@@ -672,85 +672,96 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
 
   double delay = m_duration_written - gone;
 
-  if (m_stampTimer.IsTimePast())
+  // latency works way better but is not available everyhwere
+  const int latency = m_at_jni->getLatency();
+  const bool isRawPt = m_passthrough && !m_info.m_wantsIECPassthrough;
+  if (!isRawPt && latency != -1)
   {
-    if (!m_at_jni->getTimestamp(m_timestamp))
+    m_hw_delay = latency / 1000.0;
+    // would include entire pipeline including audiotrack buffer
+    // when rerouting this might change, so ask for it again
+    const int atbuffer = m_at_jni->getBufferSizeInFrames();
+    double buffertime = static_cast<double>(atbuffer) / m_sink_sampleRate;
+    m_hw_delay -= buffertime;
+  }
+  else // use timestamp api
+  {
+    if (m_stampTimer.IsTimePast())
     {
-      CLog::Log(LOGDEBUG, "Could not acquire timestamp");
-      m_stampTimer.Set(100ms);
-    }
-    else
-    {
-      // check if frameposition is valid and nano timer less than 50 ms outdated
-      if (m_timestamp.get_framePosition() > 0 &&
-          (CurrentHostCounter() - m_timestamp.get_nanoTime()) < 50 * 1000 * 1000)
-        m_stampTimer.Set(1000ms);
-      else
+      if (!m_at_jni->getTimestamp(m_timestamp))
+      {
+        CLog::Log(LOGDEBUG, "Could not acquire timestamp");
         m_stampTimer.Set(100ms);
+      }
+      else
+      {
+        // check if frameposition is valid and nano timer less than 50 ms outdated
+        if (m_timestamp.get_framePosition() > 0 &&
+            (CurrentHostCounter() - m_timestamp.get_nanoTime()) < 50 * 1000 * 1000)
+          m_stampTimer.Set(1000ms);
+        else
+          m_stampTimer.Set(100ms);
+      }
+    }
+
+    // check if last value was received less than 2 seconds ago
+    if (m_timestamp.get_framePosition() > 0 &&
+        (CurrentHostCounter() - m_timestamp.get_nanoTime()) < 2 * 1000 * 1000 * 1000)
+    {
+      if (usesAdvancedLogging)
+      {
+        CLog::Log(LOGDEBUG, "Framecounter: {} Time: {} Current-Time: {}",
+                  (m_timestamp.get_framePosition() & UINT64_LOWER_BYTES),
+                  m_timestamp.get_nanoTime(), CurrentHostCounter());
+      }
+      uint64_t delta = static_cast<uint64_t>(CurrentHostCounter() - m_timestamp.get_nanoTime());
+      uint64_t stamphead =
+          static_cast<uint64_t>(m_timestamp.get_framePosition() & UINT64_LOWER_BYTES) +
+          delta * m_sink_sampleRate / 1000000000.0;
+      // wrap around
+      // e.g. 0xFFFFFFFFFFFF0123 -> 0x0000000000002478
+      // because we only query each second the simple smaller comparison won't suffice
+      // as delay can fluctuate minimally
+      if (stamphead < m_timestampPos && (m_timestampPos - stamphead) > 0x7FFFFFFFFFFFFFFFULL)
+      {
+        uint64_t stamp = m_timestampPos;
+        stamp += (1ULL << 32);
+        stamphead = (stamp & UINT64_UPPER_BYTES) | stamphead;
+        CLog::Log(LOGDEBUG, "Wraparound happened old: {} new: {}", m_timestampPos, stamphead);
+      }
+      m_timestampPos = stamphead;
+
+      const double playtime = m_timestampPos / static_cast<double>(m_sink_sampleRate);
+
+      if (usesAdvancedLogging)
+      {
+        CLog::Log(LOGDEBUG,
+                  "Delay - Timestamp: {} (ms) delta: {} (ms) playtime: {} (ms) Duration: {} ms",
+                  1000.0 * (m_duration_written - playtime), delta / 1000000.0, playtime * 1000,
+                  m_duration_written * 1000);
+        CLog::Log(LOGDEBUG, "Head-Position {} Timestamp Position {} Delay-Offset: {} ms", m_headPos,
+                  m_timestampPos,
+                  1000.0 * (static_cast<int64_t>(m_headPos - m_timestampPos)) / m_sink_sampleRate);
+      }
+      // especially on seek timestamp reports nonsense
+      // AE knows what it has added - and sink carries it
+      m_hw_delay = m_duration_written - playtime;
+      if (m_hw_delay < delay)
+        m_hw_delay = 0;
+      else
+        m_hw_delay -= delay; // part that delay would not have
     }
   }
+
   if (usesAdvancedLogging)
-    CLog::Log(LOGINFO, "RAW Head-Position {}", m_headPos);
-  // check if last value was received less than 2 seconds ago
-  if (m_timestamp.get_framePosition() > 0 &&
-      (CurrentHostCounter() - m_timestamp.get_nanoTime()) < 2 * 1000 * 1000 * 1000)
   {
-    if (usesAdvancedLogging)
-    {
-      CLog::Log(LOGINFO, "Framecounter: {} Time: {} Current-Time: {}",
-                (m_timestamp.get_framePosition() & UINT64_LOWER_BYTES), m_timestamp.get_nanoTime(),
-                CurrentHostCounter());
-    }
-    uint64_t delta = static_cast<uint64_t>(CurrentHostCounter() - m_timestamp.get_nanoTime());
-    uint64_t stamphead =
-        static_cast<uint64_t>(m_timestamp.get_framePosition() & UINT64_LOWER_BYTES) +
-        delta * m_sink_sampleRate / 1000000000.0;
-    // wrap around
-    // e.g. 0xFFFFFFFFFFFF0123 -> 0x0000000000002478
-    // because we only query each second the simple smaller comparison won't suffice
-    // as delay can fluctuate minimally
-    if (stamphead < m_timestampPos && (m_timestampPos - stamphead) > 0x7FFFFFFFFFFFFFFFULL)
-    {
-      uint64_t stamp = m_timestampPos;
-      stamp += (1ULL << 32);
-      stamphead = (stamp & UINT64_UPPER_BYTES) | stamphead;
-      CLog::Log(LOGDEBUG, "Wraparound happened old: {} new: {}", m_timestampPos, stamphead);
-    }
-    m_timestampPos = stamphead;
-
-    double playtime = m_timestampPos / static_cast<double>(m_sink_sampleRate);
-
-    if (usesAdvancedLogging)
-    {
-      CLog::Log(LOGINFO,
-                "Delay - Timestamp: {} (ms) delta: {} (ms) playtime: {} (ms) Duration: {} ms",
-                1000.0 * (m_duration_written - playtime), delta / 1000000.0, playtime * 1000,
-                m_duration_written * 1000);
-      CLog::Log(LOGINFO, "Head-Position {} Timestamp Position {} Delay-Offset: {} ms", m_headPos,
-                m_timestampPos,
-                1000.0 * (static_cast<int64_t>(m_headPos - m_timestampPos)) / m_sink_sampleRate);
-    }
-    double hw_delay = m_duration_written - playtime;
-    // correct by subtracting above measured delay, if lower delay gets automatically reduced
-    hw_delay -= delay;
-    // sometimes at the beginning of the stream m_timestampPos is more accurate and ahead of
-    // m_headPos - don't use the computed value then and wait
-    if (hw_delay > -1.0 && hw_delay < 1.0)
-      m_hw_delay = hw_delay;
-    else
-      m_hw_delay = 0.0;
-    if (usesAdvancedLogging)
-    {
-      CLog::Log(LOGINFO, "HW-Delay (1): {} ms", hw_delay * 1000);
-    }
+    CLog::Log(LOGDEBUG,
+              "Delay below Audiotrack: {:f} ms Timestamp Delay: {:f} ms Delay with Pause: {:f} ms",
+              m_hw_delay * 1000, delay * 1000, (delay + m_hw_delay) * 1000 + m_pause_ms);
   }
 
   delay += m_hw_delay;
 
-  if (usesAdvancedLogging)
-  {
-    CLog::Log(LOGINFO, "Combined Delay: {} ms", delay * 1000);
-  }
   if (delay < 0.0)
     delay = 0.0;
 
@@ -763,12 +774,6 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
 
   // track delay in local member
   m_delay = d;
-  if (usesAdvancedLogging)
-  {
-    CLog::Log(LOGINFO, "Delay Current: {:f} ms", d * 1000);
-    if (m_pause_ms > 0.0)
-      CLog::Log(LOGINFO, "Delay faked due to pause delay: {:f} ms", m_pause_ms);
-  }
   status.SetDelay(d);
 }
 
