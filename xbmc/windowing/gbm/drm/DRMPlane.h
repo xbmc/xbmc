@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "DRMCrtc.h"
 #include "DRMObject.h"
 
 #include <map>
@@ -20,6 +21,15 @@ namespace WINDOWING
 {
 namespace GBM
 {
+
+enum PlaneType
+{
+  PLANE_TYPE_OVERLAY,
+  PLANE_TYPE_PRIMARY,
+  PLANE_TYPE_CURSOR,
+  PLANE_TYPE_UNKNOWN,
+  PLANE_TYPE_ANY,
+};
 
 class CDRMPlane : public CDRMObject
 {
@@ -42,6 +52,8 @@ public:
 
   bool SupportsFormat(uint32_t format);
   bool SupportsFormatAndModifier(uint32_t format, uint64_t modifier);
+  bool Check(
+      uint64_t w, uint64_t h, uint32_t format, uint64_t modifier, CDRMCrtc* crtc, PlaneType type);
 
 private:
   struct DrmModePlaneDeleter

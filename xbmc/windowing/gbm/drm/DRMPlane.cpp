@@ -112,3 +112,45 @@ void CDRMPlane::FindModifiers()
   if (blob)
     drmModeFreePropertyBlob(blob);
 }
+
+bool CDRMPlane::Check(
+    uint64_t w, uint64_t h, uint32_t format, uint64_t modifier, CDRMCrtc* crtc, PlaneType type)
+{
+  if (crtc != nullptr && !(m_plane->possible_crtcs & (1 << crtc->GetOffset())))
+    return false;
+
+  // format and modifier is not supported, invalid format/modifier means ignore
+  if (format != DRM_FORMAT_INVALID)
+  {
+    if (modifier != DRM_FORMAT_MOD_INVALID && !SupportsFormatAndModifier(format, modifier))
+      return false;
+    if (modifier == DRM_FORMAT_MOD_INVALID && !SupportsFormat(format))
+      return false;
+  }
+
+  const auto plane_type = GetPropertyValue("type").value_or(PLANE_TYPE_UNKNOWN);
+
+  if (type != PLANE_TYPE_ANY && plane_type != type)
+    return false;
+
+  auto input_width_limits = GetRangePropertyLimits("INPUT_WIDTH");
+  // check if plane has defined max width and it satifies the buffer width
+  if (input_width_limits && input_width_limits->second < w)
+    return false;
+
+  // if dont use a cursor plane unless drm hints us it can be used
+  // currently only hint is INPUT_WIDTH/HEIGHT attribute provided by rockchip drm
+  // in future if any other drm really needs cursor planes we can determine it
+  // by carefully inspecting their drm implementation or adding QUIRK_USECURSORPLANES
+  if (!input_width_limits && plane_type == PLANE_TYPE_CURSOR)
+    return false;
+
+  auto input_height_limits = GetRangePropertyLimits("INPUT_HEIGHT");
+  if (input_height_limits && input_height_limits->second < h)
+    return false;
+
+  if (!input_height_limits && plane_type == PLANE_TYPE_CURSOR)
+    return false;
+
+  return true;
+}
