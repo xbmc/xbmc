@@ -54,6 +54,7 @@ public:
   bool SupportsFormatAndModifier(uint32_t format, uint64_t modifier);
   bool Check(
       uint64_t w, uint64_t h, uint32_t format, uint64_t modifier, CDRMCrtc* crtc, PlaneType type);
+  bool MoveOnTopOf(CDRMPlane* other);
 
 private:
   struct DrmModePlaneDeleter
