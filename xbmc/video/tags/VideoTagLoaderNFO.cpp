@@ -125,18 +125,19 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
   // Find a matching .nfo file
   if (!item.IsFolder())
   {
-    if (URIUtils::IsInRAR(item.GetPath())) // we have a rarred item - we want to check outside the rars
+    if (URIUtils::IsInArchive(item.GetPath())) // check outside the archive
     {
       CFileItem item2(item);
-      CURL url(item.GetPath());
-      std::string strPath = URIUtils::GetDirectory(url.GetHostName());
+      const CURL url(item.GetPath());
+      const std::string strPath{URIUtils::GetDirectory(url.GetHostName())};
       item2.SetPath(URIUtils::AddFileToFolder(strPath,
                                             URIUtils::GetFileName(item.GetPath())));
-      return FindNFO(item2, movieFolder);
+      nfoFile = FindNFO(item2, movieFolder);
+      return nfoFile;
     }
 
     // grab the folder path
-    std::string strPath = URIUtils::GetDirectory(item.GetPath());
+    std::string strPath{URIUtils::GetDirectory(item.GetPath())};
 
     if (movieFolder && !item.IsStack())
     { // looking up by folder name - movie.nfo takes priority - but not for stacked items (handled below)
@@ -149,15 +150,14 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
     if (item.IsStack())
     {
       // first try .nfo file matching first file in stack
-      CStackDirectory dir;
-      std::string firstFile = dir.GetFirstStackedFile(item.GetPath());
+      const std::string firstFile{CStackDirectory::GetFirstStackedFile(item.GetPath())};
       CFileItem item2;
       item2.SetPath(firstFile);
       nfoFile = FindNFO(item2, movieFolder);
       // else try .nfo file matching stacked title
       if (nfoFile.empty())
       {
-        std::string stackedTitlePath = dir.GetStackTitlePath(item.GetPath());
+        const std::string stackedTitlePath{CStackDirectory::GetStackTitlePath(item.GetPath())};
         item2.SetPath(stackedTitlePath);
         nfoFile = FindNFO(item2, movieFolder);
       }
@@ -170,7 +170,9 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
       // no, create .nfo file
       else
       {
-        nfoFile = URIUtils::ReplaceExtension(item.GetPath(), ".nfo");
+        std::string file{item.GetPath()};
+        URIUtils::RemoveSlashAtEnd(file);
+        nfoFile = URIUtils::ReplaceExtension(file, ".nfo");
 
         // Look for specific SxxEyy nfo and use this if present
         if (item.HasVideoInfoTag())
@@ -178,7 +180,6 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
           const CVideoInfoTag* tag{item.GetVideoInfoTag()};
           if (tag->m_iSeason >= 0 && tag->m_iEpisode >= 0)
           {
-            std::string file{item.GetPath()};
             URIUtils::RemoveExtension(file);
             file = fmt::format("{}-S{:02}E{:02}.nfo", file, tag->m_iSeason, tag->m_iEpisode);
             if (CFileUtils::Exists(file))
@@ -195,12 +196,13 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
     if (nfoFile.empty()) // final attempt - strip off any cd1 folders
     {
       URIUtils::RemoveSlashAtEnd(strPath); // need no slash for the check that follows
-      CFileItem item2;
       if (StringUtils::EndsWithNoCase(strPath, "cd1"))
       {
+        CFileItem item2;
         strPath.erase(strPath.size() - 3);
         item2.SetPath(URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(item.GetPath())));
-        return FindNFO(item2, movieFolder);
+        nfoFile = FindNFO(item2, movieFolder);
+        return nfoFile;
       }
     }
 
@@ -242,7 +244,10 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
                                   return true;
                                 })};
       if (std::ranges::distance(nfoItems) == 1)
-        return (*nfoItems.begin())->GetPath();
+      {
+        nfoFile = (*nfoItems.begin())->GetPath();
+        return nfoFile;
+      }
     }
   }
 
