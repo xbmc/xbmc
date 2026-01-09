@@ -116,6 +116,19 @@ std::optional<uint64_t> CDRMObject::GetPropertyValue(const std::string& name) co
   return m_props->prop_values[std::ranges::distance(m_propsInfo.begin(), property)];
 }
 
+bool CDRMObject::CachePropertyValue(uint32_t propertyId, uint64_t value)
+{
+  for (size_t i = 0; i < m_propsInfo.size(); i++)
+  {
+    if (m_propsInfo[i]->prop_id == propertyId)
+    {
+      m_props->prop_values[i] = value;
+      return true;
+    }
+  }
+  return false;
+}
+
 bool CDRMObject::SetProperty(const std::string& name, uint64_t value)
 {
   auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(),
@@ -123,9 +136,9 @@ bool CDRMObject::SetProperty(const std::string& name, uint64_t value)
 
   if (property != m_propsInfo.end())
   {
-    int ret = drmModeObjectSetProperty(m_fd, m_id, m_type, property->get()->prop_id, value);
-    if (ret == 0)
-      return true;
+    if (drmModeObjectSetProperty(m_fd, m_id, m_type, property->get()->prop_id, value))
+      return false;
+    return CachePropertyValue(property->get()->prop_id, value);
   }
 
   return false;
