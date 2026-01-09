@@ -125,7 +125,10 @@ bool CDRMObject::SetProperty(const std::string& name, uint64_t value)
   {
     int ret = drmModeObjectSetProperty(m_fd, m_id, m_type, property->get()->prop_id, value);
     if (ret == 0)
+    {
+      m_props->prop_values[std::ranges::distance(m_propsInfo.begin(), property)] = value;
       return true;
+    }
   }
 
   return false;
