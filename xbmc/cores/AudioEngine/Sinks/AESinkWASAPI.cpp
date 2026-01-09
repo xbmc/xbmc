@@ -885,12 +885,11 @@ initialize:
 
   REFERENCE_TIME audioSinkBufferDurationMsec, hnsLatency;
 
-  audioSinkBufferDurationMsec = (REFERENCE_TIME)500000;
-  if (IsUSBDevice())
-  {
-    CLog::LogF(LOGDEBUG, "detected USB device, increasing buffer size");
-    audioSinkBufferDurationMsec = (REFERENCE_TIME)1000000;
-  }
+  if (format.m_dataFormat == AE_FMT_RAW)
+    audioSinkBufferDurationMsec = (REFERENCE_TIME)500000; // 50ms period (same as before)
+  else
+    audioSinkBufferDurationMsec = (REFERENCE_TIME)200000; // 20ms period (same as XAudio and DSound)
+
   audioSinkBufferDurationMsec = (REFERENCE_TIME)((audioSinkBufferDurationMsec / format.m_frameSize) * format.m_frameSize); //even number of frames
 
   if (format.m_dataFormat == AE_FMT_RAW)
@@ -990,9 +989,4 @@ void CAESinkWASAPI::Drain()
     }
   }
   m_running = false;
-}
-
-bool CAESinkWASAPI::IsUSBDevice()
-{
-  return m_pDevice && m_pDevice->IsUSBDevice();
 }

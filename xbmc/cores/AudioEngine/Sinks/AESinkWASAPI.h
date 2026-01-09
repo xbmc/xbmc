@@ -40,8 +40,8 @@ public:
 
 private:
     bool InitializeExclusive(AEAudioFormat &format);
-    static void BuildWaveFormatExtensibleIEC61397(AEAudioFormat &format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex);
-    bool IsUSBDevice();
+    static void BuildWaveFormatExtensibleIEC61397(AEAudioFormat& format,
+                                                  WAVEFORMATEXTENSIBLE_IEC61937& wfxex);
 
     HANDLE m_needDataEvent{0};
     IAEWASAPIDevice* m_pDevice{nullptr};
@@ -64,7 +64,7 @@ private:
     bool m_isDirty{false}; // sink output failed - needs re-init or new device
 
     // time between next buffer of data from SoftAE and driver call for data
-    double m_avgTimeWaiting{50.0};
+    double m_avgTimeWaiting{20.0};
     double m_sinkLatency{0.0}; // time in seconds of total duration of the two WASAPI buffers
 
     unsigned int m_uiBufferLen{0}; // wasapi endpoint buffer size, in frames
