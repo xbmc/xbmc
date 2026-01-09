@@ -211,32 +211,24 @@ void CAESinkWASAPI::Deinitialize()
   m_bufferPtr = 0;
 }
 
-/**
- * @brief rescale uint64_t without overflowing on large values
- */
-static uint64_t rescale_u64(uint64_t val, uint64_t num, uint64_t den)
-{
-  return ((val / den) * num) + (((val % den) * num) / den);
-}
-
-
 void CAESinkWASAPI::GetDelay(AEDelayStatus& status)
 {
   HRESULT hr;
-  uint64_t pos, tick;
+  uint64_t pos;
   int retries = 0;
 
   if (!m_initialized)
     goto failed;
 
   do {
-    hr = m_pAudioClock->GetPosition(&pos, &tick);
+    hr = m_pAudioClock->GetPosition(&pos, NULL);
   } while (hr != S_OK && ++retries < 100);
   EXIT_ON_FAILURE(hr, "Retrieval of IAudioClock::GetPosition failed.")
 
-  status.delay = (double)(m_sinkFrames + m_bufferPtr) / m_format.m_sampleRate - (double)pos / m_clockFreq;
-  status.tick  = rescale_u64(tick, CurrentHostFrequency(), 10000000); /* convert from 100ns back to qpc ticks */
+  status.SetDelay((static_cast<double>(m_sinkFrames + m_bufferPtr) / m_format.m_sampleRate) -
+                  (static_cast<double>(pos) / m_clockFreq));
   return;
+
 failed:
   status.SetDelay(0);
 }
