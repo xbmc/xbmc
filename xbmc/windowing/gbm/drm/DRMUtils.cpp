@@ -162,20 +162,18 @@ bool CDRMUtils::FindPreferredMode()
 
 bool CDRMUtils::FindPlanes()
 {
-  for (size_t i = 0; i < m_crtcs.size(); i++)
+  for (auto& crtc : m_encoder->GetPossibleCrtcs(m_crtcs))
   {
-    if (!(m_encoder->GetPossibleCrtcs() & (1 << i)))
-      continue;
-
-    auto videoPlane = std::ranges::find_if(m_planes,
-                                           [&i](auto& plane)
-                                           {
-                                             if (plane->GetPossibleCrtcs() & (1 << i))
-                                             {
-                                               return plane->SupportsFormat(DRM_FORMAT_NV12);
-                                             }
-                                             return false;
-                                           });
+    auto videoPlane =
+        std::ranges::find_if(m_planes,
+                             [&crtc](auto& plane)
+                             {
+                               if (plane->GetPossibleCrtcs() & (1 << crtc->GetOffset()))
+                               {
+                                 return plane->SupportsFormat(DRM_FORMAT_NV12);
+                               }
+                               return false;
+                             });
 
     uint32_t videoPlaneId{0};
 
@@ -184,9 +182,9 @@ bool CDRMUtils::FindPlanes()
 
     auto guiPlane = std::ranges::find_if(
         m_planes,
-        [&i, &videoPlaneId](auto& plane)
+        [&crtc, &videoPlaneId](auto& plane)
         {
-          if (plane->GetPossibleCrtcs() & (1 << i))
+          if (plane->GetPossibleCrtcs() & (1 << crtc->GetOffset()))
           {
             return (plane->GetPlaneId() != videoPlaneId &&
                     (videoPlaneId == 0 || plane->SupportsFormat(DRM_FORMAT_ARGB8888)) &&
@@ -198,7 +196,7 @@ bool CDRMUtils::FindPlanes()
 
     if (videoPlane != m_planes.end() && guiPlane != m_planes.end())
     {
-      m_crtc = m_crtcs[i].get();
+      m_crtc = crtc;
       m_video_plane = videoPlane->get();
       m_gui_plane = guiPlane->get();
       break;
@@ -206,9 +204,9 @@ bool CDRMUtils::FindPlanes()
 
     if (guiPlane != m_planes.end())
     {
-      if (!m_crtc && m_encoder->GetCrtcId() == m_crtcs[i]->GetCrtcId())
+      if (!m_crtc && m_encoder->GetCrtcId() == crtc->GetCrtcId())
       {
-        m_crtc = m_crtcs[i].get();
+        m_crtc = crtc;
         m_gui_plane = guiPlane->get();
         m_video_plane = nullptr;
       }
@@ -542,23 +540,19 @@ bool CDRMUtils::FindEncoder()
 
 bool CDRMUtils::FindCrtc()
 {
-  for (size_t i = 0; i < m_crtcs.size(); i++)
+  for (auto& crtc : m_encoder->GetPossibleCrtcs(m_crtcs))
   {
-    if (m_encoder->GetPossibleCrtcs() & (1 << i))
+    if (crtc->GetCrtcId() != m_encoder->GetCrtcId())
+      continue;
+    m_orig_crtc = crtc;
+    if (m_orig_crtc->GetModeValid())
     {
-      if (m_crtcs[i]->GetCrtcId() == m_encoder->GetCrtcId())
-      {
-        m_orig_crtc = m_crtcs[i].get();
-        if (m_orig_crtc->GetModeValid())
-        {
-          m_mode = m_orig_crtc->GetMode();
-          CLog::LogF(LOGDEBUG, "Original crtc mode: {}x{}{} @ {} Hz", m_mode->hdisplay,
-                     m_mode->vdisplay, m_mode->flags & DRM_MODE_FLAG_INTERLACE ? "i" : "",
-                     m_mode->vrefresh);
-        }
-        return true;
-      }
+      m_mode = m_orig_crtc->GetMode();
+      CLog::LogF(LOGDEBUG, "Original crtc mode: {}x{}{} @ {} Hz", m_mode->hdisplay,
+                 m_mode->vdisplay, m_mode->flags & DRM_MODE_FLAG_INTERLACE ? "i" : "",
+                 m_mode->vrefresh);
     }
+    return true;
   }
 
   return false;
