@@ -937,11 +937,12 @@ initialize:
     return false;
   }
 
-  /* Latency of WASAPI buffers in event-driven mode is equal to the returned value  */
-  /* of GetStreamLatency converted from 100ns intervals to seconds then multiplied  */
-  /* by two as there are two equally-sized buffers and playback starts when the     */
-  /* second buffer is filled. Multiplying the returned 100ns intervals by 0.0000002 */
-  /* is handles both the unit conversion and twin buffers.                          */
+  // Latency of WASAPI buffers in event-driven mode is equal to the returned value
+  // of GetStreamLatency converted from 100ns intervals to seconds then multiplied
+  // by two as there are two equally-sized buffers and playback starts when the
+  // second buffer is filled.
+  // m_sinkLatency should match with nominal delay when all is stabilized:
+  // e.g: if period is 20ms, delay is 40 ms and latency also 40 ms
   hr = m_pAudioClient->GetStreamLatency(&hnsLatency);
   if (FAILED(hr))
   {
@@ -949,7 +950,7 @@ initialize:
     return false;
   }
 
-  m_sinkLatency = hnsLatency * 0.0000002;
+  m_sinkLatency = static_cast<double>(hnsLatency * 2) / 10000000; // 100ns intervals to s
 
   CLog::LogF(LOGINFO, "WASAPI Exclusive Mode Sink Initialized using: {}, {}, {}",
              CAEUtil::DataFormatToStr(format.m_dataFormat), wfxex.Format.nSamplesPerSec,
