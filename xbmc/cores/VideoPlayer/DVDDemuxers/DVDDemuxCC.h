@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -9,18 +9,14 @@
 #pragma once
 
 #include "DVDDemux.h"
+#include "DVDDemuxCC/ICCBitstreamParser.h"
 
 #include <memory>
 #include <vector>
 
 class CCaptionBlock;
 class CDecoderCC708;
-
-enum class CCBitstreamFormat
-{
-  ANNEXB, // Annex B format with start codes (0x000001)
-  AVCC // AVCC format with length-prefixed NAL units
-};
+class ICCBitstreamParser;
 
 class CDVDDemuxCC : public CDVDDemux
 {
@@ -46,7 +42,6 @@ protected:
   bool OpenDecoder();
   void Dispose();
   DemuxPacket* Decode();
-  CCBitstreamFormat DetectBitstreamFormat(const uint8_t* extradata, int extrasize);
 
   struct streamdata
   {
@@ -62,6 +57,5 @@ protected:
   std::vector<CCaptionBlock*> m_ccReorderBuffer;
   std::vector<CCaptionBlock*> m_ccTempBuffer;
   std::unique_ptr<CDecoderCC708> m_ccDecoder;
-  AVCodecID m_codec;
-  CCBitstreamFormat m_format = CCBitstreamFormat::ANNEXB;
+  std::unique_ptr<ICCBitstreamParser> m_parser;
 };
