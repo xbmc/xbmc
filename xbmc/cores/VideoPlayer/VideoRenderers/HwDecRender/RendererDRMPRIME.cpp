@@ -63,6 +63,8 @@ CBaseRenderer* CRendererDRMPRIME::Create(CVideoBuffer* buffer)
     AVDRMLayerDescriptor* layer = &desc->layers[0];
     uint32_t format = layer->format;
     uint64_t modifier = desc->objects[0].format_modifier;
+    uint64_t width = buf->GetWidth();
+    uint64_t height = buf->GetHeight();
 
     buf->ReleaseDescriptor();
 
@@ -70,14 +72,7 @@ CBaseRenderer* CRendererDRMPRIME::Create(CVideoBuffer* buffer)
     if (!gui)
       return nullptr;
 
-    if (!gui->SupportsFormat(CDRMUtils::FourCCWithAlpha(gui->GetFormat())))
-      return nullptr;
-
-    auto plane = drm->GetVideoPlane();
-    if (!plane)
-      return nullptr;
-
-    if (!plane->SupportsFormatAndModifier(format, modifier))
+    if (!drm->FindVideoAndGuiPlane(format, modifier, width, height))
       return nullptr;
 
     return new CRendererDRMPRIME();
@@ -89,8 +84,7 @@ CBaseRenderer* CRendererDRMPRIME::Create(CVideoBuffer* buffer)
 void CRendererDRMPRIME::Register()
 {
   CWinSystemGbm* winSystem = dynamic_cast<CWinSystemGbm*>(CServiceBroker::GetWinSystem());
-  if (winSystem && winSystem->GetDrm()->GetVideoPlane() &&
-      std::dynamic_pointer_cast<CDRMAtomic>(winSystem->GetDrm()))
+  if (winSystem && std::dynamic_pointer_cast<CDRMAtomic>(winSystem->GetDrm()))
   {
     CServiceBroker::GetSettingsComponent()
         ->GetSettings()
