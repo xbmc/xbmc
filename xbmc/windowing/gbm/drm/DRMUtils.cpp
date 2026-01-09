@@ -412,7 +412,7 @@ bool CDRMUtils::InitDrm()
 
   m_crtcs.clear();
   for (int i = 0; i < resources->count_crtcs; i++)
-    m_crtcs.emplace_back(std::make_unique<CDRMCrtc>(m_fd, resources->crtcs[i]));
+    m_crtcs.emplace_back(std::make_unique<CDRMCrtc>(m_fd, resources->crtcs[i], i));
 
   drmModeFreeResources(resources);
 
