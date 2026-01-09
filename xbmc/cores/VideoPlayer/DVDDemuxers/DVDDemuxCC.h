@@ -16,10 +16,16 @@
 class CCaptionBlock;
 class CDecoderCC708;
 
+enum class CCBitstreamFormat
+{
+  ANNEXB, // Annex B format with start codes (0x000001)
+  AVCC // AVCC format with length-prefixed NAL units
+};
+
 class CDVDDemuxCC : public CDVDDemux
 {
 public:
-  explicit CDVDDemuxCC(AVCodecID codec);
+  explicit CDVDDemuxCC(AVCodecID codec, const uint8_t* extradata, int extrasize);
   ~CDVDDemuxCC() override;
 
   bool Reset() override { return true; }
@@ -40,6 +46,7 @@ protected:
   bool OpenDecoder();
   void Dispose();
   DemuxPacket* Decode();
+  CCBitstreamFormat DetectBitstreamFormat(const uint8_t* extradata, int extrasize);
 
   struct streamdata
   {
@@ -56,4 +63,5 @@ protected:
   std::vector<CCaptionBlock*> m_ccTempBuffer;
   std::unique_ptr<CDecoderCC708> m_ccDecoder;
   AVCodecID m_codec;
+  CCBitstreamFormat m_format = CCBitstreamFormat::ANNEXB;
 };

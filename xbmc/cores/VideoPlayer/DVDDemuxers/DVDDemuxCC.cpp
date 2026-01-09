@@ -17,6 +17,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/ColorUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
 
 #include <algorithm>
 
@@ -178,7 +179,33 @@ bool reorder_sort (CCaptionBlock *lhs, CCaptionBlock *rhs)
   return (lhs->m_pts > rhs->m_pts);
 }
 
-CDVDDemuxCC::CDVDDemuxCC(AVCodecID codec) : m_codec(codec)
+CCBitstreamFormat CDVDDemuxCC::DetectBitstreamFormat(const uint8_t* extradata, int extrasize)
+{
+  // Detect AVCC vs Annex B format for H.264
+  if (m_codec == AV_CODEC_ID_H264 && extradata && extrasize >= 7)
+  {
+    // AVCC format: first byte is 0x01 (avcC version)
+    if (extradata[0] == 1)
+    {
+      CLog::Log(LOGDEBUG, "CDVDDemuxCC: Detected AVCC format from extradata");
+      return CCBitstreamFormat::AVCC;
+    }
+    // Annex B format: starts with NAL start codes
+    else if ((extradata[0] == 0 && extradata[1] == 0 && extradata[2] == 0 && extradata[3] == 1) ||
+             (extradata[0] == 0 && extradata[1] == 0 && extradata[2] == 1))
+    {
+      CLog::Log(LOGDEBUG, "CDVDDemuxCC: Detected Annex B format from extradata");
+      return CCBitstreamFormat::ANNEXB;
+    }
+  }
+
+  // No extradata or MPEG2, default to Annex B
+  return CCBitstreamFormat::ANNEXB;
+}
+
+CDVDDemuxCC::CDVDDemuxCC(AVCodecID codec, const uint8_t* extradata, int extrasize)
+  : m_codec(codec),
+    m_format(DetectBitstreamFormat(extradata, extrasize))
 {
   m_hasData = false;
   m_curPts = 0.0;
@@ -242,89 +269,34 @@ DemuxPacket* CDVDDemuxCC::Read(DemuxPacket *pSrcPacket)
     m_ccTempBuffer.pop_back();
   }
 
-  while ((len = pSrcPacket->iSize - p) > 3)
+  // AVCC format: length-prefixed NAL units
+  if (m_format == CCBitstreamFormat::AVCC && m_codec == AV_CODEC_ID_H264)
   {
-    if ((startcode & 0xffffff00) == 0x00000100)
+    while (p + 4 < pSrcPacket->iSize)
     {
-      if (m_codec == AV_CODEC_ID_MPEG2VIDEO)
+      // Read 4-byte big-endian length prefix
+      uint32_t nalSize = (pSrcPacket->pData[p] << 24) | (pSrcPacket->pData[p + 1] << 16) |
+                         (pSrcPacket->pData[p + 2] << 8) | pSrcPacket->pData[p + 3];
+      p += 4;
+
+      // Check if we have enough data for this NAL unit
+      if (p > pSrcPacket->iSize || nalSize > static_cast<uint32_t>(pSrcPacket->iSize - p))
+        break;
+
+      // Get NAL unit type
+      uint8_t nalType = pSrcPacket->pData[p] & 0x1F;
+
+      // Process slice NAL units to determine picture type
+      if (nalType >= 1 && nalType <= 5)
       {
-        int scode = startcode & 0xFF;
-        if (scode == 0x00)
+        uint8_t* buf = pSrcPacket->pData + p;
+        len = nalSize;
+        if (len > 1) // Need at least NAL header + RBSP data
         {
-          if (len > 4)
-          {
-            uint8_t *buf = pSrcPacket->pData + p;
-            picType = (buf[1] & 0x38) >> 3;
-          }
-        }
-        else if (scode == 0xb2) // user data
-        {
-          uint8_t *buf = pSrcPacket->pData + p;
-          if (len >= 6 &&
-            buf[0] == 'G' && buf[1] == 'A' && buf[2] == '9' && buf[3] == '4' &&
-            buf[4] == 3 && (buf[5] & 0x40))
-          {
-            int cc_count = buf[5] & 0x1f;
-            if (cc_count > 0 && len >= 7 + cc_count * 3)
-            {
-              CCaptionBlock *cc = new CCaptionBlock(cc_count * 3);
-              memcpy(cc->m_data, buf + 7, cc_count * 3);
-              cc->m_pts = pSrcPacket->pts;
-              if (picType == 1 || picType == 2)
-                m_ccTempBuffer.push_back(cc);
-              else
-                m_ccReorderBuffer.push_back(cc);
-            }
-          }
-          else if (len >= 6 &&
-                   buf[0] == 'C' && buf[1] == 'C' && buf[2] == 1)
-          {
-            int oddidx = (buf[4] & 0x80) ? 0 : 1;
-            int cc_count = (buf[4] & 0x3e) >> 1;
-            int extrafield = buf[4] & 0x01;
-            if (extrafield)
-              cc_count++;
-
-            if (cc_count > 0 && len >= 5 + cc_count * 3 * 2)
-            {
-              CCaptionBlock *cc = new CCaptionBlock(cc_count * 3);
-              uint8_t *src = buf + 5;
-              uint8_t *dst = cc->m_data;
-
-              for (int i = 0; i < cc_count; i++)
-              {
-                for (int j = 0; j < 2; j++)
-                {
-                  if (i == cc_count - 1 && extrafield && j == 1)
-                    break;
-
-                  if ((oddidx == j) && (src[0] == 0xFF))
-                  {
-                    dst[0] = 0x04;
-                    dst[1] = src[1];
-                    dst[2] = src[2];
-                    dst += 3;
-                  }
-                  src += 3;
-                }
-              }
-              cc->m_pts = pSrcPacket->pts;
-              m_ccReorderBuffer.push_back(cc);
-              picType = 1;
-            }
-          }
-        }
-      }
-      else if (m_codec == AV_CODEC_ID_H264)
-      {
-        int scode = startcode & 0x9F;
-        // slice data comes after SEI
-        if (scode >= 1 && scode <= 5)
-        {
-          uint8_t *buf = pSrcPacket->pData + p;
-          CBitstream bs(buf, len * 8);
-          bs.readGolombUE();
-          int sliceType = bs.readGolombUE();
+          // Skip NAL header byte
+          CBitstream bs(buf + 1, (len - 1) * 8);
+          bs.readGolombUE(); // first_mb_in_slice
+          int sliceType = bs.readGolombUE(); // slice_type
           if (sliceType == 2 || sliceType == 7) // I slice
             picType = 1;
           else if (sliceType == 0 || sliceType == 5) // P slice
@@ -338,29 +310,202 @@ DemuxPacket* CDVDDemuxCC::Read(DemuxPacket *pSrcPacket)
             }
           }
         }
-        if (scode == 0x06) // SEI
+      }
+      else if (nalType == 6) // SEI NAL unit
+      {
+        uint8_t* buf = pSrcPacket->pData + p;
+        len = nalSize;
+
+        // Look for CEA-608/708 user data in SEI
+        // SEI payload structure: [payload_type] [payload_size] [payload_data]
+        int seiPos = 1; // Skip NAL header byte
+        while (seiPos + 2 < len)
         {
-          uint8_t *buf = pSrcPacket->pData + p;
-          if (len >= 12 &&
-            buf[3] == 0 && buf[4] == 49 &&
-            buf[5] == 'G' && buf[6] == 'A' && buf[7] == '9' && buf[8] == '4' && buf[9] == 3)
+          // Read payload type
+          int payloadType = 0;
+          while (seiPos < len && buf[seiPos] == 0xFF)
           {
-            uint8_t *userdata = buf + 10;
-            int cc_count = userdata[0] & 0x1f;
-            if (len >= cc_count * 3 + 10)
+            payloadType += 255;
+            seiPos++;
+          }
+          if (seiPos < len)
+            payloadType += buf[seiPos++];
+
+          // Read payload size
+          int payloadSize = 0;
+          while (seiPos < len && buf[seiPos] == 0xFF)
+          {
+            payloadSize += 255;
+            seiPos++;
+          }
+          if (seiPos < len)
+            payloadSize += buf[seiPos++];
+
+          // Check if this is user data registered (type 4) with GA94 identifier
+          if (payloadType == 4 && seiPos + payloadSize <= len)
+          {
+            uint8_t* userdata = buf + seiPos;
+
+            // Check for ITU-T T.35 format: country_code (1 byte) + provider_code (2 bytes) + "GA94"
+            // or direct "GA94" format (Annex B style)
+            int gaOffset = -1;
+            if (payloadSize >= 11 && userdata[3] == 'G' && userdata[4] == 'A' &&
+                userdata[5] == '9' && userdata[6] == '4' && userdata[7] == 3)
             {
-              CCaptionBlock *cc = new CCaptionBlock(cc_count * 3);
-              memcpy(cc->m_data, userdata + 2, cc_count * 3);
-              cc->m_pts = pSrcPacket->pts;
-              m_ccTempBuffer.push_back(cc);
+              // ITU-T T.35 format with country/provider codes (B5 00 31 GA94...)
+              gaOffset = 3;
+            }
+            else if (payloadSize >= 8 && userdata[0] == 'G' && userdata[1] == 'A' &&
+                     userdata[2] == '9' && userdata[3] == '4' && userdata[4] == 3)
+            {
+              // Direct GA94 format
+              gaOffset = 0;
+            }
+
+            if (gaOffset >= 0)
+            {
+              uint8_t* ga94data = userdata + gaOffset;
+              int cc_count = ga94data[5] & 0x1f;
+              if (cc_count > 0 && payloadSize >= gaOffset + 6 + cc_count * 3)
+              {
+                CCaptionBlock* cc = new CCaptionBlock(cc_count * 3);
+                memcpy(cc->m_data, ga94data + 7, cc_count * 3);
+                cc->m_pts = pSrcPacket->pts;
+                m_ccTempBuffer.push_back(cc);
+              }
+            }
+          }
+
+          seiPos += payloadSize;
+        }
+      }
+
+      p += nalSize;
+    }
+  }
+  else
+  {
+    // Annex B format: start code based
+    while ((len = pSrcPacket->iSize - p) > 3)
+    {
+      if ((startcode & 0xffffff00) == 0x00000100)
+      {
+        if (m_codec == AV_CODEC_ID_MPEG2VIDEO)
+        {
+          int scode = startcode & 0xFF;
+          if (scode == 0x00)
+          {
+            if (len > 4)
+            {
+              uint8_t* buf = pSrcPacket->pData + p;
+              picType = (buf[1] & 0x38) >> 3;
+            }
+          }
+          else if (scode == 0xb2) // user data
+          {
+            uint8_t* buf = pSrcPacket->pData + p;
+            if (len >= 6 && buf[0] == 'G' && buf[1] == 'A' && buf[2] == '9' && buf[3] == '4' &&
+                buf[4] == 3 && (buf[5] & 0x40))
+            {
+              int cc_count = buf[5] & 0x1f;
+              if (cc_count > 0 && len >= 7 + cc_count * 3)
+              {
+                CCaptionBlock* cc = new CCaptionBlock(cc_count * 3);
+                memcpy(cc->m_data, buf + 7, cc_count * 3);
+                cc->m_pts = pSrcPacket->pts;
+                if (picType == 1 || picType == 2)
+                  m_ccTempBuffer.push_back(cc);
+                else
+                  m_ccReorderBuffer.push_back(cc);
+              }
+            }
+            else if (len >= 6 && buf[0] == 'C' && buf[1] == 'C' && buf[2] == 1)
+            {
+              int oddidx = (buf[4] & 0x80) ? 0 : 1;
+              int cc_count = (buf[4] & 0x3e) >> 1;
+              int extrafield = buf[4] & 0x01;
+              if (extrafield)
+                cc_count++;
+
+              if (cc_count > 0 && len >= 5 + cc_count * 3 * 2)
+              {
+                CCaptionBlock* cc = new CCaptionBlock(cc_count * 3);
+                uint8_t* src = buf + 5;
+                uint8_t* dst = cc->m_data;
+
+                for (int i = 0; i < cc_count; i++)
+                {
+                  for (int j = 0; j < 2; j++)
+                  {
+                    if (i == cc_count - 1 && extrafield && j == 1)
+                      break;
+
+                    if ((oddidx == j) && (src[0] == 0xFF))
+                    {
+                      dst[0] = 0x04;
+                      dst[1] = src[1];
+                      dst[2] = src[2];
+                      dst += 3;
+                    }
+                    src += 3;
+                  }
+                }
+                cc->m_pts = pSrcPacket->pts;
+                m_ccReorderBuffer.push_back(cc);
+                picType = 1;
+              }
+            }
+          }
+        }
+        else if (m_codec == AV_CODEC_ID_H264)
+        {
+          int scode = startcode & 0x9F;
+          // slice data comes after SEI
+          if (scode >= 1 && scode <= 5)
+          {
+            uint8_t* buf = pSrcPacket->pData + p;
+            CBitstream bs(buf, len * 8);
+            bs.readGolombUE();
+            int sliceType = bs.readGolombUE();
+            if (sliceType == 2 || sliceType == 7) // I slice
+              picType = 1;
+            else if (sliceType == 0 || sliceType == 5) // P slice
+              picType = 2;
+            if (picType == 0)
+            {
+              while (!m_ccTempBuffer.empty())
+              {
+                m_ccReorderBuffer.push_back(m_ccTempBuffer.back());
+                m_ccTempBuffer.pop_back();
+              }
+            }
+          }
+          if (scode == 0x06) // SEI
+          {
+            uint8_t* buf = pSrcPacket->pData + p;
+            if (len >= 12 && buf[3] == 0 && buf[4] == 49 && buf[5] == 'G' && buf[6] == 'A' &&
+                buf[7] == '9' && buf[8] == '4' && buf[9] == 3)
+            {
+              uint8_t* userdata = buf + 10;
+              int cc_count = userdata[0] & 0x1f;
+              if (len >= cc_count * 3 + 10)
+              {
+                CCaptionBlock* cc = new CCaptionBlock(cc_count * 3);
+                memcpy(cc->m_data, userdata + 2, cc_count * 3);
+                cc->m_pts = pSrcPacket->pts;
+                m_ccTempBuffer.push_back(cc);
+              }
             }
           }
         }
       }
+      startcode = startcode << 8 | pSrcPacket->pData[p++];
     }
-    startcode = startcode << 8 | pSrcPacket->pData[p++];
   }
 
+  // Decode CC data when we encounter an I-frame (picType==1) or P-frame (picType==2).
+  // These are reference frames that ensure correct temporal ordering of CC data,
+  // as B-frames may be reordered during decoding.
   if ((picType == 1 || picType == 2) && !m_ccReorderBuffer.empty())
   {
     if (!m_ccDecoder)
