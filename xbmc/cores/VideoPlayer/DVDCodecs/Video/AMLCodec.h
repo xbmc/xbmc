@@ -106,8 +106,6 @@ private:
   std::string   GetDoViCodecFourCC(unsigned int codec_tag) const;
   void          SetProcessInfoVideoDetails();
 
-  double        CalculatePictureDuration();
-
   DllLibAmCodec   *m_dll;
   bool             m_opened;
   bool             m_drain = false;

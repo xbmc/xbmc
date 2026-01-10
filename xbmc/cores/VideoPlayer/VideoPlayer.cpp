@@ -1265,7 +1265,8 @@ void CVideoPlayer::Prepare()
   }
 
   bool discStateRestored = false;
-  if (std::shared_ptr<CDVDInputStream::IMenus> ptr = std::dynamic_pointer_cast<CDVDInputStream::IMenus>(m_pInputStream))
+  if (std::shared_ptr<CDVDInputStream::IMenus> ptr =
+          std::dynamic_pointer_cast<CDVDInputStream::IMenus>(m_pInputStream))
   {
     CLog::Log(LOGDEBUG, "VideoPlayer: playing a file with menus");
 
@@ -1274,7 +1275,8 @@ void CVideoPlayer::Prepare()
     {
       discStateRestored = ptr->SetState(m_playerOptions.state);
     }
-    else if(std::shared_ptr<CDVDInputStreamNavigator> nav = std::dynamic_pointer_cast<CDVDInputStreamNavigator>(m_pInputStream))
+    else if (std::shared_ptr<CDVDInputStreamNavigator> nav =
+                 std::dynamic_pointer_cast<CDVDInputStreamNavigator>(m_pInputStream))
     {
       nav->EnableSubtitleStream(m_processInfo->GetVideoSettings().m_SubtitleOn);
     }
@@ -1360,7 +1362,7 @@ void CVideoPlayer::Prepare()
 
     if (m_pSubtitleDemuxer)
     {
-      if (m_pSubtitleDemuxer->SeekTime(starttime, false, &startpts))
+      if (m_pSubtitleDemuxer->SeekTime(starttime, true, &startpts))
         CLog::Log(LOGDEBUG, "{} - starting subtitle demuxer from: {}", __FUNCTION__, starttime);
       else
         CLog::Log(LOGDEBUG, "{} - failed to start subtitle demuxing from: {}", __FUNCTION__,
@@ -1762,8 +1764,8 @@ void CVideoPlayer::ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket)
 
   if (CheckSceneSkip(m_CurrentVideo))
     drop = true;
-    
-  m_CurrentVideo.lastdts = pPacket->dts;
+
+  // m_CurrentVideo.lastdts = pPacket->dts;
 
   // CLog::Log(LOGDEBUG, "CVideoPlayer::ProcessVideoData size:{:d} dts:{:.3f} pts:{:.3f} dur:{:.3f}ms, clock:{:.3f} level:{:d}",
   //   pPacket->iSize, pPacket->dts/DVD_TIME_BASE, pPacket->pts/DVD_TIME_BASE, pPacket->duration/1000.0,
@@ -2110,7 +2112,7 @@ void CVideoPlayer::HandlePlaySpeed()
                    !m_pInputStream->IsRealtime())
           {
             int audioLevel = m_VideoPlayerAudio->GetLevel();
-            //@todo hardcoded 8 seconds in message queue
+            // @todo hardcoded 8 seconds in message queue
             double maxAudioTime = clock + DVD_MSEC_TO_TIME(40 * audioLevel);
             if ((m_CurrentVideo.starttime - m_CurrentVideo.cachetotal) > maxAudioTime)
               clock = maxAudioTime;
@@ -2125,20 +2127,21 @@ void CVideoPlayer::HandlePlaySpeed()
       }
 
       m_clock.Discontinuity(clock);
-      m_CurrentVideo.syncState = IDVDStreamPlayer::SYNC_INSYNC;
-      m_CurrentVideo.avsync = CCurrentStream::AV_SYNC_NONE;
-      m_VideoPlayerVideo->SendMessage(
-          std::make_shared<CDVDMsgDouble>(CDVDMsg::GENERAL_RESYNC, clock), 1);
 
       // Only send RESYNC to audio if video PTS is valid (LAV sync fix)
       // This prevents audio from syncing to garbage during video startup
-      if (!waitingForVideoPts)
+      if (!waitingForVideoPts || !enableLavStyle)
       {
         m_CurrentAudio.syncState = IDVDStreamPlayer::SYNC_INSYNC;
         m_CurrentAudio.avsync = CCurrentStream::AV_SYNC_NONE;
         m_VideoPlayerAudio->SendMessage(
             std::make_shared<CDVDMsgDouble>(CDVDMsg::GENERAL_RESYNC, clock), 1);
       }
+
+      m_CurrentVideo.syncState = IDVDStreamPlayer::SYNC_INSYNC;
+      m_CurrentVideo.avsync = CCurrentStream::AV_SYNC_NONE;
+      m_VideoPlayerVideo->SendMessage(
+          std::make_shared<CDVDMsgDouble>(CDVDMsg::GENERAL_RESYNC, clock), 1);
 
       SetCaching(CACHESTATE_DONE);
       UpdatePlayState(0);
@@ -4053,7 +4056,7 @@ void CVideoPlayer::FlushBuffers(double pts, bool accurate, bool sync)
   m_CurrentVideo.dts         = DVD_NOPTS_VALUE;
   m_CurrentVideo.startpts    = startpts;
   m_CurrentVideo.packets = 0;
-  m_CurrentVideo.lastdts = DVD_NOPTS_VALUE;
+  // m_CurrentVideo.lastdts = DVD_NOPTS_VALUE;
 
   m_CurrentSubtitle.dts      = DVD_NOPTS_VALUE;
   m_CurrentSubtitle.startpts = startpts;
@@ -4604,6 +4607,8 @@ bool CVideoPlayer::OnAction(const CAction &action)
 
   pMenus.reset();
 
+  StreamHdrType hdrType = CServiceBroker::GetDataCacheCore().GetVideoHdrType();
+
   switch (action.GetID())
   {
     case ACTION_NEXT_ITEM:
@@ -4650,21 +4655,21 @@ bool CVideoPlayer::OnAction(const CAction &action)
 
     case ACTION_VS10_ORIGINAL:
       if (CServiceBroker::GetDataCacheCore().GetVideoHdrType() == StreamHdrType::HDR_TYPE_DOLBYVISION)
-        aml_dv_set_vs10_mode(DOLBY_VISION_OUTPUT_MODE_IPT);
+        aml_dv_set_vs10_mode(DOLBY_VISION_OUTPUT_MODE_IPT, hdrType);
       else
-        aml_dv_set_vs10_mode(DOLBY_VISION_OUTPUT_MODE_BYPASS);
+        aml_dv_set_vs10_mode(DOLBY_VISION_OUTPUT_MODE_BYPASS, hdrType);
       return true;
 
     case ACTION_VS10_SDR:
-      aml_dv_set_vs10_mode(DOLBY_VISION_OUTPUT_MODE_SDR10);
+      aml_dv_set_vs10_mode(DOLBY_VISION_OUTPUT_MODE_SDR10, hdrType);
       return true;
 
     case ACTION_VS10_HDR10:
-      aml_dv_set_vs10_mode(DOLBY_VISION_OUTPUT_MODE_HDR10);
+      aml_dv_set_vs10_mode(DOLBY_VISION_OUTPUT_MODE_HDR10, hdrType);
       return true;
 
     case ACTION_VS10_DV:
-      aml_dv_set_vs10_mode(DOLBY_VISION_OUTPUT_MODE_IPT);
+      aml_dv_set_vs10_mode(DOLBY_VISION_OUTPUT_MODE_IPT, hdrType);
       return true;
   }
 
@@ -4763,7 +4768,7 @@ int CVideoPlayer::GetPreviousChapter()
   // Afterwards skip to start of current chapter.
   const int chapter = GetChapter();
 
-  if (chapter > 0 && (GetTime() < (GetChapterPos(chapter) + 5) * 1000))
+  if (chapter > 0 && (GetTime() < (GetChapterPos(chapter) + 60) * 1000))
     return chapter - 1;
   else
     return chapter;

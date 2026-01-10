@@ -496,6 +496,22 @@ void dv_type_filler(const SettingConstPtr& setting, std::vector<IntegerSettingOp
   list.emplace_back(g_localizeStrings.Get(60026), DV_TYPE_VS10_ONLY);
 }
 
+void dv_processor_filler(const SettingConstPtr& setting, std::vector<IntegerSettingOption>& list, int& current, void* data) {
+  list.clear();
+  list.emplace_back(g_localizeStrings.Get(60503), 0);
+  if (aml_display_support_hdr_pq()) list.emplace_back(g_localizeStrings.Get(60580), 2);
+  if (aml_display_support_hdr_pq()) list.emplace_back(g_localizeStrings.Get(60504), 1);
+  if (aml_display_support_dv_ll()) list.emplace_back(g_localizeStrings.Get(60506), 4);
+  if (aml_display_support_dv_ll()) list.emplace_back(g_localizeStrings.Get(60505), 3);
+}
+
+// 0 Off
+// 1 DV as HDR10 444 12 Bit
+// 2 DV as HDR10 422 12 Bit
+// 3 DV as LLDV 422 12 Bit
+// 4 DV as LLDV 444 12 Bit
+// 5 DV as LLDV RGB Full 12 Bit
+
 void add_vs10_bypass(std::vector<IntegerSettingOption>& list) {list.emplace_back(g_localizeStrings.Get(60063), DOLBY_VISION_OUTPUT_MODE_BYPASS);}
 void add_vs10_dv_bypass(std::vector<IntegerSettingOption>& list) {list.emplace_back(g_localizeStrings.Get(60063), DOLBY_VISION_OUTPUT_MODE_IPT);}
 void add_vs10_sdr(std::vector<IntegerSettingOption>& list) {list.emplace_back(g_localizeStrings.Get(60064), DOLBY_VISION_OUTPUT_MODE_SDR10);}
@@ -554,6 +570,7 @@ bool CDolbyVisionAML::Setup()
   const auto settingsManager = settings()->GetSettingsManager();
 
   settingsManager->RegisterSettingOptionsFiller("DolbyVisionType", dv_type_filler);
+  settingsManager->RegisterSettingOptionsFiller("DolbyVisionProcessor", dv_processor_filler);
 // settingsManager->RegisterSettingOptionsFiller("DolbyVisionVSVDBMinLum", vsvdb_min_filler);
 // settingsManager->RegisterSettingOptionsFiller("DolbyVisionVSVDBMaxLum", vsvdb_max_filler);
   settingsManager->RegisterSettingOptionsFiller("DolbyVisionVS10SDR8", vs10_sdr_filler);
@@ -567,6 +584,7 @@ bool CDolbyVisionAML::Setup()
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_TYPE, true);
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_VIDEO_PROCESSOR, true);
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_VIDEO_PROCESSOR_TM, true);
+  set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_TYPE_VP_AUTO, true);
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_VSVDB_INJECT, true);
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_VSVDB_PAYLOAD, true);
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_VSVDB_CS, true);
@@ -593,6 +611,7 @@ bool CDolbyVisionAML::Setup()
   settingSet.insert(CSettings::SETTING_COREELEC_AMLOGIC_DV_MODE_ON_LUMINANCE);
   settingSet.insert(CSettings::SETTING_COREELEC_AMLOGIC_DV_TYPE);
   settingSet.insert(CSettings::SETTING_COREELEC_AMLOGIC_DV_VIDEO_PROCESSOR);
+  settingSet.insert(CSettings::SETTING_COREELEC_AMLOGIC_DV_TYPE_VP_AUTO);
   settingSet.insert(CSettings::SETTING_COREELEC_AMLOGIC_DV_VSVDB_INJECT);  
   settingSet.insert(CSettings::SETTING_COREELEC_AMLOGIC_DV_VSVDB_CS);
   settingSet.insert(CSettings::SETTING_COREELEC_AMLOGIC_DV_VSVDB_MIN_LUM);
@@ -622,15 +641,21 @@ void CDolbyVisionAML::OnSettingChanged(const std::shared_ptr<const CSetting>& se
 {
   if (!setting) return;
 
-  static int previous_dv_type = DOLBY_VISION_OUTPUT_MODE_BYPASS;
-  int dv_type(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_TYPE));
+  DOVIStreamMetadata dovi_stream_metadata;
+  dovi_stream_metadata = CServiceBroker::GetDataCacheCore().GetVideoDoViStreamMetadata();
+  int source_max_pq = static_cast<int>(dovi_stream_metadata.source_max_pq);
+  enum DV_TYPE dv_type(static_cast<DV_TYPE>(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_TYPE)));
+  int max_lum_nits_value(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_VSVDB_MAX_LUM));
+
+  static enum DV_TYPE previous_dv_type = DV_TYPE_DISPLAY_LED;
   bool reset_dv_vs10_dv = false;
   if ((previous_dv_type == DV_TYPE_VS10_ONLY) && (dv_type != DV_TYPE_VS10_ONLY)) reset_dv_vs10_dv = true;
   previous_dv_type = dv_type;
 
-  int dv_mode(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_MODE));
+  enum DV_MODE dv_mode(static_cast<DV_MODE>(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_MODE)));
   int dv_vp(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_VIDEO_PROCESSOR));
-  int max_lum_nits_value(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_VSVDB_MAX_LUM));
+
+  bool dv_type_vp_auto(settings()->GetBool(CSettings::SETTING_COREELEC_AMLOGIC_DV_TYPE_VP_AUTO));
 
   const std::string& settingId = setting->GetId();
   
@@ -639,72 +664,78 @@ void CDolbyVisionAML::OnSettingChanged(const std::shared_ptr<const CSetting>& se
     // Not working for some cases - needs video playback for mode switch to work correctly everytime.
     // enum DV_MODE dv_mode(static_cast<DV_MODE>(std::dynamic_pointer_cast<const CSettingInt>(setting)->GetValue()));
     // if (dv_mode == DV_MODE_ON) ? aml_dv_on(DOLBY_VISION_OUTPUT_MODE_IPT) : aml_dv_off();
-    set_vsvdb_payload_ver(max_lum_nits_value);
+    set_vsvdb_payload_ver(dv_type, max_lum_nits_value, source_max_pq);
     if ((dv_mode == DV_MODE_ON) && (dv_vp != 0)) settings()->SetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_VIDEO_PROCESSOR, 0);
-  } 
+    if ((dv_mode == DV_MODE_ON) && dv_type_vp_auto) settings()->SetBool(CSettings::SETTING_COREELEC_AMLOGIC_DV_TYPE_VP_AUTO, false);
+  }
   else if (settingId == CSettings::SETTING_COREELEC_AMLOGIC_DV_TYPE)
   {
     // Not working for some cases - needs video playback for mode switch to work correctly everytime.
     // aml_dv_start();
-    set_vsvdb_payload_ver(max_lum_nits_value);
+    set_vsvdb_payload_ver(dv_type, max_lum_nits_value, source_max_pq);
     if (reset_dv_vs10_dv) settings()->SetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_VS10_DV, DOLBY_VISION_OUTPUT_MODE_IPT);
     if (dv_type == DV_TYPE_VS10_ONLY) settings()->SetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_VS10_DV, DOLBY_VISION_OUTPUT_MODE_SDR10);
   }
   else if (settingId == CSettings::SETTING_COREELEC_AMLOGIC_DV_VIDEO_PROCESSOR)
   {
-    set_vsvdb_payload_ver(max_lum_nits_value);
+    set_vsvdb_payload_ver(dv_type, max_lum_nits_value, source_max_pq);
     if ((dv_vp != 0) && (dv_mode == DV_MODE_ON)) settings()->SetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_MODE, DV_MODE_ON_DEMAND);
   }
   else if (settingId == CSettings::SETTING_COREELEC_AMLOGIC_DV_MODE_ON_LUMINANCE) 
   {
     int max(std::dynamic_pointer_cast<const CSettingInt>(setting)->GetValue());
     aml_dv_set_osd_max(max);
-    set_vsvdb_payload_ver(max_lum_nits_value);
+    set_vsvdb_payload_ver(dv_type, max_lum_nits_value, source_max_pq);
   }
 //  else if (settingId == CSettings::SETTING_COREELEC_AMLOGIC_DV_HDR10PLUS_PEAK_BRIGHTNESS_SOURCE)
 //  {
-//    set_vsvdb_payload_ver(max_lum_nits_value);
+//    set_vsvdb_payload_ver(dv_type, max_lum_nits_value, source_max_pq);
 //  }
+  else if (settingId == CSettings::SETTING_COREELEC_AMLOGIC_DV_TYPE_VP_AUTO)
+  {
+    set_vsvdb_payload_ver(dv_type, max_lum_nits_value, source_max_pq);
+    if (dv_type_vp_auto && (dv_mode == DV_MODE_ON)) settings()->SetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_MODE, DV_MODE_ON_DEMAND);
+  }
   else if (settingId == CSettings::SETTING_COREELEC_AMLOGIC_DV_VSVDB_INJECT)
   {
-    set_vsvdb_payload_ver(max_lum_nits_value);
+    set_vsvdb_payload_ver(dv_type, max_lum_nits_value, source_max_pq);
   }
   else if (settingId == CSettings::SETTING_COREELEC_AMLOGIC_DV_VSVDB_CS)
   {
-//    set_vsvdb_payload_ver(max_lum_nits_value);
+//    set_vsvdb_payload_ver(dv_type, max_lum_nits_value, source_max_pq);
   }
   else if (settingId == CSettings::SETTING_COREELEC_AMLOGIC_DV_VSVDB_MIN_LUM)
   {
-//    set_vsvdb_payload_ver(max_lum_nits_value);
+//    set_vsvdb_payload_ver(dv_type, max_lum_nits_value, source_max_pq);
   }
   else if (settingId == CSettings::SETTING_COREELEC_AMLOGIC_DV_VSVDB_MAX_LUM)
   {
-//    set_vsvdb_payload_ver(max_lum_nits_value);
+//    set_vsvdb_payload_ver(dv_type, max_lum_nits_value, source_max_pq);
   }
   else if (settingId == CSettings::SETTING_COREELEC_AMLOGIC_DV_DUAL_PRIORITY)
   {
-    set_vsvdb_payload_ver(max_lum_nits_value);
+    set_vsvdb_payload_ver(dv_type, max_lum_nits_value, source_max_pq);
   }
   else if (settingId == CSettings::SETTING_COREELEC_AMLOGIC_DV_HDR10PLUS_CONVERT)
   {
-    set_vsvdb_payload_ver(max_lum_nits_value);
+    set_vsvdb_payload_ver(dv_type, max_lum_nits_value, source_max_pq);
   }
   else if (settingId == CSettings::SETTING_COREELEC_AMLOGIC_DV_HDR10PLUS_PREFER_CONVERT)
   {
-    set_vsvdb_payload_ver(max_lum_nits_value);
+    set_vsvdb_payload_ver(dv_type, max_lum_nits_value, source_max_pq);
   }
   else if (settingId == CSettings::SETTING_COREELEC_AMLOGIC_DV_VS10_DV)
   {
-    set_vsvdb_payload_ver(max_lum_nits_value);
+    set_vsvdb_payload_ver(dv_type, max_lum_nits_value, source_max_pq);
     if (dv_type == DV_TYPE_VS10_ONLY) settings()->SetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_VS10_DV, DOLBY_VISION_OUTPUT_MODE_SDR10);
   }
   else if (settingId == CSettings::SETTING_COREELEC_AMLOGIC_DV_STD_SOURCE_LEVEL_5)
   {
-    set_vsvdb_payload_ver(max_lum_nits_value);
+    set_vsvdb_payload_ver(dv_type, max_lum_nits_value, source_max_pq);
   }
   else if (settingId == CSettings::SETTING_COREELEC_AMLOGIC_DV_STD_SOURCE_LEVEL_5_OSDST)
   {
-    set_vsvdb_payload_ver(max_lum_nits_value);
+    set_vsvdb_payload_ver(dv_type, max_lum_nits_value, source_max_pq);
   }
 }
 

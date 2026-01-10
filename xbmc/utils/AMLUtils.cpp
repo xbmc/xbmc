@@ -38,12 +38,15 @@
 #include "ServiceBroker.h"
 
 #include "settings/AdvancedSettings.h"
+#include "HDR10PlusConvert.h"
 
 #include "platform/linux/SysfsPath.h"
 
 #include "linux/fb.h"
 #include <sys/ioctl.h>
 #include <amcodec/codec.h>
+
+static bool vs10_conversion = false;
 
 static std::shared_ptr<CSettings> settings()
 {
@@ -109,10 +112,16 @@ void aml_reset_audio_from_vs10_change()
   CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetAlgoForReset(1);
 }
 
-void aml_dv_set_vs10_mode(unsigned int mode)
+void aml_dv_set_vs10_mode(unsigned int mode, StreamHdrType hdrType)
 {
-  if (mode != DOLBY_VISION_OUTPUT_MODE_BYPASS) 
+  if (mode != DOLBY_VISION_OUTPUT_MODE_BYPASS)
+  {
+    if (hdrType != StreamHdrType::HDR_TYPE_DOLBYVISION)
+      vs10_conversion = true;
+    else
+      vs10_conversion = false;
     aml_dv_on(mode);
+  }
   else if (aml_is_dv_enable()) // DV BYPASS, and it is on - then switch it off.
     aml_dv_off();
 
@@ -176,6 +185,12 @@ static unsigned int aml_vs10_by_hdrtype(StreamHdrType hdrType, unsigned int bitD
       vs10_mode = aml_vs10_by_setting(CSettings::SETTING_COREELEC_AMLOGIC_DV_VS10_DV);
       break;
   }
+
+  if ((vs10_mode != DOLBY_VISION_OUTPUT_MODE_BYPASS) && (hdrType != StreamHdrType::HDR_TYPE_DOLBYVISION))
+    vs10_conversion = true;
+  else
+    vs10_conversion = false;
+
   return vs10_mode;
 }
 
@@ -489,14 +504,11 @@ std::string aml_dv_type_to_string(enum DV_TYPE type)
   return type_string;
 }
 
-void set_vsvdb_payload_ver(int max_lum_nits_value)
+void set_vsvdb_payload_ver(enum DV_TYPE dv_type, int max_lum_nits_value, int source_max_pq)
 {
-  DOVIStreamMetadata dovi_stream_metadata;
-  dovi_stream_metadata = CServiceBroker::GetDataCacheCore().GetVideoDoViStreamMetadata();
-  enum DV_TYPE dv_type(static_cast<DV_TYPE>(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_TYPE)));
   if ((dv_type == DV_TYPE_DISPLAY_LED) ||
       (max_lum_nits_value < 400) ||
-      ((max_lum_nits_value > 6450) && (dovi_stream_metadata.source_max_pq == 4095)))
+      ((max_lum_nits_value > 6450) && (source_max_pq == 4095)))
     CalculateVSVDBPayload_2();
   else
     CalculateVSVDBPayload();
@@ -515,17 +527,63 @@ unsigned int aml_dv_on(unsigned int mode)
 
   xbmc_dv_cap::dv_ver_i = 0;
   aml_get_dv_cap();
-  int colorimetry = 0;
+  enum DV_COLORIMETRY colorimetry = DV_COLORIMETRY_AMLOGIC;
   if (xbmc_dv_cap::dv_ver_i == 2) colorimetry = DV_COLORIMETRY_REMOVE;
-  else colorimetry = DV_COLORIMETRY_AMLOGIC;
   CSysfsPath("/sys/module/hdmitx20/parameters/dovi_tv_led_bt2020", (colorimetry == DV_COLORIMETRY_BT2020NC) ? 'Y' : 'N');
   CSysfsPath("/sys/module/hdmitx20/parameters/dovi_tv_led_no_colorimetry", (colorimetry == DV_COLORIMETRY_REMOVE) ? 'Y' : 'N');
 
+  DOVIStreamMetadata dovi_stream_metadata;
+  dovi_stream_metadata = CServiceBroker::GetDataCacheCore().GetVideoDoViStreamMetadata();
+  int source_max_pq = static_cast<int>(dovi_stream_metadata.source_max_pq);
+  enum DV_TYPE dv_type(static_cast<DV_TYPE>(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_TYPE)));
+  int max_lum_nits_value(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_VSVDB_MAX_LUM));
+
+  bool dv_type_vp_auto(settings()->GetBool(CSettings::SETTING_COREELEC_AMLOGIC_DV_TYPE_VP_AUTO));
   int dv_vp(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_VIDEO_PROCESSOR));
+  if ((dv_vp != 0) || (dv_type == DV_TYPE_DISPLAY_LED) || (max_lum_nits_value < max_pq_to_nits(source_max_pq))) dv_type_vp_auto = false;
+  if (dv_type_vp_auto)
+  {
+    switch (dv_type)
+    {
+      case DV_TYPE_PLAYER_LED_HDR:
+        dv_vp = 1;
+        break;
+      case DV_TYPE_PLAYER_LED_HDR2:
+        dv_vp = 2;
+        break;
+      case DV_TYPE_PLAYER_LED_LLDV:
+        dv_vp = 3;
+        break;
+      default:
+        break;
+    }
+  }
   if ((CServiceBroker::GetDataCacheCore().GetVideoFps() > 32.0f) && ((dv_vp == 4) || (dv_vp == 5)))
   {
     if (dv_vp == 4) dv_vp = 6;
     else if (dv_vp == 5) dv_vp = 7;
+  }
+  if ((dv_vp != 0) && vs10_conversion)
+  {
+    switch (dv_vp)
+    {
+      case 1:
+        dv_type = DV_TYPE_PLAYER_LED_HDR;
+        break;
+      case 2:
+        dv_type = DV_TYPE_PLAYER_LED_HDR2;
+        break;
+      case 3:
+        dv_type = DV_TYPE_PLAYER_LED_LLDV;
+        break;
+      case 4:
+        dv_type = DV_TYPE_PLAYER_LED_LLDV;
+        break;
+      default:
+        break;
+    }
+    dv_vp = 0;
+    vs10_conversion = false;
   }
   CSysfsPath("/sys/module/amdolby_vision/parameters/xbmc_dv_vp", dv_vp);
 
@@ -540,7 +598,6 @@ unsigned int aml_dv_on(unsigned int mode)
   }
   CSysfsPath("/sys/module/amdolby_vision/parameters/xbmc_dv_vp_tm", dv_vp_tm);
 
-  enum DV_TYPE dv_type(static_cast<DV_TYPE>(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_TYPE)));
   if (dv_vp > 2) dv_type = DV_TYPE_PLAYER_LED_LLDV;
   else if (dv_vp == 1) dv_type = DV_TYPE_PLAYER_LED_HDR;
   else if (dv_vp == 2) dv_type = DV_TYPE_PLAYER_LED_HDR2;
@@ -562,8 +619,7 @@ unsigned int aml_dv_on(unsigned int mode)
   int xbmc_dv_vsvdb_inject_num = 0;
   CSysfsPath("/sys/module/amdolby_vision/parameters/xbmc_dv_vsvdb_inject_num", xbmc_dv_vsvdb_inject_num);
 
-  int max_lum_nits_value(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_VSVDB_MAX_LUM));
-  set_vsvdb_payload_ver(max_lum_nits_value);
+  set_vsvdb_payload_ver(dv_type, max_lum_nits_value, source_max_pq);
 
   std::string dv_dolby_vsvdb_payload(settings()->GetString(CSettings::SETTING_COREELEC_AMLOGIC_DV_VSVDB_PAYLOAD));
   if ((dv_vp != 0) && (dv_vp_tm > 1))

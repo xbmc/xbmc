@@ -3921,14 +3921,7 @@
             <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
           </dependencies>
           <constraints>
-            <options>
-              <option label="60503">0</option> <!-- Off -->
-              <!-- <option label="60507">5</option>  DV as LLDV RGB Full 12 Bit -->
-              <option label="60580">2</option> <!-- DV as HDR10 422 12 Bit -->
-              <option label="60504">1</option> <!-- DV as HDR10 444 12 Bit -->
-              <option label="60506">4</option> <!-- DV as LLDV 444 12 Bit -->
-              <option label="60505">3</option> <!-- DV as LLDV 422 12 Bit -->
-            </options>
+            <options>DolbyVisionProcessor</options>
           </constraints>
           <control type="spinner" format="string" />
         </setting>
@@ -3970,6 +3963,19 @@
             <options>DolbyVisionType</options>
           </constraints>
           <control type="spinner" format="string" />
+        </setting>
+        <setting id="coreelec.amlogic.dolbyvision.video.type.vp.auto" type="boolean" label="60602" help="60603" parent="coreelec.amlogic.dolbyvision.type">
+          <requirement>HAVE_AMCODEC</requirement>
+          <visible>false</visible>
+          <level>2</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.video.processor" operator="is">0</dependency>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="!is">0</dependency>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="!is">3</dependency>
+          </dependencies>
+          <control type="toggle" />
         </setting>
         <setting id="coreelec.amlogic.dolbyvision.vsvdb.inject" type="boolean" label="60031" help="60032" parent="coreelec.amlogic.dolbyvision.type">
           <requirement>HAVE_AMCODEC</requirement>

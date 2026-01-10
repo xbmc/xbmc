@@ -1212,14 +1212,15 @@ void CRenderManager::PrepareNextRender()
     if (m_presentstarted) m_discard.push_back(m_presentsource);
     
     double diff = (renderPts - nextFramePts);
+    bool skip = ((m_dataCacheCore.GetSpeed() == 1.0f) && (diff > 79000.0));
 
     // skip late frames
-    while ((diff > 62000) && (m_queued.size() > 2))
+    while ((diff > 62000.0) && (m_queued.size() > 2))
     {
       int late = m_queued.front();
       m_queued.pop_front();
       m_discard.push_back(late);
-      if (m_dataCacheCore.GetSpeed() == 1.0f) m_QueueSkip++;
+      if (skip) m_QueueSkip++;
       diff = (renderPts - m_Queue[m_queued.front()].pts);
     }
 

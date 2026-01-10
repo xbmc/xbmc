@@ -24674,31 +24674,31 @@ msgstr ""
 #. "Dolby Vision Type"
 #: system/settings/settings.xml
 msgctxt "#60022"
-msgid "Set type of DV output to use with display capability."
+msgid "Set type of DV output to use with display capability. This setting will only show options that your display is capable of processing. For SDR display the only option available is VS10 Only."
 msgstr ""
 
 #. "Dolby Vision Type"
 #: system/settings/settings.xml
 msgctxt "#60023"
-msgid "Display Led (DV-Std RGB 8 Bit Tunnel)"
+msgid "Display Led (DV as DV-Std RGB 8 Bit Tunnel)"
 msgstr ""
 
 #. "Dolby Vision Type"
 #: system/settings/settings.xml
 msgctxt "#60024"
-msgid "Player Led (DV-LL 422 12 Bit)"
+msgid "Player Led (DV as DV-LL 422 12 Bit)"
 msgstr ""
 
 #. "Dolby Vision Type"
 #: system/settings/settings.xml
 msgctxt "#60025"
-msgid "Player Led (HDR10 444 12 Bit)"
+msgid "Player Led (DV as HDR10 444 12 Bit)"
 msgstr ""
 
 #. "Dolby Vision Type"
 #: system/settings/settings.xml
 msgctxt "#60026"
-msgid "VS10 Only"
+msgid "DV as VS10 Only"
 msgstr ""
 
 #. "Dolby Vision VSVDB"
@@ -24710,7 +24710,7 @@ msgstr ""
 #. "Dolby Vision VSVDB"
 #: system/settings/settings.xml
 msgctxt "#60032"
-msgid "Set DV VSVDB to replace Display DV VSVDB EDID with your specified values for Display "Colour Space" and "Maximum Luminance". If Display does not have a DV VSVDB EDID then these settings values will be used even if the "Set DV VSVDB" is set to Off. Toggle this setting from Off-On-Off to show your Display DV VSVDB EDID values."
+msgid "Set DV VSVDB to replace Display DV VSVDB EDID with your specified values for Display "Colour Space" and "Max Lum" in NITS. If Display does not have a DV VSVDB EDID then these settings values will be used even if the "Set DV VSVDB" is set to Off. Toggle this setting from Off-On-Off to show your Display DV VSVDB EDID values."
 msgstr ""
 
 #. "Dolby Vision VSVDB"
@@ -24884,7 +24884,7 @@ msgstr ""
 #. "Dolby Vision VSVDB" 
 #: system/settings/settings.xml
 msgctxt "#60076"
-msgid "Set DV Maximum Luminance based on your Display capability. If Display does not have a DV VSVDB EDID then this setting value will be used even if the "Set DV VSVDB" is set to Off. Toggle the "Set DV VSVDB" setting from Off-On-Off to show your Display Maximum Luminance DV VSVDB EDID value."
+msgid "Set DV Maximum Luminance in NITS based on your Display capability. If Display does not have a DV VSVDB EDID then this setting value will be used even if the "Set DV VSVDB" is set to Off. Toggle the "Set DV VSVDB" setting from Off-On-Off to show your Display Maximum Luminance DV VSVDB EDID value."
 msgstr ""
 
 #. "Dolby Vision VSVDB" 
@@ -25621,19 +25621,19 @@ msgstr ""
 #. "Dolby Vision LLDV to HDR10 Format"
 #: system/settings/settings.xml
 msgctxt "#60577"
-msgid "HDR10 444 12 Bit"
+msgid "DV as HDR10 444 12 Bit"
 msgstr ""
 
 #. "Dolby Vision LLDV to HDR10 Format"
 #: system/settings/settings.xml
 msgctxt "#60578"
-msgid "HDR10 422 12 Bit"
+msgid "DV as HDR10 422 12 Bit"
 msgstr ""
 
 #. "Dolby Vision Type"
 #: system/settings/settings.xml
 msgctxt "#60579"
-msgid "Player Led (HDR10 422 12 Bit)"
+msgid "Player Led (DV as HDR10 422 12 Bit)"
 msgstr ""
 
 #. "Dolby Vision Video Processor"
@@ -25766,6 +25766,18 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#60601"
 msgid "LAV Full"
+msgstr ""
+
+#. "Dolby Vision Type VP Auto"
+#: system/settings/settings.xml
+msgctxt "#60602"
+msgid "Set for Auto selection between Player Led and Video Processor settings"
+msgstr ""
+
+#. "Dolby Vision Type VP Auto"
+#: system/settings/settings.xml
+msgctxt "#60603"
+msgid "Set this option to let the software automatically select between using normal Player Led versus Video Processor (VP) settings depending on your Display Max Lum capability (shown below) and the DV Video mastered MDL. When VP is in use the OSD will be a different colour. This feature only works with DV Mode On Demand."
 msgstr ""
 
 #. Title of Dolby Vision RPU conversion setting

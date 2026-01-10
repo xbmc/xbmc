@@ -25,7 +25,7 @@ extern "C"
 
 namespace
 {
-constexpr auto TRUEHD_BUF_SIZE = 61440;
+constexpr unsigned int TRUEHD_BUF_SIZE = 61440;
 
 // Internal sentinel for "no valid PTS" - we use -1.0 instead of DVD_NOPTS_VALUE
 // because DVD_NOPTS_VALUE (0xFFF0000000000000) when cast to double becomes ~1.844e19
@@ -249,24 +249,26 @@ bool CDVDAudioCodecPassthrough::AddData(const DemuxPacket &packet)
 
     if (used != iSize)
     {
-      if (m_backlogBufferSize < static_cast<unsigned int>(iSize - used))
+      const unsigned int remaining = static_cast<unsigned int>(iSize - used);
+      if (m_backlogBufferSize < remaining)
       {
-        m_backlogBufferSize = std::max(TRUEHD_BUF_SIZE, iSize - used);
+        m_backlogBufferSize = std::max(TRUEHD_BUF_SIZE, remaining);
         m_backlogBuffer = static_cast<uint8_t*>(realloc(m_backlogBuffer, m_backlogBufferSize));
       }
-      m_backlogSize = iSize - used;
+      m_backlogSize = remaining;
       memcpy(m_backlogBuffer, pData + used, m_backlogSize);
     }
   }
   else if (pData)
   {
-    if (m_backlogBufferSize < (m_backlogSize + iSize))
+    const unsigned int newSize = m_backlogSize + static_cast<unsigned int>(iSize);
+    if (m_backlogBufferSize < newSize)
     {
-      m_backlogBufferSize = std::max(TRUEHD_BUF_SIZE, static_cast<int>(m_backlogSize + iSize));
+      m_backlogBufferSize = std::max(TRUEHD_BUF_SIZE, newSize);
       m_backlogBuffer = static_cast<uint8_t*>(realloc(m_backlogBuffer, m_backlogBufferSize));
     }
     memcpy(m_backlogBuffer + m_backlogSize, pData, iSize);
-    m_backlogSize += iSize;
+    m_backlogSize += static_cast<unsigned int>(iSize);
   }
 
   if (!m_dataSize)

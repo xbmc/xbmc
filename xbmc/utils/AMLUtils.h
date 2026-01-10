@@ -108,7 +108,7 @@ bool aml_dolby_vision_enabled();
 std::string aml_dv_output_mode_to_string(unsigned int mode);
 std::string aml_dv_mode_to_string(enum DV_MODE mode);
 std::string aml_dv_type_to_string(enum DV_TYPE type);
-void aml_dv_set_vs10_mode(unsigned int mode);
+void aml_dv_set_vs10_mode(unsigned int mode, StreamHdrType hdrType);
 void aml_dv_wait_video_off(int timeout);
 int aml_blackout_policy(int new_blackout);
 unsigned int aml_dv_on(unsigned int mode);
@@ -151,7 +151,7 @@ bool aml_unset_reg_ignore_alpha();
 std::string aml_video_fps_info();
 std::string aml_video_fps_drop();
 
-void set_vsvdb_payload_ver(int max_lum_nits_value);
+void set_vsvdb_payload_ver(enum DV_TYPE dv_type, int max_lum_nits_value, int source_max_pq);
 void CalculateVSVDBPayload();
 void CalculateVSVDBPayload_2();
 

@@ -122,12 +122,12 @@ bool CPackerMAT::PackTrueHD(const uint8_t* data, int size)
 
       // Get the offset of this frame, so we can compare to the previous frame,
       // and determine the amount of padding that needs to be inserted
-      int currentFrameOutputOffset = static_cast<int>(prevOutput - frameTime);
+      int32_t currentFrameOutputOffset = static_cast<int32_t>(prevOutput - frameTime);
 
       // The previous offset should never be smaller than the incoming offset,
       // or we will lack the reserved space
       if (m_state.nOutputTimeOffset >= currentFrameOutputOffset)
-        m_state.padding += (m_state.nOutputTimeOffset - currentFrameOutputOffset) * (64 >> (m_state.ratebits & 7));
+        m_state.padding += (m_state.nOutputTimeOffset - currentFrameOutputOffset) * static_cast<int32_t>(64 >> (m_state.ratebits & 7));
 
       CLog::Log(LOGDEBUG, "CPackerMAT::PackTrueHD: carrying forward {} padding (offset {} - {})",
                 m_state.padding, m_state.nOutputTimeOffset, currentFrameOutputOffset);
@@ -150,7 +150,7 @@ bool CPackerMAT::PackTrueHD(const uint8_t* data, int size)
   if (spaceSize < m_state.prevMatFramesize)
     spaceSize = FFALIGN(m_state.prevMatFramesize, (64 >> (m_state.ratebits & 7)));
 
-  m_state.padding += (spaceSize - m_state.prevMatFramesize);
+  m_state.padding += static_cast<int32_t>(spaceSize - m_state.prevMatFramesize);
 
   if (m_lavStyleEnabled)
   {
@@ -184,7 +184,7 @@ bool CPackerMAT::PackTrueHD(const uint8_t* data, int size)
     if (prevOutput < frameTime) // wrap around, output is always in front of frame time
       prevOutput += UINT16_MAX;
 
-    m_state.nOutputTimeOffset = static_cast<int>(prevOutput - frameTime);
+    m_state.nOutputTimeOffset = static_cast<int32_t>(prevOutput - frameTime);
   }
 
   // store frame time of the previous frame
@@ -307,27 +307,27 @@ void CPackerMAT::WriteHeader()
 
   // write MAT start code. IEC header written later, skip space only
   memcpy(m_buffer.data() + BURST_HEADER_SIZE, mat_start_code.data(), mat_start_code.size());
-  m_bufferCount = size;
+  m_bufferCount = static_cast<uint32_t>(size);
 
   // unless the start code falls into the padding, it's considered part of the current MAT frame
   // Note that audio frames are not always aligned with MAT frames, so we might already have a partial
   // frame at this point
-  m_state.matFramesize += size;
+  m_state.matFramesize += static_cast<uint32_t>(size);
 
   // The MAT metadata counts as padding, if we're scheduled to write any, which mean the start bytes
   // should reduce any further padding.
   if (m_state.padding > 0)
   {
     // if the header fits into the padding of the last frame, just reduce the amount of needed padding
-    if (m_state.padding > size)
+    if (m_state.padding > static_cast<int32_t>(size))
     {
-      m_state.padding -= size;
+      m_state.padding -= static_cast<int32_t>(size);
       m_state.matFramesize = 0;
     }
     else
     {
       // otherwise, consume all padding and set the size of the next MAT frame to the remaining data
-      m_state.matFramesize = (size - m_state.padding);
+      m_state.matFramesize = static_cast<uint32_t>(static_cast<int32_t>(size) - m_state.padding);
       m_state.padding = 0;
     }
   }
@@ -335,12 +335,12 @@ void CPackerMAT::WriteHeader()
 
 void CPackerMAT::WritePadding()
 {
-  if (m_state.padding == 0)
+  if (m_state.padding <= 0)
     return;
 
   // for padding not writes any data (nullptr) as buffer is already zeroed
   // only counts/skip bytes
-  const int remaining = FillDataBuffer(nullptr, m_state.padding, Type::PADDING);
+  const int remaining = FillDataBuffer(nullptr, static_cast<int>(m_state.padding), Type::PADDING);
 
   // not all padding could be written to the buffer, write it later
   if (remaining >= 0)
@@ -353,7 +353,7 @@ void CPackerMAT::WritePadding()
     // more padding then requested was written, eg. there was a MAT middle/end marker
     // that needed to be written
     m_state.padding = 0;
-    m_state.matFramesize = -remaining;
+    m_state.matFramesize = static_cast<uint32_t>(-remaining);
   }
 }
 
@@ -363,8 +363,8 @@ void CPackerMAT::AppendData(const uint8_t* data, int size, Type type)
   if (type == Type::DATA)
     memcpy(m_buffer.data() + m_bufferCount, data, size);
 
-  m_state.matFramesize += size;
-  m_bufferCount += size;
+  m_state.matFramesize += static_cast<uint32_t>(size);
+  m_bufferCount += static_cast<uint32_t>(size);
 }
 
 int CPackerMAT::FillDataBuffer(const uint8_t* data, int size, Type type)
@@ -378,19 +378,19 @@ int CPackerMAT::FillDataBuffer(const uint8_t* data, int size, Type type)
   // The MAT middle marker always needs to be in the exact same spot, any audio data will be split.
   // If we're currently writing padding, then the marker will be considered as padding data and
   // reduce the amount of padding still required.
-  if (GetCount() <= MAT_POS_MIDDLE && GetCount() + size > MAT_POS_MIDDLE)
+  if (GetCount() <= MAT_POS_MIDDLE && GetCount() + static_cast<uint32_t>(size) > MAT_POS_MIDDLE)
   {
     // write as much data before the middle code as we can
-    int nBytesBefore = MAT_POS_MIDDLE - GetCount();
+    int nBytesBefore = static_cast<int>(MAT_POS_MIDDLE - GetCount());
     AppendData(data, nBytesBefore, type);
     remaining -= nBytesBefore;
 
     // write the MAT middle code
-    AppendData(mat_middle_code.data(), mat_middle_code.size(), Type::DATA);
+    AppendData(mat_middle_code.data(), static_cast<int>(mat_middle_code.size()), Type::DATA);
 
     // if we're writing padding, deduct the size of the code from it
     if (type == Type::PADDING)
-      remaining -= mat_middle_code.size();
+      remaining -= static_cast<int>(mat_middle_code.size());
 
     // write remaining data after the MAT marker
     if (remaining > 0)
@@ -401,21 +401,21 @@ int CPackerMAT::FillDataBuffer(const uint8_t* data, int size, Type type)
 
   // not enough room in the buffer to write all the data,
   // write as much as we can and add the MAT footer
-  if (GetCount() + size >= MAT_BUFFER_LIMIT)
+  if (GetCount() + static_cast<uint32_t>(size) >= MAT_BUFFER_LIMIT)
   {
     // write as much data before the middle code as we can
-    int nBytesBefore = MAT_BUFFER_LIMIT - GetCount();
+    int nBytesBefore = static_cast<int>(MAT_BUFFER_LIMIT - GetCount());
     AppendData(data, nBytesBefore, type);
     remaining -= nBytesBefore;
 
     // write the MAT end code
-    AppendData(mat_end_code.data(), mat_end_code.size(), Type::DATA);
+    AppendData(mat_end_code.data(), static_cast<int>(mat_end_code.size()), Type::DATA);
 
     assert(GetCount() == MAT_BUFFER_SIZE);
 
     // MAT markers don't displace padding, so reduce the amount of padding
     if (type == Type::PADDING)
-      remaining -= mat_end_code.size();
+      remaining -= static_cast<int>(mat_end_code.size());
 
     // any remaining data will be written in future calls
     return remaining;
@@ -452,7 +452,7 @@ void CPackerMAT::FlushPacket()
     // this is done after delivery, because it modifies the duration of the frame,
     //  eg. the start of the next frame
     if (MATSamples != m_state.samples)
-      m_state.numberOfSamplesOffset += m_state.samples - MATSamples;
+      m_state.numberOfSamplesOffset += static_cast<int32_t>(m_state.samples) - static_cast<int32_t>(MATSamples);
   }
 
   m_state.samples = 0;

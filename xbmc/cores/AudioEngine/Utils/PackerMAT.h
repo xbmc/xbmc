@@ -75,10 +75,10 @@ private:
     uint32_t matFramesize; // size in bytes of current MAT frame
     uint32_t prevMatFramesize; // size in bytes of previous MAT frame
 
-    uint32_t padding; // padding bytes pending to write
+    int32_t padding; // padding bytes pending to write (signed: can go negative during LAV branch handling)
     uint32_t samples; // number of samples accumulated in current MAT frame
-    int numberOfSamplesOffset; // offset respect number of samples in a standard MAT frame (40 * 24)
-    int nOutputTimeOffset; // offset of frame time to output time (LAV: for discontinuity padding calculation)
+    int32_t numberOfSamplesOffset; // offset respect number of samples in a standard MAT frame (40 * 24)
+    int32_t nOutputTimeOffset; // offset of frame time to output time (LAV: for discontinuity padding calculation)
   };
 
   void WriteHeader();
