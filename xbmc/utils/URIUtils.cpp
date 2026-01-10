@@ -9,7 +9,6 @@
 #include "URIUtils.h"
 
 #include "FileItem.h"
-#include "FileItemList.h"
 #include "PasswordManager.h"
 #include "ServiceBroker.h"
 #include "StringUtils.h"
@@ -35,7 +34,6 @@
 #include <array>
 #include <cassert>
 #include <charconv>
-#include <ranges>
 #include <vector>
 
 #include <arpa/inet.h>
@@ -1438,6 +1436,11 @@ bool URIUtils::IsVideoDb(const std::string& strFile)
 bool URIUtils::IsBlurayPath(const std::string& strFile)
 {
   return IsProtocol(strFile, "bluray");
+}
+
+bool URIUtils::IsBlurayMenuPath(const std::string& file)
+{
+  return IsBlurayPath(file) && GetFileName(file) == "menu";
 }
 
 bool URIUtils::IsOpticalMediaFile(const std::string& file)

@@ -270,6 +270,7 @@ public:
   static bool IsDiscImage(const std::string& file);
   static bool IsDiscImageStack(const std::string& file);
   static bool IsBlurayPath(const std::string& strFile);
+  static bool IsBlurayMenuPath(const std::string& file);
 
   /*! \brief Determines if a file is from optical media (ie. index.bdmv, video_ts.ifo etc..)
    \param file file path for determination.
