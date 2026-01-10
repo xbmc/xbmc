@@ -15,6 +15,7 @@ class CPlatformWebOS : public CPlatformLinux
 public:
   bool InitStageOne() override;
   bool InitStageTwo() override;
+  bool InitStageThree() override;
   static CPlatform* CreateInstance();
 
 protected:
