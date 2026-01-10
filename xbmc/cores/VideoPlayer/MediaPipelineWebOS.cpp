@@ -402,6 +402,7 @@ void CMediaPipelineWebOS::Flush(bool sync)
     CLog::LogF(LOGDEBUG, "Failed to flush media APIs");
   FlushAudioMessages();
   FlushVideoMessages();
+  std::scoped_lock lock(m_videoCriticalSection);
   if (m_bitstream)
     m_bitstream->ResetStartDecode();
   m_flushed = true;
