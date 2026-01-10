@@ -75,8 +75,10 @@ void CDVDInputStream::SavePlaylistDetails(std::vector<PlaylistInformation>& play
   {
     // Update last playlist entry
     auto& lastPlaylist = playedPlaylists.back();
+
+    assert(lastPlaylist.duration == currentPlaylistInformation.duration); // Should be the same
+
     lastPlaylist.watchedTime += watchedTime;
-    lastPlaylist.duration = currentPlaylistInformation.duration;
     lastPlaylist.details = currentPlaylistInformation.details;
     CLog::LogFC(LOGDEBUG, LOGBLURAY, "Updated playlist/title {} - watched time {} seconds",
                 currentPlaylistInformation.playlist, lastPlaylist.watchedTime.count() / 1000);
@@ -152,7 +154,7 @@ void ProcessMenuPlaylists(std::vector<CDVDInputStream::PlaylistInformation>& pla
 }
 } // namespace
 
-CDVDInputStream::UpdateState CDVDInputStream::UpdatePlaylistDetails(
+CDVDInputStream::UpdateState CDVDInputStream::UpdateItemFromPlaylistDetails(
     DVDStreamType type,
     std::vector<PlaylistInformation>& playedPlaylists,
     CFileItem& item,
