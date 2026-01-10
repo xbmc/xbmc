@@ -600,7 +600,7 @@ protected:
   bool m_HasVideo;
   bool m_HasAudio;
 
-  bool m_UpdateStreamDetails;
+  bool m_updateStreamDetails{false};
 
   std::atomic<bool> m_displayLost;
 

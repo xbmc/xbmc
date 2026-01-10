@@ -33,7 +33,6 @@
 #include "VideoPlayerRadioRDS.h"
 #include "VideoPlayerVideo.h"
 #include "application/Application.h"
-#include "application/ApplicationStackHelper.h"
 #include "cores/DataCacheCore.h"
 #include "cores/EdlEdit.h"
 #include "cores/FFmpeg.h"
@@ -748,7 +747,6 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
   m_caching = CACHESTATE_DONE;
   m_HasVideo = false;
   m_HasAudio = false;
-  m_UpdateStreamDetails = false;
 
   const int tenthsSeconds = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
       CSettings::SETTING_VIDEOPLAYER_QUEUETIMESIZE);
@@ -2697,7 +2695,6 @@ void CVideoPlayer::OnExit()
       m_State.Clear();
       break;
     case NONE:
-    default:
       break;
   }
 
@@ -3291,7 +3288,7 @@ void CVideoPlayer::HandleMessages()
       m_bAbortRequest = true;
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SET_UPDATE_STREAM_DETAILS))
-      m_UpdateStreamDetails = true;
+      m_updateStreamDetails = true;
   }
 }
 
@@ -5433,13 +5430,13 @@ void CVideoPlayer::UpdateFileItemStreamDetails(CFileItem& item, UpdateStreamDeta
 {
   if (update == UpdateStreamDetails::UPDATE_IF_FLAGGED)
   {
-    if (!m_UpdateStreamDetails)
+    if (!m_updateStreamDetails)
       return;
 
     // For blurays
     item.SetProperty("update_stream_details", true);
 
-    m_UpdateStreamDetails = false;
+    m_updateStreamDetails = false;
   }
 
   CLog::Log(LOGDEBUG, "CVideoPlayer: updating file item stream details with available streams");
