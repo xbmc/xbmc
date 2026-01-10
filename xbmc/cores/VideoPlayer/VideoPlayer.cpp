@@ -980,6 +980,14 @@ bool CVideoPlayer::OpenDemuxStream()
 
   m_offset_pts = 0;
 
+  if (m_updateStreamDetails)
+  {
+    CFileItem item;
+    UpdateFileItemStreamDetails(item, UpdateStreamDetails::ALWAYS_UPDATE);
+    if (item.HasVideoInfoTag())
+      m_pInputStream->SaveCurrentState(item.GetVideoInfoTag()->m_streamDetails);
+  }
+
   return true;
 }
 
@@ -5221,12 +5229,6 @@ void CVideoPlayer::UpdatePlayState(double timeout)
   }
 
   m_processInfo->SetPlayTimes(state.startTime, state.time, state.timeMin, state.timeMax);
-
-  // Save state of the current stream (for blurays/DVDs)
-  CFileItem item;
-  UpdateFileItemStreamDetails(item, UpdateStreamDetails::ALWAYS_UPDATE);
-  if (item.HasVideoInfoTag())
-    m_pInputStream->SaveCurrentState(item.GetVideoInfoTag()->m_streamDetails);
 
   std::unique_lock lock(m_StateSection);
   m_State = state;
