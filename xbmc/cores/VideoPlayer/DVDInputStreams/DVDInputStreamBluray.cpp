@@ -1347,9 +1347,9 @@ void CDVDInputStreamBluray::SaveCurrentState(const CStreamDetails& details)
   m_startWatchTime = std::chrono::steady_clock::now();
 }
 
-CDVDInputStream::UpdateState CDVDInputStreamBluray::UpdateCurrentState(CFileItem& item,
-                                                                       double time,
-                                                                       bool& closed)
+CDVDInputStream::UpdateState CDVDInputStreamBluray::UpdateItemFromSavedStates(CFileItem& item,
+                                                                              double time,
+                                                                              bool& closed)
 {
   std::unique_lock lock(m_statesLock);
 
@@ -1357,7 +1357,8 @@ CDVDInputStream::UpdateState CDVDInputStreamBluray::UpdateCurrentState(CFileItem
   if (item.HasVideoInfoTag())
     SaveCurrentState(item.GetVideoInfoTag()->m_streamDetails);
 
-  return UpdatePlaylistDetails(DVDSTREAM_TYPE_BLURAY, m_playedPlaylists, item, time, closed);
+  return UpdateItemFromPlaylistDetails(DVDSTREAM_TYPE_BLURAY, m_playedPlaylists, item, time,
+                                       closed);
 }
 
 void CDVDInputStreamBluray::UpdateStack(CFileItem& item)

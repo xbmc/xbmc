@@ -217,12 +217,24 @@ public:
     NOT_PLAYED
   };
 
+  /*!
+  \brief Saves the current state of the current stream (including stream details)
+  \param details streamdetails of the current playing stream
+  */
   virtual void SaveCurrentState(const CStreamDetails& details) {}
-  virtual UpdateState UpdateCurrentState(CFileItem& item, double time, bool& closed)
+
+  /*!
+  \brief Updates the given fileitem with the state and streamdetails of what is decided to be the main (ie. main movie) title
+  \param item fileitem to update
+  \param time current playback time
+  \param closed sets closed to indicate if the stream was closed (=true) (ie. playback stopped before end) or finished (=false)
+  \returns an UpdateState flag indicating if no main title was played (=NOT_PLAYED), the main title was played completely (=FINISHED) 
+  \        or no update needs to be made to the VideoPlayer state (=NONE)
+  */
+  virtual UpdateState UpdateItemFromSavedStates(CFileItem& item, double time, bool& closed)
   {
     return UpdateState::NONE;
   }
-  virtual void UpdateStack(CFileItem& item) {}
 
   struct PlaylistInformation
   {
@@ -234,15 +246,35 @@ public:
     CStreamDetails details;
   };
 
+  /*!
+  \brief Function shared with DVDInputStreamBluray (for Blurays) and DVDInputStreamNavigator (for DVDs) to save playlist/title details
+  \param playedPlaylists vector of played playlists/titles to update
+  \param startTime a time point indicating when playback started (used to calculate the actual time a playlist/title was played for)
+  \param currentPlaylistInformation information about the current playlist/title being played
+  */
   static void SavePlaylistDetails(std::vector<PlaylistInformation>& playedPlaylists,
                                   std::chrono::steady_clock::time_point startTime,
                                   const PlaylistInformation& currentPlaylistInformation);
 
-  static UpdateState UpdatePlaylistDetails(DVDStreamType type,
-                                           std::vector<PlaylistInformation>& playedPlaylists,
-                                           CFileItem& item,
-                                           double time,
-                                           bool& closed);
+  /*!
+  \brief Function shared with DVDInputStreamBluray (for Blurays) and DVDInputStreamNavigator (for DVDs) to updates the given fileitem with 
+  \      the state and streamdetails of what is decided to be the main (ie. main movie) title
+  \param type playback type (DVD or Bluray)
+  \param playedPlaylists vector of played playlists/titles
+  \param item fileitem to update
+  \param time current playback time
+  \param closed sets closed to indicate if the stream was closed (=true) (ie. playback stopped before end) or finished (=false)
+  \returns an UpdateState flag indicating if no main title was played (=NOT_PLAYED), the main title was played completely (=FINISHED) 
+  \        or no update needs to be made (=NONE)
+  */
+  static UpdateState UpdateItemFromPlaylistDetails(
+      DVDStreamType type,
+      std::vector<PlaylistInformation>& playedPlaylists,
+      CFileItem& item,
+      double time,
+      bool& closed);
+
+  virtual void UpdateStack(CFileItem& item) {}
 
   static void UpdateStackItem(CFileItem& item, std::chrono::milliseconds length);
 

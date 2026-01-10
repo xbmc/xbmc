@@ -2686,7 +2686,7 @@ void CVideoPlayer::OnExit()
   // For other input streams no action is taken (as NONE is returned by the default virtual function)
   constexpr double STREAM_FINISHED{std::numeric_limits<double>::max()};
   const CDVDInputStream::UpdateState updateState{
-      m_pInputStream->UpdateCurrentState(fileItem, m_State.time, m_bCloseRequest)};
+      m_pInputStream->UpdateItemFromSavedStates(fileItem, m_State.time, m_bCloseRequest)};
   switch (updateState)
   {
     using enum CDVDInputStream::UpdateState;

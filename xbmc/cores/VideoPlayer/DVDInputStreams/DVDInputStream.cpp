@@ -152,7 +152,7 @@ void ProcessMenuPlaylists(std::vector<CDVDInputStream::PlaylistInformation>& pla
 }
 } // namespace
 
-CDVDInputStream::UpdateState CDVDInputStream::UpdatePlaylistDetails(
+CDVDInputStream::UpdateState CDVDInputStream::UpdateItemFromPlaylistDetails(
     DVDStreamType type,
     std::vector<PlaylistInformation>& playedPlaylists,
     CFileItem& item,
