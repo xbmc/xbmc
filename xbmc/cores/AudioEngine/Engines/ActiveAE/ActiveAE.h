@@ -64,6 +64,7 @@ struct AudioSettings
   bool streamNoise;
   int silenceTimeoutMinutes;
   float mixSubLevel;
+  bool lowLatencyMode;
 };
 
 class CActiveAEControlProtocol : public Protocol

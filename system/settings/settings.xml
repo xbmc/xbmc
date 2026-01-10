@@ -3254,6 +3254,11 @@
           </dependencies>
           <control type="toggle" />
         </setting>
+        <setting id="audiooutput.lowlatency" type="boolean" label="295" help="36418">
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
         <setting id="audiooutput.processquality" type="integer" label="13505" help="36169">
           <requirement>HAS_AE_QUALITY_LEVELS</requirement>
           <level>2</level>
