@@ -882,8 +882,6 @@ initialize:
   else
     audioSinkBufferDurationMsec = (REFERENCE_TIME)200000; // 20ms period (same as XAudio and DSound)
 
-  audioSinkBufferDurationMsec = (REFERENCE_TIME)((audioSinkBufferDurationMsec / format.m_frameSize) * format.m_frameSize); //even number of frames
-
   if (format.m_dataFormat == AE_FMT_RAW)
     format.m_dataFormat = AE_FMT_S16NE;
 
