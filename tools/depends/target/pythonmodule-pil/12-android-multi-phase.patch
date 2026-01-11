@@ -1,0 +1,310 @@
+--- a/src/_avif.c
++++ b/src/_avif.c
+@@ -881,22 +881,26 @@
+     return 0;
+ }
+ 
+-static PyModuleDef_Slot slots[] = {
+-    {Py_mod_exec, setup_module},
+-#ifdef Py_GIL_DISABLED
+-    {Py_mod_gil, Py_MOD_GIL_NOT_USED},
+-#endif
+-    {0, NULL}
+-};
+-
+ PyMODINIT_FUNC
+ PyInit__avif(void) {
++    PyObject *m;
++
+     static PyModuleDef module_def = {
+         PyModuleDef_HEAD_INIT,
+         .m_name = "_avif",
++        .m_size = -1,
+         .m_methods = avifMethods,
+-        .m_slots = slots
+     };
+ 
+-    return PyModuleDef_Init(&module_def);
++    m = PyModule_Create(&module_def);
++    if (setup_module(m) < 0) {
++        Py_DECREF(m);
++        return NULL;
++    }
++
++#ifdef Py_GIL_DISABLED
++    PyUnstable_Module_SetGIL(m, Py_MOD_GIL_NOT_USED);
++#endif
++
++    return m;
+ }
+--- a/src/_imaging.c
++++ b/src/_imaging.c
+@@ -4427,22 +4427,27 @@
+     return 0;
+ }
+ 
+-static PyModuleDef_Slot slots[] = {
+-    {Py_mod_exec, setup_module},
+-#ifdef Py_GIL_DISABLED
+-    {Py_mod_gil, Py_MOD_GIL_NOT_USED},
+-#endif
+-    {0, NULL}
+-};
+-
+ PyMODINIT_FUNC
+ PyInit__imaging(void) {
++    PyObject *m;
++
+     static PyModuleDef module_def = {
+         PyModuleDef_HEAD_INIT,
+         .m_name = "_imaging",
++        .m_size = -1,
+         .m_methods = functions,
+-        .m_slots = slots
+     };
+ 
+-    return PyModuleDef_Init(&module_def);
++    m = PyModule_Create(&module_def);
++
++    if (setup_module(m) < 0) {
++        Py_DECREF(m);
++        return NULL;
++    }
++
++#ifdef Py_GIL_DISABLED
++    PyUnstable_Module_SetGIL(m, Py_MOD_GIL_NOT_USED);
++#endif
++
++    return m;
+ }
+--- a/src/_imagingcms.c
++++ b/src/_imagingcms.c
+@@ -1475,24 +1475,28 @@
+     return 0;
+ }
+ 
+-static PyModuleDef_Slot slots[] = {
+-    {Py_mod_exec, setup_module},
+-#ifdef Py_GIL_DISABLED
+-    {Py_mod_gil, Py_MOD_GIL_NOT_USED},
+-#endif
+-    {0, NULL}
+-};
+-
+ PyMODINIT_FUNC
+ PyInit__imagingcms(void) {
+-    PyDateTime_IMPORT;
++    PyObject *m;
+ 
+     static PyModuleDef module_def = {
+         PyModuleDef_HEAD_INIT,
+         .m_name = "_imagingcms",
++        .m_size = -1,
+         .m_methods = pyCMSdll_methods,
+-        .m_slots = slots
+     };
+ 
+-    return PyModuleDef_Init(&module_def);
++    m = PyModule_Create(&module_def);
++
++    if (setup_module(m) < 0) {
++        return NULL;
++    }
++
++    PyDateTime_IMPORT;
++
++#ifdef Py_GIL_DISABLED
++    PyUnstable_Module_SetGIL(m, Py_MOD_GIL_NOT_USED);
++#endif
++
++    return m;
+ }
+--- a/src/_imagingft.c
++++ b/src/_imagingft.c
+@@ -1605,22 +1605,26 @@
+     return 0;
+ }
+ 
+-static PyModuleDef_Slot slots[] = {
+-    {Py_mod_exec, setup_module},
+-#ifdef Py_GIL_DISABLED
+-    {Py_mod_gil, Py_MOD_GIL_NOT_USED},
+-#endif
+-    {0, NULL}
+-};
+-
+ PyMODINIT_FUNC
+ PyInit__imagingft(void) {
++    PyObject *m;
++
+     static PyModuleDef module_def = {
+         PyModuleDef_HEAD_INIT,
+         .m_name = "_imagingft",
++        .m_size = -1,
+         .m_methods = _functions,
+-        .m_slots = slots
+     };
+ 
+-    return PyModuleDef_Init(&module_def);
++    m = PyModule_Create(&module_def);
++
++    if (setup_module(m) < 0) {
++        return NULL;
++    }
++
++#ifdef Py_GIL_DISABLED
++    PyUnstable_Module_SetGIL(m, Py_MOD_GIL_NOT_USED);
++#endif
++
++    return m;
+ }
+--- a/src/_imagingmath.c
++++ b/src/_imagingmath.c
+@@ -302,22 +302,26 @@
+     return 0;
+ }
+ 
+-static PyModuleDef_Slot slots[] = {
+-    {Py_mod_exec, setup_module},
+-#ifdef Py_GIL_DISABLED
+-    {Py_mod_gil, Py_MOD_GIL_NOT_USED},
+-#endif
+-    {0, NULL}
+-};
+-
+ PyMODINIT_FUNC
+ PyInit__imagingmath(void) {
++    PyObject *m;
++
+     static PyModuleDef module_def = {
+         PyModuleDef_HEAD_INIT,
+         .m_name = "_imagingmath",
++        .m_size = -1,
+         .m_methods = _functions,
+-        .m_slots = slots
+     };
+ 
+-    return PyModuleDef_Init(&module_def);
++    m = PyModule_Create(&module_def);
++
++    if (setup_module(m) < 0) {
++        return NULL;
++    }
++
++#ifdef Py_GIL_DISABLED
++    PyUnstable_Module_SetGIL(m, Py_MOD_GIL_NOT_USED);
++#endif
++
++    return m;
+ }
+--- a/src/_imagingmorph.c
++++ b/src/_imagingmorph.c
+@@ -246,22 +246,23 @@
+     {NULL, NULL, 0, NULL}
+ };
+ 
+-static PyModuleDef_Slot slots[] = {
+-#ifdef Py_GIL_DISABLED
+-    {Py_mod_gil, Py_MOD_GIL_NOT_USED},
+-#endif
+-    {0, NULL}
+-};
+-
+ PyMODINIT_FUNC
+ PyInit__imagingmorph(void) {
++    PyObject *m;
++
+     static PyModuleDef module_def = {
+         PyModuleDef_HEAD_INIT,
+         .m_name = "_imagingmorph",
+         .m_doc = "A module for doing image morphology",
++        .m_size = -1,
+         .m_methods = functions,
+-        .m_slots = slots
+     };
+ 
+-    return PyModuleDef_Init(&module_def);
++    m = PyModule_Create(&module_def);
++
++#ifdef Py_GIL_DISABLED
++    PyUnstable_Module_SetGIL(m, Py_MOD_GIL_NOT_USED);
++#endif
++
++    return m;
+ }
+--- a/src/_imagingtk.c
++++ b/src/_imagingtk.c
+@@ -46,22 +46,24 @@
+     {NULL, NULL} /* sentinel */
+ };
+ 
+-static PyModuleDef_Slot slots[] = {
+-    {Py_mod_exec, load_tkinter_funcs},
+-#ifdef Py_GIL_DISABLED
+-    {Py_mod_gil, Py_MOD_GIL_NOT_USED},
+-#endif
+-    {0, NULL}
+-};
+-
+ PyMODINIT_FUNC
+ PyInit__imagingtk(void) {
+     static PyModuleDef module_def = {
+         PyModuleDef_HEAD_INIT,
+         .m_name = "_imagingtk",
++        .m_size = -1,
+         .m_methods = functions,
+-        .m_slots = slots
+     };
++    PyObject *m;
++    m = PyModule_Create(&module_def);
++    if (load_tkinter_funcs() != 0) {
++        Py_DECREF(m);
++        return NULL;
++    }
++
++#ifdef Py_GIL_DISABLED
++    PyUnstable_Module_SetGIL(m, Py_MOD_GIL_NOT_USED);
++#endif
+ 
+-    return PyModuleDef_Init(&module_def);
++    return m;
+ }
+--- a/src/_webp.c
++++ b/src/_webp.c
+@@ -780,22 +780,26 @@
+     return 0;
+ }
+ 
+-static PyModuleDef_Slot slots[] = {
+-    {Py_mod_exec, setup_module},
+-#ifdef Py_GIL_DISABLED
+-    {Py_mod_gil, Py_MOD_GIL_NOT_USED},
+-#endif
+-    {0, NULL}
+-};
+-
+ PyMODINIT_FUNC
+ PyInit__webp(void) {
++    PyObject *m;
++
+     static PyModuleDef module_def = {
+         PyModuleDef_HEAD_INIT,
+         .m_name = "_webp",
++        .m_size = -1,
+         .m_methods = webpMethods,
+-        .m_slots = slots
+     };
+ 
+-    return PyModuleDef_Init(&module_def);
++    m = PyModule_Create(&module_def);
++    if (setup_module(m) < 0) {
++        Py_DECREF(m);
++        return NULL;
++    }
++
++#ifdef Py_GIL_DISABLED
++    PyUnstable_Module_SetGIL(m, Py_MOD_GIL_NOT_USED);
++#endif
++
++    return m;
+ }
