@@ -39,7 +39,7 @@ protected:
   void ProcessSEIPayload(uint8_t* buf,
                          int len,
                          double pts,
-                         std::vector<CCaptionBlock*>& tempBuffer);
+                         std::vector<std::unique_ptr<CCaptionBlock>>& tempBuffer);
 
   /*!
    * \brief Detect slice type from H.264 slice header

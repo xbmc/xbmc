@@ -9,6 +9,7 @@
 #pragma once
 
 #include <cstdint>
+#include <memory>
 #include <vector>
 
 class CCaptionBlock;
@@ -60,8 +61,8 @@ public:
    * containing GA94 closed caption payloads.
    */
   virtual CCPictureType ParsePacket(DemuxPacket* pPacket,
-                                    std::vector<CCaptionBlock*>& tempBuffer,
-                                    std::vector<CCaptionBlock*>& reorderBuffer) = 0;
+                                    std::vector<std::unique_ptr<CCaptionBlock>>& tempBuffer,
+                                    std::vector<std::unique_ptr<CCaptionBlock>>& reorderBuffer) = 0;
 
   /*!
    * \brief Get parser name for debugging/logging

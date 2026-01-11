@@ -8,12 +8,14 @@
 
 #include "H264AVCCBitstreamParser.h"
 
+#include "CaptionBlock.h"
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "utils/log.h"
 
-CCPictureType CH264AVCCBitstreamParser::ParsePacket(DemuxPacket* pPacket,
-                                                    std::vector<CCaptionBlock*>& tempBuffer,
-                                                    std::vector<CCaptionBlock*>& reorderBuffer)
+CCPictureType CH264AVCCBitstreamParser::ParsePacket(
+    DemuxPacket* pPacket,
+    std::vector<std::unique_ptr<CCaptionBlock>>& tempBuffer,
+    std::vector<std::unique_ptr<CCaptionBlock>>& reorderBuffer)
 {
   CCPictureType picType = CCPictureType::OTHER;
   int p = 0;
@@ -65,7 +67,7 @@ CCPictureType CH264AVCCBitstreamParser::ParsePacket(DemuxPacket* pPacket,
         {
           while (!tempBuffer.empty())
           {
-            reorderBuffer.push_back(tempBuffer.back());
+            reorderBuffer.push_back(std::move(tempBuffer.back()));
             tempBuffer.pop_back();
           }
         }
@@ -85,10 +87,8 @@ CCPictureType CH264AVCCBitstreamParser::ParsePacket(DemuxPacket* pPacket,
   return picType;
 }
 
-void CH264AVCCBitstreamParser::ParseSEINALUnit(uint8_t* buf,
-                                               int len,
-                                               double pts,
-                                               std::vector<CCaptionBlock*>& tempBuffer)
+void CH264AVCCBitstreamParser::ParseSEINALUnit(
+    uint8_t* buf, int len, double pts, std::vector<std::unique_ptr<CCaptionBlock>>& tempBuffer)
 {
   // SEI payload structure: [payload_type] [payload_size] [payload_data] [repeat...]
   // payload_type and payload_size use 0xFF for values >= 255

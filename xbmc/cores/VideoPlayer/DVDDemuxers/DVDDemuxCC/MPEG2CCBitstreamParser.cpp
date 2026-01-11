@@ -12,11 +12,12 @@
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "utils/log.h"
 
-#include <cstring>
+#include <algorithm>
 
-CCPictureType CMPEG2CCBitstreamParser::ParsePacket(DemuxPacket* pPacket,
-                                                   std::vector<CCaptionBlock*>& tempBuffer,
-                                                   std::vector<CCaptionBlock*>& reorderBuffer)
+CCPictureType CMPEG2CCBitstreamParser::ParsePacket(
+    DemuxPacket* pPacket,
+    std::vector<std::unique_ptr<CCaptionBlock>>& tempBuffer,
+    std::vector<std::unique_ptr<CCaptionBlock>>& reorderBuffer)
 {
   CCPictureType picType = CCPictureType::OTHER;
   uint32_t startcode = 0xffffffff;
@@ -74,12 +75,13 @@ CCPictureType CMPEG2CCBitstreamParser::ParsePacket(DemuxPacket* pPacket,
   return picType;
 }
 
-void CMPEG2CCBitstreamParser::ProcessGA94UserData(uint8_t* buf,
-                                                  int len,
-                                                  double pts,
-                                                  CCPictureType picType,
-                                                  std::vector<CCaptionBlock*>& tempBuffer,
-                                                  std::vector<CCaptionBlock*>& reorderBuffer)
+void CMPEG2CCBitstreamParser::ProcessGA94UserData(
+    uint8_t* buf,
+    int len,
+    double pts,
+    CCPictureType picType,
+    std::vector<std::unique_ptr<CCaptionBlock>>& tempBuffer,
+    std::vector<std::unique_ptr<CCaptionBlock>>& reorderBuffer)
 {
   // GA94 format: 'G' 'A' '9' '4' 0x03 flags cc_data...
   // buf[4] should be 0x03 (user_data_type_code)
@@ -97,22 +99,20 @@ void CMPEG2CCBitstreamParser::ProcessGA94UserData(uint8_t* buf,
     return;
   }
 
-  CCaptionBlock* cc = new CCaptionBlock(cc_count * 3);
-  memcpy(cc->m_data.data(), buf + 7, cc_count * 3);
+  auto cc = std::make_unique<CCaptionBlock>(cc_count * 3);
+  std::copy(buf + 7, buf + 7 + cc_count * 3, cc->m_data.data());
   cc->m_pts = pts;
 
   // Reference frames (I/P) go to temp buffer for proper ordering
   // Non-reference frames (B) go directly to reorder buffer
   if (picType == CCPictureType::I_FRAME || picType == CCPictureType::P_FRAME)
-    tempBuffer.push_back(cc);
+    tempBuffer.push_back(std::move(cc));
   else
-    reorderBuffer.push_back(cc);
+    reorderBuffer.push_back(std::move(cc));
 }
 
-void CMPEG2CCBitstreamParser::ProcessCCUserData(uint8_t* buf,
-                                                int len,
-                                                double pts,
-                                                std::vector<CCaptionBlock*>& reorderBuffer)
+void CMPEG2CCBitstreamParser::ProcessCCUserData(
+    uint8_t* buf, int len, double pts, std::vector<std::unique_ptr<CCaptionBlock>>& reorderBuffer)
 {
   // CC format (SCTE-20): 'C' 'C' 0x01 ...
   // buf[3] is reserved
@@ -131,7 +131,7 @@ void CMPEG2CCBitstreamParser::ProcessCCUserData(uint8_t* buf,
     return;
   }
 
-  CCaptionBlock* cc = new CCaptionBlock(cc_count * 3);
+  auto cc = std::make_unique<CCaptionBlock>(cc_count * 3);
   uint8_t* src = buf + 5;
   uint8_t* dst = cc->m_data.data();
 
@@ -156,5 +156,5 @@ void CMPEG2CCBitstreamParser::ProcessCCUserData(uint8_t* buf,
   }
 
   cc->m_pts = pts;
-  reorderBuffer.push_back(cc);
+  reorderBuffer.push_back(std::move(cc));
 }

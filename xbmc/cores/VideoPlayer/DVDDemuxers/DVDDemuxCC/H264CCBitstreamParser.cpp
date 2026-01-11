@@ -13,12 +13,10 @@
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "utils/log.h"
 
-#include <cstring>
+#include <algorithm>
 
-void CH264CCBitstreamParser::ProcessSEIPayload(uint8_t* buf,
-                                               int len,
-                                               double pts,
-                                               std::vector<CCaptionBlock*>& tempBuffer)
+void CH264CCBitstreamParser::ProcessSEIPayload(
+    uint8_t* buf, int len, double pts, std::vector<std::unique_ptr<CCaptionBlock>>& tempBuffer)
 {
   if (len < 8)
   {
@@ -70,10 +68,10 @@ void CH264CCBitstreamParser::ProcessSEIPayload(uint8_t* buf,
     return;
   }
 
-  CCaptionBlock* cc = new CCaptionBlock(cc_count * 3);
-  memcpy(cc->m_data.data(), userdata + 7, cc_count * 3);
+  auto cc = std::make_unique<CCaptionBlock>(cc_count * 3);
+  std::copy(userdata + 7, userdata + 7 + cc_count * 3, cc->m_data.data());
   cc->m_pts = pts;
-  tempBuffer.push_back(cc);
+  tempBuffer.push_back(std::move(cc));
 }
 
 CCPictureType CH264CCBitstreamParser::DetectSliceType(uint8_t* buf, int len)
