@@ -50,7 +50,7 @@ const std::array<OperatorField, 15> operators = {{
   {"notinthelast",    OPERATOR_NOT_IN_THE_LAST,   21411},
   {"true",            OPERATOR_TRUE,              20122},
   {"false",           OPERATOR_FALSE,             20424},
-  {"between",         OPERATOR_BETWEEN,           21456},
+  {"between",         OPERATOR_BETWEEN,           21398},
 }};
 // clang-format on
 

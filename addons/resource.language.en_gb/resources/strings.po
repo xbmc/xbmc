@@ -14701,7 +14701,10 @@ msgctxt "#21397"
 msgid "High quality pixel shader v2"
 msgstr ""
 
-#empty string with id 21398
+#: xbmc/dbwrappers/DatabaseQuery.cpp
+msgctxt "#21398"
+msgid "between"
+msgstr ""
 
 msgctxt "#21399"
 msgid "Use tween animations"
