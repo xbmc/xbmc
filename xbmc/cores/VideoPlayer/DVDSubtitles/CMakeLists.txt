@@ -28,6 +28,7 @@ set(HEADERS DVDFactorySubtitle.h
             DVDSubtitlesLibass.h
             SubtitleParserWebVTT.h
             SubtitlesAdapter.h
+            SubtitleSourceType.h
             SubtitlesStyle.h)
 
 core_add_library(dvdsubtitles)
