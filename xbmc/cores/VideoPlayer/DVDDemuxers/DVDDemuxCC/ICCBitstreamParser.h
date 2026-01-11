@@ -60,8 +60,8 @@ public:
    * containing GA94 closed caption payloads.
    */
   virtual CCPictureType ParsePacket(DemuxPacket* pPacket,
-                                    std::vector<CCaptionBlock*>& tempBuffer,
-                                    std::vector<CCaptionBlock*>& reorderBuffer) = 0;
+                                    std::vector<CCaptionBlock>& tempBuffer,
+                                    std::vector<CCaptionBlock>& reorderBuffer) = 0;
 
   /*!
    * \brief Get parser name for debugging/logging

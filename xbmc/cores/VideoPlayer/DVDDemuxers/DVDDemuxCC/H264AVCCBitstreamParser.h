@@ -39,8 +39,8 @@ public:
    * \return Picture type (I_FRAME, P_FRAME, or OTHER)
    */
   CCPictureType ParsePacket(DemuxPacket* pPacket,
-                            std::vector<CCaptionBlock*>& tempBuffer,
-                            std::vector<CCaptionBlock*>& reorderBuffer) override;
+                            std::vector<CCaptionBlock>& tempBuffer,
+                            std::vector<CCaptionBlock>& reorderBuffer) override;
 
   const char* GetName() const override { return "H264AVCCBitstreamParser"; }
 
@@ -56,5 +56,5 @@ private:
    * \param pts Presentation timestamp
    * \param tempBuffer Temporary buffer for CC data
    */
-  void ParseSEINALUnit(uint8_t* buf, int len, double pts, std::vector<CCaptionBlock*>& tempBuffer);
+  void ParseSEINALUnit(uint8_t* buf, int len, double pts, std::vector<CCaptionBlock>& tempBuffer);
 };

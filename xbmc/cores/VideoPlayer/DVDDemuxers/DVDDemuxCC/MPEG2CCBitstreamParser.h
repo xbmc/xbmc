@@ -36,8 +36,8 @@ public:
    * \return Picture type (I_FRAME, P_FRAME, or OTHER)
    */
   CCPictureType ParsePacket(DemuxPacket* pPacket,
-                            std::vector<CCaptionBlock*>& tempBuffer,
-                            std::vector<CCaptionBlock*>& reorderBuffer) override;
+                            std::vector<CCaptionBlock>& tempBuffer,
+                            std::vector<CCaptionBlock>& reorderBuffer) override;
 
   const char* GetName() const override { return "MPEG2CCBitstreamParser"; }
 
@@ -52,8 +52,8 @@ private:
                            int len,
                            double pts,
                            CCPictureType picType,
-                           std::vector<CCaptionBlock*>& tempBuffer,
-                           std::vector<CCaptionBlock*>& reorderBuffer);
+                           std::vector<CCaptionBlock>& tempBuffer,
+                           std::vector<CCaptionBlock>& reorderBuffer);
 
   /*!
    * \brief Process CC format user data
@@ -64,5 +64,5 @@ private:
   void ProcessCCUserData(uint8_t* buf,
                          int len,
                          double pts,
-                         std::vector<CCaptionBlock*>& reorderBuffer);
+                         std::vector<CCaptionBlock>& reorderBuffer);
 };

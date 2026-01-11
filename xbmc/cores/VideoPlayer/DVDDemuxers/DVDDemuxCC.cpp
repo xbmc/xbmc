@@ -22,6 +22,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <utility>
 
 namespace COLOR = KODI::UTILS::COLOR;
 
@@ -109,9 +110,9 @@ void ApplyStyleModifiers(std::string& ccText, const cc_attribute_t& ccAttributes
 }
 } // namespace
 
-bool reorder_sort (CCaptionBlock *lhs, CCaptionBlock *rhs)
+bool reorder_sort(const CCaptionBlock& lhs, const CCaptionBlock& rhs)
 {
-  return (lhs->m_pts > rhs->m_pts);
+  return (lhs.m_pts > rhs.m_pts);
 }
 
 CDVDDemuxCC::CDVDDemuxCC(AVCodecID codec, const uint8_t* extradata, int extrasize)
@@ -173,7 +174,7 @@ DemuxPacket* CDVDDemuxCC::Read(DemuxPacket *pSrcPacket)
   // Move temp buffer to reorder buffer
   while (!m_ccTempBuffer.empty())
   {
-    m_ccReorderBuffer.push_back(m_ccTempBuffer.back());
+    m_ccReorderBuffer.push_back(std::move(m_ccTempBuffer.back()));
     m_ccTempBuffer.pop_back();
   }
 
@@ -274,17 +275,8 @@ void CDVDDemuxCC::Dispose()
   m_streams.clear();
   m_streamdata.clear();
   m_ccDecoder.reset();
-
-  while (!m_ccReorderBuffer.empty())
-  {
-    delete m_ccReorderBuffer.back();
-    m_ccReorderBuffer.pop_back();
-  }
-  while (!m_ccTempBuffer.empty())
-  {
-    delete m_ccTempBuffer.back();
-    m_ccTempBuffer.pop_back();
-  }
+  m_ccReorderBuffer.clear();
+  m_ccTempBuffer.clear();
 }
 
 DemuxPacket* CDVDDemuxCC::Decode()
@@ -293,11 +285,10 @@ DemuxPacket* CDVDDemuxCC::Decode()
 
   while(!m_hasData && !m_ccReorderBuffer.empty())
   {
-    CCaptionBlock *cc = m_ccReorderBuffer.back();
+    auto& cc = m_ccReorderBuffer.back();
+    m_curPts = cc.m_pts;
+    m_ccDecoder->Decode(cc.m_data.data(), static_cast<int>(cc.m_data.size()));
     m_ccReorderBuffer.pop_back();
-    m_curPts = cc->m_pts;
-    m_ccDecoder->Decode(cc->m_data.data(), static_cast<int>(cc->m_data.size()));
-    delete cc;
   }
 
   if (m_hasData)
@@ -324,7 +315,7 @@ DemuxPacket* CDVDDemuxCC::Decode()
         pPacket = CDVDDemuxUtils::AllocateDemuxPacket(data.size());
         pPacket->iSize = data.size();
         if (pPacket->iSize)
-          memcpy(pPacket->pData, data.c_str(), pPacket->iSize);
+          std::copy(data.begin(), data.end(), pPacket->pData);
 
         pPacket->iStreamId = service;
         pPacket->pts = m_streamdata[i].pts;

@@ -9,12 +9,12 @@
 #pragma once
 
 #include "DVDDemux.h"
+#include "DVDDemuxCC/CaptionBlock.h"
 #include "DVDDemuxCC/ICCBitstreamParser.h"
 
 #include <memory>
 #include <vector>
 
-class CCaptionBlock;
 class CDecoderCC708;
 class ICCBitstreamParser;
 
@@ -54,8 +54,8 @@ protected:
   std::vector<CDemuxStreamSubtitle> m_streams;
   bool m_hasData;
   double m_curPts;
-  std::vector<CCaptionBlock*> m_ccReorderBuffer;
-  std::vector<CCaptionBlock*> m_ccTempBuffer;
+  std::vector<CCaptionBlock> m_ccReorderBuffer;
+  std::vector<CCaptionBlock> m_ccTempBuffer;
   std::unique_ptr<CDecoderCC708> m_ccDecoder;
   std::unique_ptr<ICCBitstreamParser> m_parser;
 };

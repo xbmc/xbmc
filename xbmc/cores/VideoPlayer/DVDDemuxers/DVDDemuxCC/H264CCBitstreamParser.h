@@ -36,10 +36,7 @@ protected:
    * \param pts Presentation timestamp for CC data
    * \param tempBuffer Temporary buffer for CC data (for reordering)
    */
-  void ProcessSEIPayload(uint8_t* buf,
-                         int len,
-                         double pts,
-                         std::vector<CCaptionBlock*>& tempBuffer);
+  void ProcessSEIPayload(uint8_t* buf, int len, double pts, std::vector<CCaptionBlock>& tempBuffer);
 
   /*!
    * \brief Detect slice type from H.264 slice header

@@ -8,12 +8,13 @@
 
 #include "H264AnnexBBitstreamParser.h"
 
+#include "CaptionBlock.h"
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "utils/log.h"
 
 CCPictureType CH264AnnexBBitstreamParser::ParsePacket(DemuxPacket* pPacket,
-                                                      std::vector<CCaptionBlock*>& tempBuffer,
-                                                      std::vector<CCaptionBlock*>& reorderBuffer)
+                                                      std::vector<CCaptionBlock>& tempBuffer,
+                                                      std::vector<CCaptionBlock>& reorderBuffer)
 {
   CCPictureType picType = CCPictureType::OTHER;
   uint32_t startcode = 0xffffffff;
@@ -46,7 +47,7 @@ CCPictureType CH264AnnexBBitstreamParser::ParsePacket(DemuxPacket* pPacket,
             // Flush any CC data from tempBuffer to reorderBuffer before returning
             while (!tempBuffer.empty())
             {
-              reorderBuffer.push_back(tempBuffer.back());
+              reorderBuffer.push_back(std::move(tempBuffer.back()));
               tempBuffer.pop_back();
             }
             return CCPictureType::INVALID;
@@ -63,7 +64,7 @@ CCPictureType CH264AnnexBBitstreamParser::ParsePacket(DemuxPacket* pPacket,
           {
             while (!tempBuffer.empty())
             {
-              reorderBuffer.push_back(tempBuffer.back());
+              reorderBuffer.push_back(std::move(tempBuffer.back()));
               tempBuffer.pop_back();
             }
           }

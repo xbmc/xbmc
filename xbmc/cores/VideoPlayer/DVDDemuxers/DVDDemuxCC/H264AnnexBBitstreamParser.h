@@ -38,8 +38,8 @@ public:
    * \return Picture type (I_FRAME, P_FRAME, or OTHER)
    */
   CCPictureType ParsePacket(DemuxPacket* pPacket,
-                            std::vector<CCaptionBlock*>& tempBuffer,
-                            std::vector<CCaptionBlock*>& reorderBuffer) override;
+                            std::vector<CCaptionBlock>& tempBuffer,
+                            std::vector<CCaptionBlock>& reorderBuffer) override;
 
   const char* GetName() const override { return "H264AnnexBBitstreamParser"; }
 };
