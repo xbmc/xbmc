@@ -895,12 +895,15 @@ function(create_mesonbuiltin)
 
     set(input "${CMAKE_${cmake_flag_name}} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_${cmake_flag_name}}")
     string(STRIP "${input}" input)
-
-    # builtinpairs cmake source variables are specifically single strings, and not lists
-    string(REGEX REPLACE "[ ]+" "', '" tmp_string "${input}")
-    string(PREPEND tmp_string "${meson_label_name} = ['")
-    string(APPEND tmp_string "']")
-    string(APPEND output_string "${tmp_string}\n")
+    if(input STREQUAL "")
+      string(APPEND output_string "${meson_label_name} = []\n")
+    else()
+      # builtinpairs cmake source variables are specifically single strings, and not lists
+      string(REGEX REPLACE "[ ]+" "', '" tmp_string "${input}")
+      string(PREPEND tmp_string "${meson_label_name} = ['")
+      string(APPEND tmp_string "']")
+      string(APPEND output_string "${tmp_string}\n")
+    endif()
   endforeach()
 
   # allow a module to override the default_library type.
