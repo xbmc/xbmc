@@ -56,6 +56,9 @@ using namespace Microsoft::WRL;
 CAESinkWASAPI::CAESinkWASAPI()
 {
   m_channelLayout.Reset();
+
+  // Get performance counter frequency for latency calculations
+  QueryPerformanceFrequency(&m_timerFreq);
 }
 
 CAESinkWASAPI::~CAESinkWASAPI()
@@ -263,9 +266,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
   // wait for Audio Driver to tell us it's got a buffer available
   if (m_running)
   {
-    LARGE_INTEGER timerFreq{};
     LARGE_INTEGER timerStart{};
-    QueryPerformanceFrequency(&timerFreq);
     QueryPerformanceCounter(&timerStart);
 
     if (WaitForSingleObject(m_needDataEvent, 1100) != WAIT_OBJECT_0)
@@ -278,7 +279,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
     LARGE_INTEGER timerStop{};
     QueryPerformanceCounter(&timerStop);
     LONGLONG timerDiff = timerStop.QuadPart - timerStart.QuadPart;
-    double timerElapsed = (double)timerDiff * 1000.0 / (double)timerFreq.QuadPart;
+    double timerElapsed = (double)timerDiff * 1000.0 / (double)m_timerFreq.QuadPart;
     m_avgTimeWaiting += (timerElapsed - m_avgTimeWaiting) * 0.5;
 
     if (m_avgTimeWaiting < 3.0)

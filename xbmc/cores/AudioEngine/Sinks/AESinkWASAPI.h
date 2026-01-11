@@ -73,4 +73,6 @@ private:
 
     std::vector<uint8_t> m_buffer;
     int m_bufferPtr{0};
+
+    LARGE_INTEGER m_timerFreq{}; // performance counter frequency
 };
