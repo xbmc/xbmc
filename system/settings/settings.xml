@@ -2469,6 +2469,16 @@
         </setting>
       </group>
     </category>
+    <category id="kademlia" label="21354" help="21355">
+      <requirement>HAS_LIBTORRENT</requirement>
+      <group id="1" label="16000">
+        <setting id="services.kademlia" type="boolean" label="21356" help="21357">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>
     <category id="airplay" label="1273" help="36602">
       <requirement>HAS_AIRPLAY</requirement>
       <group id="1" label="16000">
