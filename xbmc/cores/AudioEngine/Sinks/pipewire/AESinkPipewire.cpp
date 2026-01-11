@@ -300,10 +300,15 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
   list.emplace_back(defaultDevice);
 
   auto& registry = pipewire->GetRegistry();
-  std::lock_guard lg(registry);
 
   for (const auto& [id, node] : registry.GetNodes())
   {
+    // Immediately after a node has been added to the registry it doesn't have information yet.
+    // Once PipeWire populated the info the audio engine is informed about the update and the
+    // enumeration is performed again.
+    if (!node->HasInfo())
+      continue;
+
     CAEDeviceInfo device;
     device.m_deviceType = AE_DEVTYPE_PCM;
     device.m_deviceName = node->Get(PW_KEY_NODE_NAME);
@@ -317,17 +322,6 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
 
     std::for_each(defaultSampleRates.cbegin(), defaultSampleRates.cend(),
                   [&device](const auto& rate) { device.m_sampleRates.emplace_back(rate); });
-
-    node->EnumerateFormats();
-
-    int ret = loop.Wait(5s);
-    if (ret == -ETIMEDOUT)
-    {
-      CLog::Log(LOGDEBUG,
-                "CAESinkPipewire::{} - timed out out waiting for formats to be enumerated",
-                __FUNCTION__);
-      continue;
-    }
 
     auto& channels = node->GetChannels();
     if (channels.empty())
