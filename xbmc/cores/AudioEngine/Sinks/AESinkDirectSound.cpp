@@ -452,6 +452,7 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bo
     deviceInfo.m_displayNameExtra = std::string("DIRECTSOUND: ").append(detail.strDescription);
     deviceInfo.m_deviceType = detail.eDeviceType;
     deviceInfo.m_wantsIECPassthrough = true;
+    deviceInfo.m_onlyPCM = true;
     deviceInfoList.push_back(deviceInfo);
 
     // add the default device with m_deviceName = default
@@ -461,6 +462,7 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bo
       deviceInfo.m_displayName = std::string("default");
       deviceInfo.m_displayNameExtra = std::string("");
       deviceInfo.m_wantsIECPassthrough = true;
+      deviceInfo.m_onlyPCM = true;
       deviceInfoList.push_back(deviceInfo);
     }
   }
