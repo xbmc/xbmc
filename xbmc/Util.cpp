@@ -2459,3 +2459,21 @@ std::string CUtil::GetHexString(const std::span<const uint8_t>& buf, int count)
   std::ranges::for_each(buf, [&](auto x) { ss << static_cast<int>(x); });
   return std::move(ss).str();
 }
+
+bool CUtil::HasValidStreamDetails(const CFileItem& item)
+{
+  if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->HasStreamDetails())
+    return HasValidStreamDetails(item.GetVideoInfoTag()->m_streamDetails);
+  return false;
+}
+
+bool CUtil::HasValidStreamDetails(const CStreamDetails& streamDetails)
+{
+  // As HasStreamDetails() returns true for TV shows (because the scraper calls SetVideoInfoTag()
+  // directly to set the duration) a better test is just to see if we have any common info missing.
+  // If we have already read an nfo file then this data should be populated.
+  // (Using index 1 as 0 is bestvideo)
+  return streamDetails.GetVideoStreamCount() > 0 &&
+         !(streamDetails.GetVideoCodec(1).empty() || streamDetails.GetVideoHeight(1) == 0 ||
+           streamDetails.GetVideoWidth(1) == 0 || streamDetails.GetVideoDuration(1) == 0);
+}
