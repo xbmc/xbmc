@@ -22,7 +22,7 @@
       <group id="1">
         <setting id="audiooutput.audiodevice" type="string" label="545" help="36371">
           <level>0</level>
-          <default>DIRECTSOUND:default</default>
+          <default>XAUDIO:default</default>
           <constraints>
             <options>audiodevices</options>
           </constraints>
@@ -32,7 +32,7 @@
       <group id="3">
         <setting id="audiooutput.passthroughdevice" type="string" label="546" help="36372">
           <level>1</level>
-          <default>DIRECTSOUND:default</default>
+          <default>WASAPI:default</default>
           <constraints>
             <options>audiodevicespassthrough</options>
           </constraints>
