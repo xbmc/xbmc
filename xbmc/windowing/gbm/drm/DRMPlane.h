@@ -40,7 +40,6 @@ public:
   ~CDRMPlane() = default;
 
   uint32_t GetPlaneId() const { return m_plane->plane_id; }
-  uint32_t GetPossibleCrtcs() const { return m_plane->possible_crtcs; }
 
   void FindModifiers();
 
