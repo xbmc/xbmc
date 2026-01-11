@@ -1,5 +1,7 @@
 include ../../Makefile.include PYTHONMODULE-PIL-VERSION ../../download-files.include
-DEPS= ../../Makefile.include Makefile PYTHONMODULE-PIL-VERSION ../../download-files.include pillow-crosscompile.patch
+DEPS= ../../Makefile.include Makefile PYTHONMODULE-PIL-VERSION ../../download-files.include \
+                                  pillow-crosscompile.patch \
+                                  12-android-multi-phase.patch
 
 PYTHONPATH=$(PYTHON_SITE_PKG)
 PILPATH=$(PYTHONPATH)
@@ -67,6 +69,9 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../pillow-crosscompile.patch
+ifeq ($(OS),android)
+	cd $(PLATFORM); patch -p1 -i ../12-android-multi-phase.patch
+endif
 
 $(PILPATHLIB):
 ifeq ($(OS),android)
