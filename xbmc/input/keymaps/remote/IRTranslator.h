@@ -15,6 +15,7 @@
 
 namespace tinyxml2
 {
+class XMLElement;
 class XMLNode;
 }
 
@@ -42,12 +43,15 @@ public:
 
   unsigned int TranslateButton(const std::string& szDevice, const std::string& szButton);
 
+  static uint32_t TranslateButton(const tinyxml2::XMLElement* pButton);
+  static uint32_t TranslateUniversalRemoteButton(const tinyxml2::XMLElement* pButton);
   static uint32_t TranslateString(std::string strButton);
   static uint32_t TranslateUniversalRemoteString(const std::string& szButton);
 
 private:
   bool LoadIRMap(const std::string& irMapPath);
   void MapRemote(tinyxml2::XMLNode* pRemote, const std::string& szDevice);
+  static uint32_t ApplyModifiersToButton(const tinyxml2::XMLElement* pButton, uint32_t iButtonCode);
 
   using IRButtonMap = std::map<std::string, std::string>;
 
