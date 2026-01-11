@@ -36,6 +36,8 @@ public:
 
   void SetFormat(const uint32_t newFormat) { m_format = newFormat; }
   uint32_t GetFormat() const { return m_format; }
+  void SetModifier(const uint64_t newModifier) { m_modifier = newModifier; }
+  uint64_t GetModifier() const { return m_modifier; }
   std::vector<uint64_t>& GetModifiersForFormat(uint32_t format) { return m_modifiers_map[format]; }
 
   bool SupportsFormat(uint32_t format);
@@ -51,6 +53,7 @@ private:
 
   std::map<uint32_t, std::vector<uint64_t>> m_modifiers_map;
   uint32_t m_format{DRM_FORMAT_XRGB8888};
+  uint64_t m_modifier{DRM_FORMAT_MOD_INVALID};
 };
 
 } // namespace GBM
