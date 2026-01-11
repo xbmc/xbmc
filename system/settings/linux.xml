@@ -234,6 +234,18 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="videoscreen.usemodifiers" type="boolean" label="13477" help="13478">
+          <requirement>
+            <or>
+              <condition>HAS_GL</condition>
+              <condition>HAS_GLES</condition>
+            </or>
+          </requirement>
+          <visible>false</visible>
+          <level>3</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
       </group>
     </category>
     <category id="input">
