@@ -1415,7 +1415,9 @@ msgctxt "#294"
 msgid "Create bookmark"
 msgstr ""
 
-#empty string with id 295
+msgctxt "#295"
+msgid "Low latency mode"
+msgstr ""
 
 msgctxt "#296"
 msgid "Clear bookmarks"
@@ -21364,7 +21366,13 @@ msgctxt "#36415"
 msgid "No info available yet."
 msgstr ""
 
-#empty strings from id 36416 to 36418
+#empty strings from id 36416 to 36417
+
+#. Description of setting with label #295 "Low latency mode"
+#: system/settings/settings.xml
+msgctxt "#36418"
+msgid "Reduces audio processing latency. Improves playback start, unpause and seek (the audio returns sooner).\nYou can disable this setting if you experience audio issues."
+msgstr ""
 
 #. Description of setting with label #21417 "Settings"
 #: system/settings/settings.xml

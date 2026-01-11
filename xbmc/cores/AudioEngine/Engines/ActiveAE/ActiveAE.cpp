@@ -1556,6 +1556,7 @@ void CActiveAE::SFlushStream(CActiveAEStream *stream)
   }
 
   m_stats.UpdateStream(stream);
+  m_targetBufferLevel = 0;
 }
 
 void CActiveAE::FlushEngine()
@@ -1961,12 +1962,31 @@ bool CActiveAE::RunStages()
   const bool isTrueHDPassthrough =
       (m_mode == MODE_RAW && m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD);
 
-  if ((m_stats.GetWaterLevel() < (MAX_WATER_LEVEL + 0.0001f) || isTrueHDPassthrough) &&
+  if (m_settings.lowLatencyMode)
+  {
+    // m_targetBufferLevel grows progressively from ~0ms (virtual zero buffer and zero latency)
+    // to ~200 ms (nominal buffer and nominal latency), same as before.
+    if (m_targetBufferLevel < MAX_WATER_LEVEL)
+      m_targetBufferLevel += 0.0001f; // 2000 iterations -> ramp-up of ~10 seconds
+  }
+  else
+  {
+    m_targetBufferLevel = MAX_WATER_LEVEL + 0.0001f;
+  }
+
+  // The buffer level "GetWaterLevel()" always tries to follow m_targetBufferLevel because when it
+  // is lower, audio samples are added, and when it is higher, audio samples stop being added
+  // and the level goes down.
+  if ((m_stats.GetWaterLevel() < m_targetBufferLevel || isTrueHDPassthrough) &&
       (m_mode != MODE_TRANSCODE || (m_encoderBuffers && !m_encoderBuffers->m_freeSamples.empty())))
   {
     // calculate sync error
     for (it = m_streams.begin(); it != m_streams.end(); ++it)
     {
+      // reset target buffer level at pause (but not initial start pause)
+      if ((*it)->m_paused && (*it)->m_started && m_settings.lowLatencyMode)
+        m_targetBufferLevel = 0;
+
       if ((*it)->m_paused || !(*it)->m_started || !(*it)->m_processingBuffers || !(*it)->m_pClock)
         continue;
 
@@ -2670,6 +2690,7 @@ void CActiveAE::LoadSettings()
   m_settings.streamNoise = settings->GetBool(CSettings::SETTING_AUDIOOUTPUT_STREAMNOISE);
   m_settings.silenceTimeoutMinutes = settings->GetInt(CSettings::SETTING_AUDIOOUTPUT_STREAMSILENCE);
   m_settings.mixSubLevel = settings->GetInt(CSettings::SETTING_AUDIOOUTPUT_MIXSUBLEVEL) / 100.0;
+  m_settings.lowLatencyMode = settings->GetBool(CSettings::SETTING_AUDIOOUTPUT_LOWLATENCY);
 }
 
 void CActiveAE::ValidateOutputDevices(bool saveChanges)
