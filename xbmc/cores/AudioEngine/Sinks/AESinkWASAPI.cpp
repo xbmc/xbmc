@@ -873,15 +873,19 @@ initialize:
       CLog::LogF(LOGERROR, "unable to set audio category, {}", CWIN32Util::FormatHRESULT(hr));
   }
 
-  REFERENCE_TIME audioSinkBufferDurationMsec, hnsLatency;
+  REFERENCE_TIME audioSinkBufferDurationMsec{};
 
-  if (format.m_dataFormat == AE_FMT_RAW)
-    audioSinkBufferDurationMsec = (REFERENCE_TIME)500000; // 50ms period (same as before)
-  else
-    audioSinkBufferDurationMsec = (REFERENCE_TIME)200000; // 20ms period (same as XAudio and DSound)
+  const bool isPassthrough = (format.m_dataFormat == AE_FMT_RAW);
 
-  if (format.m_dataFormat == AE_FMT_RAW)
+  if (isPassthrough) // 50ms period (same as before)
+  {
+    audioSinkBufferDurationMsec = static_cast<REFERENCE_TIME>(500000);
     format.m_dataFormat = AE_FMT_S16NE;
+  }
+  else // PCM: 20ms period (same as XAudio and DirectSound)
+  {
+    audioSinkBufferDurationMsec = static_cast<REFERENCE_TIME>(200000);
+  }
 
   hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_EXCLUSIVE, AUDCLNT_STREAMFLAGS_EVENTCALLBACK | AUDCLNT_STREAMFLAGS_NOPERSIST,
                                     audioSinkBufferDurationMsec, audioSinkBufferDurationMsec, &wfxex.Format, NULL);
@@ -939,6 +943,7 @@ initialize:
   // second buffer is filled.
   // m_sinkLatency should match with nominal delay when all is stabilized:
   // e.g: if period is 20ms, delay is 40 ms and latency also 40 ms
+  REFERENCE_TIME hnsLatency{};
   hr = m_pAudioClient->GetStreamLatency(&hnsLatency);
   if (FAILED(hr))
   {
