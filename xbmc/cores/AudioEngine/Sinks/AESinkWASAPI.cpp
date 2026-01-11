@@ -138,12 +138,9 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
     goto failed;
   }
 
-  /* get the buffer size and calculate the frames for AE */
-  m_pAudioClient->GetBufferSize(&m_uiBufferLen);
-
-  format.m_frames       = m_uiBufferLen;
-  m_format              = format;
-  sinkRetFormat         = format.m_dataFormat;
+  format.m_frames = m_uiBufferLen;
+  m_format = format;
+  sinkRetFormat = format.m_dataFormat;
 
   hr = m_pAudioClient->GetService(IID_IAudioRenderClient, reinterpret_cast<void**>(m_pRenderClient.ReleaseAndGetAddressOf()));
   EXIT_ON_FAILURE(hr, "Could not initialize the WASAPI render client interface.")
@@ -951,9 +948,36 @@ initialize:
 
   m_sinkLatency = static_cast<double>(hnsLatency * 2) / 10000000; // 100ns intervals to s
 
+  // Get the buffer size and calculate the frames for AE
+  hr = m_pAudioClient->GetBufferSize(&m_uiBufferLen);
+  if (FAILED(hr))
+  {
+    CLog::LogF(LOGERROR, "GetBufferSize Failed : {}", CWIN32Util::FormatHRESULT(hr));
+    return false;
+  }
+
   CLog::LogF(LOGINFO, "WASAPI Exclusive Mode Sink Initialized using: {}, {}, {}",
              CAEUtil::DataFormatToStr(format.m_dataFormat), wfxex.Format.nSamplesPerSec,
              wfxex.Format.nChannels);
+
+  CLog::LogF(LOGDEBUG, "WASAPI Exclusive Mode Sink Initialized with the following parameters:");
+  CLog::Log(LOGDEBUG, "  Audio Device    : {}", m_pDevice->deviceId);
+  CLog::Log(LOGDEBUG, "  Sample Rate     : {}", wfxex.Format.nSamplesPerSec);
+  CLog::Log(LOGDEBUG, "  Sample Format   : {}", CAEUtil::DataFormatToStr(format.m_dataFormat));
+  CLog::Log(LOGDEBUG, "  Bits Per Sample : {}", wfxex.Format.wBitsPerSample);
+  CLog::Log(LOGDEBUG, "  Valid Bits/Samp : {}", wfxex.Samples.wValidBitsPerSample);
+  CLog::Log(LOGDEBUG, "  Channel Count   : {}", wfxex.Format.nChannels);
+  CLog::Log(LOGDEBUG, "  Block Align     : {}", wfxex.Format.nBlockAlign);
+  CLog::Log(LOGDEBUG, "  Avg. Bytes Sec  : {}", wfxex.Format.nAvgBytesPerSec);
+  CLog::Log(LOGDEBUG, "  Samples/Block   : {}", wfxex.Samples.wSamplesPerBlock);
+  CLog::Log(LOGDEBUG, "  Format cBSize   : {}", wfxex.Format.cbSize);
+  CLog::Log(LOGDEBUG, "  Channel Layout  : {}", ((std::string)format.m_channelLayout));
+  CLog::Log(LOGDEBUG, "  Channel Mask    : {}", wfxex.dwChannelMask);
+  CLog::Log(LOGDEBUG, "  Frames          : {}", m_uiBufferLen);
+  CLog::Log(LOGDEBUG, "  Frame Size      : {}", format.m_frameSize);
+  CLog::Log(LOGDEBUG, "  Periodicity (ms): {:.1f}", (float)audioSinkBufferDurationMsec / 10000.0f);
+  CLog::Log(LOGDEBUG, "  Latency (s)     : {:.3f}", m_sinkLatency);
+
   return true;
 }
 
