@@ -1,0 +1,13 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -265,8 +265,10 @@
+ 
+ if(DEFINED CMAKE_INSTALL_FULL_LIBDIR)
+ 
++if(ENABLE_DOCS)
+ set(f AUTHORS COPYING NEWS THANKS doc/LZO.FAQ doc/LZO.TXT doc/LZOAPI.TXT)
+ install(FILES ${f} DESTINATION "${CMAKE_INSTALL_FULL_DOCDIR}")
++endif()
+ 
+ set(f include/lzo/lzo1.h include/lzo/lzo1a.h include/lzo/lzo1b.h
+     include/lzo/lzo1c.h include/lzo/lzo1f.h include/lzo/lzo1x.h
