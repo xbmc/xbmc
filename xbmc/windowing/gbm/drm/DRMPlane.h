@@ -45,7 +45,7 @@ public:
 
   void SetFormat(const uint32_t newFormat) { m_format = newFormat; }
   uint32_t GetFormat() const { return m_format; }
-  void SetModifier(const uint32_t newModifier) { m_modifier = newModifier; }
+  void SetModifier(const uint64_t newModifier) { m_modifier = newModifier; }
   uint64_t GetModifier() const { return m_modifier; }
   std::vector<uint64_t>& GetModifiersForFormat(uint32_t format) { return m_modifiers_map[format]; }
 
