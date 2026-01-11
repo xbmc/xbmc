@@ -1027,6 +1027,12 @@ public:
    */
   std::string GetRemovableBlurayPath(std::string originalPath);
 
+  /*! \brief Check if a path exists in the database.
+   \param path The path to check.
+   \return true if the path exists, false otherwise.
+   */
+  bool CheckPathExists(const std::string& path);
+
 protected:
   int AddNewMovie(CVideoInfoTag& details);
   int AddNewMusicVideo(CVideoInfoTag& details);

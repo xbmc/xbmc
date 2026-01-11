@@ -73,10 +73,11 @@ namespace XFILE
                                    const std::string& newPath = {});
 
     /*!
-    \brief Get the parent path in common from all the parts of a stack:// path
+    \brief Get the base/parent path in common from all the parts of a stack:// path
     \param stackPath The stack:// path
-    \return The parent path
+    \return The base/parent path
     */
+    static std::string GetBasePath(const std::string& stackPath);
     static std::string GetParentPath(const std::string& stackPath);
   };
 }

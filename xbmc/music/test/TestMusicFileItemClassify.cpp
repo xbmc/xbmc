@@ -84,7 +84,7 @@ TEST(TestMusicFileItemClassify, MusicExtensions)
   {
     if (!ext.empty())
     {
-      EXPECT_TRUE(MUSIC::IsAudio(CFileItem(ext, false)));
+      EXPECT_TRUE(MUSIC::IsAudio(CFileItem("test" + ext, false)));
     }
   }
 }

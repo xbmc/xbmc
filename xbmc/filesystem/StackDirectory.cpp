@@ -123,7 +123,8 @@ std::string CStackDirectory::GetStackTitlePath(const std::string& strPath)
   {
     // Create stacked title
     stackTitle = stackParts[0].title + stackParts[0].volume +
-                 (isFolderStack ? "/" : URIUtils::GetExtension(parts[0]->GetPath()));
+                 (isFolderStack ? (URIUtils::IsDOSPath(commonPath) ? "\\" : "/")
+                                : URIUtils::GetExtension(parts[0]->GetPath()));
 
     // Check if source path uses URL encoding
     if (!isFolderStack && URIUtils::HasEncodedFilename(CURL(commonPath)))
@@ -228,6 +229,11 @@ bool CStackDirectory::ConstructStackPath(const std::vector<std::string>& paths,
 }
 
 std::string CStackDirectory::GetParentPath(const std::string& stackPath)
+{
+  return GetBasePath(stackPath);
+}
+
+std::string CStackDirectory::GetBasePath(const std::string& stackPath)
 {
   static constexpr int MAX_ITERATIONS{5};
   std::vector<std::string> paths;
