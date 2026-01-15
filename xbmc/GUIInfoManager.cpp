@@ -12189,9 +12189,15 @@ void CGUIInfoManager::OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg)
       return;
 
     if (pMsg->param1 == 1 && item->HasMusicInfoTag()) // only grab music tag
+    {
       SetCurrentSongTag(*item->GetMusicInfoTag());
+      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Info, "OnChanged");
+    }
     else if (pMsg->param1 == 2 && item->HasVideoInfoTag()) // only grab video tag
+    {
       SetCurrentVideoTag(*item->GetVideoInfoTag());
+      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Info, "OnChanged");
+    }
     else
       SetCurrentItem(*item);
 
