@@ -361,20 +361,19 @@ void CShoutcastFile::Process()
           const TagInfo& tagInfo = front;
           CFileItem* item = new CFileItem(*tagInfo.second); // will be deleted by msg receiver
           CFileItemPtr itemPtr = std::make_shared<CFileItem>(*tagInfo.second);
-          const auto& musicTag = tagInfo.second; // Read while holding lock and before pop()
-          bool shouldAnnounce = !musicTag->GetTitle().empty() || !musicTag->GetArtist().empty();
           m_tags.pop();
-          CSingleExit ex(m_tagSection);
           CServiceBroker::GetAppMessenger()->PostMsg(TMSG_UPDATE_CURRENT_ITEM, 1, -1,
                                                      static_cast<void*>(item));
 
           // Announce property change for radio stream metadata updates
-          if (shouldAnnounce)
+          const auto& components = CServiceBroker::GetAppComponents();
+          const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+          if (appPlayer->IsPlayingAudio() &&
+              CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST::Id::TYPE_MUSIC)
           {
-            const auto& components = CServiceBroker::GetAppComponents();
-            const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-            if (appPlayer->IsPlayingAudio() &&
-                CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST::Id::TYPE_MUSIC)
+            const auto& musicTag = tagInfo.second;
+            // also discards first placeholder/master tag with only station info
+            if (!musicTag->GetTitle().empty() || !musicTag->GetArtist().empty())
             {
               CVariant data;
               data["player"]["playerid"] = static_cast<int>(PLAYLIST::Id::TYPE_MUSIC);
