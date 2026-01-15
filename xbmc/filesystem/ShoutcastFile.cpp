@@ -372,7 +372,6 @@ void CShoutcastFile::Process()
               CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST::Id::TYPE_MUSIC)
           {
             const auto& musicTag = tagInfo.second;
-            // also discards first placeholder/master tag with only station info
             if (!musicTag->GetTitle().empty() || !musicTag->GetArtist().empty())
             {
               CVariant data;
