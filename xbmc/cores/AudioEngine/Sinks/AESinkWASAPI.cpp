@@ -246,18 +246,18 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
   if (!m_initialized)
     return 0;
 
-  HRESULT hr;
+  const unsigned int framesToCopy = std::min(m_format.m_frames - m_bufferPtr, frames);
+  uint8_t* buffer = data[0] + offset * m_format.m_frameSize;
 
-  unsigned int NumFramesRequested = m_format.m_frames;
-  unsigned int FramesToCopy = std::min(m_format.m_frames - m_bufferPtr, frames);
-  uint8_t *buffer = data[0]+offset*m_format.m_frameSize;
+  // if there are older frames to write or the number of frames received does
+  // not match the nominal, use the aux buffer to realign the frames
   if (m_bufferPtr != 0 || frames != m_format.m_frames)
   {
     memcpy(m_buffer.data() + m_bufferPtr * m_format.m_frameSize, buffer,
-           FramesToCopy * m_format.m_frameSize);
-    m_bufferPtr += FramesToCopy;
+           framesToCopy * m_format.m_frameSize);
+    m_bufferPtr += framesToCopy;
     if (m_bufferPtr != m_format.m_frames)
-      return frames;
+      return frames; // not enough frames to start write yet
   }
 
   // wait for Audio Driver to tell us it's got a buffer available
@@ -275,19 +275,20 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
 
     LARGE_INTEGER timerStop{};
     QueryPerformanceCounter(&timerStop);
-    LONGLONG timerDiff = timerStop.QuadPart - timerStart.QuadPart;
-    double timerElapsed = (double)timerDiff * 1000.0 / (double)m_timerFreq.QuadPart;
+    const LONGLONG timerDiff = timerStop.QuadPart - timerStart.QuadPart;
+    const double timerElapsed = static_cast<double>(timerDiff) * 1000.0 / m_timerFreq.QuadPart;
     m_avgTimeWaiting += (timerElapsed - m_avgTimeWaiting) * 0.5;
 
     if (m_avgTimeWaiting < 3.0)
     {
       CLog::LogF(LOGDEBUG, "Possible AQ Loss: Avg. Time Waiting for Audio Driver callback : {}msec",
-                 (int)m_avgTimeWaiting);
+                 static_cast<int>(m_avgTimeWaiting));
     }
   }
 
+  // get buffer to write data
   BYTE* buf;
-  hr = m_pRenderClient->GetBuffer(NumFramesRequested, &buf); // get buffer to write data
+  HRESULT hr = m_pRenderClient->GetBuffer(m_format.m_frames, &buf);
   if (FAILED(hr))
   {
     CLog::LogF(LOGERROR, "GetBuffer failed due to {}", CWIN32Util::FormatHRESULT(hr));
@@ -297,10 +298,11 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
 
   // fill buffer
   memcpy(buf, m_bufferPtr == 0 ? buffer : m_buffer.data(),
-         NumFramesRequested * m_format.m_frameSize);
+         m_format.m_frames * m_format.m_frameSize);
   m_bufferPtr = 0;
 
-  hr = m_pRenderClient->ReleaseBuffer(NumFramesRequested, 0); // pass back to audio driver
+  // pass back to the audio driver
+  hr = m_pRenderClient->ReleaseBuffer(m_format.m_frames, 0);
   if (FAILED(hr))
   {
     CLog::LogF(LOGERROR, "ReleaseBuffer failed due to {}.", CWIN32Util::FormatHRESULT(hr));
@@ -308,7 +310,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
     return INT_MAX;
   }
 
-  m_sinkFrames += NumFramesRequested;
+  m_sinkFrames += m_format.m_frames;
 
   // if not running start the audio driver
   if (!m_running)
@@ -323,10 +325,11 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
     m_running = true;
   }
 
-  if (FramesToCopy != frames)
+  // if not all received frames have been written, save the pending ones in the aux buffer
+  if (framesToCopy != frames)
   {
-    m_bufferPtr = frames-FramesToCopy;
-    memcpy(m_buffer.data(), buffer + FramesToCopy * m_format.m_frameSize,
+    m_bufferPtr = frames - framesToCopy;
+    memcpy(m_buffer.data(), buffer + framesToCopy * m_format.m_frameSize,
            m_bufferPtr * m_format.m_frameSize);
   }
 
