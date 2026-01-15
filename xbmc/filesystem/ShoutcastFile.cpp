@@ -371,14 +371,10 @@ void CShoutcastFile::Process()
           if (appPlayer->IsPlayingAudio() &&
               CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST::Id::TYPE_MUSIC)
           {
-            const auto& musicTag = tagInfo.second;
-            if (!musicTag->GetTitle().empty() || !musicTag->GetArtist().empty())
-            {
-              CVariant data;
-              data["player"]["playerid"] = static_cast<int>(PLAYLIST::Id::TYPE_MUSIC);
-              CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged",
-                                                                 itemPtr, data);
-            }
+            CVariant data;
+            data["player"]["playerid"] = static_cast<int>(PLAYLIST::Id::TYPE_MUSIC);
+            CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged",
+                                                               itemPtr, data);
           }
         }
       }
