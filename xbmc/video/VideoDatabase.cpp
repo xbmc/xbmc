@@ -324,7 +324,28 @@ int CVideoDatabase::AddPath(const std::string& strPath, const std::string &paren
   std::string strSQL;
   try
   {
-    int idPath = GetPathId(strPath);
+    // Special case for zip files
+    // If a zip file is added using the native zip support it has a zip:// path
+    // If the archive vfs addon is then installed and the containing directory is altered (so the hash is changed)
+    //  then when the directory is rescanned the zip file will have an archive:// path and could lead to an orphaned zip:// entry
+    // Similarly if the archive vfs addon is used first and then removed and the directory contents change then rescan could lead to zip://
+    // So check to see if there is an existing zip:// or archive:// path and use that
+    int idPath{-1};
+    CURL url(strPath);
+    if (url.IsProtocol("archive"))
+    {
+      // See if a zip://
+      url.SetProtocol("zip");
+      idPath = GetPathId(url.Get());
+    }
+    else if (url.IsProtocol("zip"))
+    {
+      // See if an archive://
+      url.SetProtocol("archive");
+      idPath = GetPathId(url.Get());
+    }
+    if (idPath < 0)
+      idPath = GetPathId(strPath);
     if (idPath >= 0)
       return idPath; // already have the path
 
