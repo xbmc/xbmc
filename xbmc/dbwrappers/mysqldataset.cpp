@@ -183,8 +183,15 @@ int MysqlDatabase::connect(bool create_new)
                     cert.empty() ? nullptr : cert.c_str(), ca.empty() ? nullptr : ca.c_str(),
                     capath.empty() ? nullptr : capath.c_str(),
                     ciphers.empty() ? nullptr : ciphers.c_str());
+#ifdef HAS_MARIADB
       my_bool enforce_tls = enforceSsl;
       mysql_options(conn, MYSQL_OPT_SSL_ENFORCE, (void*)&enforce_tls);
+#elif MYSQL_VERSION_ID >= 80014
+      mysql_ssl_mode enforce_tls = enforceSsl ? SSL_MODE_REQUIRED : SSL_MODE_PREFERRED;
+      mysql_options(conn, MYSQL_OPT_SSL_MODE, (void*)&enforce_tls);
+#else
+      CLog::Log(LOGWARNING, "MySQL: Not enforcing SSL mode, unsupported client version");
+#endif
       mysql_options(conn, MYSQL_OPT_CONNECT_TIMEOUT, &connect_timeout);
     }
 
