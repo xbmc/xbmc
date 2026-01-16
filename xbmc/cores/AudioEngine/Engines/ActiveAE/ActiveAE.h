@@ -411,5 +411,6 @@ protected:
   bool m_aeGUISoundForce;
 
   float m_targetBufferLevel{0.0f};
+  float m_initialTargetBufferLevel{0.0f};
 };
 };
