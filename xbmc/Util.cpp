@@ -1573,15 +1573,14 @@ bool CUtil::SupportsWriteFileOperations(const std::string& strPath)
 
   if (CServiceBroker::IsAddonInterfaceUp())
   {
-    CURL url(strPath);
-    for (const auto& addon : CServiceBroker::GetVFSAddonCache().GetAddonInstances())
-    {
-      const auto& info = addon->GetProtocolInfo();
-      auto prots = StringUtils::Split(info.type, "|");
-      if (info.supportWrite &&
-          std::find(prots.begin(), prots.end(), url.GetProtocol()) != prots.end())
-        return true;
-    }
+    return std::ranges::any_of(CServiceBroker::GetVFSAddonCache().GetAddonInstances(),
+                               [url = CURL(strPath)](const auto& addon)
+                               {
+                                 const auto& info = addon->GetProtocolInfo();
+                                 auto prots = StringUtils::Split(info.type, "|");
+                                 return info.supportWrite &&
+                                        std::ranges::find(prots, url.GetProtocol()) != prots.end();
+                               });
   }
 
   return false;
