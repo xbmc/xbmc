@@ -400,10 +400,8 @@ void CPeripheralBusAddon::UpdateAddons(void)
                          GetPeripheralAddonID);
 
   // Differences
-  std::set_difference(newIds.begin(), newIds.end(), currentIds.begin(), currentIds.end(),
-                      std::inserter(added, added.end()));
-  std::set_difference(currentIds.begin(), currentIds.end(), newIds.begin(), newIds.end(),
-                      std::inserter(removed, removed.end()));
+  std::ranges::set_difference(newIds, currentIds, std::inserter(added, added.end()));
+  std::ranges::set_difference(currentIds, newIds, std::inserter(removed, removed.end()));
 
   // Register new add-ons
   for (const std::string& addonId : added)
