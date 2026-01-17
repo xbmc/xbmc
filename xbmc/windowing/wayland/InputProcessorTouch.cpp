@@ -35,11 +35,8 @@ void CInputProcessorTouch::OnTouchDown(CSeat* seat,
   // Not optimal, but irrelevant for the small number of iterations
   for (int testPointer{0}; testPointer < CGenericTouchInputHandler::MAX_POINTERS; testPointer++)
   {
-    if (std::all_of(m_touchPoints.cbegin(), m_touchPoints.cend(),
-                    [=](decltype(m_touchPoints)::value_type const& pair)
-                    {
-                      return (pair.second.kodiPointerNumber != testPointer);
-                    }))
+    if (std::ranges::all_of(m_touchPoints, [=](const auto& pair)
+                            { return (pair.second.kodiPointerNumber != testPointer); }))
     {
       kodiPointer = testPointer;
       break;

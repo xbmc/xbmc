@@ -201,7 +201,7 @@ bool CGUIControllerList::RefreshControllers(void)
     auto ControllerNotAccepted = [&controllers](const ControllerPtr& controller)
     { return !controllers.IsControllerAccepted(controller->ID()); };
 
-    if (!std::all_of(newControllers.begin(), newControllers.end(), ControllerNotAccepted))
+    if (!std::ranges::all_of(newControllers, ControllerNotAccepted))
       newControllers.erase(
           std::remove_if(newControllers.begin(), newControllers.end(), ControllerNotAccepted),
           newControllers.end());

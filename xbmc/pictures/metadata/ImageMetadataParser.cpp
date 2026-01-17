@@ -57,7 +57,7 @@ std::string GetGPSString(const Exiv2::Value& value)
 
 bool IsOnlySpaces(const std::string& str)
 {
-  return std::all_of(str.begin(), str.end(), [](unsigned char c) { return std::isspace(c); });
+  return std::ranges::all_of(str, [](unsigned char c) { return std::isspace(c); });
 }
 } // namespace
 
