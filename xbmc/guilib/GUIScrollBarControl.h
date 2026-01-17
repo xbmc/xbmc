@@ -16,6 +16,8 @@
 #include "GUIControl.h"
 #include "GUITexture.h"
 
+#include <optional>
+
 /*!
  \ingroup controls
  \brief
@@ -65,6 +67,11 @@ protected:
 
   bool m_showOnePage;
   ORIENTATION m_orientation;
+
+  // Cached values for UpdateBarSize() optimization
+  std::optional<int> m_lastOffset;
+  std::optional<int> m_lastPageSize;
+  std::optional<int> m_lastNumItems;
 
 private:
   GUIScrollBarControl(const GUIScrollBarControl& control);
