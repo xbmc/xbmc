@@ -1088,9 +1088,8 @@ bool CWinSystemWayland::Minimize()
 bool CWinSystemWayland::HasCursor()
 {
   std::unique_lock lock(m_seatsMutex);
-  return std::any_of(m_seats.cbegin(), m_seats.cend(),
-                     [](decltype(m_seats)::value_type const& entry)
-                     { return entry.second->HasPointerCapability(); });
+  return std::ranges::any_of(m_seats, [](const auto& entry)
+                             { return entry.second->HasPointerCapability(); });
 }
 
 void CWinSystemWayland::ShowOSMouse(bool show)

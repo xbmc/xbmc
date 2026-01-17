@@ -616,7 +616,8 @@ void CWindowDecorator::UpdateButtonHoverState()
   for (auto& button : m_buttons)
   {
     bool wasHovered{button.hovered};
-    button.hovered = std::any_of(pointerPositions.cbegin(), pointerPositions.cend(), [&](CPoint point) { return button.position.PtInRect(CPointInt{point}); });
+    button.hovered = std::ranges::any_of(pointerPositions, [&](CPoint point)
+                                         { return button.position.PtInRect(CPointInt{point}); });
     changed = changed || (button.hovered != wasHovered);
   }
 

@@ -294,7 +294,7 @@ static void GenerateGameListing(const CURL& path, const VECADDONS& addons, CFile
 static void GenerateMainCategoryListing(const CURL& path, const VECADDONS& addons,
     CFileItemList& items)
 {
-  if (std::any_of(addons.begin(), addons.end(), IsInfoProviderTypeAddon))
+  if (std::ranges::any_of(addons, IsInfoProviderTypeAddon))
   {
     CFileItemPtr item(new CFileItem(g_localizeStrings.Get(24993)));
     item->SetPath(URIUtils::AddFileToFolder(path.Get(), CATEGORY_INFO_PROVIDERS));
@@ -304,7 +304,7 @@ static void GenerateMainCategoryListing(const CURL& path, const VECADDONS& addon
       item->SetArt("thumb", thumb);
     items.Add(item);
   }
-  if (std::any_of(addons.begin(), addons.end(), IsLookAndFeelTypeAddon))
+  if (std::ranges::any_of(addons, IsLookAndFeelTypeAddon))
   {
     CFileItemPtr item(new CFileItem(g_localizeStrings.Get(24997)));
     item->SetPath(URIUtils::AddFileToFolder(path.Get(), CATEGORY_LOOK_AND_FEEL));
@@ -314,7 +314,7 @@ static void GenerateMainCategoryListing(const CURL& path, const VECADDONS& addon
       item->SetArt("thumb", thumb);
     items.Add(item);
   }
-  if (std::any_of(addons.begin(), addons.end(), IsGameAddon))
+  if (std::ranges::any_of(addons, IsGameAddon))
   {
     CFileItemPtr item(new CFileItem(CAddonInfo::TranslateType(AddonType::GAME, true)));
     item->SetPath(URIUtils::AddFileToFolder(path.Get(), CATEGORY_GAME_ADDONS));

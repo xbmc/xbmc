@@ -729,9 +729,9 @@ bool CGUIControlListSetting::OnClick()
           strLabel = strLabel.substr(0, strLabel.find(','));
           if (!strLabel.empty())
           {
-            bValidType = !std::any_of(options.begin(), options.end(), [&](const auto& p) {
-              return p->GetProperty("value").asString() == strLabel;
-            });
+            bValidType =
+                !std::ranges::any_of(options, [&](const auto& p)
+                                     { return p->GetProperty("value").asString() == strLabel; });
           }
           if (bValidType)
           { // Add new value to the list of options

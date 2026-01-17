@@ -206,8 +206,8 @@ bool CContextMenuManager::IsVisible(
   if (menuItem.IsGroup())
   {
     std::unique_lock lock(m_criticalSection);
-    return std::any_of(m_addonItems.begin(), m_addonItems.end(),
-        [&](const CContextMenuItem& other){ return menuItem.IsParentOf(other) && other.IsVisible(fileItem); });
+    return std::ranges::any_of(m_addonItems, [&](const CContextMenuItem& other)
+                               { return menuItem.IsParentOf(other) && other.IsVisible(fileItem); });
   }
 
   return menuItem.IsVisible(fileItem);
@@ -219,10 +219,9 @@ bool CContextMenuManager::HasItems(const CFileItem& fileItem, const CContextMenu
   if (&root == &CContextMenuManager::MAIN)
   {
     std::unique_lock lock(m_criticalSection);
-    return std::any_of(m_items.cbegin(), m_items.cend(),
-                       [&fileItem](const std::shared_ptr<const IContextMenuItem>& menu) {
-                         return menu->IsVisible(fileItem);
-                       });
+    return std::ranges::any_of(m_items,
+                               [&fileItem](const std::shared_ptr<const IContextMenuItem>& menu)
+                               { return menu->IsVisible(fileItem); });
   }
   return false;
 }
@@ -245,10 +244,8 @@ bool CContextMenuManager::HasAddonItems(const CFileItem& fileItem,
                                         const CContextMenuItem& root) const
 {
   std::unique_lock lock(m_criticalSection);
-  return std::any_of(m_addonItems.cbegin(), m_addonItems.cend(),
-                     [this, root, &fileItem](const CContextMenuItem& menu) {
-                       return IsVisible(menu, root, fileItem);
-                     });
+  return std::ranges::any_of(m_addonItems, [this, &root, &fileItem](const CContextMenuItem& menu)
+                             { return IsVisible(menu, root, fileItem); });
 }
 
 ContextMenuView CContextMenuManager::GetAddonItems(const CFileItem& fileItem,
