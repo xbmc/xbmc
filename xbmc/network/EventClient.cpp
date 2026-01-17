@@ -128,8 +128,7 @@ bool CEventClient::AddPacket(std::unique_ptr<CEventPacket> packet)
       for (unsigned int i = 1; i <= packets; i++)
       {
         newPayloadIter =
-            std::copy(m_seqPackets[i]->Payload(),
-                      m_seqPackets[i]->Payload() + m_seqPackets[i]->PayloadSize(), newPayloadIter);
+            std::copy_n(m_seqPackets[i]->Payload(), m_seqPackets[i]->PayloadSize(), newPayloadIter);
 
         if (i > 1)
           m_seqPackets.erase(i);

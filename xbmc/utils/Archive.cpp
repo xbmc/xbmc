@@ -411,7 +411,7 @@ CArchive &CArchive::streamout_bufferwrap(const uint8_t *ptr, size_t size)
   do
   {
     auto chunkSize = std::min(size, m_BufferRemain);
-    m_BufferPos = std::copy(ptr, ptr + chunkSize, m_BufferPos);
+    m_BufferPos = std::copy_n(ptr, chunkSize, m_BufferPos);
     ptr += chunkSize;
     size -= chunkSize;
     m_BufferRemain -= chunkSize;
@@ -454,7 +454,7 @@ CArchive &CArchive::streamin_bufferwrap(uint8_t *ptr, size_t size)
       }
     }
     auto chunkSize = std::min(size, m_BufferRemain);
-    ptr = std::copy(m_BufferPos, m_BufferPos + chunkSize, ptr);
+    ptr = std::copy_n(m_BufferPos, chunkSize, ptr);
     m_BufferPos += chunkSize;
     m_BufferRemain -= chunkSize;
     size -= chunkSize;
