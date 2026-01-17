@@ -829,7 +829,9 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const std::vector
   // translate virtual windows
   if (iWindowID == WINDOW_START)
   { // virtual start window
-    iWindowID = g_SkinInfo->GetStartWindow();
+    auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+    if (skin)
+      iWindowID = skin->GetStartWindow();
   }
 
   // debug

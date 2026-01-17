@@ -30,9 +30,13 @@ CAnimEffect::CAnimEffect(const TiXmlElement *node, EFFECT_TYPE effect)
   m_pTweener.reset();
   // time and delay
 
+  auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+  float slowdown = skin ? skin->GetEffectsSlowdown() : 1.0f;
   float temp;
-  if (TIXML_SUCCESS == node->QueryFloatAttribute("time", &temp)) m_length = (unsigned int)(temp * g_SkinInfo->GetEffectsSlowdown());
-  if (TIXML_SUCCESS == node->QueryFloatAttribute("delay", &temp)) m_delay = (unsigned int)(temp * g_SkinInfo->GetEffectsSlowdown());
+  if (TIXML_SUCCESS == node->QueryFloatAttribute("time", &temp))
+    m_length = (unsigned int)(temp * slowdown);
+  if (TIXML_SUCCESS == node->QueryFloatAttribute("delay", &temp))
+    m_delay = (unsigned int)(temp * slowdown);
 
   m_pTweener = GetTweener(node);
 }

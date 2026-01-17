@@ -365,8 +365,12 @@ void CGUIInfoLabel::Parse(const std::string& label,
           {
             info = infoMgr.TranslateSkinVariableString(params[0], context);
             if (info == 0)
-              info = infoMgr.RegisterSkinVariableString(
-                  g_SkinInfo->CreateSkinVariable(params[0], context));
+            {
+              auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+              if (skin)
+                info = infoMgr.RegisterSkinVariableString(
+                    skin->CreateSkinVariable(params[0], context));
+            }
             if (info == 0) // skinner didn't define this conditional label!
               CLog::Log(LOGWARNING, "Label Formatting: $VAR[{}] is not defined", params[0]);
           }

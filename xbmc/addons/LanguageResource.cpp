@@ -10,8 +10,8 @@
 #include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
-#include "addons/Skin.h"
 #include "addons/addoninfo/AddonType.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "settings/Settings.h"
@@ -100,7 +100,7 @@ bool CLanguageResource::IsInUse() const
 
 void CLanguageResource::OnPostInstall(bool update, bool modal)
 {
-  if (!g_SkinInfo)
+  if (!CServiceBroker::GetGUI())
     return;
 
   if (IsInUse() || (!update && !modal &&

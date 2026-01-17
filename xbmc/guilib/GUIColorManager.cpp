@@ -10,6 +10,7 @@
 
 #include "addons/Skin.h"
 #include "filesystem/SpecialProtocol.h"
+#include "guilib/GUIComponent.h"
 #include "utils/ColorUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -33,13 +34,17 @@ void CGUIColorManager::Load(const std::string &colorFile)
 {
   Clear();
 
+  auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+  if (!skin)
+    return;
+
   // load the global color map if it exists
   CXBMCTinyXML xmlDoc;
   if (xmlDoc.LoadFile(CSpecialProtocol::TranslatePathConvertCase("special://xbmc/system/colors.xml")))
     LoadXML(xmlDoc);
 
   // first load the default color map if it exists
-  std::string path = URIUtils::AddFileToFolder(g_SkinInfo->Path(), "colors", "defaults.xml");
+  std::string path = URIUtils::AddFileToFolder(skin->Path(), "colors", "defaults.xml");
 
   if (xmlDoc.LoadFile(CSpecialProtocol::TranslatePathConvertCase(path)))
     LoadXML(xmlDoc);
@@ -48,7 +53,7 @@ void CGUIColorManager::Load(const std::string &colorFile)
   if (StringUtils::EqualsNoCase(colorFile, "SKINDEFAULT"))
     return; // nothing to do
 
-  path = URIUtils::AddFileToFolder(g_SkinInfo->Path(), "colors", colorFile);
+  path = URIUtils::AddFileToFolder(skin->Path(), "colors", colorFile);
   if (!URIUtils::HasExtension(path))
     path += ".xml";
   CLog::Log(LOGINFO, "Loading colors from {}", path);

@@ -299,8 +299,9 @@ bool CProfileManager::LoadProfile(unsigned int index)
 
   // save any settings of the currently used skin but only if the (master)
   // profile hasn't just been loaded as a temporary profile for login
-  if (g_SkinInfo != nullptr && !m_previousProfileLoadedForLogin)
-    g_SkinInfo->SaveSettings();
+  auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+  if (skin && !m_previousProfileLoadedForLogin)
+    skin->SaveSettings();
 
   // @todo: why is m_settings not used here?
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -425,7 +426,8 @@ void CProfileManager::FinalizeLoadProfile()
   stereoscopicsManager.Initialize();
 
   // Load initial window
-  int firstWindow = g_SkinInfo->GetFirstWindow();
+  auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+  int firstWindow = skin ? skin->GetFirstWindow() : WINDOW_HOME;
 
   CServiceBroker::GetGUI()->GetWindowManager().ChangeActiveWindow(firstWindow);
 

@@ -461,7 +461,9 @@ static int SkinResetAll(const std::vector<std::string>& params)
  */
 static int SkinDebug(const std::vector<std::string>& params)
 {
-  g_SkinInfo->ToggleDebug();
+  auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+  if (skin)
+    skin->ToggleDebug();
 
   return 0;
 }
@@ -478,7 +480,9 @@ static int SkinTimerStart(const std::vector<std::string>& params)
     return -1;
   }
 
-  g_SkinInfo->TimerStart(params[0]);
+  auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+  if (skin)
+    skin->TimerStart(params[0]);
   return 0;
 }
 
@@ -494,7 +498,9 @@ static int SkinTimerStop(const std::vector<std::string>& params)
     return -1;
   }
 
-  g_SkinInfo->TimerStop(params[0]);
+  auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+  if (skin)
+    skin->TimerStop(params[0]);
   return 0;
 }
 

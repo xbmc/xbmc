@@ -49,8 +49,6 @@ using namespace std::chrono_literals;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
 
-std::shared_ptr<ADDON::CSkinInfo> g_SkinInfo;
-
 namespace
 {
 constexpr const char* XML_SETTINGS = "settings";
@@ -406,15 +404,17 @@ const INFO::CSkinVariableString* CSkinInfo::CreateSkinVariable(const std::string
 
 void CSkinInfo::OnPreInstall()
 {
-  bool skinLoaded = g_SkinInfo != nullptr;
-  if (IsInUse() && skinLoaded)
+  auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+  const bool skinLoaded = static_cast<bool>(skin);
+  if (skinLoaded && IsInUse())
     CServiceBroker::GetAppMessenger()->SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr,
                                                "UnloadSkin");
 }
 
 void CSkinInfo::OnPostInstall(bool update, bool modal)
 {
-  if (!g_SkinInfo)
+  auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+  if (!skin)
     return;
 
   if (IsInUse() || (!update && !modal &&
@@ -464,7 +464,8 @@ void CSkinInfo::SettingOptionsSkinColorsFiller(const SettingConstPtr& setting,
                                                std::vector<StringSettingOption>& list,
                                                std::string& current)
 {
-  if (!g_SkinInfo)
+  auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+  if (!skin)
     return;
 
   std::string settingValue = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
@@ -481,7 +482,7 @@ void CSkinInfo::SettingOptionsSkinColorsFiller(const SettingConstPtr& setting,
 
   // Search for colors in the Current skin!
   std::vector<std::string> vecColors;
-  std::string strPath = URIUtils::AddFileToFolder(g_SkinInfo->Path(), "colors");
+  std::string strPath = URIUtils::AddFileToFolder(skin->Path(), "colors");
 
   CFileItemList items;
   CDirectory::GetDirectory(CSpecialProtocol::TranslatePathConvertCase(strPath), items, ".xml", DIR_FLAG_DEFAULTS);
@@ -517,7 +518,9 @@ void GetFontsetsFromFile(const std::string& fontsetFilePath,
   if (xmlDoc.LoadFile(fontsetFilePath))
   {
     TiXmlElement* rootElement = xmlDoc.RootElement();
-    g_SkinInfo->ResolveIncludes(rootElement);
+    auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+    if (skin)
+      skin->ResolveIncludes(rootElement);
     if (rootElement && (rootElement->ValueStr() == "fonts"))
     {
       const TiXmlElement* fontsetElement = rootElement->FirstChildElement("fontset");
@@ -546,7 +549,8 @@ void CSkinInfo::SettingOptionsSkinFontsFiller(const SettingConstPtr& setting,
                                               std::vector<StringSettingOption>& list,
                                               std::string& current)
 {
-  if (!g_SkinInfo)
+  auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+  if (!skin)
     return;
 
   const std::string settingValue =
@@ -554,7 +558,7 @@ void CSkinInfo::SettingOptionsSkinFontsFiller(const SettingConstPtr& setting,
   bool currentValueSet = false;
 
   // Look for fontsets that are defined in the skin's Font.xml file
-  const std::string fontsetFilePath = g_SkinInfo->GetSkinPath("Font.xml");
+  const std::string fontsetFilePath = skin->GetSkinPath("Font.xml");
   GetFontsetsFromFile(fontsetFilePath, list, settingValue, &currentValueSet);
 
   // Look for additional fontsets that are defined in .xml files in the skin's fonts directory
@@ -611,13 +615,14 @@ void CSkinInfo::SettingOptionsStartupWindowsFiller(const SettingConstPtr& settin
                                                    std::vector<IntegerSettingOption>& list,
                                                    int& current)
 {
-  if (!g_SkinInfo)
+  auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+  if (!skin)
     return;
 
   int settingValue = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
   current = -1;
 
-  const std::vector<CStartupWindow> &startupWindows = g_SkinInfo->GetStartupWindows();
+  const std::vector<CStartupWindow>& startupWindows = skin->GetStartupWindows();
 
   for (const auto& window : startupWindows)
   {
