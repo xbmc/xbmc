@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2025-12-25 01:32+0000\n"
+"PO-Revision-Date: 2026-01-17 08:13+0000\n"
 "Last-Translator: wabisabi926 <liwenliang926@163.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/zh_Hans/>\n"
 "Language: zh_cn\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.15.1\n"
+"X-Generator: Weblate 5.15.2\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -59,7 +59,7 @@ msgstr "随机电影"
 
 msgctxt "#31007"
 msgid "Unwatched movies"
-msgstr "未观看电影"
+msgstr "未观看的电影"
 
 msgctxt "#31008"
 msgid "Enable category widgets"
@@ -71,7 +71,7 @@ msgstr "下载图标"
 
 msgctxt "#31010"
 msgid "In progress movies"
-msgstr "在观看电影"
+msgstr "正在观看的电影"
 
 msgctxt "#31011"
 msgid "Most played albums"
@@ -459,7 +459,7 @@ msgstr "设置天气提供者"
 
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
-msgstr "未观看剧集"
+msgstr "未观看电视剧"
 
 msgctxt "#31123"
 msgid "Same director"
@@ -683,7 +683,7 @@ msgstr "主屏幕上相册的默认选择操作"
 #. Setting to control what happens when clicking a TV show on the home screen
 msgctxt "#31175"
 msgid "Default select action for TV shows on the home screen"
-msgstr "主屏幕上电视节目的默认选择操作"
+msgstr "主屏幕上电视剧的默认选择操作"
 
 #. Setting to control what happens when clicking a movie set on the home screen
 msgctxt "#31176"
