@@ -194,9 +194,9 @@ std::vector<JOYSTICK::CDriverPrimitive> CPeripheralAddonTranslator::TranslatePri
     const std::vector<kodi::addon::DriverPrimitive>& primitives)
 {
   std::vector<JOYSTICK::CDriverPrimitive> ret;
-  std::transform(primitives.begin(), primitives.end(), std::back_inserter(ret),
-                 [](const kodi::addon::DriverPrimitive& primitive)
-                 { return CPeripheralAddonTranslator::TranslatePrimitive(primitive); });
+  std::ranges::transform(primitives, std::back_inserter(ret),
+                         [](const kodi::addon::DriverPrimitive& primitive)
+                         { return CPeripheralAddonTranslator::TranslatePrimitive(primitive); });
   return ret;
 }
 
@@ -204,9 +204,9 @@ std::vector<kodi::addon::DriverPrimitive> CPeripheralAddonTranslator::TranslateP
     const std::vector<JOYSTICK::CDriverPrimitive>& primitives)
 {
   std::vector<kodi::addon::DriverPrimitive> ret;
-  std::transform(primitives.begin(), primitives.end(), std::back_inserter(ret),
-                 [](const JOYSTICK::CDriverPrimitive& primitive)
-                 { return CPeripheralAddonTranslator::TranslatePrimitive(primitive); });
+  std::ranges::transform(primitives, std::back_inserter(ret),
+                         [](const JOYSTICK::CDriverPrimitive& primitive)
+                         { return CPeripheralAddonTranslator::TranslatePrimitive(primitive); });
   return ret;
 }
 

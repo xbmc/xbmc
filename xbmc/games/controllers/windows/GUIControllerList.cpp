@@ -216,10 +216,10 @@ bool CGUIControllerList::RefreshControllers(void)
 
   auto GetControllerID = [](const ControllerPtr& controller) { return controller->ID(); };
 
-  std::transform(m_controllers.begin(), m_controllers.end(),
-                 std::inserter(oldControllerIds, oldControllerIds.begin()), GetControllerID);
-  std::transform(newControllers.begin(), newControllers.end(),
-                 std::inserter(newControllerIds, newControllerIds.begin()), GetControllerID);
+  std::ranges::transform(m_controllers, std::inserter(oldControllerIds, oldControllerIds.begin()),
+                         GetControllerID);
+  std::ranges::transform(newControllers, std::inserter(newControllerIds, newControllerIds.begin()),
+                         GetControllerID);
 
   const bool bChanged = (oldControllerIds != newControllerIds);
   if (bChanged)

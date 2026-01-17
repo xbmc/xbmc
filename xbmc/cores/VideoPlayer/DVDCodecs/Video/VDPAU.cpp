@@ -500,7 +500,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
 
   // check if user wants to decode this format with VDPAU
   std::string gpuvendor = CServiceBroker::GetRenderSystem()->GetRenderVendor();
-  std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
+  std::ranges::transform(gpuvendor, gpuvendor.begin(), ::tolower);
   // nvidia is whitelisted despite for mpeg-4 we need to query user settings
   if ((gpuvendor.compare(0, 6, "nvidia") != 0)  || (avctx->codec_id == AV_CODEC_ID_MPEG4) || (avctx->codec_id == AV_CODEC_ID_H263))
   {
@@ -1334,7 +1334,7 @@ void CDecoder::Register()
   CDVDFactoryCodec::RegisterHWAccel("vdpau", CDecoder::Create);
 
   std::string gpuvendor = CServiceBroker::GetRenderSystem()->GetRenderVendor();
-  std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
+  std::ranges::transform(gpuvendor, gpuvendor.begin(), ::tolower);
   bool isNvidia = (gpuvendor.compare(0, 6, "nvidia") == 0);
 
   auto settingsComponent = CServiceBroker::GetSettingsComponent();

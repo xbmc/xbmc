@@ -535,7 +535,7 @@ std::string CMime::GetMimeType(const std::string &extension)
   size_t posNotPoint = ext.find_first_not_of('.');
   if (posNotPoint != std::string::npos && posNotPoint > 0)
     ext = extension.substr(posNotPoint);
-  std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+  std::ranges::transform(ext, ext.begin(), ::tolower);
 
   const auto& mime_map = GetMap();
   const auto it = mime_map.find(ext);

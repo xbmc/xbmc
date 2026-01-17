@@ -75,8 +75,8 @@ std::vector<std::string> GetSettingListAsString(const std::string& settingID)
   std::vector<CVariant> values =
     CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(settingID);
   std::vector<std::string> result;
-  std::transform(values.begin(), values.end(), std::back_inserter(result),
-                 [](const CVariant& s) { return s.asString(); });
+  std::ranges::transform(values, std::back_inserter(result),
+                         [](const CVariant& s) { return s.asString(); });
   return result;
 }
 

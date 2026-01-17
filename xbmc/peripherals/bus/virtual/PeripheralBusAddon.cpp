@@ -389,16 +389,15 @@ void CPeripheralBusAddon::UpdateAddons(void)
   // Get new add-ons
   std::vector<AddonInfoPtr> newAddons;
   CServiceBroker::GetAddonMgr().GetAddonInfos(newAddons, true, AddonType::PERIPHERALDLL);
-  std::transform(newAddons.begin(), newAddons.end(), std::inserter(newIds, newIds.end()),
-                 GetAddonID);
+  std::ranges::transform(newAddons, std::inserter(newIds, newIds.end()), GetAddonID);
 
   std::unique_lock lock(m_critSection);
 
   // Get current add-ons
-  std::transform(m_addons.begin(), m_addons.end(), std::inserter(currentIds, currentIds.end()),
-                 GetPeripheralAddonID);
-  std::transform(m_failedAddons.begin(), m_failedAddons.end(),
-                 std::inserter(currentIds, currentIds.end()), GetPeripheralAddonID);
+  std::ranges::transform(m_addons, std::inserter(currentIds, currentIds.end()),
+                         GetPeripheralAddonID);
+  std::ranges::transform(m_failedAddons, std::inserter(currentIds, currentIds.end()),
+                         GetPeripheralAddonID);
 
   // Differences
   std::set_difference(newIds.begin(), newIds.end(), currentIds.begin(), currentIds.end(),

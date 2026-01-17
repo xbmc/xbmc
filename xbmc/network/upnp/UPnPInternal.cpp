@@ -849,7 +849,7 @@ PLT_MediaObject* BuildObject(CFileItem& item,
     {
       ext = URIUtils::GetExtension(filenames[i]).c_str();
       ext = ext.substr(1);
-      std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+      std::ranges::transform(ext, ext.begin(), ::tolower);
       /* Hardcoded check for extension is not the best way, but it can't be allowed to pass all
                subtitle extension (ex. rar or zip). There are the most popular extensions support by UPnP devices.*/
       if (SupportedSubFormats.contains(ext))
@@ -914,7 +914,7 @@ PLT_MediaObject* BuildObject(CFileItem& item,
 
       ext = URIUtils::GetExtension(subtitlePath).c_str();
       ext = ext.substr(1);
-      std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+      std::ranges::transform(ext, ext.begin(), ::tolower);
 
       NPT_String subtitle_uri = object->m_Resources[object->m_Resources.GetItemCount() - 1].m_Uri;
 

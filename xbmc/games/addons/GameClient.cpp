@@ -89,8 +89,8 @@ CGameClient::CGameClient(const ADDON::AddonInfoPtr& addonInfo)
 
   std::vector<std::string> extensions = StringUtils::Split(
       Type(AddonType::GAMEDLL)->GetValue(GAME_PROPERTY_EXTENSIONS).asString(), EXTENSION_SEPARATOR);
-  std::transform(extensions.begin(), extensions.end(),
-                 std::inserter(m_extensions, m_extensions.begin()), NormalizeExtension);
+  std::ranges::transform(extensions, std::inserter(m_extensions, m_extensions.begin()),
+                         NormalizeExtension);
 
   // Check for wildcard extension
   if (m_extensions.contains(EXTENSION_WILDCARD))

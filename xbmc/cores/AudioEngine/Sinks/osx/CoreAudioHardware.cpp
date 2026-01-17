@@ -117,7 +117,7 @@ AudioDeviceID CCoreAudioHardware::FindAudioDevice(const std::string &searchName)
     return deviceId;
 
   std::string searchNameLowerCase = searchName;
-  std::transform(searchNameLowerCase.begin(), searchNameLowerCase.end(), searchNameLowerCase.begin(), ::tolower );
+  std::ranges::transform(searchNameLowerCase, searchNameLowerCase.begin(), ::tolower);
   if (searchNameLowerCase.compare("default") == 0)
   {
     AudioDeviceID defaultDevice = GetDefaultOutputDevice();
@@ -169,7 +169,7 @@ AudioDeviceID CCoreAudioHardware::FindAudioDevice(const std::string &searchName)
     CCoreAudioDevice device;
     device.Open((pDevices[dev]));
     deviceName = device.GetName();
-    std::transform( deviceName.begin(), deviceName.end(), deviceName.begin(), ::tolower );
+    std::ranges::transform(deviceName, deviceName.begin(), ::tolower);
     if (searchNameLowerCase.compare(deviceName) == 0)
       deviceId = pDevices[dev];
     if (deviceId)
