@@ -234,8 +234,9 @@ ContextMenuView CContextMenuManager::GetItems(const CFileItem& fileItem,
   if (&root == &CContextMenuManager::MAIN)
   {
     std::unique_lock lock(m_criticalSection);
-    std::copy_if(m_items.begin(), m_items.end(), std::back_inserter(result),
-        [&](const std::shared_ptr<IContextMenuItem>& menu){ return menu->IsVisible(fileItem); });
+    std::ranges::copy_if(m_items, std::back_inserter(result),
+                         [&](const std::shared_ptr<IContextMenuItem>& menu)
+                         { return menu->IsVisible(fileItem); });
   }
   return result;
 }

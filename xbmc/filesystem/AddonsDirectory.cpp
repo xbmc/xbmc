@@ -473,8 +473,8 @@ static void DependencyAddons(const CURL& path, CFileItemList &items)
   CServiceBroker::GetAddonMgr().GetInstalledAddons(all);
 
   VECADDONS deps;
-  std::copy_if(all.begin(), all.end(), std::back_inserter(deps),
-      [&](const AddonPtr& _){ return !IsUserInstalled(_); });
+  std::ranges::copy_if(all, std::back_inserter(deps),
+                       [&](const AddonPtr& a) { return !IsUserInstalled(a); });
 
   CAddonsDirectory::GenerateAddonListing(path, deps, items, g_localizeStrings.Get(24996));
 
