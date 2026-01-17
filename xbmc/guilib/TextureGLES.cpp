@@ -179,8 +179,8 @@ std::unique_ptr<CTexture> CTexture::CreateTexture(unsigned int width,
   return std::make_unique<CGLESTexture>(width, height, format);
 }
 
-CGLESTexture::CGLESTexture(unsigned int width, unsigned int height, XB_FMT format, GLuint texture)
-  : CTexture(width, height, format), m_texture(texture)
+CGLESTexture::CGLESTexture(unsigned int width, unsigned int height, XB_FMT format)
+  : CTexture(width, height, format)
 {
   unsigned int major, minor;
   CServiceBroker::GetRenderSystem()->GetRenderVersion(major, minor);

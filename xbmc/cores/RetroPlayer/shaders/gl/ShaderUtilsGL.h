@@ -21,5 +21,4 @@ public:
   static GLint TranslateWrapType(WrapType wrapType);
   static std::string GetGLSLVersion(std::string& source);
 };
-
 } // namespace KODI::SHADER

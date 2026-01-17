@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017-2025 Team Kodi
+ *  Copyright (C) 2019-2025 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -10,11 +10,7 @@
 
 #include "cores/RetroPlayer/shaders/IShaderTexture.h"
 
-#include <memory>
-
-#include <d3d11.h>
-
-class CD3DTexture;
+#include "system_gl.h"
 
 namespace KODI::SHADER
 {
@@ -24,23 +20,23 @@ namespace KODI::SHADER
  *
  * NOTE: The lifetime of the external texture object must outlast this class.
  */
-class CShaderTextureDXRef : public IShaderTexture
+class CShaderTextureGLESRef : public IShaderTexture
 {
 public:
-  explicit CShaderTextureDXRef(CD3DTexture& texture);
-  ~CShaderTextureDXRef() override = default;
+  CShaderTextureGLESRef(uint32_t textureWidth, uint32_t textureHeight, GLuint texture = 0);
+  ~CShaderTextureGLESRef() override = default;
 
   // Implementation of IShaderTexture
   float GetWidth() const override;
   float GetHeight() const override;
 
-  // DirectX interface
-  CD3DTexture& GetTexture() { return m_texture; }
-  const CD3DTexture& GetTexture() const { return m_texture; }
-  ID3D11ShaderResourceView* GetShaderResource() const;
+  // OpenGLES interface
+  void BindToUnit(unsigned int unit);
+  GLuint GetTextureID() const { return m_texture; }
 
 private:
-  // Construction parameter
-  CD3DTexture& m_texture;
+  uint32_t m_textureWidth{0};
+  uint32_t m_textureHeight{0};
+  GLuint m_texture{0};
 };
 } // namespace KODI::SHADER

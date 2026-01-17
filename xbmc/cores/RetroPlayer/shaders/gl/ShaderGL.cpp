@@ -24,10 +24,7 @@ CShaderGL::CShaderGL() = default;
 
 CShaderGL::~CShaderGL()
 {
-  glDeleteBuffers(1, &m_shaderIndexVBO);
-  glDeleteBuffers(3, m_shaderVertexVBO.data());
-
-  glDeleteVertexArrays(1, &m_shaderVAO);
+  Destroy();
 }
 
 bool CShaderGL::Create(std::string shaderSource,
@@ -156,7 +153,7 @@ void CShaderGL::Render(IShaderTexture& source, IShaderTexture& target)
 
   glUseProgram(m_shaderProgram);
 
-  SetShaderParameters(sourceGL.GetTexture());
+  SetShaderParameters(sourceGL);
 
   glBindVertexArray(m_shaderVAO);
 
@@ -281,6 +278,20 @@ void CShaderGL::UpdateMVP()
   m_MVP = {{{xScale, 0, 0, 0}, {0, yScale, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}};
 }
 
+void CShaderGL::Destroy()
+{
+  glDeleteProgram(m_shaderProgram);
+  m_shaderProgram = 0;
+
+  glDeleteBuffers(1, &m_shaderIndexVBO);
+  glDeleteBuffers(3, m_shaderVertexVBO.data());
+  m_shaderIndexVBO = 0;
+  m_shaderVertexVBO = {0, 0, 0};
+
+  glDeleteVertexArrays(1, &m_shaderVAO);
+  m_shaderVAO = 0;
+}
+
 void CShaderGL::UpdateUniformInputs(
     IShaderTexture& sourceTexture,
     const std::vector<std::unique_ptr<IShaderTexture>>& pShaderTextures,
@@ -292,12 +303,12 @@ void CShaderGL::UpdateUniformInputs(
   if (m_passIdx > 0) // Not first pass
   {
     auto& shaderTextureGL = static_cast<CShaderTextureGL&>(*pShaderTextures[m_passIdx - 1]);
-    m_uniformFrameInputs = GetFrameInputData(shaderTextureGL.GetTexture().GetTextureID());
+    m_uniformFrameInputs = GetFrameInputData(shaderTextureGL.GetTextureID());
   }
   else // First pass
   {
     auto& shaderTextureGL = static_cast<CShaderTextureGL&>(sourceTexture);
-    m_uniformFrameInputs = GetFrameInputData(shaderTextureGL.GetTexture().GetTextureID());
+    m_uniformFrameInputs = GetFrameInputData(shaderTextureGL.GetTextureID());
   }
 
   // Set frame uniforms of previous passes
@@ -348,7 +359,7 @@ void CShaderGL::GetUniformLocs()
   m_MVPMatrixLoc = glGetUniformLocation(m_shaderProgram, "MVPMatrix");
 }
 
-void CShaderGL::SetShaderParameters(CGLTexture& sourceTexture)
+void CShaderGL::SetShaderParameters(CShaderTextureGL& sourceTexture)
 {
   // Set shader uniforms
   glUniform1f(m_FrameDirectionLoc, m_uniformInputs.frame_direction);

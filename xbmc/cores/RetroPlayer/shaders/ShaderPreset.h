@@ -111,6 +111,5 @@ protected:
   // Playback speed
   double m_speed{1.0};
 };
-
 } // namespace SHADER
 } // namespace KODI

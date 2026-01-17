@@ -70,7 +70,7 @@ bool CShaderPresetGL::CreateShaders()
 
 bool CShaderPresetGL::CreateShaderTextures()
 {
-  m_pShaderTextures.clear();
+  DisposeShaderTextures();
 
   unsigned int major{0};
   unsigned int minor{0};
@@ -90,6 +90,24 @@ bool CShaderPresetGL::CreateShaderTextures()
     float2 textureSize;
     CalculateScaledSize(pass, prevSize, scaledSize);
 
+    //! @todo Enable usage of optimal texture sizes once multi-pass preset
+    // geometry and LUT rendering are fixed.
+    //
+    // Current issues:
+    //   - Enabling optimal texture sizes breaks geometry for many multi-pass
+    //     presets
+    //   - LUTs render incorrectly due to missing per-pass and per-LUT
+    //     TexCoord attributes.
+    //
+    // Planned solution:
+    //   - Implement additional TexCoord attributes for each pass and LUT,
+    //     setting coordinates to `xamt` and `yamt` instead of 1
+    //
+    // Reference implementation in RetroArch:
+    //   https://github.com/libretro/RetroArch/blob/09a59edd6b415b7bd124b03bda68ccc4d60b0ea8/gfx/drivers/gl2.c#L3018
+    //
+    textureSize = scaledSize; // CShaderUtils::GetOptimalTextureSize(scaledSize)
+
     if (shaderIdx + 1 == numPasses)
     {
       // We're supposed to output at full (viewport) resolution
@@ -98,6 +116,35 @@ bool CShaderPresetGL::CreateShaderTextures()
     }
     else
     {
+      auto shaderTextureGL = std::make_unique<CShaderTextureGL>(
+          static_cast<unsigned int>(textureSize.x), static_cast<unsigned int>(textureSize.y));
+
+      shaderTextureGL->CreateTextureObject(); // Create new internal texture
+
+      const ShaderPass& nextPass = m_passes[shaderIdx + 1];
+
+      if (pass.fbo.sRgbFramebuffer)
+        shaderTextureGL->SetSRGBFramebuffer();
+
+      if (nextPass.mipmap)
+        shaderTextureGL->SetMipmapping();
+
+      const GLint wrapType = CShaderUtilsGL::TranslateWrapType(nextPass.wrapType);
+
+      const GLuint magFilterType =
+          (nextPass.filterType == FilterType::LINEAR ? GL_LINEAR : GL_NEAREST);
+
+      const GLuint minFilterType =
+          (nextPass.mipmap ? (nextPass.filterType == FilterType::LINEAR ? GL_LINEAR_MIPMAP_LINEAR
+                                                                        : GL_NEAREST_MIPMAP_NEAREST)
+                           : magFilterType);
+
+      glBindTexture(GL_TEXTURE_2D, shaderTextureGL->GetTextureID());
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilterType);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilterType);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapType);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapType);
+
       // Determine the framebuffer data format
       GLint internalFormat;
       GLenum pixelFormat;
@@ -121,69 +168,14 @@ bool CShaderPresetGL::CreateShaderTextures()
         }
       }
 
-      //! @todo Enable usage of optimal texture sizes once multi-pass preset
-      // geometry and LUT rendering are fixed.
-      //
-      // Current issues:
-      //   - Enabling optimal texture sizes breaks geometry for many multi-pass
-      //     presets
-      //   - LUTs render incorrectly due to missing per-pass and per-LUT
-      //     TexCoord attributes.
-      //
-      // Planned solution:
-      //   - Implement additional TexCoord attributes for each pass and LUT,
-      //     setting coordinates to `xamt` and `yamt` instead of 1
-      //
-      // Reference implementation in RetroArch:
-      //   https://github.com/libretro/RetroArch/blob/09a59edd6b415b7bd124b03bda68ccc4d60b0ea8/gfx/drivers/gl2.c#L3018
-      //
-      textureSize = scaledSize; // CShaderUtils::GetOptimalTextureSize(scaledSize)
-
-      auto textureGL = std::make_shared<CGLTexture>(static_cast<unsigned int>(textureSize.x),
-                                                    static_cast<unsigned int>(textureSize.y),
-                                                    XB_FMT_A8R8G8B8); // Format is not used
-
-      textureGL->CreateTextureObject();
-
-      if (textureGL->GetTextureID() <= 0)
-      {
-        CLog::Log(
-            LOGERROR,
-            "CShaderPresetGL::CreateShaderTextures: Couldn't create texture for video shader: {}",
-            pass.sourcePath);
-        return false;
-      }
-
-      const ShaderPass& nextPass = m_passes[shaderIdx + 1];
-
-      if (nextPass.mipmap)
-        textureGL->SetMipmapping();
-
-      textureGL->SetScalingMethod(nextPass.filterType == FilterType::LINEAR
-                                      ? TEXTURE_SCALING::LINEAR
-                                      : TEXTURE_SCALING::NEAREST);
-
-      const GLint wrapType = CShaderUtilsGL::TranslateWrapType(nextPass.wrapType);
-      const GLuint magFilterType =
-          (nextPass.filterType == FilterType::LINEAR ? GL_LINEAR : GL_NEAREST);
-      const GLuint minFilterType =
-          (nextPass.mipmap ? (nextPass.filterType == FilterType::LINEAR ? GL_LINEAR_MIPMAP_LINEAR
-                                                                        : GL_NEAREST_MIPMAP_NEAREST)
-                           : magFilterType);
-
-      glBindTexture(GL_TEXTURE_2D, textureGL->GetTextureID());
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilterType);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilterType);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapType);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapType);
       glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, textureSize.x, textureSize.y, 0, pixelFormat,
                    internalFormat == GL_RGBA32F ? GL_FLOAT : GL_UNSIGNED_BYTE, nullptr);
 
-      GLfloat blackBorder[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+      const GLfloat blackBorder[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+
       glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, blackBorder);
 
-      m_pShaderTextures.emplace_back(
-          std::make_unique<CShaderTextureGL>(std::move(textureGL), pass.fbo.sRgbFramebuffer));
+      m_pShaderTextures.emplace_back(std::move(shaderTextureGL));
     }
 
     // Notify shader of its source and dest size

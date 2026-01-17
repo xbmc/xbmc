@@ -12,9 +12,7 @@
 #include "cores/RetroPlayer/buffers/RenderBufferPoolOpenGL.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "cores/RetroPlayer/shaders/gl/ShaderPresetGL.h"
-#include "cores/RetroPlayer/shaders/gl/ShaderTextureGL.h"
-#include "guilib/TextureFormats.h"
-#include "guilib/TextureGL.h"
+#include "cores/RetroPlayer/shaders/gl/ShaderTextureGLRef.h"
 #include "utils/GLUtils.h"
 #include "utils/log.h"
 
@@ -288,21 +286,21 @@ void CRPRendererOpenGL::Render(uint8_t alpha)
   }
   else
   {
-    // We can't copy or move CGLTexture, so construct source/target in-place
     rbTextures = new RenderBufferTextures{
         // Source texture
-        std::make_shared<CGLTexture>(static_cast<unsigned int>(renderBuffer->GetWidth()),
-                                     static_cast<unsigned int>(renderBuffer->GetHeight()),
-                                     XB_FMT_RGB8, renderBuffer->TextureID()),
-        // Target texture
-        std::make_shared<CGLTexture>(static_cast<unsigned int>(m_context.GetScreenWidth()),
-                                     static_cast<unsigned int>(m_context.GetScreenHeight())),
+        std::make_shared<SHADER::CShaderTextureGLRef>(
+            static_cast<unsigned int>(renderBuffer->GetWidth()),
+            static_cast<unsigned int>(renderBuffer->GetHeight()), renderBuffer->TextureID()),
+        // Target texture is empty wrapper used to pass target width and height
+        std::make_shared<SHADER::CShaderTextureGLRef>(
+            static_cast<unsigned int>(m_context.GetScreenWidth()),
+            static_cast<unsigned int>(m_context.GetScreenHeight())),
     };
     m_RBTexturesMap.emplace(renderBuffer, rbTextures);
   }
 
-  std::shared_ptr<CGLTexture> sourceTexture = rbTextures->source;
-  std::shared_ptr<CGLTexture> targetTexture = rbTextures->target;
+  std::shared_ptr<SHADER::CShaderTextureGLRef> source = rbTextures->source;
+  std::shared_ptr<SHADER::CShaderTextureGLRef> target = rbTextures->target;
 
   Updateshaders();
 
@@ -313,15 +311,13 @@ void CRPRendererOpenGL::Render(uint8_t alpha)
     if (m_shaderPreset->GetPasses()[0].filterType == SHADER::FilterType::LINEAR)
       filter = GL_LINEAR;
 
-    glBindTexture(m_textureTarget, sourceTexture->GetTextureID());
+    glBindTexture(m_textureTarget, source->GetTextureID());
     glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, filter);
     glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, filter);
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-    SHADER::CShaderTextureGL source(sourceTexture, false);
-    SHADER::CShaderTextureGL target(targetTexture, false);
-    if (!m_shaderPreset->RenderUpdate(dest, {m_fullDestWidth, m_fullDestHeight}, source, target))
+    if (!m_shaderPreset->RenderUpdate(dest, {m_fullDestWidth, m_fullDestHeight}, *source, *target))
     {
       m_bShadersNeedUpdate = false;
       m_bUseShaderPreset = false;
@@ -343,7 +339,7 @@ void CRPRendererOpenGL::Render(uint8_t alpha)
     if (GetRenderSettings().VideoSettings().GetScalingMethod() == SCALINGMETHOD::LINEAR)
       filter = GL_LINEAR;
 
-    glBindTexture(m_textureTarget, sourceTexture->GetTextureID());
+    glBindTexture(m_textureTarget, source->GetTextureID());
     glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, filter);
     glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, filter);
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);

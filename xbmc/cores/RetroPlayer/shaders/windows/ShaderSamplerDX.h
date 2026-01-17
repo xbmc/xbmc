@@ -24,5 +24,4 @@ public:
 private:
   ID3D11SamplerState* const m_sampler;
 };
-
 } // namespace KODI::SHADER

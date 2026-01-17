@@ -3,12 +3,14 @@ if(TARGET ${APP_NAME_LC}::OpenGl)
                       ShaderLutGL.cpp
                       ShaderPresetGL.cpp
                       ShaderTextureGL.cpp
+                      ShaderTextureGLRef.cpp
                       ShaderUtilsGL.cpp
   )
   list(APPEND HEADERS ShaderGL.h
                       ShaderLutGL.h
                       ShaderPresetGL.h
                       ShaderTextureGL.h
+                      ShaderTextureGLRef.h
                       ShaderUtilsGL.h
   )
 
