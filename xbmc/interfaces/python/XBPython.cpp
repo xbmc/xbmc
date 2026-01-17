@@ -98,8 +98,7 @@ XBPython::~XBPython()
   type dest; \
   dest = src
 
-#define CHECK_FOR_ENTRY(l, v) \
-  (l.hadSomethingRemoved ? (std::find(l.begin(), l.end(), v) != l.end()) : true)
+#define CHECK_FOR_ENTRY(l, v) (l.hadSomethingRemoved ? (std::ranges::find(l, v) != l.end()) : true)
 
 void XBPython::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
                         const std::string& sender,

@@ -131,7 +131,7 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
     {
       auto prots = StringUtils::Split(vfsAddon->GetProtocols(), "|");
 
-      if (vfsAddon->HasDirectories() && std::find(prots.begin(), prots.end(), url.GetProtocol()) != prots.end())
+      if (vfsAddon->HasDirectories() && std::ranges::find(prots, url.GetProtocol()) != prots.end())
         return new CVFSEntryIDirectoryWrapper(vfsAddon);
     }
   }

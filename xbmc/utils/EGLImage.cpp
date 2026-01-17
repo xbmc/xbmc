@@ -234,7 +234,7 @@ bool CEGLImage::SupportsFormat(uint32_t format)
     return false;
   }
 
-  auto foundFormat = std::find(formats.begin(), formats.end(), format);
+  auto foundFormat = std::ranges::find(formats, format);
   if (foundFormat == formats.end() || CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
   {
     std::string formatStr;
@@ -298,7 +298,7 @@ bool CEGLImage::SupportsFormatAndModifier(uint32_t format, uint64_t modifier)
     return false;
   }
 
-  auto foundModifier = std::find(modifiers.begin(), modifiers.end(), modifier);
+  auto foundModifier = std::ranges::find(modifiers, modifier);
   if (foundModifier == modifiers.end() || CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
   {
     std::string modifierStr;

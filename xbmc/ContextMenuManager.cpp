@@ -128,7 +128,7 @@ void CContextMenuManager::ReloadAddonItems()
     auto items = std::static_pointer_cast<CContextMenuAddon>(addon)->GetItems();
     for (auto& item : items)
     {
-      auto it = std::find(addonItems.begin(), addonItems.end(), item);
+      auto it = std::ranges::find(addonItems, item);
       if (it == addonItems.end())
         addonItems.push_back(item);
     }
@@ -157,7 +157,7 @@ void CContextMenuManager::OnEvent(const ADDON::AddonEvent& event)
       auto items = std::static_pointer_cast<CContextMenuAddon>(addon)->GetItems();
       for (auto& item : items)
       {
-        auto it = std::find(m_addonItems.begin(), m_addonItems.end(), item);
+        auto it = std::ranges::find(m_addonItems, item);
         if (it == m_addonItems.end())
           m_addonItems.push_back(item);
       }
@@ -186,7 +186,7 @@ void CContextMenuManager::OnPVREvent(const PVRContextMenuEvent& event)
     case PVRContextMenuEventAction::REMOVE_ITEM:
     {
       std::unique_lock lock(m_criticalSection);
-      auto it = std::find(m_items.begin(), m_items.end(), event.item);
+      auto it = std::ranges::find(m_items, event.item);
       if (it != m_items.end())
         m_items.erase(it);
       break;

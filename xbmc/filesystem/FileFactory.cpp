@@ -94,7 +94,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     {
       auto prots = StringUtils::Split(vfsAddon->GetProtocols(), "|");
 
-      if (vfsAddon->HasFiles() && std::find(prots.begin(), prots.end(), url.GetProtocol()) != prots.end())
+      if (vfsAddon->HasFiles() && std::ranges::find(prots, url.GetProtocol()) != prots.end())
         return new CVFSEntryIFileWrapper(vfsAddon);
     }
   }

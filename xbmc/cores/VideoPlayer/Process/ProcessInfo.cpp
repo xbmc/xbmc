@@ -275,7 +275,7 @@ bool CProcessInfo::Supports(EINTERLACEMETHOD method) const
 {
   std::unique_lock lock(m_videoCodecSection);
 
-  auto it = std::find(m_deintMethods.begin(), m_deintMethods.end(), method);
+  auto it = std::ranges::find(m_deintMethods, method);
   if (it != m_deintMethods.end())
     return true;
 

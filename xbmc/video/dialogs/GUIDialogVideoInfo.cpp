@@ -381,7 +381,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
          it != m_movieItem->GetVideoInfoTag()->m_cast.end(); ++it)
     {
       // Check to see if we have already added this performer as the artist and skip adding if so
-      auto haveArtist = std::find(std::begin(artists), std::end(artists), it->strName);
+      auto haveArtist = std::ranges::find(artists, it->strName);
       if (haveArtist == artists.end()) // artist or performer not already in the list
       {
         CFileItemPtr item(new CFileItem(it->strName));
@@ -828,8 +828,7 @@ void AddCurrentArtTypes(std::vector<std::string>& artTypes,
 
   for (const auto& art : currentArt)
   {
-    if (!art.second.empty() &&
-        std::find(artTypes.cbegin(), artTypes.cend(), art.first) == artTypes.cend())
+    if (!art.second.empty() && std::ranges::find(artTypes, art.first) == artTypes.cend())
       artTypes.emplace_back(art.first);
   }
 }

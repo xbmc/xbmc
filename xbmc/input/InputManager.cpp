@@ -936,8 +936,7 @@ std::vector<std::shared_ptr<const KEYMAP::IWindowKeymap>> CInputManager::GetJoys
 
 void CInputManager::RegisterKeyboardDriverHandler(KEYBOARD::IKeyboardDriverHandler* handler)
 {
-  if (std::find(m_keyboardHandlers.begin(), m_keyboardHandlers.end(), handler) ==
-      m_keyboardHandlers.end())
+  if (std::ranges::find(m_keyboardHandlers, handler) == m_keyboardHandlers.end())
     m_keyboardHandlers.insert(m_keyboardHandlers.begin(), handler);
 }
 
@@ -950,7 +949,7 @@ void CInputManager::UnregisterKeyboardDriverHandler(KEYBOARD::IKeyboardDriverHan
 
 void CInputManager::RegisterMouseDriverHandler(MOUSE::IMouseDriverHandler* handler)
 {
-  if (std::find(m_mouseHandlers.begin(), m_mouseHandlers.end(), handler) == m_mouseHandlers.end())
+  if (std::ranges::find(m_mouseHandlers, handler) == m_mouseHandlers.end())
     m_mouseHandlers.insert(m_mouseHandlers.begin(), handler);
 }
 

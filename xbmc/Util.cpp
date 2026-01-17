@@ -1951,7 +1951,7 @@ void CUtil::ScanPathsForAssociatedItems(const std::string& videoName,
     std::string strCandidate = URIUtils::GetFileName(pItem->GetPath());
 
     // skip duplicates
-    if (std::find(associatedFiles.begin(), associatedFiles.end(), pItem->GetPath()) != associatedFiles.end())
+    if (std::ranges::find(associatedFiles, pItem->GetPath()) != associatedFiles.end())
       continue;
 
     URIUtils::RemoveExtension(strCandidate);

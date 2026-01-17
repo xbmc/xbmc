@@ -371,7 +371,7 @@ struct PeripheralScanResults
 
   bool ContainsResult(const PeripheralScanResult& result) const
   {
-    return std::find(m_results.begin(), m_results.end(), result) != m_results.end();
+    return std::ranges::find(m_results, result) != m_results.end();
   }
 
   std::vector<PeripheralScanResult> m_results;

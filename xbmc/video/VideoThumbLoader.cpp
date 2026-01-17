@@ -156,7 +156,7 @@ bool CVideoThumbLoader::IsArtTypeInWhitelist(const std::string& artType, const s
   if (!exact)
     StringUtils::TrimRight(compareArtType, "0123456789");
 
-  return std::find(whitelist.begin(), whitelist.end(), compareArtType) != whitelist.end();
+  return std::ranges::find(whitelist, compareArtType) != whitelist.end();
 }
 
 /**

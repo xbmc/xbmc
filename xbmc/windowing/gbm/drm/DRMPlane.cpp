@@ -64,7 +64,7 @@ bool CDRMPlane::SupportsFormatAndModifier(uint32_t format, uint64_t modifier)
       return false;
     }
 
-    auto formatModifier = std::find(formatModifiers->begin(), formatModifiers->end(), modifier);
+    auto formatModifier = std::ranges::find(*formatModifiers, modifier);
     if (formatModifier == formatModifiers->end())
     {
       CLog::Log(LOGDEBUG, "CDRMPlane::{} - modifier ({}) not supported for format ({})",

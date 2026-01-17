@@ -335,7 +335,7 @@ void CGUIDialogSmartPlaylistEditor::OnType()
   if (currentGroup != FieldNone && currentGroup != FieldUnknown)
   {
     std::vector<Field> groups = PLAYLIST::CSmartPlaylistRule::GetGroups(m_playlist.GetType());
-    if (std::find(groups.begin(), groups.end(), currentGroup) == groups.end())
+    if (std::ranges::find(groups, currentGroup) == groups.end())
       m_playlist.SetGroup(PLAYLIST::CSmartPlaylistRule::TranslateGroup(FieldUnknown));
   }
 

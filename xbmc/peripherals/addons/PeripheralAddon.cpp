@@ -252,8 +252,7 @@ bool CPeripheralAddon::HasFeature(const PeripheralFeature feature) const
 
 void CPeripheralAddon::GetFeatures(std::vector<PeripheralFeature>& features) const
 {
-  if (m_bProvidesJoysticks &&
-      std::find(features.begin(), features.end(), FEATURE_JOYSTICK) == features.end())
+  if (m_bProvidesJoysticks && std::ranges::find(features, FEATURE_JOYSTICK) == features.end())
     features.push_back(FEATURE_JOYSTICK);
 }
 

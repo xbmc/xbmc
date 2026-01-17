@@ -375,7 +375,7 @@ bool CVideoSurfaces::MarkRender(VdpVideoSurface surf)
     return false;
   }
   std::list<VdpVideoSurface>::iterator it;
-  it = std::find(m_freeSurfaces.begin(), m_freeSurfaces.end(), surf);
+  it = std::ranges::find(m_freeSurfaces, surf);
   if (it != m_freeSurfaces.end())
   {
     m_freeSurfaces.erase(it);
@@ -414,7 +414,7 @@ VdpVideoSurface CVideoSurfaces::GetFree(VdpVideoSurface surf)
   if (m_state.contains(surf))
   {
     std::list<VdpVideoSurface>::iterator it;
-    it = std::find(m_freeSurfaces.begin(), m_freeSurfaces.end(), surf);
+    it = std::ranges::find(m_freeSurfaces, surf);
     if (it == m_freeSurfaces.end())
     {
       CLog::Log(LOGWARNING, "CVideoSurfaces::GetFree - surface not free");
@@ -451,7 +451,7 @@ VdpVideoSurface CVideoSurfaces::RemoveNext(bool skiprender)
     m_state.erase(surf);
 
     std::list<VdpVideoSurface>::iterator it2;
-    it2 = std::find(m_freeSurfaces.begin(), m_freeSurfaces.end(), surf);
+    it2 = std::ranges::find(m_freeSurfaces, surf);
     if (it2 != m_freeSurfaces.end())
       m_freeSurfaces.erase(it2);
     return surf;
