@@ -804,14 +804,16 @@ void CGUIDialogVideoInfo::Play(bool resume)
 
 namespace
 {
+void AddArt(std::vector<std::string>& artTypes, const std::vector<std::string>& candidates)
+{
+  std::ranges::copy_if(candidates, std::back_inserter(artTypes), [&artTypes](const auto& artType)
+                       { return std::ranges::find(artTypes, artType) == artTypes.end(); });
+}
+
 // Add art types required in Kodi and configured by the user
 void AddHardCodedAndExtendedArtTypes(std::vector<std::string>& artTypes, const CVideoInfoTag& tag)
 {
-  for (const auto& artType : CVideoThumbLoader::GetArtTypes(tag.m_type))
-  {
-    if (std::find(artTypes.cbegin(), artTypes.cend(), artType) == artTypes.cend())
-      artTypes.emplace_back(artType);
-  }
+  AddArt(artTypes, CVideoThumbLoader::GetArtTypes(tag.m_type));
 }
 
 // Add art types currently assigned to the media item
@@ -840,11 +842,7 @@ void AddMediaTypeArtTypes(std::vector<std::string>& artTypes,
 {
   std::vector<std::string> dbArtTypes;
   db.GetArtTypes(tag.m_type, dbArtTypes);
-  for (const auto& artType : dbArtTypes)
-  {
-    if (std::find(artTypes.cbegin(), artTypes.cend(), artType) == artTypes.cend())
-      artTypes.emplace_back(artType);
-  }
+  AddArt(artTypes, dbArtTypes);
 }
 
 // Add art types from available but unassigned artwork for this media item
@@ -852,11 +850,7 @@ void AddAvailableArtTypes(std::vector<std::string>& artTypes,
                           const CVideoInfoTag& tag,
                           CVideoDatabase& db)
 {
-  for (const auto& artType : db.GetAvailableArtTypesForItem(tag.m_iDbId, tag.m_type))
-  {
-    if (std::find(artTypes.cbegin(), artTypes.cend(), artType) == artTypes.cend())
-      artTypes.emplace_back(artType);
-  }
+  AddArt(artTypes, db.GetAvailableArtTypesForItem(tag.m_iDbId, tag.m_type));
 }
 
 std::vector<std::string> GetArtTypesList(const CVideoInfoTag& tag)
