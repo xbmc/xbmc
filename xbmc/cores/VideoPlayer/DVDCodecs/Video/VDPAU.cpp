@@ -23,6 +23,7 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "utils/MathUtils.h"
+#include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
@@ -500,7 +501,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
 
   // check if user wants to decode this format with VDPAU
   std::string gpuvendor = CServiceBroker::GetRenderSystem()->GetRenderVendor();
-  std::ranges::transform(gpuvendor, gpuvendor.begin(), ::tolower);
+  StringUtils::ToLower(gpuvendor);
   // nvidia is whitelisted despite for mpeg-4 we need to query user settings
   if ((gpuvendor.compare(0, 6, "nvidia") != 0)  || (avctx->codec_id == AV_CODEC_ID_MPEG4) || (avctx->codec_id == AV_CODEC_ID_H263))
   {
@@ -1334,7 +1335,7 @@ void CDecoder::Register()
   CDVDFactoryCodec::RegisterHWAccel("vdpau", CDecoder::Create);
 
   std::string gpuvendor = CServiceBroker::GetRenderSystem()->GetRenderVendor();
-  std::ranges::transform(gpuvendor, gpuvendor.begin(), ::tolower);
+  StringUtils::ToLower(gpuvendor);
   bool isNvidia = (gpuvendor.compare(0, 6, "nvidia") == 0);
 
   auto settingsComponent = CServiceBroker::GetSettingsComponent();
