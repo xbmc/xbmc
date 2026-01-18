@@ -25,7 +25,7 @@ Observable &Observable::operator=(const Observable &observable)
 bool Observable::IsObserving(const Observer &obs) const
 {
   std::unique_lock lock(m_obsCritSection);
-  return std::find(m_observers.begin(), m_observers.end(), &obs) != m_observers.end();
+  return std::ranges::find(m_observers, &obs) != m_observers.end();
 }
 
 void Observable::RegisterObserver(Observer *obs)

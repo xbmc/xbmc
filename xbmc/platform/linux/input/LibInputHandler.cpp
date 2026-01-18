@@ -280,7 +280,7 @@ void CLibInputHandler::DeviceRemoved(libinput_device *dev)
   {
     CLog::Log(LOGDEBUG, "CLibInputHandler::{} - touch type device removed: {} ({})", __FUNCTION__,
               name, sysname);
-    auto device = std::find(m_devices.begin(), m_devices.end(), libinput_device_unref(dev));
+    auto device = std::ranges::find(m_devices, libinput_device_unref(dev));
     m_devices.erase(device);
   }
 
@@ -288,7 +288,7 @@ void CLibInputHandler::DeviceRemoved(libinput_device *dev)
   {
     CLog::Log(LOGDEBUG, "CLibInputHandler::{} - pointer type device removed: {} ({})", __FUNCTION__,
               name, sysname);
-    auto device = std::find(m_devices.begin(), m_devices.end(), libinput_device_unref(dev));
+    auto device = std::ranges::find(m_devices, libinput_device_unref(dev));
     m_devices.erase(device);
   }
 
@@ -296,7 +296,7 @@ void CLibInputHandler::DeviceRemoved(libinput_device *dev)
   {
     CLog::Log(LOGDEBUG, "CLibInputHandler::{} - keyboard type device removed: {} ({})",
               __FUNCTION__, name, sysname);
-    auto device = std::find(m_devices.begin(), m_devices.end(), libinput_device_unref(dev));
+    auto device = std::ranges::find(m_devices, libinput_device_unref(dev));
     m_devices.erase(device);
   }
 }

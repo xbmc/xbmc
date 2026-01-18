@@ -413,9 +413,9 @@ std::vector<std::string> CWinSystemWayland::GetConnectedOutputs()
 {
   std::unique_lock lock(m_outputsMutex);
   std::vector<std::string> outputs;
-  std::transform(m_outputs.cbegin(), m_outputs.cend(), std::back_inserter(outputs),
-                 [this](decltype(m_outputs)::value_type const& pair)
-                 { return UserFriendlyOutputName(pair.second); });
+  std::ranges::transform(m_outputs, std::back_inserter(outputs),
+                         [this](decltype(m_outputs)::value_type const& pair)
+                         { return UserFriendlyOutputName(pair.second); });
 
   return outputs;
 }
@@ -1088,9 +1088,8 @@ bool CWinSystemWayland::Minimize()
 bool CWinSystemWayland::HasCursor()
 {
   std::unique_lock lock(m_seatsMutex);
-  return std::any_of(m_seats.cbegin(), m_seats.cend(),
-                     [](decltype(m_seats)::value_type const& entry)
-                     { return entry.second->HasPointerCapability(); });
+  return std::ranges::any_of(m_seats, [](const auto& entry)
+                             { return entry.second->HasPointerCapability(); });
 }
 
 void CWinSystemWayland::ShowOSMouse(bool show)

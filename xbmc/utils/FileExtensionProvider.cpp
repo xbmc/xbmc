@@ -258,5 +258,5 @@ void CFileExtensionProvider::SetAddonExtensions(AddonType type)
 
 bool CFileExtensionProvider::EncodedHostName(const std::string& protocol) const
 {
-  return std::find(m_encoded.begin(),m_encoded.end(),protocol) != m_encoded.end();
+  return std::ranges::find(m_encoded, protocol) != m_encoded.end();
 }

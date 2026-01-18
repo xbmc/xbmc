@@ -861,9 +861,7 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(VideoPicture* pVideoPi
   {
     SetFilters();
 
-    bool need_scale = std::find(m_formats.begin(),
-                                m_formats.end(),
-                                m_pCodecContext->pix_fmt) == m_formats.end();
+    bool need_scale = std::ranges::find(m_formats, m_pCodecContext->pix_fmt) == m_formats.end();
 
     bool need_reopen = false;
     if (m_filters != m_filters_next)

@@ -35,7 +35,7 @@ void CPhysicalPort::Reset()
 
 bool CPhysicalPort::IsCompatible(const std::string& controllerId) const
 {
-  return std::find(m_accepts.begin(), m_accepts.end(), controllerId) != m_accepts.end();
+  return std::ranges::find(m_accepts, controllerId) != m_accepts.end();
 }
 
 bool CPhysicalPort::Deserialize(const tinyxml2::XMLElement* pElement)

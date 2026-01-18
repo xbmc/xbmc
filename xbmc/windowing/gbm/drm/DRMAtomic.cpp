@@ -246,11 +246,9 @@ void CDRMAtomic::CDRMAtomicRequest::LogAtomicDiff(CDRMAtomicRequest* current,
     {
       std::map<uint32_t, uint64_t> propertyDiff;
 
-      std::set_difference(current->m_atomicRequestItems[object.first].begin(),
-                          current->m_atomicRequestItems[object.first].end(),
-                          old->m_atomicRequestItems[object.first].begin(),
-                          old->m_atomicRequestItems[object.first].end(),
-                          std::inserter(propertyDiff, propertyDiff.begin()));
+      std::ranges::set_difference(current->m_atomicRequestItems[object.first],
+                                  old->m_atomicRequestItems[object.first],
+                                  std::inserter(propertyDiff, propertyDiff.begin()));
 
       atomicDiff[object.first] = propertyDiff;
     }

@@ -166,7 +166,7 @@ bool CMultiPathDirectory::GetPaths(const std::string& path, std::vector<std::str
 
   // URL decode each item
   paths.resize(temp.size());
-  std::transform(temp.begin(), temp.end(), paths.begin(), CURL::Decode);
+  std::ranges::transform(temp, paths.begin(), CURL::Decode);
   return true;
 }
 

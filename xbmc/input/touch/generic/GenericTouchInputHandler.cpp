@@ -213,8 +213,8 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event,
           m_gestureState == TouchGestureMultiTouchDone)
         break;
 
-      bool moving = std::any_of(m_pointers.cbegin(), m_pointers.cend(),
-                                [](Pointer const& p) { return p.valid() && p.moving; });
+      const bool moving =
+          std::ranges::any_of(m_pointers, [](Pointer const& p) { return p.valid() && p.moving; });
 
       if (moving)
       {

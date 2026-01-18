@@ -23,6 +23,7 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "utils/MathUtils.h"
+#include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
@@ -375,7 +376,7 @@ bool CVideoSurfaces::MarkRender(VdpVideoSurface surf)
     return false;
   }
   std::list<VdpVideoSurface>::iterator it;
-  it = std::find(m_freeSurfaces.begin(), m_freeSurfaces.end(), surf);
+  it = std::ranges::find(m_freeSurfaces, surf);
   if (it != m_freeSurfaces.end())
   {
     m_freeSurfaces.erase(it);
@@ -414,7 +415,7 @@ VdpVideoSurface CVideoSurfaces::GetFree(VdpVideoSurface surf)
   if (m_state.contains(surf))
   {
     std::list<VdpVideoSurface>::iterator it;
-    it = std::find(m_freeSurfaces.begin(), m_freeSurfaces.end(), surf);
+    it = std::ranges::find(m_freeSurfaces, surf);
     if (it == m_freeSurfaces.end())
     {
       CLog::Log(LOGWARNING, "CVideoSurfaces::GetFree - surface not free");
@@ -451,7 +452,7 @@ VdpVideoSurface CVideoSurfaces::RemoveNext(bool skiprender)
     m_state.erase(surf);
 
     std::list<VdpVideoSurface>::iterator it2;
-    it2 = std::find(m_freeSurfaces.begin(), m_freeSurfaces.end(), surf);
+    it2 = std::ranges::find(m_freeSurfaces, surf);
     if (it2 != m_freeSurfaces.end())
       m_freeSurfaces.erase(it2);
     return surf;
@@ -500,7 +501,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
 
   // check if user wants to decode this format with VDPAU
   std::string gpuvendor = CServiceBroker::GetRenderSystem()->GetRenderVendor();
-  std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
+  StringUtils::ToLower(gpuvendor);
   // nvidia is whitelisted despite for mpeg-4 we need to query user settings
   if ((gpuvendor.compare(0, 6, "nvidia") != 0)  || (avctx->codec_id == AV_CODEC_ID_MPEG4) || (avctx->codec_id == AV_CODEC_ID_H263))
   {
@@ -1334,7 +1335,7 @@ void CDecoder::Register()
   CDVDFactoryCodec::RegisterHWAccel("vdpau", CDecoder::Create);
 
   std::string gpuvendor = CServiceBroker::GetRenderSystem()->GetRenderVendor();
-  std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
+  StringUtils::ToLower(gpuvendor);
   bool isNvidia = (gpuvendor.compare(0, 6, "nvidia") == 0);
 
   auto settingsComponent = CServiceBroker::GetSettingsComponent();

@@ -46,8 +46,8 @@ std::string unique_path(const std::string& input)
 
   std::string ret;
   ret.reserve(input.size());
-  std::transform(input.begin(), input.end(), std::back_inserter(ret),
-                 [&randchar](const char c) { return (c == '%') ? randchar() : c; });
+  std::ranges::transform(input, std::back_inserter(ret),
+                         [&randchar](const char c) { return (c == '%') ? randchar() : c; });
 
   return ret;
 }

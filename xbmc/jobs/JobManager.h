@@ -200,8 +200,7 @@ private:
     const std::vector<IJobCallback*>& GetCallbacks() const { return m_callbacks; }
     void AddCallback(IJobCallback* callback)
     {
-      if (callback &&
-          std::find(m_callbacks.begin(), m_callbacks.end(), callback) == m_callbacks.end())
+      if (callback && std::ranges::find(m_callbacks, callback) == m_callbacks.end())
         m_callbacks.push_back(callback);
     }
     IJobCallback* PopCallback()

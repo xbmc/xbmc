@@ -1313,7 +1313,7 @@ void CWebServer::RegisterRequestHandler(IHTTPRequestHandler* handler)
   if (handler == nullptr)
     return;
 
-  const auto& it = std::find(m_requestHandlers.cbegin(), m_requestHandlers.cend(), handler);
+  const auto& it = std::ranges::find(m_requestHandlers, handler);
   if (it != m_requestHandlers.cend())
     return;
 

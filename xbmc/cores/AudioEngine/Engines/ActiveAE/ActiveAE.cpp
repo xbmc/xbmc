@@ -3565,7 +3565,7 @@ void CActiveAE::RegisterAudioCallback(IAudioCallback* pCallback)
 void CActiveAE::UnregisterAudioCallback(IAudioCallback* pCallback)
 {
   std::unique_lock lock(m_vizLock);
-  auto it = std::find(m_audioCallback.begin(), m_audioCallback.end(), pCallback);
+  auto it = std::ranges::find(m_audioCallback, pCallback);
   if (it != m_audioCallback.end())
     m_audioCallback.erase(it);
 }

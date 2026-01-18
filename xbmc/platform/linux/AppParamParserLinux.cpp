@@ -75,8 +75,7 @@ void CAppParamParserLinux::ParseArg(const std::string& arg)
 
   if (arg.substr(0, 12) == "--windowing=")
   {
-    if (std::find(availableWindowSystems.begin(), availableWindowSystems.end(), arg.substr(12)) !=
-        availableWindowSystems.end())
+    if (std::ranges::find(availableWindowSystems, arg.substr(12)) != availableWindowSystems.end())
       GetAppParams()->SetWindowing(arg.substr(12));
     else
     {
@@ -87,8 +86,7 @@ void CAppParamParserLinux::ParseArg(const std::string& arg)
   }
   else if (arg.substr(0, 10) == "--logging=")
   {
-    if (std::find(availableLogTargets.begin(), availableLogTargets.end(), arg.substr(10)) !=
-        availableLogTargets.end())
+    if (std::ranges::find(availableLogTargets, arg.substr(10)) != availableLogTargets.end())
     {
       GetAppParams()->SetLogTarget(arg.substr(10));
     }
@@ -119,8 +117,7 @@ void CAppParamParserLinux::ParseArg(const std::string& arg)
   else if (arg.find("--gl-interface=") != std::string::npos)
   {
     const auto argValue = arg.substr(15);
-    const auto it =
-        std::find(availableGlInterfaces.cbegin(), availableGlInterfaces.cend(), argValue);
+    const auto it = std::ranges::find(availableGlInterfaces, argValue);
     if (it != availableGlInterfaces.cend())
     {
       GetAppParams()->SetGlInterface(argValue);

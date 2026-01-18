@@ -381,7 +381,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
          it != m_movieItem->GetVideoInfoTag()->m_cast.end(); ++it)
     {
       // Check to see if we have already added this performer as the artist and skip adding if so
-      auto haveArtist = std::find(std::begin(artists), std::end(artists), it->strName);
+      auto haveArtist = std::ranges::find(artists, it->strName);
       if (haveArtist == artists.end()) // artist or performer not already in the list
       {
         CFileItemPtr item(new CFileItem(it->strName));
@@ -804,14 +804,16 @@ void CGUIDialogVideoInfo::Play(bool resume)
 
 namespace
 {
+void AddArt(std::vector<std::string>& artTypes, const std::vector<std::string>& candidates)
+{
+  std::ranges::copy_if(candidates, std::back_inserter(artTypes), [&artTypes](const auto& artType)
+                       { return std::ranges::find(artTypes, artType) == artTypes.end(); });
+}
+
 // Add art types required in Kodi and configured by the user
 void AddHardCodedAndExtendedArtTypes(std::vector<std::string>& artTypes, const CVideoInfoTag& tag)
 {
-  for (const auto& artType : CVideoThumbLoader::GetArtTypes(tag.m_type))
-  {
-    if (std::find(artTypes.cbegin(), artTypes.cend(), artType) == artTypes.cend())
-      artTypes.emplace_back(artType);
-  }
+  AddArt(artTypes, CVideoThumbLoader::GetArtTypes(tag.m_type));
 }
 
 // Add art types currently assigned to the media item
@@ -828,8 +830,7 @@ void AddCurrentArtTypes(std::vector<std::string>& artTypes,
 
   for (const auto& art : currentArt)
   {
-    if (!art.second.empty() &&
-        std::find(artTypes.cbegin(), artTypes.cend(), art.first) == artTypes.cend())
+    if (!art.second.empty() && std::ranges::find(artTypes, art.first) == artTypes.cend())
       artTypes.emplace_back(art.first);
   }
 }
@@ -841,11 +842,7 @@ void AddMediaTypeArtTypes(std::vector<std::string>& artTypes,
 {
   std::vector<std::string> dbArtTypes;
   db.GetArtTypes(tag.m_type, dbArtTypes);
-  for (const auto& artType : dbArtTypes)
-  {
-    if (std::find(artTypes.cbegin(), artTypes.cend(), artType) == artTypes.cend())
-      artTypes.emplace_back(artType);
-  }
+  AddArt(artTypes, dbArtTypes);
 }
 
 // Add art types from available but unassigned artwork for this media item
@@ -853,11 +850,7 @@ void AddAvailableArtTypes(std::vector<std::string>& artTypes,
                           const CVideoInfoTag& tag,
                           CVideoDatabase& db)
 {
-  for (const auto& artType : db.GetAvailableArtTypesForItem(tag.m_iDbId, tag.m_type))
-  {
-    if (std::find(artTypes.cbegin(), artTypes.cend(), artType) == artTypes.cend())
-      artTypes.emplace_back(artType);
-  }
+  AddArt(artTypes, db.GetAvailableArtTypesForItem(tag.m_iDbId, tag.m_type));
 }
 
 std::vector<std::string> GetArtTypesList(const CVideoInfoTag& tag)

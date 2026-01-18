@@ -370,7 +370,7 @@ wchar_t toupperUnicode(const wchar_t& c)
 template<typename StrIn, typename StrOut, typename Fn>
 void transformString(const StrIn& input, StrOut& output, Fn fn)
 {
-  std::transform(input.begin(), input.end(), output.begin(), fn);
+  std::ranges::transform(input, output.begin(), fn);
 }
 
 std::string StringUtils::ToUpper(std::string_view str)

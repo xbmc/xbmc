@@ -293,7 +293,7 @@ bool CWinSystemX11GLContext::RefreshGLContext(bool force)
   const char* vend = (const char*) glGetString(GL_VENDOR);
   if (vend)
     gpuvendor = vend;
-  std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
+  std::ranges::transform(gpuvendor, gpuvendor.begin(), ::tolower);
   bool isNvidia = (gpuvendor.compare(0, 6, "nvidia") == 0);
   bool isIntel = (gpuvendor.compare(0, 5, "intel") == 0);
 

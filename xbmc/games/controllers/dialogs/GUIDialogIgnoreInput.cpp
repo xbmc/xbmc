@@ -43,9 +43,9 @@ std::string CGUIDialogIgnoreInput::GetDialogText()
 
   std::vector<std::string> primitives;
 
-  std::transform(m_capturedPrimitives.begin(), m_capturedPrimitives.end(),
-                 std::back_inserter(primitives), [](const JOYSTICK::CDriverPrimitive& primitive)
-                 { return JOYSTICK::CJoystickTranslator::GetPrimitiveName(primitive); });
+  std::ranges::transform(m_capturedPrimitives, std::back_inserter(primitives),
+                         [](const JOYSTICK::CDriverPrimitive& primitive)
+                         { return JOYSTICK::CJoystickTranslator::GetPrimitiveName(primitive); });
 
   return StringUtils::Format(dialogText, StringUtils::Join(primitives, " | "));
 }

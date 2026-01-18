@@ -75,8 +75,8 @@ std::vector<std::string> GetSettingListAsString(const std::string& settingID)
   std::vector<CVariant> values =
     CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(settingID);
   std::vector<std::string> result;
-  std::transform(values.begin(), values.end(), std::back_inserter(result),
-                 [](const CVariant& s) { return s.asString(); });
+  std::ranges::transform(values, std::back_inserter(result),
+                         [](const CVariant& s) { return s.asString(); });
   return result;
 }
 
@@ -156,7 +156,7 @@ bool CVideoThumbLoader::IsArtTypeInWhitelist(const std::string& artType, const s
   if (!exact)
     StringUtils::TrimRight(compareArtType, "0123456789");
 
-  return std::find(whitelist.begin(), whitelist.end(), compareArtType) != whitelist.end();
+  return std::ranges::find(whitelist, compareArtType) != whitelist.end();
 }
 
 /**

@@ -437,9 +437,8 @@ int CGUIDialogVideoManager::ChooseVideoAsset(const std::shared_ptr<CFileItem>& i
     videodb.GetVideoVersions(itemType, dbId, assets, assetType);
 
     // the selected video asset already exists
-    if (std::any_of(assets.cbegin(), assets.cend(),
-                    [assetId](const std::shared_ptr<CFileItem>& asset)
-                    { return asset->GetVideoInfoTag()->m_iDbId == assetId; }))
+    if (std::ranges::any_of(assets, [assetId](const std::shared_ptr<CFileItem>& asset)
+                            { return asset->GetVideoInfoTag()->m_iDbId == assetId; }))
     {
       CGUIDialogOK::ShowAndGetInput(CVariant{40005},
                                     StringUtils::Format(g_localizeStrings.Get(40007), assetTitle));

@@ -484,7 +484,7 @@ void CPeripheralJoystick::SetMotorCount(unsigned int motorCount)
   if (m_motorCount == 0)
     m_features.erase(std::remove(m_features.begin(), m_features.end(), FEATURE_RUMBLE),
                      m_features.end());
-  else if (std::find(m_features.begin(), m_features.end(), FEATURE_RUMBLE) == m_features.end())
+  else if (std::ranges::find(m_features, FEATURE_RUMBLE) == m_features.end())
     m_features.push_back(FEATURE_RUMBLE);
 }
 
@@ -495,6 +495,6 @@ void CPeripheralJoystick::SetSupportsPowerOff(bool bSupportsPowerOff)
   if (!m_supportsPowerOff)
     m_features.erase(std::remove(m_features.begin(), m_features.end(), FEATURE_POWER_OFF),
                      m_features.end());
-  else if (std::find(m_features.begin(), m_features.end(), FEATURE_POWER_OFF) == m_features.end())
+  else if (std::ranges::find(m_features, FEATURE_POWER_OFF) == m_features.end())
     m_features.push_back(FEATURE_POWER_OFF);
 }

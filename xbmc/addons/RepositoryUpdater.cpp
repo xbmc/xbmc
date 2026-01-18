@@ -155,7 +155,7 @@ CRepositoryUpdater::~CRepositoryUpdater()
 void CRepositoryUpdater::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 {
   std::unique_lock lock(m_criticalSection);
-  m_jobs.erase(std::find(m_jobs.begin(), m_jobs.end(), job));
+  m_jobs.erase(std::ranges::find(m_jobs, job));
   if (m_jobs.empty())
   {
     CLog::Log(LOGDEBUG, "CRepositoryUpdater: done.");

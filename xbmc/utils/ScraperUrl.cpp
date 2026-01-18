@@ -113,7 +113,7 @@ void CScraperUrl::GetThumbUrls(std::vector<std::string>& thumbs,
           (url.m_type == CScraperUrl::UrlType::Season && url.m_season == season))
       {
         std::string thumbUrl = GetThumbUrl(url);
-        if (!unique || std::find(thumbs.begin(), thumbs.end(), thumbUrl) == thumbs.end())
+        if (!unique || std::ranges::find(thumbs, thumbUrl) == thumbs.end())
           thumbs.push_back(thumbUrl);
       }
     }

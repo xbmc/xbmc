@@ -256,11 +256,11 @@ bool CGUIWindowGames::GetDirectory(const std::string& strDirectory, CFileItemLis
       }
 
       // Check if file folder contains games or subfolders
-      if (std::any_of(fileFolderItems.begin(), fileFolderItems.end(),
-                      [](const CFileItemPtr& fileFolderItem) {
-                        return fileFolderItem->IsFolder() ||
-                               CGameUtils::HasGameExtension(fileFolderItem->GetPath());
-                      }))
+      if (std::ranges::any_of(fileFolderItems,
+                              [](const CFileItemPtr& fileFolderItem) {
+                                return fileFolderItem->IsFolder() ||
+                                       CGameUtils::HasGameExtension(fileFolderItem->GetPath());
+                              }))
       {
         continue;
       }

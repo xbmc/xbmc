@@ -447,11 +447,8 @@ const SelectionStream& CSelectionStreams::Get(StreamType type, int index) const
 std::vector<SelectionStream> CSelectionStreams::Get(StreamType type)
 {
   std::vector<SelectionStream> streams;
-  std::copy_if(m_Streams.begin(), m_Streams.end(), std::back_inserter(streams),
-               [type](const SelectionStream &stream)
-               {
-                 return stream.type == type;
-               });
+  std::ranges::copy_if(m_Streams, std::back_inserter(streams),
+                       [type](const SelectionStream& stream) { return stream.type == type; });
   return streams;
 }
 

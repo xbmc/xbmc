@@ -2205,9 +2205,13 @@ bool CMusicInfoScanner::AddLocalArtwork(std::map<std::string, std::string>& art,
     if (!mediaName.empty() && StringUtils::StartsWith(strCandidate, mediaName))
       strCandidate.erase(0, mediaName.length());
     StringUtils::ToLower(strCandidate);
+
+    auto proj = [](const CVariant& v) { return v.asString(); };
+
     // Skip files already used as "thumb"
     // Typically folder.jpg but can be from multiple configurable file names
-    if (std::find(thumbs.begin(), thumbs.end(), strCandidate) != thumbs.end())
+
+    if (std::ranges::find(thumbs, strCandidate, proj) != thumbs.end())
       continue;
     // Grab and strip file extension
     std::string strExt;
@@ -2238,8 +2242,7 @@ bool CMusicInfoScanner::AddLocalArtwork(std::map<std::string, std::string>& art,
     std::string strCheck = strCandidate;
     if (discnum > 0 || iArtLevel == CSettings::MUSICLIBRARY_ARTWORK_LEVEL_CUSTOM)
       strCheck = strFamily;
-    if (bUseAll || std::find(whitelistarttypes.begin(), whitelistarttypes.end(), strCheck) !=
-                       whitelistarttypes.end())
+    if (bUseAll || std::ranges::find(whitelistarttypes, strCheck, proj) != whitelistarttypes.end())
     {
       if (!strDigits.empty())
       {
@@ -2291,8 +2294,9 @@ bool CMusicInfoScanner::AddRemoteArtwork(std::map<std::string, std::string>& art
       std::string strName = url.m_aspect;
       if (iArtLevel != CSettings::MUSICLIBRARY_ARTWORK_LEVEL_BASIC)
         StringUtils::TrimRight(strName, "0123456789");
-      if (std::find(whitelistarttypes.begin(), whitelistarttypes.end(), strName) ==
-          whitelistarttypes.end())
+
+      auto proj = [](const CVariant& v) { return v.asString(); };
+      if (std::ranges::find(whitelistarttypes, strName, proj) == whitelistarttypes.end())
         continue;
     }
     if (!art.contains(url.m_aspect))

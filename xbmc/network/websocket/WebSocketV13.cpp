@@ -97,7 +97,10 @@ bool CWebSocketV13::Handshake(const char* data, size_t length, std::string &resp
   std::vector<std::string> elements;
   if (value != nullptr)
     elements = StringUtils::Split(value, ",");
-  if (elements.empty() || !std::any_of(elements.begin(), elements.end(), [](std::string& elem) { return StringUtils::EqualsNoCase(StringUtils::Trim(elem), WS_HEADER_UPGRADE); }))
+  if (elements.empty() ||
+      !std::ranges::any_of(
+          elements, [](std::string& elem)
+          { return StringUtils::EqualsNoCase(StringUtils::Trim(elem), WS_HEADER_UPGRADE); }))
   {
     CLog::Log(LOGINFO, "WebSocket [RFC6455]: invalid \"{}\" received", WS_HEADER_CONNECTION_LC);
     return true;

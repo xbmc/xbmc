@@ -199,7 +199,7 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, std::vector<std::st
   for (const auto& rule : vecSubRules)
     rule->GetPlayers(item, validPlayers, players);
 
-  if (std::find(validPlayers.begin(), validPlayers.end(), m_playerName) != validPlayers.end())
+  if (std::ranges::find(validPlayers, m_playerName) != validPlayers.end())
   {
     CLog::Log(LOGDEBUG, "CPlayerSelectionRule::GetPlayers: adding player: {} for rule: {}",
               m_playerName, m_name);

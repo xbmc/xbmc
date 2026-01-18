@@ -467,7 +467,7 @@ void CGUITextLayout::ParseText(const std::wstring& text,
         std::string t;
         g_charsetConverter.wToUTF8(text.substr(pos + 5, finish - pos - 5), t);
         KODI::UTILS::COLOR::Color color = CServiceBroker::GetGUI()->GetColorManager().GetColor(t);
-        const auto& it = std::find(colors.begin(), colors.end(), color);
+        const auto& it = std::ranges::find(colors, color);
         if (it == colors.end())
         { // create new color
           if (colors.size() <= 0xFF)

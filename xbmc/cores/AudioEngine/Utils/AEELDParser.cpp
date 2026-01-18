@@ -193,7 +193,7 @@ void CAEELDParser::Parse(const uint8_t *data, size_t length, CAEDeviceInfo& info
     if (fmt == AE_FMT_INVALID)
       continue;
 
-    if (std::find(info.m_dataFormats.begin(), info.m_dataFormats.end(), fmt) == info.m_dataFormats.end())
+    if (std::ranges::find(info.m_dataFormats, fmt) == info.m_dataFormats.end())
       info.m_dataFormats.push_back(fmt);
   }
 }

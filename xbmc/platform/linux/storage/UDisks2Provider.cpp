@@ -42,8 +42,8 @@ CUDisks2Provider::Drive::Drive(const char *object) : m_object(object)
 
 bool CUDisks2Provider::Drive::IsOptical() const
 {
-  return std::any_of(m_mediaCompatibility.begin(), m_mediaCompatibility.end(),
-                     [](const std::string& kind) { return kind.compare(0, 7, "optical") == 0; });
+  return std::ranges::any_of(m_mediaCompatibility, [](const std::string& kind)
+                             { return kind.compare(0, 7, "optical") == 0; });
 }
 
 std::string CUDisks2Provider::Drive::ToString() const

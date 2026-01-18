@@ -88,7 +88,7 @@ void CPlayerCoreFactory::GetPlayers(std::vector<std::string>&players, const bool
   {
     if (audio == conf->m_bPlaysAudio && video == conf->m_bPlaysVideo)
     {
-      if (std::find(players.begin(), players.end(), conf->m_name) != players.end())
+      if (std::ranges::find(players, conf->m_name) != players.end())
         continue;
 
       CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding player: {}", conf->m_name);
@@ -151,7 +151,7 @@ void CPlayerCoreFactory::GetPlayers(const CFileItem& item, std::vector<std::stri
     if (idx > -1)
     {
       const std::string videoDefault = GetPlayerName(idx);
-      if (std::find(players.cbegin(), players.cend(), videoDefault) == players.cend())
+      if (std::ranges::find(players, videoDefault) == players.cend())
       {
         players.emplace_back(videoDefault);
         CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding videodefaultplayer ({})",
@@ -171,7 +171,7 @@ void CPlayerCoreFactory::GetPlayers(const CFileItem& item, std::vector<std::stri
     if (idx > -1)
     {
       const std::string audioDefault = GetPlayerName(idx);
-      if (std::find(players.cbegin(), players.cend(), audioDefault) == players.cend())
+      if (std::ranges::find(players, audioDefault) == players.cend())
       {
         players.emplace_back(audioDefault);
         CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding audiodefaultplayer ({})",
