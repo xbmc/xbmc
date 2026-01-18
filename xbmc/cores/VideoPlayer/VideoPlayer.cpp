@@ -4209,6 +4209,10 @@ void CVideoPlayer::FlushBuffers(double pts, bool accurate, bool sync)
     m_CurrentSubtitle.inited = false;
     m_CurrentTeletext.inited = false;
     m_CurrentRadioRDS.inited  = false;
+
+    // Reset offset_pts to prevent accumulation of timestamp corrections across seeks
+    // This fixes desync issues with external subtitles after multiple seeks (issue #26647)
+    m_offset_pts = 0.0;
   }
 
   m_CurrentAudio.dts         = DVD_NOPTS_VALUE;
