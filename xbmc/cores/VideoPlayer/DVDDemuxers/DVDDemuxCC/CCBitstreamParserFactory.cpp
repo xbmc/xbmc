@@ -13,9 +13,8 @@
 #include "MPEG2CCBitstreamParser.h"
 #include "utils/log.h"
 
-std::unique_ptr<ICCBitstreamParser> CCBitstreamParserFactory::CreateParser(AVCodecID codec,
-                                                                           const uint8_t* extradata,
-                                                                           int extrasize)
+std::unique_ptr<ICCBitstreamParser> CCBitstreamParserFactory::CreateParser(
+    AVCodecID codec, std::span<const uint8_t> extradata)
 {
   if (codec == AV_CODEC_ID_MPEG2VIDEO)
   {
@@ -25,7 +24,7 @@ std::unique_ptr<ICCBitstreamParser> CCBitstreamParserFactory::CreateParser(AVCod
   else if (codec == AV_CODEC_ID_H264)
   {
     // Detect AVCC vs Annex B format from extradata
-    if (extradata && extrasize >= 7)
+    if (extradata.size() >= 7)
     {
       // AVCC format: first byte is 0x01 (AVCC version)
       if (extradata[0] == 1)

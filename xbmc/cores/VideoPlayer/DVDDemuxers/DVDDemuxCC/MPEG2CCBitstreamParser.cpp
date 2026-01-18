@@ -56,12 +56,13 @@ CCPictureType CMPEG2CCBitstreamParser::ParsePacket(DemuxPacket* pPacket,
         // Check for GA94 format
         if (len >= 6 && buf[0] == 'G' && buf[1] == 'A' && buf[2] == '9' && buf[3] == '4')
         {
-          ProcessGA94UserData(buf, len, pPacket->pts, picType, tempBuffer, reorderBuffer);
+          ProcessGA94UserData(std::span(buf, len), pPacket->pts, picType, tempBuffer,
+                              reorderBuffer);
         }
         // Check for CC format (SCTE-20)
         else if (len >= 6 && buf[0] == 'C' && buf[1] == 'C' && buf[2] == 1)
         {
-          ProcessCCUserData(buf, len, pPacket->pts, reorderBuffer);
+          ProcessCCUserData(std::span(buf, len), pPacket->pts, reorderBuffer);
           // CC format always uses I-frame timing
           picType = CCPictureType::I_FRAME;
         }
@@ -74,8 +75,7 @@ CCPictureType CMPEG2CCBitstreamParser::ParsePacket(DemuxPacket* pPacket,
   return picType;
 }
 
-void CMPEG2CCBitstreamParser::ProcessGA94UserData(uint8_t* buf,
-                                                  int len,
+void CMPEG2CCBitstreamParser::ProcessGA94UserData(std::span<const uint8_t> buf,
                                                   double pts,
                                                   CCPictureType picType,
                                                   std::vector<CCaptionBlock>& tempBuffer,
@@ -90,10 +90,11 @@ void CMPEG2CCBitstreamParser::ProcessGA94UserData(uint8_t* buf,
     return;
   }
 
-  int cc_count = buf[5] & 0x1f;
-  if (cc_count == 0 || len < 7 + cc_count * 3)
+  unsigned cc_count = buf[5] & 0x1f;
+  if (cc_count == 0 || buf.size() < 7 + cc_count * 3)
   {
-    CLog::LogF(LOGDEBUG, "Invalid cc_count ({}) or insufficient data (len={})", cc_count, len);
+    CLog::LogF(LOGDEBUG, "Invalid cc_count ({}) or insufficient data (len={})", cc_count,
+               buf.size());
     return;
   }
 
@@ -101,20 +102,19 @@ void CMPEG2CCBitstreamParser::ProcessGA94UserData(uint8_t* buf,
   // Non-reference frames (B) go directly to reorder buffer
   if (picType == CCPictureType::I_FRAME || picType == CCPictureType::P_FRAME)
   {
-    tempBuffer.emplace_back(cc_count * 3);
-    std::copy(buf + 7, buf + 7 + cc_count * 3, tempBuffer.back().m_data.data());
-    tempBuffer.back().m_pts = pts;
+    CCaptionBlock& cb = tempBuffer.emplace_back(cc_count * 3);
+    std::copy_n(buf.begin() + 7, cc_count * 3, cb.m_data.data());
+    cb.m_pts = pts;
   }
   else
   {
-    reorderBuffer.emplace_back(cc_count * 3);
-    std::copy(buf + 7, buf + 7 + cc_count * 3, reorderBuffer.back().m_data.data());
-    reorderBuffer.back().m_pts = pts;
+    CCaptionBlock& cb = reorderBuffer.emplace_back(cc_count * 3);
+    std::copy_n(buf.data() + 7, cc_count * 3, cb.m_data.data());
+    cb.m_pts = pts;
   }
 }
 
-void CMPEG2CCBitstreamParser::ProcessCCUserData(uint8_t* buf,
-                                                int len,
+void CMPEG2CCBitstreamParser::ProcessCCUserData(std::span<const uint8_t> buf,
                                                 double pts,
                                                 std::vector<CCaptionBlock>& reorderBuffer)
 {
@@ -123,24 +123,24 @@ void CMPEG2CCBitstreamParser::ProcessCCUserData(uint8_t* buf,
   // buf[4] contains field information and cc_count
 
   int oddidx = (buf[4] & 0x80) ? 0 : 1;
-  int cc_count = (buf[4] & 0x3e) >> 1;
+  unsigned cc_count = (buf[4] & 0x3e) >> 1;
   int extrafield = buf[4] & 0x01;
 
   if (extrafield)
     cc_count++;
 
-  if (cc_count == 0 || len < 5 + cc_count * 3 * 2)
+  if (cc_count == 0 || buf.size() < 5 + cc_count * 3 * 2)
   {
-    CLog::LogF(LOGDEBUG, "Invalid CC user data: cc_count={}, len={}", cc_count, len);
+    CLog::LogF(LOGDEBUG, "Invalid CC user data: cc_count={}, len={}", cc_count, buf.size());
     return;
   }
 
   reorderBuffer.emplace_back(cc_count * 3);
-  uint8_t* src = buf + 5;
+  const uint8_t* src = buf.data() + 5;
   uint8_t* dst = reorderBuffer.back().m_data.data();
   int bytesWritten = 0;
 
-  for (int i = 0; i < cc_count; i++)
+  for (size_t i = 0; i < cc_count; i++)
   {
     for (int j = 0; j < 2; j++)
     {

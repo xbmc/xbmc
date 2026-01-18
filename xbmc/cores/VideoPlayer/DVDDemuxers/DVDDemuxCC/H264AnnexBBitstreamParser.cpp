@@ -12,6 +12,7 @@
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <iterator>
 #include <ranges>
 
@@ -37,11 +38,11 @@ CCPictureType CH264AnnexBBitstreamParser::ParsePacket(DemuxPacket* pPacket,
       // Slice NAL units (types 1-5) - determine picture type
       if (scode >= 1 && scode <= 5)
       {
-        uint8_t* buf = pPacket->pData + p;
+        std::span<const uint8_t> buf(pPacket->pData + p, len);
 
         if (len > 1)
         {
-          CCPictureType slicePicType = DetectSliceType(buf, len);
+          CCPictureType slicePicType = DetectSliceType(buf);
 
           // If parsing failed due to corrupted Golomb codes, mark entire packet as invalid
           if (slicePicType == CCPictureType::INVALID)
@@ -68,7 +69,7 @@ CCPictureType CH264AnnexBBitstreamParser::ParsePacket(DemuxPacket* pPacket,
       // SEI NAL unit (type 6) - extract closed caption data
       else if (scode == 0x06)
       {
-        uint8_t* buf = pPacket->pData + p;
+        std::span<const uint8_t> buf(pPacket->pData + p, len);
 
         // Simplified check for GA94 closed caption data in SEI
         // Search for GA94 marker and pass to ProcessSEIPayload for full validation
@@ -81,7 +82,8 @@ CCPictureType CH264AnnexBBitstreamParser::ParsePacket(DemuxPacket* pPacket,
             // Pass from start of potential ITU-T T.35 prefix (3 bytes before GA94)
             // or from GA94 itself if no prefix exists
             int startOffset = (i >= 3) ? i - 3 : i;
-            ProcessSEIPayload(buf + startOffset, len - startOffset, pPacket->pts, tempBuffer);
+            ProcessSEIPayload(buf.subspan(startOffset, len - startOffset), pPacket->pts,
+                              tempBuffer);
             break;
           }
         }

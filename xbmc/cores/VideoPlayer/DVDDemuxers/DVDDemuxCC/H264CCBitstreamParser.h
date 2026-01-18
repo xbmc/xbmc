@@ -10,6 +10,8 @@
 
 #include "ICCBitstreamParser.h"
 
+#include <span>
+
 /*!
  * \brief Base class for H.264 closed caption bitstream parsers
  *
@@ -36,7 +38,9 @@ protected:
    * \param pts Presentation timestamp for CC data
    * \param tempBuffer Temporary buffer for CC data (for reordering)
    */
-  void ProcessSEIPayload(uint8_t* buf, int len, double pts, std::vector<CCaptionBlock>& tempBuffer);
+  void ProcessSEIPayload(std::span<const uint8_t> buf,
+                         double pts,
+                         std::vector<CCaptionBlock>& tempBuffer);
 
   /*!
    * \brief Detect slice type from H.264 slice header
@@ -48,5 +52,5 @@ protected:
    * \param len Length of slice data
    * \return Picture type (I_FRAME, P_FRAME, OTHER, or INVALID if parsing fails)
    */
-  CCPictureType DetectSliceType(uint8_t* buf, int len);
+  CCPictureType DetectSliceType(std::span<const uint8_t> buf);
 };

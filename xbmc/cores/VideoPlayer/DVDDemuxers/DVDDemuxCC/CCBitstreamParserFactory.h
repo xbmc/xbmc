@@ -28,6 +28,5 @@ public:
    * \return Parser instance or nullptr if codec is unsupported
    */
   static std::unique_ptr<ICCBitstreamParser> CreateParser(AVCodecID codec,
-                                                          const uint8_t* extradata,
-                                                          int extrasize);
+                                                          std::span<const uint8_t> extradata);
 };

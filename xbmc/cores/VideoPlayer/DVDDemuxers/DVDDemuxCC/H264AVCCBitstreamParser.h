@@ -10,6 +10,8 @@
 
 #include "H264CCBitstreamParser.h"
 
+#include <span>
+
 /*!
  * \brief H.264 AVCC format closed caption parser
  *
@@ -56,5 +58,7 @@ private:
    * \param pts Presentation timestamp
    * \param tempBuffer Temporary buffer for CC data
    */
-  void ParseSEINALUnit(uint8_t* buf, int len, double pts, std::vector<CCaptionBlock>& tempBuffer);
+  void ParseSEINALUnit(std::span<const uint8_t> buf,
+                       double pts,
+                       std::vector<CCaptionBlock>& tempBuffer);
 };

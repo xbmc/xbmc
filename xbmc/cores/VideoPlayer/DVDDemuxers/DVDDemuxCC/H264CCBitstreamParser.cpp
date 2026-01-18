@@ -15,14 +15,13 @@
 
 #include <algorithm>
 
-void CH264CCBitstreamParser::ProcessSEIPayload(uint8_t* buf,
-                                               int len,
+void CH264CCBitstreamParser::ProcessSEIPayload(std::span<const uint8_t> buf,
                                                double pts,
                                                std::vector<CCaptionBlock>& tempBuffer)
 {
-  if (len < 8)
+  if (buf.size() < 8)
   {
-    CLog::LogF(LOGDEBUG, "SEI payload too small ({})", len);
+    CLog::LogF(LOGDEBUG, "SEI payload too small ({})", buf.size());
     return;
   }
 
@@ -35,12 +34,13 @@ void CH264CCBitstreamParser::ProcessSEIPayload(uint8_t* buf,
   int gaOffset = -1;
 
   // Check for ITU-T T.35 format with GA94 at offset 3
-  if (len >= 11 && buf[3] == 'G' && buf[4] == 'A' && buf[5] == '9' && buf[6] == '4' && buf[7] == 3)
+  if (buf.size() >= 11 && buf[3] == 'G' && buf[4] == 'A' && buf[5] == '9' && buf[6] == '4' &&
+      buf[7] == 3)
   {
     gaOffset = 3;
   }
   // Check for direct GA94 format at offset 0
-  else if (len >= 8 && buf[0] == 'G' && buf[1] == 'A' && buf[2] == '9' && buf[3] == '4' &&
+  else if (buf.size() >= 8 && buf[0] == 'G' && buf[1] == 'A' && buf[2] == '9' && buf[3] == '4' &&
            buf[4] == 3)
   {
     gaOffset = 0;
@@ -53,38 +53,37 @@ void CH264CCBitstreamParser::ProcessSEIPayload(uint8_t* buf,
   }
 
   // GA94 format: 'G' 'A' '9' '4' 0x03 flags cc_data...
-  uint8_t* userdata = buf + gaOffset;
-  int payloadSize = len - gaOffset;
+  std::span<const uint8_t> userdata = buf.subspan(gaOffset);
 
   // Check process_cc_data_flag (bit 6 of flags byte)
-  if (payloadSize < 5 || !(userdata[5] & 0x40))
+  if (userdata.size() < 5 || !(userdata[5] & 0x40))
   {
     CLog::LogF(LOGDEBUG, "Invalid GA94 flags or payload too small");
     return;
   }
 
-  int cc_count = userdata[5] & 0x1f;
-  if (cc_count == 0 || payloadSize < 7 + cc_count * 3)
+  unsigned cc_count = userdata[5] & 0x1f;
+  if (cc_count == 0 || userdata.size() < 7 + cc_count * 3)
   {
     CLog::LogF(LOGDEBUG, "Invalid cc_count ({}) or insufficient data", cc_count);
     return;
   }
 
-  tempBuffer.emplace_back(cc_count * 3);
-  std::copy(userdata + 7, userdata + 7 + cc_count * 3, tempBuffer.back().m_data.data());
-  tempBuffer.back().m_pts = pts;
+  CCaptionBlock& cb = tempBuffer.emplace_back(cc_count * 3);
+  std::copy_n(userdata.begin() + 7, cc_count * 3, cb.m_data.begin());
+  cb.m_pts = pts;
 }
 
-CCPictureType CH264CCBitstreamParser::DetectSliceType(uint8_t* buf, int len)
+CCPictureType CH264CCBitstreamParser::DetectSliceType(std::span<const uint8_t> buf)
 {
-  if (len < 2)
+  if (buf.size() < 2)
   {
-    CLog::LogF(LOGDEBUG, "Slice too small ({})", len);
+    CLog::LogF(LOGDEBUG, "Slice too small ({})", buf.size());
     return CCPictureType::INVALID;
   }
 
   // Skip NAL header byte - RBSP data starts at buf+1
-  CBitstream bs(buf + 1, (len - 1) * 8);
+  CBitstream bs(buf.data() + 1, (buf.size() - 1) * 8);
 
   bs.readGolombUE(); // first_mb_in_slice
   if (bs.hasError())

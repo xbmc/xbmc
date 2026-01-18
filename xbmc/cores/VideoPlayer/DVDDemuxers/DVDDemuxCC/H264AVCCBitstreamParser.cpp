@@ -13,7 +13,6 @@
 #include "utils/log.h"
 
 #include <climits>
-#include <iterator>
 #include <ranges>
 
 CCPictureType CH264AVCCBitstreamParser::ParsePacket(DemuxPacket* pPacket,
@@ -47,12 +46,11 @@ CCPictureType CH264AVCCBitstreamParser::ParsePacket(DemuxPacket* pPacket,
     // Process slice NAL units (types 1-5) to determine picture type
     if (nalType >= 1 && nalType <= 5)
     {
-      uint8_t* buf = pPacket->pData + p;
-      int len = nalSize;
+      std::span<const uint8_t> buf(pPacket->pData + p, nalSize);
 
-      if (len > 1) // Need at least NAL header + RBSP data
+      if (buf.size() > 1) // Need at least NAL header + RBSP data
       {
-        CCPictureType slicePicType = DetectSliceType(buf, len);
+        CCPictureType slicePicType = DetectSliceType(buf);
 
         // If parsing failed due to corrupted Golomb codes, mark entire packet as invalid
         if (slicePicType == CCPictureType::INVALID)
@@ -81,7 +79,7 @@ CCPictureType CH264AVCCBitstreamParser::ParsePacket(DemuxPacket* pPacket,
     {
       uint8_t* buf = pPacket->pData + p;
       int len = nalSize;
-      ParseSEINALUnit(buf, len, pPacket->pts, tempBuffer);
+      ParseSEINALUnit(std::span(buf, len), pPacket->pts, tempBuffer);
     }
 
     p += nalSize;
@@ -90,48 +88,44 @@ CCPictureType CH264AVCCBitstreamParser::ParsePacket(DemuxPacket* pPacket,
   return picType;
 }
 
-void CH264AVCCBitstreamParser::ParseSEINALUnit(uint8_t* buf,
-                                               int len,
+void CH264AVCCBitstreamParser::ParseSEINALUnit(std::span<const uint8_t> buf,
                                                double pts,
                                                std::vector<CCaptionBlock>& tempBuffer)
 {
   // SEI payload structure: [payload_type] [payload_size] [payload_data] [repeat...]
   // payload_type and payload_size use 0xFF for values >= 255
 
-  int seiPos = 1; // Skip NAL header byte
+  size_t seiPos = 1; // Skip NAL header byte
 
-  while (seiPos < len)
+  while (seiPos < buf.size())
   {
     // Read payload type (supports extended values with 0xFF bytes)
     int payloadType = 0;
-    while (seiPos < len && buf[seiPos] == 0xFF)
+    while (seiPos < buf.size() && buf[seiPos] == 0xFF)
     {
       payloadType += 255;
       seiPos++;
     }
-    if (seiPos < len)
+    if (seiPos < buf.size())
       payloadType += buf[seiPos++];
     else
       break;
 
     // Read payload size (supports extended values with 0xFF bytes)
     int payloadSize = 0;
-    while (seiPos < len && buf[seiPos] == 0xFF)
+    while (seiPos < buf.size() && buf[seiPos] == 0xFF)
     {
       payloadSize += 255;
       seiPos++;
     }
-    if (seiPos < len)
+    if (seiPos < buf.size())
       payloadSize += buf[seiPos++];
     else
       break;
 
     // Check if this is user_data_registered_itu_t_t35 (type 4) with GA94 CC data
-    if (payloadType == 4 && seiPos + payloadSize <= len)
-    {
-      uint8_t* userdata = buf + seiPos;
-      ProcessSEIPayload(userdata, payloadSize, pts, tempBuffer);
-    }
+    if (payloadType == 4 && seiPos + payloadSize <= buf.size())
+      ProcessSEIPayload(buf.subspan(seiPos, payloadSize), pts, tempBuffer);
 
     seiPos += payloadSize;
   }

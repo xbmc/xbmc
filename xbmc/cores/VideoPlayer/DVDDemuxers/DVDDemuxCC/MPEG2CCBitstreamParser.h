@@ -10,6 +10,8 @@
 
 #include "ICCBitstreamParser.h"
 
+#include <span>
+
 /*!
  * \brief MPEG2 closed caption parser
  *
@@ -48,8 +50,7 @@ private:
    * GA94 format: 'G''A''9''4' 0x03 flags cc_data...
    * Extracts cc_count and cc_data triplets.
    */
-  void ProcessGA94UserData(uint8_t* buf,
-                           int len,
+  void ProcessGA94UserData(std::span<const uint8_t> buf,
                            double pts,
                            CCPictureType picType,
                            std::vector<CCaptionBlock>& tempBuffer,
@@ -61,8 +62,7 @@ private:
    * CC format: 'C''C' 0x01 ... (SCTE-20 format)
    * Used by some broadcast systems, extracts field-based CC data.
    */
-  void ProcessCCUserData(uint8_t* buf,
-                         int len,
+  void ProcessCCUserData(std::span<const uint8_t> buf,
                          double pts,
                          std::vector<CCaptionBlock>& reorderBuffer);
 };

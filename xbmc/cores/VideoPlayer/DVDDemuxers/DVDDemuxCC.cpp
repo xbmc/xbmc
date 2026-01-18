@@ -121,7 +121,7 @@ CDVDDemuxCC::CDVDDemuxCC(AVCodecID codec, const uint8_t* extradata, int extrasiz
 {
   m_hasData = false;
   m_curPts = 0.0;
-  m_parser = CCBitstreamParserFactory::CreateParser(codec, extradata, extrasize);
+  m_parser = CCBitstreamParserFactory::CreateParser(codec, std::span(extradata, extrasize));
 }
 
 CDVDDemuxCC::~CDVDDemuxCC()
