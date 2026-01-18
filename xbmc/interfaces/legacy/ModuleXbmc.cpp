@@ -163,15 +163,7 @@ namespace XBMCAddon
     String getLocalizedString(int id)
     {
       XBMC_TRACE;
-      String label;
-      if (id >= 30000 && id <= 30999)
-        label = g_localizeStringsTemp.Get(id);
-      else if (id >= 32000 && id <= 32999)
-        label = g_localizeStringsTemp.Get(id);
-      else
-        label = g_localizeStrings.Get(id);
-
-      return label;
+      return g_localizeStrings.Get(id);
     }
 
     String getSkinDir()

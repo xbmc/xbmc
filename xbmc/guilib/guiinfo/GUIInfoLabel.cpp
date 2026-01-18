@@ -243,10 +243,7 @@ bool CGUIInfoLabel::ReplaceSpecialKeywordReferences(std::string& work,
 
 std::string LocalizeReplacer(const std::string& str)
 {
-  std::string replace = g_localizeStringsTemp.Get(atoi(str.c_str()));
-  if (replace.empty())
-    replace = g_localizeStrings.Get(atoi(str.c_str()));
-  return replace;
+  return g_localizeStrings.Get(atoi(str.c_str()));
 }
 
 std::string AddonReplacer(const std::string& str)

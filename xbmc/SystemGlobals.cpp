@@ -25,8 +25,7 @@ std::map<std::string, std::string> CSpecialProtocol::m_pathMap;
 #include "filesystem/ZipManager.h"
 
   CLangCodeExpander  g_LangCodeExpander;
-  CLocalizeStrings   g_localizeStrings;
-  CLocalizeStrings   g_localizeStringsTemp;
+  CLocalizeStrings g_localizeStrings;
 
   XFILE::CDirectoryCache g_directoryCache;
 
