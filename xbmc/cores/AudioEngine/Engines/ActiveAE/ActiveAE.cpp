@@ -35,6 +35,9 @@ namespace
 {
 constexpr float MAX_CACHE_LEVEL = 0.4f; // total cache time of stream in seconds;
 constexpr float MAX_WATER_LEVEL = 0.2f; // buffered time after stream stages in seconds;
+constexpr float MIN_WATER_LEVEL = 0.02f; // min buffer time to prevent underrun
+constexpr float MIN_WATER_LEVEL_RESAMPLE = 0.1f; // min buffer time in resample mode
+constexpr float BUFFER_LEVEL_INCREMENT = 0.0001f; // increment step for ramp-up
 constexpr double MAX_BUFFER_TIME = 0.1; // max time of a buffer in seconds;
 } // unnamed namespace
 
@@ -1433,6 +1436,37 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
     m_sinkBuffers->Create(MAX_WATER_LEVEL*1000, true, false);
   }
 
+  // Configure buffer level ramp-up when low latency mode is enabled
+  // Resample OFF --> from ~20ms to ~200ms
+  // Resample ON --> from ~100ms to ~200ms
+  // Low latency OFF --> constant to ~200ms (no ramp-up)
+  // The increment is added to avoid ambiguous float comparisons (0.0199999 instead of 0.020001)
+  if (m_settings.lowLatencyMode)
+  {
+    bool resample = false;
+    if (!m_streams.empty())
+    {
+      for (const auto& stream : m_streams)
+      {
+        if (stream->m_streamResampleMode != 0)
+        {
+          resample = true;
+          break;
+        }
+      }
+    }
+    if (resample)
+      m_initialTargetBufferLevel = MIN_WATER_LEVEL_RESAMPLE + BUFFER_LEVEL_INCREMENT;
+    else
+      m_initialTargetBufferLevel = MIN_WATER_LEVEL + BUFFER_LEVEL_INCREMENT;
+
+    m_targetBufferLevel = m_initialTargetBufferLevel;
+  }
+  else
+  {
+    m_targetBufferLevel = MAX_WATER_LEVEL + BUFFER_LEVEL_INCREMENT;
+  }
+
   // reset gui sounds
   if (!CompareFormat(oldInternalFormat, m_internalFormat))
   {
@@ -1556,7 +1590,6 @@ void CActiveAE::SFlushStream(CActiveAEStream *stream)
   }
 
   m_stats.UpdateStream(stream);
-  m_targetBufferLevel = 0;
 }
 
 void CActiveAE::FlushEngine()
@@ -1964,14 +1997,11 @@ bool CActiveAE::RunStages()
 
   if (m_settings.lowLatencyMode)
   {
-    // m_targetBufferLevel grows progressively from ~0ms (virtual zero buffer and zero latency)
+    // m_targetBufferLevel grows progressively from ~20ms (virtual zero buffer and zero latency)
     // to ~200 ms (nominal buffer and nominal latency), same as before.
+    // In resample mode is from ~100ms to ~200ms to prevent buffer underrun.
     if (m_targetBufferLevel < MAX_WATER_LEVEL)
-      m_targetBufferLevel += 0.0001f; // 2000 iterations -> ramp-up of ~10 seconds
-  }
-  else
-  {
-    m_targetBufferLevel = MAX_WATER_LEVEL + 0.0001f;
+      m_targetBufferLevel += BUFFER_LEVEL_INCREMENT; // 2000 iterations -> ramp-up of ~10 seconds
   }
 
   // The buffer level "GetWaterLevel()" always tries to follow m_targetBufferLevel because when it
@@ -1985,7 +2015,7 @@ bool CActiveAE::RunStages()
     {
       // reset target buffer level at pause (but not initial start pause)
       if ((*it)->m_paused && (*it)->m_started && m_settings.lowLatencyMode)
-        m_targetBufferLevel = 0;
+        m_targetBufferLevel = m_initialTargetBufferLevel;
 
       if ((*it)->m_paused || !(*it)->m_started || !(*it)->m_processingBuffers || !(*it)->m_pClock)
         continue;
