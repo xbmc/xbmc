@@ -17,6 +17,7 @@
 #include "platform/win32/WIN32Util.h"
 
 #include <algorithm>
+#include <chrono>
 #include <stdint.h>
 
 #include <Audioclient.h>
@@ -25,6 +26,15 @@
 #ifdef TARGET_WINDOWS_DESKTOP
 #  pragma comment(lib, "Avrt.lib")
 #endif // TARGET_WINDOWS_DESKTOP
+
+using namespace Microsoft::WRL;
+using namespace std::chrono_literals;
+
+namespace
+{
+constexpr auto minPcmPeriod{20ms};
+constexpr auto minPassthroughPeriod{50ms};
+} // namespace
 
 const IID IID_IAudioRenderClient = __uuidof(IAudioRenderClient);
 const IID IID_IAudioClock = __uuidof(IAudioClock);
@@ -47,8 +57,6 @@ inline void SafeRelease(T **ppT)
     *ppT = nullptr;
   }
 }
-
-using namespace Microsoft::WRL;
 
 CAESinkWASAPI::CAESinkWASAPI()
 {
@@ -864,22 +872,39 @@ initialize:
       CLog::LogF(LOGERROR, "unable to set audio category, {}", CWIN32Util::FormatHRESULT(hr));
   }
 
-  REFERENCE_TIME audioSinkBufferDurationMsec{};
-
   const bool isPassthrough = (format.m_dataFormat == AE_FMT_RAW);
+  const auto targetPeriod = isPassthrough ? minPassthroughPeriod : minPcmPeriod;
 
-  if (isPassthrough) // 50ms period (same as before)
+  REFERENCE_TIME defaultDevicePeriodHns{};
+
+  if (FAILED(hr = m_pAudioClient->GetDevicePeriod(&defaultDevicePeriodHns, nullptr)))
   {
-    audioSinkBufferDurationMsec = static_cast<REFERENCE_TIME>(500000);
+    CLog::LogF(LOGERROR, "unable to retrieve the device's default period ({})",
+               CWIN32Util::FormatHRESULT(hr));
+    return false;
+  }
+
+  CLog::LogF(LOGDEBUG, "Default period: {:.1f}ms",
+             static_cast<float>(defaultDevicePeriodHns) / 10000.0f);
+
+  // Find the first multiple of the default device period larger or equal to the desired minimum
+  // buffer duration
+  // note: the default device period is meant for shared mode but offers a strong guarantee of
+  // compatibility and we're not a pro audio app that requires the min latency possible.
+
+  const auto devicePeriod = std::chrono::nanoseconds(defaultDevicePeriodHns * 100);
+  const int multiplier =
+      (targetPeriod / devicePeriod) + ((targetPeriod % devicePeriod == 0ns) ? 0 : 1);
+  const auto period = multiplier * devicePeriod;
+
+  if (isPassthrough)
     format.m_dataFormat = AE_FMT_S16NE;
-  }
-  else // PCM: 20ms period (same as XAudio and DirectSound)
-  {
-    audioSinkBufferDurationMsec = static_cast<REFERENCE_TIME>(200000);
-  }
 
-  hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_EXCLUSIVE, AUDCLNT_STREAMFLAGS_EVENTCALLBACK | AUDCLNT_STREAMFLAGS_NOPERSIST,
-                                    audioSinkBufferDurationMsec, audioSinkBufferDurationMsec, &wfxex.Format, NULL);
+  REFERENCE_TIME bufferHns{period.count() / 100};
+
+  hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_EXCLUSIVE,
+                                  AUDCLNT_STREAMFLAGS_EVENTCALLBACK | AUDCLNT_STREAMFLAGS_NOPERSIST,
+                                  bufferHns, bufferHns, &wfxex.Format, NULL);
 
   if (hr == AUDCLNT_E_BUFFER_SIZE_NOT_ALIGNED)
   {
@@ -893,8 +918,8 @@ initialize:
       return false;
     }
 
-    audioSinkBufferDurationMsec =
-        (REFERENCE_TIME)((10000.0 * 1000 / wfxex.Format.nSamplesPerSec * numBufferFrames) + 0.5);
+    bufferHns = static_cast<REFERENCE_TIME>(
+        (10000.0 * 1000 / wfxex.Format.nSamplesPerSec * numBufferFrames) + 0.5);
 
     /* Release the previous allocations */
     /* Create a new audio client */
@@ -906,8 +931,10 @@ initialize:
     }
 
     /* Open the stream and associate it with an audio session */
-    hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_EXCLUSIVE, AUDCLNT_STREAMFLAGS_EVENTCALLBACK | AUDCLNT_STREAMFLAGS_NOPERSIST,
-                                      audioSinkBufferDurationMsec, audioSinkBufferDurationMsec, &wfxex.Format, NULL);
+    hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_EXCLUSIVE,
+                                    AUDCLNT_STREAMFLAGS_EVENTCALLBACK |
+                                        AUDCLNT_STREAMFLAGS_NOPERSIST,
+                                    bufferHns, bufferHns, &wfxex.Format, NULL);
   }
   if (FAILED(hr))
   {
@@ -926,7 +953,7 @@ initialize:
     CLog::Log(LOGDEBUG, "  Enc. Channels   : {}", wfxex_iec61937.dwEncodedChannelCount);
     CLog::Log(LOGDEBUG, "  Enc. Samples/Sec: {}", wfxex_iec61937.dwEncodedSamplesPerSec);
     CLog::Log(LOGDEBUG, "  Channel Mask    : {}", wfxex.dwChannelMask);
-    CLog::Log(LOGDEBUG, "  Periodicty      : {}", audioSinkBufferDurationMsec);
+    CLog::Log(LOGDEBUG, "  Periodicity (ms): {:.1f}", static_cast<float>(bufferHns) / 10000.0f);
     return false;
   }
 
@@ -976,7 +1003,7 @@ initialize:
   CLog::Log(LOGDEBUG, "  Channel Mask    : {}", wfxex.dwChannelMask);
   CLog::Log(LOGDEBUG, "  Frames          : {}", format.m_frames);
   CLog::Log(LOGDEBUG, "  Frame Size      : {}", format.m_frameSize);
-  CLog::Log(LOGDEBUG, "  Periodicity (ms): {:.1f}", (float)audioSinkBufferDurationMsec / 10000.0f);
+  CLog::Log(LOGDEBUG, "  Periodicity (ms): {:.1f}", static_cast<float>(bufferHns) / 10000.0f);
   CLog::Log(LOGDEBUG, "  Latency (s)     : {:.3f}", m_sinkLatency);
 
   return true;
