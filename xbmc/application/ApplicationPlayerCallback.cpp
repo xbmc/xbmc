@@ -313,6 +313,11 @@ void UpdateStackAndItem(const CFileItem& file,
   }
   else
   {
+    constexpr double FINISH_THRESHOLD{1.0}; // 1 second from end is considered finished
+    const bool currentPartFinished{bookmark.timeInSeconds + FINISH_THRESHOLD >
+                                   bookmark.totalTimeInSeconds};
+    stackHelper->SetCurrentPartFinished(currentPartFinished);
+
     ConvertRelativeStackTimesToAbsolute(bookmark, file, stackHelper);
   }
 }
