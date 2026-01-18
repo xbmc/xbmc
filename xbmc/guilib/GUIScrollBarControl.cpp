@@ -228,7 +228,7 @@ void GUIScrollBarControl::SetInvalid()
 {
   CGUIControl::SetInvalid();
   m_guiBackground->SetInvalid();
-  m_guiBarFocus->SetInvalid();
+  m_guiBarNoFocus->SetInvalid();
   m_guiBarFocus->SetInvalid();
   m_guiNibNoFocus->SetInvalid();
   m_guiNibFocus->SetInvalid();
