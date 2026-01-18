@@ -243,7 +243,14 @@ bool CGUIInfoLabel::ReplaceSpecialKeywordReferences(std::string& work,
 
 std::string LocalizeReplacer(const std::string& str)
 {
-  return g_localizeStrings.Get(atoi(str.c_str()));
+  const uint32_t id = std::atoi(str.c_str());
+  auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+  if (skin && ADDON::IsSkinStringId(id))
+  {
+    return g_localizeStrings.GetAddonString(skin->ID(), id);
+  }
+
+  return g_localizeStrings.Get(id);
 }
 
 std::string AddonReplacer(const std::string& str)

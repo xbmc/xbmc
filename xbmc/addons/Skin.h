@@ -28,6 +28,15 @@ struct StringSettingOption;
 namespace ADDON
 {
 
+// Skin string ID range constants
+inline constexpr uint32_t SKIN_STRING_RANGE_START = 31000;
+inline constexpr uint32_t SKIN_STRING_RANGE_END = 31999;
+
+constexpr bool IsSkinStringId(uint32_t id) noexcept
+{
+  return id >= SKIN_STRING_RANGE_START && id <= SKIN_STRING_RANGE_END;
+}
+
 class CSkinSettingUpdateHandler;
 
 class CSkinSetting

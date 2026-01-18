@@ -141,12 +141,11 @@ bool CApplicationSkinHandling::LoadSkin(const std::string& skinID)
 
   g_fontManager.LoadFonts(settings->GetString(CSettings::SETTING_LOOKANDFEEL_FONT));
 
-  // load in the skin strings
-  std::string langPath = URIUtils::AddFileToFolder(skin->Path(), "language");
-  URIUtils::AddSlashAtEnd(langPath);
-
-  g_localizeStrings.LoadSkinStrings(langPath,
-                                    settings->GetString(CSettings::SETTING_LOCALE_LANGUAGE));
+  // load the skin strings in
+  //! @todo Move skin language files to resources/language/ to match other addon structure
+  const std::string langPath = URIUtils::AddFileToFolder(skin->Path(), "language/");
+  g_localizeStrings.LoadAddonStrings(
+      langPath, settings->GetString(CSettings::SETTING_LOCALE_LANGUAGE), skin->ID());
   skin->LoadTimers();
 
   const auto start = std::chrono::steady_clock::now();
@@ -231,7 +230,10 @@ void CApplicationSkinHandling::UnloadSkin()
     m_saveSkinOnUnloading = true;
 
   if (skin)
+  {
     skin->Unload();
+    g_localizeStrings.ClearAddonStrings(skin->ID());
+  }
 
   CGUIComponent* gui = CServiceBroker::GetGUI();
   if (gui)
