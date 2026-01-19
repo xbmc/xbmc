@@ -1317,11 +1317,15 @@ void CBitstreamConverter::ProcessSeiPrefix(uint8_t *buf, int32_t nal_size, uint8
   if (auto lightLevel = CHevcSei::ExtractContentLightLevel(messages, clearBuf))
     ApplyContentLightLevel(lightLevel.value(), updateMetadata);
 
-  if (updateMetadata) UpdateHdrStaticMetadata();
-
-  aml_dv_send_hdr10_data();
+  if (updateMetadata)
+  {
+    UpdateHdrStaticMetadata();
+    aml_dv_send_hdr10_data();
+  } 
 
   if (auto res = CHevcSei::ExtractHdr10Plus(messages, clearBuf)) {
+
+    aml_kodi_set_cd_cs(2);
 
     bool isDual = (m_intial_hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION); // Original is DV and now also found HDR10+ so is dual.
     bool considerAsHdr10Plus = (!isDual || m_dual_priority_Hdr10Plus || m_prefer_Hdr10Plus_conversion);

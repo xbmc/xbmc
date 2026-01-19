@@ -102,7 +102,7 @@ static std::string ModeFlagsToString(unsigned int flags, bool identifier)
   return res;
 }
 
-static bool write_resolution_ini(RESOLUTION_INFO res)
+bool write_resolution_ini(RESOLUTION_INFO res)
 {
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   struct statfs fsInfo;

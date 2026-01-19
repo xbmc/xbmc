@@ -162,6 +162,8 @@ void aml_reset_audio_from_window_home();
 void aml_reset_audio_from_play_from_beginning();
 void aml_reset_audio_from_play_from_resume();
 
+void aml_kodi_reset_cd_cs();
+
 void aml_get_dv_cap();
 struct xbmc_dv_cap
 {

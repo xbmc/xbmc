@@ -1765,7 +1765,7 @@ void CVideoPlayer::ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket)
   if (CheckSceneSkip(m_CurrentVideo))
     drop = true;
 
-  // m_CurrentVideo.lastdts = pPacket->dts;
+  m_CurrentVideo.lastdts = pPacket->dts;
 
   // CLog::Log(LOGDEBUG, "CVideoPlayer::ProcessVideoData size:{:d} dts:{:.3f} pts:{:.3f} dur:{:.3f}ms, clock:{:.3f} level:{:d}",
   //   pPacket->iSize, pPacket->dts/DVD_TIME_BASE, pPacket->pts/DVD_TIME_BASE, pPacket->duration/1000.0,
@@ -4056,7 +4056,7 @@ void CVideoPlayer::FlushBuffers(double pts, bool accurate, bool sync)
   m_CurrentVideo.dts         = DVD_NOPTS_VALUE;
   m_CurrentVideo.startpts    = startpts;
   m_CurrentVideo.packets = 0;
-  // m_CurrentVideo.lastdts = DVD_NOPTS_VALUE;
+  m_CurrentVideo.lastdts = DVD_NOPTS_VALUE;
 
   m_CurrentSubtitle.dts      = DVD_NOPTS_VALUE;
   m_CurrentSubtitle.startpts = startpts;
@@ -4656,20 +4656,20 @@ bool CVideoPlayer::OnAction(const CAction &action)
     case ACTION_VS10_ORIGINAL:
       if (CServiceBroker::GetDataCacheCore().GetVideoHdrType() == StreamHdrType::HDR_TYPE_DOLBYVISION)
         aml_dv_set_vs10_mode(DOLBY_VISION_OUTPUT_MODE_IPT, hdrType);
-      else
+      else if (CServiceBroker::GetDataCacheCore().GetVideoHdrType() != StreamHdrType::HDR_TYPE_HDR10PLUS)
         aml_dv_set_vs10_mode(DOLBY_VISION_OUTPUT_MODE_BYPASS, hdrType);
       return true;
-
     case ACTION_VS10_SDR:
-      aml_dv_set_vs10_mode(DOLBY_VISION_OUTPUT_MODE_SDR10, hdrType);
+      if (CServiceBroker::GetDataCacheCore().GetVideoHdrType() != StreamHdrType::HDR_TYPE_HDR10PLUS)
+        aml_dv_set_vs10_mode(DOLBY_VISION_OUTPUT_MODE_SDR10, hdrType);
       return true;
-
     case ACTION_VS10_HDR10:
-      aml_dv_set_vs10_mode(DOLBY_VISION_OUTPUT_MODE_HDR10, hdrType);
+      if (CServiceBroker::GetDataCacheCore().GetVideoHdrType() != StreamHdrType::HDR_TYPE_HDR10PLUS)
+        aml_dv_set_vs10_mode(DOLBY_VISION_OUTPUT_MODE_HDR10, hdrType);
       return true;
-
     case ACTION_VS10_DV:
-      aml_dv_set_vs10_mode(DOLBY_VISION_OUTPUT_MODE_IPT, hdrType);
+      if (CServiceBroker::GetDataCacheCore().GetVideoHdrType() != StreamHdrType::HDR_TYPE_HDR10PLUS)
+        aml_dv_set_vs10_mode(DOLBY_VISION_OUTPUT_MODE_IPT, hdrType);
       return true;
   }
 

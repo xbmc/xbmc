@@ -1398,6 +1398,46 @@ bool CAdvancedSettings::GetResetSeek() const
   return m_resetSeek;
 }
 
+void CAdvancedSettings::SetLimitCD(bool limit_cd)
+{
+  m_limitCD = limit_cd;
+}
+
+bool CAdvancedSettings::GetLimitCD() const
+{
+  return m_limitCD;
+}
+
+void CAdvancedSettings::SetLimitCDPrevVal(int cd_prev_val)
+{
+  m_limitCDPrevVal = cd_prev_val;
+}
+
+int CAdvancedSettings::GetLimitCDPrevVal() const
+{
+  return m_limitCDPrevVal;
+}
+
+void CAdvancedSettings::SetForceCS(bool force_cs)
+{
+  m_forceCS = force_cs;
+}
+
+bool CAdvancedSettings::GetForceCS() const
+{
+  return m_forceCS;
+}
+
+void CAdvancedSettings::SetForceCSPrevVal(int cs_prev_val)
+{
+  m_forceCSPrevVal = cs_prev_val;
+}
+
+int CAdvancedSettings::GetForceCSPrevVal() const
+{
+  return m_forceCSPrevVal;
+}
+
 void CAdvancedSettings::Clear()
 {
   m_videoCleanStringRegExps.clear();

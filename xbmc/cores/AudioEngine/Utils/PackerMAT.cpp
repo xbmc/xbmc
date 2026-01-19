@@ -110,7 +110,6 @@ bool CPackerMAT::PackTrueHD(const uint8_t* data, int size)
       // Reset frame timing state and use default padding (like LAV Filters)
       // NOTE: Do NOT reset prevMatFramesize - LAV keeps it for proper padding calculation
       m_state.prevFrametimeValid = false;
-      m_state.numberOfSamplesOffset = 0;
       // Standard padding: 40 samples * (64 >> ratebits) bytes = 2560 bytes for 48kHz
       spaceSize = 40 * (64 >> (m_state.ratebits & 7));
 

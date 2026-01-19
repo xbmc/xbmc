@@ -413,6 +413,22 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool GetResetSeek() const;
     bool m_resetSeek;
 
+    void SetLimitCD(bool limit_cd);
+    bool GetLimitCD() const;
+    bool m_limitCD;
+
+    void SetLimitCDPrevVal(int cd_prev_val);
+    int GetLimitCDPrevVal() const;
+    int m_limitCDPrevVal;
+
+    void SetForceCS(bool force_cs);
+    bool GetForceCS() const;
+    bool m_forceCS;
+
+    void SetForceCSPrevVal(int cs_prev_val);
+    int GetForceCSPrevVal() const;
+    int m_forceCSPrevVal;
+
   private:
     void Initialize();
     void Clear();

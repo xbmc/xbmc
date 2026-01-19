@@ -426,6 +426,8 @@ void CDVDVideoCodecAmlogic::Close(void)
 {
   CLog::Log(LOGDEBUG, "{}::{}", __MODULE_NAME__, __FUNCTION__);
 
+  aml_kodi_reset_cd_cs();
+
   m_videoBufferPool = nullptr;
 
   if (m_Codec)
@@ -434,6 +436,20 @@ void CDVDVideoCodecAmlogic::Close(void)
   m_videobuffer.iFlags = 0;
 
   m_opened = false;
+
+  while (!m_packages.empty())
+  {
+    DLDemuxPacket dual_layer_packet= m_packages.front();
+    uint8_t *pDataBackup = std::get<0>(dual_layer_packet);
+    KODI::MEMORY::AlignedFree(pDataBackup);
+    m_packages.pop_front();
+  }
+
+  m_mpeg2_sequence_pts = 0;
+  m_has_keyframe = false;
+
+  if (m_bitstream)
+    m_bitstream->ResetStartDecode();
 }
 
 bool CDVDVideoCodecAmlogic::AddData(const DemuxPacket &packet)
@@ -577,6 +593,7 @@ void CDVDVideoCodecAmlogic::Reset(void)
 
   m_mpeg2_sequence_pts = 0;
   m_has_keyframe = false;
+
   if (m_bitstream)
     m_bitstream->ResetStartDecode();
 }

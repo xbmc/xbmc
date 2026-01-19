@@ -171,3 +171,5 @@ private:
   bool m_resolutionChangeAborted;
   mutable CCriticalSection m_critical;
 };
+
+bool write_resolution_ini(RESOLUTION_INFO res);
