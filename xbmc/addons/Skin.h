@@ -289,5 +289,3 @@ private:
 };
 
 } /*namespace ADDON*/
-
-extern std::shared_ptr<ADDON::CSkinInfo> g_SkinInfo;

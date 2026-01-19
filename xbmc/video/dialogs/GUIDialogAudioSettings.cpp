@@ -17,6 +17,7 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/IPlayer.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/LocalizeStrings.h"
 #include "profiles/ProfileManager.h"
@@ -226,7 +227,8 @@ void CGUIDialogAudioSettings::InitializeSettings()
     return;
   }
 
-  bool usePopup = g_SkinInfo->HasSkinFile("DialogSlider.xml");
+  auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+  const bool usePopup = skin && skin->HasSkinFile("DialogSlider.xml");
 
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();

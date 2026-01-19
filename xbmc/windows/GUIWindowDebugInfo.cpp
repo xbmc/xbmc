@@ -42,7 +42,10 @@ CGUIWindowDebugInfo::~CGUIWindowDebugInfo(void) = default;
 
 void CGUIWindowDebugInfo::UpdateVisibility()
 {
-  if (LOG_LEVEL_DEBUG_FREEMEM <= CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_logLevel || g_SkinInfo->IsDebugging())
+  auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+  if (LOG_LEVEL_DEBUG_FREEMEM <=
+          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_logLevel ||
+      (skin && skin->IsDebugging()))
     Open();
   else
     Close();
@@ -132,7 +135,8 @@ void CGUIWindowDebugInfo::Process(unsigned int currentTime, CDirtyRegionList &di
   }
 
   // render the skin debug info
-  if (g_SkinInfo->IsDebugging())
+  auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+  if (skin && skin->IsDebugging())
   {
     if (!info.empty())
       info += "\n";

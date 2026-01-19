@@ -744,7 +744,8 @@ bool CApplication::Initialize()
     else
     {
       // activate the configured start window
-      int firstWindow = g_SkinInfo->GetFirstWindow();
+      auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+      int firstWindow = skin ? skin->GetFirstWindow() : WINDOW_HOME;
       CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(firstWindow);
 
       if (CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(WINDOW_STARTUP_ANIM))
@@ -1776,8 +1777,9 @@ bool CApplication::Stop(int exitCode)
     // either a bug in core or misbehaving addons. so try saving
     // skin settings early
     CLog::Log(LOGINFO, "Saving skin settings");
-    if (g_SkinInfo != nullptr)
-      g_SkinInfo->SaveSettings();
+    auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+    if (skin)
+      skin->SaveSettings();
 
     m_bStop = true;
     // Add this here to keep the same ordering behaviour for now

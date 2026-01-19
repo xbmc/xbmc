@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "addons/Skin.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
@@ -66,9 +67,10 @@ bool CSkinGUIInfo::GetLabel(std::string& value,
     }
     case SKIN_ASPECT_RATIO:
     {
-      if (g_SkinInfo)
+      auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+      if (skin)
       {
-        value = g_SkinInfo->GetCurrentAspect();
+        value = skin->GetCurrentAspect();
         return true;
       }
       break;
@@ -81,7 +83,8 @@ bool CSkinGUIInfo::GetLabel(std::string& value,
     }
     case SKIN_TIMER_ELAPSEDSECS:
     {
-      value = std::to_string(g_SkinInfo->GetTimerElapsedSeconds(info.GetData3()));
+      auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+      value = std::to_string(skin ? skin->GetTimerElapsedSeconds(info.GetData3()) : 0.0f);
       return true;
     }
     default:
@@ -105,7 +108,8 @@ bool CSkinGUIInfo::GetInt(int& value,
     }
     case SKIN_TIMER_ELAPSEDSECS:
     {
-      value = g_SkinInfo->GetTimerElapsedSeconds(info.GetData3());
+      auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+      value = skin ? skin->GetTimerElapsedSeconds(info.GetData3()) : 0;
       return true;
     }
     default:
@@ -150,7 +154,8 @@ bool CSkinGUIInfo::GetBool(bool& value,
     }
     case SKIN_TIMER_IS_RUNNING:
     {
-      value = g_SkinInfo->TimerIsRunning(info.GetData3());
+      auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+      value = skin ? skin->TimerIsRunning(info.GetData3()) : false;
       return true;
     }
     default:

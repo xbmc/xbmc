@@ -422,7 +422,9 @@ bool GUIFontManager::LoadFontsFromFile(const std::string& fontsetFilePath,
   if (LoadXMLData(fontsetFilePath, xmlDoc))
   {
     TiXmlElement* rootElement = xmlDoc.RootElement();
-    g_SkinInfo->ResolveIncludes(rootElement);
+    auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+    if (skin)
+      skin->ResolveIncludes(rootElement);
     const TiXmlElement* fontsetElement = rootElement->FirstChildElement("fontset");
     while (fontsetElement)
     {
@@ -450,9 +452,13 @@ bool GUIFontManager::LoadFontsFromFile(const std::string& fontsetFilePath,
 
 void GUIFontManager::LoadFonts(const std::string& fontSet)
 {
+  auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+  if (!skin)
+    return;
+
   std::string firstFontset;
   // Try to load the fontset from Font.xml
-  const std::string fontsetFilePath = g_SkinInfo->GetSkinPath("Font.xml", &m_skinResolution);
+  const std::string fontsetFilePath = skin->GetSkinPath("Font.xml", &m_skinResolution);
   if (LoadFontsFromFile(fontsetFilePath, fontSet, firstFontset))
     return;
 

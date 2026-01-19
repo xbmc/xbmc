@@ -99,8 +99,12 @@ namespace XBMCAddon
       Window(true)
     {
       XBMC_TRACE;
+      auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+      if (!skin)
+        return;
+
       RESOLUTION_INFO res;
-      std::string strSkinPath = g_SkinInfo->GetSkinPath(xmlFilename, &res);
+      std::string strSkinPath = skin->GetSkinPath(xmlFilename, &res);
       m_isMedia = isMedia;
 
       if (!CFileUtils::Exists(strSkinPath))
@@ -112,9 +116,9 @@ namespace XBMCAddon
 
         // Check for the matching folder for the skin in the fallback skins folder
         std::string fallbackPath = URIUtils::AddFileToFolder(scriptPath, "resources", "skins");
-        std::string basePath = URIUtils::AddFileToFolder(fallbackPath, g_SkinInfo->ID());
+        std::string basePath = URIUtils::AddFileToFolder(fallbackPath, skin->ID());
 
-        strSkinPath = g_SkinInfo->GetSkinPath(xmlFilename, &res, basePath);
+        strSkinPath = skin->GetSkinPath(xmlFilename, &res, basePath);
 
         // Check for the matching folder for the skin in the fallback skins folder (if it exists)
         if (CFileUtils::Exists(basePath))

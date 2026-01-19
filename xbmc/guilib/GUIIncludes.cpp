@@ -214,7 +214,8 @@ void CGUIIncludes::LoadIncludes(const TiXmlElement *node)
     }
     else if (child->Attribute("file"))
     {
-      std::string file = g_SkinInfo->GetSkinPath(child->Attribute("file"));
+      auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+      std::string file = skin ? skin->GetSkinPath(child->Attribute("file")) : "";
       const char *condition = child->Attribute("condition");
 
       if (condition)
@@ -419,7 +420,9 @@ void CGUIIncludes::ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, b
       }
       else
       {
-        Load(g_SkinInfo->GetSkinPath(file));
+        auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+        if (skin)
+          Load(skin->GetSkinPath(file));
       }
     }
 

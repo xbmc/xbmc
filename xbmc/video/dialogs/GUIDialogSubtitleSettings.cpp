@@ -285,7 +285,8 @@ void CGUIDialogSubtitleSettings::InitializeSettings()
     return;
   }
 
-  bool usePopup = g_SkinInfo->HasSkinFile("DialogSlider.xml");
+  auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+  const bool usePopup = skin && skin->HasSkinFile("DialogSlider.xml");
 
   const CVideoSettings videoSettings = appPlayer->GetVideoSettings();
 

@@ -704,7 +704,8 @@ bool CGUIWindowPVRGuideBase::OnContextButtonNavigate(CONTEXT_BUTTON button)
 
   if (button == CONTEXT_BUTTON_NAVIGATE)
   {
-    if (g_SkinInfo->HasSkinFile("DialogPVRGuideControls.xml"))
+    auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+    if (skin && skin->HasSkinFile("DialogPVRGuideControls.xml"))
     {
       // use controls dialog
       CGUIDialog* dialog =

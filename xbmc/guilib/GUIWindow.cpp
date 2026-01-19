@@ -70,7 +70,8 @@ CGUIWindow::~CGUIWindow()
 
 bool CGUIWindow::Load(const std::string& strFileName, bool bContainsPath)
 {
-  if (m_windowLoaded || !g_SkinInfo)
+  auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+  if (m_windowLoaded || !skin)
     return true;      // no point loading if it's already there
 
 #ifdef _DEBUG
@@ -103,8 +104,8 @@ bool CGUIWindow::Load(const std::string& strFileName, bool bContainsPath)
     // FIXME: strLowerPath needs to eventually go since resToUse can get incorrectly overridden
     std::string strFileNameLower = strFileName;
     StringUtils::ToLower(strFileNameLower);
-    strLowerPath =  g_SkinInfo->GetSkinPath(strFileNameLower, &m_coordsRes);
-    strPath = g_SkinInfo->GetSkinPath(strFileName, &m_coordsRes);
+    strLowerPath = skin->GetSkinPath(strFileNameLower, &m_coordsRes);
+    strPath = skin->GetSkinPath(strFileName, &m_coordsRes);
   }
 
   bool ret = LoadXML(strPath, strLowerPath);
@@ -166,7 +167,9 @@ std::unique_ptr<TiXmlElement> CGUIWindow::Prepare(const std::unique_ptr<TiXmlEle
 
   // Resolve any includes, constants, expressions that may be present
   // and save include's conditions to the given map
-  g_SkinInfo->ResolveIncludes(preparedRoot.get(), &m_xmlIncludeConditions);
+  auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+  if (skin)
+    skin->ResolveIncludes(preparedRoot.get(), &m_xmlIncludeConditions);
 
   return preparedRoot;
 }
