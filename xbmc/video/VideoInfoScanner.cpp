@@ -1243,7 +1243,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
         if (!alreadyHasArt && !item->IsPlugin() && scraper->ID() != "metadata.local")
         {
           CVideoInfoDownloader loader(scraper);
-          loader.GetArtwork(showInfo);
+          CVideoInfoTag tag{showInfo};
+          loader.GetArtwork(tag); // Can alter other fields in the tag
+          showInfo.m_strPictureURL = tag.m_strPictureURL; // We only want artwork
         }
         const UseRemoteArtWithLocalScraper useRemoteArt{
             scraper->ID() == "metadata.local" && m_advancedSettings->m_bNoRemoteArtWithLocalScraper
@@ -2754,11 +2756,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       }
       for (int season = -1; season <= maxSeasons; season++)
       {
-        // skip if we already have some art
-        const auto it = seasonArt.find(season);
-        if (it != seasonArt.end() && !it->second.empty())
-          continue;
-
+        // Look for local art irrespective of scraper/existing art as it takes priority
         KODI::ART::Artwork art;
         std::string basePath;
         if (season == -1)
