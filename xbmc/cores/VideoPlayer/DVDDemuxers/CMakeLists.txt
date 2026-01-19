@@ -2,6 +2,11 @@ set(SOURCES DemuxMultiSource.cpp
             DVDDemux.cpp
             DVDDemuxBXA.cpp
             DVDDemuxCC.cpp
+            DVDDemuxCC/CCBitstreamParserFactory.cpp
+            DVDDemuxCC/H264AnnexBBitstreamParser.cpp
+            DVDDemuxCC/H264AVCCBitstreamParser.cpp
+            DVDDemuxCC/H264CCBitstreamParser.cpp
+            DVDDemuxCC/MPEG2CCBitstreamParser.cpp
             DVDDemuxCDDA.cpp
             DVDDemuxClient.cpp
             DVDDemuxFFmpeg.cpp
@@ -13,6 +18,14 @@ set(HEADERS DemuxMultiSource.h
             DVDDemux.h
             DVDDemuxBXA.h
             DVDDemuxCC.h
+            DVDDemuxCC/Bitstream.h
+            DVDDemuxCC/CaptionBlock.h
+            DVDDemuxCC/CCBitstreamParserFactory.h
+            DVDDemuxCC/H264AnnexBBitstreamParser.h
+            DVDDemuxCC/H264AVCCBitstreamParser.h
+            DVDDemuxCC/H264CCBitstreamParser.h
+            DVDDemuxCC/ICCBitstreamParser.h
+            DVDDemuxCC/MPEG2CCBitstreamParser.h
             DVDDemuxCDDA.h
             DVDDemuxClient.h
             DVDDemuxFFmpeg.h
