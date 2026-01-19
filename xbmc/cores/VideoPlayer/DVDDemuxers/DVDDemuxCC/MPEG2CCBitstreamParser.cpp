@@ -81,20 +81,19 @@ void CMPEG2CCBitstreamParser::ProcessGA94UserData(std::span<const uint8_t> buf,
                                                   std::vector<CCaptionBlock>& tempBuffer,
                                                   std::vector<CCaptionBlock>& reorderBuffer)
 {
-  // GA94 format: 'G' 'A' '9' '4' 0x03 flags cc_data...
+  // GA94 format: 'G' 'A' '9' '4' 0x03 flags ccData...
   // buf[4] should be 0x03 (user_data_type_code)
-  // buf[5] contains flags and cc_count
-  if (buf[4] != 3 || !(buf[5] & 0x40)) // Check user_data_type_code and process_cc_data_flag
+  // buf[5] contains flags and ccCount
+  if (buf[4] != 3 || !(buf[5] & 0x40)) // Check user_data_type_code and process_ccData_flag
   {
-    CLog::LogF(LOGDEBUG, "Invalid GA94 user_data_type_code or process_cc_data_flag not set");
+    CLog::LogF(LOGDEBUG, "Invalid GA94 user_data_type_code or process_ccData_flag not set");
     return;
   }
 
-  unsigned cc_count = buf[5] & 0x1f;
-  if (cc_count == 0 || buf.size() < 7 + cc_count * 3)
+  unsigned ccCount = buf[5] & 0x1f;
+  if (ccCount == 0 || buf.size() < 7 + ccCount * 3)
   {
-    CLog::LogF(LOGDEBUG, "Invalid cc_count ({}) or insufficient data (len={})", cc_count,
-               buf.size());
+    CLog::LogF(LOGDEBUG, "Invalid ccCount ({}) or insufficient data (len={})", ccCount, buf.size());
     return;
   }
 
@@ -102,14 +101,14 @@ void CMPEG2CCBitstreamParser::ProcessGA94UserData(std::span<const uint8_t> buf,
   // Non-reference frames (B) go directly to reorder buffer
   if (picType == CCPictureType::I_FRAME || picType == CCPictureType::P_FRAME)
   {
-    CCaptionBlock& cb = tempBuffer.emplace_back(cc_count * 3);
-    std::copy_n(buf.begin() + 7, cc_count * 3, cb.m_data.data());
+    CCaptionBlock& cb = tempBuffer.emplace_back(ccCount * 3);
+    std::copy_n(buf.begin() + 7, ccCount * 3, cb.m_data.data());
     cb.m_pts = pts;
   }
   else
   {
-    CCaptionBlock& cb = reorderBuffer.emplace_back(cc_count * 3);
-    std::copy_n(buf.data() + 7, cc_count * 3, cb.m_data.data());
+    CCaptionBlock& cb = reorderBuffer.emplace_back(ccCount * 3);
+    std::copy_n(buf.data() + 7, ccCount * 3, cb.m_data.data());
     cb.m_pts = pts;
   }
 }
@@ -120,31 +119,31 @@ void CMPEG2CCBitstreamParser::ProcessCCUserData(std::span<const uint8_t> buf,
 {
   // CC format (SCTE-20): 'C' 'C' 0x01 ...
   // buf[3] is reserved
-  // buf[4] contains field information and cc_count
+  // buf[4] contains field information and ccCount
 
   int oddidx = (buf[4] & 0x80) ? 0 : 1;
-  unsigned cc_count = (buf[4] & 0x3e) >> 1;
+  unsigned ccCount = (buf[4] & 0x3e) >> 1;
   int extrafield = buf[4] & 0x01;
 
   if (extrafield)
-    cc_count++;
+    ccCount++;
 
-  if (cc_count == 0 || buf.size() < 5 + cc_count * 3 * 2)
+  if (ccCount == 0 || buf.size() < 5 + ccCount * 3 * 2)
   {
-    CLog::LogF(LOGDEBUG, "Invalid CC user data: cc_count={}, len={}", cc_count, buf.size());
+    CLog::LogF(LOGDEBUG, "Invalid CC user data: ccCount={}, len={}", ccCount, buf.size());
     return;
   }
 
-  reorderBuffer.emplace_back(cc_count * 3);
+  reorderBuffer.emplace_back(ccCount * 3);
   const uint8_t* src = buf.data() + 5;
   uint8_t* dst = reorderBuffer.back().m_data.data();
   int bytesWritten = 0;
 
-  for (size_t i = 0; i < cc_count; i++)
+  for (size_t i = 0; i < ccCount; i++)
   {
     for (int j = 0; j < 2; j++)
     {
-      if (i == cc_count - 1 && extrafield && j == 1)
+      if (i == ccCount - 1 && extrafield && j == 1)
         break;
 
       // Check if this is valid CC data for the current field

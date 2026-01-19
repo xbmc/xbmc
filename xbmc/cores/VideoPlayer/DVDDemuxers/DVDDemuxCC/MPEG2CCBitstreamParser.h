@@ -47,8 +47,8 @@ private:
   /*!
    * \brief Process GA94 format user data
    *
-   * GA94 format: 'G''A''9''4' 0x03 flags cc_data...
-   * Extracts cc_count and cc_data triplets.
+   * GA94 format: 'G''A''9''4' 0x03 flags ccData...
+   * Extracts ccCount and ccData triplets.
    */
   void ProcessGA94UserData(std::span<const uint8_t> buf,
                            double pts,

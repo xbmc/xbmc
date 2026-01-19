@@ -52,25 +52,25 @@ void CH264CCBitstreamParser::ProcessSEIPayload(std::span<const uint8_t> buf,
     return;
   }
 
-  // GA94 format: 'G' 'A' '9' '4' 0x03 flags cc_data...
+  // GA94 format: 'G' 'A' '9' '4' 0x03 flags ccData...
   std::span<const uint8_t> userdata = buf.subspan(gaOffset);
 
-  // Check process_cc_data_flag (bit 6 of flags byte)
+  // Check process_ccData_flag (bit 6 of flags byte)
   if (userdata.size() < 5 || !(userdata[5] & 0x40))
   {
     CLog::LogF(LOGDEBUG, "Invalid GA94 flags or payload too small");
     return;
   }
 
-  unsigned cc_count = userdata[5] & 0x1f;
-  if (cc_count == 0 || userdata.size() < 7 + cc_count * 3)
+  unsigned ccCount = userdata[5] & 0x1f;
+  if (ccCount == 0 || userdata.size() < 7 + ccCount * 3)
   {
-    CLog::LogF(LOGDEBUG, "Invalid cc_count ({}) or insufficient data", cc_count);
+    CLog::LogF(LOGDEBUG, "Invalid ccCount ({}) or insufficient data", ccCount);
     return;
   }
 
-  CCaptionBlock& cb = tempBuffer.emplace_back(cc_count * 3);
-  std::copy_n(userdata.begin() + 7, cc_count * 3, cb.m_data.begin());
+  CCaptionBlock& cb = tempBuffer.emplace_back(ccCount * 3);
+  std::copy_n(userdata.begin() + 7, ccCount * 3, cb.m_data.begin());
   cb.m_pts = pts;
 }
 
