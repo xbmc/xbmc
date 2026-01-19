@@ -900,42 +900,58 @@ initialize:
   if (isPassthrough)
     format.m_dataFormat = AE_FMT_S16NE;
 
-  REFERENCE_TIME bufferHns{period.count() / 100};
-
-  hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_EXCLUSIVE,
-                                  AUDCLNT_STREAMFLAGS_EVENTCALLBACK | AUDCLNT_STREAMFLAGS_NOPERSIST,
-                                  bufferHns, bufferHns, &wfxex.Format, NULL);
-
-  if (hr == AUDCLNT_E_BUFFER_SIZE_NOT_ALIGNED)
+  auto AudioClientInitialize = [this](REFERENCE_TIME periodHns, WAVEFORMATEX* format,
+                                      bool needNewClient) -> HRESULT
   {
-    /* WASAPI requires aligned buffer */
-    /* Get the next aligned frame     */
-    UINT32 numBufferFrames{0};
-    hr = m_pAudioClient->GetBufferSize(&numBufferFrames);
-    if (FAILED(hr))
+    if (needNewClient && m_pAudioClient != nullptr)
     {
-      CLog::LogF(LOGERROR, "GetBufferSize Failed : {}", CWIN32Util::FormatHRESULT(hr));
-      return false;
+      if (HRESULT hr = m_pDevice->Activate(m_pAudioClient.ReleaseAndGetAddressOf()); FAILED(hr))
+      {
+        CLog::LogF(LOGERROR, "Device Activation Failed : {}", CWIN32Util::FormatHRESULT(hr));
+        return hr;
+      }
     }
 
-    bufferHns = static_cast<REFERENCE_TIME>(
-        (10000.0 * 1000 / wfxex.Format.nSamplesPerSec * numBufferFrames) + 0.5);
+    const AUDCLNT_SHAREMODE mode = AUDCLNT_SHAREMODE_EXCLUSIVE;
+    const DWORD flags = AUDCLNT_STREAMFLAGS_EVENTCALLBACK | AUDCLNT_STREAMFLAGS_NOPERSIST;
+    return m_pAudioClient->Initialize(mode, flags, periodHns, periodHns, format, NULL);
+  };
 
-    /* Release the previous allocations */
-    /* Create a new audio client */
-    hr = m_pDevice->Activate(m_pAudioClient.ReleaseAndGetAddressOf());
-    if (FAILED(hr))
+  REFERENCE_TIME bufferHns{period.count() / 100};
+  bool needNewClient = false;
+
+  do
+  {
+    hr = AudioClientInitialize(bufferHns, &wfxex.Format, needNewClient);
+
+    if (hr == AUDCLNT_E_BUFFER_SIZE_NOT_ALIGNED)
     {
-      CLog::LogF(LOGERROR, "Device Activation Failed : {}", CWIN32Util::FormatHRESULT(hr));
-      return false;
-    }
+      // WASAPI requires aligned buffer. Get the next aligned frame
+      UINT32 numBufferFrames;
+      if (FAILED(hr = m_pAudioClient->GetBufferSize(&numBufferFrames)))
+      {
+        CLog::LogF(LOGERROR, "GetBufferSize Failed : {}", CWIN32Util::FormatHRESULT(hr));
+        return false;
+      }
 
-    /* Open the stream and associate it with an audio session */
-    hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_EXCLUSIVE,
-                                    AUDCLNT_STREAMFLAGS_EVENTCALLBACK |
-                                        AUDCLNT_STREAMFLAGS_NOPERSIST,
-                                    bufferHns, bufferHns, &wfxex.Format, NULL);
-  }
+      bufferHns = static_cast<REFERENCE_TIME>(
+          (10000.0 * 1000 / wfxex.Format.nSamplesPerSec * numBufferFrames) + 0.5);
+      needNewClient = true;
+    }
+    else if (hr == AUDCLNT_E_BUFFER_SIZE_ERROR || hr == AUDCLNT_E_INVALID_DEVICE_PERIOD ||
+             hr == E_OUTOFMEMORY)
+    {
+      // Requested buffer was too large, try again with a duration reduced by the min device period
+      bufferHns -= defaultDevicePeriodHns;
+      needNewClient = false;
+    }
+    else
+    {
+      // Success or HRESULT without dedicated handling
+      break;
+    }
+  } while (bufferHns >= defaultDevicePeriodHns);
+
   if (FAILED(hr))
   {
     CLog::LogF(LOGERROR, "Failed to initialize WASAPI in exclusive mode - {}.",
