@@ -22,6 +22,8 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <iterator>
+#include <ranges>
 #include <utility>
 
 namespace COLOR = KODI::UTILS::COLOR;
@@ -172,11 +174,7 @@ DemuxPacket* CDVDDemuxCC::Read(DemuxPacket *pSrcPacket)
   }
 
   // Move temp buffer to reorder buffer
-  while (!m_ccTempBuffer.empty())
-  {
-    m_ccReorderBuffer.push_back(std::move(m_ccTempBuffer.back()));
-    m_ccTempBuffer.pop_back();
-  }
+  std::ranges::move(std::views::reverse(m_ccTempBuffer), std::back_inserter(m_ccReorderBuffer));
 
   if (!m_parser)
   {
