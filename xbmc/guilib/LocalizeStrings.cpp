@@ -204,7 +204,7 @@ bool CLocalizeStrings::LoadAddonStrings(const std::string& path, const std::stri
   return m_addonStrings.insert_or_assign(addonId, std::move(strings)).second;
 }
 
-std::string CLocalizeStrings::GetAddonString(const std::string& addonId, uint32_t code) const
+const std::string& CLocalizeStrings::GetAddonString(const std::string& addonId, uint32_t code) const
 {
   std::shared_lock<CSharedSection> lock(m_addonStringsMutex);
   auto i = m_addonStrings.find(addonId);

@@ -45,7 +45,7 @@ public:
                         const std::string& language,
                         const std::string& addonId);
   const std::string& Get(uint32_t code) const;
-  std::string GetAddonString(const std::string& addonId, uint32_t code) const;
+  const std::string& GetAddonString(const std::string& addonId, uint32_t code) const;
 
   /*! \brief Clear all strings for a specific addon
    *  \param addonId the addon ID whose strings should be cleared
