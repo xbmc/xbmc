@@ -2178,7 +2178,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
           std::string filename = ART::GetLocalArtBaseFilename(*pItem, useFolder);
           std::string directory = URIUtils::GetDirectory(filename);
           if (filename != directory)
-            AddLocalItemArtwork(art, artTypes, directory, addAll, exactName);
+            AddLocalItemArtwork(art, artTypes, filename, addAll, exactName);
         }
 
         // Reset useFolder to false as GetLocalArtBaseFilename may modify it in
