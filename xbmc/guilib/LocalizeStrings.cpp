@@ -30,8 +30,11 @@
  \param bSourceLanguage If we are loading the source English strings.po.
  \return false if no strings.po file was loaded.
  */
-static bool LoadPO(const std::string &filename, std::map<uint32_t, LocStr>& strings,
-    std::string &encoding, uint32_t offset = 0 , bool bSourceLanguage = false)
+static bool LoadPO(const std::string& filename,
+                   std::unordered_map<uint32_t, LocStr>& strings,
+                   std::string& encoding,
+                   uint32_t offset = 0,
+                   bool bSourceLanguage = false)
 {
   CPODocument PODoc;
   if (!PODoc.LoadFile(filename))
@@ -95,8 +98,11 @@ static bool LoadPO(const std::string &filename, std::map<uint32_t, LocStr>& stri
  \param offset An offset value to place strings from the id value.
  \return false if no strings.po file was loaded.
  */
-static bool LoadStr2Mem(const std::string &pathname_in, const std::string &language,
-    std::map<uint32_t, LocStr>& strings,  std::string &encoding, uint32_t offset = 0 )
+static bool LoadStr2Mem(const std::string& pathname_in,
+                        const std::string& language,
+                        std::unordered_map<uint32_t, LocStr>& strings,
+                        std::string& encoding,
+                        uint32_t offset = 0)
 {
   std::string pathname = CSpecialProtocol::TranslatePathConvertCase(pathname_in + language);
   if (!XFILE::CDirectory::Exists(pathname))
@@ -119,7 +125,9 @@ static bool LoadStr2Mem(const std::string &pathname_in, const std::string &langu
   return LoadPO(URIUtils::AddFileToFolder(pathname, "strings.po"), strings, encoding, offset, useSourceLang);
 }
 
-static bool LoadWithFallback(const std::string& path, const std::string& language, std::map<uint32_t, LocStr>& strings)
+static bool LoadWithFallback(const std::string& path,
+                             const std::string& language,
+                             std::unordered_map<uint32_t, LocStr>& strings)
 {
   std::string encoding;
   if (!LoadStr2Mem(path, language, strings, encoding))
@@ -141,7 +149,7 @@ CLocalizeStrings::~CLocalizeStrings(void) = default;
 
 bool CLocalizeStrings::Load(const std::string& strPathName, const std::string& strLanguage)
 {
-  std::map<uint32_t, LocStr> strings;
+  std::unordered_map<uint32_t, LocStr> strings;
   if (!LoadWithFallback(strPathName, strLanguage, strings))
     return false;
 
@@ -194,7 +202,7 @@ void CLocalizeStrings::Clear()
 
 bool CLocalizeStrings::LoadAddonStrings(const std::string& path, const std::string& language, const std::string& addonId)
 {
-  std::map<uint32_t, LocStr> strings;
+  std::unordered_map<uint32_t, LocStr> strings;
   if (!LoadWithFallback(path, language, strings))
     return false;
 

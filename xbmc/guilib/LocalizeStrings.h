@@ -16,9 +16,9 @@
 #include "threads/SharedSection.h"
 #include "utils/ILocalizer.h"
 
-#include <map>
 #include <stdint.h>
 #include <string>
+#include <unordered_map>
 
 /*!
  \ingroup strings
@@ -61,10 +61,10 @@ public:
   std::string Localize(std::uint32_t code) const override { return Get(code); }
 
 protected:
-  std::map<uint32_t, LocStr> m_strings;
-  std::map<std::string, std::map<uint32_t, LocStr>> m_addonStrings;
-  typedef std::map<uint32_t, LocStr>::const_iterator ciStrings;
-  typedef std::map<uint32_t, LocStr>::iterator       iStrings;
+  std::unordered_map<uint32_t, LocStr> m_strings;
+  std::unordered_map<std::string, std::unordered_map<uint32_t, LocStr>> m_addonStrings;
+  typedef std::unordered_map<uint32_t, LocStr>::const_iterator ciStrings;
+  typedef std::unordered_map<uint32_t, LocStr>::iterator iStrings;
 
   mutable CSharedSection m_stringsMutex;
   mutable CSharedSection m_addonStringsMutex;
