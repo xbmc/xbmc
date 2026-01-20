@@ -178,7 +178,11 @@ bool CWinSystemWayland::InitWindowSystem()
 #else
   constexpr std::uint32_t maxOutputVersion = 3;
 #endif
-  m_registry->Request<wayland::output_t>(2, maxOutputVersion,
+  std::uint32_t minVersion = 2;
+#ifdef TARGET_WEBOS
+  minVersion = 1; // webOS 1.x-3.x only supports version 1
+#endif
+  m_registry->Request<wayland::output_t>(minVersion, maxOutputVersion,
                                          std::bind(&CWinSystemWayland::OnOutputAdded, this, _1, _2),
                                          std::bind(&CWinSystemWayland::OnOutputRemoved, this, _1));
 
