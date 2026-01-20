@@ -44,6 +44,51 @@ std::string CPlatformWebOS::GetHomePath()
   return path.parent_path().string();
 }
 
+void RelocateWaylandClientIfNeeded(const std::string& homePath)
+{
+  if (WebOSTVPlatformConfig::GetWebOSVersion() <= 3)
+  {
+    std::filesystem::path libDir = homePath + "/staged-lib";
+    std::filesystem::path preloadDir = homePath + "/preload-lib";
+
+    std::error_code ec;
+    std::filesystem::create_directories(preloadDir, ec);
+
+    if (!std::filesystem::exists(libDir))
+    {
+      CLog::Log(LOGERROR, "{} does not exist", libDir.string());
+      return;
+    }
+
+    for (const auto& entry : std::filesystem::directory_iterator(libDir))
+    {
+      auto fname = entry.path().filename().string();
+      if (fname.find("libwayland-client.so") == 0)
+      {
+        auto dest = preloadDir / fname;
+        try
+        {
+          // Try to move first
+          std::filesystem::rename(entry.path(), dest, ec);
+          if (ec)
+          {
+            ec.clear();
+            // If rename fails (e.g. cross‑filesystem), copy instead
+            std::filesystem::copy_file(entry.path(), dest,
+                                       std::filesystem::copy_options::overwrite_existing, ec);
+            if (ec)
+              CLog::Log(LOGERROR, "Failed to copy {}: {}", fname, ec.message());
+          }
+        }
+        catch (const std::exception& ex)
+        {
+          CLog::Log(LOGERROR, "Exception while relocating {}: {}", fname, ex.what());
+        }
+      }
+    }
+  }
+}
+
 bool CPlatformWebOS::InitStageOne()
 {
   // WebOS ipks run in a chroot like std::filesystem::current_pathenvironment
@@ -53,7 +98,6 @@ bool CPlatformWebOS::InitStageOne()
   setenv("APPID", CCompileInfo::GetPackage(), 0);
   setenv("FONTCONFIG_FILE", "/etc/fonts/fonts.conf", 1);
   setenv("FONTCONFIG_PATH", "/etc/fonts", 1);
-  setenv("GST_PLUGIN_SCANNER_1_0", (HOME + "/lib/gst-plugin-scanner").c_str(), 1);
   setenv("XDG_RUNTIME_DIR", "/tmp/xdg", 1);
   setenv("XKB_CONFIG_ROOT", "/usr/share/X11/xkb", 1);
   setenv("WAYLAND_DISPLAY", "wayland-0", 1);
@@ -68,6 +112,11 @@ bool CPlatformWebOS::InitStageOne()
   setenv("KODI_HOME", HOME.c_str(), 1);
   setenv("SSL_CERT_FILE",
          CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 1);
+
+  if (WebOSTVPlatformConfig::GetWebOSVersion() >= 4)
+    setenv("GST_PLUGIN_SCANNER_1_0", (HOME + "/lib/gst-plugin-scanner").c_str(), 1);
+
+  RelocateWaylandClientIfNeeded(HOME);
 
   return CPlatformLinux::InitStageOne();
 }
