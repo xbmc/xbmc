@@ -41,6 +41,8 @@ bool CVideoPlayerVideoWebOS::AcceptsData() const
 
 bool CVideoPlayerVideoWebOS::HasData() const
 {
+  if (!m_mediaPipeline.HasPipeline())
+    return m_mediaPipeline.GetMessageQueueVideoSize() > 0;
   return m_mediaPipeline.HasVideoData();
 }
 
