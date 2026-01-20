@@ -338,6 +338,24 @@ public:
    */
   void GetVideoResolution(unsigned int& width, unsigned int& height) const;
 
+  /**
+   * @brief Get the message queue (video)
+   * @return size of the queue
+   */
+  int GetMessageQueueVideoSize() const { return m_messageQueueVideo.GetDataSize(); }
+
+  /**
+   * @brief Get the message queue (audio)
+   * @return size of the queue
+   */
+  int GetMessageQueueAudioSize() const { return m_messageQueueAudio.GetDataSize(); }
+
+  /**
+   * @brief Check if the GStreamer pipeline exists
+   * @return true if m_pipeline is not nullptr
+   */
+  bool HasPipeline() const { return m_pipeline != nullptr; }
+
 protected:
   /**
    * @brief Video processing thread loop.
@@ -476,6 +494,13 @@ private:
                              int& width,
                              int& height,
                              int& framerate) const;
+
+  /** 
+   * @brief Use the legacy (webOS 3 feed)
+   * @param api starfish media api
+   * @param payload json to feed
+   */
+  static std::unique_ptr<char[]> FeedLegacy(StarfishMediaAPIs* api, const char* payload);
 
   static constexpr std::chrono::nanoseconds NO_PTS{-1};
 
