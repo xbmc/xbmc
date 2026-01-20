@@ -169,7 +169,13 @@ bool CWinSystemWayland::InitWindowSystem()
   m_registry->RequestSingleton(m_presentation, 1, 1, false);
   // version 2 adds done() -> required
   // version 3 adds destructor -> optional
-  m_registry->Request<wayland::output_t>(2, 3, std::bind(&CWinSystemWayland::OnOutputAdded, this, _1, _2), std::bind(&CWinSystemWayland::OnOutputRemoved, this, _1));
+  std::uint32_t minVersion = 2;
+#ifdef TARGET_WEBOS
+  minVersion = 1; // webOS 1.x-3.x only supports version 1
+#endif
+  m_registry->Request<wayland::output_t>(minVersion, 3,
+                                         std::bind(&CWinSystemWayland::OnOutputAdded, this, _1, _2),
+                                         std::bind(&CWinSystemWayland::OnOutputRemoved, this, _1));
 
   m_registry->Bind();
 
