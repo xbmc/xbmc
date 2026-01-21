@@ -987,10 +987,11 @@ void CAESinkWASAPI::Drain()
   if(!m_pAudioClient)
     return;
 
-  AEDelayStatus status;
-  GetDelay(status);
+  WriteLastBuffer();
 
-  KODI::TIME::Sleep(std::chrono::milliseconds(static_cast<int>(status.GetDelay() * 500)));
+  // Wait for last data in buffer to play before stopping (current buffer + WriteLastBuffer).
+  // If WriteLastBuffer() fails, it doesn't matter wait for the time of two buffers anyway.
+  KODI::TIME::Sleep(std::chrono::milliseconds(static_cast<int>(m_sinkLatency * 1000)));
 
   if (m_running)
   {
@@ -1006,4 +1007,64 @@ void CAESinkWASAPI::Drain()
     }
   }
   m_running = false;
+}
+
+void CAESinkWASAPI::WriteLastBuffer()
+{
+  if (!m_initialized || !m_running)
+    return;
+
+  // complete pending m_buffer with silence or generate one new m_buffer of silence
+  uint8_t* buffer = m_buffer.data();
+  unsigned int frames = m_format.m_frames;
+  if (m_bufferPtr != 0)
+  {
+    frames = m_format.m_frames - m_bufferPtr;
+    buffer += m_bufferPtr * m_format.m_frameSize;
+  }
+  CAEUtil::GenerateSilence(m_format.m_dataFormat, m_format.m_frameSize, buffer, frames);
+
+  LARGE_INTEGER timerStart{};
+  QueryPerformanceCounter(&timerStart);
+
+  // wait for buffer available
+  if (WaitForSingleObject(m_needDataEvent, 1100) != WAIT_OBJECT_0)
+  {
+    CLog::LogF(LOGERROR, "Endpoint Buffer timed out");
+    return;
+  }
+
+  LARGE_INTEGER timerStop{};
+  QueryPerformanceCounter(&timerStop);
+  const LONGLONG timerDiff = timerStop.QuadPart - timerStart.QuadPart;
+  const double timerElapsed = static_cast<double>(timerDiff) * 1000.0 / m_timerFreq.QuadPart;
+
+  if (timerElapsed < 3.0)
+  {
+    CLog::LogF(LOGWARNING, "Dropped last buffer data because there is a possible buffer underrun");
+    return;
+  }
+
+  // get buffer to write data
+  BYTE* buf;
+  HRESULT hr = m_pRenderClient->GetBuffer(m_format.m_frames, &buf);
+  if (FAILED(hr))
+  {
+    CLog::LogF(LOGERROR, "GetBuffer failed due to {}", CWIN32Util::FormatHRESULT(hr));
+    return;
+  }
+
+  // fill buffer
+  memcpy(buf, m_buffer.data(), m_format.m_frames * m_format.m_frameSize);
+
+  // pass back to the audio driver
+  hr = m_pRenderClient->ReleaseBuffer(m_format.m_frames, 0);
+  if (FAILED(hr))
+  {
+    CLog::LogF(LOGERROR, "ReleaseBuffer failed due to {}.", CWIN32Util::FormatHRESULT(hr));
+    return;
+  }
+
+  m_sinkFrames += m_format.m_frames;
+  m_bufferPtr = 0;
 }
