@@ -72,7 +72,6 @@ void ParseDatabaseSettings(const TiXmlElement* element, DatabaseSettings& settin
   XMLUtils::GetString(element, "capath", settings.capath);
   XMLUtils::GetString(element, "ciphers", settings.ciphers);
   XMLUtils::GetUInt(element, "connecttimeout", settings.connecttimeout, 1, 300);
-  XMLUtils::GetBoolean(element, "enforcessl", settings.enforceSsl);
   XMLUtils::GetBoolean(element, "compression", settings.compression);
 }
 } // unnamed namespace
