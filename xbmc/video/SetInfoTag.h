@@ -8,7 +8,9 @@
 
 #pragma once
 
-#include "VideoThumbLoader.h"
+#include "utils/Artwork.h"
+#include "utils/IArchivable.h"
+#include "utils/ISerializable.h"
 
 #include <string>
 #include <string_view>

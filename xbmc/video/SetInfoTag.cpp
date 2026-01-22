@@ -8,7 +8,6 @@
 
 #include "SetInfoTag.h"
 
-#include "VideoThumbLoader.h"
 #include "utils/Archive.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
