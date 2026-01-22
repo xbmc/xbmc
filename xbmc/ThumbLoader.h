@@ -10,6 +10,7 @@
 
 #include "BackgroundInfoLoader.h"
 
+#include <memory>
 #include <string>
 
 class CTextureDatabase;
@@ -47,7 +48,7 @@ public:
   virtual void SetCachedImage(const CFileItem &item, const std::string &type, const std::string &image);
 
 protected:
-  CTextureDatabase *m_textureDatabase;
+  std::unique_ptr<CTextureDatabase> m_textureDatabase;
 };
 
 class CProgramThumbLoader : public CThumbLoader
