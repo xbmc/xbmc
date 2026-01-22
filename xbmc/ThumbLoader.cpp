@@ -16,16 +16,11 @@
 
 using namespace KODI;
 
-CThumbLoader::CThumbLoader() :
-  CBackgroundInfoLoader()
+CThumbLoader::CThumbLoader() : m_textureDatabase(std::make_unique<CTextureDatabase>())
 {
-  m_textureDatabase = new CTextureDatabase();
 }
 
-CThumbLoader::~CThumbLoader()
-{
-  delete m_textureDatabase;
-}
+CThumbLoader::~CThumbLoader() = default;
 
 void CThumbLoader::OnLoaderStart()
 {
