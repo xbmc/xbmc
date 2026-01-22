@@ -20,6 +20,9 @@ public:
   CThumbLoader();
   ~CThumbLoader() override;
 
+  CThumbLoader(const CThumbLoader&) = delete;
+  CThumbLoader& operator=(const CThumbLoader&) = delete;
+
   void OnLoaderStart() override;
   void OnLoaderFinish() override;
 
@@ -52,6 +55,10 @@ class CProgramThumbLoader : public CThumbLoader
 public:
   CProgramThumbLoader();
   ~CProgramThumbLoader() override;
+
+  CProgramThumbLoader(const CProgramThumbLoader&) = delete;
+  CProgramThumbLoader& operator=(const CProgramThumbLoader&) = delete;
+
   bool LoadItem(CFileItem* pItem) override;
   bool LoadItemCached(CFileItem* pItem) override;
   bool LoadItemLookup(CFileItem* pItem) override;
