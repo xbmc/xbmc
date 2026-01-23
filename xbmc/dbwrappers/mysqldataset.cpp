@@ -179,12 +179,13 @@ int MysqlDatabase::connect(bool create_new)
     if (!conn)
     {
       conn = mysql_init(conn);
-      mysql_ssl_set(conn, key.empty() ? nullptr : key.c_str(),
-                    cert.empty() ? nullptr : cert.c_str(), ca.empty() ? nullptr : ca.c_str(),
-                    capath.empty() ? nullptr : capath.c_str(),
-                    ciphers.empty() ? nullptr : ciphers.c_str());
-      my_bool enforce_tls = enforceSsl;
-      mysql_options(conn, MYSQL_OPT_SSL_ENFORCE, (void*)&enforce_tls);
+      if (!key.empty() || !cert.empty() || !ca.empty() || !capath.empty() || !ciphers.empty())
+      {
+        mysql_ssl_set(conn, key.empty() ? nullptr : key.c_str(),
+                      cert.empty() ? nullptr : cert.c_str(), ca.empty() ? nullptr : ca.c_str(),
+                      capath.empty() ? nullptr : capath.c_str(),
+                      ciphers.empty() ? nullptr : ciphers.c_str());
+      }
       mysql_options(conn, MYSQL_OPT_CONNECT_TIMEOUT, &connect_timeout);
     }
 

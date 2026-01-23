@@ -46,7 +46,6 @@ int Database::connectFull(const char* newHost,
                           const char* newCA,
                           const char* newCApath,
                           const char* newCiphers,
-                          bool newEnforceSsl,
                           bool newCompression)
 {
   host = newHost;
@@ -59,7 +58,6 @@ int Database::connectFull(const char* newHost,
   ca = newCA;
   capath = newCApath;
   ciphers = newCiphers;
-  enforceSsl = newEnforceSsl;
   compression = newCompression;
 
   return connect(true);

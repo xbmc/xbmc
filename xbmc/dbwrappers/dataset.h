@@ -64,7 +64,6 @@ protected:
   std::string ca;
   std::string capath;
   std::string ciphers; // SSL - Encryption info
-  bool enforceSsl{false};
   unsigned int connect_timeout; // seconds
 
 public:
@@ -108,7 +107,6 @@ public:
                          const char* newCApath,
                          const char* newCiphers,
                          unsigned int newConnectTimeout,
-                         bool newEnforceSsl,
                          bool newCompression)
   {
     key = newKey;
@@ -117,7 +115,6 @@ public:
     capath = newCApath;
     ciphers = newCiphers;
     connect_timeout = newConnectTimeout;
-    enforceSsl = newEnforceSsl;
     compression = newCompression;
   }
 
@@ -139,7 +136,6 @@ public:
                           const char* newCA = nullptr,
                           const char* newCApath = nullptr,
                           const char* newCiphers = nullptr,
-                          bool newEnforceSsl = false,
                           bool newCompression = false);
   virtual void disconnect() { active = false; }
   virtual int postconnect() { return DB_COMMAND_OK; }
