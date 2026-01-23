@@ -29,6 +29,7 @@
 #include "events/NotificationEvent.h"
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
+#include "guilib/LocalizeStrings.h"
 #include "jobs/JobManager.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
@@ -794,6 +795,7 @@ void CAddonMgr::OnPostUnInstall(const std::string& id)
   std::unique_lock lock(m_critSection);
   m_disabled.erase(id);
   RemoveAllUpdateRulesFromList(id);
+  g_localizeStrings.ClearAddonStrings(id);
   m_events.Publish(AddonEvents::UnInstalled(id));
 }
 

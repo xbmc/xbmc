@@ -49,9 +49,6 @@ public:
 
   /*! \brief Clear all strings for a specific addon
    *  \param addonId the addon ID whose strings should be cleared
-   *  \note Currently only skins call this on unload. Other addons don't cleanup strings on
-   *        uninstall/deactivate, which should be addressed in a future PR.
-   *  \todo Extend addon lifecycle to call ClearAddonStrings when any addon is uninstalled or disabled
    */
   void ClearAddonStrings(const std::string& addonId);
 
