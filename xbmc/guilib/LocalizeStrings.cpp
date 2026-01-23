@@ -30,8 +30,11 @@
  \param bSourceLanguage If we are loading the source English strings.po.
  \return false if no strings.po file was loaded.
  */
-static bool LoadPO(const std::string &filename, std::map<uint32_t, LocStr>& strings,
-    std::string &encoding, uint32_t offset = 0 , bool bSourceLanguage = false)
+static bool LoadPO(const std::string& filename,
+                   std::unordered_map<uint32_t, LocStr>& strings,
+                   std::string& encoding,
+                   uint32_t offset = 0,
+                   bool bSourceLanguage = false)
 {
   CPODocument PODoc;
   if (!PODoc.LoadFile(filename))
@@ -95,8 +98,11 @@ static bool LoadPO(const std::string &filename, std::map<uint32_t, LocStr>& stri
  \param offset An offset value to place strings from the id value.
  \return false if no strings.po file was loaded.
  */
-static bool LoadStr2Mem(const std::string &pathname_in, const std::string &language,
-    std::map<uint32_t, LocStr>& strings,  std::string &encoding, uint32_t offset = 0 )
+static bool LoadStr2Mem(const std::string& pathname_in,
+                        const std::string& language,
+                        std::unordered_map<uint32_t, LocStr>& strings,
+                        std::string& encoding,
+                        uint32_t offset = 0)
 {
   std::string pathname = CSpecialProtocol::TranslatePathConvertCase(pathname_in + language);
   if (!XFILE::CDirectory::Exists(pathname))
@@ -119,7 +125,9 @@ static bool LoadStr2Mem(const std::string &pathname_in, const std::string &langu
   return LoadPO(URIUtils::AddFileToFolder(pathname, "strings.po"), strings, encoding, offset, useSourceLang);
 }
 
-static bool LoadWithFallback(const std::string& path, const std::string& language, std::map<uint32_t, LocStr>& strings)
+static bool LoadWithFallback(const std::string& path,
+                             const std::string& language,
+                             std::unordered_map<uint32_t, LocStr>& strings)
 {
   std::string encoding;
   if (!LoadStr2Mem(path, language, strings, encoding))
@@ -139,25 +147,9 @@ CLocalizeStrings::CLocalizeStrings(void) = default;
 
 CLocalizeStrings::~CLocalizeStrings(void) = default;
 
-void CLocalizeStrings::ClearSkinStrings()
-{
-  // clear the skin strings
-  std::unique_lock<CSharedSection> lock(m_stringsMutex);
-  Clear(31000, 31999);
-}
-
-bool CLocalizeStrings::LoadSkinStrings(const std::string& path, const std::string& language)
-{
-  //! @todo shouldn't hold lock while loading file
-  std::unique_lock<CSharedSection> lock(m_stringsMutex);
-  ClearSkinStrings();
-  // load the skin strings in.
-  return LoadWithFallback(path, language, m_strings);
-}
-
 bool CLocalizeStrings::Load(const std::string& strPathName, const std::string& strLanguage)
 {
-  std::map<uint32_t, LocStr> strings;
+  std::unordered_map<uint32_t, LocStr> strings;
   if (!LoadWithFallback(strPathName, strLanguage, strings))
     return false;
 
@@ -208,34 +200,19 @@ void CLocalizeStrings::Clear()
   m_strings.clear();
 }
 
-void CLocalizeStrings::Clear(uint32_t start, uint32_t end)
-{
-  std::unique_lock<CSharedSection> lock(m_stringsMutex);
-  iStrings it = m_strings.begin();
-  while (it != m_strings.end())
-  {
-    if (it->first >= start && it->first <= end)
-      m_strings.erase(it++);
-    else
-      ++it;
-  }
-}
-
 bool CLocalizeStrings::LoadAddonStrings(const std::string& path, const std::string& language, const std::string& addonId)
 {
-  std::map<uint32_t, LocStr> strings;
+  std::unordered_map<uint32_t, LocStr> strings;
   if (!LoadWithFallback(path, language, strings))
     return false;
 
   std::unique_lock<CSharedSection> lock(m_addonStringsMutex);
-  auto it = m_addonStrings.find(addonId);
-  if (it != m_addonStrings.end())
-    m_addonStrings.erase(it);
+  m_addonStrings.erase(addonId);
 
-  return m_addonStrings.emplace(std::string(addonId), std::move(strings)).second;
+  return m_addonStrings.insert_or_assign(addonId, std::move(strings)).second;
 }
 
-std::string CLocalizeStrings::GetAddonString(const std::string& addonId, uint32_t code)
+const std::string& CLocalizeStrings::GetAddonString(const std::string& addonId, uint32_t code) const
 {
   std::shared_lock<CSharedSection> lock(m_addonStringsMutex);
   auto i = m_addonStrings.find(addonId);
@@ -247,4 +224,10 @@ std::string CLocalizeStrings::GetAddonString(const std::string& addonId, uint32_
     return StringUtils::Empty;
 
   return j->second.strTranslated;
+}
+
+void CLocalizeStrings::ClearAddonStrings(const std::string& addonId)
+{
+  std::unique_lock<CSharedSection> lock(m_addonStringsMutex);
+  m_addonStrings.erase(addonId);
 }

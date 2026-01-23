@@ -647,6 +647,20 @@ void CGUIControlFactory::GetInfoLabel(const TiXmlNode* pControlNode,
     infoLabel = labels[0];
 }
 
+namespace
+{
+std::string GetLocalizedString(uint32_t id)
+{
+  auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+  if (skin && ADDON::IsSkinStringId(id))
+  {
+    return g_localizeStrings.GetAddonString(skin->ID(), id);
+  }
+
+  return g_localizeStrings.Get(id);
+}
+} // namespace
+
 bool CGUIControlFactory::GetInfoLabelFromElement(const TiXmlElement* element,
                                                  GUIINFO::CGUIInfoLabel& infoLabel,
                                                  int parentID)
@@ -660,9 +674,10 @@ bool CGUIControlFactory::GetInfoLabelFromElement(const TiXmlElement* element,
 
   std::string fallback = XMLUtils::GetAttribute(element, "fallback");
   if (StringUtils::IsNaturalNumber(label))
-    label = g_localizeStrings.Get(atoi(label.c_str()));
+    label = GetLocalizedString(std::atoi(label.c_str()));
+
   if (StringUtils::IsNaturalNumber(fallback))
-    fallback = g_localizeStrings.Get(atoi(fallback.c_str()));
+    fallback = GetLocalizedString(std::atoi(fallback.c_str()));
   else
     g_charsetConverter.unknownToUTF8(fallback);
   infoLabel.SetLabel(label, fallback, parentID);
