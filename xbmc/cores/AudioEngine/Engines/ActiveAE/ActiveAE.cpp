@@ -375,6 +375,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
             par->stream->m_resampleMode = par->parameter.int_par;
             par->stream->m_resampleIntegral = 0.0;
           }
+          ConfigureLowLatency();
           return;
         default:
           break;
@@ -1436,36 +1437,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
     m_sinkBuffers->Create(MAX_WATER_LEVEL*1000, true, false);
   }
 
-  // Configure buffer level ramp-up when low latency mode is enabled
-  // Resample OFF --> from ~20ms to ~200ms
-  // Resample ON --> from ~100ms to ~200ms
-  // Low latency OFF --> constant to ~200ms (no ramp-up)
-  // The increment is added to avoid ambiguous float comparisons (0.0199999 instead of 0.020001)
-  if (m_settings.lowLatencyMode)
-  {
-    bool resample = false;
-    if (!m_streams.empty())
-    {
-      for (const auto& stream : m_streams)
-      {
-        if (stream->m_streamResampleMode != 0)
-        {
-          resample = true;
-          break;
-        }
-      }
-    }
-    if (resample)
-      m_initialTargetBufferLevel = MIN_WATER_LEVEL_RESAMPLE + BUFFER_LEVEL_INCREMENT;
-    else
-      m_initialTargetBufferLevel = MIN_WATER_LEVEL + BUFFER_LEVEL_INCREMENT;
-
-    m_targetBufferLevel = m_initialTargetBufferLevel;
-  }
-  else
-  {
-    m_targetBufferLevel = MAX_WATER_LEVEL + BUFFER_LEVEL_INCREMENT;
-  }
+  ConfigureLowLatency();
 
   // reset gui sounds
   if (!CompareFormat(oldInternalFormat, m_internalFormat))
@@ -1680,6 +1652,44 @@ void CActiveAE::ChangeResamplers()
         m_settings.normalizelevels, m_settings.stereoupmix, m_settings.resampleQuality,
         m_settings.mixSubLevel);
   }
+}
+
+// Configure buffer level ramp-up when low latency mode is enabled
+// Resample OFF --> from ~20ms to ~200ms
+// Resample ON --> from ~100ms to ~200ms
+// Low latency OFF --> constant to ~200ms (no ramp-up)
+// The increment is added to avoid ambiguous float comparisons (0.0199999 instead of 0.020001)
+void CActiveAE::ConfigureLowLatency()
+{
+  bool resample{false};
+
+  if (m_settings.lowLatencyMode)
+  {
+    if (!m_streams.empty())
+    {
+      for (const auto& stream : m_streams)
+      {
+        if (stream->m_streamResampleMode != 0 || stream->m_resampleMode != 0)
+        {
+          resample = true;
+          break;
+        }
+      }
+    }
+    if (resample)
+      m_initialTargetBufferLevel = MIN_WATER_LEVEL_RESAMPLE + BUFFER_LEVEL_INCREMENT;
+    else
+      m_initialTargetBufferLevel = MIN_WATER_LEVEL + BUFFER_LEVEL_INCREMENT;
+  }
+  else
+  {
+    m_initialTargetBufferLevel = MAX_WATER_LEVEL + BUFFER_LEVEL_INCREMENT;
+  }
+
+  m_targetBufferLevel = m_initialTargetBufferLevel;
+
+  CLog::LogF(LOGDEBUG, "Low latency mode: {} - Initial buffer level: {:.0f}ms (resample: {})",
+             m_settings.lowLatencyMode, m_initialTargetBufferLevel * 1000.0f, resample);
 }
 
 void CActiveAE::ApplySettingsToFormat(AEAudioFormat& format,

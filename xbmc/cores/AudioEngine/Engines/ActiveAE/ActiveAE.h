@@ -326,6 +326,7 @@ protected:
   void SStopSound(CActiveAESound *sound);
   void DiscardSound(CActiveAESound *sound);
   void ChangeResamplers();
+  void ConfigureLowLatency();
 
   bool RunStages();
   bool HasWork();
