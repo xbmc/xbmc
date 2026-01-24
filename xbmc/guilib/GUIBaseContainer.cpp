@@ -32,6 +32,7 @@
 #include "utils/log.h"
 
 #include <memory>
+#include <unordered_map>
 
 using namespace KODI;
 
@@ -1128,23 +1129,22 @@ void CGUIBaseContainer::UpdateListProvider(bool forceRefresh /* = false */)
       }
       if (!found && !prevSelectedPath.empty())
       {
-        // as fallback, try to re-identify selected item by comparing item paths.
+        // Build path->index map for O(1) lookup instead of O(n) linear search
+        std::unordered_map<std::string, int> pathToIndex;
+        pathToIndex.reserve(m_items.size());
         for (int i = 0; i < static_cast<int>(m_items.size()); i++)
         {
-          const std::shared_ptr<CGUIListItem> c(m_items[i]);
-          if (c->IsFileItem())
-          {
-            const std::string &selectedPath = static_cast<CFileItem *>(c.get())->GetPath();
-            if (selectedPath == prevSelectedPath)
-            {
-              found = true;
-              if (i != currentItem)
-              {
-                SelectItem(i);
-                break;
-              }
-            }
-          }
+          const auto& item = m_items[i];
+          if (item->IsFileItem())
+            pathToIndex.try_emplace(static_cast<CFileItem*>(item.get())->GetPath(), i);
+        }
+
+        auto it = pathToIndex.find(prevSelectedPath);
+        if (it != pathToIndex.end())
+        {
+          found = true;
+          if (it->second != currentItem)
+            SelectItem(it->second);
         }
       }
       if (!found && currentItem >= (int)m_items.size())
