@@ -232,6 +232,9 @@ protected:
     bool focused;
   };
 
+  // Cached render items to avoid per-frame vector allocation
+  std::vector<RENDERITEM> m_renderItems;
+
 private:
   bool OnContextMenu();
 
