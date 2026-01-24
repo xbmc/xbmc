@@ -334,7 +334,7 @@ CShaderGL::UniformInputs CShaderGL::GetInputData(uint64_t frameCount) const
       // Current frame count that can be modulo'ed
       static_cast<GLint>(frameCount), // frame_count
       // Time always flows forward
-      1.0f // frame_direction
+      1 // frame_direction
   };
   return input;
 }
@@ -362,7 +362,7 @@ void CShaderGL::GetUniformLocs()
 void CShaderGL::SetShaderParameters(CShaderTextureGL& sourceTexture)
 {
   // Set shader uniforms
-  glUniform1f(m_FrameDirectionLoc, m_uniformInputs.frame_direction);
+  glUniform1i(m_FrameDirectionLoc, m_uniformInputs.frame_direction);
   glUniform1i(m_FrameCountLoc, m_uniformInputs.frame_count);
   glUniform2f(m_OutputSizeLoc, m_uniformInputs.output_size.x, m_uniformInputs.output_size.y);
   glUniform2f(m_TextureSizeLoc, m_uniformInputs.texture_size.x, m_uniformInputs.texture_size.y);

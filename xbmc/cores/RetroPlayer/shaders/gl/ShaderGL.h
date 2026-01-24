@@ -59,7 +59,7 @@ private:
     float2 texture_size;
     float2 output_size;
     GLint frame_count;
-    GLfloat frame_direction;
+    GLint frame_direction;
   };
 
   struct UniformFrameInputs
