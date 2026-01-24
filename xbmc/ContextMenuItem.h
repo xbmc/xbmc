@@ -52,7 +52,27 @@ private:
 class CContextMenuItem : public IContextMenuItem
 {
 public:
+  struct CGroup
+  {
+    std::string label{};
+    std::string parent{};
+    std::string groupId{};
+    std::string addonId{};
+  };
+
+  struct CItem
+  {
+    std::string label{};
+    std::string parent{};
+    std::string library{};
+    std::string condition{};
+    std::string addonId{};
+    std::vector<std::string> args{};
+  };
+
   CContextMenuItem() = default;
+  CContextMenuItem(CItem item);
+  CContextMenuItem(CGroup item);
 
   std::string GetLabel(const CFileItem& item) const  override { return m_label; }
   bool IsVisible(const CFileItem& item) const override ;
@@ -63,20 +83,6 @@ public:
   bool operator==(const CContextMenuItem& other) const;
   std::string ToString() const;
 
-  static CContextMenuItem CreateGroup(
-    const std::string& label,
-    const std::string& parent,
-    const std::string& groupId,
-    const std::string& addonId);
-
-  static CContextMenuItem CreateItem(
-    const std::string& label,
-    const std::string& parent,
-    const std::string& library,
-    const std::string& condition,
-    const std::string& addonId, 
-    const std::vector<std::string>& args = std::vector<std::string>());
-  
   friend class ADDON::CContextMenuAddon;
 
 private:

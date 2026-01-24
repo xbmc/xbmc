@@ -35,9 +35,12 @@
 using namespace ADDON;
 using namespace PVR;
 
-const CContextMenuItem CContextMenuManager::MAIN = CContextMenuItem::CreateGroup("", "", "kodi.core.main", "");
-const CContextMenuItem CContextMenuManager::MANAGE = CContextMenuItem::CreateGroup("", "", "kodi.core.manage", "");
-
+const CContextMenuItem CContextMenuManager::MAIN(CContextMenuItem::CGroup{
+    .groupId = "kodi.core.main",
+});
+const CContextMenuItem CContextMenuManager::MANAGE(CContextMenuItem::CGroup{
+    .groupId = "kodi.core.manage",
+});
 
 CContextMenuManager::CContextMenuManager(CAddonMgr& addonMgr)
   : m_addonMgr(addonMgr) {}
@@ -112,9 +115,8 @@ void CContextMenuManager::Init()
 
   ReloadAddonItems();
 
-  const std::vector<std::shared_ptr<IContextMenuItem>> pvrItems(CPVRContextMenuManager::GetInstance().GetMenuItems());
-  for (const auto &item : pvrItems)
-    m_items.emplace_back(item);
+  std::ranges::copy(CPVRContextMenuManager::GetInstance().GetMenuItems(),
+                    std::back_inserter(m_items));
 }
 
 void CContextMenuManager::ReloadAddonItems()
@@ -126,12 +128,8 @@ void CContextMenuManager::ReloadAddonItems()
   for (const auto& addon : addons)
   {
     auto items = std::static_pointer_cast<CContextMenuAddon>(addon)->GetItems();
-    for (auto& item : items)
-    {
-      auto it = std::ranges::find(addonItems, item);
-      if (it == addonItems.end())
-        addonItems.push_back(item);
-    }
+    std::ranges::copy_if(items, std::back_inserter(addonItems), [&addonItems](const auto& item)
+                         { return std::ranges::find(addonItems, item) == addonItems.end(); });
   }
 
   std::unique_lock lock(m_criticalSection);
