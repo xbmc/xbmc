@@ -69,7 +69,14 @@ jobs:
             Note: The PR branch is already checked out in the current working directory.
 
             After your review:
-            1. If you found issues: Use `gh pr comment` for top-level summary, and `mcp__github_inline_comment__create_inline_comment` to highlight specific code issues
+            1. If you found issues: Use `gh pr comment` for top-level summary wrapped in a collapsed section like this:
+               <details>
+               <summary>🤖 Claude Code Review</summary>
+
+               [Your review content here]
+
+               </details>
+               Also use `mcp__github_inline_comment__create_inline_comment` to highlight specific code issues
             2. If everything looks good: Use `gh pr review --approve` with NO message (just the approval checkmark)
 
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
