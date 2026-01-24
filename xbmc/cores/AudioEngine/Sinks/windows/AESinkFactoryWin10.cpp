@@ -124,12 +124,6 @@ struct AEWASAPIDeviceWin10 : public IAEWASAPIDevice
     delete this;
     return 0;
   };
-
-  bool IsUSBDevice() override
-  {
-    // TODO
-    return false;
-  }
 };
 
 std::string CAESinkFactoryWin::GetDefaultDeviceId()

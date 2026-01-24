@@ -201,28 +201,6 @@ struct AEWASAPIDeviceWin32 : public IAEWASAPIDevice
     return 0;
   };
 
-  bool IsUSBDevice() override
-  {
-    bool ret = false;
-    ComPtr<IPropertyStore> pProperty = nullptr;
-    PROPVARIANT varName;
-    PropVariantInit(&varName);
-
-    HRESULT hr = m_pDevice->OpenPropertyStore(STGM_READ, pProperty.GetAddressOf());
-    if (!SUCCEEDED(hr))
-      return ret;
-    hr = pProperty->GetValue(PKEY_Device_EnumeratorName, &varName);
-
-    if (SUCCEEDED(hr) && varName.vt != VT_EMPTY)
-    {
-      std::string str = KODI::PLATFORM::WINDOWS::FromW(varName.pwszVal);
-      StringUtils::ToUpper(str);
-      ret = (str == "USB");
-    }
-    PropVariantClear(&varName);
-    return ret;
-  }
-
 protected:
   AEWASAPIDeviceWin32(IMMDevice* pDevice)
     : m_pDevice(pDevice)
