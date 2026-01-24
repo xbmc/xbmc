@@ -191,7 +191,6 @@ struct IAEWASAPIDevice
   std::string deviceId;
   virtual int Release() = 0;
   virtual HRESULT Activate(IAudioClient** ppAudioClient) = 0;
-  virtual bool IsUSBDevice() = 0;
 };
 
 class CAESinkFactoryWin
