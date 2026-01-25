@@ -41,7 +41,7 @@ public:
 
   bool SetProperty(const std::string& name, uint64_t value);
   bool SupportsProperty(const std::string& name);
-  std::optional<uint64_t> GetPropertyValue(const std::string& name);
+  std::optional<uint64_t> GetPropertyValue(const std::string& name) const;
   std::optional<bool> IsPropertyImmutable(const std::string& name);
   std::optional<std::pair<uint64_t, uint64_t>> GetRangePropertyLimits(
       const std::string& name) const;

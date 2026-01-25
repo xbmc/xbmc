@@ -102,7 +102,7 @@ std::string CDRMConnector::GetName()
 std::vector<uint8_t> CDRMConnector::GetEDID() const
 {
 
-  uint64_t blob_id = const_cast<CDRMConnector*>(this)->GetPropertyValue("EDID").value_or(0);
+  uint64_t blob_id = GetPropertyValue("EDID").value_or(0);
 
   if (blob_id == 0)
   {
