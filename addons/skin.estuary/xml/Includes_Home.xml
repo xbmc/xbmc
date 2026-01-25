@@ -914,7 +914,7 @@
 	<include name="WeatherHourlyItem">
 		<item>
 			<label>$INFO[Weather.Data(Hourly.$PARAM[item_index].Time)]</label>
-			<label2>$INFO[Weather.Data(Hourly.$PARAM[item_index].Temperature)]$INFO[Weather.Data(Hourly.$PARAM[item_index].Precipitation), ∙ ]</label2>
+			<label2>$INFO[Weather.Data(Hourly.$PARAM[item_index].Temperature)]$INFO[Weather.Data(Hourly.$PARAM[item_index].Precipitation), • ]</label2>
 			<property name="Temperature">$INFO[Weather.Data(Hourly.$PARAM[item_index].Temperature)]</property>
 			<property name="Outlook">$INFO[Weather.Data(Hourly.$PARAM[item_id].Outlook)]</property>
 			<property name="Cloudiness">$INFO[Weather.Data(Hourly.$PARAM[item_index].Cloudiness)]</property>
@@ -928,7 +928,7 @@
 	<include name="WeatherDailyItem">
 		<item>
 			<label>$INFO[Weather.Data(Daily.$PARAM[item_index].ShortDay)]</label>
-			<label2>[COLOR blue]$INFO[Weather.Data(Daily.$PARAM[item_index].LowTemperature)][/COLOR]$INFO[Weather.Data(Daily.$PARAM[item_index].HighTemperature), ∙ [COLOR red],[/COLOR]]</label2>
+			<label2>[COLOR blue]$INFO[Weather.Data(Daily.$PARAM[item_index].LowTemperature)][/COLOR]$INFO[Weather.Data(Daily.$PARAM[item_index].HighTemperature), • [COLOR red],[/COLOR]]</label2>
 			<property name="LongDay">$INFO[Weather.Data(Daily.$PARAM[item_index].LongDay)]</property>
 			<property name="TempDay">$INFO[Weather.Data(Daily.$PARAM[item_index].TempDay)]</property>
 			<property name="Cloudiness">$INFO[Weather.Data(Daily.$PARAM[item_index].Cloudiness)]</property>
@@ -943,7 +943,7 @@
 	<include name="WeatherDayItem">
 		<item>
 			<label>$INFO[Weather.Data(Day$PARAM[item_index].Title)]</label>
-			<label2>[COLOR blue]$INFO[Weather.Data(Day$PARAM[item_index].LowTemp)][/COLOR] ∙ [COLOR red]$INFO[Weather.Data(Day$PARAM[item_index].HighTemp)][/COLOR]</label2>
+			<label2>[COLOR blue]$INFO[Weather.Data(Day$PARAM[item_index].LowTemp)][/COLOR] • [COLOR red]$INFO[Weather.Data(Day$PARAM[item_index].HighTemp)][/COLOR]</label2>
 			<property name="LongDay"></property>
 			<property name="TempDay"></property>
 			<property name="Cloudiness"></property>
