@@ -38,12 +38,13 @@ bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint 
   }
 
   auto guiformats = m_DRM->GetGuiFormats();
-  if (!std::any_of(guiformats.begin(), guiformats.end(),
-                   [&](struct guiformat format)
-                   {
-                     return format.active && m_eglContext.ChooseConfig(renderableType, format.drm,
-                                                                       false, format.alpha);
-                   }))
+  if (!std::ranges::any_of(guiformats,
+                           [&](struct guiformat format)
+                           {
+                             return format.active &&
+                                    m_eglContext.ChooseConfig(renderableType, format.drm, false,
+                                                              format.alpha);
+                           }))
   {
     return false;
   }
