@@ -20,7 +20,7 @@ namespace GBM
 class CDRMCrtc : public CDRMObject
 {
 public:
-  explicit CDRMCrtc(int fd, uint32_t crtc, int offset);
+  CDRMCrtc(int fd, uint32_t crtc, int offset);
   CDRMCrtc(const CDRMCrtc&) = delete;
   CDRMCrtc& operator=(const CDRMCrtc&) = delete;
   ~CDRMCrtc() = default;
@@ -40,7 +40,7 @@ private:
   };
 
   std::unique_ptr<drmModeCrtc, DrmModeCrtcDeleter> m_crtc;
-  int m_offset = 0;
+  int m_offset{0};
 };
 
 } // namespace GBM
