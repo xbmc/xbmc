@@ -8,9 +8,6 @@
 
 #include "ZipManager.h"
 
-#include <algorithm>
-#include <utility>
-
 #include "File.h"
 #include "URL.h"
 #if defined(TARGET_POSIX)
@@ -18,13 +15,18 @@
 #endif
 #include "utils/CharsetConverter.h"
 #include "utils/EndianSwap.h"
-#include "utils/log.h"
 #include "utils/RegExp.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
+
+#include <algorithm>
+#include <array>
+#include <cstdint>
+#include <utility>
 
 using namespace XFILE;
 
-static const size_t ZC_FLAG_EFS = 1 << 11; // general purpose bit 11 - zip holds utf-8 filenames
+static constexpr size_t ZC_FLAG_EFS = 1 << 11; // general purpose bit 11 - zip holds utf-8 filenames
 
 CZipManager::CZipManager() = default;
 
@@ -34,19 +36,17 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
 {
   struct __stat64 m_StatData = {};
 
-  std::string strFile = url.GetHostName();
-
-  if (CFile::Stat(strFile,&m_StatData))
+  const std::string strFile = url.GetHostName();
+  if (CFile::Stat(strFile, &m_StatData))
   {
-    CLog::Log(LOGDEBUG, "CZipManager::GetZipList: failed to stat file {}", url.GetRedacted());
+    CLog::LogF(LOGERROR, "Failed to stat file {}", url.GetRedacted());
     return false;
   }
 
-  std::map<std::string, std::vector<SZipEntry> >::iterator it = mZipMap.find(strFile);
+  const auto it = mZipMap.find(strFile);
   if (it != mZipMap.end()) // already listed, just return it if not changed, else release and reread
   {
-    std::map<std::string,int64_t>::iterator it2=mZipDate.find(strFile);
-
+    const auto it2 = mZipDate.find(strFile);
     if (m_StatData.st_mtime == it2->second)
     {
       items = it->second;
@@ -59,26 +59,28 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
   CFile mFile;
   if (!mFile.Open(strFile))
   {
-    CLog::Log(LOGDEBUG, "ZipManager: unable to open file {}!", strFile);
+    CLog::LogF(LOGERROR, "Unable to open file {}!", strFile);
     return false;
   }
 
   unsigned int hdr;
-  if (mFile.Read(&hdr, 4)!=4 || (Endian_SwapLE32(hdr) != ZIP_LOCAL_HEADER &&
-                                 Endian_SwapLE32(hdr) != ZIP_DATA_RECORD_HEADER &&
-                                 Endian_SwapLE32(hdr) != ZIP_SPLIT_ARCHIVE_HEADER))
+  if (mFile.Read(&hdr, 4) != 4 ||
+      (Endian_SwapLE32(hdr) != ZIP_LOCAL_HEADER && Endian_SwapLE32(hdr) != ZIP_DATA_RECORD_HEADER &&
+       Endian_SwapLE32(hdr) != ZIP_SPLIT_ARCHIVE_HEADER))
   {
-    CLog::Log(LOGDEBUG,"ZipManager: not a zip file!");
+    CLog::LogF(LOGERROR, "Not a zip file!");
     mFile.Close();
     return false;
   }
 
   if (Endian_SwapLE32(hdr) == ZIP_SPLIT_ARCHIVE_HEADER)
-    CLog::LogF(LOGWARNING, "ZIP split archive header found. Trying to process as a single archive..");
+    CLog::LogF(LOGWARNING,
+               "ZIP split archive header found. Trying to process as a single archive..");
 
   // push date for update detection
-  mZipDate.insert(make_pair(strFile,m_StatData.st_mtime));
+  mZipDate.insert(make_pair(strFile, m_StatData.st_mtime));
 
+  const bool Is64{IsZip64(mFile)};
 
   // Look for end of central directory record
   // Zipfile comment may be up to 65535 bytes
@@ -90,11 +92,12 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
   // we start the search at ECDREC_SIZE-1 from the end of file
   if (fileSize < ECDREC_SIZE - 1)
   {
-    CLog::Log(LOGERROR, "ZipManager: Invalid zip file length: {}", fileSize);
+    CLog::LogF(LOGERROR, "Invalid zip file length: {}", fileSize);
     return false;
   }
-  int searchSize = (int) std::min(static_cast<int64_t>(65557), fileSize-ECDREC_SIZE+1);
-  int blockSize = (int) std::min(1024, searchSize);
+  int searchSize =
+      static_cast<int>(std::min(static_cast<int64_t>(65557), fileSize - ECDREC_SIZE + 1));
+  int blockSize = std::min(1024, searchSize);
   int nbBlock = searchSize / blockSize;
   int extraBlockSize = searchSize % blockSize;
   // Signature is on 4 bytes
@@ -103,34 +106,40 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
   bool found = false;
 
   // Loop through blocks starting at the end of the file (minus ECDREC_SIZE-1)
-  for (int nb=1; !found && (nb <= nbBlock); nb++)
+  for (int nb = 1; !found && (nb <= nbBlock); nb++)
   {
-    mFile.Seek(fileSize-ECDREC_SIZE+1-(blockSize*nb),SEEK_SET);
+    if (mFile.Seek(fileSize - ECDREC_SIZE + 1 - (static_cast<int64_t>(blockSize) * nb), SEEK_SET) ==
+        -1)
+      return false;
     if (mFile.Read(buffer.data(), blockSize + 3) != blockSize + 3)
       return false;
-    for (int i=blockSize-1; !found && (i >= 0); i--)
+    for (int i = blockSize - 1; !found && (i >= 0); i--)
     {
       if (Endian_SwapLE32(ReadUnaligned<uint32_t>(buffer.data() + i)) == ZIP_END_CENTRAL_HEADER)
       {
         // Set current position to start of end of central directory
-        mFile.Seek(fileSize-ECDREC_SIZE+1-(blockSize*nb)+i,SEEK_SET);
+        if (mFile.Seek(fileSize - ECDREC_SIZE + 1 - (static_cast<int64_t>(blockSize) * nb) + i,
+                       SEEK_SET) == -1)
+          return false;
         found = true;
       }
     }
   }
 
   // If not found, look in the last block left...
-  if ( !found && (extraBlockSize > 0) )
+  if (!found && (extraBlockSize > 0))
   {
-    mFile.Seek(fileSize-ECDREC_SIZE+1-searchSize,SEEK_SET);
+    if (mFile.Seek(fileSize - ECDREC_SIZE + 1 - searchSize, SEEK_SET) == -1)
+      return false;
     if (mFile.Read(buffer.data(), extraBlockSize + 3) != extraBlockSize + 3)
       return false;
-    for (int i=extraBlockSize-1; !found && (i >= 0); i--)
+    for (int i = extraBlockSize - 1; !found && (i >= 0); i--)
     {
       if (Endian_SwapLE32(ReadUnaligned<uint32_t>(buffer.data() + i)) == ZIP_END_CENTRAL_HEADER)
       {
         // Set current position to start of end of central directory
-        mFile.Seek(fileSize-ECDREC_SIZE+1-searchSize+i,SEEK_SET);
+        if (mFile.Seek(fileSize - ECDREC_SIZE + 1 - searchSize + i, SEEK_SET) == -1)
+          return false;
         found = true;
       }
     }
@@ -138,16 +147,18 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
 
   buffer.clear();
 
-  if ( !found )
+  if (!found)
   {
-    CLog::Log(LOGDEBUG, "ZipManager: broken file {}!", strFile);
+    CLog::LogF(LOGERROR, "Broken file {}!", strFile);
     mFile.Close();
     return false;
   }
 
-  unsigned int cdirOffset, cdirSize;
+  unsigned int cdirOffset;
+  unsigned int cdirSize;
   // Get size of the central directory
-  mFile.Seek(12,SEEK_CUR);
+  if (mFile.Seek(12, SEEK_CUR) == -1)
+    return false;
   if (mFile.Read(&cdirSize, 4) != 4)
     return false;
   cdirSize = Endian_SwapLE32(cdirSize);
@@ -156,14 +167,24 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
     return false;
   cdirOffset = Endian_SwapLE32(cdirOffset);
 
+  // Handle ZIP64 if needed
+  uint64_t cdirOffset64 = cdirOffset;
+  uint64_t cdirSize64 = cdirSize;
+  if (Is64 && !ReadZip64EOCD(mFile, cdirOffset64, cdirSize64))
+  {
+    CLog::LogF(LOGERROR, "ZIP64 EOCD invalid in {}", strFile);
+    return false;
+  }
+
   // Go to the start of central directory
-  mFile.Seek(cdirOffset,SEEK_SET);
+  if (mFile.Seek(static_cast<int64_t>(cdirOffset64), SEEK_SET) == -1)
+    return false;
 
   CRegExp pathTraversal;
   pathTraversal.RegComp(PATH_TRAVERSAL);
 
   char temp[CHDR_SIZE];
-  while (mFile.GetPosition() < cdirOffset + cdirSize)
+  while (mFile.GetPosition() < static_cast<int64_t>(cdirOffset64 + cdirSize64))
   {
     SZipEntry ze;
     if (mFile.Read(temp, CHDR_SIZE) != CHDR_SIZE)
@@ -171,7 +192,7 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
     readCHeader(temp, ze);
     if (ze.header != ZIP_CENTRAL_HEADER)
     {
-      CLog::Log(LOGDEBUG, "ZipManager: broken file {}!", strFile);
+      CLog::LogF(LOGERROR, "Broken file {}!", strFile);
       mFile.Close();
       return false;
     }
@@ -188,10 +209,27 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
       g_charsetConverter.ToUtf8("CP437", tmp, strName);
     }
     memset(ze.name, 0, 255);
-    strncpy(ze.name, strName.c_str(), strName.size() > 254 ? 254 : strName.size());
+    const size_t copyLen = std::min(strName.size(), size_t{254});
+    std::memcpy(ze.name, strName.data(), copyLen);
+    ze.name[copyLen] = '\0';
+
+    // Read central extra field so we can parse ZIP64 extra
+    std::vector<char> extraField;
+    if (ze.eclength > 0)
+    {
+      extraField.resize(ze.eclength);
+      if (mFile.Read(extraField.data(), ze.eclength) != ze.eclength)
+        return false;
+
+      // If any 32-bit fields are maxed, pull real values from ZIP64 extra
+      if (Is64 &&
+          (ze.csize == 0xFFFFFFFFu || ze.usize == 0xFFFFFFFFu || ze.lhdrOffset == 0xFFFFFFFFu))
+        ParseZip64ExtraField(extraField.data(), ze.eclength, ze);
+    }
 
     // Jump after central file header extra field and file comment
-    mFile.Seek(ze.eclength + ze.clength,SEEK_CUR);
+    if (mFile.Seek(ze.clength, SEEK_CUR) == -1)
+      return false;
 
     if (pathTraversal.RegFind(strName) < 0)
       items.push_back(ze);
@@ -202,17 +240,36 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
   {
     // Go to the local file header to get the extra field length
     // !! local header extra field length != central file header extra field length !!
-    mFile.Seek(ze.lhdrOffset+28,SEEK_SET);
-    if (mFile.Read(&(ze.elength), 2) != 2)
+    const int64_t localFilenameLengthPos = static_cast<int64_t>(ze.lhdrOffset) + 26;
+    if (localFilenameLengthPos + 2 > mFile.GetLength())
+      return false;
+
+    if (mFile.Seek(localFilenameLengthPos, SEEK_SET) == -1)
+      return false;
+    uint16_t flength;
+    if (mFile.Read(&flength, 2) != 2)
+      return false;
+    flength = Endian_SwapLE16(flength);
+    if (mFile.Read(&ze.elength, 2) != 2)
       return false;
     ze.elength = Endian_SwapLE16(ze.elength);
 
-    // Compressed data offset = local header offset + size of local header + filename length + local file header extra field length
-    ze.offset = ze.lhdrOffset + LHDR_SIZE + ze.flength + ze.elength;
+    mFile.Seek(flength, SEEK_CUR); // Skip filename
 
+    std::vector<char> localExtra(ze.elength);
+    if (ze.elength && mFile.Read(localExtra.data(), ze.elength) != ze.elength)
+      return false;
+
+    if (Is64 &&
+        (ze.csize == 0xFFFFFFFFu || ze.usize == 0xFFFFFFFFu || ze.lhdrOffset == 0xFFFFFFFFu) &&
+        !localExtra.empty())
+      ParseZip64ExtraField(localExtra.data(), ze.elength, ze);
+
+    // Compressed data offset = local header offset + size of local header + filename length + local file header extra field length
+    ze.offset = static_cast<int64_t>(ze.lhdrOffset) + LHDR_SIZE + ze.flength + ze.elength;
   }
 
-  mZipMap.insert(make_pair(strFile,items));
+  mZipMap.insert(make_pair(strFile, items));
   mFile.Close();
   return true;
 }
@@ -317,4 +374,132 @@ void CZipManager::release(const std::string& strPath)
   }
 }
 
+bool CZipManager::IsZip64(CFile& file)
+{
+  const int64_t size{std::min<int64_t>(file.GetLength(), 1024)};
+  if (file.Seek(-size, SEEK_END) == -1)
+    return false;
 
+  std::vector<char> buffer(size);
+  if (file.Read(buffer.data(), size) != size)
+    return false;
+
+  constexpr std::array<char, 4> centralHeaderSignature{
+      {static_cast<char>(ZIP64_END_CENTRAL_HEADER & 0xFF),
+       static_cast<char>((ZIP64_END_CENTRAL_HEADER >> 8) & 0xFF),
+       static_cast<char>((ZIP64_END_CENTRAL_HEADER >> 16) & 0xFF),
+       static_cast<char>((ZIP64_END_CENTRAL_HEADER >> 24) & 0xFF)}};
+
+  return !std::ranges::search(buffer.begin(), buffer.end(), centralHeaderSignature.begin(),
+                              centralHeaderSignature.end())
+              .empty();
+}
+
+bool CZipManager::ReadZip64EOCD(CFile& file, uint64_t& cdirOffset, uint64_t& cdirSize)
+{
+  // At this point, file position is just after reading 32-bit cdirOffset in EOCD.
+  const int64_t curPos = file.GetPosition();
+  const int64_t eocdStart = curPos - 20; // 12 (skipped) + 4 (size) + 4 (offset) = 20
+  const int64_t locatorPos = eocdStart - 20; // ZIP64 locator is 20 bytes just before EOCD
+
+  if (locatorPos < 0)
+    return false;
+
+  uint32_t sig = 0;
+  if (file.Seek(locatorPos, SEEK_SET) == -1)
+    return false;
+  if (file.Read(&sig, 4) != 4)
+    return false;
+  sig = Endian_SwapLE32(sig);
+  if (sig != ZIP64_END_CENTRAL_LOCATOR)
+    return false;
+
+  uint64_t zip64EocdOffset = 0;
+
+  if (file.Seek(4, SEEK_CUR) == -1) // skip diskNumber
+    return false;
+  if (file.Read(&zip64EocdOffset, 8) != 8)
+    return false;
+  if (file.Seek(4, SEEK_CUR) == -1) // skip totalDiscs
+    return false;
+
+  zip64EocdOffset = Endian_SwapLE64(zip64EocdOffset);
+
+  // Seek to ZIP64 EOCD record
+  if (file.Seek(static_cast<int64_t>(zip64EocdOffset), SEEK_SET) == -1)
+    return false;
+  if (file.Read(&sig, 4) != 4)
+    return false;
+  sig = Endian_SwapLE32(sig);
+  if (sig != ZIP64_END_CENTRAL_HEADER)
+    return false;
+
+  // Skip size of ZIP64 EOCD record (8 bytes)
+  if (file.Seek(8, SEEK_CUR) == -1)
+    return false;
+
+  // Skip: version made by (2), version needed (2), disk number (4), CD start disk (4),
+  // number of entries on this disk (8), total entries (8) = 28 bytes
+  if (file.Seek(28, SEEK_CUR) == -1)
+    return false;
+
+  uint64_t cdirSize64 = 0;
+  uint64_t cdirOffset64 = 0;
+  if (file.Read(&cdirSize64, 8) != 8)
+    return false;
+  if (file.Read(&cdirOffset64, 8) != 8)
+    return false;
+
+  cdirSize64 = Endian_SwapLE64(cdirSize64);
+  cdirOffset64 = Endian_SwapLE64(cdirOffset64);
+
+  cdirSize = cdirSize64;
+  cdirOffset = cdirOffset64;
+
+  return true;
+}
+
+void CZipManager::ParseZip64ExtraField(const char* buf, uint16_t length, SZipEntry& info)
+{
+  uint16_t offset = 0;
+  while (offset + 4 <= length)
+  {
+    uint16_t headerId = Endian_SwapLE16(ReadUnaligned<uint16_t>(buf + offset));
+    uint16_t dataSize = Endian_SwapLE16(ReadUnaligned<uint16_t>(buf + offset + 2));
+    offset += 4;
+
+    if (offset + dataSize > length)
+      break;
+
+    if (headerId == 0x0001) // ZIP64 extended information extra field
+    {
+      const char* p = buf + offset;
+      uint16_t remaining = dataSize;
+
+      // Order: [usize(8)?][csize(8)?][lhdrOffset(8)?][diskStart(4)?]
+      if (info.usize == 0xFFFFFFFFu && remaining >= 8)
+      {
+        const uint64_t usize64 = Endian_SwapLE64(ReadUnaligned<uint64_t>(p));
+        info.usize = usize64;
+        p += 8;
+        remaining -= 8;
+      }
+      if (info.csize == 0xFFFFFFFFu && remaining >= 8)
+      {
+        const uint64_t csize64 = Endian_SwapLE64(ReadUnaligned<uint64_t>(p));
+        info.csize = csize64;
+        p += 8;
+        remaining -= 8;
+      }
+      if (info.lhdrOffset == 0xFFFFFFFFu && remaining >= 8)
+      {
+        const uint64_t hdrOffset64 = Endian_SwapLE64(ReadUnaligned<uint64_t>(p));
+        info.lhdrOffset = hdrOffset64;
+      }
+      // diskStart (4) is ignored here if present
+      break; // we don't need other extra fields
+    }
+
+    offset += dataSize;
+  }
+}

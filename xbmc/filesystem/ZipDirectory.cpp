@@ -16,22 +16,29 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
+#include <cstdint>
 #include <vector>
 
 namespace XFILE
 {
 
-  static CFileItemPtr ZipEntryToFileItem(const SZipEntry& entry, const std::string& label, const std::string& path, bool isFolder)
+namespace
+{
+std::shared_ptr<CFileItem> ZipEntryToFileItem(const SZipEntry& entry,
+                                              const std::string& label,
+                                              const std::string& path,
+                                              bool isFolder)
+{
+  std::shared_ptr<CFileItem> item(new CFileItem(label));
+  if (!isFolder)
   {
-    CFileItemPtr item(new CFileItem(label));
-    if (!isFolder)
-    {
-      item->SetSize(entry.usize);
-      item->SetDepth(entry.method);
-    }
-
-    return item;
+    item->SetSize(static_cast<int64_t>(entry.usize));
+    item->SetDepth(entry.method);
   }
+
+  return item;
+}
+} // namespace
 
   CZipDirectory::CZipDirectory() = default;
 
@@ -41,7 +48,7 @@ namespace XFILE
   {
     CURL urlZip(urlOrig);
 
-    /* if this isn't a proper archive path, assume it's the path to a archive file */
+    /* if this isn't a proper archive path, assume it's the path to an archive file */
     if (!urlOrig.IsProtocol("zip"))
       urlZip = URIUtils::CreateArchivePath("zip", urlOrig);
 
