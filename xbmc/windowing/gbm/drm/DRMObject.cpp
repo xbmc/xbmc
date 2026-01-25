@@ -119,8 +119,8 @@ std::optional<uint64_t> CDRMObject::GetPropertyValue(const std::string& name) co
 std::optional<std::pair<uint64_t, uint64_t>> CDRMObject::GetRangePropertyLimits(
     const std::string& name) const
 {
-  auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(),
-                               [&name](const auto& prop) { return prop->name == name; });
+  auto property =
+      std::ranges::find_if(m_propsInfo, [&name](const auto& prop) { return prop->name == name; });
 
   if (property == m_propsInfo.end())
     return {};
