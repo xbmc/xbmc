@@ -1,7 +1,7 @@
 /*
  *  Copyright (c) 2002 Frodo
  *      Portions Copyright (c) by the authors of ffmpeg and xvid
- *  Copyright (C) 2002-2018 Team Kodi
+ *  Copyright (C) 2002-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -195,6 +195,16 @@ bool CThread::IsRunning() const
 bool CThread::SetPriority(const ThreadPriority& priority)
 {
   return m_impl->SetPriority(priority);
+}
+
+bool CThread::SetTask(const ThreadTask& task)
+{
+  return m_impl->SetTask(task);
+}
+
+bool CThread::RevertTask()
+{
+  return m_impl->RevertTask();
 }
 
 bool CThread::IsAutoDelete() const

@@ -15,8 +15,12 @@
 
 #include <array>
 #include <mutex>
+#include <string>
 #include <string_view>
 
+#ifdef TARGET_WINDOWS_DESKTOP
+#include <avrt.h>
+#endif
 #include <process.h>
 #include <processthreadsapi.h>
 #include <windows.h>
@@ -78,6 +82,14 @@ void LogProcessPriorityClass()
     CLog::Log(LOGDEBUG, "[threads] app priority: {}", it->second);
   else
     CLog::Log(LOGDEBUG, "[threads] app priority: unrecognized (0x{:08X})", prioClass);
+}
+
+constexpr std::wstring_view ThreadTaskToNativeTask(const ThreadTask& task)
+{
+  if (task == ThreadTask::AUDIO)
+    return L"Audio";
+  else
+    throw std::range_error("Task not found");
 }
 
 std::once_flag flag;
@@ -154,4 +166,46 @@ bool CThreadImplWin::SetPriority(const ThreadPriority& priority)
     }
   }
   return bReturn;
+}
+
+bool CThreadImplWin::SetTask(const ThreadTask& task)
+{
+#ifdef TARGET_WINDOWS_DESKTOP
+  std::call_once(flag, LogProcessPriorityClass);
+
+  const std::wstring taskName{ThreadTaskToNativeTask(task)};
+  m_hTask = AvSetMmThreadCharacteristicsW(taskName.c_str(), &m_taskIndex);
+  if (m_hTask == 0)
+  {
+    CLog::LogF(LOGERROR, "unable to register thread with the multimedia scheduler ({})",
+               GetLastError());
+    return false;
+  }
+
+  CLog::Log(LOGDEBUG, "[threads] name: '{}' task: {}", m_name,
+            std::string(taskName.begin(), taskName.end()));
+#endif
+  return true;
+}
+
+bool CThreadImplWin::RevertTask()
+{
+  bool ret{true};
+#ifdef TARGET_WINDOWS_DESKTOP
+  std::call_once(flag, LogProcessPriorityClass);
+
+  if (m_hTask != 0)
+  {
+    if (AvRevertMmThreadCharacteristics(m_hTask) == 0)
+    {
+      CLog::LogF(LOGERROR, "unable to unregister thread from the multimedia scheduler ({})",
+                 GetLastError());
+      ret = false;
+    }
+    m_hTask = 0;
+
+    CLog::Log(LOGDEBUG, "[threads] name: '{}' no task", m_name);
+  }
+#endif
+  return ret;
 }
