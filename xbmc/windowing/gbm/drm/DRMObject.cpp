@@ -154,10 +154,10 @@ bool CDRMObject::SetProperty(const std::string& name, uint64_t value)
   return false;
 }
 
-std::optional<bool> CDRMObject::IsPropertyImmutable(const std::string& name)
+std::optional<bool> CDRMObject::IsPropertyImmutable(const std::string& name) const
 {
-  auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(),
-                               [&name](const auto& prop) { return prop->name == name; });
+  auto property =
+      std::ranges::find_if(m_propsInfo, [&name](const auto& prop) { return prop->name == name; });
 
   if (property == m_propsInfo.end())
     return {};
