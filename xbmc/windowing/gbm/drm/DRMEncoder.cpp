@@ -23,7 +23,7 @@ CDRMEncoder::CDRMEncoder(int fd, uint32_t encoder)
 }
 
 std::vector<CDRMCrtc*> CDRMEncoder::GetPossibleCrtcs(
-    const std::vector<std::unique_ptr<CDRMCrtc>>& crtcs, CDRMCrtc* preferred)
+    const std::vector<std::unique_ptr<CDRMCrtc>>& crtcs, CDRMCrtc* preferred) const
 {
   std::vector<CDRMCrtc*> possible;
 
