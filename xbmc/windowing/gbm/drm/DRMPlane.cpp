@@ -160,33 +160,23 @@ bool CDRMPlane::MoveOnTopOf(CDRMPlane* other)
   if (other == nullptr)
     return false;
 
-  bool zpos_available = SupportsProperty("zpos") && other->SupportsProperty("zpos");
+  const bool zpos_available = SupportsProperty("zpos") && other->SupportsProperty("zpos");
 
-  uint64_t zpos = GetPropertyValue("zpos").value_or(0);
-  uint64_t other_zpos = other->GetPropertyValue("zpos").value_or(0);
+  const uint64_t zpos = GetPropertyValue("zpos").value_or(0);
+  const uint64_t other_zpos = other->GetPropertyValue("zpos").value_or(0);
 
-  bool zpos_immutable = IsPropertyImmutable("zpos").value_or(true);
-  bool other_zpos_immutable = other->IsPropertyImmutable("zpos").value_or(true);
+  const bool zpos_immutable = IsPropertyImmutable("zpos").value_or(true);
+  const bool other_zpos_immutable = other->IsPropertyImmutable("zpos").value_or(true);
 
-  uint64_t zpos_min = 0, zpos_max = 0;
-  if (auto limits = GetRangePropertyLimits("zpos"))
-  {
-    zpos_min = limits->first;
-    zpos_max = limits->second;
-  }
+  const auto [zpos_min, zpos_max] = GetRangePropertyLimits("zpos").value_or({0, 0});
+  const auto [other_zpos_min, other_zpos_max] =
+      other->GetRangePropertyLimits("zpos").value_or({0, 0});
 
-  uint64_t other_zpos_min = 0, other_zpos_max = 0;
-  if (auto limits = other->GetRangePropertyLimits("zpos"))
-  {
-    other_zpos_min = limits->first;
-    other_zpos_max = limits->second;
-  }
-
-  CLog::Log(LOGDEBUG, "CDRMPlane::{} - zpos_available: {}", __FUNCTION__, zpos_available);
-  CLog::Log(LOGDEBUG, "CDRMPlane::{} - plane {} zpos: {}[{}-{}], immutable: {}", __FUNCTION__,
-            GetId(), zpos, zpos_min, zpos_max, zpos_immutable);
-  CLog::Log(LOGDEBUG, "CDRMPlane::{} - plane {} zpos: {}[{}-{}], immutable: {}", __FUNCTION__,
-            other->GetId(), other_zpos, other_zpos_min, other_zpos_max, other_zpos_immutable);
+  CLog::LogF(LOGDEBUG, "CDRMPlane::{} - zpos_available: {}", __FUNCTION__, zpos_available);
+  CLog::LogF(LOGDEBUG, "CDRMPlane::{} - plane {} zpos: {}[{}-{}], immutable: {}", __FUNCTION__,
+             GetId(), zpos, zpos_min, zpos_max, zpos_immutable);
+  CLog::LogF(LOGDEBUG, "CDRMPlane::{} - plane {} zpos: {}[{}-{}], immutable: {}", __FUNCTION__,
+             other->GetId(), other_zpos, other_zpos_min, other_zpos_max, other_zpos_immutable);
 
   if (zpos > other_zpos)
     return true;
@@ -197,9 +187,9 @@ bool CDRMPlane::MoveOnTopOf(CDRMPlane* other)
   if (!other_zpos_immutable && zpos_immutable && zpos > other_zpos_min)
   {
     other->SetProperty("zpos", other_zpos_min);
-    CLog::Log(LOGDEBUG,
-              "CDRMPlane::{} - moving down plane {}, zpos [{}->{}] under plane {} zpos {}",
-              __FUNCTION__, other->GetId(), other_zpos, other_zpos_min, GetId(), zpos);
+    CLog::LogF(LOGDEBUG,
+               "CDRMPlane::{} - moving down plane {}, zpos [{}->{}] under plane {} zpos {}",
+               __FUNCTION__, other->GetId(), other_zpos, other_zpos_min, GetId(), zpos);
     return true;
   }
 
@@ -207,9 +197,9 @@ bool CDRMPlane::MoveOnTopOf(CDRMPlane* other)
   {
     if (SetProperty("zpos", zpos_max))
     {
-      CLog::Log(LOGDEBUG,
-                "CDRMPlane::{} - moving up plane {}, zpos [{}->{}] on top of plane {} zpos {}",
-                __FUNCTION__, GetId(), zpos, zpos_max, other->GetId(), other_zpos);
+      CLog::LogF(LOGDEBUG,
+                 "CDRMPlane::{} - moving up plane {}, zpos [{}->{}] on top of plane {} zpos {}",
+                 __FUNCTION__, GetId(), zpos, zpos_max, other->GetId(), other_zpos);
       return true;
     }
     return false;
@@ -220,7 +210,7 @@ bool CDRMPlane::MoveOnTopOf(CDRMPlane* other)
     bool success = SetProperty("zpos", zpos_max) && other->SetProperty("zpos", other_zpos_min);
     if (success)
     {
-      CLog::Log(
+      CLog::LogF(
           LOGDEBUG,
           "CDRMPlane::{} - moving up plane {} zpos [{}->{}] and moving down plane {} zpos [{}->{}]",
           __FUNCTION__, GetId(), zpos, zpos_max, other->GetId(), other_zpos, other_zpos_min);
