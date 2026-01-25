@@ -22,14 +22,14 @@ namespace WINDOWING
 namespace GBM
 {
 
-typedef enum
+enum PlaneType
 {
   PLANE_TYPE_OVERLAY,
   PLANE_TYPE_PRIMARY,
   PLANE_TYPE_CURSOR,
   PLANE_TYPE_UNKNOWN,
   PLANE_TYPE_ANY,
-} PlaneType;
+};
 
 class CDRMPlane : public CDRMObject
 {

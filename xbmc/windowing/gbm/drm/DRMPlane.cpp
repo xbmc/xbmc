@@ -128,7 +128,7 @@ bool CDRMPlane::Check(
       return false;
   }
 
-  auto plane_type = GetPropertyValue("type").value_or(PLANE_TYPE_UNKNOWN);
+  const auto plane_type = GetPropertyValue("type").value_or(PLANE_TYPE_UNKNOWN);
 
   if (type != PLANE_TYPE_ANY && plane_type != type)
     return false;
