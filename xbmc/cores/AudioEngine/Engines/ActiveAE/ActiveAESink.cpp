@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2010-2018 Team Kodi
+ *  Copyright (C) 2010-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -596,6 +596,11 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
   } // for
 }
 
+void CActiveAESink::OnStartup()
+{
+  SetTask(ThreadTask::AUDIO);
+}
+
 void CActiveAESink::Process()
 {
   Message *msg = nullptr;
@@ -670,6 +675,11 @@ void CActiveAESink::Process()
       }
     }
   }
+}
+
+void CActiveAESink::OnExit()
+{
+  RevertTask();
 }
 
 void CActiveAESink::EnumerateSinkList(bool force, std::string driver)
