@@ -11,12 +11,47 @@ on:
     types: [submitted]
 
 jobs:
+  # Check if this is a reply to a Claude comment (for auto-triggering reassessment)
+  check-parent-comment:
+    runs-on: ubuntu-latest
+    outputs:
+      is_reply_to_claude: ${{ steps.check.outputs.is_reply_to_claude }}
+    permissions:
+      pull-requests: read
+    steps:
+      - name: Check if replying to github-actions
+        id: check
+        run: |
+          # Only check for inline comments (pull_request_review_comment)
+          if [ "${{ github.event_name }}" != "pull_request_review_comment" ]; then
+            echo "is_reply_to_claude=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Check if this comment is a reply to another comment
+          if [ -n "${{ github.event.comment.in_reply_to_id }}" ]; then
+            PARENT_COMMENT=$(gh api repos/${{ github.repository }}/pulls/comments/${{ github.event.comment.in_reply_to_id }})
+            PARENT_AUTHOR=$(echo "$PARENT_COMMENT" | jq -r '.user.login')
+            if [ "$PARENT_AUTHOR" = "github-actions" ] || [ "$PARENT_AUTHOR" = "github-actions[bot]" ]; then
+              echo "is_reply_to_claude=true" >> $GITHUB_OUTPUT
+            else
+              echo "is_reply_to_claude=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "is_reply_to_claude=false" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   claude:
+    needs: [check-parent-comment]
     if: |
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
-      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))
+      always() && (
+        (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
+        (github.event_name == 'pull_request_review_comment' && (contains(github.event.comment.body, '@claude') || needs.check-parent-comment.outputs.is_reply_to_claude == 'true')) ||
+        (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
+        (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))
+      )
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -56,33 +91,46 @@ jobs:
 
           prompt: |
             REPO: ${{ github.repository }}
+            EVENT: ${{ github.event_name }}
+            IS_REPLY_TO_CLAUDE: ${{ needs.check-parent-comment.outputs.is_reply_to_claude }}
 
             Respond to the user's request in the context of this GitHub issue/PR.
 
-            When responding to comments on pull requests:
-            1. If someone disagrees with a previous review comment, reassess your position by:
-               - Reading the relevant code and context again
-               - Considering their explanation
-               - Updating your assessment if they're correct
-               - Explaining what you missed or misunderstood
+            CONTEXT:
+            ${{ needs.check-parent-comment.outputs.is_reply_to_claude == 'true' && 'Someone replied to your previous inline review comment. Automatically reassess that specific comment thread.' || 'User mentioned @claude - respond to their request.' }}
 
-            2. Response format:
-               - If replying to an INLINE comment (on specific code): Reply inline in that thread using the inline comment API
-               - If replying to a top-level comment: Use `gh pr comment` in a collapsed section:
-                 <details>
-                 <summary>🤖 Claude Response</summary>
+            When this is a reply to your inline comment (IS_REPLY_TO_CLAUDE=true):
+            - Read the conversation thread to understand their response
+            - Reassess your original concern based on their explanation by:
+              * Reading the relevant code and context again
+              * Considering their explanation
+              * Updating your assessment if they're correct
+              * Explaining what you missed or misunderstood
+            - Reply inline in the SAME comment thread using the inline comment API
+            - Focus ONLY on that specific issue - don't reassess other comments
 
-                 [Your response here]
+            When user mentions @claude in a top-level comment:
+            - Respond to their specific request
+            - Use collapsed section format:
+              <details>
+              <summary>🤖 Claude Response</summary>
 
-                 </details>
+              [Your response here]
 
-            3. Focus ONLY on actionable issues/problems:
+              </details>
+
+            When user mentions @claude in an inline comment:
+            - Reply inline in that comment thread
+            - Keep response concise and focused
+
+            Response guidelines:
+            1. Focus ONLY on actionable issues/problems:
                - NO positive feedback, NO "looks good", NO "Author is correct"
                - NO checkmarks (✅), NO "NOT AN ISSUE" confirmations
                - If you agree with the author's explanation, just say what you missed/misunderstood
                - Keep responses brief and issue-focused
 
-            4. After reassessing all comments, if all issues are addressed or invalid:
+            2. After reassessing all relevant comments, if all issues are addressed or invalid:
                - Use `gh pr review --approve` to approve the PR
                - IMPORTANT: Use --approve flag ONLY, with NO message/body
                - NEVER include positive comments like "everything looks good" with approval
