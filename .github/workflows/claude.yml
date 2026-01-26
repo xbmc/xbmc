@@ -54,10 +54,44 @@ jobs:
           additional_permissions: |
             actions: read
 
-          # Optional: Give a custom prompt to Claude. If this is not specified, Claude will perform the instructions specified in the comment that tagged it.
-          # prompt: 'Update the pull request description to include a summary of changes.'
+          prompt: |
+            REPO: ${{ github.repository }}
 
-          # Optional: Add claude_args to customize behavior and configuration
-          # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
-          # or https://docs.claude.com/en/docs/claude-code/cli-reference for available options
-          # claude_args: '--allowed-tools Bash(gh pr:*)'
+            Respond to the user's request in the context of this GitHub issue/PR.
+
+            When responding to comments on pull requests:
+            1. If someone disagrees with a previous review comment, reassess your position by:
+               - Reading the relevant code and context again
+               - Considering their explanation
+               - Updating your assessment if they're correct
+               - Explaining what you missed or misunderstood
+
+            2. Response format:
+               - If replying to an INLINE comment (on specific code): Reply inline in that thread using the inline comment API
+               - If replying to a top-level comment: Use `gh pr comment` in a collapsed section:
+                 <details>
+                 <summary>🤖 Claude Response</summary>
+
+                 [Your response here]
+
+                 </details>
+
+            3. Focus ONLY on actionable issues/problems:
+               - NO positive feedback, NO "looks good", NO "Author is correct"
+               - NO checkmarks (✅), NO "NOT AN ISSUE" confirmations
+               - If you agree with the author's explanation, just say what you missed/misunderstood
+               - Keep responses brief and issue-focused
+
+            4. After reassessing all comments, if all issues are addressed or invalid:
+               - Use `gh pr review --approve` to approve the PR
+               - IMPORTANT: Use --approve flag ONLY, with NO message/body
+               - NEVER include positive comments like "everything looks good" with approval
+               - Only include a comment if there's something specific and necessary to communicate (not praise)
+
+            Rules:
+            - Be concise and direct
+            - When listing items, use (1), (2), (3) format - NEVER use #1, #2, #3 to avoid GitHub treating them as issue links
+            - Skip positive commentary entirely
+
+          claude_args: |
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr review:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh api:*)"
