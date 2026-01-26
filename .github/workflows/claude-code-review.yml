@@ -59,6 +59,13 @@ jobs:
             **Issue title** (file:line)
             Brief description of problem. Suggested fix with reasoning if needed (2-3 lines max).
 
+            For inline comments with concrete code fixes:
+            - Use GitHub suggestion syntax to enable "Commit suggestion" button
+            - Format: ```suggestion\n[corrected code]\n```
+            - ONLY use suggestions for simple, direct fixes (single line or small blocks)
+            - The suggestion must show ONLY the corrected lines, exactly as they should appear
+            - Do NOT use suggestions for complex changes requiring context or multiple locations
+
             Rules:
             - NO positive feedback, NO "looks good", NO summary sections, NO "✅ Strengths" sections
             - ONLY report actionable issues that need to be fixed

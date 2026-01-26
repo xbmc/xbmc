@@ -108,6 +108,10 @@ jobs:
               * Explaining what you missed or misunderstood
             - Reply inline in the SAME comment thread using the inline comment API
             - Focus ONLY on that specific issue - don't reassess other comments
+            - If you now have a concrete fix, use GitHub suggestion syntax:
+              ```suggestion
+              [corrected code]
+              ```
 
             When user mentions @claude in a top-level comment:
             - Respond to their specific request
@@ -122,6 +126,11 @@ jobs:
             When user mentions @claude in an inline comment:
             - Reply inline in that comment thread
             - Keep response concise and focused
+            - For simple, direct code fixes, use GitHub suggestion syntax to enable "Commit suggestion" button:
+              ```suggestion
+              [corrected code exactly as it should appear]
+              ```
+            - ONLY use suggestions for simple fixes (1-5 lines) - not complex multi-location changes
 
             Response guidelines:
             1. Focus ONLY on actionable issues/problems:
