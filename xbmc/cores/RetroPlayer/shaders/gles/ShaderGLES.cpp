@@ -27,11 +27,12 @@ CShaderGLES::~CShaderGLES()
   Destroy();
 }
 
-bool CShaderGLES::Create(std::string shaderSource,
+bool CShaderGLES::Create(unsigned int passIdx,
+                         std::string passAlias,
                          std::string shaderPath,
+                         std::string shaderSource,
                          ShaderParameterMap shaderParameters,
                          std::vector<std::shared_ptr<IShaderLut>> luts,
-                         unsigned int passIdx,
                          unsigned int frameCountMod)
 {
   if (shaderPath.empty())
@@ -40,11 +41,12 @@ bool CShaderGLES::Create(std::string shaderSource,
     return false;
   }
 
-  m_shaderSource = CShaderUtils::StripParameterPragmas(std::move(shaderSource));
+  m_passIdx = passIdx;
+  m_passAlias = std::move(passAlias);
   m_shaderPath = std::move(shaderPath);
+  m_shaderSource = CShaderUtils::StripParameterPragmas(std::move(shaderSource));
   m_shaderParameters = std::move(shaderParameters);
   m_luts = std::move(luts);
-  m_passIdx = passIdx;
   m_frameCountMod = frameCountMod;
   m_shaderProgram = glCreateProgram();
 
@@ -307,7 +309,7 @@ void CShaderGLES::UpdateUniformInputs(
   }
 }
 
-CShaderGLES::UniformInputs CShaderGLES::GetInputData(uint64_t frameCount)
+CShaderGLES::UniformInputs CShaderGLES::GetInputData(uint64_t frameCount) const
 {
   if (m_frameCountMod != 0)
     frameCount %= m_frameCountMod;
@@ -324,7 +326,7 @@ CShaderGLES::UniformInputs CShaderGLES::GetInputData(uint64_t frameCount)
   return input;
 }
 
-CShaderGLES::UniformFrameInputs CShaderGLES::GetFrameInputData(GLuint texture)
+CShaderGLES::UniformFrameInputs CShaderGLES::GetFrameInputData(GLuint texture) const
 {
   const UniformFrameInputs frameInput = {
       {m_inputSize}, // input_size

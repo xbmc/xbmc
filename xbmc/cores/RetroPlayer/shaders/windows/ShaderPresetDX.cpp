@@ -31,14 +31,13 @@ bool CShaderPresetDX::CreateShaders()
 {
   const auto numPasses = static_cast<unsigned int>(m_passes.size());
 
-  //! @todo Is this pass specific?
   for (unsigned int shaderIdx = 0; shaderIdx < numPasses; ++shaderIdx)
   {
-    std::vector<std::shared_ptr<IShaderLut>> passLUTsDX;
-
     const ShaderPass& pass = m_passes[shaderIdx];
     const auto numPassLuts = static_cast<unsigned int>(pass.luts.size());
 
+    //! @todo Is this pass specific?
+    std::vector<std::shared_ptr<IShaderLut>> passLUTsDX;
     for (unsigned int i = 0; i < numPassLuts; ++i)
     {
       const ShaderLut& lutStruct = pass.luts[i];
@@ -57,8 +56,8 @@ bool CShaderPresetDX::CreateShaders()
     // Get only the parameters belonging to this specific shader
     ShaderParameterMap passParameters = GetShaderParameters(pass.parameters, pass.vertexSource);
 
-    if (!videoShader->Create(shaderSource, shaderPath, std::move(passParameters),
-                             std::move(passLUTsDX), shaderIdx, pass.frameCountMod))
+    if (!videoShader->Create(shaderIdx, pass.alias, shaderPath, shaderSource,
+                             std::move(passParameters), std::move(passLUTsDX), pass.frameCountMod))
     {
       CLog::Log(LOGERROR, "CShaderPresetDX::CreateShaders: Couldn't create a video shader");
       return false;

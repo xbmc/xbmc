@@ -29,20 +29,22 @@ public:
   /*!
    * \brief Construct the video shader instance
    *
-   * \param shaderSource Source code of the shader (both vertex and pixel/fragment)
+   * \param passIdx Index of the video shader pass in the preset
+   * \param passAlias Alias name for the video shader pass
    * \param shaderPath Full path to the shader file
+   * \param shaderSource Source code of the shader (both vertex and pixel/fragment)
    * \param shaderParameters Struct with all parameters pertaining to the shader
    * \param luts Look-up textures pertaining to the shader
-   * \param passIdx Index of the video shader pass
    * \param frameCountMod Modulo applied to the frame count before sending it to the shader
    *
    * \return Returns false if creating the shader failed, true otherwise
    */
-  virtual bool Create(std::string shaderSource,
+  virtual bool Create(unsigned int passIdx,
+                      std::string passAlias,
                       std::string shaderPath,
+                      std::string shaderSource,
                       ShaderParameterMap shaderParameters,
                       std::vector<std::shared_ptr<IShaderLut>> luts,
-                      unsigned int passIdx,
                       unsigned int frameCountMod = 0) = 0;
 
   /*!
