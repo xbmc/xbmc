@@ -421,18 +421,18 @@ void CRenderSystemGLES::ResetScissors()
 
 void CRenderSystemGLES::SetDepthCulling(DEPTH_CULLING culling)
 {
-  if (culling == DEPTH_CULLING_OFF)
+  if (culling == DEPTH_CULLING::OFF)
   {
     glDisable(GL_DEPTH_TEST);
     glDepthMask(GL_FALSE);
   }
-  else if (culling == DEPTH_CULLING_BACK_TO_FRONT)
+  else if (culling == DEPTH_CULLING::BACK_TO_FRONT)
   {
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_FALSE);
     glDepthFunc(GL_GEQUAL);
   }
-  else if (culling == DEPTH_CULLING_FRONT_TO_BACK)
+  else if (culling == DEPTH_CULLING::FRONT_TO_BACK)
   {
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
