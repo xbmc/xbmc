@@ -120,9 +120,11 @@ static bool LoadStr2Mem(const std::string& pathname_in,
       return false;
   }
 
-  bool useSourceLang = StringUtils::EqualsNoCase(language, LANGUAGE_DEFAULT) || StringUtils::EqualsNoCase(language, LANGUAGE_OLD_DEFAULT);
+  bool useSourceLang = StringUtils::EqualsNoCase(language, LANGUAGE_DEFAULT) ||
+                       StringUtils::EqualsNoCase(language, LANGUAGE_OLD_DEFAULT);
 
-  return LoadPO(URIUtils::AddFileToFolder(pathname, "strings.po"), strings, encoding, offset, useSourceLang);
+  return LoadPO(URIUtils::AddFileToFolder(pathname, "strings.po"), strings, encoding, offset,
+                useSourceLang);
 }
 
 static bool LoadWithFallback(const std::string& path,
@@ -200,7 +202,9 @@ void CLocalizeStrings::Clear()
   m_strings.clear();
 }
 
-bool CLocalizeStrings::LoadAddonStrings(const std::string& path, const std::string& language, const std::string& addonId)
+bool CLocalizeStrings::LoadAddonStrings(const std::string& path,
+                                        const std::string& language,
+                                        const std::string& addonId)
 {
   std::unordered_map<uint32_t, LocStr> strings;
   if (!LoadWithFallback(path, language, strings))

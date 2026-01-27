@@ -9,12 +9,14 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
 #include "cores/FFmpeg.h"
 #include "filesystem/File.h"
-#include "guilib/LocalizeStrings.h"
 #include "imagefiles/ImageFileURL.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Mp4ChplReader.h"
@@ -194,7 +196,8 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
   for (size_t i=0;i<m_fctx->nb_chapters;++i)
   {
     tag=nullptr;
-    std::string chaptitle = StringUtils::Format(g_localizeStrings.Get(25010), i + 1);
+    std::string chaptitle = StringUtils::Format(
+        CServiceBroker::GetResourcesComponent()->GetLocalizeStrings().Get(25010), i + 1);
     std::string chapauthor;
     std::string chapalbum;
 

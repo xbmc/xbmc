@@ -17,7 +17,6 @@
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerLayout.h"
 #include "games/controllers/ControllerManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/joysticks/interfaces/IInputHandler.h"
 #include "input/keyboard/generic/DefaultKeyboardHandling.h"
 #include "input/mouse/generic/DefaultMouseHandling.h"

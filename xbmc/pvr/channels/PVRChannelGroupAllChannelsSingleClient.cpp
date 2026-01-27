@@ -9,11 +9,12 @@
 #include "PVRChannelGroupAllChannelsSingleClient.h"
 
 #include "ServiceBroker.h"
-#include "guilib/LocalizeStrings.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClient.h"
 #include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelsPath.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -63,8 +64,9 @@ std::vector<std::shared_ptr<CPVRChannelGroup>> CPVRChannelGroupAllChannelsSingle
         });
     if (it == allChannelGroups.cend())
     {
-      const std::string name{
-          StringUtils::Format(g_localizeStrings.Get(859), client->GetFullClientName())};
+      const std::string name{StringUtils::Format(
+          CServiceBroker::GetResourcesComponent()->GetLocalizeStrings().Get(859),
+          client->GetFullClientName())};
       const CPVRChannelsPath path{allChannelsGroup->IsRadio(), name, client->GetID()};
       addedGroups.emplace_back(
           std::make_shared<CPVRChannelGroupAllChannelsSingleClient>(path, allChannelsGroup));
