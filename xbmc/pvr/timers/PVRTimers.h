@@ -82,6 +82,16 @@ public:
   void Stop();
 
   /*!
+   * @brief Propagate event on system sleep
+   */
+  void OnSleep() override;
+
+  /*!
+   * @brief Propagate event on system wake
+   */
+  void OnWake() override;
+
+  /*!
    * @brief Update all timers from PVR database and from given clients.
    * @param clients The PVR clients data should be loaded for. Leave empty for all clients.
    * @return True on success, false otherwise.

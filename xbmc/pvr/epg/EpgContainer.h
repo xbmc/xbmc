@@ -73,16 +73,20 @@ public:
    */
   void Stop();
 
-  /**
+  /*!
+   * @brief Propagate event on system sleep
+   */
+  void OnSleep() override;
+
+  /*!
+   * @brief Propagate event on system wake
+   */
+  void OnWake() override;
+
+  /*!
    * @brief unload all EPG data.
    */
   void Unload();
-
-  /*!
-   * @brief Check whether the EpgContainer has fully started.
-   * @return True if started, false otherwise.
-   */
-  bool IsStarted() const;
 
   /*!
    * @brief Queue the deletion of the given EPG tables from this container.
@@ -324,7 +328,6 @@ private:
   bool m_bIsUpdating = false; /*!< true while an update is running */
   std::atomic<bool> m_bIsInitialising = {
       true}; /*!< true while the epg manager hasn't loaded all tables */
-  bool m_bStarted = false; /*!< true if EpgContainer has fully started */
   bool m_bLoaded = false; /*!< true after epg data is initially loaded from the database */
   bool m_bPreventUpdates = false; /*!< true to prevent EPG updates */
   bool m_bPlaying = false; /*!< true if Kodi is currently playing something */
