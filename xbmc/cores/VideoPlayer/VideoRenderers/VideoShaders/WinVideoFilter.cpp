@@ -121,14 +121,20 @@ bool CWinShader::Execute(const std::vector<CD3DTexture*>& targets, unsigned int 
   ComPtr<ID3D11RenderTargetView> origRTV{};
   ComPtr<ID3D11DepthStencilView> origDSV{};
 
-  // The current RTV and DSV are modified for the shaders execution. Save them for restoration
-  // after the execution.
+  // The current RTV and DSV are modified for the effect execution. Save them / restore later.
   pContext->OMGetRenderTargets(1, &origRTV, &origDSV);
 
   unsigned cPasses;
   if (!m_effect.Begin(&cPasses, 0))
   {
     CLog::LogF(LOGERROR, "failed to begin d3d effect");
+    return false;
+  }
+
+  if (cPasses != targets.size())
+  {
+    CLog::LogF(LOGERROR, "different count of render targets ({}) and effect passes ({}).",
+               targets.size(), cPasses);
     return false;
   }
 
@@ -145,8 +151,7 @@ bool CWinShader::Execute(const std::vector<CD3DTexture*>& targets, unsigned int 
   {
     // No depth buffer for intermediate render targets
     // Set it only for the last pass of the last shader (expected to render to the back buffer)
-    SetTarget(targets.size() > iPass ? targets.at(iPass) : nullptr,
-              (iPass == cPasses - 1) && m_isFinalShader ? origDSV.Get() : nullptr);
+    SetTarget(targets[iPass], (iPass == cPasses - 1) && m_isFinalShader ? origDSV.Get() : nullptr);
     SetStepParams(iPass);
 
     if (!m_effect.BeginPass(iPass))
