@@ -24,35 +24,18 @@ using namespace KODI;
 
 struct AudioClassifyTest
 {
-  AudioClassifyTest(const std::string& path,
-                    bool res = true,
-                    const std::string& mime = "",
-                    int tag_type = 0)
-    : item(path, false), result(res)
+  AudioClassifyTest(std::string path, bool res = true, std::string mime = "", int tag_type = 0)
+    : path(std::move(path)),
+      result(res),
+      mime(std::move(mime)),
+      tag_type(tag_type)
   {
-    if (!mime.empty())
-      item.SetMimeType(mime);
-    switch (tag_type)
-    {
-      case 1:
-        item.GetVideoInfoTag()->m_strFileNameAndPath = path;
-        break;
-      case 2:
-        item.GetGameInfoTag()->SetGameClient("some_client");
-        break;
-      case 3:
-        item.GetMusicInfoTag()->SetPlayCount(1);
-        break;
-      case 4:
-        item.GetPictureInfoTag()->SetInfo("foo", "bar");
-        break;
-      default:
-        break;
-    }
   }
 
-  CFileItem item;
+  std::string path;
   bool result;
+  std::string mime;
+  int tag_type;
 };
 
 class AudioTest : public testing::WithParamInterface<AudioClassifyTest>, public testing::Test
@@ -61,7 +44,32 @@ class AudioTest : public testing::WithParamInterface<AudioClassifyTest>, public 
 
 TEST_P(AudioTest, IsAudio)
 {
-  EXPECT_EQ(MUSIC::IsAudio(GetParam().item), GetParam().result);
+  const AudioClassifyTest& param = GetParam();
+
+  // Construct CFileItem at test runtime (after fixture SetUp)
+  CFileItem item(param.path, false);
+  if (!param.mime.empty())
+    item.SetMimeType(param.mime);
+
+  switch (param.tag_type)
+  {
+    case 1:
+      item.GetVideoInfoTag()->m_strFileNameAndPath = param.path;
+      break;
+    case 2:
+      item.GetGameInfoTag()->SetGameClient("some_client");
+      break;
+    case 3:
+      item.GetMusicInfoTag()->SetPlayCount(1);
+      break;
+    case 4:
+      item.GetPictureInfoTag()->SetInfo("foo", "bar");
+      break;
+    default:
+      break;
+  }
+
+  EXPECT_EQ(MUSIC::IsAudio(item), param.result);
 }
 
 const auto audio_tests = std::array{
