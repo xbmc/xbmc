@@ -210,7 +210,7 @@ int FindExtension(const std::string& path,
   auto exts{StringUtils::Split(
       !extensions.empty()
           ? extensions
-          : CServiceBroker::GetFileExtensionProvider().GetCompoundArchiveExtensions(),
+          : CServiceBroker::GetFileExtensionProvider().GetCachedCompoundArchiveExtensions(),
       '|')};
 
   // Compound extensions first (otherwise .tar.gz could be detected as .gz only)
@@ -290,7 +290,7 @@ void URIUtils::RemoveExtension(std::string& path)
       CServiceBroker::GetFileExtensionProvider().GetMusicExtensions() +
       CServiceBroker::GetFileExtensionProvider().GetVideoExtensions() +
       CServiceBroker::GetFileExtensionProvider().GetSubtitleExtensions() +
-      CServiceBroker::GetFileExtensionProvider().GetCompoundArchiveExtensions() +
+      CServiceBroker::GetFileExtensionProvider().GetCachedCompoundArchiveExtensions() +
       CServiceBroker::GetFileExtensionProvider().GetArchiveExtensions() +
       "|.py|.xml|.milk|.xbt|.cdg"
 #ifdef TARGET_DARWIN

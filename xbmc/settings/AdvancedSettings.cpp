@@ -20,6 +20,7 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
+#include "utils/FileExtensionProvider.h"
 #include "utils/FileUtils.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/Set.h"
@@ -106,6 +107,12 @@ void CAdvancedSettings::OnSettingsLoaded()
 void CAdvancedSettings::OnSettingsUnloaded()
 {
   m_initialized = false;
+
+  // If changing profile
+  if (CServiceBroker::IsServiceManagerUp())
+  {
+    CServiceBroker::GetFileExtensionProvider().InvalidateCaches();
+  }
 }
 
 void CAdvancedSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)

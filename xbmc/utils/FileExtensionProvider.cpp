@@ -257,6 +257,7 @@ void CFileExtensionProvider::SetAddonExtensions()
   {
     SetAddonExtensions(type);
   }
+  InvalidateCaches();
 }
 
 void CFileExtensionProvider::SetAddonExtensions(AddonType type)
@@ -312,4 +313,21 @@ void CFileExtensionProvider::SetAddonExtensions(AddonType type)
 bool CFileExtensionProvider::EncodedHostName(const std::string& protocol) const
 {
   return std::ranges::find(m_encoded, protocol) != m_encoded.end();
+}
+
+std::string CFileExtensionProvider::GetCachedCompoundArchiveExtensions() const
+{
+  std::scoped_lock lock(m_cacheMutex);
+  if (!m_compoundArchiveExtensionsCacheValid)
+  {
+    m_compoundArchiveExtensionsCache = GetCompoundArchiveExtensions();
+    m_compoundArchiveExtensionsCacheValid = true;
+  }
+  return m_compoundArchiveExtensionsCache;
+}
+
+void CFileExtensionProvider::InvalidateCaches()
+{
+  std::scoped_lock lock(m_cacheMutex);
+  m_compoundArchiveExtensionsCacheValid = false;
 }
