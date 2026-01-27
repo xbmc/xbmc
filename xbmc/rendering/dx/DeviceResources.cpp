@@ -223,15 +223,8 @@ void DX::DeviceResources::GetDisplayMode(DXGI_MODE_DESC* mode) const
 void DX::DeviceResources::SetViewPort(D3D11_VIEWPORT& viewPort) const
 {
   // convert logical viewport to real
-  D3D11_VIEWPORT realViewPort =
-  {
-    viewPort.TopLeftX,
-    viewPort.TopLeftY,
-    viewPort.Width,
-    viewPort.Height,
-    viewPort.MinDepth,
-    viewPort.MinDepth
-  };
+  D3D11_VIEWPORT realViewPort = {viewPort.TopLeftX, viewPort.TopLeftY, viewPort.Width,
+                                 viewPort.Height,   viewPort.MinDepth, viewPort.MaxDepth};
 
   m_deferrContext->RSSetViewports(1, &realViewPort);
 }
