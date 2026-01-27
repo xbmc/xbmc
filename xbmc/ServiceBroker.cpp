@@ -11,6 +11,7 @@
 #include "ServiceManager.h"
 #include "application/Application.h"
 #include "profiles/ProfileManager.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
@@ -311,6 +312,21 @@ void CServiceBroker::RegisterGUI(CGUIComponent* gui)
 void CServiceBroker::UnregisterGUI()
 {
   g_serviceBroker.m_pGUI = nullptr;
+}
+
+CResourcesComponent& CServiceBroker::GetResourcesComponent()
+{
+  return *g_serviceBroker.m_pResourcesComponent;
+}
+
+void CServiceBroker::RegisterResourcesComponent(std::unique_ptr<CResourcesComponent> resources)
+{
+  g_serviceBroker.m_pResourcesComponent = std::move(resources);
+}
+
+void CServiceBroker::UnregisterResourcesComponent()
+{
+  g_serviceBroker.m_pResourcesComponent.reset();
 }
 
 // audio

@@ -12,7 +12,6 @@
 #include "GUIKeyboardFactory.h"
 #include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
-#include "LocalizeStrings.h"
 #include "ServiceBroker.h"
 #include "XBDateTime.h"
 #include "dialogs/GUIDialogNumeric.h"
@@ -20,6 +19,8 @@
 #include "input/actions/ActionIDs.h"
 #include "input/keyboard/KeyIDs.h"
 #include "input/keyboard/XBMC_vkeys.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/CharsetConverter.h"
 #include "utils/ColorUtils.h"
 #include "utils/Digest.h"
@@ -80,7 +81,7 @@ void CGUIEditControl::DefaultConstructor()
   m_textOffset = 0;
   m_cursorPos = 0;
   m_cursorBlink = 0;
-  m_inputHeading = g_localizeStrings.Get(16028);
+  m_inputHeading = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(16028);
   m_inputType = INPUT_TYPE_TEXT;
   m_smsLastKey = 0;
   m_smsKeyIndex = 0;
@@ -335,7 +336,8 @@ void CGUIEditControl::OnClick()
       textChanged = CGUIDialogNumeric::ShowAndGetNumber(utf8, m_inputHeading);
       break;
     case INPUT_TYPE_SECONDS:
-      textChanged = CGUIDialogNumeric::ShowAndGetSeconds(utf8, g_localizeStrings.Get(21420));
+      textChanged = CGUIDialogNumeric::ShowAndGetSeconds(
+          utf8, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21420));
       break;
     case INPUT_TYPE_TIME:
     {
@@ -343,7 +345,10 @@ void CGUIEditControl::OnClick()
       dateTime.SetFromDBTime(utf8);
       KODI::TIME::SystemTime time;
       dateTime.GetAsSystemTime(time);
-      if (CGUIDialogNumeric::ShowAndGetTime(time, !m_inputHeading.empty() ? m_inputHeading : g_localizeStrings.Get(21420)))
+      if (CGUIDialogNumeric::ShowAndGetTime(
+              time, !m_inputHeading.empty()
+                        ? m_inputHeading
+                        : CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21420)))
       {
         dateTime = CDateTime(time);
         utf8 = dateTime.GetAsLocalizedTime("", false);
@@ -360,7 +365,10 @@ void CGUIEditControl::OnClick()
       else
         KODI::TIME::GetLocalTime(&date);
 
-      if (CGUIDialogNumeric::ShowAndGetDate(date, !m_inputHeading.empty() ? m_inputHeading : g_localizeStrings.Get(21420)))
+      if (CGUIDialogNumeric::ShowAndGetDate(
+              date, !m_inputHeading.empty()
+                        ? m_inputHeading
+                        : CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21420)))
       {
         dateTime = CDateTime(date);
         utf8 = dateTime.GetAsDBDate();
@@ -420,7 +428,8 @@ void CGUIEditControl::SetInputType(CGUIEditControl::INPUT_TYPE type, const CVari
   if (heading.isString())
     m_inputHeading = heading.asString();
   else if (heading.isInteger() && heading.asInteger())
-    m_inputHeading = g_localizeStrings.Get(static_cast<uint32_t>(heading.asInteger()));
+    m_inputHeading = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+        static_cast<uint32_t>(heading.asInteger()));
   ValidateInput();
 }
 

@@ -29,10 +29,11 @@
 #include "filesystem/AddonsDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "platform/Platform.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -171,8 +172,10 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
 void CGUIWindowAddonBrowser::SetProperties()
 {
   auto lastUpdated = CServiceBroker::GetRepositoryUpdater().LastUpdated();
-  SetProperty("Updated", lastUpdated.IsValid() ? lastUpdated.GetAsLocalizedDateTime()
-                                               : g_localizeStrings.Get(21337));
+  SetProperty("Updated",
+              lastUpdated.IsValid()
+                  ? lastUpdated.GetAsLocalizedDateTime()
+                  : CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21337));
 }
 
 class UpdateAddons : public IRunnable
@@ -214,7 +217,9 @@ void CGUIWindowAddonBrowser::InstallFromZip()
     CServiceBroker::GetMediaManager().GetLocalDrives(shares);
     CServiceBroker::GetMediaManager().GetNetworkLocations(shares);
     std::string path;
-    if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "*.zip", g_localizeStrings.Get(24041), path))
+    if (CGUIDialogFileBrowser::ShowAndGetFile(
+            shares, "*.zip",
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24041), path))
     {
       CAddonInstaller::GetInstance().InstallFromZip(path);
     }
@@ -356,7 +361,9 @@ void CGUIWindowAddonBrowser::UpdateStatus(const CFileItemPtr& item) const
                                                  downloadFinshed))
   {
     std::string progress = StringUtils::Format(
-        !downloadFinshed ? g_localizeStrings.Get(24042) : g_localizeStrings.Get(24044), percent);
+        !downloadFinshed ? CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24042)
+                         : CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24044),
+        percent);
     item->SetProperty("Addon.Status", progress);
     item->SetProperty("Addon.Downloading", true);
   }
@@ -566,8 +573,8 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<AddonType>& types,
   if (showNone)
   {
     auto item{std::make_shared<CFileItem>("", false)};
-    item->SetLabel(g_localizeStrings.Get(231));
-    item->SetLabel2(g_localizeStrings.Get(24040));
+    item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(231));
+    item->SetLabel2(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24040));
     item->SetArt("icon", "DefaultAddonNone.png");
     item->SetSpecialSort(SortSpecialOnTop);
     items.Add(std::move(item));

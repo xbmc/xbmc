@@ -17,10 +17,11 @@
 #include "addons/addoninfo/AddonType.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
@@ -198,12 +199,12 @@ void CWeatherJob::SetFromProperties()
           CSpeed::CreateFromKilometresPerHour(std::strtod(wind.asString().c_str(), nullptr))};
       std::string direction{window->GetProperty("Current.WindDirection").asString()};
       if (direction == "CALM")
-        m_info.currentWind = g_localizeStrings.Get(1410);
+        m_info.currentWind = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1410);
       else
       {
         direction = m_localizer.LocalizeOverviewToken(direction);
         m_info.currentWind = StringUtils::Format(
-            g_localizeStrings.Get(434), direction,
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(434), direction,
             static_cast<int>(speed.To(g_langInfo.GetSpeedUnit())), g_langInfo.GetSpeedUnitString());
       }
       const std::string windspeed{

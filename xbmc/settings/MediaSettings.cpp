@@ -13,12 +13,13 @@
 #include "TextureCache.h"
 #include "cores/RetroPlayer/RetroPlayerUtils.h"
 #include "dialogs/GUIDialogFileBrowser.h"
-#include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/builtins/Builtins.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicLibraryQueue.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/dialogs/GUIDialogLibExportSettings.h"
 #include "settings/lib/Setting.h"
@@ -314,7 +315,9 @@ void CMediaSettings::OnSettingAction(const std::shared_ptr<const CSetting>& sett
     CServiceBroker::GetMediaManager().GetNetworkLocations(shares);
     CServiceBroker::GetMediaManager().GetRemovableDrives(shares);
 
-    if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "musicdb.xml", g_localizeStrings.Get(651) , path))
+    if (CGUIDialogFileBrowser::ShowAndGetFile(
+            shares, "musicdb.xml",
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(651), path))
     {
       // Import data to music library showing progress dialog
       CMusicLibraryQueue::GetInstance().ImportLibrary(path, true);
@@ -338,7 +341,8 @@ void CMediaSettings::OnSettingAction(const std::shared_ptr<const CSetting>& sett
     CServiceBroker::GetMediaManager().GetNetworkLocations(shares);
     CServiceBroker::GetMediaManager().GetRemovableDrives(shares);
 
-    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(651) , path))
+    if (CGUIDialogFileBrowser::ShowAndGetDirectory(
+            shares, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(651), path))
     {
       CVideoDatabase videodatabase;
       videodatabase.Open();

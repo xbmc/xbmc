@@ -17,10 +17,11 @@
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "jobs/JobManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
@@ -72,7 +73,7 @@ static unsigned long HostToIP(const std::string& host)
   return inet_addr(ip.c_str());
 }
 
-#define LOCALIZED(id) g_localizeStrings.Get(id)
+#define LOCALIZED(id) CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(id)
 
 static void ShowDiscoveryMessage(const char* function, const char* server_name, bool new_entry)
 {

@@ -21,8 +21,9 @@
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "interfaces/builtins/Builtins.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
@@ -103,7 +104,10 @@ int CGUIDialogInfoProviderSettings::Show(ADDON::ScraperPtr& scraper)
     dialog->SetArtistScraper(scraper);
   // toast selected but disabled scrapers
   if (CServiceBroker::GetAddonMgr().IsAddonDisabled(scraper->ID()))
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(24024), scraper->Name(), 2000, true);
+    CGUIDialogKaiToast::QueueNotification(
+        CGUIDialogKaiToast::Error,
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24024), scraper->Name(),
+        2000, true);
 
   dialog->Open();
 
@@ -241,7 +245,7 @@ void CGUIDialogInfoProviderSettings::OnSettingAction(const std::shared_ptr<const
       if (CUtil::GetMatchingSource(strDirectory, shares, bIsSource) < 0) // path is outside shares - add it as a separate one
       {
         CMediaSource share;
-        share.strName = g_localizeStrings.Get(13278);
+        share.strName = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13278);
         share.strPath = strDirectory;
         shares.push_back(share);
       }
@@ -249,7 +253,9 @@ void CGUIDialogInfoProviderSettings::OnSettingAction(const std::shared_ptr<const
     else
       strDirectory = "default location";
 
-    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(20223), strDirectory, true))
+    if (CGUIDialogFileBrowser::ShowAndGetDirectory(
+            shares, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20223),
+            strDirectory, true))
     {
       if (!strDirectory.empty())
       {
@@ -317,7 +323,9 @@ void CGUIDialogInfoProviderSettings::SetupView()
       }
       else
       {
-        SetLabel2(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER, g_localizeStrings.Get(231)); //Set label2 to "None"
+        SetLabel2(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER,
+                  CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                      231)); //Set label2 to "None"
         ToggleState(SETTING_ALBUMSCRAPER_SETTINGS, false);
       }
       // Artist scraper
@@ -332,7 +340,9 @@ void CGUIDialogInfoProviderSettings::SetupView()
       }
       else
       {
-        SetLabel2(CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER, g_localizeStrings.Get(231)); //Set label2 to "None"
+        SetLabel2(CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER,
+                  CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                      231)); //Set label2 to "None"
         ToggleState(SETTING_ARTISTSCRAPER_SETTINGS, false);
       }
       // Artist Information Folder
@@ -354,7 +364,9 @@ void CGUIDialogInfoProviderSettings::SetupView()
     }
     else
     {
-      SetLabel2(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER, g_localizeStrings.Get(231)); //Set label2 to "None"
+      SetLabel2(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER,
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                    231)); //Set label2 to "None"
       ToggleState(SETTING_ALBUMSCRAPER_SETTINGS, false);
     }
   }
@@ -373,7 +385,9 @@ void CGUIDialogInfoProviderSettings::SetupView()
     }
     else
     {
-      SetLabel2(CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER, g_localizeStrings.Get(231)); //Set label2 to "None"
+      SetLabel2(CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER,
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                    231)); //Set label2 to "None"
       ToggleState(SETTING_ARTISTSCRAPER_SETTINGS, false);
     }
     // Artist Information Folder when default settings

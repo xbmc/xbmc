@@ -9,10 +9,11 @@
 #include "PVRSettings.h"
 
 #include "ServiceBroker.h"
-#include "guilib/LocalizeStrings.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/guilib/PVRGUIActionsParentalControl.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/SettingsManager.h"
@@ -183,8 +184,10 @@ void CPVRSettings::MarginTimeFiller(const SettingConstPtr& /*setting*/,
 
   for (int iValue : marginTimeValues)
   {
-    list.emplace_back(StringUtils::Format(g_localizeStrings.Get(14044), iValue) /* {} min */,
-                      iValue);
+    list.emplace_back(
+        StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(14044),
+                            iValue) /* {} min */,
+        iValue);
   }
 }
 

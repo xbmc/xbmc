@@ -21,10 +21,11 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/ActionIDs.h"
 #include "music/windows/GUIWindowMusicBase.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -243,6 +244,8 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     m_bNameChanged = true;
   path.clear();
 
+  auto& localizeStrings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
+
   if (m_type == "music")
   {
     CMediaSource share1;
@@ -253,7 +256,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
         CDirectory::Exists(path))
     {
       share1.strPath = path;
-      share1.strName = g_localizeStrings.Get(20240);
+      share1.strName = localizeStrings.Get(20240);
       share1.m_ignore = true;
       extraShares.push_back(share1);
     }
@@ -265,7 +268,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     if (XFILE::CWinLibraryDirectory::GetStoragePath(m_type, path) && !path.empty() && CDirectory::Exists(path))
     {
       share1.strPath = path;
-      share1.strName = g_localizeStrings.Get(20245);
+      share1.strName = localizeStrings.Get(20245);
       share1.m_ignore = true;
       extraShares.push_back(share1);
     }
@@ -273,7 +276,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
 
     // add the music playlist location
     share1.strPath = "special://musicplaylists/";
-    share1.strName = g_localizeStrings.Get(20011);
+    share1.strName = localizeStrings.Get(20011);
     share1.m_ignore = true;
     extraShares.push_back(share1);
 
@@ -281,13 +284,13 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     if (CPVRDirectory::HasRadioRecordings())
     {
       share1.strPath = PVR::CPVRRecordingsPath::PATH_ACTIVE_RADIO_RECORDINGS;
-      share1.strName = g_localizeStrings.Get(19017); // Recordings
+      share1.strName = localizeStrings.Get(19017); // Recordings
       extraShares.push_back(share1);
     }
     if (CPVRDirectory::HasDeletedRadioRecordings())
     {
       share1.strPath = PVR::CPVRRecordingsPath::PATH_DELETED_RADIO_RECORDINGS;
-      share1.strName = g_localizeStrings.Get(19184); // Deleted recordings
+      share1.strName = localizeStrings.Get(19184); // Deleted recordings
       extraShares.push_back(share1);
     }
 
@@ -297,7 +300,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
              .empty())
     {
       share1.strPath = "special://recordings/";
-      share1.strName = g_localizeStrings.Get(21883);
+      share1.strName = localizeStrings.Get(21883);
       extraShares.push_back(share1);
     }
   }
@@ -311,7 +314,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
         CFileUtils::Exists(path))
     {
       share1.strPath = path;
-      share1.strName = g_localizeStrings.Get(20241);
+      share1.strName = localizeStrings.Get(20241);
       share1.m_ignore = true;
       extraShares.push_back(share1);
     }
@@ -322,7 +325,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     if (XFILE::CWinLibraryDirectory::GetStoragePath(m_type, path) && !path.empty() && CDirectory::Exists(path))
     {
       share1.strPath = path;
-      share1.strName = g_localizeStrings.Get(20246);
+      share1.strName = localizeStrings.Get(20246);
       share1.m_ignore = true;
       extraShares.push_back(share1);
     }
@@ -331,20 +334,20 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     // add the video playlist location
     share1.m_ignore = true;
     share1.strPath = "special://videoplaylists/";
-    share1.strName = g_localizeStrings.Get(20012);
+    share1.strName = localizeStrings.Get(20012);
     extraShares.push_back(share1);
 
     // add the recordings dir as needed
     if (CPVRDirectory::HasTVRecordings())
     {
       share1.strPath = PVR::CPVRRecordingsPath::PATH_ACTIVE_TV_RECORDINGS;
-      share1.strName = g_localizeStrings.Get(19017); // Recordings
+      share1.strName = localizeStrings.Get(19017); // Recordings
       extraShares.push_back(share1);
     }
     if (CPVRDirectory::HasDeletedTVRecordings())
     {
       share1.strPath = PVR::CPVRRecordingsPath::PATH_DELETED_TV_RECORDINGS;
-      share1.strName = g_localizeStrings.Get(19184); // Deleted recordings
+      share1.strName = localizeStrings.Get(19184); // Deleted recordings
       extraShares.push_back(share1);
     }
   }
@@ -358,7 +361,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
         CFileUtils::Exists(path))
     {
       share1.strPath = path;
-      share1.strName = g_localizeStrings.Get(20242);
+      share1.strName = localizeStrings.Get(20242);
       share1.m_ignore = true;
       extraShares.push_back(share1);
     }
@@ -368,7 +371,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
         CFileUtils::Exists(path))
     {
       share1.strPath = path;
-      share1.strName = g_localizeStrings.Get(20243);
+      share1.strName = localizeStrings.Get(20243);
       share1.m_ignore = true;
       extraShares.push_back(share1);
     }
@@ -379,7 +382,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     if (XFILE::CWinLibraryDirectory::GetStoragePath(m_type, path) && !path.empty() && CDirectory::Exists(path))
     {
       share1.strPath = path;
-      share1.strName = g_localizeStrings.Get(20247);
+      share1.strName = localizeStrings.Get(20247);
       share1.m_ignore = true;
       extraShares.push_back(share1);
     }
@@ -387,7 +390,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     if (XFILE::CWinLibraryDirectory::GetStoragePath("photos", path) && !path.empty() && CDirectory::Exists(path))
     {
       share1.strPath = path;
-      share1.strName = g_localizeStrings.Get(20248);
+      share1.strName = localizeStrings.Get(20248);
       share1.m_ignore = true;
       extraShares.push_back(share1);
     }
@@ -400,7 +403,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
              .empty())
     {
       share1.strPath = "special://screenshots/";
-      share1.strName = g_localizeStrings.Get(20008);
+      share1.strName = localizeStrings.Get(20008);
       extraShares.push_back(share1);
     }
   }
@@ -436,7 +439,9 @@ void CGUIDialogMediaSource::OnPath(int item)
   if (m_name != CUtil::GetTitleFromPath(path))
     m_bNameChanged = true;
 
-  CGUIKeyboardFactory::ShowAndGetInput(path, CVariant{ g_localizeStrings.Get(1021) }, false);
+  CGUIKeyboardFactory::ShowAndGetInput(
+      path, CVariant{CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1021)},
+      false);
   m_paths->Get(item)->SetPath(path);
 
   if (!m_bNameChanged || m_name.empty())
@@ -496,7 +501,8 @@ void CGUIDialogMediaSource::UpdateButtons()
     CURL url(item->GetPath());
     path = url.GetWithoutUserDetails();
     if (path.empty())
-      path = g_localizeStrings.Get(1020); // "Enter path..."
+      path =
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1020); // "Enter path..."
     item->SetLabel(path);
   }
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_PATH, 0, 0, m_paths);
@@ -526,36 +532,37 @@ void CGUIDialogMediaSource::SetShare(const CMediaSource &share)
 void CGUIDialogMediaSource::SetTypeOfMedia(const std::string &type, bool editNotAdd)
 {
   m_type = type;
+  auto& localizeStrings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
   std::string heading;
   if (editNotAdd)
   {
     if (type == "video")
-      heading = g_localizeStrings.Get(10053);
+      heading = localizeStrings.Get(10053);
     else if (type == "music")
-      heading = g_localizeStrings.Get(10054);
+      heading = localizeStrings.Get(10054);
     else if (type == "pictures")
-      heading = g_localizeStrings.Get(10055);
+      heading = localizeStrings.Get(10055);
     else if (type == "games")
-      heading = g_localizeStrings.Get(35252); // "Edit game source"
+      heading = localizeStrings.Get(35252); // "Edit game source"
     else if (type == "programs")
-      heading = g_localizeStrings.Get(10056);
+      heading = localizeStrings.Get(10056);
     else
-      heading = g_localizeStrings.Get(10057);
+      heading = localizeStrings.Get(10057);
   }
   else
   {
     if (type == "video")
-      heading = g_localizeStrings.Get(10048);
+      heading = localizeStrings.Get(10048);
     else if (type == "music")
-      heading = g_localizeStrings.Get(10049);
+      heading = localizeStrings.Get(10049);
     else if (type == "pictures")
-      heading = g_localizeStrings.Get(13006);
+      heading = localizeStrings.Get(13006);
     else if (type == "games")
-      heading = g_localizeStrings.Get(35251); // "Add game source"
+      heading = localizeStrings.Get(35251); // "Add game source"
     else if (type == "programs")
-      heading = g_localizeStrings.Get(10051);
+      heading = localizeStrings.Get(10051);
     else
-      heading = g_localizeStrings.Get(10052);
+      heading = localizeStrings.Get(10052);
   }
   SET_CONTROL_LABEL(CONTROL_HEADING, heading);
 }

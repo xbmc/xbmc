@@ -23,8 +23,9 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "profiles/ProfileManager.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
@@ -160,13 +161,16 @@ std::string CGUIDialogSubtitleSettings::BrowseForSubtitle()
       paths.push_back(URIUtils::GetDirectory(strPath));
     }
     paths.push_back(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH));
-    share.FromNameAndPaths(g_localizeStrings.Get(21367), paths);
+    share.FromNameAndPaths(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21367),
+                           paths);
     shares.push_back(share);
     strPath = share.strPath;
     URIUtils::AddSlashAtEnd(strPath);
   }
 
-  if (CGUIDialogFileBrowser::ShowAndGetFile(shares, strMask, g_localizeStrings.Get(293), strPath, false, true)) // "subtitles"
+  if (CGUIDialogFileBrowser::ShowAndGetFile(
+          shares, strMask, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(293),
+          strPath, false, true)) // "subtitles"
   {
     if (URIUtils::HasExtension(strPath, ".sub"))
     {
@@ -372,7 +376,8 @@ void CGUIDialogSubtitleSettings::SubtitleStreamsOptionFiller(
     std::string strLanguage;
 
     if (!g_LangCodeExpander.Lookup(info.language, strLanguage))
-      strLanguage = g_localizeStrings.Get(13205); // Unknown
+      strLanguage =
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // Unknown
 
     if (info.name.empty())
       strItem = strLanguage;
@@ -388,7 +393,7 @@ void CGUIDialogSubtitleSettings::SubtitleStreamsOptionFiller(
   // no subtitle streams - just add a "None" entry
   if (list.empty())
   {
-    list.emplace_back(g_localizeStrings.Get(231), -1);
+    list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(231), -1);
     current = -1;
   }
 }
@@ -407,26 +412,34 @@ std::string CGUIDialogSubtitleSettings::SettingFormatterDelay(
   float fStep = step.asFloat();
 
   if (fabs(fValue) < 0.5f * fStep)
-    return StringUtils::Format(g_localizeStrings.Get(22003), 0.0);
+    return StringUtils::Format(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(22003), 0.0);
   if (fValue < 0)
-    return StringUtils::Format(g_localizeStrings.Get(22004), fabs(fValue));
+    return StringUtils::Format(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(22004), fabs(fValue));
 
-  return StringUtils::Format(g_localizeStrings.Get(22005), fValue);
+  return StringUtils::Format(
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(22005), fValue);
 }
 
 std::string CGUIDialogSubtitleSettings::FormatFlags(StreamFlags flags)
 {
   std::vector<std::string> localizedFlags;
   if (flags & StreamFlags::FLAG_DEFAULT)
-    localizedFlags.emplace_back(g_localizeStrings.Get(39105));
+    localizedFlags.emplace_back(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(39105));
   if (flags & StreamFlags::FLAG_FORCED)
-    localizedFlags.emplace_back(g_localizeStrings.Get(39106));
+    localizedFlags.emplace_back(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(39106));
   if (flags & StreamFlags::FLAG_HEARING_IMPAIRED)
-    localizedFlags.emplace_back(g_localizeStrings.Get(39107));
+    localizedFlags.emplace_back(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(39107));
   if (flags &  StreamFlags::FLAG_VISUAL_IMPAIRED)
-    localizedFlags.emplace_back(g_localizeStrings.Get(39108));
+    localizedFlags.emplace_back(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(39108));
   if (flags & StreamFlags::FLAG_ORIGINAL)
-    localizedFlags.emplace_back(g_localizeStrings.Get(39111));
+    localizedFlags.emplace_back(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(39111));
 
   std::string formated = StringUtils::Join(localizedFlags, ", ");
 

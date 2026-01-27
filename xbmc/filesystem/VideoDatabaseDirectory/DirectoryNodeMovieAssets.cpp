@@ -11,7 +11,9 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "QueryParams.h"
-#include "guilib/LocalizeStrings.h"
+#include "ServiceBroker.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
@@ -59,7 +61,8 @@ bool CDirectoryNodeMovieAssets::GetContent(CFileItemList& items) const
         URIUtils::GetParentPath(path), std::to_string(static_cast<int>(VideoAssetType::EXTRA)))};
 
     const auto item{std::make_shared<CFileItem>(pathExtras, true)};
-    item->SetLabel(g_localizeStrings.Get(40211)); // "Extras"
+    item->SetLabel(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(40211)); // "Extras"
     item->SetLabelPreformatted(true); //! @todo not sure, but used elsewhere
 
     //! @todo icon too small for nice display, add new skin icon in bigger size? ex. DefaultAddSource.png

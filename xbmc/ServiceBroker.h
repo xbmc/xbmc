@@ -70,6 +70,7 @@ class CPlayerCoreFactory;
 class CDatabaseManager;
 class CEventLog;
 class CGUIComponent;
+class CResourcesComponent;
 class CAppInboundProtocol;
 class CSettingsComponent;
 class CDecoderFilterManager;
@@ -184,6 +185,10 @@ public:
   static void RegisterGUI(CGUIComponent* gui);
   static void UnregisterGUI();
 
+  static CResourcesComponent& GetResourcesComponent();
+  static void RegisterResourcesComponent(std::unique_ptr<CResourcesComponent> resources);
+  static void UnregisterResourcesComponent();
+
   static void RegisterSettingsComponent(const std::shared_ptr<CSettingsComponent>& settings);
   static void UnregisterSettingsComponent();
   static std::shared_ptr<CSettingsComponent> GetSettingsComponent();
@@ -244,6 +249,7 @@ private:
   std::unique_ptr<CLog> m_logging;
   std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> m_pAnnouncementManager;
   CGUIComponent* m_pGUI = nullptr;
+  std::unique_ptr<CResourcesComponent> m_pResourcesComponent;
   CWinSystemBase* m_pWinSystem = nullptr;
   IAE* m_pActiveAE = nullptr;
   std::shared_ptr<CAppInboundProtocol> m_pAppPort;

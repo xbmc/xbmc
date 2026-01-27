@@ -15,8 +15,9 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/lib/Setting.h"
 #include "settings/windows/GUIControlSettings.h"
 #include "utils/StringUtils.h"
@@ -24,7 +25,6 @@
 #include "utils/log.h"
 
 #include <utility>
-
 
 using namespace ADDON;
 using namespace KODI::MESSAGING;
@@ -224,7 +224,8 @@ void CGUIDialogNetworkSetup::OnServerBrowse()
   CURL url(share.strPath);
   share.strName = url.GetWithoutUserDetails();
   shares.push_back(share);
-  if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(1015), path))
+  if (CGUIDialogFileBrowser::ShowAndGetDirectory(
+          shares, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1015), path))
   {
     SetPath(path);
     UpdateButtons();

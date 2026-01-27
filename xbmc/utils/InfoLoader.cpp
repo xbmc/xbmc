@@ -10,8 +10,9 @@
 
 #include "ServiceBroker.h"
 #include "TimeUtils.h"
-#include "guilib/LocalizeStrings.h"
 #include "jobs/JobManager.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 
 CInfoLoader::CInfoLoader(unsigned int timeToRefresh)
 {
@@ -52,7 +53,7 @@ std::string CInfoLoader::GetInfo(int info)
 
 std::string CInfoLoader::BusyInfo(int info) const
 {
-  return g_localizeStrings.Get(503);
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(503);
 }
 
 std::string CInfoLoader::TranslateInfo(int info) const

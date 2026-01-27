@@ -22,9 +22,10 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "media/MediaType.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Artwork.h"
@@ -279,7 +280,8 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     // if we don't have an url or need to refresh anyway do the web search
     if (!hasDetails && (needsRefresh || !scraperUrl.HasUrls()))
     {
-      SetTitle(StringUtils::Format(g_localizeStrings.Get(197), scraper->Name()));
+      SetTitle(StringUtils::Format(
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(197), scraper->Name()));
       SetText(itemTitle);
       SetProgress(0);
 
@@ -341,7 +343,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
               // ask the user to input a title to use
               if (!CGUIKeyboardFactory::ShowAndGetInput(
                       itemTitle,
-                      g_localizeStrings.Get(
+                      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
                           scraper->Content() == ADDON::ContentType::TVSHOWS ? 20357 : 16009),
                       false))
                 return false;
@@ -375,8 +377,8 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
         // ask the user to input a title to use
         if (!CGUIKeyboardFactory::ShowAndGetInput(
                 itemTitle,
-                g_localizeStrings.Get(scraper->Content() == ADDON::ContentType::TVSHOWS ? 20357
-                                                                                        : 16009),
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                    scraper->Content() == ADDON::ContentType::TVSHOWS ? 20357 : 16009),
                 false))
           return false;
 
@@ -444,7 +446,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       headingLabel = 20394;
 
     // prepare the progress dialog for downloading all the necessary information
-    SetTitle(g_localizeStrings.Get(headingLabel));
+    SetTitle(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(headingLabel));
     SetText(itemTitle);
     SetProgress(0);
 

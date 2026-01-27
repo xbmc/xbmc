@@ -14,11 +14,13 @@
  *  Examples of external changes: functional changes, bug fixes, constants value changes, ...
  */
 
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "VideoDatabase.h"
 #include "dbwrappers/dataset.h"
 #include "filesystem/MultiPathDirectory.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/i18n/TableLanguageCodes.h"
@@ -53,7 +55,7 @@ void InitializeVideoVersionTypeTableV123(CDatabase& db)
   {
     for (int id = VIDEO_VERSION_ID_BEGIN; id <= VIDEO_VERSION_ID_END; ++id)
     {
-      const std::string& type{g_localizeStrings.Get(id)};
+      const std::string& type{CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(id)};
       db.ExecuteQuery(
           db.PrepareSQL("INSERT INTO videoversiontype (id, name, owner) VALUES(%i, '%s', %i)", id,
                         type.c_str(), VideoAssetTypeOwner_SYSTEM));

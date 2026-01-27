@@ -26,11 +26,12 @@
 #include "cores/VideoPlayer/Process/wayland/ProcessInfoWayland.h"
 #include "cores/VideoPlayer/VideoReferenceClock.h"
 #include "guilib/DispResource.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/InputManager.h"
 #include "input/touch/generic/GenericTouchActionHandler.h"
 #include "input/touch/generic/GenericTouchInputHandler.h"
 #include "messaging/ApplicationMessenger.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
@@ -1066,7 +1067,7 @@ std::string CWinSystemWayland::UserFriendlyOutputName(std::shared_ptr<COutput> c
   if (parts.empty())
   {
     // Fallback to "unknown" if no name received from compositor
-    parts.emplace_back(g_localizeStrings.Get(13205));
+    parts.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205));
   }
 
   // Add position

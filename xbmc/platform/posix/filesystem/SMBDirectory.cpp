@@ -23,7 +23,8 @@
 #include "FileItemList.h"
 #include "PasswordManager.h"
 #include "ServiceBroker.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -276,7 +277,9 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
     }
 
     if (errno == ENODEV || errno == ENOENT)
-      cError = fmt::format(fmt::runtime(g_localizeStrings.Get(770)), errno);
+      cError = fmt::format(
+          fmt::runtime(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(770)),
+          errno);
     else
       cError = strerror(errno);
 

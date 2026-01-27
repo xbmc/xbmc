@@ -13,7 +13,6 @@
 #include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonType.h"
-#include "guilib/LocalizeStrings.h"
 #include "jobs/JobManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
@@ -23,6 +22,8 @@
 #include "pvr/addons/PVRClient.h"
 #include "pvr/addons/PVRClientUID.h"
 #include "pvr/guilib/PVRGUIProgressHandler.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -226,7 +227,8 @@ void CPVRClients::UpdateClients(const std::string& changedAddonId /* = "" */)
     CServiceBroker::GetPVRManager().Stop();
 
     auto progressHandler = std::make_unique<CPVRGUIProgressHandler>(
-        g_localizeStrings.Get(19239)); // Creating PVR clients
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+            19239)); // Creating PVR clients
 
     size_t i = 0;
     for (const auto& client : clientsToCreate)
@@ -242,8 +244,10 @@ void CPVRClients::UpdateClients(const std::string& changedAddonId /* = "" */)
         CServiceBroker::GetAddonMgr().DisableAddon(client->ID(),
                                                    AddonDisabledReason::PERMANENT_FAILURE);
         CServiceBroker::GetJobManager()->AddJob(
-            new CPVREventLogJob(true, EventLevel::Error, client->Name(),
-                                g_localizeStrings.Get(24070), client->Icon()),
+            new CPVREventLogJob(
+                true, EventLevel::Error, client->Name(),
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24070),
+                client->Icon()),
             nullptr);
       }
     }
@@ -913,7 +917,7 @@ void CPVRClients::ConnectionStateChange(const CPVRClient* client,
   if (!strMessage.empty())
     strMsg = strMessage;
   else
-    strMsg = g_localizeStrings.Get(iMsg);
+    strMsg = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(iMsg);
 
   if (!strConnectionString.empty())
     strMsg = StringUtils::Format("{} ({})", strMsg, strConnectionString);

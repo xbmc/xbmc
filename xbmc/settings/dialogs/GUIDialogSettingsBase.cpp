@@ -22,9 +22,10 @@
 #include "guilib/GUISpinControlEx.h"
 #include "guilib/GUIToggleButtonControl.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/SettingControl.h"
 #include "settings/lib/SettingSection.h"
 #include "settings/windows/GUIControlSettings.h"
@@ -519,7 +520,7 @@ void CGUIDialogSettingsBase::OnSettingPropertyChanged(
 
 std::string CGUIDialogSettingsBase::GetLocalizedString(uint32_t labelId) const
 {
-  return g_localizeStrings.Get(labelId);
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(labelId);
 }
 
 void CGUIDialogSettingsBase::SetupView()
@@ -650,7 +651,8 @@ CGUIControl* CGUIDialogSettingsBase::AddSetting(const std::shared_ptr<CSetting>&
     std::string indentation;
     for (int index = 1; index < parentLevels; index++)
       indentation.append("  ");
-    label = StringUtils::Format(g_localizeStrings.Get(168), indentation, label);
+    label = StringUtils::Format(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(168), indentation, label);
   }
 
   // create the proper controls

@@ -16,7 +16,6 @@
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "pvr/PVRManager.h"
@@ -26,6 +25,8 @@
 #include "pvr/recordings/PVRRecordingsPath.h"
 #include "pvr/settings/PVRSettings.h"
 #include "pvr/utils/PVRPathUtils.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -233,7 +234,8 @@ void CGUIWindowPVRRecordingsBase::UpdateButtons()
   else if (iWatchMode == WatchedModeWatched)
     iStringId = 16102; // "Watched"
 
-  SET_CONTROL_LABEL(CONTROL_BTNSHOWMODE, g_localizeStrings.Get(iStringId));
+  SET_CONTROL_LABEL(CONTROL_BTNSHOWMODE,
+                    CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(iStringId));
 
   const bool bGroupRecordings{
       !m_forceUngrouped && m_settings->GetBoolValue(CSettings::SETTING_PVRRECORD_GROUPRECORDINGS)};

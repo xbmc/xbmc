@@ -16,9 +16,10 @@
 #include "guilib/GUIMoverControl.h"
 #include "guilib/GUIResizeControl.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -70,7 +71,7 @@ void CGUIWindowSettingsScreenCalibration::ResetCalibration()
       CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
   pDialog->SetHeading(CVariant{20325});
   std::string strText = StringUtils::Format(
-      g_localizeStrings.Get(20326),
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20326),
       CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(m_Res[m_iCurRes]).strMode);
   pDialog->SetText(CVariant{std::move(strText)});
   pDialog->SetChoice(0, CVariant{222});
@@ -423,10 +424,12 @@ bool CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
       // recenter our control...
       pControl->SetPosition((static_cast<float>(info.iWidth) - pControl->GetWidth()) / 2,
                             (static_cast<float>(info.iHeight) - pControl->GetHeight()) / 2);
-      labelDescription = StringUtils::Format("[B]{}[/B][CR]{}", g_localizeStrings.Get(272),
-                                             g_localizeStrings.Get(273));
+      labelDescription = StringUtils::Format(
+          "[B]{}[/B][CR]{}", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(272),
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(273));
       labelValue = StringUtils::Format("{:5.3f}", info.fPixelRatio);
-      labelValue = StringUtils::Format(g_localizeStrings.Get(20327), labelValue);
+      labelValue = StringUtils::Format(
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20327), labelValue);
     }
   }
   else
@@ -440,11 +443,14 @@ bool CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
         {
           info.Overscan.left = pControl->GetXLocation();
           info.Overscan.top = pControl->GetYLocation();
-          labelDescription = StringUtils::Format("[B]{}[/B][CR]{}", g_localizeStrings.Get(274),
-                                                 g_localizeStrings.Get(276));
+          labelDescription = StringUtils::Format(
+              "[B]{}[/B][CR]{}",
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(274),
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(276));
           labelValue =
               StringUtils::Format("{}, {}", pControl->GetXLocation(), pControl->GetYLocation());
-          labelValue = StringUtils::Format(g_localizeStrings.Get(20327), labelValue);
+          labelValue = StringUtils::Format(
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20327), labelValue);
           // Update reset control position
           auto* moverControl = dynamic_cast<CGUIMoverControl*>(GetControl(CONTROL_RESET));
           if (moverControl)
@@ -466,10 +472,13 @@ bool CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
           info.Overscan.bottom = pControl->GetYLocation();
           int iXOff1 = info.iWidth - pControl->GetXLocation();
           int iYOff1 = info.iHeight - pControl->GetYLocation();
-          labelDescription = StringUtils::Format("[B]{}[/B][CR]{}", g_localizeStrings.Get(275),
-                                                 g_localizeStrings.Get(276));
+          labelDescription = StringUtils::Format(
+              "[B]{}[/B][CR]{}",
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(275),
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(276));
           labelValue = StringUtils::Format("{}, {}", iXOff1, iYOff1);
-          labelValue = StringUtils::Format(g_localizeStrings.Get(20327), labelValue);
+          labelValue = StringUtils::Format(
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20327), labelValue);
           // Update reset control position
           pControl = dynamic_cast<CGUIMoverControl*>(GetControl(CONTROL_RESET));
           if (pControl)
@@ -492,22 +501,28 @@ bool CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
             info.iSubtitles =
                 pControl->GetYLocation() - m_subtitlesHalfSpace + m_subtitleVerticalMargin;
 
-            labelDescription = StringUtils::Format("[B]{}[/B][CR]{}", g_localizeStrings.Get(277),
-                                                   g_localizeStrings.Get(278));
-            labelValue = StringUtils::Format(g_localizeStrings.Get(39184), info.iSubtitles,
-                                             info.iSubtitles - m_subtitleVerticalMargin);
+            labelDescription = StringUtils::Format(
+                "[B]{}[/B][CR]{}",
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(277),
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(278));
+            labelValue = StringUtils::Format(
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(39184),
+                info.iSubtitles, info.iSubtitles - m_subtitleVerticalMargin);
           }
           else
           {
-            labelDescription = StringUtils::Format("[B]{}[/B][CR]{}", g_localizeStrings.Get(277),
-                                                   g_localizeStrings.Get(39189));
+            labelDescription = StringUtils::Format(
+                "[B]{}[/B][CR]{}",
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(277),
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(39189));
           }
           break;
         }
 
         case CONTROL_RESET:
         {
-          labelDescription = g_localizeStrings.Get(20325);
+          labelDescription =
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20325);
           break;
         }
 
@@ -525,13 +540,17 @@ bool CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
   if (CServiceBroker::GetWinSystem()->IsFullScreen())
   {
     resInfo =
-        StringUtils::Format("{} {}x{}@{:.2f} - {}", g_localizeStrings.Get(13287), info.iScreenWidth,
-                            info.iScreenHeight, info.fRefreshRate, g_localizeStrings.Get(244));
+        StringUtils::Format("{} {}x{}@{:.2f} - {}",
+                            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13287),
+                            info.iScreenWidth, info.iScreenHeight, info.fRefreshRate,
+                            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(244));
   }
   else
   {
-    resInfo = StringUtils::Format("{} {}x{} - {}", g_localizeStrings.Get(13287), info.iScreenWidth,
-                                  info.iScreenHeight, g_localizeStrings.Get(242));
+    resInfo = StringUtils::Format(
+        "{} {}x{} - {}", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13287),
+        info.iScreenWidth, info.iScreenHeight,
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(242));
   }
   SET_CONTROL_LABEL(CONTROL_LABEL_RES, resInfo);
 

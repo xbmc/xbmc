@@ -15,9 +15,10 @@
 #include "guilib/GUIWindow.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/IGUIContainer.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "playlists/PlayList.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "windows/GUIMediaWindow.h"
@@ -52,19 +53,19 @@ std::string GetPlaylistLabel(int item, PLAYLIST::Id playlistId /* = TYPE_NONE */
     case PLAYLIST_RANDOM:
     {
       if (player.IsShuffled(playlistId))
-        return g_localizeStrings.Get(16041); // 16041: On
+        return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(16041); // 16041: On
       else
-        return g_localizeStrings.Get(591); // 591: Off
+        return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(591); // 591: Off
     }
     case PLAYLIST_REPEAT:
     {
       PLAYLIST::RepeatState state = player.GetRepeat(playlistId);
       if (state == PLAYLIST::RepeatState::ONE)
-        return g_localizeStrings.Get(592); // 592: One
+        return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(592); // 592: One
       else if (state == PLAYLIST::RepeatState::ALL)
-        return g_localizeStrings.Get(593); // 593: All
+        return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(593); // 593: All
       else
-        return g_localizeStrings.Get(594); // 594: Off
+        return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(594); // 594: Off
     }
     default:
       break;

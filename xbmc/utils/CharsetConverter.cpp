@@ -9,8 +9,10 @@
 #include "CharsetConverter.h"
 
 #include "LangInfo.h"
-#include "guilib/LocalizeStrings.h"
+#include "ServiceBroker.h"
 #include "log.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
@@ -903,7 +905,8 @@ void CCharsetConverter::SettingOptionsCharsetsFiller(const SettingConstPtr& sett
   std::vector<std::string> vecCharsets = g_charsetConverter.getCharsetLabels();
   sort(vecCharsets.begin(), vecCharsets.end(), sortstringbyname());
 
-  list.emplace_back(g_localizeStrings.Get(13278), "DEFAULT"); // "Default"
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13278),
+                    "DEFAULT"); // "Default"
   for (int i = 0; i < (int) vecCharsets.size(); ++i)
     list.emplace_back(vecCharsets[i], g_charsetConverter.getCharsetNameByLabel(vecCharsets[i]));
 }

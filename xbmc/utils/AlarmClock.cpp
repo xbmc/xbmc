@@ -12,9 +12,10 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
-#include "guilib/LocalizeStrings.h"
 #include "log.h"
 #include "messaging/ApplicationMessenger.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 
 #include <mutex>
@@ -60,8 +61,9 @@ void CAlarmClock::Start(const std::string& strName, float n_secs, const std::str
 
   EventPtr alarmClockActivity(new CNotificationEvent(
       labelAlarmClock,
-      StringUtils::Format(g_localizeStrings.Get(labelStarted), static_cast<int>(event.m_fSecs) / 60,
-                          static_cast<int>(event.m_fSecs) % 60)));
+      StringUtils::Format(
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(labelStarted),
+          static_cast<int>(event.m_fSecs) / 60, static_cast<int>(event.m_fSecs) % 60)));
 
   auto eventLog = CServiceBroker::GetEventLog();
   if (eventLog)
@@ -102,12 +104,13 @@ void CAlarmClock::Stop(const std::string& strName, bool bSilent /* false */)
     elapsed = iter->second.watch.GetElapsedSeconds();
 
   if (elapsed > static_cast<float>(iter->second.m_fSecs))
-    strMessage = g_localizeStrings.Get(13211);
+    strMessage = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13211);
   else
   {
     float remaining = static_cast<float>(iter->second.m_fSecs) - elapsed;
-    strMessage = StringUtils::Format(g_localizeStrings.Get(13212), static_cast<int>(remaining) / 60,
-                                     static_cast<int>(remaining) % 60);
+    strMessage =
+        StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13212),
+                            static_cast<int>(remaining) / 60, static_cast<int>(remaining) % 60);
   }
 
   if (iter->second.m_strCommand.empty() || static_cast<float>(iter->second.m_fSecs) > elapsed)

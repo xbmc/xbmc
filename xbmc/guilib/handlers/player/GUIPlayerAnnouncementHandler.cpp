@@ -13,8 +13,9 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 
@@ -39,18 +40,22 @@ void CGUIPlayerAnnouncementHandler::Announce(ANNOUNCEMENT::AnnouncementFlag flag
         CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
     if (advancedSettings && advancedSettings->m_EdlDisplayCommbreakNotifications)
     {
-      CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25011), data.asString());
+      CGUIDialogKaiToast::QueueNotification(
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25011), data.asString());
     }
   }
   else if (message == "SourceSlow")
   {
-    CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(21454),
-                                          g_localizeStrings.Get(21455));
+    CGUIDialogKaiToast::QueueNotification(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21454),
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21455));
   }
   else if (message == "OnToggleSkipCommercials")
   {
-    CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25011),
-                                          g_localizeStrings.Get(data.asBoolean() ? 25013 : 25012));
+    CGUIDialogKaiToast::QueueNotification(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25011),
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(data.asBoolean() ? 25013
+                                                                                          : 25012));
   }
   else if (message == "OnProcessInfo")
   {
@@ -63,19 +68,22 @@ void CGUIPlayerAnnouncementHandler::Announce(ANNOUNCEMENT::AnnouncementFlag flag
   }
   else if (message == "OnPlaybackFailed")
   {
-    CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(16026),
-                                          g_localizeStrings.Get(16029));
+    CGUIDialogKaiToast::QueueNotification(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(16026),
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(16029));
   }
 #if defined(HAVE_LIBBLURAY)
   else if (message == "OnBlurayMenuError")
   {
-    CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25008),
-                                          g_localizeStrings.Get(25009));
+    CGUIDialogKaiToast::QueueNotification(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25008),
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25009));
   }
   else if (message == "OnBlurayEncryptedError")
   {
-    CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(16026),
-                                          g_localizeStrings.Get(29805));
+    CGUIDialogKaiToast::QueueNotification(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(16026),
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(29805));
   }
 #endif
   else if (message == "OnMenu")

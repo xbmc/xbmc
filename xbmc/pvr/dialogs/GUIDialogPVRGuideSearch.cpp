@@ -12,7 +12,6 @@
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIMessage.h"
-#include "guilib/LocalizeStrings.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupMember.h"
@@ -20,6 +19,8 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgSearchFilter.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 
 #include <cstdio>
@@ -76,9 +77,11 @@ void CGUIDialogPVRGuideSearch::UpdateChannelSpin()
 
   std::vector<std::pair<std::string, int>> labels;
   if (m_searchFilter->IsRadio())
-    labels.emplace_back(g_localizeStrings.Get(19216), EPG_SEARCH_UNSET); // All radio channels
+    labels.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19216),
+                        EPG_SEARCH_UNSET); // All radio channels
   else
-    labels.emplace_back(g_localizeStrings.Get(19217), EPG_SEARCH_UNSET); // All TV channels
+    labels.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19217),
+                        EPG_SEARCH_UNSET); // All TV channels
 
   std::shared_ptr<CPVRChannelGroup> group;
   if (iChannelGroup != EPG_SEARCH_UNSET)
@@ -129,19 +132,32 @@ void CGUIDialogPVRGuideSearch::UpdateGroupsSpin()
 void CGUIDialogPVRGuideSearch::UpdateGenreSpin()
 {
   std::vector<std::pair<std::string, int>> labels;
-  labels.emplace_back(g_localizeStrings.Get(593), EPG_SEARCH_UNSET);
-  labels.emplace_back(g_localizeStrings.Get(19500), EPG_EVENT_CONTENTMASK_MOVIEDRAMA);
-  labels.emplace_back(g_localizeStrings.Get(19516), EPG_EVENT_CONTENTMASK_NEWSCURRENTAFFAIRS);
-  labels.emplace_back(g_localizeStrings.Get(19532), EPG_EVENT_CONTENTMASK_SHOW);
-  labels.emplace_back(g_localizeStrings.Get(19548), EPG_EVENT_CONTENTMASK_SPORTS);
-  labels.emplace_back(g_localizeStrings.Get(19564), EPG_EVENT_CONTENTMASK_CHILDRENYOUTH);
-  labels.emplace_back(g_localizeStrings.Get(19580), EPG_EVENT_CONTENTMASK_MUSICBALLETDANCE);
-  labels.emplace_back(g_localizeStrings.Get(19596), EPG_EVENT_CONTENTMASK_ARTSCULTURE);
-  labels.emplace_back(g_localizeStrings.Get(19612), EPG_EVENT_CONTENTMASK_SOCIALPOLITICALECONOMICS);
-  labels.emplace_back(g_localizeStrings.Get(19628), EPG_EVENT_CONTENTMASK_EDUCATIONALSCIENCE);
-  labels.emplace_back(g_localizeStrings.Get(19644), EPG_EVENT_CONTENTMASK_LEISUREHOBBIES);
-  labels.emplace_back(g_localizeStrings.Get(19660), EPG_EVENT_CONTENTMASK_SPECIAL);
-  labels.emplace_back(g_localizeStrings.Get(19499), EPG_EVENT_CONTENTMASK_USERDEFINED);
+  labels.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(593),
+                      EPG_SEARCH_UNSET);
+  labels.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19500),
+                      EPG_EVENT_CONTENTMASK_MOVIEDRAMA);
+  labels.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19516),
+                      EPG_EVENT_CONTENTMASK_NEWSCURRENTAFFAIRS);
+  labels.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19532),
+                      EPG_EVENT_CONTENTMASK_SHOW);
+  labels.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19548),
+                      EPG_EVENT_CONTENTMASK_SPORTS);
+  labels.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19564),
+                      EPG_EVENT_CONTENTMASK_CHILDRENYOUTH);
+  labels.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19580),
+                      EPG_EVENT_CONTENTMASK_MUSICBALLETDANCE);
+  labels.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19596),
+                      EPG_EVENT_CONTENTMASK_ARTSCULTURE);
+  labels.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19612),
+                      EPG_EVENT_CONTENTMASK_SOCIALPOLITICALECONOMICS);
+  labels.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19628),
+                      EPG_EVENT_CONTENTMASK_EDUCATIONALSCIENCE);
+  labels.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19644),
+                      EPG_EVENT_CONTENTMASK_LEISUREHOBBIES);
+  labels.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19660),
+                      EPG_EVENT_CONTENTMASK_SPECIAL);
+  labels.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19499),
+                      EPG_EVENT_CONTENTMASK_USERDEFINED);
 
   SET_CONTROL_LABELS(CONTROL_SPIN_GENRE, m_searchFilter->GetGenreType(), &labels);
 }
@@ -153,7 +169,10 @@ void CGUIDialogPVRGuideSearch::UpdateDurationSpin()
 
   labels.emplace_back("-", EPG_SEARCH_UNSET);
   for (int i = 1; i < 12 * 60 / 5; ++i)
-    labels.emplace_back(StringUtils::Format(g_localizeStrings.Get(14044), i * 5), i * 5);
+    labels.emplace_back(
+        StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(14044),
+                            i * 5),
+        i * 5);
 
   SET_CONTROL_LABELS(CONTROL_SPIN_MIN_DURATION, m_searchFilter->GetMinimumDuration(), &labels);
 
@@ -162,7 +181,10 @@ void CGUIDialogPVRGuideSearch::UpdateDurationSpin()
 
   labels.emplace_back("-", EPG_SEARCH_UNSET);
   for (int i = 1; i < 12 * 60 / 5; ++i)
-    labels.emplace_back(StringUtils::Format(g_localizeStrings.Get(14044), i * 5), i * 5);
+    labels.emplace_back(
+        StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(14044),
+                            i * 5),
+        i * 5);
 
   SET_CONTROL_LABELS(CONTROL_SPIN_MAX_DURATION, m_searchFilter->GetMaximumDuration(), &labels);
 }
@@ -209,12 +231,15 @@ bool CGUIDialogPVRGuideSearch::OnMessage(CGUIMessage& message)
         {
           title = m_searchFilter->GetSearchTerm();
           if (title.empty())
-            title = g_localizeStrings.Get(137); // "Search"
+            title =
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(137); // "Search"
           else
             StringUtils::Trim(title, "\"");
 
           if (!CGUIKeyboardFactory::ShowAndGetInput(
-                  title, CVariant{g_localizeStrings.Get(528)}, // "Enter title"
+                  title,
+                  CVariant{CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                      528)}, // "Enter title"
                   false))
           {
             return false;

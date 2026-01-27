@@ -17,7 +17,6 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "input/remote/IRRemote.h"
@@ -25,6 +24,8 @@
 #include "jobs/JobManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "pictures/GUIWindowSlideShow.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -262,10 +263,11 @@ bool CPeripheralCecAdapter::InitialiseFeature(const PeripheralFeature feature)
 
       // display warning: incompatible libCEC
       std::string strMessage = StringUtils::Format(
-          g_localizeStrings.Get(36040), m_cecAdapter ? m_configuration.serverVersion : -1,
-          CEC_LIB_SUPPORTED_VERSION);
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(36000),
-                                            strMessage);
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36040),
+          m_cecAdapter ? m_configuration.serverVersion : -1, CEC_LIB_SUPPORTED_VERSION);
+      CGUIDialogKaiToast::QueueNotification(
+          CGUIDialogKaiToast::Error,
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36000), strMessage);
       m_bError = true;
       if (m_cecAdapter)
         CECDestroy(m_cecAdapter);
@@ -320,9 +322,11 @@ bool CPeripheralCecAdapter::OpenConnection(void)
   // scanning the CEC bus takes about 5 seconds, so display a notification to inform users that
   // we're busy
   std::string strMessage =
-      StringUtils::Format(g_localizeStrings.Get(21336), g_localizeStrings.Get(36000));
-  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36000),
-                                        strMessage);
+      StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21336),
+                          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36000));
+  CGUIDialogKaiToast::QueueNotification(
+      CGUIDialogKaiToast::Info,
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36000), strMessage);
 
   bool bConnectionFailedDisplayed(false);
 
@@ -334,7 +338,9 @@ bool CPeripheralCecAdapter::OpenConnection(void)
       CLog::Log(LOGERROR, "{} - could not opening a connection to the CEC adapter", __FUNCTION__);
       if (!bConnectionFailedDisplayed)
         CGUIDialogKaiToast::QueueNotification(
-            CGUIDialogKaiToast::Error, g_localizeStrings.Get(36000), g_localizeStrings.Get(36012));
+            CGUIDialogKaiToast::Error,
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36000),
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36012));
       bConnectionFailedDisplayed = true;
 
       CThread::Sleep(10000ms);
@@ -775,11 +781,13 @@ void CPeripheralCecAdapter::CecAlert(void* cbParam,
   // display the alert
   if (iAlertString)
   {
-    std::string strLog(g_localizeStrings.Get(iAlertString));
+    std::string strLog(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(iAlertString));
     if (data.paramType == CEC_PARAMETER_TYPE_STRING && data.paramData)
       strLog += StringUtils::Format(" - {}", (const char*)data.paramData);
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36000),
-                                          strLog);
+    CGUIDialogKaiToast::QueueNotification(
+        CGUIDialogKaiToast::Info,
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36000), strLog);
   }
 
   if (bReopenConnection)
@@ -1658,7 +1666,8 @@ bool CPeripheralCecAdapterUpdateThread::SetInitialConfiguration(void)
   // request the OSD name of the TV
   std::string strNotification;
   std::string tvName(m_adapter->m_cecAdapter->GetDeviceOSDName(CECDEVICE_TV));
-  strNotification = StringUtils::Format("{}: {}", g_localizeStrings.Get(36016), tvName);
+  strNotification = StringUtils::Format(
+      "{}: {}", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36016), tvName);
 
   std::string strAmpName = UpdateAudioSystemStatus();
   if (!strAmpName.empty())
@@ -1667,8 +1676,9 @@ bool CPeripheralCecAdapterUpdateThread::SetInitialConfiguration(void)
   m_adapter->m_bIsReady = true;
 
   // and let the gui know that we're done
-  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36000),
-                                        strNotification);
+  CGUIDialogKaiToast::QueueNotification(
+      CGUIDialogKaiToast::Info,
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36000), strNotification);
 
   std::unique_lock lock(m_critSection);
   m_bIsUpdating = false;
@@ -1715,8 +1725,11 @@ void CPeripheralCecAdapterUpdateThread::Process(void)
         UpdateAudioSystemStatus();
       }
 
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36000),
-                                            g_localizeStrings.Get(bConfigSet ? 36023 : 36024));
+      CGUIDialogKaiToast::QueueNotification(
+          CGUIDialogKaiToast::Info,
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36000),
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(bConfigSet ? 36023
+                                                                                      : 36024));
 
       {
         std::unique_lock lock(m_critSection);

@@ -22,7 +22,6 @@
 #include "guilib/GUIMessage.h"
 #include "guilib/GUISpinControlEx.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/helpers/DialogOKHelper.h"
@@ -36,6 +35,8 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRGroupManager.h"
 #include "pvr/guilib/PVRGUIActionsParentalControl.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
@@ -399,7 +400,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo()
   {
     auto current{std::make_shared<CFileItem>("thumb://Current", false)};
     current->SetArt("thumb", pItem->GetPVRChannelInfoTag()->IconPath());
-    current->SetLabel(g_localizeStrings.Get(19282));
+    current->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19282));
     items.Add(std::move(current));
   }
   else if (pItem->HasArt("thumb"))
@@ -407,14 +408,14 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo()
     // already have a thumb that the share doesn't know about - must be a local one, so we mayaswell reuse it.
     auto current{std::make_shared<CFileItem>("thumb://Current", false)};
     current->SetArt("thumb", pItem->GetArt("thumb"));
-    current->SetLabel(g_localizeStrings.Get(19282));
+    current->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19282));
     items.Add(std::move(current));
   }
 
   // and add a "no thumb" entry as well
   auto nothumb{std::make_shared<CFileItem>("thumb://None", false)};
   nothumb->SetArt("icon", pItem->GetArt("icon"));
-  nothumb->SetLabel(g_localizeStrings.Get(19283));
+  nothumb->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19283));
   items.Add(std::move(nothumb));
 
   std::string strThumb;
@@ -424,12 +425,13 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo()
   {
     CMediaSource share1;
     share1.strPath = settings->GetString(CSettings::SETTING_PVRMENU_ICONPATH);
-    share1.strName = g_localizeStrings.Get(19066);
+    share1.strName = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19066);
     shares.push_back(share1);
   }
   CServiceBroker::GetMediaManager().GetLocalDrives(shares);
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, shares, g_localizeStrings.Get(19285), strThumb,
-                                              nullptr, 19285))
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(
+          items, shares, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19285),
+          strThumb, nullptr, 19285))
     return false;
 
   if (strThumb == "thumb://Current")
@@ -536,7 +538,8 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel()
     int iClientID = m_clientsWithSettingsList[iSelection]->GetID();
 
     const auto channel{std::make_shared<CPVRChannel>(m_bIsRadio)};
-    channel->SetChannelName(g_localizeStrings.Get(19204)); // New channel
+    channel->SetChannelName(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19204)); // New channel
     channel->SetClientID(iClientID);
 
     PVR_ERROR ret = PVR_ERROR_UNKNOWN;
@@ -857,7 +860,7 @@ void CGUIDialogPVRChannelManager::Update()
 
   {
     std::vector<std::pair<std::string, int>> labels;
-    labels.emplace_back(g_localizeStrings.Get(19210), 0);
+    labels.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19210), 0);
     //! @todo Add Labels for EPG scrapers here
     SET_CONTROL_LABELS(SPIN_EPGSOURCE_SELECTION, 0, &labels);
   }
@@ -898,7 +901,8 @@ void CGUIDialogPVRChannelManager::ClearChannelOptions()
   SET_CONTROL_FILENAME(BUTTON_CHANNEL_LOGO, "");
   CONTROL_DESELECT(RADIOBUTTON_USEEPG);
 
-  std::vector<std::pair<std::string, int>> labels = {{g_localizeStrings.Get(19210), 0}};
+  std::vector<std::pair<std::string, int>> labels = {
+      {CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19210), 0}};
   SET_CONTROL_LABELS(SPIN_EPGSOURCE_SELECTION, 0, &labels);
 
   CONTROL_DESELECT(RADIOBUTTON_PARENTAL_LOCK);

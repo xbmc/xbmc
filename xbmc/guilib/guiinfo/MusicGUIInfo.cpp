@@ -17,7 +17,6 @@
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoHelper.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
@@ -28,6 +27,8 @@
 #include "music/tags/MusicInfoTag.h"
 #include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayList.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
@@ -225,9 +226,9 @@ bool CMusicGUIInfo::GetLabel(std::string& value,
           if (votes <= 0)
             value = StringUtils::FormatNumber(rating);
           else
-            value =
-                StringUtils::Format(g_localizeStrings.Get(20350), StringUtils::FormatNumber(rating),
-                                    StringUtils::FormatNumber(votes));
+            value = StringUtils::Format(
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20350),
+                StringUtils::FormatNumber(rating), StringUtils::FormatNumber(votes));
           return true;
         }
         break;

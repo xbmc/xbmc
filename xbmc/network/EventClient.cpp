@@ -12,12 +12,13 @@
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/File.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/keyboard/KeyIDs.h"
 #include "input/keymaps/ButtonTranslator.h"
 #include "input/keymaps/joysticks/GamepadTranslator.h"
 #include "input/keymaps/keyboard/KeyboardTranslator.h"
 #include "input/keymaps/remote/IRTranslator.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
@@ -292,11 +293,14 @@ bool CEventClient::OnPacketHELO(CEventPacket *packet)
   m_bGreeted = true;
   if (m_eLogoType == LT_NONE)
   {
-    CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(33200), m_deviceName);
+    CGUIDialogKaiToast::QueueNotification(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(33200), m_deviceName);
   }
   else
   {
-    CGUIDialogKaiToast::QueueNotification(iconfile, g_localizeStrings.Get(33200), m_deviceName);
+    CGUIDialogKaiToast::QueueNotification(
+        iconfile, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(33200),
+        m_deviceName);
   }
   return true;
 }

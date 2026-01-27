@@ -39,13 +39,14 @@
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/StereoscopicsManager.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "interfaces/AnnouncementManager.h"
 #include "jobs/JobQueue.h"
 #include "messaging/ApplicationMessenger.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -599,7 +600,8 @@ void CSelectionStreams::Update(const std::shared_ptr<CDVDInputStream>& input,
       s.width = info.width;
       s.height = info.height;
       s.codec = info.codecName;
-      s.name = StringUtils::Format("{} {}", g_localizeStrings.Get(38032), i);
+      s.name = StringUtils::Format(
+          "{} {}", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(38032), i);
       Update(s);
     }
   }

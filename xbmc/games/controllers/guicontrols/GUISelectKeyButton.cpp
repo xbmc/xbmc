@@ -8,7 +8,9 @@
 
 #include "GUISelectKeyButton.h"
 
-#include "guilib/LocalizeStrings.h"
+#include "ServiceBroker.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 
 #include <string>
 
@@ -38,8 +40,10 @@ bool CGUISelectKeyButton::PromptForInput(CEvent& waitEvent)
   {
     case STATE::NEED_KEY:
     {
-      const std::string& strPrompt = g_localizeStrings.Get(35169); // "Press a key"
-      const std::string& strWarn = g_localizeStrings.Get(35170); // "Press a key ({1:d})"
+      const std::string& strPrompt =
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35169); // "Press a key"
+      const std::string& strWarn = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+          35170); // "Press a key ({1:d})"
 
       bInterrupted = DoPrompt(strPrompt, strWarn, "", waitEvent);
 
@@ -49,8 +53,10 @@ bool CGUISelectKeyButton::PromptForInput(CEvent& waitEvent)
     }
     case STATE::NEED_INPUT:
     {
-      const std::string& strPrompt = g_localizeStrings.Get(35090); // "Press {0:s}"
-      const std::string& strWarn = g_localizeStrings.Get(35091); // "Press {0:s} ({1:d})"
+      const std::string& strPrompt =
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35090); // "Press {0:s}"
+      const std::string& strWarn = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+          35091); // "Press {0:s} ({1:d})"
 
       bInterrupted = DoPrompt(strPrompt, strWarn, m_selectedKey.Label(), waitEvent);
 

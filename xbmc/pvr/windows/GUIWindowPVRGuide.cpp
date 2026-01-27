@@ -18,7 +18,6 @@
 #include "dialogs/GUIDialogNumeric.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
@@ -41,6 +40,8 @@
 #include "pvr/guilib/PVRGUIActionsTimers.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
@@ -225,7 +226,8 @@ void CGUIWindowPVRGuideBase::UpdateButtons()
 {
   CGUIWindowPVRBase::UpdateButtons();
 
-  SET_CONTROL_LABEL(CONTROL_LABEL_HEADER1, g_localizeStrings.Get(19032));
+  SET_CONTROL_LABEL(CONTROL_LABEL_HEADER1,
+                    CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19032));
 
   const std::shared_ptr<const CPVRChannelGroup> group = GetChannelGroup();
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, group ? group->GroupName() : "");
@@ -854,7 +856,9 @@ bool CGUIWindowPVRGuideBase::OpenDateSelectionDialog()
   CGUIEPGGridContainer* epgGridContainer = GetGridControl();
   epgGridContainer->GetSelectedDate().GetAsSystemTime(date);
 
-  if (CGUIDialogNumeric::ShowAndGetDate(date, g_localizeStrings.Get(19288))) /* Go to date */
+  if (CGUIDialogNumeric::ShowAndGetDate(
+          date,
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19288))) /* Go to date */
   {
     epgGridContainer->GoToDate(CDateTime(date));
     bReturn = true;

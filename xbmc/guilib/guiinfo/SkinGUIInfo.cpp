@@ -11,9 +11,10 @@
 #include "ServiceBroker.h"
 #include "addons/Skin.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/SkinSettings.h"
@@ -43,7 +44,7 @@ bool CSkinGUIInfo::GetLabel(std::string& value,
       bool bInfo = CSkinSettings::GetInstance().GetBool(info.GetData1());
       if (bInfo)
       {
-        value = g_localizeStrings.Get(20122); // True
+        value = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20122); // True
         return true;
       }
       break;

@@ -8,9 +8,11 @@
 
 #include "video/VideoDatabaseDDL.h"
 
+#include "ServiceBroker.h"
 #include "dbwrappers/dataset.h"
-#include "guilib/LocalizeStrings.h"
 #include "media/MediaType.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabaseColumns.h"
@@ -30,7 +32,7 @@ void CVideoDatabaseDDL::InitializeVideoVersionTypeTable(CDatabase& db)
       if (id == 40405 || (id >= 40418 && id <= 40430))
         continue;
 
-      const std::string& type{g_localizeStrings.Get(id)};
+      const std::string& type{CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(id)};
       db.ExecuteQuery(db.PrepareSQL(
           "INSERT INTO videoversiontype (id, name, owner, itemType) VALUES(%i, '%s', %i, %i)", id,
           type.c_str(), VideoAssetTypeOwner::SYSTEM, VideoAssetType::VERSION));

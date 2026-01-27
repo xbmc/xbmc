@@ -8,10 +8,12 @@
 
 #include "GUIHelpers.h"
 
+#include "ServiceBroker.h"
 #include "addons/IAddon.h"
 #include "addons/addoninfo/AddonInfo.h"
 #include "dialogs/GUIDialogYesNo.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 
 using namespace ADDON;
@@ -38,9 +40,11 @@ bool CHelpers::DialogAddonLifecycleUseAsk(const std::shared_ptr<const IAddon>& a
   }
   if (header_nr > 0)
   {
-    std::string header = StringUtils::Format(g_localizeStrings.Get(header_nr), addon->ID());
-    std::string text =
-        StringUtils::Format(g_localizeStrings.Get(text_nr), addon->LifecycleStateDescription());
+    std::string header = StringUtils::Format(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(header_nr), addon->ID());
+    std::string text = StringUtils::Format(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(text_nr),
+        addon->LifecycleStateDescription());
     if (!CGUIDialogYesNo::ShowAndGetInput(header, text))
       return false;
   }

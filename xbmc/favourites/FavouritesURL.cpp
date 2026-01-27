@@ -13,8 +13,9 @@
 #include "URL.h"
 #include "addons/AddonManager.h"
 #include "addons/IAddon.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/WindowTranslator.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/ExecString.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
@@ -127,9 +128,10 @@ bool CFavouritesURL::Parse(CFavouritesURL::Action action, const std::vector<std:
         // optional: target url/path
         m_target = StringUtils::DeParamify(params[1]);
       }
-      m_actionLabel =
-          StringUtils::Format(g_localizeStrings.Get(15220), // Show content in '<windowname>'
-                              g_localizeStrings.Get(m_windowId));
+      m_actionLabel = StringUtils::Format(
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+              15220), // Show content in '<windowname>'
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(m_windowId));
       break;
     case Action::PLAY_MEDIA:
       if (params.empty())
@@ -138,7 +140,8 @@ bool CFavouritesURL::Parse(CFavouritesURL::Action action, const std::vector<std:
         return false;
       }
       m_target = StringUtils::DeParamify(params[0]);
-      m_actionLabel = g_localizeStrings.Get(15218); // Play media
+      m_actionLabel =
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(15218); // Play media
       break;
     case Action::SHOW_PICTURE:
       if (params.empty())
@@ -147,7 +150,8 @@ bool CFavouritesURL::Parse(CFavouritesURL::Action action, const std::vector<std:
         return false;
       }
       m_target = StringUtils::DeParamify(params[0]);
-      m_actionLabel = g_localizeStrings.Get(15219); // Show picture
+      m_actionLabel =
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(15219); // Show picture
       break;
     case Action::RUN_SCRIPT:
       if (params.empty())
@@ -156,7 +160,8 @@ bool CFavouritesURL::Parse(CFavouritesURL::Action action, const std::vector<std:
         return false;
       }
       m_target = StringUtils::DeParamify(params[0]);
-      m_actionLabel = g_localizeStrings.Get(15221); // Execute script
+      m_actionLabel =
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(15221); // Execute script
       pathIsAddonID = true;
       break;
     case Action::RUN_ADDON:
@@ -166,7 +171,8 @@ bool CFavouritesURL::Parse(CFavouritesURL::Action action, const std::vector<std:
         return false;
       }
       m_target = StringUtils::DeParamify(params[0]);
-      m_actionLabel = g_localizeStrings.Get(15223); // Execute add-on
+      m_actionLabel =
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(15223); // Execute add-on
       pathIsAddonID = true;
       break;
     case Action::START_ANDROID_ACTIVITY:
@@ -176,7 +182,8 @@ bool CFavouritesURL::Parse(CFavouritesURL::Action action, const std::vector<std:
         return false;
       }
       m_target = StringUtils::DeParamify(params[0]);
-      m_actionLabel = g_localizeStrings.Get(15222); // Execute Android app
+      m_actionLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+          15222); // Execute Android app
       break;
     default:
       if (params.empty())
@@ -186,7 +193,8 @@ bool CFavouritesURL::Parse(CFavouritesURL::Action action, const std::vector<std:
       }
       m_action = CFavouritesURL::Action::UNKNOWN;
       m_target = StringUtils::DeParamify(params[0]);
-      m_actionLabel = g_localizeStrings.Get(15224); // Other / Unknown
+      m_actionLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+          15224); // Other / Unknown
       break;
   }
 

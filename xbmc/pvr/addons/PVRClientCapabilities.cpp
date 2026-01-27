@@ -8,7 +8,9 @@
 
 #include "PVRClientCapabilities.h"
 
-#include "guilib/LocalizeStrings.h"
+#include "ServiceBroker.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 
 #include <algorithm>
@@ -68,8 +70,10 @@ void CPVRClientCapabilities::InitRecordingsLifetimeValues()
     // No values given by addon, but lifetime supported. Use default values 1..365
     for (int i = 1; i < 366; ++i)
     {
-      m_recordingsLifetimeValues.emplace_back(StringUtils::Format(g_localizeStrings.Get(17999), i),
-                                              i); // "{} days"
+      m_recordingsLifetimeValues.emplace_back(
+          StringUtils::Format(
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(17999), i),
+          i); // "{} days"
     }
   }
   else

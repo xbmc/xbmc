@@ -31,13 +31,14 @@
 #include "games/GameUtils.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "interfaces/builtins/Builtins.h"
 #include "jobs/JobManager.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "pictures/GUIWindowSlideShow.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Digest.h"
@@ -300,7 +301,9 @@ int CGUIDialogAddonInfo::AskForVersion(
 
   for (const auto& [version, origin] : versions)
   {
-    CFileItem item(StringUtils::Format(g_localizeStrings.Get(21339), version.asString()));
+    CFileItem item(
+        StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21339),
+                            version.asString()));
     if (m_localAddon && m_localAddon->Version() == version &&
         m_item->GetAddonInfo()->Origin() == origin)
       item.Select(true);
@@ -308,7 +311,7 @@ int CGUIDialogAddonInfo::AskForVersion(
     AddonPtr repo;
     if (origin == LOCAL_CACHE)
     {
-      item.SetLabel2(g_localizeStrings.Get(24095));
+      item.SetLabel2(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24095));
       item.SetArt("icon", "DefaultAddonRepository.png");
       dialog->Add(item);
     }
@@ -474,11 +477,15 @@ void CGUIDialogAddonInfo::OnInstall()
       CAddonSystemSettings::GetInstance().GetAddonRepoUpdateMode() !=
           AddonRepoUpdateMode::ANY_REPOSITORY)
   {
-    const std::string& header = g_localizeStrings.Get(19098); // Warning!
+    const std::string& header =
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19098); // Warning!
     const std::string originStr =
-        !m_localAddon->Origin().empty() ? m_localAddon->Origin() : g_localizeStrings.Get(39029);
-    const std::string text = StringUtils::Format(g_localizeStrings.Get(39028), m_localAddon->Name(),
-                                                 originStr, m_localAddon->Version().asString());
+        !m_localAddon->Origin().empty()
+            ? m_localAddon->Origin()
+            : CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(39029);
+    const std::string text =
+        StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(39028),
+                            m_localAddon->Name(), originStr, m_localAddon->Version().asString());
 
     if (CGUIDialogYesNo::ShowAndGetInput(header, text))
     {
@@ -576,7 +583,9 @@ bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2) const
 
   if (!deps.empty())
   {
-    std::string line0 = StringUtils::Format(g_localizeStrings.Get(24046), m_localAddon->Name());
+    std::string line0 =
+        StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24046),
+                            m_localAddon->Name());
     std::string line1 = StringUtils::Join(deps, ", ");
     HELPERS::ShowOKDialogLines(CVariant{heading}, CVariant{std::move(line0)},
                                CVariant{std::move(line1)}, CVariant{line2});
@@ -624,7 +633,9 @@ void CGUIDialogAddonInfo::OnEnableDisable()
       return; //required. can't disable
 
     if (CServiceBroker::GetAddonMgr().DisableAddon(m_localAddon->ID(), AddonDisabledReason::USER))
-      m_item->SetProperty("Addon.Status", g_localizeStrings.Get(24023)); // Disabled
+      m_item->SetProperty(
+          "Addon.Status",
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24023)); // Disabled
   }
   else
   {
@@ -633,7 +644,9 @@ void CGUIDialogAddonInfo::OnEnableDisable()
       return;
 
     if (CServiceBroker::GetAddonMgr().EnableAddon(m_localAddon->ID()))
-      m_item->SetProperty("Addon.Status", g_localizeStrings.Get(305)); // Enabled
+      m_item->SetProperty(
+          "Addon.Status",
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(305)); // Enabled
   }
 
   UpdateControls(PerformButtonFocus::CHOICE_NO);
@@ -701,10 +714,13 @@ bool CGUIDialogAddonInfo::ShowDependencyList(Reactivate reactivate, EntryPoint e
               !CAddonRepos::IsFromOfficialRepo(infoAddon, CheckAddonPath::CHOICE_NO))
           {
             item->SetLabel2(StringUtils::Format(
-                g_localizeStrings.Get(messageId), it.m_depInfo.versionMin.asString(),
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(messageId),
+                it.m_depInfo.versionMin.asString(),
                 it.m_installed ? it.m_installed->Version().asString() : "",
                 it.m_available ? it.m_available->Version().asString() : "",
-                it.m_depInfo.optional ? g_localizeStrings.Get(24184) : ""));
+                it.m_depInfo.optional
+                    ? CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24184)
+                    : ""));
 
             item->SetArt("icon", infoAddon->Icon());
             item->SetProperty("addon_id", it.m_depInfo.id);
@@ -715,7 +731,8 @@ bool CGUIDialogAddonInfo::ShowDependencyList(Reactivate reactivate, EntryPoint e
       else
       {
         auto item{std::make_shared<CFileItem>(it.m_depInfo.id)};
-        item->SetLabel2(g_localizeStrings.Get(10005)); // Not available
+        item->SetLabel2(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+            10005)); // Not available
         items.Add(std::move(item));
       }
     }
@@ -780,9 +797,11 @@ void CGUIDialogAddonInfo::ShowSupportList() const
 
     std::string label;
     if (entry.m_type == AddonSupportType::Extension)
-      label = StringUtils::Format(g_localizeStrings.Get(21346), entry.m_name);
+      label = StringUtils::Format(
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21346), entry.m_name);
     else if (entry.m_type == AddonSupportType::Mimetype)
-      label = StringUtils::Format(g_localizeStrings.Get(21347), entry.m_name);
+      label = StringUtils::Format(
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21347), entry.m_name);
     else
       label = entry.m_name;
 

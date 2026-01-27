@@ -16,9 +16,10 @@
 #include "favourites/FavouritesService.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
 #include "profiles/ProfileManager.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 
@@ -68,7 +69,10 @@ static int MasterMode(const std::vector<std::string>& params)
     // master mode turned OFF => refresh favourites due to possible visibility changes
     CServiceBroker::GetFavouritesService().RefreshFavourites();
 
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(20052),g_localizeStrings.Get(20053));
+    CGUIDialogKaiToast::QueueNotification(
+        CGUIDialogKaiToast::Warning,
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20052),
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20053));
   }
   else if (g_passwordManager.IsMasterLockUnlocked(true)) // prompt user for code
   {
@@ -78,7 +82,10 @@ static int MasterMode(const std::vector<std::string>& params)
     // master mode turned ON => refresh favourites due to possible visibility changes
     CServiceBroker::GetFavouritesService().RefreshFavourites();
 
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(20052),g_localizeStrings.Get(20054));
+    CGUIDialogKaiToast::QueueNotification(
+        CGUIDialogKaiToast::Warning,
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20052),
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20054));
   }
 
   CUtil::DeleteVideoDatabaseDirectoryCache();

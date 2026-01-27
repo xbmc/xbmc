@@ -33,7 +33,6 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/InputManager.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
@@ -48,6 +47,8 @@
 #include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
 #include "playlists/PlayListFileItemClassify.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -373,7 +374,8 @@ void CGUIWindowFileManager::UpdateButtons()
   std::string strDir = CURL(m_Directory[0]->GetPath()).GetWithoutUserDetails();
   if (strDir.empty())
   {
-    SET_CONTROL_LABEL(CONTROL_CURRENTDIRLABEL_LEFT,g_localizeStrings.Get(20108));
+    SET_CONTROL_LABEL(CONTROL_CURRENTDIRLABEL_LEFT,
+                      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20108));
   }
   else
   {
@@ -382,7 +384,8 @@ void CGUIWindowFileManager::UpdateButtons()
   strDir = CURL(m_Directory[1]->GetPath()).GetWithoutUserDetails();
   if (strDir.empty())
   {
-    SET_CONTROL_LABEL(CONTROL_CURRENTDIRLABEL_RIGHT,g_localizeStrings.Get(20108));
+    SET_CONTROL_LABEL(CONTROL_CURRENTDIRLABEL_RIGHT,
+                      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20108));
   }
   else
   {
@@ -415,9 +418,12 @@ void CGUIWindowFileManager::UpdateItemCounts()
     if (selectedCount > 0)
       items =
           StringUtils::Format("{}/{} {} ({})", selectedCount, totalCount,
-                              g_localizeStrings.Get(127), StringUtils::SizeToString(selectedSize));
+                              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(127),
+                              StringUtils::SizeToString(selectedSize));
     else
-      items = StringUtils::Format("{} {}", totalCount, g_localizeStrings.Get(127));
+      items = StringUtils::Format(
+          "{} {}", totalCount,
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(127));
     SET_CONTROL_LABEL(CONTROL_NUMFILES_LEFT + i, items);
   }
 }
@@ -470,7 +476,8 @@ bool CGUIWindowFileManager::Update(int iList, const std::string &strDirectory)
   URIUtils::GetParentPath(strDirectory, strParentPath);
   if (strDirectory.empty() && (m_vecItems[iList]->Size() == 0 || CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_SHOWADDSOURCEBUTTONS)))
   { // add 'add source button'
-    const std::string& strLabel = g_localizeStrings.Get(1026);
+    const std::string& strLabel =
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1026);
     CFileItemPtr pItem(new CFileItem(strLabel));
     pItem->SetPath("add");
     pItem->SetArt("icon", "DefaultAddSource.png");
@@ -494,7 +501,7 @@ bool CGUIWindowFileManager::Update(int iList, const std::string &strDirectory)
   if (strDirectory.empty())
   {
     CFileItemPtr pItem(new CFileItem("special://profile/", true));
-    pItem->SetLabel(g_localizeStrings.Get(20070));
+    pItem->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20070));
     pItem->SetArt("thumb", "DefaultFolder.png");
     pItem->SetLabelPreformatted(true);
     m_vecItems[iList]->Add(pItem);
@@ -554,7 +561,9 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
   if ( iItem < 0 || iItem >= m_vecItems[iList]->Size() ) return ;
 
   CFileItemPtr pItem = m_vecItems[iList]->Get(iItem);
-  if (pItem->GetPath() == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
+  if (pItem->GetPath() == "add" &&
+      pItem->GetLabel() == CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                               1026)) // 'add source button' in empty root
   {
     if (CGUIDialogMediaSource::ShowAndAddMediaSource("files"))
     {
@@ -785,7 +794,9 @@ void CGUIWindowFileManager::OnSelectAll(int iList)
 void CGUIWindowFileManager::OnNewFolder(int iList)
 {
   std::string strNewFolder = "";
-  if (CGUIKeyboardFactory::ShowAndGetInput(strNewFolder, CVariant{g_localizeStrings.Get(16014)}, false))
+  if (CGUIKeyboardFactory::ShowAndGetInput(
+          strNewFolder,
+          CVariant{CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(16014)}, false))
   {
     std::string strNewPath = m_Directory[iList]->GetPath();
     URIUtils::AddSlashAtEnd(strNewPath);

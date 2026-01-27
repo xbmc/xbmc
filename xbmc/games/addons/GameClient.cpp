@@ -27,12 +27,13 @@
 #include "games/addons/streams/GameClientStreams.h"
 #include "games/addons/streams/IGameClientStream.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -209,7 +210,9 @@ bool CGameClient::OpenFile(const CFileItem& file,
 
     // Failed to play game
     // The required files can't be found.
-    MESSAGING::HELPERS::ShowOKDialogText(CVariant{35210}, CVariant{g_localizeStrings.Get(35219)});
+    MESSAGING::HELPERS::ShowOKDialogText(
+        CVariant{35210},
+        CVariant{CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35219)});
     return false;
   }
 
@@ -420,14 +423,18 @@ void CGameClient::NotifyError(GAME_ERROR error)
     // This game requires the following add-on: %s
     MESSAGING::HELPERS::ShowOKDialogText(
         CVariant{35210},
-        CVariant{StringUtils::Format(g_localizeStrings.Get(35211), missingResource)});
+        CVariant{StringUtils::Format(
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35211),
+            missingResource)});
   }
   else
   {
     // Failed to play game
     // The emulator "%s" had an internal error.
     MESSAGING::HELPERS::ShowOKDialogText(
-        CVariant{35210}, CVariant{StringUtils::Format(g_localizeStrings.Get(35213), Name())});
+        CVariant{35210},
+        CVariant{StringUtils::Format(
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35213), Name())});
   }
 }
 

@@ -13,11 +13,12 @@
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "filesystem/Directory.h"
-#include "guilib/LocalizeStrings.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/guilib/PVRGUIProgressHandler.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -63,7 +64,8 @@ void CPVRGUIChannelIconUpdater::SearchAndUpdateMissingChannelIcons() const
   std::unique_ptr<CPVRGUIProgressHandler> progressHandler;
   if (!m_groups.empty())
     progressHandler = std::make_unique<CPVRGUIProgressHandler>(
-        g_localizeStrings.Get(19286)); // Searching for channel icons
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+            19286)); // Searching for channel icons
 
   for (const auto& group : m_groups)
   {

@@ -40,7 +40,6 @@
 #include "filesystem/MusicDatabaseDirectory/QueryParams.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
@@ -56,6 +55,8 @@
 #include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
 #include "profiles/ProfileManager.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
@@ -854,14 +855,15 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
       const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
       CFileItemPtr newPlaylist(new CFileItem(profileManager->GetUserDataItem("PartyMode.xsp"),false));
-      newPlaylist->SetLabel(g_localizeStrings.Get(16035));
+      newPlaylist->SetLabel(
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(16035));
       newPlaylist->SetLabelPreformatted(true);
       newPlaylist->SetArt("icon", "DefaultPartyMode.png");
       newPlaylist->SetFolder(true);
       items.Add(newPlaylist);
 
       newPlaylist = std::make_shared<CFileItem>("newplaylist://", false);
-      newPlaylist->SetLabel(g_localizeStrings.Get(525));
+      newPlaylist->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(525));
       newPlaylist->SetArt("icon", "DefaultAddSource.png");
       newPlaylist->SetLabelPreformatted(true);
       newPlaylist->SetSpecialSort(SortSpecialOnBottom);
@@ -869,7 +871,8 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
       items.Add(newPlaylist);
 
       newPlaylist = std::make_shared<CFileItem>("newsmartplaylist://music", false);
-      newPlaylist->SetLabel(g_localizeStrings.Get(21437));
+      newPlaylist->SetLabel(
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21437));
       newPlaylist->SetArt("icon", "DefaultAddSource.png");
       newPlaylist->SetLabelPreformatted(true);
       newPlaylist->SetSpecialSort(SortSpecialOnBottom);
@@ -922,9 +925,11 @@ bool CGUIWindowMusicBase::OnSelect(int iItem)
         // ask the user if they want to play or resume
         CContextButtons choices;
         choices.Add(MUSIC_SELECT_ACTION_PLAY, 208); // 208 = Play
-        choices.Add(MUSIC_SELECT_ACTION_RESUME,
-                    StringUtils::Format(g_localizeStrings.Get(12022), // 12022 = Resume from ...
-                                        (*itemIt)->GetMusicInfoTag()->GetTitle()));
+        choices.Add(
+            MUSIC_SELECT_ACTION_RESUME,
+            StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                                    12022), // 12022 = Resume from ...
+                                (*itemIt)->GetMusicInfoTag()->GetTitle()));
 
         auto choice = CGUIDialogContextMenu::Show(choices);
         if (choice == MUSIC_SELECT_ACTION_RESUME)

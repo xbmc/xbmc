@@ -20,9 +20,10 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -117,9 +118,11 @@ void CGUIDialogVideoManager::OnInitWindow()
 
   CGUIDialog::OnInitWindow();
 
-  SET_CONTROL_LABEL(CONTROL_LABEL_TITLE,
-                    StringUtils::Format(g_localizeStrings.Get(GetHeadingId()),
-                                        m_videoAsset->GetVideoInfoTag()->GetTitle()));
+  SET_CONTROL_LABEL(
+      CONTROL_LABEL_TITLE,
+      StringUtils::Format(
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(GetHeadingId()),
+          m_videoAsset->GetVideoInfoTag()->GetTitle()));
 
   CGUIMessage msg{GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_ASSETS, 0, 0, m_videoAssetsList.get()};
   OnMessage(msg);
@@ -287,8 +290,9 @@ void CGUIDialogVideoManager::Remove()
   // confirm the removal
   if (!CGUIDialogYesNo::ShowAndGetInput(
           titleMsgId,
-          StringUtils::Format(g_localizeStrings.Get(textMsgId),
-                              m_selectedVideoAsset->GetVideoInfoTag()->GetAssetInfo().GetTitle())))
+          StringUtils::Format(
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(textMsgId),
+              m_selectedVideoAsset->GetVideoInfoTag()->GetAssetInfo().GetTitle())))
   {
     return;
   }
@@ -410,8 +414,11 @@ int CGUIDialogVideoManager::ChooseVideoAsset(const std::shared_ptr<CFileItem>& i
     {
       // create a new asset
       assetTitle = defaultName;
-      if (CGUIKeyboardFactory::ShowAndGetInput(assetTitle,
-                                               g_localizeStrings.Get(dialogNewHeadingMsgId), false))
+      if (CGUIKeyboardFactory::ShowAndGetInput(
+              assetTitle,
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                  dialogNewHeadingMsgId),
+              false))
       {
         assetTitle = StringUtils::Trim(assetTitle);
         //! @todo db refactor: should not be version, but asset
@@ -440,8 +447,10 @@ int CGUIDialogVideoManager::ChooseVideoAsset(const std::shared_ptr<CFileItem>& i
     if (std::ranges::any_of(assets, [assetId](const std::shared_ptr<CFileItem>& asset)
                             { return asset->GetVideoInfoTag()->m_iDbId == assetId; }))
     {
-      CGUIDialogOK::ShowAndGetInput(CVariant{40005},
-                                    StringUtils::Format(g_localizeStrings.Get(40007), assetTitle));
+      CGUIDialogOK::ShowAndGetInput(
+          CVariant{40005},
+          StringUtils::Format(
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(40007), assetTitle));
     }
     else
       break;
@@ -457,7 +466,8 @@ void CGUIDialogVideoManager::AppendItemFolderToFileBrowserSources(
   if (!itemDir.empty() && XFILE::CDirectory::Exists(itemDir))
   {
     CMediaSource itemSource{};
-    itemSource.strName = g_localizeStrings.Get(36041); // * Item folder
+    itemSource.strName =
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36041); // * Item folder
     itemSource.strPath = itemDir;
     sources.emplace_back(itemSource);
   }

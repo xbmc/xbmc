@@ -15,12 +15,13 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicDbUrl.h"
 #include "music/MusicLibraryQueue.h"
 #include "music/infoscanner/MusicInfoScanner.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/LibExportSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -207,8 +208,9 @@ static int ExportLibrary(const std::vector<std::string>& params)
   if (params.size() > 2)
     path=params[2];
   if (!singleFile || !path.empty() ||
-      CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661),
-                                                 path, true))
+      CGUIDialogFileBrowser::ShowAndGetDirectory(
+          shares, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(661), path,
+          true))
   {
     if (StringUtils::EqualsNoCase(params[0], "video"))
     {

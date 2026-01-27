@@ -9,8 +9,9 @@
 #include "VideoInfoTag.h"
 
 #include "ServiceBroker.h"
-#include "guilib/LocalizeStrings.h"
 #include "imagefiles/ImageFileURL.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Archive.h"
@@ -1027,8 +1028,10 @@ std::string CVideoInfoTag::GetCast(const std::string& separator,
     if (it->strRole.empty() || !bIncludeRole)
       character = StringUtils::Format("{}{}", it->strName, sep);
     else
-      character = StringUtils::Format("{} {} {}{}", it->strName, g_localizeStrings.Get(20347),
-                                      it->strRole, sep);
+      character = StringUtils::Format(
+          "{} {} {}{}", it->strName,
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20347), it->strRole,
+          sep);
     strLabel += character;
   }
   return StringUtils::TrimRight(strLabel, sep);

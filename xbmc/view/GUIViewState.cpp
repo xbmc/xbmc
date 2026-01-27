@@ -27,7 +27,6 @@
 #include "games/windows/GUIViewStateWindowGames.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/TextureManager.h"
 #include "music/GUIViewStateMusic.h"
 #include "pictures/GUIViewStatePictures.h"
@@ -35,6 +34,8 @@
 #include "profiles/ProfileManager.h"
 #include "programs/GUIViewStatePrograms.h"
 #include "pvr/windows/GUIViewStatePVR.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -375,7 +376,8 @@ bool CGUIViewState::ChooseSortMethod()
   dialog->Reset();
   dialog->SetHeading(CVariant{ 39010 }); // Label "Sort by"
   for (auto &sortMethod : m_sortMethods)
-    dialog->Add(g_localizeStrings.Get(sortMethod.m_buttonLabel));
+    dialog->Add(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(sortMethod.m_buttonLabel));
   dialog->SetSelected(m_currentSortMethod);
   dialog->Open();
   int newSelected = dialog->GetSelectedItem();

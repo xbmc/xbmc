@@ -28,7 +28,7 @@
 struct LocStr
 {
   std::string strTranslated; // string to be used in xbmc GUI
-  std::string strOriginal;   // the original English string the translation is based on
+  std::string strOriginal; // the original English string the translation is based on
 };
 
 // The default fallback language is fixed to be English
@@ -66,9 +66,3 @@ protected:
   mutable CSharedSection m_stringsMutex;
   mutable CSharedSection m_addonStringsMutex;
 };
-
-/*!
- \ingroup strings
- \brief
- */
-extern CLocalizeStrings g_localizeStrings;

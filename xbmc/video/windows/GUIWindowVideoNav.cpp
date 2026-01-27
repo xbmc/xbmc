@@ -24,7 +24,6 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
@@ -32,6 +31,8 @@
 #include "music/MusicDatabase.h"
 #include "playlists/PlayListFileItemClassify.h"
 #include "profiles/ProfileManager.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
@@ -526,7 +527,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
       if (items.GetContent() == "tags" && !items.Contains("newtag://" + videoUrl.GetType()))
       {
         const auto newTag{std::make_shared<CFileItem>("newtag://" + videoUrl.GetType(), false)};
-        newTag->SetLabel(g_localizeStrings.Get(20462));
+        newTag->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20462));
         newTag->SetLabelPreformatted(true);
         newTag->SetSpecialSort(SortSpecialOnTop);
         items.Add(newTag);
@@ -557,7 +558,8 @@ void CGUIWindowVideoNav::UpdateButtons()
       StringUtils::StartsWith(m_vecItems->Get(m_vecItems->Size()-1)->GetPath(), "/-1/"))
       iItems--;
   }
-  std::string items = StringUtils::Format("{} {}", iItems, g_localizeStrings.Get(127));
+  std::string items = StringUtils::Format(
+      "{} {}", iItems, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(127));
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 
   // set the filter label
@@ -565,7 +567,7 @@ void CGUIWindowVideoNav::UpdateButtons()
 
   // "Playlists"
   if (m_vecItems->IsPath("special://videoplaylists/"))
-    strLabel = g_localizeStrings.Get(136);
+    strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(136);
   // "{Playlist Name}"
   else if (PLAYLIST::IsPlayList(*m_vecItems))
   {
@@ -574,7 +576,7 @@ void CGUIWindowVideoNav::UpdateButtons()
     URIUtils::Split(m_vecItems->GetPath(), strDummy, strLabel);
   }
   else if (m_vecItems->IsPath("sources://video/"))
-    strLabel = g_localizeStrings.Get(744);
+    strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(744);
   // everything else is from a videodb:// path
   else if (VIDEO::IsVideoDb(*m_vecItems))
   {
@@ -587,7 +589,9 @@ void CGUIWindowVideoNav::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_FILTER, strLabel);
 
   int watchMode = CMediaSettings::GetInstance().GetWatchedMode(m_vecItems->GetContent());
-  SET_CONTROL_LABEL(CONTROL_BTNSHOWMODE, g_localizeStrings.Get(16100 + watchMode));
+  SET_CONTROL_LABEL(
+      CONTROL_BTNSHOWMODE,
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(16100 + watchMode));
 
   SET_CONTROL_SELECTED(GetID(), CONTROL_BTNSHOWALL, watchMode != WatchedModeAll);
 
@@ -686,11 +690,14 @@ void CGUIWindowVideoNav::DoSearch(const std::string& strSearch, CFileItemList& i
     std::string msg;
     if (entry.prefix > 0)
     {
-      msg = fmt::format("[{} - {}] ", g_localizeStrings.Get(entry.prefix),
-                        g_localizeStrings.Get(entry.id));
+      msg = fmt::format(
+          "[{} - {}] ",
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(entry.prefix),
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(entry.id));
     }
     else
-      msg = fmt::format("[{}] ", g_localizeStrings.Get(entry.id));
+      msg = fmt::format("[{}] ",
+                        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(entry.id));
 
     this->AppendAndClearSearchItems(tempItems, msg, items);
   });
@@ -716,8 +723,10 @@ void CGUIWindowVideoNav::OnDeleteItem(const CFileItemPtr& pItem)
       return;
 
     pDialog->SetHeading(CVariant{432});
-    std::string strLabel = StringUtils::Format(
-        g_localizeStrings.Get(pItem->HasVideoVersions() ? 40021 : 433), pItem->GetLabel());
+    std::string strLabel =
+        StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                                pItem->HasVideoVersions() ? 40021 : 433),
+                            pItem->GetLabel());
     pDialog->SetLine(1, CVariant{std::move(strLabel)});
     pDialog->SetLine(2, CVariant{""});
     pDialog->Open();
@@ -993,7 +1002,10 @@ bool CGUIWindowVideoNav::OnClick(int iItem, const std::string &player)
 
     //Get the new title
     std::string strTag;
-    if (!CGUIKeyboardFactory::ShowAndGetInput(strTag, CVariant{g_localizeStrings.Get(20462)}, false))
+    if (!CGUIKeyboardFactory::ShowAndGetInput(
+            strTag,
+            CVariant{CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20462)},
+            false))
       return true;
 
     CVideoDatabase videodb;
@@ -1009,14 +1021,16 @@ bool CGUIWindowVideoNav::OnClick(int iItem, const std::string &player)
 
     if (!videodb.GetSingleValue("tag", "tag.tag_id", videodb.PrepareSQL("tag.name = '%s' AND tag.tag_id IN (SELECT tag_link.tag_id FROM tag_link WHERE tag_link.media_type = '%s')", strTag.c_str(), mediaType.c_str())).empty())
     {
-      std::string strError = StringUtils::Format(g_localizeStrings.Get(20463), strTag);
+      std::string strError = StringUtils::Format(
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20463), strTag);
       HELPERS::ShowOKDialogText(CVariant{20462}, CVariant{std::move(strError)});
       return true;
     }
 
     int idTag = videodb.AddTag(strTag);
     CFileItemList items;
-    std::string strLabel = StringUtils::Format(g_localizeStrings.Get(20464), localizedType);
+    std::string strLabel = StringUtils::Format(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20464), localizedType);
     if (CGUIDialogVideoInfo::GetItemsForTag(strLabel, mediaType, items, idTag))
     {
       for (int index = 0; index < items.Size(); index++)

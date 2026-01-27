@@ -21,8 +21,9 @@
 #include "filesystem/StackDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
-#include "guilib/LocalizeStrings.h"
 #include "imagefiles/ImageFileURL.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -72,7 +73,9 @@ bool CFileUtils::RenameFile(const std::string &strFile)
   URIUtils::RemoveSlashAtEnd(strFileAndPath);
   std::string strFileName = URIUtils::GetFileName(strFileAndPath);
   std::string strPath = URIUtils::GetDirectory(strFileAndPath);
-  if (CGUIKeyboardFactory::ShowAndGetInput(strFileName, CVariant{g_localizeStrings.Get(16013)}, false))
+  if (CGUIKeyboardFactory::ShowAndGetInput(
+          strFileName,
+          CVariant{CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(16013)}, false))
   {
     strPath = URIUtils::AddFileToFolder(strPath, strFileName);
     CLog::Log(LOGINFO, "FileUtils: rename {}->{}", strFileAndPath, strPath);

@@ -14,9 +14,10 @@
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/SettingUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -161,7 +162,7 @@ void CGUIDialogLibExportSettings::OnSettingAction(const std::shared_ptr<const CS
       if (CUtil::GetMatchingSource(strDirectory, shares, bIsSource) < 0) // path is outside shares - add it as a separate one
       {
         CMediaSource share;
-        share.strName = g_localizeStrings.Get(13278);
+        share.strName = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13278);
         share.strPath = strDirectory;
         shares.push_back(share);
       }
@@ -169,8 +170,9 @@ void CGUIDialogLibExportSettings::OnSettingAction(const std::shared_ptr<const CS
     else
       strDirectory = "default location";
 
-    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), strDirectory,
-                                                   true) &&
+    if (CGUIDialogFileBrowser::ShowAndGetDirectory(
+            shares, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(661),
+            strDirectory, true) &&
         !strDirectory.empty())
     {
       m_destinationChecked = true;
@@ -289,13 +291,15 @@ void CGUIDialogLibExportSettings::UpdateToggles()
       !m_settings.IsArtwork())
   {
     //"Output information to NFO files (currently exporting artist folders only)"
-    SetLabel(CSettings::SETTING_MUSICLIBRARY_EXPORT_SKIPNFO, g_localizeStrings.Get(38310));
+    SetLabel(CSettings::SETTING_MUSICLIBRARY_EXPORT_SKIPNFO,
+             CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(38310));
     ToggleState(CSettings::SETTING_MUSICLIBRARY_EXPORT_OVERWRITE, false);
   }
   else
   {
     //"Output information to NFO files"
-    SetLabel(CSettings::SETTING_MUSICLIBRARY_EXPORT_SKIPNFO, g_localizeStrings.Get(38309));
+    SetLabel(CSettings::SETTING_MUSICLIBRARY_EXPORT_SKIPNFO,
+             CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(38309));
     ToggleState(CSettings::SETTING_MUSICLIBRARY_EXPORT_OVERWRITE, true);
   }
 }
@@ -309,25 +313,30 @@ void CGUIDialogLibExportSettings::UpdateDescription()
     if (m_settings.IsItemExported(ELIBEXPORT_ALBUMS))
       if (m_settings.IsArtists())
         //"Artists exported to Artist Information Folder and albums to music folders"
-        SetLabel2(CSettings::SETTING_MUSICLIBRARY_EXPORT_FOLDER, g_localizeStrings.Get(38322));
+        SetLabel2(CSettings::SETTING_MUSICLIBRARY_EXPORT_FOLDER,
+                  CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(38322));
       else
         //"Albums exported to music folders"
-        SetLabel2(CSettings::SETTING_MUSICLIBRARY_EXPORT_FOLDER, g_localizeStrings.Get(38323));
+        SetLabel2(CSettings::SETTING_MUSICLIBRARY_EXPORT_FOLDER,
+                  CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(38323));
     else
       // "Artists exported to Artist Information Folder"
-      SetLabel2(CSettings::SETTING_MUSICLIBRARY_EXPORT_FOLDER, g_localizeStrings.Get(38324));
+      SetLabel2(CSettings::SETTING_MUSICLIBRARY_EXPORT_FOLDER,
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(38324));
   }
   else if (m_settings.IsArtistFoldersOnly())
   {
     // Destination button is description of what artist folders means
     SetLabel(CSettings::SETTING_MUSICLIBRARY_EXPORT_FOLDER, "");
     //"Artists folders created in Artist Information Folder"
-    SetLabel2(CSettings::SETTING_MUSICLIBRARY_EXPORT_FOLDER, g_localizeStrings.Get(38325));
+    SetLabel2(CSettings::SETTING_MUSICLIBRARY_EXPORT_FOLDER,
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(38325));
   }
   else
   {
     SetLabel2(CSettings::SETTING_MUSICLIBRARY_EXPORT_FOLDER, m_settings.GetPath());
-    SetLabel(CSettings::SETTING_MUSICLIBRARY_EXPORT_FOLDER, g_localizeStrings.Get(38305));
+    SetLabel(CSettings::SETTING_MUSICLIBRARY_EXPORT_FOLDER,
+             CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(38305));
   }
 }
 

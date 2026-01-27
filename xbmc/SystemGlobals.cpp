@@ -5,15 +5,14 @@
  *  SPDX-License-Identifier: GPL-2.0-or-later
  *  See LICENSES/README.md for more information.
  */
-#include "SectionLoader.h"
-#include "utils/AlarmClock.h"
 #include "GUIInfoManager.h"
-#include "filesystem/DllLibCurl.h"
-#include "filesystem/DirectoryCache.h"
 #include "GUIPassword.h"
-#include "utils/LangCodeExpander.h"
 #include "PartyModeManager.h"
-#include "guilib/LocalizeStrings.h"
+#include "SectionLoader.h"
+#include "filesystem/DirectoryCache.h"
+#include "filesystem/DllLibCurl.h"
+#include "utils/AlarmClock.h"
+#include "utils/LangCodeExpander.h"
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
 #endif
@@ -24,17 +23,16 @@ std::map<std::string, std::string> CSpecialProtocol::m_pathMap;
 
 #include "filesystem/ZipManager.h"
 
-  CLangCodeExpander  g_LangCodeExpander;
-  CLocalizeStrings g_localizeStrings;
+CLangCodeExpander g_LangCodeExpander;
 
-  XFILE::CDirectoryCache g_directoryCache;
+XFILE::CDirectoryCache g_directoryCache;
 
-  CGUIPassword       g_passwordManager;
+CGUIPassword g_passwordManager;
 
-  XCURL::DllLibCurlGlobal g_curlInterface;
-  CPartyModeManager     g_partyModeManager;
+XCURL::DllLibCurlGlobal g_curlInterface;
+CPartyModeManager g_partyModeManager;
 
-  CAlarmClock        g_alarmClock;
-  CSectionLoader     g_sectionLoader;
+CAlarmClock g_alarmClock;
+CSectionLoader g_sectionLoader;
 
-  CZipManager g_ZipManager;
+CZipManager g_ZipManager;

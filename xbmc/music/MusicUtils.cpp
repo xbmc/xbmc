@@ -26,7 +26,6 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "jobs/JobManager.h"
 #include "media/MediaType.h"
 #include "music/MusicDatabase.h"
@@ -38,6 +37,8 @@
 #include "playlists/PlayListFactory.h"
 #include "playlists/PlayListFileItemClassify.h"
 #include "profiles/ProfileManager.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/IRunnable.h"
@@ -298,13 +299,13 @@ bool FillArtTypesList(CFileItem& musicitem, CFileItemList& artlist)
     CFileItemPtr artitem(new CFileItem(type, false));
     // Localise the names of common types of art
     if (type == "banner")
-      artitem->SetLabel(g_localizeStrings.Get(20020));
+      artitem->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20020));
     else if (type == "fanart")
-      artitem->SetLabel(g_localizeStrings.Get(20445));
+      artitem->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20445));
     else if (type == "poster")
-      artitem->SetLabel(g_localizeStrings.Get(20021));
+      artitem->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20021));
     else if (type == "thumb")
-      artitem->SetLabel(g_localizeStrings.Get(21371));
+      artitem->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21371));
     else
       artitem->SetLabel(type);
     // Set art type as art item property
@@ -339,8 +340,10 @@ std::string ShowSelectArtTypeDialog(CFileItemList& artitems)
   {
     // Get the new art type name
     std::string strArtTypeName;
-    if (!CGUIKeyboardFactory::ShowAndGetInput(strArtTypeName,
-                                              CVariant{g_localizeStrings.Get(13516)}, false))
+    if (!CGUIKeyboardFactory::ShowAndGetInput(
+            strArtTypeName,
+            CVariant{CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13516)},
+            false))
       return "";
     // Add new type to the list of art types
     CFileItemPtr artitem(new CFileItem(strArtTypeName, false));
@@ -362,9 +365,10 @@ int ShowSelectRatingDialog(int iSelected)
   if (dialog)
   {
     dialog->SetHeading(CVariant{38023});
-    dialog->Add(g_localizeStrings.Get(38022));
+    dialog->Add(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(38022));
     for (int i = 1; i <= 10; i++)
-      dialog->Add(StringUtils::Format("{}: {}", g_localizeStrings.Get(563), i));
+      dialog->Add(StringUtils::Format(
+          "{}: {}", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(563), i));
     dialog->SetSelected(iSelected);
     dialog->Open();
 
@@ -647,8 +651,9 @@ void ShowToastNotification(const CFileItem& item, int titleId)
   const std::string message =
       localizedMediaType.empty() ? title : localizedMediaType + ": " + title;
 
-  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(titleId),
-                                        message);
+  CGUIDialogKaiToast::QueueNotification(
+      CGUIDialogKaiToast::Info,
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(titleId), message);
 }
 
 std::string GetMusicDbItemPath(const CFileItem& item)

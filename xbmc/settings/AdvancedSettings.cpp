@@ -13,9 +13,10 @@
 #include "URL.h"
 #include "application/AppParams.h"
 #include "filesystem/SpecialProtocol.h"
-#include "guilib/LocalizeStrings.h"
 #include "network/DNSNameCache.h"
 #include "profiles/ProfileManager.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
@@ -329,7 +330,7 @@ void CAdvancedSettings::Initialize()
 
   // Build regex inserting local specific spelling of disc (xxx)
   // [ _.-]*\((?:xxx|dis[ck])[ _.-]*\d{1,3}\)$
-  std::string localeDiscStr{g_localizeStrings.Get(427)};
+  std::string localeDiscStr{CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(427)};
   if (!localeDiscStr.empty())
     localeDiscStr = EscapeSpecialChars(localeDiscStr) + "|";
   m_titleTrailingPartNumberRegExp =

@@ -8,8 +8,10 @@
 
 #include "ServicesSettings.h"
 
+#include "ServiceBroker.h"
 #include "filesystem/IFileTypes.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 
 using namespace XFILE;
@@ -18,8 +20,8 @@ void CServicesSettings::SettingOptionsChunkSizesFiller(const SettingConstPtr& /*
                                                        std::vector<IntegerSettingOption>& list,
                                                        int& /*current*/)
 {
-  const std::string& kb = g_localizeStrings.Get(37121);
-  const std::string& mb = g_localizeStrings.Get(37122);
+  const std::string& kb = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(37121);
+  const std::string& mb = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(37122);
 
   list.emplace_back(StringUtils::Format(kb, 16), 16);
   list.emplace_back(StringUtils::Format(kb, 32), 32);
@@ -34,19 +36,24 @@ void CServicesSettings::SettingOptionsBufferModesFiller(const SettingConstPtr& /
                                                         std::vector<IntegerSettingOption>& list,
                                                         int& /*current*/)
 {
-  list.emplace_back(g_localizeStrings.Get(37110), static_cast<int>(CacheBufferMode::NONE));
-  list.emplace_back(g_localizeStrings.Get(37111), static_cast<int>(CacheBufferMode::TRUE_INTERNET));
-  list.emplace_back(g_localizeStrings.Get(37112), static_cast<int>(CacheBufferMode::INTERNET));
-  list.emplace_back(g_localizeStrings.Get(37113), static_cast<int>(CacheBufferMode::NETWORK));
-  list.emplace_back(g_localizeStrings.Get(37114), static_cast<int>(CacheBufferMode::ALL));
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(37110),
+                    static_cast<int>(CacheBufferMode::NONE));
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(37111),
+                    static_cast<int>(CacheBufferMode::TRUE_INTERNET));
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(37112),
+                    static_cast<int>(CacheBufferMode::INTERNET));
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(37113),
+                    static_cast<int>(CacheBufferMode::NETWORK));
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(37114),
+                    static_cast<int>(CacheBufferMode::ALL));
 }
 
 void CServicesSettings::SettingOptionsMemorySizesFiller(const SettingConstPtr& /*setting*/,
                                                         std::vector<IntegerSettingOption>& list,
                                                         int& /*current*/)
 {
-  const std::string& mb = g_localizeStrings.Get(37122);
-  const std::string& gb = g_localizeStrings.Get(37123);
+  const std::string& mb = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(37122);
+  const std::string& gb = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(37123);
 
   list.emplace_back(StringUtils::Format(mb, 16), 16);
   list.emplace_back(StringUtils::Format(mb, 20), 20);
@@ -62,14 +69,14 @@ void CServicesSettings::SettingOptionsMemorySizesFiller(const SettingConstPtr& /
   list.emplace_back(StringUtils::Format(mb, 512), 512);
   list.emplace_back(StringUtils::Format(mb, 768), 768);
   list.emplace_back(StringUtils::Format(gb, 1), 1024);
-  list.emplace_back(g_localizeStrings.Get(37115), 0);
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(37115), 0);
 }
 
 void CServicesSettings::SettingOptionsReadFactorsFiller(const SettingConstPtr& /*setting*/,
                                                         std::vector<IntegerSettingOption>& list,
                                                         int& /*current*/)
 {
-  list.emplace_back(g_localizeStrings.Get(37116), 0);
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(37116), 0);
   list.emplace_back("1.1x", 110);
   list.emplace_back("1.25x", 125);
   list.emplace_back("1.5x", 150);
@@ -91,9 +98,9 @@ void CServicesSettings::SettingOptionsCacheChunkSizesFiller(const SettingConstPt
                                                             std::vector<IntegerSettingOption>& list,
                                                             int& /*current*/)
 {
-  const std::string& byte = g_localizeStrings.Get(37120);
-  const std::string& kb = g_localizeStrings.Get(37121);
-  const std::string& mb = g_localizeStrings.Get(37122);
+  const std::string& byte = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(37120);
+  const std::string& kb = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(37121);
+  const std::string& mb = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(37122);
 
   list.emplace_back(StringUtils::Format(byte, 256), 256);
   list.emplace_back(StringUtils::Format(byte, 512), 512);
@@ -114,9 +121,9 @@ void CServicesSettings::SettingOptionsSmbVersionsFiller(const SettingConstPtr& /
                                                         std::vector<IntegerSettingOption>& list,
                                                         int& /*current*/)
 {
-  list.emplace_back(g_localizeStrings.Get(36623), 0);
-  list.emplace_back(g_localizeStrings.Get(36624), 1);
-  list.emplace_back(g_localizeStrings.Get(36625), 2);
-  list.emplace_back(g_localizeStrings.Get(36637), 21);
-  list.emplace_back(g_localizeStrings.Get(36626), 3);
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36623), 0);
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36624), 1);
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36625), 2);
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36637), 21);
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36626), 3);
 }

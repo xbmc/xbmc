@@ -12,9 +12,10 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUISliderControl.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 
 #define CONTROL_HEADING 10
 #define CONTROL_SLIDER  11
@@ -120,7 +121,8 @@ void CGUIDialogSlider::Display(int label, float value, float min, float delta, f
   // set the label and value
   slider->Initialize();
   slider->SetAutoClose(1000);
-  slider->SetSlider(g_localizeStrings.Get(label), value, min, delta, max, callback, NULL);
+  slider->SetSlider(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(label), value,
+                    min, delta, max, callback, NULL);
   slider->SetModalityType(DialogModalityType::MODELESS);
   slider->Open();
 }

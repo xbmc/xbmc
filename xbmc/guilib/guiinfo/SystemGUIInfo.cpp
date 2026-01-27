@@ -20,13 +20,14 @@
 #include "application/ApplicationPowerHandling.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoHelper.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfileManager.h"
 #include "rendering/RenderSystem.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/SettingUtils.h"
@@ -71,10 +72,12 @@ std::string CSystemGUIInfo::GetSystemHeatInfo(int info) const
   {
     case SYSTEM_CPU_TEMPERATURE:
       return m_cpuTemp.IsValid() ? g_langInfo.GetTemperatureAsString(m_cpuTemp)
-                                 : g_localizeStrings.Get(10005); // Not available
+                                 : CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                                       10005); // Not available
     case SYSTEM_GPU_TEMPERATURE:
-      return m_gpuTemp.IsValid() ? g_langInfo.GetTemperatureAsString(m_gpuTemp)
-                                 : g_localizeStrings.Get(10005);
+      return m_gpuTemp.IsValid()
+                 ? g_langInfo.GetTemperatureAsString(m_gpuTemp)
+                 : CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(10005);
     case SYSTEM_FAN_SPEED:
       text = StringUtils::Format("{}%", m_fanSpeed * 2);
       break;
@@ -86,7 +89,8 @@ std::string CSystemGUIInfo::GetSystemHeatInfo(int info) const
         text = CServiceBroker::GetCPUInfo()->GetCoresUsageString();
 #endif
       else
-        text = g_localizeStrings.Get(10005); // Not available
+        text = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+            10005); // Not available
       break;
     default:
       break;
@@ -175,12 +179,14 @@ bool CSystemGUIInfo::GetLabel(std::string& value,
         const RESOLUTION_INFO& resInfo = winSystem->GetGfxContext().GetResInfo();
 
         if (winSystem->IsFullScreen())
-          value = StringUtils::Format("{}x{} @ {:.2f} Hz - {}", resInfo.iScreenWidth,
-                                      resInfo.iScreenHeight, resInfo.fRefreshRate,
-                                      g_localizeStrings.Get(244));
+          value = StringUtils::Format(
+              "{}x{} @ {:.2f} Hz - {}", resInfo.iScreenWidth, resInfo.iScreenHeight,
+              resInfo.fRefreshRate,
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(244));
         else
-          value = StringUtils::Format("{}x{} - {}", resInfo.iScreenWidth, resInfo.iScreenHeight,
-                                      g_localizeStrings.Get(242));
+          value = StringUtils::Format(
+              "{}x{} - {}", resInfo.iScreenWidth, resInfo.iScreenHeight,
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(242));
       }
       else
       {
@@ -255,11 +261,13 @@ bool CSystemGUIInfo::GetLabel(std::string& value,
       {
         double fTime = g_alarmClock.GetRemaining("shutdowntimer");
         if (fTime > 60.0)
-          value = StringUtils::Format(g_localizeStrings.Get(13213),
-                                      g_alarmClock.GetRemaining("shutdowntimer") / 60.0);
+          value = StringUtils::Format(
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13213),
+              g_alarmClock.GetRemaining("shutdowntimer") / 60.0);
         else
-          value = StringUtils::Format(g_localizeStrings.Get(13214),
-                                      g_alarmClock.GetRemaining("shutdowntimer"));
+          value = StringUtils::Format(
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13214),
+              g_alarmClock.GetRemaining("shutdowntimer"));
       }
       return true;
     case SYSTEM_PROFILENAME:
@@ -279,7 +287,8 @@ bool CSystemGUIInfo::GetLabel(std::string& value,
           CServiceBroker::GetSettingsComponent()->GetProfileManager();
       int iProfileId = profileManager->GetAutoLoginProfileId();
       if ((iProfileId < MASTER_PROFILE_ID) || !profileManager->GetProfileName(iProfileId, value))
-        value = g_localizeStrings.Get(37014); // Last used profile
+        value = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+            37014); // Last used profile
       return true;
     }
     case SYSTEM_PROFILETHUMB:

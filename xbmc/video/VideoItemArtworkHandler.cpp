@@ -13,9 +13,10 @@
 #include "MediaSource.h"
 #include "ServiceBroker.h"
 #include "filesystem/Directory.h"
-#include "guilib/LocalizeStrings.h"
 #include "imagefiles/ImageFileURL.h"
 #include "music/MusicDatabase.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ArtUtils.h"
@@ -127,8 +128,9 @@ void CVideoItemArtworkHandler::AddItemPathToFileBrowserSources(std::vector<CMedi
   if (IsVideo(itemTmp))
     itemDir = URIUtils::GetParentPath(itemDir);
 
-  AddItemPathStringToFileBrowserSources(sources, itemDir,
-                                        g_localizeStrings.Get(36041) /* * Item folder */);
+  AddItemPathStringToFileBrowserSources(
+      sources, itemDir,
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36041) /* * Item folder */);
 }
 
 void CVideoItemArtworkHandler::PersistArt(const std::string& art)
@@ -426,12 +428,13 @@ void CVideoItemArtworkMovieSetHandler::AddItemPathToFileBrowserSources(
 {
   AddItemPathStringToFileBrowserSources(
       sources, VIDEO::CVideoInfoScanner::GetMovieSetInfoFolder(m_item->GetLabel()),
-      g_localizeStrings.Get(36041) /* * Item folder */);
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36041) /* * Item folder */);
   AddItemPathStringToFileBrowserSources(
       sources,
       CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
           CSettings::SETTING_VIDEOLIBRARY_MOVIESETSFOLDER),
-      "* " + g_localizeStrings.Get(20226) /* Movie set information folder */);
+      "* " + CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                 20226) /* Movie set information folder */);
 }
 
 //-------------------------------------------------------------------------------------------------

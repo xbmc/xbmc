@@ -21,8 +21,9 @@
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "network/NetworkFileItemClassify.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -90,7 +91,8 @@ bool CCDDARipJob::DoWork()
   CGUIDialogExtendedProgressBar* pDlgProgress =
       CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogExtendedProgressBar>(
           WINDOW_DIALOG_EXT_PROGRESS);
-  CGUIDialogProgressBarHandle* handle = pDlgProgress->GetHandle(g_localizeStrings.Get(605));
+  CGUIDialogProgressBarHandle* handle = pDlgProgress->GetHandle(
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(605));
 
   int iTrack = atoi(m_input.substr(13, m_input.size() - 13 - 5).c_str());
   std::string strLine0 =

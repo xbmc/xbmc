@@ -14,8 +14,9 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUITexture.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/Texture.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ColorUtils.h"
@@ -60,7 +61,9 @@ bool CGUIDialogTeletext::OnMessage(CGUIMessage& message)
     if (!appPlayer->HasTeletextCache())
     {
       Close();
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(23049), "", 1500, false);
+      CGUIDialogKaiToast::QueueNotification(
+          CGUIDialogKaiToast::Info,
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(23049), "", 1500, false);
       return true;
     }
   }

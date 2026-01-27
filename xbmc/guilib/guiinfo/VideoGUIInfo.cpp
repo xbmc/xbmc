@@ -20,7 +20,6 @@
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/StereoscopicsManager.h"
 #include "guilib/WindowIDs.h"
 #include "guilib/guiinfo/GUIInfo.h"
@@ -29,6 +28,8 @@
 #include "guilib/guiinfo/GUIInfoUtils.h"
 #include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayList.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingUtils.h"
 #include "settings/Settings.h"
@@ -210,9 +211,9 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
           if (rating.rating > 0.f && rating.votes == 0)
             value = StringUtils::FormatNumber(rating.rating);
           else if (rating.votes > 0)
-            value = StringUtils::Format(g_localizeStrings.Get(20350),
-                                        StringUtils::FormatNumber(rating.rating),
-                                        StringUtils::FormatNumber(rating.votes));
+            value = StringUtils::Format(
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20350),
+                StringUtils::FormatNumber(rating.rating), StringUtils::FormatNumber(rating.votes));
           else
             break;
           return true;
@@ -411,7 +412,7 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
               !CSettingUtils::FindIntInList(
                   setting, CSettings::VIDEOLIBRARY_PLOTS_SHOW_UNWATCHED_TVSHOWEPISODES))))
         {
-          value = g_localizeStrings.Get(20370);
+          value = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20370);
         }
         else
         {

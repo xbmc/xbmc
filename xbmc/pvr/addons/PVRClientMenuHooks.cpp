@@ -8,9 +8,11 @@
 
 #include "PVRClientMenuHooks.h"
 
+#include "ServiceBroker.h"
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_menu_hook.h"
-#include "guilib/LocalizeStrings.h"
 #include "pvr/PVRContextMenus.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/log.h"
 
 #include <memory>
@@ -86,7 +88,8 @@ unsigned int CPVRClientMenuHook::GetLabelId() const
 
 std::string CPVRClientMenuHook::GetLabel() const
 {
-  return g_localizeStrings.GetAddonString(m_addonId, m_hook->iLocalizedStringId);
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().GetAddonString(
+      m_addonId, m_hook->iLocalizedStringId);
 }
 
 void CPVRClientMenuHooks::AddHook(const PVR_MENUHOOK& addonHook)

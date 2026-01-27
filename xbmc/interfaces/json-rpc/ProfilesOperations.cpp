@@ -12,7 +12,6 @@
 #include "FileItemList.h"
 #include "GUIPassword.h"
 #include "ServiceBroker.h"
-#include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"

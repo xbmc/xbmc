@@ -17,8 +17,9 @@
 #include "games/controllers/ControllerTypes.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -97,7 +98,8 @@ void CControllerSelect::Process()
   if (m_showDisconnect)
   {
     // Add a button to disconnect the port
-    CFileItemPtr item(new CFileItem(g_localizeStrings.Get(13298))); // "Disconnected"
+    CFileItemPtr item(new CFileItem(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13298))); // "Disconnected"
     item->SetArt("icon", "DefaultAddonNone.png");
     items.Add(std::move(item));
 

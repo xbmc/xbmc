@@ -7,9 +7,11 @@
  */
 
 #include "LangInfo.h"
+#include "ServiceBroker.h"
 #include "XBDateTime.h"
-#include "guilib/LocalizeStrings.h"
 #include "interfaces/legacy/ModuleXbmc.h" //Needed to test getRegion()
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 
 #include <array>
 #include <iostream>
@@ -409,7 +411,8 @@ TEST_F(TestDateTime, GetAsLocalized)
   // "DD. MMMM. YYYY",
   // "YYYY. MMMM. D"
 
-  ASSERT_TRUE(g_localizeStrings.Load(g_langInfo.GetLanguagePath(), "resource.language.en_gb"));
+  ASSERT_TRUE(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Load(
+      g_langInfo.GetLanguagePath(), "resource.language.en_gb"));
 
   // 24 hour clock must be set before time format
   g_langInfo.Set24HourClock(false);

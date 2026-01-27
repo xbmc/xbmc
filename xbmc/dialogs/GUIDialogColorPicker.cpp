@@ -10,11 +10,13 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "ServiceBroker.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIColorManager.h"
 #include "guilib/GUIMessage.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/ActionIDs.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/ColorUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -230,10 +232,13 @@ void CGUIDialogColorPicker::OnInitWindow()
   m_viewControl.SetItems(*m_vecList);
   m_viewControl.SetCurrentView(CONTROL_ICON_LIST);
 
-  SET_CONTROL_LABEL(CONTROL_NUMBER_OF_ITEMS,
-                    StringUtils::Format("{} {}", m_vecList->Size(), g_localizeStrings.Get(127)));
+  SET_CONTROL_LABEL(
+      CONTROL_NUMBER_OF_ITEMS,
+      StringUtils::Format("{} {}", m_vecList->Size(),
+                          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(127)));
 
-  SET_CONTROL_LABEL(CONTROL_CANCEL_BUTTON, g_localizeStrings.Get(222));
+  SET_CONTROL_LABEL(CONTROL_CANCEL_BUTTON,
+                    CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(222));
 
   CGUIDialogBoxBase::OnInitWindow();
 

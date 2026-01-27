@@ -24,13 +24,14 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIControlGroupList.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "media/MediaLockState.h"
 #include "music/MusicFileItemClassify.h"
 #include "profiles/ProfileManager.h"
 #include "profiles/dialogs/GUIDialogLockSettings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -62,7 +63,8 @@ void CContextButtons::Add(unsigned int button, int label)
   for (const auto& i : *this)
     if (i.first == button)
       return; // already have added this button
-  push_back(std::pair<unsigned int, std::string>(button, g_localizeStrings.Get(label)));
+  push_back(std::pair<unsigned int, std::string>(
+      button, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(label)));
 }
 
 CGUIDialogContextMenu::CGUIDialogContextMenu(void)
@@ -414,14 +416,14 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
       {
         CFileItemPtr current(new CFileItem("thumb://Current", false));
         current->SetArt("thumb", share->m_strThumbnailImage);
-        current->SetLabel(g_localizeStrings.Get(20016));
+        current->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20016));
         items.Add(current);
       }
       else if (item->HasArt("thumb"))
       { // already have a thumb that the share doesn't know about - must be a local one, so we mayaswell reuse it.
         CFileItemPtr current(new CFileItem("thumb://Current", false));
         current->SetArt("thumb", item->GetArt("thumb"));
-        current->SetLabel(g_localizeStrings.Get(20016));
+        current->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20016));
         items.Add(current);
       }
       // see if there's a local thumb for this item
@@ -430,19 +432,21 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
       {
         CFileItemPtr local(new CFileItem("thumb://Local", false));
         local->SetArt("thumb", folderThumb);
-        local->SetLabel(g_localizeStrings.Get(20017));
+        local->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20017));
         items.Add(local);
       }
       // and add a "no thumb" entry as well
       CFileItemPtr nothumb(new CFileItem("thumb://None", false));
       nothumb->SetArt("icon", item->GetArt("icon"));
-      nothumb->SetLabel(g_localizeStrings.Get(20018));
+      nothumb->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20018));
       items.Add(nothumb);
 
       std::string strThumb;
       std::vector<CMediaSource> shares;
       CServiceBroker::GetMediaManager().GetLocalDrives(shares);
-      if (!CGUIDialogFileBrowser::ShowAndGetImage(items, shares, g_localizeStrings.Get(1030), strThumb))
+      if (!CGUIDialogFileBrowser::ShowAndGetImage(
+              items, shares, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1030),
+              strThumb))
         return false;
 
       if (strThumb == "thumb://Current")

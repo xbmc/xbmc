@@ -8,8 +8,10 @@
 
 #include "SubtitlesSettings.h"
 
+#include "ServiceBroker.h"
 #include "guilib/GUIFontManager.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/lib/Setting.h"
 #include "utils/FileUtils.h"
@@ -185,7 +187,9 @@ void CSubtitlesSettings::SettingOptionsSubtitleFontsFiller(const SettingConstPtr
     std::string familyName = UTILS::FONT::GetFontFamily(defaultFontPath);
     if (!familyName.empty())
     {
-      list.emplace_back(g_localizeStrings.Get(571) + " " + familyName, FONT_DEFAULT_FAMILYNAME);
+      list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(571) +
+                            " " + familyName,
+                        FONT_DEFAULT_FAMILYNAME);
     }
   }
   // Add additional fonts from the user fonts folder

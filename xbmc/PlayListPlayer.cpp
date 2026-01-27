@@ -24,7 +24,6 @@
 #include "filesystem/VideoDatabaseFile.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "interfaces/AnnouncementManager.h"
@@ -34,6 +33,8 @@
 #include "music/tags/MusicInfoTag.h"
 #include "playlists/PlayList.h"
 #include "playlists/PlayListFileItemClassify.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
@@ -198,7 +199,10 @@ bool CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
   if ((iSong < 0) || (iSong >= playlist.size()) || (playlist.GetPlayable() <= 0))
   {
     if(!bAutoPlay)
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(559), g_localizeStrings.Get(34201));
+      CGUIDialogKaiToast::QueueNotification(
+          CGUIDialogKaiToast::Info,
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(559),
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(34201));
 
     CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, static_cast<int>(m_iCurrentPlayList),
                     m_iCurrentSong);
@@ -231,7 +235,10 @@ bool CPlayListPlayer::PlayPrevious()
 
   if (iSong < 0 || playlist.size() <= 0)
   {
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(559), g_localizeStrings.Get(34202));
+    CGUIDialogKaiToast::QueueNotification(
+        CGUIDialogKaiToast::Info,
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(559),
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(34202));
     return false;
   }
 
@@ -565,10 +572,13 @@ void CPlayListPlayer::SetShuffle(Id playlistId, bool bYesNo, bool bNotify /* = f
 
     if (bNotify)
     {
-      std::string shuffleStr =
-          StringUtils::Format("{}: {}", g_localizeStrings.Get(191),
-                              g_localizeStrings.Get(bYesNo ? 593 : 591)); // Shuffle: All/Off
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(559),  shuffleStr);
+      std::string shuffleStr = StringUtils::Format(
+          "{}: {}", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(191),
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+              bYesNo ? 593 : 591)); // Shuffle: All/Off
+      CGUIDialogKaiToast::QueueNotification(
+          CGUIDialogKaiToast::Info,
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(559), shuffleStr);
     }
 
     // find the previous order value and fix the current song marker
@@ -623,7 +633,10 @@ void CPlayListPlayer::SetRepeat(Id playlistId, RepeatState state, bool bNotify /
       iLocalizedString = 596; // Repeat: One
     else
       iLocalizedString = 597; // Repeat: All
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(559), g_localizeStrings.Get(iLocalizedString));
+    CGUIDialogKaiToast::QueueNotification(
+        CGUIDialogKaiToast::Info,
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(559),
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(iLocalizedString));
   }
 
   m_repeatState[playlistId] = state;

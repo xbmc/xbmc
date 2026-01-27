@@ -23,7 +23,6 @@
 #include "filesystem/MusicDatabaseDirectory/QueryParams.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "imagefiles/ImageFileURL.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
@@ -39,6 +38,8 @@
 #include "music/tags/MusicInfoTag.h"
 #include "music/windows/GUIWindowMusicBase.h"
 #include "profiles/ProfileManager.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -735,7 +736,7 @@ void CGUIDialogMusicInfo::AddItemPathToFileBrowserSources(std::vector<CMediaSour
   if (!itemDir.empty() && CDirectory::Exists(itemDir))
   {
     CMediaSource itemSource;
-    itemSource.strName = g_localizeStrings.Get(36041);
+    itemSource.strName = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36041);
     itemSource.strPath = itemDir;
     sources.push_back(itemSource);
   }
@@ -744,7 +745,8 @@ void CGUIDialogMusicInfo::AddItemPathToFileBrowserSources(std::vector<CMediaSour
   if (!artistFolder.empty() && CDirectory::Exists(artistFolder))
   {
     CMediaSource itemSource;
-    itemSource.strName = "* " + g_localizeStrings.Get(20223);
+    itemSource.strName =
+        "* " + CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20223);
     itemSource.strPath = artistFolder;
     sources.push_back(itemSource);
   }
@@ -790,7 +792,7 @@ void CGUIDialogMusicInfo::OnGetArt()
     CFileItemPtr item(new CFileItem("thumb://Current", false));
     item->SetArt("thumb", m_item->GetArt(type));
     item->SetArt("icon", "DefaultPicture.png");
-    item->SetLabel(g_localizeStrings.Get(13512));
+    item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13512));
     items.Add(item);
   }
 
@@ -811,7 +813,7 @@ void CGUIDialogMusicInfo::OnGetArt()
     CFileItemPtr item(new CFileItem(strItemPath, false));
     item->SetArt("thumb", remotethumbs[i]);
     item->SetArt("icon", "DefaultPicture.png");
-    item->SetLabel(g_localizeStrings.Get(13513));
+    item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13513));
 
     items.Add(item);
   }
@@ -864,7 +866,8 @@ void CGUIDialogMusicInfo::OnGetArt()
   {
     CFileItemPtr item(new CFileItem("Local Art: " + localArt, false));
     item->SetArt("thumb", localArt);
-    item->SetLabel(g_localizeStrings.Get(13514)); // "Local art"
+    item->SetLabel(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13514)); // "Local art"
     items.Add(item);
   }
 
@@ -877,7 +880,7 @@ void CGUIDialogMusicInfo::OnGetArt()
       item->SetArt("icon", "DefaultArtist.png");
     else
       item->SetArt("icon", "DefaultAlbumCover.png");
-    item->SetLabel(g_localizeStrings.Get(13515));
+    item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13515));
     items.Add(item);
   }
 
@@ -909,8 +912,10 @@ void CGUIDialogMusicInfo::OnGetArt()
   std::vector<CMediaSource> sources(*CMediaSourceSettings::GetInstance().GetSources("music"));
   CGUIDialogMusicInfo::AddItemPathToFileBrowserSources(sources, *m_item);
   CServiceBroker::GetMediaManager().GetLocalDrives(sources);
-  if (CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(13511), result) &&
-    result != "thumb://Current")
+  if (CGUIDialogFileBrowser::ShowAndGetImage(
+          items, sources, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13511),
+          result) &&
+      result != "thumb://Current")
   {
     // User didn't choose the one they have.
     // Overwrite with the new art or clear it

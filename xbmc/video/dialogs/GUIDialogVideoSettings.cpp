@@ -16,8 +16,9 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "profiles/ProfileManager.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -532,7 +533,7 @@ void CGUIDialogVideoSettings::VideoStreamsOptionFiller(
 
   if (list.empty())
   {
-    list.emplace_back(g_localizeStrings.Get(231), -1);
+    list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(231), -1);
     current = -1;
   }
 }
@@ -542,23 +543,27 @@ void CGUIDialogVideoSettings::VideoOrientationFiller(
     std::vector<IntegerSettingOption>& list,
     int& /*current*/)
 {
-  list.emplace_back(g_localizeStrings.Get(687), 0);
-  list.emplace_back(g_localizeStrings.Get(35229), 90);
-  list.emplace_back(g_localizeStrings.Get(35230), 180);
-  list.emplace_back(g_localizeStrings.Get(35231), 270);
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(687), 0);
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35229), 90);
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35230), 180);
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35231), 270);
 }
 
 std::string CGUIDialogVideoSettings::FormatFlags(StreamFlags flags)
 {
   std::vector<std::string> localizedFlags;
   if (flags & StreamFlags::FLAG_DEFAULT)
-    localizedFlags.emplace_back(g_localizeStrings.Get(39105));
+    localizedFlags.emplace_back(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(39105));
   if (flags & StreamFlags::FLAG_FORCED)
-    localizedFlags.emplace_back(g_localizeStrings.Get(39106));
+    localizedFlags.emplace_back(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(39106));
   if (flags & StreamFlags::FLAG_HEARING_IMPAIRED)
-    localizedFlags.emplace_back(g_localizeStrings.Get(39107));
+    localizedFlags.emplace_back(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(39107));
   if (flags &  StreamFlags::FLAG_VISUAL_IMPAIRED)
-    localizedFlags.emplace_back(g_localizeStrings.Get(39108));
+    localizedFlags.emplace_back(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(39108));
 
   std::string formated = StringUtils::Join(localizedFlags, ", ");
 

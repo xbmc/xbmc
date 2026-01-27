@@ -25,7 +25,8 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIUtils.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/SkinSettings.h"
@@ -177,7 +178,8 @@ static int SetNumeric(const std::vector<std::string>& params)
 {
   int string = CSkinSettings::GetInstance().TranslateString(params[0]);
   std::string value = CSkinSettings::GetInstance().GetString(string);
-  if (CGUIDialogNumeric::ShowAndGetNumber(value, g_localizeStrings.Get(611)))
+  if (CGUIDialogNumeric::ShowAndGetNumber(
+          value, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(611)))
     CSkinSettings::GetInstance().SetString(string, value);
 
   return 0;
@@ -195,6 +197,9 @@ static int SetPath(const std::vector<std::string>& params)
   std::vector<CMediaSource> localShares;
   CServiceBroker::GetMediaManager().GetLocalDrives(localShares);
   CServiceBroker::GetMediaManager().GetNetworkLocations(localShares);
+
+  const auto& localizeStrings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
+
   if (params.size() > 1)
   {
     value = params[1];
@@ -203,13 +208,13 @@ static int SetPath(const std::vector<std::string>& params)
     if (CUtil::GetMatchingSource(value,localShares,bIsSource) < 0) // path is outside shares - add it as a separate one
     {
       CMediaSource share;
-      share.strName = g_localizeStrings.Get(13278);
+      share.strName = localizeStrings.Get(13278);
       share.strPath = value;
       localShares.push_back(share);
     }
   }
 
-  if (CGUIDialogFileBrowser::ShowAndGetDirectory(localShares, g_localizeStrings.Get(657), value))
+  if (CGUIDialogFileBrowser::ShowAndGetDirectory(localShares, localizeStrings.Get(657), value))
     CSkinSettings::GetInstance().SetString(string, value);
 
   CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
@@ -230,6 +235,8 @@ static int SetFile(const std::vector<std::string>& params)
   std::string value = CSkinSettings::GetInstance().GetString(string);
   std::vector<CMediaSource> localShares;
   CServiceBroker::GetMediaManager().GetLocalDrives(localShares);
+
+  const auto& localizeStrings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
 
   // Note. can only browse one addon type from here
   // if browsing for addons, required param[1] is addontype string, with optional param[2]
@@ -269,12 +276,13 @@ static int SetFile(const std::vector<std::string>& params)
       if (CUtil::GetMatchingSource(value,localShares,bIsSource) < 0) // path is outside shares - add it as a separate one
       {
         CMediaSource share;
-        share.strName = g_localizeStrings.Get(13278);
+        share.strName = localizeStrings.Get(13278);
         share.strPath = value;
         localShares.push_back(share);
       }
     }
-    if (CGUIDialogFileBrowser::ShowAndGetFile(localShares, strMask, g_localizeStrings.Get(1033), value))
+    if (CGUIDialogFileBrowser::ShowAndGetFile(localShares, strMask, localizeStrings.Get(1033),
+                                              value))
       CSkinSettings::GetInstance().SetString(string, value);
   }
 
@@ -292,6 +300,9 @@ static int SetImage(const std::vector<std::string>& params)
   std::string value = CSkinSettings::GetInstance().GetString(string);
   std::vector<CMediaSource> localShares;
   CServiceBroker::GetMediaManager().GetLocalDrives(localShares);
+
+  const auto& localizeStrings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
+
   if (params.size() > 1)
   {
     value = params[1];
@@ -300,12 +311,12 @@ static int SetImage(const std::vector<std::string>& params)
     if (CUtil::GetMatchingSource(value,localShares,bIsSource) < 0) // path is outside shares - add it as a separate one
     {
       CMediaSource share;
-      share.strName = g_localizeStrings.Get(13278);
+      share.strName = localizeStrings.Get(13278);
       share.strPath = value;
       localShares.push_back(share);
     }
   }
-  if (CGUIDialogFileBrowser::ShowAndGetImage(localShares, g_localizeStrings.Get(1030), value))
+  if (CGUIDialogFileBrowser::ShowAndGetImage(localShares, localizeStrings.Get(1030), value))
     CSkinSettings::GetInstance().SetString(string, value);
 
   return 0;
@@ -377,7 +388,9 @@ static int SetString(const std::vector<std::string>& params)
     string = CSkinSettings::GetInstance().TranslateString(params[0]);
 
   std::string value = CSkinSettings::GetInstance().GetString(string);
-  if (CGUIKeyboardFactory::ShowAndGetInput(value, CVariant{g_localizeStrings.Get(1029)}, true))
+  if (CGUIKeyboardFactory::ShowAndGetInput(
+          value, CVariant{CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1029)},
+          true))
     CSkinSettings::GetInstance().SetString(string, value);
 
   return 0;

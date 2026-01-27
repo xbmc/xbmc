@@ -14,7 +14,8 @@
 #include "dbwrappers/Database.h"
 #include "filesystem/File.h"
 #include "filesystem/SmartPlaylistDirectory.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/DatabaseUtils.h"
@@ -228,8 +229,9 @@ std::string CSmartPlaylistRule::TranslateGroup(Field group)
 std::string CSmartPlaylistRule::GetLocalizedField(int field)
 {
   for (const translateField& f : fields)
-    if (field == f.field) return g_localizeStrings.Get(f.localizedString);
-  return g_localizeStrings.Get(16018);
+    if (field == f.field)
+      return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(f.localizedString);
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(16018);
 }
 
 CDatabaseQueryRule::FieldType CSmartPlaylistRule::GetFieldType(int field) const
@@ -783,10 +785,11 @@ std::string CSmartPlaylistRule::GetLocalizedGroup(Field group)
   for (const auto & i : groups)
   {
     if (group == i.field)
-      return g_localizeStrings.Get(i.localizedString);
+      return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(i.localizedString);
   }
 
-  return g_localizeStrings.Get(groups[0].localizedString);
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+      groups[0].localizedString);
 }
 
 bool CSmartPlaylistRule::CanGroupMix(Field group)

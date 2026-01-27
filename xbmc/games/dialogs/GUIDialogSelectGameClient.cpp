@@ -16,8 +16,9 @@
 #include "games/addons/GameClient.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -36,8 +37,8 @@ std::string CGUIDialogSelectGameClient::ShowAndGetGameClient(const std::string& 
   std::string extension = URIUtils::GetExtension(gamePath);
 
   // "Select emulator for {0:s}"
-  CGUIDialogSelect* dialog =
-      GetDialog(StringUtils::Format(g_localizeStrings.Get(35258), extension));
+  CGUIDialogSelect* dialog = GetDialog(StringUtils::Format(
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35258), extension));
   if (dialog != nullptr)
   {
     // Turn the addons into items
@@ -46,7 +47,8 @@ std::string CGUIDialogSelectGameClient::ShowAndGetGameClient(const std::string& 
     for (const auto& candidate : candidates)
     {
       CFileItemPtr item(XFILE::CAddonsDirectory::FileItemFromAddon(candidate, candidate->ID()));
-      item->SetLabel2(g_localizeStrings.Get(35257)); // "Installed"
+      item->SetLabel2(
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35257)); // "Installed"
       items.Add(std::move(item));
     }
     for (const auto& addon : installable)

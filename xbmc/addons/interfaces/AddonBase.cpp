@@ -21,7 +21,8 @@
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/lib/Setting.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -255,10 +256,11 @@ char* Interface_Base::get_localized_string(const KODI_ADDON_BACKEND_HDL hdl, lon
   if (g_application.m_bStop)
     return nullptr;
 
-  std::string label =
-      g_localizeStrings.GetAddonString(addon->ID(), static_cast<uint32_t>(label_id));
+  std::string label = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().GetAddonString(
+      addon->ID(), static_cast<uint32_t>(label_id));
   if (label.empty())
-    label = g_localizeStrings.Get(static_cast<uint32_t>(label_id));
+    label = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+        static_cast<uint32_t>(label_id));
   char* buffer = strdup(label.c_str());
   return buffer;
 }

@@ -28,7 +28,6 @@
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "jobs/JobManager.h"
@@ -43,6 +42,8 @@
 #include "playlists/PlayListFactory.h"
 #include "playlists/PlayListFileItemClassify.h"
 #include "profiles/ProfileManager.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -512,7 +513,8 @@ void CGUIWindowMusicNav::UpdateButtons()
       StringUtils::StartsWith(m_vecItems->Get(m_vecItems->Size()-1)->GetPath(), "/-1/"))
       iItems--;
   }
-  std::string items = StringUtils::Format("{} {}", iItems, g_localizeStrings.Get(127));
+  std::string items = StringUtils::Format(
+      "{} {}", iItems, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(127));
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 
   // set the filter label
@@ -520,7 +522,7 @@ void CGUIWindowMusicNav::UpdateButtons()
 
   // "Playlists"
   if (m_vecItems->IsPath("special://musicplaylists/"))
-    strLabel = g_localizeStrings.Get(136);
+    strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(136);
   // "{Playlist Name}"
   else if (PLAYLIST::IsPlayList(*m_vecItems))
   {
@@ -941,7 +943,8 @@ void CGUIWindowMusicNav::AddSearchFolder()
     {
       // add search share
       CMediaSource share;
-      share.strName=g_localizeStrings.Get(137); // Search
+      share.strName =
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(137); // Search
       share.strPath = "musicsearch://";
       share.m_iDriveType = SourceType::LOCAL;
       sources.push_back(share);

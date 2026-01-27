@@ -12,9 +12,10 @@
 #include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "filesystem/Directory.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/TextureManager.h"
 #include "guilib/WindowIDs.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -57,7 +58,7 @@ std::vector<CMediaSource>& CGUIViewStateWindowPrograms::GetSources()
   {
     CMediaSource source;
     source.strPath = "androidapp://sources/apps/";
-    source.strName = g_localizeStrings.Get(20244);
+    source.strName = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20244);
     if (CServiceBroker::GetGUI()->GetTextureManager().HasTexture("DefaultProgram.png"))
       source.m_strThumbnailImage = "DefaultProgram.png";
     source.m_iDriveType = SourceType::LOCAL;

@@ -10,11 +10,12 @@
 
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogNumeric.h"
-#include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/settings/PVRSettings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -58,7 +59,8 @@ ParentalCheckResult CPVRGUIActionsParentalControl::CheckParentalPIN() const
     return ParentalCheckResult::SUCCESS;
 
   InputVerificationResult ret = CGUIDialogNumeric::ShowAndVerifyInput(
-      pinCode, g_localizeStrings.Get(19262), true); // "Parental control. Enter PIN:"
+      pinCode, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19262),
+      true); // "Parental control. Enter PIN:"
 
   if (ret == InputVerificationResult::SUCCESS)
   {

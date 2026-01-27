@@ -16,10 +16,11 @@
 #include "XBDateTime.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "music/MusicDatabase.h"
 #include "music/MusicDbUrl.h"
 #include "playlists/SmartPlayList.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/SettingUtils.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
@@ -375,8 +376,11 @@ void CGUIDialogMediaFilter::SetupView()
     localizedMediaId = 134;
 
   // set the heading
-  SET_CONTROL_LABEL(CONTROL_HEADING, StringUtils::Format(g_localizeStrings.Get(1275),
-                                                         g_localizeStrings.Get(localizedMediaId)));
+  SET_CONTROL_LABEL(
+      CONTROL_HEADING,
+      StringUtils::Format(
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1275),
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(localizedMediaId)));
 
   SET_CONTROL_LABEL(CONTROL_OKAY_BUTTON, 186);
   SET_CONTROL_LABEL(CONTROL_CLEAR_BUTTON, 192);
@@ -616,7 +620,8 @@ void CGUIDialogMediaFilter::UpdateControls()
     std::vector<std::string> items;
     int size = GetItems(itFilter.second, items, true);
 
-    std::string label = g_localizeStrings.Get(itFilter.second.label);
+    std::string label =
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(itFilter.second.label);
     BaseSettingControlPtr control = GetSettingControl(itFilter.second.setting->GetId());
     if (control == NULL)
       continue;
@@ -627,7 +632,8 @@ void CGUIDialogMediaFilter::UpdateControls()
     else
     {
       CONTROL_ENABLE(control->GetID());
-      label = StringUtils::Format(g_localizeStrings.Get(21470), label, size);
+      label = StringUtils::Format(
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21470), label, size);
     }
     SET_CONTROL_LABEL(control->GetID(), label);
   }

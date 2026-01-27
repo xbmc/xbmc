@@ -20,7 +20,6 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
@@ -35,6 +34,8 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/filesystem/PVRGUIDirectory.h"
 #include "pvr/guilib/PVRGUIActionsChannels.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -285,7 +286,8 @@ void CGUIWindowPVRBase::OnInitWindow()
   {
     CGUIWindow::
         OnInitWindow(); // do not call CGUIMediaWindow as it will do a Refresh which in no case works in this state (no channelgroup!)
-    ShowProgressDialog(g_localizeStrings.Get(19235), 0); // PVR manager is starting up
+    ShowProgressDialog(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19235),
+                       0); // PVR manager is starting up
   }
 }
 
@@ -436,7 +438,8 @@ bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog()
   CPVRGUIDirectory::GetChannelGroupsDirectory(m_bRadio, true, options);
 
   dialog->Reset();
-  dialog->SetHeading(CVariant{g_localizeStrings.Get(19146)});
+  dialog->SetHeading(
+      CVariant{CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19146)});
   dialog->SetMultiSelection(false);
   dialog->SetItems(options);
 
@@ -648,7 +651,8 @@ void CGUIWindowPVRBase::UpdateButtons()
   if (channelGroup)
   {
     SET_CONTROL_LABEL(CONTROL_BTNCHANNELGROUPS,
-                      g_localizeStrings.Get(19141) + ": " + channelGroup->GroupName());
+                      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19141) +
+                          ": " + channelGroup->GroupName());
   }
 
   m_channelGroupsSelector->SelectChannelGroup(channelGroup);
@@ -667,7 +671,8 @@ void CGUIWindowPVRBase::ShowProgressDialog(const std::string& strText, int iProg
       return;
     }
     m_progressHandle = loadingProgressDialog->GetHandle(
-        g_localizeStrings.Get(19235)); // PVR manager is starting up
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+            19235)); // PVR manager is starting up
   }
 
   m_progressHandle->SetPercentage(static_cast<float>(iProgress));

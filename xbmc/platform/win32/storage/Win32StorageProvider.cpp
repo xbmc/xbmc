@@ -9,8 +9,9 @@
 
 #include "ServiceBroker.h"
 #include "filesystem/SpecialProtocol.h"
-#include "guilib/LocalizeStrings.h"
 #include "jobs/JobManager.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -57,7 +58,7 @@ void CWin32StorageProvider::GetLocalDrives(std::vector<CMediaSource>& localDrive
     share.strPath = KODI::PLATFORM::WINDOWS::FromW(profilePath);
   else
     share.strPath = CSpecialProtocol::TranslatePath("special://home");
-  share.strName = g_localizeStrings.Get(21440);
+  share.strName = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21440);
   share.m_ignore = true;
   share.m_iDriveType = SourceType::LOCAL;
   localDrives.push_back(share);
@@ -157,9 +158,10 @@ std::vector<std::string > CWin32StorageProvider::GetDiskUsage()
       if( DRIVE_FIXED == GetDriveType( strDrive.c_str()  ) &&
         GetDiskFreeSpaceEx( ( strDrive.c_str() ), nullptr, &ULTotal, &ULTotalFree ) )
       {
-        strRet = KODI::PLATFORM::WINDOWS::FromW(
-            StringUtils::Format(L"{} {} MB {}", strDrive, int(ULTotalFree.QuadPart / (1024 * 1024)),
-                                KODI::PLATFORM::WINDOWS::ToW(g_localizeStrings.Get(160))));
+        strRet = KODI::PLATFORM::WINDOWS::FromW(StringUtils::Format(
+            L"{} {} MB {}", strDrive, int(ULTotalFree.QuadPart / (1024 * 1024)),
+            KODI::PLATFORM::WINDOWS::ToW(
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(160))));
         result.push_back(strRet);
       }
       iPos += (wcslen( pcBuffer.get() + iPos) + 1 );
@@ -260,13 +262,15 @@ void CWin32StorageProvider::GetDrivesByType(std::vector<CMediaSource>& localDriv
           switch(uDriveType)
           {
           case DRIVE_CDROM:
-            share.strName =
-                StringUtils::Format("{} ({})", share.strPath, g_localizeStrings.Get(218));
+            share.strName = StringUtils::Format(
+                "{} ({})", share.strPath,
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(218));
             break;
           case DRIVE_REMOVABLE:
             if(share.strName.empty())
-              share.strName =
-                  StringUtils::Format("{} ({})", g_localizeStrings.Get(437), share.strPath);
+              share.strName = StringUtils::Format(
+                  "{} ({})", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(437),
+                  share.strPath);
             break;
           default:
             if(share.strName.empty())
@@ -390,7 +394,7 @@ bool CDetectDisc::DoWork()
   if (CServiceBroker::GetMediaManager().IsAudio(share.strPath))
     share.strStatus = "Audio-CD";
   else if(share.strStatus == "")
-    share.strStatus = g_localizeStrings.Get(446);
+    share.strStatus = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(446);
   share.strName = share.strPath;
   share.m_ignore = true;
   share.m_iDriveType = SourceType::OPTICAL_DISC;

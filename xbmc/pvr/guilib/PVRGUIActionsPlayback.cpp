@@ -17,7 +17,6 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/PVRItem.h"
@@ -34,6 +33,8 @@
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/settings/PVRSettings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
@@ -246,12 +247,17 @@ bool CPVRGUIActionsPlayback::SwitchToChannel(const CFileItem& item) const
   else if (result == ParentalCheckResult::FAILED)
   {
     const std::string channelName =
-        channel ? channel->ChannelName() : g_localizeStrings.Get(19029); // Channel
-    const std::string msg = StringUtils::Format(g_localizeStrings.Get(19035),
-                                                channelName); // CHANNELNAME could not be played.
+        channel
+            ? channel->ChannelName()
+            : CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19029); // Channel
+    const std::string msg =
+        StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19035),
+                            channelName); // CHANNELNAME could not be played.
 
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(19166),
-                                          msg); // PVR information
+    CGUIDialogKaiToast::QueueNotification(
+        CGUIDialogKaiToast::Error,
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19166),
+        msg); // PVR information
   }
 
   return false;
@@ -331,10 +337,10 @@ bool CPVRGUIActionsPlayback::SwitchToChannel(PlaybackType type) const
 
   CGUIDialogKaiToast::QueueNotification(
       CGUIDialogKaiToast::Error,
-      g_localizeStrings.Get(19166), // PVR information
-      StringUtils::Format(
-          g_localizeStrings.Get(19035),
-          g_localizeStrings.Get(bIsRadio ? 19021 : 19020))); // Radio/TV could not be played.
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19166), // PVR information
+      StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19035),
+                          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                              bIsRadio ? 19021 : 19020))); // Radio/TV could not be played.
   return false;
 }
 

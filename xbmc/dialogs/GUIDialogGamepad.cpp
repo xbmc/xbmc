@@ -12,11 +12,12 @@
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "input/keyboard/KeyIDs.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/Digest.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
@@ -153,7 +154,8 @@ bool CGUIDialogGamepad::OnMessage(CGUIMessage& message)
     {
       m_bConfirmed = false;
       m_bCanceled = false;
-      m_cHideInputChar = g_localizeStrings.Get(12322).c_str()[0];
+      m_cHideInputChar =
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(12322).c_str()[0];
       CGUIDialog::OnMessage(message);
       return true;
     }
@@ -236,13 +238,17 @@ int CGUIDialogGamepad::ShowAndVerifyPassword(std::string& strPassword, const std
   if (0 < iRetries)
   {
     // Show a string telling user they have iRetries retries left
-    strLine2 = StringUtils::Format("{} {} {}", g_localizeStrings.Get(12342), iRetries,
-                                   g_localizeStrings.Get(12343));
+    strLine2 = StringUtils::Format(
+        "{} {} {}", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(12342),
+        iRetries, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(12343));
   }
 
   // make a copy of strPassword to prevent from overwriting it later
   std::string strPassTemp = strPassword;
-  if (ShowAndVerifyInput(strPassTemp, dlgHeading, g_localizeStrings.Get(12330), g_localizeStrings.Get(12331), strLine2, true, true))
+  if (ShowAndVerifyInput(strPassTemp, dlgHeading,
+                         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(12330),
+                         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(12331),
+                         strLine2, true, true))
   {
     // user entered correct password
     return 0;

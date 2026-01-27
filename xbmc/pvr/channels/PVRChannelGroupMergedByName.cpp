@@ -8,8 +8,10 @@
 
 #include "PVRChannelGroupMergedByName.h"
 
-#include "guilib/LocalizeStrings.h"
+#include "ServiceBroker.h"
 #include "pvr/channels/PVRChannelGroupMember.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 
 #include <unordered_map>
@@ -117,7 +119,8 @@ std::vector<std::shared_ptr<CPVRChannelGroup>> CPVRChannelGroupMergedByName::Cre
   const std::vector<std::string> names{GetGroupNames(allChannelGroups)};
   for (const auto& name : names)
   {
-    const std::string groupName{StringUtils::Format(g_localizeStrings.Get(859), name)};
+    const std::string groupName{StringUtils::Format(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(859), name)};
     const CPVRChannelsPath path{allChannelsGroup->IsRadio(), groupName, PVR_GROUP_CLIENT_ID_LOCAL};
     const std::shared_ptr<CPVRChannelGroup> mergedByNameGroup{
         std::make_shared<CPVRChannelGroupMergedByName>(path, allChannelsGroup)};

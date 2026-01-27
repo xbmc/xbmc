@@ -9,6 +9,7 @@
 #include "AppEnvironment.h"
 
 #include "ServiceBroker.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
 
@@ -16,6 +17,8 @@ void CAppEnvironment::SetUp(const std::shared_ptr<CAppParams>& appParams)
 {
   CServiceBroker::RegisterAppParams(appParams);
   CServiceBroker::CreateLogging();
+  CServiceBroker::RegisterResourcesComponent(std::make_unique<CResourcesComponent>());
+
   const auto settingsComponent = std::make_shared<CSettingsComponent>();
   settingsComponent->Initialize();
   CServiceBroker::RegisterSettingsComponent(settingsComponent);
@@ -28,5 +31,8 @@ void CAppEnvironment::TearDown()
   CServiceBroker::UnregisterSettingsComponent();
   CServiceBroker::GetLogging().Deinitialize();
   CServiceBroker::DestroyLogging();
+
+  CServiceBroker::UnregisterResourcesComponent();
+
   CServiceBroker::UnregisterAppParams();
 }

@@ -16,9 +16,10 @@
 #include "Util.h"
 #include "Variant.h"
 #include "addons/IAddon.h"
-#include "guilib/LocalizeStrings.h"
 #include "music/tags/MusicInfoTag.h"
 #include "pictures/PictureInfoTag.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -272,7 +273,8 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
   case 'M':
     if (movie && movie->m_iEpisode > 0)
       value = StringUtils::Format("{} {}", movie->m_iEpisode,
-                                  g_localizeStrings.Get(movie->m_iEpisode == 1 ? 20452 : 20453));
+                                  CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                                      movie->m_iEpisode == 1 ? 20452 : 20453));
     break;
   case 'E':
     if (movie && movie->m_iEpisode > 0)
@@ -324,9 +326,9 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
     break;
    case 'W': // Listeners
      if (!item->IsFolder() && music && music->GetListeners() != 0)
-       value =
-           StringUtils::Format("{} {}", music->GetListeners(),
-                               g_localizeStrings.Get(music->GetListeners() == 1 ? 20454 : 20455));
+       value = StringUtils::Format("{} {}", music->GetListeners(),
+                                   CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                                       music->GetListeners() == 1 ? 20454 : 20455));
      break;
   case 'a': // Date Added
     if (movie && movie->m_dateAdded.IsValid())

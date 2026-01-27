@@ -8,7 +8,9 @@
 
 #include "StreamUtils.h"
 
-#include "guilib/LocalizeStrings.h"
+#include "ServiceBroker.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 
 #include <array>
 
@@ -145,7 +147,8 @@ std::string StreamUtils::GetLayout(unsigned int channels)
   {
     layout = std::to_string(channels);
     layout.append(" ");
-    layout.append(g_localizeStrings.Get(10127)); // "channels"
+    layout.append(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(10127)); // "channels"
   }
 
   return layout;

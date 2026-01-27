@@ -13,7 +13,8 @@
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonType.h"
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/AudioDecoder.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -268,7 +269,8 @@ std::vector<AddonSupportEntry> CExtsMimeSupportList::GetSupportedExtsAndMimeType
     supportEntry.m_type = AddonSupportType::Extension;
     supportEntry.m_name = name;
     supportEntry.m_description =
-        g_localizeStrings.GetAddonString(addonId, supportValue.m_description);
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().GetAddonString(
+            addonId, supportValue.m_description);
     supportEntry.m_icon = supportValue.m_icon;
     list.emplace_back(std::move(supportEntry));
   }
@@ -278,7 +280,8 @@ std::vector<AddonSupportEntry> CExtsMimeSupportList::GetSupportedExtsAndMimeType
     supportEntry.m_type = AddonSupportType::Mimetype;
     supportEntry.m_name = name;
     supportEntry.m_description =
-        g_localizeStrings.GetAddonString(addonId, supportValue.m_description);
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().GetAddonString(
+            addonId, supportValue.m_description);
     supportEntry.m_icon = supportValue.m_icon;
     list.emplace_back(std::move(supportEntry));
   }

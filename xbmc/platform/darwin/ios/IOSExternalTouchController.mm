@@ -8,11 +8,13 @@
 
 #import "IOSExternalTouchController.h"
 
+#include "ServiceBroker.h"
 #include "Util.h"
 #import "XBMCController.h"
 #include "filesystem/SpecialProtocol.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/mouse/MouseStat.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 
 //dim the touchscreen after 15 secs without touch event
 const CGFloat touchScreenDimTimeoutSecs       = 15.0;
@@ -70,11 +72,12 @@ const CGFloat timeFadeSecs                    = 2.0;
     [descriptionLabel setLineBreakMode:(NSLineBreakMode)NSLineBreakByTruncatingTail];
 
     [descriptionLabel setNumberOfLines:5];
-    std::string descText    = g_localizeStrings.Get(34404) + "\n";
-    descText              += g_localizeStrings.Get(34405) + "\n";
-    descText              += g_localizeStrings.Get(34406) + "\n";
-    descText              += g_localizeStrings.Get(34407) + "\n";
-    descText              += g_localizeStrings.Get(34408) + "\n";
+    std::string descText =
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(34404) + "\n";
+    descText += CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(34405) + "\n";
+    descText += CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(34406) + "\n";
+    descText += CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(34407) + "\n";
+    descText += CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(34408) + "\n";
 
     NSString *stringFromUTFString = [[NSString alloc] initWithUTF8String:descText.c_str()];
 

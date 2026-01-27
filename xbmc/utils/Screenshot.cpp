@@ -12,9 +12,10 @@
 #include "URL.h"
 #include "Util.h"
 #include "filesystem/File.h"
-#include "guilib/LocalizeStrings.h"
 #include "jobs/JobManager.h"
 #include "pictures/Picture.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/SettingPath.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -92,7 +93,8 @@ void CScreenShot::TakeScreenshot()
   std::string strDir = screenshotSetting->GetValue();
   if (strDir.empty())
   {
-    if (!CGUIControlButtonSetting::GetPath(screenshotSetting, &g_localizeStrings))
+    if (!CGUIControlButtonSetting::GetPath(
+            screenshotSetting, &CServiceBroker::GetResourcesComponent().GetLocalizeStrings()))
       return;
 
     strDir = screenshotSetting->GetValue();

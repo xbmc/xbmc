@@ -11,7 +11,8 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "ServiceBroker.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "video/VideoDatabase.h"
@@ -49,7 +50,7 @@ std::string CDirectoryNodeOverview::GetLocalizedName() const
 {
   for (const Node& node : OverviewChildren)
     if (GetName() == node.id)
-      return g_localizeStrings.Get(node.label);
+      return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(node.label);
   return "";
 }
 
@@ -97,7 +98,8 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items) const
   for (unsigned int i = 0; i < vec.size(); ++i)
   {
     CFileItemPtr pItem(new CFileItem(path + vec[i].first + "/", true));
-    pItem->SetLabel(g_localizeStrings.Get(vec[i].second));
+    pItem->SetLabel(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(vec[i].second));
     pItem->SetLabelPreformatted(true);
     pItem->SetCanQueue(false);
     items.Add(pItem);

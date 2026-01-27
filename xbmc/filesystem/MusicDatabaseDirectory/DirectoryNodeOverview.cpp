@@ -10,8 +10,10 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
-#include "guilib/LocalizeStrings.h"
+#include "ServiceBroker.h"
 #include "music/MusicDatabase.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 
 namespace XFILE
@@ -57,7 +59,7 @@ std::string CDirectoryNodeOverview::GetLocalizedName() const
 {
   for (const Node& node : OverviewChildren)
     if (GetName() == node.id)
-      return g_localizeStrings.Get(node.label);
+      return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(node.label);
   return "";
 }
 
@@ -76,7 +78,9 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items) const
     if (i == 9 && !hasCompilations)
       continue;
 
-    CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(OverviewChildren[i].label)));
+    CFileItemPtr pItem(
+        new CFileItem(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+            OverviewChildren[i].label)));
     std::string strDir = StringUtils::Format("{}/", OverviewChildren[i].id);
     pItem->SetPath(BuildPath() + strDir);
     pItem->SetFolder(true);

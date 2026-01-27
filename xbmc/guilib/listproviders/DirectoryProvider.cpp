@@ -16,7 +16,6 @@
 #include "addons/RepositoryUpdater.h"
 #include "favourites/FavouritesService.h"
 #include "filesystem/Directory.h"
-#include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/IAnnouncer.h"
 #include "jobs/JobManager.h"
@@ -25,6 +24,8 @@
 #include "pictures/PictureThumbLoader.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRThumbLoader.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ExecString.h"
@@ -285,7 +286,8 @@ public:
         if (!m_target.empty())
         {
           CFileItem item(m_url, true);
-          item.SetLabel(g_localizeStrings.Get(22082)); // More...
+          item.SetLabel(
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(22082)); // More...
           item.SetArt("icon", "DefaultFolder.png");
           item.SetProperty("node.target", m_target);
           item.SetProperty("node.type", "target_folder"); // make item identifiable, e.g. by skins

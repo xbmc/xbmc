@@ -17,7 +17,6 @@
 #include "filesystem/IDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "jobs/JobManager.h"
 #include "messaging/helpers/DialogHelper.h"
@@ -32,6 +31,8 @@
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/settings/PVRSettings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "threads/IRunnable.h"
 #include "utils/StringUtils.h"
@@ -420,12 +421,15 @@ bool CPVRGUIActionsRecordings::ProcessDeleteAfterWatch(const CFileItem& item) co
     if (AsyncDeleteRecording().Execute(item))
     {
       auto* job{new CPVREventLogJob};
-      job->AddEvent(true, // display a toast, and log event
-                    EventLevel::Information, // info, no error
-                    g_localizeStrings.Get(860), // "Delete after watching"
-                    StringUtils::Format(g_localizeStrings.Get(866), // Recording deleted: <title>
-                                        item.GetPVRRecordingInfoTag()->GetTitle()),
-                    item.GetPVRRecordingInfoTag()->IconPath());
+      job->AddEvent(
+          true, // display a toast, and log event
+          EventLevel::Information, // info, no error
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+              860), // "Delete after watching"
+          StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                                  866), // Recording deleted: <title>
+                              item.GetPVRRecordingInfoTag()->GetTitle()),
+          item.GetPVRRecordingInfoTag()->IconPath());
       CServiceBroker::GetJobManager()->AddJob(job, nullptr);
     }
     else

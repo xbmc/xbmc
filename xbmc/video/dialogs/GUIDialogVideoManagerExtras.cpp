@@ -19,7 +19,8 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -119,7 +120,7 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
   std::string path;
   if (CGUIDialogFileBrowser::ShowAndGetFile(
           sources, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
-          g_localizeStrings.Get(40015), path))
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(40015), path))
   {
     const int dbId{m_videoAsset->GetVideoInfoTag()->m_iDbId};
     const VideoDbContentType itemType = m_videoAsset->GetVideoContentType();
@@ -149,7 +150,9 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
 
         CGUIDialogOK::ShowAndGetInput(
             CVariant{40015},
-            StringUtils::Format(g_localizeStrings.Get(msgid), newAsset.m_assetTypeName));
+            StringUtils::Format(
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(msgid),
+                newAsset.m_assetTypeName));
         return false;
       }
 
@@ -157,8 +160,10 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
 
       // The video is a version, ask for confirmation of the asset type change
       if (newAsset.m_assetType == VideoAssetType::VERSION &&
-          !CGUIDialogYesNo::ShowAndGetInput(CVariant{40015},
-                                            StringUtils::Format(g_localizeStrings.Get(40036))))
+          !CGUIDialogYesNo::ShowAndGetInput(
+              CVariant{40015},
+              StringUtils::Format(
+                  CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(40036))))
       {
         return false;
       }
@@ -186,8 +191,10 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
         }
 
         if (!CGUIDialogYesNo::ShowAndGetInput(
-                CVariant{40015}, StringUtils::Format(g_localizeStrings.Get(msgid),
-                                                     newAsset.m_assetTypeName, videoTitle)))
+                CVariant{40015},
+                StringUtils::Format(
+                    CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(msgid),
+                    newAsset.m_assetTypeName, videoTitle)))
         {
           return false;
         }

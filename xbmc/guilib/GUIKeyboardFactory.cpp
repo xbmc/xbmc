@@ -6,21 +6,22 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "ServiceBroker.h"
-#include "GUIComponent.h"
-#include "messaging/ApplicationMessenger.h"
-#include "LocalizeStrings.h"
 #include "GUIKeyboardFactory.h"
+
+#include "GUIComponent.h"
 #include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
+#include "ServiceBroker.h"
+#include "dialogs/GUIDialogKeyboardGeneric.h"
+#include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Digest.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-
-#include "dialogs/GUIDialogKeyboardGeneric.h"
 #if defined(TARGET_DARWIN_EMBEDDED)
 #include "dialogs/GUIDialogKeyboardTouch.h"
 
@@ -86,7 +87,8 @@ bool CGUIKeyboardFactory::ShowAndGetInput(std::string& aTextString,
   if (heading.isString())
     headingStr = heading.asString();
   else if (heading.isInteger() && heading.asInteger())
-    headingStr = g_localizeStrings.Get((uint32_t)heading.asInteger());
+    headingStr = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+        (uint32_t)heading.asInteger());
 
   bool useKodiKeyboard = true;
 #if defined(TARGET_DARWIN_EMBEDDED)
@@ -192,7 +194,8 @@ bool CGUIKeyboardFactory::ShowAndVerifyNewPassword(std::string& newPassword,
 // \return true if successful display and user input entry/re-entry. false if unsuccessful display, no user input, or canceled editing.
 bool CGUIKeyboardFactory::ShowAndVerifyNewPassword(std::string& newPassword, unsigned int autoCloseMs /* = 0 */)
 {
-  const std::string& heading = g_localizeStrings.Get(12340);
+  const std::string& heading =
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(12340);
   return ShowAndVerifyNewPassword(newPassword, heading, false, autoCloseMs);
 }
 
@@ -207,12 +210,12 @@ int CGUIKeyboardFactory::ShowAndVerifyPassword(std::string& strPassword, const s
   if (1 > iRetries && !strHeading.empty())
     strHeadingTemp = strHeading;
   else
-    strHeadingTemp =
-        StringUtils::Format("{} - {} {}", g_localizeStrings.Get(12326),
-                            CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
-                                CSettings::SETTING_MASTERLOCK_MAXRETRIES) -
-                                iRetries,
-                            g_localizeStrings.Get(12343));
+    strHeadingTemp = StringUtils::Format(
+        "{} - {} {}", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(12326),
+        CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+            CSettings::SETTING_MASTERLOCK_MAXRETRIES) -
+            iRetries,
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(12343));
 
   std::string strUserInput;
   //! @todo GUI Setting to enable disable this feature y/n?

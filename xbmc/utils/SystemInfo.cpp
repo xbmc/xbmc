@@ -18,11 +18,12 @@
 #include "ServiceBroker.h"
 #include "filesystem/CurlFile.h"
 #include "filesystem/File.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "network/Network.h"
 #include "platform/Filesystem.h"
 #include "rendering/RenderSystem.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/CPUInfo.h"
@@ -318,7 +319,8 @@ std::string CSysInfoJob::GetMACAddress()
   {
     mac = iface->GetMacAddress();
     if (mac.empty())
-      mac = g_localizeStrings.Get(10005); // Not available
+      mac =
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(10005); // Not available
   }
   return mac;
 }
@@ -355,16 +357,16 @@ std::string CSysInfoJob::GetGatewayAddress()
 
 std::string CSysInfoJob::GetNetworkLinkState()
 {
-  std::string linkStatus = g_localizeStrings.Get(151);
+  std::string linkStatus = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(151);
   linkStatus += " ";
   CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
   if (iface && iface->IsConnected())
   {
-    linkStatus += g_localizeStrings.Get(15207);
+    linkStatus += CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(15207);
   }
   else
   {
-    linkStatus += g_localizeStrings.Get(15208);
+    linkStatus += CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(15208);
   }
   return linkStatus;
 }
@@ -423,18 +425,23 @@ std::string CSysInfoJob::GetSystemUpTime(bool bTotalUptime)
   SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
   if (iDays > 0)
   {
-    strSystemUptime =
-        StringUtils::Format("{} {}, {} {}, {} {}", iDays, g_localizeStrings.Get(12393), iHours,
-                            g_localizeStrings.Get(12392), iMinutes, g_localizeStrings.Get(12391));
+    strSystemUptime = StringUtils::Format(
+        "{} {}, {} {}, {} {}", iDays,
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(12393), iHours,
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(12392), iMinutes,
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(12391));
   }
   else if (iDays == 0 && iHours >= 1 )
   {
-    strSystemUptime = StringUtils::Format("{} {}, {} {}", iHours, g_localizeStrings.Get(12392),
-                                          iMinutes, g_localizeStrings.Get(12391));
+    strSystemUptime = StringUtils::Format(
+        "{} {}, {} {}", iHours,
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(12392), iMinutes,
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(12391));
   }
   else if (iDays == 0 && iHours == 0 &&  iMinutes >= 0)
   {
-    strSystemUptime = StringUtils::Format("{} {}", iMinutes, g_localizeStrings.Get(12391));
+    strSystemUptime = StringUtils::Format(
+        "{} {}", iMinutes, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(12391));
   }
   return strSystemUptime;
 }
@@ -454,9 +461,13 @@ std::string CSysInfo::TranslateInfo(int info) const
   case NETWORK_GATEWAY_ADDRESS:
     return m_info.gatewayAddress;
   case NETWORK_DNS1_ADDRESS:
-    return !m_info.dnsServers.empty() ? m_info.dnsServers.at(0) : g_localizeStrings.Get(231);
+    return !m_info.dnsServers.empty()
+               ? m_info.dnsServers.at(0)
+               : CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(231);
   case NETWORK_DNS2_ADDRESS:
-    return m_info.dnsServers.size() > 1 ? m_info.dnsServers.at(1) : g_localizeStrings.Get(231);
+    return m_info.dnsServers.size() > 1
+               ? m_info.dnsServers.at(1)
+               : CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(231);
   case NETWORK_LINK_STATE:
     return m_info.networkLinkState;
   case SYSTEM_OS_VERSION_INFO:
@@ -469,9 +480,9 @@ std::string CSysInfo::TranslateInfo(int info) const
     return m_info.systemTotalUptime;
   case SYSTEM_INTERNET_STATE:
     if (m_info.internetState == CSysData::CONNECTED)
-      return g_localizeStrings.Get(13296);
+      return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13296);
     else
-      return g_localizeStrings.Get(13297);
+      return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13297);
   case SYSTEM_BATTERY_LEVEL:
     return m_info.batteryLevel;
   default:
@@ -1154,19 +1165,29 @@ std::string CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
       switch(drive)
       {
       case SYSTEM_FREE_SPACE:
-        strRet = StringUtils::Format("{} MB {}", totalFree, g_localizeStrings.Get(160));
+        strRet = StringUtils::Format(
+            "{} MB {}", totalFree,
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(160));
         break;
       case SYSTEM_USED_SPACE:
-        strRet = StringUtils::Format("{} MB {}", totalUsed, g_localizeStrings.Get(20162));
+        strRet = StringUtils::Format(
+            "{} MB {}", totalUsed,
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20162));
         break;
       case SYSTEM_TOTAL_SPACE:
-        strRet = StringUtils::Format("{} MB {}", total, g_localizeStrings.Get(20161));
+        strRet = StringUtils::Format(
+            "{} MB {}", total,
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20161));
         break;
       case SYSTEM_FREE_SPACE_PERCENT:
-        strRet = StringUtils::Format("{} % {}", percentFree, g_localizeStrings.Get(160));
+        strRet = StringUtils::Format(
+            "{} % {}", percentFree,
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(160));
         break;
       case SYSTEM_USED_SPACE_PERCENT:
-        strRet = StringUtils::Format("{} % {}", percentused, g_localizeStrings.Get(20162));
+        strRet = StringUtils::Format(
+            "{} % {}", percentused,
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20162));
         break;
       }
     }
@@ -1174,9 +1195,10 @@ std::string CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
   else
   {
     if (shortText)
-      strRet = g_localizeStrings.Get(10006); // N/A
+      strRet = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(10006); // N/A
     else
-      strRet = g_localizeStrings.Get(10005); // Not available
+      strRet =
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(10005); // Not available
   }
   return strRet;
 }
@@ -1536,7 +1558,7 @@ std::string CSysInfo::GetPrivacyPolicy()
       m_privacyPolicy = std::string(reinterpret_cast<char*>(buf.data()), buf.size());
     }
     else
-      m_privacyPolicy = g_localizeStrings.Get(19055);
+      m_privacyPolicy = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19055);
   }
   return m_privacyPolicy;
 }

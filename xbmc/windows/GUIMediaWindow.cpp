@@ -43,7 +43,6 @@
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
@@ -54,6 +53,8 @@
 #include "network/Network.h"
 #include "playlists/PlayList.h"
 #include "profiles/ProfileManager.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -584,13 +585,16 @@ void CGUIMediaWindow::UpdateButtons()
     else
       CONTROL_ENABLE(CONTROL_BTNSORTBY);
 
-    std::string sortLabel = StringUtils::Format(
-        g_localizeStrings.Get(550), g_localizeStrings.Get(m_guiState->GetSortMethodLabel()));
+    std::string sortLabel =
+        StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(550),
+                            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                                m_guiState->GetSortMethodLabel()));
     SET_CONTROL_LABEL(CONTROL_BTNSORTBY, sortLabel);
   }
 
   std::string items =
-      StringUtils::Format("{} {}", m_vecItems->GetObjectCount(), g_localizeStrings.Get(127));
+      StringUtils::Format("{} {}", m_vecItems->GetObjectCount(),
+                          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(127));
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 
   SET_CONTROL_LABEL2(CONTROL_BTN_FILTER, GetProperty("filter").asString());
@@ -881,7 +885,8 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
   if (showLabel && (m_vecItems->Size() == 0 || !m_guiState->DisableAddSourceButtons()) &&
       iWindow != WINDOW_MUSIC_PLAYLIST_EDITOR)
   {
-    const std::string& strLabel = g_localizeStrings.Get(showLabel);
+    const std::string& strLabel =
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(showLabel);
     CFileItemPtr pItem(new CFileItem(strLabel));
     pItem->SetPath("add");
     pItem->SetArt("icon", "DefaultAddSource.png");
@@ -1271,7 +1276,10 @@ bool CGUIMediaWindow::GoParentFolder()
   // No items to show so go another level up
   if (!m_vecItems->GetPath().empty() && (m_filter.IsEmpty() ? m_vecItems->Size() : m_unfilteredItems->Size()) <= 0)
   {
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(2080), g_localizeStrings.Get(2081));
+    CGUIDialogKaiToast::QueueNotification(
+        CGUIDialogKaiToast::Info,
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(2080),
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(2081));
     return GoParentFolder();
   }
   return true;

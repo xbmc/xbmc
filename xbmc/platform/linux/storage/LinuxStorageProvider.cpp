@@ -7,8 +7,11 @@
  */
 
 #include "LinuxStorageProvider.h"
-#include "guilib/LocalizeStrings.h"
+
+#include "ServiceBroker.h"
 #include "UDevProvider.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #ifdef HAS_DBUS
 #include "UDisksProvider.h"
 #include "UDisks2Provider.h"
@@ -59,12 +62,12 @@ void CLinuxStorageProvider::GetLocalDrives(std::vector<CMediaSource>& localDrive
   // Home directory
   CMediaSource share;
   share.strPath = getenv("HOME");
-  share.strName = g_localizeStrings.Get(21440);
+  share.strName = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21440);
   share.m_ignore = true;
   share.m_iDriveType = SourceType::LOCAL;
   localDrives.push_back(share);
   share.strPath = "/";
-  share.strName = g_localizeStrings.Get(21453);
+  share.strName = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21453);
   localDrives.push_back(share);
 
   m_instance->GetLocalDrives(localDrives);

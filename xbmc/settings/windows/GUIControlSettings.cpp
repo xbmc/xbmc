@@ -30,7 +30,8 @@
 #include "guilib/GUISettingsSliderControl.h"
 #include "guilib/GUISpinControlEx.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/SettingAddon.h"
 #include "settings/SettingControl.h"
@@ -61,7 +62,8 @@ std::string Localize(std::uint32_t code,
 
   if (!addonId.empty())
   {
-    const std::string label = g_localizeStrings.GetAddonString(addonId, code);
+    const std::string label =
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().GetAddonString(addonId, code);
     if (!label.empty())
       return label;
   }
@@ -1089,7 +1091,8 @@ void CGUIControlButtonSetting::Update(bool fromControl, bool updateDisplayOnly)
             }
 
             if (addonNames.empty())
-              strText = g_localizeStrings.Get(231); // None
+              strText =
+                  CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(231); // None
             else
               strText = StringUtils::Join(addonNames, ", ");
           }
@@ -1106,7 +1109,8 @@ void CGUIControlButtonSetting::Update(bool fromControl, bool updateDisplayOnly)
             {
               strText = strValue;
               if (strText.empty())
-                strText = g_localizeStrings.Get(231); // None
+                strText =
+                    CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(231); // None
             }
             else
               strText = strValue;

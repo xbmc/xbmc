@@ -32,9 +32,10 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/ActionIDs.h"
 #include "jobs/Job.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
@@ -170,7 +171,10 @@ bool CGUIDialogSubtitles::OnMessage(CGUIMessage& message)
     else if (iControl == CONTROL_MANUALSEARCH)
     {
       //manual search
-      if (CGUIKeyboardFactory::ShowAndGetInput(m_strManualSearch, CVariant{g_localizeStrings.Get(24121)}, true))
+      if (CGUIKeyboardFactory::ShowAndGetInput(
+              m_strManualSearch,
+              CVariant{CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24121)},
+              true))
       {
         Search(m_strManualSearch);
         return true;
@@ -436,10 +440,10 @@ void CGUIDialogSubtitles::OnSubtitleServiceContextMenu(int itemIdx)
   CContextButtons buttons;
   // Subtitle addon settings
   buttons.Add(static_cast<int>(SUBTITLE_SERVICE_CONTEXT_BUTTONS::ADDON_SETTINGS),
-              g_localizeStrings.Get(21417));
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21417));
   // Disable addon
   buttons.Add(static_cast<int>(SUBTITLE_SERVICE_CONTEXT_BUTTONS::ADDON_DISABLE),
-              g_localizeStrings.Get(24021));
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24021));
 
   auto idx = static_cast<SUBTITLE_SERVICE_CONTEXT_BUTTONS>(CGUIDialogContextMenu::Show(buttons));
   switch (idx)
@@ -491,19 +495,21 @@ void CGUIDialogSubtitles::UpdateStatus(STATUS status)
   switch (status)
   {
     case NO_SERVICES:
-      label = g_localizeStrings.Get(24114);
+      label = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24114);
       break;
     case SEARCHING:
-      label = g_localizeStrings.Get(24107);
+      label = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24107);
       break;
     case SEARCH_COMPLETE:
       if (!m_subtitles->IsEmpty())
-        label = StringUtils::Format(g_localizeStrings.Get(24108), m_subtitles->Size());
+        label = StringUtils::Format(
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24108),
+            m_subtitles->Size());
       else
-        label = g_localizeStrings.Get(24109);
+        label = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24109);
       break;
     case DOWNLOADING:
-      label = g_localizeStrings.Get(24110);
+      label = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24110);
       break;
     default:
       break;
@@ -534,7 +540,9 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
   {
     CFileItemPtr service = GetService();
     if (service)
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, service->GetLabel(), g_localizeStrings.Get(24113));
+      CGUIDialogKaiToast::QueueNotification(
+          CGUIDialogKaiToast::Error, service->GetLabel(),
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24113));
     UpdateStatus(SEARCH_COMPLETE);
     return;
   }
@@ -618,7 +626,9 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
 
     if (!CFile::Copy(strUrl, strDownloadFile))
     {
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, strSubName, g_localizeStrings.Get(24113));
+      CGUIDialogKaiToast::QueueNotification(
+          CGUIDialogKaiToast::Error, strSubName,
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24113));
       CLog::Log(LOGERROR, "{} - Saving of subtitle {} to {} failed", __FUNCTION__, strUrl,
                 strDownloadFile);
     }

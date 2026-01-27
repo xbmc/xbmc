@@ -27,12 +27,13 @@
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindow.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/devices/Peripheral.h"
 #include "peripherals/dialogs/GUIDialogPeripheralSettings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/log.h"
 #include "view/GUIViewControl.h"
 #include "view/ViewState.h"
@@ -160,8 +161,9 @@ void CGUIAgentControllerList::Refresh()
   // Add a "No controllers connected" item if no agents are available
   if (m_vecItems->IsEmpty())
   {
-    CFileItemPtr item =
-        std::make_shared<CFileItem>(g_localizeStrings.Get(35173)); // "No controllers connected"
+    CFileItemPtr item = std::make_shared<CFileItem>(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+            35173)); // "No controllers connected"
     m_vecItems->Add(std::move(item));
   }
 

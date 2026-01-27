@@ -10,9 +10,10 @@
 
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "guilib/LocalizeStrings.h"
 #include "rendering/dx/DeviceResources.h"
 #include "rendering/dx/RenderContext.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -133,7 +134,10 @@ void CRendererHQ::UpdateVideoFilters()
         // we are in a big trouble
         m_scalerShader.reset();
         m_bUseHQScaler = false;
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(34400), g_localizeStrings.Get(34401));
+        CGUIDialogKaiToast::QueueNotification(
+            CGUIDialogKaiToast::Error,
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(34400),
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(34401));
       }
     }
   }

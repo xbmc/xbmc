@@ -12,7 +12,8 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/URIUtils.h"
 
 #include <mutex>
@@ -191,20 +192,21 @@ void CMediaManager::GetNetworkLocations(std::vector<CMediaSource>& locations, bo
     share.m_ignore = true;
 #ifdef HAS_FILESYSTEM_SMB
     share.strPath = "smb://";
-    share.strName = g_localizeStrings.Get(20171);
+    share.strName = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20171);
     locations.push_back(share);
 #endif
 
 #ifdef HAS_FILESYSTEM_NFS
     share.strPath = "nfs://";
-    share.strName = g_localizeStrings.Get(20259);
+    share.strName = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20259);
     locations.push_back(share);
 #endif// HAS_FILESYSTEM_NFS
 
 #ifdef HAS_UPNP
     if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_SERVICES_UPNP))
     {
-      const std::string& strDevices = g_localizeStrings.Get(33040); //"% Devices"
+      const std::string& strDevices =
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(33040); //"% Devices"
       share.strPath = "upnp://";
       share.strName = StringUtils::Format(strDevices, "UPnP"); //"UPnP Devices"
       locations.push_back(share);
@@ -213,7 +215,7 @@ void CMediaManager::GetNetworkLocations(std::vector<CMediaSource>& locations, bo
 
 #ifdef HAS_ZEROCONF
     share.strPath = "zeroconf://";
-    share.strName = g_localizeStrings.Get(20262);
+    share.strName = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20262);
     locations.push_back(share);
 #endif
 
@@ -225,9 +227,12 @@ void CMediaManager::GetNetworkLocations(std::vector<CMediaSource>& locations, bo
         if (!info.type.empty() && info.supportBrowsing)
         {
           share.strPath = info.type + "://";
-          share.strName = g_localizeStrings.GetAddonString(addon->ID(), info.label);
+          share.strName =
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().GetAddonString(
+                  addon->ID(), info.label);
           if (share.strName.empty())
-            share.strName = g_localizeStrings.Get(info.label);
+            share.strName =
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(info.label);
           locations.push_back(share);
         }
       }
@@ -301,27 +306,33 @@ CMediaSource CMediaManager::GetRootAddonTypeSource(const std::string& type) cons
 {
   if (type == "programs" || type == "myprograms")
   {
-    return ComputeRootAddonTypeSource("executable", g_localizeStrings.Get(1043),
-                                      "DefaultAddonProgram.png");
+    return ComputeRootAddonTypeSource(
+        "executable", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1043),
+        "DefaultAddonProgram.png");
   }
   else if (type == "video" || type == "videos")
   {
-    return ComputeRootAddonTypeSource("video", g_localizeStrings.Get(1037),
-                                      "DefaultAddonVideo.png");
+    return ComputeRootAddonTypeSource(
+        "video", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1037),
+        "DefaultAddonVideo.png");
   }
   else if (type == "music")
   {
-    return ComputeRootAddonTypeSource("audio", g_localizeStrings.Get(1038),
-                                      "DefaultAddonMusic.png");
+    return ComputeRootAddonTypeSource(
+        "audio", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1038),
+        "DefaultAddonMusic.png");
   }
   else if (type == "pictures")
   {
-    return ComputeRootAddonTypeSource("image", g_localizeStrings.Get(1039),
-                                      "DefaultAddonPicture.png");
+    return ComputeRootAddonTypeSource(
+        "image", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1039),
+        "DefaultAddonPicture.png");
   }
   else if (type == "games")
   {
-    return ComputeRootAddonTypeSource("game", g_localizeStrings.Get(35049), "DefaultAddonGame.png");
+    return ComputeRootAddonTypeSource(
+        "game", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35049),
+        "DefaultAddonGame.png");
   }
   else
   {
@@ -795,22 +806,27 @@ void CMediaManager::OnStorageAdded(const MEDIA_DETECT::STORAGE::StorageDevice& d
   }
   else
   {
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13021),
-                                          device.label, TOAST_DISPLAY_TIME, false);
+    CGUIDialogKaiToast::QueueNotification(
+        CGUIDialogKaiToast::Info,
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13021), device.label,
+        TOAST_DISPLAY_TIME, false);
   }
 #endif
 }
 
 void CMediaManager::OnStorageSafelyRemoved(const MEDIA_DETECT::STORAGE::StorageDevice& device)
 {
-  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13023),
-                                        device.label, TOAST_DISPLAY_TIME, false);
+  CGUIDialogKaiToast::QueueNotification(
+      CGUIDialogKaiToast::Info,
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13023), device.label,
+      TOAST_DISPLAY_TIME, false);
 }
 
 void CMediaManager::OnStorageUnsafelyRemoved(const MEDIA_DETECT::STORAGE::StorageDevice& device)
 {
-  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13022),
-                                        device.label);
+  CGUIDialogKaiToast::QueueNotification(
+      CGUIDialogKaiToast::Warning,
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13022), device.label);
 }
 
 UTILS::DISCS::DiscInfo CMediaManager::GetDiscInfo(const std::string& mediaPath)
@@ -864,8 +880,8 @@ bool CMediaManager::playStubFile(const CFileItem& item)
   std::string strLine1, strLine2;
 
   // use generic message by default
-  strLine1 = g_localizeStrings.Get(435).c_str();
-  strLine2 = g_localizeStrings.Get(436).c_str();
+  strLine1 = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(435).c_str();
+  strLine2 = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(436).c_str();
 
   CXBMCTinyXML2 discStubXML;
   if (discStubXML.LoadFile(item.GetPath()))
