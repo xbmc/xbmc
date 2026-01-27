@@ -68,7 +68,13 @@ std::string temp_directory_path(std::error_code &ec)
   if (result)
     return URIUtils::AppendSlash(result);
 
+#if defined(TARGET_FREEBSD)
+  // Use /var/tmp on FreeBSD as /tmp can be created in RAM
+  // This can be limiting for decompressing archives with large compressed files
+  return "/var/tmp/";
+#else
   return "/tmp/";
+#endif
 }
 
 std::string create_temp_directory(std::error_code &ec)
