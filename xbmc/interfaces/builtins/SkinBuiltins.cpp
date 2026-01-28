@@ -23,6 +23,7 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
+#include "guilib/GUIUtils.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/Settings.h"
@@ -112,14 +113,14 @@ static int SelectBool(const std::vector<std::string>& params)
 
   CGUIDialogSelect* pDlgSelect = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   pDlgSelect->Reset();
-  pDlgSelect->SetHeading(CVariant{g_localizeStrings.Get(atoi(params[0].c_str()))});
+  pDlgSelect->SetHeading(CVariant{CGUIUtils::GetLocalizedString(std::atoi(params[0].c_str()))});
 
   for (unsigned int i = 1 ; i < params.size() ; i++)
   {
     if (params[i].find('|') != std::string::npos)
     {
       std::vector<std::string> values = StringUtils::Split(params[i], '|');
-      std::string label = g_localizeStrings.Get(atoi(values[0].c_str()));
+      std::string label = CGUIUtils::GetLocalizedString(std::atoi(values[0].c_str()));
       settings.emplace_back(label, values[1].c_str());
       pDlgSelect->Add(label);
     }
@@ -331,7 +332,8 @@ static int SetColor(const std::vector<std::string>& params)
       CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogColorPicker>(
           WINDOW_DIALOG_COLOR_PICKER);
   pDlgColorPicker->Reset();
-  pDlgColorPicker->SetHeading(CVariant{g_localizeStrings.Get(atoi(params[1].c_str()))});
+  pDlgColorPicker->SetHeading(
+      CVariant{CGUIUtils::GetLocalizedString(std::atoi(params[1].c_str()))});
 
   if (params.size() > 3)
   {

@@ -17,6 +17,7 @@
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIComponent.h"
+#include "guilib/GUIUtils.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
@@ -531,7 +532,7 @@ void GetFontsetsFromFile(const std::string& fontsetFilePath,
         if (idAttr)
         {
           if (idLocAttr)
-            list.emplace_back(g_localizeStrings.Get(atoi(idLocAttr)), idAttr);
+            list.emplace_back(CGUIUtils::GetLocalizedString(std::atoi(idLocAttr)), idAttr);
           else
             list.emplace_back(idAttr, idAttr);
 
@@ -628,7 +629,7 @@ void CSkinInfo::SettingOptionsStartupWindowsFiller(const SettingConstPtr& settin
   {
     std::string windowName = window.m_name;
     if (StringUtils::IsNaturalNumber(windowName))
-      windowName = g_localizeStrings.Get(std::atoi(windowName.c_str()));
+      windowName = CGUIUtils::GetLocalizedString(std::atoi(windowName.c_str()));
     const int windowID = window.m_id;
 
     list.emplace_back(windowName, windowID);

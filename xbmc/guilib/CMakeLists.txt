@@ -55,6 +55,7 @@ set(SOURCES DDSImage.cpp
             GUITexture.cpp
             GUITextureCallbackManager.cpp
             GUIToggleButtonControl.cpp
+            GUIUtils.cpp
             GUIVideoControl.cpp
             GUIVisualisationControl.cpp
             GUIWindow.cpp
@@ -136,6 +137,7 @@ set(HEADERS AspectRatio.h
             GUITexture.h
             GUITextureCallbackManager.h
             GUIToggleButtonControl.h
+            GUIUtils.h
             GUIVideoControl.h
             GUIVisualisationControl.h
             GUIWindow.h
