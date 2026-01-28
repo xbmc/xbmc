@@ -346,7 +346,8 @@ CShaderGL::UniformFrameInputs CShaderGL::GetFrameInputData(GLuint texture) const
   const UniformFrameInputs frameInput = {
       {m_inputSize}, // input_size
       {m_inputTextureSize}, // texture_size
-      texture // texture
+      texture, // texture
+      m_passAlias // alias
   };
   return frameInput;
 }
@@ -391,7 +392,7 @@ void CShaderGL::SetShaderParameters(CShaderTextureGL& sourceTexture)
   for (const std::shared_ptr<IShaderLut>& lut : m_luts)
   {
     auto* texture = static_cast<CGLTexture*>(lut->GetTexture());
-    if (texture)
+    if (texture != nullptr)
     {
       const GLint paramLoc = glGetUniformLocation(m_shaderProgram, lut->GetID().c_str());
       glUniform1i(paramLoc, textureUnit);
@@ -404,29 +405,48 @@ void CShaderGL::SetShaderParameters(CShaderTextureGL& sourceTexture)
   for (unsigned int i = 0; i < m_passIdx + 1; ++i)
   {
     GLint paramLoc;
+
     std::string paramPass = i ? "Pass" + std::to_string(i) : "Orig";
-    std::string paramPassPrev = "PassPrev" + std::to_string(m_passIdx + 1 - i);
-
-    paramLoc = glGetUniformLocation(m_shaderProgram, (paramPass + "Texture").c_str());
-    glUniform1i(paramLoc, textureUnit);
-    paramLoc = glGetUniformLocation(m_shaderProgram, (paramPassPrev + "Texture").c_str());
-    glUniform1i(paramLoc, textureUnit);
-    glActiveTexture(GL_TEXTURE0 + textureUnit);
-    glBindTexture(GL_TEXTURE_2D, m_passesUniformFrameInputs[i].texture);
-    textureUnit++;
-
-    paramLoc = glGetUniformLocation(m_shaderProgram, (paramPass + "TextureSize").c_str());
-    glUniform2f(paramLoc, m_passesUniformFrameInputs[i].texture_size.x,
-                m_passesUniformFrameInputs[i].texture_size.y);
-    paramLoc = glGetUniformLocation(m_shaderProgram, (paramPassPrev + "TextureSize").c_str());
-    glUniform2f(paramLoc, m_passesUniformFrameInputs[i].texture_size.x,
-                m_passesUniformFrameInputs[i].texture_size.y);
-
     paramLoc = glGetUniformLocation(m_shaderProgram, (paramPass + "InputSize").c_str());
     glUniform2f(paramLoc, m_passesUniformFrameInputs[i].input_size.x,
                 m_passesUniformFrameInputs[i].input_size.y);
-    paramLoc = glGetUniformLocation(m_shaderProgram, (paramPassPrev + "InputSize").c_str());
-    glUniform2f(paramLoc, m_passesUniformFrameInputs[i].input_size.x,
-                m_passesUniformFrameInputs[i].input_size.y);
+    paramLoc = glGetUniformLocation(m_shaderProgram, (paramPass + "TextureSize").c_str());
+    glUniform2f(paramLoc, m_passesUniformFrameInputs[i].texture_size.x,
+                m_passesUniformFrameInputs[i].texture_size.y);
+    paramLoc = glGetUniformLocation(m_shaderProgram, (paramPass + "Texture").c_str());
+    glUniform1i(paramLoc, textureUnit);
+
+    if (i < m_passIdx)
+    {
+      std::string paramPassPrev = "PassPrev" + std::to_string(m_passIdx + 1 - i);
+      paramLoc = glGetUniformLocation(m_shaderProgram, (paramPassPrev + "InputSize").c_str());
+      glUniform2f(paramLoc, m_passesUniformFrameInputs[i].input_size.x,
+                  m_passesUniformFrameInputs[i].input_size.y);
+      paramLoc = glGetUniformLocation(m_shaderProgram, (paramPassPrev + "TextureSize").c_str());
+      glUniform2f(paramLoc, m_passesUniformFrameInputs[i].texture_size.x,
+                  m_passesUniformFrameInputs[i].texture_size.y);
+      paramLoc = glGetUniformLocation(m_shaderProgram, (paramPassPrev + "Texture").c_str());
+      glUniform1i(paramLoc, textureUnit);
+
+      if (i > 0)
+      {
+        std::string paramAlias = m_passesUniformFrameInputs[i - 1].alias;
+        if (!paramAlias.empty())
+        {
+          paramLoc = glGetUniformLocation(m_shaderProgram, (paramAlias + "InputSize").c_str());
+          glUniform2f(paramLoc, m_passesUniformFrameInputs[i].input_size.x,
+                      m_passesUniformFrameInputs[i].input_size.y);
+          paramLoc = glGetUniformLocation(m_shaderProgram, (paramAlias + "TextureSize").c_str());
+          glUniform2f(paramLoc, m_passesUniformFrameInputs[i].texture_size.x,
+                      m_passesUniformFrameInputs[i].texture_size.y);
+          paramLoc = glGetUniformLocation(m_shaderProgram, (paramAlias + "Texture").c_str());
+          glUniform1i(paramLoc, textureUnit);
+        }
+      }
+    }
+
+    glActiveTexture(GL_TEXTURE0 + textureUnit);
+    glBindTexture(GL_TEXTURE_2D, m_passesUniformFrameInputs[i].texture);
+    textureUnit++;
   }
 }

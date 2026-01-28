@@ -68,6 +68,7 @@ private:
     float2 input_size;
     float2 texture_size;
     GLuint texture;
+    std::string alias;
   };
 
   void UpdateUniformInputs(IShaderTexture& sourceTexture,
