@@ -120,9 +120,10 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
     const RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(i);
 
     // allow resolutions that are exact and have the correct refresh rate
-    // allow macroblock alignment / padding errors (e.g. 1080 mod16 == 8)
+    // allow hardware decoder surface padding due to codec block alignment and GPU requirements
+    // note: height has greater tolerance due to 32/64px boundaries e.g. 1080→1088 or 2160→2176
     if (((height == info.iScreenHeight && width <= info.iScreenWidth + 8) ||
-         (width == info.iScreenWidth && height <= info.iScreenHeight + 8)) &&
+         (width == info.iScreenWidth && height <= info.iScreenHeight + 32)) &&
         (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (curr.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
         MathUtils::FloatEquals(info.fRefreshRate, fps, 0.01f))
     {
@@ -154,9 +155,10 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
       const RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(i);
 
       // allow resolutions that are exact and have double the refresh rate
-      // allow macroblock alignment / padding errors (e.g. 1080 mod16 == 8)
+      // allow hardware decoder surface padding due to codec block alignment and GPU requirements
+      // note: height has greater tolerance due to 32/64px boundaries e.g. 1080→1088 or 2160→2176
       if (((height == info.iScreenHeight && width <= info.iScreenWidth + 8) ||
-           (width == info.iScreenWidth && height <= info.iScreenHeight + 8)) &&
+           (width == info.iScreenWidth && height <= info.iScreenHeight + 32)) &&
           (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (curr.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
           MathUtils::FloatEquals(info.fRefreshRate, fps * 2, 0.01f))
       {
@@ -193,9 +195,10 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
       const RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(i);
 
       // allow resolutions that are exact and have 2.5 times the refresh rate
-      // allow macroblock alignment / padding errors (e.g. 1080 mod16 == 8)
+      // allow hardware decoder surface padding due to codec block alignment and GPU requirements
+      // note: height has greater tolerance due to 32/64px boundaries e.g. 1080→1088 or 2160→2176
       if (((height == info.iScreenHeight && width <= info.iScreenWidth + 8) ||
-           (width == info.iScreenWidth && height <= info.iScreenHeight + 8)) &&
+           (width == info.iScreenWidth && height <= info.iScreenHeight + 32)) &&
           (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (curr.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
           MathUtils::FloatEquals(info.fRefreshRate, fps * 2.5f, 0.01f))
       {
