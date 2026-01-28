@@ -12,6 +12,8 @@
 #include "GUIImage.h"
 #include "TextureManager.h"
 
+#include <optional>
+
 class CGUIBorderedImage : public CGUIImage
 {
 public:
@@ -30,6 +32,7 @@ public:
 protected:
   std::unique_ptr<CGUITexture> m_borderImage;
   CRect m_borderSize;
+  std::optional<CRect> m_lastBorderRect;
 
 private:
   CGUIBorderedImage(const CGUIBorderedImage& right);
