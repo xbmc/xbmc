@@ -41,6 +41,7 @@
 #include "GUISpinControlEx.h"
 #include "GUITextBox.h"
 #include "GUIToggleButtonControl.h"
+#include "GUIUtils.h"
 #include "GUIVideoControl.h"
 #include "GUIVisualisationControl.h"
 #include "GUIWrappingListContainer.h"
@@ -647,20 +648,6 @@ void CGUIControlFactory::GetInfoLabel(const TiXmlNode* pControlNode,
     infoLabel = labels[0];
 }
 
-namespace
-{
-std::string GetLocalizedString(uint32_t id)
-{
-  auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
-  if (skin && ADDON::IsSkinStringId(id))
-  {
-    return g_localizeStrings.GetAddonString(skin->ID(), id);
-  }
-
-  return g_localizeStrings.Get(id);
-}
-} // namespace
-
 bool CGUIControlFactory::GetInfoLabelFromElement(const TiXmlElement* element,
                                                  GUIINFO::CGUIInfoLabel& infoLabel,
                                                  int parentID)
@@ -674,10 +661,10 @@ bool CGUIControlFactory::GetInfoLabelFromElement(const TiXmlElement* element,
 
   std::string fallback = XMLUtils::GetAttribute(element, "fallback");
   if (StringUtils::IsNaturalNumber(label))
-    label = GetLocalizedString(std::atoi(label.c_str()));
+    label = CGUIUtils::GetLocalizedString(std::atoi(label.c_str()));
 
   if (StringUtils::IsNaturalNumber(fallback))
-    fallback = GetLocalizedString(std::atoi(fallback.c_str()));
+    fallback = CGUIUtils::GetLocalizedString(std::atoi(fallback.c_str()));
   else
     g_charsetConverter.unknownToUTF8(fallback);
   infoLabel.SetLabel(label, fallback, parentID);
@@ -733,7 +720,7 @@ std::string CGUIControlFactory::FilterLabel(const std::string& label)
 {
   std::string viewLabel = label;
   if (StringUtils::IsNaturalNumber(viewLabel))
-    viewLabel = g_localizeStrings.Get(atoi(label.c_str()));
+    viewLabel = CGUIUtils::GetLocalizedString(std::atoi(label.c_str()));
   else
     g_charsetConverter.unknownToUTF8(viewLabel);
   return viewLabel;
@@ -746,7 +733,7 @@ bool CGUIControlFactory::GetString(const TiXmlNode* pRootNode,
   if (!XMLUtils::GetString(pRootNode, strTag, text))
     return false;
   if (StringUtils::IsNaturalNumber(text))
-    text = g_localizeStrings.Get(atoi(text.c_str()));
+    text = CGUIUtils::GetLocalizedString(std::atoi(text.c_str()));
   return true;
 }
 
