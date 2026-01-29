@@ -58,10 +58,16 @@ CFileExtensionProvider::CFileExtensionProvider(ADDON::CAddonMgr& addonManager)
                                         SetAddonExtensions();
                                       }
                                     });
+
+  m_callbackId =
+      m_advancedSettings->RegisterSettingsLoadedCallback([this]() { OnAdvancedSettingsLoaded(); });
 }
 
 CFileExtensionProvider::~CFileExtensionProvider()
 {
+  if (m_callbackId.has_value())
+    m_advancedSettings->UnregisterSettingsLoadedCallback(m_callbackId.value());
+
   m_addonManager.Events().Unsubscribe(this);
 
   m_advancedSettings.reset();
@@ -70,63 +76,87 @@ CFileExtensionProvider::~CFileExtensionProvider()
 
 const std::string& CFileExtensionProvider::GetDiscStubExtensions() const
 {
-  return m_advancedSettings->m_discStubExtensions;
+  std::lock_guard lock{m_critSection};
+
+  if (!m_discStubExtensions)
+    m_discStubExtensions = m_advancedSettings->m_discStubExtensions;
+
+  return m_discStubExtensions.value();
 }
 
 std::string CFileExtensionProvider::GetMusicExtensions() const
 {
   std::lock_guard lock{m_critSection};
 
-  std::string extensions(m_advancedSettings->m_musicExtensions);
-  extensions += '|' + GetAddonExtensions(AddonType::VFS);
-  extensions += '|' + GetAddonExtensions(AddonType::AUDIODECODER);
+  if (!m_musicExtensions)
+  {
+    m_musicExtensions = m_advancedSettings->m_musicExtensions + '|' +
+                        GetAddonExtensions(AddonType::VFS) + '|' +
+                        GetAddonExtensions(AddonType::AUDIODECODER);
+  }
 
-  return extensions;
+  return m_musicExtensions.value();
 }
 
 std::string CFileExtensionProvider::GetPictureExtensions() const
 {
   std::lock_guard lock{m_critSection};
 
-  std::string extensions(m_advancedSettings->m_pictureExtensions);
-  extensions += '|' + GetAddonExtensions(AddonType::VFS);
-  extensions += '|' + GetAddonExtensions(AddonType::IMAGEDECODER);
+  if (!m_pictureExtensions)
+  {
+    m_pictureExtensions = m_advancedSettings->m_pictureExtensions + '|' +
+                          GetAddonExtensions(AddonType::VFS) + '|' +
+                          GetAddonExtensions(AddonType::IMAGEDECODER);
+  }
 
-  return extensions;
+  return m_pictureExtensions.value();
 }
 
 std::string CFileExtensionProvider::GetSubtitleExtensions() const
 {
   std::lock_guard lock{m_critSection};
 
-  std::string extensions(m_advancedSettings->m_subtitlesExtensions);
-  extensions += '|' + GetAddonExtensions(AddonType::VFS);
+  if (!m_subtitlesExtensions)
+  {
+    m_subtitlesExtensions =
+        m_advancedSettings->m_subtitlesExtensions + '|' + GetAddonExtensions(AddonType::VFS);
+  }
 
-  return extensions;
+  return m_subtitlesExtensions.value();
 }
 
 std::string CFileExtensionProvider::GetVideoExtensions() const
 {
   std::lock_guard lock{m_critSection};
 
-  std::string extensions(m_advancedSettings->m_videoExtensions);
-  if (!extensions.empty())
-    extensions += '|';
-  extensions += GetAddonExtensions(AddonType::VFS);
+  if (!m_videoExtensions)
+  {
+    std::string extensions(m_advancedSettings->m_videoExtensions);
+    if (!extensions.empty())
+      extensions += '|';
+    extensions += GetAddonExtensions(AddonType::VFS);
 
-  return extensions;
+    m_videoExtensions = std::move(extensions);
+  }
+
+  return m_videoExtensions.value();
 }
 
 std::string CFileExtensionProvider::GetFileFolderExtensions() const
 {
   std::lock_guard lock{m_critSection};
 
-  std::string extensions(GetAddonFileFolderExtensions(AddonType::VFS));
-  if (!extensions.empty())
-    extensions += '|';
-  extensions += GetAddonFileFolderExtensions(AddonType::AUDIODECODER);
+  if (!m_fileFolderExtensions)
+  {
+    std::string extensions(GetAddonFileFolderExtensions(AddonType::VFS));
+    if (!extensions.empty())
+      extensions += '|';
+    extensions += GetAddonFileFolderExtensions(AddonType::AUDIODECODER);
 
-  return extensions;
+    m_fileFolderExtensions = std::move(extensions);
+  }
+
+  return m_fileFolderExtensions.value();
 }
 
 bool CFileExtensionProvider::CanOperateExtension(const std::string& path)
@@ -239,6 +269,10 @@ void CFileExtensionProvider::SetAddonExtensions(AddonType type)
           fileFolderExtensions.push_back(ext.first);
       }
     }
+    // Invalidate dependent cached extensions lists
+    m_musicExtensions.reset();
+    m_pictureExtensions.reset();
+    m_fileFolderExtensions.reset();
   }
   else if (type == AddonType::VFS)
   {
@@ -262,6 +296,12 @@ void CFileExtensionProvider::SetAddonExtensions(AddonType type)
         }
       }
     }
+    // Invalidate dependent cached extensions lists
+    m_musicExtensions.reset();
+    m_pictureExtensions.reset();
+    m_subtitlesExtensions.reset();
+    m_videoExtensions.reset();
+    m_fileFolderExtensions.reset();
   }
 
   m_addonExtensions[type] = StringUtils::Join(extensions, "|");
@@ -273,4 +313,15 @@ bool CFileExtensionProvider::EncodedHostName(const std::string& protocol) const
   std::lock_guard lock{m_critSection};
 
   return std::ranges::find(m_encoded, protocol) != m_encoded.end();
+}
+
+void CFileExtensionProvider::OnAdvancedSettingsLoaded()
+{
+  std::lock_guard lock{m_critSection};
+
+  m_discStubExtensions.reset();
+  m_musicExtensions.reset();
+  m_pictureExtensions.reset();
+  m_subtitlesExtensions.reset();
+  m_videoExtensions.reset();
 }
