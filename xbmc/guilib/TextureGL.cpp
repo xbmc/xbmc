@@ -247,14 +247,15 @@ void CGLTexture::LoadToGPU()
 
   TextureFormat glFormat = GetFormatGL(m_textureFormat);
 
-  if (glFormat.format == GL_FALSE)
+  if (glFormat.internalFormat == GL_FALSE)
   {
     CLog::LogF(LOGDEBUG, "Failed to load texture. Unsupported format {}", m_textureFormat);
     m_loadedToGPU = true;
     return;
   }
 
-  if ((m_textureFormat & KD_TEX_FMT_SDR) || (m_textureFormat & KD_TEX_FMT_HDR))
+  const int formatType = m_textureFormat & KD_TEX_FMT_TYPE_MASK;
+  if (formatType == KD_TEX_FMT_SDR || formatType == KD_TEX_FMT_HDR)
   {
     glTexImage2D(GL_TEXTURE_2D, 0, glFormat.internalFormat, m_textureWidth, m_textureHeight, 0,
                  glFormat.format, glFormat.type, m_pixels);
