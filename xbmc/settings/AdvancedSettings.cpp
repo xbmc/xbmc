@@ -31,6 +31,7 @@
 
 #include <algorithm>
 #include <climits>
+#include <ranges>
 #include <regex>
 #include <string>
 #include <vector>
@@ -272,6 +273,8 @@ void CAdvancedSettings::Initialize()
                                         m_allExcludeFromScanRegExps.begin(),
                                         m_allExcludeFromScanRegExps.end());
 
+  m_setExcludeFromScanRegExps.clear();
+  std::ranges::copy(m_allExcludeFromScanRegExps, std::back_inserter(m_setExcludeFromScanRegExps));
 
   m_tvshowExcludeFromScanRegExps.clear();
   m_tvshowExcludeFromScanRegExps.emplace_back("[!-._ \\\\/]sample[-._ \\\\/]");
