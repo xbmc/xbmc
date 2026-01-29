@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2022 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -32,6 +32,19 @@ public:
    *
    */
   virtual bool SetPriority(const ThreadPriority& priority) = 0;
+
+  /*!
+   * \brief Assign the current thread a task for OS scheduling (platform dependent)
+   * \param[in] task Type of task
+   * \return true for success, false for failure
+   */
+  virtual bool SetTask(const ThreadTask& task) { return true; }
+
+  /*!
+   * \brief Revert the current thread to normal scheduling (platform dependent)
+   * \return true for success, false for failure
+   */
+  virtual bool RevertTask() { return true; }
 
 protected:
   IThreadImpl(std::thread::native_handle_type handle) : m_handle(handle) {}

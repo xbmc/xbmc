@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -22,6 +22,12 @@ public:
 
   bool SetPriority(const ThreadPriority& priority) override;
 
+  bool SetTask(const ThreadTask& task) override;
+  bool RevertTask() override;
+
 private:
   CCriticalSection m_criticalSection;
+  std::string m_name;
+  HANDLE m_hTask{0};
+  DWORD m_taskIndex{0};
 };
