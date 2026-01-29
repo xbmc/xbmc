@@ -46,6 +46,7 @@ std::shared_ptr<CDVDOverlayGroup> InitialiseNewOverlayGroup(std::shared_ptr<CDVD
   group->iPTSStopTime = overlay->iPTSStopTime;
   group->bForced = overlay->bForced;
   group->replace = overlay->replace;
+  group->SetOverlayContainerFlushable(overlay->IsOverlayContainerFlushable());
   group->m_overlays.emplace_back(overlay);
   return group;
 }
