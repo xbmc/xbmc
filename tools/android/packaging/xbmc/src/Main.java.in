@@ -56,6 +56,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   // Launchers that support the Recommended Content API
   private final Set<String> mRecommendedLaunchers = new HashSet<String>() {{
     add("com.google.android.tvlauncher"); // Android TV Stock
+    add("com.google.android.apps.tv.launcherx"); // Google TV Home
     add("com.spocky.projengmenu"); // Projectivy Launcher
   }};
 
