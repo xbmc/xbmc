@@ -9609,7 +9609,12 @@ msgctxt "#16330"
 msgid "Bicubic (0,1.)"
 msgstr ""
 
-#empty strings from id 16331 to 16333
+#: xbmc/cores/VideoPlayer/VideoRenderers/BaseRenderer.cpp
+msgctxt "#16331"
+msgid "LibPlacebo"
+msgstr ""
+
+#empty strings from id 16332 to 16333
 
 #. Description of OSD video settings for deinterlace method with label #16334
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
