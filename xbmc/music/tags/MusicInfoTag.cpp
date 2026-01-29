@@ -9,7 +9,6 @@
 #include "MusicInfoTag.h"
 
 #include "ServiceBroker.h"
-#include "guilib/LocalizeStrings.h"
 #include "music/Artist.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"

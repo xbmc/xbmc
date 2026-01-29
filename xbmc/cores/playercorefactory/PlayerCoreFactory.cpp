@@ -11,13 +11,15 @@
 #include "FileItem.h"
 #include "PlayerCoreConfig.h"
 #include "PlayerSelectionRule.h"
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "cores/IPlayerCallback.h"
 #include "cores/VideoPlayer/Interface/InputStreamConstants.h"
 #include "dialogs/GUIDialogContextMenu.h"
-#include "guilib/LocalizeStrings.h"
 #include "music/MusicFileItemClassify.h"
 #include "profiles/ProfileManager.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -310,7 +312,7 @@ std::string CPlayerCoreFactory::SelectPlayerDialog(const std::vector<std::string
     //Add default player
     std::string strCaption = players[0];
     strCaption += " (";
-    strCaption += g_localizeStrings.Get(13278);
+    strCaption += CServiceBroker::GetResourcesComponent()->GetLocalizeStrings().Get(13278);
     strCaption += ")";
     choices.Add(0, strCaption);
 
