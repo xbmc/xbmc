@@ -130,6 +130,7 @@ bool JPGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   frame.rgbaImage.width = cinfo.image_width;
   frame.rgbaImage.bbp = 32;
   frame.rgbaImage.pitch = 4 * cinfo.image_width;
+  frame.rgbaImage.size = 4 * cinfo.image_width * cinfo.image_height;
 
   frames.frameList.push_back(frame);
 

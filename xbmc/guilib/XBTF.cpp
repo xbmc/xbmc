@@ -149,6 +149,7 @@ const std::string& CXBTFFile::GetPath() const
 void CXBTFFile::SetPath(const std::string& path)
 {
   m_path = path;
+  m_realPath = path;
 }
 
 uint32_t CXBTFFile::GetLoop() const
