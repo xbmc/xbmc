@@ -29,7 +29,9 @@ struct VideoDriverInfo
   void Log();
 };
 
-class CURL; // forward declaration
+// forward declarations
+class CURL;
+enum class UserDirectoriesLocation;
 
 class CWIN32Util
 {
@@ -43,7 +45,7 @@ public:
   static std::string GetResInfoString();
   static size_t GetSystemMemorySize();
 
-  static std::string GetProfilePath(const bool platformDirectories);
+  static std::string GetProfilePath(UserDirectoriesLocation loc);
   static std::string UncToSmb(const std::string &strPath);
   static std::string SmbToUnc(const std::string &strPath);
   static bool AddExtraLongPathPrefix(std::wstring& path);

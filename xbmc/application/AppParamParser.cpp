@@ -102,8 +102,8 @@ void CAppParamParser::ParseArg(const std::string &arg)
     DisplayVersion();
   else if (arg == "--standalone")
     m_params->SetStandAlone(true);
-  else if (arg == "-p" || arg  == "--portable")
-    m_params->SetPlatformDirectories(false);
+  else if (arg == "-p" || arg == "--portable")
+    m_params->SetUserDirectoriesLocation(UserDirectoriesLocation::PORTABLE);
   else if (arg == "--debug")
     m_params->SetLogLevel(LOG_LEVEL_DEBUG);
   else if (arg == "--test")
