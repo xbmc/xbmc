@@ -656,7 +656,7 @@
 						</control>
 						<control type="multiimage">
 							<left>60</left>
-							<top>108</top>
+							<top>94</top>
 							<width>130</width>
 							<height>130</height>
 							<imagepath>$INFO[ListItem.Icon]</imagepath>
@@ -670,14 +670,6 @@
 							<top>45</top>
 							<align>center</align>
 							<label>$INFO[ListItem.Label]</label>
-							<width>230</width>
-						</control>
-						<control type="label">
-							<left>15</left>
-							<top>78</top>
-							<align>center</align>
-							<font>font12</font>
-							<label>$INFO[ListItem.Property(ShortDate)]</label>
 							<width>230</width>
 						</control>
 						<control type="label">
@@ -720,7 +712,7 @@
 						</control>
 						<control type="multiimage">
 							<left>60</left>
-							<top>108</top>
+							<top>94</top>
 							<width>130</width>
 							<height>130</height>
 							<imagepath>$INFO[ListItem.Icon]</imagepath>
@@ -734,14 +726,6 @@
 							<top>45</top>
 							<align>center</align>
 							<label>$INFO[ListItem.Label]</label>
-							<width>230</width>
-						</control>
-						<control type="label">
-							<left>15</left>
-							<top>78</top>
-							<align>center</align>
-							<font>font12</font>
-							<label>$INFO[ListItem.Property(ShortDate)]</label>
 							<width>230</width>
 						</control>
 						<control type="label">
