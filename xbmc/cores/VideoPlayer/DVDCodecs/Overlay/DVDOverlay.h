@@ -59,7 +59,8 @@ public:
     constexpr double epsilon{0.1};
     return std::abs(iPTSStartTime - other.iPTSStartTime) < epsilon &&
            std::abs(iPTSStopTime - other.iPTSStopTime) < epsilon && bForced == other.bForced &&
-           replace == other.replace;
+           replace == other.replace &&
+           m_overlayContainerFlushable == other.m_overlayContainerFlushable;
   }
 
   bool IsOverlayType(DVDOverlayType type) const { return (m_type == type); }
