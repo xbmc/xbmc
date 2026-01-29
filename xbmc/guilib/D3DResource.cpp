@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -488,7 +488,8 @@ void CD3DTexture::DrawQuad(const CPoint points[4],
                            KODI::UTILS::COLOR::Color color,
                            CD3DTexture* texture,
                            const CRect* texCoords,
-                           SHADER_METHOD options)
+                           SHADER_METHOD options,
+                           float depth)
 {
   unsigned numViews = 0;
   ID3D11ShaderResourceView* views = nullptr;
@@ -499,23 +500,23 @@ void CD3DTexture::DrawQuad(const CPoint points[4],
     views = texture->GetShaderResource();
   }
 
-  DrawQuad(points, color, numViews, &views, texCoords, options);
+  DrawQuad(points, color, numViews, &views, texCoords, options, depth);
 }
 
 void CD3DTexture::DrawQuad(const CRect& rect,
                            KODI::UTILS::COLOR::Color color,
                            CD3DTexture* texture,
                            const CRect* texCoords,
-                           SHADER_METHOD options)
+                           SHADER_METHOD options,
+                           float depth)
 {
-  CPoint points[] =
-  {
-    { rect.x1, rect.y1 },
-    { rect.x2, rect.y1 },
-    { rect.x2, rect.y2 },
-    { rect.x1, rect.y2 },
+  CPoint points[] = {
+      {rect.x1, rect.y1},
+      {rect.x2, rect.y1},
+      {rect.x2, rect.y2},
+      {rect.x1, rect.y2},
   };
-  DrawQuad(points, color, texture, texCoords, options);
+  DrawQuad(points, color, texture, texCoords, options, depth);
 }
 
 void CD3DTexture::DrawQuad(const CPoint points[4],
@@ -523,24 +524,28 @@ void CD3DTexture::DrawQuad(const CPoint points[4],
                            unsigned numViews,
                            ID3D11ShaderResourceView** view,
                            const CRect* texCoords,
-                           SHADER_METHOD options)
+                           SHADER_METHOD options,
+                           float depth)
 {
   XMFLOAT4 xcolor;
   CD3DHelper::XMStoreColor(&xcolor, color);
   CRect coords = texCoords ? *texCoords : CRect(0.0f, 0.0f, 1.0f, 1.0f);
 
+  // clang-format off
   Vertex verts[4] = {
     { XMFLOAT3(points[0].x, points[0].y, 0), xcolor, XMFLOAT2(coords.x1, coords.y1), XMFLOAT2(0.0f, 0.0f) },
     { XMFLOAT3(points[1].x, points[1].y, 0), xcolor, XMFLOAT2(coords.x2, coords.y1), XMFLOAT2(0.0f, 0.0f) },
     { XMFLOAT3(points[2].x, points[2].y, 0), xcolor, XMFLOAT2(coords.x2, coords.y2), XMFLOAT2(0.0f, 0.0f) },
     { XMFLOAT3(points[3].x, points[3].y, 0), xcolor, XMFLOAT2(coords.x1, coords.y2), XMFLOAT2(0.0f, 0.0f) },
   };
+  // clang-format on
 
   CGUIShaderDX* pGUIShader = DX::Windowing()->GetGUIShader();
 
   pGUIShader->Begin(view && numViews > 0 ? options : SHADER_METHOD_RENDER_DEFAULT);
   if (view && numViews > 0)
     pGUIShader->SetShaderViews(numViews, view);
+  pGUIShader->SetDepth(depth);
   pGUIShader->DrawQuad(verts[0], verts[1], verts[2], verts[3]);
 }
 
@@ -549,16 +554,16 @@ void CD3DTexture::DrawQuad(const CRect& rect,
                            unsigned numViews,
                            ID3D11ShaderResourceView** view,
                            const CRect* texCoords,
-                           SHADER_METHOD options)
+                           SHADER_METHOD options,
+                           float depth)
 {
-  CPoint points[] =
-  {
-    { rect.x1, rect.y1 },
-    { rect.x2, rect.y1 },
-    { rect.x2, rect.y2 },
-    { rect.x1, rect.y2 },
+  CPoint points[] = {
+      {rect.x1, rect.y1},
+      {rect.x2, rect.y1},
+      {rect.x2, rect.y2},
+      {rect.x1, rect.y2},
   };
-  DrawQuad(points, color, numViews, view, texCoords, options);
+  DrawQuad(points, color, numViews, view, texCoords, options, depth);
 }
 
 CD3DEffect::CD3DEffect()

@@ -1,5 +1,5 @@
 ﻿/*
- *  Copyright (C) 2017-2019 Team Kodi
+ *  Copyright (C) 2017-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -137,6 +137,8 @@ void CRendererHQ::UpdateVideoFilters()
       }
     }
   }
+  if (m_scalerShader)
+    m_scalerShader->SetFinalShader(true);
 }
 
 void CRendererHQ::FinalOutput(CD3DTexture& source, CD3DTexture& target, const CRect& sourceRect, const CPoint(&destPoints)[4])

@@ -51,6 +51,7 @@ cbuffer cbWorld : register(b0)
   float colorRange;
   float sdrPeakLum;
   int PQ;
+  float depth;
 };
 
 inline float3 transferPQ(float3 x)

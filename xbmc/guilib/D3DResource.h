@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -121,27 +121,31 @@ public:
                        KODI::UTILS::COLOR::Color color,
                        CD3DTexture* texture,
                        const CRect* texCoords,
-                       SHADER_METHOD options = SHADER_METHOD_RENDER_TEXTURE_BLEND);
+                       SHADER_METHOD options,
+                       float depth);
 
   static void DrawQuad(const CPoint points[4],
                        KODI::UTILS::COLOR::Color color,
                        unsigned numViews,
                        ID3D11ShaderResourceView** view,
                        const CRect* texCoords,
-                       SHADER_METHOD options = SHADER_METHOD_RENDER_TEXTURE_BLEND);
+                       SHADER_METHOD options,
+                       float depth);
 
   static void DrawQuad(const CRect& coords,
                        KODI::UTILS::COLOR::Color color,
                        CD3DTexture* texture,
                        const CRect* texCoords,
-                       SHADER_METHOD options = SHADER_METHOD_RENDER_TEXTURE_BLEND);
+                       SHADER_METHOD options,
+                       float depth);
 
   static void DrawQuad(const CRect& coords,
                        KODI::UTILS::COLOR::Color color,
                        unsigned numViews,
                        ID3D11ShaderResourceView** view,
                        const CRect* texCoords,
-                       SHADER_METHOD options = SHADER_METHOD_RENDER_TEXTURE_BLEND);
+                       SHADER_METHOD options,
+                       float depth);
 
   void OnDestroyDevice(bool fatal) override;
   void OnCreateDevice() override;

@@ -191,6 +191,7 @@ void COverlayQuadsDX::Render(SRenderState &state)
   pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
   DX::Windowing()->SetAlphaBlendEnable(true);
+  pGUIShader->SetDepth(-1.f);
   pGUIShader->Begin(SHADER_METHOD_RENDER_FONT);
 
   pGUIShader->SetShaderViews(1, m_texture.GetAddressOfSRV());
@@ -356,6 +357,7 @@ void COverlayImageDX::Render(SRenderState &state)
   pContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
   pContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
+  pGUIShader->SetDepth(-1.f);
   pGUIShader->Begin(SHADER_METHOD_RENDER_TEXTURE_NOBLEND);
   DX::Windowing()->SetAlphaBlendEnable(true);
 

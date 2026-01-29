@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -1033,11 +1033,11 @@ void CGraphicContext::SetRenderOrder(RENDER_ORDER renderOrder)
 {
   m_renderOrder = renderOrder;
   if (renderOrder == RENDER_ORDER_ALL_BACK_TO_FRONT)
-    CServiceBroker::GetRenderSystem()->SetDepthCulling(DEPTH_CULLING_OFF);
+    CServiceBroker::GetRenderSystem()->SetDepthCulling(DEPTH_CULLING::OFF);
   else if (renderOrder == RENDER_ORDER_BACK_TO_FRONT)
-    CServiceBroker::GetRenderSystem()->SetDepthCulling(DEPTH_CULLING_BACK_TO_FRONT);
+    CServiceBroker::GetRenderSystem()->SetDepthCulling(DEPTH_CULLING::BACK_TO_FRONT);
   else if (renderOrder == RENDER_ORDER_FRONT_TO_BACK)
-    CServiceBroker::GetRenderSystem()->SetDepthCulling(DEPTH_CULLING_FRONT_TO_BACK);
+    CServiceBroker::GetRenderSystem()->SetDepthCulling(DEPTH_CULLING::FRONT_TO_BACK);
 }
 
 uint32_t CGraphicContext::GetDepth(uint32_t addLayers)

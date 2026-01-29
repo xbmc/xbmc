@@ -34,6 +34,7 @@ public:
   bool BeginRender() override;
   bool EndRender() override;
   void PresentRender(bool rendered, bool videoLayer) override;
+  void InvalidateColorBuffer() override;
   bool ClearBuffers(KODI::UTILS::COLOR::Color color) override;
   void SetViewPort(const CRect& viewPort) override;
   void GetViewPort(CRect& viewPort) override;
@@ -42,6 +43,7 @@ public:
   bool ScissorsCanEffectClipping() override;
   void SetScissors(const CRect &rect) override;
   void ResetScissors() override;
+  void SetDepthCulling(DEPTH_CULLING culling) override;
   void CaptureStateBlock() override;
   void ApplyStateBlock() override;
   void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight, float stereoFactor = 0.f) override;
@@ -77,6 +79,7 @@ protected:
   void OnResize();
   void CheckInterlacedStereoView(void);
   void CheckDeviceCaps();
+  ID3D11DepthStencilState* GetDepthStencilState();
 
   CCriticalSection m_resourceSection;
   CCriticalSection m_decoderSection;
@@ -89,6 +92,9 @@ protected:
   CRect m_scissor;
   CGUIShaderDX* m_pGUIShader{ nullptr };
   Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_depthStencilState;
+  Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_depthStencilStateRO;
+  Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_depthStencilStateRW;
+
   Microsoft::WRL::ComPtr<ID3D11BlendState> m_BlendEnableState;
   Microsoft::WRL::ComPtr<ID3D11BlendState> m_BlendDisableState;
   Microsoft::WRL::ComPtr<ID3D11RasterizerState> m_RSScissorDisable;
@@ -100,5 +106,5 @@ protected:
   XbmcThreads::ConditionVariable m_decodingEvent;
 
   std::shared_ptr<DX::DeviceResources> m_deviceResources;
+  DEPTH_CULLING m_depthCulling{DEPTH_CULLING::OFF};
 };
-
