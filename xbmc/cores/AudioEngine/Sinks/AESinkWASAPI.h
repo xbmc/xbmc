@@ -42,6 +42,7 @@ private:
     bool InitializeExclusive(AEAudioFormat &format);
     static void BuildWaveFormatExtensibleIEC61397(AEAudioFormat& format,
                                                   WAVEFORMATEXTENSIBLE_IEC61937& wfxex);
+    void WriteLastBuffer();
 
     HANDLE m_needDataEvent{0};
     IAEWASAPIDevice* m_pDevice{nullptr};
