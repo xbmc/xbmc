@@ -18,15 +18,16 @@ using namespace KODI;
 
 struct PlayListClassifyTest
 {
-  PlayListClassifyTest(const std::string& path, bool res, const std::string& mime = "")
-    : item(path, false), result(res)
+  PlayListClassifyTest(std::string path, bool res, std::string mime = "")
+    : path(std::move(path)),
+      result(res),
+      mime(std::move(mime))
   {
-    if (!mime.empty())
-      item.SetMimeType(mime);
   }
 
-  CFileItem item;
+  std::string path;
   bool result;
+  std::string mime;
 };
 
 class PlayListTest : public testing::WithParamInterface<PlayListClassifyTest>, public testing::Test
@@ -35,7 +36,13 @@ class PlayListTest : public testing::WithParamInterface<PlayListClassifyTest>, p
 
 TEST_P(PlayListTest, IsPlayList)
 {
-  EXPECT_EQ(PLAYLIST::IsPlayList(GetParam().item), GetParam().result);
+  const PlayListClassifyTest& param = GetParam();
+
+  CFileItem item(param.path, false);
+  if (!param.mime.empty())
+    item.SetMimeType(param.mime);
+
+  EXPECT_EQ(PLAYLIST::IsPlayList(item), param.result);
 }
 
 const auto playlist_tests = std::array{

@@ -382,6 +382,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     // runtime settings which cannot be set from advancedsettings.xml
     std::string m_videoExtensions;
+    std::string m_archiveExtensions;
+    std::string m_compoundArchiveExtensions;
     std::string m_discStubExtensions;
     std::string m_subtitlesExtensions;
     std::string m_musicExtensions;

@@ -20,7 +20,9 @@
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
 
+#include <ranges>
 #include <string>
+#include <string_view>
 #include <vector>
 
 using namespace ADDON;
@@ -103,6 +105,57 @@ std::string CFileExtensionProvider::GetVideoExtensions() const
   if (!extensions.empty())
     extensions += '|';
   extensions += GetAddonExtensions(AddonType::VFS);
+
+  return extensions;
+}
+
+namespace
+{
+std::string GetSingleExtensions(const std::string& extensions)
+{
+  std::string out;
+  for (const auto& ext : StringUtils::Split(extensions, "|"))
+  {
+    if (ext.empty())
+      continue;
+
+    if (std::ranges::count(ext, '.') == 1)
+      out.append(ext + "|");
+  }
+  if (!out.empty())
+    out.pop_back();
+  return out;
+}
+
+std::string GetCompoundExtensions(std::string_view extensions)
+{
+  std::string out;
+  for (const auto& ext : StringUtils::Split(extensions, "|"))
+  {
+    if (ext.empty())
+      continue;
+
+    if (std::ranges::count(ext, '.') > 1)
+      out.append(ext + "|");
+  }
+  if (!out.empty())
+    out.pop_back();
+  return out;
+}
+} // namespace
+
+std::string CFileExtensionProvider::GetArchiveExtensions() const
+{
+  std::string extensions(m_advancedSettings->m_archiveExtensions);
+  extensions += '|' + GetSingleExtensions(GetAddonExtensions(AddonType::VFS));
+
+  return extensions;
+}
+
+std::string CFileExtensionProvider::GetCompoundArchiveExtensions() const
+{
+  std::string extensions(m_advancedSettings->m_compoundArchiveExtensions);
+  extensions += '|' + GetCompoundExtensions(GetAddonExtensions(AddonType::VFS));
 
   return extensions;
 }
@@ -204,6 +257,7 @@ void CFileExtensionProvider::SetAddonExtensions()
   {
     SetAddonExtensions(type);
   }
+  InvalidateCaches();
 }
 
 void CFileExtensionProvider::SetAddonExtensions(AddonType type)
@@ -259,4 +313,21 @@ void CFileExtensionProvider::SetAddonExtensions(AddonType type)
 bool CFileExtensionProvider::EncodedHostName(const std::string& protocol) const
 {
   return std::ranges::find(m_encoded, protocol) != m_encoded.end();
+}
+
+std::string CFileExtensionProvider::GetCachedCompoundArchiveExtensions() const
+{
+  std::scoped_lock lock(m_cacheMutex);
+  if (!m_compoundArchiveExtensionsCacheValid)
+  {
+    m_compoundArchiveExtensionsCache = GetCompoundArchiveExtensions();
+    m_compoundArchiveExtensionsCacheValid = true;
+  }
+  return m_compoundArchiveExtensionsCache;
+}
+
+void CFileExtensionProvider::InvalidateCaches()
+{
+  std::scoped_lock lock(m_cacheMutex);
+  m_compoundArchiveExtensionsCacheValid = false;
 }

@@ -401,7 +401,7 @@ public:
   std::string GetThumbHideIfUnwatched(const CFileItem* item) const;
 
   // Gets the correct movie title
-  std::string GetMovieName(bool bUseFolderNames = false) const;
+  std::string GetMovieName(bool bUseFolderNames = false, int depth = 0) const;
 
   /*! \brief Find the base movie path (i.e. the item the user expects us to use to lookup the movie)
    For folder items, with "use foldernames for lookups" it returns the folder.

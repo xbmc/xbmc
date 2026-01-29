@@ -10,6 +10,7 @@
 
 #include <map>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <vector>
 
@@ -53,6 +54,16 @@ public:
   const std::string& GetDiscStubExtensions() const;
 
   /*!
+   * @brief Returns a list of archive extensions with a single dot (eg. .zip)
+   */
+  std::string GetArchiveExtensions() const;
+
+  /*!
+   * @brief Returns a cached list of archive extensions with a multiple dots (eg. .tar.gz)
+   */
+  std::string GetCachedCompoundArchiveExtensions() const;
+
+  /*!
    * @brief Returns a file folder extensions
    */
   std::string GetFileFolderExtensions() const;
@@ -69,11 +80,21 @@ public:
    */
   bool CanOperateExtension(const std::string& path) const;
 
+  /*!
+   * @brief Invalidate cached extensions
+   */
+  void InvalidateCaches();
+
 private:
   std::string GetAddonExtensions(ADDON::AddonType type) const;
   std::string GetAddonFileFolderExtensions(ADDON::AddonType type) const;
   void SetAddonExtensions();
   void SetAddonExtensions(ADDON::AddonType type);
+
+  /*!
+   * @brief Returns a list of archive extensions with a multiple dots (eg. .tar.gz)
+   */
+  std::string GetCompoundArchiveExtensions() const;
 
   // Construction properties
   std::shared_ptr<CAdvancedSettings> m_advancedSettings;
@@ -85,4 +106,9 @@ private:
 
   // Protocols from add-ons with encoded host names
   std::vector<std::string> m_encoded;
+
+  // Cached extensions
+  mutable std::mutex m_cacheMutex;
+  mutable std::string m_compoundArchiveExtensionsCache;
+  mutable bool m_compoundArchiveExtensionsCacheValid{false};
 };
