@@ -18,7 +18,6 @@
 #include "ServiceBroker.h"
 #include "TextureCache.h"
 #include "URL.h"
-#include "Util.h"
 #include "addons/AddonSystemSettings.h"
 #include "addons/Scraper.h"
 #include "addons/addoninfo/AddonType.h"
@@ -58,8 +57,11 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <chrono>
 #include <string_view>
 #include <utility>
+
+#include <fmt/chrono.h>
 
 using namespace KODI;
 using namespace MUSIC_INFO;
@@ -199,11 +201,10 @@ void CMusicInfoScanner::Process()
 
       m_musicDatabase.EmptyCache();
 
-      auto elapsed =
-          std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - tick);
-      CLog::Log(LOGINFO,
-                "My Music: Scanning for music info using worker thread, operation took {}s",
-                elapsed.count());
+      auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
+          std::chrono::steady_clock::now() - tick);
+      CLog::Log(LOGINFO, "My Music: Scanning for music info using worker thread, operation took {}",
+                elapsed);
     }
     if (m_scanType == 1) // load album info
     {
@@ -278,6 +279,7 @@ void CMusicInfoScanner::Process()
     CLog::Log(LOGERROR, "MusicInfoScanner: Exception while scanning.");
   }
   m_musicDatabase.Close();
+  m_regexCache.clear();
   CLog::Log(LOGDEBUG, "{} - Finished scan", __FUNCTION__);
 
   m_bRunning = false;
@@ -489,7 +491,7 @@ bool CMusicInfoScanner::DoScan(const std::string& strDirectory)
   // Discard all excluded files defined by m_musicExcludeRegExps
   const std::vector<std::string> &regexps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_audioExcludeFromScanRegExps;
 
-  if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
+  if (CUtil::ExcludeFileOrFolder(strDirectory, regexps, &m_regexCache))
     return true;
 
   if (HasNoMedia(strDirectory))
@@ -572,7 +574,8 @@ bool CMusicInfoScanner::DoScan(const std::string& strDirectory)
 CInfoScanner::InfoRet CMusicInfoScanner::ScanTags(const CFileItemList& items,
                                                   CFileItemList& scannedItems)
 {
-  std::vector<std::string> regexps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_audioExcludeFromScanRegExps;
+  const std::vector<std::string>& regexps =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_audioExcludeFromScanRegExps;
 
   for (int i = 0; i < items.Size(); ++i)
   {
@@ -581,7 +584,7 @@ CInfoScanner::InfoRet CMusicInfoScanner::ScanTags(const CFileItemList& items,
 
     CFileItemPtr pItem = items[i];
 
-    if (CUtil::ExcludeFileOrFolder(pItem->GetPath(), regexps))
+    if (CUtil::ExcludeFileOrFolder(pItem->GetPath(), regexps, &m_regexCache))
       continue;
 
     if (pItem->IsFolder() || PLAYLIST::IsPlayList(*pItem) || pItem->IsPicture() ||
