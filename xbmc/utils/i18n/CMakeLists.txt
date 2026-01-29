@@ -4,7 +4,12 @@ set(SOURCES Bcp47.cpp
             Iso3166_1.cpp
             Iso639.cpp
             Iso639_1.cpp
-            Iso639_2.cpp)
+            Iso639_2.cpp
+            RegistryRecordProvider.cpp
+            SubTagLoader.cpp
+            SubTagRegistryFile.cpp
+            SubTagRegistryManager.cpp
+            SubTagRegistryTypes.cpp)
 
 set(HEADERS Bcp47.h
             Bcp47Common.h
@@ -17,6 +22,12 @@ set(HEADERS Bcp47.h
             Iso639_1_Table.h
             Iso639_2.h
             Iso639_2_Table.h
+            RegistryRecordProvider.h
+            SubTagLoader.h
+            SubTagRegistryFile.h
+            SubTagRegistryManager.h
+            SubTagRegistryTypes.h
+            SubTagsCollection.h
             TableLanguageCodes.h)
 
 core_add_library(utils_i18n)
