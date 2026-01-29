@@ -9,8 +9,12 @@
 #include "WinSystemGbmEGLContext.h"
 
 #include "OptionalsReg.h"
+#include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
 #include "utils/log.h"
 
 using namespace KODI::WINDOWING::GBM;
@@ -33,25 +37,22 @@ bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint 
     return false;
   }
 
-  auto plane = m_DRM->GetGuiPlane();
-  uint32_t visualId = plane != nullptr ? plane->GetFormat() : DRM_FORMAT_XRGB2101010;
-
-  // prefer alpha visual id, fallback to non-alpha visual id
-  if (!m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithAlpha(visualId)) &&
-      !m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithoutAlpha(visualId)))
+  auto guiformats = m_DRM->GetGuiFormats();
+  if (!std::ranges::any_of(guiformats,
+                           [&](struct guiformat format)
+                           {
+                             return format.active &&
+                                    m_eglContext.ChooseConfig(renderableType, format.drm, false,
+                                                              format.alpha);
+                           }))
   {
-    // fallback to 8bit format if no EGL config was found for 10bit
-    if (plane)
-      plane->SetFormat(DRM_FORMAT_XRGB8888);
-
-    visualId = plane != nullptr ? plane->GetFormat() : DRM_FORMAT_XRGB8888;
-
-    if (!m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithAlpha(visualId)) &&
-        !m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithoutAlpha(visualId)))
-    {
-      return false;
-    }
+    return false;
   }
+
+  CServiceBroker::GetSettingsComponent()
+      ->GetSettings()
+      ->GetSetting(CSettings::SETTING_VIDEOSCREEN_USEMODIFIERS)
+      ->SetVisible(true);
 
   if (!CreateContext())
   {
@@ -99,15 +100,26 @@ bool CWinSystemGbmEGLContext::CreateNewWindow(const std::string& name,
   }
 
   uint32_t format = m_eglContext.GetConfigAttrib(EGL_NATIVE_VISUAL_ID);
+  bool useModifiers = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      CSettings::SETTING_VIDEOSCREEN_USEMODIFIERS);
 
-  std::vector<uint64_t> modifiers;
+  std::vector<uint64_t> fallbackModifiers = {DRM_FORMAT_MOD_LINEAR};
+  std::vector<uint64_t>* modifiers = &fallbackModifiers;
 
-  auto plane = m_DRM->GetGuiPlane();
-  if (plane)
-    modifiers = plane->GetModifiersForFormat(format);
+  if (useModifiers)
+  {
+    for (auto& fmt : m_DRM->GetGuiFormats())
+    {
+      if (fmt.drm == format && fmt.active)
+      {
+        modifiers = &fmt.modifiers;
+        break;
+      }
+    }
+  }
 
-  if (!m_GBM->GetDevice().CreateSurface(res.iWidth, res.iHeight, format, modifiers.data(),
-                                        modifiers.size()))
+  if (!m_GBM->GetDevice().CreateSurface(res.iWidth, res.iHeight, format, modifiers->data(),
+                                        modifiers->size()))
   {
     CLog::Log(LOGERROR, "CWinSystemGbmEGLContext::{} - failed to initialize GBM", __FUNCTION__);
     return false;
@@ -129,11 +141,26 @@ bool CWinSystemGbmEGLContext::CreateNewWindow(const std::string& name,
     return false;
   }
 
+  if (!m_eglContext.TrySwapBuffers())
+  {
+    return false;
+  }
+
+  struct gbm_bo* bo = m_GBM->GetDevice().GetSurface().LockFrontBuffer().Get();
+
+#if defined(HAS_GBM_MODIFIERS)
+  uint64_t modifier = gbm_bo_get_modifier(bo);
+#else
+  uint64_t modifier = DRM_FORMAT_MOD_LINEAR;
+#endif
+  if (!m_DRM->FindGuiPlane(gbm_bo_get_format(bo), modifier))
+  {
+    return false;
+  }
   m_bFullScreen = fullScreen;
   m_nWidth = res.iWidth;
   m_nHeight = res.iHeight;
   m_fRefreshRate = res.fRefreshRate;
-
   CLog::Log(LOGDEBUG, "CWinSystemGbmEGLContext::{} - initialized GBM", __FUNCTION__);
   return true;
 }
