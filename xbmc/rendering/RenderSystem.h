@@ -88,19 +88,19 @@ public:
   virtual void ShowSplash(const std::string& message);
 
 protected:
-  bool                m_bRenderCreated;
-  bool                m_bVSync;
-  unsigned int        m_maxTextureSize;
-  unsigned int        m_minDXTPitch;
+  bool m_bRenderCreated{false};
+  bool m_bVSync{true};
+  unsigned int m_maxTextureSize{2048};
+  unsigned int m_minDXTPitch{0};
 
-  std::string   m_RenderRenderer;
-  std::string   m_RenderVendor;
-  std::string   m_RenderVersion;
-  int          m_RenderVersionMinor;
-  int          m_RenderVersionMajor;
-  RenderStereoView m_stereoView = RenderStereoView::OFF;
-  RenderStereoMode m_stereoMode = RenderStereoMode::OFF;
-  bool m_limitedColorRange = false;
+  std::string m_RenderRenderer;
+  std::string m_RenderVendor;
+  std::string m_RenderVersion;
+  int m_RenderVersionMinor{0};
+  int m_RenderVersionMajor{0};
+  RenderStereoView m_stereoView{RenderStereoView::OFF};
+  RenderStereoMode m_stereoMode{RenderStereoMode::OFF};
+  bool m_limitedColorRange{false};
   bool m_transferPQ{false};
 
   std::unique_ptr<CGUIImage> m_splashImage;
