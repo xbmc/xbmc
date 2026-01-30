@@ -1053,9 +1053,41 @@ void CVideoDatabase::UpdateTables(int iVersion)
     }
     m_pDS->close();
   }
+
+  if (iVersion < 142)
+  {
+    constexpr int LOCAL_VIDEODB_ID_EPISODE_RUNTIME = 9;
+
+    std::string sql{PrepareSQL("UPDATE episode "
+                               "SET c%02d = (SELECT iVideoDuration FROM streamdetails AS s "
+                               "WHERE s.idFile = episode.idFile "
+                               " AND s.iStreamType = 0 "
+                               " AND s.iVideoDuration > 0 "
+                               "LIMIT 1) "
+                               "WHERE episode.c%02d = 0 "
+                               " AND (SELECT iVideoDuration FROM streamdetails AS s "
+                               "      WHERE s.idFile = episode.idFile "
+                               "       AND s.iStreamType = 0 "
+                               "       AND s.iVideoDuration > 0 "
+                               "      LIMIT 1) IS NOT NULL",
+                               LOCAL_VIDEODB_ID_EPISODE_RUNTIME, LOCAL_VIDEODB_ID_EPISODE_RUNTIME)};
+    m_pDS->exec(sql);
+
+    sql = PrepareSQL("DELETE FROM streamdetails "
+                     "WHERE iVideoHeight = 0 AND iVideoWidth = 0 AND iStreamType = 0 "
+                     " AND (SELECT COUNT(*) FROM streamdetails AS s "
+                     "      WHERE s.idFile = streamdetails.idFile"
+                     "      ) = 1 "
+                     " AND EXISTS (SELECT 1 FROM episode e "
+                     "             WHERE e.idFile = streamdetails.idFile "
+                     "              AND e.c%02d > 0 "
+                     "              AND e.c%02d = streamdetails.iVideoDuration)",
+                     LOCAL_VIDEODB_ID_EPISODE_RUNTIME, LOCAL_VIDEODB_ID_EPISODE_RUNTIME);
+    m_pDS->exec(sql);
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 141;
+  return 142;
 }
