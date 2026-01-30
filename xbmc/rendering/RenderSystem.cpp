@@ -21,12 +21,6 @@
 
 CRenderSystemBase::CRenderSystemBase()
 {
-  m_bRenderCreated = false;
-  m_bVSync = true;
-  m_maxTextureSize = 2048;
-  m_RenderVersionMajor = 0;
-  m_RenderVersionMinor = 0;
-  m_minDXTPitch = 0;
 }
 
 CRenderSystemBase::~CRenderSystemBase() = default;
