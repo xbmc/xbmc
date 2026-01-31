@@ -55,9 +55,6 @@ private:
     CAEChannelInfo m_channelLayout;
     std::string m_device;
 
-    enum AEDataFormat sinkReqFormat = AE_FMT_INVALID;
-    enum AEDataFormat sinkRetFormat = AE_FMT_INVALID;
-
     bool m_running{false};
     bool m_initialized{false};
     bool m_isSuspended{false}; // sink is in a suspended state - release audio device

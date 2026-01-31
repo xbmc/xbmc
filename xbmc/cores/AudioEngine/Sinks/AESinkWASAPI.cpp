@@ -92,11 +92,6 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
   bool bdefault = false;
   HRESULT hr = S_FALSE;
 
-  /* Save requested format */
-  /* Clear returned format */
-  sinkReqFormat = format.m_dataFormat;
-  sinkRetFormat = AE_FMT_INVALID;
-
   if(StringUtils::EndsWithNoCase(device, std::string("default")))
     bdefault = true;
 
@@ -140,7 +135,6 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
 
   format.m_frames = m_uiBufferLen;
   m_format = format;
-  sinkRetFormat = format.m_dataFormat;
 
   hr = m_pAudioClient->GetService(IID_IAudioRenderClient, reinterpret_cast<void**>(m_pRenderClient.ReleaseAndGetAddressOf()));
   EXIT_ON_FAILURE(hr, "Could not initialize the WASAPI render client interface.")
