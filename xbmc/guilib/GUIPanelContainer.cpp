@@ -8,7 +8,6 @@
 
 #include "GUIPanelContainer.h"
 
-#include "FileItem.h"
 #include "GUIListItemLayout.h"
 #include "GUIMessage.h"
 #include "ServiceBroker.h"

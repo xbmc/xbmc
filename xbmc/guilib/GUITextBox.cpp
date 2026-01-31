@@ -14,7 +14,6 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "utils/MathUtils.h"
-#include "utils/StringUtils.h"
 #include "windowing/WinSystem.h"
 
 #include <algorithm>

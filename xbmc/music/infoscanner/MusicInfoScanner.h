@@ -10,15 +10,17 @@
 
 #include "InfoScanner.h"
 #include "MusicAlbumInfo.h"
-#include "MusicInfoScraper.h"
 #include "music/MusicDatabase.h"
 #include "threads/IRunnable.h"
 #include "threads/Thread.h"
-#include "utils/ScraperUrl.h"
+
+#include <string>
 
 class CAlbum;
 class CArtist;
+class CFileItemList;
 class CGUIDialogProgressBarHandle;
+class CScraperUrl;
 
 namespace MUSIC_INFO
 {

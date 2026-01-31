@@ -12,6 +12,7 @@
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "addons/Skin.h"
+#include "commons/ilog.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIControlFactory.h"
@@ -26,7 +27,6 @@
 #include "utils/MemUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "utils/log.h"
 #include "windowing/WinSystem.h"
 
 #include <inttypes.h>

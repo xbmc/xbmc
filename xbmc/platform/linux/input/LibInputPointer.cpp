@@ -16,7 +16,6 @@
 #include "windowing/WinSystem.h"
 
 #include <algorithm>
-#include <string.h>
 
 #include <linux/input.h>
 

@@ -10,7 +10,6 @@
 
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
-#include "input/keyboard/Key.h"
 #include "utils/ColorUtils.h"
 #include "utils/StringUtils.h"
 #include "windowing/WinSystem.h"

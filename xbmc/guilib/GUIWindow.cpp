@@ -27,7 +27,6 @@
 #include "threads/SingleLock.h"
 #include "utils/ColorUtils.h"
 #include "utils/StringUtils.h"
-#include "utils/TimeUtils.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
