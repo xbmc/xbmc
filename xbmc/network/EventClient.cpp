@@ -18,6 +18,8 @@
 #include "input/keymaps/joysticks/GamepadTranslator.h"
 #include "input/keymaps/keyboard/KeyboardTranslator.h"
 #include "input/keymaps/remote/IRTranslator.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
@@ -747,6 +749,15 @@ unsigned int CEventClient::GetButtonCode(std::string& strMapName, bool& isAxis, 
   m_buttonQueue.erase(m_buttonQueue.begin(), it);
   m_buttonQueue.insert(m_buttonQueue.end(), repeat.begin(), repeat.end());
   return bcode;
+}
+
+void CEventClient::RefreshSettings()
+{
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  m_iRepeatDelay =
+      std::chrono::milliseconds(settings->GetInt(CSettings::SETTING_SERVICES_ESINITIALDELAY));
+  m_iRepeatSpeed =
+      std::chrono::milliseconds(settings->GetInt(CSettings::SETTING_SERVICES_ESCONTINUOUSDELAY));
 }
 
 bool CEventClient::GetMousePos(float& x, float& y)
