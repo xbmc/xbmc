@@ -9,7 +9,7 @@
 #pragma once
 
 #include "Resolution.h"
-#include "rendering/RenderSystem.h"
+#include "rendering/RenderSystemTypes.h"
 #include "threads/CriticalSection.h"
 #include "utils/ColorUtils.h"
 #include "utils/Geometry.h" // for CRect/CPoint

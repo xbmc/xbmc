@@ -26,6 +26,7 @@
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfileManager.h"
+#include "rendering/RenderSystem.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/SettingUtils.h"
