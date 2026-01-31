@@ -11,10 +11,7 @@
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
-#include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
-#include "utils/TimeUtils.h"
-#include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
 #include "platform/win32/WIN32Util.h"
@@ -89,18 +86,11 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
     return false;
 
   m_device = device;
-  bool bdefault = false;
   HRESULT hr = S_FALSE;
 
-  /* Save requested format */
-  /* Clear returned format */
-  sinkReqFormat = format.m_dataFormat;
-  sinkRetFormat = AE_FMT_INVALID;
+  const bool bdefault = device.find("default") != std::string::npos;
 
-  if(StringUtils::EndsWithNoCase(device, std::string("default")))
-    bdefault = true;
-
-  if(!bdefault)
+  if (!bdefault)
   {
     hr = CAESinkFactoryWin::ActivateWASAPIDevice(device, &m_pDevice);
     EXIT_ON_FAILURE(hr, "Retrieval of WASAPI endpoint failed.")
@@ -108,7 +98,7 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
 
   if (!m_pDevice)
   {
-    if(!bdefault)
+    if (!bdefault)
     {
       CLog::LogF(LOGINFO,
                  "Could not locate the device named \"{}\" in the list of WASAPI endpoint devices. "
@@ -138,9 +128,7 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
     goto failed;
   }
 
-  format.m_frames = m_uiBufferLen;
   m_format = format;
-  sinkRetFormat = format.m_dataFormat;
 
   hr = m_pAudioClient->GetService(IID_IAudioRenderClient, reinterpret_cast<void**>(m_pRenderClient.ReleaseAndGetAddressOf()));
   EXIT_ON_FAILURE(hr, "Could not initialize the WASAPI render client interface.")
@@ -897,14 +885,16 @@ initialize:
   {
     /* WASAPI requires aligned buffer */
     /* Get the next aligned frame     */
-    hr = m_pAudioClient->GetBufferSize(&m_uiBufferLen);
+    UINT32 numBufferFrames{0};
+    hr = m_pAudioClient->GetBufferSize(&numBufferFrames);
     if (FAILED(hr))
     {
       CLog::LogF(LOGERROR, "GetBufferSize Failed : {}", CWIN32Util::FormatHRESULT(hr));
       return false;
     }
 
-    audioSinkBufferDurationMsec = (REFERENCE_TIME) ((10000.0 * 1000 / wfxex.Format.nSamplesPerSec * m_uiBufferLen) + 0.5);
+    audioSinkBufferDurationMsec =
+        (REFERENCE_TIME)((10000.0 * 1000 / wfxex.Format.nSamplesPerSec * numBufferFrames) + 0.5);
 
     /* Release the previous allocations */
     /* Create a new audio client */
@@ -957,12 +947,15 @@ initialize:
   m_sinkLatency = static_cast<double>(hnsLatency * 2) / 10000000; // 100ns intervals to s
 
   // Get the buffer size and calculate the frames for AE
-  hr = m_pAudioClient->GetBufferSize(&m_uiBufferLen);
+  UINT32 numBufferFrames{0};
+  hr = m_pAudioClient->GetBufferSize(&numBufferFrames);
   if (FAILED(hr))
   {
     CLog::LogF(LOGERROR, "GetBufferSize Failed : {}", CWIN32Util::FormatHRESULT(hr));
     return false;
   }
+
+  format.m_frames = numBufferFrames;
 
   CLog::LogF(LOGINFO, "WASAPI Exclusive Mode Sink Initialized using: {}, {}, {}",
              CAEUtil::DataFormatToStr(format.m_dataFormat), wfxex.Format.nSamplesPerSec,
@@ -981,7 +974,7 @@ initialize:
   CLog::Log(LOGDEBUG, "  Format cBSize   : {}", wfxex.Format.cbSize);
   CLog::Log(LOGDEBUG, "  Channel Layout  : {}", ((std::string)format.m_channelLayout));
   CLog::Log(LOGDEBUG, "  Channel Mask    : {}", wfxex.dwChannelMask);
-  CLog::Log(LOGDEBUG, "  Frames          : {}", m_uiBufferLen);
+  CLog::Log(LOGDEBUG, "  Frames          : {}", format.m_frames);
   CLog::Log(LOGDEBUG, "  Frame Size      : {}", format.m_frameSize);
   CLog::Log(LOGDEBUG, "  Periodicity (ms): {:.1f}", (float)audioSinkBufferDurationMsec / 10000.0f);
   CLog::Log(LOGDEBUG, "  Latency (s)     : {:.3f}", m_sinkLatency);
