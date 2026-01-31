@@ -572,11 +572,11 @@ double CSpeed::To(Unit speedUnit) const
   return value;
 }
 
-// Returns temperature as localized string
-std::string CSpeed::ToString(Unit speedUnit) const
+// Returns speed as localized string
+std::string CSpeed::ToString(Unit speedUnit, unsigned int decimals) const
 {
   if (!IsValid())
     return "";
 
-  return StringUtils::Format("{:2.0f}", To(speedUnit));
+  return StringUtils::Format("{:.{}f}", To(speedUnit), decimals);
 }
