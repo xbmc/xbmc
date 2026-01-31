@@ -378,19 +378,19 @@ bool CDisplaySettings::OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
     const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
     const auto playbackMode = static_cast<STEREOSCOPIC_PLAYBACK_MODE>(
         settings->GetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE));
-    if (stereomodeSetting->GetValue() == RENDER_STEREO_MODE_OFF)
+    if (stereomodeSetting->GetValue() == static_cast<int>(RENDER_STEREO_MODE::OFF))
     {
       // if preferred playback mode was OFF, update playback mode to ignore
       if (playbackMode == STEREOSCOPIC_PLAYBACK_MODE_PREFERRED)
         settings->SetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE, STEREOSCOPIC_PLAYBACK_MODE_IGNORE);
-      return stereomodeSetting->SetValue(RENDER_STEREO_MODE_AUTO);
+      return stereomodeSetting->SetValue(static_cast<int>(RENDER_STEREO_MODE::AUTO));
     }
-    else if (stereomodeSetting->GetValue() == RENDER_STEREO_MODE_MONO)
+    else if (stereomodeSetting->GetValue() == static_cast<int>(RENDER_STEREO_MODE::MONO))
     {
       // if preferred playback mode was MONO, update playback mode
       if (playbackMode == STEREOSCOPIC_PLAYBACK_MODE_PREFERRED)
         settings->SetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE, STEREOSCOPIC_PLAYBACK_MODE_MONO);
-      return stereomodeSetting->SetValue(RENDER_STEREO_MODE_AUTO);
+      return stereomodeSetting->SetValue(static_cast<int>(RENDER_STEREO_MODE::AUTO));
     }
   }
 
@@ -849,11 +849,12 @@ void CDisplaySettings::SettingOptionsStereoscopicModesFiller(
   {
     const CStereoscopicsManager &stereoscopicsManager = gui->GetStereoscopicsManager();
 
-    for (int i = RENDER_STEREO_MODE_OFF; i < RENDER_STEREO_MODE_COUNT; i++)
+    for (int i = static_cast<int>(RENDER_STEREO_MODE::OFF);
+         i < static_cast<int>(RENDER_STEREO_MODE::COUNT); ++i)
     {
       const auto mode = static_cast<RENDER_STEREO_MODE>(i);
       if (CServiceBroker::GetRenderSystem()->SupportsStereo(mode))
-        list.emplace_back(stereoscopicsManager.GetLabelForStereoMode(mode), mode);
+        list.emplace_back(stereoscopicsManager.GetLabelForStereoMode(mode), i);
     }
   }
 }
@@ -863,15 +864,16 @@ void CDisplaySettings::SettingOptionsPreferredStereoscopicViewModesFiller(
 {
   const CStereoscopicsManager &stereoscopicsManager = CServiceBroker::GetGUI()->GetStereoscopicsManager();
 
-  list.emplace_back(stereoscopicsManager.GetLabelForStereoMode(RENDER_STEREO_MODE_AUTO),
-                    RENDER_STEREO_MODE_AUTO); // option for autodetect
+  list.emplace_back(stereoscopicsManager.GetLabelForStereoMode(RENDER_STEREO_MODE::AUTO),
+                    static_cast<int>(RENDER_STEREO_MODE::AUTO)); // option for autodetect
   // don't add "off" to the list of preferred modes as this doesn't make sense
-  for (int i = RENDER_STEREO_MODE_OFF +1; i < RENDER_STEREO_MODE_COUNT; i++)
+  for (int i = static_cast<int>(RENDER_STEREO_MODE::OFF) + 1;
+       i < static_cast<int>(RENDER_STEREO_MODE::COUNT); ++i)
   {
     const auto mode = static_cast<RENDER_STEREO_MODE>(i);
     // also skip "mono" mode which is no real stereoscopic mode
-    if (mode != RENDER_STEREO_MODE_MONO && CServiceBroker::GetRenderSystem()->SupportsStereo(mode))
-      list.emplace_back(stereoscopicsManager.GetLabelForStereoMode(mode), mode);
+    if (mode != RENDER_STEREO_MODE::MONO && CServiceBroker::GetRenderSystem()->SupportsStereo(mode))
+      list.emplace_back(stereoscopicsManager.GetLabelForStereoMode(mode), i);
   }
 }
 

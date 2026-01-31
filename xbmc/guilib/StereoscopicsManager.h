@@ -87,8 +87,8 @@ private:
    * @param mode The string to convert
    * @return -1 if not found, otherwise the according int of the RENDER_STEREO_MODE enum
    */
-  static int ConvertStringToGuiStereoMode(const std::string &mode);
-  static int ConvertVideoToGuiStereoMode(const std::string &mode);
+  static RENDER_STEREO_MODE ConvertStringToGuiStereoMode(const std::string& mode);
+  static RENDER_STEREO_MODE ConvertVideoToGuiStereoMode(const std::string& mode);
 
   // Construction parameters
   std::shared_ptr<CSettings> m_settings;

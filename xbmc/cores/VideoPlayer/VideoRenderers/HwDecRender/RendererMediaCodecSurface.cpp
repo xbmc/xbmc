@@ -154,24 +154,24 @@ void CRendererMediaCodecSurface::RenderUpdate(int index, int index2, bool clear,
 
   // this hack is needed to get the 2D mode of a 3D movie going
   RENDER_STEREO_MODE stereo_mode = CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode();
-  if (stereo_mode)
+  if (stereo_mode != RENDER_STEREO_MODE::OFF)
     CServiceBroker::GetWinSystem()->GetGfxContext().SetStereoView(RenderStereoView::LEFT);
 
   ManageRenderArea();
 
-  if (stereo_mode)
+  if (stereo_mode != RENDER_STEREO_MODE::OFF)
     CServiceBroker::GetWinSystem()->GetGfxContext().SetStereoView(RenderStereoView::OFF);
 
   m_surfDestRect = m_destRect;
   switch (stereo_mode)
   {
-    case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
+    case RENDER_STEREO_MODE::SPLIT_HORIZONTAL:
       m_surfDestRect.y2 *= 2.0;
       break;
-    case RENDER_STEREO_MODE_SPLIT_VERTICAL:
+    case RENDER_STEREO_MODE::SPLIT_VERTICAL:
       m_surfDestRect.x2 *= 2.0;
       break;
-    case RENDER_STEREO_MODE_MONO:
+    case RENDER_STEREO_MODE::MONO:
       if (CONF_FLAGS_STEREO_MODE_MASK(m_iFlags) == CONF_FLAGS_STEREO_MODE_TAB)
         m_surfDestRect.y2 = m_surfDestRect.y2 * 2.0f;
       else

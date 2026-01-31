@@ -253,14 +253,14 @@ CPoint CGraphicContext::StereoCorrection(const CPoint &point) const
 {
   CPoint res(point);
 
-  if(m_stereoMode == RENDER_STEREO_MODE_SPLIT_HORIZONTAL)
+  if (m_stereoMode == RENDER_STEREO_MODE::SPLIT_HORIZONTAL)
   {
     const RESOLUTION_INFO info = GetResInfo();
 
     if (m_stereoView == RenderStereoView::RIGHT)
       res.y += info.iHeight + info.iBlanking;
   }
-  if(m_stereoMode == RENDER_STEREO_MODE_SPLIT_VERTICAL)
+  if (m_stereoMode == RENDER_STEREO_MODE::SPLIT_VERTICAL)
   {
     const RESOLUTION_INFO info = GetResInfo();
 
@@ -606,7 +606,7 @@ const RESOLUTION_INFO CGraphicContext::GetResInfo(RESOLUTION res) const
 {
   RESOLUTION_INFO info = CDisplaySettings::GetInstance().GetResolutionInfo(res);
 
-  if(m_stereoMode == RENDER_STEREO_MODE_SPLIT_HORIZONTAL)
+  if (m_stereoMode == RENDER_STEREO_MODE::SPLIT_HORIZONTAL)
   {
     if((info.dwFlags & D3DPRESENTFLAG_MODE3DTB) == 0)
     {
@@ -620,7 +620,7 @@ const RESOLUTION_INFO CGraphicContext::GetResInfo(RESOLUTION res) const
     info.iSubtitles       = (info.iSubtitles      - info.iBlanking) / 2;
   }
 
-  if(m_stereoMode == RENDER_STEREO_MODE_SPLIT_VERTICAL)
+  if (m_stereoMode == RENDER_STEREO_MODE::SPLIT_VERTICAL)
   {
     if((info.dwFlags & D3DPRESENTFLAG_MODE3DSBS) == 0)
     {
@@ -888,7 +888,7 @@ CRect CGraphicContext::GenerateAABB(const CRect &rect) const
 void CGraphicContext::UpdateCameraPosition(const CPoint &camera, const float &factor)
 {
   float stereoFactor = 0.f;
-  if (m_stereoMode != RENDER_STEREO_MODE_OFF && m_stereoMode != RENDER_STEREO_MODE_MONO &&
+  if (m_stereoMode != RENDER_STEREO_MODE::OFF && m_stereoMode != RENDER_STEREO_MODE::MONO &&
       m_stereoView != RenderStereoView::OFF)
   {
     RESOLUTION_INFO res = GetResInfo();

@@ -267,8 +267,8 @@ protected:
   UITransform m_finalTransform;
   std::stack<UITransform, std::vector<UITransform>> m_transforms;
   RenderStereoView m_stereoView = RenderStereoView::OFF;
-  RENDER_STEREO_MODE m_stereoMode = RENDER_STEREO_MODE_OFF;
-  RENDER_STEREO_MODE m_nextStereoMode = RENDER_STEREO_MODE_OFF;
+  RENDER_STEREO_MODE m_stereoMode = RENDER_STEREO_MODE::OFF;
+  RENDER_STEREO_MODE m_nextStereoMode = RENDER_STEREO_MODE::OFF;
 
   bool m_isTransferPQ{false};
   RENDER_ORDER m_renderOrder{RENDER_ORDER_ALL_BACK_TO_FRONT};

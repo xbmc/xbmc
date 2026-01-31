@@ -456,9 +456,9 @@ void CGUIDialogVideoSettings::InitializeSettings()
 
   // stereoscopic settings
   entries.clear();
-  entries.emplace_back(16316, RENDER_STEREO_MODE_OFF);
-  entries.emplace_back(36503, RENDER_STEREO_MODE_SPLIT_HORIZONTAL);
-  entries.emplace_back(36504, RENDER_STEREO_MODE_SPLIT_VERTICAL);
+  entries.emplace_back(16316, static_cast<int>(RENDER_STEREO_MODE::OFF));
+  entries.emplace_back(36503, static_cast<int>(RENDER_STEREO_MODE::SPLIT_HORIZONTAL));
+  entries.emplace_back(36504, static_cast<int>(RENDER_STEREO_MODE::SPLIT_VERTICAL));
   AddSpinner(groupStereoscopic, SETTING_VIDEO_STEREOSCOPICMODE, 36535, SettingLevel::Basic, videoSettings.m_StereoMode, entries);
   AddToggle(groupStereoscopic, SETTING_VIDEO_STEREOSCOPICINVERT, 36536, SettingLevel::Basic, videoSettings.m_StereoInvert);
 

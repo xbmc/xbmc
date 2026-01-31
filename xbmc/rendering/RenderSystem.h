@@ -99,7 +99,7 @@ protected:
   int          m_RenderVersionMinor;
   int          m_RenderVersionMajor;
   RenderStereoView m_stereoView = RenderStereoView::OFF;
-  RENDER_STEREO_MODE m_stereoMode = RENDER_STEREO_MODE_OFF;
+  RENDER_STEREO_MODE m_stereoMode = RENDER_STEREO_MODE::OFF;
   bool m_limitedColorRange = false;
   bool m_transferPQ{false};
 
