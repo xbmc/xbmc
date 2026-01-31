@@ -297,7 +297,8 @@ bool CApplication::Create()
 #ifdef TARGET_POSIX //! @todo Win32 has no special://home/ mapping by default, so we
   //!       must create these here. Ideally this should be using special://home/ and
   //!      be platform agnostic (i.e. unify the InitDirectories*() functions)
-  if (!CServiceBroker::GetAppParams()->HasPlatformDirectories())
+  if (CServiceBroker::GetAppParams()->GetUserDirectoriesLocation() !=
+      UserDirectoriesLocation::PLATFORM)
 #endif
   {
     CDirectory::Create("special://xbmc/addons");

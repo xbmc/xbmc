@@ -57,8 +57,9 @@ typedef DWORD (__stdcall *tSSO)( IN DWORD SymOptions );
 // GetCurrentPackageFullName
 typedef LONG (__stdcall *GCPFN)(UINT32*, PWSTR);
 
+// Definition of class static members
 std::string win32_exception::mVersion;
-bool win32_exception::m_platformDir;
+std::string win32_exception::m_platformDir;
 
 bool win32_exception::write_minidump(EXCEPTION_POINTERS* pEp)
 {
@@ -74,8 +75,7 @@ bool win32_exception::write_minidump(EXCEPTION_POINTERS* pEp)
                                      stLocalTime.hour, stLocalTime.minute, stLocalTime.second);
 
   dumpFileName = CWIN32Util::SmbToUnc(
-      URIUtils::AddFileToFolder(CWIN32Util::GetProfilePath(m_platformDir),
-                                CUtil::MakeLegalFileName(std::move(dumpFileName))));
+      URIUtils::AddFileToFolder(m_platformDir, CUtil::MakeLegalFileName(std::move(dumpFileName))));
 
   dumpFileNameW = KODI::PLATFORM::WINDOWS::ToW(dumpFileName);
   HANDLE hDumpFile = CreateFileW(dumpFileNameW.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
@@ -191,8 +191,7 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
                                      stLocalTime.hour, stLocalTime.minute, stLocalTime.second);
 
   dumpFileName = CWIN32Util::SmbToUnc(
-      URIUtils::AddFileToFolder(CWIN32Util::GetProfilePath(m_platformDir),
-                                CUtil::MakeLegalFileName(std::move(dumpFileName))));
+      URIUtils::AddFileToFolder(m_platformDir, CUtil::MakeLegalFileName(std::move(dumpFileName))));
 
   dumpFileNameW = KODI::PLATFORM::WINDOWS::ToW(dumpFileName);
   hDumpFile = CreateFileW(dumpFileNameW.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);

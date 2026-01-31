@@ -17,6 +17,13 @@
 
 class CFileItemList;
 
+enum class UserDirectoriesLocation
+{
+  PLATFORM, //!< Standard platform location for application preferences
+  PORTABLE, //!< portable_data directory, next to the application executable
+  TEST, //!< test_data directory, next to the application executable
+};
+
 class CAppParams
 {
 public:
@@ -32,11 +39,8 @@ public:
   bool IsStandAlone() const { return m_standAlone; }
   void SetStandAlone(bool standAlone) { m_standAlone = standAlone; }
 
-  bool HasPlatformDirectories() const { return m_platformDirectories; }
-  void SetPlatformDirectories(bool platformDirectories)
-  {
-    m_platformDirectories = platformDirectories;
-  }
+  UserDirectoriesLocation GetUserDirectoriesLocation() const { return m_userDirectoriesLocation; }
+  void SetUserDirectoriesLocation(UserDirectoriesLocation loc) { m_userDirectoriesLocation = loc; }
 
   bool IsTestMode() const { return m_testmode; }
   void SetTestMode(bool testMode) { m_testmode = testMode; }
@@ -82,7 +86,6 @@ private:
 
   bool m_startFullScreen{false};
   bool m_standAlone{false};
-  bool m_platformDirectories{true};
   bool m_testmode{false};
 
   std::string m_settingsFile;
@@ -92,6 +95,7 @@ private:
   std::string m_glInterface;
 
   std::unique_ptr<CFileItemList> m_playlist;
+  UserDirectoriesLocation m_userDirectoriesLocation{UserDirectoriesLocation::PLATFORM};
 
   // The raw command-line arguments
   std::vector<std::string> m_rawArgs;

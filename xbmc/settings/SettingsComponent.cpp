@@ -33,6 +33,9 @@
 
 namespace
 {
+const std::string PORTABLE_DIRECTORY = "portable_data/";
+const std::string TEST_DIRECTORY = "test_data/";
+
 void CreateUserDirs()
 {
   XFILE::CDirectory::Create("special://home/");
@@ -56,7 +59,7 @@ void CreateUserDirs()
   XFILE::CDirectory::Create(archiveCachePath);
 }
 
-bool InitDirectoriesLinux(bool bPlatformDirectories)
+bool InitDirectoriesLinux(UserDirectoriesLocation loc)
 {
   /*
    The following is the directory mapping for Platform Specific Mode:
@@ -136,7 +139,7 @@ bool InitDirectoriesLinux(bool bPlatformDirectories)
   setenv(envAppBinHome, appBinPath.c_str(), 0);
   setenv(envAppHome, appPath.c_str(), 0);
 
-  if (bPlatformDirectories)
+  if (loc == UserDirectoriesLocation::PLATFORM)
   {
     // map our special drives
     CSpecialProtocol::SetXBMCBinPath(appBinPath);
@@ -157,11 +160,14 @@ bool InitDirectoriesLinux(bool bPlatformDirectories)
     CSpecialProtocol::SetXBMCBinPath(appBinPath);
     CSpecialProtocol::SetXBMCAltBinAddonPath(binaddonAltDir);
     CSpecialProtocol::SetXBMCPath(appPath);
-    CSpecialProtocol::SetHomePath(URIUtils::AddFileToFolder(appPath, "portable_data"));
-    CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(appPath, "portable_data/userdata"));
 
-    std::string strTempPath = appPath;
-    strTempPath = URIUtils::AddFileToFolder(strTempPath, "portable_data/temp");
+    const std::string homePath = URIUtils::AddFileToFolder(
+        appPath, loc == UserDirectoriesLocation::PORTABLE ? PORTABLE_DIRECTORY : TEST_DIRECTORY);
+
+    CSpecialProtocol::SetHomePath(homePath);
+    CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(homePath, "userdata"));
+
+    std::string strTempPath = URIUtils::AddFileToFolder(homePath, "temp");
     if (getenv(envAppTemp))
       strTempPath = getenv(envAppTemp);
     CSpecialProtocol::SetTempPath(strTempPath);
@@ -177,9 +183,9 @@ bool InitDirectoriesLinux(bool bPlatformDirectories)
 }
 
 #if defined(TARGET_DARWIN)
-bool InitDirectoriesOSX(bool bPlatformDirectories)
+bool InitDirectoriesOSX(UserDirectoriesLocation loc)
 #else
-bool InitDirectoriesOSX(bool /*bPlatformDirectories*/)
+bool InitDirectoriesOSX(UserDirectoriesLocation)
 #endif
 {
 #if defined(TARGET_DARWIN)
@@ -206,7 +212,7 @@ bool InitDirectoriesOSX(bool /*bPlatformDirectories*/)
   std::string frameworksPath = CUtil::GetFrameworksPath();
   CSpecialProtocol::SetXBMCFrameworksPath(frameworksPath);
 
-  if (bPlatformDirectories)
+  if (loc == UserDirectoriesLocation::PLATFORM)
   {
     // map our special drives
     CSpecialProtocol::SetXBMCBinPath(appPath);
@@ -253,10 +259,14 @@ bool InitDirectoriesOSX(bool /*bPlatformDirectories*/)
     CSpecialProtocol::SetXBMCBinPath(appPath);
     CSpecialProtocol::SetXBMCAltBinAddonPath(binaddonAltDir);
     CSpecialProtocol::SetXBMCPath(appPath);
-    CSpecialProtocol::SetHomePath(URIUtils::AddFileToFolder(appPath, "portable_data"));
-    CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(appPath, "portable_data/userdata"));
 
-    std::string strTempPath = URIUtils::AddFileToFolder(appPath, "portable_data/temp");
+    const std::string homePath = URIUtils::AddFileToFolder(
+        appPath, loc == UserDirectoriesLocation::PORTABLE ? PORTABLE_DIRECTORY : TEST_DIRECTORY);
+
+    CSpecialProtocol::SetHomePath(homePath);
+    CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(homePath, "userdata"));
+
+    const std::string strTempPath = URIUtils::AddFileToFolder(homePath, "temp");
     CSpecialProtocol::SetTempPath(strTempPath);
     CSpecialProtocol::SetLogPath(strTempPath);
     CreateUserDirs();
@@ -268,7 +278,7 @@ bool InitDirectoriesOSX(bool /*bPlatformDirectories*/)
 #endif
 }
 
-bool InitDirectoriesWin32(bool bPlatformDirectories)
+bool InitDirectoriesWin32(UserDirectoriesLocation loc)
 {
 #ifdef TARGET_WINDOWS
   std::string xbmcPath = CUtil::GetHomePath();
@@ -277,7 +287,7 @@ bool InitDirectoriesWin32(bool bPlatformDirectories)
   CSpecialProtocol::SetXBMCPath(xbmcPath);
   CSpecialProtocol::SetXBMCBinAddonPath(xbmcPath + "/addons");
 
-  std::string strWin32UserFolder = CWIN32Util::GetProfilePath(bPlatformDirectories);
+  std::string strWin32UserFolder = CWIN32Util::GetProfilePath(loc);
   CSpecialProtocol::SetLogPath(strWin32UserFolder);
   CSpecialProtocol::SetHomePath(strWin32UserFolder);
   CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(strWin32UserFolder, "userdata"));
@@ -309,11 +319,10 @@ void CSettingsComponent::Initialize()
   if (m_state == State::DEINITED)
   {
     const std::shared_ptr<const CAppParams> params = CServiceBroker::GetAppParams();
+    const UserDirectoriesLocation loc = params->GetUserDirectoriesLocation();
 
     // only the InitDirectories* for the current platform should return true
-    InitDirectoriesLinux(params->HasPlatformDirectories()) ||
-        InitDirectoriesOSX(params->HasPlatformDirectories()) ||
-        InitDirectoriesWin32(params->HasPlatformDirectories());
+    InitDirectoriesLinux(loc) || InitDirectoriesOSX(loc) || InitDirectoriesWin32(loc);
 
     m_settings->Initialize();
 
