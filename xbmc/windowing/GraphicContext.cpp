@@ -257,14 +257,14 @@ CPoint CGraphicContext::StereoCorrection(const CPoint &point) const
   {
     const RESOLUTION_INFO info = GetResInfo();
 
-    if(m_stereoView == RENDER_STEREO_VIEW_RIGHT)
+    if (m_stereoView == RENDER_STEREO_VIEW::RIGHT)
       res.y += info.iHeight + info.iBlanking;
   }
   if(m_stereoMode == RENDER_STEREO_MODE_SPLIT_VERTICAL)
   {
     const RESOLUTION_INFO info = GetResInfo();
 
-    if(m_stereoView == RENDER_STEREO_VIEW_RIGHT)
+    if (m_stereoView == RENDER_STEREO_VIEW::RIGHT)
       res.x += info.iWidth  + info.iBlanking;
   }
   return res;
@@ -459,7 +459,7 @@ void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdat
     m_scissors.SetRect(0, 0, (float)m_iScreenWidth, (float)m_iScreenHeight);
 
     // make sure all stereo stuff are correctly setup
-    SetStereoView(RENDER_STEREO_VIEW_OFF);
+    SetStereoView(RENDER_STEREO_VIEW::OFF);
 
     // update anyone that relies on sizing information
     CServiceBroker::GetInputManager().SetMouseResolution(info_org.iWidth, info_org.iHeight, 1, 1);
@@ -517,7 +517,7 @@ void CGraphicContext::ApplyVideoResolution(RESOLUTION res)
   m_scissors.SetRect(0, 0, (float)m_iScreenWidth, (float)m_iScreenHeight);
 
   // make sure all stereo stuff are correctly setup
-  SetStereoView(RENDER_STEREO_VIEW_OFF);
+  SetStereoView(RENDER_STEREO_VIEW::OFF);
 
   // update anyone that relies on sizing information
   RESOLUTION_INFO info_org  = CDisplaySettings::GetInstance().GetResolutionInfo(res);
@@ -888,15 +888,14 @@ CRect CGraphicContext::GenerateAABB(const CRect &rect) const
 void CGraphicContext::UpdateCameraPosition(const CPoint &camera, const float &factor)
 {
   float stereoFactor = 0.f;
-  if ( m_stereoMode != RENDER_STEREO_MODE_OFF
-    && m_stereoMode != RENDER_STEREO_MODE_MONO
-    && m_stereoView != RENDER_STEREO_VIEW_OFF)
+  if (m_stereoMode != RENDER_STEREO_MODE_OFF && m_stereoMode != RENDER_STEREO_MODE_MONO &&
+      m_stereoView != RENDER_STEREO_VIEW::OFF)
   {
     RESOLUTION_INFO res = GetResInfo();
     RESOLUTION_INFO desktop = GetResInfo(RES_DESKTOP);
     float scaleRes = (static_cast<float>(res.iWidth) / static_cast<float>(desktop.iWidth));
     float scaleX = static_cast<float>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_LOOKANDFEEL_STEREOSTRENGTH)) * scaleRes;
-    stereoFactor = factor * (m_stereoView == RENDER_STEREO_VIEW_LEFT ? scaleX : -scaleX);
+    stereoFactor = factor * (m_stereoView == RENDER_STEREO_VIEW::LEFT ? scaleX : -scaleX);
   }
   CServiceBroker::GetRenderSystem()->SetCameraPosition(camera, m_iScreenWidth, m_iScreenHeight, stereoFactor);
 }

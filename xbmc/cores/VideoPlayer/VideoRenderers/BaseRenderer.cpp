@@ -313,27 +313,29 @@ void CBaseRenderer::ManageRenderArea()
   m_sourceRect.y2 = (float)m_sourceHeight;
 
   unsigned int stereo_mode  = CONF_FLAGS_STEREO_MODE_MASK(m_iFlags);
-  int          stereo_view  = CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoView();
+  auto stereo_view = CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoView();
 
   if(CONF_FLAGS_STEREO_CADENCE(m_iFlags) == CONF_FLAGS_STEREO_CADANCE_RIGHT_LEFT)
   {
-    if     (stereo_view == RENDER_STEREO_VIEW_LEFT)  stereo_view = RENDER_STEREO_VIEW_RIGHT;
-    else if(stereo_view == RENDER_STEREO_VIEW_RIGHT) stereo_view = RENDER_STEREO_VIEW_LEFT;
+    if (stereo_view == RENDER_STEREO_VIEW::LEFT)
+      stereo_view = RENDER_STEREO_VIEW::RIGHT;
+    else if (stereo_view == RENDER_STEREO_VIEW::RIGHT)
+      stereo_view = RENDER_STEREO_VIEW::LEFT;
   }
 
   switch(stereo_mode)
   {
     case CONF_FLAGS_STEREO_MODE_TAB:
-      if (stereo_view == RENDER_STEREO_VIEW_LEFT)
+      if (stereo_view == RENDER_STEREO_VIEW::LEFT)
         m_sourceRect.y2 *= 0.5f;
-      else if(stereo_view == RENDER_STEREO_VIEW_RIGHT)
+      else if (stereo_view == RENDER_STEREO_VIEW::RIGHT)
         m_sourceRect.y1 += m_sourceRect.y2*0.5f;
       break;
 
     case CONF_FLAGS_STEREO_MODE_SBS:
-      if     (stereo_view == RENDER_STEREO_VIEW_LEFT)
+      if (stereo_view == RENDER_STEREO_VIEW::LEFT)
         m_sourceRect.x2 *= 0.5f;
-      else if(stereo_view == RENDER_STEREO_VIEW_RIGHT)
+      else if (stereo_view == RENDER_STEREO_VIEW::RIGHT)
         m_sourceRect.x1 += m_sourceRect.x2*0.5f;
       break;
 

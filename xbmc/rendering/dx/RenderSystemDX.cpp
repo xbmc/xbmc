@@ -341,7 +341,7 @@ bool CRenderSystemDX::ClearBuffers(KODI::UTILS::COLOR::Color color)
     && m_stereoMode != RENDER_STEREO_MODE_MONO)
   {
     // if stereo anaglyph/tab/sbs, data was cleared when left view was rendered
-    if (m_stereoView == RENDER_STEREO_VIEW_RIGHT)
+    if (m_stereoView == RENDER_STEREO_VIEW::RIGHT)
     {
       // execute command's queue
       m_deviceResources->FinishCommandList();
@@ -565,36 +565,36 @@ void CRenderSystemDX::SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW 
   UINT writeMask = D3D11_COLOR_WRITE_ENABLE_ALL;
   if(m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN)
   {
-    if(m_stereoView == RENDER_STEREO_VIEW_LEFT)
+    if (m_stereoView == RENDER_STEREO_VIEW::LEFT)
       writeMask = D3D11_COLOR_WRITE_ENABLE_RED;
-    else if(m_stereoView == RENDER_STEREO_VIEW_RIGHT)
+    else if (m_stereoView == RENDER_STEREO_VIEW::RIGHT)
       writeMask = D3D11_COLOR_WRITE_ENABLE_BLUE | D3D11_COLOR_WRITE_ENABLE_GREEN;
   }
   if(m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA)
   {
-    if(m_stereoView == RENDER_STEREO_VIEW_LEFT)
+    if (m_stereoView == RENDER_STEREO_VIEW::LEFT)
       writeMask = D3D11_COLOR_WRITE_ENABLE_GREEN;
-    else if(m_stereoView == RENDER_STEREO_VIEW_RIGHT)
+    else if (m_stereoView == RENDER_STEREO_VIEW::RIGHT)
       writeMask = D3D11_COLOR_WRITE_ENABLE_BLUE | D3D11_COLOR_WRITE_ENABLE_RED;
   }
   if (m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE)
   {
-    if (m_stereoView == RENDER_STEREO_VIEW_LEFT)
+    if (m_stereoView == RENDER_STEREO_VIEW::LEFT)
       writeMask = D3D11_COLOR_WRITE_ENABLE_RED | D3D11_COLOR_WRITE_ENABLE_GREEN;
-    else if (m_stereoView == RENDER_STEREO_VIEW_RIGHT)
+    else if (m_stereoView == RENDER_STEREO_VIEW::RIGHT)
       writeMask = D3D11_COLOR_WRITE_ENABLE_BLUE;
   }
   if ( RENDER_STEREO_MODE_INTERLACED    == m_stereoMode
     || RENDER_STEREO_MODE_CHECKERBOARD  == m_stereoMode)
   {
-    if (m_stereoView == RENDER_STEREO_VIEW_RIGHT)
+    if (m_stereoView == RENDER_STEREO_VIEW::RIGHT)
     {
       m_pContext->OMSetRenderTargets(1, m_rightEyeTex.GetAddressOfRTV(), m_deviceResources->GetDSV());
     }
   }
   else if (RENDER_STEREO_MODE_HARDWAREBASED == m_stereoMode)
   {
-    m_deviceResources->SetStereoIdx(m_stereoView == RENDER_STEREO_VIEW_RIGHT ? 1 : 0);
+    m_deviceResources->SetStereoIdx(m_stereoView == RENDER_STEREO_VIEW::RIGHT ? 1 : 0);
 
     m_pContext->OMSetRenderTargets(1, m_deviceResources->GetBackBuffer().GetAddressOfRTV(), m_deviceResources->GetDSV());
   }
@@ -673,7 +673,7 @@ void CRenderSystemDX::SetAlphaBlendEnable(bool enable)
 
 CD3DTexture& CRenderSystemDX::GetBackBuffer()
 {
-  if (m_stereoView == RENDER_STEREO_VIEW_RIGHT && m_rightEyeTex.Get())
+  if (m_stereoView == RENDER_STEREO_VIEW::RIGHT && m_rightEyeTex.Get())
     return m_rightEyeTex;
 
   return m_deviceResources->GetBackBuffer();
