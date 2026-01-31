@@ -97,12 +97,12 @@ void CRendererStarfish::ManageRenderArea()
   const RENDER_STEREO_MODE stereoMode =
       CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode();
   if (stereoMode == RENDER_STEREO_MODE_MONO)
-    CServiceBroker::GetWinSystem()->GetGfxContext().SetStereoView(RENDER_STEREO_VIEW::LEFT);
+    CServiceBroker::GetWinSystem()->GetGfxContext().SetStereoView(RenderStereoView::LEFT);
 
   CBaseRenderer::ManageRenderArea();
 
   if (stereoMode == RENDER_STEREO_MODE_MONO)
-    CServiceBroker::GetWinSystem()->GetGfxContext().SetStereoView(RENDER_STEREO_VIEW::OFF);
+    CServiceBroker::GetWinSystem()->GetGfxContext().SetStereoView(RenderStereoView::OFF);
 
   switch (stereoMode)
   {

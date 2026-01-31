@@ -849,15 +849,15 @@ void CApplication::Render()
   {
     if (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode())
     {
-      CServiceBroker::GetWinSystem()->GetGfxContext().SetStereoView(RENDER_STEREO_VIEW::LEFT);
+      CServiceBroker::GetWinSystem()->GetGfxContext().SetStereoView(RenderStereoView::LEFT);
       hasRendered |= CServiceBroker::GetGUI()->GetWindowManager().Render();
 
       if (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() != RENDER_STEREO_MODE_MONO)
       {
-        CServiceBroker::GetWinSystem()->GetGfxContext().SetStereoView(RENDER_STEREO_VIEW::RIGHT);
+        CServiceBroker::GetWinSystem()->GetGfxContext().SetStereoView(RenderStereoView::RIGHT);
         hasRendered |= CServiceBroker::GetGUI()->GetWindowManager().Render();
       }
-      CServiceBroker::GetWinSystem()->GetGfxContext().SetStereoView(RENDER_STEREO_VIEW::OFF);
+      CServiceBroker::GetWinSystem()->GetGfxContext().SetStereoView(RenderStereoView::OFF);
     }
     else
     {

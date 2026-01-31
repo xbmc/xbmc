@@ -8,7 +8,7 @@
 
 #pragma once
 
-enum class RENDER_STEREO_VIEW
+enum class RenderStereoView
 {
   OFF,
   LEFT,
