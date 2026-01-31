@@ -64,7 +64,6 @@ private:
     double m_avgTimeWaiting{20.0};
     double m_sinkLatency{0.0}; // time in seconds of total duration of the two WASAPI buffers
 
-    unsigned int m_uiBufferLen{0}; // wasapi endpoint buffer size, in frames
     uint64_t m_sinkFrames{0};
     uint64_t m_clockFreq{0};
 

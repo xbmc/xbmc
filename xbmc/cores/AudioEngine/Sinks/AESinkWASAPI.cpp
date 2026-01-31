@@ -133,7 +133,6 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
     goto failed;
   }
 
-  format.m_frames = m_uiBufferLen;
   m_format = format;
 
   hr = m_pAudioClient->GetService(IID_IAudioRenderClient, reinterpret_cast<void**>(m_pRenderClient.ReleaseAndGetAddressOf()));
@@ -891,14 +890,16 @@ initialize:
   {
     /* WASAPI requires aligned buffer */
     /* Get the next aligned frame     */
-    hr = m_pAudioClient->GetBufferSize(&m_uiBufferLen);
+    UINT32 numBufferFrames{0};
+    hr = m_pAudioClient->GetBufferSize(&numBufferFrames);
     if (FAILED(hr))
     {
       CLog::LogF(LOGERROR, "GetBufferSize Failed : {}", CWIN32Util::FormatHRESULT(hr));
       return false;
     }
 
-    audioSinkBufferDurationMsec = (REFERENCE_TIME) ((10000.0 * 1000 / wfxex.Format.nSamplesPerSec * m_uiBufferLen) + 0.5);
+    audioSinkBufferDurationMsec =
+        (REFERENCE_TIME)((10000.0 * 1000 / wfxex.Format.nSamplesPerSec * numBufferFrames) + 0.5);
 
     /* Release the previous allocations */
     /* Create a new audio client */
@@ -951,12 +952,15 @@ initialize:
   m_sinkLatency = static_cast<double>(hnsLatency * 2) / 10000000; // 100ns intervals to s
 
   // Get the buffer size and calculate the frames for AE
-  hr = m_pAudioClient->GetBufferSize(&m_uiBufferLen);
+  UINT32 numBufferFrames{0};
+  hr = m_pAudioClient->GetBufferSize(&numBufferFrames);
   if (FAILED(hr))
   {
     CLog::LogF(LOGERROR, "GetBufferSize Failed : {}", CWIN32Util::FormatHRESULT(hr));
     return false;
   }
+
+  format.m_frames = numBufferFrames;
 
   CLog::LogF(LOGINFO, "WASAPI Exclusive Mode Sink Initialized using: {}, {}, {}",
              CAEUtil::DataFormatToStr(format.m_dataFormat), wfxex.Format.nSamplesPerSec,
@@ -975,7 +979,7 @@ initialize:
   CLog::Log(LOGDEBUG, "  Format cBSize   : {}", wfxex.Format.cbSize);
   CLog::Log(LOGDEBUG, "  Channel Layout  : {}", ((std::string)format.m_channelLayout));
   CLog::Log(LOGDEBUG, "  Channel Mask    : {}", wfxex.dwChannelMask);
-  CLog::Log(LOGDEBUG, "  Frames          : {}", m_uiBufferLen);
+  CLog::Log(LOGDEBUG, "  Frames          : {}", format.m_frames);
   CLog::Log(LOGDEBUG, "  Frame Size      : {}", format.m_frameSize);
   CLog::Log(LOGDEBUG, "  Periodicity (ms): {:.1f}", (float)audioSinkBufferDurationMsec / 10000.0f);
   CLog::Log(LOGDEBUG, "  Latency (s)     : {:.3f}", m_sinkLatency);
