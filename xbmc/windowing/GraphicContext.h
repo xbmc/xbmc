@@ -15,13 +15,11 @@
 #include "utils/Geometry.h" // for CRect/CPoint
 #include "utils/TransformMatrix.h" // for the members m_guiTransform etc.
 
-#include <map>
 #include <stack>
 #include <string>
 #include <vector>
 
 // required by clients
-#include "ServiceBroker.h"
 #include "WinSystem.h"
 
 #define D3DPRESENTFLAG_INTERLACED   1

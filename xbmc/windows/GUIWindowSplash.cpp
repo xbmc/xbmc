@@ -8,6 +8,7 @@
 
 #include "GUIWindowSplash.h"
 
+#include "ServiceBroker.h"
 #include "Util.h"
 #include "guilib/GUIImage.h"
 #include "guilib/GUIWindowManager.h"

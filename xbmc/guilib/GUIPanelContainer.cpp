@@ -11,6 +11,7 @@
 #include "FileItem.h"
 #include "GUIListItemLayout.h"
 #include "GUIMessage.h"
+#include "ServiceBroker.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"

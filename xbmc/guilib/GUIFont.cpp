@@ -9,6 +9,7 @@
 #include "GUIFont.h"
 
 #include "GUIFontTTF.h"
+#include "ServiceBroker.h"
 #include "utils/CharsetConverter.h"
 #include "utils/MathUtils.h"
 #include "utils/TimeUtils.h"

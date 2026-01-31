@@ -15,6 +15,7 @@
 
 #include "Teletext.h"
 
+#include "ServiceBroker.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "filesystem/SpecialProtocol.h"

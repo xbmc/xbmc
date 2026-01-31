@@ -18,6 +18,7 @@
 #include "DVDOverlayContainer.h"
 #include "Interface/TimingConstants.h"
 #include "Process/ProcessInfo.h"
+#include "ServiceBroker.h"
 #include "VideoRenderers/RenderManager.h"
 #include "application/ApplicationVolumeHandling.h"
 #include "cores/AudioEngine/Encoders/AEEncoderFFmpeg.h"

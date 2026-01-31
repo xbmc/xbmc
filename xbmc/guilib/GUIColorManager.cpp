@@ -8,6 +8,7 @@
 
 #include "GUIColorManager.h"
 
+#include "ServiceBroker.h"
 #include "addons/Skin.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIComponent.h"

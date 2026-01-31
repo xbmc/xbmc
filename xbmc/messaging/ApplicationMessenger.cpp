@@ -8,6 +8,7 @@
 
 #include "ApplicationMessenger.h"
 
+#include "ServiceBroker.h"
 #include "guilib/GUIMessage.h"
 #include "messaging/IMessageTarget.h"
 #include "threads/SingleLock.h"

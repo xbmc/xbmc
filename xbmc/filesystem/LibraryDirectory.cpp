@@ -12,6 +12,7 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "GUIInfoManager.h"
+#include "ServiceBroker.h"
 #include "SmartPlaylistDirectory.h"
 #include "URL.h"
 #include "guilib/GUIControlFactory.h" // for label parsing

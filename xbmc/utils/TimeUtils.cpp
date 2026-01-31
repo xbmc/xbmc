@@ -7,6 +7,8 @@
  */
 
 #include "TimeUtils.h"
+
+#include "ServiceBroker.h"
 #include "XBDateTime.h"
 #include "windowing/GraphicContext.h"
 

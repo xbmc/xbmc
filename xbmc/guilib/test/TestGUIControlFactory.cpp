@@ -8,6 +8,7 @@
 
 #include "GUIInfoManager.h"
 #include "LangInfo.h"
+#include "ServiceBroker.h"
 #include "guilib/GUIAction.h"
 #include "guilib/GUIColorManager.h"
 #include "guilib/GUIControlFactory.h"

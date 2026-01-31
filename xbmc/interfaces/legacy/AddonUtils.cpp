@@ -9,6 +9,7 @@
 #include "AddonUtils.h"
 
 #include "LanguageHook.h"
+#include "ServiceBroker.h"
 #include "addons/Skin.h"
 #include "application/Application.h"
 #include "guilib/GUIComponent.h"

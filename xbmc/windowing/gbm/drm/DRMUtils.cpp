@@ -8,6 +8,7 @@
 
 #include "DRMUtils.h"
 
+#include "ServiceBroker.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/DRMHelpers.h"

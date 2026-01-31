@@ -10,6 +10,7 @@
 
 #include "DVDOverlayImage.h"
 #include "DVDStreamInfo.h"
+#include "ServiceBroker.h"
 #include "cores/FFmpeg.h"
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"

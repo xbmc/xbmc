@@ -9,6 +9,7 @@
 #include "VideoPlayerWebOS.h"
 
 #include "MediaPipelineWebOS.h"
+#include "ServiceBroker.h"
 #include "VideoPlayerAudioWebOS.h"
 #include "VideoPlayerVideoWebOS.h"
 #include "settings/Settings.h"

@@ -12,6 +12,7 @@
 #include "../RenderFactory.h"
 #include "../RenderFlags.h"
 #include "DVDCodecs/Video/DVDVideoCodecAndroidMediaCodec.h"
+#include "ServiceBroker.h"
 #include "rendering/RenderSystem.h"
 #include "settings/MediaSettings.h"
 #include "utils/TimeUtils.h"

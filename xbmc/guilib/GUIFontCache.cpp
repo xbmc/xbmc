@@ -9,6 +9,7 @@
 #include "GUIFontTTF.h"
 #include "windowing/GraphicContext.h"
 
+#include <map>
 #include <stdint.h>
 #include <vector>
 

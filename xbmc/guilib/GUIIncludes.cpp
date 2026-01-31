@@ -9,6 +9,7 @@
 #include "GUIIncludes.h"
 
 #include "GUIInfoManager.h"
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "addons/Skin.h"
 #include "filesystem/ResourceFile.h"
