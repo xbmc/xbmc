@@ -530,7 +530,7 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   bool changeScreen = false;   // display is changed
   bool stereoChange =
       IsStereoEnabled() != (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() ==
-                            RENDER_STEREO_MODE::HARDWAREBASED);
+                            RenderStereoMode::HARDWAREBASED);
 
   if (m_nWidth != res.iWidth || m_nHeight != res.iHeight || m_fRefreshRate != res.fRefreshRate ||
       !oldMonitor || oldMonitor->hMonitor != newMonitor->hMonitor || stereoChange ||

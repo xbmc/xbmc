@@ -15,7 +15,7 @@ enum class RenderStereoView
   RIGHT,
 };
 
-enum class RENDER_STEREO_MODE
+enum class RenderStereoMode
 {
   OFF,
   SPLIT_HORIZONTAL,

@@ -152,16 +152,16 @@ bool CRenderSystemDX::DestroyRenderSystem()
 
 void CRenderSystemDX::CheckInterlacedStereoView()
 {
-  RENDER_STEREO_MODE stereoMode = CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode();
+  RenderStereoMode stereoMode = CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode();
 
-  if (m_rightEyeTex.Get() && RENDER_STEREO_MODE::INTERLACED != stereoMode &&
-      RENDER_STEREO_MODE::CHECKERBOARD != stereoMode)
+  if (m_rightEyeTex.Get() && RenderStereoMode::INTERLACED != stereoMode &&
+      RenderStereoMode::CHECKERBOARD != stereoMode)
   {
     m_rightEyeTex.Release();
   }
 
-  if (!m_rightEyeTex.Get() && (RENDER_STEREO_MODE::INTERLACED == stereoMode ||
-                               RENDER_STEREO_MODE::CHECKERBOARD == stereoMode))
+  if (!m_rightEyeTex.Get() &&
+      (RenderStereoMode::INTERLACED == stereoMode || RenderStereoMode::CHECKERBOARD == stereoMode))
   {
     const auto outputSize = m_deviceResources->GetOutputSize();
     DXGI_FORMAT texFormat = m_deviceResources->GetBackBuffer().GetFormat();
@@ -169,7 +169,7 @@ void CRenderSystemDX::CheckInterlacedStereoView()
     {
       CLog::LogF(LOGERROR, "Failed to create right eye buffer.");
       CServiceBroker::GetWinSystem()->GetGfxContext().SetStereoMode(
-          RENDER_STEREO_MODE::SPLIT_HORIZONTAL); // try fallback to split horizontal
+          RenderStereoMode::SPLIT_HORIZONTAL); // try fallback to split horizontal
     }
     else
       m_deviceResources->Unregister(&m_rightEyeTex); // we will handle its health
@@ -279,8 +279,8 @@ void CRenderSystemDX::PresentRender(bool rendered, bool videoLayer)
   if (!m_bRenderCreated)
     return;
 
-  if (rendered && (m_stereoMode == RENDER_STEREO_MODE::INTERLACED ||
-                   m_stereoMode == RENDER_STEREO_MODE::CHECKERBOARD))
+  if (rendered && (m_stereoMode == RenderStereoMode::INTERLACED ||
+                   m_stereoMode == RenderStereoMode::CHECKERBOARD))
   {
     auto m_pContext = m_deviceResources->GetD3DContext();
 
@@ -290,7 +290,7 @@ void CRenderSystemDX::PresentRender(bool rendered, bool videoLayer)
     auto outputSize = m_deviceResources->GetOutputSize();
     CRect destRect = { 0.0f, 0.0f, float(outputSize.Width), float(outputSize.Height) };
 
-    SHADER_METHOD method = RENDER_STEREO_MODE::INTERLACED == m_stereoMode
+    SHADER_METHOD method = RenderStereoMode::INTERLACED == m_stereoMode
                                ? SHADER_METHOD_RENDER_STEREO_INTERLACED_RIGHT
                                : SHADER_METHOD_RENDER_STEREO_CHECKERBOARD_RIGHT;
     SetAlphaBlendEnable(true);
@@ -351,7 +351,7 @@ void CRenderSystemDX::InvalidateColorBuffer()
     return;
 
   /* clear is not affected by stipple pattern, so we can only clear on first frame */
-  if (m_stereoMode == RENDER_STEREO_MODE::INTERLACED && m_stereoView == RenderStereoView::RIGHT)
+  if (m_stereoMode == RenderStereoMode::INTERLACED && m_stereoView == RenderStereoView::RIGHT)
     return;
 
   // some platforms prefer a clear, instead of rendering over
@@ -376,7 +376,7 @@ bool CRenderSystemDX::ClearBuffers(KODI::UTILS::COLOR::Color color)
   CD3DHelper::XMStoreColor(fColor, color);
   ID3D11RenderTargetView* pRTView = m_deviceResources->GetBackBuffer().GetRenderTarget();
 
-  if (m_stereoMode != RENDER_STEREO_MODE::OFF && m_stereoMode != RENDER_STEREO_MODE::MONO)
+  if (m_stereoMode != RenderStereoMode::OFF && m_stereoMode != RenderStereoMode::MONO)
   {
     // if stereo anaglyph/tab/sbs, data was cleared when left view was rendered
     if (m_stereoView == RenderStereoView::RIGHT)
@@ -385,15 +385,15 @@ bool CRenderSystemDX::ClearBuffers(KODI::UTILS::COLOR::Color color)
       m_deviceResources->FinishCommandList();
 
       // do not clear RT for anaglyph modes
-      if (m_stereoMode == RENDER_STEREO_MODE::ANAGLYPH_GREEN_MAGENTA ||
-          m_stereoMode == RENDER_STEREO_MODE::ANAGLYPH_RED_CYAN ||
-          m_stereoMode == RENDER_STEREO_MODE::ANAGLYPH_YELLOW_BLUE)
+      if (m_stereoMode == RenderStereoMode::ANAGLYPH_GREEN_MAGENTA ||
+          m_stereoMode == RenderStereoMode::ANAGLYPH_RED_CYAN ||
+          m_stereoMode == RenderStereoMode::ANAGLYPH_YELLOW_BLUE)
       {
         pRTView = nullptr;
       }
       // for interlaced/checkerboard clear view for right texture
-      else if (m_stereoMode == RENDER_STEREO_MODE::INTERLACED ||
-               m_stereoMode == RENDER_STEREO_MODE::CHECKERBOARD)
+      else if (m_stereoMode == RenderStereoMode::INTERLACED ||
+               m_stereoMode == RenderStereoMode::CHECKERBOARD)
       {
         pRTView = m_rightEyeTex.GetRenderTarget();
       }
@@ -615,7 +615,7 @@ void CRenderSystemDX::OnDXDeviceRestored()
   CRenderSystemDX::InitRenderSystem();
 }
 
-void CRenderSystemDX::SetStereoMode(RENDER_STEREO_MODE mode, RenderStereoView view)
+void CRenderSystemDX::SetStereoMode(RenderStereoMode mode, RenderStereoView view)
 {
   CRenderSystemBase::SetStereoMode(mode, view);
 
@@ -625,36 +625,36 @@ void CRenderSystemDX::SetStereoMode(RENDER_STEREO_MODE mode, RenderStereoView vi
   auto m_pContext = m_deviceResources->GetD3DContext();
 
   UINT writeMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-  if (m_stereoMode == RENDER_STEREO_MODE::ANAGLYPH_RED_CYAN)
+  if (m_stereoMode == RenderStereoMode::ANAGLYPH_RED_CYAN)
   {
     if (m_stereoView == RenderStereoView::LEFT)
       writeMask = D3D11_COLOR_WRITE_ENABLE_RED;
     else if (m_stereoView == RenderStereoView::RIGHT)
       writeMask = D3D11_COLOR_WRITE_ENABLE_BLUE | D3D11_COLOR_WRITE_ENABLE_GREEN;
   }
-  if (m_stereoMode == RENDER_STEREO_MODE::ANAGLYPH_GREEN_MAGENTA)
+  if (m_stereoMode == RenderStereoMode::ANAGLYPH_GREEN_MAGENTA)
   {
     if (m_stereoView == RenderStereoView::LEFT)
       writeMask = D3D11_COLOR_WRITE_ENABLE_GREEN;
     else if (m_stereoView == RenderStereoView::RIGHT)
       writeMask = D3D11_COLOR_WRITE_ENABLE_BLUE | D3D11_COLOR_WRITE_ENABLE_RED;
   }
-  if (m_stereoMode == RENDER_STEREO_MODE::ANAGLYPH_YELLOW_BLUE)
+  if (m_stereoMode == RenderStereoMode::ANAGLYPH_YELLOW_BLUE)
   {
     if (m_stereoView == RenderStereoView::LEFT)
       writeMask = D3D11_COLOR_WRITE_ENABLE_RED | D3D11_COLOR_WRITE_ENABLE_GREEN;
     else if (m_stereoView == RenderStereoView::RIGHT)
       writeMask = D3D11_COLOR_WRITE_ENABLE_BLUE;
   }
-  if (RENDER_STEREO_MODE::INTERLACED == m_stereoMode ||
-      RENDER_STEREO_MODE::CHECKERBOARD == m_stereoMode)
+  if (RenderStereoMode::INTERLACED == m_stereoMode ||
+      RenderStereoMode::CHECKERBOARD == m_stereoMode)
   {
     if (m_stereoView == RenderStereoView::RIGHT)
     {
       m_pContext->OMSetRenderTargets(1, m_rightEyeTex.GetAddressOfRTV(), m_deviceResources->GetDSV());
     }
   }
-  else if (RENDER_STEREO_MODE::HARDWAREBASED == m_stereoMode)
+  else if (RenderStereoMode::HARDWAREBASED == m_stereoMode)
   {
     m_deviceResources->SetStereoIdx(m_stereoView == RenderStereoView::RIGHT ? 1 : 0);
 
@@ -682,17 +682,17 @@ void CRenderSystemDX::SetStereoMode(RENDER_STEREO_MODE mode, RenderStereoView vi
   }
 }
 
-bool CRenderSystemDX::SupportsStereo(RENDER_STEREO_MODE mode) const
+bool CRenderSystemDX::SupportsStereo(RenderStereoMode mode) const
 {
   switch (mode)
   {
-    case RENDER_STEREO_MODE::ANAGLYPH_RED_CYAN:
-    case RENDER_STEREO_MODE::ANAGLYPH_GREEN_MAGENTA:
-    case RENDER_STEREO_MODE::ANAGLYPH_YELLOW_BLUE:
-    case RENDER_STEREO_MODE::INTERLACED:
-    case RENDER_STEREO_MODE::CHECKERBOARD:
+    case RenderStereoMode::ANAGLYPH_RED_CYAN:
+    case RenderStereoMode::ANAGLYPH_GREEN_MAGENTA:
+    case RenderStereoMode::ANAGLYPH_YELLOW_BLUE:
+    case RenderStereoMode::INTERLACED:
+    case RenderStereoMode::CHECKERBOARD:
       return true;
-    case RENDER_STEREO_MODE::HARDWAREBASED:
+    case RenderStereoMode::HARDWAREBASED:
       return m_deviceResources->IsStereoAvailable();
     default:
       return CRenderSystemBase::SupportsStereo(mode);

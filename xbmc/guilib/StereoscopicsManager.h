@@ -43,13 +43,13 @@ public:
 
   void Initialize();
 
-  RENDER_STEREO_MODE GetStereoMode(void) const;
-  std::string DetectStereoModeByString(const std::string &needle) const;
-  std::string GetLabelForStereoMode(const RENDER_STEREO_MODE &mode) const;
+  RenderStereoMode GetStereoMode(void) const;
+  std::string DetectStereoModeByString(const std::string& needle) const;
+  std::string GetLabelForStereoMode(const RenderStereoMode mode) const;
 
-  void SetStereoMode(const RENDER_STEREO_MODE &mode);
+  void SetStereoMode(const RenderStereoMode mode);
 
-  static const char* ConvertGuiStereoModeToString(const RENDER_STEREO_MODE &mode);
+  static const char* ConvertGuiStereoModeToString(const RenderStereoMode mode);
   /**
    * @brief Converts a stereoscopics related action/command from Builtins and JsonRPC into the according cAction ID.
    * @param command The command/action
@@ -70,30 +70,31 @@ public:
   bool OnAction(const CAction &action);
 
 private:
-  RENDER_STEREO_MODE GetNextSupportedStereoMode(const RENDER_STEREO_MODE &currentMode, int step = 1) const;
-  RENDER_STEREO_MODE GetStereoModeByUserChoice() const;
-  RENDER_STEREO_MODE GetStereoModeOfPlayingVideo(void) const;
-  RENDER_STEREO_MODE GetPreferredPlaybackMode(void) const;
+  RenderStereoMode GetNextSupportedStereoMode(const RenderStereoMode currentMode,
+                                              int step = 1) const;
+  RenderStereoMode GetStereoModeByUserChoice() const;
+  RenderStereoMode GetStereoModeOfPlayingVideo(void) const;
+  RenderStereoMode GetPreferredPlaybackMode(void) const;
   std::string GetVideoStereoMode() const;
   bool IsVideoStereoscopic() const;
 
-  void SetStereoModeByUser(const RENDER_STEREO_MODE &mode);
+  void SetStereoModeByUser(const RenderStereoMode mode);
 
-  void ApplyStereoMode(const RENDER_STEREO_MODE &mode, bool notify = true);
+  void ApplyStereoMode(const RenderStereoMode mode, bool notify = true);
   void OnPlaybackStopped(void);
 
   /**
    * @brief will convert a string representation into a GUI stereo mode
    * @param mode The string to convert
-   * @return -1 if not found, otherwise the according int of the RENDER_STEREO_MODE enum
+   * @return RenderStereoMode::UNDEFINED if not found, otherwise the according int of the RenderStereoMode enum
    */
-  static RENDER_STEREO_MODE ConvertStringToGuiStereoMode(const std::string& mode);
-  static RENDER_STEREO_MODE ConvertVideoToGuiStereoMode(const std::string& mode);
+  static RenderStereoMode ConvertStringToGuiStereoMode(const std::string& mode);
+  static RenderStereoMode ConvertVideoToGuiStereoMode(const std::string& mode);
 
   // Construction parameters
   std::shared_ptr<CSettings> m_settings;
 
   // Stereoscopic parameters
-  RENDER_STEREO_MODE m_stereoModeSetByUser;
-  RENDER_STEREO_MODE m_lastStereoModeSetByUser;
+  RenderStereoMode m_stereoModeSetByUser;
+  RenderStereoMode m_lastStereoModeSetByUser;
 };

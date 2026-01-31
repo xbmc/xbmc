@@ -245,9 +245,10 @@ std::shared_ptr<CDVDOverlay> CDVDOverlayCodecFFmpeg::GetOverlay()
       }
     }
 
-    RENDER_STEREO_MODE render_stereo_mode = CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode();
-    if (render_stereo_mode != RENDER_STEREO_MODE::OFF &&
-        render_stereo_mode != RENDER_STEREO_MODE::HARDWAREBASED)
+    RenderStereoMode render_stereo_mode =
+        CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode();
+    if (render_stereo_mode != RenderStereoMode::OFF &&
+        render_stereo_mode != RenderStereoMode::HARDWAREBASED)
     {
       if (rect.h > m_height / 2)
       {

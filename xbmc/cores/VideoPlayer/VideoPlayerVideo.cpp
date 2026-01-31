@@ -705,14 +705,14 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)
     if (m_picture.stereoMode.empty())
     {
       std::string stereoMode;
-      switch (static_cast<RENDER_STEREO_MODE>(m_processInfo.GetVideoSettings().m_StereoMode))
+      switch (static_cast<RenderStereoMode>(m_processInfo.GetVideoSettings().m_StereoMode))
       {
-        case RENDER_STEREO_MODE::SPLIT_VERTICAL:
+        case RenderStereoMode::SPLIT_VERTICAL:
           stereoMode = "left_right";
           if (m_processInfo.GetVideoSettings().m_StereoInvert)
             stereoMode = "right_left";
           break;
-        case RENDER_STEREO_MODE::SPLIT_HORIZONTAL:
+        case RenderStereoMode::SPLIT_HORIZONTAL:
           stereoMode = "top_bottom";
           if (m_processInfo.GetVideoSettings().m_StereoInvert)
             stereoMode = "bottom_top";

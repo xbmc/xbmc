@@ -639,9 +639,10 @@ void CVideoThumbLoader::DetectAndAddMissingItemData(CFileItem &item)
     CVideoSettings itemVideoSettings;
     m_videoDatabase->Open();
     if (m_videoDatabase->GetVideoSettings(item, itemVideoSettings) &&
-        itemVideoSettings.m_StereoMode != static_cast<int>(RENDER_STEREO_MODE::OFF))
+        itemVideoSettings.m_StereoMode != static_cast<int>(RenderStereoMode::OFF))
     {
-      stereoMode = CStereoscopicsManager::ConvertGuiStereoModeToString(static_cast<RENDER_STEREO_MODE>(itemVideoSettings.m_StereoMode));
+      stereoMode = CStereoscopicsManager::ConvertGuiStereoModeToString(
+          static_cast<RenderStereoMode>(itemVideoSettings.m_StereoMode));
     }
     m_videoDatabase->Close();
 

@@ -33,6 +33,6 @@ namespace JSONRPC
                                                   CVariant& result);
   private:
     static JSONRPC_STATUS GetPropertyValue(const std::string &property, CVariant &result);
-    static CVariant GetStereoModeObjectFromGuiMode(const RENDER_STEREO_MODE &mode);
+    static CVariant GetStereoModeObjectFromGuiMode(const RenderStereoMode mode);
   };
 }

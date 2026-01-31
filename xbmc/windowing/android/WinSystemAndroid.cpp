@@ -50,7 +50,7 @@ CWinSystemAndroid::CWinSystemAndroid()
   m_displayWidth = 0;
   m_displayHeight = 0;
 
-  m_stereo_mode = RENDER_STEREO_MODE::OFF;
+  m_stereo_mode = RenderStereoMode::OFF;
 
   m_dispResetTimer = new CTimer(this);
 

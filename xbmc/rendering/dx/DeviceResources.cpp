@@ -245,7 +245,7 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
 
   bool recreate =
       m_stereoEnabled != (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() ==
-                          RENDER_STEREO_MODE::HARDWAREBASED);
+                          RenderStereoMode::HARDWAREBASED);
   if (!!bFullScreen && !fullscreen)
   {
     CLog::LogF(LOGDEBUG, "switching to windowed");
@@ -272,7 +272,7 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
           // force resolution change for stereo mode
           // some drivers unable to create stereo swapchain if mode does not match @23.976
           || CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() ==
-                 RENDER_STEREO_MODE::HARDWAREBASED)
+                 RenderStereoMode::HARDWAREBASED)
       {
         CLog::LogF(LOGDEBUG, "changing display mode to {}x{}@{:0.3f}{}", res.iWidth, res.iHeight,
                    res.fRefreshRate, (res.dwFlags & D3DPRESENTFLAG_INTERLACED) ? "i" : "");
@@ -588,7 +588,7 @@ void DX::DeviceResources::ResizeBuffers()
 
   CLog::LogF(LOGDEBUG, "resize buffers.");
 
-  bool bHWStereoEnabled = RENDER_STEREO_MODE::HARDWAREBASED ==
+  bool bHWStereoEnabled = RenderStereoMode::HARDWAREBASED ==
                           CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode();
   bool windowed = true;
   HRESULT hr = E_FAIL;
@@ -707,7 +707,7 @@ void DX::DeviceResources::ResizeBuffers()
 
       // fallback to split_horizontal mode.
       CServiceBroker::GetWinSystem()->GetGfxContext().SetStereoMode(
-          RENDER_STEREO_MODE::SPLIT_HORIZONTAL);
+          RenderStereoMode::SPLIT_HORIZONTAL);
     }
 
     if (FAILED(hr))
