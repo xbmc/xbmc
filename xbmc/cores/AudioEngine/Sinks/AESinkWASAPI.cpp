@@ -11,10 +11,7 @@
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
-#include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
-#include "utils/TimeUtils.h"
-#include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
 #include "platform/win32/WIN32Util.h"
@@ -89,13 +86,11 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
     return false;
 
   m_device = device;
-  bool bdefault = false;
   HRESULT hr = S_FALSE;
 
-  if(StringUtils::EndsWithNoCase(device, std::string("default")))
-    bdefault = true;
+  const bool bdefault = device.find("default") != std::string::npos;
 
-  if(!bdefault)
+  if (!bdefault)
   {
     hr = CAESinkFactoryWin::ActivateWASAPIDevice(device, &m_pDevice);
     EXIT_ON_FAILURE(hr, "Retrieval of WASAPI endpoint failed.")
@@ -103,7 +98,7 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
 
   if (!m_pDevice)
   {
-    if(!bdefault)
+    if (!bdefault)
     {
       CLog::LogF(LOGINFO,
                  "Could not locate the device named \"{}\" in the list of WASAPI endpoint devices. "
