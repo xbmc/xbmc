@@ -9,12 +9,8 @@
 #pragma once
 
 #include "EventPacket.h"
-#include "ServiceBroker.h"
 #include "Socket.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
 #include "threads/CriticalSection.h"
-#include "threads/Thread.h"
 
 #include <chrono>
 #include <list>
@@ -143,14 +139,7 @@ namespace EVENTCLIENT
       return m_deviceName;
     }
 
-    void RefreshSettings()
-    {
-      const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-      m_iRepeatDelay =
-          std::chrono::milliseconds(settings->GetInt(CSettings::SETTING_SERVICES_ESINITIALDELAY));
-      m_iRepeatSpeed = std::chrono::milliseconds(
-          settings->GetInt(CSettings::SETTING_SERVICES_ESCONTINUOUSDELAY));
-    }
+    void RefreshSettings();
 
     SOCKETS::CAddress& Address()
     {

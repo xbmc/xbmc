@@ -19,6 +19,8 @@
 #include "input/actions/ActionIDs.h"
 #include "input/actions/ActionTranslator.h"
 #include "interfaces/builtins/Builtins.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/SystemInfo.h"
 #include "utils/log.h"
 
