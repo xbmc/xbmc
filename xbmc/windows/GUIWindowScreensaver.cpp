@@ -20,6 +20,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "windowing/WinSystem.h"
 
 using namespace KODI;
 

@@ -27,6 +27,7 @@
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "windowing/WinSystem.h"
 
 #include <algorithm>
 #include <memory>

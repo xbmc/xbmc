@@ -13,6 +13,7 @@
 #include "ImageSettings.h"
 #include "ServiceBroker.h"
 #include "utils/log.h"
+#include "windowing/WinSystem.h"
 
 #include <cassert>
 

@@ -20,6 +20,7 @@
 #include "utils/MathUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
 
 #include <algorithm>
 #include <cstdlib> // std::abs(int) prototype

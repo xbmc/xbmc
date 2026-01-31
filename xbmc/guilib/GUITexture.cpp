@@ -16,6 +16,7 @@
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
 #include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
 
 #include <stdexcept>
 

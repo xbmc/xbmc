@@ -36,6 +36,7 @@
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
 
 // clang-format off
 // This breaks fmt because of SEP define, don't include

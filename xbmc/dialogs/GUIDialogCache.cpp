@@ -17,6 +17,7 @@
 #include "threads/SystemClock.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+#include "windowing/WinSystem.h"
 
 #include <mutex>
 

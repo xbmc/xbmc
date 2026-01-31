@@ -14,6 +14,7 @@
 #include "input/keyboard/Key.h"
 #include "utils/ColorUtils.h"
 #include "utils/StringUtils.h"
+#include "windowing/WinSystem.h"
 
 using namespace KODI;
 using namespace GUILIB;

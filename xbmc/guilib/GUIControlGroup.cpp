@@ -11,6 +11,7 @@
 #include "GUIMessage.h"
 #include "ServiceBroker.h"
 #include "input/mouse/MouseEvent.h"
+#include "windowing/WinSystem.h"
 
 #include <cassert>
 #include <utility>

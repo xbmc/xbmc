@@ -20,6 +20,7 @@
 #include "input/keymaps/ButtonTranslator.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/Variant.h"
+#include "windowing/XBMC_events.h"
 
 using namespace KODI;
 using namespace JSONRPC;

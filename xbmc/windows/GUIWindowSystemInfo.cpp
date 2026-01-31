@@ -21,6 +21,7 @@
 #include "utils/CPUInfo.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
+#include "windowing/WinSystem.h"
 
 constexpr int CONTROL_TEXT_START = 2;
 constexpr int CONTROL_TEXT_END = 13; // 12 lines

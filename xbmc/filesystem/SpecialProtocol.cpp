@@ -18,6 +18,7 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
 
 #include "PlatformDefs.h"
 #ifdef TARGET_POSIX

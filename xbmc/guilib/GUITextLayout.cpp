@@ -10,12 +10,14 @@
 
 #include "GUIColorManager.h"
 #include "GUIComponent.h"
-#include "GUIControl.h"
 #include "GUIFont.h"
 #include "ServiceBroker.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
+#include "utils/TransformMatrix.h"
 #include "utils/log.h"
+#include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
 
 #include <algorithm>
 #include <functional>

@@ -19,9 +19,6 @@
 #include <string>
 #include <vector>
 
-// required by clients
-#include "WinSystem.h"
-
 #define D3DPRESENTFLAG_INTERLACED   1
 #define D3DPRESENTFLAG_WIDESCREEN   2
 #define D3DPRESENTFLAG_PROGRESSIVE  4

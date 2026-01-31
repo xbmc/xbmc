@@ -14,6 +14,7 @@
 #include "utils/MathUtils.h"
 #include "utils/TimeUtils.h"
 #include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
 
 #include <mutex>
 

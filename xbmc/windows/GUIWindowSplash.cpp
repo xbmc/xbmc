@@ -14,6 +14,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "windowing/WinSystem.h"
 
 #include <memory>
 

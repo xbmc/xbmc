@@ -23,6 +23,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
+#include "windowing/WinSystem.h"
 
 CAppInboundProtocol::CAppInboundProtocol(CApplication &app) : m_pApp(app)
 {

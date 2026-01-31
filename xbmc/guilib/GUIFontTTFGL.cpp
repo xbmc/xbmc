@@ -22,6 +22,7 @@
 #include "utils/GLUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
 
 #include <cassert>
 #include <memory>

@@ -17,6 +17,7 @@
 #include "guilib/GUITexture.h"
 #include "utils/ColorUtils.h"
 #include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
 
 CGUIWindowScreensaverDim::CGUIWindowScreensaverDim(void)
   : CGUIDialog(WINDOW_SCREENSAVER_DIM, "", DialogModalityType::MODELESS)

@@ -34,6 +34,7 @@
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
+#include "windowing/WinSystem.h"
 
 #include <algorithm>
 #include <charconv>

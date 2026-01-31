@@ -22,6 +22,7 @@
 #include "threads/SystemClock.h"
 #include "utils/HTMLUtil.h"
 #include "utils/XTimeUtils.h"
+#include "windowing/WinSystem.h"
 
 #include <mutex>
 

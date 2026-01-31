@@ -13,6 +13,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "utils/Screenshot.h"
 #include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
 
 #include <memory>
 #include <mutex>

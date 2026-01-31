@@ -23,14 +23,15 @@
 #include "cores/VideoPlayer/Process/windows/ProcessInfoWin.h"
 #endif
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
-#include "cores/VideoPlayer/VideoRenderers/WinRenderer.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
+#include "cores/VideoPlayer/VideoRenderers/WinRenderer.h"
 #include "guilib/D3DResource.h"
 #include "guilib/GUIShaderDX.h"
 #include "guilib/GUITextureD3D.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/MathUtils.h"
 #include "utils/log.h"
+#include "windowing/WinSystem.h"
 
 #include <DirectXPackedVector.h>
 

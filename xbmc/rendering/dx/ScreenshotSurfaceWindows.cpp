@@ -15,6 +15,7 @@
 #include "utils/Screenshot.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
 
 #include <mutex>
 

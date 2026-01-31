@@ -13,6 +13,8 @@
 
 #include <array>
 
+class CEvent;
+
 class CGUIDialogProgress :
       public CGUIDialogBoxBase, public IProgressCallback
 {

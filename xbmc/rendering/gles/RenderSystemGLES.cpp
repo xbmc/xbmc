@@ -25,6 +25,7 @@
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
 
 #if defined(TARGET_LINUX)
 #include "utils/EGLUtils.h"

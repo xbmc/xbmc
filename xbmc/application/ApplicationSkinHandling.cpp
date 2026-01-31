@@ -47,6 +47,7 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 #include "video/dialogs/GUIDialogFullScreenInfo.h"
+#include "windowing/WinSystem.h"
 
 using namespace KODI::MESSAGING;
 

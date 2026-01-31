@@ -12,6 +12,7 @@
 #include "input/touch/generic/GenericTouchActionHandler.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
 
 static inline CPoint GetPos(libinput_event_touch *e)
 {
