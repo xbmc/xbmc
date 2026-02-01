@@ -550,6 +550,7 @@ void ProcessPlaylist(PlaylistMap& playlists, PlaylistInformation& titleInfo, Cli
 bool GetPlaylistsInformation(const CURL& url,
                              const std::string& realPath,
                              int flags,
+                             CFileItemList& allTitles,
                              ClipMap& clips,
                              PlaylistMap& playlists,
                              std::map<unsigned int, ClipInformation>& clipCache)
@@ -558,7 +559,7 @@ bool GetPlaylistsInformation(const CURL& url,
   {
     // Check cache
     const std::string& path{url.GetHostName()};
-    if (CServiceBroker::GetBlurayDiscCache()->GetMaps(path, playlists, clips))
+    if (CServiceBroker::GetBlurayDiscCache()->GetMaps(path, playlists, clips, allTitles))
     {
       CLog::LogF(LOGDEBUG, "Playlist information for {} retrieved from cache", path);
       return false;
@@ -566,7 +567,6 @@ bool GetPlaylistsInformation(const CURL& url,
 
     // Get all titles on disc
     // Sort by playlist for grouping later
-    CFileItemList allTitles;
     GetPlaylists(url, realPath, flags, GetTitle::GET_TITLES_EPISODES, allTitles,
                  SortTitles::SORT_TITLES_EPISODE, clipCache);
 
@@ -604,7 +604,7 @@ bool GetPlaylistsInformation(const CURL& url,
     CLog::LogF(LOGDEBUG, "*** Playlist information End ***");
 
     // Cache
-    CServiceBroker::GetBlurayDiscCache()->SetMaps(path, playlists, clips);
+    CServiceBroker::GetBlurayDiscCache()->SetMaps(path, playlists, clips, allTitles);
     CLog::LogF(LOGDEBUG, "Playlist information for {} cached", path);
 
     return true;
@@ -828,11 +828,13 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     // Get playlist, clip and language information
     ClipMap clips;
     PlaylistMap playlists;
-    GetPlaylistsInformation(m_url, m_realPath, m_flags, clips, playlists, m_clipCache);
+    CFileItemList allTitles;
+    GetPlaylistsInformation(m_url, m_realPath, m_flags, allTitles, clips, playlists, m_clipCache);
 
     // Get episode playlists
     CDiscDirectoryHelper helper;
-    helper.GetEpisodePlaylists(m_url, items, episodeIndex, episodesOnDisc, clips, playlists);
+    helper.GetEpisodePlaylists(m_url, items, allTitles, episodeIndex, episodesOnDisc, clips,
+                               playlists);
 
     // Heuristics failed so return all playlists
     if (items.IsEmpty())

@@ -164,6 +164,7 @@ public:
    * \brief Populates a CFileItemList with the playlist(s) corresponding to the given episode.
    * \param url bluray:// episode url
    * \param items CFileItemList to populate
+   * \param allTitles CFileItemList of all titles on the disc (populated by CBlurayDirectory). Used for streamdetails.
    * \param episodeIndex index into episodesOnDisc
    * \param episodesOnDisc vector array of CVideoInfoTags - one for each episode on the disc (populated by GetEpisodesOnDisc)
    * \param clips map of clips on disc (populated in CBlurayDirectory)
@@ -172,6 +173,7 @@ public:
    */
   bool GetEpisodePlaylists(const CURL& url,
                            CFileItemList& items,
+                           const CFileItemList& allTitles,
                            int episodeIndex,
                            const std::vector<KODI::VIDEO::EPISODE>& episodesOnDisc,
                            const ClipMap& clips,
@@ -269,6 +271,7 @@ private:
   void EndPlaylistSearch() const;
   void PopulateFileItems(const CURL& url,
                          CFileItemList& items,
+                         const CFileItemList& allTitles,
                          int episodeIndex,
                          const std::vector<KODI::VIDEO::EPISODE>& episodesOnDisc,
                          const PlaylistMap& playlists) const;
