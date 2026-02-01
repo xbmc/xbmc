@@ -1,3 +1,9 @@
+v3.1.3 (2025-10-12)
+- fix missing fanart from TMDB either way
+
+v3.1.2 (2025-10-05)
+- fix missing fanart from TMDB
+
 v3.1.1 (2025-03-21)
 - fix search for titles with accented characters
 - fix rare failure to find by IMDB number
