@@ -87,7 +87,7 @@ jobs:
 
             When user mentions @claude in a top-level comment on a PR:
             - If they ask for a review: perform the review and take appropriate action (approval or issues comment)
-            - For other requests: respond in collapsed section format:
+            - For other requests: MUST use `gh pr comment` to post response in collapsed section format:
               <details>
               <summary>🤖 Claude Response</summary>
 
@@ -107,7 +107,7 @@ jobs:
 
             Response guidelines:
             1. For code reviews (PRs) - if issues found:
-               - MUST post comment in collapsed section with list of issues
+               - MUST use `gh pr comment` to post comment in collapsed section with list of issues
                - Focus ONLY on actionable issues/problems
                - Report bugs, errors, security issues, performance problems, or logic flaws
                - Skip anything that's working correctly
@@ -120,6 +120,7 @@ jobs:
                - The approval itself is the only response needed
 
             3. For questions or requests on issues:
+               - MUST use `gh issue comment` to post your response
                - Answer the question or fulfill the request directly
                - Provide implementation suggestions, explanations, or analysis as requested
                - Avoid gratuitous praise but be helpful and constructive
