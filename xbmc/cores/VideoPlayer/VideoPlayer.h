@@ -27,6 +27,7 @@
 
 #include <atomic>
 #include <chrono>
+#include <deque>
 #include <memory>
 #include <unordered_map>
 #include <utility>
@@ -418,6 +419,9 @@ protected:
   void ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket);
+  void CacheSubtitlePacket(int streamId, DemuxPacket* pkt);
+  void ReplayCachedSubtitlePackets(int streamId);
+  void ClearSubtitlePacketCache();
   void ProcessTeletextData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessRadioRDSData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessAudioID3Data(CDemuxStream* pStream, DemuxPacket* pPacket);
@@ -572,6 +576,8 @@ protected:
   std::shared_ptr<CDVDDemux> m_pSubtitleDemuxer;
   std::unordered_map<int64_t, std::shared_ptr<CDVDDemux>> m_subtitleDemuxerMap;
   std::unique_ptr<CDVDDemuxCC> m_pCCDemuxer;
+
+  std::unordered_map<int, std::deque<DemuxPacket*>> m_subtitlePacketCache;
 
   CRenderManager m_renderManager;
 
