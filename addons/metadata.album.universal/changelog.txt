@@ -1,3 +1,9 @@
+[B]v3.1.18[/B]
+- Translations updates from Weblate
+
+[B]v3.1.17[/B]
+- Translations updates from Weblate
+
 [B]v3.1.16[/B]
 - Removed bad strings file
 
