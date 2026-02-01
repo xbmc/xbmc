@@ -57,6 +57,9 @@ public:
   const std::string& GetAudioBackend() const { return m_audioBackend; }
   void SetAudioBackend(std::string_view audioBackend) { m_audioBackend = audioBackend; }
 
+  int GetCardIndex() const { return m_cardIndex; }
+  void SetCardIndex(int cardIndex) { m_cardIndex = cardIndex; }
+
   const std::string& GetGlInterface() const { return m_glInterface; }
   void SetGlInterface(const std::string& glInterface) { m_glInterface = glInterface; }
 
@@ -93,6 +96,7 @@ private:
   std::string m_logTarget;
   std::string m_audioBackend;
   std::string m_glInterface;
+  int m_cardIndex{-1};
 
   std::unique_ptr<CFileItemList> m_playlist;
   UserDirectoriesLocation m_userDirectoriesLocation{UserDirectoriesLocation::PLATFORM};
