@@ -92,7 +92,12 @@ void CRPRenderManager::Deinitialize()
   }
   m_savestateBuffers.clear();
 
-  m_renderers.clear();
+  // Renderers may still hold GPU resources, so defer cleanup to the rendering
+  // or destructor thread
+  {
+    std::unique_lock<std::mutex> lock{m_oldRenderersMutex};
+    m_oldRenderers = std::move(m_renderers);
+  }
 
   m_state = RENDER_STATE::UNCONFIGURED;
 }
@@ -370,6 +375,12 @@ void CRPRenderManager::CheckFlush()
 
 void CRPRenderManager::RenderWindow(bool bClear, const RESOLUTION_INFO& coordsRes)
 {
+  // Clear any old renderers on the rendering thread
+  {
+    std::unique_lock<std::mutex> lock{m_oldRenderersMutex};
+    m_oldRenderers.clear();
+  }
+
   // Get a renderer for the fullscreen window
   std::shared_ptr<CRPBaseRenderer> renderer = GetRendererForSettings(nullptr);
   if (!renderer)
@@ -390,6 +401,12 @@ void CRPRenderManager::RenderControl(bool bClear,
                                      const CRect& renderRegion,
                                      const IGUIRenderSettings* renderSettings)
 {
+  // Clear any old renderers on the rendering thread
+  {
+    std::unique_lock<std::mutex> lock{m_oldRenderersMutex};
+    m_oldRenderers.clear();
+  }
+
   // Get a renderer for the control
   std::shared_ptr<CRPBaseRenderer> renderer = GetRendererForSettings(renderSettings);
   if (!renderer)
