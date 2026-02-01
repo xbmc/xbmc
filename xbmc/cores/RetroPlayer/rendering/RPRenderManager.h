@@ -243,6 +243,7 @@ private:
 
   // Render resources
   std::set<std::shared_ptr<CRPBaseRenderer>> m_renderers;
+  std::set<std::shared_ptr<CRPBaseRenderer>> m_oldRenderers;
   std::vector<IRenderBuffer*> m_pendingBuffers; // Only access from game thread
   std::vector<IRenderBuffer*> m_renderBuffers;
   std::map<AVPixelFormat, std::map<AVPixelFormat, SwsContext*>> m_scalers; // From -> to -> context
