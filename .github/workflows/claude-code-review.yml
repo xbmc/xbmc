@@ -33,10 +33,9 @@ jobs:
 
       - name: React to PR with eyes emoji
         run: |
-          gh pr view ${{ github.event.pull_request.number }} --json comments --jq '.comments[-1].id' | \
-          xargs -I {} gh api repos/${{ github.repository }}/issues/comments/{}/reactions \
+          gh api repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/reactions \
             --method POST \
-            --field content='eyes' || true
+            --field content='eyes'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
