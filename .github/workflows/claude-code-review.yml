@@ -70,6 +70,8 @@ jobs:
             Rules:
             - NO positive feedback, NO "looks good", NO summary sections, NO "✅ Strengths" sections
             - ONLY report actionable issues that need to be fixed
+            - Do NOT list confirmations or validations (e.g., "X is valid", "Y is correct") - only report PROBLEMS
+            - If you verify something is correct or answer a question from the PR description, do NOT list it as an issue
             - Keep each issue brief but clear
             - Use inline comments for code-specific issues
             - Skip severity sections if empty

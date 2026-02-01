@@ -119,6 +119,8 @@ jobs:
             - Be concise and direct
             - When listing items, use (1), (2), (3) format - NEVER use #1, #2, #3 to avoid GitHub treating them as issue links
             - For code reviews: Your job is to find problems, not to praise
+            - For code reviews: Do NOT list confirmations or validations (e.g., "X is valid", "Y is correct") - only report PROBLEMS
+            - For code reviews: If you verify something is correct or answer a question from the PR description, do NOT list it as an issue
             - For questions/requests: Your job is to be helpful, not to praise
 
           claude_args: |
