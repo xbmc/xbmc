@@ -1584,14 +1584,14 @@ CVideoInfoScanner::~CVideoInfoScanner()
             CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
     {
       const auto& strmdetails = movieDetails.m_streamDetails;
-      if (strmdetails.GetVideoCodec(1).empty() || strmdetails.GetVideoHeight(1) == 0 ||
-          strmdetails.GetVideoWidth(1) == 0 || strmdetails.GetVideoDuration(1) == 0)
-
+      if (strmdetails.GetSources() < CStreamDetail::NFO)
       {
         CDVDFileInfo::GetFileStreamDetails(pItem);
-        CLog::Log(LOGDEBUG, "VideoInfoScanner: Extracted filestream details from video file {}",
-                  CURL::GetRedacted(path));
+        CLog::LogF(LOGDEBUG, "Extracted filestream details from video file {}",
+                   CURL::GetRedacted(path));
       }
+      else
+        CLog::LogF(LOGDEBUG, "Filestream details from NFO file");
     }
 
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new item to {}:{}", content,

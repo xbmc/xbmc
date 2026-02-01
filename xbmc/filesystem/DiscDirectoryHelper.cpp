@@ -1147,8 +1147,11 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(CFileItem& item, MenuDecis
     selectedItem = *items[0]; // Main item
 
   item.SetDynPath(selectedItem.GetDynPath());
-  item.GetVideoInfoTag()->m_streamDetails = selectedItem.GetVideoInfoTag()->m_streamDetails;
   item.SetProperty("original_listitem_url", originalDynPath);
+
+  // If streamdetails are already present and they are from an nfo and should not be overwritten
+  if (!item.GetVideoInfoTag()->HasNFOStreamDetails())
+    item.GetVideoInfoTag()->m_streamDetails = selectedItem.GetVideoInfoTag()->m_streamDetails;
 
   return true;
 }
