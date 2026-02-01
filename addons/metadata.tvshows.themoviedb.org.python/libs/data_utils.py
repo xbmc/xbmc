@@ -24,7 +24,7 @@ from __future__ import absolute_import, unicode_literals
 
 import re
 import json
-from xbmc import Actor, VideoStreamDetail
+from xbmc import Actor
 from collections import namedtuple
 from .utils import safe_get, logger
 from . import settings, api_utils
@@ -166,7 +166,8 @@ def _add_season_info(show_info, vtag):
         logger.debug('adding information for season %s to list item' %
                      season['season_number'])
         vtag.addSeason(season['season_number'],
-                       safe_get(season, 'name', ''))
+                       safe_get(season, 'name', ''),
+                       _clean_plot(safe_get(season, 'overview', '')))
         for image_type, image_list in season.get('images', {}).items():
             if image_type == 'posters':
                 destination = 'poster'
@@ -213,13 +214,13 @@ def set_show_artwork(show_info, list_item):
             fanart_list = []
             for image in image_list:
                 theurl, previewurl = get_image_urls(image)
-                if image.get('iso_639_1') != None and SOURCE_SETTINGS["CATLANDSCAPE"] and theurl:
+                if (image.get('iso_639_1') != None and image.get('iso_639_1').lower() != 'xx') and SOURCE_SETTINGS["CATLANDSCAPE"] and theurl:
                     vtag.addAvailableArtwork(
                         theurl, arttype="landscape", preview=previewurl)
                 elif theurl:
                     fanart_list.append({'image': theurl})
             if fanart_list:
-                list_item.setAvailableFanart(fanart_list)
+                vtag.setAvailableFanart(fanart_list)
         else:
             if image_type == 'posters':
                 destination = 'poster'
@@ -245,12 +246,23 @@ def add_main_show_info(list_item, show_info, full_info=True):
         showname = original_name
     else:
         showname = show_info['name']
+    logger.debug('trying to get original language')
+    try:
+        original_language = show_info['spoken_languages'][0]['iso_639_1']
+        logger.debug(
+            'using %s from spoken language field' % original_language)
+    except KeyError:
+        original_language = show_info.get('original_language', '')
+        logger.debug(
+            'using %s as from fallback original language field' % original_language)
     plot = _clean_plot(safe_get(show_info, 'overview', ''))
     vtag.setTitle(showname)
     vtag.setOriginalTitle(original_name)
+    vtag.setOriginalLanguage(original_language)
     vtag.setTvShowTitle(showname)
     vtag.setPlot(plot)
     vtag.setPlotOutline(plot)
+    vtag.setTagLine(show_info.get('tagline', ''))
     vtag.setMediaType('tvshow')
     ext_ids = {'tmdb_id': show_info['id']}
     ext_ids.update(show_info.get('external_ids', {}))
@@ -336,8 +348,7 @@ def add_episode_info(list_item, episode_info, full_info=True):
             vtag.setPremiered(episode_info['air_date'])
         duration = episode_info.get('runtime')
         if duration:
-            videostream = VideoStreamDetail(duration=int(duration)*60)
-            vtag.addVideoStream(videostream)
+            vtag.setDuration(int(duration)*60)
         _set_cast(
             episode_info['season_cast'] + episode_info['credits']['guest_stars'], vtag)
         ext_ids = {'tmdb_id': episode_info['id']}
