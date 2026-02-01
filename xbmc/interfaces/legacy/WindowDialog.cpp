@@ -13,6 +13,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindow.h"
 #include "guilib/GUIWindowManager.h"
+#include "windowing/WinSystem.h"
 
 #include <mutex>
 

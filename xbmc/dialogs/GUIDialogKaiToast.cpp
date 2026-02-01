@@ -13,6 +13,7 @@
 #include "guilib/GUIMessage.h"
 #include "peripherals/Peripherals.h"
 #include "utils/TimeUtils.h"
+#include "windowing/WinSystem.h"
 
 #include <mutex>
 

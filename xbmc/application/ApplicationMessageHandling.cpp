@@ -60,6 +60,8 @@
 #include "utils/FileExtensionProvider.h"
 #include "utils/URIUtils.h"
 #include "video/VideoFileItemClassify.h"
+#include "windowing/WinSystem.h"
+
 #ifdef TARGET_ANDROID
 #include "platform/android/activity/XBMCApp.h"
 #endif

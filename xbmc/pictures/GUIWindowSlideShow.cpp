@@ -44,6 +44,7 @@
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #include "video/VideoFileItemClassify.h"
+#include "windowing/WinSystem.h"
 
 #include <memory>
 #include <random>

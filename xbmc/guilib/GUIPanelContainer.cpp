@@ -16,6 +16,7 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "utils/StringUtils.h"
+#include "windowing/WinSystem.h"
 
 #include <cassert>
 

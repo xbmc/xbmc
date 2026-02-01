@@ -19,6 +19,7 @@
 #include "input/mouse/MouseEvent.h"
 #include "utils/ColorUtils.h"
 #include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
 
 using namespace KODI;
 

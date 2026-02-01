@@ -10,8 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "windowing/GraphicContext.h"
-
-#include <stdio.h>
+#include "windowing/WinSystem.h"
 
 void CUnionDirtyRegionSolver::Solve(const CDirtyRegionList &input, CDirtyRegionList &output)
 {

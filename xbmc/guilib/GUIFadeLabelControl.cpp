@@ -11,6 +11,7 @@
 #include "GUIMessage.h"
 #include "ServiceBroker.h"
 #include "utils/Random.h"
+#include "windowing/WinSystem.h"
 
 using namespace KODI::GUILIB;
 

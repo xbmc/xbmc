@@ -20,6 +20,7 @@
 #include "settings/windows/GUIControlSettings.h"
 #include "utils/log.h"
 #include "view/ViewStateSettings.h"
+#include "windowing/WinSystem.h"
 
 #include <array>
 #include <string>

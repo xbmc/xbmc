@@ -20,6 +20,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/ColorUtils.h"
 #include "utils/log.h"
+#include "windowing/WinSystem.h"
 
 static int teletextFadeAmount = 0;
 

@@ -77,6 +77,8 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "windowing/WinSystem.h"
+
 #ifdef HAVE_LIBCAP
   #include <sys/capability.h>
 #endif

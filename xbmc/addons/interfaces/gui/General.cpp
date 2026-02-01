@@ -40,6 +40,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
+#include "windowing/WinSystem.h"
 
 #include <mutex>
 

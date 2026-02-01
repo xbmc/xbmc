@@ -18,6 +18,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
 
 #include "platform/android/activity/XBMCApp.h"
 

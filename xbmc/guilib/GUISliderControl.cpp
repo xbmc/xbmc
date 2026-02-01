@@ -19,6 +19,7 @@
 #include "input/mouse/MouseStat.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
+#include "windowing/WinSystem.h"
 
 using namespace KODI;
 

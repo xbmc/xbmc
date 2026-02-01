@@ -24,6 +24,8 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
+#include "windowing/WinSystem.h"
+
 #if defined(TARGET_DARWIN_OSX)
 #include "utils/StringUtils.h"
 #endif

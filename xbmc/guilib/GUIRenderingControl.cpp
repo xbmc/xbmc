@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "guilib/IRenderingCallback.h"
+#include "windowing/WinSystem.h"
 
 #include <mutex>
 #ifdef TARGET_WINDOWS

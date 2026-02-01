@@ -14,6 +14,7 @@
 #include "input/actions/ActionIDs.h"
 #include "input/mouse/MouseEvent.h"
 #include "utils/StringUtils.h"
+#include "windowing/WinSystem.h"
 
 #include <stdio.h>
 

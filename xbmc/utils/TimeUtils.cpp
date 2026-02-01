@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "XBDateTime.h"
 #include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
 
 #if   defined(TARGET_DARWIN)
 #include <mach/mach_time.h>

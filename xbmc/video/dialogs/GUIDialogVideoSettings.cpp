@@ -30,6 +30,7 @@
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 #include "video/ViewModeSettings.h"
+#include "windowing/WinSystem.h"
 
 #include <utility>
 

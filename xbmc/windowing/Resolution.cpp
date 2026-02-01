@@ -17,6 +17,7 @@
 #include "utils/MathUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+#include "windowing/WinSystem.h"
 
 #include <cstdlib>
 #include <limits>

@@ -22,6 +22,7 @@
 #include "input/mouse/MouseEvent.h"
 #include "input/mouse/MouseStat.h"
 #include "utils/log.h"
+#include "windowing/WinSystem.h"
 
 using namespace KODI;
 using namespace GUILIB;

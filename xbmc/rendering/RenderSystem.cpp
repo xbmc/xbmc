@@ -15,6 +15,7 @@
 #include "guilib/GUILabelControl.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "windowing/WinSystem.h"
 
 #include <memory>
 

@@ -28,10 +28,12 @@
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
-#include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
+#include "windowing/WinSystem.h"
 
 #include <memory>
+
+#include <tinyxml.h>
 
 using namespace KODI;
 

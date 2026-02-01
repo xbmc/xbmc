@@ -36,6 +36,10 @@
 #include "utils/log.h"
 #include "weather/WeatherManager.h"
 
+#if defined(TARGET_DARWIN_OSX) || defined(TARGET_WINDOWS)
+#include "windowing/WinSystem.h"
+#endif
+
 #include <list>
 #include <memory>
 

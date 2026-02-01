@@ -18,6 +18,7 @@
 #include "addons/addoninfo/AddonType.h"
 #include "filesystem/SpecialProtocol.h"
 #include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
 
 #include <mutex>
 #if defined(HAS_GL)

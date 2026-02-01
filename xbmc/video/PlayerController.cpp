@@ -32,6 +32,7 @@
 #include "utils/Variant.h"
 #include "video/dialogs/GUIDialogAudioSettings.h"
 #include "video/guilib/VideoStreamSelectHelper.h"
+#include "windowing/WinSystem.h"
 
 using namespace KODI;
 using namespace UTILS;
