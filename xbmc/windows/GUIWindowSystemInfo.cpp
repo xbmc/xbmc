@@ -16,6 +16,7 @@
 #include "guilib/WindowIDs.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "pvr/PVRManager.h"
+#include "rendering/RenderSystem.h"
 #include "storage/MediaManager.h"
 #include "utils/CPUInfo.h"
 #include "utils/StringUtils.h"
