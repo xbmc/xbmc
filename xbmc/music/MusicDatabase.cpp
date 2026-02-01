@@ -285,7 +285,7 @@ void CMusicDatabase::CreateAnalytics()
   m_pDS->exec("CREATE INDEX idxSong2 ON song(lastplayed)");
   m_pDS->exec("CREATE INDEX idxSong3 ON song(idAlbum)");
   m_pDS->exec("CREATE INDEX idxSong6 ON song( idPath, strFileName(255) )");
-  //Musicbrainz Track ID is not unique on an album, recordings are sometimes repeated e.g. "[silence]" or on a disc set
+  //Musicbrainz Recording ID is not unique on an album, recordings are sometimes repeated e.g. "[silence]" or on a disc set
   m_pDS->exec("CREATE UNIQUE INDEX idxSong7 ON song( idAlbum, iTrack, strMusicBrainzTrackID(36) )");
 
   m_pDS->exec("CREATE UNIQUE INDEX idxSongArtist_1 ON song_artist ( idSong, idArtist, idRole )");

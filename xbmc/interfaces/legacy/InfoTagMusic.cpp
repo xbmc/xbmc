@@ -154,6 +154,11 @@ namespace XBMCAddon
       return infoTag->GetLyrics();
     }
 
+    String InfoTagMusic::getMusicBrainzReleaseTrackID()
+    {
+      return infoTag->GetMusicBrainzReleaseTrackID();
+    }
+
     String InfoTagMusic::getMusicBrainzTrackID()
     {
       return infoTag->GetMusicBrainzTrackID();
@@ -298,6 +303,12 @@ namespace XBMCAddon
       setLastPlayedRaw(infoTag, lastPlayed);
     }
 
+    void InfoTagMusic::setMusicBrainzReleaseTrackID(const String& musicBrainzReleaseTrackID)
+    {
+      XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
+      setMusicBrainzReleaseTrackIDRaw(infoTag, musicBrainzReleaseTrackID);
+    }
+
     void InfoTagMusic::setMusicBrainzTrackID(const String& musicBrainzTrackID)
     {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
@@ -438,6 +449,12 @@ namespace XBMCAddon
                                         const String& lastPlayed)
     {
       infoTag->SetLastPlayed(lastPlayed);
+    }
+
+    void InfoTagMusic::setMusicBrainzReleaseTrackIDRaw(MUSIC_INFO::CMusicInfoTag* infoTag,
+                                                       const String& musicBrainzReleaseTrackID)
+    {
+      infoTag->SetMusicBrainzReleaseTrackID(musicBrainzReleaseTrackID);
     }
 
     void InfoTagMusic::setMusicBrainzTrackIDRaw(MUSIC_INFO::CMusicInfoTag* infoTag,

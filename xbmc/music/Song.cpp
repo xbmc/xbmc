@@ -204,7 +204,7 @@ void CSong::SetArtistCredits(const std::vector<std::string>& names, const std::v
 
 void CSong::MergeScrapedSong(const CSong& source, bool override)
 {
-  // Merge when MusicBrainz Track ID match (checked in CAlbum::MergeScrapedAlbum)
+  // Merge when MusicBrainz Recording ID match (checked in CAlbum::MergeScrapedAlbum)
   if ((override && !source.strTitle.empty()) || strTitle.empty())
     strTitle = source.strTitle;
   if ((override && source.iTrack != 0) || iTrack == 0)
