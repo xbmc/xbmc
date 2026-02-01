@@ -8,6 +8,7 @@
 
 #include "DirtyRegionSolvers.h"
 
+#include "ServiceBroker.h"
 #include "windowing/GraphicContext.h"
 
 #include <stdio.h>

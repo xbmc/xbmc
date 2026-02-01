@@ -13,6 +13,7 @@
 #include "GUIImage.h"
 #include "GUIInfoManager.h"
 #include "GUIListLabel.h"
+#include "ServiceBroker.h"
 #include "utils/XBMCTinyXML.h"
 
 using namespace KODI::GUILIB;

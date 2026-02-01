@@ -7,6 +7,7 @@
  */
 #include "FFmpegImage.h"
 
+#include "ServiceBroker.h"
 #include "cores/FFmpeg.h"
 #include "guilib/Texture.h"
 #include "settings/AdvancedSettings.h"

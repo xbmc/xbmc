@@ -11,6 +11,7 @@
 #include "GUIInfoManager.h"
 #include "GUIListItem.h"
 #include "GUIMessage.h"
+#include "ServiceBroker.h"
 #include "utils/StringUtils.h"
 
 CGUIProgressControl::CGUIProgressControl(int parentID,

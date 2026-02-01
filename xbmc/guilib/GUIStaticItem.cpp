@@ -10,6 +10,7 @@
 
 #include "GUIControlFactory.h"
 #include "GUIInfoManager.h"
+#include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"

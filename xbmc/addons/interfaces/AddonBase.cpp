@@ -9,6 +9,7 @@
 #include "AddonBase.h"
 
 #include "GUIUserMessages.h"
+#include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonType.h"

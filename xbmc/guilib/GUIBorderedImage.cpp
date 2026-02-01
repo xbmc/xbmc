@@ -8,6 +8,8 @@
 
 #include "GUIBorderedImage.h"
 
+#include "ServiceBroker.h"
+
 CGUIBorderedImage::CGUIBorderedImage(int parentID,
                                      int controlID,
                                      float posX,

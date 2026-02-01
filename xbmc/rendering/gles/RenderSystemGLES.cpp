@@ -8,6 +8,7 @@
 
 #include "RenderSystemGLES.h"
 
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "guilib/DirtyRegion.h"
 #include "guilib/GUITextureGLES.h"

@@ -7,6 +7,7 @@
  */
 #include "RenderSystemDX.h"
 
+#include "ServiceBroker.h"
 #include "application/Application.h"
 
 #include <mutex>

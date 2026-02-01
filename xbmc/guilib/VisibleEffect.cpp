@@ -11,6 +11,7 @@
 #include "GUIColorManager.h"
 #include "GUIControlFactory.h"
 #include "GUIInfoManager.h"
+#include "ServiceBroker.h"
 #include "Tween.h"
 #include "addons/Skin.h" // for the effect time adjustments
 #include "guilib/GUIComponent.h"

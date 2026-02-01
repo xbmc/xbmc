@@ -8,6 +8,7 @@
 
 #include "FileBrowser.h"
 
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/kodi-dev-kit/include/kodi/gui/dialogs/FileBrowser.h"

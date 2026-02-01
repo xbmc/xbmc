@@ -8,6 +8,7 @@
 
 #include "GUIRenderingControl.h"
 
+#include "ServiceBroker.h"
 #include "guilib/IRenderingCallback.h"
 
 #include <mutex>

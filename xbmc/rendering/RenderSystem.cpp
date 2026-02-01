@@ -8,6 +8,7 @@
 
 #include "RenderSystem.h"
 
+#include "ServiceBroker.h"
 #include "Util.h"
 #include "guilib/GUIFontManager.h"
 #include "guilib/GUIImage.h"

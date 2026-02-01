@@ -10,6 +10,7 @@
 
 #include "GLContextEGL.h"
 #include "OptionalsReg.h"
+#include "ServiceBroker.h"
 #include "X11DPMSSupport.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationSkinHandling.h"

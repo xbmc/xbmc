@@ -8,6 +8,7 @@
 
 #include "WinEventsIOS.h"
 
+#include "ServiceBroker.h"
 #include "application/AppInboundProtocol.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/InputManager.h"

@@ -10,6 +10,7 @@
 
 #include "GUIInfoManager.h"
 #include "GUIMessage.h"
+#include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "utils/MathUtils.h"

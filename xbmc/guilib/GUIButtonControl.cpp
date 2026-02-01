@@ -9,6 +9,7 @@
 #include "GUIButtonControl.h"
 
 #include "GUIFontManager.h"
+#include "ServiceBroker.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "input/mouse/MouseEvent.h"

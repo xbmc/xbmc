@@ -10,6 +10,7 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "ServiceBroker.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "filesystem/AddonsDirectory.h"
 #include "games/addons/GameClient.h"

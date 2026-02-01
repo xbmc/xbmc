@@ -12,6 +12,7 @@
 #include "OSScreenSaverWebOS.h"
 #include "Registry.h"
 #include "SeatWebOS.h"
+#include "ServiceBroker.h"
 #include "ShellSurfaceWebOSShell.h"
 #include "VideoRenderers/HwDecRender/RendererStarfish.h"
 #include "application/ApplicationComponents.h"

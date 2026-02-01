@@ -11,6 +11,7 @@
 #include "FileItem.h"
 #include "GUIMessage.h"
 #include "ImageSettings.h"
+#include "ServiceBroker.h"
 #include "utils/log.h"
 
 #include <cassert>

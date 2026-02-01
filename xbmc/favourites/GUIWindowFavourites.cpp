@@ -9,6 +9,7 @@
 #include "GUIWindowFavourites.h"
 
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "favourites/FavouritesService.h"
 #include "favourites/FavouritesURL.h"
 #include "favourites/FavouritesUtils.h"

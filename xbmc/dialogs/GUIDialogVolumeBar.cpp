@@ -9,6 +9,7 @@
 #include "GUIDialogVolumeBar.h"
 
 #include "IGUIVolumeBarCallback.h"
+#include "ServiceBroker.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationVolumeHandling.h"
 #include "guilib/GUIMessage.h"

@@ -10,6 +10,7 @@
 
 #include "GUIInfoManager.h"
 #include "LocalizeStrings.h"
+#include "ServiceBroker.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 

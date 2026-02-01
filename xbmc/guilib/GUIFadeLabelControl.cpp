@@ -9,6 +9,7 @@
 #include "GUIFadeLabelControl.h"
 
 #include "GUIMessage.h"
+#include "ServiceBroker.h"
 #include "utils/Random.h"
 
 using namespace KODI::GUILIB;

@@ -12,6 +12,7 @@
 #include "GUIComponent.h"
 #include "GUIControl.h"
 #include "GUIFont.h"
+#include "ServiceBroker.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"

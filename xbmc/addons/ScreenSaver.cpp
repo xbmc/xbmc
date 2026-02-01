@@ -8,6 +8,7 @@
 
 #include "ScreenSaver.h"
 
+#include "ServiceBroker.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"

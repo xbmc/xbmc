@@ -9,6 +9,7 @@
 #include "GUIControlGroup.h"
 
 #include "GUIMessage.h"
+#include "ServiceBroker.h"
 #include "input/mouse/MouseEvent.h"
 
 #include <cassert>

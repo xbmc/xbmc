@@ -10,6 +10,7 @@
 
 #include "GUILargeTextureManager.h"
 #include "GUITextureCallbackManager.h"
+#include "ServiceBroker.h"
 #include "Texture.h"
 #include "TextureManager.h"
 #include "utils/MathUtils.h"
