@@ -36,9 +36,9 @@ std::string FromW(const wchar_t* str, size_t length)
   return std::string(newStr.get(), result);
 }
 
-std::string FromW(const std::wstring& str)
+std::string FromW(std::wstring_view str)
 {
-  return FromW(str.c_str(), str.length());
+  return FromW(str.data(), str.length());
 }
 
 std::wstring ToW(const char* str, size_t length)
@@ -59,9 +59,9 @@ std::wstring ToW(const char* str, size_t length)
   return std::wstring(newStr.get(), result);
 }
 
-std::wstring ToW(const std::string& str)
+std::wstring ToW(std::string_view str)
 {
-  return ToW(str.c_str(), str.length());
+  return ToW(str.data(), str.length());
 }
 
 }

@@ -29,6 +29,11 @@ TEST(TestWin32CharsetConverter, FromW)
 
   EXPECT_EQ(expected, result);
 
+  std::wstring_view wsv(L"foo");
+  result = FromW(wsv);
+
+  EXPECT_EQ(expected, result);
+
   wchar_t ca[] = L"foo";
 
   // substring - not-null terminated
@@ -55,6 +60,11 @@ TEST(TestWin32CharsetConverter, ToW)
   s = "foo";
   result = ToW(s);
   expected = L"foo";
+
+  EXPECT_EQ(expected, result);
+
+  std::string_view sv("foo");
+  result = ToW(sv);
 
   EXPECT_EQ(expected, result);
 
