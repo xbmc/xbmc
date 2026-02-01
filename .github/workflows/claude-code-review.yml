@@ -78,14 +78,18 @@ jobs:
             Note: The PR branch is already checked out in the current working directory.
 
             After your review:
-            1. If you found issues: MUST post comment using `gh pr comment` for top-level summary wrapped in a collapsed section like this:
-               <details>
-               <summary>🤖 Claude Code Review</summary>
+            1. If you found issues:
+               - MUST post comment using `gh pr comment` for top-level summary
+               - Do NOT use `gh pr review --comment` (doesn't support collapsed sections)
+               - Do NOT post as plain PR review body (not collapsed)
+               - Use this exact format:
+                 <details>
+                 <summary>🤖 Claude Code Review</summary>
 
-               [Your review content here]
+                 [Your review content here]
 
-               </details>
-               Also use `mcp__github_inline_comment__create_inline_comment` to highlight specific code issues
+                 </details>
+               - Also use `mcp__github_inline_comment__create_inline_comment` to highlight specific code issues
             2. If NO issues found: MUST run `gh pr review --approve` (with --approve flag but NO --body flag)
                - Do NOT post any separate comment or acknowledgment
                - The approval itself is the only response needed
@@ -93,4 +97,4 @@ jobs:
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://docs.claude.com/en/docs/claude-code/cli-reference for available options
           claude_args: |
-            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr review:*),Bash(gh pr diff:*),Bash(gh pr view:*)"
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr review --approve*),Bash(gh pr diff:*),Bash(gh pr view:*)"
