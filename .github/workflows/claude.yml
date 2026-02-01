@@ -69,7 +69,7 @@ jobs:
             - DO NOT list "positive notes", "strengths", "what's working well", or similar sections
             - DO NOT use checkmarks (✅) or "NOT AN ISSUE" confirmations
             - ONLY report problems, issues, bugs, or concerns that need addressing
-            - If issues found: MUST post comment with the issues in a collapsed section
+            - If issues found: MUST use `gh pr comment` to post collapsed section with issues
             - If NO issues found: MUST run `gh pr review --approve` with NO --body flag (silent approval, no comment)
 
             When responding to questions or requests on issues (non-PR contexts):
@@ -78,7 +78,7 @@ jobs:
 
             When user mentions @claude in a top-level comment on a PR:
             - If they ask for a review: perform the review and take appropriate action (approval or issues comment)
-            - For other requests: respond in collapsed section format:
+            - For other requests: respond using `gh pr comment` in collapsed section format:
               <details>
               <summary>🤖 Claude Response</summary>
 
@@ -98,7 +98,16 @@ jobs:
 
             Response guidelines:
             1. For code reviews (PRs) - if issues found:
-               - MUST post comment in collapsed section with list of issues
+               - MUST use `gh pr comment` to post comment in collapsed section with list of issues
+               - Do NOT use `gh pr review --comment` (doesn't support collapsed sections)
+               - Do NOT post as plain PR review body (not collapsed)
+               - Use this exact format:
+                 <details>
+                 <summary>🤖 Claude Response</summary>
+
+                 [issues here]
+
+                 </details>
                - Focus ONLY on actionable issues/problems
                - Report bugs, errors, security issues, performance problems, or logic flaws
                - Skip anything that's working correctly
@@ -122,4 +131,4 @@ jobs:
             - For questions/requests: Your job is to be helpful, not to praise
 
           claude_args: |
-            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr review:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*),Bash(gh pr checks:*),Bash(gh pr status:*),Bash(gh issue view:*),Bash(gh issue list:*),Bash(gh issue comment:*),Bash(gh run view:*),Bash(gh run list:*),Bash(gh workflow view:*),Bash(gh workflow list:*),Bash(gh repo view:*),Bash(gh release view:*),Bash(gh release list:*),Bash(gh search:*),Bash(git grep:*),Bash(git log:*),Bash(git show:*),Bash(git diff:*),Bash(gh api:*)"
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr review --approve*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*),Bash(gh pr checks:*),Bash(gh pr status:*),Bash(gh issue view:*),Bash(gh issue list:*),Bash(gh issue comment:*),Bash(gh run view:*),Bash(gh run list:*),Bash(gh workflow view:*),Bash(gh workflow list:*),Bash(gh repo view:*),Bash(gh release view:*),Bash(gh release list:*),Bash(gh search:*),Bash(git grep:*),Bash(git log:*),Bash(git show:*),Bash(git diff:*),Bash(gh api:*)"
