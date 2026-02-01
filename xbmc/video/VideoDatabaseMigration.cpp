@@ -1084,6 +1084,8 @@ void CVideoDatabase::UpdateTables(int iVersion)
                      "              AND e.c%02d = streamdetails.iVideoDuration)",
                      LOCAL_VIDEODB_ID_EPISODE_RUNTIME, LOCAL_VIDEODB_ID_EPISODE_RUNTIME);
     m_pDS->exec(sql);
+
+    m_pDS->exec("ALTER TABLE streamdetails ADD iSource INTEGER DEFAULT 0");
   }
 }
 

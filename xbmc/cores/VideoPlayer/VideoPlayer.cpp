@@ -5466,20 +5466,20 @@ void CVideoPlayer::UpdateFileItemStreamDetails(CFileItem& item, UpdateStreamDeta
   CVideoInfoTag* info = item.GetVideoInfoTag();
   GetVideoStreamInfo(CURRENT_STREAM, videoInfo);
   info->m_streamDetails.SetStreams(videoInfo, m_processInfo->GetMaxTime() / 1000, audioInfo,
-                                   subtitleInfo);
+                                   subtitleInfo, CStreamDetail::MEDIA);
 
   //grab all the audio and subtitle info and save it
 
   for (int i = 0; i < GetAudioStreamCount(); i++)
   {
     GetAudioStreamInfo(i, audioInfo);
-    info->m_streamDetails.AddStream(new CStreamDetailAudio(audioInfo));
+    info->m_streamDetails.AddStream(new CStreamDetailAudio(audioInfo, CStreamDetail::MEDIA));
   }
 
   for (int i = 0; i < GetSubtitleCount(); i++)
   {
     GetSubtitleStreamInfo(i, subtitleInfo);
-    info->m_streamDetails.AddStream(new CStreamDetailSubtitle(subtitleInfo));
+    info->m_streamDetails.AddStream(new CStreamDetailSubtitle(subtitleInfo, CStreamDetail::MEDIA));
   }
 }
 

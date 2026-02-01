@@ -165,10 +165,8 @@ bool CGUIDialogSimpleMenu::ShowPlaylistSelection(CFileItem& item)
       item.SetProperty("original_listitem_url", originalDynPath);
 
       // If streamdetails are already present they are from an nfo and should not be overwritten
-      //  unless forced playlist selection (ie. choose playlist selected from the context menu) - given we
-      //  don't know the source of the original streamdetails (nfo or previous playlist) we always overwrite
-      // @todo - update when streamdetails source tracking is added
-      if (!item.GetVideoInfoTag()->HasStreamDetails() || forcePlaylistSelection)
+      //  unless forced playlist selection (ie. choose playlist selected from the context menu)
+      if (!item.GetVideoInfoTag()->HasNFOStreamDetails() || forcePlaylistSelection)
         item.GetVideoInfoTag()->m_streamDetails = item_new->GetVideoInfoTag()->m_streamDetails;
 
       return true;

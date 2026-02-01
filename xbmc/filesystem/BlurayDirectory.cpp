@@ -246,17 +246,18 @@ void SetStreamDetails(const CURL& url,
   if (!title.videoStreams.empty())
     info->m_streamDetails.SetStreams(title.videoStreams[0],
                                      static_cast<int>(title.duration.count() / 1000),
-                                     AudioStreamInfo{}, SubtitleStreamInfo{});
+                                     AudioStreamInfo{}, SubtitleStreamInfo{}, CStreamDetail::MEDIA);
   else
-    info->m_streamDetails.SetStreams(VideoStreamInfo{}, 0, AudioStreamInfo{}, SubtitleStreamInfo{});
+    info->m_streamDetails.SetStreams(VideoStreamInfo{}, 0, AudioStreamInfo{}, SubtitleStreamInfo{},
+                                     CStreamDetail::MEDIA);
 
   // Audio streams
   for (const auto& audio : title.audioStreams)
-    info->m_streamDetails.AddStream(new CStreamDetailAudio(audio));
+    info->m_streamDetails.AddStream(new CStreamDetailAudio(audio, CStreamDetail::MEDIA));
 
   // Subtitles
   for (const auto& subtitle : title.pgStreams)
-    info->m_streamDetails.AddStream(new CStreamDetailSubtitle(subtitle));
+    info->m_streamDetails.AddStream(new CStreamDetailSubtitle(subtitle, CStreamDetail::MEDIA));
 }
 
 std::shared_ptr<CFileItem> GetFileItem(const CURL& url,

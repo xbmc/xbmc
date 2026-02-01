@@ -24,12 +24,15 @@ TEST(TestStreamDetails, General)
   video->m_strCodec = "h264";
   video->m_strStereoMode = "left_right";
   video->m_strLanguage = "eng";
+  video->SetSource(CStreamDetail::MEDIA);
 
   audio->m_iChannels = 2;
   audio->m_strCodec = "aac";
   audio->m_strLanguage = "eng";
+  audio->SetSource(CStreamDetail::MEDIA);
 
   subtitle->m_strLanguage = "eng";
+  subtitle->SetSource(CStreamDetail::MEDIA);
 
   a.AddStream(video);
   a.AddStream(audio);
@@ -44,6 +47,7 @@ TEST(TestStreamDetails, General)
   EXPECT_EQ(0, a.GetVideoHeight());
   EXPECT_EQ(0, a.GetVideoDuration());
   EXPECT_STREQ("", a.GetStereoMode().c_str());
+  EXPECT_EQ(CStreamDetail::MEDIA, a.GetSources());
 
   EXPECT_EQ(1, a.GetStreamCount(CStreamDetail::AUDIO));
   EXPECT_EQ(1, a.GetAudioStreamCount());
