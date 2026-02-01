@@ -8,6 +8,7 @@
 
 #include "CharsetConverter.h"
 
+#include <limits>
 #include <memory>
 
 #include <Windows.h>
@@ -20,6 +21,9 @@ namespace WINDOWS
 {
 std::string FromW(const wchar_t* str, size_t length)
 {
+  if (length == 0 || length > std::numeric_limits<int>::max())
+    return std::string();
+
   int result = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, str, length, nullptr, 0, nullptr, nullptr);
   if (result == 0)
     return std::string();
@@ -39,6 +43,9 @@ std::string FromW(const std::wstring& str)
 
 std::wstring ToW(const char* str, size_t length)
 {
+  if (length == 0 || length > std::numeric_limits<int>::max())
+    return std::wstring();
+
   int result = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, str, length, nullptr, 0);
   if (result == 0)
     return std::wstring();
