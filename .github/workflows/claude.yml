@@ -50,6 +50,7 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          show_full_output: true
 
           # This is an optional setting that allows Claude to read CI results on PRs
           additional_permissions: |
@@ -68,21 +69,23 @@ jobs:
             - DO NOT list "positive notes", "strengths", "what's working well", or similar sections
             - DO NOT use checkmarks (✅) or "NOT AN ISSUE" confirmations
             - ONLY report problems, issues, bugs, or concerns that need addressing
-            - If there are NO issues in a PR, simply approve silently with `gh pr review --approve` and say NOTHING
+            - If issues found: MUST post comment with the issues in a collapsed section
+            - If NO issues found: MUST run `gh pr review --approve` with NO --body flag (silent approval, no comment)
 
             When responding to questions or requests on issues (non-PR contexts):
             - Answer the question directly and helpfully
             - Still avoid unnecessary praise, but focus on being useful rather than only critical
 
-            When user mentions @claude in a top-level comment:
-            - Respond to their specific request
-            - Use collapsed section format:
+            When user mentions @claude in a top-level comment on a PR:
+            - If they ask for a review: perform the review and take appropriate action (approval or issues comment)
+            - For other requests: respond in collapsed section format:
               <details>
               <summary>🤖 Claude Response</summary>
 
               [Your response here]
 
               </details>
+            - Note: Running `gh pr review --approve` IS the response for clean code - no additional comment needed
 
             When user mentions @claude in an inline comment:
             - Reply inline in that comment thread
@@ -94,23 +97,23 @@ jobs:
             - ONLY use suggestions for simple fixes (1-5 lines) - not complex multi-location changes
 
             Response guidelines:
-            1. For code reviews (PRs):
+            1. For code reviews (PRs) - if issues found:
+               - MUST post comment in collapsed section with list of issues
                - Focus ONLY on actionable issues/problems
                - Report bugs, errors, security issues, performance problems, or logic flaws
                - Skip anything that's working correctly
                - If reassessing based on user's explanation, just say what you missed/misunderstood
                - Keep responses brief and issue-focused
 
-            2. For questions or requests on issues:
+            2. For code reviews (PRs) - if NO issues found:
+               - MUST run: `gh pr review --approve` (with --approve flag but NO --body flag)
+               - Do NOT post any separate comment or acknowledgment
+               - The approval itself is the only response needed
+
+            3. For questions or requests on issues:
                - Answer the question or fulfill the request directly
                - Provide implementation suggestions, explanations, or analysis as requested
                - Avoid gratuitous praise but be helpful and constructive
-
-            3. When appropriate (e.g., after addressing concerns or if no issues found in a PR):
-               - Use `gh pr review --approve` with the --approve flag ONLY
-               - IMPORTANT: Use --approve flag with NO message/body
-               - NEVER include ANY commentary with approval
-               - Silent approval is the ONLY acceptable positive signal
 
             Rules:
             - Be concise and direct
