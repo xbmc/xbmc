@@ -14,16 +14,28 @@
 #include "utils/LangCodeExpander.h"
 #include "utils/Variant.h"
 
-#include <math.h>
+#include <algorithm>
+#include <cmath>
+#include <ranges>
 
 const float VIDEOASPECT_EPSILON = 0.025f;
+
+CStreamDetail::Source CStreamDetail::GetSource() const
+{
+  return m_source;
+}
+
+void CStreamDetail::SetSource(Source source)
+{
+  m_source = source;
+}
 
 CStreamDetailVideo::CStreamDetailVideo() :
   CStreamDetail(CStreamDetail::VIDEO)
 {
 }
 
-CStreamDetailVideo::CStreamDetailVideo(const VideoStreamInfo& info, int duration)
+CStreamDetailVideo::CStreamDetailVideo(const VideoStreamInfo& info, int duration, Source source)
   : CStreamDetail(CStreamDetail::VIDEO),
     m_iWidth(info.width),
     m_iHeight(info.height),
@@ -35,6 +47,7 @@ CStreamDetailVideo::CStreamDetailVideo(const VideoStreamInfo& info, int duration
     m_strHdrType(CStreamDetails::HdrTypeToString(info.hdrType)),
     m_strHdrDetail(info.hdrDetail)
 {
+  m_source = source;
 }
 
 void CStreamDetailVideo::Archive(CArchive& ar)
@@ -50,6 +63,7 @@ void CStreamDetailVideo::Archive(CArchive& ar)
     ar << m_strLanguage;
     ar << m_strHdrType;
     ar << m_strHdrDetail;
+    ar << m_source;
   }
   else
   {
@@ -62,6 +76,9 @@ void CStreamDetailVideo::Archive(CArchive& ar)
     ar >> m_strLanguage;
     ar >> m_strHdrType;
     ar >> m_strHdrDetail;
+    int s;
+    ar >> s;
+    m_source = static_cast<Source>(s);
   }
 }
 void CStreamDetailVideo::Serialize(CVariant& value) const
@@ -75,6 +92,7 @@ void CStreamDetailVideo::Serialize(CVariant& value) const
   value["language"] = m_strLanguage;
   value["hdrtype"] = m_strHdrType;
   value["hdrdetail"] = m_strHdrDetail;
+  value["source"] = m_source;
 }
 
 bool CStreamDetailVideo::IsWorseThan(const CStreamDetail &that) const
@@ -92,12 +110,13 @@ CStreamDetailAudio::CStreamDetailAudio() :
 {
 }
 
-CStreamDetailAudio::CStreamDetailAudio(const AudioStreamInfo &info) :
-  CStreamDetail(CStreamDetail::AUDIO),
-  m_iChannels(info.channels),
-  m_strCodec(info.codecName),
-  m_strLanguage(info.language)
+CStreamDetailAudio::CStreamDetailAudio(const AudioStreamInfo& info, Source source)
+  : CStreamDetail(CStreamDetail::AUDIO),
+    m_iChannels(info.channels),
+    m_strCodec(info.codecName),
+    m_strLanguage(info.language)
 {
+  m_source = source;
 }
 
 void CStreamDetailAudio::Archive(CArchive& ar)
@@ -107,12 +126,16 @@ void CStreamDetailAudio::Archive(CArchive& ar)
     ar << m_strCodec;
     ar << m_strLanguage;
     ar << m_iChannels;
+    ar << m_source;
   }
   else
   {
     ar >> m_strCodec;
     ar >> m_strLanguage;
     ar >> m_iChannels;
+    int s;
+    ar >> s;
+    m_source = static_cast<Source>(s);
   }
 }
 void CStreamDetailAudio::Serialize(CVariant& value) const
@@ -120,6 +143,7 @@ void CStreamDetailAudio::Serialize(CVariant& value) const
   value["codec"] = m_strCodec;
   value["language"] = m_strLanguage;
   value["channels"] = m_iChannels;
+  value["source"] = m_source;
 }
 
 bool CStreamDetailAudio::IsWorseThan(const CStreamDetail &that) const
@@ -143,10 +167,11 @@ CStreamDetailSubtitle::CStreamDetailSubtitle() :
 {
 }
 
-CStreamDetailSubtitle::CStreamDetailSubtitle(const SubtitleStreamInfo &info) :
-  CStreamDetail(CStreamDetail::SUBTITLE),
-  m_strLanguage(info.language)
+CStreamDetailSubtitle::CStreamDetailSubtitle(const SubtitleStreamInfo& info, Source source)
+  : CStreamDetail(CStreamDetail::SUBTITLE),
+    m_strLanguage(info.language)
 {
+  m_source = source;
 }
 
 void CStreamDetailSubtitle::Archive(CArchive& ar)
@@ -154,10 +179,14 @@ void CStreamDetailSubtitle::Archive(CArchive& ar)
   if (ar.IsStoring())
   {
     ar << m_strLanguage;
+    ar << m_source;
   }
   else
   {
     ar >> m_strLanguage;
+    int s;
+    ar >> s;
+    m_source = static_cast<Source>(s);
   }
 }
 void CStreamDetailSubtitle::Serialize(CVariant& value) const
@@ -175,9 +204,10 @@ bool CStreamDetailSubtitle::IsWorseThan(const CStreamDetail &that) const
 
   // the best subtitle should be the one in the user's preferred language
   // If preferred language is set to "original" this is "eng"
-  return m_strLanguage.empty() || g_LangCodeExpander.CompareISO639Codes(
-                                      static_cast<const CStreamDetailSubtitle&>(that).m_strLanguage,
-                                      g_langInfo.GetSubtitleLanguage(true));
+  return m_strLanguage.empty() ||
+         g_LangCodeExpander.CompareISO639Codes(
+             dynamic_cast<const CStreamDetailSubtitle&>(that).m_strLanguage,
+             g_langInfo.GetSubtitleLanguage(true));
 }
 
 CStreamDetailVideo& CStreamDetailVideo::operator=(const CStreamDetailVideo& that)
@@ -205,6 +235,7 @@ CStreamDetailSubtitle& CStreamDetailSubtitle::operator=(const CStreamDetailSubti
   {
     this->m_pParent = that.m_pParent;
     this->m_strLanguage = that.m_strLanguage;
+    this->m_source = that.m_source;
   }
   return *this;
 }
@@ -219,13 +250,13 @@ CStreamDetails& CStreamDetails::operator=(const CStreamDetails &that)
       switch (iter->m_eType)
       {
       case CStreamDetail::VIDEO:
-        AddStream(new CStreamDetailVideo(static_cast<const CStreamDetailVideo&>(*iter)));
+        AddStream(new CStreamDetailVideo(dynamic_cast<const CStreamDetailVideo&>(*iter)));
         break;
       case CStreamDetail::AUDIO:
-        AddStream(new CStreamDetailAudio(static_cast<const CStreamDetailAudio&>(*iter)));
+        AddStream(new CStreamDetailAudio(dynamic_cast<const CStreamDetailAudio&>(*iter)));
         break;
       case CStreamDetail::SUBTITLE:
-        AddStream(new CStreamDetailSubtitle(static_cast<const CStreamDetailSubtitle&>(*iter)));
+        AddStream(new CStreamDetailSubtitle(dynamic_cast<const CStreamDetailSubtitle&>(*iter)));
         break;
       }
     }
@@ -682,17 +713,21 @@ std::string CStreamDetails::VideoAspectToAspectDescription(float fAspect)
   return "2.76";
 }
 
-bool CStreamDetails::SetStreams(const VideoStreamInfo& videoInfo, int videoDuration, const AudioStreamInfo& audioInfo, const SubtitleStreamInfo& subtitleInfo)
+bool CStreamDetails::SetStreams(const VideoStreamInfo& videoInfo,
+                                int videoDuration,
+                                const AudioStreamInfo& audioInfo,
+                                const SubtitleStreamInfo& subtitleInfo,
+                                CStreamDetail::Source source)
 {
   if (!videoInfo.valid && !audioInfo.valid && !subtitleInfo.valid)
     return false;
   Reset();
   if (videoInfo.valid)
-    AddStream(new CStreamDetailVideo(videoInfo, videoDuration));
+    AddStream(new CStreamDetailVideo(videoInfo, videoDuration, source));
   if (audioInfo.valid)
-    AddStream(new CStreamDetailAudio(audioInfo));
+    AddStream(new CStreamDetailAudio(audioInfo, source));
   if (subtitleInfo.valid)
-    AddStream(new CStreamDetailSubtitle(subtitleInfo));
+    AddStream(new CStreamDetailSubtitle(subtitleInfo, source));
   DetermineBestStreams();
   return true;
 }
@@ -713,4 +748,49 @@ std::string CStreamDetails::HdrTypeToString(StreamHdrType hdrType)
     default:
       return "";
   }
+}
+
+CStreamDetail::Source CStreamDetails::GetSource(CStreamDetail::StreamType type, int idx) const
+{
+  switch (type)
+  {
+    case CStreamDetail::VIDEO:
+    {
+      const CStreamDetailVideo* item =
+          dynamic_cast<const CStreamDetailVideo*>(GetNthStream(CStreamDetail::VIDEO, idx));
+      if (item)
+        return item->GetSource();
+      break;
+    }
+    case CStreamDetail::AUDIO:
+    {
+      const CStreamDetailAudio* item =
+          dynamic_cast<const CStreamDetailAudio*>(GetNthStream(CStreamDetail::AUDIO, idx));
+      if (item)
+        return item->GetSource();
+      break;
+    }
+    case CStreamDetail::SUBTITLE:
+    {
+      const CStreamDetailSubtitle* item =
+          dynamic_cast<const CStreamDetailSubtitle*>(GetNthStream(CStreamDetail::SUBTITLE, idx));
+      if (item)
+        return item->GetSource();
+      break;
+    }
+  }
+  return CStreamDetail::UNDEFINED;
+}
+
+CStreamDetail::Source CStreamDetails::GetSources() const
+{
+  if (!HasItems())
+    return CStreamDetail::UNDEFINED;
+  return std::ranges::max(m_vecItems | std::views::transform(&CStreamDetail::m_source));
+}
+
+void CStreamDetails::SetSources(CStreamDetail::Source source)
+{
+  for (const auto& s : m_vecItems)
+    s->SetSource(source);
 }
