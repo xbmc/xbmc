@@ -31,6 +31,15 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
 
+      - name: React to PR with eyes emoji
+        run: |
+          gh pr view ${{ github.event.pull_request.number }} --json comments --jq '.comments[-1].id' | \
+          xargs -I {} gh api repos/${{ github.repository }}/issues/comments/{}/reactions \
+            --method POST \
+            --field content='eyes' || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Run Claude Code Review
         id: claude-review
         uses: anthropics/claude-code-action@v1
