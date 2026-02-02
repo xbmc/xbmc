@@ -41,6 +41,14 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   SEARCH_EXISTING_PACKAGES()
 
+  # Some distros ship the successor package name "crossguid2".
+  # Accept either crossguid or crossguid2 when searching for a system dependency.
+  if(NOT ${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
+    set(${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME crossguid2)
+    set(${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME_PC crossguid2)
+    SEARCH_EXISTING_PACKAGES()
+  endif()
+
   if(ENABLE_INTERNAL_CROSSGUID)
     message(STATUS "Building ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}: \(version \"${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER}\"\)")
     cmake_language(EVAL CODE "
@@ -65,6 +73,27 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
       # NEW_CROSSGUID >= 0.2.0 release
       if(EXISTS "${_crossguid_include_dir}/crossguid/guid.hpp")
+        list(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS HAVE_NEW_CROSSGUID)
+      endif()
+    elseif(TARGET crossguid2 AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS crossguid2)
+
+      # crossguid2 typically installs headers under <prefix>/include/crossguid2/crossguid/...
+      # Kodi expects to include <crossguid/guid.hpp> when HAVE_NEW_CROSSGUID is defined, so
+      # ensure the include path is adjusted accordingly.
+      get_target_property(_crossguid_include_dirs crossguid2 INTERFACE_INCLUDE_DIRECTORIES)
+
+      unset(_crossguid2_has_new)
+      foreach(_dir IN LISTS _crossguid_include_dirs)
+        if(EXISTS "${_dir}/crossguid/guid.hpp")
+          set(_crossguid2_has_new 1)
+        elseif(EXISTS "${_dir}/crossguid2/crossguid/guid.hpp")
+          set(_crossguid2_has_new 1)
+          set_property(TARGET crossguid2 APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${_dir}/crossguid2")
+        endif()
+      endforeach()
+
+      if(_crossguid2_has_new)
         list(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS HAVE_NEW_CROSSGUID)
       endif()
     else()
@@ -96,7 +125,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     ADD_MULTICONFIG_BUILDMACRO()
   else()
     if(CrossGUID_FIND_REQUIRED)
-      message(FATAL_ERROR "CrossGUID libraries were not found. You may want to use -DENABLE_INTERNAL_CROSSGUID=ON")
+      message(FATAL_ERROR "CrossGUID libraries were not found (searched: crossguid, crossguid2). You may want to use -DENABLE_INTERNAL_CROSSGUID=ON")
     endif()
   endif()
 endif()
