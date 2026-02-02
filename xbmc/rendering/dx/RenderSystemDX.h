@@ -45,7 +45,7 @@ public:
   void CaptureStateBlock() override;
   void ApplyStateBlock() override;
   void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight, float stereoFactor = 0.f) override;
-  void SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW view) override;
+  void SetStereoMode(RENDER_STEREO_MODE mode, RenderStereoView view) override;
   bool SupportsStereo(RENDER_STEREO_MODE mode) const override;
   void Project(float &x, float &y, float &z) override;
   bool SupportsNPOT(bool dxt) const override;

@@ -154,8 +154,8 @@ public:
   void SetOrigin(float x, float y);
   void RestoreOrigin();
   void SetCameraPosition(const CPoint &camera);
-  void SetStereoView(RENDER_STEREO_VIEW view);
-  RENDER_STEREO_VIEW GetStereoView()  { return m_stereoView; }
+  void SetStereoView(RenderStereoView view);
+  RenderStereoView GetStereoView() { return m_stereoView; }
   void SetStereoMode(RENDER_STEREO_MODE mode) { m_nextStereoMode = mode; }
   RENDER_STEREO_MODE GetStereoMode()  { return m_stereoMode; }
   void RestoreCameraPosition();
@@ -266,7 +266,7 @@ protected:
   UITransform m_guiTransform;
   UITransform m_finalTransform;
   std::stack<UITransform, std::vector<UITransform>> m_transforms;
-  RENDER_STEREO_VIEW m_stereoView = RENDER_STEREO_VIEW_OFF;
+  RenderStereoView m_stereoView = RenderStereoView::OFF;
   RENDER_STEREO_MODE m_stereoMode = RENDER_STEREO_MODE_OFF;
   RENDER_STEREO_MODE m_nextStereoMode = RENDER_STEREO_MODE_OFF;
 

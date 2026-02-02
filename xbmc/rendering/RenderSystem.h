@@ -63,7 +63,7 @@ public:
   virtual void ApplyStateBlock() = 0;
 
   virtual void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight, float stereoFactor = 0.f) = 0;
-  virtual void SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW view)
+  virtual void SetStereoMode(RENDER_STEREO_MODE mode, RenderStereoView view)
   {
     m_stereoMode = mode;
     m_stereoView = view;
@@ -98,7 +98,7 @@ protected:
   std::string   m_RenderVersion;
   int          m_RenderVersionMinor;
   int          m_RenderVersionMajor;
-  RENDER_STEREO_VIEW m_stereoView = RENDER_STEREO_VIEW_OFF;
+  RenderStereoView m_stereoView = RenderStereoView::OFF;
   RENDER_STEREO_MODE m_stereoMode = RENDER_STEREO_MODE_OFF;
   bool m_limitedColorRange = false;
   bool m_transferPQ{false};

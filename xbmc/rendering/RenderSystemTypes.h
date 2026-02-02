@@ -8,11 +8,11 @@
 
 #pragma once
 
-enum RENDER_STEREO_VIEW
+enum class RenderStereoView
 {
-  RENDER_STEREO_VIEW_OFF,
-  RENDER_STEREO_VIEW_LEFT,
-  RENDER_STEREO_VIEW_RIGHT,
+  OFF,
+  LEFT,
+  RIGHT,
 };
 
 enum RENDER_STEREO_MODE
