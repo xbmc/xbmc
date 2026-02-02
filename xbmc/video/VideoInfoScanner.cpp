@@ -1860,7 +1860,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     std::string path;
     const int playlist = pItem->HasVideoInfoTag() ? pItem->GetVideoInfoTag()->m_iTrack : -1;
-    if (playlist > -1 && (content == ContentType::MOVIES || content == ContentType::MOVIE_VERSIONS))
+    if (playlist > -1)
     {
       path = URIUtils::GetBlurayPlaylistPath(pItem->GetPath(), playlist);
       pItem->SetDynPath(path);
