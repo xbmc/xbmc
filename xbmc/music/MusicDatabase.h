@@ -107,6 +107,7 @@ public:
    \param dtDateNew [in] the datetime the original ID was new
    \param idAlbum [in] the database ID of the album for the song
    \param strTitle [in] the title of the song (required to be non-empty)
+   \param strMusicBrainzReleaseTrackID [in] the MusicBrainz track ID of the song
    \param strMusicBrainzTrackID [in] the MusicBrainz recording ID of the song
    \param strPathAndFileName [in] the path and filename to the song
    \param strComment [in] the ids of the added songs
@@ -135,6 +136,7 @@ public:
               const CDateTime& dtDateNew,
               const int idAlbum,
               const std::string& strTitle,
+              const std::string& strMusicBrainzReleaseTrackID,
               const std::string& strMusicBrainzTrackID,
               const std::string& strPathAndFileName,
               const std::string& strComment,
@@ -174,6 +176,7 @@ public:
   /*! \brief Update a song in the database
    \param idSong [in] the database ID of the song to update
    \param strTitle [in] the title of the song (required to be non-empty)
+   \param strMusicBrainzReleaseTrackID [in] the MusicBrainz track ID of the song
    \param strMusicBrainzTrackID [in] the MusicBrainz recording ID of the song
    \param strPathAndFileName [in] the path and filename to the song
    \param strComment [in] the ids of the added songs
@@ -204,6 +207,7 @@ public:
    */
   int UpdateSong(int idSong,
                  const std::string& strTitle,
+                 const std::string& strMusicBrainzReleaseTrackID,
                  const std::string& strMusicBrainzTrackID,
                  const std::string& strPathAndFileName,
                  const std::string& strComment,
@@ -989,6 +993,7 @@ private:
     song_strOrigReleaseDate,
     song_strDiscSubtitle,
     song_strFileName,
+    song_strMusicBrainzReleaseTrackID,
     song_strMusicBrainzTrackID,
     song_iTimesPlayed,
     song_iStartOffset,

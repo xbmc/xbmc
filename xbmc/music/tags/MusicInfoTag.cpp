@@ -885,6 +885,7 @@ void CMusicInfoTag::SetSong(const CSong& song)
   SetAlbum(song.strAlbum);
   SetAlbumArtist(song.GetAlbumArtist()); //Only have album artist in song as vector, no desc or MBID
   SetAlbumArtistSort(song.GetAlbumArtistSort());
+  SetMusicBrainzReleaseTrackID(song.strMusicBrainzReleaseTrackID);
   SetMusicBrainzTrackID(song.strMusicBrainzTrackID);
   SetContributors(song.GetContributors());
   SetComment(song.strComment);

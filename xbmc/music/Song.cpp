@@ -45,6 +45,7 @@ CSong::CSong(CFileItem& item)
     StringUtils::Trim(artistname);
   m_strAlbumArtistSort = tag.GetAlbumArtistSort();
 
+  strMusicBrainzReleaseTrackID = tag.GetMusicBrainzReleaseTrackID();
   strMusicBrainzTrackID = tag.GetMusicBrainzTrackID();
   m_musicRoles = tag.GetContributors();
   strComment = tag.GetComment();
@@ -228,6 +229,7 @@ void CSong::Serialize(CVariant& value) const
   value["duration"] = iDuration;
   value["track"] = iTrack;
   value["year"] = atoi(strReleaseDate.c_str());;
+  value["musicbrainzreleasetrackid"] = strMusicBrainzReleaseTrackID;
   value["musicbrainztrackid"] = strMusicBrainzTrackID;
   value["comment"] = strComment;
   value["mood"] = strMood;
@@ -257,6 +259,7 @@ void CSong::Clear()
   m_strAlbumArtistSort.clear();
   genre.clear();
   strThumb.clear();
+  strMusicBrainzReleaseTrackID.clear();
   strMusicBrainzTrackID.clear();
   m_musicRoles.clear();
   strComment.clear();
