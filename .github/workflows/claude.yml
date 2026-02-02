@@ -45,6 +45,15 @@ jobs:
           ref: ${{ github.event.issue.pull_request && steps.pr-info.outputs.pr_head_ref || github.ref }}
           fetch-depth: 0
 
+      - name: React to comment with eyes emoji
+        if: github.event_name == 'issue_comment' || github.event_name == 'pull_request_review_comment'
+        run: |
+          gh api repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }}/reactions \
+            --method POST \
+            --field content='eyes'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Run Claude Code
         id: claude
         uses: anthropics/claude-code-action@v1
@@ -78,7 +87,7 @@ jobs:
 
             When user mentions @claude in a top-level comment on a PR:
             - If they ask for a review: perform the review and take appropriate action (approval or issues comment)
-            - For other requests: respond in collapsed section format:
+            - For other requests: MUST use `gh pr comment` to post response in collapsed section format:
               <details>
               <summary>🤖 Claude Response</summary>
 
@@ -98,7 +107,7 @@ jobs:
 
             Response guidelines:
             1. For code reviews (PRs) - if issues found:
-               - MUST post comment in collapsed section with list of issues
+               - MUST use `gh pr comment` to post comment in collapsed section with list of issues
                - Focus ONLY on actionable issues/problems
                - Report bugs, errors, security issues, performance problems, or logic flaws
                - Skip anything that's working correctly
@@ -111,6 +120,7 @@ jobs:
                - The approval itself is the only response needed
 
             3. For questions or requests on issues:
+               - MUST use `gh issue comment` to post your response
                - Answer the question or fulfill the request directly
                - Provide implementation suggestions, explanations, or analysis as requested
                - Avoid gratuitous praise but be helpful and constructive
@@ -119,6 +129,8 @@ jobs:
             - Be concise and direct
             - When listing items, use (1), (2), (3) format - NEVER use #1, #2, #3 to avoid GitHub treating them as issue links
             - For code reviews: Your job is to find problems, not to praise
+            - For code reviews: Do NOT list confirmations or validations (e.g., "X is valid", "Y is correct") - only report PROBLEMS
+            - For code reviews: If you verify something is correct or answer a question from the PR description, do NOT list it as an issue
             - For questions/requests: Your job is to be helpful, not to praise
 
           claude_args: |
