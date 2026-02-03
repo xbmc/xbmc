@@ -353,7 +353,7 @@ void CRenderSystemDX::InvalidateColorBuffer()
     return;
 
   /* clear is not affected by stipple pattern, so we can only clear on first frame */
-  if (m_stereoMode == RENDER_STEREO_MODE_INTERLACED && m_stereoView == RENDER_STEREO_VIEW_RIGHT)
+  if (m_stereoMode == RENDER_STEREO_MODE_INTERLACED && m_stereoView == RenderStereoView::RIGHT)
     return;
 
   // some platforms prefer a clear, instead of rendering over
