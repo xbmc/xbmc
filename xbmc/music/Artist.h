@@ -181,7 +181,6 @@ private:
   bool m_bScrapedMBID = false; // Flag that mbid is from album merge of scarper results not derived from tags
 };
 
-typedef std::vector<CArtist> VECARTISTS;
 typedef std::vector<CArtistCredit> VECARTISTCREDITS;
 
 inline const std::string BLANKARTIST_FAKEMUSICBRAINZID = "Artist Tag Missing";
