@@ -55,7 +55,7 @@ public:
    */
   static void FileItemsToAlbums(const CFileItemList& items,
                                 VECALBUMS& albums,
-                                MAPSONGS* songsMap = nullptr);
+                                std::map<std::string, std::vector<CSong>>* songsMap = nullptr);
 
   /*! \brief Scrape additional album information and update the music database with it.
   Given an album, search for it using the given scraper.

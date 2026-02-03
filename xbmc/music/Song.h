@@ -20,7 +20,6 @@
 #include "utils/ISerializable.h"
 
 #include <chrono>
-#include <map>
 #include <string>
 #include <vector>
 
@@ -215,12 +214,6 @@ private:
   std::string m_strComposerSort;
   VECMUSICROLES m_musicRoles;
 };
-
-/*!
- \ingroup music
- \brief A map of a vector of CSong objects key by filename, used for CMusicDatabase
- */
-typedef std::map<std::string, std::vector<CSong>> MAPSONGS;
 
 /*!
  \ingroup music

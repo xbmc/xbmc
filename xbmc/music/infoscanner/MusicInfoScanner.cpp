@@ -631,9 +631,10 @@ static bool SortSongsByTrack(const CSong& song, const CSong& song2)
   return song.iTrack < song2.iTrack;
 }
 
-void CMusicInfoScanner::FileItemsToAlbums(const CFileItemList& items,
-                                          VECALBUMS& albums,
-                                          MAPSONGS* songsMap /* = nullptr */)
+void CMusicInfoScanner::FileItemsToAlbums(
+    const CFileItemList& items,
+    VECALBUMS& albums,
+    std::map<std::string, std::vector<CSong>>* songsMap /* = nullptr */)
 {
   /*
    * Step 1: Convert the FileItems into Songs.
@@ -650,7 +651,7 @@ void CMusicInfoScanner::FileItemsToAlbums(const CFileItemList& items,
     if (songsMap != NULL)
     {
       // Match up item to songs in library previously scanned with this path
-      MAPSONGS::iterator songlist = songsMap->find(items[i]->GetPath());
+      auto songlist = songsMap->find(items[i]->GetPath());
       if (songlist != songsMap->end())
       {
         std::vector<CSong>::iterator foundsong;
@@ -925,7 +926,7 @@ CInfoScanner::InfoRet CMusicInfoScanner::UpdateArtistInfo(CArtist& artist,
 
 int CMusicInfoScanner::RetrieveMusicInfo(const std::string& strDirectory, CFileItemList& items)
 {
-  MAPSONGS songsMap;
+  std::map<std::string, std::vector<CSong>> songsMap;
 
   // get all information for all files in current directory from database, and remove them
   if (m_musicDatabase.RemoveSongsFromPath(strDirectory, songsMap))
