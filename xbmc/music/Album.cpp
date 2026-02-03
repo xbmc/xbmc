@@ -348,7 +348,7 @@ std::string CAlbum::GetGenreString() const
   return StringUtils::Join(genre, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
 }
 
-const std::vector<std::string> CAlbum::GetAlbumArtist() const
+std::vector<std::string> CAlbum::GetAlbumArtist() const
 {
   //Get artist names as vector from artist credits
   std::vector<std::string> albumartists;
@@ -359,7 +359,7 @@ const std::vector<std::string> CAlbum::GetAlbumArtist() const
   return albumartists;
 }
 
-const std::vector<std::string> CAlbum::GetMusicBrainzAlbumArtistID() const
+std::vector<std::string> CAlbum::GetMusicBrainzAlbumArtistID() const
 {
   //Get artist MusicBrainz IDs as vector from artist credits
   std::vector<std::string> musicBrainzID;
@@ -370,7 +370,7 @@ const std::vector<std::string> CAlbum::GetMusicBrainzAlbumArtistID() const
   return musicBrainzID;
 }
 
-const std::string CAlbum::GetAlbumArtistString() const
+std::string CAlbum::GetAlbumArtistString() const
 {
   //Artist description may be different from the artists in artistcredits (see ALBUMARTISTS tag processing)
   //but is takes precedence as a string because artistcredits is not always filled during processing
@@ -385,7 +385,7 @@ const std::string CAlbum::GetAlbumArtistString() const
   return artistString;
 }
 
-const std::string CAlbum::GetAlbumArtistSort() const
+std::string CAlbum::GetAlbumArtistSort() const
 {
   //The stored artist sort name string takes precedence but a
   //value could be created from individual sort names held in artistcredits
@@ -401,7 +401,7 @@ const std::string CAlbum::GetAlbumArtistSort() const
   return artistString;
 }
 
-const std::vector<int> CAlbum::GetArtistIDArray() const
+std::vector<int> CAlbum::GetArtistIDArray() const
 {
   // Get album artist IDs for json rpc
   std::vector<int> artistids;
@@ -409,7 +409,6 @@ const std::vector<int> CAlbum::GetArtistIDArray() const
     artistids.push_back(artistCredit.GetArtistId());
   return artistids;
 }
-
 
 std::string CAlbum::GetReleaseType() const
 {

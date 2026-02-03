@@ -77,30 +77,30 @@ public:
   /*! \brief Get album artist names from the vector of artistcredits objects
   \return album artist names as a vector of strings
   */
-  const std::vector<std::string> GetAlbumArtist() const;
+  std::vector<std::string> GetAlbumArtist() const;
 
   /*! \brief Get album artist MusicBrainz IDs from the vector of artistcredits objects
   \return album artist MusicBrainz IDs as a vector of strings
   */
-  const std::vector<std::string> GetMusicBrainzAlbumArtistID() const;
+  std::vector<std::string> GetMusicBrainzAlbumArtistID() const;
   std::string GetGenreString() const;
 
   /*! \brief Get album artist names from the artist description string (if it exists)
              or concatenated from the vector of artistcredits objects
   \return album artist names as a single string
   */
-  const std::string GetAlbumArtistString() const;
+  std::string GetAlbumArtistString() const;
 
   /*! \brief Get album artist sort name from the artist sort string (if it exists)
   or concatenated from the vector of artistcredits objects
   \return album artist sort names as a single string
   */
-  const std::string GetAlbumArtistSort() const;
+  std::string GetAlbumArtistSort() const;
 
   /*! \brief Get album artist IDs (for json rpc) from the vector of artistcredits objects
   \return album artist IDs as a vector of integers
   */
-  const std::vector<int> GetArtistIDArray() const;
+  std::vector<int> GetArtistIDArray() const;
 
   typedef enum ReleaseType {
     Album = 0,
