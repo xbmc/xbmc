@@ -4972,7 +4972,12 @@ msgctxt "#1450"
 msgid "Put display to sleep when idle"
 msgstr ""
 
-#empty strings from id 1451 to 2049
+#: system/settings/settings.xml
+msgctxt "#1451"
+msgid "Restart playback after waking up"
+msgstr ""
+
+#empty strings from id 1452 to 2049
 #strings through to 1470 reserved for power-saving
 
 msgctxt "#2050"
@@ -21369,7 +21374,13 @@ msgctxt "#36415"
 msgid "No info available yet."
 msgstr ""
 
-#empty strings from id 36416 to 36417
+#. Description of setting with label #1451 "Restart playback after waking up"
+#: system/settings/settings.xml
+msgctxt "#36416"
+msgid "Restarts playback of the last played file when woken up."
+msgstr ""
+
+#empty strings from id 36417 to 36417
 
 #. Description of setting with label #295 "Low latency mode"
 #: system/settings/settings.xml

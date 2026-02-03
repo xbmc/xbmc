@@ -301,7 +301,9 @@ void CPowerManager::RestorePlayerState()
   CLog::Log(LOGDEBUG,
             "CPowerManager::RestorePlayerState - resume last played item (startOffset: {} ms)",
             m_lastPlayedFileItem->GetStartOffset());
-  g_application.PlayFile(*m_lastPlayedFileItem, m_lastUsedPlayer);
+  bool restartPlayer = m_settings->GetBool(CSettings::SETTING_POWERMANAGEMENT_RESTARTPLAYER);
+  if (restartPlayer)
+    g_application.PlayFile(*m_lastPlayedFileItem, m_lastUsedPlayer);
 }
 
 void CPowerManager::SettingOptionsShutdownStatesFiller(const SettingConstPtr& setting,
