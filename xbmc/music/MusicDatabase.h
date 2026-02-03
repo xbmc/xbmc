@@ -490,7 +490,7 @@ public:
                          const std::string& strArtist,
                          const std::string& strSort);
   void AddSongContributors(int idSong,
-                           const VECMUSICROLES& contributors,
+                           const std::vector<CMusicRole>& contributors,
                            const std::string& strSort);
   int GetRoleByName(const std::string& strRole);
   bool GetRolesByArtist(int idArtist, CFileItem* item);

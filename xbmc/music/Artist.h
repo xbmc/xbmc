@@ -12,7 +12,6 @@
 #include "utils/Artwork.h"
 #include "utils/ScraperUrl.h"
 
-#include <map>
 #include <string>
 #include <utility>
 #include <vector>
@@ -221,8 +220,3 @@ private:
   std::string m_strArtist;
   int idArtist;
 };
-
-typedef std::vector<CMusicRole> VECMUSICROLES;
-
-
-

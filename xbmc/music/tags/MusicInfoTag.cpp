@@ -1312,13 +1312,12 @@ std::string CMusicInfoTag::GetContributorsAndRolesText() const
   return StringUtils::TrimRight(strLabel, "\n");
 }
 
-
-const VECMUSICROLES &CMusicInfoTag::GetContributors()  const
+const std::vector<CMusicRole>& CMusicInfoTag::GetContributors() const
 {
   return m_musicRoles;
 }
 
-void CMusicInfoTag::SetContributors(const VECMUSICROLES& contributors)
+void CMusicInfoTag::SetContributors(const std::vector<CMusicRole>& contributors)
 {
   m_musicRoles = contributors;
 }

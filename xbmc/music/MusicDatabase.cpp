@@ -2575,7 +2575,7 @@ int CMusicDatabase::AddSongContributor(int idSong,
 }
 
 void CMusicDatabase::AddSongContributors(int idSong,
-                                         const VECMUSICROLES& contributors,
+                                         const std::vector<CMusicRole>& contributors,
                                          const std::string& strSort)
 {
   std::vector<std::string> composerSort;
