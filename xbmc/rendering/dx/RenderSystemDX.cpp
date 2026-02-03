@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -10,7 +10,6 @@
 #include "ServiceBroker.h"
 #include "application/Application.h"
 
-#include <mutex>
 #if defined(TARGET_WINDOWS_DESKTOP)
 #include "cores/RetroPlayer/process/windows/RPProcessInfoWin.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPWinRenderer.h"
@@ -29,13 +28,18 @@
 #include "guilib/GUIShaderDX.h"
 #include "guilib/GUITextureD3D.h"
 #include "guilib/GUIWindowManager.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/MathUtils.h"
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
 
+#include <mutex>
+
 #include <DirectXPackedVector.h>
 
-extern "C" {
+extern "C"
+{
 #include <libavutil/pixfmt.h>
 }
 
@@ -140,6 +144,8 @@ bool CRenderSystemDX::DestroyRenderSystem()
   m_RSScissorDisable = nullptr;
   m_RSScissorEnable = nullptr;
   m_depthStencilState = nullptr;
+  m_depthStencilStateRO = nullptr;
+  m_depthStencilStateRW = nullptr;
 
   return true;
 }
@@ -210,6 +216,19 @@ bool CRenderSystemDX::CreateStates()
   if(FAILED(hr))
     return false;
 
+  // Front to back pass - read & write depth
+  depthStencilDesc.DepthEnable = true;
+  depthStencilDesc.DepthFunc = D3D11_COMPARISON_GREATER;
+  if (FAILED(m_pD3DDev->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilStateRW)))
+    return false;
+
+  // Back to front pass - read depth, don't write it
+  depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+  depthStencilDesc.DepthFunc = D3D11_COMPARISON_GREATER_EQUAL;
+
+  if (FAILED(m_pD3DDev->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilStateRO)))
+    return false;
+
   // Set the depth stencil state.
   m_pContext->OMSetDepthStencilState(m_depthStencilState.Get(), 0);
 
@@ -277,7 +296,7 @@ void CRenderSystemDX::PresentRender(bool rendered, bool videoLayer)
                            ? SHADER_METHOD_RENDER_STEREO_INTERLACED_RIGHT
                            : SHADER_METHOD_RENDER_STEREO_CHECKERBOARD_RIGHT;
     SetAlphaBlendEnable(true);
-    CD3DTexture::DrawQuad(destRect, 0, &m_rightEyeTex, nullptr, method);
+    CD3DTexture::DrawQuad(destRect, 0, &m_rightEyeTex, nullptr, method, 1.f);
     CD3DHelper::PSClearShaderResources(m_pContext);
   }
 
@@ -328,6 +347,28 @@ bool CRenderSystemDX::EndRender()
   return true;
 }
 
+void CRenderSystemDX::InvalidateColorBuffer()
+{
+  if (!m_bRenderCreated)
+    return;
+
+  /* clear is not affected by stipple pattern, so we can only clear on first frame */
+  if (m_stereoMode == RENDER_STEREO_MODE_INTERLACED && m_stereoView == RENDER_STEREO_VIEW_RIGHT)
+    return;
+
+  // some platforms prefer a clear, instead of rendering over
+  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiGeometryClear)
+  {
+    ClearBuffers(0);
+    return;
+  }
+
+  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiFrontToBackRendering)
+    return;
+
+  m_deviceResources->ClearDepthStencil();
+}
+
 bool CRenderSystemDX::ClearBuffers(KODI::UTILS::COLOR::Color color)
 {
   if (!m_bRenderCreated)
@@ -337,8 +378,7 @@ bool CRenderSystemDX::ClearBuffers(KODI::UTILS::COLOR::Color color)
   CD3DHelper::XMStoreColor(fColor, color);
   ID3D11RenderTargetView* pRTView = m_deviceResources->GetBackBuffer().GetRenderTarget();
 
-  if ( m_stereoMode != RENDER_STEREO_MODE_OFF
-    && m_stereoMode != RENDER_STEREO_MODE_MONO)
+  if (m_stereoMode != RENDER_STEREO_MODE_OFF && m_stereoMode != RENDER_STEREO_MODE_MONO)
   {
     // if stereo anaglyph/tab/sbs, data was cleared when left view was rendered
     if (m_stereoView == RenderStereoView::RIGHT)
@@ -347,46 +387,47 @@ bool CRenderSystemDX::ClearBuffers(KODI::UTILS::COLOR::Color color)
       m_deviceResources->FinishCommandList();
 
       // do not clear RT for anaglyph modes
-      if ( m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA
-        || m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN
-        || m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE)
+      if (m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA ||
+          m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN ||
+          m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE)
       {
         pRTView = nullptr;
       }
       // for interlaced/checkerboard clear view for right texture
-      else if (m_stereoMode == RENDER_STEREO_MODE_INTERLACED
-            || m_stereoMode == RENDER_STEREO_MODE_CHECKERBOARD)
+      else if (m_stereoMode == RENDER_STEREO_MODE_INTERLACED ||
+               m_stereoMode == RENDER_STEREO_MODE_CHECKERBOARD)
       {
         pRTView = m_rightEyeTex.GetRenderTarget();
       }
     }
   }
 
-  if (pRTView == nullptr)
-    return true;
-
-  auto outputSize = m_deviceResources->GetOutputSize();
-  CRect clRect(0.0f, 0.0f,
-    static_cast<float>(outputSize.Width),
-    static_cast<float>(outputSize.Height));
-
-  // Unlike Direct3D 9, D3D11 ClearRenderTargetView always clears full extent of the resource view.
-  // Viewport and scissor settings are not applied. So clear RT by drawing full sized rect with clear color
-  if (m_ScissorsEnabled && m_scissor != clRect)
+  if (pRTView)
   {
-    bool alphaEnabled = m_BlendEnabled;
-    if (alphaEnabled)
-      SetAlphaBlendEnable(false);
+    const auto outputSize = m_deviceResources->GetOutputSize();
+    CRect clRect(0.0f, 0.0f, static_cast<float>(outputSize.Width),
+                 static_cast<float>(outputSize.Height));
 
-    CGUITextureD3D::DrawQuad(clRect, color);
+    // Unlike Direct3D 9, D3D11 ClearRenderTargetView always clears full extent of the resource view.
+    // Viewport and scissor settings are not applied. So clear RT by drawing full sized rect with clear color
+    if (m_ScissorsEnabled && m_scissor != clRect)
+    {
+      bool alphaEnabled = m_BlendEnabled;
+      if (alphaEnabled)
+        SetAlphaBlendEnable(false);
 
-    if (alphaEnabled)
-      SetAlphaBlendEnable(true);
+      CGUITextureD3D::DrawQuad(clRect, color);
+
+      if (alphaEnabled)
+        SetAlphaBlendEnable(true);
+    }
+    else
+      m_deviceResources->ClearRenderTarget(pRTView, fColor);
   }
-  else
-    m_deviceResources->ClearRenderTarget(pRTView, fColor);
 
-  m_deviceResources->ClearDepthStencil();
+  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiFrontToBackRendering)
+    m_deviceResources->ClearDepthStencil();
+
   return true;
 }
 
@@ -404,9 +445,10 @@ void CRenderSystemDX::ApplyStateBlock()
   auto m_pContext = m_deviceResources->GetD3DContext();
 
   m_pContext->RSSetState(m_ScissorsEnabled ? m_RSScissorEnable.Get() : m_RSScissorDisable.Get());
-  m_pContext->OMSetDepthStencilState(m_depthStencilState.Get(), 0);
+  m_pContext->OMSetDepthStencilState(GetDepthStencilState(), 0);
   float factors[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-  m_pContext->OMSetBlendState(m_BlendEnabled ? m_BlendEnableState.Get() : m_BlendDisableState.Get(), factors, 0xFFFFFFFF);
+  m_pContext->OMSetBlendState(m_BlendEnabled ? m_BlendEnableState.Get() : m_BlendDisableState.Get(),
+                              factors, 0xFFFFFFFF);
 
   m_pGUIShader->ApplyStateBlock();
 }
@@ -541,6 +583,28 @@ void CRenderSystemDX::ResetScissors()
 
   m_pContext->RSSetState(m_RSScissorDisable.Get());
   m_ScissorsEnabled = false;
+}
+
+ID3D11DepthStencilState* CRenderSystemDX::GetDepthStencilState()
+{
+  switch (m_depthCulling)
+  {
+    case DEPTH_CULLING::BACK_TO_FRONT:
+      return m_depthStencilStateRO.Get();
+    case DEPTH_CULLING::FRONT_TO_BACK:
+      return m_depthStencilStateRW.Get();
+    default:
+      return m_depthStencilState.Get();
+  }
+}
+
+void CRenderSystemDX::SetDepthCulling(DEPTH_CULLING culling)
+{
+  if (!m_bRenderCreated)
+    return;
+
+  m_depthCulling = culling;
+  m_deviceResources->GetD3DContext()->OMSetDepthStencilState(GetDepthStencilState(), 0);
 }
 
 void CRenderSystemDX::OnDXDeviceLost()

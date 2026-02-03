@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -339,6 +339,12 @@ void CGUIShaderDX::SetProjection(const XMMATRIX &value)
   m_cbWorldViewProj.projection = value;
 }
 
+void CGUIShaderDX::SetDepth(const float depth)
+{
+  m_bIsWVPDirty = true;
+  m_depth = depth;
+}
+
 void CGUIShaderDX::ApplyChanges(void)
 {
   ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
@@ -359,6 +365,8 @@ void CGUIShaderDX::ApplyChanges(void)
         buffer->sdrPeakLum = 10000.0f / DX::Windowing()->GetGuiSdrPeakLuminance();
       buffer->PQ = (DX::Windowing()->IsTransferPQ() ? 1 : 0);
 
+      // Translate from GL convention (-1 far 1 near) to D3D (0 far 1 near)
+      buffer->depth = m_depth / 2.f + 0.5f;
       pContext->Unmap(m_pWVPBuffer.Get(), 0);
       m_bIsWVPDirty = false;
     }

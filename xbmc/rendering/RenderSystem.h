@@ -21,11 +21,11 @@
  *   This interface is very basic since a lot of the actual details will go in to the derived classes
  */
 
-enum DEPTH_CULLING
+enum class DEPTH_CULLING
 {
-  DEPTH_CULLING_OFF = 0,
-  DEPTH_CULLING_BACK_TO_FRONT,
-  DEPTH_CULLING_FRONT_TO_BACK,
+  OFF,
+  BACK_TO_FRONT,
+  FRONT_TO_BACK,
 };
 
 class CGUIImage;

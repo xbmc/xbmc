@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -223,15 +223,8 @@ void DX::DeviceResources::GetDisplayMode(DXGI_MODE_DESC* mode) const
 void DX::DeviceResources::SetViewPort(D3D11_VIEWPORT& viewPort) const
 {
   // convert logical viewport to real
-  D3D11_VIEWPORT realViewPort =
-  {
-    viewPort.TopLeftX,
-    viewPort.TopLeftY,
-    viewPort.Width,
-    viewPort.Height,
-    viewPort.MinDepth,
-    viewPort.MinDepth
-  };
+  D3D11_VIEWPORT realViewPort = {viewPort.TopLeftX, viewPort.TopLeftY, viewPort.Width,
+                                 viewPort.Height,   viewPort.MinDepth, viewPort.MaxDepth};
 
   m_deferrContext->RSSetViewports(1, &realViewPort);
 }
@@ -1034,7 +1027,8 @@ void DX::DeviceResources::Present()
 
 void DX::DeviceResources::ClearDepthStencil() const
 {
-  m_deferrContext->ClearDepthStencilView(m_d3dDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0, 0);
+  const UINT flags = D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL;
+  m_deferrContext->ClearDepthStencilView(m_d3dDepthStencilView.Get(), flags, 0.0f, 0);
 }
 
 void DX::DeviceResources::ClearRenderTarget(ID3D11RenderTargetView* pRTView, float color[4]) const

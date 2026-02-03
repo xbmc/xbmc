@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -56,6 +56,8 @@ protected:
   int NextBuffer() const;
   CRendererBase* SelectRenderer(const VideoPicture &picture);
   CRect GetScreenRect() const;
+  void ClearBackBuffer() const;
+  void ClearBackBufferQuad() const;
 
   bool m_bConfigured = false;
   std::unique_ptr<CRendererBase> m_renderer;
