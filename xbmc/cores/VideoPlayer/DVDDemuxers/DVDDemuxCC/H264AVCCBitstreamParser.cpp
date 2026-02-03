@@ -12,6 +12,7 @@
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <climits>
 #include <ranges>
 
