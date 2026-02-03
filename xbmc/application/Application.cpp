@@ -847,12 +847,12 @@ void CApplication::Render()
   // render gui layer
   if (appPower->GetRenderGUI() && !m_skipGuiRender)
   {
-    if (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode())
+    if (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() != RenderStereoMode::OFF)
     {
       CServiceBroker::GetWinSystem()->GetGfxContext().SetStereoView(RenderStereoView::LEFT);
       hasRendered |= CServiceBroker::GetGUI()->GetWindowManager().Render();
 
-      if (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() != RENDER_STEREO_MODE_MONO)
+      if (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() != RenderStereoMode::MONO)
       {
         CServiceBroker::GetWinSystem()->GetGfxContext().SetStereoView(RenderStereoView::RIGHT);
         hasRendered |= CServiceBroker::GetGUI()->GetWindowManager().Render();

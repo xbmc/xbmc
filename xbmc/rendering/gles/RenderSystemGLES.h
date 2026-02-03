@@ -117,7 +117,7 @@ public:
 
   void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight, float stereoFactor = 0.0f) override;
 
-  bool SupportsStereo(RENDER_STEREO_MODE mode) const override;
+  bool SupportsStereo(RenderStereoMode mode) const override;
 
   void Project(float &x, float &y, float &z) override;
 

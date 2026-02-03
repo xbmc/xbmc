@@ -45,14 +45,14 @@ bool CRenderSystemBase::SupportsNPOT(bool dxt) const
   return true;
 }
 
-bool CRenderSystemBase::SupportsStereo(RENDER_STEREO_MODE mode) const
+bool CRenderSystemBase::SupportsStereo(RenderStereoMode mode) const
 {
   switch(mode)
   {
-    case RENDER_STEREO_MODE_OFF:
-    case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
-    case RENDER_STEREO_MODE_SPLIT_VERTICAL:
-    case RENDER_STEREO_MODE_MONO:
+    case RenderStereoMode::OFF:
+    case RenderStereoMode::SPLIT_HORIZONTAL:
+    case RenderStereoMode::SPLIT_VERTICAL:
+    case RenderStereoMode::MONO:
       return true;
     default:
       return false;

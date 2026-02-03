@@ -276,8 +276,8 @@ int GetStereoscopicDepth()
 {
   int depth = 0;
 
-  if(CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() != RENDER_STEREO_MODE_MONO
-  && CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() != RENDER_STEREO_MODE_OFF)
+  if (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() != RenderStereoMode::MONO &&
+      CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() != RenderStereoMode::OFF)
   {
     depth  = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_SUBTITLES_STEREOSCOPICDEPTH);
     depth *=

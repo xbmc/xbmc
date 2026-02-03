@@ -63,7 +63,7 @@ public:
   virtual void ApplyStateBlock() = 0;
 
   virtual void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight, float stereoFactor = 0.f) = 0;
-  virtual void SetStereoMode(RENDER_STEREO_MODE mode, RenderStereoView view)
+  virtual void SetStereoMode(RenderStereoMode mode, RenderStereoView view)
   {
     m_stereoMode = mode;
     m_stereoView = view;
@@ -81,7 +81,7 @@ public:
   const std::string& GetRenderRenderer() const { return m_RenderRenderer; }
   const std::string& GetRenderVersionString() const { return m_RenderVersion; }
   virtual bool SupportsNPOT(bool dxt) const;
-  virtual bool SupportsStereo(RENDER_STEREO_MODE mode) const;
+  virtual bool SupportsStereo(RenderStereoMode mode) const;
   unsigned int GetMaxTextureSize() const { return m_maxTextureSize; }
   unsigned int GetMinDXTPitch() const { return m_minDXTPitch; }
 
@@ -99,7 +99,7 @@ protected:
   int          m_RenderVersionMinor;
   int          m_RenderVersionMajor;
   RenderStereoView m_stereoView = RenderStereoView::OFF;
-  RENDER_STEREO_MODE m_stereoMode = RENDER_STEREO_MODE_OFF;
+  RenderStereoMode m_stereoMode = RenderStereoMode::OFF;
   bool m_limitedColorRange = false;
   bool m_transferPQ{false};
 

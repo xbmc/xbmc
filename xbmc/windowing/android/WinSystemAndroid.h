@@ -73,7 +73,7 @@ protected:
   int m_displayWidth;
   int m_displayHeight;
 
-  RENDER_STEREO_MODE m_stereo_mode;
+  RenderStereoMode m_stereo_mode;
 
   CTimer *m_dispResetTimer;
 

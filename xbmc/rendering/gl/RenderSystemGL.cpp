@@ -288,7 +288,7 @@ void CRenderSystemGL::InvalidateColorBuffer()
     return;
 
   /* clear is not affected by stipple pattern, so we can only clear on first frame */
-  if (m_stereoMode == RENDER_STEREO_MODE_INTERLACED && m_stereoView == RenderStereoView::RIGHT)
+  if (m_stereoMode == RenderStereoMode::INTERLACED && m_stereoView == RenderStereoView::RIGHT)
     return;
 
   // some platforms prefer a clear, instead of rendering over
@@ -312,7 +312,7 @@ bool CRenderSystemGL::ClearBuffers(KODI::UTILS::COLOR::Color color)
     return false;
 
   /* clear is not affected by stipple pattern, so we can only clear on first frame */
-  if (m_stereoMode == RENDER_STEREO_MODE_INTERLACED && m_stereoView == RenderStereoView::RIGHT)
+  if (m_stereoMode == RenderStereoMode::INTERLACED && m_stereoView == RenderStereoView::RIGHT)
     return true;
 
   float r = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::R, color) / 255.0f;
@@ -632,28 +632,28 @@ static const GLubyte stipple_3d[] = {
   0x00, 0x00, 0x00, 0x00,
 };
 
-void CRenderSystemGL::SetStereoMode(RENDER_STEREO_MODE mode, RenderStereoView view)
+void CRenderSystemGL::SetStereoMode(RenderStereoMode mode, RenderStereoView view)
 {
   CRenderSystemBase::SetStereoMode(mode, view);
 
   glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
   glDrawBuffer(GL_BACK);
 
-  if(m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN)
+  if (m_stereoMode == RenderStereoMode::ANAGLYPH_RED_CYAN)
   {
     if (m_stereoView == RenderStereoView::LEFT)
       glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE);
     else if (m_stereoView == RenderStereoView::RIGHT)
       glColorMask(GL_FALSE, GL_TRUE, GL_TRUE, GL_TRUE);
   }
-  if(m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA)
+  if (m_stereoMode == RenderStereoMode::ANAGLYPH_GREEN_MAGENTA)
   {
     if (m_stereoView == RenderStereoView::LEFT)
       glColorMask(GL_FALSE, GL_TRUE, GL_FALSE, GL_TRUE);
     else if (m_stereoView == RenderStereoView::RIGHT)
       glColorMask(GL_TRUE, GL_FALSE, GL_TRUE, GL_TRUE);
   }
-  if(m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE)
+  if (m_stereoMode == RenderStereoMode::ANAGLYPH_YELLOW_BLUE)
   {
     if (m_stereoView == RenderStereoView::LEFT)
       glColorMask(GL_TRUE, GL_TRUE, GL_FALSE, GL_TRUE);
@@ -661,7 +661,7 @@ void CRenderSystemGL::SetStereoMode(RENDER_STEREO_MODE mode, RenderStereoView vi
       glColorMask(GL_FALSE, GL_FALSE, GL_TRUE, GL_TRUE);
   }
 
-  if(m_stereoMode == RENDER_STEREO_MODE_INTERLACED)
+  if (m_stereoMode == RenderStereoMode::INTERLACED)
   {
     glEnable(GL_POLYGON_STIPPLE);
     if (m_stereoView == RenderStereoView::LEFT)
@@ -670,7 +670,7 @@ void CRenderSystemGL::SetStereoMode(RENDER_STEREO_MODE mode, RenderStereoView vi
       glPolygonStipple(stipple_3d+4);
   }
 
-  if(m_stereoMode == RENDER_STEREO_MODE_HARDWAREBASED)
+  if (m_stereoMode == RenderStereoMode::HARDWAREBASED)
   {
     if (m_stereoView == RenderStereoView::LEFT)
       glDrawBuffer(GL_BACK_LEFT);
@@ -680,16 +680,17 @@ void CRenderSystemGL::SetStereoMode(RENDER_STEREO_MODE mode, RenderStereoView vi
 
 }
 
-bool CRenderSystemGL::SupportsStereo(RENDER_STEREO_MODE mode) const
+bool CRenderSystemGL::SupportsStereo(RenderStereoMode mode) const
 {
   switch(mode)
   {
-    case RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN:
-    case RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA:
-    case RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE:
-    case RENDER_STEREO_MODE_INTERLACED:
+    case RenderStereoMode::ANAGLYPH_RED_CYAN:
+    case RenderStereoMode::ANAGLYPH_GREEN_MAGENTA:
+    case RenderStereoMode::ANAGLYPH_YELLOW_BLUE:
+    case RenderStereoMode::INTERLACED:
       return true;
-    case RENDER_STEREO_MODE_HARDWAREBASED: {
+    case RenderStereoMode::HARDWAREBASED:
+    {
       //This is called by setting init, at which point GL is not inited
       //luckily if GL doesn't support this, it will just behave as if
       //it was not in effect.

@@ -798,7 +798,7 @@ GLint CRenderSystemGLES::GUIShaderGetBrightness()
   return -1;
 }
 
-bool CRenderSystemGLES::SupportsStereo(RENDER_STEREO_MODE mode) const
+bool CRenderSystemGLES::SupportsStereo(RenderStereoMode mode) const
 {
   return CRenderSystemBase::SupportsStereo(mode);
 }
