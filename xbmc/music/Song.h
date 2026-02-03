@@ -208,16 +208,10 @@ public:
   ChapterMarks m_chapters; // map of chapter names and start and end times
 
   ReplayGain replayGain;
+
 private:
   std::vector<std::string> m_albumArtist; // Album artist from tag for album processing, no desc or MBID
   std::string m_strAlbumArtistSort; // Albumartist sort string from tag for album processing by CMusicInfoScanner::FileItemsToAlbums
   std::string m_strComposerSort;
   VECMUSICROLES m_musicRoles;
 };
-
-/*!
- \ingroup music
- \brief A vector of std::string objects, used for CMusicDatabase
- \sa CMusicDatabase
- */
-typedef std::vector<CGenre> VECGENRES;

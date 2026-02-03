@@ -80,7 +80,7 @@ class CFileItemList;
  Here is the database layout:
   \image html musicdatabase.png
 
- \sa CAlbum, CSong, CMapSong, VECARTISTS, VECALBUMS, VECGENRES
+ \sa CAlbum, CSong, CMapSong, VECARTISTS, VECALBUMS
  */
 class CMusicDatabase : public CDatabase
 {
