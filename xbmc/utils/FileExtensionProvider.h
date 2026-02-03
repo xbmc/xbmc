@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012-2018 Team Kodi
+ *  Copyright (C) 2012-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -7,6 +7,8 @@
  */
 
 #pragma once
+
+#include "threads/CriticalSection.h"
 
 #include <map>
 #include <memory>
@@ -77,7 +79,7 @@ public:
    *
    * @note Thought for cases e.g. by ISO, where can be a video or also a SACD.
    */
-  bool CanOperateExtension(const std::string& path) const;
+  static bool CanOperateExtension(const std::string& path);
 
 private:
   std::string GetAddonExtensions(ADDON::AddonType type) const;
@@ -88,6 +90,8 @@ private:
   // Construction properties
   std::shared_ptr<CAdvancedSettings> m_advancedSettings;
   ADDON::CAddonMgr &m_addonManager;
+
+  mutable CCriticalSection m_critSection;
 
   // File extension properties
   std::map<ADDON::AddonType, std::string> m_addonExtensions;
