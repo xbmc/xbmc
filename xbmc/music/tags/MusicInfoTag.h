@@ -90,7 +90,7 @@ public:
   const EmbeddedArtInfo &GetCoverArtInfo() const;
   const ReplayGain& GetReplayGain() const;
   CAlbum::ReleaseType GetAlbumReleaseType() const;
-  const ChapterMarks& GetChapterMarks() const;
+  const std::vector<ChapterDetails>& GetChapterMarks() const;
 
   void SetURL(std::string_view strURL);
   void SetTitle(const std::string& strTitle);
@@ -161,7 +161,7 @@ public:
   void SetStationName(std::string_view strStationName); // name of online radio station
   void SetStationArt(std::string_view strStationArt);
   void SetSongVideoURL(std::string_view songVideoURL); // link to video of song
-  void SetChapterMarks(const ChapterMarks& chapters);
+  void SetChapterMarks(const std::vector<ChapterDetails>& chapters);
 
   /*! \brief Append a unique artist to the artist list
    Checks if we have this artist already added, and if not adds it to the songs artist list.
@@ -261,7 +261,7 @@ private:
   std::string m_stationName;
   std::string m_stationArt; // Used to fetch thumb URL for Shoutcasts
   std::string m_songVideoURL; // link to a video for a song
-  ChapterMarks m_chapters; // Ch No., name, start time, end time
+  std::vector<ChapterDetails> m_chapters; // Ch No., name, start time, end time
 
   EmbeddedArtInfo m_coverArt; ///< art information
 
