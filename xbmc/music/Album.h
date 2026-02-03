@@ -19,7 +19,6 @@
 #include "utils/Artwork.h"
 #include "utils/ScraperUrl.h"
 
-#include <map>
 #include <vector>
 
 class TiXmlElement;
@@ -174,7 +173,7 @@ public:
   CDateTime dateNew;  // Time db record created
   CDateTime lastPlayed;
   int iTotalDiscs = -1;
-  VECSONGS songs;     ///< Local songs
+  std::vector<CSong> songs; ///< Local songs
   ReleaseType releaseType = Album;
   std::string strLastScraped;
   bool bScrapedMBID = false;

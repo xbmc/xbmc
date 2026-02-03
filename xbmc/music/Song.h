@@ -218,16 +218,9 @@ private:
 
 /*!
  \ingroup music
- \brief A vector of CSong objects, used for CMusicDatabase
- \sa CMusicDatabase
- */
-typedef std::vector<CSong> VECSONGS;
-
-/*!
- \ingroup music
  \brief A map of a vector of CSong objects key by filename, used for CMusicDatabase
  */
-typedef std::map<std::string, VECSONGS> MAPSONGS;
+typedef std::map<std::string, std::vector<CSong>> MAPSONGS;
 
 /*!
  \ingroup music

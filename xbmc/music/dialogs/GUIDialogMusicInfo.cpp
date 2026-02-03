@@ -513,7 +513,7 @@ void CGUIDialogMusicInfo::SetArtist(const CArtist& artist, const std::string &pa
   m_hasRefreshed = false;
 }
 
-void CGUIDialogMusicInfo::SetSongs(const VECSONGS &songs) const
+void CGUIDialogMusicInfo::SetSongs(const std::vector<CSong>& songs) const
 {
   m_albumSongs->Clear();
   CMusicThumbLoader loader;

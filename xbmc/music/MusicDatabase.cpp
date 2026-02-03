@@ -4098,7 +4098,7 @@ bool CMusicDatabase::GetSongsByPath(const std::string& strPath1,
     }
 
     // Each file is potentially mapped to a list of songs, gather these and save as list
-    VECSONGS songs;
+    std::vector<CSong> songs;
     std::string filename;
     while (!m_pDS->eof())
     {
@@ -11380,7 +11380,7 @@ bool CMusicDatabase::RemoveSongsFromPath(const std::string& path1, MAPSONGS& son
     if (iRowsFound > 0)
     {
       // Each file is potentially mapped to a list of songs, gather these and save as list
-      VECSONGS songs;
+      std::vector<CSong> songs;
       std::string filename;
       std::vector<std::string> songIds;
       while (!m_pDS->eof())

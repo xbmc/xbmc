@@ -167,7 +167,7 @@ bool CCueDocument::ParseTag(const std::string &strContent)
 // Function:GetSongs()
 // Store track information into songs list.
 //////////////////////////////////////////////////////////////////////////////////
-void CCueDocument::GetSongs(VECSONGS &songs)
+void CCueDocument::GetSongs(std::vector<CSong>& songs)
 {
   const auto separator =
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator;
@@ -480,7 +480,7 @@ bool CCueDocument::LoadTracks(CFileItemList& scannedItems, const CFileItem& item
 {
   const auto& tag = *item.GetMusicInfoTag();
 
-  VECSONGS tracks;
+  std::vector<CSong> tracks;
   this->GetSongs(tracks);
 
   bool oneFilePerTrack = this->IsOneFilePerTrack();
