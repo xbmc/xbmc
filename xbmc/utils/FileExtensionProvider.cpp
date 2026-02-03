@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012-2018 Team Kodi
+ *  Copyright (C) 2012-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -20,14 +20,14 @@
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
 
+#include <array>
 #include <string>
 #include <vector>
 
 using namespace ADDON;
 using namespace KODI::ADDONS;
 
-const std::vector<AddonType> ADDON_TYPES = {AddonType::VFS, AddonType::IMAGEDECODER,
-                                            AddonType::AUDIODECODER};
+constexpr std::array ADDON_TYPES{AddonType::VFS, AddonType::IMAGEDECODER, AddonType::AUDIODECODER};
 
 CFileExtensionProvider::CFileExtensionProvider(ADDON::CAddonMgr& addonManager)
   : m_advancedSettings(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()),
@@ -46,6 +46,7 @@ CFileExtensionProvider::CFileExtensionProvider(ADDON::CAddonMgr& addonManager)
                                         {
                                           if (m_addonManager.HasType(event.addonId, type))
                                           {
+                                            std::lock_guard lock{m_critSection};
                                             SetAddonExtensions(type);
                                             break;
                                           }
@@ -53,6 +54,7 @@ CFileExtensionProvider::CFileExtensionProvider(ADDON::CAddonMgr& addonManager)
                                       }
                                       else if (typeid(event) == typeid(AddonEvents::UnInstalled))
                                       {
+                                        std::lock_guard lock{m_critSection};
                                         SetAddonExtensions();
                                       }
                                     });
@@ -73,6 +75,8 @@ const std::string& CFileExtensionProvider::GetDiscStubExtensions() const
 
 std::string CFileExtensionProvider::GetMusicExtensions() const
 {
+  std::lock_guard lock{m_critSection};
+
   std::string extensions(m_advancedSettings->m_musicExtensions);
   extensions += '|' + GetAddonExtensions(AddonType::VFS);
   extensions += '|' + GetAddonExtensions(AddonType::AUDIODECODER);
@@ -82,6 +86,8 @@ std::string CFileExtensionProvider::GetMusicExtensions() const
 
 std::string CFileExtensionProvider::GetPictureExtensions() const
 {
+  std::lock_guard lock{m_critSection};
+
   std::string extensions(m_advancedSettings->m_pictureExtensions);
   extensions += '|' + GetAddonExtensions(AddonType::VFS);
   extensions += '|' + GetAddonExtensions(AddonType::IMAGEDECODER);
@@ -91,6 +97,8 @@ std::string CFileExtensionProvider::GetPictureExtensions() const
 
 std::string CFileExtensionProvider::GetSubtitleExtensions() const
 {
+  std::lock_guard lock{m_critSection};
+
   std::string extensions(m_advancedSettings->m_subtitlesExtensions);
   extensions += '|' + GetAddonExtensions(AddonType::VFS);
 
@@ -99,6 +107,8 @@ std::string CFileExtensionProvider::GetSubtitleExtensions() const
 
 std::string CFileExtensionProvider::GetVideoExtensions() const
 {
+  std::lock_guard lock{m_critSection};
+
   std::string extensions(m_advancedSettings->m_videoExtensions);
   if (!extensions.empty())
     extensions += '|';
@@ -109,6 +119,8 @@ std::string CFileExtensionProvider::GetVideoExtensions() const
 
 std::string CFileExtensionProvider::GetFileFolderExtensions() const
 {
+  std::lock_guard lock{m_critSection};
+
   std::string extensions(GetAddonFileFolderExtensions(AddonType::VFS));
   if (!extensions.empty())
     extensions += '|';
@@ -117,7 +129,7 @@ std::string CFileExtensionProvider::GetFileFolderExtensions() const
   return extensions;
 }
 
-bool CFileExtensionProvider::CanOperateExtension(const std::string& path) const
+bool CFileExtensionProvider::CanOperateExtension(const std::string& path)
 {
   /*!
    * @todo Improve this function to support all cases and not only audio decoder.
@@ -258,5 +270,7 @@ void CFileExtensionProvider::SetAddonExtensions(AddonType type)
 
 bool CFileExtensionProvider::EncodedHostName(const std::string& protocol) const
 {
+  std::lock_guard lock{m_critSection};
+
   return std::ranges::find(m_encoded, protocol) != m_encoded.end();
 }
