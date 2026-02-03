@@ -62,7 +62,7 @@ std::string CHttpResponse::Create()
       break;
 
     default:
-      return 0;
+      return "";
   }
 
   char statusBuffer[4];
