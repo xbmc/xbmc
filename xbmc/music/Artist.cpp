@@ -269,8 +269,6 @@ void CArtist::SetDateNew(const std::string& strDateNew)
 
 bool CMusicRole::operator==(const CMusicRole& a) const
 {
-  if (StringUtils::EqualsNoCase(m_strRole, a.m_strRole))
-    return StringUtils::EqualsNoCase(m_strArtist, a.m_strArtist);
-  else
-    return false;
+  return StringUtils::EqualsNoCase(m_strRole, a.m_strRole) &&
+         StringUtils::EqualsNoCase(m_strArtist, a.m_strArtist);
 }
