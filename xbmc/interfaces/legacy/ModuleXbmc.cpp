@@ -17,6 +17,7 @@
 #include "LanguageHook.h"
 #include "ServiceBroker.h"
 #include "Util.h"
+#include "addons/Skin.h"
 #include "aojsonrpc.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPowerHandling.h"
@@ -164,6 +165,17 @@ namespace XBMCAddon
     String getLocalizedString(int id)
     {
       XBMC_TRACE;
+      if (ADDON::IsSkinStringId(id))
+      {
+        auto gui = CServiceBroker::GetGUI();
+        if (gui)
+        {
+          auto skin = gui->GetSkinInfo();
+          if (skin)
+            return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().GetAddonString(
+                skin->ID(), id);
+        }
+      }
       return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(id);
     }
 
