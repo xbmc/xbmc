@@ -26,6 +26,23 @@
 
 const char* CWinSystemBase::SETTING_WINSYSTEM_IS_HDR_DISPLAY = "winsystem.ishdrdisplay";
 
+RESOLUTION_WHR::RESOLUTION_WHR(int newWidth,
+                               int newHeight,
+                               int screenWidth,
+                               int screenHeight,
+                               int newflags,
+                               int newIdx,
+                               std::string&& newId)
+  : width(newWidth),
+    height(newHeight),
+    m_screenWidth(screenWidth),
+    m_screenHeight(screenHeight),
+    flags(newflags),
+    ResInfo_Index(newIdx),
+    id(std::move(newId))
+{
+}
+
 CWinSystemBase::CWinSystemBase() : m_gfxContext(std::make_unique<CGraphicContext>())
 {
 }

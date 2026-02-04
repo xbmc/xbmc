@@ -43,9 +43,28 @@ using namespace KODI;
 #define SCROLLING_GAP   200U
 #define SCROLLING_THRESHOLD 300U
 
-CGUIBaseContainer::CGUIBaseContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems)
-    : IGUIContainer(parentID, controlID, posX, posY, width, height)
-    , m_scroller(scroller)
+CGUIBaseContainer::RENDERITEM::RENDERITEM(float newPosX,
+                                          float newPosY,
+                                          std::shared_ptr<CGUIListItem> newItem,
+                                          bool newFocused)
+  : posX(newPosX),
+    posY(newPosY),
+    item(newItem),
+    focused(newFocused)
+{
+}
+
+CGUIBaseContainer::CGUIBaseContainer(int parentID,
+                                     int controlID,
+                                     float posX,
+                                     float posY,
+                                     float width,
+                                     float height,
+                                     ORIENTATION orientation,
+                                     const CScroller& scroller,
+                                     int preloadItems)
+  : IGUIContainer(parentID, controlID, posX, posY, width, height),
+    m_scroller(scroller)
 {
   m_cursor = 0;
   m_offset = 0;

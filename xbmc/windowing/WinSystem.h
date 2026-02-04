@@ -24,6 +24,14 @@
 
 struct RESOLUTION_WHR
 {
+  // user-defined ctor required for XCode 15.2 and emplace_back
+  RESOLUTION_WHR(int newWidth,
+                 int newHeight,
+                 int screenWidth,
+                 int screenHeight,
+                 int newflags,
+                 int newIdx,
+                 std::string&& newId);
   int width;
   int height;
   int m_screenWidth;

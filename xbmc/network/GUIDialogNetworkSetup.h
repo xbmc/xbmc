@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -16,6 +16,17 @@ public:
   //! \brief A structure encapsulating properties of a supported protocol.
   struct Protocol
   {
+    // user-defined ctor for XCode 15.2 and emplace_back
+    Protocol(bool newSupportPath,
+             bool newSupportUsername,
+             bool newSupportPassword,
+             bool newSupportPort,
+             bool newSupportBrowsing,
+             int newDefaultPort,
+             std::string newType,
+             int newLabel,
+             std::string newAddonId);
+
     bool supportPath;      //!< Protocol has path in addition to server name
     bool supportUsername;  //!< Protocol uses logins
     bool supportPassword;  //!< Protocol supports passwords

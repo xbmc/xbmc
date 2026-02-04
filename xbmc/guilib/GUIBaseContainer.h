@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -220,6 +220,12 @@ protected:
 
   struct RENDERITEM
   {
+    // user-defined ctor for XCode 15.2 and emplace_back
+    RENDERITEM(float newPosX,
+               float newPosY,
+               std::shared_ptr<CGUIListItem> newItem,
+               bool newFocused);
+
     float posX;
     float posY;
     std::shared_ptr<CGUIListItem> item;

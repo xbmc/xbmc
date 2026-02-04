@@ -23,6 +23,9 @@ struct BlurayPlaylistInformation;
 
 struct Descriptor
 {
+  // user-defined ctor required for XCode 15.2 and emplace_back
+  Descriptor(unsigned int newTag, int newLength, std::vector<std::byte>&& newData);
+
   unsigned int tag;
   int length;
   std::vector<std::byte> data;

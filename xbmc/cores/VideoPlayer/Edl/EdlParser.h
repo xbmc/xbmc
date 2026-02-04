@@ -50,12 +50,27 @@ class CEdlParserResult
 public:
   struct EditEntry
   {
+    // user-defined ctor required for XCode 15.2 and emplace_back
+    EditEntry(const Edit& newEdit, const std::optional<EdlSourceLocation>& newSource)
+      : edit(newEdit),
+        source(newSource)
+    {
+    }
+
     Edit edit;
     std::optional<EdlSourceLocation> source;
   };
 
   struct SceneMarkerEntry
   {
+    // user-defined ctor required for XCode 15.2 and emplace_back
+    SceneMarkerEntry(std::chrono::milliseconds newMarker,
+                     const std::optional<EdlSourceLocation>& newSource)
+      : marker(newMarker),
+        source(newSource)
+    {
+    }
+
     std::chrono::milliseconds marker;
     std::optional<EdlSourceLocation> source;
   };

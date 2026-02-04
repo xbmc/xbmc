@@ -87,6 +87,17 @@ using namespace KODI::GUILIB;
 using namespace KODI::VIDEO;
 using namespace std::chrono_literals;
 
+CVideoDatabase::FileInformation::FileInformation(std::string&& newPath,
+                                                 int newFileId,
+                                                 int newVvId,
+                                                 std::string&& newHash)
+  : path(std::move(newPath)),
+    fileId(newFileId),
+    vvId(newVvId),
+    hash(std::move(newHash))
+{
+}
+
 //********************************************************************************************************************************
 CVideoDatabase::CVideoDatabase() = default;
 

@@ -27,6 +27,12 @@
 
 namespace XFILE
 {
+CStackDirectory::StackPart::StackPart(std::string&& newTitle, std::string&& newVolume)
+  : title(std::move(newTitle)),
+    volume(std::move(newVolume))
+{
+}
+
 bool CStackDirectory::GetDirectory(const CURL& url, CFileItemList& items)
 {
   items.Clear();
