@@ -1009,6 +1009,34 @@ bool ParseMPLS(const CURL& url,
 }
 } // namespace
 
+ClipInformation::ClipInformation(unsigned int newClip, std::string&& newCodec)
+  : clip(newClip),
+    codec(std::move(newCodec))
+{
+}
+
+PlaylistMarkInformation::PlaylistMarkInformation(BLURAY_MARK_TYPE newMarkType,
+                                                 unsigned int newPlayItemReference,
+                                                 std::chrono::milliseconds newTime,
+                                                 unsigned int newElementaryStreamPacketIdentifier,
+                                                 std::chrono::milliseconds newDuration)
+  : markType(newMarkType),
+    playItemReference(newPlayItemReference),
+    time(newTime),
+    elementaryStreamPacketIdentifier(newElementaryStreamPacketIdentifier),
+    duration(newDuration)
+{
+}
+
+ChapterInformation::ChapterInformation(unsigned int newChapter,
+                                       std::chrono::milliseconds newStart,
+                                       std::chrono::milliseconds newDuration)
+  : chapter(newChapter),
+    start(newStart),
+    duration(newDuration)
+{
+}
+
 bool CMPLSParser::ReadMPLS(const CURL& url,
                            unsigned int playlist,
                            BlurayPlaylistInformation& playlistInformation,

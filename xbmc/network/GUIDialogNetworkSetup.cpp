@@ -41,6 +41,26 @@ using namespace KODI::MESSAGING;
 #define SETTING_PASSWORD        "password"
 #define SETTING_REMOTE_PATH     "remotepath"
 
+CGUIDialogNetworkSetup::Protocol::Protocol(bool newSupportPath,
+                                           bool newSupportUsername,
+                                           bool newSupportPassword,
+                                           bool newSupportPort,
+                                           bool newSupportBrowsing,
+                                           int newDefaultPort,
+                                           std::string newType,
+                                           int newLabel,
+                                           std::string newAddonId)
+  : supportUsername(newSupportUsername),
+    supportPassword(newSupportPassword),
+    supportPort(newSupportPort),
+    supportBrowsing(newSupportBrowsing),
+    defaultPort(newDefaultPort),
+    type(newType),
+    label(newLabel),
+    addonId(newAddonId)
+{
+}
+
 CGUIDialogNetworkSetup::CGUIDialogNetworkSetup(void)
     : CGUIDialogSettingsManualBase(WINDOW_DIALOG_NETWORK_SETUP, "DialogSettings.xml")
 {

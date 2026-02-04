@@ -1913,6 +1913,13 @@ bool ParseTSPacket(const std::span<std::byte>& packet,
 }
 } // namespace
 
+Descriptor::Descriptor(unsigned int newTag, int newLength, std::vector<std::byte>&& newData)
+  : tag(newTag),
+    length(newLength),
+    data(std::move(newData))
+{
+}
+
 bool CM2TSParser::GetStreamsFromFile(const std::string& path,
                                      unsigned int clip,
                                      const std::string& clipExtension,

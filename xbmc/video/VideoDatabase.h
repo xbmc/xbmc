@@ -151,6 +151,9 @@ class CVideoDatabase : public CDatabase
 {
   struct FileInformation
   {
+    // user-defined ctor required for XCode 15.2 and emplace_back
+    FileInformation(std::string&& newPath, int newFileId, int newVvId, std::string&& newHash);
+
     std::string path;
     int fileId{0};
     int vvId{0};
