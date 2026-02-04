@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -168,11 +168,12 @@ void CGUIWindowWeather::UpdateLocations()
     {
       strLabel = StringUtils::Format("AreaCode {}", i);
     }
-    labels.emplace_back(strLabel, i);
 
     // in case it's a button, set the label
     if (i == iCurWeather)
       SET_CONTROL_LABEL(CONTROL_SELECTLOCATION, strLabel);
+
+    labels.emplace_back(std::move(strLabel), i);
   }
 
   SET_CONTROL_LABELS(CONTROL_SELECTLOCATION, iCurWeather, &labels);

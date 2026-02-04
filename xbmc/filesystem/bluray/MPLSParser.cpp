@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2025 Team Kodi
+ *  Copyright (C) 2025-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -231,7 +231,8 @@ void ParseProgramInformation(std::vector<std::byte>& buffer,
   programInformation.streams.reserve(numStreams);
   for (unsigned int j = 0; j < numStreams; ++j)
   {
-    StreamInformation streamInformation;
+    StreamInformation& streamInformation = programInformation.streams.emplace_back();
+
     streamInformation.packetIdentifier = GetWord(buffer, offset);
     offset += 2;
 
@@ -294,10 +295,9 @@ void ParseProgramInformation(std::vector<std::byte>& buffer,
       default:
         break;
     }
-    programInformation.streams.emplace_back(streamInformation);
 
-    CLog::LogFC(LOGDEBUG, LOGBLURAY, "  Stream - coding 0x{}",
-                fmt::format("{:02x}", static_cast<int>(streamInformation.coding)));
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "  Stream - coding 0x{:02x}",
+                static_cast<int>(streamInformation.coding));
 
     offset += streamLength + 1;
   }
@@ -341,10 +341,9 @@ bool ParseCLPI(std::vector<std::byte>& buffer, ClipInformation& clipInformation,
   clipInformation.programs.reserve(numPrograms);
   for (unsigned int i = 0; i < numPrograms; ++i)
   {
-    ProgramInformation programInformation;
+    ProgramInformation& programInformation = clipInformation.programs.emplace_back();
     CLog::LogFC(LOGDEBUG, LOGBLURAY, " Program {}", i);
     ParseProgramInformation(buffer, offset, programInformation);
-    clipInformation.programs.emplace_back(programInformation);
   }
 
   return true;
@@ -722,15 +721,16 @@ bool ProcessClips(const CURL& url,
       if (const auto& it = clipCache.find(clip.clip); it != clipCache.end())
       {
         // In local cache
-        playlistInformation.clips.emplace_back(it->second);
+        playlistInformation.clips.push_back(it->second);
         continue;
       }
 
       // Not in local cache
-      ClipInformation clipInformation;
+      ClipInformation& clipInformation = playlistInformation.clips.emplace_back();
       if (!ReadCLPI(url, clip.clip, clipInformation))
       {
         CLog::LogFC(LOGDEBUG, LOGBLURAY, "Cannot read clip {} information", clip.clip);
+        playlistInformation.clips.pop_back();
         return false;
       }
       playlistInformation.clips.emplace_back(clipInformation);
@@ -758,10 +758,12 @@ bool ParseSubPath(std::vector<std::byte>& buffer,
   subPlayItems.reserve(numSubPlayItems);
   for (unsigned int j = 0; j < numSubPlayItems; ++j)
   {
-    SubPlayItemInformation subPlayItem;
+    SubPlayItemInformation& subPlayItem = subPlayItems.emplace_back();
     if (!ParseSubPlayItem(buffer, offset, subPlayItem))
+    {
+      subPlayItems.pop_back();
       return false;
-    subPlayItems.emplace_back(subPlayItem);
+    }
   }
 
   return true;
@@ -788,10 +790,12 @@ bool ParsePlaylist(const CURL& url,
     playlistInformation.playItems.reserve(numPlayItems);
     for (unsigned int i = 0; i < numPlayItems; ++i)
     {
-      PlayItemInformation playItem;
+      PlayItemInformation& playItem = playlistInformation.playItems.emplace_back();
       if (!ParsePlayItem(buffer, offset, playItem))
+      {
+        playlistInformation.playItems.pop_back();
         return false;
-      playlistInformation.playItems.emplace_back(playItem);
+      }
     }
 
     // Calculate duration

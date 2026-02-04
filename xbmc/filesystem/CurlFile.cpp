@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <cassert>
 #include <climits>
+#include <utility>
 #include <vector>
 
 #ifdef TARGET_POSIX
@@ -2167,9 +2168,8 @@ const std::vector<std::string> CCurlFile::GetPropertyValues(XFILE::FileProperty 
   std::vector<std::string> values;
   std::string value = GetProperty(type, name);
   if (!value.empty())
-  {
-    values.emplace_back(value);
-  }
+    values.push_back(std::move(value));
+
   return values;
 }
 

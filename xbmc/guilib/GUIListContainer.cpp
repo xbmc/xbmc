@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -278,13 +278,19 @@ CGUIListContainer::CGUIListContainer(int parentID, int controlID, float posX, fl
                                  float textureHeight, float itemWidth, float itemHeight, float spaceBetweenItems)
 : CGUIBaseContainer(parentID, controlID, posX, posY, width, height, VERTICAL, 200, 0)
 {
-  m_layouts.emplace_back();
-  m_layouts.back().CreateListControlLayouts(width, textureHeight + spaceBetweenItems, false, labelInfo, labelInfo2, textureButton, textureButtonFocus, textureHeight, itemWidth, itemHeight, "", "");
+  CGUIListItemLayout& layout = m_layouts.emplace_back();
+  layout.CreateListControlLayouts(width, textureHeight + spaceBetweenItems, false, labelInfo,
+                                  labelInfo2, textureButton, textureButtonFocus, textureHeight,
+                                  itemWidth, itemHeight, "", "");
   std::string condition = StringUtils::Format("control.hasfocus({})", controlID);
   std::string condition2 = "!" + condition;
-  m_focusedLayouts.emplace_back();
-  m_focusedLayouts.back().CreateListControlLayouts(width, textureHeight + spaceBetweenItems, true, labelInfo, labelInfo2, textureButton, textureButtonFocus, textureHeight, itemWidth, itemHeight, condition2, condition);
-  m_height = floor(m_height / (textureHeight + spaceBetweenItems)) * (textureHeight + spaceBetweenItems);
+
+  CGUIListItemLayout& focusedLayout = m_focusedLayouts.emplace_back();
+  focusedLayout.CreateListControlLayouts(
+      width, textureHeight + spaceBetweenItems, true, labelInfo, labelInfo2, textureButton,
+      textureButtonFocus, textureHeight, itemWidth, itemHeight, condition2, condition);
+  m_height =
+      floor(m_height / (textureHeight + spaceBetweenItems)) * (textureHeight + spaceBetweenItems);
   ControlType = GUICONTAINER_LIST;
 }
 //#endif
