@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -122,13 +122,13 @@ void CWinSystemBase::SetWindowResolution(int width, int height)
 
 static void AddResolution(std::vector<RESOLUTION_WHR> &resolutions, unsigned int addindex, float bestRefreshrate)
 {
+  // non-const for move
   RESOLUTION_INFO resInfo = CDisplaySettings::GetInstance().GetResolutionInfo(addindex);
   const int width = resInfo.iWidth;
   const int height = resInfo.iHeight;
   const int screenWidth = resInfo.iScreenWidth;
   const int screenHeight = resInfo.iScreenHeight;
-  int flags  = resInfo.dwFlags & D3DPRESENTFLAG_MODEMASK;
-  const std::string id = resInfo.strId;
+  const int flags = resInfo.dwFlags & D3DPRESENTFLAG_MODEMASK;
   float refreshrate = resInfo.fRefreshRate;
 
   // don't touch RES_DESKTOP
@@ -149,9 +149,8 @@ static void AddResolution(std::vector<RESOLUTION_WHR> &resolutions, unsigned int
     }
   }
 
-  RESOLUTION_WHR res = {width, height, screenWidth, screenHeight, flags, static_cast<int>(addindex),
-                        id};
-  resolutions.emplace_back(res);
+  resolutions.emplace_back(width, height, screenWidth, screenHeight, flags,
+                           static_cast<int>(addindex), std::move(resInfo.strId));
 }
 
 static bool resSortPredicate(const RESOLUTION_WHR& i, const RESOLUTION_WHR& j)

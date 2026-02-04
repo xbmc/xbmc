@@ -63,15 +63,15 @@ public:
   const std::vector<EditEntry>& GetEdits() const { return m_edits; }
   const std::vector<SceneMarkerEntry>& GetSceneMarkers() const { return m_sceneMarkers; }
 
-  void AddEdit(const Edit& edit, std::optional<EdlSourceLocation> source = std::nullopt)
+  void AddEdit(const Edit& edit, const std::optional<EdlSourceLocation>& source = std::nullopt)
   {
-    m_edits.emplace_back(EditEntry{edit, source});
+    m_edits.emplace_back(edit, source);
   }
 
   void AddSceneMarker(std::chrono::milliseconds marker,
-                      std::optional<EdlSourceLocation> source = std::nullopt)
+                      const std::optional<EdlSourceLocation>& source = std::nullopt)
   {
-    m_sceneMarkers.emplace_back(SceneMarkerEntry{marker, source});
+    m_sceneMarkers.emplace_back(marker, source);
   }
 
   bool IsEmpty() const { return m_edits.empty() && m_sceneMarkers.empty(); }
