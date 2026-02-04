@@ -20,6 +20,7 @@
 #include <map>
 #include <span>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include <fmt/chrono.h>
@@ -462,17 +463,14 @@ bool ParsePlayItem(std::vector<std::byte>& buffer,
               fmt::format("{:%H:%M:%S}", outTime), stillMode, stillTime, angleCount);
 
   // First/only angle
-  ClipInformation angleInformation;
-  angleInformation.clip = std::stoi(clipId);
-  angleInformation.codec = codecId;
-  playItem.angleClips.emplace_back(angleInformation);
+  playItem.angleClips.emplace_back(std::stoi(clipId), std::move(codecId));
 
   // Get additional angles (if any)
   for (unsigned int j = 1; j < angleCount; ++j)
   {
-    ClipInformation additionalAngleInformation;
     const std::string angleClipId{GetString(buffer, offset, 5)};
-    const std::string angleCodecId{GetString(buffer, offset + OFFSET_ANGLE_CODEC_ID, 4)};
+    // non-const for move
+    std::string angleCodecId{GetString(buffer, offset + OFFSET_ANGLE_CODEC_ID, 4)};
     if (angleCodecId != "M2TS" && angleCodecId != "FMTS")
     {
       CLog::LogFC(LOGDEBUG, LOGBLURAY,
@@ -483,9 +481,7 @@ bool ParsePlayItem(std::vector<std::byte>& buffer,
     CLog::LogFC(LOGDEBUG, LOGBLURAY, "  Additional angle {} - clip id {}, codec id {}", j,
                 angleClipId, angleCodecId);
 
-    additionalAngleInformation.clip = std::stoi(angleClipId);
-    additionalAngleInformation.codec = angleCodecId;
-    playItem.angleClips.emplace_back(additionalAngleInformation);
+    playItem.angleClips.emplace_back(std::stoi(angleClipId), std::move(angleCodecId));
     offset += 10;
   }
 
@@ -649,18 +645,14 @@ bool ParseSubPlayItem(std::vector<std::byte>& buffer,
               fmt::format("{:%H:%M:%S}", outTime), numClips);
 
   // First/only clip
-  ClipInformation clipInformation;
-  clipInformation.clip = std::stoi(clipId);
-  clipInformation.codec = codecId;
-  subPlayItemInformation.clips.emplace_back(clipInformation);
+  subPlayItemInformation.clips.emplace_back(std::stoi(clipId), std::move(codecId));
 
   // Get additional clips (if any)
   for (unsigned int j = 1; j < numClips; ++j)
   {
-    ClipInformation additionalClipInformation;
     const std::string additionalClipId{GetString(buffer, offset, 5)};
-    const std::string additionalCodecId{
-        GetString(buffer, offset + OFFSET_SUBPLAYITEM_CLIP_CODEC_ID, 4)};
+    // non-const for move
+    std::string additionalCodecId{GetString(buffer, offset + OFFSET_SUBPLAYITEM_CLIP_CODEC_ID, 4)};
     if (additionalCodecId != "M2TS" && additionalCodecId != "FMTS")
     {
       CLog::LogFC(LOGDEBUG, LOGBLURAY,
@@ -671,9 +663,8 @@ bool ParseSubPlayItem(std::vector<std::byte>& buffer,
     CLog::LogFC(LOGDEBUG, LOGBLURAY, "  Additional clip {} - clip id {}, codec id {}", j,
                 additionalClipId, additionalCodecId);
 
-    additionalClipInformation.clip = std::stoi(additionalClipId);
-    additionalClipInformation.codec = additionalCodecId;
-    subPlayItemInformation.clips.emplace_back(additionalClipInformation);
+    subPlayItemInformation.clips.emplace_back(std::stoi(additionalClipId),
+                                              std::move(additionalCodecId));
     offset += 10;
   }
 
@@ -733,7 +724,6 @@ bool ProcessClips(const CURL& url,
         playlistInformation.clips.pop_back();
         return false;
       }
-      playlistInformation.clips.emplace_back(clipInformation);
       clipCache[clip.clip] = clipInformation;
     }
   }
@@ -839,17 +829,14 @@ bool ParsePlaylistMark(std::vector<std::byte>& buffer,
   playlistInformation.playlistMarks.reserve(numPlaylistMarks);
   for (unsigned int i = 0; i < numPlaylistMarks; ++i)
   {
-    PlaylistMarkInformation playlistMark{
-        .markType =
-            static_cast<BLURAY_MARK_TYPE>(GetByte(buffer, offset + OFFSET_MPLS_PLAYLISTMARK_TYPE)),
-        .playItemReference = GetWord(buffer, offset + OFFSET_MPLS_PLAYLISTMARK_PLAYITEM),
-        .time = std::chrono::milliseconds(GetDWord(buffer, offset + OFFSET_MPLS_PLAYLISTMARK_TIME) /
-                                          45), // 45KHz clock
-        .elementaryStreamPacketIdentifier =
-            GetWord(buffer, offset + OFFSET_MPLS_PLAYLISTMARK_PACKET_IDENTIFIER),
-        .duration = std::chrono::milliseconds(
-            GetDWord(buffer, offset + OFFSET_MPLS_PLAYLISTMARK_DURATION))};
-    playlistInformation.playlistMarks.emplace_back(playlistMark);
+    playlistInformation.playlistMarks.emplace_back(
+        static_cast<BLURAY_MARK_TYPE>(GetByte(buffer, offset + OFFSET_MPLS_PLAYLISTMARK_TYPE)),
+        GetWord(buffer, offset + OFFSET_MPLS_PLAYLISTMARK_PLAYITEM),
+        std::chrono::milliseconds(GetDWord(buffer, offset + OFFSET_MPLS_PLAYLISTMARK_TIME) /
+                                  45), // 45KHz clock
+        GetWord(buffer, offset + OFFSET_MPLS_PLAYLISTMARK_PACKET_IDENTIFIER),
+        std::chrono::milliseconds(GetDWord(buffer, offset + OFFSET_MPLS_PLAYLISTMARK_DURATION)));
+
     offset += MPLS_PLAYLISTMARK_SIZE;
   }
 
@@ -942,14 +929,13 @@ void DeriveChaptersAndTimings(BlurayPlaylistInformation& playlistInformation)
   {
     if (playlistMark.markType == BLURAY_MARK_TYPE::ENTRY)
     {
-      ChapterInformation chapterInformation{
-          .chapter = chapter, .start = start, .duration = playlistMark.duration};
-      playlistInformation.chapters.emplace_back(chapterInformation);
-      CLog::LogFC(LOGDEBUG, LOGBLURAY, "Chapter {} start {} duration {} end {}", chapter,
-                  fmt::format("{:%H:%M:%S}", start),
-                  fmt::format("{:%H:%M:%S}", chapterInformation.duration),
-                  fmt::format("{:%H:%M:%S}", start + chapterInformation.duration));
-      start += chapterInformation.duration;
+      playlistInformation.chapters.emplace_back(chapter, start, playlistMark.duration);
+
+      CLog::LogFC(LOGDEBUG, LOGBLURAY,
+                  "Chapter {} start {:%H:%M:%S} duration {:%H:%M:%S} end {:%H:%M:%S}", chapter,
+                  start, playlistMark.duration, start + playlistMark.duration);
+
+      start += playlistMark.duration;
       ++chapter;
     }
   }

@@ -10287,11 +10287,11 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         ConstructPath(fullPath, filePath, fileName);
         if (URIUtils::IsBlurayPath(fullPath))
           fullPath = URIUtils::GetDiscFile(fullPath);
-        const std::string hash{fmt::format("{}{}", fileId, fullPath)};
+        // non-const for move
+        std::string hash{fmt::format("{}{}", fileId, fullPath)};
 
-        versions.emplace_back(
-            FileInformation{.path = fullPath, .fileId = fileId, .vvId = vvId, .hash = hash});
         fileHashMap[hash]++;
+        versions.emplace_back(std::move(fullPath), fileId, vvId, std::move(hash));
 
         pDS3->next();
       }

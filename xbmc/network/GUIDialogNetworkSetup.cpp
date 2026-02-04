@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -435,7 +435,7 @@ void CGUIDialogNetworkSetup::UpdateAvailableProtocols()
   m_protocols.clear();
 #ifdef HAS_FILESYSTEM_SMB
   // most popular protocol at the first place
-  m_protocols.emplace_back(Protocol{true, true, true, false, true, 0, "smb", 20171, ""});
+  m_protocols.emplace_back(true, true, true, false, true, 0, "smb", 20171, "");
 #endif
   // protocols from vfs addon next
   if (CServiceBroker::IsAddonInterfaceUp())
@@ -447,9 +447,9 @@ void CGUIDialogNetworkSetup::UpdateAvailableProtocols()
       {
         // only use first protocol
         auto prots = StringUtils::Split(info.type, "|");
-        m_protocols.emplace_back(Protocol{
-            info.supportPath, info.supportUsername, info.supportPassword, info.supportPort,
-            info.supportBrowsing, info.defaultPort, prots.front(), info.label, addon->ID()});
+        m_protocols.emplace_back(info.supportPath, info.supportUsername, info.supportPassword,
+                                 info.supportPort, info.supportBrowsing, info.defaultPort,
+                                 prots.front(), info.label, addon->ID());
       }
     }
   }
@@ -466,6 +466,6 @@ void CGUIDialogNetworkSetup::UpdateAvailableProtocols()
 
   m_protocols.insert(m_protocols.end(), defaults.begin(), defaults.end());
 #ifdef HAS_FILESYSTEM_NFS
-  m_protocols.emplace_back(Protocol{true, false, false, false, true, 0, "nfs", 20259, ""});
+  m_protocols.emplace_back(true, false, false, false, true, 0, "nfs", 20259, "");
 #endif
 }

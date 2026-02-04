@@ -20,7 +20,7 @@ namespace XFILE
     typedef struct StackPart
     {
       std::string title;
-      std::string volume{};
+      std::string volume;
 
       auto operator<=>(const StackPart&) const = default;
     } StackPart;

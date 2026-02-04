@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -22,6 +22,7 @@
 #include <array>
 #include <functional>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace XFILE
@@ -85,7 +86,7 @@ std::string CStackDirectory::GetStackTitlePath(const std::string& strPath)
       {
         if (regExp.RegFind(path) != -1)
         {
-          stackParts.emplace_back(StackPart{.title = regExp.GetMatch(1)});
+          stackParts.emplace_back(regExp.GetMatch(1));
           break;
         }
       }
@@ -107,8 +108,7 @@ std::string CStackDirectory::GetStackTitlePath(const std::string& strPath)
       {
         if (regExp.RegFind(fileName) != -1)
         {
-          stackParts.emplace_back(
-              StackPart{.title = regExp.GetMatch(1), .volume = regExp.GetMatch(3)});
+          stackParts.emplace_back(regExp.GetMatch(1), regExp.GetMatch(3));
           break;
         }
       }
