@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2025 Team Kodi
+ *  Copyright (C) 2025-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -137,13 +137,13 @@ void CVideoDatabase::UpdateTables(int iVersion)
     std::vector<CShowItem> shows;
     while (!m_pDS->eof())
     {
-      CShowItem show;
+      CShowItem& show = shows.emplace_back();
       show.id = m_pDS->fv(0).get_asInt();
       show.path = m_pDS->fv(1).get_asInt();
       show.title = m_pDS->fv(2).get_asString();
       show.year = m_pDS->fv(3).get_asString();
       show.ident = m_pDS->fv(4).get_asString();
-      shows.emplace_back(std::move(show));
+
       m_pDS->next();
     }
     m_pDS->close();
@@ -194,11 +194,11 @@ void CVideoDatabase::UpdateTables(int iVersion)
     std::vector<CShowLink> shows;
     while (!m_pDS->eof())
     {
-      CShowLink link;
+      CShowLink& link = shows.emplace_back();
       link.show = m_pDS->fv(0).get_asInt();
       link.pathId = m_pDS->fv(1).get_asInt();
       link.path = m_pDS->fv(2).get_asString();
-      shows.emplace_back(std::move(link));
+
       m_pDS->next();
     }
     m_pDS->close();

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -9,6 +9,8 @@
 #include "HttpHeader.h"
 
 #include "utils/StringUtils.h"
+
+#include <utility>
 
 // header white space characters according to RFC 2616
 const char* const CHttpHeader::m_whitespaceChars = " \t";
@@ -81,7 +83,7 @@ bool CHttpHeader::ParseLine(const std::string& headerLine)
     StringUtils::Trim(strValue, m_whitespaceChars);
 
     if (!strParam.empty() && !strValue.empty())
-      m_params.emplace_back(strParam, strValue);
+      m_params.emplace_back(std::move(strParam), std::move(strValue));
     else
       return false;
   }
@@ -117,7 +119,7 @@ void CHttpHeader::AddParam(const std::string& param, const std::string& value, c
   if (valueTrim.empty())
     return;
 
-  m_params.emplace_back(paramLower, valueTrim);
+  m_params.emplace_back(std::move(paramLower), std::move(valueTrim));
 }
 
 std::string CHttpHeader::GetValue(const std::string& strParam) const
