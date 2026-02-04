@@ -16,6 +16,7 @@
 #include "test/TestUtils.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/FileUtils.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"

@@ -11,7 +11,6 @@
 #include "XBDateTime.h"
 #include "utils/Artwork.h"
 #include "utils/ScraperUrl.h"
-#include "utils/StringUtils.h"
 
 #include <map>
 #include <string>
@@ -214,13 +213,8 @@ public:
   int GetArtistId() const { return idArtist; }
   void SetArtistId(int iArtistId) { idArtist = iArtistId;  }
 
-  bool operator==(const CMusicRole& a) const
-  {
-    if (StringUtils::EqualsNoCase(m_strRole, a.m_strRole))
-      return StringUtils::EqualsNoCase(m_strArtist, a.m_strArtist);
-    else
-      return false;
-  }
+  bool operator==(const CMusicRole& a) const;
+
 private:
   int idRole;
   std::string m_strRole;
