@@ -171,7 +171,7 @@ public:
   std::string strTitle;
   std::string strArtistSort;
   std::string strArtistDesc;
-  VECARTISTCREDITS artistCredits;
+  std::vector<CArtistCredit> artistCredits;
   std::string strAlbum;
   std::vector<std::string> genre;
   std::string strThumb;

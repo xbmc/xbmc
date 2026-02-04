@@ -912,7 +912,8 @@ private:
   void GetFileItemFromDataset(const dbiplus::sql_record* const record,
                               CFileItem* item,
                               const CMusicDbUrl& baseUrl) const;
-  void GetFileItemFromArtistCredits(VECARTISTCREDITS& artistCredits, CFileItem* item) const;
+  void GetFileItemFromArtistCredits(std::vector<CArtistCredit>& artistCredits,
+                                    CFileItem* item) const;
 
   bool DeleteRemovedLinks();
 

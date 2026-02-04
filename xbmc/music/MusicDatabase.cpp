@@ -2776,7 +2776,7 @@ bool CMusicDatabase::GetArtistsByAlbum(int idAlbum, CFileItem* item)
     }
 
     // Get album artist credits
-    VECARTISTCREDITS artistCredits;
+    std::vector<CArtistCredit> artistCredits;
     while (!m_pDS->eof())
     {
       artistCredits.emplace_back(GetArtistCreditFromDataset(m_pDS->get_sql_record(), 0));
@@ -3240,7 +3240,7 @@ void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const rec
   }
 }
 
-void CMusicDatabase::GetFileItemFromArtistCredits(VECARTISTCREDITS& artistCredits,
+void CMusicDatabase::GetFileItemFromArtistCredits(std::vector<CArtistCredit>& artistCredits,
                                                   CFileItem* item) const
 {
   // Populate fileitem with artists from vector of artist credits
@@ -3841,7 +3841,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbumSongs(const std::string& strBaseDir,
     // Gather artist credits, rather than append to item as go along, so can return array of artistIDs too
     int songArtistOffset = song_enumCount;
     int songId = -1;
-    VECARTISTCREDITS artistCredits;
+    std::vector<CArtistCredit> artistCredits;
     while (!m_pDS->eof())
     {
       const dbiplus::sql_record* const record = m_pDS->get_sql_record();
@@ -3994,7 +3994,7 @@ bool CMusicDatabase::GetRecentlyAddedAlbumSongs(const std::string& strBaseDir,
     // Get songs from returned rows. Join means there is a row for every song artist
     int songArtistOffset = song_enumCount;
     int songId = -1;
-    VECARTISTCREDITS artistCredits;
+    std::vector<CArtistCredit> artistCredits;
     while (!m_pDS->eof())
     {
       const dbiplus::sql_record* const record = m_pDS->get_sql_record();
@@ -6358,7 +6358,7 @@ bool CMusicDatabase::GetSongsFullByWhere(
     items.Reserve(total);
     int songArtistOffset = song_enumCount;
     int songId = -1;
-    VECARTISTCREDITS artistCredits;
+    std::vector<CArtistCredit> artistCredits;
     const dbiplus::query_data& data = m_pDS->get_result_set().records;
     int count = 0;
     for (const auto& i : results)
