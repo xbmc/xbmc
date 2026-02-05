@@ -31,11 +31,12 @@ CShaderDX::~CShaderDX()
     m_pInputBuffer->Release();
 }
 
-bool CShaderDX::Create(std::string shaderSource,
+bool CShaderDX::Create(unsigned int passIdx,
+                       std::string passAlias,
                        std::string shaderPath,
+                       std::string shaderSource,
                        ShaderParameterMap shaderParameters,
                        std::vector<std::shared_ptr<IShaderLut>> luts,
-                       unsigned int passIdx,
                        unsigned int frameCountMod)
 {
   if (shaderPath.empty())
@@ -44,11 +45,12 @@ bool CShaderDX::Create(std::string shaderSource,
     return false;
   }
 
-  m_shaderSource = std::move(shaderSource);
+  m_passIdx = passIdx;
+  m_passAlias = std::move(passAlias);
   m_shaderPath = std::move(shaderPath);
+  m_shaderSource = std::move(shaderSource);
   m_shaderParameters = std::move(shaderParameters);
   m_luts = std::move(luts);
-  m_passIdx = passIdx;
   m_frameCountMod = frameCountMod;
   //m_pSampler = reinterpret_cast<ID3D11SamplerState*>(sampler);
 

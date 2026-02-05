@@ -31,11 +31,12 @@ public:
   CShaderGL& operator=(CShaderGL&&) = delete;
 
   // Implementation of IShader
-  bool Create(std::string shaderSource,
+  bool Create(unsigned int passIdx,
+              std::string passAlias,
               std::string shaderPath,
+              std::string shaderSource,
               ShaderParameterMap shaderParameters,
               std::vector<std::shared_ptr<IShaderLut>> luts,
-              unsigned int passIdx,
               unsigned int frameCountMod = 0) override;
   void Render(IShaderTexture& source, IShaderTexture& target) override;
   void SetSizes(const float2& prevSize,
@@ -59,7 +60,7 @@ private:
     float2 texture_size;
     float2 output_size;
     GLint frame_count;
-    GLfloat frame_direction;
+    GLint frame_direction;
   };
 
   struct UniformFrameInputs
@@ -67,6 +68,7 @@ private:
     float2 input_size;
     float2 texture_size;
     GLuint texture;
+    std::string alias;
   };
 
   void UpdateUniformInputs(IShaderTexture& sourceTexture,
@@ -79,17 +81,23 @@ private:
   void GetUniformLocs();
   void SetShaderParameters(CShaderTextureGL& sourceTexture);
 
-  // Currently loaded shader's source code
-  std::string m_shaderSource;
+  // Index of the video shader pass in the preset
+  unsigned int m_passIdx{0};
+
+  // Alias name for the video shader pass
+  std::string m_passAlias;
 
   // Currently loaded shader's relative path
   std::string m_shaderPath;
+
+  // Currently loaded shader's source code
+  std::string m_shaderSource;
 
   // Struct with all parameters pertaining to the shader
   ShaderParameterMap m_shaderParameters;
 
   // Look-up textures pertaining to the shader
-  std::vector<std::shared_ptr<IShaderLut>> m_luts; //! @todo Back to DX maybe
+  std::vector<std::shared_ptr<IShaderLut>> m_luts;
 
   // Resolution of the input of the shader
   float2 m_inputSize;
@@ -105,9 +113,6 @@ private:
 
   // Projection matrix
   std::array<std::array<GLfloat, 4>, 4> m_MVP;
-
-  // Index of the video shader pass
-  unsigned int m_passIdx{0};
 
   // Value to modulo (%) frame count with (unused if 0)
   unsigned int m_frameCountMod{0};
