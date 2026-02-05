@@ -18,6 +18,7 @@
 #include "cores/AudioEngine/Utils/AEStreamData.h"
 #include "cores/AudioEngine/Utils/AEStreamInfo.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "cores/DataCacheCore.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
@@ -1194,6 +1195,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
        !CompareFormat(m_sinkRequestFormat, oldSinkRequestFormat)) ||
       m_currDevice.compare(dev.name) != 0 || m_settings.driver.compare(dev.driver) != 0)
   {
+    CServiceBroker::GetDataCacheCore().ResetAudioCache();
     FlushEngine();
     if (!InitSink())
       return;

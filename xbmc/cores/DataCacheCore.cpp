@@ -38,10 +38,6 @@ void CDataCacheCore::Reset()
     std::unique_lock lock(m_videoPlayerSection);
     m_playerVideoInfo = {};
   }
-  {
-    std::unique_lock lock(m_audioPlayerSection);
-    m_playerAudioInfo = {};
-  }
   m_hasAVInfoChanges = false;
   {
     std::unique_lock lock(m_renderSection);
@@ -52,6 +48,14 @@ void CDataCacheCore::Reset()
     m_contentInfo.Reset();
   }
   m_timeInfo = {};
+}
+
+void CDataCacheCore::ResetAudioCache()
+{
+  {
+    std::unique_lock lock(m_audioPlayerSection);
+    m_playerAudioInfo = {};
+  }
 }
 
 bool CDataCacheCore::HasAVInfoChanges()
