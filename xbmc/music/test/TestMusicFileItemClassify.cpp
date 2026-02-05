@@ -13,6 +13,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "pictures/PictureInfoTag.h"
 #include "utils/FileExtensionProvider.h"
+#include "utils/StringUtils.h"
 #include "video/VideoInfoTag.h"
 
 #include <array>

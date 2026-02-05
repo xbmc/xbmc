@@ -18,6 +18,7 @@
 #include "addons/addoninfo/AddonType.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
 #include <string>

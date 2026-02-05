@@ -12,6 +12,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Fanart.h"
+#include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
 
 #include <algorithm>
@@ -266,3 +267,8 @@ void CArtist::SetDateNew(const std::string& strDateNew)
   dateNew.SetFromDBDateTime(strDateNew);
 }
 
+bool CMusicRole::operator==(const CMusicRole& a) const
+{
+  return StringUtils::EqualsNoCase(m_strRole, a.m_strRole) &&
+         StringUtils::EqualsNoCase(m_strArtist, a.m_strArtist);
+}

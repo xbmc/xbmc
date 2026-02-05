@@ -27,6 +27,7 @@
 #include "utils/FileExtensionProvider.h"
 #include "utils/Random.h"
 #include "utils/RegExp.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoFileItemClassify.h"
