@@ -10,6 +10,7 @@
 #include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayListFileItemClassify.h"
 #include "video/VideoFileItemClassify.h"
+
 #if defined(TARGET_DARWIN)
 #include <sys/param.h>
 #include <mach-o/dyld.h>
@@ -44,6 +45,7 @@
 #include <algorithm>
 #include <array>
 #include <stdlib.h>
+#include <tuple>
 #ifdef HAS_UPNP
 #include "filesystem/UPnPDirectory.h"
 #endif
@@ -625,21 +627,50 @@ std::string CUtil::GetSplashPath()
   return CSpecialProtocol::TranslatePathConvertCase(*it);
 }
 
-bool CUtil::ExcludeFileOrFolder(const std::string& strFileOrFolder, const std::vector<std::string>& regexps)
+bool CUtil::ExcludeFileOrFolder(const std::string& strFileOrFolder,
+                                const std::vector<std::string>& regexps,
+                                RegexCache* regexCache /*= nullptr*/)
 {
   if (strFileOrFolder.empty())
     return false;
 
-  CRegExp regExExcludes(true, CRegExp::autoUtf8);  // case insensitive regex
+  // If the cache is supplied the regex is created directly in the cache,
+  // if it's not supplied we create one local
+  std::optional<CRegExp> localRegex;
+  if (!regexCache)
+    localRegex.emplace(true, CRegExp::autoUtf8); // case insensitive regex
 
   for (const auto &regexp : regexps)
   {
-    if (!regExExcludes.RegComp(regexp.c_str()))
-    { // invalid regexp - complain in logs
-      CLog::Log(LOGERROR, "{}: Invalid exclude RegExp:'{}'", __FUNCTION__, regexp);
-      continue;
-    }
-    if (regExExcludes.RegFind(strFileOrFolder) > -1)
+    const auto regexToUse = [&]() -> CRegExp*
+    {
+      CRegExp* regexToInitialize = nullptr;
+      if (regexCache)
+      {
+        auto [iter, inserted] = regexCache->try_emplace(regexp, true, CRegExp::autoUtf8);
+        if (!inserted)
+          // already in the cache, no initialization necessary
+          return &(iter->second);
+        else
+          regexToInitialize = &(iter->second);
+      }
+      else
+        // the local regex needs to be always (re)initialized
+        regexToInitialize = &(*localRegex);
+
+      if (!regexToInitialize->RegComp(regexp.c_str()))
+      {
+        CLog::Log(LOGERROR, "{}: Invalid exclude RegExp:'{}'", __FUNCTION__, regexp);
+        if (regexCache)
+          // initialization failed, remove from the cache again
+          regexCache->erase(regexp);
+        return nullptr;
+      }
+
+      return regexToInitialize;
+    }();
+
+    if (regexToUse && regexToUse->RegFind(strFileOrFolder) > -1)
     {
       CLog::LogF(LOGDEBUG, "File '{}' excluded. (Matches exclude rule RegExp: '{}')", CURL::GetRedacted(strFileOrFolder), regexp);
       return true;

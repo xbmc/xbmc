@@ -11,6 +11,7 @@
 #include "InfoScanner.h"
 #include "MusicAlbumInfo.h"
 #include "MusicInfoScraper.h"
+#include "Util.h"
 #include "music/MusicDatabase.h"
 #include "threads/IRunnable.h"
 #include "threads/Thread.h"
@@ -277,6 +278,7 @@ protected:
   int m_scanType = 0; // 0 - load from files, 1 - albums, 2 - artists
   int m_idSourcePath;
   CMusicDatabase m_musicDatabase;
+  CUtil::RegexCache m_regexCache;
 
   std::set<int> m_albumsAdded;
 
