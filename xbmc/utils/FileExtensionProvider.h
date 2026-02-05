@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012-2018 Team Kodi
+ *  Copyright (C) 2012-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -8,8 +8,11 @@
 
 #pragma once
 
+#include "threads/CriticalSection.h"
+
 #include <map>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -67,7 +70,7 @@ public:
    *
    * @note Thought for cases e.g. by ISO, where can be a video or also a SACD.
    */
-  bool CanOperateExtension(const std::string& path) const;
+  static bool CanOperateExtension(const std::string& path);
 
 private:
   std::string GetAddonExtensions(ADDON::AddonType type) const;
@@ -75,9 +78,14 @@ private:
   void SetAddonExtensions();
   void SetAddonExtensions(ADDON::AddonType type);
 
+  void OnAdvancedSettingsLoaded();
+
   // Construction properties
   std::shared_ptr<CAdvancedSettings> m_advancedSettings;
   ADDON::CAddonMgr &m_addonManager;
+  std::optional<int> m_callbackId;
+
+  mutable CCriticalSection m_critSection;
 
   // File extension properties
   std::map<ADDON::AddonType, std::string> m_addonExtensions;
@@ -85,4 +93,12 @@ private:
 
   // Protocols from add-ons with encoded host names
   std::vector<std::string> m_encoded;
+
+  // Cached extensions lists
+  mutable std::optional<std::string> m_discStubExtensions;
+  mutable std::optional<std::string> m_musicExtensions;
+  mutable std::optional<std::string> m_pictureExtensions;
+  mutable std::optional<std::string> m_subtitlesExtensions;
+  mutable std::optional<std::string> m_videoExtensions;
+  mutable std::optional<std::string> m_fileFolderExtensions;
 };
