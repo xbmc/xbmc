@@ -41,12 +41,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          repository: ${{ github.event.issue.pull_request && steps.pr-info.outputs.is_fork == 'true' && format('{0}/{1}', steps.pr-info.outputs.pr_head_owner, steps.pr-info.outputs.pr_head_repo) || github.repository }}
-          ref: ${{ github.event.issue.pull_request && steps.pr-info.outputs.pr_head_ref || github.ref }}
+          # For issue_comment on PRs: use pr-info outputs if it's a fork
+          # For pull_request_review/pull_request_review_comment: use event.pull_request data directly
+          # For issues: use github.repository
+          repository: ${{
+            (github.event.issue.pull_request && steps.pr-info.outputs.is_fork == 'true' && format('{0}/{1}', steps.pr-info.outputs.pr_head_owner, steps.pr-info.outputs.pr_head_repo)) ||
+            (github.event.pull_request.head.repo.fork == true && github.event.pull_request.head.repo.full_name) ||
+            github.repository }}
+          ref: ${{
+            (github.event.issue.pull_request && steps.pr-info.outputs.pr_head_ref) ||
+            github.event.pull_request.head.ref ||
+            github.ref }}
           fetch-depth: 0
 
       - name: React to comment with eyes emoji
         if: github.event_name == 'issue_comment' || github.event_name == 'pull_request_review_comment'
+        continue-on-error: true
         run: |
           gh api repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }}/reactions \
             --method POST \
@@ -68,8 +78,24 @@ jobs:
           prompt: |
             REPO: ${{ github.repository }}
             EVENT: ${{ github.event_name }}
+            ISSUE/PR NUMBER: ${{ github.event.issue.number || github.event.pull_request.number }}
 
             The user mentioned @claude. Respond to their request in the context of this GitHub issue/PR.
+
+            IMPORTANT: Use the ISSUE/PR NUMBER provided above when running gh commands.
+            - For PR commands: `gh pr comment <number>`, `gh pr review <number>`, `gh pr view <number>`, etc.
+            - For issue commands: `gh issue comment <number>`, `gh issue view <number>`, etc.
+
+            CRITICAL: When posting multi-line comments, use printf with --body-file - (stdin):
+            ```bash
+            printf '%s\n' '<details>' '<summary>🤖 Claude Response</summary>' '' 'Your response here' 'Can include code blocks:' '```cpp' 'code here' '```' '' '</details>' | gh pr comment <number> --body-file -
+            ```
+            OR for simple text without special characters, use -b with single quotes.
+
+            DO NOT use:
+            - $(cat <<'EOF' ...) - blocked by security policy
+            - cat > /tmp/file - no /tmp write access
+            - Command substitution or process substitution - blocked
 
             CRITICAL RULE - ZERO POSITIVE FEEDBACK IN CODE REVIEWS:
             When reviewing code (PR comments/reviews):
@@ -87,14 +113,14 @@ jobs:
 
             When user mentions @claude in a top-level comment on a PR:
             - If they ask for a review: perform the review and take appropriate action (approval or issues comment)
-            - For other requests: MUST use `gh pr comment` to post response in collapsed section format:
+            - For other requests: MUST use `gh pr comment <number>` to post response in collapsed section format:
               <details>
               <summary>🤖 Claude Response</summary>
 
               [Your response here]
 
               </details>
-            - Note: Running `gh pr review --approve` IS the response for clean code - no additional comment needed
+            - Note: Running `gh pr review <number> --approve` IS the response for clean code - no additional comment needed
 
             When user mentions @claude in an inline comment:
             - Reply inline in that comment thread
@@ -107,7 +133,7 @@ jobs:
 
             Response guidelines:
             1. For code reviews (PRs) - if issues found:
-               - MUST use `gh pr comment` to post comment in collapsed section with list of issues
+               - MUST use `gh pr comment <number>` to post comment in collapsed section with list of issues
                - Focus ONLY on actionable issues/problems
                - Report bugs, errors, security issues, performance problems, or logic flaws
                - Skip anything that's working correctly
@@ -115,12 +141,12 @@ jobs:
                - Keep responses brief and issue-focused
 
             2. For code reviews (PRs) - if NO issues found:
-               - MUST run: `gh pr review --approve` (with --approve flag but NO --body flag)
+               - MUST run: `gh pr review <number> --approve` (with --approve flag but NO --body flag)
                - Do NOT post any separate comment or acknowledgment
                - The approval itself is the only response needed
 
             3. For questions or requests on issues:
-               - MUST use `gh issue comment` to post your response
+               - MUST use `gh issue comment <number>` to post your response
                - Answer the question or fulfill the request directly
                - Provide implementation suggestions, explanations, or analysis as requested
                - Avoid gratuitous praise but be helpful and constructive
