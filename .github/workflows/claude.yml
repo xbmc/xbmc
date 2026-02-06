@@ -44,13 +44,14 @@ jobs:
           # For issue_comment on PRs: use pr-info outputs if it's a fork
           # For pull_request_review/pull_request_review_comment: use event.pull_request data directly
           # For issues: use github.repository
+          # Note: Null checks are critical for deleted fork PRs
           repository: ${{
             (github.event.issue.pull_request && steps.pr-info.outputs.is_fork == 'true' && format('{0}/{1}', steps.pr-info.outputs.pr_head_owner, steps.pr-info.outputs.pr_head_repo)) ||
-            (github.event.pull_request.head.repo.fork == true && github.event.pull_request.head.repo.full_name) ||
+            (github.event.pull_request.head.repo != null && github.event.pull_request.head.repo.fork == true && github.event.pull_request.head.repo.full_name) ||
             github.repository }}
           ref: ${{
             (github.event.issue.pull_request && steps.pr-info.outputs.pr_head_ref) ||
-            github.event.pull_request.head.ref ||
+            (github.event.pull_request.head.ref != null && github.event.pull_request.head.ref) ||
             github.ref }}
           fetch-depth: 0
 
@@ -88,9 +89,15 @@ jobs:
 
             CRITICAL: When posting multi-line comments, use printf with --body-file - (stdin):
             ```bash
-            printf '%s\n' '<details>' '<summary>🤖 Claude Response</summary>' '' 'Your response here' 'Can include code blocks:' '```cpp' 'code here' '```' '' '</details>' | gh pr comment <number> --body-file -
+            printf '%s\n' '<details>' '<summary>Title</summary>' '' 'Line 1' 'Line 2' '' '</details>' | gh pr comment <number> --body-file -
             ```
-            OR for simple text without special characters, use -b with single quotes.
+            Each string argument to printf is a separate line. Single quotes prevent shell interpretation.
+            For content with single quotes or special chars, escape them or use double quotes with proper escaping.
+
+            Example with code blocks (escape backticks by separating them):
+            ```bash
+            printf '%s\n' '<details>' '<summary>Title</summary>' '' 'Code example:' '```' 'code here' '```' '' '</details>' | gh pr comment <number> --body-file -
+            ```
 
             DO NOT use:
             - $(cat <<'EOF' ...) - blocked by security policy
