@@ -21,7 +21,9 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
+#include <ranges>
 #include <string>
+#include <string_view>
 #include <vector>
 
 using namespace ADDON;
@@ -104,6 +106,57 @@ std::string CFileExtensionProvider::GetVideoExtensions() const
   if (!extensions.empty())
     extensions += '|';
   extensions += GetAddonExtensions(AddonType::VFS);
+
+  return extensions;
+}
+
+namespace
+{
+std::string GetSingleExtensions(const std::string& extensions)
+{
+  std::string out;
+  for (const auto& ext : StringUtils::Split(extensions, "|"))
+  {
+    if (ext.empty())
+      continue;
+
+    if (std::ranges::count(ext, '.') == 1)
+      out.append(ext + "|");
+  }
+  if (!out.empty())
+    out.pop_back();
+  return out;
+}
+
+std::string GetCompoundExtensions(std::string_view extensions)
+{
+  std::string out;
+  for (const auto& ext : StringUtils::Split(extensions, "|"))
+  {
+    if (ext.empty())
+      continue;
+
+    if (std::ranges::count(ext, '.') > 1)
+      out.append(ext + "|");
+  }
+  if (!out.empty())
+    out.pop_back();
+  return out;
+}
+} // namespace
+
+std::string CFileExtensionProvider::GetArchiveExtensions() const
+{
+  std::string extensions(m_advancedSettings->m_archiveExtensions);
+  extensions += '|' + GetSingleExtensions(GetAddonExtensions(AddonType::VFS));
+
+  return extensions;
+}
+
+std::string CFileExtensionProvider::GetCompoundArchiveExtensions() const
+{
+  std::string extensions(m_advancedSettings->m_compoundArchiveExtensions);
+  extensions += '|' + GetCompoundExtensions(GetAddonExtensions(AddonType::VFS));
 
   return extensions;
 }

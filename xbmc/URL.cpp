@@ -25,6 +25,7 @@
 
 #include <array>
 #include <iterator>
+#include <ranges>
 #include <string>
 #include <system_error>
 #include <vector>
@@ -414,15 +415,18 @@ void protectIPv6(std::string &hn)
 
 char CURL::GetDirectorySeparator() const
 {
+  if (URIUtils::IsDOSPath(m_strFileName))
+    return '\\';
+  if (URIUtils::IsAbsolutePOSIXPath(m_strFileName))
+    return '/';
 #ifndef TARGET_POSIX
   //We don't want to use IsLocal here, it can return true
   //for network protocols that matches localhost or hostname
   //we only ever want to use \ for win32 local filesystem
-  if ( m_strProtocol.empty() )
+  if (m_strProtocol.empty())
     return '\\';
-  else
 #endif
-    return '/';
+  return '/';
 }
 
 std::string CURL::Get() const
@@ -747,27 +751,12 @@ void CURL::RemoveProtocolOption(const std::string &key)
 
 bool CURL::HasExtension(std::string_view extensions) const
 {
-  const size_t pos = m_strFileName.find_last_of("./\\");
-  if (pos == std::string::npos || m_strFileName[pos] != '.')
-    return false;
-
-  const std::string extensionLower{
-      StringUtils::ToLower(std::string_view(m_strFileName).substr(pos))};
-
-  const std::vector<std::string> extensionsLower =
-      StringUtils::Split(StringUtils::ToLower(extensions), '|');
-
-  return std::ranges::any_of(extensionsLower, [&extensionLower](const std::string& ext)
-                             { return StringUtils::EndsWith(ext, extensionLower); });
+  return URIUtils::HasExtension(m_strFileName, extensions);
 }
 
 std::string CURL::GetExtension() const
 {
-  size_t period = m_strFileName.find_last_of("./\\");
-  if (period == std::string::npos || m_strFileName[period] != '.')
-    return std::string();
-
-  return m_strFileName.substr(period);
+  return URIUtils::GetExtension(m_strFileName);
 }
 
 bool CURL::IsStack() const
@@ -884,7 +873,7 @@ bool CURL::IsPicture() const
 bool CURL::HasParentInHostname() const
 {
   return IsProtocol("zip") || IsProtocol("apk") || IsProtocol("bluray") || IsProtocol("udf") ||
-         IsProtocol("iso9660") || IsProtocol("xbt") || IsProtocol("rar") ||
+         IsProtocol("iso9660") || IsProtocol("xbt") || IsProtocol("rar") || IsProtocol("archive") ||
          (CServiceBroker::IsAddonInterfaceUp() &&
           CServiceBroker::GetFileExtensionProvider().EncodedHostName(GetProtocol()));
 }

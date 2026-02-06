@@ -41,11 +41,7 @@ void CSaveFileState::DoWork(CFileItem& item,
                             bool updatePlayCount)
 {
   std::string progressTrackingFile = item.GetPath();
-  if (item.IsStack() ||
-      (URIUtils::IsBlurayPath(item.GetDynPath()) &&
-       (item.GetVideoContentType() == VideoDbContentType::MOVIES ||
-        item.GetVideoContentType() == VideoDbContentType::EPISODES ||
-        item.GetVideoContentType() == VideoDbContentType::UNKNOWN /* Removable bluray */)))
+  if (CUtil::UseDynPathForAddOrUpdate(item))
   {
     progressTrackingFile = item.GetDynPath();
   }

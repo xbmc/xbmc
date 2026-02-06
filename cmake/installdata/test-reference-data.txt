@@ -49,6 +49,8 @@ xbmc/video/test/testdata/moviestack_subfolder_parts/Movie_(2001)/part_2/Movie_(2
 xbmc/video/test/testdata/moviestack_subfolder_parts/Movie_(2001)/part_3/Movie_(2001)_part3.mkv
 xbmc/video/test/testdata/moviestack_subfolder_disc_parts/Movie_(2001)/part_1/VIDEO_TS/VIDEO_TS.IFO
 xbmc/video/test/testdata/moviestack_subfolder_disc_parts/Movie_(2001)/part_2/BDMV/index.bdmv
+xbmc/video/test/testdata/moviestack_subfolder_movie/Movie(2001)part1/Movie_(2001)_part1.mkv
+xbmc/video/test/testdata/moviestack_subfolder_movie/Movie(2001)part2/Movie_(2001)_part2.mkv
 xbmc/utils/test/CXBMCTinyXML-test.xml
 xbmc/utils/test/rss.xml
 xbmc/utils/test/data/bluray/BDMV/STREAM/00001.m2ts

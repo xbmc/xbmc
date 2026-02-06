@@ -23,11 +23,15 @@ namespace
 
 struct SimpleDefinition
 {
-  SimpleDefinition(const std::string& path, bool folder, bool res) : item(path, folder), result(res)
+  SimpleDefinition(std::string path, bool folder, bool res)
+    : path(std::move(path)),
+      folder(folder),
+      result(res)
   {
   }
 
-  CFileItem item;
+  std::string path;
+  bool folder;
   bool result;
 };
 
@@ -40,7 +44,10 @@ class InternetStreamTest : public testing::WithParamInterface<SimpleDefinition>,
 
 TEST_P(InternetStreamTest, IsInternetStream)
 {
-  EXPECT_EQ(NETWORK::IsInternetStream(GetParam().item), GetParam().result);
+  const SimpleDefinition& param = GetParam();
+
+  CFileItem item(param.path, param.folder);
+  EXPECT_EQ(NETWORK::IsInternetStream(item), param.result);
 }
 
 const auto inetstream_tests = std::array{
@@ -125,7 +132,9 @@ class RemoteTest : public testing::WithParamInterface<SimpleDefinition>, public 
 
 TEST_P(RemoteTest, IsRemote)
 {
-  EXPECT_EQ(NETWORK::IsRemote(GetParam().item), GetParam().result);
+  const SimpleDefinition& param = GetParam();
+  CFileItem item(param.path, param.folder);
+  EXPECT_EQ(NETWORK::IsRemote(item), param.result);
 }
 
 const auto remote_tests = std::array{
@@ -158,7 +167,9 @@ class StreamedFilesystemTest : public testing::WithParamInterface<SimpleDefiniti
 
 TEST_P(StreamedFilesystemTest, IsStreamedFilesystem)
 {
-  EXPECT_EQ(NETWORK::IsStreamedFilesystem(GetParam().item), GetParam().result);
+  const SimpleDefinition& param = GetParam();
+  CFileItem item(param.path, param.folder);
+  EXPECT_EQ(NETWORK::IsStreamedFilesystem(item), param.result);
 }
 
 const auto streamedfs_tests = std::array{

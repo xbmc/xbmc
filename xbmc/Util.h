@@ -11,11 +11,9 @@
 #include "MediaSource.h" // Definition of std::vector<CMediaSource>
 #include "utils/Digest.h"
 
-#include <climits>
-#include <cmath>
+#include <cstdint>
 #include <span>
-#include <stdint.h>
-#include <string.h>
+#include <string>
 #include <vector>
 
 //! \brief Enumeration of filesystem types for LegalPath/FileName
@@ -144,13 +142,6 @@ public:
       bool bFixDoubleSlashes =
           false); ///< return a validated path, with correct directory separators.
 
-  /*!
-   * \brief Check if a filename contains a supported font extension.
-   * \param filename The filename to check
-   * \return True if it is supported, otherwise false
-   */
-  static bool IsSupportedFontExtension(const std::string& fileName);
-
   /*! \brief Split a comma separated parameter list into separate parameters.
    Takes care of the case where we may have a quoted string containing commas, or we may
    have a function (i.e. parentheses) with multiple parameters as a single parameter.
@@ -259,6 +250,13 @@ public:
                                           std::string& basePath,
                                           std::string& videoFileName);
 
+  /*! \brief If a file has a stack://, bluray:// or archive (zip://, rar://, archive://) path,
+   *         use the dynamic path for updates (settings, SaveFileStateJob) instead of the real path.
+   *  \param item The file item to check.
+   *  \return true if dynamic path should be used, false otherwise.
+   */
+  static bool UseDynPathForAddOrUpdate(const CFileItem& item);
+
 #if !defined(TARGET_WINDOWS)
 private:
   static unsigned int s_randomSeed;
@@ -283,18 +281,34 @@ protected:
     *   \param[out] associatedFiles A vector containing the full paths of all found associated files.
     */
   static void ScanPathsForAssociatedItems(const std::string& videoName,
-                                          const CFileItemList& items,
+                                          CFileItemList& items,
                                           const std::vector<std::string>& item_exts,
                                           std::vector<std::string>& associatedFiles);
+
+  /** \brief Determines if the given path is an archive and scans it for associated files of a given video.
+    *   \param path The path of the file.
+    *   \param videoName The name of the video file.
+    *   \param item_exts A vector of extensions specifying the associated files.
+    *   \param associatedFiles A vector containing the full paths of all found associated files.
+    *   \param[in]  depth The current recursion depth. Callers do not need to set this.
+    *   \return An integer indicating the number of associated files found or -1 if not an archive.
+    */
+  static int DetermineArchiveAndScanForAssociatedItems(const std::string& path,
+                                                       const std::string& videoName,
+                                                       const std::vector<std::string>& item_exts,
+                                                       std::vector<std::string>& associatedFiles,
+                                                       int depth = 0);
 
   /** \brief Searches in an archive for associated files of a given video.
     *   \param[in]  strArchivePath The full path of the archive.
     *   \param[in]  videoNameNoExt The filename of the video without extension for which associated files should be retrieved.
     *   \param[in]  item_exts A vector of extensions specifying the associated files.
+    *   \param[in]  depth The current recursion depth.
     *   \param[out] associatedFiles A vector containing the full paths of all found associated files.
     */
   static int ScanArchiveForAssociatedItems(const std::string& strArchivePath,
                                            const std::string& videoNameNoExt,
                                            const std::vector<std::string>& item_exts,
-                                           std::vector<std::string>& associatedFiles);
+                                           std::vector<std::string>& associatedFiles,
+                                           int depth);
 };

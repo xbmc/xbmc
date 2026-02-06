@@ -1924,7 +1924,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
       // Deal with 'Disc n' subdirectories
       // Unless dealing with a full nfo in which case details are taken from there already
-      if (!pItem->GetProperty("from_nfo").asBoolean(false))
+      if (!pItem->GetProperty("from_nfo").asBoolean(false) && !pItem->IsStack())
       {
         const std::string discNum{CUtil::GetPartNumberFromPath(movieDetails.m_strFileNameAndPath)};
         if (!discNum.empty())

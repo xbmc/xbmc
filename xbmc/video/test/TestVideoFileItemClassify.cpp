@@ -29,23 +29,18 @@ using namespace KODI;
 
 struct StubDefinition
 {
-  StubDefinition(const std::string& path,
-                 bool res = true,
-                 const std::string& tagPath = "",
-                 bool isFolder = false)
-    : item(path, isFolder), result(res)
+  StubDefinition(std::string path, bool res = true, std::string tagPath = "", bool isFolder = false)
+    : path(std::move(path)),
+      result(res),
+      tagPath(std::move(tagPath)),
+      isFolder(isFolder)
   {
-    if (!tagPath.empty())
-    {
-      if (isFolder)
-        item.GetVideoInfoTag()->m_strPath = tagPath;
-      else
-        item.GetVideoInfoTag()->m_strFileNameAndPath = tagPath;
-    }
   }
 
-  CFileItem item;
+  std::string path;
   bool result;
+  std::string tagPath;
+  bool isFolder;
 };
 
 class DiscStubTest : public testing::WithParamInterface<StubDefinition>, public testing::Test
@@ -54,7 +49,18 @@ class DiscStubTest : public testing::WithParamInterface<StubDefinition>, public 
 
 TEST_P(DiscStubTest, IsDiscStub)
 {
-  EXPECT_EQ(VIDEO::IsDiscStub(GetParam().item), GetParam().result);
+  const StubDefinition& param = GetParam();
+
+  CFileItem item(param.path, param.isFolder);
+  if (!param.tagPath.empty())
+  {
+    if (param.isFolder)
+      item.GetVideoInfoTag()->m_strPath = param.tagPath;
+    else
+      item.GetVideoInfoTag()->m_strFileNameAndPath = param.tagPath;
+  }
+
+  EXPECT_EQ(VIDEO::IsDiscStub(item), param.result);
 }
 
 const auto discstub_tests = std::array{
@@ -70,36 +76,18 @@ INSTANTIATE_TEST_SUITE_P(TestVideoFileItemClassify,
 
 struct VideoClassifyTest
 {
-  VideoClassifyTest(const std::string& path,
-                    bool res = true,
-                    const std::string& mime = "",
-                    int tag_type = 0)
-    : item(path, false), result(res)
+  VideoClassifyTest(std::string path, bool res = true, std::string mime = "", int tag_type = 0)
+    : path(std::move(path)),
+      result(res),
+      mime(std::move(mime)),
+      tag_type(tag_type)
   {
-    if (!mime.empty())
-      item.SetMimeType(mime);
-    switch (tag_type)
-    {
-      case 1:
-        item.GetVideoInfoTag()->m_strFileNameAndPath = path;
-        break;
-      case 2:
-        item.GetGameInfoTag()->SetGameClient("some_client");
-        break;
-      case 3:
-        item.GetMusicInfoTag()->SetPlayCount(1);
-        break;
-      case 4:
-        item.GetPictureInfoTag()->SetInfo("foo", "bar");
-        ;
-        break;
-      default:
-        break;
-    }
   }
 
-  CFileItem item;
+  std::string path;
   bool result;
+  std::string mime;
+  int tag_type;
 };
 
 class VideoTest : public testing::WithParamInterface<VideoClassifyTest>, public testing::Test
@@ -108,7 +96,31 @@ class VideoTest : public testing::WithParamInterface<VideoClassifyTest>, public 
 
 TEST_P(VideoTest, IsVideo)
 {
-  EXPECT_EQ(VIDEO::IsVideo(GetParam().item), GetParam().result);
+  const VideoClassifyTest& param = GetParam();
+
+  CFileItem item(param.path, false);
+  if (!param.mime.empty())
+    item.SetMimeType(param.mime);
+
+  switch (param.tag_type)
+  {
+    case 1:
+      item.GetVideoInfoTag()->m_strFileNameAndPath = param.path;
+      break;
+    case 2:
+      item.GetGameInfoTag()->SetGameClient("some_client");
+      break;
+    case 3:
+      item.GetMusicInfoTag()->SetPlayCount(1);
+      break;
+    case 4:
+      item.GetPictureInfoTag()->SetInfo("foo", "bar");
+      break;
+    default:
+      break;
+  }
+
+  EXPECT_EQ(VIDEO::IsVideo(item), param.result);
 }
 
 const auto video_tests = std::array{
@@ -135,7 +147,7 @@ TEST(TestVideoFileItemClassify, VideoExtensions)
   {
     if (!ext.empty())
     {
-      EXPECT_TRUE(VIDEO::IsVideo(CFileItem(ext, false)));
+      EXPECT_TRUE(VIDEO::IsVideo(CFileItem("test" + ext, false)));
     }
   }
 }

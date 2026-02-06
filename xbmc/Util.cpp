@@ -6,90 +6,108 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "network/Network.h"
-#include "network/NetworkFileItemClassify.h"
-#include "playlists/PlayListFileItemClassify.h"
-#include "video/VideoFileItemClassify.h"
-#if defined(TARGET_DARWIN)
-#include <sys/param.h>
+// System headers
+#ifdef TARGET_DARWIN
 #include <mach-o/dyld.h>
+#include <sys/param.h>
 #endif
 
-#if defined(TARGET_FREEBSD)
+#ifdef TARGET_FREEBSD
 #include <sys/param.h>
 #include <sys/sysctl.h>
 #endif
 
 #ifdef TARGET_POSIX
-#include <sys/types.h>
 #include <dirent.h>
-#include <unistd.h>
+#include <sys/types.h>
 #include <sys/wait.h>
+#include <unistd.h>
 #endif
-#if defined(TARGET_ANDROID)
-#include <androidjni/ApplicationInfo.h>
-#include "platform/android/activity/XBMCApp.h"
-#include "CompileInfo.h"
-#endif
-#include "ServiceBroker.h"
-#include "Util.h"
-#include "addons/VFSEntry.h"
-#include "filesystem/Directory.h"
-#include "filesystem/MultiPathDirectory.h"
-#include "filesystem/PVRDirectory.h"
-#include "filesystem/RSSDirectory.h"
-#include "filesystem/SpecialProtocol.h"
-#include "filesystem/StackDirectory.h"
 
-#include <algorithm>
-#include <array>
-#include <stdlib.h>
-#ifdef HAS_UPNP
-#include "filesystem/UPnPDirectory.h"
+#ifdef TARGET_ANDROID
+#include <androidjni/ApplicationInfo.h>
 #endif
-#include "profiles/ProfileManager.h"
-#include "utils/RegExp.h"
-#include "windowing/GraphicContext.h"
-#include "guilib/TextureManager.h"
-#include "storage/MediaManager.h"
+
+// Kodi headers that include system headers
+// (come before Util.h to stabilize __stat64 typedefs)
+#include "FileItem.h"
+#include "ServiceBroker.h"
+#include "URL.h"
+#include "filesystem/Directory.h"
+#include "filesystem/File.h"
+#include "filesystem/SpecialProtocol.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
+
+// Class header
+#include "Util.h"
+
+// Other platform specific headers
 #ifdef TARGET_WINDOWS
-#include "utils/CharsetConverter.h"
 #include "WIN32Util.h"
+#include "utils/CharsetConverter.h"
 #endif
-#if defined(TARGET_DARWIN)
+
+#ifdef TARGET_DARWIN
 #include "CompileInfo.h"
 #include "platform/darwin/DarwinUtils.h"
 #endif
-#include "URL.h"
+
+#ifdef TARGET_ANDROID
+#include "CompileInfo.h"
+
+#include "platform/android/activity/XBMCApp.h"
+#endif
+
+// Remaining headers
+#include "addons/VFSEntry.h"
 #include "cores/VideoPlayer/DVDSubtitles/DVDSubtitleStream.h"
 #include "cores/VideoPlayer/DVDSubtitles/DVDSubtitleTagSami.h"
-#include "filesystem/File.h"
+#include "filesystem/MultiPathDirectory.h"
+#include "filesystem/PVRDirectory.h"
+#include "filesystem/RSSDirectory.h"
+#include "filesystem/StackDirectory.h"
+#ifdef HAS_UPNP
+#include "filesystem/UPnPDirectory.h"
+#endif
 #include "guilib/LocalizeStrings.h"
+#include "guilib/TextureManager.h"
+#include "network/Network.h"
+#include "network/NetworkFileItemClassify.h"
 #include "platform/Environment.h"
+#include "playlists/PlayListFileItemClassify.h"
+#include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "storage/MediaManager.h"
 #include "utils/Digest.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/LangCodeExpander.h"
-#include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
-#include "utils/log.h"
+#include "utils/RegExp.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoFileItemClassify.h"
+#include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
 #ifdef HAVE_LIBCAP
-  #include <sys/capability.h>
+#include <sys/capability.h>
 #endif
 
-#include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
-
-#include <ctime>
+#include <algorithm>
+#include <array>
+#include <chrono>
+#include <cstdint>
+#include <cstdlib>
 #include <iomanip>
 #include <memory>
 #include <random>
+#include <ranges>
 #include <sstream>
+#include <string>
+#include <unordered_set>
 #include <vector>
 
 #include <fstrcmp.h>
@@ -398,7 +416,9 @@ std::string GetPartAndRemoveDiscFromPath(std::string& path,
     return {};
 
   path = URIUtils::GetDirectory(path);
-  path = URIUtils::IsDiscPath(path) ? URIUtils::GetDiscBase(path) : path;
+  path = URIUtils::IsDiscPath(path) || URIUtils::IsBlurayPath(path)
+             ? URIUtils::GetDiscBasePath(path)
+             : path;
   std::string basePath{path};
   URIUtils::RemoveSlashAtEnd(basePath);
 
@@ -1086,7 +1106,8 @@ std::string CUtil::ValidatePath(std::string path, bool bFixDoubleSlashes /* = fa
   else if (path.find("://") != std::string::npos || path.find(":\\\\") != std::string::npos)
 #endif
   {
-    StringUtils::Replace(path, '\\', '/');
+    if (!URIUtils::IsDOSPath(path))
+      StringUtils::Replace(path, '\\', '/');
     /* The double slash correction should only be used when *absolutely*
        necessary! This applies to certain DLLs or use from Python DLLs/scripts
        that incorrectly generate double (back) slashes.
@@ -1222,13 +1243,16 @@ int CUtil::GetMatchingSource(const std::string& strPath1,
 
   // stack://
   if (checkURL.IsProtocol("stack"))
-    strPath.erase(0, 8); // remove the stack protocol
+    strPath = CStackDirectory::GetBasePath(checkURL.Get());
 
   // bluray://
   if (checkURL.IsProtocol("bluray"))
     strPath = URIUtils::GetDiscBase(checkURL.Get()); // get the actual path on disc
 
   if (checkURL.IsProtocol("shout"))
+    strPath = checkURL.GetHostName();
+
+  if (URIUtils::IsArchive(checkURL))
     strPath = checkURL.GetHostName();
 
   if (checkURL.IsProtocol("multipath"))
@@ -1891,6 +1915,7 @@ std::string CUtil::GetFrameworksPath(bool forPython)
   return strFrameworksPath;
 }
 
+// Used to determine external audio and subtitles location and filename
 void CUtil::GetVideoBasePathAndFileName(const std::string& videoPath,
                                         std::string& basePath,
                                         std::string& videoFileName)
@@ -1902,6 +1927,18 @@ void CUtil::GetVideoBasePathAndFileName(const std::string& videoPath,
     CFileItem item(path, false);
     videoFileName = item.GetMovieName();
     basePath = item.GetLocalMetadataPath();
+  }
+  else if (const CURL url{videoPath}; URIUtils::IsArchive(url))
+  {
+    CFileItem item(videoPath, false);
+    videoFileName = item.GetMovieName();
+    basePath = item.GetLocalMetadataPath();
+  }
+  else if (URIUtils::IsStack(videoPath))
+  {
+    CFileItem item(videoPath, false);
+    videoFileName = item.GetMovieName();
+    basePath = URIUtils::GetBasePath(videoPath);
   }
   else
   {
@@ -1938,99 +1975,129 @@ void CUtil::GetItemsToScan(const std::string& videoPath,
   }
 }
 
+static constexpr int NOT_ARCHIVE{-1};
 
 void CUtil::ScanPathsForAssociatedItems(const std::string& videoName,
-                                        const CFileItemList& items,
+                                        CFileItemList& items,
                                         const std::vector<std::string>& item_exts,
                                         std::vector<std::string>& associatedFiles)
 {
-  for (const auto &pItem : items)
+  for (int i = items.Size() - 1; i >= 0; --i)
   {
-    if (pItem->IsFolder())
+    const auto& item{items[i]};
+    if (item->IsFolder())
       continue;
 
-    std::string strCandidate = URIUtils::GetFileName(pItem->GetPath());
+    std::string strCandidate = URIUtils::GetFileName(item->GetPath());
 
     // skip duplicates
-    if (std::ranges::find(associatedFiles, pItem->GetPath()) != associatedFiles.end())
+    if (std::ranges::find(associatedFiles, item->GetPath()) != associatedFiles.end())
       continue;
 
     URIUtils::RemoveExtension(strCandidate);
     // NOTE: We don't know if one of videoName or strCandidate is URL-encoded and the other is not, so try both
-    if (StringUtils::StartsWithNoCase(strCandidate, videoName) || (StringUtils::StartsWithNoCase(strCandidate, CURL::Decode(videoName))))
+    if (StringUtils::StartsWithNoCase(strCandidate, videoName) ||
+        (StringUtils::StartsWithNoCase(strCandidate, CURL::Decode(videoName))))
     {
-      if (URIUtils::IsRAR(pItem->GetPath()) || URIUtils::IsZIP(pItem->GetPath()))
-        CUtil::ScanArchiveForAssociatedItems(pItem->GetPath(), "", item_exts, associatedFiles);
+      if (DetermineArchiveAndScanForAssociatedItems(item->GetPath(), "", item_exts,
+                                                    associatedFiles) == NOT_ARCHIVE)
+      {
+        associatedFiles.push_back(item->GetPath());
+        CLog::Log(LOGINFO, "{}: found associated file {}", __FUNCTION__,
+                  CURL::GetRedacted(item->GetPath()));
+      }
       else
       {
-        associatedFiles.push_back(pItem->GetPath());
-        CLog::Log(LOGINFO, "{}: found associated file {}", __FUNCTION__,
-                  CURL::GetRedacted(pItem->GetPath()));
+        // Remove the archive itself from the associated file list as its contents were scanned in
+        //  DetermineArchiveAndScanForAssociatedItems()
+        items.Remove(i);
       }
     }
     else
     {
-      if (URIUtils::IsRAR(pItem->GetPath()) || URIUtils::IsZIP(pItem->GetPath()))
-        CUtil::ScanArchiveForAssociatedItems(pItem->GetPath(), videoName, item_exts, associatedFiles);
+      DetermineArchiveAndScanForAssociatedItems(item->GetPath(), videoName, item_exts,
+                                                associatedFiles);
     }
   }
+}
+
+int CUtil::DetermineArchiveAndScanForAssociatedItems(const std::string& path,
+                                                     const std::string& videoName,
+                                                     const std::vector<std::string>& item_exts,
+                                                     std::vector<std::string>& associatedFiles,
+                                                     int depth /* = 0 */)
+{
+  std::string archiveExtensions{CServiceBroker::GetFileExtensionProvider().GetArchiveExtensions()};
+  if (!archiveExtensions.empty() && archiveExtensions.back() != '|')
+    archiveExtensions += '|';
+  const std::string extension{URIUtils::GetExtension(path)};
+
+  if (URIUtils::IsRAR(path) || URIUtils::IsZIP(path) ||
+      (!extension.empty() && archiveExtensions.find(extension + "|") != std::string::npos))
+  {
+    return ScanArchiveForAssociatedItems(path, videoName, item_exts, associatedFiles, depth);
+  }
+  return NOT_ARCHIVE;
 }
 
 int CUtil::ScanArchiveForAssociatedItems(const std::string& strArchivePath,
                                          const std::string& videoNameNoExt,
                                          const std::vector<std::string>& item_exts,
-                                         std::vector<std::string>& associatedFiles)
+                                         std::vector<std::string>& associatedFiles,
+                                         int depth)
 {
-  CLog::LogF(LOGDEBUG, "Scanning archive {}", CURL::GetRedacted(strArchivePath));
+  CLog::LogF(LOGDEBUG, "Scanning archive {} depth {}", CURL::GetRedacted(strArchivePath), depth);
+
+  if (depth > 2)
+  {
+    CLog::LogF(LOGDEBUG, "Depth limit exceeded");
+    return 0;
+  }
+
   int nItemsAdded = 0;
   CFileItemList ItemList;
 
-  // zip only gets the root dir
+  CURL pathToUrl(strArchivePath);
+  CURL url;
   if (URIUtils::HasExtension(strArchivePath, ".zip"))
-  {
-    CURL pathToUrl(strArchivePath);
-    CURL zipURL = URIUtils::CreateArchivePath("zip", pathToUrl, "");
-    if (!CDirectory::GetDirectory(zipURL, ItemList, "", DIR_FLAG_NO_FILE_DIRS))
-      return false;
-  }
+    url = URIUtils::CreateArchivePath("zip", pathToUrl, ""); // zip only gets the root dir
   else if (URIUtils::HasExtension(strArchivePath, ".rar"))
-  {
-    CURL pathToUrl(strArchivePath);
-    CURL rarURL = URIUtils::CreateArchivePath("rar", pathToUrl, "");
-    if (!CDirectory::GetDirectory(rarURL, ItemList, "", DIR_FLAG_NO_FILE_DIRS))
-      return false;
-  }
-  for (const auto &item : ItemList)
-  {
-    std::string strPathInRar = item->GetPath();
-    std::string strExt = URIUtils::GetExtension(strPathInRar);
+    url = URIUtils::CreateArchivePath("rar", pathToUrl, "");
+  else
+    url = URIUtils::CreateArchivePath("archive", pathToUrl, "");
 
-    // Check another archive in archive
-    if (strExt == ".zip" || strExt == ".rar")
+  if (!CDirectory::GetDirectory(url, ItemList, "", DIR_FLAG_NO_FILE_DIRS))
+  {
+    CLog::LogF(LOGDEBUG, "Failed to scan archive {}", CURL::GetRedacted(strArchivePath));
+    return 0;
+  }
+
+  for (const auto& item : ItemList)
+  {
+    std::string path{item->GetPath()};
+    std::string extension{URIUtils::GetExtension(path)};
+
+    if (const int result{DetermineArchiveAndScanForAssociatedItems(path, videoNameNoExt, item_exts,
+                                                                   associatedFiles, depth + 1)};
+        result != NOT_ARCHIVE)
     {
-      nItemsAdded +=
-          ScanArchiveForAssociatedItems(strPathInRar, videoNameNoExt, item_exts, associatedFiles);
+      nItemsAdded += result;
       continue;
     }
 
     // check that the found filename matches the movie filename
-    size_t fnl = videoNameNoExt.size();
     // NOTE: We don't know if videoNameNoExt is URL-encoded, so try both
-    if (fnl &&
-      !(StringUtils::StartsWithNoCase(URIUtils::GetFileName(strPathInRar), videoNameNoExt) ||
-        StringUtils::StartsWithNoCase(URIUtils::GetFileName(strPathInRar), CURL::Decode(videoNameNoExt))))
+    if (!videoNameNoExt.empty() &&
+        !(StringUtils::StartsWithNoCase(URIUtils::GetFileName(path), videoNameNoExt) ||
+          StringUtils::StartsWithNoCase(URIUtils::GetFileName(path), CURL::Decode(videoNameNoExt))))
       continue;
 
-    for (const auto& ext : item_exts)
+    if (std::ranges::any_of(item_exts, [&](std::string_view ext)
+                            { return StringUtils::EqualsNoCase(extension, ext); }))
     {
-      if (StringUtils::EqualsNoCase(strExt, ext))
-      {
-        CLog::Log(LOGINFO, "{}: found associated file {}", __FUNCTION__,
-                  CURL::GetRedacted(strPathInRar));
-        associatedFiles.push_back(strPathInRar);
-        nItemsAdded++;
-        break;
-      }
+      CLog::Log(LOGINFO, "{}: found associated file {}", __FUNCTION__, CURL::GetRedacted(path));
+      associatedFiles.push_back(path);
+      ++nItemsAdded;
     }
   }
 
@@ -2093,11 +2160,14 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
     items.Append(moreItems);
   }
 
-  std::vector<std::string> exts = StringUtils::Split(subtitleExtensions, '|');
-  exts.erase(std::remove(exts.begin(), exts.end(), ".zip"), exts.end());
-  exts.erase(std::remove(exts.begin(), exts.end(), ".rar"), exts.end());
+  std::vector<std::string> subtitleExts{StringUtils::Split(subtitleExtensions, '|')};
+  const std::string archiveExtensions{
+      CServiceBroker::GetFileExtensionProvider().GetArchiveExtensions()};
+  std::vector<std::string> archiveExts{StringUtils::Split(archiveExtensions, '|')};
+  std::unordered_set<std::string> archiveSet{archiveExts.begin(), archiveExts.end()};
+  std::erase_if(subtitleExts, [&](const std::string& ext) { return archiveSet.contains(ext); });
 
-  ScanPathsForAssociatedItems(strSubtitle, items, exts, vecSubtitles);
+  ScanPathsForAssociatedItems(strSubtitle, items, subtitleExts, vecSubtitles);
 
   size_t iSize = vecSubtitles.size();
   for (size_t i = 0; i < iSize; i++)
@@ -2459,4 +2529,18 @@ std::string CUtil::GetHexString(const std::span<const uint8_t>& buf, int count)
   ss << std::hex << std::setw(count) << std::setfill('0');
   std::ranges::for_each(buf, [&](auto x) { ss << static_cast<int>(x); });
   return std::move(ss).str();
+}
+
+bool CUtil::UseDynPathForAddOrUpdate(const CFileItem& item)
+{
+  if (item.IsStack() ||
+      (URIUtils::IsBlurayPath(item.GetDynPath()) &&
+       (item.GetVideoContentType() == VideoDbContentType::MOVIES ||
+        item.GetVideoContentType() == VideoDbContentType::EPISODES ||
+        item.GetVideoContentType() == VideoDbContentType::UNKNOWN /* Removable bluray */)))
+  {
+    return true;
+  }
+
+  return URIUtils::IsArchive(CURL(item.GetDynPath()));
 }
