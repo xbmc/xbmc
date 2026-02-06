@@ -51,7 +51,7 @@ jobs:
             github.repository }}
           ref: ${{
             (github.event.issue.pull_request && steps.pr-info.outputs.pr_head_ref) ||
-            (github.event.pull_request.head.ref != null && github.event.pull_request.head.ref) ||
+            github.event.pull_request.head.ref ||
             github.ref }}
           fetch-depth: 0
 
