@@ -57,6 +57,8 @@ protected:
   void SetFilters();
   void UpdateName();
   bool SetPictureParams(VideoPicture* pVideoPicture);
+  CDVDVideoCodec::VCReturn ProcessDecodedFrame();
+  CDVDVideoCodec::VCReturn ProcessFilterGraph(AVPixelFormat pixFmt, VideoPicture* pVideoPicture);
 
   bool HasHardware() { return m_pHardware != nullptr; }
   void SetHardware(IHardwareDecoder *hardware);
