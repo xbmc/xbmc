@@ -837,11 +837,16 @@ bool CPeripherals::GetNextKeypress(float frameTime, CKey& key)
     {
       std::shared_ptr<CPeripheralCecAdapter> cecDevice =
           std::static_pointer_cast<CPeripheralCecAdapter>(peripheral);
-      if (cecDevice->GetButton())
+      int buttonCode = cecDevice->GetButton();
+      unsigned int holdTime = cecDevice->GetHoldTime();
+      if (buttonCode)
       {
-        CKey newKey(cecDevice->GetButton(), cecDevice->GetHoldTime());
+        if (holdTime > HOLD_THRESHOLD_MS)
+          key = CKey(buttonCode, holdTime, CKey::MODIFIER_LONG);
+        else
+          key = CKey(buttonCode, holdTime);
+
         cecDevice->ResetButton();
-        key = newKey;
         return true;
       }
     }
