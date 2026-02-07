@@ -35,6 +35,7 @@ extern "C" {
 #include <libavfilter/avfilter.h>
 #include <libavfilter/buffersink.h>
 #include <libavfilter/buffersrc.h>
+#include <libavutil/hdr_dynamic_metadata.h>
 #include <libavutil/mastering_display_metadata.h>
 #include <libavutil/opt.h>
 #include <libavutil/pixdesc.h>
@@ -1105,10 +1106,13 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
   // metadata
   pVideoPicture->hasDisplayMetadata = false;
   pVideoPicture->hasLightMetadata = false;
-  sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_MASTERING_DISPLAY_METADATA);
-  if (sd)
+
+  AVFrameSideData* mdm = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_MASTERING_DISPLAY_METADATA);
+  AVFrameSideData* clm = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_CONTENT_LIGHT_LEVEL);
+  AVFrameSideData* dhp = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_DYNAMIC_HDR_PLUS);
+  if (mdm)
   {
-    pVideoPicture->displayMetadata = *(AVMasteringDisplayMetadata *)sd->data;
+    pVideoPicture->displayMetadata = *(AVMasteringDisplayMetadata*)mdm->data;
     pVideoPicture->hasDisplayMetadata = true;
   }
   else if (m_hints.masteringMetadata)
@@ -1116,16 +1120,46 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
     pVideoPicture->displayMetadata = *m_hints.masteringMetadata.get();
     pVideoPicture->hasDisplayMetadata = true;
   }
-  sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_CONTENT_LIGHT_LEVEL);
-  if (sd)
+  clm = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_CONTENT_LIGHT_LEVEL);
+  if (clm)
   {
-    pVideoPicture->lightMetadata = *(AVContentLightMetadata *)sd->data;
+    pVideoPicture->lightMetadata = *(AVContentLightMetadata*)clm->data;
     pVideoPicture->hasLightMetadata = true;
   }
   else if (m_hints.contentLightMetadata)
   {
     pVideoPicture->lightMetadata = *m_hints.contentLightMetadata.get();
     pVideoPicture->hasLightMetadata = true;
+  }
+
+  //set to 0 hdr data in case ww dont have it
+  memset(&pVideoPicture->plColorSpace, 0, sizeof(pl_color_space));
+  memset(&pVideoPicture->plColorRepr, 0, sizeof(pl_color_repr));
+  struct pl_av_hdr_metadata plavhdr = {.mdm = (AVMasteringDisplayMetadata*)(mdm ? mdm->data : NULL),
+                                       .clm = (AVContentLightMetadata*)(clm ? clm->data : NULL),
+                                       .dhp = (AVDynamicHDRPlus*)(dhp ? dhp->data : NULL)};
+
+  pl_map_hdr_metadata(&pVideoPicture->plColorSpace.hdr, &plavhdr);
+
+  /*hdr for libplacebo*/
+  AVBufferRef* dovi = NULL;
+  sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_DOVI_METADATA);
+  if (sd)
+  {
+    const AVDOVIMetadata* metadata = (const AVDOVIMetadata*)sd->buf->data;
+    const AVDOVIRpuDataHeader* header = av_dovi_get_header(metadata);
+    if (header->disable_residual_flag)
+    {
+      pl_map_avdovi_metadata(&pVideoPicture->plColorSpace, &pVideoPicture->plColorRepr,
+                             &pVideoPicture->plDoviMetadata, metadata);
+    }
+  }
+
+  /*dovi rpu for libplacebo*/
+  sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_DOVI_RPU_BUFFER);
+  if (sd)
+  {
+    pl_hdr_metadata_from_dovi_rpu(&pVideoPicture->plColorSpace.hdr, sd->buf->data, sd->buf->size);
   }
 
   if (pVideoPicture->iRepeatPicture)

@@ -43,7 +43,8 @@ enum RenderMethod
   RENDER_INVALID = 0,
   RENDER_DXVA = 1,
   RENDER_PS = 2,
-  RENDER_SW = 3
+  RENDER_SW = 3,
+  RENDER_LIBPLACEBO = 4
 };
 
 enum class HDR_TYPE
@@ -90,6 +91,7 @@ public:
   AVContentLightMetadata lightMetadata = {};
   std::string stereoMode;
   uint64_t frameIdx = 0;
+  bool m_isDolbyVision{false};
 
 protected:
   CRenderBuffer(AVPixelFormat av_pix_format, unsigned width, unsigned height);
@@ -133,7 +135,7 @@ public:
   bool Flush(bool saveBuffers);
   void SetBufferSize(int numBuffers) { m_iBuffersRequired = numBuffers; }
 
-  DEBUG_INFO_VIDEO GetDebugInfo(int idx);
+  virtual DEBUG_INFO_VIDEO GetDebugInfo(int idx);
 
   static DXGI_FORMAT GetDXGIFormat(const VideoPicture &picture);
   static DXGI_FORMAT GetDXGIFormat(CVideoBuffer* videoBuffer);
@@ -152,7 +154,7 @@ protected:
   bool CreateRenderBuffer(int index);
   void DeleteRenderBuffer(int index);
 
-  void ProcessHDR(CRenderBuffer* rb);
+  virtual void ProcessHDR(CRenderBuffer* rb);
   /*!
    * \brief Call before rendering begins to find out if rendering will be attempted as SDR or HDR.
    * \param picture description of the source
