@@ -23,12 +23,13 @@
 #include "filesystem/VideoDatabaseDirectory/DirectoryNode.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "music/MusicFileItemClassify.h"
 #include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayList.h"
 #include "playlists/PlayListFileItemClassify.h"
 #include "profiles/ProfileManager.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -661,7 +662,7 @@ std::string GetResumeString(int64_t startOffset, unsigned int partNumber)
   if (startOffset > 0)
   {
     resumeString =
-        StringUtils::Format(g_localizeStrings.Get(12022),
+        StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(12022),
                             StringUtils::SecondsToTimeString(
                                 static_cast<long>(CUtil::ConvertMilliSecsToSecsInt(startOffset)),
                                 TIME_FORMAT_HH_MM_SS)); // Resume from ##:##:##
@@ -669,14 +670,17 @@ std::string GetResumeString(int64_t startOffset, unsigned int partNumber)
   else
   {
     if (partNumber > 0)
-      resumeString = g_localizeStrings.Get(12023); // Resume from
+      resumeString =
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(12023); // Resume from
     else
-      resumeString = g_localizeStrings.Get(13362); // Continue watching
+      resumeString = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+          13362); // Continue watching
   }
   if (partNumber > 0)
   {
     const std::string partString{
-        StringUtils::Format(g_localizeStrings.Get(23051), partNumber)}; // Part #
+        StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(23051),
+                            partNumber)}; // Part #
     resumeString += startOffset > 0 ? " (" + partString + ")" : " " + partString;
   }
   return resumeString;

@@ -32,7 +32,6 @@
 #include "filesystem/StackDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "imagefiles/ImageFileURL.h"
 #include "interfaces/AnnouncementManager.h"
@@ -40,6 +39,8 @@
 #include "music/Artist.h"
 #include "playlists/SmartPlayList.h"
 #include "profiles/ProfileManager.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
@@ -2006,9 +2007,10 @@ bool CVideoDatabase::GetSeasonInfo(int idSeason,
     if (name.empty())
     {
       if (season == 0)
-        name = g_localizeStrings.Get(20381);
+        name = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20381);
       else
-        name = StringUtils::Format(g_localizeStrings.Get(20358), season);
+        name = StringUtils::Format(
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20358), season);
     }
 
     details.m_strTitle = name;
@@ -7423,9 +7425,10 @@ bool CVideoDatabase::GetSeasonsByWhere(const std::string& strBaseDir, const Filt
         if (strLabel.empty())
         {
           if (iSeason == 0)
-            strLabel = g_localizeStrings.Get(20381);
+            strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20381);
           else
-            strLabel = StringUtils::Format(g_localizeStrings.Get(20358), iSeason);
+            strLabel = StringUtils::Format(
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20358), iSeason);
         }
         auto pItem = std::make_shared<CFileItem>(strLabel);
 
@@ -9594,7 +9597,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
 
     if (handle)
     {
-      handle->SetTitle(g_localizeStrings.Get(700));
+      handle->SetTitle(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(700));
       handle->SetText("");
     }
     else if (showProgress)
@@ -9946,7 +9949,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
       CommitTransaction();
 
       if (handle)
-        handle->SetTitle(g_localizeStrings.Get(331));
+        handle->SetTitle(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(331));
 
       Compress(false);
 
@@ -10078,8 +10081,9 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
             {
               CURL sourceUrl(sourcePath);
               pDialog->SetHeading(CVariant{15012});
-              pDialog->SetText(CVariant{StringUtils::Format(g_localizeStrings.Get(15013),
-                                                            sourceUrl.GetWithoutUserDetails())});
+              pDialog->SetText(CVariant{StringUtils::Format(
+                  CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(15013),
+                  sourceUrl.GetWithoutUserDetails())});
               pDialog->SetChoice(0, CVariant{15015});
               pDialog->SetChoice(1, CVariant{15014});
               pDialog->Open();
@@ -10422,9 +10426,10 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           else
           {
             CLog::Log(LOGERROR, "Movie nfo export failed! ('{}')", nfoFile);
-            CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
-                                                  g_localizeStrings.Get(20302),
-                                                  CURL::GetRedacted(nfoFile));
+            CGUIDialogKaiToast::QueueNotification(
+                CGUIDialogKaiToast::Error,
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20302),
+                CURL::GetRedacted(nfoFile));
             iFailCount++;
           }
         }
@@ -10492,9 +10497,10 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
               else
               {
                 CLog::Log(LOGERROR, "Set nfo export failed! ('{}')", nfoFile);
-                CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
-                                                      g_localizeStrings.Get(20302),
-                                                      CURL::GetRedacted(nfoFile));
+                CGUIDialogKaiToast::QueueNotification(
+                    CGUIDialogKaiToast::Error,
+                    CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20302),
+                    CURL::GetRedacted(nfoFile));
                 iFailCount++;
               }
             }
@@ -10588,9 +10594,10 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
             else
             {
               CLog::Log(LOGERROR, "Musicvideo nfo export failed! ('{}')", nfoFile);
-              CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
-                                                    g_localizeStrings.Get(20302),
-                                                    CURL::GetRedacted(nfoFile));
+              CGUIDialogKaiToast::QueueNotification(
+                  CGUIDialogKaiToast::Error,
+                  CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20302),
+                  CURL::GetRedacted(nfoFile));
               iFailCount++;
             }
           }
@@ -10696,9 +10703,10 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
             else
             {
               CLog::Log(LOGERROR, "TVShow nfo export failed! ('{}')", nfoFile);
-              CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
-                                                    g_localizeStrings.Get(20302),
-                                                    CURL::GetRedacted(nfoFile));
+              CGUIDialogKaiToast::QueueNotification(
+                  CGUIDialogKaiToast::Error,
+                  CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20302),
+                  CURL::GetRedacted(nfoFile));
               iFailCount++;
             }
           }
@@ -10805,9 +10813,10 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
             else
             {
               CLog::Log(LOGERROR, "Episode nfo export failed! ('{}')", nfoFile);
-              CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
-                                                    g_localizeStrings.Get(20302),
-                                                    CURL::GetRedacted(nfoFile));
+              CGUIDialogKaiToast::QueueNotification(
+                  CGUIDialogKaiToast::Error,
+                  CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20302),
+                  CURL::GetRedacted(nfoFile));
               iFailCount++;
             }
           }
@@ -10909,7 +10918,9 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
 
   if (iFailCount > 0)
     HELPERS::ShowOKDialogText(
-        CVariant{647}, CVariant{StringUtils::Format(g_localizeStrings.Get(15011), iFailCount)});
+        CVariant{647},
+        CVariant{StringUtils::Format(
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(15011), iFailCount)});
 }
 
 void CVideoDatabase::ExportArt(const CFileItem& item,
@@ -11935,7 +11946,8 @@ void CVideoDatabase::UpdateVideoVersionTypeTable()
 
     for (int id = VIDEO_VERSION_ID_BEGIN; id <= VIDEO_VERSION_ID_END; ++id)
     {
-      const std::string& type = g_localizeStrings.Get(id);
+      const std::string& type =
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(id);
       m_pDS->exec(PrepareSQL("UPDATE videoversiontype SET name = '%s', owner = %i WHERE id = '%i'",
                              type.c_str(), VideoAssetTypeOwner::SYSTEM, id));
     }

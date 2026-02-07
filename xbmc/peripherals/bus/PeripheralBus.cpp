@@ -10,9 +10,11 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
-#include "guilib/LocalizeStrings.h"
+#include "ServiceBroker.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/devices/Peripheral.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -316,14 +318,17 @@ void CPeripheralBus::GetDirectory(const std::string& strPath, CFileItemList& ite
     std::string strDetails;
 
     if (peripheral->GetBusType() == PERIPHERAL_BUS_CEC && !peripheral->GetSettingBool("enabled"))
-      strDetails =
-          StringUtils::Format("{}: {}", g_localizeStrings.Get(126), g_localizeStrings.Get(13106));
+      strDetails = StringUtils::Format(
+          "{}: {}", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(126),
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13106));
 
     if (strDetails.empty())
     {
       std::string strVersion(peripheral->GetVersionInfo());
       if (!strVersion.empty())
-        strDetails = StringUtils::Format("{} {}", g_localizeStrings.Get(24051), strVersion);
+        strDetails = StringUtils::Format(
+            "{} {}", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24051),
+            strVersion);
     }
 
     peripheralFile->SetProperty("version", strVersion);

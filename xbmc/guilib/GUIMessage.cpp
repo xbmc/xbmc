@@ -8,7 +8,9 @@
 
 #include "GUIMessage.h"
 
-#include "LocalizeStrings.h"
+#include "ServiceBroker.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 
 std::string CGUIMessage::empty_string;
 
@@ -128,7 +130,7 @@ const std::string& CGUIMessage::GetLabel() const
 
 void CGUIMessage::SetLabel(int iString)
 {
-  m_strLabel = g_localizeStrings.Get(iString);
+  m_strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(iString);
 }
 
 void CGUIMessage::SetStringParam(const std::string& strParam)

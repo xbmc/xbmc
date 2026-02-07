@@ -20,8 +20,9 @@
 #include "addons/settings/SettingUrlEncodedString.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/SettingAddon.h"
 #include "settings/SettingConditions.h"
 #include "settings/SettingControl.h"
@@ -793,7 +794,9 @@ std::shared_ptr<CSettingCategory> CAddonSettings::ParseOldCategoryElement(
 
   // try to get the category's label and fall back to "General"
   int categoryLabel = 128;
-  ParseOldLabel(categoryElement, g_localizeStrings.Get(categoryLabel), categoryLabel);
+  ParseOldLabel(categoryElement,
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(categoryLabel),
+                categoryLabel);
   category->SetLabel(categoryLabel);
 
   // prepare a setting group
@@ -1313,7 +1316,9 @@ SettingPtr CAddonSettings::InitializeFromOldSettingEnums(
       for (uint32_t i = 0; i < values.size(); ++i)
       {
         const int label{static_cast<int>(std::strtol(values[i].c_str(), nullptr, 0))};
-        std::string value{g_localizeStrings.GetAddonString(m_addonId, label)};
+        std::string value{
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().GetAddonString(m_addonId,
+                                                                                        label)};
         if (settingEntries.size() > i)
           value = settingEntries[i];
 

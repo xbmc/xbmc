@@ -19,13 +19,14 @@
 #include "guilib/GUITextBox.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/IGUIContainer.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoHelper.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
 #include "music/dialogs/GUIDialogSongInfo.h"
 #include "music/tags/MusicInfoTag.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
@@ -127,12 +128,14 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value,
         {
           if (info.GetInfo() == CONTAINER_SORT_METHOD)
           {
-            value = g_localizeStrings.Get(viewState->GetSortMethodLabel());
+            value = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                viewState->GetSortMethodLabel());
             return true;
           }
           else if (info.GetInfo() == CONTAINER_SORT_ORDER)
           {
-            value = g_localizeStrings.Get(viewState->GetSortOrderLabel());
+            value = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                viewState->GetSortOrderLabel());
             return true;
           }
         }
@@ -320,7 +323,7 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value,
     // SYSTEM_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
     case SYSTEM_CURRENT_WINDOW:
-      value = g_localizeStrings.Get(
+      value = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
           CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog());
       return true;
     case SYSTEM_STARTUP_WINDOW:

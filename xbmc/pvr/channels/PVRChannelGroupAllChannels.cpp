@@ -9,13 +9,14 @@
 #include "PVRChannelGroupAllChannels.h"
 
 #include "ServiceBroker.h"
-#include "guilib/LocalizeStrings.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/epg/EpgContainer.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -29,7 +30,10 @@ using namespace PVR;
 
 CPVRChannelGroupAllChannels::CPVRChannelGroupAllChannels(bool bRadio)
   : CPVRChannelGroup(
-        CPVRChannelsPath(bRadio, g_localizeStrings.Get(19287), PVR_GROUP_CLIENT_ID_LOCAL), nullptr)
+        CPVRChannelsPath(bRadio,
+                         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19287),
+                         PVR_GROUP_CLIENT_ID_LOCAL),
+        nullptr)
 {
 }
 
@@ -45,7 +49,8 @@ void CPVRChannelGroupAllChannels::CheckGroupName()
   //! @todo major design flaw to fix: channel and group URLs must not contain the group name!
 
   // Ensure the group name is still correct, or channels may fail to load after a locale change
-  if (!IsUserSetName() && SetGroupName(g_localizeStrings.Get(19287)))
+  if (!IsUserSetName() &&
+      SetGroupName(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19287)))
     Persist();
 }
 

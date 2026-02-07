@@ -17,7 +17,6 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "interfaces/builtins/Builtins.h"
@@ -28,6 +27,8 @@
 #include "profiles/dialogs/GUIDialogProfileSettings.h"
 #include "pvr/PVRManager.h"
 #include "pvr/guilib/PVRGUIActionsPowerManagement.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
@@ -153,8 +154,9 @@ void CGUIWindowLoginScreen::FrameMove()
 
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  std::string strLabel = StringUtils::Format(g_localizeStrings.Get(20114), m_iSelectedItem + 1,
-                                             profileManager->GetNumberOfProfiles());
+  std::string strLabel =
+      StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20114),
+                          m_iSelectedItem + 1, profileManager->GetNumberOfProfiles());
   SET_CONTROL_LABEL(CONTROL_LABEL_SELECTED_PROFILE,strLabel);
   CGUIWindow::FrameMove();
 }
@@ -169,7 +171,8 @@ void CGUIWindowLoginScreen::OnInitWindow()
   m_viewControl.SetCurrentView(DEFAULT_VIEW_LIST);
   Update();
   m_viewControl.SetFocused();
-  SET_CONTROL_LABEL(CONTROL_LABEL_HEADER,g_localizeStrings.Get(20115));
+  SET_CONTROL_LABEL(CONTROL_LABEL_HEADER,
+                    CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20115));
   SET_CONTROL_VISIBLE(CONTROL_BIG_LIST);
 
   CGUIWindow::OnInitWindow();
@@ -203,9 +206,11 @@ void CGUIWindowLoginScreen::Update()
 
     std::string strLabel;
     if (profile->getDate().empty())
-      strLabel = g_localizeStrings.Get(20113);
+      strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20113);
     else
-      strLabel = StringUtils::Format(g_localizeStrings.Get(20112), profile->getDate());
+      strLabel = StringUtils::Format(
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20112),
+          profile->getDate());
 
     item->SetLabel2(strLabel);
     item->SetArt("thumb", profile->getThumb());

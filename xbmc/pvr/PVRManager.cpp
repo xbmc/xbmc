@@ -10,7 +10,6 @@
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
-#include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
 #include "jobs/JobManager.h"
 #include "messaging/ApplicationMessenger.h"
@@ -40,6 +39,8 @@
 #include "pvr/settings/PVRSettings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "utils/Stopwatch.h"
 #include "utils/StringUtils.h"
@@ -674,7 +675,8 @@ void CPVRManager::UpdateComponents(ManagerState stateToCheck)
 {
   XbmcThreads::EndTime<> progressTimeout(30s);
   auto progressHandler{std::make_unique<CPVRGUIProgressHandler>(
-      g_localizeStrings.Get(19235))}; // PVR manager is starting up
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+          19235))}; // PVR manager is starting up
 
   // Wait for at least one client to come up and load/update data
   while (!UpdateComponents(stateToCheck, progressHandler.get()) && m_addons->HasCreatedClients() &&
@@ -725,7 +727,9 @@ bool CPVRManager::UpdateComponents(ManagerState stateToCheck,
 
   // Load all channels and groups
   if (progressHandler)
-    progressHandler->UpdateProgress(g_localizeStrings.Get(19236), 0); // Loading channels and groups
+    progressHandler->UpdateProgress(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19236),
+        0); // Loading channels and groups
 
   if (!m_providers->Update(newClients))
   {
@@ -748,7 +752,9 @@ bool CPVRManager::UpdateComponents(ManagerState stateToCheck,
 
   // Load all timers
   if (progressHandler)
-    progressHandler->UpdateProgress(g_localizeStrings.Get(19237), 50); // Loading timers
+    progressHandler->UpdateProgress(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19237),
+        50); // Loading timers
 
   if (!m_timers->Update(newClients))
   {
@@ -760,7 +766,9 @@ bool CPVRManager::UpdateComponents(ManagerState stateToCheck,
 
   // Load all recordings
   if (progressHandler)
-    progressHandler->UpdateProgress(g_localizeStrings.Get(19238), 75); // Loading recordings
+    progressHandler->UpdateProgress(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19238),
+        75); // Loading recordings
 
   if (!m_recordings->Update(newClients))
   {

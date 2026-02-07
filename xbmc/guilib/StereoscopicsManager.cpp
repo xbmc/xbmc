@@ -22,11 +22,12 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
 #include "rendering/RenderSystem.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -212,7 +213,8 @@ RenderStereoMode CStereoscopicsManager::GetStereoModeByUserChoice() const
   pDlgSelect->Reset();
 
   // "Select stereoscopic 3D mode"
-  pDlgSelect->SetHeading(CVariant{g_localizeStrings.Get(36528)});
+  pDlgSelect->SetHeading(
+      CVariant{CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36528)});
 
   // prepare selectable stereo modes
   std::vector<RenderStereoMode> selectableModes;
@@ -291,7 +293,7 @@ std::string CStereoscopicsManager::GetLabelForStereoMode(const RenderStereoMode 
       msgId = 36502 + static_cast<int>(mode);
   }
 
-  return g_localizeStrings.Get(msgId);
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(msgId);
 }
 
 RenderStereoMode CStereoscopicsManager::GetPreferredPlaybackMode(void) const
@@ -507,7 +509,10 @@ void CStereoscopicsManager::ApplyStereoMode(const RenderStereoMode mode, bool no
     CLog::Log(LOGDEBUG, "StereoscopicsManager: stereo mode changed to {}",
               ConvertGuiStereoModeToString(mode));
     if (notify)
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36501), GetLabelForStereoMode(mode));
+      CGUIDialogKaiToast::QueueNotification(
+          CGUIDialogKaiToast::Info,
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36501),
+          GetLabelForStereoMode(mode));
   }
 }
 
@@ -580,27 +585,28 @@ void CStereoscopicsManager::OnStreamChange()
 
       CGUIDialogSelect* pDlgSelect = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
       pDlgSelect->Reset();
-      pDlgSelect->SetHeading(CVariant{g_localizeStrings.Get(36527)});
+      pDlgSelect->SetHeading(
+          CVariant{CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36527)});
 
       int idx_playing   = -1;
 
       // add choices
-      int idx_preferred = pDlgSelect->Add(g_localizeStrings.Get(36524) // preferred
-                                     + " ("
-                                     + GetLabelForStereoMode(preferred)
-                                     + ")");
+      int idx_preferred = pDlgSelect->Add(
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36524) // preferred
+          + " (" + GetLabelForStereoMode(preferred) + ")");
 
       int idx_mono = pDlgSelect->Add(GetLabelForStereoMode(RenderStereoMode::MONO)); // mono / 2d
 
       if (playing != RenderStereoMode::OFF && playing != preferred &&
           preferred != RenderStereoMode::AUTO &&
           CServiceBroker::GetRenderSystem()->SupportsStereo(playing)) // same as movie
-        idx_playing = pDlgSelect->Add(g_localizeStrings.Get(36532)
-                                    + " ("
-                                    + GetLabelForStereoMode(playing)
-                                    + ")");
+        idx_playing = pDlgSelect->Add(
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36532) + " (" +
+            GetLabelForStereoMode(playing) + ")");
 
-      int idx_select = pDlgSelect->Add( g_localizeStrings.Get(36531) ); // other / select
+      int idx_select =
+          pDlgSelect->Add(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+              36531)); // other / select
 
       pDlgSelect->Open();
 

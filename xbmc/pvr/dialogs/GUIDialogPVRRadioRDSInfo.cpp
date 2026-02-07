@@ -13,11 +13,12 @@
 #include "guilib/GUIMessage.h"
 #include "guilib/GUISpinControl.h"
 #include "guilib/GUITextBox.h"
-#include "guilib/LocalizeStrings.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRRadioRDSInfoTag.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 
 using namespace PVR;
 
@@ -211,7 +212,9 @@ bool CGUIDialogPVRRadioRDSInfo::InfoControl::Update(const std::string& textboxVa
   {
     if (!m_bSpinLabelPresent)
     {
-      m_spinControl->AddLabel(g_localizeStrings.Get(m_iSpinLabelId), m_iSpinControlId);
+      m_spinControl->AddLabel(
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(m_iSpinLabelId),
+          m_iSpinControlId);
       m_bSpinLabelPresent = true;
     }
 

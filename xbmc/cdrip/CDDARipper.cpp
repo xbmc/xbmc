@@ -18,7 +18,6 @@
 #include "addons/addoninfo/AddonType.h"
 #include "filesystem/CDDADirectory.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicDatabase.h"
 #include "music/MusicDbUrl.h"
@@ -26,6 +25,8 @@
 #include "music/infoscanner/MusicInfoScanner.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/SettingPath.h"
@@ -153,7 +154,8 @@ bool CCDDARipper::CreateAlbumDir(const MUSIC_INFO::CMusicInfoTag& infoTag,
     strDirectory = recordingpathSetting->GetValue();
     if (strDirectory.empty())
     {
-      if (CGUIControlButtonSetting::GetPath(recordingpathSetting, &g_localizeStrings))
+      if (CGUIControlButtonSetting::GetPath(
+              recordingpathSetting, &CServiceBroker::GetResourcesComponent().GetLocalizeStrings()))
         strDirectory = recordingpathSetting->GetValue();
     }
   }

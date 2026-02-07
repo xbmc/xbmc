@@ -15,7 +15,8 @@
 #include "cdioSupport.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
@@ -111,7 +112,7 @@ void CDetectDVDMedia::UpdateDvdrom()
       {
         // Send Message to GUI that disc been ejected
         SetNewDVDShareUrl(CServiceBroker::GetMediaManager().TranslateDevicePath(m_diskPath), false,
-                          g_localizeStrings.Get(502));
+                          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(502));
         CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REMOVED_MEDIA);
         CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
         // Clear all stored info
@@ -126,7 +127,7 @@ void CDetectDVDMedia::UpdateDvdrom()
       {
         // Drive is not ready (closing, opening)
         SetNewDVDShareUrl(CServiceBroker::GetMediaManager().TranslateDevicePath(m_diskPath), false,
-                          g_localizeStrings.Get(503));
+                          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(503));
         m_DriveState = DriveState::NOT_READY;
         // DVD-ROM in undefined state
         // Better delete old CD Information
@@ -148,7 +149,7 @@ void CDetectDVDMedia::UpdateDvdrom()
       {
         // Nothing in there...
         SetNewDVDShareUrl(CServiceBroker::GetMediaManager().TranslateDevicePath(m_diskPath), false,
-                          g_localizeStrings.Get(504));
+                          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(504));
         m_DriveState = DriveState::CLOSED_NO_MEDIA;
         // Send Message to GUI that disc has changed
         CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);

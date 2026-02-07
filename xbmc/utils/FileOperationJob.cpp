@@ -17,7 +17,8 @@
 #include "filesystem/FileDirectoryFactory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -225,20 +226,20 @@ std::string CFileOperationJob::GetActionString(FileAction action)
   {
     case ActionCopy:
     case ActionReplace:
-      result = g_localizeStrings.Get(115);
+      result = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(115);
       break;
 
     case ActionMove:
-      result = g_localizeStrings.Get(116);
+      result = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(116);
       break;
 
     case ActionDelete:
     case ActionDeleteFolder:
-      result = g_localizeStrings.Get(117);
+      result = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(117);
       break;
 
     case ActionCreateFolder:
-      result = g_localizeStrings.Get(119);
+      result = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(119);
       break;
 
     default:

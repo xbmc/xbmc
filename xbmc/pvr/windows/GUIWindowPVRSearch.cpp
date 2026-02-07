@@ -16,7 +16,6 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/helpers/DialogOKHelper.h"
@@ -32,6 +31,8 @@
 #include "pvr/guilib/PVRGUIActionsEPG.h"
 #include "pvr/guilib/PVRGUIActionsTimers.h"
 #include "pvr/recordings/PVRRecording.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "threads/IRunnable.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -148,7 +149,7 @@ void CGUIWindowPVRSearchBase::OnPrepareFileItems(CFileItemList& items)
   if (items.IsEmpty())
   {
     auto item = std::make_shared<CFileItem>(CPVREpgSearchPath::PATH_SEARCH_DIALOG, false);
-    item->SetLabel(g_localizeStrings.Get(
+    item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
         m_searchfilter == nullptr ? 19335 : 19336)); // "New search..." / "Edit search..."
     item->SetLabelPreformatted(true);
     item->SetSpecialSort(SortSpecialOnTop);
@@ -158,7 +159,8 @@ void CGUIWindowPVRSearchBase::OnPrepareFileItems(CFileItemList& items)
     item = std::make_shared<CFileItem>(IsRadio() ? CPVREpgSearchPath::PATH_RADIO_SAVEDSEARCHES
                                                  : CPVREpgSearchPath::PATH_TV_SAVEDSEARCHES,
                                        true);
-    item->SetLabel(g_localizeStrings.Get(19337)); // "Saved searches"
+    item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+        19337)); // "Saved searches"
     item->SetLabelPreformatted(true);
     item->SetSpecialSort(SortSpecialOnTop);
     item->SetArt("icon", "DefaultFolder.png");
@@ -353,7 +355,8 @@ void CGUIWindowPVRSearchBase::UpdateButtons()
   if (path.IsValid() && path.IsSavedSearchesRoot())
   {
     bSavedSearchesRoot = true;
-    header = g_localizeStrings.Get(19337); // "Saved searches"
+    header =
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19337); // "Saved searches"
   }
 
   if (header.empty() && m_searchfilter)
@@ -368,9 +371,13 @@ void CGUIWindowPVRSearchBase::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER1, header);
 
   if (!bSavedSearchesRoot && m_searchfilter && m_searchfilter->IsChanged())
-    SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, g_localizeStrings.Get(19342)); // "[not saved]"
+    SET_CONTROL_LABEL(
+        CONTROL_LABEL_HEADER2,
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19342)); // "[not saved]"
   else if (!bSavedSearchesRoot && m_searchfilter)
-    SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, g_localizeStrings.Get(19343)); // "[saved]"
+    SET_CONTROL_LABEL(
+        CONTROL_LABEL_HEADER2,
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19343)); // "[saved]"
   else
     SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, "");
 }
@@ -485,7 +492,7 @@ void CGUIWindowPVRSearchBase::SetSearchFilter(
       {
         title = m_searchfilter->GetSearchTerm();
         if (title.empty())
-          title = g_localizeStrings.Get(137); // "Search"
+          title = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(137); // "Search"
         else
           StringUtils::Trim(title, "\"");
 

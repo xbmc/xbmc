@@ -10,10 +10,12 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "ServiceBroker.h"
 #include "cores/RetroPlayer/RetroPlayerUtils.h"
 #include "cores/RetroPlayer/guibridge/GUIGameVideoHandle.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/GameSettings.h"
 #include "settings/MediaSettings.h"
 #include "utils/Variant.h"
@@ -42,7 +44,7 @@ CDialogGameStretchMode::CDialogGameStretchMode()
 
 std::string CDialogGameStretchMode::GetHeading()
 {
-  return g_localizeStrings.Get(35233); // "Stretch mode"
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35233); // "Stretch mode"
 }
 
 void CDialogGameStretchMode::PreInit()
@@ -86,7 +88,8 @@ void CDialogGameStretchMode::GetItems(CFileItemList& items)
 {
   for (const auto& stretchMode : m_stretchModes)
   {
-    CFileItemPtr item = std::make_shared<CFileItem>(g_localizeStrings.Get(stretchMode.stringIndex));
+    CFileItemPtr item = std::make_shared<CFileItem>(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(stretchMode.stringIndex));
 
     const std::string stretchModeId =
         RETRO::CRetroPlayerUtils::StretchModeToIdentifier(stretchMode.stretchMode);

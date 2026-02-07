@@ -45,7 +45,6 @@
 #include "GUIVideoControl.h"
 #include "GUIVisualisationControl.h"
 #include "GUIWrappingListContainer.h"
-#include "LocalizeStrings.h"
 #include "ServiceBroker.h"
 #include "addons/Skin.h"
 #include "cores/RetroPlayer/guicontrols/GUIGameControl.h"
@@ -53,6 +52,8 @@
 #include "games/controllers/guicontrols/GUIGameControllerList.h"
 #include "input/actions/ActionIDs.h"
 #include "pvr/guilib/GUIEPGGridContainer.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/CharsetConverter.h"
 #include "utils/RssManager.h"
 #include "utils/StringUtils.h"
@@ -1179,20 +1180,23 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
   // view type
   VIEW_TYPE viewType = VIEW_TYPE_NONE;
   std::string viewLabel;
+
+  const auto& localizeStrings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
+
   if (type == CGUIControl::GUICONTAINER_PANEL)
   {
     viewType = VIEW_TYPE_ICON;
-    viewLabel = g_localizeStrings.Get(536);
+    viewLabel = localizeStrings.Get(536);
   }
   else if (type == CGUIControl::GUICONTAINER_LIST)
   {
     viewType = VIEW_TYPE_LIST;
-    viewLabel = g_localizeStrings.Get(535);
+    viewLabel = localizeStrings.Get(535);
   }
   else
   {
     viewType = VIEW_TYPE_WRAP;
-    viewLabel = g_localizeStrings.Get(541);
+    viewLabel = localizeStrings.Get(541);
   }
   TiXmlElement* itemElement = pControlNode->FirstChildElement("viewtype");
   if (itemElement && itemElement->FirstChild())

@@ -16,9 +16,10 @@
 #include "addons/addoninfo/AddonType.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
@@ -73,8 +74,9 @@ void CAddonSystemSettings::OnSettingAction(const std::shared_ptr<const CSetting>
     const auto removedItems = CAddonInstaller::GetInstance().RemoveOrphanedDepsRecursively();
     if (!removedItems.empty())
     {
-      const auto message =
-          StringUtils::Format(g_localizeStrings.Get(36641), StringUtils::Join(removedItems, ", "));
+      const auto message = StringUtils::Format(
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36641),
+          StringUtils::Join(removedItems, ", "));
 
       ShowOKDialogText(CVariant{36640}, CVariant{message}); // "following orphaned were removed..."
     }

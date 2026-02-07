@@ -39,13 +39,14 @@
 #include "games/tags/GameInfoTag.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "interfaces/AnnouncementManager.h"
 #include "jobs/JobManager.h"
 #include "messaging/ApplicationMessenger.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
@@ -176,8 +177,11 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
           // overwrite the save
           bool dummy;
           if (!CGUIDialogYesNo::ShowAndGetInput(
-                  438, StringUtils::Format(g_localizeStrings.Get(35217), addon->Name()), dummy, 222,
-                  35218, 0))
+                  438,
+                  StringUtils::Format(
+                      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35217),
+                      addon->Name()),
+                  dummy, 222, 35218, 0))
             bSuccess = false;
         }
       }

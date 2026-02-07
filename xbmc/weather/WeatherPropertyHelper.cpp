@@ -9,8 +9,10 @@
 #include "WeatherPropertyHelper.h"
 
 #include "LangInfo.h"
+#include "ServiceBroker.h"
 #include "guilib/GUIWindow.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/Map.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -176,7 +178,7 @@ std::string CWeatherPropertyHelper::FormatWind(const std::string& direction, con
 {
   if (direction == "CALM")
   {
-    return g_localizeStrings.Get(1410); // Calm
+    return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1410); // Calm
   }
   else
   {
@@ -190,7 +192,8 @@ std::string CWeatherPropertyHelper::FormatWind(const std::string& direction, con
     }
     else
     {
-      return StringUtils::Format(g_localizeStrings.Get(434), // From {direction} at {speed} {unit}
+      return StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                                     434), // From {direction} at {speed} {unit}
                                  direction, static_cast<int>(speed.To(g_langInfo.GetSpeedUnit())),
                                  g_langInfo.GetSpeedUnitString());
     }

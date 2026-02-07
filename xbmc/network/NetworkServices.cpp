@@ -12,7 +12,6 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "interfaces/json-rpc/JSONRPC.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
@@ -20,6 +19,8 @@
 #include "network/EventServer.h"
 #include "network/Network.h"
 #include "network/TCPServer.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -538,9 +539,15 @@ void CNetworkServices::Start()
   if (m_settings->GetBool(CSettings::SETTING_SERVICES_UPNP))
     StartUPnP();
   if (m_settings->GetBool(CSettings::SETTING_SERVICES_ESENABLED) && !StartEventServer())
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
+    CGUIDialogKaiToast::QueueNotification(
+        CGUIDialogKaiToast::Warning,
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(33102),
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(33100));
   if (m_settings->GetBool(CSettings::SETTING_SERVICES_ESENABLED) && !StartJSONRPCServer())
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33103), g_localizeStrings.Get(33100));
+    CGUIDialogKaiToast::QueueNotification(
+        CGUIDialogKaiToast::Warning,
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(33103),
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(33100));
 
 #ifdef HAS_WEB_SERVER
   // Start web server after eventserver and JSON-RPC server, so users can use these interfaces
@@ -564,7 +571,9 @@ void CNetworkServices::Start()
     // Only try to start server if configuration is OK
     else if (!StartWebserver())
       CGUIDialogKaiToast::QueueNotification(
-          CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33101), g_localizeStrings.Get(33100));
+          CGUIDialogKaiToast::Warning,
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(33101),
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(33100));
   }
 #endif // HAS_WEB_SERVER
 

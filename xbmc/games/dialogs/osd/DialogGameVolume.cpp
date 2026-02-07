@@ -17,9 +17,10 @@
 #include "guilib/GUIMessage.h"
 #include "guilib/GUISliderControl.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "interfaces/AnnouncementManager.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/Variant.h"
 
 #include <cmath>
@@ -145,5 +146,5 @@ float CDialogGameVolume::GetVolumePercent() const
 
 std::string CDialogGameVolume::GetLabel()
 {
-  return g_localizeStrings.Get(13376); // "Volume"
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13376); // "Volume"
 }

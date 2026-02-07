@@ -8,9 +8,11 @@
 
 #include "PeripheralHID.h"
 
-#include "guilib/LocalizeStrings.h"
+#include "ServiceBroker.h"
 #include "input/InputManager.h"
 #include "peripherals/Peripherals.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/log.h"
 
 using namespace PERIPHERALS;
@@ -20,8 +22,9 @@ CPeripheralHID::CPeripheralHID(CPeripherals& manager,
                                CPeripheralBus* bus)
   : CPeripheral(manager, scanResult, bus)
 {
-  m_strDeviceName = scanResult.m_strDeviceName.empty() ? g_localizeStrings.Get(35001)
-                                                       : scanResult.m_strDeviceName;
+  m_strDeviceName = scanResult.m_strDeviceName.empty()
+                        ? CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35001)
+                        : scanResult.m_strDeviceName;
   m_features.push_back(FEATURE_HID);
 }
 

@@ -13,8 +13,9 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "interfaces/builtins/Builtins.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
@@ -37,12 +38,13 @@ bool CAutorunMediaJob::DoWork()
   if (!m_label.empty())
     pDialog->SetHeading(CVariant{m_label});
   else
-    pDialog->SetHeading(CVariant{g_localizeStrings.Get(21331)});
+    pDialog->SetHeading(
+        CVariant{CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21331)});
 
-  pDialog->Add(g_localizeStrings.Get(21332));
-  pDialog->Add(g_localizeStrings.Get(21333));
-  pDialog->Add(g_localizeStrings.Get(21334));
-  pDialog->Add(g_localizeStrings.Get(21335));
+  pDialog->Add(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21332));
+  pDialog->Add(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21333));
+  pDialog->Add(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21334));
+  pDialog->Add(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21335));
 
   pDialog->Open();
 

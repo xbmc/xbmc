@@ -12,7 +12,8 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -518,11 +519,17 @@ void CBaseRenderer::SettingOptionsRenderMethodsFiller(
     std::vector<IntegerSettingOption>& list,
     int& current)
 {
-  list.emplace_back(g_localizeStrings.Get(13416), RENDER_METHOD_AUTO);
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13416),
+                    RENDER_METHOD_AUTO);
 
 #ifdef HAS_DX
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(16319), RENDER_METHOD_DXVA));
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(13431), RENDER_METHOD_D3D_PS));
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(13419), RENDER_METHOD_SOFTWARE));
+  list.push_back(IntegerSettingOption(
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(16319), RENDER_METHOD_DXVA));
+  list.push_back(
+      IntegerSettingOption(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13431),
+                           RENDER_METHOD_D3D_PS));
+  list.push_back(
+      IntegerSettingOption(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13419),
+                           RENDER_METHOD_SOFTWARE));
 #endif
 }

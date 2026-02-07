@@ -12,9 +12,10 @@
 #include "favourites/FavouritesService.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/WindowTranslator.h"
 #include "music/MusicFileItemClassify.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -74,9 +75,10 @@ int GetTargetWindowID(const CFileItem& item)
 
 std::string CAddRemoveFavourite::GetLabel(const CFileItem& item) const
 {
-  return g_localizeStrings.Get(CServiceBroker::GetFavouritesService().IsFavourited(item, GetTargetWindowID(item))
-                               ? 14077   /* Remove from favourites */
-                               : 14076); /* Add to favourites */
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+      CServiceBroker::GetFavouritesService().IsFavourited(item, GetTargetWindowID(item))
+          ? 14077 /* Remove from favourites */
+          : 14076); /* Add to favourites */
 }
 
 bool CAddRemoveFavourite::IsVisible(const CFileItem& item) const

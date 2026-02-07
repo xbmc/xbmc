@@ -71,13 +71,14 @@
 #ifdef HAS_UPNP
 #include "filesystem/UPnPDirectory.h"
 #endif
-#include "guilib/LocalizeStrings.h"
 #include "guilib/TextureManager.h"
 #include "network/Network.h"
 #include "network/NetworkFileItemClassify.h"
 #include "platform/Environment.h"
 #include "playlists/PlayListFileItemClassify.h"
 #include "profiles/ProfileManager.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
@@ -360,9 +361,10 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
     const std::string strFileNameAndPath = url.Get();
     const size_t genre = strFileNameAndPath.find_first_of('=');
     if(genre == std::string::npos)
-      strFilename = g_localizeStrings.Get(260);
+      strFilename = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(260);
     else
-      strFilename = g_localizeStrings.Get(260) + " - " + strFileNameAndPath.substr(genre+1).c_str();
+      strFilename = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(260) + " - " +
+                    strFileNameAndPath.substr(genre + 1).c_str();
   }
 
   // Windows SMB Network (SMB)
@@ -370,7 +372,7 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
   {
     if (url.GetHostName().empty())
     {
-      strFilename = g_localizeStrings.Get(20171);
+      strFilename = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20171);
     }
     else
     {
@@ -380,15 +382,15 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
 
   // Root file views
   else if (url.IsProtocol("sources"))
-    strFilename = g_localizeStrings.Get(744);
+    strFilename = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(744);
 
   // Music Playlists
   else if (StringUtils::StartsWith(path, "special://musicplaylists"))
-    strFilename = g_localizeStrings.Get(136);
+    strFilename = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(136);
 
   // Video Playlists
   else if (StringUtils::StartsWith(path, "special://videoplaylists"))
-    strFilename = g_localizeStrings.Get(136);
+    strFilename = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(136);
 
   else if (URIUtils::HasParentInHostname(url) && strFilename.empty())
     strFilename = URIUtils::GetFileName(url.GetHostName());
@@ -2281,7 +2283,7 @@ ExternalStreamInfo CUtil::GetExternalStreamDetailsFromFilename(const std::string
     }
   }
   name += " ";
-  name += g_localizeStrings.Get(21602); // External
+  name += CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21602); // External
   StringUtils::Trim(name);
   info.name = StringUtils::RemoveDuplicatedSpacesAndTabs(name);
   if (info.flag == 0)

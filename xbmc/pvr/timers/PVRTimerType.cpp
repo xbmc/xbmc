@@ -9,11 +9,12 @@
 #include "PVRTimerType.h"
 
 #include "ServiceBroker.h"
-#include "guilib/LocalizeStrings.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClient.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/settings/PVRTimerSettingDefinition.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -62,7 +63,8 @@ std::vector<std::shared_ptr<CPVRTimerType>> CPVRTimerType::GetAllTypes()
       PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_IS_REMINDER |
           PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE | PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
           PVR_TIMER_TYPE_SUPPORTS_START_TIME | PVR_TIMER_TYPE_SUPPORTS_END_TIME,
-      g_localizeStrings.Get(819))); // One time (Scheduled by timer rule)
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+          819))); // One time (Scheduled by timer rule)
 
   // epg-based reminder rule
   iTypeId++;
@@ -83,7 +85,8 @@ std::vector<std::shared_ptr<CPVRTimerType>> CPVRTimerType::GetAllTypes()
       PVR_TIMER_TYPE_IS_REMINDER | PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE |
           PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE | PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
           PVR_TIMER_TYPE_SUPPORTS_START_TIME | PVR_TIMER_TYPE_SUPPORTS_START_MARGIN,
-      g_localizeStrings.Get(819))); // One time (Scheduled by timer rule)
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+          819))); // One time (Scheduled by timer rule)
 
   return allTypes;
 }
@@ -212,14 +215,15 @@ void CPVRTimerType::InitDescription()
       id = (m_iAttributes & PVR_TIMER_TYPE_IS_MANUAL) ? 820 // "One time"
                                                       : 821; // "One time (guide-based)
     }
-    m_strDescription = g_localizeStrings.Get(id);
+    m_strDescription = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(id);
   }
 
   // add reminder/recording prefix
   int prefixId = (m_iAttributes & PVR_TIMER_TYPE_IS_REMINDER) ? 824 // Reminder: ...
                                                               : 825; // Recording: ...
 
-  m_strDescription = StringUtils::Format(g_localizeStrings.Get(prefixId), m_strDescription);
+  m_strDescription = StringUtils::Format(
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(prefixId), m_strDescription);
 }
 
 void CPVRTimerType::InitAttributeValues(const PVR_TIMER_TYPE& type)
@@ -265,8 +269,10 @@ void CPVRTimerType::InitLifetimeValues(const PVR_TIMER_TYPE& type)
     std::vector<SettingIntValue> values;
     for (int i = 1; i < 366; ++i)
     {
-      values.emplace_back(StringUtils::Format(g_localizeStrings.Get(17999), i),
-                          i); // "{} days"
+      values.emplace_back(
+          StringUtils::Format(
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(17999), i),
+          i); // "{} days"
     }
     m_lifetimeValues = {values, DEFAULT_RECORDING_LIFETIME};
   }
@@ -293,8 +299,12 @@ void CPVRTimerType::InitPreventDuplicateEpisodesValues(const PVR_TIMER_TYPE& typ
   {
     // No values given by addon, but prevent duplicate episodes supported. Use default values 0..1
     m_preventDupEpisodesValues = {
-        {{g_localizeStrings.Get(815) /* "Record all episodes" */, 0},
-         {g_localizeStrings.Get(816) /* "Record only new episodes" */, 1}},
+        {{CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+              815) /* "Record all episodes" */,
+          0},
+         {CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+              816) /* "Record only new episodes" */,
+          1}},
         DEFAULT_RECORDING_DUPLICATEHANDLING};
   }
   else

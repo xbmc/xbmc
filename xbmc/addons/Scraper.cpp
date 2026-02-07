@@ -21,12 +21,13 @@
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/PluginDirectory.h"
-#include "guilib/LocalizeStrings.h"
 #include "music/Album.h"
 #include "music/Artist.h"
 #include "music/MusicDatabase.h"
 #include "music/infoscanner/MusicAlbumInfo.h"
 #include "music/infoscanner/MusicArtistInfo.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/SettingsValueFlatJsonSerializer.h"
@@ -93,7 +94,7 @@ std::string TranslateContent(ContentType type, bool pretty /*=false*/)
     if (type == map.type)
     {
       if (pretty && map.pretty)
-        return g_localizeStrings.Get(map.pretty);
+        return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(map.pretty);
       else
         return map.name;
     }
@@ -1327,7 +1328,8 @@ VIDEO::EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile& fcurl, const CScra
         ep.iSubepisode = (dot != std::string::npos) ? atoi(strEpNum.substr(dot + 1).c_str()) : 0;
         std::string title;
         if (!XMLUtils::GetString(pxeMovie, "title", title) || title.empty())
-          title = g_localizeStrings.Get(10005); // Not available
+          title = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+              10005); // Not available
         scurlEp.SetTitle(title);
         std::string id;
         if (XMLUtils::GetString(pxeMovie, "id", id))

@@ -25,9 +25,10 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "input/actions/ActionIDs.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/FileUtils.h"
 #include "utils/Variant.h"
 #include "view/GUIViewControl.h"
@@ -411,7 +412,9 @@ void CDialogGameSaves::OnRename(CFileItem& item)
   std::string label(savestate->Label());
 
   // "Enter new filename"
-  if (CGUIKeyboardFactory::ShowAndGetInput(label, CVariant{g_localizeStrings.Get(16013)}, true) &&
+  if (CGUIKeyboardFactory::ShowAndGetInput(
+          label, CVariant{CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(16013)},
+          true) &&
       label != savestate->Label())
   {
     std::unique_ptr<RETRO::ISavestate> newSavestate = db.RenameSavestate(savestatePath, label);

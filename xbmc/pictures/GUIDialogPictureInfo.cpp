@@ -14,10 +14,11 @@
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 
 #include <array>
 
@@ -148,7 +149,8 @@ void CGUIDialogPictureInfo::UpdatePictureInfo()
         CServiceBroker::GetGUI()->GetInfoManager().GetLabel(info, INFO::DEFAULT_CONTEXT);
     if (!picInfo.empty())
     {
-      auto item{std::make_shared<CFileItem>(g_localizeStrings.Get(code))};
+      auto item{std::make_shared<CFileItem>(
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(code))};
       item->SetLabel2(picInfo);
       m_pictureInfo->Add(item);
     }

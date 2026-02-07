@@ -33,7 +33,6 @@
 #include "filesystem/UPnPDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/builtins/Builtins.h"
@@ -54,6 +53,8 @@
 #include "pvr/PVRManager.h"
 #include "pvr/guilib/PVRGUIActionsPowerManagement.h"
 #include "pvr/guilib/PVRGUIActionsRecordings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ContentUtils.h"
@@ -615,8 +616,8 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
         return false;
       }
 
-      std::unique_ptr<CFileItem> trailerItem =
-          ContentUtils::GeneratePlayableTrailerItem(*item, g_localizeStrings.Get(20410));
+      std::unique_ptr<CFileItem> trailerItem = ContentUtils::GeneratePlayableTrailerItem(
+          *item, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20410));
 
       if (PLAYLIST::IsPlayList(*item))
       {

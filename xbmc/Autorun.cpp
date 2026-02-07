@@ -24,11 +24,12 @@
 #include "filesystem/StackDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "music/MusicFileItemClassify.h"
 #include "playlists/PlayList.h"
 #include "profiles/ProfileManager.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
@@ -595,9 +596,12 @@ void CAutorun::SettingOptionAudioCdActionsFiller(const SettingConstPtr& setting,
                                                  std::vector<IntegerSettingOption>& list,
                                                  int& current)
 {
-  list.emplace_back(g_localizeStrings.Get(16018), static_cast<int>(AutoCDAction::NONE));
-  list.emplace_back(g_localizeStrings.Get(14098), static_cast<int>(AutoCDAction::PLAY));
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(16018),
+                    static_cast<int>(AutoCDAction::NONE));
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(14098),
+                    static_cast<int>(AutoCDAction::PLAY));
 #ifdef HAS_CDDA_RIPPER
-  list.emplace_back(g_localizeStrings.Get(14096), static_cast<int>(AutoCDAction::RIP));
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(14096),
+                    static_cast<int>(AutoCDAction::RIP));
 #endif
 }

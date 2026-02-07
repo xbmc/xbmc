@@ -77,7 +77,6 @@
 #include "guilib/GUIControlProfiler.h"
 #include "guilib/GUIFontManager.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/StereoscopicsManager.h"
 #include "guilib/TextureManager.h"
 #include "input/InertialScrollingHandler.h"
@@ -122,6 +121,8 @@
 #include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "pvr/guilib/PVRGUIActionsPowerManagement.h"
 #include "rendering/RenderSystem.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
@@ -568,8 +569,10 @@ bool CApplication::Initialize()
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
   profileManager->GetEventLog().Add(EventPtr(new CNotificationEvent(
-      StringUtils::Format(g_localizeStrings.Get(177), g_sysinfo.GetAppName()),
-      StringUtils::Format(g_localizeStrings.Get(178), g_sysinfo.GetAppName()),
+      StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(177),
+                          g_sysinfo.GetAppName()),
+      StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(178),
+                          g_sysinfo.GetAppName()),
       "special://xbmc/media/icon256x256.png", EventLevel::Basic)));
 
   m_ServiceManager->GetNetwork().WaitForNet();
@@ -586,8 +589,10 @@ bool CApplication::Initialize()
         event.Set();
       });
 
-  const std::string& connecting{g_localizeStrings.Get(24186)};
-  const std::string& updating{g_localizeStrings.Get(24150)};
+  const std::string& connecting{
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24186)};
+  const std::string& updating{
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24150)};
   int iDots = 1;
   while (!event.Wait(1000ms))
   {
@@ -610,7 +615,8 @@ bool CApplication::Initialize()
     // Bail out if any of the databases failed to initialize properly.
     CLog::Log(LOGFATAL, "Failed to initialize databases");
 
-    const std::string& dbInitFailedExiting{g_localizeStrings.Get(24187)};
+    const std::string& dbInitFailedExiting{
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24187)};
 
     unsigned int secondsLeftUntilExit{10};
     while (secondsLeftUntilExit)
@@ -632,7 +638,7 @@ bool CApplication::Initialize()
     event.Set();
   });
 
-  std::string localizedStr{g_localizeStrings.Get(39175)};
+  std::string localizedStr{CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(39175)};
   iDots = 1;
   while (!event.Wait(1000ms))
   {
@@ -679,7 +685,7 @@ bool CApplication::Initialize()
               event.Set();
             },
             CJob::PRIORITY_DEDICATED);
-        localizedStr = g_localizeStrings.Get(24151);
+        localizedStr = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24151);
         iDots = 1;
         while (!event.Wait(1000ms))
         {
@@ -977,13 +983,17 @@ bool CApplication::OnAction(const CAction &action)
 
     if (hdrStatus == HDR_STATUS::HDR_OFF)
     {
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(34220),
-                                            g_localizeStrings.Get(34221));
+      CGUIDialogKaiToast::QueueNotification(
+          CGUIDialogKaiToast::Info,
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(34220),
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(34221));
     }
     else if (hdrStatus == HDR_STATUS::HDR_ON)
     {
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(34220),
-                                            g_localizeStrings.Get(34222));
+      CGUIDialogKaiToast::QueueNotification(
+          CGUIDialogKaiToast::Info,
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(34220),
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(34222));
     }
     return true;
   }
@@ -1019,8 +1029,10 @@ bool CApplication::OnAction(const CAction &action)
         default:
           throw std::logic_error("Tonemapping method not found. Did you forget to add a mapping?");
       }
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(34224),
-                                            g_localizeStrings.Get(code), 1000, false, 500);
+      CGUIDialogKaiToast::QueueNotification(
+          CGUIDialogKaiToast::Info,
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(34224),
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(code), 1000, false, 500);
     }
     return true;
   }
@@ -1647,7 +1659,7 @@ bool CApplication::Cleanup()
     //  shown are no real leaks, as parts of the app
     //  are still allocated.
 
-    g_localizeStrings.Clear();
+    CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Clear();
     g_LangCodeExpander.Clear();
     g_charsetConverter.clear();
     g_directoryCache.Clear();
@@ -1911,8 +1923,9 @@ bool CApplication::PlayMedia(CFileItem& item, const std::string& player, PLAYLIS
   else if (PLAYLIST::IsPlayList(item) || NETWORK::IsInternetStream(item))
   {
     // Not owner. Dialog auto-deletes itself.
-    CGUIDialogCache* dlgCache =
-        new CGUIDialogCache(5s, g_localizeStrings.Get(10214), item.GetLabel());
+    CGUIDialogCache* dlgCache = new CGUIDialogCache(
+        5s, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(10214),
+        item.GetLabel());
 
     //is or could be a playlist
     std::unique_ptr<PLAYLIST::CPlayList> playlist;
@@ -2217,7 +2230,8 @@ void CApplication::ConfigureAndEnableAddons()
 
     // migration (incompatible addons) dialog
     auto addonList = StringUtils::Join(disabledAddonNames, ", ");
-    auto msg = StringUtils::Format(g_localizeStrings.Get(24149), addonList);
+    auto msg = StringUtils::Format(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24149), addonList);
     HELPERS::ShowOKDialogText(CVariant{24148}, CVariant{std::move(msg)});
     m_incompatibleAddons.clear();
   }

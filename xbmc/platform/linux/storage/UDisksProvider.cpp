@@ -8,7 +8,8 @@
 #include "UDisksProvider.h"
 
 #include "ServiceBroker.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
@@ -130,7 +131,8 @@ CMediaSource CUDiskDevice::ToMediaShare() const
   if (m_Label.empty())
   {
     std::string strSize = StringUtils::SizeToString(m_PartitionSize);
-    source.strName = StringUtils::Format("{} {}", strSize, g_localizeStrings.Get(155));
+    source.strName = StringUtils::Format(
+        "{} {}", strSize, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(155));
   }
   else
     source.strName = m_Label;

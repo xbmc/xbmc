@@ -15,7 +15,8 @@
 #if defined(TARGET_WINDOWS_STORE)
 #include "filesystem/SpecialProtocol.h"
 #endif
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #if defined(TARGET_WINDOWS_STORE)
 #include "platform/Environment.h"
 #endif
@@ -967,7 +968,7 @@ void CDVDInputStreamNavigator::SetSubtitleStreamName(SubtitleStreamInfo &info, c
       case DVD_SUBPICTURE_LANG_EXT_NORMALDIRECTORSCOMMENTS:
       case DVD_SUBPICTURE_LANG_EXT_BIGDIRECTORSCOMMENTS:
       case DVD_SUBPICTURE_LANG_EXT_CHILDRENDIRECTORSCOMMENTS:
-        info.name = g_localizeStrings.Get(37001);
+        info.name = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(37001);
         break;
       default:
         break;
@@ -1016,14 +1017,14 @@ void CDVDInputStreamNavigator::SetAudioStreamName(AudioStreamInfo &info, const a
   switch( audio_attributes.code_extension )
   {
     case DVD_AUDIO_LANG_EXT_VISUALLYIMPAIRED:
-      info.name = g_localizeStrings.Get(37000);
+      info.name = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(37000);
       info.flags = StreamFlags::FLAG_VISUAL_IMPAIRED;
       break;
     case DVD_AUDIO_LANG_EXT_DIRECTORSCOMMENTS1:
-      info.name = g_localizeStrings.Get(37001);
+      info.name = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(37001);
       break;
     case DVD_AUDIO_LANG_EXT_DIRECTORSCOMMENTS2:
-      info.name = g_localizeStrings.Get(37002);
+      info.name = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(37002);
       break;
     case DVD_AUDIO_LANG_EXT_NOTSPECIFIED:
     case DVD_AUDIO_LANG_EXT_NORMALCAPTIONS:
@@ -1038,7 +1039,8 @@ void CDVDInputStreamNavigator::SetAudioStreamName(AudioStreamInfo &info, const a
     info.codecName = "ac3";
     break;
   case DVD_AUDIO_FORMAT_UNKNOWN_1:
-    info.codecDesc = g_localizeStrings.Get(13205); // "Unknown"
+    info.codecDesc =
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // "Unknown"
     CLog::LogF(LOGINFO, "unknown dvd audio codec DVD_AUDIO_FORMAT_UNKNOWN_1");
     break;
   case DVD_AUDIO_FORMAT_MPEG:
@@ -1054,7 +1056,8 @@ void CDVDInputStreamNavigator::SetAudioStreamName(AudioStreamInfo &info, const a
     info.codecName = "pcm";
     break;
   case DVD_AUDIO_FORMAT_UNKNOWN_5:
-    info.codecDesc = g_localizeStrings.Get(13205); // "Unknown"
+    info.codecDesc =
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // "Unknown"
     CLog::LogF(LOGINFO, "unknown dvd audio codec DVD_AUDIO_FORMAT_UNKNOWN_5");
     break;
   case DVD_AUDIO_FORMAT_DTS:
@@ -1065,7 +1068,8 @@ void CDVDInputStreamNavigator::SetAudioStreamName(AudioStreamInfo &info, const a
     info.codecDesc = "SDDS";
     break;
   default:
-    info.codecDesc = g_localizeStrings.Get(13205); // "Unknown"
+    info.codecDesc =
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // "Unknown"
     CLog::LogF(LOGINFO, "unknown dvd audio codec");
     break;
   }

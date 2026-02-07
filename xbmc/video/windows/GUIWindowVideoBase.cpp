@@ -34,7 +34,6 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/helpers/DialogOKHelper.h"
@@ -44,6 +43,8 @@
 #include "playlists/PlayListFactory.h"
 #include "playlists/PlayListFileItemClassify.h"
 #include "profiles/ProfileManager.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -1131,19 +1132,20 @@ bool CGUIWindowVideoBase::GetDirectory(const std::string &strDirectory, CFileIte
     const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
     CFileItemPtr newPlaylist(new CFileItem(profileManager->GetUserDataItem("PartyMode-Video.xsp"),false));
-    newPlaylist->SetLabel(g_localizeStrings.Get(16035));
+    newPlaylist->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(16035));
     newPlaylist->SetLabelPreformatted(true);
     newPlaylist->SetArt("icon", "DefaultPartyMode.png");
     newPlaylist->SetFolder(true);
     items.Add(newPlaylist);
 
-/*    newPlaylist.reset(new CFileItem("newplaylist://", false));
-    newPlaylist->SetLabel(g_localizeStrings.Get(525));
+    /*    newPlaylist.reset(new CFileItem("newplaylist://", false));
+    newPlaylist->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(525));
     newPlaylist->SetLabelPreformatted(true);
     items.Add(newPlaylist);
 */
     newPlaylist = std::make_shared<CFileItem>("newsmartplaylist://video", false);
-    newPlaylist->SetLabel(g_localizeStrings.Get(21437));  // "new smart playlist..."
+    newPlaylist->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+        21437)); // "new smart playlist..."
     newPlaylist->SetArt("icon", "DefaultAddSource.png");
     newPlaylist->SetLabelPreformatted(true);
     items.Add(newPlaylist);
@@ -1234,7 +1236,9 @@ bool CGUIWindowVideoBase::CanContainFilter(const std::string &strDirectory) cons
 void CGUIWindowVideoBase::OnSearch()
 {
   std::string strSearch;
-  if (!CGUIKeyboardFactory::ShowAndGetInput(strSearch, CVariant{g_localizeStrings.Get(16017)}, false))
+  if (!CGUIKeyboardFactory::ShowAndGetInput(
+          strSearch,
+          CVariant{CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(16017)}, false))
     return ;
 
   StringUtils::ToLower(strSearch);

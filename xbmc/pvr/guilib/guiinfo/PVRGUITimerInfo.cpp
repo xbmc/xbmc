@@ -9,10 +9,11 @@
 #include "PVRGUITimerInfo.h"
 
 #include "ServiceBroker.h"
-#include "guilib/LocalizeStrings.h"
 #include "pvr/PVRManager.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
@@ -142,10 +143,11 @@ void CPVRGUITimerInfo::UpdateNextTimer()
     strNextRecordingChannelIcon = timer->ChannelIcon();
     strNextRecordingTime = timer->StartAsLocalTime().GetAsLocalizedDateTime(false, false);
 
-    strNextTimerInfo = StringUtils::Format("{} {} {} {}", g_localizeStrings.Get(19106),
-                                           timer->StartAsLocalTime().GetAsLocalizedDate(true),
-                                           g_localizeStrings.Get(19107),
-                                           timer->StartAsLocalTime().GetAsLocalizedTime("", false));
+    strNextTimerInfo = StringUtils::Format(
+        "{} {} {} {}", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19106),
+        timer->StartAsLocalTime().GetAsLocalizedDate(true),
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19107),
+        timer->StartAsLocalTime().GetAsLocalizedTime("", false));
   }
 
   std::unique_lock lock(m_critSection);

@@ -24,8 +24,9 @@
 #include "events/EventLog.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "jobs/JobManager.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
@@ -167,13 +168,15 @@ void CRepositoryUpdater::OnJobComplete(unsigned int jobID, bool success, CJob* j
         CAddonSystemSettings::GetInstance().GetAddonAutoUpdateMode() == AUTO_UPDATES_NOTIFY)
     {
       if (updates.size() == 1)
-        CGUIDialogKaiToast::QueueNotification(updates[0]->Icon(), updates[0]->Name(),
-                                              g_localizeStrings.Get(24068), TOAST_DISPLAY_TIME,
-                                              false, TOAST_DISPLAY_TIME);
+        CGUIDialogKaiToast::QueueNotification(
+            updates[0]->Icon(), updates[0]->Name(),
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24068),
+            TOAST_DISPLAY_TIME, false, TOAST_DISPLAY_TIME);
       else
-        CGUIDialogKaiToast::QueueNotification("", g_localizeStrings.Get(24001),
-                                              g_localizeStrings.Get(24061), TOAST_DISPLAY_TIME,
-                                              false, TOAST_DISPLAY_TIME);
+        CGUIDialogKaiToast::QueueNotification(
+            "", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24001),
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24061),
+            TOAST_DISPLAY_TIME, false, TOAST_DISPLAY_TIME);
 
       auto eventLog = CServiceBroker::GetEventLog();
       for (const auto& addon : updates)
@@ -213,7 +216,9 @@ static void SetProgressIndicator(CRepositoryUpdateJob* job)
 {
   auto dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
   if (dialog)
-    job->SetProgressIndicators(dialog->GetHandle(g_localizeStrings.Get(24092)), nullptr);
+    job->SetProgressIndicators(
+        dialog->GetHandle(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24092)),
+        nullptr);
 }
 
 void CRepositoryUpdater::CheckForUpdates(const ADDON::RepositoryPtr& repo, bool showProgress)

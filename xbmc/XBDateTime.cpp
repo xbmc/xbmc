@@ -9,7 +9,9 @@
 #include "XBDateTime.h"
 
 #include "LangInfo.h"
-#include "guilib/LocalizeStrings.h"
+#include "ServiceBroker.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
 #include "utils/Archive.h"
@@ -1426,7 +1428,8 @@ std::string CDateTime::GetAsLocalizedDate(const std::string& strFormat,
         int wday = dateTime.dayOfWeek;
         if (wday < 1 || wday > 7) wday = 7;
         {
-          str = g_localizeStrings.Get((c == 'd' ? 40 : 10) + wday);
+          str = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+              (c == 'd' ? 40 : 10) + wday);
           fmtOut += (c == 'd' ? "%a" : "%A");
         }
       }
@@ -1467,7 +1470,8 @@ std::string CDateTime::GetAsLocalizedDate(const std::string& strFormat,
         int wmonth = dateTime.month;
         if (wmonth < 1 || wmonth > 12) wmonth = 12;
         {
-          str = g_localizeStrings.Get((c == 'm' ? 50 : 20) + wmonth);
+          str = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+              (c == 'm' ? 50 : 20) + wmonth);
           fmtOut += (c == 'm' ? "%b" : "%B");
         }
       }

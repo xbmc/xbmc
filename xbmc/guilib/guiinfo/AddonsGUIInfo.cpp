@@ -13,9 +13,10 @@
 #include "addons/Addon.h"
 #include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonInfo.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 
 using namespace KODI::GUILIB::GUIINFO;
@@ -77,14 +78,17 @@ bool CAddonsGUIInfo::GetLabel(std::string& value,
           using enum ADDON::AddonLifecycleState;
 
           case BROKEN:
-            value = g_localizeStrings.Get(24171); // "Broken"
+            value =
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24171); // "Broken"
             break;
           case DEPRECATED:
-            value = g_localizeStrings.Get(24170); // "Deprecated"
+            value = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                24170); // "Deprecated"
             break;
           case NORMAL:
           default:
-            value = g_localizeStrings.Get(24169); // "Normal"
+            value =
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24169); // "Normal"
             break;
         }
         return true;
@@ -116,7 +120,7 @@ bool CAddonsGUIInfo::GetLabel(std::string& value,
       {
         if (item->GetAddonInfo()->Origin() == ADDON::ORIGIN_SYSTEM)
         {
-          value = g_localizeStrings.Get(24992);
+          value = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24992);
           return true;
         }
         if (!item->GetAddonInfo()->OriginName().empty())
@@ -129,7 +133,7 @@ bool CAddonsGUIInfo::GetLabel(std::string& value,
           value = item->GetAddonInfo()->Origin();
           return true;
         }
-        value = g_localizeStrings.Get(25014);
+        value = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25014);
         return true;
       }
       case LISTITEM_ADDON_SIZE:

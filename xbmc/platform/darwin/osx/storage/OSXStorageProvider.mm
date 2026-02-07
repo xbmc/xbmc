@@ -8,8 +8,10 @@
 
 #include "OSXStorageProvider.h"
 
+#include "ServiceBroker.h"
 #include "Util.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/RegExp.h"
 
 #include "platform/darwin/osx/CocoaInterface.h"
@@ -41,7 +43,7 @@ void COSXStorageProvider::GetLocalDrives(std::vector<CMediaSource>& localDrives)
 
   // User home folder
   share.strPath = getenv("HOME");
-  share.strName = g_localizeStrings.Get(21440);
+  share.strName = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21440);
   share.m_ignore = true;
   localDrives.push_back(share);
 
@@ -236,7 +238,7 @@ std::vector<std::string> COSXStorageProvider::GetDiskUsage()
         [volumeURL getResourceValue:&spaceTotal forKey:NSURLVolumeTotalCapacityKey error:nullptr];
 
         line2.append(StringUtils::Format(
-            "{}: {} / {}", g_localizeStrings.Get(160),
+            "{}: {} / {}", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(160),
             [byteFormatter stringForObjectValue:spaceAvailable].UTF8String ?: "-",
             [byteFormatter stringForObjectValue:spaceTotal].UTF8String ?: "-"));
       }

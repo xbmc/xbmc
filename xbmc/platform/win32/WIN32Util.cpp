@@ -13,7 +13,6 @@
 #include "Util.h"
 #include "WindowHelper.h"
 #include "application/AppParams.h"
-#include "guilib/LocalizeStrings.h"
 #include "my_ntddscsi.h"
 #include "rendering/dx/DirectXHelper.h"
 #include "storage/MediaManager.h"

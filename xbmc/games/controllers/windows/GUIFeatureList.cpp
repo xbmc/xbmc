@@ -10,6 +10,7 @@
 
 #include "GUIConfigurationWizard.h"
 #include "GUIControllerDefines.h"
+#include "ServiceBroker.h"
 #include "games/addons/GameClient.h"
 #include "games/addons/input/GameClientInput.h"
 #include "games/controllers/Controller.h"
@@ -23,7 +24,8 @@
 #include "guilib/GUIImage.h"
 #include "guilib/GUILabelControl.h"
 #include "guilib/GUIWindow.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 
 using namespace KODI;
 using namespace GAME;
@@ -222,7 +224,8 @@ std::vector<CGUIFeatureList::FeatureGroup> CGUIFeatureList::GetFeatureGroups(
       if (feature.Category() == JOYSTICK::FEATURE_CATEGORY::KEY)
       {
         FeatureGroup virtualGroup;
-        virtualGroup.groupName = g_localizeStrings.Get(35166); // "All keys"
+        virtualGroup.groupName =
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35166); // "All keys"
         virtualGroup.bIsVirtualKey = true;
         virtualGroup.features.emplace_back(feature);
         groups.emplace_back(std::move(virtualGroup));
@@ -240,7 +243,8 @@ std::vector<CGUIFeatureList::FeatureGroup> CGUIFeatureList::GetFeatureGroups(
   if (groups.empty())
   {
     FeatureGroup group;
-    group.groupName = g_localizeStrings.Get(35022); // "Nothing to map"
+    group.groupName =
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35022); // "Nothing to map"
     groups.emplace_back(std::move(group));
   }
 

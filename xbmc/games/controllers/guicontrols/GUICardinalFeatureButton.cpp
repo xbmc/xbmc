@@ -8,7 +8,9 @@
 
 #include "GUICardinalFeatureButton.h"
 
-#include "guilib/LocalizeStrings.h"
+#include "ServiceBroker.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 
 #include <string>
 
@@ -36,20 +38,28 @@ bool CGUICardinalFeatureButton::PromptForInput(CEvent& waitEvent)
   switch (m_state)
   {
     case STATE::CARDINAL_DIRECTION_UP:
-      strPrompt = g_localizeStrings.Get(35092); // "Move %s up"
-      strWarn = g_localizeStrings.Get(35093); // "Move %s up (%d)"
+      strPrompt =
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35092); // "Move %s up"
+      strWarn = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+          35093); // "Move %s up (%d)"
       break;
     case STATE::CARDINAL_DIRECTION_RIGHT:
-      strPrompt = g_localizeStrings.Get(35096); // "Move %s right"
-      strWarn = g_localizeStrings.Get(35097); // "Move %s right (%d)"
+      strPrompt = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+          35096); // "Move %s right"
+      strWarn = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+          35097); // "Move %s right (%d)"
       break;
     case STATE::CARDINAL_DIRECTION_DOWN:
-      strPrompt = g_localizeStrings.Get(35094); // "Move %s down"
-      strWarn = g_localizeStrings.Get(35095); // "Move %s down (%d)"
+      strPrompt =
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35094); // "Move %s down"
+      strWarn = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+          35095); // "Move %s down (%d)"
       break;
     case STATE::CARDINAL_DIRECTION_LEFT:
-      strPrompt = g_localizeStrings.Get(35098); // "Move %s left"
-      strWarn = g_localizeStrings.Get(35099); // "Move %s left (%d)"
+      strPrompt =
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35098); // "Move %s left"
+      strWarn = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+          35099); // "Move %s left (%d)"
       break;
     default:
       break;

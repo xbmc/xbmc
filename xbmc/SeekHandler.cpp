@@ -16,10 +16,11 @@
 #include "cores/DataCacheCore.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "music/MusicFileItemClassify.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -244,9 +245,11 @@ void CSeekHandler::SettingOptionsSeekStepsFiller(const SettingConstPtr& setting,
   for (int seconds : CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_seekSteps)
   {
     if (seconds > 60)
-      label = StringUtils::Format(g_localizeStrings.Get(14044), seconds / 60);
+      label = StringUtils::Format(
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(14044), seconds / 60);
     else
-      label = StringUtils::Format(g_localizeStrings.Get(14045), seconds);
+      label = StringUtils::Format(
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(14045), seconds);
 
     list.insert(list.begin(), IntegerSettingOption("-" + label, seconds * -1));
     list.emplace_back(label, seconds);

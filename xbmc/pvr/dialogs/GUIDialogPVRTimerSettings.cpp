@@ -11,7 +11,6 @@
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "guilib/GUIMessage.h"
-#include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
 #include "pvr/PVRManager.h"
@@ -26,6 +25,8 @@
 #include "pvr/settings/PVRSettings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimerType.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/SettingUtils.h"
 #include "settings/dialogs/GUIDialogSettingsBase.h"
 #include "settings/lib/Setting.h"
@@ -687,7 +688,9 @@ void CGUIDialogPVRTimerSettings::OnSettingAction(const std::shared_ptr<const CSe
   {
     KODI::TIME::SystemTime timerStartTime;
     m_startLocalTime.GetAsSystemTime(timerStartTime);
-    if (CGUIDialogNumeric::ShowAndGetTime(timerStartTime, g_localizeStrings.Get(14066)))
+    if (CGUIDialogNumeric::ShowAndGetTime(
+            timerStartTime,
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(14066)))
     {
       SetTimeFromSystemTime(m_startLocalTime, timerStartTime);
       m_timerStartTimeStr = m_startLocalTime.GetAsLocalizedTime("", false);
@@ -698,7 +701,8 @@ void CGUIDialogPVRTimerSettings::OnSettingAction(const std::shared_ptr<const CSe
   {
     KODI::TIME::SystemTime timerEndTime;
     m_endLocalTime.GetAsSystemTime(timerEndTime);
-    if (CGUIDialogNumeric::ShowAndGetTime(timerEndTime, g_localizeStrings.Get(14066)))
+    if (CGUIDialogNumeric::ShowAndGetTime(
+            timerEndTime, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(14066)))
     {
       SetTimeFromSystemTime(m_endLocalTime, timerEndTime);
       m_timerEndTimeStr = m_endLocalTime.GetAsLocalizedTime("", false);
@@ -864,7 +868,8 @@ bool CGUIDialogPVRTimerSettings::Save()
   m_timerInfoTag->m_customProps = m_customTimerSettings->GetProperties();
 
   // Set the timer's title to the channel name if it's empty or 'New Timer'
-  if (m_strTitle.empty() || m_strTitle == g_localizeStrings.Get(19056))
+  if (m_strTitle.empty() ||
+      m_strTitle == CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19056))
   {
     const std::string channelName = m_timerInfoTag->ChannelName();
     if (!channelName.empty())
@@ -1018,7 +1023,8 @@ void CGUIDialogPVRTimerSettings::InitializeChannelsList()
   if (clients.size() > 1)
   {
     m_channelEntries.try_emplace(index, PVR_CHANNEL_INVALID_UID, PVR_CLIENT_INVALID_UID,
-                                 g_localizeStrings.Get(854)); // Any channel from any client
+                                 CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                                     854)); // Any channel from any client
     index++;
   }
 
@@ -1027,8 +1033,9 @@ void CGUIDialogPVRTimerSettings::InitializeChannelsList()
     m_channelEntries.try_emplace(
         index, PVR_CHANNEL_INVALID_UID, client->GetID(),
         clients.size() == 1
-            ? g_localizeStrings.Get(809) // Any channel
-            : StringUtils::Format(g_localizeStrings.Get(853), // Any channel from client "X"
+            ? CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(809) // Any channel
+            : StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                                      853), // Any channel from client "X"
                                   client->GetFullClientName()));
     index++;
   }
@@ -1197,13 +1204,20 @@ void CGUIDialogPVRTimerSettings::WeekdaysFiller(const SettingConstPtr& setting,
                                                 int& current) const
 {
   list.clear();
-  list.emplace_back(g_localizeStrings.Get(831), PVR_WEEKDAY_MONDAY); // "Mondays"
-  list.emplace_back(g_localizeStrings.Get(832), PVR_WEEKDAY_TUESDAY); // "Tuesdays"
-  list.emplace_back(g_localizeStrings.Get(833), PVR_WEEKDAY_WEDNESDAY); // "Wednesdays"
-  list.emplace_back(g_localizeStrings.Get(834), PVR_WEEKDAY_THURSDAY); // "Thursdays"
-  list.emplace_back(g_localizeStrings.Get(835), PVR_WEEKDAY_FRIDAY); // "Fridays"
-  list.emplace_back(g_localizeStrings.Get(836), PVR_WEEKDAY_SATURDAY); // "Saturdays"
-  list.emplace_back(g_localizeStrings.Get(837), PVR_WEEKDAY_SUNDAY); // "Sundays"
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(831),
+                    PVR_WEEKDAY_MONDAY); // "Mondays"
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(832),
+                    PVR_WEEKDAY_TUESDAY); // "Tuesdays"
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(833),
+                    PVR_WEEKDAY_WEDNESDAY); // "Wednesdays"
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(834),
+                    PVR_WEEKDAY_THURSDAY); // "Thursdays"
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(835),
+                    PVR_WEEKDAY_FRIDAY); // "Fridays"
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(836),
+                    PVR_WEEKDAY_SATURDAY); // "Saturdays"
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(837),
+                    PVR_WEEKDAY_SUNDAY); // "Sundays"
 
   current = m_iWeekdays;
 }
@@ -1260,8 +1274,11 @@ void CGUIDialogPVRTimerSettings::LifetimesFiller(const SettingConstPtr& setting,
   if (it == list.end())
   {
     // PVR backend supplied value is not in the list of predefined values. Insert it.
-    list.emplace(it, StringUtils::Format(g_localizeStrings.Get(17999), current) /* {} days */,
-                 current);
+    list.emplace(
+        it,
+        StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(17999),
+                            current) /* {} days */,
+        current);
   }
 }
 
@@ -1336,8 +1353,11 @@ void CGUIDialogPVRTimerSettings::MarginTimeFiller(const SettingConstPtr& setting
   if (bInsertValue)
   {
     // PVR backend supplied value is not in the list of predefined values. Insert it.
-    list.emplace(it, StringUtils::Format(g_localizeStrings.Get(14044), current) /* {} min */,
-                 current);
+    list.emplace(
+        it,
+        StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(14044),
+                            current) /* {} min */,
+        current);
   }
 }
 

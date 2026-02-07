@@ -10,9 +10,11 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "ServiceBroker.h"
 #include "URL.h"
-#include "guilib/LocalizeStrings.h"
 #include "music/MusicDatabase.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/log.h"
 
 using namespace XFILE;
@@ -43,7 +45,7 @@ bool CMusicSearchDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
   CLog::Log(LOGDEBUG, "{} ({}) took {} ms", __FUNCTION__, url.GetRedacted(), duration.count());
 
-  items.SetLabel(g_localizeStrings.Get(137)); // Search
+  items.SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(137)); // Search
   return true;
 }
 

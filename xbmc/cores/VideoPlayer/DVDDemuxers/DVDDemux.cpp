@@ -8,7 +8,9 @@
 
 #include "DVDDemux.h"
 
-#include "guilib/LocalizeStrings.h"
+#include "ServiceBroker.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StreamUtils.h"
 #include "utils/StringUtils.h"
 
@@ -135,7 +137,7 @@ std::string CDemuxStreamAudio::GetStreamType() const
     strInfo = "PCM";
 
   if (strInfo.empty())
-    strInfo = g_localizeStrings.Get(13205); // "Unknown"
+    strInfo = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // "Unknown"
 
   strInfo.append(" ");
   strInfo.append(StreamUtils::GetLayout(iChannels));

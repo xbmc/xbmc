@@ -11,8 +11,10 @@
 #include "Controller.h"
 #include "ControllerDefinitions.h"
 #include "ControllerTranslator.h"
+#include "ServiceBroker.h"
 #include "games/controllers/input/PhysicalTopology.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
@@ -75,7 +77,8 @@ std::string CControllerLayout::Label(void) const
   std::string label;
 
   if (m_labelId >= 0 && m_controller != nullptr)
-    label = g_localizeStrings.GetAddonString(m_controller->ID(), m_labelId);
+    label = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().GetAddonString(
+        m_controller->ID(), m_labelId);
 
   return label;
 }

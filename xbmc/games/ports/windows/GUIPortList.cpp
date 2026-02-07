@@ -25,9 +25,10 @@
 #include "games/ports/types/PortNode.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindow.h"
-#include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "view/GUIViewControl.h"
@@ -224,7 +225,8 @@ bool CGUIPortList::AddItems(const CPortNode& port,
   {
     // Create the list item
     CFileItemPtr item = std::make_shared<CFileItem>(itemLabel);
-    item->SetLabel2(g_localizeStrings.Get(13298)); // "Disconnected"
+    item->SetLabel2(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13298)); // "Disconnected"
     item->SetPath(port.GetAddress());
     item->SetArt("icon", "DefaultAddonNone.png");
     m_vecItems->Add(std::move(item));
@@ -320,7 +322,9 @@ void CGUIPortList::OnControllerSelected(const CPortNode& port, const ControllerP
       // "The emulator "%s" had an internal error."
       MESSAGING::HELPERS::ShowOKDialogText(
           CVariant{35114},
-          CVariant{StringUtils::Format(g_localizeStrings.Get(35213), m_gameClient->Name())});
+          CVariant{StringUtils::Format(
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35213),
+              m_gameClient->Name())});
     }
 
     // Send a GUI message to reload the port list
@@ -337,12 +341,12 @@ std::string CGUIPortList::GetLabel(const CPortNode& port)
     case PORT_TYPE::KEYBOARD:
     {
       // "Keyboard"
-      return g_localizeStrings.Get(35150);
+      return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35150);
     }
     case PORT_TYPE::MOUSE:
     {
       // "Mouse"
-      return g_localizeStrings.Get(35171);
+      return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35171);
     }
     case PORT_TYPE::CONTROLLER:
     {
@@ -355,7 +359,8 @@ std::string CGUIPortList::GetLabel(const CPortNode& port)
       else
       {
         // "Port {0:s}"
-        const std::string& portString = g_localizeStrings.Get(35112);
+        const std::string& portString =
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35112);
         return StringUtils::Format(portString, portId);
       }
       break;

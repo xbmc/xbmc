@@ -20,7 +20,6 @@
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "pvr/PVRManager.h"
@@ -37,6 +36,8 @@
 #include "pvr/guilib/PVRGUIActionsEPG.h"
 #include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "pvr/utils/PVRPathUtils.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -139,8 +140,10 @@ void CGUIWindowPVRChannelsBase::UpdateButtons()
 
   CGUIWindowPVRBase::UpdateButtons();
 
-  SET_CONTROL_LABEL(CONTROL_LABEL_HEADER1, m_bShowHiddenChannels ? g_localizeStrings.Get(19022)
-                                                                 : GetChannelGroup()->GroupName());
+  SET_CONTROL_LABEL(CONTROL_LABEL_HEADER1,
+                    m_bShowHiddenChannels
+                        ? CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19022)
+                        : GetChannelGroup()->GroupName());
 
   // If we are filtering by client id / provider id, expose provider's name.
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, UTILS::GetProviderNameFromPath(m_vecItems->GetPath()));
@@ -365,21 +368,27 @@ void CGUIWindowPVRChannelsBase::UpdateEpg(const std::shared_ptr<CFileItem>& item
 
     const std::string strMessage =
         StringUtils::Format("{}: '{}'",
-                            g_localizeStrings.Get(19253), // "Guide update scheduled for channel"
+                            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                                19253), // "Guide update scheduled for channel"
                             channel->ChannelName());
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
-                                          g_localizeStrings.Get(19166), // "PVR information"
-                                          strMessage);
+    CGUIDialogKaiToast::QueueNotification(
+        CGUIDialogKaiToast::Info,
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+            19166), // "PVR information"
+        strMessage);
   }
   else
   {
     const std::string strMessage =
         StringUtils::Format("{}: '{}'",
-                            g_localizeStrings.Get(19254), // "Guide update failed for channel"
+                            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                                19254), // "Guide update failed for channel"
                             channel->ChannelName());
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
-                                          g_localizeStrings.Get(19166), // "PVR information"
-                                          strMessage);
+    CGUIDialogKaiToast::QueueNotification(
+        CGUIDialogKaiToast::Error,
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+            19166), // "PVR information"
+        strMessage);
   }
 }
 

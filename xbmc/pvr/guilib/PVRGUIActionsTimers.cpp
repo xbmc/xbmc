@@ -16,7 +16,6 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "jobs/JobManager.h"
 #include "messaging/helpers/DialogHelper.h"
@@ -37,6 +36,8 @@
 #include "pvr/settings/PVRSettings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "threads/IRunnable.h"
 #include "utils/StringUtils.h"
@@ -376,29 +377,34 @@ void InstantRecordingActionSelector::AddAction(PVRRECORD_INSTANTRECORDACTION eAc
     switch (eAction)
     {
       case RECORD_INSTANTRECORDTIME:
-        m_pDlgSelect->Add(
-            StringUtils::Format(g_localizeStrings.Get(19090),
-                                m_iInstantRecordTime)); // Record next <default duration> minutes
+        m_pDlgSelect->Add(StringUtils::Format(
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19090),
+            m_iInstantRecordTime)); // Record next <default duration> minutes
         break;
       case RECORD_30_MINUTES:
-        m_pDlgSelect->Add(
-            StringUtils::Format(g_localizeStrings.Get(19090), 30)); // Record next 30 minutes
+        m_pDlgSelect->Add(StringUtils::Format(
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19090),
+            30)); // Record next 30 minutes
         break;
       case RECORD_60_MINUTES:
-        m_pDlgSelect->Add(
-            StringUtils::Format(g_localizeStrings.Get(19090), 60)); // Record next 60 minutes
+        m_pDlgSelect->Add(StringUtils::Format(
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19090),
+            60)); // Record next 60 minutes
         break;
       case RECORD_120_MINUTES:
-        m_pDlgSelect->Add(
-            StringUtils::Format(g_localizeStrings.Get(19090), 120)); // Record next 120 minutes
+        m_pDlgSelect->Add(StringUtils::Format(
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19090),
+            120)); // Record next 120 minutes
         break;
       case RECORD_CURRENT_SHOW:
-        m_pDlgSelect->Add(StringUtils::Format(g_localizeStrings.Get(19091),
-                                              title)); // Record current show (<title>)
+        m_pDlgSelect->Add(StringUtils::Format(
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19091),
+            title)); // Record current show (<title>)
         break;
       case RECORD_NEXT_SHOW:
-        m_pDlgSelect->Add(StringUtils::Format(g_localizeStrings.Get(19092),
-                                              title)); // Record next show (<title>)
+        m_pDlgSelect->Add(StringUtils::Format(
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19092),
+            title)); // Record next show (<title>)
         break;
       case NONE:
       case ASK:
@@ -506,7 +512,9 @@ bool CPVRGUIActionsTimers::SetRecordingOnChannel(const std::shared_ptr<CPVRChann
 
             // "now"
             const std::string currentTitle =
-                bLocked ? g_localizeStrings.Get(19266) /* Parental locked */ : epgTag->Title();
+                bLocked ? CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                              19266) /* Parental locked */
+                        : epgTag->Title();
             selector.AddAction(RECORD_CURRENT_SHOW, currentTitle);
             ePreselect = RECORD_CURRENT_SHOW;
 
@@ -514,9 +522,10 @@ bool CPVRGUIActionsTimers::SetRecordingOnChannel(const std::shared_ptr<CPVRChann
             epgTagNext = channel->GetEPGNext();
             if (epgTagNext)
             {
-              const std::string nextTitle = bLocked
-                                                ? g_localizeStrings.Get(19266) /* Parental locked */
-                                                : epgTagNext->Title();
+              const std::string nextTitle =
+                  bLocked ? CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                                19266) /* Parental locked */
+                          : epgTagNext->Title();
               selector.AddAction(RECORD_NEXT_SHOW, nextTitle);
 
               // be smart. if current show is almost over, preselect next show.
@@ -865,15 +874,16 @@ std::string GetAnnouncerText(const std::shared_ptr<const CPVRTimerInfoTag>& time
   std::string text;
   if (timer->IsEpgBased())
   {
-    text = StringUtils::Format(g_localizeStrings.Get(idEpg),
-                               timer->Title(), // tv show title
-                               timer->ChannelName(),
-                               timer->StartAsLocalTime().GetAsLocalizedDateTime(false, false));
+    text = StringUtils::Format(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(idEpg),
+        timer->Title(), // tv show title
+        timer->ChannelName(), timer->StartAsLocalTime().GetAsLocalizedDateTime(false, false));
   }
   else
   {
-    text = StringUtils::Format(g_localizeStrings.Get(idNoEpg), timer->ChannelName(),
-                               timer->StartAsLocalTime().GetAsLocalizedDateTime(false, false));
+    text = StringUtils::Format(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(idNoEpg),
+        timer->ChannelName(), timer->StartAsLocalTime().GetAsLocalizedDateTime(false, false));
   }
   return text;
 }
@@ -946,7 +956,7 @@ void CPVRGUIActionsTimers::AnnounceReminder(const std::shared_ptr<CPVRTimerInfoT
     if (autoRecord)
     {
       // (Auto-close of this reminder will schedule a recording...)
-      text += "\n\n" + g_localizeStrings.Get(19309);
+      text += "\n\n" + CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19309);
     }
   }
 
@@ -958,7 +968,7 @@ void CPVRGUIActionsTimers::AnnounceReminder(const std::shared_ptr<CPVRTimerInfoT
     if (autoSwitch)
     {
       // (Auto-close of this reminder will switch to channel...)
-      text += "\n\n" + g_localizeStrings.Get(19331);
+      text += "\n\n" + CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19331);
     }
   }
 

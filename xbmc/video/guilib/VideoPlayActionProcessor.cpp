@@ -17,8 +17,9 @@
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "playlists/PlayListTypes.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/PlayerUtils.h"
@@ -159,7 +160,8 @@ unsigned int CVideoPlayActionProcessor::ChooseStackPart() const
 
   for (int i = 0; i < parts.Size(); ++i)
   {
-    parts[i]->SetLabel(StringUtils::Format(g_localizeStrings.Get(23051), i + 1)); // Part #
+    parts[i]->SetLabel(StringUtils::Format(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(23051), i + 1)); // Part #
   }
 
   CGUIDialogSelect* dialog{CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(

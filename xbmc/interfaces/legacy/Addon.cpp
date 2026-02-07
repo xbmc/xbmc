@@ -17,7 +17,8 @@
 #include "addons/settings/AddonSettings.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 
 using namespace ADDON;
@@ -78,7 +79,8 @@ namespace XBMCAddon
 
     String Addon::getLocalizedString(int id)
     {
-      return g_localizeStrings.GetAddonString(pAddon->ID(), id);
+      return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().GetAddonString(
+          pAddon->ID(), id);
     }
 
     Settings* Addon::getSettings()

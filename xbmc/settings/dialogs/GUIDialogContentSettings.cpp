@@ -18,7 +18,8 @@
 #include "filesystem/AddonsDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
 #include "settings/windows/GUIControlSettings.h"
@@ -94,7 +95,10 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper,
     dialog->SetScraper(scraper);
     // toast selected but disabled scrapers
     if (CServiceBroker::GetAddonMgr().IsAddonDisabled(scraper->ID()))
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(24024), scraper->Name(), 2000, true);
+      CGUIDialogKaiToast::QueueNotification(
+          CGUIDialogKaiToast::Error,
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24024), scraper->Name(),
+          2000, true);
   }
 
   dialog->SetScanSettings(settings);
@@ -306,7 +310,9 @@ void CGUIDialogContentSettings::SetupView()
     }
     else
     {
-      SetLabel2(SETTING_SCRAPER_LIST, g_localizeStrings.Get(231)); //Set label2 to "None"
+      SetLabel2(SETTING_SCRAPER_LIST,
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                    231)); //Set label2 to "None"
       ToggleState(SETTING_SCRAPER_SETTINGS, false);
     }
   }

@@ -14,13 +14,14 @@
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "pvr/PVRManager.h"
 #include "pvr/guilib/PVRGUIActionsTimers.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimersPath.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
@@ -66,7 +67,8 @@ void CGUIWindowPVRTimersBase::OnPrepareFileItems(CFileItemList& items)
   if (path.IsValid() && path.IsTimersRoot())
   {
     const auto item = std::make_shared<CFileItem>(CPVRTimersPath::PATH_ADDTIMER, false);
-    item->SetLabel(g_localizeStrings.Get(19026)); // "Add timer..."
+    item->SetLabel(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19026)); // "Add timer..."
     item->SetLabelPreformatted(true);
     item->SetSpecialSort(SortSpecialOnTop);
     item->SetArt("icon", "DefaultTVShows.png");

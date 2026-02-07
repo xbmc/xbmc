@@ -14,8 +14,9 @@
 #include "ServiceBroker.h"
 #include "VideoDatabaseDirectory/DirectoryNode.h"
 #include "VideoDatabaseDirectory/QueryParams.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/TextureManager.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Crc32.h"
@@ -248,70 +249,70 @@ bool CVideoDatabaseDirectory::GetLabel(const std::string& strDirectory, std::str
       case NodeType::TITLE_MOVIES:
       case NodeType::TITLE_TVSHOWS:
       case NodeType::TITLE_MUSICVIDEOS:
-        strLabel = g_localizeStrings.Get(369);
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(369);
         break;
       case NodeType::ACTOR: // Actor
-        strLabel = g_localizeStrings.Get(344);
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(344);
         break;
       case NodeType::GENRE: // Genres
-        strLabel = g_localizeStrings.Get(135);
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(135);
         break;
       case NodeType::COUNTRY: // Countries
-        strLabel = g_localizeStrings.Get(20451);
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20451);
         break;
       case NodeType::YEAR: // Year
-        strLabel = g_localizeStrings.Get(562);
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(562);
         break;
       case NodeType::DIRECTOR: // Director
-        strLabel = g_localizeStrings.Get(20348);
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20348);
         break;
       case NodeType::SETS: // Sets
-        strLabel = g_localizeStrings.Get(20434);
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20434);
         break;
       case NodeType::TAGS: // Tags
-        strLabel = g_localizeStrings.Get(20459);
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20459);
         break;
       case NodeType::VIDEOVERSIONS: // Video versions
-        strLabel = g_localizeStrings.Get(40000);
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(40000);
         break;
       case NodeType::MOVIES_OVERVIEW: // Movies
-        strLabel = g_localizeStrings.Get(342);
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(342);
         break;
       case NodeType::TVSHOWS_OVERVIEW: // TV Shows
-        strLabel = g_localizeStrings.Get(20343);
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20343);
         break;
       case NodeType::RECENTLY_ADDED_MOVIES: // Recently Added Movies
-        strLabel = g_localizeStrings.Get(20386);
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20386);
         break;
       case NodeType::RECENTLY_ADDED_EPISODES: // Recently Added Episodes
-        strLabel = g_localizeStrings.Get(20387);
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20387);
         break;
       case NodeType::STUDIO: // Studios
-        strLabel = g_localizeStrings.Get(20388);
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20388);
         break;
       case NodeType::MUSICVIDEOS_OVERVIEW: // Music Videos
-        strLabel = g_localizeStrings.Get(20389);
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20389);
         break;
       case NodeType::RECENTLY_ADDED_MUSICVIDEOS: // Recently Added Music Videos
-        strLabel = g_localizeStrings.Get(20390);
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20390);
         break;
       case NodeType::SEASONS: // Seasons
-        strLabel = g_localizeStrings.Get(33054);
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(33054);
         break;
       case NodeType::EPISODES: // Episodes
-        strLabel = g_localizeStrings.Get(20360);
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20360);
         break;
       case NodeType::INPROGRESS_TVSHOWS: // InProgress TvShows
-        strLabel = g_localizeStrings.Get(626);
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(626);
         break;
       case NodeType::MOVIE_ASSETS: // Video assets
-        strLabel = g_localizeStrings.Get(40209);
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(40209);
         break;
       case NodeType::MOVIE_ASSETS_VERSIONS: // Video versions
-        strLabel = g_localizeStrings.Get(40210);
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(40210);
         break;
       case NodeType::MOVIE_ASSETS_EXTRAS: // Video extras
-        strLabel = g_localizeStrings.Get(40211);
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(40211);
         break;
 
       default:

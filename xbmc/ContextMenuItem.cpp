@@ -13,7 +13,8 @@
 #include "addons/AddonManager.h"
 #include "addons/IAddon.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #ifdef HAS_PYTHON
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "interfaces/python/ContextItemAddonInvoker.h"
@@ -24,7 +25,7 @@
 
 std::string CStaticContextMenuAction::GetLabel(const CFileItem& item) const
 {
-  return g_localizeStrings.Get(m_label);
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(m_label);
 }
 
 CContextMenuItem::CContextMenuItem(CGroup groupData)

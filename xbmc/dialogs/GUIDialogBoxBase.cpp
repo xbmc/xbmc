@@ -8,8 +8,10 @@
 
 #include "GUIDialogBoxBase.h"
 
+#include "ServiceBroker.h"
 #include "guilib/GUIMessage.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
@@ -183,14 +185,16 @@ std::string CGUIDialogBoxBase::GetLocalized(const CVariant &var) const
   if (var.isString())
     return var.asString();
   else if (var.isInteger() && var.asInteger())
-    return g_localizeStrings.Get((uint32_t)var.asInteger());
+    return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+        (uint32_t)var.asInteger());
   return "";
 }
 
 std::string CGUIDialogBoxBase::GetDefaultLabel(int controlId) const
 {
   int labelId = GetDefaultLabelID(controlId);
-  return labelId != -1 ? g_localizeStrings.Get(labelId) : "";
+  return labelId != -1 ? CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(labelId)
+                       : "";
 }
 
 int CGUIDialogBoxBase::GetDefaultLabelID(int controlId) const

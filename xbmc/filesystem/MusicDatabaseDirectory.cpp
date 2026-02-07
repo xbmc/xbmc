@@ -14,10 +14,11 @@
 #include "MusicDatabaseDirectory/QueryParams.h"
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/TextureManager.h"
 #include "music/MusicDatabase.h"
 #include "music/MusicDbUrl.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Crc32.h"
@@ -217,46 +218,52 @@ bool CMusicDatabaseDirectory::GetLabel(const std::string& strDirectory, std::str
     switch (pNode->GetChildType())
     {
       case NodeType::TOP100:
-        strLabel = g_localizeStrings.Get(271); // Top 100
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(271); // Top 100
         break;
       case NodeType::GENRE:
-        strLabel = g_localizeStrings.Get(135); // Genres
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(135); // Genres
         break;
       case NodeType::SOURCE:
-        strLabel = g_localizeStrings.Get(39030); // Sources
+        strLabel =
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(39030); // Sources
         break;
       case NodeType::ROLE:
-        strLabel = g_localizeStrings.Get(38033); // Roles
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(38033); // Roles
         break;
       case NodeType::ARTIST:
-        strLabel = g_localizeStrings.Get(133); // Artists
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(133); // Artists
         break;
       case NodeType::ALBUM:
-        strLabel = g_localizeStrings.Get(132); // Albums
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(132); // Albums
         break;
       case NodeType::ALBUM_RECENTLY_ADDED:
       case NodeType::ALBUM_RECENTLY_ADDED_SONGS:
-        strLabel = g_localizeStrings.Get(359); // Recently Added Albums
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+            359); // Recently Added Albums
         break;
       case NodeType::ALBUM_RECENTLY_PLAYED:
       case NodeType::ALBUM_RECENTLY_PLAYED_SONGS:
-        strLabel = g_localizeStrings.Get(517); // Recently Played Albums
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+            517); // Recently Played Albums
         break;
       case NodeType::ALBUM_TOP100:
       case NodeType::ALBUM_TOP100_SONGS:
-        strLabel = g_localizeStrings.Get(10505); // Top 100 Albums
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+            10505); // Top 100 Albums
         break;
       case NodeType::SINGLES:
-        strLabel = g_localizeStrings.Get(1050); // Singles
+        strLabel =
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1050); // Singles
         break;
       case NodeType::SONG:
-        strLabel = g_localizeStrings.Get(134); // Songs
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(134); // Songs
         break;
       case NodeType::SONG_TOP100:
-        strLabel = g_localizeStrings.Get(10504); // Top 100 Songs
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+            10504); // Top 100 Songs
         break;
       case NodeType::YEAR:
-        strLabel = g_localizeStrings.Get(652); // Years
+        strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(652); // Years
         break;
       case NodeType::OVERVIEW:
         strLabel = "";

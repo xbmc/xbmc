@@ -10,8 +10,10 @@
 
 #include "ContextMenuItem.h"
 #include "ContextMenuManager.h"
+#include "ServiceBroker.h"
 #include "addons/addoninfo/AddonType.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
@@ -44,7 +46,8 @@ CContextMenuAddon::CContextMenuAddon(const AddonInfoPtr& addonInfo)
 
       std::string label = elem->GetValue("label").asString();
       if (StringUtils::IsNaturalNumber(label))
-        label = g_localizeStrings.GetAddonString(ID(), atoi(label.c_str()));
+        label = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().GetAddonString(
+            ID(), atoi(label.c_str()));
 
       m_items.emplace_back(CContextMenuItem::CItem{
           .label = std::move(label),
@@ -67,7 +70,8 @@ void CContextMenuAddon::ParseMenu(
   std::string menuId = elem->GetValue("@id").asString();
   std::string menuLabel = elem->GetValue("label").asString();
   if (StringUtils::IsNaturalNumber(menuLabel))
-    menuLabel = g_localizeStrings.GetAddonString(ID(), std::stoi(menuLabel));
+    menuLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().GetAddonString(
+        ID(), std::stoi(menuLabel));
 
   if (menuId.empty())
   {
@@ -90,7 +94,8 @@ void CContextMenuAddon::ParseMenu(
     std::string library = addonExtensions.GetValue("@library").asString();
     std::string label = addonExtensions.GetValue("label").asString();
     if (StringUtils::IsNaturalNumber(label))
-      label = g_localizeStrings.GetAddonString(ID(), std::atoi(label.c_str()));
+      label = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().GetAddonString(
+          ID(), std::atoi(label.c_str()));
 
     std::vector<std::string> args;
     args.emplace_back(ID());

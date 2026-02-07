@@ -12,7 +12,8 @@
 #include "addons/Addon.h"
 #include "addons/Skin.h"
 #include "addons/addoninfo/AddonInfo.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/SettingAddon.h"
 #include "settings/SettingControl.h"
 #include "settings/SettingDateTime.h"
@@ -361,9 +362,11 @@ bool CSettingsOperations::SerializeSettingSection(
   if (!SerializeISetting(setting, obj))
     return false;
 
-  obj["label"] = g_localizeStrings.Get(setting->GetLabel());
+  obj["label"] =
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(setting->GetLabel());
   if (setting->GetHelp() >= 0)
-    obj["help"] = g_localizeStrings.Get(setting->GetHelp());
+    obj["help"] =
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(setting->GetHelp());
 
   return true;
 }
@@ -374,9 +377,11 @@ bool CSettingsOperations::SerializeSettingCategory(
   if (!SerializeISetting(setting, obj))
     return false;
 
-  obj["label"] = g_localizeStrings.Get(setting->GetLabel());
+  obj["label"] =
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(setting->GetLabel());
   if (setting->GetHelp() >= 0)
-    obj["help"] = g_localizeStrings.Get(setting->GetHelp());
+    obj["help"] =
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(setting->GetHelp());
 
   return true;
 }
@@ -393,9 +398,11 @@ bool CSettingsOperations::SerializeSetting(const std::shared_ptr<const CSetting>
   if (!SerializeISetting(setting, obj))
     return false;
 
-  obj["label"] = g_localizeStrings.Get(setting->GetLabel());
+  obj["label"] =
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(setting->GetLabel());
   if (setting->GetHelp() >= 0)
-    obj["help"] = g_localizeStrings.Get(setting->GetHelp());
+    obj["help"] =
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(setting->GetHelp());
 
   switch (setting->GetLevel())
   {
@@ -500,7 +507,8 @@ bool CSettingsOperations::SerializeSettingInt(const std::shared_ptr<const CSetti
       for (const auto& itOption : options)
       {
         CVariant varOption(CVariant::VariantTypeObject);
-        varOption["label"] = g_localizeStrings.Get(itOption.label);
+        varOption["label"] =
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(itOption.label);
         varOption["value"] = itOption.value;
         obj["options"].push_back(varOption);
       }
@@ -586,7 +594,8 @@ bool CSettingsOperations::SerializeSettingString(
       for (const auto& itOption : options)
       {
         CVariant varOption(CVariant::VariantTypeObject);
-        varOption["label"] = g_localizeStrings.Get(itOption.first);
+        varOption["label"] =
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(itOption.first);
         varOption["value"] = itOption.second;
         obj["options"].push_back(varOption);
       }
@@ -746,11 +755,13 @@ bool CSettingsOperations::SerializeSettingControl(
   {
     std::shared_ptr<const CSettingControlSpinner> spinner = std::static_pointer_cast<const CSettingControlSpinner>(control);
     if (spinner->GetFormatLabel() >= 0)
-      obj["formatlabel"] = g_localizeStrings.Get(spinner->GetFormatLabel());
+      obj["formatlabel"] = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+          spinner->GetFormatLabel());
     else if (!spinner->GetFormatString().empty() && spinner->GetFormatString() != "{:d}")
       obj["formatlabel"] = spinner->GetFormatString();
     if (spinner->GetMinimumLabel() >= 0)
-      obj["minimumlabel"] = g_localizeStrings.Get(spinner->GetMinimumLabel());
+      obj["minimumlabel"] = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+          spinner->GetMinimumLabel());
   }
   else if (type == "edit")
   {
@@ -758,29 +769,34 @@ bool CSettingsOperations::SerializeSettingControl(
     obj["hidden"] = edit->IsHidden();
     obj["verifynewvalue"] = edit->VerifyNewValue();
     if (edit->GetHeading() >= 0)
-      obj["heading"] = g_localizeStrings.Get(edit->GetHeading());
+      obj["heading"] =
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(edit->GetHeading());
   }
   else if (type == "button")
   {
     std::shared_ptr<const CSettingControlButton> button = std::static_pointer_cast<const CSettingControlButton>(control);
     if (button->GetHeading() >= 0)
-      obj["heading"] = g_localizeStrings.Get(button->GetHeading());
+      obj["heading"] =
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(button->GetHeading());
   }
   else if (type == "list")
   {
     std::shared_ptr<const CSettingControlList> list = std::static_pointer_cast<const CSettingControlList>(control);
     if (list->GetHeading() >= 0)
-      obj["heading"] = g_localizeStrings.Get(list->GetHeading());
+      obj["heading"] =
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(list->GetHeading());
     obj["multiselect"] = list->CanMultiSelect();
   }
   else if (type == "slider")
   {
     std::shared_ptr<const CSettingControlSlider> slider = std::static_pointer_cast<const CSettingControlSlider>(control);
     if (slider->GetHeading() >= 0)
-      obj["heading"] = g_localizeStrings.Get(slider->GetHeading());
+      obj["heading"] =
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(slider->GetHeading());
     obj["popup"] = slider->UsePopup();
     if (slider->GetFormatLabel() >= 0)
-      obj["formatlabel"] = g_localizeStrings.Get(slider->GetFormatLabel());
+      obj["formatlabel"] = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+          slider->GetFormatLabel());
     else
       obj["formatlabel"] = slider->GetFormatString();
   }
@@ -788,11 +804,13 @@ bool CSettingsOperations::SerializeSettingControl(
   {
     std::shared_ptr<const CSettingControlRange> range = std::static_pointer_cast<const CSettingControlRange>(control);
     if (range->GetFormatLabel() >= 0)
-      obj["formatlabel"] = g_localizeStrings.Get(range->GetFormatLabel());
+      obj["formatlabel"] =
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(range->GetFormatLabel());
     else
       obj["formatlabel"] = "";
     if (range->GetValueFormatLabel() >= 0)
-      obj["formatvalue"] = g_localizeStrings.Get(range->GetValueFormatLabel());
+      obj["formatvalue"] = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+          range->GetValueFormatLabel());
     else
       obj["formatvalue"] = range->GetValueFormat();
   }

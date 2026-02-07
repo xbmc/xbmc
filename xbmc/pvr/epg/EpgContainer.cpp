@@ -10,7 +10,6 @@
 
 #include "ServiceBroker.h"
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_channels.h" // PVR_CHANNEL_INVALID_UID
-#include "guilib/LocalizeStrings.h"
 #include "pvr/PVRManager.h"
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgChannelData.h"
@@ -20,6 +19,8 @@
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/guilib/PVRGUIProgressHandler.h"
 #include "pvr/settings/PVRSettings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -770,7 +771,8 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   std::unique_ptr<CPVRGUIProgressHandler> progressHandler;
   if (bShowProgress && !bOnlyPending && !epgsToUpdate.empty())
     progressHandler = std::make_unique<CPVRGUIProgressHandler>(
-        g_localizeStrings.Get(19004)); // Loading programme guide
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+            19004)); // Loading programme guide
 
   size_t counter = 0;
   for (const auto& [_, epg] : epgsToUpdate)

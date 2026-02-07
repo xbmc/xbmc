@@ -14,7 +14,8 @@
 #include "favourites/FavouritesService.h"
 #include "favourites/FavouritesURL.h"
 #include "favourites/FavouritesUtils.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/guilib/GUIBuiltinsUtils.h"
@@ -160,9 +161,10 @@ std::string CFavouritesTargetPlay::GetLabel(const CFileItem& item) const
 {
   const std::shared_ptr<CFileItem> targetItem{ResolveFavouriteItem(item)};
   if (targetItem && VIDEO::UTILS::GetItemResumeInformation(*targetItem).isResumable)
-    return g_localizeStrings.Get(12021); // Play from beginning
+    return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+        12021); // Play from beginning
 
-  return g_localizeStrings.Get(208); // Play
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(208); // Play
 }
 
 bool CFavouritesTargetPlay::IsVisible(const CFileItem& item) const

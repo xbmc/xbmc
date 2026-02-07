@@ -9,8 +9,10 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "ServiceBroker.h"
 #include "URL.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -836,22 +838,29 @@ void CDiscDirectoryHelper::GenerateItem(const CURL& url,
   if (isSpecial == IsSpecial::SPECIAL)
   {
     if (title.empty())
-      buf = g_localizeStrings.Get(21350); /* Special */
+      buf = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21350); /* Special */
     else
       /* Special xx - title */
-      buf = StringUtils::Format(g_localizeStrings.Get(21348), tag.m_iEpisode, tag.GetTitle());
+      buf = StringUtils::Format(
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21348), tag.m_iEpisode,
+          tag.GetTitle());
   }
   else
     /* Episode xx - title */
-    buf = StringUtils::Format(g_localizeStrings.Get(21349), tag.m_iEpisode, tag.GetTitle());
+    buf =
+        StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21349),
+                            tag.m_iEpisode, tag.GetTitle());
   item->SetTitle(buf);
   item->SetLabel(buf);
 
   item->SetLabel2(StringUtils::Format(
-      g_localizeStrings.Get(25005) /* Title: {0:d} */ + " - {1:s}: {2:s}\n\r{3:s}: {4:s}", playlist,
-      g_localizeStrings.Get(180) /* Duration */,
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25005) /* Title: {0:d} */ +
+          " - {1:s}: {2:s}\n\r{3:s}: {4:s}",
+      playlist,
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(180) /* Duration */,
       StringUtils::SecondsToTimeString(static_cast<int>(duration.count() / 1000)),
-      g_localizeStrings.Get(24026) /* Languages */, langs));
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24026) /* Languages */,
+      langs));
   item->SetSize(0);
   item->SetArt("icon", "DefaultVideo.png");
 }
@@ -945,7 +954,8 @@ void CDiscDirectoryHelper::AddRootOptions(const CURL& url,
   path.SetFileName(URIUtils::AddFileToFolder("root", "titles"));
 
   auto item{std::make_shared<CFileItem>(path.Get(), true)};
-  item->SetLabel(g_localizeStrings.Get(25002) /* All titles */);
+  item->SetLabel(
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25002) /* All titles */);
   item->SetArt("icon", "DefaultVideoPlaylists.png");
   items.Add(item);
 
@@ -953,7 +963,8 @@ void CDiscDirectoryHelper::AddRootOptions(const CURL& url,
   {
     path.SetFileName("menu");
     item = {std::make_shared<CFileItem>(path.Get(), false)};
-    item->SetLabel(g_localizeStrings.Get(25003) /* Menu */);
+    item->SetLabel(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25003) /* Menu */);
     item->SetArt("icon", "DefaultProgram.png");
     items.Add(item);
   }

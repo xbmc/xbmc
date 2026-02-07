@@ -22,7 +22,8 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -593,8 +594,10 @@ bool CGUIDialogVideoManagerVersions::ProcessVideoVersion(VideoDbContentType item
   videodb.GetFilePathById(dbId, path, itemType);
 
   if (!CGUIDialogYesNo::ShowAndGetInput(
-          CVariant{40008}, StringUtils::Format(g_localizeStrings.Get(40009),
-                                               item.GetVideoInfoTag()->GetTitle(), path)))
+          CVariant{40008},
+          StringUtils::Format(
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(40009),
+              item.GetVideoInfoTag()->GetTitle(), path)))
   {
     return false;
   }
@@ -622,7 +625,7 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
   std::string path;
   if (CGUIDialogFileBrowser::ShowAndGetFile(
           sources, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
-          g_localizeStrings.Get(40014), path))
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(40014), path))
   {
     const int dbId{m_videoAsset->GetVideoInfoTag()->m_iDbId};
     const VideoDbContentType itemType{m_videoAsset->GetVideoContentType()};
@@ -650,7 +653,9 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
 
         CGUIDialogOK::ShowAndGetInput(
             CVariant{40014},
-            StringUtils::Format(g_localizeStrings.Get(msgid), newAsset.m_assetTypeName));
+            StringUtils::Format(
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(msgid),
+                newAsset.m_assetTypeName));
         return false;
       }
 
@@ -658,8 +663,10 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
 
       // The video is an extra, ask for confirmation of the asset type change
       if (newAsset.m_assetType == VideoAssetType::EXTRA &&
-          !CGUIDialogYesNo::ShowAndGetInput(CVariant{40014},
-                                            StringUtils::Format(g_localizeStrings.Get(40035))))
+          !CGUIDialogYesNo::ShowAndGetInput(
+              CVariant{40014},
+              StringUtils::Format(
+                  CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(40035))))
       {
         return false;
       }
@@ -687,8 +694,10 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
         }
 
         if (!CGUIDialogYesNo::ShowAndGetInput(
-                CVariant{40014}, StringUtils::Format(g_localizeStrings.Get(msgid),
-                                                     newAsset.m_assetTypeName, videoTitle)))
+                CVariant{40014},
+                StringUtils::Format(
+                    CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(msgid),
+                    newAsset.m_assetTypeName, videoTitle)))
         {
           return false;
         }

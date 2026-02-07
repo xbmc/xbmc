@@ -8,8 +8,10 @@
 
 #include "KeyboardLayout.h"
 
-#include "guilib/LocalizeStrings.h"
+#include "ServiceBroker.h"
 #include "input/InputCodingTableFactory.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -127,7 +129,8 @@ std::string CKeyboardLayout::GetIdentifier() const
 
 std::string CKeyboardLayout::GetName() const
 {
-  return StringUtils::Format(g_localizeStrings.Get(311), m_language, m_layout);
+  return StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(311),
+                             m_language, m_layout);
 }
 
 std::string CKeyboardLayout::GetCharAt(unsigned int row,

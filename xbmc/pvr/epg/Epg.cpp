@@ -9,13 +9,14 @@
 #include "Epg.h"
 
 #include "ServiceBroker.h"
-#include "guilib/LocalizeStrings.h"
 #include "pvr/PVRCachedImages.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClient.h"
 #include "pvr/epg/EpgChannelData.h"
 #include "pvr/epg/EpgDatabase.h"
 #include "pvr/epg/EpgInfoTag.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -487,7 +488,7 @@ const std::string& CPVREpg::ConvertGenreIdToString(int iID, int iSubID)
       break;
   }
 
-  return g_localizeStrings.Get(iLabelId);
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(iLabelId);
 }
 
 std::shared_ptr<CPVREpgChannelData> CPVREpg::GetChannelData() const

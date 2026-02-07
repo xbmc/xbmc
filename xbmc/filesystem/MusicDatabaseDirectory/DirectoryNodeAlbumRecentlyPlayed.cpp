@@ -10,8 +10,10 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
-#include "guilib/LocalizeStrings.h"
+#include "ServiceBroker.h"
 #include "music/MusicDatabase.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 
 using namespace XFILE::MUSICDATABASEDIRECTORY;
@@ -34,7 +36,7 @@ NodeType CDirectoryNodeAlbumRecentlyPlayed::GetChildType() const
 std::string CDirectoryNodeAlbumRecentlyPlayed::GetLocalizedName() const
 {
   if (GetID() == -1)
-    return g_localizeStrings.Get(15102); // All Albums
+    return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(15102); // All Albums
   CMusicDatabase db;
   if (db.Open())
     return db.GetAlbumById(GetID());

@@ -8,7 +8,8 @@
 #include "UDisks2Provider.h"
 
 #include "ServiceBroker.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
@@ -172,7 +173,8 @@ std::string CUDisks2Provider::Filesystem::GetDisplayName() const
   if (m_block->m_label.empty())
   {
     std::string strSize = StringUtils::SizeToString(m_block->m_size);
-    return StringUtils::Format("{} {}", strSize, g_localizeStrings.Get(155));
+    return StringUtils::Format(
+        "{} {}", strSize, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(155));
   }
   else
     return m_block->m_label;

@@ -34,10 +34,11 @@
 #include "guilib/GUIFontManager.h"
 #include "guilib/GUITextureCallbackManager.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/StereoscopicsManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/SkinSettings.h"
@@ -145,7 +146,7 @@ bool CApplicationSkinHandling::LoadSkin(const std::string& skinID)
   // load the skin strings in
   //! @todo Move skin language files to resources/language/ to match other addon structure
   const std::string langPath = URIUtils::AddFileToFolder(skin->Path(), "language/");
-  g_localizeStrings.LoadAddonStrings(
+  CServiceBroker::GetResourcesComponent().GetLocalizeStrings().LoadAddonStrings(
       langPath, settings->GetString(CSettings::SETTING_LOCALE_LANGUAGE), skin->ID());
   skin->LoadTimers();
 
@@ -233,7 +234,7 @@ void CApplicationSkinHandling::UnloadSkin()
   if (skin)
   {
     skin->Unload();
-    g_localizeStrings.ClearAddonStrings(skin->ID());
+    CServiceBroker::GetResourcesComponent().GetLocalizeStrings().ClearAddonStrings(skin->ID());
   }
 
   CGUIComponent* gui = CServiceBroker::GetGUI();
@@ -436,8 +437,10 @@ void CApplicationSkinHandling::ReloadSkin(bool confirm)
     {
       m_confirmSkinChange = false;
       setting->Reset();
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(24102),
-                                            g_localizeStrings.Get(24103));
+      CGUIDialogKaiToast::QueueNotification(
+          CGUIDialogKaiToast::Error,
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24102),
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24103));
     }
   }
   m_confirmSkinChange = true;

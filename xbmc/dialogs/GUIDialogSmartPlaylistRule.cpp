@@ -17,8 +17,9 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "music/MusicDatabase.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -324,7 +325,9 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     CServiceBroker::GetMediaManager().GetLocalDrives(sources);
 
     std::string path = m_rule.GetParameter();
-    CGUIDialogFileBrowser::ShowAndGetDirectory(sources, g_localizeStrings.Get(657), path, false);
+    CGUIDialogFileBrowser::ShowAndGetDirectory(
+        sources, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(657), path,
+        false);
     if (!m_rule.m_parameter.empty())
       m_rule.m_parameter.clear();
     if (!path.empty())
@@ -364,7 +367,8 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   pDialog->Reset();
   pDialog->SetItems(items);
   std::string strHeading =
-      StringUtils::Format(g_localizeStrings.Get(13401), g_localizeStrings.Get(iLabel));
+      StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13401),
+                          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(iLabel));
   pDialog->SetHeading(CVariant{std::move(strHeading)});
   pDialog->SetMultiSelection(m_rule.m_field != FieldPlaylist && m_rule.m_field != FieldVirtualFolder);
 

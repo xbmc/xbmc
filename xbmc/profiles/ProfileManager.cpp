@@ -33,7 +33,6 @@
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/StereoscopicsManager.h" //! @todo Remove me
 #include "input/InputManager.h"
 #include "interfaces/json-rpc/JSONRPC.h" //! @todo Remove me
@@ -41,6 +40,8 @@
 #include "network/Network.h" //! @todo Remove me
 #include "network/NetworkServices.h" //! @todo Remove me
 #include "pvr/PVRManager.h" //! @todo Remove me
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/SettingsManager.h"
@@ -463,7 +464,10 @@ void CProfileManager::LogOff()
   CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_LOGIN_SCREEN, {}, false);
 
   if (!CServiceBroker::GetNetwork().GetServices().StartEventServer()) // event server could be needed in some situations
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
+    CGUIDialogKaiToast::QueueNotification(
+        CGUIDialogKaiToast::Warning,
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(33102),
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(33100));
 }
 
 bool CProfileManager::DeleteProfile(unsigned int index)

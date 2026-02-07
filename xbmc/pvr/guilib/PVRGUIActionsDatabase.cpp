@@ -16,7 +16,6 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/PVRDatabase.h"
@@ -27,6 +26,8 @@
 #include "pvr/guilib/PVRGUIActionsParentalControl.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -58,52 +59,55 @@ public:
 
     CFileItemList options;
 
-    const auto itemAll{
-        std::make_shared<CFileItem>(StringUtils::Format(g_localizeStrings.Get(593)))}; // All
+    const auto itemAll{std::make_shared<CFileItem>(StringUtils::Format(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(593)))}; // All
     itemAll->SetPath("all");
     options.Add(itemAll);
 
     // if channels are cleared, groups, EPG data and providers must also be cleared
-    const auto itemChannels{std::make_shared<CFileItem>(
-        StringUtils::Format("{}, {}, {}, {}",
-                            g_localizeStrings.Get(19019), // Channels
-                            g_localizeStrings.Get(19146), // Groups
-                            g_localizeStrings.Get(19069), // Guide
-                            g_localizeStrings.Get(19334)))}; // Providers
+    const auto itemChannels{std::make_shared<CFileItem>(StringUtils::Format(
+        "{}, {}, {}, {}",
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19019), // Channels
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19146), // Groups
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19069), // Guide
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19334)))}; // Providers
     itemChannels->SetPath("channels");
     itemChannels->Select(true); // preselect this item in dialog
     options.Add(itemChannels);
 
-    const auto itemGroups{std::make_shared<CFileItem>(g_localizeStrings.Get(19146))}; // Groups
+    const auto itemGroups{std::make_shared<CFileItem>(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19146))}; // Groups
     itemGroups->SetPath("groups");
     options.Add(itemGroups);
 
-    const auto itemGuide{std::make_shared<CFileItem>(g_localizeStrings.Get(19069))}; // Guide
+    const auto itemGuide{std::make_shared<CFileItem>(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19069))}; // Guide
     itemGuide->SetPath("guide");
     options.Add(itemGuide);
 
-    const auto itemProviders{
-        std::make_shared<CFileItem>(g_localizeStrings.Get(19334))}; // Providers
+    const auto itemProviders{std::make_shared<CFileItem>(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19334))}; // Providers
     itemProviders->SetPath("providers");
     options.Add(itemProviders);
 
-    const auto itemReminders{
-        std::make_shared<CFileItem>(g_localizeStrings.Get(19215))}; // Reminders
+    const auto itemReminders{std::make_shared<CFileItem>(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19215))}; // Reminders
     itemReminders->SetPath("reminders");
     options.Add(itemReminders);
 
-    const auto itemRecordings{
-        std::make_shared<CFileItem>(g_localizeStrings.Get(19017))}; // Recordings
+    const auto itemRecordings{std::make_shared<CFileItem>(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19017))}; // Recordings
     itemRecordings->SetPath("recordings");
     options.Add(itemRecordings);
 
-    const auto itemClients{
-        std::make_shared<CFileItem>(g_localizeStrings.Get(24019))}; // PVR clients
+    const auto itemClients{std::make_shared<CFileItem>(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24019))}; // PVR clients
     itemClients->SetPath("clients");
     options.Add(itemClients);
 
     pDlgSelect->Reset();
-    pDlgSelect->SetHeading(CVariant{g_localizeStrings.Get(19185)}); // "Clear data"
+    pDlgSelect->SetHeading(CVariant{
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19185)}); // "Clear data"
     pDlgSelect->SetItems(options);
     pDlgSelect->SetMultiSelection(true);
     pDlgSelect->Open();
@@ -207,7 +211,9 @@ bool CPVRGUIActionsDatabase::ResetDatabase(bool bResetEPGOnly) const
   CLog::LogFC(LOGDEBUG, LOGPVR, "PVR clearing {} database", bResetEPGOnly ? "EPG" : "PVR and EPG");
 
   pDlgProgress->SetHeading(CVariant{313}); // "Cleaning database"
-  pDlgProgress->SetLine(0, CVariant{g_localizeStrings.Get(19187)}); // "Clearing all related data."
+  pDlgProgress->SetLine(0,
+                        CVariant{CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                            19187)}); // "Clearing all related data."
   pDlgProgress->SetLine(1, CVariant{""});
   pDlgProgress->SetLine(2, CVariant{""});
 

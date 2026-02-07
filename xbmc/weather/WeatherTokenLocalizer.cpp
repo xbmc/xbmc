@@ -10,7 +10,8 @@
 
 #include "LangInfo.h"
 #include "ServiceBroker.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
@@ -45,7 +46,7 @@ std::string CWeatherTokenLocalizer::LocalizeOverviewToken(const std::string& tok
   {
     const auto it{m_localizedTokens.find(token)};
     if (it != m_localizedTokens.cend())
-      locStr = g_localizeStrings.Get(it->second);
+      locStr = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(it->second);
   }
 
   if (locStr.empty())

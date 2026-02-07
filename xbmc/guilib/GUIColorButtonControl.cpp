@@ -9,7 +9,6 @@
 #include "GUIColorButtonControl.h"
 
 #include "GUIInfoManager.h"
-#include "LocalizeStrings.h"
 #include "ServiceBroker.h"
 #include "input/keyboard/Key.h"
 #include "utils/ColorUtils.h"

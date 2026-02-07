@@ -24,7 +24,6 @@
 #include "filesystem/VideoDatabaseDirectory/QueryParams.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "imagefiles/ImageFileURL.h"
 #include "interfaces/AnnouncementManager.h"
@@ -35,6 +34,8 @@
 #include "music/MusicThumbLoader.h"
 #include "music/tags/MusicInfoTag.h"
 #include "playlists/PlayListFileItemClassify.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Digest.h"
@@ -854,7 +855,7 @@ NPT_Result CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
   if (items.GetPath() == "musicdb://")
   {
     CFileItemPtr playlists(new CFileItem("special://musicplaylists/", true));
-    playlists->SetLabel(g_localizeStrings.Get(136));
+    playlists->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(136));
     items.Add(playlists);
 
     CVideoDatabase database;
@@ -862,7 +863,7 @@ NPT_Result CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
     if (database.HasContent(VideoDbContentType::MUSICVIDEOS))
     {
       CFileItemPtr mvideos(new CFileItem("library://video/musicvideos/", true));
-      mvideos->SetLabel(g_localizeStrings.Get(20389));
+      mvideos->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20389));
       items.Add(mvideos);
     }
   }

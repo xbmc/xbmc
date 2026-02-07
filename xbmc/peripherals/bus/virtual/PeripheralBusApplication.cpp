@@ -16,8 +16,9 @@
 #include "games/controllers/ControllerIDs.h"
 #include "games/controllers/ControllerLayout.h"
 #include "games/controllers/ControllerManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "peripherals/Peripherals.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
@@ -44,7 +45,8 @@ bool CPeripheralBusApplication::PerformDeviceScan(PeripheralScanResults& results
   {
     PeripheralScanResult result(Type());
     result.m_type = PERIPHERAL_KEYBOARD;
-    result.m_strDeviceName = g_localizeStrings.Get(35150); // "Keyboard"
+    result.m_strDeviceName =
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35150); // "Keyboard"
     result.m_strLocation = PeripheralTypeTranslator::TypeToString(PERIPHERAL_KEYBOARD);
     result.m_iVendorId = 0;
     result.m_iProductId = 0;
@@ -67,7 +69,8 @@ bool CPeripheralBusApplication::PerformDeviceScan(PeripheralScanResults& results
   {
     PeripheralScanResult result(Type());
     result.m_type = PERIPHERAL_MOUSE;
-    result.m_strDeviceName = g_localizeStrings.Get(35171); // "Mouse"
+    result.m_strDeviceName =
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35171); // "Mouse"
     result.m_strLocation = PeripheralTypeTranslator::TypeToString(PERIPHERAL_MOUSE);
     result.m_iVendorId = 0;
     result.m_iProductId = 0;

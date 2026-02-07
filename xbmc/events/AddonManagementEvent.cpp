@@ -8,9 +8,11 @@
 
 #include "AddonManagementEvent.h"
 
+#include "ServiceBroker.h"
 #include "addons/gui/GUIDialogAddonInfo.h"
 #include "filesystem/AddonsDirectory.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/URIUtils.h"
 
 CAddonManagementEvent::CAddonManagementEvent(const ADDON::AddonPtr& addon,
@@ -58,7 +60,7 @@ std::string CAddonManagementEvent::GetExecutionLabel() const
   if (!executionLabel.empty())
     return executionLabel;
 
-  return g_localizeStrings.Get(24139);
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24139);
 }
 
 bool CAddonManagementEvent::Execute() const

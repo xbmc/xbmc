@@ -19,11 +19,12 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/PlaylistFileDirectory.h"
 #include "guilib/GUIKeyboardFactory.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "music/MusicUtils.h"
 #include "playlists/PlayListM3U.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
@@ -182,20 +183,20 @@ bool CGUIWindowMusicPlaylistEditor::GetDirectory(const std::string &strDirectory
   if (strDirectory.empty())
   { // root listing - list files:// and musicdb://
     CFileItemPtr files(new CFileItem("sources://music/", true));
-    files->SetLabel(g_localizeStrings.Get(744));
+    files->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(744));
     files->SetLabelPreformatted(true);
     files->SetIsShareOrDrive(true);
     items.Add(files);
 
     CFileItemPtr mdb(new CFileItem("library://music/", true));
-    mdb->SetLabel(g_localizeStrings.Get(14022));
+    mdb->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(14022));
     mdb->SetLabelPreformatted(true);
     mdb->SetIsShareOrDrive(true);
     items.SetPath("");
     items.Add(mdb);
 
     CFileItemPtr vdb(new CFileItem("videodb://musicvideos/", true));
-    vdb->SetLabel(g_localizeStrings.Get(20389));
+    vdb->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20389));
     vdb->SetLabelPreformatted(true);
     vdb->SetIsShareOrDrive(true);
     items.SetPath("");
@@ -225,8 +226,9 @@ void CGUIWindowMusicPlaylistEditor::UpdateButtons()
   CGUIWindowMusicBase::UpdateButtons();
 
   // Update object count label
-  std::string items = StringUtils::Format("{} {}", m_vecItems->GetObjectCount(),
-                                          g_localizeStrings.Get(127)); // " 14 Objects"
+  std::string items = StringUtils::Format(
+      "{} {}", m_vecItems->GetObjectCount(),
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(127)); // " 14 Objects"
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 }
 
@@ -304,8 +306,9 @@ void CGUIWindowMusicPlaylistEditor::UpdatePlaylist()
   OnMessage(msg);
 
   // indicate how many songs we have
-  std::string items = StringUtils::Format("{} {}", m_playlist->Size(),
-                                          g_localizeStrings.Get(134)); // "123 Songs"
+  std::string items = StringUtils::Format(
+      "{} {}", m_playlist->Size(),
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(134)); // "123 Songs"
   SET_CONTROL_LABEL(CONTROL_LABEL_PLAYLIST, items);
 
   m_playlistThumbLoader.Load(*m_playlist);
@@ -346,9 +349,9 @@ void CGUIWindowMusicPlaylistEditor::OnLoadPlaylist()
 {
   // Prompt user for file to load from music playlists folder
   std::string playlist;
-  if (CGUIDialogFileBrowser::ShowAndGetFile("special://musicplaylists/",
-                                            ".m3u|.m3u8|.pls|.b4s|.wpl|.xspf", g_localizeStrings.Get(656),
-                                            playlist))
+  if (CGUIDialogFileBrowser::ShowAndGetFile(
+          "special://musicplaylists/", ".m3u|.m3u8|.pls|.b4s|.wpl|.xspf",
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(656), playlist))
     LoadPlaylist(playlist);
 }
 
@@ -382,7 +385,9 @@ void CGUIWindowMusicPlaylistEditor::OnSavePlaylist()
   else
     URIUtils::RemoveExtension(name);
 
-  if (CGUIKeyboardFactory::ShowAndGetInput(name, CVariant{g_localizeStrings.Get(16012)}, false))
+  if (CGUIKeyboardFactory::ShowAndGetInput(
+          name, CVariant{CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(16012)},
+          false))
   {
     PLAYLIST::CPlayListM3U playlist;
     playlist.Add(*m_playlist);
@@ -393,9 +398,10 @@ void CGUIWindowMusicPlaylistEditor::OnSavePlaylist()
 
     playlist.Save(path);
     m_strLoadedPlaylist = name;
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
-                                          g_localizeStrings.Get(559), // "Playlist"
-                                          g_localizeStrings.Get(35259)); // "Saved"
+    CGUIDialogKaiToast::QueueNotification(
+        CGUIDialogKaiToast::Info,
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(559), // "Playlist"
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35259)); // "Saved"
   }
 }
 

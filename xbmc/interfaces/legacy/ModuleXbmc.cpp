@@ -23,13 +23,14 @@
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/TextureManager.h"
 #include "input/WindowTranslator.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
 #include "network/NetworkServices.h"
 #include "playlists/PlayListTypes.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
@@ -163,7 +164,7 @@ namespace XBMCAddon
     String getLocalizedString(int id)
     {
       XBMC_TRACE;
-      return g_localizeStrings.Get(id);
+      return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(id);
     }
 
     String getSkinDir()

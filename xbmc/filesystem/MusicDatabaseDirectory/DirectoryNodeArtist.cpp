@@ -10,8 +10,9 @@
 
 #include "QueryParams.h"
 #include "ServiceBroker.h"
-#include "guilib/LocalizeStrings.h"
 #include "music/MusicDatabase.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -37,7 +38,7 @@ NodeType CDirectoryNodeArtist::GetChildType() const
 std::string CDirectoryNodeArtist::GetLocalizedName() const
 {
   if (GetID() == -1)
-    return g_localizeStrings.Get(15103); // All Artists
+    return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(15103); // All Artists
   CMusicDatabase db;
   if (db.Open())
     return db.GetArtistById(GetID());

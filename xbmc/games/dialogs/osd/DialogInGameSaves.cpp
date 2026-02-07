@@ -23,8 +23,9 @@
 #include "games/dialogs/DialogGameDefines.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIMessage.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/GameSettings.h"
 #include "settings/MediaSettings.h"
 #include "utils/log.h"
@@ -37,13 +38,15 @@ namespace
 {
 CFileItemPtr CreateNewSaveItem()
 {
-  CFileItemPtr item = std::make_shared<CFileItem>(g_localizeStrings.Get(15314)); // "Save"
+  CFileItemPtr item = std::make_shared<CFileItem>(
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(15314)); // "Save"
 
   // A nonexistent path ensures a gamewindow control won't render any pixels
   item->SetPath(NO_PIXEL_DATA);
   item->SetArt("icon", "DefaultAddSource.png");
   item->SetProperty(SAVESTATE_CAPTION,
-                    g_localizeStrings.Get(15315)); // "Save progress to a new save file"
+                    CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                        15315)); // "Save progress to a new save file"
 
   return item;
 }
@@ -89,7 +92,7 @@ bool CDialogInGameSaves::OnMessage(CGUIMessage& message)
 
 std::string CDialogInGameSaves::GetHeading()
 {
-  return g_localizeStrings.Get(35249); // "Save / Load"
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35249); // "Save / Load"
 }
 
 void CDialogInGameSaves::PreInit()
@@ -358,7 +361,9 @@ void CDialogInGameSaves::OnRename(CFileItem& focusedItem)
     label = savestate->Label();
 
   // "Enter new filename"
-  if (CGUIKeyboardFactory::ShowAndGetInput(label, CVariant{g_localizeStrings.Get(16013)}, true) &&
+  if (CGUIKeyboardFactory::ShowAndGetInput(
+          label, CVariant{CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(16013)},
+          true) &&
       label != savestate->Label())
   {
     std::unique_ptr<RETRO::ISavestate> newSavestate = db.RenameSavestate(savestatePath, label);

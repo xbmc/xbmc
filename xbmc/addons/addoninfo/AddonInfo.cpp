@@ -16,7 +16,8 @@
 #include "addons/IAddon.h"
 #include "addons/addoninfo/AddonType.h"
 #include "filesystem/Directory.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
@@ -110,7 +111,7 @@ std::string CAddonInfo::TranslateType(AddonType type, bool pretty /*= false*/)
     if (type == map.type)
     {
       if (pretty && map.pretty)
-        return g_localizeStrings.Get(map.pretty);
+        return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(map.pretty);
       else
         return std::string(map.name.data(), map.name.size());
     }

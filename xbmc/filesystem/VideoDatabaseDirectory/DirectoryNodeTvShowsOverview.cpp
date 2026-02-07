@@ -10,7 +10,9 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
-#include "guilib/LocalizeStrings.h"
+#include "ServiceBroker.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 #include "video/VideoDbUrl.h"
 
@@ -44,7 +46,7 @@ std::string CDirectoryNodeTvShowsOverview::GetLocalizedName() const
 {
   for (const Node& node : TvShowChildren)
     if (GetName() == node.id)
-      return g_localizeStrings.Get(node.label);
+      return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(node.label);
   return "";
 }
 
@@ -56,7 +58,8 @@ bool CDirectoryNodeTvShowsOverview::GetContent(CFileItemList& items) const
 
   for (const Node& node : TvShowChildren)
   {
-    CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(node.label)));
+    CFileItemPtr pItem(new CFileItem(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(node.label)));
 
     CVideoDbUrl itemUrl = videoUrl;
     std::string strDir = StringUtils::Format("{}/", node.id);

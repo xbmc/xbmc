@@ -23,9 +23,10 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "jobs/JobManager.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/GameSettings.h"
 #include "settings/MediaSettings.h"
 #include "threads/SystemClock.h"
@@ -75,7 +76,7 @@ CDialogGameVideoFilter::CDialogGameVideoFilter()
 
 std::string CDialogGameVideoFilter::GetHeading()
 {
-  return g_localizeStrings.Get(35225); // "Video filter"
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35225); // "Video filter"
 }
 
 void CDialogGameVideoFilter::PreInit()
@@ -88,7 +89,8 @@ void CDialogGameVideoFilter::PreInit()
 
   if (m_items.Size() == 0)
   {
-    CFileItemPtr item = std::make_shared<CFileItem>(g_localizeStrings.Get(231)); // "None"
+    CFileItemPtr item = std::make_shared<CFileItem>(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(231)); // "None"
     m_items.Add(std::move(item));
   }
 }
@@ -104,9 +106,11 @@ void CDialogGameVideoFilter::InitScalingMethods()
         RETRO::CRenderVideoSettings videoSettings;
         videoSettings.SetScalingMethod(scalingMethodProps.scalingMethod);
 
-        CFileItemPtr item =
-            std::make_shared<CFileItem>(g_localizeStrings.Get(scalingMethodProps.nameIndex));
-        item->SetLabel2(g_localizeStrings.Get(scalingMethodProps.categoryIndex));
+        CFileItemPtr item = std::make_shared<CFileItem>(
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                scalingMethodProps.nameIndex));
+        item->SetLabel2(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+            scalingMethodProps.categoryIndex));
         item->SetProperty("game.videofilter", CVariant{videoSettings.GetVideoFilter()});
         item->SetArt("icon", ICON_VIDEO);
         m_items.Add(std::move(item));
@@ -242,7 +246,8 @@ void CDialogGameVideoFilter::InitGetMoreButton()
 
   if (showGetMore)
   {
-    auto item = std::make_shared<CFileItem>(g_localizeStrings.Get(21452)); // "Get more..."
+    auto item = std::make_shared<CFileItem>(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21452)); // "Get more..."
     item->SetArt("icon", ICON_GET_MORE);
     m_items.Add(std::move(item));
   }
@@ -333,7 +338,8 @@ void CDialogGameVideoFilter::RefreshList()
 
 std::string CDialogGameVideoFilter::GetLocalizedString(uint32_t code)
 {
-  return g_localizeStrings.GetAddonString(PRESETS_ADDON_NAME, code);
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().GetAddonString(
+      PRESETS_ADDON_NAME, code);
 }
 
 void CDialogGameVideoFilter::OnGetMore()

@@ -17,13 +17,14 @@
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/StereoscopicsManager.h"
 #include "input/WindowTranslator.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "input/actions/ActionTranslator.h"
 #include "messaging/ApplicationMessenger.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/AlarmClock.h"
@@ -188,9 +189,9 @@ static int AlarmClock(const std::vector<std::string>& params)
   { // check if shutdown is specified in particular, and get the time for it
     std::string strHeading;
     if (StringUtils::EqualsNoCase(params[0], "shutdowntimer"))
-      strHeading = g_localizeStrings.Get(20145);
+      strHeading = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20145);
     else
-      strHeading = g_localizeStrings.Get(13209);
+      strHeading = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13209);
     std::string strTime;
     if( CGUIDialogNumeric::ShowAndGetNumber(strTime, strHeading) )
       seconds = static_cast<float>(atoi(strTime.c_str())*60);

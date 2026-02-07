@@ -17,7 +17,6 @@
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
 #include "filesystem/SpecialProtocol.h"
-#include "guilib/LocalizeStrings.h"
 #include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRDescrambleInfo.h"
@@ -42,6 +41,8 @@
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimerType.h"
 #include "pvr/timers/PVRTimers.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/MathUtils.h"
@@ -2400,8 +2401,10 @@ void CPVRClient::cb_recording_notification(void* kodiInstance,
           return;
         }
 
-        const std::string strLine1 = StringUtils::Format(
-            g_localizeStrings.Get(bOnOff ? 19197 : 19198), client->GetFullClientName());
+        const std::string strLine1 =
+            StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                                    bOnOff ? 19197 : 19198),
+                                client->GetFullClientName());
         const std::string strLine2{strName ? strName : strFileName};
 
         // display a notification for 5 seconds

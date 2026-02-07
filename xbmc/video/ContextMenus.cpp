@@ -15,8 +15,9 @@
 #include "application/Application.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "music/MusicFileItemClassify.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/PlayerUtils.h"
@@ -291,10 +292,12 @@ std::string CVideoPlay::GetLabel(const CFileItem& itemIn) const
 {
   CFileItem item(itemIn.GetItemToPlay());
   if (item.IsLiveTV())
-    return g_localizeStrings.Get(19000); // Switch to channel
+    return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+        19000); // Switch to channel
   if (VIDEO::UTILS::GetItemResumeInformation(item).isResumable)
-    return g_localizeStrings.Get(12021); // Play from beginning
-  return g_localizeStrings.Get(208); // Play
+    return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+        12021); // Play from beginning
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(208); // Play
 }
 
 bool CVideoPlay::IsVisible(const CFileItem& item) const
@@ -413,9 +416,11 @@ bool CVideoPlayNext::Execute(const std::shared_ptr<CFileItem>& item) const
 std::string CVideoPlayAndQueue::GetLabel(const CFileItem& item) const
 {
   if (VIDEO::UTILS::IsAutoPlayNextItem(item))
-    return g_localizeStrings.Get(13434); // Play only this
+    return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+        13434); // Play only this
   else
-    return g_localizeStrings.Get(13412); // Play from here
+    return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+        13412); // Play from here
 }
 
 bool CVideoPlayAndQueue::IsVisible(const CFileItem& item) const

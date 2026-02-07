@@ -30,10 +30,11 @@
 #include "filesystem/File.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h" // for callback
-#include "guilib/LocalizeStrings.h"
 #include "jobs/JobManager.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -501,7 +502,9 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
   {
     if (eventLog)
       eventLog->AddWithNotification(std::make_shared<const CNotificationEvent>(
-          24045, StringUtils::Format(g_localizeStrings.Get(24143), path),
+          24045,
+          StringUtils::Format(
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24143), path),
           "special://xbmc/media/icon256x256.png", EventLevel::Error));
 
     CLog::Log(
@@ -519,7 +522,9 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
 
   if (eventLog)
     eventLog->AddWithNotification(std::make_shared<const CNotificationEvent>(
-        24045, StringUtils::Format(g_localizeStrings.Get(24143), path),
+        24045,
+        StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24143),
+                            path),
         "special://xbmc/media/icon256x256.png", EventLevel::Error));
   return false;
 }
@@ -686,16 +691,18 @@ bool CAddonInstallJob::DoWork()
 {
   m_currentType = CAddonInstallJob::TYPE_DOWNLOAD;
 
-  SetTitle(StringUtils::Format(g_localizeStrings.Get(24057), m_addon->Name()));
+  SetTitle(StringUtils::Format(
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24057), m_addon->Name()));
   SetProgress(0);
 
   // check whether all the dependencies are available or not
-  SetText(g_localizeStrings.Get(24058));
+  SetText(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24058));
   std::pair<std::string, std::string> failedDep;
   if (!CAddonInstaller::GetInstance().CheckDependencies(m_addon, failedDep))
   {
     std::string details =
-        StringUtils::Format(g_localizeStrings.Get(24142), failedDep.first, failedDep.second);
+        StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24142),
+                            failedDep.first, failedDep.second);
     CLog::Log(LOGERROR, "CAddonInstallJob[{}]: {}", m_addon->ID(), details);
     ReportInstallError(m_addon->ID(), m_addon->ID(), details);
     return false;
@@ -775,7 +782,7 @@ bool CAddonInstallJob::DoWork()
       }
 
       // at this point we have the package - check that it is valid
-      SetText(g_localizeStrings.Get(24077));
+      SetText(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24077));
       if (!hash.Empty())
       {
         TypedDigest actualHash{hash.type, CUtil::GetFileDigest(package, hash.type)};
@@ -837,7 +844,7 @@ bool CAddonInstallJob::DoWork()
     return false;
   }
 
-  g_localizeStrings.LoadAddonStrings(
+  CServiceBroker::GetResourcesComponent().GetLocalizeStrings().LoadAddonStrings(
       URIUtils::AddFileToFolder(m_addon->Path(), "resources/language/"),
       CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
           CSettings::SETTING_LOCALE_LANGUAGE),
@@ -987,7 +994,8 @@ bool CAddonInstallJob::DoWork()
     CLog::Log(LOGDEBUG, "CAddonInstallJob[{}]: installed addon marked as deprecated",
               m_addon->ID());
     std::string text =
-        StringUtils::Format(g_localizeStrings.Get(24168), m_addon->LifecycleStateDescription());
+        StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24168),
+                            m_addon->LifecycleStateDescription());
     if (eventLog)
       eventLog->Add(std::make_shared<const CAddonManagementEvent>(m_addon, text), true, false);
   }
@@ -1002,7 +1010,7 @@ bool CAddonInstallJob::DownloadPackage(const std::string &path, const std::strin
   if (ShouldCancel(0, 1))
     return false;
 
-  SetText(g_localizeStrings.Get(24078));
+  SetText(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24078));
 
   // need to download/copy the package first
   CFileItemList list;
@@ -1061,12 +1069,13 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
     {
       CLog::LogF(LOGERROR, "failed to install repository [{}]. It has dependencies defined",
                  m_addon->ID());
-      ReportInstallError(m_addon->ID(), m_addon->ID(), g_localizeStrings.Get(24088));
+      ReportInstallError(m_addon->ID(), m_addon->ID(),
+                         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24088));
       return false;
     }
   }
 
-  SetText(g_localizeStrings.Get(24079));
+  SetText(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24079));
   unsigned int totalSteps = static_cast<unsigned int>(deps.size()) + 1;
   if (ShouldCancel(0, totalSteps))
     return false;
@@ -1104,7 +1113,9 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
           {
             CLog::Log(LOGERROR, "CAddonInstallJob[{}]: failed to install dependency {}",
                       m_addon->ID(), addonID);
-            ReportInstallError(m_addon->ID(), m_addon->ID(), g_localizeStrings.Get(24085));
+            ReportInstallError(
+                m_addon->ID(), m_addon->ID(),
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24085));
             return false;
           }
         }
@@ -1124,7 +1135,9 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
           {
             CLog::Log(LOGERROR, "CAddonInstallJob[{}]: failed to find dependency {}", m_addon->ID(),
                       addonID);
-            ReportInstallError(m_addon->ID(), m_addon->ID(), g_localizeStrings.Get(24085));
+            ReportInstallError(
+                m_addon->ID(), m_addon->ID(),
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24085));
             return false;
           }
           else
@@ -1136,7 +1149,9 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
                         "version [{}]",
                         m_addon->ID(), addonID, dependencyToInstall->Version().asString(),
                         versionMin.asString());
-              ReportInstallError(m_addon->ID(), m_addon->ID(), g_localizeStrings.Get(24085));
+              ReportInstallError(
+                  m_addon->ID(), m_addon->ID(),
+                  CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24085));
               return false;
             }
           }
@@ -1156,7 +1171,9 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
             {
               CLog::Log(LOGERROR, "CAddonInstallJob[{}]: failed to install dependency {}",
                         m_addon->ID(), addonID);
-              ReportInstallError(m_addon->ID(), m_addon->ID(), g_localizeStrings.Get(24085));
+              ReportInstallError(
+                  m_addon->ID(), m_addon->ID(),
+                  CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24085));
               return false;
             }
           }
@@ -1165,7 +1182,9 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
           {
             CLog::Log(LOGERROR, "CAddonInstallJob[{}]: failed to install dependency {}",
                       m_addon->ID(), dependencyToInstall->ID());
-            ReportInstallError(m_addon->ID(), m_addon->ID(), g_localizeStrings.Get(24085));
+            ReportInstallError(
+                m_addon->ID(), m_addon->ID(),
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24085));
             return false;
           }
         }
@@ -1176,7 +1195,7 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
       return false;
   }
 
-  SetText(g_localizeStrings.Get(24086));
+  SetText(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24086));
   SetProgress(100.0f * (static_cast<float>(totalSteps) - 1.0f) / static_cast<float>(totalSteps));
 
   CFilesystemInstaller fsInstaller;
@@ -1206,7 +1225,8 @@ void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std:
     bool success = CServiceBroker::GetAddonMgr().GetAddon(addonID, addon2, OnlyEnabled::CHOICE_YES);
     if (msg.empty())
     {
-      msg = g_localizeStrings.Get(addon2 != nullptr && success ? 113 : 114);
+      msg = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+          addon2 != nullptr && success ? 113 : 114);
     }
 
     activity = std::make_shared<const CAddonManagementEvent>(addon, EventLevel::Error, msg);
@@ -1216,7 +1236,11 @@ void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std:
   else
   {
     activity = std::make_shared<const CNotificationEvent>(
-        24045, !msg.empty() ? msg : StringUtils::Format(g_localizeStrings.Get(24143), fileName),
+        24045,
+        !msg.empty() ? msg
+                     : StringUtils::Format(
+                           CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24143),
+                           fileName),
         EventLevel::Error);
 
     if (IsModal())

@@ -17,7 +17,8 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingSection.h"
 #include "settings/windows/GUIControlSettings.h"
@@ -156,10 +157,10 @@ void CGUIDialogLockSettings::OnSettingAction(const std::shared_ptr<const CSettin
 
     dialog->Reset();
     dialog->SetHeading(CVariant{12360});
-    dialog->Add(g_localizeStrings.Get(1223));
-    dialog->Add(g_localizeStrings.Get(12337));
-    dialog->Add(g_localizeStrings.Get(12338));
-    dialog->Add(g_localizeStrings.Get(12339));
+    dialog->Add(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1223));
+    dialog->Add(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(12337));
+    dialog->Add(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(12338));
+    dialog->Add(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(12339));
     dialog->SetSelected(GetLockModeLabel());
     dialog->Open();
 
@@ -221,7 +222,9 @@ void CGUIDialogLockSettings::SetupView()
 
   // set the title
   if (m_getUser)
-    SetHeading(StringUtils::Format(g_localizeStrings.Get(20152), CURL::Decode(m_url)));
+    SetHeading(
+        StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20152),
+                            CURL::Decode(m_url)));
   else
   {
     SetHeading(20066);
@@ -294,7 +297,7 @@ void CGUIDialogLockSettings::InitializeSettings()
 
 std::string CGUIDialogLockSettings::GetLockModeLabel()
 {
-  return g_localizeStrings.Get(
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
       m_locks.mode == LockMode::EVERYONE ? 1223 : 12336 + static_cast<int>(m_locks.mode));
 }
 

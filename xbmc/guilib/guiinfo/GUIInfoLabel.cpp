@@ -16,7 +16,8 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIListItem.h"
 #include "guilib/GUIUtils.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -253,7 +254,8 @@ std::string AddonReplacer(const std::string& str)
   size_t length = str.find(' ');
   const std::string addonid = str.substr(0, length);
   const int stringid{std::stoi(str.substr(length + 1))};
-  return g_localizeStrings.GetAddonString(addonid, stringid);
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().GetAddonString(addonid,
+                                                                                     stringid);
 }
 
 std::string ControllerFeatureReplacer(const std::string& str)

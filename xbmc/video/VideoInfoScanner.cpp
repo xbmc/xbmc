@@ -29,12 +29,13 @@
 #include "filesystem/PluginDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "imagefiles/ImageFileURL.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "playlists/PlayListFileItemClassify.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -263,7 +264,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
         CGUIDialogExtendedProgressBar* dialog =
           CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
         if (dialog)
-           m_handle = dialog->GetHandle(g_localizeStrings.Get(314));
+          m_handle = dialog->GetHandle(
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(314));
       }
 
       // check if we only need to perform a cleaning
@@ -332,7 +334,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
         else
         {
           if (m_handle)
-            m_handle->SetTitle(g_localizeStrings.Get(331));
+            m_handle->SetTitle(
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(331));
           m_database.Compress(false);
         }
       }
@@ -408,7 +411,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
   {
     if (m_handle)
     {
-      m_handle->SetText(g_localizeStrings.Get(20415));
+      m_handle->SetText(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20415));
     }
 
     /*
@@ -460,7 +463,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (m_handle)
       {
         int str = content == ContentType::MOVIES ? 20317 : 20318;
-        m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(str), info->Name()));
+        m_handle->SetTitle(StringUtils::Format(
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(str), info->Name()));
       }
 
       std::string fastHash;
@@ -522,7 +526,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
     else if (content == ContentType::TVSHOWS)
     {
       if (m_handle)
-        m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(20319), info->Name()));
+        m_handle->SetTitle(StringUtils::Format(
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20319), info->Name()));
 
       if (foundDirectly && !settings.parent_name_root)
       {
@@ -778,7 +783,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
           eventLog->Add(EventPtr(new CMediaLibraryEvent(
               mediaType, pItem->GetPath(), 24145,
-              StringUtils::Format(g_localizeStrings.Get(24147), mediaType, itemlogpath),
+              StringUtils::Format(
+                  CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24147),
+                  mediaType, itemlogpath),
               EventLevel::Warning)));
         }
       }
@@ -1947,8 +1954,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
           }
 
           // Add '(Disc n)' to title (in local language)
-          movieDetails.m_strTitle =
-              StringUtils::Format(g_localizeStrings.Get(29995), movieDetails.m_strTitle, discNum);
+          movieDetails.m_strTitle = StringUtils::Format(
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(29995),
+              movieDetails.m_strTitle, discNum);
         }
       }
 
@@ -2333,10 +2341,14 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (pDlgProgress)
       {
         pDlgProgress->SetLine(1, CVariant{20361}); // Loading episode details
-        pDlgProgress->SetLine(2, StringUtils::Format("{} {}", g_localizeStrings.Get(20373),
-                                                     file->iSeason)); // Season x
-        pDlgProgress->SetLine(3, StringUtils::Format("{} {}", g_localizeStrings.Get(20359),
-                                                     file->iEpisode)); // Episode y
+        pDlgProgress->SetLine(
+            2, StringUtils::Format(
+                   "{} {}", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20373),
+                   file->iSeason)); // Season x
+        pDlgProgress->SetLine(
+            3, StringUtils::Format(
+                   "{} {}", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20359),
+                   file->iEpisode)); // Episode y
         pDlgProgress->SetPercentage((int)((float)(iCurr++)/iMax*100));
         pDlgProgress->Progress();
       }
@@ -2349,7 +2361,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (m_database.GetEpisodeId(file->strPath, file->iEpisode, file->iSeason) > -1)
       {
         if (m_handle)
-          m_handle->SetText(g_localizeStrings.Get(20415));
+          m_handle->SetText(
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20415));
         continue;
       }
 

@@ -8,7 +8,9 @@
 
 #include "MediaType.h"
 
-#include "guilib/LocalizeStrings.h"
+#include "ServiceBroker.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 
 #include <utility>
@@ -103,7 +105,8 @@ std::string CMediaTypes::GetLocalization(const MediaType &mediaType)
     mediaTypeIt->second.localizationSingular <= 0)
     return "";
 
-  return g_localizeStrings.Get(mediaTypeIt->second.localizationSingular);
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+      mediaTypeIt->second.localizationSingular);
 }
 
 std::string CMediaTypes::GetPluralLocalization(const MediaType &mediaType)
@@ -113,7 +116,8 @@ std::string CMediaTypes::GetPluralLocalization(const MediaType &mediaType)
     mediaTypeIt->second.localizationPlural <= 0)
     return "";
 
-  return g_localizeStrings.Get(mediaTypeIt->second.localizationPlural);
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+      mediaTypeIt->second.localizationPlural);
 }
 
 std::string CMediaTypes::GetCapitalLocalization(const MediaType &mediaType)
@@ -123,7 +127,8 @@ std::string CMediaTypes::GetCapitalLocalization(const MediaType &mediaType)
     mediaTypeIt->second.localizationSingular <= 0)
     return "";
 
-  return g_localizeStrings.Get(mediaTypeIt->second.localizationSingularCapital);
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+      mediaTypeIt->second.localizationSingularCapital);
 }
 
 std::string CMediaTypes::GetCapitalPluralLocalization(const MediaType &mediaType)
@@ -133,5 +138,6 @@ std::string CMediaTypes::GetCapitalPluralLocalization(const MediaType &mediaType
     mediaTypeIt->second.localizationPlural <= 0)
     return "";
 
-  return g_localizeStrings.Get(mediaTypeIt->second.localizationPluralCapital);
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+      mediaTypeIt->second.localizationPluralCapital);
 }

@@ -36,7 +36,6 @@
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "imagefiles/ImageFileURL.h"
 #include "interfaces/AnnouncementManager.h"
@@ -46,6 +45,8 @@
 #include "music/MusicLibraryQueue.h"
 #include "music/tags/MusicInfoTag.h"
 #include "network/Network.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #ifdef HAS_OPTICAL_DRIVE
 #include "network/cddb.h"
 #endif // HAS_OPTICAL_DRIVE
@@ -769,7 +770,9 @@ bool CMusicDatabase::AddAlbum(CAlbum& album, int idSource)
         // no title or just numbers  (1, 02, 003 etc) - generate a better one
         if (StringUtils::IsNaturalNumber(chapter.name) || chapter.name.empty())
           song->strTitle = StringUtils::Format(
-              "{} {:03}", g_localizeStrings.Get(21396) /* Chapter */, index + 1);
+              "{} {:03}",
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21396) /* Chapter */,
+              index + 1);
         else
           song->strTitle = chapter.name;
 
@@ -932,7 +935,9 @@ bool CMusicDatabase::UpdateAlbum(CAlbum& album)
           std::string currentTitle = GetSingleValue(strSQL);
           if (currentTitle.empty())
           {
-            currentTitle = StringUtils::Format("{} {}", g_localizeStrings.Get(427), discValue);
+            currentTitle = StringUtils::Format(
+                "{} {}", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(427),
+                discValue);
             strSQL =
                 PrepareSQL("UPDATE song SET strDiscSubtitle = '%s' WHERE song.idAlbum = %i AND "
                            "song.iTrack >> 16 = %i",
@@ -1106,7 +1111,8 @@ int CMusicDatabase::AddSong(const int idSong,
       if (isBoxset && strDiscSubtitle.empty())
       {
         int discno = iTrack >> 16;
-        strDiscSubtitle = StringUtils::Format("{} {}", g_localizeStrings.Get(427), discno);
+        strDiscSubtitle = StringUtils::Format(
+            "{} {}", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(427), discno);
       }
 
       // Validate ISO8601 dates and ensure none missing
@@ -1726,7 +1732,7 @@ int CMusicDatabase::AddGenre(std::string& strGenre)
     StringUtils::Trim(strGenre);
 
     if (strGenre.empty())
-      strGenre = g_localizeStrings.Get(13205); // Unknown
+      strGenre = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // Unknown
 
     if (nullptr == m_pDB)
       return -1;
@@ -3283,7 +3289,7 @@ CAlbum CMusicDatabase::GetAlbumFromDataset(const dbiplus::sql_record* const reco
   album.idAlbum = record->at(offset + album_idAlbum).get_asInt();
   album.strAlbum = record->at(offset + album_strAlbum).get_asString();
   if (album.strAlbum.empty())
-    album.strAlbum = g_localizeStrings.Get(1050);
+    album.strAlbum = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1050);
   album.strMusicBrainzAlbumID = record->at(offset + album_strMusicBrainzAlbumID).get_asString();
   album.strReleaseGroupMBID = record->at(offset + album_strReleaseGroupMBID).get_asString();
   album.strArtistDesc = record->at(offset + album_strArtists).get_asString();
@@ -3365,7 +3371,8 @@ CArtist CMusicDatabase::GetArtistFromDataset(const dbiplus::sql_record* const re
   CArtist artist;
   artist.idArtist = record->at(offset + artist_idArtist).get_asInt();
   if (artist.idArtist == BLANKARTIST_ID && m_translateBlankArtist)
-    artist.strArtist = g_localizeStrings.Get(38042); //Missing artist tag in current language
+    artist.strArtist = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+        38042); //Missing artist tag in current language
   else
     artist.strArtist = record->at(offset + artist_strArtist).get_asString();
   artist.strSortName = record->at(offset + artist_strSortName).get_asString();
@@ -3513,7 +3520,8 @@ bool CMusicDatabase::SearchArtists(const std::string& search, CFileItemList& art
     if (nullptr == m_pDS)
       return false;
 
-    std::string strVariousArtists = g_localizeStrings.Get(340).c_str();
+    std::string strVariousArtists =
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(340).c_str();
     std::string strSQL;
     if (search.size() >= MIN_FULL_SEARCH_LENGTH)
       strSQL = PrepareSQL("SELECT * FROM artist "
@@ -3533,7 +3541,8 @@ bool CMusicDatabase::SearchArtists(const std::string& search, CFileItemList& art
       return false;
     }
 
-    const std::string& artistLabel(g_localizeStrings.Get(557)); // Artist
+    const std::string& artistLabel(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(557)); // Artist
     while (!m_pDS->eof())
     {
       std::string path = StringUtils::Format("musicdb://artists/{}/", m_pDS->fv(0).get_asInt());
@@ -4217,7 +4226,8 @@ bool CMusicDatabase::SearchAlbums(const std::string& search, CFileItemList& albu
     if (!m_pDS->query(strSQL))
       return false;
 
-    const std::string& albumLabel(g_localizeStrings.Get(558)); // Album
+    const std::string& albumLabel(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(558)); // Album
     while (!m_pDS->eof())
     {
       CAlbum album = GetAlbumFromDataset(m_pDS.get());
@@ -4910,7 +4920,8 @@ void CMusicDatabase::DeleteCDDBInfo() const
       WINDOW_DIALOG_SELECT);
   if (pDlg)
   {
-    pDlg->SetHeading(CVariant{g_localizeStrings.Get(181)});
+    pDlg->SetHeading(
+        CVariant{CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(181)});
     pDlg->Reset();
 
     std::map<uint32_t, std::string> mapCDDBIds;
@@ -6110,7 +6121,9 @@ bool CMusicDatabase::GetDiscsByWhere(CMusicDbUrl& musicUrl,
         std::string strDiscSubtitle = record->at(1).get_asString();
         if (strDiscSubtitle.empty())
         { // Make (fake) disc title from disc number, group by disc number as no real title to match
-          strDiscSubtitle = StringUtils::Format("{} {}", g_localizeStrings.Get(427), discnum);
+          strDiscSubtitle = StringUtils::Format(
+              "{} {}", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(427),
+              discnum);
           useTitle = false;
         }
         else if (oldDiscTitle == strDiscSubtitle)
@@ -11202,7 +11215,9 @@ std::string CMusicDatabase::GetAlbumDiscTitle(int idAlbum, int idDisc) const
     disctitle = GetSingleValue("song", "strDiscSubtitle",
                                PrepareSQL("idAlbum = %i AND iTrack >> 16 = %i", idAlbum, idDisc));
     if (disctitle.empty())
-      disctitle = StringUtils::Format("{} {}", g_localizeStrings.Get(427), idDisc); // "Disc 1" etc.
+      disctitle = StringUtils::Format(
+          "{} {}", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(427),
+          idDisc); // "Disc 1" etc.
     if (albumtitle.empty())
       albumtitle = disctitle;
     else
@@ -12066,9 +12081,10 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
                 if (!xmlDoc.SaveFile(nfoFile))
                 {
                   CLog::LogF(LOGERROR, "Album nfo export failed! ('{}')", nfoFile);
-                  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
-                                                        g_localizeStrings.Get(20302),
-                                                        CURL::GetRedacted(nfoFile));
+                  CGUIDialogKaiToast::QueueNotification(
+                      CGUIDialogKaiToast::Error,
+                      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20302),
+                      CURL::GetRedacted(nfoFile));
                   iFailCount++;
                 }
               }
@@ -12209,9 +12225,10 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
                   if (!xmlDoc.SaveFile(nfoFile))
                   {
                     CLog::LogF(LOGERROR, "Artist nfo export failed! ('{}')", nfoFile);
-                    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
-                                                          g_localizeStrings.Get(20302),
-                                                          CURL::GetRedacted(nfoFile));
+                    CGUIDialogKaiToast::QueueNotification(
+                        CGUIDialogKaiToast::Error,
+                        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20302),
+                        CURL::GetRedacted(nfoFile));
                     iFailCount++;
                   }
                 }
@@ -12276,7 +12293,9 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
 
   if (iFailCount > 0 && progressDialog)
     HELPERS::ShowOKDialogLines(
-        CVariant{20196}, CVariant{StringUtils::Format(g_localizeStrings.Get(15011), iFailCount)});
+        CVariant{20196},
+        CVariant{StringUtils::Format(
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(15011), iFailCount)});
 }
 
 bool CMusicDatabase::ExportSongHistory(TiXmlNode* pNode, CGUIDialogProgress* progressDialog)
@@ -12782,7 +12801,8 @@ bool CMusicDatabase::ImportSongHistory(const std::string& xmlFile,
     // Write event log entry
     // "Importing song history {1} of {2} songs matched", total - unmatched, total)
     std::string strLine =
-        StringUtils::Format(g_localizeStrings.Get(38353), total - unmatched, total);
+        StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(38353),
+                            total - unmatched, total);
 
     auto eventLog = CServiceBroker::GetEventLog();
     if (eventLog)

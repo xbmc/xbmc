@@ -10,9 +10,11 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "ServiceBroker.h"
 #include "guilib/GUIMessage.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/ActionIDs.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 
 #include <memory>
@@ -230,7 +232,7 @@ const std::vector<int>& CGUIDialogSelect::GetSelectedItems() const
 void CGUIDialogSelect::EnableButton(bool enable, int label)
 {
   m_bButtonEnabled = enable;
-  m_buttonLabel = g_localizeStrings.Get(label);
+  m_buttonLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(label);
 }
 
 void CGUIDialogSelect::EnableButton(bool enable, const std::string& label)
@@ -242,7 +244,7 @@ void CGUIDialogSelect::EnableButton(bool enable, const std::string& label)
 void CGUIDialogSelect::EnableButton2(bool enable, int label)
 {
   m_bButton2Enabled = enable;
-  m_button2Label = g_localizeStrings.Get(label);
+  m_button2Label = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(label);
 }
 
 void CGUIDialogSelect::EnableButton2(bool enable, const std::string& label)
@@ -354,8 +356,10 @@ void CGUIDialogSelect::OnInitWindow()
   }
   m_viewControl.SetCurrentView(m_useDetails ? CONTROL_DETAILED_LIST : CONTROL_SIMPLE_LIST);
 
-  SET_CONTROL_LABEL(CONTROL_NUMBER_OF_ITEMS,
-                    StringUtils::Format("{} {}", m_vecList->Size(), g_localizeStrings.Get(127)));
+  SET_CONTROL_LABEL(
+      CONTROL_NUMBER_OF_ITEMS,
+      StringUtils::Format("{} {}", m_vecList->Size(),
+                          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(127)));
 
   if (m_multiSelection)
     EnableButton(true, 186);
@@ -376,7 +380,8 @@ void CGUIDialogSelect::OnInitWindow()
   else
     SET_CONTROL_HIDDEN(CONTROL_EXTRA_BUTTON2);
 
-  SET_CONTROL_LABEL(CONTROL_CANCEL_BUTTON, g_localizeStrings.Get(222));
+  SET_CONTROL_LABEL(CONTROL_CANCEL_BUTTON,
+                    CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(222));
 
   CGUIDialogBoxBase::OnInitWindow();
 

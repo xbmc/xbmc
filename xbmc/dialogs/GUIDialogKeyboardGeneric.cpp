@@ -16,7 +16,6 @@
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUILabelControl.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/InputCodingTable.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
@@ -25,6 +24,8 @@
 #include "input/keyboard/XBMC_vkeys.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "speech/ISpeechRecognition.h"
@@ -74,9 +75,10 @@ public:
 
   void OnReadyForSpeech() override
   {
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
-                                          g_localizeStrings.Get(39177), // Speech to text
-                                          g_localizeStrings.Get(39179)); // Listening...
+    CGUIDialogKaiToast::QueueNotification(
+        CGUIDialogKaiToast::Info,
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(39177), // Speech to text
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(39179)); // Listening...
   }
 
   void OnError(int recognitionError) override
@@ -98,9 +100,10 @@ public:
         break;
     }
 
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
-                                          g_localizeStrings.Get(39177), // Speech to text
-                                          g_localizeStrings.Get(msgId));
+    CGUIDialogKaiToast::QueueNotification(
+        CGUIDialogKaiToast::Error,
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(39177), // Speech to text
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(msgId));
   }
 
   void OnResults(const std::vector<std::string>& results) override
@@ -216,7 +219,8 @@ void CGUIDialogKeyboardGeneric::OnInitWindow()
   if (m_hiddenInput)
   {
     SET_CONTROL_VISIBLE(CTL_BUTTON_REVEAL);
-    SET_CONTROL_LABEL(CTL_BUTTON_REVEAL, g_localizeStrings.Get(12308));
+    SET_CONTROL_LABEL(CTL_BUTTON_REVEAL,
+                      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(12308));
   }
   else
     SET_CONTROL_HIDDEN(CTL_BUTTON_REVEAL);
@@ -612,7 +616,9 @@ void CGUIDialogKeyboardGeneric::OnSymbols()
 void CGUIDialogKeyboardGeneric::OnReveal()
 {
   m_hiddenInput = !m_hiddenInput;
-  SET_CONTROL_LABEL(CTL_BUTTON_REVEAL, g_localizeStrings.Get(m_hiddenInput ? 12308 : 12309));
+  SET_CONTROL_LABEL(CTL_BUTTON_REVEAL,
+                    CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                        m_hiddenInput ? 12308 : 12309));
   CGUIMessage msg(GUI_MSG_SET_TYPE, GetID(), CTL_EDIT,
                   m_hiddenInput ? CGUIEditControl::INPUT_TYPE_PASSWORD
                                 : CGUIEditControl::INPUT_TYPE_TEXT);
@@ -642,7 +648,8 @@ void CGUIDialogKeyboardGeneric::OnIPAddress()
   }
   else
     start = text.size();
-  if (CGUIDialogNumeric::ShowAndGetIPAddress(ip, g_localizeStrings.Get(14068)))
+  if (CGUIDialogNumeric::ShowAndGetIPAddress(
+          ip, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(14068)))
     SetEditText(text.substr(0, start) + ip + text.substr(start + length));
 }
 

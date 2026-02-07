@@ -22,7 +22,8 @@
 #include "filesystem/BlurayCallback.h"
 #include "filesystem/Directory.h"
 #include "filesystem/DirectoryFactory.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/LangCodeExpander.h"
@@ -274,8 +275,9 @@ std::shared_ptr<CFileItem> GetFileItem(const CURL& url,
   const std::string buf{StringUtils::Format(label, title.playlist)};
   item->SetTitle(buf);
   item->SetLabel(buf);
-  const std::string chap{StringUtils::Format(g_localizeStrings.Get(25007), title.chapters.size(),
-                                             StringUtils::SecondsToTimeString(duration))};
+  const std::string chap{
+      StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25007),
+                          title.chapters.size(), StringUtils::SecondsToTimeString(duration))};
   item->SetLabel2(chap);
   item->SetSize(0);
   item->SetArt("icon", "DefaultVideo.png");
@@ -380,11 +382,13 @@ void AddPlaylists(const CURL& url,
   {
     if (IncludePlaylist(job, title, minDuration, mainPlaylist, maxPlaylist))
     {
-      items.Add(GetFileItem(url, realPath, title,
-                            title.playlist == static_cast<unsigned int>(mainPlaylist)
-                                ? g_localizeStrings.Get(25004) /* Main Title */
-                                : g_localizeStrings.Get(25005) /* Title */,
-                            clipCache));
+      items.Add(GetFileItem(
+          url, realPath, title,
+          title.playlist == static_cast<unsigned int>(mainPlaylist)
+              ? CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                    25004) /* Main Title */
+              : CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25005) /* Title */,
+          clipCache));
     }
   }
 }
@@ -434,8 +438,10 @@ bool GetPlaylists(const CURL& url,
 
     if (mainPlaylist >= 0)
     {
-      items.Add(GetFileItem(url, realPath, playlists[0], g_localizeStrings.Get(25005) /* Title */,
-                            clipCache));
+      items.Add(GetFileItem(
+          url, realPath, playlists[0],
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25005) /* Title */,
+          clipCache));
     }
     else
     {

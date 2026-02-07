@@ -8,14 +8,16 @@
 
 #include "ScraperParser.h"
 
-#include "guilib/LocalizeStrings.h"
-#include "RegExp.h"
-#include "HTMLUtil.h"
-#include "addons/Scraper.h"
-#include "URL.h"
-#include "utils/StringUtils.h"
-#include "log.h"
 #include "CharsetConverter.h"
+#include "HTMLUtil.h"
+#include "RegExp.h"
+#include "ServiceBroker.h"
+#include "URL.h"
+#include "addons/Scraper.h"
+#include "log.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
+#include "utils/StringUtils.h"
 #ifdef HAVE_LIBXSLT
 #include "utils/XSLTUtils.h"
 #endif
@@ -170,7 +172,8 @@ void CScraperParser::ReplaceBuffers(std::string& strDest)
     std::string strInfo = strDest.substr(iIndex+10, iEnd - iIndex - 10);
     std::string strReplace;
     if (m_scraper)
-      strReplace = g_localizeStrings.GetAddonString(m_scraper->ID(), strtol(strInfo.c_str(),NULL,10));
+      strReplace = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().GetAddonString(
+          m_scraper->ID(), strtol(strInfo.c_str(), NULL, 10));
     strDest.replace(strDest.begin()+iIndex,strDest.begin()+iEnd+1,strReplace);
     iIndex += strReplace.length();
   }

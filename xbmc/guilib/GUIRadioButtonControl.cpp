@@ -9,10 +9,11 @@
 #include "GUIRadioButtonControl.h"
 
 #include "GUIInfoManager.h"
-#include "LocalizeStrings.h"
 #include "ServiceBroker.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 
 CGUIRadioButtonControl::CGUIRadioButtonControl(int parentID,
                                                int controlID,
@@ -111,7 +112,8 @@ void CGUIRadioButtonControl::Process(unsigned int currentTime, CDirtyRegionList 
   m_imgRadioOffDisabled->Process(currentTime);
 
   if (m_useLabel2)
-    SetLabel2(g_localizeStrings.Get(m_bSelected ? 16041 : 351));
+    SetLabel2(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(m_bSelected ? 16041
+                                                                                           : 351));
 
   CGUIButtonControl::Process(currentTime, dirtyregions);
 }

@@ -18,7 +18,6 @@
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/helpers/DialogOKHelper.h"
@@ -31,6 +30,8 @@
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/filesystem/PVRGUIDirectory.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
@@ -149,8 +150,10 @@ bool CGUIDialogPVRGroupManager::ActionButtonNewGroup(const CGUIMessage& message)
   if (iControl == BUTTON_NEWGROUP)
   {
     std::string strGroupName;
-    if (CGUIKeyboardFactory::ShowAndGetInput(strGroupName, CVariant{g_localizeStrings.Get(19139)},
-                                             false) &&
+    if (CGUIKeyboardFactory::ShowAndGetInput(
+            strGroupName,
+            CVariant{CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19139)},
+            false) &&
         !strGroupName.empty())
     {
       // add the group if it doesn't already exist
@@ -221,8 +224,10 @@ bool CGUIDialogPVRGroupManager::ActionButtonRenameGroup(const CGUIMessage& messa
       return bReturn;
 
     std::string strGroupName(m_selectedGroup->GroupName());
-    if (CGUIKeyboardFactory::ShowAndGetInput(strGroupName, CVariant{g_localizeStrings.Get(19139)},
-                                             true /* allow empty result */))
+    if (CGUIKeyboardFactory::ShowAndGetInput(
+            strGroupName,
+            CVariant{CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19139)},
+            true /* allow empty result */))
     {
       // if an empty string was given we reset the name to the client-supplied name, if available
       const bool resetName = strGroupName.empty() && !m_selectedGroup->ClientGroupName().empty();
@@ -630,10 +635,13 @@ void CGUIDialogPVRGroupManager::Update()
     CONTROL_ENABLE_ON_CONDITION(CONTROL_LIST_CHANNELS_RIGHT,
                                 m_selectedGroup->SupportsMemberRemove());
 
-    SET_CONTROL_LABEL(CONTROL_UNGROUPED_LABEL, g_localizeStrings.Get(19219));
+    SET_CONTROL_LABEL(CONTROL_UNGROUPED_LABEL,
+                      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19219));
     SET_CONTROL_LABEL(
         CONTROL_IN_GROUP_LABEL,
-        StringUtils::Format("{} {}", g_localizeStrings.Get(19220), m_selectedGroup->GroupName()));
+        StringUtils::Format("{} {}",
+                            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19220),
+                            m_selectedGroup->GroupName()));
 
     const std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers =
         m_selectedGroup->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);

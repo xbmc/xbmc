@@ -11,7 +11,8 @@
 #include "ServiceBroker.h"
 #include "addons/Skin.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/LocalizeStrings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 
 std::string CGUIUtils::GetLocalizedString(uint32_t id)
 {
@@ -22,8 +23,9 @@ std::string CGUIUtils::GetLocalizedString(uint32_t id)
     {
       auto skin = gui->GetSkinInfo();
       if (skin)
-        return g_localizeStrings.GetAddonString(skin->ID(), id);
+        return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().GetAddonString(
+            skin->ID(), id);
     }
   }
-  return g_localizeStrings.Get(id);
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(id);
 }
