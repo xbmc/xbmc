@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2025 Team Kodi
+ *  Copyright (C) 2025-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -68,7 +68,7 @@ std::optional<ParsedBcp47Tag> CBcp47Parser::TryGenericParse(const std::string& s
   // [optional] up to 3 extended languages subtags of 3 letters each, - separated, may follow a 2 or 3 letters language subtag
   // [optional] script subtag: 4 letters (ISO 15924)
   // [optional] region subtag: 2 letters (ISO3166) or 3 digits (UN M.49)
-  // [optional] variant subtags 5 to 8 letters each or 4 characters starting with a digit
+  // [optional] variant subtags 5 to 8 characters each or 4 characters starting with a digit
   // [optional] extension/private use subtags 1 letter except x then (- and 2 to 8 letters) at least once
   // [optional] private-use subtag letter x then (- and 1 to 8 letters) at least once
 
@@ -77,7 +77,7 @@ std::optional<ParsedBcp47Tag> CBcp47Parser::TryGenericParse(const std::string& s
       "^(?:(?:(?:(?:(?<langiso639>[a-z]{2,3})(?<extlangs>(?:-[a-z]{3}){0,3}))|(?<langother>[a-z]{4,8}))"
       "(?:-(?<script>[a-z]{4}))?"
       "(?:-(?<region>[a-z]{2}|[0-9]{3}))?"
-      "(?<variants>(?:-(?:(?:[a-z]{5,8})|(?:[0-9][a-z0-9]{3})))*)"
+      "(?<variants>(?:-(?:(?:[a-z0-9]{5,8})|(?:[0-9][a-z0-9]{3})))*)"
       "(?<extensions>(?:-(?:[a-wy-z0-9](?:-[a-z0-9]{2,8})+))*)"
       "(?:-[x](?<privateuse>(?:-[a-z0-9]{1,8})+))?)"
       "|(?:x(?<globalprivateuse>(?:-[a-z0-9]{1,8})+)))$";
