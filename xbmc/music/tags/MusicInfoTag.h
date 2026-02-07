@@ -58,6 +58,7 @@ public:
   const std::string& GetDiscSubtitle() const;
   int GetBPM() const;
   std::string GetYearString() const;
+  const std::string& GetMusicBrainzReleaseTrackID() const;
   const std::string& GetMusicBrainzTrackID() const;
   const std::vector<std::string>& GetMusicBrainzArtistID() const;
   const std::vector<std::string>& GetMusicBrainzArtistHints() const;
@@ -119,6 +120,7 @@ public:
   void SetArtist(const CArtist& artist);
   void SetAlbum(const CAlbum& album);
   void SetSong(const CSong& song);
+  void SetMusicBrainzReleaseTrackID(std::string_view strReleaseTrackID);
   void SetMusicBrainzTrackID(std::string_view strTrackID);
   void SetMusicBrainzArtistID(const std::vector<std::string>& musicBrainzArtistId);
   void SetMusicBrainzArtistHints(const std::vector<std::string>& musicBrainzArtistHints);
@@ -217,6 +219,7 @@ private:
   std::string m_strAlbumArtistDesc;
   std::string m_strAlbumArtistSort;
   std::vector<std::string> m_genre;
+  std::string m_strMusicBrainzReleaseTrackID;
   std::string m_strMusicBrainzTrackID;
   std::vector<std::string> m_musicBrainzArtistID;
   std::vector<std::string> m_musicBrainzArtistHints;
