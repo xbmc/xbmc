@@ -27,6 +27,7 @@
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoLibraryQueue.h"
@@ -305,6 +306,33 @@ static int ExportLibrary2(const std::vector<std::string>& params)
   return 0;
 }
 
+/*! \brief Import a library.
+ *  \param params The parameters.
+ *  \details params[0] = "video" or "music".
+ *           params[1] = path of folder containing the videodb.xml to import.
+ */
+static int ImportLibrary(const std::vector<std::string>& params)
+{
+  if (params.size() < 2)
+    return -1;
+  const std::string& basePath = params[1];
+
+  if (StringUtils::EqualsNoCase(params[0], "music"))
+  {
+    // Import music library (not showing progress dialog)
+    std::string musicPath = URIUtils::AddFileToFolder(basePath, "musicdb.xml");
+    CMusicLibraryQueue::GetInstance().ImportLibrary(musicPath, false);
+  }
+  else
+  {
+    // Import video library
+    CVideoDatabase videodatabase;
+    videodatabase.Open();
+    videodatabase.ImportFromXML(basePath);
+    videodatabase.Close();
+  }
+  return 0;
+}
 
 /*! \brief Update a library.
  *  \param params The parameters.
@@ -467,6 +495,7 @@ CBuiltins::CommandMap CLibraryBuiltins::GetOperations() const
   return {{"cleanlibrary", {"Clean the video/music library", 1, CleanLibrary}},
           {"exportlibrary", {"Export the video/music library", 1, ExportLibrary}},
           {"exportlibrary2", {"Export the video/music library", 1, ExportLibrary2}},
+          {"importlibrary", {"Import the video/music library", 1, ImportLibrary}},
           {"updatelibrary", {"Update the selected library (music or video)", 1, UpdateLibrary}},
           {"videolibrary.search",
            {"Brings up a search dialog which will search the library", 0, SearchVideoLibrary}},
