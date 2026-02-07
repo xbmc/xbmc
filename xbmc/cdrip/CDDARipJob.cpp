@@ -36,6 +36,8 @@
 #include "platform/win32/CharsetConverter.h"
 #endif
 
+#include <array>
+
 using namespace ADDON;
 using namespace MUSIC_INFO;
 using namespace XFILE;
@@ -94,8 +96,8 @@ bool CCDDARipJob::DoWork()
   CGUIDialogProgressBarHandle* handle = pDlgProgress->GetHandle(
       CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(605));
 
-  int iTrack = atoi(m_input.substr(13, m_input.size() - 13 - 5).c_str());
-  std::string strLine0 =
+  const int iTrack = atoi(m_input.substr(13, m_input.size() - 13 - 5).c_str());
+  const std::string strLine0 =
       StringUtils::Format("{:02}. {} - {}", iTrack, m_tag.GetArtistString(), m_tag.GetTitle());
   handle->SetText(strLine0);
 
@@ -160,17 +162,17 @@ int CCDDARipJob::RipChunk(CFile& reader, const std::unique_ptr<CEncoder>& encode
 {
   percent = 0;
 
-  uint8_t stream[1024];
+  std::array<uint8_t, 1024> stream;
 
   // get data
-  ssize_t result = reader.Read(stream, 1024);
+  const ssize_t result = reader.Read(stream.data(), 1024);
 
   // return if rip is done or on some kind of error
   if (result <= 0)
     return 1;
 
   // encode data
-  ssize_t encres = encoder->EncoderEncode(stream, result);
+  const ssize_t encres = encoder->EncoderEncode(stream.data(), result);
 
   // Get progress indication
   percent = static_cast<int>(reader.GetPosition() * 100 / reader.GetLength());
@@ -184,7 +186,7 @@ int CCDDARipJob::RipChunk(CFile& reader, const std::unique_ptr<CEncoder>& encode
 std::unique_ptr<CEncoder> CCDDARipJob::SetupEncoder(CFile& reader)
 {
   std::unique_ptr<CEncoder> encoder;
-  const std::string audioEncoder = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+  const auto audioEncoder = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
       CSettings::SETTING_AUDIOCDS_ENCODER);
   if (audioEncoder == "audioencoder.kodi.builtin.aac" ||
       audioEncoder == "audioencoder.kodi.builtin.wma")
@@ -201,16 +203,16 @@ std::unique_ptr<CEncoder> CCDDARipJob::SetupEncoder(CFile& reader)
     }
   }
   if (!encoder)
-    return std::unique_ptr<CEncoder>{};
+    return {};
 
   // we have to set the tags before we init the Encoder
   const std::string strTrack = StringUtils::Format(
       "{}", std::stol(m_input.substr(13, m_input.size() - 13 - 5), nullptr, 10));
 
-  const std::string itemSeparator =
+  const std::string& itemSeparator =
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator;
 
-  encoder->SetComment(std::string("Ripped with ") + CSysInfo::GetAppName());
+  encoder->SetComment(StringUtils::Format("Ripped with {}", CSysInfo::GetAppName()));
   encoder->SetArtist(StringUtils::Join(m_tag.GetArtist(), itemSeparator));
   encoder->SetTitle(m_tag.GetTitle());
   encoder->SetAlbum(m_tag.GetAlbum());
@@ -229,23 +231,24 @@ std::unique_ptr<CEncoder> CCDDARipJob::SetupEncoder(CFile& reader)
 
 std::string CCDDARipJob::SetupTempFile()
 {
-  char tmp[MAX_PATH + 1];
+  std::array<char, MAX_PATH + 1> tmp{};
 #if defined(TARGET_WINDOWS)
   using namespace KODI::PLATFORM::WINDOWS;
-  wchar_t tmpW[MAX_PATH];
+  std::array<wchar_t, MAX_PATH + 1> tmpW;
   GetTempFileName(ToW(CSpecialProtocol::TranslatePath("special://temp/")).c_str(), L"riptrack", 0,
-                  tmpW);
-  auto tmpString = FromW(tmpW);
-  strncpy_s(tmp, tmpString.length(), tmpString.c_str(), MAX_PATH);
+                  tmpW.data());
+  auto tmpString = FromW(tmpW.data());
+  strncpy_s(tmp.data(), tmp.size(), tmpString.c_str(), MAX_PATH);
 #else
   int fd;
-  strncpy(tmp, CSpecialProtocol::TranslatePath("special://temp/riptrackXXXXXX").c_str(), MAX_PATH);
-  if ((fd = mkstemp(tmp)) == -1)
+  strncpy(tmp.data(), CSpecialProtocol::TranslatePath("special://temp/riptrackXXXXXX").c_str(),
+          MAX_PATH);
+  if ((fd = mkstemp(tmp.data())) == -1)
     tmp[0] = '\0';
   if (fd != -1)
     close(fd);
 #endif
-  return tmp;
+  return std::string(tmp.data());
 }
 
 bool CCDDARipJob::Equals(const CJob* job) const
