@@ -289,7 +289,8 @@ void CSong::Clear()
 
   replayGain = ReplayGain();
 }
-const std::vector<std::string> CSong::GetArtist() const
+
+std::vector<std::string> CSong::GetArtist() const
 {
   //Get artist names as vector from artist credits
   std::vector<std::string> songartists;
@@ -305,7 +306,7 @@ const std::vector<std::string> CSong::GetArtist() const
   return songartists;
 }
 
-const std::string CSong::GetArtistSort() const
+std::string CSong::GetArtistSort() const
 {
   //The stored artist sort name string takes precedence but a
   //value could be created from individual sort names held in artistcredits
@@ -321,7 +322,7 @@ const std::string CSong::GetArtistSort() const
   return artistString;
 }
 
-const std::vector<std::string> CSong::GetMusicBrainzArtistID() const
+std::vector<std::string> CSong::GetMusicBrainzArtistID() const
 {
   //Get artist MusicBrainz IDs as vector from artist credits
   std::vector<std::string> musicBrainzID;
@@ -332,7 +333,7 @@ const std::vector<std::string> CSong::GetMusicBrainzArtistID() const
   return musicBrainzID;
 }
 
-const std::string CSong::GetArtistString() const
+std::string CSong::GetArtistString() const
 {
   //Artist description may be different from the artists in artistcredits (see ARTISTS tag processing)
   //but is takes precedence as a string because artistcredits is not always filled during processing
@@ -347,7 +348,7 @@ const std::string CSong::GetArtistString() const
   return artistString;
 }
 
-const std::vector<int> CSong::GetArtistIDArray() const
+std::vector<int> CSong::GetArtistIDArray() const
 {
   // Get song artist IDs for json rpc
   std::vector<int> artistids;
