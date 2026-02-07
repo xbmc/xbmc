@@ -38,6 +38,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "imagefiles/ImageFileURL.h"
 #include "interfaces/AnnouncementManager.h"
+#include "music/AudioType.h"
 #include "music/MusicFileItemClassify.h"
 #include "music/MusicLibraryQueue.h"
 #include "music/MusicThumbLoader.h"
@@ -979,7 +980,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(const std::string& strDirectory, CFileI
 
     // mark albums without a title as singles
     if (album.strAlbum.empty())
-      album.releaseType = CAlbum::Single;
+      album.releaseType = AudioType::Type::Single;
 
     album.strPath = strDirectory;
     m_musicDatabase.AddAlbum(album, m_idSourcePath);
