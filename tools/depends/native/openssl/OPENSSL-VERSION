@@ -2,3 +2,5 @@ LIBNAME=openssl
 VERSION=3.0.19
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
 SHA512=6e602ac7217e1b4423793ee5c4c10745f70fcde3f9820d6c894ebeedb4f29566e2d0c3c590ae210484dcea4eb53db5bb8dbbfee14bbaca3e147406b1343c3cd7
+
+BASE_URL=https://www.openssl.org/source/
