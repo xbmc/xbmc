@@ -30,6 +30,7 @@
 class CAction;
 class CApplicationMessageHandling;
 class CBookmark;
+class CCacheComponent;
 class CFileItem;
 class CFileItemList;
 class CGUIComponent;
@@ -206,6 +207,7 @@ protected:
   void ResetPlayerEvent() { m_playerEvent.Reset(); }
 
   std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> m_pAnnouncementManager;
+  std::unique_ptr<CCacheComponent> m_pCacheComponent;
   std::unique_ptr<CGUIComponent> m_pGUI;
   std::unique_ptr<CWinSystemBase> m_pWinSystem;
   std::unique_ptr<ActiveAE::CActiveAE> m_pActiveAE;

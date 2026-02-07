@@ -299,6 +299,21 @@ CApplicationComponents& CServiceBroker::GetAppComponents()
   return g_application;
 }
 
+CCacheComponent* CServiceBroker::GetCacheComponent()
+{
+  return g_serviceBroker.m_pCacheComponent;
+}
+
+void CServiceBroker::RegisterCacheComponent(CCacheComponent* cache)
+{
+  g_serviceBroker.m_pCacheComponent = cache;
+}
+
+void CServiceBroker::UnregisterCacheComponent()
+{
+  g_serviceBroker.m_pCacheComponent = nullptr;
+}
+
 CGUIComponent* CServiceBroker::GetGUI()
 {
   return g_serviceBroker.m_pGUI;

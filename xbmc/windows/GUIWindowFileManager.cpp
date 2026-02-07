@@ -18,6 +18,8 @@
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
+#include "cache/CacheComponent.h"
+#include "cache/FileSystemCache.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogContextMenu.h"
@@ -29,7 +31,7 @@
 #include "filesystem/Directory.h"
 #include "filesystem/FileDirectoryFactory.h"
 #include "filesystem/VirtualDirectory.h"
-#include "filesystem/ZipManager.h"
+#include "filesystem/Zip.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
@@ -864,7 +866,7 @@ void CGUIWindowFileManager::GoParentFolder(int iList)
     // check for step-below, if, unmount rar
     if (url.GetFileName().empty())
       if (url.IsProtocol("zip"))
-        g_ZipManager.release(m_Directory[iList]->GetPath()); // release resources
+        CServiceBroker::GetCacheComponent()->GetZipCache().Release(url.GetHostName());
   }
 
   std::string strPath(m_strParentPath[iList]), strOldPath(m_Directory[iList]->GetPath());
