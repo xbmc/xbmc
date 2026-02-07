@@ -31,11 +31,24 @@ public:
     SUBTITLE
   };
 
+  // Source of the stream information
+  // Order is important - higher values (towards end of list) take precedence lower values
+  // when updating stream details
+  enum Source : uint8_t
+  {
+    UNDEFINED = 0,
+    MEDIA,
+    NFO
+  };
+
   explicit CStreamDetail(StreamType type) : m_eType(type), m_pParent(NULL) {}
   virtual ~CStreamDetail() = default;
   virtual bool IsWorseThan(const CStreamDetail &that) const = 0;
+  Source GetSource() const;
+  void SetSource(Source source);
 
   const StreamType m_eType;
+  Source m_source{UNDEFINED};
 
 protected:
   CStreamDetails *m_pParent;
@@ -46,7 +59,8 @@ class CStreamDetailVideo final : public CStreamDetail
 {
 public:
   CStreamDetailVideo();
-  CStreamDetailVideo(const VideoStreamInfo &info, int duration = 0);
+  CStreamDetailVideo(const VideoStreamInfo& info, int duration, Source source);
+  CStreamDetailVideo(const CStreamDetailVideo&) = default;
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;
   bool IsWorseThan(const CStreamDetail &that) const override;
@@ -65,7 +79,8 @@ class CStreamDetailAudio final : public CStreamDetail
 {
 public:
   CStreamDetailAudio();
-  CStreamDetailAudio(const AudioStreamInfo &info);
+  CStreamDetailAudio(const AudioStreamInfo& info, Source source);
+  CStreamDetailAudio(const CStreamDetailAudio&) = default;
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;
   bool IsWorseThan(const CStreamDetail &that) const override;
@@ -79,7 +94,7 @@ class CStreamDetailSubtitle final : public CStreamDetail
 {
 public:
   CStreamDetailSubtitle();
-  CStreamDetailSubtitle(const SubtitleStreamInfo &info);
+  CStreamDetailSubtitle(const SubtitleStreamInfo& info, Source source);
   CStreamDetailSubtitle(const CStreamDetailSubtitle&) = default;
   CStreamDetailSubtitle& operator=(const CStreamDetailSubtitle &that);
   void Archive(CArchive& ar) override;
@@ -132,7 +147,16 @@ public:
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;
 
-  bool SetStreams(const VideoStreamInfo& videoInfo, int videoDuration, const AudioStreamInfo& audioInfo, const SubtitleStreamInfo& subtitleInfo);
+  bool SetStreams(const VideoStreamInfo& videoInfo,
+                  int videoDuration,
+                  const AudioStreamInfo& audioInfo,
+                  const SubtitleStreamInfo& subtitleInfo,
+                  CStreamDetail::Source source);
+
+  CStreamDetail::Source GetSource(CStreamDetail::StreamType type, int idx) const;
+  CStreamDetail::Source GetSources() const;
+  void SetSources(CStreamDetail::Source source);
+
 private:
   CStreamDetail *NewStream(CStreamDetail::StreamType type);
   std::vector<std::unique_ptr<CStreamDetail>> m_vecItems;
