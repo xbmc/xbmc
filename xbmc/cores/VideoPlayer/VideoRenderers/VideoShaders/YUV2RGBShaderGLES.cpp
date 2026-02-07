@@ -1,6 +1,6 @@
 /*
  *  Copyright (c) 2007 d4rk
- *  Copyright (C) 2007-2024 Team Kodi
+ *  Copyright (C) 2007-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -71,7 +71,8 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(EShaderFormat format,
   VertexShader()->LoadSource("gles_yuv2rgb.vert", m_defines);
 
   CLog::Log(LOGDEBUG, "GLES: using shader format: {}", m_format);
-  CLog::Log(LOGDEBUG, "GLES: using tonemap method: {}", m_toneMappingMethod);
+  if (m_toneMapping)
+    CLog::Log(LOGDEBUG, "GLES: using tonemap method: {}", m_toneMappingMethod);
 
   m_convMatrix.SetSourceColorPrimaries(srcPrimaries).SetDestinationColorPrimaries(dstPrimaries);
 }
@@ -283,10 +284,8 @@ YUV2RGBFilterShader::YUV2RGBFilterShader(EShaderFormat format,
 {
   m_scaling = method;
   PixelShader()->LoadSource("gles310_yuv2rgb_filter.frag", m_defines);
+  PixelShader()->InsertSource("gles_tonemap.frag", "void main()");
   VertexShader()->LoadSource("gles310_yuv2rgb.vert");
-  PixelShader()->AppendSource("gl_output.glsl");
-
-  PixelShader()->InsertSource("gl_tonemap.glsl", "void main()");
 }
 
 YUV2RGBFilterShader::~YUV2RGBFilterShader()

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2010-2018 Team Kodi
+ *  Copyright (C) 2010-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -272,22 +272,35 @@ void CLinuxRendererGLES::CalculateTextureSourceRects(int source, int num_planes)
   }
 }
 
-void CLinuxRendererGLES::LoadPlane(CYuvPlane& plane, int type,
-                                   unsigned width, unsigned height,
-                                   int stride, int bpp, void* data)
+void CLinuxRendererGLES::LoadPlane(CYuvPlane& plane,
+                                   int type,
+                                   unsigned width,
+                                   unsigned height,
+                                   int stride,
+                                   int bpp,
+                                   void* data,
+                                   GLenum pixelType)
 {
   const GLvoid *pixelData = data;
   int bps = bpp * KODI::UTILS::GL::glFormatElementByteCount(type);
 
   glBindTexture(m_textureTarget, plane.id);
 
+  // pixelStride tracks the row pitch of pixelData — it equals 'stride' when we use the
+  // original buffer directly (or GL_UNPACK_ROW_LENGTH), but becomes width*bps when the
+  // memcpy fallback compacts each row.  The border-pixel code below needs this to index
+  // into the correct buffer without overreading.
+  int pixelStride = stride;
   bool pixelStoreChanged = false;
   if (stride != static_cast<int>(width * bps))
   {
-    if (m_pixelStoreKey > 0)
+    // GL_UNPACK_ROW_LENGTH is specified in pixels/texels, not bytes.
+    // If stride isn't divisible by bytes-per-pixel, we cannot express it as a row length.
+    const bool canUsePixelStore = (m_pixelStoreKey > 0) && (bps > 0) && ((stride % bps) == 0);
+    if (canUsePixelStore)
     {
       pixelStoreChanged = true;
-      glPixelStorei(m_pixelStoreKey, stride);
+      glPixelStorei(m_pixelStoreKey, stride / bps);
     }
     else
     {
@@ -305,9 +318,10 @@ void CLinuxRendererGLES::LoadPlane(CYuvPlane& plane, int type,
         memcpy(dst, src, width * bps);
 
       pixelData = m_planeBuffer;
+      pixelStride = width * bps;
     }
   }
-  glTexSubImage2D(m_textureTarget, 0, 0, 0, width, height, type, GL_UNSIGNED_BYTE, pixelData);
+  glTexSubImage2D(m_textureTarget, 0, 0, 0, width, height, type, pixelType, pixelData);
 
   if (m_pixelStoreKey > 0 && pixelStoreChanged)
     glPixelStorei(m_pixelStoreKey, 0);
@@ -315,21 +329,35 @@ void CLinuxRendererGLES::LoadPlane(CYuvPlane& plane, int type,
   // check if we need to load any border pixels
   if (height < plane.texheight)
   {
-    glTexSubImage2D(m_textureTarget, 0,
-                    0, height, width, 1,
-                    type, GL_UNSIGNED_BYTE,
-                    static_cast<const unsigned char*>(pixelData) + stride * (height - 1));
+    glTexSubImage2D(m_textureTarget, 0, 0, height, width, 1, type, pixelType,
+                    static_cast<const unsigned char*>(pixelData) + pixelStride * (height - 1));
   }
 
-  if (width  < plane.texwidth)
+  if (width < plane.texwidth)
   {
-    glTexSubImage2D(m_textureTarget, 0,
-                    width, 0, 1, height,
-                    type, GL_UNSIGNED_BYTE,
+    // The source data has rows pixelStride bytes apart; tell GL so it can step
+    // correctly when reading a 1-pixel-wide, height-tall column.
+    if (m_pixelStoreKey > 0 && bps > 0)
+      glPixelStorei(m_pixelStoreKey, pixelStride / bps);
+
+    glTexSubImage2D(m_textureTarget, 0, width, 0, 1, height, type, pixelType,
                     static_cast<const unsigned char*>(pixelData) + bps * (width - 1));
+
+    if (m_pixelStoreKey > 0 && bps > 0)
+      glPixelStorei(m_pixelStoreKey, 0);
   }
 
   glBindTexture(m_textureTarget, 0);
+}
+
+EShaderFormat CLinuxRendererGLES::GetShaderFormat()
+{
+  // P010 is NV12-style 4:2:0 but typically uploaded/represented as R16 (Y) + RG16 (UV).
+  // The GLES shader variant "NV12_RRG" reads U/V from the R/G channels of the chroma plane.
+  if (m_format == AV_PIX_FMT_P010)
+    return SHADER_NV12_RRG;
+
+  return CBaseRenderer::GetShaderFormat();
 }
 
 bool CLinuxRendererGLES::Flush(bool saveBuffers)
@@ -803,6 +831,10 @@ bool CLinuxRendererGLES::CreateTexture(int index)
   {
     return CreateNV12Texture(index);
   }
+  else if (m_format == AV_PIX_FMT_P010)
+  {
+    return CreateP010Texture(index);
+  }
   else
   {
     return CreateYV12Texture(index);
@@ -816,6 +848,10 @@ void CLinuxRendererGLES::DeleteTexture(int index)
   if (m_format == AV_PIX_FMT_NV12)
   {
     DeleteNV12Texture(index);
+  }
+  else if (m_format == AV_PIX_FMT_P010)
+  {
+    DeleteP010Texture(index);
   }
   else
   {
@@ -844,6 +880,10 @@ bool CLinuxRendererGLES::UploadTexture(int index)
   if (m_format == AV_PIX_FMT_NV12)
   {
     ret = UploadNV12Texture(index);
+  }
+  else if (m_format == AV_PIX_FMT_P010)
+  {
+    ret = UploadP010Texture(index);
   }
   else
   {
@@ -1342,19 +1382,16 @@ bool CLinuxRendererGLES::UploadYV12Texture(int source)
   glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 
   // load Y plane
-  LoadPlane(buf.fields[FIELD_FULL][0], GL_LUMINANCE,
-            im->width, im->height,
-            im->stride[0], im->bpp, im->plane[0]);
+  LoadPlane(buf.fields[FIELD_FULL][0], GL_LUMINANCE, im->width, im->height, im->stride[0], im->bpp,
+            im->plane[0], GL_UNSIGNED_BYTE);
 
   // load U plane
-  LoadPlane(buf.fields[FIELD_FULL][1], GL_LUMINANCE,
-            im->width >> im->cshift_x, im->height >> im->cshift_y,
-            im->stride[1], im->bpp, im->plane[1]);
+  LoadPlane(buf.fields[FIELD_FULL][1], GL_LUMINANCE, im->width >> im->cshift_x,
+            im->height >> im->cshift_y, im->stride[1], im->bpp, im->plane[1], GL_UNSIGNED_BYTE);
 
   // load V plane
-  LoadPlane(buf.fields[FIELD_FULL][2], GL_ALPHA,
-            im->width >> im->cshift_x, im->height >> im->cshift_y,
-            im->stride[2], im->bpp, im->plane[2]);
+  LoadPlane(buf.fields[FIELD_FULL][2], GL_ALPHA, im->width >> im->cshift_x,
+            im->height >> im->cshift_y, im->stride[2], im->bpp, im->plane[2], GL_UNSIGNED_BYTE);
 
   VerifyGLState();
 
@@ -1490,6 +1527,23 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
 //********************************************************************************************************
 bool CLinuxRendererGLES::UploadNV12Texture(int source)
 {
+  return UploadSemiPlanar420Texture(source, GL_LUMINANCE, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE);
+}
+
+bool CLinuxRendererGLES::UploadP010Texture(int source)
+{
+#if !defined(GL_ES_VERSION_3_0)
+  return false;
+#else
+  return UploadSemiPlanar420Texture(source, GL_RED, GL_RG, GL_UNSIGNED_SHORT);
+#endif
+}
+
+bool CLinuxRendererGLES::UploadSemiPlanar420Texture(int source,
+                                                    GLenum lumaFormat,
+                                                    GLenum chromaFormat,
+                                                    GLenum pixelType)
+{
   CPictureBuffer& buf = m_buffers[source];
   YuvImage* im = &buf.image;
 
@@ -1504,43 +1558,39 @@ bool CLinuxRendererGLES::UploadNV12Texture(int source)
   }
 
   VerifyGLState();
-
-  glPixelStorei(GL_UNPACK_ALIGNMENT, im->bpp);
+  // For 16-bit uploads (P010), using UNPACK_ALIGNMENT=1 avoids any driver-side assumptions.
+  const GLint unpackAlignment = (pixelType == GL_UNSIGNED_SHORT) ? 1 : im->bpp;
+  glPixelStorei(GL_UNPACK_ALIGNMENT, unpackAlignment);
 
   if (deinterlacing)
   {
     // Load Odd Y field
-    LoadPlane(buf.fields[FIELD_TOP][0] , GL_LUMINANCE,
-              im->width, im->height >> 1,
-              im->stride[0]*2, im->bpp, im->plane[0]);
+    LoadPlane(buf.fields[FIELD_TOP][0], lumaFormat, im->width, im->height >> 1, im->stride[0] * 2,
+              im->bpp, im->plane[0], pixelType);
 
     // Load Even Y field
-    LoadPlane(buf.fields[FIELD_BOT][0], GL_LUMINANCE,
-              im->width, im->height >> 1,
-              im->stride[0]*2, im->bpp, im->plane[0] + im->stride[0]) ;
+    LoadPlane(buf.fields[FIELD_BOT][0], lumaFormat, im->width, im->height >> 1, im->stride[0] * 2,
+              im->bpp, im->plane[0] + im->stride[0], pixelType);
 
     // Load Odd UV Fields
-    LoadPlane(buf.fields[FIELD_TOP][1], GL_LUMINANCE_ALPHA,
-              im->width >> im->cshift_x, im->height >> (im->cshift_y + 1),
-              im->stride[1]*2, im->bpp, im->plane[1]);
+    LoadPlane(buf.fields[FIELD_TOP][1], chromaFormat, im->width >> im->cshift_x,
+              im->height >> (im->cshift_y + 1), im->stride[1] * 2, im->bpp, im->plane[1],
+              pixelType);
 
     // Load Even UV Fields
-    LoadPlane(buf.fields[FIELD_BOT][1], GL_LUMINANCE_ALPHA,
-              im->width >> im->cshift_x, im->height >> (im->cshift_y + 1),
-              im->stride[1]*2, im->bpp, im->plane[1] + im->stride[1]);
-
+    LoadPlane(buf.fields[FIELD_BOT][1], chromaFormat, im->width >> im->cshift_x,
+              im->height >> (im->cshift_y + 1), im->stride[1] * 2, im->bpp,
+              im->plane[1] + im->stride[1], pixelType);
   }
   else
   {
     // Load Y plane
-    LoadPlane(buf. fields[FIELD_FULL][0], GL_LUMINANCE,
-              im->width, im->height,
-              im->stride[0], im->bpp, im->plane[0]);
+    LoadPlane(buf.fields[FIELD_FULL][0], lumaFormat, im->width, im->height, im->stride[0], im->bpp,
+              im->plane[0], pixelType);
 
     // Load UV plane
-    LoadPlane(buf.fields[FIELD_FULL][1], GL_LUMINANCE_ALPHA,
-              im->width >> im->cshift_x, im->height >> im->cshift_y,
-              im->stride[1], im->bpp, im->plane[1]);
+    LoadPlane(buf.fields[FIELD_FULL][1], chromaFormat, im->width >> im->cshift_x,
+              im->height >> im->cshift_y, im->stride[1], im->bpp, im->plane[1], pixelType);
   }
 
   VerifyGLState();
@@ -1551,6 +1601,78 @@ bool CLinuxRendererGLES::UploadNV12Texture(int source)
 }
 
 bool CLinuxRendererGLES::CreateNV12Texture(int index)
+{
+  return CreateSemiPlanar420Texture(index, 1, 8, GL_LUMINANCE, GL_LUMINANCE, GL_LUMINANCE_ALPHA,
+                                    GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE);
+}
+
+bool CLinuxRendererGLES::CreateP010Texture(int index)
+{
+#if !defined(GL_ES_VERSION_3_0)
+  return false;
+#else
+  // Requires ES 3.x + normalized 16-bit texture support.
+  uint32_t major = 0;
+  uint32_t minor = 0;
+  m_renderSystem->GetRenderVersion(major, minor);
+  if (major < 3)
+  {
+    CLog::Log(LOGERROR, "P010: requires OpenGL ES 3.0+");
+    return false;
+  }
+
+  if (!m_renderSystem->IsExtSupported("GL_EXT_texture_norm16") &&
+      !m_renderSystem->IsExtSupported("GL_OES_texture_norm16"))
+  {
+    CLog::Log(LOGERROR, "P010: missing GL_EXT/OES_texture_norm16");
+    return false;
+  }
+
+  // Some GLES SDK headers don't expose core GL_R16/GL_RG16 even though the runtime
+  // supports GL_EXT/OES_texture_norm16. Prefer core enums when present, else fall back.
+  GLint internalFormatY = 0;
+  GLint internalFormatUV = 0;
+#if defined(GL_R16)
+  internalFormatY = GL_R16;
+#elif defined(GL_R16_EXT)
+  internalFormatY = GL_R16_EXT;
+#elif defined(GL_R16_OES)
+  internalFormatY = GL_R16_OES;
+#endif
+
+#if defined(GL_RG16)
+  internalFormatUV = GL_RG16;
+#elif defined(GL_RG16_EXT)
+  internalFormatUV = GL_RG16_EXT;
+#elif defined(GL_RG16_OES)
+  internalFormatUV = GL_RG16_OES;
+#endif
+
+  if (internalFormatY == 0 || internalFormatUV == 0)
+  {
+    CLog::Log(LOGERROR, "P010: missing GL_R16/GL_RG16 enum in GLES headers");
+    return false;
+  }
+
+  return CreateSemiPlanar420Texture(index, 2, 16, internalFormatY, GL_RED, internalFormatUV, GL_RG,
+                                    GL_UNSIGNED_SHORT);
+#endif
+}
+
+void CLinuxRendererGLES::DeleteP010Texture(int index)
+{
+  // Same layout (Y + interleaved UV) as NV12, just different pixel formats.
+  DeleteNV12Texture(index);
+}
+
+bool CLinuxRendererGLES::CreateSemiPlanar420Texture(int index,
+                                                    int bytesPerComponent,
+                                                    int srcTextureBits,
+                                                    GLint internalFormatY,
+                                                    GLenum formatY,
+                                                    GLint internalFormatUV,
+                                                    GLenum formatUV,
+                                                    GLenum pixelType)
 {
   // since we also want the field textures, pitch must be texture aligned
   CPictureBuffer& buf = m_buffers[index];
@@ -1563,10 +1685,14 @@ bool CLinuxRendererGLES::CreateNV12Texture(int index)
   im.width  = m_sourceWidth;
   im.cshift_x = 1;
   im.cshift_y = 1;
-  im.bpp = 1;
+  im.bpp = bytesPerComponent;
 
-  im.stride[0] = im.width;
-  im.stride[1] = im.width;
+  buf.m_srcTextureBits = srcTextureBits;
+
+  // Y plane stride: one component per luma pixel
+  im.stride[0] = im.width * im.bpp;
+  // UV plane stride: (width/2) texels, each texel has 2 components
+  im.stride[1] = im.width * im.bpp;
   im.stride[2] = 0;
 
   im.plane[0] = nullptr;
@@ -1579,11 +1705,6 @@ bool CLinuxRendererGLES::CreateNV12Texture(int index)
   im.planesize[1] = im.stride[1] * im.height / 2;
   // third plane is not used
   im.planesize[2] = 0;
-
-  for (int i = 0; i < 2; i++)
-  {
-    im.plane[i] = nullptr; // will be set in UploadTexture()
-  }
 
   for(int f = 0; f < MAX_FIELDS; f++)
   {
@@ -1631,11 +1752,13 @@ bool CLinuxRendererGLES::CreateNV12Texture(int index)
 
       if (p == 1)
       {
-        glTexImage2D(m_textureTarget, 0, GL_LUMINANCE_ALPHA, plane.texwidth, plane.texheight, 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, nullptr);
+        glTexImage2D(m_textureTarget, 0, internalFormatUV, plane.texwidth, plane.texheight, 0,
+                     formatUV, pixelType, nullptr);
       }
       else
       {
-        glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, plane.texwidth, plane.texheight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, nullptr);
+        glTexImage2D(m_textureTarget, 0, internalFormatY, plane.texwidth, plane.texheight, 0,
+                     formatY, pixelType, nullptr);
       }
 
       glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
