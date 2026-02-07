@@ -23,6 +23,7 @@ public:
   virtual ~CDataCacheCore();
   static CDataCacheCore& GetInstance();
   void Reset();
+  void ResetAudioCache();
   bool HasAVInfoChanges();
   void SignalVideoInfoChange();
   void SignalAudioInfoChange();
