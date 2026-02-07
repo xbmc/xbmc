@@ -1,0 +1,59 @@
+--- a/meson.build
++++ b/meson.build
+@@ -37,6 +37,8 @@ optional_arguments = []
+ 
+ if host_machine.system() != 'windows'
+     test_args += '-D_POSIX_C_SOURCE=200809L'
++elif cc.get_argument_syntax() == 'msvc'
++    test_args += ['-D_CRT_SECURE_NO_WARNINGS', '-D_CRT_NONSTDC_NO_WARNINGS']
+ endif
+ 
+ # Header checks
+@@ -99,7 +101,7 @@ add_project_arguments(test_args, language: 'c')
+ add_project_arguments(cc.get_supported_arguments(optional_arguments), language: 'c')
+ 
+ # Generate config.h
+-config_h_target = configure_file(output: 'config.h', configuration: cdata)
++configure_file(output: 'config.h', configuration: cdata)
+ 
+ # Include subdir meson.build files
+ # The order is important!
+--- a/src/default_blockinput.c
++++ b/src/default_blockinput.c
+@@ -47,6 +47,11 @@
+ # define off_t int64_t
+ #endif
+ 
++#if defined(_MSC_VER) && !defined(ssize_t)
++#include <basetsd.h>
++typedef SSIZE_T ssize_t;
++#endif
++
+ #ifdef __ANDROID__
+ # undef  lseek
+ # define lseek lseek64
+--- a/src/udfread.c
++++ b/src/udfread.c
+@@ -1096,7 +1096,7 @@ static struct udf_dir *_read_subdir(udfread *udf, struct udf_dir *dir, uint32_t
+     }
+ 
+     if (!dir->subdirs) {
+-        struct udf_dir **subdirs = (struct udf_dir **)calloc(sizeof(struct udf_dir *), dir->num_entries);
++        struct udf_dir **subdirs = (struct udf_dir **)calloc(dir->num_entries, sizeof(struct udf_dir *));
+         if (!subdirs) {
+             udf_error("out of memory\n");
+             return NULL;
+--- a/src/udfread.h
++++ b/src/udfread.h
+@@ -29,6 +29,11 @@ extern "C" {
+ #include <stdint.h>    /* *int_t */
+ #include <sys/types.h> /* *size_t */
+ 
++#if defined(_MSC_VER) && !defined(ssize_t)
++#include <basetsd.h>
++typedef SSIZE_T ssize_t;
++#endif
++
+ #ifdef UDFREAD_API_EXPORT
+ #include "attributes.h"
+ #elif !defined(UDF_PUBLIC)
