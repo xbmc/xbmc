@@ -1,0 +1,12 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -97,6 +97,9 @@
+         list(APPEND lzo_COMPILE_TARGETS lzo_static_lib)
+     endif()
+     set_target_properties(lzo_static_lib PROPERTIES OUTPUT_NAME lzo2)
++    if(WIN32)
++        set_target_properties(lzo_static_lib PROPERTIES OUTPUT_NAME_DEBUG lzo2d)
++    endif()
+ endif()
+ if(ENABLE_SHARED)
+     if(lzo_USE_OBJECT_LIB)
