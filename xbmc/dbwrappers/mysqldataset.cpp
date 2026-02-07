@@ -27,7 +27,17 @@
 #ifdef HAS_MYSQL
 #include <mysql/errmsg.h>
 #elif defined(HAS_MARIADB)
-#include <mariadb/errmsg.h>
+#if defined(__has_include)
+  #if __has_include(<mariadb/errmsg.h>)
+    #include <mariadb/errmsg.h>
+  #else
+    // Fedora's MariaDB client headers are typically installed under mysql/.
+    #include <mysql/errmsg.h>
+  #endif
+#else
+  // If __has_include is not available, prefer the default MariaDB layout.
+  #include <mariadb/errmsg.h>
+#endif
 #endif
 
 #ifdef TARGET_POSIX

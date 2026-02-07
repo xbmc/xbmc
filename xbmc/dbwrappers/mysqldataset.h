@@ -15,7 +15,17 @@
 #ifdef HAS_MYSQL
 #include <mysql/mysql.h>
 #elif defined(HAS_MARIADB)
-#include <mariadb/mysql.h>
+#if defined(__has_include)
+  #if __has_include(<mariadb/mysql.h>)
+    #include <mariadb/mysql.h>
+  #else
+    // Fedora's MariaDB client headers are typically installed under mysql/.
+    #include <mysql/mysql.h>
+  #endif
+#else
+  // If __has_include is not available, prefer the default MariaDB layout.
+  #include <mariadb/mysql.h>
+#endif
 #endif
 
 namespace dbiplus
