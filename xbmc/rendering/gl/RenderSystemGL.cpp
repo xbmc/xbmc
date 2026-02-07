@@ -461,31 +461,13 @@ void CRenderSystemGL::Project(float &x, float &y, float &z)
 
 void CRenderSystemGL::CalculateMaxTexturesize()
 {
-  GLint width = 256;
-
-  // reset any previous GL errors
-  ResetGLErrors();
-
-  // max out at 2^(8+8)
-  for (int i = 0 ; i<8 ; i++)
+  GLint width;
+  glGetIntegerv(GL_MAX_TEXTURE_SIZE, &width);
+  m_maxTextureSize = width;
+  if (width > 65536) // have an upper limit in case driver acts stupid
   {
-    glTexImage2D(GL_PROXY_TEXTURE_2D, 0, GL_RGBA, width, width, 0, GL_BGRA,
-                 GL_UNSIGNED_BYTE, NULL);
-    glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH,
-                             &width);
-
-    // GMA950 on OS X sets error instead
-    if (width == 0 || (glGetError() != GL_NO_ERROR) )
-      break;
-
-    m_maxTextureSize = width;
-    width *= 2;
-    if (width > 65536) // have an upper limit in case driver acts stupid
-    {
-      CLog::Log(LOGERROR, "GL: Could not determine maximum texture width, falling back to 2048");
-      m_maxTextureSize = 2048;
-      break;
-    }
+    CLog::Log(LOGERROR, "GL: Could not determine maximum texture width, falling back to 2048");
+    m_maxTextureSize = 2048;
   }
 
   CLog::Log(LOGINFO, "GL: Maximum texture width: {}", m_maxTextureSize);
