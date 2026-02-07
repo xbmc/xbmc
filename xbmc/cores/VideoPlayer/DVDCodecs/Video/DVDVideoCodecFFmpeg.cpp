@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -47,15 +47,6 @@ extern "C" {
 #include <math.h>
 #define RINT lrint
 #endif
-
-enum DecoderState
-{
-  STATE_NONE,
-  STATE_SW_SINGLE,
-  STATE_HW_SINGLE,
-  STATE_HW_FAILED,
-  STATE_SW_MULTI
-};
 
 enum EFilterFlags {
   FILTER_NONE                =  0x0,
@@ -1215,13 +1206,26 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const std::string& filters, bool scale)
   const AVFilter* srcFilter = avfilter_get_by_name("buffer");
   const AVFilter* outFilter = avfilter_get_by_name("buffersink"); // should be last filter in the graph for now
 
+  // Prefer actual frame metadata when available (it may be populated even when codec context fields
+  // are still unspecified, e.g. for NVDEC/CUVID). This prevents buffersrc from initializing as
+  // csp/range: unknown and then warning on every incoming frame.
+  const AVColorSpace srcColorSpace =
+      (m_pDecodedFrame && m_pDecodedFrame->colorspace != AVCOL_SPC_UNSPECIFIED)
+          ? m_pDecodedFrame->colorspace
+          : m_pCodecContext->colorspace;
+  const AVColorRange srcColorRange =
+      (m_pDecodedFrame && m_pDecodedFrame->color_range != AVCOL_RANGE_UNSPECIFIED)
+          ? m_pDecodedFrame->color_range
+          : m_pCodecContext->color_range;
+
   std::string args = StringUtils::Format(
-      "video_size={}x{}:pix_fmt={}:time_base={}/{}:pixel_aspect={}/{}", m_pCodecContext->width,
-      m_pCodecContext->height, m_pCodecContext->pix_fmt,
+      "video_size={}x{}:pix_fmt={}:time_base={}/{}:pixel_aspect={}/{}:colorspace={}:range={}",
+      m_pCodecContext->width, m_pCodecContext->height, m_pCodecContext->pix_fmt,
       m_pCodecContext->time_base.num ? m_pCodecContext->time_base.num : 1,
       m_pCodecContext->time_base.num ? m_pCodecContext->time_base.den : 1,
       m_pCodecContext->sample_aspect_ratio.num != 0 ? m_pCodecContext->sample_aspect_ratio.num : 1,
-      m_pCodecContext->sample_aspect_ratio.num != 0 ? m_pCodecContext->sample_aspect_ratio.den : 1);
+      m_pCodecContext->sample_aspect_ratio.num != 0 ? m_pCodecContext->sample_aspect_ratio.den : 1,
+      static_cast<int>(srcColorSpace), static_cast<int>(srcColorRange));
 
   if (!((m_pFilterOut = avfilter_graph_alloc_filter(m_pFilterGraph, outFilter, "out"))))
   {

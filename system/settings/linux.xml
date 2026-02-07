@@ -173,6 +173,101 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <!-- NVDEC Hardware Decoding Settings -->
+        <setting id="videoplayer.usenvdec" type="boolean" label="13477" help="13478">
+          <visible>false</visible>
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoplayer.usenvdech264" type="boolean" parent="videoplayer.usenvdec" label="13479" help="13480">
+          <visible>false</visible>
+          <dependencies>
+            <dependency type="enable">
+              <condition setting="videoplayer.usenvdec" operator="is">true</condition>
+            </dependency>
+          </dependencies>
+          <level>3</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoplayer.usenvdechevc" type="boolean" parent="videoplayer.usenvdec" label="13481" help="13482">
+          <visible>false</visible>
+          <dependencies>
+            <dependency type="enable">
+              <condition setting="videoplayer.usenvdec" operator="is">true</condition>
+            </dependency>
+          </dependencies>
+          <level>3</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoplayer.usenvdecvp9" type="boolean" parent="videoplayer.usenvdec" label="13483" help="13484">
+          <visible>false</visible>
+          <dependencies>
+            <dependency type="enable">
+              <condition setting="videoplayer.usenvdec" operator="is">true</condition>
+            </dependency>
+          </dependencies>
+          <level>3</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoplayer.usenvdecav1" type="boolean" parent="videoplayer.usenvdec" label="13485" help="13486">
+          <visible>false</visible>
+          <dependencies>
+            <dependency type="enable">
+              <condition setting="videoplayer.usenvdec" operator="is">true</condition>
+            </dependency>
+          </dependencies>
+          <level>3</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoplayer.usenvdecmpeg2" type="boolean" parent="videoplayer.usenvdec" label="13487" help="13488">
+          <visible>false</visible>
+          <dependencies>
+            <dependency type="enable">
+              <condition setting="videoplayer.usenvdec" operator="is">true</condition>
+            </dependency>
+          </dependencies>
+          <level>3</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoplayer.usenvdecmpeg4" type="boolean" parent="videoplayer.usenvdec" label="13489" help="13490">
+          <visible>false</visible>
+          <dependencies>
+            <dependency type="enable">
+              <condition setting="videoplayer.usenvdec" operator="is">true</condition>
+            </dependency>
+          </dependencies>
+          <level>3</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoplayer.usenvdecvc1" type="boolean" parent="videoplayer.usenvdec" label="13491" help="13492">
+          <visible>false</visible>
+          <dependencies>
+            <dependency type="enable">
+              <condition setting="videoplayer.usenvdec" operator="is">true</condition>
+            </dependency>
+          </dependencies>
+          <level>3</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoplayer.usenvdecvp8" type="boolean" parent="videoplayer.usenvdec" label="13493" help="13494">
+          <visible>false</visible>
+          <dependencies>
+            <dependency type="enable">
+              <condition setting="videoplayer.usenvdec" operator="is">true</condition>
+            </dependency>
+          </dependencies>
+          <level>3</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.useprimedecoder" type="boolean" label="13430" help="36172">
           <requirement>HAS_GLES</requirement>
           <visible>false</visible>

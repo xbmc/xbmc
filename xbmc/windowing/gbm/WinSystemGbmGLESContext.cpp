@@ -75,6 +75,7 @@ bool CWinSystemGbmGLESContext::InitWindowSystem()
   {
     GBM::VAAPIRegister(m_vaapiProxy.get(), deepColor);
   }
+  GBM::NVDECRegister();
 
   CRendererDRMPRIMEGLES::Register();
   CRendererDRMPRIME::Register();

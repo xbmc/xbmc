@@ -7759,7 +7759,115 @@ msgctxt "#13476"
 msgid "16 bit per channel"
 msgstr ""
 
-#empty strings from id 13477 to 13504
+#. Label for setting "Allow hardware acceleration (NVDEC)"
+#: system/settings/linux.xml
+msgctxt "#13477"
+msgid "Allow hardware acceleration (NVDEC)"
+msgstr ""
+
+#. Description of setting with label #13477 "Allow hardware acceleration (NVDEC)"
+#: system/settings/linux.xml
+msgctxt "#13478"
+msgid "Enable NVDEC hardware decoding of video files, used for NVIDIA graphics cards. NVDEC provides efficient GPU-based video decoding."
+msgstr ""
+
+#. Label for setting "Use H264 NVDEC"
+#: system/settings/linux.xml
+msgctxt "#13479"
+msgid "Use H264 NVDEC"
+msgstr ""
+
+#. Description of setting with label #13479 "Use H264 NVDEC"
+#: system/settings/linux.xml
+msgctxt "#13480"
+msgid "Enable this option to use hardware acceleration for the H264/AVC codec. If disabled the CPU will be used instead."
+msgstr ""
+
+#. Label for setting "Use HEVC NVDEC"
+#: system/settings/linux.xml
+msgctxt "#13481"
+msgid "Use HEVC NVDEC"
+msgstr ""
+
+#. Description of setting with label #13481 "Use HEVC NVDEC"
+#: system/settings/linux.xml
+msgctxt "#13482"
+msgid "Enable this option to use hardware acceleration for the HEVC/H265 codec. If disabled the CPU will be used instead."
+msgstr ""
+
+#. Label for setting "Use VP9 NVDEC"
+#: system/settings/linux.xml
+msgctxt "#13483"
+msgid "Use VP9 NVDEC"
+msgstr ""
+
+#. Description of setting with label #13483 "Use VP9 NVDEC"
+#: system/settings/linux.xml
+msgctxt "#13484"
+msgid "Enable this option to use hardware acceleration for the VP9 codec. If disabled the CPU will be used instead."
+msgstr ""
+
+#. Label for setting "Use AV1 NVDEC"
+#: system/settings/linux.xml
+msgctxt "#13485"
+msgid "Use AV1 NVDEC"
+msgstr ""
+
+#. Description of setting with label #13485 "Use AV1 NVDEC"
+#: system/settings/linux.xml
+msgctxt "#13486"
+msgid "Enable this option to use hardware acceleration for the AV1 codec. If disabled the CPU will be used instead. Requires NVIDIA RTX 30 series or newer."
+msgstr ""
+
+#. Label for setting "Use MPEG2 NVDEC"
+#: system/settings/linux.xml
+msgctxt "#13487"
+msgid "Use MPEG2 NVDEC"
+msgstr ""
+
+#. Description of setting with label #13487 "Use MPEG2 NVDEC"
+#: system/settings/linux.xml
+msgctxt "#13488"
+msgid "Enable this option to use hardware acceleration for the MPEG2 codec. If disabled the CPU will be used instead."
+msgstr ""
+
+#. Label for setting "Use MPEG4 NVDEC"
+#: system/settings/linux.xml
+msgctxt "#13489"
+msgid "Use MPEG4 NVDEC"
+msgstr ""
+
+#. Description of setting with label #13489 "Use MPEG4 NVDEC"
+#: system/settings/linux.xml
+msgctxt "#13490"
+msgid "Enable this option to use hardware acceleration for the MPEG4 codec. If disabled the CPU will be used instead."
+msgstr ""
+
+#. Label for setting "Use VC1 NVDEC"
+#: system/settings/linux.xml
+msgctxt "#13491"
+msgid "Use VC1 NVDEC"
+msgstr ""
+
+#. Description of setting with label #13491 "Use VC1 NVDEC"
+#: system/settings/linux.xml
+msgctxt "#13492"
+msgid "Enable this option to use hardware acceleration for the VC1/WMV3 codec. If disabled the CPU will be used instead."
+msgstr ""
+
+#. Label for setting "Use VP8 NVDEC"
+#: system/settings/linux.xml
+msgctxt "#13493"
+msgid "Use VP8 NVDEC"
+msgstr ""
+
+#. Description of setting with label #13493 "Use VP8 NVDEC"
+#: system/settings/linux.xml
+msgctxt "#13494"
+msgid "Enable this option to use hardware acceleration for the VP8 codec. If disabled the CPU will be used instead."
+msgstr ""
+
+#empty strings from id 13495 to 13504
 
 #: system/settings/settings.xml
 msgctxt "#13505"
