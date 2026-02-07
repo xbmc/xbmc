@@ -106,7 +106,8 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect,
   VertexShader()->LoadSource("gl_yuv2rgb_vertex.glsl", m_defines);
 
   CLog::Log(LOGDEBUG, "GL: using shader format: {}", m_format);
-  CLog::Log(LOGDEBUG, "GL: using tonemap method: {}", toneMapMethod);
+  if (toneMap)
+    CLog::Log(LOGDEBUG, "GL: using tonemap method: {}", toneMapMethod);
 
   m_convMatrix.SetDestinationColorPrimaries(dstPrimaries).SetSourceColorPrimaries(srcPrimaries);
 }

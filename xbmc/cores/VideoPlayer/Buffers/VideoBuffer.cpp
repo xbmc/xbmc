@@ -109,7 +109,7 @@ bool CVideoBuffer::CopyNV12Picture(YuvImage* pDst, YuvImage *pSrc)
 {
   uint8_t *s = pSrc->plane[0];
   uint8_t *d = pDst->plane[0];
-  int w = pDst->width;
+  int w = pDst->width * pDst->bpp;
   int h = pDst->height;
   // Copy Y
   if ((w == pSrc->stride[0]) && (pSrc->stride[0] == pDst->stride[0]))
@@ -128,7 +128,7 @@ bool CVideoBuffer::CopyNV12Picture(YuvImage* pDst, YuvImage *pSrc)
 
   s = pSrc->plane[1];
   d = pDst->plane[1];
-  w = pDst->width;
+  w = pDst->width * pDst->bpp;
   h = pDst->height >> 1;
   // Copy packed UV (width is same as for Y as it's both U and V components)
   if ((w == pSrc->stride[1]) && (pSrc->stride[1] == pDst->stride[1]))
