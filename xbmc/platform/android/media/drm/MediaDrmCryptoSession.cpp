@@ -39,6 +39,21 @@ public:
   }
 };
 
+class Uint8VecBuffer : public Buffer
+{
+public:
+  inline Uint8VecBuffer(const Buffer& buf) : Buffer(buf) {}
+
+  inline Uint8VecBuffer(const std::vector<uint8_t>& vec) : Buffer(vec.size())
+  {
+    memcpy(data(), vec.data(), vec.size());
+  }
+
+  inline operator std::vector<uint8_t>() const
+  {
+    return std::vector<uint8_t>(data(), data() + capacity());
+  }
+};
 
 void CMediaDrmCryptoSession::Register()
 {
@@ -125,8 +140,9 @@ Buffer CMediaDrmCryptoSession::GetKeyRequest(const Buffer& init,
   CLog::Log(LOGDEBUG, "MediaDrm: GetKeyRequest");
   if (m_mediaDrm && m_sessionId)
   {
-    CJNIMediaDrmKeyRequest req = m_mediaDrm->getKeyRequest(*m_sessionId, CharVecBuffer(init), mimeType,
-      offlineKey ? CJNIMediaDrm::KEY_TYPE_OFFLINE : CJNIMediaDrm::KEY_TYPE_STREAMING, parameters);
+    CJNIMediaDrmKeyRequest req = m_mediaDrm->getKeyRequest(
+        *m_sessionId, Uint8VecBuffer(init), mimeType,
+        offlineKey ? CJNIMediaDrm::KEY_TYPE_OFFLINE : CJNIMediaDrm::KEY_TYPE_STREAMING, parameters);
 
     if (xbmc_jnienv()->ExceptionCheck())
     {
@@ -136,7 +152,7 @@ Buffer CMediaDrmCryptoSession::GetKeyRequest(const Buffer& init,
       return Buffer();
     }
 
-    Buffer data = CharVecBuffer(req.getData());
+    Buffer data = Uint8VecBuffer(req.getData());
 
     if (xbmc_jnienv()->ExceptionCheck())
     {
@@ -168,7 +184,8 @@ std::string CMediaDrmCryptoSession::ProvideKeyResponse(const Buffer& response)
   if (m_mediaDrm)
   {
     m_hasKeys = true;
-    std::vector<char> res = m_mediaDrm->provideKeyResponse(*m_sessionId, CharVecBuffer(response));
+    std::vector<uint8_t> res =
+        m_mediaDrm->provideKeyResponse(*m_sessionId, Uint8VecBuffer(response));
     if (xbmc_jnienv()->ExceptionCheck())
     {
       CLog::Log(LOGERROR, "MediaDrm: provideKeyResponse exception");
@@ -176,7 +193,7 @@ std::string CMediaDrmCryptoSession::ProvideKeyResponse(const Buffer& response)
       xbmc_jnienv()->ExceptionClear();
       return "";
     }
-    return std::string(res.data(), res.size());
+    return std::string(res.cbegin(), res.cend());
   }
 
   return "";
@@ -363,7 +380,7 @@ bool CMediaDrmCryptoSession::ProvisionRequest()
     return false;
   }
 
-  std::vector<char> provData = request.getData();
+  std::vector<uint8_t> provData = request.getData();
   if (xbmc_jnienv()->ExceptionCheck())
   {
     CLog::Log(LOGERROR, "MediaDrm: getProvisionRequest.getData exception");
@@ -384,7 +401,7 @@ bool CMediaDrmCryptoSession::ProvisionRequest()
   CLog::Log(LOGDEBUG, "MediaDrm: Provisioning: size: {}, url: {}", provData.size(), url);
 
   std::string tmp_str("{\"signedRequest\":\"");
-  tmp_str += std::string(provData.data(), provData.size());
+  tmp_str += std::string(provData.cbegin(), provData.cend());
   tmp_str += "\"}";
 
   std::string encoded;
@@ -407,7 +424,7 @@ bool CMediaDrmCryptoSession::ProvisionRequest()
     return false;
   }
   provData.clear();
-  char buf[8192];
+  uint8_t buf[8192];
   size_t nbRead;
 
   // read the file
