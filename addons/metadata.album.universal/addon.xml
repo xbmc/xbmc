@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.album.universal"
        name="Universal Album Scraper"
-       version="3.1.16"
+       version="3.1.18"
        provider-name="Olympia, Team Kodi">
   <requires>
     <import addon="xbmc.metadata" version="2.1.0"/>
@@ -23,6 +23,7 @@
     <summary lang="af_ZA">Universele Skraper vir Albums</summary>
     <summary lang="be_BY">Універсальны сродак атрымання звестак пра альбомы</summary>
     <summary lang="bg_BG">Универсален източник на информация за албуми</summary>
+    <summary lang="bs_BA">Univerzalni strugač za albume</summary>
     <summary lang="ca_ES">Raspador universal per àlbums</summary>
     <summary lang="cs_CZ">Univerzální zdroj získávání dat pro alba</summary>
     <summary lang="cy_GB">Crafwr Albymau Cyffredinol</summary>
@@ -68,9 +69,10 @@
     <summary lang="uk_UA">Універсальний екстрактор для альбомів</summary>
     <summary lang="vi_VN">Trình lấy dữ liệu album từ nhiều nguồn</summary>
     <summary lang="zh_CN">通用音乐专辑信息刮削器</summary>
-    <summary lang="zh_TW">通用音樂專輯訊息搜刮器</summary>
+    <summary lang="zh_TW">通用音樂專輯訊息爬蟲</summary>
     <description lang="af_ZA">Hierdie skraper kollekteer inligting vanaf die volgende ondersteunde werwe: MusicBrainz, last.fm, allmusic.com en amazon.de, terwyl kunswerke gegryp word vanaf: fanart.tv, last.fm en allmusic.com. Dit kan veld vir veld gestel word vanaf watter werf jy die spesifieke inligting wil hê.[CR][CR]Die aanvaklike soektog word altyd op MusicBrainz gedoen. Ingeval skakels van allmusic en/of amazon.de nie bygevoeg is op die MusicBrainz werf, kan velde vanaf allmusic.com en/of amazon.de nie gaan haal word nie (egter baie maklik om daardie ontbrekende skakels by te voeg).</description>
     <description lang="bg_BG">Сваля информация от следните сайтове: MusicBrainz, last.fm, allmusic.com и amazon.de. Изобрания извлича от: fanart.tv, last.fm и allmusic.com. Можете да определите от кой сайт каква информация да се сваля.[CR][CR]Първоначалното търсене винаги се прави в MusicBrainz. Когато не са налични препратки към allmusic и/или amazon.de на сайта на MusicBrainz извличането на информация от allmusic.com и/или amazon.de става невъзможно (добавянето им е много лесно).</description>
+    <description lang="bs_BA">Ovaj strugač prikuplja informacije sa sljedećih podržanih web lokacija: MusicBrainz, last.fm, allmusic.com i amazon.de, dok preuzima ilustracije sa: fanart.tv, last.fm i allmusic.com. Može se postaviti polje po polje sa koje stranice želite te specifične informacije.[CR][CR]Početna pretraga se uvijek vrši na MusicBrainz-u. U slučaju da linkovi za allmusic i/ili amazon.de nisu dodani na MusicBrainz stranicu, polja sa allmusic.com i/ili amazon.de ne mogu se preuzeti (vrlo je lako dodati te nedostajuće linkove).</description>
     <description lang="ca_ES">Aquest raspador recull informació dels següents llocs: MusicBrainz, last.fm, allmusic.com i amazon.de, alhora que agafa art de: fanart.tv, last.fm i allmusic.com. Es pot configurar camp a camp des de quin lloc voleu la informació específica. [CR][CR]La cerca inicial es realitza sempre a MusicBrainz. Els camps d&apos;allmusic i d&apos;amazon.de no es poden obtenir en el cas que els enllaços d&apos;allmusic i d&apos;amazon.de no siguin al lloc web de MusicBrainz (tot i que els enllaços que falten són fàcils d&apos;afegir).</description>
     <description lang="cs_CZ">Tento zdroj získává data z následujících podporovaných stránek: MusicBrainz, last.fm, allmusic.com and amazon.de, while grabs artwork from: fanart.tv, last.fm a allmusic.com. Je možno podrobně nastavit, které informace si přejete získat ze kterých stránek.[CR][CR]Prvotní vyhledání je vžy provedeno na MusicBrainz. V případě, že odkaz pro allmusic a nebo amazon.de není přidaný na stránku MusicBrainz, není možné údaje z allmusic.com a amazon.de stáhnout (avšak je velmi snadné tyto chybějící odkazy přidat).</description>
     <description lang="cy_GB">Mae&apos;r crafwr yn casglu gwybodaeth o&apos;r gwefannau canlynol: MusicBrainz, last.fm, allmusic.com ac amazon.de, tra&apos;n cipio gwaith celf o: fanart.tv, last.fm and allmusic.com. Mae modd ei osod fesul maes i ddewis pa wefan i gasglu gwybodaeth benodol.[CR][CR]Bydd y chwilio cychwynnol yn cael ei wneud ar MusicBrainz. Rhag ofn nad yw dolen allmusic wedi ei osod ar wefan MusicBrainz nid oes modd estyn meysydd o allmusic.com (mae&apos;n hawdd gosod y dolenni coll hynny)</description>

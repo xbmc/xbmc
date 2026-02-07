@@ -20,7 +20,11 @@
 
 import unicodedata
 from . import api_utils
-import xbmc
+try:
+    import xbmc
+except ModuleNotFoundError:
+    # only used for logging HTTP calls, not available nor needed for testing
+    xbmc = None
 try:
     from typing import Optional, Text, Dict, List, Any  # pylint: disable=unused-import
     InfoType = Dict[Text, Any]  # pylint: disable=invalid-name
@@ -41,6 +45,9 @@ MOVIE_URL = BASE_URL.format('movie/{}')
 COLLECTION_URL = BASE_URL.format('collection/{}')
 CONFIG_URL = BASE_URL.format('configuration')
 
+def log(message):
+    if xbmc:
+        xbmc.log(message, xbmc.LOGDEBUG)
 
 def search_movie(query, year=None, language=None, page=None):
     # type: (Text) -> List[InfoType]
@@ -54,7 +61,7 @@ def search_movie(query, year=None, language=None, page=None):
     :return: a list with found movies
     """
     query = unicodedata.normalize('NFC', query)
-    xbmc.log('using title of %s to find movie' % query, xbmc.LOGDEBUG)
+    log('using title of %s to find movie' % query)
     theurl = SEARCH_URL
     params = _set_params(None, language)
     params['query'] = query
@@ -75,7 +82,7 @@ def find_movie_by_external_id(external_id, language=None):
     :param language: the language filter for TMDb (optional)
     :return: the movie or error
     """
-    xbmc.log('using external id of %s to find movie' % external_id, xbmc.LOGDEBUG)
+    log('using external id of %s to find movie' % external_id)
     theurl = FIND_URL.format(external_id)
     params = _set_params(None, language)
     params['external_source'] = 'imdb_id'
@@ -94,7 +101,7 @@ def get_movie(mid, language=None, append_to_response=None):
     :append_to_response: the additional data to get from TMDb (optional)
     :return: the movie or error
     """
-    xbmc.log('using movie id of %s to get movie details' % mid, xbmc.LOGDEBUG)
+    log('using movie id of %s to get movie details' % mid)
     theurl = MOVIE_URL.format(mid)
     api_utils.set_headers(dict(HEADERS))
     return api_utils.load_info(theurl, params=_set_params(append_to_response, language))
@@ -110,7 +117,7 @@ def get_collection(collection_id, language=None, append_to_response=None):
     :append_to_response: the additional data to get from TMDb (optional)
     :return: the movie or error
     """
-    xbmc.log('using collection id of %s to get collection details' % collection_id, xbmc.LOGDEBUG)
+    log('using collection id of %s to get collection details' % collection_id)
     theurl = COLLECTION_URL.format(collection_id)
     api_utils.set_headers(dict(HEADERS))
     return api_utils.load_info(theurl, params=_set_params(append_to_response, language))
@@ -123,7 +130,7 @@ def get_configuration():
 
     :return: configuration details or error
     """
-    xbmc.log('getting configuration details', xbmc.LOGDEBUG)
+    log('getting configuration details')
     api_utils.set_headers(dict(HEADERS))
     return api_utils.load_info(CONFIG_URL, params=TMDB_PARAMS.copy())
 

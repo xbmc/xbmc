@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.artists.universal"
        name="Universal Artist Scraper"
-       version="4.3.18"
+       version="4.3.21"
        provider-name="Olympia, Team Kodi">
   <requires>
     <import addon="xbmc.metadata" version="2.1.0"/>
@@ -24,6 +24,7 @@
     <summary lang="ar_SA">ماسحة الفنان العالمية</summary>
     <summary lang="be_BY">Універсальны сродак атрымання звестак пра выканаўцаў</summary>
     <summary lang="bg_BG">Универсален източник за информация за артисти</summary>
+    <summary lang="bs_BA">Univerzalna strugalica za umjetnike</summary>
     <summary lang="ca_ES">Raspador universal per artistes</summary>
     <summary lang="cs_CZ">Univerzální zdroj získávání dat pro umělce</summary>
     <summary lang="cy_GB">Crafwr Cyffredinol ar gyfer Artistiaid</summary>
@@ -73,6 +74,7 @@
     <description lang="ar_SA">هذه الماسحة تجمع المعلومات من المواقع المدعومة التالية: TheAudioDb.com, MusicBrainz, last.fm, and allmusic.com, في حين تأخذ عناوين الأعمال الفنية من: fanart.tv, htbackdrops.com, last.fm and allmusic.com. يمكن أن ترتب حقل تلو حقل حسب الموقع الذي تريد منه تلك المعلومة المحددة.[CR][CR]البحث الابتدائي يتم دائما على ميوزك برينز. في حال أن رابط كل الموسيقى غير مضاف على حقول موقع ميوزك برينز من allmusic.com لا يمكن الحصول عليها(على الرغم من سهولة إضافة هذه الروابط المفقودة).</description>
     <description lang="be_BY">Гэты сканер збірае інфармацыю з наступных сайтаў: TheAudioDb.com, MusicBrainz, last.fm, allmusic.com, і бярэ вокладкі з: fanart.tv, htbackdrops.com, last.fm і allmusic.com. Кожнае поле можна наладзіць, каб атрымліваць інфармацыю з патрэбных вам крыніц.[CR][CR]Спачатку пошук выконваецца на MusicBrainz. Калі на сайце MusicBrainz не дададзеная спасылка на allmusic, то палі з allmusic.com не будуць запаўняцца (спасылку вельмі лёгка дадаць).</description>
     <description lang="bg_BG">Сваля информация от следните сайтове: TheAudioDb.com, MusicBrainz, last.fm, and allmusic.com. Изобрания извлича от: fanart.tv, htbackdrops.com, last.fm and allmusic.com. Можете да определите от кой сайт каква информация да се сваля.[CR][CR]Първоначалното търсене винаги се прави в MusicBrainz. Когато не е налична препратка към allmusic.com на сайта на MusicBrainz извличането на информация от allmusic.com става невъзможно (добавянето на препратка е много лесно).</description>
+    <description lang="bs_BA">Ovaj strugač prikuplja informacije sa sljedećih podržanih stranica: TheAudioDb.com, MusicBrainz, last.fm i allmusic.com, dok umjetnička djela preuzima sa: fanart.tv, htbackdrops.com, last.fm i allmusic.com. Može se postaviti polje po polje sa koje stranice želite dobiti te specifične informacije.[CR][CR]Početna pretraga se uvijek vrši na MusicBrainz-u. U slučaju da link za allmusic nije dodan na stranicu MusicBrainz, polja sa allmusic.com ne mogu se preuzeti (vrlo je lako dodati te nedostajuće linkove).</description>
     <description lang="ca_ES">Aquest raspador recopila informació dels següents llocs compatibles: TheAudioDb.com, MusicBrainz, last.fm i allmusic.com, mentre que agafa obres d&apos;art de: fanart.tv, htbackdrops.com, last.fm i allmusic.com. Es pot establir camp per camp des del lloc on voleu aquesta informació específica.[CR][CR]La cerca inicial sempre es fa a MusicBrainz. En cas que no s&apos;afegeixi l&apos;enllaç allmusic als camps del MusicBrainz, els camps d&apos;allmusic.com no es podran obtenir (tot i que és molt fàcil afegir aquests enllaços que falten).</description>
     <description lang="cs_CZ">Tento zdroj dat získává informace z následujících podporovaných stránek: TheAudioDb.com, MusicBrainz, last.fm, and allmusic.com, while grabs artwork from: fanart.tv, htbackdrops.com, last.fm a allmusic.com. Lze nastavit jakou informaci stahovat z jakých stránek.[CR][CR]Základní hledání je vždy provedeno na MusicBrainz. V případě, že schází odkaz allmusic na stránce MusicBrains, nelze stáhnout informace z allmusic.com (avšak je velmi snadné chybějící odkazy přidat).</description>
     <description lang="cy_GB">Mae&apos;r crafwr yn casglu gwybodaeth o&apos;r gwefannau canlynol: TheAudioDb.com, MusicBrainz, last.fm, a allmusic.com, tra&apos;n cipio gwaith celf o: fanart.tv, htbackdrops.com, last.fm a allmusic.com. Mae modd ei osod fesul maes i ddewis pa wefan i gasglu gwybodaeth benodol.[CR][CR]Bydd y chwilio cychwynnol yn cael ei wneud ar MusicBrainz. Rhag ofn nad yw dolen allmusic wedi ei osod ar wefan MusicBrainz nid oes modd estyn meysydd o allmusic.com (mae&apos;n hawdd gosod y dolenni coll hynny).</description>
@@ -115,6 +117,6 @@
     <description lang="uk_UA">Цей екстрактор витягує загальну інформацію з веб-сайтів TheAudioDb.com, MusicBrainz, last.fm та allmusic.com, а зображення — з fanart.tv, htbackdrops.com, last.fm та allmusic.com. Для кожного поля можна вказати з якого веб-сайту потрібно брати інформацію.[CR][CR]Початковий пошук завжди робиться на MusicBrainz. Якщо на веб-сайті MusicBrainz не додано посилання на allmusic, тоді поля з allmusic.com неможливо отримати (проте ці пропущені посилання дуже легко додати).</description>
     <description lang="vi_VN">Trình này thu thập thông tin từ những site được hỗ trợ như: TheAudioDb.com, MusicBrainz, last.fm, allmusic.com, và lấy ảnh bìa từ các nguồn: fanart.tv, htbackdrops.com, last.fm và allmusic.com. Bạn có thể tùy chỉnh chọn từng thứ riêng biệt để lấy từ site bạn muốn.[CR][CR]Lần tìm kiếm đầu tiên luôn luôn được sử dụng từ MusicBrainz. Trong trường hợp các link allmusic không có trên MusicBrainz, các trường từ allmusic.com sẽ không thể lấy về được (tuy nhiên rất dễ để tự thêm vào các link này bằng tay).</description>
     <description lang="zh_CN">本刮削器支持从以下网站获取信息：TheAudioDb.com、MusicBrainz、last.fm 和 allmusic.com，并从以下网站获取艺术图片：fanart.tv、htbackdrops.com、last.fm 和 allmusic.com。你可以指定每一项内容的来源网站。[CR][CR]初始结果总是先从 MusicBrainz 获取，如果 MusicBrainz 网站未加入到 allmusic 的外部链接，则无法获取 allmusic.com 的信息（当然你能很容易地加入缺失的链接）。</description>
-    <description lang="zh_TW">本搜刮器支援從以下網站取得資訊：TheAudioDb.com、MusicBrainz、last.fm和allmusic.com，並從以下網站取得專輯圖片：fanart.tv、htbackdrops.com、last.fm和allmusic.com。您可以指定每一項內容的來源網站。[CR][CR]初始搜尋結果總是先從MusicBrainz取得，如果MusicBrainz網站未加入到allmusic的外部連結，則無法取得allmusic.com的資訊 (當然您能很輕易地加入遺失的連結)。</description>
+    <description lang="zh_TW">本搜刮器支援從以下網站取得資訊：TheAudioDb.com、MusicBrainz、last.fm 和 allmusic.com，並從以下網站取得專輯圖片：fanart.tv、htbackdrops.com、last.fm 和 allmusic.com。您可以指定每一項內容的來源網站。[CR][CR]初始搜尋結果總是先從 MusicBrainz 取得，如果 MusicBrainz 網站未加入到 allmusic 的外部連結，則無法取得 allmusic.com 的資訊 (當然您能很輕易地加入遺失的連結)。</description>
   </extension>
 </addon>
