@@ -3194,6 +3194,16 @@
     ],
     "returns": "string"
   },
+  "VideoLibrary.AddMovie": {
+    "type": "method",
+    "description": "Add a new movie",
+    "transport": "Response",
+    "permission": "UpdateData",
+    "params": [
+      { "name": "filepath", "type": "string", "required": true, "minLength": 1, "description": "Path to the video file to add" }
+    ],
+    "returns": "string"
+  },
   "VideoLibrary.GetMovies": {
     "type": "method",
     "description": "Retrieve all movies",
