@@ -13,8 +13,10 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <cassert>
 #include <chrono>
 #include <mutex>
+#include <optional>
 #include <stdexcept>
 #include <thread>
 
@@ -330,45 +332,59 @@ bool CJobManager::OnJobProgress(unsigned int progress, unsigned int total, const
 
 void CJobManager::OnJobComplete(bool success, CJob* job)
 {
-  std::unique_lock lock(m_section);
-  // find the job in the processing queue
-  auto i = std::ranges::find_if(m_processing, JobFinder(job));
-  if (i != m_processing.end())
+  std::optional<CWorkItem> item = [&, this]
   {
-    // Move work item out of m_processing to avoid iterator invalidation
-    // when another thread modifies m_processing during callback execution
-    CWorkItem item(std::move(*i));
-    m_processing.erase(i);
-
-    // Handle cancelled jobs (no callbacks remaining)
-    if (item.GetCallbacks().empty())
+    std::unique_lock lock(m_section);
+    std::optional<CWorkItem> item;
+    auto i = std::ranges::find_if(m_processing, JobFinder(job));
+    if (i != m_processing.end())
     {
-      item.FreeJob();
-      return;
+      // Move work item out of m_processing to avoid iterator invalidation
+      // when another thread modifies m_processing during callback execution
+      item.emplace(std::move(*i));
+      m_processing.erase(i);
+    }
+    return item;
+  }();
+
+  if (item.has_value())
+  {
+    if (!item->GetCallbacks().empty())
+    {
+      // We can safely hold a reference to the counter as we are the ones
+      // controlling the creation and deletion.
+      auto& counter = [&, this]() -> std::atomic<size_t>&
+      {
+        std::unique_lock lock(m_section);
+
+        assert(!m_pendingCallbacks.contains(job));
+
+        // Track pending callbacks so CJob::IsShared() can query the count.
+        // Last callback (count==1) doesn't need to copy since it's the sole owner.
+        return m_pendingCallbacks.insert_or_assign(job, item->GetCallbacks().size()).first->second;
+      }();
+
+      while (IJobCallback* callback = item->PopCallback())
+      {
+        try
+        {
+          callback->OnJobComplete(item->GetId(), success, job);
+        }
+        catch (...)
+        {
+          CLog::LogF(LOGERROR, "Error processing job {}", job->GetType());
+        }
+        // Update pending count for next callback
+        counter = item->GetCallbacks().size();
+      }
+
+      {
+        std::unique_lock lock(m_section);
+        m_pendingCallbacks.erase(job);
+      }
     }
 
-    // Track pending callbacks so CJob::IsShared() can query the count.
-    // Last callback (count==1) doesn't need to copy since it's the sole owner.
-    m_pendingCallbacks[job] = item.GetCallbacks().size();
-
-    while (IJobCallback* callback = item.PopCallback())
-    {
-      lock.unlock();
-      try
-      {
-        callback->OnJobComplete(item.GetId(), success, job);
-      }
-      catch (...)
-      {
-        CLog::LogF(LOGERROR, "Error processing job {}", job->GetType());
-      }
-      lock.lock();
-      // Update pending count for next callback
-      m_pendingCallbacks[job] = item.GetCallbacks().size();
-    }
-
-    m_pendingCallbacks.erase(job);
-    item.FreeJob();
+    item->FreeJob();
   }
 }
 
@@ -376,7 +392,7 @@ size_t CJobManager::GetPendingCallbackCount(const CJob* job) const
 {
   std::unique_lock lock(m_section);
   auto it = m_pendingCallbacks.find(job);
-  return it != m_pendingCallbacks.end() ? it->second : 0;
+  return it != m_pendingCallbacks.end() ? static_cast<size_t>(it->second) : 0;
 }
 
 void CJobManager::RemoveWorker(const CJobWorker* worker)
