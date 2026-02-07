@@ -1,5 +1,7 @@
 include ../../Makefile.include PYTHONMODULE-PIL-VERSION ../../download-files.include
-DEPS= ../../Makefile.include Makefile PYTHONMODULE-PIL-VERSION ../../download-files.include pillow-crosscompile.patch
+DEPS= ../../Makefile.include Makefile PYTHONMODULE-PIL-VERSION ../../download-files.include \
+                                  pillow-crosscompile.patch \
+                                  12-android-multi-phase.patch
 
 PYTHONPATH=$(PYTHON_SITE_PKG)
 PILPATH=$(PYTHONPATH)
@@ -21,6 +23,8 @@ else ifeq ($(OS),darwin_embedded)
   PILPATH=$(PREFIX)/share/$(APP_NAME)/addons/script.module.pil
   PILPATHLIB=$(PILPATH)/lib
   PYTHONPATH=$(PILPATH):$(PYTHON_SITE_PKG)
+else ifeq ($(TARGET_PLATFORM),webos)
+  PILPATHLIB=$(PILPATH)
 endif
 
 SED_FLAG=-i
@@ -65,27 +69,33 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../pillow-crosscompile.patch
+ifeq ($(OS),android)
+	cd $(PLATFORM); patch -p1 -i ../12-android-multi-phase.patch
+endif
 
 $(PILPATHLIB):
 ifeq ($(OS),android)
 	mkdir -p $(PILPATHLIB)
 else ifeq ($(OS),darwin_embedded)
 	mkdir -p $(PILPATHLIB)
+else ifeq ($(TARGET_PLATFORM),webos)
+	mkdir -p $(PILPATHLIB)
 endif
 
 .installed-$(PLATFORM): $(PLATFORM) $(PILPATHLIB)
-	cd $(PLATFORM); $(NATIVEPREFIX)/bin/python3 setup.py build build_py build_ext $(BUILD_OPTS) install --install-lib $(PILPATH) bdist_egg
+	cd $(PLATFORM); $(NATIVEPREFIX)/bin/python3 setup.py build build_py build_ext $(BUILD_OPTS) install --install-lib $(PILPATHLIB) bdist_egg
 ifeq ($(OS),android)
 	unzip -o $(PLATFORM)/dist/pillow-*.egg -d $(PILPATHLIB)
 	cd $(PILPATHLIB)/PIL && \
           sed $(SED_FLAG) -e 's/import sys/import os, sys /' \
                           -e '/__file__/ s/_imaging/lib_imaging/g' \
-                          -e 's/pkg_resources.resource_filename(__name__,/os.path.join(os.environ["KODI_ANDROID_LIBS"], /' \
+                          -e "s/\.*with.*joinpath('\(.*\)').*/__file__ = os.path.join(os.environ[\"KODI_ANDROID_LIBS\"], '\1')/" \
+                          -e 's/^        /    /' \
                               _imaging*.py
 else ifeq ($(OS),darwin_embedded)
 	unzip -o $(PLATFORM)/dist/pillow-*.egg -d $(PILPATHLIB)
 else ifeq ($(TARGET_PLATFORM),webos)
-	unzip -o $(PLATFORM)/dist/pillow-*.egg -d $(PILPATH)
+	unzip -o $(PLATFORM)/dist/pillow-*.egg -d $(PILPATHLIB)
 endif
 	touch $@
 
