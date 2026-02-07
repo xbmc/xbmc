@@ -15,6 +15,8 @@
 
 #include "GUIBaseContainer.h"
 
+#include <optional>
+
 /*!
  \ingroup controls
  \brief
@@ -59,5 +61,8 @@ protected:
   int GetCurrentColumn() const;
 
   int m_itemsPerRow;
+
+  // Cached offset calculated in Process() and reused in Render()
+  std::optional<int> m_cachedScrollOffset;
 };
 
