@@ -109,6 +109,10 @@ struct ProgramInformation
 
 struct ClipInformation
 {
+  // user-defined ctor required for XCode 15.2 and emplace_back
+  ClipInformation() = default;
+  ClipInformation(unsigned int newClip, std::string&& newCodec);
+
   unsigned int clip{0};
   std::string version;
   std::string codec;
@@ -119,6 +123,13 @@ struct ClipInformation
 
 struct PlaylistMarkInformation
 {
+  // user-defined ctor required for XCode 15.2 and emplace_back
+  PlaylistMarkInformation(BLURAY_MARK_TYPE newMarkType,
+                          unsigned int newPlayItemReference,
+                          std::chrono::milliseconds newTime,
+                          unsigned int newElementaryStreamPacketIdentifier,
+                          std::chrono::milliseconds newDuration);
+
   BLURAY_MARK_TYPE markType{0};
   unsigned int playItemReference{0};
   std::chrono::milliseconds time{0ms};
@@ -128,6 +139,11 @@ struct PlaylistMarkInformation
 
 struct ChapterInformation
 {
+  // user-defined ctor required for XCode 15.2 and emplace_back
+  ChapterInformation(unsigned int newChapter,
+                     std::chrono::milliseconds newStart,
+                     std::chrono::milliseconds newDuration);
+
   unsigned int chapter{0};
   std::chrono::milliseconds start{0ms};
   std::chrono::milliseconds duration{0ms};

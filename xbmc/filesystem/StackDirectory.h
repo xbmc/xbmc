@@ -19,8 +19,11 @@ namespace XFILE
   {
     typedef struct StackPart
     {
+      // user-defined ctor required for XCode 15.2 and emplace_back
+      StackPart(std::string&& newTitle, std::string&& newVolume = {});
+
       std::string title;
-      std::string volume{};
+      std::string volume;
 
       auto operator<=>(const StackPart&) const = default;
     } StackPart;

@@ -50,12 +50,27 @@ class CEdlParserResult
 public:
   struct EditEntry
   {
+    // user-defined ctor required for XCode 15.2 and emplace_back
+    EditEntry(const Edit& newEdit, const std::optional<EdlSourceLocation>& newSource)
+      : edit(newEdit),
+        source(newSource)
+    {
+    }
+
     Edit edit;
     std::optional<EdlSourceLocation> source;
   };
 
   struct SceneMarkerEntry
   {
+    // user-defined ctor required for XCode 15.2 and emplace_back
+    SceneMarkerEntry(std::chrono::milliseconds newMarker,
+                     const std::optional<EdlSourceLocation>& newSource)
+      : marker(newMarker),
+        source(newSource)
+    {
+    }
+
     std::chrono::milliseconds marker;
     std::optional<EdlSourceLocation> source;
   };
@@ -63,15 +78,15 @@ public:
   const std::vector<EditEntry>& GetEdits() const { return m_edits; }
   const std::vector<SceneMarkerEntry>& GetSceneMarkers() const { return m_sceneMarkers; }
 
-  void AddEdit(const Edit& edit, std::optional<EdlSourceLocation> source = std::nullopt)
+  void AddEdit(const Edit& edit, const std::optional<EdlSourceLocation>& source = std::nullopt)
   {
-    m_edits.emplace_back(EditEntry{edit, source});
+    m_edits.emplace_back(edit, source);
   }
 
   void AddSceneMarker(std::chrono::milliseconds marker,
-                      std::optional<EdlSourceLocation> source = std::nullopt)
+                      const std::optional<EdlSourceLocation>& source = std::nullopt)
   {
-    m_sceneMarkers.emplace_back(SceneMarkerEntry{marker, source});
+    m_sceneMarkers.emplace_back(marker, source);
   }
 
   bool IsEmpty() const { return m_edits.empty() && m_sceneMarkers.empty(); }

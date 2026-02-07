@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -135,11 +135,9 @@ void CGUIPanelContainer::Render()
         else
         {
           if (m_orientation == VERTICAL)
-            renderitems.emplace_back(
-                RENDERITEM{origin.x + col * m_layout->Size(HORIZONTAL), pos, item, false});
+            renderitems.emplace_back(origin.x + col * m_layout->Size(HORIZONTAL), pos, item, false);
           else
-            renderitems.emplace_back(
-                RENDERITEM{pos, origin.y + col * m_layout->Size(VERTICAL), item, false});
+            renderitems.emplace_back(pos, origin.y + col * m_layout->Size(VERTICAL), item, false);
         }
       }
       // increment our position
@@ -156,11 +154,11 @@ void CGUIPanelContainer::Render()
     if (focusedItem)
     {
       if (m_orientation == VERTICAL)
-        renderitems.emplace_back(RENDERITEM{origin.x + focusedCol * m_layout->Size(HORIZONTAL),
-                                            focusedPos, focusedItem, true});
+        renderitems.emplace_back(origin.x + focusedCol * m_layout->Size(HORIZONTAL), focusedPos,
+                                 focusedItem, true);
       else
-        renderitems.emplace_back(RENDERITEM{
-            focusedPos, origin.y + focusedCol * m_layout->Size(VERTICAL), focusedItem, true});
+        renderitems.emplace_back(focusedPos, origin.y + focusedCol * m_layout->Size(VERTICAL),
+                                 focusedItem, true);
     }
 
     if (CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder() ==

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -89,7 +89,6 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
               "[WHITELIST] Using the default whitelist because the user whitelist is empty");
     std::vector<RESOLUTION> candidates;
     RESOLUTION_INFO info;
-    std::string resString;
     CServiceBroker::GetWinSystem()->GetGfxContext().GetAllowedResolutions(candidates);
     for (const auto& c : candidates)
     {
@@ -102,10 +101,7 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
         // and this causes ugly double switching.
         // This won't allow 25p / 30p playback on native refreshrate by default
         if ((info.fRefreshRate > 30) || (MathUtils::FloatEquals(info.fRefreshRate, 24.0f, 0.1f)))
-        {
-          resString = CDisplaySettings::GetInstance().GetStringFromRes(c);
-          indexList.emplace_back(resString);
-        }
+          indexList.push_back(CDisplaySettings::GetInstance().GetStringFromRes(c));
       }
     }
   }

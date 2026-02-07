@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Team Kodi
+ *  Copyright (C) 2023-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -456,10 +456,9 @@ void CGUIDialogVideoManager::AppendItemFolderToFileBrowserSources(
   const std::string itemDir{URIUtils::GetParentPath(m_videoAsset->GetDynPath())};
   if (!itemDir.empty() && XFILE::CDirectory::Exists(itemDir))
   {
-    CMediaSource itemSource{};
+    CMediaSource& itemSource = sources.emplace_back();
     itemSource.strName = g_localizeStrings.Get(36041); // * Item folder
     itemSource.strPath = itemDir;
-    sources.emplace_back(itemSource);
   }
 }
 
