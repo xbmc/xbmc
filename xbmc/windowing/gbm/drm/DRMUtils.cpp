@@ -64,17 +64,12 @@ drm_fb* CDRMUtils::DrmFbGetFromBo(struct gbm_bo* bo)
   {
     struct drm_fb* fb = static_cast<drm_fb*>(gbm_bo_get_user_data(bo));
     if (fb)
-    {
-      if (m_gui_plane->GetFormat() == fb->format)
-        return fb;
-      else
-        DrmFbDestroyCallback(bo, gbm_bo_get_user_data(bo));
-    }
+      return fb;
   }
 
   struct drm_fb* fb = new drm_fb;
   fb->bo = bo;
-  fb->format = m_gui_plane->GetFormat();
+  fb->format = gbm_bo_get_format(bo);
 
   uint32_t width, height, handles[4] = {0}, strides[4] = {0}, offsets[4] = {0};
 
@@ -161,79 +156,123 @@ bool CDRMUtils::FindPreferredMode()
   return true;
 }
 
-bool CDRMUtils::FindPlanes()
+bool CDRMUtils::FindGuiPlane(uint32_t format, uint64_t modifier)
 {
-  for (size_t i = 0; i < m_crtcs.size(); i++)
+  const auto gui_format = std::ranges::find(m_gui_formats, format, &guiformat::drm);
+
+  if (gui_format == m_gui_formats.end())
   {
-    if (!(m_encoder->GetPossibleCrtcs() & (1 << i)))
-      continue;
+    CLog::LogF(LOGERROR, "Requested format {} for gui plane is not supported",
+               DRMHELPERS::FourCCToString(format));
+    return false;
+  }
 
-    auto videoPlane = std::ranges::find_if(m_planes,
-                                           [&i](auto& plane)
-                                           {
-                                             if (plane->GetPossibleCrtcs() & (1 << i))
-                                             {
-                                               return plane->SupportsFormat(DRM_FORMAT_NV12);
-                                             }
-                                             return false;
-                                           });
+  const PlaneType gui_type = HasQuirk(QUIRK_NEEDSPRIMARY) ? PLANE_TYPE_PRIMARY : PLANE_TYPE_ANY;
+  const RESOLUTION_INFO res = GetCurrentMode();
 
-    uint32_t videoPlaneId{0};
-
-    if (videoPlane != m_planes.end())
-      videoPlaneId = videoPlane->get()->GetPlaneId();
-
-    auto guiPlane = std::ranges::find_if(
-        m_planes,
-        [&i, &videoPlaneId](auto& plane)
-        {
-          if (plane->GetPossibleCrtcs() & (1 << i))
-          {
-            return (plane->GetPlaneId() != videoPlaneId &&
-                    (videoPlaneId == 0 || plane->SupportsFormat(DRM_FORMAT_ARGB8888)) &&
-                    (plane->SupportsFormat(DRM_FORMAT_XRGB2101010) ||
-                     plane->SupportsFormat(DRM_FORMAT_XRGB8888)));
-          }
-          return false;
-        });
-
-    if (videoPlane != m_planes.end() && guiPlane != m_planes.end())
+  for (auto& crtc : m_encoder->GetPossibleCrtcs(m_crtcs, m_crtc))
+  {
+    for (auto& plane : m_planes)
     {
-      m_crtc = m_crtcs[i].get();
-      m_video_plane = videoPlane->get();
-      m_gui_plane = guiPlane->get();
-      break;
+      if (!plane->Check(res.iWidth, res.iHeight, format, modifier, crtc, gui_type))
+        continue;
+
+      plane->SetFormat(format);
+      plane->SetModifier(modifier);
+      m_old_crtc = m_crtc;
+      m_crtc = crtc;
+      m_gui_plane = plane.get();
+      CLog::LogF(LOGINFO, "Using gui plane [{}x{}] id:{}, format:{}, modifier:{}, crtc id:{}",
+                 res.iWidth, res.iHeight, m_gui_plane->GetId(), DRMHELPERS::FourCCToString(format),
+                 DRMHELPERS::ModifierToString(modifier), m_crtc->GetId());
+      return true;
     }
+  }
 
-    if (guiPlane != m_planes.end())
+  CLog::LogF(LOGERROR, "Requested format {} and modifier {} for gui plane is not supported",
+             DRMHELPERS::FourCCToString(format), DRMHELPERS::ModifierToString(modifier));
+
+  return false;
+}
+
+bool CDRMUtils::FindVideoAndGuiPlane(uint32_t format,
+                                     uint64_t modifier,
+                                     uint64_t width,
+                                     uint64_t height)
+{
+  if (m_gui_plane == nullptr)
+    return false;
+
+  for (auto& gui_format : m_gui_formats)
+  {
+    if (gui_format.drm != m_gui_plane->GetFormat())
+      continue;
+    if (!gui_format.alpha)
     {
-      if (!m_crtc && m_encoder->GetCrtcId() == m_crtcs[i]->GetCrtcId())
+      CLog::LogF(LOGWARNING,
+                 "GUI plane format {} can not do alpha blending, "
+                 "video will be rendered through EGL import over the gui plane",
+                 DRMHELPERS::FourCCToString(m_gui_plane->GetFormat()));
+      m_video_plane = nullptr;
+      return false;
+    }
+    break;
+  }
+
+  const PlaneType gui_type = HasQuirk(QUIRK_NEEDSPRIMARY) ? PLANE_TYPE_PRIMARY : PLANE_TYPE_ANY;
+  const RESOLUTION_INFO res = GetCurrentMode();
+
+  // check if current config already satisfies
+  if (m_video_plane != nullptr &&
+      m_video_plane->Check(width, height, format, modifier, m_crtc, PLANE_TYPE_ANY))
+    return true;
+
+  for (auto& crtc : m_encoder->GetPossibleCrtcs(m_crtcs, m_crtc))
+  {
+    for (auto& gui_plane : m_planes)
+    {
+      if (!gui_plane->Check(res.iWidth, res.iHeight, m_gui_plane->GetFormat(),
+                            m_gui_plane->GetModifier(), crtc, gui_type))
+        continue;
+
+      for (auto& video_plane : m_planes)
       {
-        m_crtc = m_crtcs[i].get();
-        m_gui_plane = guiPlane->get();
-        m_video_plane = nullptr;
+        if (video_plane->GetId() == gui_plane->GetId() ||
+            !video_plane->Check(width, height, format, modifier, crtc, PLANE_TYPE_ANY) ||
+            !gui_plane->MoveOnTopOf(video_plane.get()))
+          continue;
+
+        gui_plane->SetFormat(m_gui_plane->GetFormat());
+        gui_plane->SetModifier(m_gui_plane->GetModifier());
+        video_plane->SetFormat(format);
+        video_plane->SetModifier(modifier);
+
+        m_old_crtc = m_crtc;
+        m_crtc = crtc;
+
+        m_gui_plane = gui_plane.get();
+        m_video_plane = video_plane.get();
+
+        CLog::LogF(LOGINFO,
+                   "Using gui plane [{}x{}] id:{}, video plane [{}x{}] id:{} on "
+                   "crtc id:{} for video format:{}, video modifier:{}",
+                   res.iWidth, res.iHeight, m_gui_plane->GetId(), width, height,
+                   m_video_plane->GetId(), m_crtc->GetId(), DRMHELPERS::FourCCToString(format),
+                   DRMHELPERS::ModifierToString(modifier));
+        return true;
       }
     }
   }
 
-  CLog::Log(LOGINFO, "CDRMUtils: using crtc: {}", m_crtc->GetCrtcId());
-
-  // video plane may not be available
-  if (m_video_plane)
-    CLog::LogF(LOGDEBUG, "Using video plane {}", m_video_plane->GetPlaneId());
-
-  if (m_gui_plane->SupportsFormat(DRM_FORMAT_XRGB2101010))
-  {
-    m_gui_plane->SetFormat(DRM_FORMAT_XRGB2101010);
-    CLog::LogF(LOGDEBUG, "Using 10bit gui plane {}", m_gui_plane->GetPlaneId());
-  }
-  else
-  {
-    m_gui_plane->SetFormat(DRM_FORMAT_XRGB8888);
-    CLog::LogF(LOGDEBUG, "Using gui plane {}", m_gui_plane->GetPlaneId());
-  }
-
-  return true;
+  CLog::LogF(LOGWARNING,
+             "Rendering will be done through EGL. "
+             "Can not find a Video Plane [{}x{}] format:{}, modifier:{} "
+             "together with a Gui Plane [{}x{}] format:{}, modifier:{}.",
+             res.iWidth, res.iHeight, DRMHELPERS::FourCCToString(format),
+             DRMHELPERS::ModifierToString(modifier), width, height,
+             DRMHELPERS::FourCCToString(m_gui_plane->GetFormat()),
+             DRMHELPERS::ModifierToString(m_gui_plane->GetModifier()));
+  return false;
 }
 
 void CDRMUtils::PrintDrmDeviceInfo(drmDevicePtr device)
@@ -344,6 +383,14 @@ bool CDRMUtils::OpenDrm(bool needConnector)
 
     CLog::LogF(LOGDEBUG, "Opened device: {}", device->nodes[DRM_NODE_PRIMARY]);
 
+    drmVersionPtr version = drmGetVersion(m_fd);
+    if (version)
+    {
+      if (strcmp(version->name, "amdgpu") == 0)
+        m_drm_quirks |= QUIRK_NEEDSPRIMARY;
+      drmFreeVersion(version);
+    }
+
     PrintDrmDeviceInfo(device);
 
     const char* renderPath = drmGetRenderDeviceNameFromFd(m_fd);
@@ -413,7 +460,7 @@ bool CDRMUtils::InitDrm()
 
   m_crtcs.clear();
   for (int i = 0; i < resources->count_crtcs; i++)
-    m_crtcs.emplace_back(std::make_unique<CDRMCrtc>(m_fd, resources->crtcs[i]));
+    m_crtcs.emplace_back(std::make_unique<CDRMCrtc>(m_fd, resources->crtcs[i], i));
 
   drmModeFreeResources(resources);
 
@@ -442,9 +489,6 @@ bool CDRMUtils::InitDrm()
   if (!FindCrtc())
     return false;
 
-  if (!FindPlanes())
-    return false;
-
   if (!FindPreferredMode())
     return false;
 
@@ -470,9 +514,31 @@ bool CDRMUtils::InitDrm()
       return false;
     }
 
-    CLog::Log(LOGINFO, "CDRMUtils: Successfully authorized drm magic");
+    CLog::LogF(LOGINFO, "Successfully authorized drm magic");
   }
 
+  const PlaneType gui_type = HasQuirk(QUIRK_NEEDSPRIMARY) ? PLANE_TYPE_PRIMARY : PLANE_TYPE_ANY;
+  const RESOLUTION_INFO res = GetCurrentMode();
+
+  for (auto& plane : m_planes)
+  {
+    for (auto& format : m_gui_formats)
+    {
+      if (!plane->Check(res.iWidth, res.iHeight, format.drm, DRM_FORMAT_MOD_INVALID, nullptr,
+                        gui_type))
+        continue;
+
+      if (!format.active)
+        format.active = true;
+
+      for (uint64_t modifier : plane->GetModifiersForFormat(format.drm))
+      {
+        auto it = std::ranges::find(format.modifiers, modifier);
+        if (it == format.modifiers.end())
+          format.modifiers.push_back(modifier);
+      }
+    }
+  }
   return true;
 }
 
@@ -517,7 +583,7 @@ bool CDRMUtils::FindConnector()
     return false;
   }
 
-  CLog::Log(LOGINFO, "CDRMUtils: Using connector: {}", connector->get()->GetName());
+  CLog::LogF(LOGINFO, "Using connector: {}", connector->get()->GetName());
 
   m_connector = connector->get();
   return true;
@@ -535,7 +601,7 @@ bool CDRMUtils::FindEncoder()
     return false;
   }
 
-  CLog::Log(LOGINFO, "CDRMUtils: Using encoder: {}", encoder->get()->GetEncoderId());
+  CLog::LogF(LOGINFO, "Using encoder: {}", encoder->get()->GetEncoderId());
 
   m_encoder = encoder->get();
   return true;
@@ -543,23 +609,20 @@ bool CDRMUtils::FindEncoder()
 
 bool CDRMUtils::FindCrtc()
 {
-  for (size_t i = 0; i < m_crtcs.size(); i++)
+  for (auto& crtc : m_encoder->GetPossibleCrtcs(m_crtcs))
   {
-    if (m_encoder->GetPossibleCrtcs() & (1 << i))
+    if (crtc->GetCrtcId() != m_encoder->GetCrtcId())
+      continue;
+    m_orig_crtc = crtc;
+    m_crtc = m_orig_crtc;
+    if (m_orig_crtc->GetModeValid())
     {
-      if (m_crtcs[i]->GetCrtcId() == m_encoder->GetCrtcId())
-      {
-        m_orig_crtc = m_crtcs[i].get();
-        if (m_orig_crtc->GetModeValid())
-        {
-          m_mode = m_orig_crtc->GetMode();
-          CLog::LogF(LOGDEBUG, "Original crtc mode: {}x{}{} @ {} Hz", m_mode->hdisplay,
-                     m_mode->vdisplay, m_mode->flags & DRM_MODE_FLAG_INTERLACE ? "i" : "",
-                     m_mode->vrefresh);
-        }
-        return true;
-      }
+      m_mode = m_orig_crtc->GetMode();
+      CLog::LogF(LOGDEBUG, "Original crtc id: {}, mode: {}x{}{} @ {} Hz", m_crtc->GetCrtcId(),
+                 m_mode->hdisplay, m_mode->vdisplay,
+                 m_mode->flags & DRM_MODE_FLAG_INTERLACE ? "i" : "", m_mode->vrefresh);
     }
+    return true;
   }
 
   return false;
@@ -694,14 +757,4 @@ std::vector<std::string> CDRMUtils::GetConnectedConnectorNames()
   }
 
   return connectorNames;
-}
-
-uint32_t CDRMUtils::FourCCWithAlpha(uint32_t fourcc)
-{
-  return (fourcc & 0xFFFFFF00) | static_cast<uint32_t>('A');
-}
-
-uint32_t CDRMUtils::FourCCWithoutAlpha(uint32_t fourcc)
-{
-  return (fourcc & 0xFFFFFF00) | static_cast<uint32_t>('X');
 }

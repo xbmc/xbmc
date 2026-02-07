@@ -66,7 +66,7 @@ bool CDRMConnector::CheckConnector()
   unsigned retryCnt = 7;
   while (!IsConnected() && retryCnt > 0)
   {
-    CLog::Log(LOGDEBUG, "CDRMConnector::{} - connector is disconnected", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "connector is disconnected");
     retryCnt--;
     KODI::TIME::Sleep(1s);
 
@@ -101,19 +101,15 @@ std::string CDRMConnector::GetName()
 
 std::vector<uint8_t> CDRMConnector::GetEDID() const
 {
-  auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(),
-                               [](auto& prop) { return prop->name == std::string_view("EDID"); });
 
-  if (property == m_propsInfo.end())
+  uint64_t blob_id = GetPropertyValue("EDID").value_or(0);
+
+  if (blob_id == 0)
   {
     CLog::LogF(LOGDEBUG, "failed to find EDID property for connector: {}",
                m_connector->connector_id);
     return {};
   }
-
-  uint64_t blob_id = m_props->prop_values[std::distance(m_propsInfo.begin(), property)];
-  if (blob_id == 0)
-    return {};
 
   drmModePropertyBlobPtr blob = drmModeGetPropertyBlob(m_fd, blob_id);
   if (!blob)
