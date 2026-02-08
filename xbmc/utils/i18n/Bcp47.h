@@ -54,17 +54,7 @@ public:
    */
   std::string Format(Bcp47FormattingStyle style = Bcp47FormattingStyle::FORMAT_BCP47) const;
 
-  // Accessors
-  //! @todo consider returning const references
-  Bcp47TagType GetType() const { return m_type; }
-  const std::string& GetLanguage() const { return m_language; }
-  const std::vector<std::string>& GetExtLangs() const { return m_extLangs; }
-  const std::string& GetScript() const { return m_script; }
-  const std::string& GetRegion() const { return m_region; }
-  const std::vector<std::string>& GetVariants() const { return m_variants; }
-  const std::vector<Bcp47Extension>& GetExtensions() const { return m_extensions; }
-  const std::vector<std::string>& GetPrivateUse() const { return m_privateUse; }
-  const std::string& GetGrandfathered() const { return m_grandfathered; }
+  friend class CBcp47Formatter;
 
 private:
   CBcp47() = default;
