@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2025 Team Kodi
+ *  Copyright (C) 2025-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -8,15 +8,12 @@
 
 #include "utils/i18n/Bcp47.h"
 
+#include "ServiceBroker.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/i18n/Bcp47Formatter.h"
 #include "utils/i18n/Bcp47Parser.h"
-#include "utils/i18n/Iso3166_1.h"
-#include "utils/i18n/Iso639.h"
-#include "utils/i18n/Iso639_1.h"
-#include "utils/i18n/Iso639_2.h"
-#include "utils/i18n/TableLanguageCodes.h"
+#include "utils/i18n/Bcp47Registry/SubTagRegistryManager.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -33,12 +30,15 @@ bool CBcp47::operator==(const ParsedBcp47Tag& other) const
          other.m_grandfathered == m_grandfathered;
 }
 
-std::optional<CBcp47> CBcp47::ParseTag(std::string str)
+std::optional<CBcp47> CBcp47::ParseTag(std::string str, const CSubTagRegistryManager* registry)
 {
   auto p = CBcp47Parser::Parse(str);
 
   if (!p.has_value())
     return std::nullopt;
+
+  if (registry == nullptr)
+    registry = &CServiceBroker::GetSubTagRegistry();
 
   CBcp47 tag;
   tag.m_type = p->m_type;
@@ -51,142 +51,122 @@ std::optional<CBcp47> CBcp47::ParseTag(std::string str)
   tag.m_privateUse = std::move(p->m_privateUse);
   tag.m_grandfathered = std::move(p->m_grandfathered);
 
-  tag.m_isValid = tag.Validate();
+  tag.m_isValid = tag.Validate(registry);
 
   return tag;
 }
 
-bool CBcp47::Validate()
+bool CBcp47::Validate(const CSubTagRegistryManager* registry)
 {
-  // Validity rules from RFC5646:
+  // Validity rules per RFC 5646 2.2.9:
   // 1) well-formed: always true as the object can only be created from well-formed text tags.
   //    Exception: irregular grandfathered tags do not have to be well formed in order to be valid
+  //    Other special case: A tag may consist entirely of private use subtags (2.2.7.4)
+
+  // There is nothing to lookup in the registry for a private-use only tag
+  if (m_type == Bcp47TagType::PRIVATE_USE)
+    return true;
+
+  LoadRegistrySubTags(registry);
+
   if (m_type == Bcp47TagType::GRANDFATHERED)
     return true;
 
   // 2) either the tag is in the list of grandfathered tags or the primary language, extended
-  //    language, script, region and variant subtags appear in the IANA registry
-  if (!IsValidLanguage() || !IsValidRegion())
+  //    language, script, region and variant subtags appear in the IANA registry as of the
+  //    particular date.
+  if (!IsValidLanguage() || !IsValidExtLang() || !IsValidScript() || !IsValidRegion() ||
+      !IsValidVariants())
     return false;
-  //! @todo validate grandfathered tags
-  //! @todo validate extended language - count of extlang may not be enough
-  if (HasMultipleExtLang())
-    return false;
-  //! @todo validate script against ISO 15924 - also reserved Qaaa-Qabx
-  //! @todo validate variants
 
-  // 3) There are no duplicate variant subtags
+  // 3) There are no duplicate variant subtags.
   if (HasDuplicateVariants())
     return false;
 
-  // 4) There are no duplicate singleton (extension) subtags
+  // 4) There are no duplicate singleton (extension) subtags.
   if (HasDuplicateExtensions())
     return false;
 
-  // Validity within extensions is not considered
-  // Validity under older rules (RFC 3066) is not handled
+  // note: validity of the extension subtags is not considered
+  // note: validity under older rules (RFC 3066) is not handled
 
   return true;
 }
 
 bool CBcp47::IsValidLanguage() const
 {
-  // Language subtag, mandatory, validate against ISO 639
-  // except if a private use subtag was used.
-
+  // The language subtag is mandatory.
   if (m_language.empty())
   {
-    if (!m_privateUse.empty())
-      return true;
-
     CLog::LogF(LOGDEBUG, "The language subtag is mandatory and cannot be blank.");
     return false;
   }
 
-  //! @todo separate future PR replace with checks against the IANA subtags registry
-  if (m_language.length() == 2 && StringUtils::IsAsciiLetters(m_language))
-  {
-    // ISO 639-1
-    auto ret = CIso639_1::LookupByCode(m_language);
-    if (!ret)
-    {
-      CLog::LogF(LOGDEBUG, "{} is not a valid ISO 639-1 code.", m_language);
-      return false;
-    }
+  // qaa-qtz range reserved for private use by ISO 639-2 - always accept
+  // @todo is it possible to retrieve the range from the registry?
+  if (m_language.length() == 3 && m_language >= "qaa" && m_language <= "qtz")
     return true;
-  }
-  else if (m_language.length() == 3 && StringUtils::IsAsciiLetters(m_language))
-  {
-    // qaa-qtz range reserved for private use by ISO 639-2 - always accept
-    if (m_language >= "qaa" && m_language <= "qtz")
-      return true;
 
-    // Try ISO 639-2/T or B
-    std::string bCode;
-    const auto tCode = CIso639_2::LookupByCode(m_language);
-    if (tCode.has_value())
-      bCode = CIso639_2::TCodeToBCode(m_language).value_or(m_language);
-    else if (CIso639_2::BCodeToTCode(StringToLongCode(m_language)).has_value())
-      bCode = m_language;
-
-    if (bCode.empty())
-    {
-      CLog::LogF(LOGDEBUG, "{} is not a valid ISO 639-2 code.", m_language);
-      return false;
-    }
-
-    // The alpha-3 of languages that have an alpha-2 is not valid.
-    if (std::ranges::binary_search(LanguageCodesByIso639_2b, bCode, {}, &ISO639::iso639_2b))
-    {
-      CLog::LogF(LOGDEBUG,
-                 "{} has an equivalent ISO 639-1 2-char code and is therefore not valid in a BCP47 "
-                 "language tag.",
-                 m_language);
-      return false;
-    }
+  if (m_registrySubTags.has_value() && m_registrySubTags.value().m_language.has_value())
     return true;
-  }
 
   CLog::LogF(LOGDEBUG, "{} is not a valid language subtag.", m_language);
   return false;
 }
 
-bool CBcp47::HasMultipleExtLang() const
+bool CBcp47::IsValidExtLang() const
 {
-  // Multiple extlang subtags cannot be valid per RFC 5646 2.2.2.4.
-  return m_extLangs.size() > 1;
+  // The extended Language subtag is optional.
+  if (m_extLangs.empty())
+    return true;
+
+  // A tag with multiple extlang subtags cannot be valid per RFC 5646 2.2.2.4.
+  if (m_extLangs.size() > 1)
+    return false;
+
+  if (m_registrySubTags.has_value() && !m_registrySubTags.value().m_extLangs.empty())
+    return true;
+
+  CLog::LogF(LOGDEBUG, "{} is not a valid extended language subtag.", m_extLangs[0]);
+  return false;
+}
+
+bool CBcp47::IsValidScript() const
+{
+  // The region subtag is optional
+  if (m_script.empty())
+    return true;
+
+  // Values reserved for private use
+  // @todo is it possible to retrieve the range from the registry?
+  if (m_script >= "qaaa" && m_script <= "qabx")
+    return true;
+
+  if (m_registrySubTags.has_value() && m_registrySubTags.value().m_script.has_value())
+    return true;
+
+  CLog::LogF(LOGDEBUG, "{} is not a valid script.", m_script);
+  return false;
 }
 
 bool CBcp47::IsValidRegion() const
 {
-  // Region subtag is optional
+  // The region subtag is optional
   if (m_region.empty())
     return true;
 
-  // Values reserved for private use
+  // ISO 3166-1 codes reserved for private use
+  // note RFC 5646 doesn't mention the UN M.49 private use codes range 900-999
+  // @todo is it possible to retrieve the range from the registry?
   if (m_region == "aa" || (m_region >= "qm" && m_region <= "qz") ||
       (m_region >= "xa" && m_region <= "xz") || m_region == "zz")
     return true;
 
-  //! @todo separate future PR replace with checks against the IANA subtags registry
-  if (m_region.length() == 2 && StringUtils::IsAsciiLetters(m_region))
-  {
-    // ISO 3166-1
-    if (CIso3166_1::ContainsAlpha2(m_region))
-      return true;
+  if (m_registrySubTags.has_value() && m_registrySubTags.value().m_region.has_value())
+    return true;
 
-    CLog::LogF(LOGDEBUG, "{} is not a valid ISO 3166-1 alpha-2 code.", m_region);
-    return false;
-  }
-  else if (!m_region.empty())
-  {
-    // Probably a UN M.49 numeric region code - not supported
-    CLog::LogF(LOGDEBUG, "{} is not a valid region.", m_region);
-    return false;
-  }
-
-  // Region subtag is optional
-  return true;
+  CLog::LogF(LOGDEBUG, "{} is not a valid region.", m_region);
+  return false;
 }
 
 bool CBcp47::HasDuplicateVariants() const
@@ -194,8 +174,8 @@ bool CBcp47::HasDuplicateVariants() const
   if (m_variants.empty() || m_variants.size() < 2)
     return false;
 
-  // Make a copy of pointers to the strings to avoid unnecessary copies of the strings to efficiently
-  // find duplicates in a C++ idiomatic way.
+  // Make a copy of pointers to the strings to avoid unnecessary copies of the strings to
+  // efficiently find duplicates in a C++ idiomatic way.
   std::vector<const std::string*> variants;
   variants.reserve(m_variants.size());
 
@@ -206,6 +186,21 @@ bool CBcp47::HasDuplicateVariants() const
   std::ranges::sort(variants, {}, dereference);
 
   return variants.end() != std::ranges::adjacent_find(variants, {}, dereference);
+}
+
+bool CBcp47::IsValidVariants() const
+{
+  // Variant subtags are optional
+  if (m_variants.empty())
+    return true;
+
+  // No need to check one by one - they were all found in the registry if the count of parsed
+  // variants is equal to the count of variants retrieved from the registry.
+  if (m_registrySubTags.has_value() &&
+      m_variants.size() == m_registrySubTags.value().m_variants.size())
+    return true;
+
+  return false;
 }
 
 bool CBcp47::HasDuplicateExtensions() const
@@ -244,4 +239,52 @@ void CBcp47::Canonicalize()
   //! @todo replacement of deprecated with preferred
   //! @todo suppress script - not part of official canonicalization, but tags should not use
   //! a script unless it adds information
+}
+
+void CBcp47::LoadRegistrySubTags(const CSubTagRegistryManager* registry)
+{
+  // Already populated - skip
+  // @todo if/when registry is a pointer that may not always exists, need to distinguish
+  // not loaded yet from loading failed due to missing registry?
+  if (m_registrySubTags.has_value())
+    return;
+
+  TagSubTags subTags;
+
+  // @todo Registry Manager should probably be a shared_ptr - how would registry reloads be handled?
+  // and m_registrySubTags should probably be reset if the registry is not available
+  //const CSubTagRegistryManager& registry{CServiceBroker::GetSubTagRegistry()};
+  if (registry != nullptr)
+  {
+    if (m_type == Bcp47TagType::GRANDFATHERED)
+    {
+      subTags.m_grandfathered = registry->GetGrandfatheredTags().Lookup(m_grandfathered);
+    }
+    else
+    {
+      subTags.m_language = registry->GetLanguageSubTags().Lookup(m_language);
+
+      std::ranges::for_each(m_extLangs,
+                            [&registry, &subTags](const std::string& extLang)
+                            {
+                              auto subTag = registry->GetExtLangSubTags().Lookup(extLang);
+                              if (subTag.has_value())
+                                subTags.m_extLangs.push_back(std::move(*subTag));
+                            });
+
+      subTags.m_script = registry->GetScriptSubTags().Lookup(m_script);
+      subTags.m_region = registry->GetRegionSubTags().Lookup(m_region);
+
+      std::ranges::for_each(m_variants,
+                            [&registry, &subTags](const std::string& variant)
+                            {
+                              auto subTag = registry->GetVariantSubTags().Lookup(variant);
+                              if (subTag.has_value())
+                                subTags.m_variants.push_back(std::move(*subTag));
+                            });
+    }
+  }
+  // need to check errors before assigning or not relevant?
+  m_registrySubTags = std::move(subTags);
+  //else m_registrySubTags.reset()
 }

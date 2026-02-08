@@ -1,6 +1,7 @@
 set(SOURCES Bcp47.cpp
             Bcp47Formatter.cpp
             Bcp47Parser.cpp
+            Bcp47SubTags.cpp
             Iso3166_1.cpp
             Iso639.cpp
             Iso639_1.cpp
@@ -10,6 +11,7 @@ set(HEADERS Bcp47.h
             Bcp47Common.h
             Bcp47Formatter.h
             Bcp47Parser.h
+            Bcp47SubTags.h
             Iso3166_1.h
             Iso3166_1_Table.h
             Iso639.h
