@@ -53,7 +53,6 @@ bool CShaderGL::Create(unsigned int passIdx,
   std::string defineVersion = CShaderUtilsGL::GetGLSLVersion(m_shaderSource);
   std::string defineVertex = "#define VERTEX\n#define PARAMETER_UNIFORM\n";
   std::string defineFragment = "#define FRAGMENT\n#define PARAMETER_UNIFORM\n";
-
   std::string vertexShaderSourceStr = defineVersion + defineVertex + m_shaderSource;
   std::string fragmentShaderSourceStr = defineVersion + defineFragment + m_shaderSource;
   const GLchar* vertexShaderSource = vertexShaderSourceStr.c_str();
@@ -93,15 +92,18 @@ bool CShaderGL::Create(unsigned int passIdx,
               std::string(errorLog.begin(), errorLog.end()));
   }
 
+  glAttachShader(m_shaderProgram, vShader);
+  glAttachShader(m_shaderProgram, fShader);
+
   glBindAttribLocation(m_shaderProgram, 0, "VertexCoord");
   glBindAttribLocation(m_shaderProgram, 1, "COLOR");
   glBindAttribLocation(m_shaderProgram, 2, "TexCoord");
 
-  glAttachShader(m_shaderProgram, vShader);
-  glAttachShader(m_shaderProgram, fShader);
   glLinkProgram(m_shaderProgram);
+
   glDeleteShader(vShader);
   glDeleteShader(fShader);
+
   glGetProgramiv(m_shaderProgram, GL_LINK_STATUS, &status);
 
   if (status == GL_FALSE)
@@ -117,35 +119,42 @@ bool CShaderGL::Create(unsigned int passIdx,
   }
 
   glUseProgram(m_shaderProgram);
-  GLint paramLoc = glGetUniformLocation(m_shaderProgram, "Texture");
-  glUniform1i(paramLoc, 0);
-  glUseProgram(0);
 
   GetUniformLocs();
 
+  GLint paramLoc = glGetUniformLocation(m_shaderProgram, "Texture");
+  glUniform1i(paramLoc, 0);
+
+  const GLubyte idx[4] = {0, 1, 3, 2}; // Determines order of triangle strip
+
+  // Set up VAO/VBO
   glGenVertexArrays(1, &m_shaderVAO);
   glBindVertexArray(m_shaderVAO);
 
   glGenBuffers(3, m_shaderVertexVBO.data());
-
   glBindBuffer(GL_ARRAY_BUFFER, m_shaderVertexVBO[0]);
-  glEnableVertexAttribArray(0);
+
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+  glEnableVertexAttribArray(0);
 
   glBindBuffer(GL_ARRAY_BUFFER, m_shaderVertexVBO[1]);
-  glEnableVertexAttribArray(1);
+
   glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+  glEnableVertexAttribArray(1);
 
   glBindBuffer(GL_ARRAY_BUFFER, m_shaderVertexVBO[2]);
-  glEnableVertexAttribArray(2);
+
   glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr);
+  glEnableVertexAttribArray(2);
 
   glGenBuffers(1, &m_shaderIndexVBO);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_shaderIndexVBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte) * 4, idx, GL_STATIC_DRAW);
 
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+  glUseProgram(0);
   return true;
 }
 
@@ -160,16 +169,13 @@ void CShaderGL::Render(IShaderTexture& source, IShaderTexture& target)
   glBindVertexArray(m_shaderVAO);
 
   glBindBuffer(GL_ARRAY_BUFFER, m_shaderVertexVBO[0]);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(m_VertexCoords), m_VertexCoords.data(), GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(m_VertexCoords), m_VertexCoords.data(), GL_DYNAMIC_DRAW);
 
   glBindBuffer(GL_ARRAY_BUFFER, m_shaderVertexVBO[1]);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(m_colors), m_colors.data(), GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(m_colors), m_colors.data(), GL_DYNAMIC_DRAW);
 
   glBindBuffer(GL_ARRAY_BUFFER, m_shaderVertexVBO[2]);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(m_TexCoords), m_TexCoords.data(), GL_STATIC_DRAW);
-
-  // No need to bind the index VBO, it's part of VAO state
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_indices), m_indices.data(), GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(m_TexCoords), m_TexCoords.data(), GL_DYNAMIC_DRAW);
 
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, nullptr);
 
@@ -261,12 +267,6 @@ void CShaderGL::PrepareParameters(
   m_colors[3][2] = 0.0f;
   m_TexCoords[3][0] = 0.0f;
   m_TexCoords[3][1] = 0.0f;
-
-  // Determines order of triangle strip
-  m_indices[0] = 0;
-  m_indices[1] = 1;
-  m_indices[2] = 3;
-  m_indices[3] = 2;
 
   UpdateUniformInputs(sourceTexture, pShaderTextures, pShaders, frameCount);
 }

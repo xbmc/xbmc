@@ -118,7 +118,6 @@ private:
   unsigned int m_frameCountMod{0};
 
   GLuint m_shaderProgram{0};
-  std::array<GLubyte, 4> m_indices;
   std::array<std::array<float, 3>, 4> m_VertexCoords;
   std::array<std::array<float, 3>, 4> m_colors;
   std::array<std::array<float, 2>, 4> m_TexCoords;
