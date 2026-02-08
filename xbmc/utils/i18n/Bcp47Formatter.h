@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2025 Team Kodi
+ *  Copyright (C) 2025-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -53,6 +53,7 @@ private:
   bool FormatExtensions(const CBcp47& tag, std::string& str) const;
   bool FormatPrivateUse(const CBcp47& tag, std::string& str) const;
   bool FormatGrandfathered(const CBcp47& tag, std::string& str) const;
+  void FormatDebugHeader(const CBcp47& tag, std::string& str) const;
 
   Bcp47FormattingStyle m_style{Bcp47FormattingStyle::FORMAT_BCP47};
 };

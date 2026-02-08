@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2025 Team Kodi
+ *  Copyright (C) 2025-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -64,17 +64,22 @@ std::string CBcp47Formatter::Format(const CBcp47& tag) const
 {
   std::string str;
 
-  if (tag.GetType() == Bcp47TagType::GRANDFATHERED)
+  if (m_style != Bcp47FormattingStyle::FORMAT_DEBUG)
   {
-    FormatGrandfathered(tag, str);
-    return str;
-  }
+    // Shortened formats for grandfathered and private use
+    // except for debug format, which always prints everything
+    if (tag.GetType() == Bcp47TagType::GRANDFATHERED)
+    {
+      FormatGrandfathered(tag, str);
+      return str;
+    }
 
-  // Language may be empty only for tags made up only of a private use subtag
-  if (tag.GetType() == Bcp47TagType::PRIVATE_USE)
-  {
-    FormatPrivateUse(tag, str);
-    return str;
+    // Language may be empty only for tags made up only of a private use subtag
+    if (tag.GetType() == Bcp47TagType::PRIVATE_USE)
+    {
+      FormatPrivateUse(tag, str);
+      return str;
+    }
   }
 
   if (m_style == Bcp47FormattingStyle::FORMAT_ENGLISH)
@@ -114,7 +119,7 @@ std::string CBcp47Formatter::Format(const CBcp47& tag) const
       str.erase(languageSize);
     }
   }
-  else
+  else if (m_style == Bcp47FormattingStyle::FORMAT_BCP47)
   {
     // Format the tag as a BCP 47 tag with the recommended casing
 
@@ -139,118 +144,239 @@ std::string CBcp47Formatter::Format(const CBcp47& tag) const
     if (!str.empty())
       str.pop_back();
   }
+  else if (m_style == Bcp47FormattingStyle::FORMAT_DEBUG) [[unlikely]]
+  {
+    constexpr std::string_view sep = ", ";
+
+    // Dump as much information of the tag as posible, in raw form
+    FormatDebugHeader(tag, str);
+
+    FormatLanguage(tag, str);
+    str.append(sep);
+    FormatExtLangs(tag, str);
+    str.append(sep);
+    FormatScript(tag, str);
+    str.append(sep);
+    FormatRegion(tag, str);
+    str.append(sep);
+    FormatVariants(tag, str);
+    str.append(sep);
+    FormatExtensions(tag, str);
+    str.append(sep);
+    FormatPrivateUse(tag, str);
+    str.append(sep);
+    FormatGrandfathered(tag, str);
+
+    if (str.back() == ' ')
+      str.pop_back();
+  }
 
   return str;
 }
 
 bool CBcp47Formatter::FormatLanguage(const CBcp47& tag, std::string& str) const
 {
-  const std::string& language = tag.GetLanguage();
-  if (language.empty())
-    return false;
+  bool modified{false};
 
-  if (m_style == Bcp47FormattingStyle::FORMAT_ENGLISH)
+  if (m_style == Bcp47FormattingStyle::FORMAT_DEBUG) [[unlikely]]
   {
-    // Language from ISO 639-1 or ISO 639-2
-    if (std::string lang; LookupInISO639Tables(language, lang))
-      str.append(lang);
-    else
-      str.append(language); // was likely ISO 639-3 or 639-5
-    return true;
+    str.append("language: ");
+    str.append(tag.GetLanguage());
+    modified = true;
   }
-
-  str.append(language);
-  return true;
+  else if (const std::string& language = tag.GetLanguage(); !language.empty())
+  {
+    if (m_style == Bcp47FormattingStyle::FORMAT_ENGLISH)
+    {
+      // Language from ISO 639-1 or ISO 639-2
+      if (std::string lang; LookupInISO639Tables(language, lang))
+        str.append(lang);
+      else
+        str.append(language); // was likely ISO 639-3 or 639-5
+    }
+    else
+    {
+      str.append(language);
+    }
+    modified = true;
+  }
+  return modified;
 }
 
 bool CBcp47Formatter::FormatExtLangs(const CBcp47& tag, std::string& str) const
 {
-  const std::vector<std::string>& extLangs = tag.GetExtLangs();
-  if (extLangs.empty())
-    return false;
+  bool modified{false};
 
-  str.append(StringUtils::Join(extLangs, "-"));
-  return true;
+  if (m_style == Bcp47FormattingStyle::FORMAT_DEBUG) [[unlikely]]
+  {
+    str.append("ext langs: {");
+    str.append(StringUtils::Join(tag.GetExtLangs(), ", "));
+    str.append("}");
+    modified = true;
+  }
+  else if (const std::vector<std::string>& extLangs = tag.GetExtLangs(); !extLangs.empty())
+  {
+    str.append(StringUtils::Join(extLangs, "-"));
+    modified = true;
+  }
+  return modified;
 }
 
 bool CBcp47Formatter::FormatScript(const CBcp47& tag, std::string& str) const
 {
-  const std::string& script = tag.GetScript();
-  if (script.empty())
-    return false;
+  bool modified{false};
 
-  std::string s = script;
-  StringUtils::ToCapitalize(s);
-  str.append(s);
-  return true;
+  if (m_style == Bcp47FormattingStyle::FORMAT_DEBUG) [[unlikely]]
+  {
+    str.append("script: ");
+    str.append(tag.GetScript());
+    modified = true;
+  }
+  else if (const std::string& script = tag.GetScript(); !script.empty())
+  {
+    std::string s = script;
+    StringUtils::ToCapitalize(s);
+    str.append(s);
+    modified = true;
+  }
+  return modified;
 }
 
 bool CBcp47Formatter::FormatRegion(const CBcp47& tag, std::string& str) const
 {
-  const std::string& region = tag.GetRegion();
-  if (region.empty())
-    return false;
+  bool modified{false};
 
-  if (m_style == Bcp47FormattingStyle::FORMAT_ENGLISH)
+  if (m_style == Bcp47FormattingStyle::FORMAT_DEBUG) [[unlikely]]
   {
-    // Region from ISO 3166-1. UN M.49 is not supported.
-    const auto reg = CIso3166_1::LookupByCode(region);
-    str.append(reg.value_or(StringUtils::ToUpper(region)));
+    str.append("region: ");
+    str.append(tag.GetRegion());
+    modified = true;
   }
-  else
+  else if (const std::string& region = tag.GetRegion(); !region.empty())
   {
-    str.append(StringUtils::ToUpper(region));
+    if (m_style == Bcp47FormattingStyle::FORMAT_ENGLISH)
+    {
+      // Region from ISO 3166-1. UN M.49 is not supported.
+      const auto reg = CIso3166_1::LookupByCode(region);
+      str.append(reg.value_or(StringUtils::ToUpper(region)));
+    }
+    else
+    {
+      str.append(StringUtils::ToUpper(region));
+    }
+    modified = true;
   }
-  return true;
+  return modified;
 }
 
 bool CBcp47Formatter::FormatVariants(const CBcp47& tag, std::string& str) const
 {
-  const std::vector<std::string>& variants = tag.GetVariants();
-  if (variants.empty())
-    return false;
+  bool modified{false};
 
-  str.append(StringUtils::Join(variants, "-"));
-  return true;
+  if (m_style == Bcp47FormattingStyle::FORMAT_DEBUG) [[unlikely]]
+  {
+    str.append("variants: {");
+    str.append(StringUtils::Join(tag.GetVariants(), ", "));
+    str.append("}");
+    modified = true;
+  }
+  else if (const std::vector<std::string>& variants = tag.GetVariants(); !variants.empty())
+  {
+    str.append(StringUtils::Join(variants, "-"));
+    modified = true;
+  }
+  return modified;
 }
 
 bool CBcp47Formatter::FormatExtensions(const CBcp47& tag, std::string& str) const
 {
-  const std::vector<Bcp47Extension>& extensions = tag.GetExtensions();
-  if (extensions.empty())
-    return false;
+  bool modified{false};
 
-  for (const auto& ext : extensions)
+  if (m_style == Bcp47FormattingStyle::FORMAT_DEBUG) [[unlikely]]
   {
-    str.push_back(ext.name);
-    str.push_back('-');
-    str.append(StringUtils::Join(ext.segments, "-"));
-    str.push_back('-');
-  }
-  // remove final -
-  str.pop_back();
+    str.append("extensions: {");
 
-  return true;
+    for (const auto& ext : tag.GetExtensions())
+    {
+      str.append("name: ");
+      str.push_back(ext.name);
+      str.append(" values: {");
+      str.append(StringUtils::Join(ext.segments, ", "));
+      str.append("} ");
+    }
+    // remove final space
+    if (!tag.GetExtensions().empty())
+      str.pop_back();
+
+    str.append("}");
+    modified = true;
+  }
+  else if (const std::vector<Bcp47Extension>& extensions = tag.GetExtensions(); !extensions.empty())
+  {
+    for (const auto& ext : extensions)
+    {
+      str.push_back(ext.name);
+      str.push_back('-');
+      str.append(StringUtils::Join(ext.segments, "-"));
+      str.push_back('-');
+    }
+    // remove final -
+    str.pop_back();
+    modified = true;
+  }
+
+  return modified;
 }
 
 bool CBcp47Formatter::FormatPrivateUse(const CBcp47& tag, std::string& str) const
 {
-  const std::vector<std::string>& privateUse = tag.GetPrivateUse();
-  if (privateUse.empty())
-    return false;
+  bool modified{false};
 
-  str.append("x-");
-  str.append(StringUtils::Join(privateUse, "-"));
-
-  return true;
+  if (m_style == Bcp47FormattingStyle::FORMAT_DEBUG) [[unlikely]]
+  {
+    str.append("private use: {");
+    str.append(StringUtils::Join(tag.GetPrivateUse(), ", "));
+    str.append("}");
+    modified = true;
+  }
+  else if (const std::vector<std::string>& privateUse = tag.GetPrivateUse(); !privateUse.empty())
+  {
+    str.append("x-");
+    str.append(StringUtils::Join(privateUse, "-"));
+    modified = true;
+  }
+  return modified;
 }
 
 bool CBcp47Formatter::FormatGrandfathered(const CBcp47& tag, std::string& str) const
 {
-  const std::string& grandfathered = tag.GetGrandfathered();
-  if (grandfathered.empty())
-    return false;
+  bool modified{false};
 
-  str.append(grandfathered);
-  return true;
+  if (m_style == Bcp47FormattingStyle::FORMAT_DEBUG) [[unlikely]]
+  {
+    str.append("grandfathered: ");
+    str.append(tag.GetGrandfathered());
+    modified = true;
+  }
+  else if (const std::string& grandfathered = tag.GetGrandfathered(); !grandfathered.empty())
+  {
+    str.append(grandfathered);
+    modified = true;
+  }
+
+  return modified;
+}
+
+void CBcp47Formatter::FormatDebugHeader(const CBcp47& tag, std::string& str) const
+{
+  str.append("BCP47 (");
+
+  if (tag.GetType() == Bcp47TagType::WELL_FORMED)
+    str.append("well formed, ");
+  else if (tag.GetType() == Bcp47TagType::GRANDFATHERED)
+    str.append("grandfathered, ");
+  else if (tag.GetType() == Bcp47TagType::PRIVATE_USE)
+    str.append("private use, ");
+
+  str.append(tag.IsValid() ? "valid) " : "invalid) ");
 }

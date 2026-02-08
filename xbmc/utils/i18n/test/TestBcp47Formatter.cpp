@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2025 Team Kodi
+ *  Copyright (C) 2025-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -117,3 +117,52 @@ TEST_P(RecommendedCasingTester, ParseTag)
 INSTANTIATE_TEST_SUITE_P(TestI18nBcp47Formatter,
                          RecommendedCasingTester,
                          testing::ValuesIn(RecommendedCasingTests));
+
+struct TestDebugFormatting
+{
+  std::string input;
+  std::string expected;
+};
+
+std::ostream& operator<<(std::ostream& os, const TestDebugFormatting& rhs)
+{
+  return os << rhs.input;
+}
+
+// clang-format off
+const TestDebugFormatting DebugFormattingTests[] = {
+    {"en", "BCP47 (well formed, valid) language: en, ext langs: {}, script: , region: , variants: {}, extensions: {}, private use: {}, grandfathered:"},
+    {"zz", "BCP47 (well formed, invalid) language: zz, ext langs: {}, script: , region: , variants: {}, extensions: {}, private use: {}, grandfathered:"},
+    {"zz-ext-exz-bcde-fg-abcde-0abc-e-abcd-ef-f-ef-x-a-bcd",
+        "BCP47 (well formed, invalid) language: zz, ext langs: {ext, exz}, script: bcde, region: fg, "
+        "variants: {abcde, 0abc}, extensions: {name: e values: {abcd, ef} name: f values: {ef}}, "
+        "private use: {a, bcd}, grandfathered:"},
+    // Private use only
+    {"x-a-bcd", "BCP47 (private use, valid) language: , ext langs: {}, script: , region: , variants: {}, "
+        "extensions: {}, private use: {a, bcd}, grandfathered:"},
+    // Grandfathered
+    {"i-ami", "BCP47 (grandfathered, valid) language: , ext langs: {}, script: , region: , variants: {}, "
+        "extensions: {}, private use: {}, grandfathered: i-ami"},
+};
+// clang-format on
+
+class DebugFormatTester : public testing::Test,
+                          public testing::WithParamInterface<TestDebugFormatting>
+{
+};
+
+TEST_P(DebugFormatTester, Format)
+{
+  const auto& param = GetParam();
+  const auto tag = CBcp47::ParseTag(param.input);
+  EXPECT_TRUE(tag.has_value());
+  if (tag.has_value())
+  {
+    // { required to quiet clang warning about dangling else
+    EXPECT_EQ(param.expected, tag.value().Format(Bcp47FormattingStyle::FORMAT_DEBUG));
+  }
+}
+
+INSTANTIATE_TEST_SUITE_P(TestI18nBcp47Formatter,
+                         DebugFormatTester,
+                         testing::ValuesIn(DebugFormattingTests));
