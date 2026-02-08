@@ -39,6 +39,8 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <algorithm>
+#include <iterator>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -482,21 +484,13 @@ bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog()
   }
   else
   {
-    const std::shared_ptr<const CPVRChannelGroup> channelGroup = GetChannelGroup();
+    const auto channelGroup = GetChannelGroup();
     if (channelGroup)
     {
-      int idx = -1;
-      const std::string selectedGroup{channelGroup->GetPath().AsString()};
-      for (const auto& group : options)
-      {
-        // select currently active channel group
-        if (group->GetPath() == selectedGroup)
-        {
-          dialog->SetSelected(idx);
-          break;
-        }
-        idx++;
-      }
+      const auto selectedGroup = channelGroup->GetPath().AsString();
+      const auto it = std::ranges::find(options, selectedGroup, &CFileItem::GetPath);
+      if (it != options.end())
+        dialog->SetSelected(static_cast<int>(std::distance(options.begin(), it)));
     }
   }
 
