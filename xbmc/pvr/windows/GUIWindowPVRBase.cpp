@@ -485,7 +485,7 @@ bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog()
     const std::shared_ptr<const CPVRChannelGroup> channelGroup = GetChannelGroup();
     if (channelGroup)
     {
-      int idx = -1;
+      int idx = 0;
       const std::string selectedGroup{channelGroup->GetPath().AsString()};
       for (const auto& group : options)
       {
