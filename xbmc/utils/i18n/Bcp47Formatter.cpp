@@ -68,14 +68,14 @@ std::string CBcp47Formatter::Format(const CBcp47& tag) const
   {
     // Shortened formats for grandfathered and private use
     // except for debug format, which always prints everything
-    if (tag.GetType() == Bcp47TagType::GRANDFATHERED)
+    if (tag.m_type == Bcp47TagType::GRANDFATHERED)
     {
       FormatGrandfathered(tag, str);
       return str;
     }
 
     // Language may be empty only for tags made up only of a private use subtag
-    if (tag.GetType() == Bcp47TagType::PRIVATE_USE)
+    if (tag.m_type == Bcp47TagType::PRIVATE_USE)
     {
       FormatPrivateUse(tag, str);
       return str;
@@ -181,10 +181,10 @@ bool CBcp47Formatter::FormatLanguage(const CBcp47& tag, std::string& str) const
   if (m_style == Bcp47FormattingStyle::FORMAT_DEBUG) [[unlikely]]
   {
     str.append("language: ");
-    str.append(tag.GetLanguage());
+    str.append(tag.m_language);
     modified = true;
   }
-  else if (const std::string& language = tag.GetLanguage(); !language.empty())
+  else if (const std::string& language = tag.m_language; !language.empty())
   {
     if (m_style == Bcp47FormattingStyle::FORMAT_ENGLISH)
     {
@@ -210,11 +210,11 @@ bool CBcp47Formatter::FormatExtLangs(const CBcp47& tag, std::string& str) const
   if (m_style == Bcp47FormattingStyle::FORMAT_DEBUG) [[unlikely]]
   {
     str.append("ext langs: {");
-    str.append(StringUtils::Join(tag.GetExtLangs(), ", "));
+    str.append(StringUtils::Join(tag.m_extLangs, ", "));
     str.append("}");
     modified = true;
   }
-  else if (const std::vector<std::string>& extLangs = tag.GetExtLangs(); !extLangs.empty())
+  else if (const std::vector<std::string>& extLangs = tag.m_extLangs; !extLangs.empty())
   {
     str.append(StringUtils::Join(extLangs, "-"));
     modified = true;
@@ -229,10 +229,10 @@ bool CBcp47Formatter::FormatScript(const CBcp47& tag, std::string& str) const
   if (m_style == Bcp47FormattingStyle::FORMAT_DEBUG) [[unlikely]]
   {
     str.append("script: ");
-    str.append(tag.GetScript());
+    str.append(tag.m_script);
     modified = true;
   }
-  else if (const std::string& script = tag.GetScript(); !script.empty())
+  else if (const std::string& script = tag.m_script; !script.empty())
   {
     std::string s = script;
     StringUtils::ToCapitalize(s);
@@ -249,10 +249,10 @@ bool CBcp47Formatter::FormatRegion(const CBcp47& tag, std::string& str) const
   if (m_style == Bcp47FormattingStyle::FORMAT_DEBUG) [[unlikely]]
   {
     str.append("region: ");
-    str.append(tag.GetRegion());
+    str.append(tag.m_region);
     modified = true;
   }
-  else if (const std::string& region = tag.GetRegion(); !region.empty())
+  else if (const std::string& region = tag.m_region; !region.empty())
   {
     if (m_style == Bcp47FormattingStyle::FORMAT_ENGLISH)
     {
@@ -276,11 +276,11 @@ bool CBcp47Formatter::FormatVariants(const CBcp47& tag, std::string& str) const
   if (m_style == Bcp47FormattingStyle::FORMAT_DEBUG) [[unlikely]]
   {
     str.append("variants: {");
-    str.append(StringUtils::Join(tag.GetVariants(), ", "));
+    str.append(StringUtils::Join(tag.m_variants, ", "));
     str.append("}");
     modified = true;
   }
-  else if (const std::vector<std::string>& variants = tag.GetVariants(); !variants.empty())
+  else if (const std::vector<std::string>& variants = tag.m_variants; !variants.empty())
   {
     str.append(StringUtils::Join(variants, "-"));
     modified = true;
@@ -296,7 +296,7 @@ bool CBcp47Formatter::FormatExtensions(const CBcp47& tag, std::string& str) cons
   {
     str.append("extensions: {");
 
-    for (const auto& ext : tag.GetExtensions())
+    for (const auto& ext : tag.m_extensions)
     {
       str.append("name: ");
       str.push_back(ext.name);
@@ -305,13 +305,13 @@ bool CBcp47Formatter::FormatExtensions(const CBcp47& tag, std::string& str) cons
       str.append("} ");
     }
     // remove final space
-    if (!tag.GetExtensions().empty())
+    if (!tag.m_extensions.empty())
       str.pop_back();
 
     str.append("}");
     modified = true;
   }
-  else if (const std::vector<Bcp47Extension>& extensions = tag.GetExtensions(); !extensions.empty())
+  else if (const std::vector<Bcp47Extension>& extensions = tag.m_extensions; !extensions.empty())
   {
     for (const auto& ext : extensions)
     {
@@ -335,11 +335,11 @@ bool CBcp47Formatter::FormatPrivateUse(const CBcp47& tag, std::string& str) cons
   if (m_style == Bcp47FormattingStyle::FORMAT_DEBUG) [[unlikely]]
   {
     str.append("private use: {");
-    str.append(StringUtils::Join(tag.GetPrivateUse(), ", "));
+    str.append(StringUtils::Join(tag.m_privateUse, ", "));
     str.append("}");
     modified = true;
   }
-  else if (const std::vector<std::string>& privateUse = tag.GetPrivateUse(); !privateUse.empty())
+  else if (const std::vector<std::string>& privateUse = tag.m_privateUse; !privateUse.empty())
   {
     str.append("x-");
     str.append(StringUtils::Join(privateUse, "-"));
@@ -355,10 +355,10 @@ bool CBcp47Formatter::FormatGrandfathered(const CBcp47& tag, std::string& str) c
   if (m_style == Bcp47FormattingStyle::FORMAT_DEBUG) [[unlikely]]
   {
     str.append("grandfathered: ");
-    str.append(tag.GetGrandfathered());
+    str.append(tag.m_grandfathered);
     modified = true;
   }
-  else if (const std::string& grandfathered = tag.GetGrandfathered(); !grandfathered.empty())
+  else if (const std::string& grandfathered = tag.m_grandfathered; !grandfathered.empty())
   {
     str.append(grandfathered);
     modified = true;
@@ -371,11 +371,11 @@ void CBcp47Formatter::FormatDebugHeader(const CBcp47& tag, std::string& str) con
 {
   str.append("BCP47 (");
 
-  if (tag.GetType() == Bcp47TagType::WELL_FORMED)
+  if (tag.m_type == Bcp47TagType::WELL_FORMED)
     str.append("well formed, ");
-  else if (tag.GetType() == Bcp47TagType::GRANDFATHERED)
+  else if (tag.m_type == Bcp47TagType::GRANDFATHERED)
     str.append("grandfathered, ");
-  else if (tag.GetType() == Bcp47TagType::PRIVATE_USE)
+  else if (tag.m_type == Bcp47TagType::PRIVATE_USE)
     str.append("private use, ");
 
   str.append(tag.IsValid() ? "valid) " : "invalid) ");
