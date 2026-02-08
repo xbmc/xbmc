@@ -70,14 +70,14 @@ std::string CBcp47Formatter::Format(const CBcp47& tag) const
     // except for debug format, which always prints everything
     if (tag.m_type == Bcp47TagType::GRANDFATHERED)
     {
-      FormatGrandfathered(tag, str);
+      AppendGrandfathered(tag, str);
       return str;
     }
 
     // Language may be empty only for tags made up only of a private use subtag
     if (tag.m_type == Bcp47TagType::PRIVATE_USE)
     {
-      FormatPrivateUse(tag, str);
+      AppendPrivateUse(tag, str);
       return str;
     }
   }
@@ -85,7 +85,7 @@ std::string CBcp47Formatter::Format(const CBcp47& tag) const
   if (m_style == Bcp47FormattingStyle::FORMAT_ENGLISH)
   {
     // Format the tag in a style similar to locale names, ex. English (United States)
-    FormatLanguage(tag, str);
+    AppendLanguage(tag, str);
     std::size_t languageSize = str.size();
 
     if (languageSize > 0)
@@ -94,17 +94,17 @@ std::string CBcp47Formatter::Format(const CBcp47& tag) const
     std::size_t othersBegin = str.size();
     constexpr std::string_view sep = ", ";
 
-    if (FormatExtLangs(tag, str))
+    if (AppendExtLangs(tag, str))
       str.append(sep);
-    if (FormatScript(tag, str))
+    if (AppendScript(tag, str))
       str.append(sep);
-    if (FormatRegion(tag, str))
+    if (AppendRegion(tag, str))
       str.append(sep);
-    if (FormatVariants(tag, str))
+    if (AppendVariants(tag, str))
       str.append(sep);
-    if (FormatExtensions(tag, str))
+    if (AppendExtensions(tag, str))
       str.append(sep);
-    if (FormatPrivateUse(tag, str))
+    if (AppendPrivateUse(tag, str))
       str.append(sep);
 
     if (str.size() > othersBegin)
@@ -125,19 +125,19 @@ std::string CBcp47Formatter::Format(const CBcp47& tag) const
 
     str.reserve(35); // size recommended by RFC5646
 
-    if (FormatLanguage(tag, str))
+    if (AppendLanguage(tag, str))
       str.push_back('-');
-    if (FormatExtLangs(tag, str))
+    if (AppendExtLangs(tag, str))
       str.push_back('-');
-    if (FormatScript(tag, str))
+    if (AppendScript(tag, str))
       str.push_back('-');
-    if (FormatRegion(tag, str))
+    if (AppendRegion(tag, str))
       str.push_back('-');
-    if (FormatVariants(tag, str))
+    if (AppendVariants(tag, str))
       str.push_back('-');
-    if (FormatExtensions(tag, str))
+    if (AppendExtensions(tag, str))
       str.push_back('-');
-    if (FormatPrivateUse(tag, str))
+    if (AppendPrivateUse(tag, str))
       str.push_back('-');
 
     // remove final -
@@ -149,23 +149,23 @@ std::string CBcp47Formatter::Format(const CBcp47& tag) const
     constexpr std::string_view sep = ", ";
 
     // Dump as much information of the tag as posible, in raw form
-    FormatDebugHeader(tag, str);
+    AppendDebugHeader(tag, str);
 
-    FormatLanguage(tag, str);
+    AppendLanguage(tag, str);
     str.append(sep);
-    FormatExtLangs(tag, str);
+    AppendExtLangs(tag, str);
     str.append(sep);
-    FormatScript(tag, str);
+    AppendScript(tag, str);
     str.append(sep);
-    FormatRegion(tag, str);
+    AppendRegion(tag, str);
     str.append(sep);
-    FormatVariants(tag, str);
+    AppendVariants(tag, str);
     str.append(sep);
-    FormatExtensions(tag, str);
+    AppendExtensions(tag, str);
     str.append(sep);
-    FormatPrivateUse(tag, str);
+    AppendPrivateUse(tag, str);
     str.append(sep);
-    FormatGrandfathered(tag, str);
+    AppendGrandfathered(tag, str);
 
     if (str.back() == ' ')
       str.pop_back();
@@ -174,7 +174,7 @@ std::string CBcp47Formatter::Format(const CBcp47& tag) const
   return str;
 }
 
-bool CBcp47Formatter::FormatLanguage(const CBcp47& tag, std::string& str) const
+bool CBcp47Formatter::AppendLanguage(const CBcp47& tag, std::string& str) const
 {
   bool modified{false};
 
@@ -203,7 +203,7 @@ bool CBcp47Formatter::FormatLanguage(const CBcp47& tag, std::string& str) const
   return modified;
 }
 
-bool CBcp47Formatter::FormatExtLangs(const CBcp47& tag, std::string& str) const
+bool CBcp47Formatter::AppendExtLangs(const CBcp47& tag, std::string& str) const
 {
   bool modified{false};
 
@@ -222,7 +222,7 @@ bool CBcp47Formatter::FormatExtLangs(const CBcp47& tag, std::string& str) const
   return modified;
 }
 
-bool CBcp47Formatter::FormatScript(const CBcp47& tag, std::string& str) const
+bool CBcp47Formatter::AppendScript(const CBcp47& tag, std::string& str) const
 {
   bool modified{false};
 
@@ -242,7 +242,7 @@ bool CBcp47Formatter::FormatScript(const CBcp47& tag, std::string& str) const
   return modified;
 }
 
-bool CBcp47Formatter::FormatRegion(const CBcp47& tag, std::string& str) const
+bool CBcp47Formatter::AppendRegion(const CBcp47& tag, std::string& str) const
 {
   bool modified{false};
 
@@ -269,7 +269,7 @@ bool CBcp47Formatter::FormatRegion(const CBcp47& tag, std::string& str) const
   return modified;
 }
 
-bool CBcp47Formatter::FormatVariants(const CBcp47& tag, std::string& str) const
+bool CBcp47Formatter::AppendVariants(const CBcp47& tag, std::string& str) const
 {
   bool modified{false};
 
@@ -288,7 +288,7 @@ bool CBcp47Formatter::FormatVariants(const CBcp47& tag, std::string& str) const
   return modified;
 }
 
-bool CBcp47Formatter::FormatExtensions(const CBcp47& tag, std::string& str) const
+bool CBcp47Formatter::AppendExtensions(const CBcp47& tag, std::string& str) const
 {
   bool modified{false};
 
@@ -328,7 +328,7 @@ bool CBcp47Formatter::FormatExtensions(const CBcp47& tag, std::string& str) cons
   return modified;
 }
 
-bool CBcp47Formatter::FormatPrivateUse(const CBcp47& tag, std::string& str) const
+bool CBcp47Formatter::AppendPrivateUse(const CBcp47& tag, std::string& str) const
 {
   bool modified{false};
 
@@ -348,7 +348,7 @@ bool CBcp47Formatter::FormatPrivateUse(const CBcp47& tag, std::string& str) cons
   return modified;
 }
 
-bool CBcp47Formatter::FormatGrandfathered(const CBcp47& tag, std::string& str) const
+bool CBcp47Formatter::AppendGrandfathered(const CBcp47& tag, std::string& str) const
 {
   bool modified{false};
 
@@ -367,7 +367,7 @@ bool CBcp47Formatter::FormatGrandfathered(const CBcp47& tag, std::string& str) c
   return modified;
 }
 
-void CBcp47Formatter::FormatDebugHeader(const CBcp47& tag, std::string& str) const
+void CBcp47Formatter::AppendDebugHeader(const CBcp47& tag, std::string& str) const
 {
   str.append("BCP47 (");
 
