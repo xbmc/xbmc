@@ -22,23 +22,7 @@ namespace KODI::UTILS::I18N
 {
 std::ostream& operator<<(std::ostream& os, const CBcp47& obj)
 {
-  if (obj.GetType() == Bcp47TagType::GRANDFATHERED) [[unlikely]]
-  {
-    os << "BCP47 (grandfathered: " << obj.GetGrandfathered() << ")";
-    return os;
-  }
-
-  os << "BCP47 (language: " << obj.GetLanguage() << ", extended languages: {"
-     << StringUtils::Join(obj.GetExtLangs(), ",") << "}, script: " << obj.GetScript()
-     << ", region: " << obj.GetRegion() << ", variants: {"
-     << StringUtils::Join(obj.GetVariants(), ",") << "}, extensions: {";
-
-  for (const auto& ext : obj.GetExtensions())
-    os << ext << " ";
-
-  os << "}, private use: {" << StringUtils::Join(obj.GetPrivateUse(), ", ") << "}, ";
-  os << "grandfathered: " << obj.GetGrandfathered() << ")";
-
+  os << obj.Format(Bcp47FormattingStyle::FORMAT_DEBUG);
   return os;
 }
 } // namespace KODI::UTILS::I18N
