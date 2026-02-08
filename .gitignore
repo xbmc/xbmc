@@ -200,6 +200,7 @@ cmake_install.cmake
 
 #/tools/android
 /tools/android/packaging/Makefile
+/tools/android/packaging/build/reports/problems/problems-report.html
 /tools/android/packaging/xbmc/activity_main.xml
 /tools/android/packaging/xbmc/AndroidManifest.xml
 /tools/android/packaging/xbmc/src/org/xbmc/kodi/Main.java
