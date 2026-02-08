@@ -12,12 +12,18 @@
 #include "DVDInputStreams/DVDInputStream.h"
 #include "cores/FFmpeg.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
+#include "utils/StreamUtils.h"
 #include "utils/log.h"
 
 #include <memory>
 #include <tuple>
 #include <type_traits>
 #include <utility>
+
+extern "C"
+{
+#include <libavcodec/defs.h>
+}
 
 class CDemuxStreamClientInternal
 {
@@ -187,7 +193,6 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt) const {
       if (!avcodec_open2(stream->m_context, stream->m_context->codec, nullptr))
       {
         avcodec_send_packet(stream->m_context, avpkt);
-        avcodec_close(stream->m_context);
       }
     }
     av_packet_free(&avpkt);
@@ -206,7 +211,7 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt) const {
   if (len >= 0)
   {
     if (stream->m_context->profile != st->profile &&
-        stream->m_context->profile != FF_PROFILE_UNKNOWN)
+        stream->m_context->profile != AV_PROFILE_UNKNOWN)
     {
       CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - ({}) profile changed from {} to {}", st->uniqueId, st->profile, stream->m_context->profile);
       st->profile = stream->m_context->profile;
@@ -214,8 +219,7 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt) const {
       st->disabled = false;
     }
 
-    if (stream->m_context->level != st->level &&
-        stream->m_context->level != FF_LEVEL_UNKNOWN)
+    if (stream->m_context->level != st->level && stream->m_context->level != AV_LEVEL_UNKNOWN)
     {
       CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - ({}) level changed from {} to {}", st->uniqueId, st->level, stream->m_context->level);
       st->level = stream->m_context->level;
@@ -663,34 +667,12 @@ std::string CDVDDemuxClient::GetFileName()
 
 std::string CDVDDemuxClient::GetStreamCodecName(int iStreamId)
 {
-  CDemuxStream *stream = GetStream(iStreamId);
-  std::string strName;
+  CDemuxStream* stream = GetStream(iStreamId);
   if (stream)
   {
-    if (stream->codec == AV_CODEC_ID_AC3)
-      strName = "ac3";
-    else if (stream->codec == AV_CODEC_ID_MP2)
-      strName = "mp2";
-    else if (stream->codec == AV_CODEC_ID_AAC)
-      strName = "aac";
-    else if (stream->codec == AV_CODEC_ID_DTS)
-      strName = "dca";
-    else if (stream->codec == AV_CODEC_ID_MPEG2VIDEO)
-      strName = "mpeg2video";
-    else if (stream->codec == AV_CODEC_ID_H264)
-      strName = "h264";
-    else if (stream->codec == AV_CODEC_ID_EAC3)
-      strName = "eac3";
-    else if (stream->codec == AV_CODEC_ID_VP8)
-      strName = "vp8";
-    else if (stream->codec == AV_CODEC_ID_VP9)
-      strName = "vp9";
-    else if (stream->codec == AV_CODEC_ID_HEVC)
-      strName = "hevc";
-    else if (stream->codec == AV_CODEC_ID_AV1)
-      strName = "av1";
+    return StreamUtils::GetCodecName(stream->codec, stream->profile);
   }
-  return strName;
+  return {};
 }
 
 bool CDVDDemuxClient::SeekTime(double timems, bool backwards, double *startpts)

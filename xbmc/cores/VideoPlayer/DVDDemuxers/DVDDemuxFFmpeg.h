@@ -141,6 +141,7 @@ protected:
   void GetL16Parameters(int& channels, int& samplerate) const;
   double SelectAspect(AVStream* st, bool& forced) const;
 
+  bool IsDoViP7DualLayer() const;
   StreamHdrType DetermineHdrType(AVStream* pStream);
 
   CCriticalSection m_critSection;

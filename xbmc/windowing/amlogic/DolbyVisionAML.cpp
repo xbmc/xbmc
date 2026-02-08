@@ -677,13 +677,11 @@ void CDolbyVisionAML::OnSettingChanged(const std::shared_ptr<const CSetting>& se
     set_vsvdb_payload_ver(dv_type, max_lum_nits_value, source_max_pq);
     if (reset_dv_vs10_dv) settings()->SetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_VS10_DV, DOLBY_VISION_OUTPUT_MODE_IPT);
     if (dv_type == DV_TYPE_VS10_ONLY) settings()->SetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_VS10_DV, DOLBY_VISION_OUTPUT_MODE_SDR10);
-    // aml_kodi_set_cd_cs(1);
   }
   else if (settingId == CSettings::SETTING_COREELEC_AMLOGIC_DV_VIDEO_PROCESSOR)
   {
     set_vsvdb_payload_ver(dv_type, max_lum_nits_value, source_max_pq);
     if ((dv_vp != 0) && (dv_mode == DV_MODE_ON)) settings()->SetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_MODE, DV_MODE_ON_DEMAND);
-    // aml_kodi_set_cd_cs(1);
   }
   else if (settingId == CSettings::SETTING_COREELEC_AMLOGIC_DV_MODE_ON_LUMINANCE) 
   {
@@ -704,18 +702,18 @@ void CDolbyVisionAML::OnSettingChanged(const std::shared_ptr<const CSetting>& se
   {
     set_vsvdb_payload_ver(dv_type, max_lum_nits_value, source_max_pq);
   }
-  else if (settingId == CSettings::SETTING_COREELEC_AMLOGIC_DV_VSVDB_CS)
-  {
+//  else if (settingId == CSettings::SETTING_COREELEC_AMLOGIC_DV_VSVDB_CS)
+//  {
 //    set_vsvdb_payload_ver(dv_type, max_lum_nits_value, source_max_pq);
-  }
-  else if (settingId == CSettings::SETTING_COREELEC_AMLOGIC_DV_VSVDB_MIN_LUM)
-  {
+//  }
+//  else if (settingId == CSettings::SETTING_COREELEC_AMLOGIC_DV_VSVDB_MIN_LUM)
+//  {
 //    set_vsvdb_payload_ver(dv_type, max_lum_nits_value, source_max_pq);
-  }
-  else if (settingId == CSettings::SETTING_COREELEC_AMLOGIC_DV_VSVDB_MAX_LUM)
-  {
+//  }
+//  else if (settingId == CSettings::SETTING_COREELEC_AMLOGIC_DV_VSVDB_MAX_LUM)
+//  {
 //    set_vsvdb_payload_ver(dv_type, max_lum_nits_value, source_max_pq);
-  }
+//  }
   else if (settingId == CSettings::SETTING_COREELEC_AMLOGIC_DV_DUAL_PRIORITY)
   {
     set_vsvdb_payload_ver(dv_type, max_lum_nits_value, source_max_pq);

@@ -30,10 +30,25 @@ CGUIControlGroupList::CGUIControlGroupList(int parentID, int controlID, float po
   m_totalSize = 0;
   m_orientation = orientation;
   m_alignment = alignment;
-  m_lastScrollerValue = -1;
   m_useControlPositions = useControlPositions;
   ControlType = GUICONTROL_GROUPLIST;
   m_minSize = 0;
+}
+
+CGUIControlGroupList::CGUIControlGroupList(const CGUIControlGroupList& other)
+  : CGUIControlGroup(other),
+    m_itemGap(other.m_itemGap),
+    m_pageControl(other.m_pageControl),
+    m_focusedPosition(other.m_focusedPosition),
+    m_totalSize(other.m_totalSize),
+    m_scroller(other.m_scroller),
+    m_useControlPositions(other.m_useControlPositions),
+    m_orientation(other.m_orientation),
+    m_alignment(other.m_alignment),
+    m_minSize(other.m_minSize)
+{
+  // Note: m_lastScrollerValue, m_lastPageControlSize, m_lastPageControlTotalSize
+  // are intentionally not copied - they are cache values that should be recalculated
 }
 
 CGUIControlGroupList::~CGUIControlGroupList(void) = default;
@@ -55,17 +70,29 @@ void CGUIControlGroupList::Process(unsigned int currentTime, CDirtyRegionList &d
 
   // visibility status of some of the list items may have changed. Thus, the group list size
   // may now be different and the scroller needs to be updated
-  int previousTotalSize = m_totalSize;
   ValidateOffset(); // m_totalSize is updated here
-  bool sizeChanged = previousTotalSize != m_totalSize;
 
-  if (m_pageControl && (m_lastScrollerValue != m_scroller.GetValue() || sizeChanged))
+  if (m_pageControl)
   {
-    CGUIMessage message(GUI_MSG_LABEL_RESET, GetParentID(), m_pageControl, (int)Size(), (int)m_totalSize);
-    SendWindowMessage(message);
-    CGUIMessage message2(GUI_MSG_ITEM_SELECT, GetParentID(), m_pageControl, (int)m_scroller.GetValue());
-    SendWindowMessage(message2);
-    m_lastScrollerValue = static_cast<int>(m_scroller.GetValue());
+    const int currentSize = static_cast<int>(Size());
+    const int currentTotalSize = static_cast<int>(m_totalSize);
+    const int currentScrollerValue = static_cast<int>(m_scroller.GetValue());
+
+    if (m_lastPageControlSize != currentSize || m_lastPageControlTotalSize != currentTotalSize)
+    {
+      CGUIMessage message(GUI_MSG_LABEL_RESET, GetParentID(), m_pageControl, currentSize,
+                          currentTotalSize);
+      SendWindowMessage(message);
+      m_lastPageControlSize = currentSize;
+      m_lastPageControlTotalSize = currentTotalSize;
+    }
+
+    if (m_lastScrollerValue != currentScrollerValue)
+    {
+      CGUIMessage message(GUI_MSG_ITEM_SELECT, GetParentID(), m_pageControl, currentScrollerValue);
+      SendWindowMessage(message);
+      m_lastScrollerValue = currentScrollerValue;
+    }
   }
   // we run through the controls, rendering as we go
   int index = 0;
@@ -343,6 +370,8 @@ void CGUIControlGroupList::ClearAll()
   m_totalSize = 0;
   CGUIControlGroup::ClearAll();
   m_scroller.SetValue(0);
+  m_lastPageControlSize.reset();
+  m_lastPageControlTotalSize.reset();
 }
 
 #define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
@@ -383,7 +412,9 @@ void CGUIControlGroupList::SetInvalid()
 {
   CGUIControl::SetInvalid();
   // Force a message to the scrollbar
-  m_lastScrollerValue = -1;
+  m_lastScrollerValue.reset();
+  m_lastPageControlSize.reset();
+  m_lastPageControlTotalSize.reset();
 }
 
 void CGUIControlGroupList::ScrollTo(float offset)

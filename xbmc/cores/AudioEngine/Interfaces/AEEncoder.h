@@ -79,13 +79,6 @@ public:
   virtual int Encode (uint8_t *in, int in_size, uint8_t *out, int out_size) = 0;
 
   /**
-   * Get the encoded data
-   * @param data return pointer to the buffer with the current encoded block
-   * @return the size in bytes of *data
-   */
-  virtual int GetData(uint8_t **data) = 0;
-
-  /**
    * Get the delay in seconds
    * @param bufferSize how much encoded data the caller has buffered to add to the delay
    * @return the delay in seconds including any un-fetched encoded data

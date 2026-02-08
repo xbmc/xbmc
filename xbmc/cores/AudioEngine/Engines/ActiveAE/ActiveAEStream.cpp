@@ -146,13 +146,9 @@ void CActiveAEStream::InitRemapper()
     srcConfig.bits_per_sample = CAEUtil::DataFormatToUsedBits(m_format.m_dataFormat);
     srcConfig.dither_bits = CAEUtil::DataFormatToDitherBits(m_format.m_dataFormat);
 
-    m_remapper->Init(dstConfig, srcConfig,
-                     false,
-                     false,
-                     M_SQRT1_2,
-                     &remapLayout,
+    m_remapper->Init(dstConfig, srcConfig, false, false, M_SQRT1_2, &remapLayout,
                      AE_QUALITY_LOW, // not used for remapping
-                     false);
+                     false, 0.0f);
 
     // extra sound packet, we can't resample to the same buffer
     m_remapBuffer =
@@ -580,7 +576,7 @@ void CActiveAEStream::UnRegisterAudioCallback()
 void CActiveAEStream::RegisterSlave(IAEStream *slave)
 {
   std::lock_guard lock(m_streamLock);
-  
+
   m_streamSlave = slave;
 }
 
@@ -610,8 +606,10 @@ bool CActiveAEStreamBuffers::HasInputLevel(int level) const {
     return false;
 }
 
-bool CActiveAEStreamBuffers::Create(unsigned int totaltime, bool remap, bool upmix, bool normalize) const {
-  if (!m_resampleBuffers->Create(totaltime, remap, upmix, normalize))
+bool CActiveAEStreamBuffers::Create(
+    unsigned int totaltime, bool remap, bool upmix, bool normalize, float sublevel)
+{
+  if (!m_resampleBuffers->Create(totaltime, remap, upmix, normalize, sublevel))
     return false;
 
   if (!m_atempoBuffers->Create(totaltime))
@@ -661,8 +659,12 @@ bool CActiveAEStreamBuffers::ProcessBuffers()
   return busy;
 }
 
-void CActiveAEStreamBuffers::ConfigureResampler(bool normalizelevels, bool stereoupmix, AEQuality quality) const {
-  m_resampleBuffers->ConfigureResampler(normalizelevels, stereoupmix, quality);
+void CActiveAEStreamBuffers::ConfigureResampler(bool normalizelevels,
+                                                bool stereoupmix,
+                                                AEQuality quality,
+                                                float sublevel)
+{
+  m_resampleBuffers->ConfigureResampler(normalizelevels, stereoupmix, quality, sublevel);
 }
 
 float CActiveAEStreamBuffers::GetDelay() const {

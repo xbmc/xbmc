@@ -55,7 +55,7 @@ void write_rpu(BitstreamIoWriter& writer, VdrDmData& vdr_dm_data) {
 
     // 3.
     writer.write_ue(0);                 // 106 (1)              num_pivots_minus2
-    writer.write_n<uint16_t>(0, 10);    // 116 (0000000000)     pivots[0] 
+    writer.write_n<uint16_t>(0, 10);    // 116 (0000000000)     pivots[0]
     writer.write_n<uint16_t>(1023, 10); // 126 (1111111111)     pivots[1]
 
     writer.write_ue(0);                 // 127 (1)              num_x_partitions_minus1
@@ -70,7 +70,7 @@ void write_rpu(BitstreamIoWriter& writer, VdrDmData& vdr_dm_data) {
     writer.write_se(1);                 // 158 (010)            poly_coef_int 1
     writer.write_n<uint64_t>(0, 23);    // 181 (00000000000000000000000)    poly_coef :: coefficient_log2_denom_length
 
-    // 152 OK. 
+    // 152 OK.
 
     // 2.
     writer.write_ue(0);                 // 182 (1)              mapping_idc Polynomial = 0
@@ -78,16 +78,16 @@ void write_rpu(BitstreamIoWriter& writer, VdrDmData& vdr_dm_data) {
     writer.write(false);                // 184 (0)              linear_interp_flag
     writer.write_se(0);                 // 185 (1)              poly_coef_int 0
     writer.write_n<uint64_t>(0, 23);    // 208 (00000000000000000000000)    poly_coef :: coefficient_log2_denom_length
-    writer.write_se(1);                 // 211 (010)            poly_coef_int 1 
+    writer.write_se(1);                 // 211 (010)            poly_coef_int 1
     writer.write_n<uint64_t>(0, 23);    // 234 (00000000000000000000000)    poly_coef :: coefficient_log2_denom_length
 
     // 3.
     writer.write_ue(0);                 // 235 (1)              mapping_idc Polynomial = 0
     writer.write_ue(0);                 // 236 (1)              poly_order_minus1
     writer.write(false);                // 237 (0)              linear_interp_flag
-    writer.write_se(0);                 // 238 (1)              poly_coef_int 0 
+    writer.write_se(0);                 // 238 (1)              poly_coef_int 0
     writer.write_n<uint64_t>(0, 23);    // 261 (00000000000000000000000)    poly_coef :: coefficient_log2_denom_length
-    writer.write_se(1);                 // 264 (010)            poly_coef_int 1 
+    writer.write_se(1);                 // 264 (010)            poly_coef_int 1
     writer.write_n<uint64_t>(0, 23);    // 287 (00000000000000000000000)    poly_coef :: coefficient_log2_denom_length
 
     writer.write_ue(0);                 // 288 (1)              affected_dm_metadata_id
@@ -133,78 +133,70 @@ void write_rpu(BitstreamIoWriter& writer, VdrDmData& vdr_dm_data) {
 
     writer.write_n<uint16_t>(42, 10);           // (0000101010) source_diagonal (display diagonal in inches - TODO: Any effect?)
 
-    // Total Bits Up to this point = 801 Bits
+    // Dolby Vision bitstream layout expects two sequential extension
+    // metadata payloads: CM v2.9 first, then (optionally) CM v4.0.
 
-    writer.write_ue(3);                         // (00100)      num_ext_blocks (5 bits)
-    // writer.write_ue(7);                         // (0000111)    num_ext_blocks (7 bits)
-
+    // CM v2.9 extension metadata (allowed levels: 1, 2, 4, 5, 6, 255)
+    // ---------------------------------------------------------------
+    writer.write_ue(3);                         // (00100) num_ext_blocks
     writer.byte_align();                        // dm_alignment_zero_bit
 
-    // L1 -----------
-    writer.write_ue(5);                         // (00101)          length_bytes
+    // L1 ----------- (53 bits)
+    writer.write_ue(5);                         // (00110)          length_bytes (payload only)
     writer.write_n<uint8_t>(1, 8);              // (00000001)       level
     writer.write_n<uint16_t>(vdr_dm_data.min_pq, 12);
     writer.write_n<uint16_t>(vdr_dm_data.max_pq, 12);
     writer.write_n<uint16_t>(vdr_dm_data.avg_pq, 12);
-    writer.write_n<uint8_t>(0, 4);              // (0000)           alignment of 4 bits.
+    writer.write_n<uint8_t>(0, 4);              // (0000)           alignment of 4 bits. (40)
 
-    // L1 Total Bits = 53 Bits
-
-    // L5 -----------
-    writer.write_ue(7);                         // (0000111)        length_bytes
+    // L5 ----------- (71 bits)
+    writer.write_ue(7);                         // (0001000)        length_bytes (payload only)
     writer.write_n<uint8_t>(5, 8);              // (00000101)       level
     writer.write_n<uint16_t>(0, 13);            // (0000000000000)  active_area_left_offset
     writer.write_n<uint16_t>(0, 13);            // (0000000000000)  active_area_right_offset
     writer.write_n<uint16_t>(0, 13);            // (0000000000000)  active_area_top_offset
     writer.write_n<uint16_t>(0, 13);            // (0000000000000)  active_area_bottom_offset
-    writer.write_n<uint8_t>(0, 4);              // (0000)           alignment of 4 bits.
+    writer.write_n<uint8_t>(0, 4);              // (0000)           alignment of 4 bits. (56)
 
-    // L5 Total Bits = 71 Bits
-
-    // L6 -----------
-    writer.write_ue(8);                         // (0001000)        length_bytes
+    // L6 ----------- (79 bits)
+    writer.write_ue(8);                         // (0001001)        length_bytes (payload only)
     writer.write_n<uint8_t>(6, 8);              // (00000110)       level
     writer.write_n<uint16_t>(vdr_dm_data.max_display_mastering_luminance, 16);
     writer.write_n<uint16_t>(vdr_dm_data.min_display_mastering_luminance, 16);
     writer.write_n<uint16_t>(vdr_dm_data.max_content_light_level, 16);
     writer.write_n<uint16_t>(vdr_dm_data.max_frame_average_light_level, 16);
 
-    // L6 Total Bits = 79 Bits
+    // CM v4.0 extension metadata (allowed levels: 3, 8, 9, 10, 11, 254)
+    // -----------------------------------------------------------------
+    writer.write_ue(4);                         // (00101) num_ext_blocks
+    writer.byte_align();                        // dm_alignment_zero_bit
 
-    // L3 -----------
-//    writer.write_ue(5);                         // (00101)          length_bytes
-//    writer.write_n<uint8_t>(3, 8);              // (00000011)       level
-//    writer.write_n<uint16_t>(2048, 12);         // (100000000000)
-//    writer.write_n<uint16_t>(2048, 12);         // (100000000000)
-//    writer.write_n<uint16_t>(2048, 12);         // (100000000000)
-//    writer.write_n<uint8_t>(0, 4);              // (0000)           alignment of 4 bits.
+    // L3 ------------ (53 bits)
+    writer.write_ue(5);                         // (00110)          length_bytes (payload only)
+    writer.write_n<uint8_t>(3, 8);              // (00000011)       level
+    writer.write_n<uint16_t>(2048, 12);         // (100000000000)   min_pq_offset
+    writer.write_n<uint16_t>(2048, 12);         // (100000000000)   max_pq_offset
+    writer.write_n<uint16_t>(2048, 12);         // (100000000000)   avg_pq_offset
+    writer.write_n<uint8_t>(0, 4);              // (0000)           alignment of 4 bits. (40)
 
-    // L3 Total Bits = 53 Bits
+    // L9 ------------ (19 bits)
+    writer.write_ue(1);                         // (010)            length_bytes (payload only)
+    writer.write_n<uint8_t>(9, 8);              // (00001001)       level
+    writer.write_n<uint8_t>(0, 8);              // (00000000)       source_primary_index
 
-    // L9 -----------
-//    writer.write_ue(1);                         // (001)            length_bytes
-//    writer.write_n<uint8_t>(9, 8);              // (00001001)       level
-//    writer.write_n<uint8_t>(0, 8);              // (00000000)       source_primary_index
+    // L11 ----------- (45 bits)
+    writer.write_ue(4);                         // (00101)          length_bytes (payload only)
+    writer.write_n<uint8_t>(11, 8);             // (00001011)       level
+    writer.write_n<uint8_t>(1, 8);              // (00000001)       content_type
+    writer.write_n<uint8_t>(0, 8);              // (00000000)       whitepoint
+    writer.write_n<uint8_t>(0, 8);              // (00000000)       reserved_byte2
+    writer.write_n<uint8_t>(0, 8);              // (00000000)       reserved_byte3
 
-    // L9 Total Bits = 19 Bits
-
-    // L11 -----------
-//    writer.write_ue(4);                         // (00100)          length_bytes
-//    writer.write_n<uint8_t>(11, 8);             // (00001011)       level
-//    writer.write_n<uint8_t>(1, 8);              // (00000001)       content_type
-//    writer.write_n<uint8_t>(0, 8);              // (00000000)       whitepoint
-//    writer.write_n<uint8_t>(0, 8);              // (00000000)       reserved_byte2
-//    writer.write_n<uint8_t>(0, 8);              // (00000000)       reserved_byte3
-
-    // L11 Total Bits = 45 Bits
-
-    // L254 -----------
-//    writer.write_ue(2);                         // (010)            length_bytes
-//    writer.write_n<uint8_t>(254, 8);            // (11111110)       level
-//    writer.write_n<uint8_t>(0, 8);              // (00000000)       dm_mode
-//    writer.write_n<uint8_t>(2, 8);              // (00000010)       dm_version_index
-
-    // L254 Total Bits = 27 Bits
+    // L254 ---------- (27 bits)
+    writer.write_ue(2);                         // (011)            length_bytes (payload only)
+    writer.write_n<uint8_t>(254, 8);            // (11111110)       level
+    writer.write_n<uint8_t>(0, 8);              // (00000000)       dm_mode
+    writer.write_n<uint8_t>(2, 8);              // (00000010)       dm_version_index
 
     writer.byte_align();                        // ext_dm_alignment_zero_bit
 };
@@ -271,9 +263,8 @@ static uint32_t calc_crc32(const void *data, size_t data_size)
 
 std::vector<uint8_t> create_rpu_nalu(VdrDmData& vdr_dm_data) {
 
-  // Dolby Vision profile 8.1 133/152 Bytes long.
-// BitstreamIoWriter writer(152);
-  BitstreamIoWriter writer(133);
+  // Dolby Vision profile 8.1 (CMv2.9 133 Bytes long | CMv4.0 153 Bytes long)
+  BitstreamIoWriter writer(153);
 
   writer.write_n<uint8_t>(0x19, 8);  // RPU prefix
   write_rpu(writer, vdr_dm_data);

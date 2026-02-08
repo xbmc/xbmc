@@ -9,7 +9,6 @@
 #pragma once
 
 #include "ServiceBroker.h"
-#include "utils/CPUInfo.h"
 #include "utils/StringUtils.h"
 
 extern "C" {
@@ -41,23 +40,6 @@ struct FFMpegException : public std::exception
 std::string FFMpegErrorToString(int err);
 
 } // namespace FFMPEG_HELP_TOOLS
-
-inline int PPCPUFlags()
-{
-  unsigned int cpuFeatures = CServiceBroker::GetCPUInfo()->GetCPUFeatures();
-  int flags = 0;
-
-  if (cpuFeatures & CPU_FEATURE_MMX)
-    flags |= PP_CPU_CAPS_MMX;
-  if (cpuFeatures & CPU_FEATURE_MMX2)
-    flags |= PP_CPU_CAPS_MMX2;
-  if (cpuFeatures & CPU_FEATURE_3DNOW)
-    flags |= PP_CPU_CAPS_3DNOW;
-  if (cpuFeatures & CPU_FEATURE_ALTIVEC)
-    flags |= PP_CPU_CAPS_ALTIVEC;
-
-  return flags;
-}
 
 // callback used for logging
 void ff_avutil_log(void* ptr, int level, const char* format, va_list va);

@@ -14,6 +14,7 @@
 #include "utils/Geometry.h"
 
 #include <functional>
+#include <optional>
 
 // image alignment for <aspect>keep</aspect>, <aspect>scale</aspect> or <aspect>center</aspect>
 #define ASPECT_ALIGN_CENTER  0
@@ -176,6 +177,7 @@ protected:
   CRect m_vertex;       // vertex coords to render
   bool m_invalid;       // if true, we need to recalculate
   bool m_use_cache;
+  std::optional<bool> m_lastReadyState; // cached ready state for change detection
   unsigned char m_alpha;
 
   float m_frameWidth, m_frameHeight;          // size in pixels of the actual frame within the texture

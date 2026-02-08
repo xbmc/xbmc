@@ -137,7 +137,9 @@ do_loaddeps() {
   local file="$1"
   LIBNAME=$(grep "LIBNAME=" $file | sed 's/LIBNAME=//g;s/#.*$//g;/^$/d')
   VERSION=$(grep "VERSION=" $file | sed 's/VERSION=//g;s/#.*$//g;/^$/d')
-  ARCHIVE=$LIBNAME-$VERSION.tar.gz
+  SHA512=$(grep "SHA512=" $file | sed 's/SHA512=//g;s/#.*$//g;/^$/d')
+  EXT=$(grep "ARCHIVE=" $file | sed 's/ARCHIVE=//g;s/#.*$//g;/^$/d' | cut -d'.' -f2-3)
+  ARCHIVE=$LIBNAME-$VERSION.$EXT
 
   BASE_URL=http://mirrors.kodi.tv/build-deps/sources
   local libsrcdir=$LIBNAME-$VERSION

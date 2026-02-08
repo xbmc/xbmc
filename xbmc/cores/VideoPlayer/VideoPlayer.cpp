@@ -435,10 +435,21 @@ void CSelectionStreams::Update(const std::shared_ptr<CDVDInputStream>& input,
     std::string filename = nav->GetFileName();
     int source = Source(STREAM_SOURCE_NAV, filename);
 
+    std::vector<CDemuxStream*> demuxStreams;
+    if (demuxer)
+      demuxStreams = demuxer->GetStreams();
+
     int count;
     count = nav->GetAudioStreamCount();
     for(int i=0;i<count;i++)
     {
+      const auto stream =
+          std::find_if(demuxStreams.begin(), demuxStreams.end(),
+                       [i](const auto& stream)
+                       { return stream->type == STREAM_AUDIO && stream->dvdNavId == i; });
+      CDemuxStreamAudio* aStream =
+          (stream != demuxStreams.end()) ? static_cast<CDemuxStreamAudio*>(*stream) : nullptr;
+
       SelectionStream s;
       s.source   = source;
       s.type     = STREAM_AUDIO;
@@ -449,8 +460,19 @@ void CSelectionStreams::Update(const std::shared_ptr<CDVDInputStream>& input,
       AudioStreamInfo info = nav->GetAudioStreamInfo(i);
       s.name     = info.name;
       s.codec    = info.codecName;
+      // additional/more reliable info from ffmpeg than IFO nav data
+      if (aStream)
+      {
+        s.codecDesc = aStream->GetStreamType();
+        s.channels = aStream->iChannels;
+        s.bitrate = aStream->iBitRate;
+      }
+      else
+      {
+        s.codecDesc = info.codecDesc;
+        s.channels = info.channels;
+      }
       s.language = g_LangCodeExpander.ConvertToISO6392B(info.language);
-      s.channels = info.channels;
       s.flags = info.flags;
       Update(s);
     }
@@ -533,14 +555,7 @@ void CSelectionStreams::Update(const std::shared_ptr<CDVDInputStream>& input,
       }
       if(stream->type == STREAM_AUDIO)
       {
-        std::string type;
-        type = static_cast<CDemuxStreamAudio*>(stream)->GetStreamType();
-        if(type.length() > 0)
-        {
-          if(s.name.length() > 0)
-            s.name += " - ";
-          s.name += type;
-        }
+        s.codecDesc = static_cast<CDemuxStreamAudio*>(stream)->GetStreamType();
         s.channels = static_cast<CDemuxStreamAudio*>(stream)->iChannels;
         s.bitrate = static_cast<CDemuxStreamAudio*>(stream)->iBitRate;
       }
@@ -2379,8 +2394,12 @@ bool CVideoPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket
     correction = pPacket->dts - maxdts;
   }
 
-  /* if it's large scale jump, correct for it after having confirmed the jump */
-  if(pPacket->dts + DVD_MSEC_TO_TIME(500) < current.dts_end())
+  /* if it's large scale jump, correct for it after having confirmed the jump
+   * Files with DTS classic audio need a wider threshold to avoid false corrections */
+  const bool hasDTSClassic = m_CurrentAudio.hint.codec == AV_CODEC_ID_DTS &&
+                             m_CurrentAudio.hint.profile == AV_PROFILE_DTS;
+  const double backwardThreshold = DVD_MSEC_TO_TIME(hasDTSClassic ? 1000 : 500);
+  if (pPacket->dts + backwardThreshold < current.dts_end())
   {
     CLog::Log(
         LOGDEBUG,
@@ -2836,6 +2855,7 @@ void CVideoPlayer::HandleMessages()
           m_callback.OnPlayBackSeekChapter(msg.GetChapter());
         }
       }
+      m_processInfo->SeekFinished(offset);
     }
     else if (pMsg->IsType(CDVDMsg::DEMUXER_RESET))
     {
@@ -2946,6 +2966,7 @@ void CVideoPlayer::HandleMessages()
           CloseStream(m_CurrentSubtitle, false);
           OpenStream(m_CurrentSubtitle, st.demuxerId, st.id, st.source);
         }
+        aml_reset_from_subtitle_change();
       }
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SET_SUBTITLESTREAM_VISIBLE))
@@ -3513,7 +3534,7 @@ bool CVideoPlayer::SeekTimeRelative(int64_t iTime)
   mode.relative = true;
   mode.backward = (iTime < 0) ? true : false;
   mode.accurate = false;
-  mode.trickplay = true;
+  mode.trickplay = false;
   mode.sync = true;
 
   m_messenger.Put(std::make_shared<CDVDMsgPlayerSeek>(mode));
@@ -5430,6 +5451,7 @@ void CVideoPlayer::GetAudioStreamInfo(int index, AudioStreamInfo& info) const
   info.bitrate = s.bitrate;
   info.channels = s.channels;
   info.codecName = s.codec;
+  info.codecDesc = s.codecDesc;
   info.flags = s.flags;
 }
 

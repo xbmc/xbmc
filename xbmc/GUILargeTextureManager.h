@@ -14,6 +14,7 @@
 
 #include <memory>
 #include <string>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -137,6 +138,10 @@ private:
   std::vector<CLargeTexture *> m_allocated;
   typedef std::vector<CLargeTexture *>::iterator listIterator;
   typedef std::vector< std::pair<unsigned int, CLargeTexture *> >::iterator queueIterator;
+
+  // O(1) lookup maps for path-based searches
+  std::unordered_map<std::string, CLargeTexture*> m_allocatedLookup;
+  std::unordered_map<std::string, CLargeTexture*> m_queuedLookup;
 
   CCriticalSection m_listSection;
 };

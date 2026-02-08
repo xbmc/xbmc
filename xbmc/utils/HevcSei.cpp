@@ -122,7 +122,7 @@ std::vector<CHevcSei> CHevcSei::ParseSeiRbspUnclearedEmulation(const uint8_t* in
   return ParseSeiRbsp(buf.data(), buf.size());
 }
 
-std::optional<const CHevcSei*> CHevcSei:: FindHdr10PlusSeiMessage(
+std::optional<const CHevcSei*> CHevcSei::FindHdr10PlusSeiMessage(
     const std::vector<uint8_t>& buf, const std::vector<CHevcSei>& messages)
 {
   for (const CHevcSei& sei : messages)
@@ -187,7 +187,7 @@ const std::optional<const Hdr10PlusMetadata> CHevcSei::ExtractHdr10Plus(
 }
 
 const std::optional<MasteringDisplayColourVolume> CHevcSei::ExtractMasteringDisplayColourVolume(
-  const std::vector<CHevcSei>& messages, 
+  const std::vector<CHevcSei>& messages,
   const std::vector<uint8_t>& buf) {
 
   for (const auto& sei : messages) {
@@ -196,19 +196,19 @@ const std::optional<MasteringDisplayColourVolume> CHevcSei::ExtractMasteringDisp
     if (sei.m_payloadType == 137 && sei.m_payloadSize >= 24) {
 
       CBitstreamReader br(buf.data() + sei.m_payloadOffset, sei.m_payloadSize);
-      
+
       MasteringDisplayColourVolume metadata;
-      
+
       // Read display primaries
       for (int i = 0; i < 3; ++i) {
           metadata.displayPrimaries[i].x = br.ReadBits(16);
           metadata.displayPrimaries[i].y = br.ReadBits(16);
       }
-      
+
       // Read white point
       metadata.whitePoint.x = br.ReadBits(16);
       metadata.whitePoint.y = br.ReadBits(16);
-      
+
       // Read max and min luminance
       uint32_t maxLuminanceRaw = br.ReadBits(32);
       uint32_t minLuminanceRaw = br.ReadBits(32);
@@ -216,7 +216,7 @@ const std::optional<MasteringDisplayColourVolume> CHevcSei::ExtractMasteringDisp
       // Convert to nits (cd/m²) for max only.
       metadata.maxLuminance = static_cast<uint32_t>(maxLuminanceRaw) / 10000.0f;
       metadata.minLuminance = static_cast<uint32_t>(minLuminanceRaw);
-      
+
       return metadata;
     }
   }
@@ -224,7 +224,7 @@ const std::optional<MasteringDisplayColourVolume> CHevcSei::ExtractMasteringDisp
 }
 
 const std::optional<ContentLightLevel> CHevcSei::ExtractContentLightLevel(
-  const std::vector<CHevcSei>& messages, 
+  const std::vector<CHevcSei>& messages,
   const std::vector<uint8_t>& buf) {
 
   for (const auto& sei : messages) {
@@ -233,10 +233,10 @@ const std::optional<ContentLightLevel> CHevcSei::ExtractContentLightLevel(
     if (sei.m_payloadType == 144 && sei.m_payloadSize >= 4) {
 
         CBitstreamReader br(buf.data() + sei.m_payloadOffset, sei.m_payloadSize);
-        
+
         uint16_t maxCLL = br.ReadBits(16);
         uint16_t maxFALL = br.ReadBits(16);
-        
+
         return ContentLightLevel{maxCLL, maxFALL};
     }
   }

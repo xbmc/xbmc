@@ -146,12 +146,14 @@ CActiveAEBufferPoolResample::~CActiveAEBufferPoolResample()
   Flush();
 }
 
-bool CActiveAEBufferPoolResample::Create(unsigned int totaltime, bool remap, bool upmix, bool normalize)
+bool CActiveAEBufferPoolResample::Create(
+    unsigned int totaltime, bool remap, bool upmix, bool normalize, float sublevel)
 {
   CActiveAEBufferPool::Create(totaltime);
 
   m_remap = remap;
   m_stereoUpmix = upmix;
+  m_mixSubLevel = sublevel;
 
   m_normalize = true;
   if ((m_format.m_channelLayout.Count() < m_inputFormat.m_channelLayout.Count() && !normalize))
@@ -160,7 +162,7 @@ bool CActiveAEBufferPoolResample::Create(unsigned int totaltime, bool remap, boo
   if (m_inputFormat.m_channelLayout != m_format.m_channelLayout ||
       m_inputFormat.m_sampleRate != m_format.m_sampleRate ||
       m_inputFormat.m_dataFormat != m_format.m_dataFormat ||
-      m_changeResampler)
+      m_inputFormat.m_frames != m_format.m_frames || m_changeResampler)
   {
     ChangeResampler();
   }
@@ -170,10 +172,6 @@ bool CActiveAEBufferPoolResample::Create(unsigned int totaltime, bool remap, boo
 void CActiveAEBufferPoolResample::ChangeResampler()
 {
   m_resampler = CAEResampleFactory::Create();
-
-  logM(LOGDEBUG, "CActiveAEBufferPoolResample", "Channel mix - src:[{}] dst:[{}]",
-    CAEUtil::GetAVChannelLayoutString(m_inputFormat.m_channelLayout),
-    CAEUtil::GetAVChannelLayoutString(m_format.m_channelLayout));
 
   SampleConfig dstConfig, srcConfig;
   dstConfig.channel_layout = CAEUtil::GetAVChannelLayout(m_format.m_channelLayout);
@@ -190,13 +188,9 @@ void CActiveAEBufferPoolResample::ChangeResampler()
   srcConfig.bits_per_sample = CAEUtil::DataFormatToUsedBits(m_inputFormat.m_dataFormat);
   srcConfig.dither_bits = CAEUtil::DataFormatToDitherBits(m_inputFormat.m_dataFormat);
 
-  m_resampler->Init(dstConfig, srcConfig,
-                    m_stereoUpmix,
-                    m_normalize,
-                    m_centerMixLevel,
-                    m_remap ? &m_format.m_channelLayout : nullptr,
-                    m_resampleQuality,
-                    m_forceResampler);
+  m_resampler->Init(dstConfig, srcConfig, m_stereoUpmix, m_normalize, m_centerMixLevel,
+                    m_remap ? &m_format.m_channelLayout : nullptr, m_resampleQuality,
+                    m_forceResampler, m_mixSubLevel);
 
   m_changeResampler = false;
 }
@@ -355,7 +349,10 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(int64_t timestamp)
   return busy;
 }
 
-void CActiveAEBufferPoolResample::ConfigureResampler(bool normalizelevels, bool stereoupmix, AEQuality quality)
+void CActiveAEBufferPoolResample::ConfigureResampler(bool normalizelevels,
+                                                     bool stereoupmix,
+                                                     AEQuality quality,
+                                                     float sublevel)
 {
   bool normalize = true;
   if ((m_format.m_channelLayout.Count() < m_inputFormat.m_channelLayout.Count()) && !normalizelevels)

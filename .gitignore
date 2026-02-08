@@ -336,3 +336,5 @@ exclude_dll.txt
 
 # clangd index
 .cache/
+
+.github/

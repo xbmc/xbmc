@@ -28,7 +28,6 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "utils/BitstreamConverter.h"
-#include "utils/BitstreamWriter.h"
 #include "utils/CPUInfo.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
@@ -57,6 +56,11 @@
 #include <androidjni/Surface.h>
 #include <androidjni/SurfaceTexture.h>
 #include <androidjni/UUID.h>
+
+extern "C"
+{
+#include <libavutil/intreadwrite.h>
+}
 
 using namespace KODI::MESSAGING;
 
@@ -416,16 +420,16 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     case AV_CODEC_ID_VP9:
       switch (m_hints.profile)
       {
-        case FF_PROFILE_VP9_0:
+        case AV_PROFILE_VP9_0:
           profile = CJNIMediaCodecInfoCodecProfileLevel::VP9Profile0;
           break;
-        case FF_PROFILE_VP9_1:
+        case AV_PROFILE_VP9_1:
           profile = CJNIMediaCodecInfoCodecProfileLevel::VP9Profile1;
           break;
-        case FF_PROFILE_VP9_2:
+        case AV_PROFILE_VP9_2:
           profile = CJNIMediaCodecInfoCodecProfileLevel::VP9Profile2;
           break;
-        case FF_PROFILE_VP9_3:
+        case AV_PROFILE_VP9_3:
           profile = CJNIMediaCodecInfoCodecProfileLevel::VP9Profile3;
           break;
         default:;
@@ -439,33 +443,33 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     case AV_CODEC_ID_H264:
       switch (m_hints.profile)
       {
-        case FF_PROFILE_H264_BASELINE:
+        case AV_PROFILE_H264_BASELINE:
           profile = CJNIMediaCodecInfoCodecProfileLevel::AVCProfileBaseline;
           break;
-        case FF_PROFILE_H264_MAIN:
+        case AV_PROFILE_H264_MAIN:
           profile = CJNIMediaCodecInfoCodecProfileLevel::AVCProfileMain;
           break;
-        case FF_PROFILE_H264_EXTENDED:
+        case AV_PROFILE_H264_EXTENDED:
           profile = CJNIMediaCodecInfoCodecProfileLevel::AVCProfileExtended;
           break;
-        case FF_PROFILE_H264_HIGH:
+        case AV_PROFILE_H264_HIGH:
           profile = CJNIMediaCodecInfoCodecProfileLevel::AVCProfileHigh;
           break;
-        case FF_PROFILE_H264_HIGH_10:
+        case AV_PROFILE_H264_HIGH_10:
           profile = CJNIMediaCodecInfoCodecProfileLevel::AVCProfileHigh10;
           break;
-        case FF_PROFILE_H264_HIGH_422:
+        case AV_PROFILE_H264_HIGH_422:
           profile = CJNIMediaCodecInfoCodecProfileLevel::AVCProfileHigh422;
           break;
-        case FF_PROFILE_H264_HIGH_444:
+        case AV_PROFILE_H264_HIGH_444:
           profile = CJNIMediaCodecInfoCodecProfileLevel::AVCProfileHigh444;
           break;
         // All currently not supported formats
-        case FF_PROFILE_H264_HIGH_10_INTRA:
-        case FF_PROFILE_H264_HIGH_422_INTRA:
-        case FF_PROFILE_H264_HIGH_444_PREDICTIVE:
-        case FF_PROFILE_H264_HIGH_444_INTRA:
-        case FF_PROFILE_H264_CAVLC_444:
+        case AV_PROFILE_H264_HIGH_10_INTRA:
+        case AV_PROFILE_H264_HIGH_422_INTRA:
+        case AV_PROFILE_H264_HIGH_444_PREDICTIVE:
+        case AV_PROFILE_H264_HIGH_444_INTRA:
+        case AV_PROFILE_H264_CAVLC_444:
           goto FAIL;
         default:
           break;
@@ -486,16 +490,16 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     {
       switch (m_hints.profile)
       {
-        case FF_PROFILE_HEVC_MAIN:
+        case AV_PROFILE_HEVC_MAIN:
           profile = CJNIMediaCodecInfoCodecProfileLevel::HEVCProfileMain;
           break;
-        case FF_PROFILE_HEVC_MAIN_10:
+        case AV_PROFILE_HEVC_MAIN_10:
           profile = CJNIMediaCodecInfoCodecProfileLevel::HEVCProfileMain10;
           break;
-        case FF_PROFILE_HEVC_MAIN_STILL_PICTURE:
+        case AV_PROFILE_HEVC_MAIN_STILL_PICTURE:
           profile = CJNIMediaCodecInfoCodecProfileLevel::HEVCProfileMainStill;
           break;
-        case FF_PROFILE_HEVC_REXT:
+        case AV_PROFILE_HEVC_REXT:
           // No known h/w decoder supporting Hi10P
           goto FAIL;
         default:
@@ -641,10 +645,10 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
         offset += sizeof(annexL_hdr1);
         memcpy(m_hints.extradata.GetData() + offset, hints.extradata.GetData(), 4);
         offset += 4;
-        BS_WL32(buf, hints.height);
+        AV_WL32(buf, hints.height);
         memcpy(m_hints.extradata.GetData() + offset, buf, 4);
         offset += 4;
-        BS_WL32(buf, hints.width);
+        AV_WL32(buf, hints.width);
         memcpy(m_hints.extradata.GetData() + offset, buf, 4);
         offset += 4;
         memcpy(m_hints.extradata.GetData() + offset, annexL_hdr2, sizeof(annexL_hdr2));
@@ -683,11 +687,11 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     {
       switch (m_hints.profile)
       {
-        case FF_PROFILE_AV1_MAIN:
+        case AV_PROFILE_AV1_MAIN:
           profile = CJNIMediaCodecInfoCodecProfileLevel::AV1ProfileMain8;
           break;
-        case FF_PROFILE_AV1_HIGH:
-        case FF_PROFILE_AV1_PROFESSIONAL:
+        case AV_PROFILE_AV1_HIGH:
+        case AV_PROFILE_AV1_PROFESSIONAL:
           goto FAIL;
           break;
         default:

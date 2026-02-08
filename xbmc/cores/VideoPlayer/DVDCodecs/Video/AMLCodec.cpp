@@ -2658,22 +2658,19 @@ CDVDVideoCodec::VCReturn CAMLCodec::GetPicture(VideoPicture& videoPicture)
 
     m_tp_last_frame = std::chrono::system_clock::now();
 
-    // if (m_last_pts == DVD_NOPTS_VALUE)
-    //   videoPicture.iDuration = static_cast<double>(am_private->video_rate * DVD_TIME_BASE) / UNIT_FREQ;
-    // else
-    //   videoPicture.iDuration = static_cast<double>(m_cur_pts - m_last_pts);
-
     const double rate_duration = static_cast<double>(am_private->video_rate * DVD_TIME_BASE) / UNIT_FREQ;
     const double picture_duration = static_cast<double>(m_cur_pts - m_last_pts);
     const double duration_ratio = picture_duration / rate_duration;
-    const bool is_vc1_25hz_interlaced = ((m_hints.codec == AV_CODEC_ID_VC1) &&
+    const bool is_sel_25hz_interlaced = (((m_hints.codec == AV_CODEC_ID_VC1) ||
+                                          (m_hints.codec == AV_CODEC_ID_WMV3) ||
+                                          (m_hints.codec == AV_CODEC_ID_H264)) &&
                                          (m_processInfo.GetVideoFps() == 25.0f) &&
                                          m_processInfo.GetVideoInterlaced());
 
     if (m_last_pts == DVD_NOPTS_VALUE)
       videoPicture.iDuration = rate_duration;
     else if ((m_speed == DVD_PLAYSPEED_NORMAL) &&
-             !is_vc1_25hz_interlaced &&             
+             !is_sel_25hz_interlaced &&             
              (m_cur_pts < m_last_pts))
     {
       m_cur_pts = m_last_pts + rate_duration;
@@ -2687,14 +2684,6 @@ CDVDVideoCodec::VCReturn CAMLCodec::GetPicture(VideoPicture& videoPicture)
     }
     else
       videoPicture.iDuration = picture_duration;
-
-    if (m_speed != DVD_PLAYSPEED_NORMAL)
-    {
-      const double calculatedDuration = videoPicture.iDuration * static_cast<double>(DVD_PLAYSPEED_NORMAL) / static_cast<double>(m_speed);
-      videoPicture.iDuration = (picture_duration > 0.0)
-                                 ? std::min(picture_duration, calculatedDuration)
-                                 : picture_duration;
-    }
 
     videoPicture.dts = DVD_NOPTS_VALUE;
     videoPicture.pts = static_cast<double>(m_cur_pts);
@@ -3034,36 +3023,56 @@ unsigned int CAMLCodec::GetDecoderVideoRate() const {
     return 0;
 }
 
-std::string CAMLCodec::GetHDRStaticMetadata() const {
-  // add static HDR metadata for VP9 content
-  if (am_private->video_format == VFORMAT_VP9 && m_hints.masteringMetadata)
+std::string CAMLCodec::GetHDRStaticMetadata() const
+{
+  std::stringstream stream;
+  std::string config_data;
+
+  switch(am_private->video_format)
   {
-    // for more information, see CTA+861.3-A standard document
-    static const double MAX_CHROMATICITY = 50000;
-    static const double MAX_LUMINANCE = 10000;
-    std::stringstream stream;
-    stream << "HDRStaticInfo:1";
-    stream << ";mR.x:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->display_primaries[0][0]) * MAX_CHROMATICITY + 0.5);
-    stream << ";mR.y:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->display_primaries[0][1]) * MAX_CHROMATICITY + 0.5);
-    stream << ";mG.x:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->display_primaries[1][0]) * MAX_CHROMATICITY + 0.5);
-    stream << ";mG.y:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->display_primaries[1][1]) * MAX_CHROMATICITY + 0.5);
-    stream << ";mB.x:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->display_primaries[2][0]) * MAX_CHROMATICITY + 0.5);
-    stream << ";mB.y:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->display_primaries[2][1]) * MAX_CHROMATICITY + 0.5);
-    stream << ";mW.x:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->white_point[0]) * MAX_CHROMATICITY + 0.5);
-    stream << ";mW.y:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->white_point[1]) * MAX_CHROMATICITY + 0.5);
-    stream << ";mMaxDL:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->max_luminance) * MAX_LUMINANCE + 0.5);
-    stream << ";mMinDL:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->min_luminance) * MAX_LUMINANCE + 0.5);
-    if (m_hints.contentLightMetadata)
-    {
-      stream << ";mCLLPresent:1";
-      stream << ";mMaxCLL:" << m_hints.contentLightMetadata->MaxCLL;
-      stream << ";mMaxFALL:" << m_hints.contentLightMetadata->MaxFALL;
-    }
-    if (m_hints.colorTransferCharacteristic != AVCOL_TRC_UNSPECIFIED)
-      stream << ";mTransfer:" << static_cast<int>(m_hints.colorTransferCharacteristic);
-    std::string config_data = stream.str();
-    CLog::Log(LOGDEBUG, "CAMLCodec::GetHDRStaticMetadata - Created the following config: {}", config_data.c_str());
-    return config_data;
+    // add static HDR metadata for VP9 content
+    case VFORMAT_VP9:
+      if (m_hints.masteringMetadata)
+      {
+        // for more information, see CTA+861.3-A standard document
+        static const double MAX_CHROMATICITY = 50000;
+        static const double MAX_LUMINANCE = 10000;
+        stream << "HDRStaticInfo:1";
+        stream << ";mR.x:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->display_primaries[0][0]) * MAX_CHROMATICITY + 0.5);
+        stream << ";mR.y:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->display_primaries[0][1]) * MAX_CHROMATICITY + 0.5);
+        stream << ";mG.x:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->display_primaries[1][0]) * MAX_CHROMATICITY + 0.5);
+        stream << ";mG.y:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->display_primaries[1][1]) * MAX_CHROMATICITY + 0.5);
+        stream << ";mB.x:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->display_primaries[2][0]) * MAX_CHROMATICITY + 0.5);
+        stream << ";mB.y:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->display_primaries[2][1]) * MAX_CHROMATICITY + 0.5);
+        stream << ";mW.x:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->white_point[0]) * MAX_CHROMATICITY + 0.5);
+        stream << ";mW.y:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->white_point[1]) * MAX_CHROMATICITY + 0.5);
+        stream << ";mMaxDL:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->max_luminance) * MAX_LUMINANCE + 0.5);
+        stream << ";mMinDL:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->min_luminance) * MAX_LUMINANCE + 0.5);
+        if (m_hints.contentLightMetadata)
+        {
+          stream << ";mCLLPresent:1";
+          stream << ";mMaxCLL:" << m_hints.contentLightMetadata->MaxCLL;
+          stream << ";mMaxFALL:" << m_hints.contentLightMetadata->MaxFALL;
+        }
+        if (m_hints.colorTransferCharacteristic != AVCOL_TRC_UNSPECIFIED)
+          stream << ";mTransfer:" << static_cast<int>(m_hints.colorTransferCharacteristic);
+        config_data = stream.str();
+      }
+      break;
+    case VFORMAT_AV1:
+      stream << "av1_max_pic_w:" << m_hints.width;
+      stream << ";av1_max_pic_h:" << m_hints.height;
+      stream << ";";
+      [[fallthrough]];
+    case VFORMAT_H264:
+      [[fallthrough]];
+    case VFORMAT_H264_4K2K:
+      config_data = stream.str();
+      break;
+    default:
+      break;
   }
-  return std::string();
+  if (!config_data.empty())
+    CLog::Log(LOGDEBUG, "CAMLCodec::GetHDRStaticMetadata - Created the following config: {}", config_data);
+  return config_data;
 }

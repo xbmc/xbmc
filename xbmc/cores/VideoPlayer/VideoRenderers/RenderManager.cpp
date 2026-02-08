@@ -339,6 +339,7 @@ void CRenderManager::FrameMove()
         ++it;
     }
 
+    m_playerPort->UpdateRenderBuffers(m_queued.size(), m_discard.size(), m_free.size());
     m_bRenderGUI = true;
   }
 
@@ -1035,6 +1036,8 @@ bool CRenderManager::AddVideoPicture(const VideoPicture& picture, volatile std::
   m_queued.push_back(index);
   m_free.pop_front();
 
+  m_playerPort->UpdateRenderBuffers(m_queued.size(), m_discard.size(), m_free.size());
+
   // signal to any waiters to check state
   if (m_presentstep == PRESENT_IDLE)
   {
@@ -1234,6 +1237,7 @@ void CRenderManager::PrepareNextRender()
     m_presentpts = m_Queue[m_presentsource].pts;
     m_presentevent.notifyAll();
 
+    m_playerPort->UpdateRenderBuffers(m_queued.size(), m_discard.size(), m_free.size());
   }
   else if (!combined && renderPts > (nextFramePts - frametime))
   {

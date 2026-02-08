@@ -59,5 +59,8 @@ protected:
   int GetCurrentColumn() const;
 
   int m_itemsPerRow;
+
+  // Cached offset calculated in Process() and reused in Render()
+  int m_cachedScrollOffset{0};
 };
 

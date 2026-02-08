@@ -607,10 +607,10 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
     {
       int algoValue = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
                                         CSettings::SETTING_COREELEC_AMLOGIC_DV_AUDIO_SEAMLESSBRANCH);
-      if ((algoValue > 0) && (algoValue < 4))
+      auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+      int algoForReset = advancedSettings->GetAlgoForReset();
+      if (((algoValue > 0) && (algoValue < 4)) || (algoForReset == 99))
       {
-        auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
-
         bool resetSync = advancedSettings->GetResetSync();
         if (resetSync)
         {
@@ -621,21 +621,27 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
         }
 
         bool resetSeek = advancedSettings->GetResetSeek();
-        int algoForReset = advancedSettings->GetAlgoForReset();
         if (resetSeek && (algoForReset != 0))
         {
-          bool hasAtmos = ((m_streaminfo.profile == FF_PROFILE_EAC3_DDP_ATMOS) ||
-                           (m_streaminfo.profile == FF_PROFILE_TRUEHD_ATMOS));
+#if 0
+          bool hasAtmos = ((m_streaminfo.profile == AV_PROFILE_EAC3_DDP_ATMOS) ||
+                           (m_streaminfo.profile == AV_PROFILE_TRUEHD_ATMOS));
 
-          if ((!hasAtmos) && (algoForReset > 1))
+          if ((!hasAtmos) && (algoForReset > 1) && (algoForReset != 99))
           {
             algoValue = 0;
             algoForReset = 0;
             advancedSettings->SetAlgoForReset(0);
           }
+#endif
           double iTimeValue = 0.0;
           double offsetValue = 0.0;
           bool performOffset = false;
+          if (algoForReset == 99)
+          {
+            algoValue = 1;
+            algoForReset = 2;
+          }
           switch (algoValue)
           {
             case 1:

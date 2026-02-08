@@ -71,6 +71,7 @@ enum DV_COLORIMETRY : int
 #define AML_G12A    0x28
 #define AML_G12B    0x29
 #define AML_SM1     0x2B
+#define AML_SC2     0x32
 
 #define FLAG_FORCE_DOVI_LL      (unsigned int)(0x4000)
 #define FLAG_FORCE_RGB_OUTPUT   (unsigned int)(0x8000)
@@ -161,6 +162,7 @@ void aml_reset_audio_from_player_pause();
 void aml_reset_audio_from_window_home();
 void aml_reset_audio_from_play_from_beginning();
 void aml_reset_audio_from_play_from_resume();
+void aml_reset_from_subtitle_change();
 
 void aml_kodi_reset_cd_cs();
 

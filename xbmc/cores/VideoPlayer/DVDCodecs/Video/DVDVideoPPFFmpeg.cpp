@@ -54,7 +54,7 @@ bool CDVDVideoPPFFmpeg::CheckInit(int iWidth, int iHeight)
       Dispose();
     }
 
-    m_pContext = pp_get_context(iWidth, iHeight, PPCPUFlags() | PP_FORMAT_420);
+    m_pContext = pp_get_context(iWidth, iHeight, PP_CPU_CAPS_AUTO | PP_FORMAT_420);
 
     m_iInitWidth = iWidth;
     m_iInitHeight = iHeight;

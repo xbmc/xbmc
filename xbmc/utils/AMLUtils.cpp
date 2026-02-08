@@ -112,7 +112,7 @@ void aml_reset_audio_from_vs10_change()
   CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetResetSync(true);
   CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetResetSeek(true);
   CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetLastResetTime(0.0);
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetAlgoForReset(1);
+  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetAlgoForReset(2);
 }
 
 void aml_kodi_set_cd_cs(int cd_cs_type)
@@ -123,24 +123,22 @@ void aml_kodi_set_cd_cs(int cd_cs_type)
     {
       enum DV_TYPE dv_type(static_cast<DV_TYPE>(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_TYPE)));
       unsigned int dv_vp(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_VIDEO_PROCESSOR));
-      if ((dv_vp == 2) || ((dv_vp == 0) && (dv_type == DV_TYPE_PLAYER_LED_HDR2))
-                       || ((dv_vp == 0) && (dv_type == DV_TYPE_PLAYER_LED_LLDV)))
+      if ((dv_vp == 2) || (dv_vp == 3) ||
+          ((dv_vp == 0) && (dv_type == DV_TYPE_PLAYER_LED_HDR2)) ||
+          ((dv_vp == 0) && (dv_type == DV_TYPE_PLAYER_LED_LLDV)))
       {
-        // if (CServiceBroker::GetDataCacheCore().GetVideoHdrType() == StreamHdrType::HDR_TYPE_DOLBYVISION)
-        // {
-          if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->GetForceCS())
-          {
-            CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetForceCS(true);
-            CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetForceCSPrevVal(
-                            settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_FORCE_CS));
-            CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetLimitCDPrevVal(
-                            settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_LIMIT_CD));
-          }
-          settings()->SetInt(CSettings::SETTING_COREELEC_AMLOGIC_FORCE_CS, 3);
-          settings()->SetInt(CSettings::SETTING_COREELEC_AMLOGIC_LIMIT_CD, 3);
-          const RESOLUTION_INFO res_info = CDisplaySettings::GetInstance().GetResolutionInfo(CDisplaySettings::GetInstance().GetCurrentResolution());
-          write_resolution_ini(res_info);
-        // }
+        if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->GetForceCS())
+        {
+          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetForceCS(true);
+          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetForceCSPrevVal(
+                          settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_FORCE_CS));
+          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetLimitCDPrevVal(
+                          settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_LIMIT_CD));
+        }
+        settings()->SetInt(CSettings::SETTING_COREELEC_AMLOGIC_FORCE_CS, 3);
+        settings()->SetInt(CSettings::SETTING_COREELEC_AMLOGIC_LIMIT_CD, 3);
+        const RESOLUTION_INFO res_info = CDisplaySettings::GetInstance().GetResolutionInfo(CDisplaySettings::GetInstance().GetCurrentResolution());
+        write_resolution_ini(res_info);
         if (CServiceBroker::GetDataCacheCore().GetVideoFps() < 41.0f)
           aml_linux_force_422 = true;
       }
@@ -187,14 +185,11 @@ void aml_dv_set_vs10_mode(unsigned int mode, StreamHdrType hdrType)
 
   if (mode != DOLBY_VISION_OUTPUT_MODE_BYPASS)
   {
-    //if ((hdrType != StreamHdrType::HDR_TYPE_DOLBYVISION) ||
-    //    ((hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION) && (mode == DOLBY_VISION_OUTPUT_MODE_SDR10)))
     if ((existing_mode == mode) || ((mode == DOLBY_VISION_OUTPUT_MODE_IPT) && (hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)))
       vs10_conversion = false;
     else
       vs10_conversion = true;
 
-    // if ((existing_mode != DOLBY_VISION_OUTPUT_MODE_IPT) && (existing_mode != DOLBY_VISION_OUTPUT_MODE_IPT_TUNNEL) &&
     if ((existing_mode != DOLBY_VISION_OUTPUT_MODE_HDR10) &&
         (mode == DOLBY_VISION_OUTPUT_MODE_SDR10) && (hdrType == StreamHdrType::HDR_TYPE_HDR10))
       aml_dv_on(DOLBY_VISION_OUTPUT_MODE_HDR10);
@@ -525,7 +520,7 @@ bool aml_dolby_vision_enabled()
 
 std::string aml_dv_output_mode_to_string(unsigned int mode)
 {
-  std::string mode_string = "Unkown";
+  std::string mode_string = "Unknown";
   switch (mode) {
     case DOLBY_VISION_OUTPUT_MODE_IPT:
       mode_string = "0-IPT";
@@ -548,7 +543,7 @@ std::string aml_dv_output_mode_to_string(unsigned int mode)
 
 std::string aml_dv_mode_to_string(enum DV_MODE mode)
 {
-  std::string mode_string = "Unkown";
+  std::string mode_string = "Unknown";
   switch (mode) {
     case DV_MODE::DV_MODE_ON:
       mode_string = "0-On";
@@ -565,7 +560,7 @@ std::string aml_dv_mode_to_string(enum DV_MODE mode)
 
 std::string aml_dv_type_to_string(enum DV_TYPE type)
 {
-  std::string type_string = "Unkown";
+  std::string type_string = "Unknown";
   switch (type) {
     case DV_TYPE::DV_TYPE_DISPLAY_LED:
       type_string = "0-Display Led (DV-Std)";
@@ -1721,9 +1716,9 @@ void aml_dv_send_profile(int dvprofile) {
   CSysfsPath("/sys/module/amdolby_vision/parameters/xbmc_dv_profile", static_cast<unsigned int>(dvprofile));
 }
 
-void aml_dv_hdr10plus_conversion (bool hdr10plus_conversion) {
-  CSysfsPath("/sys/module/amdolby_vision/parameters/xbmc_dv_hdr10plus_conv", hdr10plus_conversion);
-}
+// void aml_dv_hdr10plus_conversion (bool hdr10plus_conversion) {
+//  CSysfsPath("/sys/module/amdolby_vision/parameters/xbmc_dv_hdr10plus_conv", hdr10plus_conversion);
+// }
 
 void aml_reset_audio_from_player_open()
 {
@@ -1738,13 +1733,10 @@ void aml_reset_audio_from_player_open()
 
 void aml_reset_audio_from_player_pause()
 {
-  if (aml_get_cpufamily_id() == AML_G12B)
-  {
-    CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetResetSync(true);
-    CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetResetSeek(true);
-    CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetLastResetTime(0.0);
-    CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetAlgoForReset(1);
-  }
+  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetResetSync(true);
+  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetResetSeek(true);
+  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetLastResetTime(0.0);
+  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetAlgoForReset(2);
 }
 
 void aml_reset_audio_from_window_home()
@@ -1752,7 +1744,7 @@ void aml_reset_audio_from_window_home()
   CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetResetSync(true);
   CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetResetSeek(true);
   CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetLastResetTime(0.0);
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetAlgoForReset(1);
+  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetAlgoForReset(2);
 }
 
 void aml_reset_audio_from_play_from_beginning()
@@ -1772,6 +1764,14 @@ void aml_reset_audio_from_play_from_resume()
   CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetResetSeek(true);
   CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetLastResetTime(0.0);
   CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetAlgoForReset(1);
+}
+
+void aml_reset_from_subtitle_change()
+{
+  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetResetSync(true);
+  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetResetSeek(true);
+  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetLastResetTime(0.0);
+  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetAlgoForReset(99);
 }
 
 void aml_kodi_reset_cd_cs()

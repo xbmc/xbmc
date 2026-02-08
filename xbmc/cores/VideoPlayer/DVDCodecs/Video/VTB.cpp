@@ -196,7 +196,7 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
 
   if(frame)
   {
-    if (frame->interlaced_frame)
+    if (frame->flags & AV_FRAME_FLAG_INTERLACED)
       return CDVDVideoCodec::VC_FATAL;
 
     if (m_renderBuffer)

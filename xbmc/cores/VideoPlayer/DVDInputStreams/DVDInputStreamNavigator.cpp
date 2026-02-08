@@ -1026,60 +1026,62 @@ void CDVDInputStreamNavigator::SetAudioStreamName(AudioStreamInfo &info, const a
   switch(audio_attributes.audio_format)
   {
   case DVD_AUDIO_FORMAT_AC3:
-    info.name += " AC3";
+    info.codecDesc = "AC3";
     info.codecName = "ac3";
     break;
   case DVD_AUDIO_FORMAT_UNKNOWN_1:
-    info.name += " UNKNOWN #1";
+    info.codecDesc = g_localizeStrings.Get(13205); // "Unknown"
+    CLog::LogF(LOGINFO, "unknown dvd audio codec DVD_AUDIO_FORMAT_UNKNOWN_1");
     break;
   case DVD_AUDIO_FORMAT_MPEG:
-    info.name += " MPEG AUDIO";
+    info.codecDesc = "MPEG-1";
     info.codecName = "mp1";
     break;
   case DVD_AUDIO_FORMAT_MPEG2_EXT:
-    info.name += " MP2 Ext.";
+    info.codecDesc = "MPEG-2";
     info.codecName = "mp2";
     break;
   case DVD_AUDIO_FORMAT_LPCM:
-    info.name += " LPCM";
+    info.codecDesc = "LPCM";
     info.codecName = "pcm";
     break;
   case DVD_AUDIO_FORMAT_UNKNOWN_5:
-    info.name += " UNKNOWN #5";
+    info.codecDesc = g_localizeStrings.Get(13205); // "Unknown"
+    CLog::LogF(LOGINFO, "unknown dvd audio codec DVD_AUDIO_FORMAT_UNKNOWN_5");
     break;
   case DVD_AUDIO_FORMAT_DTS:
-    info.name += " DTS";
+    info.codecDesc = "DTS";
     info.codecName = "dts";
     break;
   case DVD_AUDIO_FORMAT_SDDS:
-    info.name += " SDDS";
+    info.codecDesc = "SDDS";
     break;
   default:
-    info.name += " Other";
+    info.codecDesc = g_localizeStrings.Get(13205); // "Unknown"
+    CLog::LogF(LOGINFO, "unknown dvd audio codec");
     break;
   }
+
+  info.codecDesc.append(" ");
 
   switch(audio_attributes.channels + 1)
   {
   case 1:
-    info.name += " Mono";
+    info.codecDesc += g_localizeStrings.Get(37003); // "mono"
     break;
   case 2:
-    info.name += " Stereo";
+    info.codecDesc += g_localizeStrings.Get(37004); // "stereo"
     break;
   case 6:
-    info.name += " 5.1";
+    info.codecDesc += "5.1";
     break;
   case 7:
-    info.name += " 6.1";
+    info.codecDesc += "6.1";
     break;
   default:
-    char temp[32];
-    snprintf(temp, sizeof(temp), " %d-chs", audio_attributes.channels + 1);
-    info.name += temp;
+    info.codecDesc += StringUtils::Format("{:d} {}", audio_attributes.channels + 1,
+                                          g_localizeStrings.Get(10127)); // "channels"
   }
-
-  StringUtils::TrimLeft(info.name);
 }
 
 AudioStreamInfo CDVDInputStreamNavigator::GetAudioStreamInfo(const int iId)

@@ -8,6 +8,11 @@
 
 #include "BitstreamReader.h"
 
+extern "C"
+{
+#include <libavutil/intreadwrite.h>
+}
+
 CBitstreamReader::CBitstreamReader(const uint8_t* buf, int len)
   : buffer(buf), start(buf), length(len)
 {
@@ -90,7 +95,7 @@ const uint8_t* find_start_code(const uint8_t *p, const uint8_t *end, uint32_t *s
   }
 
   p = (p < end)? p - 4 : end - 4;
-  *state = BS_RB32(p);
+  *state = AV_RB32(p);
 
   return p + 4;
 }

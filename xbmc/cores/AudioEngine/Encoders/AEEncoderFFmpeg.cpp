@@ -37,7 +37,6 @@ CAEEncoderFFmpeg::~CAEEncoderFFmpeg()
 {
   Reset();
   swr_free(&m_SwrCtx);
-  av_channel_layout_uninit(&m_CodecCtx->ch_layout);
   avcodec_free_context(&m_CodecCtx);
 }
 
@@ -114,11 +113,42 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
 
   m_CodecCtx->bit_rate = m_BitRate;
   m_CodecCtx->sample_rate = format.m_sampleRate;
+
+  uint64_t channelLayout = AV_CH_LAYOUT_5POINT1_BACK;
+  if (format.m_channelLayout.IsLayoutValid())
+  {
+    const AVChannelLayout* channelLayouts = nullptr;
+    int numLayouts = 0;
+    avcodec_get_supported_config(m_CodecCtx, codec, AV_CODEC_CONFIG_CHANNEL_LAYOUT, 0,
+                                 reinterpret_cast<const void**>(&channelLayouts), &numLayouts);
+
+    std::vector<CAEChannelInfo> layouts;
+    for (int i = 0; i < numLayouts; ++i)
+    {
+      layouts.emplace_back(CAEUtil::GetAEChannelLayout(channelLayouts[i].u.mask));
+    }
+
+    const int best = format.m_channelLayout.BestMatch(layouts);
+    format.m_channelLayout = layouts[best];
+    channelLayout = CAEUtil::GetAVChannelLayout(format.m_channelLayout);
+  }
+
   av_channel_layout_uninit(&m_CodecCtx->ch_layout);
-  av_channel_layout_from_mask(&m_CodecCtx->ch_layout, AV_CH_LAYOUT_5POINT1_BACK);
+  av_channel_layout_from_mask(&m_CodecCtx->ch_layout, channelLayout);
+
+  const AVSampleFormat* sampleFmts = nullptr;
+  int numFmts = 0;
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(61, 12, 100)
+  avcodec_get_supported_config(m_CodecCtx, codec, AV_CODEC_CONFIG_SAMPLE_FORMAT, 0,
+                               reinterpret_cast<const void**>(&sampleFmts), &numFmts);
+#else
+  sampleFmts = codec->sample_fmts;
+  for (numFmts = 0; sampleFmts[numFmts] != AV_SAMPLE_FMT_NONE; ++numFmts)
+    ;
+#endif
 
   /* select a suitable data format */
-  if (codec->sample_fmts)
+  if (sampleFmts)
   {
     bool hasFloat  = false;
     bool hasDouble = false;
@@ -128,9 +158,9 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
     bool hasFloatP = false;
     bool hasUnknownFormat = false;
 
-    for(int i = 0; codec->sample_fmts[i] != AV_SAMPLE_FMT_NONE; ++i)
+    for (int i = 0; i < numFmts; ++i)
     {
-      switch (codec->sample_fmts[i])
+      switch (sampleFmts[i])
       {
         case AV_SAMPLE_FMT_FLT: hasFloat  = true; break;
         case AV_SAMPLE_FMT_DBL: hasDouble = true; break;
@@ -143,7 +173,8 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
           else
             hasUnknownFormat = true;
           break;
-        case AV_SAMPLE_FMT_NONE: return false;
+        case AV_SAMPLE_FMT_NONE:
+          continue;
         default: hasUnknownFormat = true; break;
       }
     }
@@ -180,7 +211,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
     }
     else if (hasUnknownFormat)
     {
-      m_CodecCtx->sample_fmt = codec->sample_fmts[0];
+      m_CodecCtx->sample_fmt = sampleFmts[0];
       format.m_dataFormat = AE_FMT_FLOAT;
       m_NeedConversion = true;
       CLog::Log(LOGINFO,
@@ -336,15 +367,6 @@ int CAEEncoderFFmpeg::Encode(uint8_t *in, int in_size, uint8_t *out, int out_siz
   av_packet_free(&pkt);
 
   /* return the number of frames used */
-  return size;
-}
-
-int CAEEncoderFFmpeg::GetData(uint8_t **data)
-{
-  int size;
-  *data = m_Buffer;
-  size = m_BufferSize;
-  m_BufferSize = 0;
   return size;
 }
 

@@ -20,7 +20,7 @@
 # --------
 # This will define the following target:
 #
-# ffmpeg::ffmpeg  - The FFmpeg interface target
+# ${APP_NAME_LC}::FFMPEG  - The FFmpeg interface target
 # --------
 #
 
@@ -30,128 +30,236 @@ macro(buildFFMPEG)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   # Check for dependencies - Must be done before SETUP_BUILD_VARS
-  get_libversion_data("dav1d" "target")
-  find_package(Dav1d ${LIB_DAV1D_VER} MODULE)
-  if(NOT TARGET dav1d::dav1d)
+  if(KODI_DEPENDSBUILD OR (WIN32 OR WINDOWS_STORE))
+    get_libversion_data("dav1d" "target")
+    set(DAV1D_REQUIRED REQUIRED)
+  else()
+    # FFMPEG 7+ currently only has a version requirement of Dav1d 1.0.0
+    set(LIB_DAV1D_VER 1.0.0)
+  endif()
+
+  find_package(Dav1d ${LIB_DAV1D_VER} ${DAV1D_REQUIRED} ${SEARCH_QUIET})
+  if(NOT TARGET LIBRARY::Dav1d)
     message(STATUS "dav1d not found, internal ffmpeg build will be missing AV1 support!")
   else()
     set(FFMPEG_OPTIONS -DENABLE_DAV1D=ON)
   endif()
 
-  set(MODULE_LC ffmpeg)
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC ffmpeg)
 
   SETUP_BUILD_VARS()
 
-  list(APPEND FFMPEG_OPTIONS -DENABLE_CCACHE=${ENABLE_CCACHE}
-                             -DCCACHE_PROGRAM=${CCACHE_PROGRAM}
-                             -DENABLE_VAAPI=${ENABLE_VAAPI}
-                             -DENABLE_VDPAU=${ENABLE_VDPAU}
-                             -DEXTRA_FLAGS=${FFMPEG_EXTRA_FLAGS})
+  message(STATUS "Building ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}: \(version \"${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER}\"\)")
 
-  if(KODI_DEPENDSBUILD)
-    set(CROSS_ARGS -DDEPENDS_PATH=${DEPENDS_PATH}
-                   -DPKG_CONFIG_EXECUTABLE=${PKG_CONFIG_EXECUTABLE}
-                   -DCROSSCOMPILING=${CMAKE_CROSSCOMPILING}
-                   -DOS=${OS}
-                   -DCMAKE_AR=${CMAKE_AR})
+  if(WIN32 OR WINDOWS_STORE)
+
+    find_package(Msys REQUIRED ${SEARCH_QUIET})
+    find_program(msys_BASH NAMES sh bash PATHS ${MSYS_INSTALL_PATH}/usr/bin REQUIRED
+                           ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
+
+    set(msys_env MSYS2_PATH_TYPE=inherit
+                 MSYS_INSTALL_PATH=${MSYS_INSTALL_PATH})
+
+    # Todo: buildmode?
+    set(PROMPTLEVEL noprompt)
+    set(BUILDMODE noclean)
+
+    set(build32 no)
+    set(build64 no)
+    set(buildArm no)
+    set(buildArm64 no)
+    set(win10 no)
+
+    if(ARCH STREQUAL arm64)
+      set(buildArm64 yes)
+    elseif(ARCH STREQUAL arm)
+      set(buildArm yes)
+    elseif(ARCH STREQUAL win32)
+      set(build32 yes)
+    elseif(ARCH STREQUAL x64)
+      set(build64 yes)
+    endif()
+
+    if(CMAKE_SYSTEM_NAME STREQUAL WindowsStore)
+      set(win10 yes)
+      list(APPEND msys_env win10=yes)
+    endif()
+
+    # The msys script will install and do all patching, so point to that source path
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SOURCE_DIR ${CMAKE_SOURCE_DIR}/project/BuildDependencies/build/src/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}-${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
+    # We must create the directory, otherwise we get non-existant path errors
+    file(MAKE_DIRECTORY ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SOURCE_DIR})
+
+    # We need the directory to be non-empty for externalproject_add, however we need to clean up the
+    # created EMPTYFILE for the msys script existence checks to download the archive if needed.
+    file(TOUCH ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SOURCE_DIR}/EMPTYFILE)
+    set(CONFIGURE_COMMAND ${CMAKE_COMMAND} -E rm -rf ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SOURCE_DIR}
+                  COMMAND ${CMAKE_COMMAND} -E make_directory ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SOURCE_DIR})
+
+    set(BUILD_COMMAND ${CMAKE_COMMAND} -E env ${msys_env} ${msys_BASH}
+                                        --login -i ${CMAKE_SOURCE_DIR}/tools/buildsteps/windows/make-mingwlibs.sh
+                                        --prompt=${PROMPTLEVEL}
+                                        --mode=${BUILDMODE}
+                                        --build32=${build32}
+                                        --build64=${build64}
+                                        --buildArm=${buildArm}
+                                        --buildArm64=${buildArm64}
+                                        --win10=${win10})
+    set(INSTALL_COMMAND ${CMAKE_COMMAND} -E true)
+
+    BUILD_DEP_TARGET()
+
+    set(FFMPEG_INCLUDE_DIRS ${MINGW_LIBS_DIR}/include)
+    # We must create the directory, otherwise we get non-existant path errors
+    file(MAKE_DIRECTORY ${FFMPEG_INCLUDE_DIRS})
+  else()
+
+    if(CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd)
+      if("VAAPI" IN_LIST PLATFORM_OPTIONAL_DEPS)
+        find_package(VAAPI)
+      endif()
+
+      if(TARGET ${APP_NAME_LC}::VAAPI)
+        set(FFMPEG_VAAPI TRUE)
+      endif()
+
+      if("VDPAU" IN_LIST PLATFORM_OPTIONAL_DEPS)
+        find_package(VDPAU)
+      endif()
+
+      if(TARGET ${APP_NAME_LC}::VDPAU)
+        set(FFMPEG_VDPAU TRUE)
+      endif()
+    endif()
+
+    list(APPEND FFMPEG_OPTIONS -DENABLE_CCACHE=${ENABLE_CCACHE}
+                               -DCCACHE_PROGRAM=${CCACHE_PROGRAM}
+                               -DENABLE_VAAPI=${FFMPEG_VAAPI}
+                               -DENABLE_VDPAU=${FFMPEG_VDPAU}
+                               -DEXTRA_FLAGS=${FFMPEG_EXTRA_FLAGS})
+
+    if(KODI_DEPENDSBUILD)
+      set(CROSS_ARGS -DDEPENDS_PATH=${DEPENDS_PATH}
+                     -DPKG_CONFIG_EXECUTABLE=${PKG_CONFIG_EXECUTABLE}
+                     -DCROSSCOMPILING=${CMAKE_CROSSCOMPILING}
+                     -DOS=${OS}
+                     -DCMAKE_AR=${CMAKE_AR})
+    endif()
+
+    if(USE_LTO)
+      list(APPEND FFMPEG_OPTIONS -DUSE_LTO=ON)
+    endif()
+
+    set(LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
+    list(APPEND LINKER_FLAGS ${SYSTEM_LDFLAGS})
+
+    # Some list shenanigans not being passed through without stringify/listify
+    # externalproject_add allows declaring list separator to generate a list for the target
+    string(REPLACE ";" "|" ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_MODULE_PATH "${CMAKE_MODULE_PATH}")
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIST_SEPARATOR LIST_SEPARATOR |)
+
+    set(CMAKE_ARGS -DCMAKE_MODULE_PATH=${FFMPEG_MODULE_PATH}
+                   -DFFMPEG_VER=${FFMPEG_VER}
+                   -DCORE_SYSTEM_NAME=${CORE_SYSTEM_NAME}
+                   -DCORE_PLATFORM_NAME=${CORE_PLATFORM_NAME_LC}
+                   -DCPU=${CPU}
+                   -DENABLE_NEON=${ENABLE_NEON}
+                   -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
+                   -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+                   -DENABLE_CCACHE=${ENABLE_CCACHE}
+                   -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
+                   -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}
+                   -DCMAKE_EXE_LINKER_FLAGS=${LINKER_FLAGS}
+                   -DDISABLE_FFMPEG_SOURCE_PLUGINS=${DISABLE_FFMPEG_SOURCE_PLUGINS}
+                   ${CROSS_ARGS}
+                   ${FFMPEG_OPTIONS}
+                   -DPKG_CONFIG_PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/pkgconfig)
+    set(PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+                      ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/CMakeLists.txt
+                      <SOURCE_DIR>
+    )
+
+    if(NOT DISABLE_FFMPEG_SOURCE_PLUGINS)
+      list(APPEND PATCH_COMMAND COMMAND ${CMAKE_COMMAND} -E copy
+                                ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/001-ffmpeg-all-libpostproc-plugin.patch
+                                <SOURCE_DIR>)
+
+      set(postproc_pkg_config_search "postproc=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libpostproc`")
+    endif()
+
+    if(CMAKE_GENERATOR STREQUAL Xcode)
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_GENERATOR CMAKE_GENERATOR "Unix Makefiles")
+    endif()
+
+    BUILD_DEP_TARGET()
+
+    find_program(BASH_COMMAND bash)
+    if(NOT BASH_COMMAND)
+      message(FATAL_ERROR "Internal FFmpeg requires bash.")
+    endif()
+
+    if(XCODE)
+      set(xcode_linker ${CMAKE_CXX_COMPILER})
+    endif()
+
+    file(WRITE ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ffmpeg/ffmpeg-link-wrapper
+  "#!${BASH_COMMAND}
+  if [[ $@ == *${APP_NAME_LC}.bin* || $@ == *${APP_NAME_LC}${APP_BINARY_SUFFIX}* || $@ == *${APP_NAME_LC}.so* || $@ == *${APP_NAME_LC}-test* || $@ == *MacOS/Kodi* || $@ == *${APP_NAME}.app/${APP_NAME}* ]]
+  then
+    avcodec=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libavcodec`
+    avformat=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libavformat`
+    avfilter=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libavfilter`
+    avutil=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libavutil`
+    ${postproc_pkg_config_search}
+    swscale=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libswscale`
+    swresample=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libswresample`
+    gnutls=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig/ ${PKG_CONFIG_EXECUTABLE}  --libs-only-l --static --silence-errors gnutls`
+    ${xcode_linker} $@ $avcodec $avformat $avfilter $avutil $swscale $swresample $postproc $gnutls
+  else
+    ${xcode_linker} $@
+  fi")
+    file(COPY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ffmpeg/ffmpeg-link-wrapper
+         DESTINATION ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
+         FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE)
+
+    set(FFMPEG_LINK_EXECUTABLE "${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ffmpeg-link-wrapper <CMAKE_CXX_COMPILER> <FLAGS> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> <OBJECTS> -o <TARGET> <LINK_LIBRARIES>" PARENT_SCOPE)
+    set(FFMPEG_CREATE_SHARED_LIBRARY "${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ffmpeg-link-wrapper <CMAKE_CXX_COMPILER> <CMAKE_SHARED_LIBRARY_CXX_FLAGS> <LANGUAGE_COMPILE_FLAGS> <LINK_FLAGS> <CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS> <SONAME_FLAG><TARGET_SONAME> -o <TARGET> <OBJECTS> <LINK_LIBRARIES>" PARENT_SCOPE)
+    set(FFMPEG_XCODE_WRAPPER "${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ffmpeg-link-wrapper" PARENT_SCOPE)
+    set(FFMPEG_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
   endif()
-  set(LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
-  list(APPEND LINKER_FLAGS ${SYSTEM_LDFLAGS})
 
-  # Some list shenanigans not being passed through without stringify/listify
-  # externalproject_add allows declaring list separator to generate a list for the target
-  string(REPLACE ";" "|" FFMPEG_MODULE_PATH "${CMAKE_MODULE_PATH}")
-  set(FFMPEG_LIST_SEPARATOR LIST_SEPARATOR |)
-
-  set(CMAKE_ARGS -DCMAKE_MODULE_PATH=${FFMPEG_MODULE_PATH}
-                 -DFFMPEG_VER=${FFMPEG_VER}
-                 -DCORE_SYSTEM_NAME=${CORE_SYSTEM_NAME}
-                 -DCORE_PLATFORM_NAME=${CORE_PLATFORM_NAME_LC}
-                 -DCPU=${CPU}
-                 -DENABLE_NEON=${ENABLE_NEON}
-                 -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
-                 -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
-                 -DENABLE_CCACHE=${ENABLE_CCACHE}
-                 -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
-                 -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}
-                 -DCMAKE_EXE_LINKER_FLAGS=${LINKER_FLAGS}
-                 ${CROSS_ARGS}
-                 ${FFMPEG_OPTIONS}
-                 -DPKG_CONFIG_PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/pkgconfig)
-  set(PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-                    ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/CMakeLists.txt
-                    <SOURCE_DIR>)
-
-  if(CMAKE_GENERATOR STREQUAL Xcode)
-    set(FFMPEG_GENERATOR CMAKE_GENERATOR "Unix Makefiles")
+  if(TARGET LIBRARY::Dav1d)
+    add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} LIBRARY::Dav1d)
   endif()
 
-  BUILD_DEP_TARGET()
-
-  if(TARGET dav1d::dav1d)
-    add_dependencies(ffmpeg dav1d::dav1d)
-  endif()
-
-  find_program(BASH_COMMAND bash)
-  if(NOT BASH_COMMAND)
-    message(FATAL_ERROR "Internal FFmpeg requires bash.")
-  endif()
-  file(WRITE ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ffmpeg/ffmpeg-link-wrapper
-"#!${BASH_COMMAND}
-if [[ $@ == *${APP_NAME_LC}.bin* || $@ == *${APP_NAME_LC}${APP_BINARY_SUFFIX}* || $@ == *${APP_NAME_LC}.so* || $@ == *${APP_NAME_LC}-test* || $@ == *MacOS/Kodi* ]]
-then
-  avcodec=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libavcodec`
-  avformat=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libavformat`
-  avfilter=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libavfilter`
-  avutil=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libavutil`
-  swscale=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libswscale`
-  swresample=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libswresample`
-  gnutls=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig/ ${PKG_CONFIG_EXECUTABLE}  --libs-only-l --static --silence-errors gnutls`
-  $@ $avcodec $avformat $avcodec $avfilter $swscale $swresample -lpostproc $gnutls
-else
-  $@
-fi")
-  file(COPY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ffmpeg/ffmpeg-link-wrapper
-       DESTINATION ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
-       FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE)
-
-  set(FFMPEG_LINK_EXECUTABLE "${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ffmpeg-link-wrapper <CMAKE_CXX_COMPILER> <FLAGS> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> <OBJECTS> -o <TARGET> <LINK_LIBRARIES>" PARENT_SCOPE)
-  set(FFMPEG_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
   set(FFMPEG_FOUND 1)
   set(FFMPEG_VERSION ${FFMPEG_VER})
 
-  # Whilst we use ffmpeg-link-wrapper, we only need INTERFACE at most, and possibly
-  # just not at all. However this gives target consistency with external FFMPEG usage
-  # The benefit and reason to continue to use the wrapper is to automate the collection
-  # of the actual linker flags from pkg-config lookup
+  if(WIN32 OR WINDOWS_STORE)
+    set(target_scope UNKNOWN)
+  else()
+    # Whilst we use ffmpeg-link-wrapper, we only need INTERFACE at most, and possibly
+    # just not at all. However this gives target consistency with external FFMPEG usage
+    # The benefit and reason to continue to use the wrapper is to automate the collection
+    # of the actual linker flags from pkg-config lookup
+    set(target_scope INTERFACE)
+  endif()
 
-  add_library(ffmpeg::libavcodec INTERFACE IMPORTED)
-  set_target_properties(ffmpeg::libavcodec PROPERTIES
-                                           INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIR}")
+  foreach(_ffmpeg_pkg IN ITEMS ${FFMPEG_PKGS})
+    string(REGEX REPLACE "[>]?=.*" "" _libname ${_ffmpeg_pkg})
 
-  add_library(ffmpeg::libavfilter INTERFACE IMPORTED)
-  set_target_properties(ffmpeg::libavfilter PROPERTIES
-                                            INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIR}")
+    if(NOT TARGET ffmpeg::${_libname})
+      add_library(ffmpeg::${_libname} ${target_scope} IMPORTED)
+      set_target_properties(ffmpeg::${_libname} PROPERTIES
+                                                INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIRS}")
 
-  add_library(ffmpeg::libavformat INTERFACE IMPORTED)
-  set_target_properties(ffmpeg::libavformat PROPERTIES
-                                            INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIR}")
-
-  add_library(ffmpeg::libavutil INTERFACE IMPORTED)
-  set_target_properties(ffmpeg::libavutil PROPERTIES
-                                          INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIR}")
-
-  add_library(ffmpeg::libswscale INTERFACE IMPORTED)
-  set_target_properties(ffmpeg::libswscale PROPERTIES
-                                           INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIR}")
-
-  add_library(ffmpeg::libswresample INTERFACE IMPORTED)
-  set_target_properties(ffmpeg::libswresample PROPERTIES
-                                              INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIR}")
-
-  add_library(ffmpeg::libpostproc INTERFACE IMPORTED)
-  set_target_properties(ffmpeg::libpostproc PROPERTIES
-                                            INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIR}")
+      if(WIN32 OR WINDOWS_STORE)
+        string(REPLACE "lib" "" name ${_libname})
+        set_target_properties(ffmpeg::${_libname} PROPERTIES
+                                                  IMPORTED_LOCATION "${MINGW_LIBS_DIR}/lib/${name}.lib")
+      endif()
+    endif()
+  endforeach()
 endmacro()
 
 
@@ -162,21 +270,59 @@ if(WITH_FFMPEG)
   message(STATUS "Warning: FFmpeg version checking disabled")
   set(REQUIRED_FFMPEG_VERSION undef)
 else()
-  # required ffmpeg library versions
-  set(REQUIRED_FFMPEG_VERSION 6.0.0)
-  set(_avcodec_ver ">=60.2.100")
-  set(_avfilter_ver ">=9.3.100")
-  set(_avformat_ver ">=60.3.100")
-  set(_avutil_ver ">=58.2.100")
-  set(_postproc_ver ">=57.1.100")
-  set(_swresample_ver ">=4.10.100")
-  set(_swscale_ver ">=7.1.100")
+  # We track multiple versions due to API changes. For dependsbuild or windows, we always
+  # have latest version to properly track rebuiling.
+  if(KODI_DEPENDSBUILD OR (WIN32 OR WINDOWS_STORE))
+    # required ffmpeg library versions - tools/depends/target/ffmpeg versions
+    set(REQUIRED_FFMPEG_VERSION 8.0.1)
+    set(_avutil_ver "=60.8.100")
+    set(_avcodec_ver "=62.11.100")
+    set(_avformat_ver "=62.3.100")
+    set(_avfilter_ver "=11.4.100")
+    set(_swscale_ver "=9.1.100")
+    set(_swresample_ver "=6.1.100")
+    set(_postproc_ver "=59.1.100")
+  else()
+    # required ffmpeg library versions - minimum supported API compat versions
+    set(REQUIRED_FFMPEG_VERSION 7.0.0)
+    set(_avutil_ver ">=59.8.100")
+    set(_avcodec_ver ">=61.3.100")
+    set(_avformat_ver ">=61.1.100")
+    set(_avfilter_ver ">=10.1.100")
+    set(_swscale_ver ">=8.1.100")
+    set(_swresample_ver ">=5.1.100")
+    set(_postproc_ver ">=58.1.100")
+  endif()
 endif()
 
 # Allows building with external ffmpeg not found in system paths,
 # with library version checks
 if(FFMPEG_PATH)
   set(ENABLE_INTERNAL_FFMPEG OFF)
+endif()
+
+set(FFMPEG_PKGS libavcodec${_avcodec_ver}
+                libavfilter${_avfilter_ver}
+                libavformat${_avformat_ver}
+                libavutil${_avutil_ver}
+                libswscale${_swscale_ver}
+                libswresample${_swresample_ver})
+
+if(NOT DISABLE_FFMPEG_SOURCE_PLUGINS)
+  # Optional ffmpeg sourceplugins
+  list(APPEND FFMPEG_PKGS libpostproc${_postproc_ver})
+endif()
+
+# Check for dav1d dep rebuild property
+if(KODI_DEPENDSBUILD OR (WIN32 OR WINDOWS_STORE))
+  find_package(Dav1d ${SEARCH_QUIET})
+  if(TARGET LIBRARY::Dav1d)
+    get_target_property(FFMPEG_DEP_BUILD LIBRARY::Dav1d LIB_BUILD)
+
+    if(FFMPEG_DEP_BUILD)
+      set(ENABLE_INTERNAL_FFMPEG ON)
+    endif()
+  endif()
 endif()
 
 if(ENABLE_INTERNAL_FFMPEG)
@@ -187,68 +333,79 @@ else()
     list(APPEND CMAKE_PREFIX_PATH ${FFMPEG_PATH})
   endif()
 
-  set(FFMPEG_PKGS libavcodec${_avcodec_ver}
-                  libavfilter${_avfilter_ver}
-                  libavformat${_avformat_ver}
-                  libavutil${_avutil_ver}
-                  libswscale${_swscale_ver}
-                  libswresample${_swresample_ver}
-                  libpostproc${_postproc_ver})
+  # macro for find_library usage
+  # arg1: lowercase libname (eg libavcodec, libpostproc, etc)
+  # arg2: version search specifier
+  macro(ffmpeg_find_lib libname libversion)
+    string(TOUPPER ${libname} libname_UPPER)
+    string(REPLACE "lib" "" name ${libname})
 
-  if(NOT WIN32)
-    find_package(PkgConfig REQUIRED)
-
-    pkg_check_modules(PC_FFMPEG ${FFMPEG_PKGS})
-  endif()
-
-  if((PC_FFMPEG_FOUND
-      AND PC_FFMPEG_libavcodec_VERSION
-      AND PC_FFMPEG_libavfilter_VERSION
-      AND PC_FFMPEG_libavformat_VERSION
-      AND PC_FFMPEG_libavutil_VERSION
-      AND PC_FFMPEG_libswscale_VERSION
-      AND PC_FFMPEG_libswresample_VERSION
-      AND PC_FFMPEG_libpostproc_VERSION)
-     OR WIN32)
-    set(FFMPEG_VERSION ${REQUIRED_FFMPEG_VERSION})
-
-    # macro for find_library usage
-    # arg1: lowercase libname (eg libavcodec, libpostproc, etc)
-    macro(ffmpeg_find_lib libname)
-      string(TOUPPER ${libname} libname_UPPER)
-      string(REPLACE "lib" "" name ${libname})
-
+    if(WIN32 OR WINDOWS_STORE)
       find_library(FFMPEG_${libname_UPPER}
                    NAMES ${name} ${libname}
                    PATH_SUFFIXES ffmpeg/${libname}
-                   HINTS ${DEPENDS_PATH}/lib ${PC_FFMPEG_${libname}_LIBDIR}
-                   ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
-    endmacro()
+                   HINTS ${DEPENDS_PATH}/lib ${MINGW_LIBS_DIR}/lib
+                   ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
+    else()
+      find_package(PkgConfig REQUIRED)
+
+      # ToDo: We cant use IMPORTED_TARGET yet.
+      # Linux CI fails with gmp related link issues when using the imported target
+      pkg_check_modules(FFMPEG_${libname_UPPER} ${libname}${libversion} ${SEARCH_QUIET})
+
+      # As windows does a simple find_library call, the output is a filename to the library
+      # for the pkgconfig search, we can get the full file path from _LINK_LIBRARIES first element
+      if(FFMPEG_${libname_UPPER}_FOUND)
+        # Retrieve full path name of lib (first element)
+        list(POP_FRONT FFMPEG_${libname_UPPER}_LINK_LIBRARIES FFMPEG_${libname_UPPER})
+      endif()
+    endif()
+  endmacro()
+
+  foreach(_ffmpeg_pkg IN ITEMS ${FFMPEG_PKGS})
+    string(REGEX REPLACE "[>]?=.*" "" _libname ${_ffmpeg_pkg})
+
+    string(REGEX MATCH "[>]?=" _search_spec ${_ffmpeg_pkg})
+    string(REGEX REPLACE ".*[>]?=" "${_search_spec}" _version ${_ffmpeg_pkg})
+
+    ffmpeg_find_lib(${_libname} ${_version})
+  endforeach()
+
+  # Check all libs are found, and set found.
+  # find_package_handle_standard_args isnt usable, as the libs may not exist, and it
+  # errors on not found.
+  if(FFMPEG_LIBAVCODEC AND
+     FFMPEG_LIBAVFILTER AND
+     FFMPEG_LIBAVFORMAT AND
+     FFMPEG_LIBAVUTIL AND
+     FFMPEG_LIBSWSCALE AND
+     FFMPEG_LIBSWRESAMPLE)
+    set(FFMPEG_FOUND 1)
+
+    # list of sourceplugin headers for find_path
+    if(FFMPEG_LIBPOSTPROC)
+      set(source_plugin_headers libpostproc/postprocess.h)
+    endif()
+  endif()
+
+  if(FFMPEG_FOUND)
+    # There is no easily identifiable version number for ffmpeg, as all libs have their
+    # own versioning. We may not bump REQUIRED_FFMPEG_VERSION if there is not a hard
+    # lib version increase due to API/ABI changes in FFMPEG. Due to this, the FFMPEG_VERSION
+    # may actually indicate a different version than actually used.
+    set(FFMPEG_VERSION ${REQUIRED_FFMPEG_VERSION})
 
     find_path(FFMPEG_INCLUDE_DIRS libavcodec/avcodec.h libavfilter/avfilter.h libavformat/avformat.h
-                                  libavutil/avutil.h libswscale/swscale.h libpostproc/postprocess.h
+                                  libavutil/avutil.h libswscale/swscale.h ${source_plugin_headers}
               PATH_SUFFIXES ffmpeg
-              HINTS ${DEPENDS_PATH}/include
-              ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+              HINTS ${DEPENDS_PATH}/include ${MINGW_LIBS_DIR}/include
+              ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
-    foreach(_ffmpeg_pkg IN ITEMS ${FFMPEG_PKGS})
-      string(REGEX REPLACE ">=.*" "" _libname ${_ffmpeg_pkg})
-      ffmpeg_find_lib(${_libname})
-    endforeach()
-
-    include(FindPackageHandleStandardArgs)
-    find_package_handle_standard_args(FFMPEG
-                                      VERSION_VAR FFMPEG_VERSION
-                                      REQUIRED_VARS FFMPEG_INCLUDE_DIRS
-                                                    FFMPEG_LIBAVCODEC
-                                                    FFMPEG_LIBAVFILTER
-                                                    FFMPEG_LIBAVFORMAT
-                                                    FFMPEG_LIBAVUTIL
-                                                    FFMPEG_LIBSWSCALE
-                                                    FFMPEG_LIBSWRESAMPLE
-                                                    FFMPEG_LIBPOSTPROC
-                                                    FFMPEG_VERSION
-                                      FAIL_MESSAGE "FFmpeg ${REQUIRED_FFMPEG_VERSION} not found, please consider using -DENABLE_INTERNAL_FFMPEG=ON")
+    # Windows is still just a straight file search. Explicitly search for Dav1d for
+    # correct dependency linking
+    if(WIN32 OR WINDOWS_STORE)
+      find_package(Dav1d ${SEARCH_QUIET})
+    endif()
 
     # Macro to populate target
     # arg1: lowercase libname (eg libavcodec, libpostproc, etc)
@@ -256,44 +413,56 @@ else()
       string(TOUPPER ${libname} libname_UPPER)
       string(REPLACE "lib" "" name ${libname})
 
-      if(PKG_CONFIG_FOUND AND NOT WIN32)
-        # We have to run the check against the single lib a second time, as when
-        # pkg_check_modules is run with a list, the only *_LDFLAGS set is a concatenated 
-        # list of all checked modules. Ideally we want each target to only have the LDFLAGS
-        # required for that specific module
-        pkg_check_modules(PC_FFMPEG_${libname} ${libname}${_${name}_ver} QUIET)
+      if(FFMPEG_${libname_UPPER})
+        if(WIN32 OR WINDOWS_STORE)
+          add_library(ffmpeg::${libname} UNKNOWN IMPORTED)
+          set_target_properties(ffmpeg::${libname} PROPERTIES
+                                                   IMPORTED_LOCATION "${FFMPEG_${libname_UPPER}}"
+                                                   INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIRS}")
+        else()
+          # pkg-config LDFLAGS always seem to have -l<name> listed. We dont need that, as
+          # the target gets a direct path to the physical lib
+          list(REMOVE_ITEM FFMPEG_${libname_UPPER}_LDFLAGS "-l${name}")
 
-        # pkg-config LDFLAGS always seem to have -l<name> listed. We dont need that, as
-        # the target gets a direct path to the physical lib
-        list(REMOVE_ITEM PC_FFMPEG_${libname}_LDFLAGS "-l${name}")
+          # Darwin platforms return a list that cmake splits "framework libname" into separate
+          # items, therefore the link arguments become -framework -libname causing link failures
+          # we just force concatenation of these instances, so cmake passes it as "-framework libname"
+          if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+            string(REGEX REPLACE "framework;" "framework " FFMPEG_${libname_UPPER}_LDFLAGS "${FFMPEG_${libname_UPPER}_LDFLAGS}")
+          endif()
 
-        # Darwin platforms return a list that cmake splits "framework libname" into separate
-        # items, therefore the link arguments become -framework -libname causing link failures
-        # we just force concatenation of these instances, so cmake passes it as "-framework libname"
-        if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-          string(REGEX REPLACE "framework;" "framework " PC_FFMPEG_${libname}_LDFLAGS "${PC_FFMPEG_${libname}_LDFLAGS}")
+          foreach(ldflag IN LISTS FFMPEG_${libname_UPPER}_LDFLAGS)
+            foreach(pkgname IN ITEMS ${FFMPEG_PKGS})
+              string(REGEX REPLACE "[>]?=.*" "" _shortlibname ${pkgname})
+              string(TOUPPER ${_shortlibname} _shortlibname_UPPER)
+              string(REPLACE "lib" "" shortname ${_shortlibname})
+
+              # replace -l<ffmpeglib> flag with ffmpeg target
+              # This provides correct link ordering and deduplication
+              string(REGEX REPLACE "-l${shortname}" "ffmpeg::${_shortlibname}" ldflag ${ldflag})
+            endforeach()
+            list(APPEND ${libname}_LDFLAGS ${ldflag})
+          endforeach()
+
+          add_library(ffmpeg::${libname} STATIC IMPORTED)
+          set_target_properties(ffmpeg::${libname} PROPERTIES
+                                                   IMPORTED_LOCATION "${FFMPEG_${libname_UPPER}}"
+                                                   INTERFACE_LINK_LIBRARIES "${${libname}_LDFLAGS}"
+                                                   INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIRS}")
         endif()
       endif()
-
-      add_library(ffmpeg::${libname} UNKNOWN IMPORTED)
-      set_target_properties(ffmpeg::${libname} PROPERTIES
-                                           FOLDER "FFMPEG - External Projects"
-                                           IMPORTED_LOCATION "${FFMPEG_${libname_UPPER}}"
-                                           INTERFACE_LINK_LIBRARIES "${PC_FFMPEG_${libname}_LDFLAGS}"
-                                           INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIRS}")
     endmacro()
 
     foreach(_ffmpeg_pkg IN ITEMS ${FFMPEG_PKGS})
-      string(REGEX REPLACE ">=.*" "" _libname ${_ffmpeg_pkg})
+      string(REGEX REPLACE "[>]?=.*" "" _libname ${_ffmpeg_pkg})
       ffmpeg_create_target(${_libname})
     endforeach()
-
   else()
-    if(FFMPEG_PATH)
-      message(FATAL_ERROR "FFmpeg not found, please consider using -DENABLE_INTERNAL_FFMPEG=ON")
-    else()
-      message(STATUS "FFmpeg ${REQUIRED_FFMPEG_VERSION} not found, falling back to internal build")
+    if(KODI_DEPENDSBUILD OR (WIN32 OR WINDOWS_STORE))
+      message(WARNING "Suitable FFmpeg version not found, consider explicitly using -DENABLE_INTERNAL_FFMPEG=ON. Internal FFMPEG will be built")
       buildFFMPEG()
+    else()
+      message(FATAL_ERROR "Suitable FFmpeg version not found, consider using -DENABLE_INTERNAL_FFMPEG=ON")
     endif()
   endif()
 endif()
@@ -301,24 +470,37 @@ endif()
 if(FFMPEG_FOUND)
   set(_ffmpeg_definitions FFMPEG_VER_SHA=${FFMPEG_VERSION})
 
-  if(NOT TARGET ffmpeg::ffmpeg)
-    add_library(ffmpeg::ffmpeg INTERFACE IMPORTED)
-    set_target_properties(ffmpeg::ffmpeg PROPERTIES
-                                         INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIRS}"
-                                         INTERFACE_COMPILE_DEFINITIONS "${_ffmpeg_definitions}")
+  if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE IMPORTED)
+    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                     INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIRS}"
+                                                                     INTERFACE_COMPILE_DEFINITIONS "${_ffmpeg_definitions}")
   endif()
 
-  target_link_libraries(ffmpeg::ffmpeg INTERFACE ffmpeg::libavcodec)
-  target_link_libraries(ffmpeg::ffmpeg INTERFACE ffmpeg::libavfilter)
-  target_link_libraries(ffmpeg::ffmpeg INTERFACE ffmpeg::libavformat)
-  target_link_libraries(ffmpeg::ffmpeg INTERFACE ffmpeg::libavutil)
-  target_link_libraries(ffmpeg::ffmpeg INTERFACE ffmpeg::libswscale)
-  target_link_libraries(ffmpeg::ffmpeg INTERFACE ffmpeg::libswresample)
-  target_link_libraries(ffmpeg::ffmpeg INTERFACE ffmpeg::libpostproc)
-
-  if(TARGET ffmpeg)
-    add_dependencies(ffmpeg::ffmpeg ffmpeg)
+  if(TARGET ffmpeg::libpostproc)
+    set_property(TARGET ffmpeg::libpostproc APPEND PROPERTY
+                                                   INTERFACE_COMPILE_DEFINITIONS "HAVE_LIBPOSTPROC")
   endif()
 
-  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP ffmpeg::ffmpeg)
+  foreach(_ffmpeg_pkg IN ITEMS ${FFMPEG_PKGS})
+    string(REGEX REPLACE "[>]?=.*" "" _libname ${_ffmpeg_pkg})
+    if(TARGET ffmpeg::${_libname})
+      target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE ffmpeg::${_libname})
+
+      if("${_libname}" STREQUAL "libavcodec")
+        if(TARGET LIBRARY::Dav1d)
+          set_property(TARGET ffmpeg::${_libname} APPEND PROPERTY INTERFACE_LINK_LIBRARIES LIBRARY::Dav1d)
+        endif()
+      endif()
+    endif()
+  endforeach()
+
+  # Always enable build job for windows. Msys scripts handle rebuild requirements
+  if((WIN32 OR WINDOWS_STORE) AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+    buildFFMPEG()
+  endif()
+
+  if(TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+    add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+  endif()
 endif()

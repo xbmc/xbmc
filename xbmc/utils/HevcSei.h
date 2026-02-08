@@ -84,13 +84,13 @@ public:
   static const std::optional<const Hdr10PlusMetadata> ExtractHdr10Plus(
     const std::vector<CHevcSei>& messages,
     const std::vector<uint8_t>& buf);
-  
+
   static const std::optional<MasteringDisplayColourVolume> ExtractMasteringDisplayColourVolume(
-    const std::vector<CHevcSei>& messages, 
+    const std::vector<CHevcSei>& messages,
     const std::vector<uint8_t>& buf);
 
   static const std::optional<ContentLightLevel> ExtractContentLightLevel(
-    const std::vector<CHevcSei>& messages, 
+    const std::vector<CHevcSei>& messages,
     const std::vector<uint8_t>& buf);
 
 private:

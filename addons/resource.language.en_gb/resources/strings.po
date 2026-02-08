@@ -5333,6 +5333,7 @@ msgid "File browser"
 msgstr ""
 
 #. Audio Channel count
+#: xbmc/cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.cpp
 #: xbmc/video/dialogs/GUIDialogAudioSettings.cpp
 msgctxt "#10127"
 msgid "channels"
@@ -6649,6 +6650,7 @@ msgstr ""
 #: xbmc/GUIInfoManager.cpp
 #: xbmc/LangInfo.cpp
 #: xbmc/addons/gui/GUIDialogAddonSettings.cpp
+#: xbmc/cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.cpp
 #: xbmc/music/MusicDatabase.cpp
 #: xbmc/peripherals/bus/PeripheralBus.cpp
 #: xbmc/platform/win32/WIN32Util.cpp
@@ -7367,10 +7369,7 @@ msgctxt "#13427"
 msgid "Allow hardware acceleration - DXVA2"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#13428"
-msgid "Allow hardware acceleration - CrystalHD"
-msgstr ""
+#empty string with id 13428
 
 #: system/settings/settings.xml
 msgctxt "#13429"
@@ -16924,6 +16923,7 @@ msgstr ""
 
 #. Other informations, in list selector (if present)
 #: xbmc/pvr/dialogs/GUIDialogPVRRadioRDSInfo.cpp
+#: xbmc/cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.cpp
 msgctxt "#29921"
 msgid "Other"
 msgstr ""
@@ -17930,8 +17930,39 @@ msgctxt "#34130"
 msgid "384.0"
 msgstr ""
 
-#empty strings from id 34131 to 34200
-#34131-34200 reserved for future use
+
+#. Indicates if Audio Engine should include lfe when downmixing
+#: system/settings/settings.xml
+msgctxt "#34131"
+msgid "Include LFE when downmixing"
+msgstr ""
+
+#. Description of setting with label #34131 "Include LFE when downmixing"
+#: system/settings/settings.xml
+msgctxt "#34132"
+msgid "If enabled, this setting will include lfe channel into the mixing when there is no dedicated LFE output channel available. This only makes sense for full range speakers."
+msgstr ""
+
+#. Description of setting with label #34131 "Include LFE when downmixing"
+#: system/settings/settings.xml
+msgctxt "#34133"
+msgid "Off"
+msgstr ""
+
+#. Description of setting with label #34131 "Include LFE when downmixing"
+#: system/settings/settings.xml
+msgctxt "#34134"
+msgid "50%"
+msgstr ""
+
+#. Description of setting with label #34131 "Include LFE when downmixing"
+#: system/settings/settings.xml
+msgctxt "#34135"
+msgid "100%"
+msgstr ""
+
+#empty strings from id 34136 to 34200
+#34136-34200 reserved for future use
 
 #: xbmc/PlayListPlayer.cpp
 msgctxt "#34201"
@@ -19693,11 +19724,7 @@ msgctxt "#36158"
 msgid "Enable DXVA2 hardware decoding of video files."
 msgstr ""
 
-#. Description of setting with label #13428 "Allow hardware acceleration (CrystalHD)"
-#: system/settings/settings.xml
-msgctxt "#36159"
-msgid "Enable CrystalHD decoding of video files."
-msgstr ""
+#empty string with id 36159
 
 #. Description of setting with label #13429 "Allow hardware acceleration (VDADecoder)"
 #: system/settings/settings.xml
@@ -21334,17 +21361,7 @@ msgctxt "#36445"
 msgid "Select this option to allow using double refresh rates (playing 29.97 FPS video on a 59.94 Hz monitor or playing 30 FPS video on a 60 Hz monitor). You may want to use this option if your monitor doesn't have a 29.97 Hz or 30 Hz mode."
 msgstr ""
 
-msgctxt "#36457"
-msgid "Include LFE in stereo downmix"
-msgstr ""
-
-msgctxt "#36458"
-msgid "Include low frequency effects channel in stereo downmix. 100% - Full LFE volume. 10% to 90% - reduced LFE volume. 0% - LFE excluded from stereo downmix. Note: To avoid damaging your speakers only enable LFE downmix if your speakers can handle very low bass frequencies."
-msgstr ""
-
-msgctxt "#36459"
-msgid "{0} %"
-msgstr ""
+#empty strings from id 36446 to 36459
 
 #. Description of settings with label #14112 "Enable event logging"
 #: system/settings/settings.xml
@@ -22249,7 +22266,19 @@ msgctxt "#37002"
 msgid "(Director's comments 2)"
 msgstr ""
 
-#empty strings from id 37003 to 37013
+#. DVD short name for 1.0 channel layout
+#: xbmc/cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.cpp
+msgctxt "#37003"
+msgid "mono"
+msgstr ""
+
+#. DVD short name for 2.0 channel layout
+#: xbmc/cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.cpp
+msgctxt "#37004"
+msgid "stereo"
+msgstr ""
+
+#empty strings from id 37005 to 37013
 
 #: xbmc/GUIInfoManager.cpp
 msgctxt "#37014"
@@ -22609,7 +22638,7 @@ msgctxt "#37123"
 msgid "{0:d} GB"
 msgstr ""
 
-#empty strings from id 37124 to 38006
+#empty strings from id 37124 to 38010
 
 #: system/settings/settings.xml
 msgctxt "#38007"
@@ -24812,7 +24841,7 @@ msgstr ""
 #. "Dolby Vision VS10"
 #: system/settings/settings.xml
 msgctxt "#60060"
-msgid "Use DV VS10 output target mode for HLG video."
+msgid "Use DV VS10 output target mode for HLG video (processed by VS10 as SDR)."
 msgstr ""
 
 #. "Dolby Vision VS10"

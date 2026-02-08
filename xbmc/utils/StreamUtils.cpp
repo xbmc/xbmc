@@ -8,19 +8,33 @@
 
 #include "StreamUtils.h"
 
+extern "C"
+{
+#include <libavcodec/avcodec.h>
+#include <libavcodec/defs.h>
+}
+
 int StreamUtils::GetCodecPriority(const std::string &codec)
 {
   /*
    * Technically flac, truehd, and dtshd_ma are equivalently good as they're all lossless. However,
    * ffmpeg can't decode dtshd_ma losslessy yet.
    */
+  if (codec == "truehd_atmos") // Dolby TrueHD with Atmos
+    return 11;
+  if (codec == "dtshd_ma_x_imax") // DTS:X IMAX Enhanced
+    return 10;
+  if (codec == "dtshd_ma_x") // DTS:X
+    return 9;
   if (codec == "flac") // Lossless FLAC
-    return 7;
+    return 8;
   if (codec == "truehd") // Dolby TrueHD
-    return 6;
+    return 7;
   if (codec == "dtshd_ma") // DTS-HD Master Audio (previously known as DTS++)
-    return 5;
+    return 6;
   if (codec == "dtshd_hra") // DTS-HD High Resolution Audio
+    return 5;
+  if (codec == "eac3_ddp_atmos") // Dolby Digital Plus with Atmos
     return 4;
   if (codec == "eac3") // Dolby Digital Plus
     return 3;
@@ -29,4 +43,64 @@ int StreamUtils::GetCodecPriority(const std::string &codec)
   if (codec == "ac3") // Dolby Digital
     return 1;
   return 0;
+}
+
+std::string StreamUtils::GetCodecName(int codecId, int profile)
+{
+  std::string codecName;
+
+  if (codecId == AV_CODEC_ID_DTS)
+  {
+    if (profile == AV_PROFILE_DTS_HD_MA)
+      codecName = "dtshd_ma";
+    else if (profile == AV_PROFILE_DTS_HD_MA_X)
+      codecName = "dtshd_ma_x";
+    else if (profile == AV_PROFILE_DTS_HD_MA_X_IMAX)
+      codecName = "dtshd_ma_x_imax";
+    else if (profile == AV_PROFILE_DTS_HD_HRA)
+      codecName = "dtshd_hra";
+    else
+      codecName = "dca";
+
+    return codecName;
+  }
+
+  if (codecId == AV_CODEC_ID_AAC)
+  {
+    switch (profile)
+    {
+      case AV_PROFILE_AAC_LOW:
+      case AV_PROFILE_MPEG2_AAC_LOW:
+        codecName = "aac_lc";
+        break;
+      case AV_PROFILE_AAC_HE:
+      case AV_PROFILE_MPEG2_AAC_HE:
+        codecName = "he_aac";
+        break;
+      case AV_PROFILE_AAC_HE_V2:
+        codecName = "he_aac_v2";
+        break;
+      case AV_PROFILE_AAC_SSR:
+        codecName = "aac_ssr";
+        break;
+      case AV_PROFILE_AAC_LTP:
+        codecName = "aac_ltp";
+        break;
+      default:
+        codecName = "aac";
+    }
+    return codecName;
+  }
+
+  if (codecId == AV_CODEC_ID_EAC3 && profile == AV_PROFILE_EAC3_DDP_ATMOS)
+    return "eac3_ddp_atmos";
+
+  if (codecId == AV_CODEC_ID_TRUEHD && profile == AV_PROFILE_TRUEHD_ATMOS)
+    return "truehd_atmos";
+
+  const AVCodec* codec = avcodec_find_decoder(static_cast<AVCodecID>(codecId));
+  if (codec)
+    codecName = avcodec_get_name(codec->id);
+
+  return codecName;
 }

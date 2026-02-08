@@ -15,8 +15,6 @@
 #endif
 
 #include "BitstreamConverter.h"
-#include "BitstreamReader.h"
-#include "BitstreamWriter.h"
 #include "HevcSei.h"
 #include "HDR10.h"
 #include "HDR10Plus.h"
@@ -27,17 +25,19 @@
 #include "cores/VideoPlayer/DVDStreamInfo.h"
 
 #include <algorithm>
+#include <cmath>
 #include <fmt/format.h>
 
 extern "C"
 {
 #include <libavutil/mastering_display_metadata.h>
+#include <libavutil/intreadwrite.h>
 #ifdef HAVE_LIBDOVI
 #include <libdovi/rpu_parser.h>
 #endif
 }
 
-static bool hdr10plus_conversion = false;
+// static bool hdr10plus_conversion = false;
 
 enum {
   AVC_NAL_SLICE=1,
@@ -113,6 +113,33 @@ enum {
   SEI_POST_FILTER_HINTS,
   SEI_TONE_MAPPING
 };
+
+static bool IsValidPtsForInjection(double pts)
+{
+  return std::isfinite(pts) && pts >= 0.0;
+}
+
+static constexpr char PTS_MARKER[] = "PTS_US64=";
+
+static bool AppendPtsToDoviRpuNalu(std::vector<uint8_t>& nalu, uint64_t ptsUs64)
+{
+  // Expect the final rbsp_trailing_bits byte.
+  if (nalu.size() < 1 || nalu.back() != 0x80)
+    return false;
+
+  std::vector<uint8_t> trailer;
+  trailer.reserve(sizeof(PTS_MARKER) - 1 + 16 + 1);
+  trailer.insert(trailer.end(),
+                 reinterpret_cast<const uint8_t*>(PTS_MARKER),
+                 reinterpret_cast<const uint8_t*>(PTS_MARKER) + (sizeof(PTS_MARKER) - 1));
+  const std::string ptsHex = fmt::format("{:016X}", ptsUs64);
+  trailer.insert(trailer.end(), ptsHex.begin(), ptsHex.end());
+  trailer.push_back(static_cast<uint8_t>(';'));
+
+  // Insert trailer right before the final 0x80 byte.
+  nalu.insert(nalu.end() - 1, trailer.begin(), trailer.end());
+  return true;
+}
 
 /*
  *  GStreamer h264 parser
@@ -381,8 +408,8 @@ static void get_dovi_rpu_info(uint8_t* nal_buf, uint32_t nal_size, bool first_fr
     std::string meta_version = "";
     if (vdr_dm_data && vdr_dm_data->dm_data.level254)
     {
-      hdr10plus_conversion = false;
-      aml_dv_hdr10plus_conversion(hdr10plus_conversion);  
+      // hdr10plus_conversion = false;
+      // aml_dv_hdr10plus_conversion(hdr10plus_conversion);  
       unsigned int noL8 = vdr_dm_data->dm_data.level8.len;
       if (noL8 > 0)
         meta_version = fmt::format("CMv4.0 {}-{} {}-L8",
@@ -394,26 +421,26 @@ static void get_dovi_rpu_info(uint8_t* nal_buf, uint32_t nal_size, bool first_fr
                                   vdr_dm_data->dm_data.level254->dm_version_index,
                                   vdr_dm_data->dm_data.level254->dm_mode);
     }
-    else if (hdr10plus_conversion)
-    {
-      hdr10plus_conversion = false;
-      meta_version = fmt::format("CMv4.0 {}-{}", 2, 0);
-    }
+    // else if (hdr10plus_conversion)
+    // {
+    //   hdr10plus_conversion = false;
+    //   meta_version = fmt::format("CMv4.0 {}-{}", 2, 0);
+    // }
     else if (vdr_dm_data && vdr_dm_data->dm_data.level1)
     {
-      hdr10plus_conversion = false;
-      aml_dv_hdr10plus_conversion(hdr10plus_conversion);
+      // hdr10plus_conversion = false;
+      // aml_dv_hdr10plus_conversion(hdr10plus_conversion);
       unsigned int noL2 = vdr_dm_data->dm_data.level2.len;
       if (noL2 > 0)
         meta_version = fmt::format("CMv2.9 {}-L2", noL2);
       else
         meta_version = "CMv2.9";
     }
-    else
-    {
-      hdr10plus_conversion = false;
-      aml_dv_hdr10plus_conversion(hdr10plus_conversion);
-    }
+    // else
+    // {
+    //   hdr10plus_conversion = false;
+    //   aml_dv_hdr10plus_conversion(hdr10plus_conversion);
+    // }
     
     dovi_stream_metadata.meta_version = meta_version;
     dataCacheCore.SetVideoDoViStreamMetadata(dovi_stream_metadata);
@@ -801,7 +828,7 @@ bool CBitstreamConverter::Convert(uint8_t *pData, int iSize, double pts)
           uint8_t *nal_start = pData;
           while (nal_start < end)
           {
-            nal_size = BS_RB24(nal_start);
+            nal_size = AV_RB24(nal_start);
             avio_wb32(pb, nal_size);
             nal_start += 3;
             avio_write(pb, nal_start, nal_size);
@@ -862,7 +889,7 @@ bool CBitstreamConverter::Convert(uint8_t *pData_bl, int iSize_bl, uint8_t *pDat
     {
       uint32_t size;
       uint8_t nal_type;
-      size = std::min<uint32_t>(BS_RB32(buf), end - buf - 4);
+      size = std::min<uint32_t>(AV_RB32(buf), end - buf - 4);
       buf += 4;
       nal_type = (buf[0] >> 1) & 0x3f;
 
@@ -900,7 +927,7 @@ bool CBitstreamConverter::Convert(uint8_t *pData_bl, int iSize_bl, uint8_t *pDat
     {
       uint32_t size;
       uint8_t nal_type;
-      size = std::min<uint32_t>(BS_RB32(buf), end - buf - 4);
+      size = std::min<uint32_t>(AV_RB32(buf), end - buf - 4);
       buf += 4;
       nal_type = (buf[0] >> 1) & 0x3f;
 
@@ -1282,8 +1309,8 @@ void CBitstreamConverter::AddDoViRpuNalu(const Hdr10PlusMetadata& meta, uint8_t 
       m_hints.dovi.el_present_flag = 0;
       m_hints.dovi.bl_present_flag = 1;
       m_hints.dovi.dv_bl_signal_compatibility_id = 1;
-      hdr10plus_conversion = true;
-      aml_dv_hdr10plus_conversion(hdr10plus_conversion);
+      // hdr10plus_conversion = true;
+      // aml_dv_hdr10plus_conversion(hdr10plus_conversion);
     }
 
 #ifdef HAVE_LIBDOVI
@@ -1372,8 +1399,11 @@ void CBitstreamConverter::ProcessDoViRpuWrap(uint8_t *nal_buf, int32_t nal_size,
 void CBitstreamConverter::ProcessDoViRpu(uint8_t *nal_buf, int32_t nal_size, uint8_t **poutbuf, int *poutbuf_size, double pts) const {
 
 #ifdef HAVE_LIBDOVI
+
   const DoviData* rpu_data = nullptr;
-  if (m_convert_dovi != DOVIMode::MODE_NONE) {
+
+  if (m_convert_dovi != DOVIMode::MODE_NONE)
+  {
     DOVIELType dovi_el_type = DOVIELType::TYPE_NONE;
     rpu_data = convert_dovi_rpu_nal(nal_buf, nal_size, m_convert_dovi, m_first_frame, dovi_el_type);
     if (rpu_data)
@@ -1390,14 +1420,33 @@ void CBitstreamConverter::ProcessDoViRpu(uint8_t *nal_buf, int32_t nal_size, uin
         m_dataCacheCore.SetVideoSourceDoViStreamInfo(dovi_stream_info);
       }
 
-      m_hints.dovi.el_present_flag = 0; // EL removed in both converstion cases - to MEL and to P8.1
-      if (m_convert_dovi == DOVIMode::MODE_TO81) {
+      m_hints.dovi.el_present_flag = 0; // EL removed in both conversion cases - to MEL and to P8.1
+      if (m_convert_dovi == DOVIMode::MODE_TO81)
+      {
         m_hints.dovi.dv_profile = 8;
         m_hints.dovi.dv_bl_signal_compatibility_id = 1;
       }
     }
   }
   get_dovi_rpu_info(nal_buf, nal_size, m_first_frame, m_hints.dovi_el_type, m_hints.dovi, pts, m_dataCacheCore);
+
+  std::vector<uint8_t> nalu;
+
+  // Inject the pts into the DoVi RPU NALU for FEL (STREAM_TYPE_STREAM)
+  // So can be obtained in sync with frame by the kernel driver
+  if ((m_convert_dovi == DOVIMode::MODE_NONE) &&
+      (m_hints.dovi_el_type == DOVIELType::TYPE_FEL) &&
+      IsValidPtsForInjection(pts) &&
+      nal_buf && (nal_size > 0))
+  {
+    nalu.assign(nal_buf, nal_buf + nal_size);
+    if (AppendPtsToDoviRpuNalu(nalu, static_cast<uint64_t>(pts)))
+    {
+      nal_buf = nalu.data();
+      nal_size = static_cast<int32_t>(nalu.size());
+    }
+  }
+
 #endif
 
   BitstreamAllocAndCopy(poutbuf, poutbuf_size, nullptr, 0, nal_buf, nal_size, HEVC_NAL_UNSPEC62);
@@ -1572,7 +1621,7 @@ void CBitstreamConverter::BitstreamAllocAndCopy(uint8_t** poutbuf,
   memcpy(*poutbuf + sps_pps_size + nal_header_size + offset, in, in_size);
   if (!offset)
   {
-    BS_WB32(*poutbuf + sps_pps_size, 1);
+    AV_WB32(*poutbuf + sps_pps_size, 1);
   }
   else if (nal_header_size == 4)
   {
@@ -1678,7 +1727,7 @@ int CBitstreamConverter::isom_write_avcc(AVIOContext *pb, const uint8_t *data, i
   if (len > 6)
   {
     /* check for h264 start code */
-    if (BS_RB32(data) == 0x00000001 || BS_RB24(data) == 0x000001)
+    if (AV_RB32(data) == 0x00000001 || AV_RB24(data) == 0x000001)
     {
       uint8_t *buf= nullptr, *end, *start;
       uint32_t sps_size=0, pps_size=0;
@@ -1695,7 +1744,7 @@ int CBitstreamConverter::isom_write_avcc(AVIOContext *pb, const uint8_t *data, i
       {
         uint32_t size;
         uint8_t  nal_type;
-        size = std::min<uint32_t>(BS_RB32(buf), end - buf - 4);
+        size = std::min<uint32_t>(AV_RB32(buf), end - buf - 4);
         buf += 4;
         nal_type = buf[0] & 0x1f;
         if (nal_type == 7) /* SPS */

@@ -40,7 +40,9 @@ void CGUIPanelContainer::Process(unsigned int currentTime, CDirtyRegionList &dir
 
   UpdateScrollOffset(currentTime);
 
-  int offset = (int)(m_scroller.GetValue() / m_layout->Size(m_orientation));
+  // Calculate and cache offset for reuse in Render()
+  m_cachedScrollOffset = (int)(m_scroller.GetValue() / m_layout->Size(m_orientation));
+  int offset = m_cachedScrollOffset;
 
   int cacheBefore, cacheAfter;
   GetCacheOffsets(cacheBefore, cacheAfter);
@@ -96,7 +98,8 @@ void CGUIPanelContainer::Render()
   if (!m_layout || !m_focusedLayout)
     return;
 
-  int offset = (int)(m_scroller.GetValue() / m_layout->Size(m_orientation));
+  // Use cached offset from Process() to avoid redundant calculation
+  int offset = m_cachedScrollOffset;
 
   int cacheBefore, cacheAfter;
   GetCacheOffsets(cacheBefore, cacheAfter);

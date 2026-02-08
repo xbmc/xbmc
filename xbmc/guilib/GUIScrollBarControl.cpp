@@ -72,10 +72,18 @@ void GUIScrollBarControl::Process(unsigned int currentTime, CDirtyRegionList &di
     changed |= UpdateBarSize();
 
   changed |= m_guiBackground->Process(currentTime);
-  changed |= m_guiBarNoFocus->Process(currentTime);
-  changed |= m_guiBarFocus->Process(currentTime);
-  changed |= m_guiNibNoFocus->Process(currentTime);
-  changed |= m_guiNibFocus->Process(currentTime);
+
+  // Only process textures that will actually be rendered based on focus state
+  if (m_bHasFocus)
+  {
+    changed |= m_guiBarFocus->Process(currentTime);
+    changed |= m_guiNibFocus->Process(currentTime);
+  }
+  else
+  {
+    changed |= m_guiBarNoFocus->Process(currentTime);
+    changed |= m_guiNibNoFocus->Process(currentTime);
+  }
 
   if (changed)
     MarkDirtyRegion();
@@ -228,13 +236,22 @@ void GUIScrollBarControl::SetInvalid()
 {
   CGUIControl::SetInvalid();
   m_guiBackground->SetInvalid();
-  m_guiBarFocus->SetInvalid();
+  m_guiBarNoFocus->SetInvalid();
   m_guiBarFocus->SetInvalid();
   m_guiNibNoFocus->SetInvalid();
   m_guiNibFocus->SetInvalid();
 }
 
-bool GUIScrollBarControl::UpdateBarSize() const {
+bool GUIScrollBarControl::UpdateBarSize()
+{
+  // Skip recalculation if scroll parameters haven't changed
+  if (m_offset == m_lastOffset && m_pageSize == m_lastPageSize && m_numItems == m_lastNumItems)
+    return false;
+
+  m_lastOffset = m_offset;
+  m_lastPageSize = m_pageSize;
+  m_lastNumItems = m_numItems;
+
   bool changed = false;
 
   // scale our textures to suit
