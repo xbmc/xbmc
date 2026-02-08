@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -216,6 +216,11 @@ struct TestBcp47Conversion
   std::string bcp47;
 };
 
+std::ostream& operator<<(std::ostream& os, const TestBcp47Conversion& rhs)
+{
+  return os << rhs.input;
+}
+
 // clang-format off
 const TestBcp47Conversion Bcp47ConversionTests[] = {
     {"en", true, "en"}, // ISO 639-1
@@ -227,6 +232,8 @@ const TestBcp47Conversion Bcp47ConversionTests[] = {
     {"English", true, "en"}, // Description of ISO 639-1 code
     {"Valencian", true, "ca"}, // additional description of cat, which is the alpha-3 of ca
     {"Adygei", true, "ady"}, // Description of ISO 639-2 code
+    {"Yang Zhuang", true, "zyg"}, // Description of BCP47 subtags registry language subtag
+    {"Dimili", true, "zza"}, // Additional description of ISO 639-2 zza, defined in BCP47 subtags registry
     {"", false, ""},
     {" en ", true, "en"},
     {"EN", true, "en"},
@@ -265,7 +272,6 @@ const TestLookup LookupTests[] = {
     {" en ", true, "English"},
     {"", false, ""},
     {"123", false, ""},
-    // {"English", false, ""}, won't be rejected until registry support is added
 };
 // clang-format on
 

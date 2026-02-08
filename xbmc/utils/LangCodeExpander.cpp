@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2020 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -9,10 +9,12 @@
 #include "LangCodeExpander.h"
 
 #include "LangInfo.h"
+#include "ServiceBroker.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/i18n/Bcp47.h"
+#include "utils/i18n/Bcp47Registry/SubTagRegistryManager.h"
 #include "utils/i18n/Iso3166_1.h"
 #include "utils/i18n/Iso639.h"
 #include "utils/i18n/Iso639_1.h"
@@ -405,6 +407,13 @@ bool CLangCodeExpander::ReverseLookup(const std::string& desc, std::string& code
     return true;
   }
 
+  const CSubTagRegistryManager& registry{CServiceBroker::GetSubTagRegistry()};
+  if (const auto ret = registry.GetLanguageSubTags().LookupByDescription(descTmp); ret.has_value())
+  {
+    code = ret->m_subTag;
+    return true;
+  }
+
   // Find on language addons
   if (const std::string addonLang = g_langInfo.ConvertEnglishNameToAddonLocale(descTmp);
       !addonLang.empty())
@@ -609,7 +618,14 @@ bool CLangCodeExpander::ConvertToBcp47(const std::string& text, std::string& bcp
     }
     else if (ConvertISO6392ToISO6391Internal(code, bcp47Lang))
     {
-      return true;
+      // Alpha-2 codes are likely to be registered but there is no guarantee.
+      tag = CBcp47::ParseTag(bcp47Lang);
+      if (tag.has_value() && tag->IsValid())
+      {
+        bcp47Lang = tag->Format();
+
+        return true;
+      }
     }
   }
 
