@@ -115,7 +115,7 @@ std::unique_ptr<CDVDVideoCodec> CDVDVideoCodecNVDEC::Create(CProcessInfo& proces
 
 void CDVDVideoCodecNVDEC::Register()
 {
-  static std::atomic_flag registered;
+  static std::atomic_flag registered{};
   if (registered.test_and_set())
     return;
 
