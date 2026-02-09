@@ -10,6 +10,7 @@
 
 #include "utils/i18n/Bcp47Common.h"
 
+#include <optional>
 #include <string>
 
 namespace KODI::UTILS::I18N

@@ -10,49 +10,55 @@
 
 #include "utils/StringUtils.h"
 #include "utils/i18n/Bcp47.h"
-#include "utils/i18n/Iso3166_1.h"
-#include "utils/i18n/Iso639.h"
-#include "utils/i18n/Iso639_1.h"
-#include "utils/i18n/Iso639_2.h"
 
+#include <algorithm>
+#include <functional>
 #include <string_view>
 
 using namespace KODI::UTILS::I18N;
 
 namespace
 {
-bool LookupInISO639Tables(const std::string& code, std::string& desc)
+bool AppendRegistryDescSingle(
+    const std::optional<TagSubTags>& subTags,
+    std::function<std::optional<BaseSubTag>(const TagSubTags& subTag)> member,
+    std::string& str)
 {
-  if (code.empty())
-    return false;
-
-  std::string sCode(code);
-  StringUtils::ToLower(sCode);
-  StringUtils::Trim(sCode);
-
-  if (sCode.length() == 2)
+  if (subTags.has_value())
   {
-    const auto ret = CIso639_1::LookupByCode(StringToLongCode(sCode));
-    if (ret.has_value())
+    if (const auto& subTag = member(subTags.value());
+        subTag.has_value() && !subTag.value().m_descriptions.empty())
     {
-      desc = ret.value();
+      str.append(subTag.value().m_descriptions.front());
       return true;
     }
   }
-  else if (sCode.length() == 3)
+  return false;
+}
+
+template<class T>
+bool AppendRegistryDescVector(const std::optional<TagSubTags>& subTags,
+                              std::function<std::vector<T>(const TagSubTags& subTag)> member,
+                              const std::string& sep,
+                              std::string& str)
+{
+  if (subTags.has_value())
   {
-    uint32_t longCode = StringToLongCode(sCode);
-
-    // Map B to T for the few codes that have differences
-    const auto tCode = CIso639_2::BCodeToTCode(longCode);
-    if (tCode.has_value())
-      longCode = tCode.value();
-
-    // Lookup the T code
-    const auto ret = CIso639_2::LookupByCode(longCode);
-    if (ret.has_value())
+    if (const auto& tagsVector = member(subTags.value()); !tagsVector.empty())
     {
-      desc = ret.value();
+      std::vector<std::string_view> englishDesc;
+      englishDesc.reserve(tagsVector.size());
+      std::ranges::for_each(tagsVector,
+                            [&englishDesc](const auto& subTag)
+                            {
+                              if (!subTag.m_descriptions.empty() &&
+                                  !subTag.m_descriptions.front().empty())
+                                englishDesc.push_back(subTag.m_descriptions.front());
+                              else
+                                englishDesc.push_back(subTag.m_subTag);
+                            });
+      str.append(StringUtils::Join(englishDesc, sep));
+
       return true;
     }
   }
@@ -187,18 +193,13 @@ bool CBcp47Formatter::AppendLanguage(const CBcp47& tag, std::string& str) const
   else if (const std::string& language = tag.m_language; !language.empty())
   {
     if (m_style == Bcp47FormattingStyle::FORMAT_ENGLISH)
-    {
-      // Language from ISO 639-1 or ISO 639-2
-      if (std::string lang; LookupInISO639Tables(language, lang))
-        str.append(lang);
-      else
-        str.append(language); // was likely ISO 639-3 or 639-5
-    }
-    else
+      modified = AppendRegistryDescSingle(tag.m_registrySubTags, &TagSubTags::m_language, str);
+
+    if (!modified)
     {
       str.append(language);
+      modified = true;
     }
-    modified = true;
   }
   return modified;
 }
@@ -216,8 +217,16 @@ bool CBcp47Formatter::AppendExtLangs(const CBcp47& tag, std::string& str) const
   }
   else if (const std::vector<std::string>& extLangs = tag.m_extLangs; !extLangs.empty())
   {
-    str.append(StringUtils::Join(extLangs, "-"));
-    modified = true;
+    if (m_style == Bcp47FormattingStyle::FORMAT_ENGLISH)
+    {
+      const auto& tags{tag.m_registrySubTags};
+      modified = AppendRegistryDescVector<ExtLangSubTag>(tags, &TagSubTags::m_extLangs, " ", str);
+    }
+    if (!modified)
+    {
+      str.append(StringUtils::Join(extLangs, "-"));
+      modified = true;
+    }
   }
   return modified;
 }
@@ -234,10 +243,16 @@ bool CBcp47Formatter::AppendScript(const CBcp47& tag, std::string& str) const
   }
   else if (const std::string& script = tag.m_script; !script.empty())
   {
-    std::string s = script;
-    StringUtils::ToCapitalize(s);
-    str.append(s);
-    modified = true;
+    if (m_style == Bcp47FormattingStyle::FORMAT_ENGLISH)
+      modified = AppendRegistryDescSingle(tag.m_registrySubTags, &TagSubTags::m_script, str);
+
+    if (!modified)
+    {
+      std::string s = script;
+      StringUtils::ToCapitalize(s);
+      str.append(s);
+      modified = true;
+    }
   }
   return modified;
 }
@@ -255,12 +270,9 @@ bool CBcp47Formatter::AppendRegion(const CBcp47& tag, std::string& str) const
   else if (const std::string& region = tag.m_region; !region.empty())
   {
     if (m_style == Bcp47FormattingStyle::FORMAT_ENGLISH)
-    {
-      // Region from ISO 3166-1. UN M.49 is not supported.
-      const auto reg = CIso3166_1::LookupByCode(region);
-      str.append(reg.value_or(StringUtils::ToUpper(region)));
-    }
-    else
+      modified = AppendRegistryDescSingle(tag.m_registrySubTags, &TagSubTags::m_region, str);
+
+    if (!modified)
     {
       str.append(StringUtils::ToUpper(region));
     }
@@ -282,8 +294,16 @@ bool CBcp47Formatter::AppendVariants(const CBcp47& tag, std::string& str) const
   }
   else if (const std::vector<std::string>& variants = tag.m_variants; !variants.empty())
   {
-    str.append(StringUtils::Join(variants, "-"));
-    modified = true;
+    if (m_style == Bcp47FormattingStyle::FORMAT_ENGLISH)
+    {
+      const auto& tags{tag.m_registrySubTags};
+      modified = AppendRegistryDescVector<VariantSubTag>(tags, &TagSubTags::m_variants, " ", str);
+    }
+    if (!modified)
+    {
+      str.append(StringUtils::Join(variants, "-"));
+      modified = true;
+    }
   }
   return modified;
 }
@@ -360,7 +380,12 @@ bool CBcp47Formatter::AppendGrandfathered(const CBcp47& tag, std::string& str) c
   }
   else if (const std::string& grandfathered = tag.m_grandfathered; !grandfathered.empty())
   {
-    str.append(grandfathered);
+    if (m_style == Bcp47FormattingStyle::FORMAT_ENGLISH)
+      modified = AppendRegistryDescSingle(tag.m_registrySubTags, &TagSubTags::m_grandfathered, str);
+
+    if (!modified)
+      str.append(grandfathered);
+
     modified = true;
   }
 
