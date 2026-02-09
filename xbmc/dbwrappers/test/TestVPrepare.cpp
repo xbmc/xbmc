@@ -12,6 +12,7 @@
 #endif
 
 #include <array>
+#include <cstdarg>
 #include <string>
 
 #include <gtest/gtest.h>
