@@ -9,6 +9,10 @@
 #include "utils/StringUtils.h"
 #include "utils/i18n/Bcp47.h"
 #include "utils/i18n/Bcp47Formatter.h"
+#include "utils/i18n/Bcp47Registry/SubTagRegistryManager.h"
+#include "utils/i18n/test/TestI18nUtils.h"
+
+#include <memory>
 
 #include <gtest/gtest.h>
 
@@ -28,30 +32,65 @@ std::ostream& operator<<(std::ostream& os, const TestFormatting& rhs)
 // clang-format off
 const TestFormatting FormattingTests[] = {
     {"en", "English"},
-    {"eng", "English"},
+    {"eng", "eng"}, // eng is  not valid
     {"en-AU", "English (Australia)"},
-    {"es-419", "Spanish (419)"}, // M.49 region - result will change with registry support
-    {"zh-yue-Hant-HK", "Chinese (yue, Hant, Hong Kong)"}, // result will change with registry support
-    {"yue-Hant", "yue (Hant)"}, // result will change with registry support
+    {"es-419", "Spanish (Latin America and the Caribbean)"},
+    {"zh-yue-Hant-HK", "Chinese (Yue Chinese, Han (Traditional variant), Hong Kong)"},
+    {"yue-Hant", "Yue Chinese (Han (Traditional variant))"},
     // All subtags
     {"zz-ext-exz-bcde-fg-abcde-0abc-e-abcd-ef-f-ef-x-a-bcd",
      "zz (ext-exz, Bcde, FG, abcde-0abc, e-abcd-ef-f-ef, x-a-bcd)"},
     // Private use only
     {"x-a-bcd", "x-a-bcd"},
-    // Irregular grandfathered - result will change with registry support
-    {"i-ami", "i-ami"},
+    // Irregular grandfathered
+    {"i-ami", "Amis"},
 };
 // clang-format on
 
 class FormatTester : public testing::Test, public testing::WithParamInterface<TestFormatting>
 {
+protected:
+  static CSubTagRegistryManager m_registry;
+
+  static void SetUpTestSuite()
+  {
+    // Runs once before the first test in this suite
+
+    // Use a small controlled subtags registry for more reliable tests
+    // clang-format off
+    std::vector<RegistryFileRecord> param = {
+        RegistryFileRecord{{{"Type", "language"}, {"Subtag", "en"}, {"Description", "English"}}},
+        RegistryFileRecord{{{"Type", "language"}, {"Subtag", "es"}, {"Description", "Spanish"}}},
+        RegistryFileRecord{{{"Type", "language"}, {"Subtag", "qaa"}, {"Description", "longer description"}, {"Description", "short description"}}},
+        RegistryFileRecord{{{"Type", "language"}, {"Subtag", "yue"}, {"Description", "Yue Chinese"}, {"Description", "Cantonese"}}},
+        RegistryFileRecord{{{"Type", "language"}, {"Subtag", "zh"}, {"Description", "Chinese"}}},
+        RegistryFileRecord{{{"Type", "extlang"}, {"Subtag", "yue"}, {"Description", "Yue Chinese"}, {"Description", "Cantonese"},{"Prefix", "zh"}}},
+        RegistryFileRecord{{{"Type", "script"}, {"Subtag", "Hant"}, {"Description", "Han (Traditional variant)"}}},
+        RegistryFileRecord{{{"Type", "region"}, {"Subtag", "AU"}, {"Description", "Australia"}}},
+        RegistryFileRecord{{{"Type", "region"}, {"Subtag", "HK"}, {"Description", "Hong Kong"}}},
+        RegistryFileRecord{{{"Type", "region"}, {"Subtag", "419"}, {"Description", "Latin America and the Caribbean"}}},
+        RegistryFileRecord{{{"Type", "variant"}, {"Subtag", "ao1990"}, {"Description", "Portuguese Language Orthographic Agreement of 1990 (Acordo Ortografico da Lingua Portuguesa de 1990)"}}},
+        RegistryFileRecord{{{"Type", "grandfathered"}, {"Subtag", "i-ami"}, {"Description", "Amis"}}},
 };
+    // clang-format on
+
+    std::unique_ptr<IRegistryRecordProvider> provider =
+        std::make_unique<CMemoryRecordProvider>(std::move(param));
+
+    EXPECT_TRUE(m_registry.Initialize(std::move(provider)));
+  }
+
+  static void TearDownTestSuite() { m_registry.Deinitialize(); }
+};
+
+// Define the static member
+CSubTagRegistryManager FormatTester::m_registry;
 
 TEST_P(FormatTester, FormatRaw)
 {
   // Well-formed tags (as well as grandfathered tags) should round-trip except for the casing
   const auto& param = GetParam();
-  const auto tag = CBcp47::ParseTag(param.input);
+  const auto tag = CBcp47::ParseTag(param.input, &m_registry);
   EXPECT_TRUE(tag.has_value());
   if (tag.has_value())
   {
@@ -63,7 +102,7 @@ TEST_P(FormatTester, FormatRaw)
 TEST_P(FormatTester, FormatEnglish)
 {
   const auto& param = GetParam();
-  const auto tag = CBcp47::ParseTag(param.input);
+  const auto tag = CBcp47::ParseTag(param.input, &m_registry);
   EXPECT_TRUE(tag.has_value());
   if (tag.has_value())
   {
