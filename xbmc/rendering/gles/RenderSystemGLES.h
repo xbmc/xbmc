@@ -110,7 +110,7 @@ public:
   void SetScissors(const CRect& rect) override;
   void ResetScissors() override;
 
-  void SetDepthCulling(DEPTH_CULLING culling) override;
+  void SetDepthCulling(DepthCulling culling) override;
 
   void CaptureStateBlock() override;
   void ApplyStateBlock() override;

@@ -585,16 +585,16 @@ ID3D11DepthStencilState* CRenderSystemDX::GetDepthStencilState()
 {
   switch (m_depthCulling)
   {
-    case DEPTH_CULLING::BACK_TO_FRONT:
+    case DepthCulling::BACK_TO_FRONT:
       return m_depthStencilStateRO.Get();
-    case DEPTH_CULLING::FRONT_TO_BACK:
+    case DepthCulling::FRONT_TO_BACK:
       return m_depthStencilStateRW.Get();
     default:
       return m_depthStencilState.Get();
   }
 }
 
-void CRenderSystemDX::SetDepthCulling(DEPTH_CULLING culling)
+void CRenderSystemDX::SetDepthCulling(DepthCulling culling)
 {
   if (!m_bRenderCreated)
     return;

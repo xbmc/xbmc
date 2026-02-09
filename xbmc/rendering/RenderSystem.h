@@ -23,7 +23,7 @@
  *   This interface is very basic since a lot of the actual details will go in to the derived classes
  */
 
-enum class DEPTH_CULLING
+enum class DepthCulling
 {
   OFF,
   BACK_TO_FRONT,
@@ -65,7 +65,7 @@ public:
   virtual void SetScissors(const CRect& rect) = 0;
   virtual void ResetScissors() = 0;
 
-  virtual void SetDepthCulling(DEPTH_CULLING culling) {}
+  virtual void SetDepthCulling(DepthCulling culling) {}
 
   virtual void CaptureStateBlock() = 0;
   virtual void ApplyStateBlock() = 0;

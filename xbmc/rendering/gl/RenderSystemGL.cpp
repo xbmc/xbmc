@@ -553,20 +553,20 @@ void CRenderSystemGL::ResetScissors()
   SetScissors(CRect(0, 0, (float)m_width, (float)m_height));
 }
 
-void CRenderSystemGL::SetDepthCulling(DEPTH_CULLING culling)
+void CRenderSystemGL::SetDepthCulling(DepthCulling culling)
 {
-  if (culling == DEPTH_CULLING::OFF)
+  if (culling == DepthCulling::OFF)
   {
     glDisable(GL_DEPTH_TEST);
     glDepthMask(GL_FALSE);
   }
-  else if (culling == DEPTH_CULLING::BACK_TO_FRONT)
+  else if (culling == DepthCulling::BACK_TO_FRONT)
   {
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_FALSE);
     glDepthFunc(GL_GEQUAL);
   }
-  else if (culling == DEPTH_CULLING::FRONT_TO_BACK)
+  else if (culling == DepthCulling::FRONT_TO_BACK)
   {
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
