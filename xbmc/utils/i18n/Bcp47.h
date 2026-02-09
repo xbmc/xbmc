@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2025 Team Kodi
+ *  Copyright (C) 2025-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -22,7 +22,6 @@ struct ParsedBcp47Tag;
 class CBcp47
 {
 public:
-  bool operator==(const CBcp47&) const = default;
   bool operator==(const ParsedBcp47Tag& other) const;
 
   /*!
