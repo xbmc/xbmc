@@ -512,7 +512,22 @@ void CGUIDialogSettingsBase::OnSettingChanged(const std::shared_ptr<const CSetti
   // using <dependency type="visible" setting="...">">.
   for (const auto& control : m_settingControls)
   {
-    if (control)
+    if (!control || control == m_delayedSetting)
+      continue;
+
+    // Only update controls that depend on the changed setting
+    auto deps = control->GetSetting()->GetDependencies();
+    bool dependsOnChanged = false;
+    for (const auto& dep : deps)
+    {
+      if (dep.GetSettings().count(setting->GetId()) > 0)
+      {
+        dependsOnChanged = true;
+        break;
+      }
+    }
+
+    if (dependsOnChanged || control->GetSetting() == setting)
       UpdateSettingControl(control, control->GetSetting() != setting);
   }
 }
