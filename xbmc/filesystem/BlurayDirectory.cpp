@@ -201,6 +201,31 @@ void RemoveShortPlaylists(std::vector<PlaylistInformation>& playlists)
   }
 }
 
+void GetMainPlaylist(std::vector<PlaylistInformation>& playlists, GetTitle job)
+{
+  // If any playlists have more than one chapter, discard those without
+  if (std::ranges::any_of(playlists,
+                          [](const PlaylistInformation& p) { return p.chapters.size() > 1; }))
+  {
+    std::erase_if(playlists, [](const PlaylistInformation& p) { return p.chapters.size() <= 1; });
+  }
+
+  const auto it{std::ranges::max_element(playlists, {}, &PlaylistInformation::duration)};
+  if (it == playlists.end())
+    return;
+
+  if (job == GetTitle::GET_TITLES_SINGLE)
+  {
+    playlists = {*it}; // Single longest title
+    return;
+  }
+
+  // All titles with duration of at least 70% of the longest title (to allow multiple editions on same disc)
+  const auto minimumDuration{it->duration * MAIN_TITLE_LENGTH_PERCENT / 100};
+  std::erase_if(playlists, [minimumDuration](const PlaylistInformation& playlist)
+                { return playlist.duration < minimumDuration; });
+}
+
 void SortPlaylists(std::vector<PlaylistInformation>& playlists, SortTitles sort, int mainPlaylist)
 {
   std::ranges::sort(playlists,
@@ -231,8 +256,8 @@ bool IncludePlaylist(GetTitle job,
   using enum GetTitle;
   return job == GET_TITLES_ALL || job == GET_TITLES_EPISODES ||
          (job == GET_TITLES_MAIN && title.duration >= minDuration) ||
-         (job == GET_TITLES_ONE && (title.playlist == static_cast<unsigned int>(mainPlaylist) ||
-                                    (mainPlaylist == -1 && title.playlist == maxPlaylist)));
+         (job == GET_TITLES_SINGLE && (title.playlist == static_cast<unsigned int>(mainPlaylist) ||
+                                       (mainPlaylist == -1 && title.playlist == maxPlaylist)));
 }
 
 void SetStreamDetails(const CURL& url,
@@ -352,6 +377,10 @@ bool FilterPlaylists(std::vector<PlaylistInformation>& playlists,
   // No playlists found
   if (playlists.empty())
     return false;
+
+  // For the main or single title select the longest playlist(s) that has >1 chapter
+  if (job == GetTitle::GET_TITLES_MAIN || job == GetTitle::GET_TITLES_SINGLE)
+    GetMainPlaylist(playlists, job);
 
   // Sort
   // Movies - placing main title - if present - first, then by duration
@@ -711,6 +740,7 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     return false;
 
   // /root                              - get main (length >70% longest) playlists
+  // /root/main	                        - get the single (most likely) main title playlist only
   // /root/titles                       - get all playlists
   // /root/episode/<season>/<episode>   - get playlists that correspond with S<season>E<episode>
   //                                      if none found then return all playlists
@@ -726,6 +756,10 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
   if (file == "root/titles")
     return GetPlaylists(url, m_realPath, m_flags, GetTitle::GET_TITLES_ALL, items,
                         SortTitles::SORT_TITLES_MOVIE, m_clipCache);
+
+  if (file == "root/main")
+    return GetPlaylists(url, m_realPath, m_flags, GetTitle::GET_TITLES_SINGLE, items,
+                        SortTitles::SORT_TITLES_NONE, m_clipCache);
 
   if (StringUtils::StartsWith(file, "root/episode"))
   {

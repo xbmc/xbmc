@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "Directory.h"
+#include "settings/DiscSettings.h"
 #include "video/VideoInfoTag.h"
 
 #include <chrono>
@@ -29,7 +31,7 @@ using namespace std::chrono_literals;
 
 enum class GetTitle : int
 {
-  GET_TITLES_ONE = -1,
+  GET_TITLES_SINGLE = -1,
   GET_TITLES_MAIN = -2,
   GET_TITLES_EPISODES = -3,
   GET_TITLES_ALL = -4
@@ -189,6 +191,19 @@ public:
    */
   static void AddRootOptions(const CURL& url, CFileItemList& items, AddMenuOption addMenuOption);
 
+  /*!
+   * \brief Either shows simple menu to select playlist, chooses main feature (movie/episode) playlists or returns if disc menu will be used later.
+   * \param item FileItem containing details of desired movie/episode. This is updated with the selected playlist.
+   * \param playback Setting SETTING_DISC_PLAYBACK - determines if the dialog should be shown or the main title selected (if possible).
+   * \return true if a playlist was selected or if the disc menu will be used later, false if the user cancelled.
+   */
+  static bool GetOrShowPlaylistSelection(CFileItem& item, int playback = BD_PLAYBACK_SIMPLE_MENU);
+
+protected:
+  static bool GetDirectoryItems(const std::string& path,
+                                CFileItemList& items,
+                                const CDirectory::CHints& hints);
+
 private:
   void InitialisePlaylistSearch(int episodeIndex, const std::vector<CVideoInfoTag>& episodesOnDisc);
   bool IsPotentialPlayAllPlaylist(const PlaylistInformation& playlistInformation) const;
@@ -262,5 +277,7 @@ private:
   std::vector<std::vector<CandidatePlaylistInformation>> m_allGroups;
   std::map<unsigned int, CandidatePlaylistInformation> m_candidatePlaylists;
   std::set<unsigned int> m_candidateSpecials;
+
+  static bool GetItems(CFileItemList& items, const std::string& directory);
 };
 } // namespace XFILE

@@ -11,8 +11,14 @@
 #include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "dialogs/GUIDialogBusy.h"
+#include "dialogs/GUIDialogOK.h"
+#include "dialogs/GUIDialogSimpleMenu.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "settings/DiscSettings.h"
+#include "threads/IRunnable.h"
+#include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -33,6 +39,24 @@ using namespace std::chrono_literals;
 using PlaylistMapEntry = std::pair<unsigned int, PlaylistInformation>;
 using PlaylistVector = std::vector<std::pair<unsigned int, PlaylistInformation>>;
 using PlaylistVectorEntry = std::pair<unsigned int, PlaylistInformation>;
+
+class CGetDirectoryItems : public IRunnable
+{
+public:
+  CGetDirectoryItems(std::string path, CFileItemList& items, CDirectory::CHints hints)
+    : m_path(std::move(path)),
+      m_items(&items),
+      m_hints(std::move(hints))
+  {
+  }
+  void Run() override { m_result = CDirectory::GetDirectory(m_path, *m_items, m_hints); }
+  bool m_result{false};
+
+private:
+  std::string m_path;
+  CFileItemList* m_items;
+  CDirectory::CHints m_hints;
+};
 
 CDiscDirectoryHelper::CDiscDirectoryHelper()
 {
@@ -988,4 +1012,121 @@ std::vector<CVideoInfoTag> CDiscDirectoryHelper::GetEpisodesOnDisc(const CURL& u
                       return i.m_iSeason < j.m_iSeason;
                     });
   return episodesOnDisc;
+}
+
+bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(CFileItem& item, int playback)
+{
+  const std::string originalDynPath{
+      item.GetDynPath()}; // Overwritten by dialog selection. Needed for screen refresh.
+
+  const std::string directory{
+      [&item, &originalDynPath, playback]
+      {
+        // Single episode
+        if (item.GetVideoContentType() == VideoDbContentType::EPISODES)
+        {
+          const CVideoInfoTag* tag{item.GetVideoInfoTag()};
+          return URIUtils::GetBlurayEpisodePath(originalDynPath, tag->m_iSeason, tag->m_iEpisode);
+        }
+
+        // Playlists > 70% longest
+        if (playback == BD_PLAYBACK_SIMPLE_MENU)
+          return URIUtils::GetBlurayRootPath(originalDynPath);
+
+        // Single main title
+        return URIUtils::GetBlurayMainTitlePath(originalDynPath);
+      }()};
+
+  // Get playlists that are already used (to avoid duplicates in file table)
+  std::vector<CVideoDatabase::PlaylistInfo> usedPlaylists{};
+  CVideoDatabase database;
+  if (!database.Open())
+  {
+    CLog::LogF(LOGERROR, "Failed to open video database");
+    return false;
+  }
+  usedPlaylists = database.GetPlaylistsByPath(URIUtils::GetBlurayPlaylistPath(originalDynPath));
+
+  // If replacing existing playlist (FORCE_PLAYLIST_SELECTION), remove it from exclude list
+  // as user could choose the same playlist again
+  if (item.GetProperty("force_playlist_selection").asBoolean(false))
+  {
+    CRegExp regex{true, CRegExp::autoUtf8, R"(\/(\d{5}).mpls$)"};
+    if (regex.RegFind(originalDynPath) != -1)
+    {
+      const int playlist{std::stoi(regex.GetMatch(1))};
+      std::erase_if(usedPlaylists, [&playlist](const CVideoDatabase::PlaylistInfo& p)
+                    { return p.playlist == playlist; });
+    }
+  }
+
+  // Get items
+  CFileItemList items;
+  if (!GetItems(items, directory))
+  {
+    // No main movie or episode playlist found
+    CGUIDialogOK::ShowAndGetInput(
+        CVariant{257},
+        CVariant{item.GetVideoContentType() == VideoDbContentType::EPISODES ? 25017 : 25016});
+    return false;
+  }
+
+  // Select item
+  CFileItem selectedItem;
+  if (playback == BD_PLAYBACK_SIMPLE_MENU)
+  {
+    // Use simple menu dialog to select playlist
+    while (true)
+    {
+      if (!CGUIDialogSimpleMenu::ShowPlaylistSelection(item, selectedItem, items, usedPlaylists))
+        return false;
+
+      // If a non-folder item is selected, we're done
+      if (!selectedItem.IsFolder())
+        break;
+
+      // Folder selected - retrieve all titles within it
+      if (!GetItems(items, selectedItem.GetDynPath()))
+        return false;
+    }
+  }
+
+  if (selectedItem.GetPath().empty())
+    selectedItem = *items[0]; // Main item
+
+  item.SetDynPath(selectedItem.GetDynPath());
+  item.GetVideoInfoTag()->m_streamDetails = selectedItem.GetVideoInfoTag()->m_streamDetails;
+  item.SetProperty("original_listitem_url", originalDynPath);
+
+  return true;
+}
+
+bool CDiscDirectoryHelper::GetItems(CFileItemList& items, const std::string& directory)
+{
+  items.Clear();
+  if (!GetDirectoryItems(directory, items, CDirectory::CHints()))
+  {
+    CLog::LogF(LOGERROR, "Failed to get play directory for {}", directory);
+    return false;
+  }
+
+  if (items.IsEmpty())
+  {
+    CLog::LogF(LOGERROR, "Failed to get any items in {}", directory);
+    return false;
+  }
+
+  return true;
+}
+
+bool CDiscDirectoryHelper::GetDirectoryItems(const std::string& path,
+                                             CFileItemList& items,
+                                             const CDirectory::CHints& hints)
+{
+  CGetDirectoryItems getItems(path, items, hints);
+  if (!CGUIDialogBusy::Wait(&getItems, 100, true))
+  {
+    return false;
+  }
+  return getItems.m_result;
 }

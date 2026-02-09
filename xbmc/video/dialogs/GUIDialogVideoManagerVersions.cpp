@@ -18,8 +18,8 @@
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
-#include "dialogs/GUIDialogSimpleMenu.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "filesystem/DiscDirectoryHelper.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "resources/LocalizeStrings.h"
@@ -367,7 +367,8 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
   item->SetProperty("force_playlist_selection", true);
   const int idMovie{m_database.GetMovieId(oldPath)};
 
-  if (CGUIDialogSimpleMenu::ShowPlaylistSelection(*item) && oldPath != item->GetDynPath())
+  if (XFILE::CDiscDirectoryHelper::GetOrShowPlaylistSelection(*item) &&
+      oldPath != item->GetDynPath())
   {
     // Add playlist file as bluray://
     int idFile;

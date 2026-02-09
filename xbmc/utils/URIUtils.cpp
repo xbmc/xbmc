@@ -701,6 +701,11 @@ std::string URIUtils::GetBlurayTitlesPath(const std::string& path)
   return AddFileToFolder(GetBlurayPath(path), "root", "titles");
 }
 
+std::string URIUtils::GetBlurayMainTitlePath(const std::string& path)
+{
+  return AddFileToFolder(GetBlurayPath(path), "root", "main");
+}
+
 std::string URIUtils::GetBlurayEpisodePath(const std::string& path, int season, int episode)
 {
   return AddFileToFolder(GetBlurayPath(path), "root", "episode", std::to_string(season),

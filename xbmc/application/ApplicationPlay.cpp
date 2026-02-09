@@ -15,8 +15,8 @@
 #include "Util.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
-#include "dialogs/GUIDialogSimpleMenu.h"
 #include "filesystem/DirectoryFactory.h"
+#include "filesystem/DiscDirectoryHelper.h"
 #include "music/MusicFileItemClassify.h"
 #include "playlists/PlayList.h"
 #include "playlists/PlayListFileItemClassify.h"
@@ -202,7 +202,7 @@ bool CApplicationPlay::GetPlaylistIfDisc()
        forceBlurayPlaylistSelection) &&
       IsSimpleMenuAllowed(m_item, m_player, forceSelection))
   {
-    if (!CGUIDialogSimpleMenu::ShowPlaylistSelection(m_item))
+    if (!CDiscDirectoryHelper::GetOrShowPlaylistSelection(m_item))
       return false;
 
     // Reset any resume state as new playlist chosen
