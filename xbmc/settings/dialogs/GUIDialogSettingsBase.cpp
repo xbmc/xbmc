@@ -506,7 +506,15 @@ void CGUIDialogSettingsBase::OnSettingChanged(const std::shared_ptr<const CSetti
       setting->GetType() == SettingType::Action)
     return;
 
-  UpdateSettingControl(setting->GetId(), true);
+  // Update all visible setting controls — not just the changed one —
+  // because other controls may have visibility conditions that depend
+  // on the value of the setting that just changed (e.g. addon settings
+  // using <dependency type="visible" setting="...">">.
+  for (const auto& control : m_settingControls)
+  {
+    if (control)
+      UpdateSettingControl(control, control->GetSetting() != setting);
+  }
 }
 
 void CGUIDialogSettingsBase::OnSettingPropertyChanged(
