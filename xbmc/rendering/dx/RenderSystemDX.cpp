@@ -28,8 +28,6 @@
 #include "guilib/GUIShaderDX.h"
 #include "guilib/GUITextureD3D.h"
 #include "guilib/GUIWindowManager.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
 #include "utils/MathUtils.h"
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
@@ -355,13 +353,13 @@ void CRenderSystemDX::InvalidateColorBuffer()
     return;
 
   // some platforms prefer a clear, instead of rendering over
-  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiGeometryClear)
+  if (GetClearFunction() == ClearFunction::FIXED_FUNCTION)
   {
     ClearBuffers(0);
     return;
   }
 
-  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiFrontToBackRendering)
+  if (!GetEnabledFrontToBackRendering())
     return;
 
   m_deviceResources->ClearDepthStencil();
@@ -423,7 +421,7 @@ bool CRenderSystemDX::ClearBuffers(KODI::UTILS::COLOR::Color color)
       m_deviceResources->ClearRenderTarget(pRTView, fColor);
   }
 
-  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiFrontToBackRendering)
+  if (GetEnabledFrontToBackRendering())
     m_deviceResources->ClearDepthStencil();
 
   return true;

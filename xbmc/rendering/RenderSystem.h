@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -9,10 +9,12 @@
 #pragma once
 
 #include "RenderSystemTypes.h"
+#include "threads/CriticalSection.h"
 #include "utils/ColorUtils.h"
 #include "utils/Geometry.h"
 
 #include <memory>
+#include <optional>
 #include <string>
 
 /*
@@ -26,6 +28,12 @@ enum class DEPTH_CULLING
   OFF,
   BACK_TO_FRONT,
   FRONT_TO_BACK,
+};
+
+enum class ClearFunction
+{
+  FIXED_FUNCTION,
+  GEOMETRY,
 };
 
 class CGUIImage;
@@ -53,8 +61,8 @@ public:
   virtual void RestoreViewPort() {}
 
   virtual bool ScissorsCanEffectClipping() { return false; }
-  virtual CRect ClipRectToScissorRect(const CRect &rect) { return CRect(); }
-  virtual void SetScissors(const CRect &rect) = 0;
+  virtual CRect ClipRectToScissorRect(const CRect& rect) { return CRect(); }
+  virtual void SetScissors(const CRect& rect) = 0;
   virtual void ResetScissors() = 0;
 
   virtual void SetDepthCulling(DEPTH_CULLING culling) {}
@@ -87,6 +95,15 @@ public:
 
   virtual void ShowSplash(const std::string& message);
 
+  /*!
+   * \brief Call when the cached advanced settings values need to be refreshed.
+   *        note: may execute on a different thread.
+   */
+  virtual void OnAdvancedSettingsLoaded();
+  virtual bool GetEnabledFrontToBackRendering();
+  virtual ClearFunction GetClearFunction();
+  virtual bool GetShowSplashImage();
+
 protected:
   bool m_bRenderCreated{false};
   bool m_bVSync{true};
@@ -105,5 +122,11 @@ protected:
 
   std::unique_ptr<CGUIImage> m_splashImage;
   std::unique_ptr<CGUITextLayout> m_splashMessageLayout;
-};
 
+  // Advanced settings handling
+  CCriticalSection m_settingsSection;
+  std::optional<int> m_settingsCallbackHandle;
+  bool m_guiFrontToBackRendering{false};
+  ClearFunction m_guiGeometryClear{ClearFunction::FIXED_FUNCTION};
+  bool m_showSplashImage{true};
+};

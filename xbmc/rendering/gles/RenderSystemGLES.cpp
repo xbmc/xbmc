@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2024 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -206,10 +206,10 @@ void CRenderSystemGLES::InvalidateColorBuffer()
     return;
 
   // some platforms prefer a clear, instead of rendering over
-  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiGeometryClear)
+  if (GetClearFunction() == ClearFunction::FIXED_FUNCTION)
     ClearBuffers(0);
 
-  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiFrontToBackRendering)
+  if (!GetEnabledFrontToBackRendering())
     return;
 
   glClearDepthf(0);
@@ -231,7 +231,7 @@ bool CRenderSystemGLES::ClearBuffers(KODI::UTILS::COLOR::Color color)
 
   GLbitfield flags = GL_COLOR_BUFFER_BIT;
 
-  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiFrontToBackRendering)
+  if (GetEnabledFrontToBackRendering())
   {
     glClearDepthf(0);
     glDepthMask(GL_TRUE);
