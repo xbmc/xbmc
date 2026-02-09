@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -37,6 +37,7 @@
 
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 #define SETTING_AUDIO_VOLUME                   "audio.volume"
@@ -384,23 +385,22 @@ void CGUIDialogAudioSettings::AudioStreamsOptionFiller(const SettingConstPtr& se
   // cycle through each audio stream and add it to our list control
   for (int i = 0; i < audioStreamCount; ++i)
   {
-    std::string strLanguage;
+    std::string textInfo;
 
     AudioStreamInfo info;
     appPlayer->GetAudioStreamInfo(i, info);
 
-    if (!g_LangCodeExpander.Lookup(info.language, strLanguage))
-      strLanguage = "[" + CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205) +
-                    "]"; // Unknown
+    if (!g_LangCodeExpander.Lookup(info.language, textInfo))
+      textInfo = "[" + CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205) +
+                 "]"; // Unknown
 
-    std::string textInfo = strLanguage;
     if (!info.name.empty())
       textInfo += " - " + info.name;
 
     textInfo += FormatCodec(info);
     textInfo += FormatFlags(info.flags);
     textInfo += StringUtils::Format(" ({}/{})", i + 1, audioStreamCount);
-    list.emplace_back(textInfo, i);
+    list.emplace_back(std::move(textInfo), i);
   }
 
   if (list.empty())

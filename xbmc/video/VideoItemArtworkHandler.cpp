@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2023 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -153,10 +153,9 @@ void CVideoItemArtworkHandler::AddItemPathStringToFileBrowserSources(
 {
   if (!itemDir.empty() && CDirectory::Exists(itemDir))
   {
-    CMediaSource itemSource;
+    CMediaSource& itemSource = sources.emplace_back();
     itemSource.strName = label;
     itemSource.strPath = itemDir;
-    sources.emplace_back(itemSource);
   }
 }
 

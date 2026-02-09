@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -907,6 +907,9 @@ void CCharsetConverter::SettingOptionsCharsetsFiller(const SettingConstPtr& sett
 
   list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13278),
                     "DEFAULT"); // "Default"
-  for (int i = 0; i < (int) vecCharsets.size(); ++i)
-    list.emplace_back(vecCharsets[i], g_charsetConverter.getCharsetNameByLabel(vecCharsets[i]));
+  for (auto& label : vecCharsets)
+  {
+    std::string name = g_charsetConverter.getCharsetNameByLabel(label);
+    list.emplace_back(std::move(label), std::move(name));
+  }
 }

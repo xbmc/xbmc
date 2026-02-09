@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -43,9 +43,28 @@ using namespace KODI;
 #define SCROLLING_GAP   200U
 #define SCROLLING_THRESHOLD 300U
 
-CGUIBaseContainer::CGUIBaseContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems)
-    : IGUIContainer(parentID, controlID, posX, posY, width, height)
-    , m_scroller(scroller)
+CGUIBaseContainer::RENDERITEM::RENDERITEM(float newPosX,
+                                          float newPosY,
+                                          std::shared_ptr<CGUIListItem> newItem,
+                                          bool newFocused)
+  : posX(newPosX),
+    posY(newPosY),
+    item(newItem),
+    focused(newFocused)
+{
+}
+
+CGUIBaseContainer::CGUIBaseContainer(int parentID,
+                                     int controlID,
+                                     float posX,
+                                     float posY,
+                                     float width,
+                                     float height,
+                                     ORIENTATION orientation,
+                                     const CScroller& scroller,
+                                     int preloadItems)
+  : IGUIContainer(parentID, controlID, posX, posY, width, height),
+    m_scroller(scroller)
 {
   m_cursor = 0;
   m_offset = 0;
@@ -307,9 +326,9 @@ void CGUIBaseContainer::Render()
         else
         {
           if (m_orientation == VERTICAL)
-            renderitems.emplace_back(RENDERITEM{origin.x, pos, item, false});
+            renderitems.emplace_back(origin.x, pos, item, false);
           else
-            renderitems.emplace_back(RENDERITEM{pos, origin.y, item, false});
+            renderitems.emplace_back(pos, origin.y, item, false);
         }
       }
       // increment our position
@@ -320,9 +339,9 @@ void CGUIBaseContainer::Render()
     if (focusedItem)
     {
       if (m_orientation == VERTICAL)
-        renderitems.emplace_back(RENDERITEM{origin.x, focusedPos, focusedItem, true});
+        renderitems.emplace_back(origin.x, focusedPos, focusedItem, true);
       else
-        renderitems.emplace_back(RENDERITEM{focusedPos, origin.y, focusedItem, true});
+        renderitems.emplace_back(focusedPos, origin.y, focusedItem, true);
     }
 
     if (CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder() ==

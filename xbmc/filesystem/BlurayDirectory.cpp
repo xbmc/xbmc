@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -156,11 +156,12 @@ bool GetPlaylistsFromDisc(const CURL& url,
     {
       const unsigned int playlist{static_cast<unsigned int>(std::stoi(pl.GetMatch(1)))};
 
-      PlaylistInformation t{};
+      PlaylistInformation& t = playlists.emplace_back();
       if (!GetPlaylistInfoFromDisc(url, realPath, playlist, false, t, clipCache))
+      {
         CLog::LogF(LOGDEBUG, "Unable to get playlist {}", playlist);
-      else
-        playlists.emplace_back(t);
+        playlists.pop_back();
+      }
     }
   }
   return true;
@@ -413,27 +414,26 @@ bool GetPlaylists(const CURL& url,
       if (mainPlaylist != -1)
       {
         // Only main playlist is needed
-        PlaylistInformation t{};
+        PlaylistInformation& t = playlists.emplace_back();
         if (!GetPlaylistInfoFromDisc(url, realPath, mainPlaylist, false, t, clipCache))
         {
           CLog::LogF(LOGDEBUG, "Unable to get playlist {}", mainPlaylist);
+          playlists.pop_back();
           mainPlaylist = -1;
         }
-        else
-          playlists.emplace_back(t);
       }
     }
     else if (static_cast<int>(job) >= 0)
     {
       // Single playlist
-      PlaylistInformation t{};
+      PlaylistInformation& t = playlists.emplace_back();
       mainPlaylist = static_cast<int>(job);
       if (!GetPlaylistInfoFromDisc(url, realPath, mainPlaylist, false, t, clipCache))
       {
         CLog::LogF(LOGDEBUG, "Unable to get playlist {}", mainPlaylist);
+        playlists.pop_back();
         return false;
       }
-      playlists.emplace_back(t);
     }
 
     if (mainPlaylist >= 0)
@@ -489,7 +489,7 @@ void ProcessPlaylist(PlaylistMap& playlists, PlaylistInformation& titleInfo, Cli
   for (const auto& clip : titleInfo.clips)
   {
     // Add clip to playlist
-    info.clips.emplace_back(clip);
+    info.clips.push_back(clip);
 
     // Add/extend clip information
     const auto& it = clips.find(clip);
@@ -498,13 +498,13 @@ void ProcessPlaylist(PlaylistMap& playlists, PlaylistInformation& titleInfo, Cli
       // First reference to clip
       ClipInfo clipInfo;
       clipInfo.duration = titleInfo.clipDuration[clip];
-      clipInfo.playlists.emplace_back(playlist);
+      clipInfo.playlists.push_back(playlist);
       clips[clip] = clipInfo;
     }
     else
     {
       // Additional reference to clip, add this playlist
-      it->second.playlists.emplace_back(playlist);
+      it->second.playlists.push_back(playlist);
     }
   }
 

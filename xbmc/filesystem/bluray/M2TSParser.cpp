@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2025 Team Kodi
+ *  Copyright (C) 2025-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -539,11 +539,8 @@ void ProcessPMTEntry(std::vector<std::byte>& section,
       if (descriptorOffset + 2 + desc_length > static_cast<int>(section.size()))
         break;
 
-      descriptors.emplace_back(
-          Descriptor{.tag = desc_tag,
-                     .length = desc_length,
-                     .data = std::vector(section.begin() + descriptorOffset + 2,
-                                         section.begin() + descriptorOffset + 2 + desc_length)});
+      const auto itDesc = section.begin() + descriptorOffset + 2;
+      descriptors.emplace_back(desc_tag, desc_length, std::vector(itDesc, itDesc + desc_length));
 
       // ISO 639 language descriptor
       if (desc_tag == 0x0A && desc_length >= 4)
@@ -1915,6 +1912,13 @@ bool ParseTSPacket(const std::span<std::byte>& packet,
   return true;
 }
 } // namespace
+
+Descriptor::Descriptor(unsigned int newTag, int newLength, std::vector<std::byte>&& newData)
+  : tag(newTag),
+    length(newLength),
+    data(std::move(newData))
+{
+}
 
 bool CM2TSParser::GetStreamsFromFile(const std::string& path,
                                      unsigned int clip,

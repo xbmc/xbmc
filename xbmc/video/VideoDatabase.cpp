@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2016-2025 Team Kodi
+ *  Copyright (C) 2016-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -75,6 +75,7 @@
 #include <set>
 #include <string>
 #include <unordered_set>
+#include <utility>
 #include <vector>
 
 using namespace dbiplus;
@@ -85,6 +86,17 @@ using namespace KODI::MESSAGING;
 using namespace KODI::GUILIB;
 using namespace KODI::VIDEO;
 using namespace std::chrono_literals;
+
+CVideoDatabase::FileInformation::FileInformation(std::string&& newPath,
+                                                 int newFileId,
+                                                 int newVvId,
+                                                 std::string&& newHash)
+  : path(std::move(newPath)),
+    fileId(newFileId),
+    vvId(newVvId),
+    hash(std::move(newHash))
+{
+}
 
 //********************************************************************************************************************************
 CVideoDatabase::CVideoDatabase() = default;
@@ -3307,7 +3319,7 @@ void CVideoDatabase::GetBookMarksForFile(const std::string& strFilenameAndPath, 
     m_pDS->query(strSQL);
     while (!m_pDS->eof())
     {
-      CBookmark bookmark;
+      CBookmark& bookmark = bookmarks.emplace_back();
       bookmark.timeInSeconds = m_pDS->fv("timeInSeconds").get_asDouble();
       bookmark.partNumber = partNumber;
       bookmark.totalTimeInSeconds = m_pDS->fv("totalTimeInSeconds").get_asDouble();
@@ -3327,7 +3339,6 @@ void CVideoDatabase::GetBookMarksForFile(const std::string& strFilenameAndPath, 
         bookmark.seasonNumber = m_pDS2->fv(1).get_asInt();
         m_pDS2->close();
       }
-      bookmarks.emplace_back(bookmark);
       m_pDS->next();
     }
     //sort(bookmarks.begin(), bookmarks.end(), SortBookmarks);
@@ -3440,7 +3451,7 @@ void CVideoDatabase::GetEpisodesByFileId(int idFile, std::vector<CVideoInfoTag>&
       m_pDS->goto_rec(episode.index);
       CVideoInfoTag tag{GetDetailsForEpisode(*m_pDS)};
       tag.m_duration = episode.duration;
-      episodes.emplace_back(tag);
+      episodes.push_back(std::move(tag));
     }
     m_pDS->close();
   }
@@ -5526,10 +5537,9 @@ std::vector<CScraperUrl::SUrlEntry> GetBasicItemAvailableArt(int mediaId,
     tag.m_fanart.Unpack();
     for (unsigned int i = 0; i < tag.m_fanart.GetNumFanarts(); i++)
     {
-      CScraperUrl::SUrlEntry url(tag.m_fanart.GetImageURL(i));
+      CScraperUrl::SUrlEntry& url = result.emplace_back(tag.m_fanart.GetImageURL(i));
       url.m_preview = tag.m_fanart.GetPreviewURL(i);
       url.m_aspect = "fanart";
-      result.emplace_back(url);
     }
   }
   tag.m_strPictureURL.Parse();
@@ -10288,11 +10298,11 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         ConstructPath(fullPath, filePath, fileName);
         if (URIUtils::IsBlurayPath(fullPath))
           fullPath = URIUtils::GetDiscFile(fullPath);
-        const std::string hash{fmt::format("{}{}", fileId, fullPath)};
+        // non-const for move
+        std::string hash{fmt::format("{}{}", fileId, fullPath)};
 
-        versions.emplace_back(
-            FileInformation{.path = fullPath, .fileId = fileId, .vvId = vvId, .hash = hash});
         fileHashMap[hash]++;
+        versions.emplace_back(std::move(fullPath), fileId, vvId, std::move(hash));
 
         pDS3->next();
       }
