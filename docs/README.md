@@ -23,3 +23,4 @@ Kodi uses CMake as its building system but instructions are highly dependent on 
 </p>
 
 \nKodiai fork write-mode smoke test.
+applied by kodiai
