@@ -22,3 +22,4 @@ Kodi uses CMake as its building system but instructions are highly dependent on 
   <a href="README.Windows.md" title="Windows"><img src="resources/windows.svg" height="78"></a>
 </p>
 
+\nKodiai fork write-mode smoke test.
