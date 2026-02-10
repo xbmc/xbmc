@@ -173,7 +173,6 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <!-- NVDEC Hardware Decoding Settings -->
         <setting id="videoplayer.usenvdec" type="boolean" label="13477" help="13478">
           <visible>false</visible>
           <level>2</level>
