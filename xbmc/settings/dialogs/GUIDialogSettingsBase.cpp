@@ -506,29 +506,30 @@ void CGUIDialogSettingsBase::OnSettingChanged(const std::shared_ptr<const CSetti
       setting->GetType() == SettingType::Action)
     return;
 
-  // Update all visible setting controls — not just the changed one —
-  // because other controls may have visibility conditions that depend
-  // on the value of the setting that just changed (e.g. addon settings
-  // using <dependency type="visible" setting="...">">.
+  // Update the changed control and any controls whose visibility or value
+  // depends on the setting that just changed (e.g. addon settings using
+  // <dependency type="visible" setting="...">). Skip m_delayedSetting to
+  // avoid a redundant update.
   for (const auto& control : m_settingControls)
   {
     if (!control || control == m_delayedSetting)
       continue;
 
-    // Only update controls that depend on the changed setting
-    auto deps = control->GetSetting()->GetDependencies();
-    bool dependsOnChanged = false;
+    if (control->GetSetting() == setting)
+    {
+      UpdateSettingControl(control, false);
+      continue;
+    }
+
+    const auto& deps = control->GetSetting()->GetDependencies();
     for (const auto& dep : deps)
     {
       if (dep.GetSettings().count(setting->GetId()) > 0)
       {
-        dependsOnChanged = true;
+        UpdateSettingControl(control, true);
         break;
       }
     }
-
-    if (dependsOnChanged || control->GetSetting() == setting)
-      UpdateSettingControl(control, control->GetSetting() != setting);
   }
 }
 
