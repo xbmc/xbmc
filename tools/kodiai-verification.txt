@@ -1,0 +1,4 @@
+Kodiai cutover verification file
+
+- Purpose: create a small diff for inline review comment testing
+- Safe to delete after testing
