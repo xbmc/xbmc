@@ -1032,11 +1032,11 @@ void CGraphicContext::SetRenderOrder(RENDER_ORDER renderOrder)
 {
   m_renderOrder = renderOrder;
   if (renderOrder == RENDER_ORDER_ALL_BACK_TO_FRONT)
-    CServiceBroker::GetRenderSystem()->SetDepthCulling(DEPTH_CULLING::OFF);
+    CServiceBroker::GetRenderSystem()->SetDepthCulling(DepthCulling::OFF);
   else if (renderOrder == RENDER_ORDER_BACK_TO_FRONT)
-    CServiceBroker::GetRenderSystem()->SetDepthCulling(DEPTH_CULLING::BACK_TO_FRONT);
+    CServiceBroker::GetRenderSystem()->SetDepthCulling(DepthCulling::BACK_TO_FRONT);
   else if (renderOrder == RENDER_ORDER_FRONT_TO_BACK)
-    CServiceBroker::GetRenderSystem()->SetDepthCulling(DEPTH_CULLING::FRONT_TO_BACK);
+    CServiceBroker::GetRenderSystem()->SetDepthCulling(DepthCulling::FRONT_TO_BACK);
 }
 
 uint32_t CGraphicContext::GetDepth(uint32_t addLayers)

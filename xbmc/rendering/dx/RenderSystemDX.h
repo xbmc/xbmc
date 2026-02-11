@@ -43,7 +43,7 @@ public:
   bool ScissorsCanEffectClipping() override;
   void SetScissors(const CRect &rect) override;
   void ResetScissors() override;
-  void SetDepthCulling(DEPTH_CULLING culling) override;
+  void SetDepthCulling(DepthCulling culling) override;
   void CaptureStateBlock() override;
   void ApplyStateBlock() override;
   void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight, float stereoFactor = 0.f) override;
@@ -106,5 +106,5 @@ protected:
   XbmcThreads::ConditionVariable m_decodingEvent;
 
   std::shared_ptr<DX::DeviceResources> m_deviceResources;
-  DEPTH_CULLING m_depthCulling{DEPTH_CULLING::OFF};
+  DepthCulling m_depthCulling{DepthCulling::OFF};
 };

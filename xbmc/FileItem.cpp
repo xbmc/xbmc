@@ -911,7 +911,7 @@ bool CFileItem::IsFileFolder(FileFolderType types) const
 
   if (CServiceBroker::IsAddonInterfaceUp() &&
       IsType(CServiceBroker::GetFileExtensionProvider().GetFileFolderExtensions().c_str()) &&
-      CServiceBroker::GetFileExtensionProvider().CanOperateExtension(m_strPath))
+      CFileExtensionProvider::CanOperateExtension(m_strPath))
     return true;
 
   if (static_cast<int>(types) & static_cast<int>(FileFolderType::ONBROWSE))

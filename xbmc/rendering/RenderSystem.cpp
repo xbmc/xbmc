@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -21,15 +21,33 @@
 
 CRenderSystemBase::CRenderSystemBase()
 {
-  m_bRenderCreated = false;
-  m_bVSync = true;
-  m_maxTextureSize = 2048;
-  m_RenderVersionMajor = 0;
-  m_RenderVersionMinor = 0;
-  m_minDXTPitch = 0;
+  OnAdvancedSettingsLoaded();
+
+  const auto advSettings{CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
+
+  m_settingsCallbackHandle =
+      advSettings->RegisterSettingsLoadedCallback([this]() { OnAdvancedSettingsLoaded(); });
 }
 
-CRenderSystemBase::~CRenderSystemBase() = default;
+void CRenderSystemBase::OnAdvancedSettingsLoaded()
+{
+  const auto advSettings{CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
+
+  std::unique_lock lock(m_settingsSection);
+
+  m_showSplashImage = advSettings->m_splashImage;
+  m_guiFrontToBackRendering = advSettings->m_guiFrontToBackRendering;
+  m_guiGeometryClear =
+      advSettings->m_guiGeometryClear ? ClearFunction::GEOMETRY : ClearFunction::FIXED_FUNCTION;
+}
+
+CRenderSystemBase::~CRenderSystemBase()
+{
+  const auto advSettings{CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
+
+  if (m_settingsCallbackHandle.has_value() && advSettings != nullptr)
+    advSettings->UnregisterSettingsLoadedCallback(m_settingsCallbackHandle.value());
+}
 
 void CRenderSystemBase::GetRenderVersion(unsigned int& major, unsigned int& minor) const
 {
@@ -61,7 +79,7 @@ bool CRenderSystemBase::SupportsStereo(RenderStereoMode mode) const
 
 void CRenderSystemBase::ShowSplash(const std::string& message)
 {
-  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_splashImage && !(m_splashImage || !message.empty()))
+  if (!GetShowSplashImage() && !(m_splashImage || !message.empty()))
     return;
 
   if (!m_splashImage)
@@ -116,3 +134,20 @@ void CRenderSystemBase::ShowSplash(const std::string& message)
   CServiceBroker::GetWinSystem()->GetGfxContext().Flip(true, false);
 }
 
+bool CRenderSystemBase::GetShowSplashImage()
+{
+  std::unique_lock lock(m_settingsSection);
+  return m_showSplashImage;
+}
+
+bool CRenderSystemBase::GetEnabledFrontToBackRendering()
+{
+  std::unique_lock lock(m_settingsSection);
+  return m_guiFrontToBackRendering;
+}
+
+ClearFunction CRenderSystemBase::GetClearFunction()
+{
+  std::unique_lock lock(m_settingsSection);
+  return m_guiGeometryClear;
+}

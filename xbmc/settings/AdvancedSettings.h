@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -12,10 +12,13 @@
 #include "pictures/PictureScalingAlgorithm.h"
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
+#include "threads/CriticalSection.h"
 #include "utils/RegExp.h"
 #include "utils/SortUtils.h"
 
 #include <cstdint>
+#include <functional>
+#include <map>
 #include <string>
 #include <utility>
 #include <vector>
@@ -104,6 +107,8 @@ struct RefreshVideoLatency
 
 using SETTINGS_TVSHOWLIST = std::vector<TVShowRegexp>;
 
+using AdvancedSettingsCallback = std::function<void()>;
+
 class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 {
   public:
@@ -119,6 +124,20 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool Initialized() const { return m_initialized; }
     void AddSettingsFile(const std::string &filename);
     bool Load(const CProfileManager &profileManager);
+
+    /*!
+     * \brief Register a callback to receive notifications when the advanced settings are loaded.
+     *        Note: the callback functions are invoked on the thread that loads the settings.
+     * \param[in] callback
+     * \return opaque callback handle
+     */
+    int RegisterSettingsLoadedCallback(AdvancedSettingsCallback callback);
+
+    /*!
+     * \brief Unregister a callback for notifications of advanced settings load.
+     * \param[in] handle of the callback
+     */
+    void UnregisterSettingsLoadedCallback(int handle);
 
     static void GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLIST& settings);
     static void GetCustomRegexps(TiXmlElement *pRootElement, std::vector<std::string> &settings);
@@ -403,4 +422,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     void Initialize();
     void Clear();
     void SetExtraArtwork(const TiXmlElement* arttypes, std::vector<std::string>& artworkMap) const;
+
+    mutable CCriticalSection m_listCritSection;
+    std::map<int, AdvancedSettingsCallback> m_settingsLoadedCallbacks;
 };
