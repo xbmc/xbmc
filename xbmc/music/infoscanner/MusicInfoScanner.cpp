@@ -631,16 +631,17 @@ static bool SortSongsByTrack(const CSong& song, const CSong& song2)
   return song.iTrack < song2.iTrack;
 }
 
-void CMusicInfoScanner::FileItemsToAlbums(const CFileItemList& items,
-                                          VECALBUMS& albums,
-                                          MAPSONGS* songsMap /* = nullptr */)
+void CMusicInfoScanner::FileItemsToAlbums(
+    const CFileItemList& items,
+    VECALBUMS& albums,
+    std::map<std::string, std::vector<CSong>>* songsMap /* = nullptr */)
 {
   /*
    * Step 1: Convert the FileItems into Songs.
    * If they're MB tagged, create albums directly from the FileItems.
    * If they're non-MB tagged, index them by album name ready for step 2.
    */
-  std::map<std::string, VECSONGS> songsByAlbumNames;
+  std::map<std::string, std::vector<CSong>> songsByAlbumNames;
   for (int i = 0; i < items.Size(); ++i)
   {
     CMusicInfoTag& tag = *items[i]->GetMusicInfoTag();
@@ -650,10 +651,10 @@ void CMusicInfoScanner::FileItemsToAlbums(const CFileItemList& items,
     if (songsMap != NULL)
     {
       // Match up item to songs in library previously scanned with this path
-      MAPSONGS::iterator songlist = songsMap->find(items[i]->GetPath());
+      auto songlist = songsMap->find(items[i]->GetPath());
       if (songlist != songsMap->end())
       {
-        VECSONGS::iterator foundsong;
+        std::vector<CSong>::iterator foundsong;
         if (songlist->second.size() == 1)
           foundsong = songlist->second.begin();
         else
@@ -706,7 +707,7 @@ void CMusicInfoScanner::FileItemsToAlbums(const CFileItemList& items,
    */
   for (auto& songsByAlbumName : songsByAlbumNames)
   {
-    VECSONGS& songs = songsByAlbumName.second;
+    auto& songs = songsByAlbumName.second;
     // sort the songs by tracknumber to identify duplicate track numbers
     sort(songs.begin(), songs.end(), SortSongsByTrack);
 
@@ -717,7 +718,7 @@ void CMusicInfoScanner::FileItemsToAlbums(const CFileItemList& items,
     std::string old_DiscSubtitle;
 
     std::map<std::string, std::vector<CSong *> > artists;
-    for (VECSONGS::iterator song = songs.begin(); song != songs.end(); ++song)
+    for (auto song = songs.begin(); song != songs.end(); ++song)
     {
       // test for song overlap
       if (song != songs.begin() && song->iTrack == (song - 1)->iTrack)
@@ -925,7 +926,7 @@ CInfoScanner::InfoRet CMusicInfoScanner::UpdateArtistInfo(CArtist& artist,
 
 int CMusicInfoScanner::RetrieveMusicInfo(const std::string& strDirectory, CFileItemList& items)
 {
-  MAPSONGS songsMap;
+  std::map<std::string, std::vector<CSong>> songsMap;
 
   // get all information for all files in current directory from database, and remove them
   if (m_musicDatabase.RemoveSongsFromPath(strDirectory, songsMap))

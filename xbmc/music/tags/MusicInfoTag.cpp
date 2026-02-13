@@ -327,7 +327,7 @@ const std::string& CMusicInfoTag::GetSongVideoURL() const
   return m_songVideoURL;
 }
 
-const ChapterMarks& CMusicInfoTag::GetChapterMarks() const
+const std::vector<ChapterDetails>& CMusicInfoTag::GetChapterMarks() const
 {
   return m_chapters;
 }
@@ -788,7 +788,7 @@ void CMusicInfoTag::SetSongVideoURL(std::string_view songVideoURL)
   m_songVideoURL = songVideoURL;
 }
 
-void CMusicInfoTag::SetChapterMarks(const ChapterMarks& chapters)
+void CMusicInfoTag::SetChapterMarks(const std::vector<ChapterDetails>& chapters)
 {
   m_chapters = chapters;
 }

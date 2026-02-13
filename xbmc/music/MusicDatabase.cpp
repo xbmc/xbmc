@@ -4063,7 +4063,7 @@ void CMusicDatabase::IncrementPlayCount(const CFileItem& item)
 }
 
 bool CMusicDatabase::GetSongsByPath(const std::string& strPath1,
-                                    MAPSONGS& songmap,
+                                    std::map<std::string, std::vector<CSong>>& songmap,
                                     bool bAppendToMap)
 {
   std::string strPath(strPath1);
@@ -4098,7 +4098,7 @@ bool CMusicDatabase::GetSongsByPath(const std::string& strPath1,
     }
 
     // Each file is potentially mapped to a list of songs, gather these and save as list
-    VECSONGS songs;
+    std::vector<CSong> songs;
     std::string filename;
     while (!m_pDS->eof())
     {
@@ -11323,7 +11323,9 @@ bool CMusicDatabase::GetPathHash(const std::string& path, std::string& hash)
   return false;
 }
 
-bool CMusicDatabase::RemoveSongsFromPath(const std::string& path1, MAPSONGS& songmap, bool exact)
+bool CMusicDatabase::RemoveSongsFromPath(const std::string& path1,
+                                         std::map<std::string, std::vector<CSong>>& songmap,
+                                         bool exact)
 {
   // We need to remove all songs from this path, as their tags are going
   // to be re-read.  We need to remove all songs from the song table + all links to them
@@ -11380,7 +11382,7 @@ bool CMusicDatabase::RemoveSongsFromPath(const std::string& path1, MAPSONGS& son
     if (iRowsFound > 0)
     {
       // Each file is potentially mapped to a list of songs, gather these and save as list
-      VECSONGS songs;
+      std::vector<CSong> songs;
       std::string filename;
       std::vector<std::string> songIds;
       while (!m_pDS->eof())

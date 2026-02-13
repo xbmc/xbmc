@@ -290,7 +290,7 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag* id3v2,
 {
   if (!id3v2) return false;
   ReplayGain replayGainInfo;
-  ChapterMarks chapters;
+  std::vector<ChapterDetails> chapters;
 
   ID3v2::AttachedPictureFrame *pictures[3] = {};
   const ID3v2::FrameListMap& frameListMap = id3v2->frameListMap();

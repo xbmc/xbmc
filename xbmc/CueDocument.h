@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "music/Song.h"
+#include "music/tags/ReplayGain.h"
 
 #include <string>
 #include <vector>
@@ -16,6 +16,7 @@
 class CFileItem;
 class CFileItemList;
 class CueReader;
+class CSong;
 
 class CCueDocument
 {
@@ -36,7 +37,7 @@ public:
   // USED
   bool ParseFile(const std::string &strFilePath);
   bool ParseTag(const std::string &strContent);
-  void GetSongs(VECSONGS &songs);
+  void GetSongs(std::vector<CSong>& songs);
   std::string GetMediaPath();
   const std::string& GetMediaTitle() const { return m_strAlbum; }
   void GetMediaFiles(std::vector<std::string>& mediaFiles);

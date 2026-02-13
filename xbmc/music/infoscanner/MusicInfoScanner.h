@@ -10,15 +10,17 @@
 
 #include "InfoScanner.h"
 #include "MusicAlbumInfo.h"
-#include "MusicInfoScraper.h"
 #include "music/MusicDatabase.h"
 #include "threads/IRunnable.h"
 #include "threads/Thread.h"
-#include "utils/ScraperUrl.h"
+
+#include <string>
 
 class CAlbum;
 class CArtist;
+class CFileItemList;
 class CGUIDialogProgressBarHandle;
+class CScraperUrl;
 
 namespace MUSIC_INFO
 {
@@ -53,7 +55,7 @@ public:
    */
   static void FileItemsToAlbums(const CFileItemList& items,
                                 VECALBUMS& albums,
-                                MAPSONGS* songsMap = nullptr);
+                                std::map<std::string, std::vector<CSong>>* songsMap = nullptr);
 
   /*! \brief Scrape additional album information and update the music database with it.
   Given an album, search for it using the given scraper.

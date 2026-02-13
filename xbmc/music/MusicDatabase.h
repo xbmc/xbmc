@@ -80,7 +80,7 @@ class CFileItemList;
  Here is the database layout:
   \image html musicdatabase.png
 
- \sa CAlbum, CSong, VECSONGS, CMapSong, VECARTISTS, VECALBUMS, VECGENRES
+ \sa CAlbum, CSong, CMapSong, VECARTISTS, VECALBUMS
  */
 class CMusicDatabase : public CDatabase
 {
@@ -233,9 +233,13 @@ public:
 
   //// Misc Song
   bool GetSongByFileName(const std::string& strFileName, CSong& song, int64_t startOffset = 0);
-  bool GetSongsByPath(const std::string& strPath, MAPSONGS& songmap, bool bAppendToMap = false);
+  bool GetSongsByPath(const std::string& strPath,
+                      std::map<std::string, std::vector<CSong>>& songmap,
+                      bool bAppendToMap = false);
   bool Search(const std::string& search, CFileItemList& items);
-  bool RemoveSongsFromPath(const std::string& path, MAPSONGS& songmap, bool exact = true);
+  bool RemoveSongsFromPath(const std::string& path,
+                           std::map<std::string, std::vector<CSong>>& songmap,
+                           bool exact = true);
   void CheckArtistLinksChanged();
   bool SetSongUserrating(const std::string& filePath, int userrating);
   bool SetSongUserrating(int idSong, int userrating);

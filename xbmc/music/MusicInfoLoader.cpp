@@ -207,7 +207,7 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
       has a cuesheet document or is a music file with a cuesheet embedded in the tags, and it maps
       to more than one song then we can not fill the tag data and thumb from the database.
       */
-      MAPSONGS::iterator it = m_songsMap.find(pItem->GetPath()); // Find file in song map
+      auto it = m_songsMap.find(pItem->GetPath()); // Find file in song map
       if (it != m_songsMap.end() && it->second.size() == 1)
       {
         // Have we loaded this item from database before,
