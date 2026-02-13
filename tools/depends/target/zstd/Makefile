@@ -11,20 +11,21 @@ CMAKE_OPTIONS = -DCMAKE_BUILD_TYPE=Release \
                   -DZSTD_BUILD_TESTS=OFF
 
 
-LIBDYLIB=$(PLATFORM)/builddir/lib/$(BYPRODUCT)
+LIBDYLIB=$(PLATFORM)/build/lib/$(BYPRODUCT)
 
 all: .installed-$(PLATFORM)
 
 $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
-	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)/builddir
+	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)/build
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM)/builddir; $(CMAKE) ../build/cmake ${CMAKE_OPTIONS} ..
+	cd $(PLATFORM); cp ../CMakeLists.txt ./
+	cd $(PLATFORM)/build; $(CMAKE) ${CMAKE_OPTIONS} ..
 
 $(LIBDYLIB): $(PLATFORM)
-	$(MAKE) -C $(PLATFORM)/builddir
+	$(MAKE) -C $(PLATFORM)/build
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	$(MAKE) -C $(PLATFORM)/builddir install
+	$(MAKE) -C $(PLATFORM)/build install
 	touch $@
 
 clean:

@@ -12,6 +12,10 @@ if(NOT TARGET LIBRARY::ZSTD)
 
   macro(buildmacroZSTD)
 
+    set(PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+                      ${CORE_SOURCE_DIR}/tools/depends/target/zstd/CMakeLists.txt
+                      <SOURCE_DIR>)
+
     set(CMAKE_ARGS -DCMAKE_BUILD_TYPE=Release
                    -DZSTD_BUILD_STATIC=ON
                    -DZSTD_BUILD_SHARED=OFF
