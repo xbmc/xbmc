@@ -194,7 +194,8 @@ class CMusicRole
 public:
   CMusicRole() = default;
   CMusicRole(std::string strRole, std::string strArtist)
-    : idRole(-1), m_strRole(std::move(strRole)), m_strArtist(std::move(strArtist)), idArtist(-1)
+    : m_strRole(std::move(strRole)),
+      m_strArtist(std::move(strArtist))
   {
   }
   CMusicRole(int role, std::string strRole, std::string strArtist, int ArtistId)
@@ -213,8 +214,8 @@ public:
   bool operator==(const CMusicRole& a) const;
 
 private:
-  int idRole;
+  int idRole = -1;
   std::string m_strRole;
   std::string m_strArtist;
-  int idArtist;
+  int idArtist = -1;
 };
