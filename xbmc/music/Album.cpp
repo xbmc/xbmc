@@ -23,16 +23,6 @@
 
 using namespace MUSIC_INFO;
 
-typedef struct ReleaseTypeInfo {
-  CAlbum::ReleaseType type;
-  std::string name;
-} ReleaseTypeInfo;
-
-ReleaseTypeInfo releaseTypes[] = {
-  { CAlbum::Album,  "album" },
-  { CAlbum::Single, "single" }
-};
-
 CAlbum::CAlbum(const CFileItem& item)
 {
   Reset();
@@ -412,12 +402,12 @@ std::vector<int> CAlbum::GetArtistIDArray() const
 
 std::string CAlbum::GetReleaseType() const
 {
-  return ReleaseTypeToString(releaseType);
+  return AudioType::ToString(releaseType);
 }
 
 void CAlbum::SetReleaseType(const std::string& strReleaseType)
 {
-  releaseType = ReleaseTypeFromString(strReleaseType);
+  releaseType = AudioType::FromString(strReleaseType);
 }
 
 void CAlbum::SetDateAdded(const std::string& strDateAdded)
@@ -438,28 +428,6 @@ void CAlbum::SetDateNew(const std::string& strDateNew)
 void CAlbum::SetLastPlayed(const std::string& strLastPlayed)
 {
   lastPlayed.SetFromDBDateTime(strLastPlayed);
-}
-
-std::string CAlbum::ReleaseTypeToString(CAlbum::ReleaseType releaseType)
-{
-  for (const ReleaseTypeInfo& releaseTypeInfo : releaseTypes)
-  {
-    if (releaseTypeInfo.type == releaseType)
-      return releaseTypeInfo.name;
-  }
-
-  return "album";
-}
-
-CAlbum::ReleaseType CAlbum::ReleaseTypeFromString(const std::string& strReleaseType)
-{
-  for (const ReleaseTypeInfo& releaseTypeInfo : releaseTypes)
-  {
-    if (releaseTypeInfo.name == strReleaseType)
-      return releaseTypeInfo.type;
-  }
-
-  return Album;
 }
 
 bool CAlbum::operator<(const CAlbum &a) const
@@ -602,7 +570,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
   if (XMLUtils::GetString(album, "releasetype", strReleaseType))
     SetReleaseType(strReleaseType);
   else
-    releaseType = Album;
+    releaseType = AudioType::Type::Album;
 
   return true;
 }

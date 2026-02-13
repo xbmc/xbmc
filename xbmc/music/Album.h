@@ -14,6 +14,7 @@
 */
 
 #include "Artist.h"
+#include "AudioType.h"
 #include "Song.h"
 #include "XBDateTime.h"
 #include "utils/Artwork.h"
@@ -67,7 +68,7 @@ public:
     lastPlayed.Reset();
     iTotalDiscs = -1;
     songs.clear();
-    releaseType = Album;
+    releaseType = AudioType::Type::Album;
     strLastScraped.clear();
     bScrapedMBID = false;
     bArtistSongMerge = false;
@@ -102,20 +103,12 @@ public:
   */
   std::vector<int> GetArtistIDArray() const;
 
-  typedef enum ReleaseType {
-    Album = 0,
-    Single
-  } ReleaseType;
-
   std::string GetReleaseType() const;
   void SetReleaseType(const std::string& strReleaseType);
   void SetDateAdded(const std::string& strDateAdded);
   void SetDateUpdated(const std::string& strDateUpdated);
   void SetDateNew(const std::string& strDateNew);
   void SetLastPlayed(const std::string& strLastPlayed);
-
-  static std::string ReleaseTypeToString(ReleaseType releaseType);
-  static ReleaseType ReleaseTypeFromString(const std::string& strReleaseType);
 
   /*! \brief Set album artist credits using the arrays of tag values.
    If strArtistSort (as from ALBUMARTISTSORT tag) is already set then individual
@@ -175,7 +168,7 @@ public:
   CDateTime lastPlayed;
   int iTotalDiscs = -1;
   VECSONGS songs;     ///< Local songs
-  ReleaseType releaseType = Album;
+  AudioType::Type releaseType = AudioType::Type::Album;
   std::string strLastScraped;
   bool bScrapedMBID = false;
   bool bArtistSongMerge = false;
