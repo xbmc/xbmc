@@ -2482,7 +2482,7 @@ bool CMusicDatabase::GetArtistDiscography(int idArtist, CFileItemList& items)
   return false;
 }
 
-int CMusicDatabase::AddRole(const std::string& strRole)
+int CMusicDatabase::AddRole(std::string_view strRole)
 {
   int idRole = -1;
   std::string strSQL;
@@ -2493,7 +2493,7 @@ int CMusicDatabase::AddRole(const std::string& strRole)
       return -1;
     if (nullptr == m_pDS)
       return -1;
-    strSQL = PrepareSQL("SELECT idRole FROM role WHERE strRole LIKE '%s'", strRole.c_str());
+    strSQL = PrepareSQL("SELECT idRole FROM role WHERE strRole LIKE '%s'", strRole.data());
     m_pDS->query(strSQL);
     if (m_pDS->num_rows() > 0)
       idRole = m_pDS->fv("idRole").get_asInt();
@@ -2501,7 +2501,7 @@ int CMusicDatabase::AddRole(const std::string& strRole)
 
     if (idRole < 0)
     {
-      strSQL = PrepareSQL("INSERT INTO role (strRole) VALUES ('%s')", strRole.c_str());
+      strSQL = PrepareSQL("INSERT INTO role (strRole) VALUES ('%s')", strRole.data());
       m_pDS->exec(strSQL);
       idRole = static_cast<int>(m_pDS->lastinsertid());
       m_pDS->close();
@@ -2515,19 +2515,19 @@ int CMusicDatabase::AddRole(const std::string& strRole)
 }
 
 bool CMusicDatabase::AddSongArtist(
-    int idArtist, int idSong, const std::string& strRole, const std::string& strArtist, int iOrder)
+    int idArtist, int idSong, std::string_view strRole, std::string_view strArtist, int iOrder)
 {
   int idRole = AddRole(strRole);
   return AddSongArtist(idArtist, idSong, idRole, strArtist, iOrder);
 }
 
 bool CMusicDatabase::AddSongArtist(
-    int idArtist, int idSong, int idRole, const std::string& strArtist, int iOrder)
+    int idArtist, int idSong, int idRole, std::string_view strArtist, int iOrder)
 {
   std::string strSQL;
   strSQL = PrepareSQL("REPLACE INTO song_artist (idArtist, idSong, idRole, strArtist, iOrder) "
                       "VALUES(%i, %i, %i,'%s', %i)",
-                      idArtist, idSong, idRole, strArtist.c_str(), iOrder);
+                      idArtist, idSong, idRole, strArtist.data(), iOrder);
   return ExecuteQuery(strSQL);
 }
 
@@ -2675,13 +2675,13 @@ bool CMusicDatabase::DeleteSongArtistsBySong(int idSong)
 
 bool CMusicDatabase::AddAlbumArtist(int idArtist,
                                     int idAlbum,
-                                    const std::string& strArtist,
+                                    std::string_view strArtist,
                                     int iOrder)
 {
   std::string strSQL;
   strSQL = PrepareSQL("REPLACE INTO album_artist (idArtist, idAlbum, strArtist, iOrder) "
                       "VALUES(%i,%i,'%s',%i)",
-                      idArtist, idAlbum, strArtist.c_str(), iOrder);
+                      idArtist, idAlbum, strArtist.data(), iOrder);
   return ExecuteQuery(strSQL);
 }
 

@@ -25,6 +25,7 @@
 #include <map>
 #include <set>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -471,20 +472,16 @@ public:
   /////////////////////////////////////////////////
   // Link tables
   /////////////////////////////////////////////////
-  bool AddAlbumArtist(int idArtist, int idAlbum, const std::string& strArtist, int iOrder);
+  bool AddAlbumArtist(int idArtist, int idAlbum, std::string_view strArtist, int iOrder);
   bool GetAlbumsByArtist(int idArtist, std::vector<int>& albums);
   bool GetArtistsByAlbum(int idAlbum, CFileItem* item);
   bool GetArtistsByAlbum(int idAlbum, std::vector<std::string>& artistIDs);
   bool DeleteAlbumArtistsByAlbum(int idAlbum);
 
-  int AddRole(const std::string& strRole);
-  bool AddSongArtist(int idArtist,
-                     int idSong,
-                     const std::string& strRole,
-                     const std::string& strArtist,
-                     int iOrder);
+  int AddRole(std::string_view strRole);
   bool AddSongArtist(
-      int idArtist, int idSong, int idRole, const std::string& strArtist, int iOrder);
+      int idArtist, int idSong, std::string_view strRole, std::string_view strArtist, int iOrder);
+  bool AddSongArtist(int idArtist, int idSong, int idRole, std::string_view strArtist, int iOrder);
   int AddSongContributor(int idSong,
                          const std::string& strRole,
                          const std::string& strArtist,
