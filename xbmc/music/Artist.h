@@ -183,10 +183,10 @@ private:
 
 inline const std::string BLANKARTIST_FAKEMUSICBRAINZID = "Artist Tag Missing";
 inline const std::string BLANKARTIST_NAME = "[Missing Tag]";
-const int BLANKARTIST_ID = 1;
+static constexpr int BLANKARTIST_ID = 1;
 inline const std::string VARIOUSARTISTS_MBID = "89ad4ac3-39f7-470e-963a-56509c546377";
 
-#define ROLE_ARTIST 1  //Default role
+static constexpr int ROLE_ARTIST = 1; // Default role
 
 class CMusicRole
 {
