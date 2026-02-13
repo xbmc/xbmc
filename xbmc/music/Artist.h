@@ -13,6 +13,7 @@
 #include "utils/ScraperUrl.h"
 
 #include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -181,10 +182,10 @@ private:
   bool m_bScrapedMBID = false; // Flag that mbid is from album merge of scarper results not derived from tags
 };
 
-inline const std::string BLANKARTIST_FAKEMUSICBRAINZID = "Artist Tag Missing";
-inline const std::string BLANKARTIST_NAME = "[Missing Tag]";
+static constexpr std::string_view BLANKARTIST_FAKEMUSICBRAINZID = "Artist Tag Missing";
+static constexpr std::string_view BLANKARTIST_NAME = "[Missing Tag]";
 static constexpr int BLANKARTIST_ID = 1;
-inline const std::string VARIOUSARTISTS_MBID = "89ad4ac3-39f7-470e-963a-56509c546377";
+static constexpr std::string_view VARIOUSARTISTS_MBID = "89ad4ac3-39f7-470e-963a-56509c546377";
 
 static constexpr int ROLE_ARTIST = 1; // Default role
 

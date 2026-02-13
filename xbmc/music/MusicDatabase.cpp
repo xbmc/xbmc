@@ -148,8 +148,8 @@ void CMusicDatabase::CreateTables()
   std::string strSQL =
       PrepareSQL("INSERT INTO artist (idArtist, strArtist, strSortName, strMusicBrainzArtistID) "
                  "VALUES( %i, '%s', '%s', '%s' )",
-                 BLANKARTIST_ID, BLANKARTIST_NAME.c_str(), BLANKARTIST_NAME.c_str(),
-                 BLANKARTIST_FAKEMUSICBRAINZID.c_str());
+                 BLANKARTIST_ID, BLANKARTIST_NAME.data(), BLANKARTIST_NAME.data(),
+                 BLANKARTIST_FAKEMUSICBRAINZID.data());
   m_pDS->exec(strSQL);
 
   CLog::Log(LOGINFO, "create album table");
@@ -8927,7 +8927,7 @@ void CMusicDatabase::UpdateTables(int version)
     // Fake MusicbrainzId assures uniqueness and avoids updates from scanned songs
     strSQL = PrepareSQL(
         "INSERT INTO artist (idArtist, strArtist, strMusicBrainzArtistID) VALUES( %i, '%s', '%s' )",
-        BLANKARTIST_ID, BLANKARTIST_NAME.c_str(), BLANKARTIST_FAKEMUSICBRAINZID.c_str());
+        BLANKARTIST_ID, BLANKARTIST_NAME.data(), BLANKARTIST_FAKEMUSICBRAINZID.data());
     m_pDS->exec(strSQL);
 
     // Indices have been dropped making transactions very slow, so create temp index
@@ -8949,7 +8949,7 @@ void CMusicDatabase::UpdateTables(int version)
                             "SELECT %i, idSong, %i, '%s', 0 FROM song "
                             "WHERE NOT EXISTS(SELECT idSong FROM song_artist "
                             "WHERE song_artist.idsong = song.idsong AND song_artist.idRole = %i)",
-                            BLANKARTIST_ID, ROLE_ARTIST, BLANKARTIST_NAME.c_str(), ROLE_ARTIST);
+                            BLANKARTIST_ID, ROLE_ARTIST, BLANKARTIST_NAME.data(), ROLE_ARTIST);
         ExecuteQuery(strSQL);
       }
       catch (...)
@@ -8973,7 +8973,7 @@ void CMusicDatabase::UpdateTables(int version)
                             "SELECT %i, idAlbum, '%s', 0 FROM album "
                             "WHERE NOT EXISTS(SELECT idAlbum FROM album_artist "
                             "WHERE album_artist.idAlbum = album.idAlbum)",
-                            BLANKARTIST_ID, BLANKARTIST_NAME.c_str());
+                            BLANKARTIST_ID, BLANKARTIST_NAME.data());
         ExecuteQuery(strSQL);
       }
       catch (...)
