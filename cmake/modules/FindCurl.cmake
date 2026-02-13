@@ -12,6 +12,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   macro(buildmacroCurl)
     find_package(Brotli REQUIRED ${SEARCH_QUIET})
+    find_package(ZSTD REQUIRED ${SEARCH_QUIET})
     find_package(NGHttp2 REQUIRED ${SEARCH_QUIET})
     find_package(OpenSSL REQUIRED ${SEARCH_QUIET})
 
@@ -46,6 +47,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                    -DCURL_USE_OPENSSL=ON
                    -DOPENSSL_ROOT_DIR=${DEPENDS_PATH}
                    -DCURL_BROTLI=ON
+                   -DCURL_ZSTD=ON
                    -DUSE_NGHTTP2=ON
                    -DUSE_LIBIDN2=OFF
                    -DCURL_USE_LIBSSH2=OFF
@@ -57,6 +59,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     # Link libraries for target interface
     list(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LINK_LIBRARIES LIBRARY::Brotli
+                                                                    LIBRARY::ZSTD
                                                                     LIBRARY::NGHttp2
                                                                     OpenSSL::Crypto
                                                                     OpenSSL::SSL
@@ -64,6 +67,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     # Add dependencies to build target
     add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} LIBRARY::Brotli
+                                                                        LIBRARY::ZSTD
                                                                         LIBRARY::NGHttp2
                                                                         OpenSSL::SSL
                                                                         OpenSSL::Crypto
@@ -76,6 +80,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   if(ENABLE_INTERNAL_CURL)
     # Dependency list of this find module for an INTERNAL build
     set(${CMAKE_FIND_PACKAGE_NAME}_DEPLIST Brotli
+                                           ZSTD
                                            NGHttp2
                                            OpenSSL
                                            ZLIB)

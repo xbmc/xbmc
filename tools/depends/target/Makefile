@@ -150,7 +150,7 @@ download: $(DOWNLOAD_TARGETS)
 
 cec: p8-platform
 crossguid: $(LIBUUID)
-curl: brotli openssl nghttp2 $(ZLIB)
+curl: brotli openssl nghttp2 zstd $(ZLIB)
 dbus: expat
 exiv2: $(ICONV) $(ZLIB) expat
 ffmpeg: $(ICONV) $(ZLIB) bzip2 gnutls dav1d $(LIBVA)
