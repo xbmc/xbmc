@@ -5967,9 +5967,9 @@ bool CMusicDatabase::GetAlbumsByWhere(
 
 bool CMusicDatabase::GetDiscsNav(const std::string& strBaseDir,
                                  CFileItemList& items,
+                                 const SortDescription& sortDescription,
                                  int idAlbum,
                                  const Filter& filter,
-                                 const SortDescription& sortDescription,
                                  bool countOnly)
 {
   CMusicDbUrl musicUrl;

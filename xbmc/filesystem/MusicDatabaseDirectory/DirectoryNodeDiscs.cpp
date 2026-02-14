@@ -50,7 +50,8 @@ bool CDirectoryNodeDiscs::GetContent(CFileItemList& items) const
   CQueryParams params;
   CollectQueryParams(params);
 
-  bool bSuccess = musicdatabase.GetDiscsNav(BuildPath(), items, params.GetAlbumId());
+  bool bSuccess =
+      musicdatabase.GetDiscsNav(BuildPath(), items, SortDescription(), params.GetAlbumId());
 
   musicdatabase.Close();
 

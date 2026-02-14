@@ -598,9 +598,9 @@ public:
                     bool countOnly = false);
   bool GetDiscsNav(const std::string& strBaseDir,
                    CFileItemList& items,
+                   const SortDescription& sortDescription,
                    int idAlbum,
                    const Filter& filter = Filter(),
-                   const SortDescription& sortDescription = SortDescription(),
                    bool countOnly = false);
   bool GetAlbumsByYear(const std::string& strBaseDir, CFileItemList& items, int year);
   bool GetSongsNav(const std::string& strBaseDir,
