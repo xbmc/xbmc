@@ -663,7 +663,7 @@ public:
                             const std::string& baseDir,
                             CVariant& result,
                             int& total,
-                            const SortDescription& sortDescription = SortDescription());
+                            const SortDescription& sortDescription);
   bool GetSongsByWhereJSON(const std::set<std::string, std::less<>>& fields,
                            const std::string& baseDir,
                            CVariant& result,
