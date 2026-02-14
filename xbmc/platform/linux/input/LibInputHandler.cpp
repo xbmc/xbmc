@@ -14,6 +14,7 @@
 #include "LibInputTouch.h"
 #include "ServiceBroker.h"
 #include "interfaces/AnnouncementManager.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -64,7 +65,11 @@ static void LogHandler(libinput  __attribute__((unused)) *libinput, libinput_log
     char buf[512];
     int n = vsnprintf(buf, sizeof(buf), format, args);
     if (n > 0)
-      CLog::Log(LOGDEBUG, "libinput: {}", buf);
+    {
+      std::string message(buf);
+      StringUtils::TrimRight(message);
+      CLog::Log(LOGDEBUG, "libinput: {}", message);
+    }
   }
 }
 
