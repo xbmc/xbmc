@@ -1,5 +1,6 @@
 include ../../Makefile.include UDFREAD-VERSION ../../download-files.include
-DEPS = ../../Makefile.include Makefile UDFREAD-VERSION ../../download-files.include
+DEPS = ../../Makefile.include Makefile UDFREAD-VERSION ../../download-files.include \
+                                        001-win-MR10-merged.patch
 
 MESON_BUILD_TYPE=release
 
@@ -33,6 +34,7 @@ all: .installed-$(PLATFORM)
 $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	cd $(PLATFORM); patch -p1 -i ../001-win-MR10-merged.patch
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)

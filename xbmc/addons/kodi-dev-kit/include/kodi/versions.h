@@ -37,7 +37,7 @@
 // because cmake uses this area in this form to perform its addon dependency
 // check.
 // clang-format off
-#define ADDON_GLOBAL_VERSION_MAIN                     "2.0.2"
+#define ADDON_GLOBAL_VERSION_MAIN                     "2.0.3"
 #define ADDON_GLOBAL_VERSION_MAIN_MIN                 "2.0.0"
 #define ADDON_GLOBAL_VERSION_MAIN_XML_ID              "kodi.binary.global.main"
 #define ADDON_GLOBAL_VERSION_MAIN_DEPENDS             "AddonBase.h" \
@@ -62,7 +62,7 @@
 #define ADDON_GLOBAL_VERSION_AUDIOENGINE_DEPENDS      "AudioEngine.h" \
                                                       "c-api/audio_engine.h"
 
-#define ADDON_GLOBAL_VERSION_FILESYSTEM               "1.1.10"
+#define ADDON_GLOBAL_VERSION_FILESYSTEM               "1.1.11"
 #define ADDON_GLOBAL_VERSION_FILESYSTEM_MIN           "1.1.7"
 #define ADDON_GLOBAL_VERSION_FILESYSTEM_XML_ID        "kodi.binary.global.filesystem"
 #define ADDON_GLOBAL_VERSION_FILESYSTEM_DEPENDS       "Filesystem.h" \

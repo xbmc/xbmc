@@ -3,6 +3,8 @@ DEPS = ../../Makefile.include LIBBLURAY-VERSION Makefile ../../download-files.in
                                   001-darwinembed_DiskArbitration-revert.patch \
                                   002-darwin-dlopen_searchpath.patch \
                                   003-win-libxml_searchname.patch \
+                                  004-win-msvc_fix-MR54.patch \
+                                  005-win-remove-lib-version.patch \
                                   tvos.patch
 MESON_BUILD_TYPE=release
 
@@ -50,6 +52,10 @@ endif
 	cd $(PLATFORM); patch -p1 -i ../003-win-libxml_searchname.patch
 ifeq ($(TARGET_PLATFORM),appletvos)
 	cd $(PLATFORM); patch -p1 -i ../tvos.patch
+endif
+	cd $(PLATFORM); patch -p1 -i ../004-win-msvc_fix-MR54.patch
+ifeq ($(TARGET_PLATFORM),windows)
+	cd $(PLATFORM); patch -p1 -i ../005-win-remove-lib-version.patch
 endif
 	cd $(PLATFORM); $(CONFIGURE)
 
