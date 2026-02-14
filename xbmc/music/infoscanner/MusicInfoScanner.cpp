@@ -340,7 +340,7 @@ void CMusicInfoScanner::FetchAlbumInfo(const std::string& strDirectory,
   if (strDirectory.empty())
   {
     m_musicDatabase.Open();
-    m_musicDatabase.GetAlbumsNav("musicdb://albums/", items);
+    m_musicDatabase.GetAlbumsNav("musicdb://albums/", items, SortDescription());
     m_musicDatabase.Close();
   }
   else

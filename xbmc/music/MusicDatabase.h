@@ -591,10 +591,10 @@ public:
                          bool countOnly = false);
   bool GetAlbumsNav(const std::string& strBaseDir,
                     CFileItemList& items,
+                    const SortDescription& sortDescription,
                     int idGenre = -1,
                     int idArtist = -1,
                     const Filter& filter = Filter(),
-                    const SortDescription& sortDescription = SortDescription(),
                     bool countOnly = false);
   bool GetDiscsNav(const std::string& strBaseDir,
                    CFileItemList& items,
