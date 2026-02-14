@@ -8,20 +8,24 @@
 #   LIBRARY::ZSTD   - The App specific library dependency target
 #
 
-if(NOT TARGET LIBRARY::ZSTD)
+if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
 
   macro(buildmacroZSTD)
+    if(APPLE)
+      set(EXTRA_ARGS "-DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}")
+    endif()
 
     set(PATCH_COMMAND ${CMAKE_COMMAND} -E copy
                       ${CORE_SOURCE_DIR}/tools/depends/target/zstd/CMakeLists.txt
                       <SOURCE_DIR>)
 
-    set(CMAKE_ARGS -DCMAKE_BUILD_TYPE=Release
+    set(CMAKE_ARGS -DCMAKE_POSITION_INDEPENDENT_CODE=ON
                    -DZSTD_BUILD_STATIC=ON
                    -DZSTD_BUILD_SHARED=OFF
                    -DZSTD_LEGACY_SUPPORT=OFF
                    -DZSTD_BUILD_PROGRAMS=OFF
-                   -DZSTD_BUILD_TESTS=OFF)
+                   -DZSTD_BUILD_TESTS=OFF
+                   ${EXTRA_ARGS})
 
     BUILD_DEP_TARGET()
   endmacro()
