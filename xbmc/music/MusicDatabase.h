@@ -688,13 +688,13 @@ public:
   /////////////////////////////////////////////////
   bool GetItems(const std::string& strBaseDir,
                 CFileItemList& items,
-                const Filter& filter = Filter(),
-                const SortDescription& sortDescription = SortDescription());
+                const SortDescription& sortDescription,
+                const Filter& filter = Filter());
   bool GetItems(const std::string& strBaseDir,
                 const std::string& itemType,
                 CFileItemList& items,
-                const Filter& filter = Filter(),
-                const SortDescription& sortDescription = SortDescription());
+                const SortDescription& sortDescription,
+                const Filter& filter = Filter());
   std::string GetItemById(const std::string& itemType, int id) const;
 
   /////////////////////////////////////////////////

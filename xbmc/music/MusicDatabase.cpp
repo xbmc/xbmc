@@ -7271,12 +7271,11 @@ const std::array<TranslateJSONField, 35> JSONtoDBAlbum = {{
 // clang-format on
 } //unnamed namespace
 
-bool CMusicDatabase::GetAlbumsByWhereJSON(
-    const std::set<std::string, std::less<>>& fields,
-    const std::string& baseDir,
-    CVariant& result,
-    int& total,
-    const SortDescription& sortDescription /* = SortDescription() */)
+bool CMusicDatabase::GetAlbumsByWhereJSON(const std::set<std::string, std::less<>>& fields,
+                                          const std::string& baseDir,
+                                          CVariant& result,
+                                          int& total,
+                                          const SortDescription& sortDescription)
 {
 
   if (nullptr == m_pDB)
@@ -11745,21 +11744,21 @@ bool CMusicDatabase::ScraperInUse(const std::string& scraperID) const
 
 bool CMusicDatabase::GetItems(const std::string& strBaseDir,
                               CFileItemList& items,
-                              const Filter& filter /* = Filter() */,
-                              const SortDescription& sortDescription /* = SortDescription() */)
+                              const SortDescription& sortDescription,
+                              const Filter& filter /* = Filter() */)
 {
   CMusicDbUrl musicUrl;
   if (!musicUrl.FromString(strBaseDir))
     return false;
 
-  return GetItems(strBaseDir, musicUrl.GetType(), items, filter, sortDescription);
+  return GetItems(strBaseDir, musicUrl.GetType(), items, sortDescription, filter);
 }
 
 bool CMusicDatabase::GetItems(const std::string& strBaseDir,
                               const std::string& itemType,
                               CFileItemList& items,
-                              const Filter& filter /* = Filter() */,
-                              const SortDescription& sortDescription /* = SortDescription() */)
+                              const SortDescription& sortDescription,
+                              const Filter& filter /* = Filter() */)
 {
   if (StringUtils::EqualsNoCase(itemType, "genres"))
     return GetGenresNav(strBaseDir, items, filter);

@@ -40,7 +40,7 @@ bool CDirectoryNodeGrouped::GetContent(CFileItemList& items) const
   if (!musicdatabase.Open())
     return false;
 
-  return musicdatabase.GetItems(BuildPath(), GetContentType(), items);
+  return musicdatabase.GetItems(BuildPath(), GetContentType(), items, SortDescription());
 }
 
 std::string CDirectoryNodeGrouped::GetContentType() const
