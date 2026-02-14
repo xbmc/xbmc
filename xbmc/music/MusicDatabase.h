@@ -658,7 +658,7 @@ public:
                              const std::string& baseDir,
                              CVariant& result,
                              int& total,
-                             const SortDescription& sortDescription = SortDescription());
+                             const SortDescription& sortDescription);
   bool GetAlbumsByWhereJSON(const std::set<std::string, std::less<>>& fields,
                             const std::string& baseDir,
                             CVariant& result,

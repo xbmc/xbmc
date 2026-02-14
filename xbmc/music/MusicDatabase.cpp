@@ -6535,12 +6535,11 @@ const std::array<TranslateJSONField, 35> JSONtoDBArtist = {{
 // clang-format on
 } // unnamed namespace
 
-bool CMusicDatabase::GetArtistsByWhereJSON(
-    const std::set<std::string, std::less<>>& fields,
-    const std::string& baseDir,
-    CVariant& result,
-    int& total,
-    const SortDescription& sortDescription /* = SortDescription() */)
+bool CMusicDatabase::GetArtistsByWhereJSON(const std::set<std::string, std::less<>>& fields,
+                                           const std::string& baseDir,
+                                           CVariant& result,
+                                           int& total,
+                                           const SortDescription& sortDescription)
 {
   if (nullptr == m_pDB)
     return false;
