@@ -668,7 +668,7 @@ public:
                            const std::string& baseDir,
                            CVariant& result,
                            int& total,
-                           const SortDescription& sortDescription = SortDescription());
+                           const SortDescription& sortDescription);
 
   /////////////////////////////////////////////////
   // Scraper
