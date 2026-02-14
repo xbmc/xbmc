@@ -12,7 +12,6 @@
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "threads/SharedSection.h"
-#include "utils/CharsetConverter.h"
 #include "utils/POUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
