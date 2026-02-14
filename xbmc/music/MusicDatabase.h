@@ -568,12 +568,12 @@ public:
                    const Filter& filter = Filter());
   bool GetArtistsNav(const std::string& strBaseDir,
                      CFileItemList& items,
+                     const SortDescription& sortDescription,
                      bool albumArtistsOnly = false,
                      int idGenre = -1,
                      int idAlbum = -1,
                      int idSong = -1,
                      const Filter& filter = Filter(),
-                     const SortDescription& sortDescription = SortDescription(),
                      bool countOnly = false);
   bool GetCommonNav(const std::string& strBaseDir,
                     const std::string& table,

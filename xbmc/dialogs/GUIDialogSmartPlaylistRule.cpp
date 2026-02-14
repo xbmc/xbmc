@@ -182,7 +182,8 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   else if (m_rule.m_field == FieldArtist || m_rule.m_field == FieldAlbumArtist)
   {
     if (PLAYLIST::CSmartPlaylist::IsMusicType(m_type))
-      database.GetArtistsNav("musicdb://artists/", items, m_rule.m_field == FieldAlbumArtist, -1);
+      database.GetArtistsNav("musicdb://artists/", items, SortDescription(),
+                             m_rule.m_field == FieldAlbumArtist, -1);
     if (m_type == "musicvideos" ||
         m_type == "mixed")
     {

@@ -5510,12 +5510,12 @@ bool CMusicDatabase::GetMusicLabelsNav(const std::string& strBaseDir,
 
 bool CMusicDatabase::GetArtistsNav(const std::string& strBaseDir,
                                    CFileItemList& items,
+                                   const SortDescription& sortDescription,
                                    bool albumArtistsOnly /* = false */,
                                    int idGenre /* = -1 */,
                                    int idAlbum /* = -1 */,
                                    int idSong /* = -1 */,
                                    const Filter& filter /* = Filter() */,
-                                   const SortDescription& sortDescription /* = SortDescription() */,
                                    bool countOnly /* = false */)
 {
   if (nullptr == m_pDB)
@@ -11774,10 +11774,10 @@ bool CMusicDatabase::GetItems(const std::string& strBaseDir,
   else if (StringUtils::EqualsNoCase(itemType, "roles"))
     return GetRolesNav(strBaseDir, items, filter);
   else if (StringUtils::EqualsNoCase(itemType, "artists"))
-    return GetArtistsNav(strBaseDir, items,
+    return GetArtistsNav(strBaseDir, items, sortDescription,
                          !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
                              CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS),
-                         -1, -1, -1, filter, sortDescription);
+                         -1, -1, -1, filter, false);
   else if (StringUtils::EqualsNoCase(itemType, "albums"))
     return GetAlbumsByWhere(strBaseDir, filter, items, sortDescription);
   else if (StringUtils::EqualsNoCase(itemType, "discs"))

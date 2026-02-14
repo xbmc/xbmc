@@ -402,7 +402,10 @@ void CMusicInfoScanner::FetchArtistInfo(const std::string& strDirectory,
   if (strDirectory.empty())
   {
     m_musicDatabase.Open();
-    m_musicDatabase.GetArtistsNav("musicdb://artists/", items, !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS), -1);
+    const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+    m_musicDatabase.GetArtistsNav(
+        "musicdb://artists/", items, SortDescription(),
+        !settings->GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS), -1);
     m_musicDatabase.Close();
   }
   else
