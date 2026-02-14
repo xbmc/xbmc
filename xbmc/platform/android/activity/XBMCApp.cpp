@@ -240,7 +240,7 @@ void CXBMCApp::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
 
 void CXBMCApp::onStart()
 {
-  android_printf("%s: ", __PRETTY_FUNCTION__);
+  android_printf("CXBMCApp::%s", __FUNCTION__);
 
   if (m_firstrun)
   {
@@ -302,7 +302,7 @@ bool isHeadsetPlugged()
 
 void CXBMCApp::onResume()
 {
-  android_printf("%s: ", __PRETTY_FUNCTION__);
+  android_printf("CXBMCApp::%s", __FUNCTION__);
 
   if (g_application.IsInitialized() &&
       CServiceBroker::GetWinSystem()->GetOSScreenSaver()->IsInhibited())
@@ -350,7 +350,7 @@ void CXBMCApp::onResume()
 
 void CXBMCApp::onPause()
 {
-  android_printf("%s: ", __PRETTY_FUNCTION__);
+  android_printf("CXBMCApp::%s", __FUNCTION__);
   m_bResumePlayback = false;
 
   const auto& components = CServiceBroker::GetAppComponents();
@@ -383,7 +383,7 @@ void CXBMCApp::onPause()
 
 void CXBMCApp::onStop()
 {
-  android_printf("%s: ", __PRETTY_FUNCTION__);
+  android_printf("CXBMCApp::%s", __FUNCTION__);
 
   if ((m_playback_state & PLAYBACK_STATE_PLAYING) && !m_hasReqVisible)
   {
@@ -398,7 +398,7 @@ void CXBMCApp::onStop()
 
 void CXBMCApp::onDestroy()
 {
-  android_printf("%s", __PRETTY_FUNCTION__);
+  android_printf("CXBMCApp::%s", __FUNCTION__);
 
   unregisterReceiver(*this);
 
@@ -410,42 +410,42 @@ void CXBMCApp::onDestroy()
 
 void CXBMCApp::onSaveState(void **data, size_t *size)
 {
-  android_printf("%s: ", __PRETTY_FUNCTION__);
+  android_printf("CXBMCApp::%s", __FUNCTION__);
   // no need to save anything as XBMC is running in its own thread
 }
 
 void CXBMCApp::onConfigurationChanged()
 {
-  android_printf("%s: ", __PRETTY_FUNCTION__);
+  android_printf("CXBMCApp::%s", __FUNCTION__);
   // ignore any configuration changes like screen rotation etc
 }
 
 void CXBMCApp::onLowMemory()
 {
-  android_printf("%s: ", __PRETTY_FUNCTION__);
+  android_printf("CXBMCApp::%s", __FUNCTION__);
   // can't do much as we don't want to close completely
 }
 
 void CXBMCApp::onCreateWindow(ANativeWindow* window)
 {
-  android_printf("%s: ", __PRETTY_FUNCTION__);
+  android_printf("CXBMCApp::%s", __FUNCTION__);
 }
 
 void CXBMCApp::onResizeWindow()
 {
-  android_printf("%s: ", __PRETTY_FUNCTION__);
+  android_printf("CXBMCApp::%s", __FUNCTION__);
   m_window.reset();
   // no need to do anything because we are fixed in fullscreen landscape mode
 }
 
 void CXBMCApp::onDestroyWindow()
 {
-  android_printf("%s: ", __PRETTY_FUNCTION__);
+  android_printf("CXBMCApp::%s", __FUNCTION__);
 }
 
 void CXBMCApp::onGainFocus()
 {
-  android_printf("%s: ", __PRETTY_FUNCTION__);
+  android_printf("CXBMCApp::%s", __FUNCTION__);
   m_hasFocus = true;
   auto& components = CServiceBroker::GetAppComponents();
   const auto appPower = components.GetComponent<CApplicationPowerHandling>();
@@ -454,7 +454,7 @@ void CXBMCApp::onGainFocus()
 
 void CXBMCApp::onLostFocus()
 {
-  android_printf("%s: ", __PRETTY_FUNCTION__);
+  android_printf("CXBMCApp::%s", __FUNCTION__);
   m_hasFocus = false;
 }
 
@@ -538,7 +538,7 @@ void CXBMCApp::Quit()
   m_thread.join();
 
   // Note: CLog no longer available here.
-  android_printf("%s: Application stopped!", __PRETTY_FUNCTION__);
+  android_printf("CXBMCApp::%s: Application stopped!", __FUNCTION__);
 }
 
 void CXBMCApp::KeepScreenOnCallback(void* onVariant)
@@ -557,7 +557,7 @@ void CXBMCApp::KeepScreenOnCallback(void* onVariant)
 
 void CXBMCApp::KeepScreenOn(bool on)
 {
-  android_printf("%s: %s", __PRETTY_FUNCTION__, on ? "true" : "false");
+  android_printf("CXBMCApp::%s: %s", __FUNCTION__, on ? "true" : "false");
   // this object is deallocated in the callback
   CVariant* variant = new CVariant(on);
   runNativeOnUiThread(KeepScreenOnCallback, variant);
@@ -891,7 +891,7 @@ void CXBMCApp::UpdateSessionState()
 
 void CXBMCApp::OnPlayBackStarted()
 {
-  CLog::Log(LOGDEBUG, "{}", __PRETTY_FUNCTION__);
+  CLog::Log(LOGDEBUG, "CXBMCApp::{}", __FUNCTION__);
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
 
@@ -918,7 +918,7 @@ void CXBMCApp::OnPlayBackStarted()
 
 void CXBMCApp::OnPlayBackPaused()
 {
-  CLog::Log(LOGDEBUG, "{}", __PRETTY_FUNCTION__);
+  CLog::Log(LOGDEBUG, "CXBMCApp::{}", __FUNCTION__);
 
   m_playback_state &= ~PLAYBACK_STATE_PLAYING;
   m_mediaSessionUpdated = false;
@@ -930,7 +930,7 @@ void CXBMCApp::OnPlayBackPaused()
 
 void CXBMCApp::OnPlayBackStopped()
 {
-  CLog::Log(LOGDEBUG, "{}", __PRETTY_FUNCTION__);
+  CLog::Log(LOGDEBUG, "CXBMCApp::{}", __FUNCTION__);
 
   m_playback_state = PLAYBACK_STATE_STOPPED;
   m_mediaSessionUpdated = false;
@@ -1665,7 +1665,7 @@ bool CXBMCApp::onInputDeviceEvent(const AInputEvent* event)
 
 void CXBMCApp::onDisplayAdded(int displayId)
 {
-  android_printf("%s: ", __PRETTY_FUNCTION__);
+  android_printf("CXBMCApp::%s", __FUNCTION__);
 }
 
 void CXBMCApp::onDisplayChanged(int displayId)
@@ -1683,22 +1683,22 @@ void CXBMCApp::onDisplayChanged(int displayId)
 
   m_displayChangeEvent.Set();
   m_inputHandler.setDPI(GetDPI());
-  android_printf("%s: ", __PRETTY_FUNCTION__);
+  android_printf("CXBMCApp::%s", __FUNCTION__);
 }
 
 void CXBMCApp::onDisplayRemoved(int displayId)
 {
-  android_printf("%s: ", __PRETTY_FUNCTION__);
+  android_printf("CXBMCApp::%s", __FUNCTION__);
 }
 
 void CXBMCApp::surfaceChanged(CJNISurfaceHolder holder, int format, int width, int height)
 {
-  android_printf("%s: ", __PRETTY_FUNCTION__);
+  android_printf("CXBMCApp::%s", __FUNCTION__);
 }
 
 void CXBMCApp::surfaceCreated(CJNISurfaceHolder holder)
 {
-  android_printf("%s: ", __PRETTY_FUNCTION__);
+  android_printf("CXBMCApp::%s", __FUNCTION__);
 
   m_window = CNativeWindow::CreateFromSurface(holder);
   if (m_window == nullptr)
@@ -1717,7 +1717,7 @@ void CXBMCApp::surfaceCreated(CJNISurfaceHolder holder)
 
 void CXBMCApp::surfaceDestroyed(CJNISurfaceHolder holder)
 {
-  android_printf("%s: ", __PRETTY_FUNCTION__);
+  android_printf("CXBMCApp::%s", __FUNCTION__);
   // If we have exited XBMC, it no longer exists.
   auto& components = CServiceBroker::GetAppComponents();
   const auto appPower = components.GetComponent<CApplicationPowerHandling>();
