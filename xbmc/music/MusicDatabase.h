@@ -605,10 +605,10 @@ public:
   bool GetAlbumsByYear(const std::string& strBaseDir, CFileItemList& items, int year);
   bool GetSongsNav(const std::string& strBaseDir,
                    CFileItemList& items,
+                   const SortDescription& sortDescription,
                    int idGenre,
                    int idArtist,
-                   int idAlbum,
-                   const SortDescription& sortDescription = SortDescription());
+                   int idAlbum);
   bool GetSongsByYear(const std::string& baseDir, CFileItemList& items, int year);
   bool GetSongsFullByWhere(const std::string& baseDir,
                            const Filter& filter,

@@ -253,7 +253,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   {
     if (m_type == "songs" || m_type == "mixed")
     {
-      database.GetSongsNav("musicdb://songs/", items, -1, -1, -1);
+      database.GetSongsNav("musicdb://songs/", items, SortDescription(), -1, -1, -1);
       iLabel = 134;
     }
     if (m_type == "movies")

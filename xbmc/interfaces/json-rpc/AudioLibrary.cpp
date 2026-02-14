@@ -1145,7 +1145,8 @@ bool CAudioLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
   }
 
   if (artistID != -1 || albumID != -1 || genreID != -1)
-    success |= musicdatabase.GetSongsNav("musicdb://songs/", list, genreID, artistID, albumID);
+    success |= musicdatabase.GetSongsNav("musicdb://songs/", list, SortDescription(), genreID,
+                                         artistID, albumID);
 
   int songID = (int)parameterObject["songid"].asInteger(-1);
   if (songID != -1)

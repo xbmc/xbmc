@@ -6454,10 +6454,10 @@ bool CMusicDatabase::GetSongsByYear(const std::string& baseDir, CFileItemList& i
 
 bool CMusicDatabase::GetSongsNav(const std::string& strBaseDir,
                                  CFileItemList& items,
+                                 const SortDescription& sortDescription,
                                  int idGenre,
                                  int idArtist,
-                                 int idAlbum,
-                                 const SortDescription& sortDescription /* = SortDescription() */)
+                                 int idAlbum)
 {
   CMusicDbUrl musicUrl;
   if (!musicUrl.FromString(strBaseDir))
