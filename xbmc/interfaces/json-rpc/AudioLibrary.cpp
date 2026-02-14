@@ -522,13 +522,12 @@ JSONRPC_STATUS CAudioLibrary::GetRecentlyAddedAlbums(const std::string &method, 
     return InternalError;
 
   CFileItemList items;
-  for (unsigned int index = 0; index < albums.size(); index++)
+  for (const CAlbum& album : albums)
   {
-    std::string path =
-        StringUtils::Format("musicdb://recentlyaddedalbums/{}/", albums[index].idAlbum);
+    std::string path = StringUtils::Format("musicdb://recentlyaddedalbums/{}/", album.idAlbum);
 
     CFileItemPtr item;
-    FillAlbumItem(albums[index], path, item);
+    FillAlbumItem(album, path, item);
     items.Add(item);
   }
 
@@ -573,13 +572,12 @@ JSONRPC_STATUS CAudioLibrary::GetRecentlyPlayedAlbums(const std::string &method,
     return InternalError;
 
   CFileItemList items;
-  for (unsigned int index = 0; index < albums.size(); index++)
+  for (const CAlbum& album : albums)
   {
-    std::string path =
-        StringUtils::Format("musicdb://recentlyplayedalbums/{}/", albums[index].idAlbum);
+    std::string path = StringUtils::Format("musicdb://recentlyplayedalbums/{}/", album.idAlbum);
 
     CFileItemPtr item;
-    FillAlbumItem(albums[index], path, item);
+    FillAlbumItem(album, path, item);
     items.Add(item);
   }
 
