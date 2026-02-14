@@ -52,8 +52,6 @@ CRPRendererDMAOpenGL::CRPRendererDMAOpenGL(const CRenderSettings& renderSettings
 
 void CRPRendererDMAOpenGL::Render(uint8_t alpha)
 {
-  const ViewportCoordinates dest{m_rotatedDestCoords};
-
   auto renderBuffer = static_cast<CRenderBufferDMA*>(m_renderBuffer);
   if (renderBuffer == nullptr)
     return;
@@ -97,7 +95,8 @@ void CRPRendererDMAOpenGL::Render(uint8_t alpha)
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-    if (!m_shaderPreset->RenderUpdate(dest, {m_fullDestWidth, m_fullDestHeight}, *source, *target))
+    if (!m_shaderPreset->RenderUpdate(m_rotatedDestCoords, {m_fullDestWidth, m_fullDestHeight},
+                                      *source, *target))
     {
       m_bShadersNeedUpdate = false;
       m_bUseShaderPreset = false;
@@ -106,15 +105,6 @@ void CRPRendererDMAOpenGL::Render(uint8_t alpha)
   // Use GUI shader
   else
   {
-    CRect rect = m_sourceRect;
-
-    rect.x1 /= renderBuffer->GetWidth();
-    rect.x2 /= renderBuffer->GetWidth();
-    rect.y1 /= renderBuffer->GetHeight();
-    rect.y2 /= renderBuffer->GetHeight();
-
-    const uint32_t color = (alpha << 24) | 0xFFFFFF;
-
     GLint filter = GL_NEAREST;
     if (GetRenderSettings().VideoSettings().GetScalingMethod() == SCALINGMETHOD::LINEAR)
       filter = GL_LINEAR;
@@ -127,22 +117,33 @@ void CRPRendererDMAOpenGL::Render(uint8_t alpha)
 
     m_context.EnableGUIShader(GL_SHADER_METHOD::TEXTURE);
 
-    GLubyte colour[4];
-    GLubyte idx[4] = {0, 1, 3, 2}; // Determines order of triangle strip
-    PackedVertex vertex[4];
-
     GLint uniColLoc = m_context.GUIShaderGetUniCol();
     GLint depthLoc = m_context.GUIShaderGetDepth();
 
     // Setup color values
-    colour[0] = UTILS::GL::GetChannelFromARGB(UTILS::GL::ColorChannel::R, color);
-    colour[1] = UTILS::GL::GetChannelFromARGB(UTILS::GL::ColorChannel::G, color);
-    colour[2] = UTILS::GL::GetChannelFromARGB(UTILS::GL::ColorChannel::B, color);
-    colour[3] = UTILS::GL::GetChannelFromARGB(UTILS::GL::ColorChannel::A, color);
+    GLubyte col[4];
+    const uint32_t color = (alpha << 24) | 0xFFFFFF;
+    col[0] = UTILS::GL::GetChannelFromARGB(UTILS::GL::ColorChannel::R, color);
+    col[1] = UTILS::GL::GetChannelFromARGB(UTILS::GL::ColorChannel::G, color);
+    col[2] = UTILS::GL::GetChannelFromARGB(UTILS::GL::ColorChannel::B, color);
+    col[3] = UTILS::GL::GetChannelFromARGB(UTILS::GL::ColorChannel::A, color);
 
+    glUniform4f(uniColLoc, (col[0] / 255.0f), (col[1] / 255.0f), (col[2] / 255.0f),
+                (col[3] / 255.0f));
+    glUniform1f(depthLoc, -1.0f);
+
+    // Setup destination rectangle
+    CRect rect = m_sourceRect;
+    rect.x1 /= renderBuffer->GetWidth();
+    rect.x2 /= renderBuffer->GetWidth();
+    rect.y1 /= renderBuffer->GetHeight();
+    rect.y2 /= renderBuffer->GetHeight();
+
+    PackedVertex vertex[4];
+
+    // Setup vertex position values
     for (unsigned int i = 0; i < 4; i++)
     {
-      // Setup vertex position values
       vertex[i].x = m_rotatedDestCoords[i].x;
       vertex[i].y = m_rotatedDestCoords[i].y;
       vertex[i].z = 0.0f;
@@ -157,14 +158,7 @@ void CRPRendererDMAOpenGL::Render(uint8_t alpha)
     glBindVertexArray(m_mainVAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, m_mainVertexVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex) * 4, &vertex[0], GL_STATIC_DRAW);
-
-    // No need to bind the index VBO, it's part of VAO state
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte) * 4, idx, GL_STATIC_DRAW);
-
-    glUniform4f(uniColLoc, (colour[0] / 255.0f), (colour[1] / 255.0f), (colour[2] / 255.0f),
-                (colour[3] / 255.0f));
-    glUniform1f(depthLoc, -1.0f);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex) * 4, &vertex[0], GL_DYNAMIC_DRAW);
 
     glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, nullptr);
 

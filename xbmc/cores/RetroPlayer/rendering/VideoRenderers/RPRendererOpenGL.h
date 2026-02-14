@@ -13,6 +13,7 @@
 
 #include <map>
 #include <memory>
+#include <stdint.h>
 
 #include "system_gl.h"
 
@@ -25,7 +26,6 @@ class CShaderTextureGLRef;
 
 namespace RETRO
 {
-class CRenderContext;
 class CRenderBufferOpenGL;
 
 class CRendererFactoryOpenGL : public IRendererFactory
@@ -104,7 +104,7 @@ protected:
   GLuint m_blackbarsVertexVBO;
 
   GLenum m_textureTarget = GL_TEXTURE_2D;
-  float m_clearColour = 0.0f;
+  float m_clearColor = 0.0f;
 };
 } // namespace RETRO
 } // namespace KODI

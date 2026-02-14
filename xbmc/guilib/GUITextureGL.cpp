@@ -96,6 +96,7 @@ void CGUITextureGL::Begin(KODI::UTILS::COLOR::Color color)
   {
     glDisable(GL_BLEND);
   }
+
   m_packedVertices.clear();
   m_idx.clear();
 }
@@ -283,7 +284,7 @@ void CGUITextureGL::DrawQuad(const CRect& rect,
   VerifyGLState();
 
   GLubyte col[4];
-  GLubyte idx[4] = {0, 1, 3, 2};  //determines order of the vertices
+  GLubyte idx[4] = {0, 1, 3, 2}; // Determines order of triangle strip
   GLuint vertexVBO;
   GLuint indexVBO;
 
@@ -291,7 +292,7 @@ void CGUITextureGL::DrawQuad(const CRect& rect,
   {
     float x, y, z;
     float u1, v1;
-  }vertex[4];
+  } vertex[4];
 
   if (texture)
     renderSystem->EnableShader(ShaderMethodGL::SM_TEXTURE);
@@ -334,6 +335,7 @@ void CGUITextureGL::DrawQuad(const CRect& rect,
 
   if (texture)
   {
+    // Setup texture coordinates
     CRect coords = texCoords ? *texCoords : CRect(0.0f, 0.0f, 1.0f, 1.0f);
     vertex[0].u1 = vertex[3].u1 = coords.x1;
     vertex[0].v1 = vertex[1].v1 = coords.y1;
@@ -373,4 +375,3 @@ void CGUITextureGL::DrawQuad(const CRect& rect,
 
   renderSystem->DisableShader();
 }
-

@@ -126,7 +126,7 @@ void CGUITextureGLES::Begin(KODI::UTILS::COLOR::Color color)
     texture->BindToUnit(0);
   }
 
-  if ( hasAlpha )
+  if (hasAlpha)
   {
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE);
     glEnable( GL_BLEND );
@@ -135,6 +135,7 @@ void CGUITextureGLES::Begin(KODI::UTILS::COLOR::Color color)
   {
     glDisable(GL_BLEND);
   }
+
   m_packedVertices.clear();
 }
 
@@ -182,6 +183,7 @@ void CGUITextureGLES::End()
   if (m_diffuse.size())
     glActiveTexture(GL_TEXTURE0);
   glEnable(GL_BLEND);
+
   m_renderSystem->DisableGUIShader();
 }
 
@@ -190,10 +192,11 @@ void CGUITextureGLES::Draw(float *x, float *y, float *z, const CRect &texture, c
   PackedVertex vertices[4];
 
   // Setup texture coordinates
-  //TopLeft
+  // TopLeft
   vertices[0].u1 = texture.x1;
   vertices[0].v1 = texture.y1;
-  //TopRight
+
+  // TopRight
   if (orientation & 4)
   {
     vertices[1].u1 = texture.x1;
@@ -204,10 +207,12 @@ void CGUITextureGLES::Draw(float *x, float *y, float *z, const CRect &texture, c
     vertices[1].u1 = texture.x2;
     vertices[1].v1 = texture.y1;
   }
-  //BottomRight
+
+  // BottomRight
   vertices[2].u1 = texture.x2;
   vertices[2].v1 = texture.y2;
-  //BottomLeft
+
+  // BottomLeft
   if (orientation & 4)
   {
     vertices[3].u1 = texture.x2;
@@ -221,10 +226,11 @@ void CGUITextureGLES::Draw(float *x, float *y, float *z, const CRect &texture, c
 
   if (m_diffuse.size())
   {
-    //TopLeft
+    // TopLeft
     vertices[0].u2 = diffuse.x1;
     vertices[0].v2 = diffuse.y1;
-    //TopRight
+
+    // TopRight
     if (m_info.orientation & 4)
     {
       vertices[1].u2 = diffuse.x1;
@@ -235,10 +241,12 @@ void CGUITextureGLES::Draw(float *x, float *y, float *z, const CRect &texture, c
       vertices[1].u2 = diffuse.x2;
       vertices[1].v2 = diffuse.y1;
     }
-    //BottomRight
+
+    // BottomRight
     vertices[2].u2 = diffuse.x2;
     vertices[2].v2 = diffuse.y2;
-    //BottomLeft
+
+    // BottomLeft
     if (m_info.orientation & 4)
     {
       vertices[3].u2 = diffuse.x2;
@@ -300,7 +308,7 @@ void CGUITextureGLES::DrawQuad(const CRect& rect,
   GLubyte col[4];
   GLfloat ver[4][3];
   GLfloat tex[4][2];
-  GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
+  GLubyte idx[4] = {0, 1, 3, 2}; // Determines order of triangle strip
 
   if (texture)
     renderSystem->EnableGUIShader(ShaderMethodGLES::SM_TEXTURE);
@@ -344,6 +352,7 @@ void CGUITextureGLES::DrawQuad(const CRect& rect,
     tex[1][0] = tex[2][0] = coords.x2;
     tex[2][1] = tex[3][1] = coords.y2;
   }
+
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
 
   glDisableVertexAttribArray(posLoc);
@@ -352,4 +361,3 @@ void CGUITextureGLES::DrawQuad(const CRect& rect,
 
   renderSystem->DisableGUIShader();
 }
-
