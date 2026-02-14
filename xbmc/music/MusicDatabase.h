@@ -13,7 +13,6 @@
 \brief
 */
 
-#include "MediaSource.h"
 #include "addons/Scraper.h"
 #include "dbwrappers/Database.h"
 #include "settings/LibExportSettings.h"
@@ -33,6 +32,7 @@ class CArtist;
 class CArtistCredit;
 class CDiscoAlbum;
 class CFileItem;
+class CMediaSource;
 class CMusicDbUrl;
 class CMusicRole;
 class CSong;
