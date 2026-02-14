@@ -188,7 +188,7 @@ bool CLocalizeStrings::Load(const std::string& strPathName, const std::string& s
 const std::string& CLocalizeStrings::Get(uint32_t dwCode) const
 {
   std::shared_lock<CSharedSection> lock(m_stringsMutex);
-  ciStrings i = m_strings.find(dwCode);
+  const auto i = m_strings.find(dwCode);
   if (i == m_strings.end())
   {
     return StringUtils::Empty;
