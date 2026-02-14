@@ -8,6 +8,7 @@
 
 #include "SmartPlayList.h"
 #include "XBDateTime.h"
+#include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/StringValidation.h"
 
@@ -48,5 +49,11 @@ bool CSmartPlaylistRule::ValidateDate(const std::string& input, void* data)
   // The date format must be YYYY-MM-DD
   CDateTime dt;
   return dt.SetFromRFC3339FullDate(input);
+}
+
+bool CSmartPlaylistRule::ValidateLanguage(const std::string& input, void* data)
+{
+  std::string dummy;
+  return g_LangCodeExpander.ConvertToBcp47(input, dummy);
 }
 } // namespace KODI::PLAYLIST

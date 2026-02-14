@@ -110,10 +110,10 @@ static const translateField fields[] = {
   { "videoaspect",       FieldVideoAspectRatio,        REAL_FIELD,     nullptr,                              false, 21374 },
   { "audiochannels",     FieldAudioChannels,           REAL_FIELD,     nullptr,                              false, 21444 },
   { "audiocodec",        FieldAudioCodec,              TEXTIN_FIELD,   nullptr,                              false, 21446 },
-  { "audiolanguage",     FieldAudioLanguage,           TEXTIN_FIELD,   nullptr,                              false, 21447 },
+  { "audiolanguage",     FieldAudioLanguage,           TEXTIN_FIELD,   CSmartPlaylistRule::ValidateLanguage, false, 21447 },
   { "audiocount",        FieldAudioCount,              REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 21481 },
   { "subtitlecount",     FieldSubtitleCount,           REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 21482 },
-  { "subtitlelanguage",  FieldSubtitleLanguage,        TEXTIN_FIELD,   nullptr,                              false, 21448 },
+  { "subtitlelanguage",  FieldSubtitleLanguage,        TEXTIN_FIELD,   CSmartPlaylistRule::ValidateLanguage, false, 21448 },
   { "random",            FieldRandom,                  TEXT_FIELD,     nullptr,                              false, 590 },
   { "playlist",          FieldPlaylist,                PLAYLIST_FIELD, nullptr,                              true,  559 },
   { "virtualfolder",     FieldVirtualFolder,           PLAYLIST_FIELD, nullptr,                              true,  614 },
@@ -141,7 +141,7 @@ static const translateField fields[] = {
   { "hdrtype",           FieldHdrType,                 TEXTIN_FIELD,   nullptr,                              false, 20474 },
   { "hasversions",       FieldHasVideoVersions,        BOOLEAN_FIELD,  nullptr,                              false, 20475 },
   { "hasextras",         FieldHasVideoExtras,          BOOLEAN_FIELD,  nullptr,                              false, 20476 },
-  { "originallanguage",  FieldOriginalLanguage,        TEXT_FIELD,     nullptr,                              false, 40803 },
+  { "originallanguage",  FieldOriginalLanguage,        TEXT_FIELD,     CSmartPlaylistRule::ValidateLanguage, false, 40803 },
 };
 // clang-format on
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -51,6 +51,7 @@ public:
   static bool ValidateRating(const std::string &input, void *data);
   static bool ValidateMyRating(const std::string &input, void *data);
   static bool ValidateDate(const std::string& input, void* data);
+  static bool ValidateLanguage(const std::string& input, void* data);
 
 protected:
   std::string GetField(int field, const std::string& type) const override;
