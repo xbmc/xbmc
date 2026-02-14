@@ -6192,12 +6192,11 @@ int CMusicDatabase::GetDiscsCount(const std::string& baseDir, const Filter& filt
   return iDiscTotal;
 }
 
-bool CMusicDatabase::GetSongsFullByWhere(
-    const std::string& baseDir,
-    const Filter& filter,
-    CFileItemList& items,
-    const SortDescription& sortDescription /* = SortDescription() */,
-    bool artistData /* = false*/)
+bool CMusicDatabase::GetSongsFullByWhere(const std::string& baseDir,
+                                         CFileItemList& items,
+                                         const SortDescription& sortDescription,
+                                         const Filter& filter,
+                                         bool artistData /* = false*/)
 {
   if (m_pDB == nullptr || m_pDS == nullptr)
     return false;
@@ -6449,7 +6448,7 @@ bool CMusicDatabase::GetSongsByYear(const std::string& baseDir, CFileItemList& i
   musicUrl.AddOption("year", year);
 
   Filter filter;
-  return GetSongsFullByWhere(baseDir, filter, items, SortDescription(), true);
+  return GetSongsFullByWhere(baseDir, items, SortDescription(), filter, true);
 }
 
 bool CMusicDatabase::GetSongsNav(const std::string& strBaseDir,
@@ -6473,7 +6472,7 @@ bool CMusicDatabase::GetSongsNav(const std::string& strBaseDir,
     musicUrl.AddOption("artistid", idArtist);
 
   Filter filter;
-  return GetSongsFullByWhere(musicUrl.ToString(), filter, items, sortDescription, true);
+  return GetSongsFullByWhere(musicUrl.ToString(), items, sortDescription, filter, true);
 }
 
 namespace
@@ -11783,7 +11782,7 @@ bool CMusicDatabase::GetItems(const std::string& strBaseDir,
   else if (StringUtils::EqualsNoCase(itemType, "discs"))
     return GetDiscsByWhere(strBaseDir, filter, items, sortDescription);
   else if (StringUtils::EqualsNoCase(itemType, "songs"))
-    return GetSongsFullByWhere(strBaseDir, filter, items, sortDescription, true);
+    return GetSongsFullByWhere(strBaseDir, items, sortDescription, filter, true);
 
   return false;
 }

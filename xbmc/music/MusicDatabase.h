@@ -611,9 +611,9 @@ public:
                    int idAlbum);
   bool GetSongsByYear(const std::string& baseDir, CFileItemList& items, int year);
   bool GetSongsFullByWhere(const std::string& baseDir,
-                           const Filter& filter,
                            CFileItemList& items,
-                           const SortDescription& sortDescription = SortDescription(),
+                           const SortDescription& sortDescription,
+                           const Filter& filter,
                            bool artistData = false);
   bool GetAlbumsByWhere(const std::string& baseDir,
                         const Filter& filter,
