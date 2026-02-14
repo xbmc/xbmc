@@ -53,7 +53,7 @@ Several different strategies are used to draw your attention to certain pieces o
 
 ## 2. Prerequisites
 To build Kodi:
-* **Windows** 64bit OS, Windows 10 or above (allows build of x64, win32, ARM64, UWP-64 and UWP-32)
+* **Windows** 64bit OS, Windows 10 or above (allows build of x64, win32, ARM64 and UWP-64)
 * **[CMake](https://cmake.org/download/)** version 3.30.6 or greater for Visual Studio 2022, version 4.2 or greater for Visual Studio 2026 (or version 4.1.1-msvc included with the initial release)
 * **[Git for Windows](https://gitforwindows.org/)**
 * **[Java Runtime Environment (JRE)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)**
@@ -120,7 +120,7 @@ To set up the build environment, several scripts must be called.
 > [!WARNING]
 > The scripts may fail if you have a space in the path to the bat files.
 
-Kodi can be built as either a normal 64bit, 32bit or ARM64 program, UWP 32bit and UWP 64bit. Unless there is a reason to prefer 32bit builds, we advise you to build Kodi for 64bit.
+Kodi can be built as either a normal 64bit, 32bit or ARM64 program and UWP 64bit. Unless there is a reason to prefer 32bit builds, we advise you to build Kodi for 64bit.
 
 > [!TIP]
 > Look for comments starting with `Or ...` and only execute the command(s) you need.
@@ -143,11 +143,6 @@ cd %userprofile%\kodi\tools\buildsteps\windows\arm64
 Or change to the UWP 64bit build directory:
 ```
 cd %userprofile%\kodi\tools\buildsteps\windows\x64-uwp
-```
-
-Or change to the UWP 32bit build directory:
-```
-cd %userprofile%\kodi\tools\buildsteps\windows\win32-uwp
 ```
 
 Download dependencies:
@@ -230,11 +225,6 @@ cmake -G "Visual Studio 17 2022" -A arm64 %userprofile%\kodi
 Or configure build for UWP 64bit:
 ```
 cmake -G "Visual Studio 17 2022" -A x64 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 %userprofile%\kodi
-```
-
-Or configure build for UWP 32bit:
-```
-cmake -G "Visual Studio 17 2022" -A Win32 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 %userprofile%\kodi
 ```
 
 Build Kodi:

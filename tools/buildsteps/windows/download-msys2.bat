@@ -236,8 +236,6 @@ if "%cygdrive%"=="no" echo.none / cygdrive binary,posix=0,noacl,user 0 ^0>>%inst
     echo.%instdir%\downloads2\       /var/cache/pacman/pkg
     echo.%instdir%\win32\            /depends/win32
     echo.%instdir%\x64\              /depends/x64
-    echo.%instdir%\win10-arm\        /depends/win10-arm
-    echo.%instdir%\win10-win32\      /depends/win10-win32
     echo.%instdir%\win10-x64\        /depends/win10-x64
     echo.%instdir%\arm64\            /depends/arm64
     echo.%instdir%\..\..\            /xbmc

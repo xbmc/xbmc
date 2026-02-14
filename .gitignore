@@ -187,9 +187,7 @@ cmake_install.cmake
 /project/BuildDependencies/mingwlibs
 /project/BuildDependencies/arm64
 /project/BuildDependencies/x64
-/project/BuildDependencies/win10-arm
 /project/BuildDependencies/win10-x64
-/project/BuildDependencies/win10-win32
 /project/BuildDependencies/win32
 
 # /system/players/VideoPlayer
