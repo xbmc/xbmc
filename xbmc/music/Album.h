@@ -24,6 +24,13 @@
 class TiXmlElement;
 class TiXmlNode;
 class CFileItem;
+
+enum class ReleaseType
+{
+  Album = 0,
+  Single
+};
+
 class CAlbum
 {
 public:
@@ -66,7 +73,7 @@ public:
     lastPlayed.Reset();
     iTotalDiscs = -1;
     songs.clear();
-    releaseType = Album;
+    releaseType = ReleaseType::Album;
     strLastScraped.clear();
     bScrapedMBID = false;
     bArtistSongMerge = false;
@@ -100,11 +107,6 @@ public:
   \return album artist IDs as a vector of integers
   */
   std::vector<int> GetArtistIDArray() const;
-
-  typedef enum ReleaseType {
-    Album = 0,
-    Single
-  } ReleaseType;
 
   std::string GetReleaseType() const;
   void SetReleaseType(const std::string& strReleaseType);
@@ -174,7 +176,7 @@ public:
   CDateTime lastPlayed;
   int iTotalDiscs = -1;
   std::vector<CSong> songs; ///< Local songs
-  ReleaseType releaseType = Album;
+  ReleaseType releaseType = ReleaseType::Album;
   std::string strLastScraped;
   bool bScrapedMBID = false;
   bool bArtistSongMerge = false;

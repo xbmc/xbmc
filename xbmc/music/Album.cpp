@@ -24,14 +24,11 @@
 using namespace MUSIC_INFO;
 
 typedef struct ReleaseTypeInfo {
-  CAlbum::ReleaseType type;
+  ReleaseType type;
   std::string name;
 } ReleaseTypeInfo;
 
-ReleaseTypeInfo releaseTypes[] = {
-  { CAlbum::Album,  "album" },
-  { CAlbum::Single, "single" }
-};
+ReleaseTypeInfo releaseTypes[] = {{ReleaseType::Album, "album"}, {ReleaseType::Single, "single"}};
 
 CAlbum::CAlbum(const CFileItem& item)
 {
@@ -440,7 +437,7 @@ void CAlbum::SetLastPlayed(const std::string& strLastPlayed)
   lastPlayed.SetFromDBDateTime(strLastPlayed);
 }
 
-std::string CAlbum::ReleaseTypeToString(CAlbum::ReleaseType releaseType)
+std::string CAlbum::ReleaseTypeToString(ReleaseType releaseType)
 {
   for (const ReleaseTypeInfo& releaseTypeInfo : releaseTypes)
   {
@@ -451,7 +448,7 @@ std::string CAlbum::ReleaseTypeToString(CAlbum::ReleaseType releaseType)
   return "album";
 }
 
-CAlbum::ReleaseType CAlbum::ReleaseTypeFromString(const std::string& strReleaseType)
+ReleaseType CAlbum::ReleaseTypeFromString(const std::string& strReleaseType)
 {
   for (const ReleaseTypeInfo& releaseTypeInfo : releaseTypes)
   {
@@ -459,7 +456,7 @@ CAlbum::ReleaseType CAlbum::ReleaseTypeFromString(const std::string& strReleaseT
       return releaseTypeInfo.type;
   }
 
-  return Album;
+  return ReleaseType::Album;
 }
 
 bool CAlbum::operator<(const CAlbum &a) const
@@ -602,7 +599,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
   if (XMLUtils::GetString(album, "releasetype", strReleaseType))
     SetReleaseType(strReleaseType);
   else
-    releaseType = Album;
+    releaseType = ReleaseType::Album;
 
   return true;
 }

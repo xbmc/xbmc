@@ -270,7 +270,7 @@ const ReplayGain& CMusicInfoTag::GetReplayGain() const
   return m_replayGain;
 }
 
-CAlbum::ReleaseType CMusicInfoTag::GetAlbumReleaseType() const
+ReleaseType CMusicInfoTag::GetAlbumReleaseType() const
 {
   return m_albumReleaseType;
 }
@@ -761,7 +761,7 @@ void CMusicInfoTag::SetReplayGain(const ReplayGain& aGain)
   m_replayGain = aGain;
 }
 
-void CMusicInfoTag::SetAlbumReleaseType(CAlbum::ReleaseType releaseType)
+void CMusicInfoTag::SetAlbumReleaseType(ReleaseType releaseType)
 {
   m_albumReleaseType = releaseType;
 }
@@ -1155,7 +1155,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
 
     int albumReleaseType;
     ar >> albumReleaseType;
-    m_albumReleaseType = static_cast<CAlbum::ReleaseType>(albumReleaseType);
+    m_albumReleaseType = static_cast<ReleaseType>(albumReleaseType);
     ar >> m_iBPM;
     ar >> m_samplerate;
     ar >> m_bitrate;
@@ -1204,7 +1204,7 @@ void CMusicInfoTag::Clear()
   m_iAlbumId = -1;
   m_coverArt.Clear();
   m_replayGain = ReplayGain();
-  m_albumReleaseType = CAlbum::Album;
+  m_albumReleaseType = ReleaseType::Album;
   m_listeners = 0;
   m_Rating = 0;
   m_Userrating = 0;
