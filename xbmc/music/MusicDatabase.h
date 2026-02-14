@@ -25,6 +25,7 @@
 #include <map>
 #include <set>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -80,7 +81,7 @@ class CFileItemList;
  Here is the database layout:
   \image html musicdatabase.png
 
- \sa CAlbum, CSong, CMapSong, VECARTISTS, VECALBUMS
+ \sa CAlbum, CSong, CMapSong, VECALBUMS
  */
 class CMusicDatabase : public CDatabase
 {
@@ -471,26 +472,22 @@ public:
   /////////////////////////////////////////////////
   // Link tables
   /////////////////////////////////////////////////
-  bool AddAlbumArtist(int idArtist, int idAlbum, const std::string& strArtist, int iOrder);
+  bool AddAlbumArtist(int idArtist, int idAlbum, std::string_view strArtist, int iOrder);
   bool GetAlbumsByArtist(int idArtist, std::vector<int>& albums);
   bool GetArtistsByAlbum(int idAlbum, CFileItem* item);
   bool GetArtistsByAlbum(int idAlbum, std::vector<std::string>& artistIDs);
   bool DeleteAlbumArtistsByAlbum(int idAlbum);
 
-  int AddRole(const std::string& strRole);
-  bool AddSongArtist(int idArtist,
-                     int idSong,
-                     const std::string& strRole,
-                     const std::string& strArtist,
-                     int iOrder);
+  int AddRole(std::string_view strRole);
   bool AddSongArtist(
-      int idArtist, int idSong, int idRole, const std::string& strArtist, int iOrder);
+      int idArtist, int idSong, std::string_view strRole, std::string_view strArtist, int iOrder);
+  bool AddSongArtist(int idArtist, int idSong, int idRole, std::string_view strArtist, int iOrder);
   int AddSongContributor(int idSong,
                          const std::string& strRole,
                          const std::string& strArtist,
                          const std::string& strSort);
   void AddSongContributors(int idSong,
-                           const VECMUSICROLES& contributors,
+                           const std::vector<CMusicRole>& contributors,
                            const std::string& strSort);
   int GetRoleByName(const std::string& strRole);
   bool GetRolesByArtist(int idArtist, CFileItem* item);
@@ -912,7 +909,8 @@ private:
   void GetFileItemFromDataset(const dbiplus::sql_record* const record,
                               CFileItem* item,
                               const CMusicDbUrl& baseUrl) const;
-  void GetFileItemFromArtistCredits(VECARTISTCREDITS& artistCredits, CFileItem* item) const;
+  void GetFileItemFromArtistCredits(std::vector<CArtistCredit>& artistCredits,
+                                    CFileItem* item) const;
 
   bool DeleteRemovedLinks();
 

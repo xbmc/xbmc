@@ -148,7 +148,7 @@ public:
   std::string strReleaseGroupMBID;
   std::string strArtistDesc;
   std::string strArtistSort;
-  VECARTISTCREDITS artistCredits;
+  std::vector<CArtistCredit> artistCredits;
   std::vector<std::string> genre;
   CScraperUrl thumbURL;
   std::vector<std::string> moods;

@@ -189,8 +189,8 @@ public:
   std::string GetArtistStringForRole(const std::string& strRole) const;
   std::string GetContributorsText() const;
   std::string GetContributorsAndRolesText() const;
-  const VECMUSICROLES &GetContributors() const;
-  void SetContributors(const VECMUSICROLES& contributors);
+  const std::vector<CMusicRole>& GetContributors() const;
+  void SetContributors(const std::vector<CMusicRole>& contributors);
   bool HasContributors() const { return !m_musicRoles.empty(); }
 
   void Archive(CArchive& ar) override;
@@ -225,7 +225,8 @@ private:
   std::vector<std::string> m_musicBrainzAlbumArtistHints;
   std::string m_strMusicBrainzReleaseGroupID;
   std::string m_strMusicBrainzReleaseType;
-  VECMUSICROLES m_musicRoles; //Artists contributing to the recording and role (from tags other than ARTIST or ALBUMARTIST)
+  std::vector<CMusicRole>
+      m_musicRoles; // Artists contributing to the recording and role (from tags other than ARTIST or ALBUMARTIST)
   std::string m_strComment;
   std::string m_strMood;
   std::string m_strRecordLabel;

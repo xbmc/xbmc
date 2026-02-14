@@ -781,8 +781,8 @@ void CMusicInfoScanner::FileItemsToAlbums(
                                : "there is more than one unique artist");
       // Clear song artists from artists map, put songs under "various artists" mbid entry
       artists.clear();
-      for (auto& song : songs)
-        artists[VARIOUSARTISTS_MBID].push_back(&song);
+      auto& artist = artists[std::string(VARIOUSARTISTS_MBID)];
+      std::ranges::transform(songs, std::back_inserter(artist), [](auto& song) { return &song; });
     }
 
     /*
@@ -873,7 +873,7 @@ void CMusicInfoScanner::FileItemsToAlbums(
           artist read from tags when 3a, or the localized value for "various artists" when not 3a.
           This means that tag values are no longer translated into the current language.
           */
-          album.artistCredits.emplace_back(various, VARIOUSARTISTS_MBID);
+          album.artistCredits.emplace_back(various, std::string(VARIOUSARTISTS_MBID));
         else
         {
           album.artistCredits.emplace_back(StringUtils::Trim(common[i]));
