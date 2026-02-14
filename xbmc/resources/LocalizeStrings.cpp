@@ -44,10 +44,10 @@ static bool LoadPO(const std::string& filename,
 
   while ((PODoc.GetNextEntry()))
   {
-    uint32_t id;
     if (PODoc.GetEntryType() == ID_FOUND)
     {
-      bool bStrInMem = strings.contains((id = PODoc.GetEntryID()) + offset);
+      const uint32_t id = PODoc.GetEntryID();
+      bool bStrInMem = strings.contains(id + offset);
       PODoc.ParseEntry(bSourceLanguage);
 
       if (bSourceLanguage && !PODoc.GetMsgid().empty())
