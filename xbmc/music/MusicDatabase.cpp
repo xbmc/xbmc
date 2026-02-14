@@ -5398,7 +5398,7 @@ bool CMusicDatabase::GetAlbumsByYear(const std::string& strBaseDir, CFileItemLis
   musicUrl.AddOption("show_singles", true); // allow singles to be listed
 
   Filter filter;
-  return GetAlbumsByWhere(musicUrl.ToString(), filter, items);
+  return GetAlbumsByWhere(musicUrl.ToString(), items, SortDescription(), filter);
 }
 
 bool CMusicDatabase::GetCommonNav(const std::string& strBaseDir,
@@ -5790,15 +5790,14 @@ bool CMusicDatabase::GetAlbumsNav(const std::string& strBaseDir,
   if (idArtist > 0)
     musicUrl.AddOption("artistid", idArtist);
 
-  return GetAlbumsByWhere(musicUrl.ToString(), filter, items, sortDescription, countOnly);
+  return GetAlbumsByWhere(musicUrl.ToString(), items, sortDescription, filter, countOnly);
 }
 
-bool CMusicDatabase::GetAlbumsByWhere(
-    const std::string& baseDir,
-    const Filter& filter,
-    CFileItemList& items,
-    const SortDescription& sortDescription /* = SortDescription() */,
-    bool countOnly /* = false */)
+bool CMusicDatabase::GetAlbumsByWhere(const std::string& baseDir,
+                                      CFileItemList& items,
+                                      const SortDescription& sortDescription,
+                                      const Filter& filter,
+                                      bool countOnly /* = false */)
 {
   if (m_pDB == nullptr || m_pDS == nullptr)
     return false;
@@ -11778,7 +11777,7 @@ bool CMusicDatabase::GetItems(const std::string& strBaseDir,
                              CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS),
                          -1, -1, -1, filter, false);
   else if (StringUtils::EqualsNoCase(itemType, "albums"))
-    return GetAlbumsByWhere(strBaseDir, filter, items, sortDescription);
+    return GetAlbumsByWhere(strBaseDir, items, sortDescription, filter);
   else if (StringUtils::EqualsNoCase(itemType, "discs"))
     return GetDiscsByWhere(strBaseDir, filter, items, sortDescription);
   else if (StringUtils::EqualsNoCase(itemType, "songs"))

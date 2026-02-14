@@ -616,9 +616,9 @@ public:
                            const Filter& filter,
                            bool artistData = false);
   bool GetAlbumsByWhere(const std::string& baseDir,
-                        const Filter& filter,
                         CFileItemList& items,
-                        const SortDescription& sortDescription = SortDescription(),
+                        const SortDescription& sortDescription,
+                        const Filter& filter,
                         bool countOnly = false);
   bool GetDiscsByWhere(const std::string& baseDir,
                        const Filter& filter,
