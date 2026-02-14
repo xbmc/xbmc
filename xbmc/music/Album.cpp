@@ -23,10 +23,11 @@
 
 using namespace MUSIC_INFO;
 
-typedef struct ReleaseTypeInfo {
+struct ReleaseTypeInfo
+{
   ReleaseType type;
   std::string name;
-} ReleaseTypeInfo;
+};
 
 ReleaseTypeInfo releaseTypes[] = {{ReleaseType::Album, "album"}, {ReleaseType::Single, "single"}};
 
