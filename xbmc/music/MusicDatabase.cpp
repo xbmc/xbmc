@@ -5978,25 +5978,25 @@ bool CMusicDatabase::GetDiscsNav(const std::string& strBaseDir,
   if (idAlbum > 0)
     musicUrl.AddOption("albumid", idAlbum);
 
-  return GetDiscsByWhere(musicUrl, filter, items, sortDescription, countOnly);
+  return GetDiscsByWhere(musicUrl, items, sortDescription, filter, countOnly);
 }
 
 bool CMusicDatabase::GetDiscsByWhere(const std::string& baseDir,
-                                     const Filter& filter,
                                      CFileItemList& items,
                                      const SortDescription& sortDescription,
+                                     const Filter& filter,
                                      bool countOnly)
 {
   CMusicDbUrl musicUrl;
   if (!musicUrl.FromString(baseDir))
     return false;
-  return GetDiscsByWhere(musicUrl, filter, items, sortDescription, countOnly);
+  return GetDiscsByWhere(musicUrl, items, sortDescription, filter, countOnly);
 }
 
 bool CMusicDatabase::GetDiscsByWhere(CMusicDbUrl& musicUrl,
-                                     const Filter& filter,
                                      CFileItemList& items,
                                      const SortDescription& sortDescription,
+                                     const Filter& filter,
                                      bool countOnly)
 {
   if (m_pDB == nullptr || m_pDS == nullptr)
@@ -6186,7 +6186,7 @@ int CMusicDatabase::GetDiscsCount(const std::string& baseDir, const Filter& filt
 {
   int iDiscTotal = -1;
   CFileItemList itemscount;
-  if (GetDiscsByWhere(baseDir, filter, itemscount, SortDescription(), true))
+  if (GetDiscsByWhere(baseDir, itemscount, SortDescription(), filter, true))
     iDiscTotal = itemscount.GetProperty("total").asInteger32();
   return iDiscTotal;
 }
@@ -11779,7 +11779,7 @@ bool CMusicDatabase::GetItems(const std::string& strBaseDir,
   else if (StringUtils::EqualsNoCase(itemType, "albums"))
     return GetAlbumsByWhere(strBaseDir, items, sortDescription, filter);
   else if (StringUtils::EqualsNoCase(itemType, "discs"))
-    return GetDiscsByWhere(strBaseDir, filter, items, sortDescription);
+    return GetDiscsByWhere(strBaseDir, items, sortDescription, filter);
   else if (StringUtils::EqualsNoCase(itemType, "songs"))
     return GetSongsFullByWhere(strBaseDir, items, sortDescription, filter, true);
 

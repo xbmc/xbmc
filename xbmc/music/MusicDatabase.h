@@ -621,14 +621,14 @@ public:
                         const Filter& filter,
                         bool countOnly = false);
   bool GetDiscsByWhere(const std::string& baseDir,
-                       const Filter& filter,
                        CFileItemList& items,
-                       const SortDescription& sortDescription = SortDescription(),
+                       const SortDescription& sortDescription,
+                       const Filter& filter,
                        bool countOnly = false);
   bool GetDiscsByWhere(CMusicDbUrl& musicUrl,
-                       const Filter& filter,
                        CFileItemList& items,
-                       const SortDescription& sortDescription = SortDescription(),
+                       const SortDescription& sortDescription,
+                       const Filter& filter,
                        bool countOnly = false);
   bool GetArtistsByWhere(const std::string& strBaseDir,
                          const Filter& filter,
