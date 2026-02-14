@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -142,6 +142,7 @@ static const translateField fields[] = {
   { "hdrtype",           FieldHdrType,                 TEXTIN_FIELD,   nullptr,                              false, 20474 },
   { "hasversions",       FieldHasVideoVersions,        BOOLEAN_FIELD,  nullptr,                              false, 20475 },
   { "hasextras",         FieldHasVideoExtras,          BOOLEAN_FIELD,  nullptr,                              false, 20476 },
+  { "originallanguage",  FieldOriginalLanguage,        TEXT_FIELD,     nullptr,                              false, 40803 },
 };
 // clang-format on
 
@@ -444,6 +445,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldInProgress);
     fields.push_back(FieldTag);
     fields.push_back(FieldTrailer);
+    fields.push_back(FieldOriginalLanguage);
   }
   else if (type == "episodes")
   {
@@ -505,6 +507,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldDateAdded);
     fields.push_back(FieldHasVideoVersions);
     fields.push_back(FieldHasVideoExtras);
+    fields.push_back(FieldOriginalLanguage);
     isVideo = true;
   }
   else if (type == "musicvideos")

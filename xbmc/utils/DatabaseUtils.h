@@ -152,6 +152,7 @@ enum Field
   FieldUserPreference,
   FieldHasVideoVersions,
   FieldHasVideoExtras,
+  FieldOriginalLanguage,
   FieldMax
 };
 

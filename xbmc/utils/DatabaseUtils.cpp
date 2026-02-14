@@ -233,6 +233,8 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
       return "movie_view.hasVideoVersions";
     else if (field == FieldHasVideoExtras)
       return "movie_view.hasVideoExtras";
+    else if (field == FieldOriginalLanguage)
+      return "movie_view.originalLanguage";
 
     if (!result.empty())
       return result;
@@ -279,6 +281,8 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
     else if (field == FieldNumberOfEpisodes) return "tvshow_view.totalCount";
     else if (field == FieldNumberOfWatchedEpisodes) return "tvshow_view.watchedcount";
     else if (field == FieldUserRating) return "tvshow_view.userrating";
+    else if (field == FieldOriginalLanguage)
+      return "tvshow_view.originalLanguage";
 
     if (!result.empty())
       return result;

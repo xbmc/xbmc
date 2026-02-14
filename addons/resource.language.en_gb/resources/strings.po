@@ -24838,3 +24838,9 @@ msgstr ""
 msgctxt "#40802"
 msgid "If enabled, a confirmation dialog will be displayed when files shall be deleted. If disabled, files will be deleted without user confirmation."
 msgstr ""
+
+#. Used in smart playlists as rule field name to select movies and tv shows of the given original language
+#: xbmc/playlists/SmartPlayList.cpp
+msgctxt "#40803"
+msgid "Original language"
+msgstr ""
