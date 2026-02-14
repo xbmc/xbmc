@@ -21,11 +21,6 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_DEBUG_POSTFIX d)
       set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SHARED_LIB TRUE)
 
-      set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/01-win-change_libxml.patch")
-
-      generate_patchcommand("${patches}")
-      unset(patches)
-
       if(WINDOWS_STORE)
         # Required for UWP
         set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_C_FLAGS /D_CRT_SECURE_NO_WARNINGS)
