@@ -267,7 +267,7 @@ bool CRecentlyAddedJob::UpdateMusic()
   }
 
   i = 0;
-  VECALBUMS albums;
+  std::vector<CAlbum> albums;
 
   if (musicdatabase.GetRecentlyAddedAlbums(albums, NUM_ITEMS))
   {

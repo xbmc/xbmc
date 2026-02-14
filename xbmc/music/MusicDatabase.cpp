@@ -3615,7 +3615,7 @@ bool CMusicDatabase::GetTop100(const std::string& strBaseDir, CFileItemList& ite
   return false;
 }
 
-bool CMusicDatabase::GetTop100Albums(VECALBUMS& albums)
+bool CMusicDatabase::GetTop100Albums(std::vector<CAlbum>& albums)
 {
   try
   {
@@ -3726,7 +3726,7 @@ bool CMusicDatabase::GetTop100AlbumSongs(const std::string& strBaseDir, CFileIte
   return false;
 }
 
-bool CMusicDatabase::GetRecentlyPlayedAlbums(VECALBUMS& albums)
+bool CMusicDatabase::GetRecentlyPlayedAlbums(std::vector<CAlbum>& albums)
 {
   try
   {
@@ -3887,7 +3887,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbumSongs(const std::string& strBaseDir,
   return false;
 }
 
-bool CMusicDatabase::GetRecentlyAddedAlbums(VECALBUMS& albums, unsigned int limit)
+bool CMusicDatabase::GetRecentlyAddedAlbums(std::vector<CAlbum>& albums, unsigned int limit)
 {
   try
   {

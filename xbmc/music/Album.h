@@ -182,5 +182,3 @@ public:
   bool bArtistSongMerge = false;
   int iAlbumDuration = 0;
 };
-
-typedef std::vector<CAlbum> VECALBUMS;

@@ -29,6 +29,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicDatabase.h"
+#include "music/Song.h"
 #include "playlists/PlayListFileItemClassify.h"
 #include "profiles/ProfileManager.h"
 #include "resources/LocalizeStrings.h"

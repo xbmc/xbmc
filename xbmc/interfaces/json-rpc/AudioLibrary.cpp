@@ -517,7 +517,7 @@ JSONRPC_STATUS CAudioLibrary::GetRecentlyAddedAlbums(const std::string &method, 
   if (!musicdatabase.Open())
     return InternalError;
 
-  VECALBUMS albums;
+  std::vector<CAlbum> albums;
   if (!musicdatabase.GetRecentlyAddedAlbums(albums))
     return InternalError;
 
@@ -568,7 +568,7 @@ JSONRPC_STATUS CAudioLibrary::GetRecentlyPlayedAlbums(const std::string &method,
   if (!musicdatabase.Open())
     return InternalError;
 
-  VECALBUMS albums;
+  std::vector<CAlbum> albums;
   if (!musicdatabase.GetRecentlyPlayedAlbums(albums))
     return InternalError;
 
