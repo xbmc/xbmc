@@ -5540,7 +5540,7 @@ bool CMusicDatabase::GetArtistsNav(const std::string& strBaseDir,
     if (!musicUrl.HasOption("albumartistsonly"))
       musicUrl.AddOption("albumartistsonly", albumArtistsOnly);
 
-    bool result = GetArtistsByWhere(musicUrl.ToString(), filter, items, sortDescription, countOnly);
+    bool result = GetArtistsByWhere(musicUrl.ToString(), items, sortDescription, filter, countOnly);
 
     return result;
   }
@@ -5552,12 +5552,11 @@ bool CMusicDatabase::GetArtistsNav(const std::string& strBaseDir,
   return false;
 }
 
-bool CMusicDatabase::GetArtistsByWhere(
-    const std::string& strBaseDir,
-    const Filter& filter,
-    CFileItemList& items,
-    const SortDescription& sortDescription /* = SortDescription() */,
-    bool countOnly /* = false */)
+bool CMusicDatabase::GetArtistsByWhere(const std::string& strBaseDir,
+                                       CFileItemList& items,
+                                       const SortDescription& sortDescription,
+                                       const Filter& filter,
+                                       bool countOnly /* = false */)
 {
   if (nullptr == m_pDB)
     return false;

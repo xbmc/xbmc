@@ -631,9 +631,9 @@ public:
                        const Filter& filter,
                        bool countOnly = false);
   bool GetArtistsByWhere(const std::string& strBaseDir,
-                         const Filter& filter,
                          CFileItemList& items,
-                         const SortDescription& sortDescription = SortDescription(),
+                         const SortDescription& sortDescription,
+                         const Filter& filter,
                          bool countOnly = false);
   int GetDiscsCount(const std::string& baseDir, const Filter& filter = Filter());
   int GetSongsCount(const Filter& filter = Filter());

@@ -341,7 +341,7 @@ bool CRecentlyAddedJob::UpdateTotal()
 
   CFileItemList items;
   CDatabase::Filter filter;
-  musicdatabase.GetArtistsByWhere(musicUrl.ToString(), filter, items, SortDescription(), true);
+  musicdatabase.GetArtistsByWhere(musicUrl.ToString(), items, SortDescription(), filter, true);
   int MusArtistTotals = 0;
   if (items.Size() == 1 && items.Get(0)->HasProperty("total"))
     MusArtistTotals = static_cast<int>(items.Get(0)->GetProperty("total").asInteger());
