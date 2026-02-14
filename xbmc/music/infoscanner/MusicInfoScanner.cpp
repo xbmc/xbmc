@@ -682,10 +682,9 @@ void CMusicInfoScanner::FileItemsToAlbums(
 
     if (!tag.GetMusicBrainzAlbumID().empty())
     {
-      VECALBUMS::iterator it;
-      for (it = albums.begin(); it != albums.end(); ++it)
-        if (it->strMusicBrainzAlbumID == tag.GetMusicBrainzAlbumID())
-          break;
+      const auto it = std::ranges::find_if(
+          albums, [&tag](const auto& album)
+          { return album.strMusicBrainzAlbumID == tag.GetMusicBrainzAlbumID(); });
 
       if (it == albums.end())
       {

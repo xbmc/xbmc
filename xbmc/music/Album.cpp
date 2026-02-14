@@ -350,10 +350,8 @@ std::vector<std::string> CAlbum::GetAlbumArtist() const
 {
   //Get artist names as vector from artist credits
   std::vector<std::string> albumartists;
-  for (const auto& artistCredit : artistCredits)
-  {
-    albumartists.push_back(artistCredit.GetArtist());
-  }
+  std::ranges::transform(artistCredits, std::back_inserter(albumartists),
+                         [](const auto& artistCredit) { return artistCredit.GetArtist(); });
   return albumartists;
 }
 
@@ -361,10 +359,9 @@ std::vector<std::string> CAlbum::GetMusicBrainzAlbumArtistID() const
 {
   //Get artist MusicBrainz IDs as vector from artist credits
   std::vector<std::string> musicBrainzID;
-  for (const auto& artistCredit : artistCredits)
-  {
-    musicBrainzID.push_back(artistCredit.GetMusicBrainzArtistID());
-  }
+  std::ranges::transform(artistCredits, std::back_inserter(musicBrainzID),
+                         [](const auto& artistCredit)
+                         { return artistCredit.GetMusicBrainzArtistID(); });
   return musicBrainzID;
 }
 
@@ -375,8 +372,8 @@ std::string CAlbum::GetAlbumArtistString() const
   if (!strArtistDesc.empty())
     return strArtistDesc;
   std::vector<std::string> artistvector;
-  for (const auto& i : artistCredits)
-    artistvector.emplace_back(i.GetArtist());
+  std::ranges::transform(artistCredits, std::back_inserter(artistvector),
+                         [](const auto& i) { return i.GetArtist(); });
   std::string artistString;
   if (!artistvector.empty())
     artistString = StringUtils::Join(artistvector, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
@@ -403,8 +400,8 @@ std::vector<int> CAlbum::GetArtistIDArray() const
 {
   // Get album artist IDs for json rpc
   std::vector<int> artistids;
-  for (const auto& artistCredit : artistCredits)
-    artistids.push_back(artistCredit.GetArtistId());
+  std::ranges::transform(artistCredits, std::back_inserter(artistids),
+                         [](const auto& artistCredit) { return artistCredit.GetArtistId(); });
   return artistids;
 }
 
