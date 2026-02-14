@@ -12,7 +12,6 @@
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "threads/SharedSection.h"
-#include "utils/CharsetConverter.h"
 #include "utils/POUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -44,10 +43,10 @@ static bool LoadPO(const std::string& filename,
 
   while ((PODoc.GetNextEntry()))
   {
-    uint32_t id;
     if (PODoc.GetEntryType() == ID_FOUND)
     {
-      bool bStrInMem = strings.contains((id = PODoc.GetEntryID()) + offset);
+      const uint32_t id = PODoc.GetEntryID();
+      bool bStrInMem = strings.contains(id + offset);
       PODoc.ParseEntry(bSourceLanguage);
 
       if (bSourceLanguage && !PODoc.GetMsgid().empty())
@@ -188,12 +187,8 @@ bool CLocalizeStrings::Load(const std::string& strPathName, const std::string& s
 const std::string& CLocalizeStrings::Get(uint32_t dwCode) const
 {
   std::shared_lock<CSharedSection> lock(m_stringsMutex);
-  ciStrings i = m_strings.find(dwCode);
-  if (i == m_strings.end())
-  {
-    return StringUtils::Empty;
-  }
-  return i->second.strTranslated;
+  const auto i = m_strings.find(dwCode);
+  return i == m_strings.end() ? StringUtils::Empty : i->second.strTranslated;
 }
 
 void CLocalizeStrings::Clear()
@@ -219,15 +214,12 @@ bool CLocalizeStrings::LoadAddonStrings(const std::string& path,
 const std::string& CLocalizeStrings::GetAddonString(const std::string& addonId, uint32_t code) const
 {
   std::shared_lock<CSharedSection> lock(m_addonStringsMutex);
-  auto i = m_addonStrings.find(addonId);
+  const auto i = m_addonStrings.find(addonId);
   if (i == m_addonStrings.end())
     return StringUtils::Empty;
 
-  auto j = i->second.find(code);
-  if (j == i->second.end())
-    return StringUtils::Empty;
-
-  return j->second.strTranslated;
+  const auto j = i->second.find(code);
+  return j == i->second.end() ? StringUtils::Empty : j->second.strTranslated;
 }
 
 void CLocalizeStrings::ClearAddonStrings(const std::string& addonId)
