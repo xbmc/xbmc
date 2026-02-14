@@ -188,11 +188,7 @@ const std::string& CLocalizeStrings::Get(uint32_t dwCode) const
 {
   std::shared_lock<CSharedSection> lock(m_stringsMutex);
   const auto i = m_strings.find(dwCode);
-  if (i == m_strings.end())
-  {
-    return StringUtils::Empty;
-  }
-  return i->second.strTranslated;
+  return i == m_strings.end() ? StringUtils::Empty : i->second.strTranslated;
 }
 
 void CLocalizeStrings::Clear()
@@ -218,15 +214,12 @@ bool CLocalizeStrings::LoadAddonStrings(const std::string& path,
 const std::string& CLocalizeStrings::GetAddonString(const std::string& addonId, uint32_t code) const
 {
   std::shared_lock<CSharedSection> lock(m_addonStringsMutex);
-  auto i = m_addonStrings.find(addonId);
+  const auto i = m_addonStrings.find(addonId);
   if (i == m_addonStrings.end())
     return StringUtils::Empty;
 
-  auto j = i->second.find(code);
-  if (j == i->second.end())
-    return StringUtils::Empty;
-
-  return j->second.strTranslated;
+  const auto j = i->second.find(code);
+  return j == i->second.end() ? StringUtils::Empty : j->second.strTranslated;
 }
 
 void CLocalizeStrings::ClearAddonStrings(const std::string& addonId)
