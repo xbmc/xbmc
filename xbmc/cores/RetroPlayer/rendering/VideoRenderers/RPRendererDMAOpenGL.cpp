@@ -11,7 +11,6 @@
 #include "cores/RetroPlayer/buffers/RenderBufferDMA.h"
 #include "cores/RetroPlayer/buffers/RenderBufferPoolDMA.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
-#include "cores/RetroPlayer/rendering/RenderVideoSettings.h"
 #include "cores/RetroPlayer/shaders/gl/ShaderPresetGL.h"
 #include "cores/RetroPlayer/shaders/gl/ShaderTextureGLRef.h"
 #include "utils/BufferObjectFactory.h"

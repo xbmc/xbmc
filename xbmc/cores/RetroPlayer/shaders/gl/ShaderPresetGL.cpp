@@ -29,26 +29,25 @@ CShaderPresetGL::CShaderPresetGL(RETRO::CRenderContext& context,
 
 bool CShaderPresetGL::CreateShaders()
 {
-  const auto numPasses = static_cast<unsigned int>(m_passes.size());
+  std::vector<std::shared_ptr<IShaderLut>> presetLUTsGL;
 
+  if (!m_passes.empty())
+  {
+    const auto numLuts = static_cast<unsigned int>(m_passes[0].luts.size());
+    for (unsigned int i = 0; i < numLuts; ++i)
+    {
+      const ShaderLut& lutStruct = m_passes[0].luts[i];
+
+      auto presetLut = std::make_shared<CShaderLutGL>(lutStruct.strId, lutStruct.path);
+      if (presetLut->Create(lutStruct))
+        presetLUTsGL.emplace_back(std::move(presetLut));
+    }
+  }
+
+  const auto numPasses = static_cast<unsigned int>(m_passes.size());
   for (unsigned int shaderIdx = 0; shaderIdx < numPasses; ++shaderIdx)
   {
     const ShaderPass& pass = m_passes[shaderIdx];
-    const auto numPassLuts = static_cast<unsigned int>(pass.luts.size());
-
-    //! @todo Is this pass specific?
-    std::vector<std::shared_ptr<IShaderLut>> passLUTsGL;
-    for (unsigned int i = 0; i < numPassLuts; ++i)
-    {
-      const ShaderLut& lutStruct = pass.luts[i];
-
-      auto passLut = std::make_shared<CShaderLutGL>(lutStruct.strId, lutStruct.path);
-      if (passLut->Create(lutStruct))
-        passLUTsGL.emplace_back(std::move(passLut));
-    }
-
-    // Create the shader
-    auto videoShader = std::make_unique<CShaderGL>();
 
     const std::string& shaderSource = pass.vertexSource; // Also contains fragment source
     const std::string& shaderPath = pass.sourcePath;
@@ -56,8 +55,10 @@ bool CShaderPresetGL::CreateShaders()
     // Get only the parameters belonging to this specific shader
     ShaderParameterMap passParameters = GetShaderParameters(pass.parameters, pass.vertexSource);
 
+    // Create the shader
+    auto videoShader = std::make_unique<CShaderGL>();
     if (!videoShader->Create(shaderIdx, pass.alias, shaderPath, shaderSource,
-                             std::move(passParameters), std::move(passLUTsGL), pass.frameCountMod))
+                             std::move(passParameters), presetLUTsGL, pass.frameCountMod))
     {
       CLog::Log(LOGERROR, "CShaderPresetGL::CreateShaders: Couldn't create a video shader");
       return false;
@@ -80,7 +81,6 @@ bool CShaderPresetGL::CreateShaderTextures()
   float2 prevTextureSize = m_videoSize;
 
   const auto numPasses = static_cast<unsigned int>(m_passes.size());
-
   for (unsigned int shaderIdx = 0; shaderIdx < numPasses; ++shaderIdx)
   {
     const auto& pass = m_passes[shaderIdx];
