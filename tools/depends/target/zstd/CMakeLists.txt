@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.18)
 project(zstd_shim VERSION 1.5.7)
 
+if(ANDROID AND NOT DEFINED ANDROID_PLATFORM_LEVEL)
+  set(ANDROID_PLATFORM_LEVEL 23)
+endif()
+
 add_subdirectory(build/cmake)
 
 if(TARGET libzstd_static)
