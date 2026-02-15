@@ -39,31 +39,28 @@ bool CShaderPreset::ReadPresetFile(const std::string& presetPath)
   return CServiceBroker::GetGameServices().VideoShaders().LoadPreset(presetPath, *this);
 }
 
-bool CShaderPreset::RenderUpdate(const RETRO::ViewportCoordinates& dest,
-                                 const float2 fullDestSize,
-                                 IShaderTexture& source,
-                                 IShaderTexture& target)
+bool CShaderPreset::RenderUpdate(IShaderTexture& source, IShaderTexture& target)
 {
   // Save the viewport
   CRect viewPort;
   m_context.GetViewPort(viewPort);
 
-  // Handle resizing of the viewport (window)
-  UpdateViewPort(viewPort, fullDestSize);
+  // Handle target resizing
+  UpdateOutputSize({target.GetWidth(), target.GetHeight()});
 
   // Update shaders/shader textures if required
   if (!Update())
     return false;
 
-  PrepareParameters(dest, source);
+  PrepareParameters(source);
 
-  // Apply all passes except the last one (which needs to be applied to the backbuffer)
+  // Apply all passes
   IShaderTexture* sourceTexture = &source;
   const auto numPasses = static_cast<unsigned int>(m_pShaders.size());
-  for (unsigned shaderIdx = 0; shaderIdx + 1 < numPasses; ++shaderIdx)
+  for (unsigned shaderIdx = 0; shaderIdx < numPasses; ++shaderIdx)
   {
     IShader& shader = *m_pShaders[shaderIdx];
-    IShaderTexture& texture = *m_pShaderTextures[shaderIdx];
+    IShaderTexture& texture = shaderIdx + 1 == numPasses ? target : *m_pShaderTextures[shaderIdx];
     RenderShader(shader, *sourceTexture, texture);
     sourceTexture = &texture;
   }
@@ -71,10 +68,6 @@ bool CShaderPreset::RenderUpdate(const RETRO::ViewportCoordinates& dest,
   // Restore our viewport
   m_context.SetViewPort(viewPort);
   m_context.SetScissors(viewPort);
-
-  // Apply the last pass and write to target (backbuffer) instead of the last texture
-  IShader* lastShader = m_pShaders.back().get();
-  lastShader->Render(*sourceTexture, target);
 
   m_frameCount += static_cast<float>(m_speed);
   return true;
@@ -101,7 +94,6 @@ bool CShaderPreset::SetShaderPreset(const std::string& shaderPresetPath)
   };
 
   m_presetPath = shaderPresetPath;
-  m_bPresetNeedsUpdate = true;
 
   if (m_presetPath.empty())
     // No preset should load, just return false, we shouldn't add "" to the failed paths
@@ -132,6 +124,7 @@ bool CShaderPreset::SetShaderPreset(const std::string& shaderPresetPath)
   if (m_pShaders.empty())
     return false;
 
+  m_bPresetNeedsUpdate = true;
   return true;
 }
 
@@ -154,24 +147,32 @@ bool CShaderPreset::Update()
   {
     if (!CreateShaderTextures())
       return updateFailed("A shader texture failed to init");
-  }
 
-  // Each pass except the last one must have its own texture and the opposite is also true
-  if (m_pShaders.size() != m_pShaderTextures.size() + 1)
-    return updateFailed("A shader or texture failed to init");
+    // Each pass except the last one must have its own texture and the opposite is also true
+    if (m_pShaders.size() != m_pShaderTextures.size() + 1)
+      return updateFailed("A shader or texture failed to init");
+  }
 
   m_bPresetNeedsUpdate = false;
   return true;
 }
 
-void CShaderPreset::UpdateViewPort(CRect viewPort, const float2 fullDestSize)
+void CShaderPreset::UpdateOutputSize(const float2 outputSize)
 {
-  const float2 currentViewPortSize = {viewPort.Width(), viewPort.Height()};
-  if (currentViewPortSize != m_outputSize || fullDestSize != m_fullDestSize)
+  if (outputSize != m_outputSize)
   {
-    m_outputSize = currentViewPortSize;
-    m_fullDestSize = fullDestSize;
-    m_bPresetNeedsUpdate = true;
+    m_outputSize = outputSize;
+
+    // Notify the last pass of new output size
+    if (!m_pShaders.empty())
+    {
+      m_pShaders.back()->SetSizes(outputSize);
+      m_pShaders.back()->UpdateMVP();
+    }
+
+    // If intermediate textures depend on output size, full update is needed
+    if (m_bTexturesNeedSizeUpdate)
+      m_bPresetNeedsUpdate = true;
   }
 }
 
@@ -181,15 +182,14 @@ void CShaderPreset::UpdateMVPs()
     videoShader->UpdateMVP();
 }
 
-void CShaderPreset::PrepareParameters(const RETRO::ViewportCoordinates& dest,
-                                      IShaderTexture& source)
+void CShaderPreset::PrepareParameters(IShaderTexture& source)
 {
   // Prepare parameters for all shader passes
   const auto numPasses = static_cast<unsigned int>(m_pShaders.size());
   for (unsigned int shaderIdx = 0; shaderIdx < numPasses; ++shaderIdx)
   {
     std::unique_ptr<IShader>& videoShader = m_pShaders[shaderIdx];
-    videoShader->PrepareParameters(dest, m_fullDestSize, source, m_pShaderTextures, m_pShaders,
+    videoShader->PrepareParameters(source, m_pShaderTextures, m_pShaders,
                                    static_cast<uint64_t>(m_frameCount));
   }
 }
@@ -204,8 +204,9 @@ void CShaderPreset::CalculateScaledSize(const KODI::SHADER::ShaderPass& pass,
       scaledSize.x = static_cast<float>(pass.fbo.scaleX.abs);
       break;
     case ScaleType::VIEWPORT:
-      scaledSize.x = pass.fbo.scaleX.scale != 0.0f ? pass.fbo.scaleX.scale * m_fullDestSize.x
-                                                   : m_fullDestSize.x;
+      scaledSize.x =
+          pass.fbo.scaleX.scale != 0.0f ? pass.fbo.scaleX.scale * m_outputSize.x : m_outputSize.x;
+      m_bTexturesNeedSizeUpdate = true;
       break;
     case ScaleType::INPUT:
     default:
@@ -220,8 +221,9 @@ void CShaderPreset::CalculateScaledSize(const KODI::SHADER::ShaderPass& pass,
       scaledSize.y = static_cast<float>(pass.fbo.scaleY.abs);
       break;
     case ScaleType::VIEWPORT:
-      scaledSize.y = pass.fbo.scaleY.scale != 0.0f ? pass.fbo.scaleY.scale * m_fullDestSize.y
-                                                   : m_fullDestSize.y;
+      scaledSize.y =
+          pass.fbo.scaleY.scale != 0.0f ? pass.fbo.scaleY.scale * m_outputSize.y : m_outputSize.y;
+      m_bTexturesNeedSizeUpdate = true;
       break;
     case ScaleType::INPUT:
     default:

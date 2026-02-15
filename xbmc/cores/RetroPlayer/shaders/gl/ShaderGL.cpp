@@ -9,6 +9,7 @@
 #include "ShaderGL.h"
 
 #include "ShaderTextureGL.h"
+#include "ShaderTextureGLRef.h"
 #include "ShaderUtilsGL.h"
 #include "application/Application.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
@@ -160,11 +161,11 @@ bool CShaderGL::Create(unsigned int passIdx,
 
 void CShaderGL::Render(IShaderTexture& source, IShaderTexture& target)
 {
-  auto& sourceGL = static_cast<CShaderTextureGL&>(source);
+  glDisable(GL_BLEND);
 
   glUseProgram(m_shaderProgram);
 
-  SetShaderParameters(sourceGL);
+  SetShaderParameters(source);
 
   glBindVertexArray(m_shaderVAO);
 
@@ -185,59 +186,40 @@ void CShaderGL::Render(IShaderTexture& source, IShaderTexture& target)
   glUseProgram(0);
 }
 
-void CShaderGL::SetSizes(const float2& prevSize,
-                         const float2& prevTextureSize,
-                         const float2& nextSize)
+void CShaderGL::SetSizes(const float2& nextSize,
+                         const float2& prevSize,
+                         const float2& prevTextureSize)
 {
-  m_inputSize = prevSize;
-  m_inputTextureSize = prevTextureSize;
   m_outputSize = nextSize;
+
+  if (prevSize.x > 0 && prevSize.y > 0)
+    m_inputSize = prevSize;
+
+  if (prevTextureSize.x > 0 && prevTextureSize.y > 0)
+    m_inputTextureSize = prevTextureSize;
 }
 
 void CShaderGL::PrepareParameters(
-    const RETRO::ViewportCoordinates& dest,
-    const float2 fullDestSize,
-    IShaderTexture& sourceTexture,
+    IShaderTexture& source,
     const std::vector<std::unique_ptr<IShaderTexture>>& pShaderTextures,
     const std::vector<std::unique_ptr<IShader>>& pShaders,
     uint64_t frameCount)
 {
-  if (m_passIdx + 1 != pShaders.size()) // Not last pass
-  {
-    // bottom left x,y
-    m_VertexCoords[0][0] = -m_outputSize.x / 2;
-    m_VertexCoords[0][1] = -m_outputSize.y / 2;
-    // bottom right x,y
-    m_VertexCoords[1][0] = m_outputSize.x / 2;
-    m_VertexCoords[1][1] = -m_outputSize.y / 2;
-    // top right x,y
-    m_VertexCoords[2][0] = m_outputSize.x / 2;
-    m_VertexCoords[2][1] = m_outputSize.y / 2;
-    // top left x,y
-    m_VertexCoords[3][0] = -m_outputSize.x / 2;
-    m_VertexCoords[3][1] = m_outputSize.y / 2;
+  // Set destination rectangle size
+  m_destSize = m_outputSize;
 
-    // Set destination rectangle size
-    m_destSize = m_outputSize;
-  }
-  else // Last pass
-  {
-    // bottom left x,y
-    m_VertexCoords[0][0] = dest[3].x - m_outputSize.x / 2;
-    m_VertexCoords[0][1] = dest[3].y - m_outputSize.y / 2;
-    // bottom right x,y
-    m_VertexCoords[1][0] = dest[2].x - m_outputSize.x / 2;
-    m_VertexCoords[1][1] = dest[2].y - m_outputSize.y / 2;
-    // top right x,y
-    m_VertexCoords[2][0] = dest[1].x - m_outputSize.x / 2;
-    m_VertexCoords[2][1] = dest[1].y - m_outputSize.y / 2;
-    // top left x,y
-    m_VertexCoords[3][0] = dest[0].x - m_outputSize.x / 2;
-    m_VertexCoords[3][1] = dest[0].y - m_outputSize.y / 2;
-
-    // Set destination rectangle size for the last pass
-    m_destSize = fullDestSize;
-  }
+  // bottom left x,y
+  m_VertexCoords[0][0] = -m_outputSize.x / 2;
+  m_VertexCoords[0][1] = -m_outputSize.y / 2;
+  // bottom right x,y
+  m_VertexCoords[1][0] = m_outputSize.x / 2;
+  m_VertexCoords[1][1] = -m_outputSize.y / 2;
+  // top right x,y
+  m_VertexCoords[2][0] = m_outputSize.x / 2;
+  m_VertexCoords[2][1] = m_outputSize.y / 2;
+  // top left x,y
+  m_VertexCoords[3][0] = -m_outputSize.x / 2;
+  m_VertexCoords[3][1] = m_outputSize.y / 2;
 
   // bottom left z, tu, tv, r, g, b
   m_VertexCoords[0][2] = 0;
@@ -268,7 +250,7 @@ void CShaderGL::PrepareParameters(
   m_TexCoords[3][0] = 0.0f;
   m_TexCoords[3][1] = 0.0f;
 
-  UpdateUniformInputs(sourceTexture, pShaderTextures, pShaders, frameCount);
+  UpdateUniformInputs(source, pShaderTextures, pShaders, frameCount);
 }
 
 void CShaderGL::UpdateMVP()
@@ -295,7 +277,7 @@ void CShaderGL::Destroy()
 }
 
 void CShaderGL::UpdateUniformInputs(
-    IShaderTexture& sourceTexture,
+    IShaderTexture& source,
     const std::vector<std::unique_ptr<IShaderTexture>>& pShaderTextures,
     const std::vector<std::unique_ptr<IShader>>& pShaders,
     uint64_t frameCount)
@@ -304,13 +286,13 @@ void CShaderGL::UpdateUniformInputs(
 
   if (m_passIdx > 0) // Not first pass
   {
-    auto& shaderTextureGL = static_cast<CShaderTextureGL&>(*pShaderTextures[m_passIdx - 1]);
-    m_uniformFrameInputs = GetFrameInputData(shaderTextureGL.GetTextureID());
+    auto& sourceGL = static_cast<CShaderTextureGL&>(*pShaderTextures[m_passIdx - 1]);
+    m_uniformFrameInputs = GetFrameInputData(sourceGL.GetTextureID());
   }
   else // First pass
   {
-    auto& shaderTextureGL = static_cast<CShaderTextureGL&>(sourceTexture);
-    m_uniformFrameInputs = GetFrameInputData(shaderTextureGL.GetTextureID());
+    auto& sourceGLRef = static_cast<CShaderTextureGLRef&>(source);
+    m_uniformFrameInputs = GetFrameInputData(sourceGLRef.GetTextureID());
   }
 
   // Set frame uniforms of previous passes
@@ -338,6 +320,7 @@ CShaderGL::UniformInputs CShaderGL::GetInputData(uint64_t frameCount) const
       // Time always flows forward
       1 // frame_direction
   };
+
   return input;
 }
 
@@ -349,6 +332,7 @@ CShaderGL::UniformFrameInputs CShaderGL::GetFrameInputData(GLuint texture) const
       texture, // texture
       m_passAlias // alias
   };
+
   return frameInput;
 }
 
@@ -362,7 +346,7 @@ void CShaderGL::GetUniformLocs()
   m_MVPMatrixLoc = glGetUniformLocation(m_shaderProgram, "MVPMatrix");
 }
 
-void CShaderGL::SetShaderParameters(CShaderTextureGL& sourceTexture)
+void CShaderGL::SetShaderParameters(IShaderTexture& source)
 {
   // Set shader uniforms
   glUniform1i(m_FrameDirectionLoc, m_uniformInputs.frame_direction);
@@ -381,12 +365,25 @@ void CShaderGL::SetShaderParameters(CShaderTextureGL& sourceTexture)
 
   // Set source texture
   unsigned int textureUnit = 0;
-  sourceTexture.BindToUnit(textureUnit);
-  textureUnit++;
 
-  // Regenerate source texture mipmaps
-  if (sourceTexture.IsMipmapped())
-    glGenerateMipmap(GL_TEXTURE_2D);
+  //! @todo Handle ref textures better
+  auto* sourceGL = dynamic_cast<CShaderTextureGL*>(&source);
+  auto* sourceGLRef = dynamic_cast<CShaderTextureGLRef*>(&source);
+
+  if (sourceGL != nullptr)
+  {
+    sourceGL->BindToUnit(textureUnit);
+    textureUnit++;
+
+    // Regenerate source texture mipmaps
+    if (sourceGL->IsMipmapped())
+      glGenerateMipmap(GL_TEXTURE_2D);
+  }
+  else if (sourceGLRef != nullptr)
+  {
+    sourceGLRef->BindToUnit(textureUnit);
+    textureUnit++;
+  }
 
   // Set lookup textures
   for (const std::shared_ptr<IShaderLut>& lut : m_luts)
@@ -405,7 +402,6 @@ void CShaderGL::SetShaderParameters(CShaderTextureGL& sourceTexture)
   for (unsigned int i = 0; i < m_passIdx + 1; ++i)
   {
     GLint paramLoc;
-
     std::string paramPass = i ? "Pass" + std::to_string(i) : "Orig";
     paramLoc = glGetUniformLocation(m_shaderProgram, (paramPass + "InputSize").c_str());
     glUniform2f(paramLoc, m_passesUniformFrameInputs[i].input_size.x,

@@ -26,11 +26,11 @@ public:
   CRenderBufferPoolOpenGLES(CRenderContext& context);
   ~CRenderBufferPoolOpenGLES() override = default;
 
-  // implementation of IRenderBufferPool via CBaseRenderBufferPool
+  // Implementation of IRenderBufferPool via CBaseRenderBufferPool
   bool IsCompatible(const CRenderVideoSettings& renderSettings) const override;
 
 private:
-  // implementation of CBaseRenderBufferPool
+  // Implementation of CBaseRenderBufferPool
   IRenderBuffer* CreateRenderBuffer(void* header = nullptr) override;
   bool ConfigureInternal() override;
 

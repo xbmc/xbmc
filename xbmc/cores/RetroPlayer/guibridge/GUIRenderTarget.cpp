@@ -31,7 +31,7 @@ CGUIRenderControl::CGUIRenderControl(IRenderManager* renderManager, CGUIGameCont
 
 void CGUIRenderControl::Render()
 {
-  m_renderManager->RenderControl(true, true, m_gameControl.GetRenderRegion(),
+  m_renderManager->RenderControl(false, true, m_gameControl.GetRenderRegion(),
                                  m_gameControl.GetRenderSettings());
 }
 

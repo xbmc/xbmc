@@ -28,7 +28,7 @@ public:
                         GLuint bpp);
   ~CRenderBufferOpenGLES() override;
 
-  // implementation of IRenderBuffer via CRenderBufferSysMem
+  // Implementation of IRenderBuffer via CRenderBufferSysMem
   bool UploadTexture() override;
 
   GLuint TextureID() const { return m_textureId; }

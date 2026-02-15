@@ -11,11 +11,6 @@
 #include "ShaderTypes.h"
 #include "cores/RetroPlayer/RetroPlayerTypes.h"
 
-#include <map>
-#include <stdint.h>
-#include <string>
-#include <vector>
-
 namespace KODI::SHADER
 {
 class IShaderLut;
@@ -58,13 +53,13 @@ public:
   /*!
    * \brief Sets the input and output sizes in pixels
    *
+   * \param nextSize Output image size of the shader in pixels
    * \param prevSize Input image size of the shader in pixels
    * \param prevTextureSize Power-of-two input texture size in pixels
-   * \param nextSize Output image size of the shader in pixels
    */
-  virtual void SetSizes(const float2& prevSize,
-                        const float2& prevTextureSize,
-                        const float2& nextSize) = 0;
+  virtual void SetSizes(const float2& nextSize,
+                        const float2& prevSize = float2{},
+                        const float2& prevTextureSize = float2{}) = 0;
 
   /*!
    * \brief Called before rendering
@@ -72,16 +67,12 @@ public:
    * Updates any internal state needed to ensure that correct data is passed to
    * the shader when rendering.
    *
-   * \param dest Coordinates of the 4 corners of the destination rectangle
-   * \param fullDestSize Destination rectangle size for the fullscreen game window
    * \param sourceTexture Source texture of the first shader pass
    * \param pShaderTextures Intermediate textures used for all shader passes
    * \param pShaders All shader passes
    * \param frameCount Number of frames that have passed
    */
   virtual void PrepareParameters(
-      const RETRO::ViewportCoordinates& dest,
-      const float2 fullDestSize,
       IShaderTexture& sourceTexture,
       const std::vector<std::unique_ptr<IShaderTexture>>& pShaderTextures,
       const std::vector<std::unique_ptr<IShader>>& pShaders,
