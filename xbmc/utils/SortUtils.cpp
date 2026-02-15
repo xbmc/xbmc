@@ -1082,12 +1082,14 @@ void SortUtils::Sort(SortBy sortBy, SortOrder sortOrder, SortAttribute attribute
 
 void SortUtils::Sort(const SortDescription &sortDescription, DatabaseResults& items)
 {
-  Sort(sortDescription.sortBy, sortDescription.sortOrder, sortDescription.sortAttributes, items, sortDescription.limitEnd, sortDescription.limitStart);
+  Sort(sortDescription.sortBy, sortDescription.sortOrder, sortDescription.sortAttributes, items,
+       sortDescription.limitEnd, sortDescription.limitStart);
 }
 
 void SortUtils::Sort(const SortDescription &sortDescription, SortItems& items)
 {
-  Sort(sortDescription.sortBy, sortDescription.sortOrder, sortDescription.sortAttributes, items, sortDescription.limitEnd, sortDescription.limitStart);
+  Sort(sortDescription.sortBy, sortDescription.sortOrder, sortDescription.sortAttributes, items,
+       sortDescription.limitEnd, sortDescription.limitStart);
 }
 
 bool SortUtils::SortFromDataset(const SortDescription& sortDescription,
