@@ -136,6 +136,7 @@ dependent_option(ENABLE_INTERNAL_MARIADBCLIENT "Enable internal mariadb-c-connec
 dependent_option(ENABLE_INTERNAL_NLOHMANNJSON "Enable internal nlohmannjson?")
 dependent_option(ENABLE_INTERNAL_UDFREAD "Enable internal libudfread?")
 dependent_option(ENABLE_INTERNAL_XSLT "Enable internal libxslt?")
+dependent_option(ENABLE_INTERNAL_ZSTD "Enable internal Zstandard?")
 
 # If ENABLE_INTERNAL_FMT is ON, we force ENABLE_INTERNAL_SPDLOG ON as it has a hard
 # dependency on fmt
