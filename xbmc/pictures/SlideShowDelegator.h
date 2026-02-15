@@ -46,13 +46,13 @@ public:
                     const std::string& beginSlidePath = "",
                     bool startSlideShow = true,
                     SortBy method = SortByLabel,
-                    SortOrder order = SortOrderAscending,
+                    SortOrder order = SortOrder::ASCENDING,
                     SortAttribute sortAttributes = SortAttributeNone,
                     const std::string& strExtensions = "") override;
   void AddFromPath(const std::string& strPath,
                    bool bRecursive,
                    SortBy method = SortByLabel,
-                   SortOrder order = SortOrderAscending,
+                   SortOrder order = SortOrder::ASCENDING,
                    SortAttribute sortAttributes = SortAttributeNone,
                    const std::string& strExtensions = "") override;
 

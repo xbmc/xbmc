@@ -18,11 +18,12 @@
 
 enum class SortMethod;
 
-typedef enum {
-  SortOrderNone = 0,
-  SortOrderAscending,
-  SortOrderDescending
-} SortOrder;
+enum class SortOrder
+{
+  NONE,
+  ASCENDING,
+  DESCENDING,
+};
 
 typedef enum
 {
@@ -178,7 +179,7 @@ typedef enum
 
 typedef struct SortDescription {
   SortBy sortBy = SortByNone;
-  SortOrder sortOrder = SortOrderAscending;
+  SortOrder sortOrder = SortOrder::ASCENDING;
   SortAttribute sortAttributes = SortAttributeNone;
   int limitStart = 0;
   int limitEnd = -1;

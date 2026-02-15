@@ -45,7 +45,7 @@ TEST(TestSortUtils, Sort_SortBy)
   items.push_back(item6);
   items.push_back(item7);
 
-  SortUtils::Sort(SortByArtist, SortOrderAscending, SortAttributeNone, items);
+  SortUtils::Sort(SortByArtist, SortOrder::ASCENDING, SortAttributeNone, items);
 
   EXPECT_STREQ("A Artist", (*items.at(0))[FieldArtist].asString().c_str());
   EXPECT_STREQ("B Artist", (*items.at(1))[FieldArtist].asString().c_str());

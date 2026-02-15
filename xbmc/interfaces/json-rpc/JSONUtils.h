@@ -95,7 +95,7 @@ namespace JSONRPC
 
       // parse the sort order
       sortOrder = SortUtils::SortOrderFromString(order);
-      if (sortOrder == SortOrderNone)
+      if (sortOrder == SortOrder::NONE)
         return false;
 
       // parse the sort method

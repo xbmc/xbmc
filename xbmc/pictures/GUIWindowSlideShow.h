@@ -78,13 +78,13 @@ public:
                     const std::string& beginSlidePath = "",
                     bool startSlideShow = true,
                     SortBy method = SortByLabel,
-                    SortOrder order = SortOrderAscending,
+                    SortOrder order = SortOrder::ASCENDING,
                     SortAttribute sortAttributes = SortAttributeNone,
                     const std::string& strExtensions = "") override;
   void AddFromPath(const std::string& strPath,
                    bool bRecursive,
                    SortBy method = SortByLabel,
-                   SortOrder order = SortOrderAscending,
+                   SortOrder order = SortOrder::ASCENDING,
                    SortAttribute sortAttributes = SortAttributeNone,
                    const std::string& strExtensions = "") override;
   void Shuffle() override;
@@ -118,9 +118,10 @@ private:
   void SetDirection(int direction); // -1: rewind, 1: forward
 
   typedef std::set<std::string> path_set;  // set to track which paths we're adding
-  void AddItems(const std::string &strPath, path_set *recursivePaths,
+  void AddItems(const std::string& strPath,
+                path_set* recursivePaths,
                 SortBy method = SortByLabel,
-                SortOrder order = SortOrderAscending,
+                SortOrder order = SortOrder::ASCENDING,
                 SortAttribute sortAttributes = SortAttributeNone);
   bool PlayVideo();
   CSlideShowPic::DISPLAY_EFFECT GetDisplayEffect(int iSlideNumber) const;

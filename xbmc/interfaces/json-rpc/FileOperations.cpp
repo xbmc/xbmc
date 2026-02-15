@@ -383,7 +383,7 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
         // but leave items from a playlist, smartplaylist or upnp container in order supplied
         if (!PLAYLIST::IsPlayList(items) && !PLAYLIST::IsSmartPlayList(items) &&
             !URIUtils::IsUPnP(items.GetPath()))
-          items.Sort(SortByFile, SortOrderAscending);
+          items.Sort(SortByFile, SortOrder::ASCENDING);
 
         CFileItemList filteredDirectories;
         for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)

@@ -740,7 +740,7 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
   }
 
   // sort the items
-  selectItems.Sort(SortByLabel, SortOrderAscending);
+  selectItems.Sort(SortByLabel, SortOrder::ASCENDING);
 
   for (int index = 0; index < size; ++index)
     items.push_back(selectItems.Get(index)->GetLabel());

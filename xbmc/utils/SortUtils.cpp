@@ -1113,17 +1113,19 @@ const SortUtils::SortPreparator& SortUtils::getPreparator(SortBy sortBy)
 SortUtils::Sorter SortUtils::getSorter(SortOrder sortOrder, SortAttribute attributes)
 {
   if (attributes & SortAttributeIgnoreFolders)
-    return sortOrder == SortOrderDescending ? SorterIgnoreFoldersDescending : SorterIgnoreFoldersAscending;
+    return sortOrder == SortOrder::DESCENDING ? SorterIgnoreFoldersDescending
+                                              : SorterIgnoreFoldersAscending;
 
-  return sortOrder == SortOrderDescending ? SorterDescending : SorterAscending;
+  return sortOrder == SortOrder::DESCENDING ? SorterDescending : SorterAscending;
 }
 
 SortUtils::SorterIndirect SortUtils::getSorterIndirect(SortOrder sortOrder, SortAttribute attributes)
 {
   if (attributes & SortAttributeIgnoreFolders)
-    return sortOrder == SortOrderDescending ? SorterIndirectIgnoreFoldersDescending : SorterIndirectIgnoreFoldersAscending;
+    return sortOrder == SortOrder::DESCENDING ? SorterIndirectIgnoreFoldersDescending
+                                              : SorterIndirectIgnoreFoldersAscending;
 
-  return sortOrder == SortOrderDescending ? SorterIndirectDescending : SorterIndirectAscending;
+  return sortOrder == SortOrder::DESCENDING ? SorterIndirectDescending : SorterIndirectAscending;
 }
 
 const Fields& SortUtils::GetFieldsForSorting(SortBy sortBy)
@@ -1377,14 +1379,12 @@ const std::string& SortUtils::SortMethodToString(SortBy sortMethod)
   return TypeToString<SortBy>(sortMethods, sortMethod);
 }
 
-const std::map<std::string, SortOrder> sortOrders = {
-  { "ascending", SortOrderAscending },
-  { "descending", SortOrderDescending }
-};
+const std::map<std::string, SortOrder> sortOrders = {{"ascending", SortOrder::ASCENDING},
+                                                     {"descending", SortOrder::DESCENDING}};
 
 SortOrder SortUtils::SortOrderFromString(const std::string& sortOrder)
 {
-  return TypeFromString<SortOrder>(sortOrders, sortOrder, SortOrderNone);
+  return TypeFromString<SortOrder>(sortOrders, sortOrder, SortOrder::NONE);
 }
 
 const std::string& SortUtils::SortOrderToString(SortOrder sortOrder)

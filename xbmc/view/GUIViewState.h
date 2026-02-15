@@ -76,12 +76,20 @@ protected:
    */
   void AddPlaylistOrder(const CFileItemList& items, const LABEL_MASKS& label_masks);
 
-  void AddSortMethod(SortBy sortBy, int buttonLabel, const LABEL_MASKS &labelMasks, SortAttribute sortAttributes = SortAttributeNone, SortOrder sortOrder = SortOrderNone);
-  void AddSortMethod(SortBy sortBy, SortAttribute sortAttributes, int buttonLabel, const LABEL_MASKS &labelMasks, SortOrder sortOrder = SortOrderNone);
+  void AddSortMethod(SortBy sortBy,
+                     int buttonLabel,
+                     const LABEL_MASKS& labelMasks,
+                     SortAttribute sortAttributes = SortAttributeNone,
+                     SortOrder sortOrder = SortOrder::NONE);
+  void AddSortMethod(SortBy sortBy,
+                     SortAttribute sortAttributes,
+                     int buttonLabel,
+                     const LABEL_MASKS& labelMasks,
+                     SortOrder sortOrder = SortOrder::NONE);
   void AddSortMethod(const SortDescription& sortDescription,
                      int buttonLabel,
                      const LABEL_MASKS& labelMasks);
-  void SetSortMethod(SortBy sortBy, SortOrder sortOrder = SortOrderNone);
+  void SetSortMethod(SortBy sortBy, SortOrder sortOrder = SortOrder::NONE);
   void SetSortMethod(const SortDescription& sortDescription);
   void SetSortOrder(SortOrder sortOrder);
 

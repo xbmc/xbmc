@@ -110,7 +110,8 @@ bool CViewStateSettings::Load(const TiXmlNode *settings)
     }
 
     int sortOrder;
-    if (XMLUtils::GetInt(pViewState, XML_SORTORDER, sortOrder, SortOrderNone, SortOrderDescending))
+    if (XMLUtils::GetInt(pViewState, XML_SORTORDER, sortOrder, static_cast<int>(SortOrder::NONE),
+                         static_cast<int>(SortOrder::DESCENDING)))
       viewState->second->m_sortDescription.sortOrder = (SortOrder)sortOrder;
   }
 
@@ -246,7 +247,7 @@ void CViewStateSettings::SetEventLevel(EventLevel eventLevel)
 {
   if (eventLevel < EventLevel::Basic)
     m_eventLevel = EventLevel::Basic;
-  if (eventLevel > EventLevel::Error)
+  else if (eventLevel > EventLevel::Error)
     m_eventLevel = EventLevel::Error;
   else
     m_eventLevel = eventLevel;
@@ -270,7 +271,7 @@ void CViewStateSettings::AddViewState(const std::string& strTagName, int default
   if (strTagName.empty() || m_viewStates.contains(strTagName))
     return;
 
-  CViewState *viewState = new CViewState(defaultView, defaultSort, SortOrderAscending);
+  CViewState* viewState = new CViewState(defaultView, defaultSort, SortOrder::ASCENDING);
   if (viewState == NULL)
     return;
 

@@ -37,7 +37,7 @@ CGUIViewStateWindowPVRChannels::CGUIViewStateWindowPVRChannels(const int windowI
       LABEL_MASKS("%L", "%p", "%L", "%p")); // Filename, LastPlayed | Foldername, LastPlayed
   AddSortMethod(SortByDateAdded, 570, // "Date added"
                 LABEL_MASKS("%L", "%a", "%L", "%a"), // Filename, DateAdded | Foldername, DateAdded
-                SortAttributeNone, SortOrderDescending);
+                SortAttributeNone, SortOrder::DESCENDING);
   AddSortMethod(SortByClientChannelOrder, 19315, // "Backend number"
                 LABEL_MASKS("%L", "", "%L", "")); // Filename, empty | Foldername, empty
   AddSortMethod(SortByProvider, 19348, // "Provider"
@@ -114,7 +114,7 @@ CGUIViewStateWindowPVRGuide::CGUIViewStateWindowPVRGuide(const int windowId,
       LABEL_MASKS("%L", "%p", "%L", "%p")); // Filename, LastPlayed | Foldername, LastPlayed
   AddSortMethod(SortByDateAdded, 570, // "Date added"
                 LABEL_MASKS("%L", "%a", "%L", "%a"), // Filename, DateAdded | Foldername, DateAdded
-                SortAttributeNone, SortOrderDescending);
+                SortAttributeNone, SortOrder::DESCENDING);
   AddSortMethod(SortByClientChannelOrder, 19315, // "Backend number"
                 LABEL_MASKS("%L", "", "%L", "")); // Filename, empty | Foldername, empty
   AddSortMethod(SortByProvider, 19348, // "Provider"
@@ -172,9 +172,9 @@ CGUIViewStateWindowPVRSearch::CGUIViewStateWindowPVRSearch(const int windowId,
 
   // Default sorting
   if (CPVREpgSearchPath(m_items.GetPath()).IsSavedSearchesRoot())
-    SetSortMethod(SortByDate, SortOrderDescending);
+    SetSortMethod(SortByDate, SortOrder::DESCENDING);
   else
-    SetSortMethod(SortByDate, SortOrderAscending);
+    SetSortMethod(SortByDate, SortOrder::ASCENDING);
 
   LoadViewState(m_items.GetPath(), GetWindowId());
 }
@@ -203,11 +203,11 @@ CGUIViewStateWindowPVRProviders::CGUIViewStateWindowPVRProviders(const int windo
     AddSortMethod(SortByProvider, 19348, // "Provider"
                   LABEL_MASKS("%L", "", "%L", "")); // Filename, empty | Foldername, empty
 
-    SetSortMethod(SortByProvider, SortOrderAscending);
+    SetSortMethod(SortByProvider, SortOrder::ASCENDING);
   }
   else
   {
-    SetSortMethod(SortByLabel, SortOrderAscending);
+    SetSortMethod(SortByLabel, SortOrder::ASCENDING);
   }
 
   LoadViewState(m_items.GetPath(), GetWindowId());

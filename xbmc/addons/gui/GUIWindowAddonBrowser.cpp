@@ -579,7 +579,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<AddonType>& types,
     item->SetSpecialSort(SortSpecialOnTop);
     items.Add(std::move(item));
   }
-  items.Sort(SortByLabel, SortOrderAscending);
+  items.Sort(SortByLabel, SortOrder::ASCENDING);
 
   if (!addonIDs.empty())
   {

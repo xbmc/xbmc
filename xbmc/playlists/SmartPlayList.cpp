@@ -1423,7 +1423,9 @@ bool CSmartPlaylist::Load(const CVariant &obj)
   {
     const CVariant &order = obj["order"];
     if (order.isMember("direction") && order["direction"].isString())
-      m_orderDirection = StringUtils::EqualsNoCase(order["direction"].asString(), "ascending") ? SortOrderAscending : SortOrderDescending;
+      m_orderDirection = StringUtils::EqualsNoCase(order["direction"].asString(), "ascending")
+                             ? SortOrder::ASCENDING
+                             : SortOrder::DESCENDING;
 
     if (order.isMember("ignorefolders") && obj["ignorefolders"].isBoolean())
       m_orderAttributes = obj["ignorefolders"].asBoolean() ? SortAttributeIgnoreFolders : SortAttributeNone;
@@ -1480,7 +1482,8 @@ bool CSmartPlaylist::LoadFromXML(const TiXmlNode *root, const std::string &encod
   {
     const char *direction = order->Attribute("direction");
     if (direction)
-      m_orderDirection = StringUtils::EqualsNoCase(direction, "ascending") ? SortOrderAscending : SortOrderDescending;
+      m_orderDirection = StringUtils::EqualsNoCase(direction, "ascending") ? SortOrder::ASCENDING
+                                                                           : SortOrder::DESCENDING;
 
     const char *ignorefolders = order->Attribute("ignorefolders");
     if (ignorefolders != NULL)
@@ -1547,7 +1550,8 @@ bool CSmartPlaylist::Save(const std::string &path) const
   {
     TiXmlText order(CSmartPlaylistRule::TranslateOrder(m_orderField).c_str());
     TiXmlElement nodeOrder("order");
-    nodeOrder.SetAttribute("direction", m_orderDirection == SortOrderDescending ? "descending" : "ascending");
+    nodeOrder.SetAttribute("direction",
+                           m_orderDirection == SortOrder::DESCENDING ? "descending" : "ascending");
     if (m_orderAttributes & SortAttributeIgnoreFolders)
       nodeOrder.SetAttribute("ignorefolders", "true");
     nodeOrder.InsertEndChild(order);
@@ -1586,7 +1590,8 @@ bool CSmartPlaylist::Save(CVariant &obj, bool full /* = true */) const
   {
     obj["order"] = CVariant(CVariant::VariantTypeObject);
     obj["order"]["method"] = CSmartPlaylistRule::TranslateOrder(m_orderField);
-    obj["order"]["direction"] = m_orderDirection == SortOrderDescending ? "descending" : "ascending";
+    obj["order"]["direction"] =
+        m_orderDirection == SortOrder::DESCENDING ? "descending" : "ascending";
     obj["order"]["ignorefolders"] = (m_orderAttributes & SortAttributeIgnoreFolders);
   }
 
@@ -1607,7 +1612,7 @@ void CSmartPlaylist::Reset()
   m_ruleCombination.clear();
   m_limit = 0;
   m_orderField = SortByNone;
-  m_orderDirection = SortOrderNone;
+  m_orderDirection = SortOrder::NONE;
   m_orderAttributes = SortAttributeNone;
   m_playlistType = "songs"; // sane default
   m_group.clear();
@@ -1684,7 +1689,7 @@ bool CSmartPlaylist::IsEmpty(bool ignoreSortAndLimit /* = true */) const
 {
   bool empty = m_ruleCombination.empty();
   if (empty && !ignoreSortAndLimit)
-    empty = m_limit <= 0 && m_orderField == SortByNone && m_orderDirection == SortOrderNone;
+    empty = m_limit == 0 && m_orderField == SortByNone && m_orderDirection == SortOrder::NONE;
 
   return empty;
 }

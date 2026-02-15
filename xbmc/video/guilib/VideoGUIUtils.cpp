@@ -97,7 +97,7 @@ SortDescription GetSortDescription(const CGUIViewState& state, const CFileItemLi
         if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iEpisode > 0)
         {
           // first choice for folders containing episodes
-          sortDescription.sortOrder = SortOrderAscending;
+          sortDescription.sortOrder = SortOrder::ASCENDING;
           return sortDescription;
         }
       }
@@ -111,7 +111,7 @@ SortDescription GetSortDescription(const CGUIViewState& state, const CFileItemLi
         if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->HasYear())
         {
           // first choice for folders containing movies
-          sortDescription.sortOrder = SortOrderAscending;
+          sortDescription.sortOrder = SortOrder::ASCENDING;
           return sortDescription;
         }
       }
@@ -125,7 +125,7 @@ SortDescription GetSortDescription(const CGUIViewState& state, const CFileItemLi
         {
           // fallback, if neither ByEpisode nor ByYear is available
           sortDescDate = sortDescription;
-          sortDescDate.sortOrder = SortOrderAscending;
+          sortDescDate.sortOrder = SortOrder::ASCENDING;
           break; // leave items loop. we can still find ByEpisode or ByYear. so, no return here.
         }
       }
@@ -203,7 +203,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
         if (m_mode != ContentUtils::PlayMode::PLAY_FROM_HERE &&
             (sortDesc.sortBy == SortByDate || sortDesc.sortBy == SortByYear ||
              sortDesc.sortBy == SortByEpisodeNumber))
-          sortDesc.sortOrder = SortOrderAscending;
+          sortDesc.sortOrder = SortOrder::ASCENDING;
       }
       else
         sortDesc = GetSortDescription(*state, items);

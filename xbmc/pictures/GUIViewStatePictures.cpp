@@ -33,7 +33,7 @@ CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& it
 
     SetViewAsControl(DEFAULT_VIEW_LIST);
 
-    SetSortOrder(SortOrderAscending);
+    SetSortOrder(SortOrder::ASCENDING);
   }
   else
   {

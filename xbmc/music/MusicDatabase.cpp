@@ -8388,7 +8388,7 @@ std::string CMusicDatabase::AlphanumericSortSQL(const std::string& strField,
   stored in the db.
   */
   std::string DESC;
-  if (sortOrder == SortOrderDescending)
+  if (sortOrder == SortOrder::DESCENDING)
     DESC = " DESC";
   std::string strSort;
 
@@ -13161,7 +13161,7 @@ int CMusicDatabase::GetOrderFilter(const std::string& type,
   std::vector<std::string> orderfields;
   std::string DESC;
 
-  if (sorting.sortOrder == SortOrderDescending)
+  if (sorting.sortOrder == SortOrder::DESCENDING)
     DESC = " DESC";
 
   if (sorting.sortBy == SortByRandom)
@@ -13266,7 +13266,7 @@ bool CMusicDatabase::GetFilter(CDbUrl& musicUrl, Filter& filter, SortDescription
         sorting.limitEnd = xsp.GetLimit();
       if (xsp.GetOrder() != SortByNone)
         sorting.sortBy = xsp.GetOrder();
-      sorting.sortOrder = xsp.GetOrderAscending() ? SortOrderAscending : SortOrderDescending;
+      sorting.sortOrder = xsp.GetOrderAscending() ? SortOrder::ASCENDING : SortOrder::DESCENDING;
       if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
               CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
         sorting.sortAttributes = SortAttributeIgnoreArticle;

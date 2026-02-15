@@ -515,7 +515,7 @@ void CDirectoryProvider::Reset()
     m_currentUrl.clear();
     m_itemTypes.clear();
     m_currentSort.sortBy = SortByNone;
-    m_currentSort.sortOrder = SortOrderAscending;
+    m_currentSort.sortOrder = SortOrder::ASCENDING;
     m_currentLimit = 0;
     m_currentBrowse = BrowseMode::AUTO;
     m_updateState = UpdateState::OK;
@@ -791,8 +791,8 @@ bool CDirectoryProvider::UpdateSort()
   std::unique_lock lock(m_section);
   SortBy sortMethod(SortUtils::SortMethodFromString(m_sortMethod.GetLabel(GetParentId(), false)));
   SortOrder sortOrder(SortUtils::SortOrderFromString(m_sortOrder.GetLabel(GetParentId(), false)));
-  if (sortOrder == SortOrderNone)
-    sortOrder = SortOrderAscending;
+  if (sortOrder == SortOrder::NONE)
+    sortOrder = SortOrder::ASCENDING;
 
   if (sortMethod == m_currentSort.sortBy && sortOrder == m_currentSort.sortOrder)
     return false;

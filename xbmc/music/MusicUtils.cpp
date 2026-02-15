@@ -476,7 +476,7 @@ SortDescription GetSortDescription(const CGUIViewState& state, const CFileItemLi
         {
           // First choice for folders containing a single album
           sortDescTrackNumber = sortDescription;
-          sortDescTrackNumber.sortOrder = SortOrderAscending;
+          sortDescTrackNumber.sortOrder = SortOrder::ASCENDING;
           break; // leave items loop. we can still find ByArtistThenYear. so, no return here.
         }
       }
@@ -493,7 +493,7 @@ SortDescription GetSortDescription(const CGUIViewState& state, const CFileItemLi
           if (lastAlbumId != -1 && tag->GetAlbumId() != lastAlbumId)
           {
             // First choice for folders containing multiple albums
-            sortDescription.sortOrder = SortOrderAscending;
+            sortDescription.sortOrder = SortOrder::ASCENDING;
             return sortDescription;
           }
           lastAlbumId = tag->GetAlbumId();

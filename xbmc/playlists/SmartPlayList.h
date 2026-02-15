@@ -139,9 +139,9 @@ public:
   SortBy GetOrder() const { return m_orderField; }
   void SetOrderAscending(bool orderAscending)
   {
-    m_orderDirection = orderAscending ? SortOrderAscending : SortOrderDescending;
+    m_orderDirection = orderAscending ? SortOrder::ASCENDING : SortOrder::DESCENDING;
   }
-  bool GetOrderAscending() const { return m_orderDirection != SortOrderDescending; }
+  bool GetOrderAscending() const { return m_orderDirection != SortOrder::DESCENDING; }
   SortOrder GetOrderDirection() const { return m_orderDirection; }
   void SetOrderAttributes(SortAttribute attributes) { m_orderAttributes = attributes; }
   SortAttribute GetOrderAttributes() const { return m_orderAttributes; }

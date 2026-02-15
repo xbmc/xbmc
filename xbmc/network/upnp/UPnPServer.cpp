@@ -824,7 +824,7 @@ NPT_Result CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
       item->SetLabelPreformatted(true);
       items.Add(item);
 
-      items.Sort(SortByLabel, SortOrderAscending);
+      items.Sort(SortByLabel, SortOrder::ASCENDING);
     }
     else
     {

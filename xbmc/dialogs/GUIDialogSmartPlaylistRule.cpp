@@ -362,7 +362,11 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   }
 
   // sort the items
-  items.Sort(SortByLabel, SortOrderAscending, CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
+  items.Sort(SortByLabel, SortOrder::ASCENDING,
+             CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                 CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING)
+                 ? SortAttributeIgnoreArticle
+                 : SortAttributeNone);
 
   CGUIDialogSelect* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   pDialog->Reset();

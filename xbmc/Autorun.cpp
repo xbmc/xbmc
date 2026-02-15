@@ -183,7 +183,7 @@ bool CAutorun::RunDisc(IDirectory* pDir,
   }
 
   // Sorting necessary for easier HDDVD handling
-  vecItems.Sort(SortByLabel, SortOrderAscending);
+  vecItems.Sort(SortByLabel, SortOrder::ASCENDING);
 
   bool bAllowVideo = true;
 //  bool bAllowPictures = true;
@@ -290,7 +290,7 @@ bool CAutorun::RunDisc(IDirectory* pDir,
           {
             // HD DVD Standard says the highest numbered playlist has to be handled first.
             CLog::Log(LOGINFO,"HD DVD: Playlist found. Set filetypes to *.xpl for external player.");
-            items.Sort(SortByLabel, SortOrderDescending);
+            items.Sort(SortByLabel, SortOrder::DESCENDING);
             phddvdItem = pItem;
             hddvdname = URIUtils::GetFileName(items[0]->GetPath());
             CLog::Log(LOGINFO, "HD DVD: {}", items[0]->GetPath());
@@ -310,7 +310,7 @@ bool CAutorun::RunDisc(IDirectory* pDir,
             {
               // HD DVD Standard says the lowest numbered ifo has to be handled first.
               CLog::Log(LOGINFO,"HD DVD: IFO found. Set filename to HV* and filetypes to *.ifo for external player.");
-              items.Sort(SortByLabel, SortOrderAscending);
+              items.Sort(SortByLabel, SortOrder::ASCENDING);
               phddvdItem = pItem;
               hddvdname = URIUtils::GetFileName(items[0]->GetPath());
               CLog::Log(LOGINFO, "HD DVD: {}", items[0]->GetPath());
@@ -323,7 +323,7 @@ bool CAutorun::RunDisc(IDirectory* pDir,
           if (items.Size())
           {
             // Sort *.evo files in alphabetical order.
-            items.Sort(SortByLabel, SortOrderAscending);
+            items.Sort(SortByLabel, SortOrder::ASCENDING);
             int64_t asize = 0;
             int ecount = 0;
             // calculate average size of elements above 1gb
@@ -345,7 +345,7 @@ bool CAutorun::RunDisc(IDirectory* pDir,
                 sitems.Add (items[j]);
             }
             // Sort *.evo files by size.
-            items.Sort(SortBySize, SortOrderDescending);
+            items.Sort(SortBySize, SortOrder::DESCENDING);
             // Add other files with descending size to bottom of new list.
             for (int j = 0; j < items.Size(); j++)
             {
@@ -406,7 +406,7 @@ bool CAutorun::RunDisc(IDirectory* pDir,
           CDirectory::GetDirectory(pItem->GetPath(), items, strExt, DIR_FLAG_DEFAULTS);
           if (items.Size())
           {
-            items.Sort(SortByLabel, SortOrderAscending);
+            items.Sort(SortByLabel, SortOrder::ASCENDING);
             CServiceBroker::GetPlaylistPlayer().ClearPlaylist(PLAYLIST::Id::TYPE_VIDEO);
             CServiceBroker::GetPlaylistPlayer().Add(PLAYLIST::Id::TYPE_VIDEO, items);
             CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST::Id::TYPE_VIDEO);
