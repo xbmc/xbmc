@@ -194,9 +194,9 @@ struct GUIViewSortDetails
   LABEL_MASKS m_labelMasks;
 };
 
-typedef DatabaseResult SortItem;
-typedef std::shared_ptr<SortItem> SortItemPtr;
-typedef std::vector<SortItemPtr> SortItems;
+using SortItem = DatabaseResult;
+using SortItemPtr = std::shared_ptr<SortItem>;
+using SortItems = std::vector<SortItemPtr>;
 
 class SortUtils
 {
