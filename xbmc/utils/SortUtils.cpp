@@ -1114,11 +1114,8 @@ bool SortUtils::SortFromDataset(const SortDescription& sortDescription,
 
 const SortUtils::SortPreparator& SortUtils::getPreparator(SortBy sortBy)
 {
-  std::map<SortBy, SortPreparator>::const_iterator it = m_preparators.find(sortBy);
-  if (it != m_preparators.end())
-    return it->second;
-
-  return m_preparators[SortByNone];
+  const auto it = m_preparators.find(sortBy);
+  return it == m_preparators.end() ? m_preparators[SortByNone] : it->second;
 }
 
 SortUtils::Sorter SortUtils::getSorter(SortOrder sortOrder, SortAttribute attributes)
@@ -1141,11 +1138,8 @@ SortUtils::SorterIndirect SortUtils::getSorterIndirect(SortOrder sortOrder, Sort
 
 const Fields& SortUtils::GetFieldsForSorting(SortBy sortBy)
 {
-  std::map<SortBy, Fields>::const_iterator it = m_sortingFields.find(sortBy);
-  if (it != m_sortingFields.end())
-    return it->second;
-
-  return m_sortingFields[SortByNone];
+  const auto it = m_sortingFields.find(sortBy);
+  return it == m_sortingFields.end() ? m_sortingFields[SortByNone] : it->second;
 }
 
 std::string SortUtils::RemoveArticles(const std::string &label)
@@ -1257,10 +1251,7 @@ SortMethod SortUtils::TranslateOldSortMethod(SortBy sortBy, bool ignoreArticle)
   const auto match =
       std::ranges::find_if(table, [sortBy](const auto& t) { return t.sort == sortBy; });
 
-  if (match != table.end())
-    return match->old;
-
-  return SortMethod::NONE;
+  return match == table.end() ? SortMethod::NONE : match->old;
 }
 
 SortDescription SortUtils::TranslateOldSortMethod(SortMethod sortBy)
@@ -1288,11 +1279,8 @@ int SortUtils::GetSortLabel(SortBy sortBy)
 template<typename T>
 T TypeFromString(const std::map<std::string, T>& typeMap, const std::string& name, const T& defaultType)
 {
-  auto it = typeMap.find(name);
-  if (it == typeMap.end())
-    return defaultType;
-
-  return it->second;
+  const auto it = typeMap.find(name);
+  return it == typeMap.end() ? defaultType : it->second;
 }
 
 template<typename T>
