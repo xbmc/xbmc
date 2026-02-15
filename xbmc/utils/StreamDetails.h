@@ -59,6 +59,7 @@ public:
   std::string m_strStereoMode;
   std::string m_strLanguage;
   std::string m_strHdrType;
+  std::string m_strHdrDetail;
 };
 
 class CStreamDetailAudio final : public CStreamDetail
@@ -114,6 +115,7 @@ public:
   int GetVideoWidth(int idx = 0) const;
   int GetVideoHeight(int idx = 0) const;
   std::string GetVideoHdrType (int idx = 0) const;
+  std::string GetVideoHdrDetail(int idx = 0) const;
   int GetVideoDuration(int idx = 0) const;
   void SetVideoDuration(int idx, const int duration);
   std::string GetStereoMode(int idx = 0) const;

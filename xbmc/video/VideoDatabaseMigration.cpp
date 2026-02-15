@@ -1088,6 +1088,8 @@ void CVideoDatabase::UpdateTables(int iVersion)
     }
     m_pDS->close();
   }
+  if (iVersion < 142)
+    m_pDS->exec("ALTER TABLE streamdetails ADD strHdrDetail text");
 
   if (iVersion < 143)
   {

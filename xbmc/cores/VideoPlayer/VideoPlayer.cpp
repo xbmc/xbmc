@@ -648,6 +648,7 @@ void CSelectionStreams::Update(const std::shared_ptr<CDVDInputStream>& input,
         s.stereo_mode = vstream->stereo_mode;
         s.bitrate = vstream->iBitRate;
         s.hdrType = vstream->hdr_type;
+        s.dovi = vstream->dovi;
         s.fpsRate = static_cast<uint32_t>(vstream->iFpsRate);
         s.fpsScale = static_cast<uint32_t>(vstream->iFpsScale);
       }
@@ -5603,6 +5604,7 @@ void CVideoPlayer::GetVideoStreamInfo(int streamId, VideoStreamInfo& info) const
   info.stereoMode = s.stereo_mode;
   info.flags = s.flags;
   info.hdrType = s.hdrType;
+  info.hdrDetail = std::to_string(s.dovi.dv_profile);
   info.fpsRate = s.fpsRate;
   info.fpsScale = s.fpsScale;
 }

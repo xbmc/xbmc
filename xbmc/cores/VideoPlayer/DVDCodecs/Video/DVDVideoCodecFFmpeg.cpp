@@ -1128,6 +1128,56 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
     pVideoPicture->hasLightMetadata = true;
   }
 
+  if (pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION ||
+      pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_HDR10P ||
+      pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_DOVI_HDR10P)
+  {
+    sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_DOVI_METADATA);
+    if (sd)
+    {
+      AVDOVIMetadata* dovi = (AVDOVIMetadata*)sd->data;
+      const AVDOVIRpuDataHeader* hdr = av_dovi_get_header(dovi);
+      const AVDOVIDataMapping* mapping = av_dovi_get_mapping(dovi);
+
+      if (hdr != nullptr && hdr->el_spatial_resampling_filter_flag == 1 &&
+          hdr->disable_residual_flag == 0)
+      {
+        pVideoPicture->strDVELType = "MEL";
+        for (int i = 0; i < 3; i++)
+        {
+          if (mapping != nullptr &&
+              (mapping->nlq[i].nlq_offset != 0 || mapping->nlq[i].vdr_in_max != 8388608 ||
+               mapping->nlq[i].linear_deadzone_slope != 0 ||
+               mapping->nlq[i].linear_deadzone_threshold != 0))
+          {
+            pVideoPicture->strDVELType = "FEL";
+            break;
+          }
+        }
+      }
+      else
+        CLog::LogF(LOGDEBUG, "Not a dual layer stream");
+    }
+    else
+      CLog::LogF(LOGDEBUG, "No DV metadata");
+  }
+
+  if (pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_HDR10 ||
+      pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)
+  {
+    sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_DYNAMIC_HDR_PLUS);
+    if (sd)
+    {
+      CLog::LogF(LOGDEBUG, "hdr10plus detected");
+      if (pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_HDR10)
+        pVideoPicture->hdrType = StreamHdrType::HDR_TYPE_HDR10P;
+      else
+        pVideoPicture->hdrType = StreamHdrType::HDR_TYPE_DOVI_HDR10P;
+    }
+    else
+      CLog::LogF(LOGDEBUG, "Not hdr10plus");
+  }
+
   if (pVideoPicture->iRepeatPicture)
     pVideoPicture->dts = DVD_NOPTS_VALUE;
   else
