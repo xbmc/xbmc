@@ -21,6 +21,7 @@
 #include "utils/JSONVariantParser.h"
 #include "utils/JSONVariantWriter.h"
 #include "utils/StreamDetails.h"
+#include "utils/StringFormat.h"
 #include "utils/StringUtils.h"
 #include "utils/StringValidation.h"
 #include "utils/URIUtils.h"
@@ -28,6 +29,7 @@
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <cstdlib>
 #include <memory>
 #include <optional>
@@ -51,97 +53,98 @@ typedef struct
   StringValidation::Validator validator;
   bool browseable;
   int localizedString;
+  StringFormat::Formatter m_formatter;
 } translateField;
 
 // clang-format off
 static const translateField fields[] = {
-  { "none",              FieldNone,                    TEXT_FIELD,     nullptr,                              false, 231 },
-  { "filename",          FieldFilename,                TEXT_FIELD,     nullptr,                              false, 561 },
-  { "path",              FieldPath,                    TEXT_FIELD,     nullptr,                              true,  573 },
-  { "album",             FieldAlbum,                   TEXT_FIELD,     nullptr,                              true,  558 },
-  { "albumartist",       FieldAlbumArtist,             TEXT_FIELD,     nullptr,                              true,  566 },
-  { "artist",            FieldArtist,                  TEXT_FIELD,     nullptr,                              true,  557 },
-  { "tracknumber",       FieldTrackNumber,             NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 554 },
-  { "role",              FieldRole,                    TEXT_FIELD,     nullptr,                              true, 38033 },
-  { "comment",           FieldComment,                 TEXT_FIELD,     nullptr,                              false, 569 },
-  { "review",            FieldReview,                  TEXT_FIELD,     nullptr,                              false, 183 },
-  { "themes",            FieldThemes,                  TEXT_FIELD,     nullptr,                              false, 21895 },
-  { "moods",             FieldMoods,                   TEXT_FIELD,     nullptr,                              false, 175 },
-  { "styles",            FieldStyles,                  TEXT_FIELD,     nullptr,                              false, 176 },
-  { "type",              FieldAlbumType,               TEXT_FIELD,     nullptr,                              false, 564 },
-  { "compilation",       FieldCompilation,             BOOLEAN_FIELD,  nullptr,                              false, 204 },
-  { "label",             FieldMusicLabel,              TEXT_FIELD,     nullptr,                              false, 21899 },
-  { "title",             FieldTitle,                   TEXT_FIELD,     nullptr,                              true,  556 },
-  { "sorttitle",         FieldSortTitle,               TEXT_FIELD,     nullptr,                              false, 171 },
-  { "originaltitle",     FieldOriginalTitle,           TEXT_FIELD,     nullptr,                              false, 20376 },
-  { "year",              FieldYear,                    NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  true,  562 },
-  { "time",              FieldTime,                    SECONDS_FIELD,  StringValidation::IsTime,             false, 180 },
-  { "playcount",         FieldPlaycount,               NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 567 },
-  { "lastplayed",        FieldLastPlayed,              DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 568 },
-  { "inprogress",        FieldInProgress,              BOOLEAN_FIELD,  nullptr,                              false, 575 },
-  { "rating",            FieldRating,                  REAL_FIELD,     CSmartPlaylistRule::ValidateRating,   false, 563 },
-  { "userrating",        FieldUserRating,              REAL_FIELD,     CSmartPlaylistRule::ValidateMyRating, false, 38018 },
-  { "votes",             FieldVotes,                   REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 205 },
-  { "top250",            FieldTop250,                  NUMERIC_FIELD,  nullptr,                              false, 13409 },
-  { "mpaarating",        FieldMPAA,                    TEXT_FIELD,     nullptr,                              false, 20074 },
-  { "dateadded",         FieldDateAdded,               DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 570 },
-  { "datemodified",      FieldDateModified,            DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 39119 },
-  { "datenew",           FieldDateNew,                 DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 21877 },
-  { "genre",             FieldGenre,                   TEXT_FIELD,     nullptr,                              true,  515 },
-  { "plot",              FieldPlot,                    TEXT_FIELD,     nullptr,                              false, 207 },
-  { "plotoutline",       FieldPlotOutline,             TEXT_FIELD,     nullptr,                              false, 203 },
-  { "tagline",           FieldTagline,                 TEXT_FIELD,     nullptr,                              false, 202 },
-  { "set",               FieldSet,                     TEXT_FIELD,     nullptr,                              true,  20457 },
-  { "director",          FieldDirector,                TEXT_FIELD,     nullptr,                              true,  20339 },
-  { "actor",             FieldActor,                   TEXT_FIELD,     nullptr,                              true,  20337 },
-  { "writers",           FieldWriter,                  TEXT_FIELD,     nullptr,                              true,  20417 },
-  { "airdate",           FieldAirDate,                 DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 20416 },
-  { "hastrailer",        FieldTrailer,                 BOOLEAN_FIELD,  nullptr,                              false, 20423 },
-  { "studio",            FieldStudio,                  TEXT_FIELD,     nullptr,                              true,  572 },
-  { "country",           FieldCountry,                 TEXT_FIELD,     nullptr,                              true,  574 },
-  { "tvshow",            FieldTvShowTitle,             TEXT_FIELD,     nullptr,                              true,  20364 },
-  { "status",            FieldTvShowStatus,            TEXT_FIELD,     nullptr,                              false, 126 },
-  { "season",            FieldSeason,                  NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 20373 },
-  { "episode",           FieldEpisodeNumber,           NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 20359 },
-  { "numepisodes",       FieldNumberOfEpisodes,        REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 20360 },
-  { "numwatched",        FieldNumberOfWatchedEpisodes, REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 21457 },
-  { "videoresolution",   FieldVideoResolution,         REAL_FIELD,     nullptr,                              false, 21443 },
-  { "videocodec",        FieldVideoCodec,              TEXTIN_FIELD,   nullptr,                              false, 21445 },
-  { "videoaspect",       FieldVideoAspectRatio,        REAL_FIELD,     nullptr,                              false, 21374 },
-  { "audiochannels",     FieldAudioChannels,           REAL_FIELD,     nullptr,                              false, 21444 },
-  { "audiocodec",        FieldAudioCodec,              TEXTIN_FIELD,   nullptr,                              false, 21446 },
-  { "audiolanguage",     FieldAudioLanguage,           TEXTIN_FIELD,   CSmartPlaylistRule::ValidateLanguage, false, 21447 },
-  { "audiocount",        FieldAudioCount,              REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 21481 },
-  { "subtitlecount",     FieldSubtitleCount,           REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 21482 },
-  { "subtitlelanguage",  FieldSubtitleLanguage,        TEXTIN_FIELD,   CSmartPlaylistRule::ValidateLanguage, false, 21448 },
-  { "random",            FieldRandom,                  TEXT_FIELD,     nullptr,                              false, 590 },
-  { "playlist",          FieldPlaylist,                PLAYLIST_FIELD, nullptr,                              true,  559 },
-  { "virtualfolder",     FieldVirtualFolder,           PLAYLIST_FIELD, nullptr,                              true,  614 },
-  { "tag",               FieldTag,                     TEXT_FIELD,     nullptr,                              true,  20459 },
-  { "instruments",       FieldInstruments,             TEXT_FIELD,     nullptr,                              false, 21892 },
-  { "biography",         FieldBiography,               TEXT_FIELD,     nullptr,                              false, 21887 },
-  { "born",              FieldBorn,                    TEXT_FIELD,     nullptr,                              false, 21893 },
-  { "bandformed",        FieldBandFormed,              TEXT_FIELD,     nullptr,                              false, 21894 },
-  { "disbanded",         FieldDisbanded,               TEXT_FIELD,     nullptr,                              false, 21896 },
-  { "died",              FieldDied,                    TEXT_FIELD,     nullptr,                              false, 21897 },
-  { "artisttype",        FieldArtistType,              TEXT_FIELD,     nullptr,                              false, 564 },
-  { "gender",            FieldGender,                  TEXT_FIELD,     nullptr,                              false, 39025 },
-  { "disambiguation",    FieldDisambiguation,          TEXT_FIELD,     nullptr,                              false, 39026 },
-  { "source",            FieldSource,                  TEXT_FIELD,     nullptr,                              true,  39030 },
-  { "disctitle",         FieldDiscTitle,               TEXT_FIELD,     nullptr,                              false, 38076 },
-  { "isboxset",          FieldIsBoxset,                BOOLEAN_FIELD,  nullptr,                              false, 38074 },
-  { "totaldiscs",        FieldTotalDiscs,              NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 38077 },
-  { "originalyear",      FieldOrigYear,                NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  true,  38078 },
-  { "bpm",               FieldBPM,                     NUMERIC_FIELD,  nullptr,                              false, 38080 },
-  { "samplerate",        FieldSampleRate,              NUMERIC_FIELD,  nullptr,                              false, 613 },
-  { "bitrate",           FieldMusicBitRate,            NUMERIC_FIELD,  nullptr,                              false, 623 },
-  { "channels",          FieldNoOfChannels,            NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 253 },
-  { "albumstatus",       FieldAlbumStatus,             TEXT_FIELD,     nullptr,                              false, 38081 },
-  { "albumduration",     FieldAlbumDuration,           SECONDS_FIELD,  StringValidation::IsTime,             false, 180 },
-  { "hdrtype",           FieldHdrType,                 TEXTIN_FIELD,   nullptr,                              false, 20474 },
-  { "hasversions",       FieldHasVideoVersions,        BOOLEAN_FIELD,  nullptr,                              false, 20475 },
-  { "hasextras",         FieldHasVideoExtras,          BOOLEAN_FIELD,  nullptr,                              false, 20476 },
-  { "originallanguage",  FieldOriginalLanguage,        TEXT_FIELD,     CSmartPlaylistRule::ValidateLanguage, false, 40803 },
+  { "none",              FieldNone,                    TEXT_FIELD,     nullptr,                              false, 231, nullptr},
+  { "filename",          FieldFilename,                TEXT_FIELD,     nullptr,                              false, 561, nullptr},
+  { "path",              FieldPath,                    TEXT_FIELD,     nullptr,                              true,  573, nullptr},
+  { "album",             FieldAlbum,                   TEXT_FIELD,     nullptr,                              true,  558, nullptr},
+  { "albumartist",       FieldAlbumArtist,             TEXT_FIELD,     nullptr,                              true,  566, nullptr},
+  { "artist",            FieldArtist,                  TEXT_FIELD,     nullptr,                              true,  557, nullptr},
+  { "tracknumber",       FieldTrackNumber,             NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 554, nullptr},
+  { "role",              FieldRole,                    TEXT_FIELD,     nullptr,                              true, 38033, nullptr},
+  { "comment",           FieldComment,                 TEXT_FIELD,     nullptr,                              false, 569, nullptr},
+  { "review",            FieldReview,                  TEXT_FIELD,     nullptr,                              false, 183, nullptr},
+  { "themes",            FieldThemes,                  TEXT_FIELD,     nullptr,                              false, 21895, nullptr},
+  { "moods",             FieldMoods,                   TEXT_FIELD,     nullptr,                              false, 175, nullptr},
+  { "styles",            FieldStyles,                  TEXT_FIELD,     nullptr,                              false, 176, nullptr},
+  { "type",              FieldAlbumType,               TEXT_FIELD,     nullptr,                              false, 564, nullptr},
+  { "compilation",       FieldCompilation,             BOOLEAN_FIELD,  nullptr,                              false, 204, nullptr},
+  { "label",             FieldMusicLabel,              TEXT_FIELD,     nullptr,                              false, 21899, nullptr},
+  { "title",             FieldTitle,                   TEXT_FIELD,     nullptr,                              true,  556, nullptr},
+  { "sorttitle",         FieldSortTitle,               TEXT_FIELD,     nullptr,                              false, 171, nullptr},
+  { "originaltitle",     FieldOriginalTitle,           TEXT_FIELD,     nullptr,                              false, 20376, nullptr},
+  { "year",              FieldYear,                    NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  true,  562, nullptr},
+  { "time",              FieldTime,                    SECONDS_FIELD,  StringValidation::IsTime,             false, 180, nullptr},
+  { "playcount",         FieldPlaycount,               NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 567, nullptr},
+  { "lastplayed",        FieldLastPlayed,              DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 568, nullptr},
+  { "inprogress",        FieldInProgress,              BOOLEAN_FIELD,  nullptr,                              false, 575, nullptr},
+  { "rating",            FieldRating,                  REAL_FIELD,     CSmartPlaylistRule::ValidateRating,   false, 563, nullptr},
+  { "userrating",        FieldUserRating,              REAL_FIELD,     CSmartPlaylistRule::ValidateMyRating, false, 38018, nullptr},
+  { "votes",             FieldVotes,                   REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 205, nullptr},
+  { "top250",            FieldTop250,                  NUMERIC_FIELD,  nullptr,                              false, 13409, nullptr},
+  { "mpaarating",        FieldMPAA,                    TEXT_FIELD,     nullptr,                              false, 20074, nullptr},
+  { "dateadded",         FieldDateAdded,               DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 570, nullptr},
+  { "datemodified",      FieldDateModified,            DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 39119, nullptr},
+  { "datenew",           FieldDateNew,                 DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 21877, nullptr},
+  { "genre",             FieldGenre,                   TEXT_FIELD,     nullptr,                              true,  515, nullptr},
+  { "plot",              FieldPlot,                    TEXT_FIELD,     nullptr,                              false, 207, nullptr},
+  { "plotoutline",       FieldPlotOutline,             TEXT_FIELD,     nullptr,                              false, 203, nullptr},
+  { "tagline",           FieldTagline,                 TEXT_FIELD,     nullptr,                              false, 202, nullptr},
+  { "set",               FieldSet,                     TEXT_FIELD,     nullptr,                              true,  20457, nullptr},
+  { "director",          FieldDirector,                TEXT_FIELD,     nullptr,                              true,  20339, nullptr},
+  { "actor",             FieldActor,                   TEXT_FIELD,     nullptr,                              true,  20337, nullptr},
+  { "writers",           FieldWriter,                  TEXT_FIELD,     nullptr,                              true,  20417, nullptr},
+  { "airdate",           FieldAirDate,                 DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 20416, nullptr},
+  { "hastrailer",        FieldTrailer,                 BOOLEAN_FIELD,  nullptr,                              false, 20423, nullptr},
+  { "studio",            FieldStudio,                  TEXT_FIELD,     nullptr,                              true,  572, nullptr},
+  { "country",           FieldCountry,                 TEXT_FIELD,     nullptr,                              true,  574, nullptr},
+  { "tvshow",            FieldTvShowTitle,             TEXT_FIELD,     nullptr,                              true,  20364, nullptr},
+  { "status",            FieldTvShowStatus,            TEXT_FIELD,     nullptr,                              false, 126, nullptr},
+  { "season",            FieldSeason,                  NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 20373, nullptr},
+  { "episode",           FieldEpisodeNumber,           NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 20359, nullptr},
+  { "numepisodes",       FieldNumberOfEpisodes,        REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 20360, nullptr},
+  { "numwatched",        FieldNumberOfWatchedEpisodes, REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 21457, nullptr},
+  { "videoresolution",   FieldVideoResolution,         REAL_FIELD,     nullptr,                              false, 21443, nullptr},
+  { "videocodec",        FieldVideoCodec,              TEXTIN_FIELD,   nullptr,                              false, 21445, nullptr},
+  { "videoaspect",       FieldVideoAspectRatio,        REAL_FIELD,     nullptr,                              false, 21374, nullptr},
+  { "audiochannels",     FieldAudioChannels,           REAL_FIELD,     nullptr,                              false, 21444, nullptr},
+  { "audiocodec",        FieldAudioCodec,              TEXTIN_FIELD,   nullptr,                              false, 21446, nullptr},
+  { "audiolanguage",     FieldAudioLanguage,           TEXTIN_FIELD,   CSmartPlaylistRule::ValidateLanguage, false, 21447, nullptr},
+  { "audiocount",        FieldAudioCount,              REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 21481, nullptr},
+  { "subtitlecount",     FieldSubtitleCount,           REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 21482, nullptr},
+  { "subtitlelanguage",  FieldSubtitleLanguage,        TEXTIN_FIELD,   CSmartPlaylistRule::ValidateLanguage, false, 21448, nullptr},
+  { "random",            FieldRandom,                  TEXT_FIELD,     nullptr,                              false, 590, nullptr},
+  { "playlist",          FieldPlaylist,                PLAYLIST_FIELD, nullptr,                              true,  559, nullptr},
+  { "virtualfolder",     FieldVirtualFolder,           PLAYLIST_FIELD, nullptr,                              true,  614, nullptr},
+  { "tag",               FieldTag,                     TEXT_FIELD,     nullptr,                              true,  20459, nullptr},
+  { "instruments",       FieldInstruments,             TEXT_FIELD,     nullptr,                              false, 21892, nullptr},
+  { "biography",         FieldBiography,               TEXT_FIELD,     nullptr,                              false, 21887, nullptr},
+  { "born",              FieldBorn,                    TEXT_FIELD,     nullptr,                              false, 21893, nullptr},
+  { "bandformed",        FieldBandFormed,              TEXT_FIELD,     nullptr,                              false, 21894, nullptr},
+  { "disbanded",         FieldDisbanded,               TEXT_FIELD,     nullptr,                              false, 21896, nullptr},
+  { "died",              FieldDied,                    TEXT_FIELD,     nullptr,                              false, 21897, nullptr},
+  { "artisttype",        FieldArtistType,              TEXT_FIELD,     nullptr,                              false, 564, nullptr},
+  { "gender",            FieldGender,                  TEXT_FIELD,     nullptr,                              false, 39025, nullptr},
+  { "disambiguation",    FieldDisambiguation,          TEXT_FIELD,     nullptr,                              false, 39026, nullptr},
+  { "source",            FieldSource,                  TEXT_FIELD,     nullptr,                              true,  39030, nullptr},
+  { "disctitle",         FieldDiscTitle,               TEXT_FIELD,     nullptr,                              false, 38076, nullptr},
+  { "isboxset",          FieldIsBoxset,                BOOLEAN_FIELD,  nullptr,                              false, 38074, nullptr},
+  { "totaldiscs",        FieldTotalDiscs,              NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 38077, nullptr},
+  { "originalyear",      FieldOrigYear,                NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  true,  38078, nullptr},
+  { "bpm",               FieldBPM,                     NUMERIC_FIELD,  nullptr,                              false, 38080, nullptr},
+  { "samplerate",        FieldSampleRate,              NUMERIC_FIELD,  nullptr,                              false, 613, nullptr},
+  { "bitrate",           FieldMusicBitRate,            NUMERIC_FIELD,  nullptr,                              false, 623, nullptr},
+  { "channels",          FieldNoOfChannels,            NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 253, nullptr},
+  { "albumstatus",       FieldAlbumStatus,             TEXT_FIELD,     nullptr,                              false, 38081, nullptr},
+  { "albumduration",     FieldAlbumDuration,           SECONDS_FIELD,  StringValidation::IsTime,             false, 180, nullptr},
+  { "hdrtype",           FieldHdrType,                 TEXTIN_FIELD,   nullptr,                              false, 20474, nullptr},
+  { "hasversions",       FieldHasVideoVersions,        BOOLEAN_FIELD,  nullptr,                              false, 20475, nullptr},
+  { "hasextras",         FieldHasVideoExtras,          BOOLEAN_FIELD,  nullptr,                              false, 20476, nullptr},
+  { "originallanguage",  FieldOriginalLanguage,        TEXT_FIELD,     CSmartPlaylistRule::ValidateLanguage, false, 40803, StringFormat::AsBcp47Tag},
 };
 // clang-format on
 
@@ -276,6 +279,40 @@ bool CSmartPlaylistRule::Validate(const std::string &input, void *data)
 
   return (
       std::ranges::all_of(values, [data, validator](const auto& s) { return validator(s, data); }));
+}
+
+std::string CSmartPlaylistRule::Format(const std::string& input, void* data)
+{
+  std::string output;
+
+  if (data == NULL)
+    return output;
+
+  CSmartPlaylistRule* rule = static_cast<CSmartPlaylistRule*>(data);
+
+  auto it = std::ranges::find_if(fields, [&rule](const translateField& field)
+                                 { return rule->m_field == field.field; });
+
+  if (it != std::ranges::end(fields) && it->m_formatter != nullptr)
+  {
+    StringFormat::Formatter formatter = it->m_formatter;
+
+    if (input.empty())
+    {
+      output = formatter("", data);
+    }
+    else
+    {
+      // Split the input into multiple values, format separately and reassemble the result
+      std::vector<std::string> values{StringUtils::Split(input, RULE_VALUE_SEPARATOR)};
+
+      std::ranges::for_each(values, [&formatter, &data](std::string& value)
+                            { value = formatter(value, data); });
+
+      output = StringUtils::Join(values, RULE_VALUE_SEPARATOR);
+    }
+  }
+  return output;
 }
 
 std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)

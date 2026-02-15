@@ -16,6 +16,8 @@ class StringFormat
 public:
   using Formatter = std::function<std::string(const std::string& input, void* data)>;
 
+  static std::string AsBcp47Tag(const std::string& input, void* data);
+
 private:
   StringFormat() = delete;
 };

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -563,7 +563,10 @@ void CGUIDialogSmartPlaylistRule::OnInitWindow()
 
   CGUIEditControl *editControl = dynamic_cast<CGUIEditControl*>(GetControl(CONTROL_VALUE));
   if (editControl != NULL)
+  {
     editControl->SetInputValidation(PLAYLIST::CSmartPlaylistRule::Validate, &m_rule);
+    editControl->SetInputFormat(PLAYLIST::CSmartPlaylistRule::Format, &m_rule);
+  }
 }
 
 void CGUIDialogSmartPlaylistRule::OnDeinitWindow(int nextWindowID)

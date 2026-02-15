@@ -52,6 +52,7 @@ public:
   static bool ValidateMyRating(const std::string &input, void *data);
   static bool ValidateDate(const std::string& input, void* data);
   static bool ValidateLanguage(const std::string& input, void* data);
+  static std::string Format(const std::string& input, void* data);
 
 protected:
   std::string GetField(int field, const std::string& type) const override;

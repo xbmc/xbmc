@@ -63,6 +63,7 @@ set(SOURCES ActorProtocol.cpp
             Speed.cpp
             StreamDetails.cpp
             StreamUtils.cpp
+            StringFormat.cpp
             StringUtils.cpp
             StringValidation.cpp
             SystemInfo.cpp
