@@ -19,6 +19,22 @@ using namespace KODI::UTILS::I18N;
 
 namespace
 {
+/*!
+ * \brief Return a reference to the shortest string in the provided list. The first match is returned
+ *        in case multiple strings have the shortest length.
+ * \note The returned reference is valid as long as the list remain in scope of the caller.
+ * \param[in] list List of strings
+ * \return reference to the shortest string.
+ */
+std::string_view ShortestDescription(const std::vector<std::string>& list)
+{
+  if (list.empty())
+    return "";
+
+  return *std::ranges::min_element(list, [](const auto& elem1, const auto& elem2)
+                                   { return elem1.size() < elem2.size(); });
+}
+
 bool AppendRegistryDescSingle(
     const std::optional<TagSubTags>& subTags,
     std::function<std::optional<BaseSubTag>(const TagSubTags& subTag)> member,
@@ -29,7 +45,7 @@ bool AppendRegistryDescSingle(
     if (const auto& subTag = member(subTags.value());
         subTag.has_value() && !subTag.value().m_descriptions.empty())
     {
-      str.append(subTag.value().m_descriptions.front());
+      str.append(ShortestDescription(subTag.value().m_descriptions));
       return true;
     }
   }
@@ -46,16 +62,16 @@ bool AppendRegistryDescVector(const std::optional<TagSubTags>& subTags,
   {
     if (const auto& tagsVector = member(subTags.value()); !tagsVector.empty())
     {
+      // Vector of references OK because subTags has function scope
       std::vector<std::string_view> englishDesc;
       englishDesc.reserve(tagsVector.size());
       std::ranges::for_each(tagsVector,
                             [&englishDesc](const auto& subTag)
                             {
-                              if (!subTag.m_descriptions.empty() &&
-                                  !subTag.m_descriptions.front().empty())
-                                englishDesc.push_back(subTag.m_descriptions.front());
-                              else
-                                englishDesc.push_back(subTag.m_subTag);
+                              auto& newDesc = englishDesc.emplace_back(
+                                  ShortestDescription(subTag.m_descriptions));
+                              if (newDesc.empty())
+                                newDesc = subTag.m_subTag;
                             });
       str.append(StringUtils::Join(englishDesc, sep));
 

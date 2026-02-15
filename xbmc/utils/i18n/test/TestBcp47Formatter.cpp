@@ -35,8 +35,8 @@ const TestFormatting FormattingTests[] = {
     {"eng", "eng"}, // eng is  not valid
     {"en-AU", "English (Australia)"},
     {"es-419", "Spanish (Latin America and the Caribbean)"},
-    {"zh-yue-Hant-HK", "Chinese (Yue Chinese, Han (Traditional variant), Hong Kong)"},
-    {"yue-Hant", "Yue Chinese (Han (Traditional variant))"},
+    {"zh-yue-Hant-HK", "Chinese (Cantonese, Han (Traditional variant), Hong Kong)"},
+    {"yue-Hant", "Cantonese (Han (Traditional variant))"},
     // All subtags
     {"zz-ext-exz-bcde-fg-abcde-0abc-e-abcd-ef-f-ef-x-a-bcd",
      "zz (ext-exz, Bcde, FG, abcde-0abc, e-abcd-ef-f-ef, x-a-bcd)"},
@@ -156,6 +156,45 @@ TEST_P(RecommendedCasingTester, ParseTag)
 INSTANTIATE_TEST_SUITE_P(TestI18nBcp47Formatter,
                          RecommendedCasingTester,
                          testing::ValuesIn(RecommendedCasingTests));
+
+TEST(TestI18nBcp47Formatter, ShortestDesc)
+{
+  // clang-format off
+  std::vector<RegistryFileRecord> param = {
+      RegistryFileRecord{{{"Type", "language"},
+                          {"Subtag", "qaa"},
+                          {"Description", "longer description"},
+                          {"Description", "shortest desc"},
+                          {"Description", "short description"}}},
+      RegistryFileRecord{{{"Type", "language"},
+                          {"Subtag", "qab"},
+                          {"Description", "description 1"},
+                          {"Description", "description 2"}}},
+
+  };
+  // clang-format on
+
+  std::unique_ptr<IRegistryRecordProvider> provider =
+      std::make_unique<CMemoryRecordProvider>(std::move(param));
+  CSubTagRegistryManager registry;
+  EXPECT_TRUE(registry.Initialize(std::move(provider)));
+
+  auto tag = CBcp47::ParseTag("qaa", &registry);
+  EXPECT_TRUE(tag.has_value());
+  if (tag.has_value())
+  {
+    // { required to quiet clang warning about dangling else
+    EXPECT_EQ("shortest desc", tag->Format(Bcp47FormattingStyle::FORMAT_ENGLISH));
+  }
+
+  tag = CBcp47::ParseTag("qab", &registry);
+  EXPECT_TRUE(tag.has_value());
+  if (tag.has_value())
+  {
+    // { required to quiet clang warning about dangling else
+    EXPECT_EQ("description 1", tag->Format(Bcp47FormattingStyle::FORMAT_ENGLISH));
+  }
+}
 
 struct TestDebugFormatting
 {
