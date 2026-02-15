@@ -1,3 +1,17 @@
+1.8.1
+refactored duration storage to use VideoInfoTag instead of stream details
+updated language files
+
+1.8.0
+first version for Kodi 22 (Piers)
+use new VideoInfoTag call to add fanart
+added season plot
+added tagline
+added original language
+
+1.7.4
+fix for breaking change to TMDB API for fanart
+
 1.7.3
 fix to properly using English videos as fallback
 

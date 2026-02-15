@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.tvshows.themoviedb.org.python"
   name="TMDb TV Shows"
-  version="1.7.3"
+  version="1.8.1"
   provider-name="Team Kodi">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
@@ -10,8 +10,14 @@
   <extension point="xbmc.metadata.scraper.tvshows" library="main.py" cachepersistence="00:15"/>
   <extension point="xbmc.addon.metadata">
     <reuselanguageinvoker>true</reuselanguageinvoker>
-    <news>1.7.3
-fix to properly get English videos as fallback
+    <news>1.8.1
+first version for Kodi 22 (Piers)
+added season plot
+added tagline
+added original language
+use new VideoInfoTag call to add fanart
+refactored duration to be stored in VideoInfoTag rather than stream details
+updated language files
 	</news>
     <platform>all</platform>
     <license>GPL-3.0-or-later</license>

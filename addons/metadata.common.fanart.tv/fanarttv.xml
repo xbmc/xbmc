@@ -1,149 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scraperfunctions>
-	<GetFanartTvArtistThumbsByMBID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseFanartTvArtistThumbs&quot; cache=&quot;fanarttv-artistimages-\1.json&quot;&gt;https://webservice.fanart.tv/v3/music/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression noclean="1" />
-		</RegExp>
-	</GetFanartTvArtistThumbsByMBID>
-	<ParseFanartTvArtistThumbs dest="5" clearbuffers="no">
-		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="" output="" dest="13">
-				<expression />
-			</RegExp>
-			<RegExp input="" output="" dest="16">
-				<expression />
-			</RegExp>
-			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;artistthumb&quot;:\s\[(.*?)\}\s*\]</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;thumb&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</ParseFanartTvArtistThumbs>
-
-	<GetFanartTvArtistClearlogoByMBID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseFanartTvArtistClearlogo&quot; cache=&quot;fanarttv-artistimages-\1.json&quot;&gt;https://webservice.fanart.tv/v3/music/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression noclean="1" />
-		</RegExp>
-	</GetFanartTvArtistClearlogoByMBID>
-	<ParseFanartTvArtistClearlogo dest="5" clearbuffers="no">
-		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="" output="" dest="13">
-				<expression />
-			</RegExp>
-			<RegExp input="" output="" dest="16">
-				<expression />
-			</RegExp>
-			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;hdmusiclogo&quot;:\s\[(.*?)\}\s*\]</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;clearlogo&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</ParseFanartTvArtistClearlogo>
-
-	<GetFanartTvArtistBannerByMBID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseFanartTvArtistBanner&quot; cache=&quot;fanarttv-artistimages-\1.json&quot;&gt;https://webservice.fanart.tv/v3/music/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression noclean="1" />
-		</RegExp>
-	</GetFanartTvArtistBannerByMBID>
-	<ParseFanartTvArtistBanner dest="5" clearbuffers="no">
-		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="" output="" dest="13">
-				<expression />
-			</RegExp>
-			<RegExp input="" output="" dest="16">
-				<expression />
-			</RegExp>
-			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;musicbanner&quot;:\s\[(.*?)\}\s*\]</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;banner&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</ParseFanartTvArtistBanner>
-
-	<GetFanartTvArtistFanartsByMBID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseFanartTvArtistFanarts&quot; cache=&quot;fanarttv-artistimages-\1.json&quot;&gt;https://webservice.fanart.tv/v3/music/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression noclean="1" />
-		</RegExp>
-	</GetFanartTvArtistFanartsByMBID>
-	<ParseFanartTvArtistFanarts dest="5" clearbuffers="no">
-		<RegExp input="$$13" output="&lt;details&gt;&lt;fanart&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
-			<RegExp input="" output="" dest="13">
-				<expression />
-			</RegExp>
-			<RegExp input="" output="" dest="14">
-				<expression />
-			</RegExp>
-			<RegExp input="" output="" dest="16">
-				<expression />
-			</RegExp>
-			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;artistbackground&quot;:\s\[(.*?)\}\s*\]</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="14">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
-			</RegExp>
-			<RegExp input="$$14" output="\1" dest="13">
-				<expression noclean="1">(.+)</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</ParseFanartTvArtistFanarts>
-
-	<GetFanartTvAlbumThumbsByMBID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseFanartTvAlbumThumbs&quot; cache=&quot;fanarttv-albumimages-\1.json&quot;&gt;https://webservice.fanart.tv/v3/music/albums/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression noclean="1" />
-		</RegExp>
-	</GetFanartTvAlbumThumbsByMBID>
-	<ParseFanartTvAlbumThumbs dest="5" clearbuffers="no">
-		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="" output="" dest="13">
-				<expression />
-			</RegExp>
-			<RegExp input="" output="" dest="16">
-				<expression />
-			</RegExp>
-			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;albumcover&quot;:\s\[(.*?)\}\s*\]</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;thumb&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</ParseFanartTvAlbumThumbs>
-
-	<GetFanartTvAlbumDiscartByMBID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseFanartTvAlbumDiscart&quot; cache=&quot;fanarttv-albumimages-\1.json&quot;&gt;https://webservice.fanart.tv/v3/music/albums/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression noclean="1" />
-		</RegExp>
-	</GetFanartTvAlbumDiscartByMBID>
-	<ParseFanartTvAlbumDiscart dest="5" clearbuffers="no">
-		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="" output="" dest="13">
-				<expression />
-			</RegExp>
-			<RegExp input="" output="" dest="16">
-				<expression />
-			</RegExp>
-			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;cdart&quot;:\s\[(.*?)\}\s*\]</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;discart&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</ParseFanartTvAlbumDiscart>
-
 	<GetFanartTvFanartByIdChain dest="4">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
 			<RegExp input="$$1" output="&lt;url function=&quot;ParseFanartTvFanart&quot; cache=&quot;fanarttv-\1.json&quot;&gt;https://webservice.fanart.tv/v3/movies/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;" dest="5">
@@ -164,10 +20,10 @@
 				<expression />
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;moviebackground&quot;:\s\[(.*?)\}\s*\]</expression>
+				<expression noclean="1">&quot;moviebackground&quot;:\s*\[(.*?)\}\s*\]</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="14">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;[^&quot;]*&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$14" output="\1" dest="13">
 				<expression noclean="1">(.+)</expression>
@@ -196,20 +52,49 @@
 				<expression />
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;movieposter&quot;:\s\[(.*?)\}\s*\]</expression>
+				<expression noclean="1">&quot;movieposter&quot;:\s*\[(.*?)\}\s*\]</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;poster&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;$$11&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;$$11&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;poster&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;en&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;en&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;poster&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;00&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;00&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
 	</ParseFanartTvMoviePoster>
+
+	<GetFanartTvKeyartsByIdChain clearbuffers="no" dest="4"> <!-- Expected chaining format= tmdb_id::language-->
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
+			<RegExp input="$$1" output="\2" dest="11">
+				<expression>(.+)::(.+)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseFanartTvMovieKeyarts&quot; cache=&quot;fanarttv-\1.json&quot;&gt;https://webservice.fanart.tv/v3/movies/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;" dest="5">
+				<expression>(.+)::(.+)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</GetFanartTvKeyartsByIdChain>
+	<ParseFanartTvMovieKeyarts dest="5" clearbuffers="no">
+		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="" output="" dest="13">
+				<expression />
+			</RegExp>
+			<RegExp input="" output="" dest="16">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="16">
+				<expression noclean="1">&quot;movieposter&quot;:\s*\[(.*?)\}\s*\]</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;keyart&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;00&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseFanartTvMovieKeyarts>
 
 	<GetFanartTvMovieClearlogoByIdChain dest="4" clearbuffers="no">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
@@ -231,16 +116,16 @@
 				<expression />
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;hdmovielogo&quot;:\s\[(.*?)\}\s*\]</expression>
+				<expression noclean="1">&quot;hdmovielogo&quot;:\s*\[(.*?)\}\s*\]</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;clearlogo&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;$$18&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;$$11&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;clearlogo&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;en&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;en&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;clearlogo&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;00&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;00&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -266,16 +151,16 @@
 				<expression />
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;hdmovieclearart&quot;:\s\[(.*?)\}\s*\]</expression>
+				<expression noclean="1">&quot;hdmovieclearart&quot;:\s*\[(.*?)\}\s*\]</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;clearart&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;$$18&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;$$11&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;clearart&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;en&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;en&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;clearart&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;00&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;00&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -301,16 +186,16 @@
 				<expression />
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;moviebanner&quot;:\s\[(.*?)\}\s*\]</expression>
+				<expression noclean="1">&quot;moviebanner&quot;:\s*\[(.*?)\}\s*\]</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;banner&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;$$18&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;$$11&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;banner&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;en&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;en&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;banner&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;00&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;00&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -336,16 +221,16 @@
 				<expression />
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;moviethumb&quot;:\s\[(.*?)\}\s*\]</expression>
+				<expression noclean="1">&quot;moviethumb&quot;:\s*\[(.*?)\}\s*\]</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;landscape&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;$$18&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;$$11&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;landscape&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;en&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;en&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;landscape&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;00&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;00&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -371,16 +256,16 @@
 				<expression />
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;moviedisc&quot;:\s\[(.*?)\}\s*\]</expression>
+				<expression noclean="1">&quot;moviedisc&quot;:\s*\[(.*?)\}\s*\]</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;discart&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;$$18&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;$$11&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;discart&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;en&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;en&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;discart&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;00&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;00&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -409,16 +294,16 @@
 				<expression />
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;movieposter&quot;:\s\[(.*?)\}\s*\]</expression>
+				<expression noclean="1">&quot;movieposter&quot;:\s*\[(.*?)\}\s*\]</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;set.poster&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;$$10&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;$$11&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;set.poster&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;en&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;en&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;set.poster&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;00&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;00&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -444,10 +329,10 @@
 				<expression />
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;moviebackground&quot;:\s\[(.*?)\}\s*\]</expression>
+				<expression noclean="1">&quot;moviebackground&quot;:\s*\[(.*?)\}\s*\]</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;set.fanart&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="14">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;[^&quot;]*&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$14" output="\1" dest="13">
 				<expression noclean="1">(.+)</expression>
@@ -476,16 +361,16 @@
 				<expression />
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;hdmovielogo&quot;:\s\[(.*?)\}\s*\]</expression>
+				<expression noclean="1">&quot;hdmovielogo&quot;:\s*\[(.*?)\}\s*\]</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;set.clearlogo&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;$$18&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;$$11&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;set.clearlogo&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;en&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;en&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;set.clearlogo&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;00&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;00&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -511,16 +396,16 @@
 				<expression />
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;hdmovieclearart&quot;:\s\[(.*?)\}\s*\]</expression>
+				<expression noclean="1">&quot;hdmovieclearart&quot;:\s*\[(.*?)\}\s*\]</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;set.clearart&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;$$18&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;$$11&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;set.clearart&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;en&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;en&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;set.clearart&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;00&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;00&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -546,16 +431,16 @@
 				<expression />
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;moviebanner&quot;:\s\[(.*?)\}\s*\]</expression>
+				<expression noclean="1">&quot;moviebanner&quot;:\s*\[(.*?)\}\s*\]</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;set.banner&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;$$18&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;$$11&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;set.banner&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;en&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;en&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;set.banner&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;00&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;00&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -581,16 +466,16 @@
 				<expression />
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;moviethumb&quot;:\s\[(.*?)\}\s*\]</expression>
+				<expression noclean="1">&quot;moviethumb&quot;:\s*\[(.*?)\}\s*\]</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;set.landscape&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;$$18&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;$$11&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;set.landscape&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;en&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;en&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;set.landscape&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;00&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;00&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -616,351 +501,19 @@
 				<expression />
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;moviedisc&quot;:\s\[(.*?)\}\s*\]</expression>
+				<expression noclean="1">&quot;moviedisc&quot;:\s*\[(.*?)\}\s*\]</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;set.discart&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;$$18&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;$$11&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;set.discart&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;en&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;en&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb aspect=&quot;set.discart&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;00&quot;</expression>
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s*&quot;\d*&quot;,\s*&quot;lang&quot;:\s*&quot;00&quot;,&quot;likes&quot;:\s*&quot;\d*&quot;,&quot;url&quot;:\s*&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
 	</ParseFanartTvMovieSetDiscart>
-
-	<GetFanartTvTvShowPosterByIdChain dest="4" clearbuffers="no">
-		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
-			<RegExp input="$$1" output="\1" dest="18">
-				<expression encode="1">.+::(.+)</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseFanartTvTvShowPoster&quot; cache=&quot;fanarttv-\1.json&quot;&gt;https://webservice.fanart.tv/v3/tv/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;" dest="5">
-				<expression encode="1">(.+)::.+</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</GetFanartTvTvShowPosterByIdChain>
-	<ParseFanartTvTvShowPoster dest="5" clearbuffers="no">
-		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="" output="" dest="13">
-				<expression />
-			</RegExp>
-			<RegExp input="" output="" dest="16">
-				<expression />
-			</RegExp>
-			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;tvposter&quot;:\s\[(.*?)\}\s*\]</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;poster&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;$$18&quot;</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;poster&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;en&quot;</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;poster&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;!$$18|!en&quot;</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</ParseFanartTvTvShowPoster>
-
-	<GetFanartTvTvShowBannerByIdChain dest="4" clearbuffers="no">
-		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
-			<RegExp input="$$1" output="\1" dest="18">
-				<expression encode="1">.+::(.+)</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseFanartTvTvShowBanner&quot; cache=&quot;fanarttv-\1.json&quot;&gt;https://webservice.fanart.tv/v3/tv/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;" dest="5">
-				<expression encode="1">(.+)::.+</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</GetFanartTvTvShowBannerByIdChain>
-	<ParseFanartTvTvShowBanner dest="5" clearbuffers="no">
-		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="" output="" dest="13">
-				<expression />
-			</RegExp>
-			<RegExp input="" output="" dest="16">
-				<expression />
-			</RegExp>
-			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;tvbanner&quot;:\s\[(.*?)\}\s*\]</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;banner&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;$$18&quot;</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;banner&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;en&quot;</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;banner&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;!$$18|!en&quot;</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</ParseFanartTvTvShowBanner>
-
-	<GetFanartTvTvShowLandscapeByIdChain dest="4" clearbuffers="no">
-		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
-			<RegExp input="$$1" output="\1" dest="18">
-				<expression encode="1">.+::(.+)</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseFanartTvTvShowLandscape&quot; cache=&quot;fanarttv-\1.json&quot;&gt;https://webservice.fanart.tv/v3/tv/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;" dest="5">
-				<expression encode="1">(.+)::.+</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</GetFanartTvTvShowLandscapeByIdChain>
-	<ParseFanartTvTvShowLandscape dest="5" clearbuffers="no">
-		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="" output="" dest="13">
-				<expression />
-			</RegExp>
-			<RegExp input="" output="" dest="16">
-				<expression />
-			</RegExp>
-			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;tvthumb&quot;:\s\[(.*?)\}\s*\]</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;landscape&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;$$18&quot;</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;landscape&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;en&quot;</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;landscape&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;!$$18|!en&quot;</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</ParseFanartTvTvShowLandscape>
-
-	<GetFanartTvTvShowClearlogoByIdChain dest="4" clearbuffers="no">
-		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
-			<RegExp input="$$1" output="\1" dest="18">
-				<expression encode="1">.+::(.+)</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseFanartTvTvShowClearlogo&quot; cache=&quot;fanarttv-\1.json&quot;&gt;https://webservice.fanart.tv/v3/tv/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;" dest="5">
-				<expression encode="1">(.+)::.+</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</GetFanartTvTvShowClearlogoByIdChain>
-	<ParseFanartTvTvShowClearlogo dest="5" clearbuffers="no">
-		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="" output="" dest="13">
-				<expression />
-			</RegExp>
-			<RegExp input="" output="" dest="16">
-				<expression />
-			</RegExp>
-			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;hdtvlogo&quot;:\s\[(.*?)\}\s*\]</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;clearlogo&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;$$18&quot;</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;clearlogo&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;en&quot;</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;clearlogo&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;!$$18|!en&quot;</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</ParseFanartTvTvShowClearlogo>
-
-	<GetFanartTvTvShowClearartByIdChain dest="4" clearbuffers="no">
-		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
-			<RegExp input="$$1" output="\1" dest="18">
-				<expression encode="1">.+::(.+)</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseFanartTvTvShowClearart&quot; cache=&quot;fanarttv-\1.json&quot;&gt;https://webservice.fanart.tv/v3/tv/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;" dest="5">
-				<expression encode="1">(.+)::.+</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</GetFanartTvTvShowClearartByIdChain>
-	<ParseFanartTvTvShowClearart dest="5" clearbuffers="no">
-		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="" output="" dest="13">
-				<expression />
-			</RegExp>
-			<RegExp input="" output="" dest="16">
-				<expression />
-			</RegExp>
-			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;hdclearart&quot;:\s\[(.*?)\}\s*\]</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;clearart&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;$$18&quot;</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;clearart&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;en&quot;</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;clearart&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;!$$18|!en&quot;</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</ParseFanartTvTvShowClearart>
-
-	<GetFanartTvTvShowFanartByIdChain dest="4">
-		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseFanartTvTvShowFanart&quot; cache=&quot;fanarttv-\1.json&quot;&gt;https://webservice.fanart.tv/v3/tv/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;" dest="5">
-				<expression />
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</GetFanartTvTvShowFanartByIdChain>
-	<ParseFanartTvTvShowFanart dest="5">
-		<RegExp input="$$13" output="&lt;details&gt;&lt;fanart&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
-			<RegExp input="" output="" dest="13">
-				<expression />
-			</RegExp>
-			<RegExp input="" output="" dest="16">
-				<expression />
-			</RegExp>
-			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;showbackground&quot;:\s\[(.*?)\}\s*\]</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</ParseFanartTvTvShowFanart>
-
-	<GetFanartTvTvShowCharacterartByIdChain dest="4">
-		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseFanartTvTvShowCharacterart&quot; cache=&quot;fanarttv-\1.json&quot;&gt;https://webservice.fanart.tv/v3/tv/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;" dest="5">
-				<expression />
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</GetFanartTvTvShowCharacterartByIdChain>
-	<ParseFanartTvTvShowCharacterart dest="5">
-		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="" output="" dest="13">
-				<expression />
-			</RegExp>
-			<RegExp input="" output="" dest="16">
-				<expression />
-			</RegExp>
-			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;characterart&quot;:\s\[(.*?)\}\s*\]</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;characterart&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</ParseFanartTvTvShowCharacterart>
-
-	<GetFanartTvTvShowSeasonposterByIdChain clearbuffers="no" dest="4">
-		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
-			<RegExp input="$$1" output="\1" dest="18">
-				<expression encode="1">.+::(.+)</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseFanartTvTvShowSeasonposter&quot; cache=&quot;fanarttv-\1.json&quot;&gt;https://webservice.fanart.tv/v3/tv/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;" dest="5">
-				<expression encode="1">(.+)::.+</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</GetFanartTvTvShowSeasonposterByIdChain>
-	<ParseFanartTvTvShowSeasonposter dest="5" clearbuffers="no">
-		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="" output="" dest="13">
-				<expression />
-			</RegExp>
-			<RegExp input="" output="" dest="16">
-				<expression />
-			</RegExp>
-			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;seasonposter&quot;:\s\[(.*?)\}\s*\]</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;poster&quot; type=&quot;season&quot; season=&quot;\3&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;$$18&quot;,\s*&quot;likes[^,]*,\s*&quot;season&quot;:\s&quot;([0-9,]+)</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;poster&quot; type=&quot;season&quot; season=&quot;\3&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;en&quot;,\s*&quot;likes[^,]*,\s*&quot;season&quot;:\s&quot;([0-9,]+)</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;poster&quot; type=&quot;season&quot; season=&quot;\3&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;!$$18|!en&quot;,\s*&quot;likes[^,]*,\s*&quot;season&quot;:\s&quot;([0-9,]+)</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</ParseFanartTvTvShowSeasonposter>
-
-	<GetFanartTvTvShowSeasonbannerByIdChain clearbuffers="no" dest="4">
-		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
-			<RegExp input="$$1" output="\1" dest="18">
-				<expression encode="1">.+::(.+)</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseFanartTvTvShowSeasonbanner&quot; cache=&quot;fanarttv-\1.json&quot;&gt;https://webservice.fanart.tv/v3/tv/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;" dest="5">
-				<expression encode="1">(.+)::.+</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</GetFanartTvTvShowSeasonbannerByIdChain>
-	<ParseFanartTvTvShowSeasonbanner dest="5" clearbuffers="no">
-		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="" output="" dest="13">
-				<expression />
-			</RegExp>
-			<RegExp input="" output="" dest="16">
-				<expression />
-			</RegExp>
-			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;seasonbanner&quot;:\s\[(.*?)\}\s*\]</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;banner&quot; type=&quot;season&quot; season=&quot;\3&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;$$18&quot;,\s*&quot;likes[^,]*,\s*&quot;season&quot;:\s&quot;([0-9,]+)</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;banner&quot; type=&quot;season&quot; season=&quot;\3&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;en&quot;,\s*&quot;likes[^,]*,\s*&quot;season&quot;:\s&quot;([0-9,]+)</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;banner&quot; type=&quot;season&quot; season=&quot;\3&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;!$$18|!en&quot;,\s*&quot;likes[^,]*,\s*&quot;season&quot;:\s&quot;([0-9,]+)</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</ParseFanartTvTvShowSeasonbanner>
-
-	<GetFanartTvTvShowSeasonLandscapeByIdChain clearbuffers="no" dest="4">
-		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
-			<RegExp input="$$1" output="\1" dest="18">
-				<expression encode="1">.+::(.+)</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseFanartTvTvShowSeasonLandscape&quot; cache=&quot;fanarttv-\1.json&quot;&gt;https://webservice.fanart.tv/v3/tv/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;" dest="5">
-				<expression encode="1">(.+)::.+</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</GetFanartTvTvShowSeasonLandscapeByIdChain>
-	<ParseFanartTvTvShowSeasonLandscape dest="5" clearbuffers="no">
-		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="" output="" dest="13">
-				<expression />
-			</RegExp>
-			<RegExp input="" output="" dest="16">
-				<expression />
-			</RegExp>
-			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;seasonthumb&quot;:\s\[(.*?)\}\s*\]</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;landscape&quot; type=&quot;season&quot; season=&quot;\3&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;$$18&quot;,\s*&quot;likes[^,]*,\s*&quot;season&quot;:\s&quot;([0-9,]+)</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;landscape&quot; type=&quot;season&quot; season=&quot;\3&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;en&quot;,\s*&quot;likes[^,]*,\s*&quot;season&quot;:\s&quot;([0-9,]+)</expression>
-			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb aspect=&quot;landscape&quot; type=&quot;season&quot; season=&quot;\3&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https?://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;!$$18|!en&quot;,\s*&quot;likes[^,]*,\s*&quot;season&quot;:\s&quot;([0-9,]+)</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</ParseFanartTvTvShowSeasonLandscape>
 
 </scraperfunctions>
