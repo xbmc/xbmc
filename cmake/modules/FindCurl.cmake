@@ -14,6 +14,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     find_package(Brotli REQUIRED ${SEARCH_QUIET})
     find_package(NGHttp2 REQUIRED ${SEARCH_QUIET})
     find_package(OpenSSL REQUIRED ${SEARCH_QUIET})
+    find_package(ZSTD REQUIRED ${SEARCH_QUIET})
 
     # Darwin platforms link against toolchain provided zlib regardless
     # They will fail when searching for static. All other platforms, prefer static
@@ -46,7 +47,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                    -DCURL_USE_OPENSSL=ON
                    -DOPENSSL_ROOT_DIR=${DEPENDS_PATH}
                    -DCURL_BROTLI=ON
-                   -DCURL_ZSTD=OFF
+                   -DCURL_ZSTD=ON
                    -DUSE_NGHTTP2=ON
                    -DUSE_LIBIDN2=OFF
                    -DCURL_USE_LIBSSH2=OFF
@@ -62,14 +63,16 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                                                     LIBRARY::NGHttp2
                                                                     OpenSSL::Crypto
                                                                     OpenSSL::SSL
-                                                                    LIBRARY::ZLIB)
+                                                                    LIBRARY::ZLIB
+                                                                    LIBRARY::ZSTD)
 
     # Add dependencies to build target
     add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} LIBRARY::Brotli
                                                                         LIBRARY::NGHttp2
                                                                         OpenSSL::SSL
                                                                         OpenSSL::Crypto
-                                                                        LIBRARY::ZLIB)
+                                                                        LIBRARY::ZLIB
+                                                                        LIBRARY::ZSTD)
   endmacro()
 
   # If there is a potential this library can be built internally
@@ -80,7 +83,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     set(${CMAKE_FIND_PACKAGE_NAME}_DEPLIST Brotli
                                            NGHttp2
                                            OpenSSL
-                                           ZLIB)
+                                           ZLIB
+                                           ZSTD)
 
     check_dependency_build(${CMAKE_FIND_PACKAGE_NAME} "${${CMAKE_FIND_PACKAGE_NAME}_DEPLIST}")
   endif()
