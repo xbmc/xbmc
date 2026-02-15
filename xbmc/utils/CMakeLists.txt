@@ -168,6 +168,7 @@ set(HEADERS ActorProtocol.h
             Stopwatch.h
             StreamDetails.h
             StreamUtils.h
+            StringFormat.h
             StringUtils.h
             StringValidation.h
             SystemInfo.h

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -123,6 +123,10 @@ bool CGUIEditControl::OnMessage(CGUIMessage &message)
   {
     SetLabel2(message.GetLabel());
     UpdateText();
+  }
+  else if (message.GetMessage() == GUI_MSG_LOSTFOCUS)
+  {
+    FormatInput();
   }
   return CGUIButtonControl::OnMessage(message);
 }
@@ -775,6 +779,17 @@ void CGUIEditControl::SetInputValidation(StringValidation::Validator inputValida
   ValidateInput();
 }
 
+void CGUIEditControl::SetInputFormat(StringFormat::Formatter inputFormatter, void* data)
+{
+  if (m_inputFormatter.target_type() == inputFormatter.target_type() &&
+      m_inputFormatter.target<StringFormat::Formatter>() ==
+          inputFormatter.target<StringFormat::Formatter>())
+    return;
+
+  m_inputFormatter = inputFormatter;
+  m_inputFormatterData = data;
+}
+
 bool CGUIEditControl::ValidateInput(const std::wstring &data) const
 {
   if (m_inputValidator == NULL)
@@ -798,6 +813,23 @@ void CGUIEditControl::ValidateInput()
     SendWindowMessage(msg);
 
     SetInvalid();
+  }
+}
+
+void CGUIEditControl::FormatInput()
+{
+  if (m_inputFormatter == nullptr)
+    return;
+
+  const std::string origStr = GetLabel2();
+  const std::string newStr = m_inputFormatter(origStr, m_inputFormatterData != NULL
+                                                           ? m_inputFormatterData
+                                                           : const_cast<void*>((const void*)this));
+
+  if (newStr != origStr)
+  {
+    SetLabel2(newStr);
+    UpdateText();
   }
 }
 
