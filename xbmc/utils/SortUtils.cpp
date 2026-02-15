@@ -519,26 +519,28 @@ bool preliminarySort(const SortItem& left,
                      std::wstring& labelRight)
 {
   // make sure both items have the necessary data to do the sorting
-  SortItem::const_iterator itLeftSort, itRightSort;
-  if ((itLeftSort = left.find(FieldSort)) == left.end())
+  const auto itLeftSort = left.find(FieldSort);
+  if (itLeftSort == left.end())
   {
     result = false;
     return true;
   }
-  if ((itRightSort = right.find(FieldSort)) == right.end())
+  const auto itRightSort = right.find(FieldSort);
+  if (itRightSort == right.end())
   {
     result = true;
     return true;
   }
 
   // look at special sorting behaviour
-  SortItem::const_iterator itLeft, itRight;
   SortSpecial leftSortSpecial = SortSpecial::NONE;
   SortSpecial rightSortSpecial = SortSpecial::NONE;
-  if ((itLeft = left.find(FieldSortSpecial)) != left.end() &&
+  if (const auto itLeft = left.find(FieldSortSpecial);
+      itLeft != left.end() &&
       itLeft->second.asInteger() <= static_cast<int64_t>(SortSpecial::BOTTOM))
     leftSortSpecial = static_cast<SortSpecial>(itLeft->second.asInteger());
-  if ((itRight = right.find(FieldSortSpecial)) != right.end() &&
+  if (const auto itRight = right.find(FieldSortSpecial);
+      itRight != right.end() &&
       itRight->second.asInteger() <= static_cast<int64_t>(SortSpecial::BOTTOM))
     rightSortSpecial = static_cast<SortSpecial>(itRight->second.asInteger());
 
@@ -567,8 +569,8 @@ bool preliminarySort(const SortItem& left,
 
   if (handleFolder)
   {
-    itLeft = left.find(FieldFolder);
-    itRight = right.find(FieldFolder);
+    const auto itLeft = left.find(FieldFolder);
+    const auto itRight = right.find(FieldFolder);
     if (itLeft != left.end() && itRight != right.end() &&
         itLeft->second.asBoolean() != itRight->second.asBoolean())
     {
