@@ -22,23 +22,22 @@ class CRenderBufferOpenGLES : public CRenderBufferSysMem
 {
 public:
   CRenderBufferOpenGLES(CRenderContext& context,
-                        GLuint pixeltype,
-                        GLuint internalformat,
-                        GLuint pixelformat,
+                        GLuint pixelType,
+                        GLuint internalFormat,
+                        GLuint pixelFormat,
                         GLuint bpp);
   ~CRenderBufferOpenGLES() override;
 
-  // implementation of IRenderBuffer via CRenderBufferSysMem
+  // Implementation of IRenderBuffer via CRenderBufferSysMem
   bool UploadTexture() override;
-
   GLuint TextureID() const { return m_textureId; }
 
 private:
   // Construction parameters
   CRenderContext& m_context;
-  const GLuint m_pixeltype;
-  const GLuint m_internalformat;
-  const GLuint m_pixelformat;
+  const GLuint m_pixelType;
+  const GLuint m_internalFormat;
+  const GLuint m_pixelFormat;
   const GLuint m_bpp;
 
   const GLenum m_textureTarget = GL_TEXTURE_2D; //! @todo

@@ -57,13 +57,11 @@ std::unique_ptr<CTexture> CShaderLutGL::CreateLUTTexture(const ShaderLut& lut)
   textureGL->LoadToGPU();
 
   const GLint wrapType = CShaderUtilsGL::TranslateWrapType(lut.wrapType);
+  const GLfloat blackBorder[4] = {0.0f, 0.0f, 0.0f, 0.0f};
 
   glBindTexture(GL_TEXTURE_2D, textureGL->GetTextureID());
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapType);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapType);
-
-  const GLfloat blackBorder[4] = {0.0f, 0.0f, 0.0f, 0.0f};
-
   glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, blackBorder);
 
   return texture;

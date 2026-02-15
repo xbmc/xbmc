@@ -24,35 +24,35 @@ bool CRenderBufferPoolOpenGL::IsCompatible(const CRenderVideoSettings& renderSet
 
 IRenderBuffer* CRenderBufferPoolOpenGL::CreateRenderBuffer(void* header /* = nullptr */)
 {
-  return new CRenderBufferOpenGL(m_pixeltype, m_internalformat, m_pixelformat, m_bpp);
+  return new CRenderBufferOpenGL(m_pixelType, m_internalFormat, m_pixelFormat, m_bpp);
 }
 
 bool CRenderBufferPoolOpenGL::ConfigureInternal()
 {
-  // Configure CRenderBufferPoolOpenGLES
+  // Configure CRenderBufferPoolOpenGL
   switch (m_format)
   {
     case AV_PIX_FMT_0RGB32:
     {
-      m_pixeltype = GL_UNSIGNED_BYTE;
-      m_internalformat = GL_RGBA;
-      m_pixelformat = GL_BGRA;
+      m_pixelType = GL_UNSIGNED_BYTE;
+      m_internalFormat = GL_RGBA8;
+      m_pixelFormat = GL_BGRA;
       m_bpp = sizeof(uint32_t);
       return true;
     }
     case AV_PIX_FMT_RGB555:
     {
-      m_pixeltype = GL_UNSIGNED_SHORT_5_5_5_1;
-      m_internalformat = GL_RGB;
-      m_pixelformat = GL_RGB;
+      m_pixelType = GL_UNSIGNED_SHORT_5_5_5_1;
+      m_internalFormat = GL_RGB;
+      m_pixelFormat = GL_RGB;
       m_bpp = sizeof(uint16_t);
       return true;
     }
     case AV_PIX_FMT_RGB565:
     {
-      m_pixeltype = GL_UNSIGNED_SHORT_5_6_5;
-      m_internalformat = GL_RGB;
-      m_pixelformat = GL_RGB;
+      m_pixelType = GL_UNSIGNED_SHORT_5_6_5;
+      m_internalFormat = GL_RGB565;
+      m_pixelFormat = GL_RGB;
       m_bpp = sizeof(uint16_t);
       return true;
     }

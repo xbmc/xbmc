@@ -21,7 +21,7 @@ class CRenderContext;
 class CRenderBufferOpenGL : public CRenderBufferSysMem
 {
 public:
-  CRenderBufferOpenGL(GLuint pixeltype, GLuint internalformat, GLuint pixelformat, GLuint bpp);
+  CRenderBufferOpenGL(GLuint pixelType, GLuint internalFormat, GLuint pixelFormat, GLuint bpp);
   ~CRenderBufferOpenGL() override;
 
   bool UploadTexture() override;
@@ -29,9 +29,9 @@ public:
 
 private:
   // Construction parameters
-  const GLuint m_pixeltype;
-  const GLuint m_internalformat;
-  const GLuint m_pixelformat;
+  const GLuint m_pixelType;
+  const GLuint m_internalFormat;
+  const GLuint m_pixelFormat;
   const GLuint m_bpp;
 
   const GLenum m_textureTarget = GL_TEXTURE_2D; //! @todo
