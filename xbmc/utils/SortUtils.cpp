@@ -1013,18 +1013,18 @@ void SortUtils::Sort(SortBy sortBy, SortOrder sortOrder, SortAttribute attribute
       Fields sortingFields = GetFieldsForSorting(sortBy);
 
       // Prepare the string used for sorting and store it under FieldSort
-      for (DatabaseResults::iterator item = items.begin(); item != items.end(); ++item)
+      for (auto& item : items)
       {
         // add all fields to the item that are required for sorting if they are currently missing
-        for (Fields::const_iterator field = sortingFields.begin(); field != sortingFields.end(); ++field)
+        for (const auto& field : sortingFields)
         {
-          if (!item->contains(*field))
-            item->insert(std::pair<Field, CVariant>(*field, CVariant::ConstNullVariant));
+          if (!item.contains(field))
+            item.emplace(field, CVariant::ConstNullVariant);
         }
 
         std::wstring sortLabel;
-        g_charsetConverter.utf8ToW(preparator(attributes, *item), sortLabel, false);
-        item->insert(std::pair<Field, CVariant>(FieldSort, CVariant(sortLabel)));
+        g_charsetConverter.utf8ToW(preparator(attributes, item), sortLabel, false);
+        item.emplace(FieldSort, CVariant(sortLabel));
       }
 
       // Do the sorting
@@ -1052,18 +1052,18 @@ void SortUtils::Sort(SortBy sortBy, SortOrder sortOrder, SortAttribute attribute
       Fields sortingFields = GetFieldsForSorting(sortBy);
 
       // Prepare the string used for sorting and store it under FieldSort
-      for (SortItems::iterator item = items.begin(); item != items.end(); ++item)
+      for (auto& item : items)
       {
         // add all fields to the item that are required for sorting if they are currently missing
-        for (Fields::const_iterator field = sortingFields.begin(); field != sortingFields.end(); ++field)
+        for (const auto& field : sortingFields)
         {
-          if (!(*item)->contains(*field))
-            (*item)->insert(std::pair<Field, CVariant>(*field, CVariant::ConstNullVariant));
+          if (!item->contains(field))
+            item->emplace(field, CVariant::ConstNullVariant);
         }
 
         std::wstring sortLabel;
-        g_charsetConverter.utf8ToW(preparator(attributes, **item), sortLabel, false);
-        (*item)->insert(std::pair<Field, CVariant>(FieldSort, CVariant(sortLabel)));
+        g_charsetConverter.utf8ToW(preparator(attributes, *item), sortLabel, false);
+        item->emplace(FieldSort, CVariant(sortLabel));
       }
 
       // Do the sorting
