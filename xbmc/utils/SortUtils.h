@@ -178,20 +178,21 @@ typedef enum
 } SortBy;
 ///@}
 
-typedef struct SortDescription {
+struct SortDescription
+{
   SortBy sortBy = SortByNone;
   SortOrder sortOrder = SortOrder::ASCENDING;
   SortAttribute sortAttributes = SortAttributeNone;
   int limitStart = 0;
   int limitEnd = -1;
-} SortDescription;
+};
 
-typedef struct GUIViewSortDetails
+struct GUIViewSortDetails
 {
   SortDescription m_sortDescription;
   int m_buttonLabel;
   LABEL_MASKS m_labelMasks;
-} GUIViewSortDetails;
+};
 
 typedef DatabaseResult SortItem;
 typedef std::shared_ptr<SortItem> SortItemPtr;
