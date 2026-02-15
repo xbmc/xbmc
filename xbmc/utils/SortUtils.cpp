@@ -1030,12 +1030,12 @@ void SortUtils::Sort(SortBy sortBy, SortOrder sortOrder, SortAttribute attribute
     }
   }
 
-  if (limitStart > 0 && (size_t)limitStart < items.size())
+  if (limitStart > 0 && static_cast<size_t>(limitStart) < items.size())
   {
     items.erase(items.begin(), items.begin() + limitStart);
     limitEnd -= limitStart;
   }
-  if (limitEnd > 0 && (size_t)limitEnd < items.size())
+  if (limitEnd > 0 && static_cast<size_t>(limitEnd) < items.size())
     items.erase(items.begin() + limitEnd, items.end());
 }
 
@@ -1069,12 +1069,12 @@ void SortUtils::Sort(SortBy sortBy, SortOrder sortOrder, SortAttribute attribute
     }
   }
 
-  if (limitStart > 0 && (size_t)limitStart < items.size())
+  if (limitStart > 0 && static_cast<size_t>(limitStart) < items.size())
   {
     items.erase(items.begin(), items.begin() + limitStart);
     limitEnd -= limitStart;
   }
-  if (limitEnd > 0 && (size_t)limitEnd < items.size())
+  if (limitEnd > 0 && static_cast<size_t>(limitEnd) < items.size())
     items.erase(items.begin() + limitEnd, items.end());
 }
 
