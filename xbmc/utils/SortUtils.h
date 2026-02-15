@@ -195,8 +195,7 @@ struct GUIViewSortDetails
 };
 
 using SortItem = DatabaseResult;
-using SortItemPtr = std::shared_ptr<SortItem>;
-using SortItems = std::vector<SortItemPtr>;
+using SortItems = std::vector<std::shared_ptr<SortItem>>;
 
 class SortUtils
 {
@@ -230,7 +229,8 @@ public:
 
   typedef std::string (*SortPreparator) (SortAttribute, const SortItem&);
   typedef bool (*Sorter) (const DatabaseResult &, const DatabaseResult &);
-  typedef bool (*SorterIndirect) (const SortItemPtr &, const SortItemPtr &);
+  typedef bool (*SorterIndirect)(const std::shared_ptr<SortItem>&,
+                                 const std::shared_ptr<SortItem>&);
 
 private:
   static const SortPreparator& getPreparator(SortBy sortBy);

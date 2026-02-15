@@ -616,22 +616,26 @@ bool SorterIgnoreFoldersDescending(const SortItem &left, const SortItem &right)
   return StringUtils::AlphaNumericCompare(labelLeft, labelRight) > 0;
 }
 
-bool SorterIndirectAscending(const SortItemPtr &left, const SortItemPtr &right)
+bool SorterIndirectAscending(const std::shared_ptr<SortItem>& left,
+                             const std::shared_ptr<SortItem>& right)
 {
   return SorterAscending(*left, *right);
 }
 
-bool SorterIndirectDescending(const SortItemPtr &left, const SortItemPtr &right)
+bool SorterIndirectDescending(const std::shared_ptr<SortItem>& left,
+                              const std::shared_ptr<SortItem>& right)
 {
   return SorterDescending(*left, *right);
 }
 
-bool SorterIndirectIgnoreFoldersAscending(const SortItemPtr &left, const SortItemPtr &right)
+bool SorterIndirectIgnoreFoldersAscending(const std::shared_ptr<SortItem>& left,
+                                          const std::shared_ptr<SortItem>& right)
 {
   return SorterIgnoreFoldersAscending(*left, *right);
 }
 
-bool SorterIndirectIgnoreFoldersDescending(const SortItemPtr &left, const SortItemPtr &right)
+bool SorterIndirectIgnoreFoldersDescending(const std::shared_ptr<SortItem>& left,
+                                           const std::shared_ptr<SortItem>& right)
 {
   return SorterIgnoreFoldersDescending(*left, *right);
 }
