@@ -13,7 +13,6 @@
 \brief
 */
 
-#include "Album.h"
 #include "MediaSource.h"
 #include "addons/Scraper.h"
 #include "dbwrappers/Database.h"
@@ -29,9 +28,16 @@
 #include <utility>
 #include <vector>
 
+class CAlbum;
 class CArtist;
+class CArtistCredit;
+class CDiscoAlbum;
 class CFileItem;
 class CMusicDbUrl;
+class CMusicRole;
+class CSong;
+enum class ReleaseType;
+class ReplayGain;
 class TiXmlNode;
 
 namespace dbiplus
@@ -81,7 +87,7 @@ class CFileItemList;
  Here is the database layout:
   \image html musicdatabase.png
 
- \sa CAlbum, CSong, CMapSong, VECALBUMS
+ \sa CAlbum, CSong, CMapSong
  */
 class CMusicDatabase : public CDatabase
 {
@@ -294,7 +300,7 @@ public:
                const std::string& strType,
                const std::string& strReleaseStatus,
                bool bCompilation,
-               CAlbum::ReleaseType releaseType);
+               ReleaseType releaseType);
 
   /*! \brief retrieve an album, optionally with all songs.
    \param idAlbum the database id of the album.
@@ -325,7 +331,7 @@ public:
                   const std::string& strOrigReleaseDate,
                   bool bBoxedSet,
                   bool bCompilation,
-                  CAlbum::ReleaseType releaseType,
+                  ReleaseType releaseType,
                   bool bScrapedMBID);
   bool ClearAlbumLastScrapedTime(int idAlbum);
   bool HasAlbumBeenScraped(int idAlbum) const;
@@ -507,17 +513,17 @@ public:
   // Top 100
   /////////////////////////////////////////////////
   bool GetTop100(const std::string& strBaseDir, CFileItemList& items);
-  bool GetTop100Albums(VECALBUMS& albums);
+  bool GetTop100Albums(std::vector<CAlbum>& albums);
   bool GetTop100AlbumSongs(const std::string& strBaseDir, CFileItemList& item);
 
   /////////////////////////////////////////////////
   // Recently added
   /////////////////////////////////////////////////
-  bool GetRecentlyAddedAlbums(VECALBUMS& albums, unsigned int limit = 0);
+  bool GetRecentlyAddedAlbums(std::vector<CAlbum>& albums, unsigned int limit = 0);
   bool GetRecentlyAddedAlbumSongs(const std::string& strBaseDir,
                                   CFileItemList& item,
                                   unsigned int limit = 0);
-  bool GetRecentlyPlayedAlbums(VECALBUMS& albums);
+  bool GetRecentlyPlayedAlbums(std::vector<CAlbum>& albums);
   bool GetRecentlyPlayedAlbumSongs(const std::string& strBaseDir, CFileItemList& item);
 
   /////////////////////////////////////////////////

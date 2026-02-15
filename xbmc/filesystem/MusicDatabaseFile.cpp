@@ -10,6 +10,7 @@
 
 #include "URL.h"
 #include "music/MusicDatabase.h"
+#include "music/Song.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 

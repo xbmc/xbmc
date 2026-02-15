@@ -11,6 +11,7 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "ServiceBroker.h"
+#include "music/Album.h"
 #include "music/MusicDatabase.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
@@ -49,16 +50,15 @@ bool CDirectoryNodeAlbumRecentlyPlayed::GetContent(CFileItemList& items) const
   if (!musicdatabase.Open())
     return false;
 
-  VECALBUMS albums;
+  std::vector<CAlbum> albums;
   if (!musicdatabase.GetRecentlyPlayedAlbums(albums))
   {
     musicdatabase.Close();
     return false;
   }
 
-  for (int i=0; i<(int)albums.size(); ++i)
+  for (const CAlbum& album : albums)
   {
-    CAlbum& album=albums[i];
     std::string strDir = StringUtils::Format("{}{}/", BuildPath(), album.idAlbum);
     CFileItemPtr pItem(new CFileItem(strDir, album));
     items.Add(pItem);

@@ -14,6 +14,7 @@
 #include "ServiceBroker.h"
 #include "filesystem/Directory.h"
 #include "imagefiles/ImageFileURL.h"
+#include "music/Artist.h"
 #include "music/MusicDatabase.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"

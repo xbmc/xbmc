@@ -10,6 +10,7 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "music/Album.h"
 #include "music/MusicDatabase.h"
 #include "utils/StringUtils.h"
 
@@ -19,7 +20,6 @@ CDirectoryNodeAlbumTop100::CDirectoryNodeAlbumTop100(const std::string& strName,
                                                      CDirectoryNode* pParent)
   : CDirectoryNode(NodeType::ALBUM_TOP100, strName, pParent)
 {
-
 }
 
 NodeType CDirectoryNodeAlbumTop100::GetChildType() const
@@ -44,16 +44,15 @@ bool CDirectoryNodeAlbumTop100::GetContent(CFileItemList& items) const
   if (!musicdatabase.Open())
     return false;
 
-  VECALBUMS albums;
+  std::vector<CAlbum> albums;
   if (!musicdatabase.GetTop100Albums(albums))
   {
     musicdatabase.Close();
     return false;
   }
 
-  for (int i=0; i<(int)albums.size(); ++i)
+  for (const CAlbum& album : albums)
   {
-    CAlbum& album=albums[i];
     std::string strDir = StringUtils::Format("{}{}/", BuildPath(), album.idAlbum);
     CFileItemPtr pItem(new CFileItem(strDir, album));
     items.Add(pItem);

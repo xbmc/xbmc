@@ -54,7 +54,7 @@ public:
    \param albums [out] albums found within these songs.
    */
   static void FileItemsToAlbums(const CFileItemList& items,
-                                VECALBUMS& albums,
+                                std::vector<CAlbum>& albums,
                                 std::map<std::string, std::vector<CSong>>* songsMap = nullptr);
 
   /*! \brief Scrape additional album information and update the music database with it.
@@ -105,7 +105,7 @@ protected:
    \param albums [in/out] list of albums to categorise - art field may be altered.
    \param path [in] path containing albums.
    */
-  static void FindArtForAlbums(VECALBUMS &albums, const std::string &path);
+  static void FindArtForAlbums(std::vector<CAlbum>& albums, const std::string& path);
 
   /*! \brief Scrape additional album information and update the database.
    Search for the given album using the given scraper.

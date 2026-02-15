@@ -633,7 +633,7 @@ static bool SortSongsByTrack(const CSong& song, const CSong& song2)
 
 void CMusicInfoScanner::FileItemsToAlbums(
     const CFileItemList& items,
-    VECALBUMS& albums,
+    std::vector<CAlbum>& albums,
     std::map<std::string, std::vector<CSong>>* songsMap /* = nullptr */)
 {
   /*
@@ -682,10 +682,9 @@ void CMusicInfoScanner::FileItemsToAlbums(
 
     if (!tag.GetMusicBrainzAlbumID().empty())
     {
-      VECALBUMS::iterator it;
-      for (it = albums.begin(); it != albums.end(); ++it)
-        if (it->strMusicBrainzAlbumID == tag.GetMusicBrainzAlbumID())
-          break;
+      const auto it = std::ranges::find_if(
+          albums, [&tag](const auto& album)
+          { return album.strMusicBrainzAlbumID == tag.GetMusicBrainzAlbumID(); });
 
       if (it == albums.end())
       {
@@ -936,7 +935,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(const std::string& strDirectory, CFileI
   if (ScanTags(items, scannedItems) == InfoRet::CANCELLED || scannedItems.Size() == 0)
     return 0;
 
-  VECALBUMS albums;
+  std::vector<CAlbum> albums;
   FileItemsToAlbums(scannedItems, albums, &songsMap);
 
   /*
@@ -980,7 +979,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(const std::string& strDirectory, CFileI
 
     // mark albums without a title as singles
     if (album.strAlbum.empty())
-      album.releaseType = CAlbum::Single;
+      album.releaseType = ReleaseType::Single;
 
     album.strPath = strDirectory;
     m_musicDatabase.AddAlbum(album, m_idSourcePath);
@@ -1103,7 +1102,7 @@ void MUSIC_INFO::CMusicInfoScanner::ScrapeInfoAddedAlbums()
   folder or set later by scraping from NFO files or remote sources).Clearing
   saves caching repeats of the same image.
 */
-void CMusicInfoScanner::FindArtForAlbums(VECALBUMS &albums, const std::string &path)
+void CMusicInfoScanner::FindArtForAlbums(std::vector<CAlbum>& albums, const std::string& path)
 {
   /*
    If there's a single album in the folder, then art can be taken from

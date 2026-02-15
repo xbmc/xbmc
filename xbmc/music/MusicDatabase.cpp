@@ -1425,7 +1425,7 @@ int CMusicDatabase::AddAlbum(const std::string& strAlbum,
                              const std::string& strType,
                              const std::string& strReleaseStatus,
                              bool bCompilation,
-                             CAlbum::ReleaseType releaseType)
+                             ReleaseType releaseType)
 {
   std::string strSQL;
   try
@@ -1554,7 +1554,7 @@ int CMusicDatabase::UpdateAlbum(int idAlbum,
                                 const std::string& strOrigReleaseDate,
                                 bool bBoxedSet,
                                 bool bCompilation,
-                                CAlbum::ReleaseType releaseType,
+                                ReleaseType releaseType,
                                 bool bScrapedMBID)
 {
   if (idAlbum < 0)
@@ -3615,7 +3615,7 @@ bool CMusicDatabase::GetTop100(const std::string& strBaseDir, CFileItemList& ite
   return false;
 }
 
-bool CMusicDatabase::GetTop100Albums(VECALBUMS& albums)
+bool CMusicDatabase::GetTop100Albums(std::vector<CAlbum>& albums)
 {
   try
   {
@@ -3726,7 +3726,7 @@ bool CMusicDatabase::GetTop100AlbumSongs(const std::string& strBaseDir, CFileIte
   return false;
 }
 
-bool CMusicDatabase::GetRecentlyPlayedAlbums(VECALBUMS& albums)
+bool CMusicDatabase::GetRecentlyPlayedAlbums(std::vector<CAlbum>& albums)
 {
   try
   {
@@ -3747,7 +3747,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbums(VECALBUMS& albums)
                    "JOIN albumview ON albumview.idAlbum = playedalbums.idAlbum "
                    "JOIN albumartistview ON albumview.idAlbum = albumartistview.idAlbum "
                    "ORDER BY albumview.lastplayed DESC, albumartistview.iorder ",
-                   CAlbum::ReleaseTypeToString(CAlbum::Album).c_str(), RECENTLY_PLAYED_LIMIT);
+                   CAlbum::ReleaseTypeToString(ReleaseType::Album).c_str(), RECENTLY_PLAYED_LIMIT);
 
     auto queryStart = std::chrono::steady_clock::now();
     CLog::LogF(LOGDEBUG, "query: {}", strSQL);
@@ -3887,7 +3887,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbumSongs(const std::string& strBaseDir,
   return false;
 }
 
-bool CMusicDatabase::GetRecentlyAddedAlbums(VECALBUMS& albums, unsigned int limit)
+bool CMusicDatabase::GetRecentlyAddedAlbums(std::vector<CAlbum>& albums, unsigned int limit)
 {
   try
   {
@@ -8669,10 +8669,10 @@ void CMusicDatabase::UpdateTables(int version)
     // set strReleaseType based on album name
     m_pDS->exec(PrepareSQL(
         "UPDATE album SET strReleaseType = '%s' WHERE strAlbum IS NOT NULL AND strAlbum <> ''",
-        CAlbum::ReleaseTypeToString(CAlbum::Album).c_str()));
+        CAlbum::ReleaseTypeToString(ReleaseType::Album).c_str()));
     m_pDS->exec(
         PrepareSQL("UPDATE album SET strReleaseType = '%s' WHERE strAlbum IS NULL OR strAlbum = ''",
-                   CAlbum::ReleaseTypeToString(CAlbum::Single).c_str()));
+                   CAlbum::ReleaseTypeToString(ReleaseType::Single).c_str()));
   }
   if (version < 51)
   {
@@ -11246,7 +11246,7 @@ int CMusicDatabase::GetSinglesCount()
 {
   CDatabase::Filter filter(
       PrepareSQL("songview.idAlbum IN (SELECT idAlbum FROM album WHERE strReleaseType = '%s')",
-                 CAlbum::ReleaseTypeToString(CAlbum::Single).c_str()));
+                 CAlbum::ReleaseTypeToString(ReleaseType::Single).c_str()));
   return GetSongsCount(filter);
 }
 
@@ -11986,7 +11986,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
       // Find albums to export
       std::vector<int> albumIds;
       std::string strSQL = PrepareSQL("SELECT idAlbum FROM album WHERE strReleaseType = '%s' ",
-                                      CAlbum::ReleaseTypeToString(CAlbum::Album).c_str());
+                                      CAlbum::ReleaseTypeToString(ReleaseType::Album).c_str());
       if (!settings.IsUnscraped())
         strSQL += "AND lastScraped IS NOT NULL";
       CLog::LogF(LOGDEBUG, "{}", strSQL);
@@ -13734,7 +13734,7 @@ bool CMusicDatabase::GetFilter(CDbUrl& musicUrl, Filter& filter, SortDescription
       option = options.find("show_singles");
       if (option == options.end() || !option->second.asBoolean())
         filter.AppendWhere(PrepareSQL("albumview.strReleaseType = '%s'",
-                                      CAlbum::ReleaseTypeToString(CAlbum::Album).c_str()));
+                                      CAlbum::ReleaseTypeToString(ReleaseType::Album).c_str()));
     }
   }
   else if (type == "discs")
@@ -13837,7 +13837,7 @@ bool CMusicDatabase::GetFilter(CDbUrl& musicUrl, Filter& filter, SortDescription
       filter.AppendWhere(PrepareSQL(
           "songview.idAlbum %sIN (SELECT idAlbum FROM album WHERE strReleaseType = '%s')",
           option->second.asBoolean() ? "" : "NOT ",
-          CAlbum::ReleaseTypeToString(CAlbum::Single).c_str()));
+          CAlbum::ReleaseTypeToString(ReleaseType::Single).c_str()));
 
     // When have idAlbum skip year, compilation, boxset criteria as already applied via album
     if (idAlbum < 0)
