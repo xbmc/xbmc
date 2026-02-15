@@ -10,7 +10,6 @@
 
 #include "ServiceBroker.h"
 #include "Util.h"
-#include "XBDateTime.h"
 #include "dbwrappers/Database.h"
 #include "filesystem/File.h"
 #include "filesystem/SmartPlaylistDirectory.h"
@@ -277,42 +276,6 @@ bool CSmartPlaylistRule::Validate(const std::string &input, void *data)
 
   return (
       std::ranges::all_of(values, [data, validator](const auto& s) { return validator(s, data); }));
-}
-
-bool CSmartPlaylistRule::ValidateRating(const std::string &input, void *data)
-{
-  char *end = NULL;
-  std::string strRating = input;
-  StringUtils::Trim(strRating);
-
-  double rating = std::strtod(strRating.c_str(), &end);
-  return (end == NULL || *end == '\0') &&
-         rating >= 0.0 && rating <= 10.0;
-}
-
-bool CSmartPlaylistRule::ValidateMyRating(const std::string &input, void *data)
-{
-  std::string strRating = input;
-  StringUtils::Trim(strRating);
-
-  int rating = atoi(strRating.c_str());
-  return StringValidation::IsPositiveInteger(input, data) && rating <= 10;
-}
-
-bool CSmartPlaylistRule::ValidateDate(const std::string& input, void* data)
-{
-  if (!data)
-    return false;
-
-  const auto* rule = static_cast<CSmartPlaylistRule*>(data);
-
-  //! @todo implement a validation for relative dates
-  if (rule->m_operator == OPERATOR_IN_THE_LAST || rule->m_operator == OPERATOR_NOT_IN_THE_LAST)
-    return true;
-
-  // The date format must be YYYY-MM-DD
-  CDateTime dt;
-  return dt.SetFromRFC3339FullDate(input);
 }
 
 std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)

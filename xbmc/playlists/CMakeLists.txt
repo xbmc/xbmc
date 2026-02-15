@@ -11,6 +11,7 @@ set(SOURCES PlayList.cpp
             PlayListXML.cpp
             PlayListXSPF.cpp
             SmartPlayList.cpp
+            SmartPlayListValidation.cpp
             SmartPlaylistFileItemListModifier.cpp)
 
 set(HEADERS PlayList.h
