@@ -93,7 +93,7 @@ namespace XFILE
 
       if (dir != NULL)
       {
-        pItem->SetSpecialSort(SortSpecialOnTop);
+        pItem->SetSpecialSort(SortSpecial::TOP);
         items.Add(pItem);
         delete dir;
       }

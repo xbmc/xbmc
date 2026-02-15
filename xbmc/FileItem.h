@@ -233,8 +233,8 @@ public:
   void SetDepth(int depth) { m_depth = depth; }
   int GetStartPartNumber() const { return m_lStartPartNumber; }
   void SetStartPartNumber(int number) { m_lStartPartNumber = number; }
-  bool SortsOnTop() const { return m_specialSort == SortSpecialOnTop; }
-  bool SortsOnBottom() const { return m_specialSort == SortSpecialOnBottom; }
+  bool SortsOnTop() const { return m_specialSort == SortSpecial::TOP; }
+  bool SortsOnBottom() const { return m_specialSort == SortSpecial::BOTTOM; }
   void SetSpecialSort(SortSpecial sort) { m_specialSort = sort; }
 
   inline bool HasMusicInfoTag() const { return m_musicInfoTag != nullptr; }
@@ -573,7 +573,7 @@ private:
   int m_depth{1};
   int m_lStartPartNumber{1};
   KODI::UTILS::CLockInfo m_lockInfo;
-  SortSpecial m_specialSort{SortSpecialNone};
+  SortSpecial m_specialSort{SortSpecial::NONE};
   bool m_bIsParentFolder{false};
   bool m_bCanQueue{true};
   bool m_bLabelPreformatted{false};

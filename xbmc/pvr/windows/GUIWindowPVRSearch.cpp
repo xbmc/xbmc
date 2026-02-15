@@ -152,7 +152,7 @@ void CGUIWindowPVRSearchBase::OnPrepareFileItems(CFileItemList& items)
     item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
         m_searchfilter == nullptr ? 19335 : 19336)); // "New search..." / "Edit search..."
     item->SetLabelPreformatted(true);
-    item->SetSpecialSort(SortSpecialOnTop);
+    item->SetSpecialSort(SortSpecial::TOP);
     item->SetArt("icon", "DefaultPVRSearch.png");
     items.Add(item);
 
@@ -162,7 +162,7 @@ void CGUIWindowPVRSearchBase::OnPrepareFileItems(CFileItemList& items)
     item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
         19337)); // "Saved searches"
     item->SetLabelPreformatted(true);
-    item->SetSpecialSort(SortSpecialOnTop);
+    item->SetSpecialSort(SortSpecial::TOP);
     item->SetArt("icon", "DefaultFolder.png");
     items.Add(item);
   }

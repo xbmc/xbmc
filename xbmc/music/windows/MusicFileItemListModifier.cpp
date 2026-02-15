@@ -112,10 +112,12 @@ void CMusicFileItemListModifier::AddQueuingFolder(CFileItemList& items)
   if (pItem)
   {
     pItem->SetFolder(true);
-    pItem->SetSpecialSort(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bMusicLibraryAllItemsOnBottom ? SortSpecialOnBottom : SortSpecialOnTop);
+    const auto advSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+    pItem->SetSpecialSort(advSettings->m_bMusicLibraryAllItemsOnBottom ? SortSpecial::BOTTOM
+                                                                       : SortSpecial::TOP);
     pItem->SetCanQueue(false);
     pItem->SetLabelPreformatted(true);
-    if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bMusicLibraryAllItemsOnBottom)
+    if (advSettings->m_bMusicLibraryAllItemsOnBottom)
       items.Add(pItem);
     else
       items.AddFront(pItem, (items.Size() > 0 && items[0]->IsParentFolder()) ? 1 : 0);

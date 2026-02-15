@@ -35,11 +35,12 @@ typedef enum
   SortAttributeForceConsiderFolders = 0x10, // overrides SortAttributeIgnoreFolders
 } SortAttribute;
 
-typedef enum {
-  SortSpecialNone     = 0,
-  SortSpecialOnTop    = 1,
-  SortSpecialOnBottom = 2
-} SortSpecial;
+enum class SortSpecial
+{
+  NONE,
+  TOP,
+  BOTTOM
+};
 
 ///
 /// \defgroup List_of_sort_methods List of sort methods

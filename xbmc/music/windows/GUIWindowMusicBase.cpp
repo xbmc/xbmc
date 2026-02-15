@@ -866,7 +866,7 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
       newPlaylist->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(525));
       newPlaylist->SetArt("icon", "DefaultAddSource.png");
       newPlaylist->SetLabelPreformatted(true);
-      newPlaylist->SetSpecialSort(SortSpecialOnBottom);
+      newPlaylist->SetSpecialSort(SortSpecial::BOTTOM);
       newPlaylist->SetCanQueue(false);
       items.Add(newPlaylist);
 
@@ -875,7 +875,7 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
           CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21437));
       newPlaylist->SetArt("icon", "DefaultAddSource.png");
       newPlaylist->SetLabelPreformatted(true);
-      newPlaylist->SetSpecialSort(SortSpecialOnBottom);
+      newPlaylist->SetSpecialSort(SortSpecial::BOTTOM);
       newPlaylist->SetCanQueue(false);
       items.Add(newPlaylist);
     }

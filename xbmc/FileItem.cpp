@@ -525,7 +525,7 @@ void CFileItem::Archive(CArchive& ar)
     ar << m_bCanQueue;
     ar << m_mimetype;
     ar << m_extrainfo;
-    ar << m_specialSort;
+    ar << static_cast<int>(m_specialSort);
     ar << m_doContentLookup;
 
     if (m_musicInfoTag)
@@ -588,7 +588,7 @@ void CFileItem::Archive(CArchive& ar)
     ar >> m_mimetype;
     ar >> m_extrainfo;
     ar >> temp;
-    m_specialSort = (SortSpecial)temp;
+    m_specialSort = static_cast<SortSpecial>(temp);
     ar >> m_doContentLookup;
 
     int iType;
@@ -743,7 +743,7 @@ void CFileItem::ToSortable(SortItem &sortable, const Fields &fields) const
   /* FieldLabel is used as a fallback by all sorters and therefore has to be present as well */
   sortable[FieldLabel] = GetLabel();
   /* FieldSortSpecial and FieldFolder are required in conjunction with all other sorters as well */
-  sortable[FieldSortSpecial] = m_specialSort;
+  sortable[FieldSortSpecial] = static_cast<int>(m_specialSort);
   sortable[FieldFolder] = IsFolder();
 }
 
@@ -1131,7 +1131,7 @@ void CFileItem::SetLabel(const std::string &strLabel)
   {
     m_bIsParentFolder = true;
     SetFolder(true);
-    m_specialSort = SortSpecialOnTop;
+    m_specialSort = SortSpecial::TOP;
     SetLabelPreformatted(true);
   }
   CGUIListItem::SetLabel(strLabel);

@@ -1034,9 +1034,9 @@ namespace XBMCAddon
       StringUtils::ToLower(specialSort);
 
       if (specialSort == "bottom")
-        item->SetSpecialSort(SortSpecialOnBottom);
+        item->SetSpecialSort(SortSpecial::BOTTOM);
       else if (specialSort == "top")
-        item->SetSpecialSort(SortSpecialOnTop);
+        item->SetSpecialSort(SortSpecial::TOP);
     }
 
     void ListItem::setContentLookupRaw(bool enable)
