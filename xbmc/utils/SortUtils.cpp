@@ -17,6 +17,7 @@
 #include "utils/Variant.h"
 
 #include <algorithm>
+#include <array>
 #include <limits>
 
 std::string ArrayToString(SortAttribute attributes, const CVariant &variant, const std::string &separator = " / ")
@@ -1145,13 +1146,9 @@ const Fields& SortUtils::GetFieldsForSorting(SortBy sortBy)
 std::string SortUtils::RemoveArticles(const std::string &label)
 {
   const CLangInfo::Tokens sortTokens = g_langInfo.GetSortTokens();
-  for (std::set<std::string>::const_iterator token = sortTokens.begin(); token != sortTokens.end(); ++token)
-  {
-    if (token->size() < label.size() && StringUtils::StartsWithNoCase(label, *token))
-      return label.substr(token->size());
-  }
-
-  return label;
+  const auto match = std::ranges::find_if(sortTokens, [&label](const auto& token)
+                                          { return StringUtils::StartsWithNoCase(label, token); });
+  return match == sortTokens.end() ? label : label.substr(match->size());
 }
 
 struct sort_map
@@ -1163,123 +1160,124 @@ struct sort_map
 };
 
 // clang-format off
-const sort_map table[] = {
-  { SortByLabel,                    SortMethod::LABEL,                        SortAttributeNone,          551 },
-  { SortByLabel,                    SortMethod::LABEL_IGNORE_THE,             SortAttributeIgnoreArticle, 551 },
-  { SortByLabel,                    SortMethod::LABEL_IGNORE_FOLDERS,         SortAttributeIgnoreFolders, 551 },
-  { SortByDate,                     SortMethod::DATE,                         SortAttributeNone,          552 },
-  { SortBySize,                     SortMethod::SIZE,                         SortAttributeNone,          553 },
-  { SortByBitrate,                  SortMethod::BITRATE,                      SortAttributeNone,          623 },
-  { SortByDriveType,                SortMethod::DRIVE_TYPE,                   SortAttributeNone,          564 },
-  { SortByTrackNumber,              SortMethod::TRACKNUM,                     SortAttributeNone,          554 },
-  { SortByEpisodeNumber,            SortMethod::EPISODE,                      SortAttributeNone,          20359 },// 20360 "Episodes" used for SORT_METHOD_EPISODE for sorting tvshows by episode count
-  { SortByTime,                     SortMethod::DURATION,                     SortAttributeNone,          180 },
-  { SortByTime,                     SortMethod::VIDEO_RUNTIME,                SortAttributeNone,          180 },
-  { SortByTitle,                    SortMethod::TITLE,                        SortAttributeNone,          556 },
-  { SortByTitle,                    SortMethod::TITLE_IGNORE_THE,             SortAttributeIgnoreArticle, 556 },
-  { SortByTitle,                    SortMethod::VIDEO_TITLE,                  SortAttributeNone,          556 },
-  { SortByArtist,                   SortMethod::ARTIST,                       SortAttributeNone,          557 },
-  { SortByArtistThenYear,           SortMethod::ARTIST_AND_YEAR,              SortAttributeNone,          578 },
-  { SortByArtist,                   SortMethod::ARTIST_IGNORE_THE,            SortAttributeIgnoreArticle, 557 },
-  { SortByAlbum,                    SortMethod::ALBUM,                        SortAttributeNone,          558 },
-  { SortByAlbum,                    SortMethod::ALBUM_IGNORE_THE,             SortAttributeIgnoreArticle, 558 },
-  { SortByGenre,                    SortMethod::GENRE,                        SortAttributeNone,          515 },
-  { SortByCountry,                  SortMethod::COUNTRY,                      SortAttributeNone,          574 },
-  { SortByDateAdded,                SortMethod::DATEADDED,                    SortAttributeIgnoreFolders, 570 },
-  { SortByFile,                     SortMethod::FILE,                         SortAttributeIgnoreFolders, 561 },
-  { SortByRating,                   SortMethod::SONG_RATING,                  SortAttributeNone,          563 },
-  { SortByRating,                   SortMethod::VIDEO_RATING,                 SortAttributeIgnoreFolders, 563 },
-  { SortByUserRating,               SortMethod::SONG_USER_RATING,             SortAttributeIgnoreFolders, 38018 },
-  { SortByUserRating,               SortMethod::VIDEO_USER_RATING,            SortAttributeIgnoreFolders, 38018 },
-  { SortBySortTitle,                SortMethod::VIDEO_SORT_TITLE,             SortAttributeIgnoreFolders, 171 },
-  { SortBySortTitle,                SortMethod::VIDEO_SORT_TITLE_IGNORE_THE,  SortAttribute(SortAttributeIgnoreFolders | SortAttributeIgnoreArticle), 171 },
-  { SortByOriginalTitle,            SortMethod::VIDEO_ORIGINAL_TITLE,         SortAttributeIgnoreFolders, 20376 },
-  { SortByOriginalTitle,            SortMethod::VIDEO_ORIGINAL_TITLE_IGNORE_THE, SortAttribute(SortAttributeIgnoreFolders | SortAttributeIgnoreArticle), 20376 },
-  { SortByYear,                     SortMethod::YEAR,                         SortAttributeIgnoreFolders, 562 },
-  { SortByProductionCode,           SortMethod::PRODUCTIONCODE,               SortAttributeNone,          20368 },
-  { SortByProgramCount,             SortMethod::PROGRAM_COUNT,                SortAttributeNone,          567 }, // label is "play count"
-  { SortByPlaylistOrder,            SortMethod::PLAYLIST_ORDER,               SortAttributeIgnoreFolders, 559 },
-  { SortByMPAA,                     SortMethod::MPAA_RATING,                  SortAttributeNone,          20074 },
-  { SortByStudio,                   SortMethod::STUDIO,                       SortAttributeNone,          572 },
-  { SortByStudio,                   SortMethod::STUDIO_IGNORE_THE,            SortAttributeIgnoreArticle, 572 },
-  { SortByPath,                     SortMethod::FULLPATH,                     SortAttributeNone,          573 },
-  { SortByLastPlayed,               SortMethod::LASTPLAYED,                   SortAttributeIgnoreFolders, 568 },
-  { SortByPlaycount,                SortMethod::PLAYCOUNT,                    SortAttributeIgnoreFolders, 567 },
-  { SortByListeners,                SortMethod::LISTENERS,                    SortAttributeNone,          20455 },
-  { SortByChannel,                  SortMethod::CHANNEL,                      SortAttributeNone,          19029 },
-  { SortByChannel,                  SortMethod::CHANNEL_NUMBER,               SortAttributeNone,          549 },
-  { SortByChannel,                  SortMethod::CLIENT_CHANNEL_ORDER,         SortAttributeNone,          19315 },
-  { SortByProvider,                 SortMethod::PROVIDER,                     SortAttributeNone,          19348 },
-  { SortByUserPreference,           SortMethod::USER_PREFERENCE,              SortAttributeNone,          19349 },
-  { SortByDateTaken,                SortMethod::DATE_TAKEN,                   SortAttributeIgnoreFolders, 577 },
-  { SortByNone,                     SortMethod::NONE,                         SortAttributeNone,          16018 },
-  { SortByTotalDiscs,               SortMethod::TOTAL_DISCS,                  SortAttributeNone,          38077 },
-  { SortByOrigDate,                 SortMethod::ORIG_DATE,                    SortAttributeNone,          38079 },
-  { SortByBPM,                      SortMethod::BPM,                          SortAttributeNone,          38080 },
+const auto table = std::array {
+  sort_map{ SortByLabel,                    SortMethod::LABEL,                        SortAttributeNone,          551 },
+  sort_map{ SortByLabel,                    SortMethod::LABEL_IGNORE_THE,             SortAttributeIgnoreArticle, 551 },
+  sort_map{ SortByLabel,                    SortMethod::LABEL_IGNORE_FOLDERS,         SortAttributeIgnoreFolders, 551 },
+  sort_map{ SortByDate,                     SortMethod::DATE,                         SortAttributeNone,          552 },
+  sort_map{ SortBySize,                     SortMethod::SIZE,                         SortAttributeNone,          553 },
+  sort_map{ SortByBitrate,                  SortMethod::BITRATE,                      SortAttributeNone,          623 },
+  sort_map{ SortByDriveType,                SortMethod::DRIVE_TYPE,                   SortAttributeNone,          564 },
+  sort_map{ SortByTrackNumber,              SortMethod::TRACKNUM,                     SortAttributeNone,          554 },
+  sort_map{ SortByEpisodeNumber,            SortMethod::EPISODE,                      SortAttributeNone,          20359 },// 20360 "Episodes" used for SORT_METHOD_EPISODE for sorting tvshows by episode count
+  sort_map{ SortByTime,                     SortMethod::DURATION,                     SortAttributeNone,          180 },
+  sort_map{ SortByTime,                     SortMethod::VIDEO_RUNTIME,                SortAttributeNone,          180 },
+  sort_map{ SortByTitle,                    SortMethod::TITLE,                        SortAttributeNone,          556 },
+  sort_map{ SortByTitle,                    SortMethod::TITLE_IGNORE_THE,             SortAttributeIgnoreArticle, 556 },
+  sort_map{ SortByTitle,                    SortMethod::VIDEO_TITLE,                  SortAttributeNone,          556 },
+  sort_map{ SortByArtist,                   SortMethod::ARTIST,                       SortAttributeNone,          557 },
+  sort_map{ SortByArtistThenYear,           SortMethod::ARTIST_AND_YEAR,              SortAttributeNone,          578 },
+  sort_map{ SortByArtist,                   SortMethod::ARTIST_IGNORE_THE,            SortAttributeIgnoreArticle, 557 },
+  sort_map{ SortByAlbum,                    SortMethod::ALBUM,                        SortAttributeNone,          558 },
+  sort_map{ SortByAlbum,                    SortMethod::ALBUM_IGNORE_THE,             SortAttributeIgnoreArticle, 558 },
+  sort_map{ SortByGenre,                    SortMethod::GENRE,                        SortAttributeNone,          515 },
+  sort_map{ SortByCountry,                  SortMethod::COUNTRY,                      SortAttributeNone,          574 },
+  sort_map{ SortByDateAdded,                SortMethod::DATEADDED,                    SortAttributeIgnoreFolders, 570 },
+  sort_map{ SortByFile,                     SortMethod::FILE,                         SortAttributeIgnoreFolders, 561 },
+  sort_map{ SortByRating,                   SortMethod::SONG_RATING,                  SortAttributeNone,          563 },
+  sort_map{ SortByRating,                   SortMethod::VIDEO_RATING,                 SortAttributeIgnoreFolders, 563 },
+  sort_map{ SortByUserRating,               SortMethod::SONG_USER_RATING,             SortAttributeIgnoreFolders, 38018 },
+  sort_map{ SortByUserRating,               SortMethod::VIDEO_USER_RATING,            SortAttributeIgnoreFolders, 38018 },
+  sort_map{ SortBySortTitle,                SortMethod::VIDEO_SORT_TITLE,             SortAttributeIgnoreFolders, 171 },
+  sort_map{ SortBySortTitle,                SortMethod::VIDEO_SORT_TITLE_IGNORE_THE,  SortAttribute(SortAttributeIgnoreFolders | SortAttributeIgnoreArticle), 171 },
+  sort_map{ SortByOriginalTitle,            SortMethod::VIDEO_ORIGINAL_TITLE,         SortAttributeIgnoreFolders, 20376 },
+  sort_map{ SortByOriginalTitle,            SortMethod::VIDEO_ORIGINAL_TITLE_IGNORE_THE, SortAttribute(SortAttributeIgnoreFolders | SortAttributeIgnoreArticle), 20376 },
+  sort_map{ SortByYear,                     SortMethod::YEAR,                         SortAttributeIgnoreFolders, 562 },
+  sort_map{ SortByProductionCode,           SortMethod::PRODUCTIONCODE,               SortAttributeNone,          20368 },
+  sort_map{ SortByProgramCount,             SortMethod::PROGRAM_COUNT,                SortAttributeNone,          567 }, // label is "play count"
+  sort_map{ SortByPlaylistOrder,            SortMethod::PLAYLIST_ORDER,               SortAttributeIgnoreFolders, 559 },
+  sort_map{ SortByMPAA,                     SortMethod::MPAA_RATING,                  SortAttributeNone,          20074 },
+  sort_map{ SortByStudio,                   SortMethod::STUDIO,                       SortAttributeNone,          572 },
+  sort_map{ SortByStudio,                   SortMethod::STUDIO_IGNORE_THE,            SortAttributeIgnoreArticle, 572 },
+  sort_map{ SortByPath,                     SortMethod::FULLPATH,                     SortAttributeNone,          573 },
+  sort_map{ SortByLastPlayed,               SortMethod::LASTPLAYED,                   SortAttributeIgnoreFolders, 568 },
+  sort_map{ SortByPlaycount,                SortMethod::PLAYCOUNT,                    SortAttributeIgnoreFolders, 567 },
+  sort_map{ SortByListeners,                SortMethod::LISTENERS,                    SortAttributeNone,          20455 },
+  sort_map{ SortByChannel,                  SortMethod::CHANNEL,                      SortAttributeNone,          19029 },
+  sort_map{ SortByChannel,                  SortMethod::CHANNEL_NUMBER,               SortAttributeNone,          549 },
+  sort_map{ SortByChannel,                  SortMethod::CLIENT_CHANNEL_ORDER,         SortAttributeNone,          19315 },
+  sort_map{ SortByProvider,                 SortMethod::PROVIDER,                     SortAttributeNone,          19348 },
+  sort_map{ SortByUserPreference,           SortMethod::USER_PREFERENCE,              SortAttributeNone,          19349 },
+  sort_map{ SortByDateTaken,                SortMethod::DATE_TAKEN,                   SortAttributeIgnoreFolders, 577 },
+  sort_map{ SortByNone,                     SortMethod::NONE,                         SortAttributeNone,          16018 },
+  sort_map{ SortByTotalDiscs,               SortMethod::TOTAL_DISCS,                  SortAttributeNone,          38077 },
+  sort_map{ SortByOrigDate,                 SortMethod::ORIG_DATE,                    SortAttributeNone,          38079 },
+  sort_map{ SortByBPM,                      SortMethod::BPM,                          SortAttributeNone,          38080 },
 
   // the following have no corresponding SortMethod::*
-  { SortByAlbumType,                SortMethod::NONE,                         SortAttributeNone,          564 },
-  { SortByVotes,                    SortMethod::NONE,                         SortAttributeNone,          205 },
-  { SortByTop250,                   SortMethod::NONE,                         SortAttributeNone,          13409 },
-  { SortByMPAA,                     SortMethod::NONE,                         SortAttributeNone,          20074 },
-  { SortByDateAdded,                SortMethod::NONE,                         SortAttributeNone,          570 },
-  { SortByTvShowTitle,              SortMethod::NONE,                         SortAttributeNone,          20364 },
-  { SortByTvShowStatus,             SortMethod::NONE,                         SortAttributeNone,          126 },
-  { SortBySeason,                   SortMethod::NONE,                         SortAttributeNone,          20373 },
-  { SortByNumberOfEpisodes,         SortMethod::NONE,                         SortAttributeNone,          20360 },
-  { SortByNumberOfWatchedEpisodes,  SortMethod::NONE,                         SortAttributeNone,          21441 },
-  { SortByVideoResolution,          SortMethod::NONE,                         SortAttributeNone,          21443 },
-  { SortByVideoCodec,               SortMethod::NONE,                         SortAttributeNone,          21445 },
-  { SortByVideoAspectRatio,         SortMethod::NONE,                         SortAttributeNone,          21374 },
-  { SortByAudioChannels,            SortMethod::NONE,                         SortAttributeNone,          21444 },
-  { SortByAudioCodec,               SortMethod::NONE,                         SortAttributeNone,          21446 },
-  { SortByAudioLanguage,            SortMethod::NONE,                         SortAttributeNone,          21447 },
-  { SortBySubtitleLanguage,         SortMethod::NONE,                         SortAttributeNone,          21448 },
-  { SortByRandom,                   SortMethod::NONE,                         SortAttributeNone,          590 }
+  sort_map{ SortByAlbumType,                SortMethod::NONE,                         SortAttributeNone,          564 },
+  sort_map{ SortByVotes,                    SortMethod::NONE,                         SortAttributeNone,          205 },
+  sort_map{ SortByTop250,                   SortMethod::NONE,                         SortAttributeNone,          13409 },
+  sort_map{ SortByMPAA,                     SortMethod::NONE,                         SortAttributeNone,          20074 },
+  sort_map{ SortByDateAdded,                SortMethod::NONE,                         SortAttributeNone,          570 },
+  sort_map{ SortByTvShowTitle,              SortMethod::NONE,                         SortAttributeNone,          20364 },
+  sort_map{ SortByTvShowStatus,             SortMethod::NONE,                         SortAttributeNone,          126 },
+  sort_map{ SortBySeason,                   SortMethod::NONE,                         SortAttributeNone,          20373 },
+  sort_map{ SortByNumberOfEpisodes,         SortMethod::NONE,                         SortAttributeNone,          20360 },
+  sort_map{ SortByNumberOfWatchedEpisodes,  SortMethod::NONE,                         SortAttributeNone,          21441 },
+  sort_map{ SortByVideoResolution,          SortMethod::NONE,                         SortAttributeNone,          21443 },
+  sort_map{ SortByVideoCodec,               SortMethod::NONE,                         SortAttributeNone,          21445 },
+  sort_map{ SortByVideoAspectRatio,         SortMethod::NONE,                         SortAttributeNone,          21374 },
+  sort_map{ SortByAudioChannels,            SortMethod::NONE,                         SortAttributeNone,          21444 },
+  sort_map{ SortByAudioCodec,               SortMethod::NONE,                         SortAttributeNone,          21446 },
+  sort_map{ SortByAudioLanguage,            SortMethod::NONE,                         SortAttributeNone,          21447 },
+  sort_map{ SortBySubtitleLanguage,         SortMethod::NONE,                         SortAttributeNone,          21448 },
+  sort_map{ SortByRandom,                   SortMethod::NONE,                         SortAttributeNone,          590 }
 };
 // clang-format on
 
 SortMethod SortUtils::TranslateOldSortMethod(SortBy sortBy, bool ignoreArticle)
 {
-  for (const sort_map& t : table)
-  {
-    if (t.sort == sortBy)
-    {
-      if (ignoreArticle == ((t.flags & SortAttributeIgnoreArticle) == SortAttributeIgnoreArticle))
-        return t.old;
-    }
-  }
-  for (const sort_map& t : table)
-  {
-    if (t.sort == sortBy)
-      return t.old;
-  }
+  const auto ign_match = std::ranges::find_if(
+      table,
+      [sortBy, ignoreArticle](const auto& t)
+      {
+        return t.sort == sortBy && ignoreArticle == ((t.flags & SortAttributeIgnoreArticle) ==
+                                                     SortAttributeIgnoreArticle);
+      });
+
+  if (ign_match != table.end())
+    return ign_match->old;
+
+  const auto match =
+      std::ranges::find_if(table, [sortBy](const auto& t) { return t.sort == sortBy; });
+
+  if (match != table.end())
+    return match->old;
+
   return SortMethod::NONE;
 }
 
 SortDescription SortUtils::TranslateOldSortMethod(SortMethod sortBy)
 {
   SortDescription description;
-  for (const sort_map& t : table)
+  const auto match =
+      std::ranges::find_if(table, [sortBy](const auto& t) { return t.old == sortBy; });
+
+  if (match != table.end())
   {
-    if (t.old == sortBy)
-    {
-      description.sortBy = t.sort;
-      description.sortAttributes = t.flags;
-      break;
-    }
+    description.sortBy = match->sort;
+    description.sortAttributes = match->flags;
   }
   return description;
 }
 
 int SortUtils::GetSortLabel(SortBy sortBy)
 {
-  for (const sort_map& t : table)
-  {
-    if (t.sort == sortBy)
-      return t.label;
-  }
-  return 16018; // None
+  const auto match =
+      std::ranges::find_if(table, [sortBy](const auto& t) { return t.sort == sortBy; });
+
+  return match == table.end() ? 16018 : match->label; // 16018 = None
 }
 
 template<typename T>
@@ -1295,16 +1293,9 @@ T TypeFromString(const std::map<std::string, T>& typeMap, const std::string& nam
 template<typename T>
 const std::string& TypeToString(const std::map<std::string, T>& typeMap, const T& value)
 {
-  auto it = std::find_if(typeMap.begin(), typeMap.end(),
-    [&value](const std::pair<std::string, T>& pair)
-  {
-    return pair.second == value;
-  });
-
-  if (it == typeMap.end())
-    return StringUtils::Empty;
-
-  return it->first;
+  const auto it =
+      std::ranges::find_if(typeMap, [&value](const auto& pair) { return pair.second == value; });
+  return it == typeMap.end() ? StringUtils::Empty : it->first;
 }
 
 /**
