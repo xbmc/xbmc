@@ -66,6 +66,7 @@ public:
   int pict_type;
 
   StreamHdrType hdrType;
+  std::string strDVELType;
 
   bool hasDisplayMetadata = false;
   AVMasteringDisplayMetadata displayMetadata;
