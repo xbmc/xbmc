@@ -22,9 +22,9 @@
 
 std::string ArrayToString(SortAttribute attributes, const CVariant &variant, const std::string &separator = " / ")
 {
-  std::vector<std::string> strArray;
   if (variant.isArray())
   {
+    std::vector<std::string> strArray;
     for (CVariant::const_iterator_array it = variant.begin_array(); it != variant.end_array(); ++it)
     {
       if (attributes & SortAttributeIgnoreArticle)
