@@ -11,6 +11,7 @@
 #include "DatabaseUtils.h"
 #include "LabelFormatter.h"
 
+#include <functional>
 #include <map>
 #include <memory>
 #include <string>
@@ -227,10 +228,10 @@ public:
   static const Fields& GetFieldsForSorting(SortBy sortBy);
   static std::string RemoveArticles(const std::string &label);
 
-  typedef std::string (*SortPreparator) (SortAttribute, const SortItem&);
-  typedef bool (*Sorter) (const DatabaseResult &, const DatabaseResult &);
-  typedef bool (*SorterIndirect)(const std::shared_ptr<SortItem>&,
-                                 const std::shared_ptr<SortItem>&);
+  using SortPreparator = std::function<std::string(SortAttribute, const SortItem&)>;
+  using Sorter = std::function<bool(const SortItem&, const SortItem&)>;
+  using SorterIndirect =
+      std::function<bool(const std::shared_ptr<SortItem>&, const std::shared_ptr<SortItem>&)>;
 
 private:
   static const SortPreparator& getPreparator(SortBy sortBy);
