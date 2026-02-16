@@ -51,91 +51,87 @@ using enum CDatabaseQueryRule::SearchOperator;
 
 // clang-format off
 static const CGUIDialogMediaFilter::Filter filterList[] = {
-  { "movies",       FieldTitle,         556,    SettingType::String,  "edit",   "string",   OPERATOR_CONTAINS },
-  { "movies",       FieldRating,        563,    SettingType::Number,  "range",  "number",   OPERATOR_BETWEEN },
-  { "movies",       FieldUserRating,    38018,  SettingType::Integer, "range",  "integer",  OPERATOR_BETWEEN },
-  //{ "movies",       FieldTime,          180,    SettingType::Integer, "range",  "time",     OPERATOR_BETWEEN },
-  { "movies",       FieldInProgress,    575,    SettingType::Integer, "toggle", "",         OPERATOR_FALSE },
-  { "movies",       FieldYear,          562,    SettingType::Integer, "range",  "integer",  OPERATOR_BETWEEN },
-  { "movies",       FieldTag,           20459,  SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
-  { "movies",       FieldGenre,         515,    SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
-  { "movies",       FieldActor,         20337,  SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
-  { "movies",       FieldDirector,      20339,  SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
-  { "movies",       FieldStudio,        572,    SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
+  {      "movies",          Field::TITLE,   556,  SettingType::String,   "edit",   "string",   OPERATOR_CONTAINS },
+  {      "movies",         Field::RATING,   563,  SettingType::Number,  "range",  "number",   OPERATOR_BETWEEN },
+  {      "movies",    Field::USER_RATING, 38018, SettingType::Integer,  "range",  "integer",  OPERATOR_BETWEEN },
+  {      "movies",    Field::IN_PROGRESS,   575, SettingType::Integer, "toggle", "",         OPERATOR_FALSE },
+  {      "movies",           Field::YEAR,   562, SettingType::Integer,  "range",  "integer",  OPERATOR_BETWEEN },
+  {      "movies",            Field::TAG, 20459,    SettingType::List,   "list",   "string",   OPERATOR_EQUALS },
+  {      "movies",          Field::GENRE,   515,    SettingType::List,   "list",   "string",   OPERATOR_EQUALS },
+  {      "movies",          Field::ACTOR, 20337,    SettingType::List,   "list",   "string",   OPERATOR_EQUALS },
+  {      "movies",       Field::DIRECTOR, 20339,    SettingType::List,   "list",   "string",   OPERATOR_EQUALS },
+  {      "movies",         Field::STUDIO,   572,    SettingType::List,   "list",   "string",   OPERATOR_EQUALS },
 
-  { "tvshows",      FieldTitle,         556,    SettingType::String,  "edit",   "string",   OPERATOR_CONTAINS },
-  //{ "tvshows",      FieldTvShowStatus,  126,    SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
-  { "tvshows",      FieldRating,        563,    SettingType::Number,  "range",  "number",   OPERATOR_BETWEEN },
-  { "tvshows",      FieldUserRating,    38018,  SettingType::Integer, "range",  "integer",  OPERATOR_BETWEEN },
-  { "tvshows",      FieldInProgress,    575,    SettingType::Integer, "toggle", "",         OPERATOR_FALSE },
-  { "tvshows",      FieldYear,          562,    SettingType::Integer, "range",  "integer",  OPERATOR_BETWEEN },
-  { "tvshows",      FieldTag,           20459,  SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
-  { "tvshows",      FieldGenre,         515,    SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
-  { "tvshows",      FieldActor,         20337,  SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
-  { "tvshows",      FieldDirector,      20339,  SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
-  { "tvshows",      FieldStudio,        572,    SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
+  {     "tvshows",          Field::TITLE,   556,  SettingType::String,   "edit",  "string",   OPERATOR_CONTAINS },
+  {     "tvshows",         Field::RATING,   563,  SettingType::Number,  "range",  "number",   OPERATOR_BETWEEN },
+  {     "tvshows",    Field::USER_RATING, 38018, SettingType::Integer,  "range", "integer",  OPERATOR_BETWEEN },
+  {     "tvshows",    Field::IN_PROGRESS,   575, SettingType::Integer, "toggle",        "",         OPERATOR_FALSE },
+  {     "tvshows",           Field::YEAR,   562, SettingType::Integer,  "range", "integer",  OPERATOR_BETWEEN },
+  {     "tvshows",            Field::TAG, 20459,    SettingType::List,   "list",  "string",   OPERATOR_EQUALS },
+  {     "tvshows",          Field::GENRE,   515,    SettingType::List,   "list",  "string",   OPERATOR_EQUALS },
+  {     "tvshows",          Field::ACTOR, 20337,    SettingType::List,   "list",  "string",   OPERATOR_EQUALS },
+  {     "tvshows",       Field::DIRECTOR, 20339,    SettingType::List,   "list",  "string",   OPERATOR_EQUALS },
+  {     "tvshows",         Field::STUDIO,   572,    SettingType::List,   "list",  "string",   OPERATOR_EQUALS },
 
-  { "episodes",     FieldTitle,         556,    SettingType::String,  "edit",   "string",   OPERATOR_CONTAINS },
-  { "episodes",     FieldRating,        563,    SettingType::Number,  "range",  "number",   OPERATOR_BETWEEN },
-  { "episodes",     FieldUserRating,    38018,  SettingType::Integer, "range",  "integer",  OPERATOR_BETWEEN },
-  { "episodes",     FieldAirDate,       20416,  SettingType::Integer, "range",  "date",     OPERATOR_BETWEEN },
-  { "episodes",     FieldInProgress,    575,    SettingType::Integer, "toggle", "",         OPERATOR_FALSE },
-  { "episodes",     FieldActor,         20337,  SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
-  { "episodes",     FieldDirector,      20339,  SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
+  {    "episodes",          Field::TITLE,   556,  SettingType::String,   "edit",  "string", OPERATOR_CONTAINS },
+  {    "episodes",         Field::RATING,   563,  SettingType::Number,  "range",  "number",  OPERATOR_BETWEEN },
+  {    "episodes",    Field::USER_RATING, 38018, SettingType::Integer,  "range", "integer",  OPERATOR_BETWEEN },
+  {    "episodes",       Field::AIR_DATE, 20416, SettingType::Integer,  "range",    "date",  OPERATOR_BETWEEN },
+  {    "episodes",    Field::IN_PROGRESS,   575, SettingType::Integer, "toggle",        "",    OPERATOR_FALSE },
+  {    "episodes",          Field::ACTOR, 20337,    SettingType::List,   "list",  "string",   OPERATOR_EQUALS },
+  {    "episodes",       Field::DIRECTOR, 20339,    SettingType::List,   "list",  "string",   OPERATOR_EQUALS },
 
-  { "musicvideos",  FieldTitle,         556,    SettingType::String,  "edit",   "string",   OPERATOR_CONTAINS },
-  { "musicvideos",  FieldRating,        563,    SettingType::Number,  "range",  "number",   OPERATOR_BETWEEN },
-  { "musicvideos",  FieldUserRating,    38018,  SettingType::Integer, "range",  "integer",  OPERATOR_BETWEEN },
-  { "musicvideos",  FieldArtist,        557,    SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
-  { "musicvideos",  FieldAlbum,         558,    SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
-  //{ "musicvideos",  FieldTime,          180,    SettingType::Integer, "range",  "time",     OPERATOR_BETWEEN },
-  { "musicvideos",  FieldYear,          562,    SettingType::Integer, "range",  "integer",  OPERATOR_BETWEEN },
-  { "musicvideos",  FieldTag,           20459,  SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
-  { "musicvideos",  FieldGenre,         515,    SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
-  { "musicvideos",  FieldDirector,      20339,  SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
-  { "musicvideos",  FieldStudio,        572,    SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
+  { "musicvideos",          Field::TITLE,   556,  SettingType::String,   "edit",  "string", OPERATOR_CONTAINS },
+  { "musicvideos",         Field::RATING,   563,  SettingType::Number,  "range",  "number",  OPERATOR_BETWEEN },
+  { "musicvideos",    Field::USER_RATING, 38018, SettingType::Integer,  "range", "integer",  OPERATOR_BETWEEN },
+  { "musicvideos",         Field::ARTIST,   557,    SettingType::List,   "list",  "string",   OPERATOR_EQUALS },
+  { "musicvideos",          Field::ALBUM,   558,    SettingType::List,   "list",  "string",   OPERATOR_EQUALS },
+  { "musicvideos",           Field::YEAR,   562, SettingType::Integer,  "range", "integer",  OPERATOR_BETWEEN },
+  { "musicvideos",            Field::TAG, 20459,    SettingType::List,   "list",  "string",   OPERATOR_EQUALS },
+  { "musicvideos",          Field::GENRE,   515,    SettingType::List,   "list",  "string",   OPERATOR_EQUALS },
+  { "musicvideos",       Field::DIRECTOR, 20339,    SettingType::List,   "list",  "string",   OPERATOR_EQUALS },
+  { "musicvideos",         Field::STUDIO,   572,    SettingType::List,   "list",  "string",   OPERATOR_EQUALS },
 
-  { "artists",      FieldArtist,        557,    SettingType::String,  "edit",   "string",   OPERATOR_CONTAINS },
-  { "artists",      FieldSource,      39030,    SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
-  { "artists",      FieldGenre,         515,    SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
-  { "artists",      FieldMoods,         175,    SettingType::String,  "edit",   "string",   OPERATOR_CONTAINS },
-  { "artists",      FieldStyles,        176,    SettingType::String,  "edit",   "string",   OPERATOR_CONTAINS },
-  { "artists",      FieldInstruments, 21892,    SettingType::String,  "edit",   "string",   OPERATOR_CONTAINS },
-  { "artists",      FieldArtistType,    564,    SettingType::String,  "edit",   "string",   OPERATOR_EQUALS },
-  { "artists",      FieldGender,      39025,    SettingType::String,  "edit",   "string",   OPERATOR_EQUALS },
-  { "artists",      FieldDisambiguation, 39026, SettingType::String,  "edit",   "string",   OPERATOR_CONTAINS },
-  { "artists",      FieldBiography,   21887,    SettingType::String,  "edit",   "string",   OPERATOR_CONTAINS },
-  { "artists",      FieldBorn,        21893,    SettingType::String,  "edit",   "string",   OPERATOR_CONTAINS },
-  { "artists",      FieldBandFormed,  21894,    SettingType::String,  "edit",   "string",   OPERATOR_CONTAINS },
-  { "artists",      FieldDisbanded,   21896,    SettingType::String,  "edit",   "string",   OPERATOR_CONTAINS },
-  { "artists",      FieldDied,        21897,    SettingType::String,  "edit",   "string",   OPERATOR_CONTAINS },
+  {     "artists",         Field::ARTIST,   557,  SettingType::String,   "edit",  "string", OPERATOR_CONTAINS },
+  {     "artists",         Field::SOURCE, 39030,    SettingType::List,   "list",  "string",   OPERATOR_EQUALS },
+  {     "artists",          Field::GENRE,   515,    SettingType::List,   "list",  "string",   OPERATOR_EQUALS },
+  {     "artists",          Field::MOODS,   175,  SettingType::String,   "edit",  "string", OPERATOR_CONTAINS },
+  {     "artists",         Field::STYLES,   176,  SettingType::String,   "edit",  "string", OPERATOR_CONTAINS },
+  {     "artists",    Field::INSTRUMENTS, 21892,  SettingType::String,   "edit",  "string", OPERATOR_CONTAINS },
+  {     "artists",    Field::ARTIST_TYPE,   564,  SettingType::String,   "edit",  "string",   OPERATOR_EQUALS },
+  {     "artists",         Field::GENDER, 39025,  SettingType::String,   "edit",  "string",   OPERATOR_EQUALS },
+  {     "artists", Field::DISAMBIGUATION, 39026,  SettingType::String,   "edit",  "string", OPERATOR_CONTAINS },
+  {     "artists",      Field::BIOGRAPHY, 21887,  SettingType::String,   "edit",  "string", OPERATOR_CONTAINS },
+  {     "artists",           Field::BORN, 21893,  SettingType::String,   "edit",  "string", OPERATOR_CONTAINS },
+  {     "artists",    Field::BAND_FORMED, 21894,  SettingType::String,   "edit",  "string", OPERATOR_CONTAINS },
+  {     "artists",      Field::DISBANDED, 21896,  SettingType::String,   "edit",  "string", OPERATOR_CONTAINS },
+  {     "artists",           Field::DIED, 21897,  SettingType::String,   "edit",  "string", OPERATOR_CONTAINS },
 
-  { "albums",       FieldAlbum,         556,    SettingType::String,  "edit",   "string",   OPERATOR_CONTAINS },
-//  { "albums",       FieldArtist,        557,    SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
-  { "albums",       FieldDiscTitle,     38076,  SettingType::String,  "edit",   "string",   OPERATOR_CONTAINS },
-  { "albums",       FieldAlbumArtist,   566,    SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
-  { "albums",       FieldSource,      39030,    SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
-  { "albums",       FieldRating,        563,    SettingType::Number,  "range",  "number",   OPERATOR_BETWEEN },
-  { "albums",       FieldUserRating,    38018,  SettingType::Integer, "range",  "integer",  OPERATOR_BETWEEN },
-  { "albums",       FieldAlbumType,     564,    SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
-  { "albums",       FieldYear,          562,    SettingType::Integer, "range",  "integer",  OPERATOR_BETWEEN },
-  { "albums",       FieldGenre,         515,    SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
-  { "albums",       FieldMusicLabel,    21899,  SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
-  { "albums",       FieldCompilation,   204,    SettingType::Boolean, "toggle", "",         OPERATOR_FALSE },
-  { "albums",       FieldIsBoxset,      38074,  SettingType::Boolean, "toggle", "",         OPERATOR_FALSE },
-  { "albums",       FieldOrigYear,      38078,  SettingType::String,  "edit",   "string",   OPERATOR_CONTAINS },
+  {      "albums",          Field::ALBUM,   556,  SettingType::String,   "edit",  "string", OPERATOR_CONTAINS },
+  {      "albums",     Field::DISC_TITLE, 38076,  SettingType::String,   "edit",  "string", OPERATOR_CONTAINS },
+  {      "albums",   Field::ALBUM_ARTIST,   566,    SettingType::List,   "list",  "string",   OPERATOR_EQUALS },
+  {      "albums",         Field::SOURCE, 39030,    SettingType::List,   "list",  "string",   OPERATOR_EQUALS },
+  {      "albums",         Field::RATING,   563,  SettingType::Number,  "range",  "number",  OPERATOR_BETWEEN },
+  {      "albums",    Field::USER_RATING, 38018, SettingType::Integer,  "range", "integer",  OPERATOR_BETWEEN },
+  {      "albums",     Field::ALBUM_TYPE,   564,    SettingType::List,   "list",  "string",   OPERATOR_EQUALS },
+  {      "albums",           Field::YEAR,   562, SettingType::Integer,  "range", "integer",  OPERATOR_BETWEEN },
+  {      "albums",          Field::GENRE,   515,    SettingType::List,   "list",  "string",   OPERATOR_EQUALS },
+  {      "albums",    Field::MUSIC_LABEL, 21899,    SettingType::List,   "list",  "string",   OPERATOR_EQUALS },
+  {      "albums",    Field::COMPILATION,   204, SettingType::Boolean, "toggle",        "",    OPERATOR_FALSE },
+  {      "albums",      Field::IS_BOXSET, 38074, SettingType::Boolean, "toggle",        "",    OPERATOR_FALSE },
+  {      "albums",      Field::ORIG_YEAR, 38078,  SettingType::String,   "edit",  "string", OPERATOR_CONTAINS },
 
-  { "songs",        FieldTitle,         556,    SettingType::String,  "edit",   "string",   OPERATOR_CONTAINS },
-  { "songs",        FieldAlbum,         558,    SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
-  { "songs",        FieldDiscTitle,   38076,    SettingType::String,  "edit",   "string",   OPERATOR_CONTAINS },
-  { "songs",        FieldArtist,        557,    SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
-  { "songs",        FieldTime,          180,    SettingType::Integer, "range",  "time",     OPERATOR_BETWEEN },
-  { "songs",        FieldRating,        563,    SettingType::Number,  "range",  "number",   OPERATOR_BETWEEN },
-  { "songs",        FieldUserRating,    38018,  SettingType::Integer, "range",  "integer",  OPERATOR_BETWEEN },
-  { "songs",        FieldYear,          562,    SettingType::Integer, "range",  "integer",  OPERATOR_BETWEEN },
-  { "songs",        FieldGenre,         515,    SettingType::List,    "list",   "string",   OPERATOR_EQUALS },
-  { "songs",        FieldPlaycount,     567,    SettingType::Integer, "range",  "integer",  OPERATOR_BETWEEN },
-  { "songs",        FieldSource,      39030,    SettingType::List,    "list",   "string",   OPERATOR_EQUALS }
+  {       "songs",          Field::TITLE,   556,  SettingType::String,   "edit",  "string", OPERATOR_CONTAINS },
+  {       "songs",          Field::ALBUM,   558,    SettingType::List,   "list",  "string",   OPERATOR_EQUALS },
+  {       "songs",     Field::DISC_TITLE, 38076,  SettingType::String,   "edit",  "string", OPERATOR_CONTAINS },
+  {       "songs",         Field::ARTIST,   557,    SettingType::List,   "list",  "string",   OPERATOR_EQUALS },
+  {       "songs",           Field::TIME,   180, SettingType::Integer,  "range",    "time",  OPERATOR_BETWEEN },
+  {       "songs",         Field::RATING,   563,  SettingType::Number,  "range",  "number",  OPERATOR_BETWEEN },
+  {       "songs",    Field::USER_RATING, 38018, SettingType::Integer,  "range", "integer",  OPERATOR_BETWEEN },
+  {       "songs",           Field::YEAR,   562, SettingType::Integer,  "range", "integer",  OPERATOR_BETWEEN },
+  {       "songs",          Field::GENRE,   515,    SettingType::List,   "list",  "string",   OPERATOR_EQUALS },
+  {       "songs",      Field::PLAYCOUNT,   567, SettingType::Integer,  "range", "integer",  OPERATOR_BETWEEN },
+  {       "songs",         Field::SOURCE, 39030,    SettingType::List,   "list",  "string",   OPERATOR_EQUALS }
 };
 // clang-format on
 
@@ -421,7 +417,7 @@ void CGUIDialogMediaFilter::InitializeSettings()
     // check the smartplaylist if it contains a matching rule
     for (const auto& rule : m_filter->m_ruleCombination.GetRules())
     {
-      if (rule->m_field == filter.field)
+      if (rule->m_field == static_cast<int>(filter.field))
       {
         filter.rule = static_cast<PLAYLIST::CSmartPlaylistRule*>(rule.get());
         handledRules++;
@@ -429,7 +425,8 @@ void CGUIDialogMediaFilter::InitializeSettings()
       }
     }
 
-    std::string settingId = StringUtils::Format("filter.{}.{}", filter.mediaType, filter.field);
+    std::string settingId =
+        StringUtils::Format("filter.{}.{}", filter.mediaType, static_cast<int>(filter.field));
     if (filter.controlType == "edit")
     {
       CVariant data;
@@ -537,7 +534,7 @@ void CGUIDialogMediaFilter::InitializeSettings()
 
       CLog::Log(LOGWARNING,
                 "CGUIDialogMediaFilter: filter {} of media type {} with unknown control type '{}'",
-                filter.field, filter.mediaType, filter.controlType);
+                static_cast<int>(filter.field), filter.mediaType, filter.controlType);
       continue;
     }
 
@@ -549,7 +546,7 @@ void CGUIDialogMediaFilter::InitializeSettings()
       CLog::Log(LOGWARNING,
                 "CGUIDialogMediaFilter: failed to create filter {} of media type {} with control "
                 "type '{}'",
-                filter.field, filter.mediaType, filter.controlType);
+                static_cast<int>(filter.field), filter.mediaType, filter.controlType);
       continue;
     }
 
@@ -627,7 +624,7 @@ void CGUIDialogMediaFilter::UpdateControls()
       continue;
 
     if (size <= 0 ||
-        (size == 1 && itFilter.second.field != FieldSet && itFilter.second.field != FieldTag))
+        (size == 1 && itFilter.second.field != Field::SET && itFilter.second.field != Field::TAG))
       CONTROL_DISABLE(control->GetID());
     else
     {
@@ -667,7 +664,7 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
   PLAYLIST::CSmartPlaylist tmpFilter;
   for (const auto& rule : m_filter->m_ruleCombination.GetRules())
   {
-    if (rule->m_field != filter.field)
+    if (rule->m_field != static_cast<int>(filter.field))
       tmpFilter.m_ruleCombination.AddRule(rule);
   }
 
@@ -689,17 +686,17 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
     else if (m_mediaType == "musicvideos")
       type = VideoDbContentType::MUSICVIDEOS;
 
-    if (filter.field == FieldGenre)
+    if (filter.field == Field::GENRE)
       videodb.GetGenresNav(m_dbUrl->ToString(), selectItems, type, dbfilter, countOnly);
-    else if (filter.field == FieldActor || filter.field == FieldArtist)
+    else if (filter.field == Field::ACTOR || filter.field == Field::ARTIST)
       videodb.GetActorsNav(m_dbUrl->ToString(), selectItems, type, dbfilter, countOnly);
-    else if (filter.field == FieldDirector)
+    else if (filter.field == Field::DIRECTOR)
       videodb.GetDirectorsNav(m_dbUrl->ToString(), selectItems, type, dbfilter, countOnly);
-    else if (filter.field == FieldStudio)
+    else if (filter.field == Field::STUDIO)
       videodb.GetStudiosNav(m_dbUrl->ToString(), selectItems, type, dbfilter, countOnly);
-    else if (filter.field == FieldAlbum)
+    else if (filter.field == Field::ALBUM)
       videodb.GetMusicVideoAlbumsNav(m_dbUrl->ToString(), selectItems, -1, dbfilter, countOnly);
-    else if (filter.field == FieldTag)
+    else if (filter.field == Field::TAG)
       videodb.GetTagsNav(m_dbUrl->ToString(), selectItems, type, dbfilter, countOnly);
   }
   else if (m_mediaType == "artists" || m_mediaType == "albums" || m_mediaType == "songs")
@@ -712,19 +709,19 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
     CDatabase::Filter dbfilter;
     dbfilter.where = tmpFilter.GetWhereClause(musicdb, playlists);
 
-    if (filter.field == FieldGenre)
+    if (filter.field == Field::GENRE)
       musicdb.GetGenresNav(m_dbUrl->ToString(), selectItems, dbfilter, countOnly);
-    else if (filter.field == FieldArtist || filter.field == FieldAlbumArtist)
+    else if (filter.field == Field::ARTIST || filter.field == Field::ALBUM_ARTIST)
       musicdb.GetArtistsNav(m_dbUrl->ToString(), selectItems, SortDescription(),
                             m_mediaType == "albums", -1, -1, -1, dbfilter, countOnly);
-    else if (filter.field == FieldAlbum)
+    else if (filter.field == Field::ALBUM)
       musicdb.GetAlbumsNav(m_dbUrl->ToString(), selectItems, SortDescription(), -1, -1, dbfilter,
                            countOnly);
-    else if (filter.field == FieldAlbumType)
+    else if (filter.field == Field::ALBUM_TYPE)
       musicdb.GetAlbumTypesNav(m_dbUrl->ToString(), selectItems, dbfilter, countOnly);
-    else if (filter.field == FieldMusicLabel)
+    else if (filter.field == Field::MUSIC_LABEL)
       musicdb.GetMusicLabelsNav(m_dbUrl->ToString(), selectItems, dbfilter, countOnly);
-    if (filter.field == FieldSource)
+    if (filter.field == Field::SOURCE)
       musicdb.GetSourcesNav(m_dbUrl->ToString(), selectItems, dbfilter, countOnly);
   }
 
@@ -752,7 +749,7 @@ PLAYLIST::CSmartPlaylistRule* CGUIDialogMediaFilter::AddRule(
     Field field, CDatabaseQueryRule::SearchOperator ruleOperator /* = OPERATOR_CONTAINS */)
 {
   const auto rule{std::make_shared<PLAYLIST::CSmartPlaylistRule>()};
-  rule->m_field = field;
+  rule->m_field = static_cast<int>(field);
   rule->m_operator = ruleOperator;
 
   m_filter->m_ruleCombination.AddRule(rule);
@@ -764,7 +761,7 @@ void CGUIDialogMediaFilter::DeleteRule(Field field)
 {
   for (const auto& rule : m_filter->m_ruleCombination.GetRules())
   {
-    if (rule->m_field == field)
+    if (rule->m_field == static_cast<int>(field))
     {
       m_filter->m_ruleCombination.RemoveRule(rule);
       break;
@@ -793,14 +790,15 @@ void CGUIDialogMediaFilter::GetStringListOptions(const SettingConstPtr& setting,
 
 void CGUIDialogMediaFilter::GetRange(const Filter &filter, int &min, int &interval, int &max)
 {
-  if (filter.field == FieldUserRating &&
-     (m_mediaType == "movies" || m_mediaType == "tvshows" || m_mediaType == "episodes"|| m_mediaType == "musicvideos" || m_mediaType == "albums" || m_mediaType == "songs"))
+  if (filter.field == Field::USER_RATING &&
+      (m_mediaType == "movies" || m_mediaType == "tvshows" || m_mediaType == "episodes" ||
+       m_mediaType == "musicvideos" || m_mediaType == "albums" || m_mediaType == "songs"))
   {
     min = 0;
     interval = 1;
     max = 10;
   }
-  else if (filter.field == FieldYear)
+  else if (filter.field == Field::YEAR)
   {
     min = 0;
     interval = 1;
@@ -813,24 +811,24 @@ void CGUIDialogMediaFilter::GetRange(const Filter &filter, int &min, int &interv
       if (m_mediaType == "movies")
       {
         table = "movie_view";
-        year = DatabaseUtils::GetField(FieldYear, MediaTypeMovie, DatabaseQueryPart::WHERE);
+        year = DatabaseUtils::GetField(Field::YEAR, MediaTypeMovie, DatabaseQueryPart::WHERE);
       }
       else if (m_mediaType == "tvshows")
       {
         table = "tvshow_view";
         year = StringUtils::Format(
             "strftime(\"%%Y\", {})",
-            DatabaseUtils::GetField(FieldYear, MediaTypeTvShow, DatabaseQueryPart::WHERE));
+            DatabaseUtils::GetField(Field::YEAR, MediaTypeTvShow, DatabaseQueryPart::WHERE));
       }
       else if (m_mediaType == "musicvideos")
       {
         table = "musicvideo_view";
-        year = DatabaseUtils::GetField(FieldYear, MediaTypeMusicVideo, DatabaseQueryPart::WHERE);
+        year = DatabaseUtils::GetField(Field::YEAR, MediaTypeMusicVideo, DatabaseQueryPart::WHERE);
       }
 
-      CDatabase::Filter filter;
-      filter.where = year + " > 0";
-      GetMinMax(table, year, min, max, filter);
+      CDatabase::Filter min_max_filter;
+      min_max_filter.where = year + " > 0";
+      GetMinMax(table, year, min, max, min_max_filter);
     }
     else if (m_mediaType == "albums" || m_mediaType == "songs")
     {
@@ -843,16 +841,16 @@ void CGUIDialogMediaFilter::GetRange(const Filter &filter, int &min, int &interv
         return;
 
       CDatabase::Filter filter;
-      filter.where = DatabaseUtils::GetField(FieldYear, CMediaTypes::FromString(m_mediaType),
+      filter.where = DatabaseUtils::GetField(Field::YEAR, CMediaTypes::FromString(m_mediaType),
                                              DatabaseQueryPart::WHERE) +
                      " > 0";
       GetMinMax(table,
-                DatabaseUtils::GetField(FieldYear, CMediaTypes::FromString(m_mediaType),
+                DatabaseUtils::GetField(Field::YEAR, CMediaTypes::FromString(m_mediaType),
                                         DatabaseQueryPart::SELECT),
                 min, max, filter);
     }
   }
-  else if (filter.field == FieldAirDate)
+  else if (filter.field == Field::AIR_DATE)
   {
     min = 0;
     interval = 1;
@@ -861,14 +859,14 @@ void CGUIDialogMediaFilter::GetRange(const Filter &filter, int &min, int &interv
     if (m_mediaType == "episodes")
     {
       const std::string name = DatabaseUtils::GetField(
-          FieldAirDate, CMediaTypes::FromString(m_mediaType), DatabaseQueryPart::SELECT);
+          Field::AIR_DATE, CMediaTypes::FromString(m_mediaType), DatabaseQueryPart::SELECT);
       const std::string field = StringUtils::Format("CAST(strftime(\"%%s\", {}) AS INTEGER)", name);
 
       GetMinMax("episode_view", field, min, max);
       interval = 60 * 60 * 24 * 7; // 1 week
     }
   }
-  else if (filter.field == FieldTime)
+  else if (filter.field == Field::TIME)
   {
     min = 0;
     interval = 10;
@@ -877,7 +875,7 @@ void CGUIDialogMediaFilter::GetRange(const Filter &filter, int &min, int &interv
     if (m_mediaType == "songs")
       GetMinMax("songview", "iDuration", min, max);
   }
-  else if (filter.field == FieldPlaycount)
+  else if (filter.field == Field::PLAYCOUNT)
   {
     min = 0;
     interval = 1;
@@ -890,8 +888,9 @@ void CGUIDialogMediaFilter::GetRange(const Filter &filter, int &min, int &interv
 
 void CGUIDialogMediaFilter::GetRange(const Filter &filter, float &min, float &interval, float &max)
 {
-  if (filter.field == FieldRating &&
-     (m_mediaType == "movies" || m_mediaType == "tvshows" || m_mediaType == "episodes" || m_mediaType == "musicvideos" || m_mediaType == "albums" || m_mediaType == "songs"))
+  if (filter.field == Field::RATING &&
+      (m_mediaType == "movies" || m_mediaType == "tvshows" || m_mediaType == "episodes" ||
+       m_mediaType == "musicvideos" || m_mediaType == "albums" || m_mediaType == "songs"))
   {
     min = 0.0f;
     interval = 0.1f;

@@ -997,40 +997,81 @@ void CMusicInfoTag::ToSortable(SortItem& sortable, Field field) const
 {
   switch (field)
   {
-  case FieldTitle:
-  {
-    // make sure not to overwrite an existing path with an empty one
-    std::string title = m_strTitle;
-    if (!title.empty() || !sortable.contains(FieldTitle))
-      sortable[FieldTitle] = title;
-    break;
-  }
-  case FieldArtist:      sortable[FieldArtist] = m_strArtistDesc; break;
-  case FieldArtistSort:  sortable[FieldArtistSort] = m_strArtistSort; break;
-  case FieldAlbum:       sortable[FieldAlbum] = m_strAlbum; break;
-  case FieldAlbumArtist: sortable[FieldAlbumArtist] = m_strAlbumArtistDesc; break;
-  case FieldGenre:       sortable[FieldGenre] = m_genre; break;
-  case FieldTime:        sortable[FieldTime] = m_iDuration; break;
-  case FieldTrackNumber: sortable[FieldTrackNumber] = m_iTrack; break;
-  case FieldTotalDiscs:
-    sortable[FieldTotalDiscs] = m_iDiscTotal;
-    break;
-  case FieldYear:
-    sortable[FieldYear] = GetYear();  // Optionally from m_strOriginalDate
-    break;
-  case FieldComment:     sortable[FieldComment] = m_strComment; break;
-  case FieldMoods:       sortable[FieldMoods] = m_strMood; break;
-  case FieldRating:      sortable[FieldRating] = m_Rating; break;
-  case FieldUserRating:  sortable[FieldUserRating] = m_Userrating; break;
-  case FieldVotes:       sortable[FieldVotes] = m_Votes; break;
-  case FieldPlaycount:   sortable[FieldPlaycount] = m_iTimesPlayed; break;
-  case FieldLastPlayed:  sortable[FieldLastPlayed] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::Empty; break;
-  case FieldDateAdded:   sortable[FieldDateAdded] = m_dateAdded.IsValid() ? m_dateAdded.GetAsDBDateTime() : StringUtils::Empty; break;
-  case FieldListeners:   sortable[FieldListeners] = m_listeners; break;
-  case FieldId:          sortable[FieldId] = (int64_t)m_iDbId; break;
-  case FieldOrigDate:    sortable[FieldOrigDate] = m_strOriginalDate; break;
-  case FieldBPM:         sortable[FieldBPM] = m_iBPM; break;
-  default: break;
+    case Field::TITLE:
+    {
+      // make sure not to overwrite an existing path with an empty one
+      std::string title = m_strTitle;
+      if (!title.empty() || !sortable.contains(Field::TITLE))
+        sortable[Field::TITLE] = title;
+      break;
+    }
+    case Field::ARTIST:
+      sortable[Field::ARTIST] = m_strArtistDesc;
+      break;
+    case Field::ARTIST_SORT:
+      sortable[Field::ARTIST_SORT] = m_strArtistSort;
+      break;
+    case Field::ALBUM:
+      sortable[Field::ALBUM] = m_strAlbum;
+      break;
+    case Field::ALBUM_ARTIST:
+      sortable[Field::ALBUM_ARTIST] = m_strAlbumArtistDesc;
+      break;
+    case Field::GENRE:
+      sortable[Field::GENRE] = m_genre;
+      break;
+    case Field::TIME:
+      sortable[Field::TIME] = m_iDuration;
+      break;
+    case Field::TRACK_NUMBER:
+      sortable[Field::TRACK_NUMBER] = m_iTrack;
+      break;
+    case Field::TOTAL_DISCS:
+      sortable[Field::TOTAL_DISCS] = m_iDiscTotal;
+      break;
+    case Field::YEAR:
+      sortable[Field::YEAR] = GetYear();
+      break; // Optionally from m_strOriginalDate
+    case Field::COMMENT:
+      sortable[Field::COMMENT] = m_strComment;
+      break;
+    case Field::MOODS:
+      sortable[Field::MOODS] = m_strMood;
+      break;
+    case Field::RATING:
+      sortable[Field::RATING] = m_Rating;
+      break;
+    case Field::USER_RATING:
+      sortable[Field::USER_RATING] = m_Userrating;
+      break;
+    case Field::VOTES:
+      sortable[Field::VOTES] = m_Votes;
+      break;
+    case Field::PLAYCOUNT:
+      sortable[Field::PLAYCOUNT] = m_iTimesPlayed;
+      break;
+    case Field::LAST_PLAYED:
+      sortable[Field::LAST_PLAYED] =
+          m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::Empty;
+      break;
+    case Field::DATE_ADDED:
+      sortable[Field::DATE_ADDED] =
+          m_dateAdded.IsValid() ? m_dateAdded.GetAsDBDateTime() : StringUtils::Empty;
+      break;
+    case Field::LISTENERS:
+      sortable[Field::LISTENERS] = m_listeners;
+      break;
+    case Field::ID:
+      sortable[Field::ID] = m_iDbId;
+      break;
+    case Field::ORIG_DATE:
+      sortable[Field::ORIG_DATE] = m_strOriginalDate;
+      break;
+    case Field::BPM:
+      sortable[Field::BPM] = m_iBPM;
+      break;
+    default:
+      break;
   }
 }
 

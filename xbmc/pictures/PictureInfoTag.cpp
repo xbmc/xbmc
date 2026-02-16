@@ -259,8 +259,8 @@ void CPictureInfoTag::Serialize(CVariant& value) const
 
 void CPictureInfoTag::ToSortable(SortItem& sortable, Field field) const
 {
-  if (field == FieldDateTaken && m_dateTimeTaken.IsValid())
-    sortable[FieldDateTaken] = m_dateTimeTaken.GetAsDBDateTime();
+  if (field == Field::DATE_TAKEN && m_dateTimeTaken.IsValid())
+    sortable[Field::DATE_TAKEN] = m_dateTimeTaken.GetAsDBDateTime();
 }
 
 const std::string CPictureInfoTag::GetInfo(int info) const

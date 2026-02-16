@@ -62,7 +62,7 @@ int CTextureRule::TranslateField(const char *field) const
 {
   for (const translateField& f : fields)
     if (StringUtils::EqualsNoCase(field, f.string)) return f.field;
-  return FieldNone;
+  return static_cast<int>(Field::NONE);
 }
 
 std::string CTextureRule::TranslateField(int field) const

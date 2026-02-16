@@ -651,32 +651,32 @@ void CFileItem::ToSortable(SortItem &sortable, Field field) const
 {
   switch (field)
   {
-    case FieldPath:
-      sortable[FieldPath] = m_strPath;
+    case Field::PATH:
+      sortable[Field::PATH] = m_strPath;
       break;
-    case FieldDate:
-      sortable[FieldDate] = (m_dateTime.IsValid()) ? m_dateTime.GetAsDBDateTime() : "";
+    case Field::DATE:
+      sortable[Field::DATE] = (m_dateTime.IsValid()) ? m_dateTime.GetAsDBDateTime() : "";
       break;
-    case FieldSize:
-      sortable[FieldSize] = m_dwSize;
+    case Field::SIZE:
+      sortable[Field::SIZE] = m_dwSize;
       break;
-    case FieldDriveType:
-      sortable[FieldDriveType] = static_cast<int>(m_iDriveType);
+    case Field::DRIVE_TYPE:
+      sortable[Field::DRIVE_TYPE] = static_cast<int>(m_iDriveType);
       break;
-    case FieldStartOffset:
-      sortable[FieldStartOffset] = m_lStartOffset;
+    case Field::START_OFFSET:
+      sortable[Field::START_OFFSET] = m_lStartOffset;
       break;
-    case FieldEndOffset:
-      sortable[FieldEndOffset] = m_lEndOffset;
+    case Field::END_OFFSET:
+      sortable[Field::END_OFFSET] = m_lEndOffset;
       break;
-    case FieldProgramCount:
-      sortable[FieldProgramCount] = m_programCount;
+    case Field::PROGRAM_COUNT:
+      sortable[Field::PROGRAM_COUNT] = m_programCount;
       break;
-    case FieldBitrate:
-      sortable[FieldBitrate] = m_dwSize;
+    case Field::BITRATE:
+      sortable[Field::BITRATE] = m_dwSize;
       break;
-    case FieldTitle:
-      sortable[FieldTitle] = m_strTitle;
+    case Field::TITLE:
+      sortable[Field::TITLE] = m_strTitle;
       break;
 
     // If there's ever a need to convert more properties from CGUIListItem it might be
@@ -708,14 +708,14 @@ void CFileItem::ToSortable(SortItem &sortable, Field field) const
   {
     switch (field)
     {
-      case FieldInstallDate:
-        sortable[FieldInstallDate] = GetAddonInfo()->InstallDate().GetAsDBDateTime();
+      case Field::INSTALL_DATE:
+        sortable[Field::INSTALL_DATE] = GetAddonInfo()->InstallDate().GetAsDBDateTime();
         break;
-      case FieldLastUpdated:
-        sortable[FieldLastUpdated] = GetAddonInfo()->LastUpdated().GetAsDBDateTime();
+      case Field::LAST_UPDATED:
+        sortable[Field::LAST_UPDATED] = GetAddonInfo()->LastUpdated().GetAsDBDateTime();
         break;
-      case FieldLastUsed:
-        sortable[FieldLastUsed] = GetAddonInfo()->LastUsed().GetAsDBDateTime();
+      case Field::LAST_USED:
+        sortable[Field::LAST_USED] = GetAddonInfo()->LastUsed().GetAsDBDateTime();
         break;
       default:
         break;
@@ -730,8 +730,8 @@ void CFileItem::ToSortable(SortItem &sortable, Field field) const
 
   if (IsFavourite())
   {
-    if (field == FieldUserPreference)
-      sortable[FieldUserPreference] = GetProperty("favourite.index").asString();
+    if (field == Field::USER_PREFERENCE)
+      sortable[Field::USER_PREFERENCE] = GetProperty("favourite.index").asString();
   }
 }
 
@@ -741,10 +741,10 @@ void CFileItem::ToSortable(SortItem &sortable, const Fields &fields) const
     ToSortable(sortable, field);
 
   /* FieldLabel is used as a fallback by all sorters and therefore has to be present as well */
-  sortable[FieldLabel] = GetLabel();
+  sortable[Field::LABEL] = GetLabel();
   /* FieldSortSpecial and FieldFolder are required in conjunction with all other sorters as well */
-  sortable[FieldSortSpecial] = static_cast<int>(m_specialSort);
-  sortable[FieldFolder] = IsFolder();
+  sortable[Field::SORT_SPECIAL] = static_cast<int>(m_specialSort);
+  sortable[Field::FOLDER] = IsFolder();
 }
 
 bool CFileItem::Exists(bool bUseCache /* = true */) const
