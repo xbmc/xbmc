@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2025 Team Kodi
+ *  Copyright (C) 2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -10,25 +10,13 @@
 #include "utils/i18n/Bcp47Registry/RegistryRecordProvider.h"
 #include "utils/i18n/Bcp47Registry/SubTagRegistryFile.h"
 #include "utils/i18n/Bcp47Registry/SubTagRegistryManager.h"
+#include "utils/i18n/test/TestI18nUtils.h"
 
 #include <memory>
 
 #include <gtest/gtest.h>
 
 using namespace KODI::UTILS::I18N;
-
-class CMemoryProvider : public IRegistryRecordProvider
-{
-public:
-  CMemoryProvider(std::vector<RegistryFileRecord>& records) : m_records(records) {}
-  CMemoryProvider(std::vector<RegistryFileRecord>&& records) : m_records(std::move(records)) {}
-
-  bool Load() override { return !m_records.empty(); }
-  const std::vector<RegistryFileRecord>& GetRecords() const override { return m_records; }
-
-private:
-  std::vector<RegistryFileRecord> m_records;
-};
 
 TEST(TestI18nRegistryManager, LanguageSubTag)
 {
@@ -37,7 +25,7 @@ TEST(TestI18nRegistryManager, LanguageSubTag)
       RegistryFileRecord({{"Type", "language"}, {"Subtag", "foo"}, {"Description", "bar"}})};
 
   std::unique_ptr<IRegistryRecordProvider> provider =
-      std::make_unique<CMemoryProvider>(std::move(param));
+      std::make_unique<CMemoryRecordProvider>(std::move(param));
   CSubTagRegistryManager registry;
   EXPECT_TRUE(registry.Initialize(std::move(provider)));
 
@@ -69,7 +57,7 @@ TEST(TestI18nRegistryManager, ExtLangSubTag)
       {{"Type", "extlang"}, {"Subtag", "foo"}, {"Description", "bar"}, {"Prefix", "pref"}})};
 
   std::unique_ptr<IRegistryRecordProvider> provider =
-      std::make_unique<CMemoryProvider>(std::move(param));
+      std::make_unique<CMemoryRecordProvider>(std::move(param));
   CSubTagRegistryManager registry;
   EXPECT_TRUE(registry.Initialize(std::move(provider)));
 
@@ -101,7 +89,7 @@ TEST(TestI18nRegistryManager, ScriptSubTag)
       RegistryFileRecord({{"Type", "script"}, {"Subtag", "foo"}, {"Description", "bar"}})};
 
   std::unique_ptr<IRegistryRecordProvider> provider =
-      std::make_unique<CMemoryProvider>(std::move(param));
+      std::make_unique<CMemoryRecordProvider>(std::move(param));
   CSubTagRegistryManager registry;
   EXPECT_TRUE(registry.Initialize(std::move(provider)));
 
@@ -133,7 +121,7 @@ TEST(TestI18nRegistryManager, RegionSubTag)
       RegistryFileRecord({{"Type", "region"}, {"Subtag", "foo"}, {"Description", "bar"}})};
 
   std::unique_ptr<IRegistryRecordProvider> provider =
-      std::make_unique<CMemoryProvider>(std::move(param));
+      std::make_unique<CMemoryRecordProvider>(std::move(param));
   CSubTagRegistryManager registry;
   EXPECT_TRUE(registry.Initialize(std::move(provider)));
 
@@ -165,7 +153,7 @@ TEST(TestI18nRegistryManager, VariantSubTag)
       RegistryFileRecord({{"Type", "variant"}, {"Subtag", "foo"}, {"Description", "bar"}})};
 
   std::unique_ptr<IRegistryRecordProvider> provider =
-      std::make_unique<CMemoryProvider>(std::move(param));
+      std::make_unique<CMemoryRecordProvider>(std::move(param));
   CSubTagRegistryManager registry;
   EXPECT_TRUE(registry.Initialize(std::move(provider)));
 
@@ -197,7 +185,7 @@ TEST(TestI18nRegistryManager, GrandfatheredTag)
       RegistryFileRecord({{"Type", "grandfathered"}, {"Subtag", "foo"}, {"Description", "bar"}})};
 
   std::unique_ptr<IRegistryRecordProvider> provider =
-      std::make_unique<CMemoryProvider>(std::move(param));
+      std::make_unique<CMemoryRecordProvider>(std::move(param));
   CSubTagRegistryManager registry;
   EXPECT_TRUE(registry.Initialize(std::move(provider)));
 
@@ -229,7 +217,7 @@ TEST(TestI18nRegistryManager, RedundantTag)
       RegistryFileRecord({{"Type", "redundant"}, {"Subtag", "foo"}, {"Description", "bar"}})};
 
   std::unique_ptr<IRegistryRecordProvider> provider =
-      std::make_unique<CMemoryProvider>(std::move(param));
+      std::make_unique<CMemoryRecordProvider>(std::move(param));
   CSubTagRegistryManager registry;
   EXPECT_TRUE(registry.Initialize(std::move(provider)));
 
@@ -259,7 +247,7 @@ TEST(TestI18nRegistryManager, InvalidSubTag1)
   std::vector<RegistryFileRecord> param = {RegistryFileRecord({})};
 
   std::unique_ptr<IRegistryRecordProvider> provider =
-      std::make_unique<CMemoryProvider>(std::move(param));
+      std::make_unique<CMemoryRecordProvider>(std::move(param));
   CSubTagRegistryManager registry;
   EXPECT_FALSE(registry.Initialize(std::move(provider)));
 
@@ -267,7 +255,7 @@ TEST(TestI18nRegistryManager, InvalidSubTag1)
 
   param = {RegistryFileRecord({{"Type", "language"}, {"Description", "bar"}})};
 
-  provider = std::make_unique<CMemoryProvider>(std::move(param));
+  provider = std::make_unique<CMemoryRecordProvider>(std::move(param));
   EXPECT_FALSE(registry.Initialize(std::move(provider)));
 }
 
@@ -280,7 +268,7 @@ TEST(TestI18nRegistryManager, InvalidSubTag2)
   })};
 
   std::unique_ptr<IRegistryRecordProvider> provider =
-      std::make_unique<CMemoryProvider>(std::move(param));
+      std::make_unique<CMemoryRecordProvider>(std::move(param));
   CSubTagRegistryManager registry;
   EXPECT_FALSE(registry.Initialize(std::move(provider)));
   auto l = registry.GetExtLangSubTags().Lookup("foo");
@@ -294,7 +282,7 @@ TEST(TestI18nRegistryManager, DuplicateSubTag)
       RegistryFileRecord{{{"Type", "language"}, {"Subtag", "foo"}, {"Description", "baz"}}}};
 
   std::unique_ptr<IRegistryRecordProvider> provider =
-      std::make_unique<CMemoryProvider>(std::move(param));
+      std::make_unique<CMemoryRecordProvider>(std::move(param));
   CSubTagRegistryManager registry;
   EXPECT_TRUE(registry.Initialize(std::move(provider)));
 
