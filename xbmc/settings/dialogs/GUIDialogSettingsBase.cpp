@@ -524,7 +524,7 @@ void CGUIDialogSettingsBase::OnSettingChanged(const std::shared_ptr<const CSetti
     const auto& deps = control->GetSetting()->GetDependencies();
     for (const auto& dep : deps)
     {
-      if (dep.GetSettings().count(setting->GetId()) > 0)
+      if (dep.GetSettings().contains(setting->GetId()))
       {
         UpdateSettingControl(control, true);
         break;
