@@ -1386,21 +1386,14 @@ bool CCurlFile::Exists(const CURL& url)
     long code;
     if(g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_RESPONSE_CODE, &code) == CURLE_OK && code != 404 )
     {
-      if (code == 405)
+      if (code == 405 || code == 501)
       {
-        // If we get a Method Not Allowed response, retry with a GET Request
-        g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_NOBODY, 0);
+        // If we get a Method Not Allowed or Not Implemented response, retry with a GET Request
+        g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_HTTPGET, 1);
 
-        g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FILETIME, 1);
-        g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_XFERINFOFUNCTION, transfer_abort_callback);
-        g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_NOPROGRESS, 0);
-
-        curl_slist *list = NULL;
-        list = g_curlInterface.slist_append(list, "Range: bytes=0-1"); /* try to only request 1 byte */
-        g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_HTTPHEADER, list);
+        g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_RANGE, "0-199");
 
         CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
-        g_curlInterface.slist_free_all(list);
 
         if (result == CURLE_WRITE_ERROR || result == CURLE_OK)
         {
