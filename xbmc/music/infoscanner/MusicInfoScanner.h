@@ -9,7 +9,6 @@
 #pragma once
 
 #include "InfoScanner.h"
-#include "MusicAlbumInfo.h"
 #include "music/MusicDatabase.h"
 #include "threads/IRunnable.h"
 #include "threads/Thread.h"
@@ -21,6 +20,11 @@ class CArtist;
 class CFileItemList;
 class CGUIDialogProgressBarHandle;
 class CScraperUrl;
+
+namespace MUSIC_GRABBER
+{
+class CMusicAlbumInfo;
+}
 
 namespace MUSIC_INFO
 {
