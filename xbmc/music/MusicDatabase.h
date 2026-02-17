@@ -610,10 +610,6 @@ public:
                    int idAlbum,
                    const SortDescription& sortDescription = SortDescription());
   bool GetSongsByYear(const std::string& baseDir, CFileItemList& items, int year);
-  bool GetSongsByWhere(const std::string& baseDir,
-                       const Filter& filter,
-                       CFileItemList& items,
-                       const SortDescription& sortDescription = SortDescription());
   bool GetSongsFullByWhere(const std::string& baseDir,
                            const Filter& filter,
                            CFileItemList& items,
