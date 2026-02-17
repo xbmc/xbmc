@@ -515,13 +515,17 @@ void CGUIDialogSettingsBase::OnSettingChanged(const std::shared_ptr<const CSetti
     if (!control || control == m_delayedSetting)
       continue;
 
-    if (control->GetSetting() == setting)
+    const auto& controlSetting = control->GetSetting();
+    if (!controlSetting)
+      continue;
+
+    if (controlSetting == setting)
     {
       UpdateSettingControl(control, false);
       continue;
     }
 
-    const auto& deps = control->GetSetting()->GetDependencies();
+    const auto& deps = controlSetting->GetDependencies();
     for (const auto& dep : deps)
     {
       if (dep.GetSettings().contains(setting->GetId()))
