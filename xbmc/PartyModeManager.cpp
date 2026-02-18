@@ -338,8 +338,8 @@ bool CPartyModeManager::AddRandomSongs()
       CMusicDatabase database;
       if (database.Open())
       {
-        database.GetSongsFullByWhere("musicdb://songs/", CDatabase::Filter(sqlWhereMusic),
-          items, SortDescription, true);
+        database.GetSongsFullByWhere("musicdb://songs/", items, SortDescription,
+                                     CDatabase::Filter(sqlWhereMusic), true);
 
         // Get artist and album properties for songs
         for (auto& item : items)

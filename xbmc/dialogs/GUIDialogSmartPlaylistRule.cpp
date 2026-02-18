@@ -182,7 +182,8 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   else if (m_rule.m_field == FieldArtist || m_rule.m_field == FieldAlbumArtist)
   {
     if (PLAYLIST::CSmartPlaylist::IsMusicType(m_type))
-      database.GetArtistsNav("musicdb://artists/", items, m_rule.m_field == FieldAlbumArtist, -1);
+      database.GetArtistsNav("musicdb://artists/", items, SortDescription(),
+                             m_rule.m_field == FieldAlbumArtist, -1);
     if (m_type == "musicvideos" ||
         m_type == "mixed")
     {
@@ -195,7 +196,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   else if (m_rule.m_field == FieldAlbum)
   {
     if (PLAYLIST::CSmartPlaylist::IsMusicType(m_type))
-      database.GetAlbumsNav("musicdb://albums/", items);
+      database.GetAlbumsNav("musicdb://albums/", items, SortDescription());
     if (m_type == "musicvideos" ||
         m_type == "mixed")
     {
@@ -252,7 +253,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   {
     if (m_type == "songs" || m_type == "mixed")
     {
-      database.GetSongsNav("musicdb://songs/", items, -1, -1, -1);
+      database.GetSongsNav("musicdb://songs/", items, SortDescription(), -1, -1, -1);
       iLabel = 134;
     }
     if (m_type == "movies")

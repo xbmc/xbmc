@@ -715,9 +715,11 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
     if (filter.field == FieldGenre)
       musicdb.GetGenresNav(m_dbUrl->ToString(), selectItems, dbfilter, countOnly);
     else if (filter.field == FieldArtist || filter.field == FieldAlbumArtist)
-      musicdb.GetArtistsNav(m_dbUrl->ToString(), selectItems, m_mediaType == "albums", -1, -1, -1, dbfilter, SortDescription(), countOnly);
+      musicdb.GetArtistsNav(m_dbUrl->ToString(), selectItems, SortDescription(),
+                            m_mediaType == "albums", -1, -1, -1, dbfilter, countOnly);
     else if (filter.field == FieldAlbum)
-      musicdb.GetAlbumsNav(m_dbUrl->ToString(), selectItems, -1, -1, dbfilter, SortDescription(), countOnly);
+      musicdb.GetAlbumsNav(m_dbUrl->ToString(), selectItems, SortDescription(), -1, -1, dbfilter,
+                           countOnly);
     else if (filter.field == FieldAlbumType)
       musicdb.GetAlbumTypesNav(m_dbUrl->ToString(), selectItems, dbfilter, countOnly);
     else if (filter.field == FieldMusicLabel)

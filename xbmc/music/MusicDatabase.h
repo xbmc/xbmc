@@ -568,12 +568,12 @@ public:
                    const Filter& filter = Filter());
   bool GetArtistsNav(const std::string& strBaseDir,
                      CFileItemList& items,
+                     const SortDescription& sortDescription,
                      bool albumArtistsOnly = false,
                      int idGenre = -1,
                      int idAlbum = -1,
                      int idSong = -1,
                      const Filter& filter = Filter(),
-                     const SortDescription& sortDescription = SortDescription(),
                      bool countOnly = false);
   bool GetCommonNav(const std::string& strBaseDir,
                     const std::string& table,
@@ -591,49 +591,49 @@ public:
                          bool countOnly = false);
   bool GetAlbumsNav(const std::string& strBaseDir,
                     CFileItemList& items,
+                    const SortDescription& sortDescription,
                     int idGenre = -1,
                     int idArtist = -1,
                     const Filter& filter = Filter(),
-                    const SortDescription& sortDescription = SortDescription(),
                     bool countOnly = false);
   bool GetDiscsNav(const std::string& strBaseDir,
                    CFileItemList& items,
+                   const SortDescription& sortDescription,
                    int idAlbum,
                    const Filter& filter = Filter(),
-                   const SortDescription& sortDescription = SortDescription(),
                    bool countOnly = false);
   bool GetAlbumsByYear(const std::string& strBaseDir, CFileItemList& items, int year);
   bool GetSongsNav(const std::string& strBaseDir,
                    CFileItemList& items,
+                   const SortDescription& sortDescription,
                    int idGenre,
                    int idArtist,
-                   int idAlbum,
-                   const SortDescription& sortDescription = SortDescription());
+                   int idAlbum);
   bool GetSongsByYear(const std::string& baseDir, CFileItemList& items, int year);
   bool GetSongsFullByWhere(const std::string& baseDir,
-                           const Filter& filter,
                            CFileItemList& items,
-                           const SortDescription& sortDescription = SortDescription(),
+                           const SortDescription& sortDescription,
+                           const Filter& filter,
                            bool artistData = false);
   bool GetAlbumsByWhere(const std::string& baseDir,
-                        const Filter& filter,
                         CFileItemList& items,
-                        const SortDescription& sortDescription = SortDescription(),
+                        const SortDescription& sortDescription,
+                        const Filter& filter,
                         bool countOnly = false);
   bool GetDiscsByWhere(const std::string& baseDir,
-                       const Filter& filter,
                        CFileItemList& items,
-                       const SortDescription& sortDescription = SortDescription(),
+                       const SortDescription& sortDescription,
+                       const Filter& filter,
                        bool countOnly = false);
   bool GetDiscsByWhere(CMusicDbUrl& musicUrl,
-                       const Filter& filter,
                        CFileItemList& items,
-                       const SortDescription& sortDescription = SortDescription(),
+                       const SortDescription& sortDescription,
+                       const Filter& filter,
                        bool countOnly = false);
   bool GetArtistsByWhere(const std::string& strBaseDir,
-                         const Filter& filter,
                          CFileItemList& items,
-                         const SortDescription& sortDescription = SortDescription(),
+                         const SortDescription& sortDescription,
+                         const Filter& filter,
                          bool countOnly = false);
   int GetDiscsCount(const std::string& baseDir, const Filter& filter = Filter());
   int GetSongsCount(const Filter& filter = Filter());
@@ -658,17 +658,17 @@ public:
                              const std::string& baseDir,
                              CVariant& result,
                              int& total,
-                             const SortDescription& sortDescription = SortDescription());
+                             const SortDescription& sortDescription);
   bool GetAlbumsByWhereJSON(const std::set<std::string, std::less<>>& fields,
                             const std::string& baseDir,
                             CVariant& result,
                             int& total,
-                            const SortDescription& sortDescription = SortDescription());
+                            const SortDescription& sortDescription);
   bool GetSongsByWhereJSON(const std::set<std::string, std::less<>>& fields,
                            const std::string& baseDir,
                            CVariant& result,
                            int& total,
-                           const SortDescription& sortDescription = SortDescription());
+                           const SortDescription& sortDescription);
 
   /////////////////////////////////////////////////
   // Scraper
@@ -688,13 +688,13 @@ public:
   /////////////////////////////////////////////////
   bool GetItems(const std::string& strBaseDir,
                 CFileItemList& items,
-                const Filter& filter = Filter(),
-                const SortDescription& sortDescription = SortDescription());
+                const SortDescription& sortDescription,
+                const Filter& filter = Filter());
   bool GetItems(const std::string& strBaseDir,
                 const std::string& itemType,
                 CFileItemList& items,
-                const Filter& filter = Filter(),
-                const SortDescription& sortDescription = SortDescription());
+                const SortDescription& sortDescription,
+                const Filter& filter = Filter());
   std::string GetItemById(const std::string& itemType, int id) const;
 
   /////////////////////////////////////////////////

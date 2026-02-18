@@ -208,7 +208,7 @@ namespace XFILE
           musicUrl.RemoveOption(option);
 
         CDatabase::Filter dbfilter;
-        success = db.GetItems(musicUrl.ToString(), items, dbfilter, sorting);
+        success = db.GetItems(musicUrl.ToString(), items, sorting, dbfilter);
         db.Close();
 
         items.SetProperty(PROPERTY_PATH_DB, musicUrl.ToString());
