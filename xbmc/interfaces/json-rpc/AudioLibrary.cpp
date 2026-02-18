@@ -977,6 +977,8 @@ JSONRPC_STATUS CAudioLibrary::SetSongDetails(const std::string &method, ITranspo
     song.iDuration = (int)parameterObject["duration"].asInteger();
   if (ParameterNotNull(parameterObject, "comment"))
     song.strComment = parameterObject["comment"].asString();
+  if (ParameterNotNull(parameterObject, "musicbrainzreleasetrackid"))
+    song.strMusicBrainzReleaseTrackID = parameterObject["musicbrainzreleasetrackid"].asString();
   if (ParameterNotNull(parameterObject, "musicbrainztrackid"))
     song.strMusicBrainzTrackID = parameterObject["musicbrainztrackid"].asString();
   if (ParameterNotNull(parameterObject, "playcount"))

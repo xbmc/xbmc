@@ -207,7 +207,8 @@ void CMusicDatabase::CreateTables()
               " strArtistDisp text, strArtistSort text, strGenres text, strTitle varchar(512), "
               " iTrack integer, iDuration integer, "
               " strReleaseDate TEXT, strOrigReleaseDate TEXT, "
-              " strDiscSubtitle text, strFileName text, strMusicBrainzTrackID text, "
+              " strDiscSubtitle text, strFileName text, "
+              " strMusicBrainzReleaseTrackID text, strMusicBrainzTrackID text, "
               " iTimesPlayed integer, iStartOffset integer, iEndOffset integer, "
               " lastplayed varchar(20) default NULL, "
               " rating FLOAT NOT NULL DEFAULT 0, votes INTEGER NOT NULL DEFAULT 0, "
@@ -286,7 +287,7 @@ void CMusicDatabase::CreateAnalytics()
   m_pDS->exec("CREATE INDEX idxSong2 ON song(lastplayed)");
   m_pDS->exec("CREATE INDEX idxSong3 ON song(idAlbum)");
   m_pDS->exec("CREATE INDEX idxSong6 ON song( idPath, strFileName(255) )");
-  //Musicbrainz Track ID is not unique on an album, recordings are sometimes repeated e.g. "[silence]" or on a disc set
+  //Musicbrainz Recording ID is not unique on an album, recordings are sometimes repeated e.g. "[silence]" or on a disc set
   m_pDS->exec("CREATE UNIQUE INDEX idxSong7 ON song( idAlbum, iTrack, strMusicBrainzTrackID(36) )");
 
   m_pDS->exec("CREATE UNIQUE INDEX idxSongArtist_1 ON song_artist ( idSong, idArtist, idRole )");
@@ -443,6 +444,7 @@ void CMusicDatabase::CreateViews()
               "        song.strOrigReleaseDate as strOrigReleaseDate, "
               "        song.strDiscSubtitle as strDiscSubtitle, "
               "        strFileName, "
+              "        strMusicBrainzReleaseTrackID, "
               "        strMusicBrainzTrackID, "
               "        iTimesPlayed, iStartOffset, iEndOffset, "
               "        lastplayed, "
@@ -790,6 +792,7 @@ bool CMusicDatabase::AddAlbum(CAlbum& album, int idSource)
                              song->dateNew, //
                              song->idAlbum, //
                              song->strTitle, //
+                             song->strMusicBrainzReleaseTrackID, //
                              song->strMusicBrainzTrackID, //
                              song->strFileName, //
                              song->strComment, //
@@ -1042,6 +1045,7 @@ int CMusicDatabase::AddSong(const int idSong,
                             const CDateTime& dtDateNew,
                             const int idAlbum,
                             const std::string& strTitle,
+                            const std::string& strMusicBrainzReleaseTrackID,
                             const std::string& strMusicBrainzTrackID,
                             const std::string& strPathAndFileName,
                             const std::string& strComment,
@@ -1129,7 +1133,7 @@ int CMusicDatabase::AddSong(const int idSong,
                "strReleaseDate, strOrigReleaseDate, iBPM, "
                "iBitrate, iSampleRate, iChannels, "
                "strDiscSubtitle, strFileName, dateAdded,  "
-               "strMusicBrainzTrackID, strArtistSort, "
+               "strMusicBrainzReleaseTrackId, strMusicBrainzTrackID, strArtistSort, "
                "iTimesPlayed, iStartOffset, iEndOffset, "
                "lastplayed, rating, userrating, votes, comment, mood, strReplayGain) ";
 
@@ -1146,6 +1150,10 @@ int CMusicDatabase::AddSong(const int idSong,
                      strRelease.c_str(), strOriginal.c_str(), iBPM, iBitRate, iSampleRate,
                      iChannels, strDiscSubtitle.c_str(), strFileName.c_str(), strDateMedia.c_str());
 
+      if (strMusicBrainzReleaseTrackID.empty())
+        strSQL += PrepareSQL(",NULL");
+      else
+        strSQL += PrepareSQL(",'%s'", strMusicBrainzReleaseTrackID.c_str());
       if (strMusicBrainzTrackID.empty())
         strSQL += PrepareSQL(",NULL");
       else
@@ -1178,6 +1186,7 @@ int CMusicDatabase::AddSong(const int idSong,
       m_pDS->close();
       UpdateSong(idNew, //
                  strTitle, //
+                 strMusicBrainzReleaseTrackID, //
                  strMusicBrainzTrackID, //
                  strPathAndFileName, //
                  strComment, //
@@ -1270,6 +1279,7 @@ bool CMusicDatabase::UpdateSong(CSong& song, bool bArtists /*= true*/, bool bArt
 {
   int result = UpdateSong(song.idSong,
                           song.strTitle, //
+                          song.strMusicBrainzReleaseTrackID, //
                           song.strMusicBrainzTrackID, //
                           song.strFileName, //
                           song.strComment, //
@@ -1324,6 +1334,7 @@ bool CMusicDatabase::UpdateSong(CSong& song, bool bArtists /*= true*/, bool bArt
 
 int CMusicDatabase::UpdateSong(int idSong,
                                const std::string& strTitle,
+                               const std::string& strMusicBrainzReleaseTrackID,
                                const std::string& strMusicBrainzTrackID,
                                const std::string& strPathAndFileName,
                                const std::string& strComment,
@@ -1381,6 +1392,11 @@ int CMusicDatabase::UpdateSong(int idSong,
       strTitle.c_str(), iTrack, iDuration, strRelease.c_str(), strOriginal.c_str(),
       strDiscSubtitle.c_str(), strFileName.c_str(), iBPM, iBitRate, iSampleRate, iChannels,
       strDateMedia.c_str(), songVideoURL.c_str());
+  if (strMusicBrainzReleaseTrackID.empty())
+    strSQL += PrepareSQL(", strMusicBrainzReleaseTrackID = NULL");
+  else
+    strSQL +=
+        PrepareSQL(", strMusicBrainzReleaseTrackID = '%s'", strMusicBrainzReleaseTrackID.c_str());
   if (strMusicBrainzTrackID.empty())
     strSQL += PrepareSQL(", strMusicBrainzTrackID = NULL");
   else
@@ -3141,6 +3157,8 @@ CSong CMusicDatabase::GetSongFromDataset(const dbiplus::sql_record* const record
   song.dateUpdated.SetFromDBDateTime(record->at(offset + song_dateModified).get_asString());
   song.iStartOffset = record->at(offset + song_iStartOffset).get_asInt();
   song.iEndOffset = record->at(offset + song_iEndOffset).get_asInt();
+  song.strMusicBrainzReleaseTrackID =
+      record->at(offset + song_strMusicBrainzReleaseTrackID).get_asString();
   song.strMusicBrainzTrackID = record->at(offset + song_strMusicBrainzTrackID).get_asString();
   song.rating = record->at(offset + song_rating).get_asFloat();
   song.userrating = record->at(offset + song_userrating).get_asInt();
@@ -3192,6 +3210,8 @@ void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const rec
   item->SetStartOffset(record->at(song_iStartOffset).get_asInt64());
   item->SetProperty("item_start", item->GetStartOffset());
   item->SetEndOffset(record->at(song_iEndOffset).get_asInt64());
+  item->GetMusicInfoTag()->SetMusicBrainzReleaseTrackID(
+      record->at(song_strMusicBrainzReleaseTrackID).get_asString());
   item->GetMusicInfoTag()->SetMusicBrainzTrackID(
       record->at(song_strMusicBrainzTrackID).get_asString());
   item->GetMusicInfoTag()->SetRating(record->at(song_rating).get_asFloat());
@@ -7621,40 +7641,41 @@ bool CMusicDatabase::GetAlbumsByWhereJSON(
 namespace
 {
 // clang-format off
-const std::array<TranslateJSONField, 54> JSONtoDBSong = {{
+const std::array<TranslateJSONField, 55> JSONtoDBSong = {{
   // table and single value join fields
-  { "title",                     "string", true,  "strTitle",               "" }, // Label field at top
-  { "albumid",                  "integer", true,  "song.idAlbum",           "" },
-  { "",                                "", true,  "song.iTrack",            "" },
-  { "displayartist",             "string", true,  "song.strArtistDisp",     "" },
-  { "sortartist",                "string", true,  "song.strArtistSort",     "" },
-  { "genre",                      "array", true,  "song.strGenres",         "" },
-  { "duration",                 "integer", true,  "iDuration",              "" },
-  { "comment",                   "string", true,  "comment",                "" },
-  { "",                          "string", true,  "strFileName",            "" },
-  { "musicbrainztrackid",        "string", true,  "strMusicBrainzTrackID",  "" },
-  { "playcount",                "integer", true,  "iTimesPlayed",           "" },
-  { "lastplayed",                "string", true,  "lastPlayed",             "" },
-  { "rating",                     "float", true,  "rating",                 "" },
-  { "votes",                    "integer", true,  "votes",                  "" },
-  { "userrating",              "unsigned", true,  "song.userrating",        "" },
-  { "mood",                       "array", true,  "mood",                   "" },
-  { "dateadded",                 "string", true,  "song.dateAdded",         "" },
-  { "datenew",                   "string", true,  "song.dateNew",           "" },
-  { "datemodified",              "string", true,  "song.dateModified",      "" },
-  { "file",                      "string", true,  "strPathFile",            "CONCAT(path.strPath, strFilename) AS strPathFile" },
-  { "",                          "string", true,  "strPath",                "path.strPath AS strPath" },
-  { "album",                     "string", true,  "strAlbum",               "album.strAlbum AS strAlbum" },
-  { "albumreleasetype",          "string", true,  "strAlbumReleaseType",    "album.strReleaseType AS strAlbumReleaseType" },
-  { "musicbrainzalbumid",        "string", true,  "strMusicBrainzAlbumID",  "album.strMusicBrainzAlbumID AS strMusicBrainzAlbumID" },
-  { "disctitle",                 "string", true,  "song.strDiscSubtitle",   "" },
-  { "bpm",                      "integer", true,  "iBPM",                   "" },
-  { "originaldate",             "string" , true,  "song.strOrigReleaseDate","" },
-  { "releasedate",              "string" , true,  "song.strReleaseDate",    "" },
-  { "bitrate",                  "integer", true,  "iBitRate",               "" },
-  { "samplerate",               "integer", true,  "iSampleRate",            "" },
-  { "channels",                 "integer", true,  "iChannels",              "" },
-  { "songvideourl",              "string", true,  "strVideoURL",            "" },
+  { "title",                     "string", true,  "strTitle",                     "" }, // Label field at top
+  { "albumid",                  "integer", true,  "song.idAlbum",                 "" },
+  { "",                                "", true,  "song.iTrack",                  "" },
+  { "displayartist",             "string", true,  "song.strArtistDisp",           "" },
+  { "sortartist",                "string", true,  "song.strArtistSort",           "" },
+  { "genre",                      "array", true,  "song.strGenres",               "" },
+  { "duration",                 "integer", true,  "iDuration",                    "" },
+  { "comment",                   "string", true,  "comment",                      "" },
+  { "",                          "string", true,  "strFileName",                  "" },
+  { "musicbrainzreleasetrackid", "string", true,  "strMusicBrainzReleaseTrackID", "" },
+  { "musicbrainztrackid",        "string", true,  "strMusicBrainzTrackID",        "" },
+  { "playcount",                "integer", true,  "iTimesPlayed",                 "" },
+  { "lastplayed",                "string", true,  "lastPlayed",                   "" },
+  { "rating",                     "float", true,  "rating",                       "" },
+  { "votes",                    "integer", true,  "votes",                        "" },
+  { "userrating",              "unsigned", true,  "song.userrating",              "" },
+  { "mood",                       "array", true,  "mood",                         "" },
+  { "dateadded",                 "string", true,  "song.dateAdded",               "" },
+  { "datenew",                   "string", true,  "song.dateNew",                 "" },
+  { "datemodified",              "string", true,  "song.dateModified",            "" },
+  { "file",                      "string", true,  "strPathFile",                  "CONCAT(path.strPath, strFilename) AS strPathFile" },
+  { "",                          "string", true,  "strPath",                      "path.strPath AS strPath" },
+  { "album",                     "string", true,  "strAlbum",                     "album.strAlbum AS strAlbum" },
+  { "albumreleasetype",          "string", true,  "strAlbumReleaseType",          "album.strReleaseType AS strAlbumReleaseType" },
+  { "musicbrainzalbumid",        "string", true,  "strMusicBrainzAlbumID",        "album.strMusicBrainzAlbumID AS strMusicBrainzAlbumID" },
+  { "disctitle",                 "string", true,  "song.strDiscSubtitle",         "" },
+  { "bpm",                      "integer", true,  "iBPM",                         "" },
+  { "originaldate",             "string" , true,  "song.strOrigReleaseDate",      "" },
+  { "releasedate",              "string" , true,  "song.strReleaseDate",          "" },
+  { "bitrate",                  "integer", true,  "iBitRate",                     "" },
+  { "samplerate",               "integer", true,  "iSampleRate",                  "" },
+  { "channels",                 "integer", true,  "iChannels",                    "" },
+  { "songvideourl",              "string", true,  "strVideoURL",                  "" },
 
   // JOIN fields (multivalue), same order as _JoinToSongFields
   { "albumartistid",              "array", false, "idAlbumArtist",          "album_artist.idArtist AS idAlbumArtist" },
@@ -9366,6 +9387,9 @@ void CMusicDatabase::UpdateTables(int version)
   if (version < 83)
     m_pDS->exec("ALTER TABLE song ADD strVideoURL TEXT");
 
+  if (version < 84)
+    m_pDS->exec("ALTER TABLE song ADD strMusicBrainzReleaseTrackID TEXT");
+
   // Set the version of tag scanning required.
   // Not every schema change requires the tags to be rescanned, set to the highest schema version
   // that needs this. Forced rescanning (of music files that have not changed since they were
@@ -9386,7 +9410,7 @@ void CMusicDatabase::UpdateTables(int version)
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 83;
+  return 84;
 }
 
 int CMusicDatabase::GetMusicNeedsTagScan()
@@ -12201,8 +12225,10 @@ bool CMusicDatabase::ExportSongHistory(TiXmlNode* pNode, CGUIDialogProgress* pro
     std::string strSQL =
         "SELECT idSong, song.idAlbum, "
         "strAlbum, strMusicBrainzAlbumID, album.strArtistDisp AS strAlbumArtistDisp, "
-        "song.strArtistDisp, strTitle, iTrack, strFileName, strMusicBrainzTrackID, "
-        "iTimesPlayed, lastplayed, song.rating, song.votes, song.userrating "
+        "song.strArtistDisp, strTitle, iTrack, strFileName, "
+        "strMusicBrainzReleaseTrackId, strMusicBrainzTrackID, "
+        "iTimesPlayed, lastplayed, song.rating, "
+        "song.votes, song.userrating "
         "FROM song JOIN album on album.idAlbum = song.idAlbum "
         "WHERE iTimesPlayed > 0 OR rating > 0 or userrating > 0";
 
@@ -12221,6 +12247,8 @@ bool CMusicDatabase::ExportSongHistory(TiXmlNode* pNode, CGUIDialogProgress* pro
       XMLUtils::SetString(song, "title", m_pDS->fv("strTitle").get_asString());
       XMLUtils::SetInt(song, "track", m_pDS->fv("iTrack").get_asInt());
       XMLUtils::SetString(song, "filename", m_pDS->fv("strFilename").get_asString());
+      XMLUtils::SetString(song, "musicbrainzreleasetrackid",
+                          m_pDS->fv("strMusicBrainzReleaseTrackID").get_asString());
       XMLUtils::SetString(song, "musicbrainztrackid",
                           m_pDS->fv("strMusicBrainzTrackID").get_asString());
       XMLUtils::SetInt(song, "idalbum", m_pDS->fv("idAlbum").get_asInt());
@@ -12412,6 +12440,7 @@ bool CMusicDatabase::ImportSongHistory(const std::string& xmlFile,
       std::string strTitle;
       int iTrack;
       std::string strFilename;
+      std::string strMusicBrainzReleaseTrackID;
       std::string strMusicBrainzTrackID;
       std::string strAlbum;
       std::string strMusicBrainzAlbumID;
@@ -12428,6 +12457,7 @@ bool CMusicDatabase::ImportSongHistory(const std::string& xmlFile,
         XMLUtils::GetString(entry, "title", strTitle);
         XMLUtils::GetInt(entry, "track", iTrack);
         XMLUtils::GetString(entry, "filename", strFilename);
+        XMLUtils::GetString(entry, "musicbrainzreleasetrackid", strMusicBrainzReleaseTrackID);
         XMLUtils::GetString(entry, "musicbrainztrackid", strMusicBrainzTrackID);
         XMLUtils::GetString(entry, "albumtitle", strAlbum);
         XMLUtils::GetString(entry, "musicbrainzalbumid", strMusicBrainzAlbumID);
@@ -12464,6 +12494,10 @@ bool CMusicDatabase::ImportSongHistory(const std::string& xmlFile,
         strSQLSong = PrepareSQL("(%d, %d, ", current + 1, iTrack);
         strSQLSong += PrepareSQL("'%s', '%s', '%s', ", strArtistDisp.c_str(), strTitle.c_str(),
                                  strFilename.c_str());
+        if (strMusicBrainzReleaseTrackID.empty())
+          strSQLSong += PrepareSQL("NULL, ");
+        else
+          strSQLSong += PrepareSQL("'%s', ", strMusicBrainzReleaseTrackID.c_str());
         if (strMusicBrainzTrackID.empty())
           strSQLSong += PrepareSQL("NULL, ");
         else
@@ -12510,7 +12544,8 @@ bool CMusicDatabase::ImportSongHistory(const std::string& xmlFile,
                 "strMusicBrainzAlbumID text, "
                 "strAlbumArtistDisp text, "
                 "strArtistDisp text, strTitle varchar(512), "
-                "iTrack INTEGER, strFileName text, strMusicBrainzTrackID text, "
+                "iTrack INTEGER, strFileName text, "
+                "strMusicBrainzReleaseTrackID text, strMusicBrainzTrackID text, "
                 "iTimesPlayed INTEGER, lastplayed varchar(20) default NULL, "
                 "rating FLOAT NOT NULL DEFAULT 0, votes INTEGER NOT NULL DEFAULT 0, "
                 "userrating INTEGER NOT NULL DEFAULT 0, "
@@ -12518,7 +12553,7 @@ bool CMusicDatabase::ImportSongHistory(const std::string& xmlFile,
     bHistSongExists = true;
 
     strSQL = "INSERT INTO HistSong (idSongSrc, iTrack, strArtistDisp, strTitle, "
-             "strFileName, strMusicBrainzTrackID, "
+             "strFileName, strMusicBrainzReleaseTrackID, strMusicBrainzTrackID, "
              "strAlbum, strAlbumArtistDisp, strMusicBrainzAlbumID, "
              " iTimesPlayed, lastplayed, rating, votes, userrating, idAlbum, idSong) VALUES " +
              strSQL;

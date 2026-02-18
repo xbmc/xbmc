@@ -1407,6 +1407,7 @@
         "duration",
         "comment",
         "lyrics",
+        "musicbrainzreleasetrackid",
         "musicbrainztrackid",
         "musicbrainzartistid",
         "musicbrainzalbumid",
@@ -1733,6 +1734,9 @@
       },
       "playcount": {
         "type": "integer"
+      },
+      "musicbrainzreleasetrackid": {
+        "type": "string"
       },
       "musicbrainztrackid": {
         "type": "string"
@@ -3665,6 +3669,9 @@
       "lyrics": {
         "type": "string"
       },
+      "musicbrainzreleasetrackid": {
+        "type": "string"
+      },
       "musicbrainztrackid": {
         "type": "string"
       },
@@ -3869,6 +3876,7 @@
         "duration",
         "comment",
         "lyrics",
+        "musicbrainzreleasetrackid",
         "musicbrainztrackid",
         "musicbrainzartistid",
         "musicbrainzalbumid",
@@ -4012,6 +4020,7 @@
         "duration",
         "comment",
         "lyrics",
+        "musicbrainzreleasetrackid",
         "musicbrainztrackid",
         "musicbrainzartistid",
         "musicbrainzalbumid",
