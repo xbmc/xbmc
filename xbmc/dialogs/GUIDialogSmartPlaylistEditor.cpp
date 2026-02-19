@@ -368,10 +368,10 @@ void CGUIDialogSmartPlaylistEditor::OnOrder()
 
 void CGUIDialogSmartPlaylistEditor::OnOrderDirection()
 {
-  if (m_playlist.m_orderDirection == SortOrderDescending)
-    m_playlist.m_orderDirection = SortOrderAscending;
+  if (m_playlist.m_orderDirection == SortOrder::DESCENDING)
+    m_playlist.m_orderDirection = SortOrder::ASCENDING;
   else
-    m_playlist.m_orderDirection = SortOrderDescending;
+    m_playlist.m_orderDirection = SortOrder::DESCENDING;
   UpdateButtons();
 }
 
@@ -455,7 +455,7 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
   OnMessage(msg);
   SendMessage(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_RULE_LIST, currentItem);
 
-  if (m_playlist.m_orderDirection != SortOrderDescending)
+  if (m_playlist.m_orderDirection != SortOrder::DESCENDING)
   {
     SET_CONTROL_LABEL2(CONTROL_ORDER_DIRECTION,
                        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21430));

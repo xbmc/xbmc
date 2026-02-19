@@ -11765,7 +11765,7 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
         sorting.limitEnd = xsp.GetLimit();
       if (xsp.GetOrder() != SortByNone)
         sorting.sortBy = xsp.GetOrder();
-      if (xsp.GetOrderDirection() != SortOrderNone)
+      if (xsp.GetOrderDirection() != SortOrder::NONE)
         sorting.sortOrder = xsp.GetOrderDirection();
       if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
         sorting.sortAttributes = SortAttributeIgnoreArticle;

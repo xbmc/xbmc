@@ -109,7 +109,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
 
       SetViewAsControl(DEFAULT_VIEW_LIST);
 
-      SetSortOrder(SortOrderNone);
+      SetSortOrder(SortOrder::NONE);
     }
     break;
     case NodeType::TOP100:
@@ -119,7 +119,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
 
       SetViewAsControl(DEFAULT_VIEW_LIST);
 
-      SetSortOrder(SortOrderNone);
+      SetSortOrder(SortOrder::NONE);
     }
     break;
     case NodeType::GENRE:
@@ -129,7 +129,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
 
       SetViewAsControl(DEFAULT_VIEW_LIST);
 
-      SetSortOrder(SortOrderAscending);
+      SetSortOrder(SortOrder::ASCENDING);
     }
     break;
     case NodeType::ROLE:
@@ -140,7 +140,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
 
       SetViewAsControl(DEFAULT_VIEW_LIST);
 
-      SetSortOrder(SortOrderNone);
+      SetSortOrder(SortOrder::NONE);
     }
     break;
     case NodeType::YEAR:
@@ -151,7 +151,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
 
       SetViewAsControl(DEFAULT_VIEW_LIST);
 
-      SetSortOrder(SortOrderAscending);
+      SetSortOrder(SortOrder::ASCENDING);
     }
     break;
     case NodeType::ARTIST:
@@ -209,7 +209,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
 
       SetViewAsControl(CViewStateSettings::GetInstance().Get("musicnavalbums")->m_viewMode);
 
-      SetSortOrder(SortOrderNone);
+      SetSortOrder(SortOrder::NONE);
     }
     break;
     case NodeType::ALBUM_RECENTLY_ADDED_SONGS:
@@ -219,7 +219,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
 
       SetViewAsControl(CViewStateSettings::GetInstance().Get("musicnavsongs")->m_viewMode);
 
-      SetSortOrder(SortOrderNone);
+      SetSortOrder(SortOrder::NONE);
     }
     break;
     case NodeType::ALBUM_RECENTLY_PLAYED:
@@ -242,7 +242,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       SetSortMethod(SortByNone);
 
       SetViewAsControl(DEFAULT_VIEW_LIST);
-      SetSortOrder(SortOrderNone);
+      SetSortOrder(SortOrder::NONE);
     }
     break;
     case NodeType::SINGLES:
@@ -313,7 +313,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
 
       SetViewAsControl(CViewStateSettings::GetInstance().Get("musicnavsongs")->m_viewMode);
 
-      SetSortOrder(SortOrderNone);
+      SetSortOrder(SortOrder::NONE);
     }
     break;
     case NodeType::DISC:
@@ -500,7 +500,7 @@ CGUIViewStateWindowMusicNav::CGUIViewStateWindowMusicNav(const CFileItemList& it
 
     SetViewAsControl(DEFAULT_VIEW_LIST);
 
-    SetSortOrder(SortOrderNone);
+    SetSortOrder(SortOrder::NONE);
   }
   else if (items.GetPath() == "special://musicplaylists/")
   { // playlists list sorts by label only, ignoring folders
@@ -559,7 +559,7 @@ CGUIViewStateWindowMusicNav::CGUIViewStateWindowMusicNav(const CFileItemList& it
     SetViewAsControl(viewState->m_viewMode);
     SetSortOrder(viewState->m_sortDescription.sortOrder);
 
-    SetSortOrder(SortOrderAscending);
+    SetSortOrder(SortOrder::ASCENDING);
   }
   LoadViewState(items.GetPath(), WINDOW_MUSIC_NAV);
 }
@@ -617,7 +617,7 @@ CGUIViewStateWindowMusicPlaylist::CGUIViewStateWindowMusicPlaylist(const CFileIt
 
   SetViewAsControl(DEFAULT_VIEW_LIST);
 
-  SetSortOrder(SortOrderNone);
+  SetSortOrder(SortOrder::NONE);
 
   LoadViewState(items.GetPath(), WINDOW_MUSIC_PLAYLIST);
 }

@@ -186,12 +186,12 @@ void PrunePackageCache()
   db.Open();
   for (const auto& [_, files] : packs)
   {
-    files->Sort(SortByLabel, SortOrderDescending);
+    files->Sort(SortByLabel, SortOrder::DESCENDING);
     for (int j = 2; j < files->Size(); j++)
       items.Add(std::make_shared<CFileItem>(*files->Get(j)));
   }
 
-  items.Sort(SortBySize, SortOrderDescending);
+  items.Sort(SortBySize, SortOrder::DESCENDING);
   int i = 0;
   while (size > limit && i < items.Size())
   {
@@ -211,7 +211,7 @@ void PrunePackageCache()
         items.Add(std::make_shared<CFileItem>(*files->Get(1)));
     }
 
-    items.Sort(SortByDate, SortOrderAscending);
+    items.Sort(SortByDate, SortOrder::ASCENDING);
     i = 0;
     while (size > limit && i < items.Size())
     {

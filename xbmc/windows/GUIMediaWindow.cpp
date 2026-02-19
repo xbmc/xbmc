@@ -566,14 +566,15 @@ void CGUIMediaWindow::UpdateButtons()
   if (m_guiState)
   {
     // Update sorting controls
-    if (m_guiState->GetSortOrder() == SortOrderNone)
+    if (m_guiState->GetSortOrder() == SortOrder::NONE)
     {
       CONTROL_DISABLE(CONTROL_BTNSORTASC);
     }
     else
     {
       CONTROL_ENABLE(CONTROL_BTNSORTASC);
-      SET_CONTROL_SELECTED(GetID(), CONTROL_BTNSORTASC, m_guiState->GetSortOrder() != SortOrderAscending);
+      SET_CONTROL_SELECTED(GetID(), CONTROL_BTNSORTASC,
+                           m_guiState->GetSortOrder() != SortOrder::ASCENDING);
     }
 
     // Update list/thumb control
@@ -632,13 +633,16 @@ void CGUIMediaWindow::SortItems(CFileItemList &items)
       if (sortBy != SortByNone && sortBy != SortByPlaylistOrder && sortBy != SortByProgramCount)
       {
         sorting.sortBy = sortBy;
-        sorting.sortOrder = items.GetProperty(PROPERTY_SORT_ASCENDING).asBoolean() ? SortOrderAscending : SortOrderDescending;
+        sorting.sortOrder = items.GetProperty(PROPERTY_SORT_ASCENDING).asBoolean()
+                                ? SortOrder::ASCENDING
+                                : SortOrder::DESCENDING;
         sorting.sortAttributes = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone;
 
         // if the sort order is descending, we need to switch the original sort order, as we assume
         // in CGUIViewState::AddPlaylistOrder that SortByPlaylistOrder is ascending.
-        if (guiState->GetSortOrder() == SortOrderDescending)
-          sorting.sortOrder = sorting.sortOrder == SortOrderDescending ? SortOrderAscending : SortOrderDescending;
+        if (guiState->GetSortOrder() == SortOrder::DESCENDING)
+          sorting.sortOrder = sorting.sortOrder == SortOrder::DESCENDING ? SortOrder::ASCENDING
+                                                                         : SortOrder::DESCENDING;
       }
     }
 

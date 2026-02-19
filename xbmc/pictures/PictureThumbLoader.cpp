@@ -201,7 +201,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
 
       if (items.Size() < 4 || pItem->IsCBR() || pItem->IsCBZ())
       { // less than 4 items, so just grab the first thumb
-        items.Sort(SortByLabel, SortOrderAscending);
+        items.Sort(SortByLabel, SortOrder::ASCENDING);
         std::string thumb = IMAGE_FILES::URLFromFile(items[0]->GetPath());
         db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
         CServiceBroker::GetTextureCache()->BackgroundCacheImage(thumb);

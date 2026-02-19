@@ -107,7 +107,7 @@ void CFileItemList::Clear()
 
   ClearItems();
   m_sortDescription.sortBy = SortByNone;
-  m_sortDescription.sortOrder = SortOrderNone;
+  m_sortDescription.sortOrder = SortOrder::NONE;
   m_sortDescription.sortAttributes = SortAttributeNone;
   m_sortIgnoreFolders = false;
   m_cacheToDisc = CacheType::IF_SLOW;
@@ -698,7 +698,7 @@ void CFileItemList::Stack()
   SetProperty("isstacked", true);
 
   // items needs to be sorted for stuff below to work properly
-  Sort(SortByLabel, SortOrderAscending);
+  Sort(SortByLabel, SortOrder::ASCENDING);
 
   // Convert folder paths containing disc images to files (INDEX.BDMV or VIDEO_TS.IFO)
   ConvertDiscFoldersToFiles(m_items);
@@ -875,7 +875,7 @@ bool CFileItemList::Load(int windowID)
       ar >> *this;
       CLog::Log(LOGDEBUG, "Loading items: {}, directory: {} sort method: {}, ascending: {}", Size(),
                 CURL::GetRedacted(GetPath()), m_sortDescription.sortBy,
-                m_sortDescription.sortOrder == SortOrderAscending ? "true" : "false");
+                m_sortDescription.sortOrder == SortOrder::ASCENDING ? "true" : "false");
       ar.Close();
       file.Close();
       return true;
@@ -913,7 +913,7 @@ bool CFileItemList::Save(int windowID)
     ar << *this;
     CLog::Log(LOGDEBUG, "  -- items: {}, sort method: {}, ascending: {}", iSize,
               m_sortDescription.sortBy,
-              m_sortDescription.sortOrder == SortOrderAscending ? "true" : "false");
+              m_sortDescription.sortOrder == SortOrder::ASCENDING ? "true" : "false");
     ar.Close();
     file.Close();
     return true;
@@ -1039,6 +1039,6 @@ void CFileItemList::SetReplaceListing(bool replace)
 void CFileItemList::ClearSortState()
 {
   m_sortDescription.sortBy = SortByNone;
-  m_sortDescription.sortOrder = SortOrderNone;
+  m_sortDescription.sortOrder = SortOrder::NONE;
   m_sortDescription.sortAttributes = SortAttributeNone;
 }

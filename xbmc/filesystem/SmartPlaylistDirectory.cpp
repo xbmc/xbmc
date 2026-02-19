@@ -67,7 +67,7 @@ namespace XFILE
     if (playlist.GetLimit() > 0)
       sorting.limitEnd = playlist.GetLimit();
     sorting.sortBy = playlist.GetOrder();
-    sorting.sortOrder = playlist.GetOrderAscending() ? SortOrderAscending : SortOrderDescending;
+    sorting.sortOrder = playlist.GetOrderAscending() ? SortOrder::ASCENDING : SortOrder::DESCENDING;
     sorting.sortAttributes = playlist.GetOrderAttributes();
     if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
       sorting.sortAttributes = (SortAttribute)(sorting.sortAttributes | SortAttributeIgnoreArticle);
@@ -290,7 +290,8 @@ namespace XFILE
       items.SetContent(playlist.GetType());
 
     items.SetProperty(PROPERTY_SORT_ORDER, (int)playlist.GetOrder());
-    items.SetProperty(PROPERTY_SORT_ASCENDING, playlist.GetOrderDirection() == SortOrderAscending);
+    items.SetProperty(PROPERTY_SORT_ASCENDING,
+                      playlist.GetOrderDirection() == SortOrder::ASCENDING);
     if (!group.empty())
     {
       items.SetProperty(PROPERTY_GROUP_BY, group);
@@ -302,13 +303,13 @@ namespace XFILE
     {
       if (playlist.GetOrder() == SortByRandom && group == "actors" &&
           playlist.GetType() == "musicvideos")
-        items.Sort(SortByRandom, SortOrderAscending,
+        items.Sort(SortByRandom, SortOrder::ASCENDING,
                    CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
                        CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING)
                        ? SortAttributeIgnoreArticle
                        : SortAttributeNone);
       else
-        items.Sort(SortByLabel, SortOrderAscending,
+        items.Sort(SortByLabel, SortOrder::ASCENDING,
                    CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
                        CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING)
                        ? SortAttributeIgnoreArticle

@@ -21,7 +21,7 @@ CGUIViewStateEventLog::CGUIViewStateEventLog(const CFileItemList& items) : CGUIV
   SetSortMethod(SortByDate);
   SetViewAsControl(DEFAULT_VIEW_AUTO);
 
-  SetSortOrder(SortOrderDescending);
+  SetSortOrder(SortOrder::DESCENDING);
   LoadViewState(items.GetPath(), WINDOW_EVENT_LOG);
 }
 

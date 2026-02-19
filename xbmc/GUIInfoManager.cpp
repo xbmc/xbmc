@@ -11000,12 +11000,12 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       }
       if (prop.Name() == "sortdirection")
       {
-        SortOrder order = SortOrderNone;
+        SortOrder order = SortOrder::NONE;
         if (StringUtils::EqualsNoCase(prop.param(), "ascending"))
-          order = SortOrderAscending;
+          order = SortOrder::ASCENDING;
         else if (StringUtils::EqualsNoCase(prop.param(), "descending"))
-          order = SortOrderDescending;
-        return AddMultiInfo(CGUIInfo(CONTAINER_SORT_DIRECTION, order));
+          order = SortOrder::DESCENDING;
+        return AddMultiInfo(CGUIInfo(CONTAINER_SORT_DIRECTION, static_cast<int>(order)));
       }
     }
     else if (cat.Name() == "listitem" || cat.Name() == "listitemposition" ||

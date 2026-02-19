@@ -32,7 +32,7 @@ CGUIViewStateWindowGames::CGUIViewStateWindowGames(const CFileItemList& items)
     AddSortMethod(SortByLabel, 551, LABEL_MASKS());
     AddSortMethod(SortByDriveType, 564, LABEL_MASKS());
     SetSortMethod(SortByLabel);
-    SetSortOrder(SortOrderAscending);
+    SetSortOrder(SortOrder::ASCENDING);
     SetViewAsControl(DEFAULT_VIEW_LIST);
   }
   else

@@ -496,7 +496,7 @@ void CAdvancedSettings::Initialize()
   m_iPVRTimeshiftThreshold = 10;
   m_bPVRTimeshiftSimpleOSD = true;
   m_PVRDefaultSortOrder.sortBy = SortByDate;
-  m_PVRDefaultSortOrder.sortOrder = SortOrderDescending;
+  m_PVRDefaultSortOrder.sortOrder = SortOrder::DESCENDING;
 
   m_addonPackageFolderSize = 200;
 
@@ -1256,8 +1256,9 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
       if (validSortMethods.contains(static_cast<SortBy>(sortMethod)))
       {
         int sortOrder;
-        if (XMLUtils::GetInt(pSortDecription, XML_SORTORDER, sortOrder, SortOrderAscending,
-                             SortOrderDescending))
+        if (XMLUtils::GetInt(pSortDecription, XML_SORTORDER, sortOrder,
+                             static_cast<int>(SortOrder::ASCENDING),
+                             static_cast<int>(SortOrder::DESCENDING)))
         {
           m_PVRDefaultSortOrder.sortBy = static_cast<SortBy>(sortMethod);
           m_PVRDefaultSortOrder.sortOrder = static_cast<SortOrder>(sortOrder);

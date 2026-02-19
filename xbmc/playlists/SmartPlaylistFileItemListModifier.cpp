@@ -43,7 +43,7 @@ bool CSmartPlaylistFileItemListModifier::Modify(CFileItemList &items) const
     return false;
 
   items.SetProperty(PROPERTY_SORT_ORDER, (int)xsp.GetOrder());
-  items.SetProperty(PROPERTY_SORT_ASCENDING, xsp.GetOrderDirection() == SortOrderAscending);
+  items.SetProperty(PROPERTY_SORT_ASCENDING, xsp.GetOrderDirection() == SortOrder::ASCENDING);
 
   return true;
 }
