@@ -115,7 +115,9 @@ set(HEADERS AspectRatio.h
             GUIListItem.h
             GUIListItemLayout.h
             GUIListLabel.h
+            GUIMacros.h
             GUIMessage.h
+            GUIMessageIDs.h
             GUIMoverControl.h
             GUIMultiImage.h
             GUIPanelContainer.h
