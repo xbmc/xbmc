@@ -15,6 +15,7 @@
 
 #include <algorithm>
 #include <array>
+#include <atomic>
 #include <queue>
 #include <string>
 #include <unordered_map>
@@ -245,5 +246,5 @@ private:
   bool m_running{true};
 
   // Tracks pending callback count for jobs in completion phase, used by CJob::IsShared()
-  std::unordered_map<const CJob*, size_t> m_pendingCallbacks;
+  std::unordered_map<const CJob*, std::atomic<size_t>> m_pendingCallbacks;
 };
