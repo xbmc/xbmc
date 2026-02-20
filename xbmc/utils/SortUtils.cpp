@@ -526,12 +526,14 @@ bool preliminarySort(const SortItem &left, const SortItem &right, bool handleFol
 
   // look at special sorting behaviour
   SortItem::const_iterator itLeft, itRight;
-  SortSpecial leftSortSpecial = SortSpecialNone;
-  SortSpecial rightSortSpecial = SortSpecialNone;
-  if ((itLeft = left.find(FieldSortSpecial)) != left.end() && itLeft->second.asInteger() <= (int64_t)SortSpecialOnBottom)
-    leftSortSpecial = (SortSpecial)itLeft->second.asInteger();
-  if ((itRight = right.find(FieldSortSpecial)) != right.end() && itRight->second.asInteger() <= (int64_t)SortSpecialOnBottom)
-    rightSortSpecial = (SortSpecial)itRight->second.asInteger();
+  SortSpecial leftSortSpecial = SortSpecial::NONE;
+  SortSpecial rightSortSpecial = SortSpecial::NONE;
+  if ((itLeft = left.find(FieldSortSpecial)) != left.end() &&
+      itLeft->second.asInteger() <= static_cast<int64_t>(SortSpecial::BOTTOM))
+    leftSortSpecial = static_cast<SortSpecial>(itLeft->second.asInteger());
+  if ((itRight = right.find(FieldSortSpecial)) != right.end() &&
+      itRight->second.asInteger() <= static_cast<int64_t>(SortSpecial::BOTTOM))
+    rightSortSpecial = static_cast<SortSpecial>(itRight->second.asInteger());
 
   // one has a special sort
   if (leftSortSpecial != rightSortSpecial)
@@ -539,8 +541,7 @@ bool preliminarySort(const SortItem &left, const SortItem &right, bool handleFol
     // left should be sorted on top
     // or right should be sorted on bottom
     // => left is sorted above right
-    if (leftSortSpecial == SortSpecialOnTop ||
-        rightSortSpecial == SortSpecialOnBottom)
+    if (leftSortSpecial == SortSpecial::TOP || rightSortSpecial == SortSpecial::BOTTOM)
     {
       result = true;
       return true;
@@ -551,7 +552,7 @@ bool preliminarySort(const SortItem &left, const SortItem &right, bool handleFol
     return true;
   }
   // both have either sort on top or sort on bottom -> leave as-is
-  else if (leftSortSpecial != SortSpecialNone)
+  else if (leftSortSpecial != SortSpecial::NONE)
   {
     result = false;
     return true;

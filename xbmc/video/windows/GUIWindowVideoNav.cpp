@@ -530,7 +530,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
         const auto newTag{std::make_shared<CFileItem>("newtag://" + videoUrl.GetType(), false)};
         newTag->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20462));
         newTag->SetLabelPreformatted(true);
-        newTag->SetSpecialSort(SortSpecialOnTop);
+        newTag->SetSpecialSort(SortSpecial::TOP);
         items.Add(newTag);
       }
     }
