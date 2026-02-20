@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="game.controller.default"
         name="Default Controller"
-        version="1.0.46"
+        version="1.0.47"
         provider-name="Team Kodi">
     <extension point="kodi.game.controller" library="resources/layout.xml"/>
     <extension point="xbmc.addon.metadata">
@@ -54,6 +54,7 @@
         <description lang="en_GB">The default media center controller is based on the Xbox 360 controller.</description>
         <description lang="es_ES">El mando por defecto del media center está basado en el mando de Xbox 360.</description>
         <description lang="es_MX">El mando por defecto de Kodi se basa en el control de Xbox 360.</description>
+        <description lang="et_EE">Meediakeskuse vaikejuhtseade põhineb Xbox 360 juhtseadmel.</description>
         <description lang="fa_IR">دستهٔ پیش‌گزیدهٔ مرکز رسانه، بر پایهٔ دستهٔ اکس‌باکس ۳۶۰ است.</description>
         <description lang="fi_FI">Mediakeskuksen oletusohjain perustuu Xbox 360 -ohjaimeen.</description>
         <description lang="fr_FR">La manette par défaut du centre multimédia est basée sur la manette de la Xbox 360.</description>
