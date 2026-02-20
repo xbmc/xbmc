@@ -7768,7 +7768,7 @@ msgstr ""
 #. Description of setting with label #13477 "Allow hardware acceleration (NVDEC)"
 #: system/settings/linux.xml
 msgctxt "#13478"
-msgid "Enable NVDEC hardware decoding of video files, used for NVIDIA graphics cards. NVDEC provides efficient GPU-based video decoding."
+msgid "Enable NVDEC hardware decoding of video files, used for NVIDIA graphics cards."
 msgstr ""
 
 #. Label for setting "Use H264 NVDEC"
