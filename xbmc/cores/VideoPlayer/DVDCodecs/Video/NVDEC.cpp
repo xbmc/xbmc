@@ -14,6 +14,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
+#include "utils/Map.h"
 #include "utils/log.h"
 
 #include <array>
@@ -33,34 +34,18 @@ extern "C"
 
 namespace
 {
-struct NvdecCodecInfo
-{
-  AVCodecID codec;
-  const char* setting;
-};
-
-constexpr auto NVDEC_CODEC_INFO = std::array{
-    NvdecCodecInfo{AV_CODEC_ID_H264, CSettings::SETTING_VIDEOPLAYER_USENVDECH264},
-    NvdecCodecInfo{AV_CODEC_ID_HEVC, CSettings::SETTING_VIDEOPLAYER_USENVDECHEVC},
-    NvdecCodecInfo{AV_CODEC_ID_VP9, CSettings::SETTING_VIDEOPLAYER_USENVDECVP9},
-    NvdecCodecInfo{AV_CODEC_ID_AV1, CSettings::SETTING_VIDEOPLAYER_USENVDECAV1},
-    NvdecCodecInfo{AV_CODEC_ID_MPEG2VIDEO, CSettings::SETTING_VIDEOPLAYER_USENVDECMPEG2},
-    NvdecCodecInfo{AV_CODEC_ID_MPEG4, CSettings::SETTING_VIDEOPLAYER_USENVDECMPEG4},
-    NvdecCodecInfo{AV_CODEC_ID_H263, CSettings::SETTING_VIDEOPLAYER_USENVDECMPEG4},
-    NvdecCodecInfo{AV_CODEC_ID_VC1, CSettings::SETTING_VIDEOPLAYER_USENVDECVC1},
-    NvdecCodecInfo{AV_CODEC_ID_WMV3, CSettings::SETTING_VIDEOPLAYER_USENVDECVC1},
-    NvdecCodecInfo{AV_CODEC_ID_VP8, CSettings::SETTING_VIDEOPLAYER_USENVDECVP8},
-};
-
-const NvdecCodecInfo* FindNvdecCodecInfo(AVCodecID codec)
-{
-  for (const auto& info : NVDEC_CODEC_INFO)
-  {
-    if (info.codec == codec)
-      return &info;
-  }
-  return nullptr;
-}
+constexpr auto NVDEC_CODEC_MAP = make_map<AVCodecID, const char*>({
+    {AV_CODEC_ID_H264, CSettings::SETTING_VIDEOPLAYER_USENVDECH264},
+    {AV_CODEC_ID_HEVC, CSettings::SETTING_VIDEOPLAYER_USENVDECHEVC},
+    {AV_CODEC_ID_VP9, CSettings::SETTING_VIDEOPLAYER_USENVDECVP9},
+    {AV_CODEC_ID_AV1, CSettings::SETTING_VIDEOPLAYER_USENVDECAV1},
+    {AV_CODEC_ID_MPEG2VIDEO, CSettings::SETTING_VIDEOPLAYER_USENVDECMPEG2},
+    {AV_CODEC_ID_MPEG4, CSettings::SETTING_VIDEOPLAYER_USENVDECMPEG4},
+    {AV_CODEC_ID_H263, CSettings::SETTING_VIDEOPLAYER_USENVDECMPEG4},
+    {AV_CODEC_ID_VC1, CSettings::SETTING_VIDEOPLAYER_USENVDECVC1},
+    {AV_CODEC_ID_WMV3, CSettings::SETTING_VIDEOPLAYER_USENVDECVC1},
+    {AV_CODEC_ID_VP8, CSettings::SETTING_VIDEOPLAYER_USENVDECVP8},
+});
 
 bool IsVisibleSettingEnabled(const std::shared_ptr<CSettings>& settings,
                              const std::string& settingId)
@@ -183,14 +168,14 @@ bool CDVDVideoCodecNVDEC::Open(CDVDStreamInfo& hints, CDVDCodecOptions& options)
     return false;
   }
 
-  const NvdecCodecInfo* codecInfo = FindNvdecCodecInfo(hints.codec);
-  if (!codecInfo)
+  const auto codecSetting = NVDEC_CODEC_MAP.get(hints.codec);
+  if (!codecSetting)
   {
     CLog::Log(LOGINFO, "CDVDVideoCodecNVDEC::Open() - No NVDEC config for codec {}", hints.codec);
     return false;
   }
 
-  if (!IsVisibleSettingEnabled(settings, codecInfo->setting))
+  if (!IsVisibleSettingEnabled(settings, *codecSetting))
   {
     CLog::Log(LOGINFO, "CDVDVideoCodecNVDEC::Open() - NVDEC disabled for codec {}", hints.codec);
     return false;
