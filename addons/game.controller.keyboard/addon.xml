@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="game.controller.keyboard"
         name="IBM Model M Keyboard"
-        version="1.1.47"
+        version="1.1.49"
         provider-name="Team Kodi">
     <extension point="kodi.game.controller" library="resources/layout.xml"/>
     <extension point="xbmc.addon.metadata">
@@ -49,7 +49,8 @@
         <disclaimer lang="it_IT">Credito immagine: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="nl_NL">Bron afbeelding: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="pl_PL">Pochodzenie obrazu: Wikipedia (wikipedia.org)</disclaimer>
-        <disclaimer lang="ru_RU">Источник изображения: Wikipedia (wikipedia.org)</disclaimer>
+        <disclaimer lang="pt_BR">Crédito da imagem : Wikipedia ( wikipedia.org )</disclaimer>
+        <disclaimer lang="ru_RU">Изображение предоставлено: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="sv_SE">Bildreferens: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="uk_UA">Джерело зображення: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="zh_CN">图片来源：维基百科（Wikipedia.org）</disclaimer>
