@@ -99,7 +99,7 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
       // part_number is the matroska spec key
       if (key == "TRACK" || key == "PART_NUMBER")
         albumtag.SetDiscNumber(std::stoi(tag->value));
-      else if (key == "SUBTITLE" || key == "SETSUBTITLE")
+      else if (key == "SUBTITLE" || key == "SETSUBTITLE" || key == "DISCSUBTITLE")
         albumtag.SetDiscSubtitle(tag->value);
       else if (key == "TITLE")
         albumtag.SetAlbum(tag->value);
@@ -110,7 +110,7 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
       else if (key == "ARTISTSORT" || key == "ARTIST SORT")
         albumtag.SetArtistSort(
             StringUtils::Join(StringUtils::Split(tag->value, separators), musicsep));
-      else if (key == "ALBUMARTIST" || key == "ALBUM ARTIST")
+      else if (key == "ALBUMARTIST" || key == "ALBUM ARTIST"  || key == "ALBUM_ARTIST")
         albumtag.SetAlbumArtist(
             StringUtils::Join(StringUtils::Split(tag->value, separators), musicsep));
       else if (key == "ALBUMARTSTS" || key == "ALBUM ARTISTS")
@@ -120,25 +120,28 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
             StringUtils::Join(StringUtils::Split(tag->value, separators), musicsep));
       else if (key == "MUSICBRAINZ_ARTISTID")
         albumtag.SetMusicBrainzArtistID(StringUtils::Split(tag->value, separators));
-      else if (key == "MUSICBRAINZ_ALBUMARTISTID")
+      else if (key == "MUSICBRAINZ_ALBUMARTISTID" || key == "MUSICBRAINZ ALBUM ID")
         albumtag.SetMusicBrainzAlbumArtistID(StringUtils::Split(tag->value, separators));
       else if (key == "MUSICBRAINZ_ALBUMARTIST")
         albumtag.SetAlbumArtist(tag->value);
-      else if (key == "MUSICBRAINZ_ALBUMID")
+      else if (key == "MUSICBRAINZ_ALBUMID" || key == "MUSICBRAINZ ALBUM ID")
         albumtag.SetMusicBrainzAlbumID(tag->value);
-      else if (key == "MUSICBRAINZ_RELEASEGROUPID")
+      else if (key == "MUSICBRAINZ_RELEASEGROUPID" || key == "MUSICBRAINZ RELEASE GROUP ID")
         albumtag.SetMusicBrainzReleaseGroupID(tag->value);
       else if (key == "MUSICBRAINZ_ALBUMSTATUS")
         albumtag.SetAlbumReleaseStatus(tag->value);
       else if (key == "MUSICBRAINZ_ALBUMTYPE")
         albumtag.SetMusicBrainzReleaseType(tag->value);
+      else if (key == "COMPILATION")
+        albumtag.SetCompilation(true);
       else if (key == "PUBLISHER")
         albumtag.SetRecordLabel(tag->value);
       // mp3tag info shows year but the value is stored in date_recorded
       // equates to TDRC in id3v2.4 ISO 8601 yyyy-mm-dd or part thereof
-      else if (key == "YEAR" || key == "DATE_RECORDED")
+      else if (key == "YEAR" || key == "DATE_RELEASED") // proper matroska tag is date_released
         albumtag.SetReleaseDate(tag->value);
-      else if (key == "ORIGYEAR") // ISO 8601 as above. Equates to TDOR in id3v2.4 (set by mp3tag)
+      // ISO 8601 as above. Equates to TDOR in id3v2.4 (set by mp3tag)
+      else if (key == "ORIGYEAR" || key == "DATE_RECORDED")
         albumtag.SetOriginalDate(tag->value);
       else if (key == "MOOD")
         albumtag.SetMood(tag->value);
@@ -156,10 +159,12 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
         tagdata = StringUtils::Split(tag->value, ",");
         AddCommaDelimitedString(tagdata, separators, albumtag);
       }
-      else if (key == "SUBTITLE" || key == "SETSUBTITLE")
-        albumtag.SetDiscSubtitle(tag->value);
+      else if (key == "DISC")
+        albumtag.SetDiscNumber(std::stoi(tag->value));
       else if (key == "REMIXED_BY")
         albumtag.AddArtistRole("Remixer", tag->value);
+      else if (key == "MIXED_BY" || key == "MIXER")
+        albumtag.AddArtistRole("Mixer", tag->value);
       else if (key == "COMMENT")
         albumtag.SetComment(tag->value);
     }
@@ -233,6 +238,45 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
           item->GetMusicInfoTag()->SetArtist(tag->value);
         else if (key == "MUSICBRAINZ_TRACKID")
           item->GetMusicInfoTag()->SetMusicBrainzTrackID(tag->value);
+        else if (key == "ARTISTSORT" || key == "ARTIST SORT")
+          item->GetMusicInfoTag()->SetArtistSort(
+              StringUtils::Join(StringUtils::Split(tag->value, separators), musicsep));
+        else if (key == "ALBUMARTIST" || key == "ALBUM ARTIST")
+          item->GetMusicInfoTag()->SetAlbumArtist(
+              StringUtils::Join(StringUtils::Split(tag->value, separators), musicsep));
+        else if (key == "ALBUMARTSTS" || key == "ALBUM ARTISTS")
+          item->GetMusicInfoTag()->SetAlbumArtist(StringUtils::Split(tag->value, separators));
+        else if (key == "ALBUMARTISTSORT" || key == "ALBUM ARTIST SORT")
+          item->GetMusicInfoTag()->SetAlbumArtistSort(
+              StringUtils::Join(StringUtils::Split(tag->value, separators), musicsep));
+        else if (key == "COMPOSERSORT" || key == "COMPOSER SORT")
+          item->GetMusicInfoTag()->SetComposerSort(
+              StringUtils::Join(StringUtils::Split(tag->value, separators), musicsep));
+        else if (key == "MUSICBRAINZ_ARTISTID")
+          item->GetMusicInfoTag()->SetMusicBrainzArtistID(
+              StringUtils::Split(tag->value, separators));
+        else if (key == "MUSICBRAINZ_ALBUMARTISTID")
+          item->GetMusicInfoTag()->SetMusicBrainzAlbumArtistID(
+              StringUtils::Split(tag->value, separators));
+        else if (key == "MUSICBRAINZ_ALBUMARTIST")
+          item->GetMusicInfoTag()->SetAlbumArtist(tag->value);
+        else if (key == "MUSICBRAINZ_ALBUMID")
+          item->GetMusicInfoTag()->SetMusicBrainzAlbumID(tag->value);
+        else if (key == "MUSICBRAINZ_RELEASEGROUPID")
+          item->GetMusicInfoTag()->SetMusicBrainzReleaseGroupID(tag->value);
+        else if (key == "MUSICBRAINZ_ALBUMSTATUS")
+          item->GetMusicInfoTag()->SetAlbumReleaseStatus(tag->value);
+        else if (key == "MUSICBRAINZ_ALBUMTYPE")
+          item->GetMusicInfoTag()->SetMusicBrainzReleaseType(tag->value);
+        else if (key == "PUBLISHER")
+          item->GetMusicInfoTag()->SetRecordLabel(tag->value);
+        // mp3tag info shows year but the value is stored in date_recorded
+        // equates to TDRC in id3v2.4 ISO 8601 yyyy-mm-dd or part thereof
+        else if (key == "YEAR" || key == "DATE_RELEASED") // proper matroska tag is date_released
+          item->GetMusicInfoTag()->SetReleaseDate(tag->value);
+        // ISO 8601 as above. Equates to TDOR in id3v2.4 (set by mp3tag)
+        else if (key == "ORIGYEAR" || key == "DATE_RECORDED")
+          item->GetMusicInfoTag()->SetOriginalDate(tag->value);
         else if (key == "COMPOSER")
           addRole("Composer", tag->value);
         else if (key == "LYRICIST")
@@ -251,19 +295,21 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
           addRole("Producer", tag->value);
         else if (key == "REMIXED_BY")
           addRole("Remixer", tag->value);
-        else if (key == "YEAR" || key == "DATE_RECORDED")
-          item->GetMusicInfoTag()->SetReleaseDate(tag->value);
-        else if (key == "ORIGYEAR")
-          item->GetMusicInfoTag()->SetOriginalDate(tag->value);
-        else if (key == "SUBTITLE" || key == "SETSUBTITLE")
+        else if (key == "MIXED_BY" || key == "MIXER"  )
+          addRole("Mixer", tag->value);
+        else if (key == "SUBTITLE" || key == "SETSUBTITLE" || key == "DISCSUBTITLE")
           item->GetMusicInfoTag()->SetDiscSubtitle(tag->value);
+        else if (key == "DISC")
+		  item->GetMusicInfoTag()->SetDiscNumber(std::stoi(tag->value));
         else if (key == "COMMENT")
           item->GetMusicInfoTag()->SetComment(tag->value);
         else if (key == "MOOD")
           item->GetMusicInfoTag()->SetMood(tag->value);
+        else if (key == "COMPILATION")
+          item->GetMusicInfoTag()->SetCompilation(true);
         else if (key == "GENRE")
         {
-          separators.emplace_back(",");
+          separators.push_back(",");
           item->GetMusicInfoTag()->SetGenre(StringUtils::Split(tag->value, separators), true);
           separators.pop_back();
         }
@@ -273,8 +319,16 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
           tagdata = StringUtils::Split(tag->value, ",");
           AddCommaDelimitedString(tagdata, separators, *item->GetMusicInfoTag());
         }
-        // comma separated list of role, person
-        else if (key == "INVOLVEDPEOPLE")
+        /* comma separated list of role, person
+          The key value depends on tagging software but between 'INSTRUMENTS', 'INVOLVEDPEOPLE' and
+          'ACTOR', everything should be covered. For instance https://github.com/Martchus/tageditor
+          (window & linux) shows 'performers' in the gui but names the key 'ACTOR' in the file.
+          mp3tag uses both 'instruments' & 'involvedpeople'
+          https://www.poikosoft.com/metadata-editor (windows only) can create freeform tags as can
+          https://www.videohelp.com/software/chapterEditor (Win & Linux) although it also shows the
+          correct matroska spec tags
+        */
+        else if (key == "INVOLVEDPEOPLE" || key == "ACTOR")
         {
           tagdata = StringUtils::Split(tag->value, ",");
           AddCommaDelimitedString(tagdata, separators, *item->GetMusicInfoTag());
