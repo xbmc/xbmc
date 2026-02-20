@@ -1621,8 +1621,8 @@ bool CLinuxRendererGLES::CreateP010Texture(int index)
     return false;
   }
 
-  if (!m_renderSystem->IsExtSupported("GL_EXT_texture_norm16") &&
-      !m_renderSystem->IsExtSupported("GL_OES_texture_norm16"))
+  if (!CGLExtensions::IsExtensionSupported(CGLExtensions::EXT_texture_norm16) &&
+      !CGLExtensions::IsExtensionSupported(CGLExtensions::OES_texture_norm16))
   {
     CLog::Log(LOGERROR, "P010: missing GL_EXT/OES_texture_norm16");
     return false;
