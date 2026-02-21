@@ -33,6 +33,7 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 ifeq ($(OS),darwin_embedded)
 	cd $(PLATFORM); patch -p1 -i ../01-darwinembedded-incorrecttoolchain.patch
+	cd $(PLATFORM); patch -p1 -i ../02-darwinembedded-exec-program.patch
 endif
 	cd $(PLATFORM)/build; $(CMAKE) $(CMAKE_OPTIONS) ..
 

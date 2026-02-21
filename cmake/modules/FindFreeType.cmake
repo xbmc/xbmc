@@ -29,6 +29,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS freetype::freetype)
     elseif(TARGET Freetype::Freetype)
       # Freetype native target
+      find_package(BZip2 ${SEARCH_QUIET})
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS Freetype::Freetype)
     endif()
 
