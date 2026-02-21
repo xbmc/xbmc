@@ -143,6 +143,7 @@ bool CWinSystemAndroid::CreateNewWindow(const std::string& name,
 bool CWinSystemAndroid::DestroyWindow()
 {
   CLog::Log(LOGINFO, "CWinSystemAndroid::{}", __FUNCTION__);
+  m_dispModesUpdatePending = false;
   m_nativeWindow.reset();
   m_bWindowCreated = false;
   return true;
