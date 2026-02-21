@@ -63,6 +63,8 @@ AVPixelFormat CDVDVideoCodecNVDEC::GetFormatNVDEC(AVCodecContext* avctx, const A
 {
   auto* self = static_cast<CDVDVideoCodecNVDEC*>(static_cast<ICallbackHWAccel*>(avctx->opaque));
 
+  self->m_processInfo.SetVideoDimensions(avctx->coded_width, avctx->coded_height);
+
   // Once NVDEC has failed, stop selecting CUDA so FFmpeg doesn't keep retrying.
   if (self->m_decoderState == STATE_HW_FAILED)
     return avcodec_default_get_format(avctx, fmts);
