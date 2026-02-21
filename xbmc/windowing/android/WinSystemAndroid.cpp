@@ -127,6 +127,13 @@ bool CWinSystemAndroid::CreateNewWindow(const std::string& name,
     return false;
   }
 
+  if (m_dispModesUpdatePending)
+  {
+    CLog::Log(LOGDEBUG, "CWinSystemAndroid::CreateNewWindow: display modes update was pending, refreshing resolutions");
+    UpdateResolutions(false);
+    m_dispModesUpdatePending = false;
+  }
+
   m_android->SetNativeResolution(res);
 
   m_bWindowCreated = true;
@@ -136,6 +143,7 @@ bool CWinSystemAndroid::CreateNewWindow(const std::string& name,
 bool CWinSystemAndroid::DestroyWindow()
 {
   CLog::Log(LOGINFO, "CWinSystemAndroid::{}", __FUNCTION__);
+  m_dispModesUpdatePending = false;
   m_nativeWindow.reset();
   m_bWindowCreated = false;
   return true;
@@ -263,6 +271,12 @@ void CWinSystemAndroid::UpdateDisplayModes()
   {
     // update display settings
     UpdateResolutions(false);
+  }
+  else
+  {
+    // Window not yet recreated after standby/wake - defer resolution update
+    // to CreateNewWindow() so CDisplaySettings gets fresh Android mode IDs
+    m_dispModesUpdatePending = true;
   }
 }
 
