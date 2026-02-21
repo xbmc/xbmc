@@ -236,6 +236,7 @@ bool CDVDVideoCodecNVDEC::Open(CDVDStreamInfo& hints, CDVDCodecOptions& options)
   // Bypass the base-class IHardwareDecoder selection logic.
   m_decoderState = STATE_SW_SINGLE;
   m_processInfo.SetSwDeinterlacingMethods();
+  m_processInfo.SetVideoDeintMethod("none");
   m_processInfo.SetVideoInterlaced(false);
 
   // Populate the supported pixel format list for the filter graph need_scale check.
