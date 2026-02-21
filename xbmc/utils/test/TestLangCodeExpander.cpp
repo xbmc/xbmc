@@ -272,6 +272,7 @@ const TestLookup LookupTests[] = {
     {" en ", true, "English"},
     {"", false, ""},
     {"123", false, ""},
+    {"zh-yue-Hant-HK", true, "Chinese (Cantonese, Han (Tr... [zh-yue-Hant-HK]"},
 };
 // clang-format on
 

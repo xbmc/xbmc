@@ -27,6 +27,8 @@
 
 using namespace KODI::UTILS::I18N;
 
+constexpr std::size_t MAX_BCP47_ENGLISH_NAME_LENGTH = 30;
+
 CLangCodeExpander::CLangCodeExpander() = default;
 
 CLangCodeExpander::~CLangCodeExpander() = default;
@@ -65,6 +67,8 @@ void CLangCodeExpander::LoadUserCodes(const TiXmlElement* pRootElement)
 
 bool CLangCodeExpander::Lookup(const std::string& code, std::string& desc)
 {
+  static_assert(MAX_BCP47_ENGLISH_NAME_LENGTH > 3);
+
   if (LookupInUserMap(code, desc))
     return true;
 
@@ -77,6 +81,13 @@ bool CLangCodeExpander::Lookup(const std::string& code, std::string& desc)
   if (auto tag = CBcp47::ParseTag(code); tag.has_value())
   {
     desc = tag.value().Format(Bcp47FormattingStyle::FORMAT_ENGLISH);
+    if (desc.size() > MAX_BCP47_ENGLISH_NAME_LENGTH)
+    {
+      desc.resize(MAX_BCP47_ENGLISH_NAME_LENGTH - 3);
+      desc.append("... [");
+      desc.append(tag.value().Format(Bcp47FormattingStyle::FORMAT_BCP47));
+      desc.push_back(']');
+    }
     return true;
   }
 
