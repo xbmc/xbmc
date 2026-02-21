@@ -131,7 +131,9 @@ std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& f
     if (pStream)
     {
       // ignore if it's a picture attachment (e.g. jpeg artwork)
-      if (pStream->type == StreamType::VIDEO && !(pStream->flags & AV_DISPOSITION_ATTACHED_PIC))
+      // assume the first video stream is the one we want
+      if (pStream->type == StreamType::VIDEO && !(pStream->flags & AV_DISPOSITION_ATTACHED_PIC) &&
+          nVideoStream == -1)
       {
         nVideoStream = pStream->uniqueId;
         demuxerId = pStream->demuxerId;
