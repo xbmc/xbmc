@@ -21,6 +21,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
+#include "utils/StreamDetails.h"
 #include "utils/StringUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
@@ -105,10 +106,12 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
     }
   }
 
+  const std::string hdrStr = CStreamDetails::HdrTypeToString(picture.hdrType);
   CLog::Log(LOGDEBUG,
             "CRenderManager::Configure - change configuration. {}x{}. display: {}x{}. framerate: "
-            "{:4.2f}.",
-            picture.iWidth, picture.iHeight, picture.iDisplayWidth, picture.iDisplayHeight, fps);
+            "{:4.2f}. hdrType: {}.",
+            picture.iWidth, picture.iHeight, picture.iDisplayWidth, picture.iDisplayHeight, fps,
+            hdrStr.empty() ? "none" : hdrStr);
 
   // make sure any queued frame was fully presented
   {
@@ -878,14 +881,15 @@ void CRenderManager::PresentBlend(bool clear, DWORD flags, DWORD alpha)
 void CRenderManager::UpdateLatencyTweak()
 {
   float fps = CServiceBroker::GetWinSystem()->GetGfxContext().GetFPS();
-  const bool isHDREnabled = CServiceBroker::GetWinSystem()->GetOSHDRStatus() == HDR_STATUS::HDR_ON;
+  const bool isHDRUsed = (CServiceBroker::GetWinSystem()->GetOSHDRStatus() == HDR_STATUS::HDR_ON) &&
+                         (m_picture.hdrType != StreamHdrType::HDR_TYPE_NONE);
 
   float refresh = fps;
   if (CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution() == RES_WINDOW)
     refresh = 0; // No idea about refresh rate when windowed, just get the default latency
   m_latencyTweak = static_cast<double>(
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->GetLatencyTweak(refresh,
-                                                                                     isHDREnabled));
+                                                                                     isHDRUsed));
 }
 
 void CRenderManager::UpdateResolution()
