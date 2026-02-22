@@ -10,6 +10,7 @@ set(HEADERS Bcp47.h
             Bcp47Common.h
             Bcp47Formatter.h
             Bcp47Parser.h
+            Bcp47SubTags.h
             Iso3166_1.h
             Iso3166_1_Table.h
             Iso639.h

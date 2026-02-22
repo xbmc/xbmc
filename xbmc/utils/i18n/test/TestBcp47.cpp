@@ -9,7 +9,10 @@
 #include "utils/StringUtils.h"
 #include "utils/i18n/Bcp47.h"
 #include "utils/i18n/Bcp47Parser.h"
+#include "utils/i18n/Bcp47Registry/SubTagRegistryManager.h"
 #include "utils/i18n/test/TestI18nUtils.h"
+
+#include <memory>
 
 #include <gtest/gtest.h>
 
@@ -113,31 +116,80 @@ const TestBcp47ValidateTag ValidityBcp47Tests[] = {
   {"qaa", true}, // Private use ISO 639-2
   // Extlang subtags
   {"ar-aao", true},
-  {"en-abc-def", false}, // Multiple extlangs are rejected whether they exist in registry or not
+  {"en-aao-abh", false}, // Multiple extlangs are rejected whether they exist in registry or not
+  {"en-aaa", false}, // does not exist
+  // Script subtags
+  {"en-Afak", true}, // ISO 15924
+  {"en-aaaa", false}, // does not exist
   //! @todo add test for inexistent extlang after implementation of the registry
   // Region subtags
   {"en-GB", true}, // ISO 3166-1
+  {"es-419", true}, // UN M.49
   {"en-AA", true}, // Private use
-  {"es-419", false}, // UN M.49 - support to be added with IANA language subtags registry
+  {"en-000", false}, // does not exist
   // Variant subtags
-  {"en-variant", true},
-  {"en-variant-variant", false},
+  {"en-1606nict", true},
+  // as of 2026-02-07 no example in the registry of (DIGIT 3alphanum) form
+  {"en-1606nict-1694acad", true},
+  {"en-invalid", false},
   // Extensions subtags
   {"ab-a-bcdefghi-jk", true}, // extension with multiple segments
   {"ab-b-ab-a-cd", true}, // multiple extensions in non-alphabetical order are OK
   {"ab-a-bc-a-de", false}, // duplicate extensions not allowed
+  // Private use tags
+  {"x-a-bcd", true},
+  // Grandfathered tags
+  {"i-ami", true}, // rregular grandfathered
+  {"cel-gaulish", true}, // irregular grandfathered
 };
 // clang-format on
 
 class Bcp47ValidateTagTester : public testing::Test,
                                public testing::WithParamInterface<TestBcp47ValidateTag>
 {
+protected:
+  static CSubTagRegistryManager m_registry;
+
+  static void SetUpTestSuite()
+  {
+    // Runs once before the first test in this suite
+
+    // Use a small controlled subtags registry for more reliable tests
+    // clang-format off
+    std::vector<RegistryFileRecord> param = {
+        RegistryFileRecord{{{"Type", "language"}, {"Subtag", "ab"}, {"Description", "Abkhazian"}}},
+        RegistryFileRecord{{{"Type", "language"}, {"Subtag", "ar"}, {"Description", "Arabic"}}},
+        RegistryFileRecord{{{"Type", "language"}, {"Subtag", "en"}, {"Description", "English"}}},
+        RegistryFileRecord{{{"Type", "language"}, {"Subtag", "es"}, {"Description", "Spanish"}}},
+        RegistryFileRecord{{{"Type", "language"}, {"Subtag", "ady"}, {"Description", "Adyghe"}}},
+        RegistryFileRecord{{{"Type", "extlang"}, {"Subtag", "aao"}, {"Description", "Algerian Saharan Arabic"}, {"Prefix", "ar"}}},
+        RegistryFileRecord{{{"Type", "extlang"}, {"Subtag", "abh"}, {"Description", "Tajiki Arabic"}, {"Prefix", "ar"}}},
+        RegistryFileRecord{{{"Type", "script"}, {"Subtag", "Afak"}, {"Description", "Afaka"}}},
+        RegistryFileRecord{{{"Type", "region"}, {"Subtag", "GB"}, {"Description", "United Kingdom"}}},
+        RegistryFileRecord{{{"Type", "region"}, {"Subtag", "419"}, {"Description", "Latin America and the Caribbean"}}},
+        RegistryFileRecord{{{"Type", "variant"}, {"Subtag", "1606nict"}, {"Description", "Late Middle French (to 1606)"}}},
+        RegistryFileRecord{{{"Type", "variant"}, {"Subtag", "1694acad"}, {"Description", "Early Modern French"}}},
+        RegistryFileRecord{{{"Type", "grandfathered"}, {"Subtag", "i-ami"}, {"Description", "Amis"}}},
+        RegistryFileRecord{{{"Type", "grandfathered"}, {"Subtag", "cel-gaulish"}, {"Description", "Gaulish"}}},
+    };
+    // clang-format on
+
+    std::unique_ptr<IRegistryRecordProvider> provider =
+        std::make_unique<CMemoryRecordProvider>(std::move(param));
+
+    EXPECT_TRUE(m_registry.Initialize(std::move(provider)));
+  }
+
+  static void TearDownTestSuite() { m_registry.Deinitialize(); }
 };
+
+// Define the static member
+CSubTagRegistryManager Bcp47ValidateTagTester::m_registry;
 
 TEST_P(Bcp47ValidateTagTester, ParseTag)
 {
   auto& param = GetParam();
-  auto actual = CBcp47::ParseTag(param.input);
+  auto actual = CBcp47::ParseTag(param.input, &m_registry);
 
   EXPECT_TRUE(actual.has_value());
   EXPECT_EQ(param.expectedIsValid, actual.value().IsValid());
@@ -158,4 +210,34 @@ TEST(TestI18nBcp47, Canonicalize)
   tag = CBcp47::ParseTag("ab-d-ef-g-hi-a-bc");
   tag->Canonicalize();
   EXPECT_EQ(tag->Format(), "ab-a-bc-d-ef-g-hi");
+}
+
+TEST(TestI18nBcp47, RegistryDI)
+{
+  // System registry
+  auto tag = CBcp47::ParseTag("en");
+  EXPECT_TRUE(tag.has_value());
+  EXPECT_TRUE(tag->IsValid());
+
+  // Empty registry
+  CSubTagRegistryManager registry;
+  tag = CBcp47::ParseTag("en", &registry);
+  EXPECT_TRUE(tag.has_value());
+  EXPECT_FALSE(tag->IsValid());
+
+  // registry with subtags that wouldn't be included in the official registry
+  std::vector<RegistryFileRecord> param = {
+      RegistryFileRecord({{"Type", "language"}, {"Subtag", "zz"}, {"Description", "test"}})};
+
+  std::unique_ptr<IRegistryRecordProvider> provider =
+      std::make_unique<CMemoryRecordProvider>(std::move(param));
+  EXPECT_TRUE(registry.Initialize(std::move(provider)));
+
+  tag = CBcp47::ParseTag("zz", &registry);
+  EXPECT_TRUE(tag.has_value());
+  EXPECT_TRUE(tag->IsValid());
+
+  tag = CBcp47::ParseTag("zz");
+  EXPECT_TRUE(tag.has_value());
+  EXPECT_FALSE(tag->IsValid());
 }
