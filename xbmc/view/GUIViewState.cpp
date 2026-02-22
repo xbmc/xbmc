@@ -348,7 +348,7 @@ void CGUIViewState::AddSortMethod(const SortDescription& sortDescription,
 void CGUIViewState::SetCurrentSortMethod(int method)
 {
   SortBy sortBy = (SortBy)method;
-  if (sortBy < SortByNone || sortBy > SortByLastUsed)
+  if (sortBy <= SortByStartMarker || sortBy >= SortByEndMarker)
     return; // invalid
 
   SetSortMethod(sortBy);

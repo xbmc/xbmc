@@ -53,8 +53,9 @@ enum class SortSpecial
 ///@{
 typedef enum
 {
-  /// __0__  :
-  SortByNone = 0,
+  SortByStartMarker = -1,
+  /// __0__  : Unsorted
+  SortByNone,
   /// __1__  : Sort by Name                       <em>(String: <b><c>Label</c></b>)</em>
   SortByLabel,
   /// __2__  : Sort by Date                       <em>(String: <b><c>Date</c></b>)</em>
@@ -175,6 +176,9 @@ typedef enum
   /// __59__ : Sort by user preference            <em>(String: <b><c>UserPreference</c></b>)</em>
   /// @skinning_v20 <b>SortByUserPreference</b> New sort method added.
   SortByUserPreference,
+  // SortByEndMarker must remain as the last item in the enum.
+  // All new sort methods to be added prior to this end marker.
+  SortByEndMarker,
 } SortBy;
 ///@}
 
