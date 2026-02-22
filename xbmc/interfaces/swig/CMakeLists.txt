@@ -59,66 +59,91 @@ find_package(SWIG REQUIRED ${SEARCH_QUIET})
 
 # Default URL/Versions/Hashes to use unless *_SOURCE_DIR are set for the relevant binary
 set(GROOVY_VER 4.0.26)
-set(GROOVY_URL ${KODI_MIRROR}/build-deps/sources/apache-groovy-binary-${GROOVY_VER}.zip)
-set(GROOVY_URL_HASH URL_HASH SHA512=60d1aea85008a438a9498178dc2137385653f1ea294e7e257959e9e0f94382e160e217e1090047c2a944e328cf46e8ebcfc4b015f7d0cb9f2fcf9d880c6c1344)
+set(GROOVY_ARCHIVE apache-groovy-binary-${GROOVY_VER}.zip)
+set(GROOVY_URL ${KODI_MIRROR}/build-deps/sources/${GROOVY_ARCHIVE})
+set(GROOVY_URL_HASH SHA512=60d1aea85008a438a9498178dc2137385653f1ea294e7e257959e9e0f94382e160e217e1090047c2a944e328cf46e8ebcfc4b015f7d0cb9f2fcf9d880c6c1344)
 
 set(APACHE_COMMONS_LANG_VER 3.17.0)
-set(APACHE_COMMONS_LANG_URL ${KODI_MIRROR}/build-deps/sources/commons-lang3-${APACHE_COMMONS_LANG_VER}-bin.tar.gz)
-set(APACHE_COMMONS_LANG_URL_HASH URL_HASH SHA512=8927a406a1bd084b548f89cf15fe4bc7567dcaa50ae8abae54e9c883c1574c648fcc8ad6c3abaa381dfbdf1801727ac5e6c4572063203a1dfac293d122282f05)
+set(APACHE_COMMONS_LANG_ARCHIVE commons-lang3-${APACHE_COMMONS_LANG_VER}-bin.tar.gz)
+set(APACHE_COMMONS_LANG_URL ${KODI_MIRROR}/build-deps/sources/${APACHE_COMMONS_LANG_ARCHIVE})
+set(APACHE_COMMONS_LANG_URL_HASH SHA512=8927a406a1bd084b548f89cf15fe4bc7567dcaa50ae8abae54e9c883c1574c648fcc8ad6c3abaa381dfbdf1801727ac5e6c4572063203a1dfac293d122282f05)
 
 set(APACHE_COMMONS_TEXT_VER 1.13.0)
-set(APACHE_COMMONS_TEXT_URL ${KODI_MIRROR}/build-deps/sources/commons-text-${APACHE_COMMONS_TEXT_VER}-bin.tar.gz)
-set(APACHE_COMMONS_TEXT_URL_HASH URL_HASH SHA512=a51667463e88b2d017c3baebb9bbe42c4e50cba96ffe19c89680e82002a4db8b9007daff75f8dbf8bf3725be13a3f03f3c2bc4e1f11e8e02dcab4408abdb44a1)
-
-include(FetchContent)
-FetchContent_Declare(
-  groovy
-  URL ${GROOVY_URL}
-  ${GROOVY_URL_HASH}
-  DOWNLOAD_DIR ${TARBALL_DIR}
-  SOURCE_DIR ${DEPENDS_PATH}/share/groovy
-)
-
-FetchContent_Declare(
-  apache-commons-lang
-  URL ${APACHE_COMMONS_LANG_URL}
-  ${APACHE_COMMONS_LANG_URL_HASH}
-  DOWNLOAD_DIR ${TARBALL_DIR}
-  SOURCE_DIR ${DEPENDS_PATH}/share/java/lang
-)
-
-FetchContent_Declare(
-  apache-commons-text
-  URL ${APACHE_COMMONS_TEXT_URL}
-  ${APACHE_COMMONS_TEXT_URL_HASH}
-  DOWNLOAD_DIR ${TARBALL_DIR}
-  SOURCE_DIR ${DEPENDS_PATH}/share/java/text
-)
+set(APACHE_COMMONS_TEXT_ARCHIVE commons-text-${APACHE_COMMONS_TEXT_VER}-bin.tar.gz)
+set(APACHE_COMMONS_TEXT_URL ${KODI_MIRROR}/build-deps/sources/${APACHE_COMMONS_TEXT_ARCHIVE})
+set(APACHE_COMMONS_TEXT_URL_HASH SHA512=a51667463e88b2d017c3baebb9bbe42c4e50cba96ffe19c89680e82002a4db8b9007daff75f8dbf8bf3725be13a3f03f3c2bc4e1f11e8e02dcab4408abdb44a1)
 
 if(NOT groovy_SOURCE_DIR)
-  if(NOT EXISTS ${DEPENDS_PATH}/share/groovy/lib/groovy-${GROOVY_VER}.jar OR
-     NOT EXISTS ${DEPENDS_PATH}/share/groovy/lib/groovy-xml-${GROOVY_VER}.jar OR
-     NOT EXISTS ${DEPENDS_PATH}/share/groovy/lib/groovy-templates-${GROOVY_VER}.jar)
-    FetchContent_MakeAvailable(groovy)
-  else()
-    set(groovy_SOURCE_DIR ${DEPENDS_PATH}/share/groovy)
+  # file wont be downloaded if EXPECTED_HASH matches existing archive
+  file(DOWNLOAD ${GROOVY_URL} ${TARBALL_DIR}/${GROOVY_ARCHIVE} SHOW_PROGRESS EXPECTED_HASH ${GROOVY_URL_HASH})
+
+  set(groovy_exe_name groovy)
+  if(WIN32 OR WINDOWS_STORE)
+    string(APPEND groovy_exe_name ".bat")
   endif()
+
+  find_program(groovy_executable NAMES ${groovy_exe_name}
+                                 HINTS ${DEPENDS_PATH}/share/groovy/bin)
+
+  if(groovy_executable)
+    execute_process(COMMAND "${groovy_executable}" --version
+                    OUTPUT_VARIABLE groovy_VERSION_output
+                    OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+      string(REGEX REPLACE ".*Groovy Version: [^0-9.]*\([0-9.]+\).*" "\\1"
+             groovy_VERSION "${groovy_VERSION_output}")
+  endif()
+
+  if("${groovy_VERSION}" VERSION_LESS "${GROOVY_VER}")
+    if(VERBOSE OR VERBOSE_FIND)
+      message(STATUS "Extracting Groovy (${GROOVY_VER})")
+    endif()
+
+    # Cleanup any potential conflicting dirs
+    file(REMOVE_RECURSE "${DEPENDS_PATH}/share/groovy")
+    file(ARCHIVE_EXTRACT INPUT "${TARBALL_DIR}/${GROOVY_ARCHIVE}" DESTINATION "${DEPENDS_PATH}/share")
+    file(RENAME "${DEPENDS_PATH}/share/groovy-${GROOVY_VER}" "${DEPENDS_PATH}/share/groovy")
+  endif()
+
+  set(groovy_SOURCE_DIR ${DEPENDS_PATH}/share/groovy)
 endif()
 
 if(NOT apache-commons-lang_SOURCE_DIR)
+  # file wont be downloaded if EXPECTED_HASH matches existing archive
+  file(DOWNLOAD ${APACHE_COMMONS_LANG_URL} ${TARBALL_DIR}/${APACHE_COMMONS_LANG_ARCHIVE} SHOW_PROGRESS EXPECTED_HASH ${APACHE_COMMONS_LANG_URL_HASH})
+
   if(NOT EXISTS ${DEPENDS_PATH}/share/java/lang/commons-lang3-${APACHE_COMMONS_LANG_VER}.jar)
-    FetchContent_MakeAvailable(apache-commons-lang)
-  else()
-    set(apache-commons-lang_SOURCE_DIR ${DEPENDS_PATH}/share/java/lang)
+
+    if(VERBOSE OR VERBOSE_FIND)
+      message(STATUS "Extracting apache-commons-lang3 (${APACHE_COMMONS_LANG_VER})")
+    endif()
+
+    # Cleanup any potential conflicting dirs
+    file(REMOVE_RECURSE "${DEPENDS_PATH}/share/java/lang")
+    file(ARCHIVE_EXTRACT INPUT "${TARBALL_DIR}/${APACHE_COMMONS_LANG_ARCHIVE}" DESTINATION "${DEPENDS_PATH}/share/java")
+    file(RENAME "${DEPENDS_PATH}/share/java/commons-lang3-${APACHE_COMMONS_LANG_VER}" "${DEPENDS_PATH}/share/java/lang")
   endif()
+
+  set(apache-commons-lang_SOURCE_DIR ${DEPENDS_PATH}/share/java/lang)
 endif()
 
 if(NOT apache-commons-text_SOURCE_DIR)
+  # file wont be downloaded if EXPECTED_HASH matches existing archive
+  file(DOWNLOAD ${APACHE_COMMONS_TEXT_URL} ${TARBALL_DIR}/${APACHE_COMMONS_TEXT_ARCHIVE} SHOW_PROGRESS EXPECTED_HASH ${APACHE_COMMONS_TEXT_URL_HASH})
+
   if(NOT EXISTS ${DEPENDS_PATH}/share/java/text/commons-text-${APACHE_COMMONS_TEXT_VER}.jar)
-    FetchContent_MakeAvailable(apache-commons-text)
-  else()
-    set(apache-commons-text_SOURCE_DIR ${DEPENDS_PATH}/share/java/text)
+
+    if(VERBOSE OR VERBOSE_FIND)
+      message(STATUS "Extracting apache-commons-text (${APACHE_COMMONS_TEXT_VER})")
+    endif()
+
+    # Cleanup any potential conflicting dirs
+    file(REMOVE_RECURSE "${DEPENDS_PATH}/share/java/text")
+    file(ARCHIVE_EXTRACT INPUT "${TARBALL_DIR}/${APACHE_COMMONS_TEXT_ARCHIVE}" DESTINATION "${DEPENDS_PATH}/share/java")
+    file(RENAME "${DEPENDS_PATH}/share/java/commons-text-${APACHE_COMMONS_TEXT_VER}" "${DEPENDS_PATH}/share/java/text")
   endif()
+
+  set(apache-commons-text_SOURCE_DIR ${DEPENDS_PATH}/share/java/text)
 endif()
 
 # The generated bindings
