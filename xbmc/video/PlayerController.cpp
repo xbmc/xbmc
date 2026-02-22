@@ -391,6 +391,36 @@ bool CPlayerController::OnAction(const CAction &action)
         return true;
       }
 
+      case ACTION_VSHIFT_TOP:
+      {
+        SetVerticalShift(-1.0f);
+        return true;
+      }
+
+      case ACTION_VSHIFT_CENTER:
+      {
+        SetVerticalShift(0.0f);
+        return true;
+      }
+
+      case ACTION_VSHIFT_BOTTOM:
+      {
+        SetVerticalShift(1.0f);
+        return true;
+      }
+
+      case ACTION_VSHIFT_TOP239:
+      {
+        SetVerticalShift(-1.12f); // Edge safe for 2:39 video within 16:9 stream on a 16:9 screen
+        return true;
+      }
+
+      case ACTION_VSHIFT_BOTTOM239:
+      {
+        SetVerticalShift(1.12f); // Edge safe for 2:39 video within 16:9 stream on a 16:9 screen
+        return true;
+      }
+
       case ACTION_SUBTITLE_VSHIFT_UP:
       {
         const auto settings{CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()};
@@ -655,4 +685,20 @@ void CPlayerController::OnSliderChange(void *data, CGUISliderControl *slider)
       appPlayer->SetDynamicRangeCompression((long)(slider->GetFloatValue() * 100));
     }
   }
+}
+
+void CPlayerController::SetVerticalShift(float verticalshift)
+{
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
+  CVideoSettings vs = appPlayer->GetVideoSettings();
+  vs.m_CustomVerticalShift = verticalshift; // -2.0f > 2.0f
+  if (vs.m_CustomVerticalShift > 2.0f)
+    vs.m_CustomVerticalShift = 2.0f;
+  else if (vs.m_CustomVerticalShift < -2.0f)
+    vs.m_CustomVerticalShift = -2.0f;
+  vs.m_ViewMode = ViewModeCustom;
+  appPlayer->SetRenderViewMode(ViewModeCustom, vs.m_CustomZoomAmount, vs.m_CustomPixelRatio,
+                               vs.m_CustomVerticalShift, vs.m_CustomNonLinStretch);
 }
