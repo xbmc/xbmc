@@ -70,6 +70,12 @@ set(APACHE_COMMONS_TEXT_VER 1.13.0)
 set(APACHE_COMMONS_TEXT_URL ${KODI_MIRROR}/build-deps/sources/commons-text-${APACHE_COMMONS_TEXT_VER}-bin.tar.gz)
 set(APACHE_COMMONS_TEXT_URL_HASH URL_HASH SHA512=a51667463e88b2d017c3baebb9bbe42c4e50cba96ffe19c89680e82002a4db8b9007daff75f8dbf8bf3725be13a3f03f3c2bc4e1f11e8e02dcab4408abdb44a1)
 
+# On Windows, CMake ignores DOWNLOAD_DIR parameter and downloads are stored
+# in ${CMAKE_BINARY_DIR}/_deps, causing re-download each time Kodi is build.
+if(CORE_SYSTEM_NAME MATCHES windows)
+  set(FETCHCONTENT_BASE_DIR ${TARBALL_DIR})
+endif()
+
 include(FetchContent)
 FetchContent_Declare(
   groovy
