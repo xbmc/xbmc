@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2025 Team Kodi
+ *  Copyright (C) 2025-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -24,6 +24,7 @@ enum class Bcp47FormattingStyle
 {
   FORMAT_BCP47, ///< BCP47 language tag with the recommended casing
   FORMAT_ENGLISH, ///< Subtags converted to English and formatted to mimick locale names
+  FORMAT_DEBUG, ///< Dump all the information of a tag in raw form
 };
 
 enum class Bcp47TagType

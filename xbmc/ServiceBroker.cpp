@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -20,6 +20,7 @@
 #include <utility>
 
 using namespace KODI;
+using namespace KODI::UTILS::I18N;
 
 CServiceBroker::CServiceBroker()
 {
@@ -488,4 +489,9 @@ void CServiceBroker::UnregisterBlurayDiscCache()
 std::shared_ptr<XFILE::CBlurayDiscCache> CServiceBroker::GetBlurayDiscCache()
 {
   return g_serviceBroker.m_blurayDiscCache;
+}
+
+CSubTagRegistryManager& CServiceBroker::GetSubTagRegistry()
+{
+  return g_application.m_ServiceManager->GetSubTagRegistryManager();
 }

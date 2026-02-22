@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2025 Team Kodi
+ *  Copyright (C) 2025-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -47,9 +47,10 @@ const TestBcp47Parser ParseBcp47Tests[] = {
     {"ab-012", {Bcp47TagType::WELL_FORMED, "ab", {}, "", "012", {}, {}, {}, ""}},
     {"ab-a01", {}, false},
     // Variants
+    {"ab-0abc", {Bcp47TagType::WELL_FORMED, "ab", {}, "", "", {{"0abc"}}, {}, {}, ""}},
     {"ab-abcde-bcdefghi", {Bcp47TagType::WELL_FORMED, "ab", {}, "", "", {{"abcde"}, {"bcdefghi"}}, {}, {}, ""}},
     {"ab-abcde-0abc-1def", {Bcp47TagType::WELL_FORMED, "ab", {}, "", "", {{"abcde"}, {"0abc"}, {"1def"}}, {}, {}, ""}},
-    {"ab-0abcd", {}, false},
+    {"ab-abcdefghi", {}, false},
     // Extensions
     {"ab-a-bcdefghi-jk", {Bcp47TagType::WELL_FORMED, "ab", {}, "", "", {}, {{'a', {{"bcdefghi"}, {"jk"}}}}, {}, ""}},
     {"ab-a-bc-de-a-fg-hi", {Bcp47TagType::WELL_FORMED, "ab", {}, "", "", {}, {{'a', {{"bc"}, {"de"}}}, {'a', {{"fg"}, {"hi"}}}}, {}, ""}},

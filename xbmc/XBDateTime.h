@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -162,6 +162,13 @@ public:
   bool SetFromUTCDateTime(const CDateTime &dateTime);
   bool SetFromUTCDateTime(const time_t &dateTime);
   bool SetFromRFC1123DateTime(const std::string &dateTime);
+
+  /*!
+   * \brief Set from RFC3339 full-date format YYYY-MM-DD only.
+   * \param[in] date input date.
+   * \return true when the parameter was in the expected format and represented a valid date.
+   */
+  bool SetFromRFC3339FullDate(std::string_view date);
 
   /*! \brief set from a database datetime format YYYY-MM-DD HH:MM:SS
    \sa GetAsDBDateTime()

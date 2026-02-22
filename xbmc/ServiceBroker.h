@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -127,6 +127,11 @@ namespace XFILE
 class CBlurayDiscCache;
 }
 
+namespace KODI::UTILS::I18N
+{
+class CSubTagRegistryManager;
+}
+
 class CServiceBroker
 {
 public:
@@ -180,6 +185,7 @@ public:
   static CEventLog* GetEventLog();
   static CMediaManager& GetMediaManager();
   static CComponentContainer<IApplicationComponent>& GetAppComponents();
+  static KODI::UTILS::I18N::CSubTagRegistryManager& GetSubTagRegistry();
 
   static CGUIComponent* GetGUI();
   static void RegisterGUI(CGUIComponent* gui);

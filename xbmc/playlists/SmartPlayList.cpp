@@ -29,7 +29,6 @@
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
-#include <charconv>
 #include <cstdlib>
 #include <memory>
 #include <optional>
@@ -299,23 +298,6 @@ bool CSmartPlaylistRule::ValidateMyRating(const std::string &input, void *data)
   return StringValidation::IsPositiveInteger(input, data) && rating <= 10;
 }
 
-namespace
-{
-template<typename T>
-std::optional<T> ToNumeric(std::string_view str)
-{
-  const char* end{str.data() + str.size()};
-  T result{};
-
-  auto [ptr, ec] = std::from_chars(str.data(), end, result);
-
-  if (ec != std::errc{} || ptr != end || result < 0)
-    return std::nullopt;
-
-  return result;
-}
-} // namespace
-
 bool CSmartPlaylistRule::ValidateDate(const std::string& input, void* data)
 {
   if (!data)
@@ -328,28 +310,8 @@ bool CSmartPlaylistRule::ValidateDate(const std::string& input, void* data)
     return true;
 
   // The date format must be YYYY-MM-DD
-  if (input.size() != 10)
-    return false;
-
-  const std::string_view sv{input};
-
-  if (sv[4] != '-' || sv[7] != '-')
-    return false;
-
-  const auto year{ToNumeric<int>(sv.substr(0, 4))};
-  if (!year.has_value())
-    return false;
-
-  const auto month{ToNumeric<int>(sv.substr(5, 2))};
-  if (!month.has_value())
-    return false;
-
-  const auto day{ToNumeric<int>(sv.substr(8, 2))};
-  if (!day.has_value())
-    return false;
-
   CDateTime dt;
-  return dt.SetDate(year.value(), month.value(), day.value());
+  return dt.SetFromRFC3339FullDate(input);
 }
 
 std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)

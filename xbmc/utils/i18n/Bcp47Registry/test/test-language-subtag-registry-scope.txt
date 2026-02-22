@@ -1,0 +1,10 @@
+File-Date: 2025-10-29
+%%
+Type: language
+%%
+Type: language
+Scope: macrolanguage
+%%
+Type: language
+Scope: foo
+    

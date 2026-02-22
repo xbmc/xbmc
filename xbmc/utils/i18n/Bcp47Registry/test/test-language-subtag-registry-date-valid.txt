@@ -1,0 +1,9 @@
+File-Date: 2025-08-25
+%%
+Type: language
+Subtag: foo
+Added: 2005-10-16
+%%
+Type: language
+Subtag: bar
+Deprecated: 2024-02-29

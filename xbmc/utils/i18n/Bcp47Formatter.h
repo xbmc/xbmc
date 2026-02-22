@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2025 Team Kodi
+ *  Copyright (C) 2025-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -10,6 +10,7 @@
 
 #include "utils/i18n/Bcp47Common.h"
 
+#include <optional>
 #include <string>
 
 namespace KODI::UTILS::I18N
@@ -45,14 +46,15 @@ public:
   }
 
 private:
-  bool FormatLanguage(const CBcp47& tag, std::string& str) const;
-  bool FormatExtLangs(const CBcp47& tag, std::string& str) const;
-  bool FormatScript(const CBcp47& tag, std::string& str) const;
-  bool FormatRegion(const CBcp47& tag, std::string& str) const;
-  bool FormatVariants(const CBcp47& tag, std::string& str) const;
-  bool FormatExtensions(const CBcp47& tag, std::string& str) const;
-  bool FormatPrivateUse(const CBcp47& tag, std::string& str) const;
-  bool FormatGrandfathered(const CBcp47& tag, std::string& str) const;
+  bool AppendLanguage(const CBcp47& tag, std::string& str) const;
+  bool AppendExtLangs(const CBcp47& tag, std::string& str) const;
+  bool AppendScript(const CBcp47& tag, std::string& str) const;
+  bool AppendRegion(const CBcp47& tag, std::string& str) const;
+  bool AppendVariants(const CBcp47& tag, std::string& str) const;
+  bool AppendExtensions(const CBcp47& tag, std::string& str) const;
+  bool AppendPrivateUse(const CBcp47& tag, std::string& str) const;
+  bool AppendGrandfathered(const CBcp47& tag, std::string& str) const;
+  void AppendDebugHeader(const CBcp47& tag, std::string& str) const;
 
   Bcp47FormattingStyle m_style{Bcp47FormattingStyle::FORMAT_BCP47};
 };
