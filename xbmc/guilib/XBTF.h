@@ -75,6 +75,15 @@ public:
   const std::string& GetPath() const;
   void SetPath(const std::string& path);
 
+  const std::string& GetRealPath() const { return m_realPath; }
+  void SetRealPath(const std::string& path) { m_realPath = path; }
+
+  unsigned int GetSubstitutionPriority() const { return m_substitutionPriority; }
+  void SetSubstitutionPriority(unsigned int substitutionPriority)
+  {
+    m_substitutionPriority = substitutionPriority;
+  }
+
   uint32_t GetLoop() const;
   void SetLoop(uint32_t loop);
 
@@ -88,7 +97,9 @@ public:
   static const size_t MaximumPathLength = 256;
 
 private:
-  std::string m_path;
+  std::string m_path; // path used in skin, e.g. icon.png
+  std::string m_realPath; // actual file path, might be icon.png.astc.ktx
+  unsigned int m_substitutionPriority{0};
   uint32_t m_loop = 0;
   std::vector<CXBTFFrame> m_frames;
 };

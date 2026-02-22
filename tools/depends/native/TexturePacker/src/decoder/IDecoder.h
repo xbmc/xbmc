@@ -1,21 +1,9 @@
 /*
- *      Copyright (C) 2014 Team Kodi
- *      http://kodi.tv
+ *  Copyright (C) 2014-2024 Team Kodi
+ *  This file is part of Kodi - https://kodi.tv
  *
- *  This Program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2, or (at your option)
- *  any later version.
- *
- *  This Program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
- *  <http://www.gnu.org/licenses/>.
- *
+ *  SPDX-License-Identifier: GPL-2.0-or-later
+ *  See LICENSES/README.md for more information.
  */
 
 #pragma once
@@ -41,9 +29,14 @@ class IDecoder
     virtual const char* GetDecoderName() = 0;
 
     const std::vector<std::string>& GetSupportedExtensions() const { return m_extensions; }
+    const std::vector<std::pair<std::string, KD_TEX_FMT>>& GetSupportedSubstitutions() const
+    {
+      return m_substitutions;
+    }
 
   protected:
     std::vector<std::string> m_extensions;
+    std::vector<std::pair<std::string, KD_TEX_FMT>> m_substitutions;
 };
 
 class RGBAImage
@@ -56,6 +49,7 @@ public:
   int height = 0; // height
   int bbp = 32; // bits per pixel
   int pitch = 0; // rowsize in bytes
+  size_t size = 0; // image size in bytes
   KD_TEX_FMT textureFormat{KD_TEX_FMT_SDR_BGRA8};
   KD_TEX_ALPHA textureAlpha{KD_TEX_ALPHA_STRAIGHT};
   KD_TEX_SWIZ textureSwizzle{KD_TEX_SWIZ_RGBA};
