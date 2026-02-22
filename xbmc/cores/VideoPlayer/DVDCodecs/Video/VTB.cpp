@@ -132,7 +132,7 @@ IHardwareDecoder* CDecoder::Create(CDVDStreamInfo &hint, CProcessInfo &processIn
 #if defined(TARGET_DARWIN_EMBEDDED)
   // force disable HW acceleration for live streams
   // to avoid absent image issue on interlaced videos
-  if (processInfo.IsRealtimeStream())
+  if (processInfo.IsRealtimeStream() && hint.interlaced)
     return nullptr;
 #endif
 
