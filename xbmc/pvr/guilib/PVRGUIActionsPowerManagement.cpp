@@ -101,6 +101,13 @@ bool CPVRGUIActionsPowerManagement::CanSystemPowerdown(bool bAskUser /*= true*/)
           CDateTime dailywakeuptime;
           dailywakeuptime.SetFromDBTime(
               m_settings->GetStringValue(CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME));
+
+          const CDateTime nowAsLocalTime{CDateTime::GetCurrentDateTime()};
+
+          dailywakeuptime.SetDateTime(nowAsLocalTime.GetYear(), nowAsLocalTime.GetMonth(),
+                                      nowAsLocalTime.GetDay(), dailywakeuptime.GetHour(),
+                                      dailywakeuptime.GetMinute(), dailywakeuptime.GetSecond());
+
           dailywakeuptime = dailywakeuptime.GetAsUTCDateTime();
 
           const CDateTimeSpan diff(dailywakeuptime - now);

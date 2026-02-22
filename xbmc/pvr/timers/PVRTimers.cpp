@@ -1300,7 +1300,7 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimers::GetTimerRule(
 
 CDateTime CPVRTimers::GetNextEventTime() const
 {
-  const bool dailywakup{
+  const bool dailywakeup{
       m_settings->GetBoolValue(CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUP)};
   const CDateTime now = CDateTime::GetUTCDateTime();
   const CDateTimeSpan prewakeup{
@@ -1321,16 +1321,19 @@ CDateTime CPVRTimers::GetNextEventTime() const
   }
 
   /* check daily wake up */
-  if (dailywakup)
+  if (dailywakeup)
   {
     CDateTime dailywakeuptime;
     dailywakeuptime.SetFromDBTime(
         m_settings->GetStringValue(CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME));
-    dailywakeuptime = dailywakeuptime.GetAsUTCDateTime();
 
-    dailywakeuptime.SetDateTime(now.GetYear(), now.GetMonth(), now.GetDay(),
-                                dailywakeuptime.GetHour(), dailywakeuptime.GetMinute(),
-                                dailywakeuptime.GetSecond());
+    const CDateTime nowAsLocalTime{CDateTime::GetCurrentDateTime()};
+
+    dailywakeuptime.SetDateTime(nowAsLocalTime.GetYear(), nowAsLocalTime.GetMonth(),
+                                nowAsLocalTime.GetDay(), dailywakeuptime.GetHour(),
+                                dailywakeuptime.GetMinute(), dailywakeuptime.GetSecond());
+
+    dailywakeuptime = dailywakeuptime.GetAsUTCDateTime();
 
     if ((dailywakeuptime - idle) < now)
     {
