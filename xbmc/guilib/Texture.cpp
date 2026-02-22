@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -314,14 +314,26 @@ bool CTexture::LoadIImage(IImage* pImage,
   // swscale headers for more info.
   unsigned int textureWidth = ((width + 15) / 16) * 16;
 
-  Allocate(textureWidth, height, XB_FMT_A8R8G8B8);
+  const unsigned int format = pImage->GetKDFormat();
+  const KD_TEX_SWIZ swizzle = static_cast<KD_TEX_SWIZ>(pImage->GetKDSwizzle());
+
+  if (format && SupportsFormat(static_cast<KD_TEX_FMT>(format), swizzle))
+  {
+    m_textureFormat = static_cast<KD_TEX_FMT>(format);
+    m_textureSwizzle = swizzle;
+    Allocate(textureWidth, height);
+  }
+  else
+  {
+    Allocate(textureWidth, height, XB_FMT_A8R8G8B8);
+  }
 
   m_imageWidth = std::min(m_imageWidth, textureWidth);
 
   if (m_pixels == nullptr)
     return false;
 
-  if (!pImage->Decode(m_pixels, width, height, GetPitch(), XB_FMT_A8R8G8B8))
+  if (!pImage->Decode(m_pixels, width, height, GetPitch(), format ? format : static_cast<unsigned int>(XB_FMT_A8R8G8B8)))
     return false;
 
   if (pImage->Orientation())
