@@ -23,6 +23,11 @@
 namespace
 {
 
+constexpr uint32_t AlignUp(uint32_t value, uint32_t alignment)
+{
+  return (value + alignment - 1) & ~(alignment - 1);
+}
+
 int RoundUp(int num, int factor)
 {
   return num + factor - 1 - (num - 1) % factor;
@@ -73,6 +78,7 @@ bool CUDMABufferObject::CreateBufferObject(uint32_t format, uint32_t width, uint
   switch (format)
   {
     case DRM_FORMAT_ARGB8888:
+    case DRM_FORMAT_XRGB8888:
       bpp = 4;
       break;
     case DRM_FORMAT_ARGB1555:
@@ -83,9 +89,17 @@ bool CUDMABufferObject::CreateBufferObject(uint32_t format, uint32_t width, uint
       throw std::runtime_error("CUDMABufferObject: pixel format not implemented");
   }
 
-  m_stride = width * bpp;
+  const uint32_t rawStride = width * bpp;
+  m_stride = AlignUp(rawStride, 256);
 
-  return CreateBufferObject(width * height * bpp);
+  if (rawStride != m_stride)
+  {
+    CLog::Log(LOGDEBUG,
+              "CUDMABufferObject::{} - aligned stride for format={} size={}x{} from {} to {}",
+              __FUNCTION__, format, width, height, rawStride, m_stride);
+  }
+
+  return CreateBufferObject(static_cast<uint64_t>(m_stride) * height);
 }
 
 bool CUDMABufferObject::CreateBufferObject(uint64_t size)
