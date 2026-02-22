@@ -774,6 +774,8 @@ CVideoPlayer::~CVideoPlayer()
 {
   CServiceBroker::GetWinSystem()->Unregister(this);
 
+  ClearSubtitlePacketCache();
+
   CloseFile();
   DestroyPlayers();
 
@@ -1801,6 +1803,11 @@ void CVideoPlayer::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket)
     ProcessRadioRDSData(pStream, pPacket);
   else if (CheckIsCurrent(m_CurrentAudioID3, pStream, pPacket))
     ProcessAudioID3Data(pStream, pPacket);
+  else if (pStream->type == StreamType::SUBTITLE &&
+           STREAM_SOURCE_MASK(pStream->source) == STREAM_SOURCE_DEMUX)
+  {
+    CacheSubtitlePacket(pPacket->iStreamId, pPacket);
+  }
   else
   {
     CDVDDemuxUtils::FreeDemuxPacket(pPacket); // free it since we won't do anything with it
@@ -1906,6 +1913,44 @@ void CVideoPlayer::ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket)
 
   if(m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
     m_VideoPlayerSubtitle->UpdateOverlayInfo(std::static_pointer_cast<CDVDInputStreamNavigator>(m_pInputStream), LIBDVDNAV_BUTTON_NORMAL);
+}
+
+void CVideoPlayer::CacheSubtitlePacket(int streamId, DemuxPacket* pkt)
+{
+  auto& queue = m_subtitlePacketCache[streamId];
+  queue.push_back(pkt);
+  if (queue.size() > 20)
+  {
+    CDVDDemuxUtils::FreeDemuxPacket(queue.front());
+    queue.pop_front();
+  }
+}
+
+void CVideoPlayer::ReplayCachedSubtitlePackets(int streamId)
+{
+  auto it = m_subtitlePacketCache.find(streamId);
+  if (it == m_subtitlePacketCache.end())
+    return;
+
+  auto& queue = it->second;
+  CLog::LogF(LOGDEBUG, "replaying {} cached subtitle packets for stream {}", queue.size(),
+             streamId);
+
+  for (auto* pkt : queue)
+    m_VideoPlayerSubtitle->SendMessage(std::make_shared<CDVDMsgDemuxerPacket>(pkt, false));
+
+  // CDVDMsgDemuxerPacket takes ownership of packets, so just clear without freeing
+  queue.clear();
+}
+
+void CVideoPlayer::ClearSubtitlePacketCache()
+{
+  for (auto& [id, queue] : m_subtitlePacketCache)
+  {
+    for (auto* pkt : queue)
+      CDVDDemuxUtils::FreeDemuxPacket(pkt);
+  }
+  m_subtitlePacketCache.clear();
 }
 
 void CVideoPlayer::ProcessTeletextData(CDemuxStream* pStream, DemuxPacket* pPacket)
@@ -3091,6 +3136,14 @@ void CVideoPlayer::HandleMessages()
         {
           CloseStream(m_CurrentSubtitle, false);
           OpenStream(m_CurrentSubtitle, st.demuxerId, st.id, st.source);
+
+          // For embedded subtitles, replay cached packets instead of seeking.
+          // During normal demuxing we cache subtitle packets from all embedded
+          // streams, so the new stream's recent packets are already available.
+          if (STREAM_SOURCE_MASK(st.source) == STREAM_SOURCE_DEMUX)
+          {
+            ReplayCachedSubtitlePackets(st.id);
+          }
         }
       }
     }
@@ -4241,6 +4294,8 @@ void CVideoPlayer::FlushBuffers(double pts, bool accurate, bool sync)
   m_CurrentAudioID3.dts = DVD_NOPTS_VALUE;
   m_CurrentAudioID3.startpts = startpts;
   m_CurrentAudioID3.packets = 0;
+
+  ClearSubtitlePacketCache();
 
   m_VideoPlayerAudio->Flush(sync);
   m_VideoPlayerVideo->Flush(sync);
