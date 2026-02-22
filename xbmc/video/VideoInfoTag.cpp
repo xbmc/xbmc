@@ -1447,6 +1447,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
         m_streamDetails.AddStream(p);
       }
     }
+    m_streamDetails.SetSources(CStreamDetail::NFO);
     m_streamDetails.DetermineBestStreams();
   }  /* if fileinfo */
 
@@ -1511,6 +1512,14 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
 bool CVideoInfoTag::HasStreamDetails() const
 {
   return m_streamDetails.HasItems();
+}
+
+bool CVideoInfoTag::HasNFOStreamDetails() const
+{
+  if (!HasStreamDetails())
+    return false;
+
+  return m_streamDetails.GetSources() >= CStreamDetail::NFO;
 }
 
 bool CVideoInfoTag::IsEmpty() const
