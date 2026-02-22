@@ -225,11 +225,11 @@ int MysqlDatabase::connect(bool create_new)
       // disable mysql autocommit since we handle it
       //mysql_autocommit(conn, false);
 
-      // enforce utf8 charset usage
+      // enforce utf8mb4 charset usage
       default_charset = mysql_character_set_name(conn);
-      if (mysql_set_character_set(conn, "utf8")) // returns 0 on success
+      if (mysql_set_character_set(conn, "utf8mb4")) // returns 0 on success
       {
-        CLog::Log(LOGERROR, "Unable to set utf8 charset: {} [{}]({})", db, mysql_errno(conn),
+        CLog::Log(LOGERROR, "Unable to set utf8mb4 charset: {} [{}]({})", db, mysql_errno(conn),
                   mysql_error(conn));
       }
 
@@ -243,7 +243,7 @@ int MysqlDatabase::connect(bool create_new)
       else if (create_new)
       {
         const std::string sqlcmd{StringUtils::Format(
-            "CREATE DATABASE `{}` CHARACTER SET utf8 COLLATE utf8_general_ci", db)};
+            "CREATE DATABASE `{}` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci", db)};
         const int ret = query_with_reconnect(sqlcmd.c_str());
         if (ret != MYSQL_OK)
         {
@@ -344,7 +344,7 @@ int MysqlDatabase::copy(const char* backup_name)
     }
 
     // create the new database
-    sqlcmd = StringUtils::Format("CREATE DATABASE `{}` CHARACTER SET utf8 COLLATE utf8_general_ci",
+    sqlcmd = StringUtils::Format("CREATE DATABASE `{}` CHARACTER SET utfmb48 COLLATE utf8mb4_general_ci",
                                  backup_name);
     ret = query_with_reconnect(sqlcmd.c_str());
     if (ret != MYSQL_OK)
@@ -733,7 +733,7 @@ std::string MysqlDatabase::vprepare(std::string_view format, va_list args)
   }
 
   // Remove COLLATE NOCASE the SQLite case insensitive collation.
-  // In MySQL all tables are defined with case insensitive collation utf8_general_ci
+  // In MySQL all tables are defined with case insensitive collation utf8mb4_general_ci
   pos = 0;
   static std::string_view collateNoCase = " COLLATE NOCASE";
   while ((pos = strResult.find(collateNoCase, pos)) != std::string::npos)
@@ -1859,7 +1859,7 @@ int MysqlDataset::exec(const std::string& sql)
       ci_find(qry, "CREATE TEMPORARY TABLE") != std::string::npos)
   {
     // If CREATE TABLE ... SELECT Syntax is used we need to add the encoding after the table before the select
-    // e.g. CREATE TABLE x CHARACTER SET utf8 COLLATE utf8_general_ci [AS] SELECT * FROM y
+    // e.g. CREATE TABLE x CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci [AS] SELECT * FROM y
     loc = qry.find(" AS SELECT ");
     if (loc == std::string::npos)
     {
@@ -1867,10 +1867,10 @@ int MysqlDataset::exec(const std::string& sql)
     }
     if (loc != std::string::npos)
     {
-      qry = qry.insert(loc, " CHARACTER SET utf8 COLLATE utf8_general_ci");
+      qry = qry.insert(loc, " CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci");
     }
     else
-      qry += " CHARACTER SET utf8 COLLATE utf8_general_ci";
+      qry += " CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci";
   }
 
   const auto start = std::chrono::steady_clock::now();
