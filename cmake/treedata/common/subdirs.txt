@@ -10,6 +10,7 @@ xbmc/addons/interfaces/gui/controls             addons_interfaces_gui_controls
 xbmc/addons/interfaces/gui/dialogs              addons_interfaces_gui_dialogs
 xbmc/addons/settings                            addons_settings
 xbmc/application                                application
+xbmc/cache                                      cache
 xbmc/commons                                    commons
 xbmc/dbwrappers                                 dbwrappers
 xbmc/dialogs                                    dialogs

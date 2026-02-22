@@ -8,7 +8,11 @@
 
 #include "ZipFile.h"
 
+#include "ServiceBroker.h"
 #include "URL.h"
+#include "Zip.h"
+#include "cache/CacheComponent.h"
+#include "cache/FileSystemCache.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -19,6 +23,35 @@
 static constexpr uint64_t ZIP_CACHE_LIMIT = 4ull * 1024 * 1024;
 
 using namespace XFILE;
+
+static bool FindZipEntry(const CURL& url, SZipEntry& entry)
+{
+  auto& cache = CServiceBroker::GetCacheComponent()->GetZipCache();
+  const std::string strFile = url.GetHostName();
+
+  struct __stat64 statData = {};
+  if (CFile::Stat(strFile, &statData))
+    return false;
+
+  std::vector<SZipEntry> items;
+  if (!cache.GetCachedList(strFile, statData.st_mtime, items))
+  {
+    if (!Zip::ParseZipCentralDirectory(strFile, items))
+      return false;
+    cache.StoreList(strFile, statData.st_mtime, items);
+  }
+
+  const std::string& fileName = url.GetFileName();
+  for (const auto& item : items)
+  {
+    if (std::string(item.name) == fileName)
+    {
+      entry = item;
+      return true;
+    }
+  }
+  return false;
+}
 
 CZipFile::CZipFile() : m_szStringBuffer(nullptr), m_szStartOfStringBuffer(nullptr)
 {
@@ -36,7 +69,7 @@ bool CZipFile::Open(const CURL&url)
   const std::string& strOpts = url.GetOptions();
   CURL url2(url);
   url2.SetOptions("");
-  if (!g_ZipManager.GetZipEntry(url2,mZipItem))
+  if (!FindZipEntry(url2, mZipItem))
     return false;
 
   if ((mZipItem.flags & 64) == 64)
@@ -223,7 +256,7 @@ int64_t CZipFile::Seek(int64_t iFilePosition, int iWhence)
 bool CZipFile::Exists(const CURL& url)
 {
   SZipEntry item;
-  if (g_ZipManager.GetZipEntry(url,item))
+  if (FindZipEntry(url, item))
     return true;
   return false;
 }
@@ -252,7 +285,7 @@ int CZipFile::Stat(const CURL& url, struct __stat64* buffer)
   if (!buffer)
     return -1;
 
-  if (!g_ZipManager.GetZipEntry(url, mZipItem))
+  if (!FindZipEntry(url, mZipItem))
   {
     if (url.GetFileName().empty() && CFile::Exists(url.GetHostName()))
     { // when accessing the zip "root" recognize it as a directory
@@ -401,7 +434,7 @@ int CZipFile::UnpackFromMemory(std::string& strDest, const std::string& strInput
   {
     if (!isGZ)
     {
-      CZipManager::readHeader(strInput.data()+iPos,mZipItem);
+      Zip::ReadLocalHeader(strInput.data() + iPos, mZipItem);
       if (mZipItem.header == ZIP_DATA_RECORD_HEADER)
       {
         // this header concerns a file we already processed, so we can just skip it
