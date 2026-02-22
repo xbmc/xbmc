@@ -196,7 +196,7 @@ public:
   bool CreateSurface(EGLNativeWindowType nativeWindow, EGLint HDRcolorSpace = EGL_NONE);
   bool CreatePlatformSurface(void* nativeWindow, EGLNativeWindowType nativeWindowLegacy);
   bool InitializeDisplay(EGLint renderingApi);
-  bool ChooseConfig(EGLint renderableType, EGLint visualId = 0, bool hdr = false);
+  bool ChooseConfig(EGLint renderableType, EGLint visualId = 0, bool hdr = false, int alpha = 8);
   bool CreateContext(CEGLAttributesVec contextAttribs);
   bool BindContext();
   void Destroy();

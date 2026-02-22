@@ -36,16 +36,15 @@ bool CDRMLegacy::SetVideoMode(const RESOLUTION_INFO& res, struct gbm_bo* bo)
 
   if (ret < 0)
   {
-    CLog::Log(LOGERROR, "CDRMLegacy::{} - failed to set crtc mode: {}x{}{} @ {} Hz", __FUNCTION__,
-              m_mode->hdisplay, m_mode->vdisplay,
-              m_mode->flags & DRM_MODE_FLAG_INTERLACE ? "i" : "", m_mode->vrefresh);
+    CLog::LogF(LOGERROR, "failed to set crtc mode: {}x{}{} @ {} Hz", m_mode->hdisplay,
+               m_mode->vdisplay, m_mode->flags & DRM_MODE_FLAG_INTERLACE ? "i" : "",
+               m_mode->vrefresh);
 
     return false;
   }
 
-  CLog::Log(LOGDEBUG, "CDRMLegacy::{} - set crtc mode: {}x{}{} @ {} Hz", __FUNCTION__,
-            m_mode->hdisplay, m_mode->vdisplay, m_mode->flags & DRM_MODE_FLAG_INTERLACE ? "i" : "",
-            m_mode->vrefresh);
+  CLog::LogF(LOGDEBUG, "set crtc mode: {}x{}{} @ {} Hz", m_mode->hdisplay, m_mode->vdisplay,
+             m_mode->flags & DRM_MODE_FLAG_INTERLACE ? "i" : "", m_mode->vrefresh);
 
   return true;
 }
@@ -100,7 +99,7 @@ bool CDRMLegacy::QueueFlip(struct gbm_bo* bo)
 
   if (ret)
   {
-    CLog::Log(LOGDEBUG, "CDRMLegacy::{} - failed to queue DRM page flip", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "failed to queue DRM page flip");
     return false;
   }
 
@@ -124,7 +123,7 @@ bool CDRMLegacy::InitDrm()
   if (!CDRMUtils::InitDrm())
     return false;
 
-  CLog::Log(LOGDEBUG, "CDRMLegacy::{} - initialized legacy DRM", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "initialized legacy DRM");
   return true;
 }
 
@@ -132,7 +131,7 @@ bool CDRMLegacy::SetActive(bool active)
 {
   if (!m_connector->SetProperty("DPMS", active ? DRM_MODE_DPMS_ON : DRM_MODE_DPMS_OFF))
   {
-    CLog::Log(LOGDEBUG, "CDRMLegacy::{} - failed to set DPMS property", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "failed to set DPMS property");
     return false;
   }
 

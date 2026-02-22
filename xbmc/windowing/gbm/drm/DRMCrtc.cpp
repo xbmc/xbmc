@@ -15,7 +15,10 @@
 
 using namespace KODI::WINDOWING::GBM;
 
-CDRMCrtc::CDRMCrtc(int fd, uint32_t crtc) : CDRMObject(fd), m_crtc(drmModeGetCrtc(m_fd, crtc))
+CDRMCrtc::CDRMCrtc(int fd, uint32_t crtc, int offset)
+  : CDRMObject(fd),
+    m_crtc(drmModeGetCrtc(m_fd, crtc)),
+    m_offset(offset)
 {
   if (!m_crtc)
     throw std::runtime_error("drmModeGetCrtc failed: " + std::string{strerror(errno)});

@@ -24,7 +24,7 @@ bool COffScreenModeSetting::InitDrm()
   if (!CDRMUtils::OpenDrm(false))
     return false;
 
-  CLog::Log(LOGDEBUG, "COffScreenModeSetting::{} - initialized offscreen DRM", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "initialized offscreen DRM");
   return true;
 }
 

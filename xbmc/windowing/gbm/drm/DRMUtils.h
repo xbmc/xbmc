@@ -27,12 +27,26 @@ namespace WINDOWING
 {
 namespace GBM
 {
+// https://github.com/torvalds/linux/blob/7d0a66e4bb9081d75c82ec4957c50034cb0ea449/drivers/
+// gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crtc.c#L683-L692
+//
+// amdgpu drm driver needs at least 1 primary plane to active when doing a modeset
+inline constexpr int QUIRK_NEEDSPRIMARY = 1 << 0;
 
 struct drm_fb
 {
   struct gbm_bo* bo = nullptr;
   uint32_t fb_id;
   uint32_t format;
+};
+
+struct guiformat
+{
+  uint32_t drm;
+  uint8_t bpp;
+  uint8_t alpha;
+  bool active;
+  std::vector<uint64_t> modifiers;
 };
 
 class CDRMUtils
@@ -54,15 +68,16 @@ public:
   CDRMPlane* GetGuiPlane() const { return m_gui_plane; }
   CDRMCrtc* GetCrtc() const { return m_crtc; }
   CDRMConnector* GetConnector() const { return m_connector; }
+  std::vector<guiformat>& GetGuiFormats() { return m_gui_formats; }
+  bool FindGuiPlane(uint32_t format, uint64_t modifier);
+  bool FindVideoAndGuiPlane(uint32_t format, uint64_t modifier, uint64_t width, uint64_t height);
+  bool HasQuirk(int quirk) const { return m_drm_quirks & quirk; }
 
   std::vector<std::string> GetConnectedConnectorNames();
 
   virtual RESOLUTION_INFO GetCurrentMode();
   virtual std::vector<RESOLUTION_INFO> GetModes();
   virtual bool SetMode(const RESOLUTION_INFO& res);
-
-  static uint32_t FourCCWithAlpha(uint32_t fourcc);
-  static uint32_t FourCCWithoutAlpha(uint32_t fourcc);
 
   void SetInFenceFd(int fd) { m_inFenceFd = fd; }
   int TakeOutFenceFd()
@@ -79,6 +94,7 @@ protected:
   CDRMConnector* m_connector{nullptr};
   CDRMEncoder* m_encoder{nullptr};
   CDRMCrtc* m_crtc{nullptr};
+  CDRMCrtc* m_old_crtc{nullptr};
   CDRMCrtc* m_orig_crtc{nullptr};
   CDRMPlane* m_video_plane{nullptr};
   CDRMPlane* m_gui_plane{nullptr};
@@ -96,7 +112,6 @@ private:
   bool FindConnector();
   bool FindEncoder();
   bool FindCrtc();
-  bool FindPlanes();
   bool FindPreferredMode();
   bool RestoreOriginalMode();
   RESOLUTION_INFO GetResolutionInfo(drmModeModeInfoPtr mode);
@@ -105,9 +120,12 @@ private:
   int m_renderFd;
   const char* m_renderDevicePath{nullptr};
 
+  int m_drm_quirks{0};
   std::vector<std::unique_ptr<CDRMConnector>> m_connectors;
   std::vector<std::unique_ptr<CDRMEncoder>> m_encoders;
   std::vector<std::unique_ptr<CDRMCrtc>> m_crtcs;
+  std::vector<guiformat> m_gui_formats = {{DRM_FORMAT_ARGB8888, 8, 8, false, {}},
+                                          {DRM_FORMAT_XRGB8888, 8, 0, false, {}}};
 };
 
 } // namespace GBM

@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "DRMCrtc.h"
 #include "DRMObject.h"
 
 namespace KODI
@@ -27,7 +28,8 @@ public:
 
   uint32_t GetEncoderId() const { return m_encoder->encoder_id; }
   uint32_t GetCrtcId() const { return m_encoder->crtc_id; }
-  uint32_t GetPossibleCrtcs() const { return m_encoder->possible_crtcs; }
+  std::vector<CDRMCrtc*> GetPossibleCrtcs(const std::vector<std::unique_ptr<CDRMCrtc>>& crtcs,
+                                          CDRMCrtc* preferred = nullptr) const;
 
 private:
   struct DrmModeEncoderDeleter

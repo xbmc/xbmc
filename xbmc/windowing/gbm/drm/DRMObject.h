@@ -35,11 +35,15 @@ public:
   std::string GetPropertyName(uint32_t propertyId) const;
 
   uint32_t GetId() const { return m_id; }
-  uint32_t GetPropertyId(const std::string& name) const;
-  std::optional<uint64_t> GetPropertyValue(std::string_view name, std::string_view valueName) const;
+  uint32_t GetPropertyId(std::string_view name) const;
+  std::optional<uint64_t> GetPropertyEnumValue(std::string_view name,
+                                               std::string_view valueName) const;
 
-  bool SetProperty(const std::string& name, uint64_t value);
-  bool SupportsProperty(const std::string& name);
+  bool SetProperty(std::string_view name, uint64_t value);
+  bool SupportsProperty(std::string_view name);
+  std::optional<uint64_t> GetPropertyValue(std::string_view name) const;
+  std::optional<bool> IsPropertyImmutable(std::string_view name) const;
+  std::optional<std::pair<uint64_t, uint64_t>> GetRangePropertyLimits(std::string_view name) const;
 
 protected:
   explicit CDRMObject(int fd);

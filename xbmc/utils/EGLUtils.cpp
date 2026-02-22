@@ -271,7 +271,7 @@ bool CEGLContextUtils::InitializeDisplay(EGLint renderingApi)
   return true;
 }
 
-bool CEGLContextUtils::ChooseConfig(EGLint renderableType, EGLint visualId, bool hdr)
+bool CEGLContextUtils::ChooseConfig(EGLint renderableType, EGLint visualId, bool hdr, int alpha)
 {
   EGLint numMatched{0};
 
@@ -286,7 +286,7 @@ bool CEGLContextUtils::ChooseConfig(EGLint renderableType, EGLint visualId, bool
   attribs.Add({{EGL_RED_SIZE, 8},
                {EGL_GREEN_SIZE, 8},
                {EGL_BLUE_SIZE, 8},
-               {EGL_ALPHA_SIZE, 8},
+               {EGL_ALPHA_SIZE, alpha},
                {EGL_DEPTH_SIZE, 16},
                {EGL_STENCIL_SIZE, 0},
                {EGL_SAMPLE_BUFFERS, 0},
