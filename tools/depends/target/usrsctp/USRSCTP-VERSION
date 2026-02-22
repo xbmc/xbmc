@@ -1,0 +1,9 @@
+LIBNAME=usrsctp
+VERSION=881513ab3fc75b4c53ffce7b22b08e7b07fcc67a
+ARCHIVE=$(VERSION).tar.gz
+SHA512=dc768db06bebfa0de4726f094bde3187b8d7987b6c56fb2edeb53048d67ee69ffe3341ab3b36f0b7bfda95b7816bdb00d62467e26436787d233a84975fed874d
+BYPRODUCT=libusrsctp.a
+BYPRODUCT_WIN=usrsctp.lib
+
+# TODO
+BASE_URL=https://github.com/sctplab/usrsctp/archive
