@@ -275,6 +275,12 @@ void CRPRenderManager::Flush()
   m_bFlush = true;
 }
 
+void CRPRenderManager::DestroyContext()
+{
+  for (IRenderBufferPool* bufferPool : m_processInfo.GetBufferManager().GetBufferPools())
+    bufferPool->DestroyContext();
+}
+
 bool CRPRenderManager::Create(unsigned int width, unsigned int height)
 {
   //! @todo
