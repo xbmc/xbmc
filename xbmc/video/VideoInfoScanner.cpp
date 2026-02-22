@@ -851,13 +851,14 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (isSeason && idTvShow > -1)
         idSeason = m_database.GetSeasonId(idTvShow, pItem->GetVideoInfoTag()->m_iSeason);
     }
-    if (idTvShow > -1 && (!isSeason || idSeason > -1) && (fetchEpisodes || !pItem->IsFolder()))
-    {
-      InfoRet ret = RetrieveInfoForEpisodes(pItem, idTvShow, info2, useLocal, pDlgProgress);
-      if (ret == InfoRet::ADDED)
-        m_database.SetPathHash(strPath, pItem->GetProperty("hash").asString());
-      return ret;
-    }
+
+    // Enumerate episodes here as this compares hashes of folders containing episodes from this show
+    //  and we want to do this before processing nfo files
+    EPISODELIST files;
+    if (!EnumerateSeriesFolder(pItem, files))
+      return InfoRet::HAVE_ALREADY;
+    if (files.empty()) // no update or no files
+      return InfoRet::NOT_NEEDED;
 
     if (ProgressCancelled(pDlgProgress, pItem->IsFolder() ? 20353 : 20361,
                           pItem->IsFolder() ? pItem->GetVideoInfoTag()->m_strShowTitle
@@ -874,7 +875,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     if (useLocal)
       std::tie(result, loader) = ReadInfoTag(*pItem, info2, bDirNames, true);
 
-    if (result == InfoType::FULL)
+    if (result == InfoType::FULL && idTvShow < 0)
     {
 
       long lResult = AddVideo(pItem, info2, bDirNames, useLocal);
@@ -882,7 +883,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         return InfoRet::INFO_ERROR;
       if (fetchEpisodes)
       {
-        InfoRet ret = RetrieveInfoForEpisodes(pItem, lResult, info2, useLocal, pDlgProgress);
+        InfoRet ret = RetrieveInfoForEpisodes(pItem, lResult, files, info2, useLocal, pDlgProgress);
         if (ret == InfoRet::ADDED)
           m_database.SetPathHash(pItem->GetPath(), pItem->GetProperty("hash").asString());
         return ret;
@@ -893,6 +894,15 @@ CVideoInfoScanner::~CVideoInfoScanner()
     {
       scrUrl = loader->ScraperUrl();
       pURL = &scrUrl;
+    }
+
+    // Process episodes added later after nfo is scanned in case there is an episode group and parsing url
+    if (idTvShow > -1 && (!isSeason || idSeason > -1) && (fetchEpisodes || !pItem->IsFolder()))
+    {
+      InfoRet ret = RetrieveInfoForEpisodes(pItem, idTvShow, files, info2, useLocal, pDlgProgress);
+      if (ret == InfoRet::ADDED)
+        m_database.SetPathHash(strPath, pItem->GetProperty("hash").asString());
+      return ret;
     }
 
     CScraperUrl url;
@@ -923,7 +933,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         if (fetchEpisodes)
         {
           InfoRet ret =
-              RetrieveInfoForEpisodes(pItem, lResult, info2, useLocal, pDlgProgress, true);
+              RetrieveInfoForEpisodes(pItem, lResult, files, info2, useLocal, pDlgProgress, true);
           if (ret == InfoRet::ADDED)
           {
             m_database.SetPathHash(pItem->GetPath(), pItem->GetProperty("hash").asString());
@@ -952,7 +962,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
     if (fetchEpisodes)
     {
-      InfoRet ret = RetrieveInfoForEpisodes(pItem, lResult, info2, useLocal, pDlgProgress, true);
+      InfoRet ret =
+          RetrieveInfoForEpisodes(pItem, lResult, files, info2, useLocal, pDlgProgress, true);
       if (ret == InfoRet::ADDED)
         m_database.SetPathHash(pItem->GetPath(), pItem->GetProperty("hash").asString());
     }
@@ -1219,18 +1230,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
   CInfoScanner::InfoRet CVideoInfoScanner::RetrieveInfoForEpisodes(CFileItem* item,
                                                                    long showID,
+                                                                   EPISODELIST& files,
                                                                    const ADDON::ScraperPtr& scraper,
                                                                    bool useLocal,
                                                                    CGUIDialogProgress* progress,
                                                                    bool alreadyHasArt /* = false */)
   {
-    // enumerate episodes
-    EPISODELIST files;
-    if (!EnumerateSeriesFolder(item, files))
-      return InfoRet::HAVE_ALREADY;
-    if (files.empty()) // no update or no files
-      return InfoRet::NOT_NEEDED;
-
     if (m_bStop || (progress && progress->IsCanceled()))
       return InfoRet::CANCELLED;
 

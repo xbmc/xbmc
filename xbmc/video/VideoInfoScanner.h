@@ -178,6 +178,7 @@ namespace KODI::VIDEO
                                       CGUIDialogProgress* pDlgProgress);
     InfoRet RetrieveInfoForEpisodes(CFileItem* item,
                                     long showID,
+                                    EPISODELIST& files,
                                     const ADDON::ScraperPtr& scraper,
                                     bool useLocal,
                                     CGUIDialogProgress* progress = nullptr,
