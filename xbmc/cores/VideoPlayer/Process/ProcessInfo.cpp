@@ -592,8 +592,8 @@ float CProcessInfo::MaxTempoPlatform()
 
 bool CProcessInfo::IsTempoAllowed(float tempo)
 {
-  if (tempo > MinTempoPlatform() &&
-      (tempo < MaxTempoPlatform() || tempo < CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_maxTempo))
+  if ((tempo > MinTempoPlatform() || tempo >= CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_minTempo) &&
+      (tempo < MaxTempoPlatform() || tempo <= CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_maxTempo))
     return true;
 
   return false;
