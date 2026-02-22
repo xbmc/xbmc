@@ -204,6 +204,14 @@ std::string CCheevos::GetRichPresenceEvaluation()
   std::string evaluation;
   m_gameClient->Cheevos().RCGetRichPresenceEvaluation(evaluation, m_consoleID);
 
+  std::unique_ptr<CFileItem> file{std::make_unique<CFileItem>()};
+
+  GAME::CGameInfoTag& tag = *file->GetGameInfoTag();
+  tag.SetCaption(evaluation);
+
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_UPDATE_PLAYER_ITEM, -1, -1,
+                                             static_cast<void*>(file.release()));
+
   std::string url;
   std::string postData;
   if (m_gameClient->Cheevos().RCPostRichPresenceUrl(url, postData, m_userName, m_loginToken,
