@@ -15,6 +15,7 @@ set(SOURCES AudioSinkAE.cpp
             Edl/EdlParsers/VideoReDoParser.cpp
             PTSTracker.cpp
             VideoPlayer.cpp
+            AdaptiveFrameSync.cpp
             VideoPlayerAudio.cpp
             VideoPlayerAudioID3.cpp
             VideoPlayerRadioRDS.cpp
@@ -43,6 +44,7 @@ set(HEADERS AudioSinkAE.h
             IVideoPlayer.h
             PTSTracker.h
             VideoPlayer.h
+            AdaptiveFrameSync.h
             VideoPlayerAudio.h
             VideoPlayerAudioID3.h
             VideoPlayerRadioRDS.h
