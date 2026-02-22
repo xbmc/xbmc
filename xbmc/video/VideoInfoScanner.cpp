@@ -1796,8 +1796,14 @@ CVideoInfoScanner::~CVideoInfoScanner()
       }
       else if (len1==2 && len2==2 && len3==4)
       {
+        // dd.mm.yyyy
+        if (reg.GetMatch(0)[2] == '.' && reg.GetMatch(0)[5] == '.')
+          episodeInfo.cDate.SetDate(atoi(param3.c_str()), atoi(param2.c_str()),
+                                    atoi(param1.c_str()));
         // mm dd yyyy format
-        episodeInfo.cDate.SetDate(atoi(param3.c_str()), atoi(param1.c_str()), atoi(param2.c_str()));
+        else
+          episodeInfo.cDate.SetDate(atoi(param3.c_str()), atoi(param1.c_str()),
+                                    atoi(param2.c_str()));
       }
     }
     return episodeInfo.cDate.IsValid();
