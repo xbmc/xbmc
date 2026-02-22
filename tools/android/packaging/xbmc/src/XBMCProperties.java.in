@@ -51,6 +51,14 @@ public class XBMCProperties
         Log.e(TAG, "XBMCProperties: Error loading " + propfn + " (" + e.getMessage() + ")");
       }
     }
+    
+    //Fallback to define "xbmc.data" pointing to Kodi Installation Path in case of "xbmc.data" is not already defined
+    if (System.getProperty("xbmc.data") == null || System.getProperty("xbmc.data").trim().isEmpty())
+      Properties sysProp = new Properties(System.getProperties());
+      System.setProperty("xbmc.data", mContext.getFilesDir()+"");
+      System.setProperty("xbmc.proploaded", "yes");
+      Log.i(TAG,"XBMCProperties: Defined 'xbmc.data' by default to '"+System.getProperty("xbmc.data")+"'");
+    }
   }
 
   public static String getStringProperty(String key, String devValue)
