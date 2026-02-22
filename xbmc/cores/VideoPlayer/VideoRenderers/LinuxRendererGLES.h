@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2010-2018 Team Kodi
+ *  Copyright (C) 2010-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -103,6 +103,8 @@ protected:
   void CheckVideoParameters(int index);
   AVColorPrimaries GetSrcPrimaries(AVColorPrimaries srcPrimaries, unsigned int width, unsigned int height);
 
+  EShaderFormat GetShaderFormat() override;
+
   // textures
   virtual bool UploadTexture(int index);
   virtual void DeleteTexture(int index);
@@ -116,6 +118,23 @@ protected:
   bool UploadNV12Texture(int index);
   void DeleteNV12Texture(int index);
   bool CreateNV12Texture(int index);
+
+  bool UploadP010Texture(int index);
+  void DeleteP010Texture(int index);
+  bool CreateP010Texture(int index);
+
+  bool UploadSemiPlanar420Texture(int index,
+                                  GLenum lumaFormat,
+                                  GLenum chromaFormat,
+                                  GLenum pixelType);
+  bool CreateSemiPlanar420Texture(int index,
+                                  int bytesPerComponent,
+                                  int srcTextureBits,
+                                  GLint internalFormatY,
+                                  GLenum formatY,
+                                  GLint internalFormatUV,
+                                  GLenum formatUV,
+                                  GLenum pixelType);
 
   void CalculateTextureSourceRects(int source, int num_planes);
 
@@ -193,9 +212,14 @@ protected:
   // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
   CPictureBuffer m_buffers[NUM_BUFFERS];
 
-  void LoadPlane(CYuvPlane& plane, int type,
-                 unsigned width,  unsigned height,
-                 int stride, int bpp, void* data);
+  void LoadPlane(CYuvPlane& plane,
+                 int type,
+                 unsigned width,
+                 unsigned height,
+                 int stride,
+                 int bpp,
+                 void* data,
+                 GLenum pixelType);
 
   Shaders::GLES::BaseYUV2RGBGLSLShader* m_pYUVProgShader{nullptr};
   Shaders::GLES::BaseYUV2RGBGLSLShader* m_pYUVBobShader{nullptr};
