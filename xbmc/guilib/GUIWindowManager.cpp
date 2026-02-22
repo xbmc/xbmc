@@ -67,7 +67,9 @@
 #include "windows/GUIWindowStartup.h"
 #include "windows/GUIWindowSystemInfo.h"
 
+#include <algorithm>
 #include <mutex>
+#include <ranges>
 
 // Dialog includes
 #include "music/dialogs/GUIDialogMusicOSD.h"
@@ -1666,17 +1668,46 @@ void CGUIWindowManager::DispatchThreadMessages()
     int window = m_vecThreadMessages.front().second;
     m_vecThreadMessages.pop_front();
 
-    lock.unlock();
+    // Check for duplicate messages that would be superseded by later messages
+    // Only deduplicate label/text messages where the final value wins
+    // GUI_MSG_ITEM_SELECT is excluded because param1 specifies which item,
+    // and skipping intermediate selections could lose important state changes
+    const int msgType = pMsg->GetMessage();
+    if (msgType == GUI_MSG_LABEL_SET || msgType == GUI_MSG_LABEL2_SET ||
+        msgType == GUI_MSG_SET_TEXT)
+    {
+      const int controlId = pMsg->GetControlId();
+      // Check if there's a later message of same type to same control
+      const bool hasDuplicate =
+          std::ranges::any_of(m_vecThreadMessages,
+                              [msgType, controlId, window](const auto& queued)
+                              {
+                                return queued.first->GetMessage() == msgType &&
+                                       queued.first->GetControlId() == controlId &&
+                                       queued.second == window;
+                              });
+      if (hasDuplicate)
+      {
+        // Skip this message, a later one will supersede it
+        delete pMsg;
+        pMsg = nullptr;
+      }
+    }
 
-    // XXX: during SendMessage(), there could be a deeper 'xbmc main loop' inited by e.g. doModal
-    //      which may loop there and callback to DispatchThreadMessages() multiple times.
-    if (window)
-      SendMessage( *pMsg, window );
-    else
-      SendMessage( *pMsg );
-    delete pMsg;
+    if (pMsg)
+    {
+      lock.unlock();
 
-    lock.lock();
+      // XXX: during SendMessage(), there could be a deeper 'xbmc main loop' inited by e.g. doModal
+      //      which may loop there and callback to DispatchThreadMessages() multiple times.
+      if (window)
+        SendMessage(*pMsg, window);
+      else
+        SendMessage(*pMsg);
+      delete pMsg;
+
+      lock.lock();
+    }
   }
 }
 
