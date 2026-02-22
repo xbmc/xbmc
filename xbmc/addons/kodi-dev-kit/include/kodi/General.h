@@ -477,7 +477,7 @@ inline bool ATTR_DLL_LOCAL IsAddonAvailable(const std::string& id,
   AddonToKodiFuncTable_Addon* toKodi = CPrivateBase::m_interface->toKodi;
 
   char* cVersion = nullptr;
-  bool ret = toKodi->kodi->is_addon_avilable(toKodi->kodiBase, id.c_str(), &cVersion, &enabled);
+  bool ret = toKodi->kodi->is_addon_available(toKodi->kodiBase, id.c_str(), &cVersion, &enabled);
   if (cVersion)
   {
     version = cVersion;

@@ -55,7 +55,7 @@ struct Interface_General
   static char* get_region(void* kodiBase, const char* id);
   static void get_free_mem(void* kodiInstance, long* free, long* total, bool as_bytes);
   static int get_global_idle_time(void* kodiBase);
-  static bool is_addon_avilable(void* kodiBase, const char* id, char** version, bool* enabled);
+  static bool is_addon_available(void* kodiBase, const char* id, char** version, bool* enabled);
   static void kodi_version(void* kodiBase,
                            char** compile_name,
                            int* major,

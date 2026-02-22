@@ -49,7 +49,7 @@ void Interface_General::Init(AddonGlobalInterface* addonInterface)
   addonInterface->toKodi->kodi->get_region = get_region;
   addonInterface->toKodi->kodi->get_free_mem = get_free_mem;
   addonInterface->toKodi->kodi->get_global_idle_time = get_global_idle_time;
-  addonInterface->toKodi->kodi->is_addon_avilable = is_addon_avilable;
+  addonInterface->toKodi->kodi->is_addon_available = is_addon_available;
   addonInterface->toKodi->kodi->kodi_version = kodi_version;
   addonInterface->toKodi->kodi->get_current_skin_id = get_current_skin_id;
   addonInterface->toKodi->kodi->get_keyboard_layout = get_keyboard_layout;
@@ -301,10 +301,10 @@ int Interface_General::get_global_idle_time(void* kodiBase)
   return appPower->GlobalIdleTime();
 }
 
-bool Interface_General::is_addon_avilable(void* kodiBase,
-                                          const char* id,
-                                          char** version,
-                                          bool* enabled)
+bool Interface_General::is_addon_available(void* kodiBase,
+                                           const char* id,
+                                           char** version,
+                                           bool* enabled)
 {
   const auto* addon = static_cast<const CAddonDll*>(kodiBase);
   if (!addon || !id || !version || !enabled)
