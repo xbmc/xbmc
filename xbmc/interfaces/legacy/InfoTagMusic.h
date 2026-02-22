@@ -487,6 +487,23 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagMusic
+      /// @brief \python_func{ getMusicBrainzReleaseTrackID() }
+      /// Returns the MusicBrainz Track ID from music info tag (if present).
+      ///
+      /// @return [string] MusicBrainz Track ID
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      getMusicBrainzReleaseTrackID();
+#else
+      String getMusicBrainzReleaseTrackID();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagMusic
       /// @brief \python_func{ getMusicBrainzTrackID() }
       /// Returns the MusicBrainz Recording ID from music info tag (if present).
       ///
@@ -913,10 +930,27 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagMusic
-      /// @brief \python_func{ setMusicBrainzTrackID(musicBrainzTrackID) }
-      /// Set the MusicBrainz track ID of the song.
+      /// @brief \python_func{ setMusicBrainzReleaseTrackID(musicBrainzReleaseTrackID) }
+      /// Set the MusicBrainz Track ID of the song.
       ///
-      /// @param musicBrainzTrackID  string - MusicBrainz track ID.
+      /// @param musicBrainzReleaseTrackID  string - MusicBrainz Track ID.
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      setMusicBrainzReleaseTrackID(...);
+#else
+      void setMusicBrainzReleaseTrackID(const String& musicBrainzReleaseTrackID);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief \python_func{ setMusicBrainzTrackID(musicBrainzTrackID) }
+      /// Set the MusicBrainz Recording ID of the song.
+      ///
+      /// @param musicBrainzTrackID  string - MusicBrainz Recording ID.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -931,9 +965,9 @@ namespace XBMCAddon
       ///
       /// \ingroup python_InfoTagMusic
       /// @brief \python_func{ setMusicBrainzArtistID(musicBrainzArtistID) }
-      /// Set the MusicBrainz artist IDs of the music item.
+      /// Set the MusicBrainz Artist IDs of the music item.
       ///
-      /// @param musicBrainzArtistID  list - MusicBrainz artist IDs.
+      /// @param musicBrainzArtistID  list - MusicBrainz Artist IDs.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -948,9 +982,9 @@ namespace XBMCAddon
       ///
       /// \ingroup python_InfoTagMusic
       /// @brief \python_func{ setMusicBrainzAlbumID(musicBrainzAlbumID) }
-      /// Set the MusicBrainz album ID of the music item.
+      /// Set the MusicBrainz Album ID of the music item.
       ///
-      /// @param musicBrainzAlbumID  string - MusicBrainz album ID.
+      /// @param musicBrainzAlbumID  string - MusicBrainz Album ID.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -965,9 +999,9 @@ namespace XBMCAddon
       ///
       /// \ingroup python_InfoTagMusic
       /// @brief \python_func{ setMusicBrainzReleaseGroupID(musicBrainzReleaseGroupID) }
-      /// Set the MusicBrainz release group ID of the music item.
+      /// Set the MusicBrainz Release Group ID of the music item.
       ///
-      /// @param musicBrainzReleaseGroupID  string - MusicBrainz release group ID.
+      /// @param musicBrainzReleaseGroupID  string - MusicBrainz Release Group ID.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -982,9 +1016,9 @@ namespace XBMCAddon
       ///
       /// \ingroup python_InfoTagMusic
       /// @brief \python_func{ setMusicBrainzAlbumArtistID(musicBrainzAlbumArtistID) }
-      /// Set the MusicBrainz album artist IDs of the music item.
+      /// Set the MusicBrainz Album Artist IDs of the music item.
       ///
-      /// @param musicBrainzAlbumArtistID  list - MusicBrainz album artist IDs.
+      /// @param musicBrainzAlbumArtistID  list - MusicBrainz Album Artist IDs.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -1050,6 +1084,8 @@ namespace XBMCAddon
       static void setUserRatingRaw(MUSIC_INFO::CMusicInfoTag* infoTag, int userrating);
       static void setLyricsRaw(MUSIC_INFO::CMusicInfoTag* infoTag, const String& lyrics);
       static void setLastPlayedRaw(MUSIC_INFO::CMusicInfoTag* infoTag, const String& lastPlayed);
+      static void setMusicBrainzReleaseTrackIDRaw(MUSIC_INFO::CMusicInfoTag* infoTag,
+                                                  const String& musicBrainzReleaseTrackID);
       static void setMusicBrainzTrackIDRaw(MUSIC_INFO::CMusicInfoTag* infoTag,
                                            const String& musicBrainzTrackID);
       static void setMusicBrainzArtistIDRaw(MUSIC_INFO::CMusicInfoTag* infoTag,

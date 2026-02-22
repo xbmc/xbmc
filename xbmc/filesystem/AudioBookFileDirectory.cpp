@@ -231,6 +231,8 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
           item->GetMusicInfoTag()->SetTitle(tag->value);
         else if (key == "ARTIST")
           item->GetMusicInfoTag()->SetArtist(tag->value);
+        else if (key == "MUSICBRAINZ_RELEASETRACKID")
+          item->GetMusicInfoTag()->SetMusicBrainzReleaseTrackID(tag->value);
         else if (key == "MUSICBRAINZ_TRACKID")
           item->GetMusicInfoTag()->SetMusicBrainzTrackID(tag->value);
         else if (key == "COMPOSER")
