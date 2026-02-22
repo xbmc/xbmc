@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "URL.h"
 #include "addons/IAddon.h"
 #include "threads/Event.h"
 
@@ -24,23 +25,16 @@ protected:
 
   ADDON::AddonPtr GetAddon() const;
 
-  bool StartScript(const ADDON::AddonPtr& addon, const std::string& path);
-  bool RunScript(const ADDON::AddonPtr& addon, const std::string& path, int handle, bool resume);
+  bool RunScript(const ADDON::AddonPtr& addon, const CURL& url, int handle, bool resume);
 
   void SetDone();
 
-  static int ExecuteScript(const ADDON::AddonPtr& addon, const std::string& path, bool resume);
-  static int ExecuteScript(const ADDON::AddonPtr& addon,
-                           const std::string& path,
-                           int handle,
-                           bool resume);
+  static int ExecuteScript(const ADDON::AddonPtr& addon, const CURL& url, bool resume);
+  static int ExecuteScript(const ADDON::AddonPtr& addon, CURL url, int handle, bool resume);
 
 private:
-  bool RunScriptInternal(const ADDON::AddonPtr& addon,
-                         const std::string& path,
-                         int handle,
-                         bool resume,
-                         bool wait = true);
+  bool RunScriptInternal(
+      const ADDON::AddonPtr& addon, const CURL& url, int handle, bool resume, bool wait = true);
   bool WaitOnScriptResult(int scriptId, const std::string& path, const std::string& name);
 
   ADDON::AddonPtr m_addon;
