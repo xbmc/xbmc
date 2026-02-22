@@ -32,7 +32,8 @@ public:
   bool SetKeymap(const std::string& layout);
 
 private:
-  XBMCKey XBMCKeyForKeysym(xkb_keysym_t sym, uint32_t scancode);
+  XBMCKey XBMCKeyForXKBKeysym(xkb_keysym_t sym);
+  XBMCKey XBMCKeyForLibinputKeycode(uint32_t scancode);
   void KeyRepeatTimeout();
   /**
    * Check if the system supports key composition
