@@ -57,10 +57,9 @@ bool CShaderPreset::RenderUpdate(const RETRO::ViewportCoordinates& dest,
 
   PrepareParameters(dest, source);
 
-  const auto numPasses = static_cast<unsigned int>(m_pShaders.size());
-
   // Apply all passes except the last one (which needs to be applied to the backbuffer)
   IShaderTexture* sourceTexture = &source;
+  const auto numPasses = static_cast<unsigned int>(m_pShaders.size());
   for (unsigned shaderIdx = 0; shaderIdx + 1 < numPasses; ++shaderIdx)
   {
     IShader& shader = *m_pShaders[shaderIdx];
@@ -185,9 +184,8 @@ void CShaderPreset::UpdateMVPs()
 void CShaderPreset::PrepareParameters(const RETRO::ViewportCoordinates& dest,
                                       IShaderTexture& source)
 {
-  const auto numPasses = static_cast<unsigned int>(m_pShaders.size());
-
   // Prepare parameters for all shader passes
+  const auto numPasses = static_cast<unsigned int>(m_pShaders.size());
   for (unsigned int shaderIdx = 0; shaderIdx < numPasses; ++shaderIdx)
   {
     std::unique_ptr<IShader>& videoShader = m_pShaders[shaderIdx];
@@ -215,6 +213,7 @@ void CShaderPreset::CalculateScaledSize(const KODI::SHADER::ShaderPass& pass,
           pass.fbo.scaleX.scale != 0.0f ? pass.fbo.scaleX.scale * prevSize.x : prevSize.x;
       break;
   }
+
   switch (pass.fbo.scaleY.scaleType)
   {
     case ScaleType::ABSOLUTE_SCALE:
@@ -254,9 +253,10 @@ ShaderParameterMap CShaderPreset::GetShaderParameters(
     const std::vector<ShaderParameter>& parameters, const std::string& sourceStr) const
 {
   static const std::regex pragmaParamRegex("#pragma parameter ([a-zA-Z_][a-zA-Z0-9_]*)");
-  std::smatch matches;
 
   std::vector<std::string> validParams;
+  std::smatch matches;
+
   auto searchStart(sourceStr.cbegin());
   while (regex_search(searchStart, sourceStr.cend(), matches, pragmaParamRegex))
   {
@@ -283,5 +283,6 @@ ShaderParameterMap CShaderPreset::GetShaderParameters(
       }
     }
   }
+
   return matchParams;
 }
