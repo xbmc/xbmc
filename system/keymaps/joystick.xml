@@ -64,7 +64,7 @@
       <x>ContextMenu</x>
       <y>FullScreen</y>
       <start>ActivateWindow(PlayerControls)</start>
-      <back>ActivateWindow(Home)</back>
+      <back>Back</back>
       <guide>ActivateWindow(Home)</guide>
       <up>Up</up>
       <down>Down</down>
@@ -112,7 +112,7 @@
       <x>OSD</x>
       <y>FullScreen</y>
       <start>Info</start>
-      <back>FullScreen</back>
+      <back>Stop</back>
       <guide>OSD</guide>
       <up>ChapterOrBigStepForward</up>
       <down>ChapterOrBigStepBack</down>
@@ -189,7 +189,7 @@
       <b>Stop</b>
       <b holdtime="500">FullScreen</b>
       <x>OSD</x>
-      <back>OSD</back>
+      <back>Stop</back>
       <guide>OSD</guide>
       <start>Info</start>
       <up>ChannelUp</up>
@@ -209,7 +209,7 @@
       <b>Stop</b>
       <b holdtime="500">FullScreen</b>
       <x>OSD</x>
-      <back>OSD</back>
+      <back>Stop</back>
       <guide>OSD</guide>
       <start>Info</start>
       <up>ChannelUp</up>
