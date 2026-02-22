@@ -53,6 +53,7 @@ constexpr auto ActionMappings = make_map<ActionName, ActionID>({
     {"chapterorbigstepback", ACTION_CHAPTER_OR_BIG_STEP_BACK},
     {"osd", ACTION_SHOW_OSD},
     {"showsubtitles", ACTION_SHOW_SUBTITLES},
+    {"downloadsubtitles", ACTION_DOWNLOAD_SUBTITLES},
     {"nextsubtitle", ACTION_NEXT_SUBTITLE},
     {"previoussubtitle", ACTION_PREV_SUBTITLE},
     {"browsesubtitle", ACTION_BROWSE_SUBTITLE},
