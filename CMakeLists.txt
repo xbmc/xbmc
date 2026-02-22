@@ -56,7 +56,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # set KODI_MIRROR to the default if not already set
 if(NOT DEFINED KODI_MIRROR)
-  set(KODI_MIRROR "http://mirrors.kodi.tv")
+  set(KODI_MIRROR "https://mirrors.kodi.tv")
 endif()
 
 message(STATUS "Mirror download location: ${KODI_MIRROR}")

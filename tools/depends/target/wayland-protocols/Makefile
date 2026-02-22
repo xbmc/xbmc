@@ -13,7 +13,7 @@ ifeq ($(PLATFORM),)
 	ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 	PLATFORM = native
 	TARBALLS_LOCATION = $(ROOT_DIR)
-	BASE_URL ?= http://mirrors.kodi.tv/build-deps/sources
+	BASE_URL ?= https://mirrors.kodi.tv/build-deps/sources
 	RETRIEVE_TOOL := curl
 	RETRIEVE_TOOL_FLAGS := -LsS --create-dirs --retry 10 --retry-connrefused -o
 	ARCHIVE_TOOL := tar

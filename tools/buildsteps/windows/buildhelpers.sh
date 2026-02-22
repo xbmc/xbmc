@@ -159,7 +159,7 @@ do_loaddeps() {
 
   BASE_URL=$(grep "BASE_URL=" $file | sed 's/BASE_URL=//g;s/#.*$//g;/^$/d')
   if [ -z "$BASE_URL" ]; then
-    BASE_URL=http://mirrors.kodi.tv/build-deps/sources
+    BASE_URL=https://mirrors.kodi.tv/build-deps/sources
   fi
   local libsrcdir=$LIBNAME-$VERSION
 

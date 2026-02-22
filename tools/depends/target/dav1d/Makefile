@@ -11,7 +11,7 @@ ifeq ($(CROSS_COMPILING), yes)
 else
   ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
   PREFIX ?= $(ROOT_DIR)/dav1d-install
-  BASE_URL ?= http://mirrors.kodi.tv/build-deps/sources
+  BASE_URL ?= https://mirrors.kodi.tv/build-deps/sources
   AUTORECONF := autoreconf
   RETRIEVE_TOOL := curl
   RETRIEVE_TOOL_FLAGS := -LsS --create-dirs --retry 10 --retry-connrefused -o
