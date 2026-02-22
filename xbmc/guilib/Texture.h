@@ -46,6 +46,7 @@ public:
    \param idealHeight the ideal height of the texture (defaults to 0, no ideal height).
    \param aspectRatio the aspect ratio mode of the texture (defaults to "center").
    \param strMimeType mimetype of the given texture if available (defaults to empty)
+   \param scalingMethod the image filter to apply when scaling
    \return a CTexture std::unique_ptr to the created texture - nullptr if the texture failed to load.
    */
   static std::unique_ptr<CTexture> LoadFromFile(
@@ -53,7 +54,8 @@ public:
       unsigned int idealWidth = 0,
       unsigned int idealHeight = 0,
       CAspectRatio::AspectRatio aspectRatio = CAspectRatio::CENTER,
-      const std::string& strMimeType = "");
+      const std::string& strMimeType = "",
+      TEXTURE_SCALING scalingMethod = TEXTURE_SCALING::LINEAR);
 
   /*! \brief Load a texture from a file in memory
    Loads a texture from a file in memory, restricting in size if needed based on maxHeight and maxWidth.
@@ -64,6 +66,7 @@ public:
    \param idealWidth the ideal width of the texture (defaults to 0, no ideal width).
    \param idealHeight the ideal height of the texture (defaults to 0, no ideal height).
    \param aspectRatio the aspect ratio mode of the texture (defaults to "center").
+   \param scalingMethod the image filter to apply when scaling
    \return a CTexture std::unique_ptr to the created texture - nullptr if the texture failed to load.
    */
   static std::unique_ptr<CTexture> LoadFromFileInMemory(
@@ -72,7 +75,8 @@ public:
       const std::string& mimeType,
       unsigned int idealWidth = 0,
       unsigned int idealHeight = 0,
-      CAspectRatio::AspectRatio aspectRatio = CAspectRatio::CENTER);
+      CAspectRatio::AspectRatio aspectRatio = CAspectRatio::CENTER,
+      TEXTURE_SCALING scalingMethod = TEXTURE_SCALING::LINEAR);
 
   bool LoadFromMemory(unsigned int width,
                       unsigned int height,
@@ -120,13 +124,20 @@ public:
   virtual void CreateTextureObject() = 0;
   virtual void DestroyTextureObject() = 0;
   virtual void LoadToGPU() = 0;
-  /*! 
+  /*!
    * \brief Blocks execution until the previous GFX commands have been processed.
    */
   virtual void SyncGPU(){};
   virtual void BindToUnit(unsigned int unit) = 0;
 
-  /*! 
+  /*!
+   * \brief Set texture filtering method and update GPU state if needed
+   *
+   * \param scalingMethod the scaling method to use for the texture
+   */
+  virtual void SetScalingMethod(TEXTURE_SCALING scalingMethod);
+
+  /*!
    * \brief Checks if the processing pipeline can handle the texture format/swizzle
    \param format the format of the texture.
    \return true if the texturing pipeline supports the format
@@ -141,21 +152,39 @@ private:
   CTexture(const CTexture& copy) = delete;
 
 protected:
+  /*!
+   * \brief Apply the currently-selected texture scaling method to the GPU state
+   *
+   * This is called automatically by SetScalingMethod() once the desired
+   * TEXTURE_SCALING value has been stored in \a m_scalingMethod.  Concrete
+   * subclasses (e.g., CGLTexture, CGLESTexture, CDXTexture) should override this
+   * method to bind the underlying texture object and update its filtering
+   * parameters (GL_LINEAR / GL_NEAREST, mip-map variants, etc.) so that the
+   * texture is rendered with the correct magnification and minification filters.
+   *
+   * Classes that do not keep a GPU-resident texture (or whose platform handles
+   * filtering externally) may leave the base implementation empty.
+   */
+  virtual void ApplyScalingMethod() {}
+
   bool LoadFromFileInMem(unsigned char* buffer,
                          size_t size,
                          const std::string& mimeType,
                          unsigned int idealWidth,
                          unsigned int idealHeight,
-                         CAspectRatio::AspectRatio aspectRatio);
+                         CAspectRatio::AspectRatio aspectRatio,
+                         TEXTURE_SCALING scalingMethod);
   bool LoadFromFileInternal(const std::string& texturePath,
                             unsigned int idealWidth,
                             unsigned int idealHeight,
                             CAspectRatio::AspectRatio aspectRatio,
-                            const std::string& strMimeType = "");
+                            const std::string& strMimeType = "",
+                            TEXTURE_SCALING scalingMethod = TEXTURE_SCALING::LINEAR);
   bool LoadIImage(IImage* pImage,
                   unsigned char* buffer,
                   unsigned int bufSize,
                   unsigned int idealWidth,
                   unsigned int idealHeight,
-                  CAspectRatio::AspectRatio aspectRatio);
+                  CAspectRatio::AspectRatio aspectRatio,
+                  TEXTURE_SCALING scalingMethod);
 };

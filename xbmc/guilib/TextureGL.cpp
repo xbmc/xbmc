@@ -333,3 +333,26 @@ GLuint CGLTexture::GetTextureID() const
 {
   return m_texture;
 }
+
+void CGLTexture::ApplyScalingMethod()
+{
+  if (!m_loadedToGPU || m_texture == 0)
+    return;
+
+  glBindTexture(GL_TEXTURE_2D, m_texture);
+
+  GLenum filter = (m_scalingMethod == TEXTURE_SCALING::NEAREST ? GL_NEAREST : GL_LINEAR);
+
+  if (IsMipmapped())
+  {
+    GLenum mipmapFilter = (m_scalingMethod == TEXTURE_SCALING::NEAREST ? GL_LINEAR_MIPMAP_NEAREST
+                                                                       : GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, mipmapFilter);
+  }
+  else
+  {
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+  }
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+}
