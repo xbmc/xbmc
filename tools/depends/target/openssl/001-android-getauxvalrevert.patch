@@ -1,18 +1,18 @@
 --- a/crypto/armcap.c
 +++ b/crypto/armcap.c
 @@ -74,12 +74,6 @@
- #   include <sys/auxv.h>
- #   define OSSL_IMPLEMENT_GETAUXVAL
- #  endif
--# elif defined(__ANDROID_API__)
+ #include <sys/auxv.h>
+ #define OSSL_IMPLEMENT_GETAUXVAL
+ #endif
+-#elif defined(__ANDROID_API__)
 -/* see https://developer.android.google.cn/ndk/guides/cpu-features */
--#  if __ANDROID_API__ >= 18
--#   include <sys/auxv.h>
--#   define OSSL_IMPLEMENT_GETAUXVAL
--#  endif
- # endif
- # if defined(__FreeBSD__)
- #  include <sys/param.h>
+-#if __ANDROID_API__ >= 18
+-#include <sys/auxv.h>
+-#define OSSL_IMPLEMENT_GETAUXVAL
+-#endif
+ #endif
+ #if defined(__FreeBSD__)
+ #include <sys/param.h>
 @@ -100,15 +94,6 @@
  # endif
  
@@ -20,10 +20,10 @@
 - * Android: according to https://developer.android.com/ndk/guides/cpu-features,
 - * getauxval is supported starting with API level 18
 - */
--#  if defined(__ANDROID__) && defined(__ANDROID_API__) && __ANDROID_API__ >= 18
--#   include <sys/auxv.h>
--#   define OSSL_IMPLEMENT_GETAUXVAL
--#  endif
+-#if defined(__ANDROID__) && defined(__ANDROID_API__) && __ANDROID_API__ >= 18
+-#include <sys/auxv.h>
+-#define OSSL_IMPLEMENT_GETAUXVAL
+-#endif
 -
 -/*
   * ARM puts the feature bits for Crypto Extensions in AT_HWCAP2, whereas
@@ -32,30 +32,30 @@
 --- a/crypto/ppccap.c
 +++ b/crypto/ppccap.c
 @@ -89,12 +89,6 @@
- # if __GLIBC_PREREQ(2, 16)
- #  include <sys/auxv.h>
- #  define OSSL_IMPLEMENT_GETAUXVAL
--# elif defined(__ANDROID_API__)
+ #if __GLIBC_PREREQ(2, 16)
+ #include <sys/auxv.h>
+ #define OSSL_IMPLEMENT_GETAUXVAL
+-#elif defined(__ANDROID_API__)
 -/* see https://developer.android.google.cn/ndk/guides/cpu-features */
--#  if __ANDROID_API__ >= 18
--#   include <sys/auxv.h>
--#   define OSSL_IMPLEMENT_GETAUXVAL
--#  endif
- # endif
+-#if __ANDROID_API__ >= 18
+-#include <sys/auxv.h>
+-#define OSSL_IMPLEMENT_GETAUXVAL
+-#endif
+ #endif
  #endif
  
 --- a/crypto/uid.c
 +++ b/crypto/uid.c
 @@ -36,12 +36,6 @@
- #   include <sys/auxv.h>
- #   define OSSL_IMPLEMENT_GETAUXVAL
- #  endif
--# elif defined(__ANDROID_API__)
+ #include <sys/auxv.h>
+ #define OSSL_IMPLEMENT_GETAUXVAL
+ #endif
+-#elif defined(__ANDROID_API__)
 -/* see https://developer.android.google.cn/ndk/guides/cpu-features */
--#  if __ANDROID_API__ >= 18
--#   include <sys/auxv.h>
--#   define OSSL_IMPLEMENT_GETAUXVAL
--#  endif
- # endif
+-#if __ANDROID_API__ >= 18
+-#include <sys/auxv.h>
+-#define OSSL_IMPLEMENT_GETAUXVAL
+-#endif
+ #endif
  
  int OPENSSL_issetugid(void)
