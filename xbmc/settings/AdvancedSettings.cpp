@@ -866,6 +866,10 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
         XMLUtils::GetFloat(pRefreshVideoLatency, "hdrextradelay", videolatency.hdrextradelay,
                            -600.0f, 600.0f);
 
+        if (pRefreshVideoLatency->QueryUnsignedAttribute("resolution", &videolatency.resolution) ==
+            TIXML_NO_ATTRIBUTE)
+          videolatency.resolution = 0;
+
         if (videolatency.refreshmin > 0.0f && videolatency.refreshmax >= videolatency.refreshmin)
           m_videoRefreshLatency.push_back(videolatency);
         else
@@ -1474,12 +1478,14 @@ void CAdvancedSettings::AddSettingsFile(const std::string &filename)
   m_settingsFiles.push_back(filename);
 }
 
-float CAdvancedSettings::GetLatencyTweak(float refreshrate, bool isHDREnabled) const
+float CAdvancedSettings::GetLatencyTweak(float refreshrate, bool isHDREnabled,
+                                         unsigned int resolution) const
 {
   float delay{};
   const auto& latency = std::ranges::find_if(
-      m_videoRefreshLatency, [refreshrate](const auto& param)
-      { return refreshrate >= param.refreshmin && refreshrate <= param.refreshmax; });
+      m_videoRefreshLatency, [refreshrate, resolution](const auto& param)
+      { return (refreshrate >= param.refreshmin && refreshrate <= param.refreshmax) &&
+               (param.resolution == resolution || param.resolution == 0); });
 
   if (latency != m_videoRefreshLatency.cend()) //refresh rate specific setting is found
   {
