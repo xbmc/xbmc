@@ -110,8 +110,8 @@ typedef struct XBMC_SetFocusEvent {
 /* Button event structure */
 typedef struct XBMC_ButtonEvent
 {
-  uint32_t button;
-  uint32_t holdtime;
+  uint32_t button; /* one of the XINPUT_IR_REMOTE_* event codes from IRRemote.h */
+  uint32_t holdtime; /* for button-release events: duration this button was held, in milliseconds */
 } XBMC_ButtonEvent;
 
 /* General event structure */

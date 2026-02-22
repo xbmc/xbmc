@@ -12,6 +12,8 @@
 #include "LibInputSettings.h"
 #include "ServiceBroker.h"
 #include "application/AppInboundProtocol.h"
+#include "input/keyboard/XBMC_keysym.h"
+#include "input/remote/IRRemote.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Map.h"
@@ -23,6 +25,8 @@
 #include <string.h>
 
 #include <fcntl.h>
+#include <libinput.h>
+#include <libudev.h>
 #include <linux/input.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
@@ -201,6 +205,85 @@ constexpr auto XkbDeadKeyXBMCMapping =
                                       {XKB_KEY_dead_small_schwa, XBMCK_SCHWA},
                                       {XKB_KEY_dead_capital_schwa, XBMCK_SCHWA}});
 
+/// maps from libinput (i.e. evdev) scancodes to XINPUT_IR_REMOTE_* key codes
+constexpr auto libinputKeyToRemoteButtonMap = make_map<uint32_t, uint32_t>({
+    {KEY_FULL_SCREEN, XINPUT_IR_REMOTE_DISPLAY},
+    {KEY_REWIND, XINPUT_IR_REMOTE_REVERSE},
+    {KEY_PLAY, XINPUT_IR_REMOTE_PLAY},
+    {KEY_PLAYPAUSE, XINPUT_IR_REMOTE_PLAY},
+    {KEY_FASTFORWARD, XINPUT_IR_REMOTE_FORWARD},
+    {KEY_PREVIOUS, XINPUT_IR_REMOTE_SKIP_MINUS},
+    {KEY_STOP, XINPUT_IR_REMOTE_STOP},
+    {KEY_PAUSE, XINPUT_IR_REMOTE_PAUSE},
+    {KEY_NEXT, XINPUT_IR_REMOTE_SKIP_PLUS},
+    {KEY_TITLE, XINPUT_IR_REMOTE_TITLE},
+    {KEY_INFO, XINPUT_IR_REMOTE_INFO},
+    {KEY_UP, XINPUT_IR_REMOTE_UP},
+    {KEY_DOWN, XINPUT_IR_REMOTE_DOWN},
+    {KEY_LEFT, XINPUT_IR_REMOTE_LEFT},
+    {KEY_RIGHT, XINPUT_IR_REMOTE_RIGHT},
+    {KEY_SELECT, XINPUT_IR_REMOTE_SELECT},
+    {KEY_OK, XINPUT_IR_REMOTE_SELECT},
+    {KEY_SUBTITLE, XINPUT_IR_REMOTE_SUBTITLE},
+    {KEY_LANGUAGE, XINPUT_IR_REMOTE_LANGUAGE},
+    {KEY_MENU, XINPUT_IR_REMOTE_MENU},
+    {KEY_ESC, XINPUT_IR_REMOTE_BACK},
+    {KEY_1, XINPUT_IR_REMOTE_1},
+    {KEY_2, XINPUT_IR_REMOTE_2},
+    {KEY_3, XINPUT_IR_REMOTE_3},
+    {KEY_4, XINPUT_IR_REMOTE_4},
+    {KEY_5, XINPUT_IR_REMOTE_5},
+    {KEY_6, XINPUT_IR_REMOTE_6},
+    {KEY_7, XINPUT_IR_REMOTE_7},
+    {KEY_8, XINPUT_IR_REMOTE_8},
+    {KEY_9, XINPUT_IR_REMOTE_9},
+    {KEY_0, XINPUT_IR_REMOTE_0},
+    {KEY_NUMERIC_1, XINPUT_IR_REMOTE_1},
+    {KEY_NUMERIC_2, XINPUT_IR_REMOTE_2},
+    {KEY_NUMERIC_3, XINPUT_IR_REMOTE_3},
+    {KEY_NUMERIC_4, XINPUT_IR_REMOTE_4},
+    {KEY_NUMERIC_5, XINPUT_IR_REMOTE_5},
+    {KEY_NUMERIC_6, XINPUT_IR_REMOTE_6},
+    {KEY_NUMERIC_7, XINPUT_IR_REMOTE_7},
+    {KEY_NUMERIC_8, XINPUT_IR_REMOTE_8},
+    {KEY_NUMERIC_9, XINPUT_IR_REMOTE_9},
+    {KEY_NUMERIC_0, XINPUT_IR_REMOTE_0},
+    {KEY_POWER, XINPUT_IR_REMOTE_POWER},
+    {KEY_POWER2, XINPUT_IR_REMOTE_POWER},
+    {KEY_TV, XINPUT_IR_REMOTE_MY_TV},
+    {KEY_TV2, XINPUT_IR_REMOTE_MY_TV},
+    {KEY_AUDIO, XINPUT_IR_REMOTE_MY_MUSIC},
+    {KEY_IMAGES, XINPUT_IR_REMOTE_MY_PICTURES},
+    {KEY_VIDEO, XINPUT_IR_REMOTE_MY_VIDEOS},
+    {KEY_RECORD, XINPUT_IR_REMOTE_RECORD},
+    // {KEY_, XINPUT_IR_REMOTE_START },
+    {KEY_VOLUMEUP, XINPUT_IR_REMOTE_VOLUME_PLUS},
+    {KEY_VOLUMEDOWN, XINPUT_IR_REMOTE_VOLUME_MINUS},
+    {KEY_CHANNELUP, XINPUT_IR_REMOTE_CHANNEL_PLUS},
+    {KEY_CHANNELDOWN, XINPUT_IR_REMOTE_CHANNEL_MINUS},
+    {KEY_MUTE, XINPUT_IR_REMOTE_MUTE},
+    {KEY_VCR, XINPUT_IR_REMOTE_RECORDED_TV},
+    // {KEY_, XINPUT_IR_REMOTE_LIVE_TV },
+    {KEY_NUMERIC_STAR, XINPUT_IR_REMOTE_STAR},
+    {KEY_NUMERIC_POUND, XINPUT_IR_REMOTE_HASH},
+    {KEY_DELETE, XINPUT_IR_REMOTE_CLEAR},
+    {KEY_TEXT, XINPUT_IR_REMOTE_TELETEXT},
+    {KEY_RED, XINPUT_IR_REMOTE_RED},
+    {KEY_GREEN, XINPUT_IR_REMOTE_GREEN},
+    {KEY_YELLOW, XINPUT_IR_REMOTE_YELLOW},
+    {KEY_BLUE, XINPUT_IR_REMOTE_BLUE},
+    // {KEY_, XINPUT_IR_REMOTE_PLAYLIST },
+    {KEY_EPG, XINPUT_IR_REMOTE_GUIDE},
+    {KEY_RADIO, XINPUT_IR_REMOTE_LIVE_RADIO},
+    {KEY_FIND, XINPUT_IR_REMOTE_EPG_SEARCH},
+    {KEY_EJECTCD, XINPUT_IR_REMOTE_EJECT},
+    {KEY_EJECTCLOSECD, XINPUT_IR_REMOTE_EJECT},
+    // {KEY_, XINPUT_IR_REMOTE_CONTENTS_MENU },
+    // {KEY_, XINPUT_IR_REMOTE_ROOT_MENU },
+    // {KEY_, XINPUT_IR_REMOTE_TOP_MENU },
+    {KEY_DVD, XINPUT_IR_REMOTE_DVD_MENU},
+});
+
 std::optional<XBMCKey> TranslateDeadKey(uint32_t keySym)
 {
   auto mapping = XkbDeadKeyXBMCMapping.find(keySym);
@@ -328,6 +411,15 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
 {
   if (!m_ctx || !m_keymap || !m_state)
     return;
+
+  auto* baseEvent = libinput_event_keyboard_get_base_event(e);
+  auto* inputDevice = libinput_event_get_device(baseEvent);
+  if (m_remoteControlDevices.count(inputDevice))
+  {
+    CLog::LogF(LOGDEBUG, "event comes from a remote control.");
+    ProcessRemoteControlInput(e);
+    return;
+  }
 
   const uint32_t xkbkey = libinput_event_keyboard_get_key(e) + 8;
   const xkb_keysym_t keysym = xkb_state_key_get_one_sym(m_state.get(), xkbkey);
@@ -461,13 +553,81 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
 
       m_repeatRate = data->second.at(1);
       m_repeatTimer.Stop(true);
-      m_repeatEvent = event;
+      m_repeatEventFunction = [event]()
+      {
+        std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+        if (appPort)
+          appPort->OnEvent(event);
+      };
       m_repeatTimer.Start(std::chrono::milliseconds(data->second.at(0)), false);
     }
   }
   else
   {
     m_repeatTimer.Stop();
+  }
+}
+
+void CLibInputKeyboard::ProcessRemoteControlInput(libinput_event_keyboard* e)
+{
+  const uint32_t libinputKeycode = libinput_event_keyboard_get_key(e);
+  const auto mappingIter = libinputKeyToRemoteButtonMap.find(libinputKeycode);
+  if (mappingIter != libinputKeyToRemoteButtonMap.cend())
+  {
+    const auto firstClickTime = std::chrono::steady_clock::now();
+
+    XBMC_Event buttonEvent = {};
+    buttonEvent.type = XBMC_BUTTON;
+    buttonEvent.keybutton.button = mappingIter->second;
+    buttonEvent.keybutton.holdtime = 0;
+
+    const bool pressed = libinput_event_keyboard_get_key_state(e) == LIBINPUT_KEY_STATE_PRESSED;
+    if (pressed)
+    {
+      CLog::LogF(LOGDEBUG, "mapping scancode {} to remote control code {}", libinputKeycode,
+                 mappingIter->second);
+
+      // send initial key-down event
+      std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+      if (appPort)
+        appPort->OnEvent(buttonEvent);
+
+      // set up timer to periodically send key-repeat events while button is pressed
+      libinput_event* ev = libinput_event_keyboard_get_base_event(e);
+      libinput_device* dev = libinput_event_get_device(ev);
+      const auto data = m_repeatData.find(dev);
+      if (data != m_repeatData.end())
+      {
+        CLog::LogF(LOGDEBUG, "using delay: {}ms repeat: {}ms", data->second.at(0),
+                   data->second.at(1));
+
+        m_repeatRate = data->second.at(1);
+        m_repeatTimer.Stop(true);
+        m_repeatEventFunction = [buttonEvent, firstClickTime]()
+        {
+          const auto now = std::chrono::steady_clock::now();
+          const auto duration =
+              std::chrono::duration_cast<std::chrono::milliseconds>(now - firstClickTime);
+
+          auto localButtonEvent = buttonEvent;
+          localButtonEvent.keybutton.holdtime = duration.count();
+
+          std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+          if (appPort)
+            appPort->OnEvent(localButtonEvent);
+        };
+        m_repeatTimer.Start(std::chrono::milliseconds(data->second.at(0)), false);
+      }
+    }
+    else
+    {
+      m_repeatTimer.Stop();
+    }
+  }
+  else
+  {
+    CLog::LogF(LOGINFO, "could not map libinput key code {} to remote control name.",
+               libinputKeycode);
   }
 }
 
@@ -497,14 +657,23 @@ void CLibInputKeyboard::KeyRepeatTimeout()
 {
   m_repeatTimer.RestartAsync(std::chrono::milliseconds(m_repeatRate));
 
-  std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
-  if (appPort)
-    appPort->OnEvent(m_repeatEvent);
+  m_repeatEventFunction();
 }
 
 void CLibInputKeyboard::UpdateLeds(libinput_device *dev)
 {
   libinput_device_led_update(dev, static_cast<libinput_led>(m_leds));
+}
+
+void CLibInputKeyboard::DeviceRemoved(libinput_device* dev)
+{
+  const auto data = m_repeatData.find(dev);
+  if (data != m_repeatData.end())
+  {
+    m_repeatData.erase(data);
+  }
+
+  m_remoteControlDevices.erase(dev);
 }
 
 void CLibInputKeyboard::GetRepeat(libinput_device *dev)
@@ -539,6 +708,22 @@ void CLibInputKeyboard::GetRepeat(libinput_device *dev)
   if (data == m_repeatData.end())
   {
     m_repeatData.insert(std::make_pair(dev, kbdrepvec));
+  }
+}
+
+void CLibInputKeyboard::CheckForRemoteControl(libinput_device* dev)
+{
+  auto* udevDevice = libinput_device_get_udev_device(dev);
+  // assume that devices that have an "rc" subsystem device among their parents are remote controls:
+  auto* rcDevice = udev_device_get_parent_with_subsystem_devtype(udevDevice, "rc", nullptr);
+  if (rcDevice)
+  {
+    const char* name = libinput_device_get_name(dev);
+    const char* sysname = libinput_device_get_sysname(dev);
+    CLog::Log(LOGDEBUG, "CLibInputKeyboard::{} - detected device \"{}\" ({}) as remote control",
+              __FUNCTION__, name, sysname);
+
+    m_remoteControlDevices.insert(dev);
   }
 }
 

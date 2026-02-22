@@ -13,6 +13,7 @@
 
 #include <map>
 #include <memory>
+#include <set>
 #include <vector>
 
 #include <libinput.h>
@@ -27,7 +28,9 @@ public:
 
   void ProcessKey(libinput_event_keyboard *e);
   void UpdateLeds(libinput_device *dev);
+  void DeviceRemoved(libinput_device* e);
   void GetRepeat(libinput_device *dev);
+  void CheckForRemoteControl(libinput_device* dev);
 
   bool SetKeymap(const std::string& layout);
 
@@ -50,6 +53,12 @@ private:
    * Get Unicode codepoint/UTF32 code for provided keycode
    */
   std::uint32_t UnicodeCodepointForKeycode(xkb_keycode_t code) const;
+
+  /**
+   * Process keyboard input that actually comes from a remote control.
+   */
+  void ProcessRemoteControlInput(libinput_event_keyboard* e);
+
   struct XkbContextDeleter
   {
     void operator()(xkb_context* ctx) const;
@@ -85,8 +94,10 @@ private:
 
   int m_leds;
 
-  XBMC_Event m_repeatEvent;
+  std::function<void()> m_repeatEventFunction;
   std::map<libinput_device*, std::vector<int>> m_repeatData;
   CTimer m_repeatTimer;
   int m_repeatRate;
+  /** Contains all keyboard devices that should be treated like IR remote controls. */
+  std::set<libinput_device*> m_remoteControlDevices;
 };
