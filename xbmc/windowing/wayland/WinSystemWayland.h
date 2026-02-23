@@ -217,6 +217,8 @@ private:
   wayland::compositor_t m_compositor;
   wayland::shm_t m_shm;
   wayland::viewporter_t m_viewporter;
+  wayland::fractional_scale_manager_v1_t m_fractionalScaleManager;
+  wayland::fractional_scale_v1_t m_fractionalScale;
   wayland::presentation_t m_presentation;
 
   std::unique_ptr<IShellSurface> m_shellSurface;
