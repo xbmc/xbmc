@@ -181,6 +181,7 @@ private:
   void OnOutputDone(std::uint32_t name);
   void UpdateBufferScale();
   void ApplyBufferScale();
+  void ApplyViewportSizes();
   void ApplyOpaqueRegion();
   void ApplyWindowGeometry();
   void UpdateTouchDpi();
@@ -204,6 +205,7 @@ private:
   std::unique_ptr<CRegistry> m_seatRegistry;
   wayland::compositor_t m_compositor;
   wayland::shm_t m_shm;
+  wayland::viewporter_t m_viewporter;
   wayland::presentation_t m_presentation;
 
   std::unique_ptr<IShellSurface> m_shellSurface;
@@ -265,6 +267,7 @@ private:
   // Surface state
   // -------------
   wayland::surface_t m_surface;
+  wayland::viewport_t m_viewport;
   wayland::output_t m_lastSetOutput;
   /// Set of outputs that show some part of our main surface as indicated by
   /// compositor

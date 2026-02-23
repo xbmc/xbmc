@@ -166,6 +166,7 @@ bool CWinSystemWayland::InitWindowSystem()
 
   m_registry->RequestSingleton(m_compositor, 1, 4);
   m_registry->RequestSingleton(m_shm, 1, 1);
+  m_registry->RequestSingleton(m_viewporter, 1, 1, false);
   m_registry->RequestSingleton(m_presentation, 1, 1, false);
   // version 2 adds done() -> required
   // version 3 adds destructor -> optional
@@ -275,6 +276,11 @@ bool CWinSystemWayland::CreateNewWindow(const std::string& name,
       CLog::Log(LOGWARNING, "Leaving output that was not configured yet, ignoring");
     }
   };
+
+  if (m_viewporter)
+  {
+    m_viewport = m_viewporter.get_viewport(m_surface);
+  }
 
   m_windowDecorator = std::make_unique<CWindowDecorator>(*this, *m_connection, m_surface);
 
@@ -394,6 +400,7 @@ bool CWinSystemWayland::DestroyWindow()
 
   m_shellSurface.reset();
   // waylandpp automatically calls wl_surface_destroy when the last reference is removed
+  m_viewport = wayland::viewport_t();
   m_surface = wayland::surface_t();
   m_windowDecorator.reset();
   m_seats.clear();
@@ -644,6 +651,10 @@ void CWinSystemWayland::ApplySizeUpdate(SizeUpdateInformation update)
   }
   if (update.surfaceSizeChanged)
   {
+    if (m_viewport)
+    {
+      ApplyViewportSizes();
+    }
     // Update opaque region here so size always matches the configured egl surface
     ApplyOpaqueRegion();
   }
@@ -1291,9 +1302,22 @@ void CWinSystemWayland::UpdateBufferScale()
 void CWinSystemWayland::ApplyBufferScale()
 {
   CLog::LogF(LOGINFO, "Setting Wayland buffer scale to {}", m_scale);
-  m_surface.set_buffer_scale(m_scale);
+  if (m_viewport)
+  {
+    ApplyViewportSizes();
+  }
+  else if (m_surface.can_set_buffer_scale())
+  {
+    m_surface.set_buffer_scale(m_scale);
+  }
   m_windowDecorator->SetState(m_configuredSize, m_scale, m_shellSurfaceState);
   m_seatInputProcessing->SetCoordinateScale(m_scale);
+}
+
+void CWinSystemWayland::ApplyViewportSizes()
+{
+  m_viewport.set_destination(m_surfaceSize.Width(), m_surfaceSize.Height());
+  m_viewport.set_source(0.0, 0.0, m_bufferSize.Width(), m_bufferSize.Height());
 }
 
 void CWinSystemWayland::UpdateTouchDpi()
