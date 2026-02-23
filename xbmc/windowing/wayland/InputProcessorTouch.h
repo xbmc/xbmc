@@ -33,7 +33,7 @@ class CInputProcessorTouch final : public IRawInputHandlerTouch
 public:
   CInputProcessorTouch(wayland::surface_t const& surface);
   ~CInputProcessorTouch() noexcept;
-  void SetCoordinateScale(std::int32_t scale) { m_coordinateScale = scale; }
+  void SetCoordinateScale(double scale) { m_coordinateScale = scale; }
 
   void OnTouchDown(CSeat* seat,
                    std::uint32_t serial,
@@ -71,7 +71,7 @@ private:
   void AbortTouches();
 
   wayland::surface_t m_surface;
-  std::int32_t m_coordinateScale{1};
+  double m_coordinateScale{1.0};
 
   /// Map of wl_touch point id to data
   std::map<std::int32_t, TouchPoint> m_touchPoints;

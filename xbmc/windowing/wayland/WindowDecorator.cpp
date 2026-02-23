@@ -727,11 +727,14 @@ CSizeInt CWindowDecorator::CalculateFullSurfaceSize(CSizeInt size, IShellSurface
   }
 }
 
-void CWindowDecorator::SetState(CSizeInt size, int scale, IShellSurface::StateBitset state)
+void CWindowDecorator::SetState(CSizeInt size, double scale, IShellSurface::StateBitset state)
 {
+  // Round to the nearest integer as manually drawing primitives with fractional scaling is hard to implement.
+  // It requires techniques like anti-aliasing, etc. Rely on the compositor to do the proper scaling
+  const int intScale = std::max(std::round(scale), 1.0);
   CSizeInt mainSurfaceSize{CalculateMainSurfaceSize(size, state)};
   std::unique_lock lock(m_mutex);
-  if (mainSurfaceSize == m_mainSurfaceSize && scale == m_scale && state == m_windowState)
+  if (mainSurfaceSize == m_mainSurfaceSize && intScale == m_scale && state == m_windowState)
   {
     return;
   }
@@ -744,12 +747,12 @@ void CWindowDecorator::SetState(CSizeInt size, int scale, IShellSurface::StateBi
   CLog::Log(LOGDEBUG,
             "CWindowDecorator::SetState: Setting full surface size {}x{} scale {} (main surface "
             "size {}x{}), decorations active: {}",
-            size.Width(), size.Height(), scale, mainSurfaceSize.Width(), mainSurfaceSize.Height(),
+            size.Width(), size.Height(), intScale, mainSurfaceSize.Width(), mainSurfaceSize.Height(),
             IsDecorationActive());
 
-  if (mainSurfaceSize != m_mainSurfaceSize || scale != m_scale || wasDecorations != IsDecorationActive())
+  if (mainSurfaceSize != m_mainSurfaceSize || intScale != m_scale || wasDecorations != IsDecorationActive())
   {
-    if (scale != m_scale)
+    if (intScale != m_scale)
     {
       // Reload cursor theme
       CLog::Log(LOGDEBUG, "CWindowDecorator::SetState: Buffer scale changed, reloading cursor theme");
@@ -761,7 +764,7 @@ void CWindowDecorator::SetState(CSizeInt size, int scale, IShellSurface::StateBi
     }
 
     m_mainSurfaceSize = mainSurfaceSize;
-    m_scale = scale;
+    m_scale = intScale;
     CLog::Log(LOGDEBUG, "CWindowDecorator::SetState: Resetting decorations");
     Reset(true);
   }

@@ -85,7 +85,7 @@ public:
    *
    * Call only from main thread
    */
-  void SetState(CSizeInt size, int scale, IShellSurface::StateBitset state);
+  void SetState(CSizeInt size, double scale, IShellSurface::StateBitset state);
   /**
    * Get calculated size of main surface
    */
