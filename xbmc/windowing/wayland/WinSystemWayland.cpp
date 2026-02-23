@@ -127,7 +127,7 @@ struct MsgConfigure
 
 struct MsgBufferScale
 {
-  int scale;
+  double scale;
 };
 
 };
@@ -698,7 +698,7 @@ void CWinSystemWayland::ProcessMessages()
   Actor::Message* message{};
   MessageHandle lastConfigureMessage;
   int skippedConfigures{-1};
-  int newScale{m_scale};
+  double newScale{m_scale};
 
   while (m_protocol.ReceiveOutMessage(&message))
   {
@@ -780,7 +780,8 @@ void CWinSystemWayland::ProcessMessages()
         auto const& windowed = CDisplaySettings::GetInstance().GetResolutionInfo(RES_WINDOW);
         // Kodi resolution is buffer size, but SetResolutionInternal expects
         // surface size, so divide by m_scale
-        size = CSizeInt{windowed.iWidth, windowed.iHeight} / newScale;
+        size.SetWidth(std::round(static_cast<double>(windowed.iWidth) / newScale));
+        size.SetHeight(std::round(static_cast<double>(windowed.iHeight) / newScale));
         CLog::LogF(LOGDEBUG, "Adapting Kodi windowed size {}x{}", size.Width(), size.Height());
         sizeIncludesDecoration = false;
       }
@@ -848,7 +849,12 @@ void CWinSystemWayland::AckConfigure(std::uint32_t serial)
  * \param scale new buffer scale
  * \param sizeIncludesDecoration whether size includes the size of the window decorations if present
  */
-void CWinSystemWayland::SetResolutionInternal(CSizeInt size, std::int32_t scale, IShellSurface::StateBitset state, bool sizeIncludesDecoration, bool mustAck, std::uint32_t configureSerial)
+void CWinSystemWayland::SetResolutionInternal(CSizeInt size,
+                                              double scale,
+                                              IShellSurface::StateBitset state,
+                                              bool sizeIncludesDecoration,
+                                              bool mustAck,
+                                              std::uint32_t configureSerial)
 {
   // This should never be called while a size set is pending
   assert(!m_waitingForApply);
@@ -901,8 +907,7 @@ void CWinSystemWayland::SetResolutionInternal(CSizeInt size, std::int32_t scale,
       {
         XBMC_Event msg{};
         msg.type = XBMC_VIDEORESIZE;
-        msg.resize = {sizes.surfaceSize.Width(), sizes.surfaceSize.Height(),
-                      static_cast<double>(scale)};
+        msg.resize = {sizes.surfaceSize.Width(), sizes.surfaceSize.Height(), scale};
         // FIXME
         dynamic_cast<CWinEventsWayland&>(*m_winEvents).MessagePush(&msg);
         m_waitingForApply = true;
@@ -976,7 +981,10 @@ void CWinSystemWayland::ApplyNextState()
   }
 }
 
-CWinSystemWayland::Sizes CWinSystemWayland::CalculateSizes(CSizeInt size, int scale, IShellSurface::StateBitset state, bool sizeIncludesDecoration)
+CWinSystemWayland::Sizes CWinSystemWayland::CalculateSizes(CSizeInt size,
+                                                           double scale,
+                                                           IShellSurface::StateBitset state,
+                                                           bool sizeIncludesDecoration)
 {
   Sizes result;
 
@@ -1007,7 +1015,8 @@ CWinSystemWayland::Sizes CWinSystemWayland::CalculateSizes(CSizeInt size, int sc
     result.configuredSize = m_windowDecorator->CalculateFullSurfaceSize(size, state);
   }
 
-  result.bufferSize = result.surfaceSize * scale;
+  result.bufferSize.SetWidth(std::round(static_cast<double>(result.surfaceSize.Width()) * scale));
+  result.bufferSize.SetHeight(std::round(static_cast<double>(result.surfaceSize.Height()) * scale));
 
   return result;
 }
@@ -1022,7 +1031,8 @@ CWinSystemWayland::Sizes CWinSystemWayland::CalculateSizes(CSizeInt size, int sc
  * \param sizeIncludesDecoration if true, given size includes potential window decorations
  * \return whether main buffer (not surface) size changed
  */
-CWinSystemWayland::SizeUpdateInformation CWinSystemWayland::UpdateSizeVariables(CSizeInt size, int scale, IShellSurface::StateBitset state, bool sizeIncludesDecoration)
+CWinSystemWayland::SizeUpdateInformation CWinSystemWayland::UpdateSizeVariables(
+    CSizeInt size, double scale, IShellSurface::StateBitset state, bool sizeIncludesDecoration)
 {
   CLog::LogF(LOGDEBUG, "Set size {}x{} scale {} {} decorations with state {}", size.Width(),
              size.Height(), scale, sizeIncludesDecoration ? "including" : "excluding",
@@ -1294,7 +1304,8 @@ void CWinSystemWayland::UpdateBufferScale()
   auto const maxBufferScaleIt = std::max_element(m_surfaceOutputs.cbegin(), m_surfaceOutputs.cend(), OutputScaleComparer());
   if (maxBufferScaleIt != m_surfaceOutputs.cend())
   {
-    WinSystemWaylandProtocol::MsgBufferScale msg{(*maxBufferScaleIt)->GetScale()};
+    WinSystemWaylandProtocol::MsgBufferScale msg{
+        static_cast<double>((*maxBufferScaleIt)->GetScale())};
     m_protocol.SendOutMessage(WinSystemWaylandProtocol::BUFFER_SCALE, &msg, sizeof(msg));
   }
 }
@@ -1308,7 +1319,7 @@ void CWinSystemWayland::ApplyBufferScale()
   }
   else if (m_surface.can_set_buffer_scale())
   {
-    m_surface.set_buffer_scale(m_scale);
+    m_surface.set_buffer_scale(std::round(m_scale));
   }
   m_windowDecorator->SetState(m_configuredSize, m_scale, m_shellSurfaceState);
   m_seatInputProcessing->SetCoordinateScale(m_scale);
