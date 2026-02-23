@@ -167,6 +167,7 @@ bool CWinSystemWayland::InitWindowSystem()
   m_registry->RequestSingleton(m_compositor, 1, 4);
   m_registry->RequestSingleton(m_shm, 1, 1);
   m_registry->RequestSingleton(m_viewporter, 1, 1, false);
+  m_registry->RequestSingleton(m_fractionalScaleManager, 1, 1, false);
   m_registry->RequestSingleton(m_presentation, 1, 1, false);
   // version 2 adds done() -> required
   // version 3 adds destructor -> optional
@@ -286,6 +287,22 @@ bool CWinSystemWayland::CreateNewWindow(const std::string& name,
     CLog::Log(LOGWARNING, "Viewporter protocol is not available, scaling will not work");
   }
 
+  if (m_fractionalScaleManager)
+  {
+    m_fractionalScale = m_fractionalScaleManager.get_fractional_scale(m_surface);
+    m_fractionalScale.on_preferred_scale() = [this](std::uint32_t scale)
+    {
+      constexpr double WAYLAND_SCALE_FACTOR = 120.0;
+      const double newScale = scale / WAYLAND_SCALE_FACTOR;
+      CLog::LogF(LOGINFO, "Received new preferred scale: {}", newScale);
+      if (newScale > 0.0)
+      {
+        WinSystemWaylandProtocol::MsgBufferScale msg{newScale};
+        m_protocol.SendOutMessage(WinSystemWaylandProtocol::BUFFER_SCALE, &msg, sizeof(msg));
+      }
+    };
+  }
+
   m_windowDecorator = std::make_unique<CWindowDecorator>(*this, *m_connection, m_surface);
 
   m_seatInputProcessing = std::make_unique<CSeatInputProcessing>(m_surface, *this);
@@ -320,7 +337,7 @@ bool CWinSystemWayland::CreateNewWindow(const std::string& name,
     auto wlOutput = output ? output->GetWaylandOutput() : wayland::output_t{};
     m_lastSetOutput = wlOutput;
     m_shellSurface->SetFullScreen(wlOutput, res.fRefreshRate);
-    if (output)
+    if (!m_fractionalScaleManager && output)
     {
       m_scale = output->GetScale();
       ApplyBufferScale();
@@ -405,6 +422,7 @@ bool CWinSystemWayland::DestroyWindow()
   m_shellSurface.reset();
   // waylandpp automatically calls wl_surface_destroy when the last reference is removed
   m_viewport = wayland::viewport_t();
+  m_fractionalScale = wayland::fractional_scale_v1_t();
   m_surface = wayland::surface_t();
   m_windowDecorator.reset();
   m_seats.clear();
@@ -1287,6 +1305,11 @@ void CWinSystemWayland::OnSetCursor(std::uint32_t seatGlobalName, std::uint32_t 
 
 void CWinSystemWayland::UpdateBufferScale()
 {
+  if (m_fractionalScaleManager)
+  {
+      return;
+  }
+
   // Adjust our surface size to the output with the biggest scale in order
   // to get the best quality
   auto const maxBufferScaleIt = std::max_element(m_surfaceOutputs.cbegin(), m_surfaceOutputs.cend(), OutputScaleComparer());
