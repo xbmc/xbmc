@@ -2,9 +2,9 @@ include ../../Makefile.include
 DEPS =../../Makefile.include Makefile ../../download-files.include
 
 LIBNAME=libdisplay-info
-VERSION=0.1.1
+VERSION=0.3.0
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
-SHA512=8b11c35315f3f16f6853b2ba5daa39c622f2326cfa01d54574beb577efd38d25b8260f7d74c63924473a0487bffdbff727ddc05b12d36e2106b78aadc7d4ff42
+SHA512=fa023df810d9354135c3a8576233b1a4bab29d943e9ec61ba30cfe512001e4aa56ffc10e1af42ec4d1caa5c10d8e34e3bdbe51d1858d3db580b03a3fa266ee66
 include ../../download-files.include
 
 MESON_BUILD_TYPE=release
