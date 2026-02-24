@@ -1,6 +1,7 @@
 include ../../Makefile.include
 DEPS =../../Makefile.include Makefile ../../download-files.include
 
+BASE_URL=https://gitlab.freedesktop.org/emersion/libdisplay-info/-/archive/0.3.0
 LIBNAME=libdisplay-info
 VERSION=0.3.0
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
