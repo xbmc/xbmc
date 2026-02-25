@@ -215,6 +215,7 @@ typedef enum
   XBMCVK_CONFIG = 0xEB,
   XBMCVK_EPG = 0xEC,
   XBMCVK_SUBTITLE = 0xED,
+  XBMCVK_OK = 0xEE,
 
   XBMCVK_LAST = 0xFF
 } XBMCVKey;
