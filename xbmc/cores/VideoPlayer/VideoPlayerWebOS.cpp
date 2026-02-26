@@ -94,3 +94,8 @@ void CVideoPlayerWebOS::UpdateContent()
   CVideoPlayer::UpdateContent();
   CreatePlayers();
 }
+
+bool CVideoPlayerWebOS::CanTempo()
+{
+  return m_mediaPipelineWebOS || CVideoPlayer::CanTempo();
+}

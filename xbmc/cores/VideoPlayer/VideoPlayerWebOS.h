@@ -23,6 +23,7 @@ public:
 
 protected:
   void UpdateContent() override;
+  bool CanTempo() override;
 
   void CreatePlayers() override;
 

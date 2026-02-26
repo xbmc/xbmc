@@ -5177,16 +5177,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
     state.canpause = m_pInputStream->CanPause();
 
     bool realtime = m_pInputStream->IsRealtime();
-
-    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK) &&
-        !realtime)
-    {
-      state.cantempo = true;
-    }
-    else
-    {
-      state.cantempo = false;
-    }
+    state.cantempo = CanTempo() && !realtime;
 
     m_processInfo->SetStateRealtime(realtime);
   }
@@ -5251,6 +5242,12 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 
   std::unique_lock lock(m_StateSection);
   m_State = state;
+}
+
+bool CVideoPlayer::CanTempo()
+{
+  return CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK);
 }
 
 int64_t CVideoPlayer::GetUpdatedTime()
