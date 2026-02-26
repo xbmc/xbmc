@@ -62,6 +62,7 @@ set(package_files strings.xml
                   src/interfaces/XBMCNsdManagerRegistrationListener.java
                   src/interfaces/XBMCNsdManagerDiscoveryListener.java
                   src/interfaces/XBMCMediaDrmOnEventListener.java
+                  src/interfaces/XBMCMediaDrmOnKeyStatusChangeListener.java
                   src/interfaces/XBMCDisplayManagerDisplayListener.java
                   src/interfaces/XBMCSpeechRecognitionListener.java
                   src/interfaces/XBMCConnectivityManagerNetworkCallback.java
