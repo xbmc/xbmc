@@ -16,3 +16,7 @@
 #if !defined(XKB_KEY_XF86OK)
 #define XKB_KEY_XF86OK 0x10081160
 #endif
+
+#if !defined(XKB_KEY_XF86MediaSelectProgramGuide)
+#define XKB_KEY_XF86MediaSelectProgramGuide 0x1008116a
+#endif
