@@ -194,7 +194,8 @@ static const XBMCKEYTABLE XBMCKeyTable[] = {
     // Remote control keys
     ,
     {XBMCK_SUBTITLE, 0, 0, XBMCVK_SUBTITLE, "subtitle"},
-    {XBMCK_OK, 0, 0, XBMCVK_OK, "ok"}
+    {XBMCK_OK, 0, 0, XBMCVK_OK, "ok"},
+    {XBMCK_LANGUAGE, 0, 0, XBMCVK_LANGUAGE, "language"}
 
     // Function keys
     ,

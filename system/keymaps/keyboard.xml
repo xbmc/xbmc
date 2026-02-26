@@ -388,6 +388,7 @@
       <up>ChapterOrBigStepForward</up>
       <down>ChapterOrBigStepBack</down>
       <up mod="longpress">AudioNextLanguage</up>
+      <language>AudioNextLanguage</language>
       <down mod="longpress">NextSubtitle</down>
       <left mod="alt">PlayerControl(tempodown)</left>
       <right mod="alt">PlayerControl(tempoup)</right>

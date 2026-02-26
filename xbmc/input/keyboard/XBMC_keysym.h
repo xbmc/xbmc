@@ -287,6 +287,7 @@ enum XBMCKey
   /* Remote control keys */
   XBMCK_SUBTITLE = 500,
   XBMCK_OK = 501,
+  XBMCK_LANGUAGE = 502,
 
   /*
    * Extended keypad key symbols for Num Lock state-specific behaviors
