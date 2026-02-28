@@ -549,18 +549,14 @@ bool CGUIControlGroup::RemoveControl(const CGUIControl *control)
 
 void CGUIControlGroup::ClearAll()
 {
-  // first remove from the lookup table
-  RemoveLookup();
-
-  // and delete all our children
-  for (auto *control : m_children)
-  {
+  // Delete all children
+  for (auto* control : m_children)
     delete control;
-  }
+
   m_focusedControl = 0;
   m_children.clear();
+  // Clear lookup after deletion is complete
   ClearLookup();
-  SetInvalid();
 }
 
 #ifdef _DEBUG
