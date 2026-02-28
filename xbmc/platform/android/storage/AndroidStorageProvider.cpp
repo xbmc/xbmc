@@ -10,20 +10,13 @@
 
 #include "ServiceBroker.h"
 #include "filesystem/Directory.h"
-#include "filesystem/File.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
-#include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
 #include "platform/android/activity/XBMCApp.h"
-
-#include <array>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
 
 #include <androidjni/Context.h>
 #include <androidjni/Environment.h>
@@ -31,51 +24,6 @@
 #include <androidjni/StatFs.h>
 #include <androidjni/StorageManager.h>
 #include <androidjni/StorageVolume.h>
-
-namespace
-{
-
-// clang-format off
-constexpr std::array<const char*, 10> typeWL = {
-  "vfat",
-  "exfat",
-  "sdcardfs",
-  "fuse",
-  "ntfs",
-  "fat32",
-  "ext3",
-  "ext4",
-  "esdfs",
-  "cifs"
-};
-
-constexpr std::array<const char*, 3> mountWL = {
-  "/mnt",
-  "/Removable",
-  "/storage"
-};
-
-constexpr std::array<const char*, 9> mountBL = {
-  "/mnt/secure",
-  "/mnt/shell",
-  "/mnt/asec",
-  "/mnt/obb",
-  "/mnt/media_rw/extSdCard",
-  "/mnt/media_rw/sdcard",
-  "/mnt/media_rw/usbdisk",
-  "/storage/emulated",
-  "/mnt/runtime"
-};
-
-constexpr std::array<const char*, 4> deviceWL = {
-  "/dev/block/vold",
-  "/dev/fuse",
-  "/mnt/media_rw",
-  "//" // SMB
-};
-// clang-format on
-
-} // namespace
 
 std::unique_ptr<IStorageProvider> IStorageProvider::CreateInstance()
 {
@@ -85,44 +33,6 @@ std::unique_ptr<IStorageProvider> IStorageProvider::CreateInstance()
 CAndroidStorageProvider::CAndroidStorageProvider()
 {
   PumpDriveChangeEvents(NULL);
-}
-
-std::string CAndroidStorageProvider::unescape(const std::string& str)
-{
-  std::string retString;
-  for (uint32_t i=0; i < str.length(); ++i)
-  {
-    if (str[i] != '\\')
-      retString += str[i];
-    else
-    {
-      i += 1;
-      if (str[i] == 'u') // unicode
-      {
-        //! @todo implement
-      }
-      else if (str[i] >= '0' && str[i] <= '7') // octal
-      {
-        std::string octString;
-        while (str[i] >= '0' && str[i] <= '7')
-        {
-          octString += str[i];
-          i += 1;
-        }
-        if (!octString.empty())
-        {
-          uint8_t val = 0;
-          for (int j=octString.length()-1; j>=0; --j)
-          {
-            val += ((uint8_t)(octString[j] - '0')) * (1 << ((octString.length() - (j+1)) * 3));
-          }
-          retString += (char)val;
-          i -= 1;
-        }
-      }
-    }
-  }
-  return retString;
 }
 
 void CAndroidStorageProvider::GetLocalDrives(std::vector<CMediaSource>& localDrives)
@@ -236,145 +146,6 @@ void CAndroidStorageProvider::GetRemovableDrives(std::vector<CMediaSource>& remo
       }
     }
   }
-
-  // Try fallback for SDK < 24 or in case of error
-  for (const auto& mountStr : GetRemovableDrivesLinux())
-  {
-    // Reject unreadable
-    if (XFILE::CDirectory::Exists(mountStr))
-    {
-      CMediaSource share;
-      share.strPath = unescape(mountStr);
-      share.strName = URIUtils::GetFileName(mountStr);
-      share.m_ignore = true;
-      removableDrives.emplace_back(share);
-    }
-  }
-}
-
-std::set<std::string> CAndroidStorageProvider::GetRemovableDrivesLinux()
-{
-  std::set<std::string> result;
-
-  // mounted usb disks
-  char*                               buf     = NULL;
-  FILE*                               pipe;
-  CRegExp                             reMount;
-  reMount.RegComp("^(.+?)\\s+(.+?)\\s+(.+?)\\s+(.+?)\\s");
-
-  /* /proc/mounts is only guaranteed atomic for the current read
-   * operation, so we need to read it all at once.
-   */
-  if ((pipe = fopen("/proc/mounts", "r")))
-  {
-    char*   new_buf;
-    size_t  buf_len = 4096;
-
-    while ((new_buf = (char*)realloc(buf, buf_len * sizeof(char))))
-    {
-      size_t nread;
-
-      buf   = new_buf;
-      nread = fread(buf, sizeof(char), buf_len, pipe);
-
-      if (nread == buf_len)
-      {
-        rewind(pipe);
-        buf_len *= 2;
-      }
-      else
-      {
-        buf[nread] = '\0';
-        if (!feof(pipe))
-          new_buf = NULL;
-        break;
-      }
-    }
-
-    if (!new_buf)
-    {
-      free(buf);
-      buf = NULL;
-    }
-    fclose(pipe);
-  }
-  else
-    CLog::Log(LOGERROR, "Cannot read mount points");
-
-  if (buf)
-  {
-    char* line;
-    char* saveptr = NULL;
-
-    line = strtok_r(buf, "\n", &saveptr);
-
-    while (line)
-    {
-      if (reMount.RegFind(line) != -1)
-      {
-        std::string deviceStr   = reMount.GetReplaceString("\\1");
-        std::string mountStr = reMount.GetReplaceString("\\2");
-        std::string fsStr    = reMount.GetReplaceString("\\3");
-        std::string optStr    = reMount.GetReplaceString("\\4");
-
-        // Blacklist
-        bool bl_ok = true;
-
-        // What mount points are rejected
-        for (const auto& mount : mountBL)
-        {
-          if (StringUtils::StartsWithNoCase(mountStr, mount))
-          {
-            bl_ok = false;
-            break;
-          }
-        }
-
-        if (bl_ok)
-        {
-          // What filesystems are accepted
-          bool fsok = false;
-          for (const auto& type : typeWL)
-          {
-            if (StringUtils::StartsWithNoCase(fsStr, type))
-            {
-              fsok = true;
-              break;
-            }
-          }
-          // What devices are accepted
-          bool devok = false;
-          for (const auto& device : deviceWL)
-          {
-            if (StringUtils::StartsWithNoCase(deviceStr, device))
-            {
-              devok = true;
-              break;
-            }
-          }
-
-          // What mount points are accepted
-          bool mountok = false;
-          for (const auto& mount : mountWL)
-          {
-            if (StringUtils::StartsWithNoCase(mountStr, mount))
-            {
-              mountok = true;
-              break;
-            }
-          }
-
-          if(devok && (fsok || mountok))
-          {
-            result.insert(mountStr);
-          }
-        }
-      }
-      line = strtok_r(NULL, "\n", &saveptr);
-    }
-    free(buf);
-  }
-  return result;
 }
 
 std::vector<std::string> CAndroidStorageProvider::GetDiskUsage()
