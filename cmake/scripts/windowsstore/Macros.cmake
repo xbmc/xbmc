@@ -47,7 +47,8 @@ endmacro()
 
 macro(winstore_append_props target)
   # exclude debug dlls from packaging
-  set(DEBUG_DLLS zlibd.dll)
+  # currently, zlib (debug) is not build, so there is no need to exclude
+  # set(DEBUG_DLLS zd.dll)
   foreach(_dll ${DEBUG_DLLS})
     if (DEBUG_DLLS_EXCLUDE)
       list(APPEND DEBUG_DLLS_EXCLUDE "\;$(BuildRootPath)/${_dll}")
