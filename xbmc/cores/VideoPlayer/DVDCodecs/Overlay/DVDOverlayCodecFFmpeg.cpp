@@ -10,12 +10,20 @@
 
 #include "DVDOverlayImage.h"
 #include "DVDStreamInfo.h"
+#include "ServiceBroker.h"
 #include "cores/FFmpeg.h"
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/EndianSwap.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
+
+extern "C"
+{
+#include <libavutil/dict.h>
+}
 
 CDVDOverlayCodecFFmpeg::CDVDOverlayCodecFFmpeg() : CDVDOverlayCodec("FFmpeg Subtitle Decoder")
 {
@@ -105,12 +113,32 @@ bool CDVDOverlayCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
     delete[] parse_extra;
   }
 
-  if (avcodec_open2(m_pCodecContext, pCodec, nullptr) < 0)
+  AVDictionary* codecOpts = nullptr;
+  if (m_pCodecContext->codec_id == AV_CODEC_ID_HDMV_PGS_SUBTITLE)
+  {
+    // UHD-BD HDR PGS is BT.2020 PQ, SDR PGS is SDR BT.709 or SDR BT.2020.
+    StreamHdrType videoHdrType = hints.hdrType;
+
+    // Note: HDR10+ is not identified currently upstream - will though be caught as HDR10.
+    m_pgsIsPqAuthored = (videoHdrType == StreamHdrType::HDR_TYPE_HDR10 ||
+                         videoHdrType == StreamHdrType::HDR_TYPE_HDR10PLUS ||
+                         videoHdrType == StreamHdrType::HDR_TYPE_DOLBYVISION);
+
+    // TODO: identify SDR BT.2020 and do the right thing for the PGS matrix, currently will treat as BT.709.
+    const char* matrix = m_pgsIsPqAuthored ? "bt2020" : "auto";
+
+    av_dict_set(&codecOpts, "pgs_matrix", matrix, 0);
+  }
+
+  if (avcodec_open2(m_pCodecContext, pCodec, &codecOpts) < 0)
   {
     CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Unable to open codec");
+    av_dict_free(&codecOpts);
     avcodec_free_context(&m_pCodecContext);
     return false;
   }
+
+  av_dict_free(&codecOpts);
 
   return true;
 }
@@ -287,6 +315,16 @@ std::shared_ptr<CDVDOverlay> CDVDOverlayCodecFFmpeg::GetOverlay()
 
     for (int i = 0; i < rect.nb_colors; i++)
       overlay->palette[i] = Endian_SwapLE32(((uint32_t *)rect.data[1])[i]);
+
+    if (m_pCodecContext->codec_id == AV_CODEC_ID_HDMV_PGS_SUBTITLE)
+    {
+      // UHD-BD PGS subtitles for HDR content are authored as BT.2020 + ST2084 code values
+      // Treat them as already PQ-coded to avoid applying GUI PQ conversion a second time during composition.
+      // Don't key this off IsTransferPQ()/HDRType here: at playback start the renderer may not have
+      // established PQ output yet, leading to the first subtitle(s) using the wrong composition path.
+      // We mark the overlay as a PQ-bypass candidate and decide at render time based on output state.
+      overlay->m_isHdrPq = m_pgsIsPqAuthored;
+    }
 
     m_SubtitleIndex++;
 

@@ -98,6 +98,7 @@ public:
   bool Supports(ESCALINGMETHOD method) const;
 
   int GetSkippedFrames() const { return m_QueueSkip; }
+  void DisplayReset() { m_displayReset = true; }
 
   bool Configure(const VideoPicture& picture, float fps, unsigned int orientation, StreamHdrType hdrType, int buffers = 0);
   bool AddVideoPicture(const VideoPicture& picture, volatile std::atomic_bool& bStop, EINTERLACEMETHOD deintMethod, bool wait);
@@ -136,10 +137,29 @@ public:
 
 protected:
 
+  inline void NotifyPresentWaiters()
+  {
+    if (m_presentWaiters.load(std::memory_order_relaxed) != 0)
+      m_presentevent.notifyAll();
+  }
+
+  inline void WaitPresent(std::unique_lock<CCriticalSection>& lock, std::chrono::milliseconds duration)
+  {
+    m_presentWaiters.fetch_add(1, std::memory_order_relaxed);
+    m_presentevent.wait(lock, duration);
+    m_presentWaiters.fetch_sub(1, std::memory_order_relaxed);
+  }
+
+  inline void WaitPresent(std::unique_lock<CCriticalSection>& lock, unsigned int durationMs)
+  {
+    WaitPresent(lock, std::chrono::milliseconds(durationMs));
+  }
+
   void PresentSingle(bool clear, DWORD flags, DWORD alpha);
   void PresentFields(bool clear, DWORD flags, DWORD alpha);
   void PresentBlend(bool clear, DWORD flags, DWORD alpha);
 
+  void DiscardBufferLocked();
   void PrepareNextRender();
   bool IsPresenting();
   bool IsGuiLayer();
@@ -160,6 +180,7 @@ protected:
   CCriticalSection m_presentlock;
   CCriticalSection m_datalock;
   bool m_bTriggerUpdateResolution = false;
+  bool m_bTriggerUpdateResolutionNoParams = false;
   bool m_bRenderGUI = true;
   bool m_renderedOverlay = false;
   bool m_renderDebug = false;
@@ -232,6 +253,7 @@ protected:
   bool m_presentstarted = false;
   int m_presentsource = 0;
   int m_presentsourcePast = -1;
+  std::atomic_uint m_presentWaiters{0};
   XbmcThreads::ConditionVariable m_presentevent;
   CEvent m_flushEvent;
   CEvent m_initEvent;
@@ -257,6 +279,8 @@ protected:
   //set to true when adding something to m_captures, set to false when m_captures is made empty
   //std::list::empty() isn't thread safe, using an extra bool will save a lock per render when no captures are requested
   bool m_hasCaptures = false;
+
+  bool m_displayReset = false;
 
 private:
   CDataCacheCore &m_dataCacheCore;

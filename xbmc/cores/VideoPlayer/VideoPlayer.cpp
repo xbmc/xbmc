@@ -68,6 +68,7 @@
 #include <iterator>
 #include <memory>
 #include <mutex>
+#include <thread>
 #include <utility>
 
 using namespace std::chrono_literals;
@@ -588,22 +589,27 @@ int CSelectionStreams::CountType(StreamType type) const
 // main class
 //------------------------------------------------------------------------------
 
-void CVideoPlayer::SetAVChange(std::string from) const {
+void CVideoPlayer::SetAVChange(std::string from) const
+{
   CLog::Log(LOGDEBUG, "VideoPlayer::SetAVChange true [{}]", from);
-  if (CServiceBroker::GetDataCacheCore().GetAVChange()) return; // already set, do not allow set again until done.
+
+  if (CServiceBroker::GetDataCacheCore().GetAVChange())
+    return; // already set, do not allow set again until done.
 
   CServiceBroker::GetDataCacheCore().SetAVChange(true);
   CServiceBroker::GetDataCacheCore().SetAVChangeExtended(true);
 
-  unsigned int timeout(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAVChangeFlagTimeout);
+  const unsigned int timeout{CServiceBroker::GetSettingsComponent()
+                                 ->GetAdvancedSettings()
+                                 ->m_guiAVChangeFlagTimeout};
 
   // Schedule set to false after the configured timeout in advanced settings - user can dial-in as preferred.
-  CServiceBroker::GetJobManager()->Submit([this, from, timeout]() {
-      usleep(timeout * 1000 * 1000);
-      CServiceBroker::GetDataCacheCore().SetAVChange(false);
-      CLog::Log(LOGDEBUG, "VideoPlayer::SetAVChange false [{}] after [{}] seconds", from, timeout);
-      usleep(2 * 1000 * 1000);
-      CServiceBroker::GetDataCacheCore().SetAVChangeExtended(false);
+  CServiceBroker::GetJobManager()->Submit([from = std::move(from), timeout]() {
+    std::this_thread::sleep_for(std::chrono::seconds(timeout));
+    CServiceBroker::GetDataCacheCore().SetAVChange(false);
+    CLog::Log(LOGDEBUG, "VideoPlayer::SetAVChange false [{}] after [{}] seconds", from, timeout);
+    std::this_thread::sleep_for(2s);
+    CServiceBroker::GetDataCacheCore().SetAVChangeExtended(false);
   });
 }
 
@@ -1396,7 +1402,7 @@ void CVideoPlayer::Process()
 {
   // Try to resolve the correct mime type. This can take some time, for example if a requested
   // item is located at a slow/not reachable remote source. So, do mime type detection in vp worker
-  // thread, not directly when initalizing the player to keep GUI responsible.
+  // thread, not directly when initializing the player to keep GUI responsible.
   m_item.SetMimeTypeForInternetFile();
 
   CServiceBroker::GetWinSystem()->RegisterRenderLoop(this);
@@ -2009,14 +2015,25 @@ void CVideoPlayer::HandlePlaySpeed()
         else
         {
           // start caching if audio and video are running dry
-          if ((m_VideoPlayerAudio->GetLevel() <= 20) || (m_VideoPlayerVideo->GetLevel() <= 20))
+          // Use a lower threshold (5%) for video when HW decoding, because AML
+          // consumes packets in bursts and the queue level naturally fluctuates.
+          // The original 20% threshold causes false rebuffering with high bitrate content.
+          int audioThreshold = 20;
+          int videoThreshold = m_processInfo->IsVideoHwDecoder() ? 5 : 20;
+          if ((m_VideoPlayerAudio->GetLevel() <= audioThreshold) ||
+              (m_VideoPlayerVideo->GetLevel() <= videoThreshold))
           {
             SetCaching(CACHESTATE_FULL);
           }
           else if (m_CurrentAudio.id >= 0 && m_CurrentAudio.inited &&
                    m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_INSYNC &&
-                   m_VideoPlayerAudio->GetLevel() == 0)
+                   m_VideoPlayerAudio->GetLevel() == 0 &&
+                   !m_VideoPlayerAudio->IsPassthrough())
           {
+            // Only trigger re-sync for PCM audio. For passthrough (TrueHD, DTS-HD MA),
+            // the audio queue naturally empties between codec output bursts — a momentary
+            // level of 0 is normal, not a stall. Flushing here causes a destructive
+            // seek loop with HD audio.
             CLog::Log(LOGDEBUG,"CVideoPlayer::HandlePlaySpeed - audio stream stalled, triggering re-sync");
             FlushBuffers(DVD_NOPTS_VALUE, true, true);
             CDVDMsgPlayerSeek::CMode mode;
@@ -2033,14 +2050,31 @@ void CVideoPlayer::HandlePlaySpeed()
       {
         if (m_CurrentAudio.id >= 0 && m_clock.GetClock() > DVD_MSEC_TO_TIME(1000))
         {
-          double adjust = -1.0; // a unique value
-          if (m_clock.GetSpeedAdjust() >= 0 && m_VideoPlayerAudio->GetLevel() < 1) {
-            CLog::Log(LOGDEBUG, "VideoPlayer:Speed adjust:-0.05 aq:{:d}", m_VideoPlayerAudio->GetLevel());
-             adjust = -0.05;
+          // Proportional speed adjustment for live streams instead of binary toggle.
+          // Old logic toggled between -0.05 and 0.0 causing oscillation.
+          // New logic: ramp linearly between the thresholds for smoother playback.
+          int aq = m_VideoPlayerAudio->GetLevel();
+          double currentAdjust = m_clock.GetSpeedAdjust();
+          double adjust = -1.0; // sentinel: no change
+          if (aq < 1 && currentAdjust >= 0)
+          {
+            adjust = -0.05;
+            CLog::Log(LOGDEBUG, "VideoPlayer:Speed adjust:{:.3f} aq:{:d}", adjust, aq);
           }
-          if (m_clock.GetSpeedAdjust() < 0 && m_VideoPlayerAudio->GetLevel() > 4) {
-            CLog::Log(LOGDEBUG, "VideoPlayer:Speed adjust:0.0 aq:{:d}", m_VideoPlayerAudio->GetLevel());
+          else if (aq >= 1 && aq <= 4 && currentAdjust < 0)
+          {
+            // Proportional ramp: at aq=1 use -0.0375, aq=2 use -0.025,
+            // aq=3 use -0.0125, aq=4 use 0.0
+            adjust = -0.05 * (1.0 - static_cast<double>(aq) / 4.0);
+            // Clamp to avoid tiny negative values from float imprecision
+            if (adjust > -0.001)
+              adjust = 0.0;
+            CLog::Log(LOGDEBUG, "VideoPlayer:Speed adjust:{:.3f} aq:{:d} (ramping)", adjust, aq);
+          }
+          else if (aq > 4 && currentAdjust < 0)
+          {
             adjust = 0.0;
+            CLog::Log(LOGDEBUG, "VideoPlayer:Speed adjust:{:.3f} aq:{:d}", adjust, aq);
           }
           if (adjust != -1.0)
           {
@@ -3712,6 +3746,7 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int64_t demuxerId, int iS
       res = OpenVideoStream(hint, reset);
       break;
     case STREAM_SUBTITLE:
+      hint.hdrType = m_CurrentVideo.hint.hdrType; // Set by Video Stream which is opened first
       res = OpenSubtitleStream(hint);
       break;
     case STREAM_TELETEXT:
@@ -4068,6 +4103,10 @@ void CVideoPlayer::FlushBuffers(double pts, bool accurate, bool sync)
     m_CurrentSubtitle.inited = false;
     m_CurrentTeletext.inited = false;
     m_CurrentRadioRDS.inited  = false;
+
+    // Reset offset_pts to prevent accumulation of timestamp corrections across seeks
+    // This fixes desync issues with external subtitles after multiple seeks (issue #26647)
+    m_offset_pts = 0.0;
   }
 
   m_CurrentAudio.dts         = DVD_NOPTS_VALUE;
@@ -4675,22 +4714,19 @@ bool CVideoPlayer::OnAction(const CAction &action)
       break;
 
     case ACTION_VS10_ORIGINAL:
-      if (CServiceBroker::GetDataCacheCore().GetVideoHdrType() == StreamHdrType::HDR_TYPE_DOLBYVISION)
+      if (hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)
         aml_dv_set_vs10_mode(DOLBY_VISION_OUTPUT_MODE_IPT, hdrType);
-      else if (CServiceBroker::GetDataCacheCore().GetVideoHdrType() != StreamHdrType::HDR_TYPE_HDR10PLUS)
+      else
         aml_dv_set_vs10_mode(DOLBY_VISION_OUTPUT_MODE_BYPASS, hdrType);
       return true;
     case ACTION_VS10_SDR:
-      if (CServiceBroker::GetDataCacheCore().GetVideoHdrType() != StreamHdrType::HDR_TYPE_HDR10PLUS)
-        aml_dv_set_vs10_mode(DOLBY_VISION_OUTPUT_MODE_SDR10, hdrType);
+      aml_dv_set_vs10_mode(DOLBY_VISION_OUTPUT_MODE_SDR10, hdrType);
       return true;
     case ACTION_VS10_HDR10:
-      if (CServiceBroker::GetDataCacheCore().GetVideoHdrType() != StreamHdrType::HDR_TYPE_HDR10PLUS)
-        aml_dv_set_vs10_mode(DOLBY_VISION_OUTPUT_MODE_HDR10, hdrType);
+      aml_dv_set_vs10_mode(DOLBY_VISION_OUTPUT_MODE_HDR10, hdrType);
       return true;
     case ACTION_VS10_DV:
-      if (CServiceBroker::GetDataCacheCore().GetVideoHdrType() != StreamHdrType::HDR_TYPE_HDR10PLUS)
-        aml_dv_set_vs10_mode(DOLBY_VISION_OUTPUT_MODE_IPT, hdrType);
+      aml_dv_set_vs10_mode(DOLBY_VISION_OUTPUT_MODE_IPT, hdrType);
       return true;
   }
 
@@ -4816,7 +4852,7 @@ int CVideoPlayer::GetCacheLevel() const
 double CVideoPlayer::GetQueueTime() const {
   int a = m_VideoPlayerAudio->GetLevel();
   int v = m_VideoPlayerVideo->GetLevel();
-  return std::max(a, v) * m_messageQueueTimeSize * 1000.0 / 100;
+  return std::max(a, v) * m_messageQueueTimeSize * 1000.0 / 100.0;
 }
 
 int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string& subfilename)
@@ -5076,7 +5112,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
   }
   else
   {
-    state.cache_level = std::min(1.0, queueTime /(m_messageQueueTimeSize * 1000.0));
+    state.cache_level = std::min(1.0, queueTime / (m_messageQueueTimeSize * 1000.0));
     state.cache_offset = queueTime / state.timeMax;
     state.cache_time = queueTime / 1000.0;
   }
@@ -5290,6 +5326,7 @@ void CVideoPlayer::OnResetDisplay()
   m_clock.Pause(false);
   m_displayLost = false;
   m_VideoPlayerAudio->SendMessage(std::make_shared<CDVDMsg>(CDVDMsg::PLAYER_DISPLAY_RESET), 1);
+  m_VideoPlayerVideo->SendMessage(std::make_shared<CDVDMsg>(CDVDMsg::PLAYER_DISPLAY_RESET), 1);
 }
 
 void CVideoPlayer::UpdateFileItemStreamDetails(CFileItem& item)

@@ -155,7 +155,7 @@ void CGameWindowFullScreen::ClearBackground()
   CGUIWindow::ClearBackground();
 }
 
-bool CGameWindowFullScreen::HasVisibleControls()
+bool CGameWindowFullScreen::HasVisibleControls() const
 {
   return m_controlStats->nCountVisible > 0;
 }

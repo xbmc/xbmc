@@ -356,6 +356,19 @@ std::string CProcessInfo::GetAudioDecoderName()
   return m_audioDecoderName;
 }
 
+void CProcessInfo::SetAudioChannels(const CAEChannelInfo& channels)
+{
+  std::unique_lock lock(m_audioCodecSection);
+
+  m_audioChannels = std::string(channels);
+
+  if (m_dataCache)
+  {
+    m_dataCache->SetAudioChannels(m_audioChannels);
+    m_dataCache->SetAudioSpeakerMask(CDataCacheCore::MakeSpeakerMask(channels));
+  }
+}
+
 void CProcessInfo::SetAudioChannels(const std::string &channels)
 {
   std::lock_guard lock(m_audioCodecSection);

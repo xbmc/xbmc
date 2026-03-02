@@ -1306,7 +1306,32 @@ const infomap player_process[] = {{"videodecoder", PLAYER_PROCESS_VIDEODECODER},
                                   
                                   {"av.change", PLAYER_PROCESS_AV_CHANGE },
                                 
-                                  {"audiochannelssink", PLAYER_PROCESS_AUDIOCHANNELS_SINK}};
+                                  {"audiochannelssink", PLAYER_PROCESS_AUDIOCHANNELS_SINK},
+
+                                  {"audio.speaker.fl",    PLAYER_PROCESS_AUDIO_SPK_FL},
+                                  {"audio.speaker.fr",    PLAYER_PROCESS_AUDIO_SPK_FR},
+                                  {"audio.speaker.fc",    PLAYER_PROCESS_AUDIO_SPK_FC},
+                                  {"audio.speaker.lfe",   PLAYER_PROCESS_AUDIO_SPK_LFE},
+                                  {"audio.speaker.sl",    PLAYER_PROCESS_AUDIO_SPK_SL},
+                                  {"audio.speaker.sr",    PLAYER_PROCESS_AUDIO_SPK_SR},
+                                  {"audio.speaker.bl",    PLAYER_PROCESS_AUDIO_SPK_BL},
+                                  {"audio.speaker.br",    PLAYER_PROCESS_AUDIO_SPK_BR},
+                                  {"audio.speaker.tfl",   PLAYER_PROCESS_AUDIO_SPK_TFL},
+                                  {"audio.speaker.tfr",   PLAYER_PROCESS_AUDIO_SPK_TFR},
+                                  {"audio.speaker.tbl",   PLAYER_PROCESS_AUDIO_SPK_TBL},
+                                  {"audio.speaker.tbr",   PLAYER_PROCESS_AUDIO_SPK_TBR},
+                                  {"audio.speaker.sink.fl",  PLAYER_PROCESS_AUDIO_SPK_SINK_FL},
+                                  {"audio.speaker.sink.fr",  PLAYER_PROCESS_AUDIO_SPK_SINK_FR},
+                                  {"audio.speaker.sink.fc",  PLAYER_PROCESS_AUDIO_SPK_SINK_FC},
+                                  {"audio.speaker.sink.lfe", PLAYER_PROCESS_AUDIO_SPK_SINK_LFE},
+                                  {"audio.speaker.sink.sl",  PLAYER_PROCESS_AUDIO_SPK_SINK_SL},
+                                  {"audio.speaker.sink.sr",  PLAYER_PROCESS_AUDIO_SPK_SINK_SR},
+                                  {"audio.speaker.sink.bl",  PLAYER_PROCESS_AUDIO_SPK_SINK_BL},
+                                  {"audio.speaker.sink.br",  PLAYER_PROCESS_AUDIO_SPK_SINK_BR},
+                                  {"audio.speaker.sink.tfl", PLAYER_PROCESS_AUDIO_SPK_SINK_TFL},
+                                  {"audio.speaker.sink.tfr", PLAYER_PROCESS_AUDIO_SPK_SINK_TFR},
+                                  {"audio.speaker.sink.tbl", PLAYER_PROCESS_AUDIO_SPK_SINK_TBL},
+                                  {"audio.speaker.sink.tbr", PLAYER_PROCESS_AUDIO_SPK_SINK_TBR}};
 
 /// \page modules__infolabels_boolean_conditions
 /// \subsection modules__infolabels_boolean_conditions_Weather Weather

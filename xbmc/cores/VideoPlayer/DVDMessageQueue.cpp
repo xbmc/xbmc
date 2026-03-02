@@ -334,18 +334,20 @@ int CDVDMessageQueue::GetLevel(bool data_level) const
   return level;
 }
 
-int CDVDMessageQueue::GetTimeSize() const
+double CDVDMessageQueue::GetTimeSize() const
 {
   std::lock_guard lock(m_section);
 
   if (IsDataBased())
-    return 0;
+    return 0.0;
   else
-    return (int)((m_TimeFront - m_TimeBack) / DVD_TIME_BASE);
+    return (m_TimeFront - m_TimeBack) / DVD_TIME_BASE;
 }
 
 bool CDVDMessageQueue::IsDataBased() const
 {
+  std::lock_guard lock(m_section);
+
   return (m_TimeBack == DVD_NOPTS_VALUE  ||
           m_TimeFront == DVD_NOPTS_VALUE ||
           m_TimeFront <= m_TimeBack);

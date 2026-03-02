@@ -13,6 +13,7 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "utils/log.h"
 
+#include <limits>
 #include <mutex>
 
 using namespace ActiveAE;
@@ -467,6 +468,14 @@ void CActiveAEStream::Flush()
   {
     m_currentBuffer = nullptr;
     m_leftoverBytes = 0;
+
+    // Seeking/skipping can cause PTS discontinuities. Reset the PTS tracking and
+    // error measurement interval so we don't treat a legitimate discontinuity
+    // as "messy timestamps" and ramp the averaging window up to seconds.
+    m_lastPts = std::numeric_limits<double>::lowest();
+    m_lastPtsJump = 0;
+    m_errorInterval = 1000ms;
+
     m_activeAE->FlushStream(this);
     m_streamIsFlushed = true;
   }

@@ -20,6 +20,7 @@
 #include "utils/BitstreamStats.h"
 
 #include <atomic>
+#include <chrono>
 
 #define DROP_DROPPED 1
 #define DROP_VERYLATE 2
@@ -149,4 +150,9 @@ protected:
   VideoPicture m_picture;
 
   EOutputState m_outputSate;
+
+  bool m_displayReset{false};
+  std::chrono::steady_clock::time_point m_lastDisplayReset{std::chrono::steady_clock::time_point::min()};
+
+  std::chrono::steady_clock::time_point m_rendererConfigureRetryStart{std::chrono::steady_clock::time_point::min()};
 };

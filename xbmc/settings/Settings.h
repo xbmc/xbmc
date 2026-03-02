@@ -385,6 +385,7 @@ public:
   static constexpr auto SETTING_VIDEOSCREEN_USESYSTEMSDRPEAKLUMINANCE =
       "videoscreen.usesystemsdrpeakluminance";
   static constexpr auto SETTING_VIDEOSCREEN_GUISDRPEAKLUMINANCE = "videoscreen.guipeakluminance";
+    static constexpr auto SETTING_VIDEOSCREEN_GUISDRSATURATION = "videoscreen.guisdrsaturation";
   static constexpr auto SETTING_VIDEOSCREEN_DITHER = "videoscreen.dither";
   static constexpr auto SETTING_VIDEOSCREEN_DITHERDEPTH = "videoscreen.ditherdepth";
   static constexpr auto SETTING_AUDIOOUTPUT_AUDIODEVICE = "audiooutput.audiodevice";
@@ -411,6 +412,7 @@ public:
   static constexpr auto SETTING_AUDIOOUTPUT_DTSHDPASSTHROUGH = "audiooutput.dtshdpassthrough";
   static constexpr auto SETTING_AUDIOOUTPUT_DTSHDCOREFALLBACK = "audiooutput.dtshdcorefallback";
   static constexpr auto SETTING_AUDIOOUTPUT_VOLUMESTEPS = "audiooutput.volumesteps";
+  static constexpr auto SETTING_AUDIOOUTPUT_LOWLATENCY = "audiooutput.lowlatency";
   static constexpr auto SETTING_INPUT_PERIPHERALS = "input.peripherals";
   static constexpr auto SETTING_INPUT_PERIPHERALLIBRARIES = "input.peripherallibraries";
   static constexpr auto SETTING_INPUT_ENABLEMOUSE = "input.enablemouse";

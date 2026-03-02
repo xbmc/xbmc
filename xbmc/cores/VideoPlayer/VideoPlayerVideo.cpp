@@ -329,7 +329,8 @@ inline MsgQueueReturnCode CVideoPlayerVideo::GetMessage(std::shared_ptr<CDVDMsg>
                                                         std::chrono::milliseconds timeout,
                                                         int& priority)
 {
-  return m_messageQueue.Get(pMsg, timeout, priority);
+  MsgQueueReturnCode ret = m_messageQueue.Get(pMsg, timeout, priority);
+  return ret;
 }
 
 void CVideoPlayerVideo::Process()
@@ -650,6 +651,13 @@ void CVideoPlayerVideo::Process()
         onlyPrioMsgs = true;
       }
     }
+    else if (pMsg->IsType(CDVDMsg::PLAYER_DISPLAY_RESET))
+    {
+      CLog::Log(LOGDEBUG, "CVideoPlayerVideo: display reset occurred, clear skipped frames");
+      m_displayReset = true;
+      m_lastDisplayReset = std::chrono::steady_clock::now();
+      m_renderManager.DisplayReset();
+    }
   }
 }
 
@@ -893,9 +901,12 @@ void CVideoPlayerVideo::ProcessOverlays(const VideoPicture& picture, double pts)
         continue;
 
       double pts2 = pOverlay->bForced ? pts : subsPts;
-      auto libassOverlay = std::dynamic_pointer_cast<CDVDOverlayLibass>(pOverlay);
-      if (libassOverlay) {
-        if (!libassOverlay->GetLibassHandler()->EventActive(pts2))
+
+      // Only attempt RTTI for overlay types that can be backed by libass.
+      if (pOverlay->IsOverlayType(DVDOVERLAY_TYPE_TEXT) || pOverlay->IsOverlayType(DVDOVERLAY_TYPE_SSA))
+      {
+        auto libassOverlay = std::dynamic_pointer_cast<CDVDOverlayLibass>(pOverlay);
+        if (libassOverlay && !libassOverlay->GetLibassHandler()->EventActive(pts2))
           continue;
       }
 
@@ -912,12 +923,13 @@ void CVideoPlayerVideo::ProcessOverlays(const VideoPicture& picture, double pts)
           overlays.push_back(pOverlay);
       }
     }
+  }
 
-    for(it = overlays.begin(); it != overlays.end(); ++it)
-    {
-      double pts2 = (*it)->bForced ? pts : subsPts;
-      m_renderManager.AddOverlay(*it, pts2);
-    }
+  // Add overlays outside the overlay container lock to keep the critical section small.
+  for (auto& overlay : overlays)
+  {
+    double pts2 = overlay->bForced ? pts : subsPts;
+    m_renderManager.AddOverlay(overlay, pts2);
   }
 }
 
@@ -954,10 +966,26 @@ CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPict
                                 m_hints.hdrType,
                                 m_pVideoCodec->GetAllowedReferences()))
   {
-    CLog::Log(LOGERROR, "{} - failed to configure renderer", __FUNCTION__);
+    const auto now = std::chrono::steady_clock::now();
 
+    if (m_rendererConfigureRetryStart == std::chrono::steady_clock::time_point::min())
+      m_rendererConfigureRetryStart = now;
+
+    const auto retryElapsed = now - m_rendererConfigureRetryStart;
+    if (retryElapsed < 5s)
+    {
+      logM(LOGWARNING, "CVideoPlayerVideo", "renderer configure not ready, retrying ({} ms)",
+                                            std::chrono::duration_cast<std::chrono::milliseconds>(retryElapsed).count());
+      return OUTPUT_AGAIN;
+    }
+    CLog::Log(LOGERROR, "{} - failed to configure renderer", __FUNCTION__);
+    
     return OUTPUT_ABORT;
   }
+
+  // Successful configure clears any previous display-reset retry window.
+  m_displayReset = false;
+  m_rendererConfigureRetryStart = std::chrono::steady_clock::time_point::min();
 
   // try to calculate the framerate
   m_ptsTracker.Add(picture.pts);
@@ -984,8 +1012,10 @@ CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPict
   auto timeToDisplay = std::chrono::milliseconds(DVD_TIME_TO_MSEC(picture.pts - iPlayingClock));
 
   // make sure waiting time is not negative
-  std::chrono::milliseconds maxWaitTime = std::min(std::max(timeToDisplay + 500ms, 50ms), 500ms);
-
+  // For HW decoders, use a lower minimum wait (10ms) since rendering is just
+  // a buffer release — no GPU work needed. This reduces latency for late frames.
+  const auto minWait = m_processInfo.IsVideoHwDecoder() ? 10ms : 50ms;
+  std::chrono::milliseconds maxWaitTime = std::min(std::max(timeToDisplay + 500ms, minWait), 500ms);
   // don't wait when going ff
   if (m_speed > DVD_PLAYSPEED_NORMAL)
     maxWaitTime = std::max(timeToDisplay, 0ms);
@@ -1178,8 +1208,11 @@ int CVideoPlayerVideo::CalcDropRequirement(double pts)
 
   if (iBufferLevel < 0)
     result |= DROP_BUFFER_LEVEL;
-  else if (iBufferLevel < 2)
+  else if (iBufferLevel < 2 && !m_processInfo.IsVideoHwDecoder())
   {
+    // For HW decoders (AML), a render queue of 1 is normal — the HW compositor
+    // pulls frames at vsync. Don't trigger HURRY/DROP for a normally-operating
+    // HW pipeline. Only flag low buffer for SW decoders that can actually hurry.
     result |= DROP_BUFFER_LEVEL;
     CLog::Log(LOGDEBUG, LOGVIDEO, "CVideoPlayerVideo::CalcDropRequirement - hurry: {}",
               iBufferLevel);

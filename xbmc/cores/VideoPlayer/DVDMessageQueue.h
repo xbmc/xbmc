@@ -74,7 +74,7 @@ public:
   }
 
   int GetDataSize() const { return m_iDataSize; }
-  int GetTimeSize() const;
+  double GetTimeSize() const;
   unsigned GetPacketCount(CDVDMsg::Message type) const;
   bool ReceivedAbortRequest() { return m_bAbortRequest; }
   void WaitUntilEmpty();
@@ -84,7 +84,7 @@ public:
   int GetLevel(bool data_level = false) const;
 
   void SetMaxDataSize(int iMaxDataSize) { m_iMaxDataSize = iMaxDataSize; }
-  void SetMaxTimeSize(double sec) { m_TimeSize  = 1.0 / std::max(1.0, sec); }
+  void SetMaxTimeSize(double sec) { m_TimeSize = 1.0 / sec; }
   int GetMaxDataSize() const { return m_iMaxDataSize; }
   double GetMaxTimeSize() const { return m_TimeSize; }
   bool IsInited() const { return m_bInitialized; }

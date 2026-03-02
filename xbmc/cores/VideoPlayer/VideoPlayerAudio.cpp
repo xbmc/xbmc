@@ -637,11 +637,6 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
           double iTimeValue = 0.0;
           double offsetValue = 0.0;
           bool performOffset = false;
-          if (algoForReset == 99)
-          {
-            algoValue = 1;
-            algoForReset = 2;
-          }
           switch (algoValue)
           {
             case 1:
@@ -687,6 +682,23 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
               timeToReset = (iTime > 45000.0);
               offset = 10000.0;
               performOffset = true;
+              break;
+            case 99:
+              if (iTime < 7000.0)
+              {
+                timeToReset = false;
+                offset = 0.0;
+                performOffset = false;
+                advancedSettings->SetResetSeek(false);
+                advancedSettings->SetLastResetTime(0.0);
+                advancedSettings->SetAlgoForReset(0);
+              }
+              else
+              {
+                timeToReset = true;
+                offset = 1500.0;
+                performOffset = false;
+              }
               break;
             default:
               break;
@@ -912,15 +924,17 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
       m_streaminfo.channels = audioframe.format.m_channelLayout.Count();
       CLog::Log(LOGDEBUG, "CVideoPlayerAudio::ProcessDecoderOutput: GetAudioChannelsSink: {}",
         m_processInfo.GetAudioChannelsSink());
-      // m_processInfo.SetAudioChannels(audioframe.format.m_channelLayout);
+      m_processInfo.SetAudioChannels(audioframe.format.m_channelLayout);
       if (audioframe.format.m_streamInfo.m_sampleRate > 0)
         m_processInfo.SetAudioSampleRate(audioframe.format.m_streamInfo.m_sampleRate);
       else
         m_processInfo.SetAudioSampleRate(audioframe.format.m_sampleRate);
-      if (audioframe.format.m_streamInfo.m_bitDepth > 0)
-        m_processInfo.SetAudioBitsPerSample(audioframe.format.m_streamInfo.m_bitDepth);
-      else
-        m_processInfo.SetAudioBitsPerSample(audioframe.bits_per_sample);
+
+      int bitsPerSample = audioframe.bits_per_sample;
+      if (audioframe.passthrough && audioframe.format.m_streamInfo.m_bitDepth > 0)
+        bitsPerSample = audioframe.format.m_streamInfo.m_bitDepth;
+      m_processInfo.SetAudioBitsPerSample(bitsPerSample);
+
       m_processInfo.SetAudioDecoderName(m_pAudioCodec->GetName());
       m_messageParent.Put(std::make_shared<CDVDMsg>(CDVDMsg::PLAYER_AVCHANGE));
 

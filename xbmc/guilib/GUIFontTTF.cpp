@@ -223,7 +223,6 @@ void CGUIFontTTF::ClearCharacterCache()
 
   DeleteHardwareTexture();
 
-  m_texture = nullptr;
   m_char.clear();
   m_char.reserve(CHAR_CHUNK);
   memset(m_charquick, 0, sizeof(m_charquick));
@@ -236,7 +235,6 @@ void CGUIFontTTF::ClearCharacterCache()
 void CGUIFontTTF::Clear()
 {
   m_texture.reset();
-  m_texture = nullptr;
   memset(m_charquick, 0, sizeof(m_charquick));
   m_posX = 0;
   m_posY = 0;
@@ -321,7 +319,6 @@ bool CGUIFontTTF::Load(
   m_height = height;
 
   m_texture.reset();
-  m_texture = nullptr;
 
   m_textureHeight = 0;
   m_textureWidth = ((m_cellHeight * CHARS_PER_TEXTURE_LINE) & ~63) + 64;

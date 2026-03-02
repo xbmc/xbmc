@@ -73,6 +73,12 @@ public:
   virtual void Drain() {}
 
   /*
+    Flush buffered audio in the sink (drop any queued audio without blocking).
+    Default is a no-op as not all sinks support a flush operation.
+  */
+  virtual void Flush() {}
+
+  /*
     Indicates if sink can handle volume control.
   */
   virtual bool HasVolume() { return false; }

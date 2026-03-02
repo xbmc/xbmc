@@ -19,15 +19,15 @@
 // https://www.etsi.org/deliver/etsi_ts/102100_102199/102114/01.06.01_60/ts_102114v010601p.pdf
 // https://www.etsi.org/deliver/etsi_ts/103400_103499/103491/01.02.01_60/ts_103491v010201p.pdf
 
-#define DTS_SYNC_CORE_14BE  0x1FFFE800  
+#define DTS_SYNC_CORE_14BE  0x1FFFE800
 #define DTS_SYNC_CORE_14LE  0xFF1F00E8  // DTS CD - upto 5.1 on CD!
-#define DTS_SYNC_CORE_16BE  0x7FFE8001  // DTS on DVD / BluRay 
-#define DTS_SYNC_CORE_16LE  0xFE7F0180  
+#define DTS_SYNC_CORE_16BE  0x7FFE8001  // DTS on DVD / BluRay
+#define DTS_SYNC_CORE_16LE  0xFE7F0180
 
 #define DTS_SYNC_EXTENTION  0x64582025  // DTS Extention Subsystem for below extensions.
 
 #define DTS_SYNC_EXT_XCH    0x5a5a5a5a  // DTS Extension to 6.1 Channels (XCh) - in case of multiple extension streams the XCh stream is always the last.
-#define DTS_SYNC_EXT_XXCH   0x47004a03  // DTS Extension to More Than 5.1 Channels (XXCh) 
+#define DTS_SYNC_EXT_XXCH   0x47004a03  // DTS Extension to More Than 5.1 Channels (XXCh)
 #define DTS_SYNC_EXT_X96K   0x1d95f262  // DTS Extension to 96 kHz Frequency (X96k) - if a channel extension is present the X96k extension data is placed before the XCh extension data in the encoded bit stream.
 #define DTS_SYNC_EXT_XBR    0x655e315e  // DTS Extension Extended Bit Rate, allow greater than 1.5 Mbps
 #define DTS_SYNC_EXT_LBR    0x0a801921  // DTS Extention Low Bit Rate
@@ -267,15 +267,14 @@ unsigned int CAEStreamParser::DetectType(uint8_t* data, unsigned int size)
     unsigned int header = data[0] << 24 | data[1] << 16 | data[2] << 8 | data[3];
 
     // if it could be DTS
-    if (header == DTS_SYNC_CORE_14BE || header == DTS_SYNC_CORE_14LE || 
+    if (header == DTS_SYNC_CORE_14BE || header == DTS_SYNC_CORE_14LE ||
         header == DTS_SYNC_CORE_16BE || header == DTS_SYNC_CORE_16LE)
     {
       unsigned int skip = SyncDTS(data, size);
       if (m_hasSync || m_needBytes)
         return skipped + skip;
-      else {
+      else
         possible = skipped;
-      }
     }
 
     // if it could be AC3
@@ -395,7 +394,7 @@ bool CAEStreamParser::TrySyncAC3(uint8_t* data,
       m_fsize += fsizeMain;
       return true;
     }
-    
+
     unsigned int crc_size;
     // if we have enough data, validate the entire packet, else try to validate crc2 (5/8 of the packet)
     if (framesize <= size)
@@ -414,6 +413,7 @@ bool CAEStreamParser::TrySyncAC3(uint8_t* data,
     m_info.m_type = CAEStreamInfo::STREAM_TYPE_AC3;
     m_info.m_ac3FrameSize += m_fsize;
     m_info.m_repeat = 1;
+    m_info.m_bitDepth = 16;
 
     CLog::Log(LOGINFO, "CAEStreamParser::TrySyncAC3 - AC3 stream detected ({} channels, {}Hz)",
               m_info.m_channels, m_info.m_sampleRate);
@@ -683,7 +683,7 @@ unsigned int CAEStreamParser::SyncDTS(uint8_t* data, unsigned int size)
       m_coreSize = m_fsize;
       m_fsize += ext_size;
     }
-    
+
     unsigned int sampleRate = DTSSampleRates[sfreq];
 
     if (!m_hasSync || skip || dataType != m_info.m_type || sampleRate != m_info.m_sampleRate ||
@@ -695,8 +695,8 @@ unsigned int CAEStreamParser::SyncDTS(uint8_t* data, unsigned int size)
       m_dtsBlocks = dtsBlocks;
       m_info.m_channels = DTSChannels[amode] + (lfe ? 1 : 0);
       m_syncFunc = &CAEStreamParser::SyncDTS;
-      m_info.m_repeat = 1;      
-      
+      m_info.m_repeat = 1;
+
       uint32_t hd_bits = 0;
 
       // If XLL aka DTS-HD Master Audio - Work out the bit depth
@@ -726,13 +726,13 @@ unsigned int CAEStreamParser::SyncDTS(uint8_t* data, unsigned int size)
         uint32_t nBits4FrameFsize = ExtractBits(5) + 1;
         uint32_t nLLFrameSize = ExtractBits(nBits4FrameFsize) + 1;
         uint32_t nNumChSetsInFrame = ExtractBits(4) + 1;
-        
+
         // Segments and samples calculation
         uint32_t tmp = ExtractBits(4);
         uint32_t nSegmentsInFrame = 1 << tmp;
         tmp = ExtractBits(4);
         uint32_t nSmplInSeg = 1 << tmp;
-        
+
         // Calculate total samples per frame
         m_info.m_dtsSamplesPerFrame = (nSegmentsInFrame * nSmplInSeg);
 
@@ -740,7 +740,7 @@ unsigned int CAEStreamParser::SyncDTS(uint8_t* data, unsigned int size)
         bitPosition = (nHeaderSize * 8);
 
         // Parse first Channel Set Sub-Header - to get the original audio data bit resolution
-        uint32_t nSubHeaderSize = ExtractBits(10) + 1;    // Unpack the channel set sub header size 
+        uint32_t nSubHeaderSize = ExtractBits(10) + 1;    // Unpack the channel set sub header size
         uint32_t nChSetLLChannel = ExtractBits(4) + 1;    // Extract the number of channels
         bitPosition += nChSetLLChannel;                   // Skip Channels as bits!
         hd_bits = ExtractBits(5) + 1;                     // Extract the input sample bit resolution (bit depth)
@@ -871,11 +871,11 @@ unsigned int CAEStreamParser::SyncTrueHD(uint8_t* data, unsigned int size)
       m_substreams = (data[20] & 0xF0) >> 4;
       m_fsize = length;
 
-      if (!m_hasSync) 
+      if (!m_hasSync)
       {
         // Looks like cannot understand the original bit depth - can only assume it is (up-to) 24 bit!
         // DTS-MA has the original bit depth from the PCM for example.
-        // Seen some attempts at calculation e.g. from BDInfo but not sure that can be correct as 
+        // Seen some attempts at calculation e.g. from BDInfo but not sure that can be correct as
         // with lossless compressed audio the bit rate will vary, but the original bit depth should be constant.
         // Would need to extract the samples and see if they were all padded to tell, but then seen
         // comments that some titles will use 16 padded to 24 in some scenes and then use full 24 in others!
@@ -884,7 +884,7 @@ unsigned int CAEStreamParser::SyncTrueHD(uint8_t* data, unsigned int size)
 
         // get the sample rate and substreams, we have a valid master audio unit
         m_info.m_sampleRate = (rate & 0x8 ? 44100 : 48000) << (rate & 0x7);
-     
+
         // get the number of encoded channels
         uint16_t channel_map = ((data[10] & 0x1F) << 8) | data[11];
         if (!channel_map)

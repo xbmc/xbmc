@@ -125,7 +125,9 @@ std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& f
     if (pStream)
     {
       // ignore if it's a picture attachment (e.g. jpeg artwork)
-      if (pStream->type == STREAM_VIDEO && !(pStream->flags & AV_DISPOSITION_ATTACHED_PIC))
+      // assume the first video stream is the one we want, ie the base layer in DV DTDL files
+      if (pStream->type == STREAM_VIDEO && !(pStream->flags & AV_DISPOSITION_ATTACHED_PIC) &&
+          nVideoStream == -1)
       {
         nVideoStream = pStream->uniqueId;
         demuxerId = pStream->demuxerId;
@@ -159,17 +161,13 @@ std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& f
       int64_t nSeekTo =
           seekToChapter ? demuxer->GetChapterPos(chapterNumber) * 1000 : nTotalLen / 3;
 
-      // Seek to chapter @ 0 not likley to be a very useful result, use 5 sec instead.
-      if (seekToChapter && (nSeekTo == 0)) nSeekTo = 5000;
-
       CLog::LogF(LOGDEBUG, "seeking to pos {}ms (total: {}ms) in {}", nSeekTo, nTotalLen,
                  redactPath);
 
       if (demuxer->SeekTime(static_cast<double>(nSeekTo), true))
       {
         CDVDVideoCodec::VCReturn iDecoderState = CDVDVideoCodec::VC_NONE;
-        VideoPicture picture;
-        picture.Reset();
+        VideoPicture picture = {};
 
         // num streams * 160 frames, should get a valid frame, if not abort.
         int abort_index = demuxer->GetNrOfStreams() * 160;
@@ -193,7 +191,6 @@ std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& f
           iDecoderState = CDVDVideoCodec::VC_NONE;
           while (iDecoderState == CDVDVideoCodec::VC_NONE)
           {
-            picture.Reset();
             iDecoderState = pVideoCodec->GetPicture(&picture);
           }
 
@@ -240,7 +237,6 @@ std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& f
         {
           CLog::LogF(LOGDEBUG, "decode failed in {} after {} packets.", redactPath, packetsTried);
         }
-        picture.Reset();
       }
     }
   }
@@ -313,11 +309,6 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
   if (!pInputStream)
     return false;
 
-  if (pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
-  {
-    return false;
-  }
-
   if (pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) || !pInputStream->Open())
   {
     return false;
@@ -327,7 +318,10 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
   if (pDemuxer)
   {
     bool retVal = DemuxerToStreamDetails(pInputStream, pDemuxer, pItem->GetVideoInfoTag()->m_streamDetails, strFileNameAndPath);
-    ProcessExternalSubtitles(pItem);
+
+    if (!pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+      ProcessExternalSubtitles(pItem);
+
     delete pDemuxer;
     return retVal;
   }

@@ -49,7 +49,6 @@ protected:
                                       int channelMask,
                                       int encoding,
                                       bool isRaw = false);
-  static bool HasAmlHD();
   static void UpdateAvailablePCMCapabilities();
   static void UpdateAvailablePassthroughCapabilities(bool isRaw = false);
 

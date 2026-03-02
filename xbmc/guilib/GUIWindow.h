@@ -141,7 +141,7 @@ public:
   bool IsVisible() const override { return true; }; // windows are always considered visible as they implement their own
                                                    // versions of UpdateVisibility, and are deemed visible if they're in
                                                    // the window manager's active list.
-  virtual bool HasVisibleControls() { return true; }; //Assume that window always has visible controls
+  virtual bool HasVisibleControls() const { return true; }; //Assume that window always has visible controls
 
   bool IsAnimating(ANIMATION_TYPE animType) override;
 

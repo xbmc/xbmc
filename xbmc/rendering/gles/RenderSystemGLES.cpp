@@ -396,10 +396,12 @@ void CRenderSystemGLES::ResetScissors()
 void CRenderSystemGLES::InitialiseShaders()
 {
   std::string defines;
+  std::string definesNoPQ;
   m_limitedColorRange = CServiceBroker::GetWinSystem()->UseLimitedColor();
   if (m_limitedColorRange)
   {
     defines += "#define KODI_LIMITED_RANGE 1\n";
+    definesNoPQ += "#define KODI_LIMITED_RANGE 1\n";
   }
 
   if (m_transferPQ)
@@ -450,6 +452,17 @@ void CRenderSystemGLES::InitialiseShaders()
     m_pShader[ShaderMethodGLES::SM_TEXTURE_NOBLEND]->Free();
     m_pShader[ShaderMethodGLES::SM_TEXTURE_NOBLEND].reset();
     CLog::Log(LOGERROR, "GUI Shader gles_shader_texture_noblend.frag - compile and link failed");
+  }
+
+  // Same shader, but compiled without KODI_TRANSFER_PQ for HDR-coded overlays (e.g. UHD-BD PGS).
+  m_pShader[ShaderMethodGLES::SM_TEXTURE_NOBLEND_NO_PQ] =
+      std::make_unique<CGLESShader>("gles_shader_texture_noblend.frag", definesNoPQ);
+  if (!m_pShader[ShaderMethodGLES::SM_TEXTURE_NOBLEND_NO_PQ]->CompileAndLink())
+  {
+    m_pShader[ShaderMethodGLES::SM_TEXTURE_NOBLEND_NO_PQ]->Free();
+    m_pShader[ShaderMethodGLES::SM_TEXTURE_NOBLEND_NO_PQ].reset();
+    CLog::Log(LOGERROR,
+              "GUI Shader gles_shader_texture_noblend.frag (no PQ) - compile and link failed");
   }
 
   m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR] =
@@ -541,6 +554,10 @@ void CRenderSystemGLES::ReleaseShaders()
   if (m_pShader[ShaderMethodGLES::SM_TEXTURE_NOBLEND])
     m_pShader[ShaderMethodGLES::SM_TEXTURE_NOBLEND]->Free();
   m_pShader[ShaderMethodGLES::SM_TEXTURE_NOBLEND].reset();
+
+  if (m_pShader[ShaderMethodGLES::SM_TEXTURE_NOBLEND_NO_PQ])
+    m_pShader[ShaderMethodGLES::SM_TEXTURE_NOBLEND_NO_PQ]->Free();
+  m_pShader[ShaderMethodGLES::SM_TEXTURE_NOBLEND_NO_PQ].reset();
 
   if (m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR])
     m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR]->Free();

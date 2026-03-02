@@ -9,6 +9,7 @@
 #include "BlurayFile.h"
 
 #include "URL.h"
+#include "utils/URIUtils.h"
 
 #include <assert.h>
 
@@ -32,4 +33,12 @@ namespace XFILE
 
     return host.append(filename);
   }
+
+  bool CBlurayFile::Exists(const CURL& url)
+  {
+    if (url.GetFileName() == "menu")
+      return CFile::Exists(URIUtils::GetDiscFile(url.Get()));
+    return CFile::Exists(TranslatePath(url));
+  }
+
 } /* namespace XFILE */

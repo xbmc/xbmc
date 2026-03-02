@@ -314,7 +314,7 @@ bool CAEChannelInfo::ContainsChannels(const CAEChannelInfo& rhs) const
 {
   for (unsigned int i = 0; i < rhs.m_channelCount; ++i)
   {
-    if ((rhs.m_channels[i] != AEChannel::AE_CH_UNKNOWN1) && !HasChannel(rhs.m_channels[i]))
+    if (!HasChannel(rhs.m_channels[i]))
       return false;
   }
   return true;

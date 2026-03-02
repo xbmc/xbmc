@@ -52,7 +52,7 @@ void CGUIDialog::OnWindowLoaded()
     {
       if ((*p)->GetControlType() == CGUIControl::GUICONTROL_LABEL)
       {
-        auto pLabel = (CGUILabelControl*)(*p);
+        CGUILabelControl* pLabel = static_cast<CGUILabelControl*>(*p);
 
         if (!pLabel->GetWidth())
         {

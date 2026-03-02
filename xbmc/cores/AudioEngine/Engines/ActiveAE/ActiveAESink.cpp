@@ -306,6 +306,8 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
 
         case CSinkControlProtocol::FLUSH:
           ReturnBuffers();
+          if (m_sink)
+            m_sink->Flush();
           msg->Reply(CSinkControlProtocol::ACC);
           return;
 
@@ -659,7 +661,7 @@ void CActiveAESink::Process()
     {
       msg = m_controlPort.GetMessage();
       msg->signal = CSinkControlProtocol::TIMEOUT;
-      port = nullptr;
+      port = 0;
       // signal timeout to state machine
       StateMachine(msg->signal, port, msg);
       if (!m_bStateMachineSelfTrigger)
@@ -899,6 +901,8 @@ void CActiveAESink::OpenSink()
 {
   bool passthrough = (m_requestedFormat.m_dataFormat == AE_FMT_RAW);
 
+  m_hasIecBurst = false;
+
   AESinkDevice dev = CAESinkFactory::ParseDevice(m_device);
 
   if (dev.driver.empty() && m_sink)
@@ -1022,6 +1026,7 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
   uint8_t *packBuffer;
   unsigned int frames = samples->pkt->nb_samples;
   unsigned int totalFrames = frames;
+  const bool isPassthroughAudioPacket = (m_requestedFormat.m_dataFormat == AE_FMT_RAW) && (frames > 0);
   unsigned int maxFrames;
   int retry = 0;
   unsigned int written = 0;
@@ -1040,7 +1045,11 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
       else if (samples->pkt->pause_burst_ms > 0)
       {
         // construct a pause burst if we have already output valid audio
-        bool burst = m_extStreaming && (m_packer->GetBuffer()[0] != 0);
+#if defined(HAS_LIBAMCODEC)
+        bool burst = m_extStreaming;
+#else
+        bool burst = m_extStreaming && m_hasIecBurst;
+#endif
         if (!m_packer->PackPause(m_sinkFormat.m_streamInfo, samples->pkt->pause_burst_ms, burst))
           skipSwap = true;
       }
@@ -1088,12 +1097,20 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
   {
     maxFrames = std::min(frames, m_sinkFormat.m_frames);
     written = m_sink->AddPackets(buffer, maxFrames, totalFrames - frames);
+
+    if (written > 0 && isPassthroughAudioPacket)
+      m_hasIecBurst = true;
+
     if (written == 0)
     {
       CThread::Sleep(
           std::chrono::milliseconds(500 * m_sinkFormat.m_frames / m_sinkFormat.m_sampleRate));
       retry++;
-      if (retry > 4)
+      // For passthrough, allow more retries before declaring failure.
+      // AML mode switches and HDMI link renegotiation can cause transient
+      // stalls longer than the default 4-retry window (~64ms for PCM).
+      const int maxRetries = (m_requestedFormat.m_dataFormat == AE_FMT_RAW) ? 10 : 4;
+      if (retry > maxRetries)
       {
         m_extError = true;
         CLog::Log(LOGERROR, "CActiveAESink::OutputSamples - failed");
@@ -1205,10 +1222,11 @@ void CActiveAESink::SetSilenceTimer()
     m_extSilenceTimeout = XbmcThreads::EndTime<decltype(m_extSilenceTimeout)>::Max();
   else if (m_extAppFocused) // handles no playback/GUI and playback in pause and seek
   {
-    // only true with AudioTrack RAW + passthrough + TrueHD
+    // only true with AudioTrack RAW + passthrough + DTSHD formats
     const bool noSilenceOnPause =
         !m_needIecPack && m_requestedFormat.m_dataFormat == AE_FMT_RAW &&
-        m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD;
+        (m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD_MA ||
+         m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD);
 
     m_extSilenceTimeout = (noSilenceOnPause) ? 0ms : m_silenceTimeOut;
   }

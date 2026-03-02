@@ -13,6 +13,7 @@
 #include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "cores/VideoSettings.h"
 #include "cores/AudioEngine/Utils/AEStreamInfo.h"
+#include "cores/AudioEngine/Utils/AEChannelInfo.h"
 #include "threads/CriticalSection.h"
 
 #include <atomic>
@@ -66,6 +67,7 @@ public:
   void ResetAudioCodecInfo();
   void SetAudioDecoderName(const std::string &name);
   std::string GetAudioDecoderName();
+  void SetAudioChannels(const CAEChannelInfo& channels);
   void SetAudioChannels(const std::string &channels);
   std::string GetAudioChannels();
   std::string GetAudioChannelsSink();

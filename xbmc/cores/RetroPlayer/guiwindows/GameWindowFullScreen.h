@@ -35,7 +35,7 @@ public:
   // implementation of CGUIWindow
   void FrameMove() override;
   void ClearBackground() override;
-  bool HasVisibleControls() override;
+  bool HasVisibleControls() const override;
   void OnWindowLoaded() override;
   void OnDeinitWindow(int nextWindowID) override;
 

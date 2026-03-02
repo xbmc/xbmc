@@ -130,6 +130,7 @@ enum DV_TYPE aml_dv_type();
 void aml_dv_enable_fel();
 void aml_hevc_nal_skip_policy(const int value);
 void aml_set_transfer_pq(StreamHdrType hdrType, unsigned int bitDepth);
+void aml_set_osd_pq_bypass(StreamHdrType hdrType);
 bool aml_has_frac_rate_policy();
 void aml_video_mute(bool mute);
 void aml_set_audio_passthrough(bool passthrough);

@@ -414,6 +414,6 @@ private:
   int64_t m_param2;
   std::shared_ptr<CGUIListItem> m_item;
 
-  static std::string empty_string;
+  static const std::string empty_string;
 };
 

@@ -158,23 +158,21 @@ bool CDVDInputStreamBluray::Open()
     filename = URIUtils::GetFileName(url.GetFileName());
 
     // Check whether disc is AACS protected
-    CURL url3(root);
-    CFileItem base(url3, false);
-    openDisc = base.IsProtectedBlurayDisc();
+    CURL url2(root);
+    CFileItem item(url2, false);
+    openDisc = item.IsProtectedBlurayDisc();
 
     // check for a menu call for an image file
     if (StringUtils::EqualsNoCase(filename, "menu"))
     {
-      //get rid of the udf:// protocol
-      CURL url2(root);
-      const std::string& root2 = url2.GetHostName();
-      CURL url(root2);
-      CFileItem item(url, false);
       resumable = false;
 
-      // Check whether disc is AACS protected
-      if (!openDisc)
+      // Remove udf:// if present
+      if (url2.IsProtocol("udf"))
+      {
+        item.SetPath(url2.GetHostName());
         openDisc = item.IsProtectedBlurayDisc();
+      }
 
       if (item.IsDiscImage())
       {

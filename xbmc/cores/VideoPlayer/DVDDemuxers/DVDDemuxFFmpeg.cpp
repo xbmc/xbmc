@@ -281,12 +281,13 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
   // try to abort after 30 seconds
   m_timeout.Set(30s);
 
-  CURL url = m_pInput->GetURL();
   if (m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG))
   {
     // special stream type that makes avformat handle file opening
     // allows internal ffmpeg protocols to be used
     AVDictionary* options = GetFFMpegOptionsFromInput();
+
+    CURL url = m_pInput->GetURL();
 
     int result = -1;
     if (url.IsProtocol("mms"))
@@ -300,20 +301,6 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
         url.SetProtocol("mmst");
         strFile = url.Get();
       }
-    }
-    else if (url.IsProtocol("tcp"))
-    {
-      // tcp streams cannot handle multiple connection attempts, so exit early on failure
-      // rather than falling through to the retry logic below
-      result = avformat_open_input(&m_pFormatContext, url.Get().c_str(), iformat, &options);
-      if (result < 0)
-      {
-        CLog::Log(LOGDEBUG, "Error, could not open file {}", CURL::GetRedacted(url.Get()));
-        Dispose();
-        av_dict_free(&options);
-        return false;
-      }
-      strFile = url.Get();
     }
     else if (url.IsProtocol("udp") || url.IsProtocol("rtp"))
     {
@@ -480,9 +467,8 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
   }
 
   // don't re-open mpegts streams with hevc encoding as the params are not correctly detected again
-  if (iformat && (strcmp(iformat->name, "mpegts") == 0) && !url.IsProtocol("tcp") && !fileinfo &&
-      !isBluray && m_pFormatContext->nb_streams > 0 && m_pFormatContext->streams != nullptr &&
-      m_pFormatContext->streams[0]->codecpar->codec_id != AV_CODEC_ID_HEVC)
+  if (iformat && (strcmp(iformat->name, "mpegts") == 0) && !fileinfo && !isBluray &&
+      m_pFormatContext->nb_streams > 0)
   {
     for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
     {
@@ -491,7 +477,7 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
         if (m_pFormatContext->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO &&
             m_pFormatContext->streams[i]->codecpar->codec_id != AV_CODEC_ID_HEVC)
         {
-          av_opt_set_int(m_pFormatContext, "analyzeduration", 500000, 0);
+          av_opt_set_int(m_pFormatContext, "analyzeduration", 2000000, 0);
           m_checkTransportStream = true;
           skipCreateStreams = true;
           break;
@@ -1770,19 +1756,19 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         // https://github.com/FFmpeg/FFmpeg/blob/release/7.0/doc/APIchanges
         const AVPacketSideData* sideData = nullptr;
 
-        if (streamIdx > 0 && st->hdr_type == StreamHdrType::HDR_TYPE_DOLBYVISION)
-          m_dv_dual_stream = true;
-
         if (st->hdr_type == StreamHdrType::HDR_TYPE_DOLBYVISION)
         {
+          if (streamIdx > 0) m_dv_dual_stream = true;
 
           sideData =
               av_packet_side_data_get(pStream->codecpar->coded_side_data,
                                       pStream->codecpar->nb_coded_side_data, AV_PKT_DATA_DOVI_CONF);
+
           if (!m_dv_dual_stream && sideData && sideData->size)
+          {
             st->dovi = *reinterpret_cast<const AVDOVIDecoderConfigurationRecord*>(sideData->data);
-          // force dovi configuration for DV dual stream
-          else if (aml_dolby_vision_enabled())
+          }
+          else // force dovi configuration for DV dual stream
           {
             // force dovi side data to bl stream
             CDemuxStream* bl_stream = GetStream(0);
@@ -2105,15 +2091,6 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
 #ifdef HAVE_LIBBLURAY
     if (m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY))
     {
-      // UHD BD have a secondary video stream called by Dolby as enhancement layer.
-      // This is not used by streaming services and devices (ATV, Nvidia Shield, XONE).
-      if (pStream->id == 0x1015 && !aml_dolby_vision_enabled())
-      {
-        CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::AddStream - discarding Dolby Vision stream");
-        pStream->discard = AVDISCARD_ALL;
-        delete stream;
-        return nullptr;
-      }
       stream->dvdNavId = pStream->id;
 
       auto it = std::find_if(m_streams.begin(), m_streams.end(),
@@ -2783,7 +2760,7 @@ StreamHdrType CDVDDemuxFFmpeg::DetermineHdrType(AVStream* pStream)
 
   if (av_packet_side_data_get(pStream->codecpar->coded_side_data,
                               pStream->codecpar->nb_coded_side_data,
-                              AV_PKT_DATA_DOVI_CONF)) // DoVi
+                              AV_PKT_DATA_DOVI_CONF) || (pStream->id == 0x1015)) // DoVi
     hdrType = StreamHdrType::HDR_TYPE_DOLBYVISION;
   else if (IsDoViP7DualLayer()) // DoVi P7 Dual Layer
     hdrType = StreamHdrType::HDR_TYPE_DOLBYVISION;

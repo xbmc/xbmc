@@ -12,6 +12,7 @@
 #include "ServiceBroker.h"
 #include "cores/EdlEdit.h"
 #include "cores/AudioEngine/Utils/AEStreamInfo.h"
+#include "cores/AudioEngine/Utils/AEChannelInfo.h"
 #include "utils/AgedMap.h"
 #include "utils/BitstreamConverter.h"
 
@@ -47,11 +48,6 @@ void CDataCacheCore::Reset()
 
     m_playerVideoInfo = {};
   }
-  {
-    std::lock_guard lock(m_audioPlayerSection);
-
-    m_playerAudioInfo = {};
-  }
   m_hasAVInfoChanges = false;
   {
     std::lock_guard lock(m_renderSection);
@@ -64,6 +60,14 @@ void CDataCacheCore::Reset()
     m_contentInfo.Reset();
   }
   m_timeInfo = {};
+}
+
+void CDataCacheCore::ResetAudioCache()
+{
+  {
+    std::unique_lock lock(m_audioPlayerSection);
+    m_playerAudioInfo = {};
+  }
 }
 
 bool CDataCacheCore::HasAVInfoChanges()
@@ -564,6 +568,102 @@ int CDataCacheCore::GetAudioBitsPerSample()
   std::lock_guard lock(m_audioPlayerSection);
 
   return m_playerAudioInfo.bitsPerSample;
+}
+
+uint64_t CDataCacheCore::MakeSpeakerMask(const CAEChannelInfo& channels)
+{
+  uint64_t mask = 0;
+
+  // Passthrough/RAW layouts don't carry speaker positions. Provide a sane default
+  // "bed" mapping based on channel count so skins can still light speakers.
+  if (channels.HasChannel(AE_CH_RAW))
+  {
+    switch (channels.Count())
+    {
+      case 1:
+        mask |= (1ULL << 2); // FC
+        break;
+      case 2:
+        mask |= (1ULL << 0) | (1ULL << 1); // FL/FR
+        break;
+      case 3:
+        mask |= (1ULL << 0) | (1ULL << 1) | (1ULL << 2); // FL/FR/FC
+        break;
+      case 4:
+        mask |= (1ULL << 0) | (1ULL << 1) | (1ULL << 4) | (1ULL << 5); // FL/FR/SL/SR
+        break;
+      case 5:
+        mask |= (1ULL << 0) | (1ULL << 1) | (1ULL << 2) | (1ULL << 4) | (1ULL << 5); // 5.0
+        break;
+      case 6:
+        mask |= (1ULL << 0) | (1ULL << 1) | (1ULL << 2) | (1ULL << 3) | (1ULL << 4) | (1ULL << 5); // 5.1
+        break;
+      default:
+        if (channels.Count() >= 8)
+        {
+          mask |= (1ULL << 0) | (1ULL << 1) | (1ULL << 2) | (1ULL << 3) | (1ULL << 4) |
+                  (1ULL << 5) | (1ULL << 6) | (1ULL << 7); // 7.1
+        }
+        break;
+    }
+
+    return mask;
+  }
+
+  for (unsigned int i = 0; i < channels.Count(); ++i)
+  {
+    switch (channels[i])
+    {
+      case AE_CH_FL: mask |= (1ULL << 0); break;
+      case AE_CH_FR: mask |= (1ULL << 1); break;
+      case AE_CH_FC: mask |= (1ULL << 2); break;
+      case AE_CH_LFE: mask |= (1ULL << 3); break;
+      case AE_CH_SL: mask |= (1ULL << 4); break;
+      case AE_CH_SR: mask |= (1ULL << 5); break;
+      case AE_CH_BL: mask |= (1ULL << 6); break;
+      case AE_CH_BR: mask |= (1ULL << 7); break;
+      case AE_CH_BC: mask |= (1ULL << 8); break;
+      case AE_CH_FLOC: mask |= (1ULL << 9); break;
+      case AE_CH_FROC: mask |= (1ULL << 10); break;
+      case AE_CH_TFL: mask |= (1ULL << 11); break;
+      case AE_CH_TFR: mask |= (1ULL << 12); break;
+      case AE_CH_TFC: mask |= (1ULL << 13); break;
+      case AE_CH_TC: mask |= (1ULL << 14); break;
+      case AE_CH_TBL: mask |= (1ULL << 15); break;
+      case AE_CH_TBR: mask |= (1ULL << 16); break;
+      case AE_CH_TBC: mask |= (1ULL << 17); break;
+      case AE_CH_BLOC: mask |= (1ULL << 18); break;
+      case AE_CH_BROC: mask |= (1ULL << 19); break;
+      default:
+        break;
+    }
+  }
+
+  return mask;
+}
+
+void CDataCacheCore::SetAudioSpeakerMask(uint64_t mask)
+{
+  std::unique_lock lock(m_audioPlayerSection);
+  m_playerAudioInfo.speakerMask = mask;
+}
+
+uint64_t CDataCacheCore::GetAudioSpeakerMask()
+{
+  std::unique_lock lock(m_audioPlayerSection);
+  return m_playerAudioInfo.speakerMask;
+}
+
+void CDataCacheCore::SetAudioSpeakerMaskSink(uint64_t mask)
+{
+  std::unique_lock lock(m_audioPlayerSection);
+  m_playerAudioInfo.speakerMaskSink = mask;
+}
+
+uint64_t CDataCacheCore::GetAudioSpeakerMaskSink()
+{
+  std::unique_lock lock(m_audioPlayerSection);
+  return m_playerAudioInfo.speakerMaskSink;
 }
 
 void CDataCacheCore::SetAudioPts(double pts)

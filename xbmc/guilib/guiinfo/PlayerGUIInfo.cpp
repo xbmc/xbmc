@@ -515,6 +515,78 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     case PLAYER_PROCESS_AUDIOCHANNELS_SINK:
       value = CServiceBroker::GetDataCacheCore().GetAudioChannelsSink();
       return true;
+    case PLAYER_PROCESS_AUDIO_SPK_FL:
+      value = (CServiceBroker::GetDataCacheCore().GetAudioSpeakerMask() & (1ULL << 0)) ? "1" : "0";
+      return true;
+    case PLAYER_PROCESS_AUDIO_SPK_FR:
+      value = (CServiceBroker::GetDataCacheCore().GetAudioSpeakerMask() & (1ULL << 1)) ? "1" : "0";
+      return true;
+    case PLAYER_PROCESS_AUDIO_SPK_FC:
+      value = (CServiceBroker::GetDataCacheCore().GetAudioSpeakerMask() & (1ULL << 2)) ? "1" : "0";
+      return true;
+    case PLAYER_PROCESS_AUDIO_SPK_LFE:
+      value = (CServiceBroker::GetDataCacheCore().GetAudioSpeakerMask() & (1ULL << 3)) ? "1" : "0";
+      return true;
+    case PLAYER_PROCESS_AUDIO_SPK_SL:
+      value = (CServiceBroker::GetDataCacheCore().GetAudioSpeakerMask() & (1ULL << 4)) ? "1" : "0";
+      return true;
+    case PLAYER_PROCESS_AUDIO_SPK_SR:
+      value = (CServiceBroker::GetDataCacheCore().GetAudioSpeakerMask() & (1ULL << 5)) ? "1" : "0";
+      return true;
+    case PLAYER_PROCESS_AUDIO_SPK_BL:
+      value = (CServiceBroker::GetDataCacheCore().GetAudioSpeakerMask() & (1ULL << 6)) ? "1" : "0";
+      return true;
+    case PLAYER_PROCESS_AUDIO_SPK_BR:
+      value = (CServiceBroker::GetDataCacheCore().GetAudioSpeakerMask() & (1ULL << 7)) ? "1" : "0";
+      return true;
+    case PLAYER_PROCESS_AUDIO_SPK_TFL:
+      value = (CServiceBroker::GetDataCacheCore().GetAudioSpeakerMask() & (1ULL << 11)) ? "1" : "0";
+      return true;
+    case PLAYER_PROCESS_AUDIO_SPK_TFR:
+      value = (CServiceBroker::GetDataCacheCore().GetAudioSpeakerMask() & (1ULL << 12)) ? "1" : "0";
+      return true;
+    case PLAYER_PROCESS_AUDIO_SPK_TBL:
+      value = (CServiceBroker::GetDataCacheCore().GetAudioSpeakerMask() & (1ULL << 15)) ? "1" : "0";
+      return true;
+    case PLAYER_PROCESS_AUDIO_SPK_TBR:
+      value = (CServiceBroker::GetDataCacheCore().GetAudioSpeakerMask() & (1ULL << 16)) ? "1" : "0";
+      return true;
+    case PLAYER_PROCESS_AUDIO_SPK_SINK_FL:
+      value = (CServiceBroker::GetDataCacheCore().GetAudioSpeakerMaskSink() & (1ULL << 0)) ? "1" : "0";
+      return true;
+    case PLAYER_PROCESS_AUDIO_SPK_SINK_FR:
+      value = (CServiceBroker::GetDataCacheCore().GetAudioSpeakerMaskSink() & (1ULL << 1)) ? "1" : "0";
+      return true;
+    case PLAYER_PROCESS_AUDIO_SPK_SINK_FC:
+      value = (CServiceBroker::GetDataCacheCore().GetAudioSpeakerMaskSink() & (1ULL << 2)) ? "1" : "0";
+      return true;
+    case PLAYER_PROCESS_AUDIO_SPK_SINK_LFE:
+      value = (CServiceBroker::GetDataCacheCore().GetAudioSpeakerMaskSink() & (1ULL << 3)) ? "1" : "0";
+      return true;
+    case PLAYER_PROCESS_AUDIO_SPK_SINK_SL:
+      value = (CServiceBroker::GetDataCacheCore().GetAudioSpeakerMaskSink() & (1ULL << 4)) ? "1" : "0";
+      return true;
+    case PLAYER_PROCESS_AUDIO_SPK_SINK_SR:
+      value = (CServiceBroker::GetDataCacheCore().GetAudioSpeakerMaskSink() & (1ULL << 5)) ? "1" : "0";
+      return true;
+    case PLAYER_PROCESS_AUDIO_SPK_SINK_BL:
+      value = (CServiceBroker::GetDataCacheCore().GetAudioSpeakerMaskSink() & (1ULL << 6)) ? "1" : "0";
+      return true;
+    case PLAYER_PROCESS_AUDIO_SPK_SINK_BR:
+      value = (CServiceBroker::GetDataCacheCore().GetAudioSpeakerMaskSink() & (1ULL << 7)) ? "1" : "0";
+      return true;
+    case PLAYER_PROCESS_AUDIO_SPK_SINK_TFL:
+      value = (CServiceBroker::GetDataCacheCore().GetAudioSpeakerMaskSink() & (1ULL << 11)) ? "1" : "0";
+      return true;
+    case PLAYER_PROCESS_AUDIO_SPK_SINK_TFR:
+      value = (CServiceBroker::GetDataCacheCore().GetAudioSpeakerMaskSink() & (1ULL << 12)) ? "1" : "0";
+      return true;
+    case PLAYER_PROCESS_AUDIO_SPK_SINK_TBL:
+      value = (CServiceBroker::GetDataCacheCore().GetAudioSpeakerMaskSink() & (1ULL << 15)) ? "1" : "0";
+      return true;
+    case PLAYER_PROCESS_AUDIO_SPK_SINK_TBR:
+      value = (CServiceBroker::GetDataCacheCore().GetAudioSpeakerMaskSink() & (1ULL << 16)) ? "1" : "0";
+      return true;
     case PLAYER_PROCESS_AUDIOSAMPLERATE:
       value = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetAudioSampleRate());
       return true;

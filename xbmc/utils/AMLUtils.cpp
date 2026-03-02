@@ -109,14 +109,16 @@ static void aml_dv_wait_dv_std_vsif_packet()
 
 void aml_reset_audio_from_vs10_change()
 {
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetResetSync(true);
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetResetSeek(true);
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetLastResetTime(0.0);
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetAlgoForReset(2);
+  auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  advancedSettings->SetResetSync(true);
+  advancedSettings->SetResetSeek(true);
+  advancedSettings->SetLastResetTime(0.0);
+  advancedSettings->SetAlgoForReset(2);
 }
 
 void aml_kodi_set_cd_cs(int cd_cs_type)
 {
+  auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
   switch (cd_cs_type)
   {
     case 1:
@@ -127,13 +129,11 @@ void aml_kodi_set_cd_cs(int cd_cs_type)
           ((dv_vp == 0) && (dv_type == DV_TYPE_PLAYER_LED_HDR2)) ||
           ((dv_vp == 0) && (dv_type == DV_TYPE_PLAYER_LED_LLDV)))
       {
-        if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->GetForceCS())
+        if (!advancedSettings->GetForceCS())
         {
-          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetForceCS(true);
-          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetForceCSPrevVal(
-                          settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_FORCE_CS));
-          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetLimitCDPrevVal(
-                          settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_LIMIT_CD));
+          advancedSettings->SetForceCS(true);
+          advancedSettings->SetForceCSPrevVal(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_FORCE_CS));
+          advancedSettings->SetLimitCDPrevVal(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_LIMIT_CD));
         }
         settings()->SetInt(CSettings::SETTING_COREELEC_AMLOGIC_FORCE_CS, 3);
         settings()->SetInt(CSettings::SETTING_COREELEC_AMLOGIC_LIMIT_CD, 3);
@@ -152,13 +152,11 @@ void aml_kodi_set_cd_cs(int cd_cs_type)
     case 2:
     {
       if (CServiceBroker::GetDataCacheCore().GetVideoHdrType() == StreamHdrType::HDR_TYPE_HDR10PLUS &&
-          (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->GetLimitCD()))
+          (!advancedSettings->GetLimitCD()))
       {
-        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetLimitCD(true);
-        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetLimitCDPrevVal(
-                        settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_LIMIT_CD));
-        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetForceCSPrevVal(
-                        settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_FORCE_CS));
+        advancedSettings->SetLimitCD(true);
+        advancedSettings->SetLimitCDPrevVal(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_LIMIT_CD));
+        advancedSettings->SetForceCSPrevVal(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_FORCE_CS));
         settings()->SetInt(CSettings::SETTING_COREELEC_AMLOGIC_LIMIT_CD, 3);
         settings()->SetInt(CSettings::SETTING_COREELEC_AMLOGIC_FORCE_CS, 3);
         const RESOLUTION_INFO res_info = CDisplaySettings::GetInstance().GetResolutionInfo(CDisplaySettings::GetInstance().GetCurrentResolution());
@@ -174,7 +172,10 @@ void aml_kodi_set_cd_cs(int cd_cs_type)
 void aml_dv_set_vs10_mode(unsigned int mode, StreamHdrType hdrType)
 {
   enum DV_TYPE dv_type(static_cast<DV_TYPE>(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_TYPE)));
-  if (dv_type == DV_TYPE_VS10_ONLY) return;
+  if ((dv_type == DV_TYPE_VS10_ONLY) ||
+      (hdrType == StreamHdrType::HDR_TYPE_HDR10) ||
+      (hdrType == StreamHdrType::HDR_TYPE_HDR10PLUS))
+    return;
 
   CSysfsPath dolby_vision_mode{"/sys/module/amdolby_vision/parameters/dolby_vision_mode"};
   unsigned int existing_mode = dolby_vision_mode.Get<unsigned int>().value();
@@ -239,7 +240,8 @@ int aml_blackout_policy(int new_blackout)
 static unsigned int aml_vs10_by_hdrtype(StreamHdrType hdrType, unsigned int bitDepth)
 {
   unsigned int vs10_mode = DOLBY_VISION_OUTPUT_MODE_BYPASS;
-  switch (hdrType) {
+  switch (hdrType)
+  {
     case StreamHdrType::HDR_TYPE_NONE:
       if (bitDepth == 10)
         vs10_mode = aml_vs10_by_setting(CSettings::SETTING_COREELEC_AMLOGIC_DV_VS10_SDR10);
@@ -796,6 +798,8 @@ void aml_dv_off()
 
   CSysfsPath amdolby_vision_debug{"/sys/class/amdolby_vision/debug"};
   if (amdolby_vision_debug.Exists()) CSysfsPath("/sys/class/amdolby_vision/debug", "enable_fel 0");
+  CSysfsPath("/sys/module/amdolby_vision/parameters/xbmc_dv_vp", 0);
+  CSysfsPath("/sys/module/amdolby_vision/parameters/xbmc_dv_vp_tm", 0);
 
   // First allow system to reset to follow source, then turn off DV.
   CSysfsPath("/sys/module/amdolby_vision/parameters/dolby_vision_policy", DOLBY_VISION_FOLLOW_SOURCE);
@@ -828,8 +832,8 @@ void aml_dv_open(StreamHdrType hdrType, unsigned int bitDepth)
 {
   enum DV_MODE dv_mode(aml_dv_mode());
   CLog::Log(LOGDEBUG, "AMLUtils::{} - Checking DV for DV mode: [{}], DV type: [{}]", __FUNCTION__, aml_dv_mode_to_string(dv_mode), aml_dv_type_to_string(aml_dv_type()));
-  if (dv_mode == DV_MODE_ON || dv_mode == DV_MODE_ON_DEMAND) {
-
+  if (dv_mode == DV_MODE_ON || dv_mode == DV_MODE_ON_DEMAND)
+  {
     unsigned int vs10_mode = aml_vs10_by_hdrtype(hdrType, bitDepth);
 
     if (vs10_mode != DOLBY_VISION_OUTPUT_MODE_BYPASS)
@@ -924,11 +928,20 @@ void aml_hevc_nal_skip_policy(const int value)
   CSysfsPath("/sys/module/amvdec_h265/parameters/nal_skip_policy", value);  
 }
 
+void aml_set_osd_pq_bypass(StreamHdrType hdrType)
+{
+  const bool enable = ((hdrType == StreamHdrType::HDR_TYPE_HDR10) ||
+                       (hdrType == StreamHdrType::HDR_TYPE_HDR10PLUS));
+
+  CSysfsPath("/sys/module/am_vecm/parameters/osd_pq_bypass", enable);
+  logM(LOGDEBUG, "AMLUtils", "am_vecm osd_pq_bypass [{}]", enable ? "enabled" : "disabled");
+}
+
 void aml_set_transfer_pq(StreamHdrType hdrType, unsigned int bitDepth) {
 
   // Configure GUI/OSD for HDR PQ when display is in HDR PQ mode
   bool hdr_display(CServiceBroker::GetWinSystem()->IsHDRDisplay() || aml_display_support_dv());
-  bool dv_on(aml_dv_mode() != DV_MODE_OFF);
+  bool dv_on(aml_is_dv_enable());
   bool hdr(false);
 
   if (hdr_display) // Only relevant with an hdr_display 
@@ -1722,68 +1735,75 @@ void aml_dv_send_profile(int dvprofile) {
 
 void aml_reset_audio_from_player_open()
 {
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetResetSync(true);
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetResetSeek(true);
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetLastResetTime(0.0);
+  auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  advancedSettings->SetResetSync(true);
+  advancedSettings->SetResetSeek(true);
+  advancedSettings->SetLastResetTime(0.0);
   if (aml_get_cpufamily_id() == AML_G12B)
-    CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetAlgoForReset(2);
+    advancedSettings->SetAlgoForReset(2);
   else
-    CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetAlgoForReset(3);
+    advancedSettings->SetAlgoForReset(3);
 }
 
 void aml_reset_audio_from_player_pause()
 {
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetResetSync(true);
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetResetSeek(true);
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetLastResetTime(0.0);
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetAlgoForReset(2);
+  auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  advancedSettings->SetResetSync(true);
+  advancedSettings->SetResetSeek(true);
+  advancedSettings->SetLastResetTime(0.0);
+  advancedSettings->SetAlgoForReset(2);
 }
 
 void aml_reset_audio_from_window_home()
 {
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetResetSync(true);
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetResetSeek(true);
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetLastResetTime(0.0);
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetAlgoForReset(2);
+  auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  advancedSettings->SetResetSync(true);
+  advancedSettings->SetResetSeek(true);
+  advancedSettings->SetLastResetTime(0.0);
+  advancedSettings->SetAlgoForReset(2);
 }
 
 void aml_reset_audio_from_play_from_beginning()
 {
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetResetSync(true);
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetResetSeek(true);
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetLastResetTime(0.0);
+  auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  advancedSettings->SetResetSync(true);
+  advancedSettings->SetResetSeek(true);
+  advancedSettings->SetLastResetTime(0.0);
   if (aml_get_cpufamily_id() == AML_G12B)
-    CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetAlgoForReset(2);
+    advancedSettings->SetAlgoForReset(2);
   else
-    CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetAlgoForReset(3);
+    advancedSettings->SetAlgoForReset(3);
 }
 
 void aml_reset_audio_from_play_from_resume()
 {
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetResetSync(true);
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetResetSeek(true);
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetLastResetTime(0.0);
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetAlgoForReset(1);
+  auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  advancedSettings->SetResetSync(true);
+  advancedSettings->SetResetSeek(true);
+  advancedSettings->SetLastResetTime(0.0);
+  advancedSettings->SetAlgoForReset(1);
 }
 
 void aml_reset_from_subtitle_change()
 {
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetResetSync(true);
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetResetSeek(true);
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetLastResetTime(0.0);
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetAlgoForReset(99);
+  auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  advancedSettings->SetResetSync(true);
+  advancedSettings->SetResetSeek(true);
+  advancedSettings->SetLastResetTime(0.0);
+  advancedSettings->SetAlgoForReset(99);
 }
 
 void aml_kodi_reset_cd_cs()
 {
-  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->GetLimitCD() || CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->GetForceCS())
+  auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  if (advancedSettings->GetLimitCD() || advancedSettings->GetForceCS())
   {
-    settings()->SetInt(CSettings::SETTING_COREELEC_AMLOGIC_LIMIT_CD, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->GetLimitCDPrevVal());
-    settings()->SetInt(CSettings::SETTING_COREELEC_AMLOGIC_FORCE_CS, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->GetForceCSPrevVal());
-    CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetLimitCD(false);
-    CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetForceCS(false);
-    CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetLimitCDPrevVal(0);
-    CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetForceCSPrevVal(0);
+    settings()->SetInt(CSettings::SETTING_COREELEC_AMLOGIC_LIMIT_CD, advancedSettings->GetLimitCDPrevVal());
+    settings()->SetInt(CSettings::SETTING_COREELEC_AMLOGIC_FORCE_CS, advancedSettings->GetForceCSPrevVal());
+    advancedSettings->SetLimitCD(false);
+    advancedSettings->SetForceCS(false);
+    advancedSettings->SetLimitCDPrevVal(0);
+    advancedSettings->SetForceCSPrevVal(0);
   }
 
   if (CServiceBroker::GetDataCacheCore().GetVideoHdrType() == StreamHdrType::HDR_TYPE_HDR10 &&

@@ -27,7 +27,7 @@ public:
   void Render() override;
   void RenderEx() override;
   void OnWindowLoaded() override;
-  bool HasVisibleControls() override;
+  bool HasVisibleControls() const override;
 
 protected:
   EVENT_RESULT OnMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;

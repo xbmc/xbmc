@@ -37,6 +37,7 @@ public:
   CHDRCapabilities GetDisplayHDRCapabilities() const override;
   float GetDisplayLatency() override;
   float GetGuiSdrPeakLuminance() const override;
+  float GetGuiSdrSaturation() const override;
 
   bool Hide() override;
   bool Show(bool show = true) override;

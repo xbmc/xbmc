@@ -38,6 +38,7 @@ public:
   float m_u;
   float m_v;
   bool m_pma; /*< is alpha in texture premultiplied in the values */
+  bool m_isHdrPqAuthored{false};
 };
 
 class COverlayGlyphGLES : public COverlay

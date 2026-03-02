@@ -14,6 +14,8 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+#include <algorithm>
+
 using namespace XFILE;
 
 struct SDirState

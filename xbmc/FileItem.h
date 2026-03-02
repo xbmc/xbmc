@@ -14,6 +14,7 @@
  */
 
 #include "LockType.h"
+#include "URL.h"
 #include "XBDateTime.h"
 #include "guilib/GUIListItem.h"
 #include "threads/CriticalSection.h"

@@ -9,6 +9,9 @@
 #include "network/Network.h"
 #include "URIUtils.h"
 #include "FileItem.h"
+#ifdef HAVE_LIBBLURAY
+#include "filesystem/BlurayDirectory.h"
+#endif
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/StackDirectory.h"
@@ -451,6 +454,19 @@ std::string URIUtils::GetBasePath(const std::string& strPath)
       strDirectory = GetDirectory(strCheck);
   }
   return strDirectory;
+}
+
+std::string URIUtils::GetDiscFile(const std::string& path)
+{
+  if (!IsBlurayPath(path))
+    return {};
+
+  const CURL url(path);
+  const CURL url2(url.GetHostName()); // strip bluray://
+
+  if (url2.IsProtocol("udf"))
+    return url2.GetHostName(); // ISO so strip udf:// before return
+  return AddFileToFolder(url2.Get(), "BDMV", "index.bdmv"); // BDMV
 }
 
 std::string URLEncodePath(const std::string& strPath)
@@ -1171,6 +1187,33 @@ bool URIUtils::IsVideoDb(const std::string& strFile)
 bool URIUtils::IsBluray(const std::string& strFile)
 {
   return IsProtocol(strFile, "bluray");
+}
+
+bool URIUtils::IsBlurayPath(const std::string& strFile)
+{
+  return IsProtocol(strFile, "bluray");
+}
+
+bool URIUtils::IsBlurayMenuPath(const std::string& file)
+{
+  return IsBlurayPath(file) && GetFileName(file) == "menu";
+}
+
+bool URIUtils::IsBDFile(const std::string& file)
+{
+  const std::string fileName{GetFileName(file)};
+  return StringUtils::EqualsNoCase(fileName, "index.bdmv") ||
+         StringUtils::EqualsNoCase(fileName, "MovieObject.bdmv") ||
+         StringUtils::EqualsNoCase(fileName, "INDEX.BDM") ||
+         StringUtils::EqualsNoCase(fileName, "MOVIEOBJ.BDM");
+}
+
+bool URIUtils::IsDVDFile(const std::string& file)
+{
+  const std::string fileName{GetFileName(file)};
+  return StringUtils::EqualsNoCase(fileName, "video_ts.ifo") ||
+         (StringUtils::StartsWithNoCase(fileName, "vts_") &&
+          StringUtils::EndsWithNoCase(fileName, "_0.ifo") && fileName.length() == 12);
 }
 
 bool URIUtils::IsAndroidApp(const std::string &path)

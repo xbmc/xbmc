@@ -96,6 +96,8 @@ public:
    */
   static std::string ChangeBasePath(const std::string &fromPath, const std::string &fromFile, const std::string &toPath, const bool &bAddPath = true);
 
+  static std::string GetDiscFile(const std::string& path);
+
   static CURL SubstitutePath(const CURL& url, bool reverse = false);
   static std::string SubstitutePath(const std::string& strPath, bool reverse = false);
 
@@ -179,6 +181,11 @@ public:
   static bool IsDiscImage(const std::string& file);
   static bool IsDiscImageStack(const std::string& file);
   static bool IsBluray(const std::string& strFile);
+  static bool IsBlurayPath(const std::string& strFile);
+  static bool IsBlurayMenuPath(const std::string& file);
+
+  static bool IsBDFile(const std::string& file);
+  static bool IsDVDFile(const std::string& file);
   static bool IsAndroidApp(const std::string& strFile);
   static bool IsLibraryFolder(const std::string& strFile);
   static bool IsLibraryContent(const std::string& strFile);

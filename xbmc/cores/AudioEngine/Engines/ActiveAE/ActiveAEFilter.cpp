@@ -254,6 +254,12 @@ int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_
       m_filterEof = true;
       return -1;
     }
+
+    if (!m_started)
+    {
+      m_filterEof = true;
+      return 0;
+    }
   }
 
   if (!m_hasData && m_started)

@@ -1409,7 +1409,9 @@ msgctxt "#294"
 msgid "Create bookmark"
 msgstr ""
 
-#empty string with id 295
+msgctxt "#295"
+msgid "Low latency mode"
+msgstr ""
 
 msgctxt "#296"
 msgid "Clear bookmarks"
@@ -19353,6 +19355,12 @@ msgstr ""
 
 #empty strings from id 36060 to 36095
 
+#. Label of setting "System / Display / GUI saturation boost in HDR PQ mode"
+#: system/settings/settings.xml
+msgctxt "#36095"
+msgid "GUI saturation boost in HDR PQ mode"
+msgstr ""
+
 #. Label of setting "System / Display / Use system HDR/SDR brightness balance"
 #: system/settings/settings.xml
 msgctxt "#36096"
@@ -21335,7 +21343,11 @@ msgctxt "#36440"
 msgid "Enable hardware video decode using Amlogic decoder."
 msgstr ""
 
-#empty strings from id 36440 to 36441
+#. Description of setting with label #295 "Low latency mode"
+#: system/settings/settings.xml
+msgctxt "#36441"
+msgid "Reduces audio processing latency. Improves playback start, unpause and seek (the audio returns sooner).\nYou can disable this setting if you experience audio issues."
+msgstr ""
 
 #. Description of setting "System -> Audio output -> Volume control steps" with label #1302
 #: system/settings/settings.xml
@@ -21600,7 +21612,13 @@ msgstr ""
 #. Description of setting with label #36097 "System / Display / GUI peak luminance in HDR PQ mode"
 #: system/settings/settings.xml
 msgctxt "#36547"
-msgid "Sets the peak luminance level for GUI elements while the display is in HDR PQ mode. This affects all OSD, subtitles and graphics that are SDR in origin."
+msgid "Adjusts how bright SDR GUI elements appear while the display is in HDR PQ mode (OSD, subtitles and other graphics). Does not affect HDR-authored PGS subtitles."
+msgstr ""
+
+#. Description of setting with label #36095 "System / Display / GUI saturation boost in HDR PQ mode"
+#: system/settings/settings.xml
+msgctxt "#36998"
+msgid "Adjusts colour saturation for SDR GUI elements while the display is in HDR PQ mode (OSD, subtitles and other graphics). Does not affect HDR-authored PGS subtitles."
 msgstr ""
 
 #. Description of setting with label #37021 "Set GUI resolution limit"
@@ -24650,6 +24668,12 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#60001"
 msgid "Dolby Vision (DV)"
+msgstr ""
+
+#. "Audio"
+#: system/settings/settings.xml
+msgctxt "#60005"
+msgid "Audio"
 msgstr ""
 
 #. "Dolby Vision"

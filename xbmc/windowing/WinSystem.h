@@ -216,6 +216,7 @@ public:
   virtual CHDRCapabilities GetDisplayHDRCapabilities() const { return {}; }
   static const char* SETTING_WINSYSTEM_IS_HDR_DISPLAY;
   virtual float GetGuiSdrPeakLuminance() const { return .0f; }
+  virtual float GetGuiSdrSaturation() const { return .0f; }
   virtual bool HasSystemSdrPeakLuminance() { return false; }
 
   /*!

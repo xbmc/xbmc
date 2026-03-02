@@ -44,6 +44,7 @@ public:
     height = sub_h;
     source_width = src.source_width;
     source_height = src.source_height;
+    m_isHdrPq = src.m_isHdrPq;
 
     pixels.resize(sub_h * linesize);
 
@@ -75,6 +76,11 @@ public:
 
   std::vector<uint8_t> pixels;
   std::vector<uint32_t> palette;
+
+  // If true, pixel values are already intended for HDR PQ output (e.g. UHD-BD PGS
+  // palettes authored as BT.2020 + ST2084 code values) and must NOT be converted
+  // again by GUI shaders.
+  bool m_isHdrPq{false};
 
   int linesize{0};
   int x{0};

@@ -81,14 +81,13 @@ public:
   virtual bool SupportsExtention() { return true; }
 
 protected:
-  void            Close(void);
-  void            FrameRateTracking(uint8_t *pData, int iSize, double dts, double pts);
-  //void            RemoveInfo(CDVDAmlogicInfo* info);
+  void Close(void);
+  void FrameRateTracking(uint8_t *pData, int iSize, double dts, double pts);
 
   std::shared_ptr<CAMLCodec> m_Codec;
 
   const char     *m_pFormatName;
-  VideoPicture m_videobuffer;
+  VideoPicture    m_videobuffer;
   bool            m_opened;
   int             m_codecControlFlags;
   CDVDStreamInfo  m_hints;
@@ -105,8 +104,15 @@ protected:
   std::unique_ptr<CBitstreamParser>    m_bitparser;
   std::unique_ptr<CBitstreamConverter> m_bitstream;
 private:
+  bool DualLayerConvert(uint8_t *pData, uint32_t iSize, const DemuxPacket &packet);
+  bool SingleLayerConvert(uint8_t *pData, uint32_t iSize, const DemuxPacket &packet) const;
   std::shared_ptr<CAMLVideoBufferPool> m_videoBufferPool;
   static std::atomic<bool> m_InstanceGuard;
 
   std::list<DLDemuxPacket> m_packages;
+
+  bool      m_last_added = true;
+  uint8_t  *m_last_pData = nullptr;
+  uint32_t  m_last_iSize = 0;
+
 };

@@ -18,6 +18,7 @@
 #include <list>
 #include <memory>
 #include <string>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -76,7 +77,7 @@ public:
   void Flush();
   bool IsEmpty() const;
   void SetHeight(int height);
-  void SetWidth(int height);
+  void SetWidth(int width);
 protected:
   void FreeTexture();
 
@@ -118,6 +119,7 @@ public:
   void ReleaseHwTexture(unsigned int texture);
 protected:
   std::vector<CTextureMap*> m_vecTextures;
+  std::unordered_map<std::string, CTextureMap*> m_textureIndex; ///< O(1) lookup by texture name
   std::list<std::pair<CTextureMap*, std::chrono::time_point<std::chrono::steady_clock>>>
       m_unusedTextures;
   std::vector<unsigned int> m_unusedHwTextures;

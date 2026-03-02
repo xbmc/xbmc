@@ -3152,6 +3152,30 @@
         <default>40</default>
         <control type="slider" format="percentage" range="0,100" />
       </setting>
+
+      <setting id="videoscreen.guisdrsaturation" type="integer" label="36095" help="36998">
+        <requirement>
+          <or>
+            <condition>HAS_DX</condition>
+            <condition>HAS_MEDIACODEC</condition>
+            <condition>HAVE_WEBOS</condition>
+            <condition>HAVE_AMCODEC</condition>
+          </or>
+        </requirement>
+        <dependencies>
+          <dependency type="visible" on="property" name="ishdrdisplay"/>
+          <dependency type="enable">
+            <or>
+              <condition on="property" name="hassystemsdrpeakluminance" operator="!is" />
+              <condition setting="videoscreen.usesystemsdrpeakluminance" operator="is">false</condition>
+              <condition>HAVE_AMCODEC</condition>
+            </or>
+          </dependency>
+        </dependencies>
+        <level>2</level>
+        <default>50</default>
+        <control type="slider" format="percentage" range="0,100" />
+      </setting>
       </group>
       <group id="3" label="14126">
         <setting id="videoscreen.whitelist" type="list[string]" parent="videoscreen.screen" label="14126" help="36443">
@@ -3290,6 +3314,11 @@
             <formatlabel>38009</formatlabel>
           </control>
         </setting>
+        <setting id="audiooutput.lowlatency" type="boolean" label="295" help="36441">
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
         <setting id="audiooutput.processquality" type="integer" label="13505" help="36169">
           <requirement>HAS_AE_QUALITY_LEVELS</requirement>
           <level>2</level>
@@ -3349,14 +3378,7 @@
         <setting id="audiooutput.mixsublevel" type="integer" label="34131" help="34132">
           <level>2</level>
           <default>0</default>
-          <constraints>
-            <options>
-              <option label="34133">0</option>
-              <option label="34134">50</option>
-              <option label="34135">100</option>
-            </options>
-          </constraints>
-          <control type="list" format="string" />
+          <control type="slider" format="percentage" range="0,1,100" />
         </setting>
       </group>
       <group id="2" label="15108">
@@ -3954,7 +3976,7 @@
           <requirement>HAVE_AMCODEC</requirement>
           <visible>false</visible>
           <level>2</level>
-          <default>2</default>
+          <default>0</default>
           <dependencies>
             <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
             <dependency type="visible" setting="coreelec.amlogic.dolbyvision.video.processor" operator="is">0</dependency>
@@ -4245,13 +4267,15 @@
           </constraints>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="coreelec.amlogic.dolbyvision.audio.seamlessbranch" type="integer" label="60594" help="60595" parent="coreelec.amlogic.dolbyvision.type">
-          <requirement>HAVE_AMCODEC</requirement>
+      </group>
+      <group id="3" label="60005">
+        <setting id="coreelec.amlogic.dolbyvision.audio.seamlessbranch" type="integer" label="60594" help="60595">
+          <!-- <requirement>HAVE_AMCODEC</requirement> -->
           <visible>true</visible>
           <level>2</level>
           <default>4</default>
      <!-- <dependencies>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency> 
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
           </dependencies> -->
           <constraints>
             <options>

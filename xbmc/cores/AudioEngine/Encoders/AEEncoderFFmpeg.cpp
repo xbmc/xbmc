@@ -7,6 +7,7 @@
  */
 
 #define AC3_ENCODE_BITRATE 640000
+#define EAC3_ENCODE_BITRATE 768000
 #define DTS_ENCODE_BITRATE 1411200
 
 #include "cores/AudioEngine/Encoders/AEEncoderFFmpeg.h"
@@ -94,8 +95,14 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
 
   const AVCodec* codec = nullptr;
 
-  /* fallback to ac3 if we support it, we might not have DTS support */
-  if (ac3)
+  if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_EAC3)
+  {
+    m_CodecName = "EAC3";
+    m_CodecID = AV_CODEC_ID_EAC3;
+    m_BitRate = EAC3_ENCODE_BITRATE;
+    codec = avcodec_find_encoder(m_CodecID);
+  }
+  else if (ac3 || format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_AC3)
   {
     m_CodecName = "AC3";
     m_CodecID = AV_CODEC_ID_AC3;
@@ -123,6 +130,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
                                  reinterpret_cast<const void**>(&channelLayouts), &numLayouts);
 
     std::vector<CAEChannelInfo> layouts;
+    layouts.reserve(numLayouts);
     for (int i = 0; i < numLayouts; ++i)
     {
       layouts.emplace_back(CAEUtil::GetAEChannelLayout(channelLayouts[i].u.mask));
@@ -331,7 +339,7 @@ int CAEEncoderFFmpeg::Encode(uint8_t *in, int in_size, uint8_t *out, int out_siz
     //! @TODO: This is a workaround for our current design. The caller should be made
     // aware of the potential error values to use the ffmpeg API in a proper way, which means
     // copying with EAGAIN and multiple packet output.
-    // For the current situation there is a relationship implicitely assumed of:
+    // For the current situation there is a relationship implicitly assumed of:
     // 1 frame in - 1 packet out. This holds true in practice but the API does not guarantee it.
     if (err >= 0)
     {
@@ -350,7 +358,7 @@ int CAEEncoderFFmpeg::Encode(uint8_t *in, int in_size, uint8_t *out, int out_siz
     }
     else
     {
-      CLog::LogF(LOGERROR, "Error receiving encoded paket ({})", err);
+      CLog::LogF(LOGERROR, "Error receiving encoded packet ({})", err);
     }
   }
   catch (const FFMpegException& caught)

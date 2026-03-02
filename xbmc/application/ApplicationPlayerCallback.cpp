@@ -23,6 +23,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/json-rpc/JSONUtils.h"
 #include "interfaces/python/XBPython.h"
+#include "network/NetworkFileItemClassify.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
@@ -32,6 +33,7 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 
 #include <memory>
@@ -47,6 +49,23 @@ void CApplicationPlayerCallback::OnPlayBackEnded()
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 }
+
+namespace
+{
+bool ShouldUpdateStreamDetails(const CFileItem& file)
+{
+  // If a title/playlist hasn't been selected for a bluray/dvds then the stream details may not be known
+  const bool isDiscOrStream{KODI::VIDEO::IsBDFile(file) || KODI::VIDEO::IsDVDFile(file) || file.IsDiscImage() ||
+                            URIUtils::IsBlurayMenuPath(file.GetDynPath()) ||
+                            KODI::NETWORK::IsInternetStream(file)};
+
+  // Stream details may be already set from a previous playback or nfo
+  const bool hasNoStreamDetails{!file.HasVideoInfoTag() ||
+                                !file.GetVideoInfoTag()->HasStreamDetails()};
+
+  return hasNoStreamDetails && isDiscOrStream;
+}
+} // namespace
 
 void CApplicationPlayerCallback::OnPlayBackStarted(const CFileItem& file)
 {
