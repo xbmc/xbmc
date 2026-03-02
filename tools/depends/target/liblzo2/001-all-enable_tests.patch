@@ -1,0 +1,48 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -114,6 +114,7 @@
+     set_target_properties(lzo_shared_lib PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
+ endif()
+ 
++if(ENABLE_TESTS)
+ # tests & examples
+ macro(lzo_add_executable t)
+     add_executable(${t} ${ARGN})
+@@ -148,6 +149,7 @@
+     add_executable(testmini minilzo/testmini.c minilzo/minilzo.c)
+     target_include_directories(testmini PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/lzo") # needed for "lzoconf.h"
+ endif()
++endif()
+ 
+ # /***********************************************************************
+ # // compilation flags
+@@ -249,14 +251,14 @@
+ # /***********************************************************************
+ # // "make test"
+ # ************************************************************************/
+-
++if(ENABLE_TESTS)
+ include(CTest)
+ add_test(NAME simple     COMMAND simple)
+ add_test(NAME testmini   COMMAND testmini)
+ add_test(NAME lzotest-01 COMMAND lzotest -mlzo   -n2  -q "${CMAKE_CURRENT_SOURCE_DIR}/COPYING")
+ add_test(NAME lzotest-02 COMMAND lzotest -mavail -n10 -q "${CMAKE_CURRENT_SOURCE_DIR}/COPYING")
+ add_test(NAME lzotest-03 COMMAND lzotest -mall   -n10 -q "${CMAKE_CURRENT_SOURCE_DIR}/include/lzo/lzodefs.h")
+-
++endif()
+ # /***********************************************************************
+ # // "make install"
+ # ************************************************************************/
+@@ -285,10 +287,12 @@
+     )
+ endif()
+ 
++if(ENABLE_TESTS)
+ if(1)
+     set(f lzopack lzotest simple testmini) # examples
+     install(TARGETS ${f} DESTINATION "${CMAKE_INSTALL_FULL_LIBEXECDIR}/lzo/examples")
+ endif()
++endif()
+ 
+ if(PKG_CONFIG_FOUND)
+     configure_file(lzo2.pc.cmakein lzo2.pc @ONLY)
