@@ -166,7 +166,7 @@ std::unique_ptr<CXBMCApp> CXBMCApp::m_appinstance;
 
 CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity, IInputHandler& inputHandler)
   : CJNIMainActivity(nativeActivity),
-    CJNIBroadcastReceiver(CJNIContext::getPackageName() + ".XBMCBroadcastReceiver"),
+    CJNIBroadcastReceiver("/XBMCBroadcastReceiver"),
     m_inputHandler(inputHandler)
 {
   m_activity = nativeActivity;
