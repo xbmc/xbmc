@@ -173,8 +173,5 @@ float CKey::GetRepeat() const
 
 void CKey::SetFromEventServer(bool fromEventServer)
 {
-  if (fromEventServer && (m_buttonCode & KEY_VKEY))
-    m_unicode = m_buttonCode - KEY_VKEY;
-
   m_fromEventServer = fromEventServer;
 }
