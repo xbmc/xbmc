@@ -1,0 +1,16 @@
+package @APP_PACKAGE@.interfaces;
+
+import android.media.MediaDrm;
+import android.media.MediaDrm.OnKeyStatusChangeListener;
+import java.util.List;
+
+public class XBMCMediaDrmOnKeyStatusChangeListener implements OnKeyStatusChangeListener
+{
+  native void _onKeyStatusChange(MediaDrm md, byte[] sessionId, List<MediaDrm.KeyStatus> keyInformation, boolean hasNewUsableKey);
+
+  @Override
+  public void onKeyStatusChange(MediaDrm md, byte[] sessionId, List<MediaDrm.KeyStatus> keyInformation, boolean hasNewUsableKey)
+  {
+    _onKeyStatusChange(md, sessionId, keyInformation, hasNewUsableKey);
+  }
+}
