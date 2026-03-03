@@ -173,8 +173,5 @@ float CKey::GetRepeat() const
 
 void CKey::SetFromService(bool fromService)
 {
-  if (fromService && (m_buttonCode & KEY_VKEY))
-    m_unicode = m_buttonCode - KEY_VKEY;
-
   m_fromService = fromService;
 }
