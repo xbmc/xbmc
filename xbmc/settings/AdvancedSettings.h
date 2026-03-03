@@ -388,6 +388,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_enableMultimediaKeys;
     std::vector<std::string> m_settingsFiles;
     void ParseSettingsFile(const std::string &file);
+    void ParseSettingsXML(const TiXmlElement* pRootElement);
 
     float GetLatencyTweak(float refreshrate, bool isHDREnabled) const;
     bool m_initialized{false};

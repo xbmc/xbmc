@@ -631,6 +631,14 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   CLog::Log(LOGINFO, "Contents of {} are...\n{}", file,
             std::regex_replace(printer.CStr(), redactRe, "$1USERNAME:PASSWORD@"));
 
+  ParseSettingsXML(advancedXML.RootElement());
+
+  // load in the settings overrides
+  CServiceBroker::GetSettingsComponent()->GetSettings()->LoadHidden(advancedXML.RootElement());
+}
+
+void CAdvancedSettings::ParseSettingsXML(const TiXmlElement* pRootElement)
+{
   const TiXmlElement* pElement = pRootElement->FirstChildElement("audio");
   if (pElement)
   {
@@ -1306,9 +1314,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   }
 
   XMLUtils::GetBoolean(pRootElement, "opengldebugging", m_openGlDebugging);
-
-  // load in the settings overrides
-  CServiceBroker::GetSettingsComponent()->GetSettings()->LoadHidden(pRootElement);
 }
 
 void CAdvancedSettings::Clear()
