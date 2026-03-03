@@ -420,8 +420,10 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     uint32_t m_nfsTimeout;
     int m_nfsRetries;
 
-  private:
+  protected:
     void Initialize();
+
+  private:
     void Clear();
     void SetExtraArtwork(const TiXmlElement* arttypes, std::vector<std::string>& artworkMap) const;
 
