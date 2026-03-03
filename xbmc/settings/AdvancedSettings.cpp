@@ -1246,8 +1246,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     const TiXmlElement* pSortDecription = pPVR->FirstChildElement("pvrrecordings");
     if (pSortDecription)
     {
-      const char* XML_SORTMETHOD = "sortmethod";
-      const char* XML_SORTORDER = "sortorder";
+      constexpr const char* XML_SORTMETHOD = "sortmethod";
+      constexpr const char* XML_SORTORDER = "sortorder";
       auto sortMethod = static_cast<int>(SortBy::NONE);
       static constexpr CSet validSortMethods{SortBy::LABEL,          SortBy::DATE,
                                              SortBy::SIZE,           SortBy::FILE,
