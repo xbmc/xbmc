@@ -353,9 +353,7 @@ static bool GetDetailsFromFrame(CDemuxStreamVideo* stream,
                                 CDVDDemux* demuxer,
                                 CStreamDetailVideo& vDetail)
 {
-  int packetsTried = 0;
   std::unique_ptr<CProcessInfo> processInfo(CProcessInfo::CreateInstance());
-
   std::vector<AVPixelFormat> pixFmts;
 
   pixFmts.push_back(AV_PIX_FMT_YUV420P);
@@ -393,7 +391,6 @@ static bool GetDetailsFromFrame(CDemuxStreamVideo* stream,
   do
   {
     DemuxPacket* packet = demuxer->Read();
-    packetsTried++;
 
     if (!packet)
       break;
@@ -430,6 +427,7 @@ static bool GetDetailsFromFrame(CDemuxStreamVideo* stream,
   }
 
   vDetail.m_strHdrType = CStreamDetails::HdrTypeToString(picture.hdrType);
+  vDetail.m_strHdrTypeAlt = CStreamDetails::HdrTypeToString(picture.hdrTypeAlt);
   if (vDetail.m_strHdrDetail.find("7") != std::string::npos)
     vDetail.m_strHdrDetail += picture.strDVELType;
   return true;
@@ -477,10 +475,9 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
         }
       }
       // look for DV EL type and/or hdr10+
-      // TODO: make this work for profile 10 (not sure if FFmpeg can do it)
       if (vstream->hdr_type != StreamHdrType::HDR_TYPE_NONE &&
           vstream->hdr_type != StreamHdrType::HDR_TYPE_HLG && vstream->dovi.dv_profile != 5 &&
-          vstream->dovi.dv_profile <= 10)
+          vstream->dovi.dv_profile <= 10 && p->m_strHdrTypeAlt != "hlg")
       {
         if (!GetDetailsFromFrame(vstream, pDemux, *p))
           CLog::LogF(LOGERROR, "Failed to get HDR details from frame");
@@ -507,6 +504,21 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
         p->m_iDuration = p->m_iDuration / 1000;
 
       details.AddStream(p);
+
+      if (details.GetVideoHdrType(1, true).length() > 0)
+      {
+        // add a virtual stream for the alternate HDR type
+        CStreamDetailVideo* q = new CStreamDetailVideo();
+        *q = *p;
+        q->m_strHdrType = q->m_strHdrTypeAlt;
+        // atm we use hdrDetail only for DV
+        if (q->m_strHdrType != "dolbyvision")
+          q->m_strHdrDetail = "";
+        if (p->m_strHdrType != "dolbyvision")
+          p->m_strHdrDetail = "";
+        details.AddStream(q);
+      }
+
       retVal = true;
     }
 

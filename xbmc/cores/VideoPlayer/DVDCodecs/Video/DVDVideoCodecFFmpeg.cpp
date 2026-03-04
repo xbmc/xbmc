@@ -1128,9 +1128,7 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
     pVideoPicture->hasLightMetadata = true;
   }
 
-  if (pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION ||
-      pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_HDR10P ||
-      pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_DOVI_HDR10P)
+  if (pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)
   {
     sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_DOVI_METADATA);
     if (sd)
@@ -1172,7 +1170,7 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
       if (pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_HDR10)
         pVideoPicture->hdrType = StreamHdrType::HDR_TYPE_HDR10P;
       else
-        pVideoPicture->hdrType = StreamHdrType::HDR_TYPE_DOVI_HDR10P;
+        pVideoPicture->hdrTypeAlt = StreamHdrType::HDR_TYPE_HDR10P;
     }
     else
       CLog::LogF(LOGDEBUG, "Not hdr10plus");
