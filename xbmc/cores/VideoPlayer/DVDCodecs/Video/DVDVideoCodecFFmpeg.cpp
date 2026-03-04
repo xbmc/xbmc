@@ -1128,9 +1128,7 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
     pVideoPicture->hasLightMetadata = true;
   }
 
-  if (pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION ||
-      pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_HDR10P ||
-      pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_DOVI_HDR10P)
+  if (pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)
   {
     sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_DOVI_METADATA);
     if (sd)
@@ -1155,11 +1153,7 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
           }
         }
       }
-      else
-        CLog::LogF(LOGDEBUG, "Not a dual layer stream");
     }
-    else
-      CLog::LogF(LOGDEBUG, "No DV metadata");
   }
 
   if (pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_HDR10 ||
@@ -1168,14 +1162,11 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
     sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_DYNAMIC_HDR_PLUS);
     if (sd)
     {
-      CLog::LogF(LOGDEBUG, "hdr10plus detected");
       if (pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_HDR10)
-        pVideoPicture->hdrType = StreamHdrType::HDR_TYPE_HDR10P;
+        pVideoPicture->hdrType = StreamHdrType::HDR_TYPE_HDR10PLUS;
       else
-        pVideoPicture->hdrType = StreamHdrType::HDR_TYPE_DOVI_HDR10P;
+        pVideoPicture->hdrTypeAlt = StreamHdrType::HDR_TYPE_HDR10PLUS;
     }
-    else
-      CLog::LogF(LOGDEBUG, "Not hdr10plus");
   }
 
   if (pVideoPicture->iRepeatPicture)

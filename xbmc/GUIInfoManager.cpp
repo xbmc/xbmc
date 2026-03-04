@@ -7624,7 +7624,7 @@ constexpr std::array<InfoMap, 228> listitem_labels = {{
     {"episodepart",                   LISTITEM_EPISODEPART},
     {"mediaproviders",                LISTITEM_MEDIAPROVIDERS},
     {"titleextrainfo",                LISTITEM_TITLE_EXTRAINFO},
-    {"hdrdetail",                     LISTITEM_HDR_DETAIL},
+    {"hdrdetail",                     LISTITEM_VIDEO_HDR_DETAIL},
 }};
 // clang-format on
 

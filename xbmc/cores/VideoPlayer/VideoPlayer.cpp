@@ -5604,7 +5604,25 @@ void CVideoPlayer::GetVideoStreamInfo(int streamId, VideoStreamInfo& info) const
   info.stereoMode = s.stereo_mode;
   info.flags = s.flags;
   info.hdrType = s.hdrType;
-  info.hdrDetail = std::to_string(s.dovi.dv_profile);
+  if (info.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)
+  {
+    if (info.hdrDetail.length() == 0)
+      info.hdrDetail =
+          s.dovi.dv_profile == 0 ? "" : std::to_string(static_cast<int>(s.dovi.dv_profile));
+    // distinguish HDR10 from HLG base
+    if (s.dovi.dv_profile == 8)
+    {
+      info.hdrDetail += ".";
+      info.hdrDetail += std::to_string(static_cast<int>(s.dovi.dv_bl_signal_compatibility_id));
+      if (s.dovi.dv_bl_signal_compatibility_id == 4)
+        info.hdrTypeAlt = StreamHdrType::HDR_TYPE_HLG;
+    }
+  }
+  else
+  {
+    info.hdrDetail = "";
+    info.hdrTypeAlt = StreamHdrType::HDR_TYPE_NONE;
+  }
   info.fpsRate = s.fpsRate;
   info.fpsScale = s.fpsScale;
 }

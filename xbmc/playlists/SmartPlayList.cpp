@@ -1100,7 +1100,7 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
     query = db.PrepareSQL(negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND streamdetails.iStreamType = %i GROUP BY streamdetails.idFile HAVING COUNT(streamdetails.iStreamType) " + parameter + ")",CStreamDetail::SUBTITLE);
   else if (m_field == static_cast<int>(Field::HDR_TYPE))
     query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND strHdrType " + parameter + ")";
-  else if (m_field == FieldHdrDetail)
+  else if (m_field == static_cast<int>(Field::HDR_DETAIL))
     query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table +
             ".idFile AND strHdrDetail " + parameter + ")";
 

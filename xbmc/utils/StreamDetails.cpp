@@ -180,6 +180,25 @@ bool CStreamDetailSubtitle::IsWorseThan(const CStreamDetail &that) const
                                       g_langInfo.GetSubtitleLanguage(true));
 }
 
+CStreamDetailVideo& CStreamDetailVideo::operator=(const CStreamDetailVideo& that)
+{
+  if (this != &that)
+  {
+    this->m_pParent = that.m_pParent;
+    this->m_iWidth = that.m_iWidth;
+    this->m_iHeight = that.m_iHeight;
+    this->m_fAspect = that.m_fAspect;
+    this->m_strCodec = that.m_strCodec;
+    this->m_iDuration = that.m_iDuration;
+    this->m_strStereoMode = that.m_strStereoMode;
+    this->m_strLanguage = that.m_strLanguage;
+    this->m_strHdrType = that.m_strHdrType;
+    this->m_strHdrTypeAlt = that.m_strHdrTypeAlt;
+    this->m_strHdrDetail = that.m_strHdrDetail;
+  }
+  return *this;
+}
+
 CStreamDetailSubtitle& CStreamDetailSubtitle::operator=(const CStreamDetailSubtitle &that)
 {
   if (this != &that)
@@ -411,12 +430,17 @@ int CStreamDetails::GetVideoHeight(int idx) const
     return 0;
 }
 
-std::string CStreamDetails::GetVideoHdrType( int idx) const
+std::string CStreamDetails::GetVideoHdrType(int idx, bool alt) const
 {
   const CStreamDetailVideo* item =
       dynamic_cast<const CStreamDetailVideo*>(GetNthStream(CStreamDetail::VIDEO, idx));
   if (item)
-    return item->m_strHdrType;
+  {
+    if (alt)
+      return item->m_strHdrTypeAlt;
+    else
+      return item->m_strHdrType;
+  }
   else
     return "";
 }
@@ -683,10 +707,8 @@ std::string CStreamDetails::HdrTypeToString(StreamHdrType hdrType)
       return "hdr10";
     case StreamHdrType::HDR_TYPE_HLG:
       return "hlg";
-    case StreamHdrType::HDR_TYPE_HDR10P:
-      return "hdr10p";
-    case StreamHdrType::HDR_TYPE_DOVI_HDR10P:
-      return "hdr10p-dolbyvision";
+    case StreamHdrType::HDR_TYPE_HDR10PLUS:
+      return "hdr10plus";
     case StreamHdrType::HDR_TYPE_NONE:
     default:
       return "";

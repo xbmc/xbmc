@@ -612,6 +612,14 @@ void CVideoThumbLoader::DetectAndAddMissingItemData(CFileItem &item)
   {
     CStreamDetails& details = item.GetVideoInfoTag()->m_streamDetails;
 
+    // add video stream HDR details
+    for (int i = 1; i <= details.GetVideoStreamCount(); i++)
+    {
+      std::string index = std::to_string(i);
+      item.SetProperty("HdrType." + index, details.GetVideoHdrType(i).c_str());
+      item.SetProperty("HdrDetail." + index, details.GetVideoHdrDetail(i).c_str());
+    }
+
     // add audio language properties
     for (int i = 1; i <= details.GetAudioStreamCount(); i++)
     {
