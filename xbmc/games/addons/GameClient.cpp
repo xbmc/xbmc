@@ -318,6 +318,7 @@ bool CGameClient::InitializeGameplay(const std::string& gamePath,
     Input().Start(input);
 
     m_bIsPlaying = true;
+    m_hasFrameRun = false;
     m_gamePath = gamePath;
     m_input = input;
 
@@ -491,6 +492,7 @@ void CGameClient::CloseFile()
     m_inGameSaves.reset();
 
     m_bIsPlaying = false;
+    m_hasFrameRun = false;
     m_gamePath.clear();
     m_serializeSize = 0;
     m_input = nullptr;
@@ -529,6 +531,7 @@ void CGameClient::RunFrame()
     try
     {
       LogError(m_ifc.game->toAddon->RunFrame(m_ifc.game), "RunFrame()");
+      m_hasFrameRun = true;
     }
     catch (...)
     {
@@ -565,11 +568,11 @@ bool CGameClient::Deserialize(const uint8_t* data, size_t size)
   if (data == nullptr || size == 0)
     return false;
 
-  std::unique_lock lock(m_critSection);
-
   bool bSuccess = false;
   if (m_bIsPlaying)
   {
+    std::unique_lock lock(m_critSection);
+
     try
     {
       bSuccess =
@@ -579,6 +582,17 @@ bool CGameClient::Deserialize(const uint8_t* data, size_t size)
     {
       LogException("Deserialize()");
     }
+  }
+
+  // Some cores, like Mupen64Plus-NX, initialize on the first frame, so run
+  // a frame and try again
+  if (!bSuccess && !m_hasFrameRun)
+  {
+    RunFrame();
+
+    std::unique_lock lock(m_critSection);
+
+    bSuccess = LogError(m_ifc.game->toAddon->Deserialize(m_ifc.game, data, size), "Deserialize()");
   }
 
   return bSuccess;
