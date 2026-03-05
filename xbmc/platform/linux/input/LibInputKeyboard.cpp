@@ -329,8 +329,16 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
   if (!m_ctx || !m_keymap || !m_state)
     return;
 
-  const uint32_t xkbkey = libinput_event_keyboard_get_key(e) + 8;
+  const uint32_t evkey = libinput_event_keyboard_get_key(e);
+  const uint32_t xkbkey = evkey + 8;
   const xkb_keysym_t keysym = xkb_state_key_get_one_sym(m_state.get(), xkbkey);
+
+  char keyname[64];
+  if (xkb_keysym_get_name(keysym, keyname, sizeof(keyname)) < 0)
+    keyname[0] = 0;
+
+  CLog::LogF(LOGDEBUG, "libinput key: {:#02x}, xkb keysym: {:#04x} ({})", evkey, keysym, keyname);
+
   const bool pressed = libinput_event_keyboard_get_key_state(e) == LIBINPUT_KEY_STATE_PRESSED;
   xkb_state_update_key(m_state.get(), xkbkey, pressed ? XKB_KEY_DOWN : XKB_KEY_UP);
 
