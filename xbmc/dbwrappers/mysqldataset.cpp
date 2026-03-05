@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -55,7 +55,6 @@ MysqlDatabase::MysqlDatabase()
   db = "mysql";
   login = "root";
   passwd = "null";
-  default_charset = "";
 }
 
 MysqlDatabase::~MysqlDatabase()
@@ -226,7 +225,6 @@ int MysqlDatabase::connect(bool create_new)
       //mysql_autocommit(conn, false);
 
       // enforce utf8 charset usage
-      default_charset = mysql_character_set_name(conn);
       if (mysql_set_character_set(conn, "utf8")) // returns 0 on success
       {
         CLog::Log(LOGERROR, "Unable to set utf8 charset: {} [{}]({})", db, mysql_errno(conn),

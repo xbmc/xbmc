@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002, Leo Seib, Hannover
+ *  Copyright (C) 2002-2026, Leo Seib, Hannover
  *
  *  Project:Dataset C++ Dynamic Library
  *  Module: Dataset abstraction layer header file
@@ -58,7 +58,6 @@ protected:
   std::string login;
   std::string passwd; // Login info
   std::string sequence_table{"db_sequence"}; // Sequence table for nextid
-  std::string default_charset; // Default character set
   std::string key;
   std::string cert;
   std::string ca;
@@ -98,8 +97,6 @@ public:
   void setSequenceTable(const char* new_seq_table) { sequence_table = new_seq_table; }
   /* Get name of sequence table */
   const char* getSequenceTable() const { return sequence_table.c_str(); }
-  /* Get the default character set */
-  const char* getDefaultCharset() const { return default_charset.c_str(); }
   /* Sets configuration */
   virtual void setConfig(const char* newKey,
                          const char* newCert,
