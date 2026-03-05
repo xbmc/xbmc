@@ -217,17 +217,6 @@ bool CButtonTranslator::HasLongpressMapping_Internal(int window, const CKey& key
 
     if (it2 != (*it).second.end())
       return it2->second.id != ACTION_NOOP;
-
-#ifdef TARGET_POSIX
-    // Some buttoncodes changed in Hardy
-    if ((code & KEY_VKEY) == KEY_VKEY && (code & 0x0F00))
-    {
-      code &= ~0x0F00;
-      it2 = (*it).second.find(code);
-      if (it2 != (*it).second.end())
-        return true;
-    }
-#endif
   }
 
   // no key mapping found for the current window do the fallback handling
@@ -269,21 +258,6 @@ unsigned int CButtonTranslator::GetActionCode(int window,
     action = (*it2).second.id;
     strAction = (*it2).second.strID;
   }
-
-#ifdef TARGET_POSIX
-  // Some buttoncodes changed in Hardy
-  if (action == ACTION_NONE && (code & KEY_VKEY) == KEY_VKEY && (code & 0x0F00))
-  {
-    CLog::Log(LOGDEBUG, "{}: Trying Hardy keycode for {:#04x}", __FUNCTION__, code);
-    code &= ~0x0F00;
-    it2 = (*it).second.find(code);
-    if (it2 != (*it).second.end())
-    {
-      action = (*it2).second.id;
-      strAction = (*it2).second.strID;
-    }
-  }
-#endif
 
   return action;
 }
