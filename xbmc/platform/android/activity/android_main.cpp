@@ -27,6 +27,8 @@
 #include "platform/android/activity/JNIXBMCURIUtils.h"
 #include "platform/android/activity/JNIXBMCVideoView.h"
 
+#include <android/log.h>
+
 #include <stdint.h>
 #include <stdio.h>
 #include <thread>
