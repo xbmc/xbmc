@@ -1922,30 +1922,67 @@ std::string CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
   {
     strMovieName = CStackDirectory::GetBasePath(m_strPath);
   }
-  else if (bUseFolderNames && (!IsFolder() || URIUtils::IsInArchive(m_strPath) ||
-                               (HasVideoInfoTag() && GetVideoInfoTag()->m_iDbId > 0 &&
-                                !CMediaTypes::IsContainer(GetVideoInfoTag()->m_type))))
+  else if (bUseFolderNames && !URIUtils::IsInArchive(strMovieName) &&
+           (!IsFolder() || (HasVideoInfoTag() && GetVideoInfoTag()->m_iDbId > 0 &&
+                            !CMediaTypes::IsContainer(GetVideoInfoTag()->m_type))))
   {
     const std::string name{strMovieName};
-    URIUtils::GetParentPath(name, strMovieName);
+    if (!URIUtils::GetParentPath(name, strMovieName))
+      strMovieName = name;
   }
   if (strMovieName.empty())
     return strMovieName;
 
-  const CURL url{strMovieName};
+  CURL url{strMovieName};
   if (URIUtils::IsInArchive(strMovieName) || URIUtils::IsArchive(url))
   {
-    // Try to get archive itself, if empty take path before
-    std::string name{url.GetHostName()};
-    if (name.empty())
-      name = strMovieName;
-    if (bUseFolderNames)
+    // If not using folder names then the archive itself may contain multiple movie files
+    //  so use the file name instead of the archive name
+    // Otherwise return the folder containing the archive (to be consistent with other cases where we use folder names)
+    if (!bUseFolderNames)
     {
-      if (!URIUtils::GetParentPath(name, strMovieName))
-        strMovieName = name;
+      // Special case is a bluray/dvd in a compressed file
+      const std::string name{url.GetHostName()};
+      if (!name.empty() && (URIUtils::IsBDFile(strMovieName) || URIUtils::IsDVDFile(strMovieName)))
+      {
+        // We have two choices - if there is a folder within the archive then use that, otherwise use the file name of the archive
+        const std::string base{URIUtils::RemoveDiscPath(url.GetFileName())};
+        if (!base.empty())
+        {
+          const std::string folder{URIUtils::GetDirectory(URIUtils::RemoveDiscPath(strMovieName))};
+          strMovieName = folder;
+        }
+        else
+          strMovieName = name;
+      }
     }
     else
-      strMovieName = name;
+    {
+      // First see if the movie is in a folder within the archive (that isn't a BD/DVD folder)
+      if (URIUtils::IsBDFile(strMovieName) || URIUtils::IsDVDFile(strMovieName))
+      {
+        const std::string base{URIUtils::RemoveDiscPath(strMovieName)};
+        if (!base.empty())
+        {
+          strMovieName = base;
+          url = CURL(strMovieName);
+        }
+      }
+      const std::string folder{URIUtils::GetDirectory(url.GetFileName())};
+      if (folder.empty())
+      {
+        // Not in folder in archive so use folder archive is in
+        const std::string name{strMovieName};
+        if (!URIUtils::GetParentPath(name, strMovieName))
+          strMovieName = name;
+      }
+      else
+      {
+        const std::string base{URIUtils::GetDirectory(strMovieName)};
+        if (!base.empty())
+          strMovieName = base;
+      }
+    }
   }
 
   // Remove any trailing 'Disc n' and disc path (VIDEO_TS or BDMV) to get actual movie title

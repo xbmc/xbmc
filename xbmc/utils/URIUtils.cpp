@@ -649,6 +649,23 @@ std::string URIUtils::GetDiscBasePath(const std::string& file)
   return base;
 }
 
+std::string URIUtils::RemoveDiscPath(const std::string& path)
+{
+  std::string base{};
+  if (IsBDFile(path) || IsDVDFile(path))
+  {
+    std::string folder{GetDirectory(path)};
+    RemoveSlashAtEnd(folder);
+    const std::string lastFolder{GetFileName(folder)};
+    if (StringUtils::EqualsNoCase(lastFolder, "VIDEO_TS") ||
+        StringUtils::EqualsNoCase(lastFolder, "BDMV"))
+      base = GetDirectory(folder); // go back up another one
+    else
+      base = folder;
+  }
+  return base;
+}
+
 std::string URIUtils::GetDiscFile(const std::string& path)
 {
   if (!IsBlurayPath(path))
