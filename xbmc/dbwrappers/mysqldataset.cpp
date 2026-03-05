@@ -1867,29 +1867,6 @@ int MysqlDataset::exec(const std::string& sql)
     qry = qry.insert(loc + 19, " auto_increment ");
   }
 
-  // force the charset and collation to UTF-8
-  if (ci_find(qry, "CREATE TABLE") != std::string::npos ||
-      ci_find(qry, "CREATE TEMPORARY TABLE") != std::string::npos)
-  {
-    // If CREATE TABLE ... SELECT Syntax is used we need to add the encoding after the table before the select
-    // e.g. CREATE TABLE x CHARACTER SET utf8 COLLATE utf8_general_ci [AS] SELECT * FROM y
-    loc = qry.find(" AS SELECT ");
-    if (loc == std::string::npos)
-    {
-      loc = qry.find(" SELECT ");
-    }
-    if (loc != std::string::npos)
-    {
-      qry = qry.insert(loc, SQL_CHARSET_COLLATION);
-      qry = qry.insert(loc, " ");
-    }
-    else
-    {
-      qry.append(" ");
-      qry.append(SQL_CHARSET_COLLATION);
-    }
-  }
-
   const auto start = std::chrono::steady_clock::now();
 
   const int res =
