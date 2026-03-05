@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012-2018 Team Kodi
+ *  Copyright (C) 2012-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -65,7 +65,7 @@ public:
    * @brief Get the minimal database version that is required to operate correctly.
    * @return The minimal database version.
    */
-  int GetSchemaVersion() const override { return 47; }
+  int GetSchemaVersion() const override { return 48; }
 
   /*!
    * @brief Get the default sqlite database filename.
