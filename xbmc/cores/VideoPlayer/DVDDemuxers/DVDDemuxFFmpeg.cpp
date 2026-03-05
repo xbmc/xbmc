@@ -2278,6 +2278,10 @@ void CDVDDemuxFFmpeg::ParsePacket(AVPacket* pkt)
 
   if (st && st->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
   {
+    // Skip if we've already determined this codec is unsupported
+    if (m_unsupportedCodecs.find(st->codecpar->codec_id) != m_unsupportedCodecs.end())
+      return;
+
     auto parser = m_parsers.find(st->index);
     if (parser == m_parsers.end())
     {
@@ -2289,8 +2293,11 @@ void CDVDDemuxFFmpeg::ParsePacket(AVPacket* pkt)
       const AVCodec* codec = avcodec_find_decoder(st->codecpar->codec_id);
       if (codec == nullptr)
       {
-        CLog::Log(LOGERROR, "{} - can't find decoder", __FUNCTION__);
+        CLog::Log(LOGERROR, "{} - can't find decoder for codec {}", __FUNCTION__,
+                  avcodec_get_name(st->codecpar->codec_id));
         m_parsers.erase(parser);
+        // Track this codec as unsupported to prevent repeated errors
+        m_unsupportedCodecs.insert(st->codecpar->codec_id);
         return;
       }
       parser->second->m_codecCtx = avcodec_alloc_context3(codec);
