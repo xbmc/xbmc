@@ -15,7 +15,7 @@
 #ifdef HAS_MYSQL
 #include <mysql/mysql.h>
 #elif defined(HAS_MARIADB)
-#include <mariadb/mysql.h>
+#include <mysql.h>
 #endif
 
 namespace dbiplus
