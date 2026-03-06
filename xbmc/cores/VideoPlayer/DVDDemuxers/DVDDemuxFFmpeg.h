@@ -146,6 +146,7 @@ protected:
   CCriticalSection m_critSection;
   std::map<int, CDemuxStream*> m_streams;
   std::map<int, std::unique_ptr<CDemuxParserFFmpeg>> m_parsers;
+  std::set<int> m_unsupportedCodecs; // Track codecs without decoders to avoid repeated errors
 
   AVIOContext* m_ioContext;
 
