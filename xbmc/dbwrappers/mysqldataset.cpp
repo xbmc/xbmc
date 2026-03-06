@@ -43,6 +43,12 @@ constexpr int ER_BAD_DB_ERROR = 1049;
 #define DEF_COLLATION "utf8mb4_general_ci"
 constexpr std::string_view SQL_CHARSET_COLLATION =
     "CHARACTER SET " DEF_CHARSET " COLLATE " DEF_COLLATION;
+
+// Minimum MySQL and MariaDB versions required for the default large index size needed by utf8mb4
+constexpr unsigned long MIN_MYSQL = 50709;
+constexpr std::string_view MIN_MYSQL_STR = "5.7.9";
+constexpr unsigned long MIN_MARIADB = 100205;
+constexpr std::string_view MIN_MARIADB_STR = "10.2.5";
 } // unnamed namespace
 
 namespace dbiplus
@@ -204,25 +210,22 @@ int MysqlDatabase::connect(bool create_new)
       static bool showed_ver_info = false;
       if (!showed_ver_info)
       {
-        std::string version_string = mysql_get_server_info(conn);
+        const std::string version_string = mysql_get_server_info(conn);
         CLog::Log(LOGINFO, "MYSQL: Connected to version {}", version_string);
         showed_ver_info = true;
-        unsigned long version = mysql_get_server_version(conn);
-        // Minimum for MySQL: 5.6 (5.5 is EOL)
-        unsigned long min_version = 50600;
-        if (version_string.find("MariaDB") != std::string::npos)
-        {
-          // Minimum for MariaDB: 5.5 (still supported)
-          min_version = 50500;
-        }
 
-        if (version < min_version)
+        const unsigned long version = mysql_get_server_version(conn);
+        const unsigned long minVersion =
+            version_string.find("MariaDB") != std::string::npos ? MIN_MARIADB : MIN_MYSQL;
+
+        if (version < minVersion)
         {
-          CLog::Log(
-              LOGWARNING,
-              "MYSQL: Your database server version {} is very old and might not be supported in "
-              "future Kodi versions. Please consider upgrading to MySQL 5.7 or MariaDB 10.2.",
-              version_string);
+          CLog::Log(LOGERROR,
+                    "MYSQL: Your database server version {} is very old. Kodi requires at least "
+                    "MySQL {} or MariaDB {}.",
+                    version_string, MIN_MYSQL_STR, MIN_MARIADB_STR);
+
+          throw DbErrors("database server version %s too old", version_string.c_str());
         }
       }
 
