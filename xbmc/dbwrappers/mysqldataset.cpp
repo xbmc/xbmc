@@ -49,6 +49,20 @@ constexpr unsigned long MIN_MYSQL = 50709;
 constexpr std::string_view MIN_MYSQL_STR = "5.7.9";
 constexpr unsigned long MIN_MARIADB = 100205;
 constexpr std::string_view MIN_MARIADB_STR = "10.2.5";
+
+/*!
+ * \brief Validation of unquoted identifiers
+ * \param id Identifier to validate
+ * \return true = valid, false = not valid
+ */
+bool IsValidIdentifier(std::string_view id)
+{
+  if (id.size() > 64)
+    return false;
+
+  return std::ranges::all_of(id, [](char c)
+                             { return StringUtils::isasciialphanum(c) || c == '_' || c == '$'; });
+}
 } // unnamed namespace
 
 namespace dbiplus
@@ -366,6 +380,12 @@ int MysqlDatabase::copy(const char* backup_name)
     // duplicate each table from old db to new db
     while ((row = mysql_fetch_row(res)) != nullptr)
     {
+      if (!IsValidIdentifier(row[0]))
+      {
+        CLog::LogF(LOGERROR, "Invalid table name {} - skipped.", row[0]);
+        continue;
+      }
+
       // copy the table definition
       sqlcmd = StringUtils::Format("CREATE TABLE `{}`.{} LIKE {}", backup_name, row[0], row[0]);
       ret = query_with_reconnect(sqlcmd.c_str());
