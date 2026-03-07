@@ -96,6 +96,7 @@ public:
   const CDateTime& GetFirstAired() const;
   std::string GetCast(const std::string& separator, bool bIncludeRole = false) const;
   bool HasStreamDetails() const;
+  bool HasNFOStreamDetails() const;
   bool IsEmpty() const;
 
   const std::string& GetPath() const

@@ -248,17 +248,18 @@ void SetStreamDetails(const CURL& url,
   if (!title.videoStreams.empty())
     info->m_streamDetails.SetStreams(title.videoStreams[0],
                                      static_cast<int>(title.duration.count() / 1000),
-                                     AudioStreamInfo{}, SubtitleStreamInfo{});
+                                     AudioStreamInfo{}, SubtitleStreamInfo{}, CStreamDetail::MEDIA);
   else
-    info->m_streamDetails.SetStreams(VideoStreamInfo{}, 0, AudioStreamInfo{}, SubtitleStreamInfo{});
+    info->m_streamDetails.SetStreams(VideoStreamInfo{}, 0, AudioStreamInfo{}, SubtitleStreamInfo{},
+                                     CStreamDetail::MEDIA);
 
   // Audio streams
   for (const auto& audio : title.audioStreams)
-    info->m_streamDetails.AddStream(new CStreamDetailAudio(audio));
+    info->m_streamDetails.AddStream(new CStreamDetailAudio(audio, CStreamDetail::MEDIA));
 
   // Subtitles
   for (const auto& subtitle : title.pgStreams)
-    info->m_streamDetails.AddStream(new CStreamDetailSubtitle(subtitle));
+    info->m_streamDetails.AddStream(new CStreamDetailSubtitle(subtitle, CStreamDetail::MEDIA));
 }
 
 std::shared_ptr<CFileItem> GetFileItem(const CURL& url,
@@ -520,6 +521,7 @@ void ProcessPlaylist(PlaylistMap& playlists, PlaylistInformation& titleInfo, Cli
 bool GetPlaylistsInformation(const CURL& url,
                              const std::string& realPath,
                              int flags,
+                             CFileItemList& allTitles,
                              ClipMap& clips,
                              PlaylistMap& playlists,
                              std::map<unsigned int, ClipInformation>& clipCache)
@@ -536,7 +538,6 @@ bool GetPlaylistsInformation(const CURL& url,
 
     // Get all titles on disc
     // Sort by playlist for grouping later
-    CFileItemList allTitles;
     GetPlaylists(url, realPath, flags, GetTitle::GET_TITLES_EPISODES, allTitles,
                  SortTitles::SORT_TITLES_EPISODE, clipCache);
 
@@ -756,11 +757,13 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     // Get playlist, clip and language information
     ClipMap clips;
     PlaylistMap playlists;
-    GetPlaylistsInformation(url, m_realPath, m_flags, clips, playlists, m_clipCache);
+    CFileItemList allTitles;
+    GetPlaylistsInformation(url, m_realPath, m_flags, allTitles, clips, playlists, m_clipCache);
 
     // Get episode playlists
     CDiscDirectoryHelper helper;
-    helper.GetEpisodePlaylists(m_url, items, episodeIndex, episodesOnDisc, clips, playlists);
+    helper.GetEpisodePlaylists(m_url, items, allTitles, episodeIndex, episodesOnDisc, clips,
+                               playlists);
 
     // Heuristics failed so return all playlists
     if (items.IsEmpty())
