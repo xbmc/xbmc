@@ -63,16 +63,16 @@ void CPVRChannelGroupMember::SetChannel(const std::shared_ptr<CPVRChannel>& chan
 
 void CPVRChannelGroupMember::ToSortable(SortItem& sortable, Field field) const
 {
-  if (field == FieldChannelNumber)
+  if (field == Field::CHANNEL_NUMBER)
   {
-    sortable[FieldChannelNumber] = m_channelNumber.SortableChannelNumber();
+    sortable[Field::CHANNEL_NUMBER] = m_channelNumber.SortableChannelNumber();
   }
-  else if (field == FieldClientChannelOrder)
+  else if (field == Field::CLIENT_CHANNEL_ORDER)
   {
     if (m_iOrder)
-      sortable[FieldClientChannelOrder] = m_iOrder;
+      sortable[Field::CLIENT_CHANNEL_ORDER] = m_iOrder;
     else
-      sortable[FieldClientChannelOrder] = m_clientChannelNumber.SortableChannelNumber();
+      sortable[Field::CLIENT_CHANNEL_ORDER] = m_clientChannelNumber.SortableChannelNumber();
   }
 }
 

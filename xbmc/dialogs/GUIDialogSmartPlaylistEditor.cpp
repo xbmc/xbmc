@@ -337,11 +337,11 @@ void CGUIDialogSmartPlaylistEditor::OnType()
   
   // Remove any invalid grouping left over when changing the type
   Field currentGroup = PLAYLIST::CSmartPlaylistRule::TranslateGroup(m_playlist.GetGroup().c_str());
-  if (currentGroup != FieldNone && currentGroup != FieldUnknown)
+  if (currentGroup != Field::NONE && currentGroup != Field::UNKNOWN)
   {
     std::vector<Field> groups = PLAYLIST::CSmartPlaylistRule::GetGroups(m_playlist.GetType());
     if (std::ranges::find(groups, currentGroup) == groups.end())
-      m_playlist.SetGroup(PLAYLIST::CSmartPlaylistRule::TranslateGroup(FieldUnknown));
+      m_playlist.SetGroup(PLAYLIST::CSmartPlaylistRule::TranslateGroup(Field::UNKNOWN));
   }
 
   UpdateButtons();
@@ -506,7 +506,7 @@ void CGUIDialogSmartPlaylistEditor::UpdateRuleControlButtons()
                               iSize > 0 && // there is at least one item
                                   iItem >= 0 && iItem < iSize && // and a valid item is selected
                                   m_playlist.m_ruleCombination.GetRules()[iItem]->m_field !=
-                                      FieldNone); // and it is not be empty
+                                      static_cast<int>(Field::NONE)); // and it is not be empty
 }
 
 void CGUIDialogSmartPlaylistEditor::OnInitWindow()

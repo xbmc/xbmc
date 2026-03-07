@@ -650,18 +650,18 @@ bool CPVRChannel::SetEPGScraper(std::string_view strScraper)
 void CPVRChannel::ToSortable(SortItem& sortable, Field field) const
 {
   std::unique_lock lock(m_critSection);
-  if (field == FieldChannelName)
-    sortable[FieldChannelName] = m_strChannelName;
-  else if (field == FieldLastPlayed)
+  if (field == Field::CHANNEL_NAME)
+    sortable[Field::CHANNEL_NAME] = m_strChannelName;
+  else if (field == Field::LAST_PLAYED)
   {
     const CDateTime lastWatched(m_iLastWatched);
-    sortable[FieldLastPlayed] =
+    sortable[Field::LAST_PLAYED] =
         lastWatched.IsValid() ? lastWatched.GetAsDBDateTime() : StringUtils::Empty;
   }
-  else if (field == FieldDateAdded)
-    sortable[FieldDateAdded] = m_dateTimeAdded.GetAsDBDateTime();
-  else if (field == FieldProvider)
-    sortable[FieldProvider] = StringUtils::Format("{} {}", m_iClientId, m_iClientProviderUid);
+  else if (field == Field::DATE_ADDED)
+    sortable[Field::DATE_ADDED] = m_dateTimeAdded.GetAsDBDateTime();
+  else if (field == Field::PROVIDER)
+    sortable[Field::PROVIDER] = StringUtils::Format("{} {}", m_iClientId, m_iClientProviderUid);
 }
 
 int CPVRChannel::ChannelID() const

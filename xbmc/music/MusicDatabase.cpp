@@ -5690,7 +5690,7 @@ bool CMusicDatabase::GetArtistsByWhere(const std::string& strBaseDir,
     const dbiplus::query_data& data = m_pDS->get_result_set().records;
     for (const auto& i : results)
     {
-      const auto targetRow = static_cast<unsigned int>(i.at(FieldRow).asInteger());
+      const auto targetRow = static_cast<unsigned int>(i.at(Field::ROW).asInteger());
       const dbiplus::sql_record* const record = data.at(targetRow);
 
       try
@@ -5923,7 +5923,7 @@ bool CMusicDatabase::GetAlbumsByWhere(const std::string& baseDir,
     const dbiplus::query_data& data = m_pDS->get_result_set().records;
     for (const auto& i : results)
     {
-      const auto targetRow = static_cast<unsigned int>(i.at(FieldRow).asInteger());
+      const auto targetRow = static_cast<unsigned int>(i.at(Field::ROW).asInteger());
       const dbiplus::sql_record* const record = data.at(targetRow);
 
       try
@@ -6105,7 +6105,7 @@ bool CMusicDatabase::GetDiscsByWhere(CMusicDbUrl& musicUrl,
     const dbiplus::query_data& data = m_pDS->get_result_set().records;
     for (const auto& i : results)
     {
-      const auto targetRow = static_cast<unsigned int>(i.at(FieldRow).asInteger());
+      const auto targetRow = static_cast<unsigned int>(i.at(Field::ROW).asInteger());
       const dbiplus::sql_record* const record = data.at(targetRow);
       try
       {
@@ -6360,7 +6360,7 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string& baseDir,
     int count = 0;
     for (const auto& i : results)
     {
-      const auto targetRow = static_cast<unsigned int>(i.at(FieldRow).asInteger());
+      const auto targetRow = static_cast<unsigned int>(i.at(Field::ROW).asInteger());
       const dbiplus::sql_record* const record = data.at(targetRow);
 
       try
@@ -13173,7 +13173,7 @@ int CMusicDatabase::GetOrderFilter(const std::string& type,
     for (const auto& it : fields)
     {
       std::string strField;
-      if (it == FieldYear)
+      if (it == Field::YEAR)
         strField = "iYear";
       else
         strField = DatabaseUtils::GetField(it, type, DatabaseQueryPart::SELECT);

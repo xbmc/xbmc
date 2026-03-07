@@ -56,92 +56,92 @@ typedef struct
 
 // clang-format off
 static const translateField fields[] = {
-  { "none",              FieldNone,                    TEXT_FIELD,     nullptr,                              false, 231 },
-  { "filename",          FieldFilename,                TEXT_FIELD,     nullptr,                              false, 561 },
-  { "path",              FieldPath,                    TEXT_FIELD,     nullptr,                              true,  573 },
-  { "album",             FieldAlbum,                   TEXT_FIELD,     nullptr,                              true,  558 },
-  { "albumartist",       FieldAlbumArtist,             TEXT_FIELD,     nullptr,                              true,  566 },
-  { "artist",            FieldArtist,                  TEXT_FIELD,     nullptr,                              true,  557 },
-  { "tracknumber",       FieldTrackNumber,             NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 554 },
-  { "role",              FieldRole,                    TEXT_FIELD,     nullptr,                              true, 38033 },
-  { "comment",           FieldComment,                 TEXT_FIELD,     nullptr,                              false, 569 },
-  { "review",            FieldReview,                  TEXT_FIELD,     nullptr,                              false, 183 },
-  { "themes",            FieldThemes,                  TEXT_FIELD,     nullptr,                              false, 21895 },
-  { "moods",             FieldMoods,                   TEXT_FIELD,     nullptr,                              false, 175 },
-  { "styles",            FieldStyles,                  TEXT_FIELD,     nullptr,                              false, 176 },
-  { "type",              FieldAlbumType,               TEXT_FIELD,     nullptr,                              false, 564 },
-  { "compilation",       FieldCompilation,             BOOLEAN_FIELD,  nullptr,                              false, 204 },
-  { "label",             FieldMusicLabel,              TEXT_FIELD,     nullptr,                              false, 21899 },
-  { "title",             FieldTitle,                   TEXT_FIELD,     nullptr,                              true,  556 },
-  { "sorttitle",         FieldSortTitle,               TEXT_FIELD,     nullptr,                              false, 171 },
-  { "originaltitle",     FieldOriginalTitle,           TEXT_FIELD,     nullptr,                              false, 20376 },
-  { "year",              FieldYear,                    NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  true,  562 },
-  { "time",              FieldTime,                    SECONDS_FIELD,  StringValidation::IsTime,             false, 180 },
-  { "playcount",         FieldPlaycount,               NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 567 },
-  { "lastplayed",        FieldLastPlayed,              DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 568 },
-  { "inprogress",        FieldInProgress,              BOOLEAN_FIELD,  nullptr,                              false, 575 },
-  { "rating",            FieldRating,                  REAL_FIELD,     CSmartPlaylistRule::ValidateRating,   false, 563 },
-  { "userrating",        FieldUserRating,              REAL_FIELD,     CSmartPlaylistRule::ValidateMyRating, false, 38018 },
-  { "votes",             FieldVotes,                   REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 205 },
-  { "top250",            FieldTop250,                  NUMERIC_FIELD,  nullptr,                              false, 13409 },
-  { "mpaarating",        FieldMPAA,                    TEXT_FIELD,     nullptr,                              false, 20074 },
-  { "dateadded",         FieldDateAdded,               DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 570 },
-  { "datemodified",      FieldDateModified,            DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 39119 },
-  { "datenew",           FieldDateNew,                 DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 21877 },
-  { "genre",             FieldGenre,                   TEXT_FIELD,     nullptr,                              true,  515 },
-  { "plot",              FieldPlot,                    TEXT_FIELD,     nullptr,                              false, 207 },
-  { "plotoutline",       FieldPlotOutline,             TEXT_FIELD,     nullptr,                              false, 203 },
-  { "tagline",           FieldTagline,                 TEXT_FIELD,     nullptr,                              false, 202 },
-  { "set",               FieldSet,                     TEXT_FIELD,     nullptr,                              true,  20457 },
-  { "director",          FieldDirector,                TEXT_FIELD,     nullptr,                              true,  20339 },
-  { "actor",             FieldActor,                   TEXT_FIELD,     nullptr,                              true,  20337 },
-  { "writers",           FieldWriter,                  TEXT_FIELD,     nullptr,                              true,  20417 },
-  { "airdate",           FieldAirDate,                 DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 20416 },
-  { "hastrailer",        FieldTrailer,                 BOOLEAN_FIELD,  nullptr,                              false, 20423 },
-  { "studio",            FieldStudio,                  TEXT_FIELD,     nullptr,                              true,  572 },
-  { "country",           FieldCountry,                 TEXT_FIELD,     nullptr,                              true,  574 },
-  { "tvshow",            FieldTvShowTitle,             TEXT_FIELD,     nullptr,                              true,  20364 },
-  { "status",            FieldTvShowStatus,            TEXT_FIELD,     nullptr,                              false, 126 },
-  { "season",            FieldSeason,                  NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 20373 },
-  { "episode",           FieldEpisodeNumber,           NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 20359 },
-  { "numepisodes",       FieldNumberOfEpisodes,        REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 20360 },
-  { "numwatched",        FieldNumberOfWatchedEpisodes, REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 21457 },
-  { "videoresolution",   FieldVideoResolution,         REAL_FIELD,     nullptr,                              false, 21443 },
-  { "videocodec",        FieldVideoCodec,              TEXTIN_FIELD,   nullptr,                              false, 21445 },
-  { "videoaspect",       FieldVideoAspectRatio,        REAL_FIELD,     nullptr,                              false, 21374 },
-  { "audiochannels",     FieldAudioChannels,           REAL_FIELD,     nullptr,                              false, 21444 },
-  { "audiocodec",        FieldAudioCodec,              TEXTIN_FIELD,   nullptr,                              false, 21446 },
-  { "audiolanguage",     FieldAudioLanguage,           TEXTIN_FIELD,   nullptr,                              false, 21447 },
-  { "audiocount",        FieldAudioCount,              REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 21481 },
-  { "subtitlecount",     FieldSubtitleCount,           REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 21482 },
-  { "subtitlelanguage",  FieldSubtitleLanguage,        TEXTIN_FIELD,   nullptr,                              false, 21448 },
-  { "random",            FieldRandom,                  TEXT_FIELD,     nullptr,                              false, 590 },
-  { "playlist",          FieldPlaylist,                PLAYLIST_FIELD, nullptr,                              true,  559 },
-  { "virtualfolder",     FieldVirtualFolder,           PLAYLIST_FIELD, nullptr,                              true,  614 },
-  { "tag",               FieldTag,                     TEXT_FIELD,     nullptr,                              true,  20459 },
-  { "instruments",       FieldInstruments,             TEXT_FIELD,     nullptr,                              false, 21892 },
-  { "biography",         FieldBiography,               TEXT_FIELD,     nullptr,                              false, 21887 },
-  { "born",              FieldBorn,                    TEXT_FIELD,     nullptr,                              false, 21893 },
-  { "bandformed",        FieldBandFormed,              TEXT_FIELD,     nullptr,                              false, 21894 },
-  { "disbanded",         FieldDisbanded,               TEXT_FIELD,     nullptr,                              false, 21896 },
-  { "died",              FieldDied,                    TEXT_FIELD,     nullptr,                              false, 21897 },
-  { "artisttype",        FieldArtistType,              TEXT_FIELD,     nullptr,                              false, 564 },
-  { "gender",            FieldGender,                  TEXT_FIELD,     nullptr,                              false, 39025 },
-  { "disambiguation",    FieldDisambiguation,          TEXT_FIELD,     nullptr,                              false, 39026 },
-  { "source",            FieldSource,                  TEXT_FIELD,     nullptr,                              true,  39030 },
-  { "disctitle",         FieldDiscTitle,               TEXT_FIELD,     nullptr,                              false, 38076 },
-  { "isboxset",          FieldIsBoxset,                BOOLEAN_FIELD,  nullptr,                              false, 38074 },
-  { "totaldiscs",        FieldTotalDiscs,              NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 38077 },
-  { "originalyear",      FieldOrigYear,                NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  true,  38078 },
-  { "bpm",               FieldBPM,                     NUMERIC_FIELD,  nullptr,                              false, 38080 },
-  { "samplerate",        FieldSampleRate,              NUMERIC_FIELD,  nullptr,                              false, 613 },
-  { "bitrate",           FieldMusicBitRate,            NUMERIC_FIELD,  nullptr,                              false, 623 },
-  { "channels",          FieldNoOfChannels,            NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 253 },
-  { "albumstatus",       FieldAlbumStatus,             TEXT_FIELD,     nullptr,                              false, 38081 },
-  { "albumduration",     FieldAlbumDuration,           SECONDS_FIELD,  StringValidation::IsTime,             false, 180 },
-  { "hdrtype",           FieldHdrType,                 TEXTIN_FIELD,   nullptr,                              false, 20474 },
-  { "hasversions",       FieldHasVideoVersions,        BOOLEAN_FIELD,  nullptr,                              false, 20475 },
-  { "hasextras",         FieldHasVideoExtras,          BOOLEAN_FIELD,  nullptr,                              false, 20476 },
+  { "none",              Field::NONE,                       TEXT_FIELD,     nullptr,                              false, 231 },
+  { "filename",          Field::FILENAME,                   TEXT_FIELD,     nullptr,                              false, 561 },
+  { "path",              Field::PATH,                       TEXT_FIELD,     nullptr,                              true,  573 },
+  { "album",             Field::ALBUM,                      TEXT_FIELD,     nullptr,                              true,  558 },
+  { "albumartist",       Field::ALBUM_ARTIST,               TEXT_FIELD,     nullptr,                              true,  566 },
+  { "artist",            Field::ARTIST,                     TEXT_FIELD,     nullptr,                              true,  557 },
+  { "tracknumber",       Field::TRACK_NUMBER,               NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 554 },
+  { "role",              Field::ROLE,                       TEXT_FIELD,     nullptr,                              true, 38033 },
+  { "comment",           Field::COMMENT,                    TEXT_FIELD,     nullptr,                              false, 569 },
+  { "review",            Field::REVIEW,                     TEXT_FIELD,     nullptr,                              false, 183 },
+  { "themes",            Field::THEMES,                     TEXT_FIELD,     nullptr,                              false, 21895 },
+  { "moods",             Field::MOODS,                      TEXT_FIELD,     nullptr,                              false, 175 },
+  { "styles",            Field::STYLES,                     TEXT_FIELD,     nullptr,                              false, 176 },
+  { "type",              Field::ALBUM_TYPE,                 TEXT_FIELD,     nullptr,                              false, 564 },
+  { "compilation",       Field::COMPILATION,                BOOLEAN_FIELD,  nullptr,                              false, 204 },
+  { "label",             Field::MUSIC_LABEL,                TEXT_FIELD,     nullptr,                              false, 21899 },
+  { "title",             Field::TITLE,                      TEXT_FIELD,     nullptr,                              true,  556 },
+  { "sorttitle",         Field::SORT_TITLE,                 TEXT_FIELD,     nullptr,                              false, 171 },
+  { "originaltitle",     Field::ORIGINAL_TITLE,             TEXT_FIELD,     nullptr,                              false, 20376 },
+  { "year",              Field::YEAR,                       NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  true,  562 },
+  { "time",              Field::TIME,                       SECONDS_FIELD,  StringValidation::IsTime,             false, 180 },
+  { "playcount",         Field::PLAYCOUNT,                  NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 567 },
+  { "lastplayed",        Field::LAST_PLAYED,                DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 568 },
+  { "inprogress",        Field::IN_PROGRESS,                BOOLEAN_FIELD,  nullptr,                              false, 575 },
+  { "rating",            Field::RATING,                     REAL_FIELD,     CSmartPlaylistRule::ValidateRating,   false, 563 },
+  { "userrating",        Field::USER_RATING,                REAL_FIELD,     CSmartPlaylistRule::ValidateMyRating, false, 38018 },
+  { "votes",             Field::VOTES,                      REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 205 },
+  { "top250",            Field::TOP250,                     NUMERIC_FIELD,  nullptr,                              false, 13409 },
+  { "mpaarating",        Field::MPAA,                       TEXT_FIELD,     nullptr,                              false, 20074 },
+  { "dateadded",         Field::DATE_ADDED,                 DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 570 },
+  { "datemodified",      Field::DATE_MODIFIED,              DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 39119 },
+  { "datenew",           Field::DATE_NEW,                   DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 21877 },
+  { "genre",             Field::GENRE,                      TEXT_FIELD,     nullptr,                              true,  515 },
+  { "plot",              Field::PLOT,                       TEXT_FIELD,     nullptr,                              false, 207 },
+  { "plotoutline",       Field::PLOT_OUTLINE,               TEXT_FIELD,     nullptr,                              false, 203 },
+  { "tagline",           Field::TAGLINE,                    TEXT_FIELD,     nullptr,                              false, 202 },
+  { "set",               Field::SET,                        TEXT_FIELD,     nullptr,                              true,  20457 },
+  { "director",          Field::DIRECTOR,                   TEXT_FIELD,     nullptr,                              true,  20339 },
+  { "actor",             Field::ACTOR,                      TEXT_FIELD,     nullptr,                              true,  20337 },
+  { "writers",           Field::WRITER,                     TEXT_FIELD,     nullptr,                              true,  20417 },
+  { "airdate",           Field::AIR_DATE,                   DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 20416 },
+  { "hastrailer",        Field::TRAILER,                    BOOLEAN_FIELD,  nullptr,                              false, 20423 },
+  { "studio",            Field::STUDIO,                     TEXT_FIELD,     nullptr,                              true,  572 },
+  { "country",           Field::COUNTRY,                    TEXT_FIELD,     nullptr,                              true,  574 },
+  { "tvshow",            Field::TVSHOW_TITLE,               TEXT_FIELD,     nullptr,                              true,  20364 },
+  { "status",            Field::TVSHOW_STATUS,              TEXT_FIELD,     nullptr,                              false, 126 },
+  { "season",            Field::SEASON,                     NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 20373 },
+  { "episode",           Field::EPISODE_NUMBER,             NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 20359 },
+  { "numepisodes",       Field::NUMBER_OF_EPISODES,         REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 20360 },
+  { "numwatched",        Field::NUMBER_OF_WATCHED_EPISODES, REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 21457 },
+  { "videoresolution",   Field::VIDEO_RESOLUTION,           REAL_FIELD,     nullptr,                              false, 21443 },
+  { "videocodec",        Field::VIDEO_CODEC,                TEXTIN_FIELD,   nullptr,                              false, 21445 },
+  { "videoaspect",       Field::VIDEO_ASPECT_RATIO,         REAL_FIELD,     nullptr,                              false, 21374 },
+  { "audiochannels",     Field::AUDIO_CHANNELS,             REAL_FIELD,     nullptr,                              false, 21444 },
+  { "audiocodec",        Field::AUDIO_CODEC,                TEXTIN_FIELD,   nullptr,                              false, 21446 },
+  { "audiolanguage",     Field::AUDIO_LANGUAGE,             TEXTIN_FIELD,   nullptr,                              false, 21447 },
+  { "audiocount",        Field::AUDIO_COUNT,                REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 21481 },
+  { "subtitlecount",     Field::SUBTITLE_COUNT,             REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 21482 },
+  { "subtitlelanguage",  Field::SUBTITLE_LANGUAGE,          TEXTIN_FIELD,   nullptr,                              false, 21448 },
+  { "random",            Field::RANDOM,                     TEXT_FIELD,     nullptr,                              false, 590 },
+  { "playlist",          Field::PLAYLIST,                   PLAYLIST_FIELD, nullptr,                              true,  559 },
+  { "virtualfolder",     Field::VIRTUAL_FOLDER,             PLAYLIST_FIELD, nullptr,                              true,  614 },
+  { "tag",               Field::TAG,                        TEXT_FIELD,     nullptr,                              true,  20459 },
+  { "instruments",       Field::INSTRUMENTS,                TEXT_FIELD,     nullptr,                              false, 21892 },
+  { "biography",         Field::BIOGRAPHY,                  TEXT_FIELD,     nullptr,                              false, 21887 },
+  { "born",              Field::BORN,                       TEXT_FIELD,     nullptr,                              false, 21893 },
+  { "bandformed",        Field::BAND_FORMED,                TEXT_FIELD,     nullptr,                              false, 21894 },
+  { "disbanded",         Field::DISBANDED,                  TEXT_FIELD,     nullptr,                              false, 21896 },
+  { "died",              Field::DIED,                       TEXT_FIELD,     nullptr,                              false, 21897 },
+  { "artisttype",        Field::ARTIST_TYPE,                TEXT_FIELD,     nullptr,                              false, 564 },
+  { "gender",            Field::GENDER,                     TEXT_FIELD,     nullptr,                              false, 39025 },
+  { "disambiguation",    Field::DISAMBIGUATION,             TEXT_FIELD,     nullptr,                              false, 39026 },
+  { "source",            Field::SOURCE,                     TEXT_FIELD,     nullptr,                              true,  39030 },
+  { "disctitle",         Field::DISC_TITLE,                 TEXT_FIELD,     nullptr,                              false, 38076 },
+  { "isboxset",          Field::IS_BOXSET,                  BOOLEAN_FIELD,  nullptr,                              false, 38074 },
+  { "totaldiscs",        Field::TOTAL_DISCS,                NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 38077 },
+  { "originalyear",      Field::ORIG_YEAR,                  NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  true,  38078 },
+  { "bpm",               Field::BPM,                        NUMERIC_FIELD,  nullptr,                              false, 38080 },
+  { "samplerate",        Field::SAMPLE_RATE,                NUMERIC_FIELD,  nullptr,                              false, 613 },
+  { "bitrate",           Field::MUSIC_BITRATE,              NUMERIC_FIELD,  nullptr,                              false, 623 },
+  { "channels",          Field::NUMBER_OF_CHANNELS,         NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 253 },
+  { "albumstatus",       Field::ALBUM_STATUS,               TEXT_FIELD,     nullptr,                              false, 38081 },
+  { "albumduration",     Field::ALBUM_DURATION,             SECONDS_FIELD,  StringValidation::IsTime,             false, 180 },
+  { "hdrtype",           Field::HDR_TYPE,                   TEXTIN_FIELD,   nullptr,                              false, 20474 },
+  { "hasversions",       Field::HAS_VIDEO_VERSIONS,         BOOLEAN_FIELD,  nullptr,                              false, 20475 },
+  { "hasextras",         Field::HAS_VIDEO_EXTRAS,           BOOLEAN_FIELD,  nullptr,                              false, 20476 },
 };
 // clang-format on
 
@@ -154,20 +154,20 @@ typedef struct
 } group;
 
 // clang-format off
-static const group groups[] = { { "",               FieldUnknown,   false,    571 },
-                                { "none",           FieldNone,      false,    231 },
-                                { "sets",           FieldSet,       true,   20434 },
-                                { "genres",         FieldGenre,     false,    135 },
-                                { "years",          FieldYear,      false,    652 },
-                                { "actors",         FieldActor,     false,    344 },
-                                { "directors",      FieldDirector,  false,  20348 },
-                                { "writers",        FieldWriter,    false,  20418 },
-                                { "studios",        FieldStudio,    false,  20388 },
-                                { "countries",      FieldCountry,   false,  20451 },
-                                { "artists",        FieldArtist,    false,    133 },
-                                { "albums",         FieldAlbum,     false,    132 },
-                                { "tags",           FieldTag,       false,  20459 },
-                                { "originalyears",  FieldOrigYear,  false,  38078 },
+static const group groups[] = { { "",               Field::UNKNOWN,    false,    571 },
+                                { "none",           Field::NONE,       false,    231 },
+                                { "sets",           Field::SET,        true,   20434 },
+                                { "genres",         Field::GENRE,      false,    135 },
+                                { "years",          Field::YEAR,       false,    652 },
+                                { "actors",         Field::ACTOR,      false,    344 },
+                                { "directors",      Field::DIRECTOR,   false,  20348 },
+                                { "writers",        Field::WRITER,     false,  20418 },
+                                { "studios",        Field::STUDIO,     false,  20388 },
+                                { "countries",      Field::COUNTRY,    false,  20451 },
+                                { "artists",        Field::ARTIST,     false,    133 },
+                                { "albums",         Field::ALBUM,      false,    132 },
+                                { "tags",           Field::TAG,        false,  20459 },
+                                { "originalyears",  Field::ORIG_YEAR,  false,  38078 },
                               };
 // clang-format on
 
@@ -178,14 +178,16 @@ CSmartPlaylistRule::CSmartPlaylistRule() = default;
 int CSmartPlaylistRule::TranslateField(const char *field) const
 {
   for (const translateField& f : fields)
-    if (StringUtils::EqualsNoCase(field, f.string)) return f.field;
-  return FieldNone;
+    if (StringUtils::EqualsNoCase(field, f.string))
+      return static_cast<int>(f.field);
+  return static_cast<int>(Field::NONE);
 }
 
 std::string CSmartPlaylistRule::TranslateField(int field) const
 {
   for (const translateField& f : fields)
-    if (field == f.field) return f.string;
+    if (field == static_cast<int>(f.field))
+      return f.string;
   return "none";
 }
 
@@ -211,7 +213,7 @@ Field CSmartPlaylistRule::TranslateGroup(const char *group)
       return i.field;
   }
 
-  return FieldUnknown;
+  return Field::UNKNOWN;
 }
 
 std::string CSmartPlaylistRule::TranslateGroup(Field group)
@@ -228,7 +230,7 @@ std::string CSmartPlaylistRule::TranslateGroup(Field group)
 std::string CSmartPlaylistRule::GetLocalizedField(int field)
 {
   for (const translateField& f : fields)
-    if (field == f.field)
+    if (field == static_cast<int>(f.field))
       return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(f.localizedString);
   return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(16018);
 }
@@ -236,14 +238,16 @@ std::string CSmartPlaylistRule::GetLocalizedField(int field)
 CDatabaseQueryRule::FieldType CSmartPlaylistRule::GetFieldType(int field) const
 {
   for (const translateField& f : fields)
-    if (field == f.field) return f.type;
+    if (field == static_cast<int>(f.field))
+      return f.type;
   return TEXT_FIELD;
 }
 
 bool CSmartPlaylistRule::IsFieldBrowseable(int field)
 {
   for (const translateField& f : fields)
-    if (field == f.field) return f.browseable;
+    if (field == static_cast<int>(f.field))
+      return f.browseable;
 
   return false;
 }
@@ -259,7 +263,7 @@ bool CSmartPlaylistRule::Validate(const std::string &input, void *data)
   StringValidation::Validator validator = NULL;
   for (const translateField& field : fields)
   {
-    if (rule->m_field == field.field)
+    if (rule->m_field == static_cast<int>(field.field))
     {
         validator = field.validator;
         break;
@@ -320,229 +324,190 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
   bool isVideo = false;
   if (type == "mixed")
   {
-    fields.push_back(FieldGenre);
-    fields.push_back(FieldAlbum);
-    fields.push_back(FieldArtist);
-    fields.push_back(FieldAlbumArtist);
-    fields.push_back(FieldTitle);
-    fields.push_back(FieldOriginalTitle);
-    fields.push_back(FieldYear);
-    fields.push_back(FieldTime);
-    fields.push_back(FieldTrackNumber);
-    fields.push_back(FieldFilename);
-    fields.push_back(FieldPath);
-    fields.push_back(FieldPlaycount);
-    fields.push_back(FieldLastPlayed);
+    fields = {
+        Field::GENRE,        Field::ALBUM,          Field::ARTIST, Field::ALBUM_ARTIST,
+        Field::TITLE,        Field::ORIGINAL_TITLE, Field::YEAR,   Field::TIME,
+        Field::TRACK_NUMBER, Field::FILENAME,       Field::PATH,   Field::PLAYCOUNT,
+        Field::LAST_PLAYED,
+    };
   }
   else if (type == "songs")
   {
-    fields.push_back(FieldGenre);
-    fields.push_back(FieldSource);
-    fields.push_back(FieldAlbum);
-    fields.push_back(FieldDiscTitle);
-    fields.push_back(FieldArtist);
-    fields.push_back(FieldAlbumArtist);
-    fields.push_back(FieldTitle);
-    fields.push_back(FieldYear);
+    fields = {
+        Field::GENRE,  Field::SOURCE,       Field::ALBUM, Field::DISC_TITLE,
+        Field::ARTIST, Field::ALBUM_ARTIST, Field::TITLE, Field::YEAR,
+    };
     if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
       CSettings::SETTING_MUSICLIBRARY_USEORIGINALDATE))
-      fields.push_back(FieldOrigYear);
-    fields.push_back(FieldTime);
-    fields.push_back(FieldTrackNumber);
-    fields.push_back(FieldFilename);
-    fields.push_back(FieldPath);
-    fields.push_back(FieldPlaycount);
-    fields.push_back(FieldLastPlayed);
-    fields.push_back(FieldRating);
-    fields.push_back(FieldUserRating);
-    fields.push_back(FieldComment);
-    fields.push_back(FieldMoods);
-    fields.push_back(FieldBPM);
-    fields.push_back(FieldSampleRate);
-    fields.push_back(FieldMusicBitRate);
-    fields.push_back(FieldNoOfChannels);
-    fields.push_back(FieldDateAdded);
-    fields.push_back(FieldDateModified);
-    fields.push_back(FieldDateNew);
+      fields.push_back(Field::ORIG_YEAR);
+    fields.insert(fields.end(), {
+                                    Field::TIME,
+                                    Field::TRACK_NUMBER,
+                                    Field::FILENAME,
+                                    Field::PATH,
+                                    Field::PLAYCOUNT,
+                                    Field::LAST_PLAYED,
+                                    Field::RATING,
+                                    Field::USER_RATING,
+                                    Field::COMMENT,
+                                    Field::MOODS,
+                                    Field::BPM,
+                                    Field::SAMPLE_RATE,
+                                    Field::MUSIC_BITRATE,
+                                    Field::NUMBER_OF_CHANNELS,
+                                    Field::DATE_ADDED,
+                                    Field::DATE_MODIFIED,
+                                    Field::DATE_NEW,
+                                });
   }
   else if (type == "albums")
   {
-    fields.push_back(FieldGenre);
-    fields.push_back(FieldSource);
-    fields.push_back(FieldAlbum);
-    fields.push_back(FieldDiscTitle);
-    fields.push_back(FieldTotalDiscs);
-    fields.push_back(FieldIsBoxset);
-    fields.push_back(FieldArtist);        // any artist
-    fields.push_back(FieldAlbumArtist);  // album artist
-    fields.push_back(FieldYear);
+    fields = {
+        Field::GENRE,        Field::SOURCE,      Field::ALBUM,
+        Field::DISC_TITLE,   Field::TOTAL_DISCS, Field::IS_BOXSET,
+        Field::ARTIST, // any artist
+        Field::ALBUM_ARTIST, // album artist
+        Field::YEAR,
+    };
     if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
         CSettings::SETTING_MUSICLIBRARY_USEORIGINALDATE))
-      fields.push_back(FieldOrigYear);
-    fields.push_back(FieldAlbumDuration);
-    fields.push_back(FieldReview);
-    fields.push_back(FieldThemes);
-    fields.push_back(FieldMoods);
-    fields.push_back(FieldStyles);
-    fields.push_back(FieldCompilation);
-    fields.push_back(FieldAlbumType);
-    fields.push_back(FieldMusicLabel);
-    fields.push_back(FieldRating);
-    fields.push_back(FieldUserRating);
-    fields.push_back(FieldPlaycount);
-    fields.push_back(FieldLastPlayed);
-    fields.push_back(FieldPath);
-    fields.push_back(FieldAlbumStatus);
-    fields.push_back(FieldDateAdded);
-    fields.push_back(FieldDateModified);
-    fields.push_back(FieldDateNew);
+      fields.push_back(Field::ORIG_YEAR);
+    fields.insert(fields.end(), {
+                                    Field::ALBUM_DURATION,
+                                    Field::REVIEW,
+                                    Field::THEMES,
+                                    Field::MOODS,
+                                    Field::STYLES,
+                                    Field::COMPILATION,
+                                    Field::ALBUM_TYPE,
+                                    Field::MUSIC_LABEL,
+                                    Field::RATING,
+                                    Field::USER_RATING,
+                                    Field::PLAYCOUNT,
+                                    Field::LAST_PLAYED,
+                                    Field::PATH,
+                                    Field::ALBUM_STATUS,
+                                    Field::DATE_ADDED,
+                                    Field::DATE_MODIFIED,
+                                    Field::DATE_NEW,
+                                });
   }
   else if (type == "artists")
   {
-    fields.push_back(FieldArtist);
-    fields.push_back(FieldSource);
-    fields.push_back(FieldGenre);
-    fields.push_back(FieldMoods);
-    fields.push_back(FieldStyles);
-    fields.push_back(FieldInstruments);
-    fields.push_back(FieldBiography);
-    fields.push_back(FieldArtistType);
-    fields.push_back(FieldGender);
-    fields.push_back(FieldDisambiguation);
-    fields.push_back(FieldBorn);
-    fields.push_back(FieldBandFormed);
-    fields.push_back(FieldDisbanded);
-    fields.push_back(FieldDied);
-    fields.push_back(FieldRole);
-    fields.push_back(FieldPath);
-    fields.push_back(FieldDateAdded);
-    fields.push_back(FieldDateModified);
-    fields.push_back(FieldDateNew);
+    fields = {
+        Field::ARTIST,     Field::SOURCE,         Field::GENRE,     Field::MOODS,
+        Field::STYLES,     Field::INSTRUMENTS,    Field::BIOGRAPHY, Field::ARTIST_TYPE,
+        Field::GENDER,     Field::DISAMBIGUATION, Field::BORN,      Field::BAND_FORMED,
+        Field::DISBANDED,  Field::DIED,           Field::ROLE,      Field::PATH,
+        Field::DATE_ADDED, Field::DATE_MODIFIED,  Field::DATE_NEW,
+    };
   }
   else if (type == "tvshows")
   {
-    fields.push_back(FieldTitle);
-    fields.push_back(FieldOriginalTitle);
-    fields.push_back(FieldPlot);
-    fields.push_back(FieldTagline);
-    fields.push_back(FieldTvShowStatus);
-    fields.push_back(FieldVotes);
-    fields.push_back(FieldRating);
-    fields.push_back(FieldUserRating);
-    fields.push_back(FieldYear);
-    fields.push_back(FieldGenre);
-    fields.push_back(FieldDirector);
-    fields.push_back(FieldActor);
-    fields.push_back(FieldNumberOfEpisodes);
-    fields.push_back(FieldNumberOfWatchedEpisodes);
-    fields.push_back(FieldPlaycount);
-    fields.push_back(FieldPath);
-    fields.push_back(FieldStudio);
-    fields.push_back(FieldMPAA);
-    fields.push_back(FieldDateAdded);
-    fields.push_back(FieldLastPlayed);
-    fields.push_back(FieldInProgress);
-    fields.push_back(FieldTag);
-    fields.push_back(FieldTrailer);
+    fields = {
+        Field::TITLE,
+        Field::ORIGINAL_TITLE,
+        Field::PLOT,
+        Field::TAGLINE,
+        Field::TVSHOW_STATUS,
+        Field::VOTES,
+        Field::RATING,
+        Field::USER_RATING,
+        Field::YEAR,
+        Field::GENRE,
+        Field::DIRECTOR,
+        Field::ACTOR,
+        Field::NUMBER_OF_EPISODES,
+        Field::NUMBER_OF_WATCHED_EPISODES,
+        Field::PLAYCOUNT,
+        Field::PATH,
+        Field::STUDIO,
+        Field::MPAA,
+        Field::DATE_ADDED,
+        Field::LAST_PLAYED,
+        Field::IN_PROGRESS,
+        Field::TAG,
+        Field::TRAILER,
+    };
   }
   else if (type == "episodes")
   {
-    fields.push_back(FieldTitle);
-    fields.push_back(FieldTvShowTitle);
-    fields.push_back(FieldOriginalTitle);
-    fields.push_back(FieldPlot);
-    fields.push_back(FieldVotes);
-    fields.push_back(FieldRating);
-    fields.push_back(FieldUserRating);
-    fields.push_back(FieldTime);
-    fields.push_back(FieldWriter);
-    fields.push_back(FieldAirDate);
-    fields.push_back(FieldPlaycount);
-    fields.push_back(FieldLastPlayed);
-    fields.push_back(FieldInProgress);
-    fields.push_back(FieldGenre);
-    fields.push_back(FieldYear); // premiered
-    fields.push_back(FieldDirector);
-    fields.push_back(FieldActor);
-    fields.push_back(FieldEpisodeNumber);
-    fields.push_back(FieldSeason);
-    fields.push_back(FieldFilename);
-    fields.push_back(FieldPath);
-    fields.push_back(FieldStudio);
-    fields.push_back(FieldMPAA);
-    fields.push_back(FieldDateAdded);
-    fields.push_back(FieldTag);
+    fields = {
+        Field::TITLE,       Field::TVSHOW_TITLE, Field::ORIGINAL_TITLE, Field::PLOT,
+        Field::VOTES,       Field::RATING,       Field::USER_RATING,    Field::TIME,
+        Field::WRITER,      Field::AIR_DATE,     Field::PLAYCOUNT,      Field::LAST_PLAYED,
+        Field::IN_PROGRESS, Field::GENRE,
+        Field::YEAR, // premiered
+        Field::DIRECTOR,    Field::ACTOR,        Field::EPISODE_NUMBER, Field::SEASON,
+        Field::FILENAME,    Field::PATH,         Field::STUDIO,         Field::MPAA,
+        Field::DATE_ADDED,  Field::TAG,
+    };
     isVideo = true;
   }
   else if (type == "movies")
   {
-    fields.push_back(FieldTitle);
-    fields.push_back(FieldOriginalTitle);
-    fields.push_back(FieldPlot);
-    fields.push_back(FieldPlotOutline);
-    fields.push_back(FieldTagline);
-    fields.push_back(FieldVotes);
-    fields.push_back(FieldRating);
-    fields.push_back(FieldUserRating);
-    fields.push_back(FieldTime);
-    fields.push_back(FieldWriter);
-    fields.push_back(FieldPlaycount);
-    fields.push_back(FieldLastPlayed);
-    fields.push_back(FieldInProgress);
-    fields.push_back(FieldGenre);
-    fields.push_back(FieldCountry);
-    fields.push_back(FieldYear); // premiered
-    fields.push_back(FieldDirector);
-    fields.push_back(FieldActor);
-    fields.push_back(FieldMPAA);
-    fields.push_back(FieldTop250);
-    fields.push_back(FieldStudio);
-    fields.push_back(FieldTrailer);
-    fields.push_back(FieldFilename);
-    fields.push_back(FieldPath);
-    fields.push_back(FieldSet);
-    fields.push_back(FieldTag);
-    fields.push_back(FieldDateAdded);
-    fields.push_back(FieldHasVideoVersions);
-    fields.push_back(FieldHasVideoExtras);
+    fields = {
+        Field::TITLE,
+        Field::ORIGINAL_TITLE,
+        Field::PLOT,
+        Field::PLOT_OUTLINE,
+        Field::TAGLINE,
+        Field::VOTES,
+        Field::RATING,
+        Field::USER_RATING,
+        Field::TIME,
+        Field::WRITER,
+        Field::PLAYCOUNT,
+        Field::LAST_PLAYED,
+        Field::IN_PROGRESS,
+        Field::GENRE,
+        Field::COUNTRY,
+        Field::YEAR, // premiered
+        Field::DIRECTOR,
+        Field::ACTOR,
+        Field::MPAA,
+        Field::TOP250,
+        Field::STUDIO,
+        Field::TRAILER,
+        Field::FILENAME,
+        Field::PATH,
+        Field::SET,
+        Field::TAG,
+        Field::DATE_ADDED,
+        Field::HAS_VIDEO_VERSIONS,
+        Field::HAS_VIDEO_EXTRAS,
+    };
     isVideo = true;
   }
   else if (type == "musicvideos")
   {
-    fields.push_back(FieldTitle);
-    fields.push_back(FieldGenre);
-    fields.push_back(FieldAlbum);
-    fields.push_back(FieldYear);
-    fields.push_back(FieldArtist);
-    fields.push_back(FieldFilename);
-    fields.push_back(FieldPath);
-    fields.push_back(FieldPlaycount);
-    fields.push_back(FieldLastPlayed);
-    fields.push_back(FieldRating);
-    fields.push_back(FieldUserRating);
-    fields.push_back(FieldTime);
-    fields.push_back(FieldDirector);
-    fields.push_back(FieldStudio);
-    fields.push_back(FieldPlot);
-    fields.push_back(FieldTag);
-    fields.push_back(FieldDateAdded);
+    fields = {
+        Field::TITLE,       Field::GENRE,      Field::ALBUM,     Field::YEAR,        Field::ARTIST,
+        Field::FILENAME,    Field::PATH,       Field::PLAYCOUNT, Field::LAST_PLAYED, Field::RATING,
+        Field::USER_RATING, Field::TIME,       Field::DIRECTOR,  Field::STUDIO,      Field::PLOT,
+        Field::TAG,         Field::DATE_ADDED,
+    };
     isVideo = true;
   }
   if (isVideo)
   {
-    fields.push_back(FieldVideoResolution);
-    fields.push_back(FieldAudioChannels);
-    fields.push_back(FieldAudioCount);
-    fields.push_back(FieldSubtitleCount);
-    fields.push_back(FieldVideoCodec);
-    fields.push_back(FieldAudioCodec);
-    fields.push_back(FieldAudioLanguage);
-    fields.push_back(FieldSubtitleLanguage);
-    fields.push_back(FieldVideoAspectRatio);
-    fields.push_back(FieldHdrType);
+    fields.insert(fields.end(), {
+                                    Field::VIDEO_RESOLUTION,
+                                    Field::AUDIO_CHANNELS,
+                                    Field::AUDIO_COUNT,
+                                    Field::SUBTITLE_COUNT,
+                                    Field::VIDEO_CODEC,
+                                    Field::AUDIO_CODEC,
+                                    Field::AUDIO_LANGUAGE,
+                                    Field::SUBTITLE_LANGUAGE,
+                                    Field::VIDEO_ASPECT_RATIO,
+                                    Field::HDR_TYPE,
+                                });
   }
-  fields.push_back(FieldPlaylist);
-  fields.push_back(FieldVirtualFolder);
+  fields.insert(fields.end(), {
+                                  Field::PLAYLIST,
+                                  Field::VIRTUAL_FOLDER,
+                              });
 
   return fields;
 }
@@ -695,48 +660,43 @@ std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string &type)
 std::vector<Field> CSmartPlaylistRule::GetGroups(const std::string &type)
 {
   std::vector<Field> groups;
-  groups.push_back(FieldUnknown);
-
   if (type == "artists")
-    groups.push_back(FieldGenre);
+  {
+    groups = {
+        Field::UNKNOWN,
+        Field::GENRE,
+    };
+  }
   else if (type == "albums")
   {
-    groups.push_back(FieldYear);
+    groups = {
+        Field::UNKNOWN,
+        Field::YEAR,
+    };
     if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
         CSettings::SETTING_MUSICLIBRARY_USEORIGINALDATE))
-      groups.push_back(FieldOrigYear);
+      groups.push_back(Field::ORIG_YEAR);
   }
   if (type == "movies")
   {
-    groups.push_back(FieldNone);
-    groups.push_back(FieldSet);
-    groups.push_back(FieldGenre);
-    groups.push_back(FieldYear);
-    groups.push_back(FieldActor);
-    groups.push_back(FieldDirector);
-    groups.push_back(FieldWriter);
-    groups.push_back(FieldStudio);
-    groups.push_back(FieldCountry);
-    groups.push_back(FieldTag);
+    groups = {
+        Field::UNKNOWN,  Field::NONE,   Field::SET,    Field::GENRE,   Field::YEAR, Field::ACTOR,
+        Field::DIRECTOR, Field::WRITER, Field::STUDIO, Field::COUNTRY, Field::TAG,
+    };
   }
   else if (type == "tvshows")
   {
-    groups.push_back(FieldGenre);
-    groups.push_back(FieldYear);
-    groups.push_back(FieldActor);
-    groups.push_back(FieldDirector);
-    groups.push_back(FieldStudio);
-    groups.push_back(FieldTag);
+    groups = {
+        Field::UNKNOWN,  Field::GENRE,  Field::YEAR, Field::ACTOR,
+        Field::DIRECTOR, Field::STUDIO, Field::TAG,
+    };
   }
   else if (type == "musicvideos")
   {
-    groups.push_back(FieldArtist);
-    groups.push_back(FieldAlbum);
-    groups.push_back(FieldGenre);
-    groups.push_back(FieldYear);
-    groups.push_back(FieldDirector);
-    groups.push_back(FieldStudio);
-    groups.push_back(FieldTag);
+    groups = {
+        Field::UNKNOWN, Field::ARTIST,   Field::ALBUM,  Field::GENRE,
+        Field::YEAR,    Field::DIRECTOR, Field::STUDIO, Field::TAG,
+    };
   }
 
   return groups;
@@ -813,35 +773,40 @@ std::string CSmartPlaylistRule::GetBooleanQuery(const std::string &negate, const
 {
   if (strType == "movies")
   {
-    if (m_field == FieldInProgress)
+    if (m_field == static_cast<int>(Field::IN_PROGRESS))
       return "movie_view.idFile " + negate + " IN (SELECT DISTINCT idFile FROM bookmark WHERE type = 1)";
-    else if (m_field == FieldTrailer)
+    else if (m_field == static_cast<int>(Field::TRAILER))
       return negate + GetField(m_field, strType) + "!= ''";
-    else if (m_field == FieldHasVideoVersions || m_field == FieldHasVideoExtras)
+    else if (m_field == static_cast<int>(Field::HAS_VIDEO_VERSIONS) ||
+             m_field == static_cast<int>(Field::HAS_VIDEO_EXTRAS))
       return negate + GetField(m_field, strType);
   }
   else if (strType == "episodes")
   {
-    if (m_field == FieldInProgress)
+    if (m_field == static_cast<int>(Field::IN_PROGRESS))
       return "episode_view.idFile " + negate + " IN (SELECT DISTINCT idFile FROM bookmark WHERE type = 1)";
   }
   else if (strType == "tvshows")
   {
-    if (m_field == FieldInProgress)
-      return negate + " ("
-                          "(tvshow_view.watchedcount > 0 AND tvshow_view.watchedcount < tvshow_view.totalCount) OR "
-                          "(tvshow_view.watchedcount = 0 AND EXISTS "
-                            "(SELECT 1 FROM episode_view WHERE episode_view.idShow = " + GetField(FieldId, strType) + " AND episode_view.resumeTimeInSeconds > 0)"
-                          ")"
-                       ")";
-    else if (m_field == FieldTrailer)
+    if (m_field == static_cast<int>(Field::IN_PROGRESS))
+      return negate +
+             " ("
+             "(tvshow_view.watchedcount > 0 AND tvshow_view.watchedcount < tvshow_view.totalCount) "
+             "OR "
+             "(tvshow_view.watchedcount = 0 AND EXISTS "
+             "(SELECT 1 FROM episode_view WHERE episode_view.idShow = " +
+             GetField(static_cast<int>(Field::ID), strType) +
+             " AND episode_view.resumeTimeInSeconds > 0)"
+             ")"
+             ")";
+    else if (m_field == static_cast<int>(Field::TRAILER))
       return negate + GetField(m_field, strType) + "!= ''";
   }
   if (strType == "albums")
   {
-    if (m_field == FieldCompilation)
+    if (m_field == static_cast<int>(Field::COMPILATION))
       return negate + GetField(m_field, strType);
-    if (m_field == FieldIsBoxset)
+    if (m_field == static_cast<int>(Field::IS_BOXSET))
       return negate + "albumview.bBoxedSet = 1";
   }
   return "";
@@ -850,7 +815,7 @@ std::string CSmartPlaylistRule::GetBooleanQuery(const std::string &negate, const
 CDatabaseQueryRule::SearchOperator CSmartPlaylistRule::GetOperator(const std::string& strType) const
 {
   SearchOperator op = CDatabaseQueryRule::GetOperator(strType);
-  if ((strType == "tvshows" || strType == "episodes") && m_field == FieldYear)
+  if ((strType == "tvshows" || strType == "episodes") && m_field == static_cast<int>(Field::YEAR))
   { // special case for premiered which is a date rather than a year
     //! @todo SMARTPLAYLISTS do we really need this, or should we just make this field the premiered date and request a date?
     if (op == OPERATOR_EQUALS)
@@ -864,7 +829,8 @@ CDatabaseQueryRule::SearchOperator CSmartPlaylistRule::GetOperator(const std::st
 std::string CSmartPlaylistRule::FormatParameter(const std::string &operatorString, const std::string &param, const CDatabase &db, const std::string &strType) const
 {
   // special-casing
-  if (m_field == FieldTime || m_field == FieldAlbumDuration)
+  if (m_field == static_cast<int>(Field::TIME) ||
+      m_field == static_cast<int>(Field::ALBUM_DURATION))
   { // translate time to seconds
     std::string seconds = std::to_string(StringUtils::TimeStringToSeconds(param));
     return db.PrepareSQL(operatorString, seconds.c_str());
@@ -937,22 +903,27 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
   {
     table = "songview";
 
-    if (m_field == FieldGenre)
-      query = negate + " EXISTS (SELECT 1 FROM song_genre, genre WHERE song_genre.idSong = " + GetField(FieldId, strType) + " AND song_genre.idGenre = genre.idGenre AND genre.strGenre" + parameter + ")";
-    else if (m_field == FieldArtist)
-      query = negate + " EXISTS (SELECT 1 FROM song_artist, artist WHERE song_artist.idSong = " + GetField(FieldId, strType) + " AND song_artist.idArtist = artist.idArtist AND artist.strArtist" + parameter + ")";
-    else if (m_field == FieldAlbumArtist)
+    if (m_field == static_cast<int>(Field::GENRE))
+      query = negate + " EXISTS (SELECT 1 FROM song_genre, genre WHERE song_genre.idSong = " +
+              GetField(static_cast<int>(Field::ID), strType) +
+              " AND song_genre.idGenre = genre.idGenre AND genre.strGenre" + parameter + ")";
+    else if (m_field == static_cast<int>(Field::ARTIST))
+      query = negate + " EXISTS (SELECT 1 FROM song_artist, artist WHERE song_artist.idSong = " +
+              GetField(static_cast<int>(Field::ID), strType) +
+              " AND song_artist.idArtist = artist.idArtist AND artist.strArtist" + parameter + ")";
+    else if (m_field == static_cast<int>(Field::ALBUM_ARTIST))
       query = negate + " EXISTS (SELECT 1 FROM album_artist, artist WHERE album_artist.idAlbum = " + table + ".idAlbum AND album_artist.idArtist = artist.idArtist AND artist.strArtist" + parameter + ")";
-    else if (m_field == FieldLastPlayed)
+    else if (m_field == static_cast<int>(Field::LAST_PLAYED))
       query = FormatNullableDate(GetField(m_field, strType), m_operator, parameter);
-    else if (m_field == FieldSource)
+    else if (m_field == static_cast<int>(Field::SOURCE))
       query = negate + " EXISTS (SELECT 1 FROM album_source, source WHERE album_source.idAlbum = " + table + ".idAlbum AND album_source.idSource = source.idSource AND source.strName" + parameter + ")";
-    else if (m_field == FieldYear || m_field == FieldOrigYear)
+    else if (m_field == static_cast<int>(Field::YEAR) ||
+             m_field == static_cast<int>(Field::ORIG_YEAR))
     {
       std::string field;
       if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
         CSettings::SETTING_MUSICLIBRARY_USEORIGINALDATE))
-        field = GetField(FieldOrigYear, strType);
+        field = GetField(static_cast<int>(Field::ORIG_YEAR), strType);
       else
         field = GetField(m_field, strType);
       query = FormatYearQuery(field, param, parameter);
@@ -962,28 +933,45 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
   {
     table = "albumview";
 
-    if (m_field == FieldGenre)
-      query = negate + " EXISTS (SELECT 1 FROM song, song_genre, genre WHERE song.idAlbum = " + GetField(FieldId, strType) + " AND song.idSong = song_genre.idSong AND song_genre.idGenre = genre.idGenre AND genre.strGenre" + parameter + ")";
-    else if (m_field == FieldArtist)
-      query = negate + " EXISTS (SELECT 1 FROM song, song_artist, artist WHERE song.idAlbum = " + GetField(FieldId, strType) + " AND song.idSong = song_artist.idSong AND song_artist.idArtist = artist.idArtist AND artist.strArtist" + parameter + ")";
-    else if (m_field == FieldAlbumArtist)
-      query = negate + " EXISTS (SELECT 1 FROM album_artist, artist WHERE album_artist.idAlbum = " + GetField(FieldId, strType) + " AND album_artist.idArtist = artist.idArtist AND artist.strArtist" + parameter + ")";
-    else if (m_field == FieldPath)
-      query = negate + " EXISTS (SELECT 1 FROM song JOIN path on song.idpath = path.idpath WHERE song.idAlbum = " + GetField(FieldId, strType) + " AND path.strPath" + parameter + ")";
-    else if (m_field == FieldLastPlayed)
-      query = FormatNullableDate(GetField(m_field, strType), m_operator, parameter);
-    else if (m_field == FieldSource)
-      query = negate + " EXISTS (SELECT 1 FROM album_source, source WHERE album_source.idAlbum = " + GetField(FieldId, strType) + " AND album_source.idSource = source.idSource AND source.strName" + parameter + ")";
-    else if (m_field == FieldDiscTitle)
+    if (m_field == static_cast<int>(Field::GENRE))
+      query = negate + " EXISTS (SELECT 1 FROM song, song_genre, genre WHERE song.idAlbum = " +
+              GetField(static_cast<int>(Field::ID), strType) +
+              " AND song.idSong = song_genre.idSong AND song_genre.idGenre = genre.idGenre AND "
+              "genre.strGenre" +
+              parameter + ")";
+    else if (m_field == static_cast<int>(Field::ARTIST))
+      query = negate + " EXISTS (SELECT 1 FROM song, song_artist, artist WHERE song.idAlbum = " +
+              GetField(static_cast<int>(Field::ID), strType) +
+              " AND song.idSong = song_artist.idSong AND song_artist.idArtist = artist.idArtist "
+              "AND artist.strArtist" +
+              parameter + ")";
+    else if (m_field == static_cast<int>(Field::ALBUM_ARTIST))
+      query = negate + " EXISTS (SELECT 1 FROM album_artist, artist WHERE album_artist.idAlbum = " +
+              GetField(static_cast<int>(Field::ID), strType) +
+              " AND album_artist.idArtist = artist.idArtist AND artist.strArtist" + parameter + ")";
+    else if (m_field == static_cast<int>(Field::PATH))
       query = negate +
-              " EXISTS (SELECT 1 FROM song WHERE song.idAlbum = " + GetField(FieldId, strType) +
-              " AND song.strDiscSubtitle" + parameter + ")";
-    else if (m_field == FieldYear || m_field == FieldOrigYear)
+              " EXISTS (SELECT 1 FROM song JOIN path on song.idpath = path.idpath WHERE "
+              "song.idAlbum = " +
+              GetField(static_cast<int>(Field::ID), strType) + " AND path.strPath" + parameter +
+              ")";
+    else if (m_field == static_cast<int>(Field::LAST_PLAYED))
+      query = FormatNullableDate(GetField(m_field, strType), m_operator, parameter);
+    else if (m_field == static_cast<int>(Field::SOURCE))
+      query = negate + " EXISTS (SELECT 1 FROM album_source, source WHERE album_source.idAlbum = " +
+              GetField(static_cast<int>(Field::ID), strType) +
+              " AND album_source.idSource = source.idSource AND source.strName" + parameter + ")";
+    else if (m_field == static_cast<int>(Field::DISC_TITLE))
+      query = negate + " EXISTS (SELECT 1 FROM song WHERE song.idAlbum = " +
+              GetField(static_cast<int>(Field::ID), strType) + " AND song.strDiscSubtitle" +
+              parameter + ")";
+    else if (m_field == static_cast<int>(Field::YEAR) ||
+             m_field == static_cast<int>(Field::ORIG_YEAR))
     {
       std::string field;
       if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
               CSettings::SETTING_MUSICLIBRARY_USEORIGINALDATE))
-        field = GetField(FieldOrigYear, strType);
+        field = GetField(static_cast<int>(Field::ORIG_YEAR), strType);
       else
         field = GetField(m_field, strType);
       query = FormatYearQuery(field, param, parameter);
@@ -993,132 +981,188 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
   {
     table = "artistview";
 
-    if (m_field == FieldGenre)
+    if (m_field == static_cast<int>(Field::GENRE))
     {
-      query = negate + " (EXISTS (SELECT DISTINCT song_artist.idArtist FROM song_artist, song_genre, genre WHERE song_artist.idArtist = " + GetField(FieldId, strType) + " AND song_artist.idSong = song_genre.idSong AND song_genre.idGenre = genre.idGenre AND genre.strGenre" + parameter + ")";
+      query = negate +
+              " (EXISTS (SELECT DISTINCT song_artist.idArtist FROM song_artist, song_genre, genre "
+              "WHERE song_artist.idArtist = " +
+              GetField(static_cast<int>(Field::ID), strType) +
+              " AND song_artist.idSong = song_genre.idSong AND song_genre.idGenre = genre.idGenre "
+              "AND genre.strGenre" +
+              parameter + ")";
       query += " OR ";
-      query += "EXISTS (SELECT DISTINCT album_artist.idArtist FROM album_artist, song, song_genre, genre WHERE album_artist.idArtist = " + GetField(FieldId, strType) + " AND song.idAlbum = album_artist.idAlbum AND song.idSong = song_genre.idSong AND song_genre.idGenre = genre.idGenre AND genre.strGenre" + parameter + "))";
+      query += "EXISTS (SELECT DISTINCT album_artist.idArtist FROM album_artist, song, song_genre, "
+               "genre WHERE album_artist.idArtist = " +
+               GetField(static_cast<int>(Field::ID), strType) +
+               " AND song.idAlbum = album_artist.idAlbum AND song.idSong = song_genre.idSong AND "
+               "song_genre.idGenre = genre.idGenre AND genre.strGenre" +
+               parameter + "))";
     }
-    else if (m_field == FieldRole)
+    else if (m_field == static_cast<int>(Field::ROLE))
     {
-      query = negate + " (EXISTS (SELECT DISTINCT song_artist.idArtist FROM song_artist, role WHERE song_artist.idArtist = " + GetField(FieldId, strType) + " AND song_artist.idRole = role.idRole AND role.strRole" + parameter + "))";
+      query = negate +
+              " (EXISTS (SELECT DISTINCT song_artist.idArtist FROM song_artist, role WHERE "
+              "song_artist.idArtist = " +
+              GetField(static_cast<int>(Field::ID), strType) +
+              " AND song_artist.idRole = role.idRole AND role.strRole" + parameter + "))";
     }
-    else if (m_field == FieldPath)
+    else if (m_field == static_cast<int>(Field::PATH))
     {
       query = negate + " (EXISTS (SELECT DISTINCT song_artist.idArtist FROM song_artist JOIN song ON song.idSong = song_artist.idSong JOIN path ON song.idpath = path.idpath ";
-      query += "WHERE song_artist.idArtist = " + GetField(FieldId, strType) + " AND path.strPath" + parameter + "))";
+      query += "WHERE song_artist.idArtist = " + GetField(static_cast<int>(Field::ID), strType) +
+               " AND path.strPath" + parameter + "))";
     }
-    else if (m_field == FieldSource)
+    else if (m_field == static_cast<int>(Field::SOURCE))
     {
-      query = negate + " (EXISTS(SELECT 1 FROM song_artist, song, album_source, source WHERE song_artist.idArtist = " + GetField(FieldId, strType) + " AND song.idSong = song_artist.idSong AND song_artist.idRole = 1 AND album_source.idAlbum = song.idAlbum AND album_source.idSource = source.idSource AND source.strName" + parameter + ")";
+      query = negate +
+              " (EXISTS(SELECT 1 FROM song_artist, song, album_source, source WHERE "
+              "song_artist.idArtist = " +
+              GetField(static_cast<int>(Field::ID), strType) +
+              " AND song.idSong = song_artist.idSong AND song_artist.idRole = 1 AND "
+              "album_source.idAlbum = song.idAlbum AND album_source.idSource = source.idSource AND "
+              "source.strName" +
+              parameter + ")";
       query += " OR ";
-      query += " EXISTS (SELECT 1 FROM album_artist, album_source, source WHERE album_artist.idArtist = " + GetField(FieldId, strType) + " AND album_source.idAlbum = album_artist.idAlbum AND album_source.idSource = source.idSource AND source.strName" + parameter + "))";
+      query += " EXISTS (SELECT 1 FROM album_artist, album_source, source WHERE "
+               "album_artist.idArtist = " +
+               GetField(static_cast<int>(Field::ID), strType) +
+               " AND album_source.idAlbum = album_artist.idAlbum AND album_source.idSource = "
+               "source.idSource AND source.strName" +
+               parameter + "))";
     }
   }
   else if (strType == "movies")
   {
     table = "movie_view";
 
-    if (m_field == FieldGenre)
-      query = negate + FormatLinkQuery("genre", "genre", MediaTypeMovie, GetField(FieldId, strType), parameter);
-    else if (m_field == FieldDirector)
-      query = negate + FormatLinkQuery("director", "actor", MediaTypeMovie, GetField(FieldId, strType), parameter);
-    else if (m_field == FieldActor)
-      query = negate + FormatLinkQuery("actor", "actor", MediaTypeMovie, GetField(FieldId, strType), parameter);
-    else if (m_field == FieldWriter)
-      query = negate + FormatLinkQuery("writer", "actor", MediaTypeMovie, GetField(FieldId, strType), parameter);
-    else if (m_field == FieldStudio)
-      query = negate + FormatLinkQuery("studio", "studio", MediaTypeMovie, GetField(FieldId, strType), parameter);
-    else if (m_field == FieldCountry)
-      query = negate + FormatLinkQuery("country", "country", MediaTypeMovie, GetField(FieldId, strType), parameter);
-    else if (m_field == FieldLastPlayed || m_field == FieldDateAdded)
+    if (m_field == static_cast<int>(Field::GENRE))
+      query = negate + FormatLinkQuery("genre", "genre", MediaTypeMovie,
+                                       GetField(static_cast<int>(Field::ID), strType), parameter);
+    else if (m_field == static_cast<int>(Field::DIRECTOR))
+      query = negate + FormatLinkQuery("director", "actor", MediaTypeMovie,
+                                       GetField(static_cast<int>(Field::ID), strType), parameter);
+    else if (m_field == static_cast<int>(Field::ACTOR))
+      query = negate + FormatLinkQuery("actor", "actor", MediaTypeMovie,
+                                       GetField(static_cast<int>(Field::ID), strType), parameter);
+    else if (m_field == static_cast<int>(Field::WRITER))
+      query = negate + FormatLinkQuery("writer", "actor", MediaTypeMovie,
+                                       GetField(static_cast<int>(Field::ID), strType), parameter);
+    else if (m_field == static_cast<int>(Field::STUDIO))
+      query = negate + FormatLinkQuery("studio", "studio", MediaTypeMovie,
+                                       GetField(static_cast<int>(Field::ID), strType), parameter);
+    else if (m_field == static_cast<int>(Field::COUNTRY))
+      query = negate + FormatLinkQuery("country", "country", MediaTypeMovie,
+                                       GetField(static_cast<int>(Field::ID), strType), parameter);
+    else if (m_field == static_cast<int>(Field::LAST_PLAYED) ||
+             m_field == static_cast<int>(Field::DATE_ADDED))
       query = FormatNullableDate(GetField(m_field, strType), m_operator, parameter);
-    else if (m_field == FieldTag)
-      query = negate + FormatLinkQuery("tag", "tag", MediaTypeMovie, GetField(FieldId, strType), parameter);
+    else if (m_field == static_cast<int>(Field::TAG))
+      query = negate + FormatLinkQuery("tag", "tag", MediaTypeMovie,
+                                       GetField(static_cast<int>(Field::ID), strType), parameter);
   }
   else if (strType == "musicvideos")
   {
     table = "musicvideo_view";
 
-    if (m_field == FieldGenre)
-      query = negate + FormatLinkQuery("genre", "genre", MediaTypeMusicVideo, GetField(FieldId, strType), parameter);
-    else if (m_field == FieldArtist || m_field == FieldAlbumArtist)
-      query = negate + FormatLinkQuery("actor", "actor", MediaTypeMusicVideo, GetField(FieldId, strType), parameter);
-    else if (m_field == FieldStudio)
-      query = negate + FormatLinkQuery("studio", "studio", MediaTypeMusicVideo, GetField(FieldId, strType), parameter);
-    else if (m_field == FieldDirector)
-      query = negate + FormatLinkQuery("director", "actor", MediaTypeMusicVideo, GetField(FieldId, strType), parameter);
-    else if (m_field == FieldLastPlayed || m_field == FieldDateAdded)
+    if (m_field == static_cast<int>(Field::GENRE))
+      query = negate + FormatLinkQuery("genre", "genre", MediaTypeMusicVideo,
+                                       GetField(static_cast<int>(Field::ID), strType), parameter);
+    else if (m_field == static_cast<int>(Field::ARTIST) ||
+             m_field == static_cast<int>(Field::ALBUM_ARTIST))
+      query = negate + FormatLinkQuery("actor", "actor", MediaTypeMusicVideo,
+                                       GetField(static_cast<int>(Field::ID), strType), parameter);
+    else if (m_field == static_cast<int>(Field::STUDIO))
+      query = negate + FormatLinkQuery("studio", "studio", MediaTypeMusicVideo,
+                                       GetField(static_cast<int>(Field::ID), strType), parameter);
+    else if (m_field == static_cast<int>(Field::DIRECTOR))
+      query = negate + FormatLinkQuery("director", "actor", MediaTypeMusicVideo,
+                                       GetField(static_cast<int>(Field::ID), strType), parameter);
+    else if (m_field == static_cast<int>(Field::LAST_PLAYED) ||
+             m_field == static_cast<int>(Field::DATE_ADDED))
       query = FormatNullableDate(GetField(m_field, strType), m_operator, parameter);
-    else if (m_field == FieldTag)
-      query = negate + FormatLinkQuery("tag", "tag", MediaTypeMusicVideo, GetField(FieldId, strType), parameter);
+    else if (m_field == static_cast<int>(Field::TAG))
+      query = negate + FormatLinkQuery("tag", "tag", MediaTypeMusicVideo,
+                                       GetField(static_cast<int>(Field::ID), strType), parameter);
   }
   else if (strType == "tvshows")
   {
     table = "tvshow_view";
 
-    if (m_field == FieldGenre)
-      query = negate + FormatLinkQuery("genre", "genre", MediaTypeTvShow, GetField(FieldId, strType), parameter);
-    else if (m_field == FieldDirector)
-      query = negate + FormatLinkQuery("director", "actor", MediaTypeTvShow, GetField(FieldId, strType), parameter);
-    else if (m_field == FieldActor)
-      query = negate + FormatLinkQuery("actor", "actor", MediaTypeTvShow, GetField(FieldId, strType), parameter);
-    else if (m_field == FieldStudio)
-      query = negate + FormatLinkQuery("studio", "studio", MediaTypeTvShow, GetField(FieldId, strType), parameter);
-    else if (m_field == FieldMPAA)
+    if (m_field == static_cast<int>(Field::GENRE))
+      query = negate + FormatLinkQuery("genre", "genre", MediaTypeTvShow,
+                                       GetField(static_cast<int>(Field::ID), strType), parameter);
+    else if (m_field == static_cast<int>(Field::DIRECTOR))
+      query = negate + FormatLinkQuery("director", "actor", MediaTypeTvShow,
+                                       GetField(static_cast<int>(Field::ID), strType), parameter);
+    else if (m_field == static_cast<int>(Field::ACTOR))
+      query = negate + FormatLinkQuery("actor", "actor", MediaTypeTvShow,
+                                       GetField(static_cast<int>(Field::ID), strType), parameter);
+    else if (m_field == static_cast<int>(Field::STUDIO))
+      query = negate + FormatLinkQuery("studio", "studio", MediaTypeTvShow,
+                                       GetField(static_cast<int>(Field::ID), strType), parameter);
+    else if (m_field == static_cast<int>(Field::MPAA))
       query = negate + " (" + GetField(m_field, strType) + parameter + ")";
-    else if (m_field == FieldLastPlayed || m_field == FieldDateAdded)
+    else if (m_field == static_cast<int>(Field::LAST_PLAYED) ||
+             m_field == static_cast<int>(Field::DATE_ADDED))
       query = FormatNullableDate(GetField(m_field, strType), m_operator, parameter);
-    else if (m_field == FieldPlaycount)
-      query = "CASE WHEN COALESCE(" + GetField(FieldNumberOfEpisodes, strType) + " - " + GetField(FieldNumberOfWatchedEpisodes, strType) + ", 0) > 0 THEN 0 ELSE 1 END " + parameter;
-    else if (m_field == FieldTag)
-      query = negate + FormatLinkQuery("tag", "tag", MediaTypeTvShow, GetField(FieldId, strType), parameter);
+    else if (m_field == static_cast<int>(Field::PLAYCOUNT))
+      query = "CASE WHEN COALESCE(" +
+              GetField(static_cast<int>(Field::NUMBER_OF_EPISODES), strType) + " - " +
+              GetField(static_cast<int>(Field::NUMBER_OF_WATCHED_EPISODES), strType) +
+              ", 0) > 0 THEN 0 ELSE 1 END " + parameter;
+    else if (m_field == static_cast<int>(Field::TAG))
+      query = negate + FormatLinkQuery("tag", "tag", MediaTypeTvShow,
+                                       GetField(static_cast<int>(Field::ID), strType), parameter);
   }
   else if (strType == "episodes")
   {
     table = "episode_view";
 
-    if (m_field == FieldGenre)
+    if (m_field == static_cast<int>(Field::GENRE))
       query = negate + FormatLinkQuery("genre", "genre", MediaTypeTvShow, (table + ".idShow").c_str(), parameter);
-    else if (m_field == FieldTag)
+    else if (m_field == static_cast<int>(Field::TAG))
       query = negate + FormatLinkQuery("tag", "tag", MediaTypeTvShow, (table + ".idShow").c_str(), parameter);
-    else if (m_field == FieldDirector)
-      query = negate + FormatLinkQuery("director", "actor", MediaTypeEpisode, GetField(FieldId, strType), parameter);
-    else if (m_field == FieldActor)
-      query = negate + FormatLinkQuery("actor", "actor", MediaTypeEpisode, GetField(FieldId, strType), parameter);
-    else if (m_field == FieldWriter)
-      query = negate + FormatLinkQuery("writer", "actor", MediaTypeEpisode, GetField(FieldId, strType), parameter);
-    else if (m_field == FieldLastPlayed || m_field == FieldDateAdded)
+    else if (m_field == static_cast<int>(Field::DIRECTOR))
+      query = negate + FormatLinkQuery("director", "actor", MediaTypeEpisode,
+                                       GetField(static_cast<int>(Field::ID), strType), parameter);
+    else if (m_field == static_cast<int>(Field::ACTOR))
+      query = negate + FormatLinkQuery("actor", "actor", MediaTypeEpisode,
+                                       GetField(static_cast<int>(Field::ID), strType), parameter);
+    else if (m_field == static_cast<int>(Field::WRITER))
+      query = negate + FormatLinkQuery("writer", "actor", MediaTypeEpisode,
+                                       GetField(static_cast<int>(Field::ID), strType), parameter);
+    else if (m_field == static_cast<int>(Field::LAST_PLAYED) ||
+             m_field == static_cast<int>(Field::DATE_ADDED))
       query = FormatNullableDate(GetField(m_field, strType), m_operator, parameter);
-    else if (m_field == FieldStudio)
+    else if (m_field == static_cast<int>(Field::STUDIO))
       query = negate + FormatLinkQuery("studio", "studio", MediaTypeTvShow, (table + ".idShow").c_str(), parameter);
-    else if (m_field == FieldMPAA)
+    else if (m_field == static_cast<int>(Field::MPAA))
       query = negate + " (" + GetField(m_field, strType) +  parameter + ")";
   }
-  if (m_field == FieldVideoResolution)
+  if (m_field == static_cast<int>(Field::VIDEO_RESOLUTION))
     query = table + ".idFile" + negate + GetVideoResolutionQuery(param);
-  else if (m_field == FieldAudioChannels)
+  else if (m_field == static_cast<int>(Field::AUDIO_CHANNELS))
     query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND iAudioChannels " + parameter + ")";
-  else if (m_field == FieldVideoCodec)
+  else if (m_field == static_cast<int>(Field::VIDEO_CODEC))
     query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND strVideoCodec " + parameter + ")";
-  else if (m_field == FieldAudioCodec)
+  else if (m_field == static_cast<int>(Field::AUDIO_CODEC))
     query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND strAudioCodec " + parameter + ")";
-  else if (m_field == FieldAudioLanguage)
+  else if (m_field == static_cast<int>(Field::AUDIO_LANGUAGE))
     query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND strAudioLanguage " + parameter + ")";
-  else if (m_field == FieldSubtitleLanguage)
+  else if (m_field == static_cast<int>(Field::SUBTITLE_LANGUAGE))
     query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND strSubtitleLanguage " + parameter + ")";
-  else if (m_field == FieldVideoAspectRatio)
+  else if (m_field == static_cast<int>(Field::VIDEO_ASPECT_RATIO))
     query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND fVideoAspect " + parameter + ")";
-  else if (m_field == FieldAudioCount)
+  else if (m_field == static_cast<int>(Field::AUDIO_COUNT))
     query = db.PrepareSQL(negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND streamdetails.iStreamtype = %i GROUP BY streamdetails.idFile HAVING COUNT(streamdetails.iStreamType) " + parameter + ")",CStreamDetail::AUDIO);
-  else if (m_field == FieldSubtitleCount)
+  else if (m_field == static_cast<int>(Field::SUBTITLE_COUNT))
     query = db.PrepareSQL(negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND streamdetails.iStreamType = %i GROUP BY streamdetails.idFile HAVING COUNT(streamdetails.iStreamType) " + parameter + ")",CStreamDetail::SUBTITLE);
-  else if (m_field == FieldHdrType)
+  else if (m_field == static_cast<int>(Field::HDR_TYPE))
     query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND strHdrType " + parameter + ")";
 
-  if ((m_field == FieldPlaycount && strType != "songs" && strType != "albums" &&
+  if ((m_field == static_cast<int>(Field::PLAYCOUNT) && strType != "songs" && strType != "albums" &&
        strType != "tvshows") ||
-      m_field == FieldUserRating)
+      m_field == static_cast<int>(Field::USER_RATING))
     query = FormatNullableNumber(GetField(m_field, strType), m_operator, param, parameter);
 
   if (query.empty())
@@ -1129,7 +1173,7 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
 
 std::string CSmartPlaylistRule::GetField(int field, const std::string &type) const
 {
-  if (field >= FieldUnknown && field < FieldMax)
+  if (field >= static_cast<int>(Field::UNKNOWN) && field < static_cast<int>(Field::MAX))
     return DatabaseUtils::GetField(static_cast<Field>(field), CMediaTypes::FromString(type),
                                    DatabaseQueryPart::WHERE);
   return "";
@@ -1158,14 +1202,14 @@ std::string CSmartPlaylistRuleCombination::GetWhereClause(
   {
     // don't include playlists that are meant to be displayed
     // as a virtual folders in the SQL WHERE clause
-    if (r->m_field == FieldVirtualFolder)
+    if (r->m_field == static_cast<int>(Field::VIRTUAL_FOLDER))
       continue;
 
     if (!rule.empty())
       rule += GetType() == CDatabaseQueryRuleCombination::Type::COMBINATION_AND ? " AND " : " OR ";
     rule += "(";
     std::string currentRule;
-    if (r->m_field == FieldPlaylist)
+    if (r->m_field == static_cast<int>(Field::PLAYLIST))
     {
       const std::string playlistFile =
           CSmartPlaylistDirectory::GetPlaylistByName(r->m_parameter.at(0), strType);
@@ -1216,7 +1260,8 @@ void CSmartPlaylistRuleCombination::GetVirtualFolders(const std::string& strType
 
   for (const auto& r : GetRules())
   {
-    if ((r->m_field != FieldVirtualFolder && r->m_field != FieldPlaylist) ||
+    if ((r->m_field != static_cast<int>(Field::VIRTUAL_FOLDER) &&
+         r->m_field != static_cast<int>(Field::PLAYLIST)) ||
         r->m_operator != OPERATOR_EQUALS)
       continue;
 
@@ -1225,7 +1270,7 @@ void CSmartPlaylistRuleCombination::GetVirtualFolders(const std::string& strType
     if (playlistFile.empty())
       continue;
 
-    if (r->m_field == FieldVirtualFolder)
+    if (r->m_field == static_cast<int>(Field::VIRTUAL_FOLDER))
       virtualFolders.push_back(playlistFile);
     else
     {
