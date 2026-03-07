@@ -49,6 +49,7 @@ public class XBMCSearchableActivity extends Activity
 
     // Create a simple cursor adapter for the definitions and apply them to the
     // ListView
+    @SuppressWarnings("deprecation")
     SimpleCursorAdapter words = new SimpleCursorAdapter(this, R.layout.result,
             c, from, to);
     mListView.setAdapter(words);
