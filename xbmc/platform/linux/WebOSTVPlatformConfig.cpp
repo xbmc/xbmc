@@ -10,8 +10,11 @@
 
 #include "utils/JSONVariantParser.h"
 #include "utils/JSONVariantWriter.h"
+#include "utils/SystemInfo.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+
+#include <regex>
 
 namespace
 {
@@ -36,8 +39,12 @@ constexpr const char* SUPPORT_EARCDDPlus = "eARCDDPlus";
 constexpr const char* EARC = "eARC";
 constexpr const char* DDPLUS = "DD+";
 
+constexpr const unsigned int DEFAULT_WEBOS_VERSION = 4;
+
 CVariant ms_config;
 } // namespace
+
+unsigned int WebOSTVPlatformConfig::m_webOSVersion = 0;
 
 void WebOSTVPlatformConfig::Load()
 {
@@ -69,7 +76,38 @@ void WebOSTVPlatformConfig::Load()
 
 int WebOSTVPlatformConfig::GetWebOSVersion()
 {
-  return ms_config[PLATFORM_CODE].asInteger();
+  if (m_webOSVersion > 0)
+    return m_webOSVersion;
+
+  std::string version = g_sysinfo.GetOsVersion();
+  if (!version.empty())
+  {
+    char* endptr = nullptr;
+    long maj = std::strtol(version.c_str(), &endptr, 10);
+
+    if (endptr != version.c_str())
+    {
+      m_webOSVersion = static_cast<int>(maj);
+      return m_webOSVersion;
+    }
+  }
+
+  // Try to parse a version number directly from PRETTY_NAME
+  std::string pretty = g_sysinfo.GetOsPrettyNameWithVersion();
+
+  std::regex version_regex(R"((\d+)\.(\d+)\.(\d+))");
+  std::smatch match;
+  if (std::regex_search(pretty, match, version_regex))
+  {
+    long maj = std::stoi(match[1]); // major version
+    if (maj > 0)
+    {
+      m_webOSVersion = maj;
+      return static_cast<int>(m_webOSVersion);
+    }
+  }
+
+  return DEFAULT_WEBOS_VERSION;
 }
 
 bool WebOSTVPlatformConfig::SupportsDTS()
@@ -89,7 +127,16 @@ void WebOSTVPlatformConfig::LoadARCStatus()
   m_requestContextARC->callback = [](LSHandle* sh, LSMessage* msg, void* ctx) -> bool
   {
     auto* self = static_cast<WebOSTVPlatformConfig*>(ctx);
-    std::string message = HLunaServiceMessage(msg);
+
+    const char* raw = HLunaServiceMessage(msg);
+    std::string message = raw ? std::string(raw) : std::string();
+
+    if (message.empty())
+    {
+      CLog::LogF(LOGERROR, "Failed to receive ARC luna message");
+      return false;
+    }
+
     CLog::LogF(LOGDEBUG, "ARC controller: {}", message);
 
     CVariant parsed;
