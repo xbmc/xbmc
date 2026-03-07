@@ -10,6 +10,7 @@
 #include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "cache/CacheComponent.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/ZipFile.h"
@@ -32,6 +33,16 @@ protected:
   {
     CServiceBroker::GetSettingsComponent()->GetSettings()->Unload();
   }
+
+  void SetUp() override
+  {
+    m_cacheComponent = std::make_unique<CCacheComponent>();
+    m_cacheComponent->Init();
+  }
+
+  void TearDown() override { m_cacheComponent.reset(); }
+
+  std::unique_ptr<CCacheComponent> m_cacheComponent;
 };
 
 TEST_F(TestZipFile, Read)
