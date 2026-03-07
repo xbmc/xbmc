@@ -315,9 +315,17 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
 
     // flag extraction mostly for non-library items - should end up somewhere else,
     // like a VideoInfoLoader if it existed
+    bool update = false;
+    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->HasStreamDetails())
+    {
+      if (pItem->GetVideoInfoTag()->m_streamDetails.GetVideoHdrType() == std::string("--"))
+      {
+        update = true;
+      }
+    }
     if (settings->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS) &&
         CDVDFileInfo::CanExtract(*pItem) &&
-        (!pItem->HasVideoInfoTag() || !pItem->GetVideoInfoTag()->HasStreamDetails()))
+        (!pItem->HasVideoInfoTag() || !pItem->GetVideoInfoTag()->HasStreamDetails() || update))
     {
       // No tag or no details set, so extract them
       CLog::LogF(LOGDEBUG, "trying to extract filestream details from video file {}",
@@ -603,6 +611,14 @@ void CVideoThumbLoader::DetectAndAddMissingItemData(CFileItem &item)
   if (item.HasVideoInfoTag())
   {
     CStreamDetails& details = item.GetVideoInfoTag()->m_streamDetails;
+
+    // add video stream HDR details
+    for (int i = 1; i <= details.GetVideoStreamCount(); i++)
+    {
+      std::string index = std::to_string(i);
+      item.SetProperty("HdrType." + index, details.GetVideoHdrType(i).c_str());
+      item.SetProperty("HdrDetail." + index, details.GetVideoHdrDetail(i).c_str());
+    }
 
     // add audio language properties
     for (int i = 1; i <= details.GetAudioStreamCount(); i++)

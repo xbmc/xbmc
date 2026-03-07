@@ -148,6 +148,7 @@ enum Field
   FieldAlbumStatus,
   FieldAlbumDuration,
   FieldHdrType,
+  FieldHdrDetail,
   FieldProvider,
   FieldUserPreference,
   FieldHasVideoVersions,

@@ -586,7 +586,16 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
 
         return true;
       case LISTITEM_VIDEO_HDR_TYPE:
-        value = tag->m_streamDetails.GetVideoHdrType();
+        if (tag->m_streamDetails.GetStreamCount(CStreamDetail::VIDEO) > 1)
+          value = tag->m_streamDetails.GetVideoHdrType(2);
+        else
+          value = tag->m_streamDetails.GetVideoHdrType();
+        return true;
+      case LISTITEM_HDR_DETAIL:
+        if (tag->m_streamDetails.GetStreamCount(CStreamDetail::VIDEO) > 1)
+          value = tag->m_streamDetails.GetVideoHdrDetail(2);
+        else
+          value = tag->m_streamDetails.GetVideoHdrDetail();
         return true;
       default:
         break;
