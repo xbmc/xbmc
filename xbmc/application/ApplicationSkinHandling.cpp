@@ -225,7 +225,11 @@ bool CApplicationSkinHandling::LoadSkin(const std::string& skinID)
 
 void CApplicationSkinHandling::UnloadSkin()
 {
-  auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
+  CGUIComponent* gui = CServiceBroker::GetGUI();
+  if (gui == nullptr)
+    return;
+
+  std::shared_ptr<ADDON::CSkinInfo> skin = gui->GetSkinInfo();
   if (skin && m_saveSkinOnUnloading)
     skin->SaveSettings();
   else if (!m_saveSkinOnUnloading)
@@ -237,29 +241,25 @@ void CApplicationSkinHandling::UnloadSkin()
     CServiceBroker::GetResourcesComponent().GetLocalizeStrings().ClearAddonStrings(skin->ID());
   }
 
-  CGUIComponent* gui = CServiceBroker::GetGUI();
-  if (gui)
-  {
-    gui->GetAudioManager().Enable(false);
+  gui->GetAudioManager().Enable(false);
 
-    gui->GetWindowManager().DeInitialize();
+  gui->GetWindowManager().DeInitialize();
 
-    const std::shared_ptr<CTextureCache> textureCache{CServiceBroker::GetTextureCache()};
-    if (textureCache)
-      textureCache->Deinitialize();
+  const std::shared_ptr<CTextureCache> textureCache{CServiceBroker::GetTextureCache()};
+  if (textureCache)
+    textureCache->Deinitialize();
 
-    // remove the skin-dependent window
-    gui->GetWindowManager().Delete(WINDOW_DIALOG_FULLSCREEN_INFO);
+  // remove the skin-dependent window
+  gui->GetWindowManager().Delete(WINDOW_DIALOG_FULLSCREEN_INFO);
 
-    gui->GetTextureManager().Cleanup();
-    gui->GetLargeTextureManager().CleanupUnusedImages(true);
+  gui->GetTextureManager().Cleanup();
+  gui->GetLargeTextureManager().CleanupUnusedImages(true);
 
-    g_fontManager.Clear();
+  g_fontManager.Clear();
 
-    gui->GetColorManager().Clear();
+  gui->GetColorManager().Clear();
 
-    gui->GetInfoManager().Clear();
-  }
+  gui->GetInfoManager().Clear();
 
   gui->UnloadSkin();
   CLog::Log(LOGINFO, "Unloaded skin");

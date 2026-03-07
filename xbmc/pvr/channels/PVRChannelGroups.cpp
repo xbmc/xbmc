@@ -75,8 +75,12 @@ void CPVRChannelGroups::Unload()
   for (const auto& group : m_groups)
     group->Unload();
 
-  CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
-  m_isSubscribed = false;
+  // During shutdown (esp. early abort), ServiceBroker may no longer be safe to use
+  if (m_isSubscribed && CServiceBroker::IsAddonInterfaceUp())
+  {
+    CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
+    m_isSubscribed = false;
+  }
 
   m_groups.clear();
   m_allChannelsGroup.reset();
