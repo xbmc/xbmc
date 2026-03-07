@@ -110,6 +110,13 @@ public:
    */
   static std::string GetDiscBasePath(const std::string& file);
 
+  /*! \brief Given a path (index.bdmv/video_ts.ifo), return the base folder
+   (ie the one containing the BDMV or VIDEO_TS folder).
+   \param path source path.
+   \return the base folder.
+   */
+  static std::string RemoveDiscPath(const std::string& path);
+
   /*! \brief Given a bluray:// path, return the base .ISO or index.BDMV.
    \param path bluray:// path.
    \return the base .ISO or index.BDMV.
