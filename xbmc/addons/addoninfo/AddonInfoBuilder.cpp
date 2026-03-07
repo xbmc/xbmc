@@ -789,9 +789,12 @@ const char* CAddonInfoBuilder::GetPlatformLibraryName(const tinyxml2::XMLElement
   const char* libraryName = nullptr;
 #if defined(TARGET_ANDROID)
   libraryName = element->Attribute("library_android");
-#elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
+#elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD) || defined(TARGET_WEBOS)
 #if defined(TARGET_FREEBSD)
   libraryName = element->Attribute("library_freebsd");
+  if (libraryName == nullptr)
+#elif defined(TARGET_WEBOS)
+  libraryName = element->Attribute("library_webos");
   if (libraryName == nullptr)
 #endif
   libraryName = element->Attribute("library_linux");
@@ -834,6 +837,13 @@ bool CAddonInfoBuilder::PlatformSupportsAddon(const AddonInfoPtr& addon)
 #endif
 #elif defined(TARGET_FREEBSD)
     "freebsd",
+#elif defined(TARGET_WEBOS)
+      "webos",
+#if defined(__ARM_ARCH_7A__)
+      "webos-armv7",
+#elif defined(__ARM_ARCH_8A__)
+      "webos-armv8",
+#endif
 #elif defined(TARGET_LINUX)
     "linux",
 #if defined(__ARM_ARCH_7A__)
