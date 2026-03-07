@@ -493,6 +493,8 @@ protected:
   int64_t GetTime();
   float GetPercentage();
 
+  virtual bool CanTempo();
+
   virtual void UpdateContent();
   void UpdateContentState();
 
