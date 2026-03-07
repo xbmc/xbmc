@@ -50,7 +50,7 @@ public:
   void ProcessKeyDown(XBMC_keysym& keysym);
   void ProcessKeyUp(void);
 
-  std::string GetKeyName(int KeyID);
+  std::string GetKeyName(uint32_t keyid);
 
 private:
   static bool LookupSymAndUnicodePeripherals(XBMC_keysym& keysym, uint16_t* key, char* unicode);
