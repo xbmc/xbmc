@@ -59,6 +59,7 @@ bool CWinSystemWaylandEGLContextGLES::InitWindowSystem()
   {
     WAYLAND::VAAPIRegister(m_vaapiProxy.get(), deepColor);
   }
+  WAYLAND::NVDECRegister();
 
   CBufferObjectFactory::ClearBufferObjects();
 #if defined(HAVE_LINUX_MEMFD) && defined(HAVE_LINUX_UDMABUF)

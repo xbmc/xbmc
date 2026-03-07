@@ -48,6 +48,15 @@ public:
   bool GetPictureCommon(VideoPicture* pVideoPicture) override;
 
 protected:
+  enum DecoderState
+  {
+    STATE_NONE,
+    STATE_SW_SINGLE,
+    STATE_HW_SINGLE,
+    STATE_HW_FAILED,
+    STATE_SW_MULTI
+  };
+
   void Dispose();
   static enum AVPixelFormat GetFormat(struct AVCodecContext * avctx, const AVPixelFormat * fmt);
 
@@ -57,6 +66,8 @@ protected:
   void SetFilters();
   void UpdateName();
   bool SetPictureParams(VideoPicture* pVideoPicture);
+  CDVDVideoCodec::VCReturn ProcessDecodedFrame();
+  CDVDVideoCodec::VCReturn ProcessFilterGraph(AVPixelFormat pixFmt, VideoPicture* pVideoPicture);
 
   bool HasHardware() { return m_pHardware != nullptr; }
   void SetHardware(IHardwareDecoder *hardware);
@@ -84,7 +95,7 @@ protected:
   int m_iOrientation = 0;// orientation of the video in degrees counter clockwise
 
   std::string m_name;
-  int m_decoderState;
+  DecoderState m_decoderState;
   IHardwareDecoder *m_pHardware = nullptr;
   int m_iLastKeyframe = 0;
   double m_dts = DVD_NOPTS_VALUE;

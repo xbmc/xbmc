@@ -316,10 +316,14 @@ bool CWinSystemX11GLContext::RefreshGLContext(bool force)
         if (general)
         {
           VAAPIRegister(m_vaapiProxy.get(), deepColor);
+          NVDECRegister();
           return true;
         }
         if (isIntel || gli == "egl")
+        {
+          NVDECRegister();
           return true;
+        }
       }
     }
     else if (gli == "egl-pb")
@@ -339,6 +343,7 @@ bool CWinSystemX11GLContext::RefreshGLContext(bool force)
   {
     VDPAURegister();
     VDPAURegisterRender();
+    NVDECRegister();
   }
   return success;
 }

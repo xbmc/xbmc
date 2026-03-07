@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2019 Team Kodi
+ *  Copyright (C) 2019-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -22,6 +22,7 @@ public:
 
   CProcessInfoGBM();
   EINTERLACEMETHOD GetFallbackDeintMethod() override;
+  std::vector<AVPixelFormat> GetRenderFormats() override;
 };
 
 } // namespace VIDEOPLAYER

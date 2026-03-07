@@ -71,6 +71,7 @@ bool CWinSystemGbmGLContext::InitWindowSystem()
   {
     VAAPIRegister(m_vaapiProxy.get(), deepColor);
   }
+  NVDECRegister();
 
   CScreenshotSurfaceGL::Register();
 
