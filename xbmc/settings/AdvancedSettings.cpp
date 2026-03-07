@@ -332,9 +332,9 @@ void CAdvancedSettings::Initialize()
   m_tvshowEnumRegExps.emplace_back(
       false, "[\\._ -]?()e(?:p[ ._-]?)?([0-9]+(?:(?:[a-i]|\\.[1-9])(?![0-9]))?)([^\\\\/]*)$");
   // foo.yyyy.mm.dd.* (byDate=true)
-  m_tvshowEnumRegExps.emplace_back(true, "([0-9]{4})[\\.-]([0-9]{2})[\\.-]([0-9]{2})");
-  // foo.mm.dd.yyyy.* (byDate=true)
-  m_tvshowEnumRegExps.emplace_back(true, "([0-9]{2})[\\.-]([0-9]{2})[\\.-]([0-9]{4})");
+  m_tvshowEnumRegExps.emplace_back(true, "([0-9]{4})[\\.-]([0-1][0-9])[\\.-]([0-3][0-9])");
+  // foo.dd.mm.yyyy.* or foo.mm-dd-yyyy.* (byDate=true)
+  m_tvshowEnumRegExps.emplace_back(true, "([0-3][0-9])[\\.-]([0-3][0-9])[\\.-]([0-9]{4})");
   // foo.1x09* or just /1x09*
   m_tvshowEnumRegExps.emplace_back(
       false, "[\\\\/\\._ \\[\\(-]([0-9]+)x([0-9]+(?:(?:[a-i]|\\.[1-9])(?![0-9]))?)([^\\\\/]*)$");
