@@ -45,7 +45,7 @@ CKey::CKey(uint32_t buttonCode, unsigned int held)
 }
 
 CKey::CKey(uint32_t keycode,
-           uint8_t vkey,
+           uint16_t vkey,
            wchar_t unicode,
            char ascii,
            uint32_t modifiers,
@@ -53,6 +53,7 @@ CKey::CKey(uint32_t keycode,
            unsigned int held)
 {
   Reset();
+  vkey &= KEY_VKEY_MASK;
   if (vkey) // FIXME: This needs cleaning up - should we always use the unicode key where available?
     m_buttonCode = vkey | KEY_VKEY;
   else

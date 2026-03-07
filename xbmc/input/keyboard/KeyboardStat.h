@@ -53,7 +53,7 @@ public:
   std::string GetKeyName(int KeyID);
 
 private:
-  static bool LookupSymAndUnicodePeripherals(XBMC_keysym& keysym, uint8_t* key, char* unicode);
+  static bool LookupSymAndUnicodePeripherals(XBMC_keysym& keysym, uint16_t* key, char* unicode);
 
   XBMC_keysym m_lastKeysym;
   std::chrono::time_point<std::chrono::steady_clock> m_lastKeyTime;

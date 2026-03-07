@@ -42,7 +42,9 @@ void CKeyboardStat::Initialize()
 {
 }
 
-bool CKeyboardStat::LookupSymAndUnicodePeripherals(XBMC_keysym& keysym, uint8_t* key, char* unicode)
+bool CKeyboardStat::LookupSymAndUnicodePeripherals(XBMC_keysym& keysym,
+                                                   uint16_t* key,
+                                                   char* unicode)
 {
   using namespace PERIPHERALS;
 
@@ -63,7 +65,7 @@ bool CKeyboardStat::LookupSymAndUnicodePeripherals(XBMC_keysym& keysym, uint8_t*
 CKey CKeyboardStat::TranslateKey(XBMC_keysym& keysym) const
 {
   uint32_t keycode;
-  uint8_t vkey;
+  uint16_t vkey;
   wchar_t unicode;
   char ascii;
   uint32_t modifiers;

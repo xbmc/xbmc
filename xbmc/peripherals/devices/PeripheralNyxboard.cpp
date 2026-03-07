@@ -22,7 +22,7 @@ CPeripheralNyxboard::CPeripheralNyxboard(CPeripherals& manager,
   m_features.push_back(FEATURE_NYXBOARD);
 }
 
-bool CPeripheralNyxboard::LookupSymAndUnicode(XBMC_keysym& keysym, uint8_t* key, char* unicode)
+bool CPeripheralNyxboard::LookupSymAndUnicode(XBMC_keysym& keysym, uint16_t* key, char* unicode)
 {
   std::string strCommand;
   if (keysym.sym == XBMCK_F7 && keysym.mod == XBMCKMOD_NONE &&
