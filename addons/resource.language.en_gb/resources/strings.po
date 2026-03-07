@@ -8516,7 +8516,21 @@ msgctxt "#14128"
 msgid "Allow double refresh rates"
 msgstr ""
 
-#empty strings from id 14129 to 14186
+#: system/settings/settings.xml
+msgctxt "#14129"
+msgid "Use higher refresh rates"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#14130"
+msgid "Try and match video resolution"
+msgstr ""
+
+msgctxt "#14131"
+msgid "Whitelist, Resolution and Refresh Rate"
+msgstr ""
+
+#empty strings from id 14132 to 14186
 
 #: system/settings/settings.xml
 msgctxt "#14187"
@@ -21526,7 +21540,19 @@ msgctxt "#36445"
 msgid "Select this option to allow using double refresh rates (playing 29.97 FPS video on a 59.94 Hz monitor or playing 30 FPS video on a 60 Hz monitor). You may want to use this option if your monitor doesn't have a 29.97 Hz or 30 Hz mode."
 msgstr ""
 
-#empty strings from id 36446 to 36459
+#. Description of setting with label #14129 "Whitelist"
+#: system/settings/settings.xml
+msgctxt "#36446"
+msgid "Select this option to prefer higher multiple refresh rates (playing 23.976 FPS or 29.97 FPS video on a 119.88 Hz monitor or playing 25 FPS video on a 100 Hz monitor)."
+msgstr ""
+
+#. Description of setting with label #14130 "Whitelist"
+#: system/settings/settings.xml
+msgctxt "#36447"
+msgid "Disabled - Keep the desktop resolution or use a higher resolution matching the video, if available (ie. Kodi will scale the video if needed)[CR]Enabled - Use a display resolution that matches the video, if available (ie. the TV will scale the video if needed)."
+msgstr ""
+
+#empty strings from id 36449 to 36459
 
 #. Description of settings with label #14112 "Enable event logging"
 #: system/settings/settings.xml
