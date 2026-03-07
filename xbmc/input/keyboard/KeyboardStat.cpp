@@ -14,6 +14,7 @@
 #include "KeyboardStat.h"
 
 #include "ServiceBroker.h"
+#include "input/keyboard/KeyIDs.h"
 #include "input/keyboard/KeyboardTranslator.h"
 #include "input/keyboard/KeyboardTypes.h"
 #include "input/keyboard/XBMC_keytable.h"
@@ -214,9 +215,8 @@ void CKeyboardStat::ProcessKeyUp(void)
 // Used to make the debug log more intelligible
 // The KeyID includes the flags for ctrl, alt etc
 
-std::string CKeyboardStat::GetKeyName(int KeyID)
+std::string CKeyboardStat::GetKeyName(uint32_t keyid)
 {
-  int keyid;
   std::string keyname;
   XBMCKEYTABLE keytable;
 
@@ -224,36 +224,44 @@ std::string CKeyboardStat::GetKeyName(int KeyID)
 
   // Get modifiers
 
-  if (KeyID & CKey::MODIFIER_CTRL)
+  if (keyid & CKey::MODIFIER_CTRL)
     keyname.append("ctrl-");
-  if (KeyID & CKey::MODIFIER_SHIFT)
+  if (keyid & CKey::MODIFIER_SHIFT)
     keyname.append("shift-");
-  if (KeyID & CKey::MODIFIER_ALT)
+  if (keyid & CKey::MODIFIER_ALT)
     keyname.append("alt-");
-  if (KeyID & CKey::MODIFIER_SUPER)
+  if (keyid & CKey::MODIFIER_SUPER)
     keyname.append("win-");
-  if (KeyID & CKey::MODIFIER_META)
+  if (keyid & CKey::MODIFIER_META)
     keyname.append("meta-");
-  if (KeyID & CKey::MODIFIER_LONG)
+  if (keyid & CKey::MODIFIER_LONG)
     keyname.append("long-");
 
   // Now get the key name
+  uint16_t keycode = static_cast<uint16_t>(keyid);
 
-  keyid = KeyID & 0xFF;
-  bool VKeyFound = KeyTable::LookupVKeyName(keyid, &keytable);
-  if (VKeyFound)
-    keyname.append(keytable.keyname);
+  if (keycode == KEY_UNICODE)
+    keyname.append(StringUtils::Format("<unicode> ({:#04x})", keyid));
+  else if (keycode == KEY_INVALID)
+    keyname.append(StringUtils::Format("<invalid> ({:#04x})", keyid));
+  else if (keycode >= KEY_VKEY && keycode <= KEY_VKEY_MAX)
+  {
+    uint16_t vkey = keycode - KEY_VKEY;
+    bool VKeyFound = KeyTable::LookupVKeyName(vkey, &keytable);
+    if (VKeyFound)
+      keyname.append(keytable.keyname);
+    else
+      keyname.append(std::to_string(keycode));
+    keyname.append(StringUtils::Format(" ({:#04x})", keyid));
+  }
+  else if (keycode < 256)
+    // in case this might be an universalremote keyid
+    // we also print the possible corresponding obc code
+    // so users can easily find it in their universalremote
+    // map xml
+    keyname.append(StringUtils::Format("{} ({:#02x}, obc{})", keycode, keyid, 255 - keycode));
   else
-    keyname += std::to_string(keyid);
-
-  // in case this might be an universalremote keyid
-  // we also print the possible corresponding obc code
-  // so users can easily find it in their universalremote
-  // map xml
-  if (VKeyFound || keyid > 255)
-    keyname += StringUtils::Format(" ({:#02x})", KeyID);
-  else // obc keys are 255 -rawid
-    keyname += StringUtils::Format(" ({:#02x}, obc{})", KeyID, 255 - KeyID);
+    keyname.append(StringUtils::Format("{} ({:#04x})", keycode, keyid));
 
   return keyname;
 }
