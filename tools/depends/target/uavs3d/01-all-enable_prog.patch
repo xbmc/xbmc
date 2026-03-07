@@ -1,0 +1,21 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -7,10 +7,12 @@
+ set(CMAKE_C_STANDARD 99)
+ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+ 
++if(ENABLE_PROG)
+ aux_source_directory(./test DIR_SRC_TEST)
++endif()
+ 
+ add_subdirectory(./source)
+-
++if(ENABLE_PROG)
+ add_executable(uavs3dec ${DIR_SRC_TEST})
+ 
+ if (NOT MSVC)
+@@ -18,3 +20,4 @@
+ endif()
+ target_link_libraries(uavs3dec uavs3d)
+ #target_link_libraries(uavs3dec dl)
++endif()
