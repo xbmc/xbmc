@@ -126,6 +126,8 @@ constexpr auto xkbMap = make_map<xkb_keysym_t, XBMCKey>({
     {XKB_KEY_Sys_Req, XBMCK_SYSREQ},
     {XKB_KEY_Break, XBMCK_BREAK},
     {XKB_KEY_Menu, XBMCK_MENU},
+    {XKB_KEY_XF86MenuKB, XBMCK_MENU},
+    {XKB_KEY_XF86MenuPB, XBMCK_MENU},
     {XKB_KEY_XF86PowerOff, XBMCK_POWER},
     {XKB_KEY_EcuSign, XBMCK_EURO},
     {XKB_KEY_Undo, XBMCK_UNDO},
@@ -139,7 +141,22 @@ constexpr auto xkbMap = make_map<xkb_keysym_t, XBMCKey>({
     {XKB_KEY_XF86Favorites, XBMCK_FAVORITES},
     // Unmapped: XBMCK_CONFIG, XBMCK_EPG
 
+    // Numeric keys on remote controls
+    {XKB_KEY_XF86Numeric0, XBMCK_0},
+    {XKB_KEY_XF86Numeric1, XBMCK_1},
+    {XKB_KEY_XF86Numeric2, XBMCK_2},
+    {XKB_KEY_XF86Numeric3, XBMCK_3},
+    {XKB_KEY_XF86Numeric4, XBMCK_4},
+    {XKB_KEY_XF86Numeric5, XBMCK_5},
+    {XKB_KEY_XF86Numeric6, XBMCK_6},
+    {XKB_KEY_XF86Numeric7, XBMCK_7},
+    {XKB_KEY_XF86Numeric8, XBMCK_8},
+    {XKB_KEY_XF86Numeric9, XBMCK_9},
+
     // Media keys
+    {XKB_KEY_XF86Info, XBMCK_INFO},
+    {XKB_KEY_XF86ChannelUp, XBMCK_PAGEUP},
+    {XKB_KEY_XF86ChannelDown, XBMCK_PAGEDOWN},
     {XKB_KEY_XF86Eject, XBMCK_EJECT},
     {XKB_KEY_Cancel, XBMCK_STOP},
     {XKB_KEY_XF86AudioRecord, XBMCK_RECORD},
@@ -148,6 +165,49 @@ constexpr auto xkbMap = make_map<xkb_keysym_t, XBMCKey>({
     {XKB_KEY_XF86AudioPlay, XBMCK_PLAY},
     {XKB_KEY_XF86AudioRandomPlay, XBMCK_SHUFFLE}
     // XBMCK_FASTFORWARD clashes with XBMCK_MEDIA_FASTFORWARD
+    // Kodi does not have XBMCK_ constants for these media keys:
+    // {XKB_KEY_XF86CycleAngle, XBMCK_UNKNOWN},
+    // {XKB_KEY_XF86FullScreen, XBMCK_UNKNOWN},
+    // {XKB_KEY_XF86AspectRatio, XBMCK_UNKNOWN},
+    // {XKB_KEY_XF86DVD, XBMCK_UNKNOWN},
+    // {XKB_KEY_XF86Audio, XBMCK_UNKNOWN},
+    // {XKB_KEY_XF86Video, XBMCK_UNKNOWN},
+    // {XKB_KEY_XF86AudioRandomPlay, XBMCK_UNKNOWN},
+    // {XKB_KEY_XF86Fn, XBMCK_UNKNOWN},
+});
+
+/// Additional mappings directly from libinput (i.e. evdev) keycodes to Kodi keys.
+/// These keys are not (yet) supported by any XKB release; so to avoid waiting for XKB project to add support,
+/// they are now handled here in a special way.
+/// Also, for some evdev keys there exists no appropriate XBMCK_... constant; so these entries
+/// are commented out in this table.
+constexpr auto evdevKeycodeMap = make_map<uint32_t, XBMCKey>({
+    {KEY_OK, XBMCK_RETURN},
+    // {KEY_CLEAR, XBMCK_UNKNOWN },
+    {KEY_POWER2, XBMCK_POWER},
+    // {KEY_TIME, XBMCK_UNKNOWN },
+    // {KEY_CHANNEL, XBMCK_UNKNOWN },
+    {KEY_FAVORITES, XBMCK_FAVORITES},
+    {KEY_EPG, XBMCK_EPG},
+    // {KEY_LANGUAGE, XBMCK_UNKNOWN },
+    // {KEY_TITLE, XBMCK_UNKNOWN },
+    {KEY_SUBTITLE, XBMCK_SUBTITLE},
+    // {KEY_MODE, XBMCK_UNKNOWN },
+    // {KEY_PC, XBMCK_UNKNOWN },
+    // {KEY_TV, XBMCK_UNKNOWN },
+    // {KEY_TV2, XBMCK_UNKNOWN },
+    // {KEY_VCR, XBMCK_UNKNOWN },
+    // {KEY_VCR2, XBMCK_UNKNOWN },
+    // {KEY_CD, XBMCK_UNKNOWN },
+    // {KEY_RADIO, XBMCK_UNKNOWN },
+    // {KEY_TEXT, XBMCK_UNKNOWN },
+    {KEY_RED, XBMCK_RED},
+    {KEY_GREEN, XBMCK_GREEN},
+    {KEY_YELLOW, XBMCK_YELLOW},
+    {KEY_BLUE, XBMCK_BLUE},
+    {KEY_NEXT, XBMCK_MEDIA_NEXT_TRACK},
+    {KEY_PREVIOUS, XBMCK_MEDIA_PREV_TRACK},
+    // {KEY_DIGITS, XBMCK_UNKNOWN },
 });
 
 constexpr auto logLevelMap = make_map<xkb_log_level, int>({{XKB_LOG_LEVEL_CRITICAL, LOGERROR},
@@ -329,7 +389,8 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
   if (!m_ctx || !m_keymap || !m_state)
     return;
 
-  const uint32_t xkbkey = libinput_event_keyboard_get_key(e) + 8;
+  const uint32_t libinputKeycode = libinput_event_keyboard_get_key(e);
+  const uint32_t xkbkey = libinputKeycode + 8;
   const xkb_keysym_t keysym = xkb_state_key_get_one_sym(m_state.get(), xkbkey);
   const bool pressed = libinput_event_keyboard_get_key_state(e) == LIBINPUT_KEY_STATE_PRESSED;
   xkb_state_update_key(m_state.get(), xkbkey, pressed ? XKB_KEY_DOWN : XKB_KEY_UP);
@@ -430,26 +491,40 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
     unicode = 0;
   }
 
-  const uint32_t scancode = libinput_event_keyboard_get_key(e);
-
   // flush composer if set (after a finished sequence)
   if (flushComposer)
   {
     xkb_compose_state_reset(m_composedState.get());
   }
 
+  XBMCKey xbmcKey = XBMCKeyForXKBKeysym(keysym);
+  bool keyRepeats = xkb_keymap_key_repeats(m_keymap.get(), xkbkey);
+
+  if (xbmcKey == XBMCK_UNKNOWN)
+  {
+    // for "extended keycodes" that are out of range for XKB, try to map directly from scancodes to XBMC keys:
+    xbmcKey = XBMCKeyForLibinputKeycode(libinputKeycode);
+    keyRepeats = true; // assume that all of these keys repeat
+  }
+
+  if (xbmcKey == XBMCK_UNKNOWN)
+  {
+    CLog::LogF(LOGDEBUG, "unable to map key with keycode {} ({:#x}), XKB keysym {} ({:#x}).",
+               libinputKeycode, libinputKeycode, keysym, keysym);
+  }
+
   XBMC_Event event = {};
   event.type = pressed ? XBMC_KEYDOWN : XBMC_KEYUP;
   event.key.keysym.mod = XBMCMod(mod);
-  event.key.keysym.sym = XBMCKeyForKeysym(keysym, scancode);
-  event.key.keysym.scancode = scancode;
+  event.key.keysym.sym = xbmcKey;
+  event.key.keysym.scancode = libinputKeycode;
   event.key.keysym.unicode = unicode;
 
   std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
   if (appPort)
     appPort->OnEvent(event);
 
-  if (pressed && xkb_keymap_key_repeats(m_keymap.get(), xkbkey))
+  if (pressed && keyRepeats)
   {
     libinput_event *ev = libinput_event_keyboard_get_base_event(e);
     libinput_device *dev = libinput_event_get_device(ev);
@@ -471,7 +546,7 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
   }
 }
 
-XBMCKey CLibInputKeyboard::XBMCKeyForKeysym(xkb_keysym_t sym, uint32_t scancode)
+XBMCKey CLibInputKeyboard::XBMCKeyForXKBKeysym(xkb_keysym_t sym)
 {
   if (sym >= 'A' && sym <= 'Z')
   {
@@ -489,6 +564,15 @@ XBMCKey CLibInputKeyboard::XBMCKeyForKeysym(xkb_keysym_t sym, uint32_t scancode)
   auto xkbmapping = xkbMap.find(sym);
   if (xkbmapping != xkbMap.cend())
     return xkbmapping->second;
+
+  return XBMCK_UNKNOWN;
+}
+
+XBMCKey CLibInputKeyboard::XBMCKeyForLibinputKeycode(uint32_t scancode)
+{
+  const auto evdevmapping = evdevKeycodeMap.find(scancode);
+  if (evdevmapping != evdevKeycodeMap.cend())
+    return evdevmapping->second;
 
   return XBMCK_UNKNOWN;
 }
