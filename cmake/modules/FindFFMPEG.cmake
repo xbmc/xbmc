@@ -42,7 +42,14 @@ macro(buildFFMPEG)
   if(NOT TARGET LIBRARY::Dav1d)
     message(STATUS "dav1d not found, internal ffmpeg build will be missing AV1 support!")
   else()
-    set(FFMPEG_OPTIONS -DENABLE_DAV1D=ON)
+    list(APPEND FFMPEG_OPTIONS -DENABLE_DAV1D=ON)
+  endif()
+
+  find_package(Uavs3d ${SEARCH_QUIET})
+  if(NOT TARGET LIBRARY::Uavs3d)
+    message(STATUS "libuavs3d not found, internal ffmpeg build will be missing AVS3 support!")
+  else()
+    list(APPEND FFMPEG_OPTIONS -DENABLE_UAVS3D=ON)
   endif()
 
   set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC ffmpeg)
@@ -232,6 +239,10 @@ macro(buildFFMPEG)
     add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} LIBRARY::Dav1d)
   endif()
 
+  if(TARGET LIBRARY::Uavs3d)
+    add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} LIBRARY::Uavs3d)
+  endif()
+
   set(FFMPEG_FOUND 1)
   set(FFMPEG_VERSION ${FFMPEG_VER})
 
@@ -313,11 +324,20 @@ if(NOT DISABLE_FFMPEG_SOURCE_PLUGINS)
   list(APPEND FFMPEG_PKGS libpostproc${_postproc_ver})
 endif()
 
-# Check for dav1d dep rebuild property
+# Check for ffmpeg dep rebuild property on library dependencies
 if(KODI_DEPENDSBUILD OR (WIN32 OR WINDOWS_STORE))
   find_package(Dav1d ${SEARCH_QUIET})
   if(TARGET LIBRARY::Dav1d)
     get_target_property(FFMPEG_DEP_BUILD LIBRARY::Dav1d LIB_BUILD)
+
+    if(FFMPEG_DEP_BUILD)
+      set(ENABLE_INTERNAL_FFMPEG ON)
+    endif()
+  endif()
+
+  find_package(Uavs3d ${SEARCH_QUIET})
+  if(TARGET LIBRARY::Uavs3d)
+    get_target_property(FFMPEG_DEP_BUILD LIBRARY::Uavs3d LIB_BUILD)
 
     if(FFMPEG_DEP_BUILD)
       set(ENABLE_INTERNAL_FFMPEG ON)
@@ -401,10 +421,11 @@ else()
               HINTS ${DEPENDS_PATH}/include ${MINGW_LIBS_DIR}/include
               ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
-    # Windows is still just a straight file search. Explicitly search for Dav1d for
+    # Windows is still just a straight file search. Explicitly search for 3rd party libs for
     # correct dependency linking
     if(WIN32 OR WINDOWS_STORE)
       find_package(Dav1d ${SEARCH_QUIET})
+      find_package(Uavs3d ${SEARCH_QUIET})
     endif()
 
     # Macro to populate target
