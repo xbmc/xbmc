@@ -20,6 +20,8 @@ if("wayland" IN_LIST CORE_PLATFORM_NAME_LC)
   # to already be resolved
   set(PROTOCOL_XMLS "${WAYLANDPP_PROTOCOLS_DIR}/presentation-time.xml"
                     "${WAYLANDPP_PROTOCOLS_DIR}/xdg-shell.xml"
+                    "${WAYLAND_PROTOCOLS_DIR}/stable/viewporter/viewporter.xml"
+                    "${WAYLAND_PROTOCOLS_DIR}/staging/fractional-scale/fractional-scale-v1.xml"
                     "${WAYLAND_PROTOCOLS_DIR}/unstable/xdg-shell/xdg-shell-unstable-v6.xml"
                     "${WAYLAND_PROTOCOLS_DIR}/unstable/idle-inhibit/idle-inhibit-unstable-v1.xml")
 
