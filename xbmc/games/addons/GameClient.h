@@ -256,6 +256,7 @@ private:
 
   // Properties of the current playing file
   std::atomic_bool m_bIsPlaying; // True between OpenFile() and CloseFile()
+  std::atomic_bool m_hasFrameRun{false};
   std::string m_gamePath;
   bool m_bRequiresGameLoop = false;
   size_t m_serializeSize = 0;
