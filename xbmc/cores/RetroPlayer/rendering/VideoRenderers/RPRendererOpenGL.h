@@ -21,6 +21,7 @@ namespace KODI
 {
 namespace SHADER
 {
+class CShaderTextureGL;
 class CShaderTextureGLRef;
 } // namespace SHADER
 
@@ -72,7 +73,7 @@ protected:
   struct RenderBufferTextures
   {
     std::shared_ptr<SHADER::CShaderTextureGLRef> source;
-    std::shared_ptr<SHADER::CShaderTextureGLRef> target;
+    std::shared_ptr<SHADER::CShaderTextureGL> target;
   };
 
   // implementation of CRPBaseRenderer
@@ -103,7 +104,7 @@ protected:
   GLuint m_blackbarsVAO;
   GLuint m_blackbarsVertexVBO;
 
-  GLenum m_textureTarget = GL_TEXTURE_2D;
+  const GLenum m_textureTarget = GL_TEXTURE_2D;
   float m_clearColor = 0.0f;
 };
 } // namespace RETRO

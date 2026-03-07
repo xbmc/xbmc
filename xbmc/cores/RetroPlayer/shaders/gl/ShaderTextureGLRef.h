@@ -35,8 +35,8 @@ public:
   GLuint GetTextureID() const { return m_texture; }
 
 private:
-  uint32_t m_textureWidth{0};
-  uint32_t m_textureHeight{0};
+  const uint32_t m_textureWidth;
+  const uint32_t m_textureHeight;
   GLuint m_texture{0};
 };
 } // namespace KODI::SHADER
