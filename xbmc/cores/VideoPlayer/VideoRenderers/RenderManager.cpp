@@ -97,10 +97,17 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
     if (!m_bRenderGUI)
       return true;
 
-    if (m_picture.IsSameParams(picture) && m_fps == fps && m_orientation == orientation &&
-        m_NumberBuffers == buffers && m_pRenderer != nullptr &&
-        !m_pRenderer->ConfigChanged(picture))
+    if (m_pRenderer != nullptr && m_picture.IsSameParams(picture) && m_orientation == orientation &&
+        m_NumberBuffers == buffers && !m_pRenderer->ConfigChanged(picture))
     {
+      if (m_fps != fps)
+      {
+        CLog::Log(LOGDEBUG, "CRenderManager::Configure - framerate changed from {:4.2f} to {:4.2f}",
+                  m_fps, fps);
+        m_fps = fps;
+        m_pRenderer->SetFps(fps);
+        m_bTriggerUpdateResolution = true;
+      }
       return true;
     }
   }
