@@ -56,14 +56,14 @@
 #define KEY_BUTTON_LEFT_THUMB_STICK_LEFT 282
 #define KEY_BUTTON_LEFT_THUMB_STICK_RIGHT 283
 
-// 0xF000 -> 0xF200 is reserved for the keyboard; a keyboard press is either:
+// 0xF000 -> 0xFFFE is reserved for the keyboard; a keyboard press is either:
 //   - A virtual key/functional key e.g. cursor left
 #define KEY_VKEY 0xF000
 #define KEY_VKEY_MAX 0xF0FF
 // mask of valid vkey bits in the vkey block
 #define KEY_VKEY_MASK 0x00FF
 //   - Another printable character whose range is not included in this KEY code
-#define KEY_UNICODE 0xF200
+#define KEY_UNICODE 0xFFFE
 
 // 0xE000 -> 0xEFFF is reserved for mouse actions
 #define KEY_VMOUSE 0xEFFF
