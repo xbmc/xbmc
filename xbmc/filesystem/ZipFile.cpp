@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -47,7 +47,12 @@ bool CZipFile::Open(const CURL&url)
 
   if ((mZipItem.method != 8) && (mZipItem.method != 0))
   {
-    CLog::Log(LOGERROR,"FileZip: unsupported compression method!");
+    std::string method = std::to_string(mZipItem.method);
+
+    if (mZipItem.method == 9)
+      method.append(" (PKWARE proprietary DEFLATE64)");
+
+    CLog::Log(LOGERROR, "FileZip: unsupported compression method {}", method);
     return false;
   }
 
