@@ -31,7 +31,6 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Crc32.h"
-#include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -332,7 +331,7 @@ void CGUIDialogVideoBookmarks::Update()
   if (g_application.CurrentFileItem().HasVideoInfoTag() && g_application.CurrentFileItem().GetVideoInfoTag()->m_iEpisode > -1)
   {
     std::vector<CVideoInfoTag> episodes;
-    videoDatabase.GetEpisodesByFile(g_application.CurrentFile(),episodes);
+    videoDatabase.GetEpisodesByFile(g_application.CurrentFileItem().GetDynPath(),episodes);
     if (episodes.size() > 1)
     {
       CONTROL_ENABLE(CONTROL_ADD_EPISODE_BOOKMARK);
@@ -477,7 +476,7 @@ bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
   {
     const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-    auto crc = Crc32::ComputeFromLowerCase(g_application.CurrentFile());
+    auto crc = Crc32::ComputeFromLowerCase(g_application.CurrentFileItem().GetDynPath());
     bookmark.thumbNailImage =
         StringUtils::Format("{:08x}_{}.jpg", crc, (int)bookmark.timeInSeconds);
     bookmark.thumbNailImage = URIUtils::AddFileToFolder(profileManager->GetBookmarksThumbFolder(), bookmark.thumbNailImage);
@@ -542,7 +541,7 @@ bool CGUIDialogVideoBookmarks::AddEpisodeBookmark()
   if (!videoDatabase.Open())
     return false;
 
-  videoDatabase.GetEpisodesByFile(g_application.CurrentFile(), episodes);
+  videoDatabase.GetEpisodesByFile(g_application.CurrentFileItem().GetDynPath(), episodes);
   videoDatabase.Close();
   if (!episodes.empty())
   {
@@ -596,7 +595,7 @@ bool CGUIDialogVideoBookmarks::OnAddEpisodeBookmark()
     if (!videoDatabase.Open())
       return bReturn;
     std::vector<CVideoInfoTag> episodes;
-    videoDatabase.GetEpisodesByFile(g_application.CurrentFile(),episodes);
+    videoDatabase.GetEpisodesByFile(g_application.CurrentFileItem().GetDynPath(),episodes);
     if (episodes.size() > 1)
     {
       bReturn = CGUIDialogVideoBookmarks::AddEpisodeBookmark();
