@@ -9,7 +9,10 @@
 #include "guilib/guiinfo/GamesGUIInfo.h"
 
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "Util.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "cores/RetroPlayer/RetroPlayerUtils.h"
 #include "games/tags/GameInfoTag.h"
 #include "guilib/guiinfo/GUIInfo.h"
@@ -76,6 +79,16 @@ bool CGamesGUIInfo::GetLabel(std::string& value,
       value = std::to_string(rotationDegCCW);
       return true;
     }
+    case RETROPLAYER_DISC_LABEL:
+    {
+      const auto& components = CServiceBroker::GetAppComponents();
+      const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
+      if (appPlayer)
+        value = appPlayer->DiscLabel();
+
+      return true;
+    }
     default:
       break;
   }
@@ -96,5 +109,41 @@ bool CGamesGUIInfo::GetBool(bool& value,
                             int contextWindow,
                             const CGUIInfo& info) const
 {
+  switch (info.GetInfo())
+  {
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // RETROPLAYER_*
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    case RETROPLAYER_SUPPORTS_EJECT:
+    {
+      const auto& components = CServiceBroker::GetAppComponents();
+      const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
+      value = appPlayer && appPlayer->SupportsDiscControl();
+
+      return true;
+    }
+    case RETROPLAYER_DISC_EJECTED:
+    {
+      const auto& components = CServiceBroker::GetAppComponents();
+      const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
+      value = appPlayer && appPlayer->IsDiscEjected();
+
+      return true;
+    }
+    case RETROPLAYER_EMPTY_TRAY:
+    {
+      const auto& components = CServiceBroker::GetAppComponents();
+      const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
+      value = appPlayer && appPlayer->IsTrayEmpty();
+
+      return true;
+    }
+    default:
+      break;
+  }
+
   return false;
 }

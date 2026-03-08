@@ -4299,15 +4299,52 @@ constexpr std::array<InfoMap, 83> videoplayer = {{
 ///     <p><hr>
 ///     @skinning_v18 **[New Infolabel]** \link RetroPlayer_VideoRotation `RetroPlayer.VideoRotation`\endlink
 ///     <p>
+///   \table_row3{   <b>`RetroPlayer.SupportsEject`</b>,
+///                  \anchor RetroPlayer_SupportsEject
+///                  _boolean_,
+///     @return **True** if the game's disc can be ejected, **False** if the
+///     game isn't disc-based or doesn't support ejecting the disc.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link RetroPlayer_SupportsEject `RetroPlayer.SupportsEject`\endlink
+///     <p>
+///   \table_row3{   <b>`RetroPlayer.DiscEjected`</b>,
+///                  \anchor RetroPlayer_DiscEjected
+///                  _boolean_,
+///     @return **True** if the game's disc is ejected (tray is open), **False**
+///     if the game isn't disc-based or the tray is closed.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link RetroPlayer_DiscEjected `RetroPlayer.DiscEjected`\endlink
+///     <p>
+///   \table_row3{   <b>`RetroPlayer.DiscLabel`</b>,
+///                  \anchor RetroPlayer_DiscLabel
+///                  _string_,
+///     @return The human-readable label of the currently inserted disc, or
+///     an empty string if no disc is in the tray/floppy drive or the game
+///     isn't disc-based.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link RetroPlayer_DiscLabel `RetroPlayer.DiscLabel`\endlink
+///     <p>
+///   \table_row3{   <b>`RetroPlayer.EmptyTray`</b>,
+///                  \anchor RetroPlayer_EmptyTray
+///                  _boolean_,
+///     @return **True** if the selected disc state is "No disc", **False** if a
+///     disc is selected or the game isn't disc-based.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link RetroPlayer_EmptyTray `RetroPlayer.EmptyTray`\endlink
+///     <p>
 ///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 3> retroplayer = {{
+constexpr std::array<InfoMap, 7> retroplayer = {{
     {"videofilter",   RETROPLAYER_VIDEO_FILTER},
     {"stretchmode",   RETROPLAYER_STRETCH_MODE},
     {"videorotation", RETROPLAYER_VIDEO_ROTATION},
+    {"supportseject", RETROPLAYER_SUPPORTS_EJECT},
+    {"discejected", RETROPLAYER_DISC_EJECTED},
+    {"disclabel", RETROPLAYER_DISC_LABEL},
+    {"emptytray", RETROPLAYER_EMPTY_TRAY},
 }};
 // clang-format on
 

@@ -340,6 +340,10 @@ constexpr uint32_t VIDEOPLAYER_CAN_RESUME_LIVE_TV    = 329;
 constexpr uint32_t RETROPLAYER_VIDEO_FILTER          = 330;
 constexpr uint32_t RETROPLAYER_STRETCH_MODE          = 331;
 constexpr uint32_t RETROPLAYER_VIDEO_ROTATION        = 332;
+constexpr uint32_t RETROPLAYER_SUPPORTS_EJECT        = 1700;
+constexpr uint32_t RETROPLAYER_DISC_EJECTED          = 1701;
+constexpr uint32_t RETROPLAYER_DISC_LABEL            = 1702;
+constexpr uint32_t RETROPLAYER_EMPTY_TRAY            = 1703;
 
 // More VideoPlayer infolabels
 constexpr uint32_t VIDEOPLAYER_CHANNEL_LOGO          = 333;

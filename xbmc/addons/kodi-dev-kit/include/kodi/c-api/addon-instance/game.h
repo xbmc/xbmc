@@ -1294,6 +1294,17 @@ extern "C"
     GAME_ERROR(__cdecl* RCGetRichPresenceEvaluation)
     (const AddonInstance_Game*, char**, unsigned int);
     GAME_ERROR(__cdecl* RCResetRuntime)(const AddonInstance_Game*);
+    bool(__cdecl* GetEjectState)(const AddonInstance_Game*);
+    GAME_ERROR(__cdecl* SetEjectState)(const AddonInstance_Game*, bool);
+    unsigned int(__cdecl* GetImageIndex)(const AddonInstance_Game*);
+    GAME_ERROR(__cdecl* SetImageIndex)(const AddonInstance_Game*, unsigned int);
+    unsigned int(__cdecl* GetImageCount)(const AddonInstance_Game*);
+    GAME_ERROR(__cdecl* AddImageIndex)(const AddonInstance_Game*);
+    GAME_ERROR(__cdecl* ReplaceImageIndex)(const AddonInstance_Game*, unsigned int, const char*);
+    GAME_ERROR(__cdecl* RemoveImageIndex)(const AddonInstance_Game*, unsigned int);
+    GAME_ERROR(__cdecl* SetInitialImage)(const AddonInstance_Game*, unsigned int, const char*);
+    char*(__cdecl* GetImagePath)(const AddonInstance_Game*, unsigned int);
+    char*(__cdecl* GetImageLabel)(const AddonInstance_Game*, unsigned int);
     void(__cdecl* FreeString)(const AddonInstance_Game*, char*);
   } KodiToAddonFuncTable_Game;
 
