@@ -317,8 +317,8 @@ void CAdvancedSettings::Initialize()
 
   m_videoStackRegExps = CompileRegexes({
       "(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck]|file)[ _.-]*[0-9]+)(.*?)(\\.[^.]+)$",
-      "(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck])[ _.-]*[a-z])(.*?)(\\.[^.]+)$",
-      "^(.+)((?:[ ._-]|(?<=\\)))[a-z])()(\\.[^.]+)$",
+      "(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck])[ _.-]*[a-h])(.*?)(\\.[^.]+)$",
+      "^(.+)((?:[ ._-]|(?<=\\)))[a-h])()(\\.[^.]+)$",
       // This one is a bit too greedy to enable by default.  It will stack sequels
       // in a flat dir structure, but is perfectly safe in a dir-per-vid one.
       // "(.*?)([ ._-]*[0-9])(.*?)(\\.[^.]+)$",
