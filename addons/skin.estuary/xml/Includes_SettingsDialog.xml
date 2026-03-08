@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
 	<include name="SettingsDialogOSDVisible">
-		<visible>!Window.IsActive(DialogSettings.xml) + !Window.IsActive(DialogSlider.xml) + !Window.IsActive(GameVideoFilter) + !Window.IsActive(GameStretchMode) + !Window.IsActive(GameControllers) + !Window.IsActive(GameVideoRotation)</visible>
+		<visible>!Window.IsActive(DialogSettings.xml) + !Window.IsActive(DialogSlider.xml) + !Window.IsActive(GameVideoFilter) + !Window.IsActive(GameStretchMode) + !Window.IsActive(GameControllers) + !Window.IsActive(GameVideoRotation) + !Window.IsActive(GameDiscManager)</visible>
 	</include>
 	<include name="SettingsDialogLayout">
 		<param name="height">700</param>
@@ -171,6 +171,7 @@
 			<label2>[COLOR grey]$FEATURE[select,game.controller.snes] + $FEATURE[rightstick,game.controller.default][/COLOR]</label2>
 			<onclick>ActivateWindow(GameVolume)</onclick>
 		</control>
+		<include condition="RetroPlayer.SupportsEject">SettingsDialogDiscManagerButton</include>
 		<control type="button" id="22105">
 			<description>Controller settings button</description>
 			<include>DialogSettingButton</include>
@@ -188,6 +189,14 @@
 			<include>DialogSettingButton</include>
 			<label>$LOCALIZE[35226]</label>
 			<onclick>ActivateWindow(GameAdvancedSettings)</onclick>
+		</control>
+	</include>
+	<include name="SettingsDialogDiscManagerButton">
+		<control type="button" id="22108">
+			<description>Disc Manager button</description>
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[35272]</label>
+			<onclick>ActivateWindow(GameDiscManager)</onclick>
 		</control>
 	</include>
 	<include name="SettingsDialogMusicSettingsContent">

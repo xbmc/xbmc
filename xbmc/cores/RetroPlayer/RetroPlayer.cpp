@@ -35,6 +35,7 @@
 #include "games/GameSettings.h"
 #include "games/GameUtils.h"
 #include "games/addons/GameClient.h"
+#include "games/addons/disc/GameClientDiscs.h"
 #include "games/addons/input/GameClientInput.h"
 #include "games/tags/GameInfoTag.h"
 #include "guilib/GUIComponent.h"
@@ -511,6 +512,22 @@ bool CRetroPlayer::HasGameAgent() const
 {
   if (m_gameClient)
     return m_gameClient->Input().HasAgent();
+
+  return false;
+}
+
+bool CRetroPlayer::SupportsDiscControl() const
+{
+  if (m_gameClient)
+    return m_gameClient->Discs().SupportsDiskControl();
+
+  return false;
+}
+
+bool CRetroPlayer::IsDiscEjected() const
+{
+  if (m_gameClient)
+    return m_gameClient->Discs().IsEjected();
 
   return false;
 }

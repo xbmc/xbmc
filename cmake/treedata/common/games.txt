@@ -1,6 +1,7 @@
 xbmc/games                         games
 xbmc/games/addons                  games/addons
 xbmc/games/addons/cheevos          games/addons/cheevos
+xbmc/games/addons/disc             games/addons/disc
 xbmc/games/addons/input            games/addons/input
 xbmc/games/addons/streams          games/addons/streams
 xbmc/games/agents/input            games/agents/input
@@ -13,6 +14,7 @@ xbmc/games/controllers/listproviders games/controllers/listproviders
 xbmc/games/controllers/types       games/controllers/types
 xbmc/games/controllers/windows     games/controllers/windows
 xbmc/games/dialogs                 games/dialogs
+xbmc/games/dialogs/disc            games/dialogs/disc
 xbmc/games/dialogs/osd             games/dialogs/osd
 xbmc/games/ports                   games/ports
 xbmc/games/ports/guicontrols       games/ports/guicontrols

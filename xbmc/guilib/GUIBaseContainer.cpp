@@ -1362,6 +1362,9 @@ void CGUIBaseContainer::LoadListProvider(TiXmlElement *content, int defaultItem,
 
 void CGUIBaseContainer::SetListProvider(std::unique_ptr<IListProvider> provider)
 {
+  if (provider && m_listProvider)
+    provider->OnReplace(*m_listProvider);
+
   m_listProvider = std::move(provider);
   UpdateListProvider(true);
 }

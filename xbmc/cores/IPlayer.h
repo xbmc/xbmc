@@ -282,6 +282,22 @@ public:
    */
   virtual bool HasGameAgent() const { return false; }
 
+  /*!
+   * \brief Check if disc for the currently playing item can be ejected or swapped
+   *
+   * \return True if the disc is can be ejected or swapped, false if the
+   * currently playing item isn't disc-based or disc control isn't supported
+   */
+  virtual bool SupportsDiscControl() const { return false; }
+
+  /*!
+   * \brief Check if disc for the currently playing item is ejected
+   *
+   * \return True if the disc is ejected (tray is open), false if the currently
+   * playing item isn't disc-based or the tray is closed
+   */
+  virtual bool IsDiscEjected() const { return false; }
+
   std::string m_name;
   std::string m_type;
 

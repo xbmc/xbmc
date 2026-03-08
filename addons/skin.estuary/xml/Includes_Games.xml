@@ -615,4 +615,196 @@
 			-->
 		</control>
 	</include>
+	<include name="GameDialogDiscManager">
+		<control type="group">
+			<visible>!Window.IsActive(GameDiscChanger)</visible>
+			<animation effect="fade" time="200">VisibleChange</animation>
+			<centertop>50%</centertop>
+			<centerleft>50%</centerleft>
+			<width>1480</width>
+			<height>730</height>
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="1480" />
+				<param name="height" value="730" />
+				<param name="header_label" value="$LOCALIZE[35272]" />
+			</include>
+			<control type="group">
+				<description>Content area</description>
+				<top>100</top>
+				<bottom>30</bottom>
+				<left>30</left>
+				<right>30</right>
+				<control type="group">
+					<description>List area</description>
+					<width>1430</width>
+					<height>600</height>
+					<control type="image">
+						<description>Background for list area</description>
+						<top>-20</top>
+						<bottom>-20</bottom>
+						<left>-20</left>
+						<right>-20</right>
+						<texture border="40">buttons/dialogbutton-nofo.png</texture>
+					</control>
+					<control type="group">
+						<description>Visibility group for main menu</description>
+						<visible>String.IsEqual(Window.Property(GameDiscManager.ShowMenu),true)</visible>
+						<control type="list" id="3">
+							<description>Disc manager menu. The content is a template from which the menu items are generated.</description>
+							<onup>3</onup>
+							<ondown>3</ondown>
+							<scrolltime tween="sine">200</scrolltime>
+							<orientation>vertical</orientation>
+							<itemlayout width="1440" height="100">
+								<include content="GameDiscManagerMenuItem"/>
+							</itemlayout>
+							<focusedlayout width="1440" height="100">
+								<control type="image">
+									<top>-20</top>
+									<bottom>-20</bottom>
+									<left>-20</left>
+									<right>-20</right>
+									<texture border="40" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texture>
+									<visible>Control.HasFocus(3)</visible>
+								</control>
+								<include content="GameDiscManagerMenuItem"/>
+							</focusedlayout>
+							<content>
+								<item>
+									<description>"Selected disc" item. Label2 is the inserted disc's label (or "No disc" if no disc is inserted).</description>
+									<label>$LOCALIZE[35273]</label>
+									<label2>$LOCALIZE[35274]</label2>
+									<icon>DefaultSets.png</icon>
+									<property name="EnableOnEject">true</property>
+								</item>
+								<item>
+									<description>"Eject"/"Insert" item. Label2 is the tray status (only "Tray open" is shown).</description>
+									<label>$LOCALIZE[35275]</label>
+									<icon>DefaultAddonsUpdates.png</icon>
+								</item>
+								<item>
+									<description>"Add" item for adding another disc to the game</description>
+									<label>$LOCALIZE[15019]</label>
+									<icon>DefaultAddSource.png</icon>
+									<property name="EnableOnEject">true</property>
+								</item>
+								<item>
+									<description>"Remove" item for removing a disc from the game</description>
+									<label>$LOCALIZE[1210]</label>
+									<icon>DefaultAddonNone.png</icon>
+									<property name="EnableOnEject">true</property>
+								</item>
+								<item>
+									<description>"Apply disc change" item. Plays the game for a few seconds for the disc change to take effect.</description>
+									<label>$LOCALIZE[35281]</label>
+									<icon>icons/check.png</icon>
+								</item>
+								<item>
+									<description>"Resume game" item for resuming the game</description>
+									<label>$LOCALIZE[35277]</label>
+									<icon>osd/fullscreen/buttons/play.png</icon>
+								</item>
+							</content>
+						</control>
+					</control>
+					<control type="group">
+						<description>Visibility group for disc list</description>
+						<visible>String.IsEqual(Window.Property(GameDiscManager.ShowDiscList),true)</visible>
+						<control type="list" id="108321">
+							<description>Disc list</description>
+							<onup>108321</onup>
+							<ondown>108321</ondown>
+							<pagecontrol>108322</pagecontrol>
+							<scrolltime tween="sine">200</scrolltime>
+							<orientation>vertical</orientation>
+							<itemlayout width="1440" height="100">
+								<include content="GameDiscManagerDiscItem"/>
+							</itemlayout>
+							<focusedlayout width="1440" height="100">
+								<control type="image">
+									<top>-20</top>
+									<bottom>-20</bottom>
+									<left>-20</left>
+									<right>-20</right>
+									<texture border="40" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texture>
+									<visible>Control.HasFocus(108321)</visible>
+								</control>
+								<include content="GameDiscManagerDiscItem"/>
+							</focusedlayout>
+						</control>
+						<control type="scrollbar" id="108322">
+							<description>Disc list scroll bar</description>
+							<right>-12</right>
+							<width>12</width>
+							<orientation>vertical</orientation>
+						</control>
+					</control>
+				</control>
+			</control>
+		</control>
+	</include>
+	<include name="GameDiscManagerMenuItem">
+		<control type="group">
+			<visible>!String.IsEqual(ListItem.Property(EnableOnEject),true)</visible>
+			<control type="image">
+				<width>100</width>
+				<height>100</height>
+				<texture>$INFO[ListItem.Icon]</texture>
+			</control>
+			<control type="label">
+				<top>20</top>
+				<left>105</left>
+				<label>$INFO[ListItem.Label]</label>
+				<font>font37</font>
+				<align>left</align>
+				<shadowcolor>text_shadow</shadowcolor>
+			</control>
+			<control type="label">
+				<top>20</top>
+				<left>400</left>
+				<right>40</right>
+				<label>$INFO[ListItem.Label2]</label>
+				<font>font37</font>
+				<align>right</align>
+				<shadowcolor>text_shadow</shadowcolor>
+			</control>
+		</control>
+		<control type="group">
+			<visible>String.IsEqual(ListItem.Property(EnableOnEject),true)</visible>
+			<control type="image">
+				<width>100</width>
+				<height>100</height>
+				<texture colordiffuse="$VAR[GameDiscEjectedTransparencyVar]">$INFO[ListItem.Icon]</texture>
+			</control>
+			<control type="label">
+				<top>20</top>
+				<left>105</left>
+				<label>$INFO[ListItem.Label]</label>
+				<font>font37</font>
+				<align>left</align>
+				<textcolor>$VAR[GameDiscEjectedTransparencyVar]</textcolor>
+				<shadowcolor>text_shadow</shadowcolor>
+			</control>
+			<control type="label">
+				<top>20</top>
+				<left>400</left>
+				<right>40</right>
+				<label>$INFO[ListItem.Label2]</label>
+				<font>font37</font>
+				<align>right</align>
+				<textcolor>$VAR[GameDiscEjectedTransparencyVar]</textcolor>
+				<shadowcolor>text_shadow</shadowcolor>
+			</control>
+		</control>
+	</include>
+	<include name="GameDiscManagerDiscItem">
+		<control type="label">
+			<top>20</top>
+			<left>20</left>
+			<label>$INFO[ListItem.Label]</label>
+			<font>font37</font>
+			<shadowcolor>text_shadow</shadowcolor>
+			<align>left</align>
+		</control>
+	</include>
 </includes>

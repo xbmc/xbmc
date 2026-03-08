@@ -96,6 +96,8 @@ public:
   void ResetAutoScrolling();
   void UpdateAutoScrolling(unsigned int currentTime);
 
+  void UpdateListProvider(bool forceRefresh = false);
+
 #ifdef _DEBUG
   void DumpTextureUse() override;
 #endif
@@ -131,7 +133,6 @@ protected:
   bool InsideLayout(const CGUIListItemLayout *layout, const CPoint &point) const;
   void OnFocus() override;
   void OnUnFocus() override;
-  void UpdateListProvider(bool forceRefresh = false);
 
   int ScrollCorrectionRange() const;
   inline float Size() const;
