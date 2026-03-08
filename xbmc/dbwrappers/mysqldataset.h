@@ -31,7 +31,6 @@ protected:
   /* connect descriptor */
   MYSQL* conn{nullptr};
   bool _in_transaction{false};
-  int last_err;
 
 public:
   /* default constructor */

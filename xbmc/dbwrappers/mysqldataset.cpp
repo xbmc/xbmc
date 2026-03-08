@@ -579,9 +579,9 @@ long MysqlDatabase::nextid(const char* sname)
   int id;
   std::string sqlcmd{
       StringUtils::Format("SELECT nextid FROM {} WHERE seq_name = '{}'", seq_table, sname)};
-  last_err = query_with_reconnect(sqlcmd.c_str());
+  int err = query_with_reconnect(sqlcmd.c_str());
   CLog::LogFC(LOGDEBUG, LOGDATABASE, "will request");
-  if (last_err != 0)
+  if (err != 0)
   {
     return DB_UNEXPECTED_RESULT;
   }
@@ -594,8 +594,8 @@ long MysqlDatabase::nextid(const char* sname)
       sqlcmd = StringUtils::Format("INSERT INTO {} (nextid,seq_name) VALUES ({},'{}')", seq_table,
                                    id, sname);
       mysql_free_result(res);
-      last_err = query_with_reconnect(sqlcmd.c_str());
-      if (last_err != 0)
+      err = query_with_reconnect(sqlcmd.c_str());
+      if (err != 0)
         return DB_UNEXPECTED_RESULT;
 
       return id;
@@ -606,8 +606,8 @@ long MysqlDatabase::nextid(const char* sname)
       sqlcmd = StringUtils::Format("UPDATE {} SET nextid=%d WHERE seq_name = '{}'", seq_table, id,
                                    sname);
       mysql_free_result(res);
-      last_err = query_with_reconnect(sqlcmd.c_str());
-      if (last_err != 0)
+      err = query_with_reconnect(sqlcmd.c_str());
+      if (err != 0)
         return DB_UNEXPECTED_RESULT;
 
       return id;
