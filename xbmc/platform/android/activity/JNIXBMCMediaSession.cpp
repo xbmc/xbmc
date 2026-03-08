@@ -30,7 +30,7 @@ static std::string s_className = std::string(CCompileInfo::GetClass()) + "/XBMCM
 CJNIXBMCMediaSession::CJNIXBMCMediaSession()
   : CJNIBase(s_className)
 {
-  m_object = new_object(CJNIContext::getClassLoader().loadClass(GetDotClassName(s_className)));
+  m_object = new_object(CJNIContext::getClassLoader().loadClass(GetClassNameAsPath()));
   m_object.setGlobal();
 
   add_instance(m_object, this);
