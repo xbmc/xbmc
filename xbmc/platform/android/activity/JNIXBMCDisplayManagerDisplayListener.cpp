@@ -21,7 +21,7 @@ static std::string s_className = std::string(CCompileInfo::GetClass()) + "/inter
 CJNIXBMCDisplayManagerDisplayListener::CJNIXBMCDisplayManagerDisplayListener()
   : CJNIBase(s_className)
 {
-  m_object = new_object(CJNIContext::getClassLoader().loadClass(GetDotClassName(s_className)));
+  m_object = new_object(CJNIContext::getClassLoader().loadClass(GetClassNameAsPath()));
   m_object.setGlobal();
 }
 

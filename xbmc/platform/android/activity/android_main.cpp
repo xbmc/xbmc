@@ -31,6 +31,7 @@
 #include <stdio.h>
 #include <thread>
 
+#include <android/log.h>
 #include <unistd.h>
 
 using namespace jni;
