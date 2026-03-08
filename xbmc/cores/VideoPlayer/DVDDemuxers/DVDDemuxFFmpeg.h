@@ -108,7 +108,7 @@ public:
   int GetChapterCount() override;
   int GetChapter() override;
   void GetChapterName(std::string& strChapterName, int chapterIdx=-1) override;
-  int64_t GetChapterPos(int chapterIdx = -1) override;
+  std::chrono::milliseconds GetChapterPos(int chapterIdx = -1) override;
   std::string GetStreamCodecName(int iStreamId) override;
 
   bool Aborted();

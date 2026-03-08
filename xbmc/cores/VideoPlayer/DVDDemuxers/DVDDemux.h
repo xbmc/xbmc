@@ -11,6 +11,7 @@
 #include "Interface/StreamInfo.h"
 #include "cores/FFmpeg.h"
 
+#include <chrono>
 #include <memory>
 #include <string>
 #include <vector>
@@ -282,10 +283,13 @@ public:
   virtual void GetChapterName(std::string& strChapterName, int chapterIdx = -1) {}
 
   /*
-   * Get the position of a chapter
-   * \param chapterIdx -1 for current chapter, else a chapter index
+   * Get the position of a chapter in milliseconds
+   * \param[in] chapterIdx -1 for current chapter, else a chapter index
    */
-  virtual int64_t GetChapterPos(int chapterIdx = -1) { return 0; }
+  virtual std::chrono::milliseconds GetChapterPos(int chapterIdx = -1)
+  {
+    return std::chrono::milliseconds(0);
+  }
 
   /*
    * Set the playspeed, if demuxer can handle different

@@ -2939,8 +2939,7 @@ void CVideoPlayer::HandleMessages()
       {
         // SeekChapter does not know about EDL cuts as demuxers are EDL agnostic
         // So get and adjust chapter time
-        const std::chrono::milliseconds position{m_pDemuxer->GetChapterPos(msg.GetChapter()) *
-                                                 1000};
+        const std::chrono::milliseconds position{m_pDemuxer->GetChapterPos(msg.GetChapter())};
         const auto hasEdit{m_Edl.InEdit(position)};
         double time{static_cast<double>(position.count())};
         if (hasEdit)
@@ -5098,11 +5097,9 @@ void CVideoPlayer::UpdatePlayState(double timeout)
     {
       for (int i = 0, ie = m_pDemuxer->GetChapterCount(); i < ie; ++i)
       {
-        std::string name;
-        m_pDemuxer->GetChapterName(name, i + 1);
-        //! @todo get better than second resolution
-        std::chrono::milliseconds position{m_pDemuxer->GetChapterPos(i + 1) * 1000};
-        state.chapters.emplace_back(name, m_Edl.GetTimeWithoutCuts(position).count());
+        auto& p = state.chapters.emplace_back(
+            std::string{}, m_Edl.GetTimeWithoutCuts(m_pDemuxer->GetChapterPos(i + 1)).count());
+        m_pDemuxer->GetChapterName(p.first, i + 1);
       }
     }
     state.time = m_clock.GetClock(false) * 1000 / DVD_TIME_BASE;
