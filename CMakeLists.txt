@@ -112,12 +112,17 @@ option(ENABLE_INTERNAL_CROSSGUID "Enable internal crossguid?" ON)
 # use ffmpeg from depends or system
 option(ENABLE_INTERNAL_FFMPEG "Enable internal ffmpeg?" OFF)
 
+# FFMPEG additional decoder libraries. These are only effective if ENABLE_INTERNAL_FFMPEG=ON
+# or via a toolchain build (apple/android/webos)
+# Todo: change to a list, to parse just a single user provided option for additional libs
+dependent_option(ENABLE_INTERNAL_DAV1D "Enable internal dav1d (FFMPEG lib)?")
+dependent_option(ENABLE_INTERNAL_UAVS3D  "Enable internal uavs3d (FFMPEG lib)?")
+
 # These are built for all platforms not using system libs or disabled by user
 dependent_option(ENABLE_INTERNAL_ASS "Enable internal libass?")
 dependent_option(ENABLE_INTERNAL_BLURAY "Enable internal libbluray?")
 dependent_option(ENABLE_INTERNAL_CEC "Enable internal libcec?")
 dependent_option(ENABLE_INTERNAL_CURL "Enable internal libcurl?")
-dependent_option(ENABLE_INTERNAL_DAV1D "Enable internal dav1d?")
 dependent_option(ENABLE_INTERNAL_EXIV2 "Enable internal exiv2?")
 dependent_option(ENABLE_INTERNAL_FLATBUFFERS "Enable internal flatbuffers?")
 dependent_option(ENABLE_INTERNAL_FMT "Enable internal fmt?")
