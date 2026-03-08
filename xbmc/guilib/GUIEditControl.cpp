@@ -170,10 +170,10 @@ bool CGUIEditControl::OnAction(const CAction &action)
       OnPasteClipboard();
       return true;
     }
-    else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_UNICODE && m_edit.empty())
+    else if (action.GetID() >= KEY_VKEY && action.GetID() <= KEY_VKEY_MAX && m_edit.empty())
     {
       // input from the keyboard (vkey, not ascii)
-      unsigned char b = action.GetID() & 0xFF;
+      uint16_t b = action.GetID() - KEY_VKEY;
       if (b == XBMCVK_HOME)
       {
         m_cursorPos = 0;

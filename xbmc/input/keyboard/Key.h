@@ -28,7 +28,7 @@ public:
        float repeat = 0.0f);
   CKey(uint32_t buttonCode, unsigned int held);
   CKey(uint32_t keycode,
-       uint8_t vkey,
+       uint16_t vkey,
        wchar_t unicode,
        char ascii,
        uint32_t modifiers,
@@ -54,7 +54,7 @@ public:
 
   inline uint32_t GetButtonCode() const { return m_buttonCode; }
   inline uint32_t GetKeycode() const { return m_keycode; } // XBMCKey enum in XBMC_keysym.h
-  inline uint8_t GetVKey() const { return m_vkey; }
+  inline uint16_t GetVKey() const { return m_vkey; }
   inline wchar_t GetUnicode() const { return m_unicode; }
   inline char GetAscii() const { return m_ascii; }
   inline uint32_t GetModifiers() const { return m_modifiers; }
@@ -78,7 +78,7 @@ public:
 private:
   uint32_t m_buttonCode;
   uint32_t m_keycode;
-  uint8_t m_vkey;
+  uint16_t m_vkey;
   wchar_t m_unicode;
   char m_ascii;
   uint32_t m_modifiers;
