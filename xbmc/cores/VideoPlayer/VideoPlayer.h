@@ -56,6 +56,7 @@ struct SPlayerState
     cache_bytes = 0;
     cache_level = 0.0;
     cache_offset = 0.0;
+    cache_time = 0.0;
     lastSeek = 0;
     streamsReady = false;
   }

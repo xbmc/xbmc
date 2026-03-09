@@ -5081,20 +5081,13 @@ void CVideoPlayer::UpdatePlayState(double timeout)
   else if (m_CurrentAudio.startpts != DVD_NOPTS_VALUE)
     state.dts = m_CurrentAudio.startpts;
 
-  state.startTime = 0;
-  state.timeMin = 0;
-
   std::shared_ptr<CDVDInputStream::IMenus> pMenu = std::dynamic_pointer_cast<CDVDInputStream::IMenus>(m_pInputStream);
 
   bool chapterNbEnabled{false};
 
   if (m_pDemuxer)
   {
-    if (IsInMenuInternal() && pMenu && !pMenu->CanSeek())
-    {
-      state.chapter = 0;
-    }
-    else
+    if (!(IsInMenuInternal() && pMenu && !pMenu->CanSeek()))
     {
       state.chapter = m_pDemuxer->GetChapter();
       chapterNbEnabled = true;
@@ -5107,7 +5100,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
       {
         std::string name;
         m_pDemuxer->GetChapterName(name, i + 1);
-        //! @todo get better than second resolution from the stream?
+        //! @todo get better than second resolution
         std::chrono::milliseconds position{m_pDemuxer->GetChapterPos(i + 1) * 1000};
         state.chapters.emplace_back(name, m_Edl.GetTimeWithoutCuts(position).count());
       }
@@ -5116,22 +5109,12 @@ void CVideoPlayer::UpdatePlayState(double timeout)
     state.timeMax = m_pDemuxer->GetStreamLength();
   }
 
-  state.canpause = false;
-  state.canseek = false;
-  state.cantempo = false;
-  state.isInMenu = false;
-  state.menuType = MenuType::NONE;
-
   if (m_pInputStream)
   {
     CDVDInputStream::IChapter* pChapter = m_pInputStream->GetIChapter();
     if (pChapter)
     {
-      if (IsInMenuInternal() && pMenu && !pMenu->CanSeek())
-      {
-        state.chapter = 0;
-      }
-      else
+      if (!(IsInMenuInternal() && pMenu && !pMenu->CanSeek()))
       {
         state.chapter = pChapter->GetChapter();
         chapterNbEnabled = true;
@@ -5144,7 +5127,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
         {
           std::string name;
           pChapter->GetChapterName(name, i + 1);
-          //! @todo get better than second resolution from the stream?
+          //! @todo get better than second resolution
           state.chapters.emplace_back(name, pChapter->GetChapterPos(i + 1) * 1000);
         }
       }
