@@ -424,6 +424,9 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     void Clear();
     void SetExtraArtwork(const TiXmlElement* arttypes, std::vector<std::string>& artworkMap) const;
 
+    std::vector<std::string> m_videoStackStrings;
+    std::vector<std::string> m_folderStackStrings;
+
     mutable CCriticalSection m_listCritSection;
     std::map<int, AdvancedSettingsCallback> m_settingsLoadedCallbacks;
 };
