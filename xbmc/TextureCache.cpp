@@ -55,6 +55,7 @@ void CTextureCache::Initialize()
 
 void CTextureCache::Deinitialize()
 {
+  m_cleanTimer.Stop(true);
   CancelJobs();
 
   std::unique_lock lock(m_databaseSection);
@@ -440,14 +441,13 @@ void CTextureCache::CleanTimer()
     return;
   }
 
-  CServiceBroker::GetJobManager()->Submit(
+  Submit(
       [this]()
       {
         auto next = m_cleaningInProgress.test_and_set() ? 1h : ScanOldestCache();
         m_cleaningInProgress.clear();
         m_cleanTimer.Start(next);
-      },
-      CJob::PRIORITY_LOW_PAUSABLE);
+      });
 }
 
 std::chrono::milliseconds CTextureCache::ScanOldestCache()
