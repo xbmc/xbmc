@@ -28,6 +28,7 @@ enum hdmi_metadata_type
 };
 
 Colorimetry GetColorimetry(const VideoPicture& picture);
+const char* ColorimetryToString(Colorimetry colorimetry);
 Eotf GetEOTF(const VideoPicture& picture);
 const AVMasteringDisplayMetadata* GetMasteringDisplayMetadata(const VideoPicture& picture);
 const AVContentLightMetadata* GetContentLightMetadata(const VideoPicture& picture);
