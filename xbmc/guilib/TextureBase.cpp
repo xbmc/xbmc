@@ -61,10 +61,16 @@ void CTextureBase::Allocate(uint32_t width, uint32_t height, XB_FMT format)
   if (size == 0)
     return;
 
-  m_pixels = static_cast<unsigned char*>(KODI::MEMORY::AlignedMalloc(size, 32));
+  // Allocate extra padding bytes beyond the texture data. SIMD-optimized scaling
+  // filters (e.g. ffmpeg sws_scale with AVX2/SSE) can write a few bytes past the
+  // end of the output buffer. Without padding this corrupts adjacent heap metadata.
+  // See also CPicture::CacheTexture which adds equivalent padding for sws_scale.
+  constexpr size_t simdPadding{32};
+  m_pixels = static_cast<unsigned char*>(KODI::MEMORY::AlignedMalloc(size + simdPadding, 32));
 
   if (m_pixels == nullptr)
-    CLog::Log(LOGERROR, "{} - Could not allocate {} bytes. Out of memory.", __FUNCTION__, size);
+    CLog::Log(LOGERROR, "{} - Could not allocate {} bytes. Out of memory.", __FUNCTION__,
+              size + simdPadding);
 }
 
 uint32_t CTextureBase::PadPow2(uint32_t x)

@@ -413,10 +413,11 @@ bool CTexture::UploadFromMemory(unsigned int width,
   else if (!m_pixels)
   {
     size_t size = GetPitch() * GetRows();
-    m_pixels = static_cast<unsigned char*>(KODI::MEMORY::AlignedMalloc(size, 32));
+    constexpr size_t simdPadding{32};
+    m_pixels = static_cast<unsigned char*>(KODI::MEMORY::AlignedMalloc(size + simdPadding, 32));
     if (m_pixels == nullptr)
     {
-      CLog::LogF(LOGERROR, "Could not allocate {} bytes. Out of memory.", size);
+      CLog::LogF(LOGERROR, "Could not allocate {} bytes. Out of memory.", size + simdPadding);
       return false;
     }
     std::memcpy(m_pixels, pixels, size);
