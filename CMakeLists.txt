@@ -34,6 +34,12 @@ if(POLICY CMP0144)
   cmake_policy(SET CMP0144 NEW)
 endif()
 
+# use old behaviour for FetchContent
+if(POLICY CMP0168)
+  set(CMAKE_POLICY_DEFAULT_CMP0168 OLD)
+  cmake_policy(SET CMP0168 OLD)
+endif()
+
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules/buildtools)
 if(DEPENDS_DIR)
