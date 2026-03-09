@@ -52,13 +52,6 @@ bool ValidateVideoStackRegex(const CRegExp& regex)
   return true;
 };
 
-std::vector<CRegExp> CompileRegexesFromXML(const TiXmlElement* folderStacking)
-{
-  std::vector<std::string> patterns;
-  CAdvancedSettings::GetCustomRegexps(folderStacking, patterns);
-  return CompileRegexes(patterns);
-}
-
 void ParseDatabaseSettings(const TiXmlElement* element, DatabaseSettings& settings)
 {
   XMLUtils::GetString(element, "type", settings.type);
@@ -310,19 +303,21 @@ void CAdvancedSettings::Initialize()
                                         m_allExcludeFromScanRegExps.begin(),
                                         m_allExcludeFromScanRegExps.end());
 
-  m_folderStackRegExps = CompileRegexes({
+  m_folderStackStrings = {
       "^(.*?)[ _.-]*((?:cd|dvd|p(?:(?:ar)?t)|dis[ck])[ _.-]*[0-9])$",
       "()((?:p(?:(?:ar)?t)[ _.-]*[0-9]))$",
-  });
+  };
+  m_folderStackRegExps = CompileRegexes(m_folderStackStrings);
 
-  m_videoStackRegExps = CompileRegexes({
+  m_videoStackStrings = {
       "(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck]|file)[ _.-]*[0-9]+)(.*?)(\\.[^.]+)$",
       "(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck])[ _.-]*[a-h])(.*?)(\\.[^.]+)$",
       "^(.+)((?:[ ._-]|(?<=\\)))[a-h])()(\\.[^.]+)$",
       // This one is a bit too greedy to enable by default.  It will stack sequels
       // in a flat dir structure, but is perfectly safe in a dir-per-vid one.
       // "(.*?)([ ._-]*[0-9])(.*?)(\\.[^.]+)$",
-  });
+  };
+  m_videoStackRegExps = CompileRegexes(m_videoStackStrings);
 
   m_tvshowEnumRegExps.clear();
   // foo.s01.e01, foo.s01_e01, S01E02 foo, S01 - E02, S01xE02
@@ -1104,17 +1099,17 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   const TiXmlElement* videoStacking = pRootElement->FirstChildElement("moviestacking");
   if (videoStacking)
   {
-    std::vector<CRegExp> regexes = CompileRegexesFromXML(videoStacking);
-    std::erase_if(regexes, std::not_fn(ValidateVideoStackRegex));
-    std::ranges::move(regexes, std::back_inserter(m_videoStackRegExps));
+    GetCustomRegexps(videoStacking, m_videoStackStrings);
+    m_videoStackRegExps = CompileRegexes(m_videoStackStrings);
+    std::erase_if(m_videoStackRegExps, std::not_fn(ValidateVideoStackRegex));
   }
 
   // folder stacking regexps
   const TiXmlElement* folderStacking = pRootElement->FirstChildElement("folderstacking");
   if (folderStacking)
   {
-    std::vector<CRegExp> regexes = CompileRegexesFromXML(folderStacking);
-    std::ranges::move(regexes, std::back_inserter(m_folderStackRegExps));
+    GetCustomRegexps(folderStacking, m_folderStackStrings);
+    m_folderStackRegExps = CompileRegexes(m_folderStackStrings);
   }
 
   //tv stacking regexps
