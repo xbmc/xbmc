@@ -6,7 +6,7 @@
  if(CMAKE_USE_PTHREADS_INIT)
 -  file(APPEND "${pc_file}" "Libs: -L\${libdir} -l${LIBNAME} -lm -lpthread\n")
 +  if(NOT ${CMAKE_THREAD_LIBS_INIT} STREQUAL "")
-+    set(pthread_link "-l${CMAKE_THREAD_LIBS_INIT}")  
++    set(pthread_link "${CMAKE_THREAD_LIBS_INIT}")
 +  endif()
 +  file(APPEND "${pc_file}" "Libs: -L\${libdir} -l${LIBNAME} -lm ${pthread_link}\n")
  else()
