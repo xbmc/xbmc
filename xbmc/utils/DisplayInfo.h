@@ -32,15 +32,24 @@ enum class Eotf
 
 enum class Colorimetry
 {
+  // DRM order (DRM_MODE_COLORIMETRY_*)
   DEFAULT,
+  SMPTE_170M_YCC,
+  BT709_YCC,
   XVYCC_601,
   XVYCC_709,
   SYCC_601,
   OPYCC_601,
   OPRGB,
   BT2020_CYCC,
-  BT2020_YCC,
   BT2020_RGB,
+  BT2020_YCC,
+  DCI_P3_RGB_D65,
+  DCI_P3_RGB_THEATER,
+  RGB_WIDE_FIXED,
+  RGB_WIDE_FLOAT,
+  BT601_YCC,
+  // CTA-861 only (not in DRM)
   ST2113_RGB,
   ICTCP,
 };

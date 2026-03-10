@@ -73,14 +73,21 @@ namespace
 
 constexpr auto ColorimetryMap = make_map<KODI::UTILS::Colorimetry, std::string_view>({
     {KODI::UTILS::Colorimetry::DEFAULT, "Default"},
+    {KODI::UTILS::Colorimetry::SMPTE_170M_YCC, "SMPTE_170M_YCC"},
+    {KODI::UTILS::Colorimetry::BT709_YCC, "BT709_YCC"},
     {KODI::UTILS::Colorimetry::XVYCC_601, "XVYCC_601"},
     {KODI::UTILS::Colorimetry::XVYCC_709, "XVYCC_709"},
     {KODI::UTILS::Colorimetry::SYCC_601, "SYCC_601"},
     {KODI::UTILS::Colorimetry::OPYCC_601, "opYCC_601"},
     {KODI::UTILS::Colorimetry::OPRGB, "opRGB"},
     {KODI::UTILS::Colorimetry::BT2020_CYCC, "BT2020_CYCC"},
-    {KODI::UTILS::Colorimetry::BT2020_YCC, "BT2020_YCC"},
     {KODI::UTILS::Colorimetry::BT2020_RGB, "BT2020_RGB"},
+    {KODI::UTILS::Colorimetry::BT2020_YCC, "BT2020_YCC"},
+    {KODI::UTILS::Colorimetry::DCI_P3_RGB_D65, "DCI-P3_RGB_D65"},
+    {KODI::UTILS::Colorimetry::DCI_P3_RGB_THEATER, "DCI-P3_RGB_Theater"},
+    {KODI::UTILS::Colorimetry::RGB_WIDE_FIXED, "RGB_WIDE_FIXED"},
+    {KODI::UTILS::Colorimetry::RGB_WIDE_FLOAT, "RGB_WIDE_FLOAT"},
+    {KODI::UTILS::Colorimetry::BT601_YCC, "BT601_YCC"},
     {KODI::UTILS::Colorimetry::ST2113_RGB, "Default"},
     {KODI::UTILS::Colorimetry::ICTCP, "Default"},
 });
@@ -165,6 +172,9 @@ bool CWinSystemGbm::InitWindowSystem()
     return false;
   }
 
+  SetColorimetry(nullptr);
+  SetHDR(nullptr);
+
   auto settingsComponent = CServiceBroker::GetSettingsComponent();
   if (!settingsComponent)
     return false;
@@ -173,7 +183,7 @@ bool CWinSystemGbm::InitWindowSystem()
   if (!settings)
     return false;
 
-  auto setting = settings->GetSetting(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE);
+  auto setting = settings->GetSetting("videoscreen.limitguisize");
   if (setting)
     setting->SetVisible(true);
 
@@ -382,6 +392,62 @@ bool CWinSystemGbm::SetVideoOutput(const VideoPicture* videoPicture)
                       : m_DRM->FindGuiPlane(current->GetFormat(), current->GetModifier());
 }
 
+void CWinSystemGbm::SetColorimetry(const VideoPicture* videoPicture)
+{
+  auto drm = std::dynamic_pointer_cast<CDRMAtomic>(m_DRM);
+  if (!drm)
+    return;
+
+  auto connector = drm->GetConnector();
+  if (!connector || !connector->SupportsProperty("Colorspace"))
+    return;
+
+  KODI::UTILS::Colorimetry colorimetry = KODI::UTILS::Colorimetry::DEFAULT;
+
+  if (videoPicture)
+    colorimetry = KODI::UTILS::GetColorimetry(*videoPicture);
+
+  m_colorimetry = colorimetry;
+
+  // The DRM Colorspace connector property controls what colorimetry tag the
+  // driver transmits in the HDMI AVI InfoFrame (or DisplayPort VSC SDP). The
+  // transmitted tag must match the pixel encoding actually on the wire.
+  // Kodi scans out to an RGB primary plane (XR24/XR30/AB4H), so we must pick
+  // an RGB-variant Colorspace. Signaling YCC while sending RGB causes most
+  // DP-to-HDMI bridges (incl. LSPCON) to misinterpret the signal.
+  //
+  // The CTA-861 standard (used by both HDMI and DisplayPort for colorimetry
+  // signaling) defines explicit RGB variants only for wide-gamut spaces
+  // (BT.2020_RGB, DCI-P3_RGB). BT.709 RGB and BT.601 RGB are signaled via
+  // "Default", with the sink inferring primaries from the transmitted mode
+  // (HD resolution -> BT.709, SD resolution -> BT.601).
+  KODI::UTILS::Colorimetry scanoutColorimetry;
+  switch (colorimetry)
+  {
+    case KODI::UTILS::Colorimetry::BT2020_YCC:
+    case KODI::UTILS::Colorimetry::BT2020_CYCC:
+      scanoutColorimetry = KODI::UTILS::Colorimetry::BT2020_RGB;
+      break;
+    default:
+      // BT709_YCC, SMPTE_170M_YCC, and all other YCC variants map to Default,
+      // which signals sRGB/BT.709 RGB (HD) or BT.601 RGB (SD) based on the
+      // transmitted resolution.
+      scanoutColorimetry = KODI::UTILS::Colorimetry::DEFAULT;
+      break;
+  }
+
+  std::optional<uint64_t> colorspace =
+      connector->GetPropertyEnumValue("Colorspace", ColorimetryMap.at(scanoutColorimetry));
+  if (colorspace)
+  {
+    CLog::LogF(LOGDEBUG, "setting connector colorspace to {} (source {})",
+               KODI::UTILS::ColorimetryToString(scanoutColorimetry),
+               KODI::UTILS::ColorimetryToString(colorimetry));
+    drm->AddProperty(connector, "Colorspace", colorspace.value());
+    drm->SetActive(true);
+  }
+}
+
 bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
 {
   auto settingsComponent = CServiceBroker::GetSettingsComponent();
@@ -405,19 +471,9 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
 
   if (!videoPicture)
   {
-    if (connector->SupportsProperty("Colorspace"))
-    {
-      std::optional<uint64_t> colorspace = connector->GetPropertyEnumValue("Colorspace", "Default");
-      if (colorspace)
-      {
-        CLog::LogF(LOGDEBUG, "setting connector colorspace to Default");
-        drm->AddProperty(connector, "Colorspace", colorspace.value());
-        drm->SetActive(true);
-      }
-    }
-
     if (connector->SupportsProperty("HDR_OUTPUT_METADATA"))
     {
+      CLog::LogF(LOGDEBUG, "clearing HDR_OUTPUT_METADATA");
       drm->AddProperty(connector, "HDR_OUTPUT_METADATA", 0);
       drm->SetActive(true);
 
@@ -425,7 +481,6 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
     }
 
     m_eotf = KODI::UTILS::Eotf::TRADITIONAL_SDR;
-    m_colorimetry = KODI::UTILS::Colorimetry::DEFAULT;
     return false;
   }
 
@@ -437,23 +492,8 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
     return false;
   }
 
-  KODI::UTILS::Colorimetry colorimetry = KODI::UTILS::GetColorimetry(*videoPicture);
   KODI::UTILS::Eotf eotf = KODI::UTILS::GetEOTF(*videoPicture);
-  m_colorimetry = colorimetry;
   m_eotf = eotf;
-
-  if (connector->SupportsProperty("Colorspace") && m_info &&
-      m_info->SupportsColorimetry(colorimetry))
-  {
-    std::optional<uint64_t> colorspace =
-        connector->GetPropertyEnumValue("Colorspace", ColorimetryMap.at(colorimetry));
-    if (colorspace)
-    {
-      CLog::LogF(LOGDEBUG, "setting connector colorspace to {}", ColorimetryMap.at(colorimetry));
-      drm->AddProperty(connector, "Colorspace", colorspace.value());
-      drm->SetActive(true);
-    }
-  }
 
   if (connector->SupportsProperty("HDR_OUTPUT_METADATA") && m_info &&
       m_info->SupportsHDRStaticMetadataType1() && m_info->SupportsEOTF(eotf))

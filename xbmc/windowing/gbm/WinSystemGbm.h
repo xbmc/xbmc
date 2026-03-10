@@ -63,6 +63,7 @@ public:
 
   bool SetVideoOutput(const VideoPicture* videoPicture) override;
 
+  void SetColorimetry(const VideoPicture* videoPicture) override;
   KODI::UTILS::Colorimetry GetColorimetry() const { return m_colorimetry; }
   KODI::UTILS::Eotf GetEotf() const { return m_eotf; }
   bool SetHDR(const VideoPicture* videoPicture) override;

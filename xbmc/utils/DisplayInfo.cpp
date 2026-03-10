@@ -202,6 +202,9 @@ bool CDisplayInfo::SupportsColorimetry(Colorimetry colorimetry) const
 
   switch (colorimetry)
   {
+    case Colorimetry::SMPTE_170M_YCC:
+    case Colorimetry::BT709_YCC:
+      return true; // baseline HDMI, all sinks support these
     case Colorimetry::XVYCC_601:
       return m_colorimetry->xvycc_601;
     case Colorimetry::XVYCC_709:
