@@ -17,6 +17,21 @@
 
 class CVariant;
 
+enum class TextureField
+{
+  NONE,
+  ID,
+  URL,
+  CACHED_URL,
+  LAST_HASH_CHECK,
+  IMAGE_HASH,
+  WIDTH,
+  HEIGHT,
+  USE_COUNT,
+  LAST_USED,
+  MAX
+};
+
 class CTextureRule : public CDatabaseQueryRule
 {
 public:
@@ -24,6 +39,7 @@ public:
   ~CTextureRule() override = default;
 
   static void GetAvailableFields(std::vector<std::string> &fieldList);
+
 protected:
   int                 TranslateField(const char *field) const override;
   std::string         TranslateField(int field) const override;
