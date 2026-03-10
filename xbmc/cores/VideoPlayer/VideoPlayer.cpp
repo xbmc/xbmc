@@ -64,6 +64,7 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
+#include <algorithm>
 #include <cassert>
 #include <chrono>
 #include <iterator>
@@ -2939,8 +2940,7 @@ void CVideoPlayer::HandleMessages()
       {
         // SeekChapter does not know about EDL cuts as demuxers are EDL agnostic
         // So get and adjust chapter time
-        const std::chrono::milliseconds position{m_pDemuxer->GetChapterPos(msg.GetChapter()) *
-                                                 1000};
+        const std::chrono::milliseconds position{m_pDemuxer->GetChapterPos(msg.GetChapter())};
         const auto hasEdit{m_Edl.InEdit(position)};
         double time{static_cast<double>(position.count())};
         if (hasEdit)
@@ -4902,8 +4902,9 @@ int CVideoPlayer::SeekChapter(int iChapter)
 int64_t CVideoPlayer::GetChapterPos(int chapterIdx) const
 {
   std::unique_lock lock(m_StateSection);
-  if (chapterIdx > 0 && chapterIdx <= (int) m_State.chapters.size())
-    return m_State.chapters[chapterIdx - 1].second;
+  if (chapterIdx > 0 && chapterIdx <= static_cast<int>(m_State.chapters.size()))
+    return std::chrono::round<std::chrono::seconds>(m_State.chapters[chapterIdx - 1].second)
+        .count();
 
   return -1;
 }
@@ -5040,6 +5041,30 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
   return m_SelectionStreams.TypeIndexOf(StreamType::SUBTITLE, s.source, s.demuxerId, s.id);
 }
 
+namespace
+{
+int CalculateCurrentChapter(
+    std::chrono::milliseconds currentTime,
+    const std::vector<std::pair<std::string, std::chrono::milliseconds>>& chapters)
+{
+  // Chapters are assumed to be sorted in increasing timestamp order
+  if (chapters.empty() || currentTime < chapters[0].second)
+    return 0;
+
+  const std::size_t end = chapters.size() - 1;
+
+  for (std::size_t i = 0; i < end; ++i)
+  {
+    if (currentTime >= chapters[i].second && currentTime < chapters[i + 1].second)
+      return i + 1;
+  }
+  if (currentTime >= chapters[end].second)
+    return static_cast<int>(end + 1);
+
+  return 0;
+}
+} // namespace
+
 void CVideoPlayer::UpdatePlayState(double timeout)
 {
   if (m_State.timestamp != 0 &&
@@ -5058,64 +5083,52 @@ void CVideoPlayer::UpdatePlayState(double timeout)
   else if (m_CurrentAudio.startpts != DVD_NOPTS_VALUE)
     state.dts = m_CurrentAudio.startpts;
 
-  state.startTime = 0;
-  state.timeMin = 0;
-
   std::shared_ptr<CDVDInputStream::IMenus> pMenu = std::dynamic_pointer_cast<CDVDInputStream::IMenus>(m_pInputStream);
+
+  bool chapterNbEnabled{false};
 
   if (m_pDemuxer)
   {
-    if (IsInMenuInternal() && pMenu && !pMenu->CanSeek())
-      state.chapter = 0;
-    else
+    if (!(IsInMenuInternal() && pMenu && !pMenu->CanSeek()))
+    {
       state.chapter = m_pDemuxer->GetChapter();
+      chapterNbEnabled = true;
+    }
 
     state.chapters.clear();
     if (m_pDemuxer->GetChapterCount() > 0)
     {
       for (int i = 0, ie = m_pDemuxer->GetChapterCount(); i < ie; ++i)
       {
-        std::string name;
-        m_pDemuxer->GetChapterName(name, i + 1);
-        std::chrono::milliseconds position{m_pDemuxer->GetChapterPos(i + 1) * 1000};
-        state.chapters.emplace_back(
-            name,
-            std::chrono::round<std::chrono::seconds>(m_Edl.GetTimeWithoutCuts(position)).count());
+        auto& p = state.chapters.emplace_back(
+            std::string{}, m_Edl.GetTimeWithoutCuts(m_pDemuxer->GetChapterPos(i + 1)));
+        m_pDemuxer->GetChapterName(p.first, i + 1);
       }
     }
-    CServiceBroker::GetDataCacheCore().SetChapters(state.chapters);
-
     state.time = m_clock.GetClock(false) * 1000 / DVD_TIME_BASE;
     state.timeMax = m_pDemuxer->GetStreamLength();
   }
-
-  state.canpause = false;
-  state.canseek = false;
-  state.cantempo = false;
-  state.isInMenu = false;
-  state.menuType = MenuType::NONE;
 
   if (m_pInputStream)
   {
     CDVDInputStream::IChapter* pChapter = m_pInputStream->GetIChapter();
     if (pChapter)
     {
-      if (IsInMenuInternal() && pMenu && !pMenu->CanSeek())
-        state.chapter = 0;
-      else
+      if (!(IsInMenuInternal() && pMenu && !pMenu->CanSeek()))
+      {
         state.chapter = pChapter->GetChapter();
+        chapterNbEnabled = true;
+      }
 
       state.chapters.clear();
       if (pChapter->GetChapterCount() > 0)
       {
         for (int i = 0, ie = pChapter->GetChapterCount(); i < ie; ++i)
         {
-          std::string name;
-          pChapter->GetChapterName(name, i + 1);
-          state.chapters.emplace_back(name, pChapter->GetChapterPos(i + 1));
+          auto& p = state.chapters.emplace_back(std::string{}, pChapter->GetChapterPos(i + 1));
+          pChapter->GetChapterName(p.first, i + 1);
         }
       }
-      CServiceBroker::GetDataCacheCore().SetChapters(state.chapters);
     }
 
     CDVDInputStream::ITimes* pTimes = m_pInputStream->GetITimes();
@@ -5197,6 +5210,30 @@ void CVideoPlayer::UpdatePlayState(double timeout)
         m_Edl.GetTimeWithoutCuts(std::chrono::milliseconds(std::lround(state.time))).count());
     state.timeMax = state.timeMax - static_cast<double>(m_Edl.GetTotalCutTime().count());
   }
+
+  // Attempt to calculate the current chapter from the currently known playing position
+  // The current chapter provided by the demuxer/inputstream is ahead by a cache duration most of the time.
+  if (chapterNbEnabled)
+  {
+    const std::chrono::milliseconds currentTime{llrint(m_State.time)};
+    const int playPosChapter = CalculateCurrentChapter(currentTime, state.chapters);
+
+    // Successfully calculated a current chapter from the play position?
+    // Overwrite the current chapter reported by the demuxer/inputstream
+    if (playPosChapter > 0)
+      state.chapter = playPosChapter;
+  }
+
+  // Convert to second resolution used outside of VideoPlayer for chapter positions
+  std::vector<std::pair<std::string, int64_t>> chapters;
+  for (const auto& chapter : state.chapters)
+  {
+    chapters.emplace_back(
+        chapter.first,
+        static_cast<int64_t>(std::chrono::round<std::chrono::seconds>(chapter.second).count()));
+  };
+
+  CServiceBroker::GetDataCacheCore().SetChapters(chapters);
 
   if (m_caching > CACHESTATE_DONE && m_caching < CACHESTATE_PLAY)
     state.caching = true;

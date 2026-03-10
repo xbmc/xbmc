@@ -56,6 +56,7 @@ struct SPlayerState
     cache_bytes = 0;
     cache_level = 0.0;
     cache_offset = 0.0;
+    cache_time = 0.0;
     lastSeek = 0;
     streamsReady = false;
   }
@@ -76,7 +77,8 @@ struct SPlayerState
   bool streamsReady;
 
   int chapter;              // current chapter
-  std::vector<std::pair<std::string, int64_t>> chapters; // name and position for chapters
+  // name and position for chapters
+  std::vector<std::pair<std::string, std::chrono::milliseconds>> chapters;
 
   bool canpause;            // pvr: can pause the current playing item
   bool canseek;             // pvr: can seek in the current playing item

@@ -2027,16 +2027,29 @@ int CDVDDemuxFFmpeg::GetChapter()
   if (ich)
     return ich->GetChapter();
 
-  if (m_pFormatContext == NULL
-  || m_currentPts == DVD_NOPTS_VALUE)
+  if (m_pFormatContext == NULL || m_currentPts == DVD_NOPTS_VALUE)
     return 0;
 
-  for(unsigned i = 0; i < m_pFormatContext->nb_chapters; i++)
+  for (unsigned i = 0; i < m_pFormatContext->nb_chapters; i++)
   {
-    AVChapter* chapter = m_pFormatContext->chapters[i];
-    if (m_currentPts >= ConvertTimestamp(chapter->start, chapter->time_base.den, chapter->time_base.num)
-    && m_currentPts <  ConvertTimestamp(chapter->end,   chapter->time_base.den, chapter->time_base.num))
-      return i + 1;
+    const AVChapter* chapter = m_pFormatContext->chapters[i];
+    const double startPts =
+        ConvertTimestamp(chapter->start, chapter->time_base.den, chapter->time_base.num);
+
+    if (i == m_pFormatContext->nb_chapters - 1)
+    {
+      if (m_currentPts >= startPts)
+        return i + 1;
+    }
+    else
+    {
+      const AVChapter* nextChapter = m_pFormatContext->chapters[i + 1];
+      const double nextStartPts = ConvertTimestamp(nextChapter->start, nextChapter->time_base.den,
+                                                   nextChapter->time_base.num);
+
+      if (m_currentPts >= startPts && m_currentPts < nextStartPts)
+        return i + 1;
+    }
   }
 
   return 0;
@@ -2061,18 +2074,22 @@ void CDVDDemuxFFmpeg::GetChapterName(std::string& strChapterName, int chapterIdx
   }
 }
 
-int64_t CDVDDemuxFFmpeg::GetChapterPos(int chapterIdx)
+std::chrono::milliseconds CDVDDemuxFFmpeg::GetChapterPos(int chapterIdx)
 {
+  using namespace std::chrono_literals;
+
   if (chapterIdx <= 0 || chapterIdx > GetChapterCount())
     chapterIdx = GetChapter();
   if (chapterIdx <= 0)
-    return 0;
+    return 0ms;
 
   std::shared_ptr<CDVDInputStream::IChapter> ich = std::dynamic_pointer_cast<CDVDInputStream::IChapter>(m_pInput);
   if (ich)
     return ich->GetChapterPos(chapterIdx);
 
-  return static_cast<int64_t>(m_pFormatContext->chapters[chapterIdx - 1]->start * av_q2d(m_pFormatContext->chapters[chapterIdx - 1]->time_base));
+  std::chrono::duration<float> fsec(m_pFormatContext->chapters[chapterIdx - 1]->start *
+                                    av_q2d(m_pFormatContext->chapters[chapterIdx - 1]->time_base));
+  return std::chrono::duration_cast<std::chrono::milliseconds>(fsec);
 }
 
 bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
@@ -2089,7 +2106,8 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
 
     if (startpts)
     {
-      *startpts = DVD_SEC_TO_TIME(static_cast<double>(ich->GetChapterPos(chapter)));
+      *startpts =
+          DVD_SEC_TO_TIME(std::chrono::duration<double>(ich->GetChapterPos(chapter)).count());
     }
 
     Flush();

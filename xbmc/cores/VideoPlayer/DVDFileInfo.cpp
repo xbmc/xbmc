@@ -165,7 +165,7 @@ std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& f
 
       bool seekToChapter = chapterNumber > 0 && demuxer->GetChapterCount() > 0;
       int64_t nSeekTo =
-          seekToChapter ? demuxer->GetChapterPos(chapterNumber) * 1000 : nTotalLen / 3;
+          seekToChapter ? demuxer->GetChapterPos(chapterNumber).count() : nTotalLen / 3;
 
       CLog::LogF(LOGDEBUG, "seeking to pos {}ms (total: {}ms) in {}", nSeekTo, nTotalLen,
                  redactPath);

@@ -117,7 +117,7 @@ public:
   int GetChapter() override;
   int GetChapterCount() override;
   void GetChapterName(std::string& name, int ch=-1) override {};
-  int64_t GetChapterPos(int ch) override;
+  std::chrono::milliseconds GetChapterPos(int ch) override;
   bool SeekChapter(int ch) override;
 
   CDVDInputStream::IDisplayTime* GetIDisplayTime() override { return this; }

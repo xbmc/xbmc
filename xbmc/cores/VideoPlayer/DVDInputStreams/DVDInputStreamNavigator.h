@@ -117,8 +117,8 @@ public:
 
   int GetChapter() override { return m_iPart; } // the current part in the current title
   int GetChapterCount() override { return m_iPartCount; } // the number of parts in the current title
-  void GetChapterName(std::string& name, int idx=-1) override {};
-  int64_t GetChapterPos(int ch=-1) override;
+  void GetChapterName(std::string& name, int idx = -1) override {};
+  std::chrono::milliseconds GetChapterPos(int ch = -1) override;
   bool SeekChapter(int iChapter) override;
 
   CDVDInputStream::IDisplayTime* GetIDisplayTime() override { return this; }
@@ -196,6 +196,9 @@ protected:
   uint8_t m_lastblock[DVD_VIDEO_BLOCKSIZE];
   int m_lastevent;
 
+  /*!
+   * \brief Chapters start timestamps in milliseconds, per title. Chapter numbers are 1-based.
+   */
   std::map<int, std::map<int, int64_t>> m_mapTitleChapters;
 
   /*! DVD state serializer handler */
