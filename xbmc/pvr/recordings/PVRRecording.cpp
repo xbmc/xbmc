@@ -211,10 +211,10 @@ void CPVRRecording::Serialize(CVariant& value) const
 void CPVRRecording::ToSortable(SortItem& sortable, Field field) const
 {
   std::unique_lock lock(m_critSection);
-  if (field == FieldSize)
-    sortable[FieldSize] = m_sizeInBytes;
-  else if (field == FieldProvider)
-    sortable[FieldProvider] = StringUtils::Format("{} {}", m_iClientId, m_iClientProviderUid);
+  if (field == Field::SIZE)
+    sortable[Field::SIZE] = m_sizeInBytes;
+  else if (field == Field::PROVIDER)
+    sortable[Field::PROVIDER] = StringUtils::Format("{} {}", m_iClientId, m_iClientProviderUid);
   else
     CVideoInfoTag::ToSortable(sortable, field);
 }

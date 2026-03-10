@@ -6240,7 +6240,7 @@ void CVideoDatabase::UpdateMovieTitle(int idMovie,
 
     if (!content.empty())
     {
-      SetSingleValue(iType, idMovie, FieldTitle, strNewMovieTitle);
+      SetSingleValue(iType, idMovie, Field::TITLE, strNewMovieTitle);
       AnnounceUpdate(content, idMovie);
     }
   }
@@ -6265,7 +6265,7 @@ bool CVideoDatabase::UpdateVideoSortTitle(int idDb,
     if (iType == VideoDbContentType::TVSHOWS)
       content = MediaTypeTvShow;
 
-    if (SetSingleValue(iType, idDb, FieldSortTitle, strNewSortTitle))
+    if (SetSingleValue(iType, idDb, Field::SORT_TITLE, strNewSortTitle))
     {
       AnnounceUpdate(content, idDb);
       return true;
@@ -7777,7 +7777,7 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
     const query_data &data = m_pDS->get_result_set().records;
     for (const auto &i : results)
     {
-      const auto targetRow = static_cast<unsigned int>(i.at(FieldRow).asInteger());
+      const auto targetRow = static_cast<unsigned int>(i.at(Field::ROW).asInteger());
       const dbiplus::sql_record* const record = data.at(targetRow);
 
       CVideoInfoTag movie = GetDetailsForMovie(record, getDetails);
@@ -7922,7 +7922,7 @@ bool CVideoDatabase::GetTvShowsByWhere(const std::string& strBaseDir, const Filt
     const query_data &data = m_pDS->get_result_set().records;
     for (const auto &i : results)
     {
-      const auto targetRow = static_cast<unsigned int>(i.at(FieldRow).asInteger());
+      const auto targetRow = static_cast<unsigned int>(i.at(Field::ROW).asInteger());
       const dbiplus::sql_record* const record = data.at(targetRow);
 
       auto pItem = std::make_shared<CFileItem>();
@@ -8053,7 +8053,7 @@ bool CVideoDatabase::GetEpisodesByWhere(const std::string& strBaseDir, const Fil
     const query_data &data = m_pDS->get_result_set().records;
     for (const auto &i : results)
     {
-      const auto targetRow = static_cast<unsigned int>(i.at(FieldRow).asInteger());
+      const auto targetRow = static_cast<unsigned int>(i.at(Field::ROW).asInteger());
       const dbiplus::sql_record* const record = data.at(targetRow);
 
       CVideoInfoTag episode = GetDetailsForEpisode(record, getDetails);
@@ -9034,7 +9034,7 @@ bool CVideoDatabase::GetMusicVideosByWhere(const std::string &baseDir, const Fil
     const query_data &data = m_pDS->get_result_set().records;
     for (const auto &i : results)
     {
-      const auto targetRow = static_cast<unsigned int>(i.at(FieldRow).asInteger());
+      const auto targetRow = static_cast<unsigned int>(i.at(Field::ROW).asInteger());
       const dbiplus::sql_record* const record = data.at(targetRow);
 
       CVideoInfoTag musicvideo = GetDetailsForMusicVideo(record, getDetails);

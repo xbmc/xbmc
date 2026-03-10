@@ -106,6 +106,6 @@ std::string CBaseEvent::VariantToLocalizedString(const CVariant& variant)
 
 void CBaseEvent::ToSortable(SortItem& sortable, Field field) const
 {
-  if (field == FieldDate)
-    sortable[FieldDate] = StringUtils::Format("{:020}", m_timestamp);
+  if (field == Field::DATE)
+    sortable[Field::DATE] = StringUtils::Format("{:020}", m_timestamp);
 }
