@@ -511,145 +511,111 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
   return fields;
 }
 
-std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string &type)
+std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string& type)
 {
   std::vector<SortBy> orders;
-  orders.push_back(SortBy::NONE);
   if (type == "mixed")
   {
-    orders.push_back(SortBy::GENRE);
-    orders.push_back(SortBy::ALBUM);
-    orders.push_back(SortBy::ARTIST);
-    orders.push_back(SortBy::TITLE);
-    orders.push_back(SortBy::YEAR);
-    orders.push_back(SortBy::TIME);
-    orders.push_back(SortBy::TRACK_NUMBER);
-    orders.push_back(SortBy::FILE);
-    orders.push_back(SortBy::PATH);
-    orders.push_back(SortBy::PLAYCOUNT);
-    orders.push_back(SortBy::LAST_PLAYED);
+    orders = {
+        SortBy::NONE,  SortBy::GENRE, SortBy::ALBUM,     SortBy::ARTIST,
+        SortBy::TITLE, SortBy::YEAR,  SortBy::TIME,      SortBy::TRACK_NUMBER,
+        SortBy::FILE,  SortBy::PATH,  SortBy::PLAYCOUNT, SortBy::LAST_PLAYED,
+    };
   }
   else if (type == "songs")
   {
-    orders.push_back(SortBy::GENRE);
-    orders.push_back(SortBy::ALBUM);
-    orders.push_back(SortBy::ARTIST);
-    orders.push_back(SortBy::TITLE);
-    orders.push_back(SortBy::YEAR);
+    orders = {
+        SortBy::NONE, SortBy::GENRE, SortBy::ALBUM, SortBy::ARTIST, SortBy::TITLE, SortBy::YEAR,
+    };
     if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
       CSettings::SETTING_MUSICLIBRARY_USEORIGINALDATE))
       orders.push_back(SortBy::ORIG_DATE);
-    orders.push_back(SortBy::TIME);
-    orders.push_back(SortBy::TRACK_NUMBER);
-    orders.push_back(SortBy::FILE);
-    orders.push_back(SortBy::PATH);
-    orders.push_back(SortBy::PLAYCOUNT);
-    orders.push_back(SortBy::LAST_PLAYED);
-    orders.push_back(SortBy::DATE_ADDED);
-    orders.push_back(SortBy::RATING);
-    orders.push_back(SortBy::USER_RATING);
-    orders.push_back(SortBy::BPM);
+    orders.insert(orders.end(), {
+                                    SortBy::TIME,
+                                    SortBy::TRACK_NUMBER,
+                                    SortBy::FILE,
+                                    SortBy::PATH,
+                                    SortBy::PLAYCOUNT,
+                                    SortBy::LAST_PLAYED,
+                                    SortBy::DATE_ADDED,
+                                    SortBy::RATING,
+                                    SortBy::USER_RATING,
+                                    SortBy::BPM,
+                                });
   }
   else if (type == "albums")
   {
-    orders.push_back(SortBy::GENRE);
-    orders.push_back(SortBy::ALBUM);
-    orders.push_back(SortBy::TOTAL_DISCS);
-    orders.push_back(SortBy::ARTIST); // any artist
-    orders.push_back(SortBy::YEAR);
+    orders = {
+        SortBy::NONE,   SortBy::GENRE, SortBy::ALBUM, SortBy::TOTAL_DISCS,
+        SortBy::ARTIST, // any artist
+        SortBy::YEAR,
+    };
     if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
         CSettings::SETTING_MUSICLIBRARY_USEORIGINALDATE))
       orders.push_back(SortBy::ORIG_DATE);
-    //orders.push_back(SortByThemes);
-    //orders.push_back(SortByMoods);
-    //orders.push_back(SortByStyles);
-    orders.push_back(SortBy::ALBUM_TYPE);
-    //orders.push_back(SortByMusicLabel);
-    orders.push_back(SortBy::RATING);
-    orders.push_back(SortBy::USER_RATING);
-    orders.push_back(SortBy::PLAYCOUNT);
-    orders.push_back(SortBy::LAST_PLAYED);
-    orders.push_back(SortBy::DATE_ADDED);
+    orders.insert(orders.end(), {
+                                    SortBy::ALBUM_TYPE,
+                                    SortBy::RATING,
+                                    SortBy::USER_RATING,
+                                    SortBy::PLAYCOUNT,
+                                    SortBy::LAST_PLAYED,
+                                    SortBy::DATE_ADDED,
+                                });
   }
   else if (type == "artists")
   {
-    orders.push_back(SortBy::ARTIST);
+    orders = {SortBy::NONE, SortBy::ARTIST};
   }
   else if (type == "tvshows")
   {
-    orders.push_back(SortBy::SORT_TITLE);
-    orders.push_back(SortBy::ORIGINAL_TITLE);
-    orders.push_back(SortBy::TVSHOW_STATUS);
-    orders.push_back(SortBy::VOTES);
-    orders.push_back(SortBy::RATING);
-    orders.push_back(SortBy::USER_RATING);
-    orders.push_back(SortBy::YEAR);
-    orders.push_back(SortBy::GENRE);
-    orders.push_back(SortBy::NUMBER_OF_EPISODES);
-    orders.push_back(SortBy::NUMBER_OF_WATCHED_EPISODES);
-    //orders.push_back(SortByPlaycount);
-    orders.push_back(SortBy::PATH);
-    orders.push_back(SortBy::STUDIO);
-    orders.push_back(SortBy::MPAA);
-    orders.push_back(SortBy::DATE_ADDED);
-    orders.push_back(SortBy::LAST_PLAYED);
+    orders = {
+        SortBy::NONE,
+        SortBy::SORT_TITLE,
+        SortBy::ORIGINAL_TITLE,
+        SortBy::TVSHOW_STATUS,
+        SortBy::VOTES,
+        SortBy::RATING,
+        SortBy::USER_RATING,
+        SortBy::YEAR,
+        SortBy::GENRE,
+        SortBy::NUMBER_OF_EPISODES,
+        SortBy::NUMBER_OF_WATCHED_EPISODES,
+        SortBy::PATH,
+        SortBy::STUDIO,
+        SortBy::MPAA,
+        SortBy::DATE_ADDED,
+        SortBy::LAST_PLAYED,
+    };
   }
   else if (type == "episodes")
   {
-    orders.push_back(SortBy::TITLE);
-    orders.push_back(SortBy::ORIGINAL_TITLE);
-    orders.push_back(SortBy::TVSHOW_TITLE);
-    orders.push_back(SortBy::VOTES);
-    orders.push_back(SortBy::RATING);
-    orders.push_back(SortBy::USER_RATING);
-    orders.push_back(SortBy::TIME);
-    orders.push_back(SortBy::PLAYCOUNT);
-    orders.push_back(SortBy::LAST_PLAYED);
-    orders.push_back(SortBy::YEAR); // premiered/dateaired
-    orders.push_back(SortBy::EPISODE_NUMBER);
-    orders.push_back(SortBy::SEASON);
-    orders.push_back(SortBy::FILE);
-    orders.push_back(SortBy::PATH);
-    orders.push_back(SortBy::STUDIO);
-    orders.push_back(SortBy::MPAA);
-    orders.push_back(SortBy::DATE_ADDED);
+    orders = {
+        SortBy::NONE,           SortBy::TITLE,       SortBy::ORIGINAL_TITLE, SortBy::TVSHOW_TITLE,
+        SortBy::VOTES,          SortBy::RATING,      SortBy::USER_RATING,    SortBy::TIME,
+        SortBy::PLAYCOUNT,      SortBy::LAST_PLAYED,
+        SortBy::YEAR, // premiered/dateaired
+        SortBy::EPISODE_NUMBER, SortBy::SEASON,      SortBy::FILE,           SortBy::PATH,
+        SortBy::STUDIO,         SortBy::MPAA,        SortBy::DATE_ADDED,
+    };
   }
   else if (type == "movies")
   {
-    orders.push_back(SortBy::SORT_TITLE);
-    orders.push_back(SortBy::ORIGINAL_TITLE);
-    orders.push_back(SortBy::VOTES);
-    orders.push_back(SortBy::RATING);
-    orders.push_back(SortBy::USER_RATING);
-    orders.push_back(SortBy::TIME);
-    orders.push_back(SortBy::PLAYCOUNT);
-    orders.push_back(SortBy::LAST_PLAYED);
-    orders.push_back(SortBy::GENRE);
-    orders.push_back(SortBy::COUNTRY);
-    orders.push_back(SortBy::YEAR); // premiered
-    orders.push_back(SortBy::MPAA);
-    orders.push_back(SortBy::TOP250);
-    orders.push_back(SortBy::STUDIO);
-    orders.push_back(SortBy::FILE);
-    orders.push_back(SortBy::PATH);
-    orders.push_back(SortBy::DATE_ADDED);
+    orders = {
+        SortBy::NONE,        SortBy::SORT_TITLE,  SortBy::ORIGINAL_TITLE, SortBy::VOTES,
+        SortBy::RATING,      SortBy::USER_RATING, SortBy::TIME,           SortBy::PLAYCOUNT,
+        SortBy::LAST_PLAYED, SortBy::GENRE,       SortBy::COUNTRY,
+        SortBy::YEAR, // premiered
+        SortBy::MPAA,        SortBy::TOP250,      SortBy::STUDIO,         SortBy::FILE,
+        SortBy::PATH,        SortBy::DATE_ADDED,
+    };
   }
   else if (type == "musicvideos")
   {
-    orders.push_back(SortBy::TITLE);
-    orders.push_back(SortBy::GENRE);
-    orders.push_back(SortBy::ALBUM);
-    orders.push_back(SortBy::YEAR);
-    orders.push_back(SortBy::ARTIST);
-    orders.push_back(SortBy::FILE);
-    orders.push_back(SortBy::PATH);
-    orders.push_back(SortBy::PLAYCOUNT);
-    orders.push_back(SortBy::LAST_PLAYED);
-    orders.push_back(SortBy::TIME);
-    orders.push_back(SortBy::RATING);
-    orders.push_back(SortBy::USER_RATING);
-    orders.push_back(SortBy::STUDIO);
-    orders.push_back(SortBy::DATE_ADDED);
+    orders = {
+        SortBy::NONE,   SortBy::TITLE,  SortBy::GENRE,       SortBy::ALBUM,     SortBy::YEAR,
+        SortBy::ARTIST, SortBy::FILE,   SortBy::PATH,        SortBy::PLAYCOUNT, SortBy::LAST_PLAYED,
+        SortBy::TIME,   SortBy::RATING, SortBy::USER_RATING, SortBy::STUDIO,    SortBy::DATE_ADDED,
+    };
   }
   orders.push_back(SortBy::RANDOM);
 
