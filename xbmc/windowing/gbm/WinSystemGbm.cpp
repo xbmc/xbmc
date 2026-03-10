@@ -12,7 +12,6 @@
 #include "OptionalsReg.h"
 #include "ServiceBroker.h"
 #include "VideoSyncGbm.h"
-#include "cores/VideoPlayer/Buffers/VideoBufferDRMPRIME.h"
 #include "cores/VideoPlayer/VideoReferenceClock.h"
 #include "drm/DRMAtomic.h"
 #include "drm/DRMLegacy.h"
@@ -24,6 +23,7 @@
 #include "settings/lib/Setting.h"
 #include "utils/DRMHelpers.h"
 #include "utils/DisplayInfo.h"
+#include "utils/HDRUtils.h"
 #include "utils/Map.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -437,8 +437,8 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
     return false;
   }
 
-  KODI::UTILS::Colorimetry colorimetry = DRMPRIME::GetColorimetry(*videoPicture);
-  KODI::UTILS::Eotf eotf = DRMPRIME::GetEOTF(*videoPicture);
+  KODI::UTILS::Colorimetry colorimetry = KODI::UTILS::GetColorimetry(*videoPicture);
+  KODI::UTILS::Eotf eotf = KODI::UTILS::GetEOTF(*videoPicture);
   m_colorimetry = colorimetry;
   m_eotf = eotf;
 
@@ -460,15 +460,16 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
   {
     hdr_output_metadata hdr_metadata = {};
 
-    hdr_metadata.metadata_type = DRMPRIME::HDMI_STATIC_METADATA_TYPE1;
+    hdr_metadata.metadata_type = KODI::UTILS::HDMI_STATIC_METADATA_TYPE1;
     hdr_metadata.hdmi_metadata_type1.eotf = static_cast<uint8_t>(eotf);
-    hdr_metadata.hdmi_metadata_type1.metadata_type = DRMPRIME::HDMI_STATIC_METADATA_TYPE1;
+    hdr_metadata.hdmi_metadata_type1.metadata_type = KODI::UTILS::HDMI_STATIC_METADATA_TYPE1;
 
     m_hdrBlob.Reset();
 
     if (hdr_metadata.hdmi_metadata_type1.eotf)
     {
-      const AVMasteringDisplayMetadata* mdmd = DRMPRIME::GetMasteringDisplayMetadata(*videoPicture);
+      const AVMasteringDisplayMetadata* mdmd =
+          KODI::UTILS::GetMasteringDisplayMetadata(*videoPicture);
       if (mdmd && mdmd->has_primaries)
       {
         // Convert to unsigned 16-bit values in units of 0.00002,
@@ -513,7 +514,7 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
                   __FUNCTION__, hdr_metadata.hdmi_metadata_type1.min_display_mastering_luminance);
       }
 
-      const AVContentLightMetadata* clmd = DRMPRIME::GetContentLightMetadata(*videoPicture);
+      const AVContentLightMetadata* clmd = KODI::UTILS::GetContentLightMetadata(*videoPicture);
       if (clmd)
       {
         hdr_metadata.hdmi_metadata_type1.max_cll = clmd->MaxCLL;
