@@ -257,7 +257,7 @@ bool CSmartPlaylistRule::Validate(const std::string &input, void *data)
   if (data == nullptr)
     return true;
 
-  CSmartPlaylistRule *rule = static_cast<CSmartPlaylistRule*>(data);
+  const auto* rule = static_cast<const CSmartPlaylistRule*>(data);
 
   // check if there's a validator for this rule
   StringValidation::Validator validator = NULL;
@@ -297,7 +297,7 @@ bool CSmartPlaylistRule::ValidateMyRating(const std::string &input, void *data)
   std::string strRating = input;
   StringUtils::Trim(strRating);
 
-  int rating = atoi(strRating.c_str());
+  const int rating = atoi(strRating.c_str());
   return StringValidation::IsPositiveInteger(input, data) && rating <= 10;
 }
 
@@ -306,7 +306,7 @@ bool CSmartPlaylistRule::ValidateDate(const std::string& input, void* data)
   if (!data)
     return false;
 
-  const auto* rule = static_cast<CSmartPlaylistRule*>(data);
+  const auto* rule = static_cast<const CSmartPlaylistRule*>(data);
 
   //! @todo implement a validation for relative dates
   if (rule->m_operator == OPERATOR_IN_THE_LAST || rule->m_operator == OPERATOR_NOT_IN_THE_LAST)
