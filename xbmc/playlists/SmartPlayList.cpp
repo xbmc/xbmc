@@ -171,7 +171,7 @@ static const group groups[] = { { "",               Field::UNKNOWN,    false,   
                               };
 // clang-format on
 
-#define RULE_VALUE_SEPARATOR  " / "
+constexpr std::string_view RULE_VALUE_SEPARATOR = " / ";
 
 CSmartPlaylistRule::CSmartPlaylistRule() = default;
 
