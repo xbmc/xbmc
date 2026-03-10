@@ -8,6 +8,7 @@
 
 #include "utils/i18n/Bcp47Parser.h"
 
+#include "threads/CriticalSection.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/i18n/Bcp47.h"
@@ -85,6 +86,11 @@ std::optional<ParsedBcp47Tag> CBcp47Parser::TryGenericParse(const std::string& s
 
   static CRegExp regLangCode;
   static bool initialized = regLangCode.RegComp(bcp47Regexp);
+
+  // Serialize regexp matching, not thread-safe
+  //! @todo make CRegExp::RegFind thread-safe and remove the mutex
+  static CCriticalSection critSection;
+  std::lock_guard lock{critSection};
 
   if (!initialized || regLangCode.RegFind(str) < 0)
     return {};
