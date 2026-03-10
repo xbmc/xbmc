@@ -83,7 +83,7 @@ ifeq ($(OS),linux)
   DEPENDS += dbus libuuid alsa-lib libdrm libxkbcommon libinput libudev libevdev mtdev pipewire
 
   # CI purposes only. Use linux/webos targets to test tools/depends makefile builds
-  DEPENDS += dav1d ffmpeg
+  DEPENDS += dav1d highway ffmpeg
 
   ALSA_LIB = alsa-lib
   LIBUUID = libuuid
