@@ -173,6 +173,12 @@ void MysqlDatabase::configure_connection()
   }
   else
     CLog::Log(LOGWARNING, "Unable to query optimizer_switch: '{}' ({})", db, ret);
+
+  // MySQL 5.0.0
+  sqlcmd = "SET SESSION sql_mode = (SELECT CONCAT(@@SESSION.sql_mode,',ANSI_QUOTES'))";
+  ret = mysql_real_query(conn, sqlcmd.c_str(), sqlcmd.size());
+  if (ret != MYSQL_OK)
+    throw DbErrors("Unable to set ANSI_QUOTES sql mode: '%s' (%d)", db.c_str(), ret);
 }
 
 int MysqlDatabase::connect(bool create_new)
@@ -382,7 +388,8 @@ int MysqlDatabase::copy(const char* backup_name)
       }
 
       // copy the table definition
-      sqlcmd = StringUtils::Format("CREATE TABLE `{}`.`{}` LIKE `{}`", backup_name, row[0], row[0]);
+      sqlcmd =
+          StringUtils::Format(R"(CREATE TABLE "{}"."{}" LIKE "{}")", backup_name, row[0], row[0]);
       ret = query_with_reconnect(sqlcmd.c_str());
       if (ret != MYSQL_OK)
       {
@@ -402,8 +409,8 @@ int MysqlDatabase::copy(const char* backup_name)
       }
 
       // copy the table data
-      sqlcmd = StringUtils::Format("INSERT INTO `{}`.`{}` SELECT * FROM `{}`", backup_name, row[0],
-                                   row[0]);
+      sqlcmd = StringUtils::Format(R"(INSERT INTO "{}"."{}" SELECT * FROM "{}")", backup_name,
+                                   row[0], row[0]);
       ret = query_with_reconnect(sqlcmd.c_str());
       if (ret != MYSQL_OK)
       {
@@ -449,7 +456,7 @@ int MysqlDatabase::drop_analytics()
   {
     while ((row = mysql_fetch_row(res)) != nullptr)
     {
-      sqlcmd = StringUtils::Format("ALTER TABLE `{}`.`{}` DROP INDEX `{}`", db, row[0], row[1]);
+      sqlcmd = StringUtils::Format(R"(ALTER TABLE "{}"."{}" DROP INDEX "{}")", db, row[0], row[1]);
       ret = query_with_reconnect(sqlcmd.c_str());
 
       if (ret != MYSQL_OK)
@@ -477,7 +484,7 @@ int MysqlDatabase::drop_analytics()
     while ((row = mysql_fetch_row(res)) != nullptr)
     {
       /* we do not need IF EXISTS because these views are exist */
-      sqlcmd = StringUtils::Format("DROP VIEW `{}`.`{}`", db, row[0]);
+      sqlcmd = StringUtils::Format(R"(DROP VIEW "{}"."{}")", db, row[0]);
       ret = query_with_reconnect(sqlcmd.c_str());
       if (ret != MYSQL_OK)
       {
@@ -503,7 +510,7 @@ int MysqlDatabase::drop_analytics()
   {
     while ((row = mysql_fetch_row(res)) != nullptr)
     {
-      sqlcmd = StringUtils::Format("DROP TRIGGER `{}`.`{}`", db, row[0]);
+      sqlcmd = StringUtils::Format(R"(DROP TRIGGER "{}"."{}")", db, row[0]);
       ret = query_with_reconnect(sqlcmd.c_str());
       if (ret != MYSQL_OK)
       {
@@ -530,7 +537,7 @@ int MysqlDatabase::drop_analytics()
   {
     while ((row = mysql_fetch_row(res)) != nullptr)
     {
-      sqlcmd = StringUtils::Format("DROP FUNCTION `{}`.`{}`", db, row[0]);
+      sqlcmd = StringUtils::Format(R"(DROP FUNCTION "{}"."{}")", db, row[0]);
       ret = query_with_reconnect(sqlcmd.c_str());
       if (ret != MYSQL_OK)
       {
@@ -1862,7 +1869,7 @@ bool MysqlDataset::dropIndex(const char* table, const char* index)
 
   if (num_rows())
   {
-    sql = "ALTER TABLE `%s` DROP INDEX `%s`";
+    sql = R"(ALTER TABLE "%s" DROP INDEX "%s")";
     sql_prepared = static_cast<MysqlDatabase*>(db)->prepare(sql.c_str(), table, index);
 
     if (exec(sql_prepared) != MYSQL_OK)
