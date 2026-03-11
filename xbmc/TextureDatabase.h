@@ -29,7 +29,6 @@ enum class TextureField
   HEIGHT,
   USE_COUNT,
   LAST_USED,
-  MAX
 };
 
 class CTextureRule : public CDatabaseQueryRule
