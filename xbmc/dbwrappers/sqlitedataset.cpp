@@ -301,14 +301,10 @@ int SqliteDatabase::setErr(int err_code, const char* qry)
   }
   if (conn)
     ss << " (" << sqlite3_errmsg(conn) << ")";
-  ss << "\nQuery: " << qry;
+  if (qry != nullptr)
+    ss << "\nQuery: " << qry;
   error = ss.str();
   return err_code;
-}
-
-const char* SqliteDatabase::getErrorMsg()
-{
-  return error.c_str();
 }
 
 static int AlphaNumericCollation(
