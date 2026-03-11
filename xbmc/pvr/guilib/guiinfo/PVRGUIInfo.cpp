@@ -121,6 +121,7 @@ void CPVRGUIInfo::ClearDescrambleInfo(CPVRDescrambleInfo& descrambleInfo) const
 
 void CPVRGUIInfo::Start()
 {
+  Stop();
   ResetProperties();
   Create();
   SetPriority(ThreadPriority::BELOW_NORMAL);
