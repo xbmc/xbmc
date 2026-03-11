@@ -43,7 +43,7 @@ public:
 protected:
   int                 TranslateField(const char *field) const override;
   std::string         TranslateField(int field) const override;
-  std::string         GetField(int field, const std::string& type) const override;
+  std::string GetField(int field, const std::string&) const override;
   CDatabaseQueryRule::FieldType GetFieldType(int field) const override;
   std::string         FormatParameter(const std::string &negate,
                                               const std::string &oper,
