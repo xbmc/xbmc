@@ -160,7 +160,7 @@ void CVideoDatabaseDDL::CreateTables(CDatabase& db)
       "strHdrType text)");
 
   CLog::Log(LOGINFO, "create sets table");
-  db.ExecuteQuery("CREATE TABLE sets ( idSet integer primary key, strSet text, strOverview text, "
+  db.ExecuteQuery("CREATE TABLE `sets` ( idSet integer primary key, strSet text, strOverview text, "
                   "strOriginalSet text)");
 
   CLog::Log(LOGINFO, "create seasons table");
@@ -353,7 +353,7 @@ void CVideoDatabaseDDL::CreateTriggers(CDatabase& db)
   db.ExecuteQuery("CREATE TRIGGER delete_season AFTER DELETE ON seasons FOR EACH ROW BEGIN "
                   "DELETE FROM art WHERE media_id=old.idSeason AND media_type='season'; "
                   "END");
-  db.ExecuteQuery("CREATE TRIGGER delete_set AFTER DELETE ON sets FOR EACH ROW BEGIN "
+  db.ExecuteQuery("CREATE TRIGGER delete_set AFTER DELETE ON `sets` FOR EACH ROW BEGIN "
                   "DELETE FROM art WHERE media_id=old.idSet AND media_type='set'; "
                   "END");
   db.ExecuteQuery("CREATE TRIGGER delete_person AFTER DELETE ON actor FOR EACH ROW BEGIN "
@@ -566,9 +566,9 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
   const std::string movieview = db.PrepareSQL(
       "CREATE VIEW movie_view AS SELECT"
       "  movie.*,"
-      "  sets.strSet AS strSet,"
-      "  sets.strOverview AS strSetOverview,"
-      "  sets.strOriginalSet as strOriginalSet,"
+      "  `sets`.`strSet` AS strSet,"
+      "  `sets`.`strOverview` AS strSetOverview,"
+      "  `sets`.`strOriginalSet` as strOriginalSet,"
       "  files.strFileName AS strFileName,"
       "  path.strPath AS strPath,"
       "  files.playCount AS playCount,"
@@ -606,8 +606,8 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
       "  vvt.name AS videoVersionTypeName,"
       "  vvt.itemType AS videoVersionTypeItemType "
       "FROM movie"
-      "  LEFT JOIN sets ON"
-      "    sets.idSet = movie.idSet"
+      "  LEFT JOIN `sets` ON"
+      "    `sets`.idSet = movie.idSet"
       "  LEFT JOIN rating ON"
       "    rating.rating_id = movie.c%02d"
       "  LEFT JOIN uniqueid ON"
