@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -122,7 +122,7 @@ bool CDatabase::ExistsSubQuery::BuildSQL(std::string& strSQL)
 {
   if (tablename.empty())
     return false;
-  strSQL = "EXISTS (SELECT 1 FROM " + tablename;
+  strSQL = "EXISTS (SELECT 1 FROM `" + tablename + "`";
   if (!join.empty())
     strSQL += " " + join;
   std::string strWhere;
@@ -298,7 +298,7 @@ std::string CDatabase::GetSingleValue(const std::string& strTable,
                                       const std::string& strWhereClause /* = std::string() */,
                                       const std::string& strOrderBy /* = std::string() */) const
 {
-  std::string query = PrepareSQL("SELECT %s FROM %s", strColumn.c_str(), strTable.c_str());
+  std::string query = PrepareSQL("SELECT %s FROM `%s`", strColumn.c_str(), strTable.c_str());
   if (!strWhereClause.empty())
     query += " WHERE " + strWhereClause;
   if (!strOrderBy.empty())
@@ -349,7 +349,7 @@ int CDatabase::GetSingleValueInt(const std::string& query) const
 bool CDatabase::DeleteValues(const std::string& strTable, const Filter& filter /* = Filter() */)
 {
   std::string strQuery;
-  BuildSQL(PrepareSQL("DELETE FROM %s ", strTable.c_str()), filter, strQuery);
+  BuildSQL(PrepareSQL("DELETE FROM `%s` ", strTable.c_str()), filter, strQuery);
   return ExecuteQuery(strQuery);
 }
 

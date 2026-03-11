@@ -346,7 +346,7 @@ int MysqlDatabase::copy(const char* backup_name)
     while ((row = mysql_fetch_row(res)) != NULL)
     {
       // copy the table definition
-      snprintf(sql, sizeof(sql), "CREATE TABLE `%s`.%s LIKE %s", backup_name, row[0], row[0]);
+      snprintf(sql, sizeof(sql), "CREATE TABLE `%s`.`%s` LIKE `%s`", backup_name, row[0], row[0]);
 
       if ((ret = query_with_reconnect(sql)) != MYSQL_OK)
       {
@@ -355,7 +355,7 @@ int MysqlDatabase::copy(const char* backup_name)
       }
 
       // copy the table data
-      snprintf(sql, sizeof(sql), "INSERT INTO `%s`.%s SELECT * FROM %s", backup_name, row[0],
+      snprintf(sql, sizeof(sql), "INSERT INTO `%s`.`%s` SELECT * FROM `%s`", backup_name, row[0],
                row[0]);
 
       if ((ret = query_with_reconnect(sql)) != MYSQL_OK)
@@ -402,7 +402,8 @@ int MysqlDatabase::drop_analytics(void)
   {
     while ((row = mysql_fetch_row(res)) != NULL)
     {
-      snprintf(sql, sizeof(sql), "ALTER TABLE `%s`.%s DROP INDEX %s", db.c_str(), row[0], row[1]);
+      snprintf(sql, sizeof(sql), "ALTER TABLE `%s`.`%s` DROP INDEX `%s`", db.c_str(), row[0],
+               row[1]);
 
       if ((ret = query_with_reconnect(sql)) != MYSQL_OK)
       {
@@ -426,7 +427,7 @@ int MysqlDatabase::drop_analytics(void)
     while ((row = mysql_fetch_row(res)) != NULL)
     {
       /* we do not need IF EXISTS because these views are exist */
-      snprintf(sql, sizeof(sql), "DROP VIEW `%s`.%s", db.c_str(), row[0]);
+      snprintf(sql, sizeof(sql), "DROP VIEW `%s`.`%s`", db.c_str(), row[0]);
 
       if ((ret = query_with_reconnect(sql)) != MYSQL_OK)
       {
@@ -450,7 +451,7 @@ int MysqlDatabase::drop_analytics(void)
   {
     while ((row = mysql_fetch_row(res)) != NULL)
     {
-      snprintf(sql, sizeof(sql), "DROP TRIGGER `%s`.%s", db.c_str(), row[0]);
+      snprintf(sql, sizeof(sql), "DROP TRIGGER `%s`.`%s`", db.c_str(), row[0]);
 
       if ((ret = query_with_reconnect(sql)) != MYSQL_OK)
       {
@@ -475,7 +476,7 @@ int MysqlDatabase::drop_analytics(void)
   {
     while ((row = mysql_fetch_row(res)) != NULL)
     {
-      snprintf(sql, sizeof(sql), "DROP FUNCTION `%s`.%s", db.c_str(), row[0]);
+      snprintf(sql, sizeof(sql), "DROP FUNCTION `%s`.`%s`", db.c_str(), row[0]);
 
       if ((ret = query_with_reconnect(sql)) != MYSQL_OK)
       {
@@ -1778,7 +1779,7 @@ bool MysqlDataset::dropIndex(const char* table, const char* index)
 
   if (num_rows())
   {
-    sql = "ALTER TABLE %s DROP INDEX %s";
+    sql = "ALTER TABLE `%s` DROP INDEX `%s`";
     sql_prepared = static_cast<MysqlDatabase*>(db)->prepare(sql.c_str(), table, index);
 
     if (exec(sql_prepared) != MYSQL_OK)
