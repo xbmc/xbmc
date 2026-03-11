@@ -28,21 +28,21 @@ struct TranslateField
   std::string_view string;
   TextureField field;
   CDatabaseQueryRule::FieldType type;
+  std::string_view dbTable;
 };
 
 // clang-format off
 static const auto fields = std::array{
-  TranslateField{"none",             TextureField::NONE,               TEXT_FIELD},
-  TranslateField{"textureid",        TextureField::ID,                 REAL_FIELD},
-  TranslateField{"url",              TextureField::URL,                TEXT_FIELD},
-  TranslateField{"cachedurl",        TextureField::CACHED_URL,         TEXT_FIELD},
-  TranslateField{"lasthashcheck",    TextureField::LAST_HASH_CHECK,    TEXT_FIELD},
-  TranslateField{"imagehash",        TextureField::IMAGE_HASH,         TEXT_FIELD},
-  TranslateField{"width",            TextureField::WIDTH,              REAL_FIELD},
-  TranslateField{"height",           TextureField::HEIGHT,             REAL_FIELD},
-  TranslateField{"usecount",         TextureField::USE_COUNT,          REAL_FIELD},
-  TranslateField{"lastused",         TextureField::LAST_USED,          TEXT_FIELD},
-  TranslateField{"lastlibrarycheck", TextureField::LAST_LIBRARY_CHECK, TEXT_FIELD},
+  TranslateField{"textureid",        TextureField::ID,                 REAL_FIELD, "texture.id"},
+  TranslateField{"url",              TextureField::URL,                TEXT_FIELD, "texture.url"},
+  TranslateField{"cachedurl",        TextureField::CACHED_URL,         TEXT_FIELD, "texture.cachedurl"},
+  TranslateField{"lasthashcheck",    TextureField::LAST_HASH_CHECK,    TEXT_FIELD, "texture.lasthashcheck"},
+  TranslateField{"imagehash",        TextureField::IMAGE_HASH,         TEXT_FIELD, "texture.imagehash"},
+  TranslateField{"width",            TextureField::WIDTH,              REAL_FIELD, "sizes.width"},
+  TranslateField{"height",           TextureField::HEIGHT,             REAL_FIELD, "sizes.height"},
+  TranslateField{"usecount",         TextureField::USE_COUNT,          REAL_FIELD, "sizes.usecount"},
+  TranslateField{"lastused",         TextureField::LAST_USED,          TEXT_FIELD, "sizes.lastusetime"},
+  TranslateField{"lastlibrarycheck", TextureField::LAST_LIBRARY_CHECK, TEXT_FIELD, "texture.lastlibrarycheck"},
 };
 // clang-format on
 
@@ -62,37 +62,9 @@ std::string CTextureRule::TranslateField(int field) const
 
 std::string CTextureRule::GetField(int field, const std::string&) const
 {
-  if (field < static_cast<int>(TextureField::NONE) || field > static_cast<int>(TextureField::MAX))
-    return "";
-
-  switch (static_cast<TextureField>(field))
-  {
-    case TextureField::ID:
-      return "texture.id";
-    case TextureField::URL:
-      return "texture.url";
-    case TextureField::CACHED_URL:
-      return "texture.cachedurl";
-    case TextureField::LAST_HASH_CHECK:
-      return "texture.lasthashcheck";
-    case TextureField::IMAGE_HASH:
-      return "texture.imagehash";
-    case TextureField::WIDTH:
-      return "sizes.width";
-    case TextureField::HEIGHT:
-      return "sizes.height";
-    case TextureField::USE_COUNT:
-      return "sizes.usecount";
-    case TextureField::LAST_USED:
-      return "sizes.lastusetime";
-    case TextureField::LAST_LIBRARY_CHECK:
-      return "texture.lastlibrarycheck";
-    case TextureField::MAX:
-    case TextureField::NONE:
-      return "";
-  }
-
-  return ""; // to quell faulty compiler warnings
+  const auto f = std::ranges::find_if(fields, [field](const auto& f)
+                                      { return field == static_cast<int>(f.field); });
+  return f == fields.end() ? "" : std::string(f->dbTable);
 }
 
 CDatabaseQueryRule::FieldType CTextureRule::GetFieldType(int field) const

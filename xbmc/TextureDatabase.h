@@ -30,7 +30,6 @@ enum class TextureField
   USE_COUNT,
   LAST_USED,
   LAST_LIBRARY_CHECK,
-  MAX
 };
 
 class CTextureRule : public CDatabaseQueryRule
