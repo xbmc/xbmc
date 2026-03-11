@@ -497,7 +497,7 @@ int SqliteDatabase::drop_analytics()
   std::string sqlcmd;
   for (const auto record : res.records)
   {
-    sqlcmd = StringUtils::Format("DROP INDEX '{}'", record->at(0).get_asString().c_str());
+    sqlcmd = StringUtils::Format("DROP INDEX `{}`", record->at(0).get_asString().c_str());
     err = sqlite3_exec(conn, sqlcmd.c_str(), nullptr, nullptr, nullptr);
     if (err != SQLITE_OK)
       return DB_UNEXPECTED_RESULT;
@@ -512,7 +512,7 @@ int SqliteDatabase::drop_analytics()
 
   for (const auto& record : res.records)
   {
-    sqlcmd = StringUtils::Format("DROP VIEW '{}'", record->at(0).get_asString().c_str());
+    sqlcmd = StringUtils::Format("DROP VIEW `{}`", record->at(0).get_asString().c_str());
     err = sqlite3_exec(conn, sqlcmd.c_str(), nullptr, nullptr, nullptr);
     if (err != SQLITE_OK)
       return DB_UNEXPECTED_RESULT;
@@ -527,7 +527,7 @@ int SqliteDatabase::drop_analytics()
 
   for (const auto& record : res.records)
   {
-    sqlcmd = StringUtils::Format("DROP TRIGGER '{}'", record->at(0).get_asString().c_str());
+    sqlcmd = StringUtils::Format("DROP TRIGGER `{}`", record->at(0).get_asString().c_str());
     err = sqlite3_exec(conn, sqlcmd.c_str(), nullptr, nullptr, nullptr);
     if (err != SQLITE_OK)
       return DB_UNEXPECTED_RESULT;
