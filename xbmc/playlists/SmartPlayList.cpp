@@ -29,6 +29,7 @@
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
+#include <array>
 #include <cstdlib>
 #include <memory>
 #include <optional>
@@ -44,151 +45,150 @@ using namespace XFILE;
 namespace KODI::PLAYLIST
 {
 
-typedef struct
+struct TranslateField
 {
-  char string[17];
+  std::string_view string;
   Field field;
   CDatabaseQueryRule::FieldType type;
   StringValidation::Validator validator;
   bool browseable;
   int localizedString;
-} translateField;
+};
 
 // clang-format off
-static const translateField fields[] = {
-  { "none",              Field::NONE,                       TEXT_FIELD,     nullptr,                              false, 231 },
-  { "filename",          Field::FILENAME,                   TEXT_FIELD,     nullptr,                              false, 561 },
-  { "path",              Field::PATH,                       TEXT_FIELD,     nullptr,                              true,  573 },
-  { "album",             Field::ALBUM,                      TEXT_FIELD,     nullptr,                              true,  558 },
-  { "albumartist",       Field::ALBUM_ARTIST,               TEXT_FIELD,     nullptr,                              true,  566 },
-  { "artist",            Field::ARTIST,                     TEXT_FIELD,     nullptr,                              true,  557 },
-  { "tracknumber",       Field::TRACK_NUMBER,               NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 554 },
-  { "role",              Field::ROLE,                       TEXT_FIELD,     nullptr,                              true, 38033 },
-  { "comment",           Field::COMMENT,                    TEXT_FIELD,     nullptr,                              false, 569 },
-  { "review",            Field::REVIEW,                     TEXT_FIELD,     nullptr,                              false, 183 },
-  { "themes",            Field::THEMES,                     TEXT_FIELD,     nullptr,                              false, 21895 },
-  { "moods",             Field::MOODS,                      TEXT_FIELD,     nullptr,                              false, 175 },
-  { "styles",            Field::STYLES,                     TEXT_FIELD,     nullptr,                              false, 176 },
-  { "type",              Field::ALBUM_TYPE,                 TEXT_FIELD,     nullptr,                              false, 564 },
-  { "compilation",       Field::COMPILATION,                BOOLEAN_FIELD,  nullptr,                              false, 204 },
-  { "label",             Field::MUSIC_LABEL,                TEXT_FIELD,     nullptr,                              false, 21899 },
-  { "title",             Field::TITLE,                      TEXT_FIELD,     nullptr,                              true,  556 },
-  { "sorttitle",         Field::SORT_TITLE,                 TEXT_FIELD,     nullptr,                              false, 171 },
-  { "originaltitle",     Field::ORIGINAL_TITLE,             TEXT_FIELD,     nullptr,                              false, 20376 },
-  { "year",              Field::YEAR,                       NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  true,  562 },
-  { "time",              Field::TIME,                       SECONDS_FIELD,  StringValidation::IsTime,             false, 180 },
-  { "playcount",         Field::PLAYCOUNT,                  NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 567 },
-  { "lastplayed",        Field::LAST_PLAYED,                DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 568 },
-  { "inprogress",        Field::IN_PROGRESS,                BOOLEAN_FIELD,  nullptr,                              false, 575 },
-  { "rating",            Field::RATING,                     REAL_FIELD,     CSmartPlaylistRule::ValidateRating,   false, 563 },
-  { "userrating",        Field::USER_RATING,                REAL_FIELD,     CSmartPlaylistRule::ValidateMyRating, false, 38018 },
-  { "votes",             Field::VOTES,                      REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 205 },
-  { "top250",            Field::TOP250,                     NUMERIC_FIELD,  nullptr,                              false, 13409 },
-  { "mpaarating",        Field::MPAA,                       TEXT_FIELD,     nullptr,                              false, 20074 },
-  { "dateadded",         Field::DATE_ADDED,                 DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 570 },
-  { "datemodified",      Field::DATE_MODIFIED,              DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 39119 },
-  { "datenew",           Field::DATE_NEW,                   DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 21877 },
-  { "genre",             Field::GENRE,                      TEXT_FIELD,     nullptr,                              true,  515 },
-  { "plot",              Field::PLOT,                       TEXT_FIELD,     nullptr,                              false, 207 },
-  { "plotoutline",       Field::PLOT_OUTLINE,               TEXT_FIELD,     nullptr,                              false, 203 },
-  { "tagline",           Field::TAGLINE,                    TEXT_FIELD,     nullptr,                              false, 202 },
-  { "set",               Field::SET,                        TEXT_FIELD,     nullptr,                              true,  20457 },
-  { "director",          Field::DIRECTOR,                   TEXT_FIELD,     nullptr,                              true,  20339 },
-  { "actor",             Field::ACTOR,                      TEXT_FIELD,     nullptr,                              true,  20337 },
-  { "writers",           Field::WRITER,                     TEXT_FIELD,     nullptr,                              true,  20417 },
-  { "airdate",           Field::AIR_DATE,                   DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 20416 },
-  { "hastrailer",        Field::TRAILER,                    BOOLEAN_FIELD,  nullptr,                              false, 20423 },
-  { "studio",            Field::STUDIO,                     TEXT_FIELD,     nullptr,                              true,  572 },
-  { "country",           Field::COUNTRY,                    TEXT_FIELD,     nullptr,                              true,  574 },
-  { "tvshow",            Field::TVSHOW_TITLE,               TEXT_FIELD,     nullptr,                              true,  20364 },
-  { "status",            Field::TVSHOW_STATUS,              TEXT_FIELD,     nullptr,                              false, 126 },
-  { "season",            Field::SEASON,                     NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 20373 },
-  { "episode",           Field::EPISODE_NUMBER,             NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 20359 },
-  { "numepisodes",       Field::NUMBER_OF_EPISODES,         REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 20360 },
-  { "numwatched",        Field::NUMBER_OF_WATCHED_EPISODES, REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 21457 },
-  { "videoresolution",   Field::VIDEO_RESOLUTION,           REAL_FIELD,     nullptr,                              false, 21443 },
-  { "videocodec",        Field::VIDEO_CODEC,                TEXTIN_FIELD,   nullptr,                              false, 21445 },
-  { "videoaspect",       Field::VIDEO_ASPECT_RATIO,         REAL_FIELD,     nullptr,                              false, 21374 },
-  { "audiochannels",     Field::AUDIO_CHANNELS,             REAL_FIELD,     nullptr,                              false, 21444 },
-  { "audiocodec",        Field::AUDIO_CODEC,                TEXTIN_FIELD,   nullptr,                              false, 21446 },
-  { "audiolanguage",     Field::AUDIO_LANGUAGE,             TEXTIN_FIELD,   nullptr,                              false, 21447 },
-  { "audiocount",        Field::AUDIO_COUNT,                REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 21481 },
-  { "subtitlecount",     Field::SUBTITLE_COUNT,             REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 21482 },
-  { "subtitlelanguage",  Field::SUBTITLE_LANGUAGE,          TEXTIN_FIELD,   nullptr,                              false, 21448 },
-  { "random",            Field::RANDOM,                     TEXT_FIELD,     nullptr,                              false, 590 },
-  { "playlist",          Field::PLAYLIST,                   PLAYLIST_FIELD, nullptr,                              true,  559 },
-  { "virtualfolder",     Field::VIRTUAL_FOLDER,             PLAYLIST_FIELD, nullptr,                              true,  614 },
-  { "tag",               Field::TAG,                        TEXT_FIELD,     nullptr,                              true,  20459 },
-  { "instruments",       Field::INSTRUMENTS,                TEXT_FIELD,     nullptr,                              false, 21892 },
-  { "biography",         Field::BIOGRAPHY,                  TEXT_FIELD,     nullptr,                              false, 21887 },
-  { "born",              Field::BORN,                       TEXT_FIELD,     nullptr,                              false, 21893 },
-  { "bandformed",        Field::BAND_FORMED,                TEXT_FIELD,     nullptr,                              false, 21894 },
-  { "disbanded",         Field::DISBANDED,                  TEXT_FIELD,     nullptr,                              false, 21896 },
-  { "died",              Field::DIED,                       TEXT_FIELD,     nullptr,                              false, 21897 },
-  { "artisttype",        Field::ARTIST_TYPE,                TEXT_FIELD,     nullptr,                              false, 564 },
-  { "gender",            Field::GENDER,                     TEXT_FIELD,     nullptr,                              false, 39025 },
-  { "disambiguation",    Field::DISAMBIGUATION,             TEXT_FIELD,     nullptr,                              false, 39026 },
-  { "source",            Field::SOURCE,                     TEXT_FIELD,     nullptr,                              true,  39030 },
-  { "disctitle",         Field::DISC_TITLE,                 TEXT_FIELD,     nullptr,                              false, 38076 },
-  { "isboxset",          Field::IS_BOXSET,                  BOOLEAN_FIELD,  nullptr,                              false, 38074 },
-  { "totaldiscs",        Field::TOTAL_DISCS,                NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 38077 },
-  { "originalyear",      Field::ORIG_YEAR,                  NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  true,  38078 },
-  { "bpm",               Field::BPM,                        NUMERIC_FIELD,  nullptr,                              false, 38080 },
-  { "samplerate",        Field::SAMPLE_RATE,                NUMERIC_FIELD,  nullptr,                              false, 613 },
-  { "bitrate",           Field::MUSIC_BITRATE,              NUMERIC_FIELD,  nullptr,                              false, 623 },
-  { "channels",          Field::NUMBER_OF_CHANNELS,         NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 253 },
-  { "albumstatus",       Field::ALBUM_STATUS,               TEXT_FIELD,     nullptr,                              false, 38081 },
-  { "albumduration",     Field::ALBUM_DURATION,             SECONDS_FIELD,  StringValidation::IsTime,             false, 180 },
-  { "hdrtype",           Field::HDR_TYPE,                   TEXTIN_FIELD,   nullptr,                              false, 20474 },
-  { "hasversions",       Field::HAS_VIDEO_VERSIONS,         BOOLEAN_FIELD,  nullptr,                              false, 20475 },
-  { "hasextras",         Field::HAS_VIDEO_EXTRAS,           BOOLEAN_FIELD,  nullptr,                              false, 20476 },
+static const auto fields = std::array{
+  TranslateField{ "none",              Field::NONE,                       TEXT_FIELD,     nullptr,                              false, 231 },
+  TranslateField{ "filename",          Field::FILENAME,                   TEXT_FIELD,     nullptr,                              false, 561 },
+  TranslateField{ "path",              Field::PATH,                       TEXT_FIELD,     nullptr,                              true,  573 },
+  TranslateField{ "album",             Field::ALBUM,                      TEXT_FIELD,     nullptr,                              true,  558 },
+  TranslateField{ "albumartist",       Field::ALBUM_ARTIST,               TEXT_FIELD,     nullptr,                              true,  566 },
+  TranslateField{ "artist",            Field::ARTIST,                     TEXT_FIELD,     nullptr,                              true,  557 },
+  TranslateField{ "tracknumber",       Field::TRACK_NUMBER,               NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 554 },
+  TranslateField{ "role",              Field::ROLE,                       TEXT_FIELD,     nullptr,                              true, 38033 },
+  TranslateField{ "comment",           Field::COMMENT,                    TEXT_FIELD,     nullptr,                              false, 569 },
+  TranslateField{ "review",            Field::REVIEW,                     TEXT_FIELD,     nullptr,                              false, 183 },
+  TranslateField{ "themes",            Field::THEMES,                     TEXT_FIELD,     nullptr,                              false, 21895 },
+  TranslateField{ "moods",             Field::MOODS,                      TEXT_FIELD,     nullptr,                              false, 175 },
+  TranslateField{ "styles",            Field::STYLES,                     TEXT_FIELD,     nullptr,                              false, 176 },
+  TranslateField{ "type",              Field::ALBUM_TYPE,                 TEXT_FIELD,     nullptr,                              false, 564 },
+  TranslateField{ "compilation",       Field::COMPILATION,                BOOLEAN_FIELD,  nullptr,                              false, 204 },
+  TranslateField{ "label",             Field::MUSIC_LABEL,                TEXT_FIELD,     nullptr,                              false, 21899 },
+  TranslateField{ "title",             Field::TITLE,                      TEXT_FIELD,     nullptr,                              true,  556 },
+  TranslateField{ "sorttitle",         Field::SORT_TITLE,                 TEXT_FIELD,     nullptr,                              false, 171 },
+  TranslateField{ "originaltitle",     Field::ORIGINAL_TITLE,             TEXT_FIELD,     nullptr,                              false, 20376 },
+  TranslateField{ "year",              Field::YEAR,                       NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  true,  562 },
+  TranslateField{ "time",              Field::TIME,                       SECONDS_FIELD,  StringValidation::IsTime,             false, 180 },
+  TranslateField{ "playcount",         Field::PLAYCOUNT,                  NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 567 },
+  TranslateField{ "lastplayed",        Field::LAST_PLAYED,                DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 568 },
+  TranslateField{ "inprogress",        Field::IN_PROGRESS,                BOOLEAN_FIELD,  nullptr,                              false, 575 },
+  TranslateField{ "rating",            Field::RATING,                     REAL_FIELD,     CSmartPlaylistRule::ValidateRating,   false, 563 },
+  TranslateField{ "userrating",        Field::USER_RATING,                REAL_FIELD,     CSmartPlaylistRule::ValidateMyRating, false, 38018 },
+  TranslateField{ "votes",             Field::VOTES,                      REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 205 },
+  TranslateField{ "top250",            Field::TOP250,                     NUMERIC_FIELD,  nullptr,                              false, 13409 },
+  TranslateField{ "mpaarating",        Field::MPAA,                       TEXT_FIELD,     nullptr,                              false, 20074 },
+  TranslateField{ "dateadded",         Field::DATE_ADDED,                 DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 570 },
+  TranslateField{ "datemodified",      Field::DATE_MODIFIED,              DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 39119 },
+  TranslateField{ "datenew",           Field::DATE_NEW,                   DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 21877 },
+  TranslateField{ "genre",             Field::GENRE,                      TEXT_FIELD,     nullptr,                              true,  515 },
+  TranslateField{ "plot",              Field::PLOT,                       TEXT_FIELD,     nullptr,                              false, 207 },
+  TranslateField{ "plotoutline",       Field::PLOT_OUTLINE,               TEXT_FIELD,     nullptr,                              false, 203 },
+  TranslateField{ "tagline",           Field::TAGLINE,                    TEXT_FIELD,     nullptr,                              false, 202 },
+  TranslateField{ "set",               Field::SET,                        TEXT_FIELD,     nullptr,                              true,  20457 },
+  TranslateField{ "director",          Field::DIRECTOR,                   TEXT_FIELD,     nullptr,                              true,  20339 },
+  TranslateField{ "actor",             Field::ACTOR,                      TEXT_FIELD,     nullptr,                              true,  20337 },
+  TranslateField{ "writers",           Field::WRITER,                     TEXT_FIELD,     nullptr,                              true,  20417 },
+  TranslateField{ "airdate",           Field::AIR_DATE,                   DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 20416 },
+  TranslateField{ "hastrailer",        Field::TRAILER,                    BOOLEAN_FIELD,  nullptr,                              false, 20423 },
+  TranslateField{ "studio",            Field::STUDIO,                     TEXT_FIELD,     nullptr,                              true,  572 },
+  TranslateField{ "country",           Field::COUNTRY,                    TEXT_FIELD,     nullptr,                              true,  574 },
+  TranslateField{ "tvshow",            Field::TVSHOW_TITLE,               TEXT_FIELD,     nullptr,                              true,  20364 },
+  TranslateField{ "status",            Field::TVSHOW_STATUS,              TEXT_FIELD,     nullptr,                              false, 126 },
+  TranslateField{ "season",            Field::SEASON,                     NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 20373 },
+  TranslateField{ "episode",           Field::EPISODE_NUMBER,             NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 20359 },
+  TranslateField{ "numepisodes",       Field::NUMBER_OF_EPISODES,         REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 20360 },
+  TranslateField{ "numwatched",        Field::NUMBER_OF_WATCHED_EPISODES, REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 21457 },
+  TranslateField{ "videoresolution",   Field::VIDEO_RESOLUTION,           REAL_FIELD,     nullptr,                              false, 21443 },
+  TranslateField{ "videocodec",        Field::VIDEO_CODEC,                TEXTIN_FIELD,   nullptr,                              false, 21445 },
+  TranslateField{ "videoaspect",       Field::VIDEO_ASPECT_RATIO,         REAL_FIELD,     nullptr,                              false, 21374 },
+  TranslateField{ "audiochannels",     Field::AUDIO_CHANNELS,             REAL_FIELD,     nullptr,                              false, 21444 },
+  TranslateField{ "audiocodec",        Field::AUDIO_CODEC,                TEXTIN_FIELD,   nullptr,                              false, 21446 },
+  TranslateField{ "audiolanguage",     Field::AUDIO_LANGUAGE,             TEXTIN_FIELD,   nullptr,                              false, 21447 },
+  TranslateField{ "audiocount",        Field::AUDIO_COUNT,                REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 21481 },
+  TranslateField{ "subtitlecount",     Field::SUBTITLE_COUNT,             REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 21482 },
+  TranslateField{ "subtitlelanguage",  Field::SUBTITLE_LANGUAGE,          TEXTIN_FIELD,   nullptr,                              false, 21448 },
+  TranslateField{ "random",            Field::RANDOM,                     TEXT_FIELD,     nullptr,                              false, 590 },
+  TranslateField{ "playlist",          Field::PLAYLIST,                   PLAYLIST_FIELD, nullptr,                              true,  559 },
+  TranslateField{ "virtualfolder",     Field::VIRTUAL_FOLDER,             PLAYLIST_FIELD, nullptr,                              true,  614 },
+  TranslateField{ "tag",               Field::TAG,                        TEXT_FIELD,     nullptr,                              true,  20459 },
+  TranslateField{ "instruments",       Field::INSTRUMENTS,                TEXT_FIELD,     nullptr,                              false, 21892 },
+  TranslateField{ "biography",         Field::BIOGRAPHY,                  TEXT_FIELD,     nullptr,                              false, 21887 },
+  TranslateField{ "born",              Field::BORN,                       TEXT_FIELD,     nullptr,                              false, 21893 },
+  TranslateField{ "bandformed",        Field::BAND_FORMED,                TEXT_FIELD,     nullptr,                              false, 21894 },
+  TranslateField{ "disbanded",         Field::DISBANDED,                  TEXT_FIELD,     nullptr,                              false, 21896 },
+  TranslateField{ "died",              Field::DIED,                       TEXT_FIELD,     nullptr,                              false, 21897 },
+  TranslateField{ "artisttype",        Field::ARTIST_TYPE,                TEXT_FIELD,     nullptr,                              false, 564 },
+  TranslateField{ "gender",            Field::GENDER,                     TEXT_FIELD,     nullptr,                              false, 39025 },
+  TranslateField{ "disambiguation",    Field::DISAMBIGUATION,             TEXT_FIELD,     nullptr,                              false, 39026 },
+  TranslateField{ "source",            Field::SOURCE,                     TEXT_FIELD,     nullptr,                              true,  39030 },
+  TranslateField{ "disctitle",         Field::DISC_TITLE,                 TEXT_FIELD,     nullptr,                              false, 38076 },
+  TranslateField{ "isboxset",          Field::IS_BOXSET,                  BOOLEAN_FIELD,  nullptr,                              false, 38074 },
+  TranslateField{ "totaldiscs",        Field::TOTAL_DISCS,                NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 38077 },
+  TranslateField{ "originalyear",      Field::ORIG_YEAR,                  NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  true,  38078 },
+  TranslateField{ "bpm",               Field::BPM,                        NUMERIC_FIELD,  nullptr,                              false, 38080 },
+  TranslateField{ "samplerate",        Field::SAMPLE_RATE,                NUMERIC_FIELD,  nullptr,                              false, 613 },
+  TranslateField{ "bitrate",           Field::MUSIC_BITRATE,              NUMERIC_FIELD,  nullptr,                              false, 623 },
+  TranslateField{ "channels",          Field::NUMBER_OF_CHANNELS,         NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 253 },
+  TranslateField{ "albumstatus",       Field::ALBUM_STATUS,               TEXT_FIELD,     nullptr,                              false, 38081 },
+  TranslateField{ "albumduration",     Field::ALBUM_DURATION,             SECONDS_FIELD,  StringValidation::IsTime,             false, 180 },
+  TranslateField{ "hdrtype",           Field::HDR_TYPE,                   TEXTIN_FIELD,   nullptr,                              false, 20474 },
+  TranslateField{ "hasversions",       Field::HAS_VIDEO_VERSIONS,         BOOLEAN_FIELD,  nullptr,                              false, 20475 },
+  TranslateField{ "hasextras",         Field::HAS_VIDEO_EXTRAS,           BOOLEAN_FIELD,  nullptr,                              false, 20476 },
 };
 // clang-format on
 
-typedef struct
+struct Group
 {
-  std::string name;
+  std::string_view name;
   Field field;
   bool canMix;
   int localizedString;
-} group;
+};
 
 // clang-format off
-static const group groups[] = { { "",               Field::UNKNOWN,    false,    571 },
-                                { "none",           Field::NONE,       false,    231 },
-                                { "sets",           Field::SET,        true,   20434 },
-                                { "genres",         Field::GENRE,      false,    135 },
-                                { "years",          Field::YEAR,       false,    652 },
-                                { "actors",         Field::ACTOR,      false,    344 },
-                                { "directors",      Field::DIRECTOR,   false,  20348 },
-                                { "writers",        Field::WRITER,     false,  20418 },
-                                { "studios",        Field::STUDIO,     false,  20388 },
-                                { "countries",      Field::COUNTRY,    false,  20451 },
-                                { "artists",        Field::ARTIST,     false,    133 },
-                                { "albums",         Field::ALBUM,      false,    132 },
-                                { "tags",           Field::TAG,        false,  20459 },
-                                { "originalyears",  Field::ORIG_YEAR,  false,  38078 },
-                              };
+static const auto groups = std::array{
+  Group{ "",               Field::UNKNOWN,    false,    571 },
+  Group{ "none",           Field::NONE,       false,    231 },
+  Group{ "sets",           Field::SET,        true,   20434 },
+  Group{ "genres",         Field::GENRE,      false,    135 },
+  Group{ "years",          Field::YEAR,       false,    652 },
+  Group{ "actors",         Field::ACTOR,      false,    344 },
+  Group{ "directors",      Field::DIRECTOR,   false,  20348 },
+  Group{ "writers",        Field::WRITER,     false,  20418 },
+  Group{ "studios",        Field::STUDIO,     false,  20388 },
+  Group{ "countries",      Field::COUNTRY,    false,  20451 },
+  Group{ "artists",        Field::ARTIST,     false,    133 },
+  Group{ "albums",         Field::ALBUM,      false,    132 },
+  Group{ "tags",           Field::TAG,        false,  20459 },
+  Group{ "originalyears",  Field::ORIG_YEAR,  false,  38078 },
+};
 // clang-format on
 
-#define RULE_VALUE_SEPARATOR  " / "
+constexpr std::string_view RULE_VALUE_SEPARATOR = " / ";
 
 CSmartPlaylistRule::CSmartPlaylistRule() = default;
 
 int CSmartPlaylistRule::TranslateField(const char *field) const
 {
-  for (const translateField& f : fields)
-    if (StringUtils::EqualsNoCase(field, f.string))
-      return static_cast<int>(f.field);
-  return static_cast<int>(Field::NONE);
+  const auto it = std::ranges::find_if(fields, [field](const auto& f)
+                                       { return StringUtils::EqualsNoCase(field, f.string); });
+  return it == fields.end() ? static_cast<int>(Field::NONE) : static_cast<int>(it->field);
 }
 
 std::string CSmartPlaylistRule::TranslateField(int field) const
 {
-  for (const translateField& f : fields)
-    if (field == static_cast<int>(f.field))
-      return f.string;
-  return "none";
+  const auto it = std::ranges::find_if(fields, [field](const auto& f)
+                                       { return field == static_cast<int>(f.field); });
+  return it == fields.end() ? "none" : std::string(it->string);
 }
 
 SortBy CSmartPlaylistRule::TranslateOrder(const char *order)
@@ -207,90 +207,73 @@ std::string CSmartPlaylistRule::TranslateOrder(SortBy order)
 
 Field CSmartPlaylistRule::TranslateGroup(const char *group)
 {
-  for (const auto & i : groups)
-  {
-    if (StringUtils::EqualsNoCase(group, i.name))
-      return i.field;
-  }
-
-  return Field::UNKNOWN;
+  const auto it = std::ranges::find_if(groups, [group](const auto& g)
+                                       { return StringUtils::EqualsNoCase(group, g.name); });
+  return it == groups.end() ? Field::UNKNOWN : it->field;
 }
 
 std::string CSmartPlaylistRule::TranslateGroup(Field group)
 {
-  for (const auto & i : groups)
-  {
-    if (group == i.field)
-      return i.name;
-  }
-
-  return "";
+  const auto it = std::ranges::find_if(groups, [group](const auto& g) { return group == g.field; });
+  return it == groups.end() ? "" : std::string(it->name);
 }
 
 std::string CSmartPlaylistRule::GetLocalizedField(int field)
 {
-  for (const translateField& f : fields)
-    if (field == static_cast<int>(f.field))
-      return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(f.localizedString);
-  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(16018);
+  const auto it = std::ranges::find_if(fields, [field](const auto& f)
+                                       { return field == static_cast<int>(f.field); });
+  const int str = it == fields.end() ? 16018 : it->localizedString;
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(str);
 }
 
 CDatabaseQueryRule::FieldType CSmartPlaylistRule::GetFieldType(int field) const
 {
-  for (const translateField& f : fields)
-    if (field == static_cast<int>(f.field))
-      return f.type;
-  return TEXT_FIELD;
+  const auto it = std::ranges::find_if(fields, [field](const auto& f)
+                                       { return field == static_cast<int>(f.field); });
+  return it == fields.end() ? TEXT_FIELD : it->type;
 }
 
 bool CSmartPlaylistRule::IsFieldBrowseable(int field)
 {
-  for (const translateField& f : fields)
-    if (field == static_cast<int>(f.field))
-      return f.browseable;
-
-  return false;
+  const auto it = std::ranges::find_if(fields, [field](const auto& f)
+                                       { return field == static_cast<int>(f.field); });
+  return it == fields.end() ? false : it->browseable;
 }
 
-bool CSmartPlaylistRule::Validate(const std::string &input, void *data)
+bool CSmartPlaylistRule::Validate(const std::string& input, void* data)
 {
-  if (data == NULL)
+  if (data == nullptr)
     return true;
 
-  CSmartPlaylistRule *rule = static_cast<CSmartPlaylistRule*>(data);
+  const auto* rule = static_cast<const CSmartPlaylistRule*>(data);
 
   // check if there's a validator for this rule
-  StringValidation::Validator validator = NULL;
-  for (const translateField& field : fields)
-  {
-    if (rule->m_field == static_cast<int>(field.field))
-    {
-        validator = field.validator;
-        break;
-    }
-  }
-  if (validator == NULL)
+  const auto it = std::ranges::find_if(fields, [field = rule->m_field](const auto& f)
+                                       { return field == static_cast<int>(f.field); });
+  if (it == fields.end())
+    return true;
+
+  if (!it->validator)
     return true;
 
   if (input.empty())
-    return validator("", data);
+    return it->validator("", data);
 
   // Split the input into multiple values and validate every value separately
   const std::vector<std::string> values{StringUtils::Split(input, RULE_VALUE_SEPARATOR)};
 
-  return (
-      std::ranges::all_of(values, [data, validator](const auto& s) { return validator(s, data); }));
+  return std::ranges::all_of(values, [data, validator = it->validator](const auto& s)
+                             { return validator(s, data); });
 }
 
 bool CSmartPlaylistRule::ValidateRating(const std::string &input, void *data)
 {
-  char *end = NULL;
+  char* end = nullptr;
   std::string strRating = input;
   StringUtils::Trim(strRating);
 
-  double rating = std::strtod(strRating.c_str(), &end);
-  return (end == NULL || *end == '\0') &&
-         rating >= 0.0 && rating <= 10.0;
+  const double rating = std::strtod(strRating.c_str(), &end);
+  return (end == nullptr || *end == '\0') && rating >= 0.0 && rating <= 10.0;
 }
 
 bool CSmartPlaylistRule::ValidateMyRating(const std::string &input, void *data)
@@ -298,7 +281,7 @@ bool CSmartPlaylistRule::ValidateMyRating(const std::string &input, void *data)
   std::string strRating = input;
   StringUtils::Trim(strRating);
 
-  int rating = atoi(strRating.c_str());
+  const int rating = atoi(strRating.c_str());
   return StringValidation::IsPositiveInteger(input, data) && rating <= 10;
 }
 
@@ -307,7 +290,7 @@ bool CSmartPlaylistRule::ValidateDate(const std::string& input, void* data)
   if (!data)
     return false;
 
-  const auto* rule = static_cast<CSmartPlaylistRule*>(data);
+  const auto* rule = static_cast<const CSmartPlaylistRule*>(data);
 
   //! @todo implement a validation for relative dates
   if (rule->m_operator == OPERATOR_IN_THE_LAST || rule->m_operator == OPERATOR_NOT_IN_THE_LAST)
@@ -512,145 +495,111 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
   return fields;
 }
 
-std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string &type)
+std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string& type)
 {
   std::vector<SortBy> orders;
-  orders.push_back(SortBy::NONE);
   if (type == "mixed")
   {
-    orders.push_back(SortBy::GENRE);
-    orders.push_back(SortBy::ALBUM);
-    orders.push_back(SortBy::ARTIST);
-    orders.push_back(SortBy::TITLE);
-    orders.push_back(SortBy::YEAR);
-    orders.push_back(SortBy::TIME);
-    orders.push_back(SortBy::TRACK_NUMBER);
-    orders.push_back(SortBy::FILE);
-    orders.push_back(SortBy::PATH);
-    orders.push_back(SortBy::PLAYCOUNT);
-    orders.push_back(SortBy::LAST_PLAYED);
+    orders = {
+        SortBy::NONE,  SortBy::GENRE, SortBy::ALBUM,     SortBy::ARTIST,
+        SortBy::TITLE, SortBy::YEAR,  SortBy::TIME,      SortBy::TRACK_NUMBER,
+        SortBy::FILE,  SortBy::PATH,  SortBy::PLAYCOUNT, SortBy::LAST_PLAYED,
+    };
   }
   else if (type == "songs")
   {
-    orders.push_back(SortBy::GENRE);
-    orders.push_back(SortBy::ALBUM);
-    orders.push_back(SortBy::ARTIST);
-    orders.push_back(SortBy::TITLE);
-    orders.push_back(SortBy::YEAR);
+    orders = {
+        SortBy::NONE, SortBy::GENRE, SortBy::ALBUM, SortBy::ARTIST, SortBy::TITLE, SortBy::YEAR,
+    };
     if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
       CSettings::SETTING_MUSICLIBRARY_USEORIGINALDATE))
       orders.push_back(SortBy::ORIG_DATE);
-    orders.push_back(SortBy::TIME);
-    orders.push_back(SortBy::TRACK_NUMBER);
-    orders.push_back(SortBy::FILE);
-    orders.push_back(SortBy::PATH);
-    orders.push_back(SortBy::PLAYCOUNT);
-    orders.push_back(SortBy::LAST_PLAYED);
-    orders.push_back(SortBy::DATE_ADDED);
-    orders.push_back(SortBy::RATING);
-    orders.push_back(SortBy::USER_RATING);
-    orders.push_back(SortBy::BPM);
+    orders.insert(orders.end(), {
+                                    SortBy::TIME,
+                                    SortBy::TRACK_NUMBER,
+                                    SortBy::FILE,
+                                    SortBy::PATH,
+                                    SortBy::PLAYCOUNT,
+                                    SortBy::LAST_PLAYED,
+                                    SortBy::DATE_ADDED,
+                                    SortBy::RATING,
+                                    SortBy::USER_RATING,
+                                    SortBy::BPM,
+                                });
   }
   else if (type == "albums")
   {
-    orders.push_back(SortBy::GENRE);
-    orders.push_back(SortBy::ALBUM);
-    orders.push_back(SortBy::TOTAL_DISCS);
-    orders.push_back(SortBy::ARTIST); // any artist
-    orders.push_back(SortBy::YEAR);
+    orders = {
+        SortBy::NONE,   SortBy::GENRE, SortBy::ALBUM, SortBy::TOTAL_DISCS,
+        SortBy::ARTIST, // any artist
+        SortBy::YEAR,
+    };
     if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
         CSettings::SETTING_MUSICLIBRARY_USEORIGINALDATE))
       orders.push_back(SortBy::ORIG_DATE);
-    //orders.push_back(SortByThemes);
-    //orders.push_back(SortByMoods);
-    //orders.push_back(SortByStyles);
-    orders.push_back(SortBy::ALBUM_TYPE);
-    //orders.push_back(SortByMusicLabel);
-    orders.push_back(SortBy::RATING);
-    orders.push_back(SortBy::USER_RATING);
-    orders.push_back(SortBy::PLAYCOUNT);
-    orders.push_back(SortBy::LAST_PLAYED);
-    orders.push_back(SortBy::DATE_ADDED);
+    orders.insert(orders.end(), {
+                                    SortBy::ALBUM_TYPE,
+                                    SortBy::RATING,
+                                    SortBy::USER_RATING,
+                                    SortBy::PLAYCOUNT,
+                                    SortBy::LAST_PLAYED,
+                                    SortBy::DATE_ADDED,
+                                });
   }
   else if (type == "artists")
   {
-    orders.push_back(SortBy::ARTIST);
+    orders = {SortBy::NONE, SortBy::ARTIST};
   }
   else if (type == "tvshows")
   {
-    orders.push_back(SortBy::SORT_TITLE);
-    orders.push_back(SortBy::ORIGINAL_TITLE);
-    orders.push_back(SortBy::TVSHOW_STATUS);
-    orders.push_back(SortBy::VOTES);
-    orders.push_back(SortBy::RATING);
-    orders.push_back(SortBy::USER_RATING);
-    orders.push_back(SortBy::YEAR);
-    orders.push_back(SortBy::GENRE);
-    orders.push_back(SortBy::NUMBER_OF_EPISODES);
-    orders.push_back(SortBy::NUMBER_OF_WATCHED_EPISODES);
-    //orders.push_back(SortByPlaycount);
-    orders.push_back(SortBy::PATH);
-    orders.push_back(SortBy::STUDIO);
-    orders.push_back(SortBy::MPAA);
-    orders.push_back(SortBy::DATE_ADDED);
-    orders.push_back(SortBy::LAST_PLAYED);
+    orders = {
+        SortBy::NONE,
+        SortBy::SORT_TITLE,
+        SortBy::ORIGINAL_TITLE,
+        SortBy::TVSHOW_STATUS,
+        SortBy::VOTES,
+        SortBy::RATING,
+        SortBy::USER_RATING,
+        SortBy::YEAR,
+        SortBy::GENRE,
+        SortBy::NUMBER_OF_EPISODES,
+        SortBy::NUMBER_OF_WATCHED_EPISODES,
+        SortBy::PATH,
+        SortBy::STUDIO,
+        SortBy::MPAA,
+        SortBy::DATE_ADDED,
+        SortBy::LAST_PLAYED,
+    };
   }
   else if (type == "episodes")
   {
-    orders.push_back(SortBy::TITLE);
-    orders.push_back(SortBy::ORIGINAL_TITLE);
-    orders.push_back(SortBy::TVSHOW_TITLE);
-    orders.push_back(SortBy::VOTES);
-    orders.push_back(SortBy::RATING);
-    orders.push_back(SortBy::USER_RATING);
-    orders.push_back(SortBy::TIME);
-    orders.push_back(SortBy::PLAYCOUNT);
-    orders.push_back(SortBy::LAST_PLAYED);
-    orders.push_back(SortBy::YEAR); // premiered/dateaired
-    orders.push_back(SortBy::EPISODE_NUMBER);
-    orders.push_back(SortBy::SEASON);
-    orders.push_back(SortBy::FILE);
-    orders.push_back(SortBy::PATH);
-    orders.push_back(SortBy::STUDIO);
-    orders.push_back(SortBy::MPAA);
-    orders.push_back(SortBy::DATE_ADDED);
+    orders = {
+        SortBy::NONE,           SortBy::TITLE,       SortBy::ORIGINAL_TITLE, SortBy::TVSHOW_TITLE,
+        SortBy::VOTES,          SortBy::RATING,      SortBy::USER_RATING,    SortBy::TIME,
+        SortBy::PLAYCOUNT,      SortBy::LAST_PLAYED,
+        SortBy::YEAR, // premiered/dateaired
+        SortBy::EPISODE_NUMBER, SortBy::SEASON,      SortBy::FILE,           SortBy::PATH,
+        SortBy::STUDIO,         SortBy::MPAA,        SortBy::DATE_ADDED,
+    };
   }
   else if (type == "movies")
   {
-    orders.push_back(SortBy::SORT_TITLE);
-    orders.push_back(SortBy::ORIGINAL_TITLE);
-    orders.push_back(SortBy::VOTES);
-    orders.push_back(SortBy::RATING);
-    orders.push_back(SortBy::USER_RATING);
-    orders.push_back(SortBy::TIME);
-    orders.push_back(SortBy::PLAYCOUNT);
-    orders.push_back(SortBy::LAST_PLAYED);
-    orders.push_back(SortBy::GENRE);
-    orders.push_back(SortBy::COUNTRY);
-    orders.push_back(SortBy::YEAR); // premiered
-    orders.push_back(SortBy::MPAA);
-    orders.push_back(SortBy::TOP250);
-    orders.push_back(SortBy::STUDIO);
-    orders.push_back(SortBy::FILE);
-    orders.push_back(SortBy::PATH);
-    orders.push_back(SortBy::DATE_ADDED);
+    orders = {
+        SortBy::NONE,        SortBy::SORT_TITLE,  SortBy::ORIGINAL_TITLE, SortBy::VOTES,
+        SortBy::RATING,      SortBy::USER_RATING, SortBy::TIME,           SortBy::PLAYCOUNT,
+        SortBy::LAST_PLAYED, SortBy::GENRE,       SortBy::COUNTRY,
+        SortBy::YEAR, // premiered
+        SortBy::MPAA,        SortBy::TOP250,      SortBy::STUDIO,         SortBy::FILE,
+        SortBy::PATH,        SortBy::DATE_ADDED,
+    };
   }
   else if (type == "musicvideos")
   {
-    orders.push_back(SortBy::TITLE);
-    orders.push_back(SortBy::GENRE);
-    orders.push_back(SortBy::ALBUM);
-    orders.push_back(SortBy::YEAR);
-    orders.push_back(SortBy::ARTIST);
-    orders.push_back(SortBy::FILE);
-    orders.push_back(SortBy::PATH);
-    orders.push_back(SortBy::PLAYCOUNT);
-    orders.push_back(SortBy::LAST_PLAYED);
-    orders.push_back(SortBy::TIME);
-    orders.push_back(SortBy::RATING);
-    orders.push_back(SortBy::USER_RATING);
-    orders.push_back(SortBy::STUDIO);
-    orders.push_back(SortBy::DATE_ADDED);
+    orders = {
+        SortBy::NONE,   SortBy::TITLE,  SortBy::GENRE,       SortBy::ALBUM,     SortBy::YEAR,
+        SortBy::ARTIST, SortBy::FILE,   SortBy::PATH,        SortBy::PLAYCOUNT, SortBy::LAST_PLAYED,
+        SortBy::TIME,   SortBy::RATING, SortBy::USER_RATING, SortBy::STUDIO,    SortBy::DATE_ADDED,
+    };
   }
   orders.push_back(SortBy::RANDOM);
 
@@ -704,25 +653,15 @@ std::vector<Field> CSmartPlaylistRule::GetGroups(const std::string &type)
 
 std::string CSmartPlaylistRule::GetLocalizedGroup(Field group)
 {
-  for (const auto & i : groups)
-  {
-    if (group == i.field)
-      return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(i.localizedString);
-  }
-
-  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
-      groups[0].localizedString);
+  const auto it = std::ranges::find_if(groups, [group](const auto& g) { return group == g.field; });
+  const int str = it == groups.end() ? groups[0].localizedString : it->localizedString;
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(str);
 }
 
 bool CSmartPlaylistRule::CanGroupMix(Field group)
 {
-  for (const auto & i : groups)
-  {
-    if (group == i.field)
-      return i.canMix;
-  }
-
-  return false;
+  const auto it = std::ranges::find_if(groups, [group](const auto& g) { return group == g.field; });
+  return it == groups.end() ? false : it->canMix;
 }
 
 std::string CSmartPlaylistRule::GetLocalizedRule() const
@@ -734,7 +673,7 @@ std::string CSmartPlaylistRule::GetLocalizedRule() const
 std::string CSmartPlaylistRule::GetVideoResolutionQuery(const std::string &parameter) const
 {
   std::string retVal(" IN (SELECT DISTINCT idFile FROM streamdetails WHERE iVideoWidth ");
-  int iRes = (int)std::strtol(parameter.c_str(), NULL, 10);
+  int iRes = static_cast<int>(std::strtol(parameter.c_str(), nullptr, 10));
 
   int min, max;
   if (iRes >= 2160)
@@ -1292,7 +1231,7 @@ CSmartPlaylist::CSmartPlaylist()
 
 bool CSmartPlaylist::OpenAndReadName(const CURL &url)
 {
-  if (readNameFromPath(url) == NULL)
+  if (readNameFromPath(url) == nullptr)
     return false;
 
   return !m_playlistName.empty();
@@ -1300,17 +1239,17 @@ bool CSmartPlaylist::OpenAndReadName(const CURL &url)
 
 const TiXmlNode* CSmartPlaylist::readName(const TiXmlNode *root)
 {
-  if (root == NULL)
-    return NULL;
+  if (root == nullptr)
+    return nullptr;
 
   const TiXmlElement *rootElem = root->ToElement();
-  if (rootElem == NULL)
-    return NULL;
+  if (rootElem == nullptr)
+    return nullptr;
 
   if (!StringUtils::EqualsNoCase(root->Value(), "smartplaylist"))
   {
     CLog::Log(LOGERROR, "Error loading Smart playlist");
-    return NULL;
+    return nullptr;
   }
 
   // load the playlist type
@@ -1335,7 +1274,7 @@ const TiXmlNode* CSmartPlaylist::readNameFromPath(const CURL &url)
   if (!file.Open(url))
   {
     CLog::Log(LOGERROR, "Error loading Smart playlist {} (failed to read file)", url.GetRedacted());
-    return NULL;
+    return nullptr;
   }
 
   m_xmlDoc.Clear();
@@ -1357,7 +1296,7 @@ const TiXmlNode* CSmartPlaylist::readNameFromXml(const std::string &xml)
   if (xml.empty())
   {
     CLog::Log(LOGERROR, "Error loading empty Smart playlist");
-    return NULL;
+    return nullptr;
   }
 
   m_xmlDoc.Clear();
@@ -1365,7 +1304,7 @@ const TiXmlNode* CSmartPlaylist::readNameFromXml(const std::string &xml)
   {
     CLog::Log(LOGERROR, "Error loading Smart playlist (failed to parse xml: {})",
               m_xmlDoc.ErrorDesc());
-    return NULL;
+    return nullptr;
   }
 
   const TiXmlNode *root = readName(m_xmlDoc.RootElement());
@@ -1375,7 +1314,7 @@ const TiXmlNode* CSmartPlaylist::readNameFromXml(const std::string &xml)
 
 bool CSmartPlaylist::load(const TiXmlNode *root)
 {
-  if (root == NULL)
+  if (root == nullptr)
     return false;
 
   return LoadFromXML(root);
@@ -1471,11 +1410,11 @@ bool CSmartPlaylist::LoadFromXML(const TiXmlNode *root, const std::string &encod
   }
 
   const TiXmlElement *groupElement = root->FirstChildElement("group");
-  if (groupElement != NULL && groupElement->FirstChild() != NULL)
+  if (groupElement != nullptr && groupElement->FirstChild() != nullptr)
   {
     m_group = groupElement->FirstChild()->ValueStr();
     const char* mixed = groupElement->Attribute("mixed");
-    m_groupMixed = mixed != NULL && StringUtils::EqualsNoCase(mixed, "true");
+    m_groupMixed = mixed != nullptr && StringUtils::EqualsNoCase(mixed, "true");
   }
 
   // now any limits
@@ -1493,7 +1432,7 @@ bool CSmartPlaylist::LoadFromXML(const TiXmlNode *root, const std::string &encod
                                                                            : SortOrder::DESCENDING;
 
     const char *ignorefolders = order->Attribute("ignorefolders");
-    if (ignorefolders != NULL)
+    if (ignorefolders != nullptr)
       m_orderAttributes = StringUtils::EqualsNoCase(ignorefolders, "true") ? SortAttributeIgnoreFolders : SortAttributeNone;
 
     m_orderField = CSmartPlaylistRule::TranslateOrder(order->FirstChild()->Value());
@@ -1681,14 +1620,13 @@ std::string CSmartPlaylist::GetSaveLocation() const
 
 void CSmartPlaylist::GetAvailableFields(const std::string &type, std::vector<std::string> &fieldList)
 {
-  std::vector<Field> typeFields = CSmartPlaylistRule::GetFields(type);
-  for (std::vector<Field>::const_iterator field = typeFields.begin(); field != typeFields.end(); ++field)
+  const std::vector<Field> typeFields = CSmartPlaylistRule::GetFields(type);
+  for (const auto& field : typeFields)
   {
-    for (const translateField& i : fields)
-    {
-      if (*field == i.field)
-        fieldList.emplace_back(i.string);
-    }
+    const auto it =
+        std::ranges::find_if(fields, [field](const auto& f) { return field == f.field; });
+    if (it != fields.end())
+      fieldList.emplace_back(it->string);
   }
 }
 
