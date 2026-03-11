@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -45,8 +45,6 @@ public:
   /* func. returns current status about MySQL-server connection */
   int status() override;
   int setErr(int err_code, const char* qry) override;
-  /* func. returns error message if error occurs */
-  const char* getErrorMsg() override;
 
   /* func. connects to database-server */
   int connect(bool create) override;

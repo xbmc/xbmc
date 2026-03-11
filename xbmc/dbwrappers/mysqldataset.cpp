@@ -132,11 +132,6 @@ int MysqlDatabase::setErr(int err_code, const char* qry)
   return err_code;
 }
 
-const char* MysqlDatabase::getErrorMsg()
-{
-  return error.c_str();
-}
-
 void MysqlDatabase::configure_connection()
 {
   // MySQL 5.7.5+: See #8393
