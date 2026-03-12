@@ -5,3 +5,4 @@ SHA512=a738459c8a14dee633d98d893c23c7e97a6ffe317dcc8fa4fb5daa1ece305de431464ef8b
 BYPRODUCT=liblcms2.a
 BYPRODUCT_WIN=liblcms2.a
 
+FULL_URL=https://github.com/mm2/Little-CMS/releases/download/lcms2.18/lcms2-2.18.tar.gz
