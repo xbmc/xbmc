@@ -16,7 +16,8 @@ enum class Id : int
   TYPE_NONE = -1,
   TYPE_MUSIC = 0,
   TYPE_VIDEO = 1,
-  TYPE_PICTURE = 2
+  TYPE_PICTURE = 2,
+  TYPE_GAME = 3
 };
 
 /*!

@@ -6,25 +6,28 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <stdlib.h>
-#include "network/Network.h"
 #include "DirectoryFactory.h"
-#include "SpecialProtocolDirectory.h"
-#include "MultiPathDirectory.h"
-#include "StackDirectory.h"
+
+#include "AddonsDirectory.h"
+#include "DAVDirectory.h"
+#include "EventsDirectory.h"
+#include "FTPDirectory.h"
+#include "FavouritesDirectory.h"
+#include "File.h"
 #include "FileDirectoryFactory.h"
-#include "PlaylistDirectory.h"
+#include "HTTPDirectory.h"
+#include "LibraryDirectory.h"
+#include "MultiPathDirectory.h"
 #include "MusicDatabaseDirectory.h"
 #include "MusicSearchDirectory.h"
-#include "VideoDatabaseDirectory.h"
-#include "FavouritesDirectory.h"
-#include "LibraryDirectory.h"
-#include "EventsDirectory.h"
-#include "AddonsDirectory.h"
+#include "PlaylistDirectory.h"
 #include "SourcesDirectory.h"
-#include "FTPDirectory.h"
-#include "HTTPDirectory.h"
-#include "DAVDirectory.h"
+#include "SpecialProtocolDirectory.h"
+#include "StackDirectory.h"
+#include "VideoDatabaseDirectory.h"
+#include "network/Network.h"
+
+#include <stdlib.h>
 #if defined(HAS_UDFREAD)
 #include "UDFDirectory.h"
 #endif
@@ -34,6 +37,7 @@
 #ifdef TARGET_POSIX
 #include "platform/posix/filesystem/PosixDirectory.h"
 #elif defined(TARGET_WINDOWS)
+#include "platform/win32/dirent.h" // For S_ISDIR compatability macro
 #include "platform/win32/filesystem/Win32Directory.h"
 #ifdef TARGET_WINDOWS_STORE
 #include "platform/win10/filesystem/WinLibraryDirectory.h"
@@ -86,6 +90,7 @@
 #include "ServiceBroker.h"
 #include "addons/VFSEntry.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 
 using namespace ADDON;
 
@@ -121,7 +126,21 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
     return NULL;
 
   CFileItem item(url.Get(), true);
-  IFileDirectory* pDir = CFileDirectoryFactory::Create(url, &item);
+
+  // Load directory flag from the VFS. If the url is truly a directory, don't
+  // attempt to use a file-directory loader.
+  bool canBeFileDirectory = true;
+
+  struct __stat64 st = {};
+  if (CFile::Stat(URIUtils::SubstitutePath(url), &st) == 0)
+  {
+    item.SetFolder(S_ISDIR(st.st_mode));
+    canBeFileDirectory = !item.IsFolder();
+  }
+
+  IFileDirectory* pDir = nullptr;
+  if (canBeFileDirectory)
+    pDir = CFileDirectoryFactory::Create(url, &item);
   if (pDir)
     return pDir;
 
