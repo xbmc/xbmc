@@ -1039,8 +1039,9 @@ bool CXBMCApp::StartActivity(const std::string& package,
     if (!pathname.empty() && StringUtils::StartsWith(pathname, "/storage/"))
     {
       // generate a content URI
-      jniURI = CJNIFileProvider::getUriForFile(CXBMCApp::Get(), "org.xbmc.kodi.fileprovider",
-                                               CJNIFile(pathname));
+      std::string authority{CCompileInfo::GetPackage()};
+      authority.append(".fileprovider");
+      jniURI = CJNIFileProvider::getUriForFile(CXBMCApp::Get(), authority, CJNIFile(pathname));
 
       CLog::LogF(LOGINFO, "Share using FileProvider: {}", jniURI.toString());
 
