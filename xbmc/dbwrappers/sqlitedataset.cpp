@@ -318,6 +318,16 @@ int SqliteDatabase::connect(bool create)
   if (host.empty() || db.empty())
     return DB_CONNECTION_NONE;
 
+  {
+    static bool showed_ver_info = false;
+    if (!showed_ver_info)
+    {
+      const char* version_string = sqlite3_libversion();
+      CLog::Log(LOGINFO, "SqliteDatabase: library version {}", version_string);
+      showed_ver_info = true;
+    }
+  }
+
   //CLog::Log(LOGDEBUG, "Connecting to sqlite:{}:{}", host, db);
 
   std::string db_fullpath = URIUtils::AddFileToFolder(host, db);
