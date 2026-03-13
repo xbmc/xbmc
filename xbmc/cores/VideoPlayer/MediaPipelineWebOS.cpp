@@ -736,6 +736,17 @@ bool CMediaPipelineWebOS::Load(CDVDStreamInfo videoHint, CDVDStreamInfo audioHin
   m_picture.hdrType = videoHint.hdrType;
   m_picture.color_transfer = videoHint.colorTransferCharacteristic;
 
+  // apply forced aspect
+  if (videoHint.forced_aspect && videoHint.aspect > 0.0)
+  {
+    m_picture.iDisplayWidth = std::lround(m_picture.iDisplayHeight * videoHint.aspect);
+    if (m_picture.iDisplayWidth > m_picture.iWidth)
+    {
+      m_picture.iDisplayWidth = m_picture.iWidth;
+      m_picture.iDisplayHeight = std::lround(m_picture.iDisplayWidth / videoHint.aspect);
+    }
+  }
+
   const int sorient = m_processInfo.GetVideoSettings().m_Orientation;
   const int orientation =
       sorient != 0 ? (sorient + videoHint.orientation) % 360 : videoHint.orientation;
