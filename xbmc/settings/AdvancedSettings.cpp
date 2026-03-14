@@ -1281,11 +1281,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
       dbElement != nullptr)
     ParseDatabaseSettings(dbElement, m_databaseEpg);
 
-  pElement = pRootElement->FirstChildElement("enablemultimediakeys");
-  if (pElement)
-  {
-    XMLUtils::GetBoolean(pRootElement, "enablemultimediakeys", m_enableMultimediaKeys);
-  }
+  XMLUtils::GetBoolean(pRootElement, "enablemultimediakeys", m_enableMultimediaKeys);
 
   pElement = pRootElement->FirstChildElement("gui");
   if (pElement)
