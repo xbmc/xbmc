@@ -5,3 +5,4 @@ SHA512=a7e1f7d060b358f4382e84367d66aa2850aef3b4524a0fdfe3f22dd258fb9e35dda7540f8
 BYPRODUCT=libjxl.a
 BYPRODUCT_WIN=jxl.lib
 
+FULL_URL=https://github.com/libjxl/libjxl/archive/refs/tags/v0.11.2.tar.gz
