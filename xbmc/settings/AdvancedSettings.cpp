@@ -588,7 +588,28 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 
   //Make a copy of the AS.xml and hide advancedsettings passwords
   CXBMCTinyXML advancedXMLCopy(advancedXML);
-  TiXmlNode *pRootElementCopy = advancedXMLCopy.RootElement();
+  Redact(advancedXMLCopy);
+
+  // Dump contents of copied AS.xml to debug log
+  TiXmlPrinter printer;
+  printer.SetLineBreak("\n");
+  printer.SetIndent("  ");
+  advancedXMLCopy.Accept(&printer);
+  // redact User/pass in URLs
+  std::regex redactRe("(\\w+://)\\S+:\\S+@");
+  CLog::Log(LOGINFO, "Contents of {} are...\n{}", file,
+            std::regex_replace(printer.CStr(), redactRe, "$1USERNAME:PASSWORD@"));
+
+  ParseSettingsXML(advancedXML.RootElement());
+
+  // load in the settings overrides
+  CServiceBroker::GetSettingsComponent()->GetSettings()->LoadHidden(advancedXML.RootElement());
+}
+
+void CAdvancedSettings::Redact(CXBMCTinyXML& input) const
+{
+  //Make a copy of the AS.xml and hide advancedsettings passwords
+  TiXmlNode* pRootElementCopy = input.RootElement();
   for (const auto& dbname : { "videodatabase", "musicdatabase", "tvdatabase", "epgdatabase" })
   {
     TiXmlNode *db = pRootElementCopy->FirstChild(dbname);
@@ -606,6 +627,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
       }
     }
   }
+
+  // Note: This is a regular setting override, not an advancedsetting.
   TiXmlNode *network = pRootElementCopy->FirstChild("network");
   if (network)
   {
@@ -620,21 +643,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
       }
     }
   }
-
-  // Dump contents of copied AS.xml to debug log
-  TiXmlPrinter printer;
-  printer.SetLineBreak("\n");
-  printer.SetIndent("  ");
-  advancedXMLCopy.Accept(&printer);
-  // redact User/pass in URLs
-  std::regex redactRe("(\\w+://)\\S+:\\S+@");
-  CLog::Log(LOGINFO, "Contents of {} are...\n{}", file,
-            std::regex_replace(printer.CStr(), redactRe, "$1USERNAME:PASSWORD@"));
-
-  ParseSettingsXML(advancedXML.RootElement());
-
-  // load in the settings overrides
-  CServiceBroker::GetSettingsComponent()->GetSettings()->LoadHidden(advancedXML.RootElement());
 }
 
 void CAdvancedSettings::ParseSettingsXML(const TiXmlElement* pRootElement)

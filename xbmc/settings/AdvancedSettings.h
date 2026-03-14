@@ -25,6 +25,7 @@
 
 class CProfileManager;
 class CSettingsManager;
+class CXBMCTinyXML;
 class CVariant;
 struct IntegerSettingOption;
 
@@ -421,6 +422,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_nfsRetries;
 
   protected:
+    void Redact(CXBMCTinyXML& input) const;
     void Initialize();
 
   private:
