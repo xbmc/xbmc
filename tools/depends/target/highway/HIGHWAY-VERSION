@@ -5,3 +5,4 @@ SHA512=636314b332ba93b331667079e8f7d61e892734c2b29bc10843c96ced619994835c0cf79ee
 BYPRODUCT=libhwy.a
 BYPRODUCT_WIN=hwy.lib
 
+FULL_URL=https://github.com/google/highway/releases/download/1.3.0/highway-1.3.0.tar.gz
