@@ -625,14 +625,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
         passTag->LinkEndChild(new TiXmlText("*****"));
       }
     }
-    if (network->FirstChildElement("nfstimeout"))
-    {
-      XMLUtils::GetUInt(network, "nfstimeout", m_nfsTimeout, 0, 3600);
-    }
-    if (network->FirstChildElement("nfsretries"))
-    {
-      XMLUtils::GetInt(network, "nfsretries", m_nfsRetries, -1, 30);
-    }
   }
 
   // Dump contents of copied AS.xml to debug log
@@ -958,6 +950,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetBoolean(pElement, "disableipv6", m_curlDisableIPV6);
     XMLUtils::GetBoolean(pElement, "disablehttp2", m_curlDisableHTTP2);
     XMLUtils::GetString(pElement, "catrustfile", m_caTrustFile);
+    XMLUtils::GetUInt(pElement, "nfstimeout", m_nfsTimeout, 0, 3600);
+    XMLUtils::GetInt(pElement, "nfsretries", m_nfsRetries, -1, 30);
   }
 
   pElement = pRootElement->FirstChildElement("jsonrpc");
