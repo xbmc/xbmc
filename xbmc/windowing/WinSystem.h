@@ -240,6 +240,12 @@ public:
 
   virtual bool SupportsVideoSuperResolution() { return false; }
 
+  // GUI compositing for HDR: render GUI to FBO, composite with tone mapping
+  virtual bool SetGuiCompositing(bool active) { return false; }
+  virtual bool BeginGuiComposite() { return false; }
+  virtual void EndGuiComposite() {}
+  virtual void CompositeGui() {}
+
   /*!
    * \brief Gets debug info from video renderer for use in "Debug Info OSD" (Alt + O)
    *
