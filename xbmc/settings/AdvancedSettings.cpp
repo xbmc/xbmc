@@ -1241,7 +1241,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     if (pSortDecription)
     {
       constexpr const char* XML_SORTMETHOD = "sortmethod";
-      constexpr const char* XML_SORTORDER = "sortorder";
       auto sortMethod = static_cast<int>(SortBy::NONE);
       static constexpr CSet validSortMethods{SortBy::LABEL,          SortBy::DATE,
                                              SortBy::SIZE,           SortBy::FILE,
@@ -1251,6 +1250,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
       if (validSortMethods.contains(static_cast<SortBy>(sortMethod)))
       {
         int sortOrder;
+        constexpr const char* XML_SORTORDER = "sortorder";
         if (XMLUtils::GetInt(pSortDecription, XML_SORTORDER, sortOrder,
                              static_cast<int>(SortOrder::ASCENDING),
                              static_cast<int>(SortOrder::DESCENDING)))
