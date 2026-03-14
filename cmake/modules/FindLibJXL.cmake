@@ -16,6 +16,13 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
     find_package(Highway REQUIRED ${SEARCH_QUIET})
     find_package(LCMS2 REQUIRED ${SEARCH_QUIET})
 
+    if(WIN32 OR WINDOWS_STORE)
+      set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/01-win-remove_mlib.patch")
+
+      generate_patchcommand("${patches}")
+      unset(patches)
+    endif()
+
     set(CMAKE_ARGS -DBUILD_TESTING=OFF
                    -DBUILD_SHARED_LIBS=OFF
                    -DJPEGXL_ENABLE_TOOLS=OFF

@@ -1,5 +1,6 @@
 include ../../Makefile.include LIBJXL-VERSION ../../download-files.include
-DEPS = ../../Makefile.include Makefile LIBJXL-VERSION ../../download-files.include
+DEPS = ../../Makefile.include Makefile LIBJXL-VERSION ../../download-files.include \
+                              01-win-remove_mlib.patch
 
 
 CMAKE_OPTIONS= -DBUILD_TESTING=OFF \
@@ -29,6 +30,9 @@ all: .installed-$(PLATFORM)
 $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)/build
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+ifeq ($(OS),windows)
+	cd $(PLATFORM); patch -p1 -i ../01-win-remove_mlib.patch
+endif
 	cd $(PLATFORM)/build; $(CMAKE) $(CMAKE_OPTIONS) ..
 
 $(LIBDYLIB): $(PLATFORM)
