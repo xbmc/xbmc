@@ -132,7 +132,7 @@ int CAdvancedSettings::RegisterSettingsLoadedCallback(AdvancedSettingsCallback c
 {
   static int idx{0};
   std::lock_guard lock{m_listCritSection};
-  m_settingsLoadedCallbacks[idx] = callback;
+  m_settingsLoadedCallbacks.emplace(idx, std::move(callback));
   return ++idx;
 }
 
