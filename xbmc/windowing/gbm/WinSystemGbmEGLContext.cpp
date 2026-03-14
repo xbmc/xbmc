@@ -34,6 +34,8 @@ bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint 
   }
 
   auto plane = m_DRM->GetGuiPlane();
+  // TODO: GetGuiPlane() should never be null here (FindPlanes would have failed).
+  // The DRM_FORMAT_XRGB2101010 fallback is suspect — consider DRM_FORMAT_XRGB8888.
   uint32_t visualId = plane != nullptr ? plane->GetFormat() : DRM_FORMAT_XRGB2101010;
 
   // prefer alpha visual id, fallback to non-alpha visual id
