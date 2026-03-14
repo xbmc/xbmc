@@ -222,7 +222,18 @@ bool CDRMUtils::FindPlanes()
   if (m_video_plane)
     CLog::LogF(LOGDEBUG, "Using video plane {}", m_video_plane->GetPlaneId());
 
-  if (m_gui_plane->SupportsFormat(DRM_FORMAT_XRGB2101010))
+  // Use 10-bit GUI plane when available, unless dual-plane Direct-To-Plane
+  // rendering will be used (RendererDRMPRIME — the only DRM dual-plane renderer).
+  // Dual-plane DRM compositing requires 8-bit alpha (ARGB8888) for GUI overlay transparency.
+  // 10-bit formats only offer 2-bit alpha (ARGB2101010) which causes visible banding in dual-plane.
+  // Dual-plane requires both DRMPRIME decoding and Direct-To-Plane render method.
+  bool useDualPlane = m_video_plane &&
+                      CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                          "videoplayer.useprimedecoder") &&
+                      CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+                          "videoplayer.useprimerenderer") == 0;
+
+  if (!useDualPlane && m_gui_plane->SupportsFormat(DRM_FORMAT_XRGB2101010))
   {
     m_gui_plane->SetFormat(DRM_FORMAT_XRGB2101010);
     CLog::LogF(LOGDEBUG, "Using 10bit gui plane {}", m_gui_plane->GetPlaneId());
