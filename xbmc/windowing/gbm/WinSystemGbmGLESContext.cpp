@@ -19,6 +19,7 @@
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererDRMPRIMEGLES.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
+#include "rendering/gles/GuiCompositeShaderGLES.h"
 #include "rendering/gles/ScreenshotSurfaceGLES.h"
 #include "utils/BufferObjectFactory.h"
 #include "utils/DMAHeapBufferObject.h"
@@ -180,6 +181,125 @@ void CWinSystemGbmGLESContext::PresentRender(bool rendered, bool videoLayer)
   {
     KODI::TIME::Sleep(10ms);
   }
+}
+
+bool CWinSystemGbmGLESContext::SetGuiCompositing(bool active)
+{
+  m_guiCompositing = active;
+
+  if (active)
+  {
+    if (!m_compositeShader)
+    {
+      m_compositeShader = std::make_unique<CGuiCompositeShaderGLES>();
+      if (!m_compositeShader->CompileAndLink())
+      {
+        CLog::Log(LOGERROR, "CWinSystemGbmGLESContext: failed to compile GUI composite shader");
+        m_compositeShader.reset();
+        m_guiCompositing = false;
+      }
+    }
+  }
+  else
+  {
+    m_guiFbo.Cleanup();
+    m_guiFboWidth = 0;
+    m_guiFboHeight = 0;
+    m_compositeShader.reset();
+  }
+
+  return m_guiCompositing;
+}
+
+bool CWinSystemGbmGLESContext::BeginGuiComposite()
+{
+  if (!m_guiCompositing)
+    return false;
+
+  int width = m_nWidth;
+  int height = m_nHeight;
+
+  // create or recreate FBO if size changed
+  if (!m_guiFbo.IsValid() || m_guiFboWidth != width || m_guiFboHeight != height)
+  {
+    m_guiFbo.Cleanup();
+
+    if (!m_guiFbo.Initialize())
+    {
+      CLog::Log(LOGERROR, "CWinSystemGbmGLESContext: failed to initialize GUI FBO");
+      return false;
+    }
+
+    if (!m_guiFbo.CreateAndBindToTexture(GL_TEXTURE_2D, width, height, GL_RGBA))
+    {
+      CLog::Log(LOGERROR, "CWinSystemGbmGLESContext: failed to create GUI FBO texture {}x{}", width,
+                height);
+      m_guiFbo.Cleanup();
+      return false;
+    }
+
+    m_guiFboWidth = width;
+    m_guiFboHeight = height;
+    CLog::Log(LOGDEBUG, "CWinSystemGbmGLESContext: created GUI FBO {}x{}", width, height);
+  }
+
+  if (!m_guiFbo.BeginRender())
+    return false;
+
+  // clear FBO to transparent black
+  glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+  glClear(GL_COLOR_BUFFER_BIT);
+
+  return true;
+}
+
+void CWinSystemGbmGLESContext::EndGuiComposite()
+{
+  m_guiFbo.EndRender();
+}
+
+// CompositeGui is the last GL operation in the frame (called just before EndRender).
+// GL state (blend mode, active texture, vertex arrays) is not restored afterward;
+// the next frame's rendering sets its own state.
+void CWinSystemGbmGLESContext::CompositeGui()
+{
+  if (!m_guiFbo.IsValid() || !m_guiFbo.IsBound() || !m_compositeShader)
+    return;
+
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, m_guiFbo.Texture());
+
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+  // set up orthographic projection (screen coords, Y-down)
+  float w = static_cast<float>(m_guiFboWidth);
+  float h = static_cast<float>(m_guiFboHeight);
+
+  GLfloat proj[16] = {2.0f / w, 0, 0, 0, 0, -2.0f / h, 0, 0, 0, 0, -1, 0, -1.0f, 1.0f, 0, 1};
+
+  m_compositeShader->SetProjection(proj);
+  m_compositeShader->SetSdrPeak(100.0f / 10000.0f);
+  m_compositeShader->Enable();
+
+  GLint posLoc = m_compositeShader->GetPosLoc();
+  GLint texLoc = m_compositeShader->GetTexLoc();
+
+  GLfloat vert[4][2] = {{0, 0}, {w, 0}, {w, h}, {0, h}};
+  GLfloat tex[4][2] = {{0, 1}, {1, 1}, {1, 0}, {0, 0}};
+  GLubyte idx[4] = {0, 1, 3, 2};
+
+  glVertexAttribPointer(posLoc, 2, GL_FLOAT, GL_FALSE, 0, vert);
+  glVertexAttribPointer(texLoc, 2, GL_FLOAT, GL_FALSE, 0, tex);
+  glEnableVertexAttribArray(posLoc);
+  glEnableVertexAttribArray(texLoc);
+
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+
+  glDisableVertexAttribArray(posLoc);
+  glDisableVertexAttribArray(texLoc);
+
+  m_compositeShader->Disable();
 }
 
 bool CWinSystemGbmGLESContext::CreateContext()

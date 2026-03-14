@@ -204,7 +204,7 @@ bool CRenderManager::Configure()
 
     m_playerPort->UpdateRenderInfo(info);
     m_playerPort->UpdateGuiRender(true);
-    m_playerPort->UpdateVideoRender(!m_pRenderer->IsGuiLayer());
+    m_playerPort->UpdateVideoRender(m_pRenderer->HasVideoPlane());
 
     m_queued.clear();
     m_discard.clear();
@@ -339,7 +339,7 @@ void CRenderManager::FrameMove()
     m_bRenderGUI = true;
   }
 
-  m_playerPort->UpdateGuiRender(IsGuiLayer() || firstFrame);
+  m_playerPort->UpdateGuiRender(IsGuiLayer() || !m_pRenderer->HasVideoPlane() || firstFrame);
 
   ManageCaptures();
 }
@@ -810,19 +810,6 @@ bool CRenderManager::IsGuiLayer()
   return false;
 }
 
-bool CRenderManager::IsVideoLayer()
-{
-  {
-    std::unique_lock lock(m_statelock);
-
-    if (!m_pRenderer)
-      return false;
-
-    if (!m_pRenderer->IsGuiLayer())
-      return true;
-  }
-  return false;
-}
 
 /* simple present method */
 void CRenderManager::PresentSingle(bool clear, DWORD flags, DWORD alpha)

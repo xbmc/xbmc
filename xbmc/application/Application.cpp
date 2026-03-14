@@ -851,6 +851,8 @@ void CApplication::Render()
     return;
 
   // render gui layer
+  bool compositing = CServiceBroker::GetWinSystem()->BeginGuiComposite();
+
   if (appPower->GetRenderGUI() && !m_skipGuiRender)
   {
     if (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() != RenderStereoMode::OFF)
@@ -875,8 +877,14 @@ void CApplication::Render()
     m_lastRenderTime = std::chrono::steady_clock::now();
   }
 
+  if (compositing)
+    CServiceBroker::GetWinSystem()->EndGuiComposite();
+
   // render video layer
   CServiceBroker::GetGUI()->GetWindowManager().RenderEx();
+
+  if (compositing)
+    CServiceBroker::GetWinSystem()->CompositeGui();
 
   CServiceBroker::GetRenderSystem()->EndRender();
 
