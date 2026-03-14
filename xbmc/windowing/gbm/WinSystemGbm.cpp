@@ -164,6 +164,8 @@ bool CWinSystemGbm::InitWindowSystem()
   if (setting)
     setting->SetVisible(true);
 
+  SetHDR(nullptr);
+
   CLog::Log(LOGDEBUG, "CWinSystemGbm::{} - initialized DRM", __FUNCTION__);
   return CWinSystemBase::InitWindowSystem();
 }
