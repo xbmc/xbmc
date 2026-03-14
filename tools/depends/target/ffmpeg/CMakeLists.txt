@@ -59,6 +59,29 @@ if(CMAKE_BUILD_TYPE STREQUAL Release)
   list(APPEND ffmpeg_conf --disable-debug)
 endif()
 
+if(ENABLE_LIBJXL)
+  list(APPEND ffmpeg_conf --enable-libjxl)
+
+  include(CheckCXXSymbolExists)
+  set(JXL_CXX_LIB "")
+  check_cxx_symbol_exists(__GLIBCXX__ iostream LIBSTDCXX)
+  check_cxx_symbol_exists(_LIBCPP_VERSION iostream LIBCXX)
+  if(LIBSTDCXX)
+    set(JXL_CXX_LIB "-lstdc++")
+  elseif(LIBCXX)
+    set(JXL_CXX_LIB "-lc++")
+  endif()
+
+  if(CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd)
+    find_package(Threads)
+    if(CMAKE_THREAD_LIBS_INIT)
+      set(JXL_CXX_LIB "${JXL_CXX_LIB} ${CMAKE_THREAD_LIBS_INIT}")
+    endif()
+  endif()
+else()
+  list(APPEND ffmpeg_conf --disable-libjxl)
+endif()
+
 if(CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd)
   list(APPEND ffmpeg_conf --enable-pic
                           --target-os=linux
@@ -73,9 +96,18 @@ if(CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd)
   else()
     list(APPEND ffmpeg_conf --disable-vdpau)
   endif()
+
+  if(ENABLE_LIBJXL)
+    list(APPEND ffmpeg_conf --extra-libs=${JXL_CXX_LIB})
+  endif()
 elseif(CORE_SYSTEM_NAME STREQUAL android)
+  set(android_extra_libs -liconv)
+  if(ENABLE_LIBJXL)
+    set(android_extra_libs "${android_extra_libs} -llog ${JXL_CXX_LIB}")
+  endif()
+
   list(APPEND ffmpeg_conf --target-os=android
-                          --extra-libs=-liconv
+                          --extra-libs=${android_extra_libs}
                           --disable-linux-perf
               )
   if(CPU MATCHES arm64)
@@ -95,11 +127,18 @@ elseif(CORE_SYSTEM_NAME STREQUAL darwin_embedded)
                           --disable-filter=yadif_videotoolbox
                           --target-os=darwin
               )
+
+  if(ENABLE_LIBJXL)
+    list(APPEND ffmpeg_conf --extra-libs=${JXL_CXX_LIB})
+  endif()
 elseif(CORE_SYSTEM_NAME STREQUAL osx)
   list(APPEND ffmpeg_conf --enable-videotoolbox
                           --target-os=darwin
                           --disable-securetransport
               )
+  if(ENABLE_LIBJXL)
+    list(APPEND ffmpeg_conf --extra-libs=${JXL_CXX_LIB})
+  endif()
 endif()
 
 if(CPU MATCHES arm)
