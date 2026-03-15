@@ -603,7 +603,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   ParseSettingsXML(advancedXML.RootElement());
 
   // load in the settings overrides
-  CServiceBroker::GetSettingsComponent()->GetSettings()->LoadHidden(advancedXML.RootElement());
+  CServiceBroker::GetSettingsComponent()->GetSettings()->LoadHidden(file);
 }
 
 void CAdvancedSettings::Redact(CXBMCTinyXML& input) const
