@@ -1239,23 +1239,19 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     const TiXmlElement* pSortDecription = pPVR->FirstChildElement("pvrrecordings");
     if (pSortDecription)
     {
-      constexpr const char* XML_SORTMETHOD = "sortmethod";
-      auto sortMethod = static_cast<int>(SortBy::NONE);
       static constexpr CSet validSortMethods{SortBy::LABEL,          SortBy::DATE,
                                              SortBy::SIZE,           SortBy::FILE,
                                              SortBy::EPISODE_NUMBER, SortBy::PROVIDER};
-      XMLUtils::GetInt(pSortDecription, XML_SORTMETHOD, sortMethod, static_cast<int>(SortBy::NONE),
-                       static_cast<int>(SortBy::USER_PREFERENCE));
-      if (validSortMethods.contains(static_cast<SortBy>(sortMethod)))
+      std::string smString;
+      XMLUtils::GetString(pSortDecription, "sortmethod", smString);
+      const auto sortMethod = SortUtils::SortMethodFromString(smString);
+      if (validSortMethods.contains(sortMethod))
       {
-        int sortOrder;
-        constexpr const char* XML_SORTORDER = "sortorder";
-        if (XMLUtils::GetInt(pSortDecription, XML_SORTORDER, sortOrder,
-                             static_cast<int>(SortOrder::ASCENDING),
-                             static_cast<int>(SortOrder::DESCENDING)))
+        std::string soString;
+        if (XMLUtils::GetString(pSortDecription, "sortorder", soString))
         {
-          m_PVRDefaultSortOrder.sortBy = static_cast<SortBy>(sortMethod);
-          m_PVRDefaultSortOrder.sortOrder = static_cast<SortOrder>(sortOrder);
+          m_PVRDefaultSortOrder.sortBy = sortMethod;
+          m_PVRDefaultSortOrder.sortOrder = SortUtils::SortOrderFromString(soString);
         }
       }
     }
