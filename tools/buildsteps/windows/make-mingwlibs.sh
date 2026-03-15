@@ -118,7 +118,11 @@ run_builds() {
     if [[ $build32 = "yes" ]]; then
       profile_path=/local32/etc/profile.local
     elif [[ $build64 = "yes" ]]; then
-      profile_path=/local64/etc/profile.local
+      if [[ $win10 = "yes" ]]; then
+        profile_path=/localwin10x64/etc/profile.local
+      else
+        profile_path=/local64/etc/profile.local
+      fi
     elif [[ $buildArm = "yes" ]]; then
       profile_path=/local32/etc/profile.local
     elif [[ $buildArm64 = "yes" ]]; then
