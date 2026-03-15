@@ -1077,6 +1077,24 @@ bool CApplicationPlayer::HasGameAgent() const
   return false;
 }
 
+bool CApplicationPlayer::SupportsDiscControl() const
+{
+  const std::shared_ptr<const IPlayer> player = GetInternal();
+  if (player)
+    return player->SupportsDiscControl();
+
+  return false;
+}
+
+bool CApplicationPlayer::IsDiscEjected() const
+{
+  const std::shared_ptr<const IPlayer> player = GetInternal();
+  if (player)
+    return player->IsDiscEjected();
+
+  return false;
+}
+
 int CApplicationPlayer::GetSubtitleDelay() const
 {
   // converts subtitle delay to a percentage

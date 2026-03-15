@@ -23,6 +23,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "games/GameServices.h"
 #include "games/addons/cheevos/GameClientCheevos.h"
+#include "games/addons/disc/GameClientDiscs.h"
 #include "games/addons/input/GameClientInput.h"
 #include "games/addons/streams/GameClientStreams.h"
 #include "games/addons/streams/IGameClientStream.h"
@@ -60,6 +61,8 @@ using namespace GAME;
 
 namespace
 {
+constexpr const char* GAME_PROPERTY_SUPPORTS_DISC_CONTROL = "supports_disc_control";
+
 /*
  * \brief Convert to lower case and canonicalize with a leading "."
  */
@@ -104,6 +107,9 @@ CGameClient::CGameClient(const ADDON::AddonInfoPtr& addonInfo)
       addonInfo->Type(AddonType::GAMEDLL)->GetValue(GAME_PROPERTY_SUPPORTS_VFS).asBoolean();
   m_bSupportsStandalone =
       addonInfo->Type(AddonType::GAMEDLL)->GetValue(GAME_PROPERTY_SUPPORTS_STANDALONE).asBoolean();
+  m_supportsDiscControl = addonInfo->Type(AddonType::GAMEDLL)
+                              ->GetValue(GAME_PROPERTY_SUPPORTS_DISC_CONTROL)
+                              .asBoolean();
 
   std::tie(m_emulatorName, m_platforms) = ParseLibretroName(Name());
 }
@@ -207,7 +213,6 @@ bool CGameClient::OpenFile(const CFileItem& file,
   // Some cores "succeed" to load the file even if it doesn't exist
   if (!CFileUtils::Exists(file.GetPath()))
   {
-
     // Failed to play game
     // The required files can't be found.
     MESSAGING::HELPERS::ShowOKDialogText(
@@ -241,6 +246,10 @@ bool CGameClient::OpenFile(const CFileItem& file,
   // Loading the game might require the stream subsystem to be initialized
   Streams().Initialize(streamManager);
 
+  // Initialize disc control subsystem, if supported
+  if (SupportsDiscControl())
+    Discs().Initialize(path);
+
   try
   {
     LogError(error = m_ifc.game->toAddon->LoadGame(m_ifc.game, path.c_str()), "LoadGame()");
@@ -257,7 +266,7 @@ bool CGameClient::OpenFile(const CFileItem& file,
     return false;
   }
 
-  if (!InitializeGameplay(file.GetPath(), streamManager, input))
+  if (!InitializeGameplay(path, streamManager, input))
   {
     NotifyError(GAME_ERROR_UNKNOWN);
     Streams().Deinitialize();
@@ -315,6 +324,12 @@ bool CGameClient::InitializeGameplay(const std::string& gamePath,
 {
   if (LoadGameInfo())
   {
+    if (SupportsDiscControl())
+    {
+      Discs().RestoreDiscList();
+      Discs().RefreshDiscState();
+    }
+
     Input().Start(input);
 
     m_bIsPlaying = true;
@@ -595,6 +610,16 @@ bool CGameClient::Deserialize(const uint8_t* data, size_t size)
     bSuccess = LogError(m_ifc.game->toAddon->Deserialize(m_ifc.game, data, size), "Deserialize()");
   }
 
+  if (bSuccess)
+  {
+    // Deserialization may reset disc information, so restore it now
+    if (SupportsDiscControl())
+    {
+      Discs().RestoreDiscList();
+      Discs().RefreshDiscState();
+    }
+  }
+
   return bSuccess;
 }
 
@@ -607,6 +632,7 @@ void CGameClient::LogAddonProperties(void) const
   CLog::Log(LOGINFO, "GAME: Valid extensions:    {}", StringUtils::Join(m_extensions, " "));
   CLog::Log(LOGINFO, "GAME: Supports VFS:        {}", m_bSupportsVFS);
   CLog::Log(LOGINFO, "GAME: Supports standalone: {}", m_bSupportsStandalone);
+  CLog::Log(LOGINFO, "GAME: Disc control:        {}", m_supportsDiscControl);
   CLog::Log(LOGINFO, "GAME: ------------------------------------");
 }
 

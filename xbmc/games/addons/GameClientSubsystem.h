@@ -19,6 +19,7 @@ namespace GAME
 {
 class CGameClient;
 class CGameClientCheevos;
+class CGameClientDiscs;
 class CGameClientInput;
 class CGameClientProperties;
 class CGameClientStreams;
@@ -26,6 +27,7 @@ class CGameClientStreams;
 struct GameClientSubsystems
 {
   std::unique_ptr<CGameClientCheevos> Cheevos;
+  std::unique_ptr<CGameClientDiscs> Discs;
   std::unique_ptr<CGameClientInput> Input;
   std::unique_ptr<CGameClientProperties> AddonProperties;
   std::unique_ptr<CGameClientStreams> Streams;
@@ -69,6 +71,7 @@ public:
 protected:
   // Subsystems
   CGameClientCheevos& Cheevos() const;
+  CGameClientDiscs& Discs() const;
   CGameClientInput& Input() const;
   CGameClientProperties& AddonProperties() const;
   CGameClientStreams& Streams() const;

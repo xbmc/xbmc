@@ -126,12 +126,14 @@ public:
 
   // Game subsystems (const)
   const CGameClientCheevos& Cheevos() const { return *m_subsystems.Cheevos; }
+  const CGameClientDiscs& Discs() const { return *m_subsystems.Discs; }
   const CGameClientInput& Input() const { return *m_subsystems.Input; }
   const CGameClientProperties& AddonProperties() const { return *m_subsystems.AddonProperties; }
   const CGameClientStreams& Streams() const { return *m_subsystems.Streams; }
 
   // Game subsystems (mutable)
   CGameClientCheevos& Cheevos() { return *m_subsystems.Cheevos; }
+  CGameClientDiscs& Discs() { return *m_subsystems.Discs; }
   CGameClientInput& Input() { return *m_subsystems.Input; }
   CGameClientProperties& AddonProperties() { return *m_subsystems.AddonProperties; }
   CGameClientStreams& Streams() { return *m_subsystems.Streams; }
@@ -149,6 +151,7 @@ public:
   bool IsExtensionValid(const std::string& strExtension) const;
   const std::string& GetEmulatorName() const { return m_emulatorName; }
   const std::string& GetPlatforms() const { return m_platforms; }
+  bool SupportsDiscControl() const { return m_supportsDiscControl; }
 
   // Start/stop gameplay
   bool Initialize(void);
@@ -253,6 +256,7 @@ private:
   bool m_bSupportsAllExtensions = false;
   std::string m_emulatorName;
   std::string m_platforms;
+  bool m_supportsDiscControl{false};
 
   // Properties of the current playing file
   std::atomic_bool m_bIsPlaying; // True between OpenFile() and CloseFile()

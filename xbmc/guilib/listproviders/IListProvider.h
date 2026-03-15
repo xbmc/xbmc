@@ -89,13 +89,13 @@ public:
    \param item the item that was clicked.
    \return true if the dialog was shown, false otherwise.
    */
-  virtual bool OnInfo(const std::shared_ptr<CGUIListItem>& item) = 0;
+  virtual bool OnInfo(const std::shared_ptr<CGUIListItem>& item) { return false; }
 
   /*! \brief Open the context menu for an item provided by this IListProvider.
    \param item the item that was clicked.
    \return true if the click was handled, false otherwise.
    */
-  virtual bool OnContextMenu(const std::shared_ptr<CGUIListItem>& item) = 0;
+  virtual bool OnContextMenu(const std::shared_ptr<CGUIListItem>& item) { return false; }
 
   /*! \brief Set the default item to focus. For backwards compatibility.
    \param item the item to focus.
@@ -115,6 +115,13 @@ public:
    \sa GetDefaultItem, SetDefaultItem
    */
   virtual bool AlwaysFocusDefaultItem() const { return false; }
+
+  /*!
+   * \brief Called when the list provider is replacing a container's existing list provider
+   *
+   * \param previousProvider The container's list provider being replaced
+   */
+  virtual void OnReplace(IListProvider& previousProvider) {}
 
 private:
   const int m_parentID{-1};

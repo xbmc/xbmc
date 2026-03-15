@@ -6,6 +6,7 @@ xbmc/cores/VideoPlayer/VideoRenderers/VideoShaders/test test/videoshaders
 xbmc/dbwrappers/test              test/dbwrappers
 xbmc/filesystem/test              test/filesystem
 xbmc/filesystem/VideoDatabaseDirectory/test test/videodatabasedirectory
+xbmc/games/addons/disc/test       test/games/addons/disc
 xbmc/games/addons/input/test      test/games/addons/input
 xbmc/games/controllers/input/test test/games/controllers/input
 xbmc/games/controllers/test       test/games/controllers

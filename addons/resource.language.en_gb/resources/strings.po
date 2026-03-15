@@ -1215,6 +1215,7 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogFileBrowser.cpp
 #: xbmc/games/dialogs/GUIDialogSelectGameClient.cpp
+#: xbmc/games/dialogs/osd/DiscManagerMenu.cpp
 #: xbmc/network/NetworkServices.cpp
 #: xbmc/pvr/guilib/PVRGUIActionsChannels.cpp
 #: xbmc/pvr/guilib/PVRGUIActionsRecordings.cpp
@@ -19229,7 +19230,80 @@ msgctxt "#35271"
 msgid "This game requires OpenGL support for 3D rendering. OpenGL support is still under development."
 msgstr ""
 
-#empty strings from id 35272 to 35504
+#. Label for the "Disc menu" button to open the Disc Manager when playing a game
+#: addons/skin.estuary/xml/Includes_Games.xml
+#: addons/skin.estuary/xml/Includes_SettingsDialog.xml
+#: xbmc/games/dialogs/osd/DialogGameDiscChanger.cpp
+msgctxt "#35272"
+msgid "Disc menu"
+msgstr ""
+
+#. Label for showing the disc that is inserted in the game's virtual CD drive
+#: addons/skin.estuary/xml/Includes_Games.xml
+msgctxt "#35273"
+msgid "Selected disc"
+msgstr ""
+
+#. Text shown when a disc is removed from the game's virtual CD drive
+#: addons/skin.estuary/xml/Includes_Games.xml
+#: xbmc/games/dialogs/osd/DiscManagerGame.cpp
+msgctxt "#35274"
+msgid "No disc"
+msgstr ""
+
+#. Label for the button that ejects the disc for a game's virtual CD drive
+#: addons/skin.estuary/xml/Includes_Games.xml
+#: xbmc/games/dialogs/osd/DiscManagerButtons.cpp
+#: xbmc/games/dialogs/osd/DiscManagerMenu.cpp
+msgctxt "#35275"
+msgid "Eject"
+msgstr ""
+
+#. Label for the button that inserts the disc (closes the disc tray) for a game's virtual CD drive
+#: addons/skin.estuary/xml/Includes_Games.xml
+#: xbmc/games/dialogs/osd/DiscManagerButtons.cpp
+#: xbmc/games/dialogs/osd/DiscManagerMenu.cpp
+msgctxt "#35276"
+msgid "Insert"
+msgstr ""
+
+#. Label for the button that resumes playing the current game. Called from the in-game menu.
+#: addons/skin.estuary/xml/Includes_Games.xml
+msgctxt "#35277"
+msgid "Resume game"
+msgstr ""
+
+#. Error message shown when the disc can't be ejected for a game's virtual CD drive
+#: xbmc/games/dialogs/osd/DiscManagerActions.cpp
+msgctxt "#35278"
+msgid "The disc can't be ejected right now."
+msgstr ""
+
+#. Error message shown when the disc can't be inserted (closing the disc tray) for a game's virtual CD drive
+#: xbmc/games/dialogs/osd/DiscManagerActions.cpp
+msgctxt "#35279"
+msgid "The disc can't be inserted right now."
+msgstr ""
+
+#. Title of the dialog to select a new disc image for a game's virtual CD drive
+#: xbmc/games/dialogs/osd/DiscManagerActions.cpp
+msgctxt "#35280"
+msgid "Select disc"
+msgstr ""
+
+#. The "Apply disc change" button is shown in the Disc Manager. It plays the game for a few seconds for the disc to take effect.
+#: addons/skin.estuary/xml/Includes_Games.xml
+msgctxt "#35281"
+msgid "Apply disc change"
+msgstr ""
+
+#. Text shown while the game is running in the background
+#: xbmc/games/dialogs/osd/DialogGameDiscChanger.cp
+msgctxt "#35282"
+msgid "Running game..."
+msgstr ""
+
+#empty strings from id 35283 to 35504
 
 #. connection state "host unreachable"
 #: xbmc/pvr/addons/PVRClients.cpp

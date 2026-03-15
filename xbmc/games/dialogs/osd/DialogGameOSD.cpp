@@ -78,5 +78,5 @@ void CDialogGameOSD::OnDeinitWindow(int nextWindowID)
 
 bool CDialogGameOSD::PlayInBackground(int dialogId)
 {
-  return dialogId == WINDOW_DIALOG_GAME_VOLUME;
+  return dialogId == WINDOW_DIALOG_GAME_VOLUME || dialogId == WINDOW_DIALOG_GAME_DISC_CHANGER;
 }

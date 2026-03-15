@@ -11,5 +11,6 @@
 		<include condition="Window.IsDialogTopMost(gamecontrollers)">GameDialogControllers</include>
 		<include condition="Window.IsDialogTopMost(gameports)">GameDialogPorts</include>
 		<include condition="Window.IsDialogTopMost(gameagents)">GameDialogAgents</include>
+		<include condition="Window.IsDialogTopMost(gamediscmanager)">GameDialogDiscManager</include>
 	</controls>
 </window>
