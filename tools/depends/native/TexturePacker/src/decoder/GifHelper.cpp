@@ -52,7 +52,7 @@ GifHelper::~GifHelper()
 bool GifHelper::Open(GifFileType*& gif, void *dataPtr, InputFunc readFunc)
 {
   int err = 0;
-#if GIFLIB_MAJOR == 5
+#if GIFLIB_MAJOR >= 5
   gif = DGifOpen(dataPtr, readFunc, &err);
 #else
   gif = DGifOpen(dataPtr, readFunc);
@@ -73,7 +73,7 @@ void GifHelper::Close(GifFileType* gif)
 {
   int err = 0;
   int reason = 0;
-#if GIFLIB_MAJOR == 5 && GIFLIB_MINOR >= 1
+#if (GIFLIB_MAJOR == 5 && GIFLIB_MINOR >= 1) || GIFLIB_MAJOR >= 6
   err = DGifCloseFile(gif, &reason);
 #else
   err = DGifCloseFile(gif);
@@ -181,7 +181,7 @@ bool GifHelper::Slurp(GifFileType* gif)
   if (DGifSlurp(gif) == GIF_ERROR)
   {
     int reason = 0;
-#if GIFLIB_MAJOR == 5
+#if GIFLIB_MAJOR >= 5
     reason = gif->Error;
 #else
     reason = GifLastError();
@@ -246,7 +246,7 @@ bool GifHelper::GcbToFrame(GifFrame &frame, unsigned int imgIdx)
 
   if (m_gif->ImageCount > 0)
   {
-#if GIFLIB_MAJOR == 5
+#if GIFLIB_MAJOR >= 5
     GraphicsControlBlock gcb;
     if (DGifSavedExtensionToGCB(m_gif, imgIdx, &gcb))
     {
