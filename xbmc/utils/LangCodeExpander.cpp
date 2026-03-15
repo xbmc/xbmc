@@ -261,13 +261,16 @@ bool CLangCodeExpander::ConvertToISO6392T(const std::string& strCharCode,
 
 bool CLangCodeExpander::LookupUserCode(const std::string& desc, std::string& userCode)
 {
-  for (STRINGLOOKUPTABLE::const_iterator it = m_mapUser.begin(); it != m_mapUser.end(); ++it)
+  const auto it = std::ranges::find_if(m_mapUser,
+                                       [&desc](const auto& it)
+                                       {
+                                         return StringUtils::EqualsNoCase(desc, it.first) ||
+                                                StringUtils::EqualsNoCase(desc, it.second);
+                                       });
+  if (it != m_mapUser.end())
   {
-    if (StringUtils::EqualsNoCase(desc, it->first) || StringUtils::EqualsNoCase(desc, it->second))
-    {
-      userCode = it->first;
-      return true;
-    }
+    userCode = it->first;
+    return true;
   }
   return false;
 }
@@ -399,13 +402,12 @@ bool CLangCodeExpander::ReverseLookup(const std::string& desc, std::string& code
   StringUtils::Trim(descTmp);
 
   // First find to user-defined languages
-  for (STRINGLOOKUPTABLE::const_iterator it = m_mapUser.begin(); it != m_mapUser.end(); ++it)
+  const auto it = std::ranges::find_if(m_mapUser, [&descTmp](const auto& it)
+                                       { return StringUtils::EqualsNoCase(descTmp, it.second); });
+  if (it != m_mapUser.end())
   {
-    if (StringUtils::EqualsNoCase(descTmp, it->second))
-    {
-      code = it->first;
-      return true;
-    }
+    code = it->first;
+    return true;
   }
 
   if (const auto ret = CIso639_1::LookupByName(descTmp); ret.has_value())
@@ -549,20 +551,15 @@ std::vector<std::string> CLangCodeExpander::GetLanguageNames(
   // User-defined languages can override existing ones
   if (list == LANG_LIST::INCLUDE_USERDEFINED || list == LANG_LIST::INCLUDE_ADDONS_USERDEFINED)
   {
-    for (const auto& value : m_mapUser)
-    {
-      langMap[value.first] = value.second;
-    }
+    std::ranges::copy(m_mapUser, std::inserter(langMap, langMap.end()));
   }
 
   // Sort by name and remove duplicates
   std::set<std::string, sortstringbyname> languages;
-  for (const auto& lang : langMap)
-  {
-    languages.insert(lang.second);
-  }
+  std::ranges::transform(langMap, std::inserter(languages, languages.end()),
+                         [](const auto& lang) { return lang.second; });
 
-  return std::vector<std::string>(languages.begin(), languages.end());
+  return {languages.begin(), languages.end()};
 }
 
 bool CLangCodeExpander::CompareISO639Codes(const std::string& code1, const std::string& code2)
