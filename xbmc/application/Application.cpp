@@ -1873,23 +1873,24 @@ namespace
 class CCreateAndLoadPlayList : public IRunnable
 {
 public:
-  CCreateAndLoadPlayList(CFileItem& item, std::unique_ptr<PLAYLIST::CPlayList>& playlist)
-    : m_item(item), m_playlist(playlist)
+  CCreateAndLoadPlayList(const CFileItem& item, std::unique_ptr<PLAYLIST::CPlayList>& playlist)
+    : m_item(item),
+      m_playlist(playlist)
   {
   }
 
   void Run() override
   {
-    const std::unique_ptr<PLAYLIST::CPlayList> playlist(PLAYLIST::CPlayListFactory::Create(m_item));
+    std::unique_ptr<PLAYLIST::CPlayList> playlist(PLAYLIST::CPlayListFactory::Create(m_item));
     if (playlist)
     {
       if (playlist->Load(m_item.GetPath()))
-        *m_playlist = *playlist;
+        m_playlist = std::move(playlist);
     }
   }
 
 private:
-  CFileItem& m_item;
+  const CFileItem& m_item;
   std::unique_ptr<PLAYLIST::CPlayList>& m_playlist;
 };
 } // namespace
