@@ -38,7 +38,7 @@ class CInputProcessorPointer final : public IRawInputHandlerPointer
 {
 public:
   CInputProcessorPointer(wayland::surface_t const& surface, IInputHandlerPointer& handler);
-  void SetCoordinateScale(std::int32_t scale) { m_coordinateScale = scale; }
+  void SetCoordinateScale(double scale) { m_coordinateScale = scale; }
 
   void OnPointerEnter(CSeat* seat,
                       std::uint32_t serial,
@@ -68,7 +68,7 @@ private:
 
   // Pointer position in *scaled* coordinates
   CPointGen<std::uint16_t> m_pointerPosition;
-  std::int32_t m_coordinateScale{1};
+  double m_coordinateScale{1.0};
 };
 
 }

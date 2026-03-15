@@ -25,6 +25,7 @@
 
 #include <wayland-client-protocol.hpp>
 #include <wayland-cursor.hpp>
+#include <wayland-extra-protocols.hpp>
 
 namespace KODI
 {
@@ -84,7 +85,7 @@ public:
    *
    * Call only from main thread
    */
-  void SetState(CSizeInt size, int scale, IShellSurface::StateBitset state);
+  void SetState(CSizeInt size, double scale, IShellSurface::StateBitset state);
   /**
    * Get calculated size of main surface
    */
@@ -192,6 +193,7 @@ private:
   wayland::shm_pool_t m_shmPool;
   wayland::compositor_t m_compositor;
   wayland::subcompositor_t m_subcompositor;
+  wayland::viewporter_t m_viewporter;
   wayland::surface_t m_mainSurface;
 
   std::unique_ptr<KODI::UTILS::POSIX::CSharedMemory> m_memory;
@@ -201,6 +203,7 @@ private:
   {
     Surface surface;
     wayland::subsurface_t subsurface;
+    wayland::viewport_t viewport;
     CRectInt geometry;
     /// Region of the surface that should count as being part of the window
     CRectInt windowRect;
@@ -231,6 +234,7 @@ private:
     std::uint32_t pointerEnterSerial{};
     std::string cursorName;
     wayland::surface_t cursor;
+    wayland::viewport_t cursorViewport;
 
     explicit SeatState(CSeat* seat)
     : seat{seat}

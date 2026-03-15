@@ -153,14 +153,22 @@ private:
   void LoadDefaultCursor();
   void SendFocusChange(bool focus);
   bool SetResolutionExternal(bool fullScreen, RESOLUTION_INFO const& res);
-  void SetResolutionInternal(CSizeInt size, int scale, IShellSurface::StateBitset state, bool sizeIncludesDecoration, bool mustAck = false, std::uint32_t configureSerial = 0u);
+  void SetResolutionInternal(CSizeInt size,
+                             double scale,
+                             IShellSurface::StateBitset state,
+                             bool sizeIncludesDecoration,
+                             bool mustAck = false,
+                             std::uint32_t configureSerial = 0u);
   struct Sizes
   {
     CSizeInt surfaceSize;
     CSizeInt bufferSize;
     CSizeInt configuredSize;
   };
-  Sizes CalculateSizes(CSizeInt size, int scale, IShellSurface::StateBitset state, bool sizeIncludesDecoration);
+  Sizes CalculateSizes(CSizeInt size,
+                       double scale,
+                       IShellSurface::StateBitset state,
+                       bool sizeIncludesDecoration);
   struct SizeUpdateInformation
   {
     bool surfaceSizeChanged : 1;
@@ -168,7 +176,10 @@ private:
     bool configuredSizeChanged : 1;
     bool bufferScaleChanged : 1;
   };
-  SizeUpdateInformation UpdateSizeVariables(CSizeInt size, int scale, IShellSurface::StateBitset state, bool sizeIncludesDecoration);
+  SizeUpdateInformation UpdateSizeVariables(CSizeInt size,
+                                            double scale,
+                                            IShellSurface::StateBitset state,
+                                            bool sizeIncludesDecoration);
   void ApplySizeUpdate(SizeUpdateInformation update);
   void ApplyNextState();
 
@@ -181,6 +192,7 @@ private:
   void OnOutputDone(std::uint32_t name);
   void UpdateBufferScale();
   void ApplyBufferScale();
+  void ApplyViewportSizes();
   void ApplyOpaqueRegion();
   void ApplyWindowGeometry();
   void UpdateTouchDpi();
@@ -204,6 +216,9 @@ private:
   std::unique_ptr<CRegistry> m_seatRegistry;
   wayland::compositor_t m_compositor;
   wayland::shm_t m_shm;
+  wayland::viewporter_t m_viewporter;
+  wayland::fractional_scale_manager_v1_t m_fractionalScaleManager;
+  wayland::fractional_scale_v1_t m_fractionalScale;
   wayland::presentation_t m_presentation;
 
   std::unique_ptr<IShellSurface> m_shellSurface;
@@ -265,6 +280,7 @@ private:
   // Surface state
   // -------------
   wayland::surface_t m_surface;
+  wayland::viewport_t m_viewport;
   wayland::output_t m_lastSetOutput;
   /// Set of outputs that show some part of our main surface as indicated by
   /// compositor
@@ -278,7 +294,7 @@ private:
   /// Size of the whole window including window decorations as given by configure
   CSizeInt m_configuredSize;
   /// Scale in use for main surface buffer
-  int m_scale{1};
+  double m_scale{1.0};
   /// Shell surface state last acked
   IShellSurface::StateBitset m_shellSurfaceState;
   /// Whether the shell surface is waiting for initial configure
@@ -288,7 +304,7 @@ private:
     bool mustBeAcked{false};
     std::uint32_t configureSerial{};
     CSizeInt configuredSize;
-    int scale{1};
+    double scale{1.0};
     IShellSurface::StateBitset shellSurfaceState;
   } m_next;
   bool m_waitingForApply{false};

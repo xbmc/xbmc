@@ -420,6 +420,7 @@ CWindowDecorator::CWindowDecorator(IWindowDecorationHandler& handler, CConnectio
 
   m_registry.RequestSingleton(m_compositor, 1, 4);
   m_registry.RequestSingleton(m_subcompositor, 1, 1, false);
+  m_registry.RequestSingleton(m_viewporter, 1, 1, false);
   m_registry.RequestSingleton(m_shm, 1, 1);
 
   m_registry.Bind();
@@ -584,13 +585,23 @@ void CWindowDecorator::UpdateSeatCursor(SeatState& seatState)
   if (!seatState.cursor)
   {
     seatState.cursor = m_compositor.create_surface();
+    if (m_viewporter)
+    {
+      seatState.cursorViewport = m_viewporter.get_viewport(seatState.cursor);
+    }
   }
-  int calcScale{seatState.cursor.can_set_buffer_scale() ? m_scale : 1};
+  int calcScale{seatState.cursorViewport || seatState.cursor.can_set_buffer_scale() ? m_scale : 1};
 
   seatState.seat->SetCursor(seatState.pointerEnterSerial, seatState.cursor, cursorImage.hotspot_x() / calcScale, cursorImage.hotspot_y() / calcScale);
   seatState.cursor.attach(cursorImage.get_buffer(), 0, 0);
-  seatState.cursor.damage(0, 0, cursorImage.width() / calcScale, cursorImage.height() / calcScale);
-  if (seatState.cursor.can_set_buffer_scale())
+  seatState.cursor.damage_buffer(0, 0, cursorImage.width(), cursorImage.height());
+  if (seatState.cursorViewport)
+  {
+    seatState.cursorViewport.set_destination(cursorImage.width() / m_scale,
+                                             cursorImage.height() / m_scale);
+    seatState.cursorViewport.set_source(0.0, 0.0, cursorImage.width(), cursorImage.height());
+  }
+  else if (seatState.cursor.can_set_buffer_scale())
   {
     seatState.cursor.set_buffer_scale(m_scale);
   }
@@ -673,6 +684,10 @@ CWindowDecorator::BorderSurface CWindowDecorator::MakeBorderSurface()
   CWindowDecorator::BorderSurface boarderSurface;
   boarderSurface.surface = surface;
   boarderSurface.subsurface = subsurface;
+  if (m_viewporter)
+  {
+    boarderSurface.viewport = m_viewporter.get_viewport(surface.wlSurface);
+  }
 
   return boarderSurface;
 }
@@ -716,11 +731,14 @@ CSizeInt CWindowDecorator::CalculateFullSurfaceSize(CSizeInt size, IShellSurface
   }
 }
 
-void CWindowDecorator::SetState(CSizeInt size, int scale, IShellSurface::StateBitset state)
+void CWindowDecorator::SetState(CSizeInt size, double scale, IShellSurface::StateBitset state)
 {
+  // Round to the nearest integer as manually drawing primitives with fractional scaling is hard to implement.
+  // It requires techniques like anti-aliasing, etc. Rely on the compositor to do the proper scaling
+  const int intScale = std::max(std::round(scale), 1.0);
   CSizeInt mainSurfaceSize{CalculateMainSurfaceSize(size, state)};
   std::unique_lock lock(m_mutex);
-  if (mainSurfaceSize == m_mainSurfaceSize && scale == m_scale && state == m_windowState)
+  if (mainSurfaceSize == m_mainSurfaceSize && intScale == m_scale && state == m_windowState)
   {
     return;
   }
@@ -733,12 +751,13 @@ void CWindowDecorator::SetState(CSizeInt size, int scale, IShellSurface::StateBi
   CLog::Log(LOGDEBUG,
             "CWindowDecorator::SetState: Setting full surface size {}x{} scale {} (main surface "
             "size {}x{}), decorations active: {}",
-            size.Width(), size.Height(), scale, mainSurfaceSize.Width(), mainSurfaceSize.Height(),
-            IsDecorationActive());
+            size.Width(), size.Height(), intScale, mainSurfaceSize.Width(),
+            mainSurfaceSize.Height(), IsDecorationActive());
 
-  if (mainSurfaceSize != m_mainSurfaceSize || scale != m_scale || wasDecorations != IsDecorationActive())
+  if (mainSurfaceSize != m_mainSurfaceSize || intScale != m_scale ||
+      wasDecorations != IsDecorationActive())
   {
-    if (scale != m_scale)
+    if (intScale != m_scale)
     {
       // Reload cursor theme
       CLog::Log(LOGDEBUG, "CWindowDecorator::SetState: Buffer scale changed, reloading cursor theme");
@@ -750,7 +769,7 @@ void CWindowDecorator::SetState(CSizeInt size, int scale, IShellSurface::StateBi
     }
 
     m_mainSurfaceSize = mainSurfaceSize;
-    m_scale = scale;
+    m_scale = intScale;
     CLog::Log(LOGDEBUG, "CWindowDecorator::SetState: Resetting decorations");
     Reset(true);
   }
@@ -953,7 +972,14 @@ void CWindowDecorator::AllocateBuffers()
       auto region = m_compositor.create_region();
       region.add(opaqueRegionGeometry.x1, opaqueRegionGeometry.y1, opaqueRegionGeometry.Width(), opaqueRegionGeometry.Height());
       borderSurface.surface.wlSurface.set_opaque_region(region);
-      if (borderSurface.surface.wlSurface.can_set_buffer_scale())
+      if (borderSurface.viewport)
+      {
+        borderSurface.viewport.set_destination(borderSurface.geometry.Width(),
+                                               borderSurface.geometry.Height());
+        borderSurface.viewport.set_source(0.0, 0.0, borderSurface.surface.buffer.size.Width(),
+                                          borderSurface.surface.buffer.size.Height());
+      }
+      else if (borderSurface.surface.wlSurface.can_set_buffer_scale())
       {
         borderSurface.surface.wlSurface.set_buffer_scale(m_scale);
       }
