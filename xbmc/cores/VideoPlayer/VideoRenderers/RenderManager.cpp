@@ -810,7 +810,6 @@ bool CRenderManager::IsGuiLayer()
   return false;
 }
 
-
 /* simple present method */
 void CRenderManager::PresentSingle(bool clear, DWORD flags, DWORD alpha)
 {
