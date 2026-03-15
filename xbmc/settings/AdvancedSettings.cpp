@@ -109,8 +109,7 @@ void CAdvancedSettings::OnSettingsLoaded()
     std::ranges::transform(m_settingsLoadedCallbacks, std::back_inserter(callbacks),
                            [](const auto& pair) { return pair.second; });
   }
-  for (const auto& callback : callbacks)
-    callback();
+  std::ranges::for_each(callbacks, &AdvancedSettingsCallback::operator());
 }
 
 void CAdvancedSettings::OnSettingsUnloaded()
@@ -1301,9 +1300,18 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   if (!seekSteps.empty())
   {
     m_seekSteps.clear();
-    std::vector<std::string> steps = StringUtils::Split(seekSteps, ',');
-    for (const auto& step : steps)
-      m_seekSteps.emplace_back(std::atoi(step.c_str()));
+    const auto steps = StringUtils::Split(seekSteps, ',');
+    try
+    {
+      std::ranges::transform(steps, std::back_inserter(m_seekSteps),
+                             [](const auto& step) { return std::stoi(step); });
+    }
+    catch (const std::exception& e)
+    {
+      CLog::Log(LOGERROR, R"(Error parsing seeksteps (="{}"): {}\n Clearing all values)", seekSteps,
+                e.what());
+      m_seekSteps.clear();
+    }
   }
 
   XMLUtils::GetBoolean(pRootElement, "opengldebugging", m_openGlDebugging);
