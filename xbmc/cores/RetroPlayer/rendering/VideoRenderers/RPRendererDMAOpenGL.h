@@ -23,7 +23,7 @@ class CRendererFactoryDMAOpenGL : public IRendererFactory
 public:
   ~CRendererFactoryDMAOpenGL() override = default;
 
-  // implementation of IRendererFactory
+  // Implementation of IRendererFactory
   std::string RenderSystemName() const override;
   CRPBaseRenderer* CreateRenderer(const CRenderSettings& settings,
                                   CRenderContext& context,

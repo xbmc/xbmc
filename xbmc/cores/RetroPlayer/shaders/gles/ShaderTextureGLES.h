@@ -10,8 +10,6 @@
 
 #include "cores/RetroPlayer/shaders/IShaderTexture.h"
 
-#include <memory>
-
 #include "system_gl.h"
 
 namespace KODI::SHADER
@@ -20,7 +18,12 @@ namespace KODI::SHADER
 class CShaderTextureGLES : public IShaderTexture
 {
 public:
-  CShaderTextureGLES(uint32_t textureWidth, uint32_t textureHeight);
+  CShaderTextureGLES(uint32_t textureWidth,
+                     uint32_t textureHeight,
+                     GLuint pixelType,
+                     GLuint internalFormat,
+                     GLuint pixelFormat,
+                     bool bUseAlpha);
   ~CShaderTextureGLES() override;
 
   // Disallow copy and move (this object owns raw GL IDs)
@@ -34,8 +37,8 @@ public:
   float GetHeight() const override;
 
   // OpenGLES interface
-  void CreateTextureObject();
-  void DestroyTextureObject();
+  void CreateTexture();
+  void DeleteTexture();
   void BindToUnit(unsigned int unit);
   GLuint GetTextureID() const { return m_texture; }
 
@@ -47,13 +50,20 @@ public:
 
   // Frame buffer interface
   void CreateFBO();
-  void DestroyFBO();
+  void DeleteFBO();
   bool BindFBO();
   void UnbindFBO() const;
 
 private:
-  uint32_t m_textureWidth{0};
-  uint32_t m_textureHeight{0};
+  // Construction parameters
+  const uint32_t m_textureWidth;
+  const uint32_t m_textureHeight;
+  const GLuint m_pixelType;
+  const GLuint m_internalFormat;
+  const GLuint m_pixelFormat;
+  const bool m_useAlpha;
+
+  const GLenum m_textureTarget = GL_TEXTURE_2D; //! @todo
   GLuint m_texture{0};
   GLuint m_FBO{0};
   bool m_sRgbFramebuffer{false};

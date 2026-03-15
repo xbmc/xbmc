@@ -79,7 +79,7 @@ bool CShaderDX::Create(unsigned int passIdx,
 
 void CShaderDX::Render(IShaderTexture& source, IShaderTexture& target)
 {
-  CShaderTextureDX& sourceDX = static_cast<CShaderTextureDX&>(source);
+  auto& sourceDX = static_cast<CShaderTextureDX&>(source);
 
   // Get source texture object
   const CD3DTexture& sourceTexture = sourceDX.GetTexture();

@@ -39,19 +39,17 @@ public:
               std::vector<std::shared_ptr<IShaderLut>> luts,
               unsigned int frameCountMod = 0) override;
   void Render(IShaderTexture& source, IShaderTexture& target) override;
-  void SetSizes(const float2& prevSize,
-                const float2& prevTextureSize,
-                const float2& nextSize) override;
-  void PrepareParameters(const RETRO::ViewportCoordinates& dest,
-                         const float2 fullDestSize,
-                         IShaderTexture& sourceTexture,
+  void SetSizes(const float2& nextSize,
+                const float2& prevSize = float2{},
+                const float2& prevTextureSize = float2{}) override;
+  void PrepareParameters(IShaderTexture& source,
                          const std::vector<std::unique_ptr<IShaderTexture>>& pShaderTextures,
                          const std::vector<std::unique_ptr<IShader>>& pShaders,
                          uint64_t frameCount) override;
   void UpdateMVP() override;
 
   // OpenGL interface
-  void Destroy();
+  void Delete();
 
 private:
   struct UniformInputs
@@ -71,7 +69,7 @@ private:
     std::string alias;
   };
 
-  void UpdateUniformInputs(IShaderTexture& sourceTexture,
+  void UpdateUniformInputs(IShaderTexture& source,
                            const std::vector<std::unique_ptr<IShaderTexture>>& pShaderTextures,
                            const std::vector<std::unique_ptr<IShader>>& pShaders,
                            uint64_t frameCount);
@@ -79,7 +77,7 @@ private:
   UniformFrameInputs GetFrameInputData(GLuint texture) const;
   UniformFrameInputs GetFrameUniformInputs() const { return m_uniformFrameInputs; }
   void GetUniformLocs();
-  void SetShaderParameters(CShaderTextureGL& sourceTexture);
+  void SetShaderParameters(IShaderTexture& source);
 
   // Index of the video shader pass in the preset
   unsigned int m_passIdx{0};
@@ -118,12 +116,14 @@ private:
   unsigned int m_frameCountMod{0};
 
   GLuint m_shaderProgram{0};
+
   std::array<std::array<float, 3>, 4> m_VertexCoords;
   std::array<std::array<float, 3>, 4> m_colors;
   std::array<std::array<float, 2>, 4> m_TexCoords;
 
   UniformInputs m_uniformInputs;
   UniformFrameInputs m_uniformFrameInputs;
+
   std::vector<UniformFrameInputs> m_passesUniformFrameInputs;
 
   GLint m_FrameDirectionLoc{-1};
