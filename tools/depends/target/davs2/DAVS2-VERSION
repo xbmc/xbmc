@@ -1,0 +1,6 @@
+LIBNAME=davs2
+VERSION=1.7
+BASE_URL=https://github.com/pkuvcl/davs2/archive/refs/tags
+ARCHIVE=$(VERSION).tar.gz
+SHA512=d1e5de5edf8d6adde0e67cfacfcc6a56ae88b7cda22e5c0d6e3e8e85a3b9de5edf8d6adde0e67cfacfcc6a56ae88b7cda22e5c0d6e3e8e85a3b9de5edf8d6adde
+BYPRODUCT=libdavs2.a
