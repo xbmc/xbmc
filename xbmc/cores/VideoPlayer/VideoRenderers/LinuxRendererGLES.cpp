@@ -141,6 +141,12 @@ bool CLinuxRendererGLES::Configure(const VideoPicture &picture, float fps, unsig
               m_passthroughHDR ? "on" : "off");
   }
 
+  m_hdrFboActive =
+      m_passthroughHDR && CServiceBroker::GetWinSystem()->SetGuiCompositing(m_passthroughHDR);
+  if (m_passthroughHDR && !m_hdrFboActive)
+    CLog::Log(LOGWARNING, "LinuxRendererGLES::Configure: HDR passthrough active but GUI "
+                          "compositing not supported by windowing system");
+
   return true;
 }
 
@@ -562,14 +568,50 @@ void CLinuxRendererGLES::RenderUpdate(int index, int index2, bool clear, unsigne
 void CLinuxRendererGLES::RenderUpdateVideo(bool clear, unsigned int flags, unsigned int alpha)
 {
   if (!m_bConfigured)
-  {
     return;
-  }
 
   if (IsGuiLayer())
-  {
     return;
+
+  int index = m_iYV12RenderBuffer;
+  CPictureBuffer& buf = m_buffers[index];
+
+  if (!buf.fields[FIELD_FULL][0].id)
+    return;
+
+  ManageRenderArea();
+
+  if (clear)
+  {
+    if (alpha == 255)
+      DrawBlackBars();
+    else
+      ClearBackBuffer();
   }
+
+  if (alpha < 255)
+  {
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    if (m_pYUVProgShader)
+      m_pYUVProgShader->SetAlpha(alpha / 255.0f);
+    if (m_pYUVBobShader)
+      m_pYUVBobShader->SetAlpha(alpha / 255.0f);
+  }
+  else
+  {
+    glDisable(GL_BLEND);
+    if (m_pYUVProgShader)
+      m_pYUVProgShader->SetAlpha(1.0f);
+    if (m_pYUVBobShader)
+      m_pYUVBobShader->SetAlpha(1.0f);
+  }
+
+  if (!Render(flags, index) && clear)
+    ClearBackBuffer();
+
+  VerifyGLState();
+  glEnable(GL_BLEND);
 }
 
 void CLinuxRendererGLES::UpdateVideoFilter()
@@ -795,6 +837,9 @@ void CLinuxRendererGLES::UnInit()
 
   CServiceBroker::GetWinSystem()->SetHDR(nullptr);
   m_passthroughHDR = false;
+
+  m_hdrFboActive = false;
+  CServiceBroker::GetWinSystem()->SetGuiCompositing(false);
 }
 
 bool CLinuxRendererGLES::CreateTexture(int index)
@@ -1799,7 +1844,7 @@ CRenderInfo CLinuxRendererGLES::GetRenderInfo()
 
 bool CLinuxRendererGLES::IsGuiLayer()
 {
-  return true;
+  return !m_hdrFboActive;
 }
 
 CRenderCapture* CLinuxRendererGLES::GetRenderCapture()

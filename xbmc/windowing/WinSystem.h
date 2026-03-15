@@ -234,6 +234,12 @@ public:
    * "NVIDIA RTX Video Super Resolution" or "Intel Video Super Resolution"
    *
    */
+  // GUI compositing for HDR: render GUI to FBO, composite with tone mapping
+  virtual bool SetGuiCompositing(bool active) { return false; }
+  virtual bool BeginGuiComposite() { return false; }
+  virtual void EndGuiComposite() {}
+  virtual void CompositeGui() {}
+
   virtual bool SupportsVideoSuperResolution() { return false; }
 
   /*!
