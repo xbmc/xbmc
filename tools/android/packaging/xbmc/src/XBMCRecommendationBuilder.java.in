@@ -101,6 +101,7 @@ public class XBMCRecommendationBuilder
       extras.putString(API_NOTIFICATION_EXTRA_BACKGROUND_IMAGE_URI, mBackgroundUri);
     }
 
+    @SuppressWarnings("deprecation")
     Notification notification = new Notification.BigPictureStyle(
             new Notification.Builder(mContext)
                     .setContentTitle(mTitle)

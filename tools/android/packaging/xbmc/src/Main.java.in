@@ -112,6 +112,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   }
 
   @Override
+  @SuppressWarnings("deprecation")
   public void onCreate(Bundle savedInstanceState)
   {
     System.loadLibrary("@APP_NAME_LC@");
@@ -221,6 +222,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   }
 
   @Override
+  @SuppressWarnings("deprecation")
   public void onResume()
   {
     super.onResume();
