@@ -307,7 +307,8 @@ void CGUIBaseContainer::Render()
     std::shared_ptr<CGUIListItem> focusedItem;
     int current = offset - cacheBefore;
 
-    std::vector<RENDERITEM> renderitems;
+    // Reuse cached vector to avoid per-frame allocation
+    m_renderItems.clear();
     while (pos < end && !m_items.empty())
     {
       int itemNo = CorrectOffset(current, 0);
@@ -326,9 +327,9 @@ void CGUIBaseContainer::Render()
         else
         {
           if (m_orientation == VERTICAL)
-            renderitems.emplace_back(origin.x, pos, item, false);
+            m_renderItems.emplace_back(origin.x, pos, item, false);
           else
-            renderitems.emplace_back(pos, origin.y, item, false);
+            m_renderItems.emplace_back(pos, origin.y, item, false);
         }
       }
       // increment our position
@@ -339,22 +340,22 @@ void CGUIBaseContainer::Render()
     if (focusedItem)
     {
       if (m_orientation == VERTICAL)
-        renderitems.emplace_back(origin.x, focusedPos, focusedItem, true);
+        m_renderItems.emplace_back(origin.x, focusedPos, focusedItem, true);
       else
-        renderitems.emplace_back(focusedPos, origin.y, focusedItem, true);
+        m_renderItems.emplace_back(focusedPos, origin.y, focusedItem, true);
     }
 
     if (CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder() ==
         RENDER_ORDER_FRONT_TO_BACK)
     {
-      for (auto it = std::crbegin(renderitems); it != std::crend(renderitems); it++)
+      for (auto it = std::crbegin(m_renderItems); it != std::crend(m_renderItems); it++)
       {
         RenderItem(it->posX, it->posY, it->item.get(), it->focused);
       }
     }
     else
     {
-      for (const auto& renderitem : renderitems)
+      for (const auto& renderitem : m_renderItems)
       {
         RenderItem(renderitem.posX, renderitem.posY, renderitem.item.get(), renderitem.focused);
       }
@@ -1188,6 +1189,9 @@ void CGUIBaseContainer::CalculateLayout()
 
   m_itemsPerPage = std::max((int)((Size() - m_focusedLayout->Size(m_orientation)) / m_layout->Size(m_orientation)) + 1, 1);
 
+  // Pre-allocate render items vector to avoid per-frame allocations
+  m_renderItems.reserve(m_itemsPerPage + m_cacheItems * 2 + 1);
+
   // ensure that the scroll offset is a multiple of our size
   m_scroller.SetValue(GetOffset() * m_layout->Size(m_orientation));
 }
@@ -1195,6 +1199,7 @@ void CGUIBaseContainer::CalculateLayout()
 void CGUIBaseContainer::UpdateScrollByLetter()
 {
   m_letterOffsets.clear();
+  m_letterOffsets.reserve(30); // Pre-allocate for typical alphabet size
 
   // for scrolling by letter we have an offset table into our vector.
   std::string currentMatch;
