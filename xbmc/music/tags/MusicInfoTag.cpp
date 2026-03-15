@@ -671,6 +671,11 @@ void CMusicInfoTag::SetStationName(std::string_view strStationName)
   m_stationName = strStationName;
 }
 
+const std::string& CMusicInfoTag::GetMusicBrainzReleaseTrackID() const
+{
+  return m_strMusicBrainzReleaseTrackID;
+}
+
 const std::string& CMusicInfoTag::GetMusicBrainzTrackID() const
 {
   return m_strMusicBrainzTrackID;
@@ -709,6 +714,11 @@ const std::vector<std::string>& CMusicInfoTag::GetMusicBrainzAlbumArtistHints() 
 const std::string &CMusicInfoTag::GetMusicBrainzReleaseType() const
 {
   return m_strMusicBrainzReleaseType;
+}
+
+void CMusicInfoTag::SetMusicBrainzReleaseTrackID(std::string_view strReleaseTrackID)
+{
+  m_strMusicBrainzReleaseTrackID = strReleaseTrackID;
 }
 
 void CMusicInfoTag::SetMusicBrainzTrackID(std::string_view strTrackID)
@@ -874,6 +884,7 @@ void CMusicInfoTag::SetSong(const CSong& song)
   SetAlbum(song.strAlbum);
   SetAlbumArtist(song.GetAlbumArtist()); //Only have album artist in song as vector, no desc or MBID
   SetAlbumArtistSort(song.GetAlbumArtistSort());
+  SetMusicBrainzReleaseTrackID(song.strMusicBrainzReleaseTrackID);
   SetMusicBrainzTrackID(song.strMusicBrainzTrackID);
   SetContributors(song.GetContributors());
   SetComment(song.strComment);
@@ -941,6 +952,7 @@ void CMusicInfoTag::Serialize(CVariant& value) const
   value["disc"] = GetDiscNumber();
   value["loaded"] = m_bLoaded;
   value["year"] = GetYear(); // Optionally from m_strOriginalDate
+  value["musicbrainzreleasetrackid"] = m_strMusicBrainzReleaseTrackID;
   value["musicbrainztrackid"] = m_strMusicBrainzTrackID;
   value["musicbrainzartistid"] = m_musicBrainzArtistID;
   value["musicbrainzalbumid"] = m_strMusicBrainzAlbumID;
@@ -1093,6 +1105,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar << m_bLoaded;
     ar << m_strReleaseDate;
     ar << m_strOriginalDate;
+    ar << m_strMusicBrainzReleaseTrackID;
     ar << m_strMusicBrainzTrackID;
     ar << m_musicBrainzArtistID;
     ar << m_strMusicBrainzAlbumID;
@@ -1151,6 +1164,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar >> m_bLoaded;
     ar >> m_strReleaseDate;
     ar >> m_strOriginalDate;
+    ar >> m_strMusicBrainzReleaseTrackID;
     ar >> m_strMusicBrainzTrackID;
     ar >> m_musicBrainzArtistID;
     ar >> m_strMusicBrainzAlbumID;
@@ -1215,6 +1229,7 @@ void CMusicInfoTag::Clear()
   m_albumArtist.clear();
   m_genre.clear();
   m_strTitle.clear();
+  m_strMusicBrainzReleaseTrackID.clear();
   m_strMusicBrainzTrackID.clear();
   m_musicBrainzArtistID.clear();
   m_strMusicBrainzAlbumID.clear();

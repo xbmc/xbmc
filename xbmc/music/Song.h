@@ -176,6 +176,7 @@ public:
   std::vector<std::string> genre;
   std::string strThumb;
   EmbeddedArtInfo embeddedArt;
+  std::string strMusicBrainzReleaseTrackID;
   std::string strMusicBrainzTrackID;
   std::string strComment;
   std::string strMood;
