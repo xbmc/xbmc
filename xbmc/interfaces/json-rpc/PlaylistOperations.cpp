@@ -227,6 +227,102 @@ JSONRPC_STATUS CPlaylistOperations::Swap(const std::string &method, ITransportLa
   return ACK;
 }
 
+JSONRPC_STATUS CPlaylistOperations::SetShuffle(const std::string& method,
+                                               ITransportLayer* transport,
+                                               IClient* client,
+                                               const CVariant& parameterObject,
+                                               CVariant& result)
+{
+  int playlist = GetPlaylist(parameterObject["playlistid"]);
+  bool shuffle = parameterObject["shuffle"].isBoolean() && parameterObject["shuffle"].asBoolean();
+  bool unshuffle =
+      parameterObject["shuffle"].isBoolean() && !parameterObject["shuffle"].asBoolean();
+  bool toggle =
+      parameterObject["shuffle"].isString() && parameterObject["shuffle"].asString() == "toggle";
+
+  switch (playlist)
+  {
+    case PLAYLIST_MUSIC:
+    case PLAYLIST_VIDEO:
+    {
+      if (CServiceBroker::GetPlaylistPlayer().IsShuffled(playlist))
+      {
+        if (unshuffle || toggle)
+          CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_SHUFFLE, playlist, 0);
+      }
+      else
+      {
+        if (shuffle || toggle)
+          CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_SHUFFLE, playlist, 1);
+      }
+      break;
+    }
+
+    case PLAYLIST_PICTURE:
+    {
+      CGUIWindowSlideShow* slideshow =
+          CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(
+              WINDOW_SLIDESHOW);
+      if (!slideshow)
+        return FailedToExecute;
+      if (slideshow->IsShuffled())
+      {
+        if (unshuffle || toggle)
+          return FailedToExecute;
+      }
+      else
+      {
+        if (shuffle || toggle)
+          slideshow->Shuffle();
+      }
+      break;
+    }
+
+    default:
+      return FailedToExecute;
+  }
+  return ACK;
+}
+
+JSONRPC_STATUS CPlaylistOperations::SetRepeat(const std::string& method,
+                                              ITransportLayer* transport,
+                                              IClient* client,
+                                              const CVariant& parameterObject,
+                                              CVariant& result)
+{
+  int playlist = GetPlaylist(parameterObject["playlistid"]);
+  if (playlist == PLAYLIST_PICTURE)
+    return FailedToExecute;
+
+  std::string repeat = parameterObject["repeat"].asString();
+  REPEAT_STATE state = REPEAT_NONE;
+  if (repeat == "cycle")
+  {
+    REPEAT_STATE statePrev = CServiceBroker::GetPlaylistPlayer().GetRepeat(playlist);
+    switch (statePrev)
+    {
+      case REPEAT_NONE:
+        state = REPEAT_ALL;
+        break;
+
+      case REPEAT_ALL:
+        state = REPEAT_ONE;
+        break;
+
+      default:
+        state = REPEAT_NONE;
+    }
+  }
+  else if (repeat == "one")
+    state = REPEAT_ONE;
+  else if (repeat == "all")
+    state = REPEAT_ALL;
+
+  CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_REPEAT, playlist, state);
+
+  return ACK;
+}
+
 PLAYLIST::Id CPlaylistOperations::GetPlaylist(const CVariant& playlist)
 {
   PLAYLIST::Id playlistId =
@@ -291,6 +387,65 @@ JSONRPC_STATUS CPlaylistOperations::GetPropertyValue(PLAYLIST::Id playlistId,
         result = 0;
         break;
       }
+    }
+  }
+  else if (property == "shuffled")
+  {
+    switch (playlist)
+    {
+      case PLAYLIST_MUSIC:
+      case PLAYLIST_VIDEO:
+      {
+        bool shuffled;
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_IS_SHUFFLED, playlist, -1,
+                                                     static_cast<void*>(&shuffled));
+        result = shuffled;
+        break;
+      }
+
+      case PLAYLIST_PICTURE:
+      {
+        CGUIWindowSlideShow* slideshow =
+            CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(
+                WINDOW_SLIDESHOW);
+        if (slideshow)
+          result = slideshow->IsShuffled();
+        else
+          result = -1;
+        break;
+      }
+
+      default:
+        result = -1;
+    }
+  }
+  else if (property == "repeat")
+  {
+    switch (playlist)
+    {
+      case PLAYLIST_MUSIC:
+      case PLAYLIST_VIDEO:
+      {
+        REPEAT_STATE state;
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_GET_REPEAT, playlist, -1,
+                                                     static_cast<void*>(&state));
+        switch (state)
+        {
+          case REPEAT_ONE:
+            result = "one";
+            break;
+          case REPEAT_ALL:
+            result = "all";
+            break;
+          default:
+            result = "off";
+        }
+        break;
+      }
+
+      case PLAYLIST_PICTURE:
+      default:
+        result = "off";
     }
   }
   else
