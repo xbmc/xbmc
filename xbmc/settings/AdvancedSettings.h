@@ -40,7 +40,6 @@ class DatabaseSettings
 public:
   static constexpr unsigned int DEFAULT_CONNECT_TIMEOUT = 5; // secs
 
-  DatabaseSettings() { Reset(); }
   void Reset()
   {
     type.clear();
@@ -56,20 +55,21 @@ public:
     ciphers.clear();
     connecttimeout = DEFAULT_CONNECT_TIMEOUT;
     compression = false;
-  };
-  std::string type;
-  std::string host;
-  std::string port;
-  std::string user;
-  std::string pass;
-  std::string name;
-  std::string key;
-  std::string cert;
-  std::string ca;
-  std::string capath;
-  std::string ciphers;
+  }
+
+  std::string type{};
+  std::string host{};
+  std::string port{};
+  std::string user{};
+  std::string pass{};
+  std::string name{};
+  std::string key{};
+  std::string cert{};
+  std::string ca{};
+  std::string capath{};
+  std::string ciphers{};
   unsigned int connecttimeout{DEFAULT_CONNECT_TIMEOUT};
-  bool compression;
+  bool compression{false};
 };
 
 struct TVShowRegexp
