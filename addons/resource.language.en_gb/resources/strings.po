@@ -14519,7 +14519,37 @@ msgctxt "#21350"
 msgid "Special"
 msgstr ""
 
-#empty strings from id 21351 to 21357
+#empty strings from id 21351 to 21352
+
+#. Setting for enabling verbose logging of the libtorrent component
+#: xbmc/utils/log.cpp
+msgctxt "#21353"
+msgid "Verbose logging for [B]libtorrent[/B]"
+msgstr ""
+
+#. Setting category for BitTorrent Kademlia DHT (distributed hash table) settings
+#: system/settings/settings.xml
+msgctxt "#21354"
+msgid "Kademlia"
+msgstr ""
+
+#. Description of settings category with label #21354 "Kademlia"
+#: system/settings/settings.xml
+msgctxt "#21355"
+msgid "This category contains the settings for how the Kademlia DHT service is handled."
+msgstr ""
+
+#. Setting to enable the BitTorrent Kademlia DHT (distributed hash table)
+#: system/settings/settings.xml
+msgctxt "#21356"
+msgid "Enable Kademlia DHT"
+msgstr ""
+
+#. Description of setting with label #21356 "Enable BitTorrent support"
+#: system/settings/settings.xml
+msgctxt "#21357"
+msgid "Enables Kademlia distributed hash table support for peer-to-peer communication and data streaming."
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21358"
