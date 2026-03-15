@@ -299,6 +299,7 @@ constexpr uint32_t VIDEOPLAYER_UNIQUEID              = 294;
 constexpr uint32_t VIDEOPLAYER_AUDIOSTREAMCOUNT      = 295;
 constexpr uint32_t VIDEOPLAYER_VIDEOVERSION_NAME     = 296;
 constexpr uint32_t VIDEOPLAYER_VIDEOSTREAMCOUNT      = 297;
+constexpr uint32_t VIDEOPLAYER_HDR_DETAIL            = 298;
 
 // Videoplayer infobools
 constexpr uint32_t VIDEOPLAYER_HASSUBTITLES          = 300;
@@ -1033,6 +1034,7 @@ constexpr uint32_t LISTITEM_EPISODEPART              = LISTITEM_START + 223;
 constexpr uint32_t LISTITEM_MEDIAPROVIDERS           = LISTITEM_START + 224;
 constexpr uint32_t LISTITEM_TITLE_EXTRAINFO          = LISTITEM_START + 225;
 constexpr uint32_t LISTITEM_DECODED_FILENAME_AND_PATH  = LISTITEM_START + 226;
+constexpr uint32_t LISTITEM_VIDEO_HDR_DETAIL         = LISTITEM_START + 227;
 
 constexpr int      LISTITEM_END                      = LISTITEM_START + 2500;
 

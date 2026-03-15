@@ -143,6 +143,7 @@ static const auto fields = std::array{
   TranslateField{ "hdrtype",           Field::HDR_TYPE,                   TEXTIN_FIELD,   nullptr,                              false, 20474 },
   TranslateField{ "hasversions",       Field::HAS_VIDEO_VERSIONS,         BOOLEAN_FIELD,  nullptr,                              false, 20475 },
   TranslateField{ "hasextras",         Field::HAS_VIDEO_EXTRAS,           BOOLEAN_FIELD,  nullptr,                              false, 20476 },
+  TranslateField{ "hdrdetail",         Field::HDR_DETAIL,                 TEXTIN_FIELD,   nullptr,                              false, 20478 },
 };
 // clang-format on
 
@@ -485,6 +486,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
                                     Field::SUBTITLE_LANGUAGE,
                                     Field::VIDEO_ASPECT_RATIO,
                                     Field::HDR_TYPE,
+                                    Field::HDR_DETAIL,
                                 });
   }
   fields.insert(fields.end(), {
@@ -1098,6 +1100,9 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
     query = db.PrepareSQL(negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND streamdetails.iStreamType = %i GROUP BY streamdetails.idFile HAVING COUNT(streamdetails.iStreamType) " + parameter + ")",CStreamDetail::SUBTITLE);
   else if (m_field == static_cast<int>(Field::HDR_TYPE))
     query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND strHdrType " + parameter + ")";
+  else if (m_field == static_cast<int>(Field::HDR_DETAIL))
+    query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table +
+            ".idFile AND strHdrDetail " + parameter + ")";
 
   if ((m_field == static_cast<int>(Field::PLAYCOUNT) && strType != "songs" && strType != "albums" &&
        strType != "tvshows") ||

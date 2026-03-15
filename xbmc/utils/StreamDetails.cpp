@@ -23,16 +23,17 @@ CStreamDetailVideo::CStreamDetailVideo() :
 {
 }
 
-CStreamDetailVideo::CStreamDetailVideo(const VideoStreamInfo &info, int duration) :
-  CStreamDetail(CStreamDetail::VIDEO),
-  m_iWidth(info.width),
-  m_iHeight(info.height),
-  m_fAspect(info.videoAspectRatio),
-  m_iDuration(duration),
-  m_strCodec(info.codecName),
-  m_strStereoMode(info.stereoMode),
-  m_strLanguage(info.language),
-  m_strHdrType(CStreamDetails::HdrTypeToString(info.hdrType))
+CStreamDetailVideo::CStreamDetailVideo(const VideoStreamInfo& info, int duration)
+  : CStreamDetail(CStreamDetail::VIDEO),
+    m_iWidth(info.width),
+    m_iHeight(info.height),
+    m_fAspect(info.videoAspectRatio),
+    m_iDuration(duration),
+    m_strCodec(info.codecName),
+    m_strStereoMode(info.stereoMode),
+    m_strLanguage(info.language),
+    m_strHdrType(CStreamDetails::HdrTypeToString(info.hdrType)),
+    m_strHdrDetail(info.hdrDetail)
 {
 }
 
@@ -48,6 +49,7 @@ void CStreamDetailVideo::Archive(CArchive& ar)
     ar << m_strStereoMode;
     ar << m_strLanguage;
     ar << m_strHdrType;
+    ar << m_strHdrDetail;
   }
   else
   {
@@ -59,6 +61,7 @@ void CStreamDetailVideo::Archive(CArchive& ar)
     ar >> m_strStereoMode;
     ar >> m_strLanguage;
     ar >> m_strHdrType;
+    ar >> m_strHdrDetail;
   }
 }
 void CStreamDetailVideo::Serialize(CVariant& value) const
@@ -71,6 +74,7 @@ void CStreamDetailVideo::Serialize(CVariant& value) const
   value["stereomode"] = m_strStereoMode;
   value["language"] = m_strLanguage;
   value["hdrtype"] = m_strHdrType;
+  value["hdrdetail"] = m_strHdrDetail;
 }
 
 bool CStreamDetailVideo::IsWorseThan(const CStreamDetail &that) const
@@ -174,6 +178,25 @@ bool CStreamDetailSubtitle::IsWorseThan(const CStreamDetail &that) const
   return m_strLanguage.empty() || g_LangCodeExpander.CompareISO639Codes(
                                       static_cast<const CStreamDetailSubtitle&>(that).m_strLanguage,
                                       g_langInfo.GetSubtitleLanguage(true));
+}
+
+CStreamDetailVideo& CStreamDetailVideo::operator=(const CStreamDetailVideo& that)
+{
+  if (this != &that)
+  {
+    this->m_pParent = that.m_pParent;
+    this->m_iWidth = that.m_iWidth;
+    this->m_iHeight = that.m_iHeight;
+    this->m_fAspect = that.m_fAspect;
+    this->m_strCodec = that.m_strCodec;
+    this->m_iDuration = that.m_iDuration;
+    this->m_strStereoMode = that.m_strStereoMode;
+    this->m_strLanguage = that.m_strLanguage;
+    this->m_strHdrType = that.m_strHdrType;
+    this->m_strHdrTypeAlt = that.m_strHdrTypeAlt;
+    this->m_strHdrDetail = that.m_strHdrDetail;
+  }
+  return *this;
 }
 
 CStreamDetailSubtitle& CStreamDetailSubtitle::operator=(const CStreamDetailSubtitle &that)
@@ -407,12 +430,27 @@ int CStreamDetails::GetVideoHeight(int idx) const
     return 0;
 }
 
-std::string CStreamDetails::GetVideoHdrType( int idx) const
+std::string CStreamDetails::GetVideoHdrType(int idx, bool alt) const
 {
   const CStreamDetailVideo* item =
       dynamic_cast<const CStreamDetailVideo*>(GetNthStream(CStreamDetail::VIDEO, idx));
   if (item)
-    return item->m_strHdrType;
+  {
+    if (alt)
+      return item->m_strHdrTypeAlt;
+    else
+      return item->m_strHdrType;
+  }
+  else
+    return "";
+}
+
+std::string CStreamDetails::GetVideoHdrDetail(int idx) const
+{
+  const CStreamDetailVideo* item =
+      dynamic_cast<const CStreamDetailVideo*>(GetNthStream(CStreamDetail::VIDEO, idx));
+  if (item)
+    return item->m_strHdrDetail;
   else
     return "";
 }
@@ -669,6 +707,8 @@ std::string CStreamDetails::HdrTypeToString(StreamHdrType hdrType)
       return "hdr10";
     case StreamHdrType::HDR_TYPE_HLG:
       return "hlg";
+    case StreamHdrType::HDR_TYPE_HDR10PLUS:
+      return "hdr10plus";
     case StreamHdrType::HDR_TYPE_NONE:
     default:
       return "";
