@@ -7,9 +7,52 @@
  */
 
 #include "utils/LangCodeExpander.h"
-#include "utils/StringUtils.h"
+#include "utils/XBMCTinyXML.h"
 
 #include <gtest/gtest.h>
+
+namespace
+{
+
+class CLangCodeExpanderTest : public CLangCodeExpander
+{
+public:
+  bool LookupUC(const std::string& desc, std::string& userCode)
+  {
+    return LookupUserCode(desc, userCode);
+  }
+};
+
+} // namespace
+
+TEST(TestLangCodeExpander, ParseUserCodes)
+{
+  const std::string xml =
+      R"(<advancedsettings>
+           <languagecodes>
+             <code>
+              <short>1</short>
+              <long>2</long>
+             </code>
+             <code>
+              <short>3</short>
+              <long>4</long>
+             </code>
+           </languagecodes>
+         </advancedsettings>)";
+
+  CXBMCTinyXML doc;
+  doc.Parse(xml);
+  CLangCodeExpanderTest exp;
+  ASSERT_TRUE(doc.RootElement() != nullptr);
+  ASSERT_TRUE(doc.RootElement()->FirstChildElement("languagecodes") != nullptr);
+  exp.LoadUserCodes(doc.RootElement()->FirstChildElement("languagecodes"));
+  std::string code;
+  EXPECT_TRUE(exp.LookupUC("2", code));
+  EXPECT_EQ(code, "1");
+  EXPECT_TRUE(exp.LookupUC("4", code));
+  EXPECT_EQ(code, "3");
+}
 
 TEST(TestLangCodeExpander, ConvertISO6391ToISO6392B)
 {
