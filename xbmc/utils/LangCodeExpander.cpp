@@ -116,7 +116,7 @@ bool CLangCodeExpander::ConvertISO6391ToISO6392B(const std::string& strISO6391,
   StringUtils::ToLower(strISO6391Lower);
   StringUtils::Trim(strISO6391Lower);
 
-  auto it = std::ranges::lower_bound(LanguageCodes, strISO6391Lower, {}, &ISO639::iso639_1);
+  const auto it = std::ranges::lower_bound(LanguageCodes, strISO6391Lower, {}, &ISO639::iso639_1);
   if (it != LanguageCodes.end() && it->iso639_1 == strISO6391Lower)
   {
     if (checkWin32Locales && !it->win_id.empty())
@@ -235,7 +235,7 @@ bool CLangCodeExpander::ConvertToISO6392T(const std::string& strCharCode,
     return false;
 
   {
-    auto it =
+    const auto it =
         std::ranges::lower_bound(LanguageCodesByIso639_2b, strISO6392B, {}, &ISO639::iso639_2b);
     if (it != LanguageCodesByIso639_2b.end() && it->iso639_2b == strISO6392B &&
         !it->iso639_2t.empty())
@@ -247,7 +247,8 @@ bool CLangCodeExpander::ConvertToISO6392T(const std::string& strCharCode,
 
   if (checkWin32Locales)
   {
-    auto it = std::ranges::lower_bound(LanguageCodesByWin_Id, strISO6392B, {}, &ISO639::win_id);
+    const auto it =
+        std::ranges::lower_bound(LanguageCodesByWin_Id, strISO6392B, {}, &ISO639::win_id);
     if (it != LanguageCodesByWin_Id.end() && it->win_id == strISO6392B && !it->iso639_2t.empty())
     {
       strISO6392T = it->iso639_2t;
@@ -282,7 +283,7 @@ bool CLangCodeExpander::ConvertISO31661Alpha2ToISO31661Alpha3(const std::string&
   StringUtils::ToLower(lower);
   StringUtils::Trim(lower);
 
-  auto ret = CIso3166_1::Alpha2ToAlpha3(lower);
+  const auto ret = CIso3166_1::Alpha2ToAlpha3(lower);
   if (ret)
   {
     strISO31661Alpha3 = *ret;
@@ -300,7 +301,7 @@ bool CLangCodeExpander::ConvertWindowsLanguageCodeToISO6392B(
   std::string lower(strWindowsLanguageCode);
   StringUtils::ToLower(lower);
 
-  auto it = std::ranges::lower_bound(LanguageCodesByWin_Id, lower, {}, &ISO639::win_id);
+  const auto it = std::ranges::lower_bound(LanguageCodesByWin_Id, lower, {}, &ISO639::win_id);
   if (it != LanguageCodesByWin_Id.end() && it->win_id == lower)
   {
     strISO6392B = it->iso639_2b;
@@ -340,7 +341,8 @@ bool CLangCodeExpander::ConvertToISO6391(const std::string& lang, std::string& c
     StringUtils::ToLower(lower);
 
     {
-      auto it = std::ranges::lower_bound(LanguageCodesByIso639_2b, lower, {}, &ISO639::iso639_2b);
+      const auto it =
+          std::ranges::lower_bound(LanguageCodesByIso639_2b, lower, {}, &ISO639::iso639_2b);
       if (it != LanguageCodesByIso639_2b.end() && it->iso639_2b == lower)
       {
         code = it->iso639_1;
@@ -348,7 +350,7 @@ bool CLangCodeExpander::ConvertToISO6391(const std::string& lang, std::string& c
       }
     }
     {
-      auto it = std::ranges::lower_bound(LanguageCodesByWin_Id, lower, {}, &ISO639::win_id);
+      const auto it = std::ranges::lower_bound(LanguageCodesByWin_Id, lower, {}, &ISO639::win_id);
       if (it != LanguageCodesByWin_Id.end() && it->win_id == lower)
       {
         code = it->iso639_1;
@@ -356,7 +358,7 @@ bool CLangCodeExpander::ConvertToISO6391(const std::string& lang, std::string& c
       }
     }
     {
-      auto ret = CIso3166_1::Alpha3ToAlpha2(lower);
+      const auto ret = CIso3166_1::Alpha3ToAlpha2(lower);
       if (ret)
       {
         code = *ret;
@@ -445,7 +447,7 @@ bool CLangCodeExpander::LookupInUserMap(const std::string& code, std::string& de
   StringUtils::ToLower(sCode);
   StringUtils::Trim(sCode);
 
-  STRINGLOOKUPTABLE::iterator it = m_mapUser.find(sCode);
+  const auto it = m_mapUser.find(sCode);
   if (it != m_mapUser.end())
   {
     desc = it->second;
@@ -480,7 +482,7 @@ bool CLangCodeExpander::LookupInISO639Tables(const std::string& code, std::strin
 
   if (sCode.length() == 2)
   {
-    auto ret = CIso639_1::LookupByCode(StringToLongCode(sCode));
+    const auto ret = CIso639_1::LookupByCode(StringToLongCode(sCode));
     if (ret)
     {
       desc = *ret;
@@ -492,12 +494,12 @@ bool CLangCodeExpander::LookupInISO639Tables(const std::string& code, std::strin
     uint32_t longCode = StringToLongCode(sCode);
 
     // Map B to T for the few codes that have differences
-    auto tCode = CIso639_2::BCodeToTCode(longCode);
+    const auto tCode = CIso639_2::BCodeToTCode(longCode);
     if (tCode.has_value())
       longCode = *tCode;
 
     // Lookup the T code
-    auto ret = CIso639_2::LookupByCode(longCode);
+    const auto ret = CIso639_2::LookupByCode(longCode);
     if (ret)
     {
       desc = *ret;
@@ -660,12 +662,12 @@ bool CLangCodeExpander::ConvertToBcp47(const std::string& text, std::string& bcp
 
 std::string CLangCodeExpander::FindLanguageCodeWithSubtag(const std::string& str)
 {
-  std::size_t begin = str.find("{");
+  const std::size_t begin = str.find("{");
 
   if (begin == std::string::npos)
     return "";
 
-  std::size_t end = str.find("}", begin + 1);
+  const std::size_t end = str.find("}", begin + 1);
 
   if (end == std::string::npos)
     return "";
