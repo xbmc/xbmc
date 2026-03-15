@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -128,6 +128,15 @@ public:
   static constexpr auto SETTING_VIDEOPLAYER_USEVDPAUMPEG2 = "videoplayer.usevdpaumpeg2";
   static constexpr auto SETTING_VIDEOPLAYER_USEVDPAUMPEG4 = "videoplayer.usevdpaumpeg4";
   static constexpr auto SETTING_VIDEOPLAYER_USEVDPAUVC1 = "videoplayer.usevdpauvc1";
+  static constexpr auto SETTING_VIDEOPLAYER_USENVDEC = "videoplayer.usenvdec";
+  static constexpr auto SETTING_VIDEOPLAYER_USENVDECH264 = "videoplayer.usenvdech264";
+  static constexpr auto SETTING_VIDEOPLAYER_USENVDECHEVC = "videoplayer.usenvdechevc";
+  static constexpr auto SETTING_VIDEOPLAYER_USENVDECVP9 = "videoplayer.usenvdecvp9";
+  static constexpr auto SETTING_VIDEOPLAYER_USENVDECAV1 = "videoplayer.usenvdecav1";
+  static constexpr auto SETTING_VIDEOPLAYER_USENVDECMPEG2 = "videoplayer.usenvdecmpeg2";
+  static constexpr auto SETTING_VIDEOPLAYER_USENVDECMPEG4 = "videoplayer.usenvdecmpeg4";
+  static constexpr auto SETTING_VIDEOPLAYER_USENVDECVC1 = "videoplayer.usenvdecvc1";
+  static constexpr auto SETTING_VIDEOPLAYER_USENVDECVP8 = "videoplayer.usenvdecvp8";
   static constexpr auto SETTING_VIDEOPLAYER_USEDXVA2 = "videoplayer.usedxva2";
   static constexpr auto SETTING_VIDEOPLAYER_USEVTB = "videoplayer.usevtb";
   static constexpr auto SETTING_VIDEOPLAYER_USEPRIMEDECODER = "videoplayer.useprimedecoder";

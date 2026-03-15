@@ -2,7 +2,7 @@
  *  Copyright (c) 2007 Frodo/jcmarshall/vulkanr/d4rk
  *      Based on XBoxRenderer by Frodo/jcmarshall
  *      Portions Copyright (c) by the authors of ffmpeg / xvid /mplayer
- *  Copyright (C) 2007-2018 Team Kodi
+ *  Copyright (C) 2007-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -1807,6 +1807,16 @@ GLint CLinuxRendererGL::GetInternalFormat(GLint format, int bpp)
   return format;
 }
 
+EShaderFormat CLinuxRendererGL::GetShaderFormat()
+{
+  // P010 is semi-planar 4:2:0 with 16-bit components.
+  // GL uploads via GL_RED (Y) + GL_RG (UV), same channels as NV12, so SHADER_NV12 works.
+  if (m_format == AV_PIX_FMT_P010)
+    return SHADER_NV12;
+
+  return CBaseRenderer::GetShaderFormat();
+}
+
 //-----------------------------------------------------------------------------
 // Textures
 //-----------------------------------------------------------------------------
@@ -1815,6 +1825,8 @@ bool CLinuxRendererGL::CreateTexture(int index)
 {
   if (m_format == AV_PIX_FMT_NV12)
     return CreateNV12Texture(index);
+  else if (m_format == AV_PIX_FMT_P010)
+    return CreateP010Texture(index);
   else if (m_format == AV_PIX_FMT_YUYV422 ||
            m_format == AV_PIX_FMT_UYVY422)
     return CreateYUV422PackedTexture(index);
@@ -1827,7 +1839,7 @@ void CLinuxRendererGL::DeleteTexture(int index)
   CPictureBuffer& buf = m_buffers[index];
   buf.loaded = false;
 
-  if (m_format == AV_PIX_FMT_NV12)
+  if (m_format == AV_PIX_FMT_NV12 || m_format == AV_PIX_FMT_P010)
     DeleteNV12Texture(index);
   else if (m_format == AV_PIX_FMT_YUYV422 ||
            m_format == AV_PIX_FMT_UYVY422)
@@ -1852,7 +1864,7 @@ bool CLinuxRendererGL::UploadTexture(int index)
 
     UnBindPbo(m_buffers[index]);
 
-    if (m_format == AV_PIX_FMT_NV12)
+    if (m_format == AV_PIX_FMT_NV12 || m_format == AV_PIX_FMT_P010)
     {
       CVideoBuffer::CopyNV12Picture(&dst, &src);
       BindPbo(m_buffers[index]);
@@ -2212,6 +2224,21 @@ bool CLinuxRendererGL::UploadNV12Texture(int source)
 
 bool CLinuxRendererGL::CreateNV12Texture(int index)
 {
+  return CreateSemiPlanar420Texture(index, 1, 8, GL_RED, GL_RG, GL_UNSIGNED_BYTE);
+}
+
+bool CLinuxRendererGL::CreateP010Texture(int index)
+{
+  return CreateSemiPlanar420Texture(index, 2, 16, GL_R16, GL_RG16, GL_UNSIGNED_SHORT);
+}
+
+bool CLinuxRendererGL::CreateSemiPlanar420Texture(int index,
+                                                  int bytesPerComponent,
+                                                  int srcTextureBits,
+                                                  GLint yInternalFormat,
+                                                  GLint uvInternalFormat,
+                                                  GLenum pixelType)
+{
   // since we also want the field textures, pitch must be texture aligned
   CPictureBuffer& buf = m_buffers[index];
   YuvImage &im = buf.image;
@@ -2224,10 +2251,12 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
   im.width  = m_sourceWidth;
   im.cshift_x = 1;
   im.cshift_y = 1;
-  im.bpp = 1;
+  im.bpp = bytesPerComponent;
 
-  im.stride[0] = im.width;
-  im.stride[1] = im.width;
+  buf.m_srcTextureBits = srcTextureBits;
+
+  im.stride[0] = im.width * bytesPerComponent;
+  im.stride[1] = im.width * bytesPerComponent;
   im.stride[2] = 0;
 
   im.plane[0] = NULL;
@@ -2327,9 +2356,11 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
 
       glBindTexture(m_textureTarget, plane.id);
       if (p == 1)
-        glTexImage2D(m_textureTarget, 0, GL_RG, plane.texwidth, plane.texheight, 0, GL_RG, GL_UNSIGNED_BYTE, NULL);
+        glTexImage2D(m_textureTarget, 0, uvInternalFormat, plane.texwidth, plane.texheight, 0,
+                     GL_RG, pixelType, NULL);
       else
-        glTexImage2D(m_textureTarget, 0, GL_RED, plane.texwidth, plane.texheight, 0, GL_RED, GL_UNSIGNED_BYTE, NULL);
+        glTexImage2D(m_textureTarget, 0, yInternalFormat, plane.texwidth, plane.texheight, 0,
+                     GL_RED, pixelType, NULL);
 
       glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -47,15 +47,6 @@ extern "C" {
 #include <math.h>
 #define RINT lrint
 #endif
-
-enum DecoderState
-{
-  STATE_NONE,
-  STATE_SW_SINGLE,
-  STATE_HW_SINGLE,
-  STATE_HW_FAILED,
-  STATE_SW_MULTI
-};
 
 enum EFilterFlags {
   FILTER_NONE                =  0x0,
@@ -785,49 +776,10 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(VideoPicture* pVideoPi
   }
 
   // here we got a frame
-  int64_t framePTS = m_pDecodedFrame->best_effort_timestamp;
-
-  if (m_pCodecContext->skip_frame > AVDISCARD_DEFAULT)
   {
-    if (m_dropCtrl.m_state == CDropControl::VALID &&
-        m_dropCtrl.m_lastPTS != AV_NOPTS_VALUE &&
-        framePTS != AV_NOPTS_VALUE &&
-        framePTS > (m_dropCtrl.m_lastPTS + m_dropCtrl.m_diffPTS * 1.5))
-    {
-      m_droppedFrames++;
-      if (m_interlaced)
-        m_droppedFrames++;
-    }
-  }
-  m_dropCtrl.Process(framePTS, m_pCodecContext->skip_frame > AVDISCARD_DEFAULT);
-
-  if (m_pDecodedFrame->flags & AV_FRAME_FLAG_KEY)
-  {
-    m_started = true;
-    m_iLastKeyframe = m_pCodecContext->has_b_frames + 2;
-  }
-  if (m_pDecodedFrame->flags & AV_FRAME_FLAG_INTERLACED)
-    m_interlaced = true;
-  else
-    m_interlaced = false;
-
-  if (!m_processInfo.GetVideoInterlaced() && m_interlaced)
-    m_processInfo.SetVideoInterlaced(m_interlaced);
-
-  if (!m_started)
-  {
-    int frames = 300;
-    if (m_dropCtrl.m_state == CDropControl::VALID)
-      frames = static_cast<int>(6000000 / m_dropCtrl.m_diffPTS);
-    if (m_iLastKeyframe >= frames && m_pDecodedFrame->pict_type == AV_PICTURE_TYPE_I)
-    {
-      m_started = true;
-    }
-    else
-    {
-      av_frame_unref(m_pDecodedFrame);
-      return VC_BUFFER;
-    }
+    CDVDVideoCodec::VCReturn ret = ProcessDecodedFrame();
+    if (ret != VC_NONE)
+      return ret;
   }
 
   // push the frame to hw decoder for further processing
@@ -859,50 +811,7 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(VideoPicture* pVideoPi
   // process filters for sw decoding
   else
   {
-    SetFilters();
-
-    bool need_scale = std::ranges::find(m_formats, m_pCodecContext->pix_fmt) == m_formats.end();
-
-    bool need_reopen = false;
-    if (m_filters != m_filters_next)
-      need_reopen = true;
-
-    if (!m_filters_next.empty() && m_filterEof)
-      need_reopen = true;
-
-    if (m_pFilterIn)
-    {
-      if (m_pFilterIn->outputs[0]->format != m_pCodecContext->pix_fmt ||
-          m_pFilterIn->outputs[0]->w != m_pCodecContext->width ||
-          m_pFilterIn->outputs[0]->h != m_pCodecContext->height)
-        need_reopen = true;
-    }
-
-    // try to setup new filters
-    if (need_reopen || (need_scale && m_pFilterGraph == nullptr))
-    {
-      m_filters = m_filters_next;
-
-      if (FilterOpen(m_filters, need_scale) < 0)
-        FilterClose();
-    }
-
-    if (m_pFilterGraph && !m_filterEof)
-    {
-      CDVDVideoCodec::VCReturn ret = FilterProcess(m_pDecodedFrame);
-      if (ret != VC_PICTURE)
-        return VC_NONE;
-    }
-    else
-    {
-      av_frame_unref(m_pFrame);
-      av_frame_move_ref(m_pFrame, m_pDecodedFrame);
-    }
-
-    if (!SetPictureParams(pVideoPicture))
-      return VC_ERROR;
-    else
-      return VC_PICTURE;
+    return ProcessFilterGraph(m_pCodecContext->pix_fmt, pVideoPicture);
   }
 
   return VC_NONE;
@@ -932,6 +841,106 @@ bool CDVDVideoCodecFFmpeg::SetPictureParams(VideoPicture* pVideoPicture)
   }
 
   return true;
+}
+
+CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::ProcessDecodedFrame()
+{
+  int64_t framePTS = m_pDecodedFrame->best_effort_timestamp;
+
+  if (m_pCodecContext->skip_frame > AVDISCARD_DEFAULT)
+  {
+    if (m_dropCtrl.m_state == CDropControl::VALID && m_dropCtrl.m_lastPTS != AV_NOPTS_VALUE &&
+        framePTS != AV_NOPTS_VALUE &&
+        framePTS > (m_dropCtrl.m_lastPTS + m_dropCtrl.m_diffPTS * 1.5))
+    {
+      m_droppedFrames++;
+      if (m_interlaced)
+        m_droppedFrames++;
+    }
+  }
+  m_dropCtrl.Process(framePTS, m_pCodecContext->skip_frame > AVDISCARD_DEFAULT);
+
+  if (m_pDecodedFrame->flags & AV_FRAME_FLAG_KEY)
+  {
+    m_started = true;
+    m_iLastKeyframe = m_pCodecContext->has_b_frames + 2;
+  }
+  m_interlaced = (m_pDecodedFrame->flags & AV_FRAME_FLAG_INTERLACED) != 0;
+
+  if (!m_processInfo.GetVideoInterlaced() && m_interlaced)
+    m_processInfo.SetVideoInterlaced(m_interlaced);
+
+  if (!m_started)
+  {
+    int frames = 300;
+    if (m_dropCtrl.m_state == CDropControl::VALID)
+      frames = static_cast<int>(6000000 / m_dropCtrl.m_diffPTS);
+    if (m_iLastKeyframe >= frames && m_pDecodedFrame->pict_type == AV_PICTURE_TYPE_I)
+    {
+      m_started = true;
+    }
+    else
+    {
+      av_frame_unref(m_pDecodedFrame);
+      return VC_BUFFER;
+    }
+  }
+
+  return VC_NONE;
+}
+
+CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::ProcessFilterGraph(AVPixelFormat pixFmt,
+                                                                  VideoPicture* pVideoPicture)
+{
+  SetFilters();
+
+  bool need_scale = std::ranges::find(m_formats, pixFmt) == m_formats.end();
+
+  bool need_reopen = false;
+  if (m_filters != m_filters_next)
+    need_reopen = true;
+
+  if (!m_filters_next.empty() && m_filterEof)
+    need_reopen = true;
+
+  if (m_pFilterIn)
+  {
+    if (m_pFilterIn->outputs[0]->format != pixFmt ||
+        m_pFilterIn->outputs[0]->w != m_pCodecContext->width ||
+        m_pFilterIn->outputs[0]->h != m_pCodecContext->height)
+      need_reopen = true;
+  }
+
+  if (need_reopen || (need_scale && m_pFilterGraph == nullptr))
+  {
+    m_filters = m_filters_next;
+
+    // FilterOpen reads m_pCodecContext->pix_fmt for the buffersrc format string.
+    // If the actual pixel format differs (e.g. NVDEC transfers CUDA to NV12/P010),
+    // temporarily override it so the filter graph uses the correct format.
+    const AVPixelFormat savedPF = m_pCodecContext->pix_fmt;
+    m_pCodecContext->pix_fmt = pixFmt;
+    if (FilterOpen(m_filters, need_scale) < 0)
+      FilterClose();
+    m_pCodecContext->pix_fmt = savedPF;
+  }
+
+  if (m_pFilterGraph && !m_filterEof)
+  {
+    CDVDVideoCodec::VCReturn ret = FilterProcess(m_pDecodedFrame);
+    if (ret != VC_PICTURE)
+      return VC_NONE;
+  }
+  else
+  {
+    av_frame_unref(m_pFrame);
+    av_frame_move_ref(m_pFrame, m_pDecodedFrame);
+  }
+
+  if (!SetPictureParams(pVideoPicture))
+    return VC_ERROR;
+
+  return VC_PICTURE;
 }
 
 void CDVDVideoCodecFFmpeg::Reset()
@@ -1197,13 +1206,26 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const std::string& filters, bool scale)
   const AVFilter* srcFilter = avfilter_get_by_name("buffer");
   const AVFilter* outFilter = avfilter_get_by_name("buffersink"); // should be last filter in the graph for now
 
+  // Prefer actual frame metadata when available (it may be populated even when codec context fields
+  // are still unspecified, e.g. for NVDEC/CUVID). This prevents buffersrc from initializing as
+  // csp/range: unknown and then warning on every incoming frame.
+  const AVColorSpace srcColorSpace =
+      (m_pDecodedFrame && m_pDecodedFrame->colorspace != AVCOL_SPC_UNSPECIFIED)
+          ? m_pDecodedFrame->colorspace
+          : m_pCodecContext->colorspace;
+  const AVColorRange srcColorRange =
+      (m_pDecodedFrame && m_pDecodedFrame->color_range != AVCOL_RANGE_UNSPECIFIED)
+          ? m_pDecodedFrame->color_range
+          : m_pCodecContext->color_range;
+
   std::string args = StringUtils::Format(
-      "video_size={}x{}:pix_fmt={}:time_base={}/{}:pixel_aspect={}/{}", m_pCodecContext->width,
-      m_pCodecContext->height, m_pCodecContext->pix_fmt,
+      "video_size={}x{}:pix_fmt={}:time_base={}/{}:pixel_aspect={}/{}:colorspace={}:range={}",
+      m_pCodecContext->width, m_pCodecContext->height, m_pCodecContext->pix_fmt,
       m_pCodecContext->time_base.num ? m_pCodecContext->time_base.num : 1,
       m_pCodecContext->time_base.num ? m_pCodecContext->time_base.den : 1,
       m_pCodecContext->sample_aspect_ratio.num != 0 ? m_pCodecContext->sample_aspect_ratio.num : 1,
-      m_pCodecContext->sample_aspect_ratio.num != 0 ? m_pCodecContext->sample_aspect_ratio.den : 1);
+      m_pCodecContext->sample_aspect_ratio.num != 0 ? m_pCodecContext->sample_aspect_ratio.den : 1,
+      static_cast<int>(srcColorSpace), static_cast<int>(srcColorRange));
 
   if (!((m_pFilterOut = avfilter_graph_alloc_filter(m_pFilterGraph, outFilter, "out"))))
   {

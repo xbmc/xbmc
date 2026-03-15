@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -30,6 +30,23 @@ void VAAPIRegisterRenderGL(CVaapiProxy* winSystem, bool& general, bool& deepColo
 #if defined(HAS_GLES)
 void VAAPIRegisterRenderGLES(CVaapiProxy* winSystem, bool& general, bool& deepColor);
 #endif
+} // namespace GBM
+} // namespace WINDOWING
+} // namespace KODI
+
+//-----------------------------------------------------------------------------
+// NVDEC
+//-----------------------------------------------------------------------------
+
+namespace KODI
+{
+namespace WINDOWING
+{
+namespace GBM
+{
+
+void NVDECRegister();
+
 } // namespace GBM
 } // namespace WINDOWING
 } // namespace KODI

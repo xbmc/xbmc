@@ -302,49 +302,42 @@ bool CColorManager::SetHDR(const VideoPicture* videoPicture)
   if (!m_compositorFeatures.IsSupported(wayland::color_manager_v1_feature::parametric))
     return false;
 
-  wayland::image_description_creator_params_v1_t descriptionCreator =
-      m_colorManager.create_parametric_creator();
-
+  // Validate transfer function and primaries before creating the Wayland protocol
+  // object, because early returns after create_parametric_creator() would destroy
+  // the object in an incomplete state, crashing in the Wayland proxy destructor.
   const auto transferFunction = ffmpegToWaylandTFMap.get(videoPicture->color_transfer);
-  if (transferFunction)
-  {
-    if (m_compositorTFs.IsSupported(*transferFunction))
-    {
-      CLog::Log(LOGDEBUG, "Set transfer function {}", *transferFunction);
-      descriptionCreator.set_tf_named(*transferFunction);
-    }
-    else
-    {
-      CLog::Log(LOGINFO, "Compositor doesn't support transfer function {}, HDR disabled",
-                *transferFunction);
-      return false;
-    }
-  }
-  else
+  if (!transferFunction)
   {
     CLog::Log(LOGWARNING, "Unknown transfer function {}", videoPicture->color_transfer);
     return false;
   }
+  if (!m_compositorTFs.IsSupported(*transferFunction))
+  {
+    CLog::Log(LOGINFO, "Compositor doesn't support transfer function {}, HDR disabled",
+              *transferFunction);
+    return false;
+  }
 
   const auto primaries = ffmpegToWaylandPrimariesMap.get(videoPicture->color_primaries);
-  if (primaries)
-  {
-    if (m_compositorPrimaries.IsSupported(*primaries))
-    {
-      CLog::Log(LOGDEBUG, "Set primaries {}", *primaries);
-      descriptionCreator.set_primaries_named(*primaries);
-    }
-    else
-    {
-      CLog::Log(LOGINFO, "Compositor doesn't support primaries {}, HDR disabled", *primaries);
-      return false;
-    }
-  }
-  else
+  if (!primaries)
   {
     CLog::Log(LOGWARNING, "Unknown primaries {}", videoPicture->color_primaries);
     return false;
   }
+  if (!m_compositorPrimaries.IsSupported(*primaries))
+  {
+    CLog::Log(LOGINFO, "Compositor doesn't support primaries {}, HDR disabled", *primaries);
+    return false;
+  }
+
+  wayland::image_description_creator_params_v1_t descriptionCreator =
+      m_colorManager.create_parametric_creator();
+
+  CLog::Log(LOGDEBUG, "Set transfer function {}", *transferFunction);
+  descriptionCreator.set_tf_named(*transferFunction);
+
+  CLog::Log(LOGDEBUG, "Set primaries {}", *primaries);
+  descriptionCreator.set_primaries_named(*primaries);
 
   SetDisplayMetadata(descriptionCreator, videoPicture);
   SetLightMetadata(descriptionCreator, videoPicture);
