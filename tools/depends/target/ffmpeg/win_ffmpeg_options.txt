@@ -16,4 +16,5 @@
 --enable-static
 --enable-zlib
 --enable-libdav1d
+--enable-libuavs3d
 --extra-version="Kodi"

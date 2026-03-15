@@ -129,6 +129,13 @@ else()
   list(APPEND ffmpeg_conf --disable-libdav1d)
 endif()
 
+if(ENABLE_UAVS3D)
+  list(APPEND ffmpeg_conf --enable-libuavs3d)
+  set(pkgconf_path "PKG_CONFIG_PATH=${PKG_CONFIG_PATH}")
+else()
+  list(APPEND ffmpeg_conf --disable-libuavs3d)
+endif()
+
 if(EXTRA_FLAGS)
   string(REPLACE " " ";" EXTRA_FLAGS ${EXTRA_FLAGS})
   list(APPEND ffmpeg_conf ${EXTRA_FLAGS})

@@ -1,0 +1,14 @@
+--- a/source/CMakeLists.txt
++++ b/source/CMakeLists.txt
+@@ -136,7 +138,10 @@
+ file(APPEND "${pc_file}" "Description: AVS3 decoder library \n")
+ file(APPEND "${pc_file}" "Version: ${uavs3d_version}\n")
+ if(CMAKE_USE_PTHREADS_INIT)
+-  file(APPEND "${pc_file}" "Libs: -L\${libdir} -l${LIBNAME} -lm -lpthread\n")
++  if(NOT ${CMAKE_THREAD_LIBS_INIT} STREQUAL "")
++    set(pthread_link "${CMAKE_THREAD_LIBS_INIT}")
++  endif()
++  file(APPEND "${pc_file}" "Libs: -L\${libdir} -l${LIBNAME} -lm ${pthread_link}\n")
+ else()
+   file(APPEND "${pc_file}" "Libs: -L\${libdir} -l${LIBNAME} -lm\n")
+ file(APPEND "${pc_file}" "Libs.private: \n")

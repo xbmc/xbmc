@@ -1,0 +1,32 @@
+--- /dev/null
++++ b/version.h
+@@ -0,0 +1,17 @@
++// ===========================================================================
++// version.h
++// - collection of version numbers
++// ===========================================================================
++
++#ifndef __VERSION_H__
++#define __VERSION_H__
++
++#define VER_MAJOR  1                // major version number
++#define VER_MINOR  2                // minor version number
++#define VER_BUILD  70593             // build number
++
++#define VERSION_TYPE "release"
++#define VERSION_STR  "1.2.70593"
++#define VERSION_SHA1 "81a9bc94424bfa4a23a4c98e26f511431bde8a49"
++
++#endif // __VERSION_H__
+--- a/source/CMakeLists.txt
++++ b/source/CMakeLists.txt
+@@ -100,7 +100,9 @@
+ 
+ # get version
+ set (CONFIG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
++if(CREATE_VERSION_H)
+ execute_process(COMMAND sh ${CONFIG_DIR}/version.sh ${CONFIG_DIR})
++endif()
+ 
+ function(extract_version_string version_file version_string_out)
+   file(STRINGS "${version_file}" uavs3d_version REGEX "VERSION_STR")
