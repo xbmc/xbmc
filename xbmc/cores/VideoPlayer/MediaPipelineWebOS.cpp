@@ -276,6 +276,12 @@ bool CMediaPipelineWebOS::Supports(const AVCodecID codec, const int profile)
   if ((codec == AV_CODEC_ID_H264 || codec == AV_CODEC_ID_AVS || codec == AV_CODEC_ID_CAVS) &&
       profile == AV_PROFILE_H264_HIGH_10)
     return false;
+
+  // disable MP3 on webOS 3 and below due to segfault
+  const unsigned int version = WebOSTVPlatformConfig::GetWebOSVersion();
+  if (version <= 3 && codec == AV_CODEC_ID_MP3)
+    return false;
+
   return ms_codecMap.contains(codec);
 }
 
@@ -283,7 +289,7 @@ void CMediaPipelineWebOS::AcbCallback(
     long acbId, long taskId, long eventType, long appState, long playState, const char* reply)
 {
   CLog::LogF(LOGDEBUG, "acbId={}, taskId={}, eventType={}, appState={}, playState={}, reply={}",
-             acbId, taskId, eventType, appState, playState, reply);
+             acbId, taskId, eventType, appState, playState, reply ? reply : "<null>");
 }
 
 void CMediaPipelineWebOS::FlushVideoMessages()
@@ -695,8 +701,18 @@ bool CMediaPipelineWebOS::Load(CDVDStreamInfo videoHint, CDVDStreamInfo audioHin
   int32_t maxWidth = 0;
   int32_t maxHeight = 0;
   int32_t maxFramerate = 0;
-  smp::util::getMaxVideoResolution(ms_codecMap.at(videoHint.codec).data(), &maxWidth, &maxHeight,
-                                   &maxFramerate);
+
+  if (m_webOSVersion >= 4)
+    smp::util::getMaxVideoResolution(std::string(ms_codecMap.at(videoHint.codec)), &maxWidth,
+                                     &maxHeight, &maxFramerate);
+  else
+  {
+    // sensible defaults for older webOS versions
+    maxWidth = 3840;
+    maxHeight = 2160;
+    maxFramerate = 60;
+  }
+
   p["option"]["adaptiveStreaming"]["adaptiveResolution"] = true;
   p["option"]["adaptiveStreaming"]["maxWidth"] = maxWidth;
   p["option"]["adaptiveStreaming"]["maxHeight"] = maxHeight;
@@ -1051,7 +1067,8 @@ void CMediaPipelineWebOS::SetHDR(const CDVDStreamInfo& hint) const
   CJSONVariantWriter::Write(hdrData, payload, true);
 
   CLog::LogFC(LOGDEBUG, LOGVIDEO, "Setting HDR data payload {}", payload);
-  if (!m_mediaAPIs->setHdrInfo(payload.c_str()))
+
+  if (m_webOSVersion >= 4 && !m_mediaAPIs->setHdrInfo(payload.c_str()))
     CLog::LogF(LOGERROR, "setHdrInfo failed");
 }
 
@@ -1075,7 +1092,19 @@ void CMediaPipelineWebOS::FeedAudioData(const std::shared_ptr<CDVDMsg>& msg)
   CJSONVariantWriter::Write(payload, json, true);
   CLog::LogFC(LOGDEBUG, LOGVIDEO, "{}", json);
 
-  const std::string result = m_mediaAPIs->Feed(json.c_str());
+  std::string result;
+
+  if (m_mediaAPIs)
+  {
+    if (m_webOSVersion < 4)
+    {
+      auto legacyBuf = FeedLegacy(m_mediaAPIs.get(), json.c_str());
+      if (legacyBuf)
+        result = std::string(legacyBuf.get());
+    }
+    else
+      result = m_mediaAPIs->Feed(json.c_str());
+  }
 
   if (result.find("Ok") != std::string::npos)
   {
@@ -1138,17 +1167,27 @@ void CMediaPipelineWebOS::FeedVideoData(const std::shared_ptr<CDVDMsg>& msg)
     CJSONVariantWriter::Write(time, payload, true);
 
     auto player = static_cast<mediapipeline::CustomPlayer*>(m_mediaAPIs->player.get());
-    auto pipeline = static_cast<mediapipeline::CustomPipeline*>(player->getPipeline().get());
+    auto pipeline = static_cast<mediapipeline::CustomPipeline*>(nullptr);
+
+    if (m_webOSVersion >= 4)
+      pipeline = static_cast<mediapipeline::CustomPipeline*>(player->getPipeline().get());
+
     if (!m_mediaAPIs->setTimeToDecode(payload.c_str()))
     {
       CLog::LogF(LOGERROR, "setTimeToDecode failed");
       MEDIA_CUSTOM_CONTENT_INFO_T contentInfo;
-      pipeline->loadSpi_getInfo(&contentInfo);
+
+      if (pipeline)
+      {
+        pipeline->loadSpi_getInfo(&contentInfo);
+        pipeline->setContentInfo(MEDIA_CUSTOM_SRC_TYPE_ES, &contentInfo);
+      }
+
       contentInfo.ptsToDecode = pts.count();
-      pipeline->setContentInfo(MEDIA_CUSTOM_SRC_TYPE_ES, &contentInfo);
     }
 
-    pipeline->sendSegmentEvent();
+    if (pipeline && m_webOSVersion >= 3)
+      pipeline->sendSegmentEvent();
 
     m_pts = pts;
 
@@ -1176,7 +1215,18 @@ void CMediaPipelineWebOS::FeedVideoData(const std::shared_ptr<CDVDMsg>& msg)
     CJSONVariantWriter::Write(payload, json, true);
     CLog::LogFC(LOGDEBUG, LOGVIDEO, "{}", json);
 
-    const std::string result = m_mediaAPIs->Feed(json.c_str());
+    std::string result;
+    if (m_mediaAPIs)
+    {
+      if (m_webOSVersion < 4)
+      {
+        auto legacyBuf = FeedLegacy(m_mediaAPIs.get(), json.c_str());
+        if (legacyBuf)
+          result = std::string(legacyBuf.get());
+      }
+      else
+        result = m_mediaAPIs->Feed(json.c_str());
+    }
 
     if (result.find("Ok") != std::string::npos)
     {
@@ -1520,7 +1570,8 @@ void CMediaPipelineWebOS::GetVideoResolution(unsigned int& width, unsigned int& 
 void CMediaPipelineWebOS::PlayerCallback(int32_t type, const int64_t numValue, const char* strValue)
 {
   const std::string logStr = strValue != nullptr ? strValue : "";
-  CLog::LogF(LOGDEBUG, "type: {}, numValue: {}, strValue: {}", type, numValue, logStr);
+  CLog::LogF(LOGDEBUG, "type: {}, numValue: {}, strValue: {}", type, numValue,
+             logStr.empty() ? "(null)" : logStr);
 
   const auto buffer = static_cast<CStarfishVideoBuffer*>(m_picture.videoBuffer);
 
@@ -1556,10 +1607,20 @@ void CMediaPipelineWebOS::PlayerCallback(int32_t type, const int64_t numValue, c
     case PF_EVENT_TYPE_STR_STATE_UPDATE__LOADCOMPLETED:
     {
       const auto player = static_cast<mediapipeline::CustomPlayer*>(m_mediaAPIs->player.get());
-      const auto pipeline =
-          static_cast<mediapipeline::CustomPipeline*>(player->getPipeline().get());
-      m_pipeline = pipeline->GetGStreamerElements(
-          {0, MIN_SRC_BUFFER_LEVEL_VIDEO, MAX_SRC_BUFFER_LEVEL_VIDEO, MAX_BUFFER_LEVEL});
+
+      if (m_webOSVersion >= 4)
+      {
+        const auto pipeline =
+            static_cast<mediapipeline::CustomPipeline*>(player->getPipeline().get());
+        if (pipeline)
+        {
+          auto gstreamerElements = pipeline->GetGStreamerElements(
+              {0, MIN_SRC_BUFFER_LEVEL_VIDEO, MAX_SRC_BUFFER_LEVEL_VIDEO, MAX_BUFFER_LEVEL});
+
+          if (gstreamerElements)
+            m_pipeline = gstreamerElements;
+        }
+      }
 
       if (acb)
       {
