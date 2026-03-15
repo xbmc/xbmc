@@ -49,7 +49,8 @@ void CLangCodeExpander::LoadUserCodes(const TiXmlElement* pRootElement)
     {
       const TiXmlNode* pShort = pLangCode->FirstChildElement("short");
       const TiXmlNode* pLong = pLangCode->FirstChildElement("long");
-      if (pShort != nullptr && pLong != nullptr)
+      if (pShort != nullptr && pShort->FirstChild() != nullptr && pLong != nullptr &&
+          pLong->FirstChild() != nullptr)
       {
         sShort = pShort->FirstChild()->Value();
         sLong = pLong->FirstChild()->Value();
