@@ -301,14 +301,10 @@ int SqliteDatabase::setErr(int err_code, const char* qry)
   }
   if (conn)
     ss << " (" << sqlite3_errmsg(conn) << ")";
-  ss << "\nQuery: " << qry;
+  if (qry != nullptr)
+    ss << "\nQuery: " << qry;
   error = ss.str();
   return err_code;
-}
-
-const char* SqliteDatabase::getErrorMsg()
-{
-  return error.c_str();
 }
 
 static int AlphaNumericCollation(
@@ -322,6 +318,16 @@ int SqliteDatabase::connect(bool create)
   if (host.empty() || db.empty())
     return DB_CONNECTION_NONE;
 
+  {
+    static bool showed_ver_info = false;
+    if (!showed_ver_info)
+    {
+      const char* version_string = sqlite3_libversion();
+      CLog::Log(LOGINFO, "SqliteDatabase: library version {}", version_string);
+      showed_ver_info = true;
+    }
+  }
+
   //CLog::Log(LOGDEBUG, "Connecting to sqlite:{}:{}", host, db);
 
   std::string db_fullpath = URIUtils::AddFileToFolder(host, db);
@@ -329,6 +335,7 @@ int SqliteDatabase::connect(bool create)
   try
   {
     disconnect();
+
     int flags = SQLITE_OPEN_READWRITE;
     if (create)
       flags |= SQLITE_OPEN_CREATE;
@@ -365,6 +372,16 @@ int SqliteDatabase::connect(bool create)
         CLog::Log(LOGFATAL, "SqliteDatabase: can not register collation");
         throw std::runtime_error("SqliteDatabase: can not register collation " + db_fullpath);
       }
+
+      if (setErr(sqlite3_db_config(conn, SQLITE_DBCONFIG_DQS_DDL, 0, nullptr), nullptr) !=
+          SQLITE_OK)
+        CLog::Log(LOGINFO, "SqliteDatabase: Unable to disable SQLITE_DBCONFIG_DQS_DDL ({})",
+                  getErrorMsg());
+      if (setErr(sqlite3_db_config(conn, SQLITE_DBCONFIG_DQS_DML, 0, nullptr), nullptr) !=
+          SQLITE_OK)
+        CLog::Log(LOGINFO, "SqliteDatabase: Unable to disable SQLITE_DBCONFIG_DQS_DML ({})",
+                  getErrorMsg());
+
       active = true;
       return DB_CONNECTION_OK;
     }
@@ -491,7 +508,7 @@ int SqliteDatabase::drop_analytics()
   std::string sqlcmd;
   for (const auto record : res.records)
   {
-    sqlcmd = StringUtils::Format("DROP INDEX '{}'", record->at(0).get_asString().c_str());
+    sqlcmd = StringUtils::Format(R"(DROP INDEX "{}")", record->at(0).get_asString().c_str());
     err = sqlite3_exec(conn, sqlcmd.c_str(), nullptr, nullptr, nullptr);
     if (err != SQLITE_OK)
       return DB_UNEXPECTED_RESULT;
@@ -506,7 +523,7 @@ int SqliteDatabase::drop_analytics()
 
   for (const auto& record : res.records)
   {
-    sqlcmd = StringUtils::Format("DROP VIEW '{}'", record->at(0).get_asString().c_str());
+    sqlcmd = StringUtils::Format(R"(DROP VIEW "{}")", record->at(0).get_asString().c_str());
     err = sqlite3_exec(conn, sqlcmd.c_str(), nullptr, nullptr, nullptr);
     if (err != SQLITE_OK)
       return DB_UNEXPECTED_RESULT;
@@ -521,7 +538,7 @@ int SqliteDatabase::drop_analytics()
 
   for (const auto& record : res.records)
   {
-    sqlcmd = StringUtils::Format("DROP TRIGGER '{}'", record->at(0).get_asString().c_str());
+    sqlcmd = StringUtils::Format(R"(DROP TRIGGER "{}")", record->at(0).get_asString().c_str());
     err = sqlite3_exec(conn, sqlcmd.c_str(), nullptr, nullptr, nullptr);
     if (err != SQLITE_OK)
       return DB_UNEXPECTED_RESULT;

@@ -493,7 +493,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
   }
 
   if (iVersion < 97)
-    m_pDS->exec("ALTER TABLE sets ADD strOverview TEXT");
+    m_pDS->exec("ALTER TABLE \"sets\" ADD strOverview TEXT");
 
   if (iVersion < 98)
     m_pDS->exec("ALTER TABLE seasons ADD name text");
@@ -1015,10 +1015,10 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 136)
   {
-    m_pDS->exec("ALTER TABLE sets ADD strOriginalSet TEXT");
+    m_pDS->exec("ALTER TABLE \"sets\" ADD strOriginalSet TEXT");
 
     // Copy current set title for existing sets
-    m_pDS->exec("UPDATE sets SET strOriginalSet = strSet");
+    m_pDS->exec("UPDATE \"sets\" SET strOriginalSet = strSet");
   }
 
   if (iVersion < 138)
