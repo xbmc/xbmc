@@ -50,7 +50,7 @@
 						<width>525</width>
 						<bottom>100</bottom>
 						<visible>![ListItem.IsCollection + String.IsEmpty(ListItem.Plot) + String.IsEqual(ListItem.DBType,season) + String.IsEmpty(Container.ShowPlot)]</visible>
-						<label>$INFO[ListItem.Tagline,[I],[/I][CR][CR]]$VAR[VideoInfoPlotVar][CR][CR]</label>
+						<label>$VAR[VideoInfoPlotVar]</label>
 						<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(autoscroll)</autoscroll>
 					</control>
 					<control type="textbox">
