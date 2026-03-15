@@ -128,7 +128,7 @@ private:
   bool PrepareTemplate(GifFrame &frame);
   void Release();
 
-#if GIFLIB_MAJOR != 5
+#if GIFLIB_MAJOR < 5
   /*
   taken from giflib 5.1.0
   */
