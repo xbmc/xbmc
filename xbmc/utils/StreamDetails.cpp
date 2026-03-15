@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -78,9 +78,10 @@ bool CStreamDetailVideo::IsWorseThan(const CStreamDetail &that) const
   if (that.m_eType != CStreamDetail::VIDEO)
     return true;
 
-  // Best video stream is that with the most pixels
+  // Best video stream is that with the most pixels and best hdr type
   const auto& sdv = static_cast<const CStreamDetailVideo&>(that);
-  return (sdv.m_iWidth * sdv.m_iHeight) > (m_iWidth * m_iHeight);
+  return (sdv.m_iWidth * sdv.m_iHeight * CStreamDetails::GetHdrPriority(sdv.m_strHdrType)) >
+         (m_iWidth * m_iHeight * CStreamDetails::GetHdrPriority(m_strHdrType));
 }
 
 CStreamDetailAudio::CStreamDetailAudio() :
@@ -673,4 +674,18 @@ std::string CStreamDetails::HdrTypeToString(StreamHdrType hdrType)
     default:
       return "";
   }
+}
+
+int CStreamDetails::GetHdrPriority(const std::string& hdrType)
+{
+  if (hdrType == "dolbyvision")
+    return 5;
+  if (hdrType == "hdr10plus")
+    return 4;
+  if (hdrType == "hdr10")
+    return 3;
+  if (hdrType == "hlg")
+    return 2;
+
+  return 1;
 }
