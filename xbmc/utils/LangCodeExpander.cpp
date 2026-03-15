@@ -662,12 +662,12 @@ bool CLangCodeExpander::ConvertToBcp47(const std::string& text, std::string& bcp
 
 std::string CLangCodeExpander::FindLanguageCodeWithSubtag(const std::string& str)
 {
-  const std::size_t begin = str.find("{");
+  const std::size_t begin = str.find('{');
 
   if (begin == std::string::npos)
     return "";
 
-  const std::size_t end = str.find("}", begin + 1);
+  const std::size_t end = str.find('}', begin + 1);
 
   if (end == std::string::npos)
     return "";
