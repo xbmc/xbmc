@@ -10,7 +10,7 @@
 #include "network/DNSNameCache.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 
 #include <array>
 #include <string>
@@ -25,7 +25,7 @@ class CAdvancedSettingsInit : public CAdvancedSettings
 public:
   CAdvancedSettingsInit() { Initialize(); }
 
-  void DoRedact(CXBMCTinyXML& doc) { Redact(doc); }
+  void DoRedact(tinyxml2::XMLDocument& doc) { Redact(doc); }
 };
 
 struct RegExpT
@@ -87,7 +87,7 @@ std::string GenREXML(std::string_view suite, std::string_view tag, RegExpT::Acti
 template<RegExpT::Action action>
 void RunRETest(const RegExpT& param)
 {
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(GenREXML(param.suite, param.tag, action));
   CAdvancedSettingsInit settings;
   const auto orig_size = std::invoke(param.member, settings).size();
@@ -197,7 +197,7 @@ TEST(TestAdvancedSettings, Audio)
            </audio>
          </advancedsettings>)";
 
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(xml);
   CAdvancedSettingsInit settings;
   settings.ParseSettingsXML(doc.RootElement());
@@ -229,7 +229,7 @@ TEST(TestAdvancedSettings, X11)
            </x11>
          </advancedsettings>)";
 
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(xml);
   CAdvancedSettingsInit settings;
   settings.ParseSettingsXML(doc.RootElement());
@@ -278,7 +278,7 @@ TEST(TestAdvancedSettings, Video)
            </video>
          </advancedsettings>)";
 
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(xml);
   CAdvancedSettingsInit settings;
   settings.ParseSettingsXML(doc.RootElement());
@@ -342,7 +342,7 @@ TEST(TestAdvancedSettings, MusicLibrary)
            </musiclibrary>
          </advancedsettings>)";
 
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(xml);
   CAdvancedSettingsInit settings;
   settings.ParseSettingsXML(doc.RootElement());
@@ -381,7 +381,7 @@ TEST(TestAdvancedSettings, VideoLibrary)
            </videolibrary>
          </advancedsettings>)";
 
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(xml);
   CAdvancedSettingsInit settings;
   settings.ParseSettingsXML(doc.RootElement());
@@ -408,7 +408,7 @@ TEST(TestAdvancedSettings, VideoScanner)
            </videoscanner>
          </advancedsettings>)";
 
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(xml);
   CAdvancedSettingsInit settings;
   settings.ParseSettingsXML(doc.RootElement());
@@ -426,7 +426,7 @@ TEST(TestAdvancedSettings, Slideshow)
            </slideshow>
          </advancedsettings>)";
 
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(xml);
   CAdvancedSettingsInit settings;
   settings.ParseSettingsXML(doc.RootElement());
@@ -452,7 +452,7 @@ TEST(TestAdvancedSettings, Network)
            </network>
          </advancedsettings>)";
 
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(xml);
   CAdvancedSettingsInit settings;
   settings.ParseSettingsXML(doc.RootElement());
@@ -477,7 +477,7 @@ TEST(TestAdvancedSettings, JsonRPC)
            </jsonrpc>
          </advancedsettings>)";
 
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(xml);
   CAdvancedSettingsInit settings;
   settings.ParseSettingsXML(doc.RootElement());
@@ -496,7 +496,7 @@ TEST(TestAdvancedSettings, Samba)
            </samba>
          </advancedsettings>)";
 
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(xml);
   CAdvancedSettingsInit settings;
   settings.ParseSettingsXML(doc.RootElement());
@@ -514,7 +514,7 @@ TEST(TestAdvancedSettings, HTTPDirectory)
            </httpdirectory>
          </advancedsettings>)";
 
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(xml);
   CAdvancedSettingsInit settings;
   settings.ParseSettingsXML(doc.RootElement());
@@ -530,7 +530,7 @@ TEST(TestAdvancedSettings, FTP)
            </ftp>
          </advancedsettings>)";
 
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(xml);
   CAdvancedSettingsInit settings;
   settings.ParseSettingsXML(doc.RootElement());
@@ -579,7 +579,7 @@ TEST(TestAdvancedSettings, TopLevel)
            <opengldebugging>true</opengldebugging>
          </advancedsettings>)";
 
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(xml);
   CAdvancedSettingsInit settings;
   settings.ParseSettingsXML(doc.RootElement());
@@ -642,7 +642,7 @@ TEST(TestAdvancedSettings, EPG)
            </epg>
          </advancedsettings>)";
 
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(xml);
   CAdvancedSettingsInit settings;
   settings.ParseSettingsXML(doc.RootElement());
@@ -671,7 +671,7 @@ TEST(TestAdvancedSettings, EDL)
            </edl>
          </advancedsettings>)";
 
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(xml);
   CAdvancedSettingsInit settings;
   settings.ParseSettingsXML(doc.RootElement());
@@ -696,7 +696,7 @@ TEST(TestAdvancedSettings, SortTokens)
            </sorttokens>
          </advancedsettings>)";
 
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(xml);
   CAdvancedSettingsInit settings;
   const auto orig_size = settings.m_vecTokens.size();
@@ -725,7 +725,7 @@ TEST(TestAdvancedSettings, PathSubstitution)
            </pathsubstitution>
          </advancedsettings>)";
 
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(xml);
   CAdvancedSettingsInit settings;
   settings.ParseSettingsXML(doc.RootElement());
@@ -747,7 +747,7 @@ TEST(TestAdvancedSettings, MusicFileNameFilters)
            </musicfilenamefilters>
          </advancedsettings>)";
 
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(xml);
   CAdvancedSettingsInit settings;
   settings.ParseSettingsXML(doc.RootElement());
@@ -771,7 +771,7 @@ TEST(TestAdvancedSettings, Hosts)
 
   auto cache = std::make_shared<CDNSNameCache>();
   CServiceBroker::RegisterDNSNameCache(cache);
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(xml);
   CAdvancedSettingsInit settings;
   settings.ParseSettingsXML(doc.RootElement());
@@ -795,7 +795,7 @@ TEST(TestAdvancedSettings, PowerManagement)
            </powermanagement>
          </advancedsettings>)";
 
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(xml);
   CAdvancedSettingsInit settings;
   settings.ParseSettingsXML(doc.RootElement());
@@ -824,7 +824,7 @@ TEST(TestAdvancedSettings, PVR)
            </pvr>
          </advancedsettings>)";
 
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(xml);
   CAdvancedSettingsInit settings;
   settings.ParseSettingsXML(doc.RootElement());
@@ -855,7 +855,7 @@ TEST(TestAdvancedSettings, GUI)
            </gui>
          </advancedsettings>)";
 
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(xml);
   CAdvancedSettingsInit settings;
   settings.ParseSettingsXML(doc.RootElement());
@@ -906,7 +906,7 @@ TEST(TestAdvancedSettings, VideoAdjustRefreshRate)
            </video>
          </advancedsettings>)";
 
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(xml);
   CAdvancedSettingsInit settings;
   settings.ParseSettingsXML(doc.RootElement());
@@ -961,7 +961,7 @@ TEST(TestAdvancedSettings, VideoLatency)
            </video>
          </advancedsettings>)";
 
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(xml);
   CAdvancedSettingsInit settings;
   settings.ParseSettingsXML(doc.RootElement());
@@ -997,7 +997,7 @@ TEST_P(ExtensionTest, AddAndRemove)
   EXPECT_TRUE(std::ranges::all_of(remove_array, is_in_orig));
   EXPECT_TRUE(std::ranges::none_of(add_array, is_in_orig));
 
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(GenExtXML(GetParam()));
   settings.ParseSettingsXML(doc.RootElement());
 
@@ -1031,7 +1031,7 @@ TEST_P(RegExpTest, Prepend)
 
 TEST_P(DatabaseTest, Parse)
 {
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   const DatabaseSettings ref{
       .type = "1",
       .host = "2",
@@ -1068,7 +1068,7 @@ TEST_P(DatabaseTest, Parse)
 
 TEST_P(DatabaseTest, Redact)
 {
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   const DatabaseSettings ref{
       .type = "1",
       .host = "2",

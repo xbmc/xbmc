@@ -32,12 +32,15 @@
 #endif // GetTimeFormat
 #endif // TARGET_WINDOWS
 
-class TiXmlNode;
 struct StringSettingOption;
 
 namespace ADDON
 {
   class CLanguageResource;
+}
+namespace tinyxml2
+{
+class XMLElement;
 }
 typedef std::shared_ptr<ADDON::CLanguageResource> LanguageResourcePtr;
 
@@ -199,7 +202,7 @@ public:
   static std::string GetLanguageInfoPath(const std::string &language);
   bool UseLocaleCollation();
 
-  static void LoadTokens(const TiXmlNode* pTokens, Tokens& vecTokens);
+  static void LoadTokens(const tinyxml2::XMLElement* pTokens, Tokens& vecTokens);
 
   static void SettingOptionsLanguageNamesFiller(const std::shared_ptr<const CSetting>& setting,
                                                 std::vector<StringSettingOption>& list,
