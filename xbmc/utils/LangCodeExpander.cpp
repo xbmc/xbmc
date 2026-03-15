@@ -40,18 +40,18 @@ void CLangCodeExpander::Clear()
 
 void CLangCodeExpander::LoadUserCodes(const TiXmlElement* pRootElement)
 {
-  if (pRootElement != NULL)
+  if (pRootElement != nullptr)
   {
     m_mapUser.clear();
 
     std::string sShort, sLong;
 
     const TiXmlNode* pLangCode = pRootElement->FirstChild("code");
-    while (pLangCode != NULL)
+    while (pLangCode != nullptr)
     {
       const TiXmlNode* pShort = pLangCode->FirstChildElement("short");
       const TiXmlNode* pLong = pLangCode->FirstChildElement("long");
-      if (pShort != NULL && pLong != NULL)
+      if (pShort != nullptr && pLong != nullptr)
       {
         sShort = pShort->FirstChild()->Value();
         sLong = pLong->FirstChild()->Value();
