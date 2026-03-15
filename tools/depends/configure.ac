@@ -265,6 +265,9 @@ case $host in
         platform_cxx=armv7a-linux-androideabi$use_ndk_api-clang++
     esac
   ;;
+  arm-webos-linux-gnueabi|arm-starfish-linux-gnueabi)
+    lto_wrap_prefix=gcc-
+  ;;
   *darwin*)
     # Again we set CC to find toolchain path for use in AC_PATH_TOOL macros further down
     CC=[`$use_xcrun --find clang`]
@@ -280,13 +283,13 @@ else
   PATH_FOR_HOST=$PATH
 fi
 
-AC_PATH_TOOL([RANLIB], [${platform_tool_prefix}ranlib],, $PATH_FOR_HOST)
+AC_PATH_TOOL([RANLIB], [${platform_tool_prefix}${lto_wrap_prefix}ranlib],, $PATH_FOR_HOST)
 AC_PATH_TOOL([LD], [${use_linker}],, $PATH_FOR_HOST)
-AC_PATH_TOOL([AR], [${platform_tool_prefix}ar],, $PATH_FOR_HOST)
+AC_PATH_TOOL([AR], [${platform_tool_prefix}${lto_wrap_prefix}ar],, $PATH_FOR_HOST)
 AC_PATH_TOOL([READELF], [${platform_tool_prefix}readelf],, $PATH_FOR_HOST)
 AC_PATH_TOOL([STRIP], [${platform_tool_prefix}strip],, $PATH_FOR_HOST)
 AC_PATH_TOOL([AS], [${platform_tool_prefix}as],, $PATH_FOR_HOST)
-AC_PATH_TOOL([NM], [${platform_tool_prefix}nm],, $PATH_FOR_HOST)
+AC_PATH_TOOL([NM], [${platform_tool_prefix}${lto_wrap_prefix}nm],, $PATH_FOR_HOST)
 AC_PATH_TOOL([OBJDUMP], [${platform_tool_prefix}objdump],, $PATH_FOR_HOST)
 AC_PATH_TOOL([CC],[$platform_cc],,$PATH_FOR_HOST)
 AC_PATH_TOOL([CXX],[$platform_cxx],,$PATH_FOR_HOST)
