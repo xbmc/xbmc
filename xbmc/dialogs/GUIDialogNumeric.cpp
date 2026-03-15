@@ -106,10 +106,10 @@ bool CGUIDialogNumeric::OnAction(const CAction &action)
     OnOK();
   else if (action.GetID() >= REMOTE_0 && action.GetID() <= REMOTE_9)
     OnNumber(action.GetID() - REMOTE_0);
-  else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_UNICODE)
+  else if (action.GetID() >= KEY_VKEY && action.GetID() <= KEY_VKEY_MAX)
   {
     // input from the keyboard (vkey, not ascii)
-    uint8_t b = action.GetID() & 0xFF;
+    uint16_t b = action.GetID() - KEY_VKEY;
     if (b == XBMCVK_LEFT)
       OnPrevious();
     else if (b == XBMCVK_RIGHT)
