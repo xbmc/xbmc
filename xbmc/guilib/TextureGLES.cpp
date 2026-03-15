@@ -406,6 +406,7 @@ void CGLESTexture::SwapBlueRedSwizzle(GLint& component)
 TextureFormat CGLESTexture::GetFormatGLES20(KD_TEX_FMT textureFormat)
 {
   TextureFormat glFormat;
+  const int formatType = m_textureFormat & KD_TEX_FMT_TYPE_MASK;
 
   // GLES 2.0 does not support swizzling. But for some Kodi formats+swizzles,
   // we can map GLES formats (Luminance, Luminance-Alpha, BGRA). The swizzle
@@ -438,8 +439,8 @@ TextureFormat CGLESTexture::GetFormatGLES20(KD_TEX_FMT textureFormat)
       glFormat.format = glFormat.internalFormat = GL_RGBA;
     }
   }
-  else if (textureFormat & KD_TEX_FMT_SDR || textureFormat & KD_TEX_FMT_HDR ||
-           textureFormat & KD_TEX_FMT_ETC1)
+  else if (formatType == KD_TEX_FMT_SDR || formatType == KD_TEX_FMT_HDR ||
+           formatType == KD_TEX_FMT_ETC1)
   {
     const auto it = TextureMappingGLES20.find(textureFormat);
     if (it != TextureMappingGLES20.cend())
@@ -459,8 +460,10 @@ TextureFormat CGLESTexture::GetFormatGLES20(KD_TEX_FMT textureFormat)
 TextureFormat CGLESTexture::GetFormatGLES30(KD_TEX_FMT textureFormat)
 {
   TextureFormat glFormat;
+  const int formatType = m_textureFormat & KD_TEX_FMT_TYPE_MASK;
 
-  if (textureFormat & KD_TEX_FMT_SDR || textureFormat & KD_TEX_FMT_HDR)
+  if (formatType == KD_TEX_FMT_SDR || formatType == KD_TEX_FMT_HDR ||
+      formatType == KD_TEX_FMT_ETC1 || formatType == KD_TEX_FMT_ETC2)
   {
 #if defined(GL_ES_VERSION_3_0)
     const auto it = TextureMappingGLES30.find(textureFormat);
