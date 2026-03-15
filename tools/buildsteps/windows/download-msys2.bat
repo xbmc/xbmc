@@ -193,8 +193,9 @@ if not exist %instdir%\locals mkdir %instdir%\locals
 if not exist %instdir%\locals\win32 mkdir %instdir%\locals\win32
 if not exist %instdir%\locals\x64 mkdir %instdir%\locals\x64
 if not exist %instdir%\locals\arm64 mkdir %instdir%\locals\arm64
+if not exist %instdir%\locals\win10x64 mkdir %instdir%\locals\win10x64
 
-for %%x in (win32 x64 arm64) do (
+for %%x in (win32 x64 arm64 win10x64) do (
   if not exist %instdir%\locals\%%x\share (
       echo.-------------------------------------------------------------------------------
       echo.create local %%x folders
@@ -230,6 +231,7 @@ if "%cygdrive%"=="no" echo.none / cygdrive binary,posix=0,noacl,user 0 ^0>>%inst
     echo.%instdir%\locals\win32\     /local32
     echo.%instdir%\locals\x64\       /local64
     echo.%instdir%\locals\arm64\     /localarm64
+    echo.%instdir%\locals\win10x64\  /localwin10x64
     echo.%instdir%\%msys2%\mingw32\  /mingw32
     echo.%instdir%\%msys2%\mingw64\  /mingw64
     echo.%instdir%\%msys2%\clangarm64\ /clangarm64
@@ -303,7 +305,7 @@ if exist %instdir%\locals\win32\etc\profile.local GOTO writeProfile64
         echo.DXSDK_DIR="/mingw32/i686-w64-mingw32"
         echo.ACLOCAL_PATH="/mingw32/share/aclocal:/usr/share/aclocal"
         echo.PKG_CONFIG_LOCAL_PATH="/local32/lib/pkgconfig"
-        echo.PKG_CONFIG_PATH="/local32/lib/pkgconfig:/mingw32/lib/pkgconfig"
+        echo.PKG_CONFIG_PATH="/depends/win32/lib/pkgconfig:/local32/lib/pkgconfig:/mingw32/lib/pkgconfig"
         echo.CPPFLAGS="-I/local32/include -D_FORTIFY_SOURCE=2"
         echo.CFLAGS="-I/local32/include -mms-bitfields -mthreads -mtune=generic -pipe"
         echo.CXXFLAGS="-I/local32/include -mms-bitfields -mthreads -mtune=generic -pipe"
@@ -349,7 +351,7 @@ if exist %instdir%\locals\x64\etc\profile.local GOTO writeProfilearm64
         echo.DXSDK_DIR="/mingw64/x86_64-w64-mingw32"
         echo.ACLOCAL_PATH="/mingw64/share/aclocal:/usr/share/aclocal"
         echo.PKG_CONFIG_LOCAL_PATH="/local64/lib/pkgconfig"
-        echo.PKG_CONFIG_PATH="/local64/lib/pkgconfig:/mingw64/lib/pkgconfig"
+        echo.PKG_CONFIG_PATH="/depends/x64/lib/pkgconfig:/local64/lib/pkgconfig:/mingw64/lib/pkgconfig"
         echo.CPPFLAGS="-I/local64/include -D_FORTIFY_SOURCE=2"
         echo.CFLAGS="-I/local64/include -mms-bitfields -mthreads -mtune=generic -pipe"
         echo.CXXFLAGS="-I/local64/include -mms-bitfields -mthreads -mtune=generic -pipe"
@@ -369,7 +371,7 @@ if exist %instdir%\locals\x64\etc\profile.local GOTO writeProfilearm64
     )
 
 :writeProfilearm64
-if exist %instdir%\locals\arm64\etc\profile.local GOTO loadGasPreproc
+if exist %instdir%\locals\arm64\etc\profile.local GOTO writeProfileUWP64
     echo -------------------------------------------------------------------------------
     echo.- write profile for arm64 compiling
     echo -------------------------------------------------------------------------------
@@ -395,7 +397,7 @@ if exist %instdir%\locals\arm64\etc\profile.local GOTO loadGasPreproc
         echo.DXSDK_DIR="/clangarm64/aarch64-w64-mingw32"
         echo.ACLOCAL_PATH="/clangarm64/share/aclocal:/usr/share/aclocal"
         echo.PKG_CONFIG_LOCAL_PATH="/localarm64/lib/pkgconfig"
-        echo.PKG_CONFIG_PATH="/localarm64/lib/pkgconfig:/clangarm64/lib/pkgconfig"
+        echo.PKG_CONFIG_PATH="/depends/arm64/lib/pkgconfig:/localarm64/lib/pkgconfig:/clangarm64/lib/pkgconfig"
         echo.CPPFLAGS="-I/localarm64/include -D_FORTIFY_SOURCE=2"
         echo.CFLAGS="-I/localarm64/include -mms-bitfields -mthreads -march=armv8-a -pipe"
         echo.CXXFLAGS="-I/localarm64/include -mms-bitfields -mthreads -march=armv8-a -pipe"
@@ -412,6 +414,52 @@ if exist %instdir%\locals\arm64\etc\profile.local GOTO loadGasPreproc
         echo.LOCALDESTDIR=/localarm64
         echo.export LOCALBUILDDIR LOCALDESTDIR
         )>>%instdir%\locals\arm64\etc\profile.local
+    )
+
+:writeProfileUWP64
+if exist %instdir%\locals\win10x64\etc\profile.local GOTO loadGasPreproc
+    echo -------------------------------------------------------------------------------
+    echo.- write profile for UWP 64 bit compiling
+    echo -------------------------------------------------------------------------------
+    (
+        echo.#
+        echo.# /localwin10x64/etc/profile.local
+        echo.#
+        echo.
+        echo.MSYSTEM=MINGW64
+        echo.
+        echo.alias dir='ls -la --color=auto'
+        echo.alias ls='ls --color=auto'
+        echo.export CC=gcc
+        echo.export python=/usr/bin/python
+        echo.
+        echo.MSYS2_PATH="/usr/local/bin:/usr/bin"
+        echo.MANPATH="/usr/share/man:/mingw64/share/man:/localwin10x64/man:/localwin10x64/share/man"
+        echo.INFOPATH="/usr/local/info:/usr/share/info:/usr/info:/mingw64/share/info"
+        echo.MINGW_PREFIX="/mingw64"
+        echo.MINGW_CHOST="x86_64-w64-mingw32"
+        echo.export MSYSTEM MINGW_PREFIX MINGW_CHOST
+        echo.
+        echo.DXSDK_DIR="/mingw64/x86_64-w64-mingw32"
+        echo.ACLOCAL_PATH="/mingw64/share/aclocal:/usr/share/aclocal"
+        echo.PKG_CONFIG_LOCAL_PATH="/localwin10x64/lib/pkgconfig"
+        echo.PKG_CONFIG_PATH="/depends/win10-x64/lib/pkgconfig:/localwin10x64/lib/pkgconfig:/mingw64/lib/pkgconfig"
+        echo.CPPFLAGS="-I/localwin10x64/include -D_FORTIFY_SOURCE=2"
+        echo.CFLAGS="-I/localwin10x64/include -mms-bitfields -mthreads -mtune=generic -pipe"
+        echo.CXXFLAGS="-I/localwin10x64/include -mms-bitfields -mthreads -mtune=generic -pipe"
+        echo.LDFLAGS="-L/localwin10x64/lib -pipe"
+        echo.export DXSDK_DIR ACLOCAL_PATH PKG_CONFIG_PATH PKG_CONFIG_LOCAL_PATH CPPFLAGS CFLAGS CXXFLAGS LDFLAGS MSYSTEM
+        echo.
+        echo.PATH=".:/localwin10x64/bin:/mingw64/bin:${MSYS2_PATH}:${INFOPATH}:${PATH}"
+        echo.PS1='\[\033[32m\]\u@\h \[\e[33m\]\w\[\e[0m\]\n\$ '
+        echo.export PATH PS1
+        echo.
+        echo.# package build directory
+        echo.LOCALBUILDDIR=/build
+        echo.# package installation prefix
+        echo.LOCALDESTDIR=/localwin10x64
+        echo.export LOCALBUILDDIR LOCALDESTDIR
+        )>>%instdir%\locals\win10x64\etc\profile.local
     )
 
 :loadGasPreproc

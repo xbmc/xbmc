@@ -1,0 +1,8 @@
+LIBNAME=lcms2
+VERSION=2.18
+ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
+SHA512=a738459c8a14dee633d98d893c23c7e97a6ffe317dcc8fa4fb5daa1ece305de431464ef8b762169f7a1ce16399c29f39d46c9da742cf843cfb15050c4820aa71
+BYPRODUCT=liblcms2.a
+BYPRODUCT_WIN=liblcms2.a
+
+FULL_URL=https://github.com/mm2/Little-CMS/releases/download/lcms2.18/lcms2-2.18.tar.gz

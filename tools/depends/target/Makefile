@@ -83,7 +83,7 @@ ifeq ($(OS),linux)
   DEPENDS += dbus libuuid alsa-lib libdrm libxkbcommon libinput libudev libevdev mtdev pipewire
 
   # CI purposes only. Use linux/webos targets to test tools/depends makefile builds
-  DEPENDS += dav1d ffmpeg
+  DEPENDS += brotli dav1d highway libjxl lcms2 ffmpeg
 
   ALSA_LIB = alsa-lib
   LIBUUID = libuuid
@@ -150,12 +150,13 @@ crossguid: $(LIBUUID)
 curl: brotli openssl nghttp2 $(ZLIB)
 dbus: expat
 exiv2: $(ICONV) $(ZLIB) expat
-ffmpeg: $(ICONV) $(ZLIB) bzip2 gnutls dav1d $(LIBVA)
+ffmpeg: $(ICONV) $(ZLIB) bzip2 gnutls dav1d libjxl $(LIBVA)
 fontconfig: freetype2 expat $(ICONV) $(LIBUUID)
 freetype2: bzip2 harfbuzz $(ZLIB)
 gettext: $(ICONV)
 gnutls: nettle $(ZLIB)
 harfbuzz: freetype2-noharfbuzz $(ICONV)
+lcms2: libjpeg-turbo
 libaacs: libgcrypt libgpg-error
 libass: fontconfig fribidi harfbuzz freetype2 $(ICONV)
 libbdplus: libaacs libgcrypt libgpg-error
@@ -166,6 +167,7 @@ libdisplay-info: hwdata
 libevdev: libudev
 libgcrypt: libgpg-error
 libinput: mtdev libevdev
+libjxl: brotli highway lcms2
 libmicrohttpd: gnutls libgcrypt libgpg-error
 libplist: $(ZLIB)
 libpng: $(ZLIB)
