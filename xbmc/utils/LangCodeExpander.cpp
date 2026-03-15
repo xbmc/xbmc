@@ -10,7 +10,6 @@
 
 #include "LangInfo.h"
 #include "ServiceBroker.h"
-#include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/i18n/Bcp47.h"
@@ -20,7 +19,6 @@
 #include "utils/i18n/Iso639_1.h"
 #include "utils/i18n/Iso639_2.h"
 #include "utils/i18n/TableLanguageCodes.h"
-#include "utils/log.h"
 
 #include <algorithm>
 #include <cassert>
