@@ -53,6 +53,9 @@ public:
   GLuint GetTextureID() const;
 
 protected:
+  // Implementation of CTexture
+  void ApplyScalingMethod() override;
+
   void SetSwizzle();
   TextureFormat GetFormatGL(KD_TEX_FMT textureFormat);
 
