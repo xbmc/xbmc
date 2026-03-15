@@ -342,6 +342,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
   {
     CStreamDetailSubtitle* sub = new CStreamDetailSubtitle();
     sub->m_strLanguage = subs[i].m_strLanguage;
+    sub->SetSource(CStreamDetail::MEDIA);
     details.AddStream(sub);
     result = true;
   }
@@ -374,6 +375,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
       p->m_strStereoMode = vstream->stereo_mode;
       p->m_strLanguage = vstream->language;
       p->m_strHdrType = CStreamDetails::HdrTypeToString(vstream->hdr_type);
+      p->SetSource(CStreamDetail::MEDIA);
 
       // stack handling
       if (URIUtils::IsStack(path))
@@ -405,6 +407,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
       p->m_iChannels = static_cast<CDemuxStreamAudio*>(stream)->iChannels;
       p->m_strLanguage = stream->language;
       p->m_strCodec = pDemux->GetStreamCodecName(stream->demuxerId, stream->uniqueId);
+      p->SetSource(CStreamDetail::MEDIA);
       details.AddStream(p);
       retVal = true;
     }
@@ -413,6 +416,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
     {
       CStreamDetailSubtitle *p = new CStreamDetailSubtitle();
       p->m_strLanguage = stream->language;
+      p->SetSource(CStreamDetail::MEDIA);
       details.AddStream(p);
       retVal = true;
     }
@@ -481,6 +485,7 @@ bool CDVDFileInfo::AddExternalSubtitleToDetails(const std::string &path, CStream
       CStreamDetailSubtitle *dsub = new CStreamDetailSubtitle();
       std::string lang = stream->language;
       dsub->m_strLanguage = g_LangCodeExpander.ConvertToISO6392B(lang);
+      dsub->SetSource(CStreamDetail::MEDIA);
       details.AddStream(dsub);
     }
     return true;

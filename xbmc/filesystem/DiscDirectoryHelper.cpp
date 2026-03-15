@@ -872,6 +872,7 @@ void CDiscDirectoryHelper::EndPlaylistSearch() const
 
 void CDiscDirectoryHelper::PopulateFileItems(const CURL& url,
                                              CFileItemList& items,
+                                             const CFileItemList& allTitles,
                                              int episodeIndex,
                                              const std::vector<CVideoInfoTag>& episodesOnDisc,
                                              const PlaylistMap& playlists) const
@@ -910,6 +911,12 @@ void CDiscDirectoryHelper::PopulateFileItems(const CURL& url,
       const auto newItem{std::make_shared<CFileItem>("", false)};
       GenerateItem(url, newItem, playlist.playlist, playlists, episodesOnDisc[playlist.index],
                    IsSpecial::EPISODE);
+      if (const auto detailsItem{allTitles.Get(newItem->GetPath())}; detailsItem)
+        newItem->GetVideoInfoTag()->m_streamDetails =
+            detailsItem->GetVideoInfoTag()->m_streamDetails;
+      else
+        CLog::LogFC(LOGDEBUG, LOGBLURAY, "Failed to find streamdetails for playlist {}",
+                    playlist.playlist);
       items.Add(newItem);
     }
   }
@@ -923,6 +930,11 @@ void CDiscDirectoryHelper::PopulateFileItems(const CURL& url,
       if (m_isSpecial == IsSpecial::SPECIAL && m_candidateSpecials.size() == 1)
         tag = episodesOnDisc[episodeIndex];
       GenerateItem(url, newItem, playlist, playlists, tag, IsSpecial::SPECIAL);
+      if (const auto detailsItem{allTitles.Get(newItem->GetPath())}; detailsItem)
+        newItem->GetVideoInfoTag()->m_streamDetails =
+            detailsItem->GetVideoInfoTag()->m_streamDetails;
+      else
+        CLog::LogFC(LOGDEBUG, LOGBLURAY, "Failed to find streamdetails for playlist {}", playlist);
       items.Add(newItem);
     }
   }
@@ -930,6 +942,7 @@ void CDiscDirectoryHelper::PopulateFileItems(const CURL& url,
 
 bool CDiscDirectoryHelper::GetEpisodePlaylists(const CURL& url,
                                                CFileItemList& items,
+                                               const CFileItemList& allTitles,
                                                int episodeIndex,
                                                const std::vector<CVideoInfoTag>& episodesOnDisc,
                                                const ClipMap& clips,
@@ -941,7 +954,7 @@ bool CDiscDirectoryHelper::GetEpisodePlaylists(const CURL& url,
   FindCandidatePlaylists(episodesOnDisc, episodeIndex, playlists);
   FindSpecials(playlists);
   EndPlaylistSearch();
-  PopulateFileItems(url, items, episodeIndex, episodesOnDisc, playlists);
+  PopulateFileItems(url, items, allTitles, episodeIndex, episodesOnDisc, playlists);
 
   return !items.IsEmpty();
 }

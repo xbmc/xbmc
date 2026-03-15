@@ -3145,34 +3145,37 @@ bool CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
   {
     m_pDS->exec(PrepareSQL("DELETE FROM streamdetails WHERE idFile = %i", idFile));
 
-    for (int i=1; i<=details.GetVideoStreamCount(); i++)
+    for (int i = 1; i <= details.GetVideoStreamCount(); i++)
     {
       m_pDS->exec(PrepareSQL(
           "INSERT INTO streamdetails "
           "(idFile, iStreamType, strVideoCodec, fVideoAspect, iVideoWidth, iVideoHeight, "
-          "iVideoDuration, strStereoMode, strVideoLanguage, strHdrType) "
-          "VALUES (%i,%i,'%s',%f,%i,%i,%i,'%s','%s','%s')",
+          "iVideoDuration, strStereoMode, strVideoLanguage, strHdrType, iSource) "
+          "VALUES (%i,%i,'%s',%f,%i,%i,%i,'%s','%s','%s',%i)",
           idFile, static_cast<int>(CStreamDetail::VIDEO), details.GetVideoCodec(i).c_str(),
           static_cast<double>(details.GetVideoAspect(i)), details.GetVideoWidth(i),
           details.GetVideoHeight(i), details.GetVideoDuration(i), details.GetStereoMode(i).c_str(),
-          details.GetVideoLanguage(i).c_str(), details.GetVideoHdrType(i).c_str()));
+          details.GetVideoLanguage(i).c_str(), details.GetVideoHdrType(i).c_str(),
+          static_cast<int>(details.GetSource(CStreamDetail::VIDEO, i))));
     }
-    for (int i=1; i<=details.GetAudioStreamCount(); i++)
+    for (int i = 1; i <= details.GetAudioStreamCount(); i++)
     {
       m_pDS->exec(PrepareSQL(
           "INSERT INTO streamdetails "
-          "(idFile, iStreamType, strAudioCodec, iAudioChannels, strAudioLanguage) "
-          "VALUES (%i,%i,'%s',%i,'%s')",
+          "(idFile, iStreamType, strAudioCodec, iAudioChannels, strAudioLanguage, iSource) "
+          "VALUES (%i,%i,'%s',%i,'%s',%i)",
           idFile, static_cast<int>(CStreamDetail::AUDIO), details.GetAudioCodec(i).c_str(),
-          details.GetAudioChannels(i), details.GetAudioLanguage(i).c_str()));
+          details.GetAudioChannels(i), details.GetAudioLanguage(i).c_str(),
+          static_cast<int>(details.GetSource(CStreamDetail::AUDIO, i))));
     }
-    for (int i=1; i<=details.GetSubtitleStreamCount(); i++)
+    for (int i = 1; i <= details.GetSubtitleStreamCount(); i++)
     {
       m_pDS->exec(PrepareSQL("INSERT INTO streamdetails "
-                             "(idFile, iStreamType, strSubtitleLanguage) "
-                             "VALUES (%i,%i,'%s')",
+                             "(idFile, iStreamType, strSubtitleLanguage, iSource) "
+                             "VALUES (%i,%i,'%s',%i)",
                              idFile, static_cast<int>(CStreamDetail::SUBTITLE),
-                             details.GetSubtitleLanguage(i).c_str()));
+                             details.GetSubtitleLanguage(i).c_str(),
+                             static_cast<int>(details.GetSource(CStreamDetail::SUBTITLE, i))));
     }
 
     // update the runtime information, if empty
@@ -4416,6 +4419,7 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag)
           p->m_strStereoMode = pDS->fv(11).get_asString();
           p->m_strLanguage = pDS->fv(12).get_asString();
           p->m_strHdrType = pDS->fv(13).get_asString();
+          p->m_source = static_cast<CStreamDetail::Source>(pDS->fv(14).get_asInt());
           details.AddStream(p);
           retVal = true;
           break;
@@ -4429,6 +4433,7 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag)
           else
             p->m_iChannels = pDS->fv(7).get_asInt();
           p->m_strLanguage = pDS->fv(8).get_asString();
+          p->m_source = static_cast<CStreamDetail::Source>(pDS->fv(14).get_asInt());
           details.AddStream(p);
           retVal = true;
           break;
@@ -4437,6 +4442,7 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag)
         {
           auto* p = new CStreamDetailSubtitle();
           p->m_strLanguage = pDS->fv(9).get_asString();
+          p->m_source = static_cast<CStreamDetail::Source>(pDS->fv(14).get_asInt());
           details.AddStream(p);
           retVal = true;
           break;
