@@ -17,80 +17,60 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <algorithm>
+#include <array>
+#include <string_view>
+
 using enum CDatabaseQueryRule::FieldType;
 
-enum TextureField
+struct TranslateField
 {
-  TF_None = 0,
-  TF_Id,
-  TF_Url,
-  TF_CachedUrl,
-  TF_LastHashCheck,
-  TF_ImageHash,
-  TF_Width,
-  TF_Height,
-  TF_UseCount,
-  TF_LastUsed,
-  TF_Max
-};
-
-typedef struct
-{
-  char string[14];
+  std::string_view string;
   TextureField field;
   CDatabaseQueryRule::FieldType type;
-} translateField;
+  std::string_view dbTable;
+};
 
 // clang-format off
-static const translateField fields[] = {
-  { "none",          TF_None,          TEXT_FIELD },
-  { "textureid",     TF_Id,            REAL_FIELD },
-  { "url",           TF_Url,           TEXT_FIELD },
-  { "cachedurl",     TF_CachedUrl,     TEXT_FIELD },
-  { "lasthashcheck", TF_LastHashCheck, TEXT_FIELD },
-  { "imagehash",     TF_ImageHash,     TEXT_FIELD },
-  { "width",         TF_Width,         REAL_FIELD },
-  { "height",        TF_Height,        REAL_FIELD },
-  { "usecount",      TF_UseCount,      REAL_FIELD },
-  { "lastused",      TF_LastUsed,      TEXT_FIELD }
+static const auto fields = std::array{
+  TranslateField{"textureid",     TextureField::ID,              REAL_FIELD, "texture.id" },
+  TranslateField{"url",           TextureField::URL,             TEXT_FIELD, "texture.url" },
+  TranslateField{"cachedurl",     TextureField::CACHED_URL,      TEXT_FIELD, "texture.cachedurl" },
+  TranslateField{"lasthashcheck", TextureField::LAST_HASH_CHECK, TEXT_FIELD, "texture.lasthashcheck" },
+  TranslateField{"imagehash",     TextureField::IMAGE_HASH,      TEXT_FIELD, "texture.imagehash" },
+  TranslateField{"width",         TextureField::WIDTH,           REAL_FIELD, "sizes.width" },
+  TranslateField{"height",        TextureField::HEIGHT,          REAL_FIELD, "sizes.height" },
+  TranslateField{"usecount",      TextureField::USE_COUNT,       REAL_FIELD, "sizes.usecount" },
+  TranslateField{"lastused",      TextureField::LAST_USED,       TEXT_FIELD, "sizes.lastusetime" }
 };
 // clang-format on
 
-static const size_t NUM_FIELDS = sizeof(fields) / sizeof(translateField);
-
 int CTextureRule::TranslateField(const char *field) const
 {
-  for (const translateField& f : fields)
-    if (StringUtils::EqualsNoCase(field, f.string)) return f.field;
-  return static_cast<int>(Field::NONE);
+  const auto f = std::ranges::find_if(fields, [field](const auto& f)
+                                      { return StringUtils::EqualsNoCase(field, f.string); });
+  return f == fields.end() ? static_cast<int>(TextureField::NONE) : static_cast<int>(f->field);
 }
 
 std::string CTextureRule::TranslateField(int field) const
 {
-  for (const translateField& f : fields)
-    if (field == f.field) return f.string;
-  return "none";
+  const auto f = std::ranges::find_if(fields, [field](const auto& f)
+                                      { return field == static_cast<int>(f.field); });
+  return f == fields.end() ? "none" : std::string(f->string);
 }
 
-std::string CTextureRule::GetField(int field, const std::string &type) const
+std::string CTextureRule::GetField(int field, const std::string&) const
 {
-  if (field == TF_Id) return "texture.id";
-  else if (field == TF_Url) return "texture.url";
-  else if (field == TF_CachedUrl) return "texture.cachedurl";
-  else if (field == TF_LastHashCheck) return "texture.lasthashcheck";
-  else if (field == TF_ImageHash) return "texture.imagehash";
-  else if (field == TF_Width) return "sizes.width";
-  else if (field == TF_Height) return "sizes.height";
-  else if (field == TF_UseCount) return "sizes.usecount";
-  else if (field == TF_LastUsed) return "sizes.lastusetime";
-  return "";
+  const auto f = std::ranges::find_if(fields, [field](const auto& f)
+                                      { return field == static_cast<int>(f.field); });
+  return f == fields.end() ? "" : std::string(f->dbTable);
 }
 
 CDatabaseQueryRule::FieldType CTextureRule::GetFieldType(int field) const
 {
-  for (const translateField& f : fields)
-    if (field == f.field) return f.type;
-  return TEXT_FIELD;
+  const auto f = std::ranges::find_if(fields, [field](const auto& f)
+                                      { return field == static_cast<int>(f.field); });
+  return f == fields.end() ? TEXT_FIELD : f->type;
 }
 
 std::string CTextureRule::FormatParameter(const std::string &operatorString,
@@ -99,16 +79,15 @@ std::string CTextureRule::FormatParameter(const std::string &operatorString,
                                           const std::string &strType) const
 {
   std::string parameter(param);
-  if (m_field == TF_Url)
+  if (m_field == static_cast<int>(TextureField::URL))
     parameter = IMAGE_FILES::ToCacheKey(param);
   return CDatabaseQueryRule::FormatParameter(operatorString, parameter, db, strType);
 }
 
-void CTextureRule::GetAvailableFields(std::vector<std::string> &fieldList)
+void CTextureRule::GetAvailableFields(std::vector<std::string>& fieldList)
 {
-  // start at 1 to skip TF_None
-  for (unsigned int i = 1; i < NUM_FIELDS; i++)
-    fieldList.emplace_back(fields[i].string);
+  std::ranges::transform(std::next(fields.begin()), fields.end(), std::back_inserter(fieldList),
+                         [](const auto& f) { return std::string(f.string); });
 }
 
 CTextureDatabase::CTextureDatabase() = default;
@@ -393,7 +372,7 @@ bool CTextureDatabase::AddCachedTexture(const std::string &url, const CTextureDe
 bool CTextureDatabase::ClearCachedTexture(const std::string &url, std::string &cacheFile)
 {
   std::string id = GetSingleValue(PrepareSQL("select id from texture where url='%s'", url.c_str()));
-  return !id.empty() ? ClearCachedTexture(strtol(id.c_str(), NULL, 10), cacheFile) : false;
+  return !id.empty() ? ClearCachedTexture(strtol(id.c_str(), nullptr, 10), cacheFile) : false;
 }
 
 bool CTextureDatabase::ClearCachedTexture(int id, std::string &cacheFile)
