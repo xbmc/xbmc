@@ -131,6 +131,16 @@ set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_FRAMEWORK LAST)
 set(ENV{PKG_CONFIG_LIBDIR} @prefix@/@deps_dir@/lib/pkgconfig:@prefix@/@deps_dir@/share/pkgconfig)
 
+#
+# Allow dev builds to extend pkg-config search paths
+#
+# Example:
+#   export PKG_CONFIG_LIBDIR_EXTRA="/usr/lib/pkgconfig:/usr/share/pkgconfig"
+#
+if(DEFINED ENV{PKG_CONFIG_LIBDIR_EXTRA} AND NOT "$ENV{PKG_CONFIG_LIBDIR_EXTRA}" STREQUAL "")
+  set(ENV{PKG_CONFIG_LIBDIR} "$ENV{PKG_CONFIG_LIBDIR}:$ENV{PKG_CONFIG_LIBDIR_EXTRA}")
+endif()
+
 # Binary Addons
 if(NOT CORE_SYSTEM_NAME STREQUAL linux)
   set(ADDONS_PREFER_STATIC_LIBS ON)
