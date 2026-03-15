@@ -301,8 +301,8 @@ CApplicationPlay::GatherPlaybackDetailsResult CApplicationPlay::GatherPlaybackDe
   if (VIDEO::IsDiscStub(m_item))
     return GatherPlaybackDetailsResult::RESULT_SUCCESS; // all done
 
-  if (PLAYLIST::IsPlayList(m_item))
-    return GatherPlaybackDetailsResult::RESULT_ERROR; // playlists not supported
+  if (PLAYLIST::IsPlayList(m_item) && !m_item.IsGame())
+    return GatherPlaybackDetailsResult::RESULT_ERROR; // non-game playlists not supported
 
   if (!ResolvePath())
     return GatherPlaybackDetailsResult::RESULT_ERROR;

@@ -1920,7 +1920,7 @@ bool CApplication::PlayMedia(CFileItem& item, const std::string& player, PLAYLIS
       return ProcessAndStartPlaylist(smartpl.GetName(), playlist, smartplPlaylistId);
     }
   }
-  else if (PLAYLIST::IsPlayList(item) || NETWORK::IsInternetStream(item))
+  else if ((PLAYLIST::IsPlayList(item) && !item.IsGame()) || NETWORK::IsInternetStream(item))
   {
     // Not owner. Dialog auto-deletes itself.
     CGUIDialogCache* dlgCache = new CGUIDialogCache(
