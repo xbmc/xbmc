@@ -303,12 +303,18 @@ bool CWinSystemWayland::CreateNewWindow(const std::string& name,
   // Use AppName as the desktop file name. This is required to lookup the app icon of the same name.
   m_shellSurface.reset(CreateShellSurface(name));
 
+  // Just remember initial width/height for context creation in OnConfigure
+  // This is used for sizing the EGLSurface
+  m_shellSurfaceInitializing = true;
+  m_shellSurface->Initialize();
+
   if (fullScreen)
   {
     // Try to start on correct monitor and with correct buffer scale
     auto output = FindOutputByUserFriendlyName(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR));
     auto wlOutput = output ? output->GetWaylandOutput() : wayland::output_t{};
     m_lastSetOutput = wlOutput;
+    m_shellSurfaceState.set(IShellSurface::STATE_FULLSCREEN);
     m_shellSurface->SetFullScreen(wlOutput, res.fRefreshRate);
     if (output && m_surface.can_set_buffer_scale())
     {
@@ -317,10 +323,6 @@ bool CWinSystemWayland::CreateNewWindow(const std::string& name,
     }
   }
 
-  // Just remember initial width/height for context creation in OnConfigure
-  // This is used for sizing the EGLSurface
-  m_shellSurfaceInitializing = true;
-  m_shellSurface->Initialize();
   m_shellSurfaceInitializing = false;
 
   // Apply window decorations if necessary
@@ -756,7 +758,8 @@ void CWinSystemWayland::ProcessMessages()
 
     if (size.IsZero())
     {
-      if (configure->state.test(IShellSurface::STATE_FULLSCREEN))
+      if (configure->state.test(IShellSurface::STATE_FULLSCREEN) ||
+          m_shellSurfaceState.test(IShellSurface::STATE_FULLSCREEN))
       {
         // Do not change current size - UpdateWithConfiguredSize must be called regardless in case
         // scale or something else changed
