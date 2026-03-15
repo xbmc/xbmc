@@ -86,7 +86,8 @@ public:
 
   //============================================================================
   /// @ingroup cpp_kodi_platform_CInterfaceAndroidSystem
-  /// @brief Request the android main class name e.g. <b>`org.xbmc.kodi`</b>.
+  /// @brief Request the android main class name using the internal slash notation
+  /// format e.g. <b>`org/xbmc/kodi`</b>.
   ///
   /// @return package class name
   ///
