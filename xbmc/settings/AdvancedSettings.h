@@ -139,8 +139,9 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
      */
     void UnregisterSettingsLoadedCallback(int handle);
 
-    static void GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLIST& settings);
-    static void GetCustomRegexps(TiXmlElement *pRootElement, std::vector<std::string> &settings);
+    static void GetCustomTVRegexps(const TiXmlElement* pRootElement, SETTINGS_TVSHOWLIST& settings);
+    static void GetCustomRegexps(const TiXmlElement* pRootElement,
+                                 std::vector<std::string>& settings);
     static void GetCustomExtensions(const TiXmlElement* pRootElement, std::string& extensions);
 
     std::string m_audioDefaultPlayer;
