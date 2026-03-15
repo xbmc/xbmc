@@ -7759,7 +7759,17 @@ msgctxt "#13476"
 msgid "16 bit per channel"
 msgstr ""
 
-#empty strings from id 13477 to 13504
+#: system/settings/settings.xml
+msgctxt "#13477"
+msgid "Prefer vendor texture layouts in GUI renderer"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#13478"
+msgid "Boosts the gui rendering performance, but may cause video rendering issues on some systems when direct-to-plane rendering method is used."
+msgstr ""
+
+#empty strings from id 13479 to 13504
 
 #: system/settings/settings.xml
 msgctxt "#13505"
