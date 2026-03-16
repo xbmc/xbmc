@@ -35,7 +35,7 @@
 #include "weather/WeatherManager.h"
 
 #include <algorithm>
-#include <stdexcept>
+#include <array>
 
 namespace
 {
@@ -108,16 +108,14 @@ struct TemperatureInfo
   std::string name;
 };
 
-static TemperatureInfo temperatureInfo[] = {
-  { CTemperature::UnitFahrenheit, "f" },
-  { CTemperature::UnitKelvin,     "k" },
-  { CTemperature::UnitCelsius,    "c" },
-  { CTemperature::UnitReaumur,    "re" },
-  { CTemperature::UnitRankine,    "ra" },
-  { CTemperature::UnitRomer,      "ro" },
-  { CTemperature::UnitDelisle,    "de" },
-  { CTemperature::UnitNewton,     "n" }
-};
+static const auto temperatureInfo = std::array{TemperatureInfo{CTemperature::UnitFahrenheit, "f"},
+                                               TemperatureInfo{CTemperature::UnitKelvin, "k"},
+                                               TemperatureInfo{CTemperature::UnitCelsius, "c"},
+                                               TemperatureInfo{CTemperature::UnitReaumur, "re"},
+                                               TemperatureInfo{CTemperature::UnitRankine, "ra"},
+                                               TemperatureInfo{CTemperature::UnitRomer, "ro"},
+                                               TemperatureInfo{CTemperature::UnitDelisle, "de"},
+                                               TemperatureInfo{CTemperature::UnitNewton, "n"}};
 
 #define TEMP_UNIT_STRINGS         20027
 
@@ -127,19 +125,19 @@ struct SpeedInfo
   std::string name;
 };
 
-static SpeedInfo speedInfo[] = {
-  { CSpeed::UnitKilometresPerHour,    "kmh" },
-  { CSpeed::UnitMetresPerMinute,      "mpmin" },
-  { CSpeed::UnitMetresPerSecond,      "mps" },
-  { CSpeed::UnitFeetPerHour,          "fth" },
-  { CSpeed::UnitFeetPerMinute,        "ftm" },
-  { CSpeed::UnitFeetPerSecond,        "fts" },
-  { CSpeed::UnitMilesPerHour,         "mph" },
-  { CSpeed::UnitKnots,                "kts" },
-  { CSpeed::UnitBeaufort,             "beaufort" },
-  { CSpeed::UnitInchPerSecond,        "inchs" },
-  { CSpeed::UnitYardPerSecond,        "yards" },
-  { CSpeed::UnitFurlongPerFortnight,  "fpf" }
+static const auto speedInfo = std::array{
+    SpeedInfo{CSpeed::UnitKilometresPerHour, "kmh"},
+    SpeedInfo{CSpeed::UnitMetresPerMinute, "mpmin"},
+    SpeedInfo{CSpeed::UnitMetresPerSecond, "mps"},
+    SpeedInfo{CSpeed::UnitFeetPerHour, "fth"},
+    SpeedInfo{CSpeed::UnitFeetPerMinute, "ftm"},
+    SpeedInfo{CSpeed::UnitFeetPerSecond, "fts"},
+    SpeedInfo{CSpeed::UnitMilesPerHour, "mph"},
+    SpeedInfo{CSpeed::UnitKnots, "kts"},
+    SpeedInfo{CSpeed::UnitBeaufort, "beaufort"},
+    SpeedInfo{CSpeed::UnitInchPerSecond, "inchs"},
+    SpeedInfo{CSpeed::UnitYardPerSecond, "yards"},
+    SpeedInfo{CSpeed::UnitFurlongPerFortnight, "fpf"},
 };
 
 #define SPEED_UNIT_STRINGS        20200
