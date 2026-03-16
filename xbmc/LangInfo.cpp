@@ -102,10 +102,11 @@ static std::string longDateFormats[] = {
 #define TIME_FORMAT_12HOURS       "12hours"
 #define TIME_FORMAT_24HOURS       "24hours"
 
-typedef struct TemperatureInfo {
+struct TemperatureInfo
+{
   CTemperature::Unit unit;
   std::string name;
-} TemperatureInfo;
+};
 
 static TemperatureInfo temperatureInfo[] = {
   { CTemperature::UnitFahrenheit, "f" },
@@ -120,10 +121,11 @@ static TemperatureInfo temperatureInfo[] = {
 
 #define TEMP_UNIT_STRINGS         20027
 
-typedef struct SpeedInfo {
+struct SpeedInfo
+{
   CSpeed::Unit unit;
   std::string name;
-} SpeedInfo;
+};
 
 static SpeedInfo speedInfo[] = {
   { CSpeed::UnitKilometresPerHour,    "kmh" },
