@@ -909,10 +909,7 @@ const std::string CLangInfo::GetDVDSubtitleLanguage() const
 const CLocale& CLangInfo::GetLocale() const
 {
   LanguageResourcePtr language = GetLanguageAddon();
-  if (language != nullptr)
-    return language->GetLocale();
-
-  return CLocale::Empty;
+  return language != nullptr ? language->GetLocale() : CLocale::Empty;
 }
 
 const std::string& CLangInfo::GetRegionLocale() const
@@ -928,10 +925,7 @@ const std::locale& CLangInfo::GetOriginalLocale() const
 // Returns the format string for the date of the current language
 const std::string& CLangInfo::GetDateFormat(bool bLongDate /* = false */) const
 {
-  if (bLongDate)
-    return GetLongDateFormat();
-
-  return GetShortDateFormat();
+  return bLongDate ? GetLongDateFormat() : GetShortDateFormat();
 }
 
 void CLangInfo::SetDateFormat(const std::string& dateFormat, bool bLongDate /* = false */)
@@ -1121,13 +1115,9 @@ void CLangInfo::SetTemperatureUnit(CTemperature::Unit temperatureUnit)
 
 void CLangInfo::SetTemperatureUnit(const std::string& temperatureUnit)
 {
-  CTemperature::Unit unit = CTemperature::UnitCelsius;
-  if (temperatureUnit == SETTING_REGIONAL_DEFAULT)
-    unit = m_currentRegion->m_tempUnit;
-  else
-    unit = StringToTemperatureUnit(temperatureUnit);
-
-  SetTemperatureUnit(unit);
+  SetTemperatureUnit(temperatureUnit == SETTING_REGIONAL_DEFAULT
+                         ? m_currentRegion->m_tempUnit
+                         : StringToTemperatureUnit(temperatureUnit));
 }
 
 std::string CLangInfo::GetTemperatureAsString(const CTemperature& temperature) const
@@ -1167,13 +1157,8 @@ void CLangInfo::SetSpeedUnit(CSpeed::Unit speedUnit)
 
 void CLangInfo::SetSpeedUnit(const std::string& speedUnit)
 {
-  CSpeed::Unit unit = CSpeed::UnitKilometresPerHour;
-  if (speedUnit == SETTING_REGIONAL_DEFAULT)
-    unit = m_currentRegion->m_speedUnit;
-  else
-    unit = StringToSpeedUnit(speedUnit);
-
-  SetSpeedUnit(unit);
+  SetSpeedUnit(speedUnit == SETTING_REGIONAL_DEFAULT ? m_currentRegion->m_speedUnit
+                                                     : StringToSpeedUnit(speedUnit));
 }
 
 CSpeed::Unit CLangInfo::GetSpeedUnit() const
