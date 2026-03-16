@@ -297,8 +297,8 @@ protected:
     std::string m_strMeridiemSymbols[2];
     std::string m_strTimeZone;
     std::string m_strGrouping;
-    char m_cDecimalSep;
-    char m_cThousandsSep;
+    char m_cDecimalSep{'.'};
+    char m_cThousandsSep{'.'};
 
     CTemperature::Unit m_tempUnit;
     CSpeed::Unit m_speedUnit;
