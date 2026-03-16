@@ -1047,7 +1047,7 @@ const std::string& CLangInfo::MeridiemSymbolToString(MeridiemSymbol symbol)
 }
 
 // Fills the array with the region names available for this language
-void CLangInfo::GetRegionNames(std::vector<std::string>& array)
+void CLangInfo::GetRegionNames(std::vector<std::string>& array) const
 {
   for (const auto &region : m_regions)
   {
