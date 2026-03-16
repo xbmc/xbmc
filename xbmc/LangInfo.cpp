@@ -29,7 +29,7 @@
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 #include "weather/WeatherManager.h"
@@ -410,11 +410,11 @@ bool CLangInfo::Load(const std::string& strLanguage)
 
   std::string strFileName = GetLanguageInfoPath(strLanguage);
 
-  CXBMCTinyXML xmlDoc;
+  CXBMCTinyXML2 xmlDoc;
   if (!xmlDoc.LoadFile(strFileName))
   {
-    CLog::Log(LOGERROR, "unable to load {}: {} at line {}", strFileName, xmlDoc.ErrorDesc(),
-              xmlDoc.ErrorRow());
+    CLog::Log(LOGERROR, "unable to load {}: {} at line {}", strFileName, xmlDoc.ErrorStr(),
+              xmlDoc.ErrorLineNum());
     return false;
   }
 
@@ -435,8 +435,8 @@ bool CLangInfo::Load(const std::string& strLanguage)
   m_strDVDSubtitleLanguage = m_languageAddon->GetDvdSubtitleLanguage();
   m_sortTokens = m_languageAddon->GetSortTokens();
 
-  TiXmlElement* pRootElement = xmlDoc.RootElement();
-  if (pRootElement->ValueStr() != "language")
+  const auto* pRootElement = xmlDoc.RootElement();
+  if (std::string(pRootElement->Value()) != "language")
   {
     CLog::Log(LOGERROR, "{} Doesn't contain <language>", strFileName);
     return false;
@@ -469,10 +469,10 @@ bool CLangInfo::Load(const std::string& strLanguage)
   if (g_LangCodeExpander.ConvertToISO6391(m_defaultRegion.m_strLangLocaleName, tmp))
     m_defaultRegion.m_strLangLocaleCodeTwoChar = tmp;
 
-  const TiXmlNode *pRegions = pRootElement->FirstChild("regions");
+  const auto* pRegions = pRootElement->FirstChildElement("regions");
   if (pRegions && !pRegions->NoChildren())
   {
-    const TiXmlElement *pRegion=pRegions->FirstChildElement("region");
+    const auto* pRegion = pRegions->FirstChildElement("region");
     while (pRegion)
     {
       CRegion region(m_defaultRegion);
@@ -493,15 +493,15 @@ bool CLangInfo::Load(const std::string& strLanguage)
       }
 #endif
 
-      const TiXmlNode *pDateLong=pRegion->FirstChild("datelong");
+      const auto* pDateLong = pRegion->FirstChildElement("datelong");
       if (pDateLong && !pDateLong->NoChildren())
-        region.m_strDateFormatLong=pDateLong->FirstChild()->ValueStr();
+        region.m_strDateFormatLong = pDateLong->FirstChild()->Value();
 
-      const TiXmlNode *pDateShort=pRegion->FirstChild("dateshort");
+      const auto* pDateShort = pRegion->FirstChildElement("dateshort");
       if (pDateShort && !pDateShort->NoChildren())
-        region.m_strDateFormatShort=pDateShort->FirstChild()->ValueStr();
+        region.m_strDateFormatShort = pDateShort->FirstChild()->Value();
 
-      const TiXmlElement *pTime=pRegion->FirstChildElement("time");
+      const auto* pTime = pRegion->FirstChildElement("time");
       if (pTime && !pTime->NoChildren())
       {
         region.m_strTimeFormat=pTime->FirstChild()->Value();
@@ -511,19 +511,19 @@ bool CLangInfo::Load(const std::string& strLanguage)
             XMLUtils::GetAttribute(pTime, "symbolPM");
       }
 
-      const TiXmlNode *pTempUnit=pRegion->FirstChild("tempunit");
+      const auto* pTempUnit = pRegion->FirstChildElement("tempunit");
       if (pTempUnit && !pTempUnit->NoChildren())
-        region.SetTemperatureUnit(pTempUnit->FirstChild()->ValueStr());
+        region.SetTemperatureUnit(pTempUnit->FirstChild()->Value());
 
-      const TiXmlNode *pSpeedUnit=pRegion->FirstChild("speedunit");
+      const auto* pSpeedUnit = pRegion->FirstChildElement("speedunit");
       if (pSpeedUnit && !pSpeedUnit->NoChildren())
-        region.SetSpeedUnit(pSpeedUnit->FirstChild()->ValueStr());
+        region.SetSpeedUnit(pSpeedUnit->FirstChild()->Value());
 
-      const TiXmlNode *pTimeZone=pRegion->FirstChild("timezone");
+      const auto* pTimeZone = pRegion->FirstChildElement("timezone");
       if (pTimeZone && !pTimeZone->NoChildren())
-        region.SetTimeZone(pTimeZone->FirstChild()->ValueStr());
+        region.SetTimeZone(pTimeZone->FirstChild()->Value());
 
-      const TiXmlElement *pThousandsSep = pRegion->FirstChildElement("thousandsseparator");
+      const auto* pThousandsSep = pRegion->FirstChildElement("thousandsseparator");
       if (pThousandsSep)
       {
         if (!pThousandsSep->NoChildren())
@@ -541,7 +541,7 @@ bool CLangInfo::Load(const std::string& strLanguage)
         region.m_strGrouping = "\3";
       }
 
-      const TiXmlElement *pDecimalSep = pRegion->FirstChildElement("decimalseparator");
+      const auto* pDecimalSep = pRegion->FirstChildElement("decimalseparator");
       if (pDecimalSep)
       {
         if (!pDecimalSep->NoChildren())
@@ -552,7 +552,7 @@ bool CLangInfo::Load(const std::string& strLanguage)
 
       m_regions.insert(PAIR_REGIONS(region.m_strName, region));
 
-      pRegion=pRegion->NextSiblingElement("region");
+      pRegion = pRegion->NextSiblingElement("region");
     }
 
     const std::string& strName = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOCALE_COUNTRY);
