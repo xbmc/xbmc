@@ -51,6 +51,9 @@ android {
       jniLibs {
           useLegacyPackaging = true
       }
+      exclude '**/*.kotlin_builtins'
+      exclude 'META-INF/kotlinx_coroutines*'
+      exclude 'DebugProbesKt.bin'
     }
 }
 
