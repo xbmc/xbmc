@@ -62,9 +62,13 @@ bool CWinSystemGbmGLESContext::InitWindowSystem()
   RETRO::CRPProcessInfoGbm::RegisterRendererFactory(new RETRO::CRendererFactoryOpenGLES);
 
   // GLES 3.0 required for 10-bit texture format support (GL_RGB10_A2, GL_R16UI, etc.)
+  // Fall back to GLES 2.0 for devices that don't support GLES 3.0 (e.g. lima driver)
   if (!CWinSystemGbmEGLContext::InitWindowSystemEGL(EGL_OPENGL_ES3_BIT, EGL_OPENGL_ES_API))
   {
-    return false;
+    if (!CWinSystemGbmEGLContext::InitWindowSystemEGL(EGL_OPENGL_ES2_BIT, EGL_OPENGL_ES_API))
+    {
+      return false;
+    }
   }
 
   bool general, deepColor;
