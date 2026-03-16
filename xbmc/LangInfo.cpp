@@ -169,13 +169,9 @@ static CTemperature::Unit StringToTemperatureUnit(const std::string& temperature
   std::string unit(temperatureUnit);
   StringUtils::ToLower(unit);
 
-  for (const TemperatureInfo& info : temperatureInfo)
-  {
-    if (info.name == unit)
-      return info.unit;
-  }
-
-  return CTemperature::UnitCelsius;
+  const auto it = std::ranges::find_if(temperatureInfo,
+                                       [&unit](const auto& info) { return info.name == unit; });
+  return it != temperatureInfo.end() ? it->unit : CTemperature::UnitCelsius;
 }
 
 static CSpeed::Unit StringToSpeedUnit(const std::string& speedUnit)
@@ -183,13 +179,9 @@ static CSpeed::Unit StringToSpeedUnit(const std::string& speedUnit)
   std::string unit(speedUnit);
   StringUtils::ToLower(unit);
 
-  for (const SpeedInfo& info : speedInfo)
-  {
-    if (info.name == unit)
-      return info.unit;
-  }
-
-  return CSpeed::UnitKilometresPerHour;
+  const auto it =
+      std::ranges::find_if(speedInfo, [&unit](const auto& info) { return info.name == unit; });
+  return it != speedInfo.end() ? it->unit : CSpeed::UnitKilometresPerHour;
 }
 
 struct SortLanguage
@@ -660,34 +652,34 @@ void CLangInfo::SetDefaults()
 
 std::string CLangInfo::GetGuiCharSet() const
 {
-  std::shared_ptr<CSettingString> charsetSetting = std::static_pointer_cast<CSettingString>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(CSettings::SETTING_LOCALE_CHARSET));
-  if (charsetSetting == nullptr || charsetSetting->IsDefault())
-    return m_strGuiCharSet;
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  const auto setting = settings->GetSetting(CSettings::SETTING_LOCALE_CHARSET);
+  const auto charsetSetting = std::static_pointer_cast<CSettingString>(setting);
 
-  return charsetSetting->GetValue();
+  return charsetSetting->IsDefault() ? m_strGuiCharSet : charsetSetting->GetValue();
 }
 
 std::string CLangInfo::GetSubtitleCharSet() const
 {
-  std::shared_ptr<CSettingString> charsetSetting = std::static_pointer_cast<CSettingString>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(CSettings::SETTING_SUBTITLES_CHARSET));
-  if (charsetSetting->IsDefault())
-    return m_strSubtitleCharSet;
-
-  return charsetSetting->GetValue();
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  const auto setting = settings->GetSetting(CSettings::SETTING_SUBTITLES_CHARSET);
+  const auto charsetSetting = std::static_pointer_cast<CSettingString>(setting);
+  return charsetSetting->IsDefault() ? m_strSubtitleCharSet : charsetSetting->GetValue();
 }
 
 void CLangInfo::GetAddonsLanguageCodes(std::map<std::string, std::string>& languages)
 {
   ADDON::VECADDONS addons;
   CServiceBroker::GetAddonMgr().GetAddons(addons, ADDON::AddonType::RESOURCE_LANGUAGE);
-  for (const auto& addon : addons)
-  {
-    const LanguageResourcePtr langAddon =
-        std::dynamic_pointer_cast<ADDON::CLanguageResource>(addon);
-    std::string langCode{langAddon->GetLocale().ToShortStringLC()};
-    StringUtils::Replace(langCode, '_', '-');
-    languages.emplace(langCode, addon->Name());
-  }
+  std::ranges::transform(addons, std::inserter(languages, languages.end()),
+                         [](const auto& addon)
+                         {
+                           const LanguageResourcePtr langAddon =
+                               std::dynamic_pointer_cast<ADDON::CLanguageResource>(addon);
+                           std::string langCode{langAddon->GetLocale().ToShortStringLC()};
+                           StringUtils::Replace(langCode, '_', '-');
+                           return std::pair{std::move(langCode), addon->Name()};
+                         });
 }
 
 LanguageResourcePtr CLangInfo::GetLanguageAddon(const std::string& locale /* = "" */) const
@@ -714,17 +706,18 @@ std::string CLangInfo::ConvertEnglishNameToAddonLocale(const std::string& langNa
 {
   ADDON::VECADDONS addons;
   CServiceBroker::GetAddonMgr().GetAddons(addons, ADDON::AddonType::RESOURCE_LANGUAGE);
-  for (const auto& addon : addons)
+  const auto it =
+      std::ranges::find_if(addons, [&langName](const auto& addon)
+                           { return StringUtils::CompareNoCase(addon->Name(), langName) == 0; });
+
+  if (it != addons.end())
   {
-    if (StringUtils::CompareNoCase(addon->Name(), langName) == 0)
-    {
-      const LanguageResourcePtr langAddon =
-          std::dynamic_pointer_cast<ADDON::CLanguageResource>(addon);
-      std::string locale = langAddon->GetLocale().ToShortStringLC();
-      StringUtils::Replace(locale, '_', '-');
-      return locale;
-    }
+    const LanguageResourcePtr langAddon = std::dynamic_pointer_cast<ADDON::CLanguageResource>(*it);
+    std::string locale = langAddon->GetLocale().ToShortStringLC();
+    StringUtils::Replace(locale, '_', '-');
+    return locale;
   }
+
   return "";
 }
 
@@ -787,11 +780,13 @@ bool CLangInfo::SetLanguage(std::string language /* = "" */, bool reloadServices
   if (CServiceBroker::GetAddonMgr().GetInstalledAddons(addons))
   {
     const std::string locale = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOCALE_LANGUAGE);
-    for (const auto& addon : addons)
-    {
-      const std::string path = URIUtils::AddFileToFolder(addon->Path(), "resources", "language/");
-      resources.GetLocalizeStrings().LoadAddonStrings(path, locale, addon->ID());
-    }
+    std::ranges::for_each(addons,
+                          [&resources, &locale](const auto& ad)
+                          {
+                            const std::string path =
+                                URIUtils::AddFileToFolder(ad->Path(), "resources", "language/");
+                            resources.GetLocalizeStrings().LoadAddonStrings(path, locale, ad->ID());
+                          });
   }
 
   if (reloadServices)
@@ -1045,14 +1040,13 @@ const std::string& CLangInfo::MeridiemSymbolToString(MeridiemSymbol symbol)
 // Fills the array with the region names available for this language
 void CLangInfo::GetRegionNames(std::vector<std::string>& array) const
 {
-  for (const auto &region : m_regions)
-  {
-    std::string strName=region.first;
-    if (strName=="N/A")
-      strName =
-          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(10005); // Not available
-    array.emplace_back(std::move(strName));
-  }
+  std::ranges::transform(m_regions, std::back_inserter(array),
+                         [&rc = CServiceBroker::GetResourcesComponent()](const auto& region)
+                         {
+                           return region.first == "N/A"
+                                      ? rc.GetLocalizeStrings().Get(10005) // Not available
+                                      : region.first;
+                         });
 }
 
 // Set the current region by its name, names from GetRegionNames() are valid.
@@ -1236,8 +1230,8 @@ void CLangInfo::SettingOptionsLanguageNamesFiller(const SettingConstPtr& /*setti
   if (!CServiceBroker::GetAddonMgr().GetAddons(addons, ADDON::AddonType::RESOURCE_LANGUAGE))
     return;
 
-  for (const auto &addon : addons)
-    list.emplace_back(addon->Name(), addon->Name());
+  std::ranges::transform(addons, std::back_inserter(list), [](const auto& addon)
+                         { return StringSettingOption{addon->Name(), addon->Name()}; });
 
   sort(list.begin(), list.end(), SortLanguage());
 }
@@ -1249,8 +1243,8 @@ void CLangInfo::SettingOptionsISO6391LanguagesFiller(const SettingConstPtr& /*se
   std::vector<std::string> languages = g_LangCodeExpander.GetLanguageNames(
       CLangCodeExpander::ISO_639_1, CLangCodeExpander::LANG_LIST::INCLUDE_USERDEFINED);
 
-  for (const auto &language : languages)
-    list.emplace_back(language, language);
+  std::ranges::transform(languages, std::back_inserter(list), [](const auto& language)
+                         { return StringSettingOption{language, language}; });
 }
 
 void CLangInfo::SettingOptionsAudioStreamLanguagesFiller(const SettingConstPtr& /*setting*/,
@@ -1583,6 +1577,6 @@ void CLangInfo::AddLanguages(std::vector<StringSettingOption> &list)
   std::vector<std::string> languages = g_LangCodeExpander.GetLanguageNames(
       CLangCodeExpander::ISO_639_1, CLangCodeExpander::LANG_LIST::INCLUDE_ADDONS_USERDEFINED);
 
-  for (const auto& language : languages)
-    list.emplace_back(language, language);
+  std::ranges::transform(languages, std::back_inserter(list), [](const auto& language)
+                         { return StringSettingOption{language, language}; });
 }
