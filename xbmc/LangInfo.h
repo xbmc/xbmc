@@ -221,25 +221,32 @@ public:
                                                    std::string& current);
   static void SettingOptionsRegionsFiller(const std::shared_ptr<const CSetting>& setting,
                                           std::vector<StringSettingOption>& list,
-                                          std::string& current);
+                                          std::string& current,
+                                          const CLangInfo& langInfo);
   static void SettingOptionsShortDateFormatsFiller(const std::shared_ptr<const CSetting>& setting,
                                                    std::vector<StringSettingOption>& list,
-                                                   std::string& current);
+                                                   std::string& current,
+                                                   const CLangInfo& langInfo);
   static void SettingOptionsLongDateFormatsFiller(const std::shared_ptr<const CSetting>& setting,
                                                   std::vector<StringSettingOption>& list,
-                                                  std::string& current);
+                                                  std::string& current,
+                                                  const CLangInfo& langInfo);
   static void SettingOptionsTimeFormatsFiller(const std::shared_ptr<const CSetting>& setting,
                                               std::vector<StringSettingOption>& list,
-                                              std::string& current);
+                                              std::string& current,
+                                              const CLangInfo& langInfo);
   static void SettingOptions24HourClockFormatsFiller(const std::shared_ptr<const CSetting>& setting,
                                                      std::vector<StringSettingOption>& list,
-                                                     std::string& current);
+                                                     std::string& current,
+                                                     const CLangInfo& langInfo);
   static void SettingOptionsTemperatureUnitsFiller(const std::shared_ptr<const CSetting>& setting,
                                                    std::vector<StringSettingOption>& list,
-                                                   std::string& current);
+                                                   std::string& current,
+                                                   const CLangInfo& langInfo);
   static void SettingOptionsSpeedUnitsFiller(const std::shared_ptr<const CSetting>& setting,
                                              std::vector<StringSettingOption>& list,
-                                             std::string& current);
+                                             std::string& current,
+                                             const CLangInfo& langInfo);
 
 protected:
   void SetDefaults();
@@ -279,7 +286,7 @@ protected:
     Set the locale associated with this region global. This affects string
     sorting & transformations.
     */
-    void SetGlobalLocale();
+    void SetGlobalLocale(CLangInfo& langInfo);
     std::string m_strLangLocaleName;
     std::string m_strLangLocaleCodeTwoChar;
     std::string m_strRegionLocaleName;
