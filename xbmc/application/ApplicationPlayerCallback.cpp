@@ -16,7 +16,9 @@
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationStackHelper.h"
+#ifdef HAVE_LIBBLURAY
 #include "filesystem/BlurayDirectory.h"
+#endif
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
@@ -116,6 +118,7 @@ void CApplicationPlayerCallback::OnPlayBackStarted(const CFileItem& file)
 
 namespace
 {
+#ifdef HAVE_LIBBLURAY
 void UpdateRemovableBlurayPath(CFileItem& fileItem, bool updateStreamDetails)
 {
   if (fileItem.HasVideoInfoTag())
@@ -169,6 +172,7 @@ void UpdateRemovableBlurayPath(CFileItem& fileItem, bool updateStreamDetails)
     }
   }
 }
+#endif
 
 bool WithinPercentOfEnd(const CBookmark& bookmark, float ignorePercentAtEnd)
 {
