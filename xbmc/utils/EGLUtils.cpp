@@ -271,7 +271,7 @@ bool CEGLContextUtils::InitializeDisplay(EGLint renderingApi)
   return true;
 }
 
-bool CEGLContextUtils::ChooseConfig(EGLint renderableType, EGLint visualId, bool hdr)
+bool CEGLContextUtils::ChooseConfig(EGLint renderableType, EGLint visualId, bool hdr, int alpha)
 {
   EGLint numMatched{0};
 
@@ -282,28 +282,11 @@ bool CEGLContextUtils::ChooseConfig(EGLint renderableType, EGLint visualId, bool
 
   EGLint surfaceType = EGL_WINDOW_BIT;
 
-  // Match EGL color sizes to 10-bit DRM FourCC visual IDs when requested.
-  // These are from drm_fourcc.h which is not available on all EGL platforms.
-  constexpr EGLint DRM_FORMAT_XRGB2101010 = 0x30335258; // XR30
-  constexpr EGLint DRM_FORMAT_ARGB2101010 = 0x30335241; // AR30
-
-  EGLint redSize = 8;
-  EGLint greenSize = 8;
-  EGLint blueSize = 8;
-  EGLint alphaSize = 8;
-  if (visualId == DRM_FORMAT_XRGB2101010 || visualId == DRM_FORMAT_ARGB2101010)
-  {
-    redSize = 10;
-    greenSize = 10;
-    blueSize = 10;
-    alphaSize = (visualId == DRM_FORMAT_XRGB2101010) ? 0 : 2;
-  }
-
   CEGLAttributesVec attribs;
-  attribs.Add({{EGL_RED_SIZE, redSize},
-               {EGL_GREEN_SIZE, greenSize},
-               {EGL_BLUE_SIZE, blueSize},
-               {EGL_ALPHA_SIZE, alphaSize},
+  attribs.Add({{EGL_RED_SIZE, 8},
+               {EGL_GREEN_SIZE, 8},
+               {EGL_BLUE_SIZE, 8},
+               {EGL_ALPHA_SIZE, alpha},
                {EGL_DEPTH_SIZE, 16},
                {EGL_STENCIL_SIZE, 0},
                {EGL_SAMPLE_BUFFERS, 0},

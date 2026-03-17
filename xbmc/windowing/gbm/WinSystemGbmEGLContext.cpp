@@ -38,9 +38,15 @@ bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint 
   // The DRM_FORMAT_XRGB2101010 fallback is suspect — consider DRM_FORMAT_XRGB8888.
   uint32_t visualId = plane != nullptr ? plane->GetFormat() : DRM_FORMAT_XRGB2101010;
 
+  // Determine alpha size based on plane format. 10-bit formats (ARGB2101010) only
+  // have 2-bit alpha; 8-bit formats (ARGB8888) have full 8-bit alpha.
+  bool is10bit = (visualId == DRM_FORMAT_XRGB2101010 || visualId == DRM_FORMAT_ARGB2101010);
+  int alphaWithAlpha = is10bit ? 2 : 8;
+
   // prefer alpha visual id, fallback to non-alpha visual id
-  if (!m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithAlpha(visualId)) &&
-      !m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithoutAlpha(visualId)))
+  if (!m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithAlpha(visualId), false,
+                                 alphaWithAlpha) &&
+      !m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithoutAlpha(visualId), false, 0))
   {
     // fallback to 8bit format if no EGL config was found for 10bit
     if (plane)
@@ -49,7 +55,8 @@ bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint 
     visualId = plane != nullptr ? plane->GetFormat() : DRM_FORMAT_XRGB8888;
 
     if (!m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithAlpha(visualId)) &&
-        !m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithoutAlpha(visualId)))
+        !m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithoutAlpha(visualId), false,
+                                   0))
     {
       return false;
     }
