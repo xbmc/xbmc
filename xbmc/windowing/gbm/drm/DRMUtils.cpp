@@ -170,10 +170,23 @@ bool CDRMUtils::FindGuiPlane(uint32_t format, uint64_t modifier)
   const PlaneType gui_type = HasQuirk(QUIRK_NEEDSPRIMARY) ? PLANE_TYPE_PRIMARY : PLANE_TYPE_ANY;
   const RESOLUTION_INFO res = GetCurrentMode();
 
+  if (m_crtc && m_gui_plane &&
+      m_gui_plane->Check(res.iWidth, res.iHeight, format, modifier, m_crtc, gui_type))
+  {
+    CLog::LogF(LOGINFO,
+               "Using existing gui plane [{}x{}] id:{}, format:{}, modifier:{}, crtc id:{}",
+               res.iWidth, res.iHeight, m_gui_plane->GetId(), DRMHELPERS::FourCCToString(format),
+               DRMHELPERS::ModifierToString(modifier), m_crtc->GetId());
+    return true;
+  }
+
   for (auto& crtc : m_encoder->GetPossibleCrtcs(m_crtcs, m_crtc))
   {
     for (auto& plane : m_planes)
     {
+      if (m_video_plane && m_video_plane->GetId() == plane.get()->GetId())
+        continue;
+
       if (!plane->Check(res.iWidth, res.iHeight, format, modifier, crtc, gui_type))
         continue;
 
