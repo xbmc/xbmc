@@ -41,27 +41,28 @@ bool CDatabaseManager::Initialize()
 {
   std::unique_lock lock(m_section);
 
+  if (m_initialized)
+    return false;
+
   const bool rc = InitializeInternal();
 
   m_bIsUpgrading = false;
   m_connecting = false;
+  m_initialized = true;
 
   return rc;
 }
 
 bool CDatabaseManager::InitializeInternal()
 {
-  m_dbStatus.clear();
-
   CLog::LogF(LOGDEBUG, "updating databases...");
 
   const std::shared_ptr<CAdvancedSettings> advancedSettings =
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
 
+  // NOTE: CAddonDatabase initialized in the constructor
   // NOTE: Order here is important. In particular, CTextureDatabase has to be updated
   //       before CVideoDatabase.
-  if (ADDON::CAddonDatabase db; !UpdateDatabase(db))
-    return false;
   if (CViewDatabase db; !UpdateDatabase(db))
     return false;
   if (CTextureDatabase db; !UpdateDatabase(db))

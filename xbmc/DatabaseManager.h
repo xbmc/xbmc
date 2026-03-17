@@ -65,6 +65,7 @@ public:
 private:
   std::atomic<bool> m_bIsUpgrading;
   std::atomic<bool> m_connecting{false};
+  bool m_initialized{false};
 
   enum class DBStatus
   {
