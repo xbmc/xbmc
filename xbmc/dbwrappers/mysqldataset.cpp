@@ -18,6 +18,7 @@
 #include <algorithm>
 #include <array>
 #include <cctype>
+#include <charconv>
 #include <chrono>
 #include <cstdlib>
 #include <string>
@@ -44,11 +45,42 @@ constexpr int ER_BAD_DB_ERROR = 1049;
 constexpr std::string_view SQL_CHARSET_COLLATION =
     "CHARACTER SET " DEF_CHARSET " COLLATE " DEF_COLLATION;
 
+// MariaDB 10.x version number prefix hack to trick MySQL 5.5 replication slaves into working
+// see https://jira.mariadb.org/browse/MDEV-4088
+constexpr std::string_view MARIADB_10_HACK_PREFIX = "5.5.5-";
+
 // Minimum MySQL and MariaDB versions required for the default large index size needed by utf8mb4
-constexpr unsigned long MIN_MYSQL = 50709;
 constexpr std::string_view MIN_MYSQL_STR = "5.7.9";
-constexpr unsigned long MIN_MARIADB = 100205;
 constexpr std::string_view MIN_MARIADB_STR = "10.2.5";
+
+struct MySQLDbVersion
+{
+  auto operator<=>(const MySQLDbVersion& other) const = default;
+
+  // the field order is important for the compiler-generated comparison operators
+  unsigned int m_major{0};
+  unsigned int m_minor{0};
+  unsigned int m_patch{0};
+};
+
+MySQLDbVersion VersionNumber(std::string_view str)
+{
+  // Expected format: xx.yy.zz
+  MySQLDbVersion version;
+  const char* end{str.data() + str.size()};
+
+  auto res = std::from_chars(str.data(), end, version.m_major);
+  if (res.ec != std::errc{} || res.ptr == end)
+    return version;
+
+  res = std::from_chars(res.ptr + 1, end, version.m_minor);
+  if (res.ec != std::errc{} || res.ptr == end)
+    return version;
+
+  res = std::from_chars(res.ptr + 1, end, version.m_patch);
+
+  return version;
+}
 
 /*!
  * \brief Validation of unquoted identifiers
@@ -227,22 +259,33 @@ int MysqlDatabase::connect(bool create_new)
       static bool showed_ver_info = false;
       if (!showed_ver_info)
       {
-        const std::string version_string = mysql_get_server_info(conn);
-        CLog::Log(LOGINFO, "MYSQL: Connected to version {}", version_string);
+        CLog::Log(LOGINFO, "MYSQL: client library {}", mysql_get_client_info());
+
+        std::string versionString = mysql_get_server_info(conn);
+        CLog::Log(LOGINFO, "MYSQL: Connected to version {}", versionString);
         showed_ver_info = true;
 
-        const unsigned long version = mysql_get_server_version(conn);
-        const unsigned long minVersion =
-            version_string.find("MariaDB") != std::string::npos ? MIN_MARIADB : MIN_MYSQL;
+        // Undo MariaDB 10.x version string hack - remove the prefix
+        if (versionString.starts_with(MARIADB_10_HACK_PREFIX))
+          versionString = versionString.substr(MARIADB_10_HACK_PREFIX.size());
+
+        const MySQLDbVersion version = VersionNumber(versionString);
+
+        CLog::LogF(LOGDEBUG, "server version interpreted as {}.{}.{}", version.m_major,
+                   version.m_minor, version.m_patch);
+
+        const std::string_view minVersionString =
+            versionString.find("MariaDB") != std::string::npos ? MIN_MARIADB_STR : MIN_MYSQL_STR;
+        const MySQLDbVersion minVersion = VersionNumber(minVersionString);
 
         if (version < minVersion)
         {
           CLog::Log(LOGERROR,
                     "MYSQL: Your database server version {} is very old. Kodi requires at least "
                     "MySQL {} or MariaDB {}.",
-                    version_string, MIN_MYSQL_STR, MIN_MARIADB_STR);
+                    versionString, MIN_MYSQL_STR, MIN_MARIADB_STR);
 
-          throw DbErrors("database server version %s too old", version_string.c_str());
+          throw DbErrors("database server version %s is too old", versionString.c_str());
         }
       }
 
