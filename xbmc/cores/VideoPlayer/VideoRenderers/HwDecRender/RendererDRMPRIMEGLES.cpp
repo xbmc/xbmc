@@ -31,6 +31,8 @@ using namespace KODI::UTILS::EGL;
 CRendererDRMPRIMEGLES::~CRendererDRMPRIMEGLES()
 {
   Flush(false);
+  CServiceBroker::GetWinSystem()->SetHDR(nullptr);
+  CServiceBroker::GetWinSystem()->SetGuiCompositing(false);
   CServiceBroker::GetWinSystem()->RecreateGuiSurface(false);
 }
 
@@ -132,8 +134,35 @@ bool CRendererDRMPRIMEGLES::Configure(const VideoPicture& picture,
   if (picture.colorBits > 8)
     winSystem->RecreateGuiSurface(true);
 
+  if (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
+      picture.color_transfer == AVCOL_TRC_ARIB_STD_B67)
+  {
+    m_passthroughHDR = winSystem->SetHDR(&picture);
+    CLog::Log(LOGDEBUG, "RendererDRMPRIMEGLES::Configure: HDR passthrough: {}",
+              m_passthroughHDR ? "on" : "off");
+  }
+
+  m_hdrFboActive = m_passthroughHDR && winSystem->SetGuiCompositing(picture.color_transfer);
+  if (m_passthroughHDR && !m_hdrFboActive)
+    CLog::Log(LOGWARNING, "RendererDRMPRIMEGLES::Configure: HDR passthrough active but GUI "
+                          "compositing not supported by windowing system");
+
   m_configured = true;
   return true;
+}
+
+bool CRendererDRMPRIMEGLES::IsGuiLayer()
+{
+  return !m_hdrFboActive;
+}
+
+void CRendererDRMPRIMEGLES::UnInit()
+{
+  CServiceBroker::GetWinSystem()->SetHDR(nullptr);
+  m_passthroughHDR = false;
+
+  m_hdrFboActive = false;
+  CServiceBroker::GetWinSystem()->SetGuiCompositing(false);
 }
 
 void CRendererDRMPRIMEGLES::AddVideoPicture(const VideoPicture& picture, int index)

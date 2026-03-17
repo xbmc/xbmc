@@ -37,8 +37,10 @@ public:
   // Player functions
   bool Configure(const VideoPicture& picture, float fps, unsigned int orientation) override;
   bool IsConfigured() override { return m_configured; }
+  bool IsGuiLayer() override;
+  bool HasVideoPlane() override { return false; }
   void AddVideoPicture(const VideoPicture& picture, int index) override;
-  void UnInit() override {}
+  void UnInit() override;
   bool Flush(bool saveBuffers) override;
   void ReleaseBuffer(int idx) override;
   bool NeedBuffer(int idx) override;
@@ -59,6 +61,8 @@ private:
   void Render(unsigned int flags, int index);
 
   bool m_configured = false;
+  bool m_passthroughHDR{false};
+  bool m_hdrFboActive{false};
   float m_clearColour{0.0f};
 
   struct BUFFER
