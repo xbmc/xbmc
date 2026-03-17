@@ -42,6 +42,7 @@ public:
   bool SetProperty(std::string_view name, uint64_t value);
   bool SupportsProperty(std::string_view name);
   std::optional<uint64_t> GetPropertyValue(std::string_view name) const;
+  bool CachePropertyValue(uint32_t propertyId, uint64_t value);
   std::optional<bool> IsPropertyImmutable(std::string_view name) const;
   std::optional<std::pair<uint64_t, uint64_t>> GetRangePropertyLimits(std::string_view name) const;
 
