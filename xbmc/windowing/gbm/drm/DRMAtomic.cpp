@@ -135,9 +135,17 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
     CLog::LogF(LOGERROR, "atomic commit failed: {}", strerror(errno));
     m_atomicRequestQueue.pop_back();
   }
-  else if (m_atomicRequestQueue.size() > 1)
+  else
   {
-    m_atomicRequestQueue.pop_front();
+    // Sync the property cache with values the kernel accepted.
+    // This must happen after a successful commit so that
+    // GetPropertyValue() returns current state (e.g. CRTC_ID=0
+    // after Disable()). Without this, stale cached values cause
+    // incorrect plane cleanup on subsequent video playback.
+    m_req->CacheProperties();
+
+    if (m_atomicRequestQueue.size() > 1)
+      m_atomicRequestQueue.pop_front();
   }
 
   if (m_inFenceFd != -1)
@@ -244,6 +252,17 @@ bool CDRMAtomic::CDRMAtomicRequest::AddProperty(CDRMObject* object,
 
   m_atomicRequestItems[object][propertyId] = value;
   return true;
+}
+
+void CDRMAtomic::CDRMAtomicRequest::CacheProperties()
+{
+  for (const auto& [object, properties] : m_atomicRequestItems)
+  {
+    for (const auto& [propertyId, value] : properties)
+    {
+      object->CachePropertyValue(propertyId, value);
+    }
+  }
 }
 
 void CDRMAtomic::CDRMAtomicRequest::LogAtomicDiff(CDRMAtomicRequest* current,
