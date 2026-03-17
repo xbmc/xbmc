@@ -30,13 +30,7 @@ using namespace KODI::UTILS::EGL;
 
 CRendererDRMPRIMEGLES::~CRendererDRMPRIMEGLES()
 {
-  Flush(false);
-
-  if (m_configured)
-  {
-    if (auto winSystem = CServiceBroker::GetWinSystem())
-      winSystem->SetVideoOutput(nullptr);
-  }
+  UnInit();
 }
 
 CBaseRenderer* CRendererDRMPRIMEGLES::Create(CVideoBuffer* buffer)
@@ -115,6 +109,8 @@ bool CRendererDRMPRIMEGLES::Configure(const VideoPicture& picture,
   if (!winSystem)
     return false;
 
+  m_configured = true;
+
   if (!winSystem->SetVideoOutput(&picture))
     CLog::Log(LOGWARNING, "RendererDRMPRIMEGLES::Configure: SetVideoOutput failed");
 
@@ -135,7 +131,54 @@ bool CRendererDRMPRIMEGLES::Configure(const VideoPicture& picture,
   }
 
   m_configured = true;
+
+  //! @todo limited-range color management is broken on the DRMPRIMEGLES path.
+  //! The OES_EGL_image_external sampler (samplerExternalOES) does YUV->RGB
+  //! conversion in mesa with hardcoded matrices that always output full-range
+  //! RGB regardless of source range. So `videoscreen.limitedrange=true` is
+  //! silently ignored for video pixels here, while GUI pixels go through the
+  //! GLES shader chain that does honor the setting -- producing a range
+  //! mismatch in the BO when both are composited. The clean fix is to migrate
+  //! from OES_EGL_image_external to EXT_YUV_target's __samplerExternal2DY2YEXT
+  //! (sampler returns raw YUV) and apply the conversion matrix in our own
+  //! shader, the way RendererVAAPIGLES does. Tracked in
+  //! project_limited_range_hdr.md.
+
+  if (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
+      picture.color_transfer == AVCOL_TRC_ARIB_STD_B67)
+  {
+    m_passthroughHDR = winSystem->SetHDR(&picture);
+    CLog::Log(LOGDEBUG, "RendererDRMPRIMEGLES::Configure: HDR passthrough: {}",
+              m_passthroughHDR ? "on" : "off");
+  }
+
+  m_hdrFboActive = m_passthroughHDR && winSystem->SetGuiCompositing(picture.color_transfer);
+  if (m_passthroughHDR && !m_hdrFboActive)
+    CLog::Log(LOGWARNING, "RendererDRMPRIMEGLES::Configure: HDR passthrough active but GUI "
+                          "compositing not supported by windowing system");
+
   return true;
+}
+
+bool CRendererDRMPRIMEGLES::IsGuiLayer()
+{
+  return !m_hdrFboActive;
+}
+
+void CRendererDRMPRIMEGLES::UnInit()
+{
+  Flush(false);
+
+  if (m_configured)
+  {
+    m_hdrFboActive = false;
+    CServiceBroker::GetWinSystem()->SetGuiCompositing(false);
+    CServiceBroker::GetWinSystem()->SetHDR(nullptr);
+    m_passthroughHDR = false;
+    CServiceBroker::GetWinSystem()->SetVideoOutput(nullptr);
+  }
+
+  m_configured = false;
 }
 
 void CRendererDRMPRIMEGLES::AddVideoPicture(const VideoPicture& picture, int index)
