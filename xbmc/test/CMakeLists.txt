@@ -4,6 +4,7 @@ set(SOURCES TestAutoSwitch.cpp
             TestDateTime.cpp
             TestDateTimeSpan.cpp
             TestFileItem.cpp
+            TestLangInfo.cpp
             TestMediaSource.cpp
             TestURL.cpp
             TestUtil.cpp
