@@ -77,7 +77,7 @@ void CPlayerCoreFactory::GetPlayers(std::vector<std::string>&players) const
   players.clear();
   for (auto& conf : m_vecPlayerConfigs)
   {
-    if (conf->m_bPlaysAudio || conf->m_bPlaysVideo)
+    if (conf->m_bPlaysAudio || conf->m_bPlaysVideo || conf->m_bPlaysGame)
       players.emplace_back(conf->m_name);
   }
 }
@@ -189,8 +189,8 @@ void CPlayerCoreFactory::GetPlayers(const CFileItem& item, std::vector<std::stri
 
   if (item.IsGame())
   {
-    CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding retroplayer");
-    players.emplace_back("RetroPlayer");
+    CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: forcing retroplayer");
+    players = {"RetroPlayer"};
   }
 
   CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: added {0} players", players.size());
@@ -379,6 +379,7 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
     m_vecPlayerConfigs.emplace_back(std::move(paplayer));
 
     auto retroPlayer = std::make_unique<CPlayerCoreConfig>("RetroPlayer", "game", nullptr);
+    retroPlayer->m_bPlaysGame = true;
     m_vecPlayerConfigs.emplace_back(std::move(retroPlayer));
   }
 

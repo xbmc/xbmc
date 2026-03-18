@@ -45,6 +45,8 @@ public:
     return m_bPlaysVideo;
   }
 
+  bool PlaysGame() const { return m_bPlaysGame; }
+
   std::shared_ptr<IPlayer> CreatePlayer(IPlayerCallback& callback) const;
 
   std::string m_name;
@@ -52,5 +54,6 @@ public:
   std::string m_type;
   bool m_bPlaysAudio{false};
   bool m_bPlaysVideo{false};
+  bool m_bPlaysGame{false};
   std::unique_ptr<TiXmlElement> m_config;
 };

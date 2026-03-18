@@ -26,6 +26,7 @@
 #include "guilib/WindowIDs.h"
 #include "input/actions/ActionIDs.h"
 #include "media/MediaLockState.h"
+#include "playlists/PlayListFileItemClassify.h"
 #include "playlists/PlayListTypes.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
@@ -384,7 +385,11 @@ bool CGUIWindowGames::PlayGame(const CFileItem& item)
     itemCopy.GetGameInfoTag();
   }
 
-  return g_application.PlayMedia(itemCopy, "", PLAYLIST::Id::TYPE_NONE);
+  PLAYLIST::Id playlistId = PLAYLIST::Id::TYPE_NONE;
+  if (PLAYLIST::IsPlayList(item))
+    playlistId = PLAYLIST::Id::TYPE_GAME;
+
+  return g_application.PlayMedia(itemCopy, "", playlistId);
 }
 
 bool CGUIWindowGames::CanPlay(const CFileItem& item) const
