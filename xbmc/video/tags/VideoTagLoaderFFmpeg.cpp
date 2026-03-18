@@ -204,7 +204,7 @@ CInfoScanner::InfoType CVideoTagLoaderFFmpeg::LoadMKV(CVideoInfoTag& tag,
   }
 
   AVDictionaryEntry* avtag = nullptr;
-  bool hastag = false;
+  bool hasTitle = false;
   while ((avtag = av_dict_get(m_fctx->metadata, "", avtag, AV_DICT_IGNORE_SUFFIX)))
   {
     if (StringUtils::CompareNoCase(avtag->key, "imdburl") == 0 ||
@@ -212,22 +212,25 @@ CInfoScanner::InfoType CVideoTagLoaderFFmpeg::LoadMKV(CVideoInfoTag& tag,
     {
       CNfoFile nfo;
       nfo.Create(avtag->value, m_info);
-      m_url = nfo.ScraperUrl();
-      return CInfoScanner::InfoType::URL;
+      // Try other tags if the scraper wont use the url:
+      if (nfo.ScraperUrl().HasUrls())
+      {
+        m_url = nfo.ScraperUrl();
+        return CInfoScanner::InfoType::URL;
+      }
     }
     else if (StringUtils::CompareNoCase(avtag->key, "title") == 0)
-      tag.SetTitle(avtag->value);
-    else if (StringUtils::CompareNoCase(avtag->key, "director") == 0)
     {
-      std::vector<std::string> dirs = StringUtils::Split(avtag->value, " / ");
-      tag.SetDirector(dirs);
+      tag.SetTitle(avtag->value);
+      hasTitle = true;
     }
+    else if (StringUtils::CompareNoCase(avtag->key, "director") == 0)
+      tag.SetDirector(StringUtils::Split(avtag->value, " / "));
     else if (StringUtils::CompareNoCase(avtag->key, "date_released") == 0)
       tag.SetYear(atoi(avtag->value));
-    hastag = true;
   }
 
-  return hastag ? CInfoScanner::InfoType::TITLE : CInfoScanner::InfoType::NONE;
+  return hasTitle ? CInfoScanner::InfoType::TITLE : CInfoScanner::InfoType::NONE;
 }
 
 // https://wiki.multimedia.cx/index.php/FFmpeg_Metadata
