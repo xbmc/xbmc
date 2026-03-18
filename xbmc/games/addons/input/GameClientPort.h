@@ -90,6 +90,11 @@ public:
   bool ForceConnected() const { return m_forceConnected; }
 
   /*!
+   * \brief True if a controller should be connected automatically on startup
+   */
+  bool AutoConnect() const { return m_autoConnect; }
+
+  /*!
    * \brief Get the list of devices accepted by this port
    */
   const GameClientDeviceVec& Devices() const { return m_acceptedDevices; }
@@ -98,6 +103,7 @@ private:
   PORT_TYPE m_type;
   std::string m_portId;
   bool m_forceConnected{false};
+  bool m_autoConnect{true};
   GameClientDeviceVec m_acceptedDevices;
 };
 } // namespace GAME

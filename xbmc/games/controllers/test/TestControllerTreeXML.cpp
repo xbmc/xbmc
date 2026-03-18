@@ -90,6 +90,48 @@ TEST(TestControllerTreeXML, SerializeSimpleTree)
 }
 
 /*!
+ * Serialize a controller tree port with auto-connect disabled
+ */
+TEST(TestControllerTreeXML, SerializePortAutoConnectFalse)
+{
+  // Load the default controller add-on
+  const ADDON::CAddonMgr& addonManager = CServiceBroker::GetAddonMgr();
+  ADDON::AddonPtr addon;
+  ASSERT_TRUE(addonManager.GetAddon(DEFAULT_CONTROLLER_ID, addon, ADDON::AddonType::GAME_CONTROLLER,
+                                    ADDON::OnlyEnabled::CHOICE_YES));
+  ControllerPtr controller = std::static_pointer_cast<CController>(addon);
+  ASSERT_NE(controller.get(), nullptr);
+
+  // Build the controller node
+  CControllerNode node;
+  node.SetController(controller);
+
+  // Build the port node with auto-connect disabled
+  CPortNode port;
+  port.SetPortType(PORT_TYPE::CONTROLLER);
+  port.SetPortID("1");
+  port.SetAutoConnect(false);
+  port.SetCompatibleControllers({node});
+
+  // Build the hub containing the port
+  CControllerHub hub;
+  hub.SetPorts({port});
+
+  // Serialize to XML
+  CXBMCTinyXML2 doc;
+  auto* root = doc.NewElement("controller");
+  ASSERT_TRUE(hub.Serialize(*root));
+  doc.InsertFirstChild(root);
+
+  tinyxml2::XMLPrinter printer;
+  doc.Print(&printer);
+  std::string xml = printer.CStr();
+
+  // Verify auto-connect is explicitly disabled in output
+  EXPECT_NE(xml.find("autoconnect=\"false\""), std::string::npos);
+}
+
+/*!
  * Deserialize a simple controller tree from XML
  *
  * The XML contains one controller port accepting the default controller.
@@ -117,10 +159,36 @@ TEST(TestControllerTreeXML, DeserializeSimpleTree)
   const CPortNode& port = hub.GetPorts().front();
   EXPECT_EQ(port.GetPortType(), PORT_TYPE::CONTROLLER);
   EXPECT_EQ(port.GetPortID(), "1");
+  EXPECT_TRUE(port.IsAutoConnect());
   ASSERT_EQ(port.GetCompatibleControllers().size(), 1u);
   const CControllerNode& node = port.GetCompatibleControllers().front();
   ASSERT_NE(node.GetController(), nullptr);
   EXPECT_EQ(node.GetController()->ID(), std::string(DEFAULT_CONTROLLER_ID));
+}
+
+/*!
+ * Deserialize a controller tree port with auto-connect disabled
+ */
+TEST(TestControllerTreeXML, DeserializePortAutoConnectFalse)
+{
+  // Build an XML document with autoconnect disabled on a controller port
+  const char* xml = R"(<controller>
+                         <port type="controller" id="1" autoconnect="false">
+                           <accepts controller="game.controller.default"/>
+                         </port>
+                       </controller>)";
+  std::string xmlStr{xml};
+  CXBMCTinyXML2 doc;
+  ASSERT_TRUE(doc.Parse(xmlStr));
+  const tinyxml2::XMLElement* root = doc.RootElement();
+  ASSERT_NE(root, nullptr);
+
+  CControllerHub hub;
+  ASSERT_TRUE(hub.Deserialize(*root));
+
+  ASSERT_EQ(hub.GetPorts().size(), 1u);
+  const CPortNode& port = hub.GetPorts().front();
+  EXPECT_FALSE(port.IsAutoConnect());
 }
 
 /*!

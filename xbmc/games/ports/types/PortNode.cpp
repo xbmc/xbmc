@@ -28,6 +28,7 @@ namespace
 constexpr auto XML_ELM_ACCEPTS = "accepts";
 constexpr auto XML_ATTR_PORT_TYPE = "type";
 constexpr auto XML_ATTR_PORT_ID = "id";
+constexpr auto XML_ATTR_PORT_AUTOCONNECT = "autoconnect";
 } // namespace
 
 CPortNode::~CPortNode() = default;
@@ -42,6 +43,7 @@ CPortNode& CPortNode::operator=(const CPortNode& rhs)
     m_portId = rhs.m_portId;
     m_address = rhs.m_address;
     m_forceConnected = rhs.m_forceConnected;
+    m_autoConnect = rhs.m_autoConnect;
     m_controllers = rhs.m_controllers;
   }
 
@@ -58,6 +60,7 @@ CPortNode& CPortNode::operator=(CPortNode&& rhs) noexcept
     m_portId = std::move(rhs.m_portId);
     m_address = std::move(rhs.m_address);
     m_forceConnected = rhs.m_forceConnected;
+    m_autoConnect = rhs.m_autoConnect;
     m_controllers = std::move(rhs.m_controllers);
   }
 
@@ -232,6 +235,10 @@ bool CPortNode::Serialize(tinyxml2::XMLElement& portElement) const
   // Set the port ID
   portElement.SetAttribute(XML_ATTR_PORT_ID, m_portId.c_str());
 
+  // Set auto-connect state when explicitly disabled
+  if (!m_autoConnect)
+    portElement.SetAttribute(XML_ATTR_PORT_AUTOCONNECT, false);
+
   // Iterate and serialize each controller accepted by this port
   for (const auto& controllerNode : m_controllers)
   {
@@ -291,6 +298,12 @@ bool CPortNode::Deserialize(const tinyxml2::XMLElement& portElement)
     return false;
   }
 
+  // Ports auto-connect by default unless topology opts out
+  bool autoConnect = true;
+  if (portElement.QueryBoolAttribute(XML_ATTR_PORT_AUTOCONNECT, &autoConnect) ==
+      tinyxml2::XML_SUCCESS)
+    m_autoConnect = autoConnect;
+
   // Get first "accepts" element
   const tinyxml2::XMLElement* controllerElement = portElement.FirstChildElement(XML_ELM_ACCEPTS);
   if (controllerElement == nullptr)
@@ -322,6 +335,7 @@ std::string CPortNode::GetDigest(UTILITY::CDigest::Type digestType) const
 
   digest.Update(CControllerTranslator::TranslatePortType(m_portType));
   digest.Update(m_portId);
+  digest.Update(m_autoConnect ? "true" : "false");
 
   for (const CControllerNode& controller : m_controllers)
     digest.Update(controller.GetDigest(digestType));

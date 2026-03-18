@@ -253,7 +253,7 @@ void CGameClientInput::ActivateControllers(CControllerHub& hub)
     if (port.GetCompatibleControllers().empty())
       continue;
 
-    port.SetConnected(true);
+    port.SetConnected(port.IsAutoConnect());
     port.SetActiveController(0);
     for (auto& controller : port.GetCompatibleControllers())
       ActivateControllers(controller.GetHub());

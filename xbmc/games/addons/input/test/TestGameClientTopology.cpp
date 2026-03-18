@@ -182,3 +182,31 @@ TEST(TestGameClientTopology, TestMouse)
   EXPECT_EQ(mouseController.first, MOUSE_PORT_ADDRESS);
   EXPECT_EQ(mouseController.second, DEFAULT_MOUSE_ID);
 }
+
+TEST(TestGameClientTopology, GameApiAutoConnect)
+{
+  game_input_port port{};
+  port.type = GAME_PORT_CONTROLLER;
+  port.port_id = DEFAULT_PORT_ID;
+  port.force_connected = false;
+  port.autoconnect = false;
+  port.accepted_devices = nullptr;
+  port.device_count = 0;
+
+  CGameClientPort gameClientPort{port};
+  EXPECT_FALSE(gameClientPort.AutoConnect());
+  EXPECT_FALSE(gameClientPort.ForceConnected());
+
+  // force_connected controls disconnectability, not startup auto-connect
+  port.force_connected = true;
+  CGameClientPort forcedPort{port};
+  EXPECT_TRUE(forcedPort.ForceConnected());
+  EXPECT_FALSE(forcedPort.AutoConnect());
+
+  // autoconnect controls startup connection state
+  port.force_connected = false;
+  port.autoconnect = true;
+  CGameClientPort autoconnectPort{port};
+  EXPECT_FALSE(autoconnectPort.ForceConnected());
+  EXPECT_TRUE(autoconnectPort.AutoConnect());
+}
