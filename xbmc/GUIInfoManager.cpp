@@ -4123,6 +4123,15 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///     @skinning_v20 **[New Infolabel]** \link VideoPlayer_HdrType `VideoPlayer.HdrType`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`VideoPlayer.HdrDetail`</b>,
+///                  \anchor VideoPlayer_HdrDetail
+///                  _string_,
+///     @return String containing details for the HDR type (currently only for DV - profile and EL type) or empty if not HDR. Prints eg 5\, 7FEL\,
+///     and compatibility ID for profile 8 eg 8.4.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_HdrDetail `VideoPlayer.HdrDetail`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`VideoPlayer.VideoVersionName`</b>,
 ///                  \anchor VideoPlayer_VideoVersionName
 ///                  _string_,
@@ -7290,6 +7299,15 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///     @return String containing the name of the detected HDR type or empty if not HDR. See \ref StreamHdrType for the list of possible values.
 ///     <p><hr>
 ///     @skinning_v20 **[New Infolabel]** \link ListItem_HdrType `ListItem.HdrType`\endlink
+///   }
+///   \table_row3{   <b>`ListItem.HdrDetail`</b>,
+///                  \anchor ListItem_HdrDetail
+///                  _string_,
+///     @return String containing details for the HDR type (currently only for DV - profile and EL type) or empty if not HDR. Prints eg 5\, 7FEL\,
+///     and compatibility ID for profile 8 eg 8.4.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_HdrDetail `ListItem.HdrDetail`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.SongVideoURL`</b>,
 ///                  \anchor ListItem_SongVideoURL
