@@ -212,8 +212,13 @@ CInfoScanner::InfoType CVideoTagLoaderFFmpeg::LoadMKV(CVideoInfoTag& tag,
     {
       CNfoFile nfo;
       nfo.Create(avtag->value, m_info);
-      m_url = nfo.ScraperUrl();
-      return CInfoScanner::InfoType::URL;
+      CScraperUrl m_url_new = nfo.ScraperUrl();
+      // Try other tags if the scraper wont use the url:
+      if (m_url_new.HasUrls())
+      {
+        m_url = m_url_new;
+        return CInfoScanner::InfoType::URL;
+      }
     }
     else if (StringUtils::CompareNoCase(avtag->key, "title") == 0)
       tag.SetTitle(avtag->value);
