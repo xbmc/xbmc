@@ -104,11 +104,11 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
     {
       if (message.GetSenderId() == 0 && m_maxLocation > 0) //handle only message from builtin
       {
-        // Clamp location between 1 and m_maxLocation
+        // Clamp location between 1 and m_maxLocation & cast maxLoc to avoid signed modulo with unsigned type
+        // maxLoc is added before the modulo operation to ensure non-negative operands, for correct wrapping behavior
         const CWeatherManager& wmgr{CServiceBroker::GetWeatherManager()};
-        int v = (wmgr.GetLocation() + message.GetParam1() - 1) % m_maxLocation + 1;
-        if (v < 1)
-          v += m_maxLocation;
+        const int maxLoc{static_cast<int>(m_maxLocation)};
+        int v = (wmgr.GetLocation() + message.GetParam1() - 1 + maxLoc) % maxLoc + 1;
         SetLocation(v);
         return true;
       }

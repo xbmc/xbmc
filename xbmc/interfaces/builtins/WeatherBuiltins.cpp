@@ -71,8 +71,8 @@ static int SwitchLocation(const std::vector<std::string>& params)
 ///   \table_row2_l{
 ///     <b>`Weather.LocationSet`</b>
 ///     ,
-///     Switch to given weather location (parameter can be 1-3).
-///     @param[in] parameter             1-3
+///     Switch to given weather location (parameter can be 1-N where N is the number of configured locations).
+///     @param[in] parameter             1-N
 ///   }
 /// \table_end
 ///
@@ -80,9 +80,11 @@ static int SwitchLocation(const std::vector<std::string>& params)
 CBuiltins::CommandMap CWeatherBuiltins::GetOperations() const
 {
   return {
-           {"weather.refresh",          {"Force weather data refresh", 0, SwitchLocation<0>}},
-           {"weather.locationnext",     {"Switch to next weather location", 0, SwitchLocation<1>}},
-           {"weather.locationprevious", {"Switch to previous weather location", 0, SwitchLocation<-1>}},
-           {"weather.locationset",      {"Switch to given weather location (parameter can be 1-3)", 1, SetLocation}}
-         };
+      {"weather.refresh", {"Force weather data refresh", 0, SwitchLocation<0>}},
+      {"weather.locationnext", {"Switch to next weather location", 0, SwitchLocation<1>}},
+      {"weather.locationprevious", {"Switch to previous weather location", 0, SwitchLocation<-1>}},
+      {"weather.locationset",
+       {"Switch to given weather location (parameter can be 1-N where N is the number of "
+        "configured locations)",
+        1, SetLocation}}};
 }
