@@ -98,12 +98,76 @@ public:
   ~CServiceManager();
 
   bool InitForTesting();
+
+  /*!
+   * \brief Initialize the stage 1 boot services
+   *
+   * Stage 1 sets up the platform bootstrap layer and the earliest core
+   * services that do not depend on the GUI or user profiles.
+   *
+   * Subsystems initialized in stage 1 include:
+   *
+   *   - Platform startup glue via \ref CPlatform::InitStageOne
+   *   - Python script registration when Python support is enabled
+   *   - Playlist playback coordination
+   *   - Slideshow delegation
+   *   - Network backend discovery
+   */
   bool InitStageOne();
+
+  /*!
+   * \brief Initialize the stage 2 boot services
+   *
+   * Stage 2 brings up the main shared subsystems used by the GUI and
+   * runtime services after stage 1 has completed.
+   *
+   * Subsystems initialized in stage 2 include:
+   *
+   *   - Database manager bootstrap and addon infrastructure
+   *   - Service addon manager, repository, VFS, and binary addon infrastructure
+   *   - PVR, favourites, context menu, and data cache services
+   *   - Input and game controller support, plus peripheral object construction
+   *   - Retro player render and retro engine service construction
+   *   - File extension, power, weather, media, and locale helpers
+   *   - Subtag registry manager initialization
+   *   - Optional optical media detection object creation and SMB discovery backends
+   *   - Platform stage 2 initialization
+   */
   bool InitStageTwo(const std::string& profilesUserDataFolder);
+
+  /*!
+   * \brief Initialize the stage 3 boot services
+   *
+   * Stage 3 runs after the WindowManager has initialized, so the GUI is
+   * already available when these late services start.
+   *
+   * Subsystems initialized in stage 3 include:
+   *
+   *   - Optical media detection thread startup when supported
+   *   - Peripheral activation after localized strings are loaded
+   *   - Game services and retro engine service wiring
+   *   - Context menu activation
+   *   - Conditional PVR startup only when not using the login screen
+   *   - Player core factory creation
+   *   - Platform stage 3 initialization
+   */
   bool InitStageThree(const std::shared_ptr<CProfileManager>& profileManager);
+
   void DeinitTesting();
+
+  /*!
+   * \brief Shut down the stage 3 services in reverse startup order
+   */
   void DeinitStageThree();
+
+  /*!
+   * \brief Shut down the stage 2 services in reverse startup order
+   */
   void DeinitStageTwo();
+
+  /*!
+   * \brief Shut down the stage 1 services in reverse startup order
+   */
   void DeinitStageOne();
 
   ADDON::CAddonMgr& GetAddonMgr();
@@ -123,7 +187,10 @@ public:
   PVR::CPVRManager& GetPVRManager();
   CContextMenuManager& GetContextMenuManager();
   CDataCacheCore& GetDataCacheCore();
-  /**\brief Get the platform object. This is save to be called after Init1() was called
+  /*!
+   * \brief Get the platform object
+   *
+   * Safe to call after InitStageOne() completes.
    */
   CPlatform& GetPlatform();
   KODI::GAME::CControllerManager& GetGameControllerManager();
