@@ -1791,9 +1791,12 @@ bool CApplication::Stop(int exitCode)
     // either a bug in core or misbehaving addons. so try saving
     // skin settings early
     CLog::Log(LOGINFO, "Saving skin settings");
-    auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
-    if (skin)
-      skin->SaveSettings();
+    if (CGUIComponent* gui = CServiceBroker::GetGUI())
+    {
+      auto skin = gui->GetSkinInfo();
+      if (skin)
+        skin->SaveSettings();
+    }
 
     m_bStop = true;
     // Add this here to keep the same ordering behaviour for now
@@ -1844,8 +1847,7 @@ bool CApplication::Stop(int exitCode)
     appListener->UnregisterActionListener(&GetComponent<CApplicationPlayer>()->GetSeekHandler());
     appListener->UnregisterActionListener(&CPlayerController::GetInstance());
 
-    CGUIComponent *gui = CServiceBroker::GetGUI();
-    if (gui)
+    if (CGUIComponent* gui = CServiceBroker::GetGUI())
       gui->GetAudioManager().DeInitialize();
 
     // shutdown the AudioEngine

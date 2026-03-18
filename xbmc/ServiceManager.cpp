@@ -229,6 +229,9 @@ bool CServiceManager::InitStageThree(const std::shared_ptr<CProfileManager>& pro
 
 void CServiceManager::DeinitStageThree()
 {
+  if (init_level < 3)
+    return;
+
   init_level = 2;
 #if !defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
   m_DetectDVDType->StopThread();
@@ -245,6 +248,9 @@ void CServiceManager::DeinitStageThree()
 
 void CServiceManager::DeinitStageTwo()
 {
+  if (init_level < 2)
+    return;
+
   init_level = 1;
 
   m_subTagRegistryManager.reset();
@@ -281,6 +287,9 @@ void CServiceManager::DeinitStageTwo()
 
 void CServiceManager::DeinitStageOne()
 {
+  if (init_level < 1)
+    return;
+
   init_level = 0;
 
   m_network.reset();
