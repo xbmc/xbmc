@@ -181,7 +181,14 @@ bool CAndroidUtils::SetNativeResolution(const RESOLUTION_INFO& res)
   CLog::Log(LOGINFO, "CAndroidUtils: SetNativeResolution: {}: {}x{} {}x{}@{:f}", res.strId,
             res.iWidth, res.iHeight, res.iScreenWidth, res.iScreenHeight, res.fRefreshRate);
 
-  CXBMCApp::Get().SetDisplayMode(std::atoi(res.strId.c_str()), res.fRefreshRate);
+  // Avoid calling the mode-switch API unless the resolution and/or refresh rate changes
+  if (s_res_cur_displayMode.iScreenWidth != res.iScreenWidth ||
+      s_res_cur_displayMode.iScreenHeight != res.iScreenHeight ||
+      std::fabs(s_res_cur_displayMode.fRefreshRate - res.fRefreshRate) > FLT_EPSILON)
+  {
+    CLog::LogF(LOGDEBUG, "request mode: {}", res.strId);
+    CXBMCApp::Get().SetDisplayMode(std::atoi(res.strId.c_str()), res.fRefreshRate);
+  }
   s_res_cur_displayMode = res;
   CXBMCApp::Get().SetBuffersGeometry(res.iWidth, res.iHeight, 0);
 

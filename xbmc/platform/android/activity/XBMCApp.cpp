@@ -718,16 +718,20 @@ void CXBMCApp::SetDisplayModeCallback(void* modeVariant)
 void CXBMCApp::SetDisplayMode(int mode, float rate)
 {
   if (mode < 1.0)
+  {
+    CLog::LogF(LOGDEBUG, "Invalid mode: {}", mode);
     return;
-
+  }
   CJNIWindow window = getWindow();
   if (window)
   {
     CJNIWindowManagerLayoutParams params = window.getAttributes();
     if (params.getpreferredDisplayModeId() == mode)
+    {
+      CLog::LogF(LOGDEBUG, "Requested mode and preferred mode match");
       return;
+    }
   }
-
   m_displayChangeEvent.Reset();
 
   if (m_hdmiSource)
