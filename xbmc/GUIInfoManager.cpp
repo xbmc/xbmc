@@ -1178,6 +1178,7 @@ constexpr std::array<InfoMap, 13> player_process = {{
 ///     @return **True** if weather data are currently updating.
 ///     <p><hr>
 ///     @skinning_v22 **[New Infolabel]** \link Weather_IsUpdating `Weather.IsUpdating`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Weather.LastUpdated`</b>,
 ///                  \anchor Weather_LastUpdated
@@ -1185,13 +1186,15 @@ constexpr std::array<InfoMap, 13> player_process = {{
 ///     @return The localized date and time weather data were last updated\, empty string if not available.
 ///     <p><hr>
 ///     @skinning_v22 **[New Infolabel]** \link Weather_LastUpdated `Weather.LastUpdated`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Weather.Data(property)`</b>,
 ///                  \anchor Weather_Data
 ///                  _string_,
-///     @return Weather data, as specified by the parameter.
+///     @return Weather data\, as specified by the parameter.
 ///     <p><hr>
 ///     @skinning_v22 **[New Infolabel]** \link Weather_Data `Weather.Data(property)`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Weather.Conditions`</b>,
 ///                  \anchor Weather_Conditions
@@ -6409,7 +6412,7 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///       - <b>defaultlayout</b> return a default channel layout in the format x.y.z for the
 ///         channel count (x=listener level speakers\, y=lfe channels\, z=overhead channels).
 ///         If a default layout is not defined for the channel count then the text "x channels" is
-///         returned, with x replaced by the channel count and "channels" localized to the user language.
+///         returned\, with x replaced by the channel count and "channels" localized to the user language.
 ///     @return The audio channel information of the currently selected video. Possible values
 ///       for the default format:
 ///       - <b>1</b>
