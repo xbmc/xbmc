@@ -1,3 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    </resources>
+    <string name="suggestion_channel">Proponoj</string>
+    <string name="continue_button">Daŭrigi</string>
+    <string name="error_title">Eraro</string>
+    <string name="info_title">Informoj</string>
+    <string name="exit_button">Eliri</string>
+    <string name="notice_dialog">%1$s devigas aliron al aŭdvidaĵoj kaj dosieroj de via aparato por funkcii. Bonvolu permesi ĝin per la sekvanta dialogujo aŭ %1$s ĉesos funkcii.</string>
+    <string name="record_audio_dialog">%1$s petas permeson registri sonon. Tio estas uzata nur por voĉa serĉado. Bonvolu permesi aŭ malpermesi tion en la sekvanta dialogujo.</string>
+    <string name="asking_permissions">Peto pri permesoj…</string>
+    <string name="clearing_cache">Viŝado de kaŝmemoro…</string>
+    <string name="waiting_external">Atendado por ekstera konservejo…</string>
+    <string name="external_ok">Ekstera konservejo bonas…</string>
+    <string name="starting">Lanĉado de %1$s…</string>
+    <string name="first_run">Pretigas por la unua lanĉo. Bonvolu atendi…</string>
+    <string name="permission_denied">Permeso neigita!! Elirado…</string>
+    <string name="no_find_apk">Ne eblas trovi pakaĵon.</string>
+    <string name="no_read_apk">Ne eblas legi pakaĵon.</string>
+</resources>
