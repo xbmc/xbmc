@@ -15,6 +15,7 @@
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
+#include "rendering/gl/GuiCompositeShaderGL.h"
 #include "rendering/gl/ScreenshotSurfaceGL.h"
 #include "utils/BufferObjectFactory.h"
 #include "utils/DMAHeapBufferObject.h"
@@ -203,4 +204,141 @@ bool CWinSystemGbmGLContext::CreateContext()
   }
 
   return true;
+}
+
+bool CWinSystemGbmGLContext::SetGuiCompositing(int colorTransfer)
+{
+  // TODO: add CreateLUTs(colorTransfer) support to GL composite shader to match
+  // GLES (WinSystemGbmGLESContext). Currently GL only handles PQ via pow shader;
+  // HLG and LUT-based PQ are not yet implemented.
+  m_guiCompositing = (colorTransfer != 0);
+
+  if (m_guiCompositing)
+  {
+    if (!m_compositeShader)
+    {
+      m_compositeShader = std::make_unique<CGuiCompositeShaderGL>();
+      if (!m_compositeShader->CompileAndLink())
+      {
+        CLog::Log(LOGERROR, "CWinSystemGbmGLContext: failed to compile GUI composite shader");
+        m_compositeShader.reset();
+        m_guiCompositing = false;
+      }
+    }
+  }
+  else
+  {
+    m_guiFbo.Cleanup();
+    m_guiFboWidth = 0;
+    m_guiFboHeight = 0;
+    m_compositeShader.reset();
+  }
+
+  return m_guiCompositing;
+}
+
+bool CWinSystemGbmGLContext::BeginGuiComposite()
+{
+  if (!m_guiCompositing)
+    return false;
+
+  int width = m_nWidth;
+  int height = m_nHeight;
+
+  if (!m_guiFbo.IsValid() || m_guiFboWidth != width || m_guiFboHeight != height)
+  {
+    m_guiFbo.Cleanup();
+
+    if (!m_guiFbo.Initialize())
+    {
+      CLog::Log(LOGERROR, "CWinSystemGbmGLContext: failed to initialize GUI FBO");
+      return false;
+    }
+
+    if (!m_guiFbo.CreateAndBindToTexture(GL_TEXTURE_2D, width, height, GL_RGBA))
+    {
+      CLog::Log(LOGERROR, "CWinSystemGbmGLContext: failed to create GUI FBO texture {}x{}", width,
+                height);
+      m_guiFbo.Cleanup();
+      return false;
+    }
+
+    m_guiFboWidth = width;
+    m_guiFboHeight = height;
+    CLog::Log(LOGDEBUG, "CWinSystemGbmGLContext: created GUI FBO {}x{}", width, height);
+  }
+
+  if (!m_guiFbo.BeginRender())
+    return false;
+
+  glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+  glClear(GL_COLOR_BUFFER_BIT);
+
+  return true;
+}
+
+void CWinSystemGbmGLContext::EndGuiComposite()
+{
+  m_guiFbo.EndRender();
+
+  glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+  glClear(GL_COLOR_BUFFER_BIT);
+}
+
+// CompositeGui is the last GL operation in the frame (called just before EndRender).
+// GL state (blend mode, active texture, vertex arrays) is not restored afterward;
+// the next frame's rendering sets its own state.
+void CWinSystemGbmGLContext::CompositeGui()
+{
+  if (!m_guiFbo.IsValid() || !m_guiFbo.IsBound() || !m_compositeShader)
+    return;
+
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, m_guiFbo.Texture());
+
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+  // set up orthographic projection (screen coords, Y-down)
+  float w = static_cast<float>(m_guiFboWidth);
+  float h = static_cast<float>(m_guiFboHeight);
+
+  GLfloat proj[16] = {2.0f / w, 0, 0, 0, 0, -2.0f / h, 0, 0, 0, 0, -1, 0, -1.0f, 1.0f, 0, 1};
+
+  m_compositeShader->SetProjection(proj);
+  m_compositeShader->SetSdrPeak(100.0f / 10000.0f);
+  m_compositeShader->Enable();
+
+  GLint posLoc = m_compositeShader->GetPosLoc();
+  GLint texLoc = m_compositeShader->GetTexLoc();
+
+  GLfloat vert[4][2] = {{0, 0}, {w, 0}, {w, h}, {0, h}};
+  GLfloat tex[4][2] = {{0, 1}, {1, 1}, {1, 0}, {0, 0}};
+  GLubyte idx[4] = {0, 1, 3, 2};
+
+  GLuint vbo[3];
+  glGenBuffers(3, vbo);
+
+  glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vert), vert, GL_STREAM_DRAW);
+  glVertexAttribPointer(posLoc, 2, GL_FLOAT, GL_FALSE, 0, 0);
+  glEnableVertexAttribArray(posLoc);
+
+  glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(tex), tex, GL_STREAM_DRAW);
+  glVertexAttribPointer(texLoc, 2, GL_FLOAT, GL_FALSE, 0, 0);
+  glEnableVertexAttribArray(texLoc);
+
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[2]);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(idx), idx, GL_STREAM_DRAW);
+
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
+
+  glDisableVertexAttribArray(posLoc);
+  glDisableVertexAttribArray(texLoc);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  glDeleteBuffers(3, vbo);
+
+  m_compositeShader->Disable();
 }
