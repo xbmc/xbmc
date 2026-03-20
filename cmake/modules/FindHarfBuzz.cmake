@@ -30,7 +30,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
         # used on the GH Action that builds the prebuilt libs. remove and add TARGET for freetype
         get_target_property(_link_libs harfbuzz::harfbuzz INTERFACE_LINK_LIBRARIES)
         list(REMOVE_AT _link_libs 0)
-        list(INSERT _link_libs 0 "freetype::freetype")
+        list(INSERT _link_libs 0 "Freetype::Freetype")
         set_target_properties(harfbuzz::harfbuzz PROPERTIES INTERFACE_LINK_LIBRARIES "${_link_libs}")
       endif()
     elseif(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
