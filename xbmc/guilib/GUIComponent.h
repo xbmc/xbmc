@@ -41,6 +41,7 @@ public:
   CGUITextureCallbackManager& GetTextureCallbackManager();
   CStereoscopicsManager &GetStereoscopicsManager();
   CGUIInfoManager &GetInfoManager();
+  const CGUIInfoManager& GetInfoManager() const;
   CGUIColorManager &GetColorManager();
   CGUIAudioManager &GetAudioManager();
 

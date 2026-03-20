@@ -291,16 +291,19 @@ void URIUtils::RemoveExtension(std::string& path)
 
   // Extensions to remove
   const std::string extensions{
+      // clang-format off
       CServiceBroker::GetFileExtensionProvider().GetPictureExtensions() +
       CServiceBroker::GetFileExtensionProvider().GetMusicExtensions() +
       CServiceBroker::GetFileExtensionProvider().GetVideoExtensions() +
       CServiceBroker::GetFileExtensionProvider().GetSubtitleExtensions() +
       CServiceBroker::GetFileExtensionProvider().GetCompoundArchiveExtensions() +
       CServiceBroker::GetFileExtensionProvider().GetArchiveExtensions() +
+      CServiceBroker::GetFileExtensionProvider().GetGameExtensions() +
       "|.py|.xml|.milk|.xbt|.cdg"
 #ifdef TARGET_DARWIN
       + "|.app|.applescript|.workflow"
 #endif
+      // clang-format on
   };
 
   if (const int extension{FindExtension(path, extensions, FindExtensions::ONLY_IN_LIST,

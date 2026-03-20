@@ -15,6 +15,7 @@
 #include "games/GameUtils.h"
 #include "games/agents/input/AgentInput.h"
 #include "profiles/ProfileManager.h"
+#include "utils/FileExtensionProvider.h"
 
 using namespace KODI;
 using namespace GAME;
@@ -24,10 +25,12 @@ CGameServices::CGameServices(CControllerManager& controllerManager,
                              PERIPHERALS::CPeripherals& peripheralManager,
                              const CProfileManager& profileManager,
                              CInputManager& inputManager,
-                             ADDON::CAddonMgr& addons)
+                             ADDON::CAddonMgr& addons,
+                             CFileExtensionProvider& fileExtensionProvider)
   : m_controllerManager(controllerManager),
     m_gameRenderManager(renderManager),
     m_profileManager(profileManager),
+    m_fileExtensionProvider(fileExtensionProvider),
     m_gameSettings(new CGameSettings()),
     m_agentInput(std::make_unique<CAgentInput>(peripheralManager, inputManager)),
     m_videoShaders(std::make_unique<SHADER::CShaderPresetFactory>(addons))
@@ -38,6 +41,16 @@ CGameServices::CGameServices(CControllerManager& controllerManager,
 }
 
 CGameServices::~CGameServices() = default;
+
+void CGameServices::Initialize()
+{
+  // Update game extensions
+  m_fileExtensionProvider.RegisterGameExtensions(CGameUtils::GetGameExtensions());
+}
+
+void CGameServices::Deinitialize()
+{
+}
 
 ControllerPtr CGameServices::GetController(const std::string& controllerId)
 {
@@ -78,4 +91,7 @@ std::string CGameServices::GetSavestatesFolder() const
 void CGameServices::OnAddonRepoInstalled()
 {
   CGameUtils::UpdateInstallableAddons();
+
+  // Update game extensions
+  m_fileExtensionProvider.RegisterGameExtensions(CGameUtils::GetGameExtensions());
 }

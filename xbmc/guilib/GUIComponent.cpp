@@ -95,6 +95,11 @@ CGUIInfoManager &CGUIComponent::GetInfoManager()
   return *m_guiInfoManager;
 }
 
+const CGUIInfoManager& CGUIComponent::GetInfoManager() const
+{
+  return *m_guiInfoManager;
+}
+
 CGUIColorManager &CGUIComponent::GetColorManager()
 {
   return *m_guiColorManager;
