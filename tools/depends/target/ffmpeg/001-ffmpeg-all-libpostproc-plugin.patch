@@ -19,10 +19,10 @@ index 371b0913ce7c1..613070e1b631a 100644
      - `vf_pullup.c`
      - `vf_repeatfields.c`
 diff --git a/MAINTAINERS b/MAINTAINERS
-index d1d87752b9193..c410293c323c9 100644
+index e47f6c98e9b84..708872f8ef9ed 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -135,6 +135,8 @@ Generic Parts:
+@@ -138,6 +138,8 @@ Generic Parts:
      ratecontrol.c                   [2] Michael Niedermayer
    simple IDCT:
      simple_idct.c, simple_idct.h    [2] Michael Niedermayer
@@ -32,10 +32,10 @@ index d1d87752b9193..c410293c323c9 100644
      tableprint.c, tableprint.h          Reimar Doeffinger
    fixed point FFT:
 diff --git a/Makefile b/Makefile
-index 877b0071f6cc7..d7b5a360a4d94 100644
+index f296e87ed4fc1..c45c886a122bb 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -25,6 +25,7 @@ ALLFFLIBS =            \
+@@ -27,6 +27,7 @@ ALLFFLIBS =            \
      avfilter           \
      avformat           \
      avutil             \
@@ -43,7 +43,7 @@ index 877b0071f6cc7..d7b5a360a4d94 100644
      swscale            \
      swresample         \
  
-@@ -33,6 +34,7 @@ FFLIBS-$(CONFIG_AVDEVICE)   += avdevice
+@@ -35,6 +36,7 @@ FFLIBS-$(CONFIG_AVDEVICE)   += avdevice
  FFLIBS-$(CONFIG_AVFILTER)   += avfilter
  FFLIBS-$(CONFIG_AVFORMAT)   += avformat
  FFLIBS-$(CONFIG_AVCODEC)    += avcodec
@@ -52,10 +52,10 @@ index 877b0071f6cc7..d7b5a360a4d94 100644
  FFLIBS-$(CONFIG_SWSCALE)    += swscale
  
 diff --git a/configure b/configure
-index ae74efc09f412..625a09ad385b5 100755
+index 17596942749ab..9d8db691a4600 100755
 --- a/configure
 +++ b/configure
-@@ -130,6 +130,7 @@ Component options:
+@@ -131,6 +131,7 @@ Component options:
    --disable-avformat       disable libavformat build
    --disable-swresample     disable libswresample build
    --disable-swscale        disable libswscale build
@@ -63,7 +63,7 @@ index ae74efc09f412..625a09ad385b5 100755
    --disable-avfilter       disable libavfilter build
    --disable-pthreads       disable pthreads [autodetect]
    --disable-w32threads     disable Win32 threads [autodetect]
-@@ -2072,6 +2073,7 @@ LIBRARY_LIST="
+@@ -2191,6 +2192,7 @@ LIBRARY_LIST="
      avdevice
      avfilter
      swscale
@@ -71,7 +71,7 @@ index ae74efc09f412..625a09ad385b5 100755
      avformat
      avcodec
      swresample
-@@ -3969,6 +3971,7 @@ pan_filter_deps="swresample"
+@@ -4183,6 +4185,7 @@ pan_filter_deps="swresample"
  perspective_filter_deps="gpl"
  phase_filter_deps="gpl"
  pp7_filter_deps="gpl"
@@ -79,16 +79,16 @@ index ae74efc09f412..625a09ad385b5 100755
  prewitt_opencl_filter_deps="opencl"
  procamp_vaapi_filter_deps="vaapi"
  program_opencl_filter_deps="opencl"
-@@ -4085,6 +4088,8 @@ avfilter_suggest="libm stdatomic spirv_compiler"
+@@ -4301,6 +4304,8 @@ avfilter_suggest="libm stdatomic zlib spirv_library"
  avformat_deps="avcodec avutil"
  avformat_suggest="libm network zlib stdatomic"
- avutil_suggest="clock_gettime ffnvcodec gcrypt libm libdrm libmfx opencl openssl user32 vaapi vulkan videotoolbox corefoundation corevideo coremedia bcrypt stdatomic"
+ avutil_suggest="clock_gettime ffnvcodec gcrypt libm zlib libdrm libmfx opencl openssl user32 vaapi vulkan videotoolbox corefoundation corevideo coremedia bcrypt stdatomic"
 +postproc_deps="avutil gpl"
 +postproc_suggest="libm stdatomic"
  swresample_deps="avutil"
  swresample_suggest="libm libsoxr stdatomic"
  swscale_deps="avutil"
-@@ -7535,7 +7540,7 @@ void (^block)(void);
+@@ -7914,7 +7919,7 @@ void (^block)(void);
  EOF
  
  # add some linker flags
@@ -97,7 +97,7 @@ index ae74efc09f412..625a09ad385b5 100755
  enabled rpath && add_ldexeflags -Wl,-rpath,$libdir && add_ldsoflags -Wl,-rpath,$libdir
  test_ldflags -Wl,-Bsymbolic && append SHFLAGS -Wl,-Bsymbolic
  
-@@ -7900,6 +7905,7 @@ enabled fsync_filter        && prepend avfilter_deps "avformat"
+@@ -8300,6 +8305,7 @@ enabled fsync_filter        && prepend avfilter_deps "avformat"
  enabled mcdeint_filter      && prepend avfilter_deps "avcodec"
  enabled movie_filter        && prepend avfilter_deps "avformat avcodec"
  enabled pan_filter          && prepend avfilter_deps "swresample"
@@ -105,7 +105,7 @@ index ae74efc09f412..625a09ad385b5 100755
  enabled qrencode_filter     && prepend avfilter_deps "swscale"
  enabled qrencodesrc_filter  && prepend avfilter_deps "swscale"
  enabled removelogo_filter   && prepend avfilter_deps "avformat avcodec swscale"
-@@ -7951,6 +7957,9 @@ expand_deps(){
+@@ -8351,6 +8357,9 @@ expand_deps(){
      reorder_by ${1}_deps LIBRARY_LIST  # linking order is expected later
  }
  
@@ -115,7 +115,7 @@ index ae74efc09f412..625a09ad385b5 100755
  map 'expand_deps $v' $LIBRARY_LIST
  
  if test "$quiet" != "yes"; then
-@@ -8041,6 +8050,7 @@ echo "optimize for size         ${small-no}"
+@@ -8443,6 +8452,7 @@ echo "optimize for size         ${small-no}"
  echo "optimizations             ${optimizations-no}"
  echo "static                    ${static-no}"
  echo "shared                    ${shared-no}"
@@ -123,7 +123,7 @@ index ae74efc09f412..625a09ad385b5 100755
  echo "network support           ${network-no}"
  echo "threading support         ${thread_type-no}"
  echo "safe bitstream reader     ${safe_bitstream_reader-no}"
-@@ -8417,6 +8427,7 @@ extralibs_avcodec="$avcodec_extralibs"
+@@ -8828,6 +8838,7 @@ extralibs_avcodec="$avcodec_extralibs"
  extralibs_avformat="$avformat_extralibs"
  extralibs_avdevice="$avdevice_extralibs"
  extralibs_avfilter="$avfilter_extralibs"
@@ -132,10 +132,10 @@ index ae74efc09f412..625a09ad385b5 100755
  extralibs_swresample="$swresample_extralibs"
  EOF
 diff --git a/doc/filters.texi b/doc/filters.texi
-index 6d2df075083c3..47ca7000ca374 100644
+index 5d222c6b96fd3..5a8bf1e18f01c 100644
 --- a/doc/filters.texi
 +++ b/doc/filters.texi
-@@ -19409,6 +19409,181 @@ Set window Y position, relative offset on Y axis.
+@@ -19976,6 +19976,181 @@ Set window Y position, relative offset on Y axis.
  
  This filter supports same @ref{commands} as options.
  
@@ -318,10 +318,10 @@ index 6d2df075083c3..47ca7000ca374 100644
  Apply Postprocessing filter 7. It is variant of the @ref{spp} filter,
  similar to spp = 6 with 7 point DCT, where only the center sample is
 diff --git a/fftools/ffprobe.c b/fftools/ffprobe.c
-index 80ce38e73bd2e..e6f8b16e1eaaa 100644
+index 3c29fc255791b..731cfd3620506 100644
 --- a/fftools/ffprobe.c
 +++ b/fftools/ffprobe.c
-@@ -62,6 +62,8 @@
+@@ -63,6 +63,8 @@
  #include "libswscale/version.h"
  #include "libswresample/swresample.h"
  #include "libswresample/version.h"
@@ -330,7 +330,7 @@ index 80ce38e73bd2e..e6f8b16e1eaaa 100644
  #include "libavfilter/version.h"
  #include "textformat/avtextformat.h"
  #include "cmdutils.h"
-@@ -2571,6 +2573,7 @@ static void ffprobe_show_library_versions(AVTextFormatContext *tfc)
+@@ -2697,6 +2699,7 @@ static void ffprobe_show_library_versions(AVTextFormatContext *tfc)
      SHOW_LIB_VERSION(avfilter,   AVFILTER);
      SHOW_LIB_VERSION(swscale,    SWSCALE);
      SHOW_LIB_VERSION(swresample, SWRESAMPLE);
@@ -339,10 +339,10 @@ index 80ce38e73bd2e..e6f8b16e1eaaa 100644
  }
  
 diff --git a/fftools/opt_common.c b/fftools/opt_common.c
-index c2f6b9de2a75d..2ac3fd4fb364c 100644
+index 2c1f956551db8..57de4b7b89fd7 100644
 --- a/fftools/opt_common.c
 +++ b/fftools/opt_common.c
-@@ -60,6 +60,8 @@
+@@ -61,6 +61,8 @@
  #include "libswresample/swresample.h"
  #include "libswresample/version.h"
  
@@ -351,7 +351,7 @@ index c2f6b9de2a75d..2ac3fd4fb364c 100644
  
  enum show_muxdemuxers {
      SHOW_DEFAULT,
-@@ -189,6 +191,7 @@ static void print_all_libs_info(int flags, int level)
+@@ -190,6 +192,7 @@ static void print_all_libs_info(int flags, int level)
      PRINT_LIB_INFO(avfilter,   AVFILTER,   flags, level);
      PRINT_LIB_INFO(swscale,    SWSCALE,    flags, level);
      PRINT_LIB_INFO(swresample, SWRESAMPLE, flags, level);
@@ -360,29 +360,29 @@ index c2f6b9de2a75d..2ac3fd4fb364c 100644
  
  static void print_program_info(int flags, int level)
 diff --git a/libavfilter/Makefile b/libavfilter/Makefile
-index 0effe4127ffd3..7c0d879ec9c4e 100644
+index a530cfae29be9..de6f6aaea1b7c 100644
 --- a/libavfilter/Makefile
 +++ b/libavfilter/Makefile
-@@ -431,6 +431,7 @@ OBJS-$(CONFIG_PHOTOSENSITIVITY_FILTER)       += vf_photosensitivity.o
+@@ -440,6 +440,7 @@ OBJS-$(CONFIG_PHOTOSENSITIVITY_FILTER)       += vf_photosensitivity.o
  OBJS-$(CONFIG_PIXDESCTEST_FILTER)            += vf_pixdesctest.o
  OBJS-$(CONFIG_PIXELIZE_FILTER)               += vf_pixelize.o
  OBJS-$(CONFIG_PIXSCOPE_FILTER)               += vf_datascope.o
 +OBJS-$(CONFIG_PP_FILTER)                     += vf_pp.o qp_table.o
  OBJS-$(CONFIG_PP7_FILTER)                    += vf_pp7.o qp_table.o
+ OBJS-$(CONFIG_PREMULTIPLY_DYNAMIC_FILTER)    += vf_premultiply.o framesync.o
  OBJS-$(CONFIG_PREMULTIPLY_FILTER)            += vf_premultiply.o framesync.o
- OBJS-$(CONFIG_PREWITT_FILTER)                += vf_convolution.o
 diff --git a/libavfilter/allfilters.c b/libavfilter/allfilters.c
-index 5ea33cdf01b91..740d9ab265cc5 100644
+index e26859e159145..154ea71d97c0e 100644
 --- a/libavfilter/allfilters.c
 +++ b/libavfilter/allfilters.c
-@@ -404,6 +404,7 @@ extern const FFFilter ff_vf_photosensitivity;
+@@ -412,6 +412,7 @@ extern const FFFilter ff_vf_photosensitivity;
  extern const FFFilter ff_vf_pixdesctest;
  extern const FFFilter ff_vf_pixelize;
  extern const FFFilter ff_vf_pixscope;
 +extern const FFFilter ff_vf_pp;
  extern const FFFilter ff_vf_pp7;
  extern const FFFilter ff_vf_premultiply;
- extern const FFFilter ff_vf_prewitt;
+ extern const FFFilter ff_vf_premultiply_dynamic;
 diff --git a/libavfilter/vf_pp.c b/libavfilter/vf_pp.c
 new file mode 100644
 index 0000000000000..9e9903eb97461
@@ -7101,10 +7101,10 @@ index 0000000000000..b9946912db383
 +
 +#endif /* POSTPROC_VERSION_MAJOR_H */
 diff --git a/tests/Makefile b/tests/Makefile
-index 505d7f9c6d6d4..c2043310207f8 100644
+index 4b3fa6a54ab7b..c81a0e7df5bf1 100644
 --- a/tests/Makefile
 +++ b/tests/Makefile
-@@ -208,6 +208,7 @@ include $(SRC_PATH)/tests/fate/libavformat.mak
+@@ -214,6 +214,7 @@ include $(SRC_PATH)/tests/fate/libavformat.mak
  include $(SRC_PATH)/tests/fate/libavutil.mak
  include $(SRC_PATH)/tests/fate/libswresample.mak
  include $(SRC_PATH)/tests/fate/libswscale.mak
@@ -7113,10 +7113,10 @@ index 505d7f9c6d6d4..c2043310207f8 100644
  include $(SRC_PATH)/tests/fate/lossless-video.mak
  include $(SRC_PATH)/tests/fate/matroska.mak
 diff --git a/tests/fate/filter-video.mak b/tests/fate/filter-video.mak
-index df8a9327506c2..2ae7aed88dab3 100644
+index 07b8632c6f0d6..4436f14a4f64b 100644
 --- a/tests/fate/filter-video.mak
 +++ b/tests/fate/filter-video.mak
-@@ -533,6 +533,19 @@ fate-filter-idet: CMD = framecrc -flags bitexact -idct simple -i $(SRC) -vf idet
+@@ -555,6 +555,19 @@ fate-filter-idet: CMD = framecrc -flags bitexact -idct simple -i $(SRC) -vf idet
  FATE_FILTER_VSYNTH_VIDEO_FILTER-$(CONFIG_PAD_FILTER) += fate-filter-pad
  fate-filter-pad: CMD = video_filter "pad=iw*1.5:ih*1.5:iw*0.3:ih*0.2"
  
@@ -7136,7 +7136,7 @@ index df8a9327506c2..2ae7aed88dab3 100644
  FATE_FILTER_VSYNTH1_MPEG4_QPRD-$(call FILTERDEMDEC, PP7, AVI, MPEG4) += pp7
  fate-filter-pp7: CMD = framecrc -flags bitexact -export_side_data venc_params -idct simple -i $(TARGET_PATH)/tests/data/fate/vsynth1-mpeg4-qprd.avi -frames:v 5 -flags +bitexact -vf "pp7"
  
-@@ -550,6 +563,9 @@ FATE_FILTER_VSYNTH-yes += $(FATE_FILTER_VSYNTH1_MPEG4_QPRD)
+@@ -572,6 +585,9 @@ FATE_FILTER_VSYNTH-yes += $(FATE_FILTER_VSYNTH1_MPEG4_QPRD)
  $(FATE_FILTER_VSYNTH1_MPEG4_QPRD): fate-vsynth1-mpeg4-qprd
  fate-vsynth1-mpeg4-qprd: KEEP_FILES ?= 1
  

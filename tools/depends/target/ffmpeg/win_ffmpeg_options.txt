@@ -3,6 +3,7 @@
 --disable-cuvid
 --disable-devices
 --disable-dxva2
+--disable-filter=gfxcapture
 --disable-gnutls
 --disable-muxer=whip
 --disable-nvenc
