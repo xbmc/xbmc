@@ -499,6 +499,21 @@ bool CActiveAEBufferPoolAtempo::ProcessBuffers()
     {
       in = m_inputSamples.front();
       m_inputSamples.pop_front();
+
+      // Update sample PTS and extrapolate missing timestamps for atempo processing
+      if (in->timestamp)
+      {
+        m_lastSamplePts = in->timestamp;
+      }
+      else
+      {
+        in->pkt_start_offset = 0;
+        in->timestamp = m_lastSamplePts;
+      }
+
+      m_lastSamplePts += static_cast<int64_t>(in->pkt->nb_samples - in->pkt_start_offset) * 1000 /
+                         m_format.m_sampleRate;
+
       m_outputSamples.push_back(in);
       busy = true;
     }
