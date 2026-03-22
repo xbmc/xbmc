@@ -184,8 +184,8 @@ PATH_CHANGE_REV_FILENAME=".last_success_revision"
 #params paths to be hashed
 function getBuildHash ()
 {
-  local ver_dav1d="$(extractVersion $3)"
-  local ver_ffmpeg="$(extractVersion $4)"
+  local ver_dav1d="$(extractVersion $4)"
+  local ver_ffmpeg="$(extractVersion $5)"
   local hashStr
   hashStr="$(git rev-list HEAD --max-count=1  -- $@)"
   hashStr="$hashStr $@ $ver_ffmpeg $ver_dav1d"
