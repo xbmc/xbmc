@@ -201,6 +201,8 @@ CMediaPipelineWebOS::CMediaPipelineWebOS(CProcessInfo& processInfo,
 CMediaPipelineWebOS::~CMediaPipelineWebOS()
 {
   Unload(false);
+  if (const auto buffer = static_cast<CStarfishVideoBuffer*>(m_picture.videoBuffer))
+    buffer->ResetAcbHandle();
 }
 
 int CMediaPipelineWebOS::GetVideoBitrate() const
@@ -625,12 +627,15 @@ bool CMediaPipelineWebOS::Load(CDVDStreamInfo videoHint, CDVDStreamInfo audioHin
   else
   {
     auto buffer = static_cast<CStarfishVideoBuffer*>(m_picture.videoBuffer);
-    const std::unique_ptr<AcbHandle>& acb = buffer->CreateAcbHandle();
-    if (acb->Id())
+    if (!buffer->GetAcbHandle())
     {
-      if (!AcbAPI_initialize(acb->Id(), PLAYER_TYPE_MSE, getenv("APPID"), &AcbCallback))
+      const std::unique_ptr<AcbHandle>& acb = buffer->CreateAcbHandle();
+      if (acb->Id())
       {
-        buffer->ResetAcbHandle();
+        if (!AcbAPI_initialize(acb->Id(), PLAYER_TYPE_MSE, getenv("APPID"), &AcbCallback))
+        {
+          buffer->ResetAcbHandle();
+        }
       }
     }
   }
@@ -811,9 +816,6 @@ void CMediaPipelineWebOS::Unload(const bool sync)
 
   if (!m_mediaAPIs->Unload())
     CLog::LogF(LOGERROR, "Unload failed");
-
-  const auto buffer = static_cast<CStarfishVideoBuffer*>(m_picture.videoBuffer);
-  buffer->ResetAcbHandle();
 
   if (sync)
   {
