@@ -9,7 +9,7 @@
 --disable-openssl
 --disable-programs
 --disable-shared
---enable-encoder=ac3,aac,wmav2,png,mjpeg
+--enable-encoder=ac3,eac3,aac,wmav2,png,mjpeg
 --enable-muxer=spdif,adts,asf,ipod
 --enable-protocol=http
 --enable-runtime-cpudetect
