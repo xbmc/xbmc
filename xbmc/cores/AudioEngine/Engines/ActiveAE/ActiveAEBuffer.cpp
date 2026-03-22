@@ -500,6 +500,23 @@ bool CActiveAEBufferPoolAtempo::ProcessBuffers()
     {
       in = m_inputSamples.front();
       m_inputSamples.pop_front();
+
+      // 1. If the video file provides a new time (like a seek), use it. Otherwise, calculate the next time
+      if (in->timestamp)
+      {
+        m_lastSamplePts = in->timestamp;
+      }
+      else
+      {
+        in->pkt_start_offset = 0;
+        // 2. Give the audio its correct time if it was missing
+        in->timestamp = m_lastSamplePts;
+      }
+
+      // 3. Tick the internal clock forward for the next piece of audio
+      m_lastSamplePts += static_cast<int64_t>(in->pkt->nb_samples - in->pkt_start_offset) * 1000 /
+                         m_format.m_sampleRate;
+
       m_outputSamples.push_back(in);
       busy = true;
     }
