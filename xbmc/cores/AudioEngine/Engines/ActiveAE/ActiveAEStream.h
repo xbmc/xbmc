@@ -118,6 +118,9 @@ public:
   std::unique_ptr<CActiveAEBufferPool> GetResampleBuffers();
   std::unique_ptr<CActiveAEBufferPool> GetAtempoBuffers();
 
+  // helper to check if Atempo is actively engaged with a non-1.0 tempo
+  bool IsAtempoActive() const { return m_atempoBuffers && m_atempoBuffers->GetTempo() != 1.0f; }
+
   AEAudioFormat m_inputFormat;
   std::deque<CSampleBuffer*> m_outputSamples;
   std::deque<CSampleBuffer*> m_inputSamples;
