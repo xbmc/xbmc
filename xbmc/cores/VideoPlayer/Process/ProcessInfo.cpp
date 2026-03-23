@@ -75,6 +75,7 @@ void CProcessInfo::ResetVideoCodecInfo()
   m_videoFPS = 0.0;
   m_videoDAR = 0.0;
   m_videoIsInterlaced = false;
+  m_doviIsFEL = false;
   m_deintMethods.clear();
   m_deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE);
   m_deintMethodDefault = EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE;
@@ -237,6 +238,20 @@ bool CProcessInfo::GetVideoInterlaced()
   std::unique_lock lock(m_videoCodecSection);
 
   return m_videoIsInterlaced;
+}
+
+void CProcessInfo::SetDoviIsFEL(bool isFEL)
+{
+  std::unique_lock lock(m_videoCodecSection);
+
+  m_doviIsFEL = isFEL;
+}
+
+bool CProcessInfo::GetDoviIsFEL()
+{
+  std::unique_lock lock(m_videoCodecSection);
+
+  return m_doviIsFEL;
 }
 
 EINTERLACEMETHOD CProcessInfo::GetFallbackDeintMethod()

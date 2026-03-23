@@ -18,6 +18,7 @@
 #include "HevcSei.h"
 
 #include <algorithm>
+#include <cstring>
 
 extern "C"
 {
@@ -1318,6 +1319,7 @@ bool CBitstreamConverter::mpeg2_sequence_header(const uint8_t* data,
 
 #ifdef HAVE_LIBDOVI
 // Processes Dolby Vision RPU
+//   - Sets `m_doviIsFEL` flag to true when DV is profile 7 / FEL
 //   - Converts to profile 8.1 if `m_convert_dovi` is enabled
 //   - Sets level 5 metadata to 0 offsets if `m_setDoviZeroLevel5` is enabled
 //
@@ -1325,8 +1327,8 @@ bool CBitstreamConverter::mpeg2_sequence_header(const uint8_t* data,
 // May be NULL if no processing was done or if parsing errored
 const DoviData* CBitstreamConverter::processDoviRpu(uint8_t* buf, uint32_t nalSize)
 {
-  // early exit if no processing option is enabled
-  if (!m_convert_dovi && !m_setDoviZeroLevel5)
+  // early exit if no processing option is enabled and EL type is alredy tested
+  if (m_doviELTested && !m_convert_dovi && !m_setDoviZeroLevel5)
     return NULL;
 
   DoviRpuOpaque* rpu = dovi_parse_unspec62_nalu(buf, nalSize);
@@ -1340,6 +1342,14 @@ const DoviData* CBitstreamConverter::processDoviRpu(uint8_t* buf, uint32_t nalSi
   {
     dovi_rpu_free(rpu);
     return rpuData;
+  }
+
+  if (!m_doviELTested)
+  {
+    if (header->guessed_profile == 7 && header->el_type && 0 == std::strcmp(header->el_type, "FEL"))
+      m_doviIsFEL = true;
+
+    m_doviELTested = true;
   }
 
   if (m_convert_dovi && header->guessed_profile == 7)

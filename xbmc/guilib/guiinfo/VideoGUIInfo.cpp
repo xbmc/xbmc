@@ -585,7 +585,6 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
         }
 
         return true;
-      case VIDEOPLAYER_HDR_TYPE:
       case LISTITEM_VIDEO_HDR_TYPE:
         if (tag->m_streamDetails.GetStreamCount(CStreamDetail::VIDEO) > 1 &&
             tag->m_streamDetails.GetVideoHdrType(2) == "dolbyvision")
@@ -593,7 +592,6 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
         else
           value = tag->m_streamDetails.GetVideoHdrType();
         return true;
-      case VIDEOPLAYER_HDR_DETAIL:
       case LISTITEM_VIDEO_HDR_DETAIL:
         if (tag->m_streamDetails.GetStreamCount(CStreamDetail::VIDEO) > 1 &&
             tag->m_streamDetails.GetVideoHdrType(2) == "dolbyvision")

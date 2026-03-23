@@ -438,6 +438,7 @@ private:
   CDVDClock& m_clock;
   CDVDOverlayContainer& m_overlayContainer;
   bool m_hasAudio{true};
+  bool m_doviIsFEL{false};
 
   std::atomic<bool> m_videoClosed{true};
   std::atomic<bool> m_audioClosed{true};

@@ -1136,7 +1136,8 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
     pVideoPicture->hasLightMetadata = true;
   }
 
-  if (pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)
+  if (!m_doviELTested && pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION &&
+      m_hints.dovi.dv_profile == 7)
   {
     sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_DOVI_METADATA);
     if (sd)
@@ -1148,7 +1149,7 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
       if (hdr != nullptr && hdr->el_spatial_resampling_filter_flag == 1 &&
           hdr->disable_residual_flag == 0)
       {
-        pVideoPicture->strDVELType = "MEL";
+        bool isFEL = false;
         for (int i = 0; i < 3; i++)
         {
           if (mapping != nullptr &&
@@ -1156,10 +1157,13 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
                mapping->nlq[i].linear_deadzone_slope != 0 ||
                mapping->nlq[i].linear_deadzone_threshold != 0))
           {
-            pVideoPicture->strDVELType = "FEL";
+            isFEL = true;
             break;
           }
         }
+        pVideoPicture->strDVELType = isFEL ? "FEL" : "MEL";
+        m_processInfo.SetDoviIsFEL(isFEL);
+        m_doviELTested = true;
       }
     }
   }

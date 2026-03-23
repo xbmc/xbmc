@@ -98,6 +98,7 @@ protected:
   int m_codecControlFlags = 0;
   bool m_interlaced = false;
   double m_DAR = 1.0;
+  bool m_doviELTested = false;
   CDVDStreamInfo m_hints;
   CDVDCodecOptions m_options;
 

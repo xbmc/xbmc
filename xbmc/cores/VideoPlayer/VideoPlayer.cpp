@@ -5620,19 +5620,33 @@ void CVideoPlayer::GetVideoStreamInfo(int streamId, VideoStreamInfo& info) const
   info.videoAspectRatio = s.aspect_ratio;
   info.stereoMode = s.stereo_mode;
   info.flags = s.flags;
-  info.hdrType = s.hdrType;
+  info.fpsRate = s.fpsRate;
+  info.fpsScale = s.fpsScale;
+
+  // Determine if stream is Dolby Vision P7 DTDL (double track, double layer)
+  const bool isDTDL = GetVideoStreamCount() == 2 && s.hdrType == StreamHdrType::HDR_TYPE_HDR10 &&
+                      m_content.m_selectionStreams.Get(StreamType::VIDEO, 1).hdrType ==
+                          StreamHdrType::HDR_TYPE_DOLBYVISION;
+
+  // For DTDL streams pick HDR info from EL (secondary stream)
+  const SelectionStream& sHDR = isDTDL ? m_content.m_selectionStreams.Get(StreamType::VIDEO, 1) : s;
+
+  info.hdrType = sHDR.hdrType;
   if (info.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)
   {
-    if (info.hdrDetail.length() == 0)
-      info.hdrDetail =
-          s.dovi.dv_profile == 0 ? "" : std::to_string(static_cast<int>(s.dovi.dv_profile));
+    info.hdrDetail =
+        sHDR.dovi.dv_profile == 0 ? "" : std::to_string(static_cast<int>(sHDR.dovi.dv_profile));
     // distinguish HDR10 from HLG base
-    if (s.dovi.dv_profile == 8)
+    if (sHDR.dovi.dv_profile == 8)
     {
       info.hdrDetail += ".";
-      info.hdrDetail += std::to_string(static_cast<int>(s.dovi.dv_bl_signal_compatibility_id));
-      if (s.dovi.dv_bl_signal_compatibility_id == 4)
+      info.hdrDetail += std::to_string(static_cast<int>(sHDR.dovi.dv_bl_signal_compatibility_id));
+      if (sHDR.dovi.dv_bl_signal_compatibility_id == 4)
         info.hdrTypeAlt = StreamHdrType::HDR_TYPE_HLG;
+    }
+    else if (sHDR.dovi.dv_profile == 7)
+    {
+      info.hdrDetail += m_processInfo->GetDoviIsFEL() ? "FEL" : "MEL";
     }
   }
   else
@@ -5640,8 +5654,6 @@ void CVideoPlayer::GetVideoStreamInfo(int streamId, VideoStreamInfo& info) const
     info.hdrDetail = "";
     info.hdrTypeAlt = StreamHdrType::HDR_TYPE_NONE;
   }
-  info.fpsRate = s.fpsRate;
-  info.fpsScale = s.fpsScale;
 }
 
 int CVideoPlayer::GetVideoStreamCount() const

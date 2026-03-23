@@ -184,6 +184,7 @@ protected:
   int m_src_offset[4];
   int m_src_stride[4];
   bool m_useDTSforPTS = false;
+  bool m_doviIsFEL{false};
 
   // CJNISurfaceHolderCallback interface
 public:

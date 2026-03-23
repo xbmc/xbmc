@@ -1066,6 +1066,16 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
 
         iSize = m_bitstream->GetConvertSize();
         pData = m_bitstream->GetConvertBuffer();
+
+        if (m_hints.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION && m_hints.dovi.dv_profile == 7)
+        {
+          const bool isFEL = m_bitstream->GetDoviIsFEL();
+          if (m_doviIsFEL != isFEL)
+          {
+            m_processInfo.SetDoviIsFEL(isFEL);
+            m_doviIsFEL = isFEL;
+          }
+        }
       }
 
       if (m_state == MEDIACODEC_STATE_FLUSHED)

@@ -1145,6 +1145,17 @@ void CMediaPipelineWebOS::FeedVideoData(const std::shared_ptr<CDVDMsg>& msg)
 
     size = m_bitstream->GetConvertSize();
     data = m_bitstream->GetConvertBuffer();
+
+    if (m_videoHint.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION &&
+        m_videoHint.dovi.dv_profile == 7)
+    {
+      const bool isFEL = m_bitstream->GetDoviIsFEL();
+      if (m_doviIsFEL != isFEL)
+      {
+        m_processInfo.SetDoviIsFEL(isFEL);
+        m_doviIsFEL = isFEL;
+      }
+    }
   }
 
   if (m_flushed)
