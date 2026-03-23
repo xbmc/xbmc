@@ -177,7 +177,7 @@ std::unique_ptr<CVideoSync> CWinSystemAndroidGLESContext::GetVideoSync(CVideoRef
 
 bool CWinSystemAndroidGLESContext::CreateSurface()
 {
-  if (!m_pGLContext.CreateSurface(static_cast<EGLNativeWindowType>(m_nativeWindow->m_window),
+  if (!m_pGLContext.CreateSurface(static_cast<EGLNativeWindowType>(m_nativeWindow->GetWindow()),
                                   m_HDRColorSpace))
   {
     if (m_HDRColorSpace != EGL_NONE)
@@ -185,7 +185,8 @@ bool CWinSystemAndroidGLESContext::CreateSurface()
       m_HDRColorSpace = EGL_NONE;
       m_displayMetadata = nullptr;
       m_lightMetadata = nullptr;
-      if (!m_pGLContext.CreateSurface(static_cast<EGLNativeWindowType>(m_nativeWindow->m_window)))
+      if (!m_pGLContext.CreateSurface(
+              static_cast<EGLNativeWindowType>(m_nativeWindow->GetWindow())))
         return false;
     }
     else
