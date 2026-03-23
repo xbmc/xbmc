@@ -123,7 +123,8 @@ bool CRendererVAAPIGLES::Configure(const VideoPicture& picture, float fps, unsig
 bool CRendererVAAPIGLES::ConfigChanged(const VideoPicture& picture)
 {
   CVaapiRenderPicture *pic = dynamic_cast<CVaapiRenderPicture*>(picture.videoBuffer);
-  if (pic->procPic.videoSurface != VA_INVALID_ID && !m_isVAAPIBuffer)
+  if ((pic->procPic.videoSurface != VA_INVALID_ID && !m_isVAAPIBuffer) ||
+      (pic->procPic.videoSurface == VA_INVALID_ID && m_isVAAPIBuffer))
     return true;
 
   return false;
