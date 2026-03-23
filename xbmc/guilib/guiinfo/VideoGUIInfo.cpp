@@ -667,7 +667,7 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
           CStreamDetails::VideoDimsToResolutionDescription(m_videoInfo.width, m_videoInfo.height);
       return true;
     case VIDEOPLAYER_HDR_TYPE:
-      value = CStreamDetails::HdrTypeToString(m_videoInfo.hdrType);
+      value = CStreamDetails::HdrTypeToString(m_videoInfo.hdrType) + " " + m_videoInfo.hdrDetail;
       return true;
     case VIDEOPLAYER_HDR_DETAIL:
       value = m_videoInfo.hdrDetail;
