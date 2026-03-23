@@ -205,9 +205,6 @@ public:
   int64_t GetNextFrameTime() const;
   float GetFrameLatencyMs() const;
 
-  bool getVideosurfaceInUse();
-  void setVideosurfaceInUse(bool videosurfaceInUse);
-
 protected:
   // limit who can access Volume
   friend class CAESinkAUDIOTRACK;
