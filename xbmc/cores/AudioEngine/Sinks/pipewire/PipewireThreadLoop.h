@@ -34,7 +34,6 @@ public:
 
   int Wait(std::chrono::nanoseconds timeout);
   void Signal(bool accept);
-  void Accept();
 
 private:
   struct PipewireThreadLoopDeleter

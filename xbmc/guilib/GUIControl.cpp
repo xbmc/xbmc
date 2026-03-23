@@ -139,10 +139,9 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
 
   if (IsVisible())
   {
-    auto& gfxContext = CServiceBroker::GetWinSystem()->GetGfxContext();
-    m_cachedTransform = gfxContext.AddTransform(m_transform);
+    m_cachedTransform = CServiceBroker::GetWinSystem()->GetGfxContext().AddTransform(m_transform);
     if (m_hasCamera)
-      gfxContext.SetCameraPosition(m_camera);
+      CServiceBroker::GetWinSystem()->GetGfxContext().SetCameraPosition(m_camera);
 
     Process(currentTime, dirtyregions);
     m_bInvalidated = false;
@@ -154,8 +153,8 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
     }
 
     if (m_hasCamera)
-      gfxContext.RestoreCameraPosition();
-    gfxContext.RemoveTransform();
+      CServiceBroker::GetWinSystem()->GetGfxContext().RestoreCameraPosition();
+    CServiceBroker::GetWinSystem()->GetGfxContext().RemoveTransform();
   }
 
   UpdateControlStats();
@@ -172,7 +171,6 @@ void CGUIControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregio
 {
   // update our render region
   m_renderRegion = CServiceBroker::GetWinSystem()->GetGfxContext().GenerateAABB(CalcRenderRegion());
-  // Note: single call here, caching not needed
   m_hasProcessed = true;
 }
 
@@ -182,30 +180,30 @@ void CGUIControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregio
 // 3. reset the animation transform
 void CGUIControl::DoRender()
 {
-  auto& gfxContext = CServiceBroker::GetWinSystem()->GetGfxContext();
-
   CRect hitRect(m_hitRect);
-  hitRect.Intersect(gfxContext.GetScissors());
+  hitRect.Intersect(CServiceBroker::GetWinSystem()->GetGfxContext().GetScissors());
 
   if (IsVisible() && !m_isCulled)
   {
     bool hasStereo =
         m_stereo != 0.0f &&
-        gfxContext.GetStereoMode() != RENDER_STEREO_MODE_MONO &&
-        gfxContext.GetStereoMode() != RENDER_STEREO_MODE_OFF;
+        CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() !=
+            RENDER_STEREO_MODE_MONO &&
+        CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() != RENDER_STEREO_MODE_OFF;
 
-    gfxContext.SetTransform(m_cachedTransform);
+    CServiceBroker::GetWinSystem()->GetGfxContext().SetTransform(m_cachedTransform);
     if (m_hasCamera)
-      gfxContext.SetCameraPosition(m_camera);
+      CServiceBroker::GetWinSystem()->GetGfxContext().SetCameraPosition(m_camera);
     if (hasStereo)
-      gfxContext.SetStereoFactor(m_stereo);
+      CServiceBroker::GetWinSystem()->GetGfxContext().SetStereoFactor(m_stereo);
 
     GUIPROFILER_RENDER_BEGIN(this);
 
     if (m_hitColor != 0xffffffff)
     {
-      UTILS::COLOR::Color color = gfxContext.MergeAlpha(m_hitColor);
-      CGUITexture::DrawQuad(gfxContext.GenerateAABB(hitRect), color);
+      UTILS::COLOR::Color color =
+          CServiceBroker::GetWinSystem()->GetGfxContext().MergeAlpha(m_hitColor);
+      CGUITexture::DrawQuad(CServiceBroker::GetWinSystem()->GetGfxContext().GenerateAABB(hitRect), color);
     }
 
     Render();
@@ -213,10 +211,10 @@ void CGUIControl::DoRender()
     GUIPROFILER_RENDER_END(this);
 
     if (hasStereo)
-      gfxContext.RestoreStereoFactor();
+      CServiceBroker::GetWinSystem()->GetGfxContext().RestoreStereoFactor();
     if (m_hasCamera)
-      gfxContext.RestoreCameraPosition();
-    gfxContext.RemoveTransform();
+      CServiceBroker::GetWinSystem()->GetGfxContext().RestoreCameraPosition();
+    CServiceBroker::GetWinSystem()->GetGfxContext().RemoveTransform();
   }
 }
 

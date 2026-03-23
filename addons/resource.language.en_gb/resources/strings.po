@@ -19353,7 +19353,7 @@ msgctxt "#36059"
 msgid "Wake-Up by active route"
 msgstr ""
 
-#empty strings from id 36060 to 36095
+#empty strings from id 36060 to 36094
 
 #. Label of setting "System / Display / GUI saturation boost in HDR PQ mode"
 #: system/settings/settings.xml
@@ -21615,12 +21615,6 @@ msgctxt "#36547"
 msgid "Adjusts how bright SDR GUI elements appear while the display is in HDR PQ mode (OSD, subtitles and other graphics). Does not affect HDR-authored PGS subtitles."
 msgstr ""
 
-#. Description of setting with label #36095 "System / Display / GUI saturation boost in HDR PQ mode"
-#: system/settings/settings.xml
-msgctxt "#36998"
-msgid "Adjusts colour saturation for SDR GUI elements while the display is in HDR PQ mode (OSD, subtitles and other graphics). Does not affect HDR-authored PGS subtitles."
-msgstr ""
-
 #. Description of setting with label #37021 "Set GUI resolution limit"
 #: system/settings/android.xml
 #: system/settings/gbm.xml
@@ -22267,7 +22261,13 @@ msgctxt "#36921"
 msgid "songs"
 msgstr ""
 
-#empty strings from id 36922 to 36999
+#empty strings from id 36922 to 36997
+
+#. Description of setting with label #36095 "System / Display / GUI saturation boost in HDR PQ mode"
+#: system/settings/settings.xml
+msgctxt "#36998"
+msgid "Adjusts colour saturation for SDR GUI elements while the display is in HDR PQ mode (OSD, subtitles and other graphics). Does not affect HDR-authored PGS subtitles."
+msgstr ""
 
 #: xbmc/cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.cpp
 msgctxt "#37000"
@@ -24141,6 +24141,8 @@ msgctxt "#39302"
 msgid "to P8.1"
 msgstr ""
 
+#empty strings from id 39215 to 39999
+
 # 40000 to 40800 are reserved for Video Versions feature
 
 #. Generic video versions label (plural)
@@ -25210,6 +25212,42 @@ msgctxt "#60211"
 msgid "Set Brightness-2 adjustment (compensation) when using Min PQ 20."
 msgstr ""
 
+#. Title of Dolby Vision CMv4.0 append setting
+#: system/settings/settings.xml
+msgctxt "#60320"
+msgid "CMv4.0 append"
+msgstr ""
+
+#. Help text for setting "CMv4.0 append setting" of label #50320
+#: system/settings/settings.xml
+msgctxt "#60321"
+msgid "Controls when CMv4.0 is appended to Dolby Vision profile 7 & 8 RPU during playback."
+msgstr ""
+
+#. "CMv4.0 append"
+#: system/settings/settings.xml
+msgctxt "#60322"
+msgid "Off"
+msgstr ""
+
+#. "CMv4.0 append"
+#: system/settings/settings.xml
+msgctxt "#60323"
+msgid "CMv2.9 without L2 trims"
+msgstr ""
+
+#. "CMv4.0 append"
+#: system/settings/settings.xml
+msgctxt "#60324"
+msgid "Always"
+msgstr ""
+
+#. "CMv4.0 append"
+#: system/settings/settings.xml
+msgctxt "#60325"
+msgid "Auto"
+msgstr ""
+
 #. "Dolby Vision Display LL Dolby VSVDB Limit"
 #: system/settings/settings.xml
 msgctxt "#60500"
@@ -25833,6 +25871,18 @@ msgctxt "#60603"
 msgid "Set this option to let the software automatically select between using normal Player Led versus Video Processor (VP) settings depending on your Display Max Lum capability (shown below) and the DV Video mastered MDL. When VP is in use the OSD will be a different colour. This feature only works with DV Mode On Demand."
 msgstr ""
 
+#. Setting label for E-AC-3 Atmos dialogue normalisation defeat
+#: system/settings/settings.xml
+msgctxt "#65005"
+msgid "Include E-AC-3 Atmos (breaks Atmos)"
+msgstr ""
+
+#. Setting help for E-AC-3 Atmos dialogue normalisation defeat
+#: system/settings/settings.xml
+msgctxt "#65006"
+msgid "Also apply dialogue normalisation defeat to E-AC-3 Dolby Atmos (DD+ Atmos) streams. This will disable Dolby Atmos object audio rendering — your receiver will fall back to standard Dolby Digital Plus surround. Safe to enable if your setup does not support Atmos."
+msgstr ""
+
 #. Title of Dolby Vision RPU conversion setting
 #: system/settings/settings.xml
 msgctxt "#69196"
@@ -25843,6 +25893,66 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#69197"
 msgid "Convert DV profile 7 FEL to MEL or to profile 8.1. Only use this setting if needed for audio sync issues with SoC S905X4. There is no need to use this setting with SoC S922X."
+msgstr ""
+
+#. Help text for setting of label #39204
+#: system/settings/settings.xml
+msgctxt "#69205"
+msgid "By enabling it, CC subtitles will be labeled for the hearing impaired; this will affect the automatic selection of subtitles, which unless otherwise specified will not be displayed by default."
+msgstr ""
+
+#. Abbreviation for Closed Caption subtitles (subtitles embedded in videos)
+#: xbmc/cores/VideoPlayer/DVDDemuxers/DVDDemuxCC.cpp
+msgctxt "#69206"
+msgid "CC"
+msgstr ""
+
+# Use Starfish decoder
+#: system/settings/linux.xml
+msgctxt "#69207"
+msgid "Use Starfish decoder"
+msgstr ""
+
+#. Description of setting with label #39207 "Use Starfish decoder"
+#: system/settings/linux.xml
+msgctxt "#69208"
+msgid "Starfish is the hardware video decoder for LG's webOS. Disable it for troubleshooting or testing."
+msgstr ""
+
+#. Title of Dolby Vision level 5 metadata zero override setting
+#: system/settings/settings.xml
+msgctxt "#69209"
+msgid "Dolby Vision: Override level 5 metadata to zero"
+msgstr ""
+
+#. Help text for setting "Dolby Vision: Override level 5 metadata to zero" of label #39209
+#: system/settings/settings.xml
+msgctxt "#69210"
+msgid "If enabled, Dolby Vision files will have level 5 (active area) metadata overridden to zero offsets. Enable if your display has issues with incorrectly cropped image in Dolby Vision playback."
+msgstr ""
+
+#. Label for HDR-authored PGS subtitle luminance setting
+#: system/settings/settings.xml
+msgctxt "#69211"
+msgid "HDR PGS subtitle luminance"
+msgstr ""
+
+#. Help text for setting "HDR PGS subtitle luminance" of label #39211
+#: system/settings/settings.xml
+msgctxt "#69212"
+msgid "Adjusts brightness for HDR-authored PGS subtitles (BT.2020/PQ). 50% keeps source luminance unchanged."
+msgstr ""
+
+#. Label for HDR-authored PGS subtitle saturation setting
+#: system/settings/settings.xml
+msgctxt "#69213"
+msgid "HDR PGS subtitle saturation"
+msgstr ""
+
+#. Help text for setting "HDR PGS subtitle saturation" of label #39213
+#: system/settings/settings.xml
+msgctxt "#69214"
+msgid "Adjusts color intensity for HDR-authored PGS subtitles (BT.2020/PQ). 50% keeps source saturation unchanged."
 msgstr ""
 
 #. Dolby Vision RPU Conversion
@@ -25861,6 +25971,30 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#69302"
 msgid "to P8.1"
+msgstr ""
+
+#. Setting label for TrueHD Atmos dialogue normalisation defeat
+#: system/settings/settings.xml
+msgctxt "#69351"
+msgid "TrueHD Atmos dialogue normalisation defeat (0 dB)"
+msgstr ""
+
+#. Setting help for TrueHD Atmos dialogue normalisation defeat
+#: system/settings/settings.xml
+msgctxt "#69352"
+msgid "Force the dialogue normalisation value to (0 dB) in TrueHD Atmos bitstreams. This disables receiver-side dialogue normalisation for the Atmos presentation, preventing unwanted volume reduction during passthrough playback."
+msgstr ""
+
+#. Setting label for AC-3/E-AC-3 dialogue normalisation defeat
+#: system/settings/settings.xml
+msgctxt "#69353"
+msgid "AC-3 / E-AC-3 dialogue normalisation defeat (0 dB)"
+msgstr ""
+
+#. Setting help for AC-3/E-AC-3 dialogue normalisation defeat
+#: system/settings/settings.xml
+msgctxt "#69354"
+msgid "Force the dialogue normalisation value to (0 dB) in AC-3 and E-AC-3 bitstreams. This disables receiver-side dialogue normalisation, preventing unwanted volume reduction during passthrough playback."
 msgstr ""
 
 #: system/settings/settings.xml

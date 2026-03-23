@@ -404,6 +404,9 @@ void CRenderSystemGLES::InitialiseShaders()
     definesNoPQ += "#define KODI_LIMITED_RANGE 1\n";
   }
 
+  // SM_TEXTURE_NOBLEND_NO_PQ is used for HDR-authored overlays (e.g. HDR PGS).
+  definesNoPQ += "#define KODI_HDR_PGS_ADJUST 1\n";
+
   if (m_transferPQ)
   {
     defines += "#define KODI_TRANSFER_PQ 1\n";

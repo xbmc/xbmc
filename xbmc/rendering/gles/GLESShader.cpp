@@ -13,8 +13,13 @@
 #include "ServiceBroker.h"
 #include "rendering/MatrixGL.h"
 #include "rendering/RenderSystem.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
+#include "settings/lib/Setting.h"
+#include "settings/lib/SettingType.h"
 
 using namespace Shaders;
 
@@ -52,6 +57,8 @@ void CGLESShader::OnCompiledAndLinked()
   m_hBrightness = glGetUniformLocation(ProgramHandle(), "m_brightness");
   m_sdrPeak = glGetUniformLocation(ProgramHandle(), "m_sdrPeak");
   m_sdrSaturation = glGetUniformLocation(ProgramHandle(), "m_sdrSaturation");
+  m_hdrPgsPeak = glGetUniformLocation(ProgramHandle(), "m_hdrPgsPeak");
+  m_hdrPgsSaturation = glGetUniformLocation(ProgramHandle(), "m_hdrPgsSaturation");
 
   // Variables passed directly to the Vertex shader
   m_hProj  = glGetUniformLocation(ProgramHandle(), "m_proj");
@@ -79,6 +86,64 @@ void CGLESShader::OnCompiledAndLinked()
   glUniformMatrix4fv(m_hCoord0Matrix,  1, GL_FALSE, identity);
 
   glUseProgram( 0 );
+
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  if (settings)
+  {
+    settings->RegisterCallback(this, {
+      CSettings::SETTING_VIDEOSCREEN_HDRPGSPEAKLUMINANCE,
+      CSettings::SETTING_VIDEOSCREEN_HDRPGSSATURATION,
+      CSettings::SETTING_VIDEOSCREEN_GUISDRPEAKLUMINANCE,
+      CSettings::SETTING_VIDEOSCREEN_USESYSTEMSDRPEAKLUMINANCE
+    });
+    m_cachedHdrPgsPeak = static_cast<float>(std::clamp(settings->GetInt(CSettings::SETTING_VIDEOSCREEN_HDRPGSPEAKLUMINANCE), 0, 100)) / 50.0f;
+    m_cachedHdrPgsSaturation = static_cast<float>(std::clamp(settings->GetInt(CSettings::SETTING_VIDEOSCREEN_HDRPGSSATURATION), 0, 100)) / 50.0f;
+  }
+
+  const auto winSystem = CServiceBroker::GetWinSystem();
+  if (winSystem)
+  {
+    m_cachedGuiSdrPeak = winSystem->GetGuiSdrPeakLuminance();
+    m_cachedGuiSdrSaturation = winSystem->GetGuiSdrSaturation();
+  }
+}
+
+CGLESShader::~CGLESShader()
+{
+  const auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (settingsComponent)
+  {
+    const auto settings = settingsComponent->GetSettings();
+    if (settings) settings->UnregisterCallback(this);
+  }
+}
+
+void CGLESShader::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
+{
+  if (setting == nullptr) return;
+
+  const std::string& settingId = setting->GetId();
+
+  if (settingId == CSettings::SETTING_VIDEOSCREEN_HDRPGSPEAKLUMINANCE)
+  {
+    const int hdrPgsPeakSetting = std::clamp(std::static_pointer_cast<const CSettingInt>(setting)->GetValue(), 0, 100);
+    m_cachedHdrPgsPeak = static_cast<float>(hdrPgsPeakSetting) / 50.0f;
+  }
+  else if (settingId == CSettings::SETTING_VIDEOSCREEN_HDRPGSSATURATION)
+  {
+    const int hdrPgsSaturationSetting = std::clamp(std::static_pointer_cast<const CSettingInt>(setting)->GetValue(), 0, 100);
+    m_cachedHdrPgsSaturation = static_cast<float>(hdrPgsSaturationSetting) / 50.0f;
+  }
+  else if (settingId == CSettings::SETTING_VIDEOSCREEN_GUISDRPEAKLUMINANCE ||
+           settingId == CSettings::SETTING_VIDEOSCREEN_USESYSTEMSDRPEAKLUMINANCE)
+  {
+    const auto winSystem = CServiceBroker::GetWinSystem();
+    if (winSystem)
+    {
+      m_cachedGuiSdrPeak = winSystem->GetGuiSdrPeakLuminance();
+      m_cachedGuiSdrSaturation = winSystem->GetGuiSdrSaturation();
+    }
+  }
 }
 
 bool CGLESShader::OnEnabled()
@@ -171,11 +236,10 @@ bool CGLESShader::OnEnabled()
   glUniform1f(m_hBrightness, 0.0f);
   glUniform1f(m_hContrast, 1.0f);
 
-  const float sdrPeak = CServiceBroker::GetWinSystem()->GetGuiSdrPeakLuminance();
-  glUniform1f(m_sdrPeak, sdrPeak);
-
-  const float sdrSaturation = CServiceBroker::GetWinSystem()->GetGuiSdrSaturation();
-  glUniform1f(m_sdrSaturation, sdrSaturation);
+  if (m_sdrPeak >= 0) glUniform1f(m_sdrPeak, m_cachedGuiSdrPeak);
+  if (m_sdrSaturation >= 0) glUniform1f(m_sdrSaturation, m_cachedGuiSdrSaturation);
+  if (m_hdrPgsPeak >= 0) glUniform1f(m_hdrPgsPeak, m_cachedHdrPgsPeak);
+  if (m_hdrPgsSaturation >= 0) glUniform1f(m_hdrPgsSaturation, m_cachedHdrPgsSaturation);
 
   return true;
 }

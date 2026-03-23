@@ -17,7 +17,9 @@
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "cores/AudioEngine/Utils/AEBitstreamPacker.h"
 #include "cores/AudioEngine/Utils/AEStreamInfo.h"
+#include "settings/lib/ISettingCallback.h"
 
+#include <atomic>
 #include <list>
 #include <memory>
 #include <vector>
@@ -25,7 +27,9 @@
 class CProcessInfo;
 class CPackerMAT;
 
-class CDVDAudioCodecPassthrough : public CDVDAudioCodec
+class CSetting;
+
+class CDVDAudioCodecPassthrough : public CDVDAudioCodec, public ISettingCallback
 {
 public:
   CDVDAudioCodecPassthrough(CProcessInfo &processInfo, CAEStreamInfo::DataType streamType);
@@ -57,7 +61,11 @@ public:
   // Call this from GENERAL_RESYNC handler AFTER ResetLavSyncState()
   void SyncToResyncPts(double pts);
 
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
+
 private:
+  void UpdateDialNormSettings();
+
   int GetData(uint8_t** dst);
   unsigned int PackTrueHD();
   CAEStreamParser m_parser;
@@ -113,6 +121,15 @@ private:
   static constexpr double JITTER_THRESHOLD_TRUEHD_DTS = 100000.0;  // 100ms
   static constexpr double JITTER_THRESHOLD_DEFAULT = 10000.0;      // 10ms
   double m_jitterThreshold{JITTER_THRESHOLD_DEFAULT};
+
+  // Cached settings (updated via callback, read in hot path)
+  std::atomic<bool> m_defeatAC3DialNorm{false};
+  std::atomic<bool> m_defeatEAC3AtmosDialNorm{false};
+  std::atomic<bool> m_defeatTrueHDDialNorm{false};
+
+  // E-AC-3 JOC/Atmos: dialnorm defeat must be skipped because modifying BSI
+  // dialnorm breaks JOC rendering (receiver cross-checks against OAMD metadata)
+  bool m_isEAC3JOC{false};
 
   //============================================================================
   // Internal Clock A/V Sync

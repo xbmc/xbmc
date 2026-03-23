@@ -3091,18 +3091,18 @@ bool CApplication::OnMessage(CGUIMessage& message)
   return false;
 }
 
-bool CApplication::ExecuteXBMCAction(std::string actionStr,
+bool CApplication::ExecuteXBMCAction(const std::string& in_actionStr,
                                      const std::shared_ptr<CGUIListItem>& item /* = NULL */)
 {
   // see if it is a user set string
 
   //We don't know if there is unsecure information in this yet, so we
   //postpone any logging
-  const std::string in_actionStr(actionStr);
+  std::string actionStr;
   if (item)
-    actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetItemLabel(actionStr, item.get());
+    actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetItemLabel(in_actionStr, item.get());
   else
-    actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetLabel(actionStr, INFO::DEFAULT_CONTEXT);
+    actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetLabel(in_actionStr, INFO::DEFAULT_CONTEXT);
 
   // user has asked for something to be executed
   if (CBuiltins::GetInstance().HasCommand(actionStr))

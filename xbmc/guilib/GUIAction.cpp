@@ -69,7 +69,6 @@ bool CGUIAction::ExecuteActions(int controlID,
   CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
   // take a copy of actions that satisfy our conditions
   std::vector<std::string> actions;
-  actions.reserve(m_actions.size());
   for (const auto &i : m_actions)
   {
     if (!i.HasCondition() || infoMgr.EvaluateBool(i.GetCondition(), 0, item))

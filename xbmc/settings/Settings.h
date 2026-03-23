@@ -385,7 +385,9 @@ public:
   static constexpr auto SETTING_VIDEOSCREEN_USESYSTEMSDRPEAKLUMINANCE =
       "videoscreen.usesystemsdrpeakluminance";
   static constexpr auto SETTING_VIDEOSCREEN_GUISDRPEAKLUMINANCE = "videoscreen.guipeakluminance";
-    static constexpr auto SETTING_VIDEOSCREEN_GUISDRSATURATION = "videoscreen.guisdrsaturation";
+  static constexpr auto SETTING_VIDEOSCREEN_GUISDRSATURATION = "videoscreen.guisdrsaturation";
+  static constexpr auto SETTING_VIDEOSCREEN_HDRPGSPEAKLUMINANCE = "videoscreen.hdrpgspeakluminance";
+  static constexpr auto SETTING_VIDEOSCREEN_HDRPGSSATURATION = "videoscreen.hdrpgssaturation";
   static constexpr auto SETTING_VIDEOSCREEN_DITHER = "videoscreen.dither";
   static constexpr auto SETTING_VIDEOSCREEN_DITHERDEPTH = "videoscreen.ditherdepth";
   static constexpr auto SETTING_AUDIOOUTPUT_AUDIODEVICE = "audiooutput.audiodevice";
@@ -483,7 +485,11 @@ public:
   static constexpr auto SETTING_COREELEC_AMLOGIC_DV_HDR10PLUS_PREFER_CONVERT = "coreelec.amlogic.dolbyvision.hdr10plus.prefer.convert";
   static constexpr auto SETTING_COREELEC_AMLOGIC_DV_HDR10PLUS_PEAK_BRIGHTNESS_SOURCE = "coreelec.amlogic.dolbyvision.hdr10plus.peak.brightness.source";
   static constexpr auto SETTING_COREELEC_AMLOGIC_DV_DUAL_PRIORITY = "coreelec.amlogic.dolbyvision.dual.priority";
+  static constexpr auto SETTING_COREELEC_AMLOGIC_DV_CMV40_APPEND = "coreelec.amlogic.dolbyvision.cmv40.append";
   static constexpr auto SETTING_COREELEC_AMLOGIC_DV_AUDIO_SEAMLESSBRANCH = "coreelec.amlogic.dolbyvision.audio.seamlessbranch";
+  static constexpr auto SETTING_COREELEC_AUDIO_AC3_DIALNORM = "coreelec.audio.ac3.dialnorm";
+  static constexpr auto SETTING_COREELEC_AUDIO_EAC3_ATMOS_DIALNORM = "coreelec.audio.eac3.atmos.dialnorm";
+  static constexpr auto SETTING_COREELEC_AUDIO_TRUEHD_ATMOS_DIALNORM = "coreelec.audio.truehd.atmos.dialnorm";
   static constexpr auto SETTING_CACHE_HARDDISK = "cache.harddisk";
   static constexpr auto SETTING_CACHEVIDEO_DVDROM = "cachevideo.dvdrom";
   static constexpr auto SETTING_CACHEVIDEO_LAN = "cachevideo.lan";

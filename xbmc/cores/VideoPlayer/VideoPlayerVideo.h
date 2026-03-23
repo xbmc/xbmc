@@ -17,6 +17,7 @@
 #include "PTSTracker.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "threads/Thread.h"
+#include "threads/SystemClock.h"
 #include "utils/BitstreamStats.h"
 
 #include <atomic>
@@ -65,6 +66,7 @@ public:
   bool HasData() const override;
   int  GetLevel() const override { return m_messageQueue.GetLevel(); }
   bool IsInited() const override;
+  bool IsEOS() override;
   void SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priority = 0) override;
   void FlushMessages() override;
 
@@ -73,7 +75,7 @@ public:
   double GetSubtitleDelay() override { return m_iSubtitleDelay; }
   void SetSubtitleDelay(double delay) override { m_iSubtitleDelay = delay; }
   bool IsStalled() const override { return m_stalled; }
-  bool IsRewindStalled() const override { return m_rewindStalled; }
+  bool IsPlaybackStalled() const override { return m_playbackStalled; }
   double GetCurrentPts() override;
   double GetOutputDelay() override; /* returns the expected delay, from that a packet is put in queue */
   std::string GetPlayerInfo() override;
@@ -132,7 +134,8 @@ protected:
   float m_fForcedAspectRatio;
   int m_speed;
   std::atomic_bool m_stalled = false;
-  std::atomic_bool m_rewindStalled;
+  std::atomic_bool m_playbackStalled;
+  std::atomic_bool m_isEOS{true};
   bool m_paused;
   IDVDStreamPlayer::ESyncState m_syncState;
   std::atomic_bool m_bAbortOutput;
@@ -155,4 +158,6 @@ protected:
   std::chrono::steady_clock::time_point m_lastDisplayReset{std::chrono::steady_clock::time_point::min()};
 
   std::chrono::steady_clock::time_point m_rendererConfigureRetryStart{std::chrono::steady_clock::time_point::min()};
+
+  XbmcThreads::EndTime<> m_playerInfoTimer;
 };

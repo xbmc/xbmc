@@ -40,9 +40,12 @@ public:
   pw_stream_state GetState();
   void SetActive(bool active);
 
-  pw_buffer* GetBuffer();
-  pw_buffer* PeekBuffer();
-  void QueueBuffer();
+  pw_buffer* DequeueBuffer();
+  void QueueBuffer(pw_buffer* buffer);
+
+  bool IsDriving() const;
+
+  bool TriggerProcess() const;
 
   void Flush(bool drain);
 
@@ -52,8 +55,6 @@ public:
 
   pw_time GetTime() const;
 
-  bool NeedsData() const;
-
 private:
   static void StateChanged(void* userdata,
                            enum pw_stream_state old,
@@ -61,7 +62,6 @@ private:
                            const char* error);
   static void Process(void* userdata);
   static void Drained(void* userdata);
-  void Stop();
 
   static pw_stream_events CreateStreamEvents();
 
@@ -70,11 +70,6 @@ private:
   const pw_stream_events m_streamEvents;
 
   spa_hook m_streamListener;
-
-  pw_buffer* m_buffer;
-
-  bool m_waiting;
-  bool m_running;
 
   struct PipewireStreamDeleter
   {

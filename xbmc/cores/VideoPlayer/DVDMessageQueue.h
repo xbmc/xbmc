@@ -89,8 +89,10 @@ public:
   double GetMaxTimeSize() const { return m_TimeSize; }
   bool IsInited() const { return m_bInitialized; }
   bool IsDataBased() const;
+  void GetLevels(int& level, int& dataLevel) const;
 
 private:
+  bool IsDataBasedLocked() const;
   MsgQueueReturnCode Put(const std::shared_ptr<CDVDMsg>& pMsg, int priority, bool front);
   void UpdateTimeFront();
   void UpdateTimeBack();

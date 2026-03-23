@@ -18,6 +18,7 @@ public:
     explicit BitstreamIoWriter(size_t capacity = 0);
 
     void write(bool v);
+    void write_bytes(const uint8_t* data, size_t count);
 
     template<typename T>
     void write_n(T v, uint32_t n);

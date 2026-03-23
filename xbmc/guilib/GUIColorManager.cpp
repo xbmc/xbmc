@@ -91,31 +91,16 @@ bool CGUIColorManager::LoadXML(CXBMCTinyXML &xmlDoc)
 // lookup a color and return it's hex value
 UTILS::COLOR::Color CGUIColorManager::GetColor(const std::string& color) const
 {
-  // fast path: try direct lookup without trimming (common case)
-  const auto directIt = m_colors.find(color);
-  if (directIt != m_colors.end())
-    return directIt->second;
-
-  // slow path: trim leading '=' and spaces, then retry
-  if (!color.empty() && (color[0] == '=' || color[0] == ' '))
-  {
-    std::string trimmed(color);
-    StringUtils::TrimLeft(trimmed, "= ");
-    const auto it = m_colors.find(trimmed);
-    if (it != m_colors.end())
-      return it->second;
-
-    // try converting hex directly
-    UTILS::COLOR::Color value = 0;
-    if (sscanf(trimmed.c_str(), "%x", &value) != 1)
-      value = 0;
-    return value;
-  }
+  // look in our color map
+  std::string trimmed(color);
+  StringUtils::TrimLeft(trimmed, "= ");
+  const auto it = m_colors.find(trimmed);
+  if (it != m_colors.end())
+    return (*it).second;
 
   // try converting hex directly
   UTILS::COLOR::Color value = 0;
-  if (sscanf(color.c_str(), "%x", &value) != 1)
-    value = 0;
+  sscanf(trimmed.c_str(), "%x", &value);
   return value;
 }
 

@@ -849,8 +849,23 @@ float CDataCacheCore::GetSpeed() const {
   return m_stateInfo.m_speed;
 }
 
-float CDataCacheCore::GetTempo() const {
-  std::lock_guard lock(m_stateSection);
+bool CDataCacheCore::IsNormalPlayback()
+{
+  std::unique_lock lock(m_stateSection);
+
+  return m_stateInfo.m_speed == 1.0f;
+}
+
+bool CDataCacheCore::IsPausedPlayback()
+{
+  std::unique_lock lock(m_stateSection);
+
+  return m_stateInfo.m_speed == 0.0f;
+}
+
+float CDataCacheCore::GetTempo() const
+{
+  std::unique_lock lock(m_stateSection);
 
   return m_stateInfo.m_tempo;
 }

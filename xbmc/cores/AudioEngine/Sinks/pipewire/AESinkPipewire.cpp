@@ -9,6 +9,7 @@
 #include "AESinkPipewire.h"
 
 #include "CompileInfo.h"
+#include "PipewireGlobal.h"
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Sinks/pipewire/Pipewire.h"
 #include "cores/AudioEngine/Sinks/pipewire/PipewireCore.h"
@@ -19,8 +20,6 @@
 #include "utils/Map.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
-
-#include <algorithm>
 
 #include <pipewire/keys.h>
 #include <spa/param/audio/format-utils.h>
@@ -239,8 +238,12 @@ std::chrono::duration<double, std::ratio<1>> PWTimeToAEDelay(const pw_time& time
   return delay;
 }
 
-constexpr std::chrono::duration<double, std::ratio<1>> DEFAULT_BUFFER_DURATION = 0.100s;
-constexpr unsigned int DEFAULT_NUM_PERIODS = 2;
+constexpr std::chrono::duration<double, std::ratio<1>> DEFAULT_BUFFER_DURATION = 0.200s;
+constexpr int DEFAULT_PERIODS = 4;
+constexpr std::chrono::duration<double, std::ratio<1>> DEFAULT_PERIOD_DURATION =
+    DEFAULT_BUFFER_DURATION / DEFAULT_PERIODS;
+
+constexpr int DEFAULT_LATENCY_DIVIDER = 3;
 
 } // namespace
 
@@ -300,21 +303,15 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
   list.emplace_back(defaultDevice);
 
   auto& registry = pipewire->GetRegistry();
+  std::lock_guard lg(registry);
 
-  for (const auto& [id, node] : registry.GetNodes())
+  for (const auto& [id, global] : registry.GetGlobals())
   {
-    // Immediately after a node has been added to the registry it doesn't have information yet.
-    // Once PipeWire populated the info the audio engine is informed about the update and the
-    // enumeration is performed again.
-    if (!node->HasInfo())
-      continue;
-
     CAEDeviceInfo device;
     device.m_deviceType = AE_DEVTYPE_PCM;
-    device.m_deviceName = node->Get(PW_KEY_NODE_NAME);
-    device.m_displayName = node->Get(PW_KEY_NODE_DESCRIPTION);
-    device.m_displayNameExtra = StringUtils::Format("{} (PIPEWIRE)", device.m_displayName);
-
+    device.m_deviceName = global->GetName();
+    device.m_displayName = global->GetDescription();
+    device.m_displayNameExtra = StringUtils::Format("{} (PIPEWIRE)", global->GetDescription());
     device.m_wantsIECPassthrough = true;
 
     std::for_each(formatMap.cbegin(), formatMap.cend(),
@@ -323,8 +320,20 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
     std::for_each(defaultSampleRates.cbegin(), defaultSampleRates.cend(),
                   [&device](const auto& rate) { device.m_sampleRates.emplace_back(rate); });
 
-    auto& channels = node->GetChannels();
-    if (channels.empty())
+    auto& node = global->GetNode();
+    node.EnumerateFormats();
+
+    int ret = loop.Wait(5s);
+    if (ret == -ETIMEDOUT)
+    {
+      CLog::Log(LOGDEBUG,
+                "CAESinkPipewire::{} - timed out out waiting for formats to be enumerated",
+                __FUNCTION__);
+      continue;
+    }
+
+    auto& channels = node.GetChannels();
+    if (channels.size() < 1)
       continue;
 
     for (const auto& channel : channels)
@@ -334,7 +343,7 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
         device.m_channels += ch->second;
     }
 
-    for (const auto& iec958Codec : node->GetIEC958Codecs())
+    for (const auto& iec958Codec : node.GetIEC958Codecs())
     {
       auto streamTypes = PWIEC958CodecToAEStreamInfoDataTypeList(iec958Codec);
       device.m_streamTypes.insert(device.m_streamTypes.end(), streamTypes.begin(),
@@ -379,7 +388,7 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
   PIPEWIRE::CLoopLockGuard lock(loop);
 
   auto& registry = pipewire->GetRegistry();
-  auto& nodes = registry.GetNodes();
+  auto& globals = registry.GetGlobals();
 
   uint32_t id;
   if (device == "Default")
@@ -388,13 +397,13 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
   }
   else
   {
-    auto target = std::find_if(nodes.begin(), nodes.end(),
+    auto target = std::find_if(globals.begin(), globals.end(),
                                [&device](const auto& p)
                                {
-                                 const auto& [nodeId, node] = p;
-                                 return device == node->Get(PW_KEY_NODE_NAME);
+                                 const auto& [globalId, global] = p;
+                                 return device == global->GetName();
                                });
-    if (target == nodes.end())
+    if (target == globals.end())
       return false;
 
     id = target->first;
@@ -413,11 +422,10 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
 
   m_stream = std::make_unique<PIPEWIRE::CPipewireStream>(core);
 
-  uint32_t frames =
-      std::nearbyint((DEFAULT_BUFFER_DURATION / DEFAULT_NUM_PERIODS).count() * format.m_sampleRate);
-  std::string fraction = StringUtils::Format("{}/{}", frames, format.m_sampleRate);
-
-  m_latency = DEFAULT_NUM_PERIODS * frames * 1.0s / format.m_sampleRate;
+  m_latency = DEFAULT_BUFFER_DURATION;
+  uint32_t frames = std::nearbyint(DEFAULT_PERIOD_DURATION.count() * format.m_sampleRate);
+  std::string fraction =
+      StringUtils::Format("{}/{}", frames / DEFAULT_LATENCY_DIVIDER, format.m_sampleRate);
 
   std::string srate = StringUtils::Format("1/{}", format.m_sampleRate);
 
@@ -444,16 +452,17 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
   std::vector<const spa_pod*> params;
 
   // clang-format off
-  uint32_t buf_minsize = frames * pwChannels.size() * PWFormatToSampleSize(pwFormat);
   params.emplace_back(static_cast<const spa_pod*>(spa_pod_builder_add_object(
       &builder, SPA_TYPE_OBJECT_ParamBuffers, SPA_PARAM_Buffers,
+          SPA_PARAM_BUFFERS_buffers, SPA_POD_CHOICE_RANGE_Int(20, 16, 24),
           SPA_PARAM_BUFFERS_blocks, SPA_POD_Int(1),
-          SPA_PARAM_BUFFERS_size, SPA_POD_CHOICE_RANGE_Int(buf_minsize, buf_minsize, INT32_MAX),
+          SPA_PARAM_BUFFERS_size, SPA_POD_Int(frames * pwChannels.size() * PWFormatToSampleSize(pwFormat)),
           SPA_PARAM_BUFFERS_stride, SPA_POD_Int(pwChannels.size() * PWFormatToSampleSize(pwFormat)))));
   // clang-format on
 
-  pw_stream_flags flags = static_cast<pw_stream_flags>(
-      PW_STREAM_FLAG_AUTOCONNECT | PW_STREAM_FLAG_INACTIVE | PW_STREAM_FLAG_MAP_BUFFERS);
+  pw_stream_flags flags =
+      static_cast<pw_stream_flags>(PW_STREAM_FLAG_AUTOCONNECT | PW_STREAM_FLAG_INACTIVE |
+                                   PW_STREAM_FLAG_MAP_BUFFERS | PW_STREAM_FLAG_DRIVER);
 
   if (!passthrough)
   {
@@ -494,7 +503,8 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
   CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - framesize: {}", __FUNCTION__,
             pwChannels.size() * PWFormatToSampleSize(pwFormat));
   CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - latency: {}/{} ({:.3f}s)", __FUNCTION__, frames,
-            format.m_sampleRate, static_cast<double>(frames) / format.m_sampleRate);
+            format.m_sampleRate,
+            static_cast<double>(frames) / DEFAULT_LATENCY_DIVIDER / format.m_sampleRate);
 
   pw_stream_state state;
   do
@@ -540,11 +550,9 @@ double CAESinkPipewire::GetCacheTotal()
   return m_latency.count();
 }
 
-unsigned int CAESinkPipewire::AddPackets(uint8_t** data,
-                                         unsigned int frames_in,
-                                         unsigned int offset)
+unsigned int CAESinkPipewire::AddPackets(uint8_t** data, unsigned int frames, unsigned int offset)
 {
-  unsigned int frames = frames_in;
+  const auto start = std::chrono::steady_clock::now();
 
   auto& loop = pipewire->GetThreadLoop();
 
@@ -552,57 +560,59 @@ unsigned int CAESinkPipewire::AddPackets(uint8_t** data,
 
   if (m_stream->GetState() == PW_STREAM_STATE_PAUSED)
     m_stream->SetActive(true);
-  else if (m_stream->GetState() != PW_STREAM_STATE_STREAMING)
-    return 0;
 
-  while (frames)
+  pw_buffer* pwBuffer = nullptr;
+  while (!pwBuffer)
   {
-    // Block until data is needed. Process() will wake us up.
-    while (!m_stream->NeedsData())
-    {
-      int ret = loop.Wait(1s);
-      if (ret < 0)
-        return 0;
-    }
+    pwBuffer = m_stream->DequeueBuffer();
+    if (pwBuffer)
+      break;
 
-    // Fill in exactly the requested number of frames. If we don't have enough,
-    // don't queue the buffer yet. Important for passthrough, and also for pcm
-    // since we didn't request extra buffers when creating stream.
-    pw_buffer* buffer = m_stream->GetBuffer();
-    if (!buffer)
+    int ret = loop.Wait(1s);
+    if (ret == -ETIMEDOUT)
       return 0;
-
-    spa_buffer* spaBuffer = buffer->buffer;
-    spa_data* spaData = &spaBuffer->datas[0];
-    unsigned int max_frames = spaData->maxsize / m_format.m_frameSize;
-    unsigned int requested = buffer->requested ? buffer->requested : frames;
-    unsigned int target = std::min(requested, max_frames);
-
-    if (buffer->size < target)
-    {
-      unsigned int consume = std::min(frames, static_cast<unsigned int>(target - buffer->size));
-      size_t length = consume * m_format.m_frameSize;
-      void* dst = static_cast<uint8_t*>(spaData->data) + buffer->size * m_format.m_frameSize;
-      void* src = data[0] + offset * m_format.m_frameSize;
-
-      std::memcpy(dst, src, length);
-
-      buffer->size += consume;
-      frames -= consume;
-      offset += consume;
-    }
-
-    if (buffer->size >= target)
-    {
-      spaData->chunk->offset = 0;
-      spaData->chunk->stride = m_format.m_frameSize;
-      spaData->chunk->size = buffer->size * m_format.m_frameSize;
-
-      m_stream->QueueBuffer();
-    }
   }
 
-  return frames_in;
+  pwBuffer->size = frames;
+
+  spa_buffer* spaBuffer = pwBuffer->buffer;
+  spa_data* spaData = &spaBuffer->datas[0];
+
+  size_t length = frames * m_format.m_frameSize;
+
+  void* buffer = data[0] + offset * m_format.m_frameSize;
+
+  std::memcpy(spaData->data, buffer, length);
+
+  spaData->chunk->offset = 0;
+  spaData->chunk->stride = m_format.m_frameSize;
+  spaData->chunk->size = length;
+
+  m_stream->QueueBuffer(pwBuffer);
+
+  const auto period = std::chrono::duration<double, std::ratio<1>>(static_cast<double>(frames) /
+                                                                   m_format.m_sampleRate);
+
+  do
+  {
+    pw_time time = m_stream->GetTime();
+
+    const std::chrono::duration<double, std::ratio<1>> delay =
+        PWTimeToAEDelay(time, m_format.m_sampleRate);
+
+    const auto now = std::chrono::steady_clock::now();
+
+    if ((delay <= (DEFAULT_BUFFER_DURATION - DEFAULT_PERIOD_DURATION)) || ((now - start) >= period))
+      break;
+
+    loop.Wait(5ms);
+
+  } while (true);
+
+  if (m_stream->IsDriving())
+    m_stream->TriggerProcess();
+
+  return frames;
 }
 
 void CAESinkPipewire::GetDelay(AEDelayStatus& status)
@@ -617,10 +627,6 @@ void CAESinkPipewire::GetDelay(AEDelayStatus& status)
 
   if (state != PW_STREAM_STATE_STREAMING)
     return;
-
-  pw_buffer* buffer = m_stream->PeekBuffer();
-  if (buffer)
-    time.queued += buffer->size;
 
   const std::chrono::duration<double, std::ratio<1>> delay =
       PWTimeToAEDelay(time, m_format.m_sampleRate);

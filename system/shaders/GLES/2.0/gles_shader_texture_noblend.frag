@@ -29,6 +29,10 @@ uniform sampler2D m_samp0;
 varying vec4 m_cord0;
 uniform float m_sdrPeak;
 uniform float m_sdrSaturation;
+#if defined(KODI_HDR_PGS_ADJUST)
+uniform float m_hdrPgsPeak;
+uniform float m_hdrPgsSaturation;
+#endif
 
 highp float rand(highp vec2 co)
 {
@@ -79,6 +83,51 @@ vec3 transferPQ(vec3 x)
   return x;
 }
 
+#if defined(KODI_HDR_PGS_ADJUST)
+vec3 decodePQ(vec3 x)
+{
+  const float ST2084_m1 = 2610.0 / (4096.0 * 4.0);
+  const float ST2084_m2 = (2523.0 / 4096.0) * 128.0;
+  const float ST2084_c1 = 3424.0 / 4096.0;
+  const float ST2084_c2 = (2413.0 / 4096.0) * 32.0;
+  const float ST2084_c3 = (2392.0 / 4096.0) * 32.0;
+
+  x = clamp(x, vec3(0.0), vec3(1.0));
+  vec3 p = pow(x, vec3(1.0 / ST2084_m2));
+  vec3 num = max(p - vec3(ST2084_c1), vec3(0.0));
+  vec3 den = max(vec3(ST2084_c2) - vec3(ST2084_c3) * p, vec3(1e-6));
+  return pow(num / den, vec3(1.0 / ST2084_m1));
+}
+
+vec3 encodePQ(vec3 x)
+{
+  const float ST2084_m1 = 2610.0 / (4096.0 * 4.0);
+  const float ST2084_m2 = (2523.0 / 4096.0) * 128.0;
+  const float ST2084_c1 = 3424.0 / 4096.0;
+  const float ST2084_c2 = (2413.0 / 4096.0) * 32.0;
+  const float ST2084_c3 = (2392.0 / 4096.0) * 32.0;
+
+  x = max(x, vec3(0.0));
+  vec3 p = pow(x, vec3(ST2084_m1));
+  vec3 y = (vec3(ST2084_c1) + vec3(ST2084_c2) * p) / (vec3(1.0) + vec3(ST2084_c3) * p);
+  y = pow(y, vec3(ST2084_m2));
+  return clamp(y, vec3(0.0), vec3(1.0));
+}
+
+vec3 adjustHdrPgsPQ(vec3 pq)
+{
+  vec3 linear = decodePQ(pq);
+
+  vec3 luma = vec3(dot(linear, vec3(0.2627, 0.6780, 0.0593)));
+  linear = mix(luma, linear, m_hdrPgsSaturation);
+
+  linear = max(linear, vec3(0.0));
+  linear *= m_hdrPgsPeak;
+
+  return encodePQ(linear);
+}
+#endif
+
 void main ()
 {
   vec4 rgb;
@@ -87,6 +136,8 @@ void main ()
 
 #if defined(KODI_TRANSFER_PQ)
   rgb.rgb = transferPQ(rgb.rgb);
+#elif defined(KODI_HDR_PGS_ADJUST)
+  rgb.rgb = adjustHdrPgsPQ(rgb.rgb);
 #endif
 
 #if defined(KODI_LIMITED_RANGE)

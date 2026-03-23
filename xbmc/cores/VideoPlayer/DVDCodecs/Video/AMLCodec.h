@@ -266,7 +266,7 @@ public:
   CDVDVideoCodec::VCReturn GetPicture(VideoPicture& videoPicture);
 
   void          SetSpeed(int speed);
-  void          SetDrain(bool drain) {m_drain = drain;};
+  void          SetDrain(bool drain);
   void          SetVideoRect(const CRect &SrcRect, const CRect &DestRect);
   void          SetVideoRate(int videoRate) const;
   uint64_t      GetOMXPts() const { return m_cur_pts; }
@@ -286,7 +286,7 @@ private:
   void          SetVideoContrast(const int contrast);
   void          SetVideoBrightness(const int brightness);
   void          SetVideoSaturation(const int saturation);
-  bool          OpenAmlVideo(const CDVDStreamInfo &hints);
+  bool          OpenAmlVideo();
   void          CloseAmlVideo();
   std::string   GetVfmMap(const std::string &name) const;
   void          SetVfmMap(const std::string &name, const std::string &map) const;
@@ -302,6 +302,7 @@ private:
   std::string   IntToFourCCString(unsigned int value) const;
   std::string   GetDoViCodecFourCC(unsigned int codec_tag) const;
   void          SetProcessInfoVideoDetails();
+  void          ResetFrameTimeoutClock();
 
   DllLibAmCodec   *m_dll;
   bool             m_opened;
@@ -328,30 +329,31 @@ private:
   static const unsigned int STATE_PREFILLED  = 1;
   static const unsigned int STATE_HASPTS     = 2;
 
-  unsigned int m_state;
+  unsigned int     m_state;
 
   PosixFilePtr     m_amlVideoFile;
   std::string      m_defaultVfmMap;
 
-  static std::atomic_flag  m_pollSync;
-  static int m_pollDevice;
-  static double m_ttd;
+  static           std::atomic_flag  m_pollSync;
+  static int       m_pollDevice;
+  static double    m_ttd;
 
   CDVDStreamInfo  &m_hints;         // Reference as values can change.
   CProcessInfo    &m_processInfo;
   CDataCacheCore  &m_dataCacheCore;
 
-  int m_decoder_timeout;
-  bool m_decoder_bypass_buffer_ready;
-  float m_decoder_buffer;
-  float m_decoder_stream_buffer;
-  float m_decoder_minimum_buffer;
-  float m_decoder_minimum_stream_buffer;
+  int              m_decoder_timeout;
+  bool             m_decoder_bypass_buffer_ready;
+  float            m_decoder_buffer;
+  float            m_decoder_stream_buffer;
+  float            m_decoder_minimum_buffer;
+  float            m_decoder_minimum_stream_buffer;
 
   std::chrono::time_point<std::chrono::system_clock> m_tp_last_frame;
+  float            m_last_drain_buffer_level{0.0f};
 
-  bool            m_buffer_level_ready;
-  float           m_minimum_buffer_level;
+  bool             m_buffer_level_ready;
+  float            m_minimum_buffer_level{0.0f};
 
   std::mutex       m_ioControlMutex;
 };

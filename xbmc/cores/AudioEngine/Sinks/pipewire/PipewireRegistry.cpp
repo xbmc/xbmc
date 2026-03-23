@@ -9,6 +9,7 @@
 #include "PipewireRegistry.h"
 
 #include "PipewireCore.h"
+#include "PipewireGlobal.h"
 #include "PipewireNode.h"
 #include "utils/log.h"
 
@@ -43,8 +44,6 @@ void CPipewireRegistry::OnGlobalAdded(void* userdata,
                                       uint32_t version,
                                       const struct spa_dict* props)
 {
-  auto& registry = *reinterpret_cast<CPipewireRegistry*>(userdata);
-
   if (strcmp(type, PW_TYPE_INTERFACE_Node) != 0)
     return;
 
@@ -55,25 +54,49 @@ void CPipewireRegistry::OnGlobalAdded(void* userdata,
   if (strcmp(mediaClass, "Audio/Sink") != 0)
     return;
 
-  auto& nodes = registry.GetNodes();
+  const char* name = spa_dict_lookup(props, PW_KEY_NODE_NAME);
+  if (!name)
+    return;
 
-  nodes[id] = std::make_unique<CPipewireNode>(registry, id, type);
+  const char* desc = spa_dict_lookup(props, PW_KEY_NODE_DESCRIPTION);
+  if (!desc)
+    return;
 
-  CLog::Log(LOGDEBUG, "CPipewireRegistry::{} - id={}", __FUNCTION__, id);
+  auto properties =
+      std::unique_ptr<pw_properties, PipewirePropertiesDeleter>(pw_properties_new_dict(props));
+
+  auto& registry = *reinterpret_cast<CPipewireRegistry*>(userdata);
+  std::lock_guard lg(registry);
+  auto node = std::make_unique<CPipewireNode>(registry, id, type);
+
+  auto& globals = registry.GetGlobals();
+
+  globals[id] = std::make_unique<CPipewireGlobal>();
+  globals[id]
+      ->SetName(name)
+      .SetDescription(desc)
+      .SetID(id)
+      .SetPermissions(permissions)
+      .SetType(type)
+      .SetVersion(version)
+      .SetProperties(std::move(properties))
+      .SetNode(std::move(node));
 }
 
 void CPipewireRegistry::OnGlobalRemoved(void* userdata, uint32_t id)
 {
   auto& registry = *reinterpret_cast<CPipewireRegistry*>(userdata);
-  auto& nodes = registry.GetNodes();
+  std::lock_guard lg(registry);
+  auto& globals = registry.GetGlobals();
 
-  auto it = nodes.find(id);
-  if (it != nodes.end())
+  auto it = globals.find(id);
+  if (it != globals.end())
   {
-    const auto& [nodeId, node] = *it;
-    CLog::Log(LOGDEBUG, "CPipewireRegistry::{} - id={}", __FUNCTION__, nodeId);
+    const auto& [globalId, global] = *it;
+    CLog::Log(LOGDEBUG, "CPipewireRegistry::{} - id={} type={}", __FUNCTION__, id,
+              global->GetType());
 
-    nodes.erase(it);
+    globals.erase(it);
   }
 }
 

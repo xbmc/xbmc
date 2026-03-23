@@ -50,6 +50,7 @@
 static bool vs10_conversion = false;
 static bool vs10_conversion_reset_hdr10 = true;
 bool aml_linux_force_422 = false;
+bool aml_linux_osd_sdr8 = true;
 
 static std::shared_ptr<CSettings> settings()
 {
@@ -173,7 +174,6 @@ void aml_dv_set_vs10_mode(unsigned int mode, StreamHdrType hdrType)
 {
   enum DV_TYPE dv_type(static_cast<DV_TYPE>(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_TYPE)));
   if ((dv_type == DV_TYPE_VS10_ONLY) ||
-      (hdrType == StreamHdrType::HDR_TYPE_HDR10) ||
       (hdrType == StreamHdrType::HDR_TYPE_HDR10PLUS))
     return;
 
@@ -184,8 +184,35 @@ void aml_dv_set_vs10_mode(unsigned int mode, StreamHdrType hdrType)
   else
     vs10_conversion_reset_hdr10 = false;
 
+  if (mode == DOLBY_VISION_OUTPUT_MODE_BYPASS)
+  {
+    if ((hdrType == StreamHdrType::HDR_TYPE_NONE) || (hdrType == StreamHdrType::HDR_TYPE_HLG))
+    {
+      aml_linux_osd_sdr8 = true;
+      CServiceBroker::GetWinSystem()->GetGfxContext().SetTransferPQ(false);
+    }
+    else
+    {
+      aml_linux_osd_sdr8 = false;
+      CServiceBroker::GetWinSystem()->GetGfxContext().SetTransferPQ(true);
+    }
+  }
+  else if (mode == DOLBY_VISION_OUTPUT_MODE_SDR10)
+  {
+    aml_linux_osd_sdr8 = true;
+    CServiceBroker::GetWinSystem()->GetGfxContext().SetTransferPQ(false);
+  }
+  else
+  {
+    aml_linux_osd_sdr8 = false;
+    CServiceBroker::GetWinSystem()->GetGfxContext().SetTransferPQ(true);
+  }
+
+  CSysfsPath("/sys/module/amdolby_vision/parameters/aml_linux_osd_sdr8", aml_linux_osd_sdr8);
+
   if (mode != DOLBY_VISION_OUTPUT_MODE_BYPASS)
   {
+    aml_set_osd_pq_bypass(StreamHdrType::HDR_TYPE_NONE);
     if ((existing_mode == mode) || ((mode == DOLBY_VISION_OUTPUT_MODE_IPT) && (hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)))
       vs10_conversion = false;
     else
@@ -198,9 +225,13 @@ void aml_dv_set_vs10_mode(unsigned int mode, StreamHdrType hdrType)
     aml_dv_on(mode);
   }
   else if (aml_is_dv_enable()) // DV BYPASS, and it is on - then switch it off.
+  {
+    aml_set_osd_pq_bypass(CServiceBroker::GetDataCacheCore().GetVideoHdrType());
     aml_dv_off();
+  }
 
-  aml_reset_audio_from_vs10_change();
+
+  // aml_reset_audio_from_vs10_change();
 }
 
 void aml_dv_wait_video_off(int timeout)
@@ -261,6 +292,19 @@ static unsigned int aml_vs10_by_hdrtype(StreamHdrType hdrType, unsigned int bitD
       vs10_mode = aml_vs10_by_setting(CSettings::SETTING_COREELEC_AMLOGIC_DV_VS10_DV);
       break;
   }
+   
+  if (vs10_mode == DOLBY_VISION_OUTPUT_MODE_BYPASS)
+  {
+    if (hdrType == StreamHdrType::HDR_TYPE_NONE)
+      aml_linux_osd_sdr8 = true;
+    else
+      aml_linux_osd_sdr8 = false;
+  }
+  else if (vs10_mode == DOLBY_VISION_OUTPUT_MODE_SDR10)
+    aml_linux_osd_sdr8 = true;
+  else
+    aml_linux_osd_sdr8 = false;
+  CSysfsPath("/sys/module/amdolby_vision/parameters/aml_linux_osd_sdr8", aml_linux_osd_sdr8);
 
   if ((vs10_mode != DOLBY_VISION_OUTPUT_MODE_BYPASS) &&
        ((hdrType != StreamHdrType::HDR_TYPE_DOLBYVISION) ||
@@ -777,6 +821,13 @@ unsigned int aml_dv_on(unsigned int mode)
 
 void aml_dv_off()
 {
+  StreamHdrType hdrType = CServiceBroker::GetDataCacheCore().GetVideoHdrType();
+  if (hdrType == StreamHdrType::HDR_TYPE_NONE)
+    aml_linux_osd_sdr8 = true;
+  else
+    aml_linux_osd_sdr8 = false;
+  CSysfsPath("/sys/module/amdolby_vision/parameters/aml_linux_osd_sdr8", aml_linux_osd_sdr8);
+
   // change mode and disable.
   CSysfsPath dolby_vision_mode{"/sys/module/amdolby_vision/parameters/dolby_vision_mode"};
   unsigned int existing_mode = dolby_vision_mode.Get<unsigned int>().value();
@@ -900,6 +951,11 @@ void aml_dv_set_xbmc_osd()
                     wm.IsWindowVisible(WINDOW_VIDEO_MENU) ||
                     CServiceBroker::GetDataCacheCore().GetAVChangeExtended();
 
+  const int osd_state = osd_active ? 1 : 0;
+  static int last_osd_active = -1;
+  if (osd_state == last_osd_active) return;
+  last_osd_active = osd_state;
+
   CSysfsPath("/sys/module/amdolby_vision/parameters/dolby_vision_xbmc_osd", osd_active);
 }
 
@@ -947,7 +1003,8 @@ void aml_set_transfer_pq(StreamHdrType hdrType, unsigned int bitDepth) {
   if (hdr_display) // Only relevant with an hdr_display 
   {
     // TODO: any need to test display supports each hdr content (inc fallback) specifically?
-    hdr = (hdrType != StreamHdrType::HDR_TYPE_NONE);
+    hdr = ((hdrType != StreamHdrType::HDR_TYPE_NONE) &&
+           (hdrType != StreamHdrType::HDR_TYPE_HLG));
 
     // Check for vs10 up or down mapping.
     if (dv_on) {
@@ -1729,10 +1786,6 @@ void aml_dv_send_profile(int dvprofile) {
   CSysfsPath("/sys/module/amdolby_vision/parameters/xbmc_dv_profile", static_cast<unsigned int>(dvprofile));
 }
 
-// void aml_dv_hdr10plus_conversion (bool hdr10plus_conversion) {
-//  CSysfsPath("/sys/module/amdolby_vision/parameters/xbmc_dv_hdr10plus_conv", hdr10plus_conversion);
-// }
-
 void aml_reset_audio_from_player_open()
 {
   auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
@@ -1787,10 +1840,10 @@ void aml_reset_audio_from_play_from_resume()
 void aml_reset_from_subtitle_change()
 {
   auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
-  advancedSettings->SetResetSync(true);
-  advancedSettings->SetResetSeek(true);
-  advancedSettings->SetLastResetTime(0.0);
-  advancedSettings->SetAlgoForReset(99);
+  advancedSettings->SetResetSyncSub(true);
+  advancedSettings->SetResetSeekSub(true);
+  advancedSettings->SetLastResetTimeSub(0.0);
+  advancedSettings->SetAlgoForResetSub(99);
 }
 
 void aml_kodi_reset_cd_cs()

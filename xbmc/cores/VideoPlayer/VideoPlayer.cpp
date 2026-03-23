@@ -490,6 +490,7 @@ void CSelectionStreams::Update(const std::shared_ptr<CDVDInputStream>& input,
 
       SubtitleStreamInfo info = nav->GetSubtitleStreamInfo(i);
       s.name     = info.name;
+      s.codec = info.codecName;
       s.flags = info.flags;
       s.language = g_LangCodeExpander.ConvertToISO6392B(info.language);
       Update(s);
@@ -663,7 +664,7 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
 
   m_dvd.Clear();
   m_State.Clear();
-
+  m_demuxSeekBasePts = DVD_NOPTS_VALUE;
   m_bAbortRequest = false;
   m_offset_pts = 0.0;
   m_playSpeed = DVD_PLAYSPEED_NORMAL;
@@ -1261,6 +1262,7 @@ void CVideoPlayer::Prepare()
   m_processInfo->SetTempo(1.0);
   m_processInfo->SetFrameAdvance(false);
   m_State.Clear();
+  m_demuxSeekBasePts = DVD_NOPTS_VALUE;
   m_CurrentVideo.hint.Clear();
   m_CurrentAudio.hint.Clear();
   m_CurrentSubtitle.hint.Clear();
@@ -1593,7 +1595,9 @@ void CVideoPlayer::Process()
 
       // while players are still playing, keep going to allow seekbacks
       if (m_VideoPlayerAudio->HasData() ||
-          m_VideoPlayerVideo->HasData())
+          (m_VideoPlayerVideo->HasData() ||
+           (m_VideoPlayerVideo->IsInited() &&
+            !m_VideoPlayerVideo->IsEOS())))
       {
         CThread::Sleep(100ms);
         continue;
@@ -1751,7 +1755,9 @@ void CVideoPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
    */
   EDL::Edit edit;
   if (CheckSceneSkip(m_CurrentAudio))
+  {
     drop = true;
+  }
   else if (m_Edl.InEdit(DVD_TIME_TO_MSEC(m_CurrentAudio.dts + m_offset_pts), &edit) &&
            edit.action == EDL::Action::MUTE)
   {
@@ -1786,9 +1792,7 @@ void CVideoPlayer::ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket)
   if (CheckSceneSkip(m_CurrentVideo))
     drop = true;
 
-  m_CurrentVideo.lastdts = pPacket->dts;
-
-  // CLog::Log(LOGDEBUG, "CVideoPlayer::ProcessVideoData size:{:d} dts:{:.3f} pts:{:.3f} dur:{:.3f}ms, clock:{:.3f} level:{:d}",
+  // logM(LOGDEBUG, "CVideoPlayer", "size:{:d} dts:{:.3f} pts:{:.3f} dur:{:.3f}ms, clock:{:.3f} level:{:d}",
   //   pPacket->iSize, pPacket->dts/DVD_TIME_BASE, pPacket->pts/DVD_TIME_BASE, pPacket->duration/1000.0,
   //   static_cast<double>(m_clock.GetClock()/DVD_TIME_BASE), m_VideoPlayerVideo->GetLevel());
 
@@ -2160,9 +2164,9 @@ void CVideoPlayer::HandlePlaySpeed()
           else if (m_CurrentVideo.starttime > m_CurrentAudio.starttime &&
                    !m_pInputStream->IsRealtime())
           {
-            int audioLevel = m_VideoPlayerAudio->GetLevel();
-            // @todo hardcoded 8 seconds in message queue
-            double maxAudioTime = clock + DVD_MSEC_TO_TIME(40 * audioLevel);
+            const int audioLevel = m_VideoPlayerAudio->GetLevel();
+            const double audioTimeMs = m_messageQueueTimeSize * 1000.0 * audioLevel / 100.0;
+            const double maxAudioTime = clock + DVD_MSEC_TO_TIME(audioTimeMs);
             if ((m_CurrentVideo.starttime - m_CurrentVideo.cachetotal) > maxAudioTime)
               clock = maxAudioTime;
             else
@@ -2241,6 +2245,11 @@ void CVideoPlayer::HandlePlaySpeed()
     else
     {
       bool check = true;
+      const double currentPts = m_VideoPlayerVideo->GetCurrentPts();
+      const bool playbackStalled = m_VideoPlayerVideo->IsPlaybackStalled();
+
+      const int64_t nowAbsMs = DVD_TIME_TO_MSEC(m_clock.GetAbsoluteClock());
+      const int64_t nowPlaybackMs = GetTime();
 
       // only check if we have video
       if (m_CurrentVideo.id < 0 || m_CurrentVideo.syncState != IDVDStreamPlayer::SYNC_INSYNC)
@@ -2248,26 +2257,38 @@ void CVideoPlayer::HandlePlaySpeed()
       // video message queue either initiated or already seen eof
       else if (m_CurrentVideo.inited == false && m_playSpeed >= 0)
         check = false;
-      // don't check if time has not advanced since last check
-      else if (m_SpeedState.lasttime == GetTime())
+      // Don't check too frequently (HandlePlaySpeed can spin many times within the same
+      // playback millisecond, especially during rewind). Use monotonic absolute time.
+      else if (m_SpeedState.lasttime > 0 && (nowAbsMs - m_SpeedState.lasttime) < 20)
         check = false;
       // skip if frame at screen has no valid timestamp
-      else if (m_VideoPlayerVideo->GetCurrentPts() == DVD_NOPTS_VALUE)
+      else if (currentPts == DVD_NOPTS_VALUE)
         check = false;
-      // skip if frame on screen has not changed
-      else if (m_SpeedState.lastpts == m_VideoPlayerVideo->GetCurrentPts() &&
-               (m_SpeedState.lastpts > m_State.dts || m_playSpeed > 0))
-        check = false;
+      // skip if frame on screen has not changed while fast-forwarding.
+      // If output has stalled, or the frame has been unchanged for "too long",
+      // keep checking so trickplay can trigger catch-up seeks.
+      else if ((m_playSpeed > 0) &&
+               (m_SpeedState.lastpts == currentPts) &&
+               (m_SpeedState.lastpts > m_State.dts))
+      {
+        if (!playbackStalled)
+        {
+          const double unchangedFor = m_clock.GetAbsoluteClock() - m_SpeedState.lastabstime;
+          if (unchangedFor < DVD_MSEC_TO_TIME(250)) check = false;
+        }
+      }
 
       if (check)
       {
-        m_SpeedState.lastpts  = m_VideoPlayerVideo->GetCurrentPts();
-        m_SpeedState.lasttime = GetTime();
+        const double prevPts = m_SpeedState.lastpts;
+        m_SpeedState.lastpts  = currentPts;
+        m_SpeedState.lasttime = nowAbsMs;
         m_SpeedState.lastabstime = m_clock.GetAbsoluteClock();
 
         double error;
         error  = m_clock.GetClock() - m_SpeedState.lastpts;
         error *= m_playSpeed / abs(m_playSpeed);
+        const double absRawError = std::abs(error);
 
         // allow a bigger error when going ff, the faster we go
         // the the bigger is the error we allow
@@ -2281,25 +2302,79 @@ void CVideoPlayer::HandlePlaySpeed()
         CLog::Log(LOGDEBUG, LOGVIDEO, "CVideoPlayer::Process - ffd/rwd: lastpts:{:.3f} clock:{:.3f} lastseekpts:{:.3f} speed:{:d} error:{:.3f}",
           m_SpeedState.lastpts / 1000000.0, m_clock.GetClock() / 1000000.0, m_SpeedState.lastseekpts / 1000000.0, (int)m_playSpeed, error / 1000000.0);
 
-        if (std::abs(error) > DVD_MSEC_TO_TIME(1000))
-        {
-          error  = (m_clock.GetClock() - m_SpeedState.lastseekpts) / 1000;
 
-          if (std::abs(error) > 1000 || (m_VideoPlayerVideo->IsRewindStalled() && std::abs(error) > 100))
+        const double absScaledError = std::abs(error);
+        const bool highSpeedFastForward = m_playSpeed > (DVD_PLAYSPEED_NORMAL * 2);
+        const bool veryHighSpeedFastForward = m_playSpeed >= (DVD_PLAYSPEED_NORMAL * 8);
+        const bool stalledFastForward = highSpeedFastForward && m_VideoPlayerVideo->IsPlaybackStalled();
+        const bool allowRawErrorGate = stalledFastForward || veryHighSpeedFastForward;
+
+        const int64_t sinceLastSeekMs = (m_SpeedState.lastseektime > 0)
+                                          ? (nowAbsMs - m_SpeedState.lastseektime)
+                                          : ((m_playSpeed < 0) ? 250 : 1000);
+
+        bool doSeek = false;
+        double seekErrorMs = 0.0;
+
+        // Rewind needs periodic backward seeks to synthesize reverse playback.
+        // Don't depend on the clock-vs-PTS error becoming large, as it can remain small
+        // while the displayed PTS makes little/no backward progress.
+        if (m_playSpeed < 0)
+        {
+          if (sinceLastSeekMs >= 250) doSeek = true;
+        }
+        else if ((absScaledError > DVD_MSEC_TO_TIME(1000)) ||
+                 (allowRawErrorGate && (absRawError > DVD_MSEC_TO_TIME(1000))))
+        {
+          seekErrorMs = std::abs((m_clock.GetClock() - m_SpeedState.lastseekpts) / 1000);
+
+          if (sinceLastSeekMs < 1000)
+          { }
+          else if (seekErrorMs > 1000 || (m_VideoPlayerVideo->IsPlaybackStalled() && seekErrorMs > 100))
           {
-            m_SpeedState.lastseekpts = m_clock.GetClock();
-            int direction = (m_playSpeed > 0) ? 1 : -1;
-            double iTime = (m_clock.GetClock() + m_State.time_offset + 1000000.0 * direction) / 1000;
-            CLog::Log(LOGDEBUG, LOGVIDEO, "CVideoPlayer::Process - Seeking to catch up, error was: {:.3f} time:{:.3f}", error / 1000.0, iTime/1000.0);
-            CDVDMsgPlayerSeek::CMode mode;
-            mode.time = iTime;
-            mode.backward = (m_playSpeed < 0);
-            mode.accurate = false;
-            mode.restore = false;
-            mode.trickplay = true;
-            mode.sync = false;
-            m_messenger.Put(std::make_shared<CDVDMsgPlayerSeek>(mode));
+            doSeek = true;
           }
+        }
+
+        if (doSeek)
+        {
+          m_SpeedState.lastseekpts = m_clock.GetClock();
+          m_SpeedState.lastseektime = nowAbsMs;
+
+          double iTime = 0.0;
+          if (m_playSpeed < 0)
+          {
+            double anchorPts = (currentPts != DVD_NOPTS_VALUE) ? currentPts : m_clock.GetClock();
+            if (m_SpeedState.rewindTargetPts != DVD_NOPTS_VALUE)
+              anchorPts = std::min(anchorPts, m_SpeedState.rewindTargetPts);
+
+            const double speedFactor = static_cast<double>(std::abs(m_playSpeed)) / DVD_PLAYSPEED_NORMAL;
+            double dtSec = static_cast<double>(sinceLastSeekMs) / 1000.0;
+            if (dtSec < 0.25) dtSec = 0.25;
+            if (dtSec > 2.0) dtSec = 2.0;
+
+            double rewindStepSec = speedFactor * dtSec;
+            if (rewindStepSec < 1.0) rewindStepSec = 1.0;
+            if (rewindStepSec > 10.0) rewindStepSec = 10.0;
+
+            const double rewindStep = DVD_SEC_TO_TIME(rewindStepSec);
+            const double nextTargetPts = std::max(0.0, anchorPts - rewindStep);
+            m_SpeedState.rewindTargetPts = nextTargetPts;
+            iTime = (nextTargetPts + m_State.time_offset) / 1000;
+          }
+          else
+          {
+            iTime = (m_clock.GetClock() + m_State.time_offset + DVD_SEC_TO_TIME(1.0)) / 1000;
+          }
+
+          CDVDMsgPlayerSeek::CMode mode;
+          mode.time = iTime;
+          mode.backward = (m_playSpeed < 0);
+          mode.accurate = false;
+          mode.restore = false;
+          mode.trickplay = true;
+          mode.sync = false;
+          m_messenger.Put(std::make_shared<CDVDMsgPlayerSeek>(mode));
         }
       }
     }
@@ -2453,7 +2528,8 @@ bool CVideoPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket
   {
     // we want the dts values of two streams to close, or for one to be invalid (e.g. from a missing audio stream)
     double this_dts = pPacket->dts;
-    double that_dts = current.type == STREAM_AUDIO ? m_CurrentVideo.lastdts : m_CurrentAudio.lastdts;
+    double that_dts =
+        current.type == STREAM_AUDIO ? m_CurrentVideo.lastdts : m_CurrentAudio.lastdts;
 
     if (m_CurrentAudio.id == -1 || m_CurrentVideo.id == -1 ||
        current.lastdts == DVD_NOPTS_VALUE ||
@@ -3101,6 +3177,21 @@ void CVideoPlayer::HandleMessages()
         m_processInfo->SetSpeed(static_cast<float>(speed) / DVD_PLAYSPEED_NORMAL);
 
       m_processInfo->SetFrameAdvance(false);
+
+      if (speed < DVD_PLAYSPEED_PAUSE)
+      {
+        if (m_playSpeed >= DVD_PLAYSPEED_PAUSE)
+        {
+          double seedPts = m_VideoPlayerVideo->GetCurrentPts();
+          if (seedPts == DVD_NOPTS_VALUE)
+            seedPts = m_clock.GetClock();
+          m_SpeedState.rewindTargetPts = seedPts;
+        }
+      }
+      else
+      {
+        m_SpeedState.rewindTargetPts = DVD_NOPTS_VALUE;
+      }
 
       m_playSpeed = speed;
 
@@ -4116,7 +4207,6 @@ void CVideoPlayer::FlushBuffers(double pts, bool accurate, bool sync)
   m_CurrentVideo.dts         = DVD_NOPTS_VALUE;
   m_CurrentVideo.startpts    = startpts;
   m_CurrentVideo.packets = 0;
-  m_CurrentVideo.lastdts = DVD_NOPTS_VALUE;
 
   m_CurrentSubtitle.dts      = DVD_NOPTS_VALUE;
   m_CurrentSubtitle.startpts = startpts;
@@ -4274,7 +4364,8 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
     }
     break;
     case BD_EVENT_DISCONTINUITY:
-      CLog::Log(LOGDEBUG, "CVideoPlayer::OnDiscNavResult - libbluray discontinuity detected (DEMUXER_RESET)");
+      CLog::Log(LOGDEBUG,
+                "CVideoPlayer::OnDiscNavResult - libbluray discontinuity detected (DEMUXER_RESET)");
       m_messenger.Put(std::make_shared<CDVDMsg>(CDVDMsg::DEMUXER_RESET));
       break;
     default:
@@ -5029,6 +5120,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
     CDVDInputStream::IDisplayTime* pDisplayTime = m_pInputStream->GetIDisplayTime();
 
     CDVDInputStream::ITimes::Times times;
+    double candidateBasePts = DVD_NOPTS_VALUE;
     if (pTimes && pTimes->GetTimes(times))
     {
       state.startTime = times.startTime;
@@ -5036,6 +5128,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
       state.timeMax = (times.ptsEnd - times.ptsStart) * 1000 / DVD_TIME_BASE;
       state.timeMin = (times.ptsBegin - times.ptsStart) * 1000 / DVD_TIME_BASE;
       state.time_offset = -times.ptsStart;
+      candidateBasePts = times.ptsStart;
     }
     else if (pDisplayTime && pDisplayTime->GetTotalTime() > 0)
     {
@@ -5055,6 +5148,12 @@ void CVideoPlayer::UpdatePlayState(double timeout)
     else
     {
       state.time_offset = 0;
+    }
+
+    if ((candidateBasePts != DVD_NOPTS_VALUE) &&
+        (m_demuxSeekBasePts == DVD_NOPTS_VALUE))
+    {
+      m_demuxSeekBasePts = candidateBasePts;
     }
 
     if (pMenu)
@@ -5149,6 +5248,14 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 
   std::unique_lock<CCriticalSection> lock(m_StateSection);
   m_State = state;
+
+  if ((m_demuxSeekBasePts == DVD_NOPTS_VALUE) &&
+      (state.dts != DVD_NOPTS_VALUE))
+  {
+    const double base = state.dts - DVD_MSEC_TO_TIME(state.time);
+    if (std::isfinite(base))
+      m_demuxSeekBasePts = base;
+  }
 }
 
 int64_t CVideoPlayer::GetUpdatedTime()

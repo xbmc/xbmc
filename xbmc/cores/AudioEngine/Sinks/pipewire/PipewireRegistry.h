@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "threads/CriticalSection.h"
+
 #include <map>
 #include <memory>
 #include <string>
@@ -20,7 +22,7 @@ namespace PIPEWIRE
 {
 
 class CPipewireCore;
-class CPipewireNode;
+class CPipewireGlobal;
 
 class CPipewireRegistry
 {
@@ -33,7 +35,11 @@ public:
 
   CPipewireCore& GetCore() const { return m_core; }
 
-  std::map<uint32_t, std::unique_ptr<CPipewireNode>>& GetNodes() { return m_nodes; }
+  std::map<uint32_t, std::unique_ptr<CPipewireGlobal>>& GetGlobals() { return m_globals; }
+
+  // C++ BasicLockable requirements
+  void lock() { m_lock.lock(); }
+  void unlock() { m_lock.unlock(); }
 
 private:
   static void OnGlobalAdded(void* userdata,
@@ -58,7 +64,9 @@ private:
 
   std::unique_ptr<pw_registry, PipewireRegistryDeleter> m_registry;
 
-  std::map<uint32_t, std::unique_ptr<CPipewireNode>> m_nodes;
+  std::map<uint32_t, std::unique_ptr<CPipewireGlobal>> m_globals;
+
+  CCriticalSection m_lock;
 };
 
 } // namespace PIPEWIRE

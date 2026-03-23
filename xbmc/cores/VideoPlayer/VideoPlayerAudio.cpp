@@ -284,8 +284,11 @@ void CVideoPlayerAudio::OnStartup()
 
 void CVideoPlayerAudio::UpdatePlayerInfo()
 {
+  int level, dataLevel;
+  m_messageQueue.GetLevels(level, dataLevel);
   std::ostringstream s;
-  s << "aq:"     << std::setw(2) << std::min(99,m_messageQueue.GetLevel()) << "% (" << std::setw(2) << std::min(99,m_messageQueue.GetLevel(true)) << "%)";
+  s << "aq:"     << std::setw(2) << std::min(99, level) << "% (" << std::setw(2)
+    << std::min(99, dataLevel) << "%)";
   s << ", Kb/s:" << std::fixed << std::setprecision(2) << m_audioStats.GetBitrate() / 1024.0;
   s << ", ac:"   << m_processInfo.GetAudioDecoderName().c_str();
   if (!m_info.passthrough)
@@ -312,8 +315,8 @@ void CVideoPlayerAudio::UpdatePlayerInfo()
   }
 
   m_dataCacheCore.SetAudioLiveBitRate(m_audioStats.GetBitrate());
-  m_dataCacheCore.SetAudioQueueLevel(std::min(99,m_messageQueue.GetLevel()));
-  m_dataCacheCore.SetAudioQueueDataLevel(std::min(99,m_messageQueue.GetLevel(true)));
+  m_dataCacheCore.SetAudioQueueLevel(std::min(99, level));
+  m_dataCacheCore.SetAudioQueueDataLevel(std::min(99, dataLevel));
 }
 
 void CVideoPlayerAudio::Process()
@@ -609,10 +612,17 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
                                         CSettings::SETTING_COREELEC_AMLOGIC_DV_AUDIO_SEAMLESSBRANCH);
       auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
       int algoForReset = advancedSettings->GetAlgoForReset();
-      if (((algoValue > 0) && (algoValue < 4)) || (algoForReset == 99))
+      int algoForResetSub = advancedSettings->GetAlgoForResetSub();
+      double lastResetTimeSub = advancedSettings->GetLastResetTimeSub();
+      double currentTimeSub = m_pClock->GetAbsoluteClock() / 1000.0;
+      if (lastResetTimeSub == 0.0)
       {
-        bool resetSync = advancedSettings->GetResetSync();
-        if (resetSync)
+        lastResetTimeSub = currentTimeSub;
+        advancedSettings->SetLastResetTimeSub(lastResetTimeSub);
+      }
+      if (((algoValue > 0) && (algoValue < 4)) || (algoForResetSub == 99))
+      {
+        if (advancedSettings->GetResetSync())
         {
           m_audioSink.AbortAddPackets();
           m_messageParent.Put(std::make_shared<CDVDMsg>(CDVDMsg::GENERAL_RESYNC));
@@ -621,19 +631,9 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
         }
 
         bool resetSeek = advancedSettings->GetResetSeek();
-        if (resetSeek && (algoForReset != 0))
+        bool resetSeekSub = advancedSettings->GetResetSeekSub();
+        if ((resetSeek && (algoForReset != 0)) || (resetSeekSub && (algoForResetSub != 0)))
         {
-#if 0
-          bool hasAtmos = ((m_streaminfo.profile == AV_PROFILE_EAC3_DDP_ATMOS) ||
-                           (m_streaminfo.profile == AV_PROFILE_TRUEHD_ATMOS));
-
-          if ((!hasAtmos) && (algoForReset > 1) && (algoForReset != 99))
-          {
-            algoValue = 0;
-            algoForReset = 0;
-            advancedSettings->SetAlgoForReset(0);
-          }
-#endif
           double iTimeValue = 0.0;
           double offsetValue = 0.0;
           bool performOffset = false;
@@ -658,6 +658,7 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
               break;
           }
           bool timeToReset = false;
+          bool timeToResetSub = false;
           double offset = 0;
           double lastResetTime = advancedSettings->GetLastResetTime();
           double currentTime = m_pClock->GetAbsoluteClock() / 1000.0;
@@ -683,27 +684,28 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
               offset = 10000.0;
               performOffset = true;
               break;
-            case 99:
-              if (iTime < 7000.0)
-              {
-                timeToReset = false;
-                offset = 0.0;
-                performOffset = false;
-                advancedSettings->SetResetSeek(false);
-                advancedSettings->SetLastResetTime(0.0);
-                advancedSettings->SetAlgoForReset(0);
-              }
-              else
-              {
-                timeToReset = true;
-                offset = 1500.0;
-                performOffset = false;
-              }
-              break;
             default:
               break;
           }
-          if (timeToReset)
+          if (algoForResetSub == 99)
+          {
+            if ((currentTime - lastResetTimeSub) < 7000.0)
+            {
+              timeToResetSub = false;
+              offset = 0.0;
+              performOffset = false;
+              advancedSettings->SetResetSeekSub(false);
+              advancedSettings->SetLastResetTimeSub(0.0);
+              advancedSettings->SetAlgoForResetSub(0);
+            }
+            else
+            {
+              timeToResetSub = true;
+              offset = 1500.0;
+              performOffset = false;
+            }
+          }
+          if (timeToReset || timeToResetSub)
           {
             CDVDMsgPlayerSeek::CMode mode;
             mode.time = iTime - offset;
@@ -726,9 +728,18 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
               mode.sync = true;
               m_messageParent.Put(std::make_shared<CDVDMsgPlayerSeek>(mode));
             }
-            advancedSettings->SetResetSeek(false);
-            advancedSettings->SetLastResetTime(0.0);
-            advancedSettings->SetAlgoForReset(0);
+            if (timeToReset)
+            {
+              advancedSettings->SetResetSeek(false);
+              advancedSettings->SetLastResetTime(0.0);
+              advancedSettings->SetAlgoForReset(0);
+            }
+            if (timeToResetSub)
+            {
+              advancedSettings->SetResetSeekSub(false);
+              advancedSettings->SetLastResetTimeSub(0.0);
+              advancedSettings->SetAlgoForResetSub(0);
+            }
           }
         }
       }

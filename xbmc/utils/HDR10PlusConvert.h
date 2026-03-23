@@ -37,7 +37,7 @@ struct VdrDmData {
   uint16_t max_frame_average_light_level;
 };
 
-std::vector<uint8_t> create_rpu_nalu_for_hdr10plus(
+std::vector<uint8_t> create_dovi_rpu_nalu_from_hdr10plus(
   const Hdr10PlusMetadata& meta,
   const PeakBrightnessSource& peak_source,
   const HDRStaticMetadataInfo& hdrStaticMetadataInfo);

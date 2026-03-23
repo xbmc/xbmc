@@ -101,6 +101,13 @@ uint32_t Crc32::Compute(const std::string& strValue)
   return crc;
 }
 
+uint32_t Crc32::Compute(const uint8_t* buffer, size_t count)
+{
+  Crc32 crc;
+  crc.Compute(reinterpret_cast<const char*>(buffer), count);
+  return crc;
+}
+
 uint32_t Crc32::ComputeFromLowerCase(const std::string& strValue)
 {
   std::string strLower = strValue;

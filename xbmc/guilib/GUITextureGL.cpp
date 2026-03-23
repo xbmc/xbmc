@@ -38,12 +38,47 @@ CGUITextureGL::CGUITextureGL(
   m_renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
 }
 
+CGUITextureGL::CGUITextureGL(const CGUITextureGL& texture)
+  : CGUITexture(texture),
+    m_col(texture.m_col),
+    m_packedVertices(texture.m_packedVertices),
+    m_idx(texture.m_idx),
+    m_renderSystem(texture.m_renderSystem)
+{
+}
+
+CGUITextureGL::~CGUITextureGL()
+{
+  if (m_vertexVBO != 0) glDeleteBuffers(1, &m_vertexVBO);
+  if (m_indexVBO != 0) glDeleteBuffers(1, &m_indexVBO);
+}
+
 CGUITextureGL* CGUITextureGL::Clone() const
 {
   return new CGUITextureGL(*this);
 }
 
-void CGUITextureGL::Begin(UTILS::COLOR::Color color)
+void CGUITextureGL::EnsureBuffers(size_t vertexCount, size_t indexCount)
+{
+  if (m_vertexVBO == 0) glGenBuffers(1, &m_vertexVBO);
+  if (m_indexVBO == 0) glGenBuffers(1, &m_indexVBO);
+
+  glBindBuffer(GL_ARRAY_BUFFER, m_vertexVBO);
+  if (vertexCount > m_vertexCapacity)
+  {
+    m_vertexCapacity = vertexCount;
+    glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex) * m_vertexCapacity, nullptr, GL_DYNAMIC_DRAW);
+  }
+
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexVBO);
+  if (indexCount > m_indexCapacity)
+  {
+    m_indexCapacity = indexCount;
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort) * m_indexCapacity, nullptr, GL_DYNAMIC_DRAW);
+  }
+}
+
+void CGUITextureGL::Begin(KODI::UTILS::COLOR::Color color)
 {
   CTexture* texture = m_texture.m_textures[m_currentFrame].get();
   texture->LoadToGPU();
@@ -109,12 +144,13 @@ void CGUITextureGL::End()
     GLint tex1Loc = m_renderSystem->ShaderGetCoord1();
     GLint uniColLoc = m_renderSystem->ShaderGetUniCol();
 
-    GLuint VertexVBO;
-    GLuint IndexVBO;
+    EnsureBuffers(m_packedVertices.size(), m_idx.size());
 
-    glGenBuffers(1, &VertexVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VertexVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*m_packedVertices.size(), &m_packedVertices[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vertexVBO);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(PackedVertex) * m_packedVertices.size(),
+            m_packedVertices.data());
+
+    glUniform1f(depthLoc, m_depth);
 
     if (uniColLoc >= 0)
     {
@@ -135,9 +171,8 @@ void CGUITextureGL::End()
                           reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
     glEnableVertexAttribArray(tex0Loc);
 
-    glGenBuffers(1, &IndexVBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IndexVBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ushort)*m_idx.size(), m_idx.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexVBO);
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, sizeof(GLushort) * m_idx.size(), m_idx.data());
 
     glDrawElements(GL_TRIANGLES, m_packedVertices.size()*6 / 4, GL_UNSIGNED_SHORT, 0);
 
@@ -149,8 +184,6 @@ void CGUITextureGL::End()
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glDeleteBuffers(1, &VertexVBO);
-    glDeleteBuffers(1, &IndexVBO);
   }
 
   if (m_diffuse.size())

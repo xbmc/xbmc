@@ -412,6 +412,22 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool GetResetSeek() const;
     bool m_resetSeek;
 
+    void SetAlgoForResetSub(int num_resets);
+    int GetAlgoForResetSub() const;
+    int m_algoForResetSub;
+
+    void SetLastResetTimeSub(double reset_time);
+    double GetLastResetTimeSub() const;
+    double m_lastResetTimeSub;
+
+    void SetResetSyncSub(bool reset_sync);
+    bool GetResetSyncSub() const;
+    bool m_resetSyncSub;
+
+    void SetResetSeekSub(bool reset_seek);
+    bool GetResetSeekSub() const;
+    bool m_resetSeekSub;
+
     void SetLimitCD(bool limit_cd);
     bool GetLimitCD() const;
     bool m_limitCD;

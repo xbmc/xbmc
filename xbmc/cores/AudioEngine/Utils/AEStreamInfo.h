@@ -48,6 +48,9 @@ public:
   unsigned int m_repeat = 0;
   unsigned int m_ac3FrameSize = 0;
   unsigned int m_dtsSamplesPerFrame = 0;
+  int m_dialNorm = 0; // Dialog Normalization in dB (TrueHD Atmos 16ch)
+  bool m_hasAtmos = false; // TrueHD Atmos (16-channel presentation)
+  unsigned int m_atmosChannels = 0; // Atmos 16ch channel/object count
 };
 
 class CAEStreamParser
@@ -60,6 +63,8 @@ public:
   int AddData(uint8_t *data, unsigned int size, uint8_t **buffer = nullptr, unsigned int *bufferSize = nullptr);
 
   void SetCoreOnly(bool value) { m_coreOnly = value; }
+  void SetDefeatTrueHDDialNorm(bool value) { m_defeatTrueHDDialNorm = value; }
+  void SetDefeatAC3DialNorm(bool value) { m_defeatAC3DialNorm = value; }
   unsigned int IsValid() const { return m_hasSync; }
   unsigned int GetSampleRate() const { return m_info.m_sampleRate; }
   unsigned int GetChannels() const { return m_info.m_channels; }
@@ -68,6 +73,9 @@ public:
   unsigned int GetDTSPeriod() const { return m_info.m_dtsPeriod; }
   unsigned int GetEAC3BlocksDiv() const { return m_info.m_repeat; }
   enum CAEStreamInfo::DataType GetDataType() const { return m_info.m_type; }
+  int GetDialNorm() const { return m_info.m_dialNorm; }
+  bool HasAtmos() const { return m_info.m_hasAtmos; }
+  unsigned int GetAtmosChannels() const { return m_info.m_atmosChannels; }
   bool IsLittleEndian() const { return m_info.m_dataIsLE; }
   unsigned int GetBufferSize() const { return m_bufferSize; }
   CAEStreamInfo& GetStreamInfo() { return m_info; }
@@ -82,6 +90,8 @@ private:
 
   CAEStreamInfo m_info;
   bool m_coreOnly = false;
+  bool m_defeatTrueHDDialNorm = false;
+  bool m_defeatAC3DialNorm = false;
   unsigned int m_needBytes = 0;
   ParseFunc m_syncFunc;
   bool m_hasSync = false;
@@ -93,6 +103,7 @@ private:
   AVCRC m_crcTrueHD[1024];  /* TrueHD crc table */
 
   void GetPacket(uint8_t **buffer, unsigned int *bufferSize);
+  void DefeatAC3DialNorm(uint8_t* data, unsigned int size);
   unsigned int DetectType(uint8_t *data, unsigned int size);
   bool TrySyncAC3(uint8_t *data, unsigned int size, bool resyncing, bool wantEAC3dependent);
   unsigned int SyncAC3(uint8_t *data, unsigned int size);

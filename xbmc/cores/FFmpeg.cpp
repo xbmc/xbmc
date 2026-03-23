@@ -24,7 +24,7 @@ extern "C"
 #include <map>
 #include <mutex>
 
-static thread_local CFFmpegLog* CFFmpegLogTls;
+static thread_local int CFFmpegLogLevelTls = -1;
 
 namespace FFMPEG_HELP_TOOLS
 {
@@ -41,26 +41,17 @@ std::string FFMpegErrorToString(int err)
 
 void CFFmpegLog::SetLogLevel(int level)
 {
-  CFFmpegLog::ClearLogLevel();
-  auto log = new CFFmpegLog();
-  log->level = level;
-  CFFmpegLogTls = log;
+  CFFmpegLogLevelTls = level;
 }
 
 int CFFmpegLog::GetLogLevel()
 {
-  CFFmpegLog* log = CFFmpegLogTls;
-  if (!log)
-    return -1;
-  return log->level;
+  return CFFmpegLogLevelTls;
 }
 
 void CFFmpegLog::ClearLogLevel()
 {
-  CFFmpegLog* log = CFFmpegLogTls;
-  CFFmpegLogTls = nullptr;
-  if (log)
-    delete log;
+  CFFmpegLogLevelTls = -1;
 }
 
 static CCriticalSection m_logSection;
@@ -83,12 +74,7 @@ void ff_flush_avutil_log_buffers(void)
 
 void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
 {
-  std::lock_guard lock(m_logSection);
-  
-  const CThread* threadId = CThread::GetCurrentThread();
-  std::string &buffer = g_logbuffer[threadId];
-
-  AVClass* avc= ptr ? *(AVClass**)ptr : nullptr;
+  AVClass* avc = ptr ? *(AVClass**)ptr : nullptr;
 
   int maxLevel = AV_LOG_WARNING;
   if (CFFmpegLog::GetLogLevel() > 0)
@@ -116,23 +102,29 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
       break;
   }
 
+  // Format message and prefix outside the lock
+  const CThread* threadId = CThread::GetCurrentThread();
   std::string message = StringUtils::FormatV(format, va);
   std::string prefix = StringUtils::Format("ffmpeg[{}]: ", fmt::ptr(threadId));
   if (avc)
   {
     if (avc->item_name)
-      prefix += std::string("[") + avc->item_name(ptr) + "] ";
+      prefix.append("[").append(avc->item_name(ptr)).append("] ");
     else if (avc->class_name)
-      prefix += std::string("[") + avc->class_name + "] ";
+      prefix.append("[").append(avc->class_name).append("] ");
   }
 
+  // Hold lock only for buffer access and line extraction
+  std::unique_lock lock(m_logSection);
+  std::string& buffer = g_logbuffer[threadId];
   buffer += message;
-  int pos, start = 0;
-  while ((pos = buffer.find_first_of('\n', start)) >= 0)
+
+  size_t pos, start = 0;
+  while ((pos = buffer.find('\n', start)) != std::string::npos)
   {
     if (pos > start)
       CLog::Log(type, "{}{}", prefix, buffer.substr(start, pos - start));
-    start = pos+1;
+    start = pos + 1;
   }
   buffer.erase(0, start);
 }

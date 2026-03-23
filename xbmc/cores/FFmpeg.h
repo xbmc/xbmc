@@ -51,7 +51,6 @@ public:
   static void SetLogLevel(int level);
   static int GetLogLevel();
   static void ClearLogLevel();
-  int level;
 };
 
 class FFmpegExtraData

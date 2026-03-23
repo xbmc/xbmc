@@ -184,9 +184,9 @@ void CAdvancedSettings::Initialize()
     m_videoDecoderBypassBufferReady = false;
     m_videoDecoderMinimumStreamBuffer = 17.5f;
   }
-  m_videoDecoderBuffer = 5.0f;
+  m_videoDecoderBuffer = 10.0f;
   m_videoDecoderStreamBuffer = 90.0f;
-  m_videoDecoderMinimumBuffer = 5.0f;
+  m_videoDecoderMinimumBuffer = 10.0f;
 
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;
@@ -1394,6 +1394,46 @@ void CAdvancedSettings::SetResetSeek(bool reset_seek)
 bool CAdvancedSettings::GetResetSeek() const
 {
   return m_resetSeek;
+}
+
+void CAdvancedSettings::SetAlgoForResetSub(int num_resets)
+{
+  m_algoForResetSub = num_resets;
+}
+
+int CAdvancedSettings::GetAlgoForResetSub() const
+{
+  return m_algoForResetSub;
+}
+
+void CAdvancedSettings::SetLastResetTimeSub(double reset_time)
+{
+  m_lastResetTimeSub = reset_time;
+}
+
+double CAdvancedSettings::GetLastResetTimeSub() const
+{
+  return m_lastResetTimeSub;
+}
+
+void CAdvancedSettings::SetResetSyncSub(bool reset_sync)
+{
+  m_resetSyncSub = reset_sync;
+}
+
+bool CAdvancedSettings::GetResetSyncSub() const
+{
+  return m_resetSyncSub;
+}
+
+void CAdvancedSettings::SetResetSeekSub(bool reset_seek)
+{
+  m_resetSeekSub = reset_seek;
+}
+
+bool CAdvancedSettings::GetResetSeekSub() const
+{
+  return m_resetSeekSub;
 }
 
 void CAdvancedSettings::SetLimitCD(bool limit_cd)

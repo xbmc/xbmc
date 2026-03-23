@@ -9,14 +9,17 @@
 #pragma once
 
 #include "guilib/Shader.h"
+#include "settings/lib/ISettingCallback.h"
 
 #include <string>
 
-class CGLESShader : public Shaders::CGLSLShaderProgram
+class CGLESShader : public Shaders::CGLSLShaderProgram, public ISettingCallback
 {
 public:
   CGLESShader(const char* shader, const std::string& prefix);
   CGLESShader(const char* vshader, const char* fshader, const std::string& prefix);
+  ~CGLESShader() override;
+
   void OnCompiledAndLinked() override;
   bool OnEnabled() override;
   void Free();
@@ -37,6 +40,8 @@ public:
   GLfloat GetClipXOffset() const { return m_clipXOffset; }
   GLfloat GetClipYFactor() const { return m_clipYFactor; }
   GLfloat GetClipYOffset() const { return m_clipYOffset; }
+
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
 protected:
   GLint m_hTex0 = 0;
@@ -65,4 +70,11 @@ protected:
 
   GLint m_sdrPeak;
   GLint m_sdrSaturation;
+  GLint m_hdrPgsPeak;
+  GLint m_hdrPgsSaturation;
+
+  float m_cachedGuiSdrPeak = 0.0f;
+  float m_cachedGuiSdrSaturation = 1.0f;
+  float m_cachedHdrPgsPeak = 1.0f;
+  float m_cachedHdrPgsSaturation = 1.0f;
 };

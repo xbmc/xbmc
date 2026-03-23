@@ -30,8 +30,9 @@ CGUIString::CGUIString(iString start, iString end, bool carriageReturn)
 std::string CGUIString::GetAsString() const
 {
   std::string text;
-  for (unsigned int i = 0; i < m_text.size(); i++)
-    text += (char)(m_text[i] & 0xff);
+  text.resize(m_text.size());
+  for (size_t i = 0; i < m_text.size(); i++)
+    text[i] = static_cast<char>(m_text[i] & 0xff);
   return text;
 }
 

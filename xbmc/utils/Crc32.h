@@ -18,6 +18,7 @@ public:
   void Reset();
   void Compute(const char* buffer, size_t count);
   static uint32_t Compute(const std::string& strValue);
+  static uint32_t Compute(const uint8_t* buffer, size_t count);
   static uint32_t ComputeFromLowerCase(const std::string& strValue);
 
   operator uint32_t () const

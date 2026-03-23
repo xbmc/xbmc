@@ -203,7 +203,7 @@ int CAEStreamParser::AddData(uint8_t* data,
     }
 
     // bytes to skip until the next packet
-    m_skipBytes = std::max(0, (int)m_fsize - (int)m_bufferSize);
+    m_skipBytes = std::max(0, static_cast<int>(m_fsize) - static_cast<int>(m_bufferSize));
     if (m_skipBytes)
     {
       if (bufferSize)
@@ -229,6 +229,14 @@ void CAEStreamParser::GetPacket(uint8_t** buffer, unsigned int* bufferSize)
     unsigned int size = m_fsize;
     if (m_info.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD_CORE)
       size = m_coreSize;
+
+    // Defeat AC-3/E-AC-3 dialnorm on the full frame before copying out
+    if (m_defeatAC3DialNorm &&
+        (m_info.m_type == CAEStreamInfo::STREAM_TYPE_AC3 ||
+         m_info.m_type == CAEStreamInfo::STREAM_TYPE_EAC3))
+    {
+      DefeatAC3DialNorm(m_buffer, size);
+    }
 
     // make sure the buffer is allocated and big enough
     if (!*buffer || !bufferSize || *bufferSize < size)
@@ -306,6 +314,176 @@ unsigned int CAEStreamParser::DetectType(uint8_t* data, unsigned int size)
   return possible ? possible : skipped;
 }
 
+// ---------------------------------------------------------------------------
+// AC-3 / E-AC-3 CRC-16 helpers for dialnorm defeat
+// Reference: FFmpeg libavcodec/ac3enc.c (GPL-2.0-or-later)
+// ---------------------------------------------------------------------------
+#define AC3_CRC16_POLY ((1 << 0) | (1 << 2) | (1 << 15) | (1 << 16))
+
+static inline uint16_t ac3_bswap16(uint16_t x) { return (x >> 8) | (x << 8); }
+
+static unsigned int AC3_mul_poly(unsigned int a, unsigned int b, unsigned int poly)
+{
+  unsigned int c = 0;
+  while (a)
+  {
+    if (a & 1) c ^= b;
+    a >>= 1;
+    b <<= 1;
+    if (b & (1 << 16)) b ^= poly;
+  }
+  return c;
+}
+
+static unsigned int AC3_pow_poly(unsigned int a, unsigned int n, unsigned int poly)
+{
+  unsigned int r = 1;
+  while (n)
+  {
+    if (n & 1) r = AC3_mul_poly(r, a, poly);
+    a = AC3_mul_poly(a, a, poly);
+    n >>= 1;
+  }
+  return r;
+}
+
+// Parse the 5-bit dialnorm field from an AC-3 BSI header.
+// Returns the raw 5-bit value (0-31). The effective level is (raw - 31) dB,
+// i.e. 0 = -31 dB, 1 = -30 dB, ..., 31 = 0 dB. Position depends on acmod.
+static uint8_t AC3_ParseDialnorm(const uint8_t* data, uint8_t acmod)
+{
+  // Compute extra conditional bits between acmod and lfeon
+  unsigned int extra = 0;
+  if ((acmod & 0x1) && (acmod != 0x1)) extra += 2; // cmixlev
+  if (acmod & 0x4) extra += 2;                     // surmixlev
+  if (acmod == 0x2) extra += 2;                     // dsurmod
+
+  // dialnorm starts at bit (4 + extra) from byte 6 MSB
+  // Read bytes 6,7,8 as a 24-bit big-endian value
+  uint32_t bits = (static_cast<uint32_t>(data[6]) << 16) |
+                  (static_cast<uint32_t>(data[7]) << 8)  | data[8];
+  unsigned int shift = 24 - (4 + extra) - 5; // = 15 - extra
+  return (bits >> shift) & 0x1F;
+}
+
+// Set the 5-bit dialnorm field in an AC-3 BSI header to a given value.
+static void AC3_SetDialnorm(uint8_t* data, uint8_t acmod, uint8_t value)
+{
+  unsigned int extra = 0;
+  if ((acmod & 0x1) && (acmod != 0x1)) extra += 2;
+  if (acmod & 0x4) extra += 2;
+  if (acmod == 0x2) extra += 2;
+
+  uint32_t bits = (static_cast<uint32_t>(data[6]) << 16) |
+                  (static_cast<uint32_t>(data[7]) << 8)  | data[8];
+  unsigned int shift = 15 - extra;
+  bits = (bits & ~(0x1FU << shift)) | (static_cast<uint32_t>(value & 0x1F) << shift);
+  data[6] = (bits >> 16) & 0xFF;
+  data[7] = (bits >> 8) & 0xFF;
+  data[8] = bits & 0xFF;
+}
+
+void CAEStreamParser::DefeatAC3DialNorm(uint8_t* data, unsigned int size)
+{
+  const AVCRC* crc_table = av_crc_get_table(AV_CRC_16_ANSI);
+  unsigned int offset = 0;
+
+  while (offset + 8 <= size)
+  {
+    // Each sub-frame must start with AC-3 sync word
+    if (data[offset] != 0x0B || data[offset + 1] != 0x77) break;
+
+    uint8_t* frame = data + offset;
+    uint8_t bsid = frame[5] >> 3;
+    unsigned int frame_bytes = 0;
+
+    if (bsid <= 10)
+    {
+      // AC-3
+      uint8_t fscod = frame[4] >> 6;
+      uint8_t frmsizecod = frame[4] & 0x3F;
+      if (fscod >= 3 || frmsizecod > 37) break;
+
+      unsigned int bitRate = AC3Bitrates[frmsizecod >> 1];
+      unsigned int framewords = 0;
+      switch (fscod)
+      {
+        case 0: framewords = bitRate * 2; break;
+        case 1: framewords = (320 * bitRate / 147 + (frmsizecod & 1 ? 1 : 0)); break;
+        case 2: framewords = bitRate * 4; break;
+      }
+      frame_bytes = framewords * 2;
+      if (offset + frame_bytes > size) break;
+
+      uint8_t acmod = frame[6] >> 5;
+      uint8_t dn = AC3_ParseDialnorm(frame, acmod);
+      if (dn == 31)
+      {
+        // Already 0 dB (no normalization), nothing to defeat
+        offset += frame_bytes;
+        continue;
+      }
+
+      // Set dialnorm to 31 (= 0 dB, defeats normalization)
+      AC3_SetDialnorm(frame, acmod, 31);
+
+      // Recompute CRC-1 (covers first 5/8 of frame)
+      unsigned int frame_size_58 = ((frame_bytes >> 2) + (frame_bytes >> 4)) << 1;
+      uint16_t crc1 = ac3_bswap16(
+        static_cast<uint16_t>(av_crc(crc_table, 0, frame + 4, frame_size_58 - 4)));
+      unsigned int crc_inv = AC3_pow_poly((AC3_CRC16_POLY >> 1), (8 * frame_size_58) - 16, AC3_CRC16_POLY);
+      crc1 = static_cast<uint16_t>(AC3_mul_poly(crc_inv, crc1, AC3_CRC16_POLY));
+      frame[2] = (crc1 >> 8) & 0xFF;
+      frame[3] = crc1 & 0xFF;
+
+      // Recompute CRC-2 (covers second segment; first segment CRC is 0 so we start fresh)
+      uint16_t crc2 = ac3_bswap16(
+        static_cast<uint16_t>(av_crc(crc_table, 0, frame + frame_size_58, frame_bytes - frame_size_58 - 2)));
+      if (crc2 == 0x0B77)
+      {
+        frame[frame_bytes - 3] ^= 0x1;
+        crc2 ^= 0x8005;
+      }
+      frame[frame_bytes - 2] = (crc2 >> 8) & 0xFF;
+      frame[frame_bytes - 1] = crc2 & 0xFF;
+    }
+    else if (bsid <= 16)
+    {
+      // E-AC-3
+      unsigned int framewords = (((frame[2] & 0x7) << 8) | frame[3]) + 1;
+      frame_bytes = framewords * 2;
+      if (offset + frame_bytes > size) break;
+
+      // dialnorm: byte 5 bits[2:0] (MSBs) + byte 6 bits[7:6] (LSBs)
+      uint8_t dn = ((frame[5] & 0x07) << 2) | ((frame[6] >> 6) & 0x03);
+      if (dn == 31)
+      {
+        // Already 0 dB (no normalization), nothing to defeat
+        offset += frame_bytes;
+        continue;
+      }
+
+      // Set dialnorm to 31 (= 0 dB, no normalization)
+      frame[5] |= 0x07;
+      frame[6] |= 0xC0;
+
+      // Recompute CRC-2 (covers bytes 2..frame_bytes-3)
+      uint16_t crc2 = ac3_bswap16(
+        static_cast<uint16_t>(av_crc(crc_table, 0, frame + 2, frame_bytes - 4)));
+      if (crc2 == 0x0B77)
+      {
+        frame[frame_bytes - 3] ^= 0x1;
+        crc2 ^= 0x8005;
+      }
+      frame[frame_bytes - 2] = (crc2 >> 8) & 0xFF;
+      frame[frame_bytes - 1] = crc2 & 0xFF;
+    }
+    else break;
+
+    offset += frame_bytes;
+  }
+}
+
 bool CAEStreamParser::TrySyncAC3(uint8_t* data,
                                  unsigned int size,
                                  bool resyncing,
@@ -371,6 +549,14 @@ bool CAEStreamParser::TrySyncAC3(uint8_t* data,
     m_fsize = framesize << 1;
     m_info.m_sampleRate = AC3FSCod[fscod];
 
+    // Parse dialnorm for logging (available in first 8 bytes)
+    // 5-bit raw value 0-31 maps to -31 to 0 dB (dB = raw - 31)
+    {
+      uint8_t ac3_acmod = data[6] >> 5;
+      uint8_t dialNormRaw = AC3_ParseDialnorm(data, ac3_acmod);
+      m_info.m_dialNorm = static_cast<int>(dialNormRaw) - 31;
+    }
+
     // dont do extensive testing if we have not lost sync
     if (m_info.m_type == CAEStreamInfo::STREAM_TYPE_AC3 && !resyncing)
       return true;
@@ -415,8 +601,16 @@ bool CAEStreamParser::TrySyncAC3(uint8_t* data,
     m_info.m_repeat = 1;
     m_info.m_bitDepth = 16;
 
-    CLog::Log(LOGINFO, "CAEStreamParser::TrySyncAC3 - AC3 stream detected ({} channels, {}Hz)",
-              m_info.m_channels, m_info.m_sampleRate);
+    {
+      uint8_t ac3_acmod = data[6] >> 5;
+      uint8_t dialNormRaw = AC3_ParseDialnorm(data, ac3_acmod);
+      m_info.m_dialNorm = static_cast<int>(dialNormRaw) - 31;
+    }
+    CLog::Log(LOGINFO,
+              "CAEStreamParser::TrySyncAC3 - AC3 stream detected ({} channels, {}Hz, "
+              "dialnorm: {} dB{})",
+              m_info.m_channels, m_info.m_sampleRate, m_info.m_dialNorm,
+              m_defeatAC3DialNorm ? ", defeat enabled" : "");
     return true;
   }
   else
@@ -454,6 +648,13 @@ bool CAEStreamParser::TrySyncAC3(uint8_t* data,
     m_fsize = framesize << 1; // Convert Frame size to bytes (<<1 is multiply by 2)
     m_info.m_repeat = MAX_EAC3_BLOCKS / blocks;
 
+    // Parse dialnorm for logging
+    // 5-bit raw value 0-31 maps to -31 to 0 dB (dB = raw - 31)
+    {
+      uint8_t dialNormRaw = ((data[5] & 0x07) << 2) | ((data[6] >> 6) & 0x03);
+      m_info.m_dialNorm = static_cast<int>(dialNormRaw) - 31;
+    }
+
     // EAC3 can have a dependent stream too
     if (!wantEAC3dependent)
     {
@@ -490,8 +691,15 @@ bool CAEStreamParser::TrySyncAC3(uint8_t* data,
     m_info.m_ac3FrameSize += m_fsize;
     m_info.m_bitDepth = 16;
 
-    CLog::Log(LOGINFO, "CAEStreamParser::TrySyncAC3 - E-AC3 stream detected ({} channels, {}Hz, {}-bit)",
-              m_info.m_channels, m_info.m_sampleRate, m_info.m_bitDepth);
+    {
+      uint8_t dialNormRaw = ((data[5] & 0x07) << 2) | ((data[6] >> 6) & 0x03);
+      m_info.m_dialNorm = static_cast<int>(dialNormRaw) - 31;
+    }
+    CLog::Log(LOGINFO,
+              "CAEStreamParser::TrySyncAC3 - E-AC3 stream detected ({} channels, {}Hz, {}-bit, "
+              "dialnorm: {} dB{})",
+              m_info.m_channels, m_info.m_sampleRate, m_info.m_bitDepth,
+              m_info.m_dialNorm, m_defeatAC3DialNorm ? ", defeat enabled" : "");
 
     return true;
   }
@@ -868,6 +1076,44 @@ unsigned int CAEStreamParser::SyncTrueHD(uint8_t* data, unsigned int size)
       if (((data[4 + major_sync_size - 1] << 8) | data[4 + major_sync_size - 2]) != crc)
         continue;
 
+      // Detect Atmos and parse extra_channel_meaning fields (before any patching)
+      // Reference: MediaInfoLib File_Ac3.cpp HD()
+      // Bit layout inside extra_channel_meaning:
+      //   extra_channel_meaning_length: 4 bits = data[30] bits[7:4]
+      //   16ch_dialogue_norm:           5 bits = data[30] bits[3:0] + data[31] bit 7
+      //   16ch_mix_level:               6 bits = data[31] bits[6:1]
+      //   16ch_channel_count:           5 bits = data[31] bit 0   + data[32] bits[7:4]
+      bool hasAtmos = (data[21] & 0x80) != 0;
+      bool hasExtChannelMeaning = hasAtmos && (data[29] & 1);
+      int origDialNorm = 0;
+      int atmosChannels = 0;
+
+      if (hasExtChannelMeaning)
+      {
+        // 5-bit raw value 0-31 maps to -31 to 0 dB (dB = raw - 31)
+        int dialNormRaw = ((data[30] & 0x0F) << 1) | (data[31] >> 7);
+        origDialNorm = dialNormRaw - 31;
+
+        int channelCountRaw = ((data[31] & 0x01) << 4) | (data[32] >> 4);
+        atmosChannels = channelCountRaw + 1;
+      }
+
+      // Defeat 16ch dialog normalization to 0 dB on every major sync frame.
+      // This disables receiver-side dialog normalization for the Atmos presentation.
+      bool dialNormDefeated = false;
+      if (m_defeatTrueHDDialNorm && hasExtChannelMeaning)
+      {
+        data[30] |= 0x0F; // set dialnorm bits [4:1] = 1111
+        data[31] |= 0x80; // set dialnorm bit  [0]   = 1
+        dialNormDefeated = (origDialNorm != 0);
+
+        // Recompute CRC-16 (polynomial 0x002D) after modification
+        uint16_t new_crc = av_crc(m_crcTrueHD, 0, data + 4, major_sync_size - 4);
+        new_crc ^= (data[4 + major_sync_size - 3] << 8) | data[4 + major_sync_size - 4];
+        data[4 + major_sync_size - 2] = new_crc & 0xFF;
+        data[4 + major_sync_size - 1] = (new_crc >> 8) & 0xFF;
+      }
+
       m_substreams = (data[20] & 0xF0) >> 4;
       m_fsize = length;
 
@@ -891,8 +1137,24 @@ unsigned int CAEStreamParser::SyncTrueHD(uint8_t* data, unsigned int size)
           channel_map = (data[9] << 1) | (data[10] >> 7);
         m_info.m_channels = CAEStreamParser::GetTrueHDChannels(channel_map);
 
-        CLog::Log(LOGINFO, "CAEStreamParser::SyncTrueHD - TrueHD stream detected {} channels, {}Hz, {}-bit)",
-                  m_info.m_channels, m_info.m_sampleRate, m_info.m_bitDepth);
+        m_info.m_hasAtmos = hasAtmos;
+        m_info.m_dialNorm = dialNormDefeated ? 0 : origDialNorm;
+        m_info.m_atmosChannels = atmosChannels;
+
+        std::string atmosStr;
+        if (hasAtmos)
+        {
+          atmosStr = ", dialNorm: " + std::to_string(m_info.m_dialNorm) + " dB";
+          if (dialNormDefeated)
+            atmosStr += " (defeated from " + std::to_string(origDialNorm) + " dB)";
+          if (atmosChannels)
+            atmosStr += ", atmosChannels: " + std::to_string(atmosChannels);
+        }
+        CLog::Log(LOGINFO,
+                  "CAEStreamParser::SyncTrueHD - TrueHD stream detected ({} channels, {}Hz, "
+                  "{}-bit{}{})",
+                  m_info.m_channels, m_info.m_sampleRate, m_info.m_bitDepth,
+                  hasAtmos ? ", Atmos" : "", atmosStr);
 
         m_hasSync = true;
         m_info.m_type = CAEStreamInfo::STREAM_TYPE_TRUEHD;
@@ -909,7 +1171,7 @@ unsigned int CAEStreamParser::SyncTrueHD(uint8_t* data, unsigned int size)
         continue;
 
       // if there is not enough data left to verify the packet, just return the skip amount
-      if (left < (unsigned int)m_substreams * 4)
+      if (left < static_cast<unsigned int>(m_substreams) * 4)
         return skip;
 
       // verify the parity

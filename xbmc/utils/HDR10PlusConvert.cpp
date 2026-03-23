@@ -17,7 +17,7 @@
 
 #include "HDR10PlusConvert.h"
 
-#include "HDR10PlusWriter.h"
+#include "DoViRpuWriter.h"
 #include "HDR10Plus.h"
 
 // Nits to PQ
@@ -149,7 +149,7 @@ static uint16_t clamp16(uint16_t d, uint16_t min, uint16_t max) {
 static std::vector<uint8_t> last_rpu;
 static VdrDmData last_vdr_dm_data = {};
 
-std::vector<uint8_t> create_rpu_nalu_for_hdr10plus(
+std::vector<uint8_t> create_dovi_rpu_nalu_from_hdr10plus(
   const Hdr10PlusMetadata& meta,
   const PeakBrightnessSource& peak_source,
   const HDRStaticMetadataInfo& hdrStaticMetadataInfo) 
@@ -223,10 +223,10 @@ std::vector<uint8_t> create_rpu_nalu_for_hdr10plus(
       (last_vdr_dm_data.max_content_light_level != vdr_dm_data.max_content_light_level) ||
       (last_vdr_dm_data.max_frame_average_light_level != vdr_dm_data.max_frame_average_light_level)) {
 
-    last_rpu = create_rpu_nalu(vdr_dm_data);
+    last_rpu = create_dovi_rpu_nalu(vdr_dm_data);
     last_vdr_dm_data = vdr_dm_data;
 
-    CLog::Log(LOGINFO, "HDR10PlusConvert::create_rpu_nalu_for_hdr10plus min_pq [{}] max_pq [{}] avg_pq [{}] mdml max [{}] mdml min [{}] cll [{}] fall [{}]",
+    logM(LOGDEBUG, "HDR10PlusConvert", "min_pq [{}] max_pq [{}] avg_pq [{}] mdml max [{}] mdml min [{}] cll [{}] fall [{}]",
       vdr_dm_data.min_pq,
       vdr_dm_data.max_pq,
       vdr_dm_data.avg_pq,

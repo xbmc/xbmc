@@ -10,18 +10,22 @@
 
 #include "DVDVideoCodec.h"
 #include "DVDStreamInfo.h"
+#include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 #include "cores/VideoPlayer/Buffers/VideoBuffer.h"
 #include "utils/BitstreamConverter.h"
 
 #include <set>
 #include <atomic>
+#include <memory>
 
 class CAMLCodec;
 struct mpeg2_sequence;
 struct h264_sequence;
 class CBitstreamParser;
 class CBitstreamConverter;
+class CDataCacheCore;
+class CSetting;
 
 class CDVDVideoCodecAmlogic;
 
@@ -61,7 +65,7 @@ private:
   std::vector<int> m_freeBuffers;
 };
 
-class CDVDVideoCodecAmlogic : public CDVDVideoCodec
+class CDVDVideoCodecAmlogic : public CDVDVideoCodec, public ISettingCallback
 {
 public:
   CDVDVideoCodecAmlogic(CProcessInfo &processInfo);
@@ -79,6 +83,8 @@ public:
   virtual void SetCodecControl(int flags) override;
   virtual const char* GetName(void) override { return (const char*)m_pFormatName; }
   virtual bool SupportsExtention() { return true; }
+
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
 protected:
   void Close(void);
@@ -106,6 +112,10 @@ protected:
 private:
   bool DualLayerConvert(uint8_t *pData, uint32_t iSize, const DemuxPacket &packet);
   bool SingleLayerConvert(uint8_t *pData, uint32_t iSize, const DemuxPacket &packet) const;
+  void ClearBitstreamCommon(void);
+  void UpdateAppendCMv40SettingCache();
+  void ApplyDynamicDoViSettings();
+
   std::shared_ptr<CAMLVideoBufferPool> m_videoBufferPool;
   static std::atomic<bool> m_InstanceGuard;
 
@@ -114,5 +124,9 @@ private:
   bool      m_last_added = true;
   uint8_t  *m_last_pData = nullptr;
   uint32_t  m_last_iSize = 0;
+
+  std::atomic<int> m_appendCMv40ModeSetting{static_cast<int>(DOVICMv40Mode::CMV40_NONE)};
+  DOVICMv40Mode m_appendCMv40ModeApplied{DOVICMv40Mode::CMV40_NONE};
+  bool m_settingsCallbackRegistered{false};
 
 };
