@@ -114,17 +114,14 @@ void CApplicationPlay::GetOptionsAndUpdateItem()
       return;
 
     // Get path
-    std::string path{m_item.GetDynPath()};
+    std::string path{m_item.GetPath()};
     if (m_item.HasVideoInfoTag())
     {
       const std::string videoInfoTagPath{m_item.GetVideoInfoTag()->m_strFileNameAndPath};
-      if (!videoInfoTagPath.empty())
-      {
-        // removable:// may be embedded in bluray:// path
-        if (VIDEO::IsVideoDb(m_item) ||
-            CURL::Decode(videoInfoTagPath).find("removable://") != std::string::npos)
-          path = videoInfoTagPath;
-      }
+      // removable:// may be embedded in bluray:// path
+      if (CURL::Decode(videoInfoTagPath).find("removable://") != std::string::npos ||
+          VIDEO::IsVideoDb(m_item))
+        path = videoInfoTagPath;
     }
     else if (m_item.HasProperty("original_listitem_url") &&
              URIUtils::IsPlugin(m_item.GetProperty("original_listitem_url").asString()))
