@@ -18,7 +18,7 @@ using namespace KODI::WINDOWING::LINUX;
 
 bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint apiType)
 {
-  if (!CWinSystemGbm::InitWindowSystem())
+  if (!m_DRM && !CWinSystemGbm::InitWindowSystem())
   {
     return false;
   }
@@ -30,6 +30,7 @@ bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint 
 
   if (!m_eglContext.InitializeDisplay(apiType))
   {
+    m_eglContext.Destroy();
     return false;
   }
 
@@ -37,11 +38,13 @@ bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint 
 
   if (!ChooseEGLConfig(renderableType))
   {
+    m_eglContext.Destroy();
     return false;
   }
 
   if (!CreateContext())
   {
+    m_eglContext.Destroy();
     return false;
   }
 

@@ -188,8 +188,10 @@ void CWinSystemGbmGLESContext::PresentRender(bool rendered, bool videoLayer)
 
 bool CWinSystemGbmGLESContext::CreateContext()
 {
+  const EGLint version = (m_renderableType == EGL_OPENGL_ES3_BIT) ? 3 : 2;
+
   CEGLAttributesVec contextAttribs;
-  contextAttribs.Add({{EGL_CONTEXT_CLIENT_VERSION, 2}});
+  contextAttribs.Add({{EGL_CONTEXT_CLIENT_VERSION, version}});
 
   if (!m_eglContext.CreateContext(contextAttribs))
   {
