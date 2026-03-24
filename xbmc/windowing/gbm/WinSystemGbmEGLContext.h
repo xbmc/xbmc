@@ -55,6 +55,8 @@ protected:
   bool InitWindowSystemEGL(EGLint renderableType, EGLint apiType);
   virtual bool CreateContext() = 0;
 
+  EGLint m_renderableType{0};
+
   std::unique_ptr<KODI::UTILS::EGL::CEGLFence> m_eglFence;
 
   struct delete_CVaapiProxy

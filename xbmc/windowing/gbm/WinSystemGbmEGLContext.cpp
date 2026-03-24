@@ -18,7 +18,7 @@ using namespace KODI::WINDOWING::LINUX;
 
 bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint apiType)
 {
-  if (!CWinSystemGbm::InitWindowSystem())
+  if (!m_DRM && !CWinSystemGbm::InitWindowSystem())
   {
     return false;
   }
@@ -30,8 +30,11 @@ bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint 
 
   if (!m_eglContext.InitializeDisplay(apiType))
   {
+    m_eglContext.Destroy();
     return false;
   }
+
+  m_renderableType = renderableType;
 
   auto plane = m_DRM->GetGuiPlane();
   // TODO: GetGuiPlane() should never be null here (FindPlanes would have failed).
@@ -58,12 +61,14 @@ bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint 
         !m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithoutAlpha(visualId), false,
                                    0))
     {
+      m_eglContext.Destroy();
       return false;
     }
   }
 
   if (!CreateContext())
   {
+    m_eglContext.Destroy();
     return false;
   }
 
