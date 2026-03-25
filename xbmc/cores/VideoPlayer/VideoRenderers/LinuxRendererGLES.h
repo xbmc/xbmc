@@ -150,7 +150,6 @@ protected:
   int m_reloadShaders{0};
   CRenderSystemGLES *m_renderSystem{nullptr};
   GLenum m_pixelStoreKey{0};
-  bool m_hasTextureNorm16{false};
 
   struct CYuvPlane
   {

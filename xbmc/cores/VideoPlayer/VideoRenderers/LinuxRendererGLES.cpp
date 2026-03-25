@@ -49,9 +49,6 @@ CLinuxRendererGLES::CLinuxRendererGLES()
     m_pixelStoreKey = GL_UNPACK_ROW_LENGTH_EXT;
   }
 #endif
-
-  if (m_renderSystem && m_renderSystem->IsExtSupported("GL_EXT_texture_norm16"))
-    m_hasTextureNorm16 = true;
 }
 
 CLinuxRendererGLES::~CLinuxRendererGLES()
@@ -1439,7 +1436,7 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
     default:
       break;
   }
-  if (buf.m_srcTextureBits > 8 && m_hasTextureNorm16)
+  if (buf.m_srcTextureBits > 8)
     im.bpp = 2;
   else
     im.bpp = 1;
