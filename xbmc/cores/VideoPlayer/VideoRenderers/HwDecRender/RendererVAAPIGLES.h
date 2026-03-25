@@ -59,6 +59,7 @@ protected:
   EShaderFormat GetShaderFormat() override;
 
   bool m_isVAAPIBuffer = true;
+  bool m_nv12Allocated[NUM_BUFFERS]{};
   std::unique_ptr<VAAPI::CVaapiTexture> m_vaapiTextures[NUM_BUFFERS];
   std::array<std::unique_ptr<KODI::UTILS::EGL::CEGLFence>, NUM_BUFFERS> m_fences;
   static VAAPI::IVaapiWinSystem *m_pWinSystem;

@@ -81,7 +81,7 @@ void main()
   rgbBelow = m_yuvmat * yuvBelow;
   rgbBelow.a = m_alpha;
 
-  rgb = mix(rgb, rgbBelow, 0.5);
+  rgb = mix(rgbAbove, rgbBelow, 0.5);
 
 #if defined(XBMC_COL_CONVERSION)
   rgb.rgb = pow(max(vec3(0), rgb.rgb), vec3(m_gammaSrc));
