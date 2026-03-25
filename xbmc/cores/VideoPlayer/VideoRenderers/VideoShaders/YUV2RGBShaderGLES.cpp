@@ -284,9 +284,7 @@ YUV2RGBFilterShader::YUV2RGBFilterShader(EShaderFormat format,
   m_scaling = method;
   PixelShader()->LoadSource("gles310_yuv2rgb_filter.frag", m_defines);
   VertexShader()->LoadSource("gles310_yuv2rgb.vert");
-  PixelShader()->AppendSource("gl_output.glsl");
-
-  PixelShader()->InsertSource("gl_tonemap.glsl", "void main()");
+  PixelShader()->InsertSource("gles_tonemap.frag", "void main()");
 }
 
 YUV2RGBFilterShader::~YUV2RGBFilterShader()

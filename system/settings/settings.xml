@@ -124,7 +124,12 @@
           </control>
         </setting>
         <setting id="videoplayer.hqscalerprecision" type="integer" label="13472" help="13473">
-          <requirement>HAS_GL</requirement>
+          <requirement>
+            <or>
+              <condition>HAS_GL</condition>
+              <condition>HAS_GLES</condition>
+            </or>
+          </requirement>
           <level>2</level>
           <default>10</default>
           <constraints>

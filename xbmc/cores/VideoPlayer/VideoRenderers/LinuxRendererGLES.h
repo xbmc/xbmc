@@ -147,7 +147,7 @@ protected:
 
   // Raw data used by renderer
   int m_currentField{FIELD_FULL};
-  int m_reloadShaders{0};
+  bool m_reloadShaders{false};
   CRenderSystemGLES *m_renderSystem{nullptr};
   GLenum m_pixelStoreKey{0};
 
@@ -207,6 +207,9 @@ protected:
   bool m_toneMap = false;
   ETONEMAPMETHOD m_toneMapMethod = VS_TONEMAPMETHOD_OFF;
   bool m_passthroughHDR = false;
+  GLint m_intermediateFormat{GL_RGBA};
+  GLint m_intermediateType{GL_UNSIGNED_BYTE};
+  // TODO: GL has m_intermediateGammaCorrection -- add when ported to GLES
   unsigned char* m_planeBuffer = nullptr;
   size_t m_planeBufferSize = 0;
 
