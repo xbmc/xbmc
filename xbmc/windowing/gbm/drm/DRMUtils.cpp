@@ -220,12 +220,13 @@ bool CDRMUtils::FindVideoAndGuiPlane(uint32_t format,
   {
     if (gui_format.drm != m_gui_plane->GetFormat())
       continue;
-    if (!gui_format.alpha)
+    if (gui_format.alpha < 8)
     {
-      CLog::LogF(LOGWARNING,
-                 "GUI plane format {} can not do alpha blending, "
-                 "video will be rendered through EGL import over the gui plane",
-                 DRMHELPERS::FourCCToString(m_gui_plane->GetFormat()));
+      CLog::LogF(
+          LOGWARNING,
+          "GUI plane format {} has insufficient alpha ({}-bit) for Direct-to-Plane compositing, "
+          "video will be rendered through EGL import over the gui plane",
+          DRMHELPERS::FourCCToString(m_gui_plane->GetFormat()), gui_format.alpha);
       m_video_plane = nullptr;
       return false;
     }
