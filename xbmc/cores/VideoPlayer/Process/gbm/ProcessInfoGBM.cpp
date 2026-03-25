@@ -40,3 +40,14 @@ EINTERLACEMETHOD CProcessInfoGBM::GetFallbackDeintMethod()
   return CProcessInfo::GetFallbackDeintMethod();
 #endif
 }
+
+std::vector<AVPixelFormat> CProcessInfoGBM::GetRenderFormats()
+{
+  return {
+      AV_PIX_FMT_YUV420P,   AV_PIX_FMT_NV12,      AV_PIX_FMT_YUV420P9,  AV_PIX_FMT_YUV420P10,
+      AV_PIX_FMT_YUV420P12, AV_PIX_FMT_YUV420P14, AV_PIX_FMT_YUV420P16,
+      // TODO: verify YUV422 on existing GL renderer, add support to GLES renderer
+      // AV_PIX_FMT_YUYV422,
+      // AV_PIX_FMT_UYVY422,
+  };
+}
