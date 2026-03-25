@@ -234,6 +234,10 @@ public:
    * "NVIDIA RTX Video Super Resolution" or "Intel Video Super Resolution"
    *
    */
+  // Request render surface bit depth change (e.g. 8-bit AR24 to 10-bit XR30)
+  // for single-plane rendering of 10-bit content. Returns true if supported.
+  virtual bool RecreateGuiSurface(bool prefer10bit) { return false; }
+
   virtual bool SupportsVideoSuperResolution() { return false; }
 
   /*!

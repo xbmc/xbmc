@@ -159,6 +159,10 @@ bool CLinuxRendererGLES::Configure(const VideoPicture &picture, float fps, unsig
               m_passthroughHDR ? "on" : "off");
   }
 
+  // Upgrade render surface to 10-bit for 10-bit content on single-plane
+  if (picture.colorBits > 8)
+    CServiceBroker::GetWinSystem()->RecreateGuiSurface(true);
+
   return true;
 }
 
@@ -904,6 +908,9 @@ void CLinuxRendererGLES::UnInit()
 
   CServiceBroker::GetWinSystem()->SetHDR(nullptr);
   m_passthroughHDR = false;
+
+  // Revert render surface to 8-bit
+  CServiceBroker::GetWinSystem()->RecreateGuiSurface(false);
 }
 
 bool CLinuxRendererGLES::CreateTexture(int index)

@@ -53,7 +53,11 @@ protected:
    * and call this function there with appropriate parameters
    */
   bool InitWindowSystemEGL(EGLint renderableType, EGLint apiType);
+  bool ChooseEGLConfig(EGLint renderableType, bool prefer10bit = false);
+  bool RecreateGuiSurface(bool prefer10bit) override;
   virtual bool CreateContext() = 0;
+
+  EGLint m_renderableType{0};
 
   std::unique_ptr<KODI::UTILS::EGL::CEGLFence> m_eglFence;
 
