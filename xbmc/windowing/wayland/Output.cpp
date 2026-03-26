@@ -67,6 +67,22 @@ COutput::COutput(std::uint32_t globalName,
     m_scale = scale;
   };
 
+  // wl_output.name and description were added in version 4
+  // wl_output.name is the plain output name, e.g. HDMI-A-1
+  // wl_output.description is a human-readable display name e.g. Samsung
+  // Electric Company QBQ90S 0x01000E00
+  m_output.on_name() = [this](std::string const& name)
+  {
+    std::unique_lock lock(m_geometryCriticalSection);
+    m_name = name;
+  };
+
+  m_output.on_description() = [this](std::string const& description)
+  {
+    std::unique_lock lock(m_geometryCriticalSection);
+    m_description = description;
+  };
+
   m_output.on_done() = [this]()
   {
 #ifndef TARGET_WEBOS
