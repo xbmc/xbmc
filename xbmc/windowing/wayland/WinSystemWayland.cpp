@@ -51,6 +51,7 @@
 #include <memory>
 #include <mutex>
 #include <numeric>
+#include <string_view>
 
 using namespace KODI::WINDOWING;
 using namespace KODI::WINDOWING::WAYLAND;
@@ -171,7 +172,15 @@ bool CWinSystemWayland::InitWindowSystem()
   m_registry->RequestSingleton(m_presentation, 1, 1, false);
   // version 2 adds done() -> required
   // version 3 adds destructor -> optional
-  m_registry->Request<wayland::output_t>(2, 3, std::bind(&CWinSystemWayland::OnOutputAdded, this, _1, _2), std::bind(&CWinSystemWayland::OnOutputRemoved, this, _1));
+  // version 4 adds name() and description() -> optional
+#if WAYLANDPP_VERSION_MAJOR >= 1
+  constexpr std::uint32_t maxOutputVersion = 4;
+#else
+  constexpr std::uint32_t maxOutputVersion = 3;
+#endif
+  m_registry->Request<wayland::output_t>(2, maxOutputVersion,
+                                         std::bind(&CWinSystemWayland::OnOutputAdded, this, _1, _2),
+                                         std::bind(&CWinSystemWayland::OnOutputRemoved, this, _1));
 
   m_registry->Bind();
 
@@ -530,7 +539,50 @@ std::shared_ptr<COutput> CWinSystemWayland::FindOutputByUserFriendlyName(const s
                                  return (name == UserFriendlyOutputName(entry.second));
                                });
 
-  return (outputIt == m_outputs.end() ? nullptr : outputIt->second);
+  if (outputIt == m_outputs.end())
+  {
+    // Preserve monitor selections saved before wl_output v4 names were used.
+    outputIt = std::find_if(m_outputs.begin(), m_outputs.end(),
+                            [this, &name](decltype(m_outputs)::value_type const& entry)
+                            { return name == UserFriendlyOutputName(entry.second, true); });
+  }
+
+  if (outputIt != m_outputs.end())
+    return outputIt->second;
+  if (name == OUTPUT_NAME_DEFAULT)
+    return nullptr;
+
+  std::string_view label{name};
+  const auto position = label.rfind(" @");
+  if (position != std::string_view::npos)
+  {
+    const auto coordinates = label.substr(position + 2);
+    const auto separator = coordinates.find('x');
+    if (separator != std::string_view::npos &&
+        coordinates.find_first_not_of("-0123456789x") == std::string_view::npos &&
+        StringUtils::IsInteger(coordinates.substr(0, separator)) &&
+        StringUtils::IsInteger(coordinates.substr(separator + 1)))
+      label = label.substr(0, position);
+  }
+
+  // Descriptions can change; accept only a unique complete output-name match.
+  std::shared_ptr<COutput> match;
+  for (const auto& [id, output] : m_outputs)
+  {
+    const auto connector = output->GetName();
+    if (connector.empty())
+      continue;
+
+    const auto suffix = StringUtils::Format(" ({})", connector);
+    const auto matches = [&](std::string_view value)
+    { return value == connector || (value.size() > suffix.size() && value.ends_with(suffix)); };
+    if (!matches(name) && !matches(label))
+      continue;
+    if (match)
+      return nullptr;
+    match = output;
+  }
+  return match;
 }
 
 std::shared_ptr<COutput> CWinSystemWayland::FindOutputByWaylandOutput(wayland::output_t const& output)
@@ -1102,17 +1154,39 @@ CWinSystemWayland::SizeUpdateInformation CWinSystemWayland::UpdateSizeVariables(
   return changes;
 }
 
-std::string CWinSystemWayland::UserFriendlyOutputName(std::shared_ptr<COutput> const& output)
+std::string CWinSystemWayland::UserFriendlyOutputName(std::shared_ptr<COutput> const& output,
+                                                      bool legacyName)
 {
   std::vector<std::string> parts;
-  if (!output->GetMake().empty())
+
+  if (!legacyName)
   {
-    parts.emplace_back(output->GetMake());
+    const auto name = output->GetName();
+    const auto description = output->GetDescription();
+    if (!description.empty())
+    {
+      parts.emplace_back(description);
+      if (!name.empty())
+        parts.emplace_back(StringUtils::Format("({})", name));
+    }
+    else if (!name.empty())
+    {
+      parts.emplace_back(name);
+    }
   }
-  if (!output->GetModel().empty())
+
+  if (parts.empty())
   {
-    parts.emplace_back(output->GetModel());
+    if (!output->GetMake().empty())
+    {
+      parts.emplace_back(output->GetMake());
+    }
+    if (!output->GetModel().empty())
+    {
+      parts.emplace_back(output->GetModel());
+    }
   }
+
   if (parts.empty())
   {
     // Fallback to "unknown" if no name received from compositor
@@ -1223,10 +1297,12 @@ void CWinSystemWayland::OnOutputAdded(std::uint32_t name, wayland::proxy_t&& pro
 {
   wayland::output_t output(proxy);
   // This is not accessed from multiple threads
-  m_outputsInPreparation.emplace(name, std::make_shared<COutput>(name, output, std::bind(&CWinSystemWayland::OnOutputDone, this, name)));
+  m_outputsInPreparation.emplace(
+      name, std::make_shared<COutput>(name, output, [this, name](bool labelChanged)
+                                      { OnOutputDone(name, labelChanged); }));
 }
 
-void CWinSystemWayland::OnOutputDone(std::uint32_t name)
+void CWinSystemWayland::OnOutputDone(std::uint32_t name, bool labelChanged)
 {
   auto it = m_outputsInPreparation.find(name);
   if (it != m_outputsInPreparation.end())
@@ -1243,6 +1319,8 @@ void CWinSystemWayland::OnOutputDone(std::uint32_t name)
 
     m_protocol.SendOutMessage(WinSystemWaylandProtocol::OUTPUT_HOTPLUG);
   }
+  else if (labelChanged)
+    m_protocol.SendOutMessage(WinSystemWaylandProtocol::OUTPUT_HOTPLUG);
 
   UpdateBufferScale();
 }
