@@ -389,6 +389,19 @@ private:
    */
   unsigned int GetQueueLevel(StreamType type) const;
 
+  /**
+   * @brief Get the maximum supported video resolution for a given codec.
+   * @param codec Codec name to query.
+   * @param width Output parameter for maximum width.
+   * @param height Output parameter for maximum height.
+   * @param framerate Output parameter for maximum framerate.
+   * @return True if the information was successfully retrieved, false otherwise.
+   */
+  bool GetMaxVideoResolution(const std::string& codec,
+                             int& width,
+                             int& height,
+                             int& framerate) const;
+
   std::condition_variable m_eventCondition;
   std::mutex m_eventMutex;
 
