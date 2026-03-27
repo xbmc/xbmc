@@ -132,7 +132,7 @@ std::string CGUIDialogSubtitleSettings::BrowseForSubtitle()
   std::string strPath{currentItem.GetProperty("BasePath").asString("")};
   if (strPath.empty())
   {
-    const std::string dynPath{currentItem.GetDynPath()};
+    const std::string dynPath{currentItem.GetSubtitleAnchorPath()};
     if (URIUtils::IsInRAR(dynPath) || URIUtils::IsInZIP(dynPath))
     {
       strPath = CURL(dynPath).GetHostName();

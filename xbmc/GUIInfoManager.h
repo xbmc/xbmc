@@ -126,7 +126,7 @@ public:
    */
   void SetCurrentItem(const CFileItem& item);
   void ResetCurrentItem();
-  void UpdateCurrentItem(const CFileItem& item);
+  void UpdateCurrentItem(const CFileItem& item, bool replaceLabels = true);
 
   // Current song stuff
   void SetCurrentAlbumThumb(const std::string& thumbFileName);
