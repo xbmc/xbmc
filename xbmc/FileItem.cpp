@@ -936,6 +936,11 @@ bool CFileItem::IsLibraryFolder() const
   return GetURL().IsLibraryFolder();
 }
 
+bool CFileItem::IsStrm() const
+{
+  return GetURL().HasExtension(".strm");
+}
+
 bool CFileItem::IsPythonScript() const
 {
   return GetURL().HasExtension(".py");
@@ -1315,6 +1320,23 @@ void CFileItem::UpdateInfo(const CFileItem& item,
                            bool replaceLabels /* = true */,
                            MultipleEpisodes replaceEpisodes /* = DONT_GROUP_MULTIPLE_EPISODES */)
 {
+  // Keep the library-facing label for .strm items even when the playback item has already
+  // been resolved to a remote URL and carries a transport-derived label.
+  const bool keepStrmLabel = IsStrm() && item.IsStrm() && NETWORK::IsInternetStream(item) &&
+                             item.GetDynPath() != item.GetPath();
+
+  if (IsStrm() || item.IsStrm())
+  {
+    CLog::Log(LOGDEBUG,
+              "STRM-SUBS UpdateInfo this(path='{}', dyn='{}', label='{}', isstrm={}) "
+              "item(path='{}', dyn='{}', label='{}', isstrm={}, isinternet={}) "
+              "replaceLabels={} keepStrmLabel={}",
+              CURL::GetRedacted(GetPath()), CURL::GetRedacted(GetDynPath()), GetLabel(), IsStrm(),
+              CURL::GetRedacted(item.GetPath()), CURL::GetRedacted(item.GetDynPath()),
+              item.GetLabel(), item.IsStrm(), NETWORK::IsInternetStream(item), replaceLabels,
+              keepStrmLabel);
+  }
+
   if (item.HasVideoInfoTag())
   { // copy info across
     //! @todo premiered info is normally stored in m_dateTime by the db
@@ -1385,7 +1407,7 @@ void CFileItem::UpdateInfo(const CFileItem& item,
 
   // Alter label to episode number(s) if requested
   std::string label;
-  if (replaceLabels)
+  if (replaceLabels && !keepStrmLabel)
   {
     if (replaceEpisodes == MultipleEpisodes::GROUP_MULTIPLE_EPISODES &&
         item.HasProperty("episodes") && item.GetVideoContentType() == VideoDbContentType::EPISODES)
@@ -1415,6 +1437,22 @@ void CFileItem::UpdateInfo(const CFileItem& item,
 
 void CFileItem::MergeInfo(const CFileItem& item)
 {
+  // Keep the library-facing label for .strm items even when the playback item has already
+  // been resolved to a remote URL and carries a transport-derived label.
+  const bool keepStrmLabel = IsStrm() && item.IsStrm() && NETWORK::IsInternetStream(item) &&
+                             item.GetDynPath() != item.GetPath();
+
+  if (IsStrm() || item.IsStrm())
+  {
+    CLog::Log(LOGDEBUG,
+              "STRM-SUBS MergeInfo this(path='{}', dyn='{}', label='{}', isstrm={}) "
+              "item(path='{}', dyn='{}', label='{}', isstrm={}, isinternet={}) "
+              "keepStrmLabel={}",
+              CURL::GetRedacted(GetPath()), CURL::GetRedacted(GetDynPath()), GetLabel(), IsStrm(),
+              CURL::GetRedacted(item.GetPath()), CURL::GetRedacted(item.GetDynPath()),
+              item.GetLabel(), item.IsStrm(), NETWORK::IsInternetStream(item), keepStrmLabel);
+  }
+
   // TODO: Currently merge the metadata/art info is implemented for video case only
   if (item.HasVideoInfoTag())
   {
@@ -1474,7 +1512,7 @@ void CFileItem::MergeInfo(const CFileItem& item)
   }
   if (item.HasDynPath())
     SetDynPath(item.GetDynPath());
-  if (!item.GetLabel().empty())
+  if (!keepStrmLabel && !item.GetLabel().empty())
     SetLabel(item.GetLabel());
   if (!item.GetLabel2().empty())
     SetLabel2(item.GetLabel2());
@@ -2054,6 +2092,14 @@ std::string CFileItem::GetLocalMetadataPath() const
     return URIUtils::GetDiscBasePath(GetDynPath());
 
   return URIUtils::GetParentPath(m_strPath);
+}
+
+std::string CFileItem::GetSubtitleAnchorPath() const
+{
+  if (IsStrm() && !IsPlugin())
+    return m_strPath;
+
+  return GetDynPath();
 }
 
 bool CFileItem::LoadMusicTag()
