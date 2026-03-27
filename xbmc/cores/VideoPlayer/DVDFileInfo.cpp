@@ -561,7 +561,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
 void CDVDFileInfo::ProcessExternalSubtitles(CFileItem* item)
 {
   std::vector<std::string> externalSubtitles;
-  const std::string videoPath = item->GetDynPath();
+  const std::string videoPath = item->GetSubtitleAnchorPath();
 
   CUtil::ScanForExternalSubtitles(videoPath, externalSubtitles);
 

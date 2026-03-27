@@ -2008,6 +2008,14 @@ std::string CFileItem::GetLocalMetadataPath() const
   return URIUtils::GetParentPath(m_strPath);
 }
 
+std::string CFileItem::GetSubtitleAnchorPath() const
+{
+  if (IsType(".strm"))
+    return m_strPath;
+
+  return GetDynPath();
+}
+
 bool CFileItem::LoadMusicTag()
 {
   // not audio

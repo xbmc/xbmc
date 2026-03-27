@@ -907,7 +907,7 @@ bool CVideoPlayer::OpenInputStream()
 
     if (!URIUtils::IsUPnP(m_item.GetPath()) &&
         !m_item.GetProperty("no-ext-subs-scan").asBoolean(false))
-      CUtil::ScanForExternalSubtitles(m_item.GetDynPath(), filenames);
+      CUtil::ScanForExternalSubtitles(m_item.GetSubtitleAnchorPath(), filenames);
 
     // load any subtitles from file item
     std::string key("subtitle:1");
