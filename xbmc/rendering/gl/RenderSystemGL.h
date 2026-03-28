@@ -32,6 +32,7 @@ enum class ShaderMethodGL
   SM_MULTI_BLENDCOLOR,
   SM_FONTS_RGBA,
   SM_FONTS_RGBA_SHADER_CLIP,
+  SM_STENCIL,
   SM_MAX
 };
 
@@ -60,6 +61,7 @@ private:
       {ShaderMethodGL::SM_MULTI_BLENDCOLOR, "multi blend colour"},
       {ShaderMethodGL::SM_FONTS_RGBA, "fonts rgba"},
       {ShaderMethodGL::SM_FONTS_RGBA_SHADER_CLIP, "fonts rgba with vertex shader based clipping"},
+      {ShaderMethodGL::SM_STENCIL, "stencil only"},
   });
 
   static_assert(static_cast<size_t>(ShaderMethodGL::SM_MAX) == ShaderMethodGLMap.size(),
