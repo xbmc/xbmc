@@ -237,14 +237,6 @@ public:
   } //! @todo CEC only supports toggling the mute status at this time
 
   /*!
-   * @brief Try to get a keypress from a peripheral.
-   * @param frameTime The current frametime.
-   * @param key The fetched key.
-   * @return True when a keypress was fetched, false otherwise.
-   */
-  bool GetNextKeypress(float frameTime, CKey& key);
-
-  /*!
    * @brief Register with the event scanner to control scan timing
    * @return A handle that unregisters itself when expired
    */

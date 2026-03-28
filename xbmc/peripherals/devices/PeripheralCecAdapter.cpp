@@ -17,12 +17,15 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "input/InputManager.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
+#include "input/keyboard/Key.h"
 #include "input/keymaps/remote/IRRemoteIDs.h"
 #include "interfaces/AnnouncementManager.h"
 #include "jobs/JobManager.h"
 #include "messaging/ApplicationMessenger.h"
+#include "peripherals/Peripherals.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
@@ -78,6 +81,8 @@ CPeripheralCecAdapter::CPeripheralCecAdapter(CPeripherals& manager,
 
 CPeripheralCecAdapter::~CPeripheralCecAdapter(void)
 {
+  m_manager.GetInputManager().UnregisterCecInputProvider(this);
+
   {
     std::unique_lock lock(m_critSection);
     CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
@@ -285,9 +290,25 @@ bool CPeripheralCecAdapter::InitialiseFeature(const PeripheralFeature feature)
 
     m_bStarted = true;
     Create();
+
+    m_manager.GetInputManager().RegisterCecInputProvider(this);
   }
 
   return CPeripheral::InitialiseFeature(feature);
+}
+
+std::optional<CKey> CPeripheralCecAdapter::GetCecKey()
+{
+  const int buttonCode = GetButton();
+  const unsigned int holdTime = GetHoldTime();
+
+  if (buttonCode <= 0)
+    return {};
+
+  std::optional<CKey> key = CKey{static_cast<uint32_t>(buttonCode), holdTime};
+
+  ResetButton();
+  return key;
 }
 
 void CPeripheralCecAdapter::SetVersionInfo(const libcec_configuration& configuration)

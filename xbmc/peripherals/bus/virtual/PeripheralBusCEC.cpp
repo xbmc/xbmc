@@ -8,6 +8,9 @@
 
 #include "PeripheralBusCEC.h"
 
+#include "input/InputManager.h"
+#include "peripherals/Peripherals.h"
+
 #include <libcec/cec.h>
 
 using namespace PERIPHERALS;
@@ -23,6 +26,11 @@ CPeripheralBusCEC::~CPeripheralBusCEC(void)
 {
   if (m_cecAdapter)
     CECDestroy(m_cecAdapter);
+}
+
+void CPeripheralBusCEC::ProcessEvents()
+{
+  m_manager.GetInputManager().ProcessCec();
 }
 
 bool CPeripheralBusCEC::PerformDeviceScan(PeripheralScanResults& results)

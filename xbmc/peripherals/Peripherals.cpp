@@ -828,28 +828,6 @@ bool CPeripherals::ToggleDeviceState(CecStateChange mode /*= STATE_SWITCH_TOGGLE
   return ret;
 }
 
-bool CPeripherals::GetNextKeypress(float frameTime, CKey& key)
-{
-  PeripheralVector peripherals;
-  if (SupportsCEC() && GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
-  {
-    for (auto& peripheral : peripherals)
-    {
-      std::shared_ptr<CPeripheralCecAdapter> cecDevice =
-          std::static_pointer_cast<CPeripheralCecAdapter>(peripheral);
-      if (cecDevice->GetButton())
-      {
-        CKey newKey(cecDevice->GetButton(), cecDevice->GetHoldTime());
-        cecDevice->ResetButton();
-        key = newKey;
-        return true;
-      }
-    }
-  }
-
-  return false;
-}
-
 EventPollHandlePtr CPeripherals::RegisterEventPoller()
 {
   return m_eventScanner->RegisterPollHandle();

@@ -42,6 +42,7 @@ public:
 
 #include "PeripheralHID.h"
 #include "XBDateTime.h"
+#include "input/cec/ICecInputProvider.h"
 #include "interfaces/AnnouncementManager.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
@@ -63,6 +64,11 @@ namespace CEC
 class ICECAdapter;
 };
 
+namespace KODI::CEC
+{
+class ICecKeyHandler;
+} // namespace KODI::CEC
+
 namespace PERIPHERALS
 {
 class CPeripheralCecAdapterUpdateThread;
@@ -83,6 +89,7 @@ typedef enum
 } CecVolumeChange;
 
 class CPeripheralCecAdapter : public CPeripheralHID,
+                              public KODI::CEC::ICecInputProvider,
                               public ANNOUNCEMENT::IAnnouncer,
                               private CThread
 {
@@ -115,6 +122,9 @@ public:
   int GetButton(void);
   unsigned int GetHoldTime(void);
   void ResetButton(void);
+
+  // Implementation of ICecInputProvider
+  std::optional<CKey> GetCecKey() override;
 
   // public CEC methods
   void ActivateSource(void);
