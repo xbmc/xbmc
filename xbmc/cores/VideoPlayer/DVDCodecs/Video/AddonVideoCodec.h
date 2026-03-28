@@ -55,4 +55,6 @@ private:
   AVColorRange m_colorRange = AVCOL_RANGE_UNSPECIFIED;
   AVColorPrimaries m_colorPrimaries = AVCOL_PRI_UNSPECIFIED;
   AVColorTransferCharacteristic m_colorTransfer = AVCOL_TRC_UNSPECIFIED;
+  std::shared_ptr<AVMasteringDisplayMetadata> m_masteringMetadata;
+  std::shared_ptr<AVContentLightMetadata> m_contentLightMetadata;
 };

@@ -267,6 +267,8 @@ bool CAddonVideoCodec::CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamI
   m_colorRange = hints.colorRange;
   m_colorPrimaries = hints.colorPrimaries;
   m_colorTransfer = hints.colorTransferCharacteristic;
+  m_masteringMetadata = hints.masteringMetadata;
+  m_contentLightMetadata = hints.contentLightMetadata;
 
   m_processInfo.SetVideoDimensions(hints.width, hints.height);
   m_processInfo.SetVideoDAR(m_displayAspect);
@@ -347,6 +349,16 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
     pVideoPicture->color_transfer = m_colorTransfer;
     pVideoPicture->hasDisplayMetadata = false;
     pVideoPicture->hasLightMetadata = false;
+    if (m_masteringMetadata)
+    {
+      pVideoPicture->displayMetadata = *m_masteringMetadata;
+      pVideoPicture->hasDisplayMetadata = true;
+    }
+    if (m_contentLightMetadata)
+    {
+      pVideoPicture->lightMetadata = *m_contentLightMetadata;
+      pVideoPicture->hasLightMetadata = true;
+    }
     pVideoPicture->iDuration = 0;
     pVideoPicture->iFrameType = 0;
     pVideoPicture->iRepeatPicture = 0;
