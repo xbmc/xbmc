@@ -5083,13 +5083,20 @@ void CVideoPlayer::UpdatePlayState(double timeout)
   else if (m_CurrentAudio.startpts != DVD_NOPTS_VALUE)
     state.dts = m_CurrentAudio.startpts;
 
+  state.startTime = 0;
+  state.timeMin = 0;
+
   std::shared_ptr<CDVDInputStream::IMenus> pMenu = std::dynamic_pointer_cast<CDVDInputStream::IMenus>(m_pInputStream);
 
   bool chapterNbEnabled{false};
 
   if (m_pDemuxer)
   {
-    if (!(IsInMenuInternal() && pMenu && !pMenu->CanSeek()))
+    if (IsInMenuInternal() && pMenu && !pMenu->CanSeek())
+    {
+      state.chapter = 0;
+    }
+    else
     {
       state.chapter = m_pDemuxer->GetChapter();
       chapterNbEnabled = true;
@@ -5109,12 +5116,22 @@ void CVideoPlayer::UpdatePlayState(double timeout)
     state.timeMax = m_pDemuxer->GetStreamLength();
   }
 
+  state.canpause = false;
+  state.canseek = false;
+  state.cantempo = false;
+  state.isInMenu = false;
+  state.menuType = MenuType::NONE;
+
   if (m_pInputStream)
   {
     CDVDInputStream::IChapter* pChapter = m_pInputStream->GetIChapter();
     if (pChapter)
     {
-      if (!(IsInMenuInternal() && pMenu && !pMenu->CanSeek()))
+      if (IsInMenuInternal() && pMenu && !pMenu->CanSeek())
+      {
+        state.chapter = 0;
+      }
+      else
       {
         state.chapter = pChapter->GetChapter();
         chapterNbEnabled = true;
