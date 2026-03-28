@@ -305,8 +305,9 @@ void CRenderSystemGL::InvalidateColorBuffer()
     return;
 
   glClearDepthf(0);
+  glClearStencil(0);
   glDepthMask(GL_TRUE);
-  glClear(GL_DEPTH_BUFFER_BIT);
+  glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
 bool CRenderSystemGL::ClearBuffers(KODI::UTILS::COLOR::Color color)
@@ -334,7 +335,8 @@ bool CRenderSystemGL::ClearBuffers(KODI::UTILS::COLOR::Color color)
     flags |= GL_DEPTH_BUFFER_BIT;
   }
 
-  glClear(flags);
+  glStencilMask(0xFF);
+  glClear(flags | GL_STENCIL_BUFFER_BIT);
 
   return true;
 }
@@ -571,6 +573,7 @@ void CRenderSystemGL::SetDepthCulling(DepthCulling culling)
   }
   else if (culling == DepthCulling::FRONT_TO_BACK)
   {
+    glEnable(GL_STENCIL_TEST);
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
     glDepthFunc(GL_GREATER);
@@ -816,6 +819,15 @@ void CRenderSystemGL::InitialiseShaders()
     CLog::Log(LOGERROR, "GUI Shader gl_shader_vert_clip.glsl + gl_shader_frag_fonts.glsl (RGBA) - "
                         "compile and link failed");
   }
+
+  m_pShader[ShaderMethodGL::SM_STENCIL] =
+      std::make_unique<CGLShader>("gl_shader_stencil.vert", "gl_shader_stencil.frag", defines);
+  if (!m_pShader[ShaderMethodGL::SM_STENCIL]->CompileAndLink())
+  {
+    m_pShader[ShaderMethodGL::SM_STENCIL]->Free();
+    m_pShader[ShaderMethodGL::SM_STENCIL].reset();
+    CLog::Log(LOGERROR, "GUI Shader SM_STENCIL - compile and link failed");
+  }
 }
 
 void CRenderSystemGL::ReleaseShaders()
@@ -859,6 +871,10 @@ void CRenderSystemGL::ReleaseShaders()
   if (m_pShader[ShaderMethodGL::SM_FONTS_RGBA_SHADER_CLIP])
     m_pShader[ShaderMethodGL::SM_FONTS_RGBA_SHADER_CLIP]->Free();
   m_pShader[ShaderMethodGL::SM_FONTS_RGBA_SHADER_CLIP].reset();
+
+  if (m_pShader[ShaderMethodGL::SM_STENCIL])
+    m_pShader[ShaderMethodGL::SM_STENCIL]->Free();
+  m_pShader[ShaderMethodGL::SM_STENCIL].reset();
 }
 
 void CRenderSystemGL::EnableShader(ShaderMethodGL method)
