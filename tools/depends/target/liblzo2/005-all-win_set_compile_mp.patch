@@ -1,0 +1,14 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 98c0a1a..4ffa60d 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -249,6 +249,9 @@ foreach(t ${lzo_COMPILE_TARGETS})
+     if(CMAKE_C_COMPILER_ID MATCHES "^(Clang|GNU)$")
+         target_compile_options(${t} PRIVATE -Wall -W -Wcast-qual)
+     endif()
++    if(MSVC)
++        target_compile_options(${t} PRIVATE /MP)
++    endif()
+ endforeach()
+ 
+ # /***********************************************************************
