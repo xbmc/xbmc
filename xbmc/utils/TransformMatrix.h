@@ -287,6 +287,21 @@ public:
     return ((a << 24) & 0xff000000) | ((r << 16) & 0xff0000) | ((g << 8) & 0xff00) | (b & 0xff);
   }
 
+  inline bool HasRotation() const XBMC_FORCE_INLINE
+  {
+    // X-axis rotation
+    if (m[1][2] != 0.f || m[2][1] != 0.f)
+      return true;
+    // Y-axis rotation
+    if (m[0][2] != 0.f || m[2][0] != 0.f)
+      return true;
+    // Z-axis rotation
+    if (m[0][1] != 0.f || m[1][0] != 0.f)
+      return true;
+
+    return false;
+  }
+
   float m[3][4];
   float alpha;
   float red;
