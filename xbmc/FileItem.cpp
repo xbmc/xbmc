@@ -2010,7 +2010,7 @@ std::string CFileItem::GetLocalMetadataPath() const
 
 std::string CFileItem::GetSubtitleAnchorPath() const
 {
-  if (IsType(".strm"))
+  if (GetURL().HasExtension(".strm"))
     return m_strPath;
 
   return GetDynPath();
