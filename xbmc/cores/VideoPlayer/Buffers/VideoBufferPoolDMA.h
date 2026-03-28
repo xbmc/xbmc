@@ -40,5 +40,6 @@ private:
   uint32_t TranslateFormat(AVPixelFormat format);
 
   uint32_t m_fourcc = 0;
+  uint32_t m_planes = 0;
   uint64_t m_size = 0;
 };

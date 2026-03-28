@@ -17,6 +17,7 @@
 
 extern "C"
 {
+#include <libavutil/pixdesc.h>
 #include <libavutil/pixfmt.h>
 }
 
@@ -43,7 +44,7 @@ CVideoBuffer* CVideoBufferPoolDMA::Get()
   else
   {
     int id = m_all.size();
-    buf = new CVideoBufferDMA(*this, id, m_fourcc, m_size);
+    buf = new CVideoBufferDMA(*this, id, m_fourcc, m_planes, m_size);
 
     if (!buf->Alloc())
     {
@@ -83,6 +84,7 @@ void CVideoBufferPoolDMA::Configure(AVPixelFormat format, int size)
   std::unique_lock lock(m_critSection);
 
   m_fourcc = TranslateFormat(format);
+  m_planes = av_pix_fmt_count_planes(format);
   m_size = static_cast<uint64_t>(size);
 }
 
@@ -120,15 +122,48 @@ uint32_t CVideoBufferPoolDMA::TranslateFormat(AVPixelFormat format)
 {
   switch (format)
   {
+    case AV_PIX_FMT_NV12:
+      return DRM_FORMAT_NV12;
+    case AV_PIX_FMT_P010:
+      return DRM_FORMAT_P010;
     case AV_PIX_FMT_YUV420P:
     case AV_PIX_FMT_YUVJ420P:
       return DRM_FORMAT_YUV420;
     case AV_PIX_FMT_YUV422P:
     case AV_PIX_FMT_YUVJ422P:
       return DRM_FORMAT_YUV422;
+    case AV_PIX_FMT_YUYV422:
+      return DRM_FORMAT_YUYV;
+    case AV_PIX_FMT_UYVY422:
+      return DRM_FORMAT_UYVY;
     case AV_PIX_FMT_YUV444P:
     case AV_PIX_FMT_YUVJ444P:
       return DRM_FORMAT_YUV444;
+      //! @todo remove #ifdef guards when libdrm >= 2.4.125 is the minimum
+#if defined(DRM_FORMAT_S010)
+    case AV_PIX_FMT_YUV420P10:
+      return DRM_FORMAT_S010;
+#endif
+#if defined(DRM_FORMAT_S012)
+    case AV_PIX_FMT_YUV420P12:
+      return DRM_FORMAT_S012;
+#endif
+#if defined(DRM_FORMAT_S210)
+    case AV_PIX_FMT_YUV422P10:
+      return DRM_FORMAT_S210;
+#endif
+#if defined(DRM_FORMAT_S212)
+    case AV_PIX_FMT_YUV422P12:
+      return DRM_FORMAT_S212;
+#endif
+#if defined(DRM_FORMAT_S410)
+    case AV_PIX_FMT_YUV444P10:
+      return DRM_FORMAT_S410;
+#endif
+#if defined(DRM_FORMAT_S412)
+    case AV_PIX_FMT_YUV444P12:
+      return DRM_FORMAT_S412;
+#endif
     default:
       return 0;
   }

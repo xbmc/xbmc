@@ -17,7 +17,7 @@ class IBufferObject;
 class CVideoBufferDMA : public CVideoBufferDRMPRIMEFFmpeg
 {
 public:
-  CVideoBufferDMA(IVideoBufferPool& pool, int id, uint32_t fourcc, uint64_t size);
+  CVideoBufferDMA(IVideoBufferPool& pool, int id, uint32_t fourcc, uint32_t planes, uint64_t size);
   ~CVideoBufferDMA() override;
 
   // implementation of CVideoBufferDRMPRIME via CVideoBufferDRMPRIMEFFmpeg
