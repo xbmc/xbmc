@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "Texture.h"
+#include "rendering/MatrixGL.h"
 #include "rendering/gl/RenderSystemGL.h"
 #include "utils/GLUtils.h"
 #include "utils/Geometry.h"
@@ -22,7 +23,7 @@
 
 void CGUITextureGL::Register()
 {
-  CGUITexture::Register(CGUITextureGL::CreateTexture, CGUITextureGL::DrawQuad);
+  CGUITexture::Register(CGUITextureGL::CreateTexture, CGUITextureGL::DrawQuad, CGUITextureGL::DrawStencilQuad);
 }
 
 CGUITexture* CGUITextureGL::CreateTexture(
@@ -103,7 +104,8 @@ void CGUITextureGL::Begin(KODI::UTILS::COLOR::Color color)
 
 void CGUITextureGL::End()
 {
-  if (!m_packedVertices.empty())
+  const STENCIL_LAYER oldLayer = CServiceBroker::GetWinSystem()->GetGfxContext().GetStencilLayer(); 
+  if (!m_packedVertices.empty() && oldLayer != STENCIL_LAYER::INVALID)
   {
     GLint posLoc  = m_renderSystem->ShaderGetPos();
     GLint tex0Loc = m_renderSystem->ShaderGetCoord0();
@@ -113,6 +115,9 @@ void CGUITextureGL::End()
 
     GLuint VertexVBO;
     GLuint IndexVBO;
+
+    if (oldLayer != STENCIL_LAYER::NONE)
+      glStencilFunc(GL_EQUAL, 0xFF, 0x1 << (int)oldLayer);
 
     glGenBuffers(1, &VertexVBO);
     glBindBuffer(GL_ARRAY_BUFFER, VertexVBO);
@@ -161,6 +166,7 @@ void CGUITextureGL::End()
   if (m_diffuse.size())
     glActiveTexture(GL_TEXTURE0);
   glEnable(GL_BLEND);
+  glStencilFunc(GL_ALWAYS, 0x0, 0xFF);
 
   m_renderSystem->DisableShader();
 }
@@ -255,6 +261,82 @@ void CGUITextureGL::Draw(float *x, float *y, float *z, const CRect &texture, con
     m_idx.push_back(i+3);
     m_idx.push_back(i+0);
   }
+}
+
+void CGUITextureGL::DrawStencilQuad(const CRect& rect, const STENCIL_LAYER stencilMask)
+{
+  if (stencilMask == STENCIL_LAYER::INVALID || stencilMask == STENCIL_LAYER::NONE)
+    return;
+
+  const STENCIL_LAYER currentStencilLayer = CServiceBroker::GetWinSystem()->GetGfxContext().GetStencilLayer();
+
+  glStencilMask(0x1 << (int)stencilMask);
+  glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+  if (currentStencilLayer == STENCIL_LAYER::NONE)
+    glStencilFunc(GL_ALWAYS, 0xFF, 0xFF);
+  else
+    glStencilFunc(GL_EQUAL, 0xFF, 0x1 << (int)currentStencilLayer);
+
+  glDisable(GL_DEPTH_TEST);
+  glDisable(GL_BLEND);
+  struct PackedVertex
+  {
+    float x, y;
+  } vertex[4];
+
+  // top left
+  vertex[0].x = rect.x1;
+  vertex[0].y = rect.y2;
+  // top right
+  vertex[1].x = rect.x2;
+  vertex[1].y = rect.y2;
+  // bottom left
+  vertex[2].x = rect.x1;
+  vertex[2].y = rect.y1;
+  // bottom right
+  vertex[3].x = rect.x2;
+  vertex[3].y = rect.y1;
+
+  CRenderSystemGL *renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
+  renderSystem->EnableShader(ShaderMethodGL::SM_STENCIL);
+
+  const CWinSystemBase* const winSystem = CServiceBroker::GetWinSystem();
+  const CGraphicContext& context = winSystem->GetGfxContext();
+  CMatrixGL matrix = glMatrixProject.Get();
+  matrix.MultMatrixf(glMatrixModview.Get());
+  matrix.MultMatrixf(CMatrixGL(context.GetGUIMatrix()));
+
+  const GLint matrixUniformLoc = renderSystem->ShaderGetMatrix();
+  const GLint posLoc = renderSystem->ShaderGetPos();
+
+  glUniformMatrix4fv(matrixUniformLoc, 1, GL_FALSE, matrix);
+
+  GLuint VBO{0};
+
+  glGenBuffers(1, &VBO);
+  glBindBuffer(GL_ARRAY_BUFFER, VBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*4, &vertex[0], GL_STATIC_DRAW);
+
+  glVertexAttribPointer(posLoc, 2, GL_FLOAT, 0, sizeof(PackedVertex), 0);
+  glEnableVertexAttribArray(posLoc);
+
+  glColorMask(GL_FALSE,GL_FALSE,GL_FALSE,GL_FALSE);
+
+  glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+  glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glDisableVertexAttribArray(posLoc);
+
+  glDeleteBuffers(1, &VBO);
+
+  renderSystem->DisableShader();
+
+  if (winSystem->GetGfxContext().GetRenderOrder() == RENDER_ORDER_FRONT_TO_BACK)
+    glEnable(GL_DEPTH_TEST);
+  glStencilFunc(GL_ALWAYS, 0x0, 0xFF);
+  glStencilMask(0x0);
 }
 
 void CGUITextureGL::DrawQuad(const CRect& rect,
