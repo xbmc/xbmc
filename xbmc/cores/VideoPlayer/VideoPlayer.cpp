@@ -5103,9 +5103,9 @@ void CVideoPlayer::UpdatePlayState(double timeout)
     }
 
     state.chapters.clear();
-    if (m_pDemuxer->GetChapterCount() > 0)
+    if (const int chapterCount = m_pDemuxer->GetChapterCount(); chapterCount > 0)
     {
-      for (int i = 0, ie = m_pDemuxer->GetChapterCount(); i < ie; ++i)
+      for (int i = 0, ie = chapterCount; i < ie; ++i)
       {
         auto& p = state.chapters.emplace_back(
             std::string{}, m_Edl.GetTimeWithoutCuts(m_pDemuxer->GetChapterPos(i + 1)));
@@ -5138,9 +5138,9 @@ void CVideoPlayer::UpdatePlayState(double timeout)
       }
 
       state.chapters.clear();
-      if (pChapter->GetChapterCount() > 0)
+      if (const int chapterCount = pChapter->GetChapterCount(); chapterCount > 0)
       {
-        for (int i = 0, ie = pChapter->GetChapterCount(); i < ie; ++i)
+        for (int i = 0, ie = chapterCount; i < ie; ++i)
         {
           auto& p = state.chapters.emplace_back(std::string{}, pChapter->GetChapterPos(i + 1));
           pChapter->GetChapterName(p.first, i + 1);
