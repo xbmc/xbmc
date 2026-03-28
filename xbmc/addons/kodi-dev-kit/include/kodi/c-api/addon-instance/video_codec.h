@@ -68,6 +68,15 @@ extern "C"
     VIDEOCODEC_FORMAT_YUV444P10,
     VIDEOCODEC_FORMAT_YUV444P12,
 
+    /// @brief NV12 4:2:0 semi-planar (Y + interleaved UV)
+    VIDEOCODEC_FORMAT_NV12,
+    /// @brief P010 4:2:0 10-bit semi-planar (Y + interleaved UV, 16-bit samples)
+    VIDEOCODEC_FORMAT_P010,
+    /// @brief YUYV 4:2:2 packed (Y0 U Y1 V)
+    VIDEOCODEC_FORMAT_YUYV422,
+    /// @brief UYVY 4:2:2 packed (U Y0 V Y1)
+    VIDEOCODEC_FORMAT_UYVY422,
+
     /// @brief The maximum value to use in a list.
     VIDEOCODEC_FORMAT_MAXFORMATS
   };
@@ -105,6 +114,9 @@ extern "C"
     /// [High Efficiency Video Coding](https://en.wikipedia.org/wiki/High_Efficiency_Video_Coding)
     /// (HEVC/H.265).
     VIDEOCODEC_AV1,
+
+    /// @brief Raw uncompressed video
+    VIDEOCODEC_RAWVIDEO,
   };
   //----------------------------------------------------------------------------
 
