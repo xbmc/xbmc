@@ -638,7 +638,10 @@ RESOLUTION_INFO CDRMUtils::GetResolutionInfo(drmModeModeInfoPtr mode)
     }
   }
 
-  res.fRefreshRate = (mode->clock * 1000.0f) / (mode->htotal * mode->vtotal);
+  if (mode->htotal > 0 && mode->vtotal > 0)
+    res.fRefreshRate = (mode->clock * 1000.0f) / (mode->htotal * mode->vtotal);
+  else
+    res.fRefreshRate = 0.0f;
   res.iSubtitles = res.iHeight;
   res.fPixelRatio = 1.0f;
   res.bFullScreen = true;
