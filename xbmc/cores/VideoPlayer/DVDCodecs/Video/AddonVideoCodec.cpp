@@ -10,6 +10,7 @@
 
 #include "addons/addoninfo/AddonInfo.h"
 #include "cores/VideoPlayer/Buffers/VideoBuffer.h"
+#include "cores/VideoPlayer/Buffers/VideoBufferDMA.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "cores/VideoPlayer/Interface/DemuxCrypto.h"
@@ -19,6 +20,7 @@
 extern "C"
 {
 #include <libavcodec/defs.h>
+#include <libavutil/pixdesc.h>
 }
 
 namespace
@@ -49,6 +51,14 @@ AVPixelFormat ConvertToPixelFormat(const VIDEOCODEC_FORMAT videoFormat)
       return AV_PIX_FMT_YUV444P10;
     case VIDEOCODEC_FORMAT_YUV444P12:
       return AV_PIX_FMT_YUV444P12;
+    case VIDEOCODEC_FORMAT_NV12:
+      return AV_PIX_FMT_NV12;
+    case VIDEOCODEC_FORMAT_P010:
+      return AV_PIX_FMT_P010;
+    case VIDEOCODEC_FORMAT_YUYV422:
+      return AV_PIX_FMT_YUYV422;
+    case VIDEOCODEC_FORMAT_UYVY422:
+      return AV_PIX_FMT_UYVY422;
     default:
       CLog::LogF(LOGWARNING, "Video pixel format '{}' not valid, fallback to YUV420P.",
                  videoFormat);
@@ -75,6 +85,12 @@ unsigned int GetColorBitsFromVideoFormat(const VIDEOCODEC_FORMAT videoFormat)
     case VIDEOCODEC_FORMAT_YUV422P12:
     case VIDEOCODEC_FORMAT_YUV444P12:
       return 12;
+    case VIDEOCODEC_FORMAT_NV12:
+    case VIDEOCODEC_FORMAT_YUYV422:
+    case VIDEOCODEC_FORMAT_UYVY422:
+      return 8;
+    case VIDEOCODEC_FORMAT_P010:
+      return 10;
     default:
       CLog::LogF(LOGWARNING, "Video pixel format '{}' not valid, fallback to 8 bits color.",
                  videoFormat);
@@ -205,6 +221,9 @@ bool CAddonVideoCodec::CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamI
         return false;
     }
     break;
+  case AV_CODEC_ID_RAWVIDEO:
+    initData.codec = VIDEOCODEC_RAWVIDEO;
+    break;
   default:
     return false;
   }
@@ -244,6 +263,10 @@ bool CAddonVideoCodec::CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamI
   m_displayAspect = (hints.aspect > 0.0 && !hints.forced_aspect) ? static_cast<float>(hints.aspect) : 0.0f;
   m_width = hints.width;
   m_height = hints.height;
+  m_colorSpace = hints.colorSpace;
+  m_colorRange = hints.colorRange;
+  m_colorPrimaries = hints.colorPrimaries;
+  m_colorTransfer = hints.colorTransferCharacteristic;
 
   m_processInfo.SetVideoDimensions(hints.width, hints.height);
   m_processInfo.SetVideoDAR(m_displayAspect);
@@ -268,6 +291,7 @@ bool CAddonVideoCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 
   bool ret = m_ifc.videocodec->toAddon->open(m_ifc.videocodec, &initData);
   m_processInfo.SetVideoDecoderName(GetName(), false);
+  m_processInfo.SetVideoDeintMethod("none");
 
   return ret;
 }
@@ -317,10 +341,10 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
     pVideoPicture->iFlags = 0;
     pVideoPicture->chroma_position = AVCHROMA_LOC_UNSPECIFIED;
     pVideoPicture->colorBits = GetColorBitsFromVideoFormat(picture.videoFormat);
-    pVideoPicture->color_primaries = AVColorPrimaries::AVCOL_PRI_UNSPECIFIED;
-    pVideoPicture->color_range = 0;
-    pVideoPicture->color_space = AVCOL_SPC_UNSPECIFIED;
-    pVideoPicture->color_transfer = AVCOL_TRC_UNSPECIFIED;
+    pVideoPicture->color_primaries = m_colorPrimaries;
+    pVideoPicture->color_range = m_colorRange == AVCOL_RANGE_JPEG ? 1 : 0; // 0=Limited, 1=Full
+    pVideoPicture->color_space = m_colorSpace;
+    pVideoPicture->color_transfer = m_colorTransfer;
     pVideoPicture->hasDisplayMetadata = false;
     pVideoPicture->hasLightMetadata = false;
     pVideoPicture->iDuration = 0;
@@ -339,6 +363,9 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
       pVideoPicture->videoBuffer->Release();
 
     pVideoPicture->videoBuffer = static_cast<CVideoBuffer*>(picture.videoBufferHandle);
+
+    if (auto* dmaBuf = dynamic_cast<CVideoBufferDMA*>(pVideoPicture->videoBuffer))
+      dmaBuf->SyncEnd();
 
     int strides[YuvImage::MAX_PLANES], planeOffsets[YuvImage::MAX_PLANES];
     for (int i = 0; i<YuvImage::MAX_PLANES; ++i)
@@ -375,6 +402,12 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
       m_width = picture.width;
       m_height = picture.height;
       m_processInfo.SetVideoDimensions(m_width, m_height);
+    }
+
+    {
+      AVPixelFormat pix = ConvertToPixelFormat(picture.videoFormat);
+      const char* pixFmtName = av_get_pix_fmt_name(pix);
+      m_processInfo.SetVideoPixelFormat(pixFmtName ? pixFmtName : "");
     }
 
     return CDVDVideoCodec::VC_PICTURE;
@@ -420,7 +453,8 @@ void CAddonVideoCodec::Reset()
 
 bool CAddonVideoCodec::GetFrameBuffer(VIDEOCODEC_PICTURE &picture)
 {
-  CVideoBuffer *videoBuffer = m_processInfo.GetVideoBufferManager().Get(AV_PIX_FMT_YUV420P, picture.decodedDataSize, nullptr);
+  CVideoBuffer* videoBuffer = m_processInfo.GetVideoBufferManager().Get(
+      ConvertToPixelFormat(picture.videoFormat), picture.decodedDataSize, nullptr);
   if (!videoBuffer)
   {
     CLog::Log(LOGERROR,"CAddonVideoCodec::GetFrameBuffer Failed to allocate buffer");
@@ -428,6 +462,9 @@ bool CAddonVideoCodec::GetFrameBuffer(VIDEOCODEC_PICTURE &picture)
   }
   picture.decodedData = videoBuffer->GetMemPtr();
   picture.videoBufferHandle = videoBuffer;
+
+  if (auto* dmaBuf = dynamic_cast<CVideoBufferDMA*>(videoBuffer))
+    dmaBuf->SyncStart();
 
   return true;
 }
