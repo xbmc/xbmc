@@ -8,7 +8,10 @@
 
 #include "ProcessInfoGBM.h"
 
+#include "ServiceBroker.h"
 #include "cores/VideoPlayer/Buffers/VideoBufferPoolDMA.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 
 using namespace VIDEOPLAYER;
 
@@ -24,7 +27,9 @@ void CProcessInfoGBM::Register()
 
 CProcessInfoGBM::CProcessInfoGBM()
 {
-  m_videoBufferManager.RegisterPool(std::make_shared<CVideoBufferPoolDMA>());
+  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_VIDEOPLAYER_USEPRIMEDECODER))
+    m_videoBufferManager.RegisterPool(std::make_shared<CVideoBufferPoolDMA>());
 }
 
 EINTERLACEMETHOD CProcessInfoGBM::GetFallbackDeintMethod()

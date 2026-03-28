@@ -14,6 +14,8 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "rendering/gles/RenderSystemGLES.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/EGLFence.h"
 #include "utils/EGLImage.h"
 #include "utils/GLUtils.h"
@@ -34,6 +36,13 @@ CRendererDRMPRIMEGLES::~CRendererDRMPRIMEGLES()
 CBaseRenderer* CRendererDRMPRIMEGLES::Create(CVideoBuffer* buffer)
 {
   if (!buffer)
+    return nullptr;
+
+  auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  if (!settings->GetBool(CSettings::SETTING_VIDEOPLAYER_USEPRIMEDECODER))
+    return nullptr;
+
+  if (settings->GetInt(CSettings::SETTING_VIDEOPLAYER_USEPRIMERENDERER) != 1)
     return nullptr;
 
   auto buf = dynamic_cast<CVideoBufferDRMPRIME*>(buffer);
