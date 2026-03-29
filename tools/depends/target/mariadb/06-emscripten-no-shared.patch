@@ -1,0 +1,47 @@
+--- a/libmariadb/CMakeLists.txt
++++ b/libmariadb/CMakeLists.txt
+@@ -443,6 +443,7 @@
+ ADD_LIBRARY(mariadbclient STATIC  ${MARIADB_OBJECTS} ${EMPTY_FILE})
+ TARGET_LINK_LIBRARIES(mariadbclient ${SYSTEM_LIBS} ${CRYPTO_LIBS})
+ 
++IF(NOT EMSCRIPTEN)
+ IF(UNIX)
+   ADD_LIBRARY(libmariadb SHARED ${libmariadb_RC} ${MARIADB_OBJECTS} ${EMPTY_FILE})
+   SET_TARGET_PROPERTIES(libmariadb PROPERTIES COMPILE_FLAGS "${CMAKE_SHARED_LIBRARY_C_FLAGS}")
+@@ -468,6 +469,7 @@
+ SET_TARGET_PROPERTIES(libmariadb PROPERTIES IMPORTED_INTERFACE_LINK_LIBRARIES "${SYSTEM_LIBS}")
+ 
+ SET_TARGET_PROPERTIES(libmariadb PROPERTIES PREFIX "")
++ENDIF() # NOT EMSCRIPTEN
+ 
+ #
+ # Installation
+@@ -479,19 +481,23 @@
+ # use mariadb client library we provide libmysql symlinks
+ 
+ IF(WITH_MYSQLCOMPAT)
+-  create_symlink(libmysqlclient${CMAKE_SHARED_LIBRARY_SUFFIX} libmariadb ${INSTALL_LIBDIR})
+-  create_symlink(libmysqlclient_r${CMAKE_SHARED_LIBRARY_SUFFIX} libmariadb ${INSTALL_LIBDIR})
++  IF(NOT EMSCRIPTEN)
++    create_symlink(libmysqlclient${CMAKE_SHARED_LIBRARY_SUFFIX} libmariadb ${INSTALL_LIBDIR})
++    create_symlink(libmysqlclient_r${CMAKE_SHARED_LIBRARY_SUFFIX} libmariadb ${INSTALL_LIBDIR})
++  ENDIF()
+   IF(NOT CMAKE_SYSTEM_NAME MATCHES AIX)
+     create_symlink(libmysqlclient${CMAKE_STATIC_LIBRARY_SUFFIX} mariadbclient ${INSTALL_LIBDIR})
+     create_symlink(libmysqlclient_r${CMAKE_STATIC_LIBRARY_SUFFIX} mariadbclient ${INSTALL_LIBDIR})
+   ENDIF()
+ ENDIF()
+ 
+ create_symlink(libmariadb${CMAKE_STATIC_LIBRARY_SUFFIX} mariadbclient ${INSTALL_LIBDIR})
+ 
+-SET_TARGET_PROPERTIES(libmariadb PROPERTIES VERSION
+- ${CPACK_PACKAGE_VERSION_MAJOR}
+- SOVERSION ${CPACK_PACKAGE_VERSION_MAJOR})
++IF(NOT EMSCRIPTEN)
++  SET_TARGET_PROPERTIES(libmariadb PROPERTIES VERSION
++   ${CPACK_PACKAGE_VERSION_MAJOR}
++   SOVERSION ${CPACK_PACKAGE_VERSION_MAJOR})
++ENDIF()
+ 
+ IF(NOT WIN32)
+   SET_TARGET_PROPERTIES(mariadbclient PROPERTIES OUTPUT_NAME "${LIBMARIADB_STATIC_NAME}")

@@ -55,6 +55,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     list(APPEND patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/05-all-installtargets.patch")
 
+    if(CMAKE_SYSTEM_NAME STREQUAL Emscripten)
+      list(APPEND patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/06-emscripten-no-shared.patch")
+    endif()
+
     generate_patchcommand("${patches}")
     unset(patches)
 
