@@ -12,10 +12,10 @@ all: .installed-$(PLATFORM)
 .configured-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	-rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	cd $(PLATFORM); $(CONFIGURE)
 	touch $@
 
 .installed-$(PLATFORM): .configured-$(PLATFORM)
-	cd $(PLATFORM); $(CONFIGURE)
 	$(MAKE) -C $(PLATFORM) install
 	touch $@
 

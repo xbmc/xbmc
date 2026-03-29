@@ -98,10 +98,10 @@ ifeq ($(TARGET_PLATFORM),webos)
 endif
 	cd $(PLATFORM); patch -p1 -i ../08-py312-distutils.patch
 	cd $(PLATFORM); patch -p1 -i ../backport-23ddfd3.patch
+	cd $(PLATFORM); $(CONFIGURE)
 	touch $@
 
 $(LIBDYLIB): .configured-$(PLATFORM)
-	cd $(PLATFORM); $(CONFIGURE)
 	cd $(PLATFORM); WAF_MAKE=1 ./buildtools/bin/waf --targets=smbclient
 
 .installed-$(PLATFORM): $(LIBDYLIB)

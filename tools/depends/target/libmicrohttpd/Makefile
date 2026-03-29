@@ -34,10 +34,10 @@ all: .installed-$(PLATFORM)
 ifeq ($(OS),windows)
 	cd $(PLATFORM); patch -p1 -i ../01-win-cmake.patch
 endif
+	cd $(PLATFORM); $(CONFIGURE)
 	touch $@
 
 $(LIBDYLIB): .configured-$(PLATFORM)
-	cd $(PLATFORM); $(CONFIGURE)
 	$(MAKE) -C $(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)

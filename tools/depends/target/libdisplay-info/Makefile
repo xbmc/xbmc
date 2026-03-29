@@ -36,11 +36,11 @@ all: .installed-$(PLATFORM)
 .configured-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	cd $(PLATFORM); rm -rf build; mkdir -p build
+	cd $(PLATFORM); $(CONFIGURE) . build
 	touch $@
 
 .installed-$(PLATFORM): .configured-$(PLATFORM)
-	cd $(PLATFORM); rm -rf build; mkdir -p build
-	cd $(PLATFORM); $(CONFIGURE) . build
 	cd $(PLATFORM)/build; $(NATIVEPREFIX)/bin/ninja -v
 	cd $(PLATFORM)/build; $(NATIVEPREFIX)/bin/ninja -v install
 	touch $@

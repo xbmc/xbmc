@@ -18,13 +18,13 @@ all: .installed-$(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	# do not build the program sqlite3
 	cd $(PLATFORM); patch -p1 -i ../001-Disable-sqlite3bin.patch
-	touch $@
 # seems MAP_POPULATE is broken on aarch64
 ifneq ($(OS),android)
 	cd $(PLATFORM); patch -p1 -i ../sqlite3.c.patch
 endif
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
+	touch $@
 
 $(LIBDYLIB): .configured-$(PLATFORM)
 	$(MAKE) -C $(PLATFORM)
