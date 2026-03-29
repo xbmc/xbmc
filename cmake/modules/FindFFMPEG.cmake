@@ -60,9 +60,13 @@ macro(buildFFMPEG)
     set(msys_env MSYS2_PATH_TYPE=inherit
                  MSYS_INSTALL_PATH=${MSYS_INSTALL_PATH})
 
-    # Todo: buildmode?
     set(PROMPTLEVEL noprompt)
-    set(BUILDMODE noclean)
+
+    if(FFMPEG_DEP_BUILD)
+      set(BUILDMODE clean)
+    else()
+      set(BUILDMODE noclean)
+    endif()
 
     set(build32 no)
     set(build64 no)
