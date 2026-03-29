@@ -18,15 +18,16 @@ CMAKE_OPTIONS=-DBUILD_SHARED_LIBS=1 \
 
 all: .installed-$(PLATFORM)
 
-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
+.configured-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)/build
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../001-all-cmakelists.patch
 	cd $(PLATFORM); patch -p1 -i ../002-all-libceccmakelists.patch
 	cd $(PLATFORM); patch -p1 -i ../003-all-remove_git_info.patch
 	cd $(PLATFORM)/build; $(CMAKE) ${CMAKE_OPTIONS} ..
+	touch $@
 
-$(LIBDYLIB): $(PLATFORM)
+$(LIBDYLIB): .configured-$(PLATFORM)
 	$(MAKE) -C $(PLATFORM)/build
 
 .installed-$(PLATFORM): $(LIBDYLIB)
@@ -37,8 +38,8 @@ endif
 	touch $@
 
 clean:
-	rm -rf $(PLATFORM) .installed-$(PLATFORM)
+	rm -rf $(PLATFORM) .installed-$(PLATFORM) .configured-$(PLATFORM)
 
 distclean::
-	rm -rf $(PLATFORM) .installed-$(PLATFORM)
+	rm -rf $(PLATFORM) .installed-$(PLATFORM) .configured-$(PLATFORM)
 

@@ -14,7 +14,7 @@ LIBDYLIB=$(PLATFORM)/src/.libs/$(LIBNAME).a
 
 all: .installed-$(PLATFORM)
 
-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
+.configured-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 ifeq ($(TARGET_PLATFORM),appletvos)
@@ -22,8 +22,9 @@ ifeq ($(TARGET_PLATFORM),appletvos)
 endif
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
+	touch $@
 
-$(LIBDYLIB): $(PLATFORM)
+$(LIBDYLIB): .configured-$(PLATFORM)
 ifeq ($(OS),android)
 ifeq ($(CPU),arm64-v8a)
 	cp lock-obj-pub.aarch64-unknown-linux-android.h $(PLATFORM)/src/syscfg/lock-obj-pub.linux-android.h
@@ -39,7 +40,7 @@ endif
 
 clean:
 	$(MAKE) -C $(PLATFORM) clean
-	rm -f .installed-$(PLATFORM)
+	rm -f .installed-$(PLATFORM) .configured-$(PLATFORM)
 
 distclean::
-	rm -rf $(PLATFORM) .installed-$(PLATFORM)
+	rm -rf $(PLATFORM) .installed-$(PLATFORM) .configured-$(PLATFORM)

@@ -74,7 +74,7 @@ export DISTCC_HOSTS=
 
 all: .installed-$(PLATFORM)
 
-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
+.configured-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../01-fix-dependencies.patch
@@ -98,8 +98,9 @@ ifeq ($(TARGET_PLATFORM),webos)
 endif
 	cd $(PLATFORM); patch -p1 -i ../08-py312-distutils.patch
 	cd $(PLATFORM); patch -p1 -i ../backport-23ddfd3.patch
+	touch $@
 
-$(LIBDYLIB): $(PLATFORM)
+$(LIBDYLIB): .configured-$(PLATFORM)
 	cd $(PLATFORM); $(CONFIGURE)
 	cd $(PLATFORM); WAF_MAKE=1 ./buildtools/bin/waf --targets=smbclient
 
@@ -110,7 +111,7 @@ $(LIBDYLIB): $(PLATFORM)
 
 clean:
 	cd $(PLATFORM); WAF_MAKE=1 ./buildtools/bin/waf uninstall --targets=smbclient
-	rm -f .installed-$(PLATFORM)
+	rm -f .installed-$(PLATFORM) .configured-$(PLATFORM)
 
 distclean::
-	rm -rf $(PLATFORM) .installed-$(PLATFORM)
+	rm -rf $(PLATFORM) .installed-$(PLATFORM) .configured-$(PLATFORM)

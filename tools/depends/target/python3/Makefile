@@ -87,7 +87,7 @@ LIBDYLIB=$(PLATFORM)/libpython$(PYTHON_VERSION).a
 
 all: .installed-$(PLATFORM)
 
-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
+.configured-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../apple.patch
@@ -101,8 +101,9 @@ ifeq ($(OS),android)
 endif
 	cd $(PLATFORM); $(AUTORECONF)
 	cd $(PLATFORM); $(CONFIGURE)
+	touch $@
 
-$(LIBDYLIB): $(PLATFORM)
+$(LIBDYLIB): .configured-$(PLATFORM)
 	$(MAKE) -C $(PLATFORM) libpython$(PYTHON_VERSION).a
 	touch $@
 
@@ -115,7 +116,7 @@ $(LIBDYLIB): $(PLATFORM)
 	touch $@
 
 clean:
-	rm -rf .installed-$(PLATFORM)
+	rm -rf .installed-$(PLATFORM) .configured-$(PLATFORM)
 
 distclean::
-	rm -rf $(PLATFORM) .installed-$(PLATFORM)
+	rm -rf $(PLATFORM) .installed-$(PLATFORM) .configured-$(PLATFORM)

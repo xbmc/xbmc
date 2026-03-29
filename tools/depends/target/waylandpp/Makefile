@@ -28,7 +28,7 @@ BUILDDIR = $(PLATFORM)/build
 all: .installed-$(PLATFORM)
 
 
-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
+.configured-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 ifeq ($(PREFIX),)
 	@echo
 	@echo "ERROR: please set PREFIX to the kodi install path e.g. make PREFIX=/usr/local"
@@ -39,8 +39,9 @@ endif
 	cd $(PLATFORM); patch -p1 -i ../001-fix-gcc14-build.patch
 	mkdir -p $(BUILDDIR)
 	cd $(BUILDDIR); $(CMAKE) $(CMAKE_OPTIONS) ..
+	touch $@
 
-$(LIBDYLIB): $(PLATFORM)
+$(LIBDYLIB): .configured-$(PLATFORM)
 	$(MAKE) -C $(BUILDDIR)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
@@ -53,7 +54,7 @@ endif
 
 clean:
 	$(MAKE) -C $(BUILDDIR) clean
-	rm -f .installed-$(PLATFORM)
+	rm -f .installed-$(PLATFORM) .configured-$(PLATFORM)
 
 distclean:
-	rm -rf $(PLATFORM) .installed-$(PLATFORM)
+	rm -rf $(PLATFORM) .installed-$(PLATFORM) .configured-$(PLATFORM)

@@ -63,7 +63,7 @@ LIBDYLIB=$(PLATFORM)/libssl.a
 all: .installed-$(PLATFORM)
 
 
-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
+.configured-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 ifeq ($(OS),android)
@@ -75,8 +75,9 @@ endif
 		sed -E -ie "s|static volatile sig_atomic_t intr_signal;|static volatile intr_signal;|" "$(PLATFORM)/crypto/ui/ui_openssl.c"; \
 	fi
 	sed -ie "s|PROGRAMS=|PROGRAMS=#|" "$(PLATFORM)/Makefile";
+	touch $@
 
-$(LIBDYLIB): $(PLATFORM)
+$(LIBDYLIB): .configured-$(PLATFORM)
 	$(MAKE) -C $(PLATFORM)
 	touch $@
 
@@ -86,8 +87,8 @@ $(LIBDYLIB): $(PLATFORM)
 
 clean:
 	$(MAKE) -C $(PLATFORM) clean
-	rm -f .installed-$(PLATFORM)
+	rm -f .installed-$(PLATFORM) .configured-$(PLATFORM)
 
 distclean::
-	rm -rf $(PLATFORM) .installed-$(PLATFORM)
+	rm -rf $(PLATFORM) .installed-$(PLATFORM) .configured-$(PLATFORM)
 

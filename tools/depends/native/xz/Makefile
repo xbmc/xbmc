@@ -11,12 +11,13 @@ APP=$(PLATFORM)/src/xz/xz
 
 all: .installed-$(PLATFORM)
 
-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
+.configured-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	-rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); $(CONFIGURE)
+	touch $@
 
-$(APP): $(PLATFORM)
+$(APP): .configured-$(PLATFORM)
 	$(MAKE) -C $(PLATFORM)
 
 .installed-$(PLATFORM): $(APP)
@@ -27,4 +28,4 @@ clean:
 	$(MAKE) -C $(PLATFORM) clean
 
 distclean::
-	rm -rf $(PLATFORM) .installed-$(PLATFORM)
+	rm -rf $(PLATFORM) .installed-$(PLATFORM) .configured-$(PLATFORM)

@@ -13,11 +13,12 @@ LIBDYLIB=$(PLATFORM)/.libs/lib$(LIBNAME)3.a
 
 all: .installed-$(PLATFORM)
 
-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
+.configured-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	# do not build the program sqlite3
 	cd $(PLATFORM); patch -p1 -i ../001-Disable-sqlite3bin.patch
+	touch $@
 # seems MAP_POPULATE is broken on aarch64
 ifneq ($(OS),android)
 	cd $(PLATFORM); patch -p1 -i ../sqlite3.c.patch
@@ -25,7 +26,7 @@ endif
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 
-$(LIBDYLIB): $(PLATFORM)
+$(LIBDYLIB): .configured-$(PLATFORM)
 	$(MAKE) -C $(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
@@ -34,7 +35,7 @@ $(LIBDYLIB): $(PLATFORM)
 
 clean:
 	$(MAKE) -C $(PLATFORM) clean
-	rm -f .installed-$(PLATFORM)
+	rm -f .installed-$(PLATFORM) .configured-$(PLATFORM)
 
 distclean::
-	rm -rf $(PLATFORM) .installed-$(PLATFORM)
+	rm -rf $(PLATFORM) .installed-$(PLATFORM) .configured-$(PLATFORM)
