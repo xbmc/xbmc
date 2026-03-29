@@ -205,7 +205,7 @@ public class Splash extends Activity
             {
               sendEmptyMessage(InError);
             }
-            if (fXbmcHome.exists() && fXbmcHome.lastModified() >= fPackagePath.lastModified())
+            if (isCacheValid())
             {
               mState = CachingDone;
               mCachingDone = true;
@@ -425,6 +425,33 @@ public class Splash extends Activity
             .setMovementMethod(LinkMovementMethod.getInstance());
   }
 
+  /**
+   * Displays an info dialog with a specified message and a button to continue.
+   *
+   * @param message The message to be displayed in the dialog.
+   * @param state   The next state to be sent to the state machine.
+   */
+  private void showInfoDialog(final String message, int state)
+  {
+    AlertDialog dialog = new AlertDialog.Builder(this).create();
+    dialog.setCancelable(false);
+    dialog.setTitle(getString(R.string.info_title));
+    dialog.setMessage(message);
+    dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.continue_button),
+            (dialog1, which) -> mStateMachine.sendEmptyMessage(state));
+    dialog.show();
+  }
+
+  private boolean isCacheValid()
+  {
+    if (fXbmcHome == null || !fXbmcHome.exists() || fXbmcHome.lastModified() < fPackagePath.lastModified())
+      return false;
+
+    File glesShader = new File(fXbmcHome, "assets/system/shaders/gles_shader.vert");
+    File splashImage = new File(fXbmcHome, "assets/media/splash.jpg");
+    return glesShader.exists() && splashImage.exists();
+  }
+
   private void SetupEnvironment()
   {
     sXbmcHome = XBMCProperties.getStringProperty("xbmc.home", "");
@@ -451,7 +478,7 @@ public class Splash extends Activity
         sXbmcHome = "";
       }
     }
-    File fCacheDir = getCacheDir();
+    File fCacheDir = getFilesDir();
     if (sXbmcHome.isEmpty())
     {
       sXbmcHome = fCacheDir.getAbsolutePath() + "/apk";
@@ -668,7 +695,7 @@ public class Splash extends Activity
 
         SetupEnvironment();
 
-        if (mState != InError && fXbmcHome.exists() && fXbmcHome.lastModified() >= fPackagePath.lastModified())
+        if (mState != InError && isCacheValid())
         {
           mState = CachingDone;
           mCachingDone = true;

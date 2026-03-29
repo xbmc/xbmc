@@ -1657,7 +1657,7 @@ void CXBMCApp::SetupEnv()
   StringUtils::ToLower(appName);
   std::string className = CCompileInfo::GetPackage();
 
-  std::string cacheDir = getCacheDir().getAbsolutePath();
+  std::string cacheDir = getFilesDir().getAbsolutePath();
   std::string xbmcTemp = CJNISystem::getProperty("xbmc.temp", "");
   if (!xbmcTemp.empty())
   {
