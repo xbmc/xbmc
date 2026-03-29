@@ -1,5 +1,6 @@
 include ../../Makefile.include FSTRCMP-VERSION ../../download-files.include
-DEPS = ../../Makefile.include Makefile FSTRCMP-VERSION ../../download-files.include
+DEPS = ../../Makefile.include Makefile FSTRCMP-VERSION ../../download-files.include \
+                                 01-use-lt-init.patch
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX)
@@ -11,6 +12,7 @@ all: .installed-$(PLATFORM)
 $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	cd $(PLATFORM); patch -p1 -i ../01-use-lt-init.patch
 	cd $(PLATFORM); autoreconf -vif; $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
