@@ -38,7 +38,8 @@
     defined(__SH4__) || \
     defined(__s390x__) || \
     defined(__sparc__) || \
-    defined(__xtensa__)
+    defined(__xtensa__) || \
+    defined(__EMSCRIPTEN__)
 #define DISABLE_MATHUTILS_ASM_ROUND_INT
 #endif
 // clang-format on
