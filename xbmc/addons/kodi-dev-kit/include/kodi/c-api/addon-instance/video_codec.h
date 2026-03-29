@@ -115,6 +115,9 @@ extern "C"
     /// (HEVC/H.265).
     VIDEOCODEC_AV1,
 
+    /// @brief HEVC/H.265
+    VIDEOCODEC_HEVC,
+
     /// @brief Raw uncompressed video
     VIDEOCODEC_RAWVIDEO,
   };

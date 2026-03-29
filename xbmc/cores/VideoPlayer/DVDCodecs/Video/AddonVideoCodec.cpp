@@ -221,6 +221,9 @@ bool CAddonVideoCodec::CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamI
         return false;
     }
     break;
+  case AV_CODEC_ID_HEVC:
+    initData.codec = VIDEOCODEC_HEVC;
+    break;
   case AV_CODEC_ID_RAWVIDEO:
     initData.codec = VIDEOCODEC_RAWVIDEO;
     break;
