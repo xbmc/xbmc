@@ -1,0 +1,45 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -26,6 +26,8 @@ elseif(APPLE)
+     find_library(CFLIB CoreFoundation)
+     target_link_libraries(crossguid ${CFLIB})
+     target_compile_definitions(crossguid PRIVATE GUID_CFUUID)
++elseif(EMSCRIPTEN)
++    target_compile_definitions(crossguid PRIVATE GUID_EMSCRIPTEN)
+ elseif(ANDROID)
+     # GUID_ANDROID is used in the headers, so make PUBLIC
+     target_compile_definitions(crossguid PUBLIC GUID_ANDROID)
+--- a/src/guid.cpp
++++ b/src/guid.cpp
+@@ -42,6 +42,16 @@
+ #include <cassert>
+ #endif
+ 
++#ifdef GUID_EMSCRIPTEN
++#include <array>
++#include <emscripten/emscripten.h>
++
++EM_JS(void, crossguid_fill_random_uuid_bytes, (unsigned char* out), {
++  var view = HEAPU8.subarray(out, out + 16);
++  globalThis.crypto.getRandomValues(view);
++});
++#endif
++
+ BEGIN_XG_NAMESPACE
+ 
+ #ifdef GUID_ANDROID
+@@ -388,5 +398,14 @@
+ }
+ #endif
+ 
++#ifdef GUID_EMSCRIPTEN
++Guid newGuid()
++{
++	std::array<unsigned char, 16> data;
++	crossguid_fill_random_uuid_bytes(data.data());
++	return Guid{std::move(data)};
++}
++#endif
++
+ 
+ END_XG_NAMESPACE
