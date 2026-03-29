@@ -20,7 +20,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     generate_patchcommand("${patches}")
     unset(patches)
 
-    if(CORE_SYSTEM_NAME STREQUAL darwin_embedded OR WINDOWS_STORE)
+    if(CORE_SYSTEM_NAME STREQUAL darwin_embedded OR EMSCRIPTEN OR WINDOWS_STORE)
       set(EXTRA_ARGS -DPCRE2_SUPPORT_JIT=OFF)
     else()
       set(EXTRA_ARGS -DPCRE2_SUPPORT_JIT=ON)
