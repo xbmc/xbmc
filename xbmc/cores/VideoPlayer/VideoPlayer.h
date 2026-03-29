@@ -76,8 +76,8 @@ struct SPlayerState
   MenuType menuType;
   bool streamsReady;
 
-  int chapter;              // current chapter
-  // name and position for chapters
+  int chapter; // 1-based current chapter. <=0 means no chapter / unknown
+  // name and start timestamp of chapters.
   std::vector<std::pair<std::string, std::chrono::milliseconds>> chapters;
 
   bool canpause;            // pvr: can pause the current playing item
