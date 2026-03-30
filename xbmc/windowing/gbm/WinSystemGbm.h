@@ -12,6 +12,7 @@
 #include "drm/DRMUtils.h"
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
+#include "utils/DisplayInfo.h"
 #include "windowing/WinSystem.h"
 
 #include "platform/linux/input/LibInputHandler.h"
@@ -61,6 +62,8 @@ public:
 
   bool SetVideoOutput(const VideoPicture* videoPicture) override;
 
+  KODI::UTILS::Colorimetry GetColorimetry() const { return m_colorimetry; }
+  KODI::UTILS::Eotf GetEotf() const { return m_eotf; }
   bool SetHDR(const VideoPicture* videoPicture) override;
   bool IsHDRDisplay() override;
   CHDRCapabilities GetDisplayHDRCapabilities() const override;
@@ -94,6 +97,8 @@ protected:
 
 private:
   uint32_t m_hdr_blob_id = 0;
+  KODI::UTILS::Eotf m_eotf = KODI::UTILS::Eotf::TRADITIONAL_SDR;
+  KODI::UTILS::Colorimetry m_colorimetry = KODI::UTILS::Colorimetry::DEFAULT;
 
   std::unique_ptr<UTILS::CDisplayInfo> m_info;
 };

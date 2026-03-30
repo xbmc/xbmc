@@ -426,6 +426,8 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
       m_hdr_blob_id = 0;
     }
 
+    m_eotf = KODI::UTILS::Eotf::TRADITIONAL_SDR;
+    m_colorimetry = KODI::UTILS::Colorimetry::DEFAULT;
     return false;
   }
 
@@ -438,6 +440,9 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
   }
 
   KODI::UTILS::Colorimetry colorimetry = DRMPRIME::GetColorimetry(*videoPicture);
+  KODI::UTILS::Eotf eotf = DRMPRIME::GetEOTF(*videoPicture);
+  m_colorimetry = colorimetry;
+  m_eotf = eotf;
 
   if (connector->SupportsProperty("Colorspace") && m_info &&
       m_info->SupportsColorimetry(colorimetry))
@@ -451,8 +456,6 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
       drm->SetActive(true);
     }
   }
-
-  KODI::UTILS::Eotf eotf = DRMPRIME::GetEOTF(*videoPicture);
 
   if (connector->SupportsProperty("HDR_OUTPUT_METADATA") && m_info &&
       m_info->SupportsHDRStaticMetadataType1() && m_info->SupportsEOTF(eotf))
