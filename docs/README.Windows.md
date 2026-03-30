@@ -56,7 +56,7 @@ To build Kodi:
 * **Windows** 64bit OS, Windows 10 or above (allows build of x64, win32, ARM64 and UWP-64)
 * **[CMake](https://cmake.org/download/)** version 3.30.6 or greater for Visual Studio 2022, version 4.2 or greater for Visual Studio 2026 (or version 4.1.1-msvc included with the initial release)
 * **[Git for Windows](https://gitforwindows.org/)**
-* **[Java Runtime Environment (JRE)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)**
+* **[Java Development Kit (JDK)](https://www.oracle.com/java/technologies/downloads/)** current release of JDK 21 (JDK 8 still works though old)
 * **[Nullsoft scriptable install system (NSIS)](http://nsis.sourceforge.net/Download)** version 3.04 or greater (Only needed if you want to generate an installer file)
 * **[Visual Studio 2022](https://aka.ms/vs/17/release/vs_community.exe)** or **[Visual Studio 2026](https://visualstudio.microsoft.com/downloads/)** (Community Edition is fine)
 
@@ -74,9 +74,10 @@ All install screens should remain at their default values with the exception of 
 * Under **Choosing the default editor used by Git** change default to `Use Notepad++ as Git's default editor` or your favorite editor.
 * Under **Adjust your PATH environment** change default to `Use Git and optional Unix tools from the Windows Command Prompt`.
 
-### JRE install notes
+### JDK install notes
 Default options are fine.
-After install finishes, add java's executable file path to your `PATH` **[environment variable](http://www.java.com/en/download/help/path.xml)**. Should be similar to `C:\Program Files\Java\jre1.8.0_311\bin`.
+After the install finishes, add the file path to java's executables to your `PATH` **[environment variable](http://www.java.com/en/download/help/path.xml)**. Should be similar to `C:\Program Files\Java\jdk-21.0.10\bin`.
+Setting the `JAVA_HOME` environment variable may help in rare situations, information is available on the internet.
 
 ### NSIS install notes
 Default options are fine.
