@@ -160,18 +160,10 @@ void CURL::Parse(std::string strURL1)
 
   //! @todo fix all Addon paths
   std::string strProtocol2 = GetTranslatedProtocol();
-  if(IsProtocol("rss") ||
-     IsProtocol("rsss") ||
-     IsProtocol("rar") ||
-     IsProtocol("apk") ||
-     IsProtocol("xbt") ||
-     IsProtocol("zip") ||
-     IsProtocol("addons") ||
-     IsProtocol("image") ||
-     IsProtocol("videodb") ||
-     IsProtocol("musicdb") ||
-     IsProtocol("androidapp") ||
-     IsProtocol("pvr"))
+  if (IsProtocol("rss") || IsProtocol("rsss") || IsProtocol("rar") || IsProtocol("apk") ||
+      IsProtocol("xbt") || IsProtocol("zip") || IsProtocol("addons") || IsProtocol("image") ||
+      IsProtocol("videodb") || IsProtocol("musicdb") || IsProtocol("androidapp") ||
+      IsProtocol("pvr") || IsProtocol("bluray"))
     sep = "?";
   else
   if(  IsProtocolEqual(strProtocol2, "http")

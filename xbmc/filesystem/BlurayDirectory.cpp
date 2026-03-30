@@ -26,6 +26,7 @@
 #include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/EpisodeUtils.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
@@ -731,6 +732,15 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
 {
   Dispose();
   m_url = url;
+
+  // Deal with options
+  unsigned int duration{0};
+  if (m_url.HasOption("duration"))
+  {
+    duration = StringUtils::ToUint32(m_url.GetOption("duration"), 0);
+    m_url.RemoveOption("duration");
+  }
+
   std::string root{m_url.GetHostName()};
   std::string file{m_url.GetFileName()};
   URIUtils::RemoveSlashAtEnd(file);
@@ -747,24 +757,49 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
   // /root/episode/all                  - get all episodes
   if (file == "root")
   {
-    GetPlaylists(url, m_realPath, m_flags, GetTitle::GET_TITLES_MAIN, items,
+    GetPlaylists(m_url, m_realPath, m_flags, GetTitle::GET_TITLES_MAIN, items,
                  SortTitles::SORT_TITLES_MOVIE, m_clipCache);
     AddOptionsAndSort(m_url, items, m_blurayMenuSupport);
     return (items.Size() > 2);
   }
 
   if (file == "root/titles")
-    return GetPlaylists(url, m_realPath, m_flags, GetTitle::GET_TITLES_ALL, items,
+    return GetPlaylists(m_url, m_realPath, m_flags, GetTitle::GET_TITLES_ALL, items,
                         SortTitles::SORT_TITLES_MOVIE, m_clipCache);
 
   if (file == "root/main")
-    return GetPlaylists(url, m_realPath, m_flags, GetTitle::GET_TITLES_SINGLE, items,
+    return GetPlaylists(m_url, m_realPath, m_flags, GetTitle::GET_TITLES_SINGLE, items,
                         SortTitles::SORT_TITLES_NONE, m_clipCache);
 
   if (StringUtils::StartsWith(file, "root/episode"))
   {
-    // Get episodes on disc
-    const std::vector<CVideoInfoTag> episodesOnDisc{CDiscDirectoryHelper::GetEpisodesOnDisc(url)};
+    // Get episodes on disc by parsing file/path
+    // Done first as if called from VideoInfoScanner during library scan
+    //  not all episodes may be in database yet
+    std::string path = URIUtils::GetDiscBase(m_url.Get());
+    URIUtils::RemoveSlashAtEnd(path);
+    CFileItem item(path, false);
+    KODI::VIDEO::EPISODELIST episodesOnDisc;
+    CEpisodeUtils::EnumerateEpisodeItem(&item, episodesOnDisc);
+
+    // Now get any available information from database
+    const std::vector<CVideoInfoTag> episodesInDatabase{
+        CDiscDirectoryHelper::GetEpisodesOnDisc(m_url)};
+    if (!episodesInDatabase.empty())
+    {
+      // Update data with database information (where available)
+      for (auto& episode : episodesOnDisc)
+      {
+        const auto& it{std::ranges::find_if(
+            episodesInDatabase, [&episode](const CVideoInfoTag& e)
+            { return e.m_iSeason == episode.iSeason && e.m_iEpisode == episode.iEpisode; })};
+        if (it != episodesInDatabase.end())
+        {
+          episode.duration = it->GetDuration();
+          episode.strTitle = it->GetTitle();
+        }
+      }
+    }
 
     int season{-1};
     int episode{-1};
@@ -780,17 +815,20 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
 
       // Check desired episode is on disc
       const auto& it{
-          std::ranges::find_if(episodesOnDisc, [&season, &episode](const CVideoInfoTag& e)
-                               { return e.m_iSeason == season && e.m_iEpisode == episode; })};
+          std::ranges::find_if(episodesOnDisc, [&season, &episode](const KODI::VIDEO::EPISODE& e)
+                               { return e.iSeason == season && e.iEpisode == episode; })};
       if (it == episodesOnDisc.end())
         return false; // Episode not on disc
       episodeIndex = static_cast<int>(std::distance(episodesOnDisc.begin(), it));
+
+      // Add duration from scraper
+      it->duration = duration;
     }
 
     // Get playlist, clip and language information
     ClipMap clips;
     PlaylistMap playlists;
-    GetPlaylistsInformation(url, m_realPath, m_flags, clips, playlists, m_clipCache);
+    GetPlaylistsInformation(m_url, m_realPath, m_flags, clips, playlists, m_clipCache);
 
     // Get episode playlists
     CDiscDirectoryHelper helper;
@@ -798,7 +836,7 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
 
     // Heuristics failed so return all playlists
     if (items.IsEmpty())
-      GetPlaylists(url, m_realPath, m_flags, GetTitle::GET_TITLES_EPISODES, items,
+      GetPlaylists(m_url, m_realPath, m_flags, GetTitle::GET_TITLES_EPISODES, items,
                    SortTitles::SORT_TITLES_EPISODE, m_clipCache);
 
     // Add all titles and menu options
@@ -807,10 +845,10 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     return (items.Size() > 2);
   }
 
-  if (URIUtils::IsBlurayPath(url.Get()))
+  if (URIUtils::IsBlurayPath(m_url.Get()))
   {
-    if (int playlist{URIUtils::GetBlurayPlaylistFromPath(url.Get())}; playlist >= 0)
-      return GetPlaylists(url, m_realPath, m_flags, static_cast<GetTitle>(playlist), items,
+    if (int playlist{URIUtils::GetBlurayPlaylistFromPath(m_url.Get())}; playlist >= 0)
+      return GetPlaylists(m_url, m_realPath, m_flags, static_cast<GetTitle>(playlist), items,
                           SortTitles::SORT_TITLES_NONE, m_clipCache);
     return false;
   }
