@@ -8,7 +8,7 @@
 
 #include "Key.h"
 
-#include "KeyIDs.h"
+#include "input/keymaps/keyboard/KeyIDs.h"
 
 CKey::CKey(void)
 {

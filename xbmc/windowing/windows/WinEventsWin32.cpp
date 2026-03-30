@@ -24,7 +24,7 @@
 #include "input/InputManager.h"
 #include "input/actions/Action.h"
 #include "input/keyboard/Key.h"
-#include "input/keyboard/KeyIDs.h"
+#include "input/keymaps/keyboard/KeyIDs.h"
 #include "input/mouse/MouseStat.h"
 #include "input/touch/generic/GenericTouchActionHandler.h"
 #include "input/touch/generic/GenericTouchSwipeDetector.h"

@@ -3,6 +3,7 @@ set(SOURCES CustomControllerTranslator.cpp
 )
 
 set(HEADERS CustomControllerTranslator.h
+            IRRemoteIDs.h
             IRTranslator.h
 )
 

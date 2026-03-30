@@ -9,7 +9,7 @@
 #include "IRTranslator.h"
 
 #include "ServiceBroker.h"
-#include "input/remote/IRRemote.h"
+#include "input/keymaps/remote/IRRemoteIDs.h"
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
 #include "utils/FileUtils.h"

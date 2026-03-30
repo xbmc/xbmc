@@ -21,7 +21,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
-#include "input/keyboard/KeyIDs.h"
+#include "input/keymaps/keyboard/KeyIDs.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"

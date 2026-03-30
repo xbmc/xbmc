@@ -2,7 +2,8 @@ set(SOURCES KeyboardActionMap.cpp
             KeyboardTranslator.cpp
 )
 
-set(HEADERS KeyboardActionMap.h
+set(HEADERS KeyIDs.h
+            KeyboardActionMap.h
             KeyboardTranslator.h
 )
 

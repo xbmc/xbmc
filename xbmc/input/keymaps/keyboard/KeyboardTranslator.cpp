@@ -9,8 +9,8 @@
 #include "KeyboardTranslator.h"
 
 #include "input/keyboard/Key.h"
-#include "input/keyboard/KeyIDs.h"
 #include "input/keyboard/XBMC_keytable.h"
+#include "input/keymaps/keyboard/KeyIDs.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 

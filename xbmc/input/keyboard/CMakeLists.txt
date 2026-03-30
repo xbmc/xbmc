@@ -15,7 +15,6 @@ set(HEADERS Key.h
             KeyboardSymbols.h
             KeyboardTranslator.h
             KeyboardTypes.h
-            KeyIDs.h
             XBMC_keyboard.h
             XBMC_keysym.h
             XBMC_keytable.h
