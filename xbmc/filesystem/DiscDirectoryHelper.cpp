@@ -299,16 +299,17 @@ void CDiscDirectoryHelper::FindGroups(const PlaylistMap& playlists)
                   { return group.size() < m_numEpisodes; });
     if (m_groups.empty() && m_numSpecials == 0 && longPlaylists.size() == m_numEpisodes)
     {
-      std::ranges::transform(
-          longPlaylists, std::back_inserter(m_groups),
-          [](const auto& PlaylistInformation) -> std::vector<CandidatePlaylistInformation>
-          {
-            const auto& [playlist, playlistInformation] = PlaylistInformation;
-            return {{.playlist = playlist,
-                     .duration = playlistInformation.duration,
-                     .clips = {},
-                     .languages = {}}};
-          });
+      std::vector<CandidatePlaylistInformation> group;
+      std::ranges::transform(longPlaylists, std::back_inserter(group),
+                             [](const auto& PlaylistInformation) -> CandidatePlaylistInformation
+                             {
+                               const auto& [playlist, playlistInformation] = PlaylistInformation;
+                               return {.playlist = playlist,
+                                       .duration = playlistInformation.duration,
+                                       .clips = {},
+                                       .languages = {}};
+                             });
+      m_groups.emplace_back(std::move(group));
     }
 
     if (m_groups.empty())
