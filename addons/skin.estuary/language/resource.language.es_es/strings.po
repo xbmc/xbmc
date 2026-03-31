@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2025-10-11 09:29+0000\n"
+"PO-Revision-Date: 2026-03-31 13:06+0000\n"
 "Last-Translator: Alfonso Cachero <alfonso.cachero@gmail.com>\n"
 "Language-Team: Spanish (Spain) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/es_es/>\n"
 "Language: es_es\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.13.3\n"
+"X-Generator: Weblate 5.16.2\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -388,7 +388,7 @@ msgstr "Su biblioteca está actualmente vacía. Para llenarla con su contenido p
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
-msgstr "Agregue fuentes de vídeo y establezca el tipo de contenido apropiado para completar sus bibliotecas de vídeo."
+msgstr "Agregue fuentes de vídeo y establezca el tipo de contenido apropiado para completar sus colecciones de vídeo."
 
 msgctxt "#31106"
 msgid "Teletext"
@@ -459,7 +459,7 @@ msgstr "Establecer proveedor de meteorología"
 
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
-msgstr "Series no vistas"
+msgstr "Programas de TV no vistos"
 
 msgctxt "#31123"
 msgid "Same director"
@@ -683,7 +683,7 @@ msgstr "Acción por defecto al elegir álbumes en la pantalla de inicio"
 #. Setting to control what happens when clicking a TV show on the home screen
 msgctxt "#31175"
 msgid "Default select action for TV shows on the home screen"
-msgstr "Acción por defecto al seleccionar series de TV en la pantalla de inicio"
+msgstr "Acción por defecto al seleccionar un programa de TV en la pantalla de inicio"
 
 #. Setting to control what happens when clicking a movie set on the home screen
 msgctxt "#31176"
