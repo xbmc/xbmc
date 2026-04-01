@@ -1166,10 +1166,13 @@ void CMediaPipelineWebOS::FeedVideoData(const std::shared_ptr<CDVDMsg>& msg)
     if (!m_mediaAPIs->setTimeToDecode(payload.c_str()))
     {
       CLog::LogF(LOGERROR, "setTimeToDecode failed");
-      MEDIA_CUSTOM_CONTENT_INFO_T contentInfo;
-      pipeline->loadSpi_getInfo(&contentInfo);
-      contentInfo.ptsToDecode = pts.count();
-      pipeline->setContentInfo(MEDIA_CUSTOM_SRC_TYPE_ES, &contentInfo);
+      if (m_webOSVersion < 11)
+      {
+        MEDIA_CUSTOM_CONTENT_INFO_T contentInfo;
+        pipeline->loadSpi_getInfo(&contentInfo);
+        contentInfo.ptsToDecode = pts.count();
+        pipeline->setContentInfo(MEDIA_CUSTOM_SRC_TYPE_ES, &contentInfo);
+      }
     }
 
     pipeline->sendSegmentEvent();
