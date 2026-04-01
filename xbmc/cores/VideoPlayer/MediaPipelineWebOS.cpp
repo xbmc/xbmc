@@ -184,10 +184,17 @@ CMediaPipelineWebOS::CMediaPipelineWebOS(CProcessInfo& processInfo,
 {
   m_messageQueueAudio.Init();
   m_messageQueueVideo.Init();
-  m_messageQueueAudio.SetMaxTimeSize(1.0);
-  m_messageQueueVideo.SetMaxTimeSize(1.0);
-  m_messageQueueAudio.SetMaxDataSize(MAX_SRC_BUFFER_LEVEL_AUDIO);
-  m_messageQueueVideo.SetMaxDataSize(MAX_SRC_BUFFER_LEVEL_VIDEO);
+  const int tenthsSeconds = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+      CSettings::SETTING_VIDEOPLAYER_QUEUETIMESIZE);
+  m_messageQueueAudio.SetMaxTimeSize(tenthsSeconds / 10.0);
+  m_messageQueueVideo.SetMaxTimeSize(tenthsSeconds / 10.0);
+
+  // allows max bitrate of 18 Mbit/s (TrueHD max peak) during m_messageQueueTimeSize seconds
+  // matches the value in CVideoPlayerAudio
+  const int sizeMB = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+      CSettings::SETTING_VIDEOPLAYER_QUEUEDATASIZE);
+  m_messageQueueAudio.SetMaxDataSize(18 * (tenthsSeconds / 10.0) / 8 * 1024 * 1024);
+  m_messageQueueVideo.SetMaxDataSize(sizeMB * 1024 * 1024);
 
   m_picture.Reset();
   m_picture.videoBuffer = new CStarfishVideoBuffer();
