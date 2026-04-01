@@ -1325,13 +1325,13 @@ unsigned int CMediaPipelineWebOS::GetQueuedBytes(const StreamType type) const
 
 unsigned int CMediaPipelineWebOS::GetQueueLevel(const StreamType type) const
 {
-  if (type == StreamType::AUDIO && m_audioHint.codec == AV_CODEC_ID_NONE)
-    return 0;
+  if (type == StreamType::VIDEO)
+    return std::min(99, m_messageQueueVideo.GetLevel());
 
-  const unsigned int bytes = GetQueuedBytes(type);
-  const unsigned int capacity = GetQueueCapacity(type);
+  if (type == StreamType::AUDIO && m_audioHint.codec != AV_CODEC_ID_NONE)
+    return std::min(99, m_messageQueueAudio.GetLevel());
 
-  return std::min(99L, std::lround(100.0 * bytes / capacity));
+  return 0;
 }
 
 void CMediaPipelineWebOS::SetDynamicRangeCompression(const long drc)
