@@ -36,7 +36,8 @@ void CVideoPlayerAudioWebOS::SetSpeed(const int speed)
 
 void CVideoPlayerAudioWebOS::Flush(const bool sync)
 {
-  m_mediaPipeline.Flush(sync);
+  // VideoPlayer calls this right before calling flush on the video player
+  // We can skip this call because it would essential flush the pipeline twice
 }
 
 bool CVideoPlayerAudioWebOS::AcceptsData() const
