@@ -14,21 +14,25 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   macro(buildmacroLzo2)
     set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/001-all-enable_tests.patch"
                 "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/002-all-enable_docs.patch"
-                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/003-all-install_pkgconfig.patch"
-                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/004-all-win_set_debug_postfix.patch"
-                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/005-all-win_set_compile_mp.patch")
+                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/003-all-win_set_compile_mp.patch"
+                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/004-all-install_pkgconfig.patch")
 
     if(WIN32 OR WINDOWS_STORE)
-      # Debug postfix only used for windows
-      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_DEBUG_POSTFIX d)
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SHARED_LIB ON)
     endif()
 
     generate_patchcommand("${patches}")
     unset(patches)
 
-    set(CMAKE_ARGS -DENABLE_STATIC=ON
-                   -DENABLE_SHARED=OFF
-                   -DCMAKE_POLICY_VERSION_MINIMUM=3.10)
+    set(CMAKE_ARGS -DCMAKE_POLICY_VERSION_MINIMUM=3.10)
+
+    if(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SHARED_LIB)
+      list(APPEND CMAKE_ARGS -DENABLE_STATIC=OFF
+                             -DENABLE_SHARED=ON)
+    else()
+      list(APPEND CMAKE_ARGS -DENABLE_STATIC=ON
+                             -DENABLE_SHARED=OFF)
+    endif()
 
     BUILD_DEP_TARGET()
   endmacro()

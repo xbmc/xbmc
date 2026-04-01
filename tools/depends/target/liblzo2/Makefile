@@ -2,8 +2,8 @@ include ../../Makefile.include LIBLZO2-VERSION ../../download-files.include
 DEPS = ../../Makefile.include Makefile LIBLZO2-VERSION ../../download-files.include \
                                 001-all-enable_tests.patch \
                                 002-all-enable_docs.patch \
-                                003-all-install_pkgconfig.patch \
-                                004-all-win_set_debug_postfix.patch
+                                003-all-win_set_compile_mp.patch \
+                                004-all-install_pkgconfig.patch
 
 # configuration options
 CMAKE_OPTIONS=-DCMAKE_BUILD_TYPE=Release \
@@ -23,8 +23,8 @@ all: .installed-$(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../001-all-enable_tests.patch
 	cd $(PLATFORM); patch -p1 -i ../002-all-enable_docs.patch
-	cd $(PLATFORM); patch -p1 -i ../003-all-install_pkgconfig.patch
-	cd $(PLATFORM); patch -p1 -i ../004-all-win_set_debug_postfix.patch
+	cd $(PLATFORM); patch -p1 -i ../003-all-win_set_compile_mp.patch
+	cd $(PLATFORM); patch -p1 -i ../004-all-install_pkgconfig.patch
 	cd $(PLATFORM)/build; $(CMAKE) $(CMAKE_OPTIONS) ..
 	touch $@
 
