@@ -482,8 +482,7 @@ void CAESinkALSA::GetAESParams(const AEAudioFormat& format, std::string& params)
 
   params += ",AES1=0x82,AES2=0x00";
 
-  if (m_passthrough && format.m_channelLayout.Count() == 8) params += ",AES3=0x09";
-  else if (format.m_sampleRate == 192000) params += ",AES3=0x0e";
+  if (format.m_sampleRate == 192000) params += ",AES3=0x0e";
   else if (format.m_sampleRate == 176400) params += ",AES3=0x0c";
   else if (format.m_sampleRate ==  96000) params += ",AES3=0x0a";
   else if (format.m_sampleRate ==  88200) params += ",AES3=0x08";
@@ -979,6 +978,9 @@ void CAESinkALSA::HandleError(const char* name, int err)
     default:
       CLog::Log(LOGERROR, "CAESinkALSA::HandleError({}) - snd_pcm_writei returned {} ({})", name,
                 err, snd_strerror(err));
+      if ((err = snd_pcm_prepare(m_pcm)) < 0)
+        CLog::Log(LOGERROR, "CAESinkALSA::HandleError({}) - snd_pcm_prepare returned {} ({})", name,
+                  err, snd_strerror(err));
       break;
   }
 }
