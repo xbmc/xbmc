@@ -53,6 +53,19 @@
  ELSE()
  # in cmake 3.12+ we can use
  #INSTALL(TARGETS libmariadb LIBRARY DESTINATION ${INSTALL_LIBDIR}
+diff --git a/include/ma_context.h b/include/ma_context.h
+index d9ba1ffc..c8437561 100644
+--- a/include/ma_context.h
++++ b/include/ma_context.h
+@@ -47,7 +47,7 @@
+ #  endif
+ #endif
+ 
+-#ifdef _WIN32
++#if defined(_WIN32) && !defined(MS_APP)
+ #define MY_CONTEXT_USE_WIN32_FIBERS 1
+ #elif defined(ASAN_PREFER_NON_ASM) && defined(HAVE_BOOST_CONTEXT_H)
+ #define MY_CONTEXT_USE_BOOST_CONTEXT
 --- a/libmariadb/ma_client_plugin.c.in
 +++ b/libmariadb/ma_client_plugin.c.in
 @@ -46,6 +46,8 @@
