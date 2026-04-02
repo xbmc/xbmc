@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -22,6 +22,7 @@ extern "C" {
 class CDVDDemuxFFmpeg;
 class CDVDInputStream;
 class CURL;
+struct ChapterFFmpeg;
 
 enum class TRANSPORT_STREAM_STATE
 {
@@ -178,5 +179,5 @@ protected:
   double m_dtsAtDisplayTime;
   bool m_seekToKeyFrame = false;
   double m_startTime = 0;
+  std::vector<ChapterFFmpeg> m_chapters;
 };
-

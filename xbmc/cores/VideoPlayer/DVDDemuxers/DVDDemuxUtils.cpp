@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -12,9 +12,13 @@
 #include "utils/MemUtils.h"
 #include "utils/log.h"
 
-extern "C" {
+extern "C"
+{
 #include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
 }
+
+#include <algorithm>
 
 void CDVDDemuxUtils::FreeDemuxPacket(DemuxPacket* pPacket)
 {
@@ -108,4 +112,35 @@ void CDVDDemuxUtils::StoreSideData(DemuxPacket *pkt, AVPacket *src)
   // and storing our own AVPacket. This will require some extensive changes.
   av_buffer_unref(&avPkt->buf);
   av_free(avPkt);
+}
+
+std::vector<ChapterFFmpeg> CDVDDemuxUtils::LoadChapters(std::span<AVChapter*> chapters)
+{
+  std::vector<ChapterFFmpeg> result;
+
+  if (chapters.empty() || chapters.data() == nullptr)
+    return result;
+
+  result.reserve(chapters.size());
+
+  std::ranges::transform(chapters, std::back_inserter(result),
+                         [](const AVChapter* chapter)
+                         {
+                           ChapterFFmpeg newChapter{};
+
+                           newChapter.m_startPts = chapter->start * av_q2d(chapter->time_base);
+                           newChapter.m_endPts = chapter->end * av_q2d(chapter->time_base);
+
+                           const AVDictionaryEntry* titleTag =
+                               av_dict_get(chapter->metadata, "title", nullptr, 0);
+
+                           if (titleTag)
+                             newChapter.m_name = titleTag->value;
+
+                           return newChapter;
+                         });
+
+  std::ranges::sort(result, std::less(), &ChapterFFmpeg::m_startPts);
+
+  return result;
 }

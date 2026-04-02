@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -455,6 +455,12 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
   // Avoid detecting framerate if advancedsettings.xml says so
   if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoFpsDetect == 0)
       m_pFormatContext->fps_probe_size = 0;
+
+  if (m_pFormatContext->nb_chapters && m_pFormatContext->chapters != nullptr)
+  {
+    m_chapters = CDVDDemuxUtils::LoadChapters(
+        std::span<AVChapter*>{m_pFormatContext->chapters, m_pFormatContext->nb_chapters});
+  }
 
   // analyse very short to speed up mjpeg playback start
   if (iformat && (strcmp(iformat->name, "mjpeg") == 0) && m_ioContext->seekable == 0)
@@ -2015,10 +2021,7 @@ int CDVDDemuxFFmpeg::GetChapterCount()
   if (ich)
     return ich->GetChapterCount();
 
-  if (m_pFormatContext == NULL)
-    return 0;
-
-  return m_pFormatContext->nb_chapters;
+  return m_chapters.size();
 }
 
 int CDVDDemuxFFmpeg::GetChapter()
@@ -2027,25 +2030,22 @@ int CDVDDemuxFFmpeg::GetChapter()
   if (ich)
     return ich->GetChapter();
 
-  if (m_pFormatContext == NULL || m_currentPts == DVD_NOPTS_VALUE)
+  if (m_chapters.empty() || m_currentPts == DVD_NOPTS_VALUE)
     return 0;
 
-  for (unsigned i = 0; i < m_pFormatContext->nb_chapters; i++)
+  const auto chapterCount = static_cast<unsigned int>(m_chapters.size());
+  for (unsigned i = 0; i < chapterCount; i++)
   {
-    const AVChapter* chapter = m_pFormatContext->chapters[i];
-    const double startPts =
-        ConvertTimestamp(chapter->start, chapter->time_base.den, chapter->time_base.num);
+    const double startPts = m_chapters[i].m_startPts;
 
-    if (i == m_pFormatContext->nb_chapters - 1)
+    if (i == chapterCount - 1)
     {
       if (m_currentPts >= startPts)
         return i + 1;
     }
     else
     {
-      const AVChapter* nextChapter = m_pFormatContext->chapters[i + 1];
-      const double nextStartPts = ConvertTimestamp(nextChapter->start, nextChapter->time_base.den,
-                                                   nextChapter->time_base.num);
+      const double nextStartPts = m_chapters[i + 1].m_startPts;
 
       if (m_currentPts >= startPts && m_currentPts < nextStartPts)
         return i + 1;
@@ -2067,10 +2067,7 @@ void CDVDDemuxFFmpeg::GetChapterName(std::string& strChapterName, int chapterIdx
     if (chapterIdx <= 0)
       return;
 
-    AVDictionaryEntry* titleTag = av_dict_get(m_pFormatContext->chapters[chapterIdx - 1]->metadata,
-                                                          "title", NULL, 0);
-    if (titleTag)
-      strChapterName = titleTag->value;
+    strChapterName = m_chapters[chapterIdx - 1].m_name;
   }
 }
 
@@ -2087,8 +2084,7 @@ std::chrono::milliseconds CDVDDemuxFFmpeg::GetChapterPos(int chapterIdx)
   if (ich)
     return ich->GetChapterPos(chapterIdx);
 
-  std::chrono::duration<float> fsec(m_pFormatContext->chapters[chapterIdx - 1]->start *
-                                    av_q2d(m_pFormatContext->chapters[chapterIdx - 1]->time_base));
+  std::chrono::duration<float> fsec(m_chapters[chapterIdx - 1].m_startPts);
   return std::chrono::duration_cast<std::chrono::milliseconds>(fsec);
 }
 
@@ -2114,15 +2110,10 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
     return true;
   }
 
-  if (m_pFormatContext == NULL)
+  if (chapter < 1 || m_chapters.empty() || chapter > static_cast<int>(m_chapters.size()))
     return false;
 
-  if (chapter < 1 || chapter > (int)m_pFormatContext->nb_chapters)
-    return false;
-
-  const AVChapter* ch = m_pFormatContext->chapters[chapter - 1];
-  const double pts = ch->start * av_q2d(ch->time_base);
-  return SeekTime(pts * 1000, true, startpts);
+  return SeekTime(m_chapters[chapter - 1].m_startPts * 1000, true, startpts);
 }
 
 std::string CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId)
