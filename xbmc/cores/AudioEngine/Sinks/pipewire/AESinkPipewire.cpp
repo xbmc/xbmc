@@ -481,17 +481,43 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
 
   std::vector<const spa_pod*> params;
 
-  // clang-format off
-  uint32_t buf_minsize = frames * pwChannels.size() * PWFormatToSampleSize(pwFormat);
-  params.emplace_back(static_cast<const spa_pod*>(spa_pod_builder_add_object(
-      &builder, SPA_TYPE_OBJECT_ParamBuffers, SPA_PARAM_Buffers,
-          SPA_PARAM_BUFFERS_blocks, SPA_POD_Int(1),
-          SPA_PARAM_BUFFERS_size, SPA_POD_CHOICE_RANGE_Int(buf_minsize, buf_minsize, INT32_MAX),
-          SPA_PARAM_BUFFERS_stride, SPA_POD_Int(pwChannels.size() * PWFormatToSampleSize(pwFormat)))));
-  // clang-format on
+  // Buffer params are deferred to param_changed callback (matching mpv pattern).
+  // PipeWire negotiates the format first, then we respond with buffer requirements.
+  m_stride = pwChannels.size() * PWFormatToSampleSize(pwFormat);
+  m_bufferSize = frames * m_stride;
 
-  pw_stream_flags flags = static_cast<pw_stream_flags>(
-      PW_STREAM_FLAG_AUTOCONNECT | PW_STREAM_FLAG_INACTIVE | PW_STREAM_FLAG_MAP_BUFFERS);
+  m_stream->SetParamChangedCallback(
+      [this](uint32_t id, const spa_pod* /* param */)
+      {
+        if (id != SPA_PARAM_Format)
+          return;
+
+        uint8_t buf[1024];
+        auto b = SPA_POD_BUILDER_INIT(buf, sizeof(buf));
+
+        // clang-format off
+        const spa_pod* bufferParam = static_cast<const spa_pod*>(spa_pod_builder_add_object(
+            &b, SPA_TYPE_OBJECT_ParamBuffers, SPA_PARAM_Buffers,
+                SPA_PARAM_BUFFERS_blocks, SPA_POD_Int(1),
+                SPA_PARAM_BUFFERS_size, SPA_POD_CHOICE_RANGE_Int(m_bufferSize, m_bufferSize, INT32_MAX),
+                SPA_PARAM_BUFFERS_stride, SPA_POD_Int(m_stride)));
+        // clang-format on
+
+        if (bufferParam)
+        {
+          int ret = m_stream->UpdateParams(&bufferParam, 1);
+          if (ret < 0)
+            CLog::Log(LOGERROR, "CAESinkPipewire - failed to update buffer params: {}",
+                      spa_strerror(ret));
+          else
+            CLog::Log(LOGDEBUG, "CAESinkPipewire - buffer params set: size={} stride={}",
+                      m_bufferSize, m_stride);
+        }
+      });
+
+  pw_stream_flags flags =
+      static_cast<pw_stream_flags>(PW_STREAM_FLAG_AUTOCONNECT | PW_STREAM_FLAG_INACTIVE |
+                                   PW_STREAM_FLAG_MAP_BUFFERS | PW_STREAM_FLAG_RT_PROCESS);
 
   if (!passthrough)
   {
@@ -582,6 +608,10 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
 
   m_format = format;
 
+  // Initialize ring buffer: 4x buffer size for headroom between audio engine and RT thread
+  uint32_t ringSize = m_bufferSize * 4;
+  m_stream->InitRingBuffer(ringSize, format.m_frameSize);
+
   return true;
 }
 
@@ -609,61 +639,30 @@ unsigned int CAESinkPipewire::AddPackets(uint8_t** data,
   if (m_stream->HasStreamError())
     return 0;
 
-  unsigned int frames = frames_in;
-
-  auto& loop = pipewire->GetThreadLoop();
-
-  PIPEWIRE::CLoopLockGuard lock(loop);
-
   if (m_stream->GetState() == PW_STREAM_STATE_PAUSED)
+  {
+    auto& loop = pipewire->GetThreadLoop();
+    PIPEWIRE::CLoopLockGuard lock(loop);
     m_stream->SetActive(true);
+  }
   else if (m_stream->GetState() != PW_STREAM_STATE_STREAMING)
     return 0;
 
-  while (frames)
+  unsigned int remaining = frames_in;
+  unsigned int written_total = 0;
+  const uint8_t* src = data[0] + offset * m_format.m_frameSize;
+
+  while (remaining > 0)
   {
-    // Block until data is needed. Process() will wake us up.
-    while (!m_stream->NeedsData())
+    unsigned int w = m_stream->Write(src + written_total * m_format.m_frameSize, remaining);
+    written_total += w;
+    remaining -= w;
+
+    if (remaining > 0)
     {
-      int ret = loop.Wait(1s);
-      if (ret < 0)
-        return 0;
-    }
-
-    // Fill in exactly the requested number of frames. If we don't have enough,
-    // don't queue the buffer yet. Important for passthrough, and also for pcm
-    // since we didn't request extra buffers when creating stream.
-    pw_buffer* buffer = m_stream->GetBuffer();
-    if (!buffer)
-      return 0;
-
-    spa_buffer* spaBuffer = buffer->buffer;
-    spa_data* spaData = &spaBuffer->datas[0];
-    unsigned int max_frames = spaData->maxsize / m_format.m_frameSize;
-    unsigned int requested = buffer->requested ? buffer->requested : frames;
-    unsigned int target = std::min(requested, max_frames);
-
-    if (buffer->size < target)
-    {
-      unsigned int consume = std::min(frames, static_cast<unsigned int>(target - buffer->size));
-      size_t length = consume * m_format.m_frameSize;
-      void* dst = static_cast<uint8_t*>(spaData->data) + buffer->size * m_format.m_frameSize;
-      void* src = data[0] + offset * m_format.m_frameSize;
-
-      std::memcpy(dst, src, length);
-
-      buffer->size += consume;
-      frames -= consume;
-      offset += consume;
-    }
-
-    if (buffer->size >= target)
-    {
-      spaData->chunk->offset = 0;
-      spaData->chunk->stride = m_format.m_frameSize;
-      spaData->chunk->size = buffer->size * m_format.m_frameSize;
-
-      m_stream->QueueBuffer();
+      // Ring buffer full — wait for on_process to consume data
+      if (!m_stream->WaitForSpace(1000ms))
+        return written_total;
     }
   }
 
@@ -677,15 +676,14 @@ void CAESinkPipewire::GetDelay(AEDelayStatus& status)
   PIPEWIRE::CLoopLockGuard lock(loop);
 
   pw_stream_state state = m_stream->GetState();
-
-  pw_time time = m_stream->GetTime();
-
   if (state != PW_STREAM_STATE_STREAMING)
     return;
 
-  pw_buffer* buffer = m_stream->PeekBuffer();
-  if (buffer)
-    time.queued += buffer->size;
+  pw_time time = m_stream->GetTime();
+
+  // Add ring buffer contents to queued count
+  unsigned int bufferedFrames = m_stream->GetRingBufferReadSize() / m_format.m_frameSize;
+  time.queued += bufferedFrames;
 
   const std::chrono::duration<double, std::ratio<1>> delay =
       PWTimeToAEDelay(time, m_format.m_sampleRate);
