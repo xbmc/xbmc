@@ -80,6 +80,11 @@ pw_stream_state CPipewireStream::GetState()
   return pw_stream_get_state(m_stream.get(), nullptr);
 }
 
+pw_stream_state CPipewireStream::GetState(const char** error)
+{
+  return pw_stream_get_state(m_stream.get(), error);
+}
+
 void CPipewireStream::SetActive(bool active)
 {
   if (!active)
@@ -165,8 +170,18 @@ void CPipewireStream::StateChanged(void* userdata,
     CLog::Log(LOGDEBUG, "CPipewireStream::{} - stream node {}", __FUNCTION__, stream.GetNodeId());
 
   if (state == PW_STREAM_STATE_ERROR)
-    CLog::Log(LOGDEBUG, "CPipewireStream::{} - stream node {} error: {}", __FUNCTION__,
-              stream.GetNodeId(), error);
+  {
+    stream.m_initError = true;
+    stream.m_streamError = true;
+    CLog::Log(LOGWARNING, "CPipewireStream::{} - stream error: {}", __FUNCTION__,
+              error ? error : "unknown");
+  }
+
+  if (state == PW_STREAM_STATE_UNCONNECTED && old != PW_STREAM_STATE_UNCONNECTED)
+  {
+    stream.m_streamError = true;
+    CLog::Log(LOGWARNING, "CPipewireStream::{} - stream disconnected", __FUNCTION__);
+  }
 
   loop.Signal(false);
 }

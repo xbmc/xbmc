@@ -499,16 +499,25 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
   pw_stream_state state;
   do
   {
-    state = m_stream->GetState();
+    const char* error = nullptr;
+    state = m_stream->GetState(&error);
     if (state == PW_STREAM_STATE_PAUSED)
       break;
 
-    CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - waiting", __FUNCTION__);
+    if (state == PW_STREAM_STATE_ERROR)
+    {
+      CLog::Log(LOGWARNING, "CAESinkPipewire::{} - stream entered error state during init: {}",
+                __FUNCTION__, error ? error : "unknown");
+      return false;
+    }
+
+    CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - waiting (state: {})", __FUNCTION__,
+              pw_stream_state_as_string(state));
 
     int ret = loop.Wait(5s);
     if (ret == -ETIMEDOUT)
     {
-      CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - timed out waiting for stream to be paused",
+      CLog::Log(LOGWARNING, "CAESinkPipewire::{} - timed out waiting for stream to be paused",
                 __FUNCTION__);
       return false;
     }
@@ -544,6 +553,10 @@ unsigned int CAESinkPipewire::AddPackets(uint8_t** data,
                                          unsigned int frames_in,
                                          unsigned int offset)
 {
+  // Stream error/disconnect: return 0 immediately to trigger ActiveAESink recovery
+  if (m_stream->HasStreamError())
+    return 0;
+
   unsigned int frames = frames_in;
 
   auto& loop = pipewire->GetThreadLoop();

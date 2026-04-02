@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <atomic>
 #include <memory>
 #include <vector>
 
@@ -38,6 +39,9 @@ public:
                const pw_stream_flags& flags);
 
   pw_stream_state GetState();
+  pw_stream_state GetState(const char** error);
+  bool HasInitError() const { return m_initError; }
+  bool HasStreamError() const { return m_streamError; }
   void SetActive(bool active);
 
   pw_buffer* GetBuffer();
@@ -75,6 +79,8 @@ private:
 
   bool m_waiting;
   bool m_running;
+  bool m_initError{false};
+  std::atomic<bool> m_streamError{false};
 
   struct PipewireStreamDeleter
   {
