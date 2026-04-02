@@ -34,9 +34,8 @@ public:
   explicit CPeripheralBusCEC(CPeripherals& manager);
   ~CPeripheralBusCEC(void) override;
 
-  /*!
-   * @see PeripheralBus::PerformDeviceScan()
-   */
+  // Implementation of CPeripheralBus
+  void ProcessEvents() override;
   bool PerformDeviceScan(PeripheralScanResults& results) override;
 
 private:

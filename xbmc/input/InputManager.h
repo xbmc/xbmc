@@ -29,6 +29,10 @@ class CProfileManager;
 
 namespace KODI
 {
+namespace CEC
+{
+class ICecInputProvider;
+}
 
 namespace KEYBOARD
 {
@@ -90,13 +94,6 @@ public:
    * \return true if event is handled, false otherwise
    */
   bool ProcessEventServer(int windowId, float frameTime);
-
-  /*! \brief decode an event from peripherals.
-   *
-   * \param frameTime Time in seconds since last call
-   * \return true if event is handled, false otherwise
-   */
-  bool ProcessPeripherals(float frameTime);
 
   /*! \brief Process all inputs
    *
@@ -228,6 +225,11 @@ public:
    */
   void QueueAction(const CAction& action);
 
+  /*!
+   * \brief Process CEC input
+   */
+  void ProcessCec();
+
   // implementation of ISettingCallback
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
@@ -239,6 +241,9 @@ public:
 
   virtual void RegisterMouseDriverHandler(KODI::MOUSE::IMouseDriverHandler* handler);
   virtual void UnregisterMouseDriverHandler(KODI::MOUSE::IMouseDriverHandler* handler);
+
+  void RegisterCecInputProvider(KODI::CEC::ICecInputProvider* handler);
+  void UnregisterCecInputProvider(KODI::CEC::ICecInputProvider* handler);
 
 private:
   /*! \brief Process keyboard event and translate into an action
@@ -262,6 +267,11 @@ private:
    * \return true on successfully handled event
    */
   bool HandleKey(const CKey& key);
+
+  /*!
+   * \brief Queue CEC key to be processed on the next call to Process()
+   */
+  void QueueCecKey(const CKey& key);
 
   /*! \brief Determine if an action should be processed or just
    *   cancel the screensaver
@@ -295,6 +305,10 @@ private:
   std::vector<CAction> m_queuedActions;
   CCriticalSection m_actionMutex;
 
+  std::vector<CKey> m_queuedCecKeys;
+  CCriticalSection m_cecKeyMutex;
+  CCriticalSection m_cecHandlingMutex;
+
   // Button translation
   std::unique_ptr<KODI::KEYMAP::IKeymapEnvironment> m_keymapEnvironment;
   std::unique_ptr<KODI::KEYMAP::CButtonTranslator> m_buttonTranslator;
@@ -304,6 +318,7 @@ private:
 
   std::vector<KODI::KEYBOARD::IKeyboardDriverHandler*> m_keyboardHandlers;
   std::vector<KODI::MOUSE::IMouseDriverHandler*> m_mouseHandlers;
+  std::vector<KODI::CEC::ICecInputProvider*> m_cecInputProviders;
 
   std::unique_ptr<KODI::KEYBOARD::IKeyboardDriverHandler> m_keyboardEasterEgg;
 
