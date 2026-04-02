@@ -324,17 +324,28 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
                   [&device](const auto& rate) { device.m_sampleRates.emplace_back(rate); });
 
     auto& channels = node->GetChannels();
-    if (channels.empty())
+    auto& iec958Codecs = node->GetIEC958Codecs();
+
+    // Skip nodes that have neither channel info nor IEC958 codec support
+    if (channels.empty() && iec958Codecs.empty())
       continue;
 
-    for (const auto& channel : channels)
+    if (!channels.empty())
     {
-      const auto ch = channelMap.find(channel);
-      if (ch != channelMap.cend())
-        device.m_channels += ch->second;
+      for (const auto& channel : channels)
+      {
+        const auto ch = channelMap.find(channel);
+        if (ch != channelMap.cend())
+          device.m_channels += ch->second;
+      }
+    }
+    else
+    {
+      // IEC958-only node: set default channel layout so the device is visible
+      device.m_channels = CAEChannelInfo(AE_CH_LAYOUT_2_0);
     }
 
-    for (const auto& iec958Codec : node->GetIEC958Codecs())
+    for (const auto& iec958Codec : iec958Codecs)
     {
       auto streamTypes = PWIEC958CodecToAEStreamInfoDataTypeList(iec958Codec);
       device.m_streamTypes.insert(device.m_streamTypes.end(), streamTypes.begin(),
