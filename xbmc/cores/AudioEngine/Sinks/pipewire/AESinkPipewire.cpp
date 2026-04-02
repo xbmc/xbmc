@@ -23,9 +23,11 @@
 #include <algorithm>
 
 #include <pipewire/keys.h>
+#include <pipewire/pipewire.h>
 #include <spa/param/audio/format-utils.h>
 #include <spa/param/audio/raw.h>
 #include <spa/pod/builder.h>
+#include <spa/utils/result.h>
 
 using namespace std::chrono_literals;
 
@@ -77,6 +79,31 @@ constexpr uint8_t PWFormatToSampleSize(spa_audio_format format)
       return 4;
     default:
       return 0;
+  }
+}
+
+constexpr std::string_view IEC958CodecToString(spa_audio_iec958_codec codec)
+{
+  switch (codec)
+  {
+    case SPA_AUDIO_IEC958_CODEC_PCM:
+      return "PCM";
+    case SPA_AUDIO_IEC958_CODEC_DTS:
+      return "DTS";
+    case SPA_AUDIO_IEC958_CODEC_AC3:
+      return "AC3";
+    case SPA_AUDIO_IEC958_CODEC_MPEG:
+      return "MPEG";
+    case SPA_AUDIO_IEC958_CODEC_MPEG2_AAC:
+      return "MPEG2-AAC";
+    case SPA_AUDIO_IEC958_CODEC_EAC3:
+      return "EAC3";
+    case SPA_AUDIO_IEC958_CODEC_TRUEHD:
+      return "TrueHD";
+    case SPA_AUDIO_IEC958_CODEC_DTSHD:
+      return "DTS-HD";
+    default:
+      return "Unknown";
   }
 }
 
@@ -489,9 +516,23 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
 
     params.emplace_back(spa_format_audio_iec958_build(&builder, SPA_PARAM_EnumFormat, &info));
 
-    flags = static_cast<pw_stream_flags>(PW_STREAM_FLAG_EXCLUSIVE | static_cast<int>(flags));
-
     format.m_dataFormat = AE_FMT_S16NE;
+
+    CLog::Log(LOGINFO, "CAESinkPipewire::{} - passthrough: codec={} rate={} channels={}",
+              __FUNCTION__, IEC958CodecToString(info.codec), info.rate, pwChannels.size());
+
+    // PipeWire passthrough was broken from 0.8.3 to 1.0.5 (server-side).
+    // Warn users on old versions so they don't spend hours debugging a known issue.
+    const char* pwVersion = pw_get_library_version();
+    int major = 0, minor = 0, micro = 0;
+    if (pwVersion && sscanf(pwVersion, "%d.%d.%d", &major, &minor, &micro) == 3)
+    {
+      if (major < 1 || (major == 1 && minor == 0 && micro < 6))
+        CLog::Log(LOGWARNING,
+                  "CAESinkPipewire::{} - PipeWire {} may not support passthrough correctly. "
+                  "Version 1.0.6 or later is recommended.",
+                  __FUNCTION__, pwVersion);
+    }
   }
 
   if (!m_stream->Connect(id, PW_DIRECTION_OUTPUT, params, flags))
