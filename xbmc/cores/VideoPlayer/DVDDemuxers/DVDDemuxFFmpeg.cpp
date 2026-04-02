@@ -2120,9 +2120,9 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
   if (chapter < 1 || chapter > (int)m_pFormatContext->nb_chapters)
     return false;
 
-  AVChapter* ch = m_pFormatContext->chapters[chapter - 1];
-  double dts = ConvertTimestamp(ch->start, ch->time_base.den, ch->time_base.num);
-  return SeekTime(DVD_TIME_TO_MSEC(dts), true, startpts);
+  const AVChapter* ch = m_pFormatContext->chapters[chapter - 1];
+  const double pts = ch->start * av_q2d(ch->time_base);
+  return SeekTime(pts * 1000, true, startpts);
 }
 
 std::string CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId)
