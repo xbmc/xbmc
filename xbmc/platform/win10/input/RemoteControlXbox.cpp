@@ -10,7 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "application/AppInboundProtocol.h"
-#include "input/remote/IRRemote.h"
+#include "input/keymaps/remote/IRRemoteIDs.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"

@@ -383,7 +383,7 @@ bool CIRServerSuite::HandleRemoteEvent(CIrssMessage& message)
 
     //translate to a buttoncode xbmc understands
     CLog::LogF(LOGDEBUG, "remoteEvent: {} {}", deviceName, keycode);
-    unsigned button = m_irTranslator.TranslateButton(deviceName, keycode);
+    const uint32_t button = m_irTranslator.TranslateButton(deviceName, keycode);
 
     XBMC_Event newEvent = {};
     newEvent.type = XBMC_BUTTON;

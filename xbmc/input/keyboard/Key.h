@@ -49,8 +49,8 @@ public:
   bool FromKeyboard() const;
   bool IsAnalogButton() const;
   bool IsIRRemote() const;
-  void SetFromService(bool fromService);
-  bool GetFromService() const { return m_fromService; }
+  void SetFromEventServer(bool fromEventServer);
+  bool GetFromEventServer() const { return m_fromEventServer; }
 
   inline uint32_t GetButtonCode() const { return m_buttonCode; }
   inline uint32_t GetKeycode() const { return m_keycode; } // XBMCKey enum in XBMC_keysym.h
@@ -92,5 +92,5 @@ private:
   float m_rightThumbX;
   float m_rightThumbY;
   float m_repeat; // time since last keypress
-  bool m_fromService;
+  bool m_fromEventServer;
 };

@@ -8,7 +8,7 @@
 
 #include "Key.h"
 
-#include "KeyIDs.h"
+#include "input/keymaps/keyboard/KeyIDs.h"
 
 CKey::CKey(void)
 {
@@ -81,7 +81,7 @@ void CKey::Reset()
   m_rightThumbX = 0.0f;
   m_rightThumbY = 0.0f;
   m_repeat = 0.0f;
-  m_fromService = false;
+  m_fromEventServer = false;
   m_buttonCode = KEY_INVALID;
   m_keycode = 0;
   m_vkey = 0;
@@ -103,7 +103,7 @@ CKey& CKey::operator=(const CKey& key)
   m_rightThumbX = key.m_rightThumbX;
   m_rightThumbY = key.m_rightThumbY;
   m_repeat = key.m_repeat;
-  m_fromService = key.m_fromService;
+  m_fromEventServer = key.m_fromEventServer;
   m_buttonCode = key.m_buttonCode;
   m_keycode = key.m_keycode;
   m_vkey = key.m_vkey;
@@ -171,10 +171,10 @@ float CKey::GetRepeat() const
   return m_repeat;
 }
 
-void CKey::SetFromService(bool fromService)
+void CKey::SetFromEventServer(bool fromEventServer)
 {
-  if (fromService && (m_buttonCode & KEY_VKEY))
+  if (fromEventServer && (m_buttonCode & KEY_VKEY))
     m_unicode = m_buttonCode - KEY_VKEY;
 
-  m_fromService = fromService;
+  m_fromEventServer = fromEventServer;
 }

@@ -9,7 +9,7 @@
 #include "MouseTranslator.h"
 
 #include "MouseStat.h"
-#include "input/keyboard/KeyIDs.h"
+#include "input/keymaps/keyboard/KeyIDs.h"
 #include "utils/Map.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"

@@ -21,13 +21,13 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "input/keyboard/Key.h"
-#include "input/keyboard/KeyIDs.h"
 #include "input/keyboard/KeyboardEasterEgg.h"
 #include "input/keyboard/XBMC_vkeys.h"
 #include "input/keyboard/interfaces/IKeyboardDriverHandler.h"
 #include "input/keymaps/ButtonTranslator.h"
 #include "input/keymaps/KeymapEnvironment.h"
 #include "input/keymaps/joysticks/JoystickMapper.h"
+#include "input/keymaps/keyboard/KeyIDs.h"
 #include "input/keymaps/remote/CustomControllerTranslator.h"
 #include "input/keymaps/touch/TouchTranslator.h"
 #include "input/mouse/MouseTranslator.h"
@@ -280,7 +280,7 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
         key = CKey(wKeyID, 0, 0, 0.0, 0.0, 0.0, -fAmount, frameTime);
       else
         key = CKey(wKeyID);
-      key.SetFromService(true);
+      key.SetFromEventServer(true);
       return OnKey(key);
     }
   }
@@ -504,7 +504,7 @@ bool CInputManager::OnKey(const CKey& key)
     {
       // Event server keyboard doesn't give normal key up and key down, so don't
       // process for long press if that is the source
-      if (key.GetFromService() ||
+      if (key.GetFromEventServer() ||
           !m_buttonTranslator->HasLongpressMapping(
               CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog(), key))
       {
@@ -627,7 +627,7 @@ bool CInputManager::HandleKey(const CKey& key)
       // else pass the keys through directly
       if (!action.GetID())
       {
-        if (key.GetFromService())
+        if (key.GetFromEventServer())
           action = CAction(key.GetButtonCode() != KEY_INVALID ? key.GetButtonCode() : 0,
                            key.GetUnicode());
         else
@@ -663,7 +663,7 @@ bool CInputManager::HandleKey(const CKey& key)
         return true;
       // failed to handle the keyboard action, drop down through to standard action
     }
-    if (key.GetFromService())
+    if (key.GetFromEventServer())
     {
       if (key.GetButtonCode() != KEY_INVALID)
         action = m_buttonTranslator->GetAction(iWin, key);

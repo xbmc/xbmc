@@ -143,7 +143,7 @@ void CLirc::ProcessCode(char *buf)
     buttonName[buttonNameLen - 2] = '\0';
   }
 
-  int button = m_irTranslator->TranslateButton(deviceName, buttonName);
+  const uint32_t button = m_irTranslator->TranslateButton(deviceName, buttonName);
 
   char *end = nullptr;
   long repeat = strtol(repeatStr, &end, 16);

@@ -8,7 +8,7 @@
 
 #include "GamepadTranslator.h"
 
-#include "input/keyboard/KeyIDs.h"
+#include "input/keymaps/keyboard/KeyIDs.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
