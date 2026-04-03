@@ -24,13 +24,14 @@ BUILDDIR = $(PLATFORM)/build-cmake # 'build' conflicts with file BUILD on case-i
 all: .installed-$(PLATFORM)
 
 
-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
+.configured-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	mkdir -p $(BUILDDIR)
 	cd $(BUILDDIR); $(CMAKE_FOR_BUILD) $(CMAKE_OPTIONS) ..
+	touch $@
 
-$(APP): $(PLATFORM)
+$(APP): .configured-$(PLATFORM)
 	$(MAKE) -C $(BUILDDIR)
 
 .installed-$(PLATFORM): $(APP)
@@ -39,7 +40,7 @@ $(APP): $(PLATFORM)
 
 clean:
 	$(MAKE) -C $(BUILDDIR) clean
-	rm -f .installed-$(PLATFORM)
+	rm -f .installed-$(PLATFORM) .configured-$(PLATFORM)
 
 distclean:
-	rm -rf $(PLATFORM) .installed-$(PLATFORM)
+	rm -rf $(PLATFORM) .installed-$(PLATFORM) .configured-$(PLATFORM)

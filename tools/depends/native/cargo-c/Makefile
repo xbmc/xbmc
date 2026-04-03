@@ -19,12 +19,13 @@ CLEANUP_CMD = [ -e $(PREFIX)/bin/cargo ] \
 
 all: .installed-$(PLATFORM)
 
-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
+.configured-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cp Cargo.lock $(PLATFORM)/Cargo.lock
+	touch $@
 
-$(APP): $(PLATFORM)
+$(APP): .configured-$(PLATFORM)
 	$(CARGO) build --release --manifest-path $(PLATFORM)/Cargo.toml --locked
 
 .installed-$(PLATFORM): $(APP)
@@ -34,8 +35,8 @@ $(APP): $(PLATFORM)
 
 clean:
 	$(CLEANUP_CMD)
-	rm -f .installed-$(PLATFORM)
+	rm -f .installed-$(PLATFORM) .configured-$(PLATFORM)
 
 distclean::
 	$(CLEANUP_CMD)
-	rm -rf $(PLATFORM) .installed-$(PLATFORM)
+	rm -rf $(PLATFORM) .installed-$(PLATFORM) .configured-$(PLATFORM)

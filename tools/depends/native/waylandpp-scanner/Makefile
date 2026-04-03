@@ -16,21 +16,22 @@ BUILDDIR = $(PLATFORM)/build
 all: .installed-$(PLATFORM)
 
 
-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
+.configured-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../001-fix-gcc13-build.patch
 	mkdir -p $(BUILDDIR)
 	cd $(BUILDDIR); $(NATIVEPREFIX)/bin/cmake $(CMAKE_OPTIONS) ..
+	touch $@
 
-.installed-$(PLATFORM): $(PLATFORM)
+.installed-$(PLATFORM): .configured-$(PLATFORM)
 	$(MAKE) -C $(BUILDDIR)
 	$(MAKE) -C $(BUILDDIR) install
 	touch $@
 
 clean:
 	$(MAKE) -C $(BUILDDIR) clean
-	rm -f .installed-$(PLATFORM)
+	rm -f .installed-$(PLATFORM) .configured-$(PLATFORM)
 
 distclean:
-	rm -rf $(PLATFORM) .installed-$(PLATFORM)
+	rm -rf $(PLATFORM) .installed-$(PLATFORM) .configured-$(PLATFORM)

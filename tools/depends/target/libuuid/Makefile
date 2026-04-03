@@ -15,15 +15,16 @@ LIBDYLIB=$(PLATFORM)/lib/$(LIBNAME).a
 all: .installed-$(PLATFORM)
 
 
-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
+.configured-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	# e2fsprog libuuid often fails because it doesnt create include/uuid location before
 	# installing. lets just create it and move on.
 	mkdir -p $(PREFIX)/include/uuid
 	cd $(PLATFORM); ./configure --prefix=$(PREFIX) --disable-fsck --enable-libuuid
+	touch $@
 
-$(LIBDYLIB): $(PLATFORM)
+$(LIBDYLIB): .configured-$(PLATFORM)
   # -j1 is required due to concurrency failures with dirpath.h generation
 	cd $(PLATFORM)/lib/uuid ; $(MAKE) -j1
 
@@ -34,7 +35,7 @@ $(LIBDYLIB): $(PLATFORM)
 
 clean:
 	$(MAKE) -C $(PLATFORM) clean
-	rm -f .installed-$(PLATFORM)
+	rm -f .installed-$(PLATFORM) .configured-$(PLATFORM)
 
 distclean::
-	rm -rf $(PLATFORM) .installed-$(PLATFORM)
+	rm -rf $(PLATFORM) .installed-$(PLATFORM) .configured-$(PLATFORM)

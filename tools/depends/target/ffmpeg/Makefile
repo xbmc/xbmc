@@ -40,15 +40,16 @@ endif
 include ../../download-files.include
 all: .installed-$(PLATFORM)
 
-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
+.configured-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)/build
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); cp ../CMakeLists.txt ./
 	cd $(PLATFORM); cp ../001-ffmpeg-all-libpostproc-plugin.patch ./
 	cd $(PLATFORM)/build; $(CMAKE) $(CMAKE_ARGS) ..
+	touch $@
 
-.build-$(PLATFORM): $(PLATFORM)
+.build-$(PLATFORM): .configured-$(PLATFORM)
 	$(MAKE) -C $(PLATFORM)/build
 	touch $@
 
@@ -58,7 +59,7 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 
 clean:
 	$(MAKE) -C $(PLATFORM) clean
-	rm -f .installed-$(PLATFORM)
+	rm -f .installed-$(PLATFORM) .configured-$(PLATFORM)
 
 distclean::
-	rm -rf $(PLATFORM) .installed-$(PLATFORM)
+	rm -rf $(PLATFORM) .installed-$(PLATFORM) .configured-$(PLATFORM)

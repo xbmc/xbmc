@@ -14,12 +14,13 @@ all: .installed-$(PLATFORM)
 
 download:
 
-$(PLATFORM): $(DEPS)
+.configured-$(PLATFORM): $(DEPS)
 	-rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)/build
 	cd $(PLATFORM); cp -a ../src/* .
 	cd $(PLATFORM)/build; $(CMAKE_FOR_BUILD) $(CMAKE_OPTIONS) ..
+	touch $@
 
-$(APP): $(PLATFORM)
+$(APP): .configured-$(PLATFORM)
 	$(MAKE) -C $(PLATFORM)/build
 
 .installed-$(PLATFORM): $(APP)
@@ -30,5 +31,5 @@ clean:
 	$(MAKE) -C $(PLATFORM)/build clean
 
 distclean::
-	rm -rf $(PLATFORM) .installed-$(PLATFORM)
+	rm -rf $(PLATFORM) .installed-$(PLATFORM) .configured-$(PLATFORM)
 	-rm -rf bin

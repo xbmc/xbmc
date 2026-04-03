@@ -5,10 +5,11 @@ LIBDYLIB=lib$(APP_NAME).so
 
 all: $(PLATFORM)/$(LIBDYLIB) .installed-$(PLATFORM)
 
-$(PLATFORM):
+.configured-$(PLATFORM):
 	mkdir -p $(PLATFORM)
+	touch $@
 
-$(PLATFORM)/$(LIBDYLIB): $(PLATFORM) $(DEPS)
+$(PLATFORM)/$(LIBDYLIB): .configured-$(PLATFORM) $(DEPS)
 	$(CC) -shared -o $(PLATFORM)/lib$(APP_NAME).so dummy-libxbmc.c
 
 .installed-$(PLATFORM): $(PLATFORM)/$(LIBDYLIB)
@@ -18,7 +19,7 @@ $(PLATFORM)/$(LIBDYLIB): $(PLATFORM) $(DEPS)
 
 clean:
 	rm -rf $(PLATFORM)
-	rm -f .installed-$(PLATFORM)
+	rm -f .installed-$(PLATFORM) .configured-$(PLATFORM)
 
 distclean::
-	rm -rf $(PLATFORM) .installed-$(PLATFORM)
+	rm -rf $(PLATFORM) .installed-$(PLATFORM) .configured-$(PLATFORM)
