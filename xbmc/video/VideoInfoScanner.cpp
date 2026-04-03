@@ -1571,7 +1571,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     // Also populates streamdetails
     if (::UTILS::DISCS::IsBlurayDiscImage(path) || URIUtils::IsBDFile(path))
     {
-      if (CDiscDirectoryHelper::GetOrShowPlaylistSelection(*pItem, BD_PLAYBACK_SIMPLE_MENU, true))
+      if (CDiscDirectoryHelper::GetOrShowPlaylistSelection(*pItem, MenuDecision::SILENT))
         pItem->GetVideoInfoTag()->SetFileNameAndPath(pItem->GetDynPath());
     }
 

@@ -16,7 +16,6 @@
 #include "dialogs/GUIDialogSimpleMenu.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
-#include "settings/DiscSettings.h"
 #include "threads/IRunnable.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
@@ -1036,10 +1035,9 @@ std::vector<CVideoInfoTag> CDiscDirectoryHelper::GetEpisodesOnDisc(const CURL& u
   return episodesOnDisc;
 }
 
-bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(CFileItem& item,
-                                                      int playback,
-                                                      bool silent /* = false */)
+bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(CFileItem& item, MenuDecision playback)
 {
+  const bool silent{playback == MenuDecision::SILENT};
   const std::string originalDynPath{
       item.GetDynPath()}; // Overwritten by dialog selection. Needed for screen refresh.
 
@@ -1054,7 +1052,8 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(CFileItem& item,
         }
 
         // Playlists > 70% longest
-        if (playback == BD_PLAYBACK_SIMPLE_MENU)
+        using enum MenuDecision;
+        if (playback == SHOW_SIMPLE_MENU || playback == SILENT)
           return URIUtils::GetBlurayRootPath(originalDynPath);
 
         // Single main title
@@ -1068,20 +1067,6 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(CFileItem& item,
   {
     CLog::LogF(LOGERROR, "Failed to open video database");
     return false;
-  }
-  usedPlaylists = database.GetPlaylistsByPath(URIUtils::GetBlurayPlaylistPath(originalDynPath));
-
-  // If replacing existing playlist (FORCE_PLAYLIST_SELECTION), remove it from exclude list
-  // as user could choose the same playlist again
-  if (item.GetProperty("force_playlist_selection").asBoolean(false))
-  {
-    CRegExp regex{true, CRegExp::autoUtf8, R"(\/(\d{5}).mpls$)"};
-    if (regex.RegFind(originalDynPath) != -1)
-    {
-      const int playlist{std::stoi(regex.GetMatch(1))};
-      std::erase_if(usedPlaylists, [&playlist](const CVideoDatabase::PlaylistInfo& p)
-                    { return p.playlist == playlist; });
-    }
   }
 
   // Add duration to bluray:// url as needed for episode determination in CBlurayDirectory
@@ -1110,8 +1095,23 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(CFileItem& item,
   CFileItem selectedItem;
   if (!silent)
   {
-    if (playback == BD_PLAYBACK_SIMPLE_MENU)
+    if (playback == MenuDecision::SHOW_SIMPLE_MENU)
     {
+      usedPlaylists = database.GetPlaylistsByPath(URIUtils::GetBlurayPlaylistPath(originalDynPath));
+
+      // If replacing existing playlist (FORCE_PLAYLIST_SELECTION), remove it from exclude list
+      // as user could choose the same playlist again
+      if (item.GetProperty("force_playlist_selection").asBoolean(false))
+      {
+        CRegExp regex{true, CRegExp::autoUtf8, R"(\/(\d{5}).mpls$)"};
+        if (regex.RegFind(originalDynPath) != -1)
+        {
+          const int playlist{std::stoi(regex.GetMatch(1))};
+          std::erase_if(usedPlaylists, [&playlist](const CVideoDatabase::PlaylistInfo& p)
+                        { return p.playlist == playlist; });
+        }
+      }
+
       // Use simple menu dialog to select playlist
       while (true)
       {

@@ -691,6 +691,11 @@ std::string URIUtils::GetDiscUnderlyingFile(const CURL& url)
   return AddFileToFolder(host, filename);
 }
 
+std::string URIUtils::GetBlurayMenuPath(const std::string& path)
+{
+  return AddFileToFolder(GetBlurayPath(path), "menu");
+}
+
 std::string URIUtils::GetBlurayRootPath(const std::string& path)
 {
   return AddFileToFolder(GetBlurayPath(path), "root");

@@ -367,7 +367,8 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
   item->SetProperty("force_playlist_selection", true);
   const int idMovie{m_database.GetMovieId(oldPath)};
 
-  if (XFILE::CDiscDirectoryHelper::GetOrShowPlaylistSelection(*item) &&
+  if (XFILE::CDiscDirectoryHelper::GetOrShowPlaylistSelection(
+          *item, XFILE::MenuDecision::SHOW_SIMPLE_MENU) &&
       oldPath != item->GetDynPath())
   {
     // Add playlist file as bluray://

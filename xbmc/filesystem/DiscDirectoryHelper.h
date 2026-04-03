@@ -9,7 +9,6 @@
 #pragma once
 
 #include "Directory.h"
-#include "settings/DiscSettings.h"
 #include "video/Episode.h"
 #include "video/VideoInfoTag.h"
 
@@ -49,6 +48,15 @@ enum class AddMenuOption : bool
 {
   NO_MENU,
   ADD_MENU
+};
+
+enum class MenuDecision : uint8_t
+{
+  NO_ACTION,
+  SILENT,
+  SHOW_SIMPLE_MENU,
+  SHOW_DISC_MENU,
+  GET_MAIN_TITLE
 };
 
 enum class ENCODING_TYPE : uint8_t
@@ -197,13 +205,10 @@ public:
   /*!
    * \brief Either shows simple menu to select playlist, chooses main feature (movie/episode) playlists or returns if disc menu will be used later.
    * \param item FileItem containing details of desired movie/episode. This is updated with the selected playlist.
-   * \param playback Setting SETTING_DISC_PLAYBACK - determines if the dialog should be shown or the main title selected (if possible).
-   * \param silent If true, the dialog will not be shown and the method will return false if a playlist cannot be automatically selected.
+   * \param playback Determines if the simple dialog should be shown or the main title selected (if possible).
    * \return true if a playlist was selected or if the disc menu will be used later, false if the user cancelled.
    */
-  static bool GetOrShowPlaylistSelection(CFileItem& item,
-                                         int playback = BD_PLAYBACK_SIMPLE_MENU,
-                                         bool silent = false);
+  static bool GetOrShowPlaylistSelection(CFileItem& item, MenuDecision playback);
 
 protected:
   static bool GetDirectoryItems(const std::string& path,
