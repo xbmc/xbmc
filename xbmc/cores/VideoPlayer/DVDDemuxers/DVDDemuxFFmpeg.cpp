@@ -2033,26 +2033,16 @@ int CDVDDemuxFFmpeg::GetChapter()
   if (m_chapters.empty() || m_currentPts == DVD_NOPTS_VALUE)
     return 0;
 
-  const auto chapterCount = static_cast<unsigned int>(m_chapters.size());
   const auto currentPts = std::chrono::milliseconds(DVD_TIME_TO_MSEC(m_currentPts));
+  const std::size_t end = m_chapters.size() - 1;
 
-  for (unsigned i = 0; i < chapterCount; i++)
+  for (std::size_t i = 0; i < end; ++i)
   {
-    const std::chrono::milliseconds startPts = m_chapters[i].m_startPts;
-
-    if (i == chapterCount - 1)
-    {
-      if (currentPts >= startPts)
-        return i + 1;
-    }
-    else
-    {
-      const std::chrono::milliseconds nextStartPts = m_chapters[i + 1].m_startPts;
-
-      if (currentPts >= startPts && currentPts < nextStartPts)
-        return i + 1;
-    }
+    if (currentPts >= m_chapters[i].m_startPts && currentPts < m_chapters[i + 1].m_startPts)
+      return i + 1;
   }
+  if (currentPts >= m_chapters[end].m_startPts)
+    return static_cast<int>(end + 1);
 
   return 0;
 }
