@@ -123,22 +123,24 @@ std::vector<ChapterFFmpeg> CDVDDemuxUtils::LoadChapters(std::span<AVChapter*> ch
 
   result.reserve(chapters.size());
 
-  std::ranges::transform(chapters, std::back_inserter(result),
-                         [](const AVChapter* chapter)
-                         {
-                           ChapterFFmpeg newChapter{};
+  std::ranges::transform(
+      chapters, std::back_inserter(result),
+      [](const AVChapter* chapter)
+      {
+        ChapterFFmpeg newChapter{};
 
-                           newChapter.m_startPts = chapter->start * av_q2d(chapter->time_base);
-                           newChapter.m_endPts = chapter->end * av_q2d(chapter->time_base);
+        std::chrono::duration<double> dsec(chapter->start * av_q2d(chapter->time_base));
+        newChapter.m_startPts = std::chrono::duration_cast<std::chrono::milliseconds>(dsec);
+        dsec = std::chrono::duration<double>(chapter->end * av_q2d(chapter->time_base));
+        newChapter.m_endPts = std::chrono::duration_cast<std::chrono::milliseconds>(dsec);
 
-                           const AVDictionaryEntry* titleTag =
-                               av_dict_get(chapter->metadata, "title", nullptr, 0);
+        const AVDictionaryEntry* titleTag = av_dict_get(chapter->metadata, "title", nullptr, 0);
 
-                           if (titleTag)
-                             newChapter.m_name = titleTag->value;
+        if (titleTag)
+          newChapter.m_name = titleTag->value;
 
-                           return newChapter;
-                         });
+        return newChapter;
+      });
 
   std::ranges::sort(result, std::less(), &ChapterFFmpeg::m_startPts);
 

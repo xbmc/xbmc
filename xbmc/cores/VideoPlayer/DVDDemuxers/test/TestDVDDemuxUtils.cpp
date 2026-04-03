@@ -18,6 +18,8 @@ extern "C"
 #include <libavformat/avformat.h>
 }
 
+using namespace std::chrono_literals;
+
 struct TestAVChapter
 {
   int timebasenum;
@@ -36,21 +38,21 @@ struct TestChapter
 // clang-format off
 const TestChapter testChapters[] = {
   {{{{1, 1, 0, 1, "A"}, {1, 1, 1, 2, "B"}}},
-    {{{0.0, 1.0, "A"}, {1.0, 2.0, "B"}}}},
+    {{{0s, 1s, "A"}, {1s, 2s, "B"}}}},
   // Test timebase
   {{{{1, 1000, 0, 10000, "A"}, {20, 500, 250, 500, "B"}}},
-    {{{0.0, 10.0, "A"}, {10.0, 20.0, "B"}}}},
+    {{{0s, 10s, "A"}, {10s, 20s, "B"}}}},
   // Overlapping chapters
   {{{{1, 1, 0, 11, "A"}, {1, 1, 10, 20, "B"}}},
-    {{{0.0, 11.0, "A"}, {10.0, 20.0, "B"}}}},
+    {{{0s, 11s, "A"}, {10s, 20s, "B"}}}},
   // Chapter markers
   {{{{1, 1, 0, 0, "A"}, {1, 1, 10, 10, "B"}}},
-    {{{0.0, 0.0, "A"}, {10.0, 10.0, "B"}}}},
+    {{{0s, 0s, "A"}, {10s, 10s, "B"}}}},
   {{{{1, 1, 0, 0, "A"}, {1, 1, 10, 0, "B"}}},
-    {{{0.0, 0.0, "A"}, {10.0, 0.0, "B"}}}},
+    {{{0s, 0s, "A"}, {10s, 0s, "B"}}}},
   // Out of order chapters
   {{{{1, 1, 10, 20, "B"}, {1, 1, 0, 10, "A"}}},
-    {{{0.0, 10.0, "A"}, {10.0, 20.0, "B"}}}},
+    {{{0s, 10s, "A"}, {10s, 20s, "B"}}}},
 };
 // clang-format on
 

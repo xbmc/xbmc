@@ -10,6 +10,7 @@
 
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 
+#include <chrono>
 #include <span>
 #include <string>
 #include <vector>
@@ -21,8 +22,8 @@ struct ChapterFFmpeg
 {
   bool operator==(const ChapterFFmpeg&) const = default;
 
-  double m_startPts; // movie time, in seconds
-  double m_endPts; // movie time, in seconds
+  std::chrono::milliseconds m_startPts;
+  std::chrono::milliseconds m_endPts;
   std::string m_name;
 };
 
