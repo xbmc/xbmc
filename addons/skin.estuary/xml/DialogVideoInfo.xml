@@ -654,6 +654,12 @@
 							<visible>!String.IsEmpty(ListItem.Trailer) + ![String.StartsWith(Container.FolderPath,plugin://) + String.Contains(Container.FolderPath,trailer)]</visible>
 						</item>
 						<item>
+							<label>$LOCALIZE[31049]</label>
+							<icon>icons/infodialogs/media_details.png</icon>
+							<onclick>SetProperty(InfoViewer_Header,$LOCALIZE[31049],home)</onclick>
+							<onclick>ActivateWindow(1111)</onclick>
+						</item>
+						<item>
 							<label>$LOCALIZE[31003]</label>
 							<icon>icons/infodialogs/cinema.png</icon>
 							<onclick>Dialog.Close(MovieInformation)</onclick>

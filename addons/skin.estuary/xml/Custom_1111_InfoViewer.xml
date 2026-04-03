@@ -1,0 +1,1370 @@
+<?xml version="1.0" encoding="utf-8"?>
+<window type="dialog" id="1111">
+	<defaultcontrol always="true">2000</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<controls>
+		<control type="group">
+			<centerleft>50%</centerleft>
+			<centertop>50%</centertop>
+			<width>1400</width>
+			<height>760</height>
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="1400" />
+				<param name="height" value="760" />
+				<param name="header_label" value="$INFO[Window(home).Property(InfoViewer_Header)]" />
+				<param name="header_id" value="1" />
+			</include>
+			<control type="grouplist" id="2000">
+				<left>0</left>
+				<top>90</top>
+				<width>1388</width>
+				<height>650</height>
+				<onleft>3000</onleft>
+				<onright>3000</onright>
+				<pagecontrol>3000</pagecontrol>
+				<itemgap>10</itemgap>
+				<usecontrolcoords>true</usecontrolcoords>
+				<control type="label" id="100">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[UPPERCASE]$LOCALIZE[157][/UPPERCASE]</label>
+					<font>font32_title</font>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label" id="101">
+					<posx>20</posx>
+					<height>50</height>
+					<label>$LOCALIZE[195]</label>
+					<font>font13</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>String.IsEmpty(ListItem.VideoCodec)</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="102" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31600]: [/COLOR]$VAR[VideoCodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31600]: $VAR[VideoCodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.VideoCodec)" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="103" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31601]: [/COLOR]$INFO[ListItem.VideoResolution]" />
+					<param name="altlabel" value="$LOCALIZE[31601]: $INFO[ListItem.VideoResolution]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.VideoResolution)" />
+				</include>	
+				<include content="InfoViewerButton">
+					<param name="control_id" value="104" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[20474]: [/COLOR]$VAR[VideoHDRType1Var]$INFO[ListItem.Property(HdrDetail.1), P]$VAR[VideoHDRType2Var, | ]$INFO[ListItem.Property(HdrDetail.2)" />
+					<param name="altlabel" value="$LOCALIZE[20474]: $VAR[VideoHDRType1Var]$INFO[ListItem.Property(HdrDetail.1), P]$VAR[VideoHDRType2Var, | ]$INFO[ListItem.Property(HdrDetail.2)" />
+					<param name="visible" value="!String.IsEmpty(ListItem.HdrType)" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="107" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31602]: [/COLOR]$INFO[ListItem.VideoAspect]" />
+					<param name="altlabel" value="$LOCALIZE[31602]: $INFO[ListItem.VideoAspect]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.VideoAspect)" />
+				</include>
+				<control type="label" id="200">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[UPPERCASE]$LOCALIZE[292][/UPPERCASE]</label>
+					<font>font32_title</font>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label" id="201">
+					<posx>20</posx>
+					<height>50</height>
+					<label>$LOCALIZE[195]</label>
+					<font>font13</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>String.IsEmpty(ListItem.AudioCodec)</visible>
+				</control>
+				<control type="label" id="205">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[1][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.1))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="206" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack1CodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31604]: $VAR[AudioTrack1CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.1))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="207" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.1)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: $INFO[ListItem.Property(AudioChannels.1)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.1))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="208" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.1)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.1)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.1))" />
+				</include>
+				<control type="label" id="210">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[2][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.2))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="211" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack2CodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31604]: $VAR[AudioTrack2CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.2))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="212" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.2)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: $INFO[ListItem.Property(AudioChannels.2)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.2))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="213" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.2)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.2)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.2))" />
+				</include>
+				<control type="label" id="220">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[3][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.3))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="221" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack3CodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31604]: $VAR[AudioTrack3CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.3))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="222" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.3)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: $INFO[ListItem.Property(AudioChannels.3)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.3))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="223" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.3)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.3)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.3))" />
+				</include>
+				<control type="label" id="225">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[4][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.4))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="226" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack4CodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31604]: $VAR[AudioTrack4CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.4))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="227" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.4)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: $INFO[ListItem.Property(AudioChannels.4)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.4))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="228" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.4)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.4)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.4))" />
+				</include>
+				<control type="label" id="230">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[5][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.5))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="231" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack5CodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31604]: $VAR[AudioTrack5CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.5))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="232" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.5)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: $INFO[ListItem.Property(AudioChannels.5)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.5))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="233" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.5)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.5)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.5))" />
+				</include>
+				<control type="label" id="235">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[6][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.6))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="236" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack6CodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31604]: $VAR[AudioTrack6CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.6))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="237" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.6)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.6)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.6))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="238" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.6)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.6)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.6))" />
+				</include>
+				<control type="label" id="240">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[7][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.7))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="241" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack7CodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31604]: $VAR[AudioTrack7CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.7))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="242" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.7)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: $INFO[ListItem.Property(AudioChannels.7)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.7))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="243" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.7)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.7)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.7))" />
+				</include>
+				<control type="label" id="245">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[8][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.8))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="246" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack8CodecVar]" />
+					<param name="altlabel" value="Audio Codec: $VAR[AudioTrack8CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.8))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="247" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.8)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: $INFO[ListItem.Property(AudioChannels.8)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.8))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="248" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.8)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.8)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.8))" />
+				</include>
+				<control type="label" id="250">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[9][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.9))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="251" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack9CodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31604]: $VAR[AudioTrack9CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.9))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="252" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.9)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: $INFO[ListItem.Property(AudioChannels.9)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.9))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="253" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.9)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.9)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.9))" />
+				</include>
+				<control type="label" id="255">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[10][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.10))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="256" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack10CodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31604]: $VAR[AudioTrack10CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.10))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="257" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.10)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: $INFO[ListItem.Property(AudioChannels.10)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.10))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="258" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.10)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.10)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.10))" />
+				</include>
+				<control type="label" id="260">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[11][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.11))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="261" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack11CodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31604]: $VAR[AudioTrack11CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.11))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="262" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.11)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: $INFO[ListItem.Property(AudioChannels.11)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.11))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="263" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.11)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.11)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.11))" />
+				</include>
+				<control type="label" id="265">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[12][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.12))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="266" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack12CodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31604]: $VAR[AudioTrack12CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.12))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="267" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.12)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: $INFO[ListItem.Property(AudioChannels.12)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.12))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="268" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.12)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.12)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.12))" />
+				</include>
+				<control type="label" id="270">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[13][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.13))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="271" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack13CodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31604]: $VAR[AudioTrack13CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.13))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="272" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.13)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: $INFO[ListItem.Property(AudioChannels.13)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.13))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="273" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.13)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.13)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.13))" />
+				</include>
+				<control type="label" id="275">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[14][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.14))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="276" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack14CodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31604]: $VAR[AudioTrack14CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.14))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="277" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.14)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: $INFO[ListItem.Property(AudioChannels.14)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.14))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="278" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.14)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.14)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.14))" />
+				</include>
+				<control type="label" id="280">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[15][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.15))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="281" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack15CodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31604]: $VAR[AudioTrack15CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.15))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="282" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.15)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: $INFO[ListItem.Property(AudioChannels.15)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.15))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="283" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.15)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.15)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.15))" />
+				</include>
+				<control type="label" id="290">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[16][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.16))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="291" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack16CodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31604]: $VAR[AudioTrack16CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.16))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="292" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.16)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: $INFO[ListItem.Property(AudioChannels.16)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.16))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="293" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.16)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.16)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.16))" />
+				</include>
+				<control type="label" id="295">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[17][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.17))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="296" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack17CodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31604]: $VAR[AudioTrack17CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.17))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="297" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.17)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: $INFO[ListItem.Property(AudioChannels.17)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.17))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="298" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.17)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.17)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.17))" />
+				</include>
+				<control type="label" id="300">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[18][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.18))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="301" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack18CodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31604]: $VAR[AudioTrack18CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.18))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="302" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.18)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: $INFO[ListItem.Property(AudioChannels.18)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.18))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="303" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.18)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.18)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.18))" />
+				</include>
+				<control type="label" id="305">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[19][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.19))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="306" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack19CodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31604]: $VAR[AudioTrack19CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.19))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="307" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.19)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: $INFO[ListItem.Property(AudioChannels.19)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.19))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="309" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.19)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.19)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.19))" />
+				</include>
+				<control type="label" id="310">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[20][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.20))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="311" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack20CodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31604]: $VAR[AudioTrack20CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.20))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="312" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.20)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: $INFO[ListItem.Property(AudioChannels.20)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.20))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="313" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.20)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.20)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.20))" />
+				</include>
+				<control type="label" id="315">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[21][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.21))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="316" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack21CodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31604]: $VAR[AudioTrack21CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.21))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="317" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.21)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: $INFO[ListItem.Property(AudioChannels.21)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.21))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="318" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.21)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.21)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.21))" />
+				</include>
+				<control type="label" id="320">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[22][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.22))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="321" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack22CodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31604]: $VAR[AudioTrack22CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.22))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="322" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.22)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: $INFO[ListItem.Property(AudioChannels.22)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.22))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="323" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.22)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.22)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.22))" />
+				</include>
+				<control type="label" id="325">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[23][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.23))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="326" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack23CodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31604]: $VAR[AudioTrack23CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.23))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="327" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.23)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: $INFO[ListItem.Property(AudioChannels.23)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.23))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="328" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.23)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.23)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.23))" />
+				</include>
+				<control type="label" id="330">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[24][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.24))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="331" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack24CodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31604]: $VAR[AudioTrack24CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.24))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="332" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.24)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: $INFO[ListItem.Property(AudioChannels.24)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.24))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="333" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.24)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.24)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.24))" />
+				</include>
+				<control type="label" id="335">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[25][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.25))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="336" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack25CodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31604]: $VAR[AudioTrack25CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.25))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="337" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.25)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: $INFO[ListItem.Property(AudioChannels.25)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.25))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="338" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.25)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.25)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.25))" />
+				</include>
+				<control type="label" id="340">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[26][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.26))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="341" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack26CodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31604]: $VAR[AudioTrack26CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.26))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="342" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.26)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: $INFO[ListItem.Property(AudioChannels.26)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.26))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="343" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.26)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.26)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.26))" />
+				</include>
+				<control type="label" id="345">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[27][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.27))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="346" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack27CodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31604]: $VAR[AudioTrack27CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.27))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="347" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.27)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: $INFO[ListItem.Property(AudioChannels.27)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.27))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="348" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.27)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.27)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.27))" />
+				</include>
+				<control type="label" id="350">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[28][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.28))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="351" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack28CodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31604]: $VAR[AudioTrack28CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.28))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="352" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.28)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: $INFO[ListItem.Property(AudioChannels.28)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.28))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="353" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.28)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.28)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.28))" />
+				</include>
+				<control type="label" id="355">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[29][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.29))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="356" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack29CodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31604]: $VAR[AudioTrack29CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.29))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="357" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.29)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: $INFO[ListItem.Property(AudioChannels.29)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.29))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="358" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.29)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.29)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.29))" />
+				</include>
+				<control type="label" id="360">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[I]$LOCALIZE[33002] $NUMBER[30][/I]</label>
+					<font>font30_title</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!String.IsEmpty(ListItem.Property(AudioCodec.30))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="361" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31604]: [/COLOR]$VAR[AudioTrack30CodecVar]" />
+					<param name="altlabel" value="$LOCALIZE[31604]: $VAR[AudioTrack30CodecVar]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioCodec.30))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="362" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31605]: [/COLOR]$INFO[ListItem.Property(AudioChannels.30)]" />
+					<param name="altlabel" value="$LOCALIZE[31605]: $INFO[ListItem.Property(AudioChannels.30)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioChannels.30))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="363" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[14218]: [/COLOR]$INFO[ListItem.Property(AudioLanguage.30)]" />
+					<param name="altlabel" value="$LOCALIZE[14218]: $INFO[ListItem.Property(AudioLanguage.30)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(AudioLanguage.30))" />
+				</include>
+				<control type="label" id="400">
+					<posx>20</posx>
+					<height>50</height>
+					<label>[UPPERCASE]$LOCALIZE[287][/UPPERCASE]</label>
+					<font>font32_title</font>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label" id="401">
+					<posx>20</posx>
+					<height>50</height>
+					<label>$LOCALIZE[195]</label>
+					<font>font13</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>String.IsEmpty(ListItem.Property(SubtitleLanguage.1))</visible>
+				</control>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="411" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[1]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.1)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[1]: $INFO[ListItem.Property(SubtitleLanguage.1)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.1))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="412" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[2]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.2)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[2]: $INFO[ListItem.Property(SubtitleLanguage.2)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.2))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="413" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[3]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.3)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[3]: $INFO[ListItem.Property(SubtitleLanguage.3)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.3))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="414" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[4]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.4)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[4]: $INFO[ListItem.Property(SubtitleLanguage.4)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.4))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="415" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[5]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.5)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[5]: $INFO[ListItem.Property(SubtitleLanguage.5)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.5))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="416" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[6]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.6)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[6]: $INFO[ListItem.Property(SubtitleLanguage.6)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.6))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="417" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[7]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.7)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[7]: $INFO[ListItem.Property(SubtitleLanguage.7)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.7))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="418" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[8]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.8)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[8]: $INFO[ListItem.Property(SubtitleLanguage.8)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.8))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="419" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[9]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.9)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[9]: $INFO[ListItem.Property(SubtitleLanguage.9)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.9))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="420" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[10]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.10)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[10]: $INFO[ListItem.Property(SubtitleLanguage.10)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.10))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="421" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[11]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.11)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[11]: $INFO[ListItem.Property(SubtitleLanguage.11)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.11))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="422" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[12]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.12)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[12]: $INFO[ListItem.Property(SubtitleLanguage.12)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.12))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="423" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[13]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.13)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[13]: $INFO[ListItem.Property(SubtitleLanguage.13)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.13))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="424" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[14]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.14)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[14]: $INFO[ListItem.Property(SubtitleLanguage.14)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.14))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="425" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[15]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.15)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[15]: $INFO[ListItem.Property(SubtitleLanguage.15)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.15))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="426" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[16]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.16)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[16]: $INFO[ListItem.Property(SubtitleLanguage.16)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.16))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="427" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[17]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.17)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[17]: $INFO[ListItem.Property(SubtitleLanguage.17)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.17))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="428" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[18]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.18)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[18]: $INFO[ListItem.Property(SubtitleLanguage.18)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.18))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="429" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[19]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.19)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[19]: $INFO[ListItem.Property(SubtitleLanguage.19)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.19))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="430" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[20]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.20)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[20]: $INFO[ListItem.Property(SubtitleLanguage.20)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.20))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="431" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[21]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.21)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[21]: $INFO[ListItem.Property(SubtitleLanguage.21)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.21))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="432" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[22]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.22)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[22]: $INFO[ListItem.Property(SubtitleLanguage.22)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.22))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="433" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[23]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.23)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[23]: $INFO[ListItem.Property(SubtitleLanguage.23)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.23))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="434" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[24]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.24)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[24]: $INFO[ListItem.Property(SubtitleLanguage.24)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.24))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="435" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[25]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.25)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[25]: $INFO[ListItem.Property(SubtitleLanguage.25)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.25))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="436" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[26]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.26)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[26]: $INFO[ListItem.Property(SubtitleLanguage.26)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.26))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="437" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[27]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.27)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[27]: $INFO[ListItem.Property(SubtitleLanguage.27)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.27))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="438" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[28]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.28)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[28]: $INFO[ListItem.Property(SubtitleLanguage.28)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.28))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="439" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[29]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.29)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[29]: $INFO[ListItem.Property(SubtitleLanguage.29)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.29))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="440" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[30]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.30)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[30]: $INFO[ListItem.Property(SubtitleLanguage.10)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.10))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="441" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[31]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.31)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[31]: $INFO[ListItem.Property(SubtitleLanguage.31)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.31))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="442" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[32]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.32)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[32]: $INFO[ListItem.Property(SubtitleLanguage.32)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.32))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="443" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[33]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.33)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[33]: $INFO[ListItem.Property(SubtitleLanguage.33)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.33))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="444" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[34]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.34)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[34]: $INFO[ListItem.Property(SubtitleLanguage.34)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.34))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="445" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[35]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.35)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[35]: $INFO[ListItem.Property(SubtitleLanguage.35)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.35))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="446" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[36]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.36)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[36]: $INFO[ListItem.Property(SubtitleLanguage.36)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.36))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="447" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[37]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.37)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[37]: $INFO[ListItem.Property(SubtitleLanguage.37)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.37))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="448" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[38]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.38)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[38]: $INFO[ListItem.Property(SubtitleLanguage.38)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.38))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="449" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[39]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.39)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[39]: $INFO[ListItem.Property(SubtitleLanguage.39)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.39))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="450" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[40]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.40)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[40]: $INFO[ListItem.Property(SubtitleLanguage.40)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.40))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="451" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[41]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.41)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[41]: $INFO[ListItem.Property(SubtitleLanguage.41)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.41))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="452" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[42]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.42)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[42]: $INFO[ListItem.Property(SubtitleLanguage.42)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.42))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="453" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[43]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.43)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[43]: $INFO[ListItem.Property(SubtitleLanguage.43)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.43))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="454" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[44]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.44)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[44]: $INFO[ListItem.Property(SubtitleLanguage.44)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.44))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="455" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[45]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.45)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[45]: $INFO[ListItem.Property(SubtitleLanguage.45)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.45))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="456" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[46]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.46)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[46]: $INFO[ListItem.Property(SubtitleLanguage.46)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.46))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="457" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[47]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.47)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[47]: $INFO[ListItem.Property(SubtitleLanguage.47)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.47))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="458" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[48]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.48)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[48]: $INFO[ListItem.Property(SubtitleLanguage.48)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.48))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="459" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[49]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.49)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[49]: $INFO[ListItem.Property(SubtitleLanguage.49)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.49))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="460" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[50]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.50)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[50]: $INFO[ListItem.Property(SubtitleLanguage.50)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.50))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="461" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[51]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.51)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[51]: $INFO[ListItem.Property(SubtitleLanguage.51)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.51))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="462" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[52]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.52)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[52]: $INFO[ListItem.Property(SubtitleLanguage.52)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.52))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="463" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[53]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.53)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[53]: $INFO[ListItem.Property(SubtitleLanguage.53)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.53))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="464" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[54]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.54)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[54]: $INFO[ListItem.Property(SubtitleLanguage.54)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.54))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="465" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[55]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.55)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[55]: $INFO[ListItem.Property(SubtitleLanguage.55)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.55))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="466" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[56]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.56)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[56]: $INFO[ListItem.Property(SubtitleLanguage.56)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.56))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="467" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[57]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.57)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[57]: $INFO[ListItem.Property(SubtitleLanguage.57)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.57))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="468" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[58]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.58)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[58]: $INFO[ListItem.Property(SubtitleLanguage.58)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.58))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="469" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[59]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.59)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[59]: $INFO[ListItem.Property(SubtitleLanguage.59)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.59))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="470" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[60]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.60)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[60]: $INFO[ListItem.Property(SubtitleLanguage.60)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.60))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="471" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[61]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.61)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[61]: $INFO[ListItem.Property(SubtitleLanguage.61)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.61))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="472" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[62]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.62)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[62]: $INFO[ListItem.Property(SubtitleLanguage.62)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.62))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="473" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[63]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.63)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[63]: $INFO[ListItem.Property(SubtitleLanguage.63)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.63))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="474" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[64]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.64)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[64]: $INFO[ListItem.Property(SubtitleLanguage.64)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.64))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="475" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[65]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.65)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[65]: $INFO[ListItem.Property(SubtitleLanguage.65)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.65))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="476" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[66]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.66)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[66]: $INFO[ListItem.Property(SubtitleLanguage.66)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.66))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="477" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[67]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.67)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[67]: $INFO[ListItem.Property(SubtitleLanguage.67)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.67))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="478" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[68]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.68)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[68]: $INFO[ListItem.Property(SubtitleLanguage.68)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.68))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="479" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[69]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.69)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[69]: $INFO[ListItem.Property(SubtitleLanguage.69)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.69))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="480" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[70]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.70)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[70]: $INFO[ListItem.Property(SubtitleLanguage.70)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.70))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="481" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[71]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.71)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[71]: $INFO[ListItem.Property(SubtitleLanguage.71)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.71))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="482" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[72]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.72)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[72]: $INFO[ListItem.Property(SubtitleLanguage.72)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.72))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="483" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[73]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.73)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[73]: $INFO[ListItem.Property(SubtitleLanguage.73)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.73))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="484" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[74]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.74)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[74]: $INFO[ListItem.Property(SubtitleLanguage.74)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.74))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="485" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[75]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.75)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[75]: $INFO[ListItem.Property(SubtitleLanguage.75)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.75))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="486" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[76]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.76)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[76]: $INFO[ListItem.Property(SubtitleLanguage.76)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.76))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="487" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[77]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.77)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[77]: $INFO[ListItem.Property(SubtitleLanguage.77)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.77))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="488" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[78]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.78)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[78]: $INFO[ListItem.Property(SubtitleLanguage.78)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.78))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="489" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[79]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.79)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[79]: $INFO[ListItem.Property(SubtitleLanguage.79)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.79))" />
+				</include>
+				<include content="InfoViewerButton">
+					<param name="control_id" value="490" />
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[462] $NUMBER[80]: [/COLOR]$INFO[ListItem.Property(SubtitleLanguage.80)]" />
+					<param name="altlabel" value="$LOCALIZE[462] $NUMBER[80]: $INFO[ListItem.Property(SubtitleLanguage.80)]" />
+					<param name="visible" value="!String.IsEmpty(ListItem.Property(SubtitleLanguage.80))" />
+				</include>
+			</control>
+			<control type="scrollbar" id="3000">
+				<right>0</right>
+				<top>90</top>
+				<width>12</width>
+				<height>650</height>
+				<onleft>2000</onleft>
+				<onright>2000</onright>
+				<orientation>vertical</orientation>
+				<animation effect="fade" start="0" end="100" delay="300" time="320">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
+			</control>
+		</control>
+	</controls>
+</window>

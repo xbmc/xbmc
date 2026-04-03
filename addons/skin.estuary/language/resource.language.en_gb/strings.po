@@ -275,7 +275,12 @@ msgctxt "#31048"
 msgid "Available"
 msgstr ""
 
-#empty strings from id 31049 to 31051
+#: /xml/DialogVideoInfo.xml
+msgctxt "#31049"
+msgid "Media Details"
+msgstr ""
+
+#empty strings from id 31050 to 31051
 
 #: /xml/Includes.xml
 msgctxt "#31052"

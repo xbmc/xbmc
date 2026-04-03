@@ -61,7 +61,7 @@
 				<param name="width" value="1000" />
 			</include>
 			<label>$LOCALIZE[31112]</label>
-			<label2>[B]$VAR[ActiveVideoPlayerAudioLanguage]$VAR[AudioCodecVar, | ]$VAR[ObjectAudioTypeVar, / ]$VAR[AudioChannelsVar, ][/B]</label2>
+			<label2>[B]$VAR[ActiveVideoPlayerAudioLanguage]$VAR[AudioCodecVar, | ]$VAR[AudioChannelsVar, ][/B]</label2>
 			<onclick>DialogSelectAudio</onclick>
 			<enable>Integer.IsGreater(VideoPlayer.AudioStreamCount,1)</enable>
 		</control>
@@ -70,7 +70,7 @@
 				<param name="width" value="1000" />
 			</include>
 			<label>$LOCALIZE[31109]</label>
-			<label2>[B]$VAR[VideoCodecVar]$VAR[VideoHDRTypeVar, | ]$INFO[VideoPlayer.VideoResolution, | ]$VAR[VideoResolutionTypeVar, ][/B]</label2>
+			<label2>[B]$VAR[VideoCodecVar]$VAR[VideoHDRTypeVar, | ]$INFO[VideoPlayer.HdrDetail, P]$INFO[VideoPlayer.VideoResolution, | ]$VAR[VideoResolutionTypeVar, ][/B]</label2>
 			<onclick>DialogSelectVideo</onclick>
 			<enable>Integer.IsGreater(VideoPlayer.VideoStreamCount,1)</enable>
 		</control>

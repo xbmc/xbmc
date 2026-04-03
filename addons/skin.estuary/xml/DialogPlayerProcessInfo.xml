@@ -137,7 +137,7 @@
 					<width>885</width>
 					<height>50</height>
 					<aligny>bottom</aligny>
-					<label>$INFO[VideoPlayer.VideoCodec,[COLOR button_focus]$LOCALIZE[31600]:[/COLOR] ]</label>
+					<label>$VAR[VideoCodecVar,[COLOR button_focus]$LOCALIZE[31600]:[/COLOR] ]</label>
 					<font>font14</font>
 					<shadowcolor>black</shadowcolor>
 					<visible>!String.IsEmpty(VideoPlayer.VideoCodec)</visible>
@@ -146,7 +146,7 @@
 					<width>885</width>
 					<height>50</height>
 					<aligny>bottom</aligny>
-					<label>$INFO[VideoPlayer.VideoResolution,[COLOR button_focus]$LOCALIZE[31601]:[/COLOR] ]</label>
+					<label>$INFO[VideoPlayer.VideoResolution,[COLOR button_focus]$LOCALIZE[31601]:[/COLOR] ] $VAR[VideoResolutionTypeVar]</label>
 					<font>font14</font>
 					<shadowcolor>black</shadowcolor>
 					<visible>!String.IsEmpty(VideoPlayer.VideoResolution)</visible>
@@ -154,7 +154,7 @@
 				<control type="label">
 					<width>885</width>
 					<height>50</height>
-					<label>$INFO[VideoPlayer.HdrType,[COLOR button_focus]$LOCALIZE[20474]:[/COLOR] ]</label>
+					<label>$VAR[VideoHDRTypeVar,[COLOR button_focus]$LOCALIZE[20474]:[/COLOR] ]$INFO[VideoPlayer.HdrDetail, P]</label>
 					<font>font14</font>
 					<shadowcolor>black</shadowcolor>
 					<visible>!String.IsEmpty(VideoPlayer.HdrType)</visible>
@@ -163,7 +163,7 @@
 					<width>885</width>
 					<height>50</height>
 					<aligny>bottom</aligny>
-					<label>$INFO[VideoPlayer.VideoAspect,[COLOR button_focus]$LOCALIZE[31602]:[/COLOR] ]</label>
+					<label>$INFO[VideoPlayer.VideoAspect,[COLOR button_focus]$LOCALIZE[31602]: [/COLOR],:1]</label>
 					<font>font14</font>
 					<shadowcolor>black</shadowcolor>
 					<visible>!String.IsEmpty(VideoPlayer.VideoAspect)</visible>
@@ -186,7 +186,7 @@
 					<width>885</width>
 					<height>50</height>
 					<aligny>bottom</aligny>
-					<label>$INFO[VideoPlayer.AudioCodec,[COLOR button_focus]$LOCALIZE[31604]:[/COLOR] ]</label>
+					<label>$VAR[AudioCodecVar,[COLOR button_focus]$LOCALIZE[31604]:[/COLOR] ]</label>
 					<font>font14</font>
 					<shadowcolor>black</shadowcolor>
 					<visible>!String.IsEmpty(VideoPlayer.AudioCodec)</visible>
