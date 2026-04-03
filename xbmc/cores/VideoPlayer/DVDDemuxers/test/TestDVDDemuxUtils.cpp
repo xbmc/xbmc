@@ -53,6 +53,9 @@ const TestChapter testChapters[] = {
   // Out of order chapters
   {{{{1, 1, 10, 20, "B"}, {1, 1, 0, 10, "A"}}},
     {{{0s, 10s, "A"}, {10s, 20s, "B"}}}},
+  // 1st chapter is not at 00:00:00
+  {{{{1, 1, 1, 2, "A"}}},
+    {{{0s, 0s, ""}, {1s, 2s, "A"}}}},
 };
 // clang-format on
 

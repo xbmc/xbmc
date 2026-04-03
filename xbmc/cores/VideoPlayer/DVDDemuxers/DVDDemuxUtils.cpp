@@ -116,6 +116,8 @@ void CDVDDemuxUtils::StoreSideData(DemuxPacket *pkt, AVPacket *src)
 
 std::vector<ChapterFFmpeg> CDVDDemuxUtils::LoadChapters(std::span<AVChapter*> chapters)
 {
+  using namespace std::chrono_literals;
+
   std::vector<ChapterFFmpeg> result;
 
   if (chapters.empty() || chapters.data() == nullptr)
@@ -143,6 +145,10 @@ std::vector<ChapterFFmpeg> CDVDDemuxUtils::LoadChapters(std::span<AVChapter*> ch
       });
 
   std::ranges::sort(result, std::less(), &ChapterFFmpeg::m_startPts);
+
+  // Videoplayer expects the first chapter to start at 00:00:00 - make one up if needed.
+  if (result.front().m_startPts != 0ms)
+    result.insert(result.begin(), ChapterFFmpeg{0ms, 0ms, ""});
 
   return result;
 }
