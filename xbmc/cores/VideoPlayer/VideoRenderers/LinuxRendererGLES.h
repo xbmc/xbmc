@@ -117,6 +117,10 @@ protected:
   void DeleteNV12Texture(int index);
   bool CreateNV12Texture(int index);
 
+  bool UploadYUV422PackedTexture(int index);
+  void DeleteYUV422PackedTexture(int index);
+  bool CreateYUV422PackedTexture(int index);
+
   void CalculateTextureSourceRects(int source, int num_planes);
 
   // renderers

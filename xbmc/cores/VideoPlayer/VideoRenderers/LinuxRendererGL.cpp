@@ -1916,7 +1916,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
   im.height = m_sourceHeight;
   im.width = m_sourceWidth;
   im.cshift_x = 1;
-  im.cshift_y = 1;
+  im.cshift_y = (m_format == AV_PIX_FMT_YUV422P) ? 0 : 1;
 
   switch (m_format)
   {
