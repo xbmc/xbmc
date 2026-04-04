@@ -385,11 +385,6 @@ else()
      FFMPEG_LIBSWSCALE AND
      FFMPEG_LIBSWRESAMPLE)
     set(FFMPEG_FOUND 1)
-
-    # list of sourceplugin headers for find_path
-    if(FFMPEG_LIBPOSTPROC)
-      set(source_plugin_headers libpostproc/postprocess.h)
-    endif()
   endif()
 
   if(FFMPEG_FOUND)
@@ -400,10 +395,17 @@ else()
     set(FFMPEG_VERSION ${REQUIRED_FFMPEG_VERSION})
 
     find_path(FFMPEG_INCLUDE_DIRS libavcodec/avcodec.h libavfilter/avfilter.h libavformat/avformat.h
-                                  libavutil/avutil.h libswscale/swscale.h ${source_plugin_headers}
+                                  libavutil/avutil.h libswscale/swscale.h
               PATH_SUFFIXES ffmpeg
               HINTS ${DEPENDS_PATH}/include ${MINGW_LIBS_DIR}/include
               ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
+
+    if(FFMPEG_LIBPOSTPROC AND NOT FFMPEG_LIBPOSTPROC_INCLUDE_DIRS)
+      find_path(FFMPEG_LIBPOSTPROC_INCLUDE_DIRS libpostproc/postprocess.h
+                PATH_SUFFIXES ffmpeg
+                HINTS ${DEPENDS_PATH}/include ${MINGW_LIBS_DIR}/include
+                ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
+    endif()
 
     # Windows is still just a straight file search. Explicitly search for Dav1d for
     # correct dependency linking
@@ -421,8 +423,7 @@ else()
         if(WIN32 OR WINDOWS_STORE)
           add_library(ffmpeg::${libname} UNKNOWN IMPORTED)
           set_target_properties(ffmpeg::${libname} PROPERTIES
-                                                   IMPORTED_LOCATION "${FFMPEG_${libname_UPPER}}"
-                                                   INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIRS}")
+                                                   IMPORTED_LOCATION "${FFMPEG_${libname_UPPER}}")
         else()
           # pkg-config LDFLAGS always seem to have -l<name> listed. We dont need that, as
           # the target gets a direct path to the physical lib
@@ -451,9 +452,16 @@ else()
           add_library(ffmpeg::${libname} STATIC IMPORTED)
           set_target_properties(ffmpeg::${libname} PROPERTIES
                                                    IMPORTED_LOCATION "${FFMPEG_${libname_UPPER}}"
-                                                   INTERFACE_LINK_LIBRARIES "${${libname}_LDFLAGS}"
-                                                   INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIRS}")
+                                                   INTERFACE_LINK_LIBRARIES "${${libname}_LDFLAGS}")
         endif()
+      endif()
+
+      if(FFMPEG_${libname_UPPER}_INCLUDE_DIRS)
+        set_target_properties(ffmpeg::${libname} PROPERTIES
+                                                 INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_${libname_UPPER}_INCLUDE_DIRS}")
+      else()
+        set_target_properties(ffmpeg::${libname} PROPERTIES
+                                                 INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIRS}")
       endif()
     endmacro()
 
@@ -477,7 +485,6 @@ if(FFMPEG_FOUND)
   if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE IMPORTED)
     set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                     INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIRS}"
                                                                      INTERFACE_COMPILE_DEFINITIONS "${_ffmpeg_definitions}")
   endif()
 
