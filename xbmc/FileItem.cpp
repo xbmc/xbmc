@@ -1315,6 +1315,22 @@ bool CFileItem::IsAlbum() const
 
 void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
 {
+  // Keep the library-facing label for .strm items even when the playback item has already
+  // been resolved to a remote URL and carries a transport-derived label.
+  const bool keepStrmLabel =
+      IsStrm() && item.IsStrm() && item.IsInternetStream() && item.GetDynPath() != item.GetPath();
+
+  if (IsStrm() || item.IsStrm())
+  {
+    CLog::Log(LOGDEBUG,
+              "STRM-SUBS UpdateInfo this(path='{}', dyn='{}', label='{}', isstrm={}) "
+              "item(path='{}', dyn='{}', label='{}', isstrm={}, isinternet={}) "
+              "replaceLabels={} keepStrmLabel={}",
+              GetPath(), GetDynPath(), GetLabel(), IsStrm(), item.GetPath(), item.GetDynPath(),
+              item.GetLabel(), item.IsStrm(), item.IsInternetStream(), replaceLabels,
+              keepStrmLabel);
+  }
+
   if (item.HasVideoInfoTag())
   { // copy info across
     //! @todo premiered info is normally stored in m_dateTime by the db
@@ -1381,7 +1397,7 @@ void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
     SetInvalid();
   }
   SetDynPath(item.GetDynPath());
-  if (replaceLabels && !item.GetLabel().empty())
+  if (replaceLabels && !keepStrmLabel && !item.GetLabel().empty())
     SetLabel(item.GetLabel());
   if (replaceLabels && !item.GetLabel2().empty())
     SetLabel2(item.GetLabel2());
@@ -1396,6 +1412,21 @@ void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
 
 void CFileItem::MergeInfo(const CFileItem& item)
 {
+  // Keep the library-facing label for .strm items even when the playback item has already
+  // been resolved to a remote URL and carries a transport-derived label.
+  const bool keepStrmLabel =
+      IsStrm() && item.IsStrm() && item.IsInternetStream() && item.GetDynPath() != item.GetPath();
+
+  if (IsStrm() || item.IsStrm())
+  {
+    CLog::Log(LOGDEBUG,
+              "STRM-SUBS MergeInfo this(path='{}', dyn='{}', label='{}', isstrm={}) "
+              "item(path='{}', dyn='{}', label='{}', isstrm={}, isinternet={}) "
+              "keepStrmLabel={}",
+              GetPath(), GetDynPath(), GetLabel(), IsStrm(), item.GetPath(), item.GetDynPath(),
+              item.GetLabel(), item.IsStrm(), item.IsInternetStream(), keepStrmLabel);
+  }
+
   // TODO: Currently merge the metadata/art info is implemented for video case only
   if (item.HasVideoInfoTag())
   {
@@ -1454,7 +1485,7 @@ void CFileItem::MergeInfo(const CFileItem& item)
     SetInvalid();
   }
   SetDynPath(item.GetDynPath());
-  if (!item.GetLabel().empty())
+  if (!keepStrmLabel && !item.GetLabel().empty())
     SetLabel(item.GetLabel());
   if (!item.GetLabel2().empty())
     SetLabel2(item.GetLabel2());
