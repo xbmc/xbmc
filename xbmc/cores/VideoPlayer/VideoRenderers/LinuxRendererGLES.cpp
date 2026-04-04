@@ -1846,6 +1846,13 @@ void CLinuxRendererGLES::DeleteYUV422PackedTexture(int index)
 
 bool CLinuxRendererGLES::CreateYUV422PackedTexture(int index)
 {
+  if (!CServiceBroker::GetRenderSystem()->IsExtSupported("GL_EXT_texture_format_BGRA8888"))
+  {
+    CLog::Log(LOGERROR, "CLinuxRendererGLES::CreateYUV422PackedTexture - "
+                        "GL_EXT_texture_format_BGRA8888 not supported");
+    return false;
+  }
+
   // since we also want the field textures, pitch must be texture aligned
   CPictureBuffer& buf = m_buffers[index];
   YuvImage& im = buf.image;
