@@ -933,6 +933,11 @@ bool CFileItem::IsLibraryFolder() const
   return GetURL().IsLibraryFolder();
 }
 
+bool CFileItem::IsStrm() const
+{
+  return GetURL().HasExtension(".strm");
+}
+
 bool CFileItem::IsPythonScript() const
 {
   return GetURL().HasExtension(".py");
@@ -2010,7 +2015,7 @@ std::string CFileItem::GetLocalMetadataPath() const
 
 std::string CFileItem::GetSubtitleAnchorPath() const
 {
-  if (GetURL().HasExtension(".strm"))
+  if (IsStrm())
     return m_strPath;
 
   return GetDynPath();

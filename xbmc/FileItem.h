@@ -156,6 +156,7 @@ public:
 
   bool IsGame() const;
   bool IsLibraryFolder() const;
+  bool IsStrm() const;
   bool IsPythonScript() const;
   bool IsPlugin() const;
   bool IsScript() const;

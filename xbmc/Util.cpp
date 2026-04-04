@@ -2111,8 +2111,19 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
   auto start = std::chrono::steady_clock::now();
 
   CFileItem item(strMovie, false);
-  if ((NETWORK::IsInternetStream(item) && !URIUtils::IsOnLAN(item.GetDynPath())) ||
-      PLAYLIST::IsPlayList(item) || item.IsPVR() || !VIDEO::IsVideo(item))
+  // A local .strm is the anchor we want to scan around, not the playlist/stream we want to reject.
+  const bool isStrmAnchor = item.IsStrm();
+  const bool isInternetStream = NETWORK::IsInternetStream(item);
+  const bool isOnLAN = URIUtils::IsOnLAN(item.GetDynPath());
+  const bool isPlayList = PLAYLIST::IsPlayList(item);
+  const bool isVideo = VIDEO::IsVideo(item);
+  const bool isPvr = item.IsPVR();
+  CLog::Log(LOGDEBUG,
+            "STRM-SUBS scan anchor path='{}' dyn='{}' isStrm={} isPlaylist={} isVideo={} "
+            "isInternetStream={} isOnLAN={} isPvr={}",
+            item.GetPath(), item.GetDynPath(), isStrmAnchor, isPlayList, isVideo,
+            isInternetStream, isOnLAN, isPvr);
+  if ((isInternetStream && !isOnLAN) || (!isStrmAnchor && isPlayList) || isPvr || (!isStrmAnchor && !isVideo))
     return;
 
   CLog::Log(LOGDEBUG, "{}: Searching for subtitles...", __FUNCTION__);
