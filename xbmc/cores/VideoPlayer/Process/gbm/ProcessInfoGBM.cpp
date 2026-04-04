@@ -49,9 +49,9 @@ std::vector<AVPixelFormat> CProcessInfoGBM::GetRenderFormats()
   std::vector<AVPixelFormat> formats = {
       AV_PIX_FMT_NV12,
       AV_PIX_FMT_YUV420P,
-      // TODO: verify YUV422 on existing GL renderer, add support to GLES renderer
-      // AV_PIX_FMT_YUYV422,
-      // AV_PIX_FMT_UYVY422,
+      AV_PIX_FMT_YUV422P,
+      AV_PIX_FMT_YUYV422,
+      AV_PIX_FMT_UYVY422,
   };
   // clang-format on
 
