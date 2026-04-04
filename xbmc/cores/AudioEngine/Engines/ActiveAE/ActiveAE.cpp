@@ -1735,10 +1735,11 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat& format,
     format.m_dataFormat = AE_FMT_RAW;
     format.m_sampleRate = 48000;
     format.m_channelLayout = AE_CH_LAYOUT_2_0;
-    format.m_streamInfo.m_type =
-        settings.eac3passthrough ? CAEStreamInfo::STREAM_TYPE_EAC3 : CAEStreamInfo::STREAM_TYPE_AC3;
     format.m_streamInfo.m_channels = 2;
     format.m_streamInfo.m_sampleRate = 48000;
+    format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_EAC3;
+    if (!settings.eac3passthrough || !m_sink.SupportsFormat(settings.passthroughdevice, format))
+      format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_AC3;
     if (mode)
       *mode = MODE_TRANSCODE;
   }
