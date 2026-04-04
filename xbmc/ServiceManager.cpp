@@ -126,7 +126,15 @@ bool CServiceManager::InitStageOne()
 bool CServiceManager::InitStageTwo(const std::string& profilesUserDataFolder)
 {
   // Initialize the addon database (must be before the addon manager is init'd)
-  m_databaseManager = std::make_unique<CDatabaseManager>();
+  try
+  {
+    m_databaseManager = std::make_unique<CDatabaseManager>();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGFATAL, "CServiceManager::{}: Unable to start CDatabaseManager", __FUNCTION__);
+    return false;
+  }
 
   m_binaryAddonManager = std::make_unique<
       ADDON::

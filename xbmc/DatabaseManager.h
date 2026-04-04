@@ -65,6 +65,7 @@ public:
 private:
   std::atomic<bool> m_bIsUpgrading;
   std::atomic<bool> m_connecting{false};
+  bool m_initialized{false};
 
   enum class DBStatus
   {
@@ -74,9 +75,10 @@ private:
     FAILED
   };
   void UpdateStatus(const std::string& name, DBStatus status);
-  void UpdateDatabase(CDatabase &db, DatabaseSettings *settings = NULL);
+  bool UpdateDatabase(CDatabase& db, DatabaseSettings* settings = nullptr);
   bool Update(CDatabase &db, const DatabaseSettings &settings);
   bool UpdateVersion(CDatabase &db, const std::string &dbName);
+  bool InitializeInternal();
 
   CCriticalSection            m_section;     ///< Critical section protecting m_dbStatus.
   std::map<std::string, DBStatus> m_dbStatus; ///< Our database status map.

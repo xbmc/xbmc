@@ -22,6 +22,7 @@
 
 #include <algorithm>
 #include <mutex>
+#include <stdexcept>
 
 using namespace PVR;
 
@@ -30,7 +31,8 @@ CDatabaseManager::CDatabaseManager() :
 {
   // Initialize the addon database (must be before the addon manager is init'd)
   ADDON::CAddonDatabase db;
-  UpdateDatabase(db);
+  if (!UpdateDatabase(db))
+    throw std::runtime_error("unable to initialize the Add-On database");
 }
 
 CDatabaseManager::~CDatabaseManager() = default;
@@ -39,32 +41,43 @@ bool CDatabaseManager::Initialize()
 {
   std::unique_lock lock(m_section);
 
-  m_dbStatus.clear();
+  if (m_initialized)
+    return false;
 
-  CLog::Log(LOGDEBUG, "{}, updating databases...", __FUNCTION__);
-
-  const std::shared_ptr<CAdvancedSettings> advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
-
-  // NOTE: Order here is important. In particular, CTextureDatabase has to be updated
-  //       before CVideoDatabase.
-  {
-    ADDON::CAddonDatabase db;
-    UpdateDatabase(db);
-  }
-  { CViewDatabase db; UpdateDatabase(db); }
-  { CTextureDatabase db; UpdateDatabase(db); }
-  { CMusicDatabase db; UpdateDatabase(db, &advancedSettings->m_databaseMusic); }
-  { CVideoDatabase db; UpdateDatabase(db, &advancedSettings->m_databaseVideo); }
-  { CPVRDatabase db; UpdateDatabase(db, &advancedSettings->m_databaseTV); }
-  { CPVREpgDatabase db; UpdateDatabase(db, &advancedSettings->m_databaseEpg); }
-
-  CLog::Log(LOGDEBUG, "{}, updating databases... DONE", __FUNCTION__);
+  const bool rc = InitializeInternal();
 
   m_bIsUpgrading = false;
   m_connecting = false;
+  m_initialized = true;
 
-  return std::ranges::all_of(m_dbStatus,
-                             [](const auto& db) { return db.second == DBStatus::READY; });
+  return rc;
+}
+
+bool CDatabaseManager::InitializeInternal()
+{
+  CLog::LogF(LOGDEBUG, "updating databases...");
+
+  const std::shared_ptr<CAdvancedSettings> advancedSettings =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+
+  // NOTE: CAddonDatabase initialized in the constructor
+  // NOTE: Order here is important. In particular, CTextureDatabase has to be updated
+  //       before CVideoDatabase.
+  if (CViewDatabase db; !UpdateDatabase(db))
+    return false;
+  if (CTextureDatabase db; !UpdateDatabase(db))
+    return false;
+  if (CMusicDatabase db; !UpdateDatabase(db, &advancedSettings->m_databaseMusic))
+    return false;
+  if (CVideoDatabase db; !UpdateDatabase(db, &advancedSettings->m_databaseVideo))
+    return false;
+  if (CPVRDatabase db; !UpdateDatabase(db, &advancedSettings->m_databaseTV))
+    return false;
+  if (CPVREpgDatabase db; !UpdateDatabase(db, &advancedSettings->m_databaseEpg))
+    return false;
+
+  CLog::LogF(LOGDEBUG, "updating databases... DONE");
+  return true;
 }
 
 bool CDatabaseManager::CanOpen(const std::string &name)
@@ -76,14 +89,16 @@ bool CDatabaseManager::CanOpen(const std::string &name)
   return false; // db isn't even attempted to update yet
 }
 
-void CDatabaseManager::UpdateDatabase(CDatabase &db, DatabaseSettings *settings)
+bool CDatabaseManager::UpdateDatabase(CDatabase& db, DatabaseSettings* settings)
 {
-  std::string name = db.GetBaseDBName();
+  const std::string name = db.GetBaseDBName();
   UpdateStatus(name, DBStatus::UPDATING);
-  if (Update(db, settings ? *settings : DatabaseSettings()))
+  const bool rc = Update(db, settings ? *settings : DatabaseSettings());
+  if (rc)
     UpdateStatus(name, DBStatus::READY);
   else
     UpdateStatus(name, DBStatus::FAILED);
+  return rc;
 }
 
 bool CDatabaseManager::Update(CDatabase &db, const DatabaseSettings &settings)
