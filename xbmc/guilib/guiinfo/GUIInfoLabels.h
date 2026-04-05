@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -778,6 +778,7 @@ constexpr uint32_t PLAYER_PROCESS_AUDIOCHANNELS      = PLAYER_PROCESS_START + 9;
 constexpr uint32_t PLAYER_PROCESS_AUDIOSAMPLERATE    = PLAYER_PROCESS_START + 10;
 constexpr uint32_t PLAYER_PROCESS_AUDIOBITSPERSAMPLE = PLAYER_PROCESS_START + 11;
 constexpr uint32_t PLAYER_PROCESS_VIDEOSCANTYPE      = PLAYER_PROCESS_START + 12;
+constexpr uint32_t PLAYER_PROCESS_SUBTITLESDECODER   = PLAYER_PROCESS_START + 13;
 
 constexpr uint32_t ADDON_INFOS_START                 = 1600;
 constexpr uint32_t ADDON_SETTING_STRING              = ADDON_INFOS_START;

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -141,6 +141,7 @@ bool CVideoPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, std::string &filena
 {
   std::unique_lock lock(m_section);
 
+  m_processInfo.ResetSubtitleCodecInfo();
   CloseStream(false);
   m_streaminfo = hints;
 
@@ -174,7 +175,9 @@ bool CVideoPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, std::string &filena
   m_pOverlayCodec = CDVDFactoryCodec::CreateOverlayCodec(hints);
   if (m_pOverlayCodec)
   {
-    CLog::Log(LOGDEBUG, "Created subtitles overlay codec: {}", m_pOverlayCodec->GetName());
+    const std::string& name = m_pOverlayCodec->GetName();
+    CLog::Log(LOGDEBUG, "Created subtitles overlay codec: {}", name);
+    m_processInfo.SetSubtitleDecoderName(name);
     return true;
   }
 

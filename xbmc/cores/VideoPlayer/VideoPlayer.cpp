@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -1086,8 +1086,11 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
     }
   }
 
-  if(!valid)
+  if (!valid)
+  {
     CloseStream(m_CurrentSubtitle, false);
+    m_processInfo->ResetSubtitleCodecInfo();
+  }
 
   // only set subtitle visibility if state not stored by dvd navigator, because navigator will restore it (if visible)
   if (!std::dynamic_pointer_cast<CDVDInputStreamNavigator>(m_pInputStream) ||

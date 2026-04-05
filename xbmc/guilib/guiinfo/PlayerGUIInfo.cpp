@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012-2018 Team Kodi
+ *  Copyright (C) 2012-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -345,6 +345,9 @@ bool CPlayerGUIInfo::GetLabel(std::string& value,
       return true;
     case PLAYER_PROCESS_AUDIOBITSPERSAMPLE:
       value = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetAudioBitsPerSample());
+      return true;
+    case PLAYER_PROCESS_SUBTITLESDECODER:
+      value = CServiceBroker::GetDataCacheCore().GetSubtitleDecoderName();
       return true;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -113,6 +113,9 @@ bool CDVDOverlayCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
     avcodec_free_context(&m_pCodecContext);
     return false;
   }
+
+  if (pCodec->name != nullptr)
+    SetName("ff-" + std::string(pCodec->name));
 
   return true;
 }

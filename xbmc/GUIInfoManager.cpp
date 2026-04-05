@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -1120,7 +1120,7 @@ constexpr std::array<InfoMap, 10> player_times = {{
 ///   \table_row3{   <b>`Player.Process(audiochannels)`</b>,
 ///                  \anchor Player_Process_audiochannels
 ///                  _string_,
-///     @return The audiodecoder name of the currently playing item.
+///     @return The audiochannels string of the currently playing item.
 ///     <p><hr>
 ///     @skinning_v17 **[New Infolabel]** \link Player_Process_audiochannels `Player.Process(audiochannels)`\endlink
 ///     <p>
@@ -1141,11 +1141,19 @@ constexpr std::array<InfoMap, 10> player_times = {{
 ///     @skinning_v17 **[New Infolabel]** \link Player_Process_audiobitspersample `Player.Process(audiobitspersample)`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Player.Process(subtitlesdecoder)`</b>,
+///                  \anchor Player_Process_subtitlesdecoder
+///                  _string_,
+///     @return The name of the subtitles decoder active for the currently playing item.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link Player_Process_subtitlesdecoder `Player.Process(subtitlesdecoder)`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 13> player_process = {{
+constexpr std::array<InfoMap, 14> player_process = {{
     {"videodecoder",        PLAYER_PROCESS_VIDEODECODER},
     {"deintmethod",         PLAYER_PROCESS_DEINTMETHOD},
     {"pixformat",           PLAYER_PROCESS_PIXELFORMAT},
@@ -1159,6 +1167,7 @@ constexpr std::array<InfoMap, 13> player_process = {{
     {"audiosamplerate",     PLAYER_PROCESS_AUDIOSAMPLERATE},
     {"audiobitspersample",  PLAYER_PROCESS_AUDIOBITSPERSAMPLE},
     {"videoscantype",       PLAYER_PROCESS_VIDEOSCANTYPE},
+    {"subtitlesdecoder",    PLAYER_PROCESS_SUBTITLESDECODER},
 }};
 // clang-format on
 
