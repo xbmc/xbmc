@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -11,8 +11,11 @@
 #include "ServiceBroker.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "utils/Map.h"
 #include "utils/StreamUtils.h"
 #include "utils/StringUtils.h"
+
+#include <string_view>
 
 std::string CDemuxStreamAudio::GetStreamType() const
 {
@@ -141,6 +144,37 @@ std::string CDemuxStreamAudio::GetStreamType() const
 
   strInfo.append(" ");
   strInfo.append(StreamUtils::GetLayout(iChannels));
+
+  return strInfo;
+}
+
+constexpr auto subtitleTypes = make_map<int, std::string_view>({
+    {AV_CODEC_ID_DVD_SUBTITLE, "VobSub"},
+    {AV_CODEC_ID_DVB_SUBTITLE, "DVB-SUB"},
+    {AV_CODEC_ID_SSA, "SSA"},
+    {AV_CODEC_ID_MOV_TEXT, "TTXT"}, // mov-text, timed text
+    {AV_CODEC_ID_TEXT, "Text"},
+    {AV_CODEC_ID_XSUB, "XSUB"},
+    {AV_CODEC_ID_HDMV_PGS_SUBTITLE, "PGS"},
+    {AV_CODEC_ID_DVB_TELETEXT, "DVB-TXT"},
+    {AV_CODEC_ID_SRT, "SubRip"},
+    {AV_CODEC_ID_MICRODVD, "MicroDVD"},
+    {AV_CODEC_ID_SAMI, "SAMI"},
+    {AV_CODEC_ID_REALTEXT, "RealText"},
+    {AV_CODEC_ID_SUBRIP, "SubRip"},
+    {AV_CODEC_ID_WEBVTT, "WebVTT"},
+    {AV_CODEC_ID_MPL2, "MPL2"},
+    {AV_CODEC_ID_VPLAYER, "VPlayer"},
+    {AV_CODEC_ID_ASS, "ASS"},
+    {AV_CODEC_ID_TTML, "TTML"},
+});
+
+std::string CDemuxStreamSubtitle::GetStreamType() const
+{
+  std::string strInfo;
+
+  if (auto it = subtitleTypes.find(codec); it != subtitleTypes.cend())
+    strInfo = it->second;
 
   return strInfo;
 }

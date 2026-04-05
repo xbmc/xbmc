@@ -636,8 +636,14 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
       value = m_subtitleInfo.language;
       return true;
     case VIDEOPLAYER_SUBTITLES_CODEC:
-      value = m_subtitleInfo.codecName;
+    {
+      const std::string& param = info.GetData3();
+      if (param.empty() || !StringUtils::EqualsNoCase(param, "description"))
+        value = m_subtitleInfo.codecName;
+      else
+        value = m_subtitleInfo.codecDesc;
       return true;
+    }
     case VIDEOPLAYER_COVER:
       if (m_appPlayer->IsPlayingVideo())
       {

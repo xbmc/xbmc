@@ -975,6 +975,7 @@ void CDVDInputStreamNavigator::SetSubtitleStreamName(SubtitleStreamInfo &info, c
         break;
     }
     info.codecName = "dvd_subtitle";
+    info.codecDesc = "VobSub";
   }
 }
 

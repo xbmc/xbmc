@@ -3937,7 +3937,11 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///   \table_row3{   <b>`VideoPlayer.SubtitlesCodec`</b>,
 ///                  \anchor VideoPlayer_SubtitlesCodec
 ///                  _string_,
-///     @return The codec of the current subtitles of the currently playing video. Possible values include:
+///     @param[in] format (optional) format of the info label. Possible values:
+///       - <b>(blank)</b> no format value / default format: raw codec name
+///       - <b>description</b> short human-readable name of the codec. If undefined\, an empty string is returned.
+///     @return The codec of the current subtitles of the currently playing video\, formatted per optional
+///       parameter. Values of the default format include:
 ///       - <b>ass</b>
 ///       - <b>dvb_subtitle</b>
 ///       - <b>dvb_teletext</b>
@@ -3955,7 +3959,25 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///       - <b>ttml</b>
 ///       - <b>vplayer</b>
 ///       - <b>webvtt</b>
-///       - <b>xsub</b>
+///
+///     Possible values for format "description":
+///       - <b>ASS</b>
+///       - <b>DVB-SUB</b>
+///       - <b>DVB-TXT</b>
+///       - <b>MicroDVD</b>
+///       - <b>MOV-TEXT</b>
+///       - <b>MPL2</b>
+///       - <b>PGS</b>
+///       - <b>RealText</b>
+///       - <b>SAMI</b>
+///       - <b>SSA</b>
+///       - <b>SubRip</b>
+///       - <b>Text</b>
+///       - <b>TTML</b>
+///       - <b>VobSub</b>
+///       - <b>VPlayer</b>
+///       - <b>WebVTT</b>
+///       - <b>XSUB</b>
 ///
 ///     @note `VideoPlayer.SubtitlesCodec` holds the codec of the next available subtitles stream
 ///     if subtitles are disabled in the player.
@@ -11016,6 +11038,9 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
 
       if (prop.Name() == "audiochannels" && prop.num_params() == 1)
         return AddMultiInfo(CGUIInfo(VIDEOPLAYER_AUDIO_CHANNELS, prop.param(), 0));
+
+      if (prop.Name() == "subtitlescodec" && prop.num_params() == 1)
+        return AddMultiInfo(CGUIInfo(VIDEOPLAYER_SUBTITLES_CODEC, prop.param(), 0));
 
       return TranslateVideoPlayerString(prop.Name());
     }

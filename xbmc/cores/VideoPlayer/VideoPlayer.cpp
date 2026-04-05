@@ -582,6 +582,7 @@ void CSelectionStreams::Update(const std::shared_ptr<CDVDInputStream>& input,
       SubtitleStreamInfo info = nav->GetSubtitleStreamInfo(i);
       s.name     = info.name;
       s.codec = info.codecName;
+      s.codecDesc = info.codecDesc;
       s.flags = info.flags;
       s.language = g_LangCodeExpander.ConvertToISO6392B(info.language);
       Update(s);
@@ -657,6 +658,10 @@ void CSelectionStreams::Update(const std::shared_ptr<CDVDInputStream>& input,
         s.codecDesc = static_cast<CDemuxStreamAudio*>(stream)->GetStreamType();
         s.channels = static_cast<CDemuxStreamAudio*>(stream)->iChannels;
         s.bitrate = static_cast<CDemuxStreamAudio*>(stream)->iBitRate;
+      }
+      if (stream->type == StreamType::SUBTITLE)
+      {
+        s.codecDesc = static_cast<CDemuxStreamSubtitle*>(stream)->GetStreamType();
       }
       Update(s);
     }
@@ -5739,6 +5744,7 @@ void CVideoPlayer::GetSubtitleStreamInfo(int index, SubtitleStreamInfo& info) co
   info.valid = true;
   info.language = s.language;
   info.codecName = s.codec;
+  info.codecDesc = s.codecDesc;
   info.flags = s.flags;
   info.isExternal = STREAM_SOURCE_MASK(s.source) == STREAM_SOURCE_DEMUX_SUB ||
                     STREAM_SOURCE_MASK(s.source) == STREAM_SOURCE_TEXT;
@@ -5810,6 +5816,7 @@ void CVideoPlayer::NotifySubtitleUpdate(int flags)
       // Only add stream info if valid
       CVariant contentEntry(CVariant::VariantTypeObject);
       contentEntry["index"] = stream;
+      contentEntry["codec"] = info.codecDesc;
       contentEntry["isdefault"] = (info.flags & StreamFlags::FLAG_DEFAULT) != 0;
       contentEntry["isforced"] = (info.flags & StreamFlags::FLAG_FORCED) != 0;
       contentEntry["isimpaired"] = (info.flags & StreamFlags::FLAG_VISUAL_IMPAIRED) != 0;
