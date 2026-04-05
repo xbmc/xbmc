@@ -290,7 +290,7 @@ constexpr uint32_t VIDEOPLAYER_AUDIO_CODEC           = 285;
 constexpr uint32_t VIDEOPLAYER_AUDIO_CHANNELS        = 286;
 constexpr uint32_t VIDEOPLAYER_VIDEO_ASPECT          = 287;
 constexpr uint32_t VIDEOPLAYER_SUBTITLES_LANG        = 288;
-// unused id 289
+constexpr uint32_t VIDEOPLAYER_SUBTITLES_CODEC       = 289;
 constexpr uint32_t VIDEOPLAYER_AUDIO_LANG            = 290;
 constexpr uint32_t VIDEOPLAYER_STEREOSCOPIC_MODE     = 291;
 constexpr uint32_t VIDEOPLAYER_CAST                  = 292;

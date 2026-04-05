@@ -3934,6 +3934,35 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///     @skinning_v13 **[New Infolabel]** \link VideoPlayer_SubtitlesLanguage `VideoPlayer.SubtitlesLanguage`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`VideoPlayer.SubtitlesCodec`</b>,
+///                  \anchor VideoPlayer_SubtitlesCodec
+///                  _string_,
+///     @return The codec of the current subtitles of the currently playing video. Possible values include:
+///       - <b>ass</b>
+///       - <b>dvb_subtitle</b>
+///       - <b>dvb_teletext</b>
+///       - <b>dvd_subtitle</b>
+///       - <b>hdmv_pgs_subtitle</b>
+///       - <b>microdvd</b>
+///       - <b>mov_text</b>
+///       - <b>mpl2</b>
+///       - <b>realtext</b>
+///       - <b>sami</b>
+///       - <b>srt</b>
+///       - <b>ssa</b>
+///       - <b>subrip</b>
+///       - <b>text</b>
+///       - <b>ttml</b>
+///       - <b>vplayer</b>
+///       - <b>webvtt</b>
+///       - <b>xsub</b>
+///
+///     @note `VideoPlayer.SubtitlesCodec` holds the codec of the next available subtitles stream
+///     if subtitles are disabled in the player.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_SubtitlesCodec `VideoPlayer.SubtitlesCodec`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`VideoPlayer.StereoscopicMode`</b>,
 ///                  \anchor VideoPlayer_StereoscopicMode
 ///                  _string_,
@@ -4180,7 +4209,7 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 83> videoplayer = {{
+constexpr std::array<InfoMap, 84> videoplayer = {{
     {"title",                 VIDEOPLAYER_TITLE},
     {"genre",                 VIDEOPLAYER_GENRE},
     {"country",               VIDEOPLAYER_COUNTRY},
@@ -4228,6 +4257,7 @@ constexpr std::array<InfoMap, 83> videoplayer = {{
     {"hassubtitles",          VIDEOPLAYER_HASSUBTITLES},
     {"subtitlesenabled",      VIDEOPLAYER_SUBTITLESENABLED},
     {"subtitleslanguage",     VIDEOPLAYER_SUBTITLES_LANG},
+    {"subtitlescodec",        VIDEOPLAYER_SUBTITLES_CODEC},
     {"starttime",             VIDEOPLAYER_STARTTIME},
     {"endtime",               VIDEOPLAYER_ENDTIME},
     {"nexttitle",             VIDEOPLAYER_NEXT_TITLE},

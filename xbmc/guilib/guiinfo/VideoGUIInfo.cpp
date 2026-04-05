@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012-2018 Team Kodi
+ *  Copyright (C) 2012-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -635,7 +635,9 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
     case VIDEOPLAYER_SUBTITLES_LANG:
       value = m_subtitleInfo.language;
       return true;
-      break;
+    case VIDEOPLAYER_SUBTITLES_CODEC:
+      value = m_subtitleInfo.codecName;
+      return true;
     case VIDEOPLAYER_COVER:
       if (m_appPlayer->IsPlayingVideo())
       {
