@@ -435,6 +435,10 @@
 					<param name="flag_visible" value="!String.IsEmpty(VideoPlayer.AudioChannels)" />
 					<param name="flag_label" value="$VAR[AudioChannelsVar]" />
 				</include>
+				<include content="MediaFlag">
+					<param name="flag_visible" value="VideoPlayer.HasSubTitles + VideoPlayer.SubTitlesEnabled + [!String.IsEmpty(VideoPlayer.SubtitlesCodec(Description)) | !String.IsEmpty(VideoPlayer.SubtitlesCodec)]" />
+					<param name="flag_label" value="$VAR[SubtitleCodecVar]" />
+				</include>
 			</control>
 			<control type="grouplist">
 				<visible>!String.IsEqual(ListItem.DbType,musicvideo) + [Container.Content(albums) | Window.IsActive(music)]</visible>

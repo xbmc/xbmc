@@ -858,6 +858,10 @@
 		<value condition="Container.Content(albums) | Window.IsActive(10502)">$INFO[ListItem.MusicChannels(DefaultLayout)]</value>
 		<value>$INFO[ListItem.AudioChannels(DefaultLayout)]</value>
 	</variable>
+	<variable name="SubtitleCodecVar">
+		<value condition="Window.IsActive(fullscreenvideo) + !String.IsEmpty(VideoPlayer.SubtitlesCodec(Description))">$INFO[VideoPlayer.SubtitlesCodec(Description)]</value>
+		<value condition="Window.IsActive(fullscreenvideo)">$INFO[VideoPlayer.SubtitlesCodec]</value>
+	</variable>
 	<variable name="StreamCodecVar">
 		<value condition="Window.IsVisible(dialogselectvideo) + String.IsEqual(ListItem.Property(stream.codec),av1)">AV1</value>
 		<value condition="Window.IsVisible(dialogselectvideo) + String.IsEqual(ListItem.Property(stream.codec),avc1)">AVC-1</value>
