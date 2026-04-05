@@ -219,6 +219,29 @@
 				</control>
 			</control>
 			<control type="grouplist">
+				<left>985</left>
+				<top>-4</top>
+				<visible>String.IsEqual(Window(Home).Property(PlayerInfoDialogFocus),5552)</visible>
+				<control type="label">
+					<width>885</width>
+					<height>50</height>
+					<aligny>bottom</aligny>
+					<label>$INFO[VideoPlayer.SubtitlesCodec,[COLOR button_focus]$LOCALIZE[31614]:[/COLOR] ]</label>
+					<font>font14</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>VideoPlayer.HasSubtitles + VideoPlayer.SubtitlesEnabled + !String.IsEmpty(VideoPlayer.SubtitlesCodec)</visible>
+				</control>
+				<control type="label">
+					<width>885</width>
+					<height>50</height>
+					<aligny>bottom</aligny>
+					<label>$INFO[VideoPlayer.SubtitlesLanguage,[COLOR button_focus]$LOCALIZE[31615]:[/COLOR] ]</label>
+					<font>font14</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>VideoPlayer.HasSubtitles + VideoPlayer.SubtitlesEnabled + !String.IsEmpty(VideoPlayer.SubtitlesLanguage)</visible>
+				</control>
+			</control>
+			<control type="grouplist">
 				<left>50</left>
 				<top>-204</top>
 				<visible>String.IsEqual(Window(Home).Property(PlayerInfoDialogFocus),5553)</visible>
