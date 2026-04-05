@@ -300,6 +300,20 @@
 				</control>
 			</control>
 			<control type="grouplist">
+				<left>985</left>
+				<top>-4</top>
+				<visible>String.IsEqual(Window(Home).Property(PlayerInfoDialogFocus),5553)</visible>
+				<control type="label">
+					<width>885</width>
+					<height>50</height>
+					<aligny>bottom</aligny>
+					<label>$INFO[Player.Process(subtitlesdecoder),[COLOR button_focus]$LOCALIZE[31613]:[/COLOR] ]</label>
+					<font>font14</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>VideoPlayer.HasSubtitles + VideoPlayer.SubtitlesEnabled + !String.IsEmpty(Player.Process(subtitlesdecoder))</visible>
+				</control>
+			</control>
+			<control type="grouplist">
 				<left>50</left>
 				<top>-204</top>
 				<visible>String.IsEqual(Window(Home).Property(PlayerInfoDialogFocus),5554)</visible>
