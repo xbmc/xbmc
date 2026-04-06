@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2026-03-30 04:08+0000\n"
+"PO-Revision-Date: 2026-04-05 19:04+0000\n"
 "Last-Translator: wabisabi926 <wabisabi926@foxmail.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/zh_Hans/>\n"
 "Language: zh_cn\n"
@@ -39,7 +39,7 @@ msgstr "查找..."
 
 msgctxt "#31002"
 msgid "Show media fanart as background"
-msgstr "显示媒体背景图为背景"
+msgstr "显示媒体粉丝艺术图为背景"
 
 msgctxt "#31003"
 msgid "Cinema mode"
@@ -146,7 +146,7 @@ msgstr "下次播出"
 
 msgctxt "#31028"
 msgid "Show fanart"
-msgstr "显示背景图"
+msgstr "显示粉丝艺术图"
 
 msgctxt "#31029"
 msgid "Last logged in"
@@ -259,7 +259,7 @@ msgstr "主菜单项"
 
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
-msgstr "选择天气背景图包"
+msgstr "选择天气粉丝艺术图包"
 
 msgctxt "#31063"
 msgid "Sections"
@@ -491,7 +491,7 @@ msgstr "主菜单相关设置：按喜好设置主界面。"
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
-msgstr "选择皮肤背景图包"
+msgstr "选择皮肤粉丝艺术图包"
 
 msgctxt "#31132"
 msgid "Select Program"
@@ -567,7 +567,7 @@ msgstr "类别"
 
 msgctxt "#31149"
 msgid "Choose genre fanart pack"
-msgstr "选择流派背景图包"
+msgstr "选择流派粉丝艺术图包"
 
 msgctxt "#31150"
 msgid "Origin"
@@ -623,7 +623,7 @@ msgstr "玩你自己珍藏的游戏或者从官方仓库中下载游戏插件。
 
 msgctxt "#31163"
 msgid "Show Fanart background"
-msgstr "显示背景图背景"
+msgstr "显示粉丝艺术图背景"
 
 #. Choose profile identifier
 msgctxt "#31164"
