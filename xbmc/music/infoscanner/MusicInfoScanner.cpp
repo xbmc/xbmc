@@ -2363,21 +2363,31 @@ void CMusicInfoScanner::Run()
 }
 
 // Recurse through all folders we scan and count files
-int CMusicInfoScanner::CountFilesRecursively(const std::string& strPath)
+int CMusicInfoScanner::CountFilesRecursively(const std::string& strPath, int depth)
 {
+  static constexpr int MAX_COUNT_DEPTH{256};
+  if (depth >= MAX_COUNT_DEPTH)
+  {
+    CLog::LogF(LOGWARNING, "Maximum directory depth ({}) reached for: {}", MAX_COUNT_DEPTH,
+               CURL::GetRedacted(strPath));
+    return 0;
+  }
+
   // load subfolder
   CFileItemList items;
-  CDirectory::GetDirectory(strPath, items, CServiceBroker::GetFileExtensionProvider().GetMusicExtensions(), DIR_FLAG_NO_FILE_DIRS);
+  CDirectory::GetDirectory(strPath, items,
+                           CServiceBroker::GetFileExtensionProvider().GetMusicExtensions(),
+                           DIR_FLAG_NO_FILE_DIRS);
 
   if (m_bStop)
     return 0;
 
   // true for recursive counting
-  int count = CountFiles(items, true);
+  int count = CountFiles(items, true, depth);
   return count;
 }
 
-int CMusicInfoScanner::CountFiles(const CFileItemList& items, bool recursive)
+int CMusicInfoScanner::CountFiles(const CFileItemList& items, bool recursive, int depth)
 {
   int count = 0;
   for (int i = 0; i < items.Size(); ++i)
@@ -2385,7 +2395,7 @@ int CMusicInfoScanner::CountFiles(const CFileItemList& items, bool recursive)
     const CFileItemPtr pItem = items[i];
 
     if (recursive && pItem->IsFolder())
-      count += CountFilesRecursively(pItem->GetPath());
+      count += CountFilesRecursively(pItem->GetPath(), depth + 1);
     else if (MUSIC::IsAudio(*pItem) && !PLAYLIST::IsPlayList(*pItem) && !pItem->IsNFO())
       ++count;
   }
