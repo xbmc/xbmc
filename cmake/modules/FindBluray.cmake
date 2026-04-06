@@ -16,9 +16,6 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     find_package(Meson REQUIRED)
     find_package(Ninja REQUIRED)
 
-    # Required for building libbluray bd jars, however is optional for libbluray
-    find_package(ANT)
-
     find_package(Udfread 1.2.0 REQUIRED ${SEARCH_QUIET})
     find_package(FreeType REQUIRED ${SEARCH_QUIET})
     find_package(LibXml2 REQUIRED ${SEARCH_QUIET})
@@ -29,26 +26,41 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       list(APPEND additional_env_mod --modify FONTCONFIG_ROOT=set:${DEPENDS_PATH})
     endif()
 
-    if(TARGET ANT::ANT)
-      find_package(Java COMPONENTS Development)
+    set(temp_extras_arg -Dbdj_jar=disabled)
+    set(temp_env_mod --unset=JAVA_HOME)
 
-      if(Java_Development_FOUND)
-        get_filename_component(java_binpath ${Java_JAVAC_EXECUTABLE} DIRECTORY)
-        get_filename_component(java_homepath ${java_binpath} DIRECTORY)
+    if(ENABLE_BLURAY_JAR)
+      # Required for building libbluray bd jars, however is optional for libbluray
+      find_package(ANT)
 
-        get_target_property(ANT_PATH ANT::ANT ANT_PATH)
-        get_target_property(ANT_HOME ANT::ANT ANT_HOME)
+      if(TARGET ANT::ANT)
+        find_package(Java COMPONENTS Development)
 
-        if(${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.26)
-          list(APPEND additional_env_mod --modify PATH=path_list_prepend:${NATIVEPREFIX}/bin
-                                         --modify PATH=path_list_prepend:${java_binpath}
-                                         --modify PATH=path_list_prepend:${ANT_PATH}
-                                         --modify ANT_HOME=set:${ANT_HOME}
-                                         --modify JAVA_HOME=set:${java_homepath})
+        if(Java_Development_FOUND)
+          get_filename_component(java_binpath ${Java_JAVAC_EXECUTABLE} DIRECTORY)
+          get_filename_component(java_homepath ${java_binpath} DIRECTORY)
 
-          set(build_env_mod ${CMAKE_COMMAND} -E env ${additional_env_mod})
+          get_target_property(ANT_PATH ANT::ANT ANT_PATH)
+          get_target_property(ANT_HOME ANT::ANT ANT_HOME)
+
+          if(${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.26)
+            list(APPEND additional_env_mod --modify PATH=path_list_prepend:${NATIVEPREFIX}/bin
+                                           --modify PATH=path_list_prepend:${java_binpath}
+                                           --modify PATH=path_list_prepend:${ANT_PATH}
+                                           --modify ANT_HOME=set:${ANT_HOME}
+                                           --modify JAVA_HOME=set:${java_homepath})
+
+            set(build_env_mod ${CMAKE_COMMAND} -E env ${additional_env_mod})
+          endif()
+          set(temp_extras_arg -Djdk_home=${java_homepath} -Dbdj_jar=enabled)
+          unset(temp_env_mod)
         endif()
       endif()
+    endif()
+
+    list(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_EXTRAS ${temp_extras_arg})
+    if(temp_env_mod)
+      list(APPEND additional_env_mod ${temp_env_mod})
     endif()
 
     if(APPLE)
@@ -112,6 +124,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                           -Ddefault_library=${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_libType}
                           -Denable_tools=false
                           -Dembed_udfread=false
+                          ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_EXTRAS}
                           ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_CROSS_FILE})
 
     set(BUILD_COMMAND ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_dev_env}
