@@ -1149,10 +1149,17 @@ void CVideoDatabase::UpdateTables(int iVersion)
   }
 
   if (iVersion < 144)
+  {
     m_pDS->exec("ALTER TABLE streamdetails ADD strHdrDetail text");
+  }
+
+  if (iVersion < 145)
+  {
+    m_pDS->exec("UPDATE streamdetails set strAudioCodec = 'dts' where strAudioCodec = 'dca'");
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 144;
+  return 145;
 }
