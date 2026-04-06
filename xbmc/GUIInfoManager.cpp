@@ -6384,7 +6384,7 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///       - <b>aac_ltp</b>
 ///       - <b>ac3</b>
 ///       - <b>cook</b>
-///       - <b>dca</b>
+///       - <b>dts</b>
 ///       - <b>dtshd_hra</b>
 ///       - <b>dtshd_ma</b>
 ///       - <b>dtshd_ma_x</b>
