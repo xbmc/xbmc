@@ -806,6 +806,14 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(VideoPicture* pVideoPi
     m_started = true;
     m_iLastKeyframe = m_pCodecContext->has_b_frames + 2;
   }
+  // AV1 with keyframe-filtering=2 encodes hidden keyframes (show_frame=0) that
+  // are decoded but never output. The first visible frame is INTER, not KEY.
+  // The decoder only outputs frames with valid references, so trust it.
+  else if (m_pCodecContext->codec_id == AV_CODEC_ID_AV1 && !m_started)
+  {
+    m_started = true;
+    m_iLastKeyframe = m_pCodecContext->has_b_frames + 2;
+  }
   if (m_pDecodedFrame->flags & AV_FRAME_FLAG_INTERLACED)
     m_interlaced = true;
   else
