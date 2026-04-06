@@ -47,6 +47,7 @@
 #include <cstdint>
 #include <exception>
 #include <map>
+#include <ranges>
 #include <ratio>
 #include <string_view>
 #include <utility>
@@ -1505,6 +1506,8 @@ void CMediaPipelineWebOS::ProcessAudio()
 
             m_audioResample->m_inputSamples.emplace_back(buffer);
 
+            std::vector<std::shared_ptr<CDVDMsgDemuxerPacket>> unconsumedPackets;
+            bool canConsume = true;
             while (m_audioResample->ResampleBuffers())
             {
               for (const auto& buf : m_audioResample->m_outputSamples)
@@ -1544,14 +1547,18 @@ void CMediaPipelineWebOS::ProcessAudio()
                     m_audioEncoder->Encode(buf->pkt->data[0], buf->pkt->planes * buf->pkt->linesize,
                                            p->m_packet->pData, p->m_packet->iSize);
                 buf->Return();
-                if (!FeedAudioData(p))
+                if (!canConsume || !FeedAudioData(p))
                 {
-                  m_messageQueueAudio.PutBack(p);
-                  std::this_thread::sleep_for(10ms);
+                  canConsume = false;
+                  unconsumedPackets.emplace_back(std::move(p));
                 }
               }
               m_audioResample->m_outputSamples.clear();
             }
+
+            // not consumed packets need to be pushed back in reverse to keep ordering
+            std::ranges::for_each(unconsumedPackets | std::views::reverse,
+                                  [this](const auto& p) { m_messageQueueAudio.PutBack(p); });
           }
         }
         else
@@ -1631,7 +1638,8 @@ void CMediaPipelineWebOS::PlayerCallback(int32_t type, const int64_t numValue, c
       m_pts = std::chrono::nanoseconds(numValue);
       const double pts = GetCurrentPts();
       ProcessOverlays(pts);
-      m_started = true;
+      if (!m_flushed)
+        m_started = true;
       m_picture.dts = pts;
       m_picture.pts = pts;
       std::atomic<bool> stop(false);
