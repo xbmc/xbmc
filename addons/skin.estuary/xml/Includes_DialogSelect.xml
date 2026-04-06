@@ -658,7 +658,7 @@
 						<height>20</height>
 						<font>font10</font>
 						<aligny>center</aligny>
-						<label>$VAR[StreamCodecVar]$INFO[ListItem.Property(stream.description), | ]</label>
+						<label>$VAR[SubtitleStreamDescriptionVar]</label>
 						<textcolor>grey</textcolor>
 					</control>
 					<control type="image">
@@ -707,7 +707,7 @@
 						<font>font10</font>
 						<aligny>center</aligny>
 						<scroll>true</scroll>
-						<label>$VAR[StreamCodecVar]$INFO[ListItem.Property(stream.description), | ]</label>
+						<label>$VAR[SubtitleStreamDescriptionVar]</label>
 						<scroll>true</scroll>
 					</control>
 					<control type="image">

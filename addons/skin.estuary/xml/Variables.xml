@@ -945,6 +945,11 @@
 	<variable name="StreamBitrateVar">
 		<value condition="!String.IsEqual(ListItem.Property(stream.bitrate),0)">$INFO[ListItem.Property(stream.bitrate)]</value>
 	</variable>
+	<variable name="SubtitleStreamDescriptionVar">
+		<value condition="!String.IsEmpty(ListItem.Property(stream.codecdesc))">$INFO[ListItem.Property(stream.codecdesc)]$INFO[ListItem.Property(stream.description), | ]</value>
+		<value condition="!String.IsEmpty(ListItem.Property(stream.codec))">$INFO[ListItem.Property(stream.codec)]$INFO[ListItem.Property(stream.description), | ]</value>
+		<value>$INFO[ListItem.Property(stream.description)]</value>
+	</variable>
 	<variable name="MediaInfoListLabelVar">
 		<value>$INFO[ListItem.Label]</value>
 	</variable>
