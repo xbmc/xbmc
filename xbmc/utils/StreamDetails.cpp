@@ -281,7 +281,7 @@ bool CStreamDetails::operator ==(const CStreamDetails &right) const
         GetVideoWidth(iStream) != right.GetVideoWidth(iStream) ||
         GetVideoHeight(iStream) != right.GetVideoHeight(iStream) ||
         GetVideoDuration(iStream) != right.GetVideoDuration(iStream) ||
-        fabs(GetVideoAspect(iStream) - right.GetVideoAspect(iStream)) > VIDEOASPECT_EPSILON ||
+        fabsf(GetVideoAspect(iStream) - right.GetVideoAspect(iStream)) > VIDEOASPECT_EPSILON ||
         GetSource(CStreamDetail::VIDEO, iStream) != right.GetSource(CStreamDetail::VIDEO, iStream))
       return false;
   }
