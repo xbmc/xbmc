@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -257,14 +257,18 @@ int KODI::UTILS::GL::glFormatElementByteCount(GLenum format)
 #ifdef HAS_GL
   case GL_BGRA:
     return 4;
-  case GL_RED:
-    return 1;
   case GL_GREEN:
     return 1;
-  case GL_RG:
-    return 2;
   case GL_BGR:
     return 3;
+#endif
+#ifdef GL_RED
+  case GL_RED:
+    return 1;
+#endif
+#ifdef GL_RG
+  case GL_RG:
+    return 2;
 #endif
   case GL_RGBA:
     return 4;

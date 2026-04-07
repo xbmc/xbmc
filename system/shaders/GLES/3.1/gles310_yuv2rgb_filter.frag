@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024 Team Kodi
+ *  Copyright (C) 2024-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -83,15 +83,15 @@ void main()
 #if defined(XBMC_YV12) || defined(XBMC_NV12)
 
   yuv = vec4(filter_0(m_sampY, m_cordY),
-             texture2D(m_sampU, m_cordU).g,
-             texture2D(m_sampV, m_cordV).a,
+             texture(m_sampU, m_cordU).g,
+             texture(m_sampV, m_cordV).a,
              1.0);
 
 #elif defined(XBMC_NV12_RRG)
 
   yuv = vec4(filter_0(m_sampY, m_cordY),
-             texture2D(m_sampU, m_cordU).r,
-             texture2D(m_sampV, m_cordV).g,
+             texture(m_sampU, m_cordU).r,
+             texture(m_sampV, m_cordV).g,
              1.0);
 
 #endif

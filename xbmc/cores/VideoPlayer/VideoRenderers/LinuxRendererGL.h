@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007-2018 Team Kodi
+ *  Copyright (C) 2007-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -97,6 +97,7 @@ protected:
   void UpdateVideoFilter();
   void CheckVideoParameters(int index);
   AVColorPrimaries GetSrcPrimaries(AVColorPrimaries srcPrimaries, unsigned int width, unsigned int height);
+  EShaderFormat GetShaderFormat() override;
 
   // textures
   virtual bool UploadTexture(int index);
@@ -110,6 +111,15 @@ protected:
   bool UploadNV12Texture(int index);
   void DeleteNV12Texture(int index);
   bool CreateNV12Texture(int index);
+
+  bool CreateP010Texture(int index);
+
+  bool CreateSemiPlanar420Texture(int index,
+                                  int bytesPerComponent,
+                                  int srcTextureBits,
+                                  GLint yInternalFormat,
+                                  GLint uvInternalFormat,
+                                  GLenum pixelType);
 
   bool UploadYUV422PackedTexture(int index);
   void DeleteYUV422PackedTexture(int index);

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -50,22 +50,14 @@ void CProcessInfoWayland::SetSwDeinterlacingMethods()
 
 std::vector<AVPixelFormat> CProcessInfoWayland::GetRenderFormats()
 {
-  return
-  {
-    // GL & GLES
-    AV_PIX_FMT_YUV420P,
-    AV_PIX_FMT_NV12,
+  return {// GL & GLES
+          AV_PIX_FMT_YUV420P, AV_PIX_FMT_NV12, AV_PIX_FMT_P010,
 
 #if defined(HAS_GL)
-    // Full GL only at the moment
-    // TODO YUV420Pxx need runtime-checking for GL_ALPHA16/GL_LUMINANCE16 support
-    AV_PIX_FMT_YUV420P9,
-    AV_PIX_FMT_YUV420P10,
-    AV_PIX_FMT_YUV420P12,
-    AV_PIX_FMT_YUV420P14,
-    AV_PIX_FMT_YUV420P16,
-    AV_PIX_FMT_YUYV422,
-    AV_PIX_FMT_UYVY422
+          // Full GL only at the moment
+          // TODO YUV420Pxx need runtime-checking for GL_ALPHA16/GL_LUMINANCE16 support
+          AV_PIX_FMT_YUV420P9, AV_PIX_FMT_YUV420P10, AV_PIX_FMT_YUV420P12, AV_PIX_FMT_YUV420P14,
+          AV_PIX_FMT_YUV420P16, AV_PIX_FMT_YUYV422, AV_PIX_FMT_UYVY422
 #endif
   };
 }
