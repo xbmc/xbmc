@@ -163,21 +163,21 @@ void CWinSystemGbmGLESContext::PresentRender(bool rendered, bool videoLayer)
     }
 
     CWinSystemGbm::FlipPage(rendered, videoLayer, async);
-
-    if (m_dispReset && m_dispResetTimer.IsTimePast())
-    {
-      CLog::Log(LOGDEBUG, "CWinSystemGbmGLESContext::{} - Sending display reset to all clients",
-                __FUNCTION__);
-      m_dispReset = false;
-      std::unique_lock lock(m_resourceSection);
-
-      for (auto resource : m_resources)
-        resource->OnResetDisplay();
-    }
   }
   else
   {
     KODI::TIME::Sleep(10ms);
+  }
+
+  if (m_dispReset && m_dispResetTimer.IsTimePast())
+  {
+    CLog::Log(LOGDEBUG, "CWinSystemGbmGLESContext::{} - Sending display reset to all clients",
+              __FUNCTION__);
+    m_dispReset = false;
+    std::unique_lock lock(m_resourceSection);
+
+    for (auto resource : m_resources)
+      resource->OnResetDisplay();
   }
 }
 
