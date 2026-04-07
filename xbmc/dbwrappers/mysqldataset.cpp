@@ -1821,7 +1821,7 @@ void MysqlDataset::make_query(StringList& _sql)
       Dataset::parse_sql(query);
       if ((static_cast<MysqlDatabase*>(db)->query_with_reconnect(query.c_str())) != MYSQL_OK)
       {
-        throw DbErrors(db->getErrorMsg());
+        throw DbErrors("%s", db->getErrorMsg());
       }
     } // end of for
 
@@ -1948,7 +1948,7 @@ int MysqlDataset::exec(const std::string& sql)
 
   if (res != MYSQL_OK)
   {
-    throw DbErrors(db->getErrorMsg());
+    throw DbErrors("%s", db->getErrorMsg());
   }
   else
   {
@@ -1989,7 +1989,7 @@ bool MysqlDataset::query(const std::string& query)
   if (static_cast<MysqlDatabase*>(db)->setErr(
           static_cast<MysqlDatabase*>(db)->query_with_reconnect(qry.c_str()), qry.c_str()) !=
       MYSQL_OK)
-    throw DbErrors(db->getErrorMsg());
+    throw DbErrors("%s", db->getErrorMsg());
 
   MYSQL* conn = handle();
   stmt = mysql_store_result(conn);
