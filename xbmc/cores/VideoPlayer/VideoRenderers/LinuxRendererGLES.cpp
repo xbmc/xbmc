@@ -193,13 +193,9 @@ bool CLinuxRendererGLES::Configure(const VideoPicture &picture, float fps, unsig
   if (!CServiceBroker::GetWinSystem()->SetVideoOutput(&picture))
     CLog::Log(LOGWARNING, "LinuxRendererGLES::Configure: SetVideoOutput failed");
 
-  if (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
-      picture.color_transfer == AVCOL_TRC_ARIB_STD_B67)
-  {
-    m_passthroughHDR = CServiceBroker::GetWinSystem()->SetHDR(&picture);
-    CLog::Log(LOGDEBUG, "LinuxRendererGLES::Configure: HDR passthrough: {}",
-              m_passthroughHDR ? "on" : "off");
-  }
+  m_passthroughHDR = CServiceBroker::GetWinSystem()->SetHDR(&picture);
+  CLog::Log(LOGDEBUG, "LinuxRendererGLES::Configure: HDR passthrough: {}",
+            m_passthroughHDR ? "on" : "off");
 
   m_hdrFboActive =
       m_passthroughHDR && CServiceBroker::GetWinSystem()->SetGuiCompositing(picture.color_transfer);

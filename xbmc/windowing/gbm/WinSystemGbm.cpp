@@ -429,6 +429,14 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
     return false;
   }
 
+  // Only enable HDR for PQ (HDR10/HDR10+/DV) or HLG transfer functions
+  if (videoPicture->color_transfer != AVCOL_TRC_SMPTE2084 &&
+      videoPicture->color_transfer != AVCOL_TRC_ARIB_STD_B67)
+  {
+    m_eotf = KODI::UTILS::Eotf::TRADITIONAL_SDR;
+    return false;
+  }
+
   KODI::UTILS::Colorimetry colorimetry = DRMPRIME::GetColorimetry(*videoPicture);
 
   if (connector->SupportsProperty("Colorspace") && m_info &&

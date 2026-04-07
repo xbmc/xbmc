@@ -170,14 +170,8 @@ void CVideoLayerBridgeDRMPRIME::Configure(CVideoBufferDRMPRIME* buffer)
 
   const VideoPicture& picture = buffer->GetPicture();
 
-  // Gate HDR passthrough on transfer function, matching the pattern in
-  // LinuxRendererGLES and RendererDRMPRIMEGLES (see smp79's 850dfb04d4).
-  if (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
-      picture.color_transfer == AVCOL_TRC_ARIB_STD_B67)
-  {
-    if (winSystem->SetHDR(&picture))
-      winSystem->SetGuiCompositing(picture.color_transfer);
-  }
+  if (winSystem->SetHDR(&picture))
+    winSystem->SetGuiCompositing(picture.color_transfer);
 
   std::optional<uint64_t> colorEncoding =
       plane->GetPropertyEnumValue("COLOR_ENCODING", GetColorEncoding(picture));
