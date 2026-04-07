@@ -133,29 +133,23 @@ int MysqlDatabase::status()
 
 int MysqlDatabase::setErr(int err_code, const char* qry)
 {
-  switch (err_code)
+  if (err_code == MYSQL_OK)
   {
-    case MYSQL_OK:
-      error = "Successful result";
-      break;
-    case CR_COMMANDS_OUT_OF_SYNC:
-      error = "Commands were executed in an improper order";
-      break;
-    case CR_SERVER_GONE_ERROR:
-      error = "The MySQL server has gone away";
-      break;
-    case CR_SERVER_LOST:
-      error = "The connection to the server was lost during this query";
-      break;
-    case CR_UNKNOWN_ERROR:
-      error = "An unknown error occurred";
-      break;
-    case 1146: /* ER_NO_SUCH_TABLE */
-      error = "The table does not exist";
-      break;
-    default:
-      error = StringUtils::Format("Undefined MySQL error: Code ({})", err_code);
-      break;
+    error = "Success";
+  }
+  else
+  {
+    const unsigned int err = mysql_errno(conn);
+    if (err != static_cast<unsigned int>(err_code))
+      CLog::LogF(LOGERROR,
+                 "setErr was not called immediately after the error happened (function return code "
+                 "{}, mysql_errno {})",
+                 err_code, err);
+
+    const char* errMsg = mysql_error(conn);
+
+    error = StringUtils::Format("MySQL error {} ({}): {}", err_code, mysql_sqlstate(conn),
+                                *errMsg != 0 ? errMsg : "unknown error");
   }
   error = "[" + db + "] " + error;
   error += "\nQuery: ";
