@@ -211,15 +211,27 @@ int MysqlDatabase::connect(bool create_new)
   if (host.empty() || db.empty())
     return DB_CONNECTION_NONE;
 
-  std::string resolvedHost;
-  if (!StringUtils::EqualsNoCase(host, "localhost") &&
-      CServiceBroker::GetDNSNameCache()->Lookup(host, resolvedHost))
+  if (!StringUtils::EqualsNoCase(host, "localhost"))
   {
-    if (host != resolvedHost)
-      CLog::LogF(LOGDEBUG, "Replacing configured host {} with resolved host {}", host,
-                 resolvedHost);
+    std::string resolvedHost;
 
-    host = resolvedHost;
+    if (!CServiceBroker::GetDNSNameCache()->Lookup(host, resolvedHost))
+      return DB_CONNECTION_NONE;
+
+    if (host != resolvedHost)
+    {
+      static std::string lastHost;
+      static std::string lastResolvedHost;
+
+      if (host != lastHost || resolvedHost != lastResolvedHost)
+      {
+        CLog::LogF(LOGDEBUG, "Replacing configured host {} with resolved host {}", host,
+                   resolvedHost);
+        lastHost = host;
+        lastResolvedHost = resolvedHost;
+      }
+      host = resolvedHost;
+    }
   }
 
   try
