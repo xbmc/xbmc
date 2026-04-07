@@ -32,6 +32,8 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoDbUrl.h"
 
+#include <algorithm>
+
 using namespace KODI;
 
 #define CONTROL_HEADING             2
@@ -660,13 +662,13 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
 {
   CFileItemList selectItems;
 
-  // add all rules except for the field of the filter we want to retrieve items for
-  PLAYLIST::CSmartPlaylist tmpFilter;
-  for (const auto& rule : m_filter->m_ruleCombination.GetRules())
-  {
-    if (rule->m_field != static_cast<int>(filter.field))
-      tmpFilter.m_ruleCombination.AddRule(rule);
-  }
+  // remove the rule for the field of the filter we want to retrieve items for
+  PLAYLIST::CSmartPlaylist tmpFilter = *m_filter;
+
+  auto it = std::ranges::find_if(tmpFilter.m_ruleCombination.GetRules(), [&filter](const auto& rule)
+                                 { return static_cast<int>(filter.field) == rule->m_field; });
+  if (it != tmpFilter.m_ruleCombination.GetRules().cend())
+    tmpFilter.m_ruleCombination.RemoveRule(*it);
 
   if (m_mediaType == "movies" || m_mediaType == "tvshows" || m_mediaType == "episodes" || m_mediaType == "musicvideos")
   {
@@ -721,7 +723,7 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
       musicdb.GetAlbumTypesNav(m_dbUrl->ToString(), selectItems, dbfilter, countOnly);
     else if (filter.field == Field::MUSIC_LABEL)
       musicdb.GetMusicLabelsNav(m_dbUrl->ToString(), selectItems, dbfilter, countOnly);
-    if (filter.field == Field::SOURCE)
+    else if (filter.field == Field::SOURCE)
       musicdb.GetSourcesNav(m_dbUrl->ToString(), selectItems, dbfilter, countOnly);
   }
 
