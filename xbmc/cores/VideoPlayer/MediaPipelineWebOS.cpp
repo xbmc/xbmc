@@ -1400,6 +1400,14 @@ void CMediaPipelineWebOS::Process()
         if (!m_mediaAPIs->pushEOS())
           CLog::LogF(LOGERROR, "Failed to push EOS message");
       }
+      else if (msg->IsType(CDVDMsg::GENERAL_SYNCHRONIZE))
+      {
+        if (std::static_pointer_cast<CDVDMsgGeneralSynchronize>(msg)->Wait(100ms, SYNCSOURCE_VIDEO))
+          CLog::Log(LOGDEBUG, "CDVDMsg::GENERAL_SYNCHRONIZE");
+        else
+          // push back as prio message, to process other prio messages
+          m_messageQueueVideo.Put(msg, 1);
+      }
       else
       {
         CLog::LogF(LOGDEBUG, "Received video message: {}", msg->GetMessageType());
@@ -1578,6 +1586,14 @@ void CMediaPipelineWebOS::ProcessAudio()
         };
         m_messageQueueParent.Put(
             std::make_shared<CDVDMsgType<SStateMsg>>(CDVDMsg::PLAYER_REPORT_STATE, stateMsg));
+      }
+      else if (msg->IsType(CDVDMsg::GENERAL_SYNCHRONIZE))
+      {
+        if (std::static_pointer_cast<CDVDMsgGeneralSynchronize>(msg)->Wait(100ms, SYNCSOURCE_AUDIO))
+          CLog::Log(LOGDEBUG, "CDVDMsg::GENERAL_SYNCHRONIZE");
+        else
+          // push back as prio message, to process other prio messages
+          m_messageQueueAudio.Put(msg, 1);
       }
       else
       {
