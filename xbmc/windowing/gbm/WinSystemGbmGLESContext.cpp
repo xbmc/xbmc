@@ -21,6 +21,11 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "rendering/gles/GuiCompositeShaderGLES.h"
 #include "rendering/gles/ScreenshotSurfaceGLES.h"
+
+extern "C"
+{
+#include <libavutil/pixfmt.h>
+}
 #include "utils/BufferObjectFactory.h"
 #include "utils/DMAHeapBufferObject.h"
 #include "utils/DumbBufferObject.h"
@@ -187,11 +192,11 @@ void CWinSystemGbmGLESContext::PresentRender(bool rendered, bool videoLayer)
   }
 }
 
-bool CWinSystemGbmGLESContext::SetGuiCompositing(bool active)
+bool CWinSystemGbmGLESContext::SetGuiCompositing(int colorTransfer)
 {
-  m_guiCompositing = active;
+  m_guiCompositing = (colorTransfer != 0);
 
-  if (active)
+  if (m_guiCompositing)
   {
     if (!m_compositeShader)
     {
@@ -201,7 +206,16 @@ bool CWinSystemGbmGLESContext::SetGuiCompositing(bool active)
         CLog::Log(LOGERROR, "CWinSystemGbmGLESContext: failed to compile GUI composite shader");
         m_compositeShader.reset();
         m_guiCompositing = false;
+        return false;
       }
+    }
+
+    if (!m_compositeShader->CreateLUTs(colorTransfer))
+    {
+      CLog::Log(LOGERROR, "CWinSystemGbmGLESContext: failed to create LUTs");
+      m_compositeShader.reset();
+      m_guiCompositing = false;
+      return false;
     }
   }
   else
@@ -291,7 +305,6 @@ void CWinSystemGbmGLESContext::CompositeGui()
   GLfloat proj[16] = {2.0f / w, 0, 0, 0, 0, -2.0f / h, 0, 0, 0, 0, -1, 0, -1.0f, 1.0f, 0, 1};
 
   m_compositeShader->SetProjection(proj);
-  m_compositeShader->SetSdrPeak(100.0f / 10000.0f);
   m_compositeShader->Enable();
 
   GLint posLoc = m_compositeShader->GetPosLoc();

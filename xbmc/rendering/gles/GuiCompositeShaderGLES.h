@@ -10,13 +10,17 @@
 
 #include "guilib/Shader.h"
 
+#include <vector>
+
 class CGuiCompositeShaderGLES : public Shaders::CGLSLShaderProgram
 {
 public:
   CGuiCompositeShaderGLES();
+  ~CGuiCompositeShaderGLES() override;
 
   void SetProjection(const GLfloat* proj) { m_proj = proj; }
-  void SetSdrPeak(float peak) { m_sdrPeak = peak; }
+
+  bool CreateLUTs(int colorTransfer);
 
   GLint GetPosLoc() { return m_hPos; }
   GLint GetTexLoc() { return m_hTex; }
@@ -26,12 +30,24 @@ protected:
   bool OnEnabled() override;
 
 private:
+  static constexpr int LUT_SIZE = 1024;
+
+  GLuint CreateLUTTexture(const std::vector<float>& data);
+  static std::vector<float> GenerateDegammaLUT();
+  static std::vector<float> GeneratePQLUT(float sdrPeak);
+
   const GLfloat* m_proj{nullptr};
-  float m_sdrPeak{100.0f / 10000.0f};
+  float m_sdrPeak{203.0f / 10000.0f};
+
+  GLuint m_lutDegammaTexId{0};
+  GLuint m_lutTFTexId{0};
+  float m_ootfGamma{0.0f};
 
   GLint m_hPos{-1};
   GLint m_hTex{-1};
   GLint m_hSamp{-1};
+  GLint m_hLutDegamma{-1};
+  GLint m_hLutTF{-1};
   GLint m_hProj{-1};
-  GLint m_hSdrPeak{-1};
+  GLint m_hOotfGamma{-1};
 };

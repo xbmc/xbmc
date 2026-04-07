@@ -42,7 +42,7 @@ public:
   void PresentRender(bool rendered, bool videoLayer) override;
 
   // GUI compositing for HDR
-  bool SetGuiCompositing(bool active) override;
+  bool SetGuiCompositing(int colorTransfer) override;
   bool BeginGuiComposite() override;
   void EndGuiComposite() override;
   void CompositeGui() override;

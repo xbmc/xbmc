@@ -241,7 +241,8 @@ public:
   virtual bool SupportsVideoSuperResolution() { return false; }
 
   // GUI compositing for HDR: render GUI to FBO, composite with tone mapping
-  virtual bool SetGuiCompositing(bool active) { return false; }
+  // colorTransfer: AVCOL_TRC_SMPTE2084 (PQ) or AVCOL_TRC_ARIB_STD_B67 (HLG), 0 to disable
+  virtual bool SetGuiCompositing(int colorTransfer) { return false; }
   virtual bool BeginGuiComposite() { return false; }
   virtual void EndGuiComposite() {}
   virtual void CompositeGui() {}
