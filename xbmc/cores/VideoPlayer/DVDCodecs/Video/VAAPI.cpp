@@ -31,12 +31,13 @@
 #include <va/va_drmcommon.h>
 
 extern "C" {
+#include <libavfilter/buffersink.h>
+#include <libavfilter/buffersrc.h>
 #include <libavutil/avutil.h>
 #include <libavutil/hwcontext.h>
 #include <libavutil/hwcontext_vaapi.h>
 #include <libavutil/opt.h>
-#include <libavfilter/buffersink.h>
-#include <libavfilter/buffersrc.h>
+#include <libavutil/pixdesc.h>
 }
 
 #include "system_egl.h"
@@ -589,6 +590,16 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
   m_vaapiConfig.surfaceHeight = avctx->coded_height;
   m_vaapiConfig.aspect = avctx->sample_aspect_ratio;
   m_vaapiConfig.bitDepth = avctx->bits_per_raw_sample;
+  // ffmpeg's HEVC, VP9, and AV1 decoders do not set bits_per_raw_sample,
+  // but they do set pix_fmt correctly (e.g. yuv420p10le for 10-bit).
+  // Derive bit depth from the pixel format when bits_per_raw_sample is 0,
+  // otherwise ConfigVAAPI creates NV12 surfaces for 10-bit content.
+  if (m_vaapiConfig.bitDepth == 0)
+  {
+    const AVPixFmtDescriptor* desc = av_pix_fmt_desc_get(avctx->pix_fmt);
+    if (desc)
+      m_vaapiConfig.bitDepth = desc->comp[0].depth;
+  }
   m_DisplayState = VAAPI_OPEN;
   m_vaapiConfigured = false;
   m_presentPicture = nullptr;
