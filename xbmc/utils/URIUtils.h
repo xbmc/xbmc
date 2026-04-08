@@ -374,6 +374,18 @@ public:
 
   static CURL AddCredentials(CURL url);
 
+  /*!
+   \brief Updates the URL encoding (if needed) of the given path
+
+   Ensures that the hex encoded characters are lower case
+   Ensures that DOS paths use '\' as path separator and not '/'
+   as this can cause unintentional path mismatches
+
+   \param path Path to update
+   \return Updated path
+   */
+  static std::string SanitiseUrlEncoding(const std::string& path);
+
 private:
   static std::string resolvePath(const std::string &path);
 

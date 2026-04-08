@@ -1916,3 +1916,57 @@ CURL URIUtils::AddCredentials(CURL url)
     CPasswordManager::GetInstance().AuthenticateURL(url);
   return url;
 }
+
+std::string URIUtils::SanitiseUrlEncoding(const std::string& path)
+{
+  std::string out;
+  out.reserve(path.size());
+
+  // Firstly look at encoded character capitalization.
+  // Some providers (eg. vfs rar) return paths with %2F instead of %2f,
+  // which causes problems when comparing paths.
+  // This only applies to the hostname element of the url
+  auto protocolEnd{path.find("://")};
+  if (protocolEnd == std::string::npos)
+    return path;
+  protocolEnd += 3;
+
+  auto hostEnd{path.find('/', protocolEnd)};
+  if (hostEnd == std::string::npos)
+    hostEnd = path.size();
+
+  constexpr auto is_hex = [](char c) noexcept
+  { return ('0' <= c && c <= '9') || ('a' <= c && c <= 'f') || ('A' <= c && c <= 'F'); };
+
+  for (auto it = path.begin() + static_cast<long long>(protocolEnd);
+       it != path.begin() + static_cast<long long>(hostEnd); ++it)
+  {
+    if (*it == '%' && std::ranges::distance(it, path.end()) > 2)
+    {
+      if (is_hex(it[1]) && is_hex(it[2]))
+      {
+        out += '%';
+        out += StringUtils::ToLowerAscii(it[1]);
+        out += StringUtils::ToLowerAscii(it[2]);
+        std::ranges::advance(it, 2);
+      }
+      else
+      {
+        CLog::LogF(LOGDEBUG, "Invalid encoding in path {}", CURL::GetRedacted(std::string(path)));
+        out += *it;
+      }
+    }
+    else
+      out += *it;
+  }
+
+  // In case addon (eg. vfs rar) returns malformed DOS paths (eg. c:/ and not c:\)
+  // m_basePath is used to populate the VIDEODB_ID_BASEPATH column which in turn is used
+  // by GetItemsByPath() to find items when browsing Video -> Files
+  if (out.size() >= 7 && out.compare(1, 6, "%3a%2f") == 0)
+    StringUtils::Replace(out, "%2f", "%5c");
+
+  out = path.substr(0, protocolEnd) + out + path.substr(hostEnd);
+
+  return out;
+}

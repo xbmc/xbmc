@@ -1237,6 +1237,41 @@ TEST_F(TestURIUtils, UpdateUrlEncoding)
   EXPECT_STRCASEEQ(newUrl.c_str(), oldUrl.c_str());
 }
 
+TEST_F(TestURIUtils, SanitiseUrlEncoding)
+{
+  std::string dirty = "rar://D%3A%2FMovies%2Fmovie.rar/movie.mkv";
+  std::string clean = "rar://D%3a%5cMovies%5cmovie.rar/movie.mkv";
+  EXPECT_EQ(clean,
+            URIUtils::SanitiseUrlEncoding(dirty)); // lower case encoding and '\' in encoded path
+
+  dirty = "archive://D%3A%2FMovies%2Fmovie.rar/movie.mkv";
+  clean = "archive://D%3a%5cMovies%5cmovie.rar/movie.mkv";
+  EXPECT_EQ(clean,
+            URIUtils::SanitiseUrlEncoding(dirty)); // lower case encoding and '\' in encoded path
+
+  dirty = "rar://D%3A%5CMovies%5Cmovie.rar/movie.mkv";
+  clean = "rar://D%3a%5cMovies%5cmovie.rar/movie.mkv";
+  EXPECT_EQ(clean, URIUtils::SanitiseUrlEncoding(dirty)); // lower case encoding
+
+  dirty = "rar://D%3a%2fMovies%2fmovie.rar/movie.mkv";
+  clean = "rar://D%3a%5cMovies%5cmovie.rar/movie.mkv";
+  EXPECT_EQ(clean, URIUtils::SanitiseUrlEncoding(dirty)); // '\' in encoded path
+
+  dirty = "rar://%2FMovies%2Fmovie.rar/movie.mkv";
+  clean = "rar://%2fMovies%2fmovie.rar/movie.mkv";
+  EXPECT_EQ(clean, URIUtils::SanitiseUrlEncoding(dirty)); // lower case encoding
+
+  dirty =
+      "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fmovie.iso%2f/root/episode/3/4";
+  clean = dirty;
+  EXPECT_EQ(clean, URIUtils::SanitiseUrlEncoding(dirty)); // unchanged
+
+  dirty = "rar://D%3A%2FMovies%2Fmovie.rar/movie%DD/movie.mkv";
+  clean = "rar://D%3a%5cMovies%5cmovie.rar/movie%DD/movie.mkv";
+  EXPECT_EQ(clean,
+            URIUtils::SanitiseUrlEncoding(dirty)); // only sanitise hostname
+}
+
 struct URLEncodings
 {
   std::string_view input;
