@@ -323,13 +323,13 @@ public:
   /**
    * @return Audio stream debug info
    */
-  std::string GetAudioInfo();
+  std::string GetAudioInfo() const;
 
   /**
    *
    * @return Video stream debug info
    */
-  std::string GetVideoInfo();
+  std::string GetVideoInfo() const;
 
   /**
    * @brief Get the resolution of the video stream
@@ -407,16 +407,6 @@ private:
    * @param hint Video stream hint.
    */
   void SetupBitstreamConverter(CDVDStreamInfo& hint);
-
-  /**
-   * @brief Updates the player video debug info.
-   */
-  void UpdateVideoInfo();
-
-  /**
-   * @brief Updates the player video debug info.
-   */
-  void UpdateAudioInfo();
 
   /**
    * @brief Updates ActiveAE volume setting based on current audio state.
@@ -533,10 +523,6 @@ private:
   std::atomic<std::chrono::nanoseconds> m_fedVideoPts{NO_PTS};
   std::atomic<bool> m_started{false};
 
-  std::mutex m_audioInfoMutex;
-  std::string m_audioInfo;
-  std::mutex m_videoInfoMutex;
-  std::string m_videoInfo;
   BitstreamStats m_audioStats{};
   BitstreamStats m_videoStats{};
 

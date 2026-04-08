@@ -220,42 +220,6 @@ int CMediaPipelineWebOS::GetVideoBitrate() const
   return static_cast<int>(m_videoStats.GetBitrate());
 }
 
-void CMediaPipelineWebOS::UpdateAudioInfo()
-{
-  const unsigned int level = GetQueueLevel(StreamType::AUDIO);
-  const double kb = m_messageQueueAudio.GetDataSize() / 1024.0;
-  const double ts = m_messageQueueAudio.GetTimeSize();
-  const double kbps = m_audioStats.GetBitrate() / 1024.0;
-
-  std::scoped_lock lock(m_audioInfoMutex);
-
-  std::string transcodedInfo;
-  if (m_audioEncoder)
-  {
-    transcodedInfo = fmt::format(
-        ", transcoded {}", (m_audioEncoder->GetCodecID() == AV_CODEC_ID_EAC3) ? "eac3" : "ac3");
-  }
-
-  m_audioInfo =
-      fmt::format("aq:{:02}% {:.3f}s {:.3f}Kb, Kb/s:{:.2f}{}", level, ts, kb, kbps, transcodedInfo);
-}
-
-void CMediaPipelineWebOS::UpdateVideoInfo()
-{
-  const int level = m_processInfo.GetLevelVQ();
-  const double ts = m_messageQueueVideo.GetTimeSize();
-  const double mb = m_messageQueueVideo.GetDataSize() / 1024.0 / 1024.0;
-  const double mbps = static_cast<double>(GetVideoBitrate()) / (1024.0 * 1024.0);
-  double fps = 0.0;
-
-  if (m_videoHint.fpsrate && m_videoHint.fpsscale)
-    fps = static_cast<double>(m_videoHint.fpsrate) / static_cast<double>(m_videoHint.fpsscale);
-
-  std::scoped_lock lock(m_videoInfoMutex);
-  m_videoInfo = fmt::format("vq:{:02}% {:.3f}s, {:.3f}Mb, Mb/s:{:.2f}, fr:{:.3f}, drop:{}", level,
-                            ts, mb, mbps, fps, m_droppedFrames.load());
-}
-
 void CMediaPipelineWebOS::UpdateGUISounds(const bool playing)
 {
   IAE* activeAE = CServiceBroker::GetActiveAE();
@@ -271,16 +235,37 @@ void CMediaPipelineWebOS::UpdateGUISounds(const bool playing)
     activeAE->SetVolume(1.0);
 }
 
-std::string CMediaPipelineWebOS::GetAudioInfo()
+std::string CMediaPipelineWebOS::GetAudioInfo() const
 {
-  std::scoped_lock lock(m_audioInfoMutex);
-  return m_audioInfo;
+  const unsigned int level = GetQueueLevel(StreamType::AUDIO);
+  const double kb = m_messageQueueAudio.GetDataSize() / 1024.0;
+  const double ts = m_messageQueueAudio.GetTimeSize();
+  const double kbps = m_audioStats.GetBitrate() / 1024.0;
+
+  std::string transcodedInfo;
+  if (m_audioEncoder)
+  {
+    transcodedInfo = fmt::format(
+        ", transcoded {}", (m_audioEncoder->GetCodecID() == AV_CODEC_ID_EAC3) ? "eac3" : "ac3");
+  }
+
+  return fmt::format("aq:{:02}% {:.3f}s {:.3f}Kb, Kb/s:{:.2f}{}", level, ts, kb, kbps,
+                     transcodedInfo);
 }
 
-std::string CMediaPipelineWebOS::GetVideoInfo()
+std::string CMediaPipelineWebOS::GetVideoInfo() const
 {
-  std::scoped_lock lock(m_videoInfoMutex);
-  return m_videoInfo;
+  const int level = m_processInfo.GetLevelVQ();
+  const double ts = m_messageQueueVideo.GetTimeSize();
+  const double mb = m_messageQueueVideo.GetDataSize() / 1024.0 / 1024.0;
+  const double mbps = static_cast<double>(GetVideoBitrate()) / (1024.0 * 1024.0);
+  double fps = 0.0;
+
+  if (m_videoHint.fpsrate && m_videoHint.fpsscale)
+    fps = static_cast<double>(m_videoHint.fpsrate) / static_cast<double>(m_videoHint.fpsscale);
+
+  return fmt::format("vq:{:02}% {:.3f}s, {:.3f}Mb, Mb/s:{:.2f}, fr:{:.3f}, drop:{}", level, ts, mb,
+                     mbps, fps, m_droppedFrames);
 }
 
 bool CMediaPipelineWebOS::Supports(const AVCodecID codec, const int profile)
@@ -1383,7 +1368,6 @@ void CMediaPipelineWebOS::Process()
     std::shared_ptr<CDVDMsg> msg = nullptr;
     int priority = 0;
     m_messageQueueVideo.Get(msg, 10ms, priority);
-    UpdateVideoInfo();
 
     if (msg)
     {
@@ -1438,7 +1422,7 @@ void CMediaPipelineWebOS::ProcessAudio()
     std::shared_ptr<CDVDMsg> msg = nullptr;
     int priority = 0;
     m_messageQueueAudio.Get(msg, 10ms, priority);
-    UpdateAudioInfo();
+
     if (msg)
     {
       if (msg->IsType(CDVDMsg::DEMUXER_PACKET))
