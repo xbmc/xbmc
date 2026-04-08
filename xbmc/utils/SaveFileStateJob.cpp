@@ -280,40 +280,48 @@ void CSaveFileState::DoWork(CFileItem& item,
       CLog::Log(LOGDEBUG, "{} - Saving file state for audio item {}", __FUNCTION__, redactPath);
 
       CMusicDatabase musicdatabase;
-      if (updatePlayCount)
+      if (!musicdatabase.Open())
       {
-        if (!musicdatabase.Open())
-        {
-          CLog::Log(LOGWARNING, "{} - Unable to open music database. Can not save file state!",
-                    __FUNCTION__);
-        }
-        else
+        CLog::LogF(LOGWARNING, "Unable to open music database. Can not save file state!");
+      }
+      else
+      {
+        bool updated{false};
+        if (updatePlayCount)
         {
           // consider this item as played
-          CLog::Log(LOGDEBUG, "{} - Marking audio item {} as listened", __FUNCTION__, redactPath);
-
+          CLog::LogF(LOGDEBUG, "Marking audio item {} as listened", redactPath);
           musicdatabase.IncrementPlayCount(item);
-          musicdatabase.Close();
-
-          // UPnP announce resume point changes to clients
-          // however not if playcount is modified as that already announces
-          if (MUSIC::IsMusicDb(item))
-          {
-            CVariant data;
-            data["id"] = item.GetMusicInfoTag()->GetDatabaseId();
-            data["type"] = item.GetMusicInfoTag()->GetType();
-            CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::AudioLibrary,
-                                                               "OnUpdate", data);
-          }
+          updated = true;
         }
-      }
 
-      if (MUSIC::IsAudioBook(item))
-      {
-        musicdatabase.Open();
-        musicdatabase.SetResumeBookmarkForAudioBook(
-            item, item.GetStartOffset() + CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds));
+        if (MUSIC::IsAudioBook(item) && item.GetEndOffset() > 0) // Audio file with chapters
+        {
+          int bookmarkMs;
+          if (bookmark.timeInSeconds > 0.0)
+            bookmarkMs = static_cast<int>(item.GetStartOffset() +
+                                          CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds));
+          else
+            bookmarkMs = 0; // bookmarkMs of <= 0 clears the bookmark
+
+          CLog::LogF(LOGDEBUG, "Setting resume point at {} for audio item {}", bookmarkMs,
+                     redactPath);
+          musicdatabase.SetResumeBookmarkForAudioBook(item, bookmarkMs);
+          updated = true;
+        }
+
         musicdatabase.Close();
+
+        // UPnP announce resume point changes to clients
+        // however not if playcount is modified as that already announces
+        if (updated && MUSIC::IsMusicDb(item))
+        {
+          CVariant data;
+          data["id"] = item.GetMusicInfoTag()->GetDatabaseId();
+          data["type"] = item.GetMusicInfoTag()->GetType();
+          CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::AudioLibrary, "OnUpdate",
+                                                             data);
+        }
       }
     }
   }
