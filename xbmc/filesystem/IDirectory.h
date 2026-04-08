@@ -45,7 +45,9 @@ enum DIR_FLAG
   DIR_FLAG_GET_HIDDEN = (2 << 3), ///< Get hidden files
   DIR_FLAG_READ_CACHE = (2 << 4), ///< Force reading from the directory cache (if available)
   DIR_FLAG_BYPASS_CACHE =
-      (2 << 5) ///< Completely bypass the directory cache (no reading, no writing)
+      (2 << 5), ///< Completely bypass the directory cache (no reading, no writing)
+  DIR_FLAG_FORCE_CACHE =
+      (2 << 6) ///< Force reading from the cache bypassing IDirectory creation (if available)
 };
 /*!
  \ingroup filesystem
