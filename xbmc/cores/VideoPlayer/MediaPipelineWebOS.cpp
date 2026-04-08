@@ -72,6 +72,7 @@ namespace
 constexpr unsigned int AC3_MAX_SYNC_FRAME_SIZE = 3840;
 constexpr unsigned int EAC3_MAX_SYNC_FRAME_SIZE = 6144;
 constexpr int RESAMPLED_STREAM_ID = -1000;
+constexpr int CONVERTED_STREAM_ID = -2000;
 constexpr unsigned int MIN_AUDIO_RESAMPLE_BUFFER_SIZE = 4096;
 
 constexpr unsigned int PRE_BUFFER_BYTES = 0;
@@ -1165,7 +1166,12 @@ bool CMediaPipelineWebOS::FeedVideoData(const std::shared_ptr<CDVDMsg>& msg)
   // we have an input buffer, fill it.
   if (data && m_bitstream)
   {
-    m_bitstream->Convert(data, static_cast<int>(size));
+    if (packet->iStreamId != CONVERTED_STREAM_ID)
+    {
+      m_bitstream->Convert(data, static_cast<int>(size));
+      // change the stream id here so we do not convert again if the packet is put back
+      packet->iStreamId = CONVERTED_STREAM_ID;
+    }
 
     if (!m_bitstream->CanStartDecode())
     {
