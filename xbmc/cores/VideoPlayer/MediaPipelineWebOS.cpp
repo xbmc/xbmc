@@ -320,7 +320,7 @@ bool CMediaPipelineWebOS::OpenAudioStream(CDVDStreamInfo& audioHint)
 
     if (m_webOSVersion >= 6)
     {
-      std::scoped_lock lock(m_audioCriticalSection);
+      CWorkerGate::Lock audioLock(m_audioGate);
       CVariant optInfo = CVariant::VariantTypeObject;
       const std::string codecName = SetupAudio(audioHint, optInfo);
 
@@ -376,7 +376,7 @@ bool CMediaPipelineWebOS::OpenVideoStream(CDVDStreamInfo hint)
     m_videoClosed = false;
     if (m_videoHint.codec == hint.codec && m_videoHint.hdrType == hint.hdrType)
     {
-      std::scoped_lock lock(m_videoCriticalSection);
+      CWorkerGate::Lock videoLock(m_videoGate);
       SetupBitstreamConverter(hint);
       m_videoHint = hint;
 
@@ -437,8 +437,8 @@ void CMediaPipelineWebOS::CloseVideoStream(const bool waitForBuffers)
 
 void CMediaPipelineWebOS::Flush(bool sync)
 {
-  std::scoped_lock videoLock(m_videoCriticalSection);
-  std::scoped_lock audioLock(m_audioCriticalSection);
+  CWorkerGate::Lock videoLock(m_videoGate);
+  CWorkerGate::Lock audioLock(m_audioGate);
 
   if (!m_mediaAPIs->flush())
     CLog::LogF(LOGDEBUG, "Failed to flush media APIs");
@@ -572,8 +572,8 @@ void CMediaPipelineWebOS::SetSubtitleDelay(const double delay)
 
 bool CMediaPipelineWebOS::Load(CDVDStreamInfo videoHint, CDVDStreamInfo audioHint)
 {
-  std::scoped_lock videoLock(m_videoCriticalSection);
-  std::scoped_lock audioLock(m_audioCriticalSection);
+  CWorkerGate::Lock videoLock(m_videoGate);
+  CWorkerGate::Lock audioLock(m_audioGate);
 
   CVariant p;
 
@@ -1375,9 +1375,11 @@ void CMediaPipelineWebOS::SetDynamicRangeCompression(const long drc)
 
 void CMediaPipelineWebOS::Process()
 {
+  m_videoGate.SetRunning(true);
   while (!m_bStop)
   {
-    std::unique_lock videoLock(m_videoCriticalSection);
+    m_videoGate.Checkpoint();
+
     std::shared_ptr<CDVDMsg> msg = nullptr;
     int priority = 0;
     m_messageQueueVideo.Get(msg, 10ms, priority);
@@ -1419,18 +1421,19 @@ void CMediaPipelineWebOS::Process()
         CLog::LogF(LOGDEBUG, "Received video message: {}", msg->GetMessageType());
       }
     }
-    msg = nullptr;
-    videoLock.unlock();
-    std::this_thread::yield();
   }
+
+  m_videoGate.SetRunning(false);
+  m_videoGate.OnExit();
 }
 
 void CMediaPipelineWebOS::ProcessAudio()
 {
+  m_audioGate.SetRunning(true);
   m_audioStats.Start();
   while (!m_bStop)
   {
-    std::unique_lock lock(m_audioCriticalSection);
+    m_audioGate.Checkpoint();
 
     std::shared_ptr<CDVDMsg> msg = nullptr;
     int priority = 0;
@@ -1606,11 +1609,10 @@ void CMediaPipelineWebOS::ProcessAudio()
         CLog::LogF(LOGDEBUG, "Received audio message: {}", msg->GetMessageType());
       }
     }
-
-    msg = nullptr;
-    lock.unlock();
-    std::this_thread::yield();
   }
+
+  m_audioGate.SetRunning(false);
+  m_audioGate.OnExit();
 }
 
 void CMediaPipelineWebOS::GetVideoResolution(unsigned int& width, unsigned int& height) const
