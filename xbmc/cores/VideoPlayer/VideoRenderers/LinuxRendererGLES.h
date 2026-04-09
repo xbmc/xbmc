@@ -87,6 +87,9 @@ public:
   CRenderCapture* GetRenderCapture() override;
 
 protected:
+  // Returns 0 if scaling is below hqscalers threshold.
+  // Otherwise returns the scale factor: < 1.0 = downscale, > 1.0 = upscale.
+  float ScalingAboveThreshold() const;
   static const int FIELD_FULL{0};
   static const int FIELD_TOP{1};
   static const int FIELD_BOT{2};
@@ -144,6 +147,13 @@ protected:
   GLenum m_textureTarget = GL_TEXTURE_2D;
   int m_renderMethod{RENDER_GLSL};
   RenderQuality m_renderQuality{RQ_SINGLEPASS};
+
+  // Dithering
+  bool m_useDithering{false};
+  unsigned int m_ditherDepth{0};
+  unsigned int m_srcColorBits{8};
+  bool m_srcFullRange{false};
+  GLuint m_ditherTex{0};
 
   // Raw data used by renderer
   int m_currentField{FIELD_FULL};

@@ -30,7 +30,8 @@ class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
                           AVColorPrimaries dst,
                           AVColorPrimaries src,
                           bool toneMap,
-                          ETONEMAPMETHOD toneMapMethod);
+                          ETONEMAPMETHOD toneMapMethod,
+                          bool dither = false);
     ~BaseYUV2RGBGLSLShader() override;
     void SetField(int field) { m_field = field; }
     void SetWidth(int w) { m_width = w; }
@@ -40,6 +41,10 @@ class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
     void SetBlack(float black) { m_black = black; }
     void SetContrast(float contrast) { m_contrast = contrast; }
     void SetConvertFullColorRange(bool convertFullRange) { m_convertFullRange = convertFullRange; }
+    void SetDitherUniforms(bool enabled,
+                           GLuint ditherTex,
+                           unsigned int ditherDepth,
+                           int ditherSize);
     void SetDisplayMetadata(bool hasDisplayMetadata,
                             const AVMasteringDisplayMetadata& displayMetadata,
                             bool hasLightMetadata,
@@ -107,6 +112,17 @@ class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
     GLfloat m_alpha{1.0f};
 
     bool m_convertFullRange;
+
+    // dithering
+    bool m_dither{false};
+    bool m_ditherEnabled{false};
+    GLint m_hDitherEnabled{-1};
+    GLint m_hDither{-1};
+    GLint m_hDitherQuant{-1};
+    GLint m_hDitherSize{-1};
+    GLuint m_ditherTex{0};
+    unsigned int m_ditherDepth{0};
+    int m_ditherSize{0};
   };
 
   class YUV2RGBProgressiveShader : public BaseYUV2RGBGLSLShader
@@ -116,7 +132,8 @@ class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
                              AVColorPrimaries dstPrimaries,
                              AVColorPrimaries srcPrimaries,
                              bool toneMap,
-                             ETONEMAPMETHOD toneMapMethod);
+                             ETONEMAPMETHOD toneMapMethod,
+                             bool dither = false);
   };
 
   class YUV2RGBBobShader : public BaseYUV2RGBGLSLShader
@@ -126,7 +143,8 @@ class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
                      AVColorPrimaries dstPrimaries,
                      AVColorPrimaries srcPrimaries,
                      bool toneMap,
-                     ETONEMAPMETHOD toneMapMethod);
+                     ETONEMAPMETHOD toneMapMethod,
+                     bool dither = false);
     void OnCompiledAndLinked() override;
     bool OnEnabled() override;
 
@@ -143,7 +161,8 @@ class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
                         AVColorPrimaries srcPrimaries,
                         bool toneMap,
                         ETONEMAPMETHOD toneMapMethod,
-                        ESCALINGMETHOD method);
+                        ESCALINGMETHOD method,
+                        bool dither = false);
     ~YUV2RGBFilterShader() override;
 
   protected:

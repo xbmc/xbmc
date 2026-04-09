@@ -7759,7 +7759,49 @@ msgctxt "#13476"
 msgid "16 bit per channel"
 msgstr ""
 
-#empty strings from id 13477 to 13504
+#. Value of setting with label #36100 "Dither depth"
+#: system/settings/settings.xml
+msgctxt "#13477"
+msgid "2 bit"
+msgstr ""
+
+#. Value of setting with label #36100 "Dither depth"
+#: system/settings/settings.xml
+msgctxt "#13478"
+msgid "3 bit"
+msgstr ""
+
+#. Value of setting with label #36100 "Dither depth"
+#: system/settings/settings.xml
+msgctxt "#13479"
+msgid "4 bit"
+msgstr ""
+
+#. Value of setting with label #36100 "Dither depth"
+#: system/settings/settings.xml
+msgctxt "#13480"
+msgid "5 bit"
+msgstr ""
+
+#. Value of setting with label #36100 "Dither depth"
+#: system/settings/settings.xml
+msgctxt "#13481"
+msgid "6 bit"
+msgstr ""
+
+#. Value of setting with label #36100 "Dither depth"
+#: system/settings/settings.xml
+msgctxt "#13482"
+msgid "7 bit"
+msgstr ""
+
+#. Value of setting with label #36100 "Dither depth"
+#: system/settings/settings.xml
+msgctxt "#13483"
+msgid "8 bit"
+msgstr ""
+
+#empty strings from id 13484 to 13504
 
 #: system/settings/settings.xml
 msgctxt "#13505"
@@ -22055,7 +22097,7 @@ msgstr ""
 #. Description of setting with label #36100 "Dither depth"
 #: system/settings/settings.xml
 msgctxt "#36599"
-msgid "Video dithering output precision in bits. Use the highest setting that doesn't show banding. The default of 8 is recommended for most systems. If your GPU is set to scale the output RGB levels or you use a laptop screen, a 7 or 6 bit setting may eliminate more banding. Lower settings are available for testing purposes only to make it easy to see whether dithering is applied and that the dither noise pixel size matches the display resolution."
+msgid "Video dithering output precision in bits. Auto enables dithering only when beneficial (limited- / full-range mismatch, bit depth reduction, downscaling, or HDR tone mapping) and uses 8- or 10-bit depth based on what the display supports. Lower settings are available for testing purposes only."
 msgstr ""
 
 #reserved strings 365XX

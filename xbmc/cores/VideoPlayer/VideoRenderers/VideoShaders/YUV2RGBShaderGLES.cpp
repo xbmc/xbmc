@@ -29,12 +29,14 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(EShaderFormat format,
                                              AVColorPrimaries dstPrimaries,
                                              AVColorPrimaries srcPrimaries,
                                              bool toneMap,
-                                             ETONEMAPMETHOD toneMapMethod)
+                                             ETONEMAPMETHOD toneMapMethod,
+                                             bool dither)
 {
   m_width = 1;
   m_height = 1;
   m_field = 0;
   m_format = format;
+  m_dither = dither;
 
   m_black = 0.0f;
   m_contrast = 1.0f;
@@ -67,6 +69,9 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(EShaderFormat format,
     else if (toneMapMethod == VS_TONEMAPMETHOD_HABLE)
       m_defines += "#define KODI_TONE_MAPPING_HABLE\n";
   }
+
+  if (m_dither)
+    m_defines += "#define XBMC_DITHER\n";
 
   VertexShader()->LoadSource("gles_yuv2rgb.vert", m_defines);
 
@@ -101,6 +106,15 @@ void BaseYUV2RGBGLSLShader::OnCompiledAndLinked()
   m_hCoefsDst = glGetUniformLocation(ProgramHandle(), "m_coefsDst");
   m_hToneP1 = glGetUniformLocation(ProgramHandle(), "m_toneP1");
   m_hLuminance = glGetUniformLocation(ProgramHandle(), "m_luminance");
+
+  if (m_dither)
+  {
+    m_hDitherEnabled = glGetUniformLocation(ProgramHandle(), "m_ditherEnabled");
+    m_hDither = glGetUniformLocation(ProgramHandle(), "m_dither");
+    m_hDitherQuant = glGetUniformLocation(ProgramHandle(), "m_ditherquant");
+    m_hDitherSize = glGetUniformLocation(ProgramHandle(), "m_dithersize");
+  }
+
   VerifyGLState();
 }
 
@@ -175,13 +189,41 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
     }
   }
 
+  if (m_dither && m_ditherTex)
+  {
+    glUniform1f(m_hDitherEnabled, m_ditherEnabled ? 1.0f : 0.0f);
+    glUniform1i(m_hDither, 4);
+    glActiveTexture(GL_TEXTURE4);
+    glBindTexture(GL_TEXTURE_2D, m_ditherTex);
+    glActiveTexture(GL_TEXTURE0);
+    glUniform1f(m_hDitherQuant, (1 << m_ditherDepth) - 1.0f);
+    glUniform2f(m_hDitherSize, static_cast<float>(m_ditherSize), static_cast<float>(m_ditherSize));
+  }
+
   VerifyGLState();
 
   return true;
 }
 
+void BaseYUV2RGBGLSLShader::SetDitherUniforms(bool enabled,
+                                              GLuint ditherTex,
+                                              unsigned int ditherDepth,
+                                              int ditherSize)
+{
+  m_ditherEnabled = enabled;
+  m_ditherTex = ditherTex;
+  m_ditherDepth = ditherDepth;
+  m_ditherSize = ditherSize;
+}
+
 void BaseYUV2RGBGLSLShader::OnDisabled()
 {
+  if (m_dither && m_ditherTex)
+  {
+    glActiveTexture(GL_TEXTURE4);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glActiveTexture(GL_TEXTURE0);
+  }
 }
 
 void BaseYUV2RGBGLSLShader::Free()
@@ -225,11 +267,14 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(EShaderFormat format,
                                                    AVColorPrimaries dstPrimaries,
                                                    AVColorPrimaries srcPrimaries,
                                                    bool toneMap,
-                                                   ETONEMAPMETHOD toneMapMethod)
-  : BaseYUV2RGBGLSLShader(format, dstPrimaries, srcPrimaries, toneMap, toneMapMethod)
+                                                   ETONEMAPMETHOD toneMapMethod,
+                                                   bool dither)
+  : BaseYUV2RGBGLSLShader(format, dstPrimaries, srcPrimaries, toneMap, toneMapMethod, dither)
 {
   PixelShader()->LoadSource("gles_yuv2rgb_basic.frag", m_defines);
   PixelShader()->InsertSource("gles_tonemap.frag", "void main()");
+  PixelShader()->InsertSource("gles_dither_uniforms.frag", "void main()");
+  PixelShader()->InsertSource("gles_dither_body.frag", "gl_FragColor");
 }
 
 
@@ -241,11 +286,14 @@ YUV2RGBBobShader::YUV2RGBBobShader(EShaderFormat format,
                                    AVColorPrimaries dstPrimaries,
                                    AVColorPrimaries srcPrimaries,
                                    bool toneMap,
-                                   ETONEMAPMETHOD toneMapMethod)
-  : BaseYUV2RGBGLSLShader(format, dstPrimaries, srcPrimaries, toneMap, toneMapMethod)
+                                   ETONEMAPMETHOD toneMapMethod,
+                                   bool dither)
+  : BaseYUV2RGBGLSLShader(format, dstPrimaries, srcPrimaries, toneMap, toneMapMethod, dither)
 {
   PixelShader()->LoadSource("gles_yuv2rgb_bob.frag", m_defines);
   PixelShader()->InsertSource("gles_tonemap.frag", "void main()");
+  PixelShader()->InsertSource("gles_dither_uniforms.frag", "void main()");
+  PixelShader()->InsertSource("gles_dither_body.frag", "gl_FragColor");
 }
 
 void YUV2RGBBobShader::OnCompiledAndLinked()
@@ -278,13 +326,16 @@ YUV2RGBFilterShader::YUV2RGBFilterShader(EShaderFormat format,
                                          AVColorPrimaries srcPrimaries,
                                          bool toneMap,
                                          ETONEMAPMETHOD toneMapMethod,
-                                         ESCALINGMETHOD method)
-  : BaseYUV2RGBGLSLShader(format, dstPrimaries, srcPrimaries, toneMap, toneMapMethod)
+                                         ESCALINGMETHOD method,
+                                         bool dither)
+  : BaseYUV2RGBGLSLShader(format, dstPrimaries, srcPrimaries, toneMap, toneMapMethod, dither)
 {
   m_scaling = method;
   PixelShader()->LoadSource("gles310_yuv2rgb_filter.frag", m_defines);
   VertexShader()->LoadSource("gles310_yuv2rgb.vert");
   PixelShader()->InsertSource("gles_tonemap.frag", "void main()");
+  PixelShader()->InsertSource("gles_dither_uniforms.frag", "void main()");
+  PixelShader()->InsertSource("gles_dither_body.frag", "fragColor");
 }
 
 YUV2RGBFilterShader::~YUV2RGBFilterShader()

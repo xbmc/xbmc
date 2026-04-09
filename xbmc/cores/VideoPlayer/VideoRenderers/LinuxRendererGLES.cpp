@@ -14,6 +14,7 @@
 #include "ServiceBroker.h"
 #include "VideoShaders/VideoFilterShaderGLES.h"
 #include "VideoShaders/YUV2RGBShaderGLES.h"
+#include "VideoShaders/dither.h"
 #include "application/Application.h"
 #include "cores/IPlayer.h"
 #include "guilib/Texture.h"
@@ -42,6 +43,35 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   m_fullRange = !CServiceBroker::GetWinSystem()->UseLimitedColor();
 
   m_renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
+
+  std::tie(m_useDithering, m_ditherDepth) = CServiceBroker::GetWinSystem()->GetDitherSettings();
+  if (m_useDithering)
+  {
+    if (m_renderSystem && !m_renderSystem->IsExtSupported("GL_EXT_texture_norm16"))
+    {
+      CLog::Log(LOGWARNING,
+                "GLES: dithering requested but GL_EXT_texture_norm16 not supported, disabling");
+      m_useDithering = false;
+    }
+    else
+    {
+      glGenTextures(1, &m_ditherTex);
+      glActiveTexture(GL_TEXTURE3);
+      glBindTexture(GL_TEXTURE_2D, m_ditherTex);
+      glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_R16_EXT, dither_size, dither_size, 0, GL_RED,
+                   GL_UNSIGNED_SHORT, dither_matrix);
+      glActiveTexture(GL_TEXTURE0);
+      if (m_ditherDepth == 0)
+        CLog::Log(LOGDEBUG, "GLES: dithering auto");
+      else
+        CLog::Log(LOGDEBUG, "GLES: dithering enabled, depth={}", m_ditherDepth);
+    }
+  }
 
 #if defined(GL_ES_VERSION_3_0)
   int32_t intermediatePrecision = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
@@ -73,6 +103,9 @@ CLinuxRendererGLES::~CLinuxRendererGLES()
   UnInit();
 
   ReleaseShaders();
+
+  if (m_ditherTex)
+    glDeleteTextures(1, &m_ditherTex);
 
   free(m_planeBuffer);
   m_planeBuffer = nullptr;
@@ -133,6 +166,8 @@ bool CLinuxRendererGLES::Configure(const VideoPicture &picture, float fps, unsig
   m_renderOrientation = orientation;
 
   m_srcPrimaries = picture.color_primaries;
+  m_srcColorBits = picture.colorBits;
+  m_srcFullRange = picture.color_range == 1;
   m_toneMap = false;
 
   // Calculate the input frame aspect ratio.
@@ -732,13 +767,37 @@ void CLinuxRendererGLES::UpdateVideoFilter()
       }
     }
 
-    // TODO: GL passes additional params: m_nonLinStretch, m_intermediateGammaCorrection,
-    // GLSLOutput* (for dithering and color management). Add when ported to GLES.
-    m_pVideoFilterShader = new ConvolutionFilterShader(m_scalingMethod);
+    // TODO: GL also passes m_nonLinStretch, m_intermediateGammaCorrection.
+    // Add when non-linear stretch and gamma correction are ported to GLES.
+    m_pVideoFilterShader = new ConvolutionFilterShader(m_scalingMethod, m_useDithering);
     if (!m_pVideoFilterShader->CompileAndLink())
     {
       CLog::Log(LOGERROR, "GLES: Error compiling and linking video filter shader");
       break;
+    }
+
+    if (m_useDithering && m_ditherTex)
+    {
+      bool ditherActive = true;
+      unsigned int effectiveDitherDepth = m_ditherDepth;
+      if (m_ditherDepth == 0)
+      {
+        GLint redBits = 0;
+        glGetIntegerv(GL_RED_BITS, &redBits);
+        // Use framebuffer depth on HDR displays; assume 8-bit on SDR displays
+        // since the CRTC or display will truncate to 8-bit regardless of BO depth.
+        if (CServiceBroker::GetWinSystem()->IsHDRDisplay())
+          effectiveDitherDepth = (redBits > 0) ? redBits : 8;
+        else
+          effectiveDitherDepth = 8;
+
+        float scaleFactor = ScalingAboveThreshold();
+        bool downscaling = scaleFactor > 0.0f && scaleFactor < 1.0f;
+        ditherActive = (m_srcFullRange != m_fullRange) || m_srcColorBits > effectiveDitherDepth ||
+                       m_toneMap || downscaling;
+      }
+      static_cast<ConvolutionFilterShader*>(m_pVideoFilterShader)
+          ->SetDitherUniforms(ditherActive, m_ditherTex, effectiveDitherDepth, dither_size);
     }
 
     CLog::Log(LOGINFO, "GLES: FBO intermediate format {:#x}",
@@ -799,6 +858,33 @@ void CLinuxRendererGLES::LoadShaders(int field)
         // Try GLSL shaders if supported and user requested auto or GLSL.
         if (glCreateProgram())
         {
+          // Auto dithering (depth=0): decide per-video whether dithering is beneficial.
+          // Shaders are always compiled with XBMC_DITHER when the setting is on.
+          // The m_ditherEnabled uniform controls whether the shader applies dithering.
+          bool ditherActive = true;
+          unsigned int effectiveDitherDepth = m_ditherDepth;
+
+          if (m_ditherDepth == 0 && m_ditherTex)
+          {
+            GLint redBits = 0;
+            glGetIntegerv(GL_RED_BITS, &redBits);
+            if (CServiceBroker::GetWinSystem()->IsHDRDisplay())
+              effectiveDitherDepth = (redBits > 0) ? redBits : 8;
+            else
+              effectiveDitherDepth = 8;
+
+            float scaleFactor = ScalingAboveThreshold();
+            bool downscaling = scaleFactor > 0.0f && scaleFactor < 1.0f;
+            ditherActive = (m_srcFullRange != m_fullRange) ||
+                           m_srcColorBits > effectiveDitherDepth || m_toneMap || downscaling;
+
+            CLog::Log(LOGDEBUG,
+                      "GLES: auto dither {} (depth={}, source={}bit, "
+                      "rangeMismatch={}, toneMap={}, downscaling={})",
+                      ditherActive ? "on" : "off", effectiveDitherDepth, m_srcColorBits,
+                      m_srcFullRange != m_fullRange, m_toneMap, downscaling);
+          }
+
           EShaderFormat shaderFormat = GetShaderFormat();
           m_toneMapMethod = m_videoSettings.m_ToneMapMethod;
 
@@ -809,7 +895,7 @@ void CLinuxRendererGLES::LoadShaders(int field)
           {
             m_pYUVProgShader = new YUV2RGBFilterShader(
                 shaderFormat, m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709,
-                m_srcPrimaries, m_toneMap, m_toneMapMethod, m_scalingMethod);
+                m_srcPrimaries, m_toneMap, m_toneMapMethod, m_scalingMethod, m_useDithering);
             // TODO: GL gates this on !m_cmsOn. Add when CMS is ported to GLES.
             m_pYUVProgShader->SetConvertFullColorRange(m_fullRange);
 
@@ -817,6 +903,9 @@ void CLinuxRendererGLES::LoadShaders(int field)
 
             if (m_pYUVProgShader->CompileAndLink())
             {
+              if (m_useDithering && m_ditherTex)
+                m_pYUVProgShader->SetDitherUniforms(ditherActive, m_ditherTex, effectiveDitherDepth,
+                                                    dither_size);
               m_renderMethod = RENDER_GLSL;
               UpdateVideoFilter();
               break;
@@ -832,19 +921,26 @@ void CLinuxRendererGLES::LoadShaders(int field)
           // Fall back to regular progressive shader
           m_pYUVProgShader = new YUV2RGBProgressiveShader(
               shaderFormat, m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709,
-              m_srcPrimaries, m_toneMap, m_toneMapMethod);
+              m_srcPrimaries, m_toneMap, m_toneMapMethod, m_useDithering);
           m_pYUVProgShader->SetConvertFullColorRange(m_fullRange);
 
           CLog::Log(LOGINFO, "GLES: Selecting YUV 2 RGB shader");
 
           m_pYUVBobShader = new YUV2RGBBobShader(
               shaderFormat, m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709,
-              m_srcPrimaries, m_toneMap, m_toneMapMethod);
+              m_srcPrimaries, m_toneMap, m_toneMapMethod, m_useDithering);
           m_pYUVBobShader->SetConvertFullColorRange(m_fullRange);
 
           if ((m_pYUVProgShader && m_pYUVProgShader->CompileAndLink())
               && (m_pYUVBobShader && m_pYUVBobShader->CompileAndLink()))
           {
+            if (m_useDithering && m_ditherTex)
+            {
+              m_pYUVProgShader->SetDitherUniforms(ditherActive, m_ditherTex, effectiveDitherDepth,
+                                                  dither_size);
+              m_pYUVBobShader->SetDitherUniforms(ditherActive, m_ditherTex, effectiveDitherDepth,
+                                                 dither_size);
+            }
             m_renderMethod = RENDER_GLSL;
             UpdateVideoFilter();
             break;
@@ -1851,6 +1947,22 @@ bool CLinuxRendererGLES::SupportsMultiPassRendering()
   return true;
 }
 
+float CLinuxRendererGLES::ScalingAboveThreshold() const
+{
+  float scaleX = m_destRect.Width() / static_cast<float>(m_sourceWidth);
+  float scaleY = m_destRect.Height() / static_cast<float>(m_sourceHeight);
+  float scaleFactor = (scaleX + scaleY) / 2.0f;
+  float scalePercent = fabs(1.0f - scaleFactor) * 100;
+  int minScale = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+      CSettings::SETTING_VIDEOPLAYER_HQSCALERS);
+
+  if (scalePercent < minScale)
+    return 0.0f;
+
+  // < 1.0 = downscale, > 1.0 = upscale
+  return scaleFactor;
+}
+
 bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method) const
 {
   if (method == VS_SCALINGMETHOD_NEAREST || method == VS_SCALINGMETHOD_LINEAR ||
@@ -1871,13 +1983,8 @@ bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method) const
       method == VS_SCALINGMETHOD_LANCZOS3)
   {
     // if scaling is below level, avoid hq scaling
-    float scaleX = fabs((static_cast<float>(m_sourceWidth) - m_destRect.Width()) / m_sourceWidth) * 100;
-    float scaleY = fabs((static_cast<float>(m_sourceHeight) - m_destRect.Height()) / m_sourceHeight) * 100;
-    int minScale = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_HQSCALERS);
-    if (scaleX < minScale && scaleY < minScale)
-    {
+    if (ScalingAboveThreshold() == 0.0f)
       return false;
-    }
 
     if (m_renderMethod & RENDER_GLSL)
     {
