@@ -943,7 +943,8 @@ bool CNFSFile::OpenForWrite(const CURL& url, bool bOverWrite)
     CLog::Log(LOGWARNING, "FileNFS::OpenForWrite() called with overwriting enabled! - {}",
               filename);
     //create file with proper permissions
-    ret = nfs_creat(m_pNfsContext, filename.c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH, &m_pFileHandle);
+    ret = nfs_create(m_pNfsContext, filename.c_str(), O_RDWR | O_EXCL,
+                     S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH, &m_pFileHandle);
     //if file was created the file handle isn't valid ... so close it and open later
     if(ret == 0)
     {
