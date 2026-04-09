@@ -782,8 +782,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
     return;
 
   if (m_scalingMethodGui == m_videoSettings.m_ScalingMethod &&
-      viewRect.Height() == m_viewRect.Height() &&
-      viewRect.Width() == m_viewRect.Width() &&
+      viewRect.Height() == m_lastViewRect.Height() && viewRect.Width() == m_lastViewRect.Width() &&
       !nonLinStretchChanged && !cmsChanged)
     return;
 
@@ -814,7 +813,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
 
   m_scalingMethodGui = m_videoSettings.m_ScalingMethod;
   m_scalingMethod = m_scalingMethodGui;
-  m_viewRect = viewRect;
+  m_lastViewRect = viewRect;
 
   if (!Supports(m_scalingMethod))
   {

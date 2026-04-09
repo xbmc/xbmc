@@ -2249,7 +2249,11 @@ void CVideoPlayer::HandlePlaySpeed()
 
       if (!m_State.streamsReady)
       {
-        if (m_playerOptions.fullscreen)
+        // For video, the fullscreen switch is handled synchronously in OpenStream
+        // so the renderer can configure with a valid viewport. This async fallback
+        // covers audio-only playback (visualisation window).
+        if (m_playerOptions.fullscreen &&
+            !CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenVideo())
         {
           CServiceBroker::GetAppMessenger()->PostMsg(TMSG_SWITCHTOFULLSCREEN);
         }
@@ -3871,6 +3875,17 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int64_t demuxerId, int iS
       break;
     case StreamType::VIDEO:
       res = OpenVideoStream(hint, reset);
+      // Activate fullscreen video window synchronously so the renderer
+      // configures with a valid viewport. Without this, GetViewWindow()
+      // returns 0x0 because m_bFullScreenVideo is not set until the async
+      // window activation in the streamsReady block below. m_HasVideo is
+      // set inside OpenVideoStream so SwitchToFullScreen's
+      // IsPlayingVideo() check will pass.
+      if (res && m_playerOptions.fullscreen &&
+          !CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenVideo())
+      {
+        CServiceBroker::GetAppMessenger()->SendMsg(TMSG_SWITCHTOFULLSCREEN);
+      }
       break;
     case StreamType::SUBTITLE:
       res = OpenSubtitleStream(hint);
