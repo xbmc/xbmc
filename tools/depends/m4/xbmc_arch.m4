@@ -73,6 +73,9 @@ case $host in
   *-*linux-android*)
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -DTARGET_ANDROID")
      ;;
+  wasm32*-unknown-emscripten*)
+     AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_WASM")
+     ;;
   *)
      AC_MSG_ERROR(unsupported build target: $host)
 esac

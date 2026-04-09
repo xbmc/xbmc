@@ -100,6 +100,10 @@ elseif(CORE_SYSTEM_NAME STREQUAL osx)
                           --target-os=darwin
                           --disable-securetransport
               )
+elseif(CORE_SYSTEM_NAME STREQUAL wasm)
+  list(APPEND ffmpeg_conf --target-os=none
+              )
+  set(CONFIGARCH --arch=wasm --cpu=wasm32)
 endif()
 
 if(CPU MATCHES arm)

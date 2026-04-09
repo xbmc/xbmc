@@ -100,3 +100,11 @@ if test "${ac_unique_file}" = "src/flac/main.c" || \
    test "${PACKAGE_NAME}" = "libssh2" ; then
      CFLAGS="$CFLAGS -fvisibility=default"
 fi
+
+if test "@platform_os@" = "wasm"; then
+  ac_cv_func_fork=no
+  ac_cv_func_vfork=no
+  ac_cv_func_sigaltstack=no
+  ac_cv_file__dev_urandom=no
+  ac_cv_lib_ssl_SSL_connect=yes
+fi

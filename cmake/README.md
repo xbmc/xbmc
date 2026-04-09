@@ -9,6 +9,7 @@ Welcome to Kodi's CMake Based Build System. CMake is a cross-platform tool for g
 * Android
 * FreeBSD
 * webOS
+* WebAssembly (Emscripten) — experimental; see [docs/WASM.md](../docs/WASM.md)
 
 While the legacy build systems typically used in-source builds, it's recommended to use out-of-source builds with CMake. The necessary runtime dependencies such as dlls, skins and configuration files are copied over to the build directory automatically. Instructions are highly dependent on your operating system and target platform but we prepared a set of **[build guides](../docs/README.md)** for your convenience.
 

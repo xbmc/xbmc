@@ -66,6 +66,12 @@ ifeq ($(OS),android)
   LIBUUID = libuuid
 endif
 
+ifeq ($(OS),wasm)
+  DEPENDS += libuuid
+  LIBUUID = libuuid
+  EXCLUDED_DEPENDS = libusb samba samba-gplv3 libcdio libcdio-gplv3
+endif
+
 ZLIB=
 ifneq ($(HAS_ZLIB),1)
   DEPENDS += zlib
