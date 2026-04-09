@@ -69,7 +69,7 @@ protected:
   class ConvolutionFilterShader : public BaseVideoFilterShader
   {
   public:
-    ConvolutionFilterShader(ESCALINGMETHOD method);
+    ConvolutionFilterShader(ESCALINGMETHOD method, bool dither = false);
     ~ConvolutionFilterShader() override;
     void OnCompiledAndLinked() override;
     bool OnEnabled() override;
@@ -77,6 +77,11 @@ protected:
     void Free();
 
     bool GetTextureFilter(GLint& filter) override { filter = GL_NEAREST; return true; }
+
+    void SetDitherUniforms(bool enabled,
+                           GLuint ditherTex,
+                           unsigned int ditherDepth,
+                           int ditherSize);
 
   protected:
     // kernel textures
@@ -88,6 +93,17 @@ protected:
     ESCALINGMETHOD m_method;
     bool m_floattex; //if float textures are supported
     GLint m_internalformat;
+
+    // dithering
+    bool m_dither = false;
+    bool m_ditherEnabled = false;
+    GLint m_hDitherEnabled = -1;
+    GLint m_hDither = -1;
+    GLint m_hDitherQuant = -1;
+    GLint m_hDitherSize = -1;
+    GLuint m_ditherTex = 0;
+    unsigned int m_ditherDepth = 0;
+    int m_ditherSize = 0;
   };
 
   class DefaultFilterShader : public BaseVideoFilterShader

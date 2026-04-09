@@ -118,6 +118,9 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_format = AV_PIX_FMT_NONE;
 
   std::tie(m_useDithering, m_ditherDepth) = CServiceBroker::GetWinSystem()->GetDitherSettings();
+  // TODO: GL does not support Auto dithering yet; treat as 8-bit (previous default)
+  if (m_ditherDepth == 0)
+    m_ditherDepth = 8;
 
   m_fullRange = !CServiceBroker::GetWinSystem()->UseLimitedColor();
 
