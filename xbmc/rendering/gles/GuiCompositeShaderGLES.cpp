@@ -82,16 +82,53 @@ bool CGuiCompositeShaderGLES::OnEnabled()
 
 GLuint CGuiCompositeShaderGLES::CreateLUTTexture(const std::vector<float>& data)
 {
+  while (glGetError() != GL_NO_ERROR)
+  {
+  }
+
   GLuint texId;
   glGenTextures(1, &texId);
   glBindTexture(GL_TEXTURE_2D, texId);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, data.size(), 1, 0, GL_LUMINANCE, GL_FLOAT,
-               data.data());
+
+  // Prefer GL_R16F (GLES 3.0 core) over GL_LUMINANCE + GL_FLOAT (GLES 2.0).
+  // The GLES 3.0 spec tightens format validation for unsized internal formats,
+  // and some drivers (e.g. V3D on RPi5) silently reject GL_LUMINANCE + GL_FLOAT
+  // despite advertising OES_texture_float. GL_R16F avoids this by using a sized
+  // format with well-defined behavior. Half-float precision is sufficient for
+  // a 1024-entry LUT.
+  bool uploaded = false;
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_R16F, data.size(), 1, 0, GL_RED, GL_FLOAT, data.data());
+  if (glGetError() == GL_NO_ERROR)
+  {
+    uploaded = true;
+  }
+  else
+  {
+    while (glGetError() != GL_NO_ERROR)
+    {
+    }
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, data.size(), 1, 0, GL_LUMINANCE, GL_FLOAT,
+                 data.data());
+    if (glGetError() == GL_NO_ERROR)
+      uploaded = true;
+    else
+      CLog::Log(LOGERROR,
+                "CGuiCompositeShaderGLES::CreateLUTTexture - failed to create {} entry "
+                "LUT texture (GL_R16F and GL_LUMINANCE+GL_FLOAT both failed)",
+                data.size());
+  }
+
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   glBindTexture(GL_TEXTURE_2D, 0);
+
+  if (!uploaded)
+  {
+    glDeleteTextures(1, &texId);
+    return 0;
+  }
   return texId;
 }
 
