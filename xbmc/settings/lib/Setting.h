@@ -89,7 +89,9 @@ public:
   void MakeReference(const std::string& referencedId = "");
 
   bool GetVisible() const { return ISetting::IsVisible(); }
-  // overrides of ISetting
+  /*!
+    \brief Returns whether the setting is visible. This override also checks the setting's dependencies to determine the visibility of the setting.
+  */
   bool IsVisible() const override;
 
   // implementation of ISettingCallback
