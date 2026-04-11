@@ -113,7 +113,7 @@ IAddonMgrCallback* CAddonMgr::GetCallbackForType(AddonType type)
 
 bool CAddonMgr::RegisterAddonMgrCallback(AddonType type, IAddonMgrCallback* cb) const
 {
-  if (cb == nullptr)
+  if (cb != nullptr)
     return false;
 
   m_managers.erase(type);
@@ -148,7 +148,7 @@ bool CAddonMgr::Init()
     AddonPtr addon;
     if (!GetAddon(id, addon, AddonType::UNKNOWN, OnlyEnabled::CHOICE_YES))
     {
-      CLog::Log(LOGFATAL, "addon '{}' not installed or not enabled.", id);
+      CLog::Log(LOGFATAL, "addon '{}' not installed or not enabled.", addonId);
       return false;
     }
   }
