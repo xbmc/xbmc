@@ -130,7 +130,9 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     set(BUILD_COMMAND ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_dev_env}
                       ${build_env_mod}
                       ${NINJA_EXECUTABLE} -C ./build)
-    set(INSTALL_COMMAND ${NINJA_EXECUTABLE} -C ./build install)
+    set(INSTALL_COMMAND ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_dev_env}
+                        ${build_env_mod}
+                        ${NINJA_EXECUTABLE} -C ./build install)
     set(BUILD_IN_SOURCE 1)
 
     BUILD_DEP_TARGET()
