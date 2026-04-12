@@ -111,6 +111,25 @@ jobs:
           if not exist C:\msys64\local32\etc mkdir C:\msys64\local32\etc
           bash -c "printf 'export BITS=32bit\nexport LOCALBUILDDIR=/build\nexport LOCALDESTDIR=/local32\nexport MINGW_PREFIX=/mingw32\nexport MINGW_CHOST=i686-w64-mingw32\nexport PKG_CONFIG_PATH=/local32/lib/pkgconfig:/mingw32/lib/pkgconfig\n' > /local32/etc/profile.local"
 
+      # FFmpeg --toolchain=msvc + --enable-openssl needs MSVC import libs (not MSYS2 mingw openssl).
+      - name: Install OpenSSL Win32 (MSVC libs)
+        if: steps.mingw-cache.outputs.cache-hit != 'true'
+        shell: pwsh
+        run: |
+          $root = 'C:\OpenSSL-Win32'
+          if (Test-Path "$root\include\openssl\ssl.h") {
+            Write-Host "OpenSSL already present at $root"
+            exit 0
+          }
+          $url = 'https://slproweb.com/download/Win32OpenSSL-1_1_1w.exe'
+          $out = Join-Path $env:TEMP 'Win32OpenSSL.exe'
+          Invoke-WebRequest -Uri $url -OutFile $out -UseBasicParsing
+          $p = Start-Process -FilePath $out -ArgumentList '/VERYSILENT', '/SUPPRESSMSGBOXES', "/DIR=$root" -PassThru -Wait
+          if ($p.ExitCode -ne 0) { throw "OpenSSL installer exit code $($p.ExitCode)" }
+          if (-not (Test-Path "$root\include\openssl\ssl.h")) {
+            throw "OpenSSL headers missing under $root after install"
+          }
+
       # Build FFmpeg and libdvd using the existing Kodi build scripts.
       # MSYSTEM=MINGW32 makes bash --login set up the i686-w64-mingw32 toolchain.
       # FFmpeg configure uses --toolchain=msvc (buildffmpeg.sh); load VS 2022 x86 tools first.
@@ -122,6 +141,7 @@ jobs:
           MSYSTEM: MINGW32
           # Preserve PATH from vcvars (cl, link, lib) — bash --login otherwise drops it.
           MSYS2_PATH_TYPE: inherit
+          OPENSSL_ROOT_DIR: C:\OpenSSL-Win32
         run: |
           for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) do call "%%i\VC\Auxiliary\Build\vcvars32.bat"
           bash --login -e /xbmc/tools/buildsteps/windows/make-mingwlibs.sh --prompt=noprompt --mode=clean --build32=yes --build64=no

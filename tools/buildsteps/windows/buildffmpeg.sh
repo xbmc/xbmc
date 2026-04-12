@@ -80,6 +80,7 @@ do_getFFmpegConfig
 
 # enable OpenSSL, because schannel has issues
 do_removeOption "--enable-gnutls"
+do_removeOption "--disable-openssl"
 do_addOption "--disable-gnutls"
 do_addOption "--enable-openssl"
 do_addOption "--enable-nonfree"
@@ -99,6 +100,16 @@ export LDFLAGS=""
 
 extra_cflags="-I$LOCALDESTDIR/include -I/depends/$TRIPLET/include -DWIN32_LEAN_AND_MEAN"
 extra_ldflags="-LIBPATH:\"$LOCALDESTDIR/lib\" -LIBPATH:\"$MINGW_PREFIX/lib\" -LIBPATH:\"/depends/$TRIPLET/lib\""
+# Win32 OpenSSL (Shining Light / CI): OPENSSL_ROOT_DIR=C:\OpenSSL-Win32 — MSVC .lib under lib/VC
+if [ -n "${OPENSSL_ROOT_DIR:-}" ]; then
+  _ossl=$(cygpath -u "$OPENSSL_ROOT_DIR")
+  extra_cflags="$extra_cflags -I${_ossl}/include"
+  if [ -d "${_ossl}/lib/VC/static" ]; then
+    extra_ldflags="$extra_ldflags -LIBPATH:\"${_ossl}/lib/VC/static\""
+  elif [ -d "${_ossl}/lib/VC" ]; then
+    extra_ldflags="$extra_ldflags -LIBPATH:\"${_ossl}/lib/VC\""
+  fi
+fi
 if [ "${win10:-}" = "yes" ]; then
   do_addOption "--enable-cross-compile"
   extra_cflags=$extra_cflags" -MD -DWINAPI_FAMILY=WINAPI_FAMILY_APP -D_WIN32_WINNT=0x0A00"
