@@ -1,7 +1,7 @@
 name: Build Kodi 18leia for Win w/VST2
 
-# Repository secret ORGANIZERRO_PAT must match the OrganizerRo PAT (same value as local .git/organizerro_pat.txt).
-# Used for checkout and gh release so CI uses the same credential as local tooling.
+# Repository secret ORGANIZERRO_PAT: same value as local .git/organizerro_pat.txt (required for gh release as OrganizerRo).
+# Checkout falls back to github.token when the secret is unset so forks/public clones can still run builds.
 
 on:
   push:
@@ -10,9 +10,8 @@ on:
   pull_request:
     branches:
       - Leia
+  # workflow_dispatch has no `branches` key in GitHub's schema; manual runs use the branch selected in the UI.
   workflow_dispatch:
-    branches:
-      - Leia
 permissions:
   contents: write
 
@@ -45,11 +44,11 @@ jobs:
                                         'tools/depends/target/libdvdcss/DVDCSS-VERSION',
                                         'tools/depends/target/libdvdread/DVDREAD-VERSION',
                                         'tools/depends/target/libdvdnav/DVDNAV-VERSION',
-                                        'tools/buildsteps/win32/make-mingwlibs.sh',
-                                        'tools/buildsteps/win32/buildhelpers.sh',
-                                        'tools/buildsteps/win32/buildffmpeg.sh',
-                                        'tools/buildsteps/win32/buildlibdvd.sh',
-                                        'tools/buildsteps/win32/fmpeg_options.txt') }}
+                                        'tools/buildsteps/windows/make-mingwlibs.sh',
+                                        'tools/buildsteps/windows/buildhelpers.sh',
+                                        'tools/buildsteps/windows/buildffmpeg.sh',
+                                        'tools/buildsteps/windows/buildlibdvd.sh',
+                                        'tools/buildsteps/windows/ffmpeg_options.txt') }}
 
       # ---------------------------------------------------------------
       # MSYS2 setup — always runs.  The MinGW build needs the full
@@ -71,6 +70,12 @@ jobs:
         run: |
           if not exist C:\msys64\xbmc mklink /j C:\msys64\xbmc %GITHUB_WORKSPACE%
           if not exist %GITHUB_WORKSPACE%\project\BuildDependencies\msys64 mklink /j %GITHUB_WORKSPACE%\project\BuildDependencies\msys64 C:\msys64
+
+      # Scripts use /xbmc/... ; junction is /c/msys64/xbmc — add symlink so bash resolves /xbmc.
+      - name: Symlink /xbmc for MSYS2
+        shell: cmd
+        run: |
+          bash -lc "rm -f /xbmc 2>/dev/null; ln -sf /c/msys64/xbmc /xbmc"
 
       # ---------------------------------------------------------------
       # MinGW build (cache miss only)
@@ -120,7 +125,7 @@ jobs:
           MSYSTEM: MINGW32
         run: >
           bash --login -e
-          /xbmc/tools/buildsteps/win32/make-mingwlibs.sh
+          /xbmc/tools/buildsteps/windows/make-mingwlibs.sh
           --prompt=noprompt
           --mode=clean
           --build32=yes
@@ -295,8 +300,9 @@ jobs:
             project/cmake/addons/.success
           if-no-files-found: warn
 
+      # Only collect when the addon step succeeded — avoids packaging a partial tree when addons fail.
       - name: Collect build output into system directory
-        if: always()
+        if: success()
         shell: pwsh
         run: |
           Copy-Item -Path "project\cmake\RelWithDebInfo\*" -Destination "system\" -Recurse -Force
@@ -313,7 +319,7 @@ jobs:
           Write-Host "Verified $exe"
 
       - name: Upload build artifacts
-        if: always()
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: kodi-windows-x86
@@ -374,7 +380,8 @@ jobs:
       - name: Create GitHub release
         if: ${{ success() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
         env:
-          GH_TOKEN: ${{ secrets.ORGANIZERRO_PAT != '' && secrets.ORGANIZERRO_PAT || github.token }}
+          # Same PAT as local organizerro_pat.txt — set ORGANIZERRO_PAT in repo Settings (not github.token).
+          GH_TOKEN: ${{ secrets.ORGANIZERRO_PAT }}
         shell: bash
         run: |
           gh release create "${{ steps.version.outputs.tag }}" \
