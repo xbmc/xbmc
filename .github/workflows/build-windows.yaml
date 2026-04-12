@@ -129,6 +129,11 @@ jobs:
           if (-not (Test-Path "$root\include\openssl\ssl.h")) {
             throw "OpenSSL headers missing under $root after install"
           }
+          $libs = @(Get-ChildItem -Path $root -Recurse -Filter 'libssl.lib' -ErrorAction SilentlyContinue)
+          if ($libs.Count -eq 0) {
+            throw "libssl.lib not found under $root after install (need full Win32 OpenSSL, not Light)"
+          }
+          $libs | ForEach-Object { Write-Host "Found: $($_.FullName)" }
 
       # Build FFmpeg and libdvd using the existing Kodi build scripts.
       # MSYSTEM=MINGW32 makes bash --login set up the i686-w64-mingw32 toolchain.
@@ -144,7 +149,7 @@ jobs:
           OPENSSL_ROOT_DIR: C:\OpenSSL-Win32
         run: |
           for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) do call "%%i\VC\Auxiliary\Build\vcvars32.bat"
-          bash --login -e /xbmc/tools/buildsteps/windows/make-mingwlibs.sh --prompt=noprompt --mode=clean --build32=yes --build64=no
+          bash --login -e -c "export OPENSSL_ROOT_DIR=C:/OpenSSL-Win32 && exec /xbmc/tools/buildsteps/windows/make-mingwlibs.sh --prompt=noprompt --mode=clean --build32=yes --build64=no"
 
       # Validate that the MinGW build produced expected output directories and
       # files before the cache is written.

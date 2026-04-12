@@ -100,14 +100,28 @@ export LDFLAGS=""
 
 extra_cflags="-I$LOCALDESTDIR/include -I/depends/$TRIPLET/include -DWIN32_LEAN_AND_MEAN"
 extra_ldflags="-LIBPATH:\"$LOCALDESTDIR/lib\" -LIBPATH:\"$MINGW_PREFIX/lib\" -LIBPATH:\"/depends/$TRIPLET/lib\""
-# Win32 OpenSSL (Shining Light / CI): OPENSSL_ROOT_DIR=C:\OpenSSL-Win32 — MSVC .lib under lib/VC
+# Win32 OpenSSL (Shining Light / CI): MSVC import libs — search common layouts (see libssl.lib probe).
+if [ -z "${OPENSSL_ROOT_DIR:-}" ] && [ -f /c/OpenSSL-Win32/include/openssl/ssl.h ]; then
+  export OPENSSL_ROOT_DIR="C:/OpenSSL-Win32"
+fi
 if [ -n "${OPENSSL_ROOT_DIR:-}" ]; then
   _ossl=$(cygpath -u "$OPENSSL_ROOT_DIR")
   extra_cflags="$extra_cflags -I${_ossl}/include"
-  if [ -d "${_ossl}/lib/VC/static" ]; then
-    extra_ldflags="$extra_ldflags -LIBPATH:\"${_ossl}/lib/VC/static\""
-  elif [ -d "${_ossl}/lib/VC" ]; then
-    extra_ldflags="$extra_ldflags -LIBPATH:\"${_ossl}/lib/VC\""
+  _have_ossl_lib=0
+  for _d in \
+    "${_ossl}/lib/VC/x86/MD" \
+    "${_ossl}/lib/VC/x86/MT" \
+    "${_ossl}/lib/VC/x86" \
+    "${_ossl}/lib/VC/static" \
+    "${_ossl}/lib/VC" \
+    "${_ossl}/lib"; do
+    if [ -f "${_d}/libssl.lib" ] || [ -f "${_d}/libcrypto.lib" ]; then
+      extra_ldflags="$extra_ldflags -LIBPATH:\"${_d}\""
+      _have_ossl_lib=1
+    fi
+  done
+  if [ "$_have_ossl_lib" -eq 0 ]; then
+    echo "WARNING: no libssl.lib under ${_ossl}; FFmpeg openssl check may fail"
   fi
 fi
 if [ "${win10:-}" = "yes" ]; then
