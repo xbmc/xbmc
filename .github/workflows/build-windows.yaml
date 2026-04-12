@@ -120,6 +120,8 @@ jobs:
         shell: cmd
         env:
           MSYSTEM: MINGW32
+          # Preserve PATH from vcvars (cl, link, lib) — bash --login otherwise drops it.
+          MSYS2_PATH_TYPE: inherit
         run: |
           for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) do call "%%i\VC\Auxiliary\Build\vcvars32.bat"
           bash --login -e /xbmc/tools/buildsteps/windows/make-mingwlibs.sh --prompt=noprompt --mode=clean --build32=yes --build64=no

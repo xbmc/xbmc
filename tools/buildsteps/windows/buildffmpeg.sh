@@ -84,8 +84,6 @@ do_addOption "--disable-gnutls"
 do_addOption "--enable-openssl"
 do_addOption "--enable-nonfree"
 do_addOption "--toolchain=msvc"
-# MSVC + configure on Windows often needs this (e.g. hosted cl targeting win32/win64).
-do_addOption "--enable-cross-compile"
 
 if [ "$ARCH" == "x86_64" ]; then
   FFMPEG_TARGET_OS=win64
