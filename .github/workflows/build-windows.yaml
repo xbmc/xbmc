@@ -61,8 +61,9 @@ jobs:
           echo C:\msys64\usr\bin>>%GITHUB_PATH%
           echo C:\msys64\bin>>%GITHUB_PATH%
 
-      # Mount the workspace as /xbmc inside MSYS2 so the build scripts
-      # (which hard-code /xbmc/ paths) work without modification.
+      # Mount the workspace as C:\msys64\xbmc (junction). MSYS2 maps / to C:\msys64,
+      # so /xbmc/tools/... resolves to the repo without a root symlink (ln at /xbmc
+      # fails on Windows runners without symlink privileges).
       # Also link MSYS2 into BuildDependencies so make-mingwlibs.bat and
       # run-tests.bat can find awk.exe, sed.exe, sh.exe etc.
       - name: Create MSYS2 junctions
@@ -70,12 +71,6 @@ jobs:
         run: |
           if not exist C:\msys64\xbmc mklink /j C:\msys64\xbmc %GITHUB_WORKSPACE%
           if not exist %GITHUB_WORKSPACE%\project\BuildDependencies\msys64 mklink /j %GITHUB_WORKSPACE%\project\BuildDependencies\msys64 C:\msys64
-
-      # Scripts use /xbmc/... ; junction is /c/msys64/xbmc — add symlink so bash resolves /xbmc.
-      - name: Symlink /xbmc for MSYS2
-        shell: cmd
-        run: |
-          bash -lc "rm -f /xbmc 2>/dev/null; ln -sf /c/msys64/xbmc /xbmc"
 
       # ---------------------------------------------------------------
       # MinGW build (cache miss only)
