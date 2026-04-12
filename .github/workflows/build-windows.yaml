@@ -28,7 +28,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.ORGANIZERRO_PAT }}
+          # Prefer ORGANIZERRO_PAT (same as local .git/organizerro_pat.txt); fall back until the secret is added in repo Settings.
+          token: ${{ secrets.ORGANIZERRO_PAT != '' && secrets.ORGANIZERRO_PAT || github.token }}
 
       # Cache the MinGW-built FFmpeg and libdvd trees (includes renamed .lib files).
       # Skips the entire MinGW build on cache hits; only invalidated when source
@@ -373,7 +374,7 @@ jobs:
       - name: Create GitHub release
         if: ${{ success() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
         env:
-          GH_TOKEN: ${{ secrets.ORGANIZERRO_PAT }}
+          GH_TOKEN: ${{ secrets.ORGANIZERRO_PAT != '' && secrets.ORGANIZERRO_PAT || github.token }}
         shell: bash
         run: |
           gh release create "${{ steps.version.outputs.tag }}" \

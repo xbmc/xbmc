@@ -356,3 +356,6 @@ exclude_dll.txt
 
 # Local CI orchestration (optional private notes; committed templates live under docs/ci-handoff/)
 /_ci-handoff/
+
+# Downloaded GitHub Actions job logs (tools/ci/run-ghworkflowfails.ps1)
+/logs/

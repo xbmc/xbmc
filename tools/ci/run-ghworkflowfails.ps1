@@ -3,9 +3,15 @@
 param(
     [Parameter(Mandatory = $true)]
     [string] $ScriptPath,
-    [string] $PatPath = $(Join-Path (Split-Path (Split-Path $PSScriptRoot -Parent) -Parent) ".git\organizerro_pat.txt")
+    [string] $PatPath = "",
+    [string] $WorkflowId = "build-windows.yaml"
 )
 $ErrorActionPreference = "Stop"
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$RepoRoot = Split-Path (Split-Path $ScriptDir -Parent) -Parent
+if ([string]::IsNullOrEmpty($PatPath)) {
+    $PatPath = Join-Path $RepoRoot ".git\organizerro_pat.txt"
+}
 if (-not (Test-Path $PatPath)) {
     Write-Error "PAT file not found: $PatPath"
 }
@@ -17,4 +23,8 @@ $env:GITHUB_TOKEN = $pat
 $env:GH_TOKEN = $pat
 if (-not $env:GITHUB_OWNER) { $env:GITHUB_OWNER = "OrganizerRo" }
 if (-not $env:GITHUB_REPO) { $env:GITHUB_REPO = "xbmc" }
-& node $ScriptPath @args
+if ($args.Count -eq 0) {
+    & node $ScriptPath --token $pat --owner $env:GITHUB_OWNER --repo $env:GITHUB_REPO --workflow-id $WorkflowId
+} else {
+    & node $ScriptPath @args
+}
