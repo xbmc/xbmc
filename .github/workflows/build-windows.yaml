@@ -48,7 +48,8 @@ jobs:
                                         'tools/buildsteps/windows/buildhelpers.sh',
                                         'tools/buildsteps/windows/buildffmpeg.sh',
                                         'tools/buildsteps/windows/buildlibdvd.sh',
-                                        'tools/buildsteps/windows/ffmpeg_options.txt') }}
+                                        'tools/buildsteps/windows/ffmpeg_options.txt',
+                                        'tools/buildsteps/windows/patches/*.patch') }}
 
       # ---------------------------------------------------------------
       # MSYS2 setup — always runs.  The MinGW build needs the full

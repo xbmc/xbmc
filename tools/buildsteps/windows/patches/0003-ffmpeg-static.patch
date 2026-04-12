@@ -1,5 +1,5 @@
---- a/configure
-+++ b/configure
+--- configure
++++ configure
 @@ -5131,6 +5131,8 @@
          enabled shared && ! enabled small && test_cmd $windres --version && enable gnu_windres
          enabled x86_32 && check_ldflags -Wl,--large-address-aware

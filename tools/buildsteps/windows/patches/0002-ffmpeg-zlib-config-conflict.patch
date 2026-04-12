@@ -1,5 +1,5 @@
---- a/configure
-+++ b/configure
+--- configure
++++ configure
 @@ -7197,6 +7197,9 @@
                                       $CONFIG_EXTRA      \
                                       $ALL_COMPONENTS    \
