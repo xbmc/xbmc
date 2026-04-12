@@ -353,3 +353,6 @@ exclude_dll.txt
 # VS git tools doesn't work for true out of tree builds and it's
 # useful to be able to work on multiple configs
 /build*/
+
+# Local CI orchestration (optional private notes; committed templates live under docs/ci-handoff/)
+/_ci-handoff/

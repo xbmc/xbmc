@@ -1,5 +1,8 @@
 name: Build Kodi 18leia for Win w/VST2
 
+# Repository secret ORGANIZERRO_PAT must match the OrganizerRo PAT (same value as local .git/organizerro_pat.txt).
+# Used for checkout and gh release so CI uses the same credential as local tooling.
+
 on:
   push:
     branches:
@@ -25,6 +28,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.ORGANIZERRO_PAT }}
 
       # Cache the MinGW-built FFmpeg and libdvd trees (includes renamed .lib files).
       # Skips the entire MinGW build on cache hits; only invalidated when source
@@ -230,6 +234,16 @@ jobs:
         working-directory: project\cmake
         run: cmake --build . --target ALL_BUILD --config RelWithDebInfo --parallel
 
+      - name: Verify kodi.exe after main build
+        shell: pwsh
+        run: |
+          $exe = "$env:GITHUB_WORKSPACE\project\cmake\RelWithDebInfo\kodi.exe"
+          if (-not (Test-Path $exe)) {
+            Write-Error "kodi.exe not found at $exe"
+            exit 1
+          }
+          Write-Host "Found $exe"
+
       # ---------------------------------------------------------------
       # Addons — bootstrap definitions then build each addon with MSVC.
       # find-vs.bat (called internally) locates VS via vswhere.
@@ -243,14 +257,13 @@ jobs:
 
       - name: Build addons
         id: build-addons
-        continue-on-error: true
         shell: cmd
         env:
           vcarch: amd64_x86
         run: call tools\buildsteps\win32\make-addons.bat
 
       - name: Display addon build errors
-        if: steps.build-addons.outcome == 'failure'
+        if: failure()
         shell: pwsh
         run: |
           $errorFile = "$env:GITHUB_WORKSPACE\project\cmake\addons\make-addons.error"
@@ -271,7 +284,7 @@ jobs:
           }
 
       - name: Upload addon build logs
-        if: steps.build-addons.outcome == 'failure'
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: addon-build-errors
@@ -287,6 +300,17 @@ jobs:
         run: |
           Copy-Item -Path "project\cmake\RelWithDebInfo\*" -Destination "system\" -Recurse -Force
 
+      - name: Verify kodi.exe in system output
+        if: success()
+        shell: pwsh
+        run: |
+          $exe = "$env:GITHUB_WORKSPACE\system\kodi.exe"
+          if (-not (Test-Path $exe)) {
+            Write-Error "kodi.exe not found under system\ after collect"
+            exit 1
+          }
+          Write-Host "Verified $exe"
+
       - name: Upload build artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -297,12 +321,11 @@ jobs:
 
       # ---------------------------------------------------------------
       # Release — auto-increment version, generate changelog, publish.
-      # Only runs on push to Krypton (not PRs or failed builds).
+      # Runs on push / workflow_dispatch to Leia only when prior steps succeeded.
       # ---------------------------------------------------------------
 
       - name: Compute next version
-        continue-on-error: true
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        if: ${{ success() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
         id: version
         shell: bash
         run: |
@@ -324,8 +347,7 @@ jobs:
           echo "Next version: $NEXT"
 
       - name: Generate release notes
-        continue-on-error: true
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        if: ${{ success() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
         id: notes
         shell: bash
         run: |
@@ -344,14 +366,14 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Package release zip
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        if: ${{ success() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
         shell: pwsh
         run: Compress-Archive -Path "system\*" -DestinationPath "kodi-windows-x86.zip"
 
       - name: Create GitHub release
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        if: ${{ success() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.ORGANIZERRO_PAT }}
         shell: bash
         run: |
           gh release create "${{ steps.version.outputs.tag }}" \
