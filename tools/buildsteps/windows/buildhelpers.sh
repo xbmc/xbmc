@@ -113,6 +113,9 @@ do_clean() {
 }
 
 do_download() {
+  if [[ ! -d /downloads ]]; then
+    mkdir -p /downloads
+  fi
   if [ ! -d "$LOCALSRCDIR" ]; then
     if [ ! -f /downloads/$ARCHIVE ]; then
       do_print_status "$LIBNAME-$VERSION" "$orange_color" "Downloading"
@@ -128,7 +131,7 @@ do_download() {
   for patch in ${patches[@]}; do
     echo "Applying patch ${patch}"
     if [[ -f $patch ]]; then
-      patch -d $LOCALSRCDIR -i $patch -N -r -
+      patch -d $LOCALSRCDIR -p1 -i $patch -N -r -
     fi
   done
 }
