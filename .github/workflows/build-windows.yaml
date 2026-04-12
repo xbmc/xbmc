@@ -1,20 +1,21 @@
-name: Build Kodi 17x86 for Win w/VST2
+name: Build Kodi 18leia for Win w/VST2
 
 on:
   push:
     branches:
-      - Krypton
+      - Leia
   pull_request:
     branches:
-      - Krypton
+      - Leia
   workflow_dispatch:
-
+    branches:
+      - Leia
 permissions:
   contents: write
 
 jobs:
-  build-kodi:
-    name: Build Kodi (Windows x86.VST)
+  build-kodi-leia:
+    name: Build Kodi.Leia (Windows x86.VST)
     runs-on: windows-2022
     env:
       WORKSPACE: ${{ github.workspace }}
