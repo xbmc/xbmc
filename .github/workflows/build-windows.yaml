@@ -113,19 +113,16 @@ jobs:
 
       # Build FFmpeg and libdvd using the existing Kodi build scripts.
       # MSYSTEM=MINGW32 makes bash --login set up the i686-w64-mingw32 toolchain.
+      # FFmpeg configure uses --toolchain=msvc (buildffmpeg.sh); load VS 2022 x86 tools first.
       - name: Build FFmpeg and libDVD from source
         if: steps.mingw-cache.outputs.cache-hit != 'true'
         timeout-minutes: 60
         shell: cmd
         env:
           MSYSTEM: MINGW32
-        run: >
-          bash --login -e
-          /xbmc/tools/buildsteps/windows/make-mingwlibs.sh
-          --prompt=noprompt
-          --mode=clean
-          --build32=yes
-          --build64=no
+        run: |
+          for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) do call "%%i\VC\Auxiliary\Build\vcvars32.bat"
+          bash --login -e /xbmc/tools/buildsteps/windows/make-mingwlibs.sh --prompt=noprompt --mode=clean --build32=yes --build64=no
 
       # Validate that the MinGW build produced expected output directories and
       # files before the cache is written.
