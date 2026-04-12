@@ -2,20 +2,23 @@
 
 Fetched with `tools\ci\run-ghworkflowfails.ps1` (see `README.md`).
 
-## Run 42 — failure (fixed in follow-up commits)
+## Run 44 — failure (addressed in `c5aeaac`)
 
-- **Run id:** `24316389176` — commit `cbd870d0f5` (MSYS2_PATH_TYPE inherit; drop redundant FFmpeg `--enable-cross-compile`)
-- **Symptom:** FFmpeg configure passed the MSVC `cl` test, then **`ERROR: openssl not found`**.
-- **Cause:** `ffmpeg_options.txt` still had `--disable-openssl` while `buildffmpeg.sh` added `--enable-openssl`; configure needs MSVC-style OpenSSL import libs on the runner (not only MSYS2 mingw packages).
+- **Run id:** `24316561851` — commit `cd33acf` (docs-only on top of OpenSSL work)
+- **Symptom:** Still **`ERROR: openssl not found`** after OpenSSL install step passed `ssl.h`.
+- **Likely cause:** `OPENSSL_ROOT_DIR` not visible inside **`bash --login`** when only set via Actions `env:`; **`lib/VC`** layout may be nested (`lib/VC/x86/MD`, etc.), not only `lib/VC` or `lib/VC/static`.
 
-## Run 41 — failure (addressed)
+## Fix pushed (`c5aeaac`)
 
-- **Run id:** `24314996453` — commit `931775454e` (tried `--enable-cross-compile` for `cl`)
-- **Symptom:** `cl is unable to create an executable file` / `C compiler test failed` during FFmpeg configure.
-- **Fix (cbd870d0f5):** Set **`MSYS2_PATH_TYPE=inherit`** on the FFmpeg build step so `bash --login` keeps PATH from `vcvars32.bat` (`cl`, `link`). Removed redundant unconditional `--enable-cross-compile` in `buildffmpeg.sh`.
+- **`bash --login -e -c "export OPENSSL_ROOT_DIR=C:/OpenSSL-Win32 && exec ...make-mingwlibs.sh..."`** so the variable is set in the same shell as FFmpeg configure.
+- **`buildffmpeg.sh`:** fallback `OPENSSL_ROOT_DIR` if `/c/OpenSSL-Win32` exists; **probe** multiple dirs for `libssl.lib` / `libcrypto.lib` and add each matching `-LIBPATH`.
+- **Install step:** fail fast if **`libssl.lib`** is missing under the install root (full vs Light installer).
 
-## Next verification
+## Older context
 
-- **Run in flight:** `24316531770` — https://github.com/OrganizerRo/xbmc/actions/runs/24316531770 — commit `f8b83c0` — Win32 OpenSSL (Shining Light) silent install to `C:\OpenSSL-Win32`, `OPENSSL_ROOT_DIR` + include/`lib/VC` paths in `buildffmpeg.sh`, and `do_removeOption "--disable-openssl"`.
-- Re-run: `.\tools\ci\run-ghworkflowfails.ps1` after the run finishes if it fails.
-- **DoD:** green job, `kodi.exe` in artifact, addons step OK, release asset when that path runs.
+- **Run 41:** `MSYS2_PATH_TYPE=inherit` for `cl` / PATH (see earlier commits).
+- **DoD:** green job, `kodi.exe` in artifact, addons OK, release asset when that path runs.
+
+## Next
+
+- Watch the latest **`Leia`** run for `c5aeaac`; on failure run `.\tools\ci\run-ghworkflowfails.ps1` and check the new **Found: …libssl.lib** / verification lines in the log.
