@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="audiodsp.vsthost"
+       name="VST Host"
+       version="1.0.0"
+       provider-name="Kodi Community">
+  <requires>
+    <import addon="xbmc.core"    version="0.1.0"/>
+    <import addon="xbmc.audiodsp" version="0.1.8"/>
+  </requires>
+
+  <extension point="xbmc.audiodsp"
+             library_win="audiodsp.vsthost.dll">
+    <support>
+      <modes>
+        <mode id="1"
+              type="masterprocess"
+              label="VST Chain"
+              help="Process audio through a chain of VST2 and VST3 plugins">
+          <settings>
+            <setting id="scan_paths"
+                     label="VST Plugin Folders"
+                     type="string"
+                     default=""/>
+          </settings>
+        </mode>
+      </modes>
+    </support>
+  </extension>
+
+  <extension point="xbmc.addon.metadata">
+    <platform>windows</platform>
+    <summary lang="en_GB">VST2 and VST3 plugin host for Kodi audio DSP</summary>
+    <description lang="en_GB">Load and chain VST2 and VST3 audio effect plugins in Kodi's master DSP processing stage. Supports plugin discovery, chain configuration, and state persistence.</description>
+  </extension>
+</addon>

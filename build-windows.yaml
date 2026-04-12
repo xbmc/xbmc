@@ -1,0 +1,360 @@
+name: Build Kodi 17x86 for Win w/VST2
+
+on:
+  push:
+    branches:
+      - Krypton
+  pull_request:
+    branches:
+      - Krypton
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-kodi:
+    name: Build Kodi (Windows x86.VST)
+    runs-on: windows-2022
+    env:
+      WORKSPACE: ${{ github.workspace }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Cache the MinGW-built FFmpeg and libdvd trees (includes renamed .lib files).
+      # Skips the entire MinGW build on cache hits; only invalidated when source
+      # version files or build scripts change.
+      - name: Cache MinGW-built libraries
+        uses: actions/cache@v4
+        id: mingw-cache
+        with:
+          path: |
+            lib/win32/ffmpeg
+            lib/libdvd
+          key: mingw-libs-${{ hashFiles('tools/depends/target/ffmpeg/FFMPEG-VERSION',
+                                        'tools/depends/target/libdvdcss/DVDCSS-VERSION',
+                                        'tools/depends/target/libdvdread/DVDREAD-VERSION',
+                                        'tools/depends/target/libdvdnav/DVDNAV-VERSION',
+                                        'tools/buildsteps/win32/make-mingwlibs.sh',
+                                        'tools/buildsteps/win32/buildhelpers.sh',
+                                        'tools/buildsteps/win32/buildffmpeg.sh',
+                                        'tools/buildsteps/win32/buildlibdvd.sh',
+                                        'tools/buildsteps/win32/fmpeg_options.txt') }}
+
+      # ---------------------------------------------------------------
+      # MSYS2 setup — always runs.  The MinGW build needs the full
+      # environment; run-tests.bat needs awk/sed even on cache hits.
+      # ---------------------------------------------------------------
+
+      - name: Add MSYS2 to PATH
+        shell: cmd
+        run: |
+          echo C:\msys64\usr\bin>>%GITHUB_PATH%
+          echo C:\msys64\bin>>%GITHUB_PATH%
+
+      # Mount the workspace as /xbmc inside MSYS2 so the build scripts
+      # (which hard-code /xbmc/ paths) work without modification.
+      # Also link MSYS2 into BuildDependencies so make-mingwlibs.bat and
+      # run-tests.bat can find awk.exe, sed.exe, sh.exe etc.
+      - name: Create MSYS2 junctions
+        shell: cmd
+        run: |
+          if not exist C:\msys64\xbmc mklink /j C:\msys64\xbmc %GITHUB_WORKSPACE%
+          if not exist %GITHUB_WORKSPACE%\project\BuildDependencies\msys64 mklink /j %GITHUB_WORKSPACE%\project\BuildDependencies\msys64 C:\msys64
+
+      # ---------------------------------------------------------------
+      # MinGW build (cache miss only)
+      # ---------------------------------------------------------------
+
+      - name: Update MSYS2 package database
+        if: steps.mingw-cache.outputs.cache-hit != 'true'
+        shell: cmd
+        run: bash -lc "pacman --needed --noconfirm -Sy"
+
+      - name: Install MinGW32 build tools
+        if: steps.mingw-cache.outputs.cache-hit != 'true'
+        shell: cmd
+        run: >
+          bash -lc "pacman --needed --noconfirm -S
+          base-devel
+          autoconf
+          automake
+          libtool
+          git
+          wget
+          mingw-w64-i686-gcc
+          mingw-w64-i686-binutils
+          mingw-w64-i686-pkg-config
+          mingw-w64-i686-gnutls
+          mingw-w64-i686-yasm"
+
+      # Create the /build and /local32 directories that make-mingwlibs.sh
+      # expects, and write the profile.local it sources at runtime.
+      # MINGW_CHOST and MINGW_PREFIX are required by configure --build=
+      # in buildffmpeg.sh and buildlibdvd.sh.
+      - name: Set up MinGW32 build environment
+        if: steps.mingw-cache.outputs.cache-hit != 'true'
+        shell: cmd
+        run: |
+          if not exist C:\msys64\build mkdir C:\msys64\build
+          if not exist C:\msys64\local32\etc mkdir C:\msys64\local32\etc
+          bash -c "printf 'export BITS=32bit\nexport LOCALBUILDDIR=/build\nexport LOCALDESTDIR=/local32\nexport MINGW_PREFIX=/mingw32\nexport MINGW_CHOST=i686-w64-mingw32\nexport PKG_CONFIG_PATH=/local32/lib/pkgconfig:/mingw32/lib/pkgconfig\n' > /local32/etc/profile.local"
+
+      # Build FFmpeg and libdvd using the existing Kodi build scripts.
+      # MSYSTEM=MINGW32 makes bash --login set up the i686-w64-mingw32 toolchain.
+      - name: Build FFmpeg and libDVD from source
+        if: steps.mingw-cache.outputs.cache-hit != 'true'
+        timeout-minutes: 60
+        shell: cmd
+        env:
+          MSYSTEM: MINGW32
+        run: >
+          bash --login -e
+          /xbmc/tools/buildsteps/win32/make-mingwlibs.sh
+          --prompt=noprompt
+          --mode=clean
+          --build32=yes
+          --build64=no
+
+      # Validate that the MinGW build produced expected output directories and
+      # files before the cache is written.
+      - name: Validate MinGW build outputs
+        if: steps.mingw-cache.outputs.cache-hit != 'true'
+        shell: pwsh
+        run: |
+          $required = @(
+            "lib\win32\ffmpeg\lib",
+            "lib\win32\ffmpeg\include",
+            "lib\libdvd\lib",
+            "lib\libdvd\include"
+          )
+          $failed = $false
+          foreach ($rel in $required) {
+            $path = "$env:GITHUB_WORKSPACE\$rel"
+            if (-not (Test-Path $path) -or (Get-ChildItem $path).Count -eq 0) {
+              Write-Error "Missing or empty: $path"
+              $failed = $true
+            }
+          }
+          if ($failed) { exit 1 }
+
+      # MinGW produces lib*.dll.a import libs; MSVC needs *.lib names.
+      - name: Rename MinGW FFmpeg import libs for MSVC
+        if: steps.mingw-cache.outputs.cache-hit != 'true'
+        shell: pwsh
+        run: |
+          $libDir = "$env:GITHUB_WORKSPACE\lib\win32\ffmpeg\lib"
+          if (Test-Path $libDir) {
+            $files = Get-ChildItem -Path $libDir -Filter "lib*.dll.a"
+            if ($files.Count -eq 0) {
+              Write-Error "No lib*.dll.a import libraries found in $libDir — FFmpeg build likely failed or output went to wrong location"
+              exit 1
+            }
+            $files | ForEach-Object {
+              $newName = $_.Name.Substring(3) -replace '\.dll\.a$', '.lib'
+              Rename-Item $_.FullName (Join-Path $_.DirectoryName $newName)
+            }
+          }
+
+      # ---------------------------------------------------------------
+      # These steps always run (cache hit or miss).
+      # ---------------------------------------------------------------
+
+      # On a cache hit the DLLs are not yet in system/ (the build scripts
+      # put them there, but that ran in a previous job).  Copy them now.
+      - name: Copy MinGW DLLs to system directory
+        shell: pwsh
+        run: |
+          $systemDir = "$env:GITHUB_WORKSPACE\system"
+          New-Item -ItemType Directory -Force $systemDir | Out-Null
+          $ffmpegBin = "$env:GITHUB_WORKSPACE\lib\win32\ffmpeg\bin"
+          $dvdBin    = "$env:GITHUB_WORKSPACE\lib\libdvd\bin"
+          if (Test-Path $ffmpegBin) { Copy-Item "$ffmpegBin\*.dll" $systemDir -Force }
+          if (Test-Path $dvdBin)    { Copy-Item "$dvdBin\*.dll"    $systemDir -Force }
+
+      # The MinGW-built FFmpeg/libdvd DLLs depend on MinGW runtime libraries
+      # (libwinpthread, zlib, libiconv) which must also be shipped alongside.
+      - name: Copy MinGW runtime DLLs to system directory
+        shell: pwsh
+        run: |
+          $systemDir = "$env:GITHUB_WORKSPACE\system"
+          $mingwBin  = "C:\msys64\mingw32\bin"
+          $dlls = @(
+            "libwinpthread-1.dll",
+            "zlib1.dll",
+            "libiconv-2.dll"
+          )
+          foreach ($dll in $dlls) {
+            $src = Join-Path $mingwBin $dll
+            if (Test-Path $src) {
+              Copy-Item $src $systemDir -Force
+              Write-Host "Copied $dll"
+            } else {
+              Write-Error "Missing MinGW runtime DLL: $src"
+              exit 1
+            }
+          }
+
+      # Downloads all other pre-built Windows deps (curl, openssl, sqlite, etc.)
+      # from mirrors.kodi.tv into project/BuildDependencies/{lib,include}.
+      - name: Download build dependencies
+        shell: cmd
+        working-directory: project/BuildDependencies
+        run: DownloadBuildDeps.bat
+
+      - name: Validate python27.dll
+        shell: pwsh
+        run: |
+          $python = "$env:GITHUB_WORKSPACE\system\python27.dll"
+          if (-not (Test-Path $python)) {
+            Write-Error "python27.dll not found at $python after dependency download"
+            exit 1
+          }
+          Write-Host "python27.dll present at $python"
+
+      # Build in project\cmake (in-source) so that run-tests.bat and other
+      # helper scripts find the solution at the paths they expect
+      # (e.g. ..\cmake\kodi.sln relative to project\Win32BuildSetup).
+      - name: Configure with CMake
+        shell: cmd
+        working-directory: project\cmake
+        run: cmake -G "Visual Studio 17 2022" -A Win32 .
+
+      - name: Build
+        shell: cmd
+        working-directory: project\cmake
+        run: cmake --build . --target ALL_BUILD --config RelWithDebInfo --parallel
+
+      # ---------------------------------------------------------------
+      # Addons — bootstrap definitions then build each addon with MSVC.
+      # find-vs.bat (called internally) locates VS via vswhere.
+      # ---------------------------------------------------------------
+
+      - name: Bootstrap addons
+        shell: cmd
+        env:
+          vcarch: amd64_x86
+        run: call tools\buildsteps\win32\bootstrap-addons.bat
+
+      - name: Build addons
+        id: build-addons
+        continue-on-error: true
+        shell: cmd
+        env:
+          vcarch: amd64_x86
+        run: call tools\buildsteps\win32\make-addons.bat
+
+      - name: Display addon build errors
+        if: steps.build-addons.outcome == 'failure'
+        shell: pwsh
+        run: |
+          $errorFile = "$env:GITHUB_WORKSPACE\project\cmake\addons\make-addons.error"
+          $failureFile = "$env:GITHUB_WORKSPACE\project\cmake\addons\.failure"
+          if (Test-Path $errorFile) {
+            Write-Host "::error::Addon build failed — see details below"
+            Write-Host "========== make-addons.error =========="
+            Get-Content $errorFile
+            Write-Host "======================================="
+          }
+          if (Test-Path $failureFile) {
+            Write-Host "========== Failed addons =========="
+            Get-Content $failureFile
+            Write-Host "==================================="
+          }
+          if (-not (Test-Path $errorFile) -and -not (Test-Path $failureFile)) {
+            Write-Host "::warning::Build addons step failed but no error/failure files were generated"
+          }
+
+      - name: Upload addon build logs
+        if: steps.build-addons.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: addon-build-errors
+          path: |
+            project/cmake/addons/make-addons.error
+            project/cmake/addons/.failure
+            project/cmake/addons/.success
+          if-no-files-found: warn
+
+      - name: Collect build output into system directory
+        if: always()
+        shell: pwsh
+        run: |
+          Copy-Item -Path "project\cmake\RelWithDebInfo\*" -Destination "system\" -Recurse -Force
+
+      - name: Upload build artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kodi-windows-x86
+          path: system\
+          if-no-files-found: warn
+
+      # ---------------------------------------------------------------
+      # Release — auto-increment version, generate changelog, publish.
+      # Only runs on push to Krypton (not PRs or failed builds).
+      # ---------------------------------------------------------------
+
+      - name: Compute next version
+        continue-on-error: true
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        id: version
+        shell: bash
+        run: |
+          # Find the latest v* tag reachable from HEAD
+          LATEST_TAG=$(git describe --tags --match "v*" --abbrev=0 2>/dev/null || echo "")
+          if [ -z "$LATEST_TAG" ]; then
+            NEXT="v1.0.0"
+            LOG_RANGE="HEAD"
+          else
+            # Parse major.minor.patch and bump patch
+            VERSION="${LATEST_TAG#v}"
+            IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+            PATCH=$((PATCH + 1))
+            NEXT="v${MAJOR}.${MINOR}.${PATCH}"
+            LOG_RANGE="${LATEST_TAG}..HEAD"
+          fi
+          echo "tag=$NEXT" >> "$GITHUB_OUTPUT"
+          echo "log_range=$LOG_RANGE" >> "$GITHUB_OUTPUT"
+          echo "Next version: $NEXT"
+
+      - name: Generate release notes
+        continue-on-error: true
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        id: notes
+        shell: bash
+        run: |
+          LOG_RANGE="${{ steps.version.outputs.log_range }}"
+          {
+            echo 'body<<RELEASE_EOF'
+            echo '## Changes'
+            echo ''
+            if [ "$LOG_RANGE" = "HEAD" ]; then
+              git log --pretty="- %s" -20
+            else
+              git log --pretty="- %s" "$LOG_RANGE"
+            fi
+            echo ''
+            echo 'RELEASE_EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Package release zip
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        shell: pwsh
+        run: Compress-Archive -Path "system\*" -DestinationPath "kodi-windows-x86.zip"
+
+      - name: Create GitHub release
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          gh release create "${{ steps.version.outputs.tag }}" \
+            kodi-windows-x86.zip \
+            --title "Kodi ${{ steps.version.outputs.tag }}" \
+            --notes "${{ steps.notes.outputs.body }}" \
+            --target "${{ github.sha }}"
