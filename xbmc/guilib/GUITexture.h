@@ -17,6 +17,8 @@
 #include "utils/Color.h"
 #include "utils/Geometry.h"
 #include "guiinfo/GUIInfoColor.h"
+#include "VideoBackgroundDecoder.h"
+#include <memory>
 
 // image alignment for <aspect>keep</aspect>, <aspect>scale</aspect> or <aspect>center</aspect>
 #define ASPECT_ALIGN_CENTER  0
@@ -110,6 +112,8 @@ protected:
   void LoadDiffuseImage();
   bool AllocateOnDemand();
   bool UpdateAnimFrame(unsigned int currentTime);
+  bool UpdateVideoFrame(unsigned int currentTime);
+  static bool IsVideo(const std::string& filename);
   void Render(float left, float top, float bottom, float right, float u1, float v1, float u2, float v2, float u3, float v3);
   static void OrientateTexture(CRect &rect, float width, float height, int orientation);
   void ResetAnimState();
@@ -155,6 +159,12 @@ protected:
 
   CTextureArray m_diffuse;
   CTextureArray m_texture;
+
+  // video background support
+  std::unique_ptr<CVideoBackgroundDecoder> m_videoDecoder;
+  CBaseTexture* m_videoTexture;
+  bool m_isVideoBackground;
+  unsigned int m_videoStartTime;
 };
 
 

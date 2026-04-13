@@ -10,8 +10,11 @@
 #include "windowing/GraphicContext.h"
 #include "TextureManager.h"
 #include "GUILargeTextureManager.h"
+#include "Texture.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
 
 CTextureInfo::CTextureInfo()
 {
@@ -68,6 +71,11 @@ CGUITextureBase::CGUITextureBase(float posX, float posY, float width, float heig
   m_isAllocated = NO;
   m_invalid = true;
   m_use_cache = true;
+
+  // video background
+  m_videoTexture = nullptr;
+  m_isVideoBackground = false;
+  m_videoStartTime = 0;
 }
 
 CGUITextureBase::CGUITextureBase(const CGUITextureBase &right) :
@@ -103,9 +111,18 @@ CGUITextureBase::CGUITextureBase(const CGUITextureBase &right) :
 
   m_isAllocated = NO;
   m_invalid = true;
+
+  // video background
+  m_videoTexture = nullptr;
+  m_isVideoBackground = false;
+  m_videoStartTime = 0;
 }
 
-CGUITextureBase::~CGUITextureBase(void) = default;
+CGUITextureBase::~CGUITextureBase(void)
+{
+  delete m_videoTexture;
+  m_videoTexture = nullptr;
+}
 
 bool CGUITextureBase::AllocateOnDemand()
 {
@@ -131,7 +148,9 @@ bool CGUITextureBase::Process(unsigned int currentTime)
   // check if we need to allocate our resources
   changed |= AllocateOnDemand();
 
-  if (m_texture.size() > 1)
+  if (m_isVideoBackground)
+    changed |= UpdateVideoFrame(currentTime);
+  else if (m_texture.size() > 1)
     changed |= UpdateAnimFrame(currentTime);
 
   if (m_invalid)
@@ -281,6 +300,66 @@ bool CGUITextureBase::AllocResources()
 
   // reset our animstate
   ResetAnimState();
+
+  // handle video backgrounds
+  if (IsVideo(m_info.filename))
+  {
+    std::string fullPath = CServiceBroker::GetGUI()->GetTextureManager().GetTexturePath(m_info.filename);
+    if (fullPath.empty())
+      fullPath = m_info.filename; // may be a full path already
+
+    m_videoDecoder.reset(new CVideoBackgroundDecoder());
+    if (m_videoDecoder->Open(fullPath))
+    {
+      m_isVideoBackground = true;
+      m_isAllocated = NORMAL;
+      m_videoStartTime = 0;
+
+      // decode first frame
+      m_videoDecoder->Update(0);
+      int width = 0, height = 0;
+      const uint8_t* pixels = m_videoDecoder->GetCurrentFrame(width, height);
+      if (pixels && width > 0 && height > 0)
+      {
+        unsigned int pitch = width * 4;
+        m_videoTexture = new CTexture();
+        m_videoTexture->LoadFromMemory(width, height, pitch, XB_FMT_A8R8G8B8, true, pixels);
+        CBaseTexture::SwapBlueRed(m_videoTexture->GetPixels(), m_videoTexture->GetTextureHeight(),
+                                  m_videoTexture->GetPitch(), 4, 0);
+
+        m_texture.Reset();
+        m_texture.m_textures.push_back(m_videoTexture);
+        m_texture.m_delays.push_back(0);
+        m_texture.m_width = width;
+        m_texture.m_height = height;
+        m_texture.m_texWidth = m_videoTexture->GetTextureWidth();
+        m_texture.m_texHeight = m_videoTexture->GetTextureHeight();
+        m_texture.m_orientation = 0;
+        m_texture.m_loops = 0;
+        m_texture.m_texCoordsArePixels = false;
+
+        m_frameWidth = (float)width;
+        m_frameHeight = (float)height;
+      }
+
+      // load diffuse texture
+      if (!m_info.diffuse.empty())
+        m_diffuse = CServiceBroker::GetGUI()->GetTextureManager().Load(m_info.diffuse);
+
+      CalculateSize();
+      Allocate();
+      CLog::Log(LOGDEBUG, "CGUITextureBase: Video background opened: %s", fullPath.c_str());
+      return true;
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "CGUITextureBase: Failed to open video background: %s", fullPath.c_str());
+      m_videoDecoder.reset();
+      m_isVideoBackground = false;
+      m_isAllocated = NORMAL_FAILED;
+      return false;
+    }
+  }
 
   bool changed = false;
   bool useLarge = m_info.useLarge || !CServiceBroker::GetGUI()->GetTextureManager().CanLoad(m_info.filename);
@@ -441,16 +520,33 @@ bool CGUITextureBase::CalculateSize()
 
 void CGUITextureBase::FreeResources(bool immediately /* = false */)
 {
-  if (m_isAllocated == LARGE || m_isAllocated == LARGE_FAILED)
-    CServiceBroker::GetGUI()->GetLargeTextureManager().ReleaseImage(m_info.filename, immediately || (m_isAllocated == LARGE_FAILED));
-  else if (m_isAllocated == NORMAL && m_texture.size())
-    CServiceBroker::GetGUI()->GetTextureManager().ReleaseTexture(m_info.filename, immediately);
+  if (m_isVideoBackground)
+  {
+    // video backgrounds own their texture directly, not via TextureManager
+    m_videoDecoder.reset();
+    // remove video texture from the array before Reset() tries to delete it
+    // (we own m_videoTexture separately)
+    m_texture.m_textures.clear();
+    m_texture.m_delays.clear();
+    m_texture.Reset();
+    delete m_videoTexture;
+    m_videoTexture = nullptr;
+    m_isVideoBackground = false;
+    m_videoStartTime = 0;
+  }
+  else
+  {
+    if (m_isAllocated == LARGE || m_isAllocated == LARGE_FAILED)
+      CServiceBroker::GetGUI()->GetLargeTextureManager().ReleaseImage(m_info.filename, immediately || (m_isAllocated == LARGE_FAILED));
+    else if (m_isAllocated == NORMAL && m_texture.size())
+      CServiceBroker::GetGUI()->GetTextureManager().ReleaseTexture(m_info.filename, immediately);
+
+    m_texture.Reset();
+  }
 
   if (m_diffuse.size())
     CServiceBroker::GetGUI()->GetTextureManager().ReleaseTexture(m_info.diffuse, immediately);
   m_diffuse.Reset();
-
-  m_texture.Reset();
 
   ResetAnimState();
 
@@ -516,6 +612,74 @@ bool CGUITextureBase::UpdateAnimFrame(unsigned int currentTime)
   }
 
   return changed;
+}
+
+bool CGUITextureBase::IsVideo(const std::string& filename)
+{
+  return StringUtils::EndsWithNoCase(filename, ".mp4") ||
+         StringUtils::EndsWithNoCase(filename, ".mkv") ||
+         StringUtils::EndsWithNoCase(filename, ".avi") ||
+         StringUtils::EndsWithNoCase(filename, ".mov") ||
+         StringUtils::EndsWithNoCase(filename, ".m4v") ||
+         StringUtils::EndsWithNoCase(filename, ".webm") ||
+         StringUtils::EndsWithNoCase(filename, ".wmv") ||
+         StringUtils::EndsWithNoCase(filename, ".flv") ||
+         StringUtils::EndsWithNoCase(filename, ".ts");
+}
+
+bool CGUITextureBase::UpdateVideoFrame(unsigned int currentTime)
+{
+  if (!m_videoDecoder || !m_videoDecoder->IsOpen())
+    return false;
+
+  if (m_videoStartTime == 0)
+    m_videoStartTime = currentTime;
+
+  unsigned int elapsed = currentTime - m_videoStartTime;
+  if (!m_videoDecoder->Update(elapsed))
+    return false;
+
+  int width = 0, height = 0;
+  const uint8_t* pixels = m_videoDecoder->GetCurrentFrame(width, height);
+  if (!pixels || width <= 0 || height <= 0)
+    return false;
+
+  unsigned int pitch = width * 4;
+
+  if (!m_videoTexture)
+  {
+    m_videoTexture = new CTexture();
+    m_videoTexture->LoadFromMemory(width, height, pitch, XB_FMT_A8R8G8B8, true, pixels);
+    // swap B and R channels: VideoBackgroundDecoder outputs BGRA, texture expects ARGB
+    CBaseTexture::SwapBlueRed(m_videoTexture->GetPixels(), m_videoTexture->GetTextureHeight(),
+                              m_videoTexture->GetPitch(), 4, 0);
+    m_videoTexture->LoadToGPU();
+
+    // set up the texture array with this single texture
+    m_texture.Reset();
+    m_texture.m_textures.push_back(m_videoTexture);
+    m_texture.m_delays.push_back(0);
+    m_texture.m_width = width;
+    m_texture.m_height = height;
+    m_texture.m_texWidth = m_videoTexture->GetTextureWidth();
+    m_texture.m_texHeight = m_videoTexture->GetTextureHeight();
+    m_texture.m_orientation = 0;
+    m_texture.m_loops = 0;
+    m_texture.m_texCoordsArePixels = false;
+
+    m_frameWidth = (float)width;
+    m_frameHeight = (float)height;
+    m_invalid = true;
+  }
+  else
+  {
+    m_videoTexture->Update(width, height, pitch, XB_FMT_A8R8G8B8, pixels, false);
+    CBaseTexture::SwapBlueRed(m_videoTexture->GetPixels(), m_videoTexture->GetTextureHeight(),
+                              m_videoTexture->GetPitch(), 4, 0);
+    m_videoTexture->LoadToGPU();
+  }
+
+  return true;
 }
 
 bool CGUITextureBase::SetVisible(bool visible)
@@ -652,6 +816,13 @@ bool CGUITextureBase::SetFileName(const std::string& filename)
 
   // disable large loader and cache for gifs
   if (StringUtils::EndsWithNoCase(m_info.filename, ".gif"))
+  {
+    m_info.useLarge = false;
+    SetUseCache(false);
+  }
+
+  // disable large loader and cache for video backgrounds
+  if (IsVideo(m_info.filename))
   {
     m_info.useLarge = false;
     SetUseCache(false);

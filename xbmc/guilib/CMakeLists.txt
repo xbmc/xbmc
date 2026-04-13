@@ -65,6 +65,7 @@ set(SOURCES DDSImage.cpp
             TextureBundleXBT.cpp
             Texture.cpp
             TextureManager.cpp
+            VideoBackgroundDecoder.cpp
             VisibleEffect.cpp
             XBTF.cpp
             XBTFReader.cpp)
@@ -147,6 +148,7 @@ set(HEADERS DDSImage.h
             TextureBundle.h
             TextureBundleXBT.h
             TextureManager.h
+            VideoBackgroundDecoder.h
             Tween.h
             VisibleEffect.h
             WindowIDs.h
