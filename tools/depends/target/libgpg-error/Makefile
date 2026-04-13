@@ -1,6 +1,7 @@
 include ../../Makefile.include LIBGPG-ERROR-VERSION ../../download-files.include
 DEPS = ../../Makefile.include Makefile LIBGPG-ERROR-VERSION ../../download-files.include \
-                              tvos_remove-fork.patch
+                              tvos_remove-fork.patch \
+                              0001-syscfg-Add-Emscript-arch.patch
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) \
@@ -19,6 +20,9 @@ all: .installed-$(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 ifeq ($(TARGET_PLATFORM),appletvos)
 	cd $(PLATFORM); patch -p1 -i ../tvos_remove-fork.patch
+endif
+ifeq ($(OS),wasm)
+	cd $(PLATFORM); patch -p1 -i ../0001-syscfg-Add-Emscript-arch.patch
 endif
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
