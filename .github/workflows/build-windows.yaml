@@ -216,23 +216,23 @@ jobs:
         shell: cmd
         run: call tools\buildsteps\windows\download-dependencies.bat
 
-      # Build in project\cmake (in-source) so that run-tests.bat and other
-      # helper scripts find the solution at the paths they expect
-      # (e.g. ..\cmake\kodi.sln relative to project\Win32BuildSetup).
+      # Leia has CMakeLists.txt at repo root; use an out-of-source build dir.
       - name: Configure with CMake
         shell: cmd
-        working-directory: project\cmake
-        run: cmake -G "Visual Studio 17 2022" -A Win32 .
+        run: |
+          mkdir kodi-build
+          cd kodi-build
+          cmake -G "Visual Studio 17 2022" -A Win32 %GITHUB_WORKSPACE%
 
       - name: Build
         shell: cmd
-        working-directory: project\cmake
+        working-directory: kodi-build
         run: cmake --build . --target ALL_BUILD --config RelWithDebInfo --parallel
 
       - name: Verify kodi.exe after main build
         shell: pwsh
         run: |
-          $exe = "$env:GITHUB_WORKSPACE\project\cmake\RelWithDebInfo\kodi.exe"
+          $exe = "$env:GITHUB_WORKSPACE\kodi-build\RelWithDebInfo\kodi.exe"
           if (-not (Test-Path $exe)) {
             Write-Error "kodi.exe not found at $exe"
             exit 1
@@ -248,21 +248,21 @@ jobs:
         shell: cmd
         env:
           vcarch: amd64_x86
-        run: call tools\buildsteps\win32\bootstrap-addons.bat
+        run: call tools\buildsteps\windows\win32\bootstrap-addons.bat
 
       - name: Build addons
         id: build-addons
         shell: cmd
         env:
           vcarch: amd64_x86
-        run: call tools\buildsteps\win32\make-addons.bat
+        run: call tools\buildsteps\windows\win32\make-addons.bat
 
       - name: Display addon build errors
         if: failure()
         shell: pwsh
         run: |
-          $errorFile = "$env:GITHUB_WORKSPACE\project\cmake\addons\make-addons.error"
-          $failureFile = "$env:GITHUB_WORKSPACE\project\cmake\addons\.failure"
+          $errorFile = "$env:GITHUB_WORKSPACE\cmake\addons\make-addons.error"
+          $failureFile = "$env:GITHUB_WORKSPACE\cmake\addons\.failure"
           if (Test-Path $errorFile) {
             Write-Host "::error::Addon build failed — see details below"
             Write-Host "========== make-addons.error =========="
@@ -284,9 +284,9 @@ jobs:
         with:
           name: addon-build-errors
           path: |
-            project/cmake/addons/make-addons.error
-            project/cmake/addons/.failure
-            project/cmake/addons/.success
+            cmake/addons/make-addons.error
+            cmake/addons/.failure
+            cmake/addons/.success
           if-no-files-found: warn
 
       # Only collect when the addon step succeeded — avoids packaging a partial tree when addons fail.
@@ -294,7 +294,7 @@ jobs:
         if: success()
         shell: pwsh
         run: |
-          Copy-Item -Path "project\cmake\RelWithDebInfo\*" -Destination "system\" -Recurse -Force
+          Copy-Item -Path "kodi-build\RelWithDebInfo\*" -Destination "system\" -Recurse -Force
 
       - name: Verify kodi.exe in system output
         if: success()
