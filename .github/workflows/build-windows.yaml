@@ -369,8 +369,8 @@ jobs:
       - name: Create GitHub release
         if: ${{ success() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
         env:
-          # Same PAT as local organizerro_pat.txt — set ORGANIZERRO_PAT in repo Settings (not github.token).
-          GH_TOKEN: ${{ secrets.ORGANIZERRO_PAT }}
+          # Prefer ORGANIZERRO_PAT (same as local .git/organizerro_pat.txt); fall back to github.token.
+          GH_TOKEN: ${{ secrets.ORGANIZERRO_PAT != '' && secrets.ORGANIZERRO_PAT || github.token }}
         shell: bash
         run: |
           gh release create "${{ steps.version.outputs.tag }}" \
