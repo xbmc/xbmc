@@ -30,24 +30,20 @@ jobs:
           # Prefer ORGANIZERRO_PAT (same as local .git/organizerro_pat.txt); fall back until the secret is added in repo Settings.
           token: ${{ secrets.ORGANIZERRO_PAT != '' && secrets.ORGANIZERRO_PAT || github.token }}
 
-      # Cache the MinGW-built FFmpeg and libdvd trees (includes renamed .lib files).
-      # Skips the entire MinGW build on cache hits; only invalidated when source
-      # version files or build scripts change.
+      # Cache the MinGW-built FFmpeg tree (MSVC .lib files produced by
+      # --toolchain=msvc).  The build scripts install to
+      # project/BuildDependencies/mingwlibs/win32/ which CMake picks up
+      # via MINGW_LIBS_DIR in cmake/scripts/windows/ArchSetup.cmake.
       - name: Cache MinGW-built libraries
         uses: actions/cache@v4
         id: mingw-cache
         with:
           path: |
-            lib/win32/ffmpeg
-            lib/libdvd
+            project/BuildDependencies/mingwlibs
           key: mingw-libs-${{ hashFiles('tools/depends/target/ffmpeg/FFMPEG-VERSION',
-                                        'tools/depends/target/libdvdcss/DVDCSS-VERSION',
-                                        'tools/depends/target/libdvdread/DVDREAD-VERSION',
-                                        'tools/depends/target/libdvdnav/DVDNAV-VERSION',
                                         'tools/buildsteps/windows/make-mingwlibs.sh',
                                         'tools/buildsteps/windows/buildhelpers.sh',
                                         'tools/buildsteps/windows/buildffmpeg.sh',
-                                        'tools/buildsteps/windows/buildlibdvd.sh',
                                         'tools/buildsteps/windows/ffmpeg_options.txt',
                                         'tools/buildsteps/windows/patches/*.patch') }}
 
@@ -176,84 +172,42 @@ jobs:
           for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) do call "%%i\VC\Auxiliary\Build\vcvars32.bat"
           bash --login -e -c "export OPENSSL_ROOT_DIR=C:/OpenSSL-Win32 && exec /xbmc/tools/buildsteps/windows/make-mingwlibs.sh --prompt=noprompt --mode=clean --build32=yes --build64=no"
 
-      # Validate that the MinGW build produced expected output directories and
-      # files before the cache is written.
+      # Validate that make-mingwlibs.sh installed FFmpeg to the expected
+      # prefix (project/BuildDependencies/mingwlibs/win32).  With
+      # --toolchain=msvc the output is already MSVC .lib files.
       - name: Validate MinGW build outputs
         if: steps.mingw-cache.outputs.cache-hit != 'true'
         shell: pwsh
         run: |
-          $required = @(
-            "lib\win32\ffmpeg\lib",
-            "lib\win32\ffmpeg\include",
-            "lib\libdvd\lib",
-            "lib\libdvd\include"
-          )
+          $mgDir = "$env:GITHUB_WORKSPACE\project\BuildDependencies\mingwlibs\win32"
+          $libs = @("lib\avcodec.lib", "lib\avformat.lib", "lib\avutil.lib",
+                    "lib\swscale.lib", "lib\swresample.lib", "lib\postproc.lib",
+                    "lib\avfilter.lib")
           $failed = $false
-          foreach ($rel in $required) {
-            $path = "$env:GITHUB_WORKSPACE\$rel"
-            if (-not (Test-Path $path) -or (Get-ChildItem $path).Count -eq 0) {
-              Write-Error "Missing or empty: $path"
+          foreach ($rel in $libs) {
+            $path = Join-Path $mgDir $rel
+            if (-not (Test-Path $path)) {
+              Write-Error "Missing: $path"
               $failed = $true
             }
           }
-          if ($failed) { exit 1 }
-
-      # MinGW produces lib*.dll.a import libs; MSVC needs *.lib names.
-      - name: Rename MinGW FFmpeg import libs for MSVC
-        if: steps.mingw-cache.outputs.cache-hit != 'true'
-        shell: pwsh
-        run: |
-          $libDir = "$env:GITHUB_WORKSPACE\lib\win32\ffmpeg\lib"
-          if (Test-Path $libDir) {
-            $files = Get-ChildItem -Path $libDir -Filter "lib*.dll.a"
-            if ($files.Count -eq 0) {
-              Write-Error "No lib*.dll.a import libraries found in $libDir — FFmpeg build likely failed or output went to wrong location"
-              exit 1
-            }
-            $files | ForEach-Object {
-              $newName = $_.Name.Substring(3) -replace '\.dll\.a$', '.lib'
-              Rename-Item $_.FullName (Join-Path $_.DirectoryName $newName)
-            }
+          if (-not (Test-Path "$mgDir\include")) {
+            Write-Error "Missing: $mgDir\include"
+            $failed = $true
           }
+          if ($failed) { exit 1 }
+          Write-Host "FFmpeg MSVC libs validated under $mgDir"
 
       # ---------------------------------------------------------------
       # These steps always run (cache hit or miss).
       # ---------------------------------------------------------------
 
-      # On a cache hit the DLLs are not yet in system/ (the build scripts
-      # put them there, but that ran in a previous job).  Copy them now.
-      - name: Copy MinGW DLLs to system directory
+      # FFmpeg is built static (--disable-shared); no FFmpeg DLLs to copy.
+      # Ensure system/ directory exists for later steps.
+      - name: Prepare system directory
         shell: pwsh
         run: |
-          $systemDir = "$env:GITHUB_WORKSPACE\system"
-          New-Item -ItemType Directory -Force $systemDir | Out-Null
-          $ffmpegBin = "$env:GITHUB_WORKSPACE\lib\win32\ffmpeg\bin"
-          $dvdBin    = "$env:GITHUB_WORKSPACE\lib\libdvd\bin"
-          if (Test-Path $ffmpegBin) { Copy-Item "$ffmpegBin\*.dll" $systemDir -Force }
-          if (Test-Path $dvdBin)    { Copy-Item "$dvdBin\*.dll"    $systemDir -Force }
-
-      # The MinGW-built FFmpeg/libdvd DLLs depend on MinGW runtime libraries
-      # (libwinpthread, zlib, libiconv) which must also be shipped alongside.
-      - name: Copy MinGW runtime DLLs to system directory
-        shell: pwsh
-        run: |
-          $systemDir = "$env:GITHUB_WORKSPACE\system"
-          $mingwBin  = "C:\msys64\mingw32\bin"
-          $dlls = @(
-            "libwinpthread-1.dll",
-            "zlib1.dll",
-            "libiconv-2.dll"
-          )
-          foreach ($dll in $dlls) {
-            $src = Join-Path $mingwBin $dll
-            if (Test-Path $src) {
-              Copy-Item $src $systemDir -Force
-              Write-Host "Copied $dll"
-            } else {
-              Write-Error "Missing MinGW runtime DLL: $src"
-              exit 1
-            }
-          }
+          New-Item -ItemType Directory -Force "$env:GITHUB_WORKSPACE\system" | Out-Null
 
       # Ensure pre-built Windows deps are present (idempotent; the early
       # download before FFmpeg already fetched them, but the script skips
