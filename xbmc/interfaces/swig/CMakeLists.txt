@@ -43,6 +43,10 @@ endforeach()
 add_library(python_binding STATIC ${SOURCES})
 set_target_properties(python_binding PROPERTIES POSITION_INDEPENDENT_CODE TRUE
                                                 FOLDER "Build Utilities")
+# SWIG-generated .cpp files compile from the build dir, so bare includes
+# like "GUIControl.h" in guilib/ headers cannot resolve via the default
+# include path (which only has xbmc/).  Add guilib/ explicitly.
+target_include_directories(python_binding PRIVATE ${CORE_SOURCE_DIR}/xbmc/guilib)
 set(core_DEPENDS python_binding ${core_DEPENDS} CACHE STRING "" FORCE)
 if(WIN32)
   add_precompiled_header(python_binding pch.h ${CORE_SOURCE_DIR}/xbmc/platform/win32/pch.cpp PCH_TARGET kodi)
