@@ -7,9 +7,8 @@ RETRIEVE_TOOL=curl
 ARCHIVE_TOOL=tar
 # lib name, version
 LIBNAME=m4
-VERSION=1.4.19
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.xz
+VERSION=1.4.21
+ARCHIVE=$(LIBNAME)-$(VERSION).tar.xz
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX)
