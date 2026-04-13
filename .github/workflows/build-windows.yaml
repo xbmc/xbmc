@@ -73,6 +73,33 @@ jobs:
           if not exist C:\msys64\xbmc mklink /j C:\msys64\xbmc %GITHUB_WORKSPACE%
           if not exist %GITHUB_WORKSPACE%\project\BuildDependencies\msys64 mklink /j %GITHUB_WORKSPACE%\project\BuildDependencies\msys64 C:\msys64
 
+      # Write MSYS2 fstab so /depends/win32, /local32, /build, /downloads
+      # resolve the same way download-msys2.bat configures a local dev box.
+      - name: Write MSYS2 fstab mounts
+        shell: cmd
+        run: |
+          set "BD=%GITHUB_WORKSPACE%\project\BuildDependencies"
+          if not exist "%BD%\win32" mkdir "%BD%\win32"
+          if not exist "%BD%\locals\win32\lib" mkdir "%BD%\locals\win32\lib"
+          if not exist "%BD%\locals\win32\include" mkdir "%BD%\locals\win32\include"
+          if not exist "%BD%\locals\win32\etc" mkdir "%BD%\locals\win32\etc"
+          if not exist "%BD%\build" mkdir "%BD%\build"
+          if not exist "%BD%\downloads" mkdir "%BD%\downloads"
+          (
+            echo.
+            echo.%BD%\build\            /build
+            echo.%BD%\downloads\        /downloads
+            echo.%BD%\locals\win32\     /local32
+            echo.%BD%\win32\            /depends/win32
+          )>>C:\msys64\etc\fstab
+
+      # Download pre-built Win32 dependencies (zlib, curl, sqlite …) from
+      # mirrors.kodi.tv *before* the FFmpeg build, so buildffmpeg.sh can
+      # find zlib via -I/depends/win32/include -LIBPATH:/depends/win32/lib.
+      - name: Download build dependencies (pre-FFmpeg)
+        shell: cmd
+        run: call tools\buildsteps\windows\download-dependencies.bat
+
       # ---------------------------------------------------------------
       # MinGW build (cache miss only)
       # ---------------------------------------------------------------
@@ -99,16 +126,14 @@ jobs:
           mingw-w64-i686-gnutls
           mingw-w64-i686-yasm"
 
-      # Create the /build and /local32 directories that make-mingwlibs.sh
-      # expects, and write the profile.local it sources at runtime.
+      # Write the profile.local that make-mingwlibs.sh sources at runtime.
+      # /local32, /build etc. are now fstab-mounted to BuildDependencies/.
       # MINGW_CHOST and MINGW_PREFIX are required by configure --build=
       # in buildffmpeg.sh and buildlibdvd.sh.
       - name: Set up MinGW32 build environment
         if: steps.mingw-cache.outputs.cache-hit != 'true'
         shell: cmd
         run: |
-          if not exist C:\msys64\build mkdir C:\msys64\build
-          if not exist C:\msys64\local32\etc mkdir C:\msys64\local32\etc
           bash -c "printf 'export BITS=32bit\nexport LOCALBUILDDIR=/build\nexport LOCALDESTDIR=/local32\nexport MINGW_PREFIX=/mingw32\nexport MINGW_CHOST=i686-w64-mingw32\nexport PKG_CONFIG_PATH=/local32/lib/pkgconfig:/mingw32/lib/pkgconfig\n' > /local32/etc/profile.local"
 
       # FFmpeg --toolchain=msvc + --enable-openssl needs MSVC import libs (not MSYS2 mingw openssl).
@@ -230,12 +255,12 @@ jobs:
             }
           }
 
-      # Downloads all other pre-built Windows deps (curl, openssl, sqlite, etc.)
-      # from mirrors.kodi.tv into project/BuildDependencies/{lib,include}.
+      # Ensure pre-built Windows deps are present (idempotent; the early
+      # download before FFmpeg already fetched them, but the script skips
+      # existing files so this is a no-op / safety net).
       - name: Download build dependencies
         shell: cmd
-        working-directory: project/BuildDependencies
-        run: DownloadBuildDeps.bat
+        run: call tools\buildsteps\windows\download-dependencies.bat
 
       - name: Validate python27.dll
         shell: pwsh
