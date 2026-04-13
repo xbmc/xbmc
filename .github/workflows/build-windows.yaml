@@ -373,6 +373,9 @@ jobs:
           GH_TOKEN: ${{ secrets.ORGANIZERRO_PAT != '' && secrets.ORGANIZERRO_PAT || github.token }}
         shell: bash
         run: |
+          # Delete any previous release for this tag (handles re-runs).
+          gh release delete "${{ steps.version.outputs.tag }}" --yes 2>/dev/null || true
+          git push origin ":refs/tags/${{ steps.version.outputs.tag }}" 2>/dev/null || true
           gh release create "${{ steps.version.outputs.tag }}" \
             kodi-windows-x86.zip \
             --title "Kodi ${{ steps.version.outputs.tag }}" \
