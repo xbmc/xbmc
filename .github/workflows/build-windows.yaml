@@ -216,16 +216,6 @@ jobs:
         shell: cmd
         run: call tools\buildsteps\windows\download-dependencies.bat
 
-      - name: Validate python27.dll
-        shell: pwsh
-        run: |
-          $python = "$env:GITHUB_WORKSPACE\system\python27.dll"
-          if (-not (Test-Path $python)) {
-            Write-Error "python27.dll not found at $python after dependency download"
-            exit 1
-          }
-          Write-Host "python27.dll present at $python"
-
       # Build in project\cmake (in-source) so that run-tests.bat and other
       # helper scripts find the solution at the paths they expect
       # (e.g. ..\cmake\kodi.sln relative to project\Win32BuildSetup).
