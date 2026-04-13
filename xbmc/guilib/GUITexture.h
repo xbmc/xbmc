@@ -29,7 +29,7 @@
  */
 
 #include "TextureManager.h"
-#include "Geometry.h"
+#include "utils/Geometry.h"
 #include "system.h" // HAS_GL, HAS_DX, etc
 #include "GUIInfoTypes.h"
 
