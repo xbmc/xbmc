@@ -2131,7 +2131,12 @@ void CVideoPlayer::HandlePlaySpeed()
       // care for live streams
       else if (m_pInputStream->IsRealtime())
       {
-        if (m_CurrentAudio.id >= 0)
+        // Skip SpeedAdjust for passthrough: the message queue level metric is
+        // meaningless because passthrough packets are tiny and drain instantly,
+        // so GetLevel() stays near 0. This triggers SetSpeedAdjust(-0.05) immediately
+        // and the >10 restore threshold is never reached, causing permanent clock
+        // drift at -50ms/s and persistent A/V sync oscillation.
+        if (m_CurrentAudio.id >= 0 && !IsPassthrough())
         {
           double adjust = -1.0; // a unique value
           if (m_clock.GetSpeedAdjust() >= 0 && m_VideoPlayerAudio->GetLevel() < 5)
