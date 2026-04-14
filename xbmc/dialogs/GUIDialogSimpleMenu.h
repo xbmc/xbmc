@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include "filesystem/Directory.h"
+#include "video/VideoDatabase.h"
 
-#include <string>
+#include <vector>
 
 class CFileItem;
 class CFileItemList;
@@ -18,15 +18,9 @@ class CFileItemList;
 class CGUIDialogSimpleMenu
 {
 public:
-
   /*! \brief Show dialog allowing selection of wanted playback item */
-  static bool ShowPlaylistSelection(CFileItem& item);
-
-protected:
-  static bool GetDirectoryItems(const std::string& path,
-                                CFileItemList& items,
-                                const XFILE::CDirectory::CHints& hints);
-
-private:
-  static bool GetItems(const CFileItem& item, CFileItemList& items, const std::string& directory);
+  static bool ShowPlaylistSelection(const CFileItem& item,
+                                    CFileItem& selectedItem,
+                                    const CFileItemList& items,
+                                    const std::vector<CVideoDatabase::PlaylistInfo>& usedPlaylists);
 };

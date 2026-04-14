@@ -46,7 +46,8 @@ void CBlurayDiscCache::SetPlaylistInfo(const std::string& path,
 
 void CBlurayDiscCache::SetMaps(const std::string& path,
                                const PlaylistMap& playlistmap,
-                               const ClipMap& clipmap)
+                               const ClipMap& clipmap,
+                               const CFileItemList& itemmap)
 {
   std::unique_lock lock(m_cs);
 
@@ -60,6 +61,7 @@ void CBlurayDiscCache::SetMaps(const std::string& path,
   auto& [_, disc] = *i;
   disc.playlistMap = playlistmap;
   disc.clipMap = clipmap;
+  disc.itemMap.Copy(itemmap);
   disc.mapsSet = true;
 }
 
@@ -106,7 +108,8 @@ bool CBlurayDiscCache::GetPlaylistInfo(const std::string& path,
 
 bool CBlurayDiscCache::GetMaps(const std::string& path,
                                PlaylistMap& playlistmap,
-                               ClipMap& clipmap) const
+                               ClipMap& clipmap,
+                               CFileItemList& itemmap) const
 {
   std::unique_lock lock(m_cs);
 
@@ -121,6 +124,7 @@ bool CBlurayDiscCache::GetMaps(const std::string& path,
     {
       clipmap = disc.clipMap;
       playlistmap = disc.playlistMap;
+      itemmap.Copy(disc.itemMap);
       return true;
     }
   }

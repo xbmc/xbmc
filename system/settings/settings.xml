@@ -461,9 +461,10 @@
           <default>0</default> <!-- default -->
           <constraints>
             <options>
-              <option label="14104">0</option> <!-- show simplified menu -->
-              <option label="25003">1</option> <!-- show disc menu -->
-              <option label="14103">2</option> <!-- play main movie -->
+              <option label="25018">0</option> <!-- automatic menu selection -->
+              <option label="14104">1</option> <!-- show simplified menu -->
+              <option label="25003">2</option> <!-- show disc menu -->
+              <option label="14103">3</option> <!-- play main movie -->
             </options>
           </constraints>
           <control type="list" format="string" />

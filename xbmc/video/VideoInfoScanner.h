@@ -149,8 +149,6 @@ namespace KODI::VIDEO
         UseRemoteArtWithLocalScraper useRemoteArt = UseRemoteArtWithLocalScraper::YES);
     static std::string GetImage(const CScraperUrl::SUrlEntry &image, const std::string& itemPath);
 
-    bool EnumerateEpisodeItem(const CFileItem *item, EPISODELIST& episodeList);
-
     static std::string GetMovieSetInfoFolder(const std::string& setTitle);
 
   protected:
