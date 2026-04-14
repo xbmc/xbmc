@@ -1,0 +1,26 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Clément Péron <peron.clem@gmail.com>
+Date: Tue, 14 Apr 2026 00:00:00 +0000
+Subject: [PATCH] configure.ac: use build_wasm as default Emscripten target
+
+Kodi depends only needs the Emscripten Python runtime artifacts. Avoid making
+the default "all" target pull in the browser demo web_example targets.
+---
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/configure.ac b/configure.ac
+index c12f9f2..9cbad58 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1853,7 +1853,7 @@ AS_VAR_IF([ac_cv_gcc_compat], [yes], [
+   ])
+ elif test "$ac_sys_system" = "Emscripten"; then
+   dnl Build "python.[js,wasm]", "pybuilddir.txt", and "platform" files.
+-  DEF_MAKE_ALL_RULE="build_emscripten"
++  DEF_MAKE_ALL_RULE="build_wasm"
+   REQUIRE_PGO="no"
+   DEF_MAKE_RULE="all"
+ elif test "$ac_sys_system" = "WASI"; then
+-- 
+2.39.5
