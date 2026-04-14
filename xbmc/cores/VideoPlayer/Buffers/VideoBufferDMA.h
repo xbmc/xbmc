@@ -39,8 +39,8 @@ public:
   bool Alloc();
   void Export(AVFrame* frame, uint32_t width, uint32_t height);
 
-  void SyncStart();
-  void SyncEnd();
+  void SyncStart() override;
+  void SyncEnd() override;
 
 private:
   void Destroy();

@@ -10,7 +10,6 @@
 
 #include "addons/addoninfo/AddonInfo.h"
 #include "cores/VideoPlayer/Buffers/VideoBuffer.h"
-#include "cores/VideoPlayer/Buffers/VideoBufferDMA.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "cores/VideoPlayer/Interface/DemuxCrypto.h"
@@ -384,9 +383,7 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
       pVideoPicture->videoBuffer->Release();
 
     pVideoPicture->videoBuffer = static_cast<CVideoBuffer*>(picture.videoBufferHandle);
-
-    if (auto* dmaBuf = dynamic_cast<CVideoBufferDMA*>(pVideoPicture->videoBuffer))
-      dmaBuf->SyncEnd();
+    pVideoPicture->videoBuffer->SyncEnd();
 
     int strides[YuvImage::MAX_PLANES], planeOffsets[YuvImage::MAX_PLANES];
     for (int i = 0; i<YuvImage::MAX_PLANES; ++i)
@@ -483,9 +480,7 @@ bool CAddonVideoCodec::GetFrameBuffer(VIDEOCODEC_PICTURE &picture)
   }
   picture.decodedData = videoBuffer->GetMemPtr();
   picture.videoBufferHandle = videoBuffer;
-
-  if (auto* dmaBuf = dynamic_cast<CVideoBufferDMA*>(videoBuffer))
-    dmaBuf->SyncStart();
+  videoBuffer->SyncStart();
 
   return true;
 }

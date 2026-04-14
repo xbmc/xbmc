@@ -105,6 +105,21 @@ public:
   {
   }
 
+  /*!
+   * \brief Begin CPU access to the buffer memory.
+   *
+   * Default no-op. Overridden by buffer subclasses (e.g. CVideoBufferDMA)
+   * that need to coordinate CPU-side reads/writes with GPU/DMA access.
+   * Callers can invoke unconditionally without knowing the concrete buffer
+   * type.
+   */
+  virtual void SyncStart() {}
+
+  /*!
+   * \brief End CPU access to the buffer memory. Counterpart to SyncStart().
+   */
+  virtual void SyncEnd() {}
+
   static bool CopyPicture(YuvImage* pDst, YuvImage *pSrc);
   static bool CopyNV12Picture(YuvImage* pDst, YuvImage *pSrc);
   static bool CopyYUV422PackedPicture(YuvImage* pDst, YuvImage *pSrc);
