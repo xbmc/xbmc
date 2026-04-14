@@ -422,8 +422,10 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
       m_processInfo.SetVideoDimensions(m_width, m_height);
     }
 
+    // Inner scope keeps the const pix declaration from crossing the next
+    // case label, which C++ forbids.
     {
-      AVPixelFormat pix = ConvertToPixelFormat(picture.videoFormat);
+      const AVPixelFormat pix = ConvertToPixelFormat(picture.videoFormat);
       const char* pixFmtName = av_get_pix_fmt_name(pix);
       m_processInfo.SetVideoPixelFormat(pixFmtName ? pixFmtName : "");
     }
@@ -471,7 +473,7 @@ void CAddonVideoCodec::Reset()
 
 bool CAddonVideoCodec::GetFrameBuffer(VIDEOCODEC_PICTURE &picture)
 {
-  CVideoBuffer* videoBuffer = m_processInfo.GetVideoBufferManager().Get(
+  CVideoBuffer* const videoBuffer = m_processInfo.GetVideoBufferManager().Get(
       ConvertToPixelFormat(picture.videoFormat), picture.decodedDataSize, nullptr);
   if (!videoBuffer)
   {

@@ -84,7 +84,7 @@ void CVideoBufferPoolDMA::Configure(AVPixelFormat format, int size)
   std::unique_lock lock(m_critSection);
 
   m_fourcc = TranslateFormat(format);
-  int planeCount = av_pix_fmt_count_planes(format);
+  const int planeCount = av_pix_fmt_count_planes(format);
   m_planes = planeCount > 0 ? static_cast<uint32_t>(planeCount) : 0;
   m_size = static_cast<uint64_t>(size);
 }
