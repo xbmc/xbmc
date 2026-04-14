@@ -1,0 +1,27 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Clément Péron <peron.clem@gmail.com>
+Date: Tue, 14 Apr 2026 00:00:00 +0000
+Subject: [PATCH] Makefile.pre.in: use em-config LLVM_ROOT for trampoline clang
+
+When CC is wrapped by ccache, the Emscripten trampoline rule cannot derive the
+matching clang path by treating CC as a single executable path. Query the active
+LLVM toolchain path with em-config instead.
+---
+ Makefile.pre.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile.pre.in b/Makefile.pre.in
+index 37f4c19..aa9b40f 100644
+--- a/Makefile.pre.in
++++ b/Makefile.pre.in
+@@ -3110,7 +3110,7 @@ Python/asm_trampoline.o: $(srcdir)/Python/asm_trampoline.S
+ 
+ Python/emscripten_trampoline_inner.wasm: $(srcdir)/Python/emscripten_trampoline_inner.c
+ 	# emcc has a path that ends with emsdk/upstream/emscripten/emcc, we're looking for emsdk/upstream/bin/clang.
+-	$$(dirname $$(dirname $(CC)))/bin/clang -o $@ $< -mgc -O2 -Wl,--no-entry -Wl,--import-table -Wl,--import-memory -target wasm32-unknown-unknown -nostdlib
++	$$(em-config LLVM_ROOT)/clang -o $@ $< -mgc -O2 -Wl,--no-entry -Wl,--import-table -Wl,--import-memory -target wasm32-unknown-unknown -nostdlib
+ 
+ Python/emscripten_trampoline_wasm.c: Python/emscripten_trampoline_inner.wasm
+ 	$(PYTHON_FOR_REGEN) $(srcdir)/Tools/wasm/emscripten/prepare_external_wasm.py $< $@ getWasmTrampolineModule
+-- 
+2.39.5
