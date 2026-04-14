@@ -256,7 +256,14 @@ jobs:
         env:
           vcarch: amd64_x86
         run: call tools\buildsteps\windows\win32\make-addons.bat
-
+      - name: Build addons
+        shell: cmd
+        env:
+          vcarch: amd64_x86
+        run: |
+          cd tools\buildsteps\windows
+          call make-addons.bat
+    
       - name: Display addon build errors
         if: failure()
         shell: pwsh
@@ -312,7 +319,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: kodi-windows-x86
-          path: system\
+          path:  | 
+            project/Win32BuildSetup/BUILD_WIN32/addons/  # Add this line
+            system\
+            kodi-build/Release/
           if-no-files-found: warn
 
       # ---------------------------------------------------------------
