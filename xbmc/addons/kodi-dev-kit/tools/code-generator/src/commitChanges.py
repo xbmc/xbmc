@@ -13,11 +13,15 @@ from .generateCMake__XBMC_ADDONS_KODIDEVKIT_INCLUDE_KODI_allfiles import *
 from .helper_Log import *
 
 # Global includes
-import importlib, os, subprocess
+import importlib, importlib.util, os, subprocess
 
-git_found = importlib.find_loader("git") is not None
+git_found = importlib.util.find_spec("git") is not None
 if git_found:
-    from git import Repo
+    try:
+        importlib.import_module("git")
+        from git import Repo
+    except ImportError:
+        git_found = False
 
 
 def CommitChanges(options):
