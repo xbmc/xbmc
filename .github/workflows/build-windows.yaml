@@ -240,29 +240,122 @@ jobs:
           Write-Host "Found $exe"
 
       # ---------------------------------------------------------------
-      # Addons — bootstrap definitions then build each addon with MSVC.
-      # find-vs.bat (called internally) locates VS via vswhere.
+      # Addons — bootstrap definitions, configure (downloads sources),
+      # patch visualization addons for MSVC intrinsics, then build.
+      # vcvars32.bat is loaded in each step to ensure nmake.exe is in PATH.
       # ---------------------------------------------------------------
 
       - name: Bootstrap addons
         shell: cmd
-        env:
-          vcarch: amd64_x86
-        run: call tools\buildsteps\windows\win32\bootstrap-addons.bat
+        run: |
+          for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) do call "%%i\VC\Auxiliary\Build\vcvars32.bat"
+          call tools\buildsteps\windows\bootstrap-addons.bat
+
+      - name: Configure addons and download sources
+        shell: cmd
+        run: |
+          for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) do call "%%i\VC\Auxiliary\Build\vcvars32.bat"
+          if not exist cmake\addons\build mkdir cmake\addons\build
+          if not exist cmake\addons\output mkdir cmake\addons\output
+          cd /d "%GITHUB_WORKSPACE%\cmake\addons\build"
+          cmake %GITHUB_WORKSPACE%\cmake\addons -G "NMake Makefiles" ^
+                -DCMAKE_BUILD_TYPE=Release ^
+                -DCMAKE_USER_MAKE_RULES_OVERRIDE=%GITHUB_WORKSPACE%\cmake\scripts\windows\CFlagOverrides.cmake ^
+                -DCMAKE_USER_MAKE_RULES_OVERRIDE_CXX=%GITHUB_WORKSPACE%\cmake\scripts\windows\CXXFlagOverrides.cmake ^
+                -DCMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%\project\Win32BuildSetup\BUILD_WIN32\addons ^
+                -DBUILD_DIR=%GITHUB_WORKSPACE%\cmake\addons\build ^
+                -DADDON_DEPENDS_PATH=%GITHUB_WORKSPACE%\cmake\addons\output ^
+                -DPACKAGE_ZIP=ON
+
+      - name: Patch visualization addons for MSVC intrinsics
+        shell: pwsh
+        run: |
+          $buildDir = "$env:GITHUB_WORKSPACE\cmake\addons\build"
+          $patches = @(
+            @{ addon = "visualization.milkdrop";  relpath = "lib\vis_milkdrop\ns-eel2\nseel-compiler.c" },
+            @{ addon = "visualization.milkdrop2"; relpath = "lib\vis_milk2\ns-eel2\nseel-compiler.c"  }
+          )
+          foreach ($p in $patches) {
+            $src = Join-Path $buildDir "$($p.addon)\$($p.relpath)"
+            if (-not (Test-Path $src)) {
+              Write-Warning "Skipping patch for $($p.addon): $src not found (addon may not be present)"
+              continue
+            }
+            $lines = [System.IO.File]::ReadAllLines($src)
+            $out = [System.Collections.Generic.List[string]]::new()
+            $i = 0
+            while ($i -lt $lines.Count) {
+              $line = $lines[$i]
+              $trimmed = $line.TrimStart()
+              $indent = $line.Substring(0, $line.Length - $trimmed.Length)
+              # Guard adjacent __floor/__ceil declarations (MSVC 14.44+ treats them as intrinsics)
+              if ($trimmed -match '^double __floor\(double x\);' -and
+                  $i + 1 -lt $lines.Count -and
+                  $lines[$i + 1].TrimStart() -match '^double __ceil\(double x\);') {
+                $out.Add('#if !defined(_MSC_VER)')
+                $out.Add($line)
+                $out.Add($lines[$i + 1])
+                $out.Add('#endif')
+                $i += 2
+                continue
+              }
+              # Guard __floor function pointer assignment; substitute floor on MSVC
+              if ($trimmed -match '^func->func_ptr\s*=\s*\(void\s*\*\)\s*__floor\s*;') {
+                $out.Add('#if !defined(_MSC_VER)')
+                $out.Add($line)
+                $out.Add('#else')
+                $out.Add("${indent}func->func_ptr = (void*)floor;")
+                $out.Add('#endif')
+                $i++
+                continue
+              }
+              # Guard __ceil function pointer assignment; substitute ceil on MSVC
+              if ($trimmed -match '^func->func_ptr\s*=\s*\(void\s*\*\)\s*__ceil\s*;') {
+                $out.Add('#if !defined(_MSC_VER)')
+                $out.Add($line)
+                $out.Add('#else')
+                $out.Add("${indent}func->func_ptr = (void*)ceil;")
+                $out.Add('#endif')
+                $i++
+                continue
+              }
+              $out.Add($line)
+              $i++
+            }
+            [System.IO.File]::WriteAllLines($src, $out)
+            Write-Host "Patched: $src"
+          }
 
       - name: Build addons
         id: build-addons
         shell: cmd
-        env:
-          vcarch: amd64_x86
-        run: call tools\buildsteps\windows\win32\make-addons.bat
-      - name: Build addons
-        shell: cmd
-        env:
-          vcarch: amd64_x86
         run: |
-          cd tools\buildsteps\windows
-          call make-addons.bat
+          for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) do call "%%i\VC\Auxiliary\Build\vcvars32.bat"
+          set "ADDONS_SUCCESS_FILE=%GITHUB_WORKSPACE%\cmake\addons\.success"
+          set "ADDONS_FAILURE_FILE=%GITHUB_WORKSPACE%\cmake\addons\.failure"
+          set "ERRORFILE=%GITHUB_WORKSPACE%\cmake\addons\make-addons.error"
+          del /f "%ADDONS_SUCCESS_FILE%" 2>nul
+          del /f "%ADDONS_FAILURE_FILE%" 2>nul
+          cd /d "%GITHUB_WORKSPACE%\cmake\addons\build"
+          setlocal enabledelayedexpansion
+          set "ADDONS_TO_MAKE="
+          for /f "tokens=*" %%i in ('cmake --build . --target supported_addons 2^>^&1') do (
+            set "ln=%%i"
+            if not "!ln:ALL_ADDONS_BUILDING=!" == "!ln!" (
+              set "ADDONS_TO_MAKE=!ln:*ALL_ADDONS_BUILDING: =!"
+            )
+          )
+          for %%a in (!ADDONS_TO_MAKE!) do (
+            echo Building %%a...
+            cmake --build . --target %%a
+            if errorlevel 1 (
+              echo %%a >> "%ERRORFILE%"
+              echo %%a >> "%ADDONS_FAILURE_FILE%"
+            ) else (
+              echo %%a >> "%ADDONS_SUCCESS_FILE%"
+            )
+          )
+          endlocal
     
       - name: Display addon build errors
         if: failure()
@@ -319,10 +412,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: kodi-windows-x86
-          path:  | 
-            project/Win32BuildSetup/BUILD_WIN32/addons/  # Add this line
+          path: |
+            project/Win32BuildSetup/BUILD_WIN32/addons/
             system\
-            kodi-build/Release/
+            kodi-build/RelWithDebInfo/
           if-no-files-found: warn
 
       # ---------------------------------------------------------------
