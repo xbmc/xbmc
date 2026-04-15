@@ -7,7 +7,7 @@
 #   See LICENSES/README.md for more information.
 
 # Own includes
-from code_generator import DEVKIT_DIR, KODI_DIR
+from code_generator__addon_devkit import DEVKIT_DIR, KODI_DIR
 from .generateCMake__CMAKE_TREEDATA_COMMON_addon_dev_kit_txt import *
 from .generateCMake__XBMC_ADDONS_KODIDEVKIT_INCLUDE_KODI_allfiles import *
 from .helper_Log import *
