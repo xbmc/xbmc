@@ -114,6 +114,17 @@ IF ERRORLEVEL 1 (
   GOTO ERROR
 )
 
+rem patch visualization addon nseel compiler for MSVC intrinsic conflicts
+IF EXIST "%WORKDIR%\tools\buildsteps\windows\patch-visualization-addons.ps1" (
+  powershell -NoProfile -ExecutionPolicy Bypass -File "%WORKDIR%\tools\buildsteps\windows\patch-visualization-addons.ps1" -BuildDir "%ADDONS_BUILD_PATH%"
+  IF ERRORLEVEL 1 (
+    ECHO patch-visualization-addons.ps1 error level: %ERRORLEVEL% > %ERRORFILE%
+    GOTO ERROR
+  )
+) ELSE (
+  ECHO WARNING: patch script not found, continuing without visualization addon intrinsic patch
+)
+
 rem get the list of addons that can actually be built
 SET ADDONS_TO_MAKE=
 SETLOCAL EnableDelayedExpansion
