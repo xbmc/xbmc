@@ -301,7 +301,8 @@ jobs:
             )
           )
           endlocal
-    
+          if exist "%ADDONS_FAILURE_FILE%" exit /b 1
+
       - name: Display addon build errors
         if: failure()
         shell: pwsh
