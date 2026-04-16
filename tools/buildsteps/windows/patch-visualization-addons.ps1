@@ -156,14 +156,16 @@ foreach ($p in $nseelPatches) {
 
     # Post-patch verification: scan the written file for any __floor/__ceil reference
     # that sits outside every preprocessor conditional block (depth == 0).
+    # Only #if/#ifdef/#ifndef open a new level; #endif closes it.
+    # #else/#elif are same-level continuations and do not change depth.
     $verify = [System.IO.File]::ReadAllLines($src)
     $depth = 0
     $verifyFailed = $false
     for ($vi = 0; $vi -lt $verify.Count; $vi++) {
         $vt = $verify[$vi].Trim()
-        if ($vt -match '^#if') { $depth++; continue }
-        if ($vt -match '^#endif') { if ($depth -gt 0) { $depth-- }; continue }
-        if ($depth -eq 0 -and ($vt -match '__floor' -or $vt -match '__ceil')) {
+        if ($vt -match '^#if(?:def|ndef)?\b') { $depth++; continue }
+        if ($vt -match '^#endif\b')            { if ($depth -gt 0) { $depth-- }; continue }
+        if ($depth -eq 0 -and ($vt -match '\b__floor\b' -or $vt -match '\b__ceil\b')) {
             Write-Error "[$($p.addon)] VERIFICATION FAILED: unguarded __floor/__ceil at line $($vi + 1): $($verify[$vi])"
             $verifyFailed = $true
         }
