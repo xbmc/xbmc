@@ -256,6 +256,15 @@ bool CWinSystemGbmGLESContext::BeginGuiComposite()
       return false;
     }
 
+    if (GetEnabledFrontToBackRendering() && !m_guiFbo.AttachDepthBuffer(width, height))
+    {
+      CLog::Log(LOGERROR,
+                "CWinSystemGbmGLESContext: failed to attach depth buffer to GUI FBO {}x{}", width,
+                height);
+      m_guiFbo.Cleanup();
+      return false;
+    }
+
     m_guiFboWidth = width;
     m_guiFboHeight = height;
     CLog::Log(LOGDEBUG, "CWinSystemGbmGLESContext: created GUI FBO {}x{}", width, height);
