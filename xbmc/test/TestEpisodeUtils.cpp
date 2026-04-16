@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -10,20 +10,20 @@
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "video/VideoInfoScanner.h"
+#include "utils/EpisodeUtils.h"
 
+#include <gtest/gtest-param-test.h>
 #include <gtest/gtest.h>
 
-using namespace KODI;
 using ::testing::Test;
-using ::testing::WithParamInterface;
 using ::testing::ValuesIn;
+using ::testing::WithParamInterface;
 
 struct TestEntry
 {
   const char* path;
-  std::vector<VIDEO::EPISODE> ranges;
-  std::vector<VIDEO::EPISODE> noranges;
+  std::vector<KODI::VIDEO::EPISODE> ranges;
+  std::vector<KODI::VIDEO::EPISODE> noranges;
 };
 
 static const TestEntry TestData[] = {
@@ -103,39 +103,38 @@ static const TestEntry TestData[] = {
     {"foo.S02E03-extended.mkv", {{2, 3}}, {{2, 3}}}, // comment (starting with e)
 };
 
-class TestVideoInfoScanner : public Test,
-                             public WithParamInterface<TestEntry>
+class TestEnumerateEpisodes : public Test, public WithParamInterface<TestEntry>
 {
 };
 
-TEST_P(TestVideoInfoScanner, EnumerateEpisodeItem)
+TEST_P(TestEnumerateEpisodes, EnumerateEpisodeItem)
 {
   const std::shared_ptr<CAdvancedSettings> advancedSettings =
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
   const TestEntry& entry = GetParam();
 
   CFileItem item(entry.path, false);
-  VIDEO::CVideoInfoScanner scanner;
-  VIDEO::EPISODELIST result;
+  KODI::VIDEO::EPISODELIST result;
 
+  const bool saveState{advancedSettings->m_disableEpisodeRanges};
   advancedSettings->m_disableEpisodeRanges = false;
-  ASSERT_TRUE(scanner.EnumerateEpisodeItem(&item, result));
+  ASSERT_TRUE(CEpisodeUtils::EnumerateEpisodeItem(&item, result));
   EXPECT_EQ(entry.ranges, result);
 
   advancedSettings->m_disableEpisodeRanges = true;
   result.clear();
-  ASSERT_TRUE(scanner.EnumerateEpisodeItem(&item, result));
+  ASSERT_TRUE(CEpisodeUtils::EnumerateEpisodeItem(&item, result));
   EXPECT_EQ(entry.noranges, result);
+  advancedSettings->m_disableEpisodeRanges = saveState;
 }
 
-INSTANTIATE_TEST_SUITE_P(VideoInfoScanner, TestVideoInfoScanner, ValuesIn(TestData));
+INSTANTIATE_TEST_SUITE_P(EnumerateEpisodeItem, TestEnumerateEpisodes, ValuesIn(TestData));
 
-TEST(TestVideoInfoScanner, EnumerateEpisodeItemByTitle)
+TEST(TestEnumerateEpisodes, EnumerateEpisodeItemByTitle)
 {
-  VIDEO::CVideoInfoScanner scanner;
   CFileItem item("/foo.special.mp4", false);
-  VIDEO::EPISODELIST result;
-  ASSERT_TRUE(scanner.EnumerateEpisodeItem(&item, result));
+  KODI::VIDEO::EPISODELIST result;
+  ASSERT_TRUE(CEpisodeUtils::EnumerateEpisodeItem(&item, result));
   ASSERT_EQ(result.size(), 1);
   ASSERT_EQ(result[0].strTitle, "foo");
 }

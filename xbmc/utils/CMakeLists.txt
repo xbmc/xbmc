@@ -21,6 +21,7 @@ set(SOURCES ActorProtocol.cpp
             DiscsUtils.cpp
             EndianSwap.cpp
             EmbeddedArt.cpp
+            EpisodeUtils.cpp
             ExecString.cpp
             FileExtensionProvider.cpp
             Fanart.cpp
@@ -103,6 +104,7 @@ set(HEADERS ActorProtocol.h
             Digest.h
             DiscsUtils.h
             EndianSwap.h
+            EpisodeUtils.h
             EventStream.h
             EventStreamDetail.h
             ExecString.h

@@ -11,8 +11,13 @@
 #include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "dialogs/GUIDialogBusy.h"
+#include "dialogs/GUIDialogOK.h"
+#include "dialogs/GUIDialogSimpleMenu.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "threads/IRunnable.h"
+#include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -34,6 +39,24 @@ using PlaylistMapEntry = std::pair<unsigned int, PlaylistInformation>;
 using PlaylistVector = std::vector<std::pair<unsigned int, PlaylistInformation>>;
 using PlaylistVectorEntry = std::pair<unsigned int, PlaylistInformation>;
 
+class CGetDirectoryItems : public IRunnable
+{
+public:
+  CGetDirectoryItems(std::string path, CFileItemList& items, CDirectory::CHints hints)
+    : m_path(std::move(path)),
+      m_items(&items),
+      m_hints(std::move(hints))
+  {
+  }
+  void Run() override { m_result = CDirectory::GetDirectory(m_path, *m_items, m_hints); }
+  bool m_result{false};
+
+private:
+  std::string m_path;
+  CFileItemList* m_items;
+  CDirectory::CHints m_hints;
+};
+
 CDiscDirectoryHelper::CDiscDirectoryHelper()
 {
   m_playAllPlaylists.clear();
@@ -44,16 +67,16 @@ CDiscDirectoryHelper::CDiscDirectoryHelper()
 }
 
 void CDiscDirectoryHelper::InitialisePlaylistSearch(
-    int episodeIndex, const std::vector<CVideoInfoTag>& episodesOnDisc)
+    int episodeIndex, const std::vector<KODI::VIDEO::EPISODE>& episodesOnDisc)
 {
   // Need to differentiate between specials and episodes
   m_allEpisodes = episodeIndex == -1 ? AllEpisodes::ALL : AllEpisodes::SINGLE;
-  m_isSpecial = m_allEpisodes == AllEpisodes::SINGLE && episodesOnDisc[episodeIndex].m_iSeason == 0
+  m_isSpecial = m_allEpisodes == AllEpisodes::SINGLE && episodesOnDisc[episodeIndex].iSeason == 0
                     ? IsSpecial::SPECIAL
                     : IsSpecial::EPISODE;
 
   m_numEpisodes = static_cast<unsigned int>(std::ranges::count_if(
-      episodesOnDisc, [](const CVideoInfoTag& e) { return e.m_iSeason > 0; }));
+      episodesOnDisc, [](const KODI::VIDEO::EPISODE& e) { return e.iSeason > 0; }));
   m_numSpecials = static_cast<unsigned int>(episodesOnDisc.size()) - m_numEpisodes;
 
   // If we are looking for a special then we want to find all episodes - to exclude them
@@ -65,8 +88,8 @@ void CDiscDirectoryHelper::InitialisePlaylistSearch(
   if (m_allEpisodes == AllEpisodes::SINGLE)
   {
     CLog::LogFC(LOGDEBUG, LOGBLURAY, "Looking for season {} episode {} duration {}",
-                episodesOnDisc[episodeIndex].m_iSeason, episodesOnDisc[episodeIndex].m_iEpisode,
-                episodesOnDisc[episodeIndex].GetDuration());
+                episodesOnDisc[episodeIndex].iSeason, episodesOnDisc[episodeIndex].iEpisode,
+                episodesOnDisc[episodeIndex].duration);
   }
   else
     CLog::LogFC(LOGDEBUG, LOGBLURAY, "Looking for all episodes on disc");
@@ -75,7 +98,7 @@ void CDiscDirectoryHelper::InitialisePlaylistSearch(
   for (const auto& e : episodesOnDisc)
   {
     CLog::LogFC(LOGDEBUG, LOGBLURAY, "Expected on disc - season {} episode {} duration {}",
-                e.m_iSeason, e.m_iEpisode, e.GetDuration());
+                e.iSeason, e.iEpisode, e.duration);
   }
 }
 
@@ -275,16 +298,17 @@ void CDiscDirectoryHelper::FindGroups(const PlaylistMap& playlists)
                   { return group.size() < m_numEpisodes; });
     if (m_groups.empty() && m_numSpecials == 0 && longPlaylists.size() == m_numEpisodes)
     {
-      std::ranges::transform(
-          longPlaylists, std::back_inserter(m_groups),
-          [](const auto& PlaylistInformation) -> std::vector<CandidatePlaylistInformation>
-          {
-            const auto& [playlist, playlistInformation] = PlaylistInformation;
-            return {{.playlist = playlist,
-                     .duration = playlistInformation.duration,
-                     .clips = {},
-                     .languages = {}}};
-          });
+      std::vector<CandidatePlaylistInformation> group;
+      std::ranges::transform(longPlaylists, std::back_inserter(group),
+                             [](const auto& PlaylistInformation) -> CandidatePlaylistInformation
+                             {
+                               const auto& [playlist, playlistInformation] = PlaylistInformation;
+                               return {.playlist = playlist,
+                                       .duration = playlistInformation.duration,
+                                       .clips = {},
+                                       .languages = {}};
+                             });
+      m_groups.emplace_back(std::move(group));
     }
 
     if (m_groups.empty())
@@ -467,7 +491,7 @@ bool CheckDurationsWithinTolerance(std::chrono::milliseconds episodeDuration,
 } // namespace
 
 void CDiscDirectoryHelper::UseGroupMethod(unsigned int episodeIndex,
-                                          const std::vector<CVideoInfoTag>& episodesOnDisc)
+                                          const std::vector<KODI::VIDEO::EPISODE>& episodesOnDisc)
 {
   // Method 2ai - More than one episode on disc
 
@@ -490,8 +514,7 @@ void CDiscDirectoryHelper::UseGroupMethod(unsigned int episodeIndex,
     // Now look for groups that contain same/more than numEpisodes playlists (with duplicates)
     // Check that the first numEpisodes playlists have a duration within 20% of the desired episode
     CLog::LogFC(LOGDEBUG, LOGBLURAY, "Using group method - relaxed number of playlists");
-    const std::chrono::milliseconds episodeDuration{episodesOnDisc[episodeIndex].GetDuration() *
-                                                    1000ms};
+    const std::chrono::milliseconds episodeDuration{episodesOnDisc[episodeIndex].duration * 1000ms};
     for (const auto& group : m_groups)
     {
       if (group.size() < m_numEpisodes)
@@ -515,7 +538,7 @@ void CDiscDirectoryHelper::UseGroupMethod(unsigned int episodeIndex,
 }
 
 void CDiscDirectoryHelper::UseTotalMethod(unsigned int episodeIndex,
-                                          const std::vector<CVideoInfoTag>& episodesOnDisc,
+                                          const std::vector<KODI::VIDEO::EPISODE>& episodesOnDisc,
                                           const PlaylistMap& playlists)
 {
   // Method 2aii - More than one episode on disc
@@ -531,7 +554,7 @@ void CDiscDirectoryHelper::UseTotalMethod(unsigned int episodeIndex,
       std::views::iota(0u, m_numEpisodes),
       [&](unsigned int i)
       {
-        const std::chrono::milliseconds episodeDuration{episodesOnDisc[i].GetDuration() * 1000ms};
+        const std::chrono::milliseconds episodeDuration{episodesOnDisc[i].duration * 1000ms};
         const auto playlistDuration{std::next(playlists.begin(), i)->second.duration};
         return CheckDurationsWithinTolerance(episodeDuration, playlistDuration);
       })};
@@ -565,7 +588,7 @@ int CDiscDirectoryHelper::CalculateMultiple(std::chrono::milliseconds duration,
 }
 
 void CDiscDirectoryHelper::UseGroupsWithMultiplesMethod(
-    unsigned int episodeIndex, const std::vector<CVideoInfoTag>& episodesOnDisc)
+    unsigned int episodeIndex, const std::vector<KODI::VIDEO::EPISODE>& episodesOnDisc)
 {
   // No groups of numEpisodes length so see if there could be double episode playlists
   // Assume more than one playlist
@@ -616,7 +639,7 @@ void CDiscDirectoryHelper::UseGroupsWithMultiplesMethod(
           playlistInformation.index = index;
           m_candidatePlaylists.try_emplace(playlist.playlist, playlistInformation);
           CLog::LogFC(LOGDEBUG, LOGBLURAY, "Candidate playlist {} for episode {}",
-                      playlist.playlist, episodesOnDisc[index].m_iEpisode);
+                      playlist.playlist, episodesOnDisc[index].iEpisode);
         }
         ++index;
       }
@@ -629,7 +652,7 @@ void CDiscDirectoryHelper::UseGroupsWithMultiplesMethod(
 }
 
 void CDiscDirectoryHelper::ChooseSingleBestPlaylist(
-    const std::vector<CVideoInfoTag>& episodesOnDisc)
+    const std::vector<KODI::VIDEO::EPISODE>& episodesOnDisc)
 {
   // Rebuild candidatePlaylists
   auto oldCandidatePlaylists{std::move(m_candidatePlaylists)};
@@ -644,7 +667,7 @@ void CDiscDirectoryHelper::ChooseSingleBestPlaylist(
   // Loop through each index (episode) and find the playlist with the closest duration
   for (unsigned int currentEpisodeIndex : indexes)
   {
-    std::chrono::milliseconds duration{episodesOnDisc[currentEpisodeIndex].GetDuration() * 1000};
+    std::chrono::milliseconds duration{episodesOnDisc[currentEpisodeIndex].duration * 1000};
 
     // If episode length not known, ensure the longest playlist selected
     if (duration == 0ms)
@@ -700,9 +723,10 @@ void CDiscDirectoryHelper::AddIdenticalPlaylists(const PlaylistMap& playlists)
   }
 }
 
-void CDiscDirectoryHelper::FindCandidatePlaylists(const std::vector<CVideoInfoTag>& episodesOnDisc,
-                                                  unsigned int episodeIndex,
-                                                  const PlaylistMap& playlists)
+void CDiscDirectoryHelper::FindCandidatePlaylists(
+    const std::vector<KODI::VIDEO::EPISODE>& episodesOnDisc,
+    unsigned int episodeIndex,
+    const PlaylistMap& playlists)
 {
   // At this stage we have a number of ways of trying to determine the correct playlist for an episode
   //
@@ -808,7 +832,7 @@ void CDiscDirectoryHelper::GenerateItem(const CURL& url,
                                         const std::shared_ptr<CFileItem>& item,
                                         unsigned int playlist,
                                         const PlaylistMap& playlists,
-                                        const CVideoInfoTag& tag,
+                                        const KODI::VIDEO::EPISODE& episode,
                                         IsSpecial isSpecial)
 {
   if (!playlists.contains(playlist))
@@ -834,7 +858,7 @@ void CDiscDirectoryHelper::GenerateItem(const CURL& url,
   item->SetProperty("bluray_playlist", playlist);
 
   // Get episode title
-  const std::string& title{tag.GetTitle()};
+  const std::string& title{episode.strTitle};
   if (isSpecial == IsSpecial::SPECIAL)
   {
     if (title.empty())
@@ -842,14 +866,14 @@ void CDiscDirectoryHelper::GenerateItem(const CURL& url,
     else
       /* Special xx - title */
       buf = StringUtils::Format(
-          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21348), tag.m_iEpisode,
-          tag.GetTitle());
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21348), episode.iEpisode,
+          episode.strTitle);
   }
   else
     /* Episode xx - title */
     buf =
         StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21349),
-                            tag.m_iEpisode, tag.GetTitle());
+                            episode.iEpisode, episode.strTitle);
   item->SetTitle(buf);
   item->SetLabel(buf);
 
@@ -870,11 +894,13 @@ void CDiscDirectoryHelper::EndPlaylistSearch() const
   CLog::LogFC(LOGDEBUG, LOGBLURAY, "*** Episode Search End ***");
 }
 
-void CDiscDirectoryHelper::PopulateFileItems(const CURL& url,
-                                             CFileItemList& items,
-                                             int episodeIndex,
-                                             const std::vector<CVideoInfoTag>& episodesOnDisc,
-                                             const PlaylistMap& playlists) const
+void CDiscDirectoryHelper::PopulateFileItems(
+    const CURL& url,
+    CFileItemList& items,
+    const CFileItemList& allTitles,
+    int episodeIndex,
+    const std::vector<KODI::VIDEO::EPISODE>& episodesOnDisc,
+    const PlaylistMap& playlists) const
 {
   // Now populate CFileItemList to return
   //
@@ -910,6 +936,14 @@ void CDiscDirectoryHelper::PopulateFileItems(const CURL& url,
       const auto newItem{std::make_shared<CFileItem>("", false)};
       GenerateItem(url, newItem, playlist.playlist, playlists, episodesOnDisc[playlist.index],
                    IsSpecial::EPISODE);
+
+      if (const auto detailsItem{allTitles.Get(newItem->GetPath())}; detailsItem)
+        newItem->GetVideoInfoTag()->m_streamDetails =
+            detailsItem->GetVideoInfoTag()->m_streamDetails;
+      else
+        CLog::LogFC(LOGDEBUG, LOGBLURAY, "Failed to find streamdetails for playlist {}",
+                    playlist.playlist);
+
       items.Add(newItem);
     }
   }
@@ -919,21 +953,30 @@ void CDiscDirectoryHelper::PopulateFileItems(const CURL& url,
     for (const auto& playlist : m_candidateSpecials)
     {
       const auto newItem{std::make_shared<CFileItem>("", false)};
-      CVideoInfoTag tag;
+      KODI::VIDEO::EPISODE episode;
       if (m_isSpecial == IsSpecial::SPECIAL && m_candidateSpecials.size() == 1)
-        tag = episodesOnDisc[episodeIndex];
-      GenerateItem(url, newItem, playlist, playlists, tag, IsSpecial::SPECIAL);
+        episode = episodesOnDisc[episodeIndex];
+      GenerateItem(url, newItem, playlist, playlists, episode, IsSpecial::SPECIAL);
+
+      if (const auto detailsItem{allTitles.Get(newItem->GetPath())}; detailsItem)
+        newItem->GetVideoInfoTag()->m_streamDetails =
+            detailsItem->GetVideoInfoTag()->m_streamDetails;
+      else
+        CLog::LogFC(LOGDEBUG, LOGBLURAY, "Failed to find streamdetails for playlist {}", playlist);
+
       items.Add(newItem);
     }
   }
 }
 
-bool CDiscDirectoryHelper::GetEpisodePlaylists(const CURL& url,
-                                               CFileItemList& items,
-                                               int episodeIndex,
-                                               const std::vector<CVideoInfoTag>& episodesOnDisc,
-                                               const ClipMap& clips,
-                                               const PlaylistMap& playlists)
+bool CDiscDirectoryHelper::GetEpisodePlaylists(
+    const CURL& url,
+    CFileItemList& items,
+    const CFileItemList& allTitles,
+    int episodeIndex,
+    const std::vector<KODI::VIDEO::EPISODE>& episodesOnDisc,
+    const ClipMap& clips,
+    const PlaylistMap& playlists)
 {
   InitialisePlaylistSearch(episodeIndex, episodesOnDisc);
   FindPlayAllPlaylists(clips, playlists);
@@ -941,7 +984,7 @@ bool CDiscDirectoryHelper::GetEpisodePlaylists(const CURL& url,
   FindCandidatePlaylists(episodesOnDisc, episodeIndex, playlists);
   FindSpecials(playlists);
   EndPlaylistSearch();
-  PopulateFileItems(url, items, episodeIndex, episodesOnDisc, playlists);
+  PopulateFileItems(url, items, allTitles, episodeIndex, episodesOnDisc, playlists);
 
   return !items.IsEmpty();
 }
@@ -957,6 +1000,7 @@ void CDiscDirectoryHelper::AddRootOptions(const CURL& url,
   item->SetLabel(
       CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25002) /* All titles */);
   item->SetArt("icon", "DefaultVideoPlaylists.png");
+  item->SetProperty("special", true);
   items.Add(item);
 
   if (addMenuOption == AddMenuOption::ADD_MENU)
@@ -966,6 +1010,7 @@ void CDiscDirectoryHelper::AddRootOptions(const CURL& url,
     item->SetLabel(
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25003) /* Menu */);
     item->SetArt("icon", "DefaultProgram.png");
+    item->SetProperty("special", true);
     items.Add(item);
   }
 }
@@ -988,4 +1033,159 @@ std::vector<CVideoInfoTag> CDiscDirectoryHelper::GetEpisodesOnDisc(const CURL& u
                       return i.m_iSeason < j.m_iSeason;
                     });
   return episodesOnDisc;
+}
+
+bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(CFileItem& item, MenuDecision playback)
+{
+  const bool silent{playback == MenuDecision::SILENT};
+  const std::string originalDynPath{
+      item.GetDynPath()}; // Overwritten by dialog selection. Needed for screen refresh.
+
+  const std::string directory{
+      [&item, &originalDynPath, playback]
+      {
+        // Single episode
+        if (item.GetVideoContentType() == VideoDbContentType::EPISODES)
+        {
+          const CVideoInfoTag* tag{item.GetVideoInfoTag()};
+          return URIUtils::GetBlurayEpisodePath(originalDynPath, tag->m_iSeason, tag->m_iEpisode);
+        }
+
+        // Playlists > 70% longest
+        using enum MenuDecision;
+        if (playback == SHOW_SIMPLE_MENU || playback == SILENT)
+          return URIUtils::GetBlurayRootPath(originalDynPath);
+
+        // Single main title
+        return URIUtils::GetBlurayMainTitlePath(originalDynPath);
+      }()};
+
+  // Get playlists that are already used (to avoid duplicates in file table)
+  std::vector<CVideoDatabase::PlaylistInfo> usedPlaylists{};
+  CVideoDatabase database;
+  if (!database.Open())
+  {
+    CLog::LogF(LOGERROR, "Failed to open video database");
+    return false;
+  }
+
+  // Add duration to bluray:// url as needed for episode determination in CBlurayDirectory
+  std::string directoryDuration{directory};
+  if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->GetDuration() > 0 &&
+      item.GetVideoContentType() == VideoDbContentType::EPISODES)
+  {
+    CURL dirUrl(directory);
+    dirUrl.SetOption("duration", std::to_string(item.GetVideoInfoTag()->GetDuration()));
+    directoryDuration = dirUrl.Get();
+  }
+
+  // Get items
+  CFileItemList items;
+  if (!GetItems(items, directoryDuration, silent))
+  {
+    // No main movie or episode playlist found
+    if (!silent)
+      CGUIDialogOK::ShowAndGetInput(
+          CVariant{257},
+          CVariant{item.GetVideoContentType() == VideoDbContentType::EPISODES ? 25017 : 25016});
+    return false;
+  }
+
+  // Select item
+  CFileItem selectedItem;
+  if (!silent)
+  {
+    if (playback == MenuDecision::SHOW_SIMPLE_MENU)
+    {
+      usedPlaylists = database.GetPlaylistsByPath(URIUtils::GetBlurayPlaylistPath(originalDynPath));
+
+      // If replacing existing playlist (FORCE_PLAYLIST_SELECTION), remove it from exclude list
+      // as user could choose the same playlist again
+      if (item.GetProperty("force_playlist_selection").asBoolean(false))
+      {
+        CRegExp regex{true, CRegExp::autoUtf8, R"(\/(\d{5}).mpls$)"};
+        if (regex.RegFind(originalDynPath) != -1)
+        {
+          const int playlist{std::stoi(regex.GetMatch(1))};
+          std::erase_if(usedPlaylists, [&playlist](const CVideoDatabase::PlaylistInfo& p)
+                        { return p.playlist == playlist; });
+        }
+      }
+
+      // Use simple menu dialog to select playlist
+      while (true)
+      {
+        if (!CGUIDialogSimpleMenu::ShowPlaylistSelection(item, selectedItem, items, usedPlaylists))
+          return false;
+
+        // If a non-folder item is selected, we're done
+        if (!selectedItem.IsFolder())
+          break;
+
+        // Folder selected - retrieve all titles within it
+        if (!GetItems(items, selectedItem.GetDynPath(), silent))
+          return false;
+      }
+    }
+  }
+  else
+  {
+    // Silent - used during scraping
+    // There may 2-3 items (the latter two being 'All Titles' and 'Menu' - if menus supported) then select the first item (main title/episode)
+    // Otherwise return false as we don't know which item to select and don't want to guess (as could be multiple movie versions on the disc etc..)
+    const auto playlists{
+        std::ranges::count_if(items, [](const std::shared_ptr<CFileItem>& item)
+                              { return !item->GetProperty("special").asBoolean(false); })};
+    if (playlists > 1)
+    {
+      CLog::LogF(LOGERROR, "Unable to automatically determine main playlist for {}", directory);
+      return false;
+    }
+  }
+
+  if (selectedItem.GetPath().empty())
+    selectedItem = *items[0]; // Main item
+
+  item.SetDynPath(selectedItem.GetDynPath());
+  item.GetVideoInfoTag()->m_streamDetails = selectedItem.GetVideoInfoTag()->m_streamDetails;
+  item.SetProperty("original_listitem_url", originalDynPath);
+
+  return true;
+}
+
+bool CDiscDirectoryHelper::GetItems(CFileItemList& items, const std::string& directory, bool silent)
+{
+  items.Clear();
+  if (!GetDirectoryItems(directory, items, CDirectory::CHints(), silent))
+  {
+    CLog::LogF(LOGERROR, "Failed to get play directory for {}", directory);
+    return false;
+  }
+
+  if (items.IsEmpty())
+  {
+    CLog::LogF(LOGERROR, "Failed to get any items in {}", directory);
+    return false;
+  }
+
+  return true;
+}
+
+bool CDiscDirectoryHelper::GetDirectoryItems(const std::string& path,
+                                             CFileItemList& items,
+                                             const CDirectory::CHints& hints,
+                                             bool silent)
+{
+  if (silent)
+  {
+    // Non-interactive path so skip the busy dialog
+    return CDirectory::GetDirectory(path, items, hints);
+  }
+
+  CGetDirectoryItems getItems(path, items, hints);
+  if (!CGUIDialogBusy::Wait(&getItems, 100, true))
+  {
+    return false;
+  }
+  return getItems.m_result;
 }
