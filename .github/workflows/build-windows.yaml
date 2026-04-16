@@ -251,6 +251,18 @@ jobs:
           for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) do call "%%i\VC\Auxiliary\Build\vcvars32.bat"
           call tools\buildsteps\windows\bootstrap-addons.bat
 
+      - name: Disable visualization.milkdrop2 on Windows
+        shell: pwsh
+        run: |
+          # visualization.milkdrop2 (Leia branch) uses __floor/__ceil as function pointers.
+          # MSVC 14.44+ treats these as pure intrinsics (error C7552), so the addon cannot
+          # be built on Windows. Writing platforms.txt with "!windows" causes CMake to skip
+          # this addon entirely during configure.
+          $dir = "$env:GITHUB_WORKSPACE\cmake\addons\addons\visualization.milkdrop2"
+          New-Item -ItemType Directory -Force -Path $dir | Out-Null
+          Set-Content -Path "$dir\platforms.txt" -Value "!windows"
+          Write-Host "visualization.milkdrop2 marked as unsupported on windows — skipping"
+
       - name: Configure addons and download sources
         shell: cmd
         run: |
