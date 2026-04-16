@@ -267,9 +267,11 @@ jobs:
                 -DADDON_DEPENDS_PATH=%GITHUB_WORKSPACE%\cmake\addons\output ^
                 -DPACKAGE_ZIP=ON
 
-      - name: Patch visualization addons for MSVC intrinsics
+      - name: Patch addons for MSVC compatibility
         shell: pwsh
-        run: tools\buildsteps\windows\patch-visualization-addons.ps1
+        run: |
+          & "$env:GITHUB_WORKSPACE\tools\buildsteps\windows\patch-visualization-addons.ps1" `
+              -BuildDir "$env:GITHUB_WORKSPACE\cmake\addons\build"
 
       - name: Build addons
         id: build-addons
