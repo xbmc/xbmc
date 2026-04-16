@@ -95,7 +95,7 @@ static void LoadTexture(GLenum target,
     }
 
     pixelData = pixelVector;
-    stride = width;
+    stride = bytesPerLine;
   }
   /** OpenGL ES does not support strided texture input. Make a copy without stride **/
   else if (stride != bytesPerLine)
@@ -120,7 +120,19 @@ static void LoadTexture(GLenum target,
   glTexImage2D(target, 0, internalFormat, width2, height2, 0, externalFormat, GL_UNSIGNED_BYTE,
                NULL);
 
+  GLenum glErr = glGetError();
+  if (glErr != GL_NO_ERROR)
+    CLog::Log(LOGERROR,
+              "OverlayGLES: glTexImage2D failed with 0x{:04x} ({}x{} fmt=0x{:04x}/0x{:04x})",
+              glErr, width2, height2, internalFormat, externalFormat);
+
   glTexSubImage2D(target, 0, 0, 0, width, height, externalFormat, GL_UNSIGNED_BYTE, pixelData);
+
+  glErr = glGetError();
+  if (glErr != GL_NO_ERROR)
+    CLog::Log(LOGERROR,
+              "OverlayGLES: glTexSubImage2D failed with 0x{:04x} ({}x{} stride={})", glErr,
+              width, height, stride);
 
   if (height < height2)
     glTexSubImage2D(target, 0, 0, height, width, 1, externalFormat, GL_UNSIGNED_BYTE,
@@ -358,7 +370,6 @@ void COverlayGlyphGLES::Render(SRenderState& state)
   matrix.MultMatrixf(glMatrixModview.Get());
   glUniformMatrix4fv(matrixUniformLoc, 1, GL_FALSE, matrix);
 
-  // stack object until VBOs will be used
   std::vector<VERTEX> vecVertices(6 * m_vertex.size() / 4);
   VERTEX* vertices = vecVertices.data();
 
@@ -373,14 +384,18 @@ void COverlayGlyphGLES::Render(SRenderState& state)
     *vertices++ = m_vertex[i + 2];
   }
 
-  vertices = vecVertices.data();
+  GLuint vertexVBO;
+  glGenBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(VERTEX) * vecVertices.size(), vecVertices.data(),
+               GL_STATIC_DRAW);
 
   glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(VERTEX),
-                        (char*)vertices + offsetof(VERTEX, x));
+                        reinterpret_cast<const GLvoid*>(offsetof(VERTEX, x)));
   glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VERTEX),
-                        (char*)vertices + offsetof(VERTEX, r));
+                        reinterpret_cast<const GLvoid*>(offsetof(VERTEX, r)));
   glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(VERTEX),
-                        (char*)vertices + offsetof(VERTEX, u));
+                        reinterpret_cast<const GLvoid*>(offsetof(VERTEX, u)));
 
   glEnableVertexAttribArray(posLoc);
   glEnableVertexAttribArray(colLoc);
@@ -393,6 +408,9 @@ void COverlayGlyphGLES::Render(SRenderState& state)
   glDisableVertexAttribArray(posLoc);
   glDisableVertexAttribArray(colLoc);
   glDisableVertexAttribArray(tex0Loc);
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &vertexVBO);
 
   renderSystem->DisableGUIShader();
 
