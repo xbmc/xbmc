@@ -2,7 +2,7 @@
 
 ## 1. Executive Summary
 
-This guide is the master reference for stabilizing Windows addon builds in `OrganizerRo/xbmc`.
+This guide is the master reference for stabilizing Windows addon builds in this repository.
 
 ### Three Critical Issues
 1. **Workflow path + step structure errors** in `build-windows.yaml` addon stages.
@@ -72,6 +72,8 @@ This guide is the master reference for stabilizing Windows addon builds in `Orga
     call tools\buildsteps\windows\make-addons.bat
 ```
 
+> **Note:** `%%i` is correct because this command runs inside a `cmd` batch context in GitHub Actions. Interactive `cmd` usage would use `%i`.
+
 ### Change-by-Change Explanation
 
 | Line | Change | Why |
@@ -83,7 +85,7 @@ This guide is the master reference for stabilizing Windows addon builds in `Orga
 
 ### `vcvars32.bat` Loading Rationale
 - Addon builds use MSVC/NMake generator paths and require full VS environment setup.
-- Environment from prior steps is not guaranteed for later workflow steps.
+- GitHub Actions steps do not reliably carry Visual Studio shell setup into later `cmd` steps, so each addon step should initialize its own MSVC toolchain context.
 - Calling `vcvars32.bat` in each addon-related `cmd` step makes toolchain availability deterministic.
 
 ### Path Correction Rationale (`win32` → `windows`)
@@ -95,6 +97,8 @@ This guide is the master reference for stabilizing Windows addon builds in `Orga
 ## 3. C Code Patch Details
 
 > These sources are downloaded during addon configure/build and patched in build context.
+>
+> Line references below are exact for the targeted Leia failing snapshot (issue context dated 2026-04-17). If upstream source shifts, locate patch points by matching the shown code patterns.
 
 ### Affected Addon Source Files
 - `visualization.milkdrop/lib/vis_milkdrop/ns-eel2/nseel-compiler.c`
@@ -120,17 +124,26 @@ double __ceil(double x);
 
 #### Before
 ```c
+/* registration block A */
 func->func_ptr = (void*)__floor;
+
+/* registration block B */
 func->func_ptr = (void*)__ceil;
 ```
 
 #### After
 ```c
+/* floor registration location */
 #if !defined(_MSC_VER)
 func->func_ptr = (void*)__floor;
-func->func_ptr = (void*)__ceil;
 #else
 func->func_ptr = (void*)floor;
+#endif
+
+/* ceil registration location */
+#if !defined(_MSC_VER)
+func->func_ptr = (void*)__ceil;
+#else
 func->func_ptr = (void*)ceil;
 #endif
 ```
