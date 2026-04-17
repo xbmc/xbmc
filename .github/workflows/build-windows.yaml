@@ -287,6 +287,14 @@ jobs:
           & "$env:GITHUB_WORKSPACE\tools\buildsteps\windows\patch-visualization-addons.ps1" `
               -BuildDir "$env:GITHUB_WORKSPACE\cmake\addons\build"
 
+      # Pass /D_CRT_DECLARE_NONSTDC_NAMES=1 via the CL env var so cl.exe picks it
+      # up at every invocation regardless of cmake ExternalProject nesting depth.
+      # This ensures PTRDIFF_MAX is declared in MSVC 14.44+ headers (fixes C2065
+      # in libde265/xlocnum for imagedecoder.heif) without modifying any source.
+      - name: Set CL env for MSVC addon build
+        shell: cmd
+        run: echo CL=/D_CRT_DECLARE_NONSTDC_NAMES=1>> %GITHUB_ENV%
+
       - name: Build addons
         id: build-addons
         shell: cmd
