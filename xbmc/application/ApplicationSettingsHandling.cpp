@@ -8,6 +8,7 @@
 
 #include "ApplicationSettingsHandling.h"
 
+#include "Autorun.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonType.h"
@@ -24,6 +25,7 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
+#include "utils/XBMCTinyXML.h"
 #include "windowing/WinSystem.h"
 
 #if defined(TARGET_DARWIN_OSX)
@@ -74,7 +76,8 @@ void CApplicationSettingsHandling::RegisterSettings()
                                        CSettings::SETTING_SOURCE_VIDEOS,
                                        CSettings::SETTING_SOURCE_MUSIC,
                                        CSettings::SETTING_SOURCE_PICTURES,
-                                       CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN});
+                                       CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN,
+                                       CSettings::SETTING_DVDS_AUTOACTION});
 
   auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
@@ -183,6 +186,27 @@ bool CApplicationSettingsHandling::OnSettingUpdate(const std::shared_ptr<CSettin
 {
   if (!setting)
     return false;
+
+#ifdef HAS_OPTICAL_DRIVE
+  if (setting->GetId() == CSettings::SETTING_DVDS_AUTOACTION && oldSettingNode)
+  {
+    const auto intSetting{std::static_pointer_cast<CSettingInt>(setting)};
+    if (oldSettingNode->FirstChild())
+    {
+      const std::string oldValue = oldSettingNode->FirstChild()->ValueStr();
+      if (oldValue == "true")
+        return intSetting->SetValue(static_cast<int>(AutoDVDAction::PLAY));
+      else if (oldValue == "false")
+        return intSetting->SetValue(static_cast<int>(AutoDVDAction::NONE));
+      else
+      {
+        CLog::LogF(LOGWARNING, "Unexpected old value '{}' for dvds.autorun setting, using default",
+                   oldValue);
+        return intSetting->SetValue(static_cast<int>(AutoDVDAction::NONE));
+      }
+    }
+  }
+#endif
 
 #if defined(TARGET_DARWIN_OSX)
   if (setting->GetId() == CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE)

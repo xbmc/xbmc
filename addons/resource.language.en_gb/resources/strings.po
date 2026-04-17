@@ -4199,8 +4199,11 @@ msgctxt "#1023"
 msgid "Browse for new share"
 msgstr ""
 
-#: addons/skin.estuary/xml/DialogNetworkSetup.xml
+#. Displays a dialog to select movie title(s) for text matching in a smart rule
 #: addons/skin.estuary/xml/SmartPlaylistRule.xml
+#.
+#. Action on DVD/Bluray physical disc insertion - show a browse dialog
+#: system/settings/settings.xml
 msgctxt "#1024"
 msgid "Browse"
 msgstr ""
@@ -6463,7 +6466,10 @@ msgctxt "#13018"
 msgid "Allow idle shutdown"
 msgstr ""
 
-#empty string with id 13019
+#: xbmc/storage/MediaManager.cpp
+msgctxt "#13019"
+msgid "Mounted optical disc"
+msgstr ""
 
 #: unknown
 msgctxt "#13020"
@@ -8331,7 +8337,10 @@ msgctxt "#14084"
 msgid "Queue songs on selection"
 msgstr ""
 
-#empty string with id 14085
+#: system/settings/settings.xml
+msgctxt "#14085"
+msgid "Video disc insert action"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14086"
@@ -8344,10 +8353,7 @@ msgctxt "#14087"
 msgid "Discs"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#14088"
-msgid "Play DVDs automatically"
-msgstr ""
+#empty string with id 14088
 
 #. Subtitle font selection setting
 #: system/settings/settings.xml
@@ -8393,10 +8399,7 @@ msgctxt "#14097"
 msgid "Audio CD insert action"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#14098"
-msgid "Play"
-msgstr ""
+#empty string with id 14098
 
 #: system/settings/settings.xml
 msgctxt "#14099"
@@ -9281,7 +9284,6 @@ msgctxt "#16017"
 msgid "Enter search string"
 msgstr ""
 
-#: system/settings/settings.xml
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#16018"
 msgid "None"
@@ -20277,11 +20279,7 @@ msgctxt "#36193"
 msgid "This category contains the settings for how DVD's, Blu-ray, & CD's are handled."
 msgstr ""
 
-#. Description of setting with label #14088 "Play DVDs automatically"
-#: system/settings/settings.xml
-msgctxt "#36194"
-msgid "Autorun DVD video when inserted in drive."
-msgstr ""
+#empty strings from id 36194
 
 #. Description of setting with label #21372 "Forced DVD player region"
 #: system/settings/settings.xml
@@ -20755,11 +20753,7 @@ msgctxt "#36282"
 msgid "This category contains the settings for how CDs are handled."
 msgstr ""
 
-#. Description of setting with label #14097 "Audio CD Insert Action"
-#: system/settings/settings.xml
-msgctxt "#36283"
-msgid "Autorun CDs when inserted in drive."
-msgstr ""
+#empty strings from id 36283
 
 #. Description of setting with label #227 "Load audio CD information from online service"
 #: system/settings/settings.xml
@@ -21537,7 +21531,17 @@ msgctxt "#36415"
 msgid "No info available yet."
 msgstr ""
 
-#empty strings from id 36416 to 36417
+#. Description of setting with label #14085 "Video disc insert action"
+#: system/settings/settings.xml
+msgctxt "#36416"
+msgid "Action to take when a video disc is inserted."
+msgstr ""
+
+#. Description of setting with label #14097 "Audio CD Insert Action"
+#: system/settings/settings.xml
+msgctxt "#36417"
+msgid "Action to take when an audio CD is inserted."
+msgstr ""
 
 #. Description of setting with label #295 "Low latency mode"
 #: system/settings/settings.xml
