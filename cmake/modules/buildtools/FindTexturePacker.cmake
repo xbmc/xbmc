@@ -3,8 +3,10 @@
 # -----------------
 # Finds the TexturePacker
 #
-# If WITH_TEXTUREPACKER is defined and points to a directory,
-# this path will be used to search for the Texturepacker binary
+# If WITH_TEXTUREPACKER is defined, it will be used as the location of an
+# existing TexturePacker binary to execute during the build. Useful when
+# cross-compiling. The file must exist and be executable at configure time. A
+# newly-built binary is installed alongside Kodi regardless.
 #
 #
 # This will define the following (imported) targets::
@@ -34,10 +36,13 @@ if(NOT TARGET TexturePacker::TexturePacker::Executable)
   else()
     if(WITH_TEXTUREPACKER)
       get_filename_component(_tppath ${WITH_TEXTUREPACKER} ABSOLUTE)
-      get_filename_component(_tppath ${_tppath} DIRECTORY)
-      find_program(TEXTUREPACKER_EXECUTABLE NAMES "${APP_NAME_LC}-TexturePacker" TexturePacker
-                                          HINTS ${_tppath})
-
+      if(NOT IS_DIRECTORY ${_tppath})
+        get_filename_component(_tppath ${_tppath} DIRECTORY)
+      endif()
+      find_program(TEXTUREPACKER_EXECUTABLE
+                   NAMES "${APP_NAME_LC}-TexturePacker" TexturePacker
+                   HINTS ${_tppath}
+                   NO_DEFAULT_PATH)
       # Use external TexturePacker executable if found
       if(TEXTUREPACKER_EXECUTABLE)
         add_executable(TexturePacker::TexturePacker::Executable IMPORTED GLOBAL)
@@ -45,10 +50,7 @@ if(NOT TARGET TexturePacker::TexturePacker::Executable)
                                           IMPORTED_LOCATION "${TEXTUREPACKER_EXECUTABLE}")
         message(STATUS "Found external TexturePacker: ${TEXTUREPACKER_EXECUTABLE}")
       else()
-        # Warn about external TexturePacker supplied but not fail fatally
-        # because we might have internal TexturePacker executable built
-        # and unset TEXTUREPACKER_EXECUTABLE variable
-        message(WARNING "Could not find '${APP_NAME_LC}-TexturePacker' or 'TexturePacker' executable in ${_tppath} supplied by -DWITH_TEXTUREPACKER. Make sure the executable file name matches these names!")
+        message(FATAL_ERROR "Could not find '${APP_NAME_LC}-TexturePacker' or 'TexturePacker' executable in ${_tppath} supplied by -DWITH_TEXTUREPACKER. Make sure the executable file name matches these names!")
       endif()
     endif()
 

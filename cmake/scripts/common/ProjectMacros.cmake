@@ -31,8 +31,8 @@ function(pack_xbt input output)
 
   file(APPEND ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/GeneratedPackSkins.cmake
 "message(STATUS \"Packing ${file} for ${skin}\")
-execute_process(COMMAND \"${CMAKE_COMMAND}\" -E make_directory ${dir})
-execute_process(COMMAND \$\{TEXTUREPACKER_EXECUTABLE\} -input ${input} -output ${output} -dupecheck ${verbose_flag})\n")
+execute_process(COMMAND \"${CMAKE_COMMAND}\" -E make_directory ${dir} COMMAND_ERROR_IS_FATAL ANY)
+execute_process(COMMAND \$\{TEXTUREPACKER_EXECUTABLE\} -input ${input} -output ${output} -dupecheck ${verbose_flag} COMMAND_ERROR_IS_FATAL ANY)\n")
 
     list(APPEND XBT_FILES ${output})
     set(XBT_FILES ${XBT_FILES} PARENT_SCOPE)
