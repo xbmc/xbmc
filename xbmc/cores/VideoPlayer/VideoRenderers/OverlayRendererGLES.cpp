@@ -123,16 +123,15 @@ static void LoadTexture(GLenum target,
   GLenum glErr = glGetError();
   if (glErr != GL_NO_ERROR)
     CLog::Log(LOGERROR,
-              "OverlayGLES: glTexImage2D failed with 0x{:04x} ({}x{} fmt=0x{:04x}/0x{:04x})",
-              glErr, width2, height2, internalFormat, externalFormat);
+              "OverlayGLES: glTexImage2D failed with 0x{:04x} ({}x{} fmt=0x{:04x}/0x{:04x})", glErr,
+              width2, height2, internalFormat, externalFormat);
 
   glTexSubImage2D(target, 0, 0, 0, width, height, externalFormat, GL_UNSIGNED_BYTE, pixelData);
 
   glErr = glGetError();
   if (glErr != GL_NO_ERROR)
-    CLog::Log(LOGERROR,
-              "OverlayGLES: glTexSubImage2D failed with 0x{:04x} ({}x{} stride={})", glErr,
-              width, height, stride);
+    CLog::Log(LOGERROR, "OverlayGLES: glTexSubImage2D failed with 0x{:04x} ({}x{} stride={})",
+              glErr, width, height, stride);
 
   if (height < height2)
     glTexSubImage2D(target, 0, 0, height, width, 1, externalFormat, GL_UNSIGNED_BYTE,
