@@ -291,9 +291,12 @@ jobs:
       # up at every invocation regardless of cmake ExternalProject nesting depth.
       # This ensures PTRDIFF_MAX is declared in MSVC 14.44+ headers (fixes C2065
       # in libde265/xlocnum for imagedecoder.heif) without modifying any source.
+      # NOTE: Must use pwsh (not cmd) here. In cmd.exe "1>>" is the stdout-append
+      # redirect operator, which would silently consume the trailing "1" and write
+      # "CL=/D_CRT_DECLARE_NONSTDC_NAMES=" (empty value) to GITHUB_ENV instead.
       - name: Set CL env for MSVC addon build
-        shell: cmd
-        run: echo CL=/D_CRT_DECLARE_NONSTDC_NAMES=1>> %GITHUB_ENV%
+        shell: pwsh
+        run: 'CL=/D_CRT_DECLARE_NONSTDC_NAMES=1' | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - name: Build addons
         id: build-addons
