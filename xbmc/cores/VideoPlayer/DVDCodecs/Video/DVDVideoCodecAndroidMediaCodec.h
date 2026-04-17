@@ -37,17 +37,7 @@ class CDVDMediaCodecOnFrameAvailable;
 class CJNIByteBuffer;
 class CBitstreamConverter;
 
-struct DemuxCryptoInfo;
 struct mpeg2_sequence;
-
-
-typedef struct amc_demux
-{
-  uint8_t* pData;
-  int iSize;
-  double dts;
-  double pts;
-} amc_demux;
 
 class CMediaCodecVideoBufferPool;
 
@@ -164,8 +154,6 @@ protected:
   CJNIMediaCrypto* m_crypto = nullptr;
   std::shared_ptr<CJNISurfaceTexture> m_surfaceTexture;
   std::shared_ptr<CDVDMediaCodecOnFrameAvailable> m_frameAvailable;
-
-  amc_demux m_demux_pkt;
   std::shared_ptr<CMediaCodecVideoBufferPool> m_videoBufferPool;
 
   uint32_t m_OutputDuration = 0, m_fpsDuration = 0;
@@ -181,8 +169,6 @@ protected:
   int m_indexInputBuffer;
   bool m_render_surface;
   mpeg2_sequence* m_mpeg2_sequence = nullptr;
-  int m_src_offset[4];
-  int m_src_stride[4];
   bool m_useDTSforPTS = false;
 
   // CJNISurfaceHolderCallback interface
