@@ -296,7 +296,8 @@ jobs:
       # "CL=/D_CRT_DECLARE_NONSTDC_NAMES=" (empty value) to GITHUB_ENV instead.
       - name: Set CL env for MSVC addon build
         shell: pwsh
-        run: 'CL=/D_CRT_DECLARE_NONSTDC_NAMES=1' | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        run: |
+          'CL=/D_CRT_DECLARE_NONSTDC_NAMES=1' | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - name: Build addons
         id: build-addons
