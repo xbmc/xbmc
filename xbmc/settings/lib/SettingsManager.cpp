@@ -1111,16 +1111,19 @@ bool CSettingsManager::LoadSetting(const TiXmlNode* node, const SettingPtr& sett
   const char* isDefaultAttribute = settingElement->Attribute(SETTING_XML_ELM_DEFAULT);
   const bool isDefault =
       isDefaultAttribute && StringUtils::EqualsNoCase(isDefaultAttribute, "true");
+  const std::set<CSettingUpdate>& updates = setting->GetUpdates();
 
-  if (!setting->FromString(settingElement->FirstChild() ? settingElement->FirstChild()->ValueStr()
-                                                        : StringUtils::Empty))
+  const bool failedRead{!setting->FromString(settingElement->FirstChild()
+                                                 ? settingElement->FirstChild()->ValueStr()
+                                                 : StringUtils::Empty)};
+  if (failedRead)
   {
     m_logger->warn("unable to read value of setting \"{}\"", settingId);
-    return false;
+    if (updates.empty())
+      return false; // No updates to process
   }
 
   // check if we need to perform any update logic for the setting
-  const std::set<CSettingUpdate>& updates = setting->GetUpdates();
   for (const auto& update : updates)
     updated |= UpdateSetting(node, setting, update);
 
@@ -1129,7 +1132,7 @@ bool CSettingsManager::LoadSetting(const TiXmlNode* node, const SettingPtr& sett
   if (!updated && isDefault)
     setting->Reset();
 
-  return true;
+  return !failedRead || updated;
 }
 
 bool CSettingsManager::UpdateSetting(const TiXmlNode* node,
@@ -1140,37 +1143,68 @@ bool CSettingsManager::UpdateSetting(const TiXmlNode* node,
     return false;
 
   bool updated = false;
-  const char *oldSetting = nullptr;
-  const TiXmlNode *oldSettingNode = nullptr;
+  const char* oldSetting = nullptr;
+  const TiXmlNode* oldSettingNode = nullptr;
+
+  // For rename updates, look up the old setting node
+  // For change updates, look up the current one
+  std::string lookupId;
   if (update.GetType() == SettingUpdateType::Rename)
   {
     if (update.GetValue().empty())
       return false;
-
+    lookupId = update.GetValue();
     oldSetting = update.GetValue().c_str();
+  }
+  else if (update.GetType() == SettingUpdateType::Change)
+  {
+    lookupId = setting->GetId();
+  }
+
+  if (!lookupId.empty())
+  {
     std::string categoryTag;
     std::string settingTag;
-    if (!ParseSettingIdentifier(oldSetting, categoryTag, settingTag))
+    if (!ParseSettingIdentifier(lookupId, categoryTag, settingTag))
       return false;
 
+    // Try v1 format: <category><settingtag>value</settingtag></category>
     const TiXmlNode* categoryNode = node;
     if (!categoryTag.empty())
-    {
       categoryNode = node->FirstChild(categoryTag);
-      if (!categoryNode)
-        return false;
+
+    if (categoryNode)
+      oldSettingNode = categoryNode->FirstChild(settingTag);
+
+    // Try v2+ format: <setting id="lookupId">value</setting>
+    if (!oldSettingNode)
+    {
+      const TiXmlElement* settingElement = node->FirstChildElement(SETTING_XML_ELM_SETTING);
+      while (settingElement)
+      {
+        const char* id = settingElement->Attribute(SETTING_XML_ATTR_ID);
+        if (id && lookupId == id)
+        {
+          oldSettingNode = settingElement;
+          break;
+        }
+        settingElement = settingElement->NextSiblingElement(SETTING_XML_ELM_SETTING);
+      }
     }
 
-    oldSettingNode = categoryNode->FirstChild(settingTag);
     if (!oldSettingNode)
       return false;
 
-    if (setting->FromString(oldSettingNode->FirstChild() ? oldSettingNode->FirstChild()->ValueStr()
-                                                         : StringUtils::Empty))
-      updated = true;
-    else
-      m_logger->warn("unable to update \"{}\" through automatically renaming from \"{}\"",
-                     setting->GetId(), oldSetting);
+    if (update.GetType() == SettingUpdateType::Rename)
+    {
+      if (setting->FromString(oldSettingNode->FirstChild()
+                                  ? oldSettingNode->FirstChild()->ValueStr()
+                                  : StringUtils::Empty))
+        updated = true;
+      else
+        m_logger->warn("unable to update \"{}\" through automatically renaming from \"{}\"",
+                       setting->GetId(), oldSetting);
+    }
   }
 
   updated |= OnSettingUpdate(setting, oldSetting, oldSettingNode);
