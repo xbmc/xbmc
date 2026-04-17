@@ -305,6 +305,8 @@ jobs:
           set "ERRORFILE=%GITHUB_WORKSPACE%\cmake\addons\make-addons.error"
           del /f "%ADDONS_SUCCESS_FILE%" 2>nul
           del /f "%ADDONS_FAILURE_FILE%" 2>nul
+          set "ADDON_LOGS_DIR=%GITHUB_WORKSPACE%\cmake\addons\logs"
+          if not exist "%ADDON_LOGS_DIR%" mkdir "%ADDON_LOGS_DIR%"
           cd /d "%GITHUB_WORKSPACE%\cmake\addons\build"
           setlocal enabledelayedexpansion
           set "ADDONS_TO_MAKE="
@@ -316,7 +318,8 @@ jobs:
           )
           for %%a in (!ADDONS_TO_MAKE!) do (
             echo Building %%a...
-            cmake --build . --target %%a
+            set "ADDON_LOG=!ADDON_LOGS_DIR!\%%a.log"
+            cmake --build . --target %%a > "!ADDON_LOG!" 2>&1
             if errorlevel 1 (
               echo %%a >> "%ERRORFILE%"
               echo %%a >> "%ADDONS_FAILURE_FILE%"
@@ -333,6 +336,7 @@ jobs:
         run: |
           $errorFile = "$env:GITHUB_WORKSPACE\cmake\addons\make-addons.error"
           $failureFile = "$env:GITHUB_WORKSPACE\cmake\addons\.failure"
+          $logsDir = "$env:GITHUB_WORKSPACE\cmake\addons\logs"
           if (Test-Path $errorFile) {
             Write-Host "::error::Addon build failed — see details below"
             Write-Host "========== make-addons.error =========="
@@ -343,6 +347,17 @@ jobs:
             Write-Host "========== Failed addons =========="
             Get-Content $failureFile
             Write-Host "==================================="
+            foreach ($addon in (Get-Content $failureFile)) {
+              $addon = $addon.Trim()
+              if (-not $addon) { continue }
+              $log = Join-Path $logsDir "$addon.log"
+              if (Test-Path $log) {
+                Write-Host ""
+                Write-Host "========== Build log: $addon =========="
+                Get-Content $log
+                Write-Host "======================================="
+              }
+            }
           }
           if (-not (Test-Path $errorFile) -and -not (Test-Path $failureFile)) {
             Write-Host "::warning::Build addons step failed but no error/failure files were generated"
@@ -357,6 +372,7 @@ jobs:
             cmake/addons/make-addons.error
             cmake/addons/.failure
             cmake/addons/.success
+            cmake/addons/logs/
           if-no-files-found: warn
 
       # Only collect when the addon step succeeded — avoids packaging a partial tree when addons fail.
