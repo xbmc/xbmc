@@ -147,6 +147,8 @@ CLinuxRendererGL::CLinuxRendererGL()
     m_intermediateType = GL_UNSIGNED_INT_2_10_10_10_REV;
     m_intermediateGammaCorrection = true;
   }
+  CLog::Log(LOGDEBUG, "GL: HQ scaler precision={}, intermediate format={:#x}",
+            intermediatePrecision, static_cast<unsigned>(m_intermediateFormat));
 }
 
 CLinuxRendererGL::~CLinuxRendererGL()
@@ -240,6 +242,7 @@ bool CLinuxRendererGL::Configure(const VideoPicture &picture, float fps, unsigne
 
   m_bConfigured = true;
   m_scalingMethodGui = (ESCALINGMETHOD)-1;
+  m_scalingMethod = m_videoSettings.m_ScalingMethod;
 
   // Ensure that textures are recreated and rendering starts only after the 1st
   // frame is loaded after every call to Configure().
@@ -484,9 +487,8 @@ void CLinuxRendererGL::Update()
 {
   if (!m_bConfigured)
     return;
-  ManageRenderArea();
-  m_scalingMethodGui = (ESCALINGMETHOD)-1;
 
+  ManageRenderArea();
   ValidateRenderTarget();
 }
 
@@ -754,7 +756,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
   {
     m_nonLinStretchGui = CDisplaySettings::GetInstance().IsNonLinearStretched();
     m_pixelRatio = CDisplaySettings::GetInstance().GetPixelRatio();
-    m_reloadShaders = 1;
+    m_reloadShaders = true;
     nonLinStretchChanged = true;
 
     if (m_nonLinStretchGui && (m_pixelRatio < 0.999f || m_pixelRatio > 1.001f) && Supports(RENDERFEATURE_NONLINSTRETCH))
@@ -772,18 +774,26 @@ void CLinuxRendererGL::UpdateVideoFilter()
   CRect srcRect, dstRect, viewRect;
   GetVideoRect(srcRect, dstRect, viewRect);
 
+  // TODO: UpdateVideoFilter may be called with a 0x0 viewport before the
+  // display resolution is established (the WHITELIST/resolution ADJUST happens
+  // ~500ms after the first RenderUpdate). The root-cause fix is in PR #28161
+  // (viewport-0x0-fix). Remove this bail-out once #28161 lands on master.
+  if (viewRect.Height() == 0 || viewRect.Width() == 0)
+    return;
+
   if (m_scalingMethodGui == m_videoSettings.m_ScalingMethod &&
       viewRect.Height() == m_viewRect.Height() &&
       viewRect.Width() == m_viewRect.Width() &&
       !nonLinStretchChanged && !cmsChanged)
     return;
-  else
-    m_reloadShaders = 1;
 
-  // recompile YUV shader when non-linear stretch is turned on/off
-  // or when it's on and the scaling method changed
-  if (m_nonLinStretch || nonLinStretchChanged)
-    m_reloadShaders = 1;
+  // Reload shader when the scaling method, non-linear stretch state, or CMS
+  // configuration changes. Also reload when non-linear stretch is currently
+  // active, because its shader bakes in viewport-dependent stretch parameters
+  // and we may be here due to a viewport change.
+  if (m_scalingMethod != m_videoSettings.m_ScalingMethod || nonLinStretchChanged || cmsChanged ||
+      m_nonLinStretch)
+    m_reloadShaders = true;
 
   if (cmsChanged)
   {
@@ -897,6 +907,8 @@ void CLinuxRendererGL::UpdateVideoFilter()
         break;
       }
 
+      // TODO: consider falling back to GL_RGBA8 if requested format fails,
+      // as GLES does for GL_RGB10_A2 / GL_RGBA16F on GLES 2.0 contexts.
       if (!m_fbo.fbo.CreateAndBindToTexture(GL_TEXTURE_2D, m_sourceWidth, m_sourceHeight,
                                             m_intermediateFormat, m_intermediateType, GL_NEAREST))
       {
@@ -920,6 +932,9 @@ void CLinuxRendererGL::UpdateVideoFilter()
       break;
     }
 
+    CLog::Log(LOGINFO, "GL: FBO intermediate format {:#x}",
+              static_cast<unsigned>(m_intermediateFormat));
+    CLog::Log(LOGINFO, "GL: Selecting multi pass rendering");
     m_renderQuality = RQ_MULTIPASS;
     return;
 
@@ -945,7 +960,8 @@ void CLinuxRendererGL::UpdateVideoFilter()
   m_pVideoFilterShader = new DefaultFilterShader();
   if (!m_pVideoFilterShader->CompileAndLink())
   {
-    CLog::Log(LOGERROR, "CLinuxRendererGL::UpdateVideoFilter: Error compiling and linking defauilt video filter shader");
+    CLog::Log(LOGERROR, "CLinuxRendererGL::UpdateVideoFilter: Error compiling and linking default "
+                        "video filter shader");
   }
 
   SetTextureFilter(GL_LINEAR);
@@ -954,7 +970,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
 
 void CLinuxRendererGL::LoadShaders(int field)
 {
-  m_reloadShaders = 0;
+  m_reloadShaders = false;
 
   if (!LoadShadersHook())
   {
@@ -1120,7 +1136,7 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
 
   if (m_reloadShaders)
   {
-    m_reloadShaders = 0;
+    m_reloadShaders = false;
     LoadShaders(field);
   }
 
@@ -1275,7 +1291,7 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
 
   if (m_reloadShaders)
   {
-    m_reloadShaders = 0;
+    m_reloadShaders = false;
     LoadShaders(m_currentField);
   }
 

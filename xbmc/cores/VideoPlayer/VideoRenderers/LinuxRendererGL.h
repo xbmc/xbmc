@@ -163,7 +163,7 @@ protected:
 
   // Raw data used by renderer
   int m_currentField = FIELD_FULL;
-  int m_reloadShaders = 0;
+  bool m_reloadShaders = false;
 
   struct CYuvPlane
   {
