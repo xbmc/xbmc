@@ -287,26 +287,12 @@ jobs:
           & "$env:GITHUB_WORKSPACE\tools\buildsteps\windows\patch-visualization-addons.ps1" `
               -BuildDir "$env:GITHUB_WORKSPACE\cmake\addons\build"
 
-      # Pass /D_CRT_DECLARE_NONSTDC_NAMES=1 via the CL env var so cl.exe picks it
-      # up at every invocation regardless of cmake ExternalProject nesting depth.
-      # This ensures PTRDIFF_MAX is declared in MSVC 14.44+ headers (fixes C2065
-      # in libde265/xlocnum for imagedecoder.heif) without modifying any source.
-      # NOTE: Must use pwsh (not cmd) here. In cmd.exe "1>>" is the stdout-append
-      # redirect operator, which would silently consume the trailing "1" and write
-      # "CL=/D_CRT_DECLARE_NONSTDC_NAMES=" (empty value) to GITHUB_ENV instead.
-      - name: Set CL env for MSVC addon build
-        shell: pwsh
-        run: |
-          'CL=/D_CRT_DECLARE_NONSTDC_NAMES=1' | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-
       - name: Build addons
         id: build-addons
         shell: cmd
         run: |
           for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) do call "%%i\VC\Auxiliary\Build\vcvars32.bat"
-          set "CFLAGS=/D_CRT_NONSTDC_NO_DEPRECATE /D_CRT_DECLARE_NONSTDC_NAMES=1 %CFLAGS%"
-          set "CXXFLAGS=/D_CRT_NONSTDC_NO_DEPRECATE /D_CRT_DECLARE_NONSTDC_NAMES=1 %CXXFLAGS%"
-          set "CL=/D_CRT_NONSTDC_NO_DEPRECATE /D_CRT_DECLARE_NONSTDC_NAMES=1 %CL%"
+          set "BASE_CL=%CL%"
           set "ADDONS_SUCCESS_FILE=%GITHUB_WORKSPACE%\cmake\addons\.success"
           set "ADDONS_FAILURE_FILE=%GITHUB_WORKSPACE%\cmake\addons\.failure"
           set "ERRORFILE=%GITHUB_WORKSPACE%\cmake\addons\make-addons.error"
@@ -326,6 +312,11 @@ jobs:
           for %%a in (!ADDONS_TO_MAKE!) do (
             echo Building %%a...
             set "ADDON_LOG=!ADDON_LOGS_DIR!\%%a.log"
+            if /I "%%a"=="imagedecoder.heif" (
+              set "CL=/D_CRT_NONSTDC_NO_DEPRECATE /D_CRT_DECLARE_NONSTDC_NAMES=1 !BASE_CL!"
+            ) else (
+              set "CL=!BASE_CL!"
+            )
             cmake --build . --target %%a > "!ADDON_LOG!" 2>&1
             if errorlevel 1 (
               echo %%a >> "%ERRORFILE%"
