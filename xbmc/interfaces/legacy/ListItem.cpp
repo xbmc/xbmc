@@ -604,6 +604,8 @@ namespace XBMCAddon
               InfoTagMusic::setLyricsRaw(musictag, value);
             else if (key == "lastplayed")
               InfoTagMusic::setLastPlayedRaw(musictag, value);
+            else if (key == "musicbrainzreleasetrackid")
+              InfoTagMusic::setMusicBrainzReleaseTrackIDRaw(musictag, value);
             else if (key == "musicbrainztrackid")
               InfoTagMusic::setMusicBrainzTrackIDRaw(musictag, value);
             else if (key == "musicbrainzartistid")

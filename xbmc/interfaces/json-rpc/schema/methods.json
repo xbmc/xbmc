@@ -3018,6 +3018,10 @@
         "$ref": "Optional.String"
       },
       {
+        "name": "musicbrainzreleasetrackid",
+        "$ref": "Optional.String"
+      },
+      {
         "name": "musicbrainztrackid",
         "$ref": "Optional.String"
       },

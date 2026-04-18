@@ -200,6 +200,8 @@ bool CTagLoaderTagLib::ParseTag(ASF::Tag* asf,
       SetAlbumArtist(tag, GetASFStringList(it->second));
     else if (it->first == "MusicBrainz/Album Artist Id")
       tag.SetMusicBrainzAlbumArtistID(SplitMBID(GetASFStringList(it->second)));
+    else if (it->first == "MusicBrainz/Release Track Id")
+      tag.SetMusicBrainzReleaseTrackID(it->second.front().toString().to8Bit(true));
     else if (it->first == "MusicBrainz/Track Id")
       tag.SetMusicBrainzTrackID(it->second.front().toString().to8Bit(true));
     else if (it->first == "MusicBrainz/Album Status")
@@ -642,6 +644,8 @@ bool CTagLoaderTagLib::ParseTag(APE::Tag* ape,
       tag.SetMusicBrainzAlbumID(it->second.toString().to8Bit(true));
     else if (it->first == "MUSICBRAINZ_RELEASEGROUPID")
       tag.SetMusicBrainzReleaseGroupID(it->second.toString().to8Bit(true));
+    else if (it->first == "MUSICBRAINZ_RELEASETRACKID")
+      tag.SetMusicBrainzReleaseTrackID(it->second.toString().to8Bit(true));
     else if (it->first == "MUSICBRAINZ_TRACKID")
       tag.SetMusicBrainzTrackID(it->second.toString().to8Bit(true));
     else if (it->first == "MUSICBRAINZ_ALBUMTYPE")
@@ -787,6 +791,8 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment* xiph,
       tag.SetMusicBrainzAlbumID(it->second.front().to8Bit(true));
     else if (it->first == "MUSICBRAINZ_RELEASEGROUPID")
       tag.SetMusicBrainzReleaseGroupID(it->second.front().to8Bit(true));
+    else if (it->first == "MUSICBRAINZ_RELEASETRACKID")
+      tag.SetMusicBrainzReleaseTrackID(it->second.front().to8Bit(true));
     else if (it->first == "MUSICBRAINZ_TRACKID")
       tag.SetMusicBrainzTrackID(it->second.front().to8Bit(true));
     else if (it->first == "RELEASETYPE")
@@ -980,6 +986,8 @@ bool CTagLoaderTagLib::ParseTag(MP4::Tag* mp4,
       tag.SetMusicBrainzAlbumID(it->second.toStringList().front().to8Bit(true));
     else if (it->first == "----:com.apple.iTunes:MusicBrainz Release Group Id")
       tag.SetMusicBrainzReleaseGroupID(it->second.toStringList().front().to8Bit(true));
+    else if (it->first == "----:com.apple.iTunes:MusicBrainz Release Track Id")
+      tag.SetMusicBrainzReleaseTrackID(it->second.toStringList().front().to8Bit(true));
     else if (it->first == "----:com.apple.iTunes:MusicBrainz Track Id")
       tag.SetMusicBrainzTrackID(it->second.toStringList().front().to8Bit(true));
     else if (it->first == "----:com.apple.iTunes:MusicBrainz Album Type")
