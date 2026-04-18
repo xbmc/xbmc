@@ -304,6 +304,8 @@ jobs:
         shell: cmd
         run: |
           for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) do call "%%i\VC\Auxiliary\Build\vcvars32.bat"
+          set "CFLAGS=/D_CRT_NONSTDC_NO_DEPRECATE /D_CRT_DECLARE_NONSTDC_NAMES=1 %CFLAGS%"
+          set "CXXFLAGS=/D_CRT_NONSTDC_NO_DEPRECATE /D_CRT_DECLARE_NONSTDC_NAMES=1 %CXXFLAGS%"
           set "CL=/D_CRT_DECLARE_NONSTDC_NAMES=1 %CL%"
           set "ADDONS_SUCCESS_FILE=%GITHUB_WORKSPACE%\cmake\addons\.success"
           set "ADDONS_FAILURE_FILE=%GITHUB_WORKSPACE%\cmake\addons\.failure"
