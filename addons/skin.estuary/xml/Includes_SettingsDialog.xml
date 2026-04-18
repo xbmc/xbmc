@@ -52,7 +52,7 @@
 				<param name="width" value="1000" />
 			</include>
 			<label>$LOCALIZE[31115]</label>
-			<label2>[B]$VAR[ActiveVideoPlayerSubtitleLanguage]$VAR[SubtitleCodecVar, | ][/B]</label2>
+			<label2>[B]$VAR[ActiveVideoPlayerSubtitleLanguage][/B]</label2>
 			<onclick>DialogSelectSubtitle</onclick>
 			<enable>VideoPlayer.HasSubtitles</enable>
 		</control>
