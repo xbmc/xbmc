@@ -374,19 +374,65 @@ jobs:
           if-no-files-found: warn
 
       # Collect all build output into a single staging directory that mirrors
-      # the final on-disk layout.  The CMake export-files target already
-      # copied dependency DLLs, Python, system/ data, addons, media, and
-      # userdata into kodi-build/RelWithDebInfo/ during the build.
+      # the final on-disk layout.
+      #
+      # With VS multi-config generators, CMake's export-files target copies
+      # dependency DLLs, system/, addons/, media/, userdata/, and sounds/
+      # into kodi-build/ (CMAKE_BINARY_DIR root).  The kodi.exe executable
+      # is placed in kodi-build/RelWithDebInfo/ by the MSVC generator.
+      # Staging must collect from BOTH locations.
       - name: Collect build output into staging directory
         if: success()
         shell: pwsh
         run: |
           $staging = "$env:GITHUB_WORKSPACE\staging"
           New-Item -ItemType Directory -Force $staging | Out-Null
-          # 1. Copy the entire build tree output (kodi.exe, DLLs, system/, addons/, media/, userdata/)
-          Copy-Item -Path "kodi-build\RelWithDebInfo\*" -Destination $staging -Recurse -Force
-          Write-Host "Copied build tree output to staging"
-          # 2. Merge binary addon build output (PVR, audiodecoder, etc.) into addons/
+
+          # 1. Copy kodi.exe (and .pdb) from the MSVC config output directory
+          $configDir = "kodi-build\RelWithDebInfo"
+          if (Test-Path "$configDir\kodi.exe") {
+            Copy-Item "$configDir\kodi.exe" -Destination $staging -Force
+            Write-Host "Copied kodi.exe from $configDir"
+          } else {
+            Write-Error "kodi.exe not found in $configDir"
+            exit 1
+          }
+          if (Test-Path "$configDir\kodi.pdb") {
+            Copy-Item "$configDir\kodi.pdb" -Destination $staging -Force
+          }
+
+          # 2. Copy dependency DLLs and JARs from kodi-build/ root
+          #    (placed there by CMake export-files reading cmake/installdata/windows/dlls.txt)
+          $buildRoot = "kodi-build"
+          $rootDlls = Get-ChildItem "$buildRoot\*.dll" -File -ErrorAction SilentlyContinue
+          if ($rootDlls) {
+            $rootDlls | Copy-Item -Destination $staging -Force
+            Write-Host "Copied $($rootDlls.Count) DLLs from $buildRoot to staging"
+          } else {
+            Write-Host "::warning::No DLLs found at $buildRoot root"
+          }
+          $rootJars = Get-ChildItem "$buildRoot\*.jar" -File -ErrorAction SilentlyContinue
+          if ($rootJars) {
+            $rootJars | Copy-Item -Destination $staging -Force
+            Write-Host "Copied $($rootJars.Count) JAR files from $buildRoot to staging"
+          }
+
+          # 3. Copy data directories from kodi-build/ root
+          #    (placed there by CMake export-files reading cmake/installdata/common/*.txt
+          #     and cmake/installdata/windows/*.txt)
+          $dataDirs = @("system", "addons", "media", "userdata", "sounds")
+          foreach ($dir in $dataDirs) {
+            $src = Join-Path $buildRoot $dir
+            if (Test-Path $src) {
+              $dst = Join-Path $staging $dir
+              Copy-Item -Path $src -Destination $dst -Recurse -Force
+              Write-Host "Copied $dir/ from build root to staging"
+            } else {
+              Write-Host "::warning::$dir/ not found in $buildRoot"
+            }
+          }
+
+          # 4. Merge binary addon build output (PVR, audiodecoder, etc.) into addons/
           $addonSrc = "project\Win32BuildSetup\BUILD_WIN32\addons"
           if (Test-Path $addonSrc) {
             $addonDst = Join-Path $staging "addons"
@@ -396,7 +442,8 @@ jobs:
           } else {
             Write-Host "::warning::Binary addon build output not found at $addonSrc"
           }
-          # 3. Copy libdvdnav.dll if the export-files target missed it.
+
+          # 5. Copy libdvdnav.dll if the export-files target missed it.
           #    The cmake ExternalProject installs it to kodi-build/build/libdvd/bin/
           #    but FindLibDvd.cmake expects it at DEPENDS_PATH/bin/ which may not match.
           $dvdnav = "kodi-build\build\libdvd\bin\libdvdnav.dll"
@@ -404,7 +451,8 @@ jobs:
             Copy-Item $dvdnav -Destination $staging -Force
             Write-Host "Copied libdvdnav.dll from build tree to staging"
           }
-          # 4. List what we collected
+
+          # 6. List what we collected
           Write-Host "=== Staging directory contents ==="
           Write-Host "Root files:"
           Get-ChildItem $staging -File | ForEach-Object { Write-Host "  $($_.Name) ($($_.Length) bytes)" }
@@ -419,52 +467,105 @@ jobs:
         run: |
           $staging = "$env:GITHUB_WORKSPACE\staging"
           $failed = $false
+          $warnings = @()
+
           # Check kodi.exe
           if (-not (Test-Path "$staging\kodi.exe")) {
             Write-Error "MISSING: kodi.exe"
             $failed = $true
+          } else {
+            Write-Host "OK: kodi.exe ($(( Get-Item "$staging\kodi.exe").Length) bytes)"
           }
-          # Check that at least some DLLs are present (dependency DLLs)
+
+          # Check that dependency DLLs are present
           $dlls = Get-ChildItem $staging -Filter "*.dll" -File
-          if ($dlls.Count -eq 0) {
-            Write-Error "MISSING: No DLLs found in staging root — dependency DLLs were not copied by export-files"
+          if ($dlls.Count -lt 5) {
+            Write-Error "MISSING: Only $($dlls.Count) DLLs found in staging root — expected 30+ dependency DLLs"
             $failed = $true
           } else {
-            Write-Host "Found $($dlls.Count) DLLs in staging root:"
-            $dlls | ForEach-Object { Write-Host "  $($_.Name) ($($_.Length) bytes)" }
+            Write-Host "Found $($dlls.Count) DLLs in staging root"
           }
-          # Check for specific critical DLLs (may have different names depending on package versions)
-          $criticalPatterns = @("python27*", "sqlite3*", "libcurl*", "libxml2*")
-          foreach ($pattern in $criticalPatterns) {
-            $found = Get-ChildItem $staging -Filter $pattern -File
-            if ($found.Count -gt 0) {
-              Write-Host "OK: $pattern -> $($found.Name)"
+
+          # Check for critical DLLs that MUST be present for Kodi to run
+          $criticalDlls = @(
+            "python27.dll",           # Python 2.7 runtime
+            "sqlite3.dll",            # SQLite (delay-loaded)
+            "zlib1.dll",              # zlib compression
+            "libxml2.dll",            # XML parsing
+            "libcurl.dll",            # HTTP / network
+            "libeay32.dll",           # OpenSSL crypto
+            "ssleay32.dll",           # OpenSSL SSL/TLS
+            "libmicrohttpd-dll.dll",  # Embedded web server
+            "freetype6.dll",          # Font rendering
+            "libfribidi.dll",         # BiDi text layout
+            "libpng16.dll",           # PNG image decoding
+            "pcre.dll",               # Regular expressions
+            "expat.dll",              # XML parsing (Expat)
+            "fstrcmp.dll",            # Fuzzy string comparison
+            "CrossGuid.dll",          # GUID generation
+            "tag.dll",                # Audio tag metadata
+            "tinyxmlSTL.dll"          # TinyXML with STL
+          )
+          $missingCritical = @()
+          foreach ($dll in $criticalDlls) {
+            if (Test-Path "$staging\$dll") {
+              Write-Host "  OK: $dll"
             } else {
-              Write-Host "::warning::$pattern not found in staging root (may be named differently)"
+              $missingCritical += $dll
+              Write-Host "::warning::MISSING critical DLL: $dll"
             }
           }
-          # Check system/ subdirectory
-          if (-not (Test-Path "$staging\system")) {
-            Write-Error "MISSING: system/ directory"
+          if ($missingCritical.Count -gt 0) {
+            Write-Error "MISSING $($missingCritical.Count) critical DLLs: $($missingCritical -join ', ')"
+            $failed = $true
+          }
+
+          # List all DLLs found (for debugging)
+          Write-Host "`n=== All DLLs in staging root ==="
+          $dlls | Sort-Object Name | ForEach-Object { Write-Host "  $($_.Name) ($($_.Length) bytes)" }
+
+          # Check required directories
+          $requiredDirs = @("system", "addons")
+          foreach ($dir in $requiredDirs) {
+            if (-not (Test-Path "$staging\$dir")) {
+              Write-Error "MISSING: $dir/ directory"
+              $failed = $true
+            } else {
+              $itemCount = (Get-ChildItem "$staging\$dir" -Recurse -File).Count
+              Write-Host "OK: $dir/ ($itemCount files)"
+            }
+          }
+
+          # Check system/Python/ (Python 2.7 runtime)
+          if (-not (Test-Path "$staging\system\Python")) {
+            Write-Error "MISSING: system/Python/ directory (Python 2.7 runtime)"
             $failed = $true
           } else {
-            $sysItems = Get-ChildItem "$staging\system" -Directory
-            Write-Host "system/ subdirectories: $($sysItems.Name -join ', ')"
+            Write-Host "OK: system/Python/ exists"
           }
-          # Check addons/
-          if (-not (Test-Path "$staging\addons")) {
-            Write-Error "MISSING: addons/ directory"
-            $failed = $true
-          } else {
-            $addonCount = (Get-ChildItem "$staging\addons" -Directory).Count
-            Write-Host "addons/ contains $addonCount addon directories"
+
+          # Check optional but expected directories (warnings only)
+          $optionalDirs = @("media", "userdata", "sounds")
+          foreach ($dir in $optionalDirs) {
+            if (-not (Test-Path "$staging\$dir")) {
+              Write-Host "::warning::$dir/ directory not found in staging"
+            } else {
+              Write-Host "OK: $dir/ exists"
+            }
           }
-          # Check media/
-          if (-not (Test-Path "$staging\media")) {
-            Write-Host "::warning::media/ directory not found in staging"
+
+          # Check system subdirectories
+          $systemDirs = @("keymaps", "settings", "shaders", "library")
+          foreach ($dir in $systemDirs) {
+            if (Test-Path "$staging\system\$dir") {
+              Write-Host "OK: system/$dir/ exists"
+            } else {
+              Write-Host "::warning::system/$dir/ not found in staging"
+            }
           }
+
           if ($failed) { exit 1 }
-          Write-Host "All critical files validated successfully"
+          Write-Host "`nAll critical files validated successfully"
 
       - name: Upload build artifacts
         if: success()
