@@ -32,7 +32,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     if(WIN32 OR WINDOWS_STORE)
       set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/03-win-uwp.patch"
-                  "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/04-win-installpkgconfig.patch")
+                  "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/04-win-installpkgconfig.patch"
+                  "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/06-win-parsec_link.patch")
 
       list(APPEND BUILD_FLAGS -DBUILD_SHARED_LIBS:BOOL=ON
                               -DINSTALL_SHARED=ON)
@@ -69,7 +70,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                -DCLIENT_PLUGIN_CACHING_SHA2_PASSWORD=STATIC
                                -DCLIENT_PLUGIN_MYSQL_CLEAR_PASSWORD=STATIC
                                -DCLIENT_PLUGIN_MYSQL_OLD_PASSWORD=STATIC
-                               -DCLIENT_PLUGIN_CLIENT_ED25519=STATIC)
+                               -DCLIENT_PLUGIN_CLIENT_ED25519=STATIC
+                               -DCLIENT_PLUGIN_PARSEC=STATIC)
 
     # Disable GSSAPI authentication plugin (not widely used by Kodi users)
     list(APPEND CLIENT_PLUGINS -DCLIENT_PLUGIN_AUTH_GSSAPI_CLIENT=OFF)

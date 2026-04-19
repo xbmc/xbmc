@@ -4,7 +4,8 @@ DEPS = ../../Makefile.include MARIADB-VERSION Makefile ../../download-files.incl
                                   02-linux-pthread.patch \
                                   03-win-uwp.patch \
                                   04-win-installpkgconfig.patch \
-                                  05-all-installtargets.patch
+                                  05-all-installtargets.patch \
+                                  06-win-parsec_link.patch
 
 LIBDYLIB=$(PLATFORM)/build/lib$(LIBNAME)/lib$(LIBNAME)client.a
 
@@ -13,6 +14,7 @@ PLUGIN_BUILD_FLAGS=-DCLIENT_PLUGIN_DIALOG=STATIC
 PLUGIN_BUILD_FLAGS+=-DCLIENT_PLUGIN_SHA256_PASSWORD=STATIC -DCLIENT_PLUGIN_CACHING_SHA2_PASSWORD=STATIC
 PLUGIN_BUILD_FLAGS+=-DCLIENT_PLUGIN_MYSQL_CLEAR_PASSWORD=STATIC -DCLIENT_PLUGIN_MYSQL_OLD_PASSWORD=STATIC
 PLUGIN_BUILD_FLAGS+=-DCLIENT_PLUGIN_CLIENT_ED25519=STATIC
+PLUGIN_BUILD_FLAGS+=-DCLIENT_PLUGIN_PARSEC=STATIC
 
 ifeq ($(TARGET_PLATFORM),appletvos)
   PLUGIN_BUILD_FLAGS+=-DHAVE_UCONTEXT_H= -DHAVE_FILE_UCONTEXT_H=
@@ -48,6 +50,7 @@ endif
 ifeq ($(OS),windows)
 	cd $(PLATFORM); patch -p1 -i ../03-win-uwp.patch
 	cd $(PLATFORM); patch -p1 -i ../04-win-installpkgconfig.patch
+	cd $(PLATFORM); patch -p1 -i ../06-win-parsec_link.patch
 endif
 	cd $(PLATFORM); patch -p1 -i ../05-all-installtargets.patch
 	cd $(PLATFORM)/build; $(CMAKE) $(PLUGIN_BUILD_FLAGS) $(CMAKE_OPTIONS) ..
