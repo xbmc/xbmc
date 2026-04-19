@@ -316,6 +316,34 @@ msgctxt "#31565"
 msgid "Show deleted"
 msgstr "Visa borttagna"
 
+msgctxt "#31566"
+msgid "Custom image background"
+msgstr ""
+
+msgctxt "#31567"
+msgid "Custom video background"
+msgstr ""
+
+msgctxt "#31568"
+msgid "Default background"
+msgstr ""
+
+msgctxt "#31569"
+msgid "Select image resource pack"
+msgstr ""
+
+msgctxt "#31570"
+msgid "Background image pack:"
+msgstr ""
+
+msgctxt "#31571"
+msgid "Pick background video"
+msgstr ""
+
+msgctxt "#31572"
+msgid "Background video:"
+msgstr ""
+
 msgctxt "#31900"
 msgid "First Run"
 msgstr "Första körningen"

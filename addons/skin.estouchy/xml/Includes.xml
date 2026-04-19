@@ -106,8 +106,19 @@
 			<include>ScreenWidth</include>
 			<height>960</height>
 			<texture colordiffuse="FF006699">special://skin/background/primary.jpg</texture>
-			<visible>!Skin.HasSetting(UseCustomBackground)</visible>
+			<visible>!String.IsEqual(Skin.String(BackgroundMode),image)</visible>
 		</control>
+		<!-- Image resource-pack slideshow (when a pack has been selected) -->
+		<control type="multiimage">
+			<posx>0</posx>
+			<posy>0</posy>
+			<aspectratio>scale</aspectratio>
+			<include>ScreenWidth</include>
+			<height>960</height>
+			<imagepath background="true">$INFO[Skin.String(CustomBackground.path)]$INFO[Skin.String(CustomBackground.ext)]</imagepath>
+			<visible>String.IsEqual(Skin.String(BackgroundMode),image) + !String.IsEmpty(Skin.String(CustomBackground.path))</visible>
+		</control>
+		<!-- Single-file custom image (set via Skin.SetImage) -->
 		<control type="image">
 			<posx>0</posx>
 			<posy>0</posy>
@@ -115,7 +126,7 @@
 			<include>ScreenWidth</include>
 			<height>960</height>
 			<texture colordiffuse="60FFFFFF">$INFO[Skin.String(CustomBackground)]</texture>
-			<visible>Skin.HasSetting(UseCustomBackground)</visible>
+			<visible>String.IsEqual(Skin.String(BackgroundMode),image) + String.IsEmpty(Skin.String(CustomBackground.path))</visible>
 		</control>
 		<control type="image">
 			<posx>0</posx>
@@ -175,7 +186,7 @@
 			<include>ScreenWidth</include>
 			<height>960</height>
 			<texture colordiffuse="4D24CCA2">special://skin/background/secondary1.png</texture>
-			<visible>!Skin.HasSetting(UseCustomBackground)</visible>
+			<visible>!String.IsEqual(Skin.String(BackgroundMode),image)</visible>
 		</control>
 		<control type="videowindow">
 			<posx>0</posx>
@@ -2155,8 +2166,9 @@
 			<onleft>9</onleft>
 			<onright>60</onright>
 			<visible>Skin.String(SkinSettings,3)</visible>
-			<control type="radiobutton" id="115">
-				<description>Use custom background</description>
+			<!-- Mode selector: Default background -->
+			<control type="radiobutton" id="113">
+				<description>Default background mode</description>
 				<width>$PARAM[panel-width]</width>
 				<height>80</height>
 				<aligny>center</aligny>
@@ -2165,11 +2177,44 @@
 				<texturefocus>list_focus.png</texturefocus>
 				<texturenofocus></texturenofocus>
 				<pulseonselect>false</pulseonselect>
-				<label>$LOCALIZE[31553]</label>
-				<onclick>Skin.ToggleSetting(UseCustomBackground)</onclick>
-				<selected>Skin.HasSetting(UseCustomBackground)</selected>
+				<label>$LOCALIZE[31568]</label>
+				<onclick>Skin.SetString(BackgroundMode,)</onclick>
+				<selected>String.IsEmpty(Skin.String(BackgroundMode))</selected>
 				<textoffsetx>20</textoffsetx>
 			</control>
+			<!-- Mode selector: Custom image background -->
+			<control type="radiobutton" id="114">
+				<description>Image background mode</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[31566]</label>
+				<onclick>Skin.SetString(BackgroundMode,image)</onclick>
+				<selected>String.IsEqual(Skin.String(BackgroundMode),image)</selected>
+				<textoffsetx>20</textoffsetx>
+			</control>
+			<!-- Mode selector: Custom video background -->
+			<control type="radiobutton" id="115">
+				<description>Video background mode</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[31567]</label>
+				<onclick>Skin.SetString(BackgroundMode,video)</onclick>
+				<selected>String.IsEqual(Skin.String(BackgroundMode),video)</selected>
+				<textoffsetx>20</textoffsetx>
+			</control>
+			<!-- Image sub-section: Pick image file -->
 			<control type="button" id="116">
 				<width>$PARAM[panel-width]</width>
 				<height>80</height>
@@ -2182,9 +2227,43 @@
 				<label>- $LOCALIZE[31554]</label>
 				<label2>$INFO[Skin.String(CustomBackground)]</label2>
 				<onclick>Skin.SetImage(CustomBackground)</onclick>
-				<enable>Skin.HasSetting(UseCustomBackground)</enable>
-				<textoffsetx>20</textoffsetx>
+				<enable>String.IsEqual(Skin.String(BackgroundMode),image)</enable>
+				<textoffsetx>40</textoffsetx>
 			</control>
+			<!-- Image sub-section: Select image resource pack -->
+			<control type="button" id="119">
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>- $LOCALIZE[31569]</label>
+				<label2>$INFO[Skin.String(CustomBackground.name)]</label2>
+				<onclick condition="System.HasAddon(script.image.resource.select)">RunScript(script.image.resource.select,property=CustomBackground&amp;type=resource.images.skinbackgrounds)</onclick>
+				<onclick condition="!System.HasAddon(script.image.resource.select)">InstallAddon(script.image.resource.select)</onclick>
+				<enable>String.IsEqual(Skin.String(BackgroundMode),image)</enable>
+				<textoffsetx>40</textoffsetx>
+			</control>
+			<!-- Video sub-section: Pick background video -->
+			<control type="button" id="120">
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>- $LOCALIZE[31571]</label>
+				<label2>$INFO[Skin.String(CustomVideoBackground)]</label2>
+				<onclick>Skin.SetFile(CustomVideoBackground,.mp4|.mkv|.avi|.mov|.m4v|.wmv|.ts|.mpg|.flv)</onclick>
+				<enable>String.IsEqual(Skin.String(BackgroundMode),video)</enable>
+				<textoffsetx>40</textoffsetx>
+			</control>
+			<!-- Existing toggles -->
 			<control type="radiobutton" id="117">
 				<description>Hide video background</description>
 				<width>$PARAM[panel-width]</width>
