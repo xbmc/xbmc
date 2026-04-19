@@ -373,43 +373,105 @@ jobs:
             cmake/addons/logs/
           if-no-files-found: warn
 
-      # Only collect when the addon step succeeded — avoids packaging a partial tree when addons fail.
-      - name: Collect build output into system directory
+      # Collect all build output into a single staging directory that mirrors
+      # the final on-disk layout.  The CMake export-files target already
+      # copied dependency DLLs, Python, system/ data, addons, media, and
+      # userdata into kodi-build/RelWithDebInfo/ during the build.
+      - name: Collect build output into staging directory
         if: success()
         shell: pwsh
         run: |
-          Copy-Item -Path "kodi-build\RelWithDebInfo\*" -Destination "system\" -Recurse -Force
-          # Copy addon binaries into the system tree so the release zip includes them.
+          $staging = "$env:GITHUB_WORKSPACE\staging"
+          New-Item -ItemType Directory -Force $staging | Out-Null
+          # 1. Copy the entire build tree output (kodi.exe, DLLs, system/, addons/, media/, userdata/)
+          Copy-Item -Path "kodi-build\RelWithDebInfo\*" -Destination $staging -Recurse -Force
+          Write-Host "Copied build tree output to staging"
+          # 2. Merge binary addon build output (PVR, audiodecoder, etc.) into addons/
           $addonSrc = "project\Win32BuildSetup\BUILD_WIN32\addons"
           if (Test-Path $addonSrc) {
-            $addonDst = "system\addons"
+            $addonDst = Join-Path $staging "addons"
             if (-not (Test-Path $addonDst)) { New-Item -ItemType Directory -Path $addonDst | Out-Null }
             Copy-Item -Path "$addonSrc\*" -Destination $addonDst -Recurse -Force
-            Write-Host "Copied addon binaries from $addonSrc to $addonDst"
+            Write-Host "Merged binary addons from $addonSrc into staging\addons"
           } else {
-            Write-Host "::warning::Addon build output not found at $addonSrc"
+            Write-Host "::warning::Binary addon build output not found at $addonSrc"
           }
+          # 3. Copy libdvdnav.dll if the export-files target missed it.
+          #    The cmake ExternalProject installs it to kodi-build/build/libdvd/bin/
+          #    but FindLibDvd.cmake expects it at DEPENDS_PATH/bin/ which may not match.
+          $dvdnav = "kodi-build\build\libdvd\bin\libdvdnav.dll"
+          if ((Test-Path $dvdnav) -and -not (Test-Path "$staging\libdvdnav.dll")) {
+            Copy-Item $dvdnav -Destination $staging -Force
+            Write-Host "Copied libdvdnav.dll from build tree to staging"
+          }
+          # 4. List what we collected
+          Write-Host "=== Staging directory contents ==="
+          Write-Host "Root files:"
+          Get-ChildItem $staging -File | ForEach-Object { Write-Host "  $($_.Name) ($($_.Length) bytes)" }
+          Write-Host "Root directories:"
+          Get-ChildItem $staging -Directory | ForEach-Object { Write-Host "  $($_.Name)/" }
+          $dllCount = (Get-ChildItem $staging -Filter "*.dll" -File).Count
+          Write-Host "DLLs at root: $dllCount"
 
-      - name: Verify kodi.exe in system output
+      - name: Validate required files in staging
         if: success()
         shell: pwsh
         run: |
-          $exe = "$env:GITHUB_WORKSPACE\system\kodi.exe"
-          if (-not (Test-Path $exe)) {
-            Write-Error "kodi.exe not found under system\ after collect"
-            exit 1
+          $staging = "$env:GITHUB_WORKSPACE\staging"
+          $failed = $false
+          # Check kodi.exe
+          if (-not (Test-Path "$staging\kodi.exe")) {
+            Write-Error "MISSING: kodi.exe"
+            $failed = $true
           }
-          Write-Host "Verified $exe"
+          # Check that at least some DLLs are present (dependency DLLs)
+          $dlls = Get-ChildItem $staging -Filter "*.dll" -File
+          if ($dlls.Count -eq 0) {
+            Write-Error "MISSING: No DLLs found in staging root — dependency DLLs were not copied by export-files"
+            $failed = $true
+          } else {
+            Write-Host "Found $($dlls.Count) DLLs in staging root:"
+            $dlls | ForEach-Object { Write-Host "  $($_.Name) ($($_.Length) bytes)" }
+          }
+          # Check for specific critical DLLs (may have different names depending on package versions)
+          $criticalPatterns = @("python27*", "sqlite3*", "libcurl*", "libxml2*")
+          foreach ($pattern in $criticalPatterns) {
+            $found = Get-ChildItem $staging -Filter $pattern -File
+            if ($found.Count -gt 0) {
+              Write-Host "OK: $pattern -> $($found.Name)"
+            } else {
+              Write-Host "::warning::$pattern not found in staging root (may be named differently)"
+            }
+          }
+          # Check system/ subdirectory
+          if (-not (Test-Path "$staging\system")) {
+            Write-Error "MISSING: system/ directory"
+            $failed = $true
+          } else {
+            $sysItems = Get-ChildItem "$staging\system" -Directory
+            Write-Host "system/ subdirectories: $($sysItems.Name -join ', ')"
+          }
+          # Check addons/
+          if (-not (Test-Path "$staging\addons")) {
+            Write-Error "MISSING: addons/ directory"
+            $failed = $true
+          } else {
+            $addonCount = (Get-ChildItem "$staging\addons" -Directory).Count
+            Write-Host "addons/ contains $addonCount addon directories"
+          }
+          # Check media/
+          if (-not (Test-Path "$staging\media")) {
+            Write-Host "::warning::media/ directory not found in staging"
+          }
+          if ($failed) { exit 1 }
+          Write-Host "All critical files validated successfully"
 
       - name: Upload build artifacts
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: kodi-windows-x86
-          path: |
-            project/Win32BuildSetup/BUILD_WIN32/addons/
-            system\
-            kodi-build/RelWithDebInfo/
+          path: staging\
           if-no-files-found: warn
 
       # ---------------------------------------------------------------
@@ -461,7 +523,7 @@ jobs:
       - name: Package release zip
         if: ${{ success() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
         shell: pwsh
-        run: Compress-Archive -Path "system\*" -DestinationPath "kodi-windows-x86.zip"
+        run: Compress-Archive -Path "staging\*" -DestinationPath "kodi-windows-x86.zip"
 
       - name: Create GitHub release
         if: ${{ success() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
