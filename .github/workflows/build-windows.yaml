@@ -379,6 +379,16 @@ jobs:
         shell: pwsh
         run: |
           Copy-Item -Path "kodi-build\RelWithDebInfo\*" -Destination "system\" -Recurse -Force
+          # Copy addon binaries into the system tree so the release zip includes them.
+          $addonSrc = "project\Win32BuildSetup\BUILD_WIN32\addons"
+          if (Test-Path $addonSrc) {
+            $addonDst = "system\addons"
+            if (-not (Test-Path $addonDst)) { New-Item -ItemType Directory -Path $addonDst | Out-Null }
+            Copy-Item -Path "$addonSrc\*" -Destination $addonDst -Recurse -Force
+            Write-Host "Copied addon binaries from $addonSrc to $addonDst"
+          } else {
+            Write-Host "::warning::Addon build output not found at $addonSrc"
+          }
 
       - name: Verify kodi.exe in system output
         if: success()
