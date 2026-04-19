@@ -313,7 +313,7 @@ jobs:
             echo Building %%a...
             set "ADDON_LOG=!ADDON_LOGS_DIR!\%%a.log"
             if /I "%%a"=="imagedecoder.heif" (
-              set "CL=/FI stdint.h /D_CRT_NONSTDC_NO_DEPRECATE /D_CRT_DECLARE_NONSTDC_NAMES=1 !BASE_CL!"
+              set "CL=/DPTRDIFF_MAX=0x7fffffff /D_CRT_NONSTDC_NO_DEPRECATE !BASE_CL!"
             ) else (
               set "CL=!BASE_CL!"
             )
