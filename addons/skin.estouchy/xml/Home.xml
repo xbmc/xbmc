@@ -2,6 +2,12 @@
 <window>
 	<defaultcontrol always="true">9000</defaultcontrol>
 	<onload condition="String.IsEmpty(Skin.String(FirstRun))">ActivateWindow(1111)</onload>
+	<!-- Start background video loop (windowed, with repeat) if nothing is playing -->
+	<onload condition="String.IsEqual(Skin.String(BackgroundMode),video) + !String.IsEmpty(Skin.String(CustomVideoBackground)) + !Player.HasMedia">PlayMedia($INFO[Skin.String(CustomVideoBackground)],1,noresume)</onload>
+	<!-- Re-enable RepeatOne — whether we just started or are resuming after nav away -->
+	<onload condition="String.IsEqual(Skin.String(BackgroundMode),video) + Player.HasVideo">PlayerControl(RepeatOne)</onload>
+	<!-- On leaving Home: disable repeat (but never stop the player) -->
+	<onunload condition="String.IsEqual(Skin.String(BackgroundMode),video)">PlayerControl(RepeatOff)</onunload>
 	<controls>
 		<control type="label">
 			<posx>-10</posx>
