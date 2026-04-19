@@ -16,6 +16,14 @@ import xbmc
 import xbmcvfs
 
 
+def _translate_path(path):
+    """Translate a Kodi virtual path, compatible with Leia and Matrix+."""
+    try:
+        return xbmcvfs.translatePath(path)
+    except AttributeError:
+        return xbmc.translatePath(path)
+
+
 class PluginScanner(object):
     """Discovers VST plugins from the cache and/or filesystem."""
 
@@ -25,7 +33,8 @@ class PluginScanner(object):
         :param vsthost_data_path: Path to the audiodsp.vsthost data directory
                                   (contains plugin_cache.json).
         """
-        self._vst_dir = vst_directory
+        # Translate any special:// paths to real filesystem paths
+        self._vst_dir = _translate_path(vst_directory)
         self._cache_file = os.path.join(vsthost_data_path, 'plugin_cache.json')
 
     def get_all_plugins(self):

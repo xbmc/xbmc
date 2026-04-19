@@ -24,6 +24,15 @@ import xbmcplugin
 import xbmcaddon
 import xbmcvfs
 
+
+def _translate_path(path):
+    """Translate a Kodi virtual path, compatible with Leia and Matrix+."""
+    try:
+        return xbmcvfs.translatePath(path)
+    except AttributeError:
+        return xbmc.translatePath(path)
+
+
 # ---------------------------------------------------------------------------
 # Globals
 # ---------------------------------------------------------------------------
@@ -32,7 +41,7 @@ ADDON = xbmcaddon.Addon()
 ADDON_ID = ADDON.getAddonInfo('id')
 HANDLE = int(sys.argv[1])
 BASE_URL = sys.argv[0]
-ADDON_PATH = xbmc.translatePath(ADDON.getAddonInfo('path'))
+ADDON_PATH = _translate_path(ADDON.getAddonInfo('path'))
 
 # Insert our library path so imports work
 sys.path.insert(0, os.path.join(ADDON_PATH, 'resources', 'lib'))
@@ -41,7 +50,7 @@ from chain_manager import ChainManager      # noqa: E402
 from plugin_scanner import PluginScanner    # noqa: E402
 
 # Shared data directory with the C++ audiodsp.vsthost ADSP addon
-VSTHOST_DATA = xbmc.translatePath(
+VSTHOST_DATA = _translate_path(
     'special://profile/addon_data/audiodsp.vsthost/')
 
 
