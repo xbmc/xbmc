@@ -413,6 +413,52 @@ bool VSTPlugin2::loadState(const std::vector<uint8_t>& data)
 }
 
 // ---------------------------------------------------------------------------
+// Editor support — VST2 native editor window
+// ---------------------------------------------------------------------------
+
+bool VSTPlugin2::hasEditor() const
+{
+    if (!m_loaded || !m_effect)
+        return false;
+    return (m_effect->flags & effFlagsHasEditor) != 0;
+}
+
+bool VSTPlugin2::openEditor(void* parentWindow)
+{
+    if (!m_loaded || !m_effect || !hasEditor())
+        return false;
+    m_effect->dispatcher(m_effect, effEditOpen, 0, 0, parentWindow, 0.0f);
+    return true;
+}
+
+void VSTPlugin2::closeEditor()
+{
+    if (m_loaded && m_effect)
+        m_effect->dispatcher(m_effect, effEditClose, 0, 0, nullptr, 0.0f);
+}
+
+bool VSTPlugin2::getEditorSize(int& width, int& height) const
+{
+    if (!m_loaded || !m_effect || !hasEditor())
+        return false;
+
+    ERect* rect = nullptr;
+    m_effect->dispatcher(m_effect, effEditGetRect, 0, 0, &rect, 0.0f);
+    if (!rect)
+        return false;
+
+    width  = static_cast<int>(rect->right  - rect->left);
+    height = static_cast<int>(rect->bottom - rect->top);
+    return (width > 0 && height > 0);
+}
+
+void VSTPlugin2::idleEditor()
+{
+    if (m_loaded && m_effect)
+        m_effect->dispatcher(m_effect, effEditIdle, 0, 0, nullptr, 0.0f);
+}
+
+// ---------------------------------------------------------------------------
 // staticAudioMaster — trampoline; recovers VSTPlugin2* from AEffect::user
 // ---------------------------------------------------------------------------
 

@@ -10,6 +10,7 @@
 
 #include "addon_main.h"
 #include "dsp/DSPProcessor.h"
+#include "bridge/EditorBridge.h"
 #include <string>
 #include <cstring>
 #include <windows.h>
@@ -19,6 +20,8 @@
 // ---------------------------------------------------------------------------
 
 static std::string g_addonDataPath;   // set in ADDON_Create, used for chain.json base path
+static EditorBridge g_editorBridge;   // manages named pipe server + VST editor windows
+static DSPProcessor* g_lastProcessor = nullptr;  // most recent processor for editor bridge
 
 // ---------------------------------------------------------------------------
 // Helper — retrieve the per-stream processor from the opaque handle.
@@ -46,8 +49,9 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
 
 void ADDON_Destroy()
 {
-    // Stream-level cleanup happens in StreamDestroy.
-    // Nothing to do here.
+    // Stop the editor bridge before streams are torn down.
+    g_editorBridge.stop();
+    g_lastProcessor = nullptr;
 }
 
 ADDON_STATUS ADDON_GetStatus()
@@ -180,6 +184,13 @@ AE_DSP_ERROR StreamCreate(const AE_DSP_SETTINGS* addonSettings,
     // dataAddress is void* — correct for a pointer value.
     // dataIdentifier (int) is NOT used for this purpose.
     handle->dataAddress = proc;
+
+    // Start the editor bridge (if not already running) with this processor's chain.
+    // The bridge allows the Python VST Manager addon to open native VST editor windows.
+    g_lastProcessor = proc;
+    if (!g_editorBridge.isRunning())
+        g_editorBridge.start(&proc->getChain());
+
     return AE_DSP_ERROR_NO_ERROR;
 }
 

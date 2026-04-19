@@ -59,6 +59,15 @@ public:
     bool                 loadState(const std::vector<uint8_t>& data) override;
 
     // -------------------------------------------------------------------------
+    // IVSTPlugin — Editor
+    // -------------------------------------------------------------------------
+    bool hasEditor()                              const override;
+    bool openEditor(void* parentWindow)                 override;
+    void closeEditor()                                  override;
+    bool getEditorSize(int& width, int& height)   const override;
+    void idleEditor()                                   override;
+
+    // -------------------------------------------------------------------------
     // IVSTPlugin — Format discriminator
     // -------------------------------------------------------------------------
     PluginFormat getFormat() const override { return PluginFormat::VST2; }

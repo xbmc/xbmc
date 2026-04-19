@@ -1,0 +1,1 @@
+# VST Manager library package

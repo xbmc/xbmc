@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<settings>
+    <category label="VST Plugin Directories">
+        <setting id="vst_directory" type="folder" label="Browse for VST Plugin Directory" source="auto" default=""/>
+        <setting id="vst_directory_text" type="text" label="Or type VST directory path" default=""/>
+    </category>
+</settings>
