@@ -202,14 +202,46 @@ After extraction and re-arrangement, the flat structure is:
 ### 5b. CMake export-files target
 
 `CMakeLists.txt` calls `copy_files_from_filelist_to_buildtree()` which reads
-`cmake/installdata/windows/dlls.txt` and `cmake/installdata/windows/python.txt`.
+`cmake/installdata/windows/dlls.txt`, `cmake/installdata/windows/python.txt`,
+`cmake/installdata/windows/addons.txt`, `cmake/installdata/windows/irss.txt`,
+`cmake/installdata/common/common.txt`, `cmake/installdata/common/addons.txt`,
+and `cmake/installdata/common/certificates.txt`.
 
-On Windows, files are copied to `$<TARGET_FILE_DIR:kodi>` (= `kodi-build/RelWithDebInfo/`
-for Visual Studio multi-config generators).
+Files are copied to `${CMAKE_BINARY_DIR}/` (= `kodi-build/`) — the **build tree root**,
+NOT to the MSVC config subdirectory. With Visual Studio multi-config generators,
+the directory layout after building is:
+
+```
+kodi-build/                         ← CMAKE_BINARY_DIR
+├── RelWithDebInfo/
+│   └── kodi.exe                    ← MSVC puts the executable here
+├── *.dll                           ← dependency DLLs (from dlls.txt)
+├── *.jar                           ← libbluray JARs (from dlls.txt)
+├── system/
+│   ├── Python/                     ← Python 2.7 runtime (from python.txt)
+│   ├── keymaps/                    ← from common/common.txt
+│   ├── settings/                   ← from common/common.txt
+│   ├── shaders/                    ← from common/common.txt
+│   ├── library/                    ← from common/common.txt
+│   ├── keyboardlayouts/            ← from common/common.txt
+│   ├── certs/                      ← from common/certificates.txt
+│   ├── IRSSmap.xml                 ← from windows/irss.txt
+│   └── X10-Lola-IRSSmap.xml       ← from windows/irss.txt
+├── addons/                         ← built-in addons (from common/addons.txt)
+├── media/                          ← splash, icons, fonts (from common/common.txt)
+├── userdata/                       ← default user config (from common/common.txt)
+└── sounds/                         ← UI sounds (from common/common.txt)
+```
 
 ### 5c. Packaging
 
-The "Collect build output" step copies from the build tree to a staging directory.
+The "Collect build output" step must collect from **both** locations:
+1. `kodi-build/RelWithDebInfo/` — for `kodi.exe`
+2. `kodi-build/` root — for DLLs, `system/`, `addons/`, `media/`, `userdata/`, `sounds/`
+
+It also merges binary addon build output from `project/Win32BuildSetup/BUILD_WIN32/addons/`
+into `staging/addons/`.
+
 The "Package release zip" step creates `kodi-windows-x86.zip` from the staging directory.
 
 ---
@@ -224,3 +256,4 @@ The "Package release zip" step creates `kodi-windows-x86.zip` from the staging d
 | `libdvdnav.dll` not in build tree | cmake ExternalProject installs to `kodi-build/build/libdvd/bin/` but `FindLibDvd.cmake` copies from `${DEPENDS_PATH}/bin/` | Added fallback copy in workflow collect step |
 | `/D_CRT_NONSTDC_NO_DEPRECATE` missing | CFlagOverrides.cmake/CXXFlagOverrides.cmake didn't include it | Added to both override files |
 | Binary addons not in release zip | Addon binaries built to `project/Win32BuildSetup/BUILD_WIN32/addons/` not merged into staging | Collect step now merges addon binaries into `staging/addons/` |
+| DLLs/system/media missing from staging | Collect step only copied from `kodi-build/RelWithDebInfo/` which only has `kodi.exe`; DLLs and data dirs are at `kodi-build/` root | Collect step now copies kodi.exe from RelWithDebInfo/ and DLLs/system/media/userdata/addons/sounds from kodi-build/ root |
