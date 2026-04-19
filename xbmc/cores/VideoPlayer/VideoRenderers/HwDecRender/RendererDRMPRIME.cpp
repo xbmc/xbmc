@@ -26,8 +26,6 @@
 
 using namespace KODI::WINDOWING::GBM;
 
-const std::string SETTING_VIDEOPLAYER_USEPRIMERENDERER = "videoplayer.useprimerenderer";
-
 CRendererDRMPRIME::~CRendererDRMPRIME()
 {
   Flush(false);
@@ -35,8 +33,11 @@ CRendererDRMPRIME::~CRendererDRMPRIME()
 
 CBaseRenderer* CRendererDRMPRIME::Create(CVideoBuffer* buffer)
 {
-  if (buffer && CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
-                    SETTING_VIDEOPLAYER_USEPRIMERENDERER) == 0)
+  auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  if (!settings->GetBool(CSettings::SETTING_VIDEOPLAYER_USEPRIMEDECODER))
+    return nullptr;
+
+  if (buffer && settings->GetInt(CSettings::SETTING_VIDEOPLAYER_USEPRIMERENDERER) == 0)
   {
     auto buf = dynamic_cast<CVideoBufferDRMPRIME*>(buffer);
     if (!buf)
@@ -88,7 +89,7 @@ void CRendererDRMPRIME::Register()
   {
     CServiceBroker::GetSettingsComponent()
         ->GetSettings()
-        ->GetSetting(SETTING_VIDEOPLAYER_USEPRIMERENDERER)
+        ->GetSetting(CSettings::SETTING_VIDEOPLAYER_USEPRIMERENDERER)
         ->SetVisible(true);
     VIDEOPLAYER::CRendererFactory::RegisterRenderer("drm_prime", CRendererDRMPRIME::Create);
     return;

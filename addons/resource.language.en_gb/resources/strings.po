@@ -16990,7 +16990,14 @@ msgctxt "#25017"
 msgid "No valid episode playlist has been found."
 msgstr ""
 
-#empty strings from id 25018 to 29800
+#. Automatic menu
+#. Simple menu is shown only if playlist not identified automatically
+#: system/settings/settings.xml
+msgctxt "#25018"
+msgid "Automatic menu selection"
+msgstr ""
+
+#empty strings from id 25019 to 29800
 
 #: unused
 msgctxt "#29801"

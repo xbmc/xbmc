@@ -2,8 +2,10 @@
 /Makefile.include
 /autom4te.cache/
 /**/.gitignore
+/**/.configured-*
 /**/.installed-*
 
+/native/*/.configured-*
 /native/*/.installed-*
 /native/*/x86-native/*
 /native/*/x86_64-linux-gnu-native/*
@@ -11,6 +13,7 @@
 /native/*/*-darwin*.*.*-native/
 /native/*/armeabi-v7a-native/*
 
+/target/*/.configured-*
 /target/*/.installed-*
 /target/*/native/*
 /target/*/x86/*

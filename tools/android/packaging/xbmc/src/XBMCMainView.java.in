@@ -2,7 +2,6 @@ package @APP_PACKAGE@;
 
 import android.content.Context;
 import android.graphics.PixelFormat;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.SurfaceHolder;
@@ -32,21 +31,6 @@ public class XBMCMainView extends SurfaceView implements SurfaceHolder.Callback
     Log.d(TAG, "XBMCMainView: Created");
 }
 
-  public XBMCMainView(Context context, AttributeSet attrs, int defStyle)
-  {
-    super(context, attrs, defStyle);
-    setZOrderOnTop(true);
-    getHolder().addCallback(this);
-    getHolder().setFormat(PixelFormat.TRANSPARENT);
-
-    Log.d(TAG, "XBMCMainView: Created");
-  }
-
-  public XBMCMainView(Context context, AttributeSet attrs)
-  {
-    this(context, attrs, 0);
-  }
-
   @Override
   public void surfaceCreated(SurfaceHolder holder)
   {
@@ -57,8 +41,7 @@ public class XBMCMainView extends SurfaceView implements SurfaceHolder.Callback
   }
 
   @Override
-  public void surfaceChanged(SurfaceHolder holder, int format, int width,
-                             int height)
+  public void surfaceChanged(SurfaceHolder holder, int format, int width, int height)
   {
     if (holder != getHolder())
       return;

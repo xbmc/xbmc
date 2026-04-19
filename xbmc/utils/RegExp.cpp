@@ -575,7 +575,7 @@ void CRegExp::Cleanup()
 
 inline bool CRegExp::IsValidSubNumber(int iSub) const
 {
-  return iSub >= 0 && iSub <= m_iMatchCount && iSub <= m_MaxNumOfBackrefrences;
+  return iSub >= 0 && iSub < m_iMatchCount && iSub <= m_MaxNumOfBackrefrences;
 }
 
 

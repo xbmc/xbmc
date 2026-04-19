@@ -129,6 +129,12 @@ public:
    */
   static std::string GetDiscUnderlyingFile(const CURL& url);
 
+  /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path to menu.
+   \param path the ISO/index.BDMV path.
+   \return the bluray:// menu path.
+   */
+  static std::string GetBlurayMenuPath(const std::string& path);
+
   /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path to root.
    \param path the ISO/index.BDMV path.
    \return the bluray:// root path.
@@ -140,6 +146,12 @@ public:
    \return the bluray:// root/titles path.
    */
   static std::string GetBlurayTitlesPath(const std::string& path);
+
+  /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path to main title.
+   \param path the ISO/index.BDMV path.
+   \return the bluray:// root/main path.
+   */
+  static std::string GetBlurayMainTitlePath(const std::string& path);
 
   /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path to a given episode.
    \param path the ISO/index.BDMV path.

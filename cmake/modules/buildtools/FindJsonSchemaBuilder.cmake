@@ -3,8 +3,9 @@
 # ---------------------
 # Finds the JsonSchemaBuilder
 #
-# If WITH_JSONSCHEMABUILDER is defined and points to a directory,
-# this path will be used to search for the JsonSchemaBuilder binary
+# If WITH_JSONSCHEMABUILDER is defined, it will be used as the location of an
+# existing JsonSchemaBuilder binary to execute during the build. Useful when
+# cross-compiling. The file must exist and be executable at configure time.
 #
 #
 # This will define the following (imported) targets::
@@ -17,11 +18,13 @@ if(NOT TARGET JsonSchemaBuilder::JsonSchemaBuilder)
 
   if(WITH_JSONSCHEMABUILDER)
     get_filename_component(_jsbpath ${WITH_JSONSCHEMABUILDER} ABSOLUTE)
-    get_filename_component(_jsbpath ${_jsbpath} DIRECTORY)
-    find_program(JSONSCHEMABUILDER_EXECUTABLE NAMES "${APP_NAME_LC}-JsonSchemaBuilder" JsonSchemaBuilder
-                                                    "${APP_NAME_LC}-JsonSchemaBuilder.exe" JsonSchemaBuilder.exe
-                                              HINTS ${_jsbpath})
-
+    if(NOT IS_DIRECTORY ${_jsbpath})
+      get_filename_component(_jsbpath ${_jsbpath} DIRECTORY)
+    endif()
+    find_program(JSONSCHEMABUILDER_EXECUTABLE
+                 NAMES "${APP_NAME_LC}-JsonSchemaBuilder" JsonSchemaBuilder
+                 HINTS ${_jsbpath}
+                 NO_DEFAULT_PATH)
     if(NOT JSONSCHEMABUILDER_EXECUTABLE)
       message(FATAL_ERROR "Could not find 'JsonSchemaBuilder' executable in ${_jsbpath} supplied by -DWITH_JSONSCHEMABUILDER")
     endif()

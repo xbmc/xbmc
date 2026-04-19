@@ -9,6 +9,7 @@
 #pragma once
 
 #include "DiscDirectoryHelper.h"
+#include "FileItemList.h"
 #include "bluray/M2TSParser.h"
 #include "bluray/PlaylistStructure.h"
 #include "threads/CriticalSection.h"
@@ -23,6 +24,7 @@ struct Disc
   bool mapsSet{false};
   XFILE::PlaylistMap playlistMap;
   XFILE::ClipMap clipMap;
+  CFileItemList itemMap;
 
   std::map<unsigned int, XFILE::StreamMap, std::less<>> streamMap;
 };
@@ -46,7 +48,10 @@ public:
   void SetPlaylistInfo(const std::string& path,
                        unsigned int playlist,
                        const BlurayPlaylistInformation& playlistInfo);
-  void SetMaps(const std::string& path, const PlaylistMap& playlistmap, const ClipMap& clipmap);
+  void SetMaps(const std::string& path,
+               const PlaylistMap& playlistmap,
+               const ClipMap& clipmap,
+               const CFileItemList& itemmap);
   void SetPlaylistStreamInfo(const std::string& path,
                              unsigned int playlist,
                              const StreamMap& streams);
@@ -54,7 +59,10 @@ public:
   bool GetPlaylistInfo(const std::string& path,
                        unsigned int playlist,
                        BlurayPlaylistInformation& playlistInfo) const;
-  bool GetMaps(const std::string& path, PlaylistMap& playlistmap, ClipMap& clipmap) const;
+  bool GetMaps(const std::string& path,
+               PlaylistMap& playlistmap,
+               ClipMap& clipmap,
+               CFileItemList& itemmap) const;
   bool GetPlaylistStreamInfo(const std::string& path,
                              unsigned int playlist,
                              StreamMap& streams) const;

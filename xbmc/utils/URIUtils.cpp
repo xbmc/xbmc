@@ -691,6 +691,11 @@ std::string URIUtils::GetDiscUnderlyingFile(const CURL& url)
   return AddFileToFolder(host, filename);
 }
 
+std::string URIUtils::GetBlurayMenuPath(const std::string& path)
+{
+  return AddFileToFolder(GetBlurayPath(path), "menu");
+}
+
 std::string URIUtils::GetBlurayRootPath(const std::string& path)
 {
   return AddFileToFolder(GetBlurayPath(path), "root");
@@ -699,6 +704,11 @@ std::string URIUtils::GetBlurayRootPath(const std::string& path)
 std::string URIUtils::GetBlurayTitlesPath(const std::string& path)
 {
   return AddFileToFolder(GetBlurayPath(path), "root", "titles");
+}
+
+std::string URIUtils::GetBlurayMainTitlePath(const std::string& path)
+{
+  return AddFileToFolder(GetBlurayPath(path), "root", "main");
 }
 
 std::string URIUtils::GetBlurayEpisodePath(const std::string& path, int season, int episode)

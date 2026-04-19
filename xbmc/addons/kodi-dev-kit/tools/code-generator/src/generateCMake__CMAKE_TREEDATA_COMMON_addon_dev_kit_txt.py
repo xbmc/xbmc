@@ -7,7 +7,7 @@
 #   See LICENSES/README.md for more information.
 
 # Own includes
-from code_generator import DEVKIT_DIR, KODI_DIR
+from code_generator__addon_devkit import DEVKIT_DIR, KODI_DIR
 from .helper_Log import *
 
 # Global includes
