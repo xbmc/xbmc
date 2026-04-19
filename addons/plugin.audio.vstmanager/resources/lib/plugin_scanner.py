@@ -71,8 +71,10 @@ class PluginScanner(object):
             return []
         try:
             f = xbmcvfs.File(self._cache_file, 'r')
-            content = f.read()
-            f.close()
+            try:
+                content = f.read()
+            finally:
+                f.close()
             if not content:
                 return []
             data = json.loads(content)

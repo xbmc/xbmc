@@ -188,7 +188,7 @@ def action_add(params):
         show_vst_ui(params)
     except Exception as exc:
         log('Failed to add plugin %s: %s' % (path, exc), xbmc.LOGERROR)
-        # Quietly remove the failed plugin from the chain
+        # Remove the failed plugin from the chain to prevent corruption
         chain_mgr.remove_plugin(path)
         xbmcgui.Dialog().notification(
             'VST Manager',

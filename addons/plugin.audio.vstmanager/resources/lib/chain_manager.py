@@ -105,8 +105,10 @@ class ChainManager(object):
             return copy.deepcopy(_DEFAULT_CHAIN)
         try:
             f = xbmcvfs.File(self._chain_file, 'r')
-            content = f.read()
-            f.close()
+            try:
+                content = f.read()
+            finally:
+                f.close()
             if not content:
                 return copy.deepcopy(_DEFAULT_CHAIN)
             data = json.loads(content)
@@ -121,5 +123,7 @@ class ChainManager(object):
         if not xbmcvfs.exists(self._data_path):
             xbmcvfs.mkdirs(self._data_path)
         f = xbmcvfs.File(self._chain_file, 'w')
-        f.write(json.dumps(data, indent=2))
-        f.close()
+        try:
+            f.write(json.dumps(data, indent=2))
+        finally:
+            f.close()

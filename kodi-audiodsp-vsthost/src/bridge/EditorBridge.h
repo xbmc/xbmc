@@ -105,5 +105,8 @@ private:
     /// Pipe server handle — stored so stop() can cancel blocking ConnectNamedPipe.
     HANDLE m_pipeHandle = INVALID_HANDLE_VALUE;
 
+    /// Event signaled when the UI thread is ready (m_uiThreadID is set).
+    HANDLE m_uiReadyEvent = nullptr;
+
     ATOM m_windowClass = 0;
 };

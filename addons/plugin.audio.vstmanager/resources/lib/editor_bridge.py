@@ -20,7 +20,7 @@ PIPE_NAME = r'\\.\pipe\kodi_vsthost_editor'
 PIPE_TIMEOUT_MS = 3000
 
 # Detect platform — native pipe client only works on Windows
-_IS_WINDOWS = (sys.platform == 'win32' or os.name == 'nt')
+_IS_WINDOWS = (sys.platform == 'win32')
 
 
 def _log(msg, level=xbmc.LOGDEBUG):

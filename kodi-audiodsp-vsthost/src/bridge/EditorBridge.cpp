@@ -92,12 +92,19 @@ void EditorBridge::start(DSPChain* chain)
     m_chain   = chain;
     m_running = true;
 
+    // Create an event to wait for the UI thread to become ready
+    m_uiReadyEvent = CreateEventW(nullptr, TRUE, FALSE, nullptr);
+
     // Start UI thread first so it can register the window class
     m_uiThread = std::thread([this]() { uiThreadLoop(); });
 
-    // Give UI thread time to start its message loop and set m_uiThreadID
-    while (m_uiThreadID == 0 && m_running.load())
-        Sleep(10);
+    // Wait for the UI thread to signal readiness (up to 5 seconds)
+    if (m_uiReadyEvent)
+    {
+        WaitForSingleObject(m_uiReadyEvent, 5000);
+        CloseHandle(m_uiReadyEvent);
+        m_uiReadyEvent = nullptr;
+    }
 
     // Start pipe server thread
     m_pipeThread = std::thread([this]() { pipeServerLoop(); });
@@ -249,8 +256,14 @@ std::string EditorBridge::processCommand(const std::string& json)
         // Post a message to the UI thread to open the editor
         // We allocate a string on the heap and pass its pointer via LPARAM
         auto* pathCopy = new std::string(path);
-        PostThreadMessageW(m_uiThreadID, WM_VSTBRIDGE_OPEN, 0,
-                           reinterpret_cast<LPARAM>(pathCopy));
+        if (!PostThreadMessageW(m_uiThreadID, WM_VSTBRIDGE_OPEN, 0,
+                                reinterpret_cast<LPARAM>(pathCopy)))
+        {
+            delete pathCopy;
+            return "{\"status\":\"error\",\"cmd\":\"open\",\"path\":\""
+                   + jsonEscape(path)
+                   + "\",\"error\":\"Failed to post to UI thread\"}";
+        }
 
         return "{\"status\":\"ok\",\"cmd\":\"open\",\"path\":\""
                + jsonEscape(path)
@@ -263,8 +276,14 @@ std::string EditorBridge::processCommand(const std::string& json)
             return "{\"status\":\"error\",\"cmd\":\"close\",\"error\":\"Missing path\"}";
 
         auto* pathCopy = new std::string(path);
-        PostThreadMessageW(m_uiThreadID, WM_VSTBRIDGE_CLOSE, 0,
-                           reinterpret_cast<LPARAM>(pathCopy));
+        if (!PostThreadMessageW(m_uiThreadID, WM_VSTBRIDGE_CLOSE, 0,
+                                reinterpret_cast<LPARAM>(pathCopy)))
+        {
+            delete pathCopy;
+            return "{\"status\":\"error\",\"cmd\":\"close\",\"path\":\""
+                   + jsonEscape(path)
+                   + "\",\"error\":\"Failed to post to UI thread\"}";
+        }
 
         return "{\"status\":\"ok\",\"cmd\":\"close\",\"path\":\""
                + jsonEscape(path) + "\"}";
@@ -298,6 +317,10 @@ void EditorBridge::uiThreadLoop()
 
     // Create a message-only window to receive thread messages
     m_uiThreadID = GetCurrentThreadId();
+
+    // Signal that the UI thread is ready
+    if (m_uiReadyEvent)
+        SetEvent(m_uiReadyEvent);
 
     MSG msg;
     while (GetMessageW(&msg, nullptr, 0, 0))
@@ -462,14 +485,20 @@ void EditorBridge::doCloseEditor(const std::string& pluginPath)
 
 void EditorBridge::doCloseAll()
 {
-    std::lock_guard<std::mutex> lock(m_editorMutex);
-    // Copy to avoid iterator invalidation as DestroyWindow triggers WM_DESTROY
-    auto editors = m_openEditors;
-    for (auto& [path, hwnd] : editors)
+    // Collect HWNDs to destroy, then release the lock before calling
+    // DestroyWindow (which triggers WM_DESTROY and modifies the maps).
+    std::vector<HWND> hwnds;
     {
-        if (hwnd)
-            DestroyWindow(hwnd);
+        std::lock_guard<std::mutex> lock(m_editorMutex);
+        hwnds.reserve(m_openEditors.size());
+        for (auto& [path, hwnd] : m_openEditors)
+        {
+            if (hwnd)
+                hwnds.push_back(hwnd);
+        }
     }
+    for (HWND hwnd : hwnds)
+        DestroyWindow(hwnd);
 }
 
 // ============================================================================

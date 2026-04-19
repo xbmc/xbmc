@@ -620,8 +620,12 @@ bool VSTPlugin3::hasEditor() const
     if (!m_loaded || !m_controller)
         return false;
 
-    // Try to create a view to check if the plugin has an editor.
-    // We immediately release it — the real view is created in openEditor().
+    // If we already have a cached view, we know the plugin has an editor.
+    if (m_plugView)
+        return true;
+
+    // Create and immediately release a view to probe editor support.
+    // This is called infrequently (listing UI), so the cost is acceptable.
     auto* view = m_controller->createView("editor");
     if (view)
     {
@@ -679,27 +683,13 @@ bool VSTPlugin3::getEditorSize(int& width, int& height) const
     if (!m_loaded || !m_controller)
         return false;
 
-    // Create a temporary view just to query size if no view is currently open
-    Steinberg::IPlugView* view = nullptr;
-    bool tempView = false;
-
-    if (m_plugView)
-    {
-        view = m_plugView.get();
-    }
-    else
-    {
-        view = m_controller->createView("editor");
-        if (!view)
-            return false;
-        tempView = true;
-    }
+    // Use the cached view if available; otherwise we cannot query size
+    // without attaching a view to a window, so return false.
+    if (!m_plugView)
+        return false;
 
     Steinberg::ViewRect rect{};
-    Steinberg::tresult result = view->getSize(&rect);
-
-    if (tempView)
-        view->release();
+    Steinberg::tresult result = m_plugView->getSize(&rect);
 
     if (result != Steinberg::kResultOk)
         return false;
