@@ -586,7 +586,7 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
     // xbmc rating
     if (mask & PLT_FILTER_MASK_XBMC_RATING) {
         didl += "<xbmc:rating>";
-        didl += NPT_String::Format("%.1f", m_XbmcInfo.rating);
+        didl += NPT_String::Format("%.1f", (double)m_XbmcInfo.rating);
         didl += "</xbmc:rating>";
     }
 
