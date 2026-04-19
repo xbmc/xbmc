@@ -318,6 +318,17 @@ struct AEffect {
 };
 
 // ---------------------------------------------------------------------------
+// ERect — editor window rectangle returned by effEditGetRect
+// ---------------------------------------------------------------------------
+
+struct ERect {
+    short top;
+    short left;
+    short bottom;
+    short right;
+};
+
+// ---------------------------------------------------------------------------
 // Convenience: signature of the exported entry-point symbol in a VST2 .dll/.so
 //
 //   extern "C" AEffect* VSTPluginMain(audioMasterCallback hostCallback);

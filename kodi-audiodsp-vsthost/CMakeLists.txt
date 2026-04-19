@@ -106,7 +106,7 @@ endif()
 
 # ---------------------------------------------------------------------------
 # Collect main plugin sources
-# (src/ subdirectories: dsp, plugin, settings, util, vst2, vst3)
+# (src/ subdirectories: bridge, dsp, plugin, settings, util, vst2, vst3)
 # ---------------------------------------------------------------------------
 file(GLOB_RECURSE PLUGIN_SOURCES
     CONFIGURE_DEPENDS

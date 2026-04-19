@@ -610,3 +610,106 @@ bool VSTPlugin3::setupBuses()
 
     return true;
 }
+
+// ===========================================================================
+// Editor support — VST3 native editor window via IPlugView
+// ===========================================================================
+
+bool VSTPlugin3::hasEditor() const
+{
+    if (!m_loaded || !m_controller)
+        return false;
+
+    // Try to create a view to check if the plugin has an editor.
+    // We immediately release it — the real view is created in openEditor().
+    auto* view = m_controller->createView("editor");
+    if (view)
+    {
+        view->release();
+        return true;
+    }
+    return false;
+}
+
+bool VSTPlugin3::openEditor(void* parentWindow)
+{
+    if (!m_loaded || !m_controller)
+        return false;
+
+    // Close any existing editor first
+    closeEditor();
+
+    auto* view = m_controller->createView("editor");
+    if (!view)
+    {
+        VST3_LOG("openEditor: createView returned nullptr for '%s'", m_path.c_str());
+        return false;
+    }
+
+    m_plugView = Steinberg::owned(view);
+
+    if (m_plugView->isPlatformTypeSupported("HWND") != Steinberg::kResultOk)
+    {
+        VST3_LOG("openEditor: HWND platform not supported for '%s'", m_path.c_str());
+        m_plugView = nullptr;
+        return false;
+    }
+
+    if (m_plugView->attached(parentWindow, "HWND") != Steinberg::kResultOk)
+    {
+        VST3_LOG("openEditor: attached() failed for '%s'", m_path.c_str());
+        m_plugView = nullptr;
+        return false;
+    }
+
+    return true;
+}
+
+void VSTPlugin3::closeEditor()
+{
+    if (m_plugView)
+    {
+        m_plugView->removed();
+        m_plugView = nullptr;
+    }
+}
+
+bool VSTPlugin3::getEditorSize(int& width, int& height) const
+{
+    if (!m_loaded || !m_controller)
+        return false;
+
+    // Create a temporary view just to query size if no view is currently open
+    Steinberg::IPlugView* view = nullptr;
+    bool tempView = false;
+
+    if (m_plugView)
+    {
+        view = m_plugView.get();
+    }
+    else
+    {
+        view = m_controller->createView("editor");
+        if (!view)
+            return false;
+        tempView = true;
+    }
+
+    Steinberg::ViewRect rect{};
+    Steinberg::tresult result = view->getSize(&rect);
+
+    if (tempView)
+        view->release();
+
+    if (result != Steinberg::kResultOk)
+        return false;
+
+    width  = static_cast<int>(rect.right  - rect.left);
+    height = static_cast<int>(rect.bottom - rect.top);
+    return (width > 0 && height > 0);
+}
+
+void VSTPlugin3::idleEditor()
+{
+    // VST3 editors are self-pumping via COM/message loop — no idle needed.
+}

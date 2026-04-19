@@ -106,6 +106,30 @@ public:
     bool isBypassed() const { return m_bypassed; }
     void setBypassed(bool v) { m_bypassed = v; }
 
+    // -------------------------------------------------------------------------
+    // Editor — native VST editor window support
+    // -------------------------------------------------------------------------
+
+    /// Whether the plugin provides a graphical editor window.
+    virtual bool hasEditor() const = 0;
+
+    /// Open the plugin's native editor inside the given parent window.
+    /// @param parentWindow  Platform window handle (HWND on Windows).
+    /// @return true if the editor was opened successfully.
+    virtual bool openEditor(void* parentWindow) = 0;
+
+    /// Close the plugin's native editor.
+    virtual void closeEditor() = 0;
+
+    /// Query the preferred editor window size in pixels.
+    /// @param[out] width   Editor width in pixels.
+    /// @param[out] height  Editor height in pixels.
+    /// @return true if the size was retrieved successfully.
+    virtual bool getEditorSize(int& width, int& height) const = 0;
+
+    /// Pump the editor's idle loop (VST2 only; VST3 is self-pumping).
+    virtual void idleEditor() = 0;
+
 protected:
     bool m_bypassed = false;
 };

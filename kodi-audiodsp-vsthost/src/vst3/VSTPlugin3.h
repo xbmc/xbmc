@@ -19,6 +19,7 @@
 #include "pluginterfaces/vst/ivsteditcontroller.h"
 #include "pluginterfaces/vst/ivstcomponent.h"
 #include "pluginterfaces/vst/ivstprocesscontext.h"
+#include "pluginterfaces/gui/iplugview.h"
 #include "pluginterfaces/base/ibstream.h"
 #include "base/source/fstreamer.h"
 
@@ -73,6 +74,15 @@ public:
     std::vector<uint8_t> saveState()                              const override;
     bool                 loadState(const std::vector<uint8_t>& data) override;
 
+    // -------------------------------------------------------------------------
+    // IVSTPlugin — editor
+    // -------------------------------------------------------------------------
+    bool hasEditor()                              const override;
+    bool openEditor(void* parentWindow)                 override;
+    void closeEditor()                                  override;
+    bool getEditorSize(int& width, int& height)   const override;
+    void idleEditor()                                   override;
+
 private:
     // -------------------------------------------------------------------------
     // Private helpers
@@ -97,6 +107,9 @@ private:
     Steinberg::IPtr<Steinberg::Vst::IComponent>       m_component;
     Steinberg::IPtr<Steinberg::Vst::IAudioProcessor>  m_processor;
     Steinberg::IPtr<Steinberg::Vst::IEditController>  m_controller;
+
+    /// Cached IPlugView for the VST3 editor (created on first openEditor call).
+    Steinberg::IPtr<Steinberg::IPlugView>              m_plugView;
 
     // -------------------------------------------------------------------------
     // Host-side objects
