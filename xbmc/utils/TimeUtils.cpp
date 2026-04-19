@@ -13,7 +13,7 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
-#if   defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN)
 #include <mach/mach_time.h>
 #include <CoreVideo/CVHostTime.h>
 #elif defined(TARGET_WINDOWS)
@@ -36,13 +36,13 @@ int64_t CurrentHostCounter(void)
   QueryPerformanceCounter(&PerformanceCount);
   return( (int64_t)PerformanceCount.QuadPart );
 #else
-  struct timespec now;
-#if defined(CLOCK_MONOTONIC_RAW) && !defined(TARGET_ANDROID)
-  clock_gettime(CLOCK_MONOTONIC_RAW, &now);
-#else
+  struct timespec now = {};
+#if defined(TARGET_ANDROID) || defined(TARGET_WASM)
   clock_gettime(CLOCK_MONOTONIC, &now);
-#endif // CLOCK_MONOTONIC_RAW && !TARGET_ANDROID
-  return( ((int64_t)now.tv_sec * 1000000000L) + now.tv_nsec );
+#else
+  clock_gettime(CLOCK_MONOTONIC_RAW, &now);
+#endif
+  return ((int64_t)now.tv_sec * 1000000000L) + now.tv_nsec;
 #endif
 }
 
