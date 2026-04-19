@@ -30,6 +30,7 @@ public:
   ~CWinSystemGbmGLContext() override = default;
 
   static void Register();
+  using CWinSystemGbm::Register;
   static std::unique_ptr<CWinSystemBase> CreateWinSystem();
 
   // Implementation of CWinSystemBase via CWinSystemGbm
