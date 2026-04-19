@@ -232,24 +232,21 @@ int MysqlDatabase::connect(bool create_new)
   {
     disconnect();
 
-    conn = mysql_init(nullptr);
-    if (conn == nullptr)
-      return DB_CONNECTION_NONE;
-
-    if (!key.empty() || !cert.empty() || !ca.empty() || !capath.empty() || !ciphers.empty())
+    if (!conn)
     {
-      mysql_ssl_set(conn, key.empty() ? nullptr : key.c_str(),
-                    cert.empty() ? nullptr : cert.c_str(), ca.empty() ? nullptr : ca.c_str(),
-                    capath.empty() ? nullptr : capath.c_str(),
-                    ciphers.empty() ? nullptr : ciphers.c_str());
+      conn = mysql_init(conn);
+      if (!key.empty() || !cert.empty() || !ca.empty() || !capath.empty() || !ciphers.empty())
+      {
+        mysql_ssl_set(conn, key.empty() ? nullptr : key.c_str(),
+                      cert.empty() ? nullptr : cert.c_str(), ca.empty() ? nullptr : ca.c_str(),
+                      capath.empty() ? nullptr : capath.c_str(),
+                      ciphers.empty() ? nullptr : ciphers.c_str());
+      }
+      mysql_options(conn, MYSQL_OPT_CONNECT_TIMEOUT, &connect_timeout);
     }
-    mysql_options(conn, MYSQL_OPT_CONNECT_TIMEOUT, &connect_timeout);
 
     if (!CWakeOnAccess::GetInstance().WakeUpHost(host, "MySQL : " + db))
-    {
-      disconnect();
       return DB_CONNECTION_NONE;
-    }
 
     // establish connection with just user credentials
     if (mysql_real_connect(conn, host.c_str(), login.c_str(), passwd.c_str(), nullptr,
@@ -340,13 +337,13 @@ int MysqlDatabase::connect(bool create_new)
 
     CLog::Log(LOGERROR, "Unable to open database: {} [{}]({})", db, mysql_errno(conn),
               mysql_error(conn));
+
+    return DB_CONNECTION_NONE;
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "Unable to open database: {} ({})", db, GetLastError());
   }
-
-  disconnect();
   return DB_CONNECTION_NONE;
 }
 
