@@ -479,32 +479,29 @@ jobs:
 
           # Check that dependency DLLs are present
           $dlls = Get-ChildItem $staging -Filter "*.dll" -File
-          if ($dlls.Count -lt 5) {
-            Write-Error "MISSING: Only $($dlls.Count) DLLs found in staging root — expected 30+ dependency DLLs"
+          if ($dlls.Count -lt 15) {
+            Write-Error "MISSING: Only $($dlls.Count) DLLs found in staging root — expected 20+ dependency DLLs"
             $failed = $true
           } else {
             Write-Host "Found $($dlls.Count) DLLs in staging root"
           }
 
-          # Check for critical DLLs that MUST be present for Kodi to run
+          # Check for critical DLLs that MUST be present for Kodi to run.
+          # Note: many Leia dependencies (PCRE, TagLib, CrossGuid, fstrcmp,
+          # TinyXML, FreeType, libfribidi, libpng, libmicrohttpd, expat) are
+          # linked statically — they have no DLL at runtime.
           $criticalDlls = @(
             "python27.dll",           # Python 2.7 runtime
             "sqlite3.dll",            # SQLite (delay-loaded)
-            "zlib1.dll",              # zlib compression
+            "zlib.dll",               # zlib compression (delay-loaded)
             "libxml2.dll",            # XML parsing
             "libcurl.dll",            # HTTP / network
             "libeay32.dll",           # OpenSSL crypto
             "ssleay32.dll",           # OpenSSL SSL/TLS
-            "libmicrohttpd-dll.dll",  # Embedded web server
-            "freetype6.dll",          # Font rendering
-            "libfribidi.dll",         # BiDi text layout
-            "libpng16.dll",           # PNG image decoding
-            "pcre.dll",               # Regular expressions
-            "expat.dll",              # XML parsing (Expat)
-            "fstrcmp.dll",            # Fuzzy string comparison
-            "CrossGuid.dll",          # GUID generation
-            "tag.dll",                # Audio tag metadata
-            "tinyxmlSTL.dll"          # TinyXML with STL
+            "libxslt.dll",            # XSLT transforms (delay-loaded)
+            "d3dcompiler_47.dll",     # DirectX shader compiler (delay-loaded)
+            "libmysql.dll",           # MySQL connector (delay-loaded)
+            "dnssd.dll"               # Zeroconf / Bonjour (delay-loaded)
           )
           $missingCritical = @()
           foreach ($dll in $criticalDlls) {
