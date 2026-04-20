@@ -1175,21 +1175,22 @@ bool CMediaPipelineWebOS::FeedVideoData(const std::shared_ptr<CDVDMsg>& msg)
     std::string payload;
     CJSONVariantWriter::Write(time, payload, true);
 
-    auto player = static_cast<mediapipeline::CustomPlayer*>(m_mediaAPIs->player.get());
-    auto pipeline = static_cast<mediapipeline::CustomPipeline*>(player->getPipeline().get());
-    if (!m_mediaAPIs->setTimeToDecode(payload.c_str()))
+    if (mediapipeline::CustomPipeline* pipeline = GetPipeline())
     {
-      CLog::LogF(LOGERROR, "setTimeToDecode failed");
-      if (m_webOSVersion < 11)
+      if (!m_mediaAPIs->setTimeToDecode(payload.c_str()))
       {
-        MEDIA_CUSTOM_CONTENT_INFO_T contentInfo;
-        pipeline->loadSpi_getInfo(&contentInfo);
-        contentInfo.ptsToDecode = pts.count();
-        pipeline->setContentInfo(MEDIA_CUSTOM_SRC_TYPE_ES, &contentInfo);
+        CLog::LogF(LOGERROR, "setTimeToDecode failed");
+        if (m_webOSVersion < 11)
+        {
+          MEDIA_CUSTOM_CONTENT_INFO_T contentInfo;
+          pipeline->loadSpi_getInfo(&contentInfo);
+          contentInfo.ptsToDecode = pts.count();
+          pipeline->setContentInfo(MEDIA_CUSTOM_SRC_TYPE_ES, &contentInfo);
+        }
       }
-    }
 
-    pipeline->sendSegmentEvent();
+      pipeline->sendSegmentEvent();
+    }
 
     m_pts = pts;
     m_fedVideoPts = NO_PTS;
@@ -1631,9 +1632,14 @@ bool CMediaPipelineWebOS::GetMaxVideoResolution(const std::string& codec,
 
 void CMediaPipelineWebOS::UpdatePlayTime()
 {
-  const auto pipeline = static_cast<mediapipeline::CustomPipeline*>(
-      static_cast<mediapipeline::CustomPlayer*>(m_mediaAPIs->player.get())->getPipeline().get());
   int64_t nanoPts;
+  mediapipeline::CustomPipeline* pipeline = GetPipeline();
+  if (!pipeline)
+  {
+    CLog::LogF(LOGDEBUG, "pipeline is nullptr");
+    return;
+  }
+
   pipeline->GetPlayInfo(&nanoPts);
   m_pts = std::chrono::nanoseconds(nanoPts);
 
@@ -1644,6 +1650,19 @@ void CMediaPipelineWebOS::UpdatePlayTime()
   std::atomic<bool> stop(false);
   m_renderManager.AddVideoPicture(m_picture, stop, VS_INTERLACEMETHOD_AUTO, false);
   m_clock.Discontinuity(pts);
+}
+
+mediapipeline::CustomPipeline* CMediaPipelineWebOS::GetPipeline() const
+{
+  if (!m_mediaAPIs || !m_mediaAPIs->player)
+    return nullptr;
+
+  const auto* customPlayer = static_cast<mediapipeline::CustomPlayer*>(m_mediaAPIs->player.get());
+  const auto pipelinePtr = customPlayer->getPipeline();
+  if (!pipelinePtr)
+    return nullptr;
+
+  return static_cast<mediapipeline::CustomPipeline*>(pipelinePtr.get());
 }
 
 void CMediaPipelineWebOS::PlayerCallback(int32_t type, const int64_t numValue, const char* strValue)
@@ -1676,11 +1695,15 @@ void CMediaPipelineWebOS::PlayerCallback(int32_t type, const int64_t numValue, c
       break;
     case PF_EVENT_TYPE_STR_STATE_UPDATE__LOADCOMPLETED:
     {
-      const auto player = static_cast<mediapipeline::CustomPlayer*>(m_mediaAPIs->player.get());
-      const auto pipeline =
-          static_cast<mediapipeline::CustomPipeline*>(player->getPipeline().get());
-      m_pipeline = pipeline->GetGStreamerElements(
-          {0, MIN_SRC_BUFFER_LEVEL_VIDEO, MAX_SRC_BUFFER_LEVEL_VIDEO, MAX_BUFFER_LEVEL});
+      if (mediapipeline::CustomPipeline* pipeline = GetPipeline())
+      {
+        m_pipeline = pipeline->GetGStreamerElements(
+            {0, MIN_SRC_BUFFER_LEVEL_VIDEO, MAX_SRC_BUFFER_LEVEL_VIDEO, MAX_BUFFER_LEVEL});
+      }
+      else
+      {
+        CLog::LogF(LOGERROR, "Failed to get pipeline elements");
+      }
 
       if (acb)
       {

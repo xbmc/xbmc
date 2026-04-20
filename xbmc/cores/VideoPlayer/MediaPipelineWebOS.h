@@ -34,6 +34,7 @@ class CActiveAEBufferPoolResample;
 
 namespace mediapipeline
 {
+class CustomPipeline;
 struct PipelineGStreamerElements;
 } // namespace mediapipeline
 
@@ -485,6 +486,12 @@ private:
    * pipeline.
    */
   void UpdatePlayTime();
+
+  /**
+   * @brief Gets the custom pipeline pointer
+   * @return Pointer to the custom pipeline, or nullptr if not available.
+   */
+  mediapipeline::CustomPipeline* GetPipeline() const;
 
   static constexpr std::chrono::nanoseconds NO_PTS{-1};
 
