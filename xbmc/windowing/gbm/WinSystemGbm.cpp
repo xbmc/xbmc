@@ -421,9 +421,7 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
       drm->AddProperty(connector, "HDR_OUTPUT_METADATA", 0);
       drm->SetActive(true);
 
-      if (m_hdr_blob_id)
-        drmModeDestroyPropertyBlob(drm->GetFileDescriptor(), m_hdr_blob_id);
-      m_hdr_blob_id = 0;
+      m_hdrBlob.Reset();
     }
 
     m_eotf = KODI::UTILS::Eotf::TRADITIONAL_SDR;
@@ -466,9 +464,7 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
     hdr_metadata.hdmi_metadata_type1.eotf = static_cast<uint8_t>(eotf);
     hdr_metadata.hdmi_metadata_type1.metadata_type = DRMPRIME::HDMI_STATIC_METADATA_TYPE1;
 
-    if (m_hdr_blob_id)
-      drmModeDestroyPropertyBlob(drm->GetFileDescriptor(), m_hdr_blob_id);
-    m_hdr_blob_id = 0;
+    m_hdrBlob.Reset();
 
     if (hdr_metadata.hdmi_metadata_type1.eotf)
     {
@@ -529,15 +525,14 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
                   hdr_metadata.hdmi_metadata_type1.max_fall);
       }
 
-      drmModeCreatePropertyBlob(drm->GetFileDescriptor(), &hdr_metadata, sizeof(hdr_metadata),
-                                &m_hdr_blob_id);
+      m_hdrBlob = CDRMPropertyBlob(drm->GetFileDescriptor(), &hdr_metadata, sizeof(hdr_metadata));
     }
 
-    drm->AddProperty(connector, "HDR_OUTPUT_METADATA", m_hdr_blob_id);
+    drm->AddProperty(connector, "HDR_OUTPUT_METADATA", m_hdrBlob.Get());
     drm->SetActive(true);
   }
 
-  return m_hdr_blob_id != 0;
+  return m_hdrBlob.IsValid();
 }
 
 bool CWinSystemGbm::IsHDRDisplay()
