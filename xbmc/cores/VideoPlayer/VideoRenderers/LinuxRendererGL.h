@@ -68,7 +68,7 @@ public:
   void AddVideoPicture(const VideoPicture &picture, int index) override;
   void UnInit() override;
   bool Flush(bool saveBuffers) override;
-  void SetBufferSize(int numBuffers) override { m_NumYV12Buffers = numBuffers; }
+  void SetBufferSize(int numBuffers) override { m_NumYUVBuffers = numBuffers; }
   void ReleaseBuffer(int idx) override;
   void RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;
   void Update() override;
@@ -103,17 +103,17 @@ protected:
   virtual void DeleteTexture(int index);
   virtual bool CreateTexture(int index);
 
-  bool UploadYV12Texture(int index);
-  void DeleteYV12Texture(int index);
-  bool CreateYV12Texture(int index);
+  bool UploadPlanarYUVTexture(int index);
+  void DeletePlanarYUVTexture(int index);
+  bool CreatePlanarYUVTexture(int index);
 
   bool UploadNV12Texture(int index);
   void DeleteNV12Texture(int index);
   bool CreateNV12Texture(int index);
 
-  bool UploadYUV422PackedTexture(int index);
-  void DeleteYUV422PackedTexture(int index);
-  bool CreateYUV422PackedTexture(int index);
+  bool UploadPackedYUVTexture(int index);
+  void DeletePackedYUVTexture(int index);
+  bool CreatePackedYUVTexture(int index);
 
   void CalculateTextureSourceRects(int source, int num_planes);
 
@@ -151,8 +151,8 @@ protected:
   GLint m_intermediateType{GL_UNSIGNED_BYTE};
   bool m_intermediateGammaCorrection{false};
 
-  int m_iYV12RenderBuffer = 0;
-  int m_NumYV12Buffers = 0;
+  int m_iYUVRenderBuffer = 0;
+  int m_NumYUVBuffers = 0;
 
   bool m_bConfigured = false;
   bool m_bValidated = false;
@@ -205,7 +205,7 @@ protected:
     AVContentLightMetadata lightMetadata;
   };
 
-  // YV12 decoder textures
+  // YUV decoder textures
   // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
   CPictureBuffer m_buffers[NUM_BUFFERS];
 
