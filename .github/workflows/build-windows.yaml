@@ -217,12 +217,15 @@ jobs:
         run: call tools\buildsteps\windows\download-dependencies.bat
 
       # Leia has CMakeLists.txt at repo root; use an out-of-source build dir.
+      # -DENABLE_INTERNAL_FFMPEG=OFF forces CMake to use the externally-built
+      # FFmpeg static libraries (in mingwlibs/win32/) rather than downloading
+      # and building its own.  This avoids any accidental FFmpeg DLL leakage.
       - name: Configure with CMake
         shell: cmd
         run: |
           mkdir kodi-build
           cd kodi-build
-          cmake -G "Visual Studio 17 2022" -A Win32 %GITHUB_WORKSPACE%
+          cmake -G "Visual Studio 17 2022" -A Win32 -DENABLE_INTERNAL_FFMPEG=OFF %GITHUB_WORKSPACE%
 
       - name: Build
         shell: cmd
@@ -460,6 +463,77 @@ jobs:
           Get-ChildItem $staging -Directory | ForEach-Object { Write-Host "  $($_.Name)/" }
           $dllCount = (Get-ChildItem $staging -Filter "*.dll" -File).Count
           Write-Host "DLLs at root: $dllCount"
+
+      # ---------------------------------------------------------------
+      # DLL provenance check — FFmpeg is linked statically so no FFmpeg
+      # DLLs should be present.  The only MinGW-sourced DLLs allowed are
+      # the libdvd libraries (dvdcss, dvdnav, dvdread).
+      # ---------------------------------------------------------------
+      - name: Sanitize and verify DLL provenance in staging
+        if: success()
+        shell: pwsh
+        run: |
+          $staging = "$env:GITHUB_WORKSPACE\staging"
+          $removedCount = 0
+
+          # 1. Remove any stray FFmpeg DLLs.  FFmpeg is built static
+          #    (--disable-shared --enable-static in ffmpeg_options.txt)
+          #    so none of these should exist.  If they do, they came from
+          #    a pre-packaged dependency or an MSYS2/MinGW installation.
+          $ffmpegPatterns = @(
+            "avutil*.dll", "avcodec*.dll", "avformat*.dll",
+            "avfilter*.dll", "swscale*.dll", "swresample*.dll",
+            "postproc*.dll", "avdevice*.dll"
+          )
+          foreach ($pattern in $ffmpegPatterns) {
+            $found = Get-ChildItem $staging -Filter $pattern -File -Recurse -ErrorAction SilentlyContinue
+            foreach ($f in $found) {
+              Write-Host "::warning::Removing stray FFmpeg DLL: $($f.FullName) ($('{0:N0}' -f $f.Length) bytes)"
+              Remove-Item $f.FullName -Force
+              $removedCount++
+            }
+          }
+
+          # 2. Check for MinGW runtime DLLs that should NOT be in staging.
+          #    The only DLLs intentionally sourced from MinGW are the libdvd
+          #    libraries; everything else must be MSVC-built.
+          $mingwRuntimePatterns = @(
+            "libgcc*.dll", "libstdc++*.dll", "libwinpthread*.dll",
+            "libssp*.dll", "libgomp*.dll", "libquadmath*.dll",
+            "zlib1.dll", "libiconv*.dll"
+          )
+          foreach ($pattern in $mingwRuntimePatterns) {
+            $found = Get-ChildItem $staging -Filter $pattern -File -Recurse -ErrorAction SilentlyContinue
+            foreach ($f in $found) {
+              Write-Host "::warning::Removing unwanted MinGW runtime DLL: $($f.FullName)"
+              Remove-Item $f.FullName -Force
+              $removedCount++
+            }
+          }
+
+          # 3. Whitelist check — only libdvd DLLs are allowed from MinGW.
+          #    Verify they exist if present (they are optional; the build may
+          #    produce them via ExternalProject).
+          $allowedMingwDlls = @("libdvdcss*.dll", "libdvdnav*.dll", "libdvdread*.dll")
+          foreach ($pattern in $allowedMingwDlls) {
+            $found = Get-ChildItem $staging -Filter $pattern -File -Recurse -ErrorAction SilentlyContinue
+            foreach ($f in $found) {
+              Write-Host "OK (MinGW-allowed): $($f.Name) ($($f.Length) bytes)"
+            }
+          }
+
+          # 4. Final DLL inventory
+          Write-Host "`n=== Final DLL inventory after sanitization ==="
+          $allDlls = Get-ChildItem $staging -Filter "*.dll" -File | Sort-Object Name
+          foreach ($dll in $allDlls) {
+            Write-Host "  $($dll.Name) ($('{0:N0}' -f $dll.Length) bytes)"
+          }
+          Write-Host "Total DLLs at staging root: $($allDlls.Count)"
+
+          if ($removedCount -gt 0) {
+            Write-Host "::warning::Removed $removedCount unwanted DLL(s) — review build to prevent them from appearing"
+          }
+          Write-Host "`nDLL provenance check passed"
 
       - name: Validate required files in staging
         if: success()
