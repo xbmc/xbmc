@@ -474,7 +474,7 @@ jobs:
         shell: pwsh
         run: |
           $staging = "$env:GITHUB_WORKSPACE\staging"
-          $failed = $false
+          $removedCount = 0
 
           # 1. Remove any stray FFmpeg DLLs.  FFmpeg is built static
           #    (--disable-shared --enable-static in ffmpeg_options.txt)
@@ -490,6 +490,7 @@ jobs:
             foreach ($f in $found) {
               Write-Host "::warning::Removing stray FFmpeg DLL: $($f.FullName) ($('{0:N0}' -f $f.Length) bytes)"
               Remove-Item $f.FullName -Force
+              $removedCount++
             }
           }
 
@@ -506,6 +507,7 @@ jobs:
             foreach ($f in $found) {
               Write-Host "::warning::Removing unwanted MinGW runtime DLL: $($f.FullName)"
               Remove-Item $f.FullName -Force
+              $removedCount++
             }
           }
 
@@ -514,7 +516,7 @@ jobs:
           #    produce them via ExternalProject).
           $allowedMingwDlls = @("libdvdcss*.dll", "libdvdnav*.dll", "libdvdread*.dll")
           foreach ($pattern in $allowedMingwDlls) {
-            $found = Get-ChildItem $staging -Filter $pattern -File -ErrorAction SilentlyContinue
+            $found = Get-ChildItem $staging -Filter $pattern -File -Recurse -ErrorAction SilentlyContinue
             foreach ($f in $found) {
               Write-Host "OK (MinGW-allowed): $($f.Name) ($($f.Length) bytes)"
             }
@@ -528,7 +530,9 @@ jobs:
           }
           Write-Host "Total DLLs at staging root: $($allDlls.Count)"
 
-          if ($failed) { exit 1 }
+          if ($removedCount -gt 0) {
+            Write-Host "::warning::Removed $removedCount unwanted DLL(s) — review build to prevent them from appearing"
+          }
           Write-Host "`nDLL provenance check passed"
 
       - name: Validate required files in staging
