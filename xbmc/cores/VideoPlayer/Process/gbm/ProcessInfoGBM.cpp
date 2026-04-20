@@ -52,6 +52,7 @@ std::vector<AVPixelFormat> CProcessInfoGBM::GetRenderFormats()
       AV_PIX_FMT_YUV422P,
       AV_PIX_FMT_YUYV422,
       AV_PIX_FMT_UYVY422,
+      AV_PIX_FMT_YUV444P,
   };
   // clang-format on
 

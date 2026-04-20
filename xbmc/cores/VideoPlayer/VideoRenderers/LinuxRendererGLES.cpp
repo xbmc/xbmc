@@ -1680,8 +1680,8 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
 
   im.height = m_sourceHeight;
   im.width = m_sourceWidth;
-  im.cshift_x = 1;
-  im.cshift_y = (m_format == AV_PIX_FMT_YUV422P) ? 0 : 1;
+  im.cshift_x = (m_format == AV_PIX_FMT_YUV444P) ? 0 : 1;
+  im.cshift_y = (m_format == AV_PIX_FMT_YUV422P || m_format == AV_PIX_FMT_YUV444P) ? 0 : 1;
 
   // Bit depth comes from libavutil's public pixdesc API, avoiding a parallel switch.
   const AVPixFmtDescriptor* desc = av_pix_fmt_desc_get(m_format);
