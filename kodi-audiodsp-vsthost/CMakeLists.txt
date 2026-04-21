@@ -61,7 +61,20 @@ set(VST3_HOSTING_SOURCES
     "${VST3SDK_DIR}/public.sdk/source/vst/hosting/parameterchanges.cpp"
     "${VST3SDK_DIR}/public.sdk/source/vst/hosting/eventlist.cpp"
     "${VST3SDK_DIR}/public.sdk/source/vst/hosting/connectionproxy.cpp"
+    # Defines DEF_CLASS_IID for all Vst::* interfaces (IComponent,
+    # IEditController, IAudioProcessor, IHostApplication, IConnectionPoint,
+    # IParameterChanges, IParamValueQueue, ITestPlugProvider, ...)
+    "${VST3SDK_DIR}/public.sdk/source/vst/vstinitiids.cpp"
+    # VST3::StringConvert::convert (char16 <-> UTF-8) used by module_win32.cpp
+    "${VST3SDK_DIR}/public.sdk/source/vst/utility/stringconvert.cpp"
+    # Steinberg::Vst::ThreadChecker::create used by connectionproxy.cpp
+    "${VST3SDK_DIR}/public.sdk/source/vst/utility/threadchecker_win32.cpp"
+    # Steinberg::MemoryStream used by VSTPlugin3::save/loadState
+    "${VST3SDK_DIR}/public.sdk/source/common/memorystream.cpp"
     "${VST3SDK_DIR}/base/source/fstring.cpp"
+    # Steinberg::FStreamer / IBStreamer used by VSTPlugin3::save/loadState
+    "${VST3SDK_DIR}/base/source/fstreamer.cpp"
+    "${VST3SDK_DIR}/base/source/fbuffer.cpp"
     "${VST3SDK_DIR}/base/source/updatehandler.cpp"
     "${VST3SDK_DIR}/pluginterfaces/base/funknown.cpp"
     "${VST3SDK_DIR}/pluginterfaces/base/conststringtable.cpp"
