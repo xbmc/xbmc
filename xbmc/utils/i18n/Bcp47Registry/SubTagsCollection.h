@@ -206,7 +206,7 @@ void CSubTagsCollection<T>::InsertDescLookupElem(std::string&& description, cons
 
     CLog::LogF(
         LOGDEBUG,
-        "{}subtag [{}] redefines the decription [{}] previously defined by {}subtag [{}] - {}",
+        "{}subtag [{}] redefines the description [{}] previously defined by {}subtag [{}] - {}",
         subTag.m_deprecated.empty() ? "" : "deprecated ", subTag.m_subTag, it->first,
         orig->m_deprecated.empty() ? "" : "deprecated ", orig->m_subTag,
         overwritten ? "overwritten" : "ignored");
