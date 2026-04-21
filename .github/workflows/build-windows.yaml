@@ -376,6 +376,23 @@ jobs:
             cmake/addons/logs/
           if-no-files-found: warn
 
+      - name: Build audiodsp.vsthost addon
+        shell: cmd
+        run: |
+          for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) do call "%%i\VC\Auxiliary\Build\vcvars32.bat"
+          if not exist vsthost-build mkdir vsthost-build
+          cd vsthost-build
+          cmake -G "Visual Studio 17 2022" -A Win32 ^
+                -DCMAKE_BUILD_TYPE=Release ^
+                -DKODI_ADSP_SDK_DIR=%GITHUB_WORKSPACE%\addons\kodi-addon-dev-kit\include\kodi ^
+                -DCMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%\vsthost-install ^
+                %GITHUB_WORKSPACE%\kodi-audiodsp-vsthost
+          cmake --build . --config Release --target audiodsp.vsthost
+          if exist Release\vstscanner.exe (
+            cmake --build . --config Release --target vstscanner
+          )
+          cmake --install . --config Release
+
       # Collect all build output into a single staging directory that mirrors
       # the final on-disk layout.
       #
@@ -463,6 +480,37 @@ jobs:
           Get-ChildItem $staging -Directory | ForEach-Object { Write-Host "  $($_.Name)/" }
           $dllCount = (Get-ChildItem $staging -Filter "*.dll" -File).Count
           Write-Host "DLLs at root: $dllCount"
+
+      - name: Stage VST addons into staging
+        if: success()
+        shell: pwsh
+        run: |
+          $staging = "$env:GITHUB_WORKSPACE\staging"
+
+          # --- audiodsp.vsthost ---
+          $vstInstall = "$env:GITHUB_WORKSPACE\vsthost-install"
+          $vstDst = Join-Path $staging "addons\audiodsp.vsthost"
+          New-Item -ItemType Directory -Force $vstDst | Out-Null
+          if (Test-Path "$vstInstall\audiodsp.vsthost.dll") {
+            Copy-Item "$vstInstall\audiodsp.vsthost.dll" -Destination $vstDst -Force
+            Write-Host "Staged audiodsp.vsthost.dll"
+          } else {
+            Write-Host "::warning::audiodsp.vsthost.dll not found in $vstInstall"
+          }
+          if (Test-Path "$vstInstall\vstscanner.exe") {
+            Copy-Item "$vstInstall\vstscanner.exe" -Destination $vstDst -Force
+            Write-Host "Staged vstscanner.exe"
+          }
+
+          # --- plugin.audio.vstmanager (pure Python, copy source tree) ---
+          $vstMgrSrc = "$env:GITHUB_WORKSPACE\addons\plugin.audio.vstmanager"
+          $vstMgrDst = Join-Path $staging "addons\plugin.audio.vstmanager"
+          if (Test-Path $vstMgrSrc) {
+            Copy-Item -Path $vstMgrSrc -Destination $vstMgrDst -Recurse -Force
+            Write-Host "Staged plugin.audio.vstmanager"
+          } else {
+            Write-Host "::warning::plugin.audio.vstmanager source not found at $vstMgrSrc"
+          }
 
       # ---------------------------------------------------------------
       # DLL provenance check — FFmpeg is linked statically so no FFmpeg
