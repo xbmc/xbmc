@@ -64,7 +64,7 @@ jobs:
           if not exist kodi-audiodsp-vsthost\install mkdir kodi-audiodsp-vsthost\install
           cmake -G "Visual Studio 17 2022" -A Win32 ^
             -DCMAKE_BUILD_TYPE=Release ^
-            -DKODI_ADSP_SDK_DIR="%GITHUB_WORKSPACE%\addons\kodi-addon-dev-kit\include\kodi" ^
+            -DKODI_ADSP_SDK_DIR="%GITHUB_WORKSPACE%\xbmc\addons\kodi-addon-dev-kit\include\kodi" ^
             -DCMAKE_INSTALL_PREFIX="%GITHUB_WORKSPACE%\kodi-audiodsp-vsthost\install" ^
             -S "%GITHUB_WORKSPACE%\kodi-audiodsp-vsthost" ^
             -B "%GITHUB_WORKSPACE%\kodi-audiodsp-vsthost\build"

@@ -384,7 +384,7 @@ jobs:
           cd vsthost-build
           cmake -G "Visual Studio 17 2022" -A Win32 ^
                 -DCMAKE_BUILD_TYPE=Release ^
-                -DKODI_ADSP_SDK_DIR=%GITHUB_WORKSPACE%\addons\kodi-addon-dev-kit\include\kodi ^
+                -DKODI_ADSP_SDK_DIR=%GITHUB_WORKSPACE%\xbmc\addons\kodi-addon-dev-kit\include\kodi ^
                 -DCMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%\vsthost-install ^
                 %GITHUB_WORKSPACE%\kodi-audiodsp-vsthost
           cmake --build . --config Release --target audiodsp.vsthost
