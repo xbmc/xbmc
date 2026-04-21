@@ -36,7 +36,10 @@ else()
         GIT_SUBMODULES "base;pluginterfaces;public.sdk"
         GIT_SHALLOW    TRUE
     )
-    FetchContent_MakeAvailable(vst3sdk)
+    FetchContent_GetProperties(vst3sdk)
+    if(NOT vst3sdk_POPULATED)
+        FetchContent_Populate(vst3sdk)
+    endif()
     set(VST3SDK_DIR "${vst3sdk_SOURCE_DIR}")
 endif()
 
@@ -88,12 +91,14 @@ else()
     add_library(vst3_hosting INTERFACE)
 endif()
 
-# Include directories for vst3_hosting (always attached so consumers inherit
-# them even when the target is INTERFACE).
-target_include_directories(vst3_hosting
-    $<IF:$<STREQUAL:$<TARGET_PROPERTY:vst3_hosting,TYPE>,INTERFACE_LIBRARY>,INTERFACE,PUBLIC>
-    "${VST3SDK_DIR}"
-)
+if(TARGET vst3_hosting)
+    get_target_property(_vst3_hosting_type vst3_hosting TYPE)
+    if(_vst3_hosting_type STREQUAL "INTERFACE_LIBRARY")
+        target_include_directories(vst3_hosting INTERFACE "${VST3SDK_DIR}")
+    else()
+        target_include_directories(vst3_hosting PUBLIC "${VST3SDK_DIR}")
+    endif()
+endif()
 
 if(NOT TARGET vst3_hosting OR NOT VST3_HOSTING_SOURCES_FOUND)
     # Nothing more to configure for the hosting lib.
