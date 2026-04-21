@@ -247,6 +247,13 @@ public:
   virtual void EndGuiComposite() {}
   virtual void CompositeGui() {}
 
+  // True when GUI is rendered to an FBO that is then color-transformed
+  // (sRGB -> PQ/HLG) and composited against HDR video in that non-linear
+  // space. Alpha blending assumes linear light; blending non-linear values
+  // yields wrong transparency. When true, GUI draws select a compensated
+  // alpha blend (see CGUIFontTTFGLES::FirstBegin).
+  virtual bool IsHdrComposite() const { return false; }
+
   /*!
    * \brief Gets debug info from video renderer for use in "Debug Info OSD" (Alt + O)
    *
