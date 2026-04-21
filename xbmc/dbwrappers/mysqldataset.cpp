@@ -158,11 +158,6 @@ int MysqlDatabase::setErr(int err_code, const char* qry)
   return err_code;
 }
 
-const char* MysqlDatabase::getErrorMsg()
-{
-  return error.c_str();
-}
-
 void MysqlDatabase::configure_connection()
 {
   // MySQL 5.7.5+: See #8393
@@ -433,7 +428,7 @@ int MysqlDatabase::copy(const char* backup_name)
       }
 
       // copy the table definition
-      sqlcmd = StringUtils::Format("CREATE TABLE `{}`.{} LIKE {}", backup_name, row[0], row[0]);
+      sqlcmd = StringUtils::Format("CREATE TABLE `{}`.`{}` LIKE `{}`", backup_name, row[0], row[0]);
       ret = query_with_reconnect(sqlcmd.c_str());
       if (ret != MYSQL_OK)
       {
@@ -453,8 +448,8 @@ int MysqlDatabase::copy(const char* backup_name)
       }
 
       // copy the table data
-      sqlcmd =
-          StringUtils::Format("INSERT INTO `{}`.{} SELECT * FROM {}", backup_name, row[0], row[0]);
+      sqlcmd = StringUtils::Format("INSERT INTO `{}`.`{}` SELECT * FROM `{}`", backup_name, row[0],
+                                   row[0]);
       ret = query_with_reconnect(sqlcmd.c_str());
       if (ret != MYSQL_OK)
       {
@@ -500,7 +495,7 @@ int MysqlDatabase::drop_analytics()
   {
     while ((row = mysql_fetch_row(res)) != nullptr)
     {
-      sqlcmd = StringUtils::Format("ALTER TABLE `{}`.{} DROP INDEX {}", db, row[0], row[1]);
+      sqlcmd = StringUtils::Format("ALTER TABLE `{}`.`{}` DROP INDEX `{}`", db, row[0], row[1]);
       ret = query_with_reconnect(sqlcmd.c_str());
 
       if (ret != MYSQL_OK)
@@ -528,7 +523,7 @@ int MysqlDatabase::drop_analytics()
     while ((row = mysql_fetch_row(res)) != nullptr)
     {
       /* we do not need IF EXISTS because these views are exist */
-      sqlcmd = StringUtils::Format("DROP VIEW `{}`.{}", db, row[0]);
+      sqlcmd = StringUtils::Format("DROP VIEW `{}`.`{}`", db, row[0]);
       ret = query_with_reconnect(sqlcmd.c_str());
       if (ret != MYSQL_OK)
       {
@@ -554,7 +549,7 @@ int MysqlDatabase::drop_analytics()
   {
     while ((row = mysql_fetch_row(res)) != nullptr)
     {
-      sqlcmd = StringUtils::Format("DROP TRIGGER `{}`.{}", db, row[0]);
+      sqlcmd = StringUtils::Format("DROP TRIGGER `{}`.`{}`", db, row[0]);
       ret = query_with_reconnect(sqlcmd.c_str());
       if (ret != MYSQL_OK)
       {
@@ -581,7 +576,7 @@ int MysqlDatabase::drop_analytics()
   {
     while ((row = mysql_fetch_row(res)) != nullptr)
     {
-      sqlcmd = StringUtils::Format("DROP FUNCTION `{}`.{}", db, row[0]);
+      sqlcmd = StringUtils::Format("DROP FUNCTION `{}`.`{}`", db, row[0]);
       ret = query_with_reconnect(sqlcmd.c_str());
       if (ret != MYSQL_OK)
       {
@@ -1913,7 +1908,7 @@ bool MysqlDataset::dropIndex(const char* table, const char* index)
 
   if (num_rows())
   {
-    sql = "ALTER TABLE %s DROP INDEX %s";
+    sql = "ALTER TABLE `%s` DROP INDEX `%s`";
     sql_prepared = static_cast<MysqlDatabase*>(db)->prepare(sql.c_str(), table, index);
 
     if (exec(sql_prepared) != MYSQL_OK)
