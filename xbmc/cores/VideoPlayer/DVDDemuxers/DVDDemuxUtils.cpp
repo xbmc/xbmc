@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -12,9 +12,13 @@
 #include "utils/MemUtils.h"
 #include "utils/log.h"
 
-extern "C" {
+extern "C"
+{
 #include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
 }
+
+#include <algorithm>
 
 void CDVDDemuxUtils::FreeDemuxPacket(DemuxPacket* pPacket)
 {
@@ -108,4 +112,43 @@ void CDVDDemuxUtils::StoreSideData(DemuxPacket *pkt, AVPacket *src)
   // and storing our own AVPacket. This will require some extensive changes.
   av_buffer_unref(&avPkt->buf);
   av_free(avPkt);
+}
+
+std::vector<ChapterFFmpeg> CDVDDemuxUtils::LoadChapters(std::span<AVChapter*> chapters)
+{
+  using namespace std::chrono_literals;
+
+  std::vector<ChapterFFmpeg> result;
+
+  if (chapters.empty() || chapters.data() == nullptr)
+    return result;
+
+  result.reserve(chapters.size());
+
+  std::ranges::transform(
+      chapters, std::back_inserter(result),
+      [](const AVChapter* chapter)
+      {
+        ChapterFFmpeg newChapter{};
+
+        std::chrono::duration<double> dsec(chapter->start * av_q2d(chapter->time_base));
+        newChapter.m_startPts = std::chrono::duration_cast<std::chrono::milliseconds>(dsec);
+        dsec = std::chrono::duration<double>(chapter->end * av_q2d(chapter->time_base));
+        newChapter.m_endPts = std::chrono::duration_cast<std::chrono::milliseconds>(dsec);
+
+        const AVDictionaryEntry* titleTag = av_dict_get(chapter->metadata, "title", nullptr, 0);
+
+        if (titleTag)
+          newChapter.m_name = titleTag->value;
+
+        return newChapter;
+      });
+
+  std::ranges::sort(result, std::less(), &ChapterFFmpeg::m_startPts);
+
+  // Videoplayer expects the first chapter to start at 00:00:00 - make one up if needed.
+  if (result.front().m_startPts != 0ms)
+    result.insert(result.begin(), ChapterFFmpeg{0ms, 0ms, ""});
+
+  return result;
 }
