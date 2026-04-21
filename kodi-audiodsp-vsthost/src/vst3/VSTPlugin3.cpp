@@ -95,12 +95,19 @@ bool VSTPlugin3::load(double sampleRate, int maxBlockSize, int numChannels)
     // 2. Obtain the plugin factory
     // -----------------------------------------------------------------------
     auto factory = m_module->getFactory();
+    auto classInfos = factory.classInfos();
+    if (classInfos.empty())
+    {
+        VST3_LOG("VST3 module has no class infos: '%s'", m_path.c_str());
+        m_module.reset();
+        return false;
+    }
 
     // -----------------------------------------------------------------------
     // 3. Create a PlugProvider — it handles component creation and cleanup
     // -----------------------------------------------------------------------
     m_provider = Steinberg::owned(
-        new Steinberg::Vst::PlugProvider(factory, nullptr, true));
+        new Steinberg::Vst::PlugProvider(factory, classInfos.front(), true));
     if (!m_provider)
     {
         VST3_LOG("Failed to create PlugProvider for '%s'", m_path.c_str());
@@ -111,10 +118,9 @@ bool VSTPlugin3::load(double sampleRate, int maxBlockSize, int numChannels)
     // -----------------------------------------------------------------------
     // 4. Setup the plugin (instantiates the component, controller, etc.)
     // -----------------------------------------------------------------------
-    if (m_provider->setupPlugin(Steinberg::Vst::kDefaultFactoryFlags) !=
-        Steinberg::kResultOk)
+    if (!m_provider->initialize())
     {
-        VST3_LOG("PlugProvider::setupPlugin failed for '%s'", m_path.c_str());
+        VST3_LOG("PlugProvider::initialize failed for '%s'", m_path.c_str());
         m_provider = nullptr;
         m_module.reset();
         return false;
@@ -242,7 +248,7 @@ bool VSTPlugin3::load(double sampleRate, int maxBlockSize, int numChannels)
     // Populate name / vendor from factory info
     // -----------------------------------------------------------------------
     {
-        auto& classInfoList = factory.classInfos();
+        auto classInfoList = factory.classInfos();
         for (const auto& ci : classInfoList)
         {
             if (ci.category() == kVstAudioEffectClass)
@@ -476,7 +482,7 @@ std::vector<uint8_t> VSTPlugin3::saveState() const
             auto ctrlSizeU32 = static_cast<uint32_t>(ctrlSize);
 
             // Write controller size marker into the main stream.
-            Steinberg::IBStreamer mainStreamer(&stream, Steinberg::kLittleEndian);
+            Steinberg::IBStreamer mainStreamer(&stream, kLittleEndian);
             mainStreamer.writeInt32u(ctrlSizeU32);
 
             // Append controller bytes.
@@ -488,7 +494,7 @@ std::vector<uint8_t> VSTPlugin3::saveState() const
         else
         {
             // Write zero-length marker so the format stays consistent.
-            Steinberg::IBStreamer mainStreamer(&stream, Steinberg::kLittleEndian);
+            Steinberg::IBStreamer mainStreamer(&stream, kLittleEndian);
             mainStreamer.writeInt32u(0u);
         }
     }
@@ -525,7 +531,7 @@ bool VSTPlugin3::loadState(const std::vector<uint8_t>& data)
     // Restore controller state if a length marker is present.
     if (m_controller)
     {
-        Steinberg::IBStreamer streamer(&stream, Steinberg::kLittleEndian);
+        Steinberg::IBStreamer streamer(&stream, kLittleEndian);
         uint32_t ctrlSize = 0;
         if (streamer.readInt32u(ctrlSize) && ctrlSize > 0)
         {
