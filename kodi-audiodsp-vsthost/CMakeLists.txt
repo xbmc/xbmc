@@ -148,6 +148,7 @@ if(WIN32)
     target_compile_definitions(audiodsp.vsthost PRIVATE
         NOMINMAX
         WIN32
+        TARGET_WINDOWS
         UNICODE
         _UNICODE
     )
