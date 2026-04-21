@@ -785,10 +785,10 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &freeBufferTime)
   }
 
   int status = si->m_decoder.GetStatus();
-  if (status == STATUS_ENDED   ||
-      status == STATUS_NO_FILE ||
+  if (status == STATUS_ENDED || status == STATUS_NO_FILE ||
       si->m_decoder.ReadSamples(PACKET_SIZE) == RET_ERROR ||
-      ((si->m_endOffset) && (si->m_framesSent / si->m_audioFormat.m_sampleRate >= (si->m_endOffset - si->m_startOffset) / 1000)))
+      ((si->m_endOffset) && (si->m_framesSent >= (si->m_endOffset - si->m_startOffset) *
+                                                     si->m_audioFormat.m_sampleRate / 1000)))
   {
     if (si == m_currentStream && si->m_nextFileItem)
     {

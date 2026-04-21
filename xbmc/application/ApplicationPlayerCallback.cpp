@@ -331,8 +331,7 @@ bool UpdatePlayCount(const CFileItem& fileItem, const CBookmark& bookmark)
   if (bookmark.timeInSeconds < 0.0)
     return true; // Finished
 
-  const std::shared_ptr<CAdvancedSettings> advancedSettings{
-      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
+  const auto advancedSettings{CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
   const float percent{static_cast<float>(bookmark.timeInSeconds / bookmark.totalTimeInSeconds) *
                       100.0f};
 
@@ -353,6 +352,7 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
 {
   auto& components{CServiceBroker::GetAppComponents()};
   const auto stackHelper{components.GetComponent<CApplicationStackHelper>()};
+  const auto advancedSettings{CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
 
   CFileItem fileItem{file};
   CBookmark bookmark{bookmarkParam};
@@ -361,29 +361,38 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
   if (bookmark.timeInSeconds == 0.0)
     return;
 
+  if (VIDEO::IsVideo(fileItem))
+  {
 #ifdef HAVE_LIBBLURAY
-  // Adjust paths of new fileItem for physical/removable blurays
-  // DynPath contains the mpls (playlist) played
-  // VideoInfoTag()->m_strFileNameAndPath contains the removable:// path (if played through Disc node)
-  // otherwise if played through Video->Files we need to retrieve the removable:// path
-  // We need to update DynPath with the removable:// path (for the database), keeping the playlist
-  // Also flag if we need to update stream details from the played file
-  UpdateRemovableBlurayPath(fileItem, file.GetProperty("update_stream_details").asBoolean(false));
+    // Adjust paths of new fileItem for physical/removable blurays
+    // DynPath contains the mpls (playlist) played
+    // VideoInfoTag()->m_strFileNameAndPath contains the removable:// path (if played through Disc node)
+    // otherwise if played through Video->Files we need to retrieve the removable:// path
+    // We need to update DynPath with the removable:// path (for the database), keeping the playlist
+    // Also flag if we need to update stream details from the played file
+    UpdateRemovableBlurayPath(fileItem, file.GetProperty("update_stream_details").asBoolean(false));
 #endif
 
-  // Update the stack
-  if (stackHelper->GetStack(file) != nullptr)
-    UpdateStackAndItem(file, fileItem, bookmark, stackHelper);
+    // Update the stack
+    if (stackHelper->GetStack(file) != nullptr)
+      UpdateStackAndItem(file, fileItem, bookmark, stackHelper);
 
-  if (const std::shared_ptr<CAdvancedSettings> advancedSettings{
-          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
-      WithinPercentOfEnd(bookmark, advancedSettings->m_videoIgnorePercentAtEnd))
-  {
-    bookmark.timeInSeconds = -1.0; // Finished (bookmark cleared)
+    if (WithinPercentOfEnd(bookmark, advancedSettings->m_videoIgnorePercentAtEnd))
+    {
+      bookmark.timeInSeconds = -1.0; // Finished (bookmark cleared)
+    }
+    else if (bookmark.timeInSeconds < advancedSettings->m_videoIgnoreSecondsAtStart)
+    {
+      bookmark.timeInSeconds = 0.0; // Not played enough to bookmark (bookmark cleared)
+    }
   }
-  else if (bookmark.timeInSeconds < advancedSettings->m_videoIgnoreSecondsAtStart)
+  else if (MUSIC::IsAudio(fileItem))
   {
-    bookmark.timeInSeconds = 0.0; // Not played enough to bookmark (bookmark cleared)
+    if (bookmark.timeInSeconds >= bookmark.totalTimeInSeconds - 1)
+    {
+      // If within 1 second of the end
+      bookmark.timeInSeconds = -1.0; // Finished (bookmark cleared)
+    }
   }
 
   if (CServiceBroker::GetSettingsComponent()
@@ -393,7 +402,8 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
   {
     CSaveFileState::DoWork(fileItem, bookmark, UpdatePlayCount(fileItem, bookmark));
 
-    stackHelper->SetStackFileIds(fileItem.GetVideoInfoTag()->m_iFileId);
+    if (VIDEO::IsVideo(fileItem))
+      stackHelper->SetStackFileIds(fileItem.GetVideoInfoTag()->m_iFileId);
   }
 }
 
