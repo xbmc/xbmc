@@ -438,9 +438,12 @@ CGUIWindowVideoBase::ShowInfoResult CGUIWindowVideoBase::ShowInfo(
   if (bHasInfo)
   {
     // @todo add support to refresh movie version information
-    if ((!info || info->Content() == ContentType::NONE || VIDEO::IsVideoAssetFile(*item)) &&
-        item->GetVideoContentType() != VideoDbContentType::MOVIE_SETS)
+    if (((!info || info->Content() == ContentType::NONE) &&
+         item->GetVideoContentType() != VideoDbContentType::MOVIE_SETS) ||
+        VIDEO::IsVideoAssetFile(*item))
+    {
       item->SetProperty("xxuniqueid", "xx" + movieDetails.GetUniqueID()); // disable refresh button
+    }
     item->SetProperty("CheckAutoPlayNextItem", IsActive());
     *item->GetVideoInfoTag() = movieDetails;
     pDlgInfo->SetMovie(item.get());
