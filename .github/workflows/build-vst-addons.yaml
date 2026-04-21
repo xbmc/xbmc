@@ -1,0 +1,214 @@
+name: Build VST Addons (Win32)
+
+# Builds audiodsp.vsthost.dll + vstscanner.exe and plugin.audio.vstmanager,
+# packages them into kodi-vst-addons-win32.zip, and creates a GitHub Release.
+# Uses the vst-v* tag prefix to avoid colliding with Kodi release tags.
+
+on:
+  push:
+    branches:
+      - Leia
+    paths:
+      - 'kodi-audiodsp-vsthost/**'
+      - 'addons/plugin.audio.vstmanager/**'
+      - '.github/workflows/build-vst-addons.yaml'
+  pull_request:
+    branches:
+      - Leia
+    paths:
+      - 'kodi-audiodsp-vsthost/**'
+      - 'addons/plugin.audio.vstmanager/**'
+      - '.github/workflows/build-vst-addons.yaml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-vst-addons:
+    name: Build VST addons (Windows x86)
+    runs-on: windows-2022
+
+    env:
+      # Prefer ORGANIZERRO_PAT; fall back to github.token for forks/public clones.
+      GH_TOKEN: ${{ secrets.ORGANIZERRO_PAT != '' && secrets.ORGANIZERRO_PAT || github.token }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.ORGANIZERRO_PAT != '' && secrets.ORGANIZERRO_PAT || github.token }}
+
+      # ------------------------------------------------------------------
+      # Cache the VST3 SDK FetchContent download so re-runs are fast.
+      # Key is based on the CMakeLists.txt that drives the fetch.
+      # ------------------------------------------------------------------
+      - name: Cache VST3 SDK (FetchContent)
+        uses: actions/cache@v4
+        id: vst3sdk-cache
+        with:
+          path: kodi-audiodsp-vsthost/build/_deps
+          key: vst3sdk-${{ hashFiles('kodi-audiodsp-vsthost/CMakeLists.txt') }}
+          restore-keys: |
+            vst3sdk-
+
+      # ------------------------------------------------------------------
+      # Configure audiodsp.vsthost with the Visual Studio 17 2022 Win32
+      # generator so MSBuild drives the compilation via MSVC x86 toolset.
+      # ------------------------------------------------------------------
+      - name: Configure audiodsp.vsthost (CMake)
+        shell: cmd
+        run: |
+          if not exist kodi-audiodsp-vsthost\build mkdir kodi-audiodsp-vsthost\build
+          if not exist kodi-audiodsp-vsthost\install mkdir kodi-audiodsp-vsthost\install
+          cmake -G "Visual Studio 17 2022" -A Win32 ^
+            -DCMAKE_BUILD_TYPE=Release ^
+            -DKODI_ADSP_SDK_DIR="%GITHUB_WORKSPACE%\addons\kodi-addon-dev-kit\include\kodi" ^
+            -DCMAKE_INSTALL_PREFIX="%GITHUB_WORKSPACE%\kodi-audiodsp-vsthost\install" ^
+            -S "%GITHUB_WORKSPACE%\kodi-audiodsp-vsthost" ^
+            -B "%GITHUB_WORKSPACE%\kodi-audiodsp-vsthost\build"
+
+      - name: Build audiodsp.vsthost.dll
+        shell: cmd
+        run: |
+          cmake --build "%GITHUB_WORKSPACE%\kodi-audiodsp-vsthost\build" ^
+            --config Release ^
+            --target audiodsp.vsthost ^
+            --parallel
+
+      - name: Build vstscanner.exe (if present)
+        shell: cmd
+        run: |
+          cmake --build "%GITHUB_WORKSPACE%\kodi-audiodsp-vsthost\build" ^
+            --config Release ^
+            --target vstscanner ^
+            --parallel 2>NUL || echo "vstscanner target not available — skipping"
+
+      # ------------------------------------------------------------------
+      # Stage the output into the zip layout:
+      #   addons/
+      #     audiodsp.vsthost/   <- DLL + optional exe
+      #     plugin.audio.vstmanager/  <- Python addon (no build)
+      # ------------------------------------------------------------------
+      - name: Stage addon files
+        shell: pwsh
+        run: |
+          $ws   = $env:GITHUB_WORKSPACE
+          $base = Join-Path $ws "vst-staging\addons"
+
+          # audiodsp.vsthost binaries
+          $dstHost = Join-Path $base "audiodsp.vsthost"
+          New-Item -ItemType Directory -Force $dstHost | Out-Null
+
+          $buildOut = Join-Path $ws "kodi-audiodsp-vsthost\build\Release"
+          $dll = Join-Path $buildOut "audiodsp.vsthost.dll"
+          if (Test-Path $dll) {
+            Copy-Item $dll -Destination $dstHost -Force
+            Write-Host "Staged audiodsp.vsthost.dll"
+          } else {
+            Write-Error "audiodsp.vsthost.dll not found at $dll"
+            exit 1
+          }
+
+          $exe = Join-Path $buildOut "vstscanner.exe"
+          if (Test-Path $exe) {
+            Copy-Item $exe -Destination $dstHost -Force
+            Write-Host "Staged vstscanner.exe"
+          } else {
+            Write-Host "vstscanner.exe not present — omitting from package"
+          }
+
+          # plugin.audio.vstmanager (pure Python — copy as-is, exclude plan .md files)
+          $srcMgr = Join-Path $ws "addons\plugin.audio.vstmanager"
+          $dstMgr = Join-Path $base "plugin.audio.vstmanager"
+          Copy-Item $srcMgr -Destination $dstMgr -Recurse -Force
+          # Remove any stray planning markdown files (*_PLAN.md) from the packaged addon
+          Get-ChildItem $dstMgr -Filter "*_PLAN.md" -Recurse | Remove-Item -Force
+          Write-Host "Staged plugin.audio.vstmanager"
+
+          Write-Host ""
+          Write-Host "=== Staging layout ==="
+          Get-ChildItem (Join-Path $ws "vst-staging") -Recurse | ForEach-Object {
+            Write-Host "  $($_.FullName.Replace($ws, ''))"
+          }
+
+      # ------------------------------------------------------------------
+      # Package into zip
+      # ------------------------------------------------------------------
+      - name: Package kodi-vst-addons-win32.zip
+        shell: pwsh
+        run: |
+          Compress-Archive `
+            -Path "$env:GITHUB_WORKSPACE\vst-staging\*" `
+            -DestinationPath "$env:GITHUB_WORKSPACE\kodi-vst-addons-win32.zip"
+          Write-Host "Created kodi-vst-addons-win32.zip"
+
+      - name: Upload zip as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kodi-vst-addons-win32
+          path: kodi-vst-addons-win32.zip
+          retention-days: 14
+
+      # ------------------------------------------------------------------
+      # Release — auto-increment vst-v* version, publish on push/dispatch.
+      # ------------------------------------------------------------------
+      - name: Compute next VST release version
+        if: ${{ success() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
+        id: version
+        shell: bash
+        run: |
+          # Use vst-v* prefix so VST releases don't collide with Kodi releases.
+          LATEST_TAG=$(git describe --tags --match "vst-v*" --abbrev=0 2>/dev/null || echo "")
+          if [ -z "$LATEST_TAG" ]; then
+            NEXT="vst-v1.0.0"
+            LOG_RANGE="HEAD"
+          else
+            VERSION="${LATEST_TAG#vst-v}"
+            IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+            PATCH=$((PATCH + 1))
+            NEXT="vst-v${MAJOR}.${MINOR}.${PATCH}"
+            LOG_RANGE="${LATEST_TAG}..HEAD"
+          fi
+          echo "tag=$NEXT" >> "$GITHUB_OUTPUT"
+          echo "log_range=$LOG_RANGE" >> "$GITHUB_OUTPUT"
+          echo "Next VST release: $NEXT"
+
+      - name: Generate release notes
+        if: ${{ success() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
+        id: notes
+        shell: bash
+        run: |
+          LOG_RANGE="${{ steps.version.outputs.log_range }}"
+          {
+            echo 'body<<RELEASE_EOF'
+            echo '## VST Addon Changes'
+            echo ''
+            if [ "$LOG_RANGE" = "HEAD" ]; then
+              git log --pretty="- %s" -20
+            else
+              git log --pretty="- %s" "$LOG_RANGE"
+            fi
+            echo ''
+            echo '## Contents'
+            echo '- `addons/audiodsp.vsthost/audiodsp.vsthost.dll` — Kodi ADSP VST2/VST3 host addon'
+            echo '- `addons/audiodsp.vsthost/vstscanner.exe` — standalone VST scanner (if built)'
+            echo '- `addons/plugin.audio.vstmanager/` — Python VST manager addon'
+            echo 'RELEASE_EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        if: ${{ success() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
+        env:
+          GH_TOKEN: ${{ secrets.ORGANIZERRO_PAT != '' && secrets.ORGANIZERRO_PAT || github.token }}
+        shell: bash
+        run: |
+          # Delete any previous release for this tag (handles re-runs).
+          gh release delete "${{ steps.version.outputs.tag }}" --yes 2>/dev/null || true
+          git push origin ":refs/tags/${{ steps.version.outputs.tag }}" 2>/dev/null || true
+          gh release create "${{ steps.version.outputs.tag }}" \
+            kodi-vst-addons-win32.zip \
+            --title "Kodi VST Addons ${{ steps.version.outputs.tag }}" \
+            --notes "${{ steps.notes.outputs.body }}" \
+            --target "${{ github.sha }}"
