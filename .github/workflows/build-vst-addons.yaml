@@ -75,7 +75,8 @@ jobs:
           cmake --build "%GITHUB_WORKSPACE%\kodi-audiodsp-vsthost\build" ^
             --config Release ^
             --target audiodsp.vsthost ^
-            --parallel
+            --parallel ^
+            -- /v:diag /flp:logfile="%GITHUB_WORKSPACE%\audiodsp.vsthost.msbuild.log";verbosity=diagnostic /bl:"%GITHUB_WORKSPACE%\audiodsp.vsthost.binlog"
 
       - name: Build vstscanner.exe (if present)
         shell: cmd
@@ -83,7 +84,21 @@ jobs:
           cmake --build "%GITHUB_WORKSPACE%\kodi-audiodsp-vsthost\build" ^
             --config Release ^
             --target vstscanner ^
-            --parallel 2>NUL || echo "vstscanner target not available — skipping"
+            --parallel ^
+            -- /v:diag /flp:logfile="%GITHUB_WORKSPACE%\vstscanner.msbuild.log";verbosity=diagnostic /bl:"%GITHUB_WORKSPACE%\vstscanner.binlog" 2>NUL || echo "vstscanner target not available — skipping"
+
+      - name: Upload build logs (always)
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: vst-build-logs
+          path: |
+            audiodsp.vsthost.msbuild.log
+            audiodsp.vsthost.binlog
+            vstscanner.msbuild.log
+            vstscanner.binlog
+          if-no-files-found: warn
+          retention-days: 14
 
       # ------------------------------------------------------------------
       # Stage the output into the zip layout:

@@ -32,7 +32,7 @@ else()
 
     FetchContent_Declare(vst3sdk
         GIT_REPOSITORY https://github.com/steinbergmedia/vst3sdk.git
-        GIT_TAG        v3.7.11_build_10
+        GIT_TAG        v3.7.9_build_61
         GIT_SUBMODULES "base;pluginterfaces;public.sdk"
         GIT_SHALLOW    TRUE
     )
@@ -131,6 +131,7 @@ target_compile_features(audiodsp.vsthost PRIVATE cxx_std_17)
 target_include_directories(audiodsp.vsthost
     PRIVATE
         "${CMAKE_SOURCE_DIR}/src"
+        "${CMAKE_SOURCE_DIR}/include/kodi-legacy-adsp"
         "${VST3SDK_DIR}"
         "${KODI_ADSP_SDK_DIR}"
 )
@@ -145,6 +146,7 @@ if(WIN32)
         WINDOWS_EXPORT_ALL_SYMBOLS ON
     )
     target_compile_definitions(audiodsp.vsthost PRIVATE
+        NOMINMAX
         WIN32
         UNICODE
         _UNICODE
@@ -174,6 +176,7 @@ if(EXISTS "${CMAKE_SOURCE_DIR}/scanner/vstscanner.cpp")
 
     if(WIN32)
         target_compile_definitions(vstscanner PRIVATE
+            NOMINMAX
             WIN32
             UNICODE
             _UNICODE
