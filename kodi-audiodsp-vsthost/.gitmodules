@@ -1,4 +1,0 @@
-[submodule "deps/vst3sdk"]
-	path = deps/vst3sdk
-	url = https://github.com/steinbergmedia/vst3sdk.git
-	branch = v3.7.9_build_61

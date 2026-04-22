@@ -1,8 +1,8 @@
 /*
  * vstscanner.cpp — Standalone out-of-process VST plugin scanner
  *
- * Enumerates .dll and .vst3 files in one or more directory trees, probes
- * each for VST2 / VST3 metadata, and writes one NDJSON object per file to
+ * Enumerates .dll files in one or more directory trees, probes each for
+ * VST2 metadata, and writes one NDJSON object per file to
  * stdout.  Structured Exception Handling (SEH) contains crashes inside
  * individual plugin entry points so the scan continues to the next file.
  *
@@ -21,21 +21,12 @@
 #include "../src/vst2/vestige/aeffectx.h"
 
 // ---------------------------------------------------------------------------
-// Forward declarations for VST3 hosting (VST3 SDK public.sdk/hosting)
-// ---------------------------------------------------------------------------
-#ifdef VST3SDK_AVAILABLE
-#include "public.sdk/source/vst/hosting/module.h"
-#include "pluginterfaces/vst/ivstaudioprocessor.h"
-static constexpr const char* kVstAudioEffectClass = "Audio Module Class";
-#endif
-
-// ---------------------------------------------------------------------------
 // PluginInfo — data collected for a single file
 // ---------------------------------------------------------------------------
 
 struct PluginInfo {
     std::string path;
-    std::string format;    // "vst2", "vst3", "unknown"
+    std::string format;    // "vst2", "unknown"
     std::string name;
     std::string vendor;
     int numParams  = 0;
@@ -139,7 +130,7 @@ static HMODULE loadLibrarySafe(const char* path)
 
 // ---------------------------------------------------------------------------
 // detectPluginType — LoadLibrary the DLL and probe exported symbol names.
-// Returns "vst3", "vst2", or "unknown".
+// Returns "vst2" or "unknown".
 // The caller is responsible for FreeLibrary after further processing.
 // ---------------------------------------------------------------------------
 
@@ -147,9 +138,6 @@ static std::string detectPluginType(HMODULE hMod)
 {
     if (!hMod)
         return "unknown";
-
-    if (GetProcAddress(hMod, "GetPluginFactory"))
-        return "vst3";
 
     if (GetProcAddress(hMod, "VSTPluginMain") ||
         GetProcAddress(hMod, "main"))
@@ -222,203 +210,7 @@ static PluginInfo scanVST2(const std::string& path)
 }
 
 // ---------------------------------------------------------------------------
-// VST3 raw COM-style fallback helpers
-// All structures and the SEH-guarded probe function use only POD types so
-// MSVC does not emit C4509 (SEH + C++ destructors in same function).
-// ---------------------------------------------------------------------------
-
-#ifndef VST3SDK_AVAILABLE
-
-struct Vst3PClassInfo {
-    char    cid[16];
-    int32_t cardinality;
-    char    category[32];
-    char    name[64];
-};
-
-struct Vst3PFactoryInfo {
-    char    vendor[64];
-    char    url[256];
-    char    email[128];
-    int32_t flags;
-};
-
-struct Vst3IPluginFactoryVtbl {
-    void* queryInterface;
-    void* addRef;
-    void* release;
-    long (__stdcall* getFactoryInfo)(void* self, Vst3PFactoryInfo* info);
-    int32_t (__stdcall* countClasses)(void* self);
-    long (__stdcall* getClassInfo)(void* self, int32_t index, Vst3PClassInfo* info);
-};
-
-struct Vst3IPluginFactory {
-    Vst3IPluginFactoryVtbl* vtbl;
-};
-
-typedef Vst3IPluginFactory* (__cdecl* GetPluginFactoryProc)();
-
-/// POD result returned by scanVST3Raw (no std::string — SEH-safe).
-struct Vst3RawResult {
-    char    name[64];      // plugin name from first Audio Module Class entry
-    char    vendor[64];    // vendor from factory info
-    char    error[128];    // empty on success
-    bool    found;         // true if an Audio Module Class was located
-};
-
-/// SEH-guarded VST3 raw probe.  MUST hold only POD locals — no C++ objects.
-/// The caller (scanVST3) builds std::string results from the returned struct.
-static Vst3RawResult scanVST3Raw(const char* path)
-{
-    Vst3RawResult result = {};
-
-    HMODULE hMod = loadLibrarySafe(path);
-    if (!hMod)
-    {
-        // Can't build std::to_string here — use snprintf into POD buffer.
-        DWORD err = GetLastError();
-        snprintf(result.error, sizeof(result.error),
-                 "LoadLibrary failed (error %lu)", static_cast<unsigned long>(err));
-        return result;
-    }
-
-    GetPluginFactoryProc gpf =
-        reinterpret_cast<GetPluginFactoryProc>(
-            GetProcAddress(hMod, "GetPluginFactory"));
-
-    if (!gpf)
-    {
-        FreeLibrary(hMod);
-        snprintf(result.error, sizeof(result.error),
-                 "GetPluginFactory export not found");
-        return result;
-    }
-
-    Vst3IPluginFactory* factory = nullptr;
-    __try
-    {
-        factory = gpf();
-    }
-    __except (EXCEPTION_EXECUTE_HANDLER)
-    {
-        factory = nullptr;
-    }
-
-    if (!factory || !factory->vtbl)
-    {
-        FreeLibrary(hMod);
-        snprintf(result.error, sizeof(result.error),
-                 "GetPluginFactory returned null");
-        return result;
-    }
-
-    Vst3PFactoryInfo factInfo = {};
-    __try
-    {
-        factory->vtbl->getFactoryInfo(factory, &factInfo);
-    }
-    __except (EXCEPTION_EXECUTE_HANDLER) { /* ignore */ }
-
-    int32_t numClasses = 0;
-    __try
-    {
-        numClasses = factory->vtbl->countClasses(factory);
-    }
-    __except (EXCEPTION_EXECUTE_HANDLER) { numClasses = 0; }
-
-    for (int32_t i = 0; i < numClasses; ++i)
-    {
-        Vst3PClassInfo ci = {};
-        long hr = 0;
-        __try
-        {
-            hr = factory->vtbl->getClassInfo(factory, i, &ci);
-        }
-        __except (EXCEPTION_EXECUTE_HANDLER) { hr = -1; }
-
-        if (hr != 0) continue;
-        if (strncmp(ci.category, "Audio Module Class", 32) != 0) continue;
-
-        strncpy_s(result.name,   sizeof(result.name),   ci.name,          _TRUNCATE);
-        strncpy_s(result.vendor, sizeof(result.vendor), factInfo.vendor,  _TRUNCATE);
-        result.found = true;
-        break;
-    }
-
-    if (!result.found)
-    {
-        // Copy vendor even if no audio class found; caller can still report it.
-        strncpy_s(result.vendor, sizeof(result.vendor), factInfo.vendor, _TRUNCATE);
-        if (numClasses > 0)
-            snprintf(result.error, sizeof(result.error),
-                     "no Audio Module Class found in factory");
-    }
-
-    __try
-    {
-        factory->vtbl->release(factory);
-    }
-    __except (EXCEPTION_EXECUTE_HANDLER) { /* ignore */ }
-
-    FreeLibrary(hMod);
-    return result;
-}
-
-#endif // !VST3SDK_AVAILABLE
-
-// ---------------------------------------------------------------------------
-// scanVST3 — probe a VST3 bundle.
-//
-// When the VST3 SDK hosting library is linked in (vst3_hosting target),
-// uses VST3::Hosting::Module to enumerate class infos without instantiating
-// any audio processor.
-//
-// Without the SDK uses the raw COM fallback (scanVST3Raw above).
-// ---------------------------------------------------------------------------
-
-static PluginInfo scanVST3(const std::string& path)
-{
-    PluginInfo info;
-    info.path   = path;
-    info.format = "vst3";
-
-#ifdef VST3SDK_AVAILABLE
-    // ---- Full VST3 SDK path ----
-    std::string errMsg;
-    auto module = VST3::Hosting::Module::create(path, errMsg);
-    if (!module)
-    {
-        info.error = errMsg.empty() ? "VST3 module load failed" : errMsg;
-        return info;
-    }
-
-    auto factory = module->getFactory();
-    for (int i = 0; i < factory.numClasses(); ++i)
-    {
-        auto classInfo = factory.classInfos()[i];
-        if (classInfo.category() != kVstAudioEffectClass)
-            continue;
-
-        info.name   = classInfo.name();
-        info.vendor = classInfo.vendor();
-        // numParams / numInputs / numOutputs require instantiation —
-        // omitted intentionally to keep the scanner crash-safe.
-        break;
-    }
-#else
-    // ---- Fallback: raw COM-style vtable probe (SEH in separate function) ----
-    Vst3RawResult raw = scanVST3Raw(path.c_str());
-    info.name   = raw.name;
-    info.vendor = raw.vendor;
-    if (raw.error[0] != '\0')
-        info.error = raw.error;
-#endif // VST3SDK_AVAILABLE
-
-    return info;
-}
-
-// ---------------------------------------------------------------------------
-// scanFile — dispatch to scanVST2 or scanVST3 based on detected type.
+// scanFile — dispatch to scanVST2 based on detected type.
 // For .dll files we must LoadLibrary once to detect the type, then the
 // appropriate scan function loads it again.  Two loads is safer than trying
 // to reuse the module handle across the detect/scan boundary.
@@ -429,17 +221,7 @@ static PluginInfo scanFile(const std::string& path)
     PluginInfo info;
     info.path = path;
 
-    // .vst3 bundles are always VST3 — skip the detection load.
-    {
-        std::filesystem::path p(path);
-        std::string ext = p.extension().string();
-        // Normalise to lower case for comparison.
-        for (char& c : ext) c = static_cast<char>(tolower(static_cast<unsigned char>(c)));
-        if (ext == ".vst3")
-            return scanVST3(path);
-    }
-
-    // For .dll: load (SEH-guarded), detect type, unload, call the appropriate scanner.
+    // For .dll: load (SEH-guarded), detect type, unload, call the scanner.
     HMODULE hMod = loadLibrarySafe(path.c_str());
 
     if (!hMod)
@@ -454,8 +236,6 @@ static PluginInfo scanFile(const std::string& path)
 
     if (type == "vst2")
         return scanVST2(path);
-    if (type == "vst3")
-        return scanVST3(path);
 
     info.format = "unknown";
     info.error  = "no recognised VST entry point";
@@ -520,9 +300,7 @@ static std::string toJson(const PluginInfo& info)
 }
 
 // ---------------------------------------------------------------------------
-// enumeratePaths — recursively walk searchPaths, collect .dll and .vst3 items.
-// A path ending in ".vst3" is treated as a bundle entry point even if it is a
-// directory (the VST3 bundle format uses a directory named *.vst3).
+// enumeratePaths — recursively walk searchPaths and collect .dll items.
 // ---------------------------------------------------------------------------
 
 static std::vector<std::string> enumeratePaths(
@@ -537,18 +315,6 @@ static std::vector<std::string> enumeratePaths(
 
         if (!std::filesystem::exists(rootPath, ec))
             continue;
-
-        // If the root itself is a .vst3 bundle directory, add it directly.
-        {
-            std::string ext = rootPath.extension().string();
-            for (char& c : ext) c = static_cast<char>(
-                tolower(static_cast<unsigned char>(c)));
-            if (ext == ".vst3")
-            {
-                result.push_back(rootPath.string());
-                continue;
-            }
-        }
 
         for (auto it = std::filesystem::recursive_directory_iterator(
                             rootPath,
@@ -571,15 +337,6 @@ static std::vector<std::string> enumeratePaths(
                 // Only add regular files (skip symlinks to dirs, etc.)
                 if (entry.is_regular_file(ec))
                     result.push_back(entry.path().string());
-                ec.clear();
-            }
-            else if (ext == ".vst3")
-            {
-                // A .vst3 item may be a file (old single-file format) or a
-                // directory (bundle). Add it and do not descend into it.
-                result.push_back(entry.path().string());
-                if (entry.is_directory(ec))
-                    it.disable_recursion_pending();
                 ec.clear();
             }
         }
@@ -634,9 +391,6 @@ int main(int argc, char* argv[])
         // Default well-known Windows VST install directories.
         searchPaths.emplace_back("C:\\Program Files\\VSTPlugins");
         searchPaths.emplace_back("C:\\Program Files\\Steinberg\\VSTPlugins");
-        searchPaths.emplace_back("C:\\Program Files\\Common Files\\VST3");
-        searchPaths.emplace_back("C:\\Program Files\\Common Files\\Steinberg\\VST3");
-
         // Also check the per-machine registry entry.
         std::string regPath = readRegistryVSTPath();
         if (!regPath.empty())

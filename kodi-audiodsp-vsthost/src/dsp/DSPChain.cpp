@@ -5,7 +5,6 @@
  */
 #include "DSPChain.h"
 #include "../vst2/VSTPlugin2.h"
-#include "../vst3/VSTPlugin3.h"
 #include "../util/JsonUtil.h"
 
 #include <algorithm>
@@ -29,14 +28,19 @@ DSPChain::~DSPChain()
 
 bool DSPChain::addPlugin(const std::string& path, IVSTPlugin::PluginFormat format)
 {
+    if (format != IVSTPlugin::PluginFormat::VST2)
+    {
+        const char* formatName = (format == IVSTPlugin::PluginFormat::VST3) ? "vst3" : "unknown";
+        std::fprintf(stderr,
+            "[DSPChain] addPlugin: unsupported format '%s' for '%s' (VST2 only)\n",
+            formatName, path.c_str());
+        return false;
+    }
+
     ChainPlugin slot;
     slot.path   = path;
     slot.format = format;
-
-    if (format == IVSTPlugin::PluginFormat::VST2)
-        slot.plugin = std::make_unique<VSTPlugin2>(path);
-    else
-        slot.plugin = std::make_unique<VSTPlugin3>(path);
+    slot.plugin = std::make_unique<VSTPlugin2>(path);
 
     if (m_initialized)
     {
@@ -374,8 +378,7 @@ std::string DSPChain::serializeToJson() const
         const ChainPlugin& slot = m_plugins[i];
         const bool isLast = (i == m_plugins.size() - 1);
 
-        const char* fmt = (slot.format == IVSTPlugin::PluginFormat::VST2)
-                          ? "vst2" : "vst3";
+        const char* fmt = "vst2";
 
         // Save plugin state (best-effort — empty on unloaded plugins).
         std::vector<uint8_t> stateBytes;
@@ -460,9 +463,16 @@ bool DSPChain::deserializeFromJson(const std::string& json)
         JsonUtil::extractBool  (obj, "bypassed", 0, bypassed,  dummy);
         JsonUtil::extractString(obj, "state",    0, stateStr,  dummy);
 
-        IVSTPlugin::PluginFormat fmt = (formatStr == "vst3")
-            ? IVSTPlugin::PluginFormat::VST3
-            : IVSTPlugin::PluginFormat::VST2;
+        if (formatStr != "vst2")
+        {
+            std::fprintf(stderr,
+                "[DSPChain] deserializeFromJson: unsupported format '%s' for '%s' (VST2 only)\n",
+                formatStr.c_str(), pathStr.c_str());
+            pos = objEnd + 1;
+            continue;
+        }
+
+        const IVSTPlugin::PluginFormat fmt = IVSTPlugin::PluginFormat::VST2;
 
         if (!addPlugin(pathStr, fmt))
         {

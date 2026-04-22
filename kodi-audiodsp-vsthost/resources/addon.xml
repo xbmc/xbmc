@@ -15,7 +15,7 @@
         <mode id="1"
               type="masterprocess"
               label="VST Chain"
-              help="Process audio through a chain of VST2 and VST3 plugins">
+              help="Process audio through a chain of VST/VST2 plugins">
           <settings>
             <setting id="scan_paths"
                      label="VST Plugin Folders"
@@ -29,7 +29,7 @@
 
   <extension point="xbmc.addon.metadata">
     <platform>windows</platform>
-    <summary lang="en_GB">VST2 and VST3 plugin host for Kodi audio DSP</summary>
-    <description lang="en_GB">Load and chain VST2 and VST3 audio effect plugins in Kodi's master DSP processing stage. Supports plugin discovery, chain configuration, and state persistence.</description>
+    <summary lang="en_GB">VST/VST2 plugin host for Kodi audio DSP</summary>
+    <description lang="en_GB">Load and chain VST/VST2 audio effect plugins in Kodi's master DSP processing stage. Supports plugin discovery, chain configuration, and state persistence.</description>
   </extension>
 </addon>

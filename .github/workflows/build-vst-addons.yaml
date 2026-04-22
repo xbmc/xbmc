@@ -41,19 +41,6 @@ jobs:
           token: ${{ secrets.ORGANIZERRO_PAT != '' && secrets.ORGANIZERRO_PAT || github.token }}
 
       # ------------------------------------------------------------------
-      # Cache the VST3 SDK FetchContent download so re-runs are fast.
-      # Key includes files that control SDK fetch layout/version.
-      # ------------------------------------------------------------------
-      - name: Cache VST3 SDK (FetchContent)
-        uses: actions/cache@v4
-        id: vst3sdk-cache
-        with:
-          path: kodi-audiodsp-vsthost/build/_deps
-          key: vst3sdk-${{ hashFiles('kodi-audiodsp-vsthost/CMakeLists.txt') }}-${{ hashFiles('kodi-audiodsp-vsthost/.gitmodules') }}
-          restore-keys: |
-            vst3sdk-
-
-      # ------------------------------------------------------------------
       # Configure audiodsp.vsthost with the Visual Studio 17 2022 Win32
       # generator so MSBuild drives the compilation via MSVC x86 toolset.
       # ------------------------------------------------------------------
@@ -68,35 +55,6 @@ jobs:
             -DCMAKE_INSTALL_PREFIX="%GITHUB_WORKSPACE%\kodi-audiodsp-vsthost\install" ^
             -S "%GITHUB_WORKSPACE%\kodi-audiodsp-vsthost" ^
             -B "%GITHUB_WORKSPACE%\kodi-audiodsp-vsthost\build"
-
-      - name: Validate fetched VST3 SDK headers
-        shell: pwsh
-        run: |
-          $sdkRoot = Join-Path $env:GITHUB_WORKSPACE "kodi-audiodsp-vsthost/build/_deps/vst3sdk-src"
-          $requiredHeaders = @(
-            "pluginterfaces/vst/ivstconnectionpoint.h"
-            "public.sdk/source/vst/hosting/module.h"
-          )
-          $missingHeaders = @()
-          foreach ($relativeHeader in $requiredHeaders) {
-            $headerPath = Join-Path $sdkRoot $relativeHeader
-            if (-not (Test-Path $headerPath)) {
-              $missingHeaders += $headerPath
-            }
-          }
-
-          if ($missingHeaders.Count -gt 0) {
-            Write-Error "Missing required VST3 SDK header(s):"
-            $missingHeaders | ForEach-Object { Write-Error "  $_" }
-            if (Test-Path $sdkRoot) {
-              Write-Host "SDK root exists; top-level entries:"
-              Get-ChildItem $sdkRoot -Force | Select-Object -ExpandProperty Name
-            } else {
-              Write-Host "SDK root does not exist: $sdkRoot"
-            }
-            exit 1
-          }
-          Write-Host "VST3 SDK required headers verified under: $sdkRoot"
 
       - name: Build audiodsp.vsthost.dll
         shell: cmd
@@ -236,7 +194,7 @@ jobs:
             fi
             echo ''
             echo '## Contents'
-            echo '- `addons/audiodsp.vsthost/audiodsp.vsthost.dll` — Kodi ADSP VST2/VST3 host addon'
+            echo '- `addons/audiodsp.vsthost/audiodsp.vsthost.dll` — Kodi ADSP VST host addon'
             echo '- `addons/audiodsp.vsthost/vstscanner.exe` — standalone VST scanner (if built)'
             echo '- `addons/plugin.audio.vstmanager/` — Python VST manager addon'
             echo 'RELEASE_EOF'
