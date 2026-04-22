@@ -88,6 +88,10 @@
 		<value>SW</value>
 	</variable>
 	<variable name="HideNowPlayingForCustomVideoBackground">
+		<!-- Hide only when all are true: -->
+		<!-- 1) Home window is active -->
+		<!-- 2) custom video background mode is enabled with a file selected -->
+		<!-- 3) current playback is video and matches that custom background file -->
 		<value condition="Window.IsVisible(Home) + String.IsEqual(Skin.String(BackgroundMode),video) + !String.IsEmpty(Skin.String(CustomVideoBackground)) + Player.HasVideo + String.IsEqual(Player.FilenameAndPath,Skin.String(CustomVideoBackground))">true</value>
 		<value>false</value>
 	</variable>
