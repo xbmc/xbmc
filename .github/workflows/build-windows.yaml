@@ -399,17 +399,17 @@ jobs:
           if exist "%VST_BUILD_OUT%\audiodsp.vsthost.dll" (
             copy /Y "%VST_BUILD_OUT%\audiodsp.vsthost.dll" "%VST_ADDON_DIR%\"
           ) else (
-            echo ::warning::%VST_BUILD_OUT%\audiodsp.vsthost.dll not found after build
+            echo ::warning::Missing expected VST binary at "%VST_BUILD_OUT%\audiodsp.vsthost.dll"
           )
           if exist "%VST_BUILD_OUT%\vstscanner.exe" (
             copy /Y "%VST_BUILD_OUT%\vstscanner.exe" "%VST_ADDON_DIR%\"
           ) else (
-            echo ::warning::%VST_BUILD_OUT%\vstscanner.exe not found after build
+            echo ::warning::Optional VST scanner not found at "%VST_BUILD_OUT%\vstscanner.exe"
           )
           if exist "%VST_ADDON_XML%" (
             copy /Y "%VST_ADDON_XML%" "%VST_ADDON_DIR%\"
           ) else (
-            echo ::warning::%VST_ADDON_XML% not found
+            echo ::warning::VST addon metadata not found at "%VST_ADDON_XML%"
           )
 
       # Collect all build output into a single staging directory that mirrors
