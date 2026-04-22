@@ -165,12 +165,124 @@ confirmed to be available:
 <onload condition="Skin.HasSetting(PlayerReady)">PlayMedia(...)</onload>
 ```
 
-A short Python script (or a Kodi built-in) sets `Skin.SetBoolSetting(PlayerReady)` once the
-application signals `GUI_MSG_UI_READY`.
+A Kodi built-in sets `Skin.SetBool(PlayerReady)` once the application signals
+`GUI_MSG_UI_READY`. `Skin.SetBool` is the correct builtin for toggling a named skin setting
+to `true`; `Skin.SetBoolSetting` does not exist in this codebase
+(`xbmc/interfaces/builtins/SkinBuiltins.cpp:464`).
 
 **Pros**: Zero core change; isolated to the skin.  
 **Cons**: Fragile; requires every skin author to know about Kodi's internal lifecycle. Does not
 fix the underlying core bug.
+
+---
+
+### Fix 6 — Defer/replay queue for early playback actions *(application-layer safety net)*
+
+Instead of dropping a `PlayMedia` request that arrives before `InitStageThree` completes,
+buffer it and replay it once the application has finished initialising.
+
+**Files changed**:
+
+| File | Change |
+|------|--------|
+| `xbmc/Application.h` | Add `std::deque<std::string> m_deferredActions` private member |
+| `xbmc/Application.cpp` | Intercept early actions in `ExecuteXBMCAction()`; flush in `OnMessage()` on `GUI_MSG_UI_READY` |
+
+#### How it works
+
+**1 — `Application.h`**: add a queue member
+
+```cpp
+// new private member
+std::deque<std::string> m_deferredActions;
+```
+
+**2 — `Application.cpp` — `ExecuteXBMCAction()`** (line ~3974, after label resolution):
+
+```cpp
+bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPtr &item)
+{
+  const std::string in_actionStr(actionStr);
+  if (item)
+    actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetItemLabel(actionStr, item.get());
+  else
+    actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetLabel(actionStr);
+
+  // NEW: defer any builtin action that arrives before stage-3 services are ready
+  if (m_bInitializing)
+  {
+    CLog::LogF(LOGDEBUG, "Deferring action '%s' until init completes", actionStr.c_str());
+    m_deferredActions.push_back(actionStr);
+    return true;
+  }
+
+  // ... existing dispatch code unchanged ...
+}
+```
+
+Label resolution (`CGUIInfoLabel::GetLabel`) has already run, so skin string values (e.g.
+`$INFO[Skin.String(CustomVideoBackground)]`) are baked into the stored string. The skin-side
+condition (`!Player.HasMedia`) is evaluated by `CGUIAction::ExecuteActions()` **before**
+`GUI_MSG_EXECUTE` is sent, so only actions whose conditions were satisfied at `<onload>` time
+reach this function — and therefore only those are queued.
+
+**3 — `Application.cpp` — `OnMessage()`, `GUI_MSG_UI_READY` branch** (line ~3739):
+
+```cpp
+else if (message.GetParam1() == GUI_MSG_UI_READY)
+{
+  // existing cleanup ...
+  m_bInitializing = false;
+
+  // NEW: replay any actions that arrived before InitStageThree completed
+  for (const auto& action : m_deferredActions)
+  {
+    CLog::LogF(LOGDEBUG, "Replaying deferred startup action '%s'", action.c_str());
+    ExecuteXBMCAction(action, nullptr);
+  }
+  m_deferredActions.clear();
+
+  // ... rest of existing code ...
+}
+```
+
+`GUI_MSG_UI_READY` is sent by `CApplication::Initialize()` (line ~884) via
+`SendThreadMessage`, which enqueues it for dispatch in `CApplication::Process()` →
+`CGUIWindowManager::DispatchThreadMessages()`. By the time this message is dispatched,
+`InitStageThree()` (line ~849) has long since completed and `CPlayerCoreFactory` is fully
+constructed. The replay call to `ExecuteXBMCAction` re-enters normally (without deferring,
+because `m_bInitializing` is now `false`).
+
+#### Timing guarantee
+
+```
+Initialize():
+  line ~831: ActivateWindow(firstWindow)
+               └─ <onload> fires → ExecuteXBMCAction() → m_bInitializing==true
+                  └─ action pushed onto m_deferredActions ✓
+
+  line ~849: InitStageThree()
+               └─ m_playerCoreFactory.reset(new ...) ← factory now live
+
+  line ~884: SendThreadMessage(GUI_MSG_UI_READY) ← queued, not dispatched yet
+Initialize() returns.
+
+Process() loop:
+  DispatchThreadMessages() → GUI_MSG_UI_READY → OnMessage()
+    m_bInitializing = false
+    for action in m_deferredActions:
+      ExecuteXBMCAction(action) → PlayMedia() → factory ready ✓
+```
+
+**Pros**: Preserves the original intent of the skin's `<onload>` action; the background video
+will start even on first boot without requiring a window navigation. Works as a safety net
+regardless of whether Fix 2 or Fix 4 is also applied. Handles any skin builtin, not just
+`PlayMedia`.  
+**Cons**: If Init takes long enough that the user has manually started playback by the time the
+queue flushes, replaying a `PlayMedia` command will interrupt it. Mitigated in practice because
+`GUI_MSG_UI_READY` fires very quickly after `InitStageThree`. Storing resolved action strings
+means skin-string conditions cannot be re-evaluated at replay time (they were evaluated once, at
+`<onload>` time).
 
 ---
 
@@ -182,9 +294,14 @@ Apply two fixes together:
    This resolves the root cause so that `CPlayerCoreFactory` (and all other stage-3 services) are
    available to any builtin action fired from a skin window's `<onload>`.
 
-2. **Fix 3** — Add an `assert` in `CServiceManager::GetPlayerCoreFactory()`.  
-   This turns any future regression of the same class into an immediately visible assertion failure
-   in debug builds rather than a silent CRT crash.
+2. **Fix 3** — Add a null-pointer check with logging (and an `assert` in debug builds) in
+   `CServiceManager::GetPlayerCoreFactory()`.  
+   In release builds, log an error and either return a dummy reference or abort gracefully.
+   In debug builds, assert immediately so regressions are caught early.
+
+**Fix 6** (defer/replay queue) is the best alternative to Fix 2 when reordering the init sequence
+is not acceptable (e.g. when a stage-3 component is later found to have a dependency on an active
+window). It preserves correct skin behaviour without silently dropping the first playback request.
 
 **Fix 4** (async `<onload>`) is architecturally the most correct long-term solution and is
 consistent with how focus/unfocus actions already work. It is recommended as a follow-up after
@@ -197,13 +314,21 @@ the immediate reordering fix has been validated.
 | Symbol | File:Line |
 |--------|-----------|
 | `CServiceManager::InitStageThree` | `xbmc/ServiceManager.cpp:166` |
-| `CServiceManager::GetPlayerCoreFactory` | `xbmc/ServiceManager.cpp:~360` |
+| `CServiceManager::GetPlayerCoreFactory` | `xbmc/ServiceManager.cpp:~361` |
 | `CServiceBroker::GetPlayerCoreFactory` | `xbmc/ServiceBroker.cpp:193` |
 | `CServiceBroker::IsServiceManagerUp` | `xbmc/ServiceBroker.cpp:152` |
 | `CApplication::Initialize` — window activation | `xbmc/Application.cpp:~831` |
 | `CApplication::Initialize` — InitStageThree call | `xbmc/Application.cpp:~849` |
+| `CApplication::Initialize` — GUI_MSG_UI_READY sent | `xbmc/Application.cpp:~884` |
+| `CApplication::OnMessage` — GUI_MSG_UI_READY handler | `xbmc/Application.cpp:~3739` |
+| `CApplication::ExecuteXBMCAction` | `xbmc/Application.cpp:~3964` |
+| `CApplication::m_bInitializing` | `xbmc/Application.h:433` |
+| `CGUIWindowManager::SendThreadMessage` | `xbmc/guilib/GUIWindowManager.cpp:1414` |
+| `CGUIWindowManager::DispatchThreadMessages` | `xbmc/guilib/GUIWindowManager.cpp:1422` |
+| `CApplication::Process` — dispatch loop | `xbmc/Application.cpp:~4035` |
 | `CGUIWindow::RunLoadActions` | `xbmc/guilib/GUIWindow.cpp:1049` |
 | `CGUIAction::ExecuteActions` | `xbmc/guilib/GUIAction.cpp:21` |
 | `m_sendThreadMessages` flag for async dispatch | `xbmc/guilib/GUIAction.h:55` |
 | `PlayMedia` builtin | `xbmc/interfaces/builtins/PlayerBuiltins.cpp:381` |
-| `skin.estouchy` Home `<onload>` PlayMedia | `addons/skin.estouchy/xml/Home.xml:5` |
+| `Skin.SetBool` builtin | `xbmc/interfaces/builtins/SkinBuiltins.cpp:464` |
+| `skin.estouchy` Home `<onload>` PlayMedia | `addons/skin.estouchy/xml/Home.xml:6` |
