@@ -42,14 +42,14 @@ jobs:
 
       # ------------------------------------------------------------------
       # Cache the VST3 SDK FetchContent download so re-runs are fast.
-      # Key is based on the CMakeLists.txt that drives the fetch.
+      # Key includes files that control SDK fetch layout/version.
       # ------------------------------------------------------------------
       - name: Cache VST3 SDK (FetchContent)
         uses: actions/cache@v4
         id: vst3sdk-cache
         with:
           path: kodi-audiodsp-vsthost/build/_deps
-          key: vst3sdk-${{ hashFiles('kodi-audiodsp-vsthost/CMakeLists.txt') }}
+          key: vst3sdk-${{ hashFiles('kodi-audiodsp-vsthost/CMakeLists.txt', 'kodi-audiodsp-vsthost/.gitmodules', '.github/workflows/build-vst-addons.yaml') }}
           restore-keys: |
             vst3sdk-
 
@@ -68,6 +68,23 @@ jobs:
             -DCMAKE_INSTALL_PREFIX="%GITHUB_WORKSPACE%\kodi-audiodsp-vsthost\install" ^
             -S "%GITHUB_WORKSPACE%\kodi-audiodsp-vsthost" ^
             -B "%GITHUB_WORKSPACE%\kodi-audiodsp-vsthost\build"
+
+      - name: Validate fetched VST3 SDK headers
+        shell: pwsh
+        run: |
+          $sdkRoot = Join-Path $env:GITHUB_WORKSPACE "kodi-audiodsp-vsthost\build\_deps\vst3sdk-src"
+          $requiredHeader = Join-Path $sdkRoot "pluginterfaces\vst\ivstconnectionpoint.h"
+          if (-not (Test-Path $requiredHeader)) {
+            Write-Error "Missing required VST3 SDK header: $requiredHeader"
+            if (Test-Path $sdkRoot) {
+              Write-Host "SDK root exists; top-level entries:"
+              Get-ChildItem $sdkRoot -Force | Select-Object -ExpandProperty Name
+            } else {
+              Write-Host "SDK root does not exist: $sdkRoot"
+            }
+            exit 1
+          }
+          Write-Host "VST3 SDK header verified: $requiredHeader"
 
       - name: Build audiodsp.vsthost.dll
         shell: cmd
