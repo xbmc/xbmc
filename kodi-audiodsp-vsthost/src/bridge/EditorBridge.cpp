@@ -89,7 +89,10 @@ void EditorBridge::start(DSPChain* chain)
     if (m_running.load())
         return;
 
-    m_chain   = chain;
+    {
+        std::lock_guard<std::mutex> lock(m_editorMutex);
+        m_chain = chain;
+    }
     m_running = true;
 
     // Create an event to wait for the UI thread to become ready
@@ -129,13 +132,20 @@ void EditorBridge::stop()
     if (m_uiThreadID != 0)
         PostThreadMessageW(m_uiThreadID, WM_QUIT, 0, 0);
 
+    // Null out m_chain under the lock so concurrent readers see nullptr atomically.
+    // The joins must happen OUTSIDE the lock: the UI thread acquires m_editorMutex
+    // in WM_DESTROY before it exits, so holding the lock here would deadlock.
+    {
+        std::lock_guard<std::mutex> lock(m_editorMutex);
+        m_chain = nullptr;
+    }
+
     if (m_pipeThread.joinable())
         m_pipeThread.join();
     if (m_uiThread.joinable())
         m_uiThread.join();
 
     m_uiThreadID = 0;
-    m_chain = nullptr;
 }
 
 // ============================================================================
@@ -227,16 +237,22 @@ std::string EditorBridge::processCommand(const std::string& json)
         if (path.empty())
             return "{\"status\":\"error\",\"cmd\":\"open\",\"error\":\"Missing path\"}";
 
-        if (!m_chain)
+        DSPChain* chain = nullptr;
+        {
+            std::lock_guard<std::mutex> lock(m_editorMutex);
+            chain = m_chain;
+        }
+
+        if (!chain)
             return "{\"status\":\"error\",\"cmd\":\"open\",\"path\":\""
                    + jsonEscape(path)
                    + "\",\"error\":\"No active audio chain\"}";
 
         // Find the plugin in the chain
         IVSTPlugin* plugin = nullptr;
-        for (int i = 0; i < m_chain->getPluginCount(); ++i)
+        for (int i = 0; i < chain->getPluginCount(); ++i)
         {
-            auto* p = m_chain->getPlugin(i);
+            auto* p = chain->getPlugin(i);
             if (p && p->getPath() == path) {
                 plugin = p;
                 break;
@@ -391,14 +407,20 @@ void EditorBridge::doOpenEditor(const std::string& pluginPath)
         }
     }
 
-    if (!m_chain)
+    DSPChain* chain = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(m_editorMutex);
+        chain = m_chain;
+    }
+
+    if (!chain)
         return;
 
     // Find the plugin
     IVSTPlugin* plugin = nullptr;
-    for (int i = 0; i < m_chain->getPluginCount(); ++i)
+    for (int i = 0; i < chain->getPluginCount(); ++i)
     {
-        auto* p = m_chain->getPlugin(i);
+        auto* p = chain->getPlugin(i);
         if (p && p->getPath() == pluginPath) {
             plugin = p;
             break;
@@ -535,18 +557,20 @@ LRESULT EditorBridge::handleMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM l
         {
             // Idle the VST editor — needed for VST2 plugins
             std::string pluginPath;
+            DSPChain* chain = nullptr;
             {
                 std::lock_guard<std::mutex> lock(m_editorMutex);
                 auto it = m_hwndToPath.find(hwnd);
                 if (it != m_hwndToPath.end())
                     pluginPath = it->second;
+                chain = m_chain;
             }
 
-            if (!pluginPath.empty() && m_chain)
+            if (!pluginPath.empty() && chain)
             {
-                for (int i = 0; i < m_chain->getPluginCount(); ++i)
+                for (int i = 0; i < chain->getPluginCount(); ++i)
                 {
-                    auto* p = m_chain->getPlugin(i);
+                    auto* p = chain->getPlugin(i);
                     if (p && p->getPath() == pluginPath)
                     {
                         p->idleEditor();
@@ -562,19 +586,22 @@ LRESULT EditorBridge::handleMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM l
     {
         // User clicked the X button — close the editor
         std::string pluginPath;
+        DSPChain* chain = nullptr;
         {
             std::lock_guard<std::mutex> lock(m_editorMutex);
             auto it = m_hwndToPath.find(hwnd);
             if (it != m_hwndToPath.end())
                 pluginPath = it->second;
+            chain = m_chain;
         }
 
-        // Close the VST editor before destroying the window
-        if (!pluginPath.empty() && m_chain)
+        // Close the VST editor before destroying the window.
+        // The lock is already released here, so WM_DESTROY can acquire it.
+        if (!pluginPath.empty() && chain)
         {
-            for (int i = 0; i < m_chain->getPluginCount(); ++i)
+            for (int i = 0; i < chain->getPluginCount(); ++i)
             {
-                auto* p = m_chain->getPlugin(i);
+                auto* p = chain->getPlugin(i);
                 if (p && p->getPath() == pluginPath)
                 {
                     p->closeEditor();

@@ -41,7 +41,11 @@ public:
     bool isRunning() const { return m_running.load(); }
 
     /// Return the DSPChain pointer the bridge was started with, or nullptr.
-    DSPChain* getChain() const { return m_chain; }
+    DSPChain* getChain() const
+    {
+        std::lock_guard<std::mutex> lock(m_editorMutex);
+        return m_chain;
+    }
 
 private:
     // -------------------------------------------------------------------------
@@ -98,9 +102,9 @@ private:
     std::thread         m_uiThread;
     DWORD               m_uiThreadID = 0;
 
-    /// Tracks open editor windows: plugin path → HWND.
     std::unordered_map<std::string, HWND> m_openEditors;
-    std::mutex                            m_editorMutex;
+    /// Guards m_chain, m_openEditors, and m_hwndToPath.
+    mutable std::mutex                    m_editorMutex;
 
     /// Map from HWND → plugin path (reverse lookup for WndProc).
     std::unordered_map<HWND, std::string> m_hwndToPath;
