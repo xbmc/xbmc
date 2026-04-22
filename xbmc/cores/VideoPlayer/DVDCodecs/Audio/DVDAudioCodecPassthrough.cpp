@@ -187,6 +187,14 @@ bool CDVDAudioCodecPassthrough::AddData(const DemuxPacket &packet)
 
   if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
   {
+    if (m_trueHDBuffer.empty())
+    {
+      m_trueHDBuffer.resize(TRUEHD_BUF_SIZE);
+
+      if (!m_deviceIsRAW && !m_packerMAT)
+        m_packerMAT = std::make_unique<CPackerMAT>();
+    }
+
     if (m_deviceIsRAW) // RAW
     {
       m_dataSize = PackTrueHD();
