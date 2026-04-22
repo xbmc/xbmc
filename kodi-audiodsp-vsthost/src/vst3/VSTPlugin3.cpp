@@ -12,6 +12,7 @@
 #include "pluginterfaces/vst/ivstaudioprocessor.h"
 #include "pluginterfaces/vst/ivsteditcontroller.h"
 #include "pluginterfaces/vst/ivstcomponent.h"
+#include "pluginterfaces/vst/ivstconnectionpoint.h"
 #include "pluginterfaces/vst/ivstparameterchanges.h"
 #include "pluginterfaces/base/ibstream.h"
 #include "base/source/fstreamer.h"
@@ -178,6 +179,18 @@ bool VSTPlugin3::load(double sampleRate, int maxBlockSize, int numChannels)
         // Not fatal — we continue without controller (parameter support absent).
     }
 
+    // Connect component ↔ controller via IConnectionPoint (VST3 spec requirement)
+    if (m_controller)
+    {
+        Steinberg::FUnknownPtr<Steinberg::Vst::IConnectionPoint> compCP(m_component);
+        Steinberg::FUnknownPtr<Steinberg::Vst::IConnectionPoint> ctrlCP(m_controller);
+        if (compCP && ctrlCP)
+        {
+            compCP->connect(ctrlCP);
+            ctrlCP->connect(compCP);
+        }
+    }
+
     // -----------------------------------------------------------------------
     // 8. Configure ProcessSetup
     // -----------------------------------------------------------------------
@@ -244,6 +257,15 @@ bool VSTPlugin3::load(double sampleRate, int maxBlockSize, int numChannels)
     if (m_controller)
         buildParamIndex();
 
+    // Probe editor support once here so hasEditor() is allocation-free.
+    if (m_controller)
+    {
+        auto* testView = m_controller->createView("editor");
+        m_hasEditor = (testView != nullptr);
+        if (testView)
+            testView->release();
+    }
+
     // -----------------------------------------------------------------------
     // Populate name / vendor from factory info
     // -----------------------------------------------------------------------
@@ -295,19 +317,32 @@ void VSTPlugin3::unload()
         m_component->setActive(false);
     }
 
-    // 3. Release smart pointers in reverse acquisition order
+    // 3. Disconnect IConnectionPoint peers (mirrors the connect() in load())
+    if (m_component && m_controller)
+    {
+        Steinberg::FUnknownPtr<Steinberg::Vst::IConnectionPoint> compCP(m_component);
+        Steinberg::FUnknownPtr<Steinberg::Vst::IConnectionPoint> ctrlCP(m_controller);
+        if (compCP && ctrlCP)
+        {
+            compCP->disconnect(ctrlCP);
+            ctrlCP->disconnect(compCP);
+        }
+    }
+
+    // 4. Release smart pointers in reverse acquisition order
     m_controller = nullptr;
     m_processor  = nullptr;
     m_component  = nullptr;
     m_provider   = nullptr;
 
-    // 4. Unload the module (closes the DLL)
+    // 5. Unload the module (closes the DLL)
     m_module.reset();
 
-    // 5. Clear derived state
+    // 6. Clear derived state
     m_paramIDByIndex.clear();
     m_name.clear();
     m_vendor.clear();
+    m_hasEditor = false;
 
     m_loaded = false;
     VST3_LOG("Unloaded '%s'", m_path.c_str());
@@ -322,16 +357,19 @@ int VSTPlugin3::process(float** in, float** out, int samples)
     if (!m_loaded || !m_processor)
         return 0;
 
-    // 1. Drain the parameter automation queue into a stack-local container
-    //    so it is automatically reset (destroyed) at the end of this block.
-    Steinberg::Vst::ParameterChanges blockParamChanges;
-    drainParamQueue(blockParamChanges);
-    if (blockParamChanges.getParameterCount() > 0)
-        m_processData.inputParameterChanges = &blockParamChanges;
+    // Clear any pointer left from a previous block before doing anything else.
+    m_processData.inputParameterChanges = nullptr;
+
+    // 1. Drain the parameter automation queue into the pre-allocated member
+    //    container so we avoid per-block heap allocation in the real-time path.
+    drainParamQueue(m_blockParamChanges);
+    if (m_blockParamChanges.getParameterCount() > 0)
+        m_processData.inputParameterChanges = &m_blockParamChanges;
 
     // 2. Bypass: copy input to output and return early.
     if (m_bypassed)
     {
+        m_blockParamChanges = Steinberg::Vst::ParameterChanges{};
         for (int ch = 0; ch < m_numChannels; ++ch)
             std::memcpy(out[ch], in[ch], sizeof(float) * static_cast<size_t>(samples));
         return samples;
@@ -359,7 +397,10 @@ int VSTPlugin3::process(float** in, float** out, int samples)
     // 4. Hand off to the plugin.
     m_processor->process(m_processData);
 
-    // 5. Clear per-block parameter changes so the next block starts clean.
+    // 5. Reset the parameter changes container for the next block.
+    //    Re-assigning reuses the internal vector capacity when possible,
+    //    avoiding allocation on steady-state calls.
+    m_blockParamChanges = Steinberg::Vst::ParameterChanges{};
     m_processData.inputParameterChanges = nullptr;
 
     return samples;
@@ -374,9 +415,9 @@ void VSTPlugin3::drainParamQueue(Steinberg::Vst::ParameterChanges& paramChanges)
     if (!m_controller)
         return;
 
-    // Drain the ring buffer into the caller-provided ParameterChanges container.
-    // The container is a stack-local in process() so it is fresh every audio
-    // block — no need to reset it here.
+    // Drain the ring buffer into the provided ParameterChanges container.
+    // The container (m_blockParamChanges) is reset by process() after each
+    // audio block — no need to reset it here.
     ParamChange3 change;
     while (m_paramQueue.pop(change))
     {
@@ -625,20 +666,7 @@ bool VSTPlugin3::hasEditor() const
 {
     if (!m_loaded || !m_controller)
         return false;
-
-    // If we already have a cached view, we know the plugin has an editor.
-    if (m_plugView)
-        return true;
-
-    // Create and immediately release a view to probe editor support.
-    // This is called infrequently (listing UI), so the cost is acceptable.
-    auto* view = m_controller->createView("editor");
-    if (view)
-    {
-        view->release();
-        return true;
-    }
-    return false;
+    return m_plugView != nullptr || m_hasEditor;
 }
 
 bool VSTPlugin3::openEditor(void* parentWindow)

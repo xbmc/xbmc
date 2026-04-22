@@ -122,6 +122,10 @@ private:
     // Parameter automation ring buffer (GUI→audio thread).
     RingBuffer<ParamChange3, 256>   m_paramQueue;
 
+    /// Pre-allocated parameter changes container reused every audio block
+    /// to avoid per-block heap allocation in the real-time path.
+    Steinberg::Vst::ParameterChanges m_blockParamChanges;
+
     /// Maps integer param index (0..N-1) → VST3 param ID (plugin-defined uint32).
     std::vector<uint32_t>           m_paramIDByIndex;
 
@@ -136,4 +140,5 @@ private:
     int    m_blockSize   = 512;
     int    m_numChannels = 2;
     bool   m_loaded      = false;
+    bool   m_hasEditor   = false;
 };

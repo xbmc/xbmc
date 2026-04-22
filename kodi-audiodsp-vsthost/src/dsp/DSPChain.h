@@ -15,7 +15,6 @@ struct ChainPlugin {
     std::unique_ptr<IVSTPlugin> plugin;
     std::string                 path;
     IVSTPlugin::PluginFormat    format;
-    bool                        bypassed = false;
 };
 
 /// Ordered chain of VST plugins.

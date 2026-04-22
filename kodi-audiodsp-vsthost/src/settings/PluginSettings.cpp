@@ -4,6 +4,7 @@
  * License: GPL-2.0-or-later
  */
 #include "PluginSettings.h"
+#include "../util/JsonUtil.h"
 
 #include <fstream>
 #include <sstream>
@@ -92,63 +93,6 @@ bool PluginSettings::applyChainConfig(DSPProcessor& processor,
 
 namespace {
 
-/// Escape a string for embedding in a JSON value.
-std::string jsonEscape(const std::string& s)
-{
-    std::string out;
-    out.reserve(s.size() + 4);
-    for (unsigned char c : s) {
-        if      (c == '"')  out += "\\\"";
-        else if (c == '\\') out += "\\\\";
-        else if (c == '\n') out += "\\n";
-        else if (c == '\r') out += "\\r";
-        else if (c == '\t') out += "\\t";
-        else if (c < 0x20) {
-            char buf[8];
-            snprintf(buf, sizeof(buf), "\\u%04x", static_cast<unsigned>(c));
-            out += buf;
-        } else {
-            out += static_cast<char>(c);
-        }
-    }
-    return out;
-}
-
-/// Extract a single top-level string field from a simple JSON object.
-std::string jsonExtractString(const std::string& json, const std::string& key)
-{
-    std::string search = "\"" + key + "\":\"";
-    size_t start = json.find(search);
-    if (start == std::string::npos)
-        return {};
-    start += search.size();
-    size_t end = json.find('"', start);
-    // Skip escaped quotes
-    while (end != std::string::npos && end > 0 && json[end - 1] == '\\')
-        end = json.find('"', end + 1);
-    if (end == std::string::npos)
-        return {};
-
-    std::string raw = json.substr(start, end - start);
-    // Unescape common sequences
-    std::string result;
-    result.reserve(raw.size());
-    for (size_t i = 0; i < raw.size(); ++i) {
-        if (raw[i] == '\\' && i + 1 < raw.size()) {
-            char next = raw[i + 1];
-            if      (next == '"')  { result += '"';  ++i; }
-            else if (next == '\\') { result += '\\'; ++i; }
-            else if (next == 'n')  { result += '\n'; ++i; }
-            else if (next == 'r')  { result += '\r'; ++i; }
-            else if (next == 't')  { result += '\t'; ++i; }
-            else                   { result += raw[i]; }
-        } else {
-            result += raw[i];
-        }
-    }
-    return result;
-}
-
 /// Extract all string elements from a JSON array field.
 /// Handles simple quoted strings; does not parse nested objects.
 std::vector<std::string> jsonExtractStringArray(const std::string& json,
@@ -228,11 +172,11 @@ bool PluginSettings::loadSettings()
     ss << f.rdbuf();
     std::string json = ss.str();
 
-    std::string scannerPath = jsonExtractString(json, "scannerPath");
+    std::string scannerPath = JsonUtil::extractString(json, "scannerPath");
     if (!scannerPath.empty())
         m_scannerPath = scannerPath;
 
-    std::string activeConfig = jsonExtractString(json, "activeConfig");
+    std::string activeConfig = JsonUtil::extractString(json, "activeConfig");
     if (!activeConfig.empty())
         m_activeConfigName = activeConfig;
 
@@ -253,14 +197,14 @@ bool PluginSettings::saveSettings() const
         return false;
 
     f << "{\n";
-    f << "  \"scannerPath\": \"" << jsonEscape(m_scannerPath) << "\",\n";
+    f << "  \"scannerPath\": \"" << JsonUtil::escape(m_scannerPath) << "\",\n";
     f << "  \"searchPaths\": [";
     for (size_t i = 0; i < m_searchPaths.size(); ++i) {
         if (i > 0) f << ", ";
-        f << "\"" << jsonEscape(m_searchPaths[i]) << "\"";
+        f << "\"" << JsonUtil::escape(m_searchPaths[i]) << "\"";
     }
     f << "],\n";
-    f << "  \"activeConfig\": \"" << jsonEscape(m_activeConfigName) << "\"\n";
+    f << "  \"activeConfig\": \"" << JsonUtil::escape(m_activeConfigName) << "\"\n";
     f << "}\n";
 
     return f.good();

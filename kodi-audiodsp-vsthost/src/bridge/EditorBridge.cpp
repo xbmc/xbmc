@@ -5,69 +5,12 @@
  */
 
 #include "EditorBridge.h"
+#include "../util/JsonUtil.h"
 
 #include <cstdio>
 #include <cstring>
 #include <sstream>
 #include <algorithm>
-
-// Simple JSON helpers — lightweight hand-rolled parsing to avoid dependencies.
-// We only need to extract "cmd" and "path" string fields.
-
-static std::string jsonEscape(const std::string& s)
-{
-    std::string out;
-    out.reserve(s.size() + 8);
-    for (char c : s)
-    {
-        switch (c) {
-            case '\\': out += "\\\\"; break;
-            case '"':  out += "\\\""; break;
-            case '\n': out += "\\n";  break;
-            default:   out += c;      break;
-        }
-    }
-    return out;
-}
-
-static std::string extractJsonString(const std::string& json, const char* key)
-{
-    // Look for "key": "value"
-    std::string needle = std::string("\"") + key + "\"";
-    auto pos = json.find(needle);
-    if (pos == std::string::npos) return {};
-
-    pos = json.find('"', pos + needle.size());
-    if (pos == std::string::npos) return {};
-
-    // Skip the opening quote — find the value start
-    auto valStart = json.find('"', pos);
-    if (valStart == std::string::npos) return {};
-    valStart++; // skip opening quote
-
-    // Find the closing quote (handle escaped quotes)
-    std::string result;
-    for (size_t i = valStart; i < json.size(); ++i)
-    {
-        if (json[i] == '\\' && i + 1 < json.size())
-        {
-            ++i;
-            if (json[i] == '"')  result += '"';
-            else if (json[i] == '\\') result += '\\';
-            else if (json[i] == 'n')  result += '\n';
-            else { result += '\\'; result += json[i]; }
-        }
-        else if (json[i] == '"')
-        {
-            break;
-        }
-        else
-        {
-            result += json[i];
-        }
-    }
-    return result;
-}
 
 // ============================================================================
 // Constructor / Destructor
@@ -89,7 +32,10 @@ void EditorBridge::start(DSPChain* chain)
     if (m_running.load())
         return;
 
-    m_chain   = chain;
+    {
+        std::lock_guard<std::mutex> lock(m_editorMutex);
+        m_chain = chain;
+    }
     m_running = true;
 
     // Create an event to wait for the UI thread to become ready
@@ -129,13 +75,21 @@ void EditorBridge::stop()
     if (m_uiThreadID != 0)
         PostThreadMessageW(m_uiThreadID, WM_QUIT, 0, 0);
 
+    // Null out m_chain under the lock so concurrent readers see nullptr atomically.
+    // The joins must happen OUTSIDE the lock: the UI thread's WM_CLOSE handler
+    // calls DestroyWindow(), which synchronously delivers WM_DESTROY, which
+    // acquires m_editorMutex — holding the lock here would therefore deadlock.
+    {
+        std::lock_guard<std::mutex> lock(m_editorMutex);
+        m_chain = nullptr;
+    }
+
     if (m_pipeThread.joinable())
         m_pipeThread.join();
     if (m_uiThread.joinable())
         m_uiThread.join();
 
     m_uiThreadID = 0;
-    m_chain = nullptr;
 }
 
 // ============================================================================
@@ -214,8 +168,8 @@ void EditorBridge::handleClient(HANDLE pipe)
 
 std::string EditorBridge::processCommand(const std::string& json)
 {
-    std::string cmd  = extractJsonString(json, "cmd");
-    std::string path = extractJsonString(json, "path");
+    std::string cmd  = JsonUtil::extractString(json, "cmd");
+    std::string path = JsonUtil::extractString(json, "path");
 
     if (cmd == "ping")
     {
@@ -227,16 +181,22 @@ std::string EditorBridge::processCommand(const std::string& json)
         if (path.empty())
             return "{\"status\":\"error\",\"cmd\":\"open\",\"error\":\"Missing path\"}";
 
-        if (!m_chain)
+        DSPChain* chain = nullptr;
+        {
+            std::lock_guard<std::mutex> lock(m_editorMutex);
+            chain = m_chain;
+        }
+
+        if (!chain)
             return "{\"status\":\"error\",\"cmd\":\"open\",\"path\":\""
-                   + jsonEscape(path)
+                   + JsonUtil::escape(path)
                    + "\",\"error\":\"No active audio chain\"}";
 
         // Find the plugin in the chain
         IVSTPlugin* plugin = nullptr;
-        for (int i = 0; i < m_chain->getPluginCount(); ++i)
+        for (int i = 0; i < chain->getPluginCount(); ++i)
         {
-            auto* p = m_chain->getPlugin(i);
+            auto* p = chain->getPlugin(i);
             if (p && p->getPath() == path) {
                 plugin = p;
                 break;
@@ -245,12 +205,12 @@ std::string EditorBridge::processCommand(const std::string& json)
 
         if (!plugin)
             return "{\"status\":\"error\",\"cmd\":\"open\",\"path\":\""
-                   + jsonEscape(path)
+                   + JsonUtil::escape(path)
                    + "\",\"error\":\"Plugin not in chain\"}";
 
         if (!plugin->hasEditor())
             return "{\"status\":\"ok\",\"cmd\":\"open\",\"path\":\""
-                   + jsonEscape(path)
+                   + JsonUtil::escape(path)
                    + "\",\"hasEditor\":false}";
 
         // Post a message to the UI thread to open the editor
@@ -261,12 +221,12 @@ std::string EditorBridge::processCommand(const std::string& json)
         {
             delete pathCopy;
             return "{\"status\":\"error\",\"cmd\":\"open\",\"path\":\""
-                   + jsonEscape(path)
+                   + JsonUtil::escape(path)
                    + "\",\"error\":\"Failed to post to UI thread\"}";
         }
 
         return "{\"status\":\"ok\",\"cmd\":\"open\",\"path\":\""
-               + jsonEscape(path)
+               + JsonUtil::escape(path)
                + "\",\"hasEditor\":true}";
     }
 
@@ -281,12 +241,12 @@ std::string EditorBridge::processCommand(const std::string& json)
         {
             delete pathCopy;
             return "{\"status\":\"error\",\"cmd\":\"close\",\"path\":\""
-                   + jsonEscape(path)
+                   + JsonUtil::escape(path)
                    + "\",\"error\":\"Failed to post to UI thread\"}";
         }
 
         return "{\"status\":\"ok\",\"cmd\":\"close\",\"path\":\""
-               + jsonEscape(path) + "\"}";
+               + JsonUtil::escape(path) + "\"}";
     }
 
     if (cmd == "close_all")
@@ -391,14 +351,20 @@ void EditorBridge::doOpenEditor(const std::string& pluginPath)
         }
     }
 
-    if (!m_chain)
+    DSPChain* chain = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(m_editorMutex);
+        chain = m_chain;
+    }
+
+    if (!chain)
         return;
 
     // Find the plugin
     IVSTPlugin* plugin = nullptr;
-    for (int i = 0; i < m_chain->getPluginCount(); ++i)
+    for (int i = 0; i < chain->getPluginCount(); ++i)
     {
-        auto* p = m_chain->getPlugin(i);
+        auto* p = chain->getPlugin(i);
         if (p && p->getPath() == pluginPath) {
             plugin = p;
             break;
@@ -444,13 +410,29 @@ void EditorBridge::doOpenEditor(const std::string& pluginPath)
         return;
     }
 
-    // Open the VST editor inside our window
+    // Open the VST editor inside our window (also attaches the VST3 view)
     if (!plugin->openEditor(static_cast<void*>(hwnd)))
     {
         std::fprintf(stderr, "[EditorBridge] plugin->openEditor() failed for '%s'\n",
                      pluginPath.c_str());
         DestroyWindow(hwnd);
         return;
+    }
+
+    // Resize window to match the attached view's reported size.
+    // For VST3 this is the first accurate query (m_plugView is now set).
+    {
+        int viewW = 0, viewH = 0;
+        if (plugin->getEditorSize(viewW, viewH) && viewW > 0 && viewH > 0
+            && (viewW != editorW || viewH != editorH))
+        {
+            RECT newClientRect = {0, 0, static_cast<LONG>(viewW), static_cast<LONG>(viewH)};
+            AdjustWindowRectEx(&newClientRect, WS_OVERLAPPEDWINDOW, FALSE, 0);
+            SetWindowPos(hwnd, nullptr, 0, 0,
+                         newClientRect.right - newClientRect.left,
+                         newClientRect.bottom - newClientRect.top,
+                         SWP_NOMOVE | SWP_NOZORDER);
+        }
     }
 
     // Track the editor
@@ -535,18 +517,20 @@ LRESULT EditorBridge::handleMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM l
         {
             // Idle the VST editor — needed for VST2 plugins
             std::string pluginPath;
+            DSPChain* chain = nullptr;
             {
                 std::lock_guard<std::mutex> lock(m_editorMutex);
                 auto it = m_hwndToPath.find(hwnd);
                 if (it != m_hwndToPath.end())
                     pluginPath = it->second;
+                chain = m_chain;
             }
 
-            if (!pluginPath.empty() && m_chain)
+            if (!pluginPath.empty() && chain)
             {
-                for (int i = 0; i < m_chain->getPluginCount(); ++i)
+                for (int i = 0; i < chain->getPluginCount(); ++i)
                 {
-                    auto* p = m_chain->getPlugin(i);
+                    auto* p = chain->getPlugin(i);
                     if (p && p->getPath() == pluginPath)
                     {
                         p->idleEditor();
@@ -562,19 +546,22 @@ LRESULT EditorBridge::handleMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM l
     {
         // User clicked the X button — close the editor
         std::string pluginPath;
+        DSPChain* chain = nullptr;
         {
             std::lock_guard<std::mutex> lock(m_editorMutex);
             auto it = m_hwndToPath.find(hwnd);
             if (it != m_hwndToPath.end())
                 pluginPath = it->second;
+            chain = m_chain;
         }
 
-        // Close the VST editor before destroying the window
-        if (!pluginPath.empty() && m_chain)
+        // Close the VST editor before destroying the window.
+        // The lock is already released here, so WM_DESTROY can acquire it.
+        if (!pluginPath.empty() && chain)
         {
-            for (int i = 0; i < m_chain->getPluginCount(); ++i)
+            for (int i = 0; i < chain->getPluginCount(); ++i)
             {
-                auto* p = m_chain->getPlugin(i);
+                auto* p = chain->getPlugin(i);
                 if (p && p->getPath() == pluginPath)
                 {
                     p->closeEditor();
