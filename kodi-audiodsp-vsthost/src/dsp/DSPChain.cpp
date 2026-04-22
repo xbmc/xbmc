@@ -6,6 +6,7 @@
 #include "DSPChain.h"
 #include "../vst2/VSTPlugin2.h"
 #include "../vst3/VSTPlugin3.h"
+#include "../util/JsonUtil.h"
 
 #include <algorithm>
 #include <cstring>
@@ -356,34 +357,6 @@ std::vector<uint8_t> DSPChain::base64Decode(const std::string& str)
 }
 
 // =============================================================================
-//  JSON serialization helpers (manual, no external library)
-// =============================================================================
-
-/// Escape a string for embedding inside a JSON double-quoted value.
-static std::string jsonEscape(const std::string& s)
-{
-    std::string out;
-    out.reserve(s.size());
-    for (unsigned char c : s)
-    {
-        if      (c == '"')  out += "\\\"";
-        else if (c == '\\') out += "\\\\";
-        else if (c == '\n') out += "\\n";
-        else if (c == '\r') out += "\\r";
-        else if (c == '\t') out += "\\t";
-        else if (c < 0x20)
-        {
-            char buf[8];
-            std::snprintf(buf, sizeof(buf), "\\u%04x", static_cast<unsigned>(c));
-            out += buf;
-        }
-        else
-            out += static_cast<char>(c);
-    }
-    return out;
-}
-
-// =============================================================================
 //  serializeToJson
 // =============================================================================
 
@@ -411,7 +384,7 @@ std::string DSPChain::serializeToJson() const
         const std::string stateB64 = base64Encode(stateBytes);
 
         ss << "    {\n";
-        ss << "      \"path\": \""     << jsonEscape(slot.path) << "\",\n";
+        ss << "      \"path\": \""     << JsonUtil::escape(slot.path) << "\",\n";
         ss << "      \"format\": \""   << fmt                   << "\",\n";
         ss << "      \"bypassed\": "   << (slot.plugin->isBypassed() ? "true" : "false") << ",\n";
         ss << "      \"state\": \""    << stateB64              << "\"\n";
@@ -428,97 +401,6 @@ std::string DSPChain::serializeToJson() const
 // =============================================================================
 //  deserializeFromJson  (simple hand-rolled parser for the controlled format)
 // =============================================================================
-
-/// Extract the value of a simple string field: "key": "value"
-static bool extractStringField(const std::string& json, const std::string& key,
-                                size_t searchFrom, std::string& outValue, size_t& outEnd)
-{
-    // Find: "key":
-    const std::string needle = "\"" + key + "\"";
-    size_t pos = json.find(needle, searchFrom);
-    if (pos == std::string::npos)
-        return false;
-
-    pos += needle.size();
-    pos = json.find(':', pos);
-    if (pos == std::string::npos)
-        return false;
-    ++pos;
-
-    // Skip whitespace
-    while (pos < json.size() && (json[pos] == ' ' || json[pos] == '\t'
-                                 || json[pos] == '\n' || json[pos] == '\r'))
-        ++pos;
-
-    if (pos >= json.size() || json[pos] != '"')
-        return false;
-    ++pos;  // skip opening quote
-
-    std::string value;
-    while (pos < json.size() && json[pos] != '"')
-    {
-        if (json[pos] == '\\' && pos + 1 < json.size())
-        {
-            ++pos;
-            switch (json[pos])
-            {
-                case '"':  value += '"';  break;
-                case '\\': value += '\\'; break;
-                case 'n':  value += '\n'; break;
-                case 'r':  value += '\r'; break;
-                case 't':  value += '\t'; break;
-                default:   value += json[pos]; break;
-            }
-        }
-        else
-        {
-            value += json[pos];
-        }
-        ++pos;
-    }
-
-    if (pos < json.size() && json[pos] == '"')
-        ++pos;  // skip closing quote
-
-    outValue = value;
-    outEnd   = pos;
-    return true;
-}
-
-/// Extract the value of a boolean field: "key": true/false
-static bool extractBoolField(const std::string& json, const std::string& key,
-                              size_t searchFrom, bool& outValue, size_t& outEnd)
-{
-    const std::string needle = "\"" + key + "\"";
-    size_t pos = json.find(needle, searchFrom);
-    if (pos == std::string::npos)
-        return false;
-
-    pos += needle.size();
-    pos = json.find(':', pos);
-    if (pos == std::string::npos)
-        return false;
-    ++pos;
-
-    // Skip whitespace
-    while (pos < json.size() && (json[pos] == ' ' || json[pos] == '\t'
-                                 || json[pos] == '\n' || json[pos] == '\r'))
-        ++pos;
-
-    if (json.compare(pos, 4, "true") == 0)
-    {
-        outValue = true;
-        outEnd   = pos + 4;
-        return true;
-    }
-    if (json.compare(pos, 5, "false") == 0)
-    {
-        outValue = false;
-        outEnd   = pos + 5;
-        return true;
-    }
-    return false;
-}
 
 bool DSPChain::deserializeFromJson(const std::string& json)
 {
@@ -573,10 +455,10 @@ bool DSPChain::deserializeFromJson(const std::string& json)
         bool        bypassed = false;
         size_t      dummy    = 0;
 
-        if (!extractStringField(obj, "path",   0, pathStr,   dummy)) { pos = objEnd + 1; continue; }
-        if (!extractStringField(obj, "format", 0, formatStr, dummy)) { pos = objEnd + 1; continue; }
-        extractBoolField  (obj, "bypassed", 0, bypassed,  dummy);
-        extractStringField(obj, "state",    0, stateStr,  dummy);
+        if (!JsonUtil::extractString(obj, "path",   0, pathStr,   dummy)) { pos = objEnd + 1; continue; }
+        if (!JsonUtil::extractString(obj, "format", 0, formatStr, dummy)) { pos = objEnd + 1; continue; }
+        JsonUtil::extractBool  (obj, "bypassed", 0, bypassed,  dummy);
+        JsonUtil::extractString(obj, "state",    0, stateStr,  dummy);
 
         IVSTPlugin::PluginFormat fmt = (formatStr == "vst3")
             ? IVSTPlugin::PluginFormat::VST3

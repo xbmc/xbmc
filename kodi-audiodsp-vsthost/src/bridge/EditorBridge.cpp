@@ -5,69 +5,12 @@
  */
 
 #include "EditorBridge.h"
+#include "../util/JsonUtil.h"
 
 #include <cstdio>
 #include <cstring>
 #include <sstream>
 #include <algorithm>
-
-// Simple JSON helpers — lightweight hand-rolled parsing to avoid dependencies.
-// We only need to extract "cmd" and "path" string fields.
-
-static std::string jsonEscape(const std::string& s)
-{
-    std::string out;
-    out.reserve(s.size() + 8);
-    for (char c : s)
-    {
-        switch (c) {
-            case '\\': out += "\\\\"; break;
-            case '"':  out += "\\\""; break;
-            case '\n': out += "\\n";  break;
-            default:   out += c;      break;
-        }
-    }
-    return out;
-}
-
-static std::string extractJsonString(const std::string& json, const char* key)
-{
-    // Look for "key": "value"
-    std::string needle = std::string("\"") + key + "\"";
-    auto pos = json.find(needle);
-    if (pos == std::string::npos) return {};
-
-    pos = json.find('"', pos + needle.size());
-    if (pos == std::string::npos) return {};
-
-    // Skip the opening quote — find the value start
-    auto valStart = json.find('"', pos);
-    if (valStart == std::string::npos) return {};
-    valStart++; // skip opening quote
-
-    // Find the closing quote (handle escaped quotes)
-    std::string result;
-    for (size_t i = valStart; i < json.size(); ++i)
-    {
-        if (json[i] == '\\' && i + 1 < json.size())
-        {
-            ++i;
-            if (json[i] == '"')  result += '"';
-            else if (json[i] == '\\') result += '\\';
-            else if (json[i] == 'n')  result += '\n';
-            else { result += '\\'; result += json[i]; }
-        }
-        else if (json[i] == '"')
-        {
-            break;
-        }
-        else
-        {
-            result += json[i];
-        }
-    }
-    return result;
-}
 
 // ============================================================================
 // Constructor / Destructor
@@ -225,8 +168,8 @@ void EditorBridge::handleClient(HANDLE pipe)
 
 std::string EditorBridge::processCommand(const std::string& json)
 {
-    std::string cmd  = extractJsonString(json, "cmd");
-    std::string path = extractJsonString(json, "path");
+    std::string cmd  = JsonUtil::extractString(json, "cmd");
+    std::string path = JsonUtil::extractString(json, "path");
 
     if (cmd == "ping")
     {
@@ -246,7 +189,7 @@ std::string EditorBridge::processCommand(const std::string& json)
 
         if (!chain)
             return "{\"status\":\"error\",\"cmd\":\"open\",\"path\":\""
-                   + jsonEscape(path)
+                   + JsonUtil::escape(path)
                    + "\",\"error\":\"No active audio chain\"}";
 
         // Find the plugin in the chain
@@ -262,12 +205,12 @@ std::string EditorBridge::processCommand(const std::string& json)
 
         if (!plugin)
             return "{\"status\":\"error\",\"cmd\":\"open\",\"path\":\""
-                   + jsonEscape(path)
+                   + JsonUtil::escape(path)
                    + "\",\"error\":\"Plugin not in chain\"}";
 
         if (!plugin->hasEditor())
             return "{\"status\":\"ok\",\"cmd\":\"open\",\"path\":\""
-                   + jsonEscape(path)
+                   + JsonUtil::escape(path)
                    + "\",\"hasEditor\":false}";
 
         // Post a message to the UI thread to open the editor
@@ -278,12 +221,12 @@ std::string EditorBridge::processCommand(const std::string& json)
         {
             delete pathCopy;
             return "{\"status\":\"error\",\"cmd\":\"open\",\"path\":\""
-                   + jsonEscape(path)
+                   + JsonUtil::escape(path)
                    + "\",\"error\":\"Failed to post to UI thread\"}";
         }
 
         return "{\"status\":\"ok\",\"cmd\":\"open\",\"path\":\""
-               + jsonEscape(path)
+               + JsonUtil::escape(path)
                + "\",\"hasEditor\":true}";
     }
 
@@ -298,12 +241,12 @@ std::string EditorBridge::processCommand(const std::string& json)
         {
             delete pathCopy;
             return "{\"status\":\"error\",\"cmd\":\"close\",\"path\":\""
-                   + jsonEscape(path)
+                   + JsonUtil::escape(path)
                    + "\",\"error\":\"Failed to post to UI thread\"}";
         }
 
         return "{\"status\":\"ok\",\"cmd\":\"close\",\"path\":\""
-               + jsonEscape(path) + "\"}";
+               + JsonUtil::escape(path) + "\"}";
     }
 
     if (cmd == "close_all")

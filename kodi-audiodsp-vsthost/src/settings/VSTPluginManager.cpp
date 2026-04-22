@@ -4,6 +4,7 @@
  * License: GPL-2.0-or-later
  */
 #include "VSTPluginManager.h"
+#include "../util/JsonUtil.h"
 
 #include <windows.h>
 #include <fstream>
@@ -24,42 +25,6 @@ VSTPluginManager& VSTPluginManager::instance()
 // Internal JSON field helpers (hand-rolled; no external library dependency)
 // ---------------------------------------------------------------------------
 
-static std::string extractStringField(const std::string& json, const std::string& key)
-{
-    std::string search = "\"" + key + "\":\"";
-    size_t start = json.find(search);
-    if (start == std::string::npos)
-        return {};
-    start += search.size();
-
-    // Find the closing quote, skipping over backslash-escaped characters.
-    size_t end = json.find('"', start);
-    while (end != std::string::npos && end > 0 && json[end - 1] == '\\')
-        end = json.find('"', end + 1);
-    if (end == std::string::npos)
-        return {};
-
-    std::string raw = json.substr(start, end - start);
-
-    // Unescape \" and \\ (the only two sequences vstscanner.exe emits for paths).
-    std::string result;
-    result.reserve(raw.size());
-    for (size_t i = 0; i < raw.size(); ++i) {
-        if (raw[i] == '\\' && i + 1 < raw.size()) {
-            char next = raw[i + 1];
-            if (next == '"')  { result += '"';  ++i; }
-            else if (next == '\\') { result += '\\'; ++i; }
-            else if (next == 'n')  { result += '\n'; ++i; }
-            else if (next == 'r')  { result += '\r'; ++i; }
-            else if (next == 't')  { result += '\t'; ++i; }
-            else                   { result += raw[i]; }
-        } else {
-            result += raw[i];
-        }
-    }
-    return result;
-}
-
 static int extractIntField(const std::string& json, const std::string& key)
 {
     std::string search = "\"" + key + "\":";
@@ -77,18 +42,6 @@ static int extractIntField(const std::string& json, const std::string& key)
     }
 }
 
-static bool extractBoolField(const std::string& json, const std::string& key)
-{
-    std::string search = "\"" + key + "\":";
-    size_t pos = json.find(search);
-    if (pos == std::string::npos)
-        return false;
-    pos += search.size();
-    while (pos < json.size() && (json[pos] == ' ' || json[pos] == '\t'))
-        ++pos;
-    return json.compare(pos, 4, "true") == 0;
-}
-
 // ---------------------------------------------------------------------------
 // parseJsonLine — convert a single NDJSON line to PluginInfo
 // ---------------------------------------------------------------------------
@@ -96,14 +49,14 @@ static bool extractBoolField(const std::string& json, const std::string& key)
 /*static*/ PluginInfo VSTPluginManager::parseJsonLine(const std::string& line)
 {
     PluginInfo info;
-    info.path       = extractStringField(line, "path");
-    info.format     = extractStringField(line, "format");
-    info.name       = extractStringField(line, "name");
-    info.vendor     = extractStringField(line, "vendor");
+    info.path       = JsonUtil::extractString(line, "path");
+    info.format     = JsonUtil::extractString(line, "format");
+    info.name       = JsonUtil::extractString(line, "name");
+    info.vendor     = JsonUtil::extractString(line, "vendor");
     info.numParams  = extractIntField(line, "numParams");
     info.numInputs  = extractIntField(line, "numInputs");
     info.numOutputs = extractIntField(line, "numOutputs");
-    info.hasChunk   = extractBoolField(line, "hasChunk");
+    info.hasChunk   = JsonUtil::extractBool(line, "hasChunk");
 
     // The "error" field may be a quoted string or the literal null.
     size_t errSearch = line.find("\"error\":");
@@ -113,7 +66,7 @@ static bool extractBoolField(const std::string& json, const std::string& key)
             ++afterColon;
         if (afterColon < line.size() && line[afterColon] == '"') {
             // Quoted string — extract it
-            info.error = extractStringField(line, "error");
+            info.error = JsonUtil::extractString(line, "error");
         }
         // else: literal null → info.error stays empty (success)
     }
@@ -127,33 +80,12 @@ static bool extractBoolField(const std::string& json, const std::string& key)
 
 /*static*/ std::string VSTPluginManager::pluginInfoToJson(const PluginInfo& info)
 {
-    // Escape a string value for JSON output.
-    auto escapeJson = [](const std::string& s) -> std::string {
-        std::string out;
-        out.reserve(s.size() + 4);
-        for (unsigned char c : s) {
-            if      (c == '"')  out += "\\\"";
-            else if (c == '\\') out += "\\\\";
-            else if (c == '\n') out += "\\n";
-            else if (c == '\r') out += "\\r";
-            else if (c == '\t') out += "\\t";
-            else if (c < 0x20) {
-                char buf[8];
-                snprintf(buf, sizeof(buf), "\\u%04x", static_cast<unsigned>(c));
-                out += buf;
-            } else {
-                out += static_cast<char>(c);
-            }
-        }
-        return out;
-    };
-
     std::string result;
     result += "{";
-    result += "\"path\":\""       + escapeJson(info.path)   + "\",";
-    result += "\"format\":\""     + escapeJson(info.format) + "\",";
-    result += "\"name\":\""       + escapeJson(info.name)   + "\",";
-    result += "\"vendor\":\""     + escapeJson(info.vendor) + "\",";
+    result += "\"path\":\""       + JsonUtil::escape(info.path)   + "\",";
+    result += "\"format\":\""     + JsonUtil::escape(info.format) + "\",";
+    result += "\"name\":\""       + JsonUtil::escape(info.name)   + "\",";
+    result += "\"vendor\":\""     + JsonUtil::escape(info.vendor) + "\",";
     result += "\"numParams\":"    + std::to_string(info.numParams)  + ",";
     result += "\"numInputs\":"    + std::to_string(info.numInputs)  + ",";
     result += "\"numOutputs\":"   + std::to_string(info.numOutputs) + ",";
@@ -161,7 +93,7 @@ static bool extractBoolField(const std::string& json, const std::string& key)
     if (info.error.empty())
         result += "\"error\":null";
     else
-        result += "\"error\":\"" + escapeJson(info.error) + "\"";
+        result += "\"error\":\"" + JsonUtil::escape(info.error) + "\"";
     result += "}";
     return result;
 }
