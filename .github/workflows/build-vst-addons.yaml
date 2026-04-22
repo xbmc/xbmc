@@ -49,7 +49,7 @@ jobs:
         id: vst3sdk-cache
         with:
           path: kodi-audiodsp-vsthost/build/_deps
-          key: vst3sdk-${{ hashFiles('kodi-audiodsp-vsthost/CMakeLists.txt', 'kodi-audiodsp-vsthost/.gitmodules', '.github/workflows/build-vst-addons.yaml') }}
+          key: vst3sdk-${{ hashFiles('kodi-audiodsp-vsthost/CMakeLists.txt', 'kodi-audiodsp-vsthost/.gitmodules') }}
           restore-keys: |
             vst3sdk-
 
@@ -72,10 +72,10 @@ jobs:
       - name: Validate fetched VST3 SDK headers
         shell: pwsh
         run: |
-          $sdkRoot = Join-Path $env:GITHUB_WORKSPACE "kodi-audiodsp-vsthost\build\_deps\vst3sdk-src"
+          $sdkRoot = Join-Path $env:GITHUB_WORKSPACE "kodi-audiodsp-vsthost/build/_deps/vst3sdk-src"
           $requiredHeaders = @(
-            "pluginterfaces\vst\ivstconnectionpoint.h"
-            "public.sdk\source\vst\hosting\module.h"
+            "pluginterfaces/vst/ivstconnectionpoint.h"
+            "public.sdk/source/vst/hosting/module.h"
           )
           $missingHeaders = @()
           foreach ($relativeHeader in $requiredHeaders) {
