@@ -572,6 +572,17 @@ jobs:
             Write-Host "::warning::plugin.audio.vstmanager\addon.xml missing from staging"
           }
 
+      
+      # ---------------------------------------------------------------
+      # Zip up the Addons Folder for Release
+      # ---------------------------------------------------------------
+      - name: Package addons zip
+        if: ${{ success() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
+        shell: pwsh
+        run: |
+          $vstBuiltAddon = "$env:GITHUB_WORKSPACE\project\Win32BuildSetup\BUILD_WIN32\addons\*"
+          Compress-Archive -Path $vstBuiltAddon -DestinationPath "kodi-addons.zip"
+      
       # ---------------------------------------------------------------
       # DLL provenance check — FFmpeg is linked statically so no FFmpeg
       # DLLs should be present.  The only MinGW-sourced DLLs allowed are
@@ -817,6 +828,7 @@ jobs:
           git push origin ":refs/tags/${{ steps.version.outputs.tag }}" 2>/dev/null || true
           gh release create "${{ steps.version.outputs.tag }}" \
             kodi-windows-x86.zip \
-            --title "Kodi ${{ steps.version.outputs.tag }}" \
+			kodi-addons.zip \
+            --title "Kodi 18 Full${{ steps.version.outputs.tag }}" \
             --notes "${{ steps.notes.outputs.body }}" \
             --target "${{ github.sha }}"
