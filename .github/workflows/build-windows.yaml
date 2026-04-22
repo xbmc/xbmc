@@ -392,6 +392,11 @@ jobs:
             cmake --build . --config Release --target vstscanner
           )
           cmake --install . --config Release
+          set "VST_ADDON_DIR=%GITHUB_WORKSPACE%\project\Win32BuildSetup\BUILD_WIN32\addons\audiodsp.vsthost"
+          if not exist "%VST_ADDON_DIR%" mkdir "%VST_ADDON_DIR%"
+          if exist "Release\audiodsp.vsthost.dll" copy /Y "Release\audiodsp.vsthost.dll" "%VST_ADDON_DIR%\"
+          if exist "Release\vstscanner.exe" copy /Y "Release\vstscanner.exe" "%VST_ADDON_DIR%\"
+          if exist "%GITHUB_WORKSPACE%\kodi-audiodsp-vsthost\resources\addon.xml" copy /Y "%GITHUB_WORKSPACE%\kodi-audiodsp-vsthost\resources\addon.xml" "%VST_ADDON_DIR%\"
 
       # Collect all build output into a single staging directory that mirrors
       # the final on-disk layout.
@@ -488,18 +493,34 @@ jobs:
           $staging = "$env:GITHUB_WORKSPACE\staging"
 
           # --- audiodsp.vsthost ---
+          $vstBuiltAddon = "$env:GITHUB_WORKSPACE\project\Win32BuildSetup\BUILD_WIN32\addons\audiodsp.vsthost"
+          $vstBuildOut = "$env:GITHUB_WORKSPACE\vsthost-build\Release"
           $vstInstall = "$env:GITHUB_WORKSPACE\vsthost-install"
           $vstDst = Join-Path $staging "addons\audiodsp.vsthost"
           New-Item -ItemType Directory -Force $vstDst | Out-Null
-          if (Test-Path "$vstInstall\audiodsp.vsthost.dll") {
+          if (Test-Path "$vstBuiltAddon\audiodsp.vsthost.dll") {
+            Copy-Item "$vstBuiltAddon\*" -Destination $vstDst -Recurse -Force
+            Write-Host "Staged audiodsp.vsthost addon from BUILD_WIN32\addons"
+          } elseif (Test-Path "$vstBuildOut\audiodsp.vsthost.dll") {
+            Copy-Item "$vstBuildOut\audiodsp.vsthost.dll" -Destination $vstDst -Force
+            Write-Host "Staged audiodsp.vsthost.dll from vsthost-build\Release"
+            if (Test-Path "$vstBuildOut\vstscanner.exe") {
+              Copy-Item "$vstBuildOut\vstscanner.exe" -Destination $vstDst -Force
+              Write-Host "Staged vstscanner.exe"
+            }
+            if (Test-Path "$env:GITHUB_WORKSPACE\kodi-audiodsp-vsthost\resources\addon.xml") {
+              Copy-Item "$env:GITHUB_WORKSPACE\kodi-audiodsp-vsthost\resources\addon.xml" -Destination $vstDst -Force
+              Write-Host "Staged addon.xml"
+            }
+          } elseif (Test-Path "$vstInstall\audiodsp.vsthost.dll") {
             Copy-Item "$vstInstall\audiodsp.vsthost.dll" -Destination $vstDst -Force
-            Write-Host "Staged audiodsp.vsthost.dll"
+            Write-Host "Staged audiodsp.vsthost.dll from vsthost-install"
+            if (Test-Path "$vstInstall\vstscanner.exe") {
+              Copy-Item "$vstInstall\vstscanner.exe" -Destination $vstDst -Force
+              Write-Host "Staged vstscanner.exe"
+            }
           } else {
-            Write-Host "::warning::audiodsp.vsthost.dll not found in $vstInstall"
-          }
-          if (Test-Path "$vstInstall\vstscanner.exe") {
-            Copy-Item "$vstInstall\vstscanner.exe" -Destination $vstDst -Force
-            Write-Host "Staged vstscanner.exe"
+            Write-Host "::warning::audiodsp.vsthost.dll not found in BUILD_WIN32\addons, vsthost-build\Release, or $vstInstall"
           }
 
           # --- plugin.audio.vstmanager (pure Python, copy source tree) ---
