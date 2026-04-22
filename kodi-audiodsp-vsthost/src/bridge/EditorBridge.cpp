@@ -483,10 +483,11 @@ void EditorBridge::doOpenEditor(const std::string& pluginPath)
         if (plugin->getEditorSize(viewW, viewH) && viewW > 0 && viewH > 0
             && (viewW != editorW || viewH != editorH))
         {
-            RECT newWr = {0, 0, static_cast<LONG>(viewW), static_cast<LONG>(viewH)};
-            AdjustWindowRectEx(&newWr, WS_OVERLAPPEDWINDOW, FALSE, 0);
+            RECT newClientRect = {0, 0, static_cast<LONG>(viewW), static_cast<LONG>(viewH)};
+            AdjustWindowRectEx(&newClientRect, WS_OVERLAPPEDWINDOW, FALSE, 0);
             SetWindowPos(hwnd, nullptr, 0, 0,
-                         newWr.right - newWr.left, newWr.bottom - newWr.top,
+                         newClientRect.right - newClientRect.left,
+                         newClientRect.bottom - newClientRect.top,
                          SWP_NOMOVE | SWP_NOZORDER);
         }
     }
