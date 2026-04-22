@@ -396,7 +396,7 @@ jobs:
           # Check that dependency DLLs are present
           $dlls = Get-ChildItem $staging -Filter "*.dll" -File
           if ($dlls.Count -lt 15) {
-            Write-Error "MISSING: Only $($dlls.Count) DLLs found in staging root — expected 20+ dependency DLLs"
+            Write-Error "MISSING: Only $($dlls.Count) DLLs found in staging root — expected at least 15 dependency DLLs"
             $failed = $true
           } else {
             Write-Host "Found $($dlls.Count) DLLs in staging root"
