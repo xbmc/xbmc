@@ -289,7 +289,7 @@ static std::string toJson(const PluginInfo& info)
     j += "\"numParams\":"   + std::to_string(info.numParams)  + ',';
     j += "\"numInputs\":"   + std::to_string(info.numInputs)  + ',';
     j += "\"numOutputs\":"  + std::to_string(info.numOutputs) + ',';
-    j += "\"hasChunk\":"    + (info.hasChunk ? "true" : "false") + ',';
+    j += std::string("\"hasChunk\":") + (info.hasChunk ? "true" : "false") + ',';
     j += "\"error\":";
     if (info.error.empty())
         j += "null";
