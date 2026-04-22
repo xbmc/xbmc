@@ -228,6 +228,26 @@ bool CAddonVideoCodec::CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamI
     break;
   case AV_CODEC_ID_HEVC:
     initData.codec = VIDEOCODEC_HEVC;
+    switch (hints.profile)
+    {
+      case AV_PROFILE_UNKNOWN:
+        initData.codecProfile = STREAMCODEC_PROFILE::CodecProfileUnknown;
+        break;
+      case AV_PROFILE_HEVC_MAIN:
+        initData.codecProfile = STREAMCODEC_PROFILE::HEVCCodecProfileMain;
+        break;
+      case AV_PROFILE_HEVC_MAIN_10:
+        initData.codecProfile = STREAMCODEC_PROFILE::HEVCCodecProfileMain10;
+        break;
+      case AV_PROFILE_HEVC_MAIN_STILL_PICTURE:
+        initData.codecProfile = STREAMCODEC_PROFILE::HEVCCodecProfileMainStillPicture;
+        break;
+      case AV_PROFILE_HEVC_REXT:
+        initData.codecProfile = STREAMCODEC_PROFILE::HEVCCodecProfileRext;
+        break;
+      default:
+        return false;
+    }
     break;
   case AV_CODEC_ID_RAWVIDEO:
     initData.codec = VIDEOCODEC_RAWVIDEO;

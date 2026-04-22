@@ -200,6 +200,29 @@ extern "C"
 
     /// @brief **Dolby Digital** Atmos Profile
     DDPlusCodecProfileAtmos,
+
+    /// @brief **HEVC** Main Profile\n
+    /// \n
+    /// [Color depth](https://en.wikipedia.org/wiki/Color_depth): 8 bit,
+    /// [chroma subsampling](https://en.wikipedia.org/wiki/Chroma_subsampling): 4:2:0
+    HEVCCodecProfileMain,
+
+    /// @brief **HEVC** Main 10 Profile\n
+    /// \n
+    /// [Color depth](https://en.wikipedia.org/wiki/Color_depth): 8-10 bit,
+    /// [chroma subsampling](https://en.wikipedia.org/wiki/Chroma_subsampling): 4:2:0
+    HEVCCodecProfileMain10,
+
+    /// @brief **HEVC** Main Still Picture Profile\n
+    /// \n
+    /// Single-picture subset of Main Profile.
+    HEVCCodecProfileMainStillPicture,
+
+    /// @brief **HEVC** Range Extensions Profile (Rext)\n
+    /// \n
+    /// [Color depth](https://en.wikipedia.org/wiki/Color_depth): up to 16 bit,
+    /// [chroma subsampling](https://en.wikipedia.org/wiki/Chroma_subsampling): 4:0:0, 4:2:0, 4:2:2, 4:4:4
+    HEVCCodecProfileRext,
   };
   ///@}
   //------------------------------------------------------------------------------
