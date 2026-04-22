@@ -152,19 +152,20 @@ void DSPChain::allocatePingPong()
 
 int DSPChain::process(float** in, float** out, int samples)
 {
-    const int n = (samples > m_blockSize) ? m_blockSize : samples;
+    // Clamp to the allocated buffer size to prevent heap overflow.
+    const int safeSamples = (samples > m_blockSize) ? m_blockSize : samples;
 
     if (m_plugins.empty())
     {
         // Passthrough — no plugins in chain.
         for (int ch = 0; ch < m_numChannels; ++ch)
-            std::memcpy(out[ch], in[ch], static_cast<size_t>(n) * sizeof(float));
+            std::memcpy(out[ch], in[ch], static_cast<size_t>(safeSamples) * sizeof(float));
         return samples;
     }
 
     // Copy Kodi's input buffers into the A side of the ping-pong pair.
     for (int ch = 0; ch < m_numChannels; ++ch)
-        std::memcpy(m_ptrA[ch], in[ch], static_cast<size_t>(n) * sizeof(float));
+        std::memcpy(m_ptrA[ch], in[ch], static_cast<size_t>(safeSamples) * sizeof(float));
 
     // current = "input side"; next = "output side".
     // After each plugin we swap so that the previous output becomes the next input.
@@ -173,19 +174,19 @@ int DSPChain::process(float** in, float** out, int samples)
 
     for (auto& slot : m_plugins)
     {
-        const int processed = slot.plugin->process(current->data(), next->data(), n);
+        const int processed = slot.plugin->process(current->data(), next->data(), safeSamples);
         if (processed == 0)
         {
             // Plugin produced no output (unloaded/bypass failure) — copy input to output.
             for (int ch = 0; ch < m_numChannels; ++ch)
-                std::memcpy((*next)[ch], (*current)[ch], static_cast<size_t>(n) * sizeof(float));
+                std::memcpy((*next)[ch], (*current)[ch], static_cast<size_t>(safeSamples) * sizeof(float));
         }
         std::swap(current, next);
     }
 
     // current now points to the buffer holding the final output.
     for (int ch = 0; ch < m_numChannels; ++ch)
-        std::memcpy(out[ch], (*current)[ch], static_cast<size_t>(n) * sizeof(float));
+        std::memcpy(out[ch], (*current)[ch], static_cast<size_t>(safeSamples) * sizeof(float));
 
     return samples;
 }

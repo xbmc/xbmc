@@ -249,11 +249,20 @@ int VSTPlugin2::process(float** in, float** out, int samples)
     for (int ch = 0; ch < m_numChannels; ++ch)
         std::fill(m_outputPtrs[ch], m_outputPtrs[ch] + samples, 0.0f);
 
-    // Run the plugin
-    m_effect->processReplacing(m_effect,
-                               m_inputPtrs.data(),
-                               m_outputPtrs.data(),
-                               samples);
+    // Run the plugin (guard against legacy VST2 plugins with null processReplacing)
+    if (m_effect->processReplacing)
+    {
+        m_effect->processReplacing(m_effect,
+                                   m_inputPtrs.data(),
+                                   m_outputPtrs.data(),
+                                   samples);
+    }
+    else
+    {
+        // Very old VST2 plugin — no processReplacing; passthrough.
+        for (int ch = 0; ch < m_numChannels; ++ch)
+            std::copy(m_inputPtrs[ch], m_inputPtrs[ch] + samples, m_outputPtrs[ch]);
+    }
 
     // Copy plugin outputs to caller's output buffers
     const int outChannels = std::min(pluginOuts, m_numChannels);

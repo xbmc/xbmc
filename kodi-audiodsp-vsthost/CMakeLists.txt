@@ -78,6 +78,10 @@ set(VST3_HOSTING_SOURCES
     "${VST3SDK_DIR}/base/source/fstreamer.cpp"
     "${VST3SDK_DIR}/base/source/fbuffer.cpp"
     "${VST3SDK_DIR}/base/source/updatehandler.cpp"
+    # Defines Steinberg::IString::iid, Steinberg::IDependent::iid, and other
+    # base interface IIDs.  Without this the linker reports unresolved externals
+    # for those symbols.
+    "${VST3SDK_DIR}/base/source/baseiids.cpp"
     "${VST3SDK_DIR}/pluginterfaces/base/funknown.cpp"
     "${VST3SDK_DIR}/pluginterfaces/base/conststringtable.cpp"
     # Defines DEF_CLASS_IID for FUnknown, IPluginFactory, IBStream, IPluginBase,
