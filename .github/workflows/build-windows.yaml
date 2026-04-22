@@ -548,10 +548,28 @@ jobs:
           $vstMgrSrc = "$env:GITHUB_WORKSPACE\addons\plugin.audio.vstmanager"
           $vstMgrDst = Join-Path $staging "addons\plugin.audio.vstmanager"
           if (Test-Path $vstMgrSrc) {
-            Copy-Item -Path $vstMgrSrc -Destination $vstMgrDst -Recurse -Force
-            Write-Host "Staged plugin.audio.vstmanager"
+            New-Item -ItemType Directory -Force $vstMgrDst | Out-Null
+            Copy-Item -Path "$vstMgrSrc\*" -Destination $vstMgrDst -Recurse -Force
+            # Remove planning markdown files that are not part of the distributable addon
+            Get-ChildItem $vstMgrDst -Filter "*_PLAN.md" -Recurse | Remove-Item -Force
+            $mgrFiles = (Get-ChildItem $vstMgrDst -Recurse -File).Count
+            Write-Host "Staged plugin.audio.vstmanager ($mgrFiles files)"
           } else {
             Write-Host "::warning::plugin.audio.vstmanager source not found at $vstMgrSrc"
+          }
+
+          # --- verify both addon directories were created ---
+          Write-Host ""
+          Write-Host "=== VST addon staging summary ==="
+          if (Test-Path "$vstDst\audiodsp.vsthost.dll") {
+            Write-Host "OK: audiodsp.vsthost.dll present in staging\addons\audiodsp.vsthost"
+          } else {
+            Write-Host "::warning::audiodsp.vsthost.dll missing from staging\addons\audiodsp.vsthost"
+          }
+          if (Test-Path "$vstMgrDst\addon.xml") {
+            Write-Host "OK: plugin.audio.vstmanager present in staging\addons\plugin.audio.vstmanager"
+          } else {
+            Write-Host "::warning::plugin.audio.vstmanager\addon.xml missing from staging"
           }
 
       # ---------------------------------------------------------------
