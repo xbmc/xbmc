@@ -79,9 +79,11 @@ if(FFMPEG_FOUND)
 endif()
 
 if(CORE_SYSTEM_NAME MATCHES windows)
-  list(APPEND SOURCES Sinks/AESinkWASAPI.cpp
+  list(APPEND SOURCES Engines/ActiveAE/ActiveAEDSP.cpp
+                      Sinks/AESinkWASAPI.cpp
                       Sinks/windows/AESinkFactoryWin.cpp)
-  list(APPEND HEADERS Sinks/AESinkWASAPI.h
+  list(APPEND HEADERS Engines/ActiveAE/ActiveAEDSP.h
+                      Sinks/AESinkWASAPI.h
                       Sinks/windows/AESinkFactoryWin.h)
   if(CORE_SYSTEM_NAME STREQUAL windowsstore)
     list(APPEND SOURCES Sinks/AESinkXAudio.cpp
@@ -137,6 +139,10 @@ endif()
 
 core_add_library(audioengine)
 target_include_directories(${CORE_LIBRARY} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+if(CORE_SYSTEM_NAME MATCHES windows)
+  target_include_directories(${CORE_LIBRARY} PRIVATE
+    ${CMAKE_SOURCE_DIR}/kodi-audiodsp-vsthost/include/kodi-legacy-adsp)
+endif()
 if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
   if(HAVE_SSE)
     target_compile_options(${CORE_LIBRARY} PRIVATE -msse)

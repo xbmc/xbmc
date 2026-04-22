@@ -296,6 +296,7 @@ void CActiveAE::Dispose()
   m_controlPort.Purge();
   m_dataPort.Purge();
   m_sink.Dispose();
+  m_dsp.Deinit();
 }
 
 //-----------------------------------------------------------------------------
@@ -1407,6 +1408,10 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
 
   ClearDiscardedBuffers();
   m_extDrain = false;
+
+  // Notify the ADSP add-on about the new output format so it can
+  // re-initialize its per-stream processing state.
+  m_dsp.OnConfigure(m_internalFormat);
 }
 
 CActiveAEStream* CActiveAE::CreateStream(MsgStreamNew *streamMsg)
@@ -2230,6 +2235,9 @@ bool CActiveAE::RunStages()
             m_vizBuffers->Flush();
         }
 
+        // run audio DSP (VST chain) before mixing GUI sounds
+        m_dsp.MasterProcess(out);
+
         // mix gui sounds
         MixSounds(*(out->pkt));
         if (!m_sinkHasVolume || m_muted)
@@ -2618,6 +2626,7 @@ void CActiveAE::LoadSettings()
 void CActiveAE::Start()
 {
   Create();
+  m_dsp.Init();
   Message *reply;
   if (m_controlPort.SendOutMessageSync(CActiveAEControlProtocol::INIT,
                                                  &reply,

@@ -14,6 +14,7 @@
 
 #include "threads/Thread.h"
 
+#include "ActiveAEDSP.h"
 #include "ActiveAESink.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "cores/AudioEngine/Interfaces/AESound.h"
@@ -350,6 +351,9 @@ protected:
   IAEEncoder *m_encoder;
   std::string m_currDevice;
   std::unique_ptr<CActiveAESettings> m_settingsHandler;
+
+  // Audio DSP (Windows: routes audio through the active ADSP add-on)
+  CActiveAEDSP m_dsp;
 
   // buffers
   CActiveAEBufferPoolResample *m_sinkBuffers;

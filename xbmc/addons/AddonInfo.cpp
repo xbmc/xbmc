@@ -53,6 +53,7 @@ static const TypeMapping types[] =
    {"kodi.addon.game",                   ADDON_GAME,                35049, "DefaultAddonGame.png" },
    {"kodi.audioencoder",                 ADDON_AUDIOENCODER,         200,  "DefaultAddonAudioEncoder.png" },
    {"kodi.audiodecoder",                 ADDON_AUDIODECODER,         201,  "DefaultAddonAudioDecoder.png" },
+   {"xbmc.audiodsp",                     ADDON_AUDIODSP,               0,  "DefaultAddonMusicPlay.png" },
    {"xbmc.service",                      ADDON_SERVICE,             24018, "DefaultAddonService.png" },
    {"kodi.resource.images",              ADDON_RESOURCE_IMAGES,     24035, "DefaultAddonImages.png" },
    {"kodi.resource.language",            ADDON_RESOURCE_LANGUAGE,   24026, "DefaultAddonLanguage.png" },

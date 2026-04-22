@@ -92,6 +92,12 @@ void EditorBridge::stop()
     m_uiThreadID = 0;
 }
 
+void EditorBridge::setChain(DSPChain* chain)
+{
+    std::lock_guard<std::mutex> lock(m_editorMutex);
+    m_chain = chain;
+}
+
 // ============================================================================
 // Pipe server
 // ============================================================================

@@ -69,6 +69,8 @@ namespace ADDON
     ADDON_GAME,
     //@}
 
+    ADDON_AUDIODSP,
+
     ADDON_MAX
   } TYPE;
 

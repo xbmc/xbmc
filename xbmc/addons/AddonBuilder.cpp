@@ -71,6 +71,7 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
       type == ADDON_PVRDLL ||
       type == ADDON_AUDIOENCODER ||
       type == ADDON_AUDIODECODER ||
+      type == ADDON_AUDIODSP ||
       type == ADDON_VFS ||
       type == ADDON_IMAGEDECODER ||
       type == ADDON_INPUTSTREAM ||
@@ -106,6 +107,7 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
       return CScraper::FromExtension(std::move(m_addonInfo), m_extPoint);
     case ADDON_AUDIODECODER:
     case ADDON_AUDIOENCODER:
+    case ADDON_AUDIODSP:
     case ADDON_IMAGEDECODER:
     case ADDON_INPUTSTREAM:
     case ADDON_PERIPHERALDLL:
@@ -173,6 +175,7 @@ AddonPtr CAddonBuilder::FromProps(CAddonInfo addonInfo)
       return AddonPtr(new CSkinInfo(std::move(addonInfo)));
     case ADDON_AUDIODECODER:
     case ADDON_AUDIOENCODER:
+    case ADDON_AUDIODSP:
     case ADDON_IMAGEDECODER:
     case ADDON_INPUTSTREAM:
     case ADDON_PERIPHERALDLL:
