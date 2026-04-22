@@ -293,18 +293,7 @@ jobs:
             }
           }
 
-          # 4. Merge binary addon build output (PVR, audiodecoder, etc.) into addons/
-          $addonSrc = "project\Win32BuildSetup\BUILD_WIN32\addons"
-          if (Test-Path $addonSrc) {
-            $addonDst = Join-Path $staging "addons"
-            if (-not (Test-Path $addonDst)) { New-Item -ItemType Directory -Path $addonDst | Out-Null }
-            Copy-Item -Path "$addonSrc\*" -Destination $addonDst -Recurse -Force
-            Write-Host "Merged binary addons from $addonSrc into staging\addons"
-          } else {
-            Write-Host "::warning::Binary addon build output not found at $addonSrc"
-          }
-
-          # 5. Copy libdvdnav.dll if the export-files target missed it.
+          # 4. Copy libdvdnav.dll if the export-files target missed it.
           #    The cmake ExternalProject installs it to kodi-build/build/libdvd/bin/
           #    but FindLibDvd.cmake expects it at DEPENDS_PATH/bin/ which may not match.
           $dvdnav = "kodi-build\build\libdvd\bin\libdvdnav.dll"
@@ -313,7 +302,7 @@ jobs:
             Write-Host "Copied libdvdnav.dll from build tree to staging"
           }
 
-          # 6. List what we collected
+          # 5. List what we collected
           Write-Host "=== Staging directory contents ==="
           Write-Host "Root files:"
           Get-ChildItem $staging -File | ForEach-Object { Write-Host "  $($_.Name) ($($_.Length) bytes)" }
