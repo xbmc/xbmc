@@ -467,13 +467,28 @@ void EditorBridge::doOpenEditor(const std::string& pluginPath)
         return;
     }
 
-    // Open the VST editor inside our window
+    // Open the VST editor inside our window (also attaches the VST3 view)
     if (!plugin->openEditor(static_cast<void*>(hwnd)))
     {
         std::fprintf(stderr, "[EditorBridge] plugin->openEditor() failed for '%s'\n",
                      pluginPath.c_str());
         DestroyWindow(hwnd);
         return;
+    }
+
+    // Resize window to match the attached view's reported size.
+    // For VST3 this is the first accurate query (m_plugView is now set).
+    {
+        int viewW = 0, viewH = 0;
+        if (plugin->getEditorSize(viewW, viewH) && viewW > 0 && viewH > 0
+            && (viewW != editorW || viewH != editorH))
+        {
+            RECT newWr = {0, 0, static_cast<LONG>(viewW), static_cast<LONG>(viewH)};
+            AdjustWindowRectEx(&newWr, WS_OVERLAPPEDWINDOW, FALSE, 0);
+            SetWindowPos(hwnd, nullptr, 0, 0,
+                         newWr.right - newWr.left, newWr.bottom - newWr.top,
+                         SWP_NOMOVE | SWP_NOZORDER);
+        }
     }
 
     // Track the editor
