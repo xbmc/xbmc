@@ -49,7 +49,7 @@ jobs:
         id: vst3sdk-cache
         with:
           path: kodi-audiodsp-vsthost/build/_deps
-          key: vst3sdk-${{ hashFiles('kodi-audiodsp-vsthost/CMakeLists.txt', 'kodi-audiodsp-vsthost/.gitmodules') }}
+          key: vst3sdk-${{ hashFiles('kodi-audiodsp-vsthost/CMakeLists.txt') }}-${{ hashFiles('kodi-audiodsp-vsthost/.gitmodules') }}
           restore-keys: |
             vst3sdk-
 
