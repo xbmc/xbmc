@@ -175,6 +175,37 @@ extern "C"
   //----------------------------------------------------------------------------
 
   //============================================================================
+  /// @ingroup cpp_kodi_addon_videocodec_Defs_VIDEOCODEC_PICTURE
+  /// @brief HDR type reported per decoded picture.
+  ///
+  /// Values mirror the Kodi-core enum `StreamHdrType` defined in
+  /// `xbmc/cores/VideoPlayer/Interface/StreamInfo.h` one-to-one. Keep the two
+  /// enums in sync if either is extended. Compile-time verification lives in
+  /// `xbmc/cores/VideoPlayer/DVDCodecs/Video/AddonVideoCodec.cpp`.
+  ///
+  enum VIDEOCODEC_HDR_TYPE
+  {
+    /// @brief No HDR (SDR content)
+    VIDEOCODEC_HDR_TYPE_NONE = 0,
+
+    /// @brief HDR10 (SMPTE ST 2084 / PQ transfer, static metadata)
+    VIDEOCODEC_HDR_TYPE_HDR10,
+
+    /// @brief Dolby Vision
+    VIDEOCODEC_HDR_TYPE_DOLBYVISION,
+
+    /// @brief Hybrid Log-Gamma (ARIB STD-B67)
+    VIDEOCODEC_HDR_TYPE_HLG,
+
+    /// @brief HDR10+ (SMPTE ST 2094-40 dynamic metadata)
+    VIDEOCODEC_HDR_TYPE_HDR10PLUS,
+
+    /// @brief Sentinel, keep last. Must mirror StreamHdrType::HDR_TYPE_COUNT in StreamInfo.h
+    VIDEOCODEC_HDR_TYPE_COUNT,
+  };
+  //----------------------------------------------------------------------------
+
+  //============================================================================
   /// @defgroup cpp_kodi_addon_videocodec_Defs_VIDEOCODEC_PICTURE struct VIDEOCODEC_PICTURE
   /// @ingroup cpp_kodi_addon_videocodec_Defs
   /// @brief Data structure which is given to the addon when a decoding call is made.
@@ -225,6 +256,31 @@ extern "C"
     /// @ref kodi::addon::CInstanceVideoCodec::GetFrameBuffer and must be
     /// released again using @ref kodi::addon::CInstanceVideoCodec::ReleaseFrameBuffer.
     KODI_HANDLE videoBufferHandle;
+
+    /// @brief HDR type of this picture.
+    ///
+    /// Mirrors `VideoPicture::hdrType` in Kodi core. When left at
+    /// @ref VIDEOCODEC_HDR_TYPE_NONE, Kodi will seed the picture's HDR type
+    /// from the stream hints (matching the behavior of the ffmpeg video
+    /// decoder at `DVDVideoCodecFFmpeg.cpp`). Addons that detect per-frame
+    /// HDR signaling (e.g. HDR10+ dynamic metadata) should set this field
+    /// to override the stream-level value.
+    enum VIDEOCODEC_HDR_TYPE hdrType;
+
+    /// @brief Alternate HDR type carried alongside @ref hdrType.
+    ///
+    /// Mirrors `VideoPicture::hdrTypeAlt`. Used by the ffmpeg video decoder
+    /// to signal HDR10+ dynamic metadata present in a Dolby Vision stream.
+    /// Zero-initialized (@ref VIDEOCODEC_HDR_TYPE_NONE) when not applicable.
+    enum VIDEOCODEC_HDR_TYPE hdrTypeAlt;
+
+    /// @brief Dolby Vision enhancement layer type.
+    ///
+    /// Mirrors `VideoPicture::strDVELType`. Typically "MEL" (Minimal
+    /// Enhancement Layer) or "FEL" (Full Enhancement Layer). Empty string
+    /// when not a Dolby Vision stream or when the enhancement layer type is
+    /// unknown. The addon is responsible for the NUL-terminated string.
+    char strDVELType[8];
   };
   ///@}
   //----------------------------------------------------------------------------

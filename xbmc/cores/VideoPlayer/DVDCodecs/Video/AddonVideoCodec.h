@@ -57,4 +57,5 @@ private:
   AVColorTransferCharacteristic m_colorTransfer = AVCOL_TRC_UNSPECIFIED;
   std::shared_ptr<AVMasteringDisplayMetadata> m_masteringMetadata;
   std::shared_ptr<AVContentLightMetadata> m_contentLightMetadata;
+  StreamHdrType m_hdrType = StreamHdrType::HDR_TYPE_NONE;
 };

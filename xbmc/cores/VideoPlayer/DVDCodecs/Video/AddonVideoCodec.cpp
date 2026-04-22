@@ -13,6 +13,7 @@
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "cores/VideoPlayer/Interface/DemuxCrypto.h"
+#include "cores/VideoPlayer/Interface/StreamInfo.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "utils/log.h"
 
@@ -67,6 +68,34 @@ AVPixelFormat ConvertToPixelFormat(const VIDEOCODEC_FORMAT videoFormat)
                  videoFormat);
       return AV_PIX_FMT_YUV420P;
   }
+}
+
+// Crosswalk VIDEOCODEC_HDR_TYPE (C, addon API) <-> StreamHdrType (C++ enum
+// class, Kodi core). Values are defined to match one-to-one; the static_asserts
+// below make any future drift a compile error. Keep in sync with
+// xbmc/addons/kodi-dev-kit/include/kodi/c-api/addon-instance/video_codec.h
+// and xbmc/cores/VideoPlayer/Interface/StreamInfo.h.
+StreamHdrType ConvertHdrType(const VIDEOCODEC_HDR_TYPE type)
+{
+  static_assert(static_cast<int>(VIDEOCODEC_HDR_TYPE_NONE) ==
+                    static_cast<int>(StreamHdrType::HDR_TYPE_NONE),
+                "VIDEOCODEC_HDR_TYPE / StreamHdrType drift: NONE");
+  static_assert(static_cast<int>(VIDEOCODEC_HDR_TYPE_HDR10) ==
+                    static_cast<int>(StreamHdrType::HDR_TYPE_HDR10),
+                "VIDEOCODEC_HDR_TYPE / StreamHdrType drift: HDR10");
+  static_assert(static_cast<int>(VIDEOCODEC_HDR_TYPE_DOLBYVISION) ==
+                    static_cast<int>(StreamHdrType::HDR_TYPE_DOLBYVISION),
+                "VIDEOCODEC_HDR_TYPE / StreamHdrType drift: DOLBYVISION");
+  static_assert(static_cast<int>(VIDEOCODEC_HDR_TYPE_HLG) ==
+                    static_cast<int>(StreamHdrType::HDR_TYPE_HLG),
+                "VIDEOCODEC_HDR_TYPE / StreamHdrType drift: HLG");
+  static_assert(static_cast<int>(VIDEOCODEC_HDR_TYPE_HDR10PLUS) ==
+                    static_cast<int>(StreamHdrType::HDR_TYPE_HDR10PLUS),
+                "VIDEOCODEC_HDR_TYPE / StreamHdrType drift: HDR10PLUS");
+  static_assert(static_cast<int>(VIDEOCODEC_HDR_TYPE_COUNT) ==
+                    static_cast<int>(StreamHdrType::HDR_TYPE_COUNT),
+                "VIDEOCODEC_HDR_TYPE / StreamHdrType drift: enum length mismatch");
+  return static_cast<StreamHdrType>(type);
 }
 
 unsigned int GetColorBitsFromVideoFormat(const VIDEOCODEC_FORMAT videoFormat)
@@ -297,6 +326,7 @@ bool CAddonVideoCodec::CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamI
   m_colorTransfer = hints.colorTransferCharacteristic;
   m_masteringMetadata = hints.masteringMetadata;
   m_contentLightMetadata = hints.contentLightMetadata;
+  m_hdrType = hints.hdrType;
 
   m_processInfo.SetVideoDimensions(hints.width, hints.height);
   m_processInfo.SetVideoDAR(m_displayAspect);
@@ -387,6 +417,15 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
       pVideoPicture->lightMetadata = *m_contentLightMetadata;
       pVideoPicture->hasLightMetadata = true;
     }
+
+    // Seed from stream hints (matches DVDVideoCodecFFmpeg::GetPicture), then
+    // allow addon per-picture override for dynamic HDR signaling (e.g. an
+    // addon that detects HDR10+ metadata per-frame can raise the hdrType
+    // from HDR10 to HDR10PLUS).
+    pVideoPicture->hdrType =
+        (picture.hdrType != VIDEOCODEC_HDR_TYPE_NONE) ? ConvertHdrType(picture.hdrType) : m_hdrType;
+    pVideoPicture->hdrTypeAlt = ConvertHdrType(picture.hdrTypeAlt);
+    pVideoPicture->strDVELType = picture.strDVELType;
     pVideoPicture->iDuration = 0;
     pVideoPicture->iFrameType = 0;
     pVideoPicture->iRepeatPicture = 0;
