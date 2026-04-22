@@ -3,6 +3,14 @@ cmake_minimum_required(VERSION 3.16)
 project(audiodsp.vsthost VERSION 1.0.0 LANGUAGES CXX)
 
 # ---------------------------------------------------------------------------
+# Windows-only addon — skip the entire build on other platforms.
+# ---------------------------------------------------------------------------
+if(NOT WIN32)
+    message(STATUS "audiodsp.vsthost: skipping build — Windows only")
+    return()
+endif()
+
+# ---------------------------------------------------------------------------
 # Global C++ standard
 # ---------------------------------------------------------------------------
 set(CMAKE_CXX_STANDARD 17)
@@ -44,6 +52,15 @@ else()
 endif()
 
 message(STATUS "audiodsp.vsthost: VST3SDK_DIR = ${VST3SDK_DIR}")
+
+# Keep all direct SDK include roots explicit for targets that include headers
+# like "pluginterfaces/..." and "public.sdk/...".
+set(VST3SDK_INCLUDE_DIRS
+    "${VST3SDK_DIR}"
+    "${VST3SDK_DIR}/base"
+    "${VST3SDK_DIR}/pluginterfaces"
+    "${VST3SDK_DIR}/public.sdk"
+)
 
 # ---------------------------------------------------------------------------
 # vst3_hosting — static library: only the hosting subset of the VST3 SDK
@@ -120,9 +137,9 @@ endif()
 if(TARGET vst3_hosting)
     get_target_property(_vst3_hosting_type vst3_hosting TYPE)
     if(_vst3_hosting_type STREQUAL "INTERFACE_LIBRARY")
-        target_include_directories(vst3_hosting INTERFACE "${VST3SDK_DIR}")
+        target_include_directories(vst3_hosting INTERFACE ${VST3SDK_INCLUDE_DIRS})
     else()
-        target_include_directories(vst3_hosting PUBLIC "${VST3SDK_DIR}")
+        target_include_directories(vst3_hosting PUBLIC ${VST3SDK_INCLUDE_DIRS})
     endif()
 endif()
 
@@ -158,7 +175,7 @@ target_include_directories(audiodsp.vsthost
     PRIVATE
         "${CMAKE_SOURCE_DIR}/src"
         "${CMAKE_SOURCE_DIR}/include/kodi-legacy-adsp"
-        "${VST3SDK_DIR}"
+        ${VST3SDK_INCLUDE_DIRS}
         "${KODI_ADSP_SDK_DIR}"
 )
 
@@ -193,7 +210,7 @@ if(EXISTS "${CMAKE_SOURCE_DIR}/scanner/vstscanner.cpp")
     target_include_directories(vstscanner
         PRIVATE
             "${CMAKE_SOURCE_DIR}/src"
-            "${VST3SDK_DIR}"
+            ${VST3SDK_INCLUDE_DIRS}
     )
 
     target_link_libraries(vstscanner
