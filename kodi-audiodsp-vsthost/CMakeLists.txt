@@ -3,6 +3,14 @@ cmake_minimum_required(VERSION 3.16)
 project(audiodsp.vsthost VERSION 1.0.0 LANGUAGES CXX)
 
 # ---------------------------------------------------------------------------
+# Windows-only addon — skip the entire build on other platforms.
+# ---------------------------------------------------------------------------
+if(NOT WIN32)
+    message(STATUS "audiodsp.vsthost: skipping build — Windows only")
+    return()
+endif()
+
+# ---------------------------------------------------------------------------
 # Global C++ standard
 # ---------------------------------------------------------------------------
 set(CMAKE_CXX_STANDARD 17)
