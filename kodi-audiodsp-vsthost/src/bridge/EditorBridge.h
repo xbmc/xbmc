@@ -40,6 +40,9 @@ public:
 
     bool isRunning() const { return m_running.load(); }
 
+    /// Return the DSPChain pointer the bridge was started with, or nullptr.
+    DSPChain* getChain() const { return m_chain; }
+
 private:
     // -------------------------------------------------------------------------
     // Pipe server

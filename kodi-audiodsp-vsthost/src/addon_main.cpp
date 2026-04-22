@@ -13,7 +13,6 @@
 #include "bridge/EditorBridge.h"
 #include <string>
 #include <cstring>
-#include <windows.h>
 
 // ---------------------------------------------------------------------------
 // Global state — set once in ADDON_Create, read by every StreamCreate.
@@ -196,13 +195,17 @@ AE_DSP_ERROR StreamCreate(const AE_DSP_SETTINGS* addonSettings,
 
 AE_DSP_ERROR StreamDestroy(const ADDON_HANDLE handle)
 {
-    auto* proc = GetProc(handle);
-    if (proc)
-    {
-        proc->streamDestroy();
-        delete proc;
-        handle->dataAddress = nullptr;
-    }
+    DSPProcessor* proc = GetProc(handle);
+    if (!proc)
+        return AE_DSP_ERROR_INVALID_PARAMETERS;
+
+    // Stop the editor bridge if it is pointing at the processor being destroyed
+    if (g_editorBridge.isRunning() && &proc->getChain() == g_editorBridge.getChain())
+        g_editorBridge.stop();
+
+    proc->streamDestroy();
+    delete proc;
+    handle->dataAddress = nullptr;
     return AE_DSP_ERROR_NO_ERROR;
 }
 
@@ -328,9 +331,14 @@ unsigned int MasterProcessNeededSamplesize(const ADDON_HANDLE handle)
 
 float MasterProcessGetDelay(const ADDON_HANDLE handle)
 {
-    // masterProcessGetDelay() returns int (samples); Kodi expects float seconds.
-    // Return as float — the Kodi AudioDSP struct declares this as float.
-    return static_cast<float>(GetProc(handle)->masterProcessGetDelay());
+    const DSPProcessor* proc = GetProc(handle);
+    if (!proc)
+        return 0.0f;
+    const int sampleRate = proc->getSampleRate();
+    if (sampleRate <= 0)
+        return 0.0f;
+    return static_cast<float>(proc->masterProcessGetDelay())
+           / static_cast<float>(sampleRate);
 }
 
 int MasterProcessGetOutChannels(const ADDON_HANDLE handle,
