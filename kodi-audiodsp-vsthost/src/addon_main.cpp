@@ -199,8 +199,11 @@ AE_DSP_ERROR StreamDestroy(const ADDON_HANDLE handle)
     if (!proc)
         return AE_DSP_ERROR_INVALID_PARAMETERS;
 
-    // Stop the editor bridge if it is pointing at the processor being destroyed
-    if (g_editorBridge.isRunning() && &proc->getChain() == g_editorBridge.getChain())
+    // Stop the editor bridge if it is pointing at the processor being destroyed.
+    // getChain() returns a reference to DSPProcessor::m_chain (a member, not a
+    // temporary), so taking its address yields a stable DSPChain*.
+    const DSPChain* procChain = &proc->getChain();
+    if (g_editorBridge.isRunning() && procChain == g_editorBridge.getChain())
         g_editorBridge.stop();
 
     proc->streamDestroy();
