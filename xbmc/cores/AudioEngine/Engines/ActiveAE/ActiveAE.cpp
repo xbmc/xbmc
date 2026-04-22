@@ -2235,13 +2235,14 @@ bool CActiveAE::RunStages()
             m_vizBuffers->Flush();
         }
 
-        // run audio DSP (VST chain) before mixing GUI sounds
-        m_dsp.MasterProcess(out);
-
         // mix gui sounds
         MixSounds(*(out->pkt));
         if (!m_sinkHasVolume || m_muted)
           Deamplify(*(out->pkt));
+
+        // run audio DSP (VST chain) after deamplify so VST plugins receive
+        // the final volume-adjusted signal
+        m_dsp.MasterProcess(out);
 
         if (m_mode == MODE_TRANSCODE && m_encoder)
         {

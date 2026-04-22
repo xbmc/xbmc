@@ -16,10 +16,12 @@ audio; Kodi must bypass the vsthost automatically and keep playing.
 Kodi stream decoder
   → ActiveAE per-stream resampler / processing buffers
   → ActiveAE mixer  (planar float, m_internalFormat AE_FMT_FLOATP)
-  → MixSounds + Deamplify                        ← existing
+  → MixSounds + Deamplify                        ← existing (GUI sounds, volume)
   → CActiveAEDSP::MasterProcess(out)             ← NEW: in-place VST chain
-      └─ if m_dspFailed or not planar → passthrough
-      └─ __try { DSP_MasterProcess } __except → set m_dspFailed, passthrough
+      └─ if m_dspFailed → passthrough (audio unmodified)
+      └─ planar (planes > 1): cast pkt->data to float** and call DSP in-place
+      └─ interleaved (planes == 1): deinterleave → DSP → reinterleave
+      └─ __try/__except wraps DSP call → set m_dspFailed on crash, passthrough
   → m_sinkBuffers (sink resampler)
   → CActiveAESink → WASAPI / DirectSound
 ```
@@ -107,12 +109,11 @@ processing once the cause is resolved.
   `m_dsp.StreamCreate(stream->m_format)`.
 - In `CActiveAE::DiscardStream(...)`, before deleting the stream object,
   call `m_dsp.StreamDestroy()`.
-- In `RunMixStage()`, after `Deamplify` produces `out` and **before**
+- In `RunStages()`, after `MixSounds` and `Deamplify` and **before**
   `m_sinkBuffers->m_inputSamples.push_back(out)`, insert:
 
 ```cpp
-if (out && m_dsp.IsActive() && m_mode != MODE_RAW)
-    m_dsp.MasterProcess(out);
+m_dsp.MasterProcess(out);
 ```
 
 - At the end of the `AE_TOP_CONFIGURED_SUSPEND` → `INIT` transition (after
@@ -306,8 +307,8 @@ needed, provided the planar guard in `MasterProcess()` passes.
 |--------|------|
 | `struct AudioDSP` (addon function table) | `kodi-audiodsp-vsthost/include/kodi-legacy-adsp/kodi_adsp_types.h:477` |
 | `get_addon()` export | `kodi-audiodsp-vsthost/include/kodi-legacy-adsp/kodi_adsp_dll.h:536` |
-| `CActiveAE::RunMixStage()` injection point | `xbmc/cores/AudioEngine/Engines/ActiveAE/ActiveAE.cpp:2255` |
-| `m_sinkBuffers->m_inputSamples.push_back(out)` | `xbmc/cores/AudioEngine/Engines/ActiveAE/ActiveAE.cpp:2263` |
+| `CActiveAE::RunStages()` DSP injection point | `xbmc/cores/AudioEngine/Engines/ActiveAE/ActiveAE.cpp:2246` |
+| `m_sinkBuffers->m_inputSamples.push_back(out)` | `xbmc/cores/AudioEngine/Engines/ActiveAE/ActiveAE.cpp:2271` |
 | `DSPChain::process()` | `kodi-audiodsp-vsthost/src/dsp/DSPChain.h` |
 | `EditorBridge` pipe name | `kodi-audiodsp-vsthost/src/bridge/EditorBridge.h:92` |
 | `CActiveAE::Suspend()` / `Resume()` | `xbmc/cores/AudioEngine/Engines/ActiveAE/ActiveAE.cpp:2806-2830` |
