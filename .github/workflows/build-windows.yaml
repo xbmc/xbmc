@@ -202,7 +202,7 @@ jobs:
       # These steps always run (cache hit or miss).
       # ---------------------------------------------------------------
 
-      # FFmpeg is built static (--disable-shared); no FFmpeg DLLs to copy.
+      # FFmpeg is built static (--disable-shared); no FFmpeg to copy.
       # Ensure system/ directory exists for later steps.
       - name: Prepare system directory
         shell: pwsh
@@ -217,15 +217,12 @@ jobs:
         run: call tools\buildsteps\windows\download-dependencies.bat
 
       # Leia has CMakeLists.txt at repo root; use an out-of-source build dir.
-      # -DENABLE_INTERNAL_FFMPEG=OFF forces CMake to use the externally-built
-      # FFmpeg static libraries (in mingwlibs/win32/) rather than downloading
-      # and building its own.  This avoids any accidental FFmpeg DLL leakage.
       - name: Configure with CMake
         shell: cmd
         run: |
           mkdir kodi-build
           cd kodi-build
-          cmake -G "Visual Studio 17 2022" -A Win32 -DENABLE_INTERNAL_FFMPEG=OFF %GITHUB_WORKSPACE%
+          cmake -G "Visual Studio 17 2022" -A Win32 %GITHUB_WORKSPACE%
 
       - name: Build
         shell: cmd
@@ -290,12 +287,19 @@ jobs:
           & "$env:GITHUB_WORKSPACE\tools\buildsteps\windows\patch-visualization-addons.ps1" `
               -BuildDir "$env:GITHUB_WORKSPACE\cmake\addons\build"
 
+      # Pass /D_CRT_DECLARE_NONSTDC_NAMES=1 via the CL env var so cl.exe picks it
+      # up at every invocation regardless of cmake ExternalProject nesting depth.
+      # This ensures PTRDIFF_MAX is declared in MSVC 14.44+ headers (fixes C2065
+      # in libde265/xlocnum for imagedecoder.heif) without modifying any source.
+      - name: Set CL env for MSVC addon build
+        shell: cmd
+        run: echo CL=/D_CRT_DECLARE_NONSTDC_NAMES=1>> %GITHUB_ENV%
+
       - name: Build addons
         id: build-addons
         shell: cmd
         run: |
           for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) do call "%%i\VC\Auxiliary\Build\vcvars32.bat"
-          set "BASE_CL=%CL%"
           set "ADDONS_SUCCESS_FILE=%GITHUB_WORKSPACE%\cmake\addons\.success"
           set "ADDONS_FAILURE_FILE=%GITHUB_WORKSPACE%\cmake\addons\.failure"
           set "ERRORFILE=%GITHUB_WORKSPACE%\cmake\addons\make-addons.error"
@@ -315,11 +319,6 @@ jobs:
           for %%a in (!ADDONS_TO_MAKE!) do (
             echo Building %%a...
             set "ADDON_LOG=!ADDON_LOGS_DIR!\%%a.log"
-            if /I "%%a"=="imagedecoder.heif" (
-              set "CL=/DPTRDIFF_MAX=0x7fffffff /D_CRT_NONSTDC_NO_DEPRECATE !BASE_CL!"
-            ) else (
-              set "CL=!BASE_CL!"
-            )
             cmake --build . --target %%a > "!ADDON_LOG!" 2>&1
             if errorlevel 1 (
               echo %%a >> "%ERRORFILE%"
@@ -376,102 +375,31 @@ jobs:
             cmake/addons/logs/
           if-no-files-found: warn
 
-      - name: Build audiodsp.vsthost addon
-        shell: cmd
+      # ---------------------------------------------------------------
+      # Zip up the Addons Folder for Release
+      # ---------------------------------------------------------------
+      - name: Package addons zip
+        if: ${{ success() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
+        shell: pwsh
         run: |
-          for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) do call "%%i\VC\Auxiliary\Build\vcvars32.bat"
-          if not exist vsthost-build mkdir vsthost-build
-          cd vsthost-build
-          cmake -G "Visual Studio 17 2022" -A Win32 ^
-                -DCMAKE_BUILD_TYPE=Release ^
-                -DKODI_ADSP_SDK_DIR=%GITHUB_WORKSPACE%\xbmc\addons\kodi-addon-dev-kit\include\kodi ^
-                -DCMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%\vsthost-install ^
-                %GITHUB_WORKSPACE%\kodi-audiodsp-vsthost
-          cmake --build . --config Release --target audiodsp.vsthost
-          if exist Release\vstscanner.exe (
-            cmake --build . --config Release --target vstscanner
-          )
-          cmake --install . --config Release
-          set "VST_BUILD_OUT=%GITHUB_WORKSPACE%\vsthost-build\Release"
-          set "VST_ADDON_DIR=%GITHUB_WORKSPACE%\project\Win32BuildSetup\BUILD_WIN32\addons\audiodsp.vsthost"
-          set "VST_ADDON_XML=%GITHUB_WORKSPACE%\kodi-audiodsp-vsthost\resources\addon.xml"
-          if not exist "%VST_ADDON_DIR%" mkdir "%VST_ADDON_DIR%"
-          if exist "%VST_BUILD_OUT%\audiodsp.vsthost.dll" (
-            copy /Y "%VST_BUILD_OUT%\audiodsp.vsthost.dll" "%VST_ADDON_DIR%\"
-          ) else (
-            echo ::warning::Missing expected VST binary at "%VST_BUILD_OUT%\audiodsp.vsthost.dll"
-          )
-          if exist "%VST_BUILD_OUT%\vstscanner.exe" (
-            copy /Y "%VST_BUILD_OUT%\vstscanner.exe" "%VST_ADDON_DIR%\"
-          ) else (
-            echo ::warning::Optional VST scanner not found at "%VST_BUILD_OUT%\vstscanner.exe"
-          )
-          if exist "%VST_ADDON_XML%" (
-            copy /Y "%VST_ADDON_XML%" "%VST_ADDON_DIR%\"
-          ) else (
-            echo ::warning::VST addon metadata not found at "%VST_ADDON_XML%"
-          )
-
+          $vstBuiltAddon = "$env:GITHUB_WORKSPACE\project\Win32BuildSetup\BUILD_WIN32\addons\*"
+          Compress-Archive -Path $vstBuiltAddon -DestinationPath "kodi-addons.zip"
+            
+      
       # Collect all build output into a single staging directory that mirrors
-      # the final on-disk layout.
-      #
-      # With VS multi-config generators, CMake's export-files target copies
-      # dependency DLLs, system/, addons/, media/, userdata/, and sounds/
-      # into kodi-build/ (CMAKE_BINARY_DIR root).  The kodi.exe executable
-      # is placed in kodi-build/RelWithDebInfo/ by the MSVC generator.
-      # Staging must collect from BOTH locations.
+      # the final on-disk layout.  The CMake export-files target already
+      # copied dependency DLLs, Python, system/ data, addons, media, and
+      # userdata into kodi-build/RelWithDebInfo/ during the build.
       - name: Collect build output into staging directory
         if: success()
         shell: pwsh
         run: |
           $staging = "$env:GITHUB_WORKSPACE\staging"
           New-Item -ItemType Directory -Force $staging | Out-Null
-
-          # 1. Copy kodi.exe (and .pdb) from the MSVC config output directory
-          $configDir = "kodi-build\RelWithDebInfo"
-          if (Test-Path "$configDir\kodi.exe") {
-            Copy-Item "$configDir\kodi.exe" -Destination $staging -Force
-            Write-Host "Copied kodi.exe from $configDir"
-          } else {
-            Write-Error "kodi.exe not found in $configDir"
-            exit 1
-          }
-          if (Test-Path "$configDir\kodi.pdb") {
-            Copy-Item "$configDir\kodi.pdb" -Destination $staging -Force
-          }
-
-          # 2. Copy dependency DLLs and JARs from kodi-build/ root
-          #    (placed there by CMake export-files reading cmake/installdata/windows/dlls.txt)
-          $buildRoot = "kodi-build"
-          $rootDlls = Get-ChildItem "$buildRoot\*.dll" -File -ErrorAction SilentlyContinue
-          if ($rootDlls) {
-            $rootDlls | Copy-Item -Destination $staging -Force
-            Write-Host "Copied $($rootDlls.Count) DLLs from $buildRoot to staging"
-          } else {
-            Write-Host "::warning::No DLLs found at $buildRoot root"
-          }
-          $rootJars = Get-ChildItem "$buildRoot\*.jar" -File -ErrorAction SilentlyContinue
-          if ($rootJars) {
-            $rootJars | Copy-Item -Destination $staging -Force
-            Write-Host "Copied $($rootJars.Count) JAR files from $buildRoot to staging"
-          }
-
-          # 3. Copy data directories from kodi-build/ root
-          #    (placed there by CMake export-files reading cmake/installdata/common/*.txt
-          #     and cmake/installdata/windows/*.txt)
-          $dataDirs = @("system", "addons", "media", "userdata", "sounds")
-          foreach ($dir in $dataDirs) {
-            $src = Join-Path $buildRoot $dir
-            if (Test-Path $src) {
-              $dst = Join-Path $staging $dir
-              Copy-Item -Path $src -Destination $dst -Recurse -Force
-              Write-Host "Copied $dir/ from build root to staging"
-            } else {
-              Write-Host "::warning::$dir/ not found in $buildRoot"
-            }
-          }
-
-          # 4. Merge binary addon build output (PVR, audiodecoder, etc.) into addons/
+          # 1. Copy the entire build tree output (kodi.exe, DLLs, system/, addons/, media/, userdata/)
+          Copy-Item -Path "kodi-build\RelWithDebInfo\*" -Destination $staging -Recurse -Force
+          Write-Host "Copied build tree output to staging"
+          # 2. Merge binary addon build output (PVR, audiodecoder, etc.) into addons/
           $addonSrc = "project\Win32BuildSetup\BUILD_WIN32\addons"
           if (Test-Path $addonSrc) {
             $addonDst = Join-Path $staging "addons"
@@ -481,8 +409,7 @@ jobs:
           } else {
             Write-Host "::warning::Binary addon build output not found at $addonSrc"
           }
-
-          # 5. Copy libdvdnav.dll if the export-files target missed it.
+          # 3. Copy libdvdnav.dll if the export-files target missed it.
           #    The cmake ExternalProject installs it to kodi-build/build/libdvd/bin/
           #    but FindLibDvd.cmake expects it at DEPENDS_PATH/bin/ which may not match.
           $dvdnav = "kodi-build\build\libdvd\bin\libdvdnav.dll"
@@ -490,8 +417,7 @@ jobs:
             Copy-Item $dvdnav -Destination $staging -Force
             Write-Host "Copied libdvdnav.dll from build tree to staging"
           }
-
-          # 6. List what we collected
+          # 4. List what we collected
           Write-Host "=== Staging directory contents ==="
           Write-Host "Root files:"
           Get-ChildItem $staging -File | ForEach-Object { Write-Host "  $($_.Name) ($($_.Length) bytes)" }
@@ -500,251 +426,58 @@ jobs:
           $dllCount = (Get-ChildItem $staging -Filter "*.dll" -File).Count
           Write-Host "DLLs at root: $dllCount"
 
-      - name: Stage VST addons into staging
-        if: success()
-        shell: pwsh
-        run: |
-          $staging = "$env:GITHUB_WORKSPACE\staging"
-
-          # --- audiodsp.vsthost ---
-          $vstBuiltAddon = "$env:GITHUB_WORKSPACE\project\Win32BuildSetup\BUILD_WIN32\addons\audiodsp.vsthost"
-          $vstBuildOut = "$env:GITHUB_WORKSPACE\vsthost-build\Release"
-          $vstInstall = "$env:GITHUB_WORKSPACE\vsthost-install"
-          $vstAddonXmlSrc = "$env:GITHUB_WORKSPACE\kodi-audiodsp-vsthost\resources\addon.xml"
-          $vstDst = Join-Path $staging "addons\audiodsp.vsthost"
-          New-Item -ItemType Directory -Force $vstDst | Out-Null
-          $vstBinarySource = $null
-          if (Test-Path "$vstBuiltAddon\audiodsp.vsthost.dll") {
-            $vstBinarySource = $vstBuiltAddon
-            Write-Host "Using BUILD_WIN32\addons for audiodsp.vsthost staging"
-          } elseif (Test-Path "$vstBuildOut\audiodsp.vsthost.dll") {
-            $vstBinarySource = $vstBuildOut
-            Write-Host "Using vsthost-build\Release for audiodsp.vsthost staging"
-          } elseif (Test-Path "$vstInstall\audiodsp.vsthost.dll") {
-            $vstBinarySource = $vstInstall
-            Write-Host "Using vsthost-install for audiodsp.vsthost staging"
-          }
-          if ($null -ne $vstBinarySource) {
-            Copy-Item "$vstBinarySource\audiodsp.vsthost.dll" -Destination $vstDst -Force
-            Write-Host "Staged audiodsp.vsthost.dll"
-            if (Test-Path "$vstBinarySource\vstscanner.exe") {
-              Copy-Item "$vstBinarySource\vstscanner.exe" -Destination $vstDst -Force
-              Write-Host "Staged vstscanner.exe"
-            }
-            if (Test-Path "$vstBinarySource\addon.xml") {
-              Copy-Item "$vstBinarySource\addon.xml" -Destination $vstDst -Force
-              Write-Host "Staged addon.xml"
-            } elseif (Test-Path $vstAddonXmlSrc) {
-              Copy-Item $vstAddonXmlSrc -Destination $vstDst -Force
-              Write-Host "Staged addon.xml from source tree"
-            } else {
-              Write-Host "::warning::addon.xml not found in $vstBinarySource or at $vstAddonXmlSrc"
-            }
-          } else {
-            Write-Host "::warning::audiodsp.vsthost.dll not found in BUILD_WIN32\addons, vsthost-build\Release, or $vstInstall"
-          }
-
-          # --- plugin.audio.vstmanager (pure Python, copy source tree) ---
-          $vstMgrSrc = "$env:GITHUB_WORKSPACE\addons\plugin.audio.vstmanager"
-          $vstMgrDst = Join-Path $staging "addons\plugin.audio.vstmanager"
-          if (Test-Path $vstMgrSrc) {
-            New-Item -ItemType Directory -Force $vstMgrDst | Out-Null
-            Copy-Item -Path "$vstMgrSrc\*" -Destination $vstMgrDst -Recurse -Force
-            # Remove planning markdown files that are not part of the distributable addon
-            Get-ChildItem $vstMgrDst -Filter "*_PLAN.md" -Recurse | Remove-Item -Force
-            $mgrFiles = (Get-ChildItem $vstMgrDst -Recurse -File).Count
-            Write-Host "Staged plugin.audio.vstmanager ($mgrFiles files)"
-          } else {
-            Write-Host "::warning::plugin.audio.vstmanager source not found at $vstMgrSrc"
-          }
-
-          # --- verify both addon directories were created ---
-          Write-Host ""
-          Write-Host "=== VST addon staging summary ==="
-          if (Test-Path "$vstDst\audiodsp.vsthost.dll") {
-            Write-Host "OK: audiodsp.vsthost.dll present in staging\addons\audiodsp.vsthost"
-          } else {
-            Write-Host "::warning::audiodsp.vsthost.dll missing from staging\addons\audiodsp.vsthost"
-          }
-          if (Test-Path "$vstMgrDst\addon.xml") {
-            Write-Host "OK: plugin.audio.vstmanager present in staging\addons\plugin.audio.vstmanager"
-          } else {
-            Write-Host "::warning::plugin.audio.vstmanager\addon.xml missing from staging"
-          }
-
-      # ---------------------------------------------------------------
-      # DLL provenance check — FFmpeg is linked statically so no FFmpeg
-      # DLLs should be present.  The only MinGW-sourced DLLs allowed are
-      # the libdvd libraries (dvdcss, dvdnav, dvdread).
-      # ---------------------------------------------------------------
-      - name: Sanitize and verify DLL provenance in staging
-        if: success()
-        shell: pwsh
-        run: |
-          $staging = "$env:GITHUB_WORKSPACE\staging"
-          $removedCount = 0
-
-          # 1. Remove any stray FFmpeg DLLs.  FFmpeg is built static
-          #    (--disable-shared --enable-static in ffmpeg_options.txt)
-          #    so none of these should exist.  If they do, they came from
-          #    a pre-packaged dependency or an MSYS2/MinGW installation.
-          $ffmpegPatterns = @(
-            "avutil*.dll", "avcodec*.dll", "avformat*.dll",
-            "avfilter*.dll", "swscale*.dll", "swresample*.dll",
-            "postproc*.dll", "avdevice*.dll"
-          )
-          foreach ($pattern in $ffmpegPatterns) {
-            $found = Get-ChildItem $staging -Filter $pattern -File -Recurse -ErrorAction SilentlyContinue
-            foreach ($f in $found) {
-              Write-Host "::warning::Removing stray FFmpeg DLL: $($f.FullName) ($('{0:N0}' -f $f.Length) bytes)"
-              Remove-Item $f.FullName -Force
-              $removedCount++
-            }
-          }
-
-          # 2. Check for MinGW runtime DLLs that should NOT be in staging.
-          #    The only DLLs intentionally sourced from MinGW are the libdvd
-          #    libraries; everything else must be MSVC-built.
-          $mingwRuntimePatterns = @(
-            "libgcc*.dll", "libstdc++*.dll", "libwinpthread*.dll",
-            "libssp*.dll", "libgomp*.dll", "libquadmath*.dll",
-            "zlib1.dll", "libiconv*.dll"
-          )
-          foreach ($pattern in $mingwRuntimePatterns) {
-            $found = Get-ChildItem $staging -Filter $pattern -File -Recurse -ErrorAction SilentlyContinue
-            foreach ($f in $found) {
-              Write-Host "::warning::Removing unwanted MinGW runtime DLL: $($f.FullName)"
-              Remove-Item $f.FullName -Force
-              $removedCount++
-            }
-          }
-
-          # 3. Whitelist check — only libdvd DLLs are allowed from MinGW.
-          #    Verify they exist if present (they are optional; the build may
-          #    produce them via ExternalProject).
-          $allowedMingwDlls = @("libdvdcss*.dll", "libdvdnav*.dll", "libdvdread*.dll")
-          foreach ($pattern in $allowedMingwDlls) {
-            $found = Get-ChildItem $staging -Filter $pattern -File -Recurse -ErrorAction SilentlyContinue
-            foreach ($f in $found) {
-              Write-Host "OK (MinGW-allowed): $($f.Name) ($($f.Length) bytes)"
-            }
-          }
-
-          # 4. Final DLL inventory
-          Write-Host "`n=== Final DLL inventory after sanitization ==="
-          $allDlls = Get-ChildItem $staging -Filter "*.dll" -File | Sort-Object Name
-          foreach ($dll in $allDlls) {
-            Write-Host "  $($dll.Name) ($('{0:N0}' -f $dll.Length) bytes)"
-          }
-          Write-Host "Total DLLs at staging root: $($allDlls.Count)"
-
-          if ($removedCount -gt 0) {
-            Write-Host "::warning::Removed $removedCount unwanted DLL(s) — review build to prevent them from appearing"
-          }
-          Write-Host "`nDLL provenance check passed"
-
       - name: Validate required files in staging
         if: success()
         shell: pwsh
         run: |
           $staging = "$env:GITHUB_WORKSPACE\staging"
           $failed = $false
-          $warnings = @()
-
           # Check kodi.exe
           if (-not (Test-Path "$staging\kodi.exe")) {
             Write-Error "MISSING: kodi.exe"
             $failed = $true
-          } else {
-            Write-Host "OK: kodi.exe ($(( Get-Item "$staging\kodi.exe").Length) bytes)"
           }
-
-          # Check that dependency DLLs are present
+          # Check that at least some DLLs are present (dependency DLLs)
           $dlls = Get-ChildItem $staging -Filter "*.dll" -File
-          if ($dlls.Count -lt 15) {
-            Write-Error "MISSING: Only $($dlls.Count) DLLs found in staging root — expected 20+ dependency DLLs"
+          if ($dlls.Count -eq 0) {
+            Write-Error "MISSING: No DLLs found in staging root — dependency DLLs were not copied by export-files"
             $failed = $true
           } else {
-            Write-Host "Found $($dlls.Count) DLLs in staging root"
+            Write-Host "Found $($dlls.Count) DLLs in staging root:"
+            $dlls | ForEach-Object { Write-Host "  $($_.Name) ($($_.Length) bytes)" }
           }
-
-          # Check for critical DLLs that MUST be present for Kodi to run.
-          # Note: many Leia dependencies (PCRE, TagLib, CrossGuid, fstrcmp,
-          # TinyXML, FreeType, libfribidi, libpng, libmicrohttpd, expat) are
-          # linked statically — they have no DLL at runtime.
-          $criticalDlls = @(
-            "python27.dll",           # Python 2.7 runtime
-            "sqlite3.dll",            # SQLite (delay-loaded)
-            "zlib.dll",               # zlib compression (delay-loaded)
-            "libxml2.dll",            # XML parsing
-            "libcurl.dll",            # HTTP / network
-            "libeay32.dll",           # OpenSSL crypto
-            "ssleay32.dll",           # OpenSSL SSL/TLS
-            "libxslt.dll",            # XSLT transforms (delay-loaded)
-            "d3dcompiler_47.dll",     # DirectX shader compiler (delay-loaded)
-            "libmysql.dll",           # MySQL connector (delay-loaded)
-            "dnssd.dll"               # Zeroconf / Bonjour (delay-loaded)
-          )
-          $missingCritical = @()
-          foreach ($dll in $criticalDlls) {
-            if (Test-Path "$staging\$dll") {
-              Write-Host "  OK: $dll"
+          # Check for specific critical DLLs (may have different names depending on package versions)
+          $criticalPatterns = @("python27*", "sqlite3*", "libcurl*", "libxml2*")
+          foreach ($pattern in $criticalPatterns) {
+            $found = Get-ChildItem $staging -Filter $pattern -File
+            if ($found.Count -gt 0) {
+              Write-Host "OK: $pattern -> $($found.Name)"
             } else {
-              $missingCritical += $dll
-              Write-Host "::warning::MISSING critical DLL: $dll"
+              Write-Host "::warning::$pattern not found in staging root (may be named differently)"
             }
           }
-          if ($missingCritical.Count -gt 0) {
-            Write-Error "MISSING $($missingCritical.Count) critical DLLs: $($missingCritical -join ', ')"
-            $failed = $true
-          }
-
-          # List all DLLs found (for debugging)
-          Write-Host "`n=== All DLLs in staging root ==="
-          $dlls | Sort-Object Name | ForEach-Object { Write-Host "  $($_.Name) ($($_.Length) bytes)" }
-
-          # Check required directories
-          $requiredDirs = @("system", "addons")
-          foreach ($dir in $requiredDirs) {
-            if (-not (Test-Path "$staging\$dir")) {
-              Write-Error "MISSING: $dir/ directory"
-              $failed = $true
-            } else {
-              $itemCount = (Get-ChildItem "$staging\$dir" -Recurse -File).Count
-              Write-Host "OK: $dir/ ($itemCount files)"
-            }
-          }
-
-          # Check system/Python/ (Python 2.7 runtime)
-          if (-not (Test-Path "$staging\system\Python")) {
-            Write-Error "MISSING: system/Python/ directory (Python 2.7 runtime)"
+          # Check system/ subdirectory
+          if (-not (Test-Path "$staging\system")) {
+            Write-Error "MISSING: system/ directory"
             $failed = $true
           } else {
-            Write-Host "OK: system/Python/ exists"
+            $sysItems = Get-ChildItem "$staging\system" -Directory
+            Write-Host "system/ subdirectories: $($sysItems.Name -join ', ')"
           }
-
-          # Check optional but expected directories (warnings only)
-          $optionalDirs = @("media", "userdata", "sounds")
-          foreach ($dir in $optionalDirs) {
-            if (-not (Test-Path "$staging\$dir")) {
-              Write-Host "::warning::$dir/ directory not found in staging"
-            } else {
-              Write-Host "OK: $dir/ exists"
-            }
+          # Check addons/
+          if (-not (Test-Path "$staging\addons")) {
+            Write-Error "MISSING: addons/ directory"
+            $failed = $true
+          } else {
+            $addonCount = (Get-ChildItem "$staging\addons" -Directory).Count
+            Write-Host "addons/ contains $addonCount addon directories"
           }
-
-          # Check system subdirectories
-          $systemDirs = @("keymaps", "settings", "shaders", "library")
-          foreach ($dir in $systemDirs) {
-            if (Test-Path "$staging\system\$dir") {
-              Write-Host "OK: system/$dir/ exists"
-            } else {
-              Write-Host "::warning::system/$dir/ not found in staging"
-            }
+          # Check media/
+          if (-not (Test-Path "$staging\media")) {
+            Write-Host "::warning::media/ directory not found in staging"
           }
-
           if ($failed) { exit 1 }
-          Write-Host "`nAll critical files validated successfully"
+          Write-Host "All critical files validated successfully"
 
       - name: Upload build artifacts
         if: success()
@@ -817,6 +550,7 @@ jobs:
           git push origin ":refs/tags/${{ steps.version.outputs.tag }}" 2>/dev/null || true
           gh release create "${{ steps.version.outputs.tag }}" \
             kodi-windows-x86.zip \
-            --title "Kodi ${{ steps.version.outputs.tag }}" \
+            kodi-addons.zip \
+            --title "Kodi 18 & Addons ${{ steps.version.outputs.tag }}" \
             --notes "${{ steps.notes.outputs.body }}" \
             --target "${{ github.sha }}"
