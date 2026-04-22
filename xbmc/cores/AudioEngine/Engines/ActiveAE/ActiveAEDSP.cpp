@@ -92,6 +92,9 @@ bool CActiveAEDSP::Init()
 
   // Load the DLL directly, bypassing CAddonDll::Create() / CheckAPIVersion(),
   // because legacy ADSP DLLs do not export ADDON_GetTypeVersion.
+  // NOTE: audiodsp.vsthost makes no callbacks into Kodi (it uses no libKODI_adsp
+  // host-callback stubs), so nullptr is safe as the host-callbacks argument.
+  // If a future ADSP add-on needs host callbacks this approach must be revisited.
   m_dll = new DllAddon;
   m_dll->SetFile(libPath);
   m_dll->EnableDelayedUnload(false);
@@ -198,7 +201,11 @@ void CActiveAEDSP::StreamCreate(const AEAudioFormat& fmt)
   settings.iStreamID                = 0;
   settings.iStreamType              = AE_DSP_ASTREAM_BASIC;
   settings.iInChannels              = channels;
-  settings.lInChannelPresentFlags   = 0;   // best-effort; zero = unknown
+  // NOTE: lInChannelPresentFlags / lOutChannelPresentFlags are set to 0 (unknown)
+  // because ActiveAE's AEChannelInfo does not map directly to AE_DSP_PRSNT_CH_* flags.
+  // audiodsp.vsthost ignores these fields; a future improvement could translate them
+  // using CAEUtil::GetAVChannelLayout if a more strict ADSP add-on requires them.
+  settings.lInChannelPresentFlags   = 0;
   settings.iInFrames                = blockSize;
   settings.iInSamplerate            = fmt.m_sampleRate;
   settings.iProcessFrames           = blockSize;
