@@ -1,6 +1,6 @@
 #pragma once
 /*
- * IVSTPlugin.h — Polymorphic interface for VST2 and VST3 plugin hosting
+ * IVSTPlugin.h — Polymorphic interface for VST plugin hosting
  * Part of audiodsp.vsthost — Kodi Audio DSP addon
  * License: GPL-2.0-or-later
  */
@@ -86,7 +86,6 @@ public:
 
     /// Serialize plugin state to bytes.
     /// VST2: first byte is 'C' (chunk) or 'P' (params), then data.
-    /// VST3: IBStream bytes.
     virtual std::vector<uint8_t> saveState() const = 0;
 
     /// Restore plugin state from previously saved bytes.
@@ -127,7 +126,7 @@ public:
     /// @return true if the size was retrieved successfully.
     virtual bool getEditorSize(int& width, int& height) const = 0;
 
-    /// Pump the editor's idle loop (VST2 only; VST3 is self-pumping).
+    /// Pump the editor's idle loop.
     virtual void idleEditor() = 0;
 
 protected:

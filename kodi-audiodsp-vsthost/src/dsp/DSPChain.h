@@ -40,8 +40,8 @@ public:
 
     /// Load a plugin from disk and append it to the chain.
     /// If the chain is already initialized, the plugin is loaded immediately.
-    /// @param path    Absolute path to the VST2 .dll or VST3 .vst3 file.
-    /// @param format  PluginFormat::VST2 or PluginFormat::VST3.
+    /// @param path    Absolute path to the VST plugin .dll file.
+    /// @param format  PluginFormat::VST2 (other formats are rejected).
     /// @return true on success.
     bool addPlugin(const std::string& path, IVSTPlugin::PluginFormat format);
 
