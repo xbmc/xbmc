@@ -693,8 +693,7 @@ jobs:
           gh release delete "${{ steps.version.outputs.tag }}" --yes 2>/dev/null || true
           git push origin ":refs/tags/${{ steps.version.outputs.tag }}" 2>/dev/null || true
           gh release create "${{ steps.version.outputs.tag }}" \
-            kodi-windows-x86.zip \
-            kodi-addons.zip \
+            kodi-windows-x86.zip kodi-addons.zip \
             --title "Kodi w/VST ${{ steps.version.outputs.tag }}" \
             --notes "${{ steps.notes.outputs.body }}" \
             --target "${{ github.sha }}"
