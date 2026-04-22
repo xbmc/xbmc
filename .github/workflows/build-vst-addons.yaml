@@ -73,9 +73,21 @@ jobs:
         shell: pwsh
         run: |
           $sdkRoot = Join-Path $env:GITHUB_WORKSPACE "kodi-audiodsp-vsthost\build\_deps\vst3sdk-src"
-          $requiredHeader = Join-Path $sdkRoot "pluginterfaces\vst\ivstconnectionpoint.h"
-          if (-not (Test-Path $requiredHeader)) {
-            Write-Error "Missing required VST3 SDK header: $requiredHeader"
+          $requiredHeaders = @(
+            "pluginterfaces\vst\ivstconnectionpoint.h"
+            "public.sdk\source\vst\hosting\module.h"
+          )
+          $missingHeaders = @()
+          foreach ($relativeHeader in $requiredHeaders) {
+            $headerPath = Join-Path $sdkRoot $relativeHeader
+            if (-not (Test-Path $headerPath)) {
+              $missingHeaders += $headerPath
+            }
+          }
+
+          if ($missingHeaders.Count -gt 0) {
+            Write-Error "Missing required VST3 SDK header(s):"
+            $missingHeaders | ForEach-Object { Write-Error "  $_" }
             if (Test-Path $sdkRoot) {
               Write-Host "SDK root exists; top-level entries:"
               Get-ChildItem $sdkRoot -Force | Select-Object -ExpandProperty Name
@@ -84,7 +96,7 @@ jobs:
             }
             exit 1
           }
-          Write-Host "VST3 SDK header verified: $requiredHeader"
+          Write-Host "VST3 SDK required headers verified under: $sdkRoot"
 
       - name: Build audiodsp.vsthost.dll
         shell: cmd
