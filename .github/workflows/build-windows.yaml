@@ -394,9 +394,21 @@ jobs:
           cmake --install . --config Release
           set "VST_ADDON_DIR=%GITHUB_WORKSPACE%\project\Win32BuildSetup\BUILD_WIN32\addons\audiodsp.vsthost"
           if not exist "%VST_ADDON_DIR%" mkdir "%VST_ADDON_DIR%"
-          if exist "Release\audiodsp.vsthost.dll" copy /Y "Release\audiodsp.vsthost.dll" "%VST_ADDON_DIR%\"
-          if exist "Release\vstscanner.exe" copy /Y "Release\vstscanner.exe" "%VST_ADDON_DIR%\"
-          if exist "%GITHUB_WORKSPACE%\kodi-audiodsp-vsthost\resources\addon.xml" copy /Y "%GITHUB_WORKSPACE%\kodi-audiodsp-vsthost\resources\addon.xml" "%VST_ADDON_DIR%\"
+          if exist "Release\audiodsp.vsthost.dll" (
+            copy /Y "Release\audiodsp.vsthost.dll" "%VST_ADDON_DIR%\"
+          ) else (
+            echo ::warning::Release\audiodsp.vsthost.dll not found after build
+          )
+          if exist "Release\vstscanner.exe" (
+            copy /Y "Release\vstscanner.exe" "%VST_ADDON_DIR%\"
+          ) else (
+            echo ::warning::Release\vstscanner.exe not found after build
+          )
+          if exist "%GITHUB_WORKSPACE%\kodi-audiodsp-vsthost\resources\addon.xml" (
+            copy /Y "%GITHUB_WORKSPACE%\kodi-audiodsp-vsthost\resources\addon.xml" "%VST_ADDON_DIR%\"
+          ) else (
+            echo ::warning::kodi-audiodsp-vsthost\resources\addon.xml not found
+          )
 
       # Collect all build output into a single staging directory that mirrors
       # the final on-disk layout.
@@ -499,7 +511,15 @@ jobs:
           $vstDst = Join-Path $staging "addons\audiodsp.vsthost"
           New-Item -ItemType Directory -Force $vstDst | Out-Null
           if (Test-Path "$vstBuiltAddon\audiodsp.vsthost.dll") {
-            Copy-Item "$vstBuiltAddon\*" -Destination $vstDst -Recurse -Force
+            Copy-Item "$vstBuiltAddon\audiodsp.vsthost.dll" -Destination $vstDst -Force
+            if (Test-Path "$vstBuiltAddon\vstscanner.exe") {
+              Copy-Item "$vstBuiltAddon\vstscanner.exe" -Destination $vstDst -Force
+              Write-Host "Staged vstscanner.exe"
+            }
+            if (Test-Path "$vstBuiltAddon\addon.xml") {
+              Copy-Item "$vstBuiltAddon\addon.xml" -Destination $vstDst -Force
+              Write-Host "Staged addon.xml"
+            }
             Write-Host "Staged audiodsp.vsthost addon from BUILD_WIN32\addons"
           } elseif (Test-Path "$vstBuildOut\audiodsp.vsthost.dll") {
             Copy-Item "$vstBuildOut\audiodsp.vsthost.dll" -Destination $vstDst -Force
