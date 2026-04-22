@@ -347,8 +347,14 @@ float MasterProcessGetDelay(const ADDON_HANDLE handle)
 int MasterProcessGetOutChannels(const ADDON_HANDLE handle,
                                 unsigned long& out_channel_present_flags)
 {
-    out_channel_present_flags = GetProc(handle)->masterProcessGetOutChannels();
-    return GetProc(handle)->getNumChannels();
+    const DSPProcessor* proc = GetProc(handle);
+    if (!proc)
+    {
+        out_channel_present_flags = 0;
+        return 0;
+    }
+    out_channel_present_flags = proc->masterProcessGetOutChannels();
+    return proc->getNumChannels();
 }
 
 unsigned int MasterProcess(const ADDON_HANDLE handle,
