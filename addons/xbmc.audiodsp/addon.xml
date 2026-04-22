@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="xbmc.audiodsp" version="0.1.0" provider-name="Team Kodi">
+  <backwards-compatibility abi="0.1"/>
+  <requires>
+    <c-pluff version="0.1"/>
+  </requires>
+  <extension point="xbmc.audiodsp">
+    <provides>audiodsp</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>Audio DSP provider</summary>
+    <description>Virtual addon type for Audio DSP (audiodsp.vsthost) addons</description>
+    <platform>all</platform>
+  </extension>
+</addon>

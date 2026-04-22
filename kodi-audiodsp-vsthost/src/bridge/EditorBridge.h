@@ -40,6 +40,10 @@ public:
 
     bool isRunning() const { return m_running.load(); }
 
+    /// Update the DSPChain pointer without stopping/restarting the pipe server.
+    /// Call from StreamCreate (to attach a new chain) and StreamDestroy (nullptr).
+    void setChain(DSPChain* chain);
+
     /// Return the DSPChain pointer the bridge was started with, or nullptr.
     DSPChain* getChain() const
     {

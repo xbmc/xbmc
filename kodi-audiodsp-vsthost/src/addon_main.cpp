@@ -43,12 +43,18 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
     if (dspProps && dspProps->strUserPath)
         g_addonDataPath = dspProps->strUserPath;
 
+    // Start the editor bridge immediately so the named pipe is ready for
+    // the Python VST Manager addon regardless of stream state.
+    // setChain() will be called in StreamCreate when a chain is available.
+    if (!g_editorBridge.isRunning())
+        g_editorBridge.start(nullptr);
+
     return ADDON_STATUS_OK;
 }
 
 void ADDON_Destroy()
 {
-    // Stop the editor bridge before streams are torn down.
+    // Stop the editor bridge — no more streams will come.
     g_editorBridge.stop();
     g_lastProcessor = nullptr;
 }
@@ -184,11 +190,12 @@ AE_DSP_ERROR StreamCreate(const AE_DSP_SETTINGS* addonSettings,
     // dataIdentifier (int) is NOT used for this purpose.
     handle->dataAddress = proc;
 
-    // Start the editor bridge (if not already running) with this processor's chain.
-    // The bridge allows the Python VST Manager addon to open native VST editor windows.
+    // Attach the new processor's chain to the editor bridge.
+    // The bridge is already running (started in ADDON_Create); this just
+    // updates the chain pointer so that incoming "open" commands can find
+    // the active plugins.
     g_lastProcessor = proc;
-    if (!g_editorBridge.isRunning())
-        g_editorBridge.start(&proc->getChain());
+    g_editorBridge.setChain(&proc->getChain());
 
     return AE_DSP_ERROR_NO_ERROR;
 }
@@ -199,12 +206,14 @@ AE_DSP_ERROR StreamDestroy(const ADDON_HANDLE handle)
     if (!proc)
         return AE_DSP_ERROR_INVALID_PARAMETERS;
 
-    // Stop the editor bridge if it is pointing at the processor being destroyed.
-    // getChain() returns a reference to DSPProcessor::m_chain (a member, not a
-    // temporary), so taking its address yields a stable DSPChain*.
-    const DSPChain* procChain = &proc->getChain();
-    if (g_editorBridge.isRunning() && procChain == g_editorBridge.getChain())
-        g_editorBridge.stop();
+    // Detach the chain from the editor bridge so subsequent "open" commands
+    // fail gracefully until the next StreamCreate provides a new chain.
+    // The bridge itself stays running so the pipe connection is preserved.
+    if (g_lastProcessor == proc)
+    {
+        g_editorBridge.setChain(nullptr);
+        g_lastProcessor = nullptr;
+    }
 
     proc->streamDestroy();
     delete proc;
