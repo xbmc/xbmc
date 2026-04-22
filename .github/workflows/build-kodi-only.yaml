@@ -1,6 +1,6 @@
-name: Build Kodi 18leia for Win (Kodi only)
+name: Build Kodi 18 Leia for Win (Kodi only)
 
-# Repository secret ORGANIZERRO_PAT: same value as local .git/organizerro_pat.txt (required for gh release as OrganizerRo).
+# Repository secret ORGANIZERRO_PAT: same value as local .git/organizerro_pat.txt (required for gh release as ORGANIZERRO).
 # Checkout falls back to github.token when the secret is unset so forks/public clones can still run builds.
 
 on:
