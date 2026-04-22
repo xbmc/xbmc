@@ -133,8 +133,9 @@ void EditorBridge::stop()
         PostThreadMessageW(m_uiThreadID, WM_QUIT, 0, 0);
 
     // Null out m_chain under the lock so concurrent readers see nullptr atomically.
-    // The joins must happen OUTSIDE the lock: the UI thread acquires m_editorMutex
-    // in WM_DESTROY before it exits, so holding the lock here would deadlock.
+    // The joins must happen OUTSIDE the lock: the UI thread's WM_CLOSE handler
+    // calls DestroyWindow(), which synchronously delivers WM_DESTROY, which
+    // acquires m_editorMutex — holding the lock here would therefore deadlock.
     {
         std::lock_guard<std::mutex> lock(m_editorMutex);
         m_chain = nullptr;
