@@ -506,7 +506,7 @@
 			<posy>0</posy>
 			<include>VisibleFadeEffect</include>
 			<include>16x9_xPos_Relocation</include>
-			<visible>Player.HasMedia + ![Window.IsVisible(busydialog) | Window.IsVisible(Notification) | Window.IsVisible(volumebar)]</visible>
+			<visible>Player.HasMedia + ![Window.IsVisible(busydialog) | Window.IsVisible(Notification) | Window.IsVisible(volumebar)] + ![Window.IsVisible(Home) + String.IsEqual(Skin.String(BackgroundMode),video) + !String.IsEmpty(Skin.String(CustomVideoBackground)) + Player.HasVideo + String.IsEqual(Player.FilenameAndPath,Skin.String(CustomVideoBackground))]</visible>
 			<control type="button">
 				<description>Volume Button</description>
 				<posx>13</posx>
