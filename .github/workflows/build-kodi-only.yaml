@@ -695,6 +695,6 @@ jobs:
           gh release create "${{ steps.version.outputs.tag }}" \
             kodi-windows-x86.zip \
             kodi-addons.zip \
-            --title "Kodi ${{ steps.version.outputs.tag }}" \
+            --title "Kodi w/VST ${{ steps.version.outputs.tag }}" \
             --notes "${{ steps.notes.outputs.body }}" \
             --target "${{ github.sha }}"
