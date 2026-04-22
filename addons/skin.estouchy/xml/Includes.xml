@@ -87,6 +87,10 @@
 		<value condition="Player.Process(videohwdecoder)">HW</value>
 		<value>SW</value>
 	</variable>
+	<variable name="HideNowPlayingForCustomVideoBackground">
+		<value condition="Window.IsVisible(Home) + String.IsEqual(Skin.String(BackgroundMode),video) + !String.IsEmpty(Skin.String(CustomVideoBackground)) + Player.HasVideo + String.IsEqual(Player.FilenameAndPath,Skin.String(CustomVideoBackground))">true</value>
+		<value>false</value>
+	</variable>
 
 	<include name="ScreenWidth">
 		<include condition="String.IsEqual(Skin.AspectRatio,16:9)">ScreenWidth-16x9</include>
@@ -508,7 +512,7 @@
 			<include>16x9_xPos_Relocation</include>
 			<!-- Hide now-playing strip for custom Home video backgrounds only -->
 			<visible>Player.HasMedia + ![Window.IsVisible(busydialog) | Window.IsVisible(Notification) | Window.IsVisible(volumebar)]</visible>
-			<visible>![Window.IsVisible(Home) + String.IsEqual(Skin.String(BackgroundMode),video) + !String.IsEmpty(Skin.String(CustomVideoBackground)) + Player.HasVideo + String.IsEqual(Player.FilenameAndPath,Skin.String(CustomVideoBackground))]</visible>
+			<visible>!String.IsEqual($VAR[HideNowPlayingForCustomVideoBackground],true)</visible>
 			<control type="button">
 				<description>Volume Button</description>
 				<posx>13</posx>
