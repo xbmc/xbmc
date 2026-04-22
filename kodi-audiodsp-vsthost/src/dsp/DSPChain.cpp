@@ -29,9 +29,8 @@ DSPChain::~DSPChain()
 bool DSPChain::addPlugin(const std::string& path, IVSTPlugin::PluginFormat format)
 {
     ChainPlugin slot;
-    slot.path     = path;
-    slot.format   = format;
-    slot.bypassed = false;
+    slot.path   = path;
+    slot.format = format;
 
     if (format == IVSTPlugin::PluginFormat::VST2)
         slot.plugin = std::make_unique<VSTPlugin2>(path);
@@ -153,17 +152,19 @@ void DSPChain::allocatePingPong()
 
 int DSPChain::process(float** in, float** out, int samples)
 {
+    const int n = (samples > m_blockSize) ? m_blockSize : samples;
+
     if (m_plugins.empty())
     {
         // Passthrough — no plugins in chain.
         for (int ch = 0; ch < m_numChannels; ++ch)
-            std::memcpy(out[ch], in[ch], static_cast<size_t>(samples) * sizeof(float));
+            std::memcpy(out[ch], in[ch], static_cast<size_t>(n) * sizeof(float));
         return samples;
     }
 
     // Copy Kodi's input buffers into the A side of the ping-pong pair.
     for (int ch = 0; ch < m_numChannels; ++ch)
-        std::memcpy(m_ptrA[ch], in[ch], static_cast<size_t>(samples) * sizeof(float));
+        std::memcpy(m_ptrA[ch], in[ch], static_cast<size_t>(n) * sizeof(float));
 
     // current = "input side"; next = "output side".
     // After each plugin we swap so that the previous output becomes the next input.
@@ -172,16 +173,19 @@ int DSPChain::process(float** in, float** out, int samples)
 
     for (auto& slot : m_plugins)
     {
-        // IVSTPlugin::process() handles bypass internally:
-        // if m_bypassed, it copies in→out and returns.
-        // We always call process() and always swap.
-        slot.plugin->process(current->data(), next->data(), samples);
+        const int processed = slot.plugin->process(current->data(), next->data(), n);
+        if (processed == 0)
+        {
+            // Plugin produced no output (unloaded/bypass failure) — copy input to output.
+            for (int ch = 0; ch < m_numChannels; ++ch)
+                std::memcpy((*next)[ch], (*current)[ch], static_cast<size_t>(n) * sizeof(float));
+        }
         std::swap(current, next);
     }
 
     // current now points to the buffer holding the final output.
     for (int ch = 0; ch < m_numChannels; ++ch)
-        std::memcpy(out[ch], (*current)[ch], static_cast<size_t>(samples) * sizeof(float));
+        std::memcpy(out[ch], (*current)[ch], static_cast<size_t>(n) * sizeof(float));
 
     return samples;
 }
@@ -227,7 +231,7 @@ int DSPChain::getTotalLatencySamples() const
     int total = 0;
     for (const auto& slot : m_plugins)
     {
-        if (!slot.bypassed)
+        if (!slot.plugin->isBypassed())
             total += slot.plugin->getLatencySamples();
     }
     return total;
@@ -408,7 +412,7 @@ std::string DSPChain::serializeToJson() const
         ss << "    {\n";
         ss << "      \"path\": \""     << jsonEscape(slot.path) << "\",\n";
         ss << "      \"format\": \""   << fmt                   << "\",\n";
-        ss << "      \"bypassed\": "   << (slot.bypassed ? "true" : "false") << ",\n";
+        ss << "      \"bypassed\": "   << (slot.plugin->isBypassed() ? "true" : "false") << ",\n";
         ss << "      \"state\": \""    << stateB64              << "\"\n";
         ss << "    }";
         if (!isLast) ss << ",";
@@ -588,7 +592,6 @@ bool DSPChain::deserializeFromJson(const std::string& json)
 
         // Set bypassed flag on the newly added slot.
         ChainPlugin& slot = m_plugins.back();
-        slot.bypassed = bypassed;
         slot.plugin->setBypassed(bypassed);
 
         // Restore plugin state.
