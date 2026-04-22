@@ -129,9 +129,9 @@ endif()
 if(TARGET vst3_hosting)
     get_target_property(_vst3_hosting_type vst3_hosting TYPE)
     if(_vst3_hosting_type STREQUAL "INTERFACE_LIBRARY")
-        target_include_directories(vst3_hosting INTERFACE "${VST3SDK_INCLUDE_DIRS}")
+        target_include_directories(vst3_hosting INTERFACE ${VST3SDK_INCLUDE_DIRS})
     else()
-        target_include_directories(vst3_hosting PUBLIC "${VST3SDK_INCLUDE_DIRS}")
+        target_include_directories(vst3_hosting PUBLIC ${VST3SDK_INCLUDE_DIRS})
     endif()
 endif()
 
@@ -167,7 +167,7 @@ target_include_directories(audiodsp.vsthost
     PRIVATE
         "${CMAKE_SOURCE_DIR}/src"
         "${CMAKE_SOURCE_DIR}/include/kodi-legacy-adsp"
-        "${VST3SDK_INCLUDE_DIRS}"
+        ${VST3SDK_INCLUDE_DIRS}
         "${KODI_ADSP_SDK_DIR}"
 )
 
@@ -202,7 +202,7 @@ if(EXISTS "${CMAKE_SOURCE_DIR}/scanner/vstscanner.cpp")
     target_include_directories(vstscanner
         PRIVATE
             "${CMAKE_SOURCE_DIR}/src"
-            "${VST3SDK_INCLUDE_DIRS}"
+            ${VST3SDK_INCLUDE_DIRS}
     )
 
     target_link_libraries(vstscanner
