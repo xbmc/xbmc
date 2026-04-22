@@ -67,8 +67,10 @@ set(VST3_HOSTING_SOURCES
     "${VST3SDK_DIR}/public.sdk/source/vst/vstinitiids.cpp"
     # VST3::StringConvert::convert (char16 <-> UTF-8) used by module_win32.cpp
     "${VST3SDK_DIR}/public.sdk/source/vst/utility/stringconvert.cpp"
-    # Steinberg::Vst::ThreadChecker::create used by connectionproxy.cpp
-    "${VST3SDK_DIR}/public.sdk/source/vst/utility/threadchecker_win32.cpp"
+    # Steinberg::Vst::ThreadChecker::create used by connectionproxy.cpp.
+    # The header is public.sdk/source/common/threadchecker.h;
+    # the Win32 implementation is in source/common/ (NOT source/vst/utility/).
+    "${VST3SDK_DIR}/public.sdk/source/common/threadchecker_win32.cpp"
     # Steinberg::MemoryStream used by VSTPlugin3::save/loadState
     "${VST3SDK_DIR}/public.sdk/source/common/memorystream.cpp"
     "${VST3SDK_DIR}/base/source/fstring.cpp"
@@ -78,6 +80,13 @@ set(VST3_HOSTING_SOURCES
     "${VST3SDK_DIR}/base/source/updatehandler.cpp"
     "${VST3SDK_DIR}/pluginterfaces/base/funknown.cpp"
     "${VST3SDK_DIR}/pluginterfaces/base/conststringtable.cpp"
+    # Defines DEF_CLASS_IID for FUnknown, IPluginFactory, IBStream, IPluginBase,
+    # ICloneable, IUpdateHandler, ISizeableStream, etc.  Without this the linker
+    # reports unresolved externals for every interface ::iid static member.
+    "${VST3SDK_DIR}/pluginterfaces/base/coreiids.cpp"
+    # Defines IPlugView::iid, IPlugFrame::iid, IPlugViewContentScaleSupport::iid
+    # (included by VSTPlugin3.h via pluginterfaces/gui/iplugview.h).
+    "${VST3SDK_DIR}/public.sdk/source/common/commoniids.cpp"
 )
 
 # Use a generator-expression-friendly existence check: build the list only
