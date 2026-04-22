@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="xbmc.audiodsp" version="0.1.0" provider-name="Team Kodi">
-  <backwards-compatibility abi="0.1"/>
+<addon id="xbmc.audiodsp" version="0.1.8" provider-name="Team Kodi">
+  <backwards-compatibility abi="0.1.8"/>
   <requires>
     <c-pluff version="0.1"/>
   </requires>
