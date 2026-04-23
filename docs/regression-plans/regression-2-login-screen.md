@@ -12,246 +12,287 @@
 
 This regression has two related but independent defects introduced by the deferral PR:
 
-#### Bug 2a — Login-screen branch never clears `m_bInitializing`
+#### Bug 2a — Deferred queue flushed after profile context switch, not before it
 
 `CApplication::Initialize()` has two exit paths:
 
-1. **Normal path:** No login screen → the UI is brought up, `GUI_MSG_UI_READY` fires → `m_bInitializing = false` at line 3759.
-2. **Login-screen path:** A login screen is presented. In this path the code exits `Initialize()` before `GUI_MSG_UI_READY` is processed by the normal codepath, and `m_bInitializing` is **never set to `false`**.
+1. **Normal path (no login screen):** Boot completes normally → `CProfileManager::FinalizeLoadProfile()` sends `GUI_MSG_UI_READY` with sender `WINDOW_SETTINGS_PROFILES` → `CApplication::OnMessage()` receives it → sets `m_bInitializing = false` at line 3759 → flushes deferred queue at lines 3763–3772. At this point **no profile switch has occurred**, so the flush happens in the correct master-profile context.
 
-As a result:
-- Any action fired during the login screen (e.g., skin `<onload>` actions, background refresh actions) is deferred indefinitely.
-- When the user enters their PIN and `FinalizeLoadProfile()` is called, `m_bInitializing` is finally set to `false` and the deferred queue is flushed — but the current language, skin, and user context are now those of the newly-loaded profile, not the master profile context in which the actions were originally fired.
+2. **Login-screen path:** Boot shows the login screen instead. The user's skin `<onload>` actions and other early actions are deferred into `m_deferredActions`. When the user enters their PIN, `TMSG_LOADPROFILE` is posted → `CProfileManager::LoadProfile(N)` is called → it calls `settings->Load()` (switching the active settings to profile N's settings file), `LoadLanguage()`, and other profile-specific initialization → **only then** `FinalizeLoadProfile()` sends `GUI_MSG_UI_READY` → `CApplication::OnMessage()` sets `m_bInitializing = false` and flushes the deferred queue. By this point the active language, skin, and settings context are **already those of profile N**, not the master profile. All deferred actions execute with the wrong context.
 
 ```
-CApplication::Initialize()
+[Boot, master profile — m_bInitializing = true]
   → LoginScreen shown
-  → ... user enters PIN ...
-  → FinalizeLoadProfile(profile N)
-      → LoadSkin(profile_N_skin)        ← different skin/language loaded
-      → m_bInitializing = false         ← BUG: set AFTER profile switch
-      → FlushDeferredActions()          ← replays in wrong context
+      → skin <onload> fires "PlayMedia(...)", "$INFO[...]" actions
+      → all deferred into m_deferredActions (Application.cpp:3993)
+
+[User enters PIN → TMSG_LOADPROFILE posted]
+  → CApplication::ProcessMessages()                    (Application.cpp:2272)
+      → CProfileManager::LoadProfile(N)               (ProfileManager.cpp:283)
+          → settings->Load()                          (ProfileManager.cpp:323)  ← settings switch
+          → FinalizeLoadProfile()                     (ProfileManager.cpp:373)
+              → LoadLanguage()                        (ProfileManager.cpp:407)  ← language switch
+              → ...other profile init...
+              → SendThreadMessage(GUI_MSG_UI_READY)   (ProfileManager.cpp:441)
+
+[GUI_MSG_UI_READY received — CApplication::OnMessage()]  (Application.cpp:3759)
+  → m_bInitializing = false
+  → FlushDeferredActions()
+      → ExecuteXBMCAction(action, nullptr)
+          ← $INFO tokens resolved against profile N's language/skin  ← WRONG
 ```
 
-#### Bug 2b — `ReloadSkin` fired on every `LogOff`
+#### Bug 2b — `ReloadSkin` fired on every profile load regardless of whether the skin changed
 
-`FinalizeLoadProfile()` unconditionally calls `ReloadSkin()` to apply the newly-loaded profile's skin settings. This fires even when logging out back to the master profile, causing:
-- Flickering skin reload on every logout.
-- If a deferred `ReloadSkin` is also in the queue (fired during boot in master context), two successive `ReloadSkin` calls fire back-to-back — visible as a double-flash and wasted initialisation.
+In `CApplication::OnMessage()` (Application.cpp:3774–3775), when `GUI_MSG_UI_READY` arrives with sender `WINDOW_SETTINGS_PROFILES`, `ReloadSkin()` is called unconditionally. This fires even when the master profile's skin and the new profile's skin are the same (e.g., both use `skin.estouchy`), causing:
+- A visible skin flash and wasted re-initialisation on every profile switch or logout.
+- If the deferred queue also contains a `ReloadSkin` action (e.g., from the master skin's `<onload>`), two successive `ReloadSkin` calls fire back-to-back.
+
+`ReloadSkin()` (Application.cpp:1144–1155) already reads `CSettings::SETTING_LOOKANDFEEL_SKIN` and compares it internally to load the new skin — but because it is called unconditionally, it always performs the full reload cycle even for a no-op switch.
 
 ### Key File:Line References
 
-| Location | Significance |
+| Location | What it does |
 |----------|-------------|
-| `xbmc/Application.h:433` | `bool m_bInitializing = true;` |
-| `xbmc/Application.cpp:3759` | `m_bInitializing = false;` — normal-path assignment |
-| `xbmc/Application.cpp` | `FinalizeLoadProfile()` — sets `m_bInitializing = false` in login-screen path |
-| `xbmc/profiles/ProfileManager.h` | `m_firstRealProfileLoad` — proposed new one-shot flag |
-| `xbmc/profiles/ProfileManager.cpp` | `LogOff()` / `LoadProfile()` — lifecycle management |
-| `xbmc/Application.cpp` | `ReloadSkin()` call inside `FinalizeLoadProfile()` |
+| `xbmc/Application.h:433` | `bool m_bInitializing = true;` — flag declaration |
+| `xbmc/Application.h:482` | `std::deque<std::string> m_deferredActions;` — the deferred queue (currently stores strings only; see R3 for the item-preserving struct upgrade) |
+| `xbmc/Application.cpp:3759` | `m_bInitializing = false;` — cleared on `GUI_MSG_UI_READY` |
+| `xbmc/Application.cpp:3763–3772` | Deferred queue flush loop — replay with `nullptr` item |
+| `xbmc/Application.cpp:3774–3775` | `if (sender == WINDOW_SETTINGS_PROFILES) ReloadSkin(false);` — unconditional skin reload |
+| `xbmc/Application.cpp:2272–2277` | `TMSG_LOADPROFILE` handler — calls `CProfileManager::LoadProfile()` |
+| `xbmc/Application.cpp:1144–1155` | `CApplication::ReloadSkin()` — reads new skin from settings, loads it |
+| `xbmc/profiles/ProfileManager.cpp:283` | `CProfileManager::LoadProfile()` — calls `settings->Load()` then `FinalizeLoadProfile()` |
+| `xbmc/profiles/ProfileManager.cpp:323` | `settings->Load()` — first point where the profile context switches |
+| `xbmc/profiles/ProfileManager.cpp:373` | `FinalizeLoadProfile()` call — profile settings already active here |
+| `xbmc/profiles/ProfileManager.cpp:380` | `CProfileManager::FinalizeLoadProfile()` — loads language, starts services, sends `GUI_MSG_UI_READY` |
+| `xbmc/profiles/ProfileManager.cpp:407` | `g_application.LoadLanguage(true)` inside `FinalizeLoadProfile()` |
+| `xbmc/profiles/ProfileManager.cpp:441` | `SendThreadMessage(GUI_MSG_UI_READY)` — triggers flush in Application |
+| `xbmc/profiles/ProfileManager.cpp:445` | `CProfileManager::LogOff()` — calls `LoadMasterProfileForLogin()` then activates login window |
 
 ---
 
-## 2. Exact Call Path
+## 2. Exact Call Path (Annotated with Line Numbers)
 
-### 2a — Deferred Queue Flushed in Wrong Context
-
-```
-[Boot, master profile]
-  m_bInitializing = true
-  → Show LoginScreen window
-      → LoginScreen <onload> fires actions  → deferred into m_deferredActions
-
-[User enters PIN]
-  → FinalizeLoadProfile(profile 1)
-      → CProfileManager::LoadProfile(1)
-          → language/skin of profile 1 loaded  ← context switch
-      → m_bInitializing = false
-      → FlushDeferredActions()
-          → ExecuteXBMCAction("...", item)
-              ← resolved with profile 1's skin/language/info manager  ← WRONG
-```
-
-### 2b — Double ReloadSkin on LogOff
+### 2a — Login-Screen Path: Wrong Flush Context
 
 ```
-[User logs off]
-  → CProfileManager::LogOff()
-      → LoadProfile(MASTER_PROFILE_INDEX)
-          → FinalizeLoadProfile()
-              → ReloadSkin()               ← always fires
-              → FlushDeferredActions()     ← may fire another ReloadSkin from queue
+Application.cpp:2272  TMSG_LOADPROFILE
+  → ProfileManager.cpp:283   CProfileManager::LoadProfile(N)
+      → ProfileManager.cpp:285   PrepareLoadProfile(N)   [stops services]
+      → ProfileManager.cpp:323   settings->Load()         ← CONTEXT SWITCH 1: settings
+      → ProfileManager.cpp:373   FinalizeLoadProfile()
+          → ProfileManager.cpp:407   LoadLanguage(true)   ← CONTEXT SWITCH 2: language
+          → ...
+          → ProfileManager.cpp:441   SendThreadMessage(GUI_MSG_UI_READY, WINDOW_SETTINGS_PROFILES)
+
+Application.cpp:3759  OnMessage(GUI_MSG_UI_READY)
+  → m_bInitializing = false
+  → Application.cpp:3763  flush loop
+      → Application.cpp:3770  ExecuteXBMCAction(action, nullptr)
+          ← ALL $INFO resolution uses profile N context  ← BUG
+```
+
+### 2b — Unconditional ReloadSkin
+
+```
+Application.cpp:3774  OnMessage(GUI_MSG_UI_READY) — same handler, continues:
+  if (message.GetSenderId() == WINDOW_SETTINGS_PROFILES)
+    g_application.ReloadSkin(false);   ← fires even if skin unchanged
 ```
 
 ---
 
-## 3. Candidate Fix Approaches
+## 3. Decision: Flush, Not Discard
 
-### Fix for Bug 2a — Set `m_bInitializing = false` BEFORE profile context switch
+**The deferred queue must be flushed (executed), not discarded.**
 
-Move the `m_bInitializing = false` assignment to happen **immediately after the login screen is dismissed** but **before** `FinalizeLoadProfile` switches the skin/language context. This ensures deferred actions execute in the master-profile context that was active when they were fired.
+Actions queued during the login screen (e.g., `PlayMedia` for the master skin's background video, `$INFO[System.BuildVersion]` overlays) belong to the master-profile context and are valid user-visible operations. Discarding them silently would break the master skin's expected startup behaviour every time a login screen is shown.
 
-Alternatively, clear the deferred queue entirely when a login-screen transition is detected (actions fired at the login screen are not relevant to the new profile's context anyway).
-
-### Fix for Bug 2b — Gate `ReloadSkin` with a one-shot flag in `CProfileManager`
-
-Add a `bool m_firstRealProfileLoad = true` flag to `CProfileManager`. `FinalizeLoadProfile` only calls `ReloadSkin()` if `m_firstRealProfileLoad` is `true`. After the first real profile load, clear the flag. On `LogOff`, do not reset the flag — subsequent profile switches only reload the skin if the skin settings actually differ.
+The fix therefore flushes the queue **before** `settings->Load()` switches the active context.
 
 ---
 
-## 4. Recommended Fixes
+## 4. Implementation Plan
 
-### Fix 2a — Flush or Discard Deferred Queue Before Profile Switch
+### Step 1 — Add `FlushDeferredActionsNow()` to `CApplication`
 
-#### `xbmc/Application.cpp` — `FinalizeLoadProfile`
+`CProfileManager` needs to trigger the flush from `LoadProfile()`, but `m_deferredActions` and `m_bInitializing` are private members of `CApplication`. Add a single public method to expose this safely.
+
+#### `xbmc/Application.h` — public section
 
 ```diff
- void CApplication::FinalizeLoadProfile(int profileIndex)
- {
-+  // Flush (or discard) any deferred boot actions BEFORE switching profile context.
-+  // Actions fired during the login screen belong to the master profile context.
-+  if (!m_deferredActions.empty())
++  // Flush any deferred startup actions immediately in the current context.
++  // Called by CProfileManager::LoadProfile() before switching profile context.
++  void FlushDeferredActionsNow();
+```
+
+#### `xbmc/Application.cpp`
+
+Add the new method (can go near the existing flush logic around line 3763):
+
+```diff
++void CApplication::FlushDeferredActionsNow()
++{
++  if (m_bInitializing && !m_deferredActions.empty())
 +  {
-+    for (const auto& deferred : m_deferredActions)
-+      ExecuteXBMCAction(deferred.actionStr, deferred.item);
-+    m_deferredActions.clear();
++    m_bInitializing = false;
++    std::deque<std::string> pending;
++    pending.swap(m_deferredActions);
++    for (const auto& action : pending)
++    {
++      CLog::LogF(LOGDEBUG, "Replaying deferred startup action '%s' (pre-profile-switch)", action.c_str());
++      ExecuteXBMCAction(action, nullptr);
++    }
 +  }
++  // Always clear the initializing flag so subsequent actions are not deferred.
 +  m_bInitializing = false;
-+
-   CProfileManager::GetInstance().LoadProfile(profileIndex);
-   // ... skin/language load ...
--  m_bInitializing = false;
--  FlushDeferredActions();
- }
++}
 ```
 
-**Note:** If the login-screen actions are entirely irrelevant to the new user context (e.g., skin background start-up actions for the master skin), it is also acceptable to **discard** rather than flush:
-
-```diff
-+  m_deferredActions.clear();   // discard; login-screen context no longer valid
-+  m_bInitializing = false;
-   CProfileManager::GetInstance().LoadProfile(profileIndex);
-```
-
-The safer approach is to flush in the correct context; the discard approach is acceptable if login-screen actions are provably skin-only.
+> **Note on item context:** If R3 (item-context struct upgrade) is applied first, change the queue type to `std::deque<DeferredAction>` and call `ExecuteXBMCAction(deferred.actionStr, deferred.item)`. See R3 plan for details.
 
 ---
 
-### Fix 2b — One-Shot `ReloadSkin` Guard
+### Step 2 — Call `FlushDeferredActionsNow()` Before the Settings Context Switch
 
-#### `xbmc/profiles/ProfileManager.h`
+The context switch starts at `settings->Load()` (ProfileManager.cpp:323). Call the flush just before that line, inside `CProfileManager::LoadProfile()`.
 
-```diff
- class CProfileManager
- {
- private:
-+  bool m_firstRealProfileLoad = true;
-   // ...
- };
-```
-
-#### `xbmc/profiles/ProfileManager.cpp` — `FinalizeLoadProfile` / `LogOff`
+#### `xbmc/profiles/ProfileManager.cpp` — `CProfileManager::LoadProfile()`
 
 ```diff
- void CApplication::FinalizeLoadProfile(int profileIndex)
- {
-   CProfileManager::GetInstance().LoadProfile(profileIndex);
--  ReloadSkin();
-+  if (CProfileManager::GetInstance().IsFirstRealProfileLoad())
-+  {
-+    CProfileManager::GetInstance().ClearFirstRealProfileLoad();
-+    ReloadSkin();
-+  }
-   // ...
- }
+   // save any settings of the currently used skin but only if the (master)
+   // profile hasn't just been loaded as a temporary profile for login
+   if (g_SkinInfo != nullptr && !m_previousProfileLoadedForLogin)
+     g_SkinInfo->SaveSettings();
+
+   // @todo: why is m_settings not used here?
+   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
++  // Flush any deferred boot actions NOW, while still in master-profile context.
++  // settings->Load() below switches the active profile; any $INFO tokens in
++  // deferred actions must be resolved before that context switch occurs.
++  g_application.FlushDeferredActionsNow();
++
+   // unload any old settings
+   settings->Unload();
+
+   SetCurrentProfileId(index);
+   m_previousProfileLoadedForLogin = false;
+
+   // load the new settings
+   if (!settings->Load())
 ```
 
-Or, more cleanly, make `ReloadSkin` conditional on the skin actually changing:
-
-```diff
--  ReloadSkin();
-+  const std::string newSkin = CProfileManager::GetInstance().GetCurrentProfile().GetSkin();
-+  if (newSkin != g_SkinInfo->ID())
-+    ReloadSkin();
-```
-
-This last approach (compare skin IDs) is preferred as it requires no new flag and handles all cases — including a user switching back and forth between identical-skin profiles.
+The insertion point is after `g_SkinInfo->SaveSettings()` and before `settings->Unload()` / `settings->Load()`. At this point:
+- `g_SkinInfo` still points to the master skin ✓
+- `g_localizeStrings` still contains the master language ✓
+- `CServiceBroker::GetGUI()->GetInfoManager()` still resolves against master profile ✓
 
 ---
 
-## 5. Pseudocode / Diff Sketch
+### Step 3 — Guard the `OnMessage` Flush Against Double-Execution
+
+`CApplication::OnMessage()` at line 3759 already sets `m_bInitializing = false` and flushes the queue when `GUI_MSG_UI_READY` arrives. After Step 1 the queue will already be empty and `m_bInitializing` already `false` for the login-screen path, so this code becomes a no-op. No change is required here — the existing guard `if (!m_deferredActions.empty())` naturally handles this. The normal-boot path (no login screen) is also unaffected because `FlushDeferredActionsNow()` is never called on that path.
+
+---
+
+### Step 4 — Gate `ReloadSkin` on Skin ID Change
+
+#### `xbmc/Application.cpp` — `OnMessage()` around line 3774
 
 ```diff
---- a/xbmc/Application.cpp
-+++ b/xbmc/Application.cpp
-@@ -FinalizeLoadProfile
-+  // Flush deferred queue in current (master) context before profile switch
-+  m_bInitializing = false;
-+  for (const auto& deferred : m_deferredActions)
-+    ExecuteXBMCAction(deferred.actionStr, deferred.item);
-+  m_deferredActions.clear();
-+
-   CProfileManager::GetInstance().LoadProfile(profileIndex);
--  m_bInitializing = false;
--  FlushDeferredActions();
-
-@@ -ReloadSkin call
--  ReloadSkin();
-+  const std::string newSkin = CProfileManager::GetInstance().GetCurrentProfile().GetSkin();
-+  if (newSkin != g_SkinInfo->ID())
-+    ReloadSkin();
+-      if (message.GetSenderId() == WINDOW_SETTINGS_PROFILES)
+-        g_application.ReloadSkin(false);
++      if (message.GetSenderId() == WINDOW_SETTINGS_PROFILES)
++      {
++        // Only reload the skin if the newly-active profile's skin differs from
++        // the currently-loaded skin.  Avoids redundant flash on same-skin switches.
++        const std::shared_ptr<CSettings> settings =
++            CServiceBroker::GetSettingsComponent()->GetSettings();
++        const std::string newSkinId = settings->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
++        if (!g_SkinInfo || newSkinId != g_SkinInfo->ID())
++          g_application.ReloadSkin(false);
++      }
 ```
+
+`settings->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN)` returns the value from the currently-loaded settings file, which is the new profile's settings by the time `GUI_MSG_UI_READY` is processed. `g_SkinInfo->ID()` is the skin that is currently rendering. If they differ, `ReloadSkin()` must be called; if they are the same, the reload is skipped.
+
+---
+
+## 5. Complete Change Summary
+
+| File | Location | Change |
+|------|----------|--------|
+| `xbmc/Application.h` | public section | Add `void FlushDeferredActionsNow();` declaration |
+| `xbmc/Application.cpp` | near line 3763 | Add `FlushDeferredActionsNow()` implementation |
+| `xbmc/profiles/ProfileManager.cpp` | line ~315, before `settings->Unload()` | Call `g_application.FlushDeferredActionsNow()` |
+| `xbmc/Application.cpp` | line 3774–3775 | Gate `ReloadSkin(false)` behind skin-ID comparison |
+
+No CMake changes required. No new headers. No platform guards. Total new code: ~20 lines across 4 touch points.
 
 ---
 
 ## 6. Edge Cases
 
 ### 6a. User Cancels Login
-If the user presses Back on the login screen, `FinalizeLoadProfile` is not called. `m_bInitializing` stays `true`. Deferred actions accumulate. On next profile-load attempt the flush fires. This is acceptable — same as pre-regression behaviour.
+Pressing Back on the login screen does not trigger `TMSG_LOADPROFILE` or `LoadProfile()`, so `FlushDeferredActionsNow()` is not called. `m_bInitializing` stays `true`. Deferred actions accumulate and will flush on the next `GUI_MSG_UI_READY` — either on the next login attempt or on normal shutdown recovery. This matches pre-regression behaviour.
 
 ### 6b. Multiple Profiles With the Same Skin
-Switching between two profiles that both use Estouchy should not fire `ReloadSkin`. The skin-ID comparison fix handles this correctly.
+`newSkinId == g_SkinInfo->ID()` → `ReloadSkin()` skipped → no flash. Correct.
 
 ### 6c. First Boot (No Login Screen)
-Normal path: `m_bInitializing = false` fires at line 3759 via `GUI_MSG_UI_READY`. The `FinalizeLoadProfile` changes are not reached. No impact.
+`FlushDeferredActionsNow()` is never called. `m_bInitializing = false` fires at line 3759 via `GUI_MSG_UI_READY` on the normal path. Deferred queue is flushed at lines 3763–3772 as before. Zero behaviour change.
 
-### 6d. Guest / Kiosk Profile
-A kiosk profile may have no custom skin. The skin-ID comparison defaults to master skin == profile skin → no `ReloadSkin`. Correct.
+### 6d. Guest / Kiosk Profile (No Custom Skin)
+Kiosk profile uses the same skin as master → `newSkinId == g_SkinInfo->ID()` → no reload. Correct.
 
-### 6e. Deferred Queue Contains `ReloadSkin` Action
-If boot fired a `ReloadSkin()` action that was deferred, it is now executed in the correct master-profile context (before the switch). The profile skin is then loaded if and only if it differs. The two `ReloadSkin` calls still fire sequentially, but now with the correct context for the first one and a valid reason (skin change) for the second.
+### 6e. Deferred Queue Contains a `ReloadSkin` Action
+A queued `ReloadSkin` action (e.g., fired by the master skin at startup) executes in master-profile context (before the switch). Then when `GUI_MSG_UI_READY` arrives, the skin-ID check determines whether a second `ReloadSkin` is needed. If the new profile's skin differs, exactly one more reload fires (justified). If same skin, no second reload. Net result: at most two `ReloadSkin` calls total and both are justified.
+
+### 6f. `LoadProfile` Error Path
+If `settings->Load()` returns `false` (line 325–328 in ProfileManager.cpp), `LoadProfile()` returns `false` before `FinalizeLoadProfile()` is called. By this point `FlushDeferredActionsNow()` has already run and `m_deferredActions` is empty, so no further action is needed. `m_bInitializing` is now `false`, which is correct — the failed load leaves Kodi partially initialised but further input should no longer be deferred.
+
+### 6g. Interaction with R3 (Item-Context Struct Upgrade)
+R3 changes `m_deferredActions` from `std::deque<std::string>` to `std::deque<DeferredAction>`. If R3 is applied first, update `FlushDeferredActionsNow()` to iterate over `DeferredAction` structs and pass `deferred.item` to `ExecuteXBMCAction`. The calling convention is otherwise identical.
 
 ---
 
 ## 7. Test Scenarios
 
 ### T1 — Login Screen → Profile Switch → Deferred Actions Execute in Master Context
-1. Configure Kodi with a login screen.
-2. During login-screen display, force a deferred action that references a master-profile `$INFO` token.
-3. Log in as profile 1 (different skin/language).
-4. Verify the deferred action was resolved in master-profile context, not profile-1 context.
+1. Configure Kodi with a login screen (Settings → Profiles → Show login screen at startup).
+2. Add a visible `<onload>PlayMedia($INFO[Profile.Name]-bg.mp4)</onload>` to the master skin's `LoginScreen.xml`.
+3. Boot Kodi and wait for the login screen.
+4. Log in as profile 1 which has a different profile name.
+5. **Expected:** The `PlayMedia` action resolves the `$INFO[Profile.Name]` token to the master profile's name (i.e., the name that was active at the time of deferral), **not** profile 1's name.
+6. Check the Kodi debug log for `Replaying deferred startup action` — it must appear before the `LoadProfile` context-switch log entries.
 
-### T2 — No Double `ReloadSkin` on LogOff
-1. Log in as any profile.
-2. Log off back to master.
-3. Verify `ReloadSkin()` fires at most once.
-4. Verify no double-flash in the UI.
+### T2 — No Double `ReloadSkin` on LogOff (Same Skin)
+1. Configure two profiles, both using `skin.estouchy`.
+2. Log in as profile 1.
+3. Log off back to master.
+4. **Expected:** `ReloadSkin()` fires zero times on logout (both profiles share the same skin ID).
+5. Verify in debug log: no `Loading skin` log entry during the logout sequence.
 
-### T3 — Single-Profile Setup (No Login Screen)
-1. Boot with no login screen.
-2. Verify `m_bInitializing` transitions to `false` via the normal `GUI_MSG_UI_READY` path.
-3. Verify deferred actions flush in the correct context.
-4. Verify no behaviour change from pre-regression.
-
-### T4 — Switch Between Same-Skin Profiles
-1. Create two profiles both using `skin.estouchy`.
+### T3 — Exactly One `ReloadSkin` on Profile Switch (Different Skins)
+1. Configure profile 1 with `skin.estouchy`, profile 2 with `skin.confluence`.
 2. Switch from profile 1 to profile 2.
-3. Verify `ReloadSkin()` is **not** called (skin IDs match).
+3. **Expected:** Exactly one `ReloadSkin()` call — confirmed by a single `Loading skin 'skin.confluence'` log entry.
 
-### T5 — Switch Between Different-Skin Profiles
-1. Create profile 1 (skin.estouchy) and profile 2 (skin.confluence).
-2. Switch.
-3. Verify `ReloadSkin()` IS called exactly once.
+### T4 — Single-Profile Setup (No Login Screen) Unaffected
+1. Boot with no login screen (default Kodi single-user setup).
+2. **Expected:** Deferred actions flush via the existing `GUI_MSG_UI_READY` path at Application.cpp:3763.
+3. Verify in debug log: `Replaying deferred startup action` entries appear, behaviour identical to pre-regression.
+
+### T5 — Cancelled Login Does Not Lose Deferred Actions
+1. Show the login screen.
+2. Press Back to cancel without logging in.
+3. Log in on the second attempt.
+4. **Expected:** All deferred actions from step 1 (pre-cancellation) are replayed correctly at step 3.
+
+### T6 — `LoadProfile` Failure Does Not Deadlock
+1. Simulate a settings-load failure for profile N (e.g., corrupt `guisettings.xml`).
+2. **Expected:** `FlushDeferredActionsNow()` already ran; Kodi is no longer in the `m_bInitializing` state; UI remains responsive.
 
 ---
 
@@ -259,10 +300,11 @@ If boot fired a `ReloadSkin()` action that was deferred, it is now executed in t
 
 | Risk | Likelihood | Impact | Mitigation |
 |------|-----------|--------|------------|
-| Flush before profile switch executes action in wrong skin context anyway | Low | Medium | Skin/language are still at master-profile settings at flush time; this is correct |
-| Discard approach silently loses valid boot actions | Medium | Medium | Prefer flush approach; only discard if actions are provably master-skin-only |
-| Skin-ID comparison misses skin parameter changes | Low | Low | Extend comparison to include skin parameters if needed |
-| `m_firstRealProfileLoad` flag never reset if profile load fails | Low | Low | Reset flag in `LoadProfile` error path |
+| `FlushDeferredActionsNow()` called on non-login path by accident | Very Low | Low | The call site is inside the `if (index >= m_profiles.size())` guard block in `LoadProfile` — only reachable on actual profile switches |
+| Deferred actions execute before PVR/service restart in `FinalizeLoadProfile` | Low | Medium | Deferred actions fired at login screen are skin-level UI actions (PlayMedia, ActivateWindow), not service-dependent library calls; PVR is a separate service |
+| Skin-ID comparison uses stale cached value | Very Low | Low | `settings->GetString(SETTING_LOOKANDFEEL_SKIN)` reads from the live settings object which is already loaded for the new profile at flush time |
+| `g_SkinInfo` null when ReloadSkin guard executes | Very Low | None | Added `!g_SkinInfo` null check in the guard ensures safe fallback to calling `ReloadSkin()` |
+| R3 not yet applied — `FlushDeferredActionsNow()` uses string-only queue | None | None | Functionally correct without R3; item context is a separate improvement |
 
 ### Overall Risk
-**Medium.** The profile lifecycle is more complex than the other regressions. The ordering of `m_bInitializing = false` relative to `LoadProfile()` is the core fix and carries low risk. The `ReloadSkin` guard is a quality-of-life improvement; the skin-ID comparison approach is clean and self-contained.
+**Low.** The fix is precisely targeted: one new public method in `CApplication`, one call site before `settings->Load()` in `CProfileManager::LoadProfile()`, and one conditional guard around the existing `ReloadSkin()` call. No architecture changes. The normal-boot path is completely untouched.
