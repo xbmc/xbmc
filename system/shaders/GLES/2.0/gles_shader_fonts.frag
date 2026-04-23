@@ -26,6 +26,8 @@ varying vec4 m_cord0;
 varying lowp vec4 m_colour;
 uniform float m_sdrPeak;
 
+const vec3 kLuma = vec3(0.2126, 0.7152, 0.0722);
+
 void main ()
 {
   vec4 rgb;
@@ -39,7 +41,9 @@ void main ()
 #endif
 
 #if defined(KODI_TRANSFER_PQ)
-  rgb.rgb *= m_sdrPeak;
+  float luma = dot(rgb.rgb, kLuma);
+  vec3 chroma = rgb.rgb - luma;
+  rgb.rgb = (luma * m_sdrPeak) + chroma;
 #endif
 
   gl_FragColor = rgb;
