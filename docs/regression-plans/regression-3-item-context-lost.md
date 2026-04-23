@@ -10,44 +10,53 @@
 
 ### The Deferral Bug
 
-A PR added early-boot deferral logic to `CApplication::ExecuteXBMCAction` guarded by `m_bInitializing == true`. The current code resolves `$INFO` labels **before** the deferral check:
+A PR added early-boot deferral logic to `CApplication::ExecuteXBMCAction` guarded by `m_bInitializing == true`. In the actual code, label resolution via `GetItemLabel`/`GetLabel` occurs **before** the deferral check — so the deferred queue stores the **already-resolved** action string, not the original template:
 
 ```cpp
-// Application.cpp — actual current code
+// Application.cpp — actual code (BUGGY)
 bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPtr &item)
 {
-  const std::string in_actionStr(actionStr);
+  const std::string in_actionStr(actionStr);   // ← original unresolved string saved here
+
+  // BUG: resolution happens at boot time when GUI info context is not fully ready
   if (item)
-    actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetItemLabel(actionStr, item.get()); // ← eager resolution WITH item
+    actionStr = GetItemLabel(actionStr, item.get());  // may return empty/wrong at boot
   else
-    actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetLabel(actionStr);  // ← eager resolution, no item
+    actionStr = GetLabel(actionStr);                  // resolves against boot-time context
 
   if (m_bInitializing) {
-    m_deferredActions.push_back(actionStr);  // ← stores RESOLVED string; item is discarded after use
-    return true;
+    m_deferredActions.push_back(actionStr);  // ← BUG: stores baked (possibly wrong) string;
+    return true;                             //         in_actionStr and item both lost
   }
   // … rest of function
 }
 
-// At flush time:
-for (const auto& action : pending)
-  ExecuteXBMCAction(action, nullptr);  // ← item is nullptr; resolved string is re-processed
+// Later, when m_bInitializing becomes false:
+for (const auto& action : m_deferredActions)
+  ExecuteXBMCAction(action, nullptr);  // re-runs GetLabel on already-baked string; item = nullptr
 ```
 
-The item **is** used for `GetItemLabel` at deferral time — but both the original unresolved action string (`in_actionStr`) and the item are discarded after the resolved string is pushed. This creates a subtler bug than "item silently dropped".
+The two compounding bugs are:
 
-### Why the Item Matters
+1. **Resolution at boot time** — `GetItemLabel`/`GetLabel` are called while GUI info context (skin, window state, infoManager) may not be fully initialised, potentially returning empty or incorrect strings for `$INFO[ListItem.*]` tokens.
+2. **Original string discarded** — `in_actionStr` (the raw unresolved template) is never stored; the partially-resolved string is baked into the queue, so correct re-resolution at replay time is impossible even when GUI context is fully ready.
 
-`ExecuteXBMCAction` uses `item` at **Application.cpp:3971–3974**:
+### Why the Item and the Original String Both Matter
+
+`ExecuteXBMCAction` resolves `$INFO[ListItem.*]` tokens at **Application.cpp:3984–3987** (before the deferral guard at 3990):
 
 ```cpp
+const std::string in_actionStr(actionStr);   // original template
 if (item)
   actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetItemLabel(actionStr, item.get());
 else
   actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetLabel(actionStr);
+// ← deferral check follows here at 3990
 ```
 
-When `item` is present, `GetItemLabel` resolves `$INFO[ListItem.*]` tokens against the specific list item's properties (e.g., `ListItem.FileNameAndPath`, `ListItem.Property(node.target)`, PVR tags, artwork URLs). When `item` is `nullptr`, `GetLabel` resolves these tokens against the _currently focused_ item in the GUI — which may be different, empty, or nonexistent at replay time.
+When `item` is present, `GetItemLabel` resolves `$INFO[ListItem.*]` tokens against the specific list item's properties (e.g., `ListItem.FileNameAndPath`, `ListItem.Property(node.target)`, PVR tags, artwork URLs). At boot time the GUI info manager may not yet be fully initialised, so `GetItemLabel` can return empty strings or wrong values for those tokens. The resulting partially-resolved string is then baked into `m_deferredActions` and replayed verbatim — there is no second chance to use the correct item context.
+
+At replay (line 3770), `ExecuteXBMCAction(action, nullptr)` is called; `GetLabel(action)` is invoked again on the already-baked string. If no `$INFO[]` tokens remain, `GetLabel` returns the string unchanged — correct if the first resolution succeeded, silently wrong if it did not.
 
 ### Key File:Line References
 
@@ -55,9 +64,11 @@ When `item` is present, `GetItemLabel` resolves `$INFO[ListItem.*]` tokens again
 |----------|-------------|
 | `xbmc/Application.h:433` | `bool m_bInitializing = true;` — flag that guards deferral |
 | `xbmc/Application.h:290` | `bool ExecuteXBMCAction(std::string action, const CGUIListItemPtr &item = NULL);` |
-| `xbmc/Application.cpp:3956–3958` | `GUI_MSG_EXECUTE` handler: `ExecuteXBMCAction(message.GetStringParam(), message.GetItem())` |
-| `xbmc/Application.cpp:3964–4013` | Full `ExecuteXBMCAction` body |
-| `xbmc/Application.cpp:3971–3974` | Item-conditional label resolution — the sensitive point |
+| `xbmc/Application.cpp:3969–3971` | `GUI_MSG_EXECUTE` handler: `ExecuteXBMCAction(message.GetStringParam(), message.GetItem())` |
+| `xbmc/Application.cpp:3977–4013` | Full `ExecuteXBMCAction` body |
+| `xbmc/Application.cpp:3983` | `const std::string in_actionStr(actionStr);` — original unresolved string |
+| `xbmc/Application.cpp:3984–3987` | Item-conditional label resolution — occurs **before** the deferral guard |
+| `xbmc/Application.cpp:3990–3994` | Deferral check — stores already-resolved `actionStr`, losing `in_actionStr` and `item` |
 | `xbmc/Application.cpp:3759` | `m_bInitializing = false;` — end of boot |
 | `xbmc/guilib/GUIAction.cpp:41` | `CGUIMessage msg(GUI_MSG_EXECUTE, controlID, parentID, 0, 0, item);` — item attached to message |
 | `xbmc/listproviders/DirectoryProvider.cpp:360–376` | `OnClick` resolves node.target, creates `GUI_MSG_EXECUTE` |
@@ -142,9 +153,9 @@ The fix stores `{original_actionStr, item}` pairs (the **unresolved** string plu
 
 ## 4. Candidate Fix Approaches
 
-### Approach A — Store `{string, item}` Pairs (Recommended)
+### Approach A — Store `{original string, item}` Pairs (Recommended)
 
-Change `m_deferredActions` from `std::deque<std::string>` to `std::deque<DeferredAction>` (a struct holding the **unresolved** action string and the item pointer). Also move the label resolution block in `ExecuteXBMCAction` to *after* the deferral check, so resolution only runs when `CGUIInfoManager` is ready. On replay, call `ExecuteXBMCAction(deferred.actionStr, deferred.item)`, which triggers a fresh resolution with the original item.
+Change `m_deferredActions` from `std::deque<std::string>` to `std::deque<DeferredAction>` where each entry holds the **original unresolved** action string (`in_actionStr`) and the item pointer. On replay, call `ExecuteXBMCAction(deferred.actionStr, deferred.item)` — resolution then happens when GUI services are fully ready.
 
 **Pros:**
 - Minimal change; preserves all lazy-resolution semantics.
@@ -190,6 +201,12 @@ If `item != nullptr`, bypass the deferral and execute immediately even during `m
 
 Instead of `std::deque<std::string>`, keep a `std::deque<CGUIMessage>`. When deferring, push the full message. On replay, re-dispatch via `CApplication::OnMessage`.
 
+**Pros:** Perfect fidelity — all message fields (senderID, controlID, params, item) are preserved.
+Future-proof: any new fields added to GUI_MSG_EXECUTE are automatically preserved.
+
+**Cons:**
+- CGUIMessage is not cheaply copyable (vector of strings, shared_ptr).
+
 **Pros:**
 - Perfect fidelity — all message fields (senderID, controlID, params, item) are preserved.
 - Future-proof: any new fields added to GUI_MSG_EXECUTE are automatically preserved.
@@ -212,14 +229,14 @@ Approach A is the correct surgical fix. It preserves all existing semantics, is 
 **1. Add the deferred action type and member:**
 
 ```cpp
-// Before (BUGGY):
+// Before (actual code):
 std::deque<std::string> m_deferredActions;
 
 // After (FIXED):
 // In the private section, near m_bInitializing:
 struct DeferredAction
 {
-  std::string actionStr;
+  std::string actionStr;   // original unresolved string (in_actionStr, not post-GetItemLabel)
   CGUIListItemPtr item;
 };
 std::deque<DeferredAction> m_deferredActions;
@@ -230,17 +247,17 @@ std::deque<DeferredAction> m_deferredActions;
 **2. Move the deferral check to before label resolution, and store the unresolved string + item:**
 
 ```cpp
-// Before (BUGGY):
+// Before (actual code — BUGGY):
 bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPtr &item)
 {
   const std::string in_actionStr(actionStr);
   if (item)
-    actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetItemLabel(actionStr, item.get());
+    actionStr = GetItemLabel(actionStr, item.get());  // ← resolves at boot (context not ready)
   else
-    actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetLabel(actionStr);
+    actionStr = GetLabel(actionStr);
 
   if (m_bInitializing) {
-    m_deferredActions.push_back(actionStr);   // ← stores potentially empty/wrong resolved string
+    m_deferredActions.push_back(actionStr);   // ← stores baked string; in_actionStr and item lost
     return true;
   }
   // ...
@@ -249,17 +266,19 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPt
 // After (FIXED):
 bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPtr &item)
 {
+  const std::string in_actionStr(actionStr);
+
   if (m_bInitializing) {
-    // Store unresolved action string and item; resolution deferred to flush time
-    // when CGUIInfoManager is fully initialised.
-    m_deferredActions.push_back({actionStr, item});  // ← preserves original string + item
+    // Store original string + item; resolution deferred to flush time when GUI context is ready.
+    m_deferredActions.push_back({in_actionStr, item});
     return true;
   }
-  // Resolve labels NOW (info manager is ready at flush time and for normal execution)
+
+  // Resolution now only happens for immediate (non-deferred) execution:
   if (item)
-    actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetItemLabel(actionStr, item.get());
+    actionStr = GetItemLabel(actionStr, item.get());
   else
-    actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetLabel(actionStr);
+    actionStr = GetLabel(actionStr);
   // ...
 }
 ```
@@ -290,31 +309,33 @@ m_deferredActions.clear();
 @@ -430,7 +430,14 @@ private:
    bool m_bInitializing = true;
    bool m_bPlatformDirectories = true;
- 
+
 -  std::deque<std::string> m_deferredActions;
 +  struct DeferredAction
 +  {
-+    std::string actionStr;
++    std::string actionStr;   // original unresolved string (in_actionStr)
 +    CGUIListItemPtr item;
 +  };
 +  std::deque<DeferredAction> m_deferredActions;
 
 --- a/xbmc/Application.cpp
 +++ b/xbmc/Application.cpp
-@@ -ExecuteXBMCAction — move deferral check BEFORE label resolution
-+  if (m_bInitializing) {
-+    // Store unresolved action string and item; resolution deferred to flush time.
-+    m_deferredActions.push_back({actionStr, item});
+@@ -ExecuteXBMCAction — move deferral check before label resolution
++  if (m_bInitializing)
++  {
++    m_deferredActions.push_back({in_actionStr, item});  // ← defer with original string + item
 +    return true;
 +  }
-+  // Label resolution now runs only when CGUIInfoManager is ready:
-   const std::string in_actionStr(actionStr);
++
+   // label resolution now only for immediate (non-deferred) execution:
    if (item)
-     actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetItemLabel(actionStr, item.get());
+     actionStr = GetItemLabel(actionStr, item.get());
    else
-     actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetLabel(actionStr);
--  if (m_bInitializing) {
--    m_deferredActions.push_back(actionStr);
+     actionStr = GetLabel(actionStr);
+
+-  if (m_bInitializing)
+-  {
+-    m_deferredActions.push_back(actionStr);   // ← was: baked string, item lost
 -    return true;
 -  }
 
@@ -322,7 +343,7 @@ m_deferredActions.clear();
 -  for (const auto& action : m_deferredActions)
 -    ExecuteXBMCAction(action);
 +  for (const auto& deferred : m_deferredActions)
-+    ExecuteXBMCAction(deferred.actionStr, deferred.item);
++    ExecuteXBMCAction(deferred.actionStr, deferred.item);  // resolves at flush time
    m_deferredActions.clear();
 ```
 

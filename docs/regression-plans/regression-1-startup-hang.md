@@ -192,13 +192,6 @@ The diff below shows the full function head after both R1 and R3 are applied. Th
    // ... rest unchanged
 ```
 
-> **R1 only (without R3):** If R3 is not yet applied, the label resolution block remains before the deferral check and `push_back` uses the resolved string type. Replace the `push_back` line with:
-> ```cpp
-> m_deferredActions.push_back(actionStr);  // resolved string (R3 not yet applied)
-> return false;  // R4 fix still applies
-> ```
-> The boot-critical check still works correctly on the resolved string because window navigation builtins have no `$INFO` tokens.
-
 No changes to `Application.h` are required for this fix alone (though R3 fix recommends upgrading `m_deferredActions` to `std::deque<DeferredAction>`; these two fixes compose cleanly).
 
 ---
