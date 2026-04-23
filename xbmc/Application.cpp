@@ -3758,6 +3758,19 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
         m_bInitializing = false;
 
+        // replay any builtin actions that were deferred because stage-3 services
+        // were not yet ready when they first arrived (e.g. PlayMedia from skin <onload>)
+        if (!m_deferredActions.empty())
+        {
+          std::deque<std::string> pending;
+          pending.swap(m_deferredActions);
+          for (const auto& action : pending)
+          {
+            CLog::LogF(LOGDEBUG, "Replaying deferred startup action '%s'", action.c_str());
+            ExecuteXBMCAction(action, nullptr);
+          }
+        }
+
         if (message.GetSenderId() == WINDOW_SETTINGS_PROFILES)
           g_application.ReloadSkin(false);
       }
@@ -3972,6 +3985,14 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPt
     actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetItemLabel(actionStr, item.get());
   else
     actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetLabel(actionStr);
+
+  // defer any action that arrives before stage-3 services (CPlayerCoreFactory etc.) are ready
+  if (m_bInitializing)
+  {
+    CLog::LogF(LOGDEBUG, "Deferring action '%s' until init completes", actionStr.c_str());
+    m_deferredActions.push_back(actionStr);
+    return true;
+  }
 
   // user has asked for something to be executed
   if (CBuiltins::GetInstance().HasCommand(actionStr))
