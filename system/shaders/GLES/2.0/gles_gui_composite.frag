@@ -27,6 +27,12 @@ void main()
 {
   vec4 gui = texture2D(u_samp, v_tex);
 
+  // Skip pixels the GUI never wrote to. Blend unit would still preserve video
+  // bit-exactly via DST*(1-0)+garbage*0=DST, but discard makes it structural
+  // and avoids the tone-map math, BO read and BO write for those pixels.
+  if (gui.a == 0.0)
+    discard;
+
   // sRGB -> linear via LUT (replaces pow(gui.rgb, 2.2))
   vec3 linear = vec3(
     texture2D(u_lutDegamma, vec2(gui.r, 0.5)).r,
