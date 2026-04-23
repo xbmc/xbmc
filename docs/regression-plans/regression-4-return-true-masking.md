@@ -149,6 +149,8 @@ Return a new enum value or out-param `ActionState { kExecuted, kDeferred, kFaile
 
 This is a **one-line change**. All GUI-path callers (`CGUIAction::ExecuteActions`, `CApplication::OnMessage`, etc.) discard the return value, so they are unaffected. Only `LookupSymAndUnicode` checks the return value, and the new `false` correctly tells it "the action was not handled — pass the key event through".
 
+> **Interaction with R1 (boot-critical window navigation):** When R1 is also applied, boot-critical actions (`ActivateWindow`, `ReplaceWindow`, `FullscreenWindow`) bypass the deferral block entirely and fall through to immediate execution. They return whatever value the main function body returns — typically `true` for successful execution. This is correct: the Nyxboard `LookupSymAndUnicode` path does not normally fire `ActivateWindow` as a hardware-key action, so there is no conflict. The `return false` in R4 only covers the non-critical deferral path.
+
 ### Double-Handling Analysis
 
 When `false` is returned during boot:

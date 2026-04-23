@@ -10,23 +10,31 @@
 
 ### The Deferral Bug
 
-A PR added early-boot deferral logic to `CApplication::ExecuteXBMCAction` guarded by `m_bInitializing == true`. The hypothetical (or introduced) change looks like:
+A PR added early-boot deferral logic to `CApplication::ExecuteXBMCAction` guarded by `m_bInitializing == true`. The current code resolves `$INFO` labels **before** the deferral check:
 
 ```cpp
-// Application.cpp — BUGGY version introduced by the PR
+// Application.cpp — actual current code
 bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPtr &item)
 {
+  const std::string in_actionStr(actionStr);
+  if (item)
+    actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetItemLabel(actionStr, item.get()); // ← eager resolution WITH item
+  else
+    actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetLabel(actionStr);  // ← eager resolution, no item
+
   if (m_bInitializing) {
-    m_deferredActions.push_back(actionStr);  // ← BUG: item is silently dropped
+    m_deferredActions.push_back(actionStr);  // ← stores RESOLVED string; item is discarded after use
     return true;
   }
   // … rest of function
 }
 
-// Later, when m_bInitializing becomes false:
-for (const auto& action : m_deferredActions)
-  ExecuteXBMCAction(action);  // ← item = nullptr (default)
+// At flush time:
+for (const auto& action : pending)
+  ExecuteXBMCAction(action, nullptr);  // ← item is nullptr; resolved string is re-processed
 ```
+
+The item **is** used for `GetItemLabel` at deferral time — but both the original unresolved action string (`in_actionStr`) and the item are discarded after the resolved string is pushed. This creates a subtler bug than "item silently dropped".
 
 ### Why the Item Matters
 
@@ -98,6 +106,8 @@ CGUIAction::ExecuteActions(controlID, parentID, item)
 
 This is the **primary regression path** — action strings like `PlayMedia($INFO[ListItem.FileNameAndPath])` or `ActivateWindow(MyVideoNav,$INFO[ListItem.Property(node.target_url)])` depend on item context for resolution at line 3972.
 
+> **Current vs. fixed code order:** In the current (buggy) code, `GetItemLabel`/`GetLabel` runs *before* the `m_bInitializing` check, so the item is consumed but the resolved result may be empty/wrong during boot. The proposed fix moves the label resolution block to *after* the deferral check, so resolution only happens when `CGUIInfoManager` is fully initialised (at flush time and during normal execution).
+
 ---
 
 ## 3. What Item Properties Are Used After the Deferral Point
@@ -117,13 +127,24 @@ All property resolution happens at `Application.cpp:3971–3974`, **before** any
 
 Any action string that contains `$INFO[ListItem.*]` will silently produce wrong output when replayed without the item.
 
+**The real regression with the current eager-resolution code:** During boot (`m_bInitializing == true`), `CGUIInfoManager` is not yet fully initialised. `GetItemLabel` and `GetLabel` may return empty strings or stale values for:
+- Window or skin properties (`Window.Property(...)`, `Skin.String(...)`) — the window may not be fully loaded
+- Player and PVR info tokens (`Player.HasMedia`, `ListItem.PVRChannelNumber`) — PVR/player managers not started
+- Library metadata tokens — the database is not yet open
+
+For item-level primitive properties (`CFileItem::GetPath()`, raw label, basic art) that are stored directly on the `CFileItem`, resolution may succeed. But for properties that require an active info manager query, they resolve to empty at deferral time.
+
+At flush time the item is gone (the flush loop calls `ExecuteXBMCAction(action, nullptr)`), so the info manager — now fully initialised — cannot be asked to retry the resolution with the original item.
+
+The fix stores `{original_actionStr, item}` pairs (the **unresolved** string plus the item pointer). At flush time `ExecuteXBMCAction(deferred.actionStr, deferred.item)` is called, triggering a fresh resolution when the info manager is ready and the item is still available via the stored `shared_ptr`.
+
 ---
 
 ## 4. Candidate Fix Approaches
 
 ### Approach A — Store `{string, item}` Pairs (Recommended)
 
-Change `m_deferredActions` from `std::vector<std::string>` to `std::vector<std::pair<std::string, CGUIListItemPtr>>`. Store both the raw action string **and** the item pointer. On replay, call `ExecuteXBMCAction(pair.first, pair.second)`.
+Change `m_deferredActions` from `std::deque<std::string>` to `std::deque<DeferredAction>` (a struct holding the **unresolved** action string and the item pointer). Also move the label resolution block in `ExecuteXBMCAction` to *after* the deferral check, so resolution only runs when `CGUIInfoManager` is ready. On replay, call `ExecuteXBMCAction(deferred.actionStr, deferred.item)`, which triggers a fresh resolution with the original item.
 
 **Pros:**
 - Minimal change; preserves all lazy-resolution semantics.
@@ -135,17 +156,17 @@ Change `m_deferredActions` from `std::vector<std::string>` to `std::vector<std::
 
 ---
 
-### Approach B — Resolve Labels Eagerly at Deferral Time
+### Approach B — Resolve Labels Eagerly at Deferral Time (current behaviour)
 
-At the deferral point, immediately call `GetItemLabel` / `GetLabel` to resolve `$INFO[...]` tokens, then store the fully-resolved string. On replay, no item is needed.
+At the deferral point, immediately call `GetItemLabel` / `GetLabel` to resolve `$INFO[...]` tokens, then store the fully-resolved string. On replay, no item is needed. **This is already what the current code does** — the resolution block runs before the `m_bInitializing` check.
 
 **Pros:**
 - No item lifetime management.
-- Simple: `m_deferredActions` stays `std::vector<std::string>`.
+- Simple: `m_deferredActions` stays `std::deque<std::string>`.
 
 **Cons:**
-- `CGUIInfoManager` may not be fully initialised when `m_bInitializing == true`, causing GetItemLabel to return empty strings anyway.
-- Loses true lazy-resolution; if the resolved string depends on state that changes between boot and replay, the value is stale.
+- `CGUIInfoManager` is not fully initialised when `m_bInitializing == true`, causing `GetItemLabel` to return empty strings for most tokens.
+- Loses true lazy-resolution; the resolved (empty/wrong) string is stored and re-executed at flush time.
 - Does not fix the PVR tag / artwork cases that use item data not expressible as a label token.
 
 ---
@@ -167,7 +188,7 @@ If `item != nullptr`, bypass the deferral and execute immediately even during `m
 
 ### Approach D — Store the Full CGUIMessage
 
-Instead of `std::vector<std::string>`, keep a `std::vector<CGUIMessage>`. When deferring, push the full message. On replay, re-dispatch via `CApplication::OnMessage`.
+Instead of `std::deque<std::string>`, keep a `std::deque<CGUIMessage>`. When deferring, push the full message. On replay, re-dispatch via `CApplication::OnMessage`.
 
 **Pros:**
 - Perfect fidelity — all message fields (senderID, controlID, params, item) are preserved.
@@ -192,7 +213,7 @@ Approach A is the correct surgical fix. It preserves all existing semantics, is 
 
 ```cpp
 // Before (BUGGY):
-std::vector<std::string> m_deferredActions;
+std::deque<std::string> m_deferredActions;
 
 // After (FIXED):
 // In the private section, near m_bInitializing:
@@ -201,19 +222,25 @@ struct DeferredAction
   std::string actionStr;
   CGUIListItemPtr item;
 };
-std::vector<DeferredAction> m_deferredActions;
+std::deque<DeferredAction> m_deferredActions;
 ```
 
 #### `xbmc/Application.cpp`
 
-**2. Change the deferral push in `ExecuteXBMCAction`:**
+**2. Move the deferral check to before label resolution, and store the unresolved string + item:**
 
 ```cpp
 // Before (BUGGY):
 bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPtr &item)
 {
+  const std::string in_actionStr(actionStr);
+  if (item)
+    actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetItemLabel(actionStr, item.get());
+  else
+    actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetLabel(actionStr);
+
   if (m_bInitializing) {
-    m_deferredActions.push_back(actionStr);   // ← DROPS item
+    m_deferredActions.push_back(actionStr);   // ← stores potentially empty/wrong resolved string
     return true;
   }
   // ...
@@ -223,12 +250,21 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPt
 bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPtr &item)
 {
   if (m_bInitializing) {
-    m_deferredActions.push_back({actionStr, item});  // ← preserves item
+    // Store unresolved action string and item; resolution deferred to flush time
+    // when CGUIInfoManager is fully initialised.
+    m_deferredActions.push_back({actionStr, item});  // ← preserves original string + item
     return true;
   }
+  // Resolve labels NOW (info manager is ready at flush time and for normal execution)
+  if (item)
+    actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetItemLabel(actionStr, item.get());
+  else
+    actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetLabel(actionStr);
   // ...
 }
 ```
+
+**Note:** The fix also **moves the label resolution block** to after the deferral check — ensuring resolution only runs when `CGUIInfoManager` is fully initialised.
 
 **3. Change the replay loop (wherever deferred actions are flushed):**
 
@@ -255,19 +291,32 @@ m_deferredActions.clear();
    bool m_bInitializing = true;
    bool m_bPlatformDirectories = true;
  
--  std::vector<std::string> m_deferredActions;
+-  std::deque<std::string> m_deferredActions;
 +  struct DeferredAction
 +  {
 +    std::string actionStr;
 +    CGUIListItemPtr item;
 +  };
-+  std::vector<DeferredAction> m_deferredActions;
++  std::deque<DeferredAction> m_deferredActions;
 
 --- a/xbmc/Application.cpp
 +++ b/xbmc/Application.cpp
-@@ -ExecuteXBMCAction deferral point
--    m_deferredActions.push_back(actionStr);
+@@ -ExecuteXBMCAction — move deferral check BEFORE label resolution
++  if (m_bInitializing) {
++    // Store unresolved action string and item; resolution deferred to flush time.
 +    m_deferredActions.push_back({actionStr, item});
++    return true;
++  }
++  // Label resolution now runs only when CGUIInfoManager is ready:
+   const std::string in_actionStr(actionStr);
+   if (item)
+     actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetItemLabel(actionStr, item.get());
+   else
+     actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetLabel(actionStr);
+-  if (m_bInitializing) {
+-    m_deferredActions.push_back(actionStr);
+-    return true;
+-  }
 
 @@ -replay flush
 -  for (const auto& action : m_deferredActions)
@@ -282,14 +331,16 @@ m_deferredActions.clear();
 ## 7. Edge Cases
 
 ### 7a. Item Is a Plugin Item (`plugin://`)
-- Plugin items carry their resolved plugin URL in `GetPath()`.  
-- If `actionStr` contains `$INFO[ListItem.FileNameAndPath]`, it resolves to `plugin://...` — **must** be resolved with item context.  
-- Without the item, `GetLabel()` would return the _focused_ item's path or empty, silently playing/navigating to the wrong plugin.
+- Plugin items carry their resolved plugin URL in `GetPath()`.
+- With the current (buggy) eager resolution, `GetItemLabel` is called at deferral time during boot when `CGUIInfoManager` may not be ready, potentially returning empty.
+- With the fix, resolution is deferred: `GetItemLabel` is called at flush time when the info manager is fully initialised and the item's `GetPath()` resolves correctly to `plugin://...`.
+- Without the fix, `GetLabel()` at flush time would return the _focused_ item's path or empty, silently playing/navigating to the wrong plugin.
 
 ### 7b. Item Has PVR Tags
-- PVR items store channel, recording, EPG, and timer tags.  
-- Actions like `PlayPVRChannelOnLastActivePlayer(...)` or `PVR.SearchMissingChannelIcons` with `$INFO[ListItem.PVRChannelName]` need the PVR item context.  
-- At replay time (`m_bInitializing == false`), the PVR manager is up, but the PVR info tag is on the _original_ item — if item is dropped, resolution falls back to the currently focused item in the PVR guide, which may be completely different.
+- PVR items store channel, recording, EPG, and timer tags.
+- With the current (buggy) eager resolution at boot time, PVR info tokens like `$INFO[ListItem.PVRChannelName]` may return empty because PVR managers are not yet started.
+- With the fix, resolution is deferred to flush time when both the PVR manager is up **and** the original PVR item is available via the stored `shared_ptr`.
+- Without the fix, any PVR property that goes through the info manager resolves to empty at deferral time and remains wrong at flush time (since the item is also gone).
 
 ### 7c. Item Has Custom `node.target` / `node.target_url`
 - `DirectoryProvider::OnClick` reads these at click time and bakes them into the `execute` string via `GetExecutePath`.  
@@ -365,10 +416,10 @@ m_deferredActions.clear();
 | Stored item mutated between defer and replay | Low | Medium | `shared_ptr` copies share state; if caller modifies the underlying CFileItem, replay uses modified state. Acceptable — reflects reality. |
 | Increased memory usage during boot | Low | Low | Only items clicked during `m_bInitializing` window are retained. Boot is fast; few items deferred in practice. |
 | `CGUIListItemPtr` not thread-safe to access from replay thread | Medium | High | Ensure replay always happens on the GUI thread (same thread as original defer). If the flush loop runs on a non-GUI thread, add a guard. |
-| Ordering of deferred actions | Low | Medium | `std::vector` preserves insertion order; FIFO replay is correct. |
+| Ordering of deferred actions | Low | Medium | `std::deque` preserves insertion order; FIFO replay is correct. |
 | Approach C (skip deferral for item-bearing actions) causes crash if services not ready | High (if chosen) | High | Approach A avoids this entirely by always deferring and replaying in order. |
 | `DeferredAction` struct ABI break if other TUs cache the type | None | None | `DeferredAction` is private to `CApplication`. |
 | Pre-baked strings in DirectoryProvider already correct | Verified | None | Node.target and node.target_url are resolved before `GUI_MSG_EXECUTE`; no item needed at replay for that path. |
 
 ### Overall Risk of the Fix (Approach A)
-**Low.** The change is surgical: two lines changed in `.cpp`, one struct + one field change in `.h`. No new threading, no new lifetime management beyond what `shared_ptr` already provides. The fix restores the original contract: "replay an action exactly as if the user had clicked during normal operation."
+**Low.** The change is surgical: the label resolution block is moved below the deferral check in `.cpp`, and one struct + one field change in `.h`. The deferral push stores `{actionStr, item}` instead of a resolved string. No new threading, no new lifetime management beyond what `shared_ptr` already provides. The fix restores the original contract: "replay an action exactly as if the user had clicked during normal operation."
