@@ -168,7 +168,7 @@ Before entering the spin-wait for `GUI_MSG_UI_READY`, flush the deferred queue. 
    // ... rest unchanged
 ```
 
-No changes to `Application.h` are required for this fix alone (though R3 fix recommends upgrading `m_deferredActions` to `vector<DeferredAction>`; these two fixes compose cleanly).
+No changes to `Application.h` are required for this fix alone (though R3 fix recommends upgrading `m_deferredActions` to `std::deque<DeferredAction>`; these two fixes compose cleanly).
 
 ---
 

@@ -160,7 +160,7 @@ At the deferral point, immediately call `GetItemLabel` / `GetLabel` to resolve `
 
 **Pros:**
 - No item lifetime management.
-- Simple: `m_deferredActions` stays `std::vector<std::string>`.
+- Simple: `m_deferredActions` stays `std::deque<std::string>`.
 
 **Cons:**
 - `CGUIInfoManager` may not be fully initialised when `m_bInitializing == true`, causing GetItemLabel to return empty strings anyway.
@@ -186,7 +186,13 @@ If `item != nullptr`, bypass the deferral and execute immediately even during `m
 
 ### Approach D — Store the Full CGUIMessage
 
-Instead of `std::vector<std::string>`, keep a `std::vector<CGUIMessage>`. When deferring, push the full message. On replay, re-dispatch via `CApplication::OnMessage`.
+Instead of `std::deque<std::string>`, keep a `std::deque<CGUIMessage>`. When deferring, push the full message. On replay, re-dispatch via `CApplication::OnMessage`.
+
+**Pros:** Perfect fidelity — all message fields (senderID, controlID, params, item) are preserved.
+Future-proof: any new fields added to GUI_MSG_EXECUTE are automatically preserved.
+
+**Cons:**
+- CGUIMessage is not cheaply copyable (vector of strings, shared_ptr).
 
 **Pros:**
 - Perfect fidelity — all message fields (senderID, controlID, params, item) are preserved.
@@ -414,7 +420,7 @@ m_deferredActions.clear();
 | Stored item mutated between defer and replay | Low | Medium | `shared_ptr` copies share state; if caller modifies the underlying CFileItem, replay uses modified state. Acceptable — reflects reality. |
 | Increased memory usage during boot | Low | Low | Only items clicked during `m_bInitializing` window are retained. Boot is fast; few items deferred in practice. |
 | `CGUIListItemPtr` not thread-safe to access from replay thread | Medium | High | Ensure replay always happens on the GUI thread (same thread as original defer). If the flush loop runs on a non-GUI thread, add a guard. |
-| Ordering of deferred actions | Low | Medium | `std::vector` preserves insertion order; FIFO replay is correct. |
+| Ordering of deferred actions | Low | Medium | `std::deque` preserves insertion order; FIFO replay is correct. |
 | Approach C (skip deferral for item-bearing actions) causes crash if services not ready | High (if chosen) | High | Approach A avoids this entirely by always deferring and replaying in order. |
 | `DeferredAction` struct ABI break if other TUs cache the type | None | None | `DeferredAction` is private to `CApplication`. |
 | Pre-baked strings in DirectoryProvider already correct | Verified | None | Node.target and node.target_url are resolved before `GUI_MSG_EXECUTE`; no item needed at replay for that path. |
