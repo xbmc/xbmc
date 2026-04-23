@@ -10,18 +10,27 @@
 
 ### The Deferral Bug
 
-`CApplication::ExecuteXBMCAction` returns `true` from the deferral branch:
+`CApplication::ExecuteXBMCAction` returns `true` from the deferral branch. In the actual code, the `return true` is at **Application.cpp:3994** (confirmed as of current Leia HEAD — this fix has **not yet been applied**):
 
 ```cpp
+// Application.cpp — actual code at 3977–3995 (UNFIXED)
 bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPtr &item)
 {
+  const std::string in_actionStr(actionStr);
+  if (item)
+    actionStr = GetItemLabel(actionStr, item.get());
+  else
+    actionStr = GetLabel(actionStr);
+
   if (m_bInitializing) {
     m_deferredActions.push_back(actionStr);
-    return true;   // ← "success" — but the action has NOT run yet
+    return true;   // ← "success" — but the action has NOT run yet; fix pending
   }
   // ...
 }
 ```
+
+> **Implementation status:** The `return false` change has **not** been applied to the codebase yet. The above shows the current state of line 3994.
 
 ### The Nyxboard Caller
 
@@ -57,9 +66,9 @@ For most GUI callers, the return value of `ExecuteXBMCAction` is discarded — t
 
 | Location | Significance |
 |----------|-------------|
-| `xbmc/Application.cpp:3964–4013` | `ExecuteXBMCAction` — deferral and main body |
+| `xbmc/Application.cpp:3977–4013` | `ExecuteXBMCAction` — deferral at line 3990–3994, main body below |
 | `xbmc/Application.h:290` | `bool ExecuteXBMCAction(std::string, const CGUIListItemPtr&)` |
-| `xbmc/peripherals/devices/PeripheralNyxboard.cpp` | `LookupSymAndUnicode` — only caller checking return value |
+| `xbmc/peripherals/devices/PeripheralNyxboard.cpp:41` | `LookupSymAndUnicode` — only caller checking return value |
 | `xbmc/Application.h:433` | `bool m_bInitializing = true;` |
 
 ---
@@ -136,12 +145,14 @@ Return a new enum value or out-param `ActionState { kExecuted, kDeferred, kFaile
 
 #### `xbmc/Application.cpp`
 
+> **Dependency note:** The diff below shows `m_deferredActions.push_back({actionStr, item})` which assumes R3's `DeferredAction` struct is already applied. If R3 has **not** been applied yet, the push remains `m_deferredActions.push_back(actionStr)` (or `push_back(in_actionStr)` after R3's resolution-order correction). The `return true` → `return false` change is **independent** of R3 and should be applied regardless.
+
 ```diff
  bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPtr &item)
  {
    if (m_bInitializing)
    {
-     m_deferredActions.push_back({actionStr, item});
+     m_deferredActions.push_back({actionStr, item});  // requires R3 struct; else push_back(actionStr)
 -    return true;
 +    return false;
    }
@@ -178,16 +189,17 @@ This requires a `std::unordered_set<std::string> m_handledDuringBoot` populated 
 ```diff
 --- a/xbmc/Application.cpp
 +++ b/xbmc/Application.cpp
-@@ -ExecuteXBMCAction deferral branch
+@@ -ExecuteXBMCAction deferral branch (line 3990–3994 in current Leia HEAD)
    if (m_bInitializing)
    {
-     m_deferredActions.push_back({actionStr, item});
+-    m_deferredActions.push_back(actionStr);     // without R3: string only
++    m_deferredActions.push_back({actionStr, item});  // with R3 struct; else keep push_back(actionStr)
 -    return true;
 +    return false;   // deferred ≠ executed; do not suppress peripheral key events
    }
 ```
 
-No other files need to change for this fix.
+> **Implementation status (current HEAD):** The deferral branch at line 3994 still returns `true`. This fix has **not yet been applied** and is pending implementation.
 
 ---
 
@@ -211,8 +223,10 @@ Held-key repeat events fire `LookupSymAndUnicode` repeatedly. Each call now retu
 ### 6c. Action That Must Only Fire Once
 If a deferred action is one-shot (e.g., `ActivateWindow(LoginScreen)`) and the normal key event also activates the same window, the window opens twice. This is unlikely for Nyxboard keys but worth noting. The R1 fix (bypass deferral for window-navigation actions) prevents this specific scenario from entering the deferred queue at all.
 
-### 6d. Compatibility With R3 DeferredAction Struct
-The `{actionStr, item}` push already assumes the R3 struct. If R3 is not yet applied, revert the push to `push_back(actionStr)` but still change `return true` to `return false`. The two fixes are independent.
+### 6d. Compatibility With R3 DeferredAction Struct and Resolution Order
+The `{actionStr, item}` push in the diff assumes the R3 struct is in place. If R3 is not yet applied, revert the push to `push_back(actionStr)` but still change `return true` to `return false`. The two fixes are independent.
+
+Additionally, when R3's resolution-order correction is applied (deferral check moved to before `GetItemLabel`/`GetLabel`), the push should use `in_actionStr` (the original unresolved string), not the post-resolution `actionStr`. This is a deliberate part of R3 and is not required for this R4 fix to be correct in isolation.
 
 ---
 

@@ -153,40 +153,39 @@ Add the new method (can go near the existing flush logic around line 3763):
 
 ---
 
-### Step 2 — Call `FlushDeferredActionsNow()` Before the Settings Context Switch
+### Step 2 — Call `FlushDeferredActionsNow()` Before the Profile Lock and Context Switch
 
-The context switch starts at `settings->Load()` (ProfileManager.cpp:323). Call the flush just before that line, inside `CProfileManager::LoadProfile()`.
+The context switch starts at `settings->Load()` (ProfileManager.cpp:323), but the profile manager lock is acquired at ProfileManager.cpp:299 (`CSingleLock lock(m_critical)`). **The flush must occur before this lock is taken.** Executing arbitrary builtins (`PlayMedia`, `ActivateWindow`, etc.) while holding `m_critical` creates a reentrancy risk: those builtins can call back into `CProfileManager` (e.g., to query the current profile), which would deadlock or corrupt state.
+
+The correct insertion point is between `PrepareLoadProfile(index)` (line 285) and `CSingleLock lock(m_critical)` (line 299), in the branch that handles a genuine profile switch (after the `IsMasterProfile()` fast-path has already returned).
 
 #### `xbmc/profiles/ProfileManager.cpp` — `CProfileManager::LoadProfile()`
 
 ```diff
-   // save any settings of the currently used skin but only if the (master)
-   // profile hasn't just been loaded as a temporary profile for login
-   if (g_SkinInfo != nullptr && !m_previousProfileLoadedForLogin)
-     g_SkinInfo->SaveSettings();
+   PrepareLoadProfile(index);
 
-   // @todo: why is m_settings not used here?
-   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+   if (index == 0 && IsMasterProfile())
+   {
+     ...
+     return true;
+   }
 
-+  // Flush any deferred boot actions NOW, while still in master-profile context.
-+  // settings->Load() below switches the active profile; any $INFO tokens in
-+  // deferred actions must be resolved before that context switch occurs.
++  // Flush any deferred boot actions while still in master-profile context and
++  // before acquiring m_critical.  Executing builtins under the profile lock
++  // would risk re-entrancy into CProfileManager.
 +  g_application.FlushDeferredActionsNow();
 +
-   // unload any old settings
-   settings->Unload();
-
-   SetCurrentProfileId(index);
-   m_previousProfileLoadedForLogin = false;
-
-   // load the new settings
-   if (!settings->Load())
+   CSingleLock lock(m_critical);
+   // check if the index is valid or not
+   if (index >= m_profiles.size())
+     return false;
 ```
 
-The insertion point is after `g_SkinInfo->SaveSettings()` and before `settings->Unload()` / `settings->Load()`. At this point:
+At this point:
 - `g_SkinInfo` still points to the master skin ✓
 - `g_localizeStrings` still contains the master language ✓
 - `CServiceBroker::GetGUI()->GetInfoManager()` still resolves against master profile ✓
+- `m_critical` is NOT yet held — no reentrancy risk ✓
 
 ---
 
@@ -225,7 +224,7 @@ The insertion point is after `g_SkinInfo->SaveSettings()` and before `settings->
 |------|----------|--------|
 | `xbmc/Application.h` | public section | Add `void FlushDeferredActionsNow();` declaration |
 | `xbmc/Application.cpp` | near line 3763 | Add `FlushDeferredActionsNow()` implementation |
-| `xbmc/profiles/ProfileManager.cpp` | line ~315, before `settings->Unload()` | Call `g_application.FlushDeferredActionsNow()` |
+| `xbmc/profiles/ProfileManager.cpp` | after `PrepareLoadProfile()`, before `CSingleLock lock(m_critical)` (line 299) | Call `g_application.FlushDeferredActionsNow()` |
 | `xbmc/Application.cpp` | line 3774–3775 | Gate `ReloadSkin(false)` behind skin-ID comparison |
 
 No CMake changes required. No new headers. No platform guards. Total new code: ~20 lines across 4 touch points.
@@ -300,8 +299,9 @@ R3 changes `m_deferredActions` from `std::deque<std::string>` to `std::deque<Def
 
 | Risk | Likelihood | Impact | Mitigation |
 |------|-----------|--------|------------|
-| `FlushDeferredActionsNow()` called on non-login path by accident | Very Low | Low | The call site is inside the `if (index >= m_profiles.size())` guard block in `LoadProfile` — only reachable on actual profile switches |
-| Deferred actions execute before PVR/service restart in `FinalizeLoadProfile` | Low | Medium | Deferred actions fired at login screen are skin-level UI actions (PlayMedia, ActivateWindow), not service-dependent library calls; PVR is a separate service |
+| `FlushDeferredActionsNow()` called while `m_critical` is held | **High if misplaced** | **High** | Insert call **before** `CSingleLock lock(m_critical)` (line 299), not inside the lock scope; builtins can re-enter `CProfileManager` and deadlock |
+| `FlushDeferredActionsNow()` called on non-login path by accident | Very Low | Low | The call site is outside the `IsMasterProfile()` fast-path and before the lock, so it is only reached on genuine cross-profile switches |
+| Deferred actions execute after `PrepareLoadProfile` stops PVR services | Low | Medium | Deferred actions fired at login screen are skin-level UI actions (PlayMedia, ActivateWindow), not PVR-dependent calls; PVR is restarted in `FinalizeLoadProfile` |
 | Skin-ID comparison uses stale cached value | Very Low | Low | `settings->GetString(SETTING_LOOKANDFEEL_SKIN)` reads from the live settings object which is already loaded for the new profile at flush time |
 | `g_SkinInfo` null when ReloadSkin guard executes | Very Low | None | Added `!g_SkinInfo` null check in the guard ensures safe fallback to calling `ReloadSkin()` |
 | R3 not yet applied — `FlushDeferredActionsNow()` uses string-only queue | None | None | Functionally correct without R3; item context is a separate improvement |

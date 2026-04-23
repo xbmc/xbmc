@@ -102,7 +102,10 @@ m_bInitializing = false
 
 ### Approach A — Tag Playback Actions with `skipIfPlaying` Flag (Recommended)
 
-Extend the deferred action struct (see R3) with a `bool skipIfPlaying` field. When enqueuing a playback-initiating action, set `skipIfPlaying = true`. At flush time, skip any deferred action tagged `skipIfPlaying` if `m_appPlayer.IsPlaying()` is true.
+Extend the deferred action struct (see R3) with a `bool skipIfPlaying` field. When enqueuing a playback-initiating action, set `skipIfPlaying = true`. At flush time, skip any deferred action tagged `skipIfPlaying` if the player is active.
+
+**Guard condition — `IsPlaying()` covers paused state:**  
+`CApplicationPlayer::IsPlaying()` calls `player->IsPlaying()`. In all Kodi player implementations, `IsPlaying()` returns `true` even when playback is paused (speed = 0); `IsPausedPlayback()` is a narrower check (`IsPlaying() && speed == 0`). Using `m_appPlayer.IsPlaying()` in the guard therefore correctly protects both actively playing **and** paused sessions from interruption. No separate `IsPausedPlayback()` check is needed.
 
 ```cpp
 struct DeferredAction
@@ -118,16 +121,20 @@ At enqueue:
 ```cpp
 bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPtr &item)
 {
+  const std::string in_actionStr(actionStr);
+
   if (m_bInitializing)
   {
+    // R3+R5: deferral check moved before label resolution; use in_actionStr (original template).
+    // Prefix check runs on the original string so $INFO[...] templates are still matched.
     static const std::array<std::string_view, 4> playbackPrefixes = {
         "PlayMedia(", "PlayFile(", "Playlist.Play", "PlayerControl(Play"
     };
     bool isPlayback = std::any_of(playbackPrefixes.begin(), playbackPrefixes.end(),
         [&](std::string_view prefix)
-        { return StringUtils::StartsWithNoCase(actionStr, std::string(prefix)); });
+        { return StringUtils::StartsWithNoCase(in_actionStr, std::string(prefix)); });
 
-    m_deferredActions.push_back({actionStr, item, isPlayback});
+    m_deferredActions.push_back({in_actionStr, item, isPlayback});  // store original string
     return false;  // R4 fix
   }
   // ...
@@ -139,6 +146,8 @@ At flush:
 ```cpp
 for (const auto& deferred : m_deferredActions)
 {
+  // IsPlaying() returns true for both actively playing and paused sessions,
+  // so paused playback is correctly protected from interruption.
   if (deferred.skipIfPlaying && m_appPlayer.IsPlaying())
     continue;  // user is already watching something; skip background autoplay
   ExecuteXBMCAction(deferred.actionStr, deferred.item);
@@ -241,28 +250,31 @@ The `DeferredAction` struct (already introduced in R3) gains one field:
 ```diff
 --- a/xbmc/Application.h
 +++ b/xbmc/Application.h
-@@ DeferredAction struct
+@@ DeferredAction struct (introduced by R3)
    struct DeferredAction
    {
-     std::string actionStr;
+     std::string actionStr;   // original unresolved string (in_actionStr)
      CGUIListItemPtr item;
 +    bool skipIfPlaying = false;
    };
 
 --- a/xbmc/Application.cpp
 +++ b/xbmc/Application.cpp
-@@ ExecuteXBMCAction deferral
+@@ ExecuteXBMCAction deferral (R3+R5: deferral check before label resolution)
++  if (m_bInitializing)
++  {
 +    static const std::array<std::string_view, 4> playbackPrefixes = {
 +        "PlayMedia(", "PlayFile(", "Playlist.Play", "PlayerControl(Play"
 +    };
 +    bool isPlayback = std::any_of(playbackPrefixes.begin(), playbackPrefixes.end(),
-+        [&](std::string_view p){ return StringUtils::StartsWithNoCase(actionStr, std::string(p)); });
--    m_deferredActions.push_back({actionStr, item});
-+    m_deferredActions.push_back({actionStr, item, isPlayback});
++        [&](std::string_view p){ return StringUtils::StartsWithNoCase(in_actionStr, std::string(p)); });
+-    m_deferredActions.push_back({in_actionStr, item});          // R3 (without R5)
++    m_deferredActions.push_back({in_actionStr, item, isPlayback});  // R3+R5
 
 @@ flush loop
    for (const auto& deferred : m_deferredActions)
 +  {
++    // IsPlaying() covers both active and paused sessions; paused playback is protected.
 +    if (deferred.skipIfPlaying && m_appPlayer.IsPlaying())
 +      continue;
      ExecuteXBMCAction(deferred.actionStr, deferred.item);
@@ -283,7 +295,9 @@ If the flush loop has already started iterating and the user starts a video part
 `Playlist.Play` is tagged `skipIfPlaying`. If the user has manually added items to the playlist and started it before boot completes, the deferred `Playlist.Play` is correctly skipped.
 
 ### 6d. `PlayerControl(Play)` vs `PlayerControl(Pause)` vs `PlayerControl(Stop)`
-Only `PlayerControl(Play` (prefix) is tagged. `PlayerControl(Pause)` and `PlayerControl(Stop)` are not playback-initiating (they control an existing stream) and should not carry `skipIfPlaying`. The prefix check correctly excludes them.
+Only `PlayerControl(Play` (prefix) is tagged `skipIfPlaying`. `PlayerControl(Pause)` and `PlayerControl(Stop)` are not playback-initiating (they control an existing stream) and should not carry `skipIfPlaying`. The prefix check correctly excludes them.
+
+Note: `m_appPlayer.IsPlaying()` returns `true` even when playback is paused (speed = 0), so a paused session is also correctly protected. `IsPausedPlayback()` (which returns `IsPlaying() && speed == 0`) is a subset of this guard and does not need to be checked separately.
 
 ### 6e. Plugin-Based Playback (`plugin://`)
 `PlayMedia(plugin://...)` is caught by the `PlayMedia(` prefix. Works correctly.
