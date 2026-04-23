@@ -18,13 +18,14 @@ This regression has two related but independent defects introduced by the deferr
 
 1. **Normal path (no login screen):** Boot completes normally → `CProfileManager::FinalizeLoadProfile()` sends `GUI_MSG_UI_READY` with sender `WINDOW_SETTINGS_PROFILES` → `CApplication::OnMessage()` receives it → sets `m_bInitializing = false` at line 3759 → flushes deferred queue at lines 3763–3772. At this point **no profile switch has occurred**, so the flush happens in the correct master-profile context.
 
-2. **Login-screen path:** Boot shows the login screen instead. The user's skin `<onload>` actions and other early actions are deferred into `m_deferredActions`. When the user enters their PIN, `TMSG_LOADPROFILE` is posted → `CProfileManager::LoadProfile(N)` is called → it calls `settings->Load()` (switching the active settings to profile N's settings file), `LoadLanguage()`, and other profile-specific initialization → **only then** `FinalizeLoadProfile()` sends `GUI_MSG_UI_READY` → `CApplication::OnMessage()` sets `m_bInitializing = false` and flushes the deferred queue. By this point the active language, skin, and settings context are **already those of profile N**, not the master profile. All deferred actions execute with the wrong context.
+2. **Login-screen path:** Boot shows the login screen instead. The user's skin `<onload>` actions and other early actions are deferred into `m_deferredActions`. **Important: in the current code, `$INFO` label tokens are resolved eagerly at deferral time** (before the `m_bInitializing` check), so the stored deferred strings already contain resolved values such as `PlayMedia(/path/to/bg.mp4)`. When the user enters their PIN, `TMSG_LOADPROFILE` is posted → `CProfileManager::LoadProfile(N)` is called → it calls `settings->Load()` (switching the active settings to profile N's settings file), `LoadLanguage()`, and other profile-specific initialization → **only then** `FinalizeLoadProfile()` sends `GUI_MSG_NOTIFY_ALL(GUI_MSG_UI_READY)` → `CApplication::OnMessage()` sets `m_bInitializing = false` and flushes the deferred queue. By this point the active services (PVR, language, skin, settings) are **already those of profile N**, not the master profile. The deferred actions execute in the **wrong service and locale context** — even though their $INFO tokens were resolved in the master context, any action that depends on live services (e.g., PVR channel lookup, language-dependent display) behaves incorrectly.
 
 ```
 [Boot, master profile — m_bInitializing = true]
   → LoginScreen shown
       → skin <onload> fires "PlayMedia(...)", "$INFO[...]" actions
-      → all deferred into m_deferredActions (Application.cpp:3993)
+      → $INFO tokens resolved eagerly (master context, but info mgr may not be ready)
+      → resolved strings deferred into m_deferredActions (Application.cpp:3993)
 
 [User enters PIN → TMSG_LOADPROFILE posted]
   → CApplication::ProcessMessages()                    (Application.cpp:2272)
@@ -32,14 +33,16 @@ This regression has two related but independent defects introduced by the deferr
           → settings->Load()                          (ProfileManager.cpp:323)  ← settings switch
           → FinalizeLoadProfile()                     (ProfileManager.cpp:373)
               → LoadLanguage()                        (ProfileManager.cpp:407)  ← language switch
+              → pvrManager.Init()                                               ← PVR restart
               → ...other profile init...
-              → SendThreadMessage(GUI_MSG_UI_READY)   (ProfileManager.cpp:441)
+              → SendThreadMessage(GUI_MSG_NOTIFY_ALL, WINDOW_SETTINGS_PROFILES,
+                                  param1=GUI_MSG_UI_READY)  (ProfileManager.cpp:441)
 
-[GUI_MSG_UI_READY received — CApplication::OnMessage()]  (Application.cpp:3759)
+[GUI_MSG_UI_READY param received — CApplication::OnMessage()]  (Application.cpp:3759)
   → m_bInitializing = false
   → FlushDeferredActions()
       → ExecuteXBMCAction(action, nullptr)
-          ← $INFO tokens resolved against profile N's language/skin  ← WRONG
+          ← Actions execute in profile N's SERVICE context (PVR, locale, settings)  ← WRONG
 ```
 
 #### Bug 2b — `ReloadSkin` fired on every profile load regardless of whether the skin changed
@@ -66,7 +69,7 @@ In `CApplication::OnMessage()` (Application.cpp:3774–3775), when `GUI_MSG_UI_R
 | `xbmc/profiles/ProfileManager.cpp:373` | `FinalizeLoadProfile()` call — profile settings already active here |
 | `xbmc/profiles/ProfileManager.cpp:380` | `CProfileManager::FinalizeLoadProfile()` — loads language, starts services, sends `GUI_MSG_UI_READY` |
 | `xbmc/profiles/ProfileManager.cpp:407` | `g_application.LoadLanguage(true)` inside `FinalizeLoadProfile()` |
-| `xbmc/profiles/ProfileManager.cpp:441` | `SendThreadMessage(GUI_MSG_UI_READY)` — triggers flush in Application |
+| `xbmc/profiles/ProfileManager.cpp:441` | Sends `CGUIMessage(GUI_MSG_NOTIFY_ALL, WINDOW_SETTINGS_PROFILES, 0, GUI_MSG_UI_READY)` — triggers flush in Application (message type is `GUI_MSG_NOTIFY_ALL`; `GUI_MSG_UI_READY` is the `param1` value, not the message type) |
 | `xbmc/profiles/ProfileManager.cpp:445` | `CProfileManager::LogOff()` — calls `LoadMasterProfileForLogin()` then activates login window |
 
 ---
@@ -79,23 +82,32 @@ In `CApplication::OnMessage()` (Application.cpp:3774–3775), when `GUI_MSG_UI_R
 Application.cpp:2272  TMSG_LOADPROFILE
   → ProfileManager.cpp:283   CProfileManager::LoadProfile(N)
       → ProfileManager.cpp:285   PrepareLoadProfile(N)   [stops services]
+      → ProfileManager.cpp:317   settings->Unload()
+      → ProfileManager.cpp:319   SetCurrentProfileId(index)
       → ProfileManager.cpp:323   settings->Load()         ← CONTEXT SWITCH 1: settings
       → ProfileManager.cpp:373   FinalizeLoadProfile()
           → ProfileManager.cpp:407   LoadLanguage(true)   ← CONTEXT SWITCH 2: language
+          → pvrManager.Init()                             ← CONTEXT SWITCH 3: PVR services
           → ...
-          → ProfileManager.cpp:441   SendThreadMessage(GUI_MSG_UI_READY, WINDOW_SETTINGS_PROFILES)
+          → ProfileManager.cpp:441   SendThreadMessage(
+                                       GUI_MSG_NOTIFY_ALL,
+                                       sender=WINDOW_SETTINGS_PROFILES,
+                                       param1=GUI_MSG_UI_READY)
 
-Application.cpp:3759  OnMessage(GUI_MSG_UI_READY)
-  → m_bInitializing = false
-  → Application.cpp:3763  flush loop
-      → Application.cpp:3770  ExecuteXBMCAction(action, nullptr)
-          ← ALL $INFO resolution uses profile N context  ← BUG
+Application.cpp:3724  case GUI_MSG_NOTIFY_ALL:
+  Application.cpp:3739    else if (message.GetParam1() == GUI_MSG_UI_READY):
+    Application.cpp:3759  m_bInitializing = false
+    Application.cpp:3763  flush loop
+        Application.cpp:3770  ExecuteXBMCAction(action, nullptr)
+            ← Actions execute in profile N's SERVICE context  ← BUG
+            ← Note: $INFO tokens in stored strings were resolved in master context
+            ← but live service calls (PVR, locale-dependent) use profile N's services
 ```
 
 ### 2b — Unconditional ReloadSkin
 
 ```
-Application.cpp:3774  OnMessage(GUI_MSG_UI_READY) — same handler, continues:
+Application.cpp:3774  OnMessage(GUI_MSG_NOTIFY_ALL, param1=GUI_MSG_UI_READY) — same handler, continues:
   if (message.GetSenderId() == WINDOW_SETTINGS_PROFILES)
     g_application.ReloadSkin(false);   ← fires even if skin unchanged
 ```
@@ -136,12 +148,12 @@ Add the new method (can go near the existing flush logic around line 3763):
 +  if (m_bInitializing && !m_deferredActions.empty())
 +  {
 +    m_bInitializing = false;
-+    std::deque<std::string> pending;
++    std::deque<std::string> pending;  // type changes to std::deque<DeferredAction> when R3 applied
 +    pending.swap(m_deferredActions);
 +    for (const auto& action : pending)
 +    {
 +      CLog::LogF(LOGDEBUG, "Replaying deferred startup action '%s' (pre-profile-switch)", action.c_str());
-+      ExecuteXBMCAction(action, nullptr);
++      ExecuteXBMCAction(action, nullptr);  // args change to (action.actionStr, action.item) when R3 applied
 +    }
 +  }
 +  // Always clear the initializing flag so subsequent actions are not deferred.
@@ -149,7 +161,11 @@ Add the new method (can go near the existing flush logic around line 3763):
 +}
 ```
 
-> **Note on item context:** If R3 (item-context struct upgrade) is applied first, change the queue type to `std::deque<DeferredAction>` and call `ExecuteXBMCAction(deferred.actionStr, deferred.item)`. See R3 plan for details.
+> **Note on item context (R3 interaction):** With the current code, the deferred queue stores resolved strings (`std::deque<std::string>`). `FlushDeferredActionsNow()` replays them with `nullptr` item — the strings are already resolved and the second `GetLabel` call in `ExecuteXBMCAction` is a no-op for strings with no remaining `$INFO` tokens. When R3 is applied first (recommended), the queue type becomes `std::deque<DeferredAction>` and stores unresolved strings + items. Update `FlushDeferredActionsNow()` accordingly:
+> ```cpp
+> for (const auto& deferred : pending)
+>   ExecuteXBMCAction(deferred.actionStr, deferred.item);
+> ```
 
 ---
 

@@ -352,19 +352,20 @@ If the skin fires several `PlayMedia` actions during boot (unusual), all are tag
 
 ## 8. Relationship to Other Regressions
 
-This fix composes with R3 and R4 into a single `DeferredAction` struct refactor:
+This fix composes with R3 and R4 into a single `DeferredAction` struct refactor. The container type matches the existing `std::deque<std::string>` — use `std::deque<DeferredAction>`:
 
 ```cpp
+// xbmc/Application.h — std::deque<DeferredAction> m_deferredActions;
 struct DeferredAction
 {
-  std::string     actionStr;
-  CGUIListItemPtr item;           // R3: preserves item via shared_ptr
-  bool            skipIfPlaying;  // R5: skip playback builtins if player active
+  std::string     actionStr;      // unresolved original action string (R3: not pre-resolved)
+  CGUIListItemPtr item;           // R3: preserves item via shared_ptr for flush-time resolution
+  bool            skipIfPlaying;  // R5: skip playback builtins if player active at flush
 };
 ```
 
 R4's `return false` change is independent and can be applied first.  
-R1's boot-critical bypass is also independent.  
+R1's boot-critical bypass is also independent — **boot-critical window navigation actions (R1) bypass the deferral block entirely** and execute immediately, so they never enter the deferred queue and never have `skipIfPlaying` set. This is correct: a `ReplaceWindow` or `ActivateWindow` during boot should never be skipped at flush time because it never enters the queue to begin with.  
 R2 is a separate lifecycle fix in `CProfileManager`.
 
 Suggested implementation order: **R1 → R4 → R3+R5 (combined struct refactor) → R2**.
@@ -375,7 +376,7 @@ Suggested implementation order: **R1 → R4 → R3+R5 (combined struct refactor)
 
 | Risk | Likelihood | Impact | Mitigation |
 |------|-----------|--------|------------|
-| Playback prefix list misses a custom action | Low | Medium | Add `xbmc.playmedia`, `xbmc.playfile` aliases if present in CBuiltins |
+| Playback prefix list misses a custom action | Low | Medium | Add `xbmc.playmedia`, `xbmc.playfile` aliases if present in `CBuiltins`; also consider `PlayMedia` with lowercase variants — `StartsWithNoCase` handles case but not alias expansion |
 | Background video never starts (false positive skip) | Very low | Low | Condition is `m_appPlayer.IsPlaying()` — precise; only true if media active |
 | Race condition between flush start and user playback start | Low | Low | Per-entry check in flush loop handles this gracefully |
 | `skipIfPlaying` flag stored in persistent deferred queue breaks R3 struct | None | None | All three fields (`actionStr`, `item`, `skipIfPlaying`) are trivially copyable or shared_ptr-managed |

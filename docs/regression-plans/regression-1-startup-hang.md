@@ -142,15 +142,25 @@ Before entering the spin-wait for `GUI_MSG_UI_READY`, flush the deferred queue. 
 
 ## 5. Recommended Fix — Approach A
 
+### Code Structure Context
+
+**Important:** In the current code (without R3), `GetItemLabel`/`GetLabel` label resolution happens **before** the `m_bInitializing` deferral check. The `bootCritical` prefix check therefore runs on the **resolved** `actionStr`. This is functionally correct for window navigation builtins — `ActivateWindow(Home)`, `ReplaceWindow(Home)`, and `FullscreenWindow` never contain `$INFO` tokens, so their resolved and unresolved forms are identical.
+
+When R3 is also applied (recommended), the label resolution block is **moved to after** the deferral check, so the `bootCritical` check runs on the **original, unresolved** action string. This is equally correct and also more robust for hypothetical future skins that might write `ActivateWindow($INFO[Window.Property(target)])` — the check catches the prefix before resolution.
+
 ### Detailed Code Changes
 
-#### `xbmc/Application.cpp` — `ExecuteXBMCAction`
+#### `xbmc/Application.cpp` — `ExecuteXBMCAction` (with R3 applied)
+
+The diff below shows the full function head after both R1 and R3 are applied. The label resolution block has been moved to after the deferral check so that deferred actions preserve the unresolved string.
 
 ```diff
  bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPtr &item)
  {
-   if (m_bInitializing)
-   {
+   const std::string in_actionStr(actionStr);
++
++  if (m_bInitializing)
++  {
 +    // Window navigation actions must execute immediately during boot;
 +    // deferring them prevents GUI_MSG_UI_READY from ever being sent.
 +    static const std::array<std::string_view, 3> bootCritical = {
@@ -161,10 +171,24 @@ Before entering the spin-wait for `GUI_MSG_UI_READY`, flush the deferred queue. 
 +        { return StringUtils::StartsWithNoCase(actionStr, std::string(prefix)); });
 +    if (!isCritical)
 +    {
-       m_deferredActions.push_back(actionStr);
-       return true;
++      m_deferredActions.push_back({actionStr, item});  // R3: store unresolved string + item
++      return false;   // R4: do not suppress peripheral key events on deferral
 +    }
-   }
++    // fall through: execute boot-critical window navigation immediately
++  }
++
++  // Resolve labels here (info manager is fully ready for immediate execution
++  // and for the deferred-action flush path).
+   if (item)
+     actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetItemLabel(actionStr, item.get());
+   else
+     actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetLabel(actionStr);
+-
+-  if (m_bInitializing)
+-  {
+-    m_deferredActions.push_back(actionStr);
+-    return true;
+-  }
    // ... rest unchanged
 ```
 

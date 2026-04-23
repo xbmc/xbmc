@@ -117,6 +117,8 @@ CGUIAction::ExecuteActions(controlID, parentID, item)
 
 This is the **primary regression path** — action strings like `PlayMedia($INFO[ListItem.FileNameAndPath])` or `ActivateWindow(MyVideoNav,$INFO[ListItem.Property(node.target_url)])` depend on item context for resolution at line 3972.
 
+> **Current vs. fixed code order:** In the current (buggy) code, `GetItemLabel`/`GetLabel` runs *before* the `m_bInitializing` check, so the item is consumed but the resolved result may be empty/wrong during boot. The proposed fix moves the label resolution block to *after* the deferral check, so resolution only happens when `CGUIInfoManager` is fully initialised (at flush time and during normal execution).
+
 ---
 
 ## 3. What Item Properties Are Used After the Deferral Point
@@ -136,6 +138,17 @@ All property resolution happens at `Application.cpp:3971–3974`, **before** any
 
 Any action string that contains `$INFO[ListItem.*]` will silently produce wrong output when replayed without the item.
 
+**The real regression with the current eager-resolution code:** During boot (`m_bInitializing == true`), `CGUIInfoManager` is not yet fully initialised. `GetItemLabel` and `GetLabel` may return empty strings or stale values for:
+- Window or skin properties (`Window.Property(...)`, `Skin.String(...)`) — the window may not be fully loaded
+- Player and PVR info tokens (`Player.HasMedia`, `ListItem.PVRChannelNumber`) — PVR/player managers not started
+- Library metadata tokens — the database is not yet open
+
+For item-level primitive properties (`CFileItem::GetPath()`, raw label, basic art) that are stored directly on the `CFileItem`, resolution may succeed. But for properties that require an active info manager query, they resolve to empty at deferral time.
+
+At flush time the item is gone (the flush loop calls `ExecuteXBMCAction(action, nullptr)`), so the info manager — now fully initialised — cannot be asked to retry the resolution with the original item.
+
+The fix stores `{original_actionStr, item}` pairs (the **unresolved** string plus the item pointer). At flush time `ExecuteXBMCAction(deferred.actionStr, deferred.item)` is called, triggering a fresh resolution when the info manager is ready and the item is still available via the stored `shared_ptr`.
+
 ---
 
 ## 4. Candidate Fix Approaches
@@ -154,17 +167,17 @@ Change `m_deferredActions` from `std::deque<std::string>` to `std::deque<Deferre
 
 ---
 
-### Approach B — Resolve Labels Eagerly at Deferral Time
+### Approach B — Resolve Labels Eagerly at Deferral Time (current behaviour)
 
-At the deferral point, immediately call `GetItemLabel` / `GetLabel` to resolve `$INFO[...]` tokens, then store the fully-resolved string. On replay, no item is needed.
+At the deferral point, immediately call `GetItemLabel` / `GetLabel` to resolve `$INFO[...]` tokens, then store the fully-resolved string. On replay, no item is needed. **This is already what the current code does** — the resolution block runs before the `m_bInitializing` check.
 
 **Pros:**
 - No item lifetime management.
 - Simple: `m_deferredActions` stays `std::deque<std::string>`.
 
 **Cons:**
-- `CGUIInfoManager` may not be fully initialised when `m_bInitializing == true`, causing GetItemLabel to return empty strings anyway.
-- Loses true lazy-resolution; if the resolved string depends on state that changes between boot and replay, the value is stale.
+- `CGUIInfoManager` is not fully initialised when `m_bInitializing == true`, causing `GetItemLabel` to return empty strings for most tokens.
+- Loses true lazy-resolution; the resolved (empty/wrong) string is stored and re-executed at flush time.
 - Does not fix the PVR tag / artwork cases that use item data not expressible as a label token.
 
 ---
@@ -231,7 +244,7 @@ std::deque<DeferredAction> m_deferredActions;
 
 #### `xbmc/Application.cpp`
 
-**2. Change the deferral push in `ExecuteXBMCAction`:**
+**2. Move the deferral check to before label resolution, and store the unresolved string + item:**
 
 ```cpp
 // Before (actual code — BUGGY):
@@ -269,6 +282,8 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPt
   // ...
 }
 ```
+
+**Note:** The fix also **moves the label resolution block** to after the deferral check — ensuring resolution only runs when `CGUIInfoManager` is fully initialised.
 
 **3. Change the replay loop (wherever deferred actions are flushed):**
 
@@ -337,14 +352,16 @@ m_deferredActions.clear();
 ## 7. Edge Cases
 
 ### 7a. Item Is a Plugin Item (`plugin://`)
-- Plugin items carry their resolved plugin URL in `GetPath()`.  
-- If `actionStr` contains `$INFO[ListItem.FileNameAndPath]`, it resolves to `plugin://...` — **must** be resolved with item context.  
-- Without the item, `GetLabel()` would return the _focused_ item's path or empty, silently playing/navigating to the wrong plugin.
+- Plugin items carry their resolved plugin URL in `GetPath()`.
+- With the current (buggy) eager resolution, `GetItemLabel` is called at deferral time during boot when `CGUIInfoManager` may not be ready, potentially returning empty.
+- With the fix, resolution is deferred: `GetItemLabel` is called at flush time when the info manager is fully initialised and the item's `GetPath()` resolves correctly to `plugin://...`.
+- Without the fix, `GetLabel()` at flush time would return the _focused_ item's path or empty, silently playing/navigating to the wrong plugin.
 
 ### 7b. Item Has PVR Tags
-- PVR items store channel, recording, EPG, and timer tags.  
-- Actions like `PlayPVRChannelOnLastActivePlayer(...)` or `PVR.SearchMissingChannelIcons` with `$INFO[ListItem.PVRChannelName]` need the PVR item context.  
-- At replay time (`m_bInitializing == false`), the PVR manager is up, but the PVR info tag is on the _original_ item — if item is dropped, resolution falls back to the currently focused item in the PVR guide, which may be completely different.
+- PVR items store channel, recording, EPG, and timer tags.
+- With the current (buggy) eager resolution at boot time, PVR info tokens like `$INFO[ListItem.PVRChannelName]` may return empty because PVR managers are not yet started.
+- With the fix, resolution is deferred to flush time when both the PVR manager is up **and** the original PVR item is available via the stored `shared_ptr`.
+- Without the fix, any PVR property that goes through the info manager resolves to empty at deferral time and remains wrong at flush time (since the item is also gone).
 
 ### 7c. Item Has Custom `node.target` / `node.target_url`
 - `DirectoryProvider::OnClick` reads these at click time and bakes them into the `execute` string via `GetExecutePath`.  
@@ -426,4 +443,4 @@ m_deferredActions.clear();
 | Pre-baked strings in DirectoryProvider already correct | Verified | None | Node.target and node.target_url are resolved before `GUI_MSG_EXECUTE`; no item needed at replay for that path. |
 
 ### Overall Risk of the Fix (Approach A)
-**Low.** The change is surgical: two lines changed in `.cpp`, one struct + one field change in `.h`. No new threading, no new lifetime management beyond what `shared_ptr` already provides. The fix restores the original contract: "replay an action exactly as if the user had clicked during normal operation."
+**Low.** The change is surgical: the label resolution block is moved below the deferral check in `.cpp`, and one struct + one field change in `.h`. The deferral push stores `{actionStr, item}` instead of a resolved string. No new threading, no new lifetime management beyond what `shared_ptr` already provides. The fix restores the original contract: "replay an action exactly as if the user had clicked during normal operation."
