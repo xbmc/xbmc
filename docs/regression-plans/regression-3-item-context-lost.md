@@ -188,7 +188,7 @@ If `item != nullptr`, bypass the deferral and execute immediately even during `m
 
 ### Approach D — Store the Full CGUIMessage
 
-Instead of `std::vector<std::string>`, keep a `std::vector<CGUIMessage>`. When deferring, push the full message. On replay, re-dispatch via `CApplication::OnMessage`.
+Instead of `std::deque<std::string>`, keep a `std::deque<CGUIMessage>`. When deferring, push the full message. On replay, re-dispatch via `CApplication::OnMessage`.
 
 **Pros:**
 - Perfect fidelity — all message fields (senderID, controlID, params, item) are preserved.
