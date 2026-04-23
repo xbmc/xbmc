@@ -35,24 +35,11 @@ Kodi stream decoder
 ### 1 — Virtual provider addon
 **File:** `addons/xbmc.audiodsp/addon.xml`
 
-The file already exists.  **However, its `version` attribute is `"0.1.0"` which
-does not satisfy the `<import>` declared in
-`kodi-audiodsp-vsthost/resources/addon.xml`:**
-
-```xml
-<import addon="xbmc.audiodsp" version="0.1.8"/>
-```
-
-The addon manager's `MeetsVersion` check requires the provider's version to be
-`≥ 0.1.8`.  Until the attribute is corrected, `audiodsp.vsthost` will never be
-considered enabled and the entire audio routing chain will remain inactive.
-
-**Required change:** set `version="0.1.8"` (and `<backwards-compatibility abi="0.1.8"/>`)
-in `addons/xbmc.audiodsp/addon.xml`.  The `KODI_AE_DSP_API_VERSION` macro in
-`kodi_adsp_types.h` is already `"0.1.8"`, so this aligns the virtual provider
-with the API the addon DLL was compiled against.
-
-Pattern to follow: `addons/xbmc.core/addon.xml`.
+The file already exists and **is correctly configured** — `version="0.1.8"` and
+`<backwards-compatibility abi="0.1.8"/>` are already set, matching the
+`<import addon="xbmc.audiodsp" version="0.1.8"/>` declaration in
+`kodi-audiodsp-vsthost/resources/addon.xml` and the `KODI_AE_DSP_API_VERSION`
+macro in `kodi_adsp_types.h`.  No changes are needed here.
 
 ---
 
@@ -223,36 +210,115 @@ after wake.
 
 ### 8 — VST crash recovery  *(new)*
 
-#### Layer 1 — Per-plugin SEH guard in `DSPChain::process()` *(future work)*
+#### Layer 1 — Per-plugin SEH guard in `DSPChain::process()` *(scoped for current work — VST2 only)*
 
-**File:** `kodi-audiodsp-vsthost/src/dsp/DSPChain.cpp`
+**File:** `kodi-audiodsp-vsthost/src/dsp/DSPChain.cpp`  
+**Scope:** VST2 only.  VST3 sources are excluded from the current build
+(`CMakeLists.txt` explicitly filters out `src/vst3/*.cpp`).  When VST3 support
+is added in a future phase this same guard will apply automatically, because the
+crash-isolation path dispatches through the `IVSTPlugin::process()` virtual.
 
-> **Status: not yet implemented.**  The current `DSPChain::process()` calls
-> `slot.plugin->process(...)` directly.  A per-plugin SEH wrapper is
-> desirable for defence-in-depth but has not been added yet.
+> **Status: not yet implemented.**  The current `DSPChain::process()` at lines
+> 158–197 calls `slot.plugin->process(...)` directly with no SEH protection.
+> A crash inside a misbehaving VST2 plugin's `processReplacing` function
+> propagates as an unhandled SEH exception through the entire addon, where it is
+> eventually caught by the addon-level guard in `CActiveAEDSP::MasterProcess()`
+> (Layer 2), which sets `m_dspFailed = true` and disables **all** DSP for the
+> session.  Layer 1 stops the fault at the individual plugin slot so the
+> remaining plugins in the chain keep running.
 
-Add a standalone SEH wrapper (must be a free function — MSVC prohibits mixing
-`__try/__except` with C++ destructors in the same scope):
+##### Problem
+
+When plugin slot `N` raises a structured exception inside `processReplacing()`:
+
+1. The exception escapes `slot.plugin->process()` in `DSPChain::process()`.
+2. MSVC's stack unwinder propagates it past `DSPChain::process()`.
+3. It escapes `DSPProcessor::masterProcess()` and `MasterProcess()` in the addon.
+4. The addon-level `__try/__except` in `CActiveAEDSP::MasterProcess()` catches
+   it, sets `m_dspFailed = true`, and disables all DSP — including all plugins
+   that were functioning correctly before plugin `N` crashed.
+
+Layer 1 prevents steps 2–4 from ever being reached.
+
+##### Implementation
+
+**Constraint — MSVC SEH scope rule:**
+MSVC (C4509) prohibits `__try/__except` in any function scope that also contains
+C++ objects with non-trivial destructors.  `DSPChain::process()` holds
+`std::vector<float*>*` locals on the stack, making it ineligible.  The pattern
+is identical to `VSTPlugin2::callPluginMainSafe()` (`VSTPlugin2.cpp:44–53`),
+which wraps the plugin entry-point call for the same reason.
+
+**Step 1 — Add standalone SEH wrapper immediately above `DSPChain::process()`:**
 
 ```cpp
-static int callPluginProcessSafe(IVSTPlugin* p, float** in, float** out, int samples)
+// Must be a free function — MSVC C4509 prohibits __try/__except in any scope
+// that contains C++ objects with non-trivial destructors.
+// Mirrors the VSTPlugin2::callPluginMainSafe() pattern in VSTPlugin2.cpp.
+static int callSlotProcessSafe(IVSTPlugin* p, float** in, float** out, int samples)
 {
     int result = 0;
     __try {
         result = p->process(in, out, samples);
     } __except (EXCEPTION_EXECUTE_HANDLER) {
+        // Mark this plugin slot as permanently bypassed so subsequent blocks
+        // never enter the VST2 processReplacing path again.
+        p->setBypassed(true);
+        std::fprintf(stderr,
+            "[DSPChain] plugin crashed (SEH), permanently bypassing: %s\n",
+            p->getPath().c_str());
         result = 0;
     }
     return result;
 }
 ```
 
-Replace the direct `slot.plugin->process(...)` call in the processing loop
-with `callPluginProcessSafe(...)`.  On exception:
-- `result == 0` is already handled by copying input to output (passthrough).
-- Additionally call `slot.plugin->setBypassed(true)` to skip the crashed
-  plugin in all subsequent blocks with zero SEH overhead.
-- Log the crash with the plugin path.
+**Step 2 — Replace the direct `process()` call in the processing loop
+(line 182):**
+
+```cpp
+// BEFORE:
+const int processed = slot.plugin->process(current->data(), next->data(), safeSamples);
+
+// AFTER:
+const int processed = callSlotProcessSafe(
+    slot.plugin.get(), current->data(), next->data(), safeSamples);
+```
+
+No other change to `DSPChain::process()` is needed.  The existing
+`if (processed == 0)` block already copies `*current` to `*next` (passthrough),
+so audio continues without the crashed plugin's contribution.  On the next call,
+`VSTPlugin2::process()` sees `m_bypassed == true` at line 229 and copies input
+to output directly — zero `processReplacing` overhead, no further SEH cost.
+
+**Why `setBypassed(true)` is safe inside `__except`:**
+`p` points to a `VSTPlugin2` C++ wrapper object on the host heap, not into the
+crashed VST DLL's memory.  `setBypassed()` is a trivial `m_bypassed = true`
+write (`IVSTPlugin.h:106`) on the wrapper object.  The VST DLL may have
+corrupted its own internal state, but the host wrapper is intact.
+
+##### Interaction with Layers 2 and 3
+
+| Layer | Triggers when | Outcome |
+|-------|---------------|---------|
+| 1 — `callSlotProcessSafe` | Single VST2 plugin raises SEH exception | That slot bypassed permanently; rest of chain continues; `m_dspFailed` stays `false` |
+| 2 — `CActiveAEDSP::MasterProcess()` SEH | Entire addon or chain crashes past Layer 1 | `m_dspFailed = true`; all DSP disabled; audio passes through unmodified |
+| 3 — `m_dspFailed` bypass + recovery timer | `m_dspFailed` set by Layer 2 | Immediate zero-cost Kodi-level passthrough; auto-recovery timer (future work) |
+
+Layer 1 makes it far less likely that Layer 2 is ever triggered, because it
+absorbs per-plugin faults before they can unwind past `DSPChain::process()`.
+
+##### Acceptance criteria
+
+- A VST2 plugin that raises an SEH exception inside `processReplacing()` is
+  automatically bypassed; audio from all other plugins in the chain is
+  unaffected.
+- The bypassed slot emits a `[DSPChain] plugin crashed (SEH)` message to
+  `stderr` exactly once per crash event.
+- `m_dspFailed` remains `false` after an isolated per-plugin crash.
+- Subsequent `DSPChain::process()` calls skip the bypassed plugin at zero SEH
+  overhead (the `m_bypassed` check in `VSTPlugin2::process()` short-circuits
+  before any VST DLL call).
 
 #### Layer 2 — Addon-level SEH guard in `CActiveAEDSP::MasterProcess()` *(implemented)*
 
@@ -301,9 +367,19 @@ are registered in the parent `CMakeLists.txt`.)*
 ### 10 — Addon manifest
 **File:** `system/addon-manifest.xml`
 
+The `xbmc.audiodsp` virtual-provider entry is already present and registered as
+**required** (no `optional` attribute):
+
 ```xml
-<addon optional="true">xbmc.audiodsp</addon>
+<addon>xbmc.audiodsp</addon>
 ```
+
+This is intentional: `xbmc.audiodsp` ships no DLL — it is a virtual
+extension-point addon.  It must always be present so that `audiodsp.vsthost`
+can declare its `<import>` dependency and have it resolved by the addon manager.
+Making it `optional="true"` would allow the manager to consider
+`audiodsp.vsthost` enabled even when the virtual provider is absent, causing a
+failed `MeetsVersion` check at runtime and silently preventing audio routing.
 
 ---
 
@@ -321,8 +397,8 @@ are registered in the parent `CMakeLists.txt`.)*
 | H | Whole addon crash terminates audio render thread | §8 layer 2 SEH → `m_dspFailed` passthrough | ✅ done |
 | I | No automatic recovery after crash | §8 layer 3 recovery timer | ⏳ future work |
 | J | `EditorBridge::m_chain` dangling after `StreamDestroy` | §6 `setChain(nullptr)` | ✅ done |
-| K | `addons/xbmc.audiodsp/addon.xml` version 0.1.0 ≠ required 0.1.8 | §1 — bump version attribute | ❌ **still needed** |
-| L | Per-plugin crash isolation in `DSPChain::process()` | §8 layer 1 `callPluginProcessSafe` | ⏳ future work |
+| K | `addons/xbmc.audiodsp/addon.xml` version 0.1.0 ≠ required 0.1.8 | §1 — bumped to 0.1.8 | ✅ done |
+| L | Per-plugin crash isolation in `DSPChain::process()` (VST2) | §8 layer 1 `callSlotProcessSafe` | 🔧 current work |
 
 ---
 
@@ -361,7 +437,11 @@ needed, provided the planar guard in `MasterProcess()` passes.
 | `m_dsp.OnConfigure()` call site | `xbmc/cores/AudioEngine/Engines/ActiveAE/ActiveAE.cpp:1414` |
 | `CActiveAE::RunStages()` DSP injection point | `xbmc/cores/AudioEngine/Engines/ActiveAE/ActiveAE.cpp:2245` |
 | `m_sinkBuffers->m_inputSamples.push_back(out)` | `xbmc/cores/AudioEngine/Engines/ActiveAE/ActiveAE.cpp:2272` |
-| `DSPChain::process()` | `kodi-audiodsp-vsthost/src/dsp/DSPChain.cpp:158-197` |
+| `DSPChain::process()` — processing loop to wrap | `kodi-audiodsp-vsthost/src/dsp/DSPChain.cpp:158-197` |
+| `callSlotProcessSafe` (to be added before line 158) | `kodi-audiodsp-vsthost/src/dsp/DSPChain.cpp` |
+| `VSTPlugin2::callPluginMainSafe()` — SEH pattern reference | `kodi-audiodsp-vsthost/src/vst2/VSTPlugin2.cpp:44-53` |
+| `VSTPlugin2::process()` bypass short-circuit | `kodi-audiodsp-vsthost/src/vst2/VSTPlugin2.cpp:229` |
+| `IVSTPlugin::setBypassed()` / `isBypassed()` | `kodi-audiodsp-vsthost/src/plugin/IVSTPlugin.h:105-106` |
 | `EditorBridge` pipe name | `kodi-audiodsp-vsthost/src/bridge/EditorBridge.h:96` |
 | `EditorBridge::setChain()` | `kodi-audiodsp-vsthost/src/bridge/EditorBridge.cpp:95-99` |
 | `ADDON_Create` / `ADDON_Destroy` lifecycle | `kodi-audiodsp-vsthost/src/addon_main.cpp:39-60` |
@@ -369,4 +449,4 @@ needed, provided the planar guard in `MasterProcess()` passes.
 | `AE_TOP_CONFIGURED_SUSPEND → INIT` branch | `xbmc/cores/AudioEngine/Engines/ActiveAE/ActiveAE.cpp:826-860` |
 | `CPowerManager::OnSleep()` / `OnWake()` | `xbmc/powermanagement/PowerManager.cpp:170-219` |
 | `CAddonDll::Create(ADDON_TYPE, void*, void*)` | `xbmc/addons/binary-addons/AddonDll.cpp:184` |
-| Virtual provider addon | `addons/xbmc.audiodsp/addon.xml` (version must be 0.1.8) |
+| Virtual provider addon | `addons/xbmc.audiodsp/addon.xml` (version 0.1.8, abi 0.1.8) |
