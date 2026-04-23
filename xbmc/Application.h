@@ -479,6 +479,7 @@ private:
   CApplicationPlayer m_appPlayer;
   CEvent m_playerEvent;
   CApplicationStackHelper m_stackHelper;
+  std::deque<std::string> m_deferredActions; /*!< Actions queued before stage-3 services are ready; replayed on GUI_MSG_UI_READY */
 };
 
 XBMC_GLOBAL_REF(CApplication,g_application);
