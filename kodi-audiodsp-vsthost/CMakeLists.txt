@@ -18,15 +18,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # ---------------------------------------------------------------------------
-# User-configurable paths
-# ---------------------------------------------------------------------------
-set(KODI_ADSP_SDK_DIR
-    "C:/src/xbmc/xbmc/addons/kodi-addon-dev-kit/include/kodi"
-    CACHE PATH
-    "Path to the Kodi ADSP addon dev-kit include directory \
-(xbmc/addons/kodi-addon-dev-kit/include/kodi)")
-
-# ---------------------------------------------------------------------------
 # Collect main plugin sources
 # (src/ subdirectories: bridge, dsp, plugin, settings, util, vst2)
 # ---------------------------------------------------------------------------
@@ -50,7 +41,6 @@ target_include_directories(audiodsp.vsthost
     PRIVATE
         "${CMAKE_SOURCE_DIR}/src"
         "${CMAKE_SOURCE_DIR}/include/kodi-legacy-adsp"
-        "${KODI_ADSP_SDK_DIR}"
 )
 
 if(WIN32)
@@ -110,6 +100,6 @@ message(STATUS "------------------------------------------------------------")
 message(STATUS "audiodsp.vsthost build configuration")
 message(STATUS "  Version          : ${PROJECT_VERSION}")
 message(STATUS "  C++ standard     : ${CMAKE_CXX_STANDARD}")
-message(STATUS "  Kodi ADSP SDK    : ${KODI_ADSP_SDK_DIR}")
+message(STATUS "  Legacy ADSP hdrs : ${CMAKE_SOURCE_DIR}/include/kodi-legacy-adsp")
 message(STATUS "  Platform         : ${CMAKE_SYSTEM_NAME}")
 message(STATUS "------------------------------------------------------------")
