@@ -386,6 +386,38 @@ public:
   }
   //----------------------------------------------------------------------------
 
+  //============================================================================
+  ///
+  /// @ingroup cpp_kodi_addon_videocodec
+  /// @brief Query the platform-native buffer handle for a buffer previously
+  /// obtained via @ref GetFrameBuffer().
+  ///
+  /// Allows the addon to render directly into the underlying GPU/hardware
+  /// buffer (for example via EGLImage import of a DMA-BUF on Linux), avoiding
+  /// CPU readback and copy.
+  ///
+  /// @param[in]  videoBufferHandle The opaque handle from
+  ///             @ref VIDEOCODEC_PICTURE::videoBufferHandle.
+  /// @param[out] platformBuffer Filled in on success. The `type` field
+  ///             indicates how to interpret `handle`.
+  /// @return     true if a native handle is available, false otherwise.
+  ///             Returns false on platforms where the buffer is plain CPU
+  ///             memory or when the API is unavailable; in that case the
+  ///             addon should fall back to the @ref VIDEOCODEC_PICTURE::decodedData
+  ///             CPU pointer.
+  ///
+  /// @remarks Only called from addon itself
+  ///
+  bool GetFrameBufferPlatformHandle(KODI_HANDLE videoBufferHandle,
+                                    VIDEOCODEC_PLATFORM_BUFFER& platformBuffer)
+  {
+    if (!m_instanceData->toKodi->get_frame_buffer_platform_handle)
+      return false;
+    return m_instanceData->toKodi->get_frame_buffer_platform_handle(
+        m_instanceData->toKodi->kodiInstance, videoBufferHandle, &platformBuffer);
+  }
+  //----------------------------------------------------------------------------
+
 private:
   void SetAddonStruct(KODI_ADDON_INSTANCE_STRUCT* instance)
   {

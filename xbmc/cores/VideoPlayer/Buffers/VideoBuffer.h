@@ -42,6 +42,8 @@ struct YuvImage
 #define BUFFER_STATE_DECODER 0x01;
 #define BUFFER_STATE_RENDER  0x02;
 
+struct AVDRMFrameDescriptor;
+
 class CVideoBuffer;
 class IVideoBufferPool;
 class CVideoBufferManager;
@@ -119,6 +121,16 @@ public:
    * \brief End CPU access to the buffer memory. Counterpart to SyncStart().
    */
   virtual void SyncEnd() {}
+
+  /*!
+   * \brief Return an AVDRMFrameDescriptor for platform-buffer-aware callers.
+   *
+   * Default no-op returning nullptr. Overridden by DRM PRIME buffer types
+   * (e.g. CVideoBufferDMA) that carry a DMA-BUF descriptor. Lets cross-
+   * platform callers query for a platform handle without needing to know
+   * the concrete buffer type.
+   */
+  virtual AVDRMFrameDescriptor* GetDescriptor() const { return nullptr; }
 
   static bool CopyPicture(YuvImage* pDst, YuvImage *pSrc);
   static bool CopyNV12Picture(YuvImage* pDst, YuvImage *pSrc);

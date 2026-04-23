@@ -81,6 +81,20 @@ extern "C"
     /// @brief UYVY 4:2:2 packed (U Y0 V Y1)
     VIDEOCODEC_FORMAT_UYVY422,
 
+    /// @brief Packed RGB 8:8:8:8, 32 bpp, X (padding) in the high byte.
+    /// In memory (little-endian): B, G, R, X. Matches DRM_FORMAT_XRGB8888.
+    VIDEOCODEC_FORMAT_XRGB8888,
+    /// @brief Packed RGB 10:10:10, 32 bpp, 2-bit X (padding) in the top bits.
+    /// In memory: little-endian dword 0xXXRRRGGGBBB. Matches DRM_FORMAT_XRGB2101010.
+    VIDEOCODEC_FORMAT_XRGB2101010,
+    /// @brief Packed RGB 16:16:16, 64 bpp, X in the high 16 bits.
+    /// In memory (little-endian): B, G, R, X each 2 bytes. Matches DRM_FORMAT_XRGB16161616.
+    /// Used for 12-bit content stored in 16-bit containers; lower bits are zero.
+    VIDEOCODEC_FORMAT_XRGB16161616,
+    /// @brief Packed RGB 16:16:16, 64 bpp half-float (IEEE 754 binary16),
+    /// X in the high 16 bits. Matches DRM_FORMAT_XRGB16161616F. HDR float path.
+    VIDEOCODEC_FORMAT_XRGB16161616F,
+
     /// @brief The maximum value to use in a list.
     VIDEOCODEC_FORMAT_MAXFORMATS
   };
@@ -285,6 +299,118 @@ extern "C"
   ///@}
   //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @ingroup cpp_kodi_addon_videocodec_Defs
+  /// @brief Platform-native buffer type, used to identify the meaning of the
+  /// `handle` field in @ref VIDEOCODEC_PLATFORM_BUFFER.
+  ///
+  /// Returned by
+  /// @ref kodi::addon::CInstanceVideoCodec::GetFrameBufferPlatformHandle so
+  /// addons can render directly into the underlying GPU/hardware buffer
+  /// without going through CPU memory.
+  ///
+  enum VIDEOCODEC_PLATFORM_BUFFER_TYPE
+  {
+    /// @brief No native handle available, addon must use the CPU-mapped pointer
+    /// in @ref VIDEOCODEC_PICTURE::decodedData.
+    VIDEOCODEC_PLATFORM_BUFFER_NONE = 0,
+    /// @brief Linux DMA-BUF. `handle` points at a @ref KODI_DRM_FRAME_DESCRIPTOR
+    /// which carries DMA-BUF fd(s), DRM fourcc, modifier, and per-plane
+    /// offsets/pitches. All fields are native DRM types (from
+    /// `<drm_fourcc.h>`); no ffmpeg/libavutil dependency required.
+    VIDEOCODEC_PLATFORM_BUFFER_DRM_PRIME,
+    /// @brief Windows D3D11. `handle` is `ID3D11Texture2D*`. Reserved -- not
+    /// implemented yet.
+    VIDEOCODEC_PLATFORM_BUFFER_D3D11_TEXTURE,
+    /// @brief macOS/iOS. `handle` is `IOSurfaceRef`. Reserved -- not
+    /// implemented yet.
+    VIDEOCODEC_PLATFORM_BUFFER_IOSURFACE,
+    /// @brief Android. `handle` is `AHardwareBuffer*`. Reserved -- not
+    /// implemented yet.
+    VIDEOCODEC_PLATFORM_BUFFER_AHARDWAREBUFFER,
+  };
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @defgroup cpp_kodi_addon_videocodec_Defs_KODI_DRM_FRAME_DESCRIPTOR DRM PRIME frame descriptor
+  /// @ingroup cpp_kodi_addon_videocodec_Defs
+  /// @brief DRM-native multi-planar DMA-BUF descriptor.
+  ///
+  /// Pointed at by @ref VIDEOCODEC_PLATFORM_BUFFER::handle when
+  /// @ref VIDEOCODEC_PLATFORM_BUFFER::type is
+  /// @ref VIDEOCODEC_PLATFORM_BUFFER_DRM_PRIME. Layout mirrors the information
+  /// DRM itself exposes via `drmModeAddFB2` + DMA-BUF fds; no ffmpeg types are
+  /// used so addons need only `<drm_fourcc.h>` from libdrm.
+  ///
+  ///@{
+#define KODI_DRM_MAX_PLANES 4
+
+  /// @brief One plane of a DRM layer: which object holds its data, and where.
+  struct KODI_DRM_PLANE
+  {
+    /// @brief Index into @ref KODI_DRM_FRAME_DESCRIPTOR::objects.
+    uint32_t object_index;
+    /// @brief Byte offset within that object where this plane begins.
+    uint32_t offset;
+    /// @brief Row stride in bytes.
+    uint32_t pitch;
+  };
+
+  /// @brief One backing object (DMA-BUF) underlying one or more layers/planes.
+  struct KODI_DRM_OBJECT
+  {
+    /// @brief DMA-BUF file descriptor. Owned by Kodi; do not close.
+    int32_t fd;
+    /// @brief Total size of the DMA-BUF in bytes.
+    uint32_t size;
+    /// @brief DRM format modifier (`DRM_FORMAT_MOD_*` from `<drm_fourcc.h>`);
+    /// `DRM_FORMAT_MOD_INVALID` when unknown.
+    uint64_t format_modifier;
+  };
+
+  /// @brief One image layer. Most buffers have a single layer; multi-layer
+  /// (e.g. planar YUV with separately allocated Y and UV) is also supported.
+  struct KODI_DRM_LAYER
+  {
+    /// @brief DRM fourcc (`DRM_FORMAT_*` from `<drm_fourcc.h>`).
+    uint32_t format;
+    /// @brief Number of planes used (up to @ref KODI_DRM_MAX_PLANES).
+    uint32_t nb_planes;
+    struct KODI_DRM_PLANE planes[KODI_DRM_MAX_PLANES];
+  };
+
+  /// @brief Full descriptor: which objects back which layers, and how.
+  struct KODI_DRM_FRAME_DESCRIPTOR
+  {
+    uint32_t nb_objects;
+    struct KODI_DRM_OBJECT objects[KODI_DRM_MAX_PLANES];
+    uint32_t nb_layers;
+    struct KODI_DRM_LAYER layers[KODI_DRM_MAX_PLANES];
+  };
+  ///@}
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @defgroup cpp_kodi_addon_videocodec_Defs_VIDEOCODEC_PLATFORM_BUFFER struct VIDEOCODEC_PLATFORM_BUFFER
+  /// @ingroup cpp_kodi_addon_videocodec_Defs
+  /// @brief Native buffer descriptor returned by
+  /// @ref kodi::addon::CInstanceVideoCodec::GetFrameBufferPlatformHandle.
+  ///
+  /// The meaning of `handle` depends on `type` -- see
+  /// @ref VIDEOCODEC_PLATFORM_BUFFER_TYPE for per-type interpretation.
+  ///
+  ///@{
+  struct VIDEOCODEC_PLATFORM_BUFFER
+  {
+    /// @brief Type of the native handle. Determines how to interpret `handle`.
+    enum VIDEOCODEC_PLATFORM_BUFFER_TYPE type;
+    /// @brief Opaque pointer to the platform-native buffer object. The addon
+    /// must cast based on `type`. Lifetime is bounded by the underlying
+    /// `videoBufferHandle` (released via @ref ReleaseFrameBuffer).
+    void* handle;
+  };
+  ///@}
+  //----------------------------------------------------------------------------
   struct VIDEOCODEC_INITDATA
   {
     enum VIDEOCODEC_TYPE codec;
@@ -337,6 +463,9 @@ extern "C"
     KODI_HANDLE kodiInstance;
     bool (*get_frame_buffer)(void* kodiInstance, struct VIDEOCODEC_PICTURE* picture);
     void (*release_frame_buffer)(void* kodiInstance, void* buffer);
+    bool (*get_frame_buffer_platform_handle)(void* kodiInstance,
+                                             KODI_HANDLE videoBufferHandle,
+                                             struct VIDEOCODEC_PLATFORM_BUFFER* platformBuffer);
   } AddonToKodiFuncTable_VideoCodec;
 
   typedef struct AddonInstance_VideoCodec

@@ -165,6 +165,22 @@ uint32_t CVideoBufferPoolDMA::TranslateFormat(AVPixelFormat format)
     case AV_PIX_FMT_YUV444P12:
       return DRM_FORMAT_S412;
 #endif
+    // Packed RGB formats. AV_PIX_FMT_BGR0 = bytes B,G,R,X = DRM_FORMAT_XRGB8888.
+    case AV_PIX_FMT_BGR0:
+      return DRM_FORMAT_XRGB8888;
+    case AV_PIX_FMT_X2RGB10LE:
+      return DRM_FORMAT_XRGB2101010;
+      // ffmpeg has no X variant of 16-bit RGB; we use RGBA64/RGBAF16 with the
+      // alpha component treated as undefined padding (X). DRM 16-bit RGB
+      // formats need libdrm >= 2.4.110.
+#if defined(DRM_FORMAT_XRGB16161616)
+    case AV_PIX_FMT_RGBA64LE:
+      return DRM_FORMAT_XRGB16161616;
+#endif
+#if defined(DRM_FORMAT_XRGB16161616F)
+    case AV_PIX_FMT_RGBAF16LE:
+      return DRM_FORMAT_XRGB16161616F;
+#endif
     default:
       return 0;
   }

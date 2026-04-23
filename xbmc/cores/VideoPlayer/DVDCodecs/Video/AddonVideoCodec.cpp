@@ -20,6 +20,7 @@
 extern "C"
 {
 #include <libavcodec/defs.h>
+#include <libavutil/hwcontext_drm.h>
 #include <libavutil/pixdesc.h>
 }
 
@@ -63,6 +64,18 @@ AVPixelFormat ConvertToPixelFormat(const VIDEOCODEC_FORMAT videoFormat)
       return AV_PIX_FMT_YUYV422;
     case VIDEOCODEC_FORMAT_UYVY422:
       return AV_PIX_FMT_UYVY422;
+    case VIDEOCODEC_FORMAT_XRGB8888:
+      // BGR0 in ffmpeg = bytes B,G,R,X = DRM_FORMAT_XRGB8888
+      return AV_PIX_FMT_BGR0;
+    case VIDEOCODEC_FORMAT_XRGB2101010:
+      return AV_PIX_FMT_X2RGB10LE;
+    case VIDEOCODEC_FORMAT_XRGB16161616:
+      // ffmpeg has no X variant for 16-bit RGB; RGBA64 is the closest match.
+      // The alpha bytes are unused (X) for our purposes.
+      return AV_PIX_FMT_RGBA64LE;
+    case VIDEOCODEC_FORMAT_XRGB16161616F:
+      // Same situation for half-float RGB.
+      return AV_PIX_FMT_RGBAF16LE;
     default:
       CLog::LogF(LOGWARNING, "Video pixel format '{}' not valid, fallback to YUV420P.",
                  videoFormat);
@@ -125,6 +138,14 @@ unsigned int GetColorBitsFromVideoFormat(const VIDEOCODEC_FORMAT videoFormat)
       return 8;
     case VIDEOCODEC_FORMAT_P010:
       return 10;
+    case VIDEOCODEC_FORMAT_XRGB8888:
+      return 8;
+    case VIDEOCODEC_FORMAT_XRGB2101010:
+      return 10;
+    case VIDEOCODEC_FORMAT_XRGB16161616:
+      return 12;
+    case VIDEOCODEC_FORMAT_XRGB16161616F:
+      return 16;
     default:
       CLog::LogF(LOGWARNING, "Video pixel format '{}' not valid, fallback to 8 bits color.",
                  videoFormat);
@@ -149,6 +170,7 @@ CAddonVideoCodec::CAddonVideoCodec(CProcessInfo& processInfo,
   m_ifc.videocodec->toKodi->kodiInstance = this;
   m_ifc.videocodec->toKodi->get_frame_buffer = get_frame_buffer;
   m_ifc.videocodec->toKodi->release_frame_buffer = release_frame_buffer;
+  m_ifc.videocodec->toKodi->get_frame_buffer_platform_handle = get_frame_buffer_platform_handle;
   if (CreateInstance() != ADDON_STATUS_OK || !m_ifc.videocodec->toAddon->open)
   {
     CLog::Log(LOGERROR, "CInputStreamAddon: Failed to create add-on instance for '{}'",
@@ -541,6 +563,21 @@ bool CAddonVideoCodec::GetFrameBuffer(VIDEOCODEC_PICTURE &picture)
   }
   picture.decodedData = videoBuffer->GetMemPtr();
   picture.videoBufferHandle = videoBuffer;
+
+  // Populate the AVDRMFrameDescriptor immediately so addons that call
+  // GetFrameBufferPlatformHandle() before returning VC_PICTURE see valid
+  // fields (fd, fourcc, offsets, pitches). Without this the descriptor
+  // would still be zero-initialized until CAddonVideoCodec::GetPicture
+  // later calls SetDimensions a second time. Virtual SetDimensions is a
+  // no-op for non-DMA buffers.
+  int strides[YuvImage::MAX_PLANES] = {};
+  int offsets[YuvImage::MAX_PLANES] = {};
+  for (int i = 0; i < YuvImage::MAX_PLANES; ++i)
+  {
+    strides[i] = static_cast<int>(picture.stride[i]);
+    offsets[i] = static_cast<int>(picture.planeOffsets[i]);
+  }
+  videoBuffer->SetDimensions(picture.width, picture.height, strides, offsets);
   videoBuffer->SyncStart();
 
   return true;
@@ -550,6 +587,57 @@ void CAddonVideoCodec::ReleaseFrameBuffer(KODI_HANDLE videoBufferHandle)
 {
   if (videoBufferHandle)
     static_cast<CVideoBuffer*>(videoBufferHandle)->Release();
+}
+
+bool CAddonVideoCodec::GetFrameBufferPlatformHandle(KODI_HANDLE videoBufferHandle,
+                                                    VIDEOCODEC_PLATFORM_BUFFER& platformBuffer)
+{
+  platformBuffer.type = VIDEOCODEC_PLATFORM_BUFFER_NONE;
+  platformBuffer.handle = nullptr;
+
+  if (!videoBufferHandle)
+    return false;
+
+  auto* videoBuffer = static_cast<CVideoBuffer*>(videoBufferHandle);
+
+  // DRM-PRIME DMA-BUF platforms (Linux GBM/Wayland) override GetDescriptor()
+  // to return an AVDRMFrameDescriptor carrying fd/fourcc/modifier/planes.
+  // Non-DRM-PRIME buffer types return nullptr from the base class default.
+  // Translate ffmpeg's descriptor into the Kodi-native KODI_DRM_FRAME_DESCRIPTOR
+  // so the addon API doesn't leak ffmpeg types (see video_codec.h). Layout is
+  // identical by design, but the copy insulates addons from any future ffmpeg
+  // ABI churn in AVDRMFrameDescriptor.
+  if (auto* src = videoBuffer->GetDescriptor())
+  {
+    m_drmFrameDesc = {};
+    m_drmFrameDesc.nb_objects = static_cast<uint32_t>(src->nb_objects);
+    for (int i = 0; i < src->nb_objects && i < KODI_DRM_MAX_PLANES; ++i)
+    {
+      m_drmFrameDesc.objects[i].fd = src->objects[i].fd;
+      m_drmFrameDesc.objects[i].size = static_cast<uint32_t>(src->objects[i].size);
+      m_drmFrameDesc.objects[i].format_modifier = src->objects[i].format_modifier;
+    }
+    m_drmFrameDesc.nb_layers = static_cast<uint32_t>(src->nb_layers);
+    for (int l = 0; l < src->nb_layers && l < KODI_DRM_MAX_PLANES; ++l)
+    {
+      m_drmFrameDesc.layers[l].format = src->layers[l].format;
+      m_drmFrameDesc.layers[l].nb_planes = static_cast<uint32_t>(src->layers[l].nb_planes);
+      for (int p = 0; p < src->layers[l].nb_planes && p < KODI_DRM_MAX_PLANES; ++p)
+      {
+        m_drmFrameDesc.layers[l].planes[p].object_index =
+            static_cast<uint32_t>(src->layers[l].planes[p].object_index);
+        m_drmFrameDesc.layers[l].planes[p].offset =
+            static_cast<uint32_t>(src->layers[l].planes[p].offset);
+        m_drmFrameDesc.layers[l].planes[p].pitch =
+            static_cast<uint32_t>(src->layers[l].planes[p].pitch);
+      }
+    }
+    platformBuffer.type = VIDEOCODEC_PLATFORM_BUFFER_DRM_PRIME;
+    platformBuffer.handle = &m_drmFrameDesc;
+    return true;
+  }
+
+  return false;
 }
 
 /*********************     ADDON-TO-KODI    **********************/
@@ -568,4 +656,15 @@ void CAddonVideoCodec::release_frame_buffer(void* kodiInstance, KODI_HANDLE vide
     return;
 
   static_cast<CAddonVideoCodec*>(kodiInstance)->ReleaseFrameBuffer(videoBufferHandle);
+}
+
+bool CAddonVideoCodec::get_frame_buffer_platform_handle(void* kodiInstance,
+                                                        KODI_HANDLE videoBufferHandle,
+                                                        VIDEOCODEC_PLATFORM_BUFFER* platformBuffer)
+{
+  if (!kodiInstance || !platformBuffer)
+    return false;
+
+  return static_cast<CAddonVideoCodec*>(kodiInstance)
+      ->GetFrameBufferPlatformHandle(videoBufferHandle, *platformBuffer);
 }
