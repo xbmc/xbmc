@@ -30,6 +30,7 @@
 /target/*/iphonesimulator*.*_x86_64*-target-**
 /target/*/appletvos*.*_arm64*-target-**
 /target/*/appletvsimulator*.*_x86_64*-target-**
+/target/*/wasm*-emscripten-**
 
 /pre-depends/
 /pre-build-deps/
