@@ -1,27 +1,56 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Clément Péron <peron.clem@gmail.com>
 Date: Tue, 14 Apr 2026 00:00:00 +0000
-Subject: [PATCH] Makefile.pre.in: use em-config LLVM_ROOT for trampoline clang
+Subject: [PATCH] Emscripten: use em-config LLVM_ROOT for trampoline clang
 
 When CC is wrapped by ccache, the Emscripten trampoline rule cannot derive the
-matching clang path by treating CC as a single executable path. Query the active
-LLVM toolchain path with em-config instead.
+matching clang path by treating CC as a single executable path. Detect em-config
+during configure and query the active LLVM toolchain path from that binary.
 ---
- Makefile.pre.in | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Makefile.pre.in | 3 ++-
+ configure.ac    | 9 +++++++++
+ 2 files changed, 11 insertions(+), 1 deletion(-)
 
 diff --git a/Makefile.pre.in b/Makefile.pre.in
-index 37f4c19..aa9b40f 100644
+index 37f4c19..8b202055d0 100644
 --- a/Makefile.pre.in
 +++ b/Makefile.pre.in
-@@ -3110,7 +3110,7 @@ Python/asm_trampoline.o: $(srcdir)/Python/asm_trampoline.S
+@@ -58,6 +58,7 @@ DTRACE_OBJS=    @DTRACE_OBJS@
+ DTRACE_OBJS=    @DTRACE_OBJS@
+ DSYMUTIL=       @DSYMUTIL@
+ DSYMUTIL_PATH=  @DSYMUTIL_PATH@
++EMCONFIG=             @EMCONFIG@
+ 
+ GNULD=		@GNULD@
+ 
+@@ -3110,7 +3111,7 @@ Python/asm_trampoline.o: $(srcdir)/Python/asm_trampoline.S
  
  Python/emscripten_trampoline_inner.wasm: $(srcdir)/Python/emscripten_trampoline_inner.c
  	# emcc has a path that ends with emsdk/upstream/emscripten/emcc, we're looking for emsdk/upstream/bin/clang.
 -	$$(dirname $$(dirname $(CC)))/bin/clang -o $@ $< -mgc -O2 -Wl,--no-entry -Wl,--import-table -Wl,--import-memory -target wasm32-unknown-unknown -nostdlib
-+	$$(em-config LLVM_ROOT)/clang -o $@ $< -mgc -O2 -Wl,--no-entry -Wl,--import-table -Wl,--import-memory -target wasm32-unknown-unknown -nostdlib
++	$$($(EMCONFIG) LLVM_ROOT)/clang -o $@ $< -mgc -O2 -Wl,--no-entry -Wl,--import-table -Wl,--import-memory -target wasm32-unknown-unknown -nostdlib
  
  Python/emscripten_trampoline_wasm.c: Python/emscripten_trampoline_inner.wasm
  	$(PYTHON_FOR_REGEN) $(srcdir)/Tools/wasm/emscripten/prepare_external_wasm.py $< $@ getWasmTrampolineModule
+diff --git a/configure.ac b/configure.ac
+index d2664cc..8a1261f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -995,6 +995,15 @@ AS_CASE([$ac_sys_system],
+     AS_VAR_APPEND([LDFLAGS], [" -mios-version-min=${IPHONEOS_DEPLOYMENT_TARGET}"])
+   ],
+ )
++
++if test "$ac_sys_system" = "Emscripten"
++then
++  dnl look for em-config
++  AC_PATH_PROG([EMCONFIG], [em-config], [not found])
++  if test "$EMCONFIG" = "not found"; then
++      AC_MSG_ERROR([em-config command not found on \$PATH])
++  fi
++fi
+ 
+ if test "$ac_sys_system" = "Darwin"
+ then
 -- 
 2.39.5

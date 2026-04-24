@@ -9,11 +9,11 @@ This guide has been tested only on **macOS** with **Emscripten SDK 5.0.6**. Othe
 
 ## Table of Contents
 1. **[Document conventions](#1-document-conventions)**
-2. **[Prerequisites](#2-prerequisites)**  
-  2.1. **[Install the Emscripten SDK](#21-install-the-emscripten-sdk)**  
+2. **[Prerequisites](#2-prerequisites)**
+  2.1. **[Install the Emscripten SDK](#21-install-the-emscripten-sdk)**
   2.2. **[Activate the Emscripten environment](#22-activate-the-emscripten-environment)**
 3. **[Get the source code](#3-get-the-source-code)**
-4. **[Build tools and dependencies](#4-build-tools-and-dependencies)**  
+4. **[Build tools and dependencies](#4-build-tools-and-dependencies)**
   4.1. **[Advanced Configure Options](#41-advanced-configure-options)**
 
 ## 1. Document conventions
@@ -42,14 +42,14 @@ git clone -b Krypton https://github.com/xbmc/xbmc kodi
 ```
 
 Several different strategies are used to draw your attention to certain pieces of information. In order of how critical the information is, these items are marked as a note, tip, or warning. For example:
- 
-> [!NOTE]  
+
+> [!NOTE]
 > Linux is user friendly... It's just very particular about who its friends are.
 
 > [!TIP]
 > Algorithm is what developers call code they do not want to explain.
 
-> [!WARNING]  
+> [!WARNING]
 > Developers don't change light bulbs. It's a hardware problem.
 
 **[back to top](#table-of-contents)** | **[back to section top](#1-document-conventions)**
@@ -62,7 +62,6 @@ Several different strategies are used to draw your attention to certain pieces o
 Install Xcode Command Line Tools and the remaining host tools:
 ```
 xcode-select --install
-brew install autoconf automake cmake gperf libtool pkg-config python
 ```
 
 ### 2.1. Install the Emscripten SDK
@@ -71,7 +70,7 @@ Install Emscripten with Homebrew (recommended on macOS):
 brew install emscripten
 ```
 
-> [!WARNING]  
+> [!WARNING]
 > Kodi's WASM bring-up has only been tested against Emscripten **5.0.6**. Other versions may work but are unverified; if you hit an unexpected build failure, please try 5.0.6 before reporting it. You can check the version shipped by Homebrew with `brew info emscripten`.
 
 **Alternatively**, install **emsdk 5.0.6** manually if you need to pin an exact version or use a different host OS:
@@ -116,7 +115,7 @@ git clone https://github.com/xbmc/xbmc kodi
 ## 4. Build tools and dependencies
 The WASM depends are built in `$HOME/kodi/tools/depends` and installed under the prefix you pass to `configure`. This guide uses `$HOME/kodi-wasm-depends`.
 
-> [!NOTE]  
+> [!NOTE]
 > `--host=wasm32-unknown-emscripten` and `--with-platform=wasm` are both required. The Emscripten SDK must be activated first (see **[2.2. Activate the Emscripten environment](#22-activate-the-emscripten-environment)**).
 
 Prepare to configure build:
@@ -142,7 +141,7 @@ make -j$(getconf _NPROCESSORS_ONLN)
 > [!TIP]
 > By adding `-j<number>` to the make command, you can choose how many concurrent jobs will be used and expedite the build process. It is recommended to use `-j$(getconf _NPROCESSORS_ONLN)` to compile on all available processor cores. The build machine can also be configured to do this automatically by adding `export MAKEFLAGS="-j$(getconf _NPROCESSORS_ONLN)"` to your shell config (e.g. `~/.bashrc`).
 
-> [!WARNING]  
+> [!WARNING]
 > Look for the `Dependencies built successfully.` success message. If in doubt run a single threaded `make` command until the message appears. If the single make fails, clean the specific library by issuing `make -C target/<name_of_failed_lib> distclean` and run `make` again.
 
 Once the build finishes, the per-library install trees and the generated toolchain files (`Toolchain.cmake`, `config.site`, and the Meson cross file) are available under the WASM depends prefix:

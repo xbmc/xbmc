@@ -275,7 +275,12 @@ case $host in
     # Resolve official Emscripten root from em-config (required).
     em_config_bin="$use_toolchain/em-config"
     if test ! -x "$em_config_bin"; then
-      AC_MSG_ERROR([Missing required em-config at $em_config_bin])
+      alt_em_config_bin="$use_toolchain/upstream/emscripten/em-config"
+      if test -x "$alt_em_config_bin"; then
+        em_config_bin="$alt_em_config_bin"
+      else
+        AC_MSG_ERROR([Missing required em-config at $em_config_bin or $alt_em_config_bin])
+      fi
     fi
     emscripten_toolchain_root=`"$em_config_bin" EMSCRIPTEN_ROOT 2>/dev/null`
     if test -z "$emscripten_toolchain_root"; then
@@ -311,6 +316,7 @@ AC_PATH_TOOL([NM], [${platform_tool_prefix}nm],, $PATH_FOR_HOST)
 AC_PATH_TOOL([OBJDUMP], [${platform_tool_prefix}objdump],, $PATH_FOR_HOST)
 AC_PATH_TOOL([CC],[$platform_cc],,$PATH_FOR_HOST)
 AC_PATH_TOOL([CXX],[$platform_cxx],,$PATH_FOR_HOST)
+AC_PATH_PROG([EMCONFIG], [em-config], , $PATH_FOR_HOST)
 
 if test "x$LD" = "x"; then
   AC_MSG_ERROR(No linker found with name ${use_linker}. You may want to provide using --with-linker=<linker>)
