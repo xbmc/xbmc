@@ -937,6 +937,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
     {
       // Add the movie entry
       int movieId{-1};
+      item.SetProperty("from_nfo", true);
+
       CVideoInfoTag* tag{item.GetVideoInfoTag()};
       if (tag->HasVideoVersions())
       {
@@ -972,8 +974,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
           if (!AddSet(pItem->GetVideoInfoTag()->m_set))
             return InfoRet::INFO_ERROR;
       }
-
-      item.SetProperty("from_nfo", true);
 
       // Look for default version
       int defaultVersionFileId{-1};
@@ -1108,6 +1108,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       std::tie(result, loader) = ReadInfoTag(*pItem, info2, bDirNames, true);
     if (result == InfoType::FULL)
     {
+      pItem->SetProperty("from_nfo", true);
       if (AddVideo(pItem, info2, bDirNames, true) < 0)
         return InfoRet::INFO_ERROR;
       return InfoRet::ADDED;
@@ -1569,10 +1570,14 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     // Determine bluray playlist (if possible)
     // Also populates streamdetails
-    if (::UTILS::DISCS::IsBlurayDiscImage(path) || URIUtils::IsBDFile(path))
+    if (!libraryImport && !pItem->GetProperty("from_nfo").asBoolean(false) &&
+        (::UTILS::DISCS::IsBlurayDiscImage(path) || URIUtils::IsBDFile(path)))
     {
       if (CDiscDirectoryHelper::GetOrShowPlaylistSelection(*pItem, MenuDecision::SILENT))
-        pItem->GetVideoInfoTag()->SetFileNameAndPath(pItem->GetDynPath());
+      {
+        path = pItem->GetDynPath();
+        pItem->GetVideoInfoTag()->SetFileNameAndPath(path);
+      }
     }
 
     /* As HasStreamDetails() returns true for TV shows (because the scraper calls SetVideoInfoTag()
@@ -2071,6 +2076,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
         std::tie(result, loader) = ReadInfoTag(item, info, false, false);
       if (result == InfoType::FULL)
       {
+        item.SetProperty("from_nfo", true);
+
         // override with episode and season number from file if available
         if (file->iEpisode > -1)
         {
