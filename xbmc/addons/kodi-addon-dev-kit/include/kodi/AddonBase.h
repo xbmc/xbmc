@@ -136,6 +136,12 @@ struct ADDON_HANDLE_STRUCT
 };
 typedef ADDON_HANDLE_STRUCT *ADDON_HANDLE;
 
+/* Sentinel: signals to legacy ADSP headers (xbmc_addon_types.h) that
+ * ADDON_STATUS and ADDON_HANDLE_STRUCT are already defined here, so they
+ * must not be re-defined. This prevents C2011 "type redefinition" errors
+ * when both headers are included in the same translation unit. */
+#define KODI_ADDON_DEV_KIT_TYPES_DEFINED
+
 /*
  * To have a on add-on and kodi itself handled string always on known size!
  */

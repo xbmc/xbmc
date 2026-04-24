@@ -35,6 +35,13 @@
 extern "C" {
 #endif
 
+/* Guard against redefinition when this header is included from a Kodi
+ * translation unit that already pulled in kodi-addon-dev-kit/include/kodi/AddonBase.h.
+ * That header defines ADDON_STATUS and ADDON_HANDLE_STRUCT and sets the
+ * sentinel macro KODI_ADDON_DEV_KIT_TYPES_DEFINED.  When the sentinel is
+ * absent (e.g. building audiodsp.vsthost itself) we define the types normally. */
+#ifndef KODI_ADDON_DEV_KIT_TYPES_DEFINED
+
 enum ADDON_STATUS
 {
   ADDON_STATUS_OK,
@@ -45,6 +52,8 @@ enum ADDON_STATUS
   ADDON_STATUS_NEED_SAVEDSETTINGS,
   ADDON_STATUS_PERMANENT_FAILURE   /**< permanent failure, like failing to resolve methods */
 };
+
+#endif /* !KODI_ADDON_DEV_KIT_TYPES_DEFINED */
 
 typedef struct
 {
@@ -59,6 +68,8 @@ typedef struct
 /*!
  * @brief Handle used to return data from the PVR add-on to CPVRClient
  */
+#ifndef KODI_ADDON_DEV_KIT_TYPES_DEFINED
+
 struct ADDON_HANDLE_STRUCT
 {
   void *callerAddress;  /*!< address of the caller */
@@ -66,6 +77,8 @@ struct ADDON_HANDLE_STRUCT
   int   dataIdentifier; /*!< parameter to pass back when calling the callback */
 };
 typedef ADDON_HANDLE_STRUCT *ADDON_HANDLE;
+
+#endif /* !KODI_ADDON_DEV_KIT_TYPES_DEFINED */
 
 #ifdef __cplusplus
 };
