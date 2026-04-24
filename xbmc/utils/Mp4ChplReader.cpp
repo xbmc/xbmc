@@ -89,7 +89,7 @@ ChplChapterResult ParseChpl(CFile& file, const int64_t chplSize, std::vector<Chp
       (uint32_t(flagBuf[0]) << 16) | (uint32_t(flagBuf[1]) << 8) | uint32_t(flagBuf[2]);
 
   uint32_t count = 0;
-  std::chrono::nanoseconds timeBase;
+  std::chrono::nanoseconds timeBase{};
 
   if (version == 0)
   {

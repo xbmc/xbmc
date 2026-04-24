@@ -40,7 +40,7 @@ bool CMusicDatabaseDirectory::GetDirectory(const CURL& url, CFileItemList &items
   // Adjust path to control navigation from albums to discs or directly to songs
   CQueryParams params;
   NodeType type;
-  NodeType childtype;
+  NodeType childtype{};
   GetDirectoryNodeInfo(path, type, childtype, params);
   if (childtype == NodeType::DISC)
   {
