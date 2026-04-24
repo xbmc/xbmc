@@ -155,6 +155,39 @@ void DSPChain::allocatePingPong()
 //  Audio processing
 // =============================================================================
 
+// SEH filter: runs during the stack walk, before any unwind destructors.
+// Logs the offending plugin path and SEH exception code, then signals that
+// the exception should propagate to the next enclosing __try (Layer 2 in
+// CActiveAEDSP::MasterProcess).
+//
+// Must be a free function — MSVC C4509 prohibits __try/__except in any scope
+// that contains C++ objects with non-trivial destructors.
+static int logSlotCrashAndEscalate(EXCEPTION_POINTERS* ep, const char* pluginPath)
+{
+    std::fprintf(stderr,
+        "[DSPChain] plugin crashed (SEH 0x%08X) — escalating to disable all DSP: %s\n",
+        static_cast<unsigned>(ep->ExceptionRecord->ExceptionCode),
+        pluginPath ? pluginPath : "<unknown>");
+    return EXCEPTION_CONTINUE_SEARCH;  // propagate → caught by Layer 2
+}
+
+// Wrapper that applies the per-slot SEH filter and then re-raises.
+// The __except body is never entered; the filter always returns CONTINUE_SEARCH.
+// pluginPath must be captured from host-heap before the __try (see process()).
+//
+// Must be a free function — same C4509 constraint as logSlotCrashAndEscalate.
+static int callSlotProcessSafe(IVSTPlugin* p, float** in, float** out,
+                                int samples, const char* pluginPath)
+{
+    int result = 0;
+    __try {
+        result = p->process(in, out, samples);
+    } __except (logSlotCrashAndEscalate(GetExceptionInformation(), pluginPath)) {
+        // Never reached — filter always returns EXCEPTION_CONTINUE_SEARCH.
+    }
+    return result;
+}
+
 int DSPChain::process(float** in, float** out, int samples)
 {
     // Clamp to the allocated buffer size to prevent heap overflow.
@@ -179,7 +212,12 @@ int DSPChain::process(float** in, float** out, int samples)
 
     for (auto& slot : m_plugins)
     {
-        const int processed = slot.plugin->process(current->data(), next->data(), safeSamples);
+        // Capture the path as a plain C string before the __try.
+        // slot.path lives on the host heap (unaffected by a plugin-side crash),
+        // so c_str() is safe to capture here and pass into callSlotProcessSafe.
+        const char* pluginPath = slot.path.c_str();
+        const int processed = callSlotProcessSafe(
+            slot.plugin.get(), current->data(), next->data(), safeSamples, pluginPath);
         if (processed == 0)
         {
             // Plugin produced no output (unloaded/bypass failure) — copy input to output.
