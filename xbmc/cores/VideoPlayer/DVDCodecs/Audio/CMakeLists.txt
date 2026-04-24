@@ -1,7 +1,9 @@
-set(SOURCES DVDAudioCodecFFmpeg.cpp
+set(SOURCES AddonAudioCodec.cpp
+            DVDAudioCodecFFmpeg.cpp
             DVDAudioCodecPassthrough.cpp)
 
-set(HEADERS DVDAudioCodec.h
+set(HEADERS AddonAudioCodec.h
+            DVDAudioCodec.h
             DVDAudioCodecFFmpeg.h
             DVDAudioCodecPassthrough.h)
 

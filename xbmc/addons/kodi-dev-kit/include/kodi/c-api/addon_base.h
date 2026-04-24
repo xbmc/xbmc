@@ -285,6 +285,7 @@ extern "C"
       struct AddonInstance_ShaderPreset* shaderpreset;
       struct AddonInstance_VFSEntry* vfs;
       struct AddonInstance_VideoCodec* videocodec;
+      struct AddonInstance_AudioCodec* audiocodec;
       struct AddonInstance_Visualization* visualization;
     };
   } KODI_ADDON_INSTANCE_STRUCT;
