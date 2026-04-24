@@ -36,7 +36,7 @@ static DSPProcessor* GetProc(const ADDON_HANDLE handle)
 // ADDON lifecycle
 // ---------------------------------------------------------------------------
 
-ADDON_STATUS ADDON_Create(void* hdl, void* props)
+/**ADDON_STATUS ADDON_Create(void* hdl, void* props)
 {
     // props is AE_DSP_PROPERTIES (defined in kodi_adsp_types.h as AE_DSP_PROPERTIES)
     const AE_DSP_PROPERTIES* dspProps = static_cast<const AE_DSP_PROPERTIES*>(props);
@@ -49,6 +49,26 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
     if (!g_editorBridge.isRunning())
         g_editorBridge.start(nullptr);
 
+    return ADDON_STATUS_OK;
+}**/
+
+ADDON_STATUS ADDON_Create(void* hdl, void* props)
+{
+    const AE_DSP_PROPERTIES* dspProps = static_cast<const AE_DSP_PROPERTIES*>(props);
+    if (dspProps && dspProps->strUserPath)
+        g_addonDataPath = dspProps->strUserPath;
+
+    // Start editor bridge
+    if (!g_editorBridge.isRunning())
+    {
+        if (!g_editorBridge.start(nullptr))
+        {
+            std::fprintf(stderr,
+                "[VSTHost] ERROR: Failed to start named pipe server\n");
+            return ADDON_STATUS_PERMANENT_FAILURE;
+        }
+    }
+    
     return ADDON_STATUS_OK;
 }
 
