@@ -164,9 +164,12 @@ void DSPChain::allocatePingPong()
 // that contains C++ objects with non-trivial destructors.
 static int logSlotCrashAndEscalate(EXCEPTION_POINTERS* ep, const char* pluginPath)
 {
+    const unsigned code = (ep && ep->ExceptionRecord)
+        ? static_cast<unsigned>(ep->ExceptionRecord->ExceptionCode)
+        : 0u;
     std::fprintf(stderr,
         "[DSPChain] plugin crashed (SEH 0x%08X) — escalating to disable all DSP: %s\n",
-        static_cast<unsigned>(ep->ExceptionRecord->ExceptionCode),
+        code,
         pluginPath ? pluginPath : "<unknown>");
     return EXCEPTION_CONTINUE_SEARCH;  // propagate → caught by Layer 2
 }
@@ -179,6 +182,8 @@ static int logSlotCrashAndEscalate(EXCEPTION_POINTERS* ep, const char* pluginPat
 static int callSlotProcessSafe(IVSTPlugin* p, float** in, float** out,
                                 int samples, const char* pluginPath)
 {
+    if (!p)
+        return 0;  // programming error — no plugin to call
     int result = 0;
     __try {
         result = p->process(in, out, samples);
