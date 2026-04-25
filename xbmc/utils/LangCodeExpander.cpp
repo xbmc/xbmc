@@ -10,7 +10,6 @@
 
 #include "LangInfo.h"
 #include "ServiceBroker.h"
-#include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/i18n/Bcp47.h"
@@ -20,7 +19,6 @@
 #include "utils/i18n/Iso639_1.h"
 #include "utils/i18n/Iso639_2.h"
 #include "utils/i18n/TableLanguageCodes.h"
-#include "utils/log.h"
 
 #include <algorithm>
 #include <cassert>
@@ -40,18 +38,19 @@ void CLangCodeExpander::Clear()
 
 void CLangCodeExpander::LoadUserCodes(const TiXmlElement* pRootElement)
 {
-  if (pRootElement != NULL)
+  if (pRootElement != nullptr)
   {
     m_mapUser.clear();
 
     std::string sShort, sLong;
 
     const TiXmlNode* pLangCode = pRootElement->FirstChild("code");
-    while (pLangCode != NULL)
+    while (pLangCode != nullptr)
     {
       const TiXmlNode* pShort = pLangCode->FirstChildElement("short");
       const TiXmlNode* pLong = pLangCode->FirstChildElement("long");
-      if (pShort != NULL && pLong != NULL)
+      if (pShort != nullptr && pShort->FirstChild() != nullptr && pLong != nullptr &&
+          pLong->FirstChild() != nullptr)
       {
         sShort = pShort->FirstChild()->Value();
         sLong = pLong->FirstChild()->Value();
@@ -116,7 +115,7 @@ bool CLangCodeExpander::ConvertISO6391ToISO6392B(const std::string& strISO6391,
   StringUtils::ToLower(strISO6391Lower);
   StringUtils::Trim(strISO6391Lower);
 
-  auto it = std::ranges::lower_bound(LanguageCodes, strISO6391Lower, {}, &ISO639::iso639_1);
+  const auto it = std::ranges::lower_bound(LanguageCodes, strISO6391Lower, {}, &ISO639::iso639_1);
   if (it != LanguageCodes.end() && it->iso639_1 == strISO6391Lower)
   {
     if (checkWin32Locales && !it->win_id.empty())
@@ -235,7 +234,7 @@ bool CLangCodeExpander::ConvertToISO6392T(const std::string& strCharCode,
     return false;
 
   {
-    auto it =
+    const auto it =
         std::ranges::lower_bound(LanguageCodesByIso639_2b, strISO6392B, {}, &ISO639::iso639_2b);
     if (it != LanguageCodesByIso639_2b.end() && it->iso639_2b == strISO6392B &&
         !it->iso639_2t.empty())
@@ -247,7 +246,8 @@ bool CLangCodeExpander::ConvertToISO6392T(const std::string& strCharCode,
 
   if (checkWin32Locales)
   {
-    auto it = std::ranges::lower_bound(LanguageCodesByWin_Id, strISO6392B, {}, &ISO639::win_id);
+    const auto it =
+        std::ranges::lower_bound(LanguageCodesByWin_Id, strISO6392B, {}, &ISO639::win_id);
     if (it != LanguageCodesByWin_Id.end() && it->win_id == strISO6392B && !it->iso639_2t.empty())
     {
       strISO6392T = it->iso639_2t;
@@ -260,13 +260,16 @@ bool CLangCodeExpander::ConvertToISO6392T(const std::string& strCharCode,
 
 bool CLangCodeExpander::LookupUserCode(const std::string& desc, std::string& userCode)
 {
-  for (STRINGLOOKUPTABLE::const_iterator it = m_mapUser.begin(); it != m_mapUser.end(); ++it)
+  const auto it = std::ranges::find_if(m_mapUser,
+                                       [&desc](const auto& it)
+                                       {
+                                         return StringUtils::EqualsNoCase(desc, it.first) ||
+                                                StringUtils::EqualsNoCase(desc, it.second);
+                                       });
+  if (it != m_mapUser.end())
   {
-    if (StringUtils::EqualsNoCase(desc, it->first) || StringUtils::EqualsNoCase(desc, it->second))
-    {
-      userCode = it->first;
-      return true;
-    }
+    userCode = it->first;
+    return true;
   }
   return false;
 }
@@ -282,7 +285,7 @@ bool CLangCodeExpander::ConvertISO31661Alpha2ToISO31661Alpha3(const std::string&
   StringUtils::ToLower(lower);
   StringUtils::Trim(lower);
 
-  auto ret = CIso3166_1::Alpha2ToAlpha3(lower);
+  const auto ret = CIso3166_1::Alpha2ToAlpha3(lower);
   if (ret)
   {
     strISO31661Alpha3 = *ret;
@@ -300,7 +303,7 @@ bool CLangCodeExpander::ConvertWindowsLanguageCodeToISO6392B(
   std::string lower(strWindowsLanguageCode);
   StringUtils::ToLower(lower);
 
-  auto it = std::ranges::lower_bound(LanguageCodesByWin_Id, lower, {}, &ISO639::win_id);
+  const auto it = std::ranges::lower_bound(LanguageCodesByWin_Id, lower, {}, &ISO639::win_id);
   if (it != LanguageCodesByWin_Id.end() && it->win_id == lower)
   {
     strISO6392B = it->iso639_2b;
@@ -340,7 +343,8 @@ bool CLangCodeExpander::ConvertToISO6391(const std::string& lang, std::string& c
     StringUtils::ToLower(lower);
 
     {
-      auto it = std::ranges::lower_bound(LanguageCodesByIso639_2b, lower, {}, &ISO639::iso639_2b);
+      const auto it =
+          std::ranges::lower_bound(LanguageCodesByIso639_2b, lower, {}, &ISO639::iso639_2b);
       if (it != LanguageCodesByIso639_2b.end() && it->iso639_2b == lower)
       {
         code = it->iso639_1;
@@ -348,7 +352,7 @@ bool CLangCodeExpander::ConvertToISO6391(const std::string& lang, std::string& c
       }
     }
     {
-      auto it = std::ranges::lower_bound(LanguageCodesByWin_Id, lower, {}, &ISO639::win_id);
+      const auto it = std::ranges::lower_bound(LanguageCodesByWin_Id, lower, {}, &ISO639::win_id);
       if (it != LanguageCodesByWin_Id.end() && it->win_id == lower)
       {
         code = it->iso639_1;
@@ -356,7 +360,7 @@ bool CLangCodeExpander::ConvertToISO6391(const std::string& lang, std::string& c
       }
     }
     {
-      auto ret = CIso3166_1::Alpha3ToAlpha2(lower);
+      const auto ret = CIso3166_1::Alpha3ToAlpha2(lower);
       if (ret)
       {
         code = *ret;
@@ -397,13 +401,12 @@ bool CLangCodeExpander::ReverseLookup(const std::string& desc, std::string& code
   StringUtils::Trim(descTmp);
 
   // First find to user-defined languages
-  for (STRINGLOOKUPTABLE::const_iterator it = m_mapUser.begin(); it != m_mapUser.end(); ++it)
+  const auto it = std::ranges::find_if(m_mapUser, [&descTmp](const auto& it)
+                                       { return StringUtils::EqualsNoCase(descTmp, it.second); });
+  if (it != m_mapUser.end())
   {
-    if (StringUtils::EqualsNoCase(descTmp, it->second))
-    {
-      code = it->first;
-      return true;
-    }
+    code = it->first;
+    return true;
   }
 
   if (const auto ret = CIso639_1::LookupByName(descTmp); ret.has_value())
@@ -445,7 +448,7 @@ bool CLangCodeExpander::LookupInUserMap(const std::string& code, std::string& de
   StringUtils::ToLower(sCode);
   StringUtils::Trim(sCode);
 
-  STRINGLOOKUPTABLE::iterator it = m_mapUser.find(sCode);
+  const auto it = m_mapUser.find(sCode);
   if (it != m_mapUser.end())
   {
     desc = it->second;
@@ -480,7 +483,7 @@ bool CLangCodeExpander::LookupInISO639Tables(const std::string& code, std::strin
 
   if (sCode.length() == 2)
   {
-    auto ret = CIso639_1::LookupByCode(StringToLongCode(sCode));
+    const auto ret = CIso639_1::LookupByCode(StringToLongCode(sCode));
     if (ret)
     {
       desc = *ret;
@@ -492,12 +495,12 @@ bool CLangCodeExpander::LookupInISO639Tables(const std::string& code, std::strin
     uint32_t longCode = StringToLongCode(sCode);
 
     // Map B to T for the few codes that have differences
-    auto tCode = CIso639_2::BCodeToTCode(longCode);
+    const auto tCode = CIso639_2::BCodeToTCode(longCode);
     if (tCode.has_value())
       longCode = *tCode;
 
     // Lookup the T code
-    auto ret = CIso639_2::LookupByCode(longCode);
+    const auto ret = CIso639_2::LookupByCode(longCode);
     if (ret)
     {
       desc = *ret;
@@ -547,20 +550,15 @@ std::vector<std::string> CLangCodeExpander::GetLanguageNames(
   // User-defined languages can override existing ones
   if (list == LANG_LIST::INCLUDE_USERDEFINED || list == LANG_LIST::INCLUDE_ADDONS_USERDEFINED)
   {
-    for (const auto& value : m_mapUser)
-    {
-      langMap[value.first] = value.second;
-    }
+    std::ranges::copy(m_mapUser, std::inserter(langMap, langMap.end()));
   }
 
   // Sort by name and remove duplicates
   std::set<std::string, sortstringbyname> languages;
-  for (const auto& lang : langMap)
-  {
-    languages.insert(lang.second);
-  }
+  std::ranges::transform(langMap, std::inserter(languages, languages.end()),
+                         [](const auto& lang) { return lang.second; });
 
-  return std::vector<std::string>(languages.begin(), languages.end());
+  return {languages.begin(), languages.end()};
 }
 
 bool CLangCodeExpander::CompareISO639Codes(const std::string& code1, const std::string& code2)
@@ -660,12 +658,12 @@ bool CLangCodeExpander::ConvertToBcp47(const std::string& text, std::string& bcp
 
 std::string CLangCodeExpander::FindLanguageCodeWithSubtag(const std::string& str)
 {
-  std::size_t begin = str.find("{");
+  const std::size_t begin = str.find('{');
 
   if (begin == std::string::npos)
     return "";
 
-  std::size_t end = str.find("}", begin + 1);
+  const std::size_t end = str.find('}', begin + 1);
 
   if (end == std::string::npos)
     return "";
