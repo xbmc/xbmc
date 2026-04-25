@@ -20,7 +20,7 @@ ifeq (darwin, $(findstring darwin, $(HOST)))
 endif
 
 
-export CC CFLAGS
+export CC CFLAGS AR RANLIB
 export LDSHARED LDFLAGS
 export PYTHONPATH=$(PYTHON_SITE_PKG)
 export SETUPTOOLS_EXT_SUFFIX=.so
