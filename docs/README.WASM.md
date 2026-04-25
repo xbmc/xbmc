@@ -129,7 +129,6 @@ Configure build:
 ./configure \
   --host=wasm32-unknown-emscripten \
   --with-platform=wasm \
-  --prefix=$HOME/kodi-wasm-depends \
   --disable-debug
 ```
 
@@ -153,6 +152,11 @@ $HOME/kodi-wasm-depends/wasm32-unknown-emscripten-release/
 
 
 **All platforms:**
+
+```
+--prefix=<path>
+```
+  install path for built tools and dependencies
 
 ```
 --with-toolchain=<path>

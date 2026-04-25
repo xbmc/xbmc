@@ -101,8 +101,7 @@ elseif(CORE_SYSTEM_NAME STREQUAL osx)
                           --disable-securetransport
               )
 elseif(CORE_SYSTEM_NAME STREQUAL wasm)
-  list(APPEND ffmpeg_conf --target-os=none
-              )
+  list(APPEND ffmpeg_conf --target-os=none)
   set(CONFIGARCH --arch=wasm --cpu=wasm32)
 endif()
 
