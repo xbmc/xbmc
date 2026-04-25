@@ -109,6 +109,7 @@ namespace JSONRPC
 
     std::vector<CTCPClient*> m_connections;
     std::vector<SOCKET> m_servers;
+    CCriticalSection m_connectionsCritSection;
     int m_port;
     bool m_nonlocal;
     void* m_sdpd;
