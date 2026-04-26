@@ -9,7 +9,8 @@
 #include "VideoInfoDownloader.h"
 
 #include "dialogs/GUIDialogProgress.h"
-#include "filesystem/CurlFile.h"
+#include "filesystem/HttpClientFactory.h"
+#include "filesystem/IHttpClient.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -25,13 +26,10 @@ using namespace std::chrono_literals;
 CVideoInfoDownloader::CVideoInfoDownloader(const ADDON::ScraperPtr& scraper)
   : CThread("VideoInfoDownloader"), m_info(scraper)
 {
-  m_http = new XFILE::CCurlFile;
+  m_http = XFILE::CreateHttpClient();
 }
 
-CVideoInfoDownloader::~CVideoInfoDownloader()
-{
-  delete m_http;
-}
+CVideoInfoDownloader::~CVideoInfoDownloader() = default;
 
 // return value: 0 = we failed, -1 = we failed and reported an error, 1 = success
 int CVideoInfoDownloader::InternalFindMovie(const std::string &movieTitle, int movieYear,
