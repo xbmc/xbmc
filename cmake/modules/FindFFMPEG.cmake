@@ -42,7 +42,22 @@ macro(buildFFMPEG)
   if(NOT TARGET LIBRARY::Dav1d)
     message(STATUS "dav1d not found, internal ffmpeg build will be missing AV1 support!")
   else()
-    set(FFMPEG_OPTIONS -DENABLE_DAV1D=ON)
+    list(APPEND FFMPEG_OPTIONS -DENABLE_DAV1D=ON)
+  endif()
+
+  if(KODI_DEPENDSBUILD OR (WIN32 OR WINDOWS_STORE))
+    get_libversion_data("libjxl" "target")
+    set(JXL_REQUIRED REQUIRED)
+  else()
+    # FFMPEG currently only has a version requirement of libjxl 0.7.0
+    set(LIB_LIBJXL_VER 0.7.0)
+  endif()
+
+  find_package(LibJXL ${LIB_LIBJXL_VER} ${JXL_REQUIRED} ${SEARCH_QUIET})
+  if(NOT TARGET LIBRARY::LibJXL)
+    message(STATUS "libjxl not found, internal ffmpeg build will be missing jxl image support!")
+  else()
+    list(APPEND FFMPEG_OPTIONS -DENABLE_LIBJXL=ON)
   endif()
 
   set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC ffmpeg)
@@ -236,6 +251,10 @@ macro(buildFFMPEG)
     add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} LIBRARY::Dav1d)
   endif()
 
+  if(TARGET LIBRARY::LibJXL)
+    add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} LIBRARY::LibJXL)
+  endif()
+
   set(FFMPEG_FOUND 1)
   set(FFMPEG_VERSION ${FFMPEG_VER})
 
@@ -327,6 +346,15 @@ if(KODI_DEPENDSBUILD OR (WIN32 OR WINDOWS_STORE))
       set(ENABLE_INTERNAL_FFMPEG ON)
     endif()
   endif()
+
+  find_package(LibJXL ${SEARCH_QUIET})
+  if(TARGET LIBRARY::LibJXL)
+    get_target_property(FFMPEG_DEP_BUILD LIBRARY::LibJXL LIB_BUILD)
+
+    if(FFMPEG_DEP_BUILD)
+      set(ENABLE_INTERNAL_FFMPEG ON)
+    endif()
+  endif()
 endif()
 
 if(ENABLE_INTERNAL_FFMPEG)
@@ -411,6 +439,7 @@ else()
     # correct dependency linking
     if(WIN32 OR WINDOWS_STORE)
       find_package(Dav1d ${SEARCH_QUIET})
+      find_package(LibJXL ${SEARCH_QUIET})
     endif()
 
     # Macro to populate target
@@ -501,6 +530,11 @@ if(FFMPEG_FOUND)
       if("${_libname}" STREQUAL "libavcodec")
         if(TARGET LIBRARY::Dav1d)
           set_property(TARGET ffmpeg::${_libname} APPEND PROPERTY INTERFACE_LINK_LIBRARIES LIBRARY::Dav1d)
+        endif()
+
+        if(TARGET LIBRARY::LibJXL)
+          set_property(TARGET ffmpeg::${_libname} APPEND PROPERTY INTERFACE_LINK_LIBRARIES LIBRARY::LibJXL
+                                                                                           LIBRARY::LibJXL-threads)
         endif()
       endif()
     endif()
