@@ -32,6 +32,12 @@ float ForwardPQ(float L)
   return std::pow((ST2084_c1 + ST2084_c2 * Lm1) / (1.0f + ST2084_c3 * Lm1), ST2084_m2);
 }
 
+// IEC 61966-2-1 sRGB EOTF.
+float SRGBToLinear(float v)
+{
+  return v <= 0.04045f ? v / 12.92f : std::pow((v + 0.055f) / 1.055f, 2.4f);
+}
+
 } // namespace
 
 CGuiCompositeShaderGLES::CGuiCompositeShaderGLES()
@@ -138,7 +144,7 @@ std::vector<float> CGuiCompositeShaderGLES::GenerateDegammaLUT()
   for (int i = 0; i < LUT_SIZE; i++)
   {
     float x = static_cast<float>(i) / (LUT_SIZE - 1);
-    lut[i] = std::pow(x, 2.2f);
+    lut[i] = SRGBToLinear(x);
   }
   return lut;
 }

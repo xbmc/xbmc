@@ -30,7 +30,8 @@ protected:
   bool OnEnabled() override;
 
 private:
-  static constexpr int LUT_SIZE = 1024;
+  // One entry per RGBA8 input value; increase to match GUI bit depth.
+  static constexpr int LUT_SIZE = 256;
 
   GLuint CreateLUTTexture(const std::vector<float>& data);
   static std::vector<float> GenerateDegammaLUT();
