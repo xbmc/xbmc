@@ -1055,8 +1055,10 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
     m_processInfo->ResetAudioCodecInfo();
   }
 
-  // enable  or disable subtitles
+  // enable or disable subtitles
   bool visible = m_processInfo->GetVideoSettings().m_SubtitleOn;
+  const bool isDefaultVideosettings =
+      m_processInfo->GetVideoSettings().m_isDefaultVideoSettings.value_or(true);
 
   // open subtitle stream
   SelectionStream as = m_SelectionStreams.Get(StreamType::AUDIO, GetAudioStream());
@@ -1071,19 +1073,23 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
     if (OpenStream(m_CurrentSubtitle, stream.demuxerId, stream.id, stream.source))
     {
       valid = true;
-      if(!psp.relevant(stream))
-        visible = false;
-
-      // Image type subtitles (e.g. VOBSUB) can support "forced" flag on overlays (images)
-      // so you need to keep the stream open to parse "forced" flag on each image
-      // since we leave the stream open by default, it is necessary to close it
-      // if the language does not match the preferences.
-      if (!visible && StreamUtils::IsCodecSupportForcedOverlay(stream.codecId) &&
-          !g_LangCodeExpander.CompareISO639Codes(stream.language, as.language))
+      // default settings: let the predicates control sub visibility
+      // video specific settings: respect the user's choice
+      if (isDefaultVideosettings)
       {
-        valid = false;
-      }
+        if (!psp.relevant(stream))
+          visible = false;
 
+        // Image type subtitles (e.g. VOBSUB) can support "forced" flag on overlays (images)
+        // so you need to keep the stream open to parse "forced" flag on each image
+        // since we leave the stream open by default, it is necessary to close it
+        // if the language does not match the preferences.
+        if (!visible && StreamUtils::IsCodecSupportForcedOverlay(stream.codecId) &&
+            !g_LangCodeExpander.CompareISO639Codes(stream.language, as.language))
+        {
+          valid = false;
+        }
+      }
       break;
     }
   }
