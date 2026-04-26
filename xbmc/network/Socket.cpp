@@ -42,6 +42,7 @@ bool CPosixUDPSocket::Bind(bool localOnly, int port, int range)
       m_iSock = socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP);
       if (m_iSock != INVALID_SOCKET)
       {
+#if !defined(TARGET_WASM)
 #ifdef WINSOCK_VERSION
         const char zero = 0;
 #else
@@ -52,6 +53,7 @@ bool CPosixUDPSocket::Bind(bool localOnly, int port, int range)
           closesocket(m_iSock);
           m_iSock = INVALID_SOCKET;
         }
+#endif
       }
     }
   }
@@ -79,6 +81,7 @@ bool CPosixUDPSocket::Bind(bool localOnly, int port, int range)
   }
 
   // make sure we can reuse the address
+#if !defined(TARGET_WASM)
 #ifdef WINSOCK_VERSION
   const char yes=1;
 #else
@@ -89,6 +92,7 @@ bool CPosixUDPSocket::Bind(bool localOnly, int port, int range)
     CLog::Log(LOGWARNING, "UDP: Could not enable the address reuse options");
     CLog::Log(LOGWARNING, "UDP: {}", strerror(errno));
   }
+#endif
 
   // bind to any address or localhost
   if (m_ipv6Socket)
@@ -143,6 +147,9 @@ bool CPosixUDPSocket::Bind(bool localOnly, int port, int range)
 
 bool CPosixUDPSocket::CheckIPv6(int port, int range)
 {
+#if defined(TARGET_WASM)
+  return false;
+#else
   CAddress testaddr("::");
 #if defined(TARGET_WINDOWS)
   using CAutoPtrSocket = KODI::UTILS::CScopeGuard<SOCKET, INVALID_SOCKET, decltype(closesocket)>;
@@ -188,6 +195,7 @@ bool CPosixUDPSocket::CheckIPv6(int port, int range)
   }
 
   return false;
+#endif // !TARGET_WASM
 }
 
 void CPosixUDPSocket::Close()

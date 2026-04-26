@@ -430,8 +430,10 @@ std::vector<SOCKET> CreateTCPServerSocket(const int port, const bool bindLocal, 
     if (sock == INVALID_SOCKET)
       continue;
 
+#ifndef TARGET_WASM
     setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&yes), sizeof(yes));
     setsockopt(sock, IPPROTO_IPV6, IPV6_V6ONLY, reinterpret_cast<const char*>(&yes), sizeof(yes));
+#endif
 
     if (bind(sock, result->ai_addr, result->ai_addrlen) != 0)
     {

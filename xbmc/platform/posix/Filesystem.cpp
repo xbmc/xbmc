@@ -10,7 +10,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "utils/URIUtils.h"
 
-#if defined(TARGET_LINUX)
+#if defined(TARGET_LINUX) || defined(TARGET_WASM)
 #include <sys/statvfs.h>
 #elif defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
 #include <sys/param.h>
@@ -36,7 +36,7 @@ space_info space(const std::string& path, std::error_code& ec)
 {
   ec.clear();
   space_info sp;
-#if defined(TARGET_LINUX)
+#if defined(TARGET_LINUX) || defined(TARGET_WASM)
   struct statvfs64 fsInfo;
   auto result = statvfs64(CSpecialProtocol::TranslatePath(path).c_str(), &fsInfo);
 #else
