@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <memory>
+
 class ILanguageInvoker;
 
 class ILanguageInvocationHandler
@@ -27,5 +29,5 @@ public:
   virtual void OnExecutionEnded(ILanguageInvoker* invoker) {}
   virtual void OnScriptFinalized(ILanguageInvoker *invoker) { }
 
-  virtual ILanguageInvoker* CreateInvoker() = 0;
+  virtual std::shared_ptr<ILanguageInvoker> CreateInvoker() = 0;
 };
