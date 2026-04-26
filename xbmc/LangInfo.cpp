@@ -848,7 +848,9 @@ const std::string& CLangInfo::GetSubtitleLanguage(bool allowFallback) const
 void CLangInfo::SetSubtitleLanguage(const std::string& language, bool isIso6392 /* = false */)
 {
   if (language.empty() || StringUtils::EqualsNoCase(language, subLanguageDefault) ||
-      StringUtils::EqualsNoCase(language, subLanguageOriginal))
+      StringUtils::EqualsNoCase(language, subLanguageOriginal) ||
+      StringUtils::EqualsNoCase(language, subLanguageForcedOnly) ||
+      StringUtils::EqualsNoCase(language, subLanguageNone))
   {
     m_subtitleLanguage.clear();
     return;
