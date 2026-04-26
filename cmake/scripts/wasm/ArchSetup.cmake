@@ -29,31 +29,29 @@ set(HOST_CAN_EXECUTE_TARGET FALSE)
 # Prefer internal libs when cross-compiling to wasm (typical for depends builds)
 set(USE_INTERNAL_LIBS ON)
 
-list(APPEND AUDIO_BACKENDS_LIST "webaudio")
-
 set(APP_BINARY_SUFFIX ".js")
 
+# emcc --profiling keeps function names in the build so browser DevTools can
+# attribute samples; it is off by default because it inflates the binary.
+option(ENABLE_WASM_PROFILING "Enable Emscripten --profiling (CPU profiling in browser DevTools)" OFF)
+
 # Threading + memory (COOP/COEP headers required in HTML for pthreads).
-# PROXY_TO_PTHREAD: Kodi's init is synchronous/blocking; it must run on a
-# pthread so the browser main thread stays responsive.
-# OFFSCREEN_FRAMEBUFFER: required for WebGL to work from a pthread. Without it,
-# emscripten_webgl_make_context_current silently fails on worker threads.
-# The newRenderingFrameStarted crash (GL.currentContext null on main thread) is
-# fixed by calling MAIN_THREAD_EM_ASM to mirror the context current state on the
-# main thread right after emscripten_webgl_make_context_current (see
-# WinSystemWasmGLESContext.cpp).
 if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
   add_link_options(
     "SHELL:-sUSE_PTHREADS=1"
-    "SHELL:-sPTHREAD_POOL_SIZE=8"
-    "SHELL:-sINITIAL_MEMORY=2GB"
+    "SHELL:-sPTHREAD_POOL_SIZE=16"
+    "SHELL:-sAUDIO_WORKLET"
+    "SHELL:-sWASM_WORKERS"
+    "SHELL:-sINITIAL_MEMORY=512MB"
+    "SHELL:-sMAXIMUM_MEMORY=4GB"
+    "SHELL:-sALLOW_MEMORY_GROWTH=1"
+    "SHELL:-sSTACK_SIZE=5MB"
     "SHELL:-sPROXY_TO_PTHREAD"
-    "SHELL:-sOFFSCREEN_FRAMEBUFFER"
     "SHELL:-sMIN_WEBGL_VERSION=2"
     "SHELL:-sMAX_WEBGL_VERSION=2"
     "SHELL:-sFULL_ES3=1"
-    "SHELL:-sABORTING_MALLOC=0"
     "SHELL:-lidbfs.js"
+    "SHELL:-lembind"
   )
 
   # ---------------------------------------------------------------------------
@@ -84,6 +82,12 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     message(STATUS "WASM: Debug build — SAFE_HEAP + DWARF symbols + source maps enabled")
   else()
     add_link_options("SHELL:-sASSERTIONS=1")
+  endif()
+
+  if(ENABLE_WASM_PROFILING)
+    add_compile_options(--profiling)
+    add_link_options(--profiling)
+    message(STATUS "WASM: Emscripten --profiling enabled (ENABLE_WASM_PROFILING=ON)")
   endif()
 endif()
 
