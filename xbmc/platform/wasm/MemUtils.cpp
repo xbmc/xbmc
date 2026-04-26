@@ -41,6 +41,9 @@ void GetMemoryStatus(MemoryStatus* buffer)
   if (!buffer)
     return;
 
+  // Safe to widen to 64 bits: Emscripten's getHeapMax() caps this below 4GB
+  // on non-MEMORY64 builds (see the MAXIMUM_MEMORY comment in ArchSetup.cmake),
+  // so it never wraps to 0 here.
   // The sbrk break, not the linear-memory size, is what the allocator has claimed.
   const uint64_t heapMax = static_cast<uint64_t>(emscripten_get_heap_max());
   const uint64_t heapUsed = static_cast<uint64_t>(*emscripten_get_sbrk_ptr());

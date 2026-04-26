@@ -43,6 +43,9 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     "SHELL:-sAUDIO_WORKLET"
     "SHELL:-sWASM_WORKERS"
     "SHELL:-sINITIAL_MEMORY=512MB"
+    # Emscripten's getHeapMax() (src/lib/libcore.js) caps this at
+    # 4GB - WASM_PAGE_SIZE on non-MEMORY64 builds, so emscripten_get_heap_max()
+    # never actually wraps to 0 despite the literal 4GB here.
     "SHELL:-sMAXIMUM_MEMORY=4GB"
     "SHELL:-sALLOW_MEMORY_GROWTH=1"
     "SHELL:-sSTACK_SIZE=5MB"
