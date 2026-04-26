@@ -8,7 +8,8 @@
 
 #include "MusicInfoScraper.h"
 
-#include "filesystem/CurlFile.h"
+#include "filesystem/HttpClientFactory.h"
+#include "filesystem/IHttpClient.h"
 #include "utils/log.h"
 
 using namespace MUSIC_GRABBER;
@@ -22,13 +23,12 @@ CMusicInfoScraper::CMusicInfoScraper(const ADDON::ScraperPtr& scraper)
   m_bCanceled=false;
   m_iAlbum=-1;
   m_iArtist=-1;
-  m_http = new XFILE::CCurlFile;
+  m_http = XFILE::CreateHttpClient();
 }
 
 CMusicInfoScraper::~CMusicInfoScraper(void)
 {
   StopThread();
-  delete m_http;
 }
 
 int CMusicInfoScraper::GetAlbumCount() const

@@ -63,13 +63,12 @@
 #endif
 #include "ImageFile.h"
 #include "ResourceFile.h"
+#include "ServiceBroker.h"
 #include "URL.h"
-#include "utils/log.h"
+#include "addons/VFSEntry.h"
 #include "network/WakeOnAccess.h"
 #include "utils/StringUtils.h"
-#include "ServiceBroker.h"
-#include "addons/VFSEntry.h"
-
+#include "utils/log.h"
 using namespace ADDON;
 using namespace XFILE;
 
@@ -154,12 +153,11 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if (CWinLibraryFile::IsValid(url)) return new CWinLibraryFile();
 #endif
 
-  if (url.IsProtocol("ftp")
-  ||  url.IsProtocol("ftps")
-  ||  url.IsProtocol("rss")
-  ||  url.IsProtocol("rsss")
-  ||  url.IsProtocol("http")
-  ||  url.IsProtocol("https")) return new CCurlFile();
+  if (url.IsProtocol("ftp") || url.IsProtocol("ftps") || url.IsProtocol("rss") ||
+      url.IsProtocol("rsss"))
+    return new CCurlFile();
+  else if (url.IsProtocol("http") || url.IsProtocol("https"))
+    return new CCurlFile();
   else if (url.IsProtocol("dav") || url.IsProtocol("davs")) return new CDAVFile();
   else if (url.IsProtocol("shout") || url.IsProtocol("shouts")) return new CShoutcastFile();
 #ifdef HAS_FILESYSTEM_SMB
