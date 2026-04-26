@@ -215,7 +215,7 @@ protected:
 
   // clear colour for "black" bars
   float m_clearColour{0.0f};
-  CRect m_viewRect;
+  CRect m_lastViewRect;
 
 private:
   void ClearBackBuffer();

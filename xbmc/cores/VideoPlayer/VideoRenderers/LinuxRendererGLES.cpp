@@ -607,8 +607,7 @@ void CLinuxRendererGLES::UpdateVideoFilter()
   // TODO: GL also checks nonLinStretchChanged and cmsChanged in the early exit
   // and the reload check below. Add when non-linear stretch and CMS are ported to GLES.
   if (m_scalingMethodGui == m_videoSettings.m_ScalingMethod &&
-      viewRect.Height() == m_viewRect.Height() &&
-      viewRect.Width() == m_viewRect.Width())
+      viewRect.Height() == m_lastViewRect.Height() && viewRect.Width() == m_lastViewRect.Width())
   {
     return;
   }
@@ -619,7 +618,7 @@ void CLinuxRendererGLES::UpdateVideoFilter()
 
   m_scalingMethodGui = m_videoSettings.m_ScalingMethod;
   m_scalingMethod = m_scalingMethodGui;
-  m_viewRect = viewRect;
+  m_lastViewRect = viewRect;
 
   if(!Supports(m_scalingMethod))
   {
