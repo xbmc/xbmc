@@ -47,6 +47,20 @@ enum class MeridiemSymbol
   AM
 };
 
+namespace KODI::LANGINFO
+{
+// audio language special values
+constexpr std::string_view audioLanguageMediaDefault = "mediadefault";
+constexpr std::string_view audioLanguageOriginal = "original";
+constexpr std::string_view audioLanguageDefault = "default";
+
+// subtitles language special values
+constexpr std::string_view subLanguageNone = "none";
+constexpr std::string_view subLanguageForcedOnly = "forced_only";
+constexpr std::string_view subLanguageOriginal = "original";
+constexpr std::string_view subLanguageDefault = "default";
+}
+
 class CLangInfo : public ISettingCallback, public ISettingsHandler
 {
 public:

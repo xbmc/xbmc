@@ -111,9 +111,9 @@ public:
     const std::string subLangSetting =
         settings->GetString(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE);
 
-    m_isSubNone = StringUtils::EqualsNoCase(subLangSetting, "none");
-    m_isPrefOriginal = StringUtils::EqualsNoCase(subLangSetting, "original");
-    m_isPrefForced = StringUtils::EqualsNoCase(subLangSetting, "forced_only");
+    m_isSubNone = StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageNone);
+    m_isPrefOriginal = StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageOriginal);
+    m_isPrefForced = StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageForcedOnly);
     m_isPrefHearingImp = settings->GetBool(CSettings::SETTING_ACCESSIBILITY_SUBHEARING);
 
     m_subLang = g_langInfo.GetSubtitleLanguage(false);
@@ -211,13 +211,15 @@ public:
 
     const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
-    if (!StringUtils::EqualsNoCase(settings->GetString(CSettings::SETTING_LOCALE_AUDIOLANGUAGE), "mediadefault"))
+    if (!StringUtils::EqualsNoCase(settings->GetString(CSettings::SETTING_LOCALE_AUDIOLANGUAGE),
+                                   LANGINFO::audioLanguageMediaDefault))
     {
-      if (!StringUtils::EqualsNoCase(settings->GetString(CSettings::SETTING_LOCALE_AUDIOLANGUAGE), "original"))
+      if (!StringUtils::EqualsNoCase(settings->GetString(CSettings::SETTING_LOCALE_AUDIOLANGUAGE),
+                                     LANGINFO::audioLanguageOriginal))
       {
         std::string audio_language = g_langInfo.GetAudioLanguage(true);
-        PREDICATE_RETURN(g_LangCodeExpander.CompareISO639Codes(audio_language, lh.language)
-          , g_LangCodeExpander.CompareISO639Codes(audio_language, rh.language));
+        PREDICATE_RETURN(g_LangCodeExpander.CompareISO639Codes(audio_language, lh.language),
+                         g_LangCodeExpander.CompareISO639Codes(audio_language, rh.language));
       }
       else
       {
@@ -285,8 +287,8 @@ public:
     const std::string subLangSetting =
         settings->GetString(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE);
 
-    m_isPrefOriginal = StringUtils::EqualsNoCase(subLangSetting, "original");
-    m_isPrefForced = StringUtils::EqualsNoCase(subLangSetting, "forced_only");
+    m_isPrefOriginal = StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageOriginal);
+    m_isPrefForced = StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageForcedOnly);
     m_isPrefHearingImp = settings->GetBool(CSettings::SETTING_ACCESSIBILITY_SUBHEARING);
 
     m_subLang = g_langInfo.GetSubtitleLanguage(false);
