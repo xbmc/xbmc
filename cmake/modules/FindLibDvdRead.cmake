@@ -50,6 +50,11 @@ if(NOT TARGET LibDvdRead::LibDvdRead)
     string(REPLACE ";" " " ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LDFLAGS "${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LINK_LIBRARIES}")
   endif()
 
+  if(CMAKE_SYSTEM_NAME STREQUAL Emscripten)
+    find_package(Patch MODULE REQUIRED ${SEARCH_QUIET})
+    set(PATCH_COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CMAKE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/001-emscripten-bswap.patch)
+  endif()
+
   if(CORE_SYSTEM_NAME MATCHES windows)
     set(CMAKE_ARGS -DDUMMY_DEFINE=ON
                    -DCMAKE_POLICY_VERSION_MINIMUM=3.5

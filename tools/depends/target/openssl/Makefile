@@ -22,6 +22,8 @@ ifeq ($(OS), linux)
       CONFIGURE+= linux-generic32
     endif
   endif
+else ifeq ($(OS), wasm)
+  CONFIGURE=./Configure no-shared no-asm no-tests no-module no-async no-afalgeng --prefix=$(PREFIX) --libdir=lib linux-generic32
 else
   ifeq ($(OS), android)
     TARGETOPT=--with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib -U__ANDROID_API__ -D__ANDROID_API__=$(NDK_LEVEL)

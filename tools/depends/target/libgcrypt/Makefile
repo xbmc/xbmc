@@ -14,6 +14,14 @@ ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
   endif
 endif
 
+ifeq ($(OS),wasm)
+  # Emscripten exposes <sys/random.h> with GRND_RANDOM, which makes libgcrypt's
+  # rndgetentropy backend compile a getrandom() reference even though that symbol
+  # is not provided at link time. Keep using getentropy() without the getrandom()
+  # FIPS-only branch by hiding sys/random.h from configure.
+  CONFIGURE_FLAGS+= ac_cv_header_sys_random_h=no
+endif
+
 # Disable random jitter entropy due to failure on multiple platform/arches
 # ./jitterentropy-base.c:58:3: error: "The CPU Jitter random number generator must not be compiled with optimizations. 
 #                                       See documentation. Use the compiler switch -O0 for compiling jitterentropy.c."

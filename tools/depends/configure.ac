@@ -41,7 +41,9 @@ AC_ARG_ENABLE([ccache],
 AC_ARG_WITH([linker],
   [AS_HELP_STRING([--with-linker],
   [specify linker to use.])],
-  [use_linker=$withval])
+  [use_linker=$withval
+   use_linker_explicit=yes],
+  [use_linker_explicit=no])
 
 AC_ARG_WITH([toolchain],
   [AS_HELP_STRING([--with-toolchain],
@@ -265,6 +267,39 @@ case $host in
         platform_cxx=armv7a-linux-androideabi$use_ndk_api-clang++
     esac
   ;;
+  wasm32*-unknown-emscripten*)
+    platform_cc=emcc
+    platform_cxx=em++
+    platform_tool_prefix=em
+    if test -z "$use_toolchain"; then
+      use_toolchain=`dirname \`which emcc\``
+    fi
+    # Resolve official Emscripten root from em-config (required).
+    em_config_bin="$use_toolchain/em-config"
+    if test ! -x "$em_config_bin"; then
+      alt_em_config_bin="$use_toolchain/upstream/emscripten/em-config"
+      if test -x "$alt_em_config_bin"; then
+        em_config_bin="$alt_em_config_bin"
+      else
+        AC_MSG_ERROR([Missing required em-config at $em_config_bin or $alt_em_config_bin])
+      fi
+    fi
+    emscripten_toolchain_root=`"$em_config_bin" EMSCRIPTEN_ROOT 2>/dev/null`
+    if test -z "$emscripten_toolchain_root"; then
+      AC_MSG_ERROR([em-config EMSCRIPTEN_ROOT returned empty result])
+    fi
+    use_toolchain="$emscripten_toolchain_root"
+    if test ! -f "$use_toolchain/cmake/Modules/Platform/Emscripten.cmake"; then
+      AC_MSG_ERROR([Could not find Platform/Emscripten.cmake under EMSCRIPTEN_ROOT: $use_toolchain])
+    fi
+    platform_additional_path=`"$em_config_bin" LLVM_ROOT 2>/dev/null`
+    if test -z "$platform_additional_path"; then
+      AC_MSG_ERROR([em-config LLVM_ROOT returned empty result])
+    fi
+    if test "$use_linker_explicit" != "yes"; then
+      use_linker=wasm-ld
+    fi
+  ;;
   *darwin*)
     # Again we set CC to find toolchain path for use in AC_PATH_TOOL macros further down
     CC=[`$use_xcrun --find clang`]
@@ -276,6 +311,9 @@ esac
 
 if test -n $use_toolchain; then
   PATH_FOR_HOST=$use_toolchain:$use_toolchain/usr/bin:$use_toolchain/bin:$PATH
+  if test -n "$platform_additional_path"; then
+    PATH_FOR_HOST=$platform_additional_path:$PATH_FOR_HOST
+  fi
 else
   PATH_FOR_HOST=$PATH
 fi
@@ -290,6 +328,7 @@ AC_PATH_TOOL([NM], [${platform_tool_prefix}nm],, $PATH_FOR_HOST)
 AC_PATH_TOOL([OBJDUMP], [${platform_tool_prefix}objdump],, $PATH_FOR_HOST)
 AC_PATH_TOOL([CC],[$platform_cc],,$PATH_FOR_HOST)
 AC_PATH_TOOL([CXX],[$platform_cxx],,$PATH_FOR_HOST)
+AC_PATH_PROG([EMCONFIG], [em-config], , $PATH_FOR_HOST)
 
 if test "x$LD" = "x"; then
   AC_MSG_ERROR(No linker found with name ${use_linker}. You may want to provide using --with-linker=<linker>)
@@ -421,6 +460,24 @@ case $host in
     ffmpeg_options_default="--enable-vaapi --enable-vdpau --cpu=$ffmpeg_cpu"
     target_platform="x11 wayland gbm"
   ;;
+  wasm32*-unknown-emscripten*)
+    if test "x$use_cpu" = "xauto"; then
+      use_cpu="wasm32"
+    fi
+    meson_cpu="wasm32"
+    meson_system="emscripten"
+    platform_os="wasm"
+    target_platform="wasm"
+    app_rendersystem="gles"
+    #emscripten builds are always cross
+    cross_compiling="yes"
+    has_zlib=0
+    platform_cflags="-fPIC -pthread"
+    platform_cxxflags="$platform_cflags"
+    optimize_flags="-O2"
+    platform_ldflags="-pthread"
+    ffmpeg_options_default="--disable-asm --disable-x86asm --disable-inline-asm --disable-programs --enable-cross-compile --target-os=none --arch=wasm32"
+  ;;
   *darwin*)
     # darwin builds are always cross
     cross_compiling="yes"
@@ -513,6 +570,8 @@ case $use_platform in
     ;;
   webos)
     ;;
+  wasm)
+    ;;
   auto)
     ;;
   *)
@@ -523,7 +582,7 @@ XBMC_SETUP_ARCH_DEFINES()
 
 case $build in
   *darwin*)
-    if test "$platform_os" != "android"; then
+    if test "$platform_os" != "android" && test "$platform_os" != "wasm"; then
       # MacOS 11 requires explicit isysroot for autoconf link tests
       # However we do not want to pollute LDFLAGS once lib link tests are complete
       LDFLAGS="$platform_includes"
@@ -533,7 +592,7 @@ esac
 
 # Android NDK < 28 has issues with iconv when built with newer SDK
 # unsure why webos requires special handling
-if test "$platform_os" = "android" || test "$target_platform" = "webos"; then
+if test "$platform_os" = "android" || test "$target_platform" = "webos" || test "$platform_os" = "wasm"; then
   need_libiconv=1
   ac_cv_search_iconv_open=-liconv
 else

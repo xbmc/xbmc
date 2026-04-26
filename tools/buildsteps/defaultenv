@@ -69,6 +69,13 @@ case $XBMC_PLATFORM_DIR in
     DEFAULT_BUILD_HOST="x86_64-linux-gnu"
   ;;
 
+  wasm)
+    DEFAULT_SDK_VERSION=5.0.6
+    DEFAULT_CONFIGURATION="Release"
+    DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
+    DEFAULT_XCODE_APP="Xcode_15.2.app" # CI host is macos currently
+  ;;
+
   freebsd)
     DEFAULT_CONFIGURATION="Debug"
   ;;

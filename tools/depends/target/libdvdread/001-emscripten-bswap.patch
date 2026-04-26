@@ -1,0 +1,11 @@
+--- a/src/bswap.h	2026-03-29 21:56:52
++++ b/src/bswap.h	2026-03-29 22:11:20
+@@ -85,7 +85,7 @@
+  * functionality!
+  */
+ 
+-#elif defined(__FreeBSD__) || defined(__sun) || defined(__bsdi__) || defined(_WIN32) || defined(__CYGWIN__) || defined(__BEOS__) || defined(__OS2__)
++#elif defined(__FreeBSD__) || defined(__sun) || defined(__bsdi__) || defined(_WIN32) || defined(__CYGWIN__) || defined(__BEOS__) || defined(__OS2__) || defined(__EMSCRIPTEN__)
+ #define B2N_16(x)                             \
+  x = ((((x) & 0xff00) >> 8) |                 \
+       (((x) & 0x00ff) << 8))

@@ -4,7 +4,8 @@ DEPS = ../../Makefile.include MARIADB-VERSION Makefile ../../download-files.incl
                                   02-linux-pthread.patch \
                                   03-win-uwp.patch \
                                   04-win-installpkgconfig.patch \
-                                  05-all-installtargets.patch
+                                  05-all-installtargets.patch \
+                                  06-emscripten-no-shared.patch
 
 LIBDYLIB=$(PLATFORM)/build/lib$(LIBNAME)/lib$(LIBNAME)client.a
 
@@ -49,6 +50,9 @@ ifeq ($(OS),windows)
 	cd $(PLATFORM); patch -p1 -i ../03-win-uwp.patch
 	cd $(PLATFORM); patch -p1 -i ../04-win-installpkgconfig.patch
 endif
+ifeq ($(OS),wasm)
+	cd $(PLATFORM); patch -p1 -i ../06-emscripten-no-shared.patch
+endif
 	cd $(PLATFORM); patch -p1 -i ../05-all-installtargets.patch
 	cd $(PLATFORM)/build; $(CMAKE) $(PLUGIN_BUILD_FLAGS) $(CMAKE_OPTIONS) ..
 	touch $@
@@ -59,6 +63,10 @@ $(LIBDYLIB): .configured-$(PLATFORM)
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM)/build install
 	rm -f $(PREFIX)/lib/mariadb/*.so $(PREFIX)/lib/mariadb/*.dylib
+ifeq ($(OS),wasm)
+	# static-only target: pkg-config references -lmariadb but only libmariadbclient.a exists
+	cd $(PREFIX)/lib/mariadb && ln -sf libmariadbclient.a libmariadb.a
+endif
 	touch $@
 
 clean:

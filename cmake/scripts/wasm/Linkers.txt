@@ -1,0 +1,4 @@
+# Emscripten provides the linker; gold/lld/mold are not used
+set(ENABLE_GOLD OFF CACHE BOOL "No gnu gold linker" FORCE)
+set(ENABLE_LLD OFF CACHE BOOL "No llvm lld linker" FORCE)
+set(ENABLE_MOLD OFF CACHE BOOL "No mold linker" FORCE)

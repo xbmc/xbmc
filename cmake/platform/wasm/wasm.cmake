@@ -1,0 +1,4 @@
+# Emscripten WebAssembly platform — GLES maps to WebGL2
+set(PLATFORM_REQUIRED_DEPS OpenGLES EGL)
+set(PLATFORM_OPTIONAL_DEPS_EXCLUDE CEC)
+set(APP_RENDER_SYSTEM gles)

@@ -14,7 +14,7 @@ case $build in
   amd64-*-freebsd*)
      AC_SUBST(NATIVE_ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_FREEBSD")
      ;;
-  arm-apple-darwin*)
+  arm-apple-darwin*|aarch64-apple-darwin*)
      AC_SUBST(NATIVE_ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_DARWIN -DTARGET_DARWIN_OSX")
      ;;
   x86_64-apple-darwin*)
@@ -72,6 +72,9 @@ case $host in
      ;;
   *-*linux-android*)
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -DTARGET_ANDROID")
+     ;;
+  wasm32*-unknown-emscripten*)
+     AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_WASM")
      ;;
   *)
      AC_MSG_ERROR(unsupported build target: $host)

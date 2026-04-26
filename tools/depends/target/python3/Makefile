@@ -5,7 +5,10 @@ DEPS = ../../Makefile.include Makefile PYTHON3-VERSION ../../download-files.incl
                                  static-compile.patch \
                                  10-android-modules.patch \
                                  11-android-ctypes.patch \
-                                 12-android-arm.patch
+                                 12-android-arm.patch \
+                                 13-wasm-em-config-clang.patch \
+                                 14-wasm-build-wasm-default.patch \
+                                 15-wasm-static-hacl.patch
 
 ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
   ifeq ($(OS), darwin_embedded)
@@ -31,6 +34,17 @@ ifeq ($(OS), linux)
     # Force intl check to succeed
     EXTRA_CONFIGURE+=ac_cv_lib_intl_textdomain=yes
   endif
+endif
+
+ifeq ($(OS),wasm)
+  # Cross-compiling to wasm cannot run AX_C_FLOAT_WORDS_BIGENDIAN's probe.
+  # WebAssembly is little-endian, so preset the cache result. Also disable
+  # forkpty: posixmodule builds the forkpty wrapper under HAVE_FORKPTY, but the
+  # PyOS_*Fork helpers it calls are only built when HAVE_FORK is available.
+  # memfd_create is also misdetected here and fails at link time with emcc.
+  EXTRA_CONFIGURE+= ax_cv_c_float_words_bigendian=no \
+                    ac_cv_func_forkpty=no ac_cv_lib_util_forkpty=no \
+                    ac_cv_func_memfd_create=no
 endif
 
 # Disabled c extension modules for all platforms
@@ -98,6 +112,11 @@ ifeq ($(OS),android)
 	cd $(PLATFORM); patch -p1 -i ../10-android-modules.patch
 	cd $(PLATFORM); patch -p1 -i ../11-android-ctypes.patch
 	cd $(PLATFORM); patch -p1 -i ../12-android-arm.patch
+endif
+ifeq ($(OS),wasm)
+	cd $(PLATFORM); patch -p1 -i ../13-wasm-em-config-clang.patch
+	cd $(PLATFORM); patch -p1 -i ../14-wasm-build-wasm-default.patch
+	cd $(PLATFORM); patch -p1 -i ../15-wasm-static-hacl.patch
 endif
 	cd $(PLATFORM); $(AUTORECONF)
 	cd $(PLATFORM); $(CONFIGURE)

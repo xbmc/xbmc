@@ -1,0 +1,60 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -22,8 +22,7 @@
+ AC_CANONICAL_HOST
+ AC_GNU_SOURCE
+ AC_PROG_INSTALL
+-AC_PROG_RANLIB
+-AC_CHECK_PROGS(AR, ar)
++LT_INIT
+ 
+ AC_USE_SYSTEM_EXTENSIONS
+ AC_C_CONST
+@@ -53,37 +52,7 @@
+ dnl! AC_ADD_CFLAGS(-Werror)
+ dnl! AC_ADD_CFLAGS([-Wl,--as-needed])
+ 
+-AC_CHECK_PROGS(LIBTOOL, libtool)
+ 
+-if test -z "$LIBTOOL"
+-then
+-  AC_MSG_RESULT([
+-        You must have GNU Libtool installed to build fstrcmp.
+-        Homepage: http://www.gnu.org/software/libtool/])
+-  OK=no
+-  if apt-get --version > /dev/null 2> /dev/null; then
+-    AC_MSG_RESULT([
+-        The following command may be used to install it:
+-        sudo apt-get install libtool
+-    ])
+-    OK=yes
+-  fi
+-  if yum --version > /dev/null 2> /dev/null; then
+-    AC_MSG_RESULT([
+-        The following command may be used to install it:
+-        sudo yum install libtool
+-    ])
+-    OK=yes
+-  fi
+-  if test "$OK" != "yes"; then
+-    AC_MSG_RESULT([
+-        If you are using a package based install, you will need the
+-        libtool package.
+-    ])
+-  fi
+-  exit 1
+-fi
+-
+ AC_CHECK_PROGS(GROFF, groff roff)
+ AC_CHECK_PROGS(SOELIM, gsoelim soelim)
+ AC_CHECK_PROGS(REFER, refer grefer)
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -34,6 +34,7 @@
+ #
+ # directory containing the source
+ #
++top_builddir = .
+ srcdir = @srcdir@
+ VPATH = @srcdir@
+ 

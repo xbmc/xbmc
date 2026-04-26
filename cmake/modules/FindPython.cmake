@@ -61,7 +61,13 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       find_package(LibLZMA REQUIRED ${SEARCH_QUIET})
 
       if(NOT CORE_SYSTEM_NAME STREQUAL android)
-        set(PYTHON_DEP_LIBRARIES pthread dl util)
+        if(CORE_SYSTEM_NAME STREQUAL wasm)
+          # Emscripten does not provide native libdl/libutil.
+          # Keep only pthread for threaded Python builds.
+          set(PYTHON_DEP_LIBRARIES pthread)
+        else()
+          set(PYTHON_DEP_LIBRARIES pthread dl util)
+        endif()
         if(CORE_SYSTEM_NAME STREQUAL linux)
           # python archive built via depends requires librt for _posixshmem library
           list(APPEND PYTHON_DEP_LIBRARIES rt)

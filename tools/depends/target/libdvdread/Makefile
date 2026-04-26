@@ -1,6 +1,7 @@
 -include ../../Makefile.include
 include LIBDVDREAD-VERSION
-DEPS = LIBDVDREAD-VERSION Makefile ../../download-files.include
+DEPS = LIBDVDREAD-VERSION Makefile ../../download-files.include \
+       001-emscripten-bswap.patch
 
 # configuration settings
 config = --prefix=$(PREFIX) --disable-shared --enable-static --with-pic --with-libdvdcss
@@ -38,6 +39,9 @@ all: .installed-$(PLATFORM)
 .configured-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+ifeq ($(OS),wasm)
+	cd $(PLATFORM); patch -p1 -i ../001-emscripten-bswap.patch
+endif
 	cd $(PLATFORM); $(AUTORECONF) -vif && $(PKGCONFIGPATH) CFLAGS="$(CFLAGS) $(EXTRA_CFLAGS)" ac_cv_path_GIT= ./configure $(config)
 	touch $@
 

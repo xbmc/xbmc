@@ -1,0 +1,16 @@
+diff --git a/libavutil/common.h b/libavutil/common.h
+--- a/libavutil/common.h
++++ b/libavutil/common.h
+@@ -26,7 +26,11 @@
+ #ifndef AVUTIL_COMMON_H
+ #define AVUTIL_COMMON_H
+ 
+-#if defined(__cplusplus) && !defined(__STDC_CONSTANT_MACROS) && !defined(UINT64_C)
++/*
++ * In C++ prior to C++11, some of the C99 defines in stdint.h are omitted unless
++ * you request to enable them by setting __STDC_CONSTANT_MACROS
++ */
++#if defined(__cplusplus) && __cplusplus < 201103L && !defined(__STDC_CONSTANT_MACROS) && !defined(UINT64_C)
+ #error missing -D__STDC_CONSTANT_MACROS / #define __STDC_CONSTANT_MACROS
+ #endif
+ 

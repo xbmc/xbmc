@@ -4,10 +4,12 @@ DEPS = ../../Makefile.include Makefile PCRE2-VERSION ../../download-files.includ
 
 # configuration settings
 CMAKE_OPTIONS=-DBUILD_STATIC_LIBS=ON \
+              -DPCRE2_STATIC_PIC=ON \
               -DPCRE2_BUILD_PCRE2_8=ON \
               -DPCRE2_BUILD_PCRE2_16=OFF \
               -DPCRE2_BUILD_PCRE2_32=OFF \
               -DPCRE2_SUPPORT_JIT=ON \
+              -DPCRE_NEWLINE=ANYCRLF \
               -DPCRE2_SUPPORT_UNICODE=ON \
               -DPCRE2_BUILD_PCRE2GREP=OFF \
               -DPCRE2_BUILD_TESTS=OFF \
@@ -15,6 +17,9 @@ CMAKE_OPTIONS=-DBUILD_STATIC_LIBS=ON \
 
 ifeq ($(OS),darwin_embedded)
   # build default is off, look to see if we want to enable this for non darwin_embedded platforms
+  CMAKE_OPTIONS+= -DPCRE2_SUPPORT_JIT=OFF
+endif
+ifeq ($(OS),wasm)
   CMAKE_OPTIONS+= -DPCRE2_SUPPORT_JIT=OFF
 endif
 
