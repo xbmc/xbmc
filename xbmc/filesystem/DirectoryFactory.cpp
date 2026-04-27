@@ -133,7 +133,7 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 
   struct __stat64 st = {};
   static constexpr auto excludedProtocols =
-      make_set<std::string_view>({"upnp", "special", "addons", "favourites", "sources"});
+      make_set<std::string_view>({"upnp", "addons", "favourites", "sources"});
   const bool exclude{excludedProtocols.contains(url.GetProtocol())};
   if (!exclude && CFile::Stat(URIUtils::SubstitutePath(url), &st) == 0)
   {
