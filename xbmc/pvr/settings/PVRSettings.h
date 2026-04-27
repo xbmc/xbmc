@@ -38,6 +38,7 @@ public:
   void OnSettingsLoaded() override;
 
   // ISettingCallback implementation
+  bool OnSettingChanging(const std::shared_ptr<const CSetting>& setting) override;
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
   bool GetBoolValue(const std::string& settingName) const;

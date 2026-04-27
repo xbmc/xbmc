@@ -12467,7 +12467,13 @@ msgctxt "#19687"
 msgid "Play recording"
 msgstr ""
 
-#empty strings from id 19688 to 19689
+#. Error message for invalid PVR daily wake-up time
+#: xbmc/pvr/settings/PVRSettings.cpp
+msgctxt "#19688"
+msgid "Time must be in HH:MM:SS format, including any leading zeroes."
+msgstr ""
+
+#empty string with id 19689
 
 #. Text for shutdown confirmation dialog
 #: xbmc/pvr/guilib/PVRGUIActionsPowerManagement.cpp
