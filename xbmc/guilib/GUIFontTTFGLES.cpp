@@ -147,6 +147,9 @@ void CGUIFontTTFGLES::LastEnd()
   CRenderSystemGLES* renderSystem =
       dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
 
+  renderSystem->EnableGUIShader(m_scissorClip ? ShaderMethodGLES::SM_FONTS
+                                              : ShaderMethodGLES::SM_FONTS_SHADER_CLIP);
+
   GLint posLoc = renderSystem->GUIShaderGetPos();
   GLint colLoc = renderSystem->GUIShaderGetCol();
   GLint tex0Loc = renderSystem->GUIShaderGetCoord0();
@@ -154,6 +157,19 @@ void CGUIFontTTFGLES::LastEnd()
   GLint coordStepUniformLoc = renderSystem->GUIShaderGetCoordStep();
   GLint matrixUniformLoc = renderSystem->GUIShaderGetMatrix();
   GLint depthLoc = renderSystem->GUIShaderGetDepth();
+
+  if (posLoc < 0 || colLoc < 0 || tex0Loc < 0)
+  {
+    static bool loggedInvalidFontAttributes = false;
+    if (!loggedInvalidFontAttributes)
+    {
+      CLog::Log(LOGERROR, "GUIFontTTFGLES: invalid font shader attributes: pos={} col={} tex0={}",
+                posLoc, colLoc, tex0Loc);
+      loggedInvalidFontAttributes = true;
+    }
+    renderSystem->DisableGUIShader();
+    return;
+  }
 
   CreateStaticVertexBuffers();
 
