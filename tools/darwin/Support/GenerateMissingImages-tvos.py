@@ -1,16 +1,21 @@
 #!/usr/bin/env python3
 
-import sys, os, json
+import json
+import os
+import sys
 from subprocess import call
+
 
 assetCatalogPath = sys.argv[1]
 brandAssetsDir = sys.argv[2] + '.brandassets'
+
 
 def getImageFilename(jsonContents, scale):
     for image in jsonContents.get('images', []):
         if image.get('scale') == scale and 'filename' in image:
             return image['filename']
     return None
+
 
 def generateImage(contentsRelativeDir, isBaseImage1x, newWidth, newHeight):
     contentsDir = os.path.join(assetCatalogPath, contentsRelativeDir)
@@ -23,7 +28,18 @@ def generateImage(contentsRelativeDir, isBaseImage1x, newWidth, newHeight):
         if existingImageRelativePath is None or newImageRelativePath is None:
             return
         existingImagePath = os.path.join(contentsDir, existingImageRelativePath)
-        call(['sips', '--resampleHeightWidth', str(newHeight), str(newWidth), existingImagePath, '--out', os.path.join(contentsDir, newImageRelativePath)])
+        call(
+            [
+                'sips',
+                '--resampleHeightWidth',
+                str(newHeight),
+                str(newWidth),
+                existingImagePath,
+                '--out',
+                os.path.join(contentsDir, newImageRelativePath),
+            ]
+        )
+
 
 def generateImageStack1x(stackRelativeDir):
     stackDir = os.path.join(assetCatalogPath, stackRelativeDir)
@@ -41,7 +57,12 @@ def generateImageStack1x(stackRelativeDir):
         if frameSize is None:
             continue
 
-        generateImage(os.path.join(layerRelativeDir, 'Content.imageset'), False, frameSize['width'], frameSize['height'])
+        generateImage(
+            os.path.join(layerRelativeDir, 'Content.imageset'),
+            False,
+            frameSize['width'],
+            frameSize['height'],
+        )
 
 
 generateImage(sys.argv[3] + '.launchimage', True, 3840, 2160)
