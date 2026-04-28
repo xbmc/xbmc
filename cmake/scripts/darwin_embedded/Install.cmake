@@ -21,20 +21,20 @@ if(CORE_PLATFORM_NAME_LC STREQUAL tvos)
 
 else()
   set(BUNDLE_RESOURCES ${CMAKE_SOURCE_DIR}/media/applaunch_screen.png
-                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/rounded/AppIcon29x29.png
-                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/rounded/AppIcon29x29@2x.png
-                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/rounded/AppIcon40x40.png
-                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/rounded/AppIcon40x40@2x.png
-                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/rounded/AppIcon50x50.png
-                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/rounded/AppIcon50x50@2x.png
-                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/rounded/AppIcon57x57.png
-                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/rounded/AppIcon57x57@2x.png
-                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/rounded/AppIcon60x60.png
-                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/rounded/AppIcon60x60@2x.png
-                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/rounded/AppIcon72x72.png
-                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/rounded/AppIcon72x72@2x.png
-                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/rounded/AppIcon76x76.png
-                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/rounded/AppIcon76x76@2x.png)
+                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon29x29.png
+                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon29x29@2x.png
+                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon40x40.png
+                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon40x40@2x.png
+                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon50x50.png
+                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon50x50@2x.png
+                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon57x57.png
+                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon57x57@2x.png
+                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon60x60.png
+                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon60x60@2x.png
+                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon72x72.png
+                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon72x72@2x.png
+                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon76x76.png
+                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon76x76@2x.png)
 
   target_sources(${APP_NAME_LC} PRIVATE ${BUNDLE_RESOURCES})
   foreach(file IN LISTS BUNDLE_RESOURCES)
