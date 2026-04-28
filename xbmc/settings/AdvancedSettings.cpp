@@ -188,6 +188,10 @@ void CAdvancedSettings::Initialize()
   m_videoDecoderStreamBuffer = 90.0f;
   m_videoDecoderMinimumBuffer = 10.0f;
 
+  m_blurayIsoCachePageSize = 256 * 1024;
+  m_blurayIsoCacheMaxBytes = 64 * 1024 * 1024;
+  m_blurayIsoCacheForwardPrefetchPages = 1;
+
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;
   m_musicTimeSeekBackward = -10;
@@ -894,6 +898,14 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetFloat(pElement, "decoderstreambuffer", m_videoDecoderStreamBuffer, 0.0f, 100.0f);
     XMLUtils::GetFloat(pElement, "decoderminimumbuffer", m_videoDecoderMinimumBuffer, 0.0f, 100.0f);
     XMLUtils::GetFloat(pElement, "decoderminimumstreambuffer", m_videoDecoderMinimumStreamBuffer, 0.0f, 100.0f);
+  }
+
+  pElement = pRootElement->FirstChildElement("blurayisocache");
+  if (pElement)
+  {
+    XMLUtils::GetUInt(pElement, "pagesize", m_blurayIsoCachePageSize, 2048, 1024 * 1024);
+    XMLUtils::GetUInt(pElement, "maxbytes", m_blurayIsoCacheMaxBytes, 256 * 1024, 1024 * 1024 * 1024);
+    XMLUtils::GetUInt(pElement, "forwardprefetchpages", m_blurayIsoCacheForwardPrefetchPages, 0, 16);
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");
