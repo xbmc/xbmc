@@ -65,12 +65,15 @@ rm -rf "$TARGET_CONTENTS/Libraries"
 mkdir -p "$TARGET_CONTENTS/Libraries"
 
 echo "Creating icon"
-ICON_ICNS="$SRCROOT/tools/darwin/packaging/media/osx/kodi.icns"
-ICON_ICONSET="$SRCROOT/tools/darwin/packaging/media/osx/icon.iconset"
+ICON_ROOT="${SOURCE_ROOT:-$SRCROOT}"
+ICON_ICNS="$ICON_ROOT/tools/darwin/packaging/media/osx/kodi.icns"
+ICON_ICONSET="$ICON_ROOT/tools/darwin/packaging/media/osx/icon.iconset"
 
 if [ -f "$ICON_ICNS" ]; then
+  echo "Using bundled icns: $ICON_ICNS"
   cp -f "$ICON_ICNS" "$TARGET_CONTENTS/Resources/kodi.icns"
 elif [ -d "$ICON_ICONSET" ]; then
+  echo "Falling back to legacy iconset: $ICON_ICONSET"
   iconutil -c icns --output "$TARGET_CONTENTS/Resources/kodi.icns" "$ICON_ICONSET"
 else
   echo "ERROR: No macOS icon source found" >&2
