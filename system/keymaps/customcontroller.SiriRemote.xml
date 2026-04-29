@@ -72,8 +72,8 @@
       <button id="2">VolumeDown</button>
       <button id="3">StepBack</button>
       <button id="4">StepForward</button>
-      <button id="5">Pause</button>
-      <button id="6">Stop</button>
+      <button id="5">OSD</button>
+      <button id="6">Back</button>
       <button id="7">OSD</button>
       <button id="8">noop</button>
       <button id="9">noop</button>
@@ -131,7 +131,7 @@
   <VideoMenu>
     <customcontroller name="SiriRemote">
       <button id="5">Select</button>
-      <button id="6">Stop</button>
+      <button id="6">Back</button>
       <button id="7">OSD</button>
     </customcontroller>
   </VideoMenu>
