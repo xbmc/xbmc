@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2022 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -974,6 +974,8 @@ void CDVDInputStreamNavigator::SetSubtitleStreamName(SubtitleStreamInfo &info, c
       default:
         break;
     }
+    info.codecName = "dvd_subtitle";
+    info.codecDesc = "VobSub";
   }
 }
 

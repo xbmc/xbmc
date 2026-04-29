@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -1120,7 +1120,7 @@ constexpr std::array<InfoMap, 10> player_times = {{
 ///   \table_row3{   <b>`Player.Process(audiochannels)`</b>,
 ///                  \anchor Player_Process_audiochannels
 ///                  _string_,
-///     @return The audiodecoder name of the currently playing item.
+///     @return The audiochannels string of the currently playing item.
 ///     <p><hr>
 ///     @skinning_v17 **[New Infolabel]** \link Player_Process_audiochannels `Player.Process(audiochannels)`\endlink
 ///     <p>
@@ -1141,11 +1141,19 @@ constexpr std::array<InfoMap, 10> player_times = {{
 ///     @skinning_v17 **[New Infolabel]** \link Player_Process_audiobitspersample `Player.Process(audiobitspersample)`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Player.Process(subtitlesdecoder)`</b>,
+///                  \anchor Player_Process_subtitlesdecoder
+///                  _string_,
+///     @return The name of the subtitles decoder active for the currently playing item.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link Player_Process_subtitlesdecoder `Player.Process(subtitlesdecoder)`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 13> player_process = {{
+constexpr std::array<InfoMap, 14> player_process = {{
     {"videodecoder",        PLAYER_PROCESS_VIDEODECODER},
     {"deintmethod",         PLAYER_PROCESS_DEINTMETHOD},
     {"pixformat",           PLAYER_PROCESS_PIXELFORMAT},
@@ -1159,6 +1167,7 @@ constexpr std::array<InfoMap, 13> player_process = {{
     {"audiosamplerate",     PLAYER_PROCESS_AUDIOSAMPLERATE},
     {"audiobitspersample",  PLAYER_PROCESS_AUDIOBITSPERSAMPLE},
     {"videoscantype",       PLAYER_PROCESS_VIDEOSCANTYPE},
+    {"subtitlesdecoder",    PLAYER_PROCESS_SUBTITLESDECODER},
 }};
 // clang-format on
 
@@ -3925,6 +3934,57 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///     @skinning_v13 **[New Infolabel]** \link VideoPlayer_SubtitlesLanguage `VideoPlayer.SubtitlesLanguage`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`VideoPlayer.SubtitlesCodec`</b>,
+///                  \anchor VideoPlayer_SubtitlesCodec
+///                  _string_,
+///     @param[in] format (optional) format of the info label. Possible values:
+///       - <b>(blank)</b> no format value / default format: raw codec name
+///       - <b>description</b> short human-readable name of the codec. If undefined\, an empty string is returned.
+///     @return The codec of the current subtitles of the currently playing video\, formatted per optional
+///       parameter. Values of the default format include:
+///       - <b>ass</b>
+///       - <b>dvb_subtitle</b>
+///       - <b>dvb_teletext</b>
+///       - <b>dvd_subtitle</b>
+///       - <b>hdmv_pgs_subtitle</b>
+///       - <b>microdvd</b>
+///       - <b>mov_text</b>
+///       - <b>mpl2</b>
+///       - <b>realtext</b>
+///       - <b>sami</b>
+///       - <b>srt</b>
+///       - <b>ssa</b>
+///       - <b>subrip</b>
+///       - <b>text</b>
+///       - <b>ttml</b>
+///       - <b>vplayer</b>
+///       - <b>webvtt</b>
+///
+///     Possible values for format "description":
+///       - <b>ASS</b>
+///       - <b>DVB-SUB</b>
+///       - <b>DVB-TXT</b>
+///       - <b>MicroDVD</b>
+///       - <b>MOV-TEXT</b>
+///       - <b>MPL2</b>
+///       - <b>PGS</b>
+///       - <b>RealText</b>
+///       - <b>SAMI</b>
+///       - <b>SSA</b>
+///       - <b>SubRip</b>
+///       - <b>Text</b>
+///       - <b>TTML</b>
+///       - <b>VobSub</b>
+///       - <b>VPlayer</b>
+///       - <b>WebVTT</b>
+///       - <b>XSUB</b>
+///
+///     @note `VideoPlayer.SubtitlesCodec` holds the codec of the next available subtitles stream
+///     if subtitles are disabled in the player.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_SubtitlesCodec `VideoPlayer.SubtitlesCodec`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`VideoPlayer.StereoscopicMode`</b>,
 ///                  \anchor VideoPlayer_StereoscopicMode
 ///                  _string_,
@@ -4171,7 +4231,7 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 83> videoplayer = {{
+constexpr std::array<InfoMap, 84> videoplayer = {{
     {"title",                 VIDEOPLAYER_TITLE},
     {"genre",                 VIDEOPLAYER_GENRE},
     {"country",               VIDEOPLAYER_COUNTRY},
@@ -4219,6 +4279,7 @@ constexpr std::array<InfoMap, 83> videoplayer = {{
     {"hassubtitles",          VIDEOPLAYER_HASSUBTITLES},
     {"subtitlesenabled",      VIDEOPLAYER_SUBTITLESENABLED},
     {"subtitleslanguage",     VIDEOPLAYER_SUBTITLES_LANG},
+    {"subtitlescodec",        VIDEOPLAYER_SUBTITLES_CODEC},
     {"starttime",             VIDEOPLAYER_STARTTIME},
     {"endtime",               VIDEOPLAYER_ENDTIME},
     {"nexttitle",             VIDEOPLAYER_NEXT_TITLE},
@@ -10977,6 +11038,9 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
 
       if (prop.Name() == "audiochannels" && prop.num_params() == 1)
         return AddMultiInfo(CGUIInfo(VIDEOPLAYER_AUDIO_CHANNELS, prop.param(), 0));
+
+      if (prop.Name() == "subtitlescodec" && prop.num_params() == 1)
+        return AddMultiInfo(CGUIInfo(VIDEOPLAYER_SUBTITLES_CODEC, prop.param(), 0));
 
       return TranslateVideoPlayerString(prop.Name());
     }

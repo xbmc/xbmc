@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024 Team Kodi
+ *  Copyright (C) 2024-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -482,6 +482,7 @@ void KODI::VIDEO::GUILIB::OpenDialogSelectSubtitleStream()
     fileItem->SetProperty("stream.id", info.streamId);
     fileItem->SetProperty("stream.description", info.name);
     fileItem->SetProperty("stream.codec", info.codecName);
+    fileItem->SetProperty("stream.codecdesc", info.codecDesc);
 
     fileItem->SetProperty("stream.isdefault", info.isDefault);
     fileItem->SetProperty("stream.isforced", info.isForced);

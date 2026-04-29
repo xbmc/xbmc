@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -358,6 +358,23 @@ void CGUIDialogSubtitleSettings::AddSubtitleStreams(const std::shared_ptr<CSetti
   m_subtitleStreamSetting = AddList(group, settingId, 462, SettingLevel::Basic, m_subtitleStream, SubtitleStreamsOptionFiller, 462);
 }
 
+namespace
+{
+std::string FormatCodec(const SubtitleStreamInfo& info)
+{
+  std::string codec = " (";
+  if (!info.codecDesc.empty())
+    codec += info.codecDesc;
+  else if (!info.codecName.empty())
+    codec += info.codecName;
+  else
+    codec += CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // unknown
+  codec += ")";
+
+  return codec;
+}
+} // namespace
+
 void CGUIDialogSubtitleSettings::SubtitleStreamsOptionFiller(
     const SettingConstPtr& setting, std::vector<IntegerSettingOption>& list, int& current)
 {
@@ -384,6 +401,7 @@ void CGUIDialogSubtitleSettings::SubtitleStreamsOptionFiller(
     else
       strItem = StringUtils::Format("{} - {}", strLanguage, info.name);
 
+    strItem += FormatCodec(info);
     strItem += FormatFlags(info.flags);
     strItem += StringUtils::Format(" ({}/{})", i + 1, subtitleStreamCount);
 

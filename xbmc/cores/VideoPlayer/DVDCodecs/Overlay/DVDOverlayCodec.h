@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -77,6 +77,12 @@ public:
    * return codecs name
    */
   const std::string& GetName() const { return m_codecName; }
+
+  /*!
+   * \brief Set the codec name
+   * \param[in] name name
+   */
+  void SetName(const std::string& name) { m_codecName = name; }
 
 protected:
   /*

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -262,6 +262,21 @@ int CDataCacheCore::GetAudioBitsPerSample()
   std::unique_lock lock(m_audioPlayerSection);
 
   return m_playerAudioInfo.bitsPerSample;
+}
+
+// player subtitle info
+void CDataCacheCore::SetSubtitleDecoderName(std::string name)
+{
+  std::unique_lock lock(m_subtitlePlayerSection);
+
+  m_playerSubtitleInfo.m_decoderName = std::move(name);
+}
+
+std::string CDataCacheCore::GetSubtitleDecoderName()
+{
+  std::unique_lock lock(m_subtitlePlayerSection);
+
+  return m_playerSubtitleInfo.m_decoderName;
 }
 
 void CDataCacheCore::SetEditList(const std::vector<EDL::Edit>& editList)

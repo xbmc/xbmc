@@ -727,8 +727,8 @@
 	<variable name="ActiveVideoPlayerSubtitleLanguage">
 		<value condition="!VideoPlayer.HasSubtitles">$LOCALIZE[36623]</value>
 		<value condition="VideoPlayer.HasSubtitles + !VideoPlayer.SubtitlesEnabled">$LOCALIZE[1223]</value>
-		<value condition="VideoPlayer.HasSubtitles + VideoPlayer.SubtitlesEnabled + !String.IsEmpty(VideoPlayer.SubtitlesLanguage)">[UPPERCASE]$INFO[VideoPlayer.SubtitlesLanguage][/UPPERCASE]</value>
-		<value condition="VideoPlayer.HasSubtitles + VideoPlayer.SubtitlesEnabled + String.IsEmpty(VideoPlayer.SubtitlesLanguage)">$LOCALIZE[13205]</value>
+		<value condition="VideoPlayer.HasSubtitles + VideoPlayer.SubtitlesEnabled + !String.IsEmpty(VideoPlayer.SubtitlesLanguage)">[UPPERCASE]$INFO[VideoPlayer.SubtitlesLanguage][/UPPERCASE]$VAR[SubtitleCodecVar, | ]</value>
+		<value condition="VideoPlayer.HasSubtitles + VideoPlayer.SubtitlesEnabled + String.IsEmpty(VideoPlayer.SubtitlesLanguage)">???$VAR[SubtitleCodecVar, | ]</value>
 	</variable>
 	<variable name="ActiveVideoPlayerAudioLanguage">
 		<value condition="!String.IsEmpty(VideoPlayer.AudioLanguage)">[UPPERCASE]$INFO[VideoPlayer.AudioLanguage][/UPPERCASE]</value>
@@ -858,6 +858,10 @@
 		<value condition="Container.Content(albums) | Window.IsActive(10502)">$INFO[ListItem.MusicChannels(DefaultLayout)]</value>
 		<value>$INFO[ListItem.AudioChannels(DefaultLayout)]</value>
 	</variable>
+	<variable name="SubtitleCodecVar">
+		<value condition="Window.IsActive(fullscreenvideo) + !String.IsEmpty(VideoPlayer.SubtitlesCodec(Description))">$INFO[VideoPlayer.SubtitlesCodec(Description)]</value>
+		<value condition="Window.IsActive(fullscreenvideo)">$INFO[VideoPlayer.SubtitlesCodec]</value>
+	</variable>
 	<variable name="StreamCodecVar">
 		<value condition="Window.IsVisible(dialogselectvideo) + String.IsEqual(ListItem.Property(stream.codec),av1)">AV1</value>
 		<value condition="Window.IsVisible(dialogselectvideo) + String.IsEqual(ListItem.Property(stream.codec),avc1)">AVC-1</value>
@@ -926,6 +930,7 @@
 		<value condition="Window.IsVisible(dialogselectaudio) + String.IsEqual(ListItem.Property(stream.codec),ac3)">Dolby Digital</value>
 		<value condition="Window.IsVisible(dialogselectaudio) + String.IsEqual(ListItem.Property(stream.codec),truehd_atmos)">Dolby TrueHD Atmos</value>
 		<value condition="Window.IsVisible(dialogselectaudio) + String.IsEqual(ListItem.Property(stream.codec),truehd)">Dolby TrueHD</value>
+		<value>$INFO[ListItem.Property(stream.codecdesc)]</value>
 		<value>$INFO[ListItem.Property(stream.codec)]</value>
 	</variable>
 	<variable name="StreamChannelsVar">
@@ -939,6 +944,11 @@
 	</variable>
 	<variable name="StreamBitrateVar">
 		<value condition="!String.IsEqual(ListItem.Property(stream.bitrate),0)">$INFO[ListItem.Property(stream.bitrate)]</value>
+	</variable>
+	<variable name="SubtitleStreamDescriptionVar">
+		<value condition="!String.IsEmpty(ListItem.Property(stream.codecdesc))">$INFO[ListItem.Property(stream.codecdesc)]$INFO[ListItem.Property(stream.description), | ]</value>
+		<value condition="!String.IsEmpty(ListItem.Property(stream.codec))">$INFO[ListItem.Property(stream.codec)]$INFO[ListItem.Property(stream.description), | ]</value>
+		<value>$INFO[ListItem.Property(stream.description)]</value>
 	</variable>
 	<variable name="MediaInfoListLabelVar">
 		<value>$INFO[ListItem.Label]</value>
