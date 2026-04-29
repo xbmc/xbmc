@@ -325,7 +325,8 @@ void CLinuxRendererGLES::LoadPlane(CYuvPlane& plane, int type,
       pixelData = m_planeBuffer;
     }
   }
-  glTexSubImage2D(m_textureTarget, 0, 0, 0, width, height, type, GL_UNSIGNED_BYTE, pixelData);
+  GLenum datatype = (bpp == 2) ? GL_UNSIGNED_SHORT : GL_UNSIGNED_BYTE;
+  glTexSubImage2D(m_textureTarget, 0, 0, 0, width, height, type, datatype, pixelData);
 
   if (m_pixelStoreKey > 0 && pixelStoreChanged)
     glPixelStorei(m_pixelStoreKey, 0);
@@ -333,17 +334,13 @@ void CLinuxRendererGLES::LoadPlane(CYuvPlane& plane, int type,
   // check if we need to load any border pixels
   if (height < plane.texheight)
   {
-    glTexSubImage2D(m_textureTarget, 0,
-                    0, height, width, 1,
-                    type, GL_UNSIGNED_BYTE,
+    glTexSubImage2D(m_textureTarget, 0, 0, height, width, 1, type, datatype,
                     static_cast<const unsigned char*>(pixelData) + stride * (height - 1));
   }
 
   if (width  < plane.texwidth)
   {
-    glTexSubImage2D(m_textureTarget, 0,
-                    width, 0, 1, height,
-                    type, GL_UNSIGNED_BYTE,
+    glTexSubImage2D(m_textureTarget, 0, width, 0, 1, height, type, datatype,
                     static_cast<const unsigned char*>(pixelData) + bps * (width - 1));
   }
 
@@ -1449,22 +1446,32 @@ bool CLinuxRendererGLES::UploadYV12Texture(int source)
 
   VerifyGLState();
 
-  glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-  // load Y plane
-  LoadPlane(buf.fields[FIELD_FULL][0], GL_LUMINANCE,
-            im->width, im->height,
-            im->stride[0], im->bpp, im->plane[0]);
+  if (im->bpp == 2)
+  {
+    // >8-bit: three separate GL_R16_EXT planes
+    LoadPlane(buf.fields[FIELD_FULL][0], GL_RED, im->width, im->height, im->stride[0], im->bpp,
+              im->plane[0]);
 
-  // load U plane
-  LoadPlane(buf.fields[FIELD_FULL][1], GL_LUMINANCE,
-            im->width >> im->cshift_x, im->height >> im->cshift_y,
-            im->stride[1], im->bpp, im->plane[1]);
+    LoadPlane(buf.fields[FIELD_FULL][1], GL_RED, im->width >> im->cshift_x,
+              im->height >> im->cshift_y, im->stride[1], im->bpp, im->plane[1]);
 
-  // load V plane
-  LoadPlane(buf.fields[FIELD_FULL][2], GL_ALPHA,
-            im->width >> im->cshift_x, im->height >> im->cshift_y,
-            im->stride[2], im->bpp, im->plane[2]);
+    LoadPlane(buf.fields[FIELD_FULL][2], GL_RED, im->width >> im->cshift_x,
+              im->height >> im->cshift_y, im->stride[2], im->bpp, im->plane[2]);
+  }
+  else
+  {
+    // 8-bit: GL_LUMINANCE for Y/U, GL_ALPHA for V
+    LoadPlane(buf.fields[FIELD_FULL][0], GL_LUMINANCE, im->width, im->height, im->stride[0],
+              im->bpp, im->plane[0]);
+
+    LoadPlane(buf.fields[FIELD_FULL][1], GL_LUMINANCE, im->width >> im->cshift_x,
+              im->height >> im->cshift_y, im->stride[1], im->bpp, im->plane[1]);
+
+    LoadPlane(buf.fields[FIELD_FULL][2], GL_ALPHA, im->width >> im->cshift_x,
+              im->height >> im->cshift_y, im->stride[2], im->bpp, im->plane[2]);
+  }
 
   VerifyGLState();
 
@@ -1509,7 +1516,8 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
 {
   // since we also want the field textures, pitch must be texture aligned
   unsigned p;
-  YuvImage &im = m_buffers[index].image;
+  CPictureBuffer& buf = m_buffers[index];
+  YuvImage& im = buf.image;
 
   DeleteYV12Texture(index);
 
@@ -1517,7 +1525,31 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
   im.width = m_sourceWidth;
   im.cshift_x = 1;
   im.cshift_y = 1;
-  im.bpp = 1;
+
+  switch (m_format)
+  {
+    case AV_PIX_FMT_YUV420P16:
+      buf.m_srcTextureBits = 16;
+      break;
+    case AV_PIX_FMT_YUV420P14:
+      buf.m_srcTextureBits = 14;
+      break;
+    case AV_PIX_FMT_YUV420P12:
+      buf.m_srcTextureBits = 12;
+      break;
+    case AV_PIX_FMT_YUV420P10:
+      buf.m_srcTextureBits = 10;
+      break;
+    case AV_PIX_FMT_YUV420P9:
+      buf.m_srcTextureBits = 9;
+      break;
+    default:
+      break;
+  }
+  if (buf.m_srcTextureBits > 8)
+    im.bpp = 2;
+  else
+    im.bpp = 1;
 
   im.stride[0] = im.bpp * im.width;
   im.stride[1] = im.bpp * (im.width >> im.cshift_x);
@@ -1574,17 +1606,23 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
 
       glBindTexture(m_textureTarget, plane.id);
 
-      GLint format;
-      if (p == 2) // V plane needs an alpha texture
+      if (im.bpp == 2)
       {
-        format = GL_ALPHA;
+        glTexImage2D(m_textureTarget, 0, GL_R16_EXT, plane.texwidth, plane.texheight, 0, GL_RED,
+                     GL_UNSIGNED_SHORT, nullptr);
       }
       else
       {
-        format = GL_LUMINANCE;
+        GLint format;
+        if (p == 2) // V plane needs an alpha texture
+          format = GL_ALPHA;
+        else
+          format = GL_LUMINANCE;
+
+        glTexImage2D(m_textureTarget, 0, format, plane.texwidth, plane.texheight, 0, format,
+                     GL_UNSIGNED_BYTE, nullptr);
       }
 
-      glTexImage2D(m_textureTarget, 0, format, plane.texwidth, plane.texheight, 0, format, GL_UNSIGNED_BYTE, nullptr);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
       glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
