@@ -9,6 +9,7 @@
 #include "PVRSettings.h"
 
 #include "ServiceBroker.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/guilib/PVRGUIActionsParentalControl.h"
@@ -20,12 +21,15 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <array>
 #include <memory>
 #include <mutex>
 #include <set>
 #include <string>
+#include <string_view>
 #include <utility>
+#include <vector>
 
 using namespace PVR;
 
@@ -108,6 +112,72 @@ void CPVRSettings::OnSettingsLoaded()
   }
 
   Init(settingNames);
+}
+
+bool CPVRSettings::OnSettingChanging(const std::shared_ptr<const CSetting>& setting)
+{
+  if (setting == nullptr)
+  {
+    CLog::LogF(LOGERROR, "No setting");
+    return false;
+  }
+
+  const std::string_view& settingId = setting->GetId();
+
+  if (settingId == CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME)
+  {
+    auto dlgError = []()
+    {
+      // Time must be in HH:MM:SS format, including any leading zeroes.
+      KODI::MESSAGING::HELPERS::ShowOKDialogText(257, 19688);
+      return false;
+    };
+
+    const std::string& value = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
+
+    if (value.length() < 5 || value.length() > 8)
+      return dlgError();
+
+    std::vector<std::string_view> parts;
+    size_t start{0};
+    size_t end = value.find(':');
+
+    while (end != std::string_view::npos)
+    {
+      parts.push_back(value.substr(start, end - start));
+      start = end + 1;
+      end = value.find(':', start);
+    }
+    parts.push_back(value.substr(start));
+
+    if (parts.size() < 2 || parts.size() > 3)
+      return dlgError();
+
+    for (std::string_view sv : parts)
+    {
+      if (sv.length() != 2 || !std::all_of(sv.begin(), sv.end(), ::isdigit))
+        return dlgError();
+    }
+
+    auto stoi = [](std::string_view sv)
+    {
+      int val{0};
+      for (char c : sv)
+        val = val * 10 + (c - '0');
+      return val;
+    };
+
+    int h = stoi(parts.at(0));
+    int m = stoi(parts.at(1));
+    int s = (parts.size() == 3) ? stoi(parts.at(2)) : 0;
+
+    if (h > 23 || m > 59 || s > 59)
+      return dlgError();
+
+    return true;
+  }
+
+  return true;
 }
 
 void CPVRSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
