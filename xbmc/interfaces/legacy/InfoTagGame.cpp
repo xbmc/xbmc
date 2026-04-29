@@ -80,6 +80,11 @@ String InfoTagGame::getGameClient()
   return infoTag->GetGameClient();
 }
 
+String InfoTagGame::getCaption()
+{
+  return infoTag->GetCaption();
+}
+
 void InfoTagGame::setTitle(const String& title)
 {
   XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
@@ -128,6 +133,12 @@ void InfoTagGame::setGameClient(const String& gameClient)
   setGameClientRaw(infoTag, gameClient);
 }
 
+void InfoTagGame::setCaption(const String& gameClient)
+{
+  XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
+  setCaptionRaw(infoTag, gameClient);
+}
+
 void InfoTagGame::setTitleRaw(KODI::GAME::CGameInfoTag* infoTag, const String& title)
 {
   infoTag->SetTitle(title);
@@ -166,6 +177,11 @@ void InfoTagGame::setYearRaw(KODI::GAME::CGameInfoTag* infoTag, unsigned int yea
 void InfoTagGame::setGameClientRaw(KODI::GAME::CGameInfoTag* infoTag, const String& gameClient)
 {
   infoTag->SetGameClient(gameClient);
+}
+
+void InfoTagGame::setCaptionRaw(KODI::GAME::CGameInfoTag* infoTag, const String& caption)
+{
+  infoTag->SetCaption(caption);
 }
 
 } // namespace xbmc
