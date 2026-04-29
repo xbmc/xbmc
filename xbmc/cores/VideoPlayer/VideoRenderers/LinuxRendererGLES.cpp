@@ -111,7 +111,7 @@ bool CLinuxRendererGLES::ValidateRenderTarget()
       return false;
     }
 
-    for (int i = 0 ; i < m_NumYV12Buffers ; i++)
+    for (int i = 0; i < m_NumYUVBuffers; i++)
     {
       CreateTexture(i);
     }
@@ -172,9 +172,9 @@ bool CLinuxRendererGLES::ConfigChanged(const VideoPicture &picture)
   return false;
 }
 
-int CLinuxRendererGLES::NextYV12Texture()
+int CLinuxRendererGLES::NextYUVTexture()
 {
-  return (m_iYV12RenderBuffer + 1) % m_NumYV12Buffers;
+  return (m_iYUVRenderBuffer + 1) % m_NumYUVBuffers;
 }
 
 void CLinuxRendererGLES::AddVideoPicture(const VideoPicture &picture, int index)
@@ -354,7 +354,7 @@ bool CLinuxRendererGLES::Flush(bool saveBuffers)
 {
   glFinish();
 
-  for (int i = 0 ; i < m_NumYV12Buffers ; i++)
+  for (int i = 0; i < m_NumYUVBuffers; i++)
   {
     DeleteTexture(i);
   }
@@ -362,7 +362,7 @@ bool CLinuxRendererGLES::Flush(bool saveBuffers)
   glFinish();
   m_bValidated = false;
   m_fbo.fbo.Cleanup();
-  m_iYV12RenderBuffer = 0;
+  m_iYUVRenderBuffer = 0;
 
   return false;
 }
@@ -501,7 +501,7 @@ void CLinuxRendererGLES::DrawBlackBars()
 
 void CLinuxRendererGLES::RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha)
 {
-  m_iYV12RenderBuffer = index;
+  m_iYUVRenderBuffer = index;
 
   if (!m_bConfigured)
   {
@@ -890,7 +890,7 @@ void CLinuxRendererGLES::UnInit()
 
   glFinish();
 
-  // YV12 textures
+  // YUV textures
   for (int i = 0; i < NUM_BUFFERS; ++i)
   {
     DeleteTexture(i);
@@ -908,13 +908,11 @@ void CLinuxRendererGLES::UnInit()
 bool CLinuxRendererGLES::CreateTexture(int index)
 {
   if (m_format == AV_PIX_FMT_NV12)
-  {
     return CreateNV12Texture(index);
-  }
+  else if (m_format == AV_PIX_FMT_YUYV422 || m_format == AV_PIX_FMT_UYVY422)
+    return CreatePackedYUVTexture(index);
   else
-  {
-    return CreateYV12Texture(index);
-  }
+    return CreatePlanarYUVTexture(index);
 }
 
 void CLinuxRendererGLES::DeleteTexture(int index)
@@ -922,13 +920,11 @@ void CLinuxRendererGLES::DeleteTexture(int index)
   ReleaseBuffer(index);
 
   if (m_format == AV_PIX_FMT_NV12)
-  {
     DeleteNV12Texture(index);
-  }
+  else if (m_format == AV_PIX_FMT_YUYV422 || m_format == AV_PIX_FMT_UYVY422)
+    DeletePackedYUVTexture(index);
   else
-  {
-    DeleteYV12Texture(index);
-  }
+    DeletePlanarYUVTexture(index);
 }
 
 bool CLinuxRendererGLES::UploadTexture(int index)
@@ -953,10 +949,14 @@ bool CLinuxRendererGLES::UploadTexture(int index)
   {
     ret = UploadNV12Texture(index);
   }
+  else if (m_format == AV_PIX_FMT_YUYV422 || m_format == AV_PIX_FMT_UYVY422)
+  {
+    ret = UploadPackedYUVTexture(index);
+  }
   else
   {
-    // default to YV12 texture handlers
-    ret = UploadYV12Texture(index);
+    // default to planar YUV texture handlers
+    ret = UploadPlanarYUVTexture(index);
   }
 
   if (ret)
@@ -1440,9 +1440,9 @@ bool CLinuxRendererGLES::RenderCapture(int index, CRenderCapture* capture)
 }
 
 //********************************************************************************************************/
-// YV12 Texture creation, deletion, copying + clearing
+// YUV texture creation, deletion, copying + clearing
 //********************************************************************************************************/
-bool CLinuxRendererGLES::UploadYV12Texture(int source)
+bool CLinuxRendererGLES::UploadPlanarYUVTexture(int source)
 {
   CPictureBuffer& buf = m_buffers[source];
   YuvImage* im = &buf.image;
@@ -1473,7 +1473,7 @@ bool CLinuxRendererGLES::UploadYV12Texture(int source)
   return true;
 }
 
-void CLinuxRendererGLES::DeleteYV12Texture(int index)
+void CLinuxRendererGLES::DeletePlanarYUVTexture(int index)
 {
   YuvImage &im = m_buffers[index].image;
 
@@ -1505,18 +1505,18 @@ void CLinuxRendererGLES::DeleteYV12Texture(int index)
   }
 }
 
-bool CLinuxRendererGLES::CreateYV12Texture(int index)
+bool CLinuxRendererGLES::CreatePlanarYUVTexture(int index)
 {
   // since we also want the field textures, pitch must be texture aligned
   unsigned p;
   YuvImage &im = m_buffers[index].image;
 
-  DeleteYV12Texture(index);
+  DeletePlanarYUVTexture(index);
 
   im.height = m_sourceHeight;
   im.width = m_sourceWidth;
-  im.cshift_x = 1;
-  im.cshift_y = 1;
+  im.cshift_x = (m_format == AV_PIX_FMT_YUV444P) ? 0 : 1;
+  im.cshift_y = (m_format == AV_PIX_FMT_YUV422P || m_format == AV_PIX_FMT_YUV444P) ? 0 : 1;
   im.bpp = 1;
 
   im.stride[0] = im.bpp * im.width;
@@ -1795,11 +1795,143 @@ void CLinuxRendererGLES::DeleteNV12Texture(int index)
 }
 
 //********************************************************************************************************
+// YUV422 packed Texture creation, deletion, copying + clearing
+//********************************************************************************************************
+bool CLinuxRendererGLES::UploadPackedYUVTexture(int source)
+{
+  CPictureBuffer& buf = m_buffers[source];
+  YuvImage* im = &buf.image;
+
+  VerifyGLState();
+
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+  // Load YUYV plane
+  LoadPlane(buf.fields[FIELD_FULL][0], GL_BGRA_EXT, im->width / 2, im->height, im->stride[0],
+            im->bpp, im->plane[0]);
+
+  VerifyGLState();
+
+  CalculateTextureSourceRects(source, 3);
+
+  return true;
+}
+
+void CLinuxRendererGLES::DeletePackedYUVTexture(int index)
+{
+  CPictureBuffer& buf = m_buffers[index];
+  YuvImage& im = buf.image;
+
+  if (buf.fields[FIELD_FULL][0].id == 0)
+    return;
+
+  // finish up all textures, and delete them
+  for (int f = 0; f < MAX_FIELDS; f++)
+  {
+    if (buf.fields[f][0].id)
+    {
+      if (glIsTexture(buf.fields[f][0].id))
+      {
+        glDeleteTextures(1, &buf.fields[f][0].id);
+      }
+      buf.fields[f][0].id = 0;
+    }
+    buf.fields[f][1].id = 0;
+    buf.fields[f][2].id = 0;
+  }
+
+  im.plane[0] = nullptr;
+}
+
+bool CLinuxRendererGLES::CreatePackedYUVTexture(int index)
+{
+  if (!CServiceBroker::GetRenderSystem()->IsExtSupported("GL_EXT_texture_format_BGRA8888"))
+  {
+    CLog::Log(LOGERROR, "CLinuxRendererGLES::CreatePackedYUVTexture - "
+                        "GL_EXT_texture_format_BGRA8888 not supported");
+    return false;
+  }
+
+  // since we also want the field textures, pitch must be texture aligned
+  CPictureBuffer& buf = m_buffers[index];
+  YuvImage& im = buf.image;
+
+  // Delete any old texture
+  DeletePackedYUVTexture(index);
+
+  im.height = m_sourceHeight;
+  im.width = m_sourceWidth;
+  im.cshift_x = 0;
+  im.cshift_y = 0;
+  im.bpp = 1;
+
+  im.stride[0] = im.width * 2;
+  im.stride[1] = 0;
+  im.stride[2] = 0;
+
+  im.planesize[0] = im.stride[0] * im.height;
+  im.planesize[1] = 0;
+  im.planesize[2] = 0;
+
+  im.plane[0] = nullptr; // will be set in UploadTexture()
+  im.plane[1] = nullptr;
+  im.plane[2] = nullptr;
+
+  for (int f = 0; f < MAX_FIELDS; f++)
+  {
+    if (!glIsTexture(buf.fields[f][0].id))
+    {
+      glGenTextures(1, &buf.fields[f][0].id);
+      VerifyGLState();
+    }
+    buf.fields[f][1].id = buf.fields[f][0].id;
+    buf.fields[f][2].id = buf.fields[f][1].id;
+  }
+
+  // YUV
+  for (int f = FIELD_FULL; f <= FIELD_BOT; f++)
+  {
+    int fieldshift = (f == FIELD_FULL) ? 0 : 1;
+    CYuvPlane(&planes)[YuvImage::MAX_PLANES] = buf.fields[f];
+
+    planes[0].texwidth = im.width / 2;
+    planes[0].texheight = im.height >> fieldshift;
+    planes[1].texwidth = planes[0].texwidth;
+    planes[1].texheight = planes[0].texheight;
+    planes[2].texwidth = planes[1].texwidth;
+    planes[2].texheight = planes[1].texheight;
+
+    for (int p = 0; p < 3; p++)
+    {
+      planes[p].pixpertex_x = 2;
+      planes[p].pixpertex_y = 1;
+    }
+
+    CYuvPlane& plane = planes[0];
+    if (plane.texwidth * plane.texheight == 0)
+      continue;
+
+    glBindTexture(m_textureTarget, plane.id);
+
+    glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_BGRA_EXT,
+                 GL_UNSIGNED_BYTE, NULL);
+
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    VerifyGLState();
+  }
+
+  return true;
+}
+
+//********************************************************************************************************
 // SurfaceTexture creation, deletion, copying + clearing
 //********************************************************************************************************
 void CLinuxRendererGLES::SetTextureFilter(GLenum method)
 {
-  for (int i = 0 ; i < m_NumYV12Buffers; i++)
+  for (int i = 0; i < m_NumYUVBuffers; i++)
   {
     CPictureBuffer& buf = m_buffers[i];
 
@@ -1852,8 +1984,14 @@ bool CLinuxRendererGLES::SupportsMultiPassRendering()
 
 bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method) const
 {
-  if (method == VS_SCALINGMETHOD_NEAREST || method == VS_SCALINGMETHOD_LINEAR ||
-      method == VS_SCALINGMETHOD_AUTO)
+  // nearest neighbor doesn't work on YUY2 and UYVY
+  if (method == VS_SCALINGMETHOD_NEAREST && m_format != AV_PIX_FMT_YUYV422 &&
+      m_format != AV_PIX_FMT_UYVY422)
+  {
+    return true;
+  }
+
+  if (method == VS_SCALINGMETHOD_LINEAR || method == VS_SCALINGMETHOD_AUTO)
   {
     return true;
   }
