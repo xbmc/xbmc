@@ -1082,6 +1082,7 @@ namespace XBMCAddon
 
     void InfoTagVideo::addStreamRaw(CVideoInfoTag* infoTag, CStreamDetail* stream)
     {
+      stream->SetSource(CStreamDetail::MEDIA);
       infoTag->m_streamDetails.AddStream(stream);
     }
 
