@@ -639,7 +639,14 @@ RESOLUTION_INFO CDRMUtils::GetResolutionInfo(drmModeModeInfoPtr mode)
   }
 
   if (mode->htotal > 0 && mode->vtotal > 0)
-    res.fRefreshRate = (mode->clock * 1000.0f) / (mode->htotal * mode->vtotal);
+  {
+    double numerator = mode->clock * 1000.0;
+    double denominator = static_cast<double>(mode->vtotal) * mode->htotal;
+    if (mode->vscan > 1)
+      denominator *= mode->vscan;
+
+    res.fRefreshRate = numerator / denominator;
+  }
   else
     res.fRefreshRate = mode->vrefresh;
   res.iSubtitles = res.iHeight;
