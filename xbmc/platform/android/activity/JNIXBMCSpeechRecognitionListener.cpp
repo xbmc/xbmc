@@ -38,8 +38,7 @@ void CJNIXBMCSpeechRecognitionListener::RegisterNatives(JNIEnv* env)
 
 CJNIXBMCSpeechRecognitionListener::CJNIXBMCSpeechRecognitionListener() : CJNIBase(s_className)
 {
-  m_object = new_object(CJNIContext::getClassLoader().loadClass(
-      ClassPathToName(s_className))); // TODO: replace param with GetClassNameAsPath
+  m_object = new_object(CJNIContext::getClassLoader().loadClass(ToDotClassName(s_className))); // TODO: GetDotClassName cannot be used, something is preventing CJNIBase from setting the classname
   m_object.setGlobal();
 
   add_instance(m_object, this);
