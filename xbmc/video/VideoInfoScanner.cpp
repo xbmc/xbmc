@@ -1530,15 +1530,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
             ? UseRemoteArtWithLocalScraper::NO
             : UseRemoteArtWithLocalScraper::YES};
 
-    std::string path;
-    const int playlist = pItem->HasVideoInfoTag() ? pItem->GetVideoInfoTag()->m_iTrack : -1;
-    if (playlist > -1 && (content == ContentType::MOVIES || content == ContentType::MOVIE_VERSIONS))
+    std::string path{pItem->GetPath()};
+    const int playlist{pItem->HasVideoInfoTag() ? pItem->GetVideoInfoTag()->m_iTrack : -1};
+    if (playlist > -1 && (::UTILS::DISCS::IsBlurayDiscImage(path) || URIUtils::IsBDFile(path)))
     {
-      path = URIUtils::GetBlurayPlaylistPath(pItem->GetPath(), playlist);
+      path = URIUtils::GetBlurayPlaylistPath(path, playlist);
       pItem->SetDynPath(path);
     }
-    else
-      path = pItem->GetPath();
 
     if (!libraryImport)
       GetArtwork(pItem, content, videoFolder, useLocal && !pItem->IsPlugin(),
