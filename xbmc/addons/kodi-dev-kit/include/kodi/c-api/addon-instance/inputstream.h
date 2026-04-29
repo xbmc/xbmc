@@ -202,7 +202,7 @@ extern "C"
     /// @brief **0000 0000 0000 0000 :** Empty to set if nothing is used
     INPUTSTREAM_FEATURE_NONE = 0,
 
-    /// @brief **0000 0000 0000 0001 :** To set addon decode should used with @ref cpp_kodi_addon_videocodec.
+    /// @brief **0000 0000 0000 0001 :** To set addon decode should used with @ref cpp_kodi_addon_videocodec or @ref cpp_kodi_addon_audiocodec.
     INPUTSTREAM_FEATURE_DECODE = (1 << 0)
   };
   ///@}

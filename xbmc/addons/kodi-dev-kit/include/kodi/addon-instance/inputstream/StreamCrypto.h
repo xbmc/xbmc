@@ -21,6 +21,7 @@ namespace addon
 class CInstanceInputStream;
 class InputstreamInfo;
 class VideoCodecInitdata;
+class AudioCodecInitdata;
 
 //==============================================================================
 /// @defgroup cpp_kodi_addon_inputstream_Defs_StreamEncryption_StreamCryptoSession class StreamCryptoSession
@@ -45,6 +46,7 @@ class ATTR_DLL_LOCAL StreamCryptoSession
   friend class CInstanceInputStream;
   friend class InputstreamInfo;
   friend class VideoCodecInitdata;
+  friend class AudioCodecInitdata;
   /*! \endcond */
 
 public:
