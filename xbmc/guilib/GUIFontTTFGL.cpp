@@ -76,7 +76,6 @@ bool CGUIFontTTFGL::FirstBegin()
   else
   {
     m_scissorClip = false;
-    renderSystem->ResetScissors();
     renderSystem->EnableShader(ShaderMethodGL::SM_FONTS_SHADER_CLIP);
   }
 
@@ -149,6 +148,14 @@ void CGUIFontTTFGL::LastEnd()
   if (!winSystem)
     return;
 
+  const STENCIL_LAYER stencilLayer = CServiceBroker::GetWinSystem()->GetGfxContext().GetStencilLayer();
+
+  if (stencilLayer == STENCIL_LAYER::INVALID)
+    return;
+
+  if (stencilLayer != STENCIL_LAYER::NONE)
+    glStencilFunc(GL_EQUAL, 0xFF, 0x1 << (int)stencilLayer);
+
   CRenderSystemGL* renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
 
   GLint posLoc = renderSystem->ShaderGetPos();
@@ -174,7 +181,7 @@ void CGUIFontTTFGL::LastEnd()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementArrayHandle);
     // Store current scissor
     CGraphicContext& context = winSystem->GetGfxContext();
-    CRect scissor = context.StereoCorrection(context.GetScissors());
+    const CRect scissor = context.StereoCorrection(context.GetScissors());
 
     for (size_t i = 0; i < m_vertexTrans.size(); i++)
     {
@@ -202,8 +209,6 @@ void CGUIFontTTFGL::LastEnd()
       else
       {
         // clip using vertex shader
-        renderSystem->ResetScissors();
-
         const float clipBoundaries[4] = {
             (m_vertexTrans[i].m_clip.x1 - m_vertexTrans[i].m_translateX -
              m_vertexTrans[i].m_offsetX) /
@@ -293,6 +298,8 @@ void CGUIFontTTFGL::LastEnd()
   glDisableVertexAttribArray(tex0Loc);
 
   renderSystem->DisableShader();
+
+  glStencilFunc(GL_ALWAYS, 0x0, 0xFF);
 }
 
 CVertexBuffer CGUIFontTTFGL::CreateVertexBuffer(const std::vector<SVertex>& vertices) const

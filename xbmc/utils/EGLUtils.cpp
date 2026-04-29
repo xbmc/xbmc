@@ -288,7 +288,7 @@ bool CEGLContextUtils::ChooseConfig(EGLint renderableType, EGLint visualId, bool
                {EGL_BLUE_SIZE, 8},
                {EGL_ALPHA_SIZE, 8},
                {EGL_DEPTH_SIZE, 16},
-               {EGL_STENCIL_SIZE, 0},
+               {EGL_STENCIL_SIZE, 8},
                {EGL_SAMPLE_BUFFERS, 0},
                {EGL_SAMPLES, 0},
                {EGL_SURFACE_TYPE, surfaceType},
