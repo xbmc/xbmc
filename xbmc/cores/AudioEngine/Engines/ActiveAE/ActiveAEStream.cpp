@@ -178,7 +178,17 @@ double CActiveAEStream::CalcResampleRatio(double error)
   if (fabs(error) > 1000)
     m_resampleIntegral = 0;
   else if (fabs(error) > 5)
+  {
     m_resampleIntegral += error / 1000 / 50;
+
+    // Limit the correction sum to +/-0.04 to prevent over-correction during large fixes
+    // This stops the system from swinging too far the other way after a big sync gap.
+    constexpr double MAX_RESAMPLE_INTEGRAL = 0.04;
+    if (m_resampleIntegral > MAX_RESAMPLE_INTEGRAL)
+      m_resampleIntegral = MAX_RESAMPLE_INTEGRAL;
+    else if (m_resampleIntegral < -MAX_RESAMPLE_INTEGRAL)
+      m_resampleIntegral = -MAX_RESAMPLE_INTEGRAL;
+  }
 
   double proportional = 0.0;
 
@@ -204,8 +214,15 @@ std::chrono::milliseconds CActiveAEStream::GetErrorInterval()
 {
   std::chrono::milliseconds ret = m_errorInterval;
   double rr = m_processingBuffers->GetRR();
-  if (rr > 1.02 || rr < 0.98)
+
+  bool isAtempo = m_processingBuffers->IsAtempoActive();
+
+  // If atempo is active, we don't want to slow down the sync checks.
+  // The normal 3x wait is meant to keep standard resampling smooth,
+  // but for Atempo it just makes sync recovery take too long.
+  if (!isAtempo && (rr > 1.02 || rr < 0.98))
     ret *= 3;
+
   return ret;
 }
 

@@ -51,7 +51,7 @@ public:
   void Return();
   std::unique_ptr<CSoundPacket> pkt;
   CActiveAEBufferPool *pool = nullptr;
-  int64_t timestamp;
+  int64_t timestamp = 0;
   int pkt_start_offset = 0;
   int refCount = 0;
   double centerMixLevel;
@@ -145,7 +145,7 @@ protected:
   bool m_drain;
   bool m_changeFilter;
   float m_tempo;
-  int64_t m_lastSamplePts;
+  int64_t m_lastSamplePts = 0;
   bool m_fillPackets;
 };
 
