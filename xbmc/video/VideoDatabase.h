@@ -139,11 +139,14 @@ enum class DeleteMovieHashAction
 struct EpisodeInformation
 {
   int index{0};
+  int season{-1};
+  int episode{-1};
   unsigned int duration{0};
+  CBookmark bookmark{};
 };
 
 using EpisodeFileMap = std::multimap<std::string, EpisodeInformation, std::less<>>;
-using EpisodeFileMapEntry = std::pair<std::string, EpisodeInformation>;
+using EpisodeFileMapEntry = EpisodeFileMap::value_type;
 
 static constexpr const char* MULTIPLE_EPISODES{"multiple_episodes"};
 
@@ -308,6 +311,7 @@ public:
   void GetEpisodesByBlurayPath(const std::string& path, std::vector<CVideoInfoTag>& episodes);
   void GetEpisodesByFile(const std::string& strFilenameAndPath, std::vector<CVideoInfoTag>& episodes);
   void GetEpisodesByFileId(int idFile, std::vector<CVideoInfoTag>& episodes);
+  bool GetEpisodeMap(int idShow, EpisodeFileMap& fileMap, int idFile = -1) const;
   bool GetEpisodeMap(int idShow,
                      EpisodeFileMap& fileMap,
                      dbiplus::Dataset& pDS,
@@ -509,7 +513,8 @@ public:
   bool ClearBookMarksOfFile(const std::string& strFilenameAndPath,
                             CBookmark::EType type = CBookmark::STANDARD);
   bool ClearBookMarksOfFile(int idFile, CBookmark::EType type = CBookmark::STANDARD);
-  bool GetBookMarkForEpisode(const CVideoInfoTag& tag, CBookmark& bookmark);
+  bool GetBookMarkForEpisode(int dbId, CBookmark& bookmark) const;
+  bool GetBookMarkForEpisode(const CVideoInfoTag& tag, CBookmark& bookmark) const;
   void AddBookMarkForEpisode(const CVideoInfoTag& tag, const CBookmark& bookmark);
   void DeleteBookMarkForEpisode(const CVideoInfoTag& tag);
   bool GetResumePoint(CVideoInfoTag& tag);

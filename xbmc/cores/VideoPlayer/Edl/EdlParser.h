@@ -10,9 +10,9 @@
 
 #include "cores/EdlEdit.h"
 #include "filesystem/File.h"
-#include "utils/URIUtils.h"
 
 #include <chrono>
+#include <cstdint>
 #include <optional>
 #include <string>
 #include <vector>
@@ -118,9 +118,10 @@ public:
    * @brief Parse EDL data from a file item
    * @param item The file item (provides path for file-based, or PVR tags for PVR)
    * @param fps Frames per second (needed for frame-based formats, 0 if unavailable)
+   * @param duration Duration of the media item in milliseconds (0 if unavailable)
    * @return CEdlParserResult containing edits and scene markers, or empty if parsing failed
    */
-  virtual CEdlParserResult Parse(const CFileItem& item, float fps) = 0;
+  virtual CEdlParserResult Parse(const CFileItem& item, float fps, int64_t duration) = 0;
 };
 
 /*!

@@ -271,6 +271,7 @@ public:
                       LanCheckMode lanCheckMode = LanCheckMode::ONLY_LOCAL_SUBNET);
   static bool IsHostOnLAN(const std::string& hostName,
                           LanCheckMode lanCheckMode = LanCheckMode::ONLY_LOCAL_SUBNET);
+  static bool IsLocalOrLAN(const std::string& path);
   static bool IsPlugin(const std::string& strFile);
   static bool IsScript(const std::string& strFile);
   static bool IsRAR(const std::string& strFile);

@@ -1065,6 +1065,12 @@ bool URIUtils::IsHostOnLAN(const std::string& host, LanCheckMode lanCheckMode)
   return false;
 }
 
+bool URIUtils::IsLocalOrLAN(const std::string& path)
+{
+  // Check if item is on local drive or network share
+  return (IsHD(path) || IsOnLAN(path, LanCheckMode::ANY_PRIVATE_SUBNET)) && !IsInternetStream(path);
+}
+
 bool URIUtils::IsMultiPath(const std::string& strPath)
 {
   return IsProtocol(strPath, "multipath");
