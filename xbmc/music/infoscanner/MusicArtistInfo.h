@@ -13,6 +13,10 @@
 
 class CXBMCTinyXML;
 class CScraperUrl;
+namespace XFILE
+{
+class IHttpClient;
+}
 
 namespace MUSIC_GRABBER
 {
@@ -28,8 +32,9 @@ public:
   const CArtist& GetArtist() const { return m_artist; }
   CArtist& GetArtist() { return m_artist; }
   const CScraperUrl& GetArtistURL() const { return m_artistURL; }
-  bool Load(XFILE::CCurlFile& http, const ADDON::ScraperPtr& scraper,
-    const std::string &strSearch);
+  bool Load(XFILE::IHttpClient& http,
+            const ADDON::ScraperPtr& scraper,
+            const std::string& strSearch);
 
 protected:
   CArtist m_artist;

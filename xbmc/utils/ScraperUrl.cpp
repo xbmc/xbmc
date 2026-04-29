@@ -13,7 +13,7 @@
 #include "URIUtils.h"
 #include "URL.h"
 #include "XMLUtils.h"
-#include "filesystem/CurlFile.h"
+#include "filesystem/IHttpClient.h"
 #include "filesystem/ZipFile.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
@@ -299,7 +299,7 @@ std::string CScraperUrl::GetThumbUrl(const CScraperUrl::SUrlEntry& entry)
 
 bool CScraperUrl::Get(const SUrlEntry& scrURL,
                       std::string& strHTML,
-                      XFILE::CCurlFile& http,
+                      XFILE::IHttpClient& http,
                       const std::string& cacheContext)
 {
   CURL url(scrURL.m_url);

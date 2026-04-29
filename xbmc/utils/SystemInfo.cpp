@@ -16,8 +16,9 @@
 #endif
 #include "CompileInfo.h"
 #include "ServiceBroker.h"
-#include "filesystem/CurlFile.h"
 #include "filesystem/File.h"
+#include "filesystem/HttpClientFactory.h"
+#include "filesystem/IHttpClient.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "network/Network.h"
 #include "platform/Filesystem.h"
@@ -305,8 +306,8 @@ const CSysData &CSysInfoJob::GetData() const
 CSysData::INTERNET_STATE CSysInfoJob::GetInternetState()
 {
   // Internet connection state!
-  XFILE::CCurlFile http;
-  if (http.IsInternet())
+  auto http = XFILE::CreateHttpClient();
+  if (http->IsInternet())
     return CSysData::CONNECTED;
   return CSysData::DISCONNECTED;
 }
