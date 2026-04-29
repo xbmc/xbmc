@@ -59,7 +59,7 @@ set(SOURCES AddonsDirectory.cpp
             ZeroconfDirectory.cpp
             ZipDirectory.cpp
             ZipFile.cpp
-            ZipManager.cpp)
+            Zip.cpp)
 
 set(HEADERS AddonsDirectory.h
             CacheStrategy.h
@@ -124,7 +124,7 @@ set(HEADERS AddonsDirectory.h
             ZeroconfDirectory.h
             ZipDirectory.h
             ZipFile.h
-            ZipManager.h)
+            Zip.h)
 
 if(TARGET ${APP_NAME_LC}::Iso9660pp)
   list(APPEND SOURCES ISO9660Directory.cpp

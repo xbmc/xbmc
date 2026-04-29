@@ -69,6 +69,7 @@ class CWeatherManager;
 class CPlayerCoreFactory;
 class CDatabaseManager;
 class CEventLog;
+class CCacheComponent;
 class CGUIComponent;
 class CResourcesComponent;
 class CAppInboundProtocol;
@@ -187,6 +188,10 @@ public:
   static CComponentContainer<IApplicationComponent>& GetAppComponents();
   static KODI::UTILS::I18N::CSubTagRegistryManager& GetSubTagRegistry();
 
+  static CCacheComponent* GetCacheComponent();
+  static void RegisterCacheComponent(CCacheComponent* cache);
+  static void UnregisterCacheComponent();
+
   static CGUIComponent* GetGUI();
   static void RegisterGUI(CGUIComponent* gui);
   static void UnregisterGUI();
@@ -254,6 +259,7 @@ private:
   std::shared_ptr<CAppParams> m_appParams;
   std::unique_ptr<CLog> m_logging;
   std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> m_pAnnouncementManager;
+  CCacheComponent* m_pCacheComponent = nullptr;
   CGUIComponent* m_pGUI = nullptr;
   std::unique_ptr<CResourcesComponent> m_pResourcesComponent;
   CWinSystemBase* m_pWinSystem = nullptr;

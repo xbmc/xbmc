@@ -10,7 +10,7 @@
 
 #include "File.h"
 #include "IFile.h"
-#include "ZipManager.h"
+#include "Zip.h"
 
 #include <zlib.h>
 
