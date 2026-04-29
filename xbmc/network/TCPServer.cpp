@@ -115,18 +115,26 @@ void CTCPServer::Process()
     struct timeval  to     = {1, 0};
     FD_ZERO(&rfds);
 
-    for (auto& it : m_servers)
     {
-      FD_SET(it, &rfds);
-      if ((intptr_t)it > (intptr_t)max_fd)
-        max_fd = it;
-    }
+      // Build the fd_set under lock so a concurrent Announce or modification
+      // of m_connections doesn't tear out from under us. Drop the lock for
+      // the select() call below since it sleeps up to 1s and would otherwise
+      // starve Announce.
+      std::unique_lock lock(m_connectionsCritSection);
 
-    for (unsigned int i = 0; i < m_connections.size(); i++)
-    {
-      FD_SET(m_connections[i]->m_socket, &rfds);
-      if ((intptr_t)m_connections[i]->m_socket > (intptr_t)max_fd)
-        max_fd = m_connections[i]->m_socket;
+      for (auto& it : m_servers)
+      {
+        FD_SET(it, &rfds);
+        if ((intptr_t)it > (intptr_t)max_fd)
+          max_fd = it;
+      }
+
+      for (unsigned int i = 0; i < m_connections.size(); i++)
+      {
+        FD_SET(m_connections[i]->m_socket, &rfds);
+        if ((intptr_t)m_connections[i]->m_socket > (intptr_t)max_fd)
+          max_fd = m_connections[i]->m_socket;
+      }
     }
 
     int res = select((intptr_t)max_fd+1, &rfds, NULL, NULL, &to);
@@ -138,6 +146,9 @@ void CTCPServer::Process()
     }
     else if (res > 0)
     {
+      // Re-acquire for the I/O and accept passes; both modify m_connections.
+      std::unique_lock lock(m_connectionsCritSection);
+
       for (int i = m_connections.size() - 1; i >= 0; i--)
       {
         int socket = m_connections[i]->m_socket;
@@ -237,6 +248,12 @@ void CTCPServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
                           const std::string& message,
                           const CVariant& data)
 {
+  // Hold m_connectionsCritSection across the whole iteration so the Process
+  // thread cannot erase a connection out from under us while we Send to it.
+  // Without this lock, a client that disconnects right after receiving its
+  // response (e.g. `nc -q1`) crashes Announce on use-after-free.
+  std::unique_lock lock(m_connectionsCritSection);
+
   if (m_connections.empty())
     return;
 
@@ -245,7 +262,7 @@ void CTCPServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
   for (unsigned int i = 0; i < m_connections.size(); i++)
   {
     {
-      std::unique_lock lock(m_connections[i]->m_critSection);
+      std::unique_lock connLock(m_connections[i]->m_critSection);
       if ((m_connections[i]->GetAnnouncementFlags() & flag) == 0)
         continue;
     }
@@ -479,6 +496,8 @@ bool CTCPServer::InitializeTCP()
 
 void CTCPServer::Deinitialize()
 {
+  std::unique_lock lock(m_connectionsCritSection);
+
   for (unsigned int i = 0; i < m_connections.size(); i++)
   {
     m_connections[i]->Disconnect();
