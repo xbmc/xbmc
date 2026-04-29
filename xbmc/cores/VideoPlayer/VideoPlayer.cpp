@@ -111,9 +111,9 @@ public:
     const std::string subLangSetting =
         settings->GetString(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE);
 
-    m_isSubNone = StringUtils::EqualsNoCase(subLangSetting, "none");
-    m_isPrefOriginal = StringUtils::EqualsNoCase(subLangSetting, "original");
-    m_isPrefForced = StringUtils::EqualsNoCase(subLangSetting, "forced_only");
+    m_isSubNone = StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageNone);
+    m_isPrefOriginal = StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageOriginal);
+    m_isPrefForced = StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageForcedOnly);
     m_isPrefHearingImp = settings->GetBool(CSettings::SETTING_ACCESSIBILITY_SUBHEARING);
 
     m_subLang = g_langInfo.GetSubtitleLanguage(false);
@@ -211,13 +211,15 @@ public:
 
     const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
-    if (!StringUtils::EqualsNoCase(settings->GetString(CSettings::SETTING_LOCALE_AUDIOLANGUAGE), "mediadefault"))
+    if (!StringUtils::EqualsNoCase(settings->GetString(CSettings::SETTING_LOCALE_AUDIOLANGUAGE),
+                                   LANGINFO::audioLanguageMediaDefault))
     {
-      if (!StringUtils::EqualsNoCase(settings->GetString(CSettings::SETTING_LOCALE_AUDIOLANGUAGE), "original"))
+      if (!StringUtils::EqualsNoCase(settings->GetString(CSettings::SETTING_LOCALE_AUDIOLANGUAGE),
+                                     LANGINFO::audioLanguageOriginal))
       {
         std::string audio_language = g_langInfo.GetAudioLanguage(true);
-        PREDICATE_RETURN(g_LangCodeExpander.CompareISO639Codes(audio_language, lh.language)
-          , g_LangCodeExpander.CompareISO639Codes(audio_language, rh.language));
+        PREDICATE_RETURN(g_LangCodeExpander.CompareISO639Codes(audio_language, lh.language),
+                         g_LangCodeExpander.CompareISO639Codes(audio_language, rh.language));
       }
       else
       {
@@ -285,8 +287,8 @@ public:
     const std::string subLangSetting =
         settings->GetString(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE);
 
-    m_isPrefOriginal = StringUtils::EqualsNoCase(subLangSetting, "original");
-    m_isPrefForced = StringUtils::EqualsNoCase(subLangSetting, "forced_only");
+    m_isPrefOriginal = StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageOriginal);
+    m_isPrefForced = StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageForcedOnly);
     m_isPrefHearingImp = settings->GetBool(CSettings::SETTING_ACCESSIBILITY_SUBHEARING);
 
     m_subLang = g_langInfo.GetSubtitleLanguage(false);
@@ -1053,8 +1055,10 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
     m_processInfo->ResetAudioCodecInfo();
   }
 
-  // enable  or disable subtitles
+  // enable or disable subtitles
   bool visible = m_processInfo->GetVideoSettings().m_SubtitleOn;
+  const bool isDefaultVideosettings =
+      m_processInfo->GetVideoSettings().m_isDefaultVideoSettings.value_or(true);
 
   // open subtitle stream
   SelectionStream as = m_SelectionStreams.Get(StreamType::AUDIO, GetAudioStream());
@@ -1069,19 +1073,23 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
     if (OpenStream(m_CurrentSubtitle, stream.demuxerId, stream.id, stream.source))
     {
       valid = true;
-      if(!psp.relevant(stream))
-        visible = false;
-
-      // Image type subtitles (e.g. VOBSUB) can support "forced" flag on overlays (images)
-      // so you need to keep the stream open to parse "forced" flag on each image
-      // since we leave the stream open by default, it is necessary to close it
-      // if the language does not match the preferences.
-      if (!visible && StreamUtils::IsCodecSupportForcedOverlay(stream.codecId) &&
-          !g_LangCodeExpander.CompareISO639Codes(stream.language, as.language))
+      // default settings: let the predicates control sub visibility
+      // video specific settings: respect the user's choice
+      if (isDefaultVideosettings)
       {
-        valid = false;
-      }
+        if (!psp.relevant(stream))
+          visible = false;
 
+        // Image type subtitles (e.g. VOBSUB) can support "forced" flag on overlays (images)
+        // so you need to keep the stream open to parse "forced" flag on each image
+        // since we leave the stream open by default, it is necessary to close it
+        // if the language does not match the preferences.
+        if (!visible && StreamUtils::IsCodecSupportForcedOverlay(stream.codecId) &&
+            !g_LangCodeExpander.CompareISO639Codes(stream.language, as.language))
+        {
+          valid = false;
+        }
+      }
       break;
     }
   }

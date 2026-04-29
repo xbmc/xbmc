@@ -53,6 +53,8 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
     return false;
 
   std::unique_lock lock(m_critical);
+
+  m_defaultVideoSettings.m_isDefaultVideoSettings = true;
   const TiXmlElement *pElement = settings->FirstChildElement("defaultvideosettings");
   if (pElement)
   {

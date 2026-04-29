@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -10,6 +10,7 @@
 
 #include "utils/Map.h"
 
+#include <optional>
 #include <string_view>
 
 #include <fmt/format.h>
@@ -228,6 +229,7 @@ public:
   float m_ToneMapParam;
   int m_Orientation;
   int m_CenterMixLevel; // relative to metadata or default
+  std::optional<bool> m_isDefaultVideoSettings; //!< true: default video settings, false: video specific
 };
 
 class CCriticalSection;

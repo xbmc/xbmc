@@ -47,7 +47,7 @@ std::string GetDateStringWithFormat(const CDateTime& date, const std::string& fo
 }
 } // namespace
 
-using namespace PVR;
+using namespace KODI::LANGINFO;
 
 static std::string shortDateFormats[] = {
     // clang-format off
@@ -195,6 +195,33 @@ struct SortLanguage
 
     return strLeft.compare(strRight) < 0;
   }
+};
+
+struct SpecialLanguageSetting
+{
+  std::string_view m_code;
+  int m_message;
+};
+
+// Elements sorted in order of appearance in the settings
+constexpr auto specialAudioLangSettings = std::array{
+    SpecialLanguageSetting{audioLanguageMediaDefault, 307},
+    SpecialLanguageSetting{audioLanguageOriginal, 308},
+    SpecialLanguageSetting{audioLanguageDefault, 309},
+};
+
+// Elements in order of appearance in the settings
+constexpr auto specialSubtitlesLangSettings = std::array{
+    SpecialLanguageSetting{subLanguageNone, 231},
+    SpecialLanguageSetting{subLanguageForcedOnly, 13207},
+    SpecialLanguageSetting{subLanguageOriginal, 308},
+    SpecialLanguageSetting{subLanguageDefault, 309},
+};
+
+// Elements in order of appearance in the settings
+constexpr auto specialSubtitlesDownloadLangSettings = std::array{
+    SpecialLanguageSetting{subLanguageOriginal, 308},
+    SpecialLanguageSetting{subLanguageDefault, 309},
 };
 
 CLangInfo::CRegion::CRegion()
@@ -812,9 +839,11 @@ const std::string& CLangInfo::GetAudioLanguage(bool allowFallback) const
 
 void CLangInfo::SetAudioLanguage(const std::string& language, bool isIso6392 /* = false */)
 {
-  if (language.empty() || StringUtils::EqualsNoCase(language, "default") ||
-      StringUtils::EqualsNoCase(language, "original") ||
-      StringUtils::EqualsNoCase(language, "mediadefault"))
+  if (language.empty() ||
+      std::ranges::find_if(specialAudioLangSettings,
+                           [&language](const SpecialLanguageSetting& setting)
+                           { return StringUtils::EqualsNoCase(language, setting.m_code); }) !=
+          specialAudioLangSettings.end())
   {
     m_audioLanguage.clear();
     return;
@@ -847,8 +876,11 @@ const std::string& CLangInfo::GetSubtitleLanguage(bool allowFallback) const
 
 void CLangInfo::SetSubtitleLanguage(const std::string& language, bool isIso6392 /* = false */)
 {
-  if (language.empty() || StringUtils::EqualsNoCase(language, "default") ||
-      StringUtils::EqualsNoCase(language, "original"))
+  if (language.empty() ||
+      std::ranges::find_if(specialSubtitlesLangSettings,
+                           [&language](const SpecialLanguageSetting& setting)
+                           { return StringUtils::EqualsNoCase(language, setting.m_code); }) !=
+          specialSubtitlesLangSettings.end())
   {
     m_subtitleLanguage.clear();
     return;
@@ -1251,12 +1283,12 @@ void CLangInfo::SettingOptionsAudioStreamLanguagesFiller(const SettingConstPtr& 
                                                          std::vector<StringSettingOption>& list,
                                                          std::string& /*current*/)
 {
-  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(307),
-                    "mediadefault");
-  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(308),
-                    "original");
-  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(309),
-                    "default");
+  for (const auto& special : specialAudioLangSettings)
+  {
+    list.emplace_back(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(special.m_message),
+        std::string{special.m_code});
+  }
 
   AddLanguages(list);
 }
@@ -1265,13 +1297,12 @@ void CLangInfo::SettingOptionsSubtitleStreamLanguagesFiller(const SettingConstPt
                                                             std::vector<StringSettingOption>& list,
                                                             std::string& /*current*/)
 {
-  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(231), "none");
-  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13207),
-                    "forced_only");
-  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(308),
-                    "original");
-  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(309),
-                    "default");
+  for (const auto& special : specialSubtitlesLangSettings)
+  {
+    list.emplace_back(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(special.m_message),
+        std::string{special.m_code});
+  }
 
   AddLanguages(list);
 }
@@ -1281,10 +1312,12 @@ void CLangInfo::SettingOptionsSubtitleDownloadlanguagesFiller(
     std::vector<StringSettingOption>& list,
     std::string& /*current*/)
 {
-  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(308),
-                    "original");
-  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(309),
-                    "default");
+  for (const auto& special : specialSubtitlesDownloadLangSettings)
+  {
+    list.emplace_back(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(special.m_message),
+        std::string{special.m_code});
+  }
 
   AddLanguages(list);
 }

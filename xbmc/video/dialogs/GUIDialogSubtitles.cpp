@@ -374,7 +374,7 @@ void CGUIDialogSubtitles::Search(const std::string &search/*=""*/)
 
   std::string preferredLanguage = settings->GetString(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE);
 
-  if (StringUtils::EqualsNoCase(preferredLanguage, "original"))
+  if (StringUtils::EqualsNoCase(preferredLanguage, KODI::LANGINFO::subLanguageOriginal))
   {
     AudioStreamInfo info;
     std::string strLanguage;
@@ -388,7 +388,7 @@ void CGUIDialogSubtitles::Search(const std::string &search/*=""*/)
 
     preferredLanguage = strLanguage;
   }
-  else if (StringUtils::EqualsNoCase(preferredLanguage, "default"))
+  else if (StringUtils::EqualsNoCase(preferredLanguage, KODI::LANGINFO::subLanguageDefault))
     preferredLanguage = g_langInfo.GetEnglishLanguageName();
 
   url.SetOption("preferredlanguage", preferredLanguage);
