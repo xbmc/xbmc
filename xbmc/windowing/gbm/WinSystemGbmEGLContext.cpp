@@ -18,7 +18,7 @@ using namespace KODI::WINDOWING::LINUX;
 
 bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint apiType)
 {
-  if (!CWinSystemGbm::InitWindowSystem())
+  if (!m_DRM && !CWinSystemGbm::InitWindowSystem())
   {
     return false;
   }
@@ -30,31 +30,21 @@ bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint 
 
   if (!m_eglContext.InitializeDisplay(apiType))
   {
+    m_eglContext.Destroy();
     return false;
   }
 
-  auto plane = m_DRM->GetGuiPlane();
-  uint32_t visualId = plane != nullptr ? plane->GetFormat() : DRM_FORMAT_XRGB2101010;
+  m_renderableType = renderableType;
 
-  // prefer alpha visual id, fallback to non-alpha visual id
-  if (!m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithAlpha(visualId)) &&
-      !m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithoutAlpha(visualId)))
+  if (!ChooseEGLConfig(renderableType))
   {
-    // fallback to 8bit format if no EGL config was found for 10bit
-    if (plane)
-      plane->SetFormat(DRM_FORMAT_XRGB8888);
-
-    visualId = plane != nullptr ? plane->GetFormat() : DRM_FORMAT_XRGB8888;
-
-    if (!m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithAlpha(visualId)) &&
-        !m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithoutAlpha(visualId)))
-    {
-      return false;
-    }
+    m_eglContext.Destroy();
+    return false;
   }
 
   if (!CreateContext())
   {
+    m_eglContext.Destroy();
     return false;
   }
 
@@ -80,6 +70,37 @@ bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint 
   return true;
 }
 
+bool CWinSystemGbmEGLContext::ChooseEGLConfig(EGLint renderableType, bool prefer10bit)
+{
+  auto guiformats = m_DRM->GetGuiFormats();
+  if (!std::ranges::any_of(guiformats,
+                           [&](struct guiformat format)
+                           {
+                             if (prefer10bit && format.bpp < 10)
+                               return false;
+                             if (!prefer10bit && format.bpp > 8)
+                               return false;
+                             return format.active &&
+                                    m_eglContext.ChooseConfig(renderableType, format.drm, false,
+                                                              format.alpha);
+                           }))
+  {
+    // If preferred depth not available, try any active format
+    if (!std::ranges::any_of(guiformats,
+                             [&](struct guiformat format)
+                             {
+                               return format.active &&
+                                      m_eglContext.ChooseConfig(renderableType, format.drm, false,
+                                                                format.alpha);
+                             }))
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 bool CWinSystemGbmEGLContext::CreateNewWindow(const std::string& name,
                                               bool fullScreen,
                                               RESOLUTION_INFO& res)
@@ -99,15 +120,20 @@ bool CWinSystemGbmEGLContext::CreateNewWindow(const std::string& name,
   }
 
   uint32_t format = m_eglContext.GetConfigAttrib(EGL_NATIVE_VISUAL_ID);
+  std::vector<uint64_t> fallbackModifiers = {DRM_FORMAT_MOD_LINEAR};
+  std::vector<uint64_t>* modifiers = &fallbackModifiers;
 
-  std::vector<uint64_t> modifiers;
+  for (auto& fmt : m_DRM->GetGuiFormats())
+  {
+    if (fmt.drm == format && fmt.active)
+    {
+      modifiers = &fmt.modifiers;
+      break;
+    }
+  }
 
-  auto plane = m_DRM->GetGuiPlane();
-  if (plane)
-    modifiers = plane->GetModifiersForFormat(format);
-
-  if (!m_GBM->GetDevice().CreateSurface(res.iWidth, res.iHeight, format, modifiers.data(),
-                                        modifiers.size()))
+  if (!m_GBM->GetDevice().CreateSurface(res.iWidth, res.iHeight, format, modifiers->data(),
+                                        modifiers->size()))
   {
     CLog::Log(LOGERROR, "CWinSystemGbmEGLContext::{} - failed to initialize GBM", __FUNCTION__);
     return false;
@@ -129,11 +155,26 @@ bool CWinSystemGbmEGLContext::CreateNewWindow(const std::string& name,
     return false;
   }
 
+  if (!m_eglContext.TrySwapBuffers())
+  {
+    return false;
+  }
+
+  struct gbm_bo* bo = m_GBM->GetDevice().GetSurface().LockFrontBuffer().Get();
+
+#if defined(HAS_GBM_MODIFIERS)
+  uint64_t modifier = gbm_bo_get_modifier(bo);
+#else
+  uint64_t modifier = DRM_FORMAT_MOD_LINEAR;
+#endif
+  if (!m_DRM->FindGuiPlane(gbm_bo_get_format(bo), modifier))
+  {
+    return false;
+  }
   m_bFullScreen = fullScreen;
   m_nWidth = res.iWidth;
   m_nHeight = res.iHeight;
   m_fRefreshRate = res.fRefreshRate;
-
   CLog::Log(LOGDEBUG, "CWinSystemGbmEGLContext::{} - initialized GBM", __FUNCTION__);
   return true;
 }
@@ -143,6 +184,78 @@ bool CWinSystemGbmEGLContext::DestroyWindow()
   m_eglContext.DestroySurface();
 
   CLog::Log(LOGDEBUG, "CWinSystemGbmEGLContext::{} - deinitialized GBM", __FUNCTION__);
+  return true;
+}
+
+bool CWinSystemGbmEGLContext::RecreateGuiSurface(bool prefer10bit)
+{
+  uint32_t currentFormat = m_eglContext.GetConfigAttrib(EGL_NATIVE_VISUAL_ID);
+
+  if (!ChooseEGLConfig(m_renderableType, prefer10bit))
+  {
+    CLog::LogF(LOGERROR, "failed to choose EGL config for {}", prefer10bit ? "10-bit" : "8-bit");
+    return false;
+  }
+
+  uint32_t format = m_eglContext.GetConfigAttrib(EGL_NATIVE_VISUAL_ID);
+
+  if (format == currentFormat)
+  {
+    CLog::LogF(LOGDEBUG, "surface already at requested format ({:#x}), skipping", format);
+    return true;
+  }
+
+  m_eglContext.DestroySurface();
+
+  std::vector<uint64_t> fallbackModifiers = {DRM_FORMAT_MOD_LINEAR};
+  std::vector<uint64_t>* modifiers = &fallbackModifiers;
+
+  for (auto& fmt : m_DRM->GetGuiFormats())
+  {
+    if (fmt.drm == format && fmt.active)
+    {
+      modifiers = &fmt.modifiers;
+      break;
+    }
+  }
+
+  if (!m_GBM->GetDevice().CreateSurface(m_nWidth, m_nHeight, format, modifiers->data(),
+                                        modifiers->size()))
+  {
+    CLog::LogF(LOGERROR, "failed to create GBM surface");
+    return false;
+  }
+
+  if (!m_eglContext.CreatePlatformSurface(
+          m_GBM->GetDevice().GetSurface().Get(),
+          reinterpret_cast<khronos_uintptr_t>(m_GBM->GetDevice().GetSurface().Get())))
+  {
+    return false;
+  }
+
+  if (!m_eglContext.BindContext())
+  {
+    return false;
+  }
+
+  if (!m_eglContext.TrySwapBuffers())
+  {
+    return false;
+  }
+
+  struct gbm_bo* bo = m_GBM->GetDevice().GetSurface().LockFrontBuffer().Get();
+
+#if defined(HAS_GBM_MODIFIERS)
+  uint64_t modifier = gbm_bo_get_modifier(bo);
+#else
+  uint64_t modifier = DRM_FORMAT_MOD_LINEAR;
+#endif
+  if (!m_DRM->FindGuiPlane(gbm_bo_get_format(bo), modifier))
+  {
+    return false;
+  }
+
+  CLog::LogF(LOGINFO, "GUI surface recreated as {}", prefer10bit ? "10-bit" : "8-bit");
   return true;
 }
 
