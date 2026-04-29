@@ -1179,10 +1179,8 @@ void DX::DeviceResources::CheckDXVA2SharedDecoderSurfaces()
   CLog::LogF(LOGINFO, "DXVA2 shared decoder surfaces is{}supported",
              m_DXVA2SharedDecoderSurfaces ? " " : " NOT ");
 
-  m_DXVA2UseFence =
-      m_DXVA2SharedDecoderSurfaces &&
-      (ad.VendorId == PCIV_NVIDIA || ad.VendorId == PCIV_AMD || ad.VendorId == PCIV_QUALCOMM) &&
-      CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin10_1703);
+  m_DXVA2UseFence = m_DXVA2SharedDecoderSurfaces &&
+                    CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin10_1703);
 
   if (m_DXVA2SharedDecoderSurfaces)
     CLog::LogF(LOGINFO, "DXVA2 shared decoder surfaces {} fence synchronization.",
