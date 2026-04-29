@@ -53,8 +53,8 @@ std::string filenameToType(std::string_view filename)
 CVideoTagLoaderFFmpeg::CVideoTagLoaderFFmpeg(const CFileItem& item,
                                              const ADDON::ScraperPtr& info,
                                              bool lookInFolder)
-  : IVideoInfoTagLoader(item, info, lookInFolder)
-  , m_info(info)
+  : IVideoInfoTagLoader(item, info, lookInFolder),
+    m_info(info)
 {
   std::string filename =
       item.IsStack() ? CStackDirectory::GetFirstStackedFile(item.GetPath()) : item.GetPath();
@@ -71,9 +71,8 @@ CVideoTagLoaderFFmpeg::CVideoTagLoaderFFmpeg(const CFileItem& item,
   int blockSize = m_file->GetChunkSize();
   int bufferSize = blockSize > 1 ? blockSize : 4096;
   uint8_t* buffer = (uint8_t*)av_malloc(bufferSize);
-  m_ioctx = avio_alloc_context(buffer, bufferSize, 0,
-                               m_file, vfs_file_read, nullptr,
-                               vfs_file_seek);
+  m_ioctx =
+      avio_alloc_context(buffer, bufferSize, 0, m_file, vfs_file_read, nullptr, vfs_file_seek);
 
   m_fctx = avformat_alloc_context();
   m_fctx->pb = m_ioctx;
@@ -111,12 +110,12 @@ bool CVideoTagLoaderFFmpeg::HasInfo() const
   {
     const AVDictionaryEntry* avtag =
         av_dict_get(m_fctx->streams[i]->metadata, "filename", nullptr, AV_DICT_IGNORE_SUFFIX);
-    if (avtag && strcmp(avtag->value,"kodi-metadata") == 0)
+    if (avtag && strcmp(avtag->value, "kodi-metadata") == 0)
     {
       m_metadata_stream = i;
       return true;
     }
-    else if (avtag && strcmp(avtag->value,"kodi-override-metadata") == 0)
+    else if (avtag && strcmp(avtag->value, "kodi-override-metadata") == 0)
     {
       m_metadata_stream = i;
       m_override_data = true;
@@ -129,7 +128,8 @@ bool CVideoTagLoaderFFmpeg::HasInfo() const
     return av_dict_get(m_fctx->metadata, "IMDBURL", nullptr, AV_DICT_IGNORE_SUFFIX) ||
            av_dict_get(m_fctx->metadata, "TMDBURL", nullptr, AV_DICT_IGNORE_SUFFIX) ||
            av_dict_get(m_fctx->metadata, "TITLE", nullptr, AV_DICT_IGNORE_SUFFIX);
-  } else if (m_item.IsType(".mp4") || m_item.IsType(".avi"))
+  }
+  else if (m_item.IsType(".mp4") || m_item.IsType(".avi"))
     return av_dict_get(m_fctx->metadata, "title", nullptr, AV_DICT_IGNORE_SUFFIX);
   else
     return false;
@@ -212,8 +212,13 @@ CInfoScanner::InfoType CVideoTagLoaderFFmpeg::LoadMKV(CVideoInfoTag& tag,
     {
       CNfoFile nfo;
       nfo.Create(avtag->value, m_info);
-      m_url = nfo.ScraperUrl();
-      return CInfoScanner::InfoType::URL;
+      CScraperUrl m_url_new = nfo.ScraperUrl();
+      // Try other tags if the scraper wont use the url:
+      if (m_url_new.HasUrls())
+      {
+        m_url = m_url_new;
+        return CInfoScanner::InfoType::URL;
+      }
     }
     else if (StringUtils::CompareNoCase(avtag->key, "title") == 0)
       tag.SetTitle(avtag->value);
@@ -245,7 +250,7 @@ CInfoScanner::InfoType CVideoTagLoaderFFmpeg::LoadMP4(CVideoInfoTag& tag,
       tag.SetWritingCredits(StringUtils::Split(avtag->value, " / "));
     else if (strcmp(avtag->key, "genre") == 0)
       tag.SetGenre(StringUtils::Split(avtag->value, " / "));
-    else if (strcmp(avtag->key,"date") == 0)
+    else if (strcmp(avtag->key, "date") == 0)
       tag.SetYear(atoi(avtag->value));
     else if (strcmp(avtag->key, "description") == 0)
     {
@@ -290,7 +295,7 @@ CInfoScanner::InfoType CVideoTagLoaderFFmpeg::LoadAVI(CVideoInfoTag& tag,
   {
     if (strcmp(avtag->key, "title") == 0)
       tag.SetTitle(avtag->value);
-    else if (strcmp(avtag->key,"date") == 0)
+    else if (strcmp(avtag->key, "date") == 0)
       tag.SetYear(atoi(avtag->value));
   }
 
