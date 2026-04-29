@@ -1,17 +1,29 @@
 {
-  "layers" : [
+  "layers": [
     {
-      "filename" : "Front.imagestacklayer"
+      "filename": "Front.imagestacklayer"
     },
     {
-      "filename" : "Middle.imagestacklayer"
+      "filename": "UpperMiddle.imagestacklayer"
     },
     {
-      "filename" : "Back.imagestacklayer"
+      "filename": "Middle.imagestacklayer"
+    },
+    {
+      "filename": "LowerMiddle.imagestacklayer"
+    },
+    {
+      "filename": "Back.imagestacklayer"
     }
   ],
-  "info" : {
-    "version" : 1,
-    "author" : "xcode"
+  "properties": {
+    "canvasSize": {
+      "width": 1280,
+      "height": 768
+    }
+  },
+  "info": {
+    "version": 1,
+    "author": "xcode"
   }
 }

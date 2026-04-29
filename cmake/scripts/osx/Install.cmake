@@ -2,6 +2,8 @@
 
 set(PACKAGE_OUTPUT_DIR ${CMAKE_BINARY_DIR}/build/${CORE_BUILD_CONFIG})
 
+set(APP_ICON_ICNS ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/osx/${APP_NAME_LC}.icns)
+
 configure_file(${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/osx/Info.plist.in
                ${CMAKE_BINARY_DIR}/xbmc/platform/darwin/osx/Info.plist @ONLY)
 execute_process(COMMAND perl -p -i -e "s/r####/${APP_SCMID}/" ${CMAKE_BINARY_DIR}/xbmc/platform/darwin/osx/Info.plist)
@@ -47,6 +49,11 @@ foreach(_pkg_lib IN LISTS package_libs)
   list(APPEND ADDITIONAL_COMMANDS COMMAND ${CMAKE_COMMAND} -E copy_if_different ${package_lib_expression} $<TARGET_BUNDLE_CONTENT_DIR:${APP_NAME_LC}>/Libraries)
 endforeach()
 
+if(EXISTS ${APP_ICON_ICNS})
+  set_source_files_properties(${APP_ICON_ICNS} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+  target_sources(${APP_NAME_LC} PRIVATE ${APP_ICON_ICNS})
+endif()
+
 add_custom_command(TARGET ${APP_NAME_LC} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/DllPaths_generated.h
                                      ${CMAKE_BINARY_DIR}/xbmc/DllPaths_generated.h
@@ -62,6 +69,7 @@ add_custom_command(TARGET ${APP_NAME_LC} POST_BUILD
             "APP_NAME=${APP_NAME}"
             "FULL_PRODUCT_NAME=${APP_NAME}.app"
             "SRCROOT=${CMAKE_BINARY_DIR}"
+          "SOURCE_ROOT=${CMAKE_SOURCE_DIR}"
             "PYTHON_VERSION=${PYTHON_VERSION}"
             ${CMAKE_SOURCE_DIR}/tools/darwin/Support/copyframeworks-osx.command
     ${ADDITIONAL_COMMANDS})
