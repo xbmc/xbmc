@@ -712,8 +712,14 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetCuts(const CDataCacheCor
   float lastMarker = 0.0f;
   for (const auto& cut : cuts)
   {
-    float marker = cut.count() * 100.0f / duration;
-    if (marker != 0)
+    float marker = static_cast<float>(cut.count()) * 100.0f / static_cast<float>(duration);
+
+    if (marker >= 100.0f)
+      // Cut at or beyond end, no mark needed
+      // Break as cuts stored in time order
+      break;
+
+    if (marker != 0.0f)
       ranges.emplace_back(lastMarker, marker);
 
     lastMarker = marker;
