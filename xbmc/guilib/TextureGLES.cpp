@@ -313,7 +313,8 @@ void CGLESTexture::LoadToGPU()
     return;
   }
 
-  if ((m_textureFormat & KD_TEX_FMT_SDR) || (m_textureFormat & KD_TEX_FMT_HDR))
+  if ((m_textureFormat & KD_TEX_FMT_TYPE_MASK) == KD_TEX_FMT_SDR ||
+      (m_textureFormat & KD_TEX_FMT_TYPE_MASK) == KD_TEX_FMT_HDR)
   {
     glTexImage2D(GL_TEXTURE_2D, 0, glesFormat.internalFormat, m_textureWidth, m_textureHeight, 0,
                  glesFormat.format, glesFormat.type, m_pixels);
@@ -438,8 +439,9 @@ TextureFormat CGLESTexture::GetFormatGLES20(KD_TEX_FMT textureFormat)
       glFormat.format = glFormat.internalFormat = GL_RGBA;
     }
   }
-  else if (textureFormat & KD_TEX_FMT_SDR || textureFormat & KD_TEX_FMT_HDR ||
-           textureFormat & KD_TEX_FMT_ETC1)
+  else if ((m_textureFormat & KD_TEX_FMT_TYPE_MASK) == KD_TEX_FMT_SDR ||
+           (m_textureFormat & KD_TEX_FMT_TYPE_MASK) == KD_TEX_FMT_HDR ||
+           (m_textureFormat & KD_TEX_FMT_TYPE_MASK) == KD_TEX_FMT_ETC1)
   {
     const auto it = TextureMappingGLES20.find(textureFormat);
     if (it != TextureMappingGLES20.cend())
@@ -460,7 +462,8 @@ TextureFormat CGLESTexture::GetFormatGLES30(KD_TEX_FMT textureFormat)
 {
   TextureFormat glFormat;
 
-  if (textureFormat & KD_TEX_FMT_SDR || textureFormat & KD_TEX_FMT_HDR)
+  if ((m_textureFormat & KD_TEX_FMT_TYPE_MASK) == KD_TEX_FMT_SDR ||
+      (m_textureFormat & KD_TEX_FMT_TYPE_MASK) == KD_TEX_FMT_HDR)
   {
 #if defined(GL_ES_VERSION_3_0)
     const auto it = TextureMappingGLES30.find(textureFormat);
