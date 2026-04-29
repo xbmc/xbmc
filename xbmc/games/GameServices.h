@@ -14,6 +14,7 @@
 #include <memory>
 #include <string>
 
+class CFileExtensionProvider;
 class CInputManager;
 class CProfileManager;
 
@@ -56,8 +57,13 @@ public:
                 PERIPHERALS::CPeripherals& peripheralManager,
                 const CProfileManager& profileManager,
                 CInputManager& inputManager,
-                ADDON::CAddonMgr& addons);
+                ADDON::CAddonMgr& addons,
+                CFileExtensionProvider& fileExtensionProvider);
   ~CGameServices();
+
+  // Lifecycle functions
+  void Initialize();
+  void Deinitialize();
 
   ControllerPtr GetController(const std::string& controllerId);
   ControllerPtr GetDefaultController();
@@ -99,6 +105,7 @@ private:
   CControllerManager& m_controllerManager;
   RETRO::CGUIGameRenderManager& m_gameRenderManager;
   const CProfileManager& m_profileManager;
+  CFileExtensionProvider& m_fileExtensionProvider;
 
   // Game services
   std::unique_ptr<CGameSettings> m_gameSettings;

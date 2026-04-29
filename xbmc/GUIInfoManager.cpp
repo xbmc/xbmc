@@ -4300,14 +4300,79 @@ constexpr std::array<InfoMap, 83> videoplayer = {{
 ///     @skinning_v18 **[New Infolabel]** \link RetroPlayer_VideoRotation `RetroPlayer.VideoRotation`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`RetroPlayer.Title`</b>,
+///                  \anchor RetroPlayer_Title
+///                  _string_,
+///     @return The title of the currently-playing game.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link RetroPlayer_Title `RetroPlayer.Title`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`RetroPlayer.Platform`</b>,
+///                  \anchor RetroPlayer_Platform
+///                  _string_,
+///     @return The platform or platform group of the currently-playing game (e.g.
+///             an emulator might report "Nintendo - SNES / SFC / Game Boy / Color").
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link RetroPlayer_Platform `RetroPlayer.Platform`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`RetroPlayer.Genres`</b>,
+///                  \anchor RetroPlayer_Genres
+///                  _string_,
+///     @return The genres of the currently-playing game\, joined by "\, ".
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link RetroPlayer_Genres `RetroPlayer.Genres`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`RetroPlayer.Publisher`</b>,
+///                  \anchor RetroPlayer_Publisher
+///                  _string_,
+///     @return The publisher of the currently-playing game (e.g. "Nintendo").
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link RetroPlayer_Publisher `RetroPlayer.Publisher`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`RetroPlayer.Developer`</b>,
+///                  \anchor RetroPlayer_Developer
+///                  _string_,
+///     @return The developer of the currently-playing game (e.g. "Square").
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link RetroPlayer_Developer `RetroPlayer.Developer`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`RetroPlayer.Overview`</b>,
+///                  \anchor RetroPlayer_Overview
+///                  _string_,
+///     @return The overview/summary of the currently-playing game.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link RetroPlayer_Overview `RetroPlayer.Overview`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`RetroPlayer.GameClient`</b>,
+///                  \anchor RetroPlayer_GameClient
+///                  _string_,
+///     @return The add-on ID of the game client (a.k.a. emulator) used to play the
+///     currently-playing game (e.g. `game.libretro.beetle-psx`).
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link RetroPlayer_GameClient `RetroPlayer.GameClient`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 3> retroplayer = {{
-    {"videofilter",   RETROPLAYER_VIDEO_FILTER},
-    {"stretchmode",   RETROPLAYER_STRETCH_MODE},
+constexpr std::array<InfoMap, 10> retroplayer = {{
+    {"videofilter", RETROPLAYER_VIDEO_FILTER},
+    {"stretchmode", RETROPLAYER_STRETCH_MODE},
     {"videorotation", RETROPLAYER_VIDEO_ROTATION},
+    {"title", RETROPLAYER_TITLE},
+    {"platform", RETROPLAYER_PLATFORM},
+    {"genres", RETROPLAYER_GENRES},
+    {"publisher", RETROPLAYER_PUBLISHER},
+    {"developer", RETROPLAYER_DEVELOPER},
+    {"overview", RETROPLAYER_OVERVIEW},
+    {"gameclient", RETROPLAYER_GAME_CLIENT},
 }};
 // clang-format on
 

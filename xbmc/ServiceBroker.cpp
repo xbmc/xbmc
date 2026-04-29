@@ -305,6 +305,11 @@ CGUIComponent* CServiceBroker::GetGUI()
   return g_serviceBroker.m_pGUI;
 }
 
+const CGUIComponent* CServiceBroker::GetGUIConst()
+{
+  return g_serviceBroker.m_pGUI;
+}
+
 void CServiceBroker::RegisterGUI(CGUIComponent* gui)
 {
   g_serviceBroker.m_pGUI = gui;

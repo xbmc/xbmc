@@ -374,6 +374,24 @@ void CFileExtensionProvider::SetAddonExtensions(AddonType type)
   m_addonFileFolderExtensions[type] = StringUtils::Join(fileFolderExtensions, "|");
 }
 
+void CFileExtensionProvider::RegisterGameExtensions(const std::set<std::string>& extensions)
+{
+  std::lock_guard lock{m_critSection};
+  m_gameExtensions.insert(extensions.begin(), extensions.end());
+}
+
+void CFileExtensionProvider::UnregisterGameExtensions(const std::set<std::string>& extensions)
+{
+  std::lock_guard lock{m_critSection};
+  for (const auto& ext : extensions)
+    m_gameExtensions.erase(ext);
+}
+
+std::string CFileExtensionProvider::GetGameExtensions() const
+{
+  return StringUtils::Join(m_gameExtensions, "|");
+}
+
 bool CFileExtensionProvider::EncodedHostName(const std::string& protocol) const
 {
   std::lock_guard lock{m_critSection};

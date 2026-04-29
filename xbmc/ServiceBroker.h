@@ -188,6 +188,7 @@ public:
   static KODI::UTILS::I18N::CSubTagRegistryManager& GetSubTagRegistry();
 
   static CGUIComponent* GetGUI();
+  static const CGUIComponent* GetGUIConst();
   static void RegisterGUI(CGUIComponent* gui);
   static void UnregisterGUI();
 

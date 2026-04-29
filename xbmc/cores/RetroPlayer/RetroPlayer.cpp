@@ -190,6 +190,11 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
 
   if (bSuccess)
   {
+    // If platform is not set, get the platform from the game client so it can
+    // be used in the OSD and GUI
+    if (fileCopy.GetGameInfoTag()->GetPlatform().empty())
+      fileCopy.GetGameInfoTag()->SetPlatform(m_gameClient->GetPlatforms());
+
     // Switch to fullscreen
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_SWITCHTOFULLSCREEN);
 

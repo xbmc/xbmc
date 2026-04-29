@@ -266,6 +266,12 @@ std::set<std::string> CGameUtils::GetGameExtensions()
     }
   }
 
+  // Remove special libretro extensions
+  extensions.erase("*");
+  extensions.erase(".");
+  extensions.erase("./");
+  extensions.erase("/");
+
   return extensions;
 }
 
