@@ -814,7 +814,6 @@
 		<value condition="String.IsEqual(ListItem.AudioCodec,ape) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.AudioCodec,ape)] | [Window.IsActive(visualisation) + String.IsEqual(MusicPlayer.Codec,ape)]">APE</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,avc) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.AudioCodec,avc)] | [Window.IsActive(visualisation) + String.IsEqual(MusicPlayer.Codec,avc)]">AVC</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,cdda) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.AudioCodec,cdda)] | [Window.IsActive(visualisation) + String.IsEqual(MusicPlayer.Codec,cdda)]">CDDA</value>
-		<value condition="String.IsEqual(ListItem.AudioCodec,dca) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.AudioCodec,dca)] | [Window.IsActive(visualisation) + String.IsEqual(MusicPlayer.Codec,dca)]">DTS</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,dolbydigital) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.AudioCodec,dolbydigital)] | [Window.IsActive(visualisation) + String.IsEqual(MusicPlayer.Codec,dolbydigital)]">Dolby Digital</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,dts) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.AudioCodec,dts)] | [Window.IsActive(visualisation) + String.IsEqual(MusicPlayer.Codec,dts)]">DTS</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,dtshd_hra) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.AudioCodec,dtshd_hra)] | [Window.IsActive(visualisation) + String.IsEqual(MusicPlayer.Codec,dtshd_hra)]">DTS-HD HRA</value>
@@ -918,7 +917,6 @@
 		<value condition="Window.IsVisible(dialogselectaudio) + String.IsEqual(ListItem.Property(stream.codec),dtshd_ma_x_imax)">DTS-HD MA / DTS:X IMAX</value>
 		<value condition="Window.IsVisible(dialogselectaudio) + String.IsEqual(ListItem.Property(stream.codec),dtshd_ma_x)">DTS-HD MA / DTS:X</value>
 		<value condition="Window.IsVisible(dialogselectaudio) + String.IsEqual(ListItem.Property(stream.codec),dtshd_ma)">DTS-HD MA</value>
-		<value condition="Window.IsVisible(dialogselectaudio) + String.IsEqual(ListItem.Property(stream.codec),dca)">DTS</value>
 		<value condition="Window.IsVisible(dialogselectaudio) + String.IsEqual(ListItem.Property(stream.codec),dts)">DTS</value>
 		<value condition="Window.IsVisible(dialogselectaudio) + String.IsEqual(ListItem.Property(stream.codec),eac3_ddp_atmos)">Dolby Digital+ Atmos</value>
 		<value condition="Window.IsVisible(dialogselectaudio) + String.IsEqual(ListItem.Property(stream.codec),eac3)">Dolby Digital+</value>
