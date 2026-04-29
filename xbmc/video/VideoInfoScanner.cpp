@@ -1580,23 +1580,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
       }
     }
 
-    /* As HasStreamDetails() returns true for TV shows (because the scraper calls SetVideoInfoTag()
-     * directly to set the duration) a better test is just to see if we have any common flag info
-     * missing.  If we have already read an nfo file then this data should be populated, otherwise
-     * get it from the video file */
-
     if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-            CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
+            CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS) &&
+        !movieDetails.HasStreamDetails())
     {
-      const auto& strmdetails = movieDetails.m_streamDetails;
-      if (strmdetails.GetVideoCodec(1).empty() || strmdetails.GetVideoHeight(1) == 0 ||
-          strmdetails.GetVideoWidth(1) == 0 || strmdetails.GetVideoDuration(1) == 0)
-
-      {
-        CDVDFileInfo::GetFileStreamDetails(pItem);
-        CLog::Log(LOGDEBUG, "VideoInfoScanner: Extracted filestream details from video file {}",
-                  CURL::GetRedacted(path));
-      }
+      CDVDFileInfo::GetFileStreamDetails(pItem);
+      CLog::Log(LOGDEBUG, "VideoInfoScanner: Extracted filestream details from video file {}",
+                CURL::GetRedacted(path));
     }
 
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new item to {}:{}", content,
@@ -2274,6 +2264,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     if (ret)
     {
+      movieDetails.m_streamDetails.Reset(); // Scrapers should not return streamdetails
+
       if (loader)
         loader->Load(movieDetails, true);
 
