@@ -578,10 +578,10 @@ KODI_HANDLE CInputStreamAddon::cb_get_stream_transfer(KODI_HANDLE handle,
     demuxStream->cryptoSession = std::make_shared<DemuxCryptoSession>(
         map[stream->m_cryptoSession.keySystem], stream->m_cryptoSession.sessionId,
         stream->m_cryptoSession.flags);
-
-    if ((stream->m_features & INPUTSTREAM_FEATURE_DECODE) != 0)
-      demuxStream->externalInterfaces = thisClass->m_subAddonProvider;
   }
+
+  if ((stream->m_features & INPUTSTREAM_FEATURE_DECODE) != 0)
+    demuxStream->externalInterfaces = thisClass->m_subAddonProvider;
 
   // Tie the lifetime of the stream to the CInputStreamAddon
   thisClass->m_streams.emplace_back(demuxStream);

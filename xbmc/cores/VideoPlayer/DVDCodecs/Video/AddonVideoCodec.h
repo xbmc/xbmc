@@ -43,12 +43,29 @@ private:
    */
   bool GetFrameBuffer(VIDEOCODEC_PICTURE &picture);
   void ReleaseFrameBuffer(KODI_HANDLE videoBufferHandle);
+  bool GetFrameBufferPlatformHandle(KODI_HANDLE videoBufferHandle,
+                                    VIDEOCODEC_PLATFORM_BUFFER& platformBuffer);
 
   static bool get_frame_buffer(void* kodiInstance, VIDEOCODEC_PICTURE *picture);
   static void release_frame_buffer(void* kodiInstance, KODI_HANDLE videoBufferHandle);
+  static bool get_frame_buffer_platform_handle(void* kodiInstance,
+                                               KODI_HANDLE videoBufferHandle,
+                                               VIDEOCODEC_PLATFORM_BUFFER* platformBuffer);
 
   int m_codecFlags = 0;
   VIDEOCODEC_FORMAT m_formats[VIDEOCODEC_FORMAT_MAXFORMATS + 1];
   float m_displayAspect = 0.0f;
   unsigned int m_width, m_height;
+  AVColorSpace m_colorSpace = AVCOL_SPC_UNSPECIFIED;
+  AVColorRange m_colorRange = AVCOL_RANGE_UNSPECIFIED;
+  AVColorPrimaries m_colorPrimaries = AVCOL_PRI_UNSPECIFIED;
+  AVColorTransferCharacteristic m_colorTransfer = AVCOL_TRC_UNSPECIFIED;
+  std::shared_ptr<AVMasteringDisplayMetadata> m_masteringMetadata;
+  std::shared_ptr<AVContentLightMetadata> m_contentLightMetadata;
+  StreamHdrType m_hdrType = StreamHdrType::HDR_TYPE_NONE;
+
+  // Scratch descriptor filled by GetFrameBufferPlatformHandle and pointed at
+  // via VIDEOCODEC_PLATFORM_BUFFER::handle. Keeps the addon API free of
+  // ffmpeg types (see KODI_DRM_FRAME_DESCRIPTOR in video_codec.h).
+  KODI_DRM_FRAME_DESCRIPTOR m_drmFrameDesc{};
 };

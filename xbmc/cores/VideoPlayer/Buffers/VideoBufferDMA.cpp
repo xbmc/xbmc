@@ -19,9 +19,11 @@ extern "C"
 #include <libavutil/pixdesc.h>
 }
 
-CVideoBufferDMA::CVideoBufferDMA(IVideoBufferPool& pool, int id, uint32_t fourcc, uint64_t size)
+CVideoBufferDMA::CVideoBufferDMA(
+    IVideoBufferPool& pool, int id, uint32_t fourcc, uint32_t planes, uint64_t size)
   : CVideoBufferDRMPRIMEFFmpeg(pool, id),
     m_bo(CBufferObject::GetBufferObject(true)),
+    m_planes(planes),
     m_fourcc(fourcc),
     m_size(size)
 {
@@ -87,6 +89,8 @@ void CVideoBufferDMA::SetDimensions(int width,
   {
     layer->planes[i].offset = planeOffsets[i];
     layer->planes[i].pitch = strides[i];
+    m_strides[i] = strides[i];
+    m_offsets[i] = planeOffsets[i];
   }
 
   if (CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
@@ -108,7 +112,6 @@ bool CVideoBufferDMA::Alloc()
 
   m_fd = m_bo->GetFd();
   m_addr = m_bo->GetMemory();
-  m_planes = 3; // CAddonVideoCodec only requests AV_PIX_FMT_YUV420P for now
 
   CLog::Log(LOGDEBUG, LOGVIDEO, "CVideoBufferDMA::{} - id={} fourcc={} fd={} size={} addr={}",
             __FUNCTION__, m_id, DRMHELPERS::FourCCToString(m_fourcc), m_fd, m_size,

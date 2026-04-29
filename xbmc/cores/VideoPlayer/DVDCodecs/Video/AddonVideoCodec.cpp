@@ -13,12 +13,15 @@
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "cores/VideoPlayer/Interface/DemuxCrypto.h"
+#include "cores/VideoPlayer/Interface/StreamInfo.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "utils/log.h"
 
 extern "C"
 {
 #include <libavcodec/defs.h>
+#include <libavutil/hwcontext_drm.h>
+#include <libavutil/pixdesc.h>
 }
 
 namespace
@@ -37,23 +40,75 @@ AVPixelFormat ConvertToPixelFormat(const VIDEOCODEC_FORMAT videoFormat)
       return AV_PIX_FMT_YUV420P10;
     case VIDEOCODEC_FORMAT_YUV420P12:
       return AV_PIX_FMT_YUV420P12;
+    case VIDEOCODEC_FORMAT_YUV422P:
+      return AV_PIX_FMT_YUV422P;
     case VIDEOCODEC_FORMAT_YUV422P9:
       return AV_PIX_FMT_YUV422P9;
     case VIDEOCODEC_FORMAT_YUV422P10:
       return AV_PIX_FMT_YUV422P10;
     case VIDEOCODEC_FORMAT_YUV422P12:
       return AV_PIX_FMT_YUV422P12;
+    case VIDEOCODEC_FORMAT_YUV444P:
+      return AV_PIX_FMT_YUV444P;
     case VIDEOCODEC_FORMAT_YUV444P9:
       return AV_PIX_FMT_YUV444P9;
     case VIDEOCODEC_FORMAT_YUV444P10:
       return AV_PIX_FMT_YUV444P10;
     case VIDEOCODEC_FORMAT_YUV444P12:
       return AV_PIX_FMT_YUV444P12;
+    case VIDEOCODEC_FORMAT_NV12:
+      return AV_PIX_FMT_NV12;
+    case VIDEOCODEC_FORMAT_P010:
+      return AV_PIX_FMT_P010;
+    case VIDEOCODEC_FORMAT_YUYV422:
+      return AV_PIX_FMT_YUYV422;
+    case VIDEOCODEC_FORMAT_UYVY422:
+      return AV_PIX_FMT_UYVY422;
+    case VIDEOCODEC_FORMAT_XRGB8888:
+      // BGR0 in ffmpeg = bytes B,G,R,X = DRM_FORMAT_XRGB8888
+      return AV_PIX_FMT_BGR0;
+    case VIDEOCODEC_FORMAT_XRGB2101010:
+      return AV_PIX_FMT_X2RGB10LE;
+    case VIDEOCODEC_FORMAT_XRGB16161616:
+      // ffmpeg has no X variant for 16-bit RGB; RGBA64 is the closest match.
+      // The alpha bytes are unused (X) for our purposes.
+      return AV_PIX_FMT_RGBA64LE;
+    case VIDEOCODEC_FORMAT_XRGB16161616F:
+      // Same situation for half-float RGB.
+      return AV_PIX_FMT_RGBAF16LE;
     default:
       CLog::LogF(LOGWARNING, "Video pixel format '{}' not valid, fallback to YUV420P.",
                  videoFormat);
       return AV_PIX_FMT_YUV420P;
   }
+}
+
+// Crosswalk VIDEOCODEC_HDR_TYPE (C, addon API) <-> StreamHdrType (C++ enum
+// class, Kodi core). Values are defined to match one-to-one; the static_asserts
+// below make any future drift a compile error. Keep in sync with
+// xbmc/addons/kodi-dev-kit/include/kodi/c-api/addon-instance/video_codec.h
+// and xbmc/cores/VideoPlayer/Interface/StreamInfo.h.
+StreamHdrType ConvertHdrType(const VIDEOCODEC_HDR_TYPE type)
+{
+  static_assert(static_cast<int>(VIDEOCODEC_HDR_TYPE_NONE) ==
+                    static_cast<int>(StreamHdrType::HDR_TYPE_NONE),
+                "VIDEOCODEC_HDR_TYPE / StreamHdrType drift: NONE");
+  static_assert(static_cast<int>(VIDEOCODEC_HDR_TYPE_HDR10) ==
+                    static_cast<int>(StreamHdrType::HDR_TYPE_HDR10),
+                "VIDEOCODEC_HDR_TYPE / StreamHdrType drift: HDR10");
+  static_assert(static_cast<int>(VIDEOCODEC_HDR_TYPE_DOLBYVISION) ==
+                    static_cast<int>(StreamHdrType::HDR_TYPE_DOLBYVISION),
+                "VIDEOCODEC_HDR_TYPE / StreamHdrType drift: DOLBYVISION");
+  static_assert(static_cast<int>(VIDEOCODEC_HDR_TYPE_HLG) ==
+                    static_cast<int>(StreamHdrType::HDR_TYPE_HLG),
+                "VIDEOCODEC_HDR_TYPE / StreamHdrType drift: HLG");
+  static_assert(static_cast<int>(VIDEOCODEC_HDR_TYPE_HDR10PLUS) ==
+                    static_cast<int>(StreamHdrType::HDR_TYPE_HDR10PLUS),
+                "VIDEOCODEC_HDR_TYPE / StreamHdrType drift: HDR10PLUS");
+  static_assert(static_cast<int>(VIDEOCODEC_HDR_TYPE_COUNT) ==
+                    static_cast<int>(StreamHdrType::HDR_TYPE_COUNT),
+                "VIDEOCODEC_HDR_TYPE / StreamHdrType drift: enum length mismatch");
+  return static_cast<StreamHdrType>(type);
 }
 
 unsigned int GetColorBitsFromVideoFormat(const VIDEOCODEC_FORMAT videoFormat)
@@ -62,6 +117,8 @@ unsigned int GetColorBitsFromVideoFormat(const VIDEOCODEC_FORMAT videoFormat)
   {
     case VIDEOCODEC_FORMAT_YV12:
     case VIDEOCODEC_FORMAT_I420:
+    case VIDEOCODEC_FORMAT_YUV422P:
+    case VIDEOCODEC_FORMAT_YUV444P:
       return 8;
     case VIDEOCODEC_FORMAT_YUV420P9:
     case VIDEOCODEC_FORMAT_YUV422P9:
@@ -75,6 +132,20 @@ unsigned int GetColorBitsFromVideoFormat(const VIDEOCODEC_FORMAT videoFormat)
     case VIDEOCODEC_FORMAT_YUV422P12:
     case VIDEOCODEC_FORMAT_YUV444P12:
       return 12;
+    case VIDEOCODEC_FORMAT_NV12:
+    case VIDEOCODEC_FORMAT_YUYV422:
+    case VIDEOCODEC_FORMAT_UYVY422:
+      return 8;
+    case VIDEOCODEC_FORMAT_P010:
+      return 10;
+    case VIDEOCODEC_FORMAT_XRGB8888:
+      return 8;
+    case VIDEOCODEC_FORMAT_XRGB2101010:
+      return 10;
+    case VIDEOCODEC_FORMAT_XRGB16161616:
+      return 12;
+    case VIDEOCODEC_FORMAT_XRGB16161616F:
+      return 16;
     default:
       CLog::LogF(LOGWARNING, "Video pixel format '{}' not valid, fallback to 8 bits color.",
                  videoFormat);
@@ -99,6 +170,7 @@ CAddonVideoCodec::CAddonVideoCodec(CProcessInfo& processInfo,
   m_ifc.videocodec->toKodi->kodiInstance = this;
   m_ifc.videocodec->toKodi->get_frame_buffer = get_frame_buffer;
   m_ifc.videocodec->toKodi->release_frame_buffer = release_frame_buffer;
+  m_ifc.videocodec->toKodi->get_frame_buffer_platform_handle = get_frame_buffer_platform_handle;
   if (CreateInstance() != ADDON_STATUS_OK || !m_ifc.videocodec->toAddon->open)
   {
     CLog::Log(LOGERROR, "CInputStreamAddon: Failed to create add-on instance for '{}'",
@@ -205,6 +277,32 @@ bool CAddonVideoCodec::CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamI
         return false;
     }
     break;
+  case AV_CODEC_ID_HEVC:
+    initData.codec = VIDEOCODEC_HEVC;
+    switch (hints.profile)
+    {
+      case AV_PROFILE_UNKNOWN:
+        initData.codecProfile = STREAMCODEC_PROFILE::CodecProfileUnknown;
+        break;
+      case AV_PROFILE_HEVC_MAIN:
+        initData.codecProfile = STREAMCODEC_PROFILE::HEVCCodecProfileMain;
+        break;
+      case AV_PROFILE_HEVC_MAIN_10:
+        initData.codecProfile = STREAMCODEC_PROFILE::HEVCCodecProfileMain10;
+        break;
+      case AV_PROFILE_HEVC_MAIN_STILL_PICTURE:
+        initData.codecProfile = STREAMCODEC_PROFILE::HEVCCodecProfileMainStillPicture;
+        break;
+      case AV_PROFILE_HEVC_REXT:
+        initData.codecProfile = STREAMCODEC_PROFILE::HEVCCodecProfileRext;
+        break;
+      default:
+        return false;
+    }
+    break;
+  case AV_CODEC_ID_RAWVIDEO:
+    initData.codec = VIDEOCODEC_RAWVIDEO;
+    break;
   default:
     return false;
   }
@@ -244,6 +342,13 @@ bool CAddonVideoCodec::CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamI
   m_displayAspect = (hints.aspect > 0.0 && !hints.forced_aspect) ? static_cast<float>(hints.aspect) : 0.0f;
   m_width = hints.width;
   m_height = hints.height;
+  m_colorSpace = hints.colorSpace;
+  m_colorRange = hints.colorRange;
+  m_colorPrimaries = hints.colorPrimaries;
+  m_colorTransfer = hints.colorTransferCharacteristic;
+  m_masteringMetadata = hints.masteringMetadata;
+  m_contentLightMetadata = hints.contentLightMetadata;
+  m_hdrType = hints.hdrType;
 
   m_processInfo.SetVideoDimensions(hints.width, hints.height);
   m_processInfo.SetVideoDAR(m_displayAspect);
@@ -268,6 +373,7 @@ bool CAddonVideoCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 
   bool ret = m_ifc.videocodec->toAddon->open(m_ifc.videocodec, &initData);
   m_processInfo.SetVideoDecoderName(GetName(), false);
+  m_processInfo.SetVideoDeintMethod("none");
 
   return ret;
 }
@@ -317,12 +423,31 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
     pVideoPicture->iFlags = 0;
     pVideoPicture->chroma_position = AVCHROMA_LOC_UNSPECIFIED;
     pVideoPicture->colorBits = GetColorBitsFromVideoFormat(picture.videoFormat);
-    pVideoPicture->color_primaries = AVColorPrimaries::AVCOL_PRI_UNSPECIFIED;
-    pVideoPicture->color_range = 0;
-    pVideoPicture->color_space = AVCOL_SPC_UNSPECIFIED;
-    pVideoPicture->color_transfer = AVCOL_TRC_UNSPECIFIED;
+    pVideoPicture->color_primaries = m_colorPrimaries;
+    pVideoPicture->color_range = m_colorRange == AVCOL_RANGE_JPEG ? 1 : 0; // 0=Limited, 1=Full
+    pVideoPicture->color_space = m_colorSpace;
+    pVideoPicture->color_transfer = m_colorTransfer;
     pVideoPicture->hasDisplayMetadata = false;
     pVideoPicture->hasLightMetadata = false;
+    if (m_masteringMetadata)
+    {
+      pVideoPicture->displayMetadata = *m_masteringMetadata;
+      pVideoPicture->hasDisplayMetadata = true;
+    }
+    if (m_contentLightMetadata)
+    {
+      pVideoPicture->lightMetadata = *m_contentLightMetadata;
+      pVideoPicture->hasLightMetadata = true;
+    }
+
+    // Seed from stream hints (matches DVDVideoCodecFFmpeg::GetPicture), then
+    // allow addon per-picture override for dynamic HDR signaling (e.g. an
+    // addon that detects HDR10+ metadata per-frame can raise the hdrType
+    // from HDR10 to HDR10PLUS).
+    pVideoPicture->hdrType =
+        (picture.hdrType != VIDEOCODEC_HDR_TYPE_NONE) ? ConvertHdrType(picture.hdrType) : m_hdrType;
+    pVideoPicture->hdrTypeAlt = ConvertHdrType(picture.hdrTypeAlt);
+    pVideoPicture->strDVELType = picture.strDVELType;
     pVideoPicture->iDuration = 0;
     pVideoPicture->iFrameType = 0;
     pVideoPicture->iRepeatPicture = 0;
@@ -339,6 +464,7 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
       pVideoPicture->videoBuffer->Release();
 
     pVideoPicture->videoBuffer = static_cast<CVideoBuffer*>(picture.videoBufferHandle);
+    pVideoPicture->videoBuffer->SyncEnd();
 
     int strides[YuvImage::MAX_PLANES], planeOffsets[YuvImage::MAX_PLANES];
     for (int i = 0; i<YuvImage::MAX_PLANES; ++i)
@@ -375,6 +501,14 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
       m_width = picture.width;
       m_height = picture.height;
       m_processInfo.SetVideoDimensions(m_width, m_height);
+    }
+
+    // Inner scope keeps the const pix declaration from crossing the next
+    // case label, which C++ forbids.
+    {
+      const AVPixelFormat pix = ConvertToPixelFormat(picture.videoFormat);
+      const char* pixFmtName = av_get_pix_fmt_name(pix);
+      m_processInfo.SetVideoPixelFormat(pixFmtName ? pixFmtName : "");
     }
 
     return CDVDVideoCodec::VC_PICTURE;
@@ -420,7 +554,8 @@ void CAddonVideoCodec::Reset()
 
 bool CAddonVideoCodec::GetFrameBuffer(VIDEOCODEC_PICTURE &picture)
 {
-  CVideoBuffer *videoBuffer = m_processInfo.GetVideoBufferManager().Get(AV_PIX_FMT_YUV420P, picture.decodedDataSize, nullptr);
+  CVideoBuffer* const videoBuffer = m_processInfo.GetVideoBufferManager().Get(
+      ConvertToPixelFormat(picture.videoFormat), picture.decodedDataSize, nullptr);
   if (!videoBuffer)
   {
     CLog::Log(LOGERROR,"CAddonVideoCodec::GetFrameBuffer Failed to allocate buffer");
@@ -429,6 +564,22 @@ bool CAddonVideoCodec::GetFrameBuffer(VIDEOCODEC_PICTURE &picture)
   picture.decodedData = videoBuffer->GetMemPtr();
   picture.videoBufferHandle = videoBuffer;
 
+  // Populate the AVDRMFrameDescriptor immediately so addons that call
+  // GetFrameBufferPlatformHandle() before returning VC_PICTURE see valid
+  // fields (fd, fourcc, offsets, pitches). Without this the descriptor
+  // would still be zero-initialized until CAddonVideoCodec::GetPicture
+  // later calls SetDimensions a second time. Virtual SetDimensions is a
+  // no-op for non-DMA buffers.
+  int strides[YuvImage::MAX_PLANES] = {};
+  int offsets[YuvImage::MAX_PLANES] = {};
+  for (int i = 0; i < YuvImage::MAX_PLANES; ++i)
+  {
+    strides[i] = static_cast<int>(picture.stride[i]);
+    offsets[i] = static_cast<int>(picture.planeOffsets[i]);
+  }
+  videoBuffer->SetDimensions(picture.width, picture.height, strides, offsets);
+  videoBuffer->SyncStart();
+
   return true;
 }
 
@@ -436,6 +587,57 @@ void CAddonVideoCodec::ReleaseFrameBuffer(KODI_HANDLE videoBufferHandle)
 {
   if (videoBufferHandle)
     static_cast<CVideoBuffer*>(videoBufferHandle)->Release();
+}
+
+bool CAddonVideoCodec::GetFrameBufferPlatformHandle(KODI_HANDLE videoBufferHandle,
+                                                    VIDEOCODEC_PLATFORM_BUFFER& platformBuffer)
+{
+  platformBuffer.type = VIDEOCODEC_PLATFORM_BUFFER_NONE;
+  platformBuffer.handle = nullptr;
+
+  if (!videoBufferHandle)
+    return false;
+
+  auto* videoBuffer = static_cast<CVideoBuffer*>(videoBufferHandle);
+
+  // DRM-PRIME DMA-BUF platforms (Linux GBM/Wayland) override GetDescriptor()
+  // to return an AVDRMFrameDescriptor carrying fd/fourcc/modifier/planes.
+  // Non-DRM-PRIME buffer types return nullptr from the base class default.
+  // Translate ffmpeg's descriptor into the Kodi-native KODI_DRM_FRAME_DESCRIPTOR
+  // so the addon API doesn't leak ffmpeg types (see video_codec.h). Layout is
+  // identical by design, but the copy insulates addons from any future ffmpeg
+  // ABI churn in AVDRMFrameDescriptor.
+  if (auto* src = videoBuffer->GetDescriptor())
+  {
+    m_drmFrameDesc = {};
+    m_drmFrameDesc.nb_objects = static_cast<uint32_t>(src->nb_objects);
+    for (int i = 0; i < src->nb_objects && i < KODI_DRM_MAX_PLANES; ++i)
+    {
+      m_drmFrameDesc.objects[i].fd = src->objects[i].fd;
+      m_drmFrameDesc.objects[i].size = static_cast<uint32_t>(src->objects[i].size);
+      m_drmFrameDesc.objects[i].format_modifier = src->objects[i].format_modifier;
+    }
+    m_drmFrameDesc.nb_layers = static_cast<uint32_t>(src->nb_layers);
+    for (int l = 0; l < src->nb_layers && l < KODI_DRM_MAX_PLANES; ++l)
+    {
+      m_drmFrameDesc.layers[l].format = src->layers[l].format;
+      m_drmFrameDesc.layers[l].nb_planes = static_cast<uint32_t>(src->layers[l].nb_planes);
+      for (int p = 0; p < src->layers[l].nb_planes && p < KODI_DRM_MAX_PLANES; ++p)
+      {
+        m_drmFrameDesc.layers[l].planes[p].object_index =
+            static_cast<uint32_t>(src->layers[l].planes[p].object_index);
+        m_drmFrameDesc.layers[l].planes[p].offset =
+            static_cast<uint32_t>(src->layers[l].planes[p].offset);
+        m_drmFrameDesc.layers[l].planes[p].pitch =
+            static_cast<uint32_t>(src->layers[l].planes[p].pitch);
+      }
+    }
+    platformBuffer.type = VIDEOCODEC_PLATFORM_BUFFER_DRM_PRIME;
+    platformBuffer.handle = &m_drmFrameDesc;
+    return true;
+  }
+
+  return false;
 }
 
 /*********************     ADDON-TO-KODI    **********************/
@@ -454,4 +656,15 @@ void CAddonVideoCodec::release_frame_buffer(void* kodiInstance, KODI_HANDLE vide
     return;
 
   static_cast<CAddonVideoCodec*>(kodiInstance)->ReleaseFrameBuffer(videoBufferHandle);
+}
+
+bool CAddonVideoCodec::get_frame_buffer_platform_handle(void* kodiInstance,
+                                                        KODI_HANDLE videoBufferHandle,
+                                                        VIDEOCODEC_PLATFORM_BUFFER* platformBuffer)
+{
+  if (!kodiInstance || !platformBuffer)
+    return false;
+
+  return static_cast<CAddonVideoCodec*>(kodiInstance)
+      ->GetFrameBufferPlatformHandle(videoBufferHandle, *platformBuffer);
 }
