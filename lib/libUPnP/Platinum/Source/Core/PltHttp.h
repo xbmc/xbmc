@@ -151,29 +151,28 @@ private:
 |   macros
 +---------------------------------------------------------------------*/
 #if defined(NPT_CONFIG_ENABLE_LOGGING)
-#define PLT_LOG_HTTP_REQUEST_L(_logger, _level, _prefix, _request) \
-do { \
-    if (!_request) break; \
-	NPT_LOG_GET_LOGGER((_logger))                                       \
-	if ((_logger).logger && (_level) >= (_logger).logger->GetLevel()) { \
-		NPT_StringOutputStreamReference stream(new NPT_StringOutputStream); \
-		NPT_OutputStreamReference output = stream; \
-		_request->GetHeaders().GetHeaders().Apply(NPT_HttpHeaderPrinter(output)); \
-		NPT_LOG_X((_logger),(_level),((_level),__FILE__,__LINE__,(NPT_LocalFunctionName),"%s\n%s %s %s\n%s", (const char*)_prefix, (const char*)_request->GetMethod(), (const char*)_request->GetUrl().ToRequestString(true), (const char*)_request->GetProtocol(), (const char*)stream->GetString())); \
-	} \
-} while (0)
-
-#define PLT_LOG_HTTP_RESPONSE_L(_logger, _level, _prefix, _response) \
-do { \
-    if (!_response) break; \
-	NPT_LOG_GET_LOGGER((_logger))                                       \
-	if ((_logger).logger && (_level) >= (_logger).logger->GetLevel()) { \
-		NPT_StringOutputStreamReference stream(new NPT_StringOutputStream); \
-		NPT_OutputStreamReference output = stream; \
-		_response->GetHeaders().GetHeaders().Apply(NPT_HttpHeaderPrinter(output)); \
-		NPT_LOG_X((_logger),(_level),((_level),__FILE__,__LINE__,(NPT_LocalFunctionName),"%s\n%s %d %s\n%s", (const char*)_prefix, (const char*)_response->GetProtocol(), _response->GetStatusCode(), (const char*)_response->GetReasonPhrase(), (const char*)stream->GetString())); \
-	} \
-} while (0)
+inline void PLT_LogHttpRequest(volatile NPT_LoggerReference& logger, int level, const char* prefix, const NPT_HttpRequest* request)
+{
+	if (!request) return;
+	if (const_cast<NPT_LoggerReference&>(logger).logger && level >= const_cast<NPT_LoggerReference&>(logger).logger->GetLevel()) {
+		NPT_StringOutputStreamReference stream(new NPT_StringOutputStream);
+		NPT_OutputStreamReference output = stream;
+		request->GetHeaders().GetHeaders().Apply(NPT_HttpHeaderPrinter(output));
+		NPT_LOG_X((const_cast<NPT_LoggerReference&>(logger)),(level),((level),__FILE__,__LINE__,(NPT_LocalFunctionName),"%s\n%s %s %s\n%s", prefix, (const char*)request->GetMethod(), (const char*)request->GetUrl().ToRequestString(true), (const char*)request->GetProtocol(), (const char*)stream->GetString()));
+	}
+}
+inline void PLT_LogHttpResponse(volatile NPT_LoggerReference& logger, int level, const char* prefix, const NPT_HttpResponse* response)
+{
+	if (!response) return;
+	if (const_cast<NPT_LoggerReference&>(logger).logger && level >= const_cast<NPT_LoggerReference&>(logger).logger->GetLevel()) {
+		NPT_StringOutputStreamReference stream(new NPT_StringOutputStream);
+		NPT_OutputStreamReference output = stream;
+		response->GetHeaders().GetHeaders().Apply(NPT_HttpHeaderPrinter(output));
+		NPT_LOG_X((const_cast<NPT_LoggerReference&>(logger)),(level),((level),__FILE__,__LINE__,(NPT_LocalFunctionName),"%s\n%s %d %s\n%s", prefix, (const char*)response->GetProtocol(), response->GetStatusCode(), (const char*)response->GetReasonPhrase(), (const char*)stream->GetString()));
+	}
+}
+#define PLT_LOG_HTTP_REQUEST_L(_logger, _level, _prefix, _request)  PLT_LogHttpRequest((_logger), (_level), (_prefix), (_request))
+#define PLT_LOG_HTTP_RESPONSE_L(_logger, _level, _prefix, _response) PLT_LogHttpResponse((_logger), (_level), (_prefix), (_response))
 
 #define PLT_LOG_HTTP_REQUEST(_level,_prefix,_request) PLT_LOG_HTTP_REQUEST_L(_NPT_LocalLogger,(_level),(_prefix),(_request))
 

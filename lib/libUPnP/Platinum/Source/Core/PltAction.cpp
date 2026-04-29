@@ -253,8 +253,6 @@ PLT_Action::VerifyArgumentValue(const char* name, const char* value)
 NPT_Result
 PLT_Action::VerifyArguments(bool input)
 {
-    NPT_Cardinal count = 0;
-
     // Check we have all the required parameters (in or out)
     for(unsigned int i=0; i<m_ActionDesc.GetArgumentDescs().GetItemCount(); i++) {
         PLT_ArgumentDesc* arg_desc = m_ActionDesc.GetArgumentDescs()[i];
@@ -271,7 +269,6 @@ PLT_Action::VerifyArguments(bool input)
 				(const char*) m_ActionDesc.GetName());
             return NPT_FAILURE;
         }
-        ++count;
     }
 
     SetError(0, "");

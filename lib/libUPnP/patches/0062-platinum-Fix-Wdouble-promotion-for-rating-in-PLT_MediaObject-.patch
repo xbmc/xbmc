@@ -1,0 +1,33 @@
+From 205fb7781112743bf4ca8c05d0c23e43cc0ae0cd Mon Sep 17 00:00:00 2001
+From: Rudi Heitbaum <rudi@heitbaum.com>
+Date: Sun, 19 Apr 2026 04:47:57 +0000
+Subject: [PATCH] [Platinum] Fix -Wdouble-promotion for rating in
+ PLT_MediaObject::ToDidl
+
+fixes:
+../lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp: In member function 'virtual NPT_Result PLT_MediaObject::ToDidl(NPT_UInt64, NPT_String&)':
+../lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp:589:55: warning: implicit conversion from 'NPT_Float' {aka 'float'} to 'double' when passing argument to function [-Wdouble-promotion]
+  589 |         didl += NPT_String::Format("%.1f", m_XbmcInfo.rating);
+      |                                            ~~~~~~~~~~~^~~~~~
+
+Signed-off-by: Rudi Heitbaum <rudi@heitbaum.com>
+---
+ .../Platinum/Source/Devices/MediaServer/PltMediaItem.cpp        | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
+index fac16902f7..c3e0cea2bb 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
+@@ -586,7 +586,7 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
+     // xbmc rating
+     if (mask & PLT_FILTER_MASK_XBMC_RATING) {
+         didl += "<xbmc:rating>";
+-        didl += NPT_String::Format("%.1f", m_XbmcInfo.rating);
++        didl += NPT_String::Format("%.1f", (double)m_XbmcInfo.rating);
+         didl += "</xbmc:rating>";
+     }
+ 
+-- 
+2.53.0
+

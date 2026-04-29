@@ -1,0 +1,41 @@
+From 81a17f89896feadc5a2b681278695a2cb74364ef Mon Sep 17 00:00:00 2001
+From: Rudi Heitbaum <rudi@heitbaum.com>
+Date: Sun, 19 Apr 2026 04:23:11 +0000
+Subject: [PATCH] [Platinum] Remove unused count variable in
+ PLT_Action::VerifyArguments
+
+fixes:
+../lib/libUPnP/Platinum/Source/Core/PltAction.cpp: In member function 'NPT_Result PLT_Action::VerifyArguments(bool)':
+../lib/libUPnP/Platinum/Source/Core/PltAction.cpp:256:18: warning: variable 'count' set but not used [-Wunused-but-set-variable=]
+  256 |     NPT_Cardinal count = 0;
+      |                  ^~~~~
+
+Signed-off-by: Rudi Heitbaum <rudi@heitbaum.com>
+---
+ lib/libUPnP/Platinum/Source/Core/PltAction.cpp | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/lib/libUPnP/Platinum/Source/Core/PltAction.cpp b/lib/libUPnP/Platinum/Source/Core/PltAction.cpp
+index 78ff4b2b9a..1325b0d933 100644
+--- a/lib/libUPnP/Platinum/Source/Core/PltAction.cpp
++++ b/lib/libUPnP/Platinum/Source/Core/PltAction.cpp
+@@ -253,8 +253,6 @@ PLT_Action::VerifyArgumentValue(const char* name, const char* value)
+ NPT_Result
+ PLT_Action::VerifyArguments(bool input)
+ {
+-    NPT_Cardinal count = 0;
+-
+     // Check we have all the required parameters (in or out)
+     for(unsigned int i=0; i<m_ActionDesc.GetArgumentDescs().GetItemCount(); i++) {
+         PLT_ArgumentDesc* arg_desc = m_ActionDesc.GetArgumentDescs()[i];
+@@ -271,7 +269,6 @@ PLT_Action::VerifyArguments(bool input)
+ 				(const char*) m_ActionDesc.GetName());
+             return NPT_FAILURE;
+         }
+-        ++count;
+     }
+ 
+     SetError(0, "");
+-- 
+2.53.0
+

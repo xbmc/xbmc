@@ -1,0 +1,40 @@
+From ba591fdfd5fce54e2176f72bcca995ee24fc09d9 Mon Sep 17 00:00:00 2001
+From: Rudi Heitbaum <rudi@heitbaum.com>
+Date: Sun, 19 Apr 2026 04:29:37 +0000
+Subject: [PATCH] [Platinum] Remove unused bad_request label in
+ PLT_DeviceHost::ProcessHttpPostRequest
+
+fixes:
+../lib/libUPnP/Platinum/Source/Core/PltDeviceHost.cpp: In member function 'virtual NPT_Result PLT_DeviceHost::ProcessHttpPostRequest(NPT_HttpRequest&, const NPT_HttpRequestContext&, NPT_HttpResponse&)':
+../lib/libUPnP/Platinum/Source/Core/PltDeviceHost.cpp:648:1: warning: label 'bad_request' defined but not used [-Wunused-label]
+  648 | bad_request:
+      | ^~~~~~~~~~~
+In file included from ../lib/libUPnP/Platinum/Source/Core/PltHttpClientTask.h:46,
+                 from ../lib/libUPnP/Platinum/Source/Core/PltEvent.h:46,
+                 from ../lib/libUPnP/Platinum/Source/Core/PltService.h:46,
+                 from ../lib/libUPnP/Platinum/Source/Core/PltDeviceHost.cpp:38:
+
+Signed-off-by: Rudi Heitbaum <rudi@heitbaum.com>
+---
+ lib/libUPnP/Platinum/Source/Core/PltDeviceHost.cpp | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/lib/libUPnP/Platinum/Source/Core/PltDeviceHost.cpp b/lib/libUPnP/Platinum/Source/Core/PltDeviceHost.cpp
+index 6f5f09f9cf..8475dbaf17 100644
+--- a/lib/libUPnP/Platinum/Source/Core/PltDeviceHost.cpp
++++ b/lib/libUPnP/Platinum/Source/Core/PltDeviceHost.cpp
+@@ -645,11 +645,6 @@ done:
+     delete xml;
+     return NPT_SUCCESS;
+ 
+-bad_request:
+-    // generic 500 now unused
+-    response.SetStatus(500, "Bad Request");
+-    goto bad_request_end;
+-
+ bad_request_find_service:
+     response.SetStatus(500, "Bad Request: Service by URL");
+     goto bad_request_end;
+-- 
+2.53.0
+
