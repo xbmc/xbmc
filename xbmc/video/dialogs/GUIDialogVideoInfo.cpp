@@ -138,6 +138,10 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_BTN_REFRESH)
       {
+        // Refresh button should be disabled for items with xxuniqueid, but if it isn't, don't allow refresh
+        if (const std::string uniqueId = m_movieItem->GetProperty("xxuniqueid").asString();
+            StringUtils::StartsWithNoCase(uniqueId, "xx"))
+          return false;
         if (m_movieItem->GetVideoInfoTag()->m_type == MediaTypeTvShow)
         {
           bool bCanceled=false;
