@@ -136,6 +136,19 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
       return nfoFile;
     }
 
+    // For bluray:// paths, use the real file name (either <movie>.iso or index.bdmv)
+    if (URIUtils::IsBlurayPath(item.GetPath()))
+    {
+      CFileItem item2(item);
+      const std::string path{URIUtils::GetDiscFile(item.GetPath())};
+      if (!path.empty())
+      {
+        item2.SetPath(path);
+        nfoFile = FindNFO(item2, movieFolder);
+        return nfoFile;
+      }
+    }
+
     // grab the folder path
     std::string strPath{URIUtils::GetDirectory(item.GetPath())};
 
