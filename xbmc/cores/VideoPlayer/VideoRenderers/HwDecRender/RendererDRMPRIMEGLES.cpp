@@ -31,6 +31,7 @@ using namespace KODI::UTILS::EGL;
 CRendererDRMPRIMEGLES::~CRendererDRMPRIMEGLES()
 {
   Flush(false);
+  CServiceBroker::GetWinSystem()->RecreateGuiSurface(false);
 }
 
 CBaseRenderer* CRendererDRMPRIMEGLES::Create(CVideoBuffer* buffer)
@@ -126,6 +127,10 @@ bool CRendererDRMPRIMEGLES::Configure(const VideoPicture& picture,
   }
 
   m_clearColour = winSystem->UseLimitedColor() ? (16.0f / 0xff) : 0.0f;
+
+  // Upgrade render surface to 10-bit for 10-bit content on single-plane
+  if (picture.colorBits > 8)
+    winSystem->RecreateGuiSurface(true);
 
   m_configured = true;
   return true;

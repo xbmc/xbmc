@@ -257,15 +257,15 @@ int KODI::UTILS::GL::glFormatElementByteCount(GLenum format)
 #ifdef HAS_GL
   case GL_BGRA:
     return 4;
-  case GL_RED:
-    return 1;
   case GL_GREEN:
     return 1;
-  case GL_RG:
-    return 2;
   case GL_BGR:
     return 3;
 #endif
+  case GL_RED:
+    return 1;
+  case GL_RG:
+    return 2;
   case GL_RGBA:
     return 4;
   case GL_RGB:

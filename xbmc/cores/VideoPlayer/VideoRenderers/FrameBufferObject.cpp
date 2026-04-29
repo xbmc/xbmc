@@ -62,6 +62,10 @@ void CFrameBufferObject::Cleanup()
   if (m_texid)
     glDeleteTextures(1, &m_texid);
 
+  if (m_depthBuffer)
+    glDeleteRenderbuffers(1, &m_depthBuffer);
+
+  m_depthBuffer = 0;
   m_texid = 0;
   m_fbo = 0;
   m_valid = false;
@@ -99,6 +103,33 @@ bool CFrameBufferObject::CreateAndBindToTexture(GLenum target, int width, int he
     return false;
   }
   m_bound = true;
+  return true;
+}
+
+bool CFrameBufferObject::AttachDepthBuffer(int width, int height)
+{
+  if (!IsValid() || !IsBound())
+    return false;
+
+  if (m_depthBuffer)
+    glDeleteRenderbuffers(1, &m_depthBuffer);
+
+  glGenRenderbuffers(1, &m_depthBuffer);
+  glBindRenderbuffer(GL_RENDERBUFFER, m_depthBuffer);
+  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
+  glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+  glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
+  glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthBuffer);
+  const GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+  if (status != GL_FRAMEBUFFER_COMPLETE)
+  {
+    glDeleteRenderbuffers(1, &m_depthBuffer);
+    m_depthBuffer = 0;
+    return false;
+  }
   return true;
 }
 
