@@ -263,6 +263,20 @@ void CSaveFileState::DoWork(CFileItem& item,
         {
           CUtil::DeleteVideoDatabaseDirectoryCache();
           CFileItemPtr msgItem(new CFileItem(item));
+          // Preserve the library title before broadcasting the post-playback update for .strm
+          // items. The playback item keeps the local .strm path, but its label can already have
+          // been replaced with the remote resource name.
+          if (msgItem->IsStrm() && msgItem->HasVideoInfoTag() &&
+              !msgItem->GetVideoInfoTag()->m_strTitle.empty())
+          {
+            CLog::Log(LOGDEBUG,
+                      "STRM-SUBS save-state relabel path='{}' dyn='{}' old='{}' new='{}' "
+                      "isstrm={} isvideo={} updatePlayCount={}",
+                      msgItem->GetPath(), msgItem->GetDynPath(), msgItem->GetLabel(),
+                      msgItem->GetVideoInfoTag()->m_strTitle, msgItem->IsStrm(),
+                      msgItem->IsVideo(), updatePlayCount);
+            msgItem->SetLabel(msgItem->GetVideoInfoTag()->m_strTitle);
+          }
           if (item.HasProperty("original_listitem_url"))
             msgItem->SetPath(item.GetProperty("original_listitem_url").asString());
 

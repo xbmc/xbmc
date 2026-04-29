@@ -156,6 +156,7 @@ public:
 
   bool IsGame() const;
   bool IsLibraryFolder() const;
+  bool IsStrm() const;
   bool IsPythonScript() const;
   bool IsPlugin() const;
   bool IsScript() const;
@@ -428,6 +429,12 @@ public:
      \sa URIUtils::GetParentPath
    */
   std::string GetLocalMetadataPath() const;
+
+  /*! \brief Get the path that should be used as the anchor for associated subtitles.
+   This is usually the resolved playback path, except for .strm items where subtitles
+   should be associated with the local .strm file rather than its resolved target URL.
+   */
+  std::string GetSubtitleAnchorPath() const;
 
   bool LoadMusicTag();
   bool LoadGameTag();
