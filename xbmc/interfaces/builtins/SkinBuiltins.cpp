@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -33,6 +33,7 @@
 #include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
 using namespace ADDON;
 
@@ -59,6 +60,25 @@ static int UnloadSkin(const std::vector<std::string>& params)
   const auto appSkin = components.GetComponent<CApplicationSkinHandling>();
   appSkin->UnloadSkin();
 
+  return 0;
+}
+
+/*! \brief Load the provided skin.
+ *  \param params[0] = skinId of the skin to load
+ */
+static int LoadSkin(const std::vector<std::string>& params)
+{
+  if (!params.empty())
+  {
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appSkin = components.GetComponent<CApplicationSkinHandling>();
+    if (!appSkin->LoadSkin(params[0]))
+      CLog::Log(LOGERROR, "SkinBuiltins: error loading the skin {}", params[0]);
+  }
+  else
+  {
+    CLog::LogF(LOGDEBUG, "empty params - abort.");
+  }
   return 0;
 }
 
@@ -543,6 +563,12 @@ static int SkinTimerStop(const std::vector<std::string>& params)
 ///     Unloads the current skin
 ///   }
 ///   \table_row2_l{
+///     <b>`LoadSkin(skinId)`</b>
+///     ,
+///     Loads the skin passed as a parameter
+///     @param[in] skinId               Addon skin id of the skin.
+///   }
+///   \table_row2_l{
 ///     <b>`Skin.Reset(setting)`</b>
 ///     ,
 ///     Resets the skin `setting`. If `setting` is a bool setting (i.e. set via
@@ -701,6 +727,7 @@ CBuiltins::CommandMap CSkinBuiltins::GetOperations() const
 {
   return {{"reloadskin", {"Reload Kodi's skin", 0, ReloadSkin}},
           {"unloadskin", {"Unload Kodi's skin", 0, UnloadSkin}},
+          {"loadskin", {"Load Kodi's skin", 0, LoadSkin}},
           {"skin.reset", {"Resets a skin setting to default", 1, SkinReset}},
           {"skin.resetsettings", {"Resets all skin settings", 0, SkinResetAll}},
           {"skin.setaddon", {"Prompts and set an addon", 2, SetAddon}},

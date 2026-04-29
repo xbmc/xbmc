@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -45,6 +45,8 @@
 #include <set>
 #include <string>
 #include <vector>
+
+#include <fmt/format.h>
 
 using namespace XFILE;
 using namespace KODI::MESSAGING;
@@ -416,9 +418,12 @@ void CSkinInfo::OnPreInstall()
 
 void CSkinInfo::OnPostInstall(bool update, bool modal)
 {
-  auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
-  if (!skin)
+  if (CServiceBroker::GetGUI()->GetSkinInfo() == nullptr)
+  {
+    CServiceBroker::GetAppMessenger()->SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr,
+                                               fmt::format("LoadSkin({})", ID()));
     return;
+  }
 
   if (IsInUse() || (!update && !modal &&
                     HELPERS::ShowYesNoDialogText(CVariant{Name()}, CVariant{24099}) ==
