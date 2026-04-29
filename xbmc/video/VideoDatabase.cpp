@@ -8553,6 +8553,17 @@ std::string CVideoDatabase::GetContentForPath(const std::string& strPath)
       m_pDS->query( sql );
       if (m_pDS->num_rows() && m_pDS->fv(0).get_asInt() > 0)
         return "episodes";
+
+      // If the episodes are in archives then strPath points to the archive (eg. rar://)
+      // So see if there are any matches using the parentpathid
+      sql = PrepareSQL("SELECT COUNT(*) FROM episode e "
+                       "JOIN path p ON e.c%02d = p.idPath "
+                       "WHERE p.strPath = '%s'",
+                       VIDEODB_ID_EPISODE_PARENTPATHID, strPath.c_str());
+      m_pDS->query(sql);
+      if (m_pDS->num_rows() && m_pDS->fv(0).get_asInt() > 0)
+        return "episodes";
+
       return foundDirectly ? "tvshows" : "seasons";
     }
     return TranslateContent(scraper->Content());
@@ -11449,6 +11460,8 @@ bool CVideoDatabase::GetItemsForPath(const std::string &content, const std::stri
 
     return !items.IsEmpty();
   }
+  if (URIUtils::IsArchive(CURL(path)))
+    return GetItemsForPath(content, URIUtils::GetParentPath(path), items);
 
   int pathID = GetPathId(path);
   if (pathID < 0)

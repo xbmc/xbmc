@@ -16,6 +16,7 @@
 #include "addons/interfaces/Filesystem.h"
 #include "network/ZeroconfBrowser.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/log.h"
 
 #include <mutex>
@@ -499,7 +500,7 @@ void VFSDirEntriesToCFileItemList(int num_entries, const VFSDirEntry* entries, C
   {
     auto item = std::make_shared<CFileItem>();
     item->SetLabel(entries[i].label);
-    item->SetPath(entries[i].path);
+    item->SetPath(URIUtils::SanitiseUrlEncoding(entries[i].path));
     item->SetSize(entries[i].size);
     item->SetDateTime(entries[i].date_time);
     item->SetFolder(entries[i].folder);
@@ -566,7 +567,7 @@ bool CVFSEntry::ContainsFiles(const CURL& url, CFileItemList& items) const
   VFSDirEntriesToCFileItemList(num_entries, entries, items);
   m_ifc.vfs->toAddon->free_directory(m_ifc.vfs, entries, num_entries);
   if (strlen(rootpath))
-    items.SetPath(rootpath);
+    items.SetPath(URIUtils::SanitiseUrlEncoding(rootpath));
 
   return true;
 }

@@ -8,8 +8,6 @@
 
 #include "FileDirectoryFactory.h"
 
-#include "music/MusicFileItemClassify.h"
-
 #if defined(HAS_ISO9660PP)
 #include "ISO9660Directory.h"
 #endif
@@ -17,13 +15,13 @@
 #include "UDFDirectory.h"
 #endif
 #include "RSSDirectory.h"
-#include "UDFDirectory.h"
 #include "utils/URIUtils.h"
 #if defined(TARGET_ANDROID)
 #include "platform/android/filesystem/APKDirectory.h"
 #endif
 #include "AudioBookFileDirectory.h"
 #include "Directory.h"
+#include "DirectoryCache.h"
 #include "FileItem.h"
 #include "PlaylistFileDirectory.h"
 #include "ServiceBroker.h"
@@ -35,6 +33,7 @@
 #include "addons/ExtsMimeSupportList.h"
 #include "addons/VFSEntry.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "music/MusicFileItemClassify.h"
 #include "playlists/PlayListFactory.h"
 #include "playlists/SmartPlayList.h"
 #include "utils/StringUtils.h"
@@ -119,6 +118,13 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
               if (URIUtils::HasParentInHostname(itemUrl))
                 item->SetPath(itemUrl.Get());
             }
+
+            // Cache the archive listing so subsequent CDirectory::GetDirectory calls
+            // (e.g. from ScanArchiveForAssociatedItems) get a cache hit instead of
+            // re-opening the archive via the VFS addon
+            const std::string& archivePath = wrap->GetItems().GetPath();
+            if (!archivePath.empty())
+              g_directoryCache.SetDirectory(CURL(archivePath), wrap->GetItems(), CacheType::ONCE);
 
             if (wrap->GetItems().Size() == 1)
             {

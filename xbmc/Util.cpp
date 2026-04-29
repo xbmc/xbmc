@@ -2068,7 +2068,7 @@ int CUtil::ScanArchiveForAssociatedItems(const std::string& strArchivePath,
   else
     url = URIUtils::CreateArchivePath("archive", pathToUrl, "");
 
-  if (!CDirectory::GetDirectory(url, ItemList, "", DIR_FLAG_NO_FILE_DIRS))
+  if (!CDirectory::GetDirectory(url, ItemList, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_FORCE_CACHE))
   {
     CLog::LogF(LOGDEBUG, "Failed to scan archive {}", CURL::GetRedacted(strArchivePath));
     return 0;
