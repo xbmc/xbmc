@@ -595,7 +595,7 @@ bool CInputManager::HandleKey(const CKey& key)
   if (appPower->WakeUpScreenSaverAndDPMS(processKey) && !processKey)
   {
     CLog::LogF(LOGDEBUG, "{} pressed, screen saver/dpms woken up",
-               m_Keyboard.GetKeyName((int)key.GetButtonCode()));
+               m_Keyboard.GetKeyName(key.GetButtonCode()));
     return true;
   }
 
@@ -678,7 +678,7 @@ bool CInputManager::HandleKey(const CKey& key)
       }
 
       CLog::LogF(LOGDEBUG, "{} pressed, trying keyboard action {:x}",
-                 m_Keyboard.GetKeyName((int)key.GetButtonCode()), action.GetID());
+                 m_Keyboard.GetKeyName(key.GetButtonCode()), action.GetID());
 
       if (g_application.OnAction(action))
         return true;
@@ -694,7 +694,7 @@ bool CInputManager::HandleKey(const CKey& key)
   }
   if (!key.IsAnalogButton())
     CLog::LogF(LOGDEBUG, "{} pressed, window {}, action is {}",
-               m_Keyboard.GetKeyName((int)key.GetButtonCode()), iWin, action.GetName());
+               m_Keyboard.GetKeyName(key.GetButtonCode()), iWin, action.GetName());
 
   return ExecuteInputAction(action);
 }
