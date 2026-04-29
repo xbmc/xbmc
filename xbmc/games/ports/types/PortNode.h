@@ -92,6 +92,12 @@ public:
   void SetForceConnected(bool forceConnected) { m_forceConnected = forceConnected; }
 
   /*!
+   * \brief If true, this port starts connected when a game session begins
+   */
+  bool IsAutoConnect() const { return m_autoConnect; }
+  void SetAutoConnect(bool autoConnect) { m_autoConnect = autoConnect; }
+
+  /*!
    * \brief Return the controller profiles that are compatible with this port
    *
    * \return The controller profiles, or empty if this port doesn't support
@@ -157,6 +163,7 @@ private:
   std::string m_portId;
   std::string m_address;
   bool m_forceConnected{true};
+  bool m_autoConnect{true};
   ControllerNodeVec m_controllers;
 };
 

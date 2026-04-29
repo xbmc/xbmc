@@ -23,7 +23,8 @@ using namespace GAME;
 CGameClientPort::CGameClientPort(const game_input_port& port)
   : m_type(CGameClientTranslator::TranslatePortType(port.type)),
     m_portId(port.port_id ? port.port_id : ""),
-    m_forceConnected(port.force_connected)
+    m_forceConnected(port.force_connected),
+    m_autoConnect(port.autoconnect)
 {
   if (port.accepted_devices != nullptr)
   {
@@ -49,7 +50,8 @@ CGameClientPort::CGameClientPort(const game_input_port& logicalPort,
                                  const CPhysicalPort& physicalPort)
   : m_type(PORT_TYPE::CONTROLLER),
     m_portId(physicalPort.ID()),
-    m_forceConnected(logicalPort.force_connected)
+    m_forceConnected(logicalPort.force_connected),
+    m_autoConnect(logicalPort.autoconnect)
 {
   if (logicalPort.accepted_devices != nullptr)
   {

@@ -926,6 +926,12 @@ extern "C"
     ///
     bool force_connected;
 
+    /// @brief Flag to auto-connect this port when a game session begins
+    ///
+    /// Set to false to start this port disconnected.
+    ///
+    bool autoconnect;
+
     /// @brief The list of devices that can be connected to the port
     game_input_device* accepted_devices;
 

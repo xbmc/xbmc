@@ -85,6 +85,7 @@ TEST(TestControllerDigest, SimpleTree)
   UTILITY::CDigest manualPort{type};
   manualPort.Update(CControllerTranslator::TranslatePortType(PORT_TYPE::CONTROLLER));
   manualPort.Update("1");
+  manualPort.Update("true");
   manualPort.Update(expectedNodeDigest);
   const std::string expectedPortDigest = manualPort.FinalizeRaw();
   EXPECT_EQ(portDigest, expectedPortDigest);
@@ -156,6 +157,7 @@ TEST(TestControllerDigest, MultiControllerPort)
   UTILITY::CDigest manualPort{type};
   manualPort.Update(CControllerTranslator::TranslatePortType(PORT_TYPE::CONTROLLER));
   manualPort.Update("1");
+  manualPort.Update("true");
   manualPort.Update(expectedNodeDigest1);
   manualPort.Update(expectedNodeDigest2);
   const std::string expectedPortDigest = manualPort.FinalizeRaw();
@@ -235,6 +237,7 @@ TEST(TestControllerDigest, NestedHub)
   UTILITY::CDigest manualPortChild{type};
   manualPortChild.Update(CControllerTranslator::TranslatePortType(PORT_TYPE::CONTROLLER));
   manualPortChild.Update("2");
+  manualPortChild.Update("true");
   manualPortChild.Update(expectedNodeChild);
   const std::string expectedPortChild = manualPortChild.FinalizeRaw();
   EXPECT_EQ(portDigestChild, expectedPortChild);
@@ -253,6 +256,7 @@ TEST(TestControllerDigest, NestedHub)
   UTILITY::CDigest manualPortParent{type};
   manualPortParent.Update(CControllerTranslator::TranslatePortType(PORT_TYPE::CONTROLLER));
   manualPortParent.Update("1");
+  manualPortParent.Update("true");
   manualPortParent.Update(expectedNodeParent);
   const std::string expectedPortParent = manualPortParent.FinalizeRaw();
   EXPECT_EQ(portDigestParent, expectedPortParent);
@@ -261,4 +265,32 @@ TEST(TestControllerDigest, NestedHub)
   manualHubRoot.Update(expectedPortParent);
   const std::string expectedHubRoot = manualHubRoot.FinalizeRaw();
   EXPECT_EQ(hubDigestRoot, expectedHubRoot);
+}
+
+/*!
+ * Verify auto-connect contributes to port digest
+ */
+TEST(TestControllerDigest, PortAutoConnectAffectsDigest)
+{
+  const UTILITY::CDigest::Type type = UTILITY::CDigest::Type::MD5;
+
+  auto addonInfo = std::make_shared<ADDON::CAddonInfo>("game.controller.test",
+                                                       ADDON::AddonType::GAME_CONTROLLER);
+  auto controller = std::make_shared<CController>(addonInfo);
+
+  CControllerNode node;
+  node.SetController(controller);
+
+  CPortNode autoConnectPort;
+  autoConnectPort.SetPortType(PORT_TYPE::CONTROLLER);
+  autoConnectPort.SetPortID("1");
+  autoConnectPort.SetCompatibleControllers({node});
+
+  CPortNode manualConnectPort;
+  manualConnectPort.SetPortType(PORT_TYPE::CONTROLLER);
+  manualConnectPort.SetPortID("1");
+  manualConnectPort.SetAutoConnect(false);
+  manualConnectPort.SetCompatibleControllers({node});
+
+  EXPECT_NE(autoConnectPort.GetDigest(type), manualConnectPort.GetDigest(type));
 }
