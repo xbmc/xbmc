@@ -13,6 +13,8 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <cstdint>
+
 using namespace EDL;
 
 bool CPvrEdlParser::CanParse(const CFileItem& item) const
@@ -20,7 +22,7 @@ bool CPvrEdlParser::CanParse(const CFileItem& item) const
   return item.HasPVRRecordingInfoTag() || item.HasEPGInfoTag();
 }
 
-CEdlParserResult CPvrEdlParser::Parse(const CFileItem& item, float fps)
+CEdlParserResult CPvrEdlParser::Parse(const CFileItem& item, float fps, int64_t duration)
 {
   CEdlParserResult result;
 

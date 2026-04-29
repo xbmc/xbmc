@@ -25,7 +25,7 @@ class CEdl
 public:
   CEdl();
 
-  bool ReadEditDecisionLists(const CFileItem& fileItem, float fps);
+  bool ReadEditDecisionLists(const CFileItem& fileItem, float fps, int64_t duration);
   void Clear();
 
   /*!

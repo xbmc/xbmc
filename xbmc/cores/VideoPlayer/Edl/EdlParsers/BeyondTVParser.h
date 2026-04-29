@@ -10,6 +10,8 @@
 
 #include "cores/VideoPlayer/Edl/EdlParser.h"
 
+#include <cstdint>
+
 namespace EDL
 {
 
@@ -32,7 +34,7 @@ namespace EDL
 class CBeyondTVParser : public CEdlFileParserBase
 {
 public:
-  CEdlParserResult Parse(const CFileItem& item, float fps) override;
+  CEdlParserResult Parse(const CFileItem& item, float fps, int64_t duration) override;
 
 protected:
   std::string GetEdlFilePath(const CFileItem& item) const override;

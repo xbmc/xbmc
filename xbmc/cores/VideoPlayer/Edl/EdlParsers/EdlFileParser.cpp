@@ -15,6 +15,8 @@
 #include "utils/log.h"
 
 #include <charconv>
+#include <chrono>
+#include <cstdint>
 
 using namespace EDL;
 using namespace XFILE;
@@ -24,7 +26,7 @@ std::string CEdlFileParser::GetEdlFilePath(const CFileItem& item) const
   return URIUtils::ReplaceExtension(item.GetDynPath(), ".edl");
 }
 
-CEdlParserResult CEdlFileParser::Parse(const CFileItem& item, float fps)
+CEdlParserResult CEdlFileParser::Parse(const CFileItem& item, float fps, int64_t duration)
 {
   CEdlParserResult result;
 
