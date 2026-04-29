@@ -433,6 +433,11 @@ void CRPRenderManager::RenderControl(bool bClear,
   if (renderBuffer == nullptr)
     return;
 
+  // Calculate alpha (before SetTransform overrides the accumulated alpha)
+  UTILS::COLOR::Color alpha = 255;
+  if (bUseAlpha)
+    alpha = m_renderContext.MergeAlpha(UTILS::COLOR::BLACK) >> 24;
+
   // Set fullscreen
   const bool bWasFullscreen = m_renderContext.IsFullScreenVideo();
   if (bWasFullscreen)
@@ -454,11 +459,6 @@ void CRPRenderManager::RenderControl(bool bClear,
     m_renderContext.Clear(UTILS::COLOR::BLACK);
     m_renderContext.SetScissors(old);
   }
-
-  // Calculate alpha
-  UTILS::COLOR::Color alpha = 255;
-  if (bUseAlpha)
-    alpha = m_renderContext.MergeAlpha(UTILS::COLOR::BLACK) >> 24;
 
   RenderInternal(renderer, renderBuffer, false, alpha);
 
