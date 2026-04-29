@@ -19,6 +19,7 @@
 #include "network/EventServer.h"
 #include "network/Network.h"
 #include "network/TCPServer.h"
+#include "network/torrent/ILibtorrent.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
@@ -75,7 +76,13 @@
 #endif
 #endif
 
+#if defined(HAS_LIBTORRENT)
+#include "network/torrent/Libtorrent.h"
+#endif
+
+using namespace KODI;
 using namespace KODI::MESSAGING;
+using namespace NETWORK;
 using namespace JSONRPC;
 using namespace EVENTSERVER;
 #ifdef HAS_UPNP
@@ -87,18 +94,24 @@ using KODI::MESSAGING::HELPERS::DialogResponse;
 CNetworkServices::CNetworkServices()
 #ifdef HAS_WEB_SERVER
   : m_webserver(*new CWebServer),
-  m_httpImageHandler(*new CHTTPImageHandler),
-  m_httpImageTransformationHandler(*new CHTTPImageTransformationHandler),
-  m_httpVfsHandler(*new CHTTPVfsHandler),
-  m_httpJsonRpcHandler(*new CHTTPJsonRpcHandler)
+    m_httpImageHandler(*new CHTTPImageHandler),
+    m_httpImageTransformationHandler(*new CHTTPImageTransformationHandler),
+    m_httpVfsHandler(*new CHTTPVfsHandler),
+    m_httpJsonRpcHandler(*new CHTTPJsonRpcHandler)
 #ifdef HAS_WEB_INTERFACE
 #ifdef HAS_PYTHON
-  , m_httpPythonHandler(*new CHTTPPythonHandler)
+    ,
+    m_httpPythonHandler(*new CHTTPPythonHandler)
 #endif
-  , m_httpWebinterfaceHandler(*new CHTTPWebinterfaceHandler)
-  , m_httpWebinterfaceAddonsHandler(*new CHTTPWebinterfaceAddonsHandler)
+    ,
+    m_httpWebinterfaceHandler(*new CHTTPWebinterfaceHandler),
+    m_httpWebinterfaceAddonsHandler(*new CHTTPWebinterfaceAddonsHandler)
 #endif // HAS_WEB_INTERFACE
 #endif // HAS_WEB_SERVER
+#ifdef HAS_LIBTORRENT
+    ,
+    m_libtorrent(std::make_unique<CLibtorrent>())
+#endif
 {
 #ifdef HAS_WEB_SERVER
   m_webserver.RegisterRequestHandler(&m_httpImageHandler);
@@ -136,6 +149,7 @@ CNetworkServices::CNetworkServices()
              CSettings::SETTING_SERVICES_ESALLINTERFACES,
              CSettings::SETTING_SERVICES_ESINITIALDELAY,
              CSettings::SETTING_SERVICES_ESCONTINUOUSDELAY,
+             CSettings::SETTING_SERVICES_KADEMLIA,
              CSettings::SETTING_SMB_WINSSERVER,
              CSettings::SETTING_SMB_WORKGROUP,
              CSettings::SETTING_SMB_MINPROTOCOL,
@@ -481,6 +495,14 @@ bool CNetworkServices::OnSettingChanging(const std::shared_ptr<const CSetting>& 
   }
 #endif // HAS_FILESYSTEM_SMB
 
+  else if (settingId == CSettings::SETTING_SERVICES_KADEMLIA)
+  {
+    if (m_settings->GetBool(CSettings::SETTING_SERVICES_KADEMLIA))
+      return StartLibtorrent();
+    else
+      return StopLibtorrent(false);
+  }
+
   return true;
 }
 
@@ -535,6 +557,8 @@ bool CNetworkServices::OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
 
 void CNetworkServices::Start()
 {
+  if (m_settings->GetBool(CSettings::SETTING_SERVICES_KADEMLIA))
+    StartLibtorrent();
   StartZeroconf();
   if (m_settings->GetBool(CSettings::SETTING_SERVICES_UPNP))
     StartUPnP();
@@ -599,6 +623,7 @@ void CNetworkServices::Stop(bool bWait)
   StopAirPlayServer(bWait);
   StopAirTunesServer(bWait);
   StopWSDiscovery();
+  StopLibtorrent(bWait);
 }
 
 bool CNetworkServices::StartServer(enum ESERVERS server, bool start)
@@ -652,6 +677,11 @@ bool CNetworkServices::StartServer(enum ESERVERS server, bool start)
     case ES_WSDISCOVERY:
       // the callback will take care of starting/stopping WS-Discovery
       ret = settings->SetBool(CSettings::SETTING_SERVICES_WSDISCOVERY, start);
+      break;
+
+    case ES_LIBTORRENT:
+      // the callback will take care of starting/stopping libtorrent
+      ret = settings->SetBool(CSettings::SETTING_SERVICES_KADEMLIA, start);
       break;
 
     default:
@@ -1256,6 +1286,51 @@ bool CNetworkServices::StopWSDiscovery()
   return true;
 #endif // HAS_FILESYSTEM_SMB
   return false;
+}
+
+bool CNetworkServices::StartLibtorrent()
+{
+  if (!m_libtorrent)
+    return false;
+
+  if (!m_settings->GetBool(CSettings::SETTING_SERVICES_KADEMLIA))
+    return false;
+
+  if (IsLibtorrentRunning())
+    return true;
+
+  CLog::Log(LOGINFO, "Starting libtorrent");
+  m_libtorrent->Start();
+
+  return true;
+}
+
+bool CNetworkServices::IsLibtorrentRunning() const
+{
+  if (m_libtorrent)
+    return m_libtorrent->IsOnline();
+
+  return false;
+}
+
+bool CNetworkServices::StopLibtorrent(bool bWait)
+{
+  if (!m_libtorrent)
+    return true;
+
+  if (!bWait)
+    CLog::Log(LOGINFO, "Signaling libtorrent to stop");
+  else
+    CLog::Log(LOGINFO, "Stopping libtorrent");
+
+  m_libtorrent->Stop(bWait);
+
+  return true;
+}
+
+ILibtorrent* CNetworkServices::GetLibtorrent()
+{
+  return m_libtorrent.get();
 }
 
 bool CNetworkServices::ValidatePort(int port)
