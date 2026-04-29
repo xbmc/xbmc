@@ -234,7 +234,18 @@ public:
    * "NVIDIA RTX Video Super Resolution" or "Intel Video Super Resolution"
    *
    */
+  // Request render surface bit depth change (e.g. 8-bit AR24 to 10-bit XR30)
+  // for single-plane rendering of 10-bit content. Returns true if supported.
+  virtual bool RecreateGuiSurface(bool prefer10bit) { return false; }
+
   virtual bool SupportsVideoSuperResolution() { return false; }
+
+  // GUI compositing for HDR: render GUI to FBO, composite with tone mapping
+  // colorTransfer: AVCOL_TRC_SMPTE2084 (PQ) or AVCOL_TRC_ARIB_STD_B67 (HLG), 0 to disable
+  virtual bool SetGuiCompositing(int colorTransfer) { return false; }
+  virtual bool BeginGuiComposite() { return false; }
+  virtual void EndGuiComposite() {}
+  virtual void CompositeGui() {}
 
   /*!
    * \brief Gets debug info from video renderer for use in "Debug Info OSD" (Alt + O)
