@@ -107,10 +107,11 @@ bool CAutorun::ExecuteAutorun(const std::string& path)
 bool CAutorun::PlayDisc(const std::string& path, const PlayDiscOptions& options)
 {
   const auto& settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  const AutoCDAction action =
+  const auto cdAction =
       static_cast<AutoCDAction>(settings->GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION));
-  if (!options.bypassSettings && action != AutoCDAction::PLAY &&
-      !settings->GetBool(CSettings::SETTING_DVDS_AUTORUN))
+  const auto dvdAction =
+      static_cast<AutoDVDAction>(settings->GetInt(CSettings::SETTING_DVDS_AUTOACTION));
+  if (!options.bypassSettings && cdAction != AutoCDAction::PLAY && dvdAction != AutoDVDAction::PLAY)
     return false;
 
   int nSize = CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST::Id::TYPE_MUSIC).size();
@@ -202,7 +203,9 @@ bool CAutorun::RunDisc(IDirectory* pDir,
   {
     std::string hddvdname = "";
     CFileItemPtr phddvdItem;
-    bool bAutorunDVDs = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_DVDS_AUTORUN);
+    bool bAutorunDVDs =
+        CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+            CSettings::SETTING_DVDS_AUTOACTION) == static_cast<int>(AutoDVDAction::PLAY);
 
     // check root folders next, for normal structured dvd's
     for (const auto& pItem : vecItems)
@@ -430,8 +433,9 @@ bool CAutorun::RunDisc(IDirectory* pDir,
 
   // check video first
   if (!nAddedToPlaylist && !bPlaying &&
-      (options.bypassSettings || CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-                                     CSettings::SETTING_DVDS_AUTORUN)))
+      (options.bypassSettings ||
+       CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+           CSettings::SETTING_DVDS_AUTOACTION) == static_cast<int>(AutoDVDAction::PLAY)))
   {
     // stack video files
     CFileItemList tempItems;
@@ -604,4 +608,16 @@ void CAutorun::SettingOptionAudioCdActionsFiller(const SettingConstPtr& setting,
   list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(14096),
                     static_cast<int>(AutoCDAction::RIP));
 #endif
+}
+
+void CAutorun::SettingOptionVideoDiscActionsFiller(const SettingConstPtr& setting,
+                                                   std::vector<IntegerSettingOption>& list,
+                                                   int& current)
+{
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36462),
+                    static_cast<int>(AutoDVDAction::NONE));
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36463),
+                    static_cast<int>(AutoDVDAction::PLAY));
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36464),
+                    static_cast<int>(AutoDVDAction::BROWSE));
 }

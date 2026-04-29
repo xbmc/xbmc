@@ -181,7 +181,7 @@ public:
   static constexpr auto SETTING_SUBTITLES_DOWNLOADFIRST = "subtitles.downloadfirst";
   static constexpr auto SETTING_SUBTITLES_TV = "subtitles.tv";
   static constexpr auto SETTING_SUBTITLES_MOVIE = "subtitles.movie";
-  static constexpr auto SETTING_DVDS_AUTORUN = "dvds.autorun";
+  static constexpr auto SETTING_DVDS_AUTOACTION = "dvds.autorun";
   static constexpr auto SETTING_DVDS_PLAYERREGION = "dvds.playerregion";
   static constexpr auto SETTING_DVDS_AUTOMENU = "dvds.automenu";
   static constexpr auto SETTING_DISC_PLAYBACK = "disc.playback";

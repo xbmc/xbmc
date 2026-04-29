@@ -425,11 +425,17 @@
     </category>
     <category id="discs" label="14087" help="36193">
       <group id="1" label="446">
-        <setting id="dvds.autorun" type="boolean" label="14088" help="36194">
+        <setting id="dvds.autorun" type="integer" label="14088" help="36194">
           <requirement>HAS_OPTICAL_DRIVE</requirement>
           <level>0</level>
-          <default>false</default>
-          <control type="toggle" />
+          <default>0</default> <!-- None -->
+          <constraints>
+            <options>videodiscactions</options>
+          </constraints>
+          <updates>
+            <update type="change" />
+          </updates>
+          <control type="list" format="string" />
         </setting>
         <setting id="dvds.playerregion" type="integer" label="21372" help="36195">
           <level>1</level>

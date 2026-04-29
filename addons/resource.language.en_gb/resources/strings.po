@@ -6461,7 +6461,10 @@ msgctxt "#13018"
 msgid "Allow idle shutdown"
 msgstr ""
 
-#empty string with id 13019
+#: xbmc/storage/MediaManager.cpp
+msgctxt "#13019"
+msgid "Mounted optical disc"
+msgstr ""
 
 #: unknown
 msgctxt "#13020"
@@ -8297,7 +8300,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14088"
-msgid "Play DVDs automatically"
+msgid "Video disc insert action"
 msgstr ""
 
 #. Subtitle font selection setting
@@ -20123,10 +20126,10 @@ msgctxt "#36193"
 msgid "This category contains the settings for how DVD's, Blu-ray, & CD's are handled."
 msgstr ""
 
-#. Description of setting with label #14088 "Play DVDs automatically"
+#. Description of setting with label #14088 "Video disc insert action"
 #: system/settings/settings.xml
 msgctxt "#36194"
-msgid "Autorun DVD video when inserted in drive."
+msgid "Action to take when a video disc is inserted."
 msgstr ""
 
 #. Description of setting with label #21372 "Forced DVD player region"
@@ -20604,7 +20607,7 @@ msgstr ""
 #. Description of setting with label #14097 "Audio CD Insert Action"
 #: system/settings/settings.xml
 msgctxt "#36283"
-msgid "Autorun CDs when inserted in drive."
+msgid "Action to take when an audio CD is inserted."
 msgstr ""
 
 #. Description of setting with label #227 "Load audio CD information from online service"
@@ -21554,7 +21557,25 @@ msgctxt "#36461"
 msgid "Notification event describe regular processes and actions performed by the system or the user."
 msgstr ""
 
-#empty strings from id 36462 to 36499
+#. Action on DVD/Bluray physical disc insertion - take no action
+#: system/settings/settings.xml
+msgctxt "#36462"
+msgid "None"
+msgstr ""
+
+#. Action on DVD/Bluray physical disc insertion - play the disc automatically
+#: system/settings/settings.xml
+msgctxt "#36463"
+msgid "Play"
+msgstr ""
+
+#. Action on DVD/Bluray physical disc insertion - show a browse dialog
+#: system/settings/settings.xml
+msgctxt "#36464"
+msgid "Browse"
+msgstr ""
+
+#empty strings from id 36465 to 36499
 #end reservation
 
 #. label of a setting for the stereoscopic 3D mode of the GUI that is/should be applied

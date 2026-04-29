@@ -8,31 +8,12 @@
 
 #include "MediaManager.h"
 
-#include "FileItem.h"
-#include "ServiceBroker.h"
-#include "URL.h"
-#include "guilib/GUIComponent.h"
-#include "resources/LocalizeStrings.h"
-#include "resources/ResourcesComponent.h"
-#include "utils/URIUtils.h"
-
-#include <mutex>
-#ifdef TARGET_WINDOWS
-#include "platform/win32/WIN32Util.h"
-#include "utils/CharsetConverter.h"
-#endif
-#include "guilib/GUIWindowManager.h"
-#ifdef HAS_OPTICAL_DRIVE
-#ifndef TARGET_WINDOWS
-//! @todo switch all ports to use auto sources
-#include <map>
-#include <utility>
-#include "DetectDVDType.h"
-#endif
-#endif
 #include "Autorun.h"
 #include "AutorunMediaJob.h"
+#include "FileItem.h"
 #include "GUIUserMessages.h"
+#include "ServiceBroker.h"
+#include "URL.h"
 #include "addons/VFSEntry.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogPlayEject.h"
@@ -40,19 +21,40 @@
 #include "filesystem/BlurayDiscCache.h"
 #endif
 #include "filesystem/File.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
 #include "jobs/JobManager.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#ifdef TARGET_WINDOWS
+#include "utils/CharsetConverter.h"
+
+#include "platform/win32/WIN32Util.h"
+#endif
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 
+#ifdef HAS_OPTICAL_DRIVE
+#ifndef TARGET_WINDOWS
+//! @todo switch all ports to use auto sources
+#include "DetectDVDType.h"
+
+#include <map>
+#include <utility>
+#endif
+#endif
+
+#include <mutex>
 #include <string>
 #include <vector>
 
@@ -778,40 +780,83 @@ std::vector<std::string> CMediaManager::GetDiskUsage()
 void CMediaManager::OnStorageAdded(const MEDIA_DETECT::STORAGE::StorageDevice& device)
 {
 #ifdef HAS_OPTICAL_DRIVE
-  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  if (settings->GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION) !=
-          static_cast<int>(AutoCDAction::NONE) ||
-      settings->GetBool(CSettings::SETTING_DVDS_AUTORUN))
+  if (device.type == MEDIA_DETECT::STORAGE::Type::OPTICAL)
   {
-    if (settings->GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION) ==
-        static_cast<int>(AutoCDAction::RIP))
+    const std::shared_ptr<CSettings> settings{
+        CServiceBroker::GetSettingsComponent()->GetSettings()};
+
+    CCdInfo* pInfo{GetCdInfo(device.path)};
+    const bool isAudioDisc{pInfo && // If it returns null, it is likely to be a protected video disc
+                           pInfo->IsAudio(1)};
+
+    if (isAudioDisc)
     {
-      CServiceBroker::GetJobManager()->AddJob(new CAutorunMediaJob(device.label, device.path), this,
-                                              CJob::PRIORITY_LOW);
+      const auto cdAutoAction{
+          static_cast<AutoCDAction>(settings->GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION))};
+      CLog::LogF(LOGDEBUG, "Audio CD detected with path {}, auto action is {}", device.path,
+                 static_cast<int>(cdAutoAction));
+
+      bool processed{true};
+      using enum AutoCDAction;
+      if (cdAutoAction == RIP || cdAutoAction == PLAY)
+      {
+        // Will fallback to play if HAS_CDDA_RIPPER not defined
+        if (!MEDIA_DETECT::CAutorun::ExecuteAutorun(device.path))
+        {
+          CLog::LogF(LOGDEBUG, "Could not execute autorun (rip/play) for audio CD with path {}",
+                     device.path);
+          processed = false;
+        }
+      }
+      if (cdAutoAction == NONE || !processed)
+      {
+        CGUIDialogKaiToast::QueueNotification(
+            CGUIDialogKaiToast::Info,
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13019), device.label,
+            TOAST_DISPLAY_TIME, false);
+      }
     }
     else
     {
-      if (device.type == MEDIA_DETECT::STORAGE::Type::OPTICAL)
+      const auto dvdAutoAction{
+          static_cast<AutoDVDAction>(settings->GetInt(CSettings::SETTING_DVDS_AUTOACTION))};
+      CLog::LogF(LOGDEBUG, "Video disc detected with path {}, auto action is {}", device.path,
+                 static_cast<int>(dvdAutoAction));
+
+      bool processed{true};
+      using enum AutoDVDAction;
+      if (dvdAutoAction == BROWSE)
       {
-        if (MEDIA_DETECT::CAutorun::ExecuteAutorun(device.path))
-        {
-          return;
-        }
-        CLog::Log(LOGDEBUG, "{}: Could not execute autorun for optical disc with path {}",
-                  __FUNCTION__, device.path);
+        CServiceBroker::GetJobManager()->AddJob(new CAutorunMediaJob(device.label, device.path),
+                                                this, CJob::PRIORITY_HIGH);
       }
-      CServiceBroker::GetJobManager()->AddJob(new CAutorunMediaJob(device.label, device.path), this,
-                                              CJob::PRIORITY_HIGH);
+      else if (dvdAutoAction == PLAY)
+      {
+        if (!MEDIA_DETECT::CAutorun::ExecuteAutorun(device.path))
+        {
+          CLog::LogF(LOGDEBUG, "Could not execute autorun for video disc with path {}",
+                     device.path);
+          processed = false;
+        }
+      }
+      if (dvdAutoAction == NONE || !processed)
+      {
+        CGUIDialogKaiToast::QueueNotification(
+            CGUIDialogKaiToast::Info,
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13019), device.label,
+            TOAST_DISPLAY_TIME, false);
+      }
     }
   }
   else
+#endif
   {
+    // Non-optical (or no optical support) - eg. USB stick
     CGUIDialogKaiToast::QueueNotification(
         CGUIDialogKaiToast::Info,
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13021), device.label,
         TOAST_DISPLAY_TIME, false);
   }
-#endif
 }
 
 void CMediaManager::OnStorageSafelyRemoved(const MEDIA_DETECT::STORAGE::StorageDevice& device)
