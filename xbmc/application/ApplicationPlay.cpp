@@ -80,8 +80,12 @@ bool GetEpisodeBookmark(const CFileItem& item, CPlayerOptions& options, CVideoDa
     {
       CBookmark bookmark;
       db.GetBookMarkForEpisode(*tag, bookmark);
-      options.starttime = bookmark.timeInSeconds;
       options.state = bookmark.playerState;
+
+      // Only apply starttime for non-local/LAN items where EDL parser won't run
+      if (!URIUtils::IsLocalOrLAN(item.GetDynPath()))
+        options.starttime = bookmark.timeInSeconds;
+
       return true;
     }
   }
@@ -153,7 +157,7 @@ void CApplicationPlay::GetOptionsAndUpdateItem()
           m_options.starttime = bookmark.timeInSeconds;
           m_options.state = bookmark.playerState;
         }
-        else if (m_options.starttime == 0.0 && m_item.HasVideoInfoTag())
+        else if (m_options.starttime == 0.0)
           GetEpisodeBookmark(m_item, m_options, db);
       }
 
@@ -163,7 +167,7 @@ void CApplicationPlay::GetOptionsAndUpdateItem()
       if (m_options.starttime == 0.0)
         m_item.SetStartOffset(0);
     }
-    else if (m_item.HasVideoInfoTag())
+    else
       GetEpisodeBookmark(m_item, m_options, db);
 
     db.Close();

@@ -11,6 +11,7 @@
 #include "EdlParsers/BeyondTVParser.h"
 #include "EdlParsers/ComskipParser.h"
 #include "EdlParsers/EdlFileParser.h"
+#include "EdlParsers/MultipleEpisodeEdlParser.h"
 #include "EdlParsers/PvrEdlParser.h"
 #include "EdlParsers/VideoReDoParser.h"
 #include "FileItem.h"
@@ -22,21 +23,14 @@ std::vector<std::unique_ptr<IEdlParser>> CEdlParserFactory::GetEdlParsersForItem
     const CFileItem& item)
 {
   std::vector<std::unique_ptr<IEdlParser>> parsers;
-
-  const std::string& mediaFilePath = item.GetDynPath();
-
-  // Check if item is on local drive or network share
-  const bool isLocalOrLan = (URIUtils::IsHD(mediaFilePath) ||
-                             URIUtils::IsOnLAN(mediaFilePath, LanCheckMode::ANY_PRIVATE_SUBNET)) &&
-                            !URIUtils::IsInternetStream(mediaFilePath);
-
-  if (isLocalOrLan)
+  if (URIUtils::IsLocalOrLAN(item.GetDynPath()))
   {
     // File-based parsers for local/LAN items
     parsers.emplace_back(std::make_unique<CVideoReDoParser>());
     parsers.emplace_back(std::make_unique<CEdlFileParser>());
     parsers.emplace_back(std::make_unique<CComskipParser>());
     parsers.emplace_back(std::make_unique<CBeyondTVParser>());
+    parsers.emplace_back(std::make_unique<CMultipleEpisodeEdlParser>());
   }
   else
   {
