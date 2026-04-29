@@ -262,8 +262,8 @@ protected:
   int GetPathHash(const CFileItemList &items, std::string &hash);
 
   void Run() override;
-  int CountFiles(const CFileItemList& items, bool recursive);
-  int CountFilesRecursively(const std::string& strPath);
+  int CountFiles(const CFileItemList& items, bool recursive, int depth = 0);
+  int CountFilesRecursively(const std::string& strPath, int depth = 0);
 
   /*! \brief Resolve a MusicBrainzID to a URL
    If we have a MusicBrainz ID for an artist or album,
