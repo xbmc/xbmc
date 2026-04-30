@@ -1034,6 +1034,154 @@ public:
 
   ///@}
 
+  //--==----==----==----==----==----==----==----==----==----==----==----==----==--
+
+  //============================================================================
+  /// @defgroup cpp_kodi_addon_game_DiscOperations 5. Disc operations
+  /// @ingroup cpp_kodi_addon_game
+  /// @brief **Disc operations**
+  ///
+  ///---------------------------------------------------------------------------
+  ///
+  /// **Disc operation parts in interface:**\n
+  /// Copy this to your project and extend with your parts or leave functions
+  /// complete away where not used or supported.
+  ///
+  /// @copydetails cpp_kodi_addon_game_DiscOperations_header_addon_auto_check
+  /// @copydetails cpp_kodi_addon_game_DiscOperations_source_addon_auto_check
+  ///
+  ///@{
+
+  //============================================================================
+  /// @brief Returns whether the virtual disk tray is currently ejected.
+  ///
+  /// The initial state should be closed (`false`) unless changed by the game
+  /// implementation.
+  ///
+  /// @return `true` if the tray is ejected (open), otherwise `false`.
+  ///
+  virtual bool GetEjectState() { return false; }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @brief Opens or closes the virtual disk tray.
+  ///
+  /// The image index should only be changed while the tray is ejected.
+  ///
+  /// @param[in] ejected `true` to eject/open the tray, `false` to close it.
+  ///
+  /// @return The error, or @ref GAME_ERROR_NO_ERROR if the tray state was
+  ///         changed successfully.
+  ///
+  virtual GAME_ERROR SetEjectState(bool ejected) { return GAME_ERROR_NOT_IMPLEMENTED; }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @brief Gets the index of the currently inserted disk image.
+  ///
+  /// @return Current disk image index. A value greater than or equal to
+  ///         @ref GetImageCount() indicates that no image is inserted.
+  ///
+  virtual unsigned int GetImageIndex() { return 0; }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @brief Inserts the disk image at the given index.
+  ///
+  /// This should only succeed when the tray is ejected.
+  ///
+  /// @param[in] imageIndex The image index to insert.
+  ///
+  /// @return The error, or @ref GAME_ERROR_NO_ERROR if the image was set.
+  ///
+  virtual GAME_ERROR SetImageIndex(unsigned int imageIndex) { return GAME_ERROR_NOT_IMPLEMENTED; }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @brief Gets the number of available disk images.
+  ///
+  /// @return The total number of selectable disk images.
+  ///
+  virtual unsigned int GetImageCount() { return 0; }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @brief Adds a new disk image slot.
+  ///
+  /// @return The error, or @ref GAME_ERROR_NO_ERROR if a new image index was
+  ///         added.
+  ///
+  virtual GAME_ERROR AddImageIndex() { return GAME_ERROR_NOT_IMPLEMENTED; }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @brief Replaces the disk image at the given index.
+  ///
+  /// The tray must be ejected for this operation.
+  ///
+  /// @param[in] imageIndex The image index to replace.
+  /// @param[in] filePath Path to the new disk image.
+  ///
+  /// @return The error, or @ref GAME_ERROR_NO_ERROR if the image was replaced.
+  ///
+  virtual GAME_ERROR ReplaceImageIndex(unsigned int imageIndex, const std::string& filePath)
+  {
+    return GAME_ERROR_NOT_IMPLEMENTED;
+  }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @brief Removes the disk image at the given index.
+  ///
+  /// The tray must be ejected for this operation.
+  ///
+  /// @param[in] imageIndex The image index to remove.
+  ///
+  /// @return The error, or @ref GAME_ERROR_NO_ERROR if the image was removed.
+  ///
+  virtual GAME_ERROR RemoveImageIndex(unsigned int imageIndex)
+  {
+    return GAME_ERROR_NOT_IMPLEMENTED;
+  }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @brief Sets which image should be initially inserted on load.
+  ///
+  /// @param[in] imageIndex The initial image index.
+  /// @param[in] filePath Path used to validate the selected image.
+  ///
+  /// @return The error, or @ref GAME_ERROR_NO_ERROR if the initial image was
+  ///         accepted.
+  ///
+  virtual GAME_ERROR SetInitialImage(unsigned int imageIndex, const std::string& filePath)
+  {
+    return GAME_ERROR_NOT_IMPLEMENTED;
+  }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @brief Gets the full path of a disk image.
+  ///
+  /// @param[in] imageIndex The image index to query.
+  ///
+  /// @return The image path, or an empty string if unavailable.
+  ///
+  virtual std::string GetImagePath(unsigned int imageIndex) { return ""; }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @brief Gets a user-friendly label for a disk image.
+  ///
+  /// @param[in] imageIndex The image index to query.
+  ///
+  /// @return The image label, or an empty string if unavailable.
+  ///
+  virtual std::string GetImageLabel(unsigned int imageIndex) { return ""; }
+  //----------------------------------------------------------------------------
+
+  ///@}
+
 private:
   void SetAddonStruct(KODI_ADDON_INSTANCE_STRUCT* instance)
   {
@@ -1076,6 +1224,18 @@ private:
     instance->game->toAddon->RCEnableRichPresence = ADDON_RCEnableRichPresence;
     instance->game->toAddon->RCGetRichPresenceEvaluation = ADDON_RCGetRichPresenceEvaluation;
     instance->game->toAddon->RCResetRuntime = ADDON_RCResetRuntime;
+
+    instance->game->toAddon->GetEjectState = ADDON_GetEjectState;
+    instance->game->toAddon->SetEjectState = ADDON_SetEjectState;
+    instance->game->toAddon->GetImageIndex = ADDON_GetImageIndex;
+    instance->game->toAddon->SetImageIndex = ADDON_SetImageIndex;
+    instance->game->toAddon->GetImageCount = ADDON_GetImageCount;
+    instance->game->toAddon->AddImageIndex = ADDON_AddImageIndex;
+    instance->game->toAddon->ReplaceImageIndex = ADDON_ReplaceImageIndex;
+    instance->game->toAddon->RemoveImageIndex = ADDON_RemoveImageIndex;
+    instance->game->toAddon->SetInitialImage = ADDON_SetInitialImage;
+    instance->game->toAddon->GetImagePath = ADDON_GetImagePath;
+    instance->game->toAddon->GetImageLabel = ADDON_GetImageLabel;
 
     instance->game->toAddon->FreeString = ADDON_FreeString;
 
@@ -1378,6 +1538,88 @@ private:
   inline static GAME_ERROR ADDON_RCResetRuntime(const AddonInstance_Game* instance)
   {
     return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->RCResetRuntime();
+  }
+
+  inline static bool ADDON_GetEjectState(const AddonInstance_Game* instance)
+  {
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->GetEjectState();
+  }
+
+  inline static GAME_ERROR ADDON_SetEjectState(const AddonInstance_Game* instance, bool ejected)
+  {
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->SetEjectState(ejected);
+  }
+
+  inline static unsigned int ADDON_GetImageIndex(const AddonInstance_Game* instance)
+  {
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->GetImageIndex();
+  }
+
+  inline static GAME_ERROR ADDON_SetImageIndex(const AddonInstance_Game* instance,
+                                               unsigned int imageIndex)
+  {
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->SetImageIndex(imageIndex);
+  }
+
+  inline static unsigned int ADDON_GetImageCount(const AddonInstance_Game* instance)
+  {
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->GetImageCount();
+  }
+
+  inline static GAME_ERROR ADDON_AddImageIndex(const AddonInstance_Game* instance)
+  {
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->AddImageIndex();
+  }
+
+  inline static GAME_ERROR ADDON_ReplaceImageIndex(const AddonInstance_Game* instance,
+                                                   unsigned int imageIndex,
+                                                   const char* filePath)
+  {
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
+        ->ReplaceImageIndex(imageIndex, filePath ? filePath : "");
+  }
+
+  inline static GAME_ERROR ADDON_RemoveImageIndex(const AddonInstance_Game* instance,
+                                                  unsigned int imageIndex)
+  {
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
+        ->RemoveImageIndex(imageIndex);
+  }
+
+  inline static GAME_ERROR ADDON_SetInitialImage(const AddonInstance_Game* instance,
+                                                 unsigned int imageIndex,
+                                                 const char* filePath)
+  {
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
+        ->SetInitialImage(imageIndex, filePath ? filePath : "");
+  }
+
+  inline static char* ADDON_GetImagePath(const AddonInstance_Game* instance,
+                                         unsigned int imageIndex)
+  {
+    std::string cppPath =
+        static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->GetImagePath(imageIndex);
+    if (cppPath.empty())
+      return nullptr;
+
+    char* path = new char[cppPath.size() + 1];
+    std::copy(cppPath.begin(), cppPath.end(), path);
+    path[cppPath.size()] = '\0';
+    return path;
+  }
+
+  inline static char* ADDON_GetImageLabel(const AddonInstance_Game* instance,
+                                          unsigned int imageIndex)
+  {
+    std::string cppLabel =
+        static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->GetImageLabel(imageIndex);
+    if (cppLabel.empty())
+      return nullptr;
+
+    char* label = new char[cppLabel.size() + 1];
+    std::copy(cppLabel.begin(), cppLabel.end(), label);
+    label[cppLabel.size()] = '\0';
+    return label;
   }
 
   inline static void ADDON_FreeString(const AddonInstance_Game* instance, char* str)

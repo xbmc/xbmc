@@ -971,4 +971,8 @@
 		<value condition="!String.IsEmpty(Skin.String(WeatherOutlookIcon.path))">$INFO[Skin.String(WeatherOutlookIcon.ext)]</value>
 		<value>.png</value>
 	</variable>
+	<variable name="GameDiscEjectedTransparencyVar">
+		<value condition="!RetroPlayer.DiscEjected">60FFFFFF</value>
+		<value>FFFFFFFF</value>
+	</variable>
 </includes>

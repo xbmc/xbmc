@@ -618,6 +618,13 @@ bool CPlayerGUIInfo::GetBool(bool& value,
                       CServiceBroker::GetPlaylistPlayer().GetCurrentItemIdx();
           return true;
         }
+        else if (item->HasProperty("isplaying"))
+        {
+          // Allow the "isplaying" property to override the default behavior
+          // of always selecting an item if its path matches the currently
+          // playing file path
+          value = item->GetProperty("isplaying").asBoolean();
+        }
         else if (m_currentItem && !m_currentItem->GetPath().empty())
         {
           if (!g_application.m_strPlayListFile.empty())
