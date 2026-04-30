@@ -217,7 +217,10 @@ bool CWinSystemGbmGLContext::SetGuiCompositing(int colorTransfer)
   {
     if (!m_compositeShader)
     {
-      m_compositeShader = std::make_unique<CGuiCompositeShaderGL>();
+      std::string defines;
+      if (UseLimitedColor())
+        defines += "#define KODI_LIMITED_RANGE 1\n";
+      m_compositeShader = std::make_unique<CGuiCompositeShaderGL>(defines);
       if (!m_compositeShader->CompileAndLink())
       {
         CLog::Log(LOGERROR, "CWinSystemGbmGLContext: failed to compile GUI composite shader");

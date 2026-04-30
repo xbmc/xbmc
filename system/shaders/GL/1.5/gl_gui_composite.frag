@@ -37,6 +37,12 @@ void main()
 {
   vec4 gui = texture(u_samp, v_tex);
 
+  // Skip pixels the GUI never wrote to. Blend unit would still preserve video
+  // bit-exactly via DST*(1-0)+garbage*0=DST, but discard makes it structural
+  // and avoids the tone-map math, BO read and BO write for those pixels.
+  if (gui.a == 0.0)
+    discard;
+
   // sRGB -> linear (approximate)
   vec3 linear = pow(gui.rgb, vec3(2.2));
 
@@ -48,6 +54,13 @@ void main()
 
   // linear -> PQ
   vec3 pq = forwardPQ(linear);
+
+  // Limited-range encoding at the BO write boundary. Canonical normalized
+  // ratios (bit-depth-agnostic in float space; BO write quantizes to the
+  // active surface bit depth).
+#ifdef KODI_LIMITED_RANGE
+  pq = pq * ((235.0 - 16.0) / 255.0) + (16.0 / 255.0);
+#endif
 
   fragColor = vec4(pq, gui.a);
 }

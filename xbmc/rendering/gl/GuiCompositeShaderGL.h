@@ -10,10 +10,12 @@
 
 #include "guilib/Shader.h"
 
+#include <string>
+
 class CGuiCompositeShaderGL : public Shaders::CGLSLShaderProgram
 {
 public:
-  CGuiCompositeShaderGL();
+  explicit CGuiCompositeShaderGL(const std::string& prefix);
 
   void SetProjection(const GLfloat* proj) { m_proj = proj; }
   void SetSdrPeak(float peak) { m_sdrPeak = peak; }

@@ -10,10 +10,10 @@
 
 #include "utils/log.h"
 
-CGuiCompositeShaderGL::CGuiCompositeShaderGL()
+CGuiCompositeShaderGL::CGuiCompositeShaderGL(const std::string& prefix)
 {
-  VertexShader()->LoadSource("gl_gui_composite.vert");
-  PixelShader()->LoadSource("gl_gui_composite.frag");
+  VertexShader()->LoadSource("gl_gui_composite.vert", prefix);
+  PixelShader()->LoadSource("gl_gui_composite.frag", prefix);
 }
 
 void CGuiCompositeShaderGL::OnCompiledAndLinked()
