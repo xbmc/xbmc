@@ -11,6 +11,7 @@
 #include "BlurayStateSerializer.h"
 #include "DVDInputStream.h"
 
+#include <atomic>
 #include <list>
 #include <memory>
 #include <queue>
@@ -218,7 +219,7 @@ protected:
     int64_t ReadRaw(uint64_t offset, uint8_t* buffer, size_t size);
     void SetupPlayerSettings() const;
     void FreeTitleInfo();
-    unsigned int m_isoCacheFallbacks{0};
+    std::atomic<unsigned int> m_isoCacheFallbacks{0};
     std::unique_ptr<CBlurayIsoCache> m_isoCache;
     std::unique_ptr<CDVDInputStreamFile> m_pstream;
     std::string m_rootPath;
