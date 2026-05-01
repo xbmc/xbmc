@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -275,13 +275,10 @@ void CGUIDialogVideoInfo::OnInitWindow()
 
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  const std::string uniqueId = m_movieItem->GetProperty("xxuniqueid").asString();
-  if (uniqueId.empty() || !StringUtils::StartsWithNoCase(uniqueId, "xx"))
-    CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_REFRESH,
-        (profileManager->GetCurrentProfile().canWriteDatabases() ||
-        g_passwordManager.bMasterUser));
-  else
-    CONTROL_DISABLE(CONTROL_BTN_REFRESH);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_REFRESH,
+                              m_refreshEnabled &&
+                                  (profileManager->GetCurrentProfile().canWriteDatabases() ||
+                                   g_passwordManager.bMasterUser));
 
   // @todo add support to edit video asset art. Until then edit art through Versions Manager.
   if (!VIDEO::IsVideoAssetFile(*m_movieItem))
