@@ -151,20 +151,18 @@ if(CMAKE_GENERATOR STREQUAL Ninja)
   endif()
 endif()
 
-find_package(Patch MODULE REQUIRED)
+include(PatchHelpers)
 
 set(ffmpeg_patches <SOURCE_DIR>/002-ffmpeg-libavutil-common-h-cpp11-constant-macros.patch)
 if(NOT DISABLE_FFMPEG_SOURCE_PLUGINS)
   list(PREPEND ffmpeg_patches <SOURCE_DIR>/001-ffmpeg-all-libpostproc-plugin.patch)
 endif()
+generate_patchcommand("${ffmpeg_patches}" OUTPUT_VARIABLE sourceplugin_patch)
 
 include(ExternalProject)
 externalproject_add(ffmpeg
                     SOURCE_DIR ${CMAKE_SOURCE_DIR}
-                    PATCH_COMMAND /bin/sh <SOURCE_DIR>/apply-patches.sh
-                      ${PATCH_EXECUTABLE}
-                      <SOURCE_DIR>
-                      ${ffmpeg_patches}
+                    PATCH_COMMAND ${sourceplugin_patch}
                     CONFIGURE_COMMAND ${pkgconf} ${pkgconf_path} <SOURCE_DIR>/configure
                       --prefix=${CMAKE_INSTALL_PREFIX}
                       --extra-version="kodi-${FFMPEG_VER}"

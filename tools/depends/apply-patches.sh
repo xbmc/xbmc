@@ -58,7 +58,7 @@ for patch_file in "$@"; do
     # silently rolling them back. --batch: never prompt interactively.
     if ! "$patch_program" -d "$source_dir" -p1 -N --batch -i "$patch_file"; then
         echo "apply-patches.sh: failed to apply $patch_name" >&2
-        echo "apply-patches.sh: hint: source tree may be stale, re-extract with 'make distclean'." >&2
+        echo "apply-patches.sh: hint: source tree may be stale, re-extract it and try again." >&2
         exit 1
     fi
 

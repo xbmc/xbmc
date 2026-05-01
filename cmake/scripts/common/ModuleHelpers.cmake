@@ -101,33 +101,7 @@ function(get_libversion_data module libtype)
   set(LIB_${MOD_UPPER}_VER ${${MOD_UPPER}_VER} PARENT_SCOPE)
 endfunction()
 
-# Function to loop through list of patch files (full path)
-# Sets to a PATCH_COMMAND variable and set to parent scope (caller)
-# Used to test windows line endings and set appropriate patch commands
-function(generate_patchcommand _patchlist)
-  # find the path to the patch executable
-  find_package(Patch MODULE REQUIRED ${SEARCH_QUIET})
-
-  # Loop through patches and add to PATCH_COMMAND
-  # for windows, check CRLF/LF state
-
-  set(_count 0)
-  foreach(patch ${_patchlist})
-    if(WIN32 OR WINDOWS_STORE)
-      PATCH_LF_CHECK(${patch})
-    endif()
-    if(${_count} EQUAL "0")
-      set(_patch_command ${PATCH_EXECUTABLE} -p1 -i ${patch})
-    else()
-      list(APPEND _patch_command COMMAND ${PATCH_EXECUTABLE} -p1 -i ${patch})
-    endif()
-
-    math(EXPR _count "${_count}+1")
-  endforeach()
-  set(PATCH_COMMAND ${_patch_command} PARENT_SCOPE)
-  unset(_count)
-  unset(_patch_command)
-endfunction()
+include(PatchHelpers)
 
 # Macro to factor out the repetitive URL setup
 macro(SETUP_BUILD_VARS)
@@ -537,29 +511,6 @@ macro(BUILD_DEP_TARGET)
   string(TOUPPER "${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}" _search_upper)
   set(${_search_upper}_FOUND ON CACHE BOOL "${_search_upper}_FOUND" FORCE)
   unset(_search_upper)
-endmacro()
-
-# Macro to test format of line endings of a patch
-# Windows Specific
-macro(PATCH_LF_CHECK patch)
-  if(CMAKE_HOST_WIN32)
-    # On Windows "patch.exe" can only handle CR-LF line-endings.
-    # Our patches have LF-only line endings - except when they
-    # have been checked out as part of a dependency hosted on Git
-    # and core.autocrlf=true.
-    file(READ ${ARGV0} patch_content_hex HEX)
-    # Force handle LF-only line endings
-    if(NOT patch_content_hex MATCHES "0d0a")
-      if (NOT "--binary" IN_LIST PATCH_EXECUTABLE)
-        list(APPEND PATCH_EXECUTABLE --binary)
-      endif()
-    else()
-      if ("--binary" IN_LIST PATCH_EXECUTABLE)
-        list(REMOVE_ITEM PATCH_EXECUTABLE --binary)
-      endif()
-    endif()
-  endif()
-  unset(patch_content_hex)
 endmacro()
 
 # Function to check a list of libraries to force the calling library to be
