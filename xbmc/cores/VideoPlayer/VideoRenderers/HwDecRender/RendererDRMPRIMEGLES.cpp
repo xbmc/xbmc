@@ -134,8 +134,6 @@ bool CRendererDRMPRIMEGLES::Configure(const VideoPicture& picture,
     }
   }
 
-  m_clearColour = winSystem->UseLimitedColor() ? (16.0f / 0xff) : 0.0f;
-
   m_configured = true;
   return true;
 }
@@ -244,7 +242,7 @@ void CRendererDRMPRIMEGLES::DrawBlackBars()
   GLint uniCol = renderSystem->GUIShaderGetUniCol();
   GLint depthLoc = renderSystem->GUIShaderGetDepth();
 
-  glUniform4f(uniCol, m_clearColour / 255.0f, m_clearColour / 255.0f, m_clearColour / 255.0f, 1.0f);
+  glUniform4f(uniCol, 0.0f, 0.0f, 0.0f, 1.0f);
   glUniform1f(depthLoc, -1.0f);
 
   GLuint vertexVBO;
@@ -278,7 +276,8 @@ void CRendererDRMPRIMEGLES::RenderUpdate(
       DrawBlackBars();
     else
     {
-      glClearColor(m_clearColour, m_clearColour, m_clearColour, 0);
+      const float bg = CServiceBroker::GetWinSystem()->UseLimitedColor() ? (16.0f / 0xff) : 0.0f;
+      glClearColor(bg, bg, bg, 0);
       glClear(GL_COLOR_BUFFER_BIT);
       glClearColor(0, 0, 0, 0);
     }

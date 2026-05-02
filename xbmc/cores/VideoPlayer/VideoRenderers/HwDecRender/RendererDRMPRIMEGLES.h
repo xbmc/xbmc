@@ -59,7 +59,6 @@ private:
   void Render(unsigned int flags, int index);
 
   bool m_configured = false;
-  float m_clearColour{0.0f};
 
   struct BUFFER
   {
