@@ -289,10 +289,13 @@ bool CSysInfoJob::DoWork()
   m_info.osVersionInfo     = CSysInfo::GetOsPrettyNameWithVersion() + " (kernel: " + CSysInfo::GetKernelName() + " " + CSysInfo::GetKernelVersionFull() + ")";
   m_info.macAddress        = GetMACAddress();
   m_info.batteryLevel      = GetBatteryLevel();
-  m_info.ipAddress = GetIPAddress();
+  m_info.ipv4Address = GetIPv4Address();
+  m_info.gatewayAddress = GetGatewayAddress();
   m_info.netMask = GetNetMask();
   m_info.dnsServers = GetDNSServers();
-  m_info.gatewayAddress = GetGatewayAddress();
+  m_info.ipv6Address = GetIPv6Address();
+  m_info.ipv6GatewayAddress = GetIPv6GatewayAddress();
+  m_info.ipv6DnsServers = GetIPv6DNSServers();
   m_info.networkLinkState = GetNetworkLinkState();
   return true;
 }
@@ -325,12 +328,22 @@ std::string CSysInfoJob::GetMACAddress()
   return mac;
 }
 
-std::string CSysInfoJob::GetIPAddress()
+std::string CSysInfoJob::GetIPv4Address()
 {
   CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
   if (iface)
   {
-    return iface->GetCurrentIPAddress();
+    return iface->GetCurrentIPv4Address();
+  }
+  return {};
+}
+
+std::string CSysInfoJob::GetIPv6Address()
+{
+  CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
+  if (iface)
+  {
+    return iface->GetCurrentIPv6Address();
   }
   return {};
 }
@@ -355,6 +368,16 @@ std::string CSysInfoJob::GetGatewayAddress()
   return {};
 }
 
+std::string CSysInfoJob::GetIPv6GatewayAddress()
+{
+  CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
+  if (iface)
+  {
+    return iface->GetCurrentIPv6DefaultGateway();
+  }
+  return {};
+}
+
 std::string CSysInfoJob::GetNetworkLinkState()
 {
   std::string linkStatus = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(151);
@@ -374,6 +397,11 @@ std::string CSysInfoJob::GetNetworkLinkState()
 std::vector<std::string> CSysInfoJob::GetDNSServers()
 {
   return CServiceBroker::GetNetwork().GetNameServers();
+}
+
+std::vector<std::string> CSysInfoJob::GetIPv6DNSServers()
+{
+  return CServiceBroker::GetNetwork().GetIPv6NameServers();
 }
 
 std::string CSysInfoJob::GetVideoEncoder()
@@ -455,7 +483,7 @@ std::string CSysInfo::TranslateInfo(int info) const
   case NETWORK_MAC_ADDRESS:
     return m_info.macAddress;
   case NETWORK_IP_ADDRESS:
-    return m_info.ipAddress;
+    return m_info.ipv4Address;
   case NETWORK_SUBNET_MASK:
     return m_info.netMask;
   case NETWORK_GATEWAY_ADDRESS:
@@ -467,6 +495,18 @@ std::string CSysInfo::TranslateInfo(int info) const
   case NETWORK_DNS2_ADDRESS:
     return m_info.dnsServers.size() > 1
                ? m_info.dnsServers.at(1)
+               : CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(231);
+  case NETWORK_IPV6_ADDRESS:
+    return m_info.ipv6Address;
+  case NETWORK_IPV6_GATEWAY_ADDRESS:
+    return m_info.ipv6GatewayAddress;
+  case NETWORK_IPV6_DNS1_ADDRESS:
+    return !m_info.ipv6DnsServers.empty()
+               ? m_info.ipv6DnsServers.at(0)
+               : CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(231);
+  case NETWORK_IPV6_DNS2_ADDRESS:
+    return m_info.ipv6DnsServers.size() > 1
+               ? m_info.ipv6DnsServers.at(1)
                : CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(231);
   case NETWORK_LINK_STATE:
     return m_info.networkLinkState;

@@ -22,6 +22,8 @@ public:
   ~CNetworkInterfaceLinux() override = default;
 
   std::string GetCurrentDefaultGateway() const override;
+  std::string GetCurrentIPv6Address() const override;
+  std::string GetCurrentIPv6DefaultGateway() const override;
   bool GetHostMacAddress(unsigned long host, std::string& mac) const override;
 };
 
@@ -33,6 +35,7 @@ public:
 
   bool PingHost(unsigned long host, unsigned int timeout_ms = 2000) override;
   std::vector<std::string> GetNameServers(void) override;
+  std::vector<std::string> GetIPv6NameServers(void) override;
 
 private:
   void GetMacAddress(const std::string& interfaceName, char macAddrRaw[6]) override;

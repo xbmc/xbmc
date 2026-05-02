@@ -148,7 +148,7 @@ bool CNetworkBase::IsLocalHost(const std::string& hostname)
   while (iter != ifaces.end())
   {
     CNetworkInterface* iface = *iter;
-    if (iface && iface->GetCurrentIPAddress() == hostname)
+    if (iface && iface->GetCurrentIPv4Address() == hostname)
       return true;
 
      ++iter;
@@ -186,7 +186,7 @@ bool CNetworkBase::HasInterfaceForIP(unsigned long address)
       if (iface && iface->IsConnected())
       {
          subnet = ntohl(inet_addr(iface->GetCurrentNetmask().c_str()));
-         local = ntohl(inet_addr(iface->GetCurrentIPAddress().c_str()));
+         local = ntohl(inet_addr(iface->GetCurrentIPv4Address().c_str()));
          if( (address & subnet) == (local & subnet) )
             return true;
       }
