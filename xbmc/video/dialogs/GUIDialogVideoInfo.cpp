@@ -273,33 +273,31 @@ void CGUIDialogVideoInfo::OnInitWindow()
   m_hasUpdatedUserrating = false;
   m_bViewReview = true;
 
-  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
+  const std::shared_ptr<CProfileManager> profileManager =
+      CServiceBroker::GetSettingsComponent()->GetProfileManager();
+  const bool userCanWrite =
+      profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser;
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_REFRESH,
-                              m_refreshEnabled &&
-                                  (profileManager->GetCurrentProfile().canWriteDatabases() ||
-                                   g_passwordManager.bMasterUser));
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_REFRESH, m_refreshEnabled && userCanWrite);
 
   // @todo add support to edit video asset art. Until then edit art through Versions Manager.
-  if (!VIDEO::IsVideoAssetFile(*m_movieItem))
-    CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB,
-                                (profileManager->GetCurrentProfile().canWriteDatabases() ||
-                                 g_passwordManager.bMasterUser) &&
-                                    !StringUtils::StartsWithNoCase(
-                                        m_movieItem->GetVideoInfoTag()->GetUniqueID(), "plugin"));
+  if (!VIDEO::IsVideoAssetFile(*m_movieItem) && userCanWrite)
+    CONTROL_ENABLE_ON_CONDITION(
+        CONTROL_BTN_GET_THUMB,
+        !StringUtils::StartsWithNoCase(m_movieItem->GetVideoInfoTag()->GetUniqueID(), "plugin"));
   else
     CONTROL_DISABLE(CONTROL_BTN_GET_THUMB);
 
   // Disable video user rating button for plugins and sets as they don't have tables to save this
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_USERRATING, !m_movieItem->IsPlugin() && m_movieItem->GetVideoInfoTag()->m_type != MediaTypeVideoCollection);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_USERRATING,
+                              !m_movieItem->IsPlugin() && m_movieItem->GetVideoInfoTag()->m_type !=
+                                                              MediaTypeVideoCollection);
 
   VideoDbContentType type = m_movieItem->GetVideoContentType();
-  if (type == VideoDbContentType::TVSHOWS || type == VideoDbContentType::MOVIES)
-    CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_FANART,
-                                (profileManager->GetCurrentProfile().canWriteDatabases() ||
-                                 g_passwordManager.bMasterUser) &&
-                                    !StringUtils::StartsWithNoCase(
-                                        m_movieItem->GetVideoInfoTag()->GetUniqueID(), "plugin"));
+  if ((type == VideoDbContentType::TVSHOWS || type == VideoDbContentType::MOVIES) && userCanWrite)
+    CONTROL_ENABLE_ON_CONDITION(
+        CONTROL_BTN_GET_FANART,
+        !StringUtils::StartsWithNoCase(m_movieItem->GetVideoInfoTag()->GetUniqueID(), "plugin"));
   else
     CONTROL_DISABLE(CONTROL_BTN_GET_FANART);
 
