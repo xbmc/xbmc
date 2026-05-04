@@ -16,6 +16,7 @@
 #include "dialogs/GUIDialogNumeric.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
+#include "guilib/GUIControlGroupList.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/StereoscopicsManager.h"
 #include "input/WindowTranslator.h"
@@ -39,6 +40,51 @@ using namespace KODI;
 
 namespace
 {
+/*! \brief Reset a grouplist control's focus to its first item.
+ *  \param params The parameters.
+ *  \details params[0] = The control ID of the grouplist to reset.
+ */
+static int ResetGroupList(const std::vector<std::string>& params)
+{
+  CGUIWindow* window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(
+      CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog());
+  if (!window)
+  {
+    CLog::Log(LOGWARNING, "ResetGroupList: No active window or dialog found");
+    return 0;
+  }
+  {
+    int controlId = 0;
+    try
+    {
+      controlId = std::stoi(params[0]);
+    }
+    catch (const std::exception&)
+    {
+      CLog::Log(LOGWARNING, "ResetGroupList: Invalid control ID '{}'", params[0]);
+      return 0;
+    }
+    CGUIControl* control = window->GetControl(controlId);
+    if (!control)
+    {
+      CLog::Log(LOGWARNING, "ResetGroupList: Control {} not found", params[0]);
+      return 0;
+    }
+    if (control->GetControlType() != CGUIControl::GUICONTROL_GROUPLIST)
+    {
+      CLog::Log(LOGWARNING, "ResetGroupList: Control {} is not a grouplist", params[0]);
+      return 0;
+    }
+    if (static_cast<CGUIControlGroupList*>(control)->ResetFocusToFirstItem())
+      CLog::Log(LOGDEBUG, "ResetGroupList: Reset grouplist {} to first item", params[0]);
+    else
+      CLog::Log(LOGWARNING, "ResetGroupList: No focusable controls found in grouplist {}",
+                params[0]);
+  }
+
+  return 0;
+}
+
 /*! \brief Execute a GUI action.
  *  \param params The parameters.
  *  \details params[0] = Action to execute.
@@ -581,27 +627,51 @@ static int ToggleDirty(const std::vector<std::string>&)
 ///     ,
 ///     makes dirty regions visible for debugging proposes.
 ///   }
+///   \table_row2_l{
+///     <b>`Control.ResetGroupList(id)`</b>
+///     ,
+///     Resets a grouplist control's focus to its first item and scrolls back to the top.
+///     @param[in] id                    The control ID of the grouplist to reset.
+///   }
 ///  \table_end
 ///
 
 CBuiltins::CommandMap CGUIBuiltins::GetOperations() const
 {
   return {
-           {"action",                         {"Executes an action for the active window (same as in keymap)", 1, Action}},
-           {"cancelalarm",                    {"Cancels an alarm", 1, CancelAlarm}},
-           {"alarmclock",                     {"Prompt for a length of time and start an alarm clock", 2, AlarmClock}},
-           {"activatewindow",                 {"Activate the specified window", 1, ActivateWindow<false>}},
-           {"activatewindowandfocus",         {"Activate the specified window and sets focus to the specified id", 1, ActivateAndFocus<false>}},
-           {"clearproperty",                  {"Clears a window property for the current focused window/dialog (key,value)", 1, ClearProperty}},
-           {"dialog.close",                   {"Close a dialog", 1, CloseDialog}},
-           {"notification",                   {"Shows a notification on screen, specify header, then message, and optionally time in milliseconds and a icon.", 2, Notification}},
-           {"refreshrss",                     {"Reload RSS feeds from RSSFeeds.xml", 0, RefreshRSS}},
-           {"replacewindow",                  {"Replaces the current window with the new one", 1, ActivateWindow<true>}},
-           {"replacewindowandfocus",          {"Replaces the current window with the new one and sets focus to the specified id", 1, ActivateAndFocus<true>}},
-           {"setguilanguage",                 {"Set GUI Language", 1, SetLanguage}},
-           {"setproperty",                    {"Sets a window property for the current focused window/dialog (key,value)", 2, SetProperty}},
-           {"setstereomode",                  {"Changes the stereo mode of the GUI. Params can be: toggle, next, previous, select, tomono or any of the supported stereomodes (off, split_vertical, split_horizontal, row_interleaved, hardware_based, anaglyph_cyan_red, anaglyph_green_magenta, anaglyph_yellow_blue, monoscopic)", 1, SetStereoMode}},
-           {"takescreenshot",                 {"Takes a Screenshot", 0, Screenshot}},
-           {"toggledirtyregionvisualization", {"Enables/disables dirty-region visualization", 0, ToggleDirty}}
-         };
+      {"action", {"Executes an action for the active window (same as in keymap)", 1, Action}},
+      {"cancelalarm", {"Cancels an alarm", 1, CancelAlarm}},
+      {"alarmclock", {"Prompt for a length of time and start an alarm clock", 2, AlarmClock}},
+      {"activatewindow", {"Activate the specified window", 1, ActivateWindow<false>}},
+      {"activatewindowandfocus",
+       {"Activate the specified window and sets focus to the specified id", 1,
+        ActivateAndFocus<false>}},
+      {"clearproperty",
+       {"Clears a window property for the current focused window/dialog (key,value)", 1,
+        ClearProperty}},
+      {"dialog.close", {"Close a dialog", 1, CloseDialog}},
+      {"notification",
+       {"Shows a notification on screen, specify header, then message, and optionally time in "
+        "milliseconds and a icon.",
+        2, Notification}},
+      {"refreshrss", {"Reload RSS feeds from RSSFeeds.xml", 0, RefreshRSS}},
+      {"replacewindow", {"Replaces the current window with the new one", 1, ActivateWindow<true>}},
+      {"replacewindowandfocus",
+       {"Replaces the current window with the new one and sets focus to the specified id", 1,
+        ActivateAndFocus<true>}},
+      {"setguilanguage", {"Set GUI Language", 1, SetLanguage}},
+      {"setproperty",
+       {"Sets a window property for the current focused window/dialog (key,value)", 2,
+        SetProperty}},
+      {"setstereomode",
+       {"Changes the stereo mode of the GUI. Params can be: toggle, next, previous, select, tomono "
+        "or any of the supported stereomodes (off, split_vertical, split_horizontal, "
+        "row_interleaved, hardware_based, anaglyph_cyan_red, anaglyph_green_magenta, "
+        "anaglyph_yellow_blue, monoscopic)",
+        1, SetStereoMode}},
+      {"takescreenshot", {"Takes a Screenshot", 0, Screenshot}},
+      {"toggledirtyregionvisualization",
+       {"Enables/disables dirty-region visualization", 0, ToggleDirty}},
+      {"control.resetgrouplist",
+       {"Resets a grouplist control's focus to its first item", 1, ResetGroupList}}};
 }
