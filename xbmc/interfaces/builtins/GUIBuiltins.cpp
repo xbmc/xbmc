@@ -55,7 +55,8 @@ static int ResetGroupList(const std::vector<std::string>& params)
       if (static_cast<CGUIControlGroupList*>(control)->ResetFocusToFirstItem())
         CLog::Log(LOGDEBUG, "ResetGroupList: Reset grouplist {} to first item", params[0]);
       else
-        CLog::Log(LOGWARNING, "ResetGroupList: No focusable controls found in grouplist {}", params[0]);
+        CLog::Log(LOGWARNING, "ResetGroupList: No focusable controls found in grouplist {}",
+                  params[0]);
   }
 
   return 0;
