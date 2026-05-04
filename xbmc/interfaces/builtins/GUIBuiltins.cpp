@@ -612,22 +612,39 @@ static int ToggleDirty(const std::vector<std::string>&)
 CBuiltins::CommandMap CGUIBuiltins::GetOperations() const
 {
   return {
-           {"action",                         {"Executes an action for the active window (same as in keymap)", 1, Action}},
-           {"cancelalarm",                    {"Cancels an alarm", 1, CancelAlarm}},
-           {"alarmclock",                     {"Prompt for a length of time and start an alarm clock", 2, AlarmClock}},
-           {"activatewindow",                 {"Activate the specified window", 1, ActivateWindow<false>}},
-           {"activatewindowandfocus",         {"Activate the specified window and sets focus to the specified id", 1, ActivateAndFocus<false>}},
-           {"clearproperty",                  {"Clears a window property for the current focused window/dialog (key,value)", 1, ClearProperty}},
-           {"dialog.close",                   {"Close a dialog", 1, CloseDialog}},
-           {"notification",                   {"Shows a notification on screen, specify header, then message, and optionally time in milliseconds and a icon.", 2, Notification}},
-           {"refreshrss",                     {"Reload RSS feeds from RSSFeeds.xml", 0, RefreshRSS}},
-           {"replacewindow",                  {"Replaces the current window with the new one", 1, ActivateWindow<true>}},
-           {"replacewindowandfocus",          {"Replaces the current window with the new one and sets focus to the specified id", 1, ActivateAndFocus<true>}},
-           {"setguilanguage",                 {"Set GUI Language", 1, SetLanguage}},
-           {"setproperty",                    {"Sets a window property for the current focused window/dialog (key,value)", 2, SetProperty}},
-           {"setstereomode",                  {"Changes the stereo mode of the GUI. Params can be: toggle, next, previous, select, tomono or any of the supported stereomodes (off, split_vertical, split_horizontal, row_interleaved, hardware_based, anaglyph_cyan_red, anaglyph_green_magenta, anaglyph_yellow_blue, monoscopic)", 1, SetStereoMode}},
-           {"takescreenshot",                 {"Takes a Screenshot", 0, Screenshot}},
-           {"toggledirtyregionvisualization", {"Enables/disables dirty-region visualization", 0, ToggleDirty}},
-           {"control.resetgrouplist",         {"Resets a grouplist control's focus to its first item", 1, ResetGroupList}}
-         };
+      {"action", {"Executes an action for the active window (same as in keymap)", 1, Action}},
+      {"cancelalarm", {"Cancels an alarm", 1, CancelAlarm}},
+      {"alarmclock", {"Prompt for a length of time and start an alarm clock", 2, AlarmClock}},
+      {"activatewindow", {"Activate the specified window", 1, ActivateWindow<false>}},
+      {"activatewindowandfocus",
+       {"Activate the specified window and sets focus to the specified id", 1,
+        ActivateAndFocus<false>}},
+      {"clearproperty",
+       {"Clears a window property for the current focused window/dialog (key,value)", 1,
+        ClearProperty}},
+      {"dialog.close", {"Close a dialog", 1, CloseDialog}},
+      {"notification",
+       {"Shows a notification on screen, specify header, then message, and optionally time in "
+        "milliseconds and a icon.",
+        2, Notification}},
+      {"refreshrss", {"Reload RSS feeds from RSSFeeds.xml", 0, RefreshRSS}},
+      {"replacewindow", {"Replaces the current window with the new one", 1, ActivateWindow<true>}},
+      {"replacewindowandfocus",
+       {"Replaces the current window with the new one and sets focus to the specified id", 1,
+        ActivateAndFocus<true>}},
+      {"setguilanguage", {"Set GUI Language", 1, SetLanguage}},
+      {"setproperty",
+       {"Sets a window property for the current focused window/dialog (key,value)", 2,
+        SetProperty}},
+      {"setstereomode",
+       {"Changes the stereo mode of the GUI. Params can be: toggle, next, previous, select, tomono "
+        "or any of the supported stereomodes (off, split_vertical, split_horizontal, "
+        "row_interleaved, hardware_based, anaglyph_cyan_red, anaglyph_green_magenta, "
+        "anaglyph_yellow_blue, monoscopic)",
+        1, SetStereoMode}},
+      {"takescreenshot", {"Takes a Screenshot", 0, Screenshot}},
+      {"toggledirtyregionvisualization",
+       {"Enables/disables dirty-region visualization", 0, ToggleDirty}},
+      {"control.resetgrouplist",
+       {"Resets a grouplist control's focus to its first item", 1, ResetGroupList}}};
 }
