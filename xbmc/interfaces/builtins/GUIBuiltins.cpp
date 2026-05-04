@@ -48,7 +48,11 @@ static int ResetGroupList(const std::vector<std::string>& params)
 {
   CGUIWindow* window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(
       CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog());
-  if (window)
+  if (!window)
+  {
+    CLog::Log(LOGWARNING, "ResetGroupList: No active window or dialog found");
+    return 0;
+  }
   {
     int controlId = 0;
     try {
