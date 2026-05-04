@@ -16,6 +16,7 @@
 #include "dialogs/GUIDialogNumeric.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
+#include "guilib/GUIControlGroupList.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/StereoscopicsManager.h"
 #include "input/WindowTranslator.h"
@@ -39,6 +40,24 @@ using namespace KODI;
 
 namespace
 {
+/*! \brief Reset a grouplist control's focus to its first item.
+ *  \param params The parameters.
+ *  \details params[0] = The control ID of the grouplist to reset.
+ */
+static int ResetGroupList(const std::vector<std::string>& params)
+{
+  CGUIWindow* window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(
+      CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog());
+  if (window)
+  {
+    CGUIControl* control = window->GetControl(atoi(params[0].c_str()));
+    if (control && control->GetControlType() == CGUIControl::GUICONTROL_GROUPLIST)
+      static_cast<CGUIControlGroupList*>(control)->ResetFocusToFirstItem();
+  }
+
+  return 0;
+}
+
 /*! \brief Execute a GUI action.
  *  \param params The parameters.
  *  \details params[0] = Action to execute.
@@ -581,6 +600,12 @@ static int ToggleDirty(const std::vector<std::string>&)
 ///     ,
 ///     makes dirty regions visible for debugging proposes.
 ///   }
+///   \table_row2_l{
+///     <b>`Control.ResetGroupList(id)`</b>
+///     ,
+///     Resets a grouplist control's focus to its first item and scrolls back to the top.
+///     @param[in] id                    The control ID of the grouplist to reset.
+///   }
 ///  \table_end
 ///
 
@@ -602,6 +627,7 @@ CBuiltins::CommandMap CGUIBuiltins::GetOperations() const
            {"setproperty",                    {"Sets a window property for the current focused window/dialog (key,value)", 2, SetProperty}},
            {"setstereomode",                  {"Changes the stereo mode of the GUI. Params can be: toggle, next, previous, select, tomono or any of the supported stereomodes (off, split_vertical, split_horizontal, row_interleaved, hardware_based, anaglyph_cyan_red, anaglyph_green_magenta, anaglyph_yellow_blue, monoscopic)", 1, SetStereoMode}},
            {"takescreenshot",                 {"Takes a Screenshot", 0, Screenshot}},
-           {"toggledirtyregionvisualization", {"Enables/disables dirty-region visualization", 0, ToggleDirty}}
+           {"toggledirtyregionvisualization", {"Enables/disables dirty-region visualization", 0, ToggleDirty}},
+           {"control.resetgrouplist",         {"Resets a grouplist control's focus to its first item", 1, ResetGroupList}}
          };
 }

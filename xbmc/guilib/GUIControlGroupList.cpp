@@ -190,6 +190,17 @@ bool CGUIControlGroupList::OnAction(const CAction& action)
   return CGUIControlGroup::OnAction(action);
 }
 
+bool CGUIControlGroupList::ResetFocusToFirstItem()
+{
+  CGUIControl* firstControl = GetFirstFocusableControl();
+  if (!firstControl)
+    return false;
+
+  m_focusedControl = firstControl->GetID();
+  m_scroller.SetValue(0.0f);
+  return true;
+}
+
 bool CGUIControlGroupList::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage() )

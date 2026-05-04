@@ -43,6 +43,7 @@ public:
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
   void Render() override;
   bool OnAction(const CAction& action) override;
+  bool ResetFocusToFirstItem();
   bool OnMessage(CGUIMessage& message) override;
 
   EVENT_RESULT SendMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
