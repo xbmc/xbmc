@@ -50,7 +50,14 @@ static int ResetGroupList(const std::vector<std::string>& params)
       CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog());
   if (window)
   {
-    CGUIControl* control = window->GetControl(atoi(params[0].c_str()));
+    int controlId = 0;
+    try {
+      controlId = std::stoi(params[0]);
+    } catch (const std::exception&) {
+      CLog::Log(LOGWARNING, "ResetGroupList: Invalid control ID '{}'", params[0]);
+      return 0;
+    }
+    CGUIControl* control = window->GetControl(controlId);
     if (control && control->GetControlType() == CGUIControl::GUICONTROL_GROUPLIST)
       if (static_cast<CGUIControlGroupList*>(control)->ResetFocusToFirstItem())
         CLog::Log(LOGDEBUG, "ResetGroupList: Reset grouplist {} to first item", params[0]);
