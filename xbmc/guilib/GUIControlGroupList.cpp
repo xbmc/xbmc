@@ -193,18 +193,17 @@ bool CGUIControlGroupList::OnAction(const CAction& action)
 bool CGUIControlGroupList::ResetFocusToFirstItem()
 {
   CGUIControl* firstControl = GetFirstFocusableControl();
-  if (!firstControl)
+  if (!firstControl || !firstControl->IsVisible())
     return false;
 
   CGUIControl* focusedControl = GetFocusedControl();
-  
+
   // If there's a currently focused control and it's different from the first control,
   // send proper focus messages to maintain consistent state
   if (focusedControl && focusedControl != firstControl)
   {
     CGUIMessage message(GUI_MSG_LOSTFOCUS, GetID(), focusedControl->GetID(), firstControl->GetID());
     focusedControl->OnMessage(message);
-
     CGUIMessage message2(GUI_MSG_SETFOCUS, GetID(), firstControl->GetID());
     firstControl->OnMessage(message2);
   }
