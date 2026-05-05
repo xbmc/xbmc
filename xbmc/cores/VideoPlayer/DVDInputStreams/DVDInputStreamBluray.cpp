@@ -420,13 +420,16 @@ void CDVDInputStreamBluray::Close()
   if (m_isoCacheFallbacks > 0)
   {
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::{} - ISO cache fallbacks {}", __FUNCTION__,
-              m_isoCacheFallbacks);
+              m_isoCacheFallbacks.load());
   }
 
-  if (m_isoCache)
   {
-    m_isoCache->Stop();
-    m_isoCache.reset();
+    std::lock_guard<std::mutex> lock(m_isoCacheMutex);
+    if (m_isoCache)
+    {
+      m_isoCache->Stop();
+      m_isoCache.reset();
+    }
   }
 
   if(m_bd)
@@ -495,8 +498,11 @@ void CDVDInputStreamBluray::ProcessEvent() {
 
   case BD_EVENT_SEEK:
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_SEEK");
-    if (m_isoCache)
-      m_isoCache->ResetAccessPattern();
+    {
+      std::lock_guard<std::mutex> lock(m_isoCacheMutex);
+      if (m_isoCache)
+        m_isoCache->ResetAccessPattern();
+    }
     //m_player->OnDVDNavResult(nullptr, 1);
     //bd_read_skip_still(m_bd);
     //m_hold = HOLD_HELD;
@@ -546,8 +552,11 @@ void CDVDInputStreamBluray::ProcessEvent() {
   case BD_EVENT_TITLE:
   {
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_TITLE {}", m_event.param);
-    if (m_isoCache)
-      m_isoCache->ResetAccessPattern();
+    {
+      std::lock_guard<std::mutex> lock(m_isoCacheMutex);
+      if (m_isoCache)
+        m_isoCache->ResetAccessPattern();
+    }
     const BLURAY_DISC_INFO* disc_info = bd_get_disc_info(m_bd);
 
     m_menu = false;
@@ -570,16 +579,22 @@ void CDVDInputStreamBluray::ProcessEvent() {
   }
   case BD_EVENT_PLAYLIST:
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_PLAYLIST {}", m_event.param);
-    if (m_isoCache)
-      m_isoCache->ResetAccessPattern();
+    {
+      std::lock_guard<std::mutex> lock(m_isoCacheMutex);
+      if (m_isoCache)
+        m_isoCache->ResetAccessPattern();
+    }
     m_playlist = m_event.param;
     ProcessItem(m_playlist);
     break;
 
   case BD_EVENT_PLAYITEM:
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_PLAYITEM {}", m_event.param);
-    if (m_isoCache)
-      m_isoCache->ResetAccessPattern();
+    {
+      std::lock_guard<std::mutex> lock(m_isoCacheMutex);
+      if (m_isoCache)
+        m_isoCache->ResetAccessPattern();
+    }
     if (m_titleInfo && m_event.param < m_titleInfo->clip_count)
       m_clip = &m_titleInfo->clips[m_event.param];
     uint64_t clip_start, clip_in, bytepos;
@@ -757,9 +772,14 @@ int CDVDInputStreamBluray::Read(uint8_t* buf, int buf_size)
 
 int CDVDInputStreamBluray::ReadBlocks(uint8_t* buf, int lba, int num_blocks)
 {
-  if (m_isoCache)
+  CBlurayIsoCache* cache = nullptr;
   {
-    const int result = m_isoCache->ReadBlocks(buf, lba, num_blocks);
+    std::lock_guard<std::mutex> lock(m_isoCacheMutex);
+    cache = m_isoCache.get();
+  }
+  if (cache)
+  {
+    const int result = cache->ReadBlocks(buf, lba, num_blocks);
     if (result >= 0)
       return result;
 
@@ -768,7 +788,7 @@ int CDVDInputStreamBluray::ReadBlocks(uint8_t* buf, int lba, int num_blocks)
     {
       CLog::Log(LOGDEBUG,
                 "CDVDInputStreamBluray::{} - cached read failed at lba {} blocks {}, falling back ({})",
-                __FUNCTION__, lba, num_blocks, m_isoCacheFallbacks);
+                __FUNCTION__, lba, num_blocks, m_isoCacheFallbacks.load());
     }
   }
 
@@ -1481,6 +1501,7 @@ bool CDVDInputStreamBluray::OpenStream(CFileItem &item)
 
   if (m_isoCache)
   {
+    std::lock_guard<std::mutex> lock(m_isoCacheMutex);
     m_isoCache->Stop();
     m_isoCache.reset();
   }
@@ -1544,7 +1565,7 @@ int CDVDInputStreamBluray::ReadBlocksDirect(uint8_t* buf, int lba, int num_block
   return result;
 }
 
-int64_t CDVDInputStreamBluray::ReadRaw(uint64_t offset, uint8_t* buffer, size_t size)
+int64_t CDVDInputStreamBluray::ReadRaw(int64_t offset, uint8_t* buffer, size_t size)
 {
   CDVDInputStreamFile* lpstream = m_pstream.get();
   if (!lpstream || !buffer || size == 0)
@@ -1555,7 +1576,7 @@ int64_t CDVDInputStreamBluray::ReadRaw(uint64_t offset, uint8_t* buffer, size_t 
 
   std::lock_guard lock(m_readBlocksLock);
 
-  if (lpstream->Seek(static_cast<int64_t>(offset), SEEK_SET) < 0)
+  if (lpstream->Seek(offset, SEEK_SET) < 0)
     return -1;
 
   size_t totalRead = 0;

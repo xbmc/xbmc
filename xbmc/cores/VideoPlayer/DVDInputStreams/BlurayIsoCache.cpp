@@ -185,6 +185,13 @@ CBlurayIsoCache::PagePtr CBlurayIsoCache::LoadPage(int64_t pageIndex, bool prefe
   if (bytesRead <= 0)
     return nullptr;
 
+  if (static_cast<size_t>(bytesRead) > bytesToRead)
+  {
+    CLog::Log(LOGERROR, "{}::{} - callback returned {} bytes, expected at most {}",
+              LOG_TAG, __FUNCTION__, bytesRead, bytesToRead);
+    return nullptr;
+  }
+
   page->validBytes = static_cast<size_t>(bytesRead);
   InsertPage(pageIndex, page);
 
