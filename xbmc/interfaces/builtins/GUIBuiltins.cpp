@@ -58,7 +58,9 @@ static int ResetGroupList(const std::vector<std::string>& params)
     try
     {
       controlId = std::stoi(params[0]);
-    } catch (const std::exception&) {
+    }
+    catch (const std::exception&)
+    {
       CLog::Log(LOGWARNING, "ResetGroupList: Invalid control ID '{}'", params[0]);
       return 0;
     }
