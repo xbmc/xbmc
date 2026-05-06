@@ -286,11 +286,30 @@ bool CSeekHandler::OnAction(const CAction &action)
     case ACTION_SMALL_STEP_BACK:
     case ACTION_STEP_BACK:
     {
+      if (appPlayer->IsPausedPlayback() && appPlayer->HasVideo())
+      {
+        const float fps{CServiceBroker::GetDataCacheCore().GetVideoFps()};
+        if (fps > 0.0f)
+        {
+          const int64_t frameTimeMs{static_cast<int64_t>(std::llround(1000.0 / fps))};
+          const int64_t targetTimeMs{
+              std::max(appPlayer->GetMinTime(), appPlayer->GetTime() - std::max<int64_t>(1, frameTimeMs))};
+          appPlayer->SeekTime(targetTimeMs);
+        }
+        return true;
+      }
+
       Seek(false, action.GetAmount(), action.GetRepeat(), false, type);
       return true;
     }
     case ACTION_STEP_FORWARD:
     {
+      if (appPlayer->IsPausedPlayback() && appPlayer->HasVideo())
+      {
+        appPlayer->FrameAdvance(1);
+        return true;
+      }
+
       Seek(true, action.GetAmount(), action.GetRepeat(), false, type);
       return true;
     }
