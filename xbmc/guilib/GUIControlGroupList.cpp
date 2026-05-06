@@ -210,11 +210,9 @@ bool CGUIControlGroupList::ResetFocusToFirstItem()
 
   m_focusedControl = firstControl->GetID();
   m_scroller.SetValue(0.0f);
-  m_scroller.SetValue(0.0f);
   SetInvalid();
   MarkDirtyRegion();
   return true;
-}
 }
 
 bool CGUIControlGroupList::OnMessage(CGUIMessage& message)
