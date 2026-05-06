@@ -209,7 +209,11 @@ bool CGUIControlGroupList::ResetFocusToFirstItem()
   }
 
   m_focusedControl = firstControl->GetID();
+  m_focusedControl = firstControl->GetID();
   m_scroller.SetValue(0.0f);
+  SetInvalid();
+  MarkDirtyRegion();
+  return true;
   return true;
 }
 
