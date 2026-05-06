@@ -214,7 +214,7 @@ bool CGUIControlGroupList::ResetFocusToFirstItem()
   SetInvalid();
   MarkDirtyRegion();
   return true;
-  return true;
+}
 }
 
 bool CGUIControlGroupList::OnMessage(CGUIMessage& message)
