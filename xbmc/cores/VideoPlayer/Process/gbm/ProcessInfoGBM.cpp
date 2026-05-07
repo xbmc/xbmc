@@ -76,6 +76,16 @@ std::vector<AVPixelFormat> CProcessInfoGBM::GetRenderFormats()
     formats.push_back(AV_PIX_FMT_YUV420P12);
     formats.push_back(AV_PIX_FMT_YUV420P14);
     formats.push_back(AV_PIX_FMT_YUV420P16);
+    formats.push_back(AV_PIX_FMT_YUV422P9);
+    formats.push_back(AV_PIX_FMT_YUV422P10);
+    formats.push_back(AV_PIX_FMT_YUV422P12);
+    formats.push_back(AV_PIX_FMT_YUV422P14);
+    formats.push_back(AV_PIX_FMT_YUV422P16);
+    formats.push_back(AV_PIX_FMT_YUV444P9);
+    formats.push_back(AV_PIX_FMT_YUV444P10);
+    formats.push_back(AV_PIX_FMT_YUV444P12);
+    formats.push_back(AV_PIX_FMT_YUV444P14);
+    formats.push_back(AV_PIX_FMT_YUV444P16);
   }
 
   return formats;
