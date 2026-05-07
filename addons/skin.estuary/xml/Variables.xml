@@ -399,7 +399,7 @@
 		<value condition="String.IsEqual(ListItem.DBType,set)">$INFO[ListItem.Title]</value>
 		<value condition="!String.IsEmpty(ListItem.TVShowTitle)">$INFO[ListItem.TVShowTitle]$INFO[ListItem.Year, ([COLOR grey],[/COLOR])]</value>
 		<value condition="Skin.HasSetting(OriginalTitleFormat_1st) + !String.IsEmpty(ListItem.OriginalTitle) + !String.IsEqual(ListItem.Label,ListItem.OriginalTitle)">$INFO[ListItem.OriginalTitle]$INFO[ListItem.Label, (,)]$INFO[ListItem.Year, ([COLOR grey],[/COLOR])]</value>
-		<value condition="Skin.HasSetting(OriginalTitleFormat_2nd) + !String.IsEmpty(ListItem.OriginalTitle) + !String.IsEqual(ListItem.Label,ListItem.OriginalTitle)">$INFO[ListItem.Label] ($INFO[ListItem.OriginalTitle])$INFO[ListItem.Year, ([COLOR grey],[/COLOR])]</value>
+		<value condition="Skin.HasSetting(OriginalTitleFormat_2nd) + !String.IsEmpty(ListItem.OriginalTitle) + !String.IsEqual(ListItem.Label,ListItem.OriginalTitle)">$INFO[ListItem.Label]$INFO[ListItem.OriginalTitle, (,)]$INFO[ListItem.Year, ([COLOR grey],[/COLOR])]</value>
 		<value condition="Skin.HasSetting(OriginalTitleFormat_Only) + !String.IsEmpty(ListItem.OriginalTitle) + !String.IsEqual(ListItem.Label,ListItem.OriginalTitle)">$INFO[ListItem.OriginalTitle]$INFO[ListItem.Year, ([COLOR grey],[/COLOR])]</value>
 		<value condition="!String.IsEmpty(ListItem.Title)">$INFO[ListItem.Title]$INFO[ListItem.Year, ([COLOR grey],[/COLOR])]</value>
 		<value>$INFO[ListItem.Label]$INFO[ListItem.Year, ([COLOR grey],[/COLOR])]</value>
