@@ -535,7 +535,7 @@ macro(BUILD_DEP_TARGET)
   set(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND 1)
 
   string(TOUPPER "${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}" _search_upper)
-  set(${_search_upper}_FOUND ON CACHE BOOL "${_search_upper}_FOUND" FORCE)
+  set(${_search_upper}_FOUND 1)
   unset(_search_upper)
 endmacro()
 
