@@ -309,7 +309,7 @@ void CWinSystemGbmGLContext::CompositeGui()
   GLfloat proj[16] = {2.0f / w, 0, 0, 0, 0, -2.0f / h, 0, 0, 0, 0, -1, 0, -1.0f, 1.0f, 0, 1};
 
   m_compositeShader->SetProjection(proj);
-  m_compositeShader->SetSdrPeak(100.0f / 10000.0f);
+  m_compositeShader->SetSdrPeak(203.0f / 10000.0f);
   m_compositeShader->Enable();
 
   GLint posLoc = m_compositeShader->GetPosLoc();

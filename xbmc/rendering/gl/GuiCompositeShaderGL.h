@@ -29,7 +29,7 @@ protected:
 
 private:
   const GLfloat* m_proj{nullptr};
-  float m_sdrPeak{100.0f / 10000.0f};
+  float m_sdrPeak{203.0f / 10000.0f};
 
   GLint m_hPos{-1};
   GLint m_hTex{-1};
