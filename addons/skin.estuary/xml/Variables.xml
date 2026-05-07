@@ -86,7 +86,7 @@
 		<value condition="Container.Content(recordings)">$INFO[ListItem.Label]$VAR[PVRListItemSubLabelFocused, (,)]</value>
 		<value condition="[!String.IsEmpty(ListItem.EpgEventTitle) | !String.IsEmpty(ListItem.TitleExtraInfo)] + Window.IsActive(videoplaylist)">$INFO[ListItem.Label]$VAR[PVRListItemSubLabelFocused, (,)]</value>
 		<value condition="[!String.IsEmpty(ListItem.Season) | !String.IsEmpty(ListItem.Episode) | !String.IsEmpty(ListItem.EpisodeName)] + Window.IsActive(videoplaylist)">$INFO[ListItem.Title,,: ]$VAR[SeasonEpisodeLabel]</value>
-		<value condition="Skin.HasSetting(OriginalTitleFormat_1st) + !String.IsEmpty(ListItem.OriginalTitle) + !String.IsEqual(ListItem.Label,ListItem.OriginalTitle)">$INFO[ListItem.OriginalTitle] ($INFO[ListItem.Label])</value>
+		<value condition="Skin.HasSetting(OriginalTitleFormat_1st) + !String.IsEmpty(ListItem.OriginalTitle) + !String.IsEqual(ListItem.Label,ListItem.OriginalTitle)">$INFO[ListItem.OriginalTitle]$INFO[ListItem.Label, (,)]</value>
 		<value condition="Skin.HasSetting(OriginalTitleFormat_2nd) + !String.IsEmpty(ListItem.OriginalTitle) + !String.IsEqual(ListItem.Label,ListItem.OriginalTitle)">$INFO[ListItem.Label] ($INFO[ListItem.OriginalTitle])</value>
 		<value condition="Skin.HasSetting(OriginalTitleFormat_Only) + !String.IsEmpty(ListItem.OriginalTitle) + !String.IsEqual(ListItem.Label,ListItem.OriginalTitle)">$INFO[ListItem.OriginalTitle]</value>
 		<value>$INFO[ListItem.Label]</value>
