@@ -1,0 +1,11 @@
+--- a/lib/nfs_v4.c	2026-05-07 08:35:42.619327411 +0800
++++ b/lib/nfs_v4.c	2026-05-06 13:47:35.407621236 +0800
+@@ -2902,7 +2902,7 @@ nfs4_readlink_cb(struct rpc_context *rpc
+ 
+         rlresok = &res->resarray.resarray_val[i].nfs_resop4_u.opreadlink.READLINK4res_u.resok4;
+ 
+-        target = strdup(rlresok->link.utf8string_val);
++        target = strndup(rlresok->link.utf8string_val, rlresok->link.utf8string_len);
+         if (target == NULL) {
+                 data->cb(-ENOMEM, nfs, "Failed to allocate memory",
+                          data->private_data);
