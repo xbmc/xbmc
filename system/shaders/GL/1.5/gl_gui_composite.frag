@@ -43,8 +43,10 @@ void main()
   if (gui.a == 0.0)
     discard;
 
-  // sRGB -> linear (approximate)
-  vec3 linear = pow(gui.rgb, vec3(2.2));
+  // sRGB -> linear (IEC 61966-2-1 piecewise EOTF)
+  vec3 linear = mix(gui.rgb / 12.92,
+                    pow((gui.rgb + 0.055) / 1.055, vec3(2.4)),
+                    step(0.04045, gui.rgb));
 
   // BT.709 -> BT.2020 gamut mapping
   linear = bt709_to_bt2020 * linear;
