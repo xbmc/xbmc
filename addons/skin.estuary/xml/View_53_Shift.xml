@@ -102,7 +102,7 @@
 							<height>40</height>
 							<width>460</width>
 							<aligny>center</aligny>
-							<label>$INFO[ListItem.Year,[COLOR button_focus],[/COLOR]  -  ]$INFO[ListItem.Title]</label>
+							<label>$INFO[ListItem.Year,[COLOR button_focus],[/COLOR]  -  ]$VAR[ListLabelVar]</label>
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 					</focusedlayout>
@@ -112,7 +112,7 @@
 							<height>40</height>
 							<width>460</width>
 							<aligny>center</aligny>
-							<label>$INFO[ListItem.Year,[COLOR button_focus],[/COLOR]  -  ]$INFO[ListItem.Title]</label>
+							<label>$INFO[ListItem.Year,[COLOR button_focus],[/COLOR]  -  ]$VAR[ListLabelVar]</label>
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 					</itemlayout>
@@ -164,7 +164,7 @@
 			<height>105</height>
 			<align>center</align>
 			<aligny>center</aligny>
-			<label>$INFO[ListItem.Label]</label>
+			<label>$VAR[ListLabelVar]</label>
 		</control>
 		<include>IconStatusOverlay</include>
 		<control type="group">

@@ -268,14 +268,30 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr ""
 
-#empty string with id 31047
+#: /xml/SkinSettings.xml
+msgctxt "#31047"
+msgid "Movie title format"
+msgstr ""
 
 #: /xml/DialogVideoInfo.xml
 msgctxt "#31048"
 msgid "Available"
 msgstr ""
 
-#empty strings from id 31049 to 31051
+#: /xml/SkinSettings.xml
+msgctxt "#31049"
+msgid "Original title"
+msgstr ""
+
+#: /xml/SkinSettings.xml
+msgctxt "#31050"
+msgid "Original title (Localised title)"
+msgstr ""
+
+#: /xml/SkinSettings.xml
+msgctxt "#31051"
+msgid "Localised title (Original title)"
+msgstr ""
 
 #: /xml/Includes.xml
 msgctxt "#31052"
