@@ -358,18 +358,30 @@ EShaderFormat CBaseRenderer::GetShaderFormat()
 {
   EShaderFormat ret = SHADER_NONE;
 
-  if (m_format == AV_PIX_FMT_YUV420P || m_format == AV_PIX_FMT_YUV422P ||
+  // clang-format off
+  if (m_format == AV_PIX_FMT_YUV420P ||
+      m_format == AV_PIX_FMT_YUV422P ||
       m_format == AV_PIX_FMT_YUV444P)
     ret = SHADER_YV12;
-  else if (m_format == AV_PIX_FMT_YUV420P9)
+  else if (m_format == AV_PIX_FMT_YUV420P9 ||
+           m_format == AV_PIX_FMT_YUV422P9 ||
+           m_format == AV_PIX_FMT_YUV444P9)
     ret = SHADER_YV12_9;
-  else if (m_format == AV_PIX_FMT_YUV420P10)
+  else if (m_format == AV_PIX_FMT_YUV420P10 ||
+           m_format == AV_PIX_FMT_YUV422P10 ||
+           m_format == AV_PIX_FMT_YUV444P10)
     ret = SHADER_YV12_10;
-  else if (m_format == AV_PIX_FMT_YUV420P12)
+  else if (m_format == AV_PIX_FMT_YUV420P12 ||
+           m_format == AV_PIX_FMT_YUV422P12 ||
+           m_format == AV_PIX_FMT_YUV444P12)
     ret = SHADER_YV12_12;
-  else if (m_format == AV_PIX_FMT_YUV420P14)
+  else if (m_format == AV_PIX_FMT_YUV420P14 ||
+           m_format == AV_PIX_FMT_YUV422P14 ||
+           m_format == AV_PIX_FMT_YUV444P14)
     ret = SHADER_YV12_14;
-  else if (m_format == AV_PIX_FMT_YUV420P16)
+  else if (m_format == AV_PIX_FMT_YUV420P16 ||
+           m_format == AV_PIX_FMT_YUV422P16 ||
+           m_format == AV_PIX_FMT_YUV444P16)
     ret = SHADER_YV12_16;
   else if (m_format == AV_PIX_FMT_NV12)
     ret = SHADER_NV12;
@@ -377,6 +389,7 @@ EShaderFormat CBaseRenderer::GetShaderFormat()
     ret = SHADER_YUY2;
   else if (m_format == AV_PIX_FMT_UYVY422)
     ret = SHADER_UYVY;
+  // clang-format on
   else
     CLog::Log(LOGERROR, "CBaseRenderer::GetShaderFormat - unsupported format {}", m_format);
 

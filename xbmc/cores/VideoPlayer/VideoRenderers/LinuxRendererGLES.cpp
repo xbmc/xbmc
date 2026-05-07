@@ -1680,11 +1680,13 @@ bool CLinuxRendererGLES::CreatePlanarYUVTexture(int index)
 
   im.height = m_sourceHeight;
   im.width = m_sourceWidth;
-  im.cshift_x = (m_format == AV_PIX_FMT_YUV444P) ? 0 : 1;
-  im.cshift_y = (m_format == AV_PIX_FMT_YUV422P || m_format == AV_PIX_FMT_YUV444P) ? 0 : 1;
 
-  // Bit depth comes from libavutil's public pixdesc API, avoiding a parallel switch.
+  // Chroma subsampling derived from libavutil's pixdesc API. Works for any
+  // planar YUV pix_fmt (4:2:0 / 4:2:2 / 4:4:4) without per-format checks.
   const AVPixFmtDescriptor* desc = av_pix_fmt_desc_get(m_format);
+  im.cshift_x = desc ? desc->log2_chroma_w : 1;
+  im.cshift_y = desc ? desc->log2_chroma_h : 1;
+
   buf.m_srcTextureBits = desc ? desc->comp[0].depth : 8;
   im.bpp = (buf.m_srcTextureBits > 8) ? 2 : 1;
 

@@ -1933,33 +1933,14 @@ bool CLinuxRendererGL::CreatePlanarYUVTexture(int index)
 
   im.height = m_sourceHeight;
   im.width = m_sourceWidth;
-  im.cshift_x = (m_format == AV_PIX_FMT_YUV444P) ? 0 : 1;
-  im.cshift_y = (m_format == AV_PIX_FMT_YUV422P || m_format == AV_PIX_FMT_YUV444P) ? 0 : 1;
-
-  switch (m_format)
-  {
-    case AV_PIX_FMT_YUV420P16:
-      buf.m_srcTextureBits = 16;
-      break;
-    case AV_PIX_FMT_YUV420P14:
-      buf.m_srcTextureBits = 14;
-      break;
-    case AV_PIX_FMT_YUV420P12:
-      buf.m_srcTextureBits = 12;
-      break;
-    case AV_PIX_FMT_YUV420P10:
-      buf.m_srcTextureBits = 10;
-      break;
-    case AV_PIX_FMT_YUV420P9:
-      buf.m_srcTextureBits = 9;
-      break;
-    default:
-      break;
-  }
-  if (buf.m_srcTextureBits > 8)
-    im.bpp = 2;
-  else
-    im.bpp = 1;
+  // Chroma subsampling and bit depth derived from libavutil's pixdesc API,
+  // avoiding a parallel per-pix_fmt switch. Works for any planar YUV pix_fmt
+  // (4:2:0 / 4:2:2 / 4:4:4 at any supported bit depth).
+  const AVPixFmtDescriptor* desc = av_pix_fmt_desc_get(m_format);
+  im.cshift_x = desc ? desc->log2_chroma_w : 1;
+  im.cshift_y = desc ? desc->log2_chroma_h : 1;
+  buf.m_srcTextureBits = desc ? desc->comp[0].depth : 8;
+  im.bpp = (buf.m_srcTextureBits > 8) ? 2 : 1;
 
   im.stride[0] = im.bpp * im.width;
   im.stride[1] = im.bpp * (im.width >> im.cshift_x);

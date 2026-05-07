@@ -21,6 +21,7 @@
 
 extern "C" {
 #include <libavutil/mastering_display_metadata.h>
+#include <libavutil/pixdesc.h>
 }
 
 class CRenderCapture;
