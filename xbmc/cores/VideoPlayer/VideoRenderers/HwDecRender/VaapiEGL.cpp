@@ -506,7 +506,8 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
             break;
           case 1:
             texture = &m_vu;
-            if (surface.fourcc == VA_FOURCC_NV12 || surface.fourcc == VA_FOURCC_P010 || surface.fourcc == VA_FOURCC_P016)
+            if (surface.fourcc == VA_FOURCC_NV12 || surface.fourcc == VA_FOURCC_P010 ||
+                surface.fourcc == VA_FOURCC_P012 || surface.fourcc == VA_FOURCC_P016)
             {
               // Adjust w/h for 4:2:0 subsampling on UV plane
               width = (width + 1) >> 1;

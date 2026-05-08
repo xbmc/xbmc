@@ -634,6 +634,20 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
   m_presentPicture = nullptr;
   m_getBufferError = 0;
 
+  // Bitstream chroma subsampling, used by HEVC and VP9 dispatch below to
+  // pick the right VA profile. log2_chroma_{w,h} encodes the subsampling
+  // factor: (1,1) = 4:2:0, (1,0) = 4:2:2, (0,0) = 4:4:4.
+  int chroma = 0;
+  if (const AVPixFmtDescriptor* d = av_pix_fmt_desc_get(avctx->pix_fmt))
+  {
+    if (d->log2_chroma_w == 1 && d->log2_chroma_h == 1)
+      chroma = 420;
+    else if (d->log2_chroma_w == 1 && d->log2_chroma_h == 0)
+      chroma = 422;
+    else if (d->log2_chroma_w == 0 && d->log2_chroma_h == 0)
+      chroma = 444;
+  }
+
   VAProfile profile;
   switch (avctx->codec_id)
   {
@@ -672,6 +686,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
     }
     case AV_CODEC_ID_HEVC:
     {
+      // VAAPI HEVC profile naming: VAProfileHEVCMain<N> is N-bit 4:2:0.
       if (avctx->profile == AV_PROFILE_HEVC_MAIN_10)
       {
         if (!m_capFormats.Supports(AV_PIX_FMT_P010))
@@ -681,6 +696,12 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
       }
       else if (avctx->profile == AV_PROFILE_HEVC_MAIN)
         profile = VAProfileHEVCMain;
+      else if (avctx->profile == AV_PROFILE_HEVC_REXT && m_vaapiConfig.bitDepth == 12 &&
+               chroma == 420 &&
+               (m_capFormats.Supports(AV_PIX_FMT_P012) || m_capFormats.Supports(AV_PIX_FMT_P016)))
+      {
+        profile = VAProfileHEVCMain12;
+      }
       else
         profile = VAProfileNone;
       if (!m_vaapiConfig.context->SupportsProfile(profile))
@@ -736,11 +757,6 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
 
   m_vaapiConfig.profile = profile;
   m_vaapiConfig.attrib = m_vaapiConfig.context->GetAttrib(profile);
-  if ((m_vaapiConfig.attrib.value & (VA_RT_FORMAT_YUV420 | VA_RT_FORMAT_YUV420_10BPP)) == 0)
-  {
-    CLog::Log(LOGERROR, "VAAPI - invalid yuv format {:x}", m_vaapiConfig.attrib.value);
-    return false;
-  }
 
   if (avctx->codec_id == AV_CODEC_ID_H264)
   {
@@ -1177,7 +1193,9 @@ bool CDecoder::ConfigVAAPI()
 {
   m_vaapiConfig.dpy = m_vaapiConfig.context->GetDisplay();
   m_vaapiConfig.attrib = m_vaapiConfig.context->GetAttrib(m_vaapiConfig.profile);
-  if ((m_vaapiConfig.attrib.value & (VA_RT_FORMAT_YUV420 | VA_RT_FORMAT_YUV420_10BPP)) == 0)
+  unsigned int validFormats =
+      VA_RT_FORMAT_YUV420 | VA_RT_FORMAT_YUV420_10BPP | VA_RT_FORMAT_YUV420_12;
+  if ((m_vaapiConfig.attrib.value & validFormats) == 0)
   {
     CLog::Log(LOGERROR, "VAAPI - invalid yuv format {:x}", m_vaapiConfig.attrib.value);
     return false;
@@ -1201,6 +1219,16 @@ bool CDecoder::ConfigVAAPI()
   {
     format = VA_RT_FORMAT_YUV420_10BPP;
     pixelFormat = VA_FOURCC_P010;
+  }
+  else if ((m_vaapiConfig.profile == VAProfileHEVCMain12 ||
+            m_vaapiConfig.profile == VAProfileVP9Profile2) &&
+           m_vaapiConfig.bitDepth == 12)
+  {
+    // P012 is the 12-bit-native fourcc; P016 carries the same 12-bit content
+    // padded into 16-bit storage and is a fallback when the driver does not
+    // advertise P012.
+    format = VA_RT_FORMAT_YUV420_12;
+    pixelFormat = m_capFormats.Supports(AV_PIX_FMT_P012) ? VA_FOURCC_P012 : VA_FOURCC_P016;
   }
 
   VASurfaceAttrib attribs[1], *attrib;
