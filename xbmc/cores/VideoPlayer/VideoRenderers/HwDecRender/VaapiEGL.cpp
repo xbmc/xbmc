@@ -532,13 +532,29 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
         return false;
     }
 
+    // Mesa Y210 / Y212 / Y216 import quirk: Mesa imports those DRM fourccs
+    // as a two-plane internal layout (RG_UNORM16 luma + RGBA16 chroma)
+    // whose chroma plane is only reachable via the samplerExternalOES NIR
+    // lowering pass. sampler2D sees only the luma plane (RG with B=0 and
+    // A=1), losing chroma. Re-import the same DMA-BUF as a flat
+    // ABGR16161616 texture at half width so sampler2D returns the four
+    // 16-bit slots Y0 / Cb / Y1 / Cr directly.
+    EGLint eglFourcc = static_cast<EGLint>(layer.drm_format);
+    EGLint eglWidth = width;
+    if (surface.fourcc == VA_FOURCC_Y210 || surface.fourcc == VA_FOURCC_Y212 ||
+        surface.fourcc == VA_FOURCC_Y216)
+    {
+      eglFourcc = DRM_FORMAT_ABGR16161616;
+      eglWidth = (width + 1) >> 1;
+    }
+
     CEGLAttributes<8> attribs; // 6 static + 2 modifiers
-    attribs.Add({{EGL_LINUX_DRM_FOURCC_EXT, static_cast<EGLint>(layer.drm_format)},
-      {EGL_WIDTH, width},
-      {EGL_HEIGHT, height},
-      {EGL_DMA_BUF_PLANE0_FD_EXT, object.fd},
-      {EGL_DMA_BUF_PLANE0_OFFSET_EXT, static_cast<EGLint>(layer.offset[plane])},
-      {EGL_DMA_BUF_PLANE0_PITCH_EXT, static_cast<EGLint>(layer.pitch[plane])}});
+    attribs.Add({{EGL_LINUX_DRM_FOURCC_EXT, eglFourcc},
+                 {EGL_WIDTH, eglWidth},
+                 {EGL_HEIGHT, height},
+                 {EGL_DMA_BUF_PLANE0_FD_EXT, object.fd},
+                 {EGL_DMA_BUF_PLANE0_OFFSET_EXT, static_cast<EGLint>(layer.offset[plane])},
+                 {EGL_DMA_BUF_PLANE0_PITCH_EXT, static_cast<EGLint>(layer.pitch[plane])}});
 
     if (m_hasPlaneModifiers)
     {
