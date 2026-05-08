@@ -48,15 +48,31 @@ void CRendererVAAPIGLES::Register(IVaapiWinSystem* winSystem,
     return;
   }
 
-  CVaapi2Texture::TestInterop(vaDpy, eglDisplay, general, deepColor);
-  CLog::Log(LOGDEBUG, "Vaapi2 EGL interop test results: general {}, deepColor {}",
-            general ? "yes" : "no", deepColor ? "yes" : "no");
-  if (!general)
+  // Probe importable surface formats. Vaapi2 (vaExportSurfaceHandle) is
+  // tried first because it can probe a wider fourcc set than Vaapi1
+  // (vaDeriveImage). Vaapi1 fallback runs only when Vaapi2 cannot import
+  // even the baseline 8-bit 4:2:0 NV12 surface, which happens on older
+  // Mesa / older VAAPI driver pairings.
+  CCapabilities& caps = CDecoder::GetCaps();
+  CVaapi2Texture::TestInteropFormats(vaDpy, eglDisplay, caps);
+
+  if (!caps.Supports(AV_PIX_FMT_NV12))
   {
-    CVaapi1Texture::TestInterop(vaDpy, eglDisplay, general, deepColor);
-    CLog::Log(LOGDEBUG, "Vaapi1 EGL interop test results: general {}, deepColor {}",
-              general ? "yes" : "no", deepColor ? "yes" : "no");
+    bool v1General = false;
+    bool v1DeepColor = false;
+    CVaapi1Texture::TestInterop(vaDpy, eglDisplay, v1General, v1DeepColor);
+    if (v1General)
+      caps.Add(AV_PIX_FMT_NV12);
+    if (v1DeepColor)
+      caps.Add(AV_PIX_FMT_P010);
   }
+
+  CLog::Log(LOGDEBUG, "VAAPI EGL interop: {}", caps.ToString());
+
+  // Bool out-params are views over caps for the OptionalsReg / WinSystem
+  // boundary that still expresses capability as the general/deepColor pair.
+  general = caps.Supports(AV_PIX_FMT_NV12);
+  deepColor = caps.Supports(AV_PIX_FMT_P010);
 
   vaTerminate(vaDpy);
 

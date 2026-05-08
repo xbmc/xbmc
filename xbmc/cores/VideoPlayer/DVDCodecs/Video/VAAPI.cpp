@@ -504,9 +504,38 @@ bool CVideoSurfaces::HasRefs()
 // VAAPI
 //-----------------------------------------------------------------------------
 
-bool CDecoder::m_capGeneral = false;
-bool CDecoder::m_capDeepColor = false;
+CCapabilities CDecoder::m_capFormats;
 IVaapiWinSystem* CDecoder::m_pWinSystem = nullptr;
+
+//-----------------------------------------------------------------------------
+// CCapabilities
+//-----------------------------------------------------------------------------
+
+void CCapabilities::Add(AVPixelFormat pixFmt)
+{
+  m_pixFmts.insert(pixFmt);
+}
+
+bool CCapabilities::Supports(AVPixelFormat pixFmt) const
+{
+  return m_pixFmts.count(pixFmt) > 0;
+}
+
+std::string CCapabilities::ToString() const
+{
+  if (m_pixFmts.empty())
+    return "none";
+
+  std::string out;
+  for (auto pixFmt : m_pixFmts)
+  {
+    if (!out.empty())
+      out += ',';
+    const char* name = av_get_pix_fmt_name(pixFmt);
+    out += name ? name : "?";
+  }
+  return out;
+}
 
 CDecoder::CDecoder(CProcessInfo& processInfo) :
   m_vaapiOutput(*this, &m_inMsgEvent),
@@ -529,7 +558,7 @@ CDecoder::~CDecoder()
 
 bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat fmt)
 {
-  if (!m_capGeneral)
+  if (!m_capFormats.Supports(AV_PIX_FMT_NV12))
     return false;
 
   // check if user wants to decode this format with VAAPI
@@ -645,7 +674,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
     {
       if (avctx->profile == AV_PROFILE_HEVC_MAIN_10)
       {
-        if (!m_capDeepColor)
+        if (!m_capFormats.Supports(AV_PIX_FMT_P010))
           return false;
 
         profile = VAProfileHEVCMain10;
@@ -1268,7 +1297,7 @@ IHardwareDecoder* CDecoder::Create(CDVDStreamInfo &hint, CProcessInfo &processIn
   return nullptr;
 }
 
-void CDecoder::Register(IVaapiWinSystem *winSystem, bool deepColor)
+void CDecoder::Register(IVaapiWinSystem* winSystem, bool /*deepColor*/)
 {
   m_pWinSystem = winSystem;
 
@@ -1276,8 +1305,6 @@ void CDecoder::Register(IVaapiWinSystem *winSystem, bool deepColor)
   if (!CVAAPIContext::EnsureContext(&config.context, nullptr))
     return;
 
-  m_capGeneral = true;
-  m_capDeepColor = deepColor;
   CDVDFactoryCodec::RegisterHWAccel("vaapi", CDecoder::Create);
   config.context->Release(nullptr);
 

@@ -689,3 +689,20 @@ bool CVaapi2Texture::TestInteropGeneral(VADisplay vaDpy, EGLDisplay eglDisplay)
 {
   return TestEsh(vaDpy, eglDisplay, VA_RT_FORMAT_YUV420, VA_FOURCC_NV12);
 }
+
+void CVaapi2Texture::TestInteropFormats(VADisplay vaDpy, EGLDisplay eglDisplay, CCapabilities& caps)
+{
+  // NV12 is the importability gate. If EGL cannot import the baseline 8-bit
+  // 4:2:0 surface, no other VAAPI fourcc will import either; skip the rest.
+  if (!TestEsh(vaDpy, eglDisplay, VA_RT_FORMAT_YUV420, VA_FOURCC_NV12))
+    return;
+
+  // Iterate the central format table; any fourcc whose TestEsh round-trip
+  // succeeds is added to caps. Future fourccs are added by extending the
+  // table - no probe-side changes needed.
+  for (const auto& fmt : kVaFormatTable)
+  {
+    if (TestEsh(vaDpy, eglDisplay, fmt.vaRtFormat, fmt.vaFourcc))
+      caps.Add(fmt.pixFmt);
+  }
+}

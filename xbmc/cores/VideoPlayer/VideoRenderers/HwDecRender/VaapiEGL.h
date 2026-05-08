@@ -25,6 +25,7 @@
 namespace VAAPI
 {
 
+class CCapabilities;
 class CVaapiRenderPicture;
 
 struct InteropInfo
@@ -99,6 +100,10 @@ public:
 
   static void TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &deepColor);
   static bool TestInteropGeneral(VADisplay vaDpy, EGLDisplay eglDisplay);
+
+  // Probe every importable VA fourcc the renderer cares about and Add()
+  // each successful one to caps.
+  static void TestInteropFormats(VADisplay vaDpy, EGLDisplay eglDisplay, CCapabilities& caps);
 
 private:
   static bool TestEsh(VADisplay vaDpy, EGLDisplay eglDisplay, std::uint32_t rtFormat, std::int32_t pixelFormat);
