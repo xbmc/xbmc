@@ -289,14 +289,16 @@ bool CSeekHandler::OnAction(const CAction &action)
       if (appPlayer->IsPausedPlayback() && appPlayer->HasVideo())
       {
         const float fps{CServiceBroker::GetDataCacheCore().GetVideoFps()};
+        const float fps{CServiceBroker::GetDataCacheCore().GetVideoFps()};
         if (fps > 0.0f)
         {
           const int64_t frameTimeMs{static_cast<int64_t>(std::llround(1000.0 / fps))};
-          const int64_t targetTimeMs{std::max(
-              appPlayer->GetMinTime(), appPlayer->GetTime() - std::max<int64_t>(1, frameTimeMs))};
+          const int64_t targetTimeMs{
+              std::max(appPlayer->GetMinTime(), appPlayer->GetTime() - std::max<int64_t>(1, frameTimeMs))};
           appPlayer->SeekTime(targetTimeMs);
+          return true;
         }
-        return true;
+        // Fall through to normal seek behavior if fps is invalid
       }
 
       Seek(false, action.GetAmount(), action.GetRepeat(), false, type);
