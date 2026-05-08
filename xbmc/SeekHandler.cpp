@@ -290,7 +290,7 @@ bool CSeekHandler::OnAction(const CAction &action)
       {
         const float fps{CServiceBroker::GetDataCacheCore().GetVideoFps()};
         const float fps{CServiceBroker::GetDataCacheCore().GetVideoFps()};
-        if (fps > 0.0f)
+        if (fps > 1.0f)
         {
           const int64_t frameTimeMs{static_cast<int64_t>(std::llround(1000.0 / fps))};
           const int64_t targetTimeMs{
