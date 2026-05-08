@@ -26,6 +26,9 @@ enum EShaderFormat
   SHADER_UYVY,
   SHADER_NV12_RRG,
   SHADER_Y210, // packed 4:2:2 in GL_RGBA16 (Y210 / Y212 / Y216)
+  SHADER_AYUV, // packed 4:4:4 in GL_RGBA8  (AYUV / XYUV)
+  SHADER_Y410, // packed 4:4:4 in GL_RGB10_A2 (Y410)
+  SHADER_Y412, // packed 4:4:4 in GL_RGBA16 (Y412 / Y416)
   SHADER_MAX,
 };
 
@@ -56,6 +59,9 @@ private:
       {SHADER_UYVY, "UYVY"},
       {SHADER_NV12_RRG, "NV12 red/red/green"},
       {SHADER_Y210, "Y210 packed 4:2:2"},
+      {SHADER_AYUV, "AYUV packed 4:4:4"},
+      {SHADER_Y410, "Y410 packed 4:4:4 10-bit"},
+      {SHADER_Y412, "Y412 packed 4:4:4 12/16-bit"},
   });
 
   static_assert(SHADER_MAX == shaderFormatMap.size(),

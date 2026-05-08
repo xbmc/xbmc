@@ -157,8 +157,8 @@ EShaderFormat CRendererVAAPIGLES::GetShaderFormat()
   // P012 / P016) all share SHADER_NV12_RRG; Mesa imports their DMA-BUF as
   // GL_R16 / GL_RG16 textures whose normalized 0..1 sampled floats span
   // the full range regardless of underlying bit depth, so one shader
-  // covers all 4:2:0 bit depths. Packed 4:2:2 has its own shader because
-  // its channel layout differs.
+  // covers all 4:2:0 bit depths. Packed 4:2:2 and 4:4:4 each have their
+  // own shader because their channel layouts differ.
   switch (m_vaapiFourcc)
   {
     case VA_FOURCC_NV12:
@@ -170,6 +170,16 @@ EShaderFormat CRendererVAAPIGLES::GetShaderFormat()
     case VA_FOURCC_Y212:
     case VA_FOURCC_Y216:
       return SHADER_Y210;
+    case VA_FOURCC_AYUV:
+#ifdef VA_FOURCC_XYUV
+    case VA_FOURCC_XYUV:
+#endif
+      return SHADER_AYUV;
+    case VA_FOURCC_Y410:
+      return SHADER_Y410;
+    case VA_FOURCC_Y412:
+    case VA_FOURCC_Y416:
+      return SHADER_Y412;
     default:
       CLog::Log(LOGDEBUG, "CRendererVAAPIGLES::GetShaderFormat - unrecognized fourcc: {:#x}",
                 m_vaapiFourcc);

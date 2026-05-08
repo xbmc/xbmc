@@ -714,6 +714,23 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
       {
         profile = VAProfileHEVCMain422_12;
       }
+      else if (avctx->profile == AV_PROFILE_HEVC_REXT && m_vaapiConfig.bitDepth == 8 &&
+               chroma == 444 &&
+               (m_capFormats.Supports(AV_PIX_FMT_VUYA) || m_capFormats.Supports(AV_PIX_FMT_VUYX)))
+      {
+        profile = VAProfileHEVCMain444;
+      }
+      else if (avctx->profile == AV_PROFILE_HEVC_REXT && m_vaapiConfig.bitDepth == 10 &&
+               chroma == 444 && m_capFormats.Supports(AV_PIX_FMT_XV30))
+      {
+        profile = VAProfileHEVCMain444_10;
+      }
+      else if (avctx->profile == AV_PROFILE_HEVC_REXT && m_vaapiConfig.bitDepth == 12 &&
+               chroma == 444 &&
+               (m_capFormats.Supports(AV_PIX_FMT_XV36) || m_capFormats.Supports(AV_PIX_FMT_XV48)))
+      {
+        profile = VAProfileHEVCMain444_12;
+      }
       else
         profile = VAProfileNone;
       if (!m_vaapiConfig.context->SupportsProfile(profile))
@@ -729,10 +746,31 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
     }
     case AV_CODEC_ID_VP9:
     {
+      // VP9 profiles vary chroma subsampling and bit depth orthogonally:
+      //   Profile 0: 4:2:0  8-bit
+      //   Profile 1: 4:2:2 / 4:4:4  8-bit
+      //   Profile 2: 4:2:0  10/12-bit
+      //   Profile 3: 4:2:2 / 4:4:4  10/12-bit
+      // VAAPI does not split by chroma; the VP9 profile constants cover both
+      // 4:2:2 and 4:4:4 inside Profile 1 / Profile 3, with the surface fourcc
+      // selected per the actual content's pix_fmt. Intel iHD only produces
+      // 4:4:4 surfaces for VP9 1/3, so 4:2:2 VP9 falls through to SW.
       if (avctx->profile == AV_PROFILE_VP9_0)
         profile = VAProfileVP9Profile0;
       else if (avctx->profile == AV_PROFILE_VP9_2)
         profile = VAProfileVP9Profile2;
+      else if (avctx->profile == AV_PROFILE_VP9_1 && chroma == 444 &&
+               (m_capFormats.Supports(AV_PIX_FMT_VUYA) || m_capFormats.Supports(AV_PIX_FMT_VUYX)))
+      {
+        profile = VAProfileVP9Profile1;
+      }
+      else if (avctx->profile == AV_PROFILE_VP9_3 && chroma == 444 &&
+               ((m_vaapiConfig.bitDepth == 10 && m_capFormats.Supports(AV_PIX_FMT_XV30)) ||
+                (m_vaapiConfig.bitDepth == 12 && (m_capFormats.Supports(AV_PIX_FMT_XV36) ||
+                                                  m_capFormats.Supports(AV_PIX_FMT_XV48)))))
+      {
+        profile = VAProfileVP9Profile3;
+      }
       else
         profile = VAProfileNone;
       if (!m_vaapiConfig.context->SupportsProfile(profile))
@@ -1207,7 +1245,8 @@ bool CDecoder::ConfigVAAPI()
   m_vaapiConfig.attrib = m_vaapiConfig.context->GetAttrib(m_vaapiConfig.profile);
   unsigned int validFormats = VA_RT_FORMAT_YUV420 | VA_RT_FORMAT_YUV420_10BPP |
                               VA_RT_FORMAT_YUV420_12 | VA_RT_FORMAT_YUV422_10 |
-                              VA_RT_FORMAT_YUV422_12;
+                              VA_RT_FORMAT_YUV422_12 | VA_RT_FORMAT_YUV444 |
+                              VA_RT_FORMAT_YUV444_10 | VA_RT_FORMAT_YUV444_12;
   if ((m_vaapiConfig.attrib.value & validFormats) == 0)
   {
     CLog::Log(LOGERROR, "VAAPI - invalid yuv format {:x}", m_vaapiConfig.attrib.value);
@@ -1253,6 +1292,30 @@ bool CDecoder::ConfigVAAPI()
     // Y212 is the 12-bit-native fourcc; Y216 is the 16-bit-storage fallback.
     format = VA_RT_FORMAT_YUV422_12;
     pixelFormat = m_capFormats.Supports(AV_PIX_FMT_Y212) ? VA_FOURCC_Y212 : VA_FOURCC_Y216;
+  }
+  else if ((m_vaapiConfig.profile == VAProfileHEVCMain444 ||
+            m_vaapiConfig.profile == VAProfileVP9Profile1) &&
+           m_vaapiConfig.bitDepth == 8)
+  {
+    // AYUV is the standard 4:4:4 8-bit fourcc; XYUV is identical bytes
+    // with alpha ignored, used by some VAAPI versions.
+    format = VA_RT_FORMAT_YUV444;
+    pixelFormat = m_capFormats.Supports(AV_PIX_FMT_VUYA) ? VA_FOURCC_AYUV : VA_FOURCC_XYUV;
+  }
+  else if ((m_vaapiConfig.profile == VAProfileHEVCMain444_10 ||
+            m_vaapiConfig.profile == VAProfileVP9Profile3) &&
+           m_vaapiConfig.bitDepth == 10)
+  {
+    format = VA_RT_FORMAT_YUV444_10;
+    pixelFormat = VA_FOURCC_Y410;
+  }
+  else if ((m_vaapiConfig.profile == VAProfileHEVCMain444_12 ||
+            m_vaapiConfig.profile == VAProfileVP9Profile3) &&
+           m_vaapiConfig.bitDepth == 12)
+  {
+    // Y412 is the 12-bit-native fourcc; Y416 is the 16-bit-storage fallback.
+    format = VA_RT_FORMAT_YUV444_12;
+    pixelFormat = m_capFormats.Supports(AV_PIX_FMT_XV36) ? VA_FOURCC_Y412 : VA_FOURCC_Y416;
   }
 
   VASurfaceAttrib attribs[1], *attrib;

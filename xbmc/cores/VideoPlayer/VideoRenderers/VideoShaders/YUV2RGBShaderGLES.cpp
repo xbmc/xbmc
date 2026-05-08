@@ -58,6 +58,12 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(EShaderFormat format,
     m_defines += "#define XBMC_UYVY\n";
   else if (m_format == SHADER_Y210)
     m_defines += "#define XBMC_Y210\n";
+  else if (m_format == SHADER_AYUV)
+    m_defines += "#define XBMC_AYUV\n";
+  else if (m_format == SHADER_Y410)
+    m_defines += "#define XBMC_Y410\n";
+  else if (m_format == SHADER_Y412)
+    m_defines += "#define XBMC_Y412\n";
   else
     CLog::Log(LOGERROR, "GLES: BaseYUV2RGBGLSLShader - unsupported format {}", m_format);
 

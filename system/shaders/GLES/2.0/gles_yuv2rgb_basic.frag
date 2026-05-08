@@ -114,6 +114,29 @@ void main()
 
   yuv = vec4(outY, outUV, 1.0);
 
+#elif defined(XBMC_AYUV)
+
+  // Packed 4:4:4 in 8-bit channels (AYUV, XYUV). DRM_FORMAT_AYUV stores
+  // bytes V, U, Y, A in memory; EGL imports as GL_RGBA8 so RGBA = V, U, Y,
+  // alpha. Shader sees one full-resolution YUV sample per texel.
+  vec4 t = texture2D(m_sampY, m_cordY);
+  yuv = vec4(t.b, t.g, t.r, 1.0);
+
+#elif defined(XBMC_Y410)
+
+  // Packed 4:4:4 10-bit in a 32-bit word (DRM_FORMAT_Y410). EGL imports as
+  // GL_RGB10_A2; the format's standard bit layout puts A2 V10 U10 Y10
+  // little-endian, which surfaces as RGBA = U, Y, V, A after import.
+  vec4 t = texture2D(m_sampY, m_cordY);
+  yuv = vec4(t.g, t.r, t.b, 1.0);
+
+#elif defined(XBMC_Y412)
+
+  // Packed 4:4:4 in 16-bit channels (Y412 12-bit, Y416 16-bit). EGL imports
+  // as GL_RGBA16 with channel order RGBA = U, Y, V, A.
+  vec4 t = texture2D(m_sampY, m_cordY);
+  yuv = vec4(t.g, t.r, t.b, 1.0);
+
 #endif
 
   rgb = m_yuvmat * yuv;
