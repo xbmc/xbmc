@@ -490,6 +490,14 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
                 layer.num_planes);
       return false;
     }
+    // Driver-supplied object_index is untrusted; reject OOB before indexing.
+    if (layer.object_index[plane] >= surface.num_objects)
+    {
+      CLog::Log(LOGERROR,
+                "CVaapi2Texture::Map: layer {} plane {} object_index {} >= num_objects {}", layerNo,
+                plane, layer.object_index[plane], surface.num_objects);
+      return false;
+    }
     auto const& object = surface.objects[layer.object_index[plane]];
 
     MappedTexture* texture{};
@@ -664,6 +672,12 @@ bool CVaapi2Texture::TestEsh(VADisplay vaDpy, EGLDisplay eglDisplay, std::uint32
   if (status == VA_STATUS_SUCCESS)
   {
     auto const& layer = drmPrimeSurface.layers[0];
+    if (layer.object_index[0] >= drmPrimeSurface.num_objects)
+    {
+      CLog::Log(LOGERROR, "CVaapi2Texture::TestEsh: object_index {} >= num_objects {}",
+                layer.object_index[0], drmPrimeSurface.num_objects);
+      return false;
+    }
     auto const& object = drmPrimeSurface.objects[layer.object_index[0]];
     EGLint attribs[] = {
       EGL_LINUX_DRM_FOURCC_EXT, static_cast<EGLint>(drmPrimeSurface.layers[0].drm_format),
