@@ -327,6 +327,18 @@ const std::vector<std::pair<std::string, int64_t>>& CDataCacheCore::GetChapters(
   return m_contentInfo.GetChapters();
 }
 
+void CDataCacheCore::SetBookmarks(const std::vector<std::chrono::milliseconds>& bookmarks)
+{
+  std::unique_lock lock(m_contentSection);
+  m_contentInfo.SetBookmarks(bookmarks);
+}
+
+const std::vector<std::chrono::milliseconds>& CDataCacheCore::GetBookmarks() const
+{
+  std::unique_lock lock(m_contentSection);
+  return m_contentInfo.GetBookmarks();
+}
+
 void CDataCacheCore::SetRenderClockSync(bool enable)
 {
   std::unique_lock lock(m_renderSection);

@@ -4162,6 +4162,13 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
     CServiceBroker::GetDataCacheCore().SetCuts(m_Edl.GetCutMarkers());
     CServiceBroker::GetDataCacheCore().SetSceneMarkers(m_Edl.GetSceneMarkers());
 
+    VECBOOKMARKS bm;
+    if (CBookmark::GetBookmarksForFile(m_item.GetDynPath(), bm, {CBookmark::STANDARD}))
+    {
+      std::vector<std::chrono::milliseconds> pos = CBookmark::BookmarksToPositions(bm);
+      SetBookmarks(pos);
+    }
+
     static_cast<IDVDStreamPlayerVideo*>(player)->SetSpeed(m_streamPlayerSpeed);
     m_CurrentVideo.syncState = IDVDStreamPlayer::SYNC_STARTING;
     m_CurrentVideo.packets = 0;
@@ -5038,6 +5045,16 @@ int CVideoPlayer::GetPreviousChapter()
     return chapter - 1;
   else
     return chapter;
+}
+
+std::vector<std::chrono::milliseconds> CVideoPlayer::GetBookmarks() const
+{
+  return CServiceBroker::GetDataCacheCore().GetBookmarks();
+}
+
+void CVideoPlayer::SetBookmarks(const std::vector<std::chrono::milliseconds>& bookmarks)
+{
+  CServiceBroker::GetDataCacheCore().SetBookmarks(bookmarks);
 }
 
 void CVideoPlayer::AddSubtitle(const std::string& strSubPath)
