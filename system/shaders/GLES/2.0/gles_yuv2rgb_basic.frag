@@ -93,6 +93,27 @@ void main()
 
   yuv = vec4(outY, outUV, 1.0);
 
+#elif defined(XBMC_Y210)
+
+  // Packed 4:2:2 in 16-bit channels (covers Y210 10-bit, Y212 12-bit, Y216
+  // 16-bit). Mesa imports DRM_FORMAT_Y210/Y212/Y216 as GL_RGBA16; channels
+  // map RGBA -> Y0, Cb, Y1, Cr. Each texel spans two luma samples sharing
+  // one chroma pair, like YUY2 but in wider channels.
+  vec2 stepxy = m_step;
+  vec2 pos    = m_cordY;
+  pos         = vec2(pos.x - stepxy.x * 0.25, pos.y);
+  vec2 f      = fract(pos / stepxy);
+
+  vec4 c1 = texture2D(m_sampY, vec2(pos.x + (0.5 - f.x) * stepxy.x, pos.y));
+  vec4 c2 = texture2D(m_sampY, vec2(pos.x + (1.5 - f.x) * stepxy.x, pos.y));
+
+  float leftY  = mix(c1.r, c1.b, f.x * 2.0);
+  float rightY = mix(c1.b, c2.r, f.x * 2.0 - 1.0);
+  vec2  outUV  = mix(c1.ga, c2.ga, f.x);
+  float outY   = mix(leftY, rightY, step(0.5, f.x));
+
+  yuv = vec4(outY, outUV, 1.0);
+
 #endif
 
   rgb = m_yuvmat * yuv;

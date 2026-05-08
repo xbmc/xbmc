@@ -197,6 +197,10 @@ struct CVaapiConfig
   CProcessInfo *processInfo;
   bool driverIsMesa;
   int bitDepth;
+  // VA fourcc requested for the surface pool. Carried through to processed
+  // pictures so the renderer can pick its sampling path per-fourcc without
+  // re-inspecting the surface.
+  std::int32_t pixelFormat{};
 };
 
 /**
@@ -241,6 +245,7 @@ struct CVaapiProcessedPicture
     id = rhs.id;
     source = rhs.source;
     crop = rhs.crop;
+    fourcc = rhs.fourcc;
     return *this;
   };
 
@@ -250,6 +255,9 @@ struct CVaapiProcessedPicture
   int id;
   CPostproc *source = nullptr;
   bool crop = false;
+  // VA fourcc of the underlying surface. Set by COutput from
+  // CVaapiConfig::pixelFormat.
+  std::int32_t fourcc{};
 };
 
 class CVaapiRenderPicture : public CVideoBuffer
@@ -455,6 +463,9 @@ inline constexpr VaFormatEntry kVaFormatTable[] = {
     {VA_FOURCC_P010, VA_RT_FORMAT_YUV420_10BPP, AV_PIX_FMT_P010},
     {VA_FOURCC_P012, VA_RT_FORMAT_YUV420_12, AV_PIX_FMT_P012},
     {VA_FOURCC_P016, VA_RT_FORMAT_YUV420_12, AV_PIX_FMT_P016},
+    {VA_FOURCC_Y210, VA_RT_FORMAT_YUV422_10, AV_PIX_FMT_Y210},
+    {VA_FOURCC_Y212, VA_RT_FORMAT_YUV422_12, AV_PIX_FMT_Y212},
+    {VA_FOURCC_Y216, VA_RT_FORMAT_YUV422_12, AV_PIX_FMT_Y216},
 };
 
 /*!

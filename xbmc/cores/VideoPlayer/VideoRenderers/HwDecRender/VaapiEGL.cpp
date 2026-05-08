@@ -498,6 +498,13 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
 
     switch (surface.num_layers)
     {
+      case 1:
+        // Single-plane packed formats (YUY2, Y210/Y212/Y216). The DMA-BUF
+        // carries Y/Cb/Y/Cr (or wider) interleaved; bind to m_y and leave
+        // m_vu unused. The shader (XBMC_Y210 in gles_yuv2rgb_basic.frag)
+        // decodes the packed layout.
+        texture = &m_y;
+        break;
       case 2:
         switch (layerNo)
         {
@@ -520,7 +527,7 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
         break;
       default:
         CLog::Log(LOGDEBUG,
-                  "CVaapi2Texture::Map: DRM-exported surface {} layers - only 2 supported",
+                  "CVaapi2Texture::Map: DRM-exported surface {} layers - only 1 or 2 supported",
                   surface.num_layers);
         return false;
     }

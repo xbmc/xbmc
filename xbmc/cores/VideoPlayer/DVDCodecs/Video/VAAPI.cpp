@@ -686,7 +686,8 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
     }
     case AV_CODEC_ID_HEVC:
     {
-      // VAAPI HEVC profile naming: VAProfileHEVCMain<N> is N-bit 4:2:0.
+      // VAAPI HEVC profile naming: VAProfileHEVCMain<N> is N-bit 4:2:0,
+      // VAProfileHEVCMain422_<N> is N-bit 4:2:2.
       if (avctx->profile == AV_PROFILE_HEVC_MAIN_10)
       {
         if (!m_capFormats.Supports(AV_PIX_FMT_P010))
@@ -701,6 +702,17 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
                (m_capFormats.Supports(AV_PIX_FMT_P012) || m_capFormats.Supports(AV_PIX_FMT_P016)))
       {
         profile = VAProfileHEVCMain12;
+      }
+      else if (avctx->profile == AV_PROFILE_HEVC_REXT && m_vaapiConfig.bitDepth == 10 &&
+               chroma == 422 && m_capFormats.Supports(AV_PIX_FMT_Y210))
+      {
+        profile = VAProfileHEVCMain422_10;
+      }
+      else if (avctx->profile == AV_PROFILE_HEVC_REXT && m_vaapiConfig.bitDepth == 12 &&
+               chroma == 422 &&
+               (m_capFormats.Supports(AV_PIX_FMT_Y212) || m_capFormats.Supports(AV_PIX_FMT_Y216)))
+      {
+        profile = VAProfileHEVCMain422_12;
       }
       else
         profile = VAProfileNone;
@@ -1193,8 +1205,9 @@ bool CDecoder::ConfigVAAPI()
 {
   m_vaapiConfig.dpy = m_vaapiConfig.context->GetDisplay();
   m_vaapiConfig.attrib = m_vaapiConfig.context->GetAttrib(m_vaapiConfig.profile);
-  unsigned int validFormats =
-      VA_RT_FORMAT_YUV420 | VA_RT_FORMAT_YUV420_10BPP | VA_RT_FORMAT_YUV420_12;
+  unsigned int validFormats = VA_RT_FORMAT_YUV420 | VA_RT_FORMAT_YUV420_10BPP |
+                              VA_RT_FORMAT_YUV420_12 | VA_RT_FORMAT_YUV422_10 |
+                              VA_RT_FORMAT_YUV422_12;
   if ((m_vaapiConfig.attrib.value & validFormats) == 0)
   {
     CLog::Log(LOGERROR, "VAAPI - invalid yuv format {:x}", m_vaapiConfig.attrib.value);
@@ -1230,6 +1243,17 @@ bool CDecoder::ConfigVAAPI()
     format = VA_RT_FORMAT_YUV420_12;
     pixelFormat = m_capFormats.Supports(AV_PIX_FMT_P012) ? VA_FOURCC_P012 : VA_FOURCC_P016;
   }
+  else if (m_vaapiConfig.profile == VAProfileHEVCMain422_10 && m_vaapiConfig.bitDepth == 10)
+  {
+    format = VA_RT_FORMAT_YUV422_10;
+    pixelFormat = VA_FOURCC_Y210;
+  }
+  else if (m_vaapiConfig.profile == VAProfileHEVCMain422_12 && m_vaapiConfig.bitDepth == 12)
+  {
+    // Y212 is the 12-bit-native fourcc; Y216 is the 16-bit-storage fallback.
+    format = VA_RT_FORMAT_YUV422_12;
+    pixelFormat = m_capFormats.Supports(AV_PIX_FMT_Y212) ? VA_FOURCC_Y212 : VA_FOURCC_Y216;
+  }
 
   VASurfaceAttrib attribs[1], *attrib;
   attrib = attribs;
@@ -1237,6 +1261,10 @@ bool CDecoder::ConfigVAAPI()
   attrib->type = VASurfaceAttribPixelFormat;
   attrib->value.type = VAGenericValueTypeInteger;
   attrib->value.value.i = pixelFormat;
+
+  // Carry the surface fourcc through to processed pictures so the renderer
+  // can dispatch sampling per-fourcc without re-inspecting each surface.
+  m_vaapiConfig.pixelFormat = pixelFormat;
 
   VASurfaceID surfaces[32];
   int nb_surfaces = m_vaapiConfig.maxReferences;
@@ -2229,6 +2257,10 @@ CVaapiRenderPicture* COutput::ProcessPicture(CVaapiProcessedPicture &pic)
   CVaapiRenderPicture *retPic;
   retPic = m_bufferPool->GetVaapi();
   retPic->DVDPic.SetParams(pic.DVDPic);
+
+  // Stamp the surface fourcc so renderers can dispatch sampling per-fourcc
+  // (NV12/P010/P012/P016 semi-planar vs YUY2/Y210 packed).
+  pic.fourcc = m_config.pixelFormat;
 
   if (!pic.source)
   {

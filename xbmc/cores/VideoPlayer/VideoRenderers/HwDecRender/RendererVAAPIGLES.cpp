@@ -101,6 +101,8 @@ bool CRendererVAAPIGLES::Configure(const VideoPicture& picture, float fps, unsig
   else
     m_isVAAPIBuffer = false;
 
+  m_vaapiFourcc = pic->procPic.fourcc;
+
   if (m_isVAAPIBuffer)
   {
     InteropInfo interop;
@@ -148,14 +150,31 @@ bool CRendererVAAPIGLES::ConfigChanged(const VideoPicture& picture)
 
 EShaderFormat CRendererVAAPIGLES::GetShaderFormat()
 {
-  EShaderFormat ret = SHADER_NONE;
+  if (!m_isVAAPIBuffer)
+    return SHADER_NV12;
 
-  if (m_isVAAPIBuffer)
-    ret = SHADER_NV12_RRG;
-  else
-    ret = SHADER_NV12;
-
-  return ret;
+  // Per-fourcc sampling path. Semi-planar 4:2:0 surfaces (NV12 / P010 /
+  // P012 / P016) all share SHADER_NV12_RRG; Mesa imports their DMA-BUF as
+  // GL_R16 / GL_RG16 textures whose normalized 0..1 sampled floats span
+  // the full range regardless of underlying bit depth, so one shader
+  // covers all 4:2:0 bit depths. Packed 4:2:2 has its own shader because
+  // its channel layout differs.
+  switch (m_vaapiFourcc)
+  {
+    case VA_FOURCC_NV12:
+    case VA_FOURCC_P010:
+    case VA_FOURCC_P012:
+    case VA_FOURCC_P016:
+      return SHADER_NV12_RRG;
+    case VA_FOURCC_Y210:
+    case VA_FOURCC_Y212:
+    case VA_FOURCC_Y216:
+      return SHADER_Y210;
+    default:
+      CLog::Log(LOGDEBUG, "CRendererVAAPIGLES::GetShaderFormat - unrecognized fourcc: {:#x}",
+                m_vaapiFourcc);
+      return SHADER_NV12_RRG;
+  }
 }
 
 bool CRendererVAAPIGLES::LoadShadersHook()
@@ -271,6 +290,16 @@ bool CRendererVAAPIGLES::UploadTexture(int index)
   planes[0].texwidth  = size.Width();
   planes[0].texheight = size.Height();
 
+  // Packed 4:2:2 fourccs (YUY2 / Y210 / Y212 / Y216) hold two luma per
+  // texel, so the GL texture covers half the source width with each texel
+  // representing a (Y0, Cb, Y1, Cr) macropixel. Match the LinuxRendererGLES
+  // YUYV path: halve texwidth (ceiling for odd widths) and tell the shader
+  // pixpertex_x = 2.
+  const bool packed422 = (m_vaapiFourcc == VA_FOURCC_Y210 || m_vaapiFourcc == VA_FOURCC_Y212 ||
+                          m_vaapiFourcc == VA_FOURCC_Y216);
+  if (packed422)
+    planes[0].texwidth = (planes[0].texwidth + 1) / 2;
+
   planes[1].texwidth  = planes[0].texwidth  >> im.cshift_x;
   planes[1].texheight = planes[0].texheight >> im.cshift_y;
   planes[2].texwidth  = planes[1].texwidth;
@@ -278,7 +307,7 @@ bool CRendererVAAPIGLES::UploadTexture(int index)
 
   for (int p = 0; p < 3; p++)
   {
-    planes[p].pixpertex_x = 1;
+    planes[p].pixpertex_x = packed422 ? 2 : 1;
     planes[p].pixpertex_y = 1;
   }
 
