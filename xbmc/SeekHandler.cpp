@@ -289,7 +289,6 @@ bool CSeekHandler::OnAction(const CAction &action)
       if (appPlayer->IsPausedPlayback() && appPlayer->HasVideo())
       {
         const float fps{CServiceBroker::GetDataCacheCore().GetVideoFps()};
-        const float fps{CServiceBroker::GetDataCacheCore().GetVideoFps()};
         if (fps > 1.0f)
         {
           const int64_t frameTimeMs{static_cast<int64_t>(std::llround(1000.0 / fps))};
