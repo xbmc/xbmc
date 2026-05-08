@@ -48,24 +48,9 @@ void CRendererVAAPIGLES::Register(IVaapiWinSystem* winSystem,
     return;
   }
 
-  // Probe importable surface formats. Vaapi2 (vaExportSurfaceHandle) is
-  // tried first because it can probe a wider fourcc set than Vaapi1
-  // (vaDeriveImage). Vaapi1 fallback runs only when Vaapi2 cannot import
-  // even the baseline 8-bit 4:2:0 NV12 surface, which happens on older
-  // Mesa / older VAAPI driver pairings.
+  // Probe importable surface formats via vaExportSurfaceHandle.
   CCapabilities& caps = CDecoder::GetCaps();
   CVaapi2Texture::TestInteropFormats(vaDpy, eglDisplay, caps);
-
-  if (!caps.Supports(AV_PIX_FMT_NV12))
-  {
-    bool v1General = false;
-    bool v1DeepColor = false;
-    CVaapi1Texture::TestInterop(vaDpy, eglDisplay, v1General, v1DeepColor);
-    if (v1General)
-      caps.Add(AV_PIX_FMT_NV12);
-    if (v1DeepColor)
-      caps.Add(AV_PIX_FMT_P010);
-  }
 
   CLog::Log(LOGDEBUG, "VAAPI EGL interop: {}", caps.ToString());
 
@@ -113,19 +98,9 @@ bool CRendererVAAPIGLES::Configure(const VideoPicture& picture, float fps, unsig
         (PFNGLEGLIMAGETARGETTEXTURE2DOESPROC)eglGetProcAddress("glEGLImageTargetTexture2DOES");
     interop.eglDisplay = m_pWinSystem->GetEGLDisplay();
 
-    bool useVaapi2 = VAAPI::CVaapi2Texture::TestInteropGeneral(
-        pic->vadsp, CRendererVAAPIGLES::m_pWinSystem->GetEGLDisplay());
-
     for (auto& tex : m_vaapiTextures)
     {
-      if (useVaapi2)
-      {
-        tex = std::make_unique<VAAPI::CVaapi2Texture>();
-      }
-      else
-      {
-        tex = std::make_unique<VAAPI::CVaapi1Texture>();
-      }
+      tex = std::make_unique<VAAPI::CVaapi2Texture>();
       tex->Init(interop);
     }
 
@@ -171,9 +146,7 @@ EShaderFormat CRendererVAAPIGLES::GetShaderFormat()
     case VA_FOURCC_Y216:
       return SHADER_Y210;
     case VA_FOURCC_AYUV:
-#ifdef VA_FOURCC_XYUV
     case VA_FOURCC_XYUV:
-#endif
       return SHADER_AYUV;
     case VA_FOURCC_Y410:
       return SHADER_Y410;
