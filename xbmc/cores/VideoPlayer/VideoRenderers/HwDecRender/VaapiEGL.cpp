@@ -444,6 +444,14 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
   m_vaapiPic = pic;
   m_vaapiPic->Acquire();
 
+  // Pairs with the Acquire() above; nulling lets a retry see unmapped state.
+  auto failMap = [this]()
+  {
+    m_vaapiPic->Release();
+    m_vaapiPic = nullptr;
+    return false;
+  };
+
   VAStatus status;
 
   VADRMPRIMESurfaceDescriptor surface;
@@ -457,12 +465,15 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
   {
     CLog::Log(LOGWARNING, "CVaapi2Texture::Map: vaExportSurfaceHandle failed - Error: {} ({})",
               vaErrorStr(status), status);
-    return false;
+    return failMap();
   }
 
   // Remember fds to close them later
   if (surface.num_objects > m_drmFDs.size())
+  {
+    failMap();
     throw std::logic_error("Too many fds returned by vaExportSurfaceHandle");
+  }
 
   for (uint32_t object = 0; object < surface.num_objects; object++)
   {
@@ -474,7 +485,7 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
   {
     CLog::Log(LOGERROR, "CVaapi2Texture::Map: vaSyncSurface - Error: {} ({})", vaErrorStr(status),
               status);
-    return false;
+    return failMap();
   }
 
   m_textureSize.Set(pic->DVDPic.iWidth, pic->DVDPic.iHeight);
@@ -488,7 +499,7 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
       CLog::Log(LOGDEBUG,
                 "CVaapi2Texture::Map: DRM-exported layer has {} planes - only 1 supported",
                 layer.num_planes);
-      return false;
+      return failMap();
     }
     // Driver-supplied object_index is untrusted; reject OOB before indexing.
     if (layer.object_index[plane] >= surface.num_objects)
@@ -496,7 +507,7 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
       CLog::Log(LOGERROR,
                 "CVaapi2Texture::Map: layer {} plane {} object_index {} >= num_objects {}", layerNo,
                 plane, layer.object_index[plane], surface.num_objects);
-      return false;
+      return failMap();
     }
     auto const& object = surface.objects[layer.object_index[plane]];
 
@@ -530,6 +541,7 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
             }
             break;
           default:
+            failMap();
             throw std::logic_error("Impossible layer number");
         }
         break;
@@ -537,7 +549,7 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
         CLog::Log(LOGDEBUG,
                   "CVaapi2Texture::Map: DRM-exported surface {} layers - only 1 or 2 supported",
                   surface.num_layers);
-        return false;
+        return failMap();
     }
 
     // Mesa Y210 / Y212 / Y216 import quirk: Mesa imports those DRM fourccs
@@ -576,7 +588,7 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
     if (!texture->eglImage)
     {
       CEGLUtils::Log(LOGERROR, "Failed to import VA DRM surface into EGL image");
-      return false;
+      return failMap();
     }
 
     glGenTextures(1, &texture->glTexture);
