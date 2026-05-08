@@ -819,6 +819,23 @@ constexpr std::array<InfoMap, 7> integer_bools = {{
 ///     @skinning_v19 **[New Infolabel]** \link Player_Chapters `Player.Chapters`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Player.Bookmarks`</b>,
+///                  \anchor Player_Bookmarks
+///                  _string_,
+///     @return The bookmarks of the currently playing item as csv in the format start1\,end1\,start2\,end2\,...
+///     Tokens have values in the range from 0.0 to 100.0. end token is greater or equal to the  start token.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link Player_Bookmarks `Player.Bookmarks`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.HasBookmarks`</b>,
+///                  \anchor Player_HasBookmarks
+///                  _boolean_,
+///     @return **True** if the item being played has bookmarks\, **False** otherwise
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link Player_HasBookmarks `Player.HasBookmarks`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`Player.IsExternal`</b>,
 ///                  \anchor Player_IsExternal
 ///                  _boolean_,
@@ -844,7 +861,7 @@ constexpr std::array<InfoMap, 7> integer_bools = {{
 ///     <p>
 ///   }
 // clang-format off
-constexpr std::array<InfoMap, 58> player_labels = {{
+constexpr std::array<InfoMap, 60> player_labels = {{
     {"hasmedia",              PLAYER_HAS_MEDIA},
     {"hasaudio",              PLAYER_HAS_AUDIO},
     {"hasvideo",              PLAYER_HAS_VIDEO},
@@ -903,6 +920,8 @@ constexpr std::array<InfoMap, 58> player_labels = {{
     {"scenemarkers",          PLAYER_SCENE_MARKERS},
     {"hasscenemarkers",       PLAYER_HAS_SCENE_MARKERS},
     {"chapters",              PLAYER_CHAPTERS},
+    {"bookmarks",             PLAYER_BOOKMARKS},
+    {"hasbookmarks",          PLAYER_HAS_BOOKMARKS},
 }};
 // clang-format on
 
