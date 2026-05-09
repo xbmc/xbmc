@@ -337,7 +337,7 @@ public:
   int GetChapterCount() const override;
   int GetChapter() const override;
   void GetChapterName(std::string& strChapterName, int chapterIdx = -1) const override;
-  int64_t GetChapterPos(int chapterIdx = -1) const override;
+  int64_t GetChapterPos(int chapterIdx = -1) const override; // chapter start ts in seconds
   int  SeekChapter(int iChapter) override;
   std::vector<std::chrono::milliseconds> GetBookmarks() const override;
   bool HasBookmarks() const;
@@ -511,6 +511,7 @@ protected:
 
   void UpdateFileItemStreamDetails(CFileItem& item, UpdateStreamDetails update);
   int GetPreviousChapter();
+  std::optional<std::chrono::milliseconds> GetChapterPosMs(int chapterIdx = -1) const;
   int GetPreviousBookmark(std::chrono::milliseconds ts);
   int GetNextBookmark(std::chrono::milliseconds ts);
   std::optional<std::chrono::milliseconds> GetBookmarkPos(int idx);
