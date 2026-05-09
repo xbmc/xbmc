@@ -1157,9 +1157,61 @@ void CVideoDatabase::UpdateTables(int iVersion)
   {
     m_pDS->exec("UPDATE streamdetails set strAudioCodec = 'dts' where strAudioCodec = 'dca'");
   }
+
+  if (iVersion < 146)
+  {
+    constexpr int LOCAL_VIDEODB_ID_EPISODE_RUNTIME = 9;
+
+    // Create indices to speed up the queries below (CVideoDatabaseDDL::CreateIndices() has not been called yet)
+    m_pDS->exec("CREATE UNIQUE INDEX ix_episode_file_1 ON episode (idEpisode, idFile)");
+    m_pDS->exec("CREATE UNIQUE INDEX id_episode_file_2 ON episode (idFile, idEpisode)");
+    m_pDS->exec("CREATE INDEX ix_streamdetails ON streamdetails (idFile)");
+
+    // Create temporary table
+    // Avoids MySQL/MariaDB/Sqlite incompatible differences in the later UPDATE and DELETE queries
+    m_pDS->exec("CREATE TABLE single_video_streams "
+                "(idEpisode INTEGER PRIMARY KEY, idFile INTEGER, iVideoDuration INTEGER, "
+                "iTotalStreams INTEGER)");
+
+    // Populate temporary table
+    // Find any episode where the duration (c09) is 0 but there is a video stream with a positive duration in streamdetails
+    // We don't look for height/width = 0 here as the file may have been played and proper streamdetails derived
+    m_pDS->exec(PrepareSQL(
+        "INSERT INTO single_video_streams (idEpisode, idFile, iVideoDuration, iTotalStreams) "
+        "SELECT e.idEpisode, e.idFile, "
+        "  MAX(s.iVideoDuration), "
+        "  (SELECT COUNT(*) FROM streamdetails s2 WHERE s2.idFile = e.idFile) "
+        "FROM episode e "
+        "JOIN streamdetails s ON e.idFile = s.idFile "
+        "WHERE (e.c%02d = '0' OR e.c%02d IS NULL) "
+        "  AND s.iStreamType = 0 AND s.iVideoDuration > 0 "
+        "GROUP BY e.idEpisode, e.idFile",
+        LOCAL_VIDEODB_ID_EPISODE_RUNTIME));
+
+    // Update the episodes' duration with the value from streamdetails
+    m_pDS->exec(PrepareSQL("UPDATE episode "
+                           "SET c%02d = (SELECT iVideoDuration FROM single_video_streams AS s "
+                           "            WHERE s.idEpisode = episode.idEpisode) "
+                           "WHERE idEpisode IN (SELECT idEpisode FROM single_video_streams)",
+                           LOCAL_VIDEODB_ID_EPISODE_RUNTIME));
+
+    // Delete any streamdetails where the video height/width are 0 (dummy entry created by scraper)
+    m_pDS->exec(PrepareSQL("DELETE FROM streamdetails "
+                           "WHERE iVideoHeight = 0 AND iVideoWidth = 0 AND iStreamType = 0 "
+                           "  AND idFile IN (SELECT idFile FROM single_video_streams "
+                           "                   WHERE iTotalStreams = 1)"));
+
+    // Remove temporary table
+    m_pDS->exec("DROP TABLE IF EXISTS single_video_streams");
+
+    // Remove indices
+    m_pDS->dropIndex("episode", "ix_episode_file_1");
+    m_pDS->dropIndex("episode", "id_episode_file_2");
+    m_pDS->dropIndex("streamdetails", "ix_streamdetails");
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 145;
+  return 146;
 }
