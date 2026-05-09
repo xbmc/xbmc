@@ -231,6 +231,10 @@ void CAdvancedSettings::Initialize()
   m_videoDefaultLatency = 0.0;
   m_videoDefaultHdrExtraLatency = 0.0;
 
+  m_blurayIsoCachePageSize = 256 * 1024;
+  m_blurayIsoCacheMaxBytes = 64 * 1024 * 1024;
+  m_blurayIsoCacheForwardPrefetchPages = 1;
+
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;
   m_musicTimeSeekBackward = -10;
@@ -867,6 +871,14 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
       XMLUtils::GetFloat(pVideoLatency, "hdrextradelay", m_videoDefaultHdrExtraLatency, -600.0f,
                          600.0f);
     }
+  }
+
+  pElement = pRootElement->FirstChildElement("blurayisocache");
+  if (pElement)
+  {
+    XMLUtils::GetUInt(pElement, "pagesize", m_blurayIsoCachePageSize, 2048, 1024 * 1024);
+    XMLUtils::GetUInt(pElement, "maxbytes", m_blurayIsoCacheMaxBytes, 256 * 1024, 1024 * 1024 * 1024);
+    XMLUtils::GetUInt(pElement, "forwardprefetchpages", m_blurayIsoCacheForwardPrefetchPages, 0, 16);
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");
