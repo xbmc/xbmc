@@ -29,7 +29,8 @@ public:
   enum class InstanceType
   {
     INPUTSTREAM,
-    VIDEOCODEC
+    VIDEOCODEC,
+    AUDIOCODEC
   };
   virtual void GetAddonInstance(InstanceType instance_type,
                                 ADDON::AddonInfoPtr& addonInfo,

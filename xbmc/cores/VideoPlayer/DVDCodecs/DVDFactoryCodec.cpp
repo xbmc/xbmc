@@ -8,6 +8,7 @@
 
 #include "DVDFactoryCodec.h"
 
+#include "Audio/AddonAudioCodec.h"
 #include "Audio/DVDAudioCodec.h"
 #include "Audio/DVDAudioCodecFFmpeg.h"
 #include "Audio/DVDAudioCodecPassthrough.h"
@@ -183,6 +184,25 @@ std::unique_ptr<CDVDAudioCodec> CDVDFactoryCodec::CreateAudioCodec(
 
   if (!allowdtshddecode)
     options.m_keys.emplace_back("allowdtshddecode", "0");
+
+  // addon handler for this stream ?
+
+  if (hint.externalInterfaces)
+  {
+    ADDON::AddonInfoPtr addonInfo;
+    KODI_HANDLE parentInstance;
+    hint.externalInterfaces->GetAddonInstance(ADDON::IAddonProvider::InstanceType::AUDIOCODEC,
+                                              addonInfo, parentInstance);
+    if (addonInfo && parentInstance)
+    {
+      pCodec = std::make_unique<CAddonAudioCodec>(processInfo, addonInfo, parentInstance);
+      if (pCodec->Open(hint, options))
+      {
+        return pCodec;
+      }
+    }
+    return nullptr;
+  }
 
   // platform specific audio decoders
   for (auto &codec : m_hwAudioCodecs)

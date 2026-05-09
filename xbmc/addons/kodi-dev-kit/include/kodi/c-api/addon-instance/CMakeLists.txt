@@ -2,6 +2,7 @@
 # See xbmc/addons/kodi-dev-kit/tools/code-generator.py.
 
 set(HEADERS
+  audio_codec.h
   audiodecoder.h
   audioencoder.h
   game.h

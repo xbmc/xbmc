@@ -41,7 +41,8 @@ void CInputStreamProvider::GetAddonInstance(InstanceType instance_type,
                                             ADDON::AddonInfoPtr& addonInfo,
                                             KODI_HANDLE& parentInstance)
 {
-  if (instance_type == ADDON::IAddonProvider::InstanceType::VIDEOCODEC)
+  if (instance_type == ADDON::IAddonProvider::InstanceType::VIDEOCODEC ||
+      instance_type == ADDON::IAddonProvider::InstanceType::AUDIOCODEC)
   {
     addonInfo = m_addonInfo;
     parentInstance = m_parentInstance;

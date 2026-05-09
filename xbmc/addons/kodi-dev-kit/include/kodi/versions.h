@@ -37,8 +37,8 @@
 // because cmake uses this area in this form to perform its addon dependency
 // check.
 // clang-format off
-#define ADDON_GLOBAL_VERSION_MAIN                     "2.0.3"
-#define ADDON_GLOBAL_VERSION_MAIN_MIN                 "2.0.3"
+#define ADDON_GLOBAL_VERSION_MAIN                     "2.1.0"
+#define ADDON_GLOBAL_VERSION_MAIN_MIN                 "2.1.0"
 #define ADDON_GLOBAL_VERSION_MAIN_XML_ID              "kodi.binary.global.main"
 #define ADDON_GLOBAL_VERSION_MAIN_DEPENDS             "AddonBase.h" \
                                                       "addon-instance/" \
@@ -108,8 +108,8 @@
 #define ADDON_INSTANCE_VERSION_IMAGEDECODER_DEPENDS   "c-api/addon-instance/imagedecoder.h" \
                                                       "addon-instance/ImageDecoder.h"
 
-#define ADDON_INSTANCE_VERSION_INPUTSTREAM            "3.4.0"
-#define ADDON_INSTANCE_VERSION_INPUTSTREAM_MIN        "3.4.0"
+#define ADDON_INSTANCE_VERSION_INPUTSTREAM            "3.5.0"
+#define ADDON_INSTANCE_VERSION_INPUTSTREAM_MIN        "3.5.0"
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM_XML_ID     "kodi.binary.instance.inputstream"
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM_DEPENDS    "c-api/addon-instance/inputstream.h" \
                                                       "c-api/addon-instance/inputstream/demux_packet.h" \
@@ -180,8 +180,8 @@
 #define ADDON_INSTANCE_VERSION_VISUALIZATION_DEPENDS  "addon-instance/Visualization.h" \
                                                       "c-api/addon-instance/visualization.h"
 
-#define ADDON_INSTANCE_VERSION_VIDEOCODEC             "2.1.0"
-#define ADDON_INSTANCE_VERSION_VIDEOCODEC_MIN         "2.1.0"
+#define ADDON_INSTANCE_VERSION_VIDEOCODEC             "2.1.1"
+#define ADDON_INSTANCE_VERSION_VIDEOCODEC_MIN         "2.1.1"
 #define ADDON_INSTANCE_VERSION_VIDEOCODEC_XML_ID      "kodi.binary.instance.videocodec"
 #define ADDON_INSTANCE_VERSION_VIDEOCODEC_DEPENDS     "c-api/addon-instance/video_codec.h" \
                                                       "c-api/addon-instance/inputstream/stream_codec.h" \
@@ -189,6 +189,17 @@
                                                       "addon-instance/VideoCodec.h" \
                                                       "addon-instance/inputstream/StreamCodec.h" \
                                                       "addon-instance/inputstream/StreamCrypto.h"
+
+#define ADDON_INSTANCE_VERSION_AUDIOCODEC             "1.0.0"
+#define ADDON_INSTANCE_VERSION_AUDIOCODEC_MIN         "1.0.0"
+#define ADDON_INSTANCE_VERSION_AUDIOCODEC_XML_ID      "kodi.binary.instance.audiocodec"
+#define ADDON_INSTANCE_VERSION_AUDIOCODEC_DEPENDS     "c-api/addon-instance/audio_codec.h" \
+                                                      "c-api/addon-instance/inputstream/stream_codec.h" \
+                                                      "c-api/addon-instance/inputstream/stream_crypto.h" \
+                                                      "addon-instance/AudioCodec.h" \
+                                                      "addon-instance/inputstream/StreamCodec.h" \
+                                                      "addon-instance/inputstream/StreamCrypto.h"
+
 // clang-format on
 
 //==============================================================================
@@ -255,6 +266,9 @@ typedef enum ADDON_TYPE
 
   /// Shader preset instance, see @ref cpp_kodi_addon_shaderpreset "kodi::addon::CInstanceShaderPreset"
   ADDON_INSTANCE_SHADERPRESET = 113,
+
+  /// Audio codec instance, see @ref cpp_kodi_addon_audiocodec "kodi::addon::CInstanceAudioCodec"
+  ADDON_INSTANCE_AUDIOCODEC = 114,
 } ADDON_TYPE;
 ///@}
 //------------------------------------------------------------------------------
@@ -360,6 +374,10 @@ extern "C"
       case ADDON_INSTANCE_VIDEOCODEC:
         return ADDON_INSTANCE_VERSION_VIDEOCODEC;
 #endif
+#if !defined(BUILD_KODI_ADDON) || defined(ADDON_INSTANCE_VERSION_AUDIOCODEC_USED)
+      case ADDON_INSTANCE_AUDIOCODEC:
+        return ADDON_INSTANCE_VERSION_AUDIOCODEC;
+#endif
     }
     return "0.0.0";
   }
@@ -417,6 +435,8 @@ extern "C"
         return ADDON_INSTANCE_VERSION_VISUALIZATION_MIN;
       case ADDON_INSTANCE_VIDEOCODEC:
         return ADDON_INSTANCE_VERSION_VIDEOCODEC_MIN;
+      case ADDON_INSTANCE_AUDIOCODEC:
+        return ADDON_INSTANCE_VERSION_AUDIOCODEC_MIN;
     }
     return "0.0.0";
   }
@@ -471,6 +491,8 @@ extern "C"
         return "Visualization";
       case ADDON_INSTANCE_VIDEOCODEC:
         return "VideoCodec";
+      case ADDON_INSTANCE_AUDIOCODEC:
+        return "AudioCodec";
     }
     return "unknown";
   }
@@ -526,6 +548,8 @@ extern "C"
         return ADDON_INSTANCE_VISUALIZATION;
       else if (strcmp(name, "videocodec") == 0)
         return ADDON_INSTANCE_VIDEOCODEC;
+      else if (strcmp(name, "audiocodec") == 0)
+        return ADDON_INSTANCE_AUDIOCODEC;
     }
     return -1;
   }
