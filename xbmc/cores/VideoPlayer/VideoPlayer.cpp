@@ -5047,14 +5047,66 @@ int CVideoPlayer::GetPreviousChapter()
     return chapter;
 }
 
+bool CVideoPlayer::HasBookmarks() const
+{
+  std::unique_lock lock(m_StateSection);
+  return !m_State.m_bookmarks.empty();
+}
+
 std::vector<std::chrono::milliseconds> CVideoPlayer::GetBookmarks() const
 {
-  return CServiceBroker::GetDataCacheCore().GetBookmarks();
+  std::unique_lock lock(m_StateSection);
+  return m_State.m_bookmarks;
 }
 
 void CVideoPlayer::SetBookmarks(const std::vector<std::chrono::milliseconds>& bookmarks)
 {
+  std::unique_lock lock(m_StateSection);
+  m_State.m_bookmarks = bookmarks;
   CServiceBroker::GetDataCacheCore().SetBookmarks(bookmarks);
+}
+
+int CVideoPlayer::GetPreviousBookmark(std::chrono::milliseconds ts)
+{
+  std::unique_lock lock(m_StateSection);
+  std::vector<std::chrono::milliseconds> bookmarks = m_State.m_bookmarks;
+
+  if (bookmarks.empty())
+    return -1;
+
+  // Add grace period of 5 seconds to make it easier to skip backwards through bookmarks
+  //! @todo reduce to 2 seconds if seek accuracy can be improved
+  const std::chrono::milliseconds adjusted_ts = ts - 5s;
+
+  size_t idx{0};
+  while (idx < bookmarks.size() && bookmarks[idx] < adjusted_ts)
+    ++idx;
+
+  return idx > 0 ? static_cast<int>(idx) - 1 : -1;
+}
+
+int CVideoPlayer::GetNextBookmark(std::chrono::milliseconds ts)
+{
+  std::unique_lock lock(m_StateSection);
+  std::vector<std::chrono::milliseconds> bookmarks = m_State.m_bookmarks;
+
+  if (bookmarks.empty())
+    return -1;
+
+  size_t idx{0};
+  while (idx < bookmarks.size() && bookmarks[idx] <= ts)
+    ++idx;
+
+  return idx < bookmarks.size() ? idx : -1;
+}
+
+std::optional<std::chrono::milliseconds> CVideoPlayer::GetBookmarkPos(int idx)
+{
+  std::unique_lock lock(m_StateSection);
+  if (idx >= 0 && static_cast<size_t>(idx) < m_State.m_bookmarks.size())
+    return m_State.m_bookmarks[idx];
+  else
+    return std::nullopt;
 }
 
 void CVideoPlayer::AddSubtitle(const std::string& strSubPath)
