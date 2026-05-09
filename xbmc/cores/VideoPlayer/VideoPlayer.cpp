@@ -776,12 +776,14 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
   m_displayLost = false;
   m_error = false;
   m_bCloseRequest = false;
-  CServiceBroker::GetWinSystem()->Register(this);
+  if (auto system = CServiceBroker::GetWinSystem(); system != nullptr)
+    system->Register(this);
 }
 
 CVideoPlayer::~CVideoPlayer()
 {
-  CServiceBroker::GetWinSystem()->Unregister(this);
+  if (auto system = CServiceBroker::GetWinSystem(); system != nullptr)
+    system->Unregister(this);
 
   CloseFile();
   DestroyPlayers();
@@ -849,8 +851,13 @@ bool CVideoPlayer::CloseFile(bool reopen)
   // wait for the main thread to finish up
   // since this main thread cleans up all other resources and threads
   // we are done after the StopThread call
+  if (auto system = CServiceBroker::GetWinSystem(); system != nullptr)
   {
-    CSingleExit exitlock(CServiceBroker::GetWinSystem()->GetGfxContext());
+    CSingleExit exitlock(system->GetGfxContext());
+    StopThread();
+  }
+  else
+  {
     StopThread();
   }
 

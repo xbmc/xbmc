@@ -79,6 +79,7 @@ bool CServiceManager::InitForTesting()
     CLog::Log(LOGFATAL, "CServiceManager::{}: Unable to start CAddonMgr", __FUNCTION__);
     return false;
   }
+  m_dataCacheCore = std::make_unique<CDataCacheCore>();
 
   m_extsMimeSupportList = std::make_unique<ADDONS::CExtsMimeSupportList>(*m_addonMgr);
   m_fileExtensionProvider = std::make_unique<CFileExtensionProvider>(*m_addonMgr);
@@ -96,6 +97,7 @@ void CServiceManager::DeinitTesting()
   m_subTagRegistryManager.reset();
   m_fileExtensionProvider.reset();
   m_extsMimeSupportList.reset();
+  m_dataCacheCore.reset();
   m_binaryAddonManager.reset();
   m_addonMgr.reset();
   m_databaseManager.reset();
