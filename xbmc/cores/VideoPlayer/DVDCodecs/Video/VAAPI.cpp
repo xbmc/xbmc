@@ -660,6 +660,13 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
         if (!m_vaapiConfig.context->SupportsProfile(profile))
           return false;
       }
+      else if (avctx->profile == AV_PROFILE_H264_HIGH_10 && m_vaapiConfig.bitDepth == 10 &&
+               m_capFormats.Supports(AV_PIX_FMT_P010))
+      {
+        profile = VAProfileH264High10;
+        if (!m_vaapiConfig.context->SupportsProfile(profile))
+          return false;
+      }
       else
       {
         if (avctx->profile == AV_PROFILE_H264_MAIN)
@@ -779,9 +786,15 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
       break;
     case AV_CODEC_ID_AV1:
     {
+      // AV1 Profile 1 is 4:4:4 only per spec, 8 or 10-bit. Intel iHD (Xe3+)
+      // outputs AYUV (8-bit) or Y410 (10-bit) for this profile.
       if (avctx->profile == AV_PROFILE_AV1_MAIN)
         profile = VAProfileAV1Profile0;
-      else if (avctx->profile == AV_PROFILE_AV1_HIGH)
+      else if (avctx->profile == AV_PROFILE_AV1_HIGH && m_vaapiConfig.bitDepth == 8 &&
+               (m_capFormats.Supports(AV_PIX_FMT_VUYA) || m_capFormats.Supports(AV_PIX_FMT_VUYX)))
+        profile = VAProfileAV1Profile1;
+      else if (avctx->profile == AV_PROFILE_AV1_HIGH && m_vaapiConfig.bitDepth == 10 &&
+               m_capFormats.Supports(AV_PIX_FMT_XV30))
         profile = VAProfileAV1Profile1;
       else
         profile = VAProfileNone;
@@ -1252,7 +1265,8 @@ bool CDecoder::ConfigVAAPI()
 
   if ((m_vaapiConfig.profile == VAProfileHEVCMain10 ||
        m_vaapiConfig.profile == VAProfileVP9Profile2 ||
-       m_vaapiConfig.profile == VAProfileAV1Profile0) &&
+       m_vaapiConfig.profile == VAProfileAV1Profile0 ||
+       m_vaapiConfig.profile == VAProfileH264High10) &&
       m_vaapiConfig.bitDepth == 10)
   {
     format = VA_RT_FORMAT_YUV420_10BPP;
@@ -1280,7 +1294,8 @@ bool CDecoder::ConfigVAAPI()
     pixelFormat = m_capFormats.Supports(AV_PIX_FMT_Y212) ? VA_FOURCC_Y212 : VA_FOURCC_Y216;
   }
   else if ((m_vaapiConfig.profile == VAProfileHEVCMain444 ||
-            m_vaapiConfig.profile == VAProfileVP9Profile1) &&
+            m_vaapiConfig.profile == VAProfileVP9Profile1 ||
+            m_vaapiConfig.profile == VAProfileAV1Profile1) &&
            m_vaapiConfig.bitDepth == 8)
   {
     // AYUV is the standard 4:4:4 8-bit fourcc; XYUV is identical bytes
@@ -1289,7 +1304,8 @@ bool CDecoder::ConfigVAAPI()
     pixelFormat = m_capFormats.Supports(AV_PIX_FMT_VUYA) ? VA_FOURCC_AYUV : VA_FOURCC_XYUV;
   }
   else if ((m_vaapiConfig.profile == VAProfileHEVCMain444_10 ||
-            m_vaapiConfig.profile == VAProfileVP9Profile3) &&
+            m_vaapiConfig.profile == VAProfileVP9Profile3 ||
+            m_vaapiConfig.profile == VAProfileAV1Profile1) &&
            m_vaapiConfig.bitDepth == 10)
   {
     format = VA_RT_FORMAT_YUV444_10;
