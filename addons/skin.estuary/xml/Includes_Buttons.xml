@@ -45,6 +45,35 @@
 			</control>
 		</definition>
 	</include>
+	<include name="InfoViewerButton">
+		<param name="onclick_condition">false</param>
+		<param name="onclick">noop</param>
+		<param name="altclick_condition">false</param>
+		<param name="altclick">noop</param>
+		<definition>
+			<control type="togglebutton" id="$PARAM[control_id]">
+				<width>1480</width>
+				<height>50</height>
+				<textoffsetx>10</textoffsetx>
+				<aligny>center</aligny>
+				<font>font13</font>
+				<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
+				<alttexturefocus colordiffuse="button_focus">lists/focus.png</alttexturefocus>
+				<texturenofocus />
+				<alttexturenofocus />
+				<onclick>noop</onclick>
+				<onclick condition="$PARAM[onclick_condition]">$PARAM[onclick]</onclick>
+				<altclick>noop</altclick>
+				<altclick condition="$PARAM[altclick_condition]">$PARAM[altclick]</altclick>
+				<onback>ClearProperty(InfoViewer_Visible,Home)</onback>
+				<onback>5000</onback>
+				<label>$PARAM[label]</label>
+				<altlabel>$PARAM[altlabel]</altlabel>
+				<usealttexture>Control.HasFocus($PARAM[control_id])</usealttexture>
+				<visible>$PARAM[visible]</visible>
+			</control>
+		</definition>
+	</include>
 	<include name="DefaultSettingButton">
 		<param name="height">70</param>
 		<param name="textoffsetx">40</param>
