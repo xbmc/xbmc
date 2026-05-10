@@ -751,9 +751,10 @@ int CDVDInputStreamBluray::ReadBlocks(uint8_t* buf, int lba, int num_blocks)
     ++m_isoCacheFallbacks;
     if (m_isoCacheFallbacks <= 3 || (m_isoCacheFallbacks & (m_isoCacheFallbacks - 1)) == 0)
     {
-      CLog::Log(LOGDEBUG,
-                "CDVDInputStreamBluray::{} - cached read failed at lba {} blocks {}, falling back ({})",
-                __FUNCTION__, lba, num_blocks, m_isoCacheFallbacks.load());
+      CLog::Log(
+          LOGDEBUG,
+          "CDVDInputStreamBluray::{} - cached read failed at lba {} blocks {}, falling back ({})",
+          __FUNCTION__, lba, num_blocks, m_isoCacheFallbacks.load());
     }
   }
 
@@ -1308,8 +1309,8 @@ void CDVDInputStreamBluray::SetupPlayerSettings()
 
 bool CDVDInputStreamBluray::OpenStream(CFileItem &item)
 {
-  CLog::Log(LOGINFO, "CDVDInputStreamBluray::{} - opening ISO stream for {}",
-            __FUNCTION__, CURL::GetRedacted(item.GetPath()));
+  CLog::Log(LOGINFO, "CDVDInputStreamBluray::{} - opening ISO stream for {}", __FUNCTION__,
+            CURL::GetRedacted(item.GetPath()));
 
   {
     std::shared_ptr<CBlurayIsoCache> cache;
@@ -1345,15 +1346,14 @@ bool CDVDInputStreamBluray::OpenStream(CFileItem &item)
     CLog::Log(LOGINFO, "CDVDInputStreamBluray::{} - enable Bluray ISO cache for {} ({} bytes)",
               __FUNCTION__, CURL::GetRedacted(item.GetPath()), sourceLength);
     m_isoCache = std::make_shared<CBlurayIsoCache>(
-        sourceLength,
-      [this](int64_t offset, uint8_t* buffer, size_t size) { return ReadRaw(offset, buffer, size); },
-      cacheConfig);
+        sourceLength, [this](int64_t offset, uint8_t* buffer, size_t size)
+        { return ReadRaw(offset, buffer, size); }, cacheConfig);
     m_isoCache->Start();
   }
   else
   {
-    CLog::Log(LOGINFO, "CDVDInputStreamBluray::{} - skip ISO cache, source length {}",
-              __FUNCTION__, sourceLength);
+    CLog::Log(LOGINFO, "CDVDInputStreamBluray::{} - skip ISO cache, source length {}", __FUNCTION__,
+              sourceLength);
   }
 
   return true;

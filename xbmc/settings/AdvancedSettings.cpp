@@ -877,8 +877,10 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   if (pElement)
   {
     XMLUtils::GetUInt(pElement, "pagesize", m_blurayIsoCachePageSize, 2048, 1024 * 1024);
-    XMLUtils::GetUInt(pElement, "maxbytes", m_blurayIsoCacheMaxBytes, 256 * 1024, 1024 * 1024 * 1024);
-    XMLUtils::GetUInt(pElement, "forwardprefetchpages", m_blurayIsoCacheForwardPrefetchPages, 0, 16);
+    XMLUtils::GetUInt(pElement, "maxbytes", m_blurayIsoCacheMaxBytes, 256 * 1024,
+                      1024 * 1024 * 1024);
+    XMLUtils::GetUInt(pElement, "forwardprefetchpages", m_blurayIsoCacheForwardPrefetchPages, 0,
+                      16);
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");

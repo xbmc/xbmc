@@ -20,7 +20,9 @@ constexpr const char* LOG_TAG = "CBlurayIsoCache";
 }
 
 CBlurayIsoCache::CBlurayIsoCache(int64_t sourceLength, ReadCallback readCallback, Config config)
-  : m_config(std::move(config)), m_readCallback(std::move(readCallback)), m_sourceLength(sourceLength)
+  : m_config(std::move(config)),
+    m_readCallback(std::move(readCallback)),
+    m_sourceLength(sourceLength)
 {
   if (m_config.pageSize < BLOCK_SIZE)
     m_config.pageSize = BLOCK_SIZE;
@@ -60,13 +62,12 @@ void CBlurayIsoCache::Start()
   m_worker = std::thread(&CBlurayIsoCache::Worker, this);
   m_started = true;
 
-  CLog::Log(LOGDEBUG,
-            "{}::{} - cache config pageSize={} maxBytes={} maxPages={} forwardPages={}",
+  CLog::Log(LOGDEBUG, "{}::{} - cache config pageSize={} maxBytes={} maxPages={} forwardPages={}",
             LOG_TAG, __FUNCTION__, m_config.pageSize, m_config.maxBytes, m_maxPages,
             m_config.forwardPrefetchPages);
 
-  CLog::Log(LOGINFO, "{}::{} - Bluray ISO cache started for {} bytes source",
-            LOG_TAG, __FUNCTION__, m_sourceLength);
+  CLog::Log(LOGINFO, "{}::{} - Bluray ISO cache started for {} bytes source", LOG_TAG, __FUNCTION__,
+            m_sourceLength);
 }
 
 void CBlurayIsoCache::Stop()
@@ -187,8 +188,8 @@ CBlurayIsoCache::PagePtr CBlurayIsoCache::LoadPage(int64_t pageIndex, bool prefe
 
   if (static_cast<size_t>(bytesRead) > bytesToRead)
   {
-    CLog::Log(LOGERROR, "{}::{} - callback returned {} bytes, expected at most {}",
-              LOG_TAG, __FUNCTION__, bytesRead, bytesToRead);
+    CLog::Log(LOGERROR, "{}::{} - callback returned {} bytes, expected at most {}", LOG_TAG,
+              __FUNCTION__, bytesRead, bytesToRead);
     return nullptr;
   }
 
@@ -249,7 +250,8 @@ void CBlurayIsoCache::LogStats(const char* reason)
   }
 
   CLog::Log(LOGDEBUG,
-            "{}::{} - {} detail: reads={} reqBlocks={} pageHits={} misses={} syncLoads={} pfLoads={} pfFails={} evicts={} fwdPfs={} pages={}",
+            "{}::{} - {} detail: reads={} reqBlocks={} pageHits={} misses={} syncLoads={} "
+            "pfLoads={} pfFails={} evicts={} fwdPfs={} pages={}",
             LOG_TAG, __FUNCTION__, reason, m_readRequests.load(), m_requestedBlocks.load(),
             m_pageHits.load(), m_pageMisses.load(), m_syncPageLoads.load(),
             m_prefetchPageLoads.load(), m_prefetchFailures.load(), m_evictions.load(),
@@ -257,9 +259,9 @@ void CBlurayIsoCache::LogStats(const char* reason)
 
   CLog::Log(LOGINFO,
             "{}::{} - {}: {} reads, {} pageHits / {} pageMisses, {} pfLoads ({} failed), {} evicts",
-            LOG_TAG, __FUNCTION__, reason,
-            m_readRequests.load(), m_pageHits.load(), m_pageMisses.load(),
-            m_prefetchPageLoads.load(), m_prefetchFailures.load(), m_evictions.load());
+            LOG_TAG, __FUNCTION__, reason, m_readRequests.load(), m_pageHits.load(),
+            m_pageMisses.load(), m_prefetchPageLoads.load(), m_prefetchFailures.load(),
+            m_evictions.load());
 }
 
 void CBlurayIsoCache::QueueForwardPrefetch(int64_t firstPage, int64_t lastPage)
@@ -270,9 +272,8 @@ void CBlurayIsoCache::QueueForwardPrefetch(int64_t firstPage, int64_t lastPage)
   bool sequential = false;
   {
     std::lock_guard<std::mutex> lock(m_accessMutex);
-    sequential =
-        (m_lastReadEndPage < 0 ||
-         (firstPage >= m_lastReadEndPage && firstPage <= (m_lastReadEndPage + 1)));
+    sequential = (m_lastReadEndPage < 0 ||
+                  (firstPage >= m_lastReadEndPage && firstPage <= (m_lastReadEndPage + 1)));
   }
 
   if (!sequential)

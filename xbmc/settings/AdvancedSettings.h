@@ -423,6 +423,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     unsigned int m_blurayIsoCachePageSize;
     unsigned int m_blurayIsoCacheMaxBytes;
     unsigned int m_blurayIsoCacheForwardPrefetchPages;
+
   private:
     void Initialize();
     void Clear();

@@ -37,9 +37,7 @@ public:
 
   using ReadCallback = std::function<int64_t(int64_t offset, uint8_t* buffer, size_t size)>;
 
-  CBlurayIsoCache(int64_t sourceLength,
-                  ReadCallback readCallback,
-                  Config config);
+  CBlurayIsoCache(int64_t sourceLength, ReadCallback readCallback, Config config);
   ~CBlurayIsoCache();
 
   void Start();
