@@ -420,8 +420,9 @@ void CGUITextLayout::ParseText(const std::wstring& text,
         ++boldDepth;
       else if (boldDepth > 0)
         --boldDepth;
-      else
-        ; // unmatched [/B] - ignore
+      else {
+        // unmatched [/B] - ignore
+      }
       newStyle = FONT_STYLE_BOLD;
     }
     else if (text.compare(pos, 2, L"I]") == 0)
