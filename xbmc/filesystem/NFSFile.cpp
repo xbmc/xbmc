@@ -30,6 +30,9 @@
 #ifdef TARGET_WINDOWS
 #include <fcntl.h>
 #include <sys\stat.h>
+#ifndef S_ISDIR
+#define S_ISDIR(m) (((m) & _S_IFDIR) != 0)
+#endif
 #endif
 
 #if defined(TARGET_WINDOWS)
@@ -670,7 +673,12 @@ bool CNFSFile::Open(const CURL& url)
 
   struct __stat64 tmpBuffer;
 
-  if( Stat(&tmpBuffer) )
+  // nfs_open succeeds on directories, which lets libdvdread / libbluray
+  // mis-classify a folder structure (DVD VIDEO_TS, Bluray BDMV) as a disc image
+  // and run UDF/BDMV parsing on it, which then fails. Reject directories here
+  // so callers fall back to file-by-file mode, the correct behaviour for folder
+  // structures on remote VFS shares.
+  if (Stat(&tmpBuffer) != 0 || S_ISDIR(tmpBuffer.st_mode))
   {
     m_url.Reset();
     Close();
