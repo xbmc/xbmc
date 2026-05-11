@@ -710,6 +710,9 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetEditList(const CDataCach
 {
   std::vector<std::pair<float, float>> ranges;
 
+  if (duration == 0)
+    return ranges;
+
   const std::vector<EDL::Edit>& edits = data.GetEditList();
   for (const auto& edit : edits)
   {
@@ -724,6 +727,9 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetCuts(const CDataCacheCor
                                                              std::time_t duration) const
 {
   std::vector<std::pair<float, float>> ranges;
+
+  if (duration == 0)
+    return ranges;
 
   const std::vector<std::chrono::milliseconds>& cuts = data.GetCuts();
   float lastMarker = 0.0f;
@@ -749,6 +755,9 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetSceneMarkers(const CData
 {
   std::vector<std::pair<float, float>> ranges;
 
+  if (duration == 0)
+    return ranges;
+
   const std::vector<std::chrono::milliseconds>& scenes = data.GetSceneMarkers();
   float lastMarker = 0.0f;
   for (const auto& scene : scenes)
@@ -766,6 +775,9 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetChapters(const CDataCach
                                                                  std::time_t duration) const
 {
   std::vector<std::pair<float, float>> ranges;
+
+  if (duration == 0)
+    return ranges;
 
   const std::vector<std::pair<std::string, int64_t>>& chapters = data.GetChapters();
   float lastMarker = 0.0f;
@@ -785,6 +797,9 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetBookmarks(const CDataCac
                                                                   std::time_t duration) const
 {
   std::vector<std::pair<float, float>> ranges;
+
+  if (duration == 0)
+    return ranges;
 
   const std::vector<std::chrono::milliseconds>& bookmarks = data.GetBookmarks();
   float lastMarker = 0.0f;
