@@ -388,11 +388,11 @@ void CGUITextLayout::ParseText(const std::wstring& text,
   // With simple |= / &=~ the first [/B] would clear bold for everything that follows.
   // With reference counts the bit stays set until the last matching open tag is closed.
   // Unmatched closing tags are no-ops (count floors at 0).
-  int boldDepth       = 0;
-  int italicDepth     = 0;
-  int lightDepth      = 0;
-  int uppercaseDepth  = 0;
-  int lowercaseDepth  = 0;
+  int boldDepth = 0;
+  int italicDepth = 0;
+  int lightDepth = 0;
+  int uppercaseDepth = 0;
+  int lowercaseDepth = 0;
   int capitalizeDepth = 0;
 
   int startPos = 0;
@@ -420,7 +420,8 @@ void CGUITextLayout::ParseText(const std::wstring& text,
         ++boldDepth;
       else if (boldDepth > 0)
         --boldDepth;
-      else {
+      else
+	  {
         // unmatched [/B] - ignore
       }
       newStyle = FONT_STYLE_BOLD;
@@ -541,12 +542,18 @@ void CGUITextLayout::ParseText(const std::wstring& text,
       startPos = pos;
       currentColor = newColor;
       currentStyle = defaultStyle;
-      if (boldDepth       > 0) currentStyle |= FONT_STYLE_BOLD;
-      if (italicDepth     > 0) currentStyle |= FONT_STYLE_ITALICS;
-      if (lightDepth      > 0) currentStyle |= FONT_STYLE_LIGHT;
-      if (uppercaseDepth  > 0) currentStyle |= FONT_STYLE_UPPERCASE;
-      if (lowercaseDepth  > 0) currentStyle |= FONT_STYLE_LOWERCASE;
-      if (capitalizeDepth > 0) currentStyle |= FONT_STYLE_CAPITALIZE;
+      if (boldDepth > 0)
+        currentStyle |= FONT_STYLE_BOLD;
+      if (italicDepth > 0)
+        currentStyle |= FONT_STYLE_ITALICS;
+      if (lightDepth > 0)
+        currentStyle |= FONT_STYLE_LIGHT;
+      if (uppercaseDepth > 0)
+        currentStyle |= FONT_STYLE_UPPERCASE;
+      if (lowercaseDepth > 0)
+        currentStyle |= FONT_STYLE_LOWERCASE;
+      if (capitalizeDepth > 0)
+        currentStyle |= FONT_STYLE_CAPITALIZE;
     }
     pos = text.find(L'[', pos);
   }
