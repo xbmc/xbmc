@@ -8,6 +8,7 @@
 	<include file="Includes_Buttons.xml" />
 	<include file="Includes_DialogSelect.xml" />
 	<include file="Includes_InfoViewer.xml" />
+	<include file="Includes_Maps.xml" />
 	<include file="Includes_MusicInfo.xml" />
 	<include file="Includes_PVR.xml" />
 	<include file="Includes_SettingsDialog.xml" />
