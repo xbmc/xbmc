@@ -94,9 +94,10 @@ std::string CSystemGUIInfo::GetSystemHeatInfo(int info) const
       break;
     case SYSTEM_CPU_ALT_USAGE:
       if (CServiceBroker::GetCPUInfo()->SupportsCPUUsage())
-        return CServiceBroker::GetCPUInfo()->GetCoresUsageAltString();
+        text = CServiceBroker::GetCPUInfo()->GetCoresUsageAltString();
       else
-        return g_localizeStrings.Get(10005); // Not available
+        text = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+            10005); // Not available
       break;
     default:
       break;
