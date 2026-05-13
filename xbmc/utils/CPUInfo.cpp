@@ -62,3 +62,36 @@ std::string CCPUInfo::GetCoresUsageString()
 
   return strCores;
 }
+
+std::string CCPUInfo::GetCoresUsageAltString()
+{
+  std::string strCores;
+
+  if (SupportsCPUUsage())
+  {
+    GetUsedPercentage(); // must call it to recalculate pct values
+
+    if (!m_cores.empty())
+    {
+      bool isFirst = true;
+      for (const auto& core : m_cores)
+      {
+        if (!isFirst) strCores += " | "; 
+        else isFirst = false;
+
+        unsigned int cpu_percent = static_cast<unsigned int>(std::min(99.99, core.m_usagePercent));
+
+        if (cpu_percent < 100) 
+          strCores += StringUtils::Format("{:02d}", cpu_percent);
+        else 
+          strCores += "**";
+      }
+    }
+    else
+    {
+      strCores += StringUtils::Format("{:02d}", static_cast<int>(m_lastUsedPercentage));
+    }
+  }
+
+  return strCores;
+}

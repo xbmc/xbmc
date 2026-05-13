@@ -1967,6 +1967,7 @@ constexpr std::array<InfoMap, 76> system_labels = {{
     {"dpmsactive",              SYSTEM_DPMS_ACTIVE},
     {"cputemperature",          SYSTEM_CPU_TEMPERATURE}, // labels from here
     {"cpuusage",                SYSTEM_CPU_USAGE},
+    {"cpualtusage",             SYSTEM_CPU_ALT_USAGE},
     {"gputemperature",          SYSTEM_GPU_TEMPERATURE},
     {"fanspeed",                SYSTEM_FAN_SPEED},
     {"freespace",               SYSTEM_FREE_SPACE},

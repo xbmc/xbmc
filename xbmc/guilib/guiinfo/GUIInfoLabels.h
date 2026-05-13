@@ -468,11 +468,12 @@ constexpr uint32_t SYSTEM_ADDON_UPDATE_COUNT         = 642;
 constexpr uint32_t SYSTEM_PRIVACY_POLICY             = 643;
 constexpr uint32_t SYSTEM_TOTAL_MEMORY               = 644;
 constexpr uint32_t SYSTEM_CPU_USAGE                  = 645;
-constexpr uint32_t SYSTEM_USED_MEMORY_PERCENT        = 646;
-constexpr uint32_t SYSTEM_USED_MEMORY                = 647;
-constexpr uint32_t SYSTEM_FREE_MEMORY                = 648;
-constexpr uint32_t SYSTEM_FREE_MEMORY_PERCENT        = 649;
-// unused id 650 to 653
+constexpr uint32_t SYSTEM_CPU_ALT_USAGE              = 646;
+constexpr uint32_t SYSTEM_USED_MEMORY_PERCENT        = 647;
+constexpr uint32_t SYSTEM_USED_MEMORY                = 648;
+constexpr uint32_t SYSTEM_FREE_MEMORY                = 649;
+constexpr uint32_t SYSTEM_FREE_MEMORY_PERCENT        = 650;
+// unused id 651 to 653
 constexpr uint32_t SYSTEM_UPTIME                     = 654;
 constexpr uint32_t SYSTEM_TOTALUPTIME                = 655;
 constexpr uint32_t SYSTEM_CPUFREQUENCY               = 656;
