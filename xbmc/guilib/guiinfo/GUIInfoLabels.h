@@ -362,6 +362,10 @@ constexpr uint32_t VIDEOPLAYER_PARENTAL_RATING_CODE  = 335;
 constexpr uint32_t VIDEOPLAYER_PARENTAL_RATING_ICON  = 336;
 constexpr uint32_t VIDEOPLAYER_PARENTAL_RATING_SOURCE  = 337;
 constexpr uint32_t VIDEOPLAYER_MEDIAPROVIDERS        = 338;
+constexpr uint32_t VIDEOPLAYER_SUBTITLES_LANG_EX     = 1800;
+constexpr uint32_t VIDEOPLAYER_SUBTITLES_NAME        = 1801;
+constexpr uint32_t VIDEOPLAYER_AUDIO_LANG_EX         = 1802;
+constexpr uint32_t VIDEOPLAYER_AUDIO_NAME            = 1803;
 
 // More MusicPlayer infolabels
 constexpr uint32_t MUSICPLAYER_MEDIAPROVIDERS        = 339;
