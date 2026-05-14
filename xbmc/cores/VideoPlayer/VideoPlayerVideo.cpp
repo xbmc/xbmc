@@ -611,7 +611,9 @@ void CVideoPlayerVideo::Process()
 
 void CVideoPlayerVideo::UpdatePlayerInfo()
 {
-  m_processInfo.SetVideoLiveBitRate(GetVideoBitrate());  
+  m_processInfo.SetVideoLiveBitRate(GetVideoBitrate());
+  m_processInfo.SetVideoQueueLevel(std::min(99, m_messageQueue.GetLevel()));
+  m_processInfo.SetVideoQueueDataLevel(std::min(99, m_messageQueue.GetLevel(true)));
 }
 
 bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)

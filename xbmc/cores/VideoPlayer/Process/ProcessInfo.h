@@ -50,6 +50,10 @@ public:
   float GetVideoDAR();
   void SetVideoLiveBitRate(double bitRate);
   double GetVideoLiveBitRate();
+  void SetVideoQueueLevel(int level);
+  int GetVideoQueueLevel();
+  void SetVideoQueueDataLevel(int level);
+  int GetVideoQueueDataLevel();
   void SetVideoInterlaced(bool interlaced);
   bool GetVideoInterlaced();
   virtual EINTERLACEMETHOD GetFallbackDeintMethod();
@@ -74,6 +78,10 @@ public:
   int GetAudioBitsPerSample();
   void SetAudioLiveBitRate(double bitRate);
   double GetAudioLiveBitRate();
+  void SetAudioQueueLevel(int level);
+  int GetAudioQueueLevel();
+  void SetAudioQueueDataLevel(int level);
+  int GetAudioQueueDataLevel();
   virtual bool AllowDTSHDDecode();
   virtual bool WantsRawPassthrough() { return false; }
 
@@ -139,6 +147,8 @@ protected:
   float m_videoFPS;
   float m_videoDAR;
   double m_videoLiveBitRate;
+  int m_videoQueueLevel;
+  int m_videoQueueDataLevel;
   bool m_videoIsInterlaced;
   std::list<EINTERLACEMETHOD> m_deintMethods;
   EINTERLACEMETHOD m_deintMethodDefault;
@@ -152,6 +162,8 @@ protected:
   int m_audioSampleRate;
   int m_audioBitsPerSample;
   double m_audioLiveBitRate;
+  int m_audioQueueLevel;
+  int m_audioQueueDataLevel;
   CCriticalSection m_audioCodecSection;
 
   // render info

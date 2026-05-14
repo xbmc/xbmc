@@ -48,6 +48,10 @@ public:
   float GetVideoDAR();
   void SetVideoLiveBitRate(double bitRate);
   double GetVideoLiveBitRate();
+  void SetVideoQueueLevel(int level);
+  int GetVideoQueueLevel();
+  void SetVideoQueueDataLevel(int level);
+  int GetVideoQueueDataLevel();
 
   /*!
    * @brief Set if the video is interlaced in cache.
@@ -72,6 +76,10 @@ public:
   int GetAudioBitsPerSample();
   void SetAudioLiveBitRate(double bitRate);
   double GetAudioLiveBitRate();
+  void SetAudioQueueLevel(int level);
+  int GetAudioQueueLevel();
+  void SetAudioQueueDataLevel(int level);
+  int GetAudioQueueDataLevel();
 
   // content info
 
@@ -217,6 +225,8 @@ protected:
     float dar;
     bool m_isInterlaced;
     double liveBitRate;
+    int queueLevel;
+    int queueDataLevel;
   } m_playerVideoInfo;
 
   CCriticalSection m_audioPlayerSection;
@@ -227,6 +237,8 @@ protected:
     int sampleRate;
     int bitsPerSample;
     double liveBitRate;
+    int queueLevel;
+    int queueDataLevel;
   } m_playerAudioInfo;
 
   mutable CCriticalSection m_contentSection;

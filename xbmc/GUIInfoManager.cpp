@@ -1161,9 +1161,13 @@ constexpr std::array<InfoMap, 13> player_process = {{
     {"audiolivebitrate",    PLAYER_PROCESS_AUDIO_LIVE_BITRATE},
     {"audiolivekibitrate",  PLAYER_PROCESS_AUDIO_LIVE_KI_BITRATE},
     {"audiolivemibitrate",  PLAYER_PROCESS_AUDIO_LIVE_MI_BITRATE},
+    {"audio.queue.level",   PLAYER_PROCESS_AUDIO_QUEUE_LEVEL},
+    {"audio.queue.data.level", PLAYER_PROCESS_AUDIO_QUEUE_DATA_LEVEL},
     {"videolivebitrate",    PLAYER_PROCESS_VIDEO_LIVE_BITRATE},
     {"videolivekibitrate",  PLAYER_PROCESS_VIDEO_LIVE_KI_BITRATE},
     {"videolivemibitrate",  PLAYER_PROCESS_VIDEO_LIVE_MI_BITRATE},
+    {"video.queue.level",   PLAYER_PROCESS_VIDEO_QUEUE_LEVEL},
+    {"video.queue.data.level", PLAYER_PROCESS_VIDEO_QUEUE_DATA_LEVEL},
     {"videoscantype",       PLAYER_PROCESS_VIDEOSCANTYPE},
 }};
 // clang-format on

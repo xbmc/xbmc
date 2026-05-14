@@ -355,6 +355,12 @@ bool CPlayerGUIInfo::GetLabel(std::string& value,
     case PLAYER_PROCESS_AUDIO_LIVE_MI_BITRATE:
       value = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetAudioLiveBitRate() / 1048576);
       return true;
+    case PLAYER_PROCESS_AUDIO_QUEUE_LEVEL:
+      value = std::to_string(CServiceBroker::GetDataCacheCore().GetAudioQueueLevel());
+      return true;
+    case PLAYER_PROCESS_AUDIO_QUEUE_DATA_LEVEL:
+      value = std::to_string(CServiceBroker::GetDataCacheCore().GetAudioQueueDataLevel());
+      return true;
     case PLAYER_PROCESS_VIDEO_LIVE_BITRATE:
       value = std::to_string(CServiceBroker::GetDataCacheCore().GetVideoLiveBitRate());
       return true;
@@ -363,6 +369,12 @@ bool CPlayerGUIInfo::GetLabel(std::string& value,
       return true;
     case PLAYER_PROCESS_VIDEO_LIVE_MI_BITRATE:
       value = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetVideoLiveBitRate() / 1048576);
+      return true;
+    case PLAYER_PROCESS_VIDEO_QUEUE_LEVEL:
+      value = std::to_string(CServiceBroker::GetDataCacheCore().GetVideoQueueLevel());
+      return true;
+    case PLAYER_PROCESS_VIDEO_QUEUE_DATA_LEVEL:
+      value = std::to_string(CServiceBroker::GetDataCacheCore().GetVideoQueueDataLevel());
       return true;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -418,6 +430,18 @@ bool CPlayerGUIInfo::GetInt(int& value,
       return true;
     case PLAYER_AUDIO_DELAY:
       value = m_appPlayer->GetAudioDelay();
+      return true;
+    case PLAYER_PROCESS_AUDIO_QUEUE_LEVEL:
+      value = CServiceBroker::GetDataCacheCore().GetAudioQueueLevel();
+      return true;
+    case PLAYER_PROCESS_AUDIO_QUEUE_DATA_LEVEL:
+      value = CServiceBroker::GetDataCacheCore().GetAudioQueueDataLevel();
+      return true;
+    case PLAYER_PROCESS_VIDEO_QUEUE_LEVEL:
+      value = CServiceBroker::GetDataCacheCore().GetVideoQueueLevel();
+      return true;
+    case PLAYER_PROCESS_VIDEO_QUEUE_DATA_LEVEL:
+      value = CServiceBroker::GetDataCacheCore().GetVideoQueueDataLevel();
       return true;
     default:
       break;
