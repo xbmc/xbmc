@@ -226,7 +226,7 @@ void CVideoPlayerAudio::UpdatePlayerInfo()
 
   m_processInfo.SetAudioLiveBitRate(m_audioStats.GetBitrate());
   m_processInfo.SetAudioQueueLevel(std::min(99, m_messageQueue.GetLevel()));
-  m_processInfo.SetAudioQueueDataLevel(std::min(99, m_messageQueue.GetLevel(true)));
+  m_processInfo.SetAudioQueueDataLevel(std::min(99, m_messageQueue.GetLevel()));
 }
 
 void CVideoPlayerAudio::Process()
