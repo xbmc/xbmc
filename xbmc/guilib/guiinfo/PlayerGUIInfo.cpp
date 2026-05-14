@@ -350,10 +350,12 @@ bool CPlayerGUIInfo::GetLabel(std::string& value,
       value = std::to_string(CServiceBroker::GetDataCacheCore().GetAudioLiveBitRate());
       return true;
     case PLAYER_PROCESS_AUDIO_LIVE_KI_BITRATE:
-      value = StringUtils::FormatNumberNoDecimal(CServiceBroker::GetDataCacheCore().GetAudioLiveBitRate() / 1024);
+      value = StringUtils::FormatNumberNoDecimal(
+          CServiceBroker::GetDataCacheCore().GetAudioLiveBitRate() / 1024);
       return true;
     case PLAYER_PROCESS_AUDIO_LIVE_MI_BITRATE:
-      value = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetAudioLiveBitRate() / 1048576);
+      value = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetAudioLiveBitRate() /
+                                        1048576);
       return true;
     case PLAYER_PROCESS_AUDIO_QUEUE_LEVEL:
       value = std::to_string(CServiceBroker::GetDataCacheCore().GetAudioQueueLevel());
@@ -365,10 +367,12 @@ bool CPlayerGUIInfo::GetLabel(std::string& value,
       value = std::to_string(CServiceBroker::GetDataCacheCore().GetVideoLiveBitRate());
       return true;
     case PLAYER_PROCESS_VIDEO_LIVE_KI_BITRATE:
-      value = StringUtils::FormatNumberNoDecimal(CServiceBroker::GetDataCacheCore().GetVideoLiveBitRate() / 1024);
+      value = StringUtils::FormatNumberNoDecimal(
+          CServiceBroker::GetDataCacheCore().GetVideoLiveBitRate() / 1024);
       return true;
     case PLAYER_PROCESS_VIDEO_LIVE_MI_BITRATE:
-      value = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetVideoLiveBitRate() / 1048576);
+      value = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetVideoLiveBitRate() /
+                                        1048576);
       return true;
     case PLAYER_PROCESS_VIDEO_QUEUE_LEVEL:
       value = std::to_string(CServiceBroker::GetDataCacheCore().GetVideoQueueLevel());

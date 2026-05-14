@@ -198,7 +198,7 @@ void CProcessInfo::SetVideoLiveBitRate(double bitRate)
 {
   std::unique_lock lock(m_videoCodecSection);
 
-  m_videoLiveBitRate= bitRate;
+  m_videoLiveBitRate = bitRate;
 
   if (m_dataCache)
     m_dataCache->SetVideoLiveBitRate(m_videoLiveBitRate);
@@ -399,7 +399,7 @@ void CProcessInfo::ResetAudioCodecInfo()
     m_dataCache->SetAudioBitsPerSample(m_audioBitsPerSample);
     m_dataCache->SetAudioLiveBitRate(m_audioLiveBitRate);
     m_dataCache->SetAudioQueueLevel(m_audioQueueLevel);
-    m_dataCache->SetAudioQueueDataLevel(m_audioQueueLevel);
+    m_dataCache->SetAudioQueueDataLevel(m_audioQueueDataLevel);
   }
 }
 

@@ -1145,30 +1145,30 @@ constexpr std::array<InfoMap, 10> player_times = {{
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 13> player_process = {{
-    {"videodecoder",        PLAYER_PROCESS_VIDEODECODER},
-    {"deintmethod",         PLAYER_PROCESS_DEINTMETHOD},
-    {"pixformat",           PLAYER_PROCESS_PIXELFORMAT},
-    {"videowidth",          PLAYER_PROCESS_VIDEOWIDTH},
-    {"videoheight",         PLAYER_PROCESS_VIDEOHEIGHT},
-    {"videofps",            PLAYER_PROCESS_VIDEOFPS},
-    {"videodar",            PLAYER_PROCESS_VIDEODAR},
-    {"videohwdecoder",      PLAYER_PROCESS_VIDEOHWDECODER},
-    {"audiodecoder",        PLAYER_PROCESS_AUDIODECODER},
-    {"audiochannels",       PLAYER_PROCESS_AUDIOCHANNELS},
-    {"audiosamplerate",     PLAYER_PROCESS_AUDIOSAMPLERATE},
-    {"audiobitspersample",  PLAYER_PROCESS_AUDIOBITSPERSAMPLE},
-    {"audiolivebitrate",    PLAYER_PROCESS_AUDIO_LIVE_BITRATE},
-    {"audiolivekibitrate",  PLAYER_PROCESS_AUDIO_LIVE_KI_BITRATE},
-    {"audiolivemibitrate",  PLAYER_PROCESS_AUDIO_LIVE_MI_BITRATE},
-    {"audio.queue.level",   PLAYER_PROCESS_AUDIO_QUEUE_LEVEL},
+constexpr std::array<InfoMap, 23> player_process = {{
+    {"videodecoder",           PLAYER_PROCESS_VIDEODECODER},
+    {"deintmethod",            PLAYER_PROCESS_DEINTMETHOD},
+    {"pixformat",              PLAYER_PROCESS_PIXELFORMAT},
+    {"videowidth",             PLAYER_PROCESS_VIDEOWIDTH},
+    {"videoheight",            PLAYER_PROCESS_VIDEOHEIGHT},
+    {"videofps",               PLAYER_PROCESS_VIDEOFPS},
+    {"videodar",               PLAYER_PROCESS_VIDEODAR},
+    {"videohwdecoder",         PLAYER_PROCESS_VIDEOHWDECODER},
+    {"audiodecoder",           PLAYER_PROCESS_AUDIODECODER},
+    {"audiochannels",          PLAYER_PROCESS_AUDIOCHANNELS},
+    {"audiosamplerate",        PLAYER_PROCESS_AUDIOSAMPLERATE},
+    {"audiobitspersample",     PLAYER_PROCESS_AUDIOBITSPERSAMPLE},
+    {"audiolivebitrate",       PLAYER_PROCESS_AUDIO_LIVE_BITRATE},
+    {"audiolivekibitrate",     PLAYER_PROCESS_AUDIO_LIVE_KI_BITRATE},
+    {"audiolivemibitrate",     PLAYER_PROCESS_AUDIO_LIVE_MI_BITRATE},
+    {"audio.queue.level",      PLAYER_PROCESS_AUDIO_QUEUE_LEVEL},
     {"audio.queue.data.level", PLAYER_PROCESS_AUDIO_QUEUE_DATA_LEVEL},
-    {"videolivebitrate",    PLAYER_PROCESS_VIDEO_LIVE_BITRATE},
-    {"videolivekibitrate",  PLAYER_PROCESS_VIDEO_LIVE_KI_BITRATE},
-    {"videolivemibitrate",  PLAYER_PROCESS_VIDEO_LIVE_MI_BITRATE},
-    {"video.queue.level",   PLAYER_PROCESS_VIDEO_QUEUE_LEVEL},
+    {"videolivebitrate",       PLAYER_PROCESS_VIDEO_LIVE_BITRATE},
+    {"videolivekibitrate",     PLAYER_PROCESS_VIDEO_LIVE_KI_BITRATE},
+    {"videolivemibitrate",     PLAYER_PROCESS_VIDEO_LIVE_MI_BITRATE},
+    {"video.queue.level",      PLAYER_PROCESS_VIDEO_QUEUE_LEVEL},
     {"video.queue.data.level", PLAYER_PROCESS_VIDEO_QUEUE_DATA_LEVEL},
-    {"videoscantype",       PLAYER_PROCESS_VIDEOSCANTYPE},
+    {"videoscantype",          PLAYER_PROCESS_VIDEOSCANTYPE},
 }};
 // clang-format on
 
@@ -4181,7 +4181,7 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 83> videoplayer = {{
+constexpr std::array<InfoMap, 87> videoplayer = {{
     {"title",                 VIDEOPLAYER_TITLE},
     {"genre",                 VIDEOPLAYER_GENRE},
     {"country",               VIDEOPLAYER_COUNTRY},
