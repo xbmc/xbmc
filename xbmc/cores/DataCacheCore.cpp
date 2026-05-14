@@ -167,6 +167,20 @@ int CDataCacheCore::GetVideoHeight()
   return m_playerVideoInfo.height;
 }
 
+void CDataCacheCore::SetVideoLiveBitRate(double bitRate)
+{
+  std::unique_lock lock(m_videoPlayerSection);
+
+  m_playerVideoInfo.liveBitRate = bitRate;
+}
+
+double CDataCacheCore::GetVideoLiveBitRate()
+{
+  std::unique_lock lock(m_videoPlayerSection);
+
+  return m_playerVideoInfo.liveBitRate;
+}
+
 void CDataCacheCore::SetVideoFps(float fps)
 {
   std::unique_lock lock(m_videoPlayerSection);
@@ -262,6 +276,20 @@ int CDataCacheCore::GetAudioBitsPerSample()
   std::unique_lock lock(m_audioPlayerSection);
 
   return m_playerAudioInfo.bitsPerSample;
+}
+
+void CDataCacheCore::SetAudioLiveBitRate(double bitRate)
+{
+  std::unique_lock lock(m_audioPlayerSection);
+
+  m_playerAudioInfo.liveBitRate = bitRate;
+}
+
+double CDataCacheCore::GetAudioLiveBitRate()
+{
+  std::unique_lock lock(m_audioPlayerSection);
+
+  return m_playerAudioInfo.liveBitRate;
 }
 
 void CDataCacheCore::SetEditList(const std::vector<EDL::Edit>& editList)

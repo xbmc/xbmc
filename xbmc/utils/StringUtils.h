@@ -422,6 +422,18 @@ public:
     return std::move(ss).str();
   }
 
+  template<typename T>
+  [[nodiscard]] static std::string FormatNumberNoDecimal(T num)
+  {
+    std::stringstream ss;
+#if !(defined(_DEBUG) && defined(TARGET_WINDOWS))
+    ss.imbue(GetOriginalLocale());
+#endif
+    ss.precision(0);
+    ss << std::fixed << num;
+    return std::move(ss).str();
+  }
+
   /*! \brief Escapes the given string to be able to be used as a parameter.
 
    Escapes backslashes and double-quotes with an additional backslash and

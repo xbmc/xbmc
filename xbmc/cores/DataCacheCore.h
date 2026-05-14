@@ -46,6 +46,8 @@ public:
   float GetVideoFps();
   void SetVideoDAR(float dar);
   float GetVideoDAR();
+  void SetVideoLiveBitRate(double bitRate);
+  double GetVideoLiveBitRate();
 
   /*!
    * @brief Set if the video is interlaced in cache.
@@ -68,6 +70,8 @@ public:
   int GetAudioSampleRate();
   void SetAudioBitsPerSample(int bitsPerSample);
   int GetAudioBitsPerSample();
+  void SetAudioLiveBitRate(double bitRate);
+  double GetAudioLiveBitRate();
 
   // content info
 
@@ -212,6 +216,7 @@ protected:
     float fps;
     float dar;
     bool m_isInterlaced;
+    double liveBitRate;
   } m_playerVideoInfo;
 
   CCriticalSection m_audioPlayerSection;
@@ -221,6 +226,7 @@ protected:
     std::string channels;
     int sampleRate;
     int bitsPerSample;
+    double liveBitRate;
   } m_playerAudioInfo;
 
   mutable CCriticalSection m_contentSection;

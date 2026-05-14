@@ -593,6 +593,7 @@ void CVideoPlayerVideo::Process()
         }
 
         m_videoStats.AddSampleBytes(pPacket->iSize);
+        UpdatePlayerInfo();
 
         if (ProcessDecoderOutput(frametime, pts))
         {
@@ -606,6 +607,11 @@ void CVideoPlayerVideo::Process()
       }
     }
   }
+}
+
+void CVideoPlayerVideo::UpdatePlayerInfo()
+{
+  m_processInfo.SetVideoLiveBitRate(GetVideoBitrate());  
 }
 
 bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)
