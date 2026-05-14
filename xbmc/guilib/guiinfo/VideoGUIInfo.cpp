@@ -700,12 +700,72 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
       }
       break;
     }
+    case VIDEOPLAYER_AUDIO_BIT_RATE:
+    {
+      int iBitrate = m_audioInfo.bitrate;
+      if (iBitrate > 0)
+      {
+        value = std::to_string(iBitrate);
+        return true;
+      }
+      break;
+    }
+    case VIDEOPLAYER_AUDIO_KIBIT_RATE:
+    {
+      int iBitrate = m_audioInfo.bitrate;
+      if (iBitrate > 0)
+      {
+        value = StringUtils::FormatNumber((static_cast<double>(iBitrate) / 1024), 0);
+        return true;
+      }
+      break;
+    }
+    case VIDEOPLAYER_AUDIO_MIBIT_RATE:
+    {
+      int iBitrate = m_audioInfo.bitrate;
+      if (iBitrate > 0)
+      {
+        value = StringUtils::FormatNumber((static_cast<double>(iBitrate) / 1048576), 2);
+        return true;
+      }
+      break;
+    }
     case VIDEOPLAYER_AUDIO_BITRATE:
     {
       int iBitrate = m_audioInfo.bitrate;
       if (iBitrate > 0)
       {
         value = std::to_string(std::lrint(static_cast<double>(iBitrate) / 1000.0));
+        return true;
+      }
+      break;
+    }
+    case VIDEOPLAYER_VIDEO_BIT_RATE:
+    {
+      int iBitrate = m_videoInfo.bitrate;
+      if (iBitrate > 0)
+      {
+        value = std::to_string(iBitrate);
+        return true;
+      }
+      break;
+    }
+    case VIDEOPLAYER_VIDEO_KIBIT_RATE:
+    {
+      int iBitrate = m_videoInfo.bitrate;
+      if (iBitrate > 0)
+      {
+        value = StringUtils::FormatNumber((static_cast<double>(iBitrate) / 1024), 0);
+        return true;
+      }
+      break;
+    }
+    case VIDEOPLAYER_VIDEO_MIBIT_RATE:
+    {
+      int iBitrate = m_videoInfo.bitrate;
+      if (iBitrate > 0)
+      {
+        value = StringUtils::FormatNumber((static_cast<double>(iBitrate) / 1048576), 2);
         return true;
       }
       break;

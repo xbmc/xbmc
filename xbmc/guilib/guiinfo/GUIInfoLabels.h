@@ -366,6 +366,12 @@ constexpr uint32_t VIDEOPLAYER_SUBTITLES_LANG_EX     = 1800;
 constexpr uint32_t VIDEOPLAYER_SUBTITLES_NAME        = 1801;
 constexpr uint32_t VIDEOPLAYER_AUDIO_LANG_EX         = 1802;
 constexpr uint32_t VIDEOPLAYER_AUDIO_NAME            = 1803;
+constexpr uint32_t VIDEOPLAYER_AUDIO_BIT_RATE        = 1804;
+constexpr uint32_t VIDEOPLAYER_AUDIO_KIBIT_RATE      = 1805;
+constexpr uint32_t VIDEOPLAYER_AUDIO_MIBIT_RATE      = 1806;
+constexpr uint32_t VIDEOPLAYER_VIDEO_BIT_RATE        = 1807;
+constexpr uint32_t VIDEOPLAYER_VIDEO_KIBIT_RATE      = 1808;
+constexpr uint32_t VIDEOPLAYER_VIDEO_MIBIT_RATE      = 1809;
 
 // More MusicPlayer infolabels
 constexpr uint32_t MUSICPLAYER_MEDIAPROVIDERS        = 339;
