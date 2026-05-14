@@ -201,7 +201,8 @@ void CVideoPlayerAudio::OnStartup()
 void CVideoPlayerAudio::UpdatePlayerInfo()
 {
   std::ostringstream s;
-  s << "aq:" << std::setw(2) << std::min(99, m_messageQueue.GetLevel());
+  s << "aq:" << std::setw(2) << std::min(99, m_messageQueue.GetLevel()) << "% (" << std::setw(2)
+    << std::min(99, m_messageQueue.GetLevel(true)) << "%)";
   s << "% " << std::fixed << std::setprecision(3) << m_messageQueue.GetTimeSize();
   s << "s, Kb/s:" << std::fixed << std::setprecision(2) << m_audioStats.GetBitrate() / 1024.0;
 
@@ -223,6 +224,10 @@ void CVideoPlayerAudio::UpdatePlayerInfo()
     std::unique_lock lock(m_info_section);
     m_info = info;
   }
+
+  m_processInfo.SetAudioLiveBitRate(m_audioStats.GetBitrate());
+  m_processInfo.SetAudioQueueLevel(std::min(99, m_messageQueue.GetLevel()));
+  m_processInfo.SetAudioQueueDataLevel(std::min(99, m_messageQueue.GetLevel(true)));
 }
 
 void CVideoPlayerAudio::Process()

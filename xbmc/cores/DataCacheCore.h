@@ -46,6 +46,12 @@ public:
   float GetVideoFps();
   void SetVideoDAR(float dar);
   float GetVideoDAR();
+  void SetVideoLiveBitRate(double bitRate);
+  double GetVideoLiveBitRate();
+  void SetVideoQueueLevel(int level);
+  int GetVideoQueueLevel();
+  void SetVideoQueueDataLevel(int level);
+  int GetVideoQueueDataLevel();
 
   /*!
    * @brief Set if the video is interlaced in cache.
@@ -68,6 +74,12 @@ public:
   int GetAudioSampleRate();
   void SetAudioBitsPerSample(int bitsPerSample);
   int GetAudioBitsPerSample();
+  void SetAudioLiveBitRate(double bitRate);
+  double GetAudioLiveBitRate();
+  void SetAudioQueueLevel(int level);
+  int GetAudioQueueLevel();
+  void SetAudioQueueDataLevel(int level);
+  int GetAudioQueueDataLevel();
 
   // content info
 
@@ -212,6 +224,9 @@ protected:
     float fps;
     float dar;
     bool m_isInterlaced;
+    double liveBitRate;
+    int queueLevel;
+    int queueDataLevel;
   } m_playerVideoInfo;
 
   CCriticalSection m_audioPlayerSection;
@@ -221,6 +236,9 @@ protected:
     std::string channels;
     int sampleRate;
     int bitsPerSample;
+    double liveBitRate;
+    int queueLevel;
+    int queueDataLevel;
   } m_playerAudioInfo;
 
   mutable CCriticalSection m_contentSection;
