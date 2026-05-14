@@ -1059,7 +1059,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
         const int dbId{static_cast<int>(AddVideo(pItem, info2, bDirNames, useLocal))};
         if (dbId < 0)
           return InfoRet::INFO_ERROR;
-        if (m_similarVideoAction == SimilarVideoScanAction::ASK &&
+        if ((m_similarVideoAction == SimilarVideoScanAction::ASK ||
+             m_similarVideoAction == SimilarVideoScanAction::AUTO) &&
             ProcessVideoVersion(VideoDbContentType::MOVIES, dbId))
           return InfoRet::HAVE_ALREADY;
         return InfoRet::ADDED;
@@ -1084,7 +1085,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
       const int dbId{static_cast<int>(AddVideo(pItem, info2, bDirNames, useLocal))};
       if (dbId < 0)
         return InfoRet::INFO_ERROR;
-      if (m_similarVideoAction == SimilarVideoScanAction::ASK &&
+      if ((m_similarVideoAction == SimilarVideoScanAction::ASK ||
+           m_similarVideoAction == SimilarVideoScanAction::AUTO) &&
           ProcessVideoVersion(VideoDbContentType::MOVIES, dbId))
         return InfoRet::HAVE_ALREADY;
       return InfoRet::ADDED;

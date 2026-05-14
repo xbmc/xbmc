@@ -12299,9 +12299,13 @@ bool CVideoDatabase::ConvertVideoToVersion(VideoDbContentType itemType,
       DeleteMovie(dbIdSource, cascadeAction, DeleteMovieHashAction::HASH_PRESERVE);
   }
 
-  // Rename the default version
-  ExecuteQuery(PrepareSQL("UPDATE videoversion SET idType = %i, itemType = %i WHERE idFile = %i",
-                          idVideoVersion, assetType, idFile));
+  // Rename the default version when provided
+  if (idVideoVersion < 0)
+    ExecuteQuery(
+        PrepareSQL("UPDATE videoversion SET itemType = %i WHERE idFile = %i", assetType, idFile));
+  else
+    ExecuteQuery(PrepareSQL("UPDATE videoversion SET idType = %i, itemType = %i WHERE idFile = %i",
+                            idVideoVersion, assetType, idFile));
 
   CommitTransaction();
 
@@ -12696,6 +12700,30 @@ bool CVideoDatabase::GetVideoVersionTypes(VideoDbContentType idContent,
     CLog::LogF(LOGERROR, "failed");
   }
   return false;
+}
+
+bool CVideoDatabase::IsValidVideoAssetType(int typeId,
+                                           VideoDbContentType idContent,
+                                           VideoAssetType assetType)
+{
+  if (!m_pDB)
+    return false;
+
+  MediaType mediaType;
+
+  if (idContent == VideoDbContentType::MOVIES)
+    mediaType = MediaTypeMovie;
+  else
+    return false;
+
+  const std::string query =
+      PrepareSQL("SELECT 1 FROM videoversiontype "
+                 "WHERE id = %i "
+                 "AND name != '' "
+                 "AND itemType = %i "
+                 "AND owner IN (%i, %i)",
+                 typeId, assetType, VideoAssetTypeOwner::SYSTEM, VideoAssetTypeOwner::USER);
+  return GetSingleValueInt(query) == 1;
 }
 
 std::string CVideoDatabase::GetVideoVersionById(int id)
