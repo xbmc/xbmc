@@ -170,10 +170,6 @@ bool CWinSystemGbm::InitWindowSystem()
   if (setting)
     setting->SetVisible(true);
 
-  setting = settings->GetSetting("videoscreen.limitguisize");
-  if (setting)
-    setting->SetVisible(true);
-
   SetHDR(nullptr);
 
   CLog::Log(LOGDEBUG, "CWinSystemGbm::{} - initialized DRM", __FUNCTION__);
