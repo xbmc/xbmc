@@ -80,8 +80,8 @@ public:
   void WaitUntilEmpty();
 
   // non messagequeue related functions
-  bool IsFull() const { return GetLevel() == 100; }
-  int GetLevel() const;
+  bool IsFull() const { return GetLevel(true) == 100; }
+  int GetLevel(bool data_level = false) const;
 
   void SetMaxDataSize(int iMaxDataSize) { m_iMaxDataSize = iMaxDataSize; }
   void SetMaxTimeSize(double sec) { m_TimeSize = 1.0 / sec; }

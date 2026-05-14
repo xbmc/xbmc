@@ -963,7 +963,7 @@ CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPict
 std::string CVideoPlayerVideo::GetPlayerInfo()
 {
   std::ostringstream s;
-  s << "vq:" << std::setw(2) << std::min(99, m_processInfo.GetLevelVQ());
+  s << "vq:" << std::setw(2) << std::min(99, m_messageQueue.GetLevel()) << "% (" << std::setw(2) << std::min(99, m_messageQueue.GetLevel(true)) << "%)";
   s << "% " << std::fixed << std::setprecision(3) << m_messageQueue.GetTimeSize();
   s << "s, Mb/s:" << std::fixed << std::setprecision(2)
     << static_cast<double>(GetVideoBitrate()) / (1024.0 * 1024.0);
