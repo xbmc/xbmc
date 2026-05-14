@@ -641,8 +641,8 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
     {
       std::string strLanguage;
       if (!g_LangCodeExpander.Lookup(m_subtitleInfo.language, strLanguage))
-        strLanguage = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
-            13205); // Unknown
+        strLanguage =
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // Unknown
       value = strLanguage;
       return true;
     }
@@ -727,8 +727,8 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
     {
       std::string strLanguage;
       if (!g_LangCodeExpander.Lookup(m_audioInfo.language, strLanguage))
-        strLanguage = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
-            13205); // Unknown
+        strLanguage =
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // Unknown
       value = strLanguage;
       return true;
     }
