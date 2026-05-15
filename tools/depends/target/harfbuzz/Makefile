@@ -8,7 +8,7 @@ ifeq ($(DEBUG_BUILD), yes)
 endif
 
 # configuration settings
-CONFIGURE = $(NATIVEPREFIX)/bin/python3 $(NATIVEPREFIX)/bin/meson \
+CONFIGURE = $(NATIVEPREFIX)/bin/python3 $(NATIVEPREFIX)/bin/meson setup \
 	--buildtype=$(MESON_BUILD_TYPE) \
 	--prefix=$(PREFIX) \
 	-Ddocs=disabled \
@@ -16,6 +16,8 @@ CONFIGURE = $(NATIVEPREFIX)/bin/python3 $(NATIVEPREFIX)/bin/meson \
 	-Dicu_builtin=false \
 	-Dfreetype=enabled \
 	-Dintrospection=disabled \
+	-Dutilities=disabled \
+	-Dgpu=disabled \
 	-Ddefault_library=static
 
 ifeq ($(CROSS_COMPILING), yes)
