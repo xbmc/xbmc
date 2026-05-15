@@ -123,6 +123,15 @@ bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
       CMusicDatabase::SetPropertiesFromAlbum(*pItem, album);
 
     path = pItem->GetMusicInfoTag()->GetURL();
+
+    // The artist and album lookups above have populated the item from the DB.
+    // The remaining work below opens the source file with TagLib just to
+    // fetch lyrics, which is not worth the cost - particularly for files on
+    // network shares, or large Matroska/chaptered containers where TagLib
+    // seeks to EOF hunting for ID3-style tags that aren't there. Bail out for
+    // anything already in the music DB.
+    pItem->SetProperty("hasfullmusictag", "true");
+    return true;
   }
 
   CLog::Log(LOGDEBUG, "Loading additional tag info for file {}", path);
