@@ -11,6 +11,8 @@
 #include "threads/CriticalSection.h"
 #include "utils/RingBuffer.h"
 
+#include <cstdint>
+
 struct AEAudioFormat;
 class CFileItem;
 class ICodec;
@@ -83,6 +85,11 @@ private:
   bool m_eof;
   int m_status;
   bool m_canPlay;
+
+  // Cached startup-buffer threshold in bytes, computed once per codec in
+  // Create() from the immutable format (bits/ch/rate). Avoids recomputing a
+  // 64-bit multiply/divide in the ReadSamples hot loop while STATUS_QUEUING.
+  uint64_t m_startThresholdBytes;
 
   // the codec we're using
   ICodec* m_codec;
