@@ -5,10 +5,9 @@ DEPS = ../../Makefile.include Makefile ../../download-files.include
 
 # lib name, version
 LIBNAME=libffi
-VERSION=3.2.1
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
-SHA512=980ca30a8d76f963fca722432b1fe5af77d7a4e4d2eac5144fbc5374d4c596609a293440573f4294207e1bdd9fda80ad1e1cafb2ffb543df5a275bc3bd546483
+VERSION=3.5.2
+ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
+SHA512=76974a84e3aee6bbd646a6da2e641825ae0b791ca6efdc479b2d4cbcd3ad607df59cffcf5031ad5bd30822961a8c6de164ac8ae379d1804acd388b1975cdbf4d
 include ../../download-files.include
 
 # configuration settings
@@ -32,8 +31,6 @@ $(LIBDYLIB): .configured-$(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM) install
-	mkdir -p $(NATIVEPREFIX)/include/ffi
-	cp $(NATIVEPREFIX)/lib/$(SOURCE)/include/* $(NATIVEPREFIX)/include/ffi/
 	touch $@
 
 clean:
