@@ -338,7 +338,7 @@ YUV2RGBFilterShader::YUV2RGBFilterShader(EShaderFormat format,
   VertexShader()->LoadSource("gles310_yuv2rgb.vert");
   PixelShader()->InsertSource("gles_tonemap.frag", "void main()");
   PixelShader()->InsertSource("gles_dither_uniforms.frag", "void main()");
-  PixelShader()->InsertSource("gles_dither_body.frag", "fragColor");
+  PixelShader()->InsertSource("gles_dither_body.frag", "fragColor = rgb");
 }
 
 YUV2RGBFilterShader::~YUV2RGBFilterShader()
