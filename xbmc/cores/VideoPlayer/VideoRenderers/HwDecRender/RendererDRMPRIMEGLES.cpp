@@ -13,6 +13,8 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderCapture.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
+#include "cores/VideoPlayer/VideoRenderers/VideoShaders/YUV2RGBShaderGLES.h"
+#include "rendering/MatrixGL.h"
 #include "rendering/gles/RenderSystemGLES.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -126,23 +128,107 @@ bool CRendererDRMPRIMEGLES::Configure(const VideoPicture& picture,
     if (!buf.fence)
     {
       buf.texture.Init(eglDisplay);
+      buf.yuvTexture.Init(eglDisplay);
       buf.fence = std::make_unique<CEGLFence>(eglDisplay);
     }
   }
 
   m_configured = true;
 
-  //! @todo limited-range color management is broken on the DRMPRIMEGLES path.
-  //! The OES_EGL_image_external sampler (samplerExternalOES) does YUV->RGB
-  //! conversion in mesa with hardcoded matrices that always output full-range
-  //! RGB regardless of source range. So `videoscreen.limitedrange=true` is
-  //! silently ignored for video pixels here, while GUI pixels go through the
-  //! GLES shader chain that does honor the setting -- producing a range
-  //! mismatch in the BO when both are composited. The clean fix is to migrate
-  //! from OES_EGL_image_external to EXT_YUV_target's __samplerExternal2DY2YEXT
-  //! (sampler returns raw YUV) and apply the conversion matrix in our own
-  //! shader, the way RendererVAAPIGLES does. Tracked in
-  //! project_limited_range_hdr.md.
+  // Two render paths, selected per-frame in Render():
+  //  - Full-range: OES samplerExternalOES (always available).
+  //  - Limited-range: per-plane sampler2D + BaseYUV2RGBGLSLShader, built
+  //    here when the source fourcc is one we can per-plane import.
+  m_yuvShader.reset();
+
+  uint32_t sourceFourcc = 0;
+  auto* drmBuf = dynamic_cast<CVideoBufferDRMPRIME*>(picture.videoBuffer);
+  if (drmBuf && drmBuf->AcquireDescriptor())
+  {
+    auto* desc = drmBuf->GetDescriptor();
+    if (desc && desc->nb_layers == 1)
+      sourceFourcc = desc->layers[0].format;
+    drmBuf->ReleaseDescriptor();
+  }
+
+  if (CDRMPRIMETextureYUV::SupportsFormat(sourceFourcc))
+  {
+    using namespace Shaders::GLES;
+    // Both src and dst primaries equal disables the in-shader primary-matrix
+    // path (`if (dstPrimaries != srcPrimaries)`); we want pass-through, same
+    // as the OES path does. No tone mapping either.
+    //! @todo SHADER_YV12_10 is the WRONG token here for 8-bit YUV420 content.
+    //! The EShaderFormat enum conflates two things: the shader sampling
+    //! pattern (.r/.g/.a legacy CPU-upload vs .r/.r/.r per-plane R8/R16) and
+    //! the source bit depth. Per-plane EGL import always wants the
+    //! single-channel sampling pattern (XBMC_YV12_HI define) regardless of
+    //! bit depth, but the only way to get that today is to pick one of
+    //! SHADER_YV12_9 / _10 / _12 / _14 / _16. Picking _10 here just routes
+    //! through the right shader define; the actual bit depth is handled by
+    //! SetColParams below. Clean up by either (a) adding a
+    //! SHADER_YV12_PLANAR enum value that activates XBMC_YV12_HI without
+    //! implying a bit depth, or (b) dropping 3-plane YUV420 from this path
+    //! entirely (NV12/P010/P012/P016 via SHADER_NV12_RRG cover the realistic
+    //! DRMPRIME cases).
+    //! @todo SHADER_YV12_10 is the WRONG token here for 8-bit YUV420 content.
+    //! The EShaderFormat enum conflates two things: the shader sampling
+    //! pattern (.r/.g/.a legacy CPU-upload vs .r/.r/.r per-plane R8/R16) and
+    //! the source bit depth. Per-plane EGL import always wants the
+    //! single-channel sampling pattern (XBMC_YV12_HI define) regardless of
+    //! bit depth, but the only way to get that today is to pick one of
+    //! SHADER_YV12_9 / _10 / _12 / _14 / _16. Picking _10 here just routes
+    //! through the right shader define; the actual bit depth is handled by
+    //! SetColParams below. Clean up by either (a) adding a
+    //! SHADER_YV12_PLANAR enum value that activates XBMC_YV12_HI without
+    //! implying a bit depth, or (b) dropping 3-plane YUV420 from this path
+    //! entirely (NV12/P010/P012/P016 via SHADER_NV12_RRG cover the realistic
+    //! DRMPRIME cases).
+    const bool planar3 = (sourceFourcc == DRM_FORMAT_YUV420
+#if defined(DRM_FORMAT_S010)
+                          || sourceFourcc == DRM_FORMAT_S010
+#endif
+#if defined(DRM_FORMAT_S012)
+                          || sourceFourcc == DRM_FORMAT_S012
+#endif
+#if defined(DRM_FORMAT_S016)
+                          || sourceFourcc == DRM_FORMAT_S016
+#endif
+    );
+    EShaderFormat fmt = planar3 ? SHADER_YV12_10 : SHADER_NV12_RRG;
+    auto shader = std::make_unique<YUV2RGBProgressiveShader>(
+        fmt, picture.color_primaries, picture.color_primaries,
+        /*toneMap*/ false, VS_TONEMAPMETHOD_OFF);
+    if (shader->CompileAndLink())
+    {
+      // P010/P012/P016 are MSB-aligned -> textureBits=8 (no rescale).
+      // S010/S012/S016 are LSB-aligned -> textureBits=colorBits (matrix rescales).
+      const bool lsbAligned =
+#if defined(DRM_FORMAT_S010)
+          sourceFourcc == DRM_FORMAT_S010 ||
+#endif
+#if defined(DRM_FORMAT_S012)
+          sourceFourcc == DRM_FORMAT_S012 ||
+#endif
+#if defined(DRM_FORMAT_S016)
+          sourceFourcc == DRM_FORMAT_S016 ||
+#endif
+          false;
+      const int textureBits = lsbAligned ? picture.colorBits : 8;
+      shader->SetColParams(picture.color_space, picture.colorBits, picture.color_range != 1,
+                           textureBits);
+      m_yuvShader = std::move(shader);
+      CLog::Log(LOGINFO,
+                "RendererDRMPRIMEGLES::Configure: limited-range YUV path "
+                "available (src bits {}, src {} range, fourcc {:#x})",
+                picture.colorBits, picture.color_range ? "full" : "limited", sourceFourcc);
+    }
+    else
+    {
+      CLog::Log(LOGWARNING, "RendererDRMPRIMEGLES::Configure: limited-range "
+                            "YUV shader compile/link failed; OES path will "
+                            "be used regardless of user setting");
+    }
+  }
 
   if (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
       picture.color_transfer == AVCOL_TRC_ARIB_STD_B67)
@@ -178,6 +264,7 @@ void CRendererDRMPRIMEGLES::UnInit()
     CServiceBroker::GetWinSystem()->SetVideoOutput(nullptr);
   }
 
+  m_yuvShader.reset();
   m_configured = false;
 }
 
@@ -190,6 +277,7 @@ void CRendererDRMPRIMEGLES::AddVideoPicture(const VideoPicture& picture, int ind
     if (buf.fence)
       buf.fence->DestroyFence();
     buf.texture.Unmap();
+    buf.yuvTexture.Unmap();
     buf.videoBuffer->Release();
   }
   buf.videoBuffer = picture.videoBuffer;
@@ -213,6 +301,7 @@ void CRendererDRMPRIMEGLES::ReleaseBuffer(int index)
     buf.fence->DestroyFence();
 
   buf.texture.Unmap();
+  buf.yuvTexture.Unmap();
 
   if (buf.videoBuffer)
   {
@@ -370,6 +459,105 @@ void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
   if (!renderSystem)
     return;
 
+  // Per-frame path selection. m_yuvShader is only alive if the source
+  // fourcc was importable; UseLimitedColor() is checked every frame so
+  // the user can toggle the setting at runtime and the next frame picks
+  // up the new path without any rebuild.
+  auto* winSystem = CServiceBroker::GetWinSystem();
+  const bool useYUVPath =
+      m_yuvShader && winSystem && winSystem->UseLimitedColor() && buf.yuvTexture.Map(buffer);
+
+  if (useYUVPath)
+  {
+    // Limited-range YUV path: per-plane sampler2D + BaseYUV2RGBGLSLShader.
+    // Vertex/cord array setup is taken from CLinuxRendererGLES::RenderSinglePass
+    // (LinuxRendererGLES.cpp:1100-1183). The texture-unit binding pattern is
+    // taken from CRendererVAAPIGLES::UploadTexture (RendererVAAPIGLES.cpp:270-282)
+    // -- specifically, the SHADER_NV12_RRG case binds the UV texture to BOTH
+    // U and V samplers so .r returns U and .g returns V via the GR88 / GR1616
+    // import.
+    const int numPlanes = buf.yuvTexture.GetNumPlanes();
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, buf.yuvTexture.GetTexture(0));
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, buf.yuvTexture.GetTexture(1));
+    glActiveTexture(GL_TEXTURE2);
+    // 3-plane (YV12_HI): plane 2 is V. 2-plane (NV12_RRG): rebind plane 1
+    // (UV) so sampV samples the same texture as sampU.
+    glBindTexture(GL_TEXTURE_2D, buf.yuvTexture.GetTexture(numPlanes == 3 ? 2 : 1));
+    glActiveTexture(GL_TEXTURE0);
+
+    const CSizeInt texSize = buf.yuvTexture.GetTextureSize();
+    m_yuvShader->SetWidth(texSize.Width());
+    m_yuvShader->SetHeight(texSize.Height());
+    m_yuvShader->SetAlpha(1.0f);
+    m_yuvShader->SetMatrices(glMatrixProject.Get(), glMatrixModview.Get());
+    // SetConvertFullColorRange(false) was set at Configure time -> matrix
+    // produces limited-range RGB. No per-frame setter needed.
+    m_yuvShader->Enable();
+
+    GLubyte idx[4] = {0, 1, 3, 2};
+    GLfloat vert[4][3];
+    GLfloat tex[3][4][2];
+
+    GLint vertLoc = m_yuvShader->GetVertexLoc();
+    GLint yLoc = m_yuvShader->GetYcoordLoc();
+    GLint uLoc = m_yuvShader->GetUcoordLoc();
+    GLint vLoc = m_yuvShader->GetVcoordLoc();
+
+    glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, 0, vert);
+    glVertexAttribPointer(yLoc, 2, GL_FLOAT, 0, 0, tex[0]);
+    glVertexAttribPointer(uLoc, 2, GL_FLOAT, 0, 0, tex[1]);
+    glVertexAttribPointer(vLoc, 2, GL_FLOAT, 0, 0, tex[2]);
+
+    glEnableVertexAttribArray(vertLoc);
+    glEnableVertexAttribArray(yLoc);
+    glEnableVertexAttribArray(uLoc);
+    glEnableVertexAttribArray(vLoc);
+
+    for (int i = 0; i < 4; i++)
+    {
+      vert[i][0] = m_rotatedDestCoords[i].x;
+      vert[i][1] = m_rotatedDestCoords[i].y;
+      vert[i][2] = 0.0f;
+    }
+
+    // Per-plane texcoords are 0..1; each EGL-imported texture covers the
+    // whole plane regardless of chroma subsampling.
+    for (int p = 0; p < 3; p++)
+    {
+      tex[p][0][0] = 0.0f;
+      tex[p][0][1] = 0.0f;
+      tex[p][1][0] = 1.0f;
+      tex[p][1][1] = 0.0f;
+      tex[p][2][0] = 1.0f;
+      tex[p][2][1] = 1.0f;
+      tex[p][3][0] = 0.0f;
+      tex[p][3][1] = 1.0f;
+    }
+
+    glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+
+    glDisableVertexAttribArray(vertLoc);
+    glDisableVertexAttribArray(yLoc);
+    glDisableVertexAttribArray(uLoc);
+    glDisableVertexAttribArray(vLoc);
+
+    m_yuvShader->Disable();
+
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    buf.fence->DestroyFence();
+    buf.fence->CreateFence();
+    return;
+  }
+
+  // Full-range OES path (unchanged).
   if (!buf.texture.Map(buffer))
     return;
 

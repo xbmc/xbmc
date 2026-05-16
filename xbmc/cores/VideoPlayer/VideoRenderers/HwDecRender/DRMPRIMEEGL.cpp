@@ -133,3 +133,201 @@ void CDRMPRIMETexture::Unmap()
   m_primebuffer->Release();
   m_primebuffer = nullptr;
 }
+
+namespace
+{
+
+// Maps a source DRM fourcc to the per-plane import descriptors used by
+// CDRMPRIMETextureYUV. planeWidthShift / planeHeightShift describe
+// chroma subsampling relative to the full Y-plane resolution.
+struct PlaneLayout
+{
+  int numPlanes;
+  uint32_t planeFourcc[CDRMPRIMETextureYUV::MAX_PLANES];
+  int planeWidthShift[CDRMPRIMETextureYUV::MAX_PLANES];
+  int planeHeightShift[CDRMPRIMETextureYUV::MAX_PLANES];
+};
+
+bool GetPlaneLayout(uint32_t sourceFormat, PlaneLayout& layout)
+{
+  switch (sourceFormat)
+  {
+    case DRM_FORMAT_NV12:
+      layout = {2, {DRM_FORMAT_R8, DRM_FORMAT_GR88, 0}, {0, 1, 0}, {0, 1, 0}};
+      return true;
+    case DRM_FORMAT_P010:
+    case DRM_FORMAT_P012:
+    case DRM_FORMAT_P016:
+      layout = {2, {DRM_FORMAT_R16, DRM_FORMAT_GR1616, 0}, {0, 1, 0}, {0, 1, 0}};
+      return true;
+    case DRM_FORMAT_YUV420:
+      layout = {3, {DRM_FORMAT_R8, DRM_FORMAT_R8, DRM_FORMAT_R8}, {0, 1, 1}, {0, 1, 1}};
+      return true;
+#if defined(DRM_FORMAT_S010)
+    case DRM_FORMAT_S010:
+#endif
+#if defined(DRM_FORMAT_S012)
+    case DRM_FORMAT_S012:
+#endif
+#if defined(DRM_FORMAT_S016)
+    case DRM_FORMAT_S016:
+#endif
+#if defined(DRM_FORMAT_S010) || defined(DRM_FORMAT_S012) || defined(DRM_FORMAT_S016)
+      layout = {3, {DRM_FORMAT_R16, DRM_FORMAT_R16, DRM_FORMAT_R16}, {0, 1, 1}, {0, 1, 1}};
+      return true;
+#endif
+    default:
+      return false;
+  }
+}
+
+} // namespace
+
+bool CDRMPRIMETextureYUV::SupportsFormat(uint32_t fourcc)
+{
+  PlaneLayout dummy;
+  return GetPlaneLayout(fourcc, dummy);
+}
+
+// Cleanup pattern taken from CDRMPRIMETexture::~CDRMPRIMETexture (above),
+// extended to the per-plane texture array.
+CDRMPRIMETextureYUV::~CDRMPRIMETextureYUV()
+{
+  // Release any active mapping (EGL images, descriptor, buffer ref).
+  Unmap();
+  // Delete the GL texture objects that Map() may have generated.
+  for (int i = 0; i < MAX_PLANES; i++)
+  {
+    if (m_textures[i])
+      glDeleteTextures(1, &m_textures[i]);
+  }
+}
+
+void CDRMPRIMETextureYUV::Init(EGLDisplay eglDisplay)
+{
+  m_eglDisplay = eglDisplay;
+}
+
+// Descriptor acquire/release lifecycle and the per-plane
+// glIsTexture/glGenTextures + glBindTexture + glTexParameteri x4 +
+// UploadImage + unbind sequence are taken from CDRMPRIMETexture::Map
+// (above) and CVaapi2Texture::Map (VaapiEGL.cpp:438-560). What is new
+// here is the per-plane DRM fourcc derivation (single-layer N-plane
+// descriptor split into N separate EGL images) and the multi-plane
+// loop. Single-layer-N-plane is the shape ffmpeg HW decoders and the
+// SW-decode -> DMA path produce.
+bool CDRMPRIMETextureYUV::Map(CVideoBufferDRMPRIME* buffer)
+{
+  if (m_primebuffer)
+    return true;
+
+  if (!buffer->AcquireDescriptor())
+  {
+    CLog::Log(LOGERROR, "CDRMPRIMETextureYUV::{} - failed to acquire descriptor", __FUNCTION__);
+    return false;
+  }
+
+  AVDRMFrameDescriptor* descriptor = buffer->GetDescriptor();
+  if (!descriptor || descriptor->nb_layers < 1)
+  {
+    buffer->ReleaseDescriptor();
+    return false;
+  }
+
+  // Only the single-layer-multi-plane descriptor shape is supported.
+  // ffmpeg HW decoders and the SW decode -> DMA path both produce this shape.
+  if (descriptor->nb_layers != 1)
+  {
+    CLog::Log(LOGWARNING,
+              "CDRMPRIMETextureYUV::{} - {} layers, only single-layer descriptors supported",
+              __FUNCTION__, descriptor->nb_layers);
+    buffer->ReleaseDescriptor();
+    return false;
+  }
+
+  AVDRMLayerDescriptor* layer = &descriptor->layers[0];
+
+  PlaneLayout planeLayout;
+  if (!GetPlaneLayout(layer->format, planeLayout))
+  {
+    CLog::Log(LOGWARNING, "CDRMPRIMETextureYUV::{} - unsupported source fourcc {:#x}", __FUNCTION__,
+              layer->format);
+    buffer->ReleaseDescriptor();
+    return false;
+  }
+
+  if (layer->nb_planes != planeLayout.numPlanes)
+  {
+    CLog::Log(LOGERROR,
+              "CDRMPRIMETextureYUV::{} - layer has {} planes, expected {} for fourcc {:#x}",
+              __FUNCTION__, layer->nb_planes, planeLayout.numPlanes, layer->format);
+    buffer->ReleaseDescriptor();
+    return false;
+  }
+
+  m_texWidth = buffer->GetWidth();
+  m_texHeight = buffer->GetHeight();
+  m_sourceFormat = layer->format;
+  m_numPlanes = planeLayout.numPlanes;
+
+  for (int i = 0; i < m_numPlanes; i++)
+  {
+    AVDRMPlaneDescriptor& plane = layer->planes[i];
+    AVDRMObjectDescriptor& object = descriptor->objects[plane.object_index];
+
+    CEGLImage::EglAttrs attribs{};
+    attribs.width = m_texWidth >> planeLayout.planeWidthShift[i];
+    attribs.height = m_texHeight >> planeLayout.planeHeightShift[i];
+    attribs.format = planeLayout.planeFourcc[i];
+    attribs.planes[0].fd = object.fd;
+    attribs.planes[0].modifier = object.format_modifier;
+    attribs.planes[0].offset = static_cast<int>(plane.offset);
+    attribs.planes[0].pitch = static_cast<int>(plane.pitch);
+
+    if (!m_eglImages[i])
+      m_eglImages[i] = std::make_unique<CEGLImage>(m_eglDisplay);
+
+    if (!m_eglImages[i]->CreateImage(attribs))
+    {
+      // Roll back any planes we already imported in this Map() call.
+      for (int j = 0; j < i; j++)
+        m_eglImages[j]->DestroyImage();
+      m_numPlanes = 0;
+      buffer->ReleaseDescriptor();
+      return false;
+    }
+
+    if (!glIsTexture(m_textures[i]))
+      glGenTextures(1, &m_textures[i]);
+    glBindTexture(GL_TEXTURE_2D, m_textures[i]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    m_eglImages[i]->UploadImage(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, 0);
+  }
+
+  m_primebuffer = buffer;
+  m_primebuffer->Acquire();
+  return true;
+}
+
+// DestroyImage + ReleaseDescriptor + buffer Release + null sequence is
+// taken from CDRMPRIMETexture::Unmap (above), looped over planes.
+void CDRMPRIMETextureYUV::Unmap()
+{
+  if (!m_primebuffer)
+    return;
+
+  for (int i = 0; i < m_numPlanes; i++)
+  {
+    if (m_eglImages[i])
+      m_eglImages[i]->DestroyImage();
+  }
+  m_numPlanes = 0;
+
+  m_primebuffer->ReleaseDescriptor();
+  m_primebuffer->Release();
+  m_primebuffer = nullptr;
+}
