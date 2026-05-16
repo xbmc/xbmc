@@ -106,8 +106,6 @@ public:
   void SetNewTempo(float tempo);
   float GetNewTempo();
   bool IsTempoAllowed(float tempo);
-  virtual float MinTempoPlatform();
-  virtual float MaxTempoPlatform();
   void SetLevelVQ(int level);
   int GetLevelVQ();
   void SetGuiRender(bool gui);
@@ -126,6 +124,10 @@ public:
 
 protected:
   CProcessInfo();
+
+  virtual float MinTempoPlatform();
+  virtual float MaxTempoPlatform();
+
   static std::map<std::string, CreateProcessControl> m_processControls;
   CDataCacheCore *m_dataCache = nullptr;
 
