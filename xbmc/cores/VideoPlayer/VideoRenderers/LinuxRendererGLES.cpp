@@ -175,6 +175,14 @@ bool CLinuxRendererGLES::Configure(const VideoPicture &picture, float fps, unsig
             inferred ? " (inferred)" : "", picture.colorBits,
             picture.color_range == 1 ? "full" : "limited");
   m_format = picture.videoBuffer->GetFormat();
+
+  // CPU-upload renderer: HWACCEL pix_fmts (e.g. AV_PIX_FMT_DRM_PRIME) have no host planes.
+  if (GetShaderFormat() == SHADER_NONE)
+  {
+    CLog::Log(LOGDEBUG, "LinuxRendererGLES::Configure: refusing unsupported pix_fmt {}", m_format);
+    return false;
+  }
+
   m_sourceWidth = picture.iWidth;
   m_sourceHeight = picture.iHeight;
   m_renderOrientation = orientation;
