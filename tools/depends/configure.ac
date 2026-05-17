@@ -889,6 +889,7 @@ endian = 'little'
 
 [properties]
 pkg_config_libdir = '$prefix/$deps_dir/lib/pkgconfig'
+cmake_toolchain_file = '$prefix/$deps_dir/share/Toolchain.cmake'
 
 [built-in options]
 c_args = $MESON_CFLAGS
