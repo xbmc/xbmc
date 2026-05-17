@@ -33,6 +33,7 @@ CRendererDRMPRIME::~CRendererDRMPRIME()
   // the GUI after playback falls back to Default / SDR.
   if (auto* winSystem = CServiceBroker::GetWinSystem())
   {
+    winSystem->SetGuiCompositing(false);
     winSystem->SetHDR(nullptr);
     winSystem->SetColorimetry(nullptr);
   }
@@ -121,7 +122,16 @@ bool CRendererDRMPRIME::Configure(const VideoPicture& picture, float fps, unsign
   if (auto* winSystem = CServiceBroker::GetWinSystem())
   {
     winSystem->SetColorimetry(&picture);
-    winSystem->SetHDR(&picture);
+
+    const bool passthroughHDR = winSystem->SetHDR(&picture);
+    CLog::Log(LOGDEBUG, "CRendererDRMPRIME::Configure: HDR passthrough: {}",
+              passthroughHDR ? "on" : "off");
+
+    const bool hdrFboActive =
+        passthroughHDR && winSystem->SetGuiCompositing(picture.color_transfer);
+    if (passthroughHDR && !hdrFboActive)
+      CLog::Log(LOGWARNING, "CRendererDRMPRIME::Configure: HDR passthrough active but "
+                            "GUI compositing not supported by windowing system");
   }
 
   // Calculate the input frame aspect ratio.
