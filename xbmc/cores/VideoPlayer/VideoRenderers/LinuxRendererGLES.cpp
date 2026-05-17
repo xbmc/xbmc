@@ -55,6 +55,7 @@ CLinuxRendererGLES::CLinuxRendererGLES()
     }
     else
     {
+#if defined(GL_R16_EXT)
       glGenTextures(1, &m_ditherTex);
       glActiveTexture(GL_TEXTURE3);
       glBindTexture(GL_TEXTURE_2D, m_ditherTex);
@@ -70,6 +71,12 @@ CLinuxRendererGLES::CLinuxRendererGLES()
         CLog::Log(LOGDEBUG, "GLES: dithering auto");
       else
         CLog::Log(LOGDEBUG, "GLES: dithering enabled, depth={}", m_ditherDepth);
+#else
+      // GL_EXT_texture_norm16 not exposed by this GL header (e.g. iOS):
+      // no 16-bit single-channel format available for the dither texture.
+      CLog::Log(LOGWARNING, "GLES: GL_R16_EXT undefined at build time; dithering disabled");
+      m_useDithering = false;
+#endif
     }
   }
 
