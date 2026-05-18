@@ -31,7 +31,6 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                    -DPCRE2_BUILD_PCRE2_8=ON
                    -DPCRE2_BUILD_PCRE2_16=OFF
                    -DPCRE2_BUILD_PCRE2_32=OFF
-                   -DPCRE_NEWLINE=ANYCRLF
                    -DPCRE2_SUPPORT_UNICODE=ON
                    -DPCRE2_BUILD_PCRE2GREP=OFF
                    -DPCRE2_BUILD_TESTS=OFF
