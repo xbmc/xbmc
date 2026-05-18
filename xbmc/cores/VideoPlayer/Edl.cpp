@@ -245,7 +245,17 @@ bool CEdl::AddSceneMarker(std::chrono::milliseconds iSceneMarker)
 
   CLog::LogF(LOGDEBUG, "Inserting new scene marker: {}",
              StringUtils::MillisecondsToTimeString(iSceneMarker));
-  m_vecSceneMarkers.push_back(iSceneMarker); // Unsorted
+
+  // Insert scene marker in sorted ascending order
+  if (m_vecSceneMarkers.empty() || iSceneMarker > m_vecSceneMarkers.back())
+  {
+    m_vecSceneMarkers.emplace_back(iSceneMarker);
+  }
+  else
+  {
+    const auto it{std::ranges::lower_bound(m_vecSceneMarkers, iSceneMarker)};
+    m_vecSceneMarkers.insert(it, iSceneMarker);
+  }
 
   return true;
 }

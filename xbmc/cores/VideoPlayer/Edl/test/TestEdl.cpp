@@ -82,7 +82,7 @@ TEST_F(TestEdl, TestParsingMplayerTimeBasedEDL)
   EXPECT_EQ(edl.GetSceneMarkers().at(0),
             edl.GetTimeWithoutCuts(duration_cast<std::chrono::milliseconds>(255.3s)));
   // one of them only has start defined, at 720.1 secs
-  EXPECT_EQ(edl.GetSceneMarkers().at(1),
+  EXPECT_EQ(edl.GetSceneMarkers().at(2),
             edl.GetTimeWithoutCuts(duration_cast<std::chrono::milliseconds>(720.1s)));
 
   // commbreaks
