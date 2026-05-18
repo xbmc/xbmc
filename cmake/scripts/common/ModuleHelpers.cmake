@@ -880,6 +880,9 @@ endfunction()
 function(create_mesonproperties)
 
   string(APPEND output_string "pkg_config_libdir = '${DEPENDS_PATH}/lib/pkgconfig'\n")
+  if(CMAKE_TOOLCHAIN_FILE)
+    string(APPEND output_string "cmake_toolchain_file = '${CMAKE_TOOLCHAIN_FILE}'\n")
+  endif()
 
   # Easiest to just prepend header at the end of the full string creation
   string(PREPEND output_string "[properties]\n")
