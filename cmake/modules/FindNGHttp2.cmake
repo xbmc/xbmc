@@ -12,16 +12,13 @@ if(NOT TARGET LIBRARY::NGHttp2)
 
   macro(buildmacroNGHttp2)
 
-    set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/01-all-cmake-version.patch")
-    generate_patchcommand("${patches}")
-    unset(patches)
-
     set(CMAKE_ARGS -DENABLE_DEBUG=OFF
                    -DENABLE_FAILMALLOC=OFF
                    -DENABLE_LIB_ONLY=ON
                    -DENABLE_DOC=OFF
                    -DBUILD_STATIC_LIBS=ON
                    -DBUILD_SHARED_LIBS=OFF
+                   -DBUILD_TESTING=OFF
                    -DWITH_LIBXML2=OFF)
 
     BUILD_DEP_TARGET()
@@ -30,27 +27,13 @@ if(NOT TARGET LIBRARY::NGHttp2)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC nghttp2)
+  set(${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME_PC libnghttp2)
 
   SETUP_BUILD_VARS()
 
   SETUP_FIND_SPECS()
 
-  # Search for cmake config. Suitable for all platforms including windows
-  # nghttp uses a non standard config name, so we have to supply CONFIGS
-  find_package(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
-                                                         CONFIGS nghttp2-targets.cmake
-                                                         HINTS ${DEPENDS_PATH}/lib/cmake
-                                                         ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
-
-  # cmake config may not be available (eg Debian libnghttp2-dev package)
-  # fallback to pkgconfig for non windows platforms
-  if(NOT ${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
-    find_package(PkgConfig ${SEARCH_QUIET})
-
-    if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWSSTORE))
-      pkg_check_modules(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} libnghttp2${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET} IMPORTED_TARGET)
-    endif()
-  endif()
+  SEARCH_EXISTING_PACKAGES()
 
   # Check for existing Nghttp2. If version >= NGHTTP2-VERSION file version, dont build
   if("${${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION}" VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND NGHttp2_FIND_REQUIRED)
