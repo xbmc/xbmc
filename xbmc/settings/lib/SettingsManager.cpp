@@ -20,20 +20,25 @@
 #include <map>
 #include <mutex>
 #include <shared_mutex>
+#include <string_view>
 #include <unordered_set>
 #include <utility>
 
 const uint32_t CSettingsManager::Version = 2;
 const uint32_t CSettingsManager::MinimumSupportedVersion = 0;
 
-bool ParseSettingIdentifier(const std::string& settingId, std::string& categoryTag, std::string& settingTag)
+namespace
 {
-  static const std::string Separator = ".";
+bool ParseSettingIdentifier(std::string_view settingId,
+                            std::string& categoryTag,
+                            std::string& settingTag)
+{
+  constexpr std::string_view separator = ".";
 
   if (settingId.empty())
     return false;
 
-  std::vector<std::string> parts = StringUtils::Split(settingId, Separator);
+  std::vector<std::string> parts = StringUtils::Split(settingId, separator);
   if (parts.empty() || parts.at(0).empty())
     return false;
 
@@ -48,10 +53,48 @@ bool ParseSettingIdentifier(const std::string& settingId, std::string& categoryT
   parts.erase(parts.begin());
 
   // put together the setting tag
-  settingTag = StringUtils::Join(parts, Separator);
+  settingTag = StringUtils::Join(parts, separator);
 
   return true;
 }
+
+const TiXmlElement* LocateSetting(const TiXmlNode* node, std::string_view settingId)
+{
+  const TiXmlElement* settingElement = nullptr;
+
+  // Attempt v2 first, the switch from v1 happened in 2013
+  if (!settingElement)
+  {
+    // check if the setting is stored using its full setting identifier (v2+)
+    settingElement = node->FirstChildElement(SETTING_XML_ELM_SETTING);
+    while (settingElement)
+    {
+      const char* id = settingElement->Attribute(SETTING_XML_ATTR_ID);
+      if (id && settingId.compare(id) == 0)
+        break;
+
+      settingElement = settingElement->NextSiblingElement(SETTING_XML_ELM_SETTING);
+    }
+  }
+
+  if (!settingElement)
+  {
+    // try to split the setting identifier into category and subsetting identifier (v1-)
+    std::string categoryTag;
+    std::string settingTag;
+    if (ParseSettingIdentifier(settingId, categoryTag, settingTag))
+    {
+      const TiXmlNode* categoryNode = node;
+      if (!categoryTag.empty())
+        categoryNode = node->FirstChild(categoryTag);
+
+      if (categoryNode)
+        settingElement = categoryNode->FirstChildElement(settingTag);
+    }
+  }
+  return settingElement;
+}
+} // namespace
 
 CSettingsManager::CSettingsManager()
   : m_logger(CServiceBroker::GetLogging().GetLogger("CSettingsManager"))
@@ -1076,33 +1119,7 @@ bool CSettingsManager::LoadSetting(const TiXmlNode* node, const SettingPtr& sett
   if (setting->IsReference())
     settingId = setting->GetReferencedId();
 
-  const TiXmlElement* settingElement = nullptr;
-  // try to split the setting identifier into category and subsetting identifier (v1-)
-  std::string categoryTag;
-  std::string settingTag;
-  if (ParseSettingIdentifier(settingId, categoryTag, settingTag))
-  {
-    const TiXmlNode* categoryNode = node;
-    if (!categoryTag.empty())
-      categoryNode = node->FirstChild(categoryTag);
-
-    if (categoryNode)
-      settingElement = categoryNode->FirstChildElement(settingTag);
-  }
-
-  if (!settingElement)
-  {
-    // check if the setting is stored using its full setting identifier (v2+)
-    settingElement = node->FirstChildElement(SETTING_XML_ELM_SETTING);
-    while (settingElement)
-    {
-      const char* id = settingElement->Attribute(SETTING_XML_ATTR_ID);
-      if (id && settingId.compare(id) == 0)
-        break;
-
-      settingElement = settingElement->NextSiblingElement(SETTING_XML_ELM_SETTING);
-    }
-  }
+  const TiXmlElement* settingElement = LocateSetting(node, settingId);
 
   if (!settingElement)
     return false;
