@@ -960,8 +960,8 @@ void CSettingsManager::OnSettingAction(const std::shared_ptr<const CSetting>& se
 }
 
 bool CSettingsManager::OnSettingUpdate(const SettingPtr& setting,
-                                       const char* oldSettingId,
-                                       const TiXmlNode* oldSettingNode)
+                                       std::string_view oldSettingId,
+                                       const TiXmlElement* oldSettingNode)
 {
   std::shared_lock lock(m_settingsCritical);
   if (!setting)
@@ -1157,14 +1157,14 @@ bool CSettingsManager::UpdateSetting(const TiXmlNode* node,
     return false;
 
   bool updated = false;
-  const char* oldSetting = nullptr;
+  std::string oldSetting;
   const TiXmlElement* oldSettingElement = nullptr;
   if (update.GetType() == SettingUpdateType::Rename)
   {
     if (update.GetValue().empty())
       return false;
 
-    oldSetting = update.GetValue().c_str();
+    oldSetting = update.GetValue();
     oldSettingElement = LocateSetting(node, oldSetting);
 
     if (!oldSettingElement)

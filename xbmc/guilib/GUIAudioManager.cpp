@@ -57,8 +57,8 @@ void CGUIAudioManager::OnSettingChanged(const std::shared_ptr<const CSetting>& s
 }
 
 bool CGUIAudioManager::OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
-                                       const char* oldSettingId,
-                                       const TiXmlNode* oldSettingNode)
+                                       std::string_view oldSettingId,
+                                       const TiXmlElement* oldSettingNode)
 {
   if (setting == NULL)
     return false;

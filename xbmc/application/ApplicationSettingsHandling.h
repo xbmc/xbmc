@@ -31,6 +31,6 @@ protected:
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
   void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
   bool OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
-                       const char* oldSettingId,
-                       const TiXmlNode* oldSettingNode) override;
+                       std::string_view oldSettingId,
+                       const TiXmlElement* oldSettingNode) override;
 };

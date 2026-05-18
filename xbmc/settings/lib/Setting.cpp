@@ -293,8 +293,8 @@ bool CSetting::DeserializeIdentification(const TiXmlNode* node,
 }
 
 bool CSetting::OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
-                               const char* oldSettingId,
-                               const TiXmlNode* oldSettingNode)
+                               std::string_view oldSettingId,
+                               const TiXmlElement* oldSettingNode)
 {
   if (!m_callback)
     return false;

@@ -358,8 +358,8 @@ bool CDisplaySettings::OnSettingChanging(const std::shared_ptr<const CSetting>& 
 }
 
 bool CDisplaySettings::OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
-                                       const char* oldSettingId,
-                                       const TiXmlNode* oldSettingNode)
+                                       std::string_view oldSettingId,
+                                       const TiXmlElement* oldSettingNode)
 {
   if (!setting)
     return false;
