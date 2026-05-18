@@ -2,10 +2,15 @@ include ../../Makefile.include LIBZIP-VERSION ../../download-files.include
 DEPS = ../../Makefile.include LIBZIP-VERSION Makefile ../../download-files.include
 
 CMAKE_OPTIONS=-DBUILD_DOC:BOOL=OFF \
+              -DBUILD_OSSFUZZ=OFF \
               -DBUILD_EXAMPLES:BOOL=OFF \
               -DBUILD_REGRESS:BOOL=OFF \
               -DBUILD_SHARED_LIBS:BOOL=OFF \
               -DBUILD_TOOLS:BOOL=OFF \
+              -DENABLE_MBEDTLS=OFF \
+              -DENABLE_OPENSSL=OFF \
+              -DENABLE_LZMA=OFF \
+              -DENABLE_ZSTD=OFF \
               -DCMAKE_BUILD_TYPE=Debug
 
 LIBDYLIB=$(PLATFORM)/build/lib/$(BYPRODUCT)

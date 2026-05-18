@@ -23,13 +23,18 @@ if("${libzip_VERSION}" VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
   find_package(ZLIB REQUIRED ${SEARCH_QUIET})
 
   # Eventually we will want Find modules for the following deps
-  # bzip2 
+  # bzip2 nettle
 
   set(CMAKE_ARGS -DBUILD_DOC=OFF
+                 -DBUILD_OSSFUZZ=OFF
                  -DBUILD_EXAMPLES=OFF
                  -DBUILD_REGRESS=OFF
                  -DBUILD_SHARED_LIBS=OFF
-                 -DBUILD_TOOLS=OFF)
+                 -DBUILD_TOOLS=OFF
+                 -DENABLE_LZMA=OFF
+                 -DENABLE_ZSTD=OFF
+                 -DENABLE_MBEDTLS=OFF
+                 -DENABLE_OPENSSL=OFF)
 
   set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
 
