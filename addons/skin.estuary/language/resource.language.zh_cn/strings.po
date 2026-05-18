@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2026-05-16 17:34+0000\n"
+"PO-Revision-Date: 2026-05-18 07:53+0000\n"
 "Last-Translator: wabisabi926 <wabisabi926@foxmail.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/zh_Hans/>\n"
 "Language: zh_cn\n"
@@ -795,17 +795,17 @@ msgstr "频道"
 #. Label to show the subtitle decoder name
 msgctxt "#31613"
 msgid "Subtitle decoder"
-msgstr ""
+msgstr "字幕解码器"
 
 #. Label to show the subtitle codec name
 msgctxt "#31614"
 msgid "Subtitle codec"
-msgstr ""
+msgstr "字幕编码"
 
 #. Label to show the subtitle language
 msgctxt "#31615"
 msgid "Subtitle language"
-msgstr ""
+msgstr "字幕语言"
 
 #~ msgctxt "#31025"
 #~ msgid "No favourites found. You can add any item from media views to this list by using the context menu."
