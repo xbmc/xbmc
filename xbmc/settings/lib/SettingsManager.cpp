@@ -1157,40 +1157,29 @@ bool CSettingsManager::UpdateSetting(const TiXmlNode* node,
     return false;
 
   bool updated = false;
-  const char *oldSetting = nullptr;
-  const TiXmlNode *oldSettingNode = nullptr;
+  const char* oldSetting = nullptr;
+  const TiXmlElement* oldSettingElement = nullptr;
   if (update.GetType() == SettingUpdateType::Rename)
   {
     if (update.GetValue().empty())
       return false;
 
     oldSetting = update.GetValue().c_str();
-    std::string categoryTag;
-    std::string settingTag;
-    if (!ParseSettingIdentifier(oldSetting, categoryTag, settingTag))
+    oldSettingElement = LocateSetting(node, oldSetting);
+
+    if (!oldSettingElement)
       return false;
 
-    const TiXmlNode* categoryNode = node;
-    if (!categoryTag.empty())
-    {
-      categoryNode = node->FirstChild(categoryTag);
-      if (!categoryNode)
-        return false;
-    }
-
-    oldSettingNode = categoryNode->FirstChild(settingTag);
-    if (!oldSettingNode)
-      return false;
-
-    if (setting->FromString(oldSettingNode->FirstChild() ? oldSettingNode->FirstChild()->ValueStr()
-                                                         : StringUtils::Empty))
+    if (setting->FromString(oldSettingElement->FirstChild()
+                                ? oldSettingElement->FirstChild()->ValueStr()
+                                : StringUtils::Empty))
       updated = true;
     else
       m_logger->warn("unable to update \"{}\" through automatically renaming from \"{}\"",
                      setting->GetId(), oldSetting);
   }
 
-  updated |= OnSettingUpdate(setting, oldSetting, oldSettingNode);
+  updated |= OnSettingUpdate(setting, oldSetting, oldSettingElement);
   return updated;
 }
 
