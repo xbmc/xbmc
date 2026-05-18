@@ -5,10 +5,8 @@ DEPS = ../../Makefile.include Makefile LIBXML2-VERSION ../../download-files.incl
 CMAKE_OPTIONS=-DBUILD_SHARED_LIBS=OFF \
               -DLIBXML2_WITH_DEBUG=OFF \
               -DLIBXML2_WITH_ICONV=OFF \
-              -DLIBXML2_WITH_LZMA=OFF \
               -DLIBXML2_WITH_MODULES=OFF \
               -DLIBXML2_WITH_PYTHON=OFF \
-              -DLIBXML2_WITH_RUN_DEBUG=OFF \
               -DLIBXML2_WITH_PROGRAMS=OFF \
               -DLIBXML2_WITH_TESTS=OFF
 
