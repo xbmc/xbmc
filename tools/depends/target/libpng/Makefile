@@ -5,7 +5,7 @@ DEPS = ../../Makefile.include Makefile LIBPNG-VERSION ../../download-files.inclu
 CMAKE_OPTIONS=-DPNG_SHARED=OFF \
               -DPNG_STATIC=ON \
               -DPNG_TESTS=OFF \
-              -DPNG_DEBUG=OFF \
+              -DPNG_TOOLS=OFF \
               -DPNG_HARDWARE_OPTIMIZATIONS=ON
 
 # provide ZLIB_ROOT if platform is building zlib
