@@ -770,8 +770,14 @@ RESOLUTION_INFO CDRMUtils::GetResolutionInfo(drmModeModeInfoPtr mode)
   res.iWidth = res.iScreenWidth;
   res.iHeight = res.iScreenHeight;
 
-  int limit = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
-      SETTING_VIDEOSCREEN_LIMITGUISIZE);
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
+  // limitguisize should only apply if Direct-to-Plane is configured.
+  //! @todo we are forced to check settings to detect D2P status, but this is brittle.
+  const int limit = settings->GetBool(CSettings::SETTING_VIDEOPLAYER_USEPRIMEDECODER) &&
+                            settings->GetInt(CSettings::SETTING_VIDEOPLAYER_USEPRIMERENDERER) == 0
+                        ? settings->GetInt(SETTING_VIDEOSCREEN_LIMITGUISIZE)
+                        : 0;
   if (limit > 0 && res.iScreenWidth > 1920 && res.iScreenHeight > 1080)
   {
     switch (limit)
