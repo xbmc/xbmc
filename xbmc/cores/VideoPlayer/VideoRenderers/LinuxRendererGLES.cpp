@@ -193,9 +193,6 @@ bool CLinuxRendererGLES::Configure(const VideoPicture &picture, float fps, unsig
   if (!CServiceBroker::GetWinSystem()->SetVideoOutput(&picture))
     CLog::Log(LOGWARNING, "LinuxRendererGLES::Configure: SetVideoOutput failed");
 
-  // setup the background colour
-  m_clearColour = CServiceBroker::GetWinSystem()->UseLimitedColor() ? (16.0f / 0xff) : 0.0f;
-
   if (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
       picture.color_transfer == AVCOL_TRC_ARIB_STD_B67)
   {
@@ -463,7 +460,7 @@ void CLinuxRendererGLES::ClearBackBufferQuad()
   GLint uniCol = m_renderSystem->GUIShaderGetUniCol();
   GLint depthLoc = m_renderSystem->GUIShaderGetDepth();
 
-  glUniform4f(uniCol, m_clearColour / 255.0f, m_clearColour / 255.0f, m_clearColour / 255.0f, 1.0f);
+  glUniform4f(uniCol, 0.0f, 0.0f, 0.0f, 1.0f);
   glUniform1f(depthLoc, -1);
 
   GLuint vertexVBO;
@@ -527,7 +524,7 @@ void CLinuxRendererGLES::DrawBlackBars()
   GLint uniCol = renderSystem->GUIShaderGetUniCol();
   GLint depthLoc = m_renderSystem->GUIShaderGetDepth();
 
-  glUniform4f(uniCol, m_clearColour / 255.0f, m_clearColour / 255.0f, m_clearColour / 255.0f, 1.0f);
+  glUniform4f(uniCol, 0.0f, 0.0f, 0.0f, 1.0f);
   glUniform1f(depthLoc, -1);
 
   GLuint vertexVBO;

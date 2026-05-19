@@ -225,8 +225,6 @@ protected:
   unsigned char* m_planeBuffer = nullptr;
   size_t m_planeBufferSize = 0;
 
-  // clear colour for "black" bars
-  float m_clearColour{0.0f};
   CRect m_lastViewRect;
 
   // HDR FBO compositing: when active, IsGuiLayer() returns false so
