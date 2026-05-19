@@ -99,11 +99,18 @@ CWinSystemGbm::~CWinSystemGbm() = default;
 
 const std::string CWinSystemGbm::GetName()
 {
-  auto gui_plane = m_DRM->GetGuiPlane();
-  if (gui_plane == nullptr)
-    return "gbm";
-  return "gbm (" + DRMHELPERS::FourCCToString(gui_plane->GetFormat()) + " " +
-         DRMHELPERS::ModifierToString(gui_plane->GetModifier()) + ")";
+  const auto* gui = m_DRM->GetGuiPlane();
+  const auto* video = m_DRM->GetVideoPlane();
+
+  std::string name = "gbm (";
+  if (gui)
+    name += DRMHELPERS::FourCCToString(gui->GetFormat());
+  if (gui && video)
+    name += " / ";
+  if (video)
+    name += DRMHELPERS::FourCCToString(video->GetFormat());
+  name += ")";
+  return name;
 }
 
 bool CWinSystemGbm::InitWindowSystem()
