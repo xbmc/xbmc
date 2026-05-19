@@ -188,7 +188,7 @@ void CGUIWindowSystemInfo::FrameMove()
     auto windowSystem = CServiceBroker::GetWinSystem();
     if (windowSystem)
     {
-      static std::string platform = windowSystem->GetName();
+      const std::string platform = windowSystem->GetName();
       if (platform != "platform default")
         SET_CONTROL_LABEL(
             i++,
