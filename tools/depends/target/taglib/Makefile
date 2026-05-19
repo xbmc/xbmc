@@ -1,6 +1,7 @@
 include ../../Makefile.include TAGLIB-VERSION ../../download-files.include
 DEPS = ../../Makefile.include Makefile TAGLIB-VERSION ../../download-files.include \
-                                       001-cmake-pdb-debug.patch
+                                       001-cmake-pdb-debug.patch \
+                                       002-allow-chapters-without-uid.patch
 
 LIBDYLIB=$(PLATFORM)/build/$(LIBNAME)/$(BYPRODUCT)
 all: .installed-$(PLATFORM)
@@ -10,6 +11,7 @@ all: .installed-$(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); rm -rf build; mkdir -p build
 	cd $(PLATFORM); patch -p1 -i ../001-cmake-pdb-debug.patch
+	cd $(PLATFORM); patch -p1 -i ../002-allow-chapters-without-uid.patch
 	cd $(PLATFORM)/build; $(CMAKE) -DBUILD_SHARED_LIBS=OFF -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DBUILD_BINDINGS=OFF -DCMAKE_BUILD_TYPE=Debug ..
 	touch $@
 
