@@ -3,12 +3,15 @@ DEPS = ../../Makefile.include LIBJPEG-TURBO-VERSION Makefile ../../download-file
 
 LIBDYLIB=$(PLATFORM)/build/libjpeg.a
 
-CMAKE_OPTIONS=-DENABLE_SHARED:BOOL=OFF -DWITH_JPEG8:BOOL=ON -DWITH_TURBOJPEG=OFF
+CMAKE_OPTIONS=-DENABLE_SHARED:BOOL=OFF \
+              -DWITH_JPEG8:BOOL=ON \
+              -DWITH_JAVA=OFF \
+              -DWITH_TOOLS=OFF \
+              -DWITH_TESTS=OFF \
+              -DWITH_TURBOJPEG=OFF
 
 ifeq ($(OS),wasm)
   CMAKE_OPTIONS+= -DWITH_SIMD=OFF
-else
-  CMAKE_OPTIONS+= -DCMAKE_ASM_NASM_COMPILER:FILEPATH=$(NATIVEPREFIX)/bin/nasm
 endif
 
 all: .installed-$(PLATFORM)
