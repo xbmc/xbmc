@@ -19,4 +19,6 @@ public:
   static bool EnumerateEpisodeItem(const CFileItem* item,
                                    KODI::VIDEO::EPISODELIST& episodeList,
                                    KODI::REGEXP::RegExpCache* cache = nullptr);
+
+  static std::string GetEpisodesLabel(const CFileItem& item);
 };

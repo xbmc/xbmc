@@ -8698,7 +8698,6 @@ std::string CVideoDatabase::GetContentForPath(const std::string& strPath)
       // So see if there are any matches using the parentpathid.
       sql = PrepareSQL("SELECT DISTINCT e.strPath FROM episode_view e "
                        "JOIN path p ON e.c%02d = p.idPath "
-                       "JOIN files f ON e.idFile = f.idFile "
                        "WHERE p.strPath = '%s' ",
                        VIDEODB_ID_EPISODE_PARENTPATHID, strPath.c_str());
       m_pDS->query(sql);
@@ -8707,7 +8706,7 @@ std::string CVideoDatabase::GetContentForPath(const std::string& strPath)
         while (!m_pDS->eof())
         {
           const CURL url(m_pDS->fv(0).get_asString());
-          if (url.GetFileName().empty() && URIUtils::IsArchive(url))
+          if ((url.GetFileName().empty() && URIUtils::IsArchive(url)) || url.IsBlurayPath())
             return "episodes"; // Episodes in root of archive
           m_pDS->next();
         }
@@ -9519,6 +9518,34 @@ void CVideoDatabase::GetMusicVideosByName(const std::string& strSearch, CFileIte
   {
     CLog::LogF(LOGERROR, "({}) failed", strSQL);
   }
+}
+
+std::string CVideoDatabase::GetPlotByShowId(int idShow)
+{
+  std::string strSQL;
+
+  try
+  {
+    if (nullptr == m_pDB)
+      return "";
+    if (nullptr == m_pDS)
+      return "";
+
+    strSQL = PrepareSQL("SELECT c%02d FROM tvshow WHERE idShow = %i", VIDEODB_ID_TV_PLOT, idShow);
+    m_pDS->query(strSQL);
+
+    std::string plot{};
+    if (!m_pDS->eof())
+      plot = m_pDS->fv(0).get_asString();
+
+    m_pDS->close();
+    return plot;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "({}) failed", strSQL);
+  }
+  return {};
 }
 
 void CVideoDatabase::GetEpisodesByPlot(const std::string& strSearch, CFileItemList& items)

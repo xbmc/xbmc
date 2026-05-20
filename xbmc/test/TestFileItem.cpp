@@ -7,12 +7,17 @@
  */
 
 #include "FileItem.h"
+#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "media/MediaType.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/SettingsManager.h"
+#include "video/VideoInfoTag.h"
 
 #include <gtest/gtest.h>
 
@@ -1015,3 +1020,83 @@ TEST(TestFileItem, MimeType)
   EXPECT_EQ("http://testdomain.com/api/movies", item.GetURL().Get());
   EXPECT_EQ("http://testdomain.com/api/movies", item.GetDynURL().Get());
 }
+
+namespace
+{
+// U+2068 FSI / U+2069 PDI: bidi isolation markers emitted by CListFormatter
+constexpr std::string_view FSI = "\xE2\x81\xA8";
+constexpr std::string_view PDI = "\xE2\x81\xA9";
+
+std::string StripIsolates(std::string s)
+{
+  for (std::string_view marker : {FSI, PDI})
+  {
+    size_t pos = 0;
+    while ((pos = s.find(marker, pos)) != std::string::npos)
+      s.erase(pos, marker.size());
+  }
+  return s;
+}
+
+struct EpisodeLabelTestCase
+{
+  const char* testName; //!< GTest parameter name (must be [a-zA-Z0-9_]+)
+  const char* episodes; //!< value for "episodes" property
+  int episodesSpecials; //!< > 0 → set "episodes_specials"; 0 = omit property
+  const char* expectedLabel; //!< expected label after stripping isolates
+};
+
+CFileItem MakeEpisodeItem()
+{
+  const auto tag = std::make_unique<CVideoInfoTag>();
+  tag->m_type = MediaTypeEpisode;
+  return CFileItem(*tag);
+}
+
+// clang-format off
+const EpisodeLabelTestCase EpisodeLabelCases[] = {
+  // testName                             episodes              specials  expectedLabel
+  {"SingleEpisode",                       "S01E01",             0, "Episode 1"},
+  {"ContiguousSingleSeasonRange",         "S01E01S01E02S01E03", 0, "Episodes 1-3"},
+  {"NonContiguousSingleSeason",           "S01E01S01E03S01E05", 0, "Episode 1, Episode 3, and Episode 5"},
+  {"MultipleSeasons_SingleEpisodeEach",   "S01E05S02E01",       0, "Season 1 Episode 5 and Season 2 Episode 1"},
+  {"MultipleSeasons_RangeInFirstSeason",  "S01E05S01E06S02E01", 0, "Season 1 Episodes 5-6 and Season 2 Episode 1"},
+  {"SpecialsOnly",                        "",                   3, "Specials"},
+  {"MixedEpisodesAndSpecials",            "S01E01S01E02",       2, "Episodes 1-2 and Specials"},
+  {"ThreeSegmentList",                    "S01E01S02E01S03E01", 0, "Season 1 Episode 1, Season 2 Episode 1, and Season 3 Episode 1"},
+};
+// clang-format on
+
+class TestFileItemEpisodeLabel : public Test, public WithParamInterface<EpisodeLabelTestCase>
+{
+protected:
+  void SetUp() override
+  {
+    ASSERT_TRUE(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Load(
+        g_langInfo.GetLanguagePath(), "resource.language.en_gb"));
+  }
+
+  void TearDown() override { CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Clear(); }
+};
+} // namespace
+
+TEST_P(TestFileItemEpisodeLabel, FormatsCorrectly)
+{
+  const EpisodeLabelTestCase& tc = GetParam();
+
+  CFileItem source = MakeEpisodeItem();
+  source.SetProperty("episodes", tc.episodes);
+  if (tc.episodesSpecials > 0)
+    source.SetProperty("episodes_specials", tc.episodesSpecials);
+
+  CFileItem target = MakeEpisodeItem();
+  target.UpdateInfo(source, /*replaceLabels=*/true, MultipleEpisodes::GROUP_MULTIPLE_EPISODES);
+
+  EXPECT_EQ(tc.expectedLabel, StripIsolates(target.GetLabel()));
+}
+
+INSTANTIATE_TEST_SUITE_P(EpisodeLabel,
+                         TestFileItemEpisodeLabel,
+                         ValuesIn(EpisodeLabelCases),
+                         [](const testing::TestParamInfo<EpisodeLabelTestCase>& info)
+                         { return info.param.testName; });

@@ -15218,7 +15218,37 @@ msgctxt "#21485"
 msgid "Supported file extensions and media types"
 msgstr ""
 
-#empty strings from id 21486 to 21601
+#. Used to show Episodes in Video->Files (eg. Episode n)
+#: xbmc/FileItem.cpp
+msgctxt "#21486"
+msgid "Episode {0:d}"
+msgstr ""
+
+#. Used to show Episodes in Video->Files (eg. Episodes m-n)
+#: xbmc/FileItem.cpp
+msgctxt "#21487"
+msgid "Episodes {0:d}-{1:d}"
+msgstr ""
+
+#. Used to show Episodes in Video->Files (eg. Season x Episode n)
+#: xbmc/FileItem.cpp
+msgctxt "#21488"
+msgid "Season {0:d} Episode {1:d}"
+msgstr ""
+
+#. Used to show Episodes in Video->Files (eg. Season x Episodes m-n)
+#: xbmc/FileItem.cpp
+msgctxt "#21489"
+msgid "Season {0:d} Episodes {1:d}-{2:d}"
+msgstr ""
+
+#. Used to show Specials in Video->Files (when there are no episodes) (eg. Specials)
+#: xbmc/FileItem.cpp
+msgctxt "#21490"
+msgid "Specials"
+msgstr ""
+
+#empty strings from id 21491 to 21601
 
 #: xbmc/Util.cpp
 msgctxt "#21602"
