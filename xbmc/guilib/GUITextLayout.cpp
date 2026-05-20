@@ -381,9 +381,19 @@ void CGUITextLayout::ParseText(const std::wstring& text,
   std::stack<KODI::UTILS::COLOR::Color> colorStack;
   colorStack.push(0);
 
-  // these aren't independent, but that's probably not too much of an issue
-  // eg [UPPERCASE]Glah[LOWERCASE]FReD[/LOWERCASE]Georeg[/UPPERCASE] will work (lower case >> upper case)
-  // but [LOWERCASE]Glah[UPPERCASE]FReD[/UPPERCASE]Georeg[/LOWERCASE] won't
+  // Boolean style tags ([B], [I], [LIGHT], [UPPERCASE], [LOWERCASE], [CAPITALIZE])
+  // use per-tag reference counts so that nested identical tags work correctly.
+  // This fixes the case where a skin wraps a label in e.g. [B]...[/B] while the
+  // addon has already formatted the value with [B]...[/B], producing [B][B]text[/B][/B].
+  // With simple |= / &=~ the first [/B] would clear bold for everything that follows.
+  // With reference counts the bit stays set until the last matching open tag is closed.
+  // Unmatched closing tags are no-ops (count floors at 0).
+  int boldDepth = 0;
+  int italicDepth = 0;
+  int lightDepth = 0;
+  int uppercaseDepth = 0;
+  int lowercaseDepth = 0;
+  int capitalizeDepth = 0;
 
   int startPos = 0;
   size_t pos = text.find(L'[');
@@ -404,46 +414,62 @@ void CGUITextLayout::ParseText(const std::wstring& text,
     }
     // check for each type
     if (text.compare(pos, 2, L"B]") == 0)
-    { // bold - finish the current text block and assign the bold state
+    { // bold
       pos += 2;
-      if ((on && text.find(L"[/B]",pos) != std::string::npos) ||          // check for a matching end point
-         (!on && (currentStyle & FONT_STYLE_BOLD)))       // or matching start point
-        newStyle = FONT_STYLE_BOLD;
+      if (on)
+        ++boldDepth;
+      else if (boldDepth > 0)
+        --boldDepth;
+      else
+	  {
+        // unmatched [/B] - ignore
+      }
+      newStyle = FONT_STYLE_BOLD;
     }
     else if (text.compare(pos, 2, L"I]") == 0)
     { // italics
       pos += 2;
-      if ((on && text.find(L"[/I]", pos) != std::string::npos) ||          // check for a matching end point
-         (!on && (currentStyle & FONT_STYLE_ITALICS)))    // or matching start point
-        newStyle = FONT_STYLE_ITALICS;
+      if (on)
+        ++italicDepth;
+      else if (italicDepth > 0)
+        --italicDepth;
+      newStyle = FONT_STYLE_ITALICS;
     }
     else if (text.compare(pos, 10, L"UPPERCASE]") == 0)
     {
       pos += 10;
-      if ((on && text.find(L"[/UPPERCASE]", pos) != std::string::npos) ||  // check for a matching end point
-         (!on && (currentStyle & FONT_STYLE_UPPERCASE)))  // or matching start point
-        newStyle = FONT_STYLE_UPPERCASE;
+      if (on)
+        ++uppercaseDepth;
+      else if (uppercaseDepth > 0)
+        --uppercaseDepth;
+      newStyle = FONT_STYLE_UPPERCASE;
     }
     else if (text.compare(pos, 10, L"LOWERCASE]") == 0)
     {
       pos += 10;
-      if ((on && text.find(L"[/LOWERCASE]", pos) != std::string::npos) ||  // check for a matching end point
-         (!on && (currentStyle & FONT_STYLE_LOWERCASE)))  // or matching start point
-        newStyle = FONT_STYLE_LOWERCASE;
+      if (on)
+        ++lowercaseDepth;
+      else if (lowercaseDepth > 0)
+        --lowercaseDepth;
+      newStyle = FONT_STYLE_LOWERCASE;
     }
     else if (text.compare(pos, 11, L"CAPITALIZE]") == 0)
     {
       pos += 11;
-      if ((on && text.find(L"[/CAPITALIZE]", pos) != std::string::npos) ||  // check for a matching end point
-         (!on && (currentStyle & FONT_STYLE_CAPITALIZE)))  // or matching start point
-        newStyle = FONT_STYLE_CAPITALIZE;
+      if (on)
+        ++capitalizeDepth;
+      else if (capitalizeDepth > 0)
+        --capitalizeDepth;
+      newStyle = FONT_STYLE_CAPITALIZE;
     }
     else if (text.compare(pos, 6, L"LIGHT]") == 0)
     {
       pos += 6;
-      if ((on && text.find(L"[/LIGHT]", pos) != std::string::npos) ||
-         (!on && (currentStyle & FONT_STYLE_LIGHT)))
-        newStyle = FONT_STYLE_LIGHT;
+      if (on)
+        ++lightDepth;
+      else if (lightDepth > 0)
+        --lightDepth;
+      newStyle = FONT_STYLE_LIGHT;
     }
     else if (text.compare(pos, 5, L"TABS]") == 0 && on)
     {
@@ -463,7 +489,7 @@ void CGUITextLayout::ParseText(const std::wstring& text,
       pos += 3;
     }
     else if (text.compare(pos,5, L"COLOR") == 0)
-    { // color
+    { // color - already stack-based, unchanged
       size_t finish = text.find(L']', pos + 5);
       if (on && finish != std::string::npos && text.find(L"[/COLOR]",finish) != std::string::npos)
       {
@@ -512,13 +538,22 @@ void CGUITextLayout::ParseText(const std::wstring& text,
       for (int i = 0; i < tabs; ++i)
         parsedText.push_back(L'\t');
 
-      // and switch to the new style
+      // switch to the new style, deriving it from the current depths
       startPos = pos;
       currentColor = newColor;
-      if (on)
-        currentStyle |= newStyle;
-      else
-        currentStyle &= ~newStyle;
+      currentStyle = defaultStyle;
+      if (boldDepth > 0)
+        currentStyle |= FONT_STYLE_BOLD;
+      if (italicDepth > 0)
+        currentStyle |= FONT_STYLE_ITALICS;
+      if (lightDepth > 0)
+        currentStyle |= FONT_STYLE_LIGHT;
+      if (uppercaseDepth > 0)
+        currentStyle |= FONT_STYLE_UPPERCASE;
+      if (lowercaseDepth > 0)
+        currentStyle |= FONT_STYLE_LOWERCASE;
+      if (capitalizeDepth > 0)
+        currentStyle |= FONT_STYLE_CAPITALIZE;
     }
     pos = text.find(L'[', pos);
   }
