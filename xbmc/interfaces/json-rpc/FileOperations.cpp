@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2020 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -32,6 +32,7 @@
 #include <memory>
 
 using namespace KODI;
+using namespace KODI::REGEXP;
 using namespace JSONRPC;
 using namespace XFILE;
 
@@ -114,9 +115,10 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const std::string &method, ITranspo
     }
 
     CFileItemList filteredFiles;
+    RegExpCache cache;
     for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
     {
-      if (CUtil::ExcludeFileOrFolder(items[i]->GetPath(), regexps))
+      if (CUtil::ExcludeFileOrFolder(items[i]->GetPath(), regexps, &cache))
         continue;
 
       if (items[i]->IsSmb())
@@ -386,9 +388,10 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
           items.Sort(SortBy::FILE, SortOrder::ASCENDING);
 
         CFileItemList filteredDirectories;
+        RegExpCache cache;
         for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
         {
-          if (CUtil::ExcludeFileOrFolder(items[i]->GetPath(), regexps))
+          if (CUtil::ExcludeFileOrFolder(items[i]->GetPath(), regexps, &cache))
             continue;
 
           if (items[i]->IsFolder())

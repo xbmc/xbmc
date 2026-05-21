@@ -310,10 +310,11 @@ bool CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem)
       const std::vector<std::string>& excludeFromScan = CServiceBroker::GetSettingsComponent()
                                                             ->GetAdvancedSettings()
                                                             ->m_moviesExcludeFromScanRegExps;
+      KODI::REGEXP::RegExpCache cache;
       for (const auto& i : items)
       {
         if (VIDEO::IsVideo(*i) && !PLAYLIST::IsPlayList(*i) &&
-            !CUtil::ExcludeFileOrFolder(i->GetPath(), excludeFromScan))
+            !CUtil::ExcludeFileOrFolder(i->GetPath(), excludeFromScan, &cache))
         {
           item.SetPath(i->GetPath());
           item.SetFolder(false);
