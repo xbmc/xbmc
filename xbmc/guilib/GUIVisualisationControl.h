@@ -80,6 +80,7 @@ private:
   inline void CreateBuffers();
   inline void ClearBuffers();
 
+  bool m_initOK{false};
   bool m_callStart{false};
   bool m_alreadyStarted{false};
   bool m_attemptedLoad{false};

@@ -461,21 +461,35 @@ public:
 
   //============================================================================
   /// @ingroup cpp_kodi_addon_visualization
+  /// @brief Called from Kodi to Initialize the visualization.
+  ///
+  /// @return true if initialization was successful, false if not.
+  ///
+  /// @note On Windows by use of Angle this call must be used to initialize the
+  /// OpenGLES rendering.
+  ///
+  virtual bool Init() { return true; }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @ingroup cpp_kodi_addon_visualization
+  /// @brief Called from Kodi to Deinitialize the visualization.
+  ///
+  virtual void DeInit() {}
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @ingroup cpp_kodi_addon_visualization
   /// @brief Used to notify the visualization that a new song has been started.
   ///
   /// @param[in] channels Number of channels in the stream
   /// @param[in] samplesPerSec Samples per second of stream
   /// @param[in] bitsPerSample Number of bits in one sample
-  /// @param[in] songName The name of the currently-playing song
   /// @return true if start successful done
   ///
-  virtual bool Start(int channels,
-                     int samplesPerSec,
-                     int bitsPerSample,
-                     const std::string& songName)
-  {
-    return true;
-  }
+  /// @note Song name can be taken by call from Kodi of @ref UpdateTrack().
+  ///
+  virtual bool AudioStart(int channels, int samplesPerSec, int bitsPerSample) { return true; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -483,9 +497,20 @@ public:
   /// @brief Used to inform the visualization that the rendering control was
   /// stopped.
   ///
-  virtual void Stop() {}
+  virtual void AudioStop() {}
   //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @ingroup cpp_kodi_addon_visualization
+  /// @brief Used to get the number of buffers from the current visualization.
+  ///
+  /// @return The number of buffers to delay before calling @ref AudioData()
+  ///
+  /// @note If this function is not implemented, it will default to 0.
+  ///
+  virtual int AudioGetSyncDelay() { return 0; }
+  //----------------------------------------------------------------------------
+  //
   //============================================================================
   /// @ingroup cpp_kodi_addon_visualization
   /// @brief Pass audio data to the visualization.
@@ -511,17 +536,6 @@ public:
   /// @brief Used to indicate when the add-on should render.
   ///
   virtual void Render() {}
-  //----------------------------------------------------------------------------
-
-  //============================================================================
-  /// @ingroup cpp_kodi_addon_visualization
-  /// @brief Used to get the number of buffers from the current visualization.
-  ///
-  /// @return The number of buffers to delay before calling @ref AudioData()
-  ///
-  /// @note If this function is not implemented, it will default to 0.
-  ///
-  virtual int GetSyncDelay() { return 0; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -770,12 +784,14 @@ private:
   {
     m_instanceData = instance;
     m_instanceData->hdl = this;
-    m_instanceData->visualization->toAddon->start = ADDON_start;
-    m_instanceData->visualization->toAddon->stop = ADDON_stop;
+    m_instanceData->visualization->toAddon->init = ADDON_init;
+    m_instanceData->visualization->toAddon->deinit = ADDON_deinit;
+    m_instanceData->visualization->toAddon->audio_start = ADDON_audio_start;
+    m_instanceData->visualization->toAddon->audio_stop = ADDON_audio_stop;
+    m_instanceData->visualization->toAddon->audio_get_sync_delay = ADDON_audio_get_sync_delay;
     m_instanceData->visualization->toAddon->audio_data = ADDON_audio_data;
     m_instanceData->visualization->toAddon->is_dirty = ADDON_is_dirty;
     m_instanceData->visualization->toAddon->render = ADDON_render;
-    m_instanceData->visualization->toAddon->get_sync_delay = ADDON_get_sync_delay;
     m_instanceData->visualization->toAddon->prev_preset = ADDON_prev_preset;
     m_instanceData->visualization->toAddon->next_preset = ADDON_next_preset;
     m_instanceData->visualization->toAddon->load_preset = ADDON_load_preset;
@@ -791,22 +807,37 @@ private:
     m_instanceData->visualization->toKodi->get_properties(instance->info->kodi, &m_props);
   }
 
-  inline static bool ADDON_start(const KODI_ADDON_VISUALIZATION_HDL hdl,
-                                 int channels,
-                                 int samplesPerSec,
-                                 int bitsPerSample,
-                                 const char* songName)
+  inline static bool ADDON_init(const KODI_ADDON_VISUALIZATION_HDL hdl)
   {
     CInstanceVisualization* thisClass = static_cast<CInstanceVisualization*>(hdl);
     thisClass->m_renderHelper = kodi::gui::GetRenderHelper();
-    return thisClass->Start(channels, samplesPerSec, bitsPerSample, songName);
+    return thisClass->Init();
   }
 
-  inline static void ADDON_stop(const KODI_ADDON_VISUALIZATION_HDL hdl)
+  inline static void ADDON_deinit(const KODI_ADDON_VISUALIZATION_HDL hdl)
   {
     CInstanceVisualization* thisClass = static_cast<CInstanceVisualization*>(hdl);
-    thisClass->Stop();
+    thisClass->DeInit();
     thisClass->m_renderHelper = nullptr;
+  }
+
+  inline static bool ADDON_audio_start(const KODI_ADDON_VISUALIZATION_HDL hdl,
+                                       int channels,
+                                       int samplesPerSec,
+                                       int bitsPerSample)
+  {
+    return static_cast<CInstanceVisualization*>(hdl)->AudioStart(channels, samplesPerSec,
+                                                                 bitsPerSample);
+  }
+
+  inline static void ADDON_audio_stop(const KODI_ADDON_VISUALIZATION_HDL hdl)
+  {
+    static_cast<CInstanceVisualization*>(hdl)->AudioStop();
+  }
+
+  inline static int ADDON_audio_get_sync_delay(const KODI_ADDON_VISUALIZATION_HDL hdl)
+  {
+    return static_cast<CInstanceVisualization*>(hdl)->AudioGetSyncDelay();
   }
 
   inline static void ADDON_audio_data(const KODI_ADDON_VISUALIZATION_HDL hdl,
@@ -829,11 +860,6 @@ private:
     thisClass->m_renderHelper->Begin();
     thisClass->Render();
     thisClass->m_renderHelper->End();
-  }
-
-  inline static int ADDON_get_sync_delay(const KODI_ADDON_VISUALIZATION_HDL hdl)
-  {
-    return static_cast<CInstanceVisualization*>(hdl)->GetSyncDelay();
   }
 
   inline static unsigned int ADDON_get_presets(const KODI_ADDON_VISUALIZATION_HDL hdl)

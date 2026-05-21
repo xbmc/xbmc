@@ -7075,6 +7075,8 @@ msgctxt "#13328"
 msgid "{0:s} not found"
 msgstr ""
 
+#. Label in the notification dialog for when a file or add-on fails to open
+#: xbmc/guilib/GUIVisualisationControl.cpp
 msgctxt "#13329"
 msgid "Error opening {0:s}"
 msgstr ""
@@ -14433,7 +14435,7 @@ msgstr ""
 #: xbmc/playlists/SmartPlayList.cpp
 msgctxt "#20475"
 msgid "Has multiple versions"
-msgstr ""	
+msgstr ""
 
 #. Used in smart playlists as rule field name to select items that have video extras
 #: xbmc/playlists/SmartPlayList.cpp
@@ -15962,6 +15964,7 @@ msgid "Script"
 msgstr ""
 
 #: xbmc/addons/Addon.cpp
+#: xbmc/guilib/GUIVisualisationControl.cpp
 msgctxt "#24010"
 msgid "Visualisation"
 msgstr ""
