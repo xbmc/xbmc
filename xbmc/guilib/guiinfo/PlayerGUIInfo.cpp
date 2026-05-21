@@ -26,6 +26,8 @@
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoHelper.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -349,6 +351,39 @@ bool CPlayerGUIInfo::GetLabel(std::string& value,
     case PLAYER_PROCESS_SUBTITLEDECODER:
       value = CServiceBroker::GetDataCacheCore().GetSubtitleDecoderName();
       return true;
+    case PLAYER_PROCESS_AUDIO_LIVE_BITRATE:
+      value = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetAudioLiveBitRate() /
+                                        1024);
+      value += " " + CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25019);
+      return true;
+    case PLAYER_PROCESS_AUDIO_QUEUE_LEVEL:
+      value = std::to_string(CServiceBroker::GetDataCacheCore().GetAudioQueueLevel());
+      return true;
+    case PLAYER_PROCESS_AUDIO_QUEUE_DATA_LEVEL:
+      value = std::to_string(CServiceBroker::GetDataCacheCore().GetAudioQueueDataLevel());
+      return true;
+    case PLAYER_PROCESS_VIDEO_LIVE_BITRATE:
+    {
+      int kbps = CServiceBroker::GetDataCacheCore().GetVideoLiveBitRate() / 1024;
+      if (kbps >= 1000)
+      {
+        value = StringUtils::Format(
+            "{:.1f}", CServiceBroker::GetDataCacheCore().GetVideoLiveBitRate() / 1048576.0f);
+        value += " " + CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25020);
+      }
+      else
+      {
+        value = std::to_string(kbps);
+        value += " " + CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25019);
+      }
+      return true;
+    }
+    case PLAYER_PROCESS_VIDEO_QUEUE_LEVEL:
+      value = std::to_string(CServiceBroker::GetDataCacheCore().GetVideoQueueLevel());
+      return true;
+    case PLAYER_PROCESS_VIDEO_QUEUE_DATA_LEVEL:
+      value = std::to_string(CServiceBroker::GetDataCacheCore().GetVideoQueueDataLevel());
+      return true;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // PLAYLIST_*
@@ -403,6 +438,18 @@ bool CPlayerGUIInfo::GetInt(int& value,
       return true;
     case PLAYER_AUDIO_DELAY:
       value = m_appPlayer->GetAudioDelay();
+      return true;
+    case PLAYER_PROCESS_AUDIO_QUEUE_LEVEL:
+      value = CServiceBroker::GetDataCacheCore().GetAudioQueueLevel();
+      return true;
+    case PLAYER_PROCESS_AUDIO_QUEUE_DATA_LEVEL:
+      value = CServiceBroker::GetDataCacheCore().GetAudioQueueDataLevel();
+      return true;
+    case PLAYER_PROCESS_VIDEO_QUEUE_LEVEL:
+      value = CServiceBroker::GetDataCacheCore().GetVideoQueueLevel();
+      return true;
+    case PLAYER_PROCESS_VIDEO_QUEUE_DATA_LEVEL:
+      value = CServiceBroker::GetDataCacheCore().GetVideoQueueDataLevel();
       return true;
     default:
       break;

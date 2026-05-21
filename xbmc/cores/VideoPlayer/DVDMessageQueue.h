@@ -81,7 +81,14 @@ public:
 
   // non messagequeue related functions
   bool IsFull() const { return GetLevel() == 100; }
-  int GetLevel() const;
+
+  /*!
+   * \brief Get the current queue level.
+   *
+   * \param dataLevel If true, return the data-based level.
+   * \return Queue level as a percentage.
+   */
+  int GetLevel(bool dataLevel = false) const;
 
   void SetMaxDataSize(int iMaxDataSize) { m_iMaxDataSize = iMaxDataSize; }
   void SetMaxTimeSize(double sec) { m_TimeSize = 1.0 / sec; }

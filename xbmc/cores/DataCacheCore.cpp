@@ -167,6 +167,48 @@ int CDataCacheCore::GetVideoHeight()
   return m_playerVideoInfo.height;
 }
 
+void CDataCacheCore::SetVideoLiveBitRate(int bitRate)
+{
+  std::unique_lock lock(m_videoPlayerSection);
+
+  m_playerVideoInfo.liveBitRate = bitRate;
+}
+
+int CDataCacheCore::GetVideoLiveBitRate()
+{
+  std::unique_lock lock(m_videoPlayerSection);
+
+  return m_playerVideoInfo.liveBitRate;
+}
+
+void CDataCacheCore::SetVideoQueueLevel(int level)
+{
+  std::unique_lock lock(m_videoPlayerSection);
+
+  m_playerVideoInfo.queueLevel = level;
+}
+
+int CDataCacheCore::GetVideoQueueLevel()
+{
+  std::unique_lock lock(m_videoPlayerSection);
+
+  return m_playerVideoInfo.queueLevel;
+}
+
+void CDataCacheCore::SetVideoQueueDataLevel(int level)
+{
+  std::unique_lock lock(m_videoPlayerSection);
+
+  m_playerVideoInfo.queueDataLevel = level;
+}
+
+int CDataCacheCore::GetVideoQueueDataLevel()
+{
+  std::unique_lock lock(m_videoPlayerSection);
+
+  return m_playerVideoInfo.queueDataLevel;
+}
+
 void CDataCacheCore::SetVideoFps(float fps)
 {
   std::unique_lock lock(m_videoPlayerSection);
@@ -277,6 +319,48 @@ std::string CDataCacheCore::GetSubtitleDecoderName()
   std::unique_lock lock(m_subtitlePlayerSection);
 
   return m_playerSubtitleInfo.m_decoderName;
+}
+
+void CDataCacheCore::SetAudioLiveBitRate(int bitRate)
+{
+  std::unique_lock lock(m_audioPlayerSection);
+
+  m_playerAudioInfo.liveBitRate = bitRate;
+}
+
+int CDataCacheCore::GetAudioLiveBitRate()
+{
+  std::unique_lock lock(m_audioPlayerSection);
+
+  return m_playerAudioInfo.liveBitRate;
+}
+
+void CDataCacheCore::SetAudioQueueLevel(int level)
+{
+  std::unique_lock lock(m_audioPlayerSection);
+
+  m_playerAudioInfo.queueLevel = level;
+}
+
+int CDataCacheCore::GetAudioQueueLevel()
+{
+  std::unique_lock lock(m_audioPlayerSection);
+
+  return m_playerAudioInfo.queueLevel;
+}
+
+void CDataCacheCore::SetAudioQueueDataLevel(int level)
+{
+  std::unique_lock lock(m_audioPlayerSection);
+
+  m_playerAudioInfo.queueDataLevel = level;
+}
+
+int CDataCacheCore::GetAudioQueueDataLevel()
+{
+  std::unique_lock lock(m_audioPlayerSection);
+
+  return m_playerAudioInfo.queueDataLevel;
 }
 
 void CDataCacheCore::SetEditList(const std::vector<EDL::Edit>& editList)

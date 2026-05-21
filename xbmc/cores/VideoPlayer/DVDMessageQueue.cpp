@@ -307,7 +307,7 @@ void CDVDMessageQueue::WaitUntilEmpty()
   }
 }
 
-int CDVDMessageQueue::GetLevel() const
+int CDVDMessageQueue::GetLevel(bool dataLevel) const
 {
   std::unique_lock lock(m_section);
 
@@ -316,7 +316,7 @@ int CDVDMessageQueue::GetLevel() const
   if (m_iDataSize == 0)
     return 0;
 
-  if (IsDataBased())
+  if (IsDataBased() || dataLevel)
   {
     return std::min(100, 100 * m_iDataSize / m_iMaxDataSize);
   }
