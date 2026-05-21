@@ -15,16 +15,20 @@
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/Visualization.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonType.h"
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "music/tags/MusicInfoTag.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -157,27 +161,21 @@ void CGUIVisualisationControl::Process(unsigned int currentTime, CDirtyRegionLis
 
     if (!m_instance && !m_attemptedLoad)
     {
-      InitVisualization();
-
+      m_initOK = InitVisualization();
       m_attemptedLoad = true;
     }
-    else if (m_callStart && m_instance)
+    else if (m_initOK && m_callStart && m_instance)
     {
       auto& context = CServiceBroker::GetWinSystem()->GetGfxContext();
 
       context.CaptureStateBlock();
       if (m_alreadyStarted)
       {
-        m_instance->Stop();
+        m_instance->AudioStop();
         m_alreadyStarted = false;
       }
 
-      std::string songTitle = URIUtils::GetFileName(g_application.CurrentFile());
-      const MUSIC_INFO::CMusicInfoTag* tag =
-          CServiceBroker::GetGUI()->GetInfoManager().GetCurrentSongTag();
-      if (tag && !tag->GetTitle().empty())
-        songTitle = tag->GetTitle();
-      m_alreadyStarted = m_instance->Start(m_channels, m_samplesPerSec, m_bitsPerSample, songTitle);
+      m_alreadyStarted = m_instance->AudioStart(m_channels, m_samplesPerSec, m_bitsPerSample);
       context.ApplyStateBlock();
       m_callStart = false;
       m_updateTrack = true;
@@ -394,8 +392,25 @@ bool CGUIVisualisationControl::InitVisualization()
   CreateBuffers();
 
   m_alreadyStarted = false;
+  bool ret = m_instance->Init();
+
   context.ApplyStateBlock();
-  return true;
+
+  if (!ret)
+  {
+    // Log the error and inform the user that display stays blank due to failed initialization
+    // of the visualisation add-on.
+    CLog::Log(LOGERROR, "Failed to initialize visualization add-on: {}", addonBase->Name());
+    const auto& localizeStrings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
+    // "Visualisation"
+    // "Error opening {0:s}"
+    const std::string failedAddonInfo =
+        StringUtils::Format(localizeStrings.Get(13329), addonBase->Name());
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, localizeStrings.Get(24010),
+                                          failedAddonInfo);
+  }
+
+  return ret;
 }
 
 void CGUIVisualisationControl::DeInitVisualization()
@@ -420,16 +435,18 @@ void CGUIVisualisationControl::DeInitVisualization()
 
   if (m_instance)
   {
+    auto& context = winSystem->GetGfxContext();
+    context.CaptureStateBlock();
+
     if (m_alreadyStarted)
     {
-      auto& context = winSystem->GetGfxContext();
-
-      context.CaptureStateBlock();
-      m_instance->Stop();
-      context.ApplyStateBlock();
+      m_instance->AudioStop();
       m_alreadyStarted = false;
     }
 
+    m_instance->DeInit();
+
+    context.ApplyStateBlock();
     m_instance.reset();
   }
 
@@ -442,7 +459,7 @@ void CGUIVisualisationControl::CreateBuffers()
 
   m_numBuffers = 1;
   if (m_instance)
-    m_numBuffers += m_instance->GetSyncDelay();
+    m_numBuffers += m_instance->AudioGetSyncDelay();
   if (m_numBuffers > MAX_AUDIO_BUFFERS)
     m_numBuffers = MAX_AUDIO_BUFFERS;
   if (m_numBuffers < 1)

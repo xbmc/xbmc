@@ -20,12 +20,15 @@ public:
   CVisualization(const ADDON::AddonInfoPtr& addonInfo, float x, float y, float w, float h);
   ~CVisualization() override;
 
-  bool Start(int channels, int samplesPerSec, int bitsPerSample, const std::string& songName);
-  void Stop();
+  bool Init();
+  void DeInit();
+
+  bool AudioStart(int channels, int samplesPerSec, int bitsPerSample);
+  void AudioStop();
+  int AudioGetSyncDelay();
   void AudioData(const float* audioData, int audioDataLength);
   bool IsDirty();
   void Render();
-  int GetSyncDelay();
   bool NextPreset();
   bool PrevPreset();
   bool LoadPreset(int select);

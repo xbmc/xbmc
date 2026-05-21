@@ -61,10 +61,6 @@ CVisualization::CVisualization(const AddonInfoPtr& addonInfo, float x, float y, 
     CLog::Log(LOGFATAL, "Visualization: failed to create instance for '{}' and not usable!", ID());
     return;
   }
-
-  /* presets becomes send with "transfer_preset" during call of function below */
-  if (m_ifc.visualization->toAddon->get_presets)
-    m_ifc.visualization->toAddon->get_presets(m_ifc.hdl);
 }
 
 CVisualization::~CVisualization()
@@ -77,21 +73,51 @@ CVisualization::~CVisualization()
   delete m_ifc.visualization;
 }
 
-bool CVisualization::Start(int channels,
-                           int samplesPerSec,
-                           int bitsPerSample,
-                           const std::string& songName)
+bool CVisualization::Init()
 {
-  if (m_ifc.visualization->toAddon->start)
-    return m_ifc.visualization->toAddon->start(m_ifc.hdl, channels, samplesPerSec, bitsPerSample,
-                                               songName.c_str());
+  /* Confirm mandatory init function is available */
+  if (!m_ifc.visualization->toAddon->init)
+    return false;
+
+  /* Do the initialize on add-on about visualization */
+  if (!m_ifc.visualization->toAddon->init(m_ifc.hdl))
+    return false;
+
+  /*
+   * Presets becomes send with "transfer_preset" during call of function below
+   * This must be called after the init to make sure add-on prepared needed parts.
+   */
+  if (m_ifc.visualization->toAddon->get_presets)
+    m_ifc.visualization->toAddon->get_presets(m_ifc.hdl);
+
+  return true;
+}
+
+void CVisualization::DeInit()
+{
+  if (m_ifc.visualization->toAddon->deinit)
+    m_ifc.visualization->toAddon->deinit(m_ifc.hdl);
+}
+
+bool CVisualization::AudioStart(int channels, int samplesPerSec, int bitsPerSample)
+{
+  if (m_ifc.visualization->toAddon->audio_start)
+    return m_ifc.visualization->toAddon->audio_start(m_ifc.hdl, channels, samplesPerSec,
+                                                     bitsPerSample);
   return false;
 }
 
-void CVisualization::Stop()
+void CVisualization::AudioStop()
 {
-  if (m_ifc.visualization->toAddon->stop)
-    m_ifc.visualization->toAddon->stop(m_ifc.hdl);
+  if (m_ifc.visualization->toAddon->audio_stop)
+    m_ifc.visualization->toAddon->audio_stop(m_ifc.hdl);
+}
+
+int CVisualization::AudioGetSyncDelay()
+{
+  if (m_ifc.visualization->toAddon->audio_get_sync_delay)
+    return m_ifc.visualization->toAddon->audio_get_sync_delay(m_ifc.hdl);
+  return 0;
 }
 
 void CVisualization::AudioData(const float* audioData, int audioDataLength)
@@ -111,13 +137,6 @@ void CVisualization::Render()
 {
   if (m_ifc.visualization->toAddon->render)
     m_ifc.visualization->toAddon->render(m_ifc.hdl);
-}
-
-int CVisualization::GetSyncDelay()
-{
-  if (m_ifc.visualization->toAddon->get_sync_delay)
-    m_ifc.visualization->toAddon->get_sync_delay(m_ifc.hdl);
-  return 0;
 }
 
 bool CVisualization::NextPreset()
