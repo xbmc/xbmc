@@ -308,7 +308,16 @@ void CWinSystemGbmGLESContext::CompositeGui()
   glBindTexture(GL_TEXTURE_2D, m_guiFbo.Texture());
 
   glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+  // In D2P, the GUI plane is composited against a separate video plane by
+  // the display HW. The default glBlendFunc also blends the alpha channel,
+  // leaving the GUI plane buffer with src.a^2; the hardware composite then
+  // reads that squared alpha and translucent GUI pixels render at the
+  // wrong opacity. Replace the stored alpha so the hardware sees src.a.
+  if (m_DRM->GetVideoPlane() && m_DRM->GetGuiPlane())
+    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+  else
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   // set up orthographic projection (screen coords, Y-down)
   float w = static_cast<float>(m_guiFboWidth);
