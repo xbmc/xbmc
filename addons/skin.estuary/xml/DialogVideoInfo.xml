@@ -3,6 +3,7 @@
 	<onload>SetFocus(5000,0,absolute)</onload>
 	<onload>SetProperty(infobackground,$ESCINFO[ListItem.Art(fanart)],home)</onload>
 	<onunload>ClearProperty(infobackground,home)</onunload>
+	<onunload>ClearProperty(InfoViewer_Visible,home)</onunload>
 	<controls>
 		<control type="button" id="6">
 			<include>HiddenObject</include>
@@ -654,6 +655,15 @@
 							<visible>!String.IsEmpty(ListItem.Trailer) + ![String.StartsWith(Container.FolderPath,plugin://) + String.Contains(Container.FolderPath,trailer)]</visible>
 						</item>
 						<item>
+							<label>$LOCALIZE[31124]</label>
+							<icon>icons/infodialogs/media_details.png</icon>
+							<onclick>SetProperty(InfoViewer_Visible,true,home)</onclick>
+							<onclick>SetProperty(InfoViewer_Header,$LOCALIZE[31124],home)</onclick>
+							<onclick>SetProperty(InfoViewer_Content,MediaDetails,home)</onclick>
+							<onclick>SetFocus(102)</onclick>
+							<visible>String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,musicvideo) | String.IsEqual(ListItem.DBType,episode)</visible>
+						</item>
+						<item>
 							<label>$LOCALIZE[31003]</label>
 							<icon>icons/infodialogs/cinema.png</icon>
 							<onclick>Dialog.Close(MovieInformation)</onclick>
@@ -820,6 +830,7 @@
 				</control>
 			</control>
 		</control>
+		<include>InfoViewerLayout</include>
 		<include condition="Skin.HasSetting(touchmode)">TouchBackButton</include>
 	</controls>
 </window>

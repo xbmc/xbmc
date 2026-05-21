@@ -604,7 +604,10 @@ msgctxt "#31123"
 msgid "Same director"
 msgstr ""
 
-#empty string with id 31124
+#: /xml/DialogVideoInfo.xml
+msgctxt "#31124"
+msgid "Media Details"
+msgstr ""
 
 #: /xml/DialogVideoInfo.xml
 msgctxt "#31125"
