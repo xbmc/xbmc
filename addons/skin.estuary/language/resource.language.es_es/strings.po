@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2026-03-31 13:06+0000\n"
+"PO-Revision-Date: 2026-05-21 19:17+0000\n"
 "Last-Translator: Alfonso Cachero <alfonso.cachero@gmail.com>\n"
 "Language-Team: Spanish (Spain) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/es_es/>\n"
 "Language: es_es\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.16.2\n"
+"X-Generator: Weblate 2026.5\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -223,7 +223,7 @@ msgstr "Eliminar grupo"
 
 msgctxt "#31047"
 msgid "Movie title format"
-msgstr ""
+msgstr "Formato del título de la película"
 
 msgctxt "#31048"
 msgid "Available"
@@ -231,15 +231,15 @@ msgstr "Disponible"
 
 msgctxt "#31049"
 msgid "Original title"
-msgstr ""
+msgstr "Título original"
 
 msgctxt "#31050"
 msgid "Original title (Localised title)"
-msgstr ""
+msgstr "Título original (Título traducido)"
 
 msgctxt "#31051"
 msgid "Localised title (Original title)"
-msgstr ""
+msgstr "Título traducido (Título original)"
 
 msgctxt "#31052"
 msgid "filtered"
@@ -480,6 +480,10 @@ msgstr "Programas de TV no vistos"
 msgctxt "#31123"
 msgid "Same director"
 msgstr "Mismo director"
+
+msgctxt "#31124"
+msgid "Media Details"
+msgstr "Detalles del Contenido"
 
 msgctxt "#31125"
 msgid "Press up for actor info"
@@ -795,17 +799,17 @@ msgstr "canales"
 #. Label to show the subtitle decoder name
 msgctxt "#31613"
 msgid "Subtitle decoder"
-msgstr ""
+msgstr "Descodificador de subtítulos"
 
 #. Label to show the subtitle codec name
 msgctxt "#31614"
 msgid "Subtitle codec"
-msgstr ""
+msgstr "Códec de subtítulos"
 
 #. Label to show the subtitle language
 msgctxt "#31615"
 msgid "Subtitle language"
-msgstr ""
+msgstr "Idioma de subtítulos"
 
 #~ msgctxt "#31025"
 #~ msgid "No favourites found. You can add any item from media views to this list by using the context menu."

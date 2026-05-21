@@ -481,6 +481,10 @@ msgctxt "#31123"
 msgid "Same director"
 msgstr "Même réalisateur"
 
+msgctxt "#31124"
+msgid "Media Details"
+msgstr ""
+
 msgctxt "#31125"
 msgid "Press up for actor info"
 msgstr "Peser sur haut pour les informations sur les acteurs"

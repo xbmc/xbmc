@@ -481,6 +481,10 @@ msgctxt "#31123"
 msgid "Same director"
 msgstr "Mateix director"
 
+msgctxt "#31124"
+msgid "Media Details"
+msgstr ""
+
 msgctxt "#31125"
 msgid "Press up for actor info"
 msgstr "Premeu amunt per a la informació de l'actor"

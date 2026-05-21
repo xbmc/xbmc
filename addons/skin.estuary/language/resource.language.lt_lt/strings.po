@@ -481,6 +481,10 @@ msgctxt "#31123"
 msgid "Same director"
 msgstr "Tas pats režisierius"
 
+msgctxt "#31124"
+msgid "Media Details"
+msgstr ""
+
 msgctxt "#31125"
 msgid "Press up for actor info"
 msgstr "Paspauskite aukštyn norėdami atidaryti aktoriaus informaciją"
