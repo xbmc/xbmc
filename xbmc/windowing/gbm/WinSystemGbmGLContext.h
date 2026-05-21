@@ -9,11 +9,13 @@
 #pragma once
 
 #include "WinSystemGbmEGLContext.h"
+#include "cores/VideoPlayer/VideoRenderers/FrameBufferObject.h"
 #include "rendering/gl/RenderSystemGL.h"
 #include "utils/EGLUtils.h"
 
 #include <memory>
 
+class CGuiCompositeShaderGL;
 class CVaapiProxy;
 
 namespace KODI
@@ -39,10 +41,24 @@ public:
   bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
   void PresentRender(bool rendered, bool videoLayer) override;
 
+  // GUI compositing for HDR (FBO + sRGB->PQ shader)
+  bool SetGuiCompositing(int colorTransfer) override;
+  bool BeginGuiComposite() override;
+  void EndGuiComposite() override;
+  void CompositeGui() override;
+  bool IsHdrComposite() const override { return m_guiCompositing; }
+
 protected:
   void SetVSyncImpl(bool enable) override {}
   void PresentRenderImpl(bool rendered) override {};
   bool CreateContext() override;
+
+private:
+  bool m_guiCompositing{false};
+  CFrameBufferObject m_guiFbo;
+  int m_guiFboWidth{0};
+  int m_guiFboHeight{0};
+  std::unique_ptr<CGuiCompositeShaderGL> m_compositeShader;
 };
 
 } // namespace GBM
