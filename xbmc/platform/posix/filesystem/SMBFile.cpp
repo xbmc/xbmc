@@ -29,12 +29,223 @@
 
 #include <cstring>
 #include <inttypes.h>
+#include <list>
+#include <map>
 #include <mutex>
 #include <regex>
+#include <unordered_map>
 
 #include <libsmbclient.h>
 
 using namespace XFILE;
+
+// ---------------------------------------------------------------
+// [Fix] LRU cache to limit simultaneous SMB sessions.
+//       Windows limits SMB sessions per user to 20, and Kodi's
+//       library scanner checks every share for artwork (folder.jpg
+//       etc.), causing session exhaustion when >20 shares exist.
+//       This cache keeps at most MAX_CACHED_SERVERS sessions alive,
+//       evicting the least recently used share when the limit is
+//       reached.  The session count stays well below 20, preventing
+//       "Invalid argument" errors.
+//
+//       The cache key includes username and workgroup to correctly
+//       isolate sessions when different credentials are used for
+//       the same server/share.
+//
+//       To avoid use-after-free after a network loss, cache hits
+//       re-fetch the real server pointer from libsmbclient.  The
+//       library never sees a stale pointer, eliminating crashes.
+//
+//       Additional safety: null checks, and the global mutex is
+//       held throughout each cache operation to avoid race conditions.
+// ---------------------------------------------------------------
+namespace
+{
+constexpr size_t MAX_CACHED_SERVERS = 15; // < 20 to avoid session exhaustion
+
+// Build a cache key from the four components that libsmbclient uses
+// internally.  Backslashes are used as separators because they cannot
+// appear in share names or workgroup / user names.
+std::string MakeKey(const std::string& server,
+                    const std::string& share,
+                    const std::string& username,
+                    const std::string& workgroup)
+{
+  return server + "\\" + share + "\\" + username + "\\" + workgroup;
+}
+
+// Split a MakeKey-generated string back into its four components.
+// The key format is guaranteed: server \ share \ username \ workgroup.
+struct KeyParts
+{
+  std::string server;
+  std::string share;
+  std::string username;
+  std::string workgroup;
+};
+KeyParts SplitKey(const std::string& key)
+{
+  KeyParts parts;
+  const size_t pos1 = key.find('\\');
+  const size_t pos2 = key.find('\\', pos1 + 1);
+  const size_t pos3 = key.find('\\', pos2 + 1);
+
+  if (pos1 != std::string::npos)
+    parts.server = key.substr(0, pos1);
+  if (pos2 != std::string::npos)
+    parts.share = key.substr(pos1 + 1, pos2 - pos1 - 1);
+  if (pos3 != std::string::npos)
+    parts.username = key.substr(pos2 + 1, pos3 - pos2 - 1);
+  if (pos3 != std::string::npos)
+    parts.workgroup = key.substr(pos3 + 1);
+  return parts;
+}
+
+// LRU list - front is most-recently-used, back is least-recently-used.
+// The map provides O(1) lookup from key to list iterator.
+std::list<std::string> g_lru;
+std::unordered_map<std::string, std::list<std::string>::iterator> g_map;
+std::mutex g_cacheMutex;
+
+// Original libsmbclient callback, saved during CSMB::Init().
+smbc_get_cached_srv_fn orig_cache_fn = nullptr;
+
+// -----------------------------------------------------------------
+// Replacement for smbc_get_cached_srv_fn.
+//   - cache hit  -> move key to front, re-fetch real server pointer.
+//   - cache miss -> create new entry, evict LRU if needed.
+// -----------------------------------------------------------------
+SMBCSRV* xb_smbc_cache(
+    SMBCCTX* c, const char* server, const char* share, const char* workgroup, const char* username)
+{
+  std::lock_guard<std::mutex> lock(g_cacheMutex);
+
+  if (!orig_cache_fn)
+  {
+    CLog::LogF(LOGERROR, "[SMB_SESSION_LIMIT] orig_cache_fn is null - cannot create session");
+    return nullptr;
+  }
+
+  const std::string srv(server ? server : "");
+  const std::string shr(share ? share : "");
+  const std::string wg(workgroup ? workgroup : "");
+  const std::string usr(username ? username : "");
+  const std::string key = MakeKey(srv, shr, usr, wg);
+
+  // ---------- cache hit ---------------------------------------------------
+  auto it = g_map.find(key);
+  if (it != g_map.end())
+  {
+    // Move to front (most recently used)
+    g_lru.splice(g_lru.begin(), g_lru, it->second);
+
+    // Always re-fetch the current server pointer from the library.
+    // This prevents use-after-free if the library recreated the
+    // server after a network loss.
+    SMBCSRV* realSrv = orig_cache_fn(c, server, share, workgroup, username);
+    if (!realSrv)
+    {
+      // The library no longer has this server - remove from cache.
+      CLog::LogF(LOGDEBUG, "[SMB_SESSION_LIMIT] Cached server no longer valid for '{}'", key);
+      g_lru.erase(it->second);
+      g_map.erase(it);
+      // Fall through to cache-miss path to create a fresh session.
+    }
+    else
+    {
+      CLog::LogF(LOGDEBUG, "[SMB_SESSION_LIMIT] Server cache HIT for '{}'", key);
+      return realSrv;
+    }
+  }
+
+  // ---------- cache miss - create new entry --------------------------------
+  SMBCSRV* srvPtr = orig_cache_fn(c, server, share, workgroup, username);
+  if (!srvPtr)
+  {
+    CLog::LogF(LOGERROR, "[SMB_SESSION_LIMIT] orig_cache_fn failed for '{}'", key);
+    return nullptr;
+  }
+
+  // ---------- evict oldest if limit reached --------------------------------
+  if (g_lru.size() >= MAX_CACHED_SERVERS)
+  {
+    const std::string& oldKey = g_lru.back();
+    CLog::LogF(LOGDEBUG, "[SMB_SESSION_LIMIT] Server cache EVICT '{}'", oldKey);
+
+    // Tell the library the server is no longer needed.  The return
+    // value is ignored - even if the server is still in use, we drop
+    // our reference and keep the cache size invariant.
+    smbc_remove_unused_server_fn removeFn = smbc_getFunctionRemoveUnusedServer(c);
+    if (removeFn)
+    {
+      KeyParts kp = SplitKey(oldKey);
+      SMBCSRV* oldSrv = orig_cache_fn(c, kp.server.c_str(), kp.share.c_str(), kp.workgroup.c_str(),
+                                      kp.username.c_str());
+      if (oldSrv)
+      {
+        int rc = removeFn(c, oldSrv);
+        if (rc != 0)
+          CLog::LogF(LOGWARNING, "[SMB_SESSION_LIMIT] remove_unused_server failed for '{}' (rc={})",
+                     oldKey, rc);
+      }
+    }
+    else
+    {
+      CLog::LogF(LOGWARNING, "[SMB_SESSION_LIMIT] remove_unused_server not available - "
+                             "evicting from tracking only");
+    }
+
+    // Drop from our bookkeeping structures
+    g_map.erase(oldKey);
+    g_lru.pop_back();
+  }
+
+  // ---------- insert new entry at front ------------------------------------
+  g_lru.push_front(key);
+  g_map[key] = g_lru.begin();
+
+  CLog::LogF(LOGDEBUG, "[SMB_SESSION_LIMIT] Server cache CREATED for '{}' (total cached: {})", key,
+             g_lru.size());
+  return srvPtr;
+}
+
+// -----------------------------------------------------------------
+// Called from CSMB::Deinit() - remove every entry we still track.
+// -----------------------------------------------------------------
+void ClearServerCache(SMBCCTX* c)
+{
+  std::lock_guard<std::mutex> lock(g_cacheMutex);
+
+  smbc_remove_unused_server_fn removeFn = smbc_getFunctionRemoveUnusedServer(c);
+  if (removeFn)
+  {
+    for (const std::string& key : g_lru)
+    {
+      KeyParts kp = SplitKey(key);
+      SMBCSRV* srv = orig_cache_fn(c, kp.server.c_str(), kp.share.c_str(), kp.workgroup.c_str(),
+                                   kp.username.c_str());
+      if (srv)
+      {
+        int rc = removeFn(c, srv);
+        if (rc != 0)
+          CLog::LogF(LOGWARNING,
+                     "[SMB_SESSION_LIMIT] ClearServerCache: "
+                     "remove_unused_server failed for '{}' (rc={})",
+                     key, rc);
+      }
+    }
+  }
+  else
+  {
+    CLog::LogF(LOGWARNING, "[SMB_SESSION_LIMIT] ClearServerCache: "
+                           "remove_unused_server not available");
+  }
+
+  g_lru.clear();
+  g_map.clear();
+}
+} // unnamed namespace
 
 void xb_smbc_log(void* private_ptr, int level, const char* msg)
 {
@@ -61,18 +272,9 @@ void xb_smbc_log(void* private_ptr, int level, const char* msg)
     CLog::Log(logLevel, "smb: {}", msg);
 }
 
-void xb_smbc_auth(const char *srv, const char *shr, char *wg, int wglen,
-                  char *un, int unlen, char *pw, int pwlen)
+void xb_smbc_auth(
+    const char* srv, const char* shr, char* wg, int wglen, char* un, int unlen, char* pw, int pwlen)
 {
-}
-
-// WTF is this ?, we get the original server cache only
-// to set the server cache to this function which call the
-// original one anyway. Seems quite silly.
-smbc_get_cached_srv_fn orig_cache;
-SMBCSRV* xb_smbc_cache(SMBCCTX* c, const char* server, const char* share, const char* workgroup, const char* username)
-{
-  return orig_cache(c, server, share, workgroup, username);
 }
 
 bool CSMB::IsFirstInit = true;
@@ -93,6 +295,10 @@ void CSMB::Deinit()
 {
   std::unique_lock lock(*this);
 
+  // [Fix] Clear the LRU cache before freeing the SMB context
+  if (m_context)
+    ClearServerCache(m_context);
+
   /* samba goes loco if deinited while it has some files opened */
   if (m_context)
   {
@@ -108,7 +314,8 @@ void CSMB::Init()
 
   if (!m_context)
   {
-    const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+    const std::shared_ptr<CSettings> settings =
+        CServiceBroker::GetSettingsComponent()->GetSettings();
 
     // force libsmbclient to use our own smb.conf by overriding HOME
     std::string truehome(getenv("HOME"));
@@ -173,7 +380,8 @@ void CSMB::Init()
         }
 
         // set legacy security options
-        if (settings->GetBool(CSettings::SETTING_SMB_LEGACYSECURITY) && (settings->GetInt(CSettings::SETTING_SMB_MAXPROTOCOL) == 1))
+        if (settings->GetBool(CSettings::SETTING_SMB_LEGACYSECURITY) &&
+            (settings->GetInt(CSettings::SETTING_SMB_MAXPROTOCOL) == 1))
         {
           fprintf(f, "\tclient NTLMv2 auth = no\n");
           fprintf(f, "\tclient use spnego = no\n");
@@ -185,7 +393,8 @@ void CSMB::Init()
             !StringUtils::EqualsNoCase(settings->GetString(CSettings::SETTING_SMB_WINSSERVER),
                                        "0.0.0.0"))
         {
-          fprintf(f, "\twins server = %s\n", settings->GetString(CSettings::SETTING_SMB_WINSSERVER).c_str());
+          fprintf(f, "\twins server = %s\n",
+                  settings->GetString(CSettings::SETTING_SMB_WINSSERVER).c_str());
           fprintf(f, "\tname resolve order = bcast wins host\n");
         }
         else
@@ -196,7 +405,10 @@ void CSMB::Init()
         if (!CServiceBroker::GetSettingsComponent()
                  ->GetAdvancedSettings()
                  ->m_sambadoscodepage.empty())
-          fprintf(f, "\tdos charset = %s\n", CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_sambadoscodepage.c_str());
+          fprintf(f, "\tdos charset = %s\n",
+                  CServiceBroker::GetSettingsComponent()
+                      ->GetAdvancedSettings()
+                      ->m_sambadoscodepage.c_str());
 
         // include users configuration if available
         fprintf(f, "\tinclude = %s/.smb/user.conf\n", home.c_str());
@@ -225,26 +437,31 @@ void CSMB::Init()
     smbc_setDebug(m_context, CServiceBroker::GetLogging().CanLogComponent(LOGSAMBA) ? 10 : 0);
     smbc_setLogCallback(m_context, this, xb_smbc_log);
     smbc_setFunctionAuthData(m_context, xb_smbc_auth);
-    orig_cache = smbc_getFunctionGetCachedServer(m_context);
-    smbc_setFunctionGetCachedServer(m_context, xb_smbc_cache);
+    orig_cache_fn = smbc_getFunctionGetCachedServer(m_context);
+    smbc_setFunctionGetCachedServer(m_context, xb_smbc_cache); // [Fix] Install LRU cache
     smbc_setOptionOneSharePerServer(m_context, false);
     smbc_setOptionBrowseMaxLmbCount(m_context, 0);
-    smbc_setTimeout(m_context, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_sambaclienttimeout * 1000);
+    smbc_setTimeout(
+        m_context,
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_sambaclienttimeout * 1000);
     // we do not need to strdup these, smbc_setXXX below will make their own copies
     if (!settings->GetString(CSettings::SETTING_SMB_WORKGROUP).empty())
       //! @bug libsmbclient < 4.9 isn't const correct
-      smbc_setWorkgroup(m_context, const_cast<char*>(settings->GetString(CSettings::SETTING_SMB_WORKGROUP).c_str()));
+      smbc_setWorkgroup(
+          m_context,
+          const_cast<char*>(settings->GetString(CSettings::SETTING_SMB_WORKGROUP).c_str()));
     std::string guest = "guest";
     //! @bug libsmbclient < 4.8 isn't const correct
     smbc_setUser(m_context, const_cast<char*>(guest.c_str()));
 #else
     m_context->debug = (CServiceBroker::GetLogging().CanLogComponent(LOGSAMBA) ? 10 : 0);
     m_context->callbacks.auth_fn = xb_smbc_auth;
-    orig_cache = m_context->callbacks.get_cached_srv_fn;
-    m_context->callbacks.get_cached_srv_fn = xb_smbc_cache;
+    orig_cache_fn = m_context->callbacks.get_cached_srv_fn;
+    m_context->callbacks.get_cached_srv_fn = xb_smbc_cache; // [Fix] Install LRU cache
     m_context->options.one_share_per_server = false;
     m_context->options.browse_max_lmb_count = 0;
-    m_context->timeout = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_sambaclienttimeout * 1000;
+    m_context->timeout =
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_sambaclienttimeout * 1000;
     // we need to strdup these, they will get free'd on smbc_free_context
     if (settings->GetString(CSettings::SETTING_SMB_WORKGROUP).length() > 0)
       m_context->workgroup = strdup(settings->GetString(CSettings::SETTING_SMB_WORKGROUP).c_str());
@@ -255,7 +472,7 @@ void CSMB::Init()
     if (smbc_init_context(m_context))
     {
       // setup context using the smb old interface compatibility
-      SMBCCTX *old_context = smbc_set_context(m_context);
+      SMBCCTX* old_context = smbc_set_context(m_context);
       // free previous context or we leak it, this comes from smbc_init above.
       // there is a bug in smbclient (old interface), if we init/set a context
       // then set(null)/free it in DeInit above, the next smbc_set_context
@@ -277,7 +494,7 @@ void CSMB::Init()
   m_IdleTimeout = 180;
 }
 
-std::string CSMB::URLEncode(const CURL &url)
+std::string CSMB::URLEncode(const CURL& url)
 {
   /* due to smb wanting encoded urls we have to build it manually */
 
@@ -287,7 +504,7 @@ std::string CSMB::URLEncode(const CURL &url)
   /* probably the url parser that goes crazy */
   if (!url.GetUserName().empty() /* || url.GetPassWord().length() > 0 */)
   {
-    if(!url.GetDomain().empty())
+    if (!url.GetDomain().empty())
     {
       flat += URLEncode(url.GetDomain());
       flat += ";";
@@ -321,7 +538,7 @@ std::string CSMB::URLEncode(const CURL &url)
   return flat;
 }
 
-std::string CSMB::URLEncode(const std::string &value)
+std::string CSMB::URLEncode(const std::string& value)
 {
   return CURL::Encode(value);
 }
@@ -329,7 +546,7 @@ std::string CSMB::URLEncode(const std::string &value)
 /* This is called from CApplication::ProcessSlow() and is used to tell if smbclient have been idle for too long */
 void CSMB::CheckIfIdle()
 {
-/* We check if there are open connections. This is done without a lock to not halt the mainthread. It should be thread safe as
+  /* We check if there are open connections. This is done without a lock to not halt the mainthread. It should be thread safe as
    worst case scenario is that m_OpenConnections could read 0 and then changed to 1 if this happens it will enter the if which will lead to another check, which is locked.  */
   if (m_OpenConnections == 0)
   { /* I've set the the maximum IDLE time to be 1 min and 30 sec. */
@@ -337,13 +554,13 @@ void CSMB::CheckIfIdle()
     if (m_OpenConnections == 0 /* check again - when locked */ && m_context != NULL)
     {
       if (m_IdleTimeout > 0)
-	  {
+      {
         m_IdleTimeout--;
       }
-	  else
-	  {
-            CLog::Log(LOGINFO, "Samba is idle. Closing the remaining connections");
-            smb.Deinit();
+      else
+      {
+        CLog::Log(LOGINFO, "Samba is idle. Closing the remaining connections");
+        Deinit();
       }
     }
   }
@@ -459,7 +676,7 @@ bool CSMBFile::Open(const CURL& url)
   m_fileSize = tmpBuffer.st_size;
 
   int64_t ret = smbc_lseek(m_fd, 0, SEEK_SET);
-  if ( ret < 0 )
+  if (ret < 0)
   {
     smbc_close(m_fd);
     m_fd = -1;
@@ -468,7 +685,6 @@ bool CSMBFile::Open(const CURL& url)
   // We've successfully opened the file!
   return true;
 }
-
 
 /// \brief Checks authentication against SAMBA share. Reads password cache created in CSMBDirectory::OpenDir().
 /// \param strAuth The SMB style path
@@ -495,7 +711,7 @@ int CSMBFile::OpenFile(std::string& strAuth)
 }
 */
 
-int CSMBFile::OpenFile(const CURL &url, std::string& strAuth)
+int CSMBFile::OpenFile(const CURL& url, std::string& strAuth)
 {
   int fd = -1;
   smb.Init();
@@ -505,8 +721,9 @@ int CSMBFile::OpenFile(const CURL &url, std::string& strAuth)
 
   {
     std::unique_lock lock(smb);
-    if (smb.IsSmbValid())
-      fd = smbc_open(strPath.c_str(), O_RDONLY, 0);
+    if (!smb.IsSmbValid())
+      return -1;
+    fd = smbc_open(strPath.c_str(), O_RDONLY, 0);
   }
 
   if (fd >= 0)
@@ -519,7 +736,8 @@ bool CSMBFile::Exists(const CURL& url)
 {
   // we can't open files like smb://file.f or smb://server/file.f
   // if a file matches the if below return false, it can't exist on a samba share.
-  if (!IsValidFile(url.GetFileName())) return false;
+  if (!IsValidFile(url.GetFileName()))
+    return false;
 
   smb.Init();
   std::string strFileName = GetAuthenticatedPath(CSMB::GetResolvedUrl(url));
@@ -531,7 +749,8 @@ bool CSMBFile::Exists(const CURL& url)
     return false;
   int iResult = smbc_stat(strFileName.c_str(), &info);
 
-  if (iResult < 0) return false;
+  if (iResult < 0)
+    return false;
   return true;
 }
 
@@ -566,7 +785,8 @@ int CSMBFile::Stat(const CURL& url, struct __stat64* buffer)
 
 int CSMBFile::Truncate(int64_t size)
 {
-  if (m_fd == -1) return 0;
+  if (m_fd == -1)
+    return 0;
   /*
  * This would force us to be dependant on SMBv3.2 which is GPLv3
  * This is only used by the TagLib writers, which are not currently in use
@@ -583,7 +803,7 @@ int CSMBFile::Truncate(int64_t size)
   return 0;
 }
 
-ssize_t CSMBFile::Read(void *lpBuf, size_t uiBufSize)
+ssize_t CSMBFile::Read(void* lpBuf, size_t uiBufSize)
 {
   if (uiBufSize > SSIZE_MAX)
     uiBufSize = SSIZE_MAX;
@@ -606,14 +826,14 @@ ssize_t CSMBFile::Read(void *lpBuf, size_t uiBufSize)
 
   ssize_t bytesRead = smbc_read(m_fd, lpBuf, (int)uiBufSize);
 
-  if (m_allowRetry && bytesRead < 0 && errno == EINVAL )
+  if (m_allowRetry && bytesRead < 0 && errno == EINVAL)
   {
     CLog::Log(LOGERROR, "{} - Error( {}, {}, {} ) - Retrying", __FUNCTION__, bytesRead, errno,
               strerror(errno));
     bytesRead = smbc_read(m_fd, lpBuf, (int)uiBufSize);
   }
 
-  if ( bytesRead < 0 )
+  if (bytesRead < 0)
     CLog::Log(LOGERROR, "{} - Error( {}, {}, {} )", __FUNCTION__, bytesRead, errno,
               strerror(errno));
 
@@ -622,7 +842,8 @@ ssize_t CSMBFile::Read(void *lpBuf, size_t uiBufSize)
 
 int64_t CSMBFile::Seek(int64_t iFilePosition, int iWhence)
 {
-  if (m_fd == -1) return -1;
+  if (m_fd == -1)
+    return -1;
 
   std::unique_lock lock(smb); // Init not called since it has to be "inited" by now
   if (!smb.IsSmbValid())
@@ -630,7 +851,7 @@ int64_t CSMBFile::Seek(int64_t iFilePosition, int iWhence)
   smb.SetActivityTime();
   int64_t pos = smbc_lseek(m_fd, iFilePosition, iWhence);
 
-  if ( pos < 0 )
+  if (pos < 0)
   {
     CLog::Log(LOGERROR, "{} - Error( {}, {}, {} )", __FUNCTION__, pos, errno, strerror(errno));
     return -1;
@@ -654,14 +875,15 @@ void CSMBFile::Close()
 
 ssize_t CSMBFile::Write(const void* lpBuf, size_t uiBufSize)
 {
-  if (m_fd == -1) return -1;
+  if (m_fd == -1)
+    return -1;
 
   // lpBuf can be safely casted to void* since xbmc_write will only read from it.
   std::unique_lock lock(smb);
   if (!smb.IsSmbValid())
     return -1;
 
-  return  smbc_write(m_fd, lpBuf, uiBufSize);
+  return smbc_write(m_fd, lpBuf, uiBufSize);
 }
 
 bool CSMBFile::Delete(const CURL& url)
@@ -675,7 +897,7 @@ bool CSMBFile::Delete(const CURL& url)
 
   int result = smbc_unlink(strFile.c_str());
 
-  if(result != 0)
+  if (result != 0)
     CLog::Log(LOGERROR, "{} - Error( {} )", __FUNCTION__, strerror(errno));
 
   return (result == 0);
@@ -692,7 +914,7 @@ bool CSMBFile::Rename(const CURL& url, const CURL& urlnew)
 
   int result = smbc_rename(strFile.c_str(), strFileNew.c_str());
 
-  if(result != 0)
+  if (result != 0)
     CLog::Log(LOGERROR, "{} - Error( {} )", __FUNCTION__, strerror(errno));
 
   return (result == 0);
@@ -706,7 +928,8 @@ bool CSMBFile::OpenForWrite(const CURL& url, bool bOverWrite)
 
   // we can't open files like smb://file.f or smb://server/file.f
   // if a file matches the if below return false, it can't exist on a samba share.
-  if (!IsValidFile(url.GetFileName())) return false;
+  if (!IsValidFile(url.GetFileName()))
+    return false;
 
   std::string strFileName = GetAuthenticatedPath(CSMB::GetResolvedUrl(url));
   std::unique_lock lock(smb);
@@ -740,12 +963,12 @@ bool CSMBFile::IsValidFile(const std::string& strFileName)
 {
   if (strFileName.find('/') == std::string::npos || /* doesn't have sharename */
       StringUtils::EndsWith(strFileName, "/.") || /* not current folder */
-      StringUtils::EndsWith(strFileName, "/.."))  /* not parent folder */
-      return false;
+      StringUtils::EndsWith(strFileName, "/..")) /* not parent folder */
+    return false;
   return true;
 }
 
-std::string CSMBFile::GetAuthenticatedPath(const CURL &url)
+std::string CSMBFile::GetAuthenticatedPath(const CURL& url)
 {
   CURL authURL(CSMB::GetResolvedUrl(url));
   CPasswordManager::GetInstance().AuthenticateURL(authURL);
@@ -759,7 +982,7 @@ int CSMBFile::IoControl(IOControl request, void* param)
 
   if (request == IOControl::SET_RETRY)
   {
-    m_allowRetry = *(bool*) param;
+    m_allowRetry = *(bool*)param;
     return 0;
   }
 
