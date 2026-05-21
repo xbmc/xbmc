@@ -789,9 +789,10 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
 
   if (!regexps.empty())
   {
+    KODI::REGEXP::RegExpCache cache;
     for (int i=0; i < items.Size();)
     {
-      if (CUtil::ExcludeFileOrFolder(items[i]->GetPath(), regexps, nullptr))
+      if (CUtil::ExcludeFileOrFolder(items[i]->GetPath(), regexps, &cache))
         items.Remove(i);
       else
         i++;
