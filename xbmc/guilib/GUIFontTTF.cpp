@@ -16,17 +16,22 @@
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "addons/LanguageResource.h"
+#include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
-#include "guilib/LocalizeStrings.h"
+#include "jobs/JobManager.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "rendering/RenderSystem.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SystemClock.h"
 #include "utils/MathUtils.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
@@ -75,8 +80,8 @@ constexpr int TAB_SPACE_LENGTH = 4;
 constexpr std::chrono::hours JOB_RETRY_TIMEOUT{24};
 constexpr std::chrono::hours JOB_CANCEL_TIMEOUT{std::numeric_limits<std::chrono::hours>::max()};
 
-static const character_t DUMMY_POINT('.', FONT_STYLE_NORMAL, UTILS::COLOR::INDEX_DEFAULT);
-static const character_t DUMMY_SPACE('X', FONT_STYLE_NORMAL, UTILS::COLOR::INDEX_DEFAULT);
+static const character_t DUMMY_POINT('.', FONT_STYLE_NORMAL, KODI::UTILS::COLOR::INDEX_DEFAULT);
+static const character_t DUMMY_SPACE('X', FONT_STYLE_NORMAL, KODI::UTILS::COLOR::INDEX_DEFAULT);
 
 static constexpr std::array<std::pair<CFontTable::ADDON, const char*>, 20> fontAddons = {
     {{CFontTable::ADDON::RESOURCE_LANGUAGE_AM_ET, "resource.language.am_et"},
@@ -460,8 +465,9 @@ public:
       return false;
     }
 
-    const std::string heading = g_localizeStrings.Get(2105);
-    const std::string message = StringUtils::Format(g_localizeStrings.Get(2106), m_addonId,
+    const auto& localizeStrings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
+    const std::string heading = localizeStrings.Get(2105);
+    const std::string message = StringUtils::Format(localizeStrings.Get(2106), m_addonId,
                                                     addon->Name(), m_fontTable.m_name);
     if (method == InstallMethod::NO_ASK ||
         HELPERS::ShowYesNoDialogText(heading, message) == DialogResponse::CHOICE_YES)
@@ -479,7 +485,7 @@ public:
 
         CLog::Log(LOGERROR, "InstallLanguageJob::{}: Failed to install {}", __func__, m_addonId);
         const std::string message =
-            StringUtils::Format(g_localizeStrings.Get(2107), m_addonId, m_fontTable.m_name);
+            StringUtils::Format(localizeStrings.Get(2107), m_addonId, m_fontTable.m_name);
         HELPERS::ShowOKDialogText(257 /*"Error"*/, message);
       }
 
@@ -933,13 +939,6 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
 
   if (dirtyCache)
   {
-    // Try to validate any conflicting alignments
-    //! @todo: This validate is the last resort and can result in a bad rendered text
-    //! because the alignment it is used also by caller components for other operations
-    //! this inform the problem on the log, potentially can be improved
-    //! by add validating alignments from each parent caller component
-    ValidateAlignments(alignment);
-
     const std::vector<Glyph> glyphs = GetHarfBuzzShapedGlyphs(text);
     // save the origin, which is scaled separately
 #if not defined(HAS_DX)
@@ -984,10 +983,8 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
 
     if (!useRTOLChar && alignment & (XBFONT_RIGHT | XBFONT_CENTER_X))
     {
-      // To truncate to the left, we skip all characters that exceed the maximum width,
-      // so the rendering starts from the first character that falls within the maximum width,
-      // taking into account also the ellipses
-      textWidth = ellipsesWidth;
+      // Get the extent of this line
+      float w = GetTextWidthInternal(text, glyphs);
 
       if (alignment & XBFONT_TRUNCATED && w > maxPixelWidth + 0.5f) // + 0.5f due to rounding issues
         w = maxPixelWidth;
@@ -1060,7 +1057,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
       {
         // If starting text on a new line, determine justification effects
         // Get the current letter in the CStdString
-        UTILS::COLOR::Color color = text[glyph.m_glyphInfo.cluster].color;
+        KODI::UTILS::COLOR::Color color = text[glyph.m_glyphInfo.cluster].color;
         if (color >= colors.size())
           color = 0;
         color = colors[color];
@@ -1157,7 +1154,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
 
         // If starting text on a new line, determine justification effects
         // Get the current letter in the CStdString
-        UTILS::COLOR::Color color = text[glyph->m_glyphInfo.cluster].color;
+        KODI::UTILS::COLOR::Color color = text[glyph->m_glyphInfo.cluster].color;
         if (color >= colors.size())
           color = 0;
         color = colors[color];
@@ -1592,7 +1589,7 @@ CFontData* CGUIFontTTF::FindFallback(char32_t letter, const CFontTable*& fontTab
 
     using namespace ADDON;
 
-    std::shared_ptr<CAddonInfo> addonInfo = CServiceBroker::GetAddonMgr().GetAddonInfo(it4->second);
+    std::shared_ptr<CAddonInfo> addonInfo = CServiceBroker::GetAddonMgr().GetAddonInfo(it4->second, ADDON::AddonType::RESOURCE_FONT);
     if (addonInfo)
     {
       strPath = CSpecialProtocol::TranslatePath(

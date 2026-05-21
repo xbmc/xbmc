@@ -91,7 +91,7 @@ void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
 
     for (unsigned int i = 0; i < utf16.size(); i++)
     {
-      UTILS::COLOR::ColorIndex color = 0;
+      KODI::UTILS::COLOR::ColorIndex color = 0;
       if ((m_startSelection < m_endSelection) && (m_startSelection <= i && i < m_endSelection))
         color = 2;
       else if ((m_startHighlight < m_endHighlight) && (i < m_startHighlight || i >= m_endHighlight))
@@ -100,7 +100,7 @@ void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
     }
     if (m_bShowCursor && m_iCursorPos >= 0 && (unsigned int)m_iCursorPos <= utf16.size())
     {
-      UTILS::COLOR::ColorIndex color = 0;
+      KODI::UTILS::COLOR::ColorIndex color = 0;
       if ((++m_dwCounter % 50) <= 25)
         color = 3;
       text.insert(text.begin() + m_iCursorPos,

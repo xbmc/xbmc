@@ -181,11 +181,11 @@ private:
   };
   static void AppendToUTF32(const std::string& utf8,
                             int style,
-                            UTILS::COLOR::Color color,
+                            KODI::UTILS::COLOR::Color color,
                             vecText& utf32);
   static void AppendToUTF32(const std::wstring& utf16,
                             int style,
-                            UTILS::COLOR::Color color,
+                            KODI::UTILS::COLOR::Color color,
                             vecText& utf32);
   static void ParseText(const std::wstring& text,
                         uint32_t defaultStyle,

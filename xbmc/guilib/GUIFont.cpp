@@ -33,7 +33,7 @@ CScrollInfo::CScrollInfo(unsigned int wait /* = 50 */,
   m_suffix.clear();
   m_suffix.reserve(wsuffix.size());
   for (vecText::size_type i = 0; i < wsuffix.size(); i++)
-    m_suffix.emplace_back(wsuffix[i], FONT_STYLE_NORMAL, UTILS::COLOR::INDEX_DEFAULT);
+    m_suffix.emplace_back(wsuffix[i], FONT_STYLE_NORMAL, KODI::UTILS::COLOR::INDEX_DEFAULT);
   Reset();
 }
 
@@ -291,7 +291,7 @@ float CGUIFont::GetCharWidth(const character_t& ch)
 
 float CGUIFont::GetCharWidth(char32_t ch)
 {
-  return GetCharWidth(character_t(ch, FONT_STYLE_NORMAL, UTILS::COLOR::INDEX_DEFAULT));
+  return GetCharWidth(character_t(ch, FONT_STYLE_NORMAL, KODI::UTILS::COLOR::INDEX_DEFAULT));
 }
 
 float CGUIFont::GetTextHeight(int numLines) const

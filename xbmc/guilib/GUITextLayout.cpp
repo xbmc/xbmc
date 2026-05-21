@@ -280,7 +280,7 @@ void CGUITextLayout::BidiTransform(std::vector<CGUIString>& lines, bool forceLTR
     CGUIString& line = lines[i];
     unsigned int lineLength = line.m_text.size();
     std::wstring logicalText;
-    std::vector<std::pair<int, UTILS::COLOR::Color>> style;
+    std::vector<std::pair<int, KODI::UTILS::COLOR::Color>> style;
 
     logicalText.reserve(lineLength);
     style.reserve(lineLength);
@@ -305,7 +305,7 @@ void CGUITextLayout::BidiTransform(std::vector<CGUIString>& lines, bool forceLTR
       for (unsigned int j = 0; j < visualText.size(); j++)
       {
         styledVisualText.emplace_back(visualText[j], FONT_STYLE_NORMAL,
-                                      UTILS::COLOR::INDEX_DEFAULT);
+                                      KODI::UTILS::COLOR::INDEX_DEFAULT);
       }
     }
     else
@@ -348,7 +348,7 @@ void CGUITextLayout::Filter(std::string &text)
   g_charsetConverter.utf8ToW(text, utf16, false);
   std::vector<KODI::UTILS::COLOR::Color> colors;
   vecText parsedText;
-  ParseText(utf16, FONT_STYLE_NORMAL, UTILS::COLOR::WHITE, colors, parsedText);
+  ParseText(utf16, FONT_STYLE_NORMAL, KODI::UTILS::COLOR::WHITE, colors, parsedText);
   utf16.clear();
   for (unsigned int i = 0; i < parsedText.size(); i++)
     utf16 += static_cast<wchar_t>(parsedText[i].letter);
@@ -528,9 +528,9 @@ void CGUITextLayout::ParseText(const std::wstring& text,
         StringUtils::ToCapitalize(subText);
       AppendToUTF32(subText, currentStyle & FONT_STYLE_MASK, currentColor, parsedText);
       if (newLine)
-        parsedText.emplace_back('\n', FONT_STYLE_NORMAL, UTILS::COLOR::INDEX_DEFAULT);
+        parsedText.emplace_back('\n', FONT_STYLE_NORMAL, KODI::UTILS::COLOR::INDEX_DEFAULT);
       for (int i = 0; i < tabs; ++i)
-        parsedText.emplace_back('\t', FONT_STYLE_NORMAL, UTILS::COLOR::INDEX_DEFAULT);
+        parsedText.emplace_back('\t', FONT_STYLE_NORMAL, KODI::UTILS::COLOR::INDEX_DEFAULT);
 
       // switch to the new style, deriving it from the current depths
       startPos = pos;
@@ -787,7 +787,7 @@ float CGUITextLayout::GetTextWidth(const std::wstring &text) const
   // NOTE: Assumes a single line of text
   if (!m_font) return 0;
   vecText utf32;
-  AppendToUTF32(text, m_font->GetStyle() & FONT_STYLE_MASK, UTILS::COLOR::INDEX_DEFAULT, utf32);
+  AppendToUTF32(text, m_font->GetStyle() & FONT_STYLE_MASK, KODI::UTILS::COLOR::INDEX_DEFAULT, utf32);
   return m_font->GetTextWidth(utf32);
 }
 
@@ -812,13 +812,13 @@ void CGUITextLayout::DrawText(CGUIFont* font,
 {
   if (!font) return;
   vecText utf32;
-  AppendToUTF32(text, FONT_STYLE_NORMAL, UTILS::COLOR::INDEX_DEFAULT, utf32);
+  AppendToUTF32(text, FONT_STYLE_NORMAL, KODI::UTILS::COLOR::INDEX_DEFAULT, utf32);
   font->DrawText(x, y, color, shadowColor, utf32, align, 0);
 }
 
 void CGUITextLayout::AppendToUTF32(const std::wstring& utf16,
                                    int style,
-                                   UTILS::COLOR::Color color,
+                                   KODI::UTILS::COLOR::Color color,
                                    vecText& utf32)
 {
   // NOTE: Assumes a single line of text
@@ -829,7 +829,7 @@ void CGUITextLayout::AppendToUTF32(const std::wstring& utf16,
 
 void CGUITextLayout::AppendToUTF32(const std::string& utf8,
                                    int style,
-                                   UTILS::COLOR::Color color,
+                                   KODI::UTILS::COLOR::Color color,
                                    vecText& utf32)
 {
   std::wstring utf16;

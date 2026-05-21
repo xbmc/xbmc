@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "addons/IAddon.h"
 #include "jobs/IJobCallback.h"
 #include "threads/Event.h"
 

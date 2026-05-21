@@ -190,11 +190,11 @@ void CRssReader::getFeed(vecText &text)
   text.clear();
   // double the spaces at the start of the set
   for (int j = 0; j < m_spacesBetweenFeeds; j++)
-    text.emplace_back(' ', FONT_STYLE_NORMAL, UTILS::COLOR::INDEX_DEFAULT);
+    text.emplace_back(' ', FONT_STYLE_NORMAL, KODI::UTILS::COLOR::INDEX_DEFAULT);
   for (unsigned int i = 0; i < m_strFeed.size(); i++)
   {
     for (int j = 0; j < m_spacesBetweenFeeds; j++)
-      text.emplace_back(' ', FONT_STYLE_NORMAL, UTILS::COLOR::INDEX_DEFAULT);
+      text.emplace_back(' ', FONT_STYLE_NORMAL, KODI::UTILS::COLOR::INDEX_DEFAULT);
 
     for (unsigned int j = 0; j < m_strFeed[i].size(); j++)
       text.emplace_back(m_strFeed[i][j], FONT_STYLE_NORMAL, m_strColors[i][j] - 48);

@@ -14,6 +14,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <cstdint>
 #include <vector>
 
 class CDateTime;

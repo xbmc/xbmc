@@ -15,19 +15,19 @@
 
 struct character_t
 {
-  character_t(char l, int s, UTILS::COLOR::Color c)
+  character_t(char l, int s, KODI::UTILS::COLOR::Color c)
     : letter(static_cast<char32_t>(l)), style(s), color(c)
   {
   }
-  character_t(char16_t l, int s, UTILS::COLOR::Color c)
+  character_t(char16_t l, int s, KODI::UTILS::COLOR::Color c)
     : letter(static_cast<char32_t>(l)), style(s), color(c)
   {
   }
-  character_t(wchar_t l, int s, UTILS::COLOR::Color c)
+  character_t(wchar_t l, int s, KODI::UTILS::COLOR::Color c)
     : letter(static_cast<char32_t>(l)), style(s), color(c)
   {
   }
-  character_t(char32_t l, int s, UTILS::COLOR::Color c) : letter(l), style(s), color(c) {}
+  character_t(char32_t l, int s, KODI::UTILS::COLOR::Color c) : letter(l), style(s), color(c) {}
 
   bool operator==(const character_t& right) const
   {
@@ -45,7 +45,7 @@ struct character_t
 
   char32_t letter;
   uint32_t style;
-  UTILS::COLOR::ColorIndex color;
+  KODI::UTILS::COLOR::ColorIndex color;
 };
 
 using vecText = std::vector<character_t>;

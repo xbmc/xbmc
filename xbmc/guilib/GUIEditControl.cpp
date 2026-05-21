@@ -578,7 +578,7 @@ bool CGUIEditControl::SetStyledText(const std::wstring &text)
 
   for (unsigned int i = 0; i < text.size(); i++)
   {
-    UTILS::COLOR::ColorIndex color = 0;
+    KODI::UTILS::COLOR::ColorIndex color = 0;
     if (m_editLength > 0 && startSelection <= i && i < endSelection)
       color = 2; // highlight the letters we're playing with
     else if (!m_edit.empty() && (i < startHighlight || i >= endHighlight))
@@ -587,7 +587,7 @@ bool CGUIEditControl::SetStyledText(const std::wstring &text)
   }
 
   // show the cursor
-  UTILS::COLOR::ColorIndex color = 0;
+  KODI::UTILS::COLOR::ColorIndex color = 0;
   if ((++m_cursorBlink % 64) > 32)
     color = 3;
   styled.insert(styled.begin() + m_cursorPos, character_t('|', style, color));

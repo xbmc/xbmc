@@ -29,7 +29,6 @@ constexpr Color LIMITED_BLACK = 0xFF101010;
 // W3C HTML color list
 
 constexpr Color WHITE = 0xFFFFFFFF;
-constexpr Color WHITE = 0xFFFFFFFF;
 constexpr Color SILVER = 0xFFC0C0C0;
 constexpr Color GRAY = 0xFF808080;
 constexpr Color BLACK = 0xFF000000;

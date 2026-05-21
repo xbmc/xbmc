@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "addons/IAddon.h"
 #include "threads/CriticalSection.h"
 
 #include <memory>
