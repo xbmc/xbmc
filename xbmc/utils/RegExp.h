@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -10,7 +10,10 @@
 
 //! @todo - move to std::regex (after switching to gcc 4.9 or higher) and get rid of CRegExp
 
+#include <memory>
 #include <string>
+#include <string_view>
+#include <unordered_map>
 #include <vector>
 
 #define PCRE2_CODE_UNIT_WIDTH 8
@@ -151,3 +154,53 @@ private:
 };
 
 std::vector<CRegExp> CompileRegexes(const std::vector<std::string>& regExpPatterns);
+
+namespace KODI::REGEXP
+{
+struct StringHash
+{
+  using is_transparent = void; // Enables heterogeneous operations.
+  std::size_t operator()(std::string_view sv) const
+  {
+    std::hash<std::string_view> hasher;
+    return hasher(sv);
+  }
+};
+
+// RegExpCache doesn't support concurrent access or execution of the cached regexp.
+// Synchronization must be provided by the caller for such scenarios.
+using RegExpCache =
+    std::unordered_map<std::string, std::shared_ptr<CRegExp>, StringHash, std::equal_to<>>;
+
+/*!
+ * \brief Provide the caller with a compiled CRegExp for the provided pattern. The CRegExp will be
+ *        retrieved from the optional cache first or created when it doesn't exist in the cache.
+ *        note: the cache key is the pattern. The same CRegExp will be returned for the same pattern
+ *        and different constructor arguments.
+ * \tparam ...Args 
+ * \param[in] pattern Regular expression pattern
+ * \param[in] cache Optional cache of regexp
+ * \param[in] ...ctorArgs Arguments to forward to the constructor of CRegExp
+ * \return A compiled regexp of the provided pattern.
+ */
+template<typename... Args>
+std::shared_ptr<CRegExp> GetRegExp(const std::string& pattern,
+                                   RegExpCache* cache,
+                                   Args&&... ctorArgs)
+{
+  if (cache)
+  {
+    if (auto iter = cache->find(pattern); iter != cache->end())
+      return iter->second;
+  }
+  auto regexp = std::make_shared<CRegExp>(std::forward<Args>(ctorArgs)...);
+  if (!regexp->RegComp(pattern))
+    regexp.reset();
+
+  // Unconditionnally add to the cache to avoid recompiling failing patterns.
+  if (cache)
+    cache->emplace(pattern, regexp);
+
+  return regexp;
+}
+} // namespace KODI::REGEXP
