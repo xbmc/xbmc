@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "utils/RegExp.h"
 #include "video/Episode.h"
 
 class CFileItem;
@@ -15,5 +16,7 @@ class CFileItem;
 class CEpisodeUtils
 {
 public:
-  static bool EnumerateEpisodeItem(const CFileItem* item, KODI::VIDEO::EPISODELIST& episodeList);
+  static bool EnumerateEpisodeItem(const CFileItem* item,
+                                   KODI::VIDEO::EPISODELIST& episodeList,
+                                   KODI::REGEXP::RegExpCache* cache = nullptr);
 };

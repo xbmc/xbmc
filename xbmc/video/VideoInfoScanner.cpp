@@ -1398,8 +1398,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (ProcessItemByVideoInfoTag(items[i].get(), episodeList))
         continue;
 
-      if (!CEpisodeUtils::EnumerateEpisodeItem(items[i].get(), episodeList))
-        CLog::Log(LOGDEBUG, "VideoInfoScanner: Could not enumerate file {}", CURL::GetRedacted(items[i]->GetPath()));
+      if (!CEpisodeUtils::EnumerateEpisodeItem(items[i].get(), episodeList, &m_regexpCache))
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Could not enumerate file {}",
+                  CURL::GetRedacted(items[i]->GetPath()));
     }
     return true;
   }
