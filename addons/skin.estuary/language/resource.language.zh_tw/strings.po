@@ -481,6 +481,10 @@ msgctxt "#31123"
 msgid "Same director"
 msgstr "同一位導演的作品"
 
+msgctxt "#31124"
+msgid "Media Details"
+msgstr ""
+
 msgctxt "#31125"
 msgid "Press up for actor info"
 msgstr "按上鍵查看演員資料"

@@ -484,6 +484,10 @@ msgctxt "#31123"
 msgid "Same director"
 msgstr ""
 
+msgctxt "#31124"
+msgid "Media Details"
+msgstr ""
+
 # empty string with id 31124
 msgctxt "#31125"
 msgid "Press up for actor info"
