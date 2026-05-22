@@ -311,9 +311,9 @@ elseif(ENABLE_MYSQLCLIENT AND NOT ENABLE_MYSQLCLIENT STREQUAL AUTO)
   set(ENABLE_MARIADBCLIENT OFF CACHE BOOL "")
 endif()
 
-core_optional_dep(MariaDBClient)
+core_optional_dep(MariaDBClient>=10.2.5)
 if(NOT TARGET ${APP_NAME_LC}::MariaDBClient)
-  core_optional_dep(MySqlClient)
+  core_optional_dep(MySqlClient>=5.7.9)
 endif()
 
 if(NOT TARGET ${APP_NAME_LC}::UDEV)
