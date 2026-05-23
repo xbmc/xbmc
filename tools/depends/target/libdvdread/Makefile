@@ -1,56 +1,67 @@
--include ../../Makefile.include
-include LIBDVDREAD-VERSION
-DEPS = LIBDVDREAD-VERSION Makefile ../../download-files.include \
-       001-emscripten-bswap.patch
+include ../../Makefile.include LIBDVDREAD-VERSION ../../download-files.include
+DEPS = ../../Makefile.include LIBDVDREAD-VERSION Makefile ../../download-files.include \
+                                  01-all-disableopendir.patch \
+                                  02-all-disablesymlink.patch \
+                                  03-win-add_defines.patch \
+                                  04-win-uwp_compat.patch \
+                                  05-win-remove_stat.patch \
+                                  06-win-remove_config_h.patch \
+                                  07-emscripten-bswap.patch \
+                                  08-win-ssize_t.patch
+
+MESON_BUILD_TYPE=release
+
+ifeq ($(DEBUG_BUILD), yes)
+  MESON_BUILD_TYPE=debug
+endif
 
 # configuration settings
-config = --prefix=$(PREFIX) --disable-shared --enable-static --with-pic --with-libdvdcss
-EXTRA_CFLAGS = -D_XBMC -DHAVE_DVDCSS_DVDCSS_H
+CONFIGURE = $(NATIVEPREFIX)/bin/python3 $(NATIVEPREFIX)/bin/meson setup \
+  --prefix=$(PREFIX) \
+  --libdir=lib \
+  --buildtype=$(MESON_BUILD_TYPE) \
+  -Denable_docs=false \
+  -Dlibdvdcss=enabled \
+  . build
 
 ifeq ($(CROSS_COMPILING), yes)
-  DEPS += ../../Makefile.include
+  CONFIGURE += --cross-file=$(PREFIX)/share/cross-file.meson
+  export CC=$(CC_FOR_BUILD)
+  export CXX=$(CXX_FOR_BUILD)
+  export CFLAGS=$(CFLAGS_FOR_BUILD)
+  export CXXFLAGS=$(CXXFLAGS_FOR_BUILD)
 else
-  ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-  PREFIX := $(ROOT_DIR)/dvdread-install
-  AUTORECONF := autoreconf
-
-  ifeq ($(PLATFORM),)
-    PLATFORM = native
-    TARBALLS_LOCATION = $(ROOT_DIR)
-    PKGCONFIGPATH = PKG_CONFIG_PATH="$(ROOT_DIR)/../libdvdcss/dvdcss-install/lib/pkgconfig"
-    EXTRA_CFLAGS += -I$(ROOT_DIR)/../libdvdcss/dvdcss-install/include
-    RETRIEVE_TOOL := curl
-    RETRIEVE_TOOL_FLAGS := -LsS --create-dirs --retry 10 --retry-connrefused -o
-    ARCHIVE_TOOL := tar
-    ARCHIVE_TOOL_FLAGS := --strip-components=1 -xf
-  endif
+  export CC CXX CFLAGS CXXFLAGS
 endif
+export PKG_CONFIG_PATH=$(PREFIX)/lib/pkgconfig
 
-ifeq ($(OS),osx)
-  EXTRA_CFLAGS +=  -D__DARWIN__
-endif
-ifeq ($(OS),darwin_embedded)
-  EXTRA_CFLAGS +=  -D__DARWIN__
-endif
+LIBDYLIB=$(PLATFORM)/build/src/$(BYPRODUCT)
 
-include ../../download-files.include
 all: .installed-$(PLATFORM)
 
 .configured-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-ifeq ($(OS),wasm)
-	cd $(PLATFORM); patch -p1 -i ../001-emscripten-bswap.patch
+	cd $(PLATFORM); patch -p1 -i ../01-all-disableopendir.patch
+	cd $(PLATFORM); patch -p1 -i ../02-all-disablesymlink.patch
+ifeq ($(TARGET_PLATFORM),windows)
+	cd $(PLATFORM); patch -p1 -i ../03-win-add_defines.patch
+	cd $(PLATFORM); patch -p1 -i ../04-win-uwp_compat.patch
+	cd $(PLATFORM); patch -p1 -i ../05-win-remove_stat.patch
+	cd $(PLATFORM); patch -p1 -i ../06-win-remove_config_h.patch
+	cd $(PLATFORM); patch -p1 -i ../08-win-ssize_t.patch
 endif
-	cd $(PLATFORM); $(AUTORECONF) -vif && $(PKGCONFIGPATH) CFLAGS="$(CFLAGS) $(EXTRA_CFLAGS)" ac_cv_path_GIT= ./configure $(config)
+ifeq ($(OS),wasm)
+	cd $(PLATFORM); patch -p1 -i ../07-emscripten-bswap.patch
+endif
+	cd $(PLATFORM); $(CONFIGURE)
 	touch $@
 
-$(PLATFORM)/.libs/$(LIBNAME).a: .configured-$(PLATFORM)
-	[ -d $(PLATFORM)/.libs ] && [ ! -f $@ ] && $(MAKE) -C $(PLATFORM) clean || :
-	$(MAKE) -C $(PLATFORM)
+$(LIBDYLIB): .configured-$(PLATFORM)
+	cd $(PLATFORM)/build; $(NATIVEPREFIX)/bin/ninja -v
 
-.installed-$(PLATFORM): $(PLATFORM)/.libs/$(LIBNAME).a
-	$(MAKE) -C $(PLATFORM) install
+.installed-$(PLATFORM): $(LIBDYLIB)
+	cd $(PLATFORM)/build; $(NATIVEPREFIX)/bin/ninja -v install
 	touch $@
 
 clean:
@@ -59,4 +70,3 @@ clean:
 
 distclean::
 	rm -rf $(PLATFORM) .installed-$(PLATFORM) .configured-$(PLATFORM)
-

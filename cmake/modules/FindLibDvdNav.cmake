@@ -56,7 +56,7 @@ if(NOT TARGET LibDvdNav::LibDvdNav)
 
     # INTERFACE_INCLUDE_DIRECTORIES may have multiple paths. We need to separate these
     # individually to then set the -I argument correctly with each path
-    get_target_property(_interface_include_dirs ${APP_NAME_LC}::LibDvdRead INTERFACE_INCLUDE_DIRECTORIES)
+    get_target_property(_interface_include_dirs LIBRARY::LibDvdRead INTERFACE_INCLUDE_DIRECTORIES)
     foreach(_interface_include_dir ${_interface_include_dirs})
       string(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_CFLAGS " -I${_interface_include_dir}")
     endforeach()
@@ -92,14 +92,14 @@ if(NOT TARGET LibDvdNav::LibDvdNav)
 
   BUILD_DEP_TARGET()
 
-  add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} ${APP_NAME_LC}::LibDvdRead)
+  add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} LIBRARY::LibDvdRead)
 
   if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
     SETUP_BUILD_TARGET()
 
     add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                     INTERFACE_LINK_LIBRARIES ${APP_NAME_LC}::LibDvdRead)
+                                                                     INTERFACE_LINK_LIBRARIES LIBRARY::LibDvdRead)
 
   else()
     if(LibDvdNav_FIND_REQUIRED)

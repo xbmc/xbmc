@@ -13,7 +13,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     set(LIBDVD_TARGET_DIR .)
     copy_file_to_buildtree(${DEPENDS_PATH}/bin/libdvdnav.dll DIRECTORY ${LIBDVD_TARGET_DIR})
   else()
-    set(_dvdlibs ${APP_NAME_LC}::LibDvdRead)
+    set(_dvdlibs LIBRARY::LibDvdRead)
 
     if(TARGET LIBRARY::LibDvdCSS)
       list(APPEND _dvdlibs LIBRARY::LibDvdCSS)
