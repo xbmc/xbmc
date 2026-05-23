@@ -1,0 +1,37 @@
+--- a/src/device.c
++++ b/src/device.c
+@@ -63,10 +63,6 @@
+ #   include <fcntl.h>                                           /* O_BINARY  */
+ #endif
+ 
+-#ifdef _WIN32
+-#   include <windows.h>
+-#endif
+-
+ #include "dvdcss/dvdcss.h"
+ 
+ #include "common.h"
+@@ -454,23 +450,7 @@ int dvdcss_close_device ( dvdcss_t dvdcss )
+  *****************************************************************************/
+ static int libc_open ( dvdcss_t dvdcss, const char *psz_device )
+ {
+-#ifdef _WIN32
+-    int wlen;
+-    dvdcss->i_fd = -1;
+-    wlen = MultiByteToWideChar( CP_UTF8, 0, psz_device, -1, NULL, 0 );
+-    if( wlen > 0 ) {
+-        wchar_t *wpath = (wchar_t*)malloc( sizeof(wchar_t) * wlen );
+-        if( wpath ) {
+-            if( MultiByteToWideChar(CP_UTF8, 0, psz_device, -1, wpath, wlen ) ) {
+-                dvdcss->i_fd = _wopen( wpath, O_BINARY );
+-            }
+-            free( wpath );
+-        }
+-    }
+-#else
+     dvdcss->i_fd = open( psz_device, O_BINARY );
+-#endif
+-
+     if( dvdcss->i_fd == -1 )
+     {
+         print_error( dvdcss, "failed to open device %s (%s)",

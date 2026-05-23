@@ -15,8 +15,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   else()
     set(_dvdlibs ${APP_NAME_LC}::LibDvdRead)
 
-    if(TARGET ${APP_NAME_LC}::LibDvdCSS)
-      list(APPEND _dvdlibs ${APP_NAME_LC}::LibDvdCSS)
+    if(TARGET LIBRARY::LibDvdCSS)
+      list(APPEND _dvdlibs LIBRARY::LibDvdCSS)
     endif()
 
     # link a shared dvdnav library that includes the whole archives of dvdread and dvdcss as well

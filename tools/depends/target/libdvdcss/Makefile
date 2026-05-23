@@ -1,42 +1,62 @@
--include ../../Makefile.include
-include LIBDVDCSS-VERSION
-DEPS = LIBDVDCSS-VERSION Makefile ../../download-files.include
+include ../../Makefile.include LIBDVDCSS-VERSION ../../download-files.include
+DEPS = ../../Makefile.include LIBDVDCSS-VERSION Makefile ../../download-files.include \
+                                  01-all-libc_read_improvement.patch \
+                                  02-darwinembedded-enablebuild.patch \
+                                  03-win-uwpfixes.patch \
+                                  04-win-open_wrapforce.patch
 
-ifeq ($(CROSS_COMPILING), yes)
-  DEPS += ../../Makefile.include
-else
-  ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-  PREFIX := $(ROOT_DIR)/dvdcss-install
-  AUTORECONF := autoreconf
+MESON_BUILD_TYPE=release
 
-  ifeq ($(PLATFORM),)
-    PLATFORM = native
-    TARBALLS_LOCATION = $(ROOT_DIR)
-    RETRIEVE_TOOL := curl
-    RETRIEVE_TOOL_FLAGS := -LsS --create-dirs --retry 10 --retry-connrefused -o
-    ARCHIVE_TOOL := tar
-    ARCHIVE_TOOL_FLAGS := --strip-components=1 -xf
-  endif
+ifeq ($(DEBUG_BUILD), yes)
+  MESON_BUILD_TYPE=debug
 endif
 
 # configuration settings
-config = --prefix=$(PREFIX) --disable-shared --enable-static --with-pic
+CONFIGURE = $(NATIVEPREFIX)/bin/python3 $(NATIVEPREFIX)/bin/meson setup \
+  --prefix=$(PREFIX) \
+  --libdir=lib \
+  --buildtype=$(MESON_BUILD_TYPE) \
+  -Denable_docs=false \
+  -Denable_examples=false \
+  . build
 
-include ../../download-files.include
+ifeq ($(TARGET_PLATFORM),webos)
+  CONFIGURE += -DPATH_MAX=2048
+endif
+
+ifeq ($(CROSS_COMPILING), yes)
+  CONFIGURE += --cross-file=$(PREFIX)/share/cross-file.meson
+  export CC=$(CC_FOR_BUILD)
+  export CXX=$(CXX_FOR_BUILD)
+  export CFLAGS=$(CFLAGS_FOR_BUILD)
+  export CXXFLAGS=$(CXXFLAGS_FOR_BUILD)
+else
+  export CC CXX CFLAGS CXXFLAGS
+endif
+
+LIBDYLIB=$(PLATFORM)/build/src/$(BYPRODUCT)
+
 all: .installed-$(PLATFORM)
 
 .configured-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); $(AUTORECONF) -vif && ac_cv_path_GIT= ./configure $(config)
+	cd $(PLATFORM); patch -p1 -i ../01-all-libc_read_improvement.patch
+ifeq ($(OS),darwin_embedded)
+	cd $(PLATFORM); patch -p1 -i ../02-darwinembedded-enablebuild.patch
+endif
+ifeq ($(TARGET_PLATFORM),windows)
+	cd $(PLATFORM); patch -p1 -i ../03-win-uwpfixes.patch
+	cd $(PLATFORM); patch -p1 -i ../04-win-open_wrapforce.patch
+endif
+	cd $(PLATFORM); $(CONFIGURE)
 	touch $@
 
-$(PLATFORM)/.libs/$(LIBNAME).a: .configured-$(PLATFORM)
-	[ -d $(PLATFORM)/.libs ] && [ ! -f $@ ] && $(MAKE) -C $(PLATFORM) clean || :
-	$(MAKE) -C $(PLATFORM)
+$(LIBDYLIB): .configured-$(PLATFORM)
+	cd $(PLATFORM)/build; $(NATIVEPREFIX)/bin/ninja -v
 
-.installed-$(PLATFORM): $(PLATFORM)/.libs/$(LIBNAME).a
-	$(MAKE) -C $(PLATFORM) install
+.installed-$(PLATFORM): $(LIBDYLIB)
+	cd $(PLATFORM)/build; $(NATIVEPREFIX)/bin/ninja -v install
 	touch $@
 
 clean:
@@ -45,4 +65,3 @@ clean:
 
 distclean::
 	rm -rf $(PLATFORM) .installed-$(PLATFORM) .configured-$(PLATFORM)
-
