@@ -888,6 +888,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
   float buttonGap = 5;
   int startMovement = 0;
   int endMovement = 0;
+  FixedListAlignY fixedListAlignY = FixedListAlignY::CENTER;
   CAspectRatio aspect;
   std::string allowHiddenFocus;
   std::string enableCondition;
@@ -1027,6 +1028,10 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
   uint32_t alignY = 0;
   if (GetLabelAlignmentY(pControlNode, "aligny", alignY))
     labelInfo.align |= alignY;
+  // No attribute = center vertical alignment
+  GetAlignmentY(pControlNode, "aligny", fixedListAlignY,
+                {FixedListAlignY::CENTER, FixedListAlignY::TOP, FixedListAlignY::CENTER,
+                 FixedListAlignY::BOTTOM});
   if (XMLUtils::GetFloat(pControlNode, "textwidth", labelInfo.width))
     labelInfo.align |= XBFONT_TRUNCATED;
 
@@ -1617,9 +1622,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
       CScroller scroller;
       GetScroller(pControlNode, "scrolltime", scroller);
 
-      control =
-          new CGUIFixedListContainer(parentID, id, posX, posY, width, height, orientation, scroller,
-                                     preloadItems, focusPosition, startMovement, endMovement);
+      control = new CGUIFixedListContainer(parentID, id, posX, posY, width, height, orientation,
+                                           scroller, preloadItems, focusPosition, startMovement,
+                                           endMovement, fixedListAlignY);
       CGUIFixedListContainer* fcontrol = static_cast<CGUIFixedListContainer*>(control);
       fcontrol->LoadLayout(pControlNode);
       fcontrol->LoadListProvider(pControlNode, defaultControl, defaultAlways);

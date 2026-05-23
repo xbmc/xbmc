@@ -12,6 +12,8 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 
+#include <functional>
+
 CGUIFixedListContainer::CGUIFixedListContainer(int parentID,
                                                int controlID,
                                                float posX,
@@ -23,7 +25,8 @@ CGUIFixedListContainer::CGUIFixedListContainer(int parentID,
                                                int preloadItems,
                                                int fixedPosition,
                                                int startCursorRange,
-                                               int endCursorRange)
+                                               int endCursorRange,
+                                               FixedListAlignY alignY)
   : CGUIBaseContainer(
         parentID, controlID, posX, posY, width, height, orientation, scroller, preloadItems)
 {
@@ -32,6 +35,7 @@ CGUIFixedListContainer::CGUIFixedListContainer(int parentID,
   m_fixedCursor = fixedPosition;
   m_startCursorRange = startCursorRange;
   m_endCursorRange = endCursorRange;
+  m_alignY = alignY;
   SetCursor(m_fixedCursor);
 }
 
@@ -311,12 +315,30 @@ void CGUIFixedListContainer::GetCursorRange(int &minCursor, int &maxCursor) cons
     return;
   }
 
-  const int itemsCount = static_cast<int>(m_items.size());
-  while (maxCursor - minCursor > itemsCount - 1)
+  std::function<void(int& minCursor, int& maxCursor, int fixedCursor)> fn;
+
+  switch (m_alignY)
   {
-    if (maxCursor - m_fixedCursor > m_fixedCursor - minCursor)
-      maxCursor--;
-    else
-      minCursor++;
+    case FixedListAlignY::CENTER:
+      fn = [](int& minCursor, int& maxCursor, int fixedCursor)
+      {
+        if (maxCursor - fixedCursor > fixedCursor - minCursor)
+          maxCursor--;
+        else
+          minCursor++;
+      };
+      break;
+    case FixedListAlignY::TOP:
+      fn = [](int& minCursor, int& maxCursor, int fixedCursor) { maxCursor--; };
+      break;
+    case FixedListAlignY::BOTTOM:
+      fn = [](int& minCursor, int& maxCursor, int fixedCursor) { minCursor++; };
+      break;
+    default:
+      // unknown value: nothing can be done, exit to avoid an infinite loop.
+      return;
   }
+
+  while (maxCursor - minCursor > static_cast<int>(m_items.size()) - 1)
+    fn(minCursor, maxCursor, m_fixedCursor);
 }

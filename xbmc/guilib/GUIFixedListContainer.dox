@@ -32,6 +32,7 @@ control is very flexible.
           <autoscroll>true</autoscroll>
           <focusposition>4</focusposition>
           <movement>6</movement>
+		  <aligny>top</aligny>
           <itemlayout width="250" height="29">
                     <control type="image">
                             <posx>5</posx>
@@ -130,6 +131,7 @@ important, as xml tags are case-sensitive.
 | content       | Used to set the item content that this list will contain. Allows the skinner to setup a list anywhere they want with a static set of content, as a useful alternative to the grouplist control. [See here for more information](http://kodi.wiki/view/Static_List_Content).
 | preloaditems  | Used in association with the background image loader. [See here for more information](http://kodi.wiki/view/Background_Image_Loader).
 | autoscroll    | Used to make the container scroll automatically
+| aligny        | Can be top, center, or bottom. Aligns the list items within the available list area. Has no effect when items fill the list area. Defaults to center.
 
 
 --------------------------------------------------------------------------------

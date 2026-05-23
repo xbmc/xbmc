@@ -15,6 +15,13 @@
 
 #include "GUIBaseContainer.h"
 
+enum class FixedListAlignY
+{
+  CENTER = 0,
+  TOP,
+  BOTTOM,
+};
+
 /*!
  \ingroup controls
  \brief
@@ -33,7 +40,8 @@ public:
                          int preloadItems,
                          int fixedPosition,
                          int startCursorRange,
-                         int endCursorRange);
+                         int endCursorRange,
+                         FixedListAlignY alignY);
   ~CGUIFixedListContainer(void) override;
   CGUIFixedListContainer* Clone() const override { return new CGUIFixedListContainer(*this); }
 
@@ -68,5 +76,6 @@ private:
   int m_fixedCursor; ///< default position the skinner wishes to use for the focused item
   int m_startCursorRange; ///< range that the focused item can vary when at the beginning end of the list
   int m_endCursorRange; ///< range that the focused item can vary when at the end of the list
+  FixedListAlignY m_alignY; //!< Vertical alignment of the items
 };
 
