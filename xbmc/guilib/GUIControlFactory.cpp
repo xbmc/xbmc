@@ -60,6 +60,8 @@
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
+#include <array>
+
 using namespace KODI;
 using namespace KODI::GUILIB;
 using namespace PVR;
@@ -108,6 +110,40 @@ static const ControlMapping controls[] = {
     {"visualisation", CGUIControl::GUICONTROL_VISUALISATION},
     {"wraplist", CGUIControl::GUICONTAINER_WRAPLIST},
 };
+
+namespace
+{
+/*!
+ * \brief Retrieve vertical alignment tag value
+ * \param[in] rootNode root XML node
+ * \param[in] tag tag name
+ * \param[out] alignment vertical alignment - one of the values provided in values
+ * \param[in] values values for unknown, top, center and bottom vertical alignment (in that order)
+ * \return true when the tag is found, false otherwise
+ */
+template<typename T>
+bool GetAlignmentY(const TiXmlNode* rootNode,
+                   const char* tag,
+                   T& alignment,
+                   std::array<T, 4> values)
+{
+  const TiXmlNode* pNode = rootNode->FirstChild(tag);
+  if (!pNode || !pNode->FirstChild())
+    return false;
+
+  const std::string strAlign = pNode->FirstChild()->Value();
+
+  alignment = values[0];
+  if (strAlign == "top")
+    alignment = values[1];
+  else if (strAlign == "center")
+    alignment = values[2];
+  else if (strAlign == "bottom")
+    alignment = values[3];
+
+  return true;
+}
+} // namespace
 
 CGUIControl::GUICONTROLTYPES CGUIControlFactory::TranslateControlType(const std::string& type)
 {
@@ -455,25 +491,11 @@ bool CGUIControlFactory::GetAlignment(const TiXmlNode* pRootNode,
   return true;
 }
 
-bool CGUIControlFactory::GetAlignmentY(const TiXmlNode* pRootNode,
-                                       const char* strTag,
-                                       uint32_t& alignment)
+bool CGUIControlFactory::GetLabelAlignmentY(const TiXmlNode* pRootNode,
+                                            const char* strTag,
+                                            uint32_t& alignment)
 {
-  const TiXmlNode* pNode = pRootNode->FirstChild(strTag);
-  if (!pNode || !pNode->FirstChild())
-  {
-    return false;
-  }
-
-  std::string strAlign = pNode->FirstChild()->Value();
-
-  alignment = 0;
-  if (strAlign == "center")
-  {
-    alignment = XBFONT_CENTER_Y;
-  }
-
-  return true;
+  return GetAlignmentY(pRootNode, strTag, alignment, {0, 0, XBFONT_CENTER_Y, 0});
 }
 
 bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control,
@@ -1003,7 +1025,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
     labelInfo.font = g_fontManager.GetFont(strFont);
   XMLUtils::GetString(pControlNode, "monofont", strMonoFont);
   uint32_t alignY = 0;
-  if (GetAlignmentY(pControlNode, "aligny", alignY))
+  if (GetLabelAlignmentY(pControlNode, "aligny", alignY))
     labelInfo.align |= alignY;
   if (XMLUtils::GetFloat(pControlNode, "textwidth", labelInfo.width))
     labelInfo.align |= XBFONT_TRUNCATED;

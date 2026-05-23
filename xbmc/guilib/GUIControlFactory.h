@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -73,7 +73,9 @@ public:
                              int parentID);
   static bool GetTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo& image);
   static bool GetAlignment(const TiXmlNode* pRootNode, const char* strTag, uint32_t& dwAlignment);
-  static bool GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, uint32_t& dwAlignment);
+  static bool GetLabelAlignmentY(const TiXmlNode* pRootNode,
+                                 const char* strTag,
+                                 uint32_t& dwAlignment);
   static bool GetAnimations(TiXmlNode* control,
                             const CRect& rect,
                             int context,

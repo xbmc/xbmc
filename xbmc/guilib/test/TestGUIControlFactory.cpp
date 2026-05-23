@@ -179,11 +179,13 @@ const auto AlignmentTests = std::array{
     AlignmentTest{R"(<root/>)"s, 0, false},
 };
 
-class TestGetAlignmentY : public testing::WithParamInterface<AlignmentTest>, public testing::Test
+class TestGetLabelAlignmentY : public testing::WithParamInterface<AlignmentTest>,
+                               public testing::Test
 {
 };
 
-const auto AlignmentYTests = std::array{
+const auto LabelAlignmentYTests = std::array{
+    AlignmentTest{R"(<root><test>top</test></root>)"s, 0},
     AlignmentTest{R"(<root><test>center</test></root>)"s, XBFONT_CENTER_Y},
     AlignmentTest{R"(<root><test>bottom</test></root>)"s, 0},
     AlignmentTest{R"(<root><test/></root>)"s, std::numeric_limits<uint32_t>::max(), false},
@@ -695,18 +697,18 @@ INSTANTIATE_TEST_SUITE_P(TestGUIControlFactory,
                          TestGetAlignment,
                          testing::ValuesIn(AlignmentTests));
 
-TEST_P(TestGetAlignmentY, GetAlignmentY)
+TEST_P(TestGetLabelAlignmentY, GetAlignmentY)
 {
   CXBMCTinyXML doc;
   doc.Parse(GetParam().def);
   uint32_t align = std::numeric_limits<uint32_t>::max();
-  EXPECT_EQ(CGFTestable::GetAlignmentY(doc.RootElement(), "test", align), GetParam().result);
+  EXPECT_EQ(CGFTestable::GetLabelAlignmentY(doc.RootElement(), "test", align), GetParam().result);
   EXPECT_EQ(align, GetParam().align);
 }
 
 INSTANTIATE_TEST_SUITE_P(TestGUIControlFactory,
-                         TestGetAlignmentY,
-                         testing::ValuesIn(AlignmentYTests));
+                         TestGetLabelAlignmentY,
+                         testing::ValuesIn(LabelAlignmentYTests));
 
 TEST_P(TestAspectRatio, GetAspectRatio)
 {
