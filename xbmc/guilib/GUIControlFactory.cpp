@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -864,7 +864,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
   std::string strRSSTags = "";
 
   float buttonGap = 5;
-  int iMovementRange = 0;
+  int startMovement = 0;
+  int endMovement = 0;
   CAspectRatio aspect;
   std::string allowHiddenFocus;
   std::string enableCondition;
@@ -1130,7 +1131,14 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
       orientation = HORIZONTAL;
   }
   XMLUtils::GetFloat(pControlNode, "itemgap", buttonGap);
-  XMLUtils::GetInt(pControlNode, "movement", iMovementRange);
+
+  int movement = 0;
+  XMLUtils::GetInt(pControlNode, "movement", movement);
+  if (!XMLUtils::GetInt(pControlNode, "startmovement", startMovement))
+    startMovement = movement;
+  if (!XMLUtils::GetInt(pControlNode, "endmovement", endMovement))
+    endMovement = movement;
+
   GetAspectRatio(pControlNode, "aspectratio", aspect);
 
   bool alwaysScroll;
@@ -1587,8 +1595,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
       CScroller scroller;
       GetScroller(pControlNode, "scrolltime", scroller);
 
-      control = new CGUIFixedListContainer(parentID, id, posX, posY, width, height, orientation,
-                                           scroller, preloadItems, focusPosition, iMovementRange);
+      control =
+          new CGUIFixedListContainer(parentID, id, posX, posY, width, height, orientation, scroller,
+                                     preloadItems, focusPosition, startMovement, endMovement);
       CGUIFixedListContainer* fcontrol = static_cast<CGUIFixedListContainer*>(control);
       fcontrol->LoadLayout(pControlNode);
       fcontrol->LoadListProvider(pControlNode, defaultControl, defaultAlways);
