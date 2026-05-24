@@ -5,8 +5,8 @@ XBMC_PLATFORM_DIR=tvos
 cd $WORKSPACE/build/tools/darwin/packaging/darwin_embedded/
 
 #rename for upload
-#e.x. kodi-20130314-8c2fb31-Frodo-tvos.deb
-#e.x. kodi-20130314-8c2fb31-Frodo-tvos.ipa
+#e.x. kodi-${JENKINS_BUILD_STRING}-tvos.deb
+#e.x. kodi-${JENKINS_BUILD_STRING}-tvos.ipa
 UPLOAD_DIR="$WORKSPACE/tools/darwin/packaging/tvos"
 UPLOAD_FILENAME="kodi-$(getBuildRevDateStr)-tvos"
 mkdir -p $UPLOAD_DIR

@@ -2,7 +2,7 @@
 
 This page is for Apple TV HD and Apple TV 4K models that run tvOS.
 
-The current stable release for tvOS is Kodi v21.3 Omega.
+The current stable release for tvOS is available from the Kodi tvOS download page.
 
 ## Requirements
 

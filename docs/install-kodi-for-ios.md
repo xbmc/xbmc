@@ -1,6 +1,6 @@
 # HOW-TO: Install Kodi for iOS
 
-The current stable release for iOS and iPadOS is Kodi v21.3 Omega.
+The current stable release for iOS and iPadOS is available from the Kodi iOS download page.
 
 ## Requirements
 
@@ -10,7 +10,7 @@ To install Kodi for iOS or iPadOS you must have one of the following:
 - a jailbroken iPhone or iPad and a package manager such as Sileo, Zebra or Cydia
 - a Mac with Xcode if you want to build and sign Kodi yourself
 
-Kodi v21.3 runs on iOS 11 and later. Older iOS versions require older Kodi releases.
+Current Kodi releases run on iOS 11 and later. Older iOS versions require older Kodi releases.
 
 ## Which install method should I use?
 
