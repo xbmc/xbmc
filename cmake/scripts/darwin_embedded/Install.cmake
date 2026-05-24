@@ -123,6 +123,8 @@ endif()
 set(DEPENDS_ROOT_FOR_XCODE ${NATIVEPREFIX}/..)
 configure_file(${CMAKE_SOURCE_DIR}/tools/darwin/packaging/darwin_embedded/mkdeb-darwin_embedded.sh.in
                ${CMAKE_BINARY_DIR}/tools/darwin/packaging/darwin_embedded/mkdeb-darwin_embedded.sh @ONLY)
+configure_file(${CMAKE_SOURCE_DIR}/tools/darwin/packaging/darwin_embedded/mkipa-darwin_embedded.sh.in
+               ${CMAKE_BINARY_DIR}/tools/darwin/packaging/darwin_embedded/mkipa-darwin_embedded.sh @ONLY)
 
 configure_file(${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/Credits.html.in
                ${CMAKE_BINARY_DIR}/xbmc/platform/darwin/Credits.html @ONLY)
@@ -132,3 +134,7 @@ add_custom_target(deb
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tools/darwin/packaging/darwin_embedded)
 add_dependencies(deb ${APP_NAME_LC})
 
+add_custom_target(ipa
+    COMMAND sh ./mkipa-darwin_embedded.sh ${CORE_BUILD_CONFIG}
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tools/darwin/packaging/darwin_embedded)
+add_dependencies(ipa ${APP_NAME_LC})

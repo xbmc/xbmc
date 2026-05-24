@@ -6,6 +6,9 @@ cd $WORKSPACE/build/tools/darwin/packaging/darwin_embedded/
 
 #rename for upload
 #e.x. kodi-20130314-8c2fb31-Frodo-ios64.deb
-UPLOAD_FILENAME="kodi-$(getBuildRevDateStr)-ios64.deb"
-mkdir $WORKSPACE/tools/darwin/packaging/ios
-mv *.deb $WORKSPACE/tools/darwin/packaging/ios/$UPLOAD_FILENAME
+#e.x. kodi-20130314-8c2fb31-Frodo-ios64.ipa
+UPLOAD_DIR="$WORKSPACE/tools/darwin/packaging/ios"
+UPLOAD_FILENAME="kodi-$(getBuildRevDateStr)-ios64"
+mkdir -p $UPLOAD_DIR
+mv *.deb $UPLOAD_DIR/$UPLOAD_FILENAME.deb
+mv *.ipa $UPLOAD_DIR/$UPLOAD_FILENAME.ipa

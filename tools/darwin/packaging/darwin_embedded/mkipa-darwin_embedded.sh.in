@@ -1,0 +1,59 @@
+#!/bin/sh
+
+set -ex
+
+# usage: ./mkipa-darwin_embedded.sh release/debug (case insensitive)
+SWITCH=`echo $1 | tr [A-Z] [a-z]`
+DIRNAME=`dirname $0`
+
+if [ "${SWITCH#*debug}" != "${SWITCH}" ]; then
+  echo "Packaging Debug target for @APP_NAME@"
+  APP="$DIRNAME/../../../../build/Debug-@PLATFORM@/@APP_NAME@.app"
+elif [ "${SWITCH#*release}" != "${SWITCH}" ]; then
+  echo "Packaging Release target for @APP_NAME@"
+  APP="$DIRNAME/../../../../build/Release-@PLATFORM@/@APP_NAME@.app"
+else
+  echo "You need to specify the build target"
+  exit 1
+fi
+
+if [ ! -d $APP ]; then
+  echo "@APP_NAME@.app not found! are you sure you built $1 target?"
+  exit 1
+fi
+
+PACKAGE="@PLATFORM_BUNDLE_IDENTIFIER@"
+VERSION=@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@
+REVISION=0
+
+if [ "@APP_VERSION_TAG_LC@" != "" ]; then
+  REVISION=$REVISION~@APP_VERSION_TAG_LC@
+fi
+
+# customize revision string
+[ ! -z "$2" ] && REVISION="$2"
+
+ARCHIVE=${PACKAGE}_${VERSION}-${REVISION}_@PLATFORM@-arm64.ipa
+PAYLOAD_DIR="$DIRNAME/Payload"
+
+echo Creating $PACKAGE IPA version $VERSION revision $REVISION
+rm -rf "$PAYLOAD_DIR"
+rm -f "$DIRNAME/$ARCHIVE"
+
+mkdir -p "$PAYLOAD_DIR"
+rsync -a --no-links "$APP" "$PAYLOAD_DIR/"
+find "$PAYLOAD_DIR" -name '.svn' -exec rm -rf {} \;
+find "$PAYLOAD_DIR" -name '.git*' -exec rm -rf {} \;
+find "$PAYLOAD_DIR" -name '.DS_Store' -exec rm -rf {} \;
+
+echo Packaging $PACKAGE
+# Tell tar, pax, etc. on Mac OS X 10.4+ not to archive
+# extended attributes (e.g. resource forks) to ._* archive members.
+# Also allows archiving and extracting actual ._* files.
+export COPYFILE_DISABLE=true
+export COPY_EXTENDED_ATTRIBUTES_DISABLE=true
+
+(cd "$DIRNAME" && /usr/bin/ditto -c -k --sequesterRsrc --keepParent Payload "$ARCHIVE")
+
+# clean up by removing package dir
+rm -rf "$PAYLOAD_DIR"
