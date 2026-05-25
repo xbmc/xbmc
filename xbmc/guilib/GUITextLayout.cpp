@@ -397,7 +397,7 @@ void CGUITextLayout::ParseText(const std::wstring& text,
 
   int startPos = 0;
   size_t pos = text.find(L'[');
-  while (pos != std::string::npos && pos + 1 < text.size())
+  while (pos != std::wstring::npos && pos + 1 < text.size())
   {
     uint32_t newStyle = 0;
     KODI::UTILS::COLOR::Color newColor = currentColor;
@@ -417,20 +417,22 @@ void CGUITextLayout::ParseText(const std::wstring& text,
     { // bold
       pos += 2;
       if (on)
-        ++boldDepth;
+      {
+        if (text.find(L"[/B]", pos) != std::wstring::npos)
+          ++boldDepth;
+      }
       else if (boldDepth > 0)
         --boldDepth;
-      else
-	  {
-        // unmatched [/B] - ignore
-      }
       newStyle = FONT_STYLE_BOLD;
     }
     else if (text.compare(pos, 2, L"I]") == 0)
     { // italics
       pos += 2;
       if (on)
-        ++italicDepth;
+      {
+        if (text.find(L"[/I]", pos) != std::wstring::npos)
+          ++italicDepth;
+      }
       else if (italicDepth > 0)
         --italicDepth;
       newStyle = FONT_STYLE_ITALICS;
@@ -439,7 +441,10 @@ void CGUITextLayout::ParseText(const std::wstring& text,
     {
       pos += 10;
       if (on)
-        ++uppercaseDepth;
+      {
+        if (text.find(L"[/UPPERCASE]", pos) != std::wstring::npos)
+          ++uppercaseDepth;
+      }
       else if (uppercaseDepth > 0)
         --uppercaseDepth;
       newStyle = FONT_STYLE_UPPERCASE;
@@ -448,7 +453,10 @@ void CGUITextLayout::ParseText(const std::wstring& text,
     {
       pos += 10;
       if (on)
-        ++lowercaseDepth;
+      {
+        if (text.find(L"[/LOWERCASE]", pos) != std::wstring::npos)
+          ++lowercaseDepth;
+      }
       else if (lowercaseDepth > 0)
         --lowercaseDepth;
       newStyle = FONT_STYLE_LOWERCASE;
@@ -457,7 +465,10 @@ void CGUITextLayout::ParseText(const std::wstring& text,
     {
       pos += 11;
       if (on)
-        ++capitalizeDepth;
+      {
+        if (text.find(L"[/CAPITALIZE]", pos) != std::wstring::npos)
+          ++capitalizeDepth;
+      }
       else if (capitalizeDepth > 0)
         --capitalizeDepth;
       newStyle = FONT_STYLE_CAPITALIZE;
@@ -466,7 +477,10 @@ void CGUITextLayout::ParseText(const std::wstring& text,
     {
       pos += 6;
       if (on)
-        ++lightDepth;
+      {
+        if (text.find(L"[/LIGHT]", pos) != std::wstring::npos)
+          ++lightDepth;
+      }
       else if (lightDepth > 0)
         --lightDepth;
       newStyle = FONT_STYLE_LIGHT;
@@ -475,7 +489,7 @@ void CGUITextLayout::ParseText(const std::wstring& text,
     {
       pos += 5;
       const size_t end = text.find(L"[/TABS]", pos);
-      if (end != std::string::npos)
+      if (end != std::wstring::npos)
       {
         std::string t;
         g_charsetConverter.wToUTF8(text.substr(pos), t);
@@ -489,9 +503,10 @@ void CGUITextLayout::ParseText(const std::wstring& text,
       pos += 3;
     }
     else if (text.compare(pos,5, L"COLOR") == 0)
-    { // color - already stack-based, unchanged
+    { // color
       size_t finish = text.find(L']', pos + 5);
-      if (on && finish != std::string::npos && text.find(L"[/COLOR]",finish) != std::string::npos)
+      if (on && finish != std::wstring::npos &&
+          text.find(L"[/COLOR]", finish) != std::wstring::npos)
       {
         std::string t;
         g_charsetConverter.wToUTF8(text.substr(pos + 5, finish - pos - 5), t);
@@ -519,7 +534,7 @@ void CGUITextLayout::ParseText(const std::wstring& text,
         newColor = colorStack.top();
         colorTagChange = true;
       }
-      if (finish != std::string::npos)
+      if (finish != std::wstring::npos)
         pos = finish + 1;
     }
 
