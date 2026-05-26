@@ -600,7 +600,13 @@ CInfoScanner::InfoRet CMusicInfoScanner::ScanTags(const CFileItemList& items,
     m_currentItem++;
 
     CMusicInfoTag& tag = *pItem->GetMusicInfoTag();
-    if (!tag.Loaded())
+    // Forced rescan must re-read tags from disk even if the item arrives with
+    // tag.Loaded() already true (e.g. DB-enriched directory listings). The
+    // folder-level SCAN_RESCAN check above (line 521) bypasses the path-hash
+    // skip, but without this check ScanTags would still reuse cached tag
+    // state on a per-file basis, defeating "Do full tag scan even when
+    // unchanged".
+    if (!tag.Loaded() || (m_flags & SCAN_RESCAN))
     {
       std::unique_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(*pItem));
       if (nullptr != pLoader)
