@@ -19,6 +19,7 @@
 
 #include <cctype>
 #include <string>
+#include <string_view>
 #include <vector>
 
 using namespace KODI;
@@ -292,8 +293,10 @@ bool CEpisodeUtils::EnumerateEpisodeItem(const CFileItem* item, VIDEO::EPISODELI
           {
             // Already added SxxEyy now loop (if needed) to SxxEzz
             const int last{episode.iEpisode};
-            const int next{
-                disableEpisodeRanges || !remainder.starts_with("-") ? last : currentEpisode + 1};
+            const int next{disableEpisodeRanges ||
+                                   !std::string_view(remainder).substr(offset).starts_with('-')
+                               ? last
+                               : currentEpisode + 1};
 
             ProcessEpisodeRange(next, last, episode, episodeList,
                                 advancedSettings->m_tvshowMultiPartEnumRegExp, remainder);
@@ -304,7 +307,8 @@ bool CEpisodeUtils::EnumerateEpisodeItem(const CFileItem* item, VIDEO::EPISODELI
           else
           {
             // Two possible scenarios here:
-            if (remainder.substr(offset, 1) != "-" || disableEpisodeRanges)
+            if (disableEpisodeRanges ||
+                !std::string_view(remainder).substr(offset).starts_with('-'))
             {
               // (Sxx)Eyy has already been added and we now in a new range (eg. S00E01S01E01....)
               // Add first episode here
