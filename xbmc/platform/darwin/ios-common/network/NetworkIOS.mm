@@ -90,7 +90,7 @@ void CNetworkInterfaceIOS::GetMacAddressRaw(char rawMac[6]) const
   memset(&rawMac[0], 0, 6);
 }
 
-std::string CNetworkInterfaceIOS::GetCurrentIPAddress() const
+std::string CNetworkInterfaceIOS::GetCurrentIPv4Address() const
 {
   std::string address;
   struct ifaddrs* interfaces = nullptr;
@@ -103,27 +103,14 @@ std::string CNetworkInterfaceIOS::GetCurrentIPAddress() const
     if (StringUtils::StartsWith(iface->ifa_name, m_interfaceName))
     {
       if ((iface->ifa_flags & (IFF_UP | IFF_RUNNING)) == (IFF_UP | IFF_RUNNING) &&
-          iface->ifa_dstaddr != nullptr)
+          iface->ifa_dstaddr != nullptr && iface->ifa_addr != nullptr &&
+          iface->ifa_addr->sa_family == AF_INET)
       {
-        switch (iface->ifa_addr->sa_family)
-        {
-          case AF_INET:
-            char str4[INET_ADDRSTRLEN];
-            inet_ntop(AF_INET,
-                      &((reinterpret_cast<struct sockaddr_in*>(iface->ifa_addr))->sin_addr), str4,
-                      INET_ADDRSTRLEN);
-            address = str4;
-            break;
-          case AF_INET6:
-            char str6[INET6_ADDRSTRLEN];
-            inet_ntop(AF_INET6,
-                      &((reinterpret_cast<struct sockaddr_in6*>(iface->ifa_addr))->sin6_addr), str6,
-                      INET6_ADDRSTRLEN);
-            address = str6;
-            break;
-          default:
-            break;
-        }
+        char str4[INET_ADDRSTRLEN];
+        inet_ntop(AF_INET, &((reinterpret_cast<struct sockaddr_in*>(iface->ifa_addr))->sin_addr),
+                  str4, INET_ADDRSTRLEN);
+        address = str4;
+        break;
       }
     }
   }
@@ -147,27 +134,14 @@ std::string CNetworkInterfaceIOS::GetCurrentNetmask() const
     if (StringUtils::StartsWith(iface->ifa_name, m_interfaceName))
     {
       if ((iface->ifa_flags & (IFF_UP | IFF_RUNNING)) == (IFF_UP | IFF_RUNNING) &&
-          iface->ifa_dstaddr != nullptr)
+          iface->ifa_dstaddr != nullptr && iface->ifa_addr != nullptr &&
+          iface->ifa_addr->sa_family == AF_INET)
       {
-        switch (iface->ifa_addr->sa_family)
-        {
-          case AF_INET:
-            char mask4[INET_ADDRSTRLEN];
-            inet_ntop(AF_INET,
-                      &((reinterpret_cast<struct sockaddr_in*>(iface->ifa_netmask))->sin_addr),
-                      mask4, INET_ADDRSTRLEN);
-            netmask = mask4;
-            break;
-          case AF_INET6:
-            char mask6[INET6_ADDRSTRLEN];
-            inet_ntop(AF_INET6,
-                      &((reinterpret_cast<struct sockaddr_in6*>(iface->ifa_netmask))->sin6_addr),
-                      mask6, INET6_ADDRSTRLEN);
-            netmask = mask6;
-            break;
-          default:
-            break;
-        }
+        char mask4[INET_ADDRSTRLEN];
+        inet_ntop(AF_INET, &((reinterpret_cast<struct sockaddr_in*>(iface->ifa_netmask))->sin_addr),
+                  mask4, INET_ADDRSTRLEN);
+        netmask = mask4;
+        break;
       }
     }
   }
@@ -180,88 +154,148 @@ std::string CNetworkInterfaceIOS::GetCurrentNetmask() const
 
 std::string CNetworkInterfaceIOS::GetCurrentDefaultGateway() const
 {
+  return GetGateway(AF_INET);
+}
+
+std::string CNetworkInterfaceIOS::GetCurrentIPv6DefaultGateway() const
+{
+  return GetGateway(AF_INET6);
+}
+
+// Walk the kernel routing table (via sysctl net.route dump) and return the
+// next-hop gateway of the default route (destination ::/0 or 0.0.0.0/0) for
+// the requested address family.
+std::string CNetworkInterfaceIOS::GetGateway(int family) const
+{
   std::string gateway;
-  int mib[] = {CTL_NET, PF_ROUTE, 0, 0, NET_RT_FLAGS, RTF_GATEWAY};
-  int afinet_type[] = {AF_INET, AF_INET6};
+  int mib[] = {CTL_NET, PF_ROUTE, 0, family, NET_RT_FLAGS, RTF_GATEWAY};
 
-  for (int ip_type = 0; ip_type <= 1; ip_type++)
+  size_t needed = 0;
+  if (sysctl(mib, sizeof(mib) / sizeof(int), nullptr, &needed, nullptr, 0) < 0)
+    return gateway;
+
+  char* buf = new char[needed];
+
+  if (sysctl(mib, sizeof(mib) / sizeof(int), buf, &needed, nullptr, 0) < 0)
   {
-    mib[3] = afinet_type[ip_type];
-
-    size_t needed = 0;
-    if (sysctl(mib, sizeof(mib) / sizeof(int), nullptr, &needed, nullptr, 0) < 0)
-      return "";
-
-    char* buf;
-    if ((buf = new char[needed]) == 0)
-      return "";
-
-    if (sysctl(mib, sizeof(mib) / sizeof(int), buf, &needed, nullptr, 0) < 0)
-    {
-      CLog::Log(LOGERROR, "sysctl: net.route.0.0.dump");
-      delete[] buf;
-      return gateway;
-    }
-
-    struct rt_msghdr* rt;
-    for (char* p = buf; p < buf + needed; p += rt->rtm_msglen)
-    {
-      rt = reinterpret_cast<struct rt_msghdr*>(p);
-      struct sockaddr* sa = reinterpret_cast<struct sockaddr*>(rt + 1);
-      struct sockaddr* sa_tab[RTAX_MAX];
-      for (int i = 0; i < RTAX_MAX; i++)
-      {
-        if (rt->rtm_addrs & (1 << i))
-        {
-          sa_tab[i] = sa;
-          sa = reinterpret_cast<struct sockaddr*>(
-              reinterpret_cast<char*>(sa) +
-              ((sa->sa_len) > 0 ? (1 + (((sa->sa_len) - 1) | (sizeof(long) - 1))) : sizeof(long)));
-        }
-        else
-        {
-          sa_tab[i] = nullptr;
-        }
-      }
-
-      if (((rt->rtm_addrs & (RTA_DST | RTA_GATEWAY)) == (RTA_DST | RTA_GATEWAY)) &&
-          sa_tab[RTAX_DST]->sa_family == afinet_type[ip_type] &&
-          sa_tab[RTAX_GATEWAY]->sa_family == afinet_type[ip_type])
-      {
-        if (afinet_type[ip_type] == AF_INET)
-        {
-          if ((reinterpret_cast<struct sockaddr_in*>(sa_tab[RTAX_DST]))->sin_addr.s_addr == 0)
-          {
-            char dstStr4[INET_ADDRSTRLEN];
-            char srcStr4[INET_ADDRSTRLEN];
-            memcpy(srcStr4,
-                   &(reinterpret_cast<struct sockaddr_in*>(sa_tab[RTAX_GATEWAY]))->sin_addr,
-                   sizeof(struct in_addr));
-            if (inet_ntop(AF_INET, srcStr4, dstStr4, INET_ADDRSTRLEN) != nullptr)
-              gateway = dstStr4;
-            break;
-          }
-        }
-        else if (afinet_type[ip_type] == AF_INET6)
-        {
-          if ((reinterpret_cast<struct sockaddr_in*>(sa_tab[RTAX_DST]))->sin_addr.s_addr == 0)
-          {
-            char dstStr6[INET6_ADDRSTRLEN];
-            char srcStr6[INET6_ADDRSTRLEN];
-            memcpy(srcStr6,
-                   &(reinterpret_cast<struct sockaddr_in6*>(sa_tab[RTAX_GATEWAY]))->sin6_addr,
-                   sizeof(struct in6_addr));
-            if (inet_ntop(AF_INET6, srcStr6, dstStr6, INET6_ADDRSTRLEN) != nullptr)
-              gateway = dstStr6;
-            break;
-          }
-        }
-      }
-    }
-    free(buf);
+    CLog::Log(LOGERROR, "sysctl: net.route.0.0.dump");
+    delete[] buf;
+    return gateway;
   }
 
+  struct rt_msghdr* rt;
+  for (char* p = buf; p < buf + needed; p += rt->rtm_msglen)
+  {
+    rt = reinterpret_cast<struct rt_msghdr*>(p);
+    struct sockaddr* sa = reinterpret_cast<struct sockaddr*>(rt + 1);
+    struct sockaddr* sa_tab[RTAX_MAX];
+    for (int i = 0; i < RTAX_MAX; i++)
+    {
+      if (rt->rtm_addrs & (1 << i))
+      {
+        sa_tab[i] = sa;
+        // Routing-socket sockaddrs are padded to sizeof(uint32_t) on Darwin
+        // (not sizeof(long)); the latter overshoots 28-byte sockaddr_in6
+        // entries and corrupts parsing of subsequent addresses.
+        sa = reinterpret_cast<struct sockaddr*>(
+            reinterpret_cast<char*>(sa) +
+            ((sa->sa_len) > 0 ? (1 + (((sa->sa_len) - 1) | (sizeof(uint32_t) - 1)))
+                              : sizeof(uint32_t)));
+      }
+      else
+      {
+        sa_tab[i] = nullptr;
+      }
+    }
+
+    if (((rt->rtm_addrs & (RTA_DST | RTA_GATEWAY)) != (RTA_DST | RTA_GATEWAY)) ||
+        sa_tab[RTAX_DST]->sa_family != family || sa_tab[RTAX_GATEWAY]->sa_family != family)
+      continue;
+
+    if (family == AF_INET)
+    {
+      // default route has an all-zero (0.0.0.0) destination
+      if ((reinterpret_cast<struct sockaddr_in*>(sa_tab[RTAX_DST]))->sin_addr.s_addr != 0)
+        continue;
+
+      char dstStr4[INET_ADDRSTRLEN];
+      if (inet_ntop(AF_INET,
+                    &(reinterpret_cast<struct sockaddr_in*>(sa_tab[RTAX_GATEWAY]))->sin_addr,
+                    dstStr4, INET_ADDRSTRLEN) != nullptr)
+        gateway = dstStr4;
+      break;
+    }
+    else if (family == AF_INET6)
+    {
+      // default route has an unspecified (::) destination
+      if (!IN6_IS_ADDR_UNSPECIFIED(
+              &(reinterpret_cast<struct sockaddr_in6*>(sa_tab[RTAX_DST]))->sin6_addr))
+        continue;
+
+      struct in6_addr gwAddr =
+          (reinterpret_cast<struct sockaddr_in6*>(sa_tab[RTAX_GATEWAY]))->sin6_addr;
+
+      // Darwin embeds the scope (interface index) of a link-local address in
+      // bytes 2-3 of the address itself (the KAME convention) rather than in
+      // sin6_scope_id. A default gateway is almost always link-local, so clear
+      // the embedded id first or inet_ntop renders it literally (e.g.
+      // "fe80:4::1" instead of "fe80::1").
+      if (IN6_IS_ADDR_LINKLOCAL(&gwAddr))
+        gwAddr.s6_addr[2] = gwAddr.s6_addr[3] = 0;
+
+      char dstStr6[INET6_ADDRSTRLEN];
+      if (inet_ntop(AF_INET6, &gwAddr, dstStr6, INET6_ADDRSTRLEN) != nullptr)
+        gateway = dstStr6;
+      break;
+    }
+  }
+
+  delete[] buf;
+
   return gateway;
+}
+
+// Returns the first globally scoped IPv6 address on the current interface.
+//
+// Unlike the macOS implementation, this cannot rank candidates (preferring a
+// stable address over a temporary/deprecated one) because that requires
+// querying per-address flags with SIOCGIFAFLAG_IN6, whose in6_ifreq struct is
+// defined in <netinet6/in6_var.h> -- a kernel header that is not part of the
+// public iOS SDK. getifaddrs() alone does not expose address state, so we take
+// the first non-link-local, non-loopback address and may end up returning a
+// temporary (RFC 4941) privacy address.
+std::string CNetworkInterfaceIOS::GetCurrentIPv6Address() const
+{
+  std::string address;
+
+  struct ifaddrs* interfaces = nullptr;
+  if (getifaddrs(&interfaces) != 0)
+    return address;
+
+  for (struct ifaddrs* iface = interfaces; iface != nullptr; iface = iface->ifa_next)
+  {
+    if (!StringUtils::StartsWith(iface->ifa_name, m_interfaceName) ||
+        (iface->ifa_flags & (IFF_UP | IFF_RUNNING)) != (IFF_UP | IFF_RUNNING) ||
+        iface->ifa_addr == nullptr || iface->ifa_addr->sa_family != AF_INET6)
+      continue;
+
+    const struct sockaddr_in6* addr6 =
+        reinterpret_cast<const struct sockaddr_in6*>(iface->ifa_addr);
+
+    if (IN6_IS_ADDR_LINKLOCAL(&addr6->sin6_addr) || IN6_IS_ADDR_LOOPBACK(&addr6->sin6_addr))
+      continue;
+
+    char str6[INET6_ADDRSTRLEN];
+    if (inet_ntop(AF_INET6, &addr6->sin6_addr, str6, sizeof(str6)) == nullptr)
+      continue;
+
+    address = str6;
+    break;
+  }
+
+  freeifaddrs(interfaces);
+
+  return address;
 }
 
 std::unique_ptr<CNetworkBase> CNetworkBase::GetNetwork()
@@ -366,7 +400,11 @@ void CNetworkIOS::queryInterfaceList()
   freeifaddrs(list);
 }
 
-std::vector<std::string> CNetworkIOS::GetNameServers()
+namespace
+{
+// Query the active resolver configuration and return every nameserver (both
+// IPv4 and IPv6) in numeric form. Callers filter by address family.
+std::vector<std::string> QueryNameServers()
 {
   std::vector<std::string> nameServers;
   res_state res = static_cast<res_state>(malloc(sizeof(struct __res_state)));
@@ -399,6 +437,34 @@ std::vector<std::string> CNetworkIOS::GetNameServers()
 
   res_ndestroy(res);
   return nameServers;
+}
+} // namespace
+
+std::vector<std::string> CNetworkIOS::GetNameServers()
+{
+  std::vector<std::string> result;
+
+  // a ':' only appears in IPv6 address literals
+  for (const auto& server : QueryNameServers())
+  {
+    if (server.find(':') == std::string::npos)
+      result.emplace_back(server);
+  }
+
+  return result;
+}
+
+std::vector<std::string> CNetworkIOS::GetIPv6NameServers()
+{
+  std::vector<std::string> result;
+
+  for (const auto& server : QueryNameServers())
+  {
+    if (server.find(':') != std::string::npos)
+      result.emplace_back(server);
+  }
+
+  return result;
 }
 
 bool CNetworkIOS::PingHost(unsigned long remote_ip, unsigned int timeout_ms)
