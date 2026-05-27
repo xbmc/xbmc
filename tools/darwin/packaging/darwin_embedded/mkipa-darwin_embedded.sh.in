@@ -3,8 +3,8 @@
 set -ex
 
 # usage: ./mkipa-darwin_embedded.sh release/debug (case insensitive)
-SWITCH=`echo $1 | tr [A-Z] [a-z]`
-DIRNAME=`dirname $0`
+SWITCH=$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')
+DIRNAME=$(dirname "$0")
 
 if [ "${SWITCH#*debug}" != "${SWITCH}" ]; then
   echo "Packaging Debug target for @APP_NAME@"
@@ -17,7 +17,7 @@ else
   exit 1
 fi
 
-if [ ! -d $APP ]; then
+if [ ! -d "$APP" ]; then
   echo "@APP_NAME@.app not found! are you sure you built $1 target?"
   exit 1
 fi
