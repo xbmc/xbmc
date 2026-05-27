@@ -8,26 +8,11 @@
 
 #pragma once
 
-extern "C" {
-#define DVDNAV_COMPILE
- #include <stdint.h>
+#include <stdint.h>
 
- #include "dvdnav/dvdnav.h"
+#include <dvdnav/dvdnav.h>
+#include <dvdnav/dvd_types.h>
 
- #ifndef WIN32
- #define WIN32
- #endif // WIN32
-
- #ifndef HAVE_CONFIG_H
- #define HAVE_CONFIG_H
- #endif
-
- #include "dvdnav/dvd_types.h"
-
- #ifdef WIN32 // WIN32INCLUDES
- #undef HAVE_CONFIG_H
- #endif
-}
 #include "DynamicDll.h"
 
 class DllDvdNavInterface
