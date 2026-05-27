@@ -776,12 +776,14 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
   m_displayLost = false;
   m_error = false;
   m_bCloseRequest = false;
-  CServiceBroker::GetWinSystem()->Register(this);
+  if (auto system = CServiceBroker::GetWinSystem(); system != nullptr)
+    system->Register(this);
 }
 
 CVideoPlayer::~CVideoPlayer()
 {
-  CServiceBroker::GetWinSystem()->Unregister(this);
+  if (auto system = CServiceBroker::GetWinSystem(); system != nullptr)
+    system->Unregister(this);
 
   CloseFile();
   DestroyPlayers();
@@ -849,8 +851,13 @@ bool CVideoPlayer::CloseFile(bool reopen)
   // wait for the main thread to finish up
   // since this main thread cleans up all other resources and threads
   // we are done after the StopThread call
+  if (auto system = CServiceBroker::GetWinSystem(); system != nullptr)
   {
-    CSingleExit exitlock(CServiceBroker::GetWinSystem()->GetGfxContext());
+    CSingleExit exitlock(system->GetGfxContext());
+    StopThread();
+  }
+  else
+  {
     StopThread();
   }
 
@@ -3521,68 +3528,125 @@ void CVideoPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
   if (!m_State.canseek)
     return;
 
-  if (bLargeStep && bChapterOverride && GetChapter() > 0 && GetChapterCount() > 1)
+  std::optional<int64_t> seekTarget;
+  const int64_t time = GetTime();
+  bool accurate = false;
+
+  if (bLargeStep && bChapterOverride)
   {
-    if (!bPlus)
+    const int chapter = GetChapter();
+    const bool hasValidChapters = GetChapterCount() > 1 && chapter > 0;
+
+    if (hasValidChapters || HasBookmarks())
     {
-      SeekChapter(GetPreviousChapter());
-      return;
-    }
-    else if (GetChapter() < GetChapterCount())
-    {
-      SeekChapter(GetChapter() + 1);
-      return;
+      const std::chrono::milliseconds ts{time};
+
+      // Seek to the nearest bookmark or chapter.
+      // No earlier/later bookmark or chapter? use a large step.
+      if (!bPlus)
+      {
+        const std::optional<std::chrono::milliseconds> tsBookmark =
+            GetBookmarkPos(GetPreviousBookmark(ts));
+
+        if (hasValidChapters)
+        {
+          const std::optional<std::chrono::milliseconds> tsChapter =
+              GetChapterPosMs(GetPreviousChapter());
+
+          if (tsChapter.has_value() &&
+              (!tsBookmark.has_value() || tsChapter.value().count() > tsBookmark.value().count()))
+          {
+            SeekChapter(GetPreviousChapter());
+            return;
+          }
+        }
+
+        if (tsBookmark.has_value())
+          seekTarget = tsBookmark.value().count();
+      }
+      else
+      {
+        const std::optional<std::chrono::milliseconds> tsBookmark =
+            GetBookmarkPos(GetNextBookmark(ts));
+
+        if (hasValidChapters)
+        {
+          const std::optional<std::chrono::milliseconds> tsChapter = GetChapterPosMs(chapter + 1);
+
+          if (tsChapter.has_value() &&
+              (!tsBookmark.has_value() || tsChapter.value().count() < tsBookmark.value().count()))
+          {
+            SeekChapter(chapter + 1);
+            return;
+          }
+        }
+
+        if (tsBookmark.has_value())
+          seekTarget = tsBookmark.value().count();
+      }
     }
   }
 
-  int64_t seekTarget;
-  const std::shared_ptr<CAdvancedSettings> advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
-  if (advancedSettings->m_videoUseTimeSeeking && m_processInfo->GetMaxTime() > 2000 * advancedSettings->m_videoTimeSeekForwardBig)
+  if (seekTarget.has_value())
   {
-    if (bLargeStep)
-      seekTarget = bPlus ? advancedSettings->m_videoTimeSeekForwardBig :
-                           advancedSettings->m_videoTimeSeekBackwardBig;
-    else
-      seekTarget = bPlus ? advancedSettings->m_videoTimeSeekForward :
-                           advancedSettings->m_videoTimeSeekBackward;
-    seekTarget *= 1000;
-    seekTarget += GetTime();
+    accurate = true;
   }
   else
   {
-    int percent;
-    if (bLargeStep)
-      percent = bPlus ? advancedSettings->m_videoPercentSeekForwardBig : advancedSettings->m_videoPercentSeekBackwardBig;
+    const std::shared_ptr<CAdvancedSettings> advancedSettings =
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+    if (advancedSettings->m_videoUseTimeSeeking &&
+        m_processInfo->GetMaxTime() > 2000 * advancedSettings->m_videoTimeSeekForwardBig)
+    {
+      if (bLargeStep)
+        seekTarget = bPlus ? advancedSettings->m_videoTimeSeekForwardBig
+                           : advancedSettings->m_videoTimeSeekBackwardBig;
+      else
+        seekTarget = bPlus ? advancedSettings->m_videoTimeSeekForward
+                           : advancedSettings->m_videoTimeSeekBackward;
+      seekTarget.value() *= 1000;
+      seekTarget.value() += GetTime();
+    }
     else
-      percent = bPlus ? advancedSettings->m_videoPercentSeekForward : advancedSettings->m_videoPercentSeekBackward;
-    seekTarget = static_cast<int64_t>(m_processInfo->GetMaxTime() * (GetPercentage() + percent) / 100);
+    {
+      int percent;
+      if (bLargeStep)
+        percent = bPlus ? advancedSettings->m_videoPercentSeekForwardBig
+                        : advancedSettings->m_videoPercentSeekBackwardBig;
+      else
+        percent = bPlus ? advancedSettings->m_videoPercentSeekForward
+                        : advancedSettings->m_videoPercentSeekBackward;
+      seekTarget =
+          static_cast<int64_t>(m_processInfo->GetMaxTime() * (GetPercentage() + percent) / 100);
+    }
+
+    if (g_application.CurrentFileItem().IsStack() &&
+        (seekTarget > m_processInfo->GetMaxTime() || seekTarget < 0))
+    {
+      g_application.SeekTime((seekTarget.value() - time) * 0.001 + g_application.GetTime());
+      // warning, don't access any VideoPlayer variables here as
+      // the VideoPlayer object may have been destroyed
+      return;
+    }
   }
 
-  bool restore = true;
-
-  int64_t time = GetTime();
-  if(g_application.CurrentFileItem().IsStack() &&
-     (seekTarget > m_processInfo->GetMaxTime() || seekTarget < 0))
+  if (seekTarget.has_value())
   {
-    g_application.SeekTime((seekTarget - time) * 0.001 + g_application.GetTime());
-    // warning, don't access any VideoPlayer variables here as
-    // the VideoPlayer object may have been destroyed
-    return;
+    int64_t target = seekTarget.value();
+    CDVDMsgPlayerSeek::CMode mode;
+    mode.time = target;
+    mode.backward = !bPlus;
+    mode.accurate = accurate;
+    mode.restore = true;
+    mode.trickplay = false;
+    mode.sync = true;
+
+    m_messenger.Put(std::make_shared<CDVDMsgPlayerSeek>(mode));
+    SynchronizeDemuxer();
+    if (target < 0)
+      target = 0;
+    m_callback.OnPlayBackSeek(target, target - time);
   }
-
-  CDVDMsgPlayerSeek::CMode mode;
-  mode.time = (int)seekTarget;
-  mode.backward = !bPlus;
-  mode.accurate = false;
-  mode.restore = restore;
-  mode.trickplay = false;
-  mode.sync = true;
-
-  m_messenger.Put(std::make_shared<CDVDMsgPlayerSeek>(mode));
-  SynchronizeDemuxer();
-  if (seekTarget < 0)
-    seekTarget = 0;
-  m_callback.OnPlayBackSeek(seekTarget, seekTarget - time);
 }
 
 bool CVideoPlayer::SeekScene(Direction seekDirection)
@@ -4161,6 +4225,13 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
     CServiceBroker::GetDataCacheCore().SetEditList(m_Edl.GetEditList());
     CServiceBroker::GetDataCacheCore().SetCuts(m_Edl.GetCutMarkers());
     CServiceBroker::GetDataCacheCore().SetSceneMarkers(m_Edl.GetSceneMarkers());
+
+    VECBOOKMARKS bm;
+    if (CBookmark::GetBookmarksForFile(m_item.GetDynPath(), bm, {CBookmark::STANDARD}))
+    {
+      std::vector<std::chrono::milliseconds> pos = CBookmark::BookmarksToPositions(bm);
+      SetBookmarks(pos);
+    }
 
     static_cast<IDVDStreamPlayerVideo*>(player)->SetSpeed(m_streamPlayerSpeed);
     m_CurrentVideo.syncState = IDVDStreamPlayer::SYNC_STARTING;
@@ -5028,6 +5099,15 @@ int64_t CVideoPlayer::GetChapterPos(int chapterIdx) const
   return -1;
 }
 
+std::optional<std::chrono::milliseconds> CVideoPlayer::GetChapterPosMs(int chapterIdx) const
+{
+  std::unique_lock lock(m_StateSection);
+  if (chapterIdx > 0 && chapterIdx <= static_cast<int>(m_State.chapters.size()))
+    return m_State.chapters[chapterIdx - 1].second;
+
+  return std::nullopt;
+}
+
 int CVideoPlayer::GetPreviousChapter()
 {
   // 5-second grace period from chapter start to skip backwards to previous chapter
@@ -5038,6 +5118,68 @@ int CVideoPlayer::GetPreviousChapter()
     return chapter - 1;
   else
     return chapter;
+}
+
+bool CVideoPlayer::HasBookmarks() const
+{
+  std::unique_lock lock(m_StateSection);
+  return !m_State.m_bookmarks.empty();
+}
+
+std::vector<std::chrono::milliseconds> CVideoPlayer::GetBookmarks() const
+{
+  std::unique_lock lock(m_StateSection);
+  return m_State.m_bookmarks;
+}
+
+void CVideoPlayer::SetBookmarks(const std::vector<std::chrono::milliseconds>& bookmarks)
+{
+  std::unique_lock lock(m_StateSection);
+  m_State.m_bookmarks = bookmarks;
+  CServiceBroker::GetDataCacheCore().SetBookmarks(bookmarks);
+}
+
+int CVideoPlayer::GetPreviousBookmark(std::chrono::milliseconds ts)
+{
+  std::unique_lock lock(m_StateSection);
+  std::vector<std::chrono::milliseconds> bookmarks = m_State.m_bookmarks;
+
+  if (bookmarks.empty())
+    return -1;
+
+  // Add grace period of 5 seconds to make it easier to skip backwards through bookmarks
+  //! @todo reduce to 2 seconds if seek accuracy can be improved
+  const std::chrono::milliseconds adjusted_ts = ts - 5s;
+
+  size_t idx{0};
+  while (idx < bookmarks.size() && bookmarks[idx] < adjusted_ts)
+    ++idx;
+
+  return idx > 0 ? static_cast<int>(idx) - 1 : -1;
+}
+
+int CVideoPlayer::GetNextBookmark(std::chrono::milliseconds ts)
+{
+  std::unique_lock lock(m_StateSection);
+  std::vector<std::chrono::milliseconds> bookmarks = m_State.m_bookmarks;
+
+  if (bookmarks.empty())
+    return -1;
+
+  size_t idx{0};
+  while (idx < bookmarks.size() && bookmarks[idx] <= ts)
+    ++idx;
+
+  return idx < bookmarks.size() ? idx : -1;
+}
+
+std::optional<std::chrono::milliseconds> CVideoPlayer::GetBookmarkPos(int idx)
+{
+  std::unique_lock lock(m_StateSection);
+  if (idx >= 0 && static_cast<size_t>(idx) < m_State.m_bookmarks.size())
+    return m_State.m_bookmarks[idx];
+  else
+    return std::nullopt;
 }
 
 void CVideoPlayer::AddSubtitle(const std::string& strSubPath)

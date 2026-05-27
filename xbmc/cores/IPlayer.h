@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -14,6 +14,7 @@
 #include "MenuType.h"
 #include "VideoSettings.h"
 
+#include <chrono>
 #include <memory>
 #include <string>
 #include <vector>
@@ -165,6 +166,8 @@ public:
   virtual int64_t GetChapterPos(int chapterIdx = -1) const { return 0; }
   virtual int  SeekChapter(int iChapter)                       { return -1; }
 //  virtual bool GetChapterInfo(int chapter, SChapterInfo &info) { return false; }
+  virtual std::vector<std::chrono::milliseconds> GetBookmarks() const { return {}; }
+  virtual void SetBookmarks(const std::vector<std::chrono::milliseconds>& bookmarks) {}
 
   virtual void SeekTime(int64_t iTime = 0) {}
   /*

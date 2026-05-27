@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -28,6 +28,7 @@
 #include <atomic>
 #include <chrono>
 #include <memory>
+#include <optional>
 #include <unordered_map>
 #include <utility>
 #include <vector>
@@ -49,6 +50,7 @@ struct SPlayerState
     menuType = MenuType::NONE;
     chapter = 0;
     chapters.clear();
+    m_bookmarks.clear();
     canpause = false;
     canseek = false;
     cantempo = false;
@@ -79,6 +81,8 @@ struct SPlayerState
   int chapter; // 1-based current chapter. <=0 means no chapter / unknown
   // name and start timestamp of chapters.
   std::vector<std::pair<std::string, std::chrono::milliseconds>> chapters;
+  // position of the bookmarks
+  std::vector<std::chrono::milliseconds> m_bookmarks;
 
   bool canpause;            // pvr: can pause the current playing item
   bool canseek;             // pvr: can seek in the current playing item
@@ -333,8 +337,11 @@ public:
   int GetChapterCount() const override;
   int GetChapter() const override;
   void GetChapterName(std::string& strChapterName, int chapterIdx = -1) const override;
-  int64_t GetChapterPos(int chapterIdx = -1) const override;
+  int64_t GetChapterPos(int chapterIdx = -1) const override; // chapter start ts in seconds
   int  SeekChapter(int iChapter) override;
+  std::vector<std::chrono::milliseconds> GetBookmarks() const override;
+  bool HasBookmarks() const;
+  void SetBookmarks(const std::vector<std::chrono::milliseconds>& bookmarks) override;
 
   void SeekTime(int64_t iTime) override;
   bool SeekTimeRelative(int64_t iTime) override;
@@ -504,6 +511,10 @@ protected:
 
   void UpdateFileItemStreamDetails(CFileItem& item, UpdateStreamDetails update);
   int GetPreviousChapter();
+  std::optional<std::chrono::milliseconds> GetChapterPosMs(int chapterIdx = -1) const;
+  int GetPreviousBookmark(std::chrono::milliseconds ts);
+  int GetNextBookmark(std::chrono::milliseconds ts);
+  std::optional<std::chrono::milliseconds> GetBookmarkPos(int idx);
 
   bool m_players_created;
 

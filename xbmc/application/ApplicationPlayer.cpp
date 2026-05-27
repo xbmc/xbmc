@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -205,6 +205,21 @@ int64_t CApplicationPlayer::GetChapterPos(int chapterIdx) const
     return player->GetChapterPos(chapterIdx);
 
   return -1;
+}
+
+std::vector<std::chrono::milliseconds> CApplicationPlayer::GetBookmarks() const
+{
+  const std::shared_ptr<const IPlayer> player = GetInternal();
+  if (player)
+    return player->GetBookmarks();
+  return {};
+}
+
+void CApplicationPlayer::SetBookmarks(const std::vector<std::chrono::milliseconds>& bookmarks)
+{
+  const std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    player->SetBookmarks(bookmarks);
 }
 
 bool CApplicationPlayer::HasAudio() const

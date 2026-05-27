@@ -163,6 +163,15 @@
 				<righttexture>colors/white.png</righttexture>
 				<info>Player.Chapters</info>
 			</control>
+			<control type="ranges">
+				<left>0</left>
+				<top>61</top>
+				<width>100%</width>
+				<height>4</height>
+				<texturebg border="3" colordiffuse="00FFFFFF">colors/white50.png</texturebg>
+				<righttexture>colors/white.png</righttexture>
+				<info>Player.Bookmarks</info>
+			</control>
 		</control>
 		<control type="group">
 			<animation effect="slide" end="0,-200" time="300" tween="sine" easing="inout" condition="$EXP[infodialog_active]">conditional</animation>

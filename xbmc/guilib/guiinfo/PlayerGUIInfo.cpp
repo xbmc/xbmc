@@ -304,6 +304,7 @@ bool CPlayerGUIInfo::GetLabel(std::string& value,
     case PLAYER_CUTS:
     case PLAYER_SCENE_MARKERS:
     case PLAYER_CHAPTERS:
+    case PLAYER_BOOKMARKS:
       value = GetContentRanges(info.GetInfo());
       return true;
 
@@ -564,6 +565,9 @@ bool CPlayerGUIInfo::GetBool(bool& value,
     case PLAYER_HAS_SCENE_MARKERS:
       value = !CServiceBroker::GetDataCacheCore().GetSceneMarkers().empty();
       return true;
+    case PLAYER_HAS_BOOKMARKS:
+      value = !CServiceBroker::GetDataCacheCore().GetBookmarks().empty();
+      return true;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // PLAYLIST_*
@@ -682,6 +686,9 @@ std::string CPlayerGUIInfo::GetContentRanges(int iInfo) const
       case PLAYER_CHAPTERS:
         ranges = GetChapters(data, duration);
         break;
+      case PLAYER_BOOKMARKS:
+        ranges = GetBookmarks(data, duration);
+        break;
       default:
         CLog::Log(LOGERROR, "CPlayerGUIInfo::GetContentRanges({}) - unhandled guiinfo", iInfo);
         break;
@@ -703,6 +710,9 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetEditList(const CDataCach
 {
   std::vector<std::pair<float, float>> ranges;
 
+  if (duration == 0)
+    return ranges;
+
   const std::vector<EDL::Edit>& edits = data.GetEditList();
   for (const auto& edit : edits)
   {
@@ -717,6 +727,9 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetCuts(const CDataCacheCor
                                                              std::time_t duration) const
 {
   std::vector<std::pair<float, float>> ranges;
+
+  if (duration == 0)
+    return ranges;
 
   const std::vector<std::chrono::milliseconds>& cuts = data.GetCuts();
   float lastMarker = 0.0f;
@@ -742,6 +755,9 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetSceneMarkers(const CData
 {
   std::vector<std::pair<float, float>> ranges;
 
+  if (duration == 0)
+    return ranges;
+
   const std::vector<std::chrono::milliseconds>& scenes = data.GetSceneMarkers();
   float lastMarker = 0.0f;
   for (const auto& scene : scenes)
@@ -760,6 +776,9 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetChapters(const CDataCach
 {
   std::vector<std::pair<float, float>> ranges;
 
+  if (duration == 0)
+    return ranges;
+
   const std::vector<std::pair<std::string, int64_t>>& chapters = data.GetChapters();
   float lastMarker = 0.0f;
   for (const auto& [_, chapterEnd] : chapters)
@@ -767,6 +786,27 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetChapters(const CDataCach
     const float marker =
         static_cast<float>(chapterEnd * 1000) * 100.0f / static_cast<float>(duration);
     if (marker != 0.0f)
+      ranges.emplace_back(lastMarker, marker);
+
+    lastMarker = marker;
+  }
+  return ranges;
+}
+
+std::vector<std::pair<float, float>> CPlayerGUIInfo::GetBookmarks(const CDataCacheCore& data,
+                                                                  std::time_t duration) const
+{
+  std::vector<std::pair<float, float>> ranges;
+
+  if (duration == 0)
+    return ranges;
+
+  const std::vector<std::chrono::milliseconds>& bookmarks = data.GetBookmarks();
+  float lastMarker = 0.0f;
+  for (const auto& scene : bookmarks)
+  {
+    float marker = scene.count() * 100.0f / duration;
+    if (marker != 0)
       ranges.emplace_back(lastMarker, marker);
 
     lastMarker = marker;

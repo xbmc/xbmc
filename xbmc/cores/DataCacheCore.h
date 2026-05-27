@@ -119,6 +119,18 @@ public:
    */
   const std::vector<std::pair<std::string, int64_t>>& GetChapters() const;
 
+  /*!
+   * \brief Set the list of bookmarks in cache.
+   * \return The list of bookmarks or an empty list if no bookmarks exist
+   */
+  void SetBookmarks(const std::vector<std::chrono::milliseconds>& bookmarks);
+
+  /*!
+   * \brief Get the list of bookmarks from cache.
+   * \return The list of bookmarks or an empty vector if no scene exist.
+   */
+  const std::vector<std::chrono::milliseconds>& GetBookmarks() const;
+
   // render info
   void SetRenderClockSync(bool enabled);
   bool IsRenderClockSync();
@@ -292,6 +304,21 @@ protected:
     const std::vector<std::pair<std::string, int64_t>>& GetChapters() const { return m_chapters; }
 
     /*!
+      * @brief Save the list of bookmarks in cache.
+      * @param sceneMarkers the list of bookmarks to store in cache
+      */
+    void SetBookmarks(const std::vector<std::chrono::milliseconds>& bookmarks)
+    {
+      m_bookmarks = bookmarks;
+    }
+
+    /*!
+      * \brief Get the list of bookmarks in cache.
+      * \return the list of bookmarks in cache
+      */
+    const std::vector<std::chrono::milliseconds>& GetBookmarks() const { return m_bookmarks; }
+
+    /*!
       * @brief Reset the content cache to the original values (all empty)
       */
     void Reset()
@@ -300,6 +327,7 @@ protected:
       m_chapters.clear();
       m_cuts.clear();
       m_sceneMarkers.clear();
+      m_bookmarks.clear();
     }
 
   private:
@@ -311,6 +339,8 @@ protected:
     std::vector<std::chrono::milliseconds> m_cuts;
     /*!< position for EDL scene markers */
     std::vector<std::chrono::milliseconds> m_sceneMarkers;
+    /*!< position for bookmarks */
+    std::vector<std::chrono::milliseconds> m_bookmarks;
   } m_contentInfo;
 
   CCriticalSection m_renderSection;

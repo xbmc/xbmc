@@ -777,7 +777,7 @@ constexpr std::array<InfoMap, 7> integer_bools = {{
 ///                  \anchor Player_Editlist
 ///                  _string_,
 ///     @return The editlist of the currently playing item as csv in the format start1\,end1\,start2\,end2\,...
-///     Tokens must have values in the range from 0.0 to 100.0. end token must be less or equal than start token.
+///     Tokens have values in the range from 0.0 to 100.0. end token is greater or equal to the  start token.
 ///     @note This infolabel does not contain EDL cuts. Edits start and end times are adjusted according to cuts
 ///     defined for the media item.
 ///     <p><hr>
@@ -788,7 +788,7 @@ constexpr std::array<InfoMap, 7> integer_bools = {{
 ///                  \anchor Player_Cuts
 ///                  _string_,
 ///     @return The EDL cut markers of the currently playing item as csv in the format start1\,end1\,start2\,end2\,...
-///     Tokens must have values in the range from 0.0 to 100.0. end token must be less or equal than start token.
+///     Tokens have values in the range from 0.0 to 100.0. end token is greater or equal to the  start token.
 ///     <p><hr>
 ///     @skinning_v20 **[New Infolabel]** \link Player_Cuts `Player.Cuts`\endlink
 ///     <p>
@@ -797,7 +797,7 @@ constexpr std::array<InfoMap, 7> integer_bools = {{
 ///                  \anchor Player_SceneMarkers
 ///                  _string_,
 ///     @return The EDL scene markers of the currently playing item as csv in the format start1\,end1\,start2\,end2\,...
-///     Tokens must have values in the range from 0.0 to 100.0. end token must be less or equal than start token.
+///     Tokens have values in the range from 0.0 to 100.0. end token is greater or equal to the  start token.
 ///     <p><hr>
 ///     @skinning_v20 **[New Infolabel]** \link Player_SceneMarkers `Player.SceneMarkers`\endlink
 ///     <p>
@@ -814,9 +814,26 @@ constexpr std::array<InfoMap, 7> integer_bools = {{
 ///                  \anchor Player_Chapters
 ///                  _string_,
 ///     @return The chapters of the currently playing item as csv in the format start1\,end1\,start2\,end2\,...
-///     Tokens must have values in the range from 0.0 to 100.0. end token must be less or equal than start token.
+///     Tokens have values in the range from 0.0 to 100.0. end token is greater or equal to the  start token.
 ///     <p><hr>
 ///     @skinning_v19 **[New Infolabel]** \link Player_Chapters `Player.Chapters`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.Bookmarks`</b>,
+///                  \anchor Player_Bookmarks
+///                  _string_,
+///     @return The bookmarks of the currently playing item as csv in the format start1\,end1\,start2\,end2\,...
+///     Tokens have values in the range from 0.0 to 100.0. end token is greater or equal to the  start token.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link Player_Bookmarks `Player.Bookmarks`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.HasBookmarks`</b>,
+///                  \anchor Player_HasBookmarks
+///                  _boolean_,
+///     @return **True** if the item being played has bookmarks\, **False** otherwise
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link Player_HasBookmarks `Player.HasBookmarks`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.IsExternal`</b>,
@@ -844,7 +861,7 @@ constexpr std::array<InfoMap, 7> integer_bools = {{
 ///     <p>
 ///   }
 // clang-format off
-constexpr std::array<InfoMap, 58> player_labels = {{
+constexpr std::array<InfoMap, 60> player_labels = {{
     {"hasmedia",              PLAYER_HAS_MEDIA},
     {"hasaudio",              PLAYER_HAS_AUDIO},
     {"hasvideo",              PLAYER_HAS_VIDEO},
@@ -903,6 +920,8 @@ constexpr std::array<InfoMap, 58> player_labels = {{
     {"scenemarkers",          PLAYER_SCENE_MARKERS},
     {"hasscenemarkers",       PLAYER_HAS_SCENE_MARKERS},
     {"chapters",              PLAYER_CHAPTERS},
+    {"bookmarks",             PLAYER_BOOKMARKS},
+    {"hasbookmarks",          PLAYER_HAS_BOOKMARKS},
 }};
 // clang-format on
 

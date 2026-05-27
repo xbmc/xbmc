@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012-2018 Team Kodi
+ *  Copyright (C) 2012-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -85,6 +85,8 @@ private:
                                                        std::time_t duration) const;
   std::vector<std::pair<float, float>> GetChapters(const CDataCacheCore& data,
                                                    std::time_t duration) const;
+  std::vector<std::pair<float, float>> GetBookmarks(const CDataCacheCore& data,
+                                                    std::time_t duration) const;
 
   std::unique_ptr<CFileItem> m_currentItem;
   std::atomic_bool m_playerShowTime{false};
