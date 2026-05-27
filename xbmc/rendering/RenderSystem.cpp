@@ -19,6 +19,8 @@
 
 #include <memory>
 
+unsigned int CRenderSystemBase::m_GUIElementCount = 0;
+
 CRenderSystemBase::CRenderSystemBase()
 {
   OnAdvancedSettingsLoaded();

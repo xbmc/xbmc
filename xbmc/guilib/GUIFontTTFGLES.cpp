@@ -281,6 +281,7 @@ void CGUIFontTTFGLES::LastEnd()
             reinterpret_cast<GLvoid*>(character * sizeof(SVertex) * 4 + offsetof(SVertex, u)));
 
         glDrawElements(GL_TRIANGLES, 6 * count, GL_UNSIGNED_SHORT, 0);
+        CRenderSystemBase::m_GUIElementCount++;
       }
 
       glMatrixModview.Pop();

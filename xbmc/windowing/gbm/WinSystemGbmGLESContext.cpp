@@ -270,15 +270,20 @@ bool CWinSystemGbmGLESContext::BeginGuiComposite()
 
     m_guiFboWidth = width;
     m_guiFboHeight = height;
+    m_guiFboClean = false; // fresh FBO is undefined, force a clear
     CLog::Log(LOGDEBUG, "CWinSystemGbmGLESContext: created GUI FBO {}x{}", width, height);
   }
 
   if (!m_guiFbo.BeginRender())
     return false;
 
-  // clear FBO to transparent black
-  glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-  glClear(GL_COLOR_BUFFER_BIT);
+  // Clear only when the FBO holds stale content; idle frames are already clean.
+  if (!m_guiFboClean)
+  {
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    m_guiFboClean = true;
+  }
 
   return true;
 }
@@ -302,6 +307,14 @@ void CWinSystemGbmGLESContext::EndGuiComposite()
 void CWinSystemGbmGLESContext::CompositeGui()
 {
   if (!m_guiFbo.IsValid() || !m_guiFbo.IsBound() || !m_compositeShader)
+    return;
+
+  // CRenderSystemBase counts the GUI elements drawn this frame. Zero means the
+  // GUI layer put nothing in the FBO: it is still clean (skip next clear) and
+  // there is nothing to composite.
+  const bool guiEmpty = (CRenderSystemBase::m_GUIElementCount == 0);
+  m_guiFboClean = guiEmpty;
+  if (guiEmpty)
     return;
 
   glActiveTexture(GL_TEXTURE0);

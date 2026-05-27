@@ -262,6 +262,8 @@ bool CRenderSystemGL::BeginRender()
   if (!m_bRenderCreated)
     return false;
 
+  m_GUIElementCount = 0;
+
   bool useLimited = CServiceBroker::GetWinSystem()->UseLimitedColor() &&
                     !CServiceBroker::GetWinSystem()->IsHdrComposite();
 

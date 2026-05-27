@@ -176,6 +176,8 @@ bool CRenderSystemGLES::BeginRender()
   if (!m_bRenderCreated)
     return false;
 
+  m_GUIElementCount = 0;
+
   const bool useLimited = CServiceBroker::GetWinSystem()->UseLimitedColor() &&
                           !CServiceBroker::GetWinSystem()->IsHdrComposite();
   const bool usePQ = CServiceBroker::GetWinSystem()->GetGfxContext().IsTransferPQ();

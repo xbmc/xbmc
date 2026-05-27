@@ -45,6 +45,10 @@ public:
   CRenderSystemBase();
   virtual ~CRenderSystemBase();
 
+  // Number of GUI elements (textures, text, overlays) drawn this frame; reset
+  // in BeginRender, bumped at each GUI draw primitive. Render-thread only.
+  static unsigned int m_GUIElementCount;
+
   virtual bool InitRenderSystem() = 0;
   virtual bool DestroyRenderSystem() = 0;
   virtual bool ResetRenderSystem(int width, int height) = 0;

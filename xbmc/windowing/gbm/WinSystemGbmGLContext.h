@@ -58,6 +58,7 @@ private:
   CFrameBufferObject m_guiFbo;
   int m_guiFboWidth{0};
   int m_guiFboHeight{0};
+  bool m_guiFboClean{false};
   std::unique_ptr<CGuiCompositeShaderGL> m_compositeShader;
 };
 
