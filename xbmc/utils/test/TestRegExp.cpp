@@ -302,3 +302,126 @@ TEST_F(TestRegExpLog, DumpOvector)
 
   EXPECT_TRUE(XFILE::CFile::Delete(logfile));
 }
+
+namespace
+{
+void RegExpCacheTest(KODI::REGEXP::RegExpCache* cache)
+{
+  std::shared_ptr<CRegExp> regexp;
+
+  // Invalid pattern
+  regexp = KODI::REGEXP::GetRegExp("(abc", cache);
+
+  EXPECT_EQ(nullptr, regexp);
+  if (cache != nullptr)
+  {
+    // braces to keep clang-format happy
+    EXPECT_EQ(1, cache->size());
+  }
+
+  // The cache doesn't grow for known patterns
+  regexp = KODI::REGEXP::GetRegExp("(abc", cache);
+
+  EXPECT_EQ(nullptr, regexp);
+  if (cache != nullptr)
+  {
+    // braces to keep clang-format happy
+    EXPECT_EQ(1, cache->size());
+  }
+
+  regexp = KODI::REGEXP::GetRegExp("^(Test)", cache);
+
+  if (cache != nullptr)
+  {
+    // braces to keep clang-format happy
+    EXPECT_EQ(2, cache->size());
+  }
+  EXPECT_NE(nullptr, regexp);
+  if (regexp != nullptr)
+  {
+    EXPECT_TRUE(regexp->IsCompiled());
+    EXPECT_EQ(0, regexp->RegFind("Test"));
+  }
+
+  // The cache doesn't grow for known patterns
+  KODI::REGEXP::GetRegExp("^(Test)", cache);
+
+  if (cache != nullptr)
+  {
+    // braces to keep clang-format happy
+    EXPECT_EQ(2, cache->size());
+  }
+
+  // Return a cached regexp
+  std::shared_ptr<CRegExp> regexp2;
+  regexp2 = KODI::REGEXP::GetRegExp("^(Test)", cache);
+
+  if (cache != nullptr)
+  {
+    // braces to keep clang-format happy
+    EXPECT_TRUE(regexp.get() == regexp2.get());
+  }
+  else
+  {
+    EXPECT_TRUE(regexp.get() != regexp2.get());
+  }
+}
+} // namespace
+
+TEST(TestRegExpCache, WithCache)
+{
+  KODI::REGEXP::RegExpCache cache;
+  EXPECT_TRUE(cache.empty());
+
+  RegExpCacheTest(&cache);
+}
+
+TEST(TestRegExpCache, WithoutCache)
+{
+  RegExpCacheTest(nullptr);
+}
+
+TEST(TestRegExpCache, CtorArgs)
+{
+  std::shared_ptr<CRegExp> regexp;
+
+  // Default constructor: case sensitive
+  regexp = KODI::REGEXP::GetRegExp("^(Test)", nullptr);
+
+  EXPECT_NE(nullptr, regexp);
+  if (regexp != nullptr)
+  {
+    EXPECT_TRUE(regexp->IsCompiled());
+    EXPECT_EQ(-1, regexp->RegFind("TeST"));
+  }
+
+  // ctor argument for case sensitive match
+  regexp = KODI::REGEXP::GetRegExp("^(Test)", nullptr, true, CRegExp::forceUtf8);
+
+  EXPECT_NE(nullptr, regexp);
+  if (regexp != nullptr)
+  {
+    EXPECT_TRUE(regexp->IsCompiled());
+    // Successful match with a different case
+    EXPECT_EQ(0, regexp->RegFind("TeST"));
+  }
+
+  // Default constructor: ascii mode
+  regexp = KODI::REGEXP::GetRegExp("\\x{00E0}", nullptr);
+  EXPECT_NE(nullptr, regexp);
+  if (regexp != nullptr)
+  {
+    EXPECT_TRUE(regexp->IsCompiled());
+    EXPECT_EQ(-1, regexp->RegFind("\u00E0")); // letter à
+  }
+
+  // Constructor argument for unicode mode
+  regexp = KODI::REGEXP::GetRegExp("\\x{00E0}", nullptr, false, CRegExp::forceUtf8);
+
+  EXPECT_NE(nullptr, regexp);
+  if (regexp != nullptr)
+  {
+    EXPECT_TRUE(regexp->IsCompiled());
+    EXPECT_EQ(0, regexp->RegFind("\u00E0"));
+  }
+}

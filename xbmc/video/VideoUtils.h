@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022 Team Kodi
+ *  Copyright (C) 2022-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "utils/RegExp.h"
 #include "video/Bookmark.h"
 
 #include <cstdint>
@@ -23,9 +24,11 @@ namespace KODI::VIDEO::UTILS
 
 /*! \brief
  *  Find a local trailer file for a given file item
+ *  \param[in] item the file item
+ *  \param[in] optional Regexp cache to avoid recompilation
  *  \return non-empty string with path of trailer if found
  */
-std::string FindTrailer(const CFileItem& item);
+std::string FindTrailer(const CFileItem& item, KODI::REGEXP::RegExpCache* cache = nullptr);
 
 /*!
  \brief Check whether an item is an optical media folder or its parent.

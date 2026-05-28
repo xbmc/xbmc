@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -12,6 +12,7 @@
 #include "music/MusicDatabase.h"
 #include "threads/IRunnable.h"
 #include "threads/Thread.h"
+#include "utils/RegExp.h"
 
 #include <string>
 
@@ -289,5 +290,6 @@ protected:
   std::set<std::string> m_seenPaths;
   int m_flags;
   CThread m_fileCountReader;
+  mutable KODI::REGEXP::RegExpCache m_regexpCache;
 };
 }

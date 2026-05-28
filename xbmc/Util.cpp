@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -647,21 +647,24 @@ std::string CUtil::GetSplashPath()
   return CSpecialProtocol::TranslatePathConvertCase(*it);
 }
 
-bool CUtil::ExcludeFileOrFolder(const std::string& strFileOrFolder, const std::vector<std::string>& regexps)
+bool CUtil::ExcludeFileOrFolder(const std::string& strFileOrFolder,
+                                const std::vector<std::string>& regexps,
+                                KODI::REGEXP::RegExpCache* cache)
 {
   if (strFileOrFolder.empty())
     return false;
 
-  CRegExp regExExcludes(true, CRegExp::autoUtf8);  // case insensitive regex
+  std::shared_ptr<CRegExp> regExExcludes;
 
   for (const auto &regexp : regexps)
   {
-    if (!regExExcludes.RegComp(regexp.c_str()))
+    if (regExExcludes = KODI::REGEXP::GetRegExp(regexp, cache, true, CRegExp::autoUtf8);
+        regExExcludes == nullptr)
     { // invalid regexp - complain in logs
       CLog::Log(LOGERROR, "{}: Invalid exclude RegExp:'{}'", __FUNCTION__, regexp);
       continue;
     }
-    if (regExExcludes.RegFind(strFileOrFolder) > -1)
+    if (regExExcludes->RegFind(strFileOrFolder) > -1)
     {
       CLog::LogF(LOGDEBUG, "File '{}' excluded. (Matches exclude rule RegExp: '{}')", CURL::GetRedacted(strFileOrFolder), regexp);
       return true;

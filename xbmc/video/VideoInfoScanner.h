@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -13,6 +13,7 @@
 #include "addons/Scraper.h"
 #include "guilib/GUIListItem.h"
 #include "utils/Artwork.h"
+#include "utils/RegExp.h"
 
 #include <set>
 #include <string>
@@ -49,14 +50,13 @@ namespace KODI::VIDEO
 
   class CVideoInfoScanner : public CInfoScanner
   {
-
+  public:
     enum class UseRemoteArtWithLocalScraper : bool
     {
       NO,
       YES
     };
 
-  public:
     CVideoInfoScanner();
     ~CVideoInfoScanner() override;
 
@@ -136,17 +136,19 @@ namespace KODI::VIDEO
 
     /*! \brief Get season thumbs for a tvshow.
      All seasons (regardless of whether the user has episodes) are added to the art map.
-     \param show     tvshow info tag
-     \param art      artwork map to which season thumbs are added.
-     \param useLocal whether to use local thumbs, defaults to true
-     \param useRemoteArt use remote art if also using local scraper. Defaults to yes.
+     \param[in] show     tvshow info tag
+     \param[in] art      artwork map to which season thumbs are added.
+     \param[in] useLocal whether to use local thumbs, defaults to true
+     \param[in] useRemoteArt use remote art if also using local scraper. Defaults to yes.
+     \param[in] cache regexp cache to avoid repeated compilations
      */
     static void GetSeasonThumbs(
         const CVideoInfoTag& show,
         KODI::ART::SeasonsArtwork& art,
         const std::vector<std::string>& artTypes,
         bool useLocal = true,
-        UseRemoteArtWithLocalScraper useRemoteArt = UseRemoteArtWithLocalScraper::YES);
+        UseRemoteArtWithLocalScraper useRemoteArt = UseRemoteArtWithLocalScraper::YES,
+        KODI::REGEXP::RegExpCache* cache = nullptr);
     static std::string GetImage(const CScraperUrl::SUrlEntry &image, const std::string& itemPath);
 
     static std::string GetMovieSetInfoFolder(const std::string& setTitle);
@@ -329,5 +331,6 @@ namespace KODI::VIDEO
     std::set<int> m_pathsToClean;
     std::shared_ptr<CAdvancedSettings> m_advancedSettings;
     CVideoDatabase::ScraperCache m_scraperCache;
+    mutable KODI::REGEXP::RegExpCache m_regexpCache;
   };
   } // namespace KODI::VIDEO

@@ -167,7 +167,9 @@ void ProcessEpisodeRange(int first,
 }
 } // namespace
 
-bool CEpisodeUtils::EnumerateEpisodeItem(const CFileItem* item, VIDEO::EPISODELIST& episodeList)
+bool CEpisodeUtils::EnumerateEpisodeItem(const CFileItem* item,
+                                         VIDEO::EPISODELIST& episodeList,
+                                         KODI::REGEXP::RegExpCache* cache /* = nullptr */)
 {
   const auto advancedSettings{CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
   const auto& tvShowRegExps{advancedSettings->m_tvshowEnumRegExps};
@@ -186,21 +188,22 @@ bool CEpisodeUtils::EnumerateEpisodeItem(const CFileItem* item, VIDEO::EPISODELI
   label = CURL::Decode(CURL::GetRedacted(label));
 
   // Pre-compile multi-part regex
-  CRegExp reg2(true, CRegExp::autoUtf8);
-  const bool multiPartRegexValid{reg2.RegComp(advancedSettings->m_tvshowMultiPartEnumRegExp)};
-  if (!multiPartRegexValid)
+  std::shared_ptr<CRegExp> multiPartRegex = KODI::REGEXP::GetRegExp(
+      advancedSettings->m_tvshowMultiPartEnumRegExp, cache, true, CRegExp::autoUtf8);
+  if (multiPartRegex == nullptr)
     CLog::LogF(LOGWARNING, "Invalid multipart RegExp '{}', multipart episode detection disabled",
                advancedSettings->m_tvshowMultiPartEnumRegExp);
   const bool disableEpisodeRanges{advancedSettings->m_disableEpisodeRanges};
 
   for (const auto& tvShowRegExp : tvShowRegExps)
   {
-    CRegExp reg(true, CRegExp::autoUtf8);
-    if (!reg.RegComp(tvShowRegExp.regexp))
+    std::shared_ptr<CRegExp> reg =
+        KODI::REGEXP::GetRegExp(tvShowRegExp.regexp, cache, true, CRegExp::autoUtf8);
+    if (reg == nullptr)
       continue; // Failed to compile
 
     int regPosition;
-    if ((regPosition = reg.RegFind(label.c_str())) < 0)
+    if ((regPosition = reg->RegFind(label.c_str())) < 0)
       continue;
 
     VIDEO::EPISODE episode;
@@ -216,7 +219,7 @@ bool CEpisodeUtils::EnumerateEpisodeItem(const CFileItem* item, VIDEO::EPISODELI
 
     if (byDate)
     {
-      if (!GetAirDateFromRegExp(reg, episode))
+      if (!GetAirDateFromRegExp(*reg, episode))
         continue;
 
       CLog::LogF(LOGDEBUG, "Found date based match {} ({}) [{}]",
@@ -225,7 +228,7 @@ bool CEpisodeUtils::EnumerateEpisodeItem(const CFileItem* item, VIDEO::EPISODELI
     }
     else if (byTitle)
     {
-      if (!GetEpisodeTitleFromRegExp(reg, episode))
+      if (!GetEpisodeTitleFromRegExp(*reg, episode))
         continue;
 
       CLog::LogF(LOGDEBUG, "Found title based match {} ({}) [{}]",
@@ -233,7 +236,7 @@ bool CEpisodeUtils::EnumerateEpisodeItem(const CFileItem* item, VIDEO::EPISODELI
     }
     else
     {
-      if (!GetEpisodeAndSeasonFromRegExp(reg, episode, defaultSeason))
+      if (!GetEpisodeAndSeasonFromRegExp(*reg, episode, defaultSeason))
         continue;
 
       CLog::LogF(LOGDEBUG, "Found episode match {} (s{}e{}) [{}]",
@@ -243,7 +246,7 @@ bool CEpisodeUtils::EnumerateEpisodeItem(const CFileItem* item, VIDEO::EPISODELI
 
     // Grab the remainder from first regexp run
     // as second run might modify or empty it.
-    std::string remainder(reg.GetMatch(3));
+    std::string remainder(reg->GetMatch(3));
 
     // Check if the files base path is a dedicated folder that contains
     // only this single episode. If season and episode match with the
@@ -252,18 +255,18 @@ bool CEpisodeUtils::EnumerateEpisodeItem(const CFileItem* item, VIDEO::EPISODELI
     URIUtils::RemoveSlashAtEnd(basePath);
     basePath = URIUtils::GetFileName(basePath);
 
-    if (reg.RegFind(basePath.c_str()) > -1)
+    if (reg->RegFind(basePath.c_str()) > -1)
     {
       VIDEO::EPISODE parent;
       if (byDate)
       {
-        GetAirDateFromRegExp(reg, parent);
+        GetAirDateFromRegExp(*reg, parent);
         if (episode.cDate == parent.cDate)
           episode.isFolder = true;
       }
       else
       {
-        GetEpisodeAndSeasonFromRegExp(reg, parent, defaultSeason);
+        GetEpisodeAndSeasonFromRegExp(*reg, parent, defaultSeason);
         if (episode.iSeason == parent.iSeason && episode.iEpisode == parent.iEpisode)
           episode.isFolder = true;
       }
@@ -274,7 +277,7 @@ bool CEpisodeUtils::EnumerateEpisodeItem(const CFileItem* item, VIDEO::EPISODELI
 
     // check the remainder of the string for any further episodes.
     // Multi-part only applies to season/episode matches, not date or title based
-    if (!byDate && !byTitle && multiPartRegexValid)
+    if (!byDate && !byTitle && multiPartRegex != nullptr)
     {
       size_t offset{0};
       int reg2Position;
@@ -282,13 +285,14 @@ bool CEpisodeUtils::EnumerateEpisodeItem(const CFileItem* item, VIDEO::EPISODELI
       int currentEpisode{episode.iEpisode};
 
       // we want "long circuit" OR below so that both offsets are evaluated
-      while (static_cast<int>((reg2Position = reg2.RegFind(remainder.c_str() + offset)) > -1) |
-             static_cast<int>((regPosition = reg.RegFind(remainder.c_str() + offset)) > -1))
+      while (static_cast<int>((reg2Position = multiPartRegex->RegFind(remainder.c_str() + offset)) >
+                              -1) |
+             static_cast<int>((regPosition = reg->RegFind(remainder.c_str() + offset)) > -1))
       {
         if ((regPosition <= reg2Position && regPosition != -1) || // season (or 'ep') match
             (regPosition >= 0 && reg2Position == -1))
         {
-          GetEpisodeAndSeasonFromRegExp(reg, episode, defaultSeason);
+          GetEpisodeAndSeasonFromRegExp(*reg, episode, defaultSeason);
           if (currentSeason == episode.iSeason)
           {
             // Already added SxxEyy now loop (if needed) to SxxEzz
@@ -302,7 +306,7 @@ bool CEpisodeUtils::EnumerateEpisodeItem(const CFileItem* item, VIDEO::EPISODELI
                                 advancedSettings->m_tvshowMultiPartEnumRegExp, remainder);
 
             currentEpisode = episode.iEpisode;
-            remainder = reg.GetMatch(3);
+            remainder = reg->GetMatch(3);
           }
           else
           {
@@ -315,7 +319,7 @@ bool CEpisodeUtils::EnumerateEpisodeItem(const CFileItem* item, VIDEO::EPISODELI
               currentSeason = episode.iSeason;
               currentEpisode = episode.iEpisode;
               episodeList.push_back(episode);
-              remainder = reg.GetMatch(3);
+              remainder = reg->GetMatch(3);
             }
             else
             {
@@ -325,7 +329,7 @@ bool CEpisodeUtils::EnumerateEpisodeItem(const CFileItem* item, VIDEO::EPISODELI
               {
                 // Already added first episode of invalid range so remove it
                 episodeList.pop_back();
-                remainder = reg.GetMatch(3);
+                remainder = reg->GetMatch(3);
                 CLog::LogF(
                     LOGDEBUG,
                     "VideoInfoScanner: Removing season {}, episode {} as part of invalid range",
@@ -342,7 +346,7 @@ bool CEpisodeUtils::EnumerateEpisodeItem(const CFileItem* item, VIDEO::EPISODELI
         else if ((reg2Position < regPosition && reg2Position != -1) || // episode match
                  (reg2Position >= 0 && regPosition == -1))
         {
-          const std::string result{reg2.GetMatch(2)};
+          const std::string result{multiPartRegex->GetMatch(2)};
           const int last{std::stoi(result)};
           const std::string prefix{
               offset < remainder.length()
@@ -353,10 +357,11 @@ bool CEpisodeUtils::EnumerateEpisodeItem(const CFileItem* item, VIDEO::EPISODELI
                              : last};
 
           ProcessEpisodeRange(next, last, episode, episodeList,
-                              advancedSettings->m_tvshowMultiPartEnumRegExp, reg2.GetMatch(3));
+                              advancedSettings->m_tvshowMultiPartEnumRegExp,
+                              multiPartRegex->GetMatch(3));
 
           currentEpisode = episode.iEpisode;
-          offset += reg2Position + reg2.GetMatch(1).length() + result.length();
+          offset += reg2Position + multiPartRegex->GetMatch(1).length() + result.length();
         }
       }
     }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022 Team Kodi
+ *  Copyright (C) 2022-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -42,7 +42,7 @@
 namespace KODI::VIDEO::UTILS
 {
 
-std::string FindTrailer(const CFileItem& item)
+std::string FindTrailer(const CFileItem& item, KODI::REGEXP::RegExpCache* cache /* = nullptr */)
 {
   std::string strFile2;
   std::string strFile = item.GetPath();
@@ -81,15 +81,16 @@ std::string FindTrailer(const CFileItem& item)
   std::string strFile3 = URIUtils::AddFileToFolder(strDir, "movie-trailer");
 
   // Precompile our REs
-  std::vector<CRegExp> matchRegExps;
-  CRegExp tmpRegExp(true, CRegExp::autoUtf8);
+  std::vector<std::shared_ptr<CRegExp>> matchRegExps;
   const std::vector<std::string>& strMatchRegExps =
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_trailerMatchRegExps;
 
   for (const auto& strRegExp : strMatchRegExps)
   {
-    if (tmpRegExp.RegComp(strRegExp))
-      matchRegExps.push_back(tmpRegExp);
+    if (std::shared_ptr<CRegExp> r =
+            KODI::REGEXP::GetRegExp(strRegExp, cache, true, CRegExp::autoUtf8);
+        r != nullptr)
+      matchRegExps.push_back(r);
   }
 
   std::string strTrailer;
@@ -108,7 +109,7 @@ std::string FindTrailer(const CFileItem& item)
     {
       for (auto& expr : matchRegExps)
       {
-        if (expr.RegFind(strCandidate) != -1)
+        if (expr->RegFind(strCandidate) != -1)
         {
           strTrailer = items[i]->GetPath();
           i = items.Size();

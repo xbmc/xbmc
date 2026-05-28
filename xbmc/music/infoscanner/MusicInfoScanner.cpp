@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -497,7 +497,7 @@ bool CMusicInfoScanner::DoScan(const std::string& strDirectory)
   // Discard all excluded files defined by m_musicExcludeRegExps
   const std::vector<std::string> &regexps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_audioExcludeFromScanRegExps;
 
-  if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
+  if (CUtil::ExcludeFileOrFolder(strDirectory, regexps, &m_regexpCache))
     return true;
 
   if (HasNoMedia(strDirectory))
@@ -581,7 +581,8 @@ bool CMusicInfoScanner::DoScan(const std::string& strDirectory)
 CInfoScanner::InfoRet CMusicInfoScanner::ScanTags(const CFileItemList& items,
                                                   CFileItemList& scannedItems)
 {
-  std::vector<std::string> regexps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_audioExcludeFromScanRegExps;
+  std::vector<std::string> regexps =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_audioExcludeFromScanRegExps;
 
   for (int i = 0; i < items.Size(); ++i)
   {
@@ -590,7 +591,7 @@ CInfoScanner::InfoRet CMusicInfoScanner::ScanTags(const CFileItemList& items,
 
     CFileItemPtr pItem = items[i];
 
-    if (CUtil::ExcludeFileOrFolder(pItem->GetPath(), regexps))
+    if (CUtil::ExcludeFileOrFolder(pItem->GetPath(), regexps, &m_regexpCache))
       continue;
 
     if (pItem->IsFolder() || PLAYLIST::IsPlayList(*pItem) || pItem->IsPicture() ||
