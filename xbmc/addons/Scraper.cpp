@@ -1369,39 +1369,46 @@ bool CScraper::GetVideoDetails(XFILE::CCurlFile& fcurl,
 
   video.Reset();
 
+  bool fRet(false);
   if (m_isPython)
-    return PythonDetails(ID(), "url", scurl.GetFirstThumbUrl(),
+  {
+    fRet = PythonDetails(ID(), "url", scurl.GetFirstThumbUrl(),
                          fMovie ? "getdetails" : "getepisodedetails", GetPathSettingsAsJSON(),
                          uniqueIDs, video);
-
-  std::string sFunc = fMovie ? "GetDetails" : "GetEpisodeDetails";
-  std::vector<std::string> vcsIn;
-  vcsIn.push_back(scurl.GetId());
-  vcsIn.push_back(scurl.GetFirstThumbUrl());
-  std::vector<std::string> vcsOut = RunNoThrow(sFunc, scurl, fcurl, &vcsIn);
-
-  // parse XML output
-  bool fRet(false);
-  for (const auto& i : vcsOut)
-  {
-    CXBMCTinyXML doc;
-    doc.Parse(i, TIXML_ENCODING_UTF8);
-    if (!doc.RootElement())
-    {
-      CLog::LogF(LOGERROR, "Unable to parse XML");
-      continue;
-    }
-
-    TiXmlHandle xhDoc(&doc);
-    const TiXmlElement* pxeDetails = xhDoc.FirstChild("details").Element();
-    if (!pxeDetails)
-    {
-      CLog::LogF(LOGERROR, "Invalid XML file (want <details>)");
-      continue;
-    }
-    video.Load(pxeDetails, true /*fChain*/);
-    fRet = true; // but don't exit in case of chaining
   }
+  else
+  {
+    std::string sFunc = fMovie ? "GetDetails" : "GetEpisodeDetails";
+    std::vector<std::string> vcsIn;
+    vcsIn.push_back(scurl.GetId());
+    vcsIn.push_back(scurl.GetFirstThumbUrl());
+    std::vector<std::string> vcsOut = RunNoThrow(sFunc, scurl, fcurl, &vcsIn);
+
+    // parse XML output
+    for (const auto& i : vcsOut)
+    {
+      CXBMCTinyXML doc;
+      doc.Parse(i, TIXML_ENCODING_UTF8);
+      if (!doc.RootElement())
+      {
+        CLog::LogF(LOGERROR, "Unable to parse XML");
+        continue;
+      }
+
+      TiXmlHandle xhDoc(&doc);
+      const TiXmlElement* pxeDetails = xhDoc.FirstChild("details").Element();
+      if (!pxeDetails)
+      {
+        CLog::LogF(LOGERROR, "Invalid XML file (want <details>)");
+        continue;
+      }
+      video.Load(pxeDetails, true /*fChain*/);
+      fRet = true; // but don't exit in case of chaining
+    }
+  }
+
+  video.m_streamDetails.Reset(); // Scrapers should not return streamdetails
+
   return fRet;
 }
 
