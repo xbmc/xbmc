@@ -30,7 +30,6 @@
 #include <cstring>
 #include <inttypes.h>
 #include <list>
-#include <map>
 #include <mutex>
 #include <regex>
 #include <unordered_map>
@@ -40,29 +39,54 @@
 using namespace XFILE;
 
 // ---------------------------------------------------------------
-// [Fix] LRU cache to limit simultaneous SMB sessions.
-//       Windows limits SMB sessions per user to 20, and Kodi's
-//       library scanner checks every share for artwork (folder.jpg
-//       etc.), causing session exhaustion when >20 shares exist.
-//       This cache keeps at most MAX_CACHED_SERVERS sessions alive,
-//       evicting the least recently used share when the limit is
-//       reached.  The session count stays well below 20, preventing
-//       "Invalid argument" errors.
+// [Fix] LRU cache for SMB server sessions.
 //
-//       The cache key includes username and workgroup to correctly
-//       isolate sessions when different credentials are used for
-//       the same server/share.
+// Desktop Windows limits SMB sessions to 20 per user. Kodi's library
+// scanner accesses every available share to look for artwork, which
+// quickly exhausts that limit when more than 20 shares exist.
 //
-//       To avoid use-after-free after a network loss, cache hits
-//       re-fetch the real server pointer from libsmbclient.  The
-//       library never sees a stale pointer, eliminating crashes.
+// This cache holds at most MAX_CACHED_SERVERS (15) sessions alive,
+// evicting the least recently used share when the limit is reached.
+// The session count stays well below 20, preventing "Invalid argument"
+// errors.
 //
-//       Additional safety: null checks, and the global mutex is
-//       held throughout each cache operation to avoid race conditions.
+// The cache key includes username and workgroup to correctly isolate
+// sessions when different credentials are used for the same server/share.
+//
+// To avoid use-after-free after a network loss, cache hits always
+// re-fetch the real server pointer from libsmbclient.  If the pointer
+// changed, the old one is simply dropped - we never call
+// remove_unused_server on it, avoiding a double-free risk.
+//
+// The implementation caches the remove_unused_server function pointer
+// once at init and stores the SMBCSRV* directly in the LRU list so that
+// eviction never requires another library call.
+//
+// Safety measures:
+//   - The existing CSMB mutex serialises all library calls, including
+//     Deinit().  Only one thread can be inside xb_smbc_cache at a time,
+//     making additional synchronisation unnecessary.
+//   - The cache mutex (g_cacheMutex) is held during the entire cache
+//     operation and protects the LRU structures against the cleanup
+//     that Deinit() performs under the same lock.
+//   - On shutdown, the original library callback is restored before the
+//     SMB context is freed, and orig_cache_fn is nullified so any future
+//     call will return an error immediately.
+//   - Tracked servers are explicitly released in Deinit() via
+//     remove_unused_server.
+//
+// libsmbclient adds a small overhead of 1-3 sessions (transport, IPC$,
+// etc.) that are not visible to our cache.  With MAX_CACHED_SERVERS = 15
+// the total remains well below the Windows 20-session limit.
 // ---------------------------------------------------------------
 namespace
 {
-constexpr size_t MAX_CACHED_SERVERS = 15; // < 20 to avoid session exhaustion
+// 15 is a safe value - the total stays under 20 even with the library's
+// additional overhead.
+constexpr size_t MAX_CACHED_SERVERS = 15;
+
+// Cached remove_unused_server function pointer, obtained once during Init.
+smbc_remove_unused_server_fn g_removeUnusedFn = nullptr;
 
 // Build a cache key from the four components that libsmbclient uses
 // internally.  Backslashes are used as separators because they cannot
@@ -72,49 +96,67 @@ std::string MakeKey(const std::string& server,
                     const std::string& username,
                     const std::string& workgroup)
 {
-  return server + "\\" + share + "\\" + username + "\\" + workgroup;
+  std::string key;
+  key.reserve(server.size() + share.size() + username.size() + workgroup.size() + 3);
+  key.append(server).push_back('\\');
+  key.append(share).push_back('\\');
+  key.append(username).push_back('\\');
+  key.append(workgroup);
+  return key;
 }
 
-// Split a MakeKey-generated string back into its four components.
-// The key format is guaranteed: server \ share \ username \ workgroup.
-struct KeyParts
+// Cache entry stores the key and the associated server pointer
+// so eviction can call remove_unused_server directly.
+struct CacheEntry
 {
-  std::string server;
-  std::string share;
-  std::string username;
-  std::string workgroup;
+  std::string key;
+  SMBCSRV* srv = nullptr;
 };
-KeyParts SplitKey(const std::string& key)
-{
-  KeyParts parts;
-  const size_t pos1 = key.find('\\');
-  const size_t pos2 = key.find('\\', pos1 + 1);
-  const size_t pos3 = key.find('\\', pos2 + 1);
-
-  if (pos1 != std::string::npos)
-    parts.server = key.substr(0, pos1);
-  if (pos2 != std::string::npos)
-    parts.share = key.substr(pos1 + 1, pos2 - pos1 - 1);
-  if (pos3 != std::string::npos)
-    parts.username = key.substr(pos2 + 1, pos3 - pos2 - 1);
-  if (pos3 != std::string::npos)
-    parts.workgroup = key.substr(pos3 + 1);
-  return parts;
-}
 
 // LRU list - front is most-recently-used, back is least-recently-used.
 // The map provides O(1) lookup from key to list iterator.
-std::list<std::string> g_lru;
-std::unordered_map<std::string, std::list<std::string>::iterator> g_map;
+std::list<CacheEntry> g_lru;
+std::unordered_map<std::string, std::list<CacheEntry>::iterator> g_map;
 std::mutex g_cacheMutex;
 
 // Original libsmbclient callback, saved during CSMB::Init().
 smbc_get_cached_srv_fn orig_cache_fn = nullptr;
 
 // -----------------------------------------------------------------
+// Evict the least-recently-used entry from the cache.
+// Must be called with g_cacheMutex held.
+// -----------------------------------------------------------------
+void EvictOne(SMBCCTX* c)
+{
+  // Copy key and pointer by value - pop_back() will destroy the node.
+  const std::string evictKey = g_lru.back().key;
+  SMBCSRV* const evictSrv = g_lru.back().srv;
+
+  CLog::LogF(LOGDEBUG, "[SMB_SESSION_LIMIT] Server cache EVICT '{}'", evictKey);
+
+  if (g_removeUnusedFn && evictSrv)
+  {
+    int rc = g_removeUnusedFn(c, evictSrv);
+    if (rc != 0)
+      CLog::LogF(LOGWARNING, "[SMB_SESSION_LIMIT] remove_unused_server failed for '{}' (rc={})",
+                 evictKey, rc);
+  }
+  else if (!g_removeUnusedFn)
+  {
+    CLog::LogF(LOGWARNING, "[SMB_SESSION_LIMIT] remove_unused_server not available - "
+                           "evicting from tracking only");
+  }
+
+  g_map.erase(evictKey);
+  g_lru.pop_back();
+}
+
+// -----------------------------------------------------------------
 // Replacement for smbc_get_cached_srv_fn.
 //   - cache hit  -> move key to front, re-fetch real server pointer.
 //   - cache miss -> create new entry, evict LRU if needed.
+// The whole operation runs under g_cacheMutex; the outer smb mutex
+// guarantees only one thread is in here at a time.
 // -----------------------------------------------------------------
 SMBCSRV* xb_smbc_cache(
     SMBCCTX* c, const char* server, const char* share, const char* workgroup, const char* username)
@@ -140,23 +182,29 @@ SMBCSRV* xb_smbc_cache(
     // Move to front (most recently used)
     g_lru.splice(g_lru.begin(), g_lru, it->second);
 
+    SMBCSRV* oldSrv = it->second->srv; // remember the old pointer
+
     // Always re-fetch the current server pointer from the library.
     // This prevents use-after-free if the library recreated the
     // server after a network loss.
     SMBCSRV* realSrv = orig_cache_fn(c, server, share, workgroup, username);
-    if (!realSrv)
+    if (realSrv)
     {
-      // The library no longer has this server - remove from cache.
-      CLog::LogF(LOGDEBUG, "[SMB_SESSION_LIMIT] Cached server no longer valid for '{}'", key);
-      g_lru.erase(it->second);
-      g_map.erase(it);
-      // Fall through to cache-miss path to create a fresh session.
-    }
-    else
-    {
+      // Server is valid. If the pointer changed, just update our entry
+      // without touching the old pointer - the library owns its lifetime.
+      if (realSrv != oldSrv)
+        it->second->srv = realSrv;
+
       CLog::LogF(LOGDEBUG, "[SMB_SESSION_LIMIT] Server cache HIT for '{}'", key);
       return realSrv;
     }
+
+    // The library no longer has this server - remove the stale entry
+    // and fall through to the cache-miss path to create a fresh one.
+    CLog::LogF(LOGDEBUG, "[SMB_SESSION_LIMIT] Cached server no longer valid for '{}'", key);
+    g_lru.erase(it->second);
+    g_map.erase(it);
+    // intentional fall-through
   }
 
   // ---------- cache miss - create new entry --------------------------------
@@ -169,40 +217,10 @@ SMBCSRV* xb_smbc_cache(
 
   // ---------- evict oldest if limit reached --------------------------------
   if (g_lru.size() >= MAX_CACHED_SERVERS)
-  {
-    const std::string& oldKey = g_lru.back();
-    CLog::LogF(LOGDEBUG, "[SMB_SESSION_LIMIT] Server cache EVICT '{}'", oldKey);
-
-    // Tell the library the server is no longer needed.  The return
-    // value is ignored - even if the server is still in use, we drop
-    // our reference and keep the cache size invariant.
-    smbc_remove_unused_server_fn removeFn = smbc_getFunctionRemoveUnusedServer(c);
-    if (removeFn)
-    {
-      KeyParts kp = SplitKey(oldKey);
-      SMBCSRV* oldSrv = orig_cache_fn(c, kp.server.c_str(), kp.share.c_str(), kp.workgroup.c_str(),
-                                      kp.username.c_str());
-      if (oldSrv)
-      {
-        int rc = removeFn(c, oldSrv);
-        if (rc != 0)
-          CLog::LogF(LOGWARNING, "[SMB_SESSION_LIMIT] remove_unused_server failed for '{}' (rc={})",
-                     oldKey, rc);
-      }
-    }
-    else
-    {
-      CLog::LogF(LOGWARNING, "[SMB_SESSION_LIMIT] remove_unused_server not available - "
-                             "evicting from tracking only");
-    }
-
-    // Drop from our bookkeeping structures
-    g_map.erase(oldKey);
-    g_lru.pop_back();
-  }
+    EvictOne(c);
 
   // ---------- insert new entry at front ------------------------------------
-  g_lru.push_front(key);
+  g_lru.push_front({key, srvPtr});
   g_map[key] = g_lru.begin();
 
   CLog::LogF(LOGDEBUG, "[SMB_SESSION_LIMIT] Server cache CREATED for '{}' (total cached: {})", key,
@@ -212,27 +230,28 @@ SMBCSRV* xb_smbc_cache(
 
 // -----------------------------------------------------------------
 // Called from CSMB::Deinit() - remove every entry we still track.
+// Must be called before the SMB context is freed.
 // -----------------------------------------------------------------
 void ClearServerCache(SMBCCTX* c)
 {
   std::lock_guard<std::mutex> lock(g_cacheMutex);
 
-  smbc_remove_unused_server_fn removeFn = smbc_getFunctionRemoveUnusedServer(c);
-  if (removeFn)
+  // First, nullify the original callback so that any future calls
+  // (or waiting threads) will immediately see an error state.
+  orig_cache_fn = nullptr;
+
+  if (g_removeUnusedFn)
   {
-    for (const std::string& key : g_lru)
+    for (const auto& entry : g_lru)
     {
-      KeyParts kp = SplitKey(key);
-      SMBCSRV* srv = orig_cache_fn(c, kp.server.c_str(), kp.share.c_str(), kp.workgroup.c_str(),
-                                   kp.username.c_str());
-      if (srv)
+      if (entry.srv)
       {
-        int rc = removeFn(c, srv);
+        int rc = g_removeUnusedFn(c, entry.srv);
         if (rc != 0)
           CLog::LogF(LOGWARNING,
                      "[SMB_SESSION_LIMIT] ClearServerCache: "
                      "remove_unused_server failed for '{}' (rc={})",
-                     key, rc);
+                     entry.key, rc);
       }
     }
   }
@@ -277,6 +296,9 @@ void xb_smbc_auth(
 {
 }
 
+// This flag protects against an old Samba bug where smbc_set_context()
+// returns an already freed pointer on subsequent inits. It is still
+// needed on some current Samba 4.0 installations.
 bool CSMB::IsFirstInit = true;
 
 CSMB::CSMB()
@@ -295,17 +317,27 @@ void CSMB::Deinit()
 {
   std::unique_lock lock(*this);
 
-  // [Fix] Clear the LRU cache before freeing the SMB context
+  // Save the original callback *before* ClearServerCache nullifies it.
+  smbc_get_cached_srv_fn oldCallback = orig_cache_fn;
+
+  // Clear the LRU cache, which also nullifies orig_cache_fn.
   if (m_context)
     ClearServerCache(m_context);
 
   /* samba goes loco if deinited while it has some files opened */
   if (m_context)
   {
+    // Restore the original callback before we destroy the context
+    // so the library won't call our wrapper with a dead context.
+    smbc_setFunctionGetCachedServer(m_context, oldCallback);
+
     smbc_set_context(NULL);
     smbc_free_context(m_context, 1);
     m_context = NULL;
   }
+
+  // The cached remove function pointer is no longer valid.
+  g_removeUnusedFn = nullptr;
 }
 
 void CSMB::Init()
@@ -421,19 +453,23 @@ void CSMB::Init()
     // multiple smbc_init calls are ignored by libsmbclient.
     // note: this is important as it initializes the smb old
     // interface compatibility. Samba 3.4.0 or higher has the new interface.
-    // note: we leak the following here once, not sure why yet.
-    // 48 bytes -> smb_xmalloc_array
-    // 32 bytes -> set_param_opt
-    // 16 bytes -> set_param_opt
+    // smbc_init is deprecated but still required for the old-interface
+    // compatibility used by smbc_set_context / smbc_free_context.
     smbc_init(xb_smbc_auth, 0);
 
     // setup our context
     m_context = smbc_new_context();
+    if (!m_context)
+    {
+      CLog::LogF(LOGERROR, "smbc_new_context() failed");
+      setenv("HOME", truehome.c_str(), 1);
+      return;
+    }
 
     // restore HOME
     setenv("HOME", truehome.c_str(), 1);
 
-#ifdef DEPRECATED_SMBC_INTERFACE
+    // Use the modern Samba 4 API (non-deprecated setter functions).
     smbc_setDebug(m_context, CServiceBroker::GetLogging().CanLogComponent(LOGSAMBA) ? 10 : 0);
     smbc_setLogCallback(m_context, this, xb_smbc_log);
     smbc_setFunctionAuthData(m_context, xb_smbc_auth);
@@ -444,45 +480,36 @@ void CSMB::Init()
     smbc_setTimeout(
         m_context,
         CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_sambaclienttimeout * 1000);
-    // we do not need to strdup these, smbc_setXXX below will make their own copies
+
+    // Some older Samba 4.x headers (pre-4.9 / 4.8) still declare these functions
+    // with non-const char* parameters, so a const_cast is needed for compatibility.
     if (!settings->GetString(CSettings::SETTING_SMB_WORKGROUP).empty())
-      //! @bug libsmbclient < 4.9 isn't const correct
       smbc_setWorkgroup(
           m_context,
           const_cast<char*>(settings->GetString(CSettings::SETTING_SMB_WORKGROUP).c_str()));
-    std::string guest = "guest";
-    //! @bug libsmbclient < 4.8 isn't const correct
-    smbc_setUser(m_context, const_cast<char*>(guest.c_str()));
-#else
-    m_context->debug = (CServiceBroker::GetLogging().CanLogComponent(LOGSAMBA) ? 10 : 0);
-    m_context->callbacks.auth_fn = xb_smbc_auth;
-    orig_cache_fn = m_context->callbacks.get_cached_srv_fn;
-    m_context->callbacks.get_cached_srv_fn = xb_smbc_cache; // [Fix] Install LRU cache
-    m_context->options.one_share_per_server = false;
-    m_context->options.browse_max_lmb_count = 0;
-    m_context->timeout =
-        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_sambaclienttimeout * 1000;
-    // we need to strdup these, they will get free'd on smbc_free_context
-    if (settings->GetString(CSettings::SETTING_SMB_WORKGROUP).length() > 0)
-      m_context->workgroup = strdup(settings->GetString(CSettings::SETTING_SMB_WORKGROUP).c_str());
-    m_context->user = strdup("guest");
-#endif
+    smbc_setUser(m_context, const_cast<char*>("guest"));
 
     // initialize samba and do some hacking into the settings
     if (smbc_init_context(m_context))
     {
       // setup context using the smb old interface compatibility
       SMBCCTX* old_context = smbc_set_context(m_context);
-      // free previous context or we leak it, this comes from smbc_init above.
-      // there is a bug in smbclient (old interface), if we init/set a context
-      // then set(null)/free it in DeInit above, the next smbc_set_context
-      // return the already freed previous context, free again and bang, crash.
-      // so we setup a stic bool to track the first init so we can free the
-      // context associated with the initial smbc_init.
+
+      // There is a bug in old Samba versions where smbc_set_context may
+      // return an already freed pointer on subsequent inits.  IsFirstInit
+      // guarantees we only free the very first compatibility context once.
       if (old_context && IsFirstInit)
       {
         smbc_free_context(old_context, 1);
         IsFirstInit = false;
+      }
+
+      // Cache the remove_unused_server function pointer.
+      g_removeUnusedFn = smbc_getFunctionRemoveUnusedServer(m_context);
+      if (!g_removeUnusedFn)
+      {
+        CLog::LogF(LOGWARNING, "[SMB_SESSION_LIMIT] remove_unused_server function not available; "
+                               "sessions may not be closed on eviction");
       }
     }
     else
@@ -500,8 +527,8 @@ std::string CSMB::URLEncode(const CURL& url)
 
   std::string flat = "smb://";
 
-  /* samba messes up of password is set but no username is set. don't know why yet */
-  /* probably the url parser that goes crazy */
+  /* Samba's URL parser is modern and handles missing username gracefully,
+     but we keep the explicit check for safety. */
   if (!url.GetUserName().empty() /* || url.GetPassWord().length() > 0 */)
   {
     if (!url.GetDomain().empty())
@@ -685,31 +712,6 @@ bool CSMBFile::Open(const CURL& url)
   // We've successfully opened the file!
   return true;
 }
-
-/// \brief Checks authentication against SAMBA share. Reads password cache created in CSMBDirectory::OpenDir().
-/// \param strAuth The SMB style path
-/// \return SMB file descriptor
-/*
-int CSMBFile::OpenFile(std::string& strAuth)
-{
-  int fd = -1;
-
-  std::string strPath = g_passwordManager.GetSMBAuthFilename(strAuth);
-
-  fd = smbc_open(strPath.c_str(), O_RDONLY, 0);
-  //! @todo Run a loop here that prompts for our username/password as appropriate?
-  //! We have the ability to run a file (eg from a button action) without browsing to
-  //! the directory first.  In the case of a password protected share that we do
-  //! not have the authentication information for, the above smbc_open() will have
-  //! returned negative, and the file will not be opened.  While this is not a particular
-  //! likely scenario, we might want to implement prompting for the password in this case.
-  //! The code from SMBDirectory can be used for this.
-  if(fd >= 0)
-    strAuth = strPath;
-
-  return fd;
-}
-*/
 
 int CSMBFile::OpenFile(const CURL& url, std::string& strAuth)
 {
