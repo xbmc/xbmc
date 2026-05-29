@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -38,6 +38,13 @@ public:
   std::shared_ptr<CFileItem> GetCurrentListItem(int offset = 0) override { return m_movieItem; }
   const CFileItemList& CurrentDirectory() const { return *m_castList; }
   bool HasListItems() const override { return true; }
+
+  /*!
+   * \brief May the user request a refresh of the item displayed by the dialog
+            note: call before displaying the dialog
+   * \param[in] enable true to allow or false to block the action
+   */
+  void EnableItemRefresh(bool enable) { m_refreshEnabled = enable; }
 
   static void AddItemPathToFileBrowserSources(std::vector<CMediaSource>& sources,
                                               const CFileItem& item);
@@ -113,6 +120,7 @@ protected:
   bool m_hasUpdatedUserrating = false;
   int m_startUserrating = -1;
   bool m_hasUpdatedItems{false};
+  bool m_refreshEnabled{false}; //!< May the item be refreshed
 
 private:
   static bool ManageVideoItemArtwork(const std::shared_ptr<CFileItem>& item,

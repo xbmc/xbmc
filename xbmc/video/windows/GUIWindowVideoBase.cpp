@@ -435,13 +435,14 @@ CGUIWindowVideoBase::ShowInfoResult CGUIWindowVideoBase::ShowInfo(
     movieDetails = *item->GetVideoInfoTag();
   }
 
+  // @todo add support to refresh movie version information
+  pDlgInfo->EnableItemRefresh((info != nullptr && info->Content() != ContentType::NONE &&
+                               !VIDEO::IsVideoAssetFile(*item)) ||
+                              item->GetVideoContentType() == VideoDbContentType::MOVIE_SETS);
+
   bool needsRefresh = false;
   if (bHasInfo)
   {
-    // @todo add support to refresh movie version information
-    if ((!info || info->Content() == ContentType::NONE || VIDEO::IsVideoAssetFile(*item)) &&
-        item->GetVideoContentType() != VideoDbContentType::MOVIE_SETS)
-      item->SetProperty("xxuniqueid", "xx" + movieDetails.GetUniqueID()); // disable refresh button
     item->SetProperty("CheckAutoPlayNextItem", IsActive());
     *item->GetVideoInfoTag() = movieDetails;
     pDlgInfo->SetMovie(item.get());
