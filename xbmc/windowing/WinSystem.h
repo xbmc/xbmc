@@ -257,7 +257,10 @@ public:
   // GUI compositing for HDR: render GUI to FBO, composite with tone mapping
   // colorTransfer: AVCOL_TRC_SMPTE2084 (PQ) or AVCOL_TRC_ARIB_STD_B67 (HLG), 0 to disable
   virtual bool SetGuiCompositing(int colorTransfer) { return false; }
-  virtual bool BeginGuiComposite() { return false; }
+  // guiWillRender: hint that GUI rendering is about to fire this frame.
+  // When false, implementations should skip FBO bind/clear since no GUI
+  // draws will land in the FBO this frame.
+  virtual bool BeginGuiComposite(bool guiWillRender) { return false; }
   virtual void EndGuiComposite() {}
   virtual void CompositeGui() {}
 

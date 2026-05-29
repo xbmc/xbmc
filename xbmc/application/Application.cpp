@@ -851,9 +851,10 @@ void CApplication::Render()
     return;
 
   // render gui layer
-  bool compositing = CServiceBroker::GetWinSystem()->BeginGuiComposite();
+  const bool guiWillRender = appPower->GetRenderGUI() && !m_skipGuiRender;
+  bool compositing = CServiceBroker::GetWinSystem()->BeginGuiComposite(guiWillRender);
 
-  if (appPower->GetRenderGUI() && !m_skipGuiRender)
+  if (guiWillRender)
   {
     if (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() != RenderStereoMode::OFF)
     {
@@ -1547,10 +1548,14 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     }
 
     if (!m_bStop)
-    {
-      if (!m_skipGuiRender)
-        CServiceBroker::GetGUI()->GetWindowManager().Process(CTimeUtils::GetFrameTime());
-    }
+      CServiceBroker::GetGUI()->GetWindowManager().Process(CTimeUtils::GetFrameTime());
+
+    // Dirty-driven skip: on paths with a persistent framebuffer (D2P plane or
+    // HDR GUI compositing FBO), skip Render when no controls dirtied themselves
+    // this frame. The persistence keeps the previous OSD on screen for free.
+    if (!m_skipGuiRender && appPlayer->IsRenderingVideoLayer() &&
+        !CServiceBroker::GetGUI()->GetWindowManager().HasDirtyRegions())
+      m_skipGuiRender = true;
     CServiceBroker::GetGUI()->GetWindowManager().FrameMove();
   }
 

@@ -232,10 +232,12 @@ bool CWinSystemGbmGLESContext::SetGuiCompositing(int colorTransfer)
   return m_guiCompositing;
 }
 
-bool CWinSystemGbmGLESContext::BeginGuiComposite()
+bool CWinSystemGbmGLESContext::BeginGuiComposite(bool guiWillRender)
 {
   if (!m_guiCompositing)
     return false;
+
+  m_guiWillRender = guiWillRender;
 
   int width = m_nWidth;
   int height = m_nHeight;
@@ -274,6 +276,11 @@ bool CWinSystemGbmGLESContext::BeginGuiComposite()
     CLog::Log(LOGDEBUG, "CWinSystemGbmGLESContext: created GUI FBO {}x{}", width, height);
   }
 
+  // When GUI render is being skipped, leave the FBO bind/clear out: nothing
+  // will draw into it this frame.
+  if (!guiWillRender)
+    return true;
+
   if (!m_guiFbo.BeginRender())
     return false;
 
@@ -290,7 +297,8 @@ bool CWinSystemGbmGLESContext::BeginGuiComposite()
 
 void CWinSystemGbmGLESContext::EndGuiComposite()
 {
-  m_guiFbo.EndRender();
+  if (m_guiWillRender)
+    m_guiFbo.EndRender();
 
   // Clear the backbuffer before video renders. In the FBO compositing path,
   // video renders in the RenderEx pass with clear=false, so DrawBlackBars is
