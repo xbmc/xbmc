@@ -230,6 +230,7 @@ bool CRendererDRMPRIMEGLES::Configure(const VideoPicture& picture,
     }
   }
 
+  winSystem->SetColorimetry(&picture);
   m_passthroughHDR = winSystem->SetHDR(&picture);
   CLog::Log(LOGDEBUG, "RendererDRMPRIMEGLES::Configure: HDR passthrough: {}",
             m_passthroughHDR ? "on" : "off");
@@ -257,6 +258,7 @@ void CRendererDRMPRIMEGLES::UnInit()
     CServiceBroker::GetWinSystem()->SetGuiCompositing(false);
     CServiceBroker::GetWinSystem()->SetHDR(nullptr);
     m_passthroughHDR = false;
+    CServiceBroker::GetWinSystem()->SetColorimetry(nullptr);
     CServiceBroker::GetWinSystem()->SetVideoOutput(nullptr);
   }
 

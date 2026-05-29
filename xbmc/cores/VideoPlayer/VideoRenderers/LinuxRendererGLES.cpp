@@ -27,6 +27,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/GLUtils.h"
+#include "utils/HDRUtils.h"
 #include "utils/MathUtils.h"
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
@@ -166,7 +167,13 @@ bool CLinuxRendererGLES::ValidateRenderTarget()
 
 bool CLinuxRendererGLES::Configure(const VideoPicture &picture, float fps, unsigned int orientation)
 {
-  CLog::Log(LOGDEBUG, "LinuxRendererGLES::Configure: fps: {:0.3f}", fps);
+  auto colorimetry = KODI::UTILS::GetColorimetry(picture);
+  bool inferred = (picture.color_space == AVCOL_SPC_UNSPECIFIED);
+  CLog::Log(LOGDEBUG,
+            "LinuxRendererGLES::Configure: fps: {:0.3f}, {}x{}, colorimetry: {}{}, {}bit, {} range",
+            fps, picture.iWidth, picture.iHeight, KODI::UTILS::ColorimetryToString(colorimetry),
+            inferred ? " (inferred)" : "", picture.colorBits,
+            picture.color_range == 1 ? "full" : "limited");
   m_format = picture.videoBuffer->GetFormat();
   m_sourceWidth = picture.iWidth;
   m_sourceHeight = picture.iHeight;
@@ -192,6 +199,8 @@ bool CLinuxRendererGLES::Configure(const VideoPicture &picture, float fps, unsig
 
   if (!CServiceBroker::GetWinSystem()->SetVideoOutput(&picture))
     CLog::Log(LOGWARNING, "LinuxRendererGLES::Configure: SetVideoOutput failed");
+
+  CServiceBroker::GetWinSystem()->SetColorimetry(&picture);
 
   m_passthroughHDR = CServiceBroker::GetWinSystem()->SetHDR(&picture);
   CLog::Log(LOGDEBUG, "LinuxRendererGLES::Configure: HDR passthrough: {}",
@@ -1040,6 +1049,7 @@ void CLinuxRendererGLES::UnInit()
     CServiceBroker::GetWinSystem()->SetGuiCompositing(false);
     CServiceBroker::GetWinSystem()->SetHDR(nullptr);
     m_passthroughHDR = false;
+    CServiceBroker::GetWinSystem()->SetColorimetry(nullptr);
     CServiceBroker::GetWinSystem()->SetVideoOutput(nullptr);
   }
 

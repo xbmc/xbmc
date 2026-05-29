@@ -10,37 +10,18 @@
 
 #include "cores/VideoPlayer/Buffers/VideoBuffer.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
-#include "utils/DisplayInfo.h"
 
 extern "C"
 {
 #include <libavutil/frame.h>
 #include <libavutil/hwcontext_drm.h>
-#include <libavutil/mastering_display_metadata.h>
 }
 
 namespace DRMPRIME
 {
 
-// HDR enums is copied from linux include/linux/hdmi.h (strangely not part of uapi)
-enum hdmi_metadata_type
-{
-  HDMI_STATIC_METADATA_TYPE1 = 0,
-};
-enum hdmi_eotf
-{
-  HDMI_EOTF_TRADITIONAL_GAMMA_SDR,
-  HDMI_EOTF_TRADITIONAL_GAMMA_HDR,
-  HDMI_EOTF_SMPTE_ST2084,
-  HDMI_EOTF_BT_2100_HLG,
-};
-
-KODI::UTILS::Colorimetry GetColorimetry(const VideoPicture& picture);
 std::string GetColorEncoding(const VideoPicture& picture);
 std::string GetColorRange(const VideoPicture& picture);
-KODI::UTILS::Eotf GetEOTF(const VideoPicture& picture);
-const AVMasteringDisplayMetadata* GetMasteringDisplayMetadata(const VideoPicture& picture);
-const AVContentLightMetadata* GetContentLightMetadata(const VideoPicture& picture);
 
 } // namespace DRMPRIME
 
