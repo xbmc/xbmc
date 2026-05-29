@@ -179,6 +179,7 @@ bool CDRMUtils::FindGuiPlane(uint32_t format, uint64_t modifier)
                DRMHELPERS::ModifierToString(modifier), m_crtc->GetId());
     m_gui_plane->SetFormat(format);
     m_gui_plane->SetModifier(modifier);
+    m_video_plane = nullptr;
     return true;
   }
 
