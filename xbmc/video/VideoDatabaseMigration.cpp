@@ -1186,7 +1186,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
         "WHERE (e.c%02d = '0' OR e.c%02d IS NULL) "
         "  AND s.iStreamType = 0 AND s.iVideoDuration > 0 "
         "GROUP BY e.idEpisode, e.idFile",
-        LOCAL_VIDEODB_ID_EPISODE_RUNTIME));
+        LOCAL_VIDEODB_ID_EPISODE_RUNTIME, LOCAL_VIDEODB_ID_EPISODE_RUNTIME));
 
     // Update the episodes' duration with the value from streamdetails
     m_pDS->exec(PrepareSQL("UPDATE episode "
