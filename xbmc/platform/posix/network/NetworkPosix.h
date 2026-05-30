@@ -27,7 +27,6 @@ public:
   bool IsConnected() const override;
   std::string GetCurrentIPv4Address() const override;
   std::string GetCurrentNetmask() const override;
-  std::string GetCurrentIPv6Address() const override;
 
   std::string GetMacAddress() const override;
   void GetMacAddressRaw(char rawMac[6]) const override;

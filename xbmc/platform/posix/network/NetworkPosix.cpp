@@ -125,38 +125,6 @@ std::string CNetworkInterfacePosix::GetCurrentNetmask() const
   return result;
 }
 
-std::string CNetworkInterfacePosix::GetCurrentIPv6Address() const
-{
-  std::string address;
-  struct ifaddrs* interfaces = nullptr;
-
-  if (getifaddrs(&interfaces) != 0)
-    return address;
-
-  for (struct ifaddrs* iface = interfaces; iface != nullptr; iface = iface->ifa_next)
-  {
-    if (iface->ifa_name != m_interfaceName ||
-        (iface->ifa_flags & (IFF_UP | IFF_RUNNING)) != (IFF_UP | IFF_RUNNING) ||
-        iface->ifa_addr == nullptr || iface->ifa_addr->sa_family != AF_INET6)
-      continue;
-
-    char str6[INET6_ADDRSTRLEN];
-    const struct sockaddr_in6* addr6 =
-        reinterpret_cast<const struct sockaddr_in6*>(iface->ifa_addr);
-
-    if (IN6_IS_ADDR_LINKLOCAL(&addr6->sin6_addr) ||
-        (inet_ntop(AF_INET6, &addr6->sin6_addr, str6, INET6_ADDRSTRLEN) == nullptr))
-      continue;
-
-    address = str6;
-    break;
-  }
-
-  freeifaddrs(interfaces);
-
-  return address;
-}
-
 std::string CNetworkInterfacePosix::GetMacAddress() const
 {
   return m_interfaceMacAdr;
