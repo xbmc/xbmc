@@ -79,7 +79,7 @@ add_custom_command(TARGET ${APP_NAME_LC} POST_BUILD
             "APP_NAME=${APP_NAME}"
             "FULL_PRODUCT_NAME=${APP_NAME}.app"
             "SRCROOT=${CMAKE_BINARY_DIR}"
-          "SOURCE_ROOT=${CMAKE_SOURCE_DIR}"
+            "SOURCE_ROOT=${CMAKE_SOURCE_DIR}"
             "PYTHON_VERSION=${PYTHON_VERSION}"
             ${CMAKE_SOURCE_DIR}/tools/darwin/Support/copyframeworks-osx.command
     ${ADDITIONAL_COMMANDS})
