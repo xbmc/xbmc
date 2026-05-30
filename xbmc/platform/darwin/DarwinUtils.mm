@@ -123,6 +123,25 @@ std::string CDarwinUtils::GetFrameworkPath(bool forPython)
 #endif
 }
 
+std::string CDarwinUtils::GetJavaCPPath()
+{
+  @autoreleasepool
+  {
+    auto mainBundle = NSBundle.mainBundle;
+
+    if ([mainBundle.executablePath containsString:@"Contents"])
+    {
+      // ExecutablePath is <product>.app/Contents/MacOS/<executable>
+      // we should have <product>.app/Contents/Libraries
+      return std::string{[[mainBundle.bundlePath stringByAppendingPathComponent:@"Contents"]
+                             stringByAppendingPathComponent:@"Java"]
+                             .UTF8String};
+    }
+  }
+
+  return std::string{};
+}
+
 namespace
 {
 NSString* getExecutablePath()
