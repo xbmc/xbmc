@@ -85,7 +85,7 @@ CSMBDirectory::~CSMBDirectory(void)
   smb.AddIdleConnection();
 }
 
-bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
+bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList& items)
 {
   // We accept smb://[[[domain;]user[:password@]]server[/share[/path[/file]]]]
 
@@ -176,6 +176,13 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       if (dirent->smbc_type != SMBC_FILE_SHARE && dirent->smbc_type != SMBC_SERVER)
         continue;
 
+      // Skip hidden and Windows administrative shares (names ending with '$').
+      // These shares (C$, ADMIN$, IPC$, etc.) are not intended for browsing
+      // and are usually inaccessible.  Filtering them here keeps the listing clean.
+      const std::string shareName = dirent->name;
+      if (dirent->smbc_type == SMBC_FILE_SHARE && !shareName.empty() && shareName.back() == '$')
+        continue;
+
       std::string path(strRoot);
 
       // needed for network / workgroup browsing
@@ -208,7 +215,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   return true;
 }
 
-int CSMBDirectory::Open(const CURL &url)
+int CSMBDirectory::Open(const CURL& url)
 {
   smb.Init();
   std::string strAuth;
@@ -243,8 +250,7 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
   // don't do this for smb:// !!
   std::string s = strAuth;
   int len = s.length();
-  if (len > 1 && s.at(len - 2) != '/' &&
-      (s.at(len - 1) == '/' || s.at(len - 1) == '\\'))
+  if (len > 1 && s.at(len - 2) != '/' && (s.at(len - 1) == '/' || s.at(len - 1) == '\\'))
   {
     s.erase(len - 1, 1);
   }
@@ -309,7 +315,7 @@ bool CSMBDirectory::Create(const CURL& url2)
 
   int result = smbc_mkdir(strFileName.c_str(), 0);
   bool success = (result == 0 || EEXIST == errno);
-  if(!success)
+  if (!success)
     CLog::LogF(LOGERROR, "Error( {} )", strerror(errno));
 
   return success;
@@ -326,7 +332,7 @@ bool CSMBDirectory::Remove(const CURL& url2)
 
   int result = smbc_rmdir(strFileName.c_str());
 
-  if(result != 0 && errno != ENOENT)
+  if (result != 0 && errno != ENOENT)
   {
     CLog::LogF(LOGERROR, "Error( {} )", strerror(errno));
     return false;
@@ -350,4 +356,3 @@ bool CSMBDirectory::Exists(const CURL& url2)
 
   return S_ISDIR(info.st_mode);
 }
-
