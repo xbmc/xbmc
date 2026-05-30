@@ -40,6 +40,14 @@ namespace OVERLAY {
     float height;
   };
 
+  /*!
+   * \brief Mark the GUI dirty so the GUI walk fires next frame.
+   *  Used by overlay-related code paths (subtitles, debug OSD) to keep
+   *  the GUI walk running while overlays are visible; overlays are not
+   *  CGUIControls and do not participate in the dirty system automatically.
+   */
+  void MarkDirty();
+
   class COverlay
   {
   public:

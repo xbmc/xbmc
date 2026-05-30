@@ -102,6 +102,13 @@ void CDebugRenderer::Render(CRect& src, CRect& dst, CRect& view)
 
   m_overlayRenderer.SetVideoRect(src, dst, view);
   m_overlayRenderer.Render(0);
+
+  // Sustain the dirty-driven Render skip while the debug OSD is enabled.
+  // Unlike video subtitles (which call AddOverlay per video frame and so
+  // mark dirty per frame), the debug OSD only calls AddOverlay once at
+  // Initialize, so without a per-frame nudge here the GUI walk would not
+  // re-fire after the first frame and the debug OSD would freeze.
+  MarkDirty();
 }
 
 void CDebugRenderer::Flush()

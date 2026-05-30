@@ -17,6 +17,8 @@
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayImage.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayLibass.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -43,6 +45,11 @@ COverlay::COverlay()
 
 COverlay::~COverlay() = default;
 
+void OVERLAY::MarkDirty()
+{
+  CServiceBroker::GetGUI()->GetWindowManager().MarkDirty();
+}
+
 unsigned int CRenderer::m_textureid = 1;
 
 CRenderer::CRenderer()
@@ -64,6 +71,16 @@ void CRenderer::AddOverlay(std::shared_ptr<CDVDOverlay> o, double pts, int index
   e.pts = pts;
   e.overlay_dvd = std::move(o);
   m_buffers[index].push_back(e);
+
+  // Wake the dirty-driven skip so the new overlay actually paints on its
+  // first frame. Without this hook the GUI walk would stay skipped and the
+  // overlay would never reach its draw site. For video subtitles this also
+  // fires per video frame (ProcessOverlays calls AddOverlay for every
+  // active overlay), sustaining the walk while the subtitle is visible.
+  //! @todo Smart subtitle dirty: query libass ass_step_sub to mark dirty
+  //! only on actual subtitle transitions, not every video frame, so the
+  //! dirty-driven skip can take effect between transitions.
+  MarkDirty();
 }
 
 void CRenderer::Release(std::vector<SElement>& list)
