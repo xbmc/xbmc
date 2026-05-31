@@ -32,6 +32,20 @@
 #include "utils/StringUtils.h"
 #endif
 
+enum class SimilarVideoScanAction : int
+{
+  ACTION_NONE = 0, //!< no action
+  ACTION_ASK = 1, //!< ask the user if a new version of an existing video should be created
+  ACTION_AUTO, //!< automatically create a new version
+};
+
+enum class AutoDVDAction : uint8_t
+{
+  NONE = 0,
+  PLAY,
+  BROWSE
+};
+
 namespace
 {
 bool IsPlaying(const std::string& condition,
@@ -120,7 +134,9 @@ void CApplicationSettingsHandling::RegisterSettings()
                                        CSettings::SETTING_SOURCE_VIDEOS,
                                        CSettings::SETTING_SOURCE_MUSIC,
                                        CSettings::SETTING_SOURCE_PICTURES,
-                                       CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN});
+                                       CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN,
+                                       CSettings::SETTING_VIDEOLIBRARY_SIMILARVIDEOACTION,
+                                       CSettings::SETTING_DVDS_AUTORUN});
 
   auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
@@ -245,6 +261,21 @@ bool CApplicationSettingsHandling::OnSettingUpdate(const std::shared_ptr<CSettin
     }
   }
 #endif
+
+  if (setting->GetId() == CSettings::SETTING_VIDEOLIBRARY_SIMILARVIDEOACTION &&
+      oldSettingId == "videolibrary.ignorevideoversions" && oldSettingNode)
+  {
+    return ConvertSettingBoolToInt<SimilarVideoScanAction>(setting, oldSettingId, oldSettingNode,
+                                                           SimilarVideoScanAction::ACTION_ASK,
+                                                           SimilarVideoScanAction::ACTION_NONE);
+  }
+
+  if (setting->GetId() == CSettings::SETTING_DVDS_AUTORUN && oldSettingId == "dvds.autorun" &&
+      oldSettingNode)
+  {
+    return ConvertSettingBoolToInt<AutoDVDAction>(setting, oldSettingId, oldSettingNode,
+                                                  AutoDVDAction::NONE, AutoDVDAction::PLAY);
+  }
 
   return false;
 }
