@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -15,6 +15,13 @@
 
 #include "GUIBaseContainer.h"
 
+enum class FixedListAlignY
+{
+  CENTER = 0,
+  TOP,
+  BOTTOM,
+};
+
 /*!
  \ingroup controls
  \brief
@@ -22,7 +29,19 @@
 class CGUIFixedListContainer : public CGUIBaseContainer
 {
 public:
-  CGUIFixedListContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems, int fixedPosition, int cursorRange);
+  CGUIFixedListContainer(int parentID,
+                         int controlID,
+                         float posX,
+                         float posY,
+                         float width,
+                         float height,
+                         ORIENTATION orientation,
+                         const CScroller& scroller,
+                         int preloadItems,
+                         int fixedPosition,
+                         int startCursorRange,
+                         int endCursorRange,
+                         FixedListAlignY alignY);
   ~CGUIFixedListContainer(void) override;
   CGUIFixedListContainer* Clone() const override { return new CGUIFixedListContainer(*this); }
 
@@ -54,7 +73,9 @@ private:
    */
   void GetCursorRange(int &minCursor, int &maxCursor) const;
 
-  int m_fixedCursor;    ///< default position the skinner wishes to use for the focused item
-  int m_cursorRange;    ///< range that the focused item can vary when at the ends of the list
+  int m_fixedCursor; ///< default position the skinner wishes to use for the focused item
+  int m_startCursorRange; ///< range that the focused item can vary when at the beginning end of the list
+  int m_endCursorRange; ///< range that the focused item can vary when at the end of the list
+  FixedListAlignY m_alignY; //!< Vertical alignment of the items
 };
 

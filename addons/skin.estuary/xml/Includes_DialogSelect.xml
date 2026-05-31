@@ -256,7 +256,7 @@
 					<param name="list_id" value="3" />
 				</include>
 			</control>
-			<control type="list" id="6">
+			<control type="fixedlist" id="6">
 				<left>20</left>
 				<top>100</top>
 				<width>930</width>
@@ -266,6 +266,10 @@
 				<onleft>9001</onleft>
 				<onright>61</onright>
 				<pagecontrol>61</pagecontrol>
+				<focusposition>4</focusposition>
+				<startmovement>4</startmovement>
+				<endmovement>5</endmovement>
+				<aligny>top</aligny>
 				<scrolltime>200</scrolltime>
 				<itemlayout height="75" width="930">
 					<control type="image">
@@ -439,7 +443,7 @@
 					<param name="list_id" value="3" />
 				</include>
 			</control>
-			<control type="list" id="6">
+			<control type="fixedlist" id="6">
 				<left>20</left>
 				<top>100</top>
 				<width>930</width>
@@ -449,6 +453,10 @@
 				<onleft>9001</onleft>
 				<onright>61</onright>
 				<pagecontrol>61</pagecontrol>
+				<focusposition>4</focusposition>
+				<startmovement>4</startmovement>
+				<endmovement>5</endmovement>
+				<aligny>top</aligny>
 				<scrolltime>200</scrolltime>
 				<itemlayout height="75" width="930">
 					<control type="image">
@@ -621,7 +629,7 @@
 					<param name="list_id" value="3" />
 				</include>
 			</control>
-			<control type="list" id="6">
+			<control type="fixedlist" id="6">
 				<left>20</left>
 				<top>100</top>
 				<width>880</width>
@@ -631,6 +639,10 @@
 				<onleft>9001</onleft>
 				<onright>61</onright>
 				<pagecontrol>61</pagecontrol>
+				<focusposition>4</focusposition>
+				<startmovement>4</startmovement>
+				<endmovement>5</endmovement>
+				<aligny>top</aligny>
 				<scrolltime>200</scrolltime>
 				<itemlayout height="75" width="880">
 					<control type="image">
