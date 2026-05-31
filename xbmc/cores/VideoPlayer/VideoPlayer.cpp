@@ -3201,6 +3201,21 @@ void CVideoPlayer::HandleMessages()
         {
           CloseStream(m_CurrentSubtitle, false);
           OpenStream(m_CurrentSubtitle, st.demuxerId, st.id, st.source);
+
+          // For embedded subtitles the demuxer is ahead of playback (AV buffers
+          // are full), so the subtitle packets for the current playback time have
+          // already been read and discarded. Seek back to the current time so they
+          // get re-read, mirroring what audio stream switching does.
+          if (STREAM_SOURCE_MASK(st.source) == STREAM_SOURCE_DEMUX)
+          {
+            CDVDMsgPlayerSeek::CMode mode;
+            mode.time = static_cast<double>(GetUpdatedTime());
+            mode.backward = true;
+            mode.accurate = true;
+            mode.trickplay = true;
+            mode.sync = true;
+            m_messenger.Put(std::make_shared<CDVDMsgPlayerSeek>(mode));
+          }
         }
       }
     }
