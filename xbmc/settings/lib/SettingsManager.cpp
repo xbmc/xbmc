@@ -1120,20 +1120,20 @@ bool CSettingsManager::LoadSetting(const TiXmlNode* node, const SettingPtr& sett
     settingId = setting->GetReferencedId();
 
   const TiXmlElement* settingElement = LocateSetting(node, settingId);
+  bool isDefault = true;
 
-  if (!settingElement)
-    return false;
-
-  // check if the default="true" attribute is set for the value
-  const char* isDefaultAttribute = settingElement->Attribute(SETTING_XML_ELM_DEFAULT);
-  const bool isDefault =
-      isDefaultAttribute && StringUtils::EqualsNoCase(isDefaultAttribute, "true");
-
-  if (!setting->FromString(settingElement->FirstChild() ? settingElement->FirstChild()->ValueStr()
-                                                        : StringUtils::Empty))
+  if (settingElement)
   {
-    m_logger->warn("unable to read value of setting \"{}\"", settingId);
-    return false;
+    // check if the default="true" attribute is set for the value
+    const char* isDefaultAttribute = settingElement->Attribute(SETTING_XML_ELM_DEFAULT);
+    isDefault = isDefaultAttribute && StringUtils::EqualsNoCase(isDefaultAttribute, "true");
+
+    if (!setting->FromString(settingElement->FirstChild() ? settingElement->FirstChild()->ValueStr()
+                                                          : StringUtils::Empty))
+    {
+      m_logger->warn("unable to read value of setting \"{}\"", settingId);
+      return false;
+    }
   }
 
   // check if we need to perform any update logic for the setting
