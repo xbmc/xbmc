@@ -1178,6 +1178,15 @@ bool CSettingsManager::UpdateSetting(const TiXmlNode* node,
       m_logger->warn("unable to update \"{}\" through automatically renaming from \"{}\"",
                      setting->GetId(), oldSetting);
   }
+  else if (update.GetType() == SettingUpdateType::Change)
+  {
+    oldSetting = update.GetValue().empty() ? setting->GetId() : update.GetValue();
+
+    oldSettingElement = LocateSetting(node, oldSetting);
+
+    if (!oldSettingElement)
+      return false;
+  }
 
   updated |= OnSettingUpdate(setting, oldSetting, oldSettingElement);
   return updated;

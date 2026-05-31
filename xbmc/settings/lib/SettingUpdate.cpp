@@ -38,15 +38,13 @@ bool CSettingUpdate::Deserialize(const TiXmlNode *node)
     return false;
   }
 
-  if (m_type == SettingUpdateType::Rename)
-  {
-    if (node->FirstChild() == nullptr || node->FirstChild()->Type() != TiXmlNode::TINYXML_TEXT)
-    {
-      s_logger->warn("missing or invalid setting id for rename update definition");
-      return false;
-    }
-
+  if (node->FirstChild() != nullptr && node->FirstChild()->Type() == TiXmlNode::TINYXML_TEXT)
     m_value = node->FirstChild()->ValueStr();
+
+  if (m_type == SettingUpdateType::Rename && m_value.empty())
+  {
+    s_logger->warn("missing or invalid setting id for rename update definition");
+    return false;
   }
 
   return true;
