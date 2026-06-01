@@ -24,6 +24,8 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
+#include "utils/StringUtils.h"
+#include "utils/XBMCTinyXML.h"
 #include "windowing/WinSystem.h"
 
 #if defined(TARGET_DARWIN_OSX)
@@ -39,6 +41,50 @@ bool IsPlaying(const std::string& condition,
   auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
   return appPlayer ? appPlayer->IsPlaying() : false;
+}
+
+/*!
+ * \brief Set the value of an integer setting from a bool setting, using the provided mappings.
+ * \tparam T Class of the values the bool setting is mapped to
+ * \param setting The Integer setting
+ * \param oldSettingId Name of the bool setting
+ * \param oldSettingNode XML node of the bool setting
+ * \param mappingFalse Mapping of the bool false value
+ * \param mappingTrue Mapping of the bool true value
+ * \return 
+ */
+template<typename T>
+bool ConvertSettingBoolToInt(const std::shared_ptr<CSetting>& setting,
+                             std::string_view oldSettingId,
+                             const TiXmlElement* oldSettingNode,
+                             const T& mappingFalse,
+                             const T& mappingTrue)
+{
+  // Leave the new setting at default value if the old setting had the default value.
+  const char* isDefaultAttribute = oldSettingNode->Attribute(SETTING_XML_ELM_DEFAULT);
+  if (const bool isDefault =
+          isDefaultAttribute && StringUtils::EqualsNoCase(isDefaultAttribute, "true");
+      isDefault)
+    return false;
+
+  const auto intSetting{std::static_pointer_cast<CSettingInt>(setting)};
+  if (oldSettingNode->FirstChild())
+  {
+    const std::string oldValue = oldSettingNode->FirstChild()->ValueStr();
+    if (oldValue == "false")
+      return intSetting->SetValue(static_cast<int>(mappingFalse));
+    else if (oldValue == "true")
+      return intSetting->SetValue(static_cast<int>(mappingTrue));
+    else if (setting->GetId() != oldSettingId ||
+             (setting->GetId() == oldSettingId &&
+              (!oldValue.empty() && !isdigit(oldValue.front()))))
+    {
+      // change without rename: the setting may already be in int format and it's not an error
+      CLog::LogF(LOGWARNING, "Unexpected old value '{}' for setting {}, using default", oldValue,
+                 oldSettingId);
+    }
+  }
+  return false;
 }
 } // namespace
 
