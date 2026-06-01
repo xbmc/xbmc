@@ -66,7 +66,6 @@ private:
   CEvent m_stoppedEvent;
 
   XBMCAddon::AddonClass::Ref<XBMCAddon::Python::PythonLanguageHook> m_languageHook;
-  bool m_systemExitThrown = false;
 
   static CCriticalSection s_critical;
 

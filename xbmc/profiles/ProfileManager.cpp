@@ -16,6 +16,7 @@
 #include "PasswordManager.h"
 #include "PlayListPlayer.h" //! @todo Remove me
 #include "ServiceBroker.h"
+#include "TextureCache.h"
 #include "Util.h"
 #include "addons/AddonManager.h" //! @todo Remove me
 #include "addons/Service.h" //! @todo Remove me
@@ -310,6 +311,9 @@ bool CProfileManager::LoadProfile(unsigned int index)
   // unload any old settings
   settings->Unload();
 
+  // Stop all texture cache jobs and close the old profile's texture database
+  CServiceBroker::GetTextureCache()->Deinitialize();
+
   SetCurrentProfileId(index);
   m_previousProfileLoadedForLogin = false;
 
@@ -323,6 +327,9 @@ bool CProfileManager::LoadProfile(unsigned int index)
   settings->SetLoaded();
 
   CreateProfileFolders();
+
+  // Re-open the texture database for the new profile
+  CServiceBroker::GetTextureCache()->Initialize();
 
   CServiceBroker::GetDatabaseManager().Initialize();
   CServiceBroker::GetInputManager().LoadKeymaps();
