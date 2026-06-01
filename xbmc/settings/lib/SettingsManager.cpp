@@ -12,6 +12,7 @@
 #include "Setting.h"
 #include "SettingDefinitions.h"
 #include "SettingSection.h"
+#include "SettingsMigration.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
@@ -169,6 +170,33 @@ bool CSettingsManager::Load(const TiXmlElement* root,
     m_logger->error("unable to read setting values from version {} (current version: {})", version,
                     Version);
     return false;
+  }
+
+  std::unique_ptr<TiXmlElement> writableRoot;
+
+  if (version < Version)
+  {
+    // Local deep copy to keep the rest of the code reading settings const
+    writableRoot.reset(root->Clone()->ToElement());
+
+    if (writableRoot != nullptr)
+    {
+      if (!CSettingsMigration::UpdateXMLSettings(writableRoot.get(), version, Version, updated))
+        return false;
+
+      // Continue loading with the modified xml document
+      root = writableRoot.get();
+    }
+    else
+    {
+      m_logger->error(
+          "Unable to create an in-memory copy of the settings for the settings upgrade. "
+          "The new settings will have default values.");
+    }
+
+    // Mark settings updated to have them serialized with the new version number after load, even
+    // if no setting was actually modified.
+    updated = true;
   }
 
   if (!Deserialize(root, updated, loadedSettings))
