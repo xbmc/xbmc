@@ -525,7 +525,7 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
         streamSubtitle->m_parser->flags |= PARSER_FLAG_COMPLETE_FRAMES;
     }
 
-    if (source->extraData.GetSize() == 4)
+    if (source->extraData)
     {
       streamSubtitle->extraData = source->extraData;
     }
