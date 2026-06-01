@@ -121,6 +121,8 @@ if(CORE_PLATFORM_NAME_LC STREQUAL tvos)
 endif()
 
 set(DEPENDS_ROOT_FOR_XCODE ${NATIVEPREFIX}/..)
+configure_file(${CMAKE_SOURCE_DIR}/tools/darwin/packaging/darwin_embedded/package-darwin_embedded.sh.in
+               ${CMAKE_BINARY_DIR}/tools/darwin/packaging/darwin_embedded/package-darwin_embedded.sh @ONLY)
 configure_file(${CMAKE_SOURCE_DIR}/tools/darwin/packaging/darwin_embedded/mkdeb-darwin_embedded.sh.in
                ${CMAKE_BINARY_DIR}/tools/darwin/packaging/darwin_embedded/mkdeb-darwin_embedded.sh @ONLY)
 configure_file(${CMAKE_SOURCE_DIR}/tools/darwin/packaging/darwin_embedded/mkipa-darwin_embedded.sh.in

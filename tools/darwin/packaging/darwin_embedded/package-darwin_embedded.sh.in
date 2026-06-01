@@ -1,0 +1,72 @@
+# Shared setup for iOS/tvOS package scripts. This file is configured by CMake
+# and sourced from the generated packaging directory.
+
+darwin_embedded_package_init()
+{
+  SWITCH=$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')
+  DIRNAME=$(dirname "$2")
+  NATIVEPREFIX=@NATIVEPREFIX@
+  DSYM_TARGET_DIR=/Users/Shared/xbmc-depends/dSyms
+  DSYM_FILENAME=@APP_NAME@.app.dSYM
+  PP_DEVICE=iOS
+
+  if [ "@PLATFORM@" = "appletvos" ]; then
+    PP_DEVICE=tvOS
+  fi
+
+  if [ "${SWITCH#*debug}" != "${SWITCH}" ]; then
+    CORE_BUILD_TYPE=Debug
+  elif [ "${SWITCH#*release}" != "${SWITCH}" ]; then
+    CORE_BUILD_TYPE=Release
+  else
+    echo "You need to specify the build target"
+    exit 1
+  fi
+
+  APP="$DIRNAME/../../../../build/${CORE_BUILD_TYPE}-@PLATFORM@/@APP_NAME@.app"
+  DSYM="$DIRNAME/../../../../build/${CORE_BUILD_TYPE}-@PLATFORM@/$DSYM_FILENAME"
+  PACKAGE="@PLATFORM_BUNDLE_IDENTIFIER@"
+  VERSION=@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@
+  REVISION=0
+
+  if [ "@APP_VERSION_TAG_LC@" != "" ]; then
+    REVISION=$REVISION~@APP_VERSION_TAG_LC@
+  fi
+
+  # customize revision string
+  [ -n "$3" ] && REVISION="$3"
+}
+
+darwin_embedded_require_app()
+{
+  if [ ! -d "$APP" ]; then
+    echo "@APP_NAME@.app not found! are you sure you built $1 target?"
+    exit 1
+  fi
+}
+
+darwin_embedded_package_dsym()
+{
+  if [ -d "$DSYM" ]; then
+    if [ -d "$DSYM_TARGET_DIR" ]; then
+      tar -C "$DSYM/.." -c "$DSYM_FILENAME/" | bzip2 > "$DSYM_TARGET_DIR/$("$DIRNAME/../gitrev-posix")-${DSYM_FILENAME}.tar.bz2"
+    fi
+  fi
+}
+
+darwin_embedded_prepare_app_staging()
+{
+  rsync -a --no-links "$APP" "$1/"
+  find "$1" -name '.svn' -exec rm -rf {} \;
+  find "$1" -name '.git*' -exec rm -rf {} \;
+  find "$1" -name '.DS_Store' -exec rm -rf {} \;
+}
+
+darwin_embedded_disable_copyfile_metadata()
+{
+  # Tell tar, pax, etc. on Mac OS X 10.4+ not to archive
+  # extended attributes (e.g. resource forks) to ._* archive members.
+  # Also allows archiving and extracting actual ._* files.
+  export COPYFILE_DISABLE=true
+  export COPY_EXTENDED_ATTRIBUTES_DISABLE=true
+}
