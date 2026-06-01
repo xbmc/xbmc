@@ -12,6 +12,7 @@
 #include "Setting.h"
 #include "SettingDefinitions.h"
 #include "SettingSection.h"
+#include "SettingsMigration.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
@@ -25,6 +26,21 @@
 
 const uint32_t CSettingsManager::Version = 2;
 const uint32_t CSettingsManager::MinimumSupportedVersion = 0;
+
+namespace
+{
+std::unique_ptr<TiXmlElement> Clone(const TiXmlElement* root)
+{
+  if (TiXmlNode* cloneNode = root->Clone(); cloneNode != nullptr)
+  {
+    if (TiXmlElement* clone = cloneNode->ToElement(); clone != nullptr)
+      return std::unique_ptr<TiXmlElement>(clone);
+
+    delete cloneNode;
+  }
+  return {};
+}
+} // namespace
 
 bool CSettingsManager::ParseSettingIdentifier(std::string_view settingId,
                                               std::string& categoryTag,
@@ -170,6 +186,41 @@ bool CSettingsManager::Load(const TiXmlElement* root,
     m_logger->error("unable to read setting values from version {} (current version: {})", version,
                     Version);
     return false;
+  }
+
+  updated = false;
+
+  // Scoped to remain alive until the end of the function
+  std::unique_ptr<TiXmlElement> writableRoot;
+
+  if (version < Version)
+  {
+    // Local deep copy to keep the rest of the settings reading code const
+    writableRoot = Clone(root);
+
+    if (writableRoot != nullptr)
+    {
+      CSettingsMigration migration{};
+      if (migration.UpdateXMLSettings(writableRoot.get(), version, Version))
+      {
+        // Continue loading with the modified xml document
+        root = writableRoot.get();
+        // Always mark settings updated to have them serialized with the new version number after load,
+        // even if no setting was modified (impacted setting not present in the file for example)
+        updated = true;
+      }
+    }
+
+    if (!updated)
+    {
+      m_logger->error(
+          "Unable to create an in-memory copy of the settings for the settings upgrade, or "
+          "unrecoverable upgrade failure. The settings that would have been upgraded will have "
+          "default values.");
+      // Must continue even with a catastrophic upgrade failure. All settings would otherwise be
+      // reset to default, much worse than missing the upgrade of a few settings.
+      //! @todo rework Kodi startup and handling of settings load problem.
+    }
   }
 
   if (!Deserialize(root, updated, loadedSettings))
@@ -794,8 +845,6 @@ bool CSettingsManager::Deserialize(const TiXmlNode* node,
                                    bool& updated,
                                    LoadedSettings* loadedSettings /* = nullptr */)
 {
-  updated = false;
-
   if (!node)
     return false;
 

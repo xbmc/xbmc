@@ -21,6 +21,7 @@
 #include "utils/logtypes.h"
 
 #include <map>
+#include <memory>
 #include <set>
 #include <string_view>
 #include <unordered_set>
