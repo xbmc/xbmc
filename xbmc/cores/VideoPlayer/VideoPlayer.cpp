@@ -1003,6 +1003,8 @@ bool CVideoPlayer::OpenDemuxStream()
     if (item.HasVideoInfoTag())
       m_pInputStream->SaveCurrentState(item.GetVideoInfoTag()->m_streamDetails);
   }
+  else
+    m_pInputStream->SaveCurrentState({});
 
   return true;
 }
