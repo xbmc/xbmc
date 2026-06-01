@@ -59,6 +59,7 @@ void CGLESShader::OnCompiledAndLinked()
   m_hShaderClip = glGetUniformLocation(ProgramHandle(), "m_shaderClip");
   m_hCoordStep = glGetUniformLocation(ProgramHandle(), "m_cordStep");
   m_hDepth = glGetUniformLocation(ProgramHandle(), "m_depth");
+  m_hPma = glGetUniformLocation(ProgramHandle(), "m_pma");
 
   // Vertex attributes
   m_hPos    = glGetAttribLocation(ProgramHandle(),  "m_attrpos");
@@ -172,6 +173,11 @@ bool CGLESShader::OnEnabled()
 
   glUniform1f(m_hBrightness, 0.0f);
   glUniform1f(m_hContrast, 1.0f);
+
+  // Default to straight-alpha math for all consumers; the one site that draws
+  // premultiplied-alpha textures (COverlayTextureGLES) overrides this to 1.0
+  // before drawing so the limited-range conversion offset scales by alpha.
+  glUniform1f(m_hPma, 0.0f);
 
   const float sdrPeak = CServiceBroker::GetWinSystem()->GetGuiSdrPeakLuminance();
   glUniform1f(m_sdrPeak, sdrPeak);

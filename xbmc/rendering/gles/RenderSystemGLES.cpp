@@ -752,6 +752,14 @@ GLint CRenderSystemGLES::GUIShaderGetDepth()
   return -1;
 }
 
+GLint CRenderSystemGLES::GUIShaderGetPma()
+{
+  if (m_pShader[m_method])
+    return m_pShader[m_method]->GetPmaLoc();
+
+  return -1;
+}
+
 GLint CRenderSystemGLES::GUIShaderGetUniCol()
 {
   if (m_pShader[m_method])
