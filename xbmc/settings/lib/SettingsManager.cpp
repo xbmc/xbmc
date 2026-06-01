@@ -1119,8 +1119,10 @@ bool CSettingsManager::LoadSetting(const TiXmlNode* node, const SettingPtr& sett
   if (setting->IsReference())
     settingId = setting->GetReferencedId();
 
+  const std::set<CSettingUpdate>& updates = setting->GetUpdates();
   const TiXmlElement* settingElement = LocateSetting(node, settingId);
   bool isDefault = true;
+  bool failedRead = false;
 
   if (settingElement)
   {
@@ -1128,16 +1130,14 @@ bool CSettingsManager::LoadSetting(const TiXmlNode* node, const SettingPtr& sett
     const char* isDefaultAttribute = settingElement->Attribute(SETTING_XML_ELM_DEFAULT);
     isDefault = isDefaultAttribute && StringUtils::EqualsNoCase(isDefaultAttribute, "true");
 
-    if (!setting->FromString(settingElement->FirstChild() ? settingElement->FirstChild()->ValueStr()
-                                                          : StringUtils::Empty))
-    {
+    failedRead =
+        !setting->FromString(settingElement->FirstChild() ? settingElement->FirstChild()->ValueStr()
+                                                          : StringUtils::Empty);
+    if (failedRead)
       m_logger->warn("unable to read value of setting \"{}\"", settingId);
-      return false;
-    }
   }
 
   // check if we need to perform any update logic for the setting
-  const std::set<CSettingUpdate>& updates = setting->GetUpdates();
   for (const auto& update : updates)
     updated |= UpdateSetting(node, setting, update);
 
@@ -1146,7 +1146,7 @@ bool CSettingsManager::LoadSetting(const TiXmlNode* node, const SettingPtr& sett
   if (!updated && isDefault)
     setting->Reset();
 
-  return true;
+  return !failedRead || updated;
 }
 
 bool CSettingsManager::UpdateSetting(const TiXmlNode* node,
