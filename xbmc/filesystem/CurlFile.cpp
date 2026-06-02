@@ -158,6 +158,38 @@ static inline void* realloc_simple(void *ptr, size_t size)
 static constexpr int CURL_OFF = 0L;
 static constexpr int CURL_ON = 1L;
 
+static bool IsTransientCurlError(CURLcode result)
+{
+  return result == CURLE_OPERATION_TIMEDOUT || result == CURLE_PARTIAL_FILE ||
+         result == CURLE_COULDNT_CONNECT || result == CURLE_HTTP2_STREAM ||
+         result == CURLE_RECV_ERROR;
+}
+
+static CURLcode PerformWithTransientRetries(CURL_HANDLE* easyHandle,
+                                            const CURL& url,
+                                            const char* functionName)
+{
+  const int maxRetries =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_curlretries;
+
+  CURLcode result = CURLE_OK;
+  for (int attempt = 0; attempt <= maxRetries; ++attempt)
+  {
+    result = g_curlInterface.easy_perform(easyHandle);
+    if (!IsTransientCurlError(result) || attempt == maxRetries)
+      break;
+
+    // Force the next probe off the failed/reused connection.
+    CLog::Log(LOGWARNING, "CCurlFile::{} - <{}> Transient error {}({}), reconnect and retry {}",
+              functionName, url.GetRedacted(), g_curlInterface.easy_strerror(result), result,
+              attempt + 1);
+    g_curlInterface.easy_setopt(easyHandle, CURLOPT_FRESH_CONNECT, CURL_ON);
+  }
+
+  g_curlInterface.easy_setopt(easyHandle, CURLOPT_FRESH_CONNECT, CURL_OFF); // restore pool reuse
+  return result;
+}
+
 size_t CCurlFile::CReadState::HeaderCallback(void *ptr, size_t size, size_t nmemb)
 {
   std::string inString;
@@ -1373,7 +1405,7 @@ bool CCurlFile::Exists(const CURL& url)
       g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_NOCWD);
   }
 
-  CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
+  CURLcode result = PerformWithTransientRetries(m_state->m_easyHandle, url, __FUNCTION__);
 
   if (result == CURLE_WRITE_ERROR || result == CURLE_OK)
   {
@@ -1399,7 +1431,7 @@ bool CCurlFile::Exists(const CURL& url)
         list = g_curlInterface.slist_append(list, "Range: bytes=0-1"); /* try to only request 1 byte */
         g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_HTTPHEADER, list);
 
-        CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
+        result = PerformWithTransientRetries(m_state->m_easyHandle, url, __FUNCTION__);
         g_curlInterface.slist_free_all(list);
 
         if (result == CURLE_WRITE_ERROR || result == CURLE_OK)
@@ -1580,7 +1612,7 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
       g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_NOCWD);
   }
 
-  CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
+  CURLcode result = PerformWithTransientRetries(m_state->m_easyHandle, url, __FUNCTION__);
 
   if(result == CURLE_HTTP_RETURNED_ERROR)
   {
@@ -1611,8 +1643,7 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
 #endif
     g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_NOPROGRESS, 0);
 
-    result = g_curlInterface.easy_perform(m_state->m_easyHandle);
-
+    result = PerformWithTransientRetries(m_state->m_easyHandle, url, __FUNCTION__);
   }
 
   if( result != CURLE_ABORTED_BY_CALLBACK && result != CURLE_OK )
@@ -1787,12 +1818,7 @@ int8_t CCurlFile::CReadState::FillBuffer(unsigned int want)
                         msg->data.result);
             }
 
-            if ( (msg->data.result == CURLE_OPERATION_TIMEDOUT ||
-                  msg->data.result == CURLE_PARTIAL_FILE       ||
-                  msg->data.result == CURLE_COULDNT_CONNECT    ||
-                  msg->data.result == CURLE_HTTP2_STREAM       ||
-                  msg->data.result == CURLE_RECV_ERROR)        &&
-                  !m_bFirstLoop)
+            if (IsTransientCurlError(msg->data.result) && !m_bFirstLoop)
             {
               bRetryNow = false; // Leave it to caller whether the operation is retried
               bError = true;
