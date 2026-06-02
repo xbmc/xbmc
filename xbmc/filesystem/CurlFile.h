@@ -13,6 +13,7 @@
 #include "utils/RingBuffer.h"
 
 #include <map>
+#include <memory>
 #include <string>
 
 typedef void CURL_HANDLE;
@@ -50,7 +51,7 @@ namespace XFILE
       {
         return m_state->ReadLine(buffer, bufferSize);
       }
-      ssize_t Read(void* lpBuf, size_t uiBufSize) override { return m_state->Read(lpBuf, uiBufSize); }
+      ssize_t Read(void* lpBuf, size_t uiBufSize) override;
       ssize_t Write(const void* lpBuf, size_t uiBufSize) override;
       const std::string GetProperty(XFILE::FileProperty type, const std::string &name = "") const override;
       const std::vector<std::string> GetPropertyValues(XFILE::FileProperty type, const std::string &name = "") const override;
@@ -204,5 +205,11 @@ namespace XFILE
       MAPHTTPHEADERS m_requestheaders;
 
       long m_httpresponse;
+
+      // ISO engine (only activated for .iso files over HTTP)
+      std::unique_ptr<class CCurlFileEngine> m_isoEngine;
+      bool m_useIsoEngine = false;
+
+      static bool IsIsoUrl(const CURL& url);
   };
 }

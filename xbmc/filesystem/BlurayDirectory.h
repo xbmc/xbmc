@@ -14,12 +14,20 @@
 #include "bluray/MPLSParser.h"
 
 #include <map>
+#include <memory>
+#include <mutex>
 #include <string>
 
 #include <libbluray/bluray.h>
 
+class CBlurayIsoCache;
 class CFileItem;
 class CFileItemList;
+
+namespace XFILE
+{
+class CFile;
+}
 
 namespace XFILE
 {
@@ -53,12 +61,18 @@ private:
   void Dispose();
   std::string GetDiscInfoString(DiscInfo info) const;
   const BLURAY_DISC_INFO* GetDiscInfo() const;
+  static int ReadBlockCallback(void* handle, void* buf, int lba, int num_blocks);
+  int64_t ReadRaw(int64_t offset, uint8_t* buffer, size_t size);
 
   CURL m_url;
   std::string m_realPath;
   BLURAY* m_bd{nullptr};
   bool m_blurayInitialized{false};
   bool m_blurayMenuSupport{false};
+
+  std::shared_ptr<CBlurayIsoCache> m_isoCache;
+  std::shared_ptr<XFILE::CFile> m_isoFile;
+  std::mutex m_isoReadLock;
 
   std::map<unsigned int, ClipInformation> m_clipCache;
 };

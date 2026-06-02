@@ -907,6 +907,24 @@ bool CVideoPlayer::OpenInputStream()
 
   if (!m_pInputStream->Open())
   {
+    // For disc images: if Bluray stream fails to open (not a Bluray disc),
+    // fallback to Navigator.
+    if (m_item.IsDiscImage())
+    {
+      CLog::Log(LOGDEBUG,
+                "CVideoPlayer::OpenInputStream - Bluray open failed, "
+                "trying Navigator fallback for disc image");
+      m_pInputStream = std::make_shared<CDVDInputStreamNavigator>(this, m_item);
+      if (!m_pInputStream->Open())
+      {
+        CLog::Log(LOGERROR,
+                  "CVideoPlayer::OpenInputStream - error opening Navigator for [{}]",
+                  CURL::GetRedacted(m_item.GetPath()));
+        return false;
+      }
+      return true;
+    }
+
     CLog::Log(LOGERROR, "CVideoPlayer::OpenInputStream - error opening [{}]",
               CURL::GetRedacted(m_item.GetPath()));
     return false;
