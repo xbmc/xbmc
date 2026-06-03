@@ -12800,7 +12800,7 @@ msgstr ""
 
 #: addons/skin.estuary/xml/Variables.xml
 msgctxt "#20060"
-msgid "Media info"
+msgid "Media"
 msgstr ""
 
 msgctxt "#20061"
