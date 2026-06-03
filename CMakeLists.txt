@@ -78,6 +78,7 @@ option(ENABLE_AIRTUNES    "Enable AirTunes support?" ON)
 option(ENABLE_OPTICAL     "Enable optical support?" ON)
 option(ENABLE_PYTHON      "Enable python support?" ON)
 option(ENABLE_TESTING     "Enable testing support?" ON)
+option(ENABLE_ROS2        "Enable ROS 2 support?" OFF)
 
 # Internal Depends - supported on all platforms
 
@@ -251,6 +252,17 @@ set(optional_deps Alsa
                   XSLT
                   ${PLATFORM_OPTIONAL_DEPS})
 
+# ROS dependencies. Keep in alphabetical order please
+list(APPEND optional_deps
+  ament_cmake
+  image_transport
+  oasis_msgs
+  rcl_interfaces
+  rclcpp
+  rmw
+  sensor_msgs
+)
+
 # Remove excluded platform specific optional_deps
 foreach(excludedep ${PLATFORM_OPTIONAL_DEPS_EXCLUDE})
   list(FILTER optional_deps EXCLUDE REGEX ${excludedep})
@@ -288,6 +300,10 @@ if(ENABLE_AIRTUNES)
   if(TARGET Shairplay::Shairplay)
     core_require_dep(Shairplay)
   endif()
+endif()
+
+if (ENABLE_ROS2)
+  list(APPEND DEP_DEFINES "-DHAS_ROS2=1")
 endif()
 
 # find all folders containing addon.xml.in
@@ -594,12 +610,6 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/cmake/scripts/${CORE_SYSTEM_NAME}/ExtraTargets.cma
 endif()
 
 include(cmake/scripts/${CORE_SYSTEM_NAME}/Install.cmake)
-
-# Add uninstall target
-if(CMAKE_GENERATOR MATCHES Makefile)
-  add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P ${CMAKE_SOURCE_DIR}/cmake/scripts/common/Uninstall.cmake)
-  set_target_properties(uninstall PROPERTIES FOLDER "Build Utilities")
-endif()
 
 # Create target that allows to build binary-addons.
 # Use make binary-addons ADDONS="visualization.spectrum" to select the addons to build.

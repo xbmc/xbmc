@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<controls>
+		<control type="videowindow">
+			<description>Video background</description>
+		</control>
+		<control type="group">
+			<description>Lab content area</description>
+			<visible>SmartHome.HasLab</visible>
+			<animation effect="fade" time="1500">VisibleChange</animation>
+			<left>50</left>
+			<width>860</width>
+			<top>100</top>
+			<height>880</height>
+			<control type="image">
+				<description>Lab content area background</description>
+				<top>-20</top>
+				<bottom>-20</bottom>
+				<left>-20</left>
+				<right>-20</right>
+				<texture border="40">buttons/dialogbutton-nofo.png</texture>
+			</control>
+			<control type="list">
+				<description>Sensor data list</description>
+				<orientation>vertical</orientation>
+				<itemlayout width="860" height="220">
+					<control type="label">
+						<label>$INFO[ListItem.Label]</label>
+						<left>20</left>
+						<font>font60</font>
+						<shadowcolor>text_shadow</shadowcolor>
+						<align>left</align>
+						<aligny>center</aligny>
+					</control>
+					<control type="label">
+						<label>$INFO[ListItem.Label2]</label>
+						<right>20</right>
+						<font>font60</font>
+						<shadowcolor>text_shadow</shadowcolor>
+						<align>right</align>
+						<aligny>center</aligny>
+					</control>
+				</itemlayout>
+				<focusedlayout width="860" height="220">
+					<control type="label">
+						<label>$INFO[ListItem.Label]</label>
+						<left>20</left>
+						<font>font60</font>
+						<shadowcolor>text_shadow</shadowcolor>
+						<align>left</align>
+						<aligny>center</aligny>
+					</control>
+					<control type="label">
+						<label>$INFO[ListItem.Label2]</label>
+						<right>20</right>
+						<font>font60</font>
+						<shadowcolor>text_shadow</shadowcolor>
+						<align>right</align>
+						<aligny>center</aligny>
+					</control>
+				</focusedlayout>
+				<content>
+					<item>
+						<label>CPU</label>
+						<label2>$INFO[SmartHome.LabCPU]</label2> <!--20 %-->
+					</item>
+					<item>
+						<label>Memory</label>
+						<label2>$INFO[SmartHome.LabMemory]</label2> <!--20 %-->
+					</item>
+					<item>
+						<label>Current</label>
+						<label2>$INFO[SmartHome.LabCurrent]</label2> <!-- 50 mA -->
+					</item>
+					<item>
+						<label>IR</label>
+						<label2>$INFO[SmartHome.LabIR]</label2> <!-- 5.00 V -->
+					</item>
+				</content>
+			</control>
+		</control>
+	</controls>
+</window>

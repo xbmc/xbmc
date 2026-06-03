@@ -1,4 +1,5 @@
 set(SOURCES ControllerActivity.cpp
+            ControllerState.cpp
             DefaultButtonMap.cpp
             DefaultKeyboardTranslator.cpp
             DefaultMouseTranslator.cpp
@@ -8,6 +9,7 @@ set(SOURCES ControllerActivity.cpp
 )
 
 set(HEADERS ControllerActivity.h
+            ControllerState.h
             DefaultButtonMap.h
             DefaultKeyboardTranslator.h
             DefaultMouseTranslator.h
