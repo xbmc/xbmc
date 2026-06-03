@@ -39,7 +39,7 @@ public:
 private:
   void DrmAtomicCommit(int fb_id, int flags, bool rendered, bool videoLayer);
 
-  bool m_need_modeset;
+  bool m_need_modeset{true};
   bool m_active = true;
 
   class CDRMAtomicRequest
