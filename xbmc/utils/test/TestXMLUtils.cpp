@@ -584,3 +584,98 @@ TEST(TestXMLUtils, SetDateTime)
   EXPECT_TRUE(XMLUtils::GetDateTime(b.RootElement(), "node", val2));
   EXPECT_TRUE(ref == val2);
 }
+
+TEST(TestXMLUtils, NodeSerializationRoot)
+{
+  const std::string XmlDocument = "<root><node>some string</node></root>";
+  const std::string expected = "<root><node>some string</node></root>";
+
+  {
+    // 1 - the node belongs to a document
+    CXBMCTinyXML doc;
+    EXPECT_TRUE(doc.Parse(XmlDocument));
+    EXPECT_EQ(expected, XMLUtils::NodeStringSerialization(doc.RootElement(),
+                                                          XMLUtils::SerializationFormat::COMPACT));
+
+    // 2 - the node is not attached to a document
+    TiXmlNode* node = doc.RootElement()->Clone();
+    EXPECT_EQ(expected,
+              XMLUtils::NodeStringSerialization(node, XMLUtils::SerializationFormat::COMPACT));
+    // the node is still functional after serialization
+    EXPECT_NE(nullptr, node->FirstChildElement("node"));
+    // Free allocated memory
+    TiXmlDocument tempdoc;
+    tempdoc.LinkEndChild(node);
+  }
+  {
+    // TinyXML2 doesn't allow freestanding XMLNodes. They are always memory-managed by a XMLDocument.
+    CXBMCTinyXML2 doc;
+    EXPECT_TRUE(doc.Parse(XmlDocument));
+    EXPECT_EQ(expected, XMLUtils::NodeStringSerialization(doc.RootElement(),
+                                                          XMLUtils::SerializationFormat::COMPACT));
+  }
+}
+
+TEST(TestXMLUtils, NodeSerializationChild)
+{
+  const std::string XmlDocument = "<root><node>some string</node></root>";
+  const std::string expected = "<node>some string</node>";
+
+  {
+    CXBMCTinyXML doc;
+    EXPECT_TRUE(doc.Parse(XmlDocument));
+    TiXmlElement* elem = doc.RootElement()->FirstChildElement("node");
+    EXPECT_EQ(expected,
+              XMLUtils::NodeStringSerialization(elem, XMLUtils::SerializationFormat::COMPACT));
+  }
+  {
+    // TinyXML2 doesn't allow freestanding XMLNodes. They are always memory-managed by a XMLDocument.
+    CXBMCTinyXML2 doc;
+    EXPECT_TRUE(doc.Parse(XmlDocument));
+    tinyxml2::XMLElement* elem = doc.RootElement()->FirstChildElement("node");
+
+    EXPECT_EQ(expected,
+              XMLUtils::NodeStringSerialization(elem, XMLUtils::SerializationFormat::COMPACT));
+  }
+}
+
+TEST(TestXMLUtils, NodeSerializationCompact)
+{
+  const std::string XmlDocument = "<root><node>some string</node></root>";
+  const std::string expected = "<root><node>some string</node></root>";
+
+  {
+    CXBMCTinyXML doc;
+    EXPECT_TRUE(doc.Parse(XmlDocument));
+    EXPECT_EQ(expected, XMLUtils::NodeStringSerialization(doc.RootElement(),
+                                                          XMLUtils::SerializationFormat::COMPACT));
+  }
+  {
+    CXBMCTinyXML2 doc;
+    EXPECT_TRUE(doc.Parse(XmlDocument));
+    EXPECT_EQ(expected, XMLUtils::NodeStringSerialization(doc.RootElement(),
+                                                          XMLUtils::SerializationFormat::COMPACT));
+  }
+}
+
+TEST(TestXMLUtils, NodeSerializationPretty)
+{
+  const std::string XmlDocument = "<root><node>some string</node></root>";
+  const std::string expected = R"(<root>
+    <node>some string</node>
+</root>
+)";
+
+  {
+    CXBMCTinyXML doc;
+    EXPECT_TRUE(doc.Parse(XmlDocument));
+    EXPECT_EQ(expected, XMLUtils::NodeStringSerialization(doc.RootElement(),
+                                                          XMLUtils::SerializationFormat::PRETTY));
+  }
+  {
+    CXBMCTinyXML2 doc;
+    EXPECT_TRUE(doc.Parse(XmlDocument));
+    EXPECT_EQ(expected, XMLUtils::NodeStringSerialization(doc.RootElement(),
+                                                          XMLUtils::SerializationFormat::PRETTY));
+  }
+}
