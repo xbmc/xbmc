@@ -21,7 +21,6 @@
 #include "addons/Service.h" //! @todo Remove me
 #include "addons/Skin.h"
 #include "application/Application.h" //! @todo Remove me
-#include "application/ApplicationComponents.h"
 #include "application/ApplicationPowerHandling.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "events/EventLog.h"
@@ -52,7 +51,6 @@
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 #include "video/VideoLibraryQueue.h" //! @todo Remove me
@@ -298,6 +296,10 @@ bool CProfileManager::LoadProfile(unsigned int index)
     return true;
   }
 
+  // check if the profile is already active
+  if (m_currentProfile == index && !m_profiles.at(index).needsRefresh())
+    return true;
+
   // save any settings of the currently used skin but only if the (master)
   // profile hasn't just been loaded as a temporary profile for login
   auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
@@ -312,6 +314,7 @@ bool CProfileManager::LoadProfile(unsigned int index)
 
   SetCurrentProfileId(index);
   m_previousProfileLoadedForLogin = false;
+  m_profiles.at(index).SetNeedsRefresh(false);
 
   // load the new settings
   if (!settings->Load())
