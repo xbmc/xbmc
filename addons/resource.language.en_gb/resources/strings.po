@@ -14456,7 +14456,12 @@ msgctxt "#20478"
 msgid "DV profile"
 msgstr ""
 
-#empty strings from id 20479 to 21329
+#: xbmc/profiles/dialogs/GUIDialogProfileSettings.xml
+msgctxt "#20479"
+msgid "Profile needs reloading for changes to take effect. Reload now?"
+msgstr ""
+
+#empty strings from id 20480 to 21329
 #up to 21329 is reserved for the video db !! !
 
 #: system/settings/settings.xml
