@@ -24,7 +24,7 @@
 #include <unordered_set>
 #include <utility>
 
-const uint32_t CSettingsManager::Version = 2;
+const uint32_t CSettingsManager::Version = 3;
 const uint32_t CSettingsManager::MinimumSupportedVersion = 0;
 
 bool CSettingsManager::ParseSettingIdentifier(std::string_view settingId,

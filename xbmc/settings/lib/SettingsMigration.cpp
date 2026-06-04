@@ -100,5 +100,14 @@ bool CSettingsMigration::Upgrade(TiXmlElement* root, int currentVersion, bool& u
   // new setting will have a default value instead of a converted old setting.
   // The conversion functions are responsible of the problems logging.
 
+  if (currentVersion < 3)
+  {
+    constexpr std::string_view oldSettingId = "videolibrary.ignorevideoversions";
+    constexpr std::string_view newSettingId = "videolibrary.similarvideoaction";
+
+    ConvertSettingBoolToInt(root, oldSettingId, newSettingId,
+                            {.m_default = 0, .m_false = 1, .m_true = 0});
+  }
+
   return true;
 }
