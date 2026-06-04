@@ -74,7 +74,7 @@ void CSettingsValueXmlSerializer::SerializeGroup(TiXmlNode* parent,
 }
 
 void CSettingsValueXmlSerializer::SerializeSetting(TiXmlNode* parent,
-                                                   const std::shared_ptr<CSetting>& setting) const
+                                                   const std::shared_ptr<CSetting>& setting)
 {
   if (!setting)
     return;
