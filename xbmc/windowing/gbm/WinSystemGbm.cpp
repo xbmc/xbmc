@@ -169,6 +169,7 @@ bool CWinSystemGbm::InitWindowSystem()
   if (!m_GBM->CreateDevice(m_DRM->GetFileDescriptor()))
   {
     m_GBM.reset();
+    m_DRM.reset();
     return false;
   }
 

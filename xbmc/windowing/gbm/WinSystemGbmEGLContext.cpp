@@ -171,7 +171,10 @@ bool CWinSystemGbmEGLContext::CreateNewWindow(const std::string& name,
 #else
   uint64_t modifier = DRM_FORMAT_MOD_LINEAR;
 #endif
-  if (!m_DRM->FindGuiPlane(gbm_bo_get_format(bo), modifier))
+  // Offscreen has no CRTC and no scanout planes; FindGuiPlane has nothing to
+  // assign, so skip the call rather than violate its post-condition that
+  // m_gui_plane is set on success.
+  if (m_DRM->GetCrtc() && !m_DRM->FindGuiPlane(gbm_bo_get_format(bo), modifier))
   {
     return false;
   }
