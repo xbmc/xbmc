@@ -24,6 +24,7 @@ precision mediump float;
 uniform sampler2D m_samp0;
 varying vec4 m_cord0;
 uniform float m_sdrPeak;
+uniform float m_pma;
 
 void main ()
 {
@@ -33,7 +34,7 @@ void main ()
 
 #if defined(KODI_LIMITED_RANGE)
   rgb.rgb *= (235.0 - 16.0) / 255.0;
-  rgb.rgb += 16.0 / 255.0;
+  rgb.rgb += mix(1.0, rgb.a, m_pma) * 16.0 / 255.0;
 #endif
 
 #if defined(KODI_TRANSFER_PQ)

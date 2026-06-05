@@ -143,6 +143,7 @@ public:
   GLint GUIShaderGetClip();
   GLint GUIShaderGetCoordStep();
   GLint GUIShaderGetDepth();
+  GLint GUIShaderGetPma();
 
 protected:
   virtual void SetVSyncImpl(bool enable) = 0;
