@@ -56,10 +56,6 @@ extern "C" FILE* fopen_utf8(const char* _Filename, const char* _Mode);
 #define fopen_utf8 fopen
 #endif
 
-#define GC_SCRIPT \
-  "import gc\n" \
-  "gc.collect(2)\n"
-
 #define PY_PATH_SEP DELIM
 
 // Time before ill-behaved scripts are terminated
@@ -88,7 +84,8 @@ static const std::string getListOfAddonClassesAsString(
 }
 
 CPythonInvoker::CPythonInvoker(ILanguageInvocationHandler* invocationHandler)
-  : ILanguageInvoker(invocationHandler), m_threadState(NULL)
+  : ILanguageInvoker(invocationHandler),
+    m_threadState(NULL)
 {
 }
 
@@ -347,7 +344,6 @@ bool CPythonInvoker::execute(const std::string& script, std::vector<std::wstring
     }
   }
 
-  m_systemExitThrown = false;
   InvokerState stateToSet;
   if (!failed && !PyErr_Occurred())
   {
@@ -357,7 +353,6 @@ bool CPythonInvoker::execute(const std::string& script, std::vector<std::wstring
   }
   else if (PyErr_ExceptionMatches(PyExc_SystemExit))
   {
-    m_systemExitThrown = true;
     CLog::Log(LOGDEBUG, "CPythonInvoker({}, {}): script aborted", GetId(), m_sourceFile);
     stateToSet = InvokerStateFailed;
     onAbort();
@@ -546,7 +541,6 @@ bool CPythonInvoker::stop(bool abort)
         PyEval_RestoreThread(ts);
       }
 
-
       PyThreadState* state = PyInterpreterState_ThreadHead(m_threadState->interp);
       while (state)
       {
@@ -583,34 +577,37 @@ void CPythonInvoker::onExecutionDone()
 
     onDeinitialization();
 
-    // run the gc before finishing
-    //
-    // if the script exited by throwing a SystemExit exception then going back
-    // into the interpreter causes this python bug to get hit:
-    //    http://bugs.python.org/issue10582
-    // and that causes major failures. So we are not going to go back in
-    // to run the GC if that's the case.
-    if (!m_stop && m_languageHook->HasRegisteredAddonClasses() && !m_systemExitThrown &&
-        PyRun_SimpleString(GC_SCRIPT) == -1)
-      CLog::Log(LOGERROR,
-                "CPythonInvoker({}, {}): failed to run the gc to clean up after running prior to "
-                "shutting down the Interpreter",
-                GetId(), m_sourceFile);
+    // Force a full garbage collection to clean up unreferenced Python objects
+    // before we start tearing down the interpreter. This prevents objects with
+    // dangling C++ backing pointers from being destroyed during Py_EndInterpreter.
+    PyGC_Collect();
 
-    // PyErr_Clear() is required to prevent the debug python library to trigger an assert() at the Py_EndInterpreter() level
-    PyErr_Clear();
+    // Unregister all Addon classes now, while the interpreter is still alive.
+    // This ensures C++ destructors can safely release Python references.
+    m_languageHook->UnregisterMe();
 
-    Py_EndInterpreter(m_threadState);
-
-    // If we still have objects left around, produce an error message detailing what's been left behind
+    // If any classes still remain, log them - but we'll still try to clear
+    // the interpreter forcefully.
     if (m_languageHook->HasRegisteredAddonClasses())
       CLog::Log(LOGWARNING,
                 "CPythonInvoker({}, {}): the python script \"{}\" has left several "
                 "classes in memory that we couldn't clean up. The classes include: {}",
                 GetId(), m_sourceFile, m_sourceFile, getListOfAddonClassesAsString(m_languageHook));
 
-    // unregister the language hook
-    m_languageHook->UnregisterMe();
+    // Force-clear all module dictionaries in this sub-interpreter.
+    // This breaks circular references and allows the C++ bound objects
+    // to be destroyed cleanly, preventing the segfault inside _PyModule_ClearDict.
+    PyObject* modules = PyImport_GetModuleDict();
+    if (modules)
+      PyDict_Clear(modules);
+
+    // Run GC again to clean up any garbage created by the dict clearing.
+    PyGC_Collect();
+
+    // Clear any remaining Python error state to avoid asserts in debug builds.
+    PyErr_Clear();
+
+    Py_EndInterpreter(m_threadState);
 
     PyThreadState_Swap(m_mainThreadState);
     PyThreadState_Clear(m_mainThreadState);

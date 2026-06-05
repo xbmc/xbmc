@@ -409,6 +409,7 @@ void SqliteDatabase::disconnect()
     return;
   sqlite3_close(conn);
   active = false;
+  conn = nullptr; // Reset handle to avoid stale pointer usage after database is closed
 }
 
 int SqliteDatabase::postconnect()
@@ -897,7 +898,7 @@ int SqliteDataset::exec(const std::string& sql)
 
   const auto start = std::chrono::steady_clock::now();
 
-  char* errmsg;
+  char* errmsg = nullptr; // Must be initialized to nullptr; sqlite3_exec may not always set it
   const int res =
       db->setErr(sqlite3_exec(handle(), qry.c_str(), &callback, &exec_res, &errmsg), qry.c_str());
 
@@ -914,13 +915,20 @@ int SqliteDataset::exec(const std::string& sql)
   {
     if (errmsg)
     {
-      DbErrors err("%s (%s)", db->getErrorMsg(), errmsg);
+      // Guard against possible NULL strings from getErrorMsg
+      const char* dbErr = db->getErrorMsg();
+      if (!dbErr)
+        dbErr = "unknown database error";
+      DbErrors err("%s (%s)", dbErr, errmsg);
       sqlite3_free(errmsg);
       throw err;
     }
     else
     {
-      throw DbErrors("%s", db->getErrorMsg());
+      const char* dbErr = db->getErrorMsg();
+      if (!dbErr)
+        dbErr = "unknown database error";
+      throw DbErrors("%s", dbErr);
     }
   }
 }
