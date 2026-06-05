@@ -900,6 +900,24 @@ void CDiscDirectoryHelper::FindSpecials(const PlaylistMap& playlists)
 
 namespace
 {
+std::vector<ChapterInfo> GetChapterInfo(const PlaylistInformation& playlistInformation)
+{
+  if (playlistInformation.chapters.empty())
+    return {};
+
+  std::vector<ChapterInfo> chapterInfo;
+  for (unsigned int i = 0; i < playlistInformation.chapters.size() - 1; ++i)
+  {
+    const std::chrono::milliseconds start = playlistInformation.chapters[i];
+    const std::chrono::milliseconds duration = playlistInformation.chapters[i + 1] - start;
+    chapterInfo.push_back({i + 1, start, duration});
+  }
+  chapterInfo.push_back({static_cast<unsigned int>(playlistInformation.chapters.size()),
+                         playlistInformation.chapters.back(),
+                         playlistInformation.duration - playlistInformation.chapters.back()});
+  return chapterInfo;
+}
+
 void GenerateItem(const CURL& url,
                   const std::shared_ptr<CFileItem>& item,
                   unsigned int playlist,
@@ -926,8 +944,10 @@ void GenerateItem(const CURL& url,
   item->SetPath(path.Get());
 
   CVideoInfoTag* itemTag{item->GetVideoInfoTag()};
-  itemTag->SetDuration(static_cast<int>(duration.count()));
+  itemTag->SetDuration(static_cast<int>(duration.count() / 1000));
   item->SetProperty("bluray_playlist", playlist);
+
+  itemTag->SetChapters(GetChapterInfo(it->second));
 
   // Get episode title
   const std::string& title{episode.strTitle};

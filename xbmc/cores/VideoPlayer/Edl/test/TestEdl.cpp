@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "Edl/EdlParsers/ChapterEdlParser.h"
 #include "Edl/EdlParsers/MultipleEpisodeEdlParser.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
@@ -944,4 +945,197 @@ TEST_F(TestParseEditsForEpisode, EditStraddlingBothBoundariesIsClamped)
     }
   }
   EXPECT_TRUE(clampedFound) << "Expected wide commbreak clamped to episode window [500s - 600s]";
+}
+
+// ============================================================================
+// TestChapterEdlParser
+// ============================================================================
+
+class TestChapterEdlParser : public ::testing::Test
+{
+protected:
+  // Build `count` evenly-spaced ChapterInfo entries, each `chapterDuration` long.
+  static std::vector<ChapterInfo> MakeChapters(int count, std::chrono::milliseconds chapterDuration)
+  {
+    std::vector<ChapterInfo> chapters;
+    for (int i = 0; i < count; ++i)
+    {
+      ChapterInfo ch;
+      ch.chapter = static_cast<unsigned int>(i + 1);
+      ch.start = chapterDuration * i;
+      ch.duration = chapterDuration;
+      chapters.push_back(ch);
+    }
+    return chapters;
+  }
+
+  // Build a CFileItem with a VideoInfoTag carrying the given chapters.
+  // The path contains ?chapters=<chaptersRange> when chaptersRange is non-empty.
+  static CFileItem MakeChapterItem(const std::vector<ChapterInfo>& chapters,
+                                   const std::string& chaptersRange)
+  {
+    CFileItem item;
+    const std::string path = chaptersRange.empty()
+                                 ? "bluray://localhost/movie.iso"
+                                 : "bluray://localhost/movie.iso?chapters=" + chaptersRange;
+    item.SetPath(path);
+    item.GetVideoInfoTag()->SetChapters(chapters);
+    return item;
+  }
+};
+
+// ---- CanParse ----------------------------------------------------------
+
+TEST_F(TestChapterEdlParser, CanParse_ReturnsFalse_WhenNoVideoInfoTag)
+{
+  // ParseChapters early-exits when HasVideoInfoTag() is false
+  CChapterEdlParser parser;
+  CFileItem item;
+  item.SetPath("bluray://localhost/movie.iso?chapters=1-3");
+  // Do NOT call GetVideoInfoTag() so HasVideoInfoTag() stays false
+  EXPECT_FALSE(parser.CanParse(item));
+}
+
+TEST_F(TestChapterEdlParser, CanParse_ReturnsFalse_WhenChaptersAreEmpty)
+{
+  // Item has a VideoInfoTag but its chapter list is empty
+  CChapterEdlParser parser;
+  const auto item = MakeChapterItem({}, "1-1");
+  EXPECT_FALSE(parser.CanParse(item));
+}
+
+TEST_F(TestChapterEdlParser, CanParse_ReturnsFalse_WhenNoChaptersUrlOption)
+{
+  // Item has chapters but the path carries no ?chapters= option
+  CChapterEdlParser parser;
+  const auto item = MakeChapterItem(MakeChapters(3, 10s), "");
+  EXPECT_FALSE(parser.CanParse(item));
+}
+
+TEST_F(TestChapterEdlParser, CanParse_ReturnsFalse_WhenChaptersOptionFormatIsInvalid)
+{
+  // The ?chapters= value does not match the required \d{1,3}-\d{1,3} pattern
+  CChapterEdlParser parser;
+  CFileItem item;
+  item.SetPath("bluray://localhost/movie.iso?chapters=invalid");
+  item.GetVideoInfoTag()->SetChapters(MakeChapters(3, 10s));
+  EXPECT_FALSE(parser.CanParse(item));
+}
+
+TEST_F(TestChapterEdlParser, CanParse_ReturnsFalse_WhenStartChapterIsZero)
+{
+  // startChapter of 0 is invalid (chapters are 1-based)
+  CChapterEdlParser parser;
+  const auto item = MakeChapterItem(MakeChapters(3, 10s), "0-2");
+  EXPECT_FALSE(parser.CanParse(item));
+}
+
+TEST_F(TestChapterEdlParser, CanParse_ReturnsFalse_WhenEndChapterExceedsChapterCount)
+{
+  // endChapter (5) exceeds the actual number of chapters (3)
+  CChapterEdlParser parser;
+  const auto item = MakeChapterItem(MakeChapters(3, 10s), "1-5");
+  EXPECT_FALSE(parser.CanParse(item));
+}
+
+TEST_F(TestChapterEdlParser, CanParse_ReturnsFalse_WhenStartChapterExceedsEnd)
+{
+  // startChapter > endChapter is an invalid range
+  CChapterEdlParser parser;
+  const auto item = MakeChapterItem(MakeChapters(3, 10s), "3-1");
+  EXPECT_FALSE(parser.CanParse(item));
+}
+
+TEST_F(TestChapterEdlParser, CanParse_ReturnsTrue_WhenChaptersOptionAndChaptersAreValid)
+{
+  // All conditions met: chapters present, valid range within chapter count
+  CChapterEdlParser parser;
+  const auto item = MakeChapterItem(MakeChapters(3, 10s), "1-3");
+  EXPECT_TRUE(parser.CanParse(item));
+}
+
+// ---- Parse -------------------------------------------------------------
+
+TEST_F(TestChapterEdlParser, Parse_ReturnsEmptyResult_WhenCannotParse)
+{
+  // Parse returns an empty result when ParseChapters fails (no VideoInfoTag)
+  CChapterEdlParser parser;
+  CFileItem item;
+  item.SetPath("bluray://localhost/movie.iso?chapters=1-3");
+  const auto result = parser.Parse(item, 0, 30s);
+  EXPECT_TRUE(result.IsEmpty());
+}
+
+TEST_F(TestChapterEdlParser, Parse_ReturnsEmptyResult_WhenChapterSpansEntireFile)
+{
+  // Range "1-3" over a 3×10s file with duration=30s → start=0ms, end=30s=duration
+  // No EDL cuts are needed so the result must be empty
+  CChapterEdlParser parser;
+  const auto item = MakeChapterItem(MakeChapters(3, 10s), "1-3");
+  const auto result = parser.Parse(item, 0, 30s);
+  EXPECT_TRUE(result.IsEmpty());
+}
+
+TEST_F(TestChapterEdlParser, Parse_ReturnsEmptyResult_WhenChapterEndExceedsFileDuration)
+{
+  // Single chapter: start=20s, duration=20s → end=40s which exceeds duration=30s → invalid
+  CChapterEdlParser parser;
+  std::vector<ChapterInfo> chapters;
+  ChapterInfo ch;
+  ch.chapter = 1;
+  ch.start = 20s;
+  ch.duration = 20s;
+  chapters.push_back(ch);
+  CFileItem item;
+  item.SetPath("bluray://localhost/movie.iso?chapters=1-1");
+  item.GetVideoInfoTag()->SetChapters(chapters);
+  const auto result = parser.Parse(item, 0, 30s);
+  EXPECT_TRUE(result.IsEmpty());
+}
+
+TEST_F(TestChapterEdlParser, Parse_ReturnsOnlyStartCut_WhenChapterRangeStartsAfterZero)
+{
+  // Range "2-3" over a 3×10s file: start=10s, end=30s=duration → only a start cut
+  CChapterEdlParser parser;
+  const auto item = MakeChapterItem(MakeChapters(3, 10s), "2-3");
+  const auto result = parser.Parse(item, 0, 30s);
+  EXPECT_EQ(result.GetEdits().size(), 1);
+  EXPECT_TRUE(result.GetSceneMarkers().empty());
+  EXPECT_EQ(result.GetEdits().at(0).edit.start, 0ms);
+  EXPECT_EQ(result.GetEdits().at(0).edit.end, 10s);
+  for (const auto& entry : result.GetEdits())
+    EXPECT_EQ(entry.edit.action, Action::CUT);
+  EXPECT_TRUE(result.GetSceneMarkers().empty());
+}
+
+TEST_F(TestChapterEdlParser, Parse_ReturnsOnlyEndCut_WhenChapterRangeEndsBeforeFileDuration)
+{
+  // Range "1-2" over a 3×10s file: start=0ms, end=20s < 30s → only an end cut
+  CChapterEdlParser parser;
+  const auto item = MakeChapterItem(MakeChapters(3, 10s), "1-2");
+  const auto result = parser.Parse(item, 0, 30s);
+  EXPECT_EQ(result.GetEdits().size(), 1);
+  EXPECT_TRUE(result.GetSceneMarkers().empty());
+  EXPECT_EQ(result.GetEdits().at(0).edit.start, 20s);
+  EXPECT_EQ(result.GetEdits().at(0).edit.end, 30s);
+  for (const auto& entry : result.GetEdits())
+    EXPECT_EQ(entry.edit.action, Action::CUT);
+  EXPECT_TRUE(result.GetSceneMarkers().empty());
+}
+
+TEST_F(TestChapterEdlParser, Parse_ReturnsBothCuts_WhenChapterRangeIsMiddleOfFile)
+{
+  // Range "2-2" over a 3×10s file: start=10s, end=20s → start cut + end cut
+  CChapterEdlParser parser;
+  const auto item = MakeChapterItem(MakeChapters(3, 10s), "2-2");
+  const auto result = parser.Parse(item, 0, 30s);
+  EXPECT_EQ(result.GetEdits().size(), 2);
+  EXPECT_TRUE(result.GetSceneMarkers().empty());
+  EXPECT_EQ(result.GetEdits().at(0).edit.start, 0ms);
+  EXPECT_EQ(result.GetEdits().at(0).edit.end, 10s);
+  EXPECT_EQ(result.GetEdits().at(1).edit.start, 20s);
+  EXPECT_EQ(result.GetEdits().at(1).edit.end, 30s);
+  for (const auto& entry : result.GetEdits())
+    EXPECT_EQ(entry.edit.action, Action::CUT);
+  EXPECT_TRUE(result.GetSceneMarkers().empty());
 }

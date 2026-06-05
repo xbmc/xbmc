@@ -4236,9 +4236,18 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
     float fFramesPerSecond = 0.0f;
     if (m_CurrentVideo.hint.fpsscale > 0.0f)
       fFramesPerSecond = static_cast<float>(m_CurrentVideo.hint.fpsrate) / static_cast<float>(m_CurrentVideo.hint.fpsscale);
-    const std::chrono::milliseconds duration =
-        m_pDemuxer ? std::chrono::milliseconds(m_pDemuxer->GetStreamLength()) : 0ms;
-    m_Edl.ReadEditDecisionLists(m_item, fFramesPerSecond, duration);
+    std::chrono::milliseconds duration{0ms};
+    if (m_pDemuxer)
+      duration = std::chrono::milliseconds(m_pDemuxer->GetStreamLength());
+    if (duration == 0ms && m_pInputStream)
+      duration = m_pInputStream->GetDuration();
+
+    // Get chapters (for bluray)
+    CFileItem item(m_item);
+    if (item.HasVideoInfoTag() && m_pInputStream)
+      item.GetVideoInfoTag()->SetChapters(m_pInputStream->GetChapters());
+
+    m_Edl.ReadEditDecisionLists(item, fFramesPerSecond, duration);
     CServiceBroker::GetDataCacheCore().SetEditList(m_Edl.GetEditList());
     CServiceBroker::GetDataCacheCore().SetCuts(m_Edl.GetCutMarkers());
     CServiceBroker::GetDataCacheCore().SetSceneMarkers(m_Edl.GetSceneMarkers());

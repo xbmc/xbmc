@@ -3412,10 +3412,11 @@ void CVideoDatabase::GetEpisodesByBlurayPath(const std::string& path,
     CURL url{path};
     url.SetFileName("");
     const std::string blurayPath{URIUtils::AddFileToFolder(url.Get(), "BDMV", "PLAYLIST", "")};
-    const std::string sql{
-        PrepareSQL("select idFile from episode_view "
-                   "where (strPath = '%s' and strFileName = '%s') or strPath = '%s'",
-                   basePath.c_str(), baseFile.c_str(), blurayPath.c_str())};
+    const std::string sql{PrepareSQL("SELECT idFile FROM episode_view "
+                                     "WHERE (strPath = '%s' AND strFileName = '%s') "
+                                     "OR SUBSTR(strPath, 1, %i) = '%s'",
+                                     basePath.c_str(), baseFile.c_str(),
+                                     static_cast<int>(blurayPath.size()), blurayPath.c_str())};
     m_pDS->query(sql);
     if (!m_pDS->eof())
       return GetEpisodesByFileId(m_pDS->fv("idFile").get_asInt(), episodes);

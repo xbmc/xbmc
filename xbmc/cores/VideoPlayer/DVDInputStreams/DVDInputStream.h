@@ -278,6 +278,9 @@ public:
 
   static void UpdateStackItem(CFileItem& item, std::chrono::milliseconds length);
 
+  virtual std::vector<ChapterInfo> GetChapters() { return {}; }
+  virtual std::chrono::milliseconds GetDuration() { return std::chrono::milliseconds::zero(); }
+
 protected:
   DVDStreamType m_streamType;
   BitstreamStats m_stats;

@@ -28,7 +28,6 @@
 #include "video/VideoInfoTag.h"
 
 #include <chrono>
-#include <functional>
 #include <limits>
 #include <memory>
 #include <string>
@@ -1361,4 +1360,27 @@ void CDVDInputStreamBluray::UpdateStack(CFileItem& item)
 {
   return UpdateStackItem(item,
                          m_titleInfo ? std::chrono::milliseconds(m_titleInfo->duration / 90) : 0ms);
+}
+
+std::vector<ChapterInfo> CDVDInputStreamBluray::GetChapters()
+{
+  std::vector<ChapterInfo> chapters;
+  if (!m_titleInfo || !m_titleInfo->chapters)
+    return chapters;
+
+  for (unsigned int i = 0; i < m_titleInfo->chapter_count; ++i)
+  {
+    const BLURAY_TITLE_CHAPTER& chapter{m_titleInfo->chapters[i]};
+    std::chrono::milliseconds start{chapter.start / 90};
+    std::chrono::milliseconds duration{chapter.duration / 90};
+    chapters.push_back({i + 1, start, duration});
+  }
+  return chapters;
+}
+
+std::chrono::milliseconds CDVDInputStreamBluray::GetDuration()
+{
+  if (!m_titleInfo)
+    return 0ms;
+  return std::chrono::milliseconds(m_titleInfo->duration / 90);
 }
