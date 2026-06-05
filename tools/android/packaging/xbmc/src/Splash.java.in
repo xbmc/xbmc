@@ -205,7 +205,7 @@ public class Splash extends Activity
             {
               sendEmptyMessage(InError);
             }
-            if (fXbmcHome.exists() && fXbmcHome.lastModified() >= fPackagePath.lastModified())
+            if (cachedAssetsPresent() && fXbmcHome.lastModified() >= fPackagePath.lastModified())
             {
               mState = CachingDone;
               mCachingDone = true;
@@ -423,6 +423,34 @@ public class Splash extends Activity
     // Make links actually clickable
     ((TextView) myAlertDialog.findViewById(android.R.id.message))
             .setMovementMethod(LinkMovementMethod.getInstance());
+  }
+
+  // Android may delete individual files from getCacheDir() at any time to
+  // reclaim storage (see Context.getCacheDir()). When that happens the cache
+  // directory still exists with an up-to-date timestamp, so the exists()+mtime
+  // check below wrongly concludes the payload is already unpacked and skips
+  // extraction. Kodi then hard-crashes in native code when it cannot open an
+  // evicted asset such as special://xbmc/system/settings/settings.xml.
+  // Treat the cache as valid only if the essential extracted assets are still
+  // present; otherwise fall through and re-extract.
+  private boolean cachedAssetsPresent()
+  {
+    if (fXbmcHome == null || !fXbmcHome.exists())
+      return false;
+
+    String[] essential = {
+      "assets/system/settings/settings.xml",
+      "assets/system/addon-manifest.xml",
+    };
+    for (String rel : essential)
+    {
+      if (!new File(fXbmcHome, rel).exists())
+      {
+        Log.w(TAG, "Cached asset missing (" + rel + "); forcing re-extraction");
+        return false;
+      }
+    }
+    return true;
   }
 
   private void SetupEnvironment()
@@ -668,7 +696,7 @@ public class Splash extends Activity
 
         SetupEnvironment();
 
-        if (mState != InError && fXbmcHome.exists() && fXbmcHome.lastModified() >= fPackagePath.lastModified())
+        if (mState != InError && cachedAssetsPresent() && fXbmcHome.lastModified() >= fPackagePath.lastModified())
         {
           mState = CachingDone;
           mCachingDone = true;
