@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <stddef.h> /* size_t */
+#include <functional>
 #include <string>
 
 struct AddonInstance_Game;
@@ -41,6 +41,7 @@ public:
                          const std::string& username,
                          const std::string& token,
                          unsigned int gameID);
+  void SetRetroAchievementsCredentials(const std::string& username, const std::string& token);
   bool RCPostRichPresenceUrl(std::string& url,
                              std::string& postData,
                              const std::string& username,
@@ -49,6 +50,11 @@ public:
                              const std::string& richPresence);
   void RCEnableRichPresence(const std::string& script);
   void RCGetRichPresenceEvaluation(std::string& evaluation, RETRO::RConsoleID consoleID);
+
+  void ActivateAchievement(unsigned int cheevoId, const std::string& memAddrExpression);
+  void GetAchievementUrlId(const std::function<void(const std::string& achievementUrl,
+                                                    unsigned int cheevoId)>& callback);
+
   // When the game is reset, the runtime should also be reset
   void RCResetRuntime();
 

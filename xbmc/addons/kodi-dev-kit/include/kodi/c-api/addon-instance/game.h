@@ -1288,6 +1288,8 @@ extern "C"
     GAME_ERROR(__cdecl* RCGetGameIDUrl)(const AddonInstance_Game*, char**, const char*);
     GAME_ERROR(__cdecl* RCGetPatchFileUrl)
     (const AddonInstance_Game*, char**, const char*, const char*, unsigned int);
+    GAME_ERROR(__cdecl* SetRetroAchievementsCredentials)
+    (const AddonInstance_Game*, const char*, const char*);
     GAME_ERROR(__cdecl* RCPostRichPresenceUrl)
     (const AddonInstance_Game*,
      char**,
@@ -1299,6 +1301,11 @@ extern "C"
     GAME_ERROR(__cdecl* RCEnableRichPresence)(const AddonInstance_Game*, const char*);
     GAME_ERROR(__cdecl* RCGetRichPresenceEvaluation)
     (const AddonInstance_Game*, char**, unsigned int);
+    GAME_ERROR(__cdecl* ActivateAchievement)(const AddonInstance_Game*, unsigned int, const char*);
+    GAME_ERROR(__cdecl* GetCheevoUrlId)
+    (const AddonInstance_Game*,
+     void(__cdecl*)(const void*, const char*, unsigned int),
+     const void*);
     GAME_ERROR(__cdecl* RCResetRuntime)(const AddonInstance_Game*);
     bool(__cdecl* GetEjectState)(const AddonInstance_Game*);
     GAME_ERROR(__cdecl* SetEjectState)(const AddonInstance_Game*, bool);

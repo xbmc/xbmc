@@ -12,6 +12,7 @@
 #include "../c-api/addon-instance/game.h"
 
 #include <algorithm>
+#include <functional>
 
 #ifdef __cplusplus
 
@@ -917,7 +918,7 @@ public:
   /// @brief Generates a RetroAchievements hash for a given game that
   ///        can be used to identify the game by RetroAchievements
   ///
-  /// @param[out] hash The hash of the file. Its size must be >=33 characters
+  /// @param[out] hash The generated hash of the file
   /// @param[in] consoleID The console ID as it is defined by rcheevos for
   ///                      the console the ROM is made for
   /// @param[in] filePath The path of the rom
@@ -936,7 +937,6 @@ public:
   /// @brief Gets a URL to the endpoint that returns the game ID
   ///
   /// @param[out] url The URL to GET the game ID
-  /// @param[in] size The size of the URL char array
   /// @param[in] hash The hash of the rom
   ///
   /// @return The error, or @ref GAME_ERROR_NO_ERROR if the URL was created
@@ -950,7 +950,6 @@ public:
   /// @brief Gets a URL to the endpoint that returns the patch file
   ///
   /// @param[out] url The URL to GET the game patch file
-  /// @param[in] size The size of the URL char array
   /// @param[in] username The RetroAchievements username of the user
   /// @param[in] token The login token to RetroAchievements of the user
   /// @param[in] gameID The ID of the game in RetroAchievements API
@@ -966,13 +965,25 @@ public:
   }
 
   //============================================================================
+  /// @brief Set the credentials of the RetroAchievements user
+  ///
+  /// @param[in] username The RetroAchievements username of the user
+  /// @param[in] token The login token to RetroAchievements of the user
+  ///
+  /// @return The error, or @ref GAME_ERROR_NO_ERROR if the call was successful
+  ///
+  virtual GAME_ERROR SetRetroAchievementsCredentials(const std::string& username,
+                                                     const std::string& token)
+  {
+    return GAME_ERROR_NOT_IMPLEMENTED;
+  }
+
+  //============================================================================
   /// @brief Gets a URL to the endpoint that updates the rich presence
   ///        in the user's RetroAchievements profile
   ///
   /// @param[out] url The URL to POST the rich presence to RetroAchievements
-  /// @param[in] urlSize The size of the URL char array
   /// @param[out] postData The post data of the request
-  /// @param[in] postSize The size of the post data char array
   /// @param[in] username The RetroAchievements username of the user
   /// @param[in] token The login token to RetroAchievements of the user
   /// @param[in] gameID The ID of the game in RetroAchievements API
@@ -1009,7 +1020,6 @@ public:
   ///
   /// @param[out] evaluation The evaluation of what the player is doing in
   ///                        the game this frame
-  /// @param[in] size The size of the evaluation char pointer
   /// @param[in] consoleID The console ID as it is defined by rcheevos for
   ///                      the console the rom is made for
   ///
@@ -1017,6 +1027,39 @@ public:
   ///         created successfully
   ///
   virtual GAME_ERROR RCGetRichPresenceEvaluation(std::string& evaluation, unsigned int consoleID)
+  {
+    return GAME_ERROR_NOT_IMPLEMENTED;
+  }
+
+  //============================================================================
+  /// @brief Activate an achievement
+  ///
+  /// @param[in] cheevoId The achievement ID
+  /// @param[in] memAddrExpression Achievement memory expression from patch data
+  ///                              as a string
+  ///
+  /// @return The error, or @ref GAME_ERROR_NO_ERROR if the call was successful
+  ///
+  virtual GAME_ERROR ActivateAchievement(unsigned int cheevoId,
+                                         const std::string& memAddrExpression)
+  {
+    return GAME_ERROR_NOT_IMPLEMENTED;
+  }
+
+  //============================================================================
+  /// @brief Get triggered achievement URL and ID pairs
+  ///
+  /// @param[in] callback Callback invoked once per triggered achievement during
+  ///                     this call. It may be called zero or more times before
+  ///                     the function returns. Implementations must not
+  ///                     retain/copy the callback for later use. The URL string
+  ///                     reference is valid only for the callback invocation and
+  ///                     must be copied if needed afterwards.
+  ///
+  /// @return The error, or @ref GAME_ERROR_NO_ERROR if the call was successful
+  ///
+  virtual GAME_ERROR GetCheevoUrlId(
+      const std::function<void(const std::string& achievementUrl, unsigned int cheevoId)>& callback)
   {
     return GAME_ERROR_NOT_IMPLEMENTED;
   }
@@ -1220,9 +1263,13 @@ private:
     instance->game->toAddon->RCGenerateHashFromFile = ADDON_RCGenerateHashFromFile;
     instance->game->toAddon->RCGetGameIDUrl = ADDON_RCGetGameIDUrl;
     instance->game->toAddon->RCGetPatchFileUrl = ADDON_RCGetPatchFileUrl;
+    instance->game->toAddon->SetRetroAchievementsCredentials =
+        ADDON_SetRetroAchievementsCredentials;
     instance->game->toAddon->RCPostRichPresenceUrl = ADDON_RCPostRichPresenceUrl;
     instance->game->toAddon->RCEnableRichPresence = ADDON_RCEnableRichPresence;
     instance->game->toAddon->RCGetRichPresenceEvaluation = ADDON_RCGetRichPresenceEvaluation;
+    instance->game->toAddon->ActivateAchievement = ADDON_ActivateAchievement;
+    instance->game->toAddon->GetCheevoUrlId = ADDON_GetCheevoUrlId;
     instance->game->toAddon->RCResetRuntime = ADDON_RCResetRuntime;
 
     instance->game->toAddon->GetEjectState = ADDON_GetEjectState;
@@ -1434,16 +1481,23 @@ private:
                                                         unsigned int consoleID,
                                                         const char* filePath)
   {
+    if (hash == nullptr || filePath == nullptr)
+      return GAME_ERROR_INVALID_PARAMETERS;
+
+    *hash = nullptr;
+
     std::string cppHash;
 
     GAME_ERROR ret = static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
                          ->RCGenerateHashFromFile(cppHash, consoleID, filePath);
-    if (!cppHash.empty() && hash)
+
+    if (ret == GAME_ERROR_NO_ERROR)
     {
       *hash = new char[cppHash.size() + 1];
       std::copy(cppHash.begin(), cppHash.end(), *hash);
       (*hash)[cppHash.size()] = '\0';
     }
+
     return ret;
   }
 
@@ -1451,15 +1505,22 @@ private:
                                                 char** url,
                                                 const char* hash)
   {
+    if (url == nullptr || hash == nullptr)
+      return GAME_ERROR_INVALID_PARAMETERS;
+
+    *url = nullptr;
+
     std::string cppUrl;
     GAME_ERROR ret =
         static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->RCGetGameIDUrl(cppUrl, hash);
-    if (!cppUrl.empty() && url)
+
+    if (ret == GAME_ERROR_NO_ERROR)
     {
       *url = new char[cppUrl.size() + 1];
       std::copy(cppUrl.begin(), cppUrl.end(), *url);
       (*url)[cppUrl.size()] = '\0';
     }
+
     return ret;
   }
 
@@ -1469,17 +1530,35 @@ private:
                                                    const char* token,
                                                    unsigned int gameID)
   {
+    if (url == nullptr || username == nullptr || token == nullptr)
+      return GAME_ERROR_INVALID_PARAMETERS;
+
+    *url = nullptr;
+
     std::string cppUrl;
 
     GAME_ERROR ret = static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
                          ->RCGetPatchFileUrl(cppUrl, username, token, gameID);
-    if (!cppUrl.empty() && url)
+
+    if (ret == GAME_ERROR_NO_ERROR)
     {
       *url = new char[cppUrl.size() + 1];
       std::copy(cppUrl.begin(), cppUrl.end(), *url);
       (*url)[cppUrl.size()] = '\0';
     }
+
     return ret;
+  }
+
+  inline static GAME_ERROR ADDON_SetRetroAchievementsCredentials(const AddonInstance_Game* instance,
+                                                                 const char* username,
+                                                                 const char* token)
+  {
+    if (username == nullptr || token == nullptr)
+      return GAME_ERROR_INVALID_PARAMETERS;
+
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
+        ->SetRetroAchievementsCredentials(username, token);
   }
 
   inline static GAME_ERROR ADDON_RCPostRichPresenceUrl(const AddonInstance_Game* instance,
@@ -1490,19 +1569,26 @@ private:
                                                        unsigned int gameID,
                                                        const char* richPresence)
   {
+    if (url == nullptr || postData == nullptr || username == nullptr || token == nullptr ||
+        richPresence == nullptr)
+      return GAME_ERROR_INVALID_PARAMETERS;
+
+    *url = nullptr;
+    *postData = nullptr;
+
     std::string cppUrl;
     std::string cppPostData;
+
     GAME_ERROR ret =
         static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
             ->RCPostRichPresenceUrl(cppUrl, cppPostData, username, token, gameID, richPresence);
-    if (!cppUrl.empty())
+
+    if (ret == GAME_ERROR_NO_ERROR)
     {
       *url = new char[cppUrl.size() + 1];
       std::copy(cppUrl.begin(), cppUrl.end(), *url);
       (*url)[cppUrl.size()] = '\0';
-    }
-    if (!cppPostData.empty())
-    {
+
       *postData = new char[cppPostData.size() + 1];
       std::copy(cppPostData.begin(), cppPostData.end(), *postData);
       (*postData)[cppPostData.size()] = '\0';
@@ -1514,6 +1600,9 @@ private:
   inline static GAME_ERROR ADDON_RCEnableRichPresence(const AddonInstance_Game* instance,
                                                       const char* script)
   {
+    if (script == nullptr)
+      return GAME_ERROR_INVALID_PARAMETERS;
+
     return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
         ->RCEnableRichPresence(script);
   }
@@ -1522,10 +1611,16 @@ private:
                                                              char** evaluation,
                                                              unsigned int consoleID)
   {
+    if (evaluation == nullptr)
+      return GAME_ERROR_INVALID_PARAMETERS;
+
+    *evaluation = nullptr;
+
     std::string cppEvaluation;
     GAME_ERROR ret = static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
                          ->RCGetRichPresenceEvaluation(cppEvaluation, consoleID);
-    if (!cppEvaluation.empty())
+
+    if (ret == GAME_ERROR_NO_ERROR)
     {
       *evaluation = new char[cppEvaluation.size() + 1];
       std::copy(cppEvaluation.begin(), cppEvaluation.end(), *evaluation);
@@ -1533,6 +1628,34 @@ private:
     }
 
     return ret;
+  }
+
+  inline static GAME_ERROR ADDON_ActivateAchievement(const AddonInstance_Game* instance,
+                                                     unsigned int cheevoId,
+                                                     const char* memAddrExpression)
+  {
+    if (memAddrExpression == nullptr)
+      return GAME_ERROR_INVALID_PARAMETERS;
+
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
+        ->ActivateAchievement(cheevoId, memAddrExpression);
+  }
+
+  inline static GAME_ERROR ADDON_GetCheevoUrlId(const AddonInstance_Game* instance,
+                                                void(__cdecl* callback)(const void* context,
+                                                                        const char* achievementUrl,
+                                                                        unsigned int cheevoId),
+                                                const void* context)
+  {
+    if (callback == nullptr)
+      return GAME_ERROR_INVALID_PARAMETERS;
+
+    const auto cppCallback =
+        [callback, context](const std::string& achievementUrl, unsigned int cheevoId)
+    { callback(context, achievementUrl.c_str(), cheevoId); };
+
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
+        ->GetCheevoUrlId(cppCallback);
   }
 
   inline static GAME_ERROR ADDON_RCResetRuntime(const AddonInstance_Game* instance)
