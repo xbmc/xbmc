@@ -110,6 +110,16 @@ namespace OVERLAY {
     virtual void Render(int idx, float depth = 0.0f);
 
     /*!
+     * \brief Pre-walk hook: render libass output for the present slot.
+     *  Called once per frame on the GUI/main thread before the GUI walk-skip
+     *  decision. Caches the ASS_Image* and detect_change flag on each
+     *  SElement so ConvertLibass can consume them during the walk without
+     *  re-entering libass. Calls MarkDirty internally when libass reports
+     *  a visible or changed subtitle.
+     */
+    void PrepareOverlays(int idx);
+
+    /*!
      * \brief Release resources
      */
     void UnInit();
@@ -122,7 +132,27 @@ namespace OVERLAY {
     void Reset();
 
     void Release(int idx);
-    bool HasOverlay(int idx);
+
+    /*!
+     * \brief True if any overlay in buffer slot \a idx is actually visible
+     *  on this frame.
+     *
+     *  For libass overlays (TEXT/SSA), the persistent CDVDOverlayText /
+     *  CDVDOverlaySSA container has iPTSStopTime = DVD_NOPTS_VALUE and so
+     *  survives ProcessOverlays' PTS filter for the entire playback session
+     *  even between events. Presence in m_buffers[idx] is therefore not a
+     *  visibility test for libass. Visibility is read from the per-frame
+     *  e.renderedImages cache populated by PrepareOverlays via
+     *  ass_render_frame (non-null when an event covers the current PTS).
+     *
+     *  For image (PGS/DVB/IMAGE) and SPU overlays, ProcessOverlays already
+     *  PTS-filters before AddOverlay, so presence in m_buffers[idx] is the
+     *  per-frame visibility test.
+     *
+     *  Must be called after PrepareOverlays has run this frame; before that
+     *  e.renderedImages reflects the previous frame's state.
+     */
+    bool HasVisibleOverlay(int idx) const;
     void SetVideoRect(CRect &source, CRect &dest, CRect &view);
     void SetStereoMode(const std::string &stereomode);
 
@@ -150,22 +180,19 @@ namespace OVERLAY {
       SElement() : overlay_dvd(NULL) { pts = 0.0; }
       double pts;
       std::shared_ptr<CDVDOverlay> overlay_dvd;
+      // Output of libass cached by PrepareOverlays and consumed by
+      // ConvertLibass when the GUI walk runs. libass owns renderedImages;
+      // the pointer is valid only until the next ass_render_frame call.
+      ASS_Image* renderedImages{nullptr};
+      float renderedFrameWidth{0.0f};
+      float renderedFrameHeight{0.0f};
     };
 
     void Render(COverlay* o);
-    std::shared_ptr<COverlay> Convert(CDVDOverlay& o, double pts);
-    /*!
-    * \brief Convert the overlay to a overlay renderer
-    * \param o The overlay to convert
-    * \param pts The current PTS time
-    * \param subStyle The style to be used, MUST BE SET ONLY at the first call or when user change settings
-    * \return True if success, false if error
-    */
-    std::shared_ptr<COverlay> ConvertLibass(
-        CDVDOverlayLibass& o,
-        double pts,
-        bool updateStyle,
-        const std::shared_ptr<struct KODI::SUBTITLES::STYLE::style>& overlayStyle);
+    std::shared_ptr<COverlay> Convert(SElement& e);
+    // Build a COverlay (cached or freshly created) from the libass output
+    // already produced by PrepareOverlays. Does not call ass_render_frame.
+    std::shared_ptr<COverlay> ConvertLibass(SElement& e);
 
     void CreateSubtitlesStyle();
 
@@ -184,7 +211,7 @@ namespace OVERLAY {
       POSRESINFO_SAVE_CHANGES = -2,
     };
 
-    CCriticalSection m_section;
+    mutable CCriticalSection m_section;
     std::vector<SElement> m_buffers[NUM_BUFFERS];
     std::map<unsigned int, std::shared_ptr<COverlay>> m_textureCache;
     static unsigned int m_textureid;
@@ -205,5 +232,10 @@ namespace OVERLAY {
 
     std::shared_ptr<struct KODI::SUBTITLES::STYLE::style> m_overlayStyle;
     std::atomic<bool> m_isSettingsChanged{false};
+    // Track whether last frame had any image/SPU overlay, for transition
+    // detection in PrepareOverlays. Image/SPU overlays have no per-frame
+    // change signal like libass' assDetectChange, so we compare per-frame
+    // presence to drive MarkDirty on arrival and disappearance.
+    bool m_prevHadImageSpu{false};
   };
 }

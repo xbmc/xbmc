@@ -9,6 +9,8 @@
 #include "DRMAtomic.h"
 
 #include "ServiceBroker.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
@@ -108,20 +110,19 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
       AddProperty(outputPlane, "IN_FENCE_FD", m_inFenceFd);
     }
   }
+  //! @todo Reaching out to the window manager and application player
+  //! singletons from inside the DRM layer is a layering violation. The
+  //! "should the GUI plane be attached this frame" decision is GUI/player
+  //! policy and should be computed at the WinSystem caller and passed in
+  //! as a parameter on FlipPage. Until that refactor lands, do the lookups
+  //! in place to match the surrounding master code pattern.
   else if (m_gui_plane && m_video_plane &&
            !CServiceBroker::GetGUI()->GetWindowManager().HasVisibleControls() &&
+           !CServiceBroker::GetAppComponents()
+                .GetComponent<CApplicationPlayer>()
+                ->HasVisibleOverlay() &&
            !HasQuirk(QUIRK_NEEDSPRIMARY))
   {
-    // Dual-plane (DRMPRIME D2P) mode with no visible GUI controls: disable
-    // the gui plane to save scanout bandwidth. The video plane is being
-    // populated by CVideoLayerBridgeDRMPRIME on the same atomic request.
-    // Skip when the crtc requires a primary plane (amdgpu QUIRK_NEEDSPRIMARY)
-    // -- in that case the gui plane is the primary and disabling it would
-    // fail the commit.
-    //
-    // Gating on (m_gui_plane && m_video_plane) precisely matches dual-plane
-    // mode and rejects single-plane flip-flop mode where m_gui_plane is null
-    // (FindVideoPlane has adopted it as the video output plane).
     AddProperty(m_gui_plane, "FB_ID", 0);
     AddProperty(m_gui_plane, "CRTC_ID", 0);
   }

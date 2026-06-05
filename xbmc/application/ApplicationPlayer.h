@@ -62,6 +62,7 @@ public:
   bool IsRenderingVideo() const;
   bool IsRenderingGuiLayer() const;
   bool IsRenderingVideoLayer() const;
+  bool HasVisibleOverlay() const;
   bool Supports(EINTERLACEMETHOD method) const;
   EINTERLACEMETHOD GetDeinterlacingMethodDefault() const;
   bool Supports(ESCALINGMETHOD method) const;

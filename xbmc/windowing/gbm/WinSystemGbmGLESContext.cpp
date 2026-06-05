@@ -340,7 +340,7 @@ void CWinSystemGbmGLESContext::CompositeGui()
   //   D2P:          "FBO is empty/clean AND back buffer cache is invalid"
   if (m_guiWillRender)
   {
-    const bool guiEmpty = (CRenderSystemBase::m_GUIElementCount == 0);
+    const bool guiEmpty = (GetGUIElementCount() == 0);
     m_guiFboClean = guiEmpty;
     if (guiEmpty)
       return;

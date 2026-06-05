@@ -231,7 +231,7 @@ bool CRenderManager::Configure()
     m_presentpts = DVD_NOPTS_VALUE;
     m_lateframes = -1;
     m_presentevent.notifyAll();
-    m_renderedOverlay = false;
+    m_renderedDebugOverlay = false;
     m_renderDebug = false;
     m_clockSync.Reset();
     m_dvdClock.SetVsyncAdjust(0);
@@ -351,6 +351,13 @@ void CRenderManager::FrameMove()
   }
 
   m_playerPort->UpdateGuiRender(IsGuiLayer() || !m_pRenderer->HasVideoPlane() || firstFrame);
+
+  // Pre-walk libass probe: render the libass output for the present slot
+  // once on the render thread, before the GUI walk-skip check runs next
+  // frame. PrepareOverlays MarkDirty's internally when libass reports
+  // something visible or changed. Replaces the cross-thread MarkDirty
+  // formerly issued from CRenderer::AddOverlay on the video thread.
+  m_overlays.PrepareOverlays(m_presentsource);
 
   ManageCaptures();
 }
@@ -736,7 +743,6 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
     if (!m_pRenderer->IsGuiLayer())
       m_pRenderer->Update();
 
-    m_renderedOverlay = m_overlays.HasOverlay(m_presentsource);
     CRect src, dst, view;
     m_pRenderer->GetVideoRect(src, dst, view);
     m_overlays.SetVideoRect(src, dst, view);
@@ -774,7 +780,7 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
       m_debugRenderer.Render(src, dst, view);
 
       m_debugTimer.Set(1000ms);
-      m_renderedOverlay = true;
+      m_renderedDebugOverlay = true;
     }
   }
 
@@ -811,8 +817,8 @@ bool CRenderManager::IsGuiLayer()
     if (!m_pRenderer)
       return false;
 
-    if ((m_pRenderer->IsGuiLayer() && IsPresenting()) ||
-        m_renderedOverlay || m_overlays.HasOverlay(m_presentsource))
+    if ((m_pRenderer->IsGuiLayer() && IsPresenting()) || m_renderedDebugOverlay ||
+        m_overlays.HasVisibleOverlay(m_presentsource))
       return true;
 
     if (m_renderDebug && m_debugTimer.IsTimePast())

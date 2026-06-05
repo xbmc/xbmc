@@ -71,16 +71,6 @@ void CRenderer::AddOverlay(std::shared_ptr<CDVDOverlay> o, double pts, int index
   e.pts = pts;
   e.overlay_dvd = std::move(o);
   m_buffers[index].push_back(e);
-
-  // Wake the dirty-driven skip so the new overlay actually paints on its
-  // first frame. Without this hook the GUI walk would stay skipped and the
-  // overlay would never reach its draw site. For video subtitles this also
-  // fires per video frame (ProcessOverlays calls AddOverlay for every
-  // active overlay), sustaining the walk while the subtitle is visible.
-  //! @todo Smart subtitle dirty: query libass ass_step_sub to mark dirty
-  //! only on actual subtitle transitions, not every video frame, so the
-  //! dirty-driven skip can take effect between transitions.
-  MarkDirty();
 }
 
 void CRenderer::Release(std::vector<SElement>& list)
@@ -165,7 +155,7 @@ void CRenderer::Render(int idx, float depth)
   {
     if (it->overlay_dvd)
     {
-      std::shared_ptr<COverlay> o = Convert(*(it->overlay_dvd), it->pts);
+      std::shared_ptr<COverlay> o = Convert(*it);
 
       if (o)
         Render(o.get());
@@ -264,22 +254,34 @@ void CRenderer::Render(COverlay* o)
   o->Render(state);
 }
 
-bool CRenderer::HasOverlay(int idx)
+bool CRenderer::HasVisibleOverlay(int idx) const
 {
-  bool hasOverlay = false;
-
   std::unique_lock lock(m_section);
+  if (idx < 0 || idx >= NUM_BUFFERS)
+    return false;
 
-  std::vector<SElement>& list = m_buffers[idx];
-  for(std::vector<SElement>::iterator it = list.begin(); it != list.end(); ++it)
+  for (const auto& e : m_buffers[idx])
   {
-    if (it->overlay_dvd)
+    if (!e.overlay_dvd)
+      continue;
+
+    const CDVDOverlay& o = *e.overlay_dvd;
+    // Image-based (PGS/DVB) and DVD SPU: ProcessOverlays PTS-filters before
+    // AddOverlay, so presence is the per-frame visibility test.
+    if (o.IsOverlayType(DVDOVERLAY_TYPE_IMAGE) || o.IsOverlayType(DVDOVERLAY_TYPE_SPU))
+      return true;
+
+    // libass (TEXT/SSA): the container survives the whole session via
+    // iPTSStopTime=DVD_NOPTS_VALUE, so presence alone is meaningless. The
+    // accurate per-frame signal is whether ass_render_frame returned any
+    // images for the current PTS, cached by PrepareOverlays.
+    if (o.IsOverlayType(DVDOVERLAY_TYPE_TEXT) || o.IsOverlayType(DVDOVERLAY_TYPE_SSA))
     {
-      hasOverlay = true;
-      break;
+      if (e.renderedImages != nullptr)
+        return true;
     }
   }
-  return hasOverlay;
+  return false;
 }
 
 void CRenderer::SetVideoRect(CRect &source, CRect &dest, CRect &view)
@@ -419,150 +421,48 @@ void CRenderer::CreateSubtitlesStyle()
   m_overlayStyle->lineSpacing = settings->GetLineSpacing();
 }
 
-std::shared_ptr<COverlay> CRenderer::ConvertLibass(
-    CDVDOverlayLibass& o,
-    double pts,
-    bool updateStyle,
-    const std::shared_ptr<struct SUBTITLES::STYLE::style>& overlayStyle)
+void CRenderer::PrepareOverlays(int idx)
 {
-  SUBTITLES::STYLE::renderOpts rOpts;
+  std::unique_lock lock(m_section);
+  if (idx < 0 || idx >= NUM_BUFFERS)
+    return;
 
-  // libass render in a target area which named as frame. the frame size may bigger than video size,
-  // and including margins between video to frame edge. libass allow to render subtitles into the margins.
-  // this has been used to show subtitles in the top or bottom "black bar" between video to frame border.
-  rOpts.sourceWidth = m_rs.Width();
-  rOpts.sourceHeight = m_rs.Height();
-  rOpts.videoWidth = m_rd.Width();
-  rOpts.videoHeight = m_rd.Height();
-  rOpts.frameWidth = m_rv.Width();
-  rOpts.frameHeight = m_rv.Height();
+  bool hasChanges = false;
+  bool hasImageSpu = false;
+  for (auto& e : m_buffers[idx])
+  {
+    // Clear last frame's cached output; libass may have invalidated the
+    // pointer on its next ass_render_frame call.
+    // (assDetectChange is consumed by ConvertLibass, not here.)
+    e.renderedImages = nullptr;
 
-  // Render subtitle of half-sbs and half-ou video in full screen, not in half screen
-  if (m_stereomode == "left_right" || m_stereomode == "right_left")
-  {
-    // only half-sbs video, sbs video don't need to change source size
-    if (rOpts.sourceWidth / rOpts.sourceHeight < 1.2f)
-      rOpts.sourceWidth = m_rs.Width() * 2;
-  }
-  else if (m_stereomode == "top_bottom" || m_stereomode == "bottom_top")
-  {
-    // only half-ou video, ou video don't need to change source size
-    if (rOpts.sourceWidth / rOpts.sourceHeight > 2.5f)
-      rOpts.sourceHeight = m_rs.Height() * 2;
-  }
+    if (!e.overlay_dvd)
+      continue;
 
-  // Set position of subtitles based on video calibration settings
-  RESOLUTION_INFO resInfo = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
-  // Keep track of subtitle position value change,
-  // can be changed by GUI Calibration or by window mode/resolution change or
-  // by user manual change (e.g. keyboard shortcut)
-  if (m_subtitlePosResInfo != resInfo.iSubtitles)
-  {
-    if (m_subtitlePosResInfo == POSRESINFO_SAVE_CHANGES)
+    CDVDOverlay& o = *e.overlay_dvd;
+
+    // Image-based subtitles (PGS, DVB) and DVD SPU: presence of the entry
+    // in the present buffer slot is the visibility test. ProcessOverlays
+    // PTS-filters before AddOverlay, so any entry here covers "now".
+    // For change detection: m_textureid == 0 means the overlay has never
+    // been rendered (new arrival). Catches new bitmaps for PGS/DVB and
+    // every-frame-different animated PGS. The presence-flip check after
+    // the loop catches the disappearance case.
+    if (o.IsOverlayType(DVDOVERLAY_TYPE_IMAGE) || o.IsOverlayType(DVDOVERLAY_TYPE_SPU))
     {
-      // m_subtitlePosition has been changed
-      // and has been requested to save the value to resInfo
-      resInfo.iSubtitles = m_subtitlePosition + m_subtitleVerticalMargin;
-      CServiceBroker::GetWinSystem()->GetGfxContext().SetResInfo(
-          CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution(), resInfo);
-      m_subtitlePosResInfo = m_subtitlePosition + m_subtitleVerticalMargin;
+      hasImageSpu = true;
+      if (o.m_textureid == 0)
+        hasChanges = true;
+      continue;
     }
-    else
-      ResetSubtitlePosition();
-  }
 
-  rOpts.m_par = resInfo.fPixelRatio;
+    if (!o.IsOverlayType(DVDOVERLAY_TYPE_TEXT) && !o.IsOverlayType(DVDOVERLAY_TYPE_SSA))
+      continue;
 
-  // rOpts.position and margins (set to style) can invalidate the text
-  // positions to subtitles type that make use of margins to position text on
-  // the screen (e.g. ASS/WebVTT) then we allow to set them when position
-  // override setting is enabled only
-  if (o.IsForcedMargins())
-  {
-    rOpts.marginsMode = SUBTITLES::STYLE::MarginsMode::DISABLED;
-  }
-  else if (m_subtitleAlign == SUBTITLES::Align::MANUAL)
-  {
-    // When vertical margins are used Libass apply a displacement in percentage
-    // of the height available to line position, this displacement causes
-    // problems with subtitle calibration bar on Video Calibration window,
-    // so when you moving the subtitle bar of the GUI the text will no longer
-    // match the bar, this calculation compensates for the displacement.
-    // Note also that the displacement compensation will cause a different
-    // default position of the text, different from the other alignment positions
-    double posPx = static_cast<double>(m_subtitlePosition - resInfo.Overscan.top);
-
-    int assPlayResY = o.GetLibassHandler()->GetPlayResY();
-    double assVertMargin = static_cast<double>(overlayStyle->marginVertical) *
-                           (static_cast<double>(assPlayResY) / 720);
-    double vertMarginScaled = assVertMargin / assPlayResY * static_cast<double>(rOpts.frameHeight);
-
-    double pos = posPx / (static_cast<double>(rOpts.frameHeight) - vertMarginScaled);
-    rOpts.position = 100 - pos * 100;
-  }
-  else if (m_subtitleAlign == SUBTITLES::Align::BOTTOM_OUTSIDE)
-  {
-    // To keep consistent the position of text as other alignment positions
-    // we avoid apply the displacement compensation
-    double posPx =
-        static_cast<double>(m_subtitlePosition + m_subtitleVerticalMargin - resInfo.Overscan.top);
-    rOpts.position = 100 - posPx / static_cast<double>(rOpts.frameHeight) * 100;
-  }
-  else if (m_subtitleAlign == SUBTITLES::Align::BOTTOM_INSIDE ||
-           m_subtitleAlign == SUBTITLES::Align::TOP_INSIDE)
-  {
-    rOpts.marginsMode = SUBTITLES::STYLE::MarginsMode::INSIDE_VIDEO;
-  }
-
-  // Set the horizontal text alignment (currently used to improve readability on CC subtitles only)
-  // This setting influence style->alignment property
-  if (o.IsTextAlignEnabled())
-  {
-    if (m_subtitleHorizontalAlign == SUBTITLES::HorizontalAlign::LEFT)
-      rOpts.horizontalAlignment = SUBTITLES::STYLE::HorizontalAlign::LEFT;
-    else if (m_subtitleHorizontalAlign == SUBTITLES::HorizontalAlign::RIGHT)
-      rOpts.horizontalAlignment = SUBTITLES::STYLE::HorizontalAlign::RIGHT;
-    else
-      rOpts.horizontalAlignment = SUBTITLES::STYLE::HorizontalAlign::CENTER;
-  }
-
-  // changes: Detect changes from previously rendered images, if > 0 they are changed
-  int changes = 0;
-  ASS_Image* images =
-      o.GetLibassHandler()->RenderImage(pts, rOpts, updateStyle, overlayStyle, &changes);
-
-  // If no images not execute the renderer
-  if (!images)
-    return nullptr;
-
-  if (o.m_textureid)
-  {
-    if (changes == 0)
-    {
-      std::map<unsigned int, std::shared_ptr<COverlay>>::iterator it =
-          m_textureCache.find(o.m_textureid);
-      if (it != m_textureCache.end())
-        return it->second;
-    }
-  }
-
-  std::shared_ptr<COverlay> overlay = COverlay::Create(images, rOpts.frameWidth, rOpts.frameHeight);
-
-  m_textureCache[m_textureid] = overlay;
-  o.m_textureid = m_textureid;
-  m_textureid++;
-  return overlay;
-}
-
-std::shared_ptr<COverlay> CRenderer::Convert(CDVDOverlay& o, double pts)
-{
-  std::shared_ptr<COverlay> r = NULL;
-
-  if (o.IsOverlayType(DVDOVERLAY_TYPE_TEXT) || o.IsOverlayType(DVDOVERLAY_TYPE_SSA))
-  {
     CDVDOverlayLibass& ovAss = static_cast<CDVDOverlayLibass&>(o);
     if (!ovAss.GetLibassHandler())
-      return nullptr;
+      continue;
+
     bool updateStyle = !m_overlayStyle || m_isSettingsChanged;
     if (updateStyle)
     {
@@ -571,7 +471,189 @@ std::shared_ptr<COverlay> CRenderer::Convert(CDVDOverlay& o, double pts)
       CreateSubtitlesStyle();
     }
 
-    r = ConvertLibass(ovAss, pts, updateStyle, m_overlayStyle);
+    SUBTITLES::STYLE::renderOpts rOpts;
+
+    // libass render in a target area which named as frame. the frame size may bigger than video size,
+    // and including margins between video to frame edge. libass allow to render subtitles into the margins.
+    // this has been used to show subtitles in the top or bottom "black bar" between video to frame border.
+    rOpts.sourceWidth = m_rs.Width();
+    rOpts.sourceHeight = m_rs.Height();
+    rOpts.videoWidth = m_rd.Width();
+    rOpts.videoHeight = m_rd.Height();
+    rOpts.frameWidth = m_rv.Width();
+    rOpts.frameHeight = m_rv.Height();
+
+    // Render subtitle of half-sbs and half-ou video in full screen, not in half screen
+    if (m_stereomode == "left_right" || m_stereomode == "right_left")
+    {
+      // only half-sbs video, sbs video don't need to change source size
+      if (rOpts.sourceWidth / rOpts.sourceHeight < 1.2f)
+        rOpts.sourceWidth = m_rs.Width() * 2;
+    }
+    else if (m_stereomode == "top_bottom" || m_stereomode == "bottom_top")
+    {
+      // only half-ou video, ou video don't need to change source size
+      if (rOpts.sourceWidth / rOpts.sourceHeight > 2.5f)
+        rOpts.sourceHeight = m_rs.Height() * 2;
+    }
+
+    // Set position of subtitles based on video calibration settings
+    RESOLUTION_INFO resInfo = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
+    // Keep track of subtitle position value change,
+    // can be changed by GUI Calibration or by window mode/resolution change or
+    // by user manual change (e.g. keyboard shortcut)
+    if (m_subtitlePosResInfo != resInfo.iSubtitles)
+    {
+      if (m_subtitlePosResInfo == POSRESINFO_SAVE_CHANGES)
+      {
+        // m_subtitlePosition has been changed
+        // and has been requested to save the value to resInfo
+        resInfo.iSubtitles = m_subtitlePosition + m_subtitleVerticalMargin;
+        CServiceBroker::GetWinSystem()->GetGfxContext().SetResInfo(
+            CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution(), resInfo);
+        m_subtitlePosResInfo = m_subtitlePosition + m_subtitleVerticalMargin;
+      }
+      else
+        ResetSubtitlePosition();
+    }
+
+    rOpts.m_par = resInfo.fPixelRatio;
+
+    // rOpts.position and margins (set to style) can invalidate the text
+    // positions to subtitles type that make use of margins to position text on
+    // the screen (e.g. ASS/WebVTT) then we allow to set them when position
+    // override setting is enabled only
+    if (ovAss.IsForcedMargins())
+    {
+      rOpts.marginsMode = SUBTITLES::STYLE::MarginsMode::DISABLED;
+    }
+    else if (m_subtitleAlign == SUBTITLES::Align::MANUAL)
+    {
+      // When vertical margins are used Libass apply a displacement in percentage
+      // of the height available to line position, this displacement causes
+      // problems with subtitle calibration bar on Video Calibration window,
+      // so when you moving the subtitle bar of the GUI the text will no longer
+      // match the bar, this calculation compensates for the displacement.
+      // Note also that the displacement compensation will cause a different
+      // default position of the text, different from the other alignment positions
+      double posPx = static_cast<double>(m_subtitlePosition - resInfo.Overscan.top);
+
+      int assPlayResY = ovAss.GetLibassHandler()->GetPlayResY();
+      double assVertMargin = static_cast<double>(m_overlayStyle->marginVertical) *
+                             (static_cast<double>(assPlayResY) / 720);
+      double vertMarginScaled =
+          assVertMargin / assPlayResY * static_cast<double>(rOpts.frameHeight);
+
+      double pos = posPx / (static_cast<double>(rOpts.frameHeight) - vertMarginScaled);
+      rOpts.position = 100 - pos * 100;
+    }
+    else if (m_subtitleAlign == SUBTITLES::Align::BOTTOM_OUTSIDE)
+    {
+      // To keep consistent the position of text as other alignment positions
+      // we avoid apply the displacement compensation
+      double posPx =
+          static_cast<double>(m_subtitlePosition + m_subtitleVerticalMargin - resInfo.Overscan.top);
+      rOpts.position = 100 - posPx / static_cast<double>(rOpts.frameHeight) * 100;
+    }
+    else if (m_subtitleAlign == SUBTITLES::Align::BOTTOM_INSIDE ||
+             m_subtitleAlign == SUBTITLES::Align::TOP_INSIDE)
+    {
+      rOpts.marginsMode = SUBTITLES::STYLE::MarginsMode::INSIDE_VIDEO;
+    }
+
+    // Set the horizontal text alignment (currently used to improve readability on CC subtitles only)
+    // This setting influence style->alignment property
+    if (ovAss.IsTextAlignEnabled())
+    {
+      if (m_subtitleHorizontalAlign == SUBTITLES::HorizontalAlign::LEFT)
+        rOpts.horizontalAlignment = SUBTITLES::STYLE::HorizontalAlign::LEFT;
+      else if (m_subtitleHorizontalAlign == SUBTITLES::HorizontalAlign::RIGHT)
+        rOpts.horizontalAlignment = SUBTITLES::STYLE::HorizontalAlign::RIGHT;
+      else
+        rOpts.horizontalAlignment = SUBTITLES::STYLE::HorizontalAlign::CENTER;
+    }
+
+    e.renderedFrameWidth = rOpts.frameWidth;
+    e.renderedFrameHeight = rOpts.frameHeight;
+
+    // Pull the libass output for this PTS. Cached on the SElement until
+    // ConvertLibass consumes it later in this frame's GUI walk.
+    int currentChange = 0;
+    e.renderedImages = ovAss.GetLibassHandler()->RenderImage(e.pts, rOpts, updateStyle,
+                                                             m_overlayStyle, &currentChange);
+    // OR-accumulate libass's per-call change onto the persistent overlay,
+    // not onto SElement: m_buffers[idx] is rebuilt per frame by AddOverlay/
+    // Release on the render queue, so SElement state cannot survive the
+    // transition-to-walk gap. The CDVDOverlayLibass shared_ptr survives.
+    if (currentChange > 0)
+      ovAss.m_pendingChange = currentChange;
+
+    // MarkDirty only on this-frame change (not the accumulated value).
+    if (currentChange > 0)
+      hasChanges = true;
+  }
+
+  // Image/SPU disappearance: image-based subtitles (PGS/DVB/SPU) have no
+  // libass-style per-frame change signal. The m_textureid==0 check inside
+  // the loop catches arrival of a new bitmap. This catches the symmetric
+  // case: the buffer slot just went empty (last frame had image/SPU, this
+  // frame does not). Without this, when a PGS subtitle ends the walk does
+  // not fire, the cached bitmap stays on the GUI plane, and the screen
+  // never blanks between consecutive PGS subtitles.
+  if (hasImageSpu != m_prevHadImageSpu)
+    hasChanges = true;
+  m_prevHadImageSpu = hasImageSpu;
+
+  if (hasChanges)
+    MarkDirty();
+}
+
+std::shared_ptr<COverlay> CRenderer::ConvertLibass(SElement& e)
+{
+  // If no images not execute the renderer
+  if (!e.renderedImages)
+    return nullptr;
+
+  CDVDOverlayLibass& o = static_cast<CDVDOverlayLibass&>(*e.overlay_dvd);
+
+  if (o.m_textureid)
+  {
+    if (o.m_pendingChange == 0)
+    {
+      std::map<unsigned int, std::shared_ptr<COverlay>>::iterator it =
+          m_textureCache.find(o.m_textureid);
+      if (it != m_textureCache.end())
+        return it->second;
+    }
+  }
+
+  std::shared_ptr<COverlay> overlay =
+      COverlay::Create(e.renderedImages, e.renderedFrameWidth, e.renderedFrameHeight);
+
+  m_textureCache[m_textureid] = overlay;
+  o.m_textureid = m_textureid;
+  m_textureid++;
+  o.m_pendingChange = 0; // consume
+  return overlay;
+}
+
+std::shared_ptr<COverlay> CRenderer::Convert(SElement& e)
+{
+  if (!e.overlay_dvd)
+    return nullptr;
+
+  CDVDOverlay& o = *e.overlay_dvd;
+  std::shared_ptr<COverlay> r = NULL;
+
+  if (o.IsOverlayType(DVDOVERLAY_TYPE_TEXT) || o.IsOverlayType(DVDOVERLAY_TYPE_SSA))
+  {
+    CDVDOverlayLibass& ovAss = static_cast<CDVDOverlayLibass&>(o);
+    if (!ovAss.GetLibassHandler())
+      return nullptr;
+
+    // ASS_Image* and detect_change were populated this frame by
+    // PrepareOverlays. ConvertLibass does not re-enter libass.
+    r = ConvertLibass(e);
 
     if (!r)
       return nullptr;

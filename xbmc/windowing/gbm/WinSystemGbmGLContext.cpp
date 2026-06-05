@@ -339,7 +339,7 @@ void CWinSystemGbmGLContext::CompositeGui()
   // FBO is in the same state as the previous frame and the flag stays as-is.
   if (m_guiWillRender)
   {
-    const bool guiEmpty = (CRenderSystemBase::m_GUIElementCount == 0);
+    const bool guiEmpty = (GetGUIElementCount() == 0);
     m_guiFboClean = guiEmpty;
     if (guiEmpty)
       return;

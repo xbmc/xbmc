@@ -905,6 +905,42 @@ void CApplication::Render()
                                                        appPlayer->IsRenderingVideoLayer());
 
   CTimeUtils::UpdateFrameTime(hasRendered);
+
+  // [debug hack] count gui-on-screen frames vs total played and skipped
+  {
+    static unsigned int s_video = 0;
+    static unsigned int s_ctrls = 0;
+    static unsigned int s_subs = 0;
+    static unsigned int s_skipGui = 0;
+    static unsigned int s_skipAny = 0;
+    if (!appPlayer->IsPlayingVideo())
+    {
+      s_video = 0;
+      s_ctrls = 0;
+      s_subs = 0;
+      s_skipGui = 0;
+      s_skipAny = 0;
+    }
+    else
+    {
+      ++s_video;
+      const bool ctrlsOn = CServiceBroker::GetGUI()->GetWindowManager().HasVisibleControls();
+      const bool subsOn = appPlayer->HasVisibleOverlay();
+      if (ctrlsOn)
+        ++s_ctrls;
+      if (subsOn)
+        ++s_subs;
+      if (m_skipGuiRender)
+      {
+        ++s_skipAny;
+        if (ctrlsOn || subsOn)
+          ++s_skipGui;
+      }
+      if (s_video % 240 == 0)
+        CLog::Log(LOGDEBUG, "TEMP: [framecount] video={} ctrls={} subs={} skip-gui={} skip-any={}",
+                  s_video, s_ctrls, s_subs, s_skipGui, s_skipAny);
+    }
+  }
 }
 
 bool CApplication::OnAction(const CAction &action)

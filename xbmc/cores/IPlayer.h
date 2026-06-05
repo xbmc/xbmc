@@ -241,6 +241,12 @@ public:
   virtual float GetRenderAspectRatio() const { return 1.0; }
   virtual void TriggerUpdateResolution() {}
   virtual bool IsRenderingVideo() const { return false; }
+  /*!
+   * \brief True if any subtitle/overlay is actually visible on the current
+   *  presented frame. Per-frame accurate. Default false for players that
+   *  do not render overlays (e.g. retro, paplayer, external).
+   */
+  virtual bool HasVisibleOverlay() const { return false; }
   virtual bool IsLiveStream() const { return false; }
   virtual void GetRects(CRect& source, CRect& dest, CRect& view) const
   {

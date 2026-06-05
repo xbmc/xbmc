@@ -49,6 +49,8 @@ public:
   // in BeginRender, bumped at each GUI draw primitive. Render-thread only.
   static unsigned int m_GUIElementCount;
 
+  unsigned int GetGUIElementCount() const { return m_GUIElementCount; }
+
   virtual bool InitRenderSystem() = 0;
   virtual bool DestroyRenderSystem() = 0;
   virtual bool ResetRenderSystem(int width, int height) = 0;

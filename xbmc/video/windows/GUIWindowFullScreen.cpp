@@ -376,7 +376,11 @@ void CGUIWindowFullScreen::Process(unsigned int currentTime, CDirtyRegionList &d
 {
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-  if (appPlayer->IsRenderingGuiLayer())
+  // Only fire for single-plane renderers where video draws via the GUI walk
+  // (VAAPI, LinuxRendererGLES, DRMPRIMEGLES). For D2P, video lives on its
+  // own hardware plane; subtitle dirty is handled by OVERLAY::PrepareOverlays
+  // on actual change.
+  if (!appPlayer->IsRenderingVideoLayer())
     MarkDirtyRegion();
 
   m_controlStats->Reset();

@@ -695,7 +695,10 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPicturesInfoProvider().SetCurrentSlide(m_slides.at(m_iCurrentSlide).get());
 
   RenderPause();
-  if (IsVideo(*m_slides.at(m_iCurrentSlide)) && appPlayer && appPlayer->IsRenderingGuiLayer())
+  // Force MarkDirty when video is drawn through the GUI walk (single-plane
+  // path: the walk drives video frame display). On D2P the video plane self-
+  // updates independently of the walk, so no per-frame MarkDirty is needed.
+  if (IsVideo(*m_slides.at(m_iCurrentSlide)) && appPlayer && !appPlayer->IsRenderingVideoLayer())
   {
     MarkDirtyRegion();
   }
