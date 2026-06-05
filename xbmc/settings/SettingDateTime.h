@@ -20,10 +20,10 @@ public:
                int label,
                const std::string& value,
                CSettingsManager* settingsManager = nullptr);
-  CSettingDate(const std::string &id, const CSettingDate &setting);
+  CSettingDate(std::string_view id, const CSettingDate& setting);
   ~CSettingDate() override = default;
 
-  SettingPtr Clone(const std::string &id) const override;
+  SettingPtr Clone(std::string_view id) const override;
 
   bool CheckValidity(const std::string &value) const override;
 
@@ -34,15 +34,15 @@ public:
 class CSettingTime : public CSettingString
 {
 public:
-  CSettingTime(const std::string& id, CSettingsManager* settingsManager = nullptr);
-  CSettingTime(const std::string& id,
+  CSettingTime(std::string_view id, CSettingsManager* settingsManager = nullptr);
+  CSettingTime(std::string_view id,
                int label,
                const std::string& value,
                CSettingsManager* settingsManager = nullptr);
-  CSettingTime(const std::string &id, const CSettingTime &setting);
+  CSettingTime(std::string_view id, const CSettingTime& setting);
   ~CSettingTime() override = default;
 
-  SettingPtr Clone(const std::string &id) const override;
+  SettingPtr Clone(std::string_view id) const override;
 
   bool CheckValidity(const std::string &value) const override;
 

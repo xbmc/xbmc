@@ -18,21 +18,26 @@
 
 #include <mutex>
 
-CSettingAddon::CSettingAddon(const std::string &id, CSettingsManager *settingsManager /* = nullptr */)
+CSettingAddon::CSettingAddon(std::string_view id, CSettingsManager* settingsManager /* = nullptr */)
   : CSettingString(id, settingsManager)
-{ }
+{
+}
 
-CSettingAddon::CSettingAddon(const std::string &id, int label, const std::string &value, CSettingsManager *settingsManager /* = nullptr */)
+CSettingAddon::CSettingAddon(std::string_view id,
+                             int label,
+                             const std::string& value,
+                             CSettingsManager* settingsManager /* = nullptr */)
   : CSettingString(id, label, value, settingsManager)
-{ }
+{
+}
 
-CSettingAddon::CSettingAddon(const std::string &id, const CSettingAddon &setting)
+CSettingAddon::CSettingAddon(std::string_view id, const CSettingAddon& setting)
   : CSettingString(id, setting)
 {
   copyaddontype(setting);
 }
 
-SettingPtr CSettingAddon::Clone(const std::string &id) const
+SettingPtr CSettingAddon::Clone(std::string_view id) const
 {
   return std::make_shared<CSettingAddon>(id, *this);
 }

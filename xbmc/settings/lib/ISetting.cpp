@@ -14,11 +14,12 @@
 
 #include <string>
 
-ISetting::ISetting(const std::string &id, CSettingsManager *settingsManager /* = nullptr */)
-  : m_id(id)
-  , m_settingsManager(settingsManager)
-  , m_requirementCondition(settingsManager)
-{ }
+ISetting::ISetting(std::string_view id, CSettingsManager* settingsManager /* = nullptr */)
+  : m_id(id),
+    m_settingsManager(settingsManager),
+    m_requirementCondition(settingsManager)
+{
+}
 
 bool ISetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {

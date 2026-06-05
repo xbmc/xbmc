@@ -19,12 +19,15 @@ class TiXmlNode;
 class CSettingPath : public CSettingString
 {
 public:
-  CSettingPath(const std::string &id, CSettingsManager *settingsManager = nullptr);
-  CSettingPath(const std::string &id, int label, const std::string &value, CSettingsManager *settingsManager = nullptr);
-  CSettingPath(const std::string &id, const CSettingPath &setting);
+  CSettingPath(std::string_view id, CSettingsManager* settingsManager = nullptr);
+  CSettingPath(std::string_view id,
+               int label,
+               const std::string& value,
+               CSettingsManager* settingsManager = nullptr);
+  CSettingPath(std::string_view id, const CSettingPath& setting);
   ~CSettingPath() override = default;
 
-  SettingPtr Clone(const std::string &id) const override;
+  SettingPtr Clone(std::string_view id) const override;
 
   bool Deserialize(const TiXmlNode *node, bool update = false) override;
   bool SetValue(const std::string &value) override;
