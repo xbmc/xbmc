@@ -53,6 +53,12 @@ using namespace std::chrono_literals;
 
 #define NUM_RENDER_PICS 7
 
+#ifndef VAProfileH264High10
+    #define VAProfileH264High10_Fallback VAProfileH264High
+#else
+    #define VAProfileH264High10_Fallback VAProfileH264High10
+#endif
+
 constexpr auto SETTING_VIDEOPLAYER_USEVAAPI = "videoplayer.usevaapi";
 constexpr auto SETTING_VIDEOPLAYER_USEVAAPIAV1 = "videoplayer.usevaapiav1";
 constexpr auto SETTING_VIDEOPLAYER_USEVAAPIAVC = "videoplayer.usevaapiavc";
@@ -663,7 +669,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
       else if (avctx->profile == AV_PROFILE_H264_HIGH_10 && m_vaapiConfig.bitDepth == 10 &&
                m_capFormats.Supports(AV_PIX_FMT_P010))
       {
-        profile = VAProfileH264High10;
+        profile = VAProfileH264High10_Fallback;
         if (!m_vaapiConfig.context->SupportsProfile(profile))
           return false;
       }
@@ -1266,7 +1272,7 @@ bool CDecoder::ConfigVAAPI()
   if ((m_vaapiConfig.profile == VAProfileHEVCMain10 ||
        m_vaapiConfig.profile == VAProfileVP9Profile2 ||
        m_vaapiConfig.profile == VAProfileAV1Profile0 ||
-       m_vaapiConfig.profile == VAProfileH264High10) &&
+       m_vaapiConfig.profile == VAProfileH264High10_Fallback) &&
       m_vaapiConfig.bitDepth == 10)
   {
     format = VA_RT_FORMAT_YUV420_10BPP;
