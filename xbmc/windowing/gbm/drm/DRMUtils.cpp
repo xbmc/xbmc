@@ -300,9 +300,7 @@ bool CDRMUtils::FindVideoAndGuiPlane(uint32_t format,
       continue;
     if (output_format.alpha < 8)
     {
-      CLog::LogF(LOGWARNING,
-                 "GUI plane format {} can not do alpha blending, "
-                 "falling back to single-plane EGL import (GUI composited over video)",
+      CLog::LogF(LOGWARNING, "GUI plane format {} cannot do alpha blending",
                  DRMHELPERS::FourCCToString(m_gui_plane->GetFormat()));
       m_video_plane = nullptr;
       return false;
@@ -360,11 +358,10 @@ bool CDRMUtils::FindVideoAndGuiPlane(uint32_t format,
   }
 
   CLog::LogF(LOGWARNING,
-             "Rendering will be done through EGL. "
-             "Can not find a Video Plane [{}x{}] format:{}, modifier:{} "
+             "Cannot find a Video Plane [{}x{}] format:{}, modifier:{} "
              "together with a Gui Plane [{}x{}] format:{}, modifier:{}.",
-             res.iWidth, res.iHeight, DRMHELPERS::FourCCToString(format),
-             DRMHELPERS::ModifierToString(modifier), width, height,
+             width, height, DRMHELPERS::FourCCToString(format),
+             DRMHELPERS::ModifierToString(modifier), res.iWidth, res.iHeight,
              DRMHELPERS::FourCCToString(m_gui_plane->GetFormat()),
              DRMHELPERS::ModifierToString(m_gui_plane->GetModifier()));
   return false;
