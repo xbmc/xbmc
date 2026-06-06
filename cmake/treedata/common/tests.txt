@@ -24,6 +24,7 @@ xbmc/pictures/metadata/test       test/pictures/metadata
 xbmc/playlists/test               test/playlists
 xbmc/pvr/channels/test            test/pvrchannels
 xbmc/settings/test                test/settings
+xbmc/settings/lib/test            test/lib/settings
 xbmc/test                         test
 xbmc/threads/test                 test/threads
 xbmc/utils/i18n/test              test/utils/i18n

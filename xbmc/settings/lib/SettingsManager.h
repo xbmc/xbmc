@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2013-2018 Team Kodi
+ *  Copyright (C) 2013-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -485,6 +485,38 @@ public:
    \param identifier Identifier of the dynamic condition
    */
   void RemoveDynamicCondition(const std::string &identifier);
+
+  /*!
+   * \brief Parses a dot-separated setting identifier into its category and setting tag components.
+   *        Used by the V1 settings format.
+   * 
+   * \param settingId[in] The setting identifier to parse. Must be non-empty and must not start
+   *                      with a dot.
+   * \param categoryTag[out] The leading component of \p settingId or an empty string if the
+   *                         identifier contains no dot.
+   * \param settingTag[out] The remainder of \p settingId after the first dot, or the full
+   *                        identifier if there is no dot.
+   * \return True if \p settingId was non-empty and did not begin with a dot, false otherwise.
+   *         The output parameters are left unchanged on failure.
+   */
+  static bool ParseSettingIdentifier(std::string_view settingId,
+                                     std::string& categoryTag,
+                                     std::string& settingTag);
+
+  /*!
+   * \brief Locates the XML element for a setting within a settings document, supporting both
+   *        the current (v2+) and legacy (v1) storage formats. The v2 format is prioritized.
+   *
+   * \param node[in] The root XML node of the settings document to search within.
+   * \param settingId[in] The setting identifier to look up.
+   * \return A pointer to the matching \c TiXmlElement, or nullptr if not found or there is an error.
+   *         The returned pointer lifetime matches that of \p node.
+   */
+  static const TiXmlElement* LocateSetting(const TiXmlNode* node, std::string_view settingId);
+  static TiXmlElement* LocateSetting(TiXmlNode* node, std::string_view settingId)
+  {
+    return const_cast<TiXmlElement*>(LocateSetting(const_cast<const TiXmlNode*>(node), settingId));
+  }
 
 private:
   // implementation of ISettingCallback
