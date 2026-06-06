@@ -1664,12 +1664,24 @@ void CXBMCApp::SetupEnv()
     setenv("KODI_TEMP", xbmcTemp.c_str(), 0);
   }
 
+  // Resolve the unpacked-asset location WITHOUT relying on the Java Splash
+  // activity having set xbmc.home. Android can relaunch the Main activity
+  // directly after killing the idle process (Main has its own MAIN intent
+  // filter), skipping Splash; and the OS evicts files from getCacheDir() under
+  // storage pressure. Both together caused a crash-on-boot when the native side
+  // fell back to the (evicted) cache. Derive no_backup - a sibling of cache
+  // that the OS never auto-purges - directly from the cache path, so every asset
+  // path is correct regardless of how the process was started. (libandroidjni
+  // in this branch only binds getCacheDir(), hence the string derivation.)
+  std::string assetsBase = cacheDir;
+  const std::string cacheSuffix = "/cache";
+  if (assetsBase.size() >= cacheSuffix.size() &&
+      assetsBase.compare(assetsBase.size() - cacheSuffix.size(), cacheSuffix.size(), cacheSuffix) == 0)
+    assetsBase.resize(assetsBase.size() - cacheSuffix.size());
+
   std::string xbmcHome = CJNISystem::getProperty("xbmc.home", "");
-  // When xbmc.home is set (e.g. the bootstrap unpacks into no_backup storage to
-  // avoid the OS evicting cached assets) every asset path must follow it,
-  // including PYTHONHOME below - otherwise the interpreter is looked up in the
-  // empty cache dir and add-ons fail to load.
-  std::string assetsHome = xbmcHome.empty() ? (cacheDir + "/apk/assets") : (xbmcHome + "/assets");
+  std::string assetsHome =
+      xbmcHome.empty() ? (assetsBase + "/no_backup/apk/assets") : (xbmcHome + "/assets");
   setenv("KODI_BIN_HOME", assetsHome.c_str(), 0);
   setenv("KODI_HOME", assetsHome.c_str(), 0);
   setenv("KODI_BINADDON_PATH", (cacheDir + "/lib").c_str(), 0);

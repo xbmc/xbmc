@@ -459,11 +459,11 @@ public class Splash extends Activity
       // corrupts the unpacked payload and later crashes the native side when
       // it cannot open an evicted asset (e.g. system/settings/settings.xml ->
       // "Unable to load settings definitions"). getNoBackupFilesDir() is never
-      // auto-purged. Publish it through the xbmc.home property so the native
-      // side (KODI_HOME / KODI_BIN_HOME / PYTHONHOME) uses the same location.
+      // auto-purged. The native side derives the same no_backup location on its
+      // own (see XBMCApp::SetupEnv), so this does not depend on a property that
+      // would be unset if the OS relaunches Main without going through Splash.
       sXbmcHome = getNoBackupFilesDir().getAbsolutePath() + "/apk";
       fXbmcHome = new File(sXbmcHome);
-      System.setProperty("xbmc.home", sXbmcHome);
     }
     File fLibCache = new File(fCacheDir.getAbsolutePath() + "/lib");
     fLibCache.mkdirs();
