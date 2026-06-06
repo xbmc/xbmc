@@ -25,6 +25,7 @@
 namespace VAAPI
 {
 
+class CCapabilities;
 class CVaapiRenderPicture;
 
 struct InteropInfo
@@ -51,41 +52,6 @@ public:
   virtual CSizeInt GetTextureSize() = 0;
 };
 
-class CVaapi1Texture : public CVaapiTexture
-{
-public:
-  CVaapi1Texture() = default;
-
-  bool Map(CVaapiRenderPicture *pic) override;
-  void Unmap() override;
-  void Init(InteropInfo &interop) override;
-
-  GLuint GetTextureY() override;
-  GLuint GetTextureVU() override;
-  CSizeInt GetTextureSize() override;
-
-  static void TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &deepColor);
-
-  GLuint m_texture = 0;
-  GLuint m_textureY = 0;
-  GLuint m_textureVU = 0;
-  int m_texWidth = 0;
-  int m_texHeight = 0;
-
-protected:
-  static bool TestInteropDeepColor(VADisplay vaDpy, EGLDisplay eglDisplay);
-
-  InteropInfo m_interop;
-  CVaapiRenderPicture *m_vaapiPic = nullptr;
-  struct GLSurface
-  {
-    VAImage vaImage;
-    VABufferInfo vBufInfo;
-    EGLImageKHR eglImage;
-    EGLImageKHR eglImageY, eglImageVU;
-  } m_glSurface;
-};
-
 class CVaapi2Texture : public CVaapiTexture
 {
 public:
@@ -99,6 +65,10 @@ public:
 
   static void TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &deepColor);
   static bool TestInteropGeneral(VADisplay vaDpy, EGLDisplay eglDisplay);
+
+  // Probe every importable VA fourcc the renderer cares about and Add()
+  // each successful one to caps.
+  static void TestInteropFormats(VADisplay vaDpy, EGLDisplay eglDisplay, CCapabilities& caps);
 
 private:
   static bool TestEsh(VADisplay vaDpy, EGLDisplay eglDisplay, std::uint32_t rtFormat, std::int32_t pixelFormat);

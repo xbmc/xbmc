@@ -20,18 +20,23 @@
 
 #include "platform/linux/sse4/DllLibSSE4.h"
 
+#include <cstdint>
 #include <list>
 #include <map>
 #include <memory>
 #include <mutex>
+#include <set>
+#include <string>
 #include <utility>
 #include <vector>
 
 #include <va/va.h>
 
-extern "C" {
-#include <libavutil/avutil.h>
+extern "C"
+{
 #include <libavfilter/avfilter.h>
+#include <libavutil/avutil.h>
+#include <libavutil/pixfmt.h>
 }
 
 using namespace Actor;
@@ -192,6 +197,10 @@ struct CVaapiConfig
   CProcessInfo *processInfo;
   bool driverIsMesa;
   int bitDepth;
+  // VA fourcc requested for the surface pool. Carried through to processed
+  // pictures so the renderer can pick its sampling path per-fourcc without
+  // re-inspecting the surface.
+  std::int32_t pixelFormat{};
 };
 
 /**
@@ -236,6 +245,7 @@ struct CVaapiProcessedPicture
     id = rhs.id;
     source = rhs.source;
     crop = rhs.crop;
+    fourcc = rhs.fourcc;
     return *this;
   };
 
@@ -245,6 +255,9 @@ struct CVaapiProcessedPicture
   int id;
   CPostproc *source = nullptr;
   bool crop = false;
+  // VA fourcc of the underlying surface. Set by COutput from
+  // CVaapiConfig::pixelFormat.
+  std::int32_t fourcc{};
 };
 
 class CVaapiRenderPicture : public CVideoBuffer
@@ -431,6 +444,75 @@ private:
 };
 
 //-----------------------------------------------------------------------------
+// Importable surface formats
+//-----------------------------------------------------------------------------
+
+// Pairing of a VA fourcc, its VA_RT_FORMAT_* (used for surface-creation probe),
+// and the matching ffmpeg AVPixelFormat. Single source of truth: the probe
+// iterates this table, the caller queries it by AVPixelFormat. Future fourcc
+// support is added by extending the table; both directions stay in sync.
+struct VaFormatEntry
+{
+  std::uint32_t vaFourcc;
+  unsigned vaRtFormat;
+  AVPixelFormat pixFmt;
+};
+
+inline constexpr VaFormatEntry kVaFormatTable[] = {
+    {VA_FOURCC_NV12, VA_RT_FORMAT_YUV420, AV_PIX_FMT_NV12},
+    {VA_FOURCC_P010, VA_RT_FORMAT_YUV420_10BPP, AV_PIX_FMT_P010},
+    {VA_FOURCC_P012, VA_RT_FORMAT_YUV420_12, AV_PIX_FMT_P012},
+    {VA_FOURCC_P016, VA_RT_FORMAT_YUV420_12, AV_PIX_FMT_P016},
+    {VA_FOURCC_Y210, VA_RT_FORMAT_YUV422_10, AV_PIX_FMT_Y210},
+    {VA_FOURCC_Y212, VA_RT_FORMAT_YUV422_12, AV_PIX_FMT_Y212},
+    {VA_FOURCC_Y216, VA_RT_FORMAT_YUV422_12, AV_PIX_FMT_Y216},
+    {VA_FOURCC_AYUV, VA_RT_FORMAT_YUV444, AV_PIX_FMT_VUYA},
+    {VA_FOURCC_XYUV, VA_RT_FORMAT_YUV444, AV_PIX_FMT_VUYX},
+    {VA_FOURCC_Y410, VA_RT_FORMAT_YUV444_10, AV_PIX_FMT_XV30},
+    {VA_FOURCC_Y412, VA_RT_FORMAT_YUV444_12, AV_PIX_FMT_XV36},
+    {VA_FOURCC_Y416, VA_RT_FORMAT_YUV444_12, AV_PIX_FMT_XV48},
+};
+
+/*!
+ * \brief Tracks which VA surface formats the EGL interop layer can import.
+ *
+ * Caller-facing API uses AVPixelFormat (ffmpeg currency), matching the
+ * vocabulary used elsewhere in Kodi's codec and renderer code. Internally
+ * the AVPixelFormat is mapped to its VA fourcc via kVaFormatTable.
+ *
+ * Populated at startup by the probe layer (CVaapi2Texture::TestInteropFormats),
+ * which iterates kVaFormatTable and Adds each fourcc that passes a round-trip
+ * import test. Queried by the decoder when picking a VA profile.
+ */
+class CCapabilities
+{
+public:
+  /*!
+   * \brief Mark the given pixel format as importable on this system.
+   * \param pixFmt ffmpeg pixel format whose corresponding VA fourcc the
+   *               EGL interop layer was able to import.
+   * \note Silently ignores formats not present in kVaFormatTable.
+   */
+  void Add(AVPixelFormat pixFmt);
+
+  /*!
+   * \brief Test whether a pixel format is importable on this system.
+   * \param pixFmt ffmpeg pixel format to query.
+   * \return true if the matching VA fourcc has been Added.
+   */
+  bool Supports(AVPixelFormat pixFmt) const;
+
+  /*!
+   * \brief Render the populated set as a human-readable string for logging.
+   * \return Comma-separated list of ffmpeg pixel format names.
+   */
+  std::string ToString() const;
+
+private:
+  std::set<AVPixelFormat> m_pixFmts;
+};
+
+//-----------------------------------------------------------------------------
 // Interface into windowing
 //-----------------------------------------------------------------------------
 
@@ -476,6 +558,10 @@ public:
   static IHardwareDecoder* Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt);
   static void Register(IVaapiWinSystem *winSystem, bool deepColor);
 
+  // Importable surface caps. Populated by the renderer probe before
+  // CDecoder::Register runs; read by CDecoder::Open profile dispatch.
+  static CCapabilities& GetCaps() { return m_capFormats; }
+
   static IVaapiWinSystem* m_pWinSystem;
 
 protected:
@@ -510,8 +596,7 @@ protected:
   int m_codecControl;
   CProcessInfo& m_processInfo;
 
-  static bool m_capGeneral;
-  static bool m_capDeepColor;
+  static CCapabilities m_capFormats;
 
 private:
   struct AVBufferRefDeleter

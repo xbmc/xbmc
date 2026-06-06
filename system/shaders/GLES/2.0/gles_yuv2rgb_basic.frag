@@ -93,6 +93,50 @@ void main()
 
   yuv = vec4(outY, outUV, 1.0);
 
+#elif defined(XBMC_Y210)
+
+  // Packed 4:2:2 in 16-bit channels (covers Y210 10-bit, Y212 12-bit, Y216
+  // 16-bit). Mesa imports DRM_FORMAT_Y210/Y212/Y216 as GL_RGBA16; channels
+  // map RGBA -> Y0, Cb, Y1, Cr. Each texel spans two luma samples sharing
+  // one chroma pair, like YUY2 but in wider channels.
+  vec2 stepxy = m_step;
+  vec2 pos    = m_cordY;
+  pos         = vec2(pos.x - stepxy.x * 0.25, pos.y);
+  vec2 f      = fract(pos / stepxy);
+
+  vec4 c1 = texture2D(m_sampY, vec2(pos.x + (0.5 - f.x) * stepxy.x, pos.y));
+  vec4 c2 = texture2D(m_sampY, vec2(pos.x + (1.5 - f.x) * stepxy.x, pos.y));
+
+  float leftY  = mix(c1.r, c1.b, f.x * 2.0);
+  float rightY = mix(c1.b, c2.r, f.x * 2.0 - 1.0);
+  vec2  outUV  = mix(c1.ga, c2.ga, f.x);
+  float outY   = mix(leftY, rightY, step(0.5, f.x));
+
+  yuv = vec4(outY, outUV, 1.0);
+
+#elif defined(XBMC_AYUV)
+
+  // Packed 4:4:4 in 8-bit channels (AYUV, XYUV). DRM_FORMAT_AYUV stores
+  // bytes V, U, Y, A in memory; EGL imports as GL_RGBA8 so RGBA = V, U, Y,
+  // alpha. Shader sees one full-resolution YUV sample per texel.
+  vec4 t = texture2D(m_sampY, m_cordY);
+  yuv = vec4(t.b, t.g, t.r, 1.0);
+
+#elif defined(XBMC_Y410)
+
+  // Packed 4:4:4 10-bit in a 32-bit word (DRM_FORMAT_Y410). EGL imports as
+  // GL_RGB10_A2; the format's standard bit layout puts A2 V10 U10 Y10
+  // little-endian, which surfaces as RGBA = U, Y, V, A after import.
+  vec4 t = texture2D(m_sampY, m_cordY);
+  yuv = vec4(t.g, t.r, t.b, 1.0);
+
+#elif defined(XBMC_Y412)
+
+  // Packed 4:4:4 in 16-bit channels (Y412 12-bit, Y416 16-bit). EGL imports
+  // as GL_RGBA16 with channel order RGBA = U, Y, V, A.
+  vec4 t = texture2D(m_sampY, m_cordY);
+  yuv = vec4(t.g, t.r, t.b, 1.0);
+
 #endif
 
   rgb = m_yuvmat * yuv;

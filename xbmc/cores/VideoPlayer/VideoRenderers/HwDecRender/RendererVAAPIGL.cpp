@@ -44,14 +44,8 @@ void CRendererVAAPIGL::Register(IVaapiWinSystem* winSystem,
   }
 
   CVaapi2Texture::TestInterop(vaDpy, eglDisplay, general, deepColor);
-  CLog::Log(LOGDEBUG, "Vaapi2 EGL interop test results: general {}, deepColor {}",
+  CLog::Log(LOGDEBUG, "VAAPI EGL interop test results: general {}, deepColor {}",
             general ? "yes" : "no", deepColor ? "yes" : "no");
-  if (!general)
-  {
-    CVaapi1Texture::TestInterop(vaDpy, eglDisplay, general, deepColor);
-    CLog::Log(LOGDEBUG, "Vaapi1 EGL interop test results: general {}, deepColor {}",
-              general ? "yes" : "no", deepColor ? "yes" : "no");
-  }
 
   vaTerminate(vaDpy);
 
@@ -90,19 +84,9 @@ bool CRendererVAAPIGL::Configure(const VideoPicture& picture, float fps, unsigne
     interop.glEGLImageTargetTexture2DOES = (PFNGLEGLIMAGETARGETTEXTURE2DOESPROC)eglGetProcAddress("glEGLImageTargetTexture2DOES");
     interop.eglDisplay = CRendererVAAPIGL::m_pWinSystem->GetEGLDisplay();
 
-    bool useVaapi2 = VAAPI::CVaapi2Texture::TestInteropGeneral(
-        pic->vadsp, CRendererVAAPIGL::m_pWinSystem->GetEGLDisplay());
-
     for (auto &tex : m_vaapiTextures)
     {
-      if (useVaapi2)
-      {
-        tex = std::make_unique<VAAPI::CVaapi2Texture>();
-      }
-      else
-      {
-        tex = std::make_unique<VAAPI::CVaapi1Texture>();
-      }
+      tex = std::make_unique<VAAPI::CVaapi2Texture>();
       tex->Init(interop);
     }
   }
