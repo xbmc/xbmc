@@ -774,3 +774,42 @@ std::string XMLUtils::NodeStringSerialization(const tinyxml2::XMLNode* node,
 
   return printer.CStr();
 }
+
+bool XMLUtils::RemoveNode(TiXmlNode* node)
+{
+  if (node == nullptr)
+    return false;
+
+  TiXmlNode* parent = node->Parent();
+
+  if (parent == nullptr)
+    return false;
+
+  // TinyXml doesn't allow removal of the root of the document and does nothing.
+  if (parent->Type() == TiXmlNode::TINYXML_DOCUMENT)
+    return false;
+
+  if (!parent->RemoveChild(node))
+    return false;
+
+  return true;
+}
+
+bool XMLUtils::RemoveNode(tinyxml2::XMLNode* node)
+{
+  if (node == nullptr)
+    return false;
+
+  tinyxml2::XMLNode* parent = node->Parent();
+
+  if (parent == nullptr)
+    return false;
+
+  // TinyXml doesn't allow removal of the root of the document and does nothing.
+  if (parent->ToDocument() != nullptr)
+    return false;
+
+  parent->DeleteChild(node);
+
+  return true;
+}

@@ -172,6 +172,9 @@ public:
            NodeStringSerialization(node2, SerializationFormat::COMPACT);
   }
 
+  static bool RemoveNode(TiXmlNode* node);
+  static bool RemoveNode(tinyxml2::XMLNode* node);
+
   static const int path_version = 1;
 };
 
