@@ -49,9 +49,10 @@ std::vector<AVPixelFormat> CProcessInfoGBM::GetRenderFormats()
   std::vector<AVPixelFormat> formats = {
       AV_PIX_FMT_NV12,
       AV_PIX_FMT_YUV420P,
-      // TODO: verify YUV422 on existing GL renderer, add support to GLES renderer
-      // AV_PIX_FMT_YUYV422,
-      // AV_PIX_FMT_UYVY422,
+      AV_PIX_FMT_YUV422P,
+      AV_PIX_FMT_YUYV422,
+      AV_PIX_FMT_UYVY422,
+      AV_PIX_FMT_YUV444P,
   };
   // clang-format on
 
@@ -75,6 +76,16 @@ std::vector<AVPixelFormat> CProcessInfoGBM::GetRenderFormats()
     formats.push_back(AV_PIX_FMT_YUV420P12);
     formats.push_back(AV_PIX_FMT_YUV420P14);
     formats.push_back(AV_PIX_FMT_YUV420P16);
+    formats.push_back(AV_PIX_FMT_YUV422P9);
+    formats.push_back(AV_PIX_FMT_YUV422P10);
+    formats.push_back(AV_PIX_FMT_YUV422P12);
+    formats.push_back(AV_PIX_FMT_YUV422P14);
+    formats.push_back(AV_PIX_FMT_YUV422P16);
+    formats.push_back(AV_PIX_FMT_YUV444P9);
+    formats.push_back(AV_PIX_FMT_YUV444P10);
+    formats.push_back(AV_PIX_FMT_YUV444P12);
+    formats.push_back(AV_PIX_FMT_YUV444P14);
+    formats.push_back(AV_PIX_FMT_YUV444P16);
   }
 
   return formats;

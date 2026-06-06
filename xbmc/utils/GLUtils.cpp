@@ -275,6 +275,10 @@ int KODI::UTILS::GL::glFormatElementByteCount(GLenum format)
   case GL_LUMINANCE:
   case GL_ALPHA:
     return 1;
+#ifdef HAS_GLES
+  case GL_BGRA_EXT:
+    return 4;
+#endif
   default:
     CLog::Log(LOGERROR, "glFormatElementByteCount - Unknown format {}", format);
     return 1;
