@@ -1665,16 +1665,13 @@ void CXBMCApp::SetupEnv()
   }
 
   std::string xbmcHome = CJNISystem::getProperty("xbmc.home", "");
-  if (xbmcHome.empty())
-  {
-    setenv("KODI_BIN_HOME", (cacheDir + "/apk/assets").c_str(), 0);
-    setenv("KODI_HOME", (cacheDir + "/apk/assets").c_str(), 0);
-  }
-  else
-  {
-    setenv("KODI_BIN_HOME", (xbmcHome + "/assets").c_str(), 0);
-    setenv("KODI_HOME", (xbmcHome + "/assets").c_str(), 0);
-  }
+  // When xbmc.home is set (e.g. the bootstrap unpacks into no_backup storage to
+  // avoid the OS evicting cached assets) every asset path must follow it,
+  // including PYTHONHOME below - otherwise the interpreter is looked up in the
+  // empty cache dir and add-ons fail to load.
+  std::string assetsHome = xbmcHome.empty() ? (cacheDir + "/apk/assets") : (xbmcHome + "/assets");
+  setenv("KODI_BIN_HOME", assetsHome.c_str(), 0);
+  setenv("KODI_HOME", assetsHome.c_str(), 0);
   setenv("KODI_BINADDON_PATH", (cacheDir + "/lib").c_str(), 0);
 
   std::string externalDir = CJNISystem::getProperty("xbmc.data", "");
@@ -1693,7 +1690,7 @@ void CXBMCApp::SetupEnv()
   else
     setenv("HOME", getenv("KODI_TEMP"), 0);
 
-  std::string pythonPath = cacheDir + "/apk/assets/python" + CCompileInfo::GetPythonVersion();
+  std::string pythonPath = assetsHome + "/python" + CCompileInfo::GetPythonVersion();
   setenv("PYTHONHOME", pythonPath.c_str(), 1);
   setenv("PYTHONPATH", "", 1);
   setenv("PYTHONOPTIMIZE","", 1);
