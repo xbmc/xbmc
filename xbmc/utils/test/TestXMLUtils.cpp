@@ -679,3 +679,145 @@ TEST(TestXMLUtils, NodeSerializationPretty)
                                                           XMLUtils::SerializationFormat::PRETTY));
   }
 }
+
+TEST(TestXMLUtils, RemoveNodeFastFail)
+{
+  const std::string XmlDocument = "<root><node>some string</node></root>";
+  {
+    CXBMCTinyXML doc;
+    EXPECT_TRUE(doc.Parse(XmlDocument));
+
+    // the root element can't be deleted
+    EXPECT_FALSE(XMLUtils::RemoveNode(doc.RootElement()));
+
+    EXPECT_FALSE(XMLUtils::RemoveNode(static_cast<TiXmlElement*>(nullptr)));
+  }
+
+  {
+    CXBMCTinyXML2 doc;
+    EXPECT_TRUE(doc.Parse(XmlDocument));
+
+    // the root element can't be deleted
+    EXPECT_FALSE(XMLUtils::RemoveNode(doc.RootElement()));
+
+    EXPECT_FALSE(XMLUtils::RemoveNode(static_cast<tinyxml2::XMLElement*>(nullptr)));
+  }
+}
+
+TEST(TestXMLUtils, RemoveNode)
+{
+  const std::string XmlDocument = "<root><node>some string</node><other>string</other></root>";
+  {
+    CXBMCTinyXML doc;
+    EXPECT_TRUE(doc.Parse(XmlDocument));
+    TiXmlNode* node = doc.RootElement()->FirstChildElement("node");
+
+    EXPECT_TRUE(XMLUtils::RemoveNode(node));
+    std::string expected = "<root><other>string</other></root>";
+
+    EXPECT_EQ(expected, XMLUtils::NodeStringSerialization(doc.RootElement(),
+                                                          XMLUtils::SerializationFormat::COMPACT));
+  }
+
+  {
+    CXBMCTinyXML2 doc;
+    EXPECT_TRUE(doc.Parse(XmlDocument));
+    tinyxml2::XMLNode* root = doc.RootElement();
+    tinyxml2::XMLNode* node = root->FirstChildElement("node");
+
+    EXPECT_TRUE(XMLUtils::RemoveNode(node));
+    std::string expected = "<root><other>string</other></root>";
+
+    EXPECT_EQ(expected, XMLUtils::NodeStringSerialization(doc.RootElement(),
+                                                          XMLUtils::SerializationFormat::COMPACT));
+  }
+}
+
+TEST(TestXMLUtils, RemoveNodeWithChild)
+{
+  const std::string XmlDocument =
+      "<root><node><child>some string</child></node><other>string</other></root>";
+  {
+    CXBMCTinyXML doc;
+    EXPECT_TRUE(doc.Parse(XmlDocument));
+    TiXmlNode* node = doc.RootElement()->FirstChildElement("node");
+
+    EXPECT_TRUE(XMLUtils::RemoveNode(node));
+    std::string expected = "<root><other>string</other></root>";
+
+    EXPECT_EQ(expected, XMLUtils::NodeStringSerialization(doc.RootElement(),
+                                                          XMLUtils::SerializationFormat::COMPACT));
+  }
+
+  {
+    CXBMCTinyXML2 doc;
+    EXPECT_TRUE(doc.Parse(XmlDocument));
+    tinyxml2::XMLNode* root = doc.RootElement();
+    tinyxml2::XMLNode* node = root->FirstChildElement("node");
+
+    EXPECT_TRUE(XMLUtils::RemoveNode(node));
+    std::string expected = "<root><other>string</other></root>";
+
+    EXPECT_EQ(expected, XMLUtils::NodeStringSerialization(doc.RootElement(),
+                                                          XMLUtils::SerializationFormat::COMPACT));
+  }
+}
+
+TEST(TestXMLUtils, RemoveChildNode)
+{
+  const std::string XmlDocument =
+      "<root><node>node string<child>some string</child></node><other>string</other></root>";
+  {
+    CXBMCTinyXML doc;
+    EXPECT_TRUE(doc.Parse(XmlDocument));
+    TiXmlNode* node = doc.RootElement()->FirstChildElement("node");
+    node = node->FirstChildElement("child");
+
+    EXPECT_TRUE(XMLUtils::RemoveNode(node));
+    std::string expected = "<root><node>node string</node><other>string</other></root>";
+
+    EXPECT_EQ(expected, XMLUtils::NodeStringSerialization(doc.RootElement(),
+                                                          XMLUtils::SerializationFormat::COMPACT));
+  }
+  {
+    CXBMCTinyXML2 doc;
+    EXPECT_TRUE(doc.Parse(XmlDocument));
+    tinyxml2::XMLNode* root = doc.RootElement();
+    tinyxml2::XMLNode* node = root->FirstChildElement("node");
+    node = node->FirstChildElement("child");
+
+    EXPECT_TRUE(XMLUtils::RemoveNode(node));
+    std::string expected = "<root><node>node string</node><other>string</other></root>";
+
+    EXPECT_EQ(expected, XMLUtils::NodeStringSerialization(doc.RootElement(),
+                                                          XMLUtils::SerializationFormat::COMPACT));
+  }
+}
+
+TEST(TestXMLUtils, RemoveNodeFreestanding)
+{
+  const std::string XmlDocument = "<root><node>some string</node><other>string</other></root>";
+  {
+    CXBMCTinyXML doc;
+    EXPECT_TRUE(doc.Parse(XmlDocument));
+    TiXmlNode* node = doc.RootElement()->FirstChildElement("node");
+
+    TiXmlNode* clone = node->Clone();
+
+    EXPECT_FALSE(XMLUtils::RemoveNode(clone));
+
+    TiXmlDocument tempdoc;
+    tempdoc.LinkEndChild(clone);
+  }
+
+  {
+    CXBMCTinyXML2 doc;
+    EXPECT_TRUE(doc.Parse(XmlDocument));
+    tinyxml2::XMLNode* root = doc.RootElement();
+    tinyxml2::XMLNode* node = root->FirstChildElement("node");
+
+    tinyxml2::XMLNode* clone = node->DeepClone(nullptr);
+
+    EXPECT_FALSE(XMLUtils::RemoveNode(clone));
+  }
+}
