@@ -106,7 +106,8 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method,
     defines += m_glslOutput->GetDefines();
   }
 
-  CLog::Log(LOGDEBUG, "GL: using scaling method: {}", m_method);
+  CLog::Log(LOGDEBUG, "GL: using scaling method: {}",
+            fmt::formatter<ESCALINGMETHOD>::ToString(m_method));
   CLog::Log(LOGDEBUG, "GL: using shader: {}", shadername);
 
   PixelShader()->LoadSource(shadername, defines);

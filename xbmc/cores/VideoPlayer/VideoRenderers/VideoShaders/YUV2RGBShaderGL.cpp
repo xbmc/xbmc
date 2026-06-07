@@ -82,7 +82,8 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect,
   else if (m_format == SHADER_UYVY)
     m_defines += "#define XBMC_UYVY\n";
   else
-    CLog::Log(LOGERROR, "GL: BaseYUV2RGBGLSLShader - unsupported format {}", m_format);
+    CLog::Log(LOGERROR, "GL: BaseYUV2RGBGLSLShader - unsupported format {}",
+              fmt::formatter<EShaderFormat>::ToString(m_format));
 
   if (dstPrimaries != srcPrimaries)
   {
@@ -105,8 +106,10 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect,
 
   VertexShader()->LoadSource("gl_yuv2rgb_vertex.glsl", m_defines);
 
-  CLog::Log(LOGDEBUG, "GL: using shader format: {}", m_format);
-  CLog::Log(LOGDEBUG, "GL: using tonemap method: {}", toneMapMethod);
+  CLog::Log(LOGDEBUG, "GL: using shader format: {}",
+            fmt::formatter<EShaderFormat>::ToString(m_format));
+  CLog::Log(LOGDEBUG, "GL: using tonemap method: {}",
+            fmt::formatter<ETONEMAPMETHOD>::ToString(toneMapMethod));
 
   m_convMatrix.SetDestinationColorPrimaries(dstPrimaries).SetSourceColorPrimaries(srcPrimaries);
 }
