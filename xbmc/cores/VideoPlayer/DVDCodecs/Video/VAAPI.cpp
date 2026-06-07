@@ -25,6 +25,7 @@
 
 #include <array>
 #include <mutex>
+#include <optional>
 
 #include <drm_fourcc.h>
 #include <va/va_drm.h>
@@ -638,111 +639,75 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
       chroma = 444;
   }
 
-  VAProfile profile;
+  auto declineUnsupported = [&]
+  {
+    CLog::Log(LOGINFO, "VAAPI - no usable profile/format for this stream (chroma {}, {}-bit)",
+              chroma, m_vaapiConfig.bitDepth);
+    return false;
+  };
+
+  std::optional<VAProfile> profile;
   switch (avctx->codec_id)
   {
     case AV_CODEC_ID_MPEG2VIDEO:
       profile = VAProfileMPEG2Main;
-      if (!m_vaapiConfig.context->SupportsProfile(profile))
-        return false;
       break;
     case AV_CODEC_ID_MPEG4:
     case AV_CODEC_ID_H263:
       profile = VAProfileMPEG4AdvancedSimple;
-      if (!m_vaapiConfig.context->SupportsProfile(profile))
-        return false;
       break;
     case AV_CODEC_ID_H264:
     {
       if (avctx->profile == AV_PROFILE_H264_CONSTRAINED_BASELINE)
-      {
         profile = VAProfileH264ConstrainedBaseline;
-        if (!m_vaapiConfig.context->SupportsProfile(profile))
-          return false;
-      }
 #if VA_CHECK_VERSION(1, 18, 0)
       else if (avctx->profile == AV_PROFILE_H264_HIGH_10 && m_vaapiConfig.bitDepth == 10 &&
                m_capFormats.Supports(AV_PIX_FMT_P010))
-      {
         profile = VAProfileH264High10;
-        if (!m_vaapiConfig.context->SupportsProfile(profile))
-          return false;
-      }
 #endif
+      // Prefer Main when the driver has it, otherwise High (a superset of Main).
+      else if (avctx->profile == AV_PROFILE_H264_MAIN &&
+               m_vaapiConfig.context->SupportsProfile(VAProfileH264Main))
+        profile = VAProfileH264Main;
       else
-      {
-        if (avctx->profile == AV_PROFILE_H264_MAIN)
-        {
-          profile = VAProfileH264Main;
-          if (m_vaapiConfig.context->SupportsProfile(profile))
-            break;
-        }
         profile = VAProfileH264High;
-        if (!m_vaapiConfig.context->SupportsProfile(profile))
-          return false;
-      }
       break;
     }
     case AV_CODEC_ID_HEVC:
     {
       // VAAPI HEVC profile naming: VAProfileHEVCMain<N> is N-bit 4:2:0,
       // VAProfileHEVCMain422_<N> is N-bit 4:2:2.
-      if (avctx->profile == AV_PROFILE_HEVC_MAIN_10)
-      {
-        if (!m_capFormats.Supports(AV_PIX_FMT_P010))
-          return false;
-
+      if (avctx->profile == AV_PROFILE_HEVC_MAIN_10 && m_capFormats.Supports(AV_PIX_FMT_P010))
         profile = VAProfileHEVCMain10;
-      }
       else if (avctx->profile == AV_PROFILE_HEVC_MAIN)
         profile = VAProfileHEVCMain;
       else if (avctx->profile == AV_PROFILE_HEVC_REXT && m_vaapiConfig.bitDepth == 12 &&
                chroma == 420 &&
                (m_capFormats.Supports(AV_PIX_FMT_P012) || m_capFormats.Supports(AV_PIX_FMT_P016)))
-      {
         profile = VAProfileHEVCMain12;
-      }
       else if (avctx->profile == AV_PROFILE_HEVC_REXT && m_vaapiConfig.bitDepth == 10 &&
                chroma == 422 && m_capFormats.Supports(AV_PIX_FMT_Y210))
-      {
         profile = VAProfileHEVCMain422_10;
-      }
       else if (avctx->profile == AV_PROFILE_HEVC_REXT && m_vaapiConfig.bitDepth == 12 &&
                chroma == 422 &&
                (m_capFormats.Supports(AV_PIX_FMT_Y212) || m_capFormats.Supports(AV_PIX_FMT_Y216)))
-      {
         profile = VAProfileHEVCMain422_12;
-      }
       else if (avctx->profile == AV_PROFILE_HEVC_REXT && m_vaapiConfig.bitDepth == 8 &&
                chroma == 444 &&
                (m_capFormats.Supports(AV_PIX_FMT_VUYA) || m_capFormats.Supports(AV_PIX_FMT_VUYX)))
-      {
         profile = VAProfileHEVCMain444;
-      }
       else if (avctx->profile == AV_PROFILE_HEVC_REXT && m_vaapiConfig.bitDepth == 10 &&
                chroma == 444 && m_capFormats.Supports(AV_PIX_FMT_XV30))
-      {
         profile = VAProfileHEVCMain444_10;
-      }
       else if (avctx->profile == AV_PROFILE_HEVC_REXT && m_vaapiConfig.bitDepth == 12 &&
                chroma == 444 &&
                (m_capFormats.Supports(AV_PIX_FMT_XV36) || m_capFormats.Supports(AV_PIX_FMT_XV48)))
-      {
         profile = VAProfileHEVCMain444_12;
-      }
-      else
-        profile = VAProfileNone;
-      if (!m_vaapiConfig.context->SupportsProfile(profile))
-        return false;
       break;
     }
     case AV_CODEC_ID_VP8:
-    {
       profile = VAProfileVP8Version0_3;
-      if (!m_vaapiConfig.context->SupportsProfile(profile))
-        return false;
       break;
-    }
     case AV_CODEC_ID_VP9:
     {
       // VP9 profiles vary chroma subsampling and bit depth orthogonally:
@@ -760,31 +725,19 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
         profile = VAProfileVP9Profile2;
       else if (avctx->profile == AV_PROFILE_VP9_1 && chroma == 444 &&
                (m_capFormats.Supports(AV_PIX_FMT_VUYA) || m_capFormats.Supports(AV_PIX_FMT_VUYX)))
-      {
         profile = VAProfileVP9Profile1;
-      }
       else if (avctx->profile == AV_PROFILE_VP9_3 && chroma == 444 &&
                ((m_vaapiConfig.bitDepth == 10 && m_capFormats.Supports(AV_PIX_FMT_XV30)) ||
                 (m_vaapiConfig.bitDepth == 12 && (m_capFormats.Supports(AV_PIX_FMT_XV36) ||
                                                   m_capFormats.Supports(AV_PIX_FMT_XV48)))))
-      {
         profile = VAProfileVP9Profile3;
-      }
-      else
-        profile = VAProfileNone;
-      if (!m_vaapiConfig.context->SupportsProfile(profile))
-        return false;
       break;
     }
     case AV_CODEC_ID_WMV3:
       profile = VAProfileVC1Main;
-      if (!m_vaapiConfig.context->SupportsProfile(profile))
-        return false;
       break;
     case AV_CODEC_ID_VC1:
       profile = VAProfileVC1Advanced;
-      if (!m_vaapiConfig.context->SupportsProfile(profile))
-        return false;
       break;
     case AV_CODEC_ID_AV1:
     {
@@ -798,18 +751,17 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
       else if (avctx->profile == AV_PROFILE_AV1_HIGH && m_vaapiConfig.bitDepth == 10 &&
                m_capFormats.Supports(AV_PIX_FMT_XV30))
         profile = VAProfileAV1Profile1;
-      else
-        profile = VAProfileNone;
-      if (!m_vaapiConfig.context->SupportsProfile(profile))
-        return false;
       break;
     }
     default:
       return false;
   }
 
-  m_vaapiConfig.profile = profile;
-  m_vaapiConfig.attrib = m_vaapiConfig.context->GetAttrib(profile);
+  if (!profile || !m_vaapiConfig.context->SupportsProfile(*profile))
+    return declineUnsupported();
+
+  m_vaapiConfig.profile = *profile;
+  m_vaapiConfig.attrib = m_vaapiConfig.context->GetAttrib(*profile);
 
   if (avctx->codec_id == AV_CODEC_ID_H264)
   {
