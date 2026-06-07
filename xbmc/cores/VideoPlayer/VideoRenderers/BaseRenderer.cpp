@@ -391,7 +391,8 @@ EShaderFormat CBaseRenderer::GetShaderFormat()
     ret = SHADER_UYVY;
   // clang-format on
   else
-    CLog::Log(LOGERROR, "CBaseRenderer::GetShaderFormat - unsupported format {}", m_format);
+    CLog::Log(LOGERROR, "CBaseRenderer::GetShaderFormat - unsupported format {}",
+              m_format == AV_PIX_FMT_NONE ? "none" : av_get_pix_fmt_name(m_format));
 
   return ret;
 }
