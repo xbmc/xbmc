@@ -660,6 +660,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
         if (!m_vaapiConfig.context->SupportsProfile(profile))
           return false;
       }
+#if VA_CHECK_VERSION(1, 18, 0)
       else if (avctx->profile == AV_PROFILE_H264_HIGH_10 && m_vaapiConfig.bitDepth == 10 &&
                m_capFormats.Supports(AV_PIX_FMT_P010))
       {
@@ -667,6 +668,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
         if (!m_vaapiConfig.context->SupportsProfile(profile))
           return false;
       }
+#endif
       else
       {
         if (avctx->profile == AV_PROFILE_H264_MAIN)
@@ -1265,8 +1267,10 @@ bool CDecoder::ConfigVAAPI()
 
   if ((m_vaapiConfig.profile == VAProfileHEVCMain10 ||
        m_vaapiConfig.profile == VAProfileVP9Profile2 ||
-       m_vaapiConfig.profile == VAProfileAV1Profile0 ||
-       m_vaapiConfig.profile == VAProfileH264High10) &&
+#if VA_CHECK_VERSION(1, 18, 0)
+       m_vaapiConfig.profile == VAProfileH264High10 ||
+#endif
+       m_vaapiConfig.profile == VAProfileAV1Profile0) &&
       m_vaapiConfig.bitDepth == 10)
   {
     format = VA_RT_FORMAT_YUV420_10BPP;
