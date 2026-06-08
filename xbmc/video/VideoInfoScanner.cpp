@@ -858,7 +858,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
     std::string identifierType;
     std::string identifier;
     long lResult = -1;
-    if (info2->IsPython() && CUtil::GetFilenameIdentifier(movieTitle, identifierType, identifier))
+    if (info2->IsPython() &&
+        CUtil::GetFilenameIdentifier(movieTitle, identifierType, identifier, &m_regexpCache))
     {
       const ADDON::CScraper::UniqueIDs uniqueIDs{{identifierType, identifier}};
       if (GetDetails(pItem, uniqueIDs, url, info2,
@@ -1045,7 +1046,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     std::string identifierType;
     std::string identifier;
-    if (info2->IsPython() && CUtil::GetFilenameIdentifier(movieTitle, identifierType, identifier))
+    if (info2->IsPython() &&
+        CUtil::GetFilenameIdentifier(movieTitle, identifierType, identifier, &m_regexpCache))
     {
       const ADDON::CScraper::UniqueIDs uniqueIDs{{identifierType, identifier}};
       if (GetDetails(pItem, uniqueIDs, url, info2,
@@ -1143,7 +1145,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     std::string identifierType;
     std::string identifier;
-    if (info2->IsPython() && CUtil::GetFilenameIdentifier(movieTitle, identifierType, identifier))
+    if (info2->IsPython() &&
+        CUtil::GetFilenameIdentifier(movieTitle, identifierType, identifier, &m_regexpCache))
     {
       const ADDON::CScraper::UniqueIDs uniqueIDs{{identifierType, identifier}};
       if (GetDetails(pItem, uniqueIDs, url, info2,

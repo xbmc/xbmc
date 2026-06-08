@@ -52,11 +52,13 @@ public:
                           bool bCleanChars = true);
   static bool GetFilenameIdentifier(const std::string& fileName,
                                     std::string& identifierType,
-                                    std::string& identifier);
+                                    std::string& identifier,
+                                    KODI::REGEXP::RegExpCache* cache);
   static bool GetFilenameIdentifier(const std::string& fileName,
                                     std::string& identifierType,
                                     std::string& identifier,
-                                    std::string& match);
+                                    std::string& match,
+                                    KODI::REGEXP::RegExpCache* cache);
   static bool HasFilenameIdentifier(const std::string& fileName);
   static std::string GetTitleFromPath(const CURL& url, bool bIsFolder = false);
   static std::string GetTitleFromPath(const std::string& strFileNameAndPath, bool bIsFolder = false);

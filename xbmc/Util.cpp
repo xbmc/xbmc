@@ -449,40 +449,40 @@ std::string CUtil::GetPartNumberFromPath(std::string path)
 
 bool CUtil::GetFilenameIdentifier(const std::string& fileName,
                                   std::string& identifierType,
-                                  std::string& identifier)
+                                  std::string& identifier,
+                                  KODI::REGEXP::RegExpCache* cache)
 {
   std::string match;
-  return GetFilenameIdentifier(fileName, identifierType, identifier, match);
+  return GetFilenameIdentifier(fileName, identifierType, identifier, match, cache);
 }
 
 bool CUtil::GetFilenameIdentifier(const std::string& fileName,
                                   std::string& identifierType,
                                   std::string& identifier,
-                                  std::string& match)
+                                  std::string& match,
+                                  KODI::REGEXP::RegExpCache* cache)
 {
-  CRegExp reIdentifier(true, CRegExp::autoUtf8);
+  std::shared_ptr<CRegExp> reIdentifier;
 
   const std::shared_ptr<CAdvancedSettings> advancedSettings =
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
-  if (!reIdentifier.RegComp(advancedSettings->m_videoFilenameIdentifierRegExp))
+
+  if (reIdentifier = KODI::REGEXP::GetRegExp(advancedSettings->m_videoFilenameIdentifierRegExp,
+                                             cache, true, CRegExp::autoUtf8);
+      reIdentifier == nullptr)
   {
     CLog::LogF(LOGERROR, "Invalid filename identifier RegExp:'{}'",
                advancedSettings->m_videoFilenameIdentifierRegExp);
     return false;
   }
-  else
+
+  if (reIdentifier->RegFind(fileName) >= 0)
   {
-    if (reIdentifier.RegComp(advancedSettings->m_videoFilenameIdentifierRegExp))
-    {
-      if (reIdentifier.RegFind(fileName) >= 0)
-      {
-        match = reIdentifier.GetMatch(0);
-        identifierType = reIdentifier.GetMatch(1);
-        identifier = reIdentifier.GetMatch(2);
-        StringUtils::ToLower(identifierType);
-        return true;
-      }
-    }
+    match = reIdentifier->GetMatch(0);
+    identifierType = reIdentifier->GetMatch(1);
+    identifier = reIdentifier->GetMatch(2);
+    StringUtils::ToLower(identifierType);
+    return true;
   }
   return false;
 }
@@ -491,7 +491,7 @@ bool CUtil::HasFilenameIdentifier(const std::string& fileName)
 {
   std::string identifierType;
   std::string identifier;
-  return GetFilenameIdentifier(fileName, identifierType, identifier);
+  return GetFilenameIdentifier(fileName, identifierType, identifier, nullptr);
 }
 
 void CUtil::CleanString(const std::string& strFileName,
@@ -509,7 +509,7 @@ void CUtil::CleanString(const std::string& strFileName,
   std::string identifier;
   std::string identifierType;
   std::string identifierMatch;
-  if (GetFilenameIdentifier(strFileName, identifierType, identifier, identifierMatch))
+  if (GetFilenameIdentifier(strFileName, identifierType, identifier, identifierMatch, nullptr))
     StringUtils::Replace(strTitleAndYear, identifierMatch, "");
 
   const std::shared_ptr<CAdvancedSettings> advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
