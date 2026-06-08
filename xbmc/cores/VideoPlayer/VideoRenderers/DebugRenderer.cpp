@@ -55,6 +55,9 @@ void CDebugRenderer::Initialize()
 
 void CDebugRenderer::Dispose()
 {
+  if (!m_isInitialized)
+    return;
+
   m_isInitialized = false;
   m_overlayRenderer.Flush();
   m_overlay.reset();
