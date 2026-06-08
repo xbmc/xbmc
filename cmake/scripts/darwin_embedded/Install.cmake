@@ -121,22 +121,56 @@ if(CORE_PLATFORM_NAME_LC STREQUAL tvos)
 endif()
 
 set(DEPENDS_ROOT_FOR_XCODE ${NATIVEPREFIX}/..)
-configure_file(${CMAKE_SOURCE_DIR}/tools/darwin/packaging/darwin_embedded/package-darwin_embedded.sh.in
-               ${CMAKE_BINARY_DIR}/tools/darwin/packaging/darwin_embedded/package-darwin_embedded.sh @ONLY)
-configure_file(${CMAKE_SOURCE_DIR}/tools/darwin/packaging/darwin_embedded/mkdeb-darwin_embedded.sh.in
-               ${CMAKE_BINARY_DIR}/tools/darwin/packaging/darwin_embedded/mkdeb-darwin_embedded.sh @ONLY)
-configure_file(${CMAKE_SOURCE_DIR}/tools/darwin/packaging/darwin_embedded/mkipa-darwin_embedded.sh.in
-               ${CMAKE_BINARY_DIR}/tools/darwin/packaging/darwin_embedded/mkipa-darwin_embedded.sh @ONLY)
+
+set(DARWIN_EMBEDDED_CPACK_DIR ${CMAKE_BINARY_DIR}/tools/darwin/packaging/darwin_embedded)
+set(DARWIN_EMBEDDED_DSYM_TARGET_DIR /Users/Shared/xbmc-depends/dSyms)
+set(DARWIN_EMBEDDED_DSYM_FILENAME ${APP_NAME}.app.dSYM)
+set(DARWIN_EMBEDDED_PACKAGE ${PLATFORM_BUNDLE_IDENTIFIER})
+set(DARWIN_EMBEDDED_PACKAGE_ARM64 ${DARWIN_EMBEDDED_PACKAGE}64)
+set(DARWIN_EMBEDDED_VERSION ${APP_VERSION_MAJOR}.${APP_VERSION_MINOR})
+set(DARWIN_EMBEDDED_REVISION 0)
+set(DARWIN_EMBEDDED_DEVICE iOS)
+set(DARWIN_EMBEDDED_DEB_ARCHITECTURE iphoneos-arm)
+if(APP_VERSION_TAG_LC)
+  set(DARWIN_EMBEDDED_REVISION ${DARWIN_EMBEDDED_REVISION}~${APP_VERSION_TAG_LC})
+endif()
+if(CORE_PLATFORM_NAME_LC STREQUAL tvos)
+  set(DARWIN_EMBEDDED_DEVICE tvOS)
+  set(DARWIN_EMBEDDED_DEB_ARCHITECTURE appletvos-arm64)
+endif()
+
+configure_file(${CMAKE_SOURCE_DIR}/tools/darwin/packaging/darwin_embedded/cpack_install-darwin_embedded.cmake.in
+               ${DARWIN_EMBEDDED_CPACK_DIR}/cpack_install-darwin_embedded.cmake @ONLY)
+configure_file(${CMAKE_SOURCE_DIR}/tools/darwin/packaging/darwin_embedded/cpack_postinst-darwin_embedded.in
+               ${DARWIN_EMBEDDED_CPACK_DIR}/postinst @ONLY)
+configure_file(${CMAKE_SOURCE_DIR}/tools/darwin/packaging/darwin_embedded/cpack_prerm-darwin_embedded.in
+               ${DARWIN_EMBEDDED_CPACK_DIR}/prerm @ONLY)
+
+set(DARWIN_EMBEDDED_CPACK_KIND deb)
+set(DARWIN_EMBEDDED_CPACK_GENERATOR DEB)
+set(DARWIN_EMBEDDED_CPACK_PACKAGE_NAME ${DARWIN_EMBEDDED_PACKAGE_ARM64})
+set(DARWIN_EMBEDDED_CPACK_FILE_NAME ${DARWIN_EMBEDDED_PACKAGE_ARM64}_${DARWIN_EMBEDDED_VERSION}-${DARWIN_EMBEDDED_REVISION}_${PLATFORM}-arm)
+configure_file(${CMAKE_SOURCE_DIR}/tools/darwin/packaging/darwin_embedded/CPackConfig-darwin_embedded.cmake.in
+               ${DARWIN_EMBEDDED_CPACK_DIR}/CPackConfig-deb.cmake @ONLY)
+
+set(DARWIN_EMBEDDED_CPACK_KIND ipa)
+set(DARWIN_EMBEDDED_CPACK_GENERATOR ZIP)
+set(DARWIN_EMBEDDED_CPACK_PACKAGE_NAME ${DARWIN_EMBEDDED_PACKAGE})
+set(DARWIN_EMBEDDED_CPACK_FILE_NAME ${DARWIN_EMBEDDED_PACKAGE}_${DARWIN_EMBEDDED_VERSION}-${DARWIN_EMBEDDED_REVISION}_${PLATFORM}-arm64)
+configure_file(${CMAKE_SOURCE_DIR}/tools/darwin/packaging/darwin_embedded/CPackConfig-darwin_embedded.cmake.in
+               ${DARWIN_EMBEDDED_CPACK_DIR}/CPackConfig-ipa.cmake @ONLY)
 
 configure_file(${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/Credits.html.in
                ${CMAKE_BINARY_DIR}/xbmc/platform/darwin/Credits.html @ONLY)
 
 add_custom_target(deb
-    COMMAND sh ./mkdeb-darwin_embedded.sh ${CORE_BUILD_CONFIG}
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tools/darwin/packaging/darwin_embedded)
+    COMMAND ${CMAKE_COMMAND} -E env COPYFILE_DISABLE=true COPY_EXTENDED_ATTRIBUTES_DISABLE=true
+            ${CMAKE_CPACK_COMMAND} -C ${CORE_BUILD_CONFIG} --config CPackConfig-deb.cmake
+    WORKING_DIRECTORY ${DARWIN_EMBEDDED_CPACK_DIR})
 add_dependencies(deb ${APP_NAME_LC})
 
 add_custom_target(ipa
-    COMMAND sh ./mkipa-darwin_embedded.sh ${CORE_BUILD_CONFIG}
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tools/darwin/packaging/darwin_embedded)
+    COMMAND ${CMAKE_COMMAND} -E env COPYFILE_DISABLE=true COPY_EXTENDED_ATTRIBUTES_DISABLE=true
+            ${CMAKE_CPACK_COMMAND} -C ${CORE_BUILD_CONFIG} --config CPackConfig-ipa.cmake
+    WORKING_DIRECTORY ${DARWIN_EMBEDDED_CPACK_DIR})
 add_dependencies(ipa ${APP_NAME_LC})

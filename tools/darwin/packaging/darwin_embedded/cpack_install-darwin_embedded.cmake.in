@@ -1,0 +1,59 @@
+if(NOT CPACK_BUILD_CONFIG)
+  set(CPACK_BUILD_CONFIG "@CORE_BUILD_CONFIG@")
+endif()
+
+string(TOLOWER "${CPACK_BUILD_CONFIG}" _build_config_lc)
+if(_build_config_lc MATCHES "debug")
+  set(_core_build_type Debug)
+elseif(_build_config_lc MATCHES "release")
+  set(_core_build_type Release)
+else()
+  message(FATAL_ERROR "You need to specify the build target")
+endif()
+
+set(_install_prefix "$ENV{CMAKE_INSTALL_PREFIX}")
+set(_app "@CMAKE_BINARY_DIR@/build/${_core_build_type}-@PLATFORM@/@APP_NAME@.app")
+set(_dsym "@CMAKE_BINARY_DIR@/build/${_core_build_type}-@PLATFORM@/@DARWIN_EMBEDDED_DSYM_FILENAME@")
+
+if(NOT _install_prefix)
+  message(FATAL_ERROR "CMAKE_INSTALL_PREFIX is not set by CPack")
+endif()
+
+if(NOT IS_DIRECTORY "${_app}")
+  message(FATAL_ERROR "@APP_NAME@.app not found! are you sure you built ${CPACK_BUILD_CONFIG} target?")
+endif()
+
+if(IS_DIRECTORY "${_dsym}" AND IS_DIRECTORY "@DARWIN_EMBEDDED_DSYM_TARGET_DIR@")
+  execute_process(
+    COMMAND "@DARWIN_EMBEDDED_CPACK_DIR@/../gitrev-posix"
+    OUTPUT_VARIABLE _gitrev
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+  execute_process(
+    COMMAND tar -C "${_dsym}/.." -c "@DARWIN_EMBEDDED_DSYM_FILENAME@/"
+    COMMAND bzip2
+    OUTPUT_FILE "@DARWIN_EMBEDDED_DSYM_TARGET_DIR@/${_gitrev}-@DARWIN_EMBEDDED_DSYM_FILENAME@.tar.bz2"
+    COMMAND_ERROR_IS_FATAL ANY)
+endif()
+
+if(DARWIN_EMBEDDED_CPACK_KIND STREQUAL "ipa")
+  set(_destination "${_install_prefix}/Payload")
+elseif(DARWIN_EMBEDDED_CPACK_KIND STREQUAL "deb")
+  set(_destination "${_install_prefix}/Applications")
+else()
+  message(FATAL_ERROR "Unknown Darwin embedded CPack kind: ${DARWIN_EMBEDDED_CPACK_KIND}")
+endif()
+
+file(REMOVE_RECURSE "${_destination}")
+file(MAKE_DIRECTORY "${_destination}")
+
+execute_process(
+  COMMAND rsync -a --no-links "${_app}" "${_destination}/"
+  COMMAND_ERROR_IS_FATAL ANY)
+
+file(GLOB_RECURSE _metadata
+     "${_destination}/.svn"
+     "${_destination}/.git*"
+     "${_destination}/.DS_Store")
+foreach(_entry IN LISTS _metadata)
+  file(REMOVE_RECURSE "${_entry}")
+endforeach()
