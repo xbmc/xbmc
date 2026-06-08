@@ -266,15 +266,16 @@ bool CRenderer::HasVisibleOverlay(int idx) const
       continue;
 
     const CDVDOverlay& o = *e.overlay_dvd;
-    // Image-based (PGS/DVB) and DVD SPU: ProcessOverlays PTS-filters before
-    // AddOverlay, so presence is the per-frame visibility test.
+    // PGS/DVB and DVD SPU: ProcessOverlays inserts these into m_buffers
+    // only at PTS values where the bitmap is on screen, so finding one
+    // here means it is visible.
     if (o.IsOverlayType(DVDOVERLAY_TYPE_IMAGE) || o.IsOverlayType(DVDOVERLAY_TYPE_SPU))
       return true;
 
-    // libass (TEXT/SSA): the container survives the whole session via
-    // iPTSStopTime=DVD_NOPTS_VALUE, so presence alone is meaningless. The
-    // accurate per-frame signal is whether ass_render_frame returned any
-    // images for the current PTS, cached by PrepareOverlays.
+    // libass (TEXT/SSA): the container stays in m_buffers for the whole
+    // video (iPTSStopTime=DVD_NOPTS_VALUE). Visibility means
+    // ass_render_frame returned images for the current PTS, cached by
+    // PrepareOverlays in e.renderedImages.
     if (o.IsOverlayType(DVDOVERLAY_TYPE_TEXT) || o.IsOverlayType(DVDOVERLAY_TYPE_SSA))
     {
       if (e.renderedImages != nullptr)
@@ -427,7 +428,7 @@ void CRenderer::PrepareOverlays(int idx)
   if (idx < 0 || idx >= NUM_BUFFERS)
     return;
 
-  bool hasChanges = false;
+  bool doMarkDirty = false;
   bool hasImageSpu = false;
   for (auto& e : m_buffers[idx])
   {
@@ -441,18 +442,16 @@ void CRenderer::PrepareOverlays(int idx)
 
     CDVDOverlay& o = *e.overlay_dvd;
 
-    // Image-based subtitles (PGS, DVB) and DVD SPU: presence of the entry
-    // in the present buffer slot is the visibility test. ProcessOverlays
-    // PTS-filters before AddOverlay, so any entry here covers "now".
-    // For change detection: m_textureid == 0 means the overlay has never
-    // been rendered (new arrival). Catches new bitmaps for PGS/DVB and
-    // every-frame-different animated PGS. The presence-flip check after
-    // the loop catches the disappearance case.
+    // PGS/DVB and DVD SPU: only added to m_buffers at their visible PTS,
+    // so finding one means it is on screen now. m_textureid == 0 is the
+    // "new arrival" signal (also true every frame for animated PGS where
+    // each frame is a fresh CDVDOverlay). Disappearance is caught after
+    // the loop by the hasImageSpu vs m_prevHadImageSpu check.
     if (o.IsOverlayType(DVDOVERLAY_TYPE_IMAGE) || o.IsOverlayType(DVDOVERLAY_TYPE_SPU))
     {
       hasImageSpu = true;
       if (o.m_textureid == 0)
-        hasChanges = true;
+        doMarkDirty = true;
       continue;
     }
 
@@ -471,11 +470,12 @@ void CRenderer::PrepareOverlays(int idx)
       CreateSubtitlesStyle();
     }
 
+    // rOpts setup moved from CRenderer::ConvertLibass; duplicated in CDebugRenderer::CRenderer::Render.
     SUBTITLES::STYLE::renderOpts rOpts;
 
-    // libass render in a target area which named as frame. the frame size may bigger than video size,
-    // and including margins between video to frame edge. libass allow to render subtitles into the margins.
-    // this has been used to show subtitles in the top or bottom "black bar" between video to frame border.
+    // Three rects: source (subtitle canvas), video (playing size), frame
+    // (render target; may exceed video to include letterbox bars so libass
+    // can place subtitles in them).
     rOpts.sourceWidth = m_rs.Width();
     rOpts.sourceHeight = m_rs.Height();
     rOpts.videoWidth = m_rd.Width();
@@ -581,30 +581,22 @@ void CRenderer::PrepareOverlays(int idx)
     int currentChange = 0;
     e.renderedImages = ovAss.GetLibassHandler()->RenderImage(e.pts, rOpts, updateStyle,
                                                              m_overlayStyle, &currentChange);
-    // OR-accumulate libass's per-call change onto the persistent overlay,
-    // not onto SElement: m_buffers[idx] is rebuilt per frame by AddOverlay/
-    // Release on the render queue, so SElement state cannot survive the
-    // transition-to-walk gap. The CDVDOverlayLibass shared_ptr survives.
     if (currentChange > 0)
+    {
+      // Persist on the overlay so a skipped GUI render does not drop the change.
       ovAss.m_pendingChange = currentChange;
-
-    // MarkDirty only on this-frame change (not the accumulated value).
-    if (currentChange > 0)
-      hasChanges = true;
+      doMarkDirty = true;
+    }
   }
 
-  // Image/SPU disappearance: image-based subtitles (PGS/DVB/SPU) have no
-  // libass-style per-frame change signal. The m_textureid==0 check inside
-  // the loop catches arrival of a new bitmap. This catches the symmetric
-  // case: the buffer slot just went empty (last frame had image/SPU, this
-  // frame does not). Without this, when a PGS subtitle ends the walk does
-  // not fire, the cached bitmap stays on the GUI plane, and the screen
-  // never blanks between consecutive PGS subtitles.
+  // PGS/DVB/SPU disappearance: arrival is caught by m_textureid==0 in
+  // the loop above. Without this, a PGS subtitle ending leaves its
+  // cached bitmap on the GUI plane until something else dirties.
   if (hasImageSpu != m_prevHadImageSpu)
-    hasChanges = true;
+    doMarkDirty = true;
   m_prevHadImageSpu = hasImageSpu;
 
-  if (hasChanges)
+  if (doMarkDirty)
     MarkDirty();
 }
 
@@ -651,8 +643,8 @@ std::shared_ptr<COverlay> CRenderer::Convert(SElement& e)
     if (!ovAss.GetLibassHandler())
       return nullptr;
 
-    // ASS_Image* and detect_change were populated this frame by
-    // PrepareOverlays. ConvertLibass does not re-enter libass.
+    // Build the COverlay from libass output PrepareOverlays cached on e
+    // earlier this frame; avoids re-entering libass during render.
     r = ConvertLibass(e);
 
     if (!r)

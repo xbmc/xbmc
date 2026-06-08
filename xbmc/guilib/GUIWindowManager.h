@@ -100,9 +100,9 @@ public:
   void MarkDirty(const CRect& rect);
 
   /*! \brief True if Process() collected any dirty regions this frame.
-   Callable after Process() to decide whether Render() needs to run; used by
-   the dirty-driven skip on paths with a persistent framebuffer (DRM plane,
-   GUI compositing FBO).
+   *   Callable after Process() to decide whether the render pass needs
+   *   to run; used by the dirty-driven skip in CApplication::FrameMove
+   *   (currently gated to D2P plane and HDR GUI compositing FBO contexts).
    */
   bool HasDirtyRegions() const { return !m_dirtyregions.empty(); }
 

@@ -59,8 +59,9 @@ private:
   CFrameBufferObject m_guiFbo;
   int m_guiFboWidth{0};
   int m_guiFboHeight{0};
+  // True when the GUI FBO is empty (no draws this frame); CompositeGui skips composite when true.
   bool m_guiFboClean{false};
-  // Hint from BeginGuiComposite about whether the GUI render is going to fire.
+  // Whether the GUI render pass will run this frame; set by BeginGuiComposite.
   bool m_guiWillRender{true};
 
   std::unique_ptr<CGuiCompositeShaderGLES> m_compositeShader;

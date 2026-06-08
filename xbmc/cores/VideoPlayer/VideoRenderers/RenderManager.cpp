@@ -352,11 +352,9 @@ void CRenderManager::FrameMove()
 
   m_playerPort->UpdateGuiRender(IsGuiLayer() || !m_pRenderer->HasVideoPlane() || firstFrame);
 
-  // Pre-walk libass probe: render the libass output for the present slot
-  // once on the render thread, before the GUI walk-skip check runs next
-  // frame. PrepareOverlays MarkDirty's internally when libass reports
-  // something visible or changed. Replaces the cross-thread MarkDirty
-  // formerly issued from CRenderer::AddOverlay on the video thread.
+  // Run libass for the current PTS and cache the output for ConvertLibass
+  // to use during the render pass. PrepareOverlays MarkDirty's on libass
+  // changes and on PGS/DVB/SPU arrival/disappearance.
   m_overlays.PrepareOverlays(m_presentsource);
 
   ManageCaptures();

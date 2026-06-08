@@ -146,11 +146,11 @@ void CDebugRenderer::CRenderer::Render(int idx, float depth)
       if (updateStyle)
         CreateSubtitlesStyle();
 
-      // Debug OSD is a standalone path: text content changes every frame
-      // and DebugRenderer::Render MarkDirty's per frame anyway, so it does
-      // not participate in the PrepareOverlays / SElement caching scheme.
-      // The rOpts setup below mirrors what master's CRenderer::ConvertLibass
-      // did inline.
+      // Copied from OVERLAY::CRenderer::ConvertLibass. PR #28373 changed
+      // that function to read its libass output from a per-frame SElement
+      // populated by AddOverlay/Release. The debug overlay is added once
+      // at Initialize and never produces an SElement, so it cannot share
+      // the implementation.
       KODI::SUBTITLES::STYLE::renderOpts rOpts;
       rOpts.sourceWidth = m_rs.Width();
       rOpts.sourceHeight = m_rs.Height();

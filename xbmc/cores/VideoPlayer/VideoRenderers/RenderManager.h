@@ -102,11 +102,9 @@ public:
   void ShowVideo(bool enable);
 
   /*!
-   * \brief True if any subtitle/overlay is actually visible on the current
-   *  presented frame. Per-frame accurate, unlike the coarse HasOverlay path
-   *  which returns true for the whole playback session whenever a libass
-   *  track is loaded (due to the persistent NOPTS container). See
-   *  OVERLAY::CRenderer::HasVisibleOverlay for the full rationale.
+   * \brief True if any subtitle/overlay is visible on the current presented
+   *  frame. Per-frame accurate. See OVERLAY::CRenderer::HasVisibleOverlay
+   *  for the libass vs PGS/DVB/SPU details.
    *
    *  Must be called after CRenderManager::FrameMove has run this frame
    *  (which calls PrepareOverlays). Reads cached state; cheap.

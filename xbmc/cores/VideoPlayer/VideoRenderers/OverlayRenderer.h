@@ -41,10 +41,11 @@ namespace OVERLAY {
   };
 
   /*!
-   * \brief Mark the GUI dirty so the GUI walk fires next frame.
-   *  Used by overlay-related code paths (subtitles, debug OSD) to keep
-   *  the GUI walk running while overlays are visible; overlays are not
-   *  CGUIControls and do not participate in the dirty system automatically.
+   * \brief Mark the entire GUI dirty so the next render pass runs
+   *  (not skipped). Overlays (subtitles, debug OSD) are not CGUIControls
+   *  and do not set m_controlDirtyState automatically; callers invoke
+   *  this at overlay state transitions and on per-frame updates where
+   *  needed (debug OSD).
    */
   void MarkDirty();
 
@@ -134,20 +135,15 @@ namespace OVERLAY {
     void Release(int idx);
 
     /*!
-     * \brief True if any overlay in buffer slot \a idx is actually visible
-     *  on this frame.
+     * \brief True if any overlay in m_buffers[idx] is visible this frame.
      *
-     *  For libass overlays (TEXT/SSA), the persistent CDVDOverlayText /
-     *  CDVDOverlaySSA container has iPTSStopTime = DVD_NOPTS_VALUE and so
-     *  survives ProcessOverlays' PTS filter for the entire playback session
-     *  even between events. Presence in m_buffers[idx] is therefore not a
-     *  visibility test for libass. Visibility is read from the per-frame
-     *  e.renderedImages cache populated by PrepareOverlays via
-     *  ass_render_frame (non-null when an event covers the current PTS).
+     *  PGS/DVB and DVD SPU: ProcessOverlays only inserts at the visible PTS,
+     *  so any entry in m_buffers means visible.
      *
-     *  For image (PGS/DVB/IMAGE) and SPU overlays, ProcessOverlays already
-     *  PTS-filters before AddOverlay, so presence in m_buffers[idx] is the
-     *  per-frame visibility test.
+     *  libass (TEXT/SSA): the container is added once with no stop PTS and
+     *  stays in m_buffers for the whole video. Visibility means
+     *  ass_render_frame returned images for the current PTS, cached on
+     *  e.renderedImages by PrepareOverlays.
      *
      *  Must be called after PrepareOverlays has run this frame; before that
      *  e.renderedImages reflects the previous frame's state.
@@ -180,9 +176,9 @@ namespace OVERLAY {
       SElement() : overlay_dvd(NULL) { pts = 0.0; }
       double pts;
       std::shared_ptr<CDVDOverlay> overlay_dvd;
-      // Output of libass cached by PrepareOverlays and consumed by
-      // ConvertLibass when the GUI walk runs. libass owns renderedImages;
-      // the pointer is valid only until the next ass_render_frame call.
+      // libass output cached by PrepareOverlays; read by ConvertLibass during
+      // render. libass owns the pointer; valid only until the next
+      // ass_render_frame call.
       ASS_Image* renderedImages{nullptr};
       float renderedFrameWidth{0.0f};
       float renderedFrameHeight{0.0f};
@@ -232,10 +228,9 @@ namespace OVERLAY {
 
     std::shared_ptr<struct KODI::SUBTITLES::STYLE::style> m_overlayStyle;
     std::atomic<bool> m_isSettingsChanged{false};
-    // Track whether last frame had any image/SPU overlay, for transition
-    // detection in PrepareOverlays. Image/SPU overlays have no per-frame
-    // change signal like libass' assDetectChange, so we compare per-frame
-    // presence to drive MarkDirty on arrival and disappearance.
+    // Whether last frame had any image/SPU overlay. Used by PrepareOverlays
+    // to detect arrival/disappearance transitions (image/SPU have no
+    // per-frame change signal of their own, unlike libass detect_change).
     bool m_prevHadImageSpu{false};
   };
 }
