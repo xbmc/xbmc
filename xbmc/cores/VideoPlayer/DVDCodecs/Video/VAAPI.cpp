@@ -2672,6 +2672,8 @@ bool CVppPostproc::UpdateDeintMethod(EINTERLACEMETHOD method)
   m_forwardRefs = pplCaps.num_forward_references;
   m_backwardRefs = pplCaps.num_backward_references;
 
+  CLog::Log(LOGINFO, "VAAPI::CVppPostproc - deinterlacer active: {}",
+            fmt::formatter<EINTERLACEMETHOD>::ToString(method));
   return true;
 }
 

@@ -179,7 +179,8 @@ bool CLinuxRendererGLES::Configure(const VideoPicture &picture, float fps, unsig
   // CPU-upload renderer: HWACCEL pix_fmts (e.g. AV_PIX_FMT_DRM_PRIME) have no host planes.
   if (GetShaderFormat() == SHADER_NONE)
   {
-    CLog::Log(LOGDEBUG, "LinuxRendererGLES::Configure: refusing unsupported pix_fmt {}", m_format);
+    CLog::Log(LOGDEBUG, "LinuxRendererGLES::Configure: refusing unsupported pix_fmt {}",
+              m_format == AV_PIX_FMT_NONE ? "none" : av_get_pix_fmt_name(m_format));
     return false;
   }
 

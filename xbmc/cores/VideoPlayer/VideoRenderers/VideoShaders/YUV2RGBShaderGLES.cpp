@@ -65,7 +65,8 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(EShaderFormat format,
   else if (m_format == SHADER_Y412)
     m_defines += "#define XBMC_Y412\n";
   else
-    CLog::Log(LOGERROR, "GLES: BaseYUV2RGBGLSLShader - unsupported format {}", m_format);
+    CLog::Log(LOGERROR, "GLES: BaseYUV2RGBGLSLShader - unsupported format {}",
+              fmt::formatter<EShaderFormat>::ToString(m_format));
 
   if (dstPrimaries != srcPrimaries)
   {
@@ -90,8 +91,10 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(EShaderFormat format,
 
   VertexShader()->LoadSource("gles_yuv2rgb.vert", m_defines);
 
-  CLog::Log(LOGDEBUG, "GLES: using shader format: {}", m_format);
-  CLog::Log(LOGDEBUG, "GLES: using tonemap method: {}", m_toneMappingMethod);
+  CLog::Log(LOGDEBUG, "GLES: using shader format: {}",
+            fmt::formatter<EShaderFormat>::ToString(m_format));
+  CLog::Log(LOGDEBUG, "GLES: using tonemap method: {}",
+            fmt::formatter<ETONEMAPMETHOD>::ToString(m_toneMappingMethod));
 
   m_convMatrix.SetSourceColorPrimaries(srcPrimaries).SetDestinationColorPrimaries(dstPrimaries);
 }

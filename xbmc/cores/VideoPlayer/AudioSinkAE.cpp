@@ -45,8 +45,9 @@ CAudioSinkAE::~CAudioSinkAE()
 
 bool CAudioSinkAE::Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool needresampler)
 {
-  CLog::Log(LOGINFO, "Creating audio stream (codec id: {}, channels: {}, sample rate: {}, {})",
-            codec, audioframe.format.m_channelLayout.Count(), audioframe.format.m_sampleRate,
+  CLog::Log(LOGINFO, "Creating audio stream (codec: {}, channels: {}, sample rate: {}, {})",
+            avcodec_get_name(codec), audioframe.format.m_channelLayout.Count(),
+            audioframe.format.m_sampleRate,
             audioframe.passthrough ? "pass-through" : "no pass-through");
 
   // if passthrough isset do something else

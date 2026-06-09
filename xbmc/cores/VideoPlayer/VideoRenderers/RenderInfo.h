@@ -13,6 +13,7 @@
 #include "cores/IPlayer.h"
 
 extern "C" {
+#include <libavutil/pixdesc.h>
 #include <libavutil/pixfmt.h>
 }
 

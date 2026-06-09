@@ -54,6 +54,12 @@ struct fmt::formatter<EINTERLACEMETHOD> : fmt::formatter<std::string_view>
     return fmt::formatter<string_view>::format(it->second, ctx);
   }
 
+  static constexpr std::string_view ToString(EINTERLACEMETHOD m) noexcept
+  {
+    const auto it = interlaceMethodMap.find(m);
+    return it != interlaceMethodMap.cend() ? it->second : "unknown";
+  }
+
 private:
   static constexpr auto interlaceMethodMap = make_map<EINTERLACEMETHOD, std::string_view>({
       {VS_INTERLACEMETHOD_NONE, "none"},
@@ -114,6 +120,12 @@ public:
     return fmt::formatter<string_view>::format(it->second, ctx);
   }
 
+  static constexpr std::string_view ToString(ESCALINGMETHOD m) noexcept
+  {
+    const auto it = scalingMethodMap.find(m);
+    return it != scalingMethodMap.cend() ? it->second : "unknown";
+  }
+
 private:
   static constexpr auto scalingMethodMap = make_map<ESCALINGMETHOD, std::string_view>({
       {VS_SCALINGMETHOD_NEAREST, "nearest neighbour"},
@@ -133,8 +145,8 @@ private:
       {VS_SCALINGMETHOD_VDPAU_HARDWARE, "vdpau"},
       {VS_SCALINGMETHOD_DXVA_HARDWARE, "dxva"},
       {VS_SCALINGMETHOD_AUTO, "auto"},
-      {VS_SCALINGMETHOD_SPLINE36_FAST, "spline32 fast"},
-      {VS_SCALINGMETHOD_SPLINE36, "spline32"},
+      {VS_SCALINGMETHOD_SPLINE36_FAST, "spline36 fast"},
+      {VS_SCALINGMETHOD_SPLINE36, "spline36"},
   });
 
   static_assert(VS_SCALINGMETHOD_MAX == scalingMethodMap.size(),
@@ -163,6 +175,12 @@ public:
       throw std::range_error("no tonemap method string found");
 
     return fmt::formatter<string_view>::format(it->second, ctx);
+  }
+
+  static constexpr std::string_view ToString(ETONEMAPMETHOD m) noexcept
+  {
+    const auto it = tonemapMethodMap.find(m);
+    return it != tonemapMethodMap.cend() ? it->second : "unknown";
   }
 
 private:

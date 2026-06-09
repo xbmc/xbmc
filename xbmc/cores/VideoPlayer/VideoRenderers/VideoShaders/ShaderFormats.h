@@ -45,6 +45,12 @@ struct fmt::formatter<EShaderFormat> : fmt::formatter<std::string_view>
     return fmt::formatter<string_view>::format(it->second, ctx);
   }
 
+  static constexpr std::string_view ToString(EShaderFormat f) noexcept
+  {
+    const auto it = shaderFormatMap.find(f);
+    return it != shaderFormatMap.cend() ? it->second : "unknown";
+  }
+
 private:
   static constexpr auto shaderFormatMap = make_map<EShaderFormat, std::string_view>({
       {SHADER_NONE, "none"},
