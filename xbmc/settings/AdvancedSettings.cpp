@@ -256,6 +256,7 @@ void CAdvancedSettings::Initialize()
   m_cachePath = "special://temp/";
 
   m_videoFilenameIdentifierRegExp = R"([{\[](tmdb|imdb|tvdb)(?:id)?[-=](\w+)[}\]])";
+  m_videoFilenameAttributePairsRegExp = R"([\[{]\s*(?<key>\w+)\s*[=\-](?<value>[^\]}]+)[\]}])";
   m_videoCleanDateTimeRegExp = "(.*[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-9][0-9])([ _\\,\\.\\(\\)\\[\\]\\-]|[^0-9]$)?";
 
   m_videoCleanStringRegExps.clear();
@@ -718,6 +719,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
       GetCustomRegexps(pVideoExcludes, m_videoCleanStringRegExps);
 
     XMLUtils::GetString(pElement, "filenameidentifier", m_videoFilenameIdentifierRegExp);
+    XMLUtils::GetString(pElement, "filenameattributepairs", m_videoFilenameAttributePairsRegExp);
     XMLUtils::GetString(pElement,"cleandatetime", m_videoCleanDateTimeRegExp);
     XMLUtils::GetString(pElement,"ppffmpegpostprocessing",m_videoPPFFmpegPostProc);
     XMLUtils::GetInt(pElement,"vdpauscaling",m_videoVDPAUScaling);

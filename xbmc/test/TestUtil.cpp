@@ -154,6 +154,92 @@ const TestUtilCleanStringData values[] = {
 
 INSTANTIATE_TEST_SUITE_P(URL, TestUtilCleanString, ValuesIn(values));
 
+struct TestUtilFilenameAttributesData
+{
+  std::string input;
+  CUtil::FilenameAttributeMap expected;
+};
+
+std::ostream& operator<<(std::ostream& os, const TestUtilFilenameAttributesData& rhs)
+{
+  return os << rhs.input;
+}
+
+class TestUtilFilenameAttributePairs : public Test,
+                                       public WithParamInterface<TestUtilFilenameAttributesData>
+{
+};
+
+TEST_P(TestUtilFilenameAttributePairs, RetrieveAttributes)
+{
+  auto& params = GetParam();
+  EXPECT_EQ(params.expected, CUtil::GetFilenameAttributePairs(params.input, nullptr));
+}
+
+const TestUtilFilenameAttributesData filenameAttributePairsTests[] = {
+    {"Some.MovieName.mkv", {}},
+    // separators and braces
+    {"Some.MovieName[key=value].mkv", {{"key", "value"}}},
+    {"Some.MovieName[key-value].mkv", {{"key", "value"}}},
+    {"Some.MovieName{key=value}.mkv", {{"key", "value"}}},
+    {"Some.MovieName{key-value}.mkv", {{"key", "value"}}},
+    // trim
+    {"Some.MovieName[ key  =   value  ].mkv", {{"key", "value"}}},
+    // multiple matches
+    {"Some.MovieName [key1=value1]{key2 = value2}.mkv", {{"key1", "value1"}, {"key2", "value2"}}},
+    {"Some.MovieName [key1=value1] foobar {key2 = value2}.mkv",
+     {{"key1", "value1"}, {"key2", "value2"}}},
+    // case
+    {"Some.MovieName[KeY=vAlUe].mkv", {{"key", "vAlUe"}}},
+    // repeated key
+    {"Some.MovieName[key=value1][key=value2].mkv", {{"key", "value2"}}},
+    // no match
+    {"Some.MovieName.key=value.mkv", {}},
+    {"Some.MovieName[key=].mkv", {}},
+    {"Some.MovieName[=value].mkv", {}},
+    {"", {}},
+};
+
+INSTANTIATE_TEST_SUITE_P(TestUtil,
+                         TestUtilFilenameAttributePairs,
+                         ValuesIn(filenameAttributePairsTests));
+
+struct TestUtilCleanFilenameAttributesData
+{
+  std::string input;
+  std::string expected;
+};
+
+std::ostream& operator<<(std::ostream& os, const TestUtilCleanFilenameAttributesData& rhs)
+{
+  return os << rhs.input;
+}
+
+class TestUtilCleanFilenameAttributePairs
+  : public Test,
+    public WithParamInterface<TestUtilCleanFilenameAttributesData>
+{
+};
+
+TEST_P(TestUtilCleanFilenameAttributePairs, Clean)
+{
+  auto& params = GetParam();
+  std::string file = params.input;
+  CUtil::CleanFilenameAttributePairs(file, nullptr);
+  EXPECT_EQ(params.expected, file);
+}
+
+const TestUtilCleanFilenameAttributesData cleanFilenameAttributePairsTests[] = {
+    {"Some.MovieName[key=value].mkv", "Some.MovieName.mkv"},
+    {"Some.MovieName [key1=value1]{key2 = value2}.mkv", "Some.MovieName .mkv"},
+    {"Some.MovieName [key1=value1] foobar {key2 = value2}.mkv", "Some.MovieName  foobar .mkv"},
+    {"Some.MovieName.mkv", "Some.MovieName.mkv"},
+};
+
+INSTANTIATE_TEST_SUITE_P(TestUtil,
+                         TestUtilCleanFilenameAttributePairs,
+                         ValuesIn(cleanFilenameAttributePairsTests));
+
 struct TestUtilSplitParamsData
 {
   std::string input;

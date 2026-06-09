@@ -102,6 +102,7 @@
 #include <chrono>
 #include <cstdint>
 #include <cstdlib>
+#include <functional>
 #include <iomanip>
 #include <memory>
 #include <random>
@@ -445,6 +446,102 @@ std::string CUtil::RemoveTrailingPartNumberSegmentFromPath(std::string path,
 std::string CUtil::GetPartNumberFromPath(std::string path)
 {
   return GetPartAndRemoveDiscFromPath(path, PreserveFileName::REMOVE);
+}
+
+namespace
+{
+/*!
+ * \brief Returns a compiled regular expression to retrieve filename attributes
+ * \param[in] cache Optional regular expression cache
+ * \return Valid pointer if the regular expression was compiled successfully, nullptr otherwise.
+ */
+std::shared_ptr<CRegExp> InitFilenameAttributesRegExp(KODI::REGEXP::RegExpCache* cache)
+{
+  std::shared_ptr<CRegExp> re;
+
+  const std::shared_ptr<CAdvancedSettings> advancedSettings =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+
+  if (advancedSettings == nullptr)
+    return re;
+
+  re = KODI::REGEXP::GetRegExp(advancedSettings->m_videoFilenameAttributePairsRegExp, cache, true,
+                               CRegExp::autoUtf8);
+  if (re == nullptr)
+  {
+    CLog::LogF(LOGERROR, "Invalid filename attribute pairs RegExp:'{}'",
+               advancedSettings->m_videoFilenameAttributePairsRegExp);
+  }
+  return re;
+}
+
+/*!
+ * \brief Iterates over all filename attributes key=value pairs in @p fileName, invoking @p callback
+ *        for each one.
+ * @p fileName must not be modified by @p callback.
+ * \param fileName [in] The filename to search for attribute pairs.
+ * \param cache[in] Optional regular expression cache
+ * \param callback[in] Invoked for each match with the absolute position, the match length, the value
+ *                     of the key and value of the match.
+ */
+void ForEachFilenameAttribute(
+    const std::string& fileName,
+    KODI::REGEXP::RegExpCache* cache,
+    std::function<void(int pos, int len, const std::string& key, const std::string& value)>
+        callback)
+{
+  if (std::shared_ptr<CRegExp> re = InitFilenameAttributesRegExp(cache); re != nullptr)
+  {
+    unsigned int offset = 0;
+    while (true)
+    {
+      int pos = re->RegFind(fileName, offset);
+      if (pos < 0)
+        break;
+
+      const int matchLength = re->GetFindLen();
+      callback(pos, matchLength, re->GetMatch("key"), re->GetMatch("value"));
+      offset = pos + matchLength;
+    }
+  }
+}
+} // namespace
+
+CUtil::FilenameAttributeMap CUtil::GetFilenameAttributePairs(const std::string& fileName,
+                                                             KODI::REGEXP::RegExpCache* cache)
+{
+  FilenameAttributeMap result;
+
+  ForEachFilenameAttribute(fileName, cache,
+                           [&result](int, int, std::string key, std::string value)
+                           {
+                             StringUtils::Trim(key);
+                             StringUtils::ToLower(key);
+                             StringUtils::Trim(value);
+                             if (!key.empty() && !value.empty())
+                               result.insert_or_assign(key, value);
+                           });
+  return result;
+}
+
+void CUtil::CleanFilenameAttributePairs(std::string& fileName, KODI::REGEXP::RegExpCache* cache)
+{
+  std::string result;
+  result.reserve(fileName.size());
+  int last = 0;
+
+  // Copy the gaps between matches into the new result string - less allocations/shifting than
+  // deleting from the existing string, and doesn't modify the string being iterated.
+  ForEachFilenameAttribute(
+      fileName, cache,
+      [&result, &fileName, &last](int pos, int len, const std::string&, const std::string&)
+      {
+        result.append(fileName, last, pos - last);
+        last = pos + len;
+      });
+  result.append(fileName, last, std::string::npos);
+
+  fileName = std::move(result);
 }
 
 bool CUtil::GetFilenameIdentifier(const std::string& fileName,

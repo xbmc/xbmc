@@ -15,6 +15,7 @@
 #include <cstdint>
 #include <span>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 //! \brief Enumeration of filesystem types for LegalPath/FileName
@@ -43,13 +44,47 @@ struct ExternalStreamInfo
 class CUtil
 {
   CUtil() = delete;
+
 public:
+  /*!
+   * \brief Transparent string hasher for std::unordered_map heterogeneous lookup
+   */
+  struct StringHash
+  {
+    using is_transparent = void; // Enables heterogeneous operations.
+    std::size_t operator()(std::string_view sv) const { return std::hash<std::string_view>{}(sv); }
+  };
+
+  using FilenameAttributeMap =
+      std::unordered_map<std::string, std::string, StringHash, std::equal_to<>>;
+
   static void CleanString(const std::string& strFileName,
                           std::string& strTitle,
                           std::string& strTitleAndYear,
                           std::string& strYear,
                           bool bRemoveExtension = false,
                           bool bCleanChars = true);
+  /*!
+   * \brief Extracts all key/value attribute pairs encoded in @p fileName (ex. [key=value])
+   *        Matches are found using a regular expression from advanced settings, which
+   *        must contain named capture groups @c key and @c value. 
+   *        The key is trimmed and lowercased before insertion. If the same key appears more than
+   *        once, the last value wins.
+   * \param fileName[in] The filename to extract attributes from.
+   * \param cache[in,out] Optional regular expression cache.
+   * \return A map of attribute keys and their values, or an empty map if the
+   *         regular expression is invalid or no matches are found.
+   */
+  static FilenameAttributeMap GetFilenameAttributePairs(const std::string& fileName,
+                                                        KODI::REGEXP::RegExpCache* cache);
+
+  /*!
+   * \brief Removes all filename attribute pairs from @p fileName
+   * \param[in,out] fileName The filename to strip attributes from.
+   * \param[in,out] cache Optional regular expression cache
+   */
+  static void CleanFilenameAttributePairs(std::string& fileName, KODI::REGEXP::RegExpCache* cache);
+
   static bool GetFilenameIdentifier(const std::string& fileName,
                                     std::string& identifierType,
                                     std::string& identifier,
