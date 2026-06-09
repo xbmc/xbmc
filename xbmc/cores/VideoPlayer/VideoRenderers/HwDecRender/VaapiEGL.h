@@ -63,9 +63,6 @@ public:
   GLuint GetTextureVU() override;
   CSizeInt GetTextureSize() override;
 
-  static void TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &deepColor);
-  static bool TestInteropGeneral(VADisplay vaDpy, EGLDisplay eglDisplay);
-
   // Probe every importable VA fourcc the renderer cares about and Add()
   // each successful one to caps.
   static void TestInteropFormats(VADisplay vaDpy, EGLDisplay eglDisplay, CCapabilities& caps);

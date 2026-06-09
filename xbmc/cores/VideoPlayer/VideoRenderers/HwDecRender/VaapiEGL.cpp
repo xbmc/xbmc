@@ -55,17 +55,10 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
     return failMap();
   }
 
-  // Remember fds to close them later
-  if (surface.num_objects > m_drmFDs.size())
-  {
-    failMap();
-    throw std::logic_error("Too many fds returned by vaExportSurfaceHandle");
-  }
-
-  for (uint32_t object = 0; object < surface.num_objects; object++)
-  {
+  // Take ownership of the exported fds (RAII closes them on Unmap). num_objects
+  // is bounded by the libva descriptor's fixed objects[] array == m_drmFDs.size().
+  for (uint32_t object = 0; object < surface.num_objects && object < m_drmFDs.size(); object++)
     m_drmFDs[object].attach(surface.objects[object].fd);
-  }
 
   status = vaSyncSurface(pic->vadsp, pic->procPic.videoSurface);
   if (status != VA_STATUS_SUCCESS)
@@ -267,30 +260,34 @@ bool CVaapi2Texture::TestEsh(VADisplay vaDpy, EGLDisplay eglDisplay, std::uint32
   if (status == VA_STATUS_SUCCESS)
   {
     auto const& layer = drmPrimeSurface.layers[0];
-    if (layer.object_index[0] >= drmPrimeSurface.num_objects)
+    if (layer.object_index[0] < drmPrimeSurface.num_objects)
     {
+      auto const& object = drmPrimeSurface.objects[layer.object_index[0]];
+      EGLint attribs[] = {EGL_LINUX_DRM_FOURCC_EXT,
+                          static_cast<EGLint>(drmPrimeSurface.layers[0].drm_format),
+                          EGL_WIDTH,
+                          width,
+                          EGL_HEIGHT,
+                          height,
+                          EGL_DMA_BUF_PLANE0_FD_EXT,
+                          static_cast<EGLint>(object.fd),
+                          EGL_DMA_BUF_PLANE0_OFFSET_EXT,
+                          static_cast<EGLint>(layer.offset[0]),
+                          EGL_DMA_BUF_PLANE0_PITCH_EXT,
+                          static_cast<EGLint>(layer.pitch[0]),
+                          EGL_NONE};
+
+      EGLImageKHR eglImage =
+          eglCreateImageKHR(eglDisplay, EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, nullptr, attribs);
+      if (eglImage)
+      {
+        eglDestroyImageKHR(eglDisplay, eglImage);
+        result = true;
+      }
+    }
+    else
       CLog::Log(LOGERROR, "CVaapi2Texture::TestEsh: object_index {} >= num_objects {}",
                 layer.object_index[0], drmPrimeSurface.num_objects);
-      return false;
-    }
-    auto const& object = drmPrimeSurface.objects[layer.object_index[0]];
-    EGLint attribs[] = {
-      EGL_LINUX_DRM_FOURCC_EXT, static_cast<EGLint>(drmPrimeSurface.layers[0].drm_format),
-      EGL_WIDTH, width,
-      EGL_HEIGHT, height,
-      EGL_DMA_BUF_PLANE0_FD_EXT, static_cast<EGLint>(object.fd),
-      EGL_DMA_BUF_PLANE0_OFFSET_EXT, static_cast<EGLint>(layer.offset[0]),
-      EGL_DMA_BUF_PLANE0_PITCH_EXT, static_cast<EGLint>(layer.pitch[0]),
-      EGL_NONE};
-
-    EGLImageKHR eglImage = eglCreateImageKHR(eglDisplay,
-      EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, nullptr,
-      attribs);
-    if (eglImage)
-    {
-      eglDestroyImageKHR(eglDisplay, eglImage);
-      result = true;
-    }
 
     for (uint32_t object = 0; object < drmPrimeSurface.num_objects; object++)
     {
@@ -301,23 +298,6 @@ bool CVaapi2Texture::TestEsh(VADisplay vaDpy, EGLDisplay eglDisplay, std::uint32
   vaDestroySurfaces(vaDpy, &surface, 1);
 
   return result;
-}
-
-void CVaapi2Texture::TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay, bool& general, bool& deepColor)
-{
-  general = false;
-  deepColor = false;
-
-  general = TestInteropGeneral(vaDpy, eglDisplay);
-  if (general)
-  {
-    deepColor = TestEsh(vaDpy, eglDisplay, VA_RT_FORMAT_YUV420_10BPP, VA_FOURCC_P010);
-  }
-}
-
-bool CVaapi2Texture::TestInteropGeneral(VADisplay vaDpy, EGLDisplay eglDisplay)
-{
-  return TestEsh(vaDpy, eglDisplay, VA_RT_FORMAT_YUV420, VA_FOURCC_NV12);
 }
 
 void CVaapi2Texture::TestInteropFormats(VADisplay vaDpy, EGLDisplay eglDisplay, CCapabilities& caps)

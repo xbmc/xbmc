@@ -43,9 +43,16 @@ void CRendererVAAPIGL::Register(IVaapiWinSystem* winSystem,
     return;
   }
 
-  CVaapi2Texture::TestInterop(vaDpy, eglDisplay, general, deepColor);
-  CLog::Log(LOGDEBUG, "VAAPI EGL interop test results: general {}, deepColor {}",
-            general ? "yes" : "no", deepColor ? "yes" : "no");
+  // Probe importable surface formats via vaExportSurfaceHandle.
+  CCapabilities& caps = CDecoder::GetCaps();
+  CVaapi2Texture::TestInteropFormats(vaDpy, eglDisplay, caps);
+
+  CLog::Log(LOGDEBUG, "VAAPI EGL interop: {}", caps.ToString());
+
+  // Bool out-params are views over caps for the OptionalsReg / WinSystem
+  // boundary that still expresses capability as the general/deepColor pair.
+  general = caps.Supports(AV_PIX_FMT_NV12);
+  deepColor = caps.Supports(AV_PIX_FMT_P010);
 
   vaTerminate(vaDpy);
 

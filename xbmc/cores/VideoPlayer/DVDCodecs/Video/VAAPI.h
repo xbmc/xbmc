@@ -461,6 +461,9 @@ struct VaFormatEntry
 inline constexpr VaFormatEntry kVaFormatTable[] = {
     {VA_FOURCC_NV12, VA_RT_FORMAT_YUV420, AV_PIX_FMT_NV12},
     {VA_FOURCC_P010, VA_RT_FORMAT_YUV420_10BPP, AV_PIX_FMT_P010},
+#if defined(HAS_GLES)
+    // The GL renderer samples every surface as NV12 and has no shader for the
+    // 12-bit 4:2:0 / packed 4:2:2 / packed 4:4:4 layouts, so those are GLES-only.
     {VA_FOURCC_P012, VA_RT_FORMAT_YUV420_12, AV_PIX_FMT_P012},
     {VA_FOURCC_P016, VA_RT_FORMAT_YUV420_12, AV_PIX_FMT_P016},
     {VA_FOURCC_Y210, VA_RT_FORMAT_YUV422_10, AV_PIX_FMT_Y210},
@@ -471,6 +474,7 @@ inline constexpr VaFormatEntry kVaFormatTable[] = {
     {VA_FOURCC_Y410, VA_RT_FORMAT_YUV444_10, AV_PIX_FMT_XV30},
     {VA_FOURCC_Y412, VA_RT_FORMAT_YUV444_12, AV_PIX_FMT_XV36},
     {VA_FOURCC_Y416, VA_RT_FORMAT_YUV444_12, AV_PIX_FMT_XV48},
+#endif
 };
 
 /*!
