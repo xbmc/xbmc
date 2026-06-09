@@ -723,9 +723,15 @@ macro(ADD_MULTICONFIG_BUILDMACRO)
 endmacro()
 
 macro(SEARCH_EXISTING_PACKAGES)
+  if(${CMAKE_FIND_PACKAGE_NAME}_HINT_PREFIX_PATH)
+    set(_search_prefix ${${CMAKE_FIND_PACKAGE_NAME}_HINT_PREFIX_PATH})
+  else()
+    set(_search_prefix ${DEPENDS_PATH})
+  endif()
+
   find_package(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
-                                                         HINTS ${DEPENDS_PATH}/share/cmake
-                                                               ${DEPENDS_PATH}/lib/cmake
+                                                         HINTS ${_search_prefix}/share/cmake
+                                                               ${_search_prefix}/lib/cmake
                                                          ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
   # fallback to pkgconfig to cover all bases
