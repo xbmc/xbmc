@@ -244,27 +244,25 @@ private:
       const std::map<unsigned int, std::vector<unsigned int>>& playAllPlaylistClipMap);
   void FindPlayAllPlaylists(const ClipMap& clips, const PlaylistMap& playlists);
   void FindGroups(const PlaylistMap& playlists);
-  void UsePlayAllPlaylistMethod(unsigned int episodeIndex, const PlaylistMap& playlists);
-  void UseLongOrCommonMethodForSingleEpisode(unsigned int episodeIndex,
-                                             const PlaylistMap& playlists);
+  void UsePlayAllPlaylistMethod(int episodeIndex, const PlaylistMap& playlists);
+  void UseLongOrCommonMethodForSingleEpisode(int episodeIndex, const PlaylistMap& playlists);
   static std::vector<std::vector<CandidatePlaylistInformation>> GetGroupsWithoutDuplicates(
       const std::vector<std::vector<CandidatePlaylistInformation>>& groups);
-  void GetPlaylistsFromGroup(unsigned int episodeIndex,
+  void GetPlaylistsFromGroup(int episodeIndex,
                              const std::vector<CandidatePlaylistInformation>& group);
-  void UseGroupMethod(unsigned int episodeIndex,
-                      const std::vector<KODI::VIDEO::EPISODE>& episodesOnDisc);
-  void UseTotalMethod(unsigned int episodeIndex,
+  void UseGroupMethod(int episodeIndex, const std::vector<KODI::VIDEO::EPISODE>& episodesOnDisc);
+  void UseTotalMethod(int episodeIndex,
                       const std::vector<KODI::VIDEO::EPISODE>& episodesOnDisc,
                       const PlaylistMap& playlists);
   static int CalculateMultiple(std::chrono::milliseconds duration,
                                std::chrono::milliseconds averageShortest,
                                double multiplePercent);
-  void UseGroupsWithMultiplesMethod(unsigned int episodeIndex,
+  void UseGroupsWithMultiplesMethod(int episodeIndex,
                                     const std::vector<KODI::VIDEO::EPISODE>& episodesOnDisc);
   void ChooseSingleBestPlaylist(const std::vector<KODI::VIDEO::EPISODE>& episodesOnDisc);
   void AddIdenticalPlaylists(const PlaylistMap& playlists);
   void FindCandidatePlaylists(const std::vector<KODI::VIDEO::EPISODE>& episodesOnDisc,
-                              unsigned int episodeIndex,
+                              int episodeIndex,
                               const PlaylistMap& playlists);
   void FindSpecials(const PlaylistMap& playlists);
   static void GenerateItem(const CURL& url,
