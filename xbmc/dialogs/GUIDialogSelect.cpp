@@ -16,6 +16,7 @@
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
+#include "video/VideoInfoTag.h"
 
 #include <memory>
 
@@ -37,11 +38,37 @@ CGUIDialogSelect::CGUIDialogSelect(int windowId)
     m_bButtonPressed(false),
     m_bButton2Pressed(false),
     m_useDetails(false),
-    m_multiSelection(false)
+    m_multiSelection(false),
+    m_enforceContiguousSelection(false),
+    m_useExtraAsOK(false),
+    m_selectChapters(false)
 {
   m_bConfirmed = false;
   m_loadType = KEEP_IN_MEMORY;
 }
+
+namespace
+{
+bool AreSelectedItemsContiguous(const CFileItemList& items)
+{
+  // Find the first selected item
+  const auto firstSelected{std::find_if(items.begin(), items.end(),
+                                        [](const std::shared_ptr<CFileItem>& item)
+                                        { return item->IsSelected(); })};
+  if (firstSelected == items.end())
+    return false; // No selected items
+
+  // Find the last selected item
+  const auto lastSelected{std::find_if(items.rbegin(), items.rend(),
+                                       [](const std::shared_ptr<CFileItem>& item)
+                                       { return item->IsSelected(); })
+                              .base()};
+
+  // Check that no unselected items exist between first and last
+  return std::all_of(firstSelected, lastSelected,
+                     [](const std::shared_ptr<CFileItem>& item) { return item->IsSelected(); });
+}
+} // namespace
 
 CGUIDialogSelect::~CGUIDialogSelect(void) = default;
 
@@ -49,7 +76,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
-  case GUI_MSG_WINDOW_DEINIT:
+    case GUI_MSG_WINDOW_DEINIT:
     {
       CGUIDialogBoxBase::OnMessage(message);
 
@@ -58,12 +85,16 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
       m_useDetails = false;
       m_multiSelection = false;
 
+      m_enforceContiguousSelection = false;
+      m_useExtraAsOK = false;
+      m_selectChapters = false;
+
       // construct selected items list
       m_selectedItems.clear();
       m_selectedItem = nullptr;
-      for (int i = 0 ; i < m_vecList->Size() ; i++)
+      for (int i = 0; i < m_vecList->Size(); i++)
       {
-        CFileItemPtr item = m_vecList->Get(i);
+        std::shared_ptr<CFileItem> item = m_vecList->Get(i);
         if (item->IsSelected())
         {
           m_selectedItems.push_back(i);
@@ -76,7 +107,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
     }
     break;
 
-  case GUI_MSG_WINDOW_INIT:
+    case GUI_MSG_WINDOW_INIT:
     {
       m_bButtonPressed = false;
       m_bButton2Pressed = false;
@@ -86,8 +117,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
     }
     break;
 
-
-  case GUI_MSG_CLICKED:
+    case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
       if (m_viewControl.HasControl(CONTROL_SIMPLE_LIST))
@@ -98,16 +128,30 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
           int iSelected = m_viewControl.GetSelectedItem();
           if (iSelected >= 0 && iSelected < m_vecList->Size())
           {
-            CFileItemPtr item(m_vecList->Get(iSelected));
+            std::shared_ptr<CFileItem> item(m_vecList->Get(iSelected));
             if (m_multiSelection)
               item->Select(!item->IsSelected());
             else
             {
-              for (int i = 0 ; i < m_vecList->Size() ; i++)
+              for (int i = 0; i < m_vecList->Size(); i++)
                 m_vecList->Get(i)->Select(false);
               item->Select(true);
               OnSelect(iSelected);
             }
+
+            if (m_enforceContiguousSelection)
+            {
+              if (AreSelectedItemsContiguous(*m_vecList))
+                CONTROL_ENABLE(CONTROL_EXTRA_BUTTON);
+              else
+                CONTROL_DISABLE(CONTROL_EXTRA_BUTTON);
+            }
+
+            if (m_selectChapters && item->HasVideoInfoTag() &&
+                item->GetVideoInfoTag()->HasChapters() && !item->HasProperty("chapter"))
+              CONTROL_ENABLE(CONTROL_EXTRA_BUTTON2);
+            else
+              CONTROL_DISABLE(CONTROL_EXTRA_BUTTON2);
           }
         }
       }
@@ -136,7 +180,8 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
       }
     }
     break;
-  case GUI_MSG_SETFOCUS:
+
+    case GUI_MSG_SETFOCUS:
     {
       if (m_viewControl.HasControl(message.GetControlId()))
       {
@@ -156,6 +201,9 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
       }
     }
     break;
+
+    default:
+      break;
   }
 
   return CGUIDialogBoxBase::OnMessage(message);
@@ -164,7 +212,8 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
 void CGUIDialogSelect::OnSelect(int idx)
 {
   m_bConfirmed = true;
-  Close();
+  if (!m_useExtraAsOK)
+    Close();
 }
 
 bool CGUIDialogSelect::OnBack(int actionID)
@@ -183,6 +232,10 @@ void CGUIDialogSelect::Reset()
   m_bButton2Enabled = false;
   m_bButton2Pressed = false;
 
+  m_enforceContiguousSelection = false;
+  m_useExtraAsOK = false;
+  m_selectChapters = false;
+
   m_useDetails = false;
   m_multiSelection = false;
   m_focusToButton = false;
@@ -193,7 +246,7 @@ void CGUIDialogSelect::Reset()
 
 int CGUIDialogSelect::Add(const std::string& strLabel)
 {
-  CFileItemPtr pItem(new CFileItem(strLabel));
+  std::shared_ptr<CFileItem> pItem(std::make_shared<CFileItem>(strLabel));
   m_vecList->Add(pItem);
   return m_vecList->Size() - 1;
 }
@@ -217,7 +270,7 @@ int CGUIDialogSelect::GetSelectedItem() const
   return !m_selectedItems.empty() ? m_selectedItems[0] : -1;
 }
 
-const CFileItemPtr CGUIDialogSelect::GetSelectedFileItem() const
+const std::shared_ptr<CFileItem> CGUIDialogSelect::GetSelectedFileItem() const
 {
   if (m_selectedItem)
     return m_selectedItem;
@@ -253,12 +306,12 @@ void CGUIDialogSelect::EnableButton2(bool enable, const std::string& label)
   m_button2Label = label;
 }
 
-bool CGUIDialogSelect::IsButtonPressed()
+bool CGUIDialogSelect::IsButtonPressed() const
 {
   return m_bButtonPressed;
 }
 
-bool CGUIDialogSelect::IsButton2Pressed()
+bool CGUIDialogSelect::IsButton2Pressed() const
 {
   return m_bButton2Pressed;
 }
@@ -317,11 +370,34 @@ void CGUIDialogSelect::SetUseDetails(bool useDetails)
 void CGUIDialogSelect::SetMultiSelection(bool multiSelection)
 {
   m_multiSelection = multiSelection;
+  if (multiSelection)
+    SetUseExtraAsOK(true);
+  else
+    SetUseExtraAsOK(false);
 }
 
 void CGUIDialogSelect::SetButtonFocus(bool buttonFocus)
 {
   m_focusToButton = buttonFocus;
+}
+
+void CGUIDialogSelect::SetEnforceContiguousSelection(bool enforceContiguousSelection)
+{
+  m_enforceContiguousSelection = enforceContiguousSelection;
+}
+
+void CGUIDialogSelect::SetUseExtraAsOK(bool useExtraAsOK)
+{
+  m_useExtraAsOK = useExtraAsOK;
+  if (useExtraAsOK)
+    EnableButton(true, 186); // OK
+  else
+    EnableButton(false, 186);
+}
+
+void CGUIDialogSelect::SetSelectChapters(bool selectChapters)
+{
+  m_selectChapters = selectChapters;
 }
 
 CGUIControl *CGUIDialogSelect::GetFirstFocusableControl(int id)
@@ -361,9 +437,6 @@ void CGUIDialogSelect::OnInitWindow()
       StringUtils::Format("{} {}", m_vecList->Size(),
                           CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(127)));
 
-  if (m_multiSelection)
-    EnableButton(true, 186);
-
   if (m_bButtonEnabled)
   {
     SET_CONTROL_LABEL(CONTROL_EXTRA_BUTTON, m_buttonLabel);
@@ -376,12 +449,21 @@ void CGUIDialogSelect::OnInitWindow()
   {
     SET_CONTROL_LABEL(CONTROL_EXTRA_BUTTON2, m_button2Label);
     SET_CONTROL_VISIBLE(CONTROL_EXTRA_BUTTON2);
+    if (m_selectChapters)
+      CONTROL_DISABLE(
+          CONTROL_EXTRA_BUTTON2); // Disable button until an item with chapters is selected
   }
   else
     SET_CONTROL_HIDDEN(CONTROL_EXTRA_BUTTON2);
 
   SET_CONTROL_LABEL(CONTROL_CANCEL_BUTTON,
                     CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(222));
+
+  // If contiguous items are required this implies at least one must be selected
+  // Also it means the UseExtraAsOK button is in effect
+  // So disable the OK (extra) button initially
+  if (m_enforceContiguousSelection)
+    CONTROL_DISABLE(CONTROL_EXTRA_BUTTON);
 
   CGUIDialogBoxBase::OnInitWindow();
 

@@ -37,8 +37,8 @@ public:
   void EnableButton(bool enable, const std::string& label);
   void EnableButton2(bool enable, int label);
   void EnableButton2(bool enable, const std::string& label);
-  bool IsButtonPressed();
-  bool IsButton2Pressed();
+  bool IsButtonPressed() const;
+  bool IsButton2Pressed() const;
   void Sort(bool bSortOrder = true);
   void SetSelected(int iSelected);
   void SetSelected(const std::string &strSelectedLabel);
@@ -47,9 +47,12 @@ public:
   void SetUseDetails(bool useDetails);
   void SetMultiSelection(bool multiSelection);
   void SetButtonFocus(bool buttonFocus);
+  void SetEnforceContiguousSelection(bool enforceContiguousSelection);
+  void SetUseExtraAsOK(bool useExtraAsOK);
+  void SetSelectChapters(bool selectChapters);
+  CGUIControl* GetFirstFocusableControl(int id) override;
 
 protected:
-  CGUIControl *GetFirstFocusableControl(int id) override;
   void OnWindowLoaded() override;
   void OnInitWindow() override;
   void OnDeinitWindow(int nextWindowID) override;
@@ -71,6 +74,9 @@ private:
   bool m_useDetails;
   bool m_multiSelection;
   bool m_focusToButton{};
+  bool m_enforceContiguousSelection;
+  bool m_useExtraAsOK;
+  bool m_selectChapters;
 
   std::vector<int> m_selectedItems;
 };
