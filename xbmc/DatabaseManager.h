@@ -39,6 +39,13 @@ public:
    */
   bool Initialize();
 
+  /*! \brief Reset the database manager state.
+   Must be called on profile changes (LoadProfile / LogOff) so that the
+   next call to Initialize() re-runs the schema version check and migration
+   for all databases under the new profile's database folder.
+   */
+  void Deinitialize();
+
   /*! \brief Check whether we can open a database.
 
    Checks whether the database has been updated correctly, if so returns true.
