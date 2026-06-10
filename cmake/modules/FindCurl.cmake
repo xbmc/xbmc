@@ -56,7 +56,21 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                    -DCURL_CA_FALLBACK=ON
                    ${OPTIONAL_ARGS})
 
+    # Curl runs its own FindZstd.cmake in the nested configure step, so pass the
+    # ZSTD include/library paths explicitly
+    get_target_property(ZSTD_INCLUDE_DIR LIBRARY::ZSTD ZSTD_INCLUDE_DIR)
+    get_target_property(ZSTD_LIBRARY LIBRARY::ZSTD ZSTD_LIBRARY)
+    if (ZSTD_INCLUDE_DIR)
+      list(APPEND CMAKE_ARGS -DZSTD_INCLUDE_DIR=${ZSTD_INCLUDE_DIR})
+    endif()
+    if (ZSTD_LIBRARY)
+      list(APPEND CMAKE_ARGS -DZSTD_LIBRARY=${ZSTD_LIBRARY})
+    endif()
+
     BUILD_DEP_TARGET()
+
+    unset(ZSTD_INCLUDE_DIR)
+    unset(ZSTD_LIBRARY)
 
     # Link libraries for target interface
     list(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LINK_LIBRARIES LIBRARY::Brotli

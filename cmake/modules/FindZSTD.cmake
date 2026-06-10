@@ -61,6 +61,13 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
 
       # Set LIB_BUILD property to allow calling modules to know we will be building
       set_target_properties(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES LIB_BUILD ON)
+
+      # Allow calling modules to use the include dir and library when building
+      # their own targets
+      set_target_properties(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+        ZSTD_INCLUDE_DIR "${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR}"
+        ZSTD_LIBRARY "${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY}"
+      )
     endif()
 
     ADD_MULTICONFIG_BUILDMACRO()
