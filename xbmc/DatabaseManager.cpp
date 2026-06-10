@@ -53,6 +53,15 @@ bool CDatabaseManager::Initialize()
   return rc;
 }
 
+void CDatabaseManager::Deinitialize()
+{
+  std::unique_lock lock(m_section);
+  m_initialized = false;
+  m_bIsUpgrading = false;
+  m_connecting = false;
+  m_dbStatus.clear();
+}
+
 bool CDatabaseManager::InitializeInternal()
 {
   CLog::LogF(LOGDEBUG, "updating databases...");
