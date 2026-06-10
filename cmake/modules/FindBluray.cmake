@@ -67,6 +67,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
           endif()
           set(temp_extras_arg -Djdk_home=${java_homepath} -Dbdj_jar=enabled)
           unset(temp_env_mod)
+
+          set(build_jar ON)
         endif()
       endif()
     endif()
@@ -209,6 +211,11 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     else()
       SETUP_BUILD_TARGET()
       add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+
+      if(build_jar)
+        set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTY BDJ_BUILD ON)
+        set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTY BDJ_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
+      endif()
     endif()
 
     set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS HAVE_LIBBLURAY)
@@ -216,6 +223,12 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     # This is incorrectly applied to all platforms. Requires its own handling in the future
     if(NOT CORE_PLATFORM_NAME_LC STREQUAL windowsstore)
       list(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS HAVE_LIBBLURAY_BDJ)
+    endif()
+
+    find_package(BlurayBDJ ${SEARCH_QUIET})
+    if(TARGET Extras::BlurayBDJ)
+      #Todo: Relocate the HAVE_LIBBLURAY_BDJ compile definition inside the succesful bdj target?
+      add_dependencies(Extras::BlurayBDJ ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     endif()
 
     ADD_TARGET_COMPILE_DEFINITION()

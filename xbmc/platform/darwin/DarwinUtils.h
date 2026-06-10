@@ -23,6 +23,7 @@ public:
   static const char *GetOSVersionString(void);
   static const char* GetVersionString();
   static std::string GetFrameworkPath(bool forPython);
+  static std::string GetJavaCPPath();
   static int         GetExecutablePath(char* path, size_t *pathsize);
   static void        SetScheduling(bool realtime);
   static bool        CFStringRefToString(CFStringRef source, std::string& destination);

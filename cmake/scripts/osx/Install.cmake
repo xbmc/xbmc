@@ -49,6 +49,16 @@ foreach(_pkg_lib IN LISTS package_libs)
   list(APPEND ADDITIONAL_COMMANDS COMMAND ${CMAKE_COMMAND} -E copy_if_different ${package_lib_expression} $<TARGET_BUNDLE_CONTENT_DIR:${APP_NAME_LC}>/Libraries)
 endforeach()
 
+if(TARGET Extras::BlurayBDJ)
+  get_target_property(_interface_files Extras::BlurayBDJ INTERFACE_LINK_LIBRARIES)
+
+  list(APPEND ADDITIONAL_COMMANDS COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_BUNDLE_CONTENT_DIR:${APP_NAME_LC}>/Java)
+
+  foreach(file IN LISTS _interface_files)
+    list(APPEND ADDITIONAL_COMMANDS COMMAND ${CMAKE_COMMAND} -E copy_if_different ${file} $<TARGET_BUNDLE_CONTENT_DIR:${APP_NAME_LC}>/Java)
+  endforeach()
+endif()
+
 if(EXISTS ${APP_ICON_ICNS})
   set_source_files_properties(${APP_ICON_ICNS} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
   target_sources(${APP_NAME_LC} PRIVATE ${APP_ICON_ICNS})
@@ -69,7 +79,7 @@ add_custom_command(TARGET ${APP_NAME_LC} POST_BUILD
             "APP_NAME=${APP_NAME}"
             "FULL_PRODUCT_NAME=${APP_NAME}.app"
             "SRCROOT=${CMAKE_BINARY_DIR}"
-          "SOURCE_ROOT=${CMAKE_SOURCE_DIR}"
+            "SOURCE_ROOT=${CMAKE_SOURCE_DIR}"
             "PYTHON_VERSION=${PYTHON_VERSION}"
             ${CMAKE_SOURCE_DIR}/tools/darwin/Support/copyframeworks-osx.command
     ${ADDITIONAL_COMMANDS})

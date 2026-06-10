@@ -29,7 +29,6 @@ mkdir -p "$TARGET_PATH/system"
 mkdir -p "$TARGET_PATH/userdata"
 mkdir -p "$TARGET_PATH/media"
 mkdir -p "$TARGET_PATH/tools/darwin/runtime"
-mkdir -p "$TARGET_PATH/extras/user"
 
 ${SYNC} "$SRCROOT/LICENSE.md" "$BASE_TARGET_PATH"
 ${SYNC} "$SRCROOT/privacy-policy.txt" "$TARGET_PATH"
@@ -42,18 +41,5 @@ ${SYNC} "$SRCROOT/addons/skin.estuary/extras" "$TARGET_PATH/addons/skin.estuary"
 ${SYNC} "$SRCROOT/addons/skin.estuary/resources" "$TARGET_PATH/addons/skin.estuary"
 ${SYNC} --include 'settings/settings.xml' --include 'settings/darwin*' --exclude 'settings/*.xml' "$SRCROOT/system" "$TARGET_PATH"
 ${SYNC} "$SRCROOT/userdata" "$TARGET_PATH"
-
-# copy extra packages if applicable
-if [ -d "$SRCROOT/extras/system" ]; then
-  ${SYNC} "$SRCROOT/extras/system/" "$TARGET_PATH"
-fi
-
-# copy extra user packages if applicable
-if [ -d "$SRCROOT/extras/user" ]; then
-  ${SYNC} "$SRCROOT/extras/user/" "$TARGET_PATH/extras/user"
-fi
-
-# not sure we want to do this with out major testing, many scripts cannot handle the spaces in the app name
-#mv "$TARGET_BUILD_DIR/$TARGET_NAME" "$TARGET_BUILD_DIR/$APP_NAME Media Center.app"
 
 fi
