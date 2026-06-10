@@ -17,7 +17,12 @@
             name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
             var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
                     results = regex.exec(location.search);
-            return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+            var res = results == null ? "" : results[1].replace(/\+/g, " ");
+            try { res = decodeURIComponent(res); } catch (e) { return ""; }
+            res = res.replace(/[\u0000-\u001F\u007F]/g, "").trim();
+            // Reject any absolute/protocol-relative URL or URL with a scheme (prevents javascript:, data:, http:, etc.)
+            if (/^(?:[a-zA-Z][a-zA-Z0-9+.-]*:|\/\/)/.test(res)) return "";
+            return res.replace(/[<>\"]/g, "");
         }
         function getBaseURL() {
             var parts = window.location.href.split('videoPlayer.html');
@@ -115,7 +120,7 @@
 
             });
         }
-        else if (yt != '') {
+        else if (yt != '' && /^[a-zA-Z0-9_-]+$/.test(yt)) {
             // If playing a youtube video.
             $player = $('<iframe>', {
                 width: width,
