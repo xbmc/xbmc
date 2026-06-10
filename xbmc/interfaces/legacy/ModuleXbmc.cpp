@@ -60,6 +60,26 @@ namespace XBMCAddon
     /*****************************************************************
      * start of xbmc methods
      *****************************************************************/
+
+    /*! @brief Extract base language name from compound language strings.
+     *  Removes region or script identifier suffix in parentheses.
+     *  Examples: "English(US)" -> "English", "Chinese(Hant)" -> "Chinese"
+     *  @param lang Language string that may contain region (2-char, e.g. US) or
+     *              script identifier (e.g. Hant, Cyrl, Arab) in parentheses
+     *  @return Base language name without region or script suffix
+     */
+    static std::string GetBaseLanguageName(const std::string& lang)
+    {
+      size_t openParen = lang.find('(');
+      if (openParen != std::string::npos)
+      {
+        std::string baseLang = lang.substr(0, openParen);
+        StringUtils::TrimRight(baseLang);
+        return baseLang;
+      }
+      return lang;
+    }
+
     void log(const char* msg, int level)
     {
       // check for a valid loglevel
@@ -204,7 +224,7 @@ namespace XBMCAddon
       case CLangCodeExpander::ISO_639_1:
         {
           std::string langCode;
-          g_LangCodeExpander.ConvertToISO6391(lang, langCode);
+          g_LangCodeExpander.ConvertToISO6391(GetBaseLanguageName(lang), langCode);
           if (region)
           {
             std::string region = g_langInfo.GetRegionLocale();
@@ -218,7 +238,7 @@ namespace XBMCAddon
       case CLangCodeExpander::ISO_639_2:
         {
           std::string langCode;
-          g_LangCodeExpander.ConvertToISO6392B(lang, langCode);
+          g_LangCodeExpander.ConvertToISO6392B(GetBaseLanguageName(lang), langCode);
           if (region)
           {
             std::string region = g_langInfo.GetRegionLocale();
