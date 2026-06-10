@@ -927,6 +927,23 @@ CVideoInfoScanner::~CVideoInfoScanner()
     if (m_handle)
       m_handle->SetText(pItem->GetMovieName(bDirNames));
 
+    //! @todo: do something about edition values slightly different from db version types due to
+    //! available filesystem characters. ex. "directors cut" in file name vs "Director's Cut"
+    const std::string editionFromFilename{
+        CUtil::GetFilenameEdition(URIUtils::GetFileName(pItem->GetPath()), &m_regexpCache)};
+
+    // An edition extracted from the filename is applied only when an asset title hasn't been set yet (NFO wins).
+    const auto applyEdition = [&editionFromFilename](CFileItem* item)
+    {
+      if (editionFromFilename.empty())
+        return;
+
+      // Creation of a tag if one doesn't exist yet is on purpose
+      CVideoInfoTag* tag{item->GetVideoInfoTag()};
+      if (tag && tag->GetAssetInfo().GetTitle().empty())
+        tag->GetAssetInfo().SetTitle(editionFromFilename);
+    };
+
     InfoType result = InfoType::NONE;
     CScraperUrl scrUrl;
 
@@ -967,6 +984,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
       // Existing movie cannot be found or is not version - add it
       if (movieId < 0)
       {
+        applyEdition(&item);
+
         movieId = static_cast<int>(AddVideo(&item, info2, bDirNames, true));
         if (movieId < 0)
           return InfoRet::INFO_ERROR;
@@ -1056,6 +1075,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
       {
         if (UpdateSetInTag(*pItem->GetVideoInfoTag()) && !AddSet(pItem->GetVideoInfoTag()->m_set))
           return InfoRet::INFO_ERROR;
+
+        applyEdition(pItem);
+
         const int dbId{static_cast<int>(AddVideo(pItem, info2, bDirNames, useLocal))};
         if (dbId < 0)
           return InfoRet::INFO_ERROR;
@@ -1080,6 +1102,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
     {
       if (UpdateSetInTag(*pItem->GetVideoInfoTag()) && !AddSet(pItem->GetVideoInfoTag()->m_set))
         return InfoRet::INFO_ERROR;
+
+      applyEdition(pItem);
+
       const int dbId{static_cast<int>(AddVideo(pItem, info2, bDirNames, useLocal))};
       if (dbId < 0)
         return InfoRet::INFO_ERROR;
