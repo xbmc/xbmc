@@ -389,6 +389,7 @@ void COverlayGlyphGLES::Render(SRenderState& state)
   glUniform1f(depthLoc, -1.0f);
 
   glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
+  CRenderSystemBase::m_GUIElementCount++;
 
   glDisableVertexAttribArray(posLoc);
   glDisableVertexAttribArray(colLoc);
@@ -482,6 +483,7 @@ void COverlayTextureGLES::Render(SRenderState& state)
   tex[2][1] = tex[3][1] = m_v;
 
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+  CRenderSystemBase::m_GUIElementCount++;
 
   glDisableVertexAttribArray(posLoc);
   glDisableVertexAttribArray(tex0Loc);

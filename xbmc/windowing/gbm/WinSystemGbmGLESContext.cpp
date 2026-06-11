@@ -232,10 +232,12 @@ bool CWinSystemGbmGLESContext::SetGuiCompositing(int colorTransfer)
   return m_guiCompositing;
 }
 
-bool CWinSystemGbmGLESContext::BeginGuiComposite()
+bool CWinSystemGbmGLESContext::BeginGuiComposite(bool guiWillRender)
 {
   if (!m_guiCompositing)
     return false;
+
+  m_guiWillRender = guiWillRender;
 
   int width = m_nWidth;
   int height = m_nHeight;
@@ -270,22 +272,49 @@ bool CWinSystemGbmGLESContext::BeginGuiComposite()
 
     m_guiFboWidth = width;
     m_guiFboHeight = height;
+    m_guiFboClean = false; // fresh FBO is undefined, force a clear
     CLog::Log(LOGDEBUG, "CWinSystemGbmGLESContext: created GUI FBO {}x{}", width, height);
   }
+
+  // When GUI render is being skipped, leave the FBO bind/clear out: nothing
+  // will draw into it this frame. The FBO's prior sRGB GUI content is
+  // implicitly preserved across the skipped frame as a side effect.
+  //! @todo The preserved sRGB FBO is currently not leveraged: D2P reuses the
+  //! post-PQ GUI plane back buffer directly via display HW, and single-plane
+  //! never reaches !guiWillRender (the dirty-driven skip is gated on
+  //! IsRenderingVideoLayer). Future single-plane "gate, don't move" work
+  //! lets the GUI walk skip while CompositeGui still runs each video frame,
+  //! re-using this cached sRGB FBO as the composite source.
+  if (!guiWillRender)
+    return true;
 
   if (!m_guiFbo.BeginRender())
     return false;
 
-  // clear FBO to transparent black
-  glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-  glClear(GL_COLOR_BUFFER_BIT);
+  // Clear only when the FBO holds stale content; idle frames are already clean.
+  if (!m_guiFboClean)
+  {
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    m_guiFboClean = true;
+  }
 
   return true;
 }
 
 void CWinSystemGbmGLESContext::EndGuiComposite()
 {
-  m_guiFbo.EndRender();
+  if (m_guiWillRender)
+    m_guiFbo.EndRender();
+
+  // When the GUI render is skipped this frame, Flip(hasRendered=false, ...)
+  // will skip eglSwapBuffers and the back-buffer contents never reach the
+  // screen. Clearing it is pure waste. Gate on D2P because single-plane
+  // never reaches !m_guiWillRender (the dirty-driven skip is gated on
+  // IsRenderingVideoLayer()), so this is the only path that triggers.
+  const bool isD2P = m_DRM && m_DRM->GetVideoPlane() != nullptr && m_DRM->GetGuiPlane() != nullptr;
+  if (isD2P && !m_guiWillRender)
+    return;
 
   // Clear the backbuffer before video renders. In the FBO compositing path,
   // video renders in the RenderEx pass with clear=false, so DrawBlackBars is
@@ -302,6 +331,32 @@ void CWinSystemGbmGLESContext::EndGuiComposite()
 void CWinSystemGbmGLESContext::CompositeGui()
 {
   if (!m_guiFbo.IsValid() || !m_guiFbo.IsBound() || !m_compositeShader)
+    return;
+
+  // Only update m_guiFboClean when GUI render fired this frame; otherwise the
+  // FBO is in the same state as the previous frame and the flag stays as-is.
+  // m_guiFboClean meaning depends on context:
+  //   single-plane: "FBO is empty/clean" (no composite work needed)
+  //   D2P:          "FBO is empty/clean AND back buffer cache is invalid"
+  if (m_guiWillRender)
+  {
+    const bool guiEmpty = (GetGUIElementCount() == 0);
+    m_guiFboClean = guiEmpty;
+    if (guiEmpty)
+      return;
+  }
+  else if (m_guiFboClean)
+  {
+    return;
+  }
+
+  // D2P with no new render: the cached PQ frame is already in the GUI plane
+  // back buffer from the prior composite. Skip the shader pass entirely; Flip
+  // will skip eglSwapBuffers too (hasRendered==false because Render was not
+  // called), and the display HW keeps scanning out the cached frame while the
+  // video plane updates independently via atomic commit.
+  if (!m_guiWillRender && m_DRM && m_DRM->GetVideoPlane() != nullptr &&
+      m_DRM->GetGuiPlane() != nullptr)
     return;
 
   glActiveTexture(GL_TEXTURE0);

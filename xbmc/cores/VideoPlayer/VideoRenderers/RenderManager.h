@@ -101,6 +101,16 @@ public:
   void AddOverlay(std::shared_ptr<CDVDOverlay> o, double pts);
   void ShowVideo(bool enable);
 
+  /*!
+   * \brief True if any subtitle/overlay is visible on the current presented
+   *  frame. Per-frame accurate. See OVERLAY::CRenderer::HasVisibleOverlay
+   *  for the libass vs PGS/DVB/SPU details.
+   *
+   *  Must be called after CRenderManager::FrameMove has run this frame
+   *  (which calls PrepareOverlays). Reads cached state; cheap.
+   */
+  bool HasVisibleOverlay() const { return m_overlays.HasVisibleOverlay(m_presentsource); }
+
   /**
    * If player uses buffering it has to wait for a buffer before it calls
    * AddVideoPicture and AddOverlay. It waits for max 50 ms before it returns -1
@@ -152,7 +162,7 @@ protected:
   CCriticalSection m_datalock;
   bool m_bTriggerUpdateResolution = false;
   bool m_bRenderGUI = true;
-  bool m_renderedOverlay = false;
+  bool m_renderedDebugOverlay = false;
   bool m_renderDebug = false;
   bool m_renderDebugVideo = false;
   XbmcThreads::EndTime<> m_debugTimer;

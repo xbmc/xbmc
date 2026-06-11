@@ -40,6 +40,15 @@ namespace OVERLAY {
     float height;
   };
 
+  /*!
+   * \brief Mark the entire GUI dirty so the next render pass runs
+   *  (not skipped). Overlays (subtitles, debug OSD) are not CGUIControls
+   *  and do not set m_controlDirtyState automatically; callers invoke
+   *  this at overlay state transitions and on per-frame updates where
+   *  needed (debug OSD).
+   */
+  void MarkDirty();
+
   class COverlay
   {
   public:
@@ -102,6 +111,16 @@ namespace OVERLAY {
     virtual void Render(int idx, float depth = 0.0f);
 
     /*!
+     * \brief Pre-walk hook: render libass output for the present slot.
+     *  Called once per frame on the GUI/main thread before the GUI walk-skip
+     *  decision. Caches the ASS_Image* and detect_change flag on each
+     *  SElement so ConvertLibass can consume them during the walk without
+     *  re-entering libass. Calls MarkDirty internally when libass reports
+     *  a visible or changed subtitle.
+     */
+    void PrepareOverlays(int idx);
+
+    /*!
      * \brief Release resources
      */
     void UnInit();
@@ -114,7 +133,22 @@ namespace OVERLAY {
     void Reset();
 
     void Release(int idx);
-    bool HasOverlay(int idx);
+
+    /*!
+     * \brief True if any overlay in m_buffers[idx] is visible this frame.
+     *
+     *  PGS/DVB and DVD SPU: ProcessOverlays only inserts at the visible PTS,
+     *  so any entry in m_buffers means visible.
+     *
+     *  libass (TEXT/SSA): the container is added once with no stop PTS and
+     *  stays in m_buffers for the whole video. Visibility means
+     *  ass_render_frame returned images for the current PTS, cached on
+     *  e.renderedImages by PrepareOverlays.
+     *
+     *  Must be called after PrepareOverlays has run this frame; before that
+     *  e.renderedImages reflects the previous frame's state.
+     */
+    bool HasVisibleOverlay(int idx) const;
     void SetVideoRect(CRect &source, CRect &dest, CRect &view);
     void SetStereoMode(const std::string &stereomode);
 
@@ -142,22 +176,19 @@ namespace OVERLAY {
       SElement() : overlay_dvd(NULL) { pts = 0.0; }
       double pts;
       std::shared_ptr<CDVDOverlay> overlay_dvd;
+      // libass output cached by PrepareOverlays; read by ConvertLibass during
+      // render. libass owns the pointer; valid only until the next
+      // ass_render_frame call.
+      ASS_Image* renderedImages{nullptr};
+      float renderedFrameWidth{0.0f};
+      float renderedFrameHeight{0.0f};
     };
 
     void Render(COverlay* o);
-    std::shared_ptr<COverlay> Convert(CDVDOverlay& o, double pts);
-    /*!
-    * \brief Convert the overlay to a overlay renderer
-    * \param o The overlay to convert
-    * \param pts The current PTS time
-    * \param subStyle The style to be used, MUST BE SET ONLY at the first call or when user change settings
-    * \return True if success, false if error
-    */
-    std::shared_ptr<COverlay> ConvertLibass(
-        CDVDOverlayLibass& o,
-        double pts,
-        bool updateStyle,
-        const std::shared_ptr<struct KODI::SUBTITLES::STYLE::style>& overlayStyle);
+    std::shared_ptr<COverlay> Convert(SElement& e);
+    // Build a COverlay (cached or freshly created) from the libass output
+    // already produced by PrepareOverlays. Does not call ass_render_frame.
+    std::shared_ptr<COverlay> ConvertLibass(SElement& e);
 
     void CreateSubtitlesStyle();
 
@@ -176,7 +207,7 @@ namespace OVERLAY {
       POSRESINFO_SAVE_CHANGES = -2,
     };
 
-    CCriticalSection m_section;
+    mutable CCriticalSection m_section;
     std::vector<SElement> m_buffers[NUM_BUFFERS];
     std::map<unsigned int, std::shared_ptr<COverlay>> m_textureCache;
     static unsigned int m_textureid;
@@ -197,5 +228,9 @@ namespace OVERLAY {
 
     std::shared_ptr<struct KODI::SUBTITLES::STYLE::style> m_overlayStyle;
     std::atomic<bool> m_isSettingsChanged{false};
+    // Whether last frame had any image/SPU overlay. Used by PrepareOverlays
+    // to detect arrival/disappearance transitions (image/SPU have no
+    // per-frame change signal of their own, unlike libass detect_change).
+    bool m_prevHadImageSpu{false};
   };
 }

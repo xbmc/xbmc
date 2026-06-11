@@ -99,6 +99,13 @@ public:
    */
   void MarkDirty(const CRect& rect);
 
+  /*! \brief True if Process() collected any dirty regions this frame.
+   *   Callable after Process() to decide whether the render pass needs
+   *   to run; used by the dirty-driven skip in CApplication::FrameMove
+   *   (currently gated to D2P plane and HDR GUI compositing FBO contexts).
+   */
+  bool HasDirtyRegions() const { return !m_dirtyregions.empty(); }
+
   /*! \brief Rendering of the current window and any dialogs
    Render is called every frame to draw the current window and any dialogs.
    It should only be called from the application thread.

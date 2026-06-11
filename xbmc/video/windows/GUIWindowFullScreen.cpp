@@ -376,7 +376,12 @@ void CGUIWindowFullScreen::Process(unsigned int currentTime, CDirtyRegionList &d
 {
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-  if (appPlayer->IsRenderingGuiLayer())
+  // IsRenderingVideoLayer: true on D2P (video has its own DRM plane);
+  // false in single-plane mode (video drawn through the render pass).
+  // Single-plane: MarkDirtyRegion every frame so the render pass keeps
+  // running and draws the next video frame. D2P video plane updates
+  // independently.
+  if (!appPlayer->IsRenderingVideoLayer())
     MarkDirtyRegion();
 
   m_controlStats->Reset();

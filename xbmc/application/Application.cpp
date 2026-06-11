@@ -851,9 +851,10 @@ void CApplication::Render()
     return;
 
   // render gui layer
-  bool compositing = CServiceBroker::GetWinSystem()->BeginGuiComposite();
+  const bool guiWillRender = appPower->GetRenderGUI() && !m_skipGuiRender;
+  bool compositing = CServiceBroker::GetWinSystem()->BeginGuiComposite(guiWillRender);
 
-  if (appPower->GetRenderGUI() && !m_skipGuiRender)
+  if (guiWillRender)
   {
     if (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() != RenderStereoMode::OFF)
     {
@@ -904,6 +905,42 @@ void CApplication::Render()
                                                        appPlayer->IsRenderingVideoLayer());
 
   CTimeUtils::UpdateFrameTime(hasRendered);
+
+  // [debug hack] count gui-on-screen frames vs total played and skipped
+  {
+    static unsigned int s_video = 0;
+    static unsigned int s_ctrls = 0;
+    static unsigned int s_subs = 0;
+    static unsigned int s_skipGui = 0;
+    static unsigned int s_skipAny = 0;
+    if (!appPlayer->IsPlayingVideo())
+    {
+      s_video = 0;
+      s_ctrls = 0;
+      s_subs = 0;
+      s_skipGui = 0;
+      s_skipAny = 0;
+    }
+    else
+    {
+      ++s_video;
+      const bool ctrlsOn = CServiceBroker::GetGUI()->GetWindowManager().HasVisibleControls();
+      const bool subsOn = appPlayer->HasVisibleOverlay();
+      if (ctrlsOn)
+        ++s_ctrls;
+      if (subsOn)
+        ++s_subs;
+      if (m_skipGuiRender)
+      {
+        ++s_skipAny;
+        if (ctrlsOn || subsOn)
+          ++s_skipGui;
+      }
+      if (s_video % 240 == 0)
+        CLog::Log(LOGDEBUG, "TEMP: [framecount] video={} ctrls={} subs={} skip-gui={} skip-any={}",
+                  s_video, s_ctrls, s_subs, s_skipGui, s_skipAny);
+    }
+  }
 }
 
 bool CApplication::OnAction(const CAction &action)
@@ -1547,10 +1584,14 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     }
 
     if (!m_bStop)
-    {
-      if (!m_skipGuiRender)
-        CServiceBroker::GetGUI()->GetWindowManager().Process(CTimeUtils::GetFrameTime());
-    }
+      CServiceBroker::GetGUI()->GetWindowManager().Process(CTimeUtils::GetFrameTime());
+
+    // Dirty-driven skip: on paths with a persistent framebuffer (D2P plane or
+    // HDR GUI compositing FBO), skip Render when no controls dirtied themselves
+    // this frame. The persistence keeps the previous OSD on screen for free.
+    if (!m_skipGuiRender && appPlayer->IsRenderingVideoLayer() &&
+        !CServiceBroker::GetGUI()->GetWindowManager().HasDirtyRegions())
+      m_skipGuiRender = true;
     CServiceBroker::GetGUI()->GetWindowManager().FrameMove();
   }
 

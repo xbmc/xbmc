@@ -946,6 +946,15 @@ bool CApplicationPlayer::IsRenderingVideoLayer() const
     return false;
 }
 
+bool CApplicationPlayer::HasVisibleOverlay() const
+{
+  const std::shared_ptr<const IPlayer> player = GetInternal();
+  if (player)
+    return player->HasVisibleOverlay();
+  else
+    return false;
+}
+
 bool CApplicationPlayer::Supports(EINTERLACEMETHOD method) const
 {
   const std::shared_ptr<const IPlayer> player = GetInternal();

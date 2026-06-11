@@ -36,7 +36,9 @@ void CGUIVideoControl::Process(unsigned int currentTime, CDirtyRegionList &dirty
   //! @todo Proper processing which marks when its actually changed. Just mark always for now.
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-  if (appPlayer->IsRenderingGuiLayer())
+  // Only fire for single-plane renderers where video draws via the GUI walk.
+  // See CGUIWindowFullScreen::Process for full rationale.
+  if (!appPlayer->IsRenderingVideoLayer())
     MarkDirtyRegion();
 
   CGUIControl::Process(currentTime, dirtyregions);

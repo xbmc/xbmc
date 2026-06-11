@@ -43,7 +43,7 @@ public:
 
   // GUI compositing for HDR (FBO + sRGB->PQ shader)
   bool SetGuiCompositing(int colorTransfer) override;
-  bool BeginGuiComposite() override;
+  bool BeginGuiComposite(bool guiWillRender) override;
   void EndGuiComposite() override;
   void CompositeGui() override;
   bool IsHdrComposite() const override { return m_guiCompositing; }
@@ -58,6 +58,10 @@ private:
   CFrameBufferObject m_guiFbo;
   int m_guiFboWidth{0};
   int m_guiFboHeight{0};
+  // True when the GUI FBO is empty (no draws this frame); CompositeGui skips composite when true.
+  bool m_guiFboClean{false};
+  // Whether the GUI render pass will run this frame; set by BeginGuiComposite.
+  bool m_guiWillRender{true};
   std::unique_ptr<CGuiCompositeShaderGL> m_compositeShader;
 };
 

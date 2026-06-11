@@ -5656,6 +5656,11 @@ bool CVideoPlayer::IsRenderingVideo() const
   return m_renderManager.IsConfigured();
 }
 
+bool CVideoPlayer::HasVisibleOverlay() const
+{
+  return m_renderManager.HasVisibleOverlay();
+}
+
 bool CVideoPlayer::IsLiveStream() const
 {
   if (!m_processInfo)

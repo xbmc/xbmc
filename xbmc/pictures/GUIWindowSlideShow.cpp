@@ -695,7 +695,11 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPicturesInfoProvider().SetCurrentSlide(m_slides.at(m_iCurrentSlide).get());
 
   RenderPause();
-  if (IsVideo(*m_slides.at(m_iCurrentSlide)) && appPlayer && appPlayer->IsRenderingGuiLayer())
+  // Single-plane mode (video drawn into the GUI back buffer during the
+  // render pass): MarkDirty every frame to keep the render pass running.
+  // D2P (video has its own hardware plane): video updates independently
+  // of the render pass.
+  if (IsVideo(*m_slides.at(m_iCurrentSlide)) && appPlayer && !appPlayer->IsRenderingVideoLayer())
   {
     MarkDirtyRegion();
   }
