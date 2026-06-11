@@ -88,6 +88,7 @@
 #include "utils/FileExtensionProvider.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/RegExp.h"
+#include "utils/StringUtils.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
 #include "windowing/GraphicContext.h"
@@ -111,6 +112,7 @@
 #include <string>
 #include <string_view>
 #include <unordered_set>
+#include <utility>
 #include <vector>
 
 #include <fstrcmp.h>
@@ -533,8 +535,8 @@ void CUtil::CleanFilenameAttributePairs(std::string& fileName, KODI::REGEXP::Reg
   result.reserve(fileName.size());
   int last = 0;
 
-  // Copy the gaps between matches into the new result string - less allocations/shifting than
-  // deleting from the existing string, and doesn't modify the string being iterated.
+  // Collect the gaps between attribute tokens into the new result string. Reduces allocations
+  // and in place erasure without modification of the string being iterated.
   ForEachFilenameAttribute(
       fileName, cache,
       [&result, &fileName, &last](int pos, int len, const std::string&, const std::string&)
@@ -552,26 +554,56 @@ bool CUtil::GetFilenameIdentifier(const std::string& fileName,
                                   std::string& identifier,
                                   KODI::REGEXP::RegExpCache* cache)
 {
-  std::shared_ptr<CRegExp> reIdentifier;
+  return GetFilenameIdentifier(GetFilenameAttributePairs(fileName, cache), identifierType,
+                               identifier);
+}
 
-  const std::shared_ptr<CAdvancedSettings> advancedSettings =
-      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
-
-  if (reIdentifier = KODI::REGEXP::GetRegExp(advancedSettings->m_videoFilenameIdentifierRegExp,
-                                             cache, true, CRegExp::autoUtf8);
-      reIdentifier == nullptr)
+bool CUtil::GetFilenameIdentifier(const CUtil::FilenameAttributeMap& attributes,
+                                  std::string& identifierType,
+                                  std::string& identifier)
+{
+  if (const std::shared_ptr<CAdvancedSettings> advancedSettings =
+          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+      advancedSettings != nullptr)
   {
-    CLog::LogF(LOGERROR, "Invalid filename identifier RegExp:'{}'",
-               advancedSettings->m_videoFilenameIdentifierRegExp);
-    return false;
-  }
+    const std::unordered_set<std::string>& identifiers =
+        advancedSettings->m_videoScannerMetadataSources;
 
-  if (reIdentifier->RegFind(fileName) >= 0)
-  {
-    identifierType = reIdentifier->GetMatch(1);
-    identifier = reIdentifier->GetMatch(2);
-    StringUtils::ToLower(identifierType);
-    return true;
+    if (identifiers.empty())
+      return false;
+
+    // The attribute key must be a known identifier with an optional id suffix and the value
+    // must be purely alphanumeric.
+
+    // Projection to strip the "id" suffix
+    auto proj = [](const std::pair<std::string, std::string>& attr)
+    {
+      constexpr std::string_view suffix = "id";
+      if (!StringUtils::EndsWithNoCase(attr.first, suffix))
+        return attr;
+      return std::pair{attr.first.substr(0, attr.first.size() - suffix.size()), attr.second};
+    };
+
+    auto it = std::ranges::find_if(
+        attributes,
+        [&identifiers](const auto& attr)
+        {
+          if (identifiers.contains(attr.first) && !attr.second.empty() &&
+              std::ranges::all_of(attr.second,
+                                  [](char c) { return StringUtils::isasciialphanum(c); }))
+            return true;
+
+          return false;
+        },
+        proj);
+
+    if (it != attributes.end())
+    {
+      auto stripped = proj(*it);
+      identifierType = stripped.first;
+      identifier = stripped.second;
+      return true;
+    }
   }
   return false;
 }
@@ -609,7 +641,7 @@ void CUtil::CleanString(const std::string& strFileName,
   if (strFileName == "..")
    return;
 
-  CleanFilenameAttributes(strTitleAndYear, nullptr);
+  CleanFilenameAttributePairs(strTitleAndYear, nullptr);
 
   const std::shared_ptr<CAdvancedSettings> advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
   const std::vector<std::string> &regexps = advancedSettings->m_videoCleanStringRegExps;

@@ -6,7 +6,10 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "ServiceBroker.h"
 #include "Util.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 
 #include <gtest/gtest-param-test.h>
 #include <gtest/gtest.h>
@@ -111,6 +114,15 @@ std::ostream& operator<<(std::ostream& os, const TestUtilCleanStringData& rhs)
 
 class TestUtilCleanString : public Test, public WithParamInterface<TestUtilCleanStringData>
 {
+public:
+  static void SetUpTestSuite()
+  {
+    // Inject list of known metadata sources for reliable results
+    const std::shared_ptr<CAdvancedSettings> advancedSettings =
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+    ASSERT_TRUE(advancedSettings != nullptr);
+    advancedSettings->m_videoScannerMetadataSources = {"tmdb", "imdb"};
+  }
 };
 
 TEST_P(TestUtilCleanString, GetFilenameIdentifier)
@@ -222,6 +234,43 @@ TEST(TestUtil, GetFilenameEditionString)
             CUtil::GetFilenameEdition("Some.MovieName[edition=Director's Cut].mkv", nullptr));
   EXPECT_EQ("", CUtil::GetFilenameEdition("Some.MovieName[foo=bar].mkv", nullptr));
   EXPECT_EQ("", CUtil::GetFilenameEdition("Some.MovieName.mkv", nullptr));
+}
+
+TEST(TestUtil, GetFilenameIdentifierMap)
+{
+  std::string identifierType;
+  std::string identifier;
+
+  // Inject list of known metadata sources for reliable results
+  const std::shared_ptr<CAdvancedSettings> advancedSettings =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  ASSERT_TRUE(advancedSettings != nullptr);
+
+  advancedSettings->m_videoScannerMetadataSources = {"tmdb"};
+
+  CUtil::FilenameAttributeMap emptyAttrs;
+  EXPECT_FALSE(CUtil::GetFilenameIdentifier(emptyAttrs, identifierType, identifier));
+
+  CUtil::FilenameAttributeMap attrs = {{"edition", "test"}};
+  EXPECT_FALSE(CUtil::GetFilenameIdentifier(attrs, identifierType, identifier));
+
+  attrs = {{"foo", "bar"}};
+  EXPECT_FALSE(CUtil::GetFilenameIdentifier(attrs, identifierType, identifier));
+
+  // the suffix "id" is removed from the key
+  attrs = CUtil::FilenameAttributeMap{{"tmdb", "123"}};
+  EXPECT_TRUE(CUtil::GetFilenameIdentifier(attrs, identifierType, identifier));
+  EXPECT_EQ("tmdb", identifierType);
+  EXPECT_EQ("123", identifier);
+
+  attrs = CUtil::FilenameAttributeMap{{"tmdbid", "123"}};
+  EXPECT_TRUE(CUtil::GetFilenameIdentifier(attrs, identifierType, identifier));
+  EXPECT_EQ("tmdb", identifierType);
+  EXPECT_EQ("123", identifier);
+
+  // The value must be alphanum.
+  attrs = {{"tmdb", "test-12 3"}};
+  EXPECT_FALSE(CUtil::GetFilenameIdentifier(attrs, identifierType, identifier));
 }
 
 struct TestUtilCleanFilenameAttributesData

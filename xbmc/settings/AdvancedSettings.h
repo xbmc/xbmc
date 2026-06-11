@@ -20,6 +20,7 @@
 #include <functional>
 #include <map>
 #include <string>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -230,7 +231,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_fullScreenOnMovieStart;
     std::string m_cachePath;
     std::string m_videoCleanDateTimeRegExp;
-    std::string m_videoFilenameIdentifierRegExp;
     std::string m_videoFilenameAttributePairsRegExp;
     std::vector<std::string> m_videoCleanStringRegExps;
     std::vector<std::string> m_videoExcludeFromListingRegExps;
@@ -295,6 +295,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     bool m_bVideoScannerIgnoreErrors;
     int m_iVideoLibraryDateAdded;
+    std::unordered_set<std::string> m_videoScannerMetadataSources;
 
     bool m_caseSensitiveLocalArtMatch{true};
     int m_minimumEpisodePlaylistDuration; // seconds
@@ -430,4 +431,5 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     mutable CCriticalSection m_listCritSection;
     std::map<int, AdvancedSettingsCallback> m_settingsLoadedCallbacks;
+    std::string m_metadataSourcesPriv;
 };

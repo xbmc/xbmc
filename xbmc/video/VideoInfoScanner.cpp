@@ -927,10 +927,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
     if (m_handle)
       m_handle->SetText(pItem->GetMovieName(bDirNames));
 
-    //! @todo: do something about edition values slightly different from db version types due to
+    const auto filenameAttributes =
+        CUtil::GetFilenameAttributePairs(URIUtils::GetFileName(pItem->GetPath()), &m_regexpCache);
+
+    //! @todo: do something about edition values slightly different from db due to
     //! available filesystem characters. ex. "directors cut" in file name vs "Director's Cut"
-    const std::string editionFromFilename{
-        CUtil::GetFilenameEdition(URIUtils::GetFileName(pItem->GetPath()), &m_regexpCache)};
+    const std::string editionFromFilename{CUtil::GetFilenameEdition(filenameAttributes)};
 
     // An edition extracted from the filename is applied only when an asset title hasn't been set yet (NFO wins).
     const auto applyEdition = [&editionFromFilename](CFileItem* item)
@@ -1065,7 +1067,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     std::string identifierType;
     std::string identifier;
     if (info2->IsPython() &&
-        CUtil::GetFilenameIdentifier(movieTitle, identifierType, identifier, &m_regexpCache))
+        CUtil::GetFilenameIdentifier(filenameAttributes, identifierType, identifier))
     {
       const ADDON::CScraper::UniqueIDs uniqueIDs{{identifierType, identifier}};
       if (GetDetails(pItem, uniqueIDs, url, info2,
