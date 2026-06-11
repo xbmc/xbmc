@@ -552,16 +552,6 @@ bool CUtil::GetFilenameIdentifier(const std::string& fileName,
                                   std::string& identifier,
                                   KODI::REGEXP::RegExpCache* cache)
 {
-  std::string match;
-  return GetFilenameIdentifier(fileName, identifierType, identifier, match, cache);
-}
-
-bool CUtil::GetFilenameIdentifier(const std::string& fileName,
-                                  std::string& identifierType,
-                                  std::string& identifier,
-                                  std::string& match,
-                                  KODI::REGEXP::RegExpCache* cache)
-{
   std::shared_ptr<CRegExp> reIdentifier;
 
   const std::shared_ptr<CAdvancedSettings> advancedSettings =
@@ -578,7 +568,6 @@ bool CUtil::GetFilenameIdentifier(const std::string& fileName,
 
   if (reIdentifier->RegFind(fileName) >= 0)
   {
-    match = reIdentifier->GetMatch(0);
     identifierType = reIdentifier->GetMatch(1);
     identifier = reIdentifier->GetMatch(2);
     StringUtils::ToLower(identifierType);
@@ -620,11 +609,7 @@ void CUtil::CleanString(const std::string& strFileName,
   if (strFileName == "..")
    return;
 
-  std::string identifier;
-  std::string identifierType;
-  std::string identifierMatch;
-  if (GetFilenameIdentifier(strFileName, identifierType, identifier, identifierMatch, nullptr))
-    StringUtils::Replace(strTitleAndYear, identifierMatch, "");
+  CleanFilenameAttributes(strTitleAndYear, nullptr);
 
   const std::shared_ptr<CAdvancedSettings> advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
   const std::vector<std::string> &regexps = advancedSettings->m_videoCleanStringRegExps;

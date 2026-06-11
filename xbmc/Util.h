@@ -89,11 +89,6 @@ public:
                                     std::string& identifierType,
                                     std::string& identifier,
                                     KODI::REGEXP::RegExpCache* cache);
-  static bool GetFilenameIdentifier(const std::string& fileName,
-                                    std::string& identifierType,
-                                    std::string& identifier,
-                                    std::string& match,
-                                    KODI::REGEXP::RegExpCache* cache);
   static bool HasFilenameIdentifier(const std::string& fileName);
 
   static std::string GetFilenameEdition(const std::string& fileName,
