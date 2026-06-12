@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2026-01-21 09:42+0000\n"
+"PO-Revision-Date: 2026-06-11 02:16+0000\n"
 "Last-Translator: Massimo Pissarello <mapi68@gmail.com>\n"
 "Language-Team: Italian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/it_it/>\n"
 "Language: it_it\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.15.2\n"
+"X-Generator: Weblate 2026.6.1\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -223,7 +223,7 @@ msgstr "Elimina gruppo"
 
 msgctxt "#31047"
 msgid "Movie title format"
-msgstr ""
+msgstr "Formato del titolo del film"
 
 msgctxt "#31048"
 msgid "Available"
@@ -231,15 +231,15 @@ msgstr "Disponibile"
 
 msgctxt "#31049"
 msgid "Original title"
-msgstr ""
+msgstr "Titolo originale"
 
 msgctxt "#31050"
 msgid "Original title (Localised title)"
-msgstr ""
+msgstr "Titolo originale (titolo localizzato)"
 
 msgctxt "#31051"
 msgid "Localised title (Original title)"
-msgstr ""
+msgstr "Titolo localizzato (titolo originale)"
 
 msgctxt "#31052"
 msgid "filtered"
@@ -483,7 +483,7 @@ msgstr "Stesso regista"
 
 msgctxt "#31124"
 msgid "Media Details"
-msgstr ""
+msgstr "Dettagli media"
 
 msgctxt "#31125"
 msgid "Press up for actor info"
@@ -799,17 +799,17 @@ msgstr "canali"
 #. Label to show the subtitle decoder name
 msgctxt "#31613"
 msgid "Subtitle decoder"
-msgstr ""
+msgstr "Decodificatore sottotitoli"
 
 #. Label to show the subtitle codec name
 msgctxt "#31614"
 msgid "Subtitle codec"
-msgstr ""
+msgstr "Codec sottotitoli"
 
 #. Label to show the subtitle language
 msgctxt "#31615"
 msgid "Subtitle language"
-msgstr ""
+msgstr "Lingua sottotitoli"
 
 #~ msgctxt "#31025"
 #~ msgid "No favourites found. You can add any item from media views to this list by using the context menu."
