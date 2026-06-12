@@ -884,5 +884,56 @@
       }
     ],
     "returns": null
+  },
+  "GUI.OnSkinUnloading": {
+    "type": "notification",
+    "description": "The current skin is about to be unloaded.",
+    "params": [
+      {
+        "name": "sender",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "data",
+        "type": "null",
+        "required": true
+      }
+    ],
+    "returns": null
+  },
+  "GUI.OnSkinLoaded": {
+    "type": "notification",
+    "description": "A skin has been loaded.",
+    "params": [
+      {
+        "name": "sender",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "data",
+        "type": "null",
+        "required": true
+      }
+    ],
+    "returns": null
+  },
+  "GUI.OnSkinLoadFailed": {
+    "type": "notification",
+    "description": "A skin failed to load.",
+    "params": [
+      {
+        "name": "sender",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "data",
+        "type": "null",
+        "required": true
+      }
+    ],
+    "returns": null
   }
 }
