@@ -177,7 +177,7 @@ libva: libdrm $(LIBVA_DEPS)
 libxml2: $(ZLIB)
 libxslt: libxml2
 libzip: bzip2 gnutls $(ZLIB)
-mariadb: openssl $(ICONV) $(ZLIB)
+mariadb: openssl $(ICONV) $(ZLIB) zstd
 mesa: libdrm $(MESA_DEPS) $(ZLIB)
 nettle: gmp
 openssl: $(ZLIB)
