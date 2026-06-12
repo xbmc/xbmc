@@ -398,6 +398,8 @@ int CGUIDialogVideoManager::ChooseVideoAsset(const std::shared_ptr<CFileItem>& i
   //! @todo db refactor: should not be version, but asset
   CFileItemList list;
   videodb.GetVideoVersionTypes(itemType, assetType, list);
+  const std::string origAssetTitle =
+      item->HasVideoInfoTag() ? item->GetVideoInfoTag()->GetAssetInfo().GetTitle() : "";
 
   int assetId{-1};
   while (true)
@@ -406,6 +408,8 @@ int CGUIDialogVideoManager::ChooseVideoAsset(const std::shared_ptr<CFileItem>& i
 
     dialog->Reset();
     dialog->SetItems(list);
+    if (!origAssetTitle.empty())
+      dialog->SetSelected(origAssetTitle);
     dialog->SetHeading(dialogHeadingMsgId);
     dialog->EnableButton(true, dialogButtonMsgId);
     dialog->Open();
