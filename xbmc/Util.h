@@ -95,6 +95,11 @@ public:
                                     std::string& match,
                                     KODI::REGEXP::RegExpCache* cache);
   static bool HasFilenameIdentifier(const std::string& fileName);
+
+  static std::string GetFilenameEdition(const std::string& fileName,
+                                        KODI::REGEXP::RegExpCache* cache);
+  static std::string GetFilenameEdition(const FilenameAttributeMap& attributes);
+
   static std::string GetTitleFromPath(const CURL& url, bool bIsFolder = false);
   static std::string GetTitleFromPath(const std::string& strFileNameAndPath, bool bIsFolder = false);
 

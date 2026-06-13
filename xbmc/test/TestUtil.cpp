@@ -204,6 +204,26 @@ INSTANTIATE_TEST_SUITE_P(TestUtil,
                          TestUtilFilenameAttributePairs,
                          ValuesIn(filenameAttributePairsTests));
 
+TEST(TestUtil, GetFilenameEditionMap)
+{
+  CUtil::FilenameAttributeMap attrs = {{"edition", "Director's Cut"}, {"foo", "bar"}};
+  EXPECT_EQ("Director's Cut", CUtil::GetFilenameEdition(attrs));
+
+  attrs = {{"foo", "bar"}, {"edition", "Director's Cut"}};
+  EXPECT_EQ("Director's Cut", CUtil::GetFilenameEdition(attrs));
+
+  CUtil::FilenameAttributeMap emptyAttrs;
+  EXPECT_EQ("", CUtil::GetFilenameEdition(emptyAttrs));
+}
+
+TEST(TestUtil, GetFilenameEditionString)
+{
+  EXPECT_EQ("Director's Cut",
+            CUtil::GetFilenameEdition("Some.MovieName[edition=Director's Cut].mkv", nullptr));
+  EXPECT_EQ("", CUtil::GetFilenameEdition("Some.MovieName[foo=bar].mkv", nullptr));
+  EXPECT_EQ("", CUtil::GetFilenameEdition("Some.MovieName.mkv", nullptr));
+}
+
 struct TestUtilCleanFilenameAttributesData
 {
   std::string input;

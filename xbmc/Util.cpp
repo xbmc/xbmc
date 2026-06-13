@@ -109,6 +109,7 @@
 #include <ranges>
 #include <sstream>
 #include <string>
+#include <string_view>
 #include <unordered_set>
 #include <vector>
 
@@ -125,6 +126,8 @@ using namespace KODI;
 #if !defined(TARGET_WINDOWS)
 unsigned int CUtil::s_randomSeed = time(NULL);
 #endif
+
+constexpr std::string_view FILENAME_EDITION = "edition";
 
 namespace
 {
@@ -589,6 +592,20 @@ bool CUtil::HasFilenameIdentifier(const std::string& fileName)
   std::string identifierType;
   std::string identifier;
   return GetFilenameIdentifier(fileName, identifierType, identifier, nullptr);
+}
+
+std::string CUtil::GetFilenameEdition(const std::string& fileName, KODI::REGEXP::RegExpCache* cache)
+{
+  return GetFilenameEdition(GetFilenameAttributePairs(fileName, cache));
+}
+
+std::string CUtil::GetFilenameEdition(const FilenameAttributeMap& attributes)
+{
+  auto it = attributes.find(FILENAME_EDITION);
+  if (it != attributes.end())
+    return it->second;
+
+  return "";
 }
 
 void CUtil::CleanString(const std::string& strFileName,
