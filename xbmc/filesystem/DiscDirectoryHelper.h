@@ -15,7 +15,6 @@
 #include <chrono>
 #include <cstdint>
 #include <map>
-#include <memory>
 #include <set>
 #include <string>
 #include <vector>
@@ -125,11 +124,14 @@ struct ClipInfo
 
 using PlaylistMap = std::map<unsigned int, PlaylistInformation>;
 using ClipMap = std::map<unsigned int, ClipInfo>;
+using Episode = KODI::VIDEO::EPISODE;
+using Episodes = std::vector<KODI::VIDEO::EPISODE>;
 
 static constexpr std::chrono::milliseconds MIN_EPISODE_DURATION{10 * 60 * 1000}; // 10 minutes
 static constexpr std::chrono::milliseconds MAX_EPISODE_DIFFERENCE{30 * 1000}; // 30 seconds
 static constexpr std::chrono::milliseconds MIN_SPECIAL_DURATION{5 * 60 * 1000}; // 5 minutes
-static constexpr unsigned int MAIN_TITLE_LENGTH_PERCENT{70};
+static constexpr int DURATION_TOLERANCE_PERCENT{20};
+static constexpr int MAIN_TITLE_LENGTH_PERCENT{70};
 
 class CDiscDirectoryHelper
 {
@@ -149,6 +151,7 @@ class CDiscDirectoryHelper
   {
     unsigned int playlist{0};
     unsigned int index{0};
+    unsigned int playAllPlaylistEpisodesStartOffset{0};
     std::chrono::milliseconds duration{0ms};
     std::chrono::milliseconds durationDelta{0ms};
     int multiple{0};
@@ -183,7 +186,7 @@ public:
                            CFileItemList& items,
                            const CFileItemList& allTitles,
                            int episodeIndex,
-                           const std::vector<KODI::VIDEO::EPISODE>& episodesOnDisc,
+                           const Episodes& episodesOnDisc,
                            const ClipMap& clips,
                            const PlaylistMap& playlists);
 
@@ -217,68 +220,36 @@ protected:
                                 bool silent = false);
 
 private:
-  void InitialisePlaylistSearch(int episodeIndex,
-                                const std::vector<KODI::VIDEO::EPISODE>& episodesOnDisc);
-  bool IsPotentialPlayAllPlaylist(const PlaylistInformation& playlistInformation) const;
-  static bool ClipQualifies(const ClipInfo& clipInformation,
-                            unsigned int clip,
-                            const PlaylistInformation& playlistInformation,
-                            bool& allowBeginningOrEnd,
-                            bool allowBeginningAndEnd);
-  bool IsValidSingleEpisodePlaylist(const PlaylistInformation& singleEpisodePlaylistInformation,
-                                    unsigned int clip) const;
-  bool CheckClip(const PlaylistMap& playlists,
-                 unsigned int playlistNumber,
-                 const ClipInfo& clipInformation,
-                 unsigned int clip,
-                 std::vector<unsigned int>& playAllPlaylistMap) const;
-  bool ProcessPlaylistClips(
-      const ClipMap& clips,
-      const PlaylistMap& playlists,
-      unsigned int playlistNumber,
-      const PlaylistInformation& playlistInformation,
-      std::map<unsigned int, std::vector<unsigned int>>& playAllPlaylistClipMap) const;
+  void InitialisePlaylistSearch(int episodeIndex, const Episodes& episodesOnDisc);
   void StorePlayAllPlaylist(
       unsigned int playlistNumber,
+      unsigned int playAllPlaylistEpisodesStartOffset,
       const PlaylistInformation& playlistInformation,
       const std::map<unsigned int, std::vector<unsigned int>>& playAllPlaylistClipMap);
   void FindPlayAllPlaylists(const ClipMap& clips, const PlaylistMap& playlists);
-  void FindGroups(const PlaylistMap& playlists);
-  void UsePlayAllPlaylistMethod(unsigned int episodeIndex, const PlaylistMap& playlists);
-  void UseLongOrCommonMethodForSingleEpisode(unsigned int episodeIndex,
-                                             const PlaylistMap& playlists);
+  void FindGroups(const PlaylistMap& playlists, const Episodes& episodesOnDisc);
+  void UsePlayAllPlaylistMethod(int episodeIndex, const PlaylistMap& playlists);
+  void UseLongOrCommonMethodForSingleEpisode(int episodeIndex, const PlaylistMap& playlists);
   static std::vector<std::vector<CandidatePlaylistInformation>> GetGroupsWithoutDuplicates(
       const std::vector<std::vector<CandidatePlaylistInformation>>& groups);
-  void GetPlaylistsFromGroup(unsigned int episodeIndex,
+  void GetPlaylistsFromGroup(int episodeIndex,
                              const std::vector<CandidatePlaylistInformation>& group);
-  void UseGroupMethod(unsigned int episodeIndex,
-                      const std::vector<KODI::VIDEO::EPISODE>& episodesOnDisc);
-  void UseTotalMethod(unsigned int episodeIndex,
-                      const std::vector<KODI::VIDEO::EPISODE>& episodesOnDisc,
-                      const PlaylistMap& playlists);
-  static int CalculateMultiple(std::chrono::milliseconds duration,
-                               std::chrono::milliseconds averageShortest,
-                               double multiplePercent);
-  void UseGroupsWithMultiplesMethod(unsigned int episodeIndex,
-                                    const std::vector<KODI::VIDEO::EPISODE>& episodesOnDisc);
-  void ChooseSingleBestPlaylist(const std::vector<KODI::VIDEO::EPISODE>& episodesOnDisc);
+  void UseGroupMethod(int episodeIndex, const Episodes& episodesOnDisc);
+  static std::chrono::milliseconds CalculateAverageOfShortEpisodes(
+      const std::vector<CandidatePlaylistInformation>& group);
+  void UseGroupsWithMultiplesMethod(int episodeIndex, const Episodes& episodesOnDisc);
+  void ChooseSingleBestPlaylist(const Episodes& episodesOnDisc);
   void AddIdenticalPlaylists(const PlaylistMap& playlists);
-  void FindCandidatePlaylists(const std::vector<KODI::VIDEO::EPISODE>& episodesOnDisc,
-                              unsigned int episodeIndex,
+  void FindCandidatePlaylists(const Episodes& episodesOnDisc,
+                              int episodeIndex,
                               const PlaylistMap& playlists);
   void FindSpecials(const PlaylistMap& playlists);
-  static void GenerateItem(const CURL& url,
-                           const std::shared_ptr<CFileItem>& item,
-                           unsigned int playlist,
-                           const PlaylistMap& playlists,
-                           const KODI::VIDEO::EPISODE& episode,
-                           IsSpecial isSpecial);
-  void EndPlaylistSearch() const;
+  static void EndPlaylistSearch();
   void PopulateFileItems(const CURL& url,
                          CFileItemList& items,
                          const CFileItemList& allTitles,
                          int episodeIndex,
-                         const std::vector<KODI::VIDEO::EPISODE>& episodesOnDisc,
+                         const Episodes& episodesOnDisc,
                          const PlaylistMap& playlists) const;
 
   AllEpisodes m_allEpisodes{AllEpisodes::SINGLE};
