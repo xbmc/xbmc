@@ -210,36 +210,38 @@ bool CPeripheralAddon::Register(unsigned int peripheralIndex, const PeripheralPt
 void CPeripheralAddon::UnregisterRemovedDevices(const PeripheralScanResults& results,
                                                 PeripheralVector& removedPeripherals)
 {
-  std::vector<unsigned int> removedIndexes;
+  PeripheralVector removed;
 
   {
     std::unique_lock lock(m_critSection);
-    for (auto& it : m_peripherals)
+    for (auto it = m_peripherals.begin(); it != m_peripherals.end();)
     {
-      const PeripheralPtr& peripheral = it.second;
+      const PeripheralPtr& peripheral = it->second;
       PeripheralScanResult updatedDevice(PERIPHERAL_BUS_ADDON);
       if (!results.GetDeviceOnLocation(peripheral->Location(), &updatedDevice) ||
           *peripheral != updatedDevice)
       {
-        // Device removed
-        removedIndexes.push_back(it.first);
+        removed.emplace_back(peripheral);
+        it = m_peripherals.erase(it);
+      }
+      else
+      {
+        ++it;
       }
     }
   }
 
-  for (auto index : removedIndexes)
+  for (const auto& peripheral : removed)
   {
-    auto it = m_peripherals.find(index);
-    const PeripheralPtr& peripheral = it->second;
     CLog::Log(LOGINFO, "{} - {} device removed from {}: {} ({}:{})", __FUNCTION__,
               PeripheralTypeTranslator::TypeToString(peripheral->Type()),
               peripheral->FileLocation(), peripheral->DeviceName(), peripheral->VendorIdAsString(),
               peripheral->ProductIdAsString());
     UnregisterButtonMap(peripheral.get());
     peripheral->OnDeviceRemoved();
-    removedPeripherals.push_back(peripheral);
-    m_peripherals.erase(it);
   }
+
+  removedPeripherals.insert(removedPeripherals.end(), removed.begin(), removed.end());
 }
 
 bool CPeripheralAddon::HasFeature(const PeripheralFeature feature) const
@@ -471,11 +473,19 @@ bool CPeripheralAddon::ProcessEvents(void)
       }
     }
 
-    for (const auto& it : m_peripherals)
+    std::vector<std::shared_ptr<CPeripheralJoystick>> joysticks;
     {
-      if (it.second->Type() == PERIPHERAL_JOYSTICK)
-        std::static_pointer_cast<CPeripheralJoystick>(it.second)->OnInputFrame();
+      std::unique_lock lock(m_critSection);
+      joysticks.reserve(m_peripherals.size());
+      for (const auto& it : m_peripherals)
+      {
+        if (it.second->Type() == PERIPHERAL_JOYSTICK)
+          joysticks.emplace_back(std::static_pointer_cast<CPeripheralJoystick>(it.second));
+      }
     }
+
+    for (const auto& joystick : joysticks)
+      joystick->OnInputFrame();
 
     m_ifc.peripheral->toAddon->free_events(m_ifc.peripheral, eventCount, pEvents);
 
