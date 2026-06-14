@@ -10,6 +10,7 @@
 #include "Util.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "video/FilenameAttributes.h"
 
 #include <gtest/gtest-param-test.h>
 #include <gtest/gtest.h>
@@ -17,6 +18,8 @@
 using ::testing::Test;
 using ::testing::ValuesIn;
 using ::testing::WithParamInterface;
+
+using namespace KODI::VIDEO;
 
 TEST(TestUtil, GetQualifiedFilename)
 {
@@ -129,7 +132,7 @@ TEST_P(TestUtilCleanString, GetFilenameIdentifier)
 {
   std::string identifierType;
   std::string identifier;
-  CUtil::GetFilenameIdentifier(GetParam().input, identifierType, identifier, nullptr);
+  CFilenameAttributes(GetParam().input, nullptr).GetIdentifier(identifierType, identifier);
   EXPECT_EQ(identifierType, GetParam().expIdentifierType);
   EXPECT_EQ(identifier, GetParam().expIdentifier);
 }
@@ -165,149 +168,6 @@ const TestUtilCleanStringData values[] = {
     {"Some (Director Cut).BDRemux.mkv", true, "Some (Director Cut)", "Some (Director Cut)", ""}};
 
 INSTANTIATE_TEST_SUITE_P(URL, TestUtilCleanString, ValuesIn(values));
-
-struct TestUtilFilenameAttributesData
-{
-  std::string input;
-  CUtil::FilenameAttributeMap expected;
-};
-
-std::ostream& operator<<(std::ostream& os, const TestUtilFilenameAttributesData& rhs)
-{
-  return os << rhs.input;
-}
-
-class TestUtilFilenameAttributePairs : public Test,
-                                       public WithParamInterface<TestUtilFilenameAttributesData>
-{
-};
-
-TEST_P(TestUtilFilenameAttributePairs, RetrieveAttributes)
-{
-  auto& params = GetParam();
-  EXPECT_EQ(params.expected, CUtil::GetFilenameAttributePairs(params.input, nullptr));
-}
-
-const TestUtilFilenameAttributesData filenameAttributePairsTests[] = {
-    {"Some.MovieName.mkv", {}},
-    // separators and braces
-    {"Some.MovieName[key=value].mkv", {{"key", "value"}}},
-    {"Some.MovieName[key-value].mkv", {{"key", "value"}}},
-    {"Some.MovieName{key=value}.mkv", {{"key", "value"}}},
-    {"Some.MovieName{key-value}.mkv", {{"key", "value"}}},
-    // trim
-    {"Some.MovieName[ key  =   value  ].mkv", {{"key", "value"}}},
-    // multiple matches
-    {"Some.MovieName [key1=value1]{key2 = value2}.mkv", {{"key1", "value1"}, {"key2", "value2"}}},
-    {"Some.MovieName [key1=value1] foobar {key2 = value2}.mkv",
-     {{"key1", "value1"}, {"key2", "value2"}}},
-    // case
-    {"Some.MovieName[KeY=vAlUe].mkv", {{"key", "vAlUe"}}},
-    // repeated key
-    {"Some.MovieName[key=value1][key=value2].mkv", {{"key", "value2"}}},
-    // no match
-    {"Some.MovieName.key=value.mkv", {}},
-    {"Some.MovieName[key=].mkv", {}},
-    {"Some.MovieName[=value].mkv", {}},
-    {"", {}},
-};
-
-INSTANTIATE_TEST_SUITE_P(TestUtil,
-                         TestUtilFilenameAttributePairs,
-                         ValuesIn(filenameAttributePairsTests));
-
-TEST(TestUtil, GetFilenameEditionMap)
-{
-  CUtil::FilenameAttributeMap attrs = {{"edition", "Director's Cut"}, {"foo", "bar"}};
-  EXPECT_EQ("Director's Cut", CUtil::GetFilenameEdition(attrs));
-
-  attrs = {{"foo", "bar"}, {"edition", "Director's Cut"}};
-  EXPECT_EQ("Director's Cut", CUtil::GetFilenameEdition(attrs));
-
-  CUtil::FilenameAttributeMap emptyAttrs;
-  EXPECT_EQ("", CUtil::GetFilenameEdition(emptyAttrs));
-}
-
-TEST(TestUtil, GetFilenameEditionString)
-{
-  EXPECT_EQ("Director's Cut",
-            CUtil::GetFilenameEdition("Some.MovieName[edition=Director's Cut].mkv", nullptr));
-  EXPECT_EQ("", CUtil::GetFilenameEdition("Some.MovieName[foo=bar].mkv", nullptr));
-  EXPECT_EQ("", CUtil::GetFilenameEdition("Some.MovieName.mkv", nullptr));
-}
-
-TEST(TestUtil, GetFilenameIdentifierMap)
-{
-  std::string identifierType;
-  std::string identifier;
-
-  // Inject list of known metadata sources for reliable results
-  const std::shared_ptr<CAdvancedSettings> advancedSettings =
-      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
-  ASSERT_TRUE(advancedSettings != nullptr);
-
-  advancedSettings->m_videoScannerMetadataSources = {"tmdb"};
-
-  CUtil::FilenameAttributeMap emptyAttrs;
-  EXPECT_FALSE(CUtil::GetFilenameIdentifier(emptyAttrs, identifierType, identifier));
-
-  CUtil::FilenameAttributeMap attrs = {{"edition", "test"}};
-  EXPECT_FALSE(CUtil::GetFilenameIdentifier(attrs, identifierType, identifier));
-
-  attrs = {{"foo", "bar"}};
-  EXPECT_FALSE(CUtil::GetFilenameIdentifier(attrs, identifierType, identifier));
-
-  // the suffix "id" is removed from the key
-  attrs = CUtil::FilenameAttributeMap{{"tmdb", "123"}};
-  EXPECT_TRUE(CUtil::GetFilenameIdentifier(attrs, identifierType, identifier));
-  EXPECT_EQ("tmdb", identifierType);
-  EXPECT_EQ("123", identifier);
-
-  attrs = CUtil::FilenameAttributeMap{{"tmdbid", "123"}};
-  EXPECT_TRUE(CUtil::GetFilenameIdentifier(attrs, identifierType, identifier));
-  EXPECT_EQ("tmdb", identifierType);
-  EXPECT_EQ("123", identifier);
-
-  // The value must be alphanum.
-  attrs = {{"tmdb", "test-12 3"}};
-  EXPECT_FALSE(CUtil::GetFilenameIdentifier(attrs, identifierType, identifier));
-}
-
-struct TestUtilCleanFilenameAttributesData
-{
-  std::string input;
-  std::string expected;
-};
-
-std::ostream& operator<<(std::ostream& os, const TestUtilCleanFilenameAttributesData& rhs)
-{
-  return os << rhs.input;
-}
-
-class TestUtilCleanFilenameAttributePairs
-  : public Test,
-    public WithParamInterface<TestUtilCleanFilenameAttributesData>
-{
-};
-
-TEST_P(TestUtilCleanFilenameAttributePairs, Clean)
-{
-  auto& params = GetParam();
-  std::string file = params.input;
-  CUtil::CleanFilenameAttributePairs(file, nullptr);
-  EXPECT_EQ(params.expected, file);
-}
-
-const TestUtilCleanFilenameAttributesData cleanFilenameAttributePairsTests[] = {
-    {"Some.MovieName[key=value].mkv", "Some.MovieName.mkv"},
-    {"Some.MovieName [key1=value1]{key2 = value2}.mkv", "Some.MovieName .mkv"},
-    {"Some.MovieName [key1=value1] foobar {key2 = value2}.mkv", "Some.MovieName  foobar .mkv"},
-    {"Some.MovieName.mkv", "Some.MovieName.mkv"},
-};
-
-INSTANTIATE_TEST_SUITE_P(TestUtil,
-                         TestUtilCleanFilenameAttributePairs,
-                         ValuesIn(cleanFilenameAttributePairsTests));
 
 struct TestUtilSplitParamsData
 {

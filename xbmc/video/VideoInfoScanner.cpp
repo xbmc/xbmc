@@ -52,6 +52,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+#include "video/FilenameAttributes.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
@@ -859,7 +860,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     std::string identifier;
     long lResult = -1;
     if (info2->IsPython() &&
-        CUtil::GetFilenameIdentifier(movieTitle, identifierType, identifier, &m_regexpCache))
+        CFilenameAttributes(movieTitle, &m_regexpCache).GetIdentifier(identifierType, identifier))
     {
       const ADDON::CScraper::UniqueIDs uniqueIDs{{identifierType, identifier}};
       if (GetDetails(pItem, uniqueIDs, url, info2,
@@ -927,12 +928,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
     if (m_handle)
       m_handle->SetText(pItem->GetMovieName(bDirNames));
 
-    const auto filenameAttributes =
-        CUtil::GetFilenameAttributePairs(URIUtils::GetFileName(pItem->GetPath()), &m_regexpCache);
+    const CFilenameAttributes filenameAttributes(URIUtils::GetFileName(pItem->GetPath()),
+                                                 &m_regexpCache);
 
     //! @todo: do something about edition values slightly different from db due to
     //! available filesystem characters. ex. "directors cut" in file name vs "Director's Cut"
-    const std::string editionFromFilename{CUtil::GetFilenameEdition(filenameAttributes)};
+    const std::string editionFromFilename{filenameAttributes.GetEdition()};
 
     // An edition extracted from the filename is applied only when an asset title hasn't been set yet (NFO wins).
     const auto applyEdition = [&editionFromFilename](CFileItem* item)
@@ -1066,8 +1067,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     std::string identifierType;
     std::string identifier;
-    if (info2->IsPython() &&
-        CUtil::GetFilenameIdentifier(filenameAttributes, identifierType, identifier))
+    if (info2->IsPython() && filenameAttributes.GetIdentifier(identifierType, identifier))
     {
       const ADDON::CScraper::UniqueIDs uniqueIDs{{identifierType, identifier}};
       if (GetDetails(pItem, uniqueIDs, url, info2,
@@ -1172,7 +1172,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     std::string identifierType;
     std::string identifier;
     if (info2->IsPython() &&
-        CUtil::GetFilenameIdentifier(movieTitle, identifierType, identifier, &m_regexpCache))
+        CFilenameAttributes(movieTitle, &m_regexpCache).GetIdentifier(identifierType, identifier))
     {
       const ADDON::CScraper::UniqueIDs uniqueIDs{{identifierType, identifier}};
       if (GetDetails(pItem, uniqueIDs, url, info2,

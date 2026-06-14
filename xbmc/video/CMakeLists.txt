@@ -1,5 +1,6 @@
 set(SOURCES Bookmark.cpp
             ContextMenus.cpp
+            FilenameAttributes.cpp
             GUIViewStateVideo.cpp
             PlayerController.cpp
             SetInfoTag.cpp
@@ -23,6 +24,7 @@ set(SOURCES Bookmark.cpp
 set(HEADERS Bookmark.h
             ContextMenus.h
             Episode.h
+            FilenameAttributes.h
             GUIViewStateVideo.h
             PlayerController.h
             SetInfoTag.h
