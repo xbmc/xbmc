@@ -2299,18 +2299,15 @@ int CVideoDatabase::SetDetailsForMovie(CVideoInfoTag& details,
       idSet = AddSet(details.m_set.GetTitle(), details.m_set.GetOverview(),
                      details.m_set.GetOriginalTitle(), details.GetUpdateSetOverview());
       details.m_set.SetID(idSet);
-      // add art if not available
-      if (!HasArtForItem(idSet, MediaTypeVideoCollection))
+      for (const auto& [type, url] : artwork)
       {
-        for (const auto& [type, url] : artwork)
+        if (!StringUtils::StartsWith(type, "set."))
+          continue;
+        if (!SetArtForItem(idSet, MediaTypeVideoCollection, type.substr(4), url))
         {
-          if (StringUtils::StartsWith(type, "set.") &&
-              !SetArtForItem(idSet, MediaTypeVideoCollection, type.substr(4), url))
-          {
-            if (!inTransaction)
-              RollbackTransaction();
-            return -1;
-          }
+          if (!inTransaction)
+            RollbackTransaction();
+          return -1;
         }
       }
     }
