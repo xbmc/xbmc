@@ -159,8 +159,12 @@ public:
 
   /*!
    * @brief Called when this device is removed, before calling the destructor.
+   *
+   * @note Overrides must call the base implementation, which releases the
+   *       agent controller to break the reference cycle that would otherwise
+   *       keep this peripheral alive after removal.
    */
-  virtual void OnDeviceRemoved(void) {}
+  virtual void OnDeviceRemoved(void);
 
   /*!
    * @brief Get all subdevices if this device is multifunctional.
