@@ -1144,7 +1144,7 @@ constexpr std::array<InfoMap, 10> player_times = {{
 ///   \table_row3{   <b>`Player.Process(audiolivebitrate)`</b>,
 ///                  \anchor Player_Process_audiolivebitrate
 ///                  _string_,
-///     @return The live audio bitrate of the currently playing item in Kb/s.
+///     @return The live audio bitrate of the currently playing item\, including the localized speed unit of measure (ex. Kb/s)
 ///     <p><hr>
 ///     @skinning_v22 **[New Infolabel]** \link Player_Process_audiolivebitrate `Player.Process(audiolivebitrate)`\endlink
 ///     <p>
@@ -1160,7 +1160,7 @@ constexpr std::array<InfoMap, 10> player_times = {{
 ///   \table_row3{   <b>`Player.Process(audioqueuedatalevel)`</b>,
 ///                  \anchor Player_Process_audioqueuedatalevel
 ///                  _string_,
-///     @return The audio queue data level of the currently playing as a percentage.
+///     @return The audio queue data level of the currently playing item as a percentage.
 ///     <p><hr>
 ///     @skinning_v22 **[New Infolabel]** \link Player_Process_audioqueuedatalevel `Player.Process(audioqueuedatalevel)`\endlink
 ///     <p>
@@ -1168,7 +1168,7 @@ constexpr std::array<InfoMap, 10> player_times = {{
 ///   \table_row3{   <b>`Player.Process(videolivebitrate)`</b>,
 ///                  \anchor Player_Process_videolivebitrate
 ///                  _string_,
-///     @return The live video bitrate of the currently playing item in Mb/s.
+///     @return The live video bitrate of the currently playing item\, including the localized speed unit of measure (ex. Mb/s)
 ///     <p><hr>
 ///     @skinning_v22 **[New Infolabel]** \link Player_Process_videolivebitrate `Player.Process(videolivebitrate)`\endlink
 ///     <p>
@@ -1184,7 +1184,7 @@ constexpr std::array<InfoMap, 10> player_times = {{
 ///   \table_row3{   <b>`Player.Process(videoqueuedatalevel)`</b>,
 ///                  \anchor Player_Process_videoqueuedatalevel
 ///                  _string_,
-///     @return The video queue data level of the currently playing as a percentage.
+///     @return The video queue data level of the currently playing item as a percentage.
 ///     <p><hr>
 ///     @skinning_v22 **[New Infolabel]** \link Player_Process_videoqueuedatalevel `Player.Process(videoqueuedatalevel)`\endlink
 ///     <p>
@@ -3981,8 +3981,7 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///   \table_row3{   <b>`VideoPlayer.AudioLanguageEx`</b>,
 ///                  \anchor VideoPlayer_AudioLanguageEx
 ///                  _string_,
-///     @return The English name of the language of the audio stream of the currently
-///     playing video (e.g. "English"\, "German"\, "French").
+///     @return The English name of the language of the current audio stream of the currently playing item.
 ///     <p><hr>
 ///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_AudioLanguageEx `VideoPlayer.AudioLanguageEx`\endlink
 ///     <p>
@@ -4009,8 +4008,7 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///   \table_row3{   <b>`VideoPlayer.SubtitleLanguageEx`</b>,
 ///                  \anchor VideoPlayer_SubtitleLanguageEx
 ///                  _string_,
-///     @return The English name of the language of the subtitle stream of the currently
-///     playing video (e.g. "English"\, "German"\, "French").
+///     @return The English name of the language of the current subtitle stream of the currently playing item.
 ///     <p><hr>
 ///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_SubtitleLanguageEx `VideoPlayer.SubtitleLanguageEx`\endlink
 ///     <p>
