@@ -1168,7 +1168,7 @@ constexpr std::array<InfoMap, 10> player_times = {{
 ///   \table_row3{   <b>`Player.Process(videolivebitrate)`</b>,
 ///                  \anchor Player_Process_videolivebitrate
 ///                  _string_,
-///     @return The live video bitrate of the currently playing item. Values below 1000 Kb/s are displayed in Kb/s, otherwise in Mb/s.
+///     @return The live video bitrate of the currently playing item in Mb/s.
 ///     <p><hr>
 ///     @skinning_v22 **[New Infolabel]** \link Player_Process_videolivebitrate `Player.Process(videolivebitrate)`\endlink
 ///     <p>
@@ -4006,13 +4006,13 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///     @skinning_v13 **[New Infolabel]** \link VideoPlayer_SubtitlesLanguage `VideoPlayer.SubtitlesLanguage`\endlink
 ///     <p>
 ///   }
-///   \table_row3{   <b>`VideoPlayer.SubtitlesLanguageEx`</b>,
-///                  \anchor VideoPlayer_SubtitlesLanguageEx
+///   \table_row3{   <b>`VideoPlayer.SubtitleLanguageEx`</b>,
+///                  \anchor VideoPlayer_SubtitleLanguageEx
 ///                  _string_,
 ///     @return The English name of the language of the subtitle stream of the currently
 ///     playing video (e.g. "English"\, "German"\, "French").
 ///     <p><hr>
-///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_SubtitlesLanguageEx `VideoPlayer.SubtitlesLanguageEx`\endlink
+///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_SubtitleLanguageEx `VideoPlayer.SubtitleLanguageEx`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.SubtitleCodec`</b>,
@@ -4044,12 +4044,12 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_SubtitleCodec `VideoPlayer.SubtitleCodec`\endlink
 ///     <p>
 ///   }
-///   \table_row3{   <b>`VideoPlayer.SubtitlesName`</b>,
-///                  \anchor VideoPlayer_SubtitlesName
+///   \table_row3{   <b>`VideoPlayer.SubtitleName`</b>,
+///                  \anchor VideoPlayer_SubtitleName
 ///                  _string_,
 ///     @return The name of the active subtitle stream of the currently playing video.
 ///     <p><hr>
-///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_SubtitlesName `VideoPlayer.SubtitlesName`\endlink
+///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_SubtitleName `VideoPlayer.SubtitleName`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.StereoscopicMode`</b>,
@@ -4348,9 +4348,9 @@ constexpr std::array<InfoMap, 88> videoplayer = {{
     {"hassubtitles",          VIDEOPLAYER_HASSUBTITLES},
     {"subtitlesenabled",      VIDEOPLAYER_SUBTITLESENABLED},
     {"subtitleslanguage",     VIDEOPLAYER_SUBTITLES_LANG},
-    {"subtitleslanguageex",   VIDEOPLAYER_SUBTITLES_LANG_EX},
+    {"subtitlelanguageex",    VIDEOPLAYER_SUBTITLE_LANG_EX},
     {"subtitlecodec",         VIDEOPLAYER_SUBTITLE_CODEC},
-    {"subtitlesname",         VIDEOPLAYER_SUBTITLES_NAME},
+    {"subtitlename",          VIDEOPLAYER_SUBTITLE_NAME},
     {"starttime",             VIDEOPLAYER_STARTTIME},
     {"endtime",               VIDEOPLAYER_ENDTIME},
     {"nexttitle",             VIDEOPLAYER_NEXT_TITLE},

@@ -17041,7 +17041,6 @@ msgid "Automatic menu selection"
 msgstr ""
 
 #. Bit rate unit of measure for the audio live bit rate info label (bits per second  / 1024)
-#. Also used for video live bit rate when below 1000 Kb/s
 #: xbmc/guilib/guiinfo/PlayerGUIInfo.cpp
 msgctxt "#25019"
 msgid "Kb/s"

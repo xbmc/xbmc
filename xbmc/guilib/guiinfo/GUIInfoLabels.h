@@ -437,8 +437,8 @@ constexpr uint32_t VISUALISATION_HAS_PRESETS         = 414;
 // unused id 415
 constexpr uint32_t VIDEOPLAYER_AUDIO_LANG_EX         = 416;
 constexpr uint32_t VIDEOPLAYER_AUDIO_NAME            = 417;
-constexpr uint32_t VIDEOPLAYER_SUBTITLES_LANG_EX     = 418;
-constexpr uint32_t VIDEOPLAYER_SUBTITLES_NAME        = 419;
+constexpr uint32_t VIDEOPLAYER_SUBTITLE_LANG_EX      = 418;
+constexpr uint32_t VIDEOPLAYER_SUBTITLE_NAME         = 419;
 
 constexpr uint32_t STRING_IS_EMPTY                   = 420;
 constexpr uint32_t STRING_IS_EQUAL                   = 421;

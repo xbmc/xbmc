@@ -363,21 +363,10 @@ bool CPlayerGUIInfo::GetLabel(std::string& value,
       value = std::to_string(CServiceBroker::GetDataCacheCore().GetAudioQueueDataLevel());
       return true;
     case PLAYER_PROCESS_VIDEO_LIVE_BITRATE:
-    {
-      int kbps = CServiceBroker::GetDataCacheCore().GetVideoLiveBitRate() / 1024;
-      if (kbps >= 1000)
-      {
-        value = StringUtils::Format(
-            "{:.1f}", CServiceBroker::GetDataCacheCore().GetVideoLiveBitRate() / 1048576.0f);
-        value += " " + CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25020);
-      }
-      else
-      {
-        value = std::to_string(kbps);
-        value += " " + CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25019);
-      }
+      value = StringUtils::Format(
+          "{:.1f}", CServiceBroker::GetDataCacheCore().GetVideoLiveBitRate() / 1048576.0);
+      value += " " + CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25020);
       return true;
-    }
     case PLAYER_PROCESS_VIDEO_QUEUE_LEVEL:
       value = std::to_string(CServiceBroker::GetDataCacheCore().GetVideoQueueLevel());
       return true;

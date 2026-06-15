@@ -639,13 +639,13 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
     case VIDEOPLAYER_SUBTITLE_CODEC:
       value = m_subtitleInfo.codecName;
       return true;
-    case VIDEOPLAYER_SUBTITLES_LANG_EX:
+    case VIDEOPLAYER_SUBTITLE_LANG_EX:
     {
       if (!g_LangCodeExpander.Lookup(m_subtitleInfo.language, value))
         value = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // Unknown
       return true;
     }
-    case VIDEOPLAYER_SUBTITLES_NAME:
+    case VIDEOPLAYER_SUBTITLE_NAME:
       value = m_subtitleInfo.name;
       return true;
     case VIDEOPLAYER_COVER:
