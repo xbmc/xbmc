@@ -407,6 +407,9 @@ void CAdvancedSettings::Initialize()
   m_caseSensitiveLocalArtMatch = true; // case sensitive local art matching
   m_bNoRemoteArtWithLocalScraper =
       false; // If local nfo file refers to online art, it will be retrieved
+  m_bRetrieveAllArtDuringScrape =
+      false; // If true, then all art is retrieved synchronously during scraping.
+             // If false (default) it is retrieved in the background asynchronously in a low priority thread.
 
   m_iEpgUpdateCheckInterval = 300; /* Check every X seconds, if EPG data need to be updated. This does not mean that
                                       every X seconds an EPG update is actually triggered, it's just the interval how
@@ -912,6 +915,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetInt(pElement, "minimumepisodeplaylistduration", m_minimumEpisodePlaylistDuration);
     XMLUtils::GetBoolean(pElement, "disableepisoderanges", m_disableEpisodeRanges);
     XMLUtils::GetBoolean(pElement, "noremoteartwithlocalscraper", m_bNoRemoteArtWithLocalScraper);
+    XMLUtils::GetBoolean(pElement, "retrieveallartduringscrape", m_bRetrieveAllArtDuringScrape);
   }
 
   pElement = pRootElement->FirstChildElement("videoscanner");

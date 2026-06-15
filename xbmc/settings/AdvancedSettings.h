@@ -299,6 +299,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_minimumEpisodePlaylistDuration; // seconds
     bool m_disableEpisodeRanges{false};
     bool m_bNoRemoteArtWithLocalScraper{false};
+    bool m_bRetrieveAllArtDuringScrape{false};
 
     CLangInfo::Tokens m_vecTokens;
 

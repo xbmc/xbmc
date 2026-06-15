@@ -1975,8 +1975,32 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     for (const auto& artType : artTypes)
     {
-      if (art.contains(artType))
+      if (!art.contains(artType))
+        continue;
+
+      if (!CServiceBroker::GetSettingsComponent()
+               ->GetAdvancedSettings()
+               ->m_bRetrieveAllArtDuringScrape)
+      {
         CServiceBroker::GetTextureCache()->BackgroundCacheImage(art[artType]);
+      }
+      else
+      {
+        const std::string& artUrl{art.at(artType)};
+
+        // Special images (embedded video frame extraction) are still cached asynchronously
+        IMAGE_FILES::CImageFileURL imageFileURL{artUrl};
+        if (imageFileURL.IsSpecialImage())
+        {
+          CServiceBroker::GetTextureCache()->BackgroundCacheImage(artUrl);
+          continue;
+        }
+
+        bool needsRecaching{false};
+        if (CServiceBroker::GetTextureCache()->CheckCachedImage(artUrl, needsRecaching).empty() ||
+            needsRecaching)
+          CServiceBroker::GetTextureCache()->CacheImage(artUrl);
+      }
     }
 
     pItem->SetArt(art);
@@ -2541,8 +2565,21 @@ CVideoInfoScanner::~CVideoInfoScanner()
           if (notUsingThisRemoteArt)
             i->thumbUrl.Clear();
         }
-        if (!i->thumb.empty())
+        if (!CServiceBroker::GetSettingsComponent()
+                 ->GetAdvancedSettings()
+                 ->m_bRetrieveAllArtDuringScrape &&
+            !i->thumb.empty())
           CServiceBroker::GetTextureCache()->BackgroundCacheImage(i->thumb);
+      }
+      if (CServiceBroker::GetSettingsComponent()
+              ->GetAdvancedSettings()
+              ->m_bRetrieveAllArtDuringScrape &&
+          !i->thumb.empty())
+      {
+        bool needsRecaching{false};
+        if (CServiceBroker::GetTextureCache()->CheckCachedImage(i->thumb, needsRecaching).empty() ||
+            needsRecaching)
+          CServiceBroker::GetTextureCache()->CacheImage(i->thumb);
       }
     }
   }
