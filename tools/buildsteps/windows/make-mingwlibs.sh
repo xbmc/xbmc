@@ -97,11 +97,34 @@ echo " WORKSPACE = $WORKSPACE"
 echo
 echo "-------------------------------------------------------------------------------"
 
+# Build dav1d explicitly first; FFmpeg's configure checks for libdav1d via
+# `require libdav1d ... -llibdav1d` and bails out with "ERROR: libdav1d not
+# found" if the import library is not present in $PREFIX/lib.
+echo -ne "\033]0;building dav1d $TRIPLET\007"
+echo "-------------------------------------------------"
+echo " building dav1d $TRIPLET"
+echo "-------------------------------------------------"
+./builddav1d.sh $MAKECLEAN
+checkfiles lib/libdav1d.lib
+echo "-------------------------------------------------"
+echo " building of dav1d $TRIPLET done..."
+echo "-------------------------------------------------"
+
 echo -ne "\033]0;building FFmpeg $TRIPLET\007"
 echo "-------------------------------------------------"
 echo " building FFmpeg $TRIPLET"
 echo "-------------------------------------------------"
-./buildffmpeg.sh $MAKECLEAN
+FFMPEG_LOG="$Win32BuildSetup/ffmpeg-build.log"
+./buildffmpeg.sh $MAKECLEAN 2>&1 | tee "$FFMPEG_LOG"
+FFMPEG_RC=${PIPESTATUS[0]}
+echo "FFmpeg exit code: $FFMPEG_RC"
+echo "Full FFmpeg log saved to: $FFMPEG_LOG"
+if [[ $FFMPEG_RC -ne 0 ]]; then
+  echo "=== last 60 lines of FFmpeg log ==="
+  tail -n 60 "$FFMPEG_LOG"
+  echo "==================================="
+  exit $FFMPEG_RC
+fi
 checkfiles lib/avcodec.lib lib/avformat.lib lib/avutil.lib lib/postproc.lib lib/swscale.lib lib/avfilter.lib lib/swresample.lib
 echo "-------------------------------------------------"
 echo " building of FFmpeg $TRIPLET done..."
