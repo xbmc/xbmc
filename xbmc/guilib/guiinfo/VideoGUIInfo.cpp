@@ -35,6 +35,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
+#include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -638,6 +639,15 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
     case VIDEOPLAYER_SUBTITLE_CODEC:
       value = m_subtitleInfo.codecName;
       return true;
+    case VIDEOPLAYER_SUBTITLE_LANG_EX:
+    {
+      if (!g_LangCodeExpander.Lookup(m_subtitleInfo.language, value))
+        value = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // Unknown
+      return true;
+    }
+    case VIDEOPLAYER_SUBTITLE_NAME:
+      value = m_subtitleInfo.name;
+      return true;
     case VIDEOPLAYER_COVER:
       if (m_appPlayer->IsPlayingVideo())
       {
@@ -711,6 +721,15 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
     }
     case VIDEOPLAYER_AUDIO_LANG:
       value = m_audioInfo.language;
+      return true;
+    case VIDEOPLAYER_AUDIO_LANG_EX:
+    {
+      if (!g_LangCodeExpander.Lookup(m_audioInfo.language, value))
+        value = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // Unknown
+      return true;
+    }
+    case VIDEOPLAYER_AUDIO_NAME:
+      value = m_audioInfo.name;
       return true;
     default:
       break;

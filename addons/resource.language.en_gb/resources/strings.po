@@ -17043,7 +17043,19 @@ msgctxt "#25018"
 msgid "Automatic menu selection"
 msgstr ""
 
-#empty strings from id 25019 to 29800
+#. Bit rate unit of measure for the audio live bit rate info label (bits per second  / 1024)
+#: xbmc/guilib/guiinfo/PlayerGUIInfo.cpp
+msgctxt "#25019"
+msgid "Kb/s"
+msgstr ""
+
+#. Bit rate unit of measure for the video live bit rate info label (bits per second  / (1024 * 1024))
+#: xbmc/guilib/guiinfo/PlayerGUIInfo.cpp
+msgctxt "#25020"
+msgid "Mb/s"
+msgstr ""
+
+#empty strings from id 25021 to 29800
 
 #: unused
 msgctxt "#29801"

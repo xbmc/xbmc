@@ -46,6 +46,12 @@ public:
   float GetVideoFps();
   void SetVideoDAR(float dar);
   float GetVideoDAR();
+  void SetVideoLiveBitRate(int bitRate);
+  int GetVideoLiveBitRate();
+  void SetVideoQueueLevel(int level);
+  int GetVideoQueueLevel();
+  void SetVideoQueueDataLevel(int level);
+  int GetVideoQueueDataLevel();
 
   /*!
    * @brief Set if the video is interlaced in cache.
@@ -68,6 +74,12 @@ public:
   int GetAudioSampleRate();
   void SetAudioBitsPerSample(int bitsPerSample);
   int GetAudioBitsPerSample();
+  void SetAudioLiveBitRate(int bitRate);
+  int GetAudioLiveBitRate();
+  void SetAudioQueueLevel(int level);
+  int GetAudioQueueLevel();
+  void SetAudioQueueDataLevel(int level);
+  int GetAudioQueueDataLevel();
 
   // player subtitle info
   void SetSubtitleDecoderName(std::string name);
@@ -228,6 +240,9 @@ protected:
     float fps;
     float dar;
     bool m_isInterlaced;
+    int liveBitRate;
+    int queueLevel;
+    int queueDataLevel;
   } m_playerVideoInfo;
 
   CCriticalSection m_audioPlayerSection;
@@ -237,6 +252,9 @@ protected:
     std::string channels;
     int sampleRate;
     int bitsPerSample;
+    int liveBitRate;
+    int queueLevel;
+    int queueDataLevel;
   } m_playerAudioInfo;
 
   CCriticalSection m_subtitlePlayerSection;

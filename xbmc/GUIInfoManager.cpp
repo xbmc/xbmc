@@ -1160,6 +1160,54 @@ constexpr std::array<InfoMap, 10> player_times = {{
 ///     @skinning_v17 **[New Infolabel]** \link Player_Process_audiobitspersample `Player.Process(audiobitspersample)`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Player.Process(audiolivebitrate)`</b>,
+///                  \anchor Player_Process_audiolivebitrate
+///                  _string_,
+///     @return The live audio bitrate of the currently playing item\, including the localized speed unit of measure (ex. Kb/s)
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link Player_Process_audiolivebitrate `Player.Process(audiolivebitrate)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.Process(audioqueuelevel)`</b>,
+///                  \anchor Player_Process_audioqueuelevel
+///                  _string_,
+///     @return The audio queue level of the currently playing item as a percentage.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link Player_Process_audioqueuelevel `Player.Process(audioqueuelevel)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.Process(audioqueuedatalevel)`</b>,
+///                  \anchor Player_Process_audioqueuedatalevel
+///                  _string_,
+///     @return The audio queue data level of the currently playing item as a percentage.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link Player_Process_audioqueuedatalevel `Player.Process(audioqueuedatalevel)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.Process(videolivebitrate)`</b>,
+///                  \anchor Player_Process_videolivebitrate
+///                  _string_,
+///     @return The live video bitrate of the currently playing item\, including the localized speed unit of measure (ex. Mb/s)
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link Player_Process_videolivebitrate `Player.Process(videolivebitrate)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.Process(videoqueuelevel)`</b>,
+///                  \anchor Player_Process_videoqueuelevel
+///                  _string_,
+///     @return The video queue level of the currently playing item as a percentage.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link Player_Process_videoqueuelevel `Player.Process(videoqueuelevel)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.Process(videoqueuedatalevel)`</b>,
+///                  \anchor Player_Process_videoqueuedatalevel
+///                  _string_,
+///     @return The video queue data level of the currently playing item as a percentage.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link Player_Process_videoqueuedatalevel `Player.Process(videoqueuedatalevel)`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`Player.Process(subtitledecoder)`</b>,
 ///                  \anchor Player_Process_subtitledecoder
 ///                  _string_,
@@ -1173,7 +1221,7 @@ constexpr std::array<InfoMap, 10> player_times = {{
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 14> player_process = {{
+constexpr std::array<InfoMap, 20> player_process = {{
     {"videodecoder",        PLAYER_PROCESS_VIDEODECODER},
     {"deintmethod",         PLAYER_PROCESS_DEINTMETHOD},
     {"pixformat",           PLAYER_PROCESS_PIXELFORMAT},
@@ -1186,6 +1234,12 @@ constexpr std::array<InfoMap, 14> player_process = {{
     {"audiochannels",       PLAYER_PROCESS_AUDIOCHANNELS},
     {"audiosamplerate",     PLAYER_PROCESS_AUDIOSAMPLERATE},
     {"audiobitspersample",  PLAYER_PROCESS_AUDIOBITSPERSAMPLE},
+    {"audiolivebitrate",    PLAYER_PROCESS_AUDIO_LIVE_BITRATE},
+    {"audioqueuelevel",     PLAYER_PROCESS_AUDIO_QUEUE_LEVEL},
+    {"audioqueuedatalevel", PLAYER_PROCESS_AUDIO_QUEUE_DATA_LEVEL},
+    {"videolivebitrate",    PLAYER_PROCESS_VIDEO_LIVE_BITRATE},
+    {"videoqueuelevel",     PLAYER_PROCESS_VIDEO_QUEUE_LEVEL},
+    {"videoqueuedatalevel", PLAYER_PROCESS_VIDEO_QUEUE_DATA_LEVEL},
     {"videoscantype",       PLAYER_PROCESS_VIDEOSCANTYPE},
     {"subtitledecoder",     PLAYER_PROCESS_SUBTITLEDECODER},
 }};
@@ -3943,6 +3997,22 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///     @skinning_v13 **[New Infolabel]** \link VideoPlayer_AudioLanguage `VideoPlayer.AudioLanguage`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`VideoPlayer.AudioLanguageEx`</b>,
+///                  \anchor VideoPlayer_AudioLanguageEx
+///                  _string_,
+///     @return The English name of the language of the current audio stream of the currently playing item.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_AudioLanguageEx `VideoPlayer.AudioLanguageEx`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`VideoPlayer.AudioName`</b>,
+///                  \anchor VideoPlayer_AudioName
+///                  _string_,
+///     @return The name of the active audio stream of the currently playing video.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_AudioName `VideoPlayer.AudioName`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`VideoPlayer.SubtitlesLanguage`</b>,
 ///                  \anchor VideoPlayer_SubtitlesLanguage
 ///                  _string_,
@@ -3952,6 +4022,14 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///     subtitle stream if subtitles are disabled in the player
 ///     <p><hr>
 ///     @skinning_v13 **[New Infolabel]** \link VideoPlayer_SubtitlesLanguage `VideoPlayer.SubtitlesLanguage`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`VideoPlayer.SubtitleLanguageEx`</b>,
+///                  \anchor VideoPlayer_SubtitleLanguageEx
+///                  _string_,
+///     @return The English name of the language of the current subtitle stream of the currently playing item.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_SubtitleLanguageEx `VideoPlayer.SubtitleLanguageEx`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.SubtitleCodec`</b>,
@@ -3981,6 +4059,14 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///     if subtitles are disabled in the player.
 ///     <p><hr>
 ///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_SubtitleCodec `VideoPlayer.SubtitleCodec`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`VideoPlayer.SubtitleName`</b>,
+///                  \anchor VideoPlayer_SubtitleName
+///                  _string_,
+///     @return The name of the active subtitle stream of the currently playing video.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_SubtitleName `VideoPlayer.SubtitleName`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.StereoscopicMode`</b>,
@@ -4229,7 +4315,7 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 84> videoplayer = {{
+constexpr std::array<InfoMap, 88> videoplayer = {{
     {"title",                 VIDEOPLAYER_TITLE},
     {"genre",                 VIDEOPLAYER_GENRE},
     {"country",               VIDEOPLAYER_COUNTRY},
@@ -4271,13 +4357,17 @@ constexpr std::array<InfoMap, 84> videoplayer = {{
     {"audiochannels",         VIDEOPLAYER_AUDIO_CHANNELS},
     {"audiobitrate",          VIDEOPLAYER_AUDIO_BITRATE},
     {"audiolanguage",         VIDEOPLAYER_AUDIO_LANG},
+    {"audiolanguageex",       VIDEOPLAYER_AUDIO_LANG_EX},
+	{"audioname",             VIDEOPLAYER_AUDIO_NAME},
     {"hasteletext",           VIDEOPLAYER_HASTELETEXT},
     {"lastplayed",            VIDEOPLAYER_LASTPLAYED},
     {"playcount",             VIDEOPLAYER_PLAYCOUNT},
     {"hassubtitles",          VIDEOPLAYER_HASSUBTITLES},
     {"subtitlesenabled",      VIDEOPLAYER_SUBTITLESENABLED},
     {"subtitleslanguage",     VIDEOPLAYER_SUBTITLES_LANG},
+    {"subtitlelanguageex",    VIDEOPLAYER_SUBTITLE_LANG_EX},
     {"subtitlecodec",         VIDEOPLAYER_SUBTITLE_CODEC},
+    {"subtitlename",          VIDEOPLAYER_SUBTITLE_NAME},
     {"starttime",             VIDEOPLAYER_STARTTIME},
     {"endtime",               VIDEOPLAYER_ENDTIME},
     {"nexttitle",             VIDEOPLAYER_NEXT_TITLE},
