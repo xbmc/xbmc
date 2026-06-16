@@ -331,6 +331,9 @@ bool CProfileManager::LoadProfile(unsigned int index)
   // Re-open the texture database for the new profile
   CServiceBroker::GetTextureCache()->Initialize();
 
+  // Reset the database manager so all databases are re-initialized for the
+  // new profile, which forces a schema version check and migration.
+  CServiceBroker::GetDatabaseManager().Deinitialize();
   CServiceBroker::GetDatabaseManager().Initialize();
   CServiceBroker::GetInputManager().LoadKeymaps();
 
@@ -460,6 +463,10 @@ void CProfileManager::LogOff()
   CServiceBroker::GetPVRManager().Stop();
 
   networkManager.NetworkMessage(CNetworkBase::SERVICES_DOWN, 1);
+
+  // Reset the database manager so the master profile's databases are
+  // re-initialized cleanly when the login screen is shown again.
+  CServiceBroker::GetDatabaseManager().Deinitialize();
 
   LoadMasterProfileForLogin();
 
