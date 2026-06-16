@@ -39,12 +39,17 @@
       <right mod="ctrl">analogseekforward</right>
       <pageup>PageUp</pageup>
       <pagedown>PageDown</pagedown>
+      <channel_up>PageUp</channel_up>
+      <channel_down>PageDown</channel_down>
       <return>Select</return>
       <return mod="longpress">ContextMenu</return>
       <return mod="ctrl">Enter</return>
       <enter>Select</enter>
       <enter mod="longpress">ContextMenu</enter>
       <enter mod="ctrl">Enter</enter>
+      <ok>Select</ok>
+      <ok mod="longpress">ContextMenu</ok>
+      <ok mod="ctrl">Enter</ok>
       <backspace>Back</backspace>
       <browser_back>Back</browser_back>
       <browser_back mod="longpress">ActivateWindow(Home)</browser_back>
@@ -56,11 +61,13 @@
       <escape>PreviousMenu</escape>
       <escape mod="longpress">Back</escape>
       <i>Info</i>
+      <info>Info</info>
       <menu>ContextMenu</menu>
       <menu mod="longpress">Menu</menu>
       <c>ContextMenu</c>
       <c mod="longpress">Menu</c>
       <space>Pause</space>
+      <pause>Pause</pause>
       <x>Stop</x>
       <period>SkipNext</period>
       <comma>SkipPrevious</comma>
@@ -192,6 +199,7 @@
       <down>Down</down>
       <return>Select</return>
       <enter>Select</enter>
+      <ok>Select</ok>
       <backspace>Backspace</backspace>
       <browser_back>Backspace</browser_back>
       <browser_back mod="longpress">PreviousMenu</browser_back>
@@ -200,6 +208,7 @@
       <menu>VoiceRecognizer</menu>
       <return mod="longpress">VoiceRecognizer</return>
       <enter mod="longpress">VoiceRecognizer</enter>
+      <ok mod="longpress">VoiceRecognizer</ok>
       <play_pause>VoiceRecognizer</play_pause>
     </keyboard>
   </VirtualKeyboard>
@@ -359,8 +368,10 @@
       <closesquarebracket>BigStepBack</closesquarebracket>
       <return>OSD</return>
       <enter>OSD</enter>
+      <ok>OSD</ok>
       <return mod="longpress">PlayPause</return>
       <enter mod="longpress">PlayPause</enter>
+      <ok mod="longpress">PlayPause</ok>
       <m>OSD</m>
       <menu>OSD</menu>
       <i>Info</i>
@@ -371,12 +382,15 @@
       <zoom>AspectRatio</zoom>
       <t>ShowSubtitles</t>
       <t mod="ctrl">SubtitleAlign</t>
+      <subtitle>NextSubtitle</subtitle>
+      <subtitle mod="longpress">ShowSubtitles</subtitle>
       <l>DialogSelectSubtitle</l>
       <left>StepBack</left>
       <right>StepForward</right>
       <up>ChapterOrBigStepForward</up>
       <down>ChapterOrBigStepBack</down>
       <up mod="longpress">AudioNextLanguage</up>
+      <language>AudioNextLanguage</language>
       <down mod="longpress">NextSubtitle</down>
       <left mod="alt">PlayerControl(tempodown)</left>
       <right mod="alt">PlayerControl(tempoup)</right>
@@ -391,6 +405,8 @@
       <down mod="ctrl">SubtitleShiftDown</down>
       <pageup>SkipNext</pageup>
       <pagedown>SkipPrevious</pagedown>
+      <channel_up>SkipNext</channel_up>
+      <channel_down>SkipPrevious</channel_down>
       <plus mod="ctrl">VolAmpUp</plus>
       <equals mod="ctrl">VolAmpUp</equals>
       <minus mod="ctrl">VolAmpDown</minus>
@@ -409,6 +425,7 @@
       <browser_back mod="longpress">Stop</browser_back>
       <return>OSD</return>
       <enter>OSD</enter>
+      <ok>OSD</ok>
       <m>OSD</m>
       <menu>OSD</menu>
       <i>Info</i>
@@ -438,6 +455,7 @@
     <keyboard>
       <return>Select</return>
       <enter>Select</enter>
+      <ok>Select</ok>
     </keyboard>
   </VideoTimeSeek>
   <FullscreenInfo>
@@ -452,6 +470,7 @@
       <menu>OSD</menu>
       <return mod="longpress">PlayPause</return>
       <enter mod="longpress">PlayPause</enter>
+      <ok mod="longpress">PlayPause</ok>
     </keyboard>
   </FullscreenInfo>
   <PlayerControls>
@@ -475,6 +494,8 @@
       <return mod="longpress">PlayPause</return>
       <enter>OSD</enter>
       <enter mod="longpress">PlayPause</enter>
+      <ok>OSD</ok>
+      <ok mod="longpress">PlayPause</ok>
       <m>OSD</m>
       <menu>OSD</menu>
       <i>Info</i>
@@ -544,6 +565,7 @@
       <minus>ZoomOut</minus>
       <return>Rotate</return>
       <enter>Rotate</enter>
+      <ok>Rotate</ok>
       <r>Rotate</r>
       <backspace mod="longpress">ActivateWindow(Home)</backspace>
     </keyboard>
@@ -552,6 +574,7 @@
     <keyboard>
       <return>NextCalibration</return>
       <enter>NextCalibration</enter>
+      <ok>NextCalibration</ok>
       <d>ResetCalibration</d>
       <r>NextResolution</r>
     </keyboard>
@@ -560,6 +583,7 @@
     <keyboard>
       <return>NextCalibration</return>
       <enter>NextCalibration</enter>
+      <ok>NextCalibration</ok>
       <d>ResetCalibration</d>
     </keyboard>
   </ScreenCalibration>
@@ -583,13 +607,18 @@
       <z>AspectRatio</z>
       <zoom>AspectRatio</zoom>
       <t>ShowSubtitles</t>
+      <subtitle>NextSubtitle</subtitle>
+      <subtitle mod="longpress">ShowSubtitles</subtitle>
       <l>DialogSelectSubtitle</l>
       <a>AudioDelay</a>
       <escape>Fullscreen</escape>
       <return>Select</return>
       <enter>Select</enter>      <!-- backspace>Fullscreen</backspace -->
+      <ok>Select</ok>
       <pageup>SkipNext</pageup>
       <pagedown>SkipPrevious</pagedown>
+      <channel_up>SkipNext</channel_up>
+      <channel_down>SkipPrevious</channel_down>
     </keyboard>
   </VideoMenu>
   <OSDVideoSettings>
@@ -694,12 +723,16 @@
       <down>Down</down>
       <return>OSD</return>
       <enter>OSD</enter>
+      <ok>OSD</ok>
       <g>ActivateWindow(PVRChannelGuide)</g>
       <c>ActivateWindow(PVROSDChannels)</c>
       <return mod="longpress">ActivateWindow(PVROSDChannels)</return>
       <enter mod="longpress">ActivateWindow(PVROSDChannels)</enter>
+      <ok mod="longpress">ActivateWindow(PVROSDChannels)</ok>
       <pageup>ChannelUp</pageup>
       <pagedown>ChannelDown</pagedown>
+      <channel_up>ChannelUp</channel_up>
+      <channel_down>ChannelDown</channel_down>
       <period mod="longpress">ChannelNumberSeparator</period>
       <numpadperiod>ChannelNumberSeparator</numpadperiod>
     </keyboard>
@@ -712,12 +745,16 @@
       <down>Down</down>
       <return>OSD</return>
       <enter>OSD</enter>
+      <ok>OSD</ok>
       <g>ActivateWindow(PVRChannelGuide)</g>
       <c>ActivateWindow(PVROSDChannels)</c>
       <return mod="longpress">ActivateWindow(PVROSDChannels)</return>
       <enter mod="longpress">ActivateWindow(PVROSDChannels)</enter>
+      <ok mod="longpress">ActivateWindow(PVROSDChannels)</ok>
       <pageup>ChannelUp</pageup>
       <pagedown>ChannelDown</pagedown>
+      <channel_up>ChannelUp</channel_up>
+      <channel_down>ChannelDown</channel_down>
       <period mod="longpress">ChannelNumberSeparator</period>
       <numpadperiod>ChannelNumberSeparator</numpadperiod>
     </keyboard>
@@ -726,18 +763,21 @@
     <keyboard>
       <return>Select</return>
       <enter>Select</enter>
+      <ok>Select</ok>
     </keyboard>
   </FullscreenLiveTvPreview>
   <FullscreenRadioPreview>
     <keyboard>
       <return>Select</return>
       <enter>Select</enter>
+      <ok>Select</ok>
     </keyboard>
   </FullscreenRadioPreview>
   <FullscreenLiveTvInput>
     <keyboard>
       <return>Select</return>
       <enter>Select</enter>
+      <ok>Select</ok>
       <period>ChannelNumberSeparator</period>
       <numpadperiod>ChannelNumberSeparator</numpadperiod>
     </keyboard>
@@ -746,6 +786,7 @@
     <keyboard>
       <return>Select</return>
       <enter>Select</enter>
+      <ok>Select</ok>
       <period>ChannelNumberSeparator</period>
       <numpadperiod>ChannelNumberSeparator</numpadperiod>
     </keyboard>

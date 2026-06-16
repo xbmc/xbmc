@@ -11,6 +11,7 @@
 #include "LangInfo.h"
 #include "LibInputSettings.h"
 #include "ServiceBroker.h"
+#include "XkbCompat.h"
 #include "application/AppInboundProtocol.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -126,20 +127,41 @@ constexpr auto xkbMap = make_map<xkb_keysym_t, XBMCKey>({
     {XKB_KEY_Sys_Req, XBMCK_SYSREQ},
     {XKB_KEY_Break, XBMCK_BREAK},
     {XKB_KEY_Menu, XBMCK_MENU},
+    {XKB_KEY_XF86MenuKB, XBMCK_MENU},
+    {XKB_KEY_XF86MenuPB, XBMCK_MENU},
     {XKB_KEY_XF86PowerOff, XBMCK_POWER},
     {XKB_KEY_EcuSign, XBMCK_EURO},
     {XKB_KEY_Undo, XBMCK_UNDO},
     {XKB_KEY_XF86Sleep, XBMCK_SLEEP},
-    // Unmapped: XBMCK_GUIDE, XBMCK_SETTINGS, XBMCK_INFO
+    // Unmapped: XBMCK_GUIDE, XBMCK_SETTINGS
     {XKB_KEY_XF86Red, XBMCK_RED},
     {XKB_KEY_XF86Green, XBMCK_GREEN},
     {XKB_KEY_XF86Yellow, XBMCK_YELLOW},
     {XKB_KEY_XF86Blue, XBMCK_BLUE},
     // Unmapped: XBMCK_ZOOM, XBMCK_TEXT
     {XKB_KEY_XF86Favorites, XBMCK_FAVORITES},
-    // Unmapped: XBMCK_CONFIG, XBMCK_EPG
+    // Unmapped: XBMCK_CONFIG
+
+    // Numeric keys on remote controls
+    {XKB_KEY_XF86Numeric0, XBMCK_0},
+    {XKB_KEY_XF86Numeric1, XBMCK_1},
+    {XKB_KEY_XF86Numeric2, XBMCK_2},
+    {XKB_KEY_XF86Numeric3, XBMCK_3},
+    {XKB_KEY_XF86Numeric4, XBMCK_4},
+    {XKB_KEY_XF86Numeric5, XBMCK_5},
+    {XKB_KEY_XF86Numeric6, XBMCK_6},
+    {XKB_KEY_XF86Numeric7, XBMCK_7},
+    {XKB_KEY_XF86Numeric8, XBMCK_8},
+    {XKB_KEY_XF86Numeric9, XBMCK_9},
 
     // Media keys
+    {XKB_KEY_XF86OK, XBMCK_OK},
+    {XKB_KEY_XF86Info, XBMCK_INFO},
+    {XKB_KEY_XF86MediaSelectProgramGuide, XBMCK_EPG},
+    {XKB_KEY_XF86MediaLanguageMenu, XBMCK_LANGUAGE},
+    {XKB_KEY_XF86Subtitle, XBMCK_SUBTITLE},
+    {XKB_KEY_XF86ChannelUp, XBMCK_CHANNEL_UP},
+    {XKB_KEY_XF86ChannelDown, XBMCK_CHANNEL_DOWN},
     {XKB_KEY_XF86Eject, XBMCK_EJECT},
     {XKB_KEY_Cancel, XBMCK_STOP},
     {XKB_KEY_XF86AudioRecord, XBMCK_RECORD},

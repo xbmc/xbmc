@@ -18,7 +18,8 @@ if("gbm" IN_LIST CORE_PLATFORM_NAME_LC)
                         LibInputKeyboard.h
                         LibInputPointer.h
                         LibInputSettings.h
-                        LibInputTouch.h)
+                        LibInputTouch.h
+                        XkbCompat.h)
   endif()
 endif()
 
