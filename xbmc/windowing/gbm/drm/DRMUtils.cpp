@@ -457,6 +457,9 @@ bool CDRMUtils::OpenDrm(bool needConnector)
     if (m_fd < 0)
       continue;
 
+    if (!ValidateDevice(m_fd))
+      continue;
+
     if (needConnector)
     {
       auto resources = drmModeGetResources(m_fd);

@@ -89,6 +89,18 @@ public:
 
 protected:
   bool OpenDrm(bool needConnector);
+
+  /*!
+   * \brief Per-device validation hook invoked while scanning DRM devices.
+   *
+   * Called by OpenDrm() for each candidate device after its primary node has
+   * been opened. Returning false makes OpenDrm() skip the device and continue
+   * with the next one. The base implementation accepts every device; subclasses
+   * override it to require additional capabilities (e.g. atomic modesetting) so
+   * that the capability verdict stays tied to the same card as the connector.
+   */
+  virtual bool ValidateDevice(int fd) { return true; }
+
   drm_fb* DrmFbGetFromBo(struct gbm_bo* bo);
 
   int m_fd{-1};

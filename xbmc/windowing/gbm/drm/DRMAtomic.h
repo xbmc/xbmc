@@ -26,6 +26,13 @@ namespace GBM
 class CDRMAtomic : public CDRMUtils
 {
 public:
+  enum class AtomicSupport
+  {
+    UNKNOWN,
+    UNSUPPORTED,
+    SUPPORTED,
+  };
+
   CDRMAtomic() = default;
   ~CDRMAtomic() override = default;
   void FlipPage(struct gbm_bo* bo, bool rendered, bool videoLayer, bool async) override;
@@ -33,14 +40,19 @@ public:
   bool SetActive(bool active) override;
   bool InitDrm() override;
   void DestroyDrm() override;
+
   bool SupportsFencing() override { return true; }
   bool AddProperty(CDRMObject* object, const char* name, uint64_t value);
+
+protected:
+  bool ValidateDevice(int fd) override;
 
 private:
   void DrmAtomicCommit(int fb_id, int flags, bool rendered, bool videoLayer);
 
   bool m_need_modeset{true};
   bool m_active = true;
+  AtomicSupport m_atomicSupport{AtomicSupport::UNKNOWN};
 
   class CDRMAtomicRequest
   {

@@ -16,8 +16,10 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 
+#include <chrono>
 #include <errno.h>
 #include <string.h>
+#include <thread>
 
 #include <drm_fourcc.h>
 #include <drm_mode.h>
@@ -204,27 +206,74 @@ void CDRMAtomic::FlipPage(struct gbm_bo* bo, bool rendered, bool videoLayer, boo
   DrmAtomicCommit(!drm_fb ? 0 : drm_fb->fb_id, flags, rendered, videoLayer);
 }
 
-bool CDRMAtomic::InitDrm()
+bool CDRMAtomic::ValidateDevice(int fd)
 {
-  if (!CDRMUtils::OpenDrm(true))
-    return false;
-
-  auto ret = drmSetClientCap(m_fd, DRM_CLIENT_CAP_ATOMIC, 1);
+  // Tie the atomic-capability verdict to the same card OpenDrm() is inspecting,
+  // so a headless secondary GPU (common on PRIME laptops) can never decide the
+  // fate of the card the monitor is actually attached to. The atomic client cap
+  // must be set before universal planes are requested in CDRMUtils::InitDrm();
+  // doing it here, during the device scan, keeps that required ordering.
+  auto ret = drmSetClientCap(fd, DRM_CLIENT_CAP_ATOMIC, 1);
   if (ret)
   {
-    CLog::LogF(LOGERROR, "no atomic modesetting support: {}", strerror(errno));
+    CLog::LogF(LOGDEBUG, "no atomic modesetting support: {}", strerror(errno));
+    if (m_atomicSupport == AtomicSupport::UNKNOWN)
+      m_atomicSupport = AtomicSupport::UNSUPPORTED;
     return false;
   }
 
-  m_atomicRequestQueue.emplace_back(std::make_unique<CDRMAtomicRequest>());
-  m_req = m_atomicRequestQueue.back().get();
-
-  if (!CDRMUtils::InitDrm())
-    return false;
-
-  CLog::LogF(LOGDEBUG, "initialized atomic DRM");
-
+  m_atomicSupport = AtomicSupport::SUPPORTED;
   return true;
+}
+
+bool CDRMAtomic::InitDrm()
+{
+  // A connector's status can be transiently unknown/disconnected at cold boot
+  // (the HPD/EDID probe may not have completed yet, notably on amdgpu), which
+  // makes the connector search fail even though atomic-capable hardware is
+  // present. Re-scan every card a few times with a delay before giving up, so a
+  // not-yet-ready display does not demote Kodi to legacy DRM. The retry only
+  // runs while at least one scanned card is atomic-capable, so genuinely
+  // legacy-only systems fall through immediately. A permanently headless
+  // atomic card (or an atomic card whose display only ever lives on a separate
+  // non-atomic GPU) cannot be told apart from a display that is about to
+  // appear, so those rarer cases pay the bounded retry delay before correctly
+  // settling on legacy.
+  constexpr int maxPasses = 3;
+  constexpr auto retryDelay = std::chrono::milliseconds(500);
+
+  for (int pass = 0; pass < maxPasses; ++pass)
+  {
+    m_atomicSupport = AtomicSupport::UNKNOWN;
+
+    if (CDRMUtils::OpenDrm(true))
+    {
+      if (m_atomicRequestQueue.empty())
+      {
+        m_atomicRequestQueue.emplace_back(std::make_unique<CDRMAtomicRequest>());
+        m_req = m_atomicRequestQueue.back().get();
+      }
+
+      if (!CDRMUtils::InitDrm())
+        return false;
+
+      CLog::LogF(LOGDEBUG, "initialized atomic DRM");
+      return true;
+    }
+
+    if (m_atomicSupport != AtomicSupport::SUPPORTED)
+      break;
+
+    if (pass + 1 < maxPasses)
+    {
+      CLog::LogF(LOGWARNING,
+                 "atomic-capable device present but no connector ready, re-scanning ({}/{})",
+                 pass + 1, maxPasses);
+      std::this_thread::sleep_for(retryDelay);
+    }
+  }
+
+  return false;
 }
 
 void CDRMAtomic::DestroyDrm()
