@@ -6660,6 +6660,9 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///       - <b>ac3</b>
 ///       - <b>cook</b>
 ///       - <b>dts</b>
+///       - <b>dts_96_24</b>
+///       - <b>dts_es</b>
+///       - <b>dts_express</b>
 ///       - <b>dtshd_hra</b>
 ///       - <b>dtshd_ma</b>
 ///       - <b>dtshd_ma_x</b>
@@ -6677,6 +6680,12 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///       - <b>vorbis</b>
 ///       - <b>wmapro</b>
 ///       - <b>wmav2</b>
+///
+///     The names are based on ffmpeg codec names with exceptions for specific codec profiles.
+///     <p><hr>
+///     @skinning_v22 **[Infolabel Updated]** \link ListItem_AudioCodec `ListItem.AudioCodec`\endlink
+///     added aac_lc\, he_aac\, he_aac_v2\, aac_ssr\, aac_ltp\, dts_96_24\, dts_es\, dts_express\,
+///     dtshd_ma_x\, dtshd_ma_x_imax\, eac3_ddp_atmos\, truehd_atmos
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.AudioChannels(format)`</b>,
