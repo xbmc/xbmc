@@ -54,6 +54,7 @@ public:
   double GetVsyncAdjust();
 
   void Pause(bool pause);
+  bool IsPaused() const;
   void Advance(double time);
 
 protected:

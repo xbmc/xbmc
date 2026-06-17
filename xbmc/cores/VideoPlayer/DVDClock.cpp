@@ -112,6 +112,12 @@ void CDVDClock::Pause(bool pause)
   }
 }
 
+bool CDVDClock::IsPaused() const
+{
+  std::unique_lock lock(m_critSection);
+  return m_pauseClock != 0;
+}
+
 void CDVDClock::Advance(double time)
 {
   std::unique_lock lock(m_critSection);
