@@ -44,7 +44,7 @@ constexpr unsigned int SYNC_BYTE = 0x47;
 constexpr unsigned int TS_HEADER_SIZE = 4;
 constexpr unsigned int ADAPTATION_FIELD_MASK = 0x02;
 constexpr unsigned int PACKETS_TO_PARSE =
-    2000; // Based on testing this is enough to analyse all streams
+    8000; // Based on testing this is enough to analyse all streams
 constexpr unsigned int BUFFER_SIZE{BDAV_PACKET_SIZE * PACKETS_TO_PARSE};
 constexpr int TIMESTAMP_SIZE = 4;
 
