@@ -175,7 +175,7 @@ AudioStreamInfo PopulateAudioStreamInfo(const StreamInformation& stream,
         if (bsai->isXLL)
           asi.codecName = "dtshd_hra";
         else
-          asi.codecName = "dca";
+          asi.codecName = "dts";
         break;
       }
       case AUDIO_DTSHD_MASTER:
