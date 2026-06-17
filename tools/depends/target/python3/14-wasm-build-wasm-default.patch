@@ -13,7 +13,7 @@ diff --git a/configure.ac b/configure.ac
 index c12f9f2..9cbad58 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -1853,7 +1853,7 @@ AS_VAR_IF([ac_cv_gcc_compat], [yes], [
+@@ -1862,7 +1862,7 @@
    ])
  elif test "$ac_sys_system" = "Emscripten"; then
    dnl Build "python.[js,wasm]", "pybuilddir.txt", and "platform" files.

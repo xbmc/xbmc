@@ -1,6 +1,6 @@
 --- a/Makefile.pre.in
 +++ b/Makefile.pre.in
-@@ -3396,3 +3396,12 @@
+@@ -3420,3 +3420,12 @@
  # Local Variables:
  # mode: makefile
  # End:

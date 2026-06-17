@@ -24,25 +24,25 @@ diff --git a/Modules/_remote_debugging_module.c b/Modules/_remote_debugging_modu
 index 701f4b0eabdb15..5937d4892f550f 100644
 --- a/Modules/_remote_debugging_module.c
 +++ b/Modules/_remote_debugging_module.c
-@@ -872,7 +872,7 @@ _Py_RemoteDebug_GetAsyncioDebugAddress(proc_handle_t* handle)
+@@ -1317,7 +1317,7 @@
          PyErr_SetString(PyExc_RuntimeError, "Failed to find the AsyncioDebug section in the process.");
          _PyErr_ChainExceptions1(exc);
      }
 -#elif defined(__linux__)
 +#elif defined(__linux__) && HAVE_PROCESS_VM_READV
      // On Linux, search for asyncio debug in executable or DLL
-     address = search_linux_map_for_section(handle, "AsyncioDebug", "python");
+     address = search_linux_map_for_section(handle, "AsyncioDebug", "_asyncio.cpython", NULL);
      if (address == 0) {
 diff --git a/Python/remote_debug.h b/Python/remote_debug.h
 index d920d9e5b5ff2c..e7676013197fa9 100644
 --- a/Python/remote_debug.h
 +++ b/Python/remote_debug.h
-@@ -891,7 +891,7 @@ _Py_RemoteDebug_GetPyRuntimeAddress(proc_handle_t* handle)
+@@ -924,7 +924,7 @@
              handle->pid);
          _PyErr_ChainExceptions1(exc);
      }
 -#elif defined(__linux__)
 +#elif defined(__linux__) && HAVE_PROCESS_VM_READV
      // On Linux, search for 'python' in executable or DLL
-     address = search_linux_map_for_section(handle, "PyRuntime", "python");
-     if (address == 0) {
+     address = search_linux_map_for_section(handle, "PyRuntime", "python",
+                                            _Py_RemoteDebug_ValidatePyRuntimeCookie);
