@@ -314,6 +314,12 @@ bool CProfileManager::LoadProfile(unsigned int index)
   // Stop all texture cache jobs and close the old profile's texture database
   CServiceBroker::GetTextureCache()->Deinitialize();
 
+  // Reset database manager state while the texture cache is quiet.
+  // The manager holds no persistent connections; this call just clears
+  // m_dbStatus so the next Initialize() re-runs schema checks and
+  // migrations for the new profile.
+  CServiceBroker::GetDatabaseManager().Deinitialize();
+
   SetCurrentProfileId(index);
   m_previousProfileLoadedForLogin = false;
 
@@ -328,13 +334,16 @@ bool CProfileManager::LoadProfile(unsigned int index)
 
   CreateProfileFolders();
 
-  // Re-open the texture database for the new profile
+  // Update/migrate databases for the new profile first, then re-start the
+  // texture cache. The cache opens its own connection, but the Textures DB
+  // schema must be current before that happens - the order matters.
+  if (!CServiceBroker::GetDatabaseManager().Initialize())
+  {
+    CLog::Log(LOGFATAL, "CProfileManager: unable to initialize databases for profile \"{}\"",
+              m_profiles.at(index).getName());
+    return false;
+  }
   CServiceBroker::GetTextureCache()->Initialize();
-
-  // Reset the database manager so all databases are re-initialized for the
-  // new profile, which forces a schema version check and migration.
-  CServiceBroker::GetDatabaseManager().Deinitialize();
-  CServiceBroker::GetDatabaseManager().Initialize();
   CServiceBroker::GetInputManager().LoadKeymaps();
 
   CServiceBroker::GetInputManager().SetMouseEnabled(settings->GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
@@ -468,6 +477,8 @@ void CProfileManager::LogOff()
   // re-initialized cleanly when the login screen is shown again.
   CServiceBroker::GetDatabaseManager().Deinitialize();
 
+  // LoadMasterProfileForLogin calls LoadProfile, which closes and re-opens
+  // all databases at the correct point in the switch sequence.
   LoadMasterProfileForLogin();
 
   g_passwordManager.bMasterUser = false;

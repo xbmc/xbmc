@@ -577,37 +577,41 @@ void CPythonInvoker::onExecutionDone()
 
     onDeinitialization();
 
-    // Force a full garbage collection to clean up unreferenced Python objects
-    // before we start tearing down the interpreter. This prevents objects with
-    // dangling C++ backing pointers from being destroyed during Py_EndInterpreter.
+    // Clear any lingering Python error state early, so it cannot affect
+    // the garbage collection or module dictionary clearing below.
+    PyErr_Clear();
+
+    // Force a full GC cycle unconditionally before teardown.
     PyGC_Collect();
 
-    // Unregister all Addon classes now, while the interpreter is still alive.
-    // This ensures C++ destructors can safely release Python references.
-    m_languageHook->UnregisterMe();
+    // Pre-clear all module dictionaries before calling Py_EndInterpreter.
+    // This ensures SWIG destructors fire cleanly while the interpreter
+    // is still fully initialised, preventing a SIGSEGV inside
+    // _PyModule_ClearDict when Py_EndInterpreter tears down the interpreter.
+    PyObject* modules = PyImport_GetModuleDict();
+    if (modules)
+      PyDict_Clear(modules);
 
-    // If any classes still remain, log them - but we'll still try to clear
-    // the interpreter forcefully.
+    // Collect any objects that became unreachable after dict clearing.
+    PyGC_Collect();
+
+    // Clear any Python error that may have been set by finalizers or
+    // the previous GC, to avoid debug asserts inside Py_EndInterpreter.
+    PyErr_Clear();
+
+    Py_EndInterpreter(m_threadState);
+
+    // If objects remain, log them. The language hook is still registered,
+    // so destructor callbacks during cleanup unregister from this hook,
+    // avoiding false positives.
     if (m_languageHook->HasRegisteredAddonClasses())
       CLog::Log(LOGWARNING,
                 "CPythonInvoker({}, {}): the python script \"{}\" has left several "
                 "classes in memory that we couldn't clean up. The classes include: {}",
                 GetId(), m_sourceFile, m_sourceFile, getListOfAddonClassesAsString(m_languageHook));
 
-    // Force-clear all module dictionaries in this sub-interpreter.
-    // This breaks circular references and allows the C++ bound objects
-    // to be destroyed cleanly, preventing the segfault inside _PyModule_ClearDict.
-    PyObject* modules = PyImport_GetModuleDict();
-    if (modules)
-      PyDict_Clear(modules);
-
-    // Run GC again to clean up any garbage created by the dict clearing.
-    PyGC_Collect();
-
-    // Clear any remaining Python error state to avoid asserts in debug builds.
-    PyErr_Clear();
-
-    Py_EndInterpreter(m_threadState);
+    // Unregister the language hook
+    m_languageHook->UnregisterMe();
 
     PyThreadState_Swap(m_mainThreadState);
     PyThreadState_Clear(m_mainThreadState);
