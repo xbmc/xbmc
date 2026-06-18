@@ -54,7 +54,10 @@
 
 using namespace KODI;
 
-CServiceManager::CServiceManager() = default;
+CServiceManager::CServiceManager()
+  : m_fileExtensionProvider(std::make_unique<CFileExtensionProvider>())
+{
+}
 
 CServiceManager::~CServiceManager()
 {
@@ -82,7 +85,7 @@ bool CServiceManager::InitForTesting()
   m_dataCacheCore = std::make_unique<CDataCacheCore>();
 
   m_extsMimeSupportList = std::make_unique<ADDONS::CExtsMimeSupportList>(*m_addonMgr);
-  m_fileExtensionProvider = std::make_unique<CFileExtensionProvider>(*m_addonMgr);
+  m_fileExtensionProvider->Initialize(*m_addonMgr);
 
   m_subTagRegistryManager = std::make_unique<KODI::UTILS::I18N::CSubTagRegistryManager>();
   m_subTagRegistryManager->Initialize();
@@ -95,7 +98,7 @@ void CServiceManager::DeinitTesting()
 {
   init_level = 0;
   m_subTagRegistryManager.reset();
-  m_fileExtensionProvider.reset();
+  m_fileExtensionProvider->Deinitialize();
   m_extsMimeSupportList.reset();
   m_dataCacheCore.reset();
   m_binaryAddonManager.reset();
@@ -177,7 +180,7 @@ bool CServiceManager::InitStageTwo(const std::string& profilesUserDataFolder)
 
   m_gameRenderManager = std::make_unique<RETRO::CGUIGameRenderManager>();
 
-  m_fileExtensionProvider = std::make_unique<CFileExtensionProvider>(*m_addonMgr);
+  m_fileExtensionProvider->Initialize(*m_addonMgr);
 
   m_powerManager = std::make_unique<CPowerManager>();
   m_powerManager->Initialize();
@@ -273,7 +276,7 @@ void CServiceManager::DeinitStageTwo()
 
   m_weatherManager.reset();
   m_powerManager.reset();
-  m_fileExtensionProvider.reset();
+  m_fileExtensionProvider->Deinitialize();
   m_gameRenderManager.reset();
   m_peripherals.reset();
   m_inputManager.reset();

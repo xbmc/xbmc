@@ -33,46 +33,57 @@ using namespace KODI::ADDONS;
 
 constexpr std::array ADDON_TYPES{AddonType::VFS, AddonType::IMAGEDECODER, AddonType::AUDIODECODER};
 
-CFileExtensionProvider::CFileExtensionProvider(ADDON::CAddonMgr& addonManager)
-  : m_advancedSettings(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()),
-    m_addonManager(addonManager)
+void CFileExtensionProvider::Initialize(ADDON::CAddonMgr& addonManager)
 {
+  m_addonManager = &addonManager;
+
+  m_advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  if (!m_advancedSettings)
+    m_advancedSettings = std::make_shared<CAdvancedSettings>();
+
   SetAddonExtensions();
 
-  m_addonManager.Events().Subscribe(this,
-                                    [this](const AddonEvent& event)
-                                    {
-                                      if (typeid(event) == typeid(AddonEvents::Enabled) ||
-                                          typeid(event) == typeid(AddonEvents::Disabled) ||
-                                          typeid(event) == typeid(AddonEvents::ReInstalled))
-                                      {
-                                        for (auto& type : ADDON_TYPES)
-                                        {
-                                          if (m_addonManager.HasType(event.addonId, type))
-                                          {
-                                            std::lock_guard lock{m_critSection};
-                                            SetAddonExtensions(type);
-                                            break;
-                                          }
-                                        }
-                                      }
-                                      else if (typeid(event) == typeid(AddonEvents::UnInstalled))
-                                      {
-                                        std::lock_guard lock{m_critSection};
-                                        SetAddonExtensions();
-                                      }
-                                    });
+  m_addonManager->Events().Subscribe(this,
+                                     [this](const AddonEvent& event)
+                                     {
+                                       if (typeid(event) == typeid(AddonEvents::Enabled) ||
+                                           typeid(event) == typeid(AddonEvents::Disabled) ||
+                                           typeid(event) == typeid(AddonEvents::ReInstalled))
+                                       {
+                                         for (auto& type : ADDON_TYPES)
+                                         {
+                                           if (m_addonManager->HasType(event.addonId, type))
+                                           {
+                                             std::lock_guard lock{m_critSection};
+                                             SetAddonExtensions(type);
+                                             break;
+                                           }
+                                         }
+                                       }
+                                       else if (typeid(event) == typeid(AddonEvents::UnInstalled))
+                                       {
+                                         std::lock_guard lock{m_critSection};
+                                         SetAddonExtensions();
+                                       }
+                                     });
 
   m_callbackId =
       m_advancedSettings->RegisterSettingsLoadedCallback([this]() { OnAdvancedSettingsLoaded(); });
 }
 
-CFileExtensionProvider::~CFileExtensionProvider()
+void CFileExtensionProvider::Deinitialize()
 {
   if (m_callbackId.has_value())
+  {
     m_advancedSettings->UnregisterSettingsLoadedCallback(m_callbackId.value());
+    m_callbackId.reset();
+  }
 
-  m_addonManager.Events().Unsubscribe(this);
+  if (m_addonManager != nullptr)
+  {
+    m_addonManager->Events().Unsubscribe(this);
+    m_addonManager = nullptr;
+  }
 
   m_advancedSettings.reset();
   m_addonExtensions.clear();
@@ -341,7 +352,10 @@ void CFileExtensionProvider::SetAddonExtensions(AddonType type)
   else if (type == AddonType::VFS)
   {
     std::vector<AddonInfoPtr> addonInfos;
-    m_addonManager.GetAddonInfos(addonInfos, true, type);
+
+    if (m_addonManager != nullptr)
+      m_addonManager->GetAddonInfos(addonInfos, true, type);
+
     for (const auto& addonInfo : addonInfos)
     {
       std::string ext = addonInfo->Type(type)->GetValue("@extensions").asString();
