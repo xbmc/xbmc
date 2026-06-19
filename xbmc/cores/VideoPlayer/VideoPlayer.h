@@ -27,6 +27,7 @@
 
 #include <atomic>
 #include <chrono>
+#include <functional>
 #include <memory>
 #include <optional>
 #include <unordered_map>
@@ -516,6 +517,25 @@ protected:
   int GetPreviousBookmark(std::chrono::milliseconds ts);
   int GetNextBookmark(std::chrono::milliseconds ts);
   std::optional<std::chrono::milliseconds> GetBookmarkPos(int idx);
+
+  struct SeekCandidate
+  {
+    int64_t targetTime;
+    std::function<void()> action;
+  };
+
+  enum class SeekStep
+  {
+    NORMAL,
+    LARGE,
+  };
+
+  std::optional<SeekCandidate> GetTimeOrPercentSeekCandidate(int64_t time,
+                                                             Direction direction,
+                                                             SeekStep step);
+  std::optional<SeekCandidate> GetChapterSeekCandidate(int64_t time, Direction direction);
+  std::optional<SeekCandidate> GetBookmarkSeekCandidate(int64_t time, Direction direction);
+  void ExecuteTimeSeek(int64_t target, Direction direction, bool accurate);
 
   bool m_players_created;
 
