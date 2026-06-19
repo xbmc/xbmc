@@ -403,6 +403,7 @@ void CGUITextLayout::ParseText(const std::wstring& text,
     KODI::UTILS::COLOR::Color newColor = currentColor;
     bool colorTagChange = false;
     bool newLine = false;
+    bool tabsTag = false;
     int tabs = 0;
     // have a [ - check if it's an ON or OFF switch
     bool on(true);
@@ -485,16 +486,20 @@ void CGUITextLayout::ParseText(const std::wstring& text,
         --lightDepth;
       newStyle = FONT_STYLE_LIGHT;
     }
-    else if (text.compare(pos, 5, L"TABS]") == 0 && on)
+    else if (text.compare(pos, 5, L"TABS]") == 0)
     {
       pos += 5;
-      const size_t end = text.find(L"[/TABS]", pos);
-      if (end != std::wstring::npos)
+      tabsTag = true;
+      if (on)
       {
-        std::string t;
-        g_charsetConverter.wToUTF8(text.substr(pos), t);
-        tabs = atoi(t.c_str());
-        pos = end + 7;
+        const size_t end = text.find(L"[/TABS]", pos);
+        if (end != std::wstring::npos)
+        {
+          std::string t;
+          g_charsetConverter.wToUTF8(text.substr(pos), t);
+          tabs = atoi(t.c_str());
+          pos = end + 7;
+        }
       }
     }
     else if (text.compare(pos, 3, L"CR]") == 0 && on)
@@ -538,7 +543,7 @@ void CGUITextLayout::ParseText(const std::wstring& text,
         pos = finish + 1;
     }
 
-    if (newStyle || colorTagChange || newLine || tabs)
+    if (newStyle || colorTagChange || newLine || tabs || tabsTag)
     { // we have a new style or a new color, so format up the previous segment
       std::wstring subText = text.substr(startPos, endPos - startPos);
       if (currentStyle & FONT_STYLE_UPPERCASE)
