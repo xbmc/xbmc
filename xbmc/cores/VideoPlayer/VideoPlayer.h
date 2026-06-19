@@ -502,7 +502,7 @@ protected:
   void UpdatePlayState(double timeout);
   void GetGeneralInfo(std::string& strVideoInfo);
   int64_t GetUpdatedTime();
-  int64_t GetTime();
+  int64_t GetTime() const;
   float GetPercentage();
 
   virtual bool CanTempo();

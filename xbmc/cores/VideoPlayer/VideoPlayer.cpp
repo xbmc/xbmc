@@ -3888,7 +3888,7 @@ bool CVideoPlayer::SeekTimeRelative(int64_t iTime)
 }
 
 // return the time in milliseconds
-int64_t CVideoPlayer::GetTime()
+int64_t CVideoPlayer::GetTime() const
 {
   std::unique_lock lock(m_StateSection);
   return llrint(m_State.time);
