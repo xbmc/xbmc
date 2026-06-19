@@ -9,9 +9,10 @@
 #pragma once
 
 #include <memory>
+#include <string_view>
 
 class CSetting;
-class TiXmlNode;
+class TiXmlElement;
 
 class ISettingCallback
 {
@@ -66,8 +67,8 @@ public:
    \return True if the setting has been successfully updated otherwise false
    */
   virtual bool OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
-                               const char* oldSettingId,
-                               const TiXmlNode* oldSettingNode)
+                               std::string_view oldSettingId,
+                               const TiXmlElement* oldSettingNode)
   {
     return false;
   }
