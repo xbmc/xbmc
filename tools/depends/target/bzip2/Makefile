@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS = ../../Makefile.include Makefile Makefile.patch ../../download-files.include
+DEPS = ../../Makefile.include Makefile Makefile.patch bzip2.pc.in ../../download-files.include
 
 # lib name, version
 LIBNAME=bzip2
@@ -25,6 +25,8 @@ all: .installed-$(PLATFORM)
 	$(MAKE) -C $(PLATFORM) PREFIX=$(PREFIX) CC="$(CC)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" AR="$(AR)"
 	$(MAKE) -C $(PLATFORM) install PREFIX=$(PREFIX)
 	rm $(PREFIX)/bin/bzip2
+	mkdir -p $(PREFIX)/lib/pkgconfig
+	sed -e 's|@PREFIX@|$(PREFIX)|' -e 's|@VERSION@|$(VERSION)|' bzip2.pc.in > $(PREFIX)/lib/pkgconfig/bzip2.pc
 	touch $@
 
 clean:
