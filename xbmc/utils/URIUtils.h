@@ -97,7 +97,7 @@ public:
 
   /*! \brief Given a bluray:// path or disc file path (index.bdmv/video_ts.ifo), return the base .ISO or folder
    containing the disc file structure.
-   \param path source path.
+   \param file source path.
    \return the base .ISO or folder containing the disc file structure.
    \note Used to determine file/folder to delete
    */
@@ -105,7 +105,7 @@ public:
 
   /*! \brief Given a bluray:// path or disc file path (index.bdmv/video_ts.ifo), return the folder
    containing the disc file structure or ISO.
-   \param path source path.
+   \param file source path.
    \return the folder containing the .ISO or disc file structure.
    */
   static std::string GetDiscBasePath(const std::string& file);
@@ -135,17 +135,27 @@ public:
    */
   static std::string GetBlurayMenuPath(const std::string& path);
 
-  /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path to root.
-   \param path the ISO/index.BDMV path.
-   \return the bluray:// root path.
-   */
-  static std::string GetBlurayRootPath(const std::string& path);
+  enum class GetAllTitles : bool
+  {
+    LONG,
+    ALL
+  };
 
-  /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path to titles.
+  enum class AllTitlesOptions : bool
+  {
+    MOVIES,
+    EPISODES
+  };
+
+  /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path to select titles.
    \param path the ISO/index.BDMV path.
-   \return the bluray:// root/titles path.
+   \param getAllTitles whether to get all titles or just those within 70% of longest (most likely to be movies/episodes)
+   \param options movies or episodes - later dictates how to sort the titles - by length (movies) or by playlist (episodes)
+   \return the bluray:// titles path.
    */
-  static std::string GetBlurayTitlesPath(const std::string& path);
+  static std::string GetBlurayTitlesPath(const std::string& path,
+                                         GetAllTitles getAllTitles = GetAllTitles::LONG,
+                                         AllTitlesOptions options = AllTitlesOptions::MOVIES);
 
   /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path to main title.
    \param path the ISO/index.BDMV path.

@@ -1699,55 +1699,315 @@ TEST_F(TestURIUtils, GetDiscUnderlyingFile)
             URIUtils::GetDiscUnderlyingFile(url));
 }
 
-TEST_F(TestURIUtils, GetBlurayRootPath)
+TEST_F(TestURIUtils, GetBlurayTitlesPath)
 {
-  std::string refDir{"bluray://%2fsomepath%2fpath%2f/root"};
-  EXPECT_EQ(refDir, URIUtils::GetBlurayRootPath("/somepath/path/BDMV/index.bdmv"));
-  EXPECT_EQ(refDir,
-            URIUtils::GetBlurayRootPath("bluray://%2fsomepath%2fpath%2f/BDMV/PLAYLIST/00800.mpls"));
+  //
+  // root/titles
+  //
 
-  refDir = "bluray://udf%3a%2f%2f%252fsomepath%252fpath%252fmovie.iso%2f/root";
-  EXPECT_EQ(refDir, URIUtils::GetBlurayRootPath("/somepath/path/movie.iso"));
+  std::string refDir{"bluray://%2fsomepath%2fpath%2f/root/titles"};
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath("/somepath/path/BDMV/index.bdmv",
+                                                  URIUtils::GetAllTitles::LONG,
+                                                  URIUtils::AllTitlesOptions::MOVIES));
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath(
+                        "bluray://%2fsomepath%2fpath%2f/BDMV/PLAYLIST/00800.mpls",
+                        URIUtils::GetAllTitles::LONG, URIUtils::AllTitlesOptions::MOVIES));
+
+  refDir = "bluray://udf%3a%2f%2f%252fsomepath%252fpath%252fmovie.iso%2f/root/titles";
   EXPECT_EQ(refDir,
-            URIUtils::GetBlurayRootPath(
+            URIUtils::GetBlurayTitlesPath("/somepath/path/movie.iso", URIUtils::GetAllTitles::LONG,
+                                          URIUtils::AllTitlesOptions::MOVIES));
+  EXPECT_EQ(refDir,
+            URIUtils::GetBlurayTitlesPath(
                 "bluray://udf%3a%2f%2f%252fsomepath%252fpath%252fmovie.iso%2f/BDMV/PLAYLIST/"
-                "00800.mpls"));
+                "00800.mpls",
+                URIUtils::GetAllTitles::LONG, URIUtils::AllTitlesOptions::MOVIES));
 
-  refDir = "bluray://D%3a%5cMovies%5c/root";
-  EXPECT_EQ(refDir, URIUtils::GetBlurayRootPath("D:\\Movies\\BDMV\\index.bdmv"));
+  refDir = "bluray://D%3a%5cMovies%5c/root/titles";
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath("D:\\Movies\\BDMV\\index.bdmv",
+                                                  URIUtils::GetAllTitles::LONG,
+                                                  URIUtils::AllTitlesOptions::MOVIES));
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath(
+                        "bluray://D%3a%5cMovies%5c/BDMV/PLAYLIST/00800.mpls",
+                        URIUtils::GetAllTitles::LONG, URIUtils::AllTitlesOptions::MOVIES));
+
+  refDir = "bluray://udf%3a%2f%2fD%253a%255cMovies%255cmovie.iso%2f/root/titles";
   EXPECT_EQ(refDir,
-            URIUtils::GetBlurayRootPath("bluray://D%3a%5cMovies%5c/BDMV/PLAYLIST/00800.mpls"));
-
-  refDir = "bluray://udf%3a%2f%2fD%253a%255cMovies%255cmovie.iso%2f/root";
-  EXPECT_EQ(refDir, URIUtils::GetBlurayRootPath("D:\\Movies\\movie.iso"));
-  EXPECT_EQ(refDir, URIUtils::GetBlurayRootPath(
+            URIUtils::GetBlurayTitlesPath("D:\\Movies\\movie.iso", URIUtils::GetAllTitles::LONG,
+                                          URIUtils::AllTitlesOptions::MOVIES));
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath(
                         "bluray://udf%3a%2f%2fD%253a%255cMovies%255cmovie.iso%2f/BDMV/PLAYLIST/"
-                        "00800.mpls"));
+                        "00800.mpls",
+                        URIUtils::GetAllTitles::LONG, URIUtils::AllTitlesOptions::MOVIES));
 
-  refDir = "bluray://%5c%5cServer%5cMovies%5c/root";
-  EXPECT_EQ(refDir, URIUtils::GetBlurayRootPath("\\\\Server\\Movies\\BDMV\\index.bdmv"));
-  EXPECT_EQ(refDir, URIUtils::GetBlurayRootPath(
-                        "bluray://%5c%5cServer%5cMovies%5c/BDMV/PLAYLIST/00800.mpls"));
+  refDir = "bluray://%5c%5cServer%5cMovies%5c/root/titles";
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath("\\\\Server\\Movies\\BDMV\\index.bdmv",
+                                                  URIUtils::GetAllTitles::LONG,
+                                                  URIUtils::AllTitlesOptions::MOVIES));
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath(
+                        "bluray://%5c%5cServer%5cMovies%5c/BDMV/PLAYLIST/00800.mpls",
+                        URIUtils::GetAllTitles::LONG, URIUtils::AllTitlesOptions::MOVIES));
 
-  refDir = "bluray://udf%3a%2f%2f%255c%255cServer%255cMovies%255cmovie.iso%2f/root";
-  EXPECT_EQ(refDir, URIUtils::GetBlurayRootPath("\\\\Server\\Movies\\movie.iso"));
+  refDir = "bluray://udf%3a%2f%2f%255c%255cServer%255cMovies%255cmovie.iso%2f/root/titles";
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath("\\\\Server\\Movies\\movie.iso",
+                                                  URIUtils::GetAllTitles::LONG,
+                                                  URIUtils::AllTitlesOptions::MOVIES));
   EXPECT_EQ(refDir,
-            URIUtils::GetBlurayRootPath(
+            URIUtils::GetBlurayTitlesPath(
                 "bluray://udf%3a%2f%2f%255c%255cServer%255cMovies%255cmovie.iso%2f/BDMV/PLAYLIST/"
-                "00800.mpls"));
+                "00800.mpls",
+                URIUtils::GetAllTitles::LONG, URIUtils::AllTitlesOptions::MOVIES));
 
-  refDir = "bluray://smb%3a%2f%2fsomepath%2fpath%2f/root";
-  EXPECT_EQ(refDir, URIUtils::GetBlurayRootPath("smb://somepath/path/BDMV/index.bdmv"));
-  EXPECT_EQ(refDir, URIUtils::GetBlurayRootPath(
-                        "bluray://smb%3a%2f%2fsomepath%2fpath%2f/BDMV/PLAYLIST/00800.mpls"));
+  refDir = "bluray://smb%3a%2f%2fsomepath%2fpath%2f/root/titles";
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath("smb://somepath/path/BDMV/index.bdmv",
+                                                  URIUtils::GetAllTitles::LONG,
+                                                  URIUtils::AllTitlesOptions::MOVIES));
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath(
+                        "bluray://smb%3a%2f%2fsomepath%2fpath%2f/BDMV/PLAYLIST/00800.mpls",
+                        URIUtils::GetAllTitles::LONG, URIUtils::AllTitlesOptions::MOVIES));
 
-  refDir = "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fmovie.iso%2f/root";
-  EXPECT_EQ(refDir, URIUtils::GetBlurayRootPath("smb://somepath/path/movie.iso"));
+  refDir = "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fmovie.iso%2f/root/titles";
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath("smb://somepath/path/movie.iso",
+                                                  URIUtils::GetAllTitles::LONG,
+                                                  URIUtils::AllTitlesOptions::MOVIES));
   EXPECT_EQ(
       refDir,
-      URIUtils::GetBlurayRootPath(
+      URIUtils::GetBlurayTitlesPath(
           "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fmovie.iso%2f/BDMV/PLAYLIST/"
-          "00800.mpls"));
+          "00800.mpls",
+          URIUtils::GetAllTitles::LONG, URIUtils::AllTitlesOptions::MOVIES));
+
+  //
+  // root/titles/all
+  //
+
+  refDir = "bluray://%2fsomepath%2fpath%2f/root/titles/all";
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath("/somepath/path/BDMV/index.bdmv",
+                                                  URIUtils::GetAllTitles::ALL,
+                                                  URIUtils::AllTitlesOptions::MOVIES));
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath(
+                        "bluray://%2fsomepath%2fpath%2f/BDMV/PLAYLIST/00800.mpls",
+                        URIUtils::GetAllTitles::ALL, URIUtils::AllTitlesOptions::MOVIES));
+
+  refDir = "bluray://udf%3a%2f%2f%252fsomepath%252fpath%252fmovie.iso%2f/root/titles/all";
+  EXPECT_EQ(refDir,
+            URIUtils::GetBlurayTitlesPath("/somepath/path/movie.iso", URIUtils::GetAllTitles::ALL,
+                                          URIUtils::AllTitlesOptions::MOVIES));
+  EXPECT_EQ(refDir,
+            URIUtils::GetBlurayTitlesPath(
+                "bluray://udf%3a%2f%2f%252fsomepath%252fpath%252fmovie.iso%2f/BDMV/PLAYLIST/"
+                "00800.mpls",
+                URIUtils::GetAllTitles::ALL, URIUtils::AllTitlesOptions::MOVIES));
+
+  refDir = "bluray://D%3a%5cMovies%5c/root/titles/all";
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath("D:\\Movies\\BDMV\\index.bdmv",
+                                                  URIUtils::GetAllTitles::ALL,
+                                                  URIUtils::AllTitlesOptions::MOVIES));
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath(
+                        "bluray://D%3a%5cMovies%5c/BDMV/PLAYLIST/00800.mpls",
+                        URIUtils::GetAllTitles::ALL, URIUtils::AllTitlesOptions::MOVIES));
+
+  refDir = "bluray://udf%3a%2f%2fD%253a%255cMovies%255cmovie.iso%2f/root/titles/all";
+  EXPECT_EQ(refDir,
+            URIUtils::GetBlurayTitlesPath("D:\\Movies\\movie.iso", URIUtils::GetAllTitles::ALL,
+                                          URIUtils::AllTitlesOptions::MOVIES));
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath(
+                        "bluray://udf%3a%2f%2fD%253a%255cMovies%255cmovie.iso%2f/BDMV/PLAYLIST/"
+                        "00800.mpls",
+                        URIUtils::GetAllTitles::ALL, URIUtils::AllTitlesOptions::MOVIES));
+
+  refDir = "bluray://%5c%5cServer%5cMovies%5c/root/titles/all";
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath("\\\\Server\\Movies\\BDMV\\index.bdmv",
+                                                  URIUtils::GetAllTitles::ALL,
+                                                  URIUtils::AllTitlesOptions::MOVIES));
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath(
+                        "bluray://%5c%5cServer%5cMovies%5c/BDMV/PLAYLIST/00800.mpls",
+                        URIUtils::GetAllTitles::ALL, URIUtils::AllTitlesOptions::MOVIES));
+
+  refDir = "bluray://udf%3a%2f%2f%255c%255cServer%255cMovies%255cmovie.iso%2f/root/titles/all";
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath("\\\\Server\\Movies\\movie.iso",
+                                                  URIUtils::GetAllTitles::ALL,
+                                                  URIUtils::AllTitlesOptions::MOVIES));
+  EXPECT_EQ(refDir,
+            URIUtils::GetBlurayTitlesPath(
+                "bluray://udf%3a%2f%2f%255c%255cServer%255cMovies%255cmovie.iso%2f/BDMV/PLAYLIST/"
+                "00800.mpls",
+                URIUtils::GetAllTitles::ALL, URIUtils::AllTitlesOptions::MOVIES));
+
+  refDir = "bluray://smb%3a%2f%2fsomepath%2fpath%2f/root/titles/all";
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath("smb://somepath/path/BDMV/index.bdmv",
+                                                  URIUtils::GetAllTitles::ALL,
+                                                  URIUtils::AllTitlesOptions::MOVIES));
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath(
+                        "bluray://smb%3a%2f%2fsomepath%2fpath%2f/BDMV/PLAYLIST/00800.mpls",
+                        URIUtils::GetAllTitles::ALL, URIUtils::AllTitlesOptions::MOVIES));
+
+  refDir =
+      "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fmovie.iso%2f/root/titles/all";
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath("smb://somepath/path/movie.iso",
+                                                  URIUtils::GetAllTitles::ALL,
+                                                  URIUtils::AllTitlesOptions::MOVIES));
+  EXPECT_EQ(
+      refDir,
+      URIUtils::GetBlurayTitlesPath(
+          "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fmovie.iso%2f/BDMV/PLAYLIST/"
+          "00800.mpls",
+          URIUtils::GetAllTitles::ALL, URIUtils::AllTitlesOptions::MOVIES));
+
+  //
+  // /root/titles/episodes
+  //
+
+  refDir = "bluray://%2fsomepath%2fpath%2f/root/titles/episodes";
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath("/somepath/path/BDMV/index.bdmv",
+                                                  URIUtils::GetAllTitles::LONG,
+                                                  URIUtils::AllTitlesOptions::EPISODES));
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath(
+                        "bluray://%2fsomepath%2fpath%2f/BDMV/PLAYLIST/00800.mpls",
+                        URIUtils::GetAllTitles::LONG, URIUtils::AllTitlesOptions::EPISODES));
+
+  refDir = "bluray://udf%3a%2f%2f%252fsomepath%252fpath%252fmovie.iso%2f/root/titles/episodes";
+  EXPECT_EQ(refDir,
+            URIUtils::GetBlurayTitlesPath("/somepath/path/movie.iso", URIUtils::GetAllTitles::LONG,
+                                          URIUtils::AllTitlesOptions::EPISODES));
+  EXPECT_EQ(refDir,
+            URIUtils::GetBlurayTitlesPath(
+                "bluray://udf%3a%2f%2f%252fsomepath%252fpath%252fmovie.iso%2f/BDMV/PLAYLIST/"
+                "00800.mpls",
+                URIUtils::GetAllTitles::LONG, URIUtils::AllTitlesOptions::EPISODES));
+
+  refDir = "bluray://D%3a%5cMovies%5c/root/titles/episodes";
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath("D:\\Movies\\BDMV\\index.bdmv",
+                                                  URIUtils::GetAllTitles::LONG,
+                                                  URIUtils::AllTitlesOptions::EPISODES));
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath(
+                        "bluray://D%3a%5cMovies%5c/BDMV/PLAYLIST/00800.mpls",
+                        URIUtils::GetAllTitles::LONG, URIUtils::AllTitlesOptions::EPISODES));
+
+  refDir = "bluray://udf%3a%2f%2fD%253a%255cMovies%255cmovie.iso%2f/root/titles/episodes";
+  EXPECT_EQ(refDir,
+            URIUtils::GetBlurayTitlesPath("D:\\Movies\\movie.iso", URIUtils::GetAllTitles::LONG,
+                                          URIUtils::AllTitlesOptions::EPISODES));
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath(
+                        "bluray://udf%3a%2f%2fD%253a%255cMovies%255cmovie.iso%2f/BDMV/PLAYLIST/"
+                        "00800.mpls",
+                        URIUtils::GetAllTitles::LONG, URIUtils::AllTitlesOptions::EPISODES));
+
+  refDir = "bluray://%5c%5cServer%5cMovies%5c/root/titles/episodes";
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath("\\\\Server\\Movies\\BDMV\\index.bdmv",
+                                                  URIUtils::GetAllTitles::LONG,
+                                                  URIUtils::AllTitlesOptions::EPISODES));
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath(
+                        "bluray://%5c%5cServer%5cMovies%5c/BDMV/PLAYLIST/00800.mpls",
+                        URIUtils::GetAllTitles::LONG, URIUtils::AllTitlesOptions::EPISODES));
+
+  refDir = "bluray://udf%3a%2f%2f%255c%255cServer%255cMovies%255cmovie.iso%2f/root/titles/episodes";
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath("\\\\Server\\Movies\\movie.iso",
+                                                  URIUtils::GetAllTitles::LONG,
+                                                  URIUtils::AllTitlesOptions::EPISODES));
+  EXPECT_EQ(refDir,
+            URIUtils::GetBlurayTitlesPath(
+                "bluray://udf%3a%2f%2f%255c%255cServer%255cMovies%255cmovie.iso%2f/BDMV/PLAYLIST/"
+                "00800.mpls",
+                URIUtils::GetAllTitles::LONG, URIUtils::AllTitlesOptions::EPISODES));
+
+  refDir = "bluray://smb%3a%2f%2fsomepath%2fpath%2f/root/titles/episodes";
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath("smb://somepath/path/BDMV/index.bdmv",
+                                                  URIUtils::GetAllTitles::LONG,
+                                                  URIUtils::AllTitlesOptions::EPISODES));
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath(
+                        "bluray://smb%3a%2f%2fsomepath%2fpath%2f/BDMV/PLAYLIST/00800.mpls",
+                        URIUtils::GetAllTitles::LONG, URIUtils::AllTitlesOptions::EPISODES));
+
+  refDir = "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fmovie.iso%2f/root/titles/"
+           "episodes";
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath("smb://somepath/path/movie.iso",
+                                                  URIUtils::GetAllTitles::LONG,
+                                                  URIUtils::AllTitlesOptions::EPISODES));
+  EXPECT_EQ(
+      refDir,
+      URIUtils::GetBlurayTitlesPath(
+          "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fmovie.iso%2f/BDMV/PLAYLIST/"
+          "00800.mpls",
+          URIUtils::GetAllTitles::LONG, URIUtils::AllTitlesOptions::EPISODES));
+
+  //
+  // /root/titles/episodes/all
+  //
+
+  refDir = "bluray://%2fsomepath%2fpath%2f/root/titles/episodes/all";
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath("/somepath/path/BDMV/index.bdmv",
+                                                  URIUtils::GetAllTitles::ALL,
+                                                  URIUtils::AllTitlesOptions::EPISODES));
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath(
+                        "bluray://%2fsomepath%2fpath%2f/BDMV/PLAYLIST/00800.mpls",
+                        URIUtils::GetAllTitles::ALL, URIUtils::AllTitlesOptions::EPISODES));
+
+  refDir = "bluray://udf%3a%2f%2f%252fsomepath%252fpath%252fmovie.iso%2f/root/titles/episodes/all";
+  EXPECT_EQ(refDir,
+            URIUtils::GetBlurayTitlesPath("/somepath/path/movie.iso", URIUtils::GetAllTitles::ALL,
+                                          URIUtils::AllTitlesOptions::EPISODES));
+  EXPECT_EQ(refDir,
+            URIUtils::GetBlurayTitlesPath(
+                "bluray://udf%3a%2f%2f%252fsomepath%252fpath%252fmovie.iso%2f/BDMV/PLAYLIST/"
+                "00800.mpls",
+                URIUtils::GetAllTitles::ALL, URIUtils::AllTitlesOptions::EPISODES));
+
+  refDir = "bluray://D%3a%5cMovies%5c/root/titles/episodes/all";
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath("D:\\Movies\\BDMV\\index.bdmv",
+                                                  URIUtils::GetAllTitles::ALL,
+                                                  URIUtils::AllTitlesOptions::EPISODES));
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath(
+                        "bluray://D%3a%5cMovies%5c/BDMV/PLAYLIST/00800.mpls",
+                        URIUtils::GetAllTitles::ALL, URIUtils::AllTitlesOptions::EPISODES));
+
+  refDir = "bluray://udf%3a%2f%2fD%253a%255cMovies%255cmovie.iso%2f/root/titles/episodes/all";
+  EXPECT_EQ(refDir,
+            URIUtils::GetBlurayTitlesPath("D:\\Movies\\movie.iso", URIUtils::GetAllTitles::ALL,
+                                          URIUtils::AllTitlesOptions::EPISODES));
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath(
+                        "bluray://udf%3a%2f%2fD%253a%255cMovies%255cmovie.iso%2f/BDMV/PLAYLIST/"
+                        "00800.mpls",
+                        URIUtils::GetAllTitles::ALL, URIUtils::AllTitlesOptions::EPISODES));
+
+  refDir = "bluray://%5c%5cServer%5cMovies%5c/root/titles/episodes/all";
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath("\\\\Server\\Movies\\BDMV\\index.bdmv",
+                                                  URIUtils::GetAllTitles::ALL,
+                                                  URIUtils::AllTitlesOptions::EPISODES));
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath(
+                        "bluray://%5c%5cServer%5cMovies%5c/BDMV/PLAYLIST/00800.mpls",
+                        URIUtils::GetAllTitles::ALL, URIUtils::AllTitlesOptions::EPISODES));
+
+  refDir =
+      "bluray://udf%3a%2f%2f%255c%255cServer%255cMovies%255cmovie.iso%2f/root/titles/episodes/all";
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath("\\\\Server\\Movies\\movie.iso",
+                                                  URIUtils::GetAllTitles::ALL,
+                                                  URIUtils::AllTitlesOptions::EPISODES));
+  EXPECT_EQ(refDir,
+            URIUtils::GetBlurayTitlesPath(
+                "bluray://udf%3a%2f%2f%255c%255cServer%255cMovies%255cmovie.iso%2f/BDMV/PLAYLIST/"
+                "00800.mpls",
+                URIUtils::GetAllTitles::ALL, URIUtils::AllTitlesOptions::EPISODES));
+
+  refDir = "bluray://smb%3a%2f%2fsomepath%2fpath%2f/root/titles/episodes/all";
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath("smb://somepath/path/BDMV/index.bdmv",
+                                                  URIUtils::GetAllTitles::ALL,
+                                                  URIUtils::AllTitlesOptions::EPISODES));
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath(
+                        "bluray://smb%3a%2f%2fsomepath%2fpath%2f/BDMV/PLAYLIST/00800.mpls",
+                        URIUtils::GetAllTitles::ALL, URIUtils::AllTitlesOptions::EPISODES));
+
+  refDir = "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fmovie.iso%2f/root/titles/"
+           "episodes/all";
+  EXPECT_EQ(refDir, URIUtils::GetBlurayTitlesPath("smb://somepath/path/movie.iso",
+                                                  URIUtils::GetAllTitles::ALL,
+                                                  URIUtils::AllTitlesOptions::EPISODES));
+  EXPECT_EQ(
+      refDir,
+      URIUtils::GetBlurayTitlesPath(
+          "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fmovie.iso%2f/BDMV/PLAYLIST/"
+          "00800.mpls",
+          URIUtils::GetAllTitles::ALL, URIUtils::AllTitlesOptions::EPISODES));
 }
 
 TEST_F(TestURIUtils, GetBlurayEpisodePath)
