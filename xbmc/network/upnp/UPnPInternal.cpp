@@ -1154,6 +1154,7 @@ int PopulateTagFromObject(CVideoInfoTag& tag,
       detail->m_iChannels = resource->m_NbAudioChannels;
       tag.m_streamDetails.AddStream(detail);
     }
+    tag.m_streamDetails.SetSources(CStreamDetail::EXTERNAL);
   }
   return NPT_SUCCESS;
 }

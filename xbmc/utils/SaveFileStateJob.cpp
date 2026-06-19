@@ -11,7 +11,6 @@
 #include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
-#include "StringUtils.h"
 #include "URIUtils.h"
 #include "URL.h"
 #include "Util.h"
@@ -24,17 +23,13 @@
 #include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
 #include "network/upnp/UPnP.h"
-#include "utils/ComponentContainer.h"
 #include "utils/Variant.h"
 #include "video/Bookmark.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
 
-#include <chrono>
-
 using namespace KODI;
 using namespace KODI::VIDEO;
-using namespace std::chrono_literals;
 
 void CSaveFileState::DoWork(CFileItem& item,
                             CBookmark& bookmark,
@@ -203,7 +198,10 @@ void CSaveFileState::DoWork(CFileItem& item,
 
           // Check whether the item's db streamdetails need updating
           if (!videodatabase.GetStreamDetails(dbItem) ||
-              dbItem.GetVideoInfoTag()->m_streamDetails != item.GetVideoInfoTag()->m_streamDetails)
+              (dbItem.GetVideoInfoTag()->m_streamDetails !=
+                   item.GetVideoInfoTag()->m_streamDetails &&
+               dbItem.GetVideoInfoTag()->m_streamDetails.ShouldUpdateWithNewDetails(
+                   item.GetVideoInfoTag()->m_streamDetails)))
           {
             videodatabase.BeginTransaction();
 
