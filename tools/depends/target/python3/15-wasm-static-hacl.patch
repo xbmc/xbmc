@@ -15,18 +15,18 @@ diff --git a/Makefile.pre.in b/Makefile.pre.in
 index 37f4c19..0b61362 100644
 --- a/Makefile.pre.in
 +++ b/Makefile.pre.in
-@@ -701,6 +701,12 @@ LIBHACL_HMAC_OBJS= \
+@@ -705,6 +705,12 @@
+ 		$(LIBHACL_BLAKE2_OBJS)
  LIBHACL_HMAC_LIB_STATIC=Modules/_hacl/libHacl_HMAC.a
  LIBHACL_HMAC_LIB_SHARED=$(LIBHACL_HMAC_OBJS)
- 
++
 +LIBHACL_BLAKE2_LIB_SHARED=
 +LIBHACL_SHA1_LIB_SHARED=
 +LIBHACL_SHA3_LIB_SHARED=
 +LIBHACL_MD5_LIB_SHARED=
 +LIBRARY_OBJS_OMIT_FROZEN += $(LIBHACL_HMAC_OBJS)
-+
+ 
  LIBHACL_HEADERS= \
  		Modules/_hacl/include/krml/FStar_UInt128_Verified.h \
- 		Modules/_hacl/include/krml/FStar_UInt_8_16_32_64.h \
 -- 
 2.39.5

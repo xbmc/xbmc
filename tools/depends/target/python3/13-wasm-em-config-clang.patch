@@ -15,7 +15,7 @@ diff --git a/Makefile.pre.in b/Makefile.pre.in
 index 37f4c19..8b202055d0 100644
 --- a/Makefile.pre.in
 +++ b/Makefile.pre.in
-@@ -58,6 +58,7 @@ DTRACE_OBJS=    @DTRACE_OBJS@
+@@ -58,6 +58,7 @@
  DTRACE_OBJS=    @DTRACE_OBJS@
  DSYMUTIL=       @DSYMUTIL@
  DSYMUTIL_PATH=  @DSYMUTIL_PATH@
@@ -23,24 +23,23 @@ index 37f4c19..8b202055d0 100644
  
  GNULD=		@GNULD@
  
-@@ -3110,7 +3111,7 @@ Python/asm_trampoline.o: $(srcdir)/Python/asm_trampoline.S
+@@ -3112,7 +3113,7 @@
  
  Python/emscripten_trampoline_inner.wasm: $(srcdir)/Python/emscripten_trampoline_inner.c
  	# emcc has a path that ends with emsdk/upstream/emscripten/emcc, we're looking for emsdk/upstream/bin/clang.
--	$$(dirname $$(dirname $(CC)))/bin/clang -o $@ $< -mgc -O2 -Wl,--no-entry -Wl,--import-table -Wl,--import-memory -target wasm32-unknown-unknown -nostdlib
+-	$$(em-config LLVM_ROOT)/clang -o $@ $< -mgc -O2 -Wl,--no-entry -Wl,--import-table -Wl,--import-memory -target wasm32-unknown-unknown -nostdlib
 +	$$($(EMCONFIG) LLVM_ROOT)/clang -o $@ $< -mgc -O2 -Wl,--no-entry -Wl,--import-table -Wl,--import-memory -target wasm32-unknown-unknown -nostdlib
  
  Python/emscripten_trampoline_wasm.c: Python/emscripten_trampoline_inner.wasm
- 	$(PYTHON_FOR_REGEN) $(srcdir)/Tools/wasm/emscripten/prepare_external_wasm.py $< $@ getWasmTrampolineModule
+ 	$(PYTHON_FOR_REGEN) $(srcdir)/Platforms/emscripten/prepare_external_wasm.py $< $@ getWasmTrampolineModule
 diff --git a/configure.ac b/configure.ac
 index d2664cc..8a1261f 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -995,6 +995,15 @@ AS_CASE([$ac_sys_system],
-     AS_VAR_APPEND([LDFLAGS], [" -mios-version-min=${IPHONEOS_DEPLOYMENT_TARGET}"])
+@@ -994,6 +994,15 @@
    ],
  )
-+
+ 
 +if test "$ac_sys_system" = "Emscripten"
 +then
 +  dnl look for em-config
@@ -49,8 +48,9 @@ index d2664cc..8a1261f 100644
 +      AC_MSG_ERROR([em-config command not found on \$PATH])
 +  fi
 +fi
- 
++
  if test "$ac_sys_system" = "Darwin"
  then
+   dnl look for SDKROOT
 -- 
 2.39.5
