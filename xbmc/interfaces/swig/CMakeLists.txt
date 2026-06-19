@@ -4,12 +4,13 @@
 
 # Host Python 3 interpreter used to run the code generator at build time. This
 # is the BUILD-host interpreter, distinct from Kodi's target Python in
-# cmake/modules/FindPython.cmake; when cross-compiling, pass
-# -DPython3_EXECUTABLE=<host python> if a target interpreter was cached first.
-find_package(Python3 COMPONENTS Interpreter REQUIRED ${SEARCH_QUIET})
-if(Python3_VERSION VERSION_LESS 3.8)
+# cmake/modules/FindPython.cmake. FindPythonInterpreter searches the host
+# (hinting ${NATIVEPREFIX}/bin) and, unlike find_package(Python3), does not
+# pick up a cross-compiled target interpreter from the CMake cache.
+find_package(PythonInterpreter REQUIRED ${SEARCH_QUIET})
+if(PYTHON3_INTERPRETER_VERSION VERSION_LESS 3.8)
   message(FATAL_ERROR "The python bindings code generator requires a host "
-                      "Python >= 3.8 (found ${Python3_VERSION})")
+                      "Python 3.8 or newer (found ${PYTHON3_INTERPRETER_VERSION})")
 endif()
 
 find_package(SWIG REQUIRED ${SEARCH_QUIET})
@@ -59,7 +60,7 @@ function(generate_file file)
   add_custom_command(OUTPUT ${CPP_FILE}
                      COMMAND SWIG::SWIG
                      ARGS ${SWIG_ARGS}
-                     COMMAND ${Python3_EXECUTABLE}
+                     COMMAND ${PYTHON_EXECUTABLE}
                      ARGS ${CODEGEN_DIR}/generate.py ${file}.xml ${CPP_FILE}
                      ${CLANG_FORMAT_COMMAND}
                      DEPENDS SWIG::SWIG ${swig_deps} ${CODEGEN_SOURCES}
