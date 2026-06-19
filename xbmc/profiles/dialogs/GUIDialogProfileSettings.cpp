@@ -24,6 +24,7 @@
 #include "profiles/dialogs/GUIDialogLockSettings.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "settings/windows/GUIControlSettings.h"
@@ -31,6 +32,8 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "utils/XBMCTinyXML2.h"
+#include "utils/XMLUtils.h"
 #include "utils/log.h"
 
 #include <cassert>
@@ -174,6 +177,58 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
                                 URIUtils::AddFileToFolder("special://masterprofile/", dialog->m_directory, "sources.xml"));
           }
       }
+
+      exists = XFILE::CFile::Exists(URIUtils::AddFileToFolder(
+          "special://masterprofile/", dialog->m_directory, "advancedsettings.xml"));
+      const DatabaseSettings dbv =
+          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseVideo;
+      const DatabaseSettings dbm =
+          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseMusic;
+      if (!exists && (!dbv.type.empty() || !dbm.type.empty()))
+      {
+        // Remote database so cannot create seperate database files
+        // Instead use <name> to create a unique name
+        CXBMCTinyXML xmlDoc;
+        TiXmlElement xmlRootElement("advancedsettings");
+        TiXmlNode* pRoot = xmlDoc.InsertEndChild(xmlRootElement);
+        if (pRoot != nullptr)
+        {
+          if (!dbv.type.empty())
+          {
+            TiXmlElement xmlVideoElement("videodatabase");
+            TiXmlNode* pVideo = pRoot->InsertEndChild(xmlVideoElement);
+            XMLUtils::SetString(pVideo, "type", dbv.type);
+            XMLUtils::SetString(pVideo, "host", dbv.host);
+            XMLUtils::SetString(pVideo, "port", dbv.port);
+            XMLUtils::SetString(pVideo, "user", dbv.user);
+            XMLUtils::SetString(pVideo, "pass", dbv.pass);
+
+            // Generate name
+            XMLUtils::SetString(
+                pVideo, "name",
+                StringUtils::Format("{}-myvideos", CUtil::SQLTableCleanString(dialog->m_name)));
+          }
+
+          if (!dbm.type.empty())
+          {
+            TiXmlElement xmlMusicElement("musicdatabase");
+            TiXmlNode* pMusic = pRoot->InsertEndChild(xmlMusicElement);
+            XMLUtils::SetString(pMusic, "type", dbm.type);
+            XMLUtils::SetString(pMusic, "host", dbm.host);
+            XMLUtils::SetString(pMusic, "port", dbm.port);
+            XMLUtils::SetString(pMusic, "user", dbm.user);
+            XMLUtils::SetString(pMusic, "pass", dbm.pass);
+
+            // Generate name
+            XMLUtils::SetString(
+                pMusic, "name",
+                StringUtils::Format("{}-mymusic", CUtil::SQLTableCleanString(dialog->m_name)));
+          }
+
+          xmlDoc.SaveFile(StringUtils::Format("special://masterprofile/{}/advancedsettings.xml",
+                                              dialog->m_directory));
+        }
+      }
     }
 
     /*if (!dialog->m_bIsNewUser)
@@ -190,6 +245,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
     profile->setDatabases((dialog->m_dbMode & 2) == 2);
     profile->setSources((dialog->m_sourcesMode & 2) == 2);
     profile->SetLocks(dialog->m_locks);
+    profile->SetNeedsRefresh(true);
     profileManager->Save();
 
     return true;
