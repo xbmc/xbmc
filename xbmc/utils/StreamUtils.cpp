@@ -65,6 +65,12 @@ std::string StreamUtils::GetCodecName(int codecId, int profile)
       codecName = "dtshd_ma_x_imax";
     else if (profile == AV_PROFILE_DTS_HD_HRA)
       codecName = "dtshd_hra";
+    else if (profile == AV_PROFILE_DTS_ES)
+      codecName = "dts_es";
+    else if (profile == AV_PROFILE_DTS_96_24)
+      codecName = "dts_96_24";
+    else if (profile == AV_PROFILE_DTS_EXPRESS)
+      codecName = "dts_express";
     else
       codecName = "dts";
 
