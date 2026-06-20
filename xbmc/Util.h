@@ -43,6 +43,7 @@ struct ExternalStreamInfo
 class CUtil
 {
   CUtil() = delete;
+
 public:
   static void CleanString(const std::string& strFileName,
                           std::string& strTitle,
@@ -50,14 +51,7 @@ public:
                           std::string& strYear,
                           bool bRemoveExtension = false,
                           bool bCleanChars = true);
-  static bool GetFilenameIdentifier(const std::string& fileName,
-                                    std::string& identifierType,
-                                    std::string& identifier);
-  static bool GetFilenameIdentifier(const std::string& fileName,
-                                    std::string& identifierType,
-                                    std::string& identifier,
-                                    std::string& match);
-  static bool HasFilenameIdentifier(const std::string& fileName);
+
   static std::string GetTitleFromPath(const CURL& url, bool bIsFolder = false);
   static std::string GetTitleFromPath(const std::string& strFileNameAndPath, bool bIsFolder = false);
 

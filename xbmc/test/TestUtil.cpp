@@ -1,12 +1,16 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
  *  See LICENSES/README.md for more information.
  */
 
+#include "ServiceBroker.h"
 #include "Util.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
+#include "video/FilenameAttributes.h"
 
 #include <gtest/gtest-param-test.h>
 #include <gtest/gtest.h>
@@ -14,6 +18,8 @@
 using ::testing::Test;
 using ::testing::ValuesIn;
 using ::testing::WithParamInterface;
+
+using namespace KODI::VIDEO;
 
 TEST(TestUtil, GetQualifiedFilename)
 {
@@ -111,13 +117,22 @@ std::ostream& operator<<(std::ostream& os, const TestUtilCleanStringData& rhs)
 
 class TestUtilCleanString : public Test, public WithParamInterface<TestUtilCleanStringData>
 {
+public:
+  static void SetUpTestSuite()
+  {
+    // Inject list of known metadata sources for reliable results
+    const std::shared_ptr<CAdvancedSettings> advancedSettings =
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+    ASSERT_TRUE(advancedSettings != nullptr);
+    advancedSettings->m_videoScannerMetadataSources = {"tmdb", "imdb"};
+  }
 };
 
 TEST_P(TestUtilCleanString, GetFilenameIdentifier)
 {
   std::string identifierType;
   std::string identifier;
-  CUtil::GetFilenameIdentifier(GetParam().input, identifierType, identifier);
+  CFilenameAttributes(GetParam().input, nullptr).GetIdentifier(identifierType, identifier);
   EXPECT_EQ(identifierType, GetParam().expIdentifierType);
   EXPECT_EQ(identifier, GetParam().expIdentifier);
 }

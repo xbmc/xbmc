@@ -88,6 +88,8 @@
 #include "utils/FileExtensionProvider.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/RegExp.h"
+#include "utils/StringUtils.h"
+#include "video/FilenameAttributes.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
 #include "windowing/GraphicContext.h"
@@ -447,53 +449,6 @@ std::string CUtil::GetPartNumberFromPath(std::string path)
   return GetPartAndRemoveDiscFromPath(path, PreserveFileName::REMOVE);
 }
 
-bool CUtil::GetFilenameIdentifier(const std::string& fileName,
-                                  std::string& identifierType,
-                                  std::string& identifier)
-{
-  std::string match;
-  return GetFilenameIdentifier(fileName, identifierType, identifier, match);
-}
-
-bool CUtil::GetFilenameIdentifier(const std::string& fileName,
-                                  std::string& identifierType,
-                                  std::string& identifier,
-                                  std::string& match)
-{
-  CRegExp reIdentifier(true, CRegExp::autoUtf8);
-
-  const std::shared_ptr<CAdvancedSettings> advancedSettings =
-      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
-  if (!reIdentifier.RegComp(advancedSettings->m_videoFilenameIdentifierRegExp))
-  {
-    CLog::LogF(LOGERROR, "Invalid filename identifier RegExp:'{}'",
-               advancedSettings->m_videoFilenameIdentifierRegExp);
-    return false;
-  }
-  else
-  {
-    if (reIdentifier.RegComp(advancedSettings->m_videoFilenameIdentifierRegExp))
-    {
-      if (reIdentifier.RegFind(fileName) >= 0)
-      {
-        match = reIdentifier.GetMatch(0);
-        identifierType = reIdentifier.GetMatch(1);
-        identifier = reIdentifier.GetMatch(2);
-        StringUtils::ToLower(identifierType);
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
-bool CUtil::HasFilenameIdentifier(const std::string& fileName)
-{
-  std::string identifierType;
-  std::string identifier;
-  return GetFilenameIdentifier(fileName, identifierType, identifier);
-}
-
 void CUtil::CleanString(const std::string& strFileName,
                         std::string& strTitle,
                         std::string& strTitleAndYear,
@@ -506,11 +461,7 @@ void CUtil::CleanString(const std::string& strFileName,
   if (strFileName == "..")
    return;
 
-  std::string identifier;
-  std::string identifierType;
-  std::string identifierMatch;
-  if (GetFilenameIdentifier(strFileName, identifierType, identifier, identifierMatch))
-    StringUtils::Replace(strTitleAndYear, identifierMatch, "");
+  KODI::VIDEO::CFilenameAttributes::CleanFilenameAttributePairs(strTitleAndYear, nullptr);
 
   const std::shared_ptr<CAdvancedSettings> advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
   const std::vector<std::string> &regexps = advancedSettings->m_videoCleanStringRegExps;

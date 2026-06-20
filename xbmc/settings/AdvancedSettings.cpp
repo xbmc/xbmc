@@ -255,7 +255,7 @@ void CAdvancedSettings::Initialize()
   m_fullScreenOnMovieStart = true;
   m_cachePath = "special://temp/";
 
-  m_videoFilenameIdentifierRegExp = R"([\{\[](\w+?)(?:id)?[-=](\w+)[\}|\]])";
+  m_videoFilenameAttributePairsRegExp = R"([\[{]\s*(?<key>\w+)\s*[=\-](?<value>[^\]}]+)[\]}])";
   m_videoCleanDateTimeRegExp = "(.*[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-9][0-9])([ _\\,\\.\\(\\)\\[\\]\\-]|[^0-9]$)?";
 
   m_videoCleanStringRegExps.clear();
@@ -400,6 +400,7 @@ void CAdvancedSettings::Initialize()
   m_bVideoLibraryCleanOnUpdate = false;
   m_bVideoLibraryUseFastHash = true;
   m_bVideoScannerIgnoreErrors = false;
+  m_metadataSourcesPriv = "tmdb|imdb|tvdb|anidb|";
   m_iVideoLibraryDateAdded = 1; // prefer mtime over ctime and current time
   m_minimumEpisodePlaylistDuration = 5 * 60; // 5 minutes
   m_disableEpisodeRanges = false;
@@ -717,7 +718,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     if (pVideoExcludes)
       GetCustomRegexps(pVideoExcludes, m_videoCleanStringRegExps);
 
-    XMLUtils::GetString(pElement, "filenameidentifier", m_videoFilenameIdentifierRegExp);
+    XMLUtils::GetString(pElement, "filenameattributepairs", m_videoFilenameAttributePairsRegExp);
     XMLUtils::GetString(pElement,"cleandatetime", m_videoCleanDateTimeRegExp);
     XMLUtils::GetString(pElement,"ppffmpegpostprocessing",m_videoPPFFmpegPostProc);
     XMLUtils::GetInt(pElement,"vdpauscaling",m_videoVDPAUScaling);
@@ -918,6 +919,15 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   if (pElement)
   {
     XMLUtils::GetBoolean(pElement, "ignoreerrors", m_bVideoScannerIgnoreErrors);
+
+    // Adjust the builtin list with the advanced setting then prepare for use.
+    if (const TiXmlElement* elem = pElement->FirstChildElement("metadatasources"); elem != nullptr)
+      GetCustomExtensions(elem, m_metadataSourcesPriv);
+
+    StringUtils::ToLower(m_metadataSourcesPriv);
+    const std::vector<std::string> split = StringUtils::Split(m_metadataSourcesPriv, '|');
+    m_videoScannerMetadataSources = std::unordered_set<std::string>(
+        std::make_move_iterator(split.begin()), std::make_move_iterator(split.end()));
   }
 
   // Backward-compatibility of ExternalPlayer config

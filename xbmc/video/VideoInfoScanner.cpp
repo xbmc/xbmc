@@ -52,6 +52,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+#include "video/FilenameAttributes.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
@@ -859,7 +860,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
     std::string identifierType;
     std::string identifier;
     long lResult = -1;
-    if (info2->IsPython() && CUtil::GetFilenameIdentifier(movieTitle, identifierType, identifier))
+    if (info2->IsPython() &&
+        CFilenameAttributes(movieTitle, &m_regexpCache).GetIdentifier(identifierType, identifier))
     {
       const ADDON::CScraper::UniqueIDs uniqueIDs{{identifierType, identifier}};
       if (GetDetails(pItem, uniqueIDs, url, info2,
@@ -927,6 +929,25 @@ CVideoInfoScanner::~CVideoInfoScanner()
     if (m_handle)
       m_handle->SetText(pItem->GetMovieName(bDirNames));
 
+    const CFilenameAttributes filenameAttributes(URIUtils::GetFileName(pItem->GetPath()),
+                                                 &m_regexpCache);
+
+    //! @todo: do something about edition values slightly different from db due to
+    //! available filesystem characters. ex. "directors cut" in file name vs "Director's Cut"
+    const std::string editionFromFilename{filenameAttributes.GetEdition()};
+
+    // An edition extracted from the filename is applied only when an asset title hasn't been set yet (NFO wins).
+    const auto applyEdition = [&editionFromFilename](CFileItem* item)
+    {
+      if (editionFromFilename.empty())
+        return;
+
+      // Creation of a tag if one doesn't exist yet is on purpose
+      CVideoInfoTag* tag{item->GetVideoInfoTag()};
+      if (tag && tag->GetAssetInfo().GetTitle().empty())
+        tag->GetAssetInfo().SetTitle(editionFromFilename);
+    };
+
     InfoType result = InfoType::NONE;
     CScraperUrl scrUrl;
 
@@ -967,14 +988,15 @@ CVideoInfoScanner::~CVideoInfoScanner()
       // Existing movie cannot be found or is not version - add it
       if (movieId < 0)
       {
+        applyEdition(&item);
+
         movieId = static_cast<int>(AddVideo(&item, info2, bDirNames, true));
         if (movieId < 0)
           return InfoRet::INFO_ERROR;
 
         // Deal with set
-        if (UpdateSetInTag(*pItem->GetVideoInfoTag()))
-          if (!AddSet(pItem->GetVideoInfoTag()->m_set))
-            return InfoRet::INFO_ERROR;
+        if (UpdateSetInTag(*pItem->GetVideoInfoTag()) && !AddSet(pItem->GetVideoInfoTag()->m_set))
+          return InfoRet::INFO_ERROR;
       }
 
       // Look for default version
@@ -1046,7 +1068,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     std::string identifierType;
     std::string identifier;
-    if (info2->IsPython() && CUtil::GetFilenameIdentifier(movieTitle, identifierType, identifier))
+    if (info2->IsPython() && filenameAttributes.GetIdentifier(identifierType, identifier))
     {
       const ADDON::CScraper::UniqueIDs uniqueIDs{{identifierType, identifier}};
       if (GetDetails(pItem, uniqueIDs, url, info2,
@@ -1056,6 +1078,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
       {
         if (UpdateSetInTag(*pItem->GetVideoInfoTag()) && !AddSet(pItem->GetVideoInfoTag()->m_set))
           return InfoRet::INFO_ERROR;
+
+        applyEdition(pItem);
+
         const int dbId{static_cast<int>(AddVideo(pItem, info2, bDirNames, useLocal))};
         if (dbId < 0)
           return InfoRet::INFO_ERROR;
@@ -1082,6 +1107,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
     {
       if (UpdateSetInTag(*pItem->GetVideoInfoTag()) && !AddSet(pItem->GetVideoInfoTag()->m_set))
         return InfoRet::INFO_ERROR;
+
+      applyEdition(pItem);
+
       const int dbId{static_cast<int>(AddVideo(pItem, info2, bDirNames, useLocal))};
       if (dbId < 0)
         return InfoRet::INFO_ERROR;
@@ -1148,7 +1176,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     std::string identifierType;
     std::string identifier;
-    if (info2->IsPython() && CUtil::GetFilenameIdentifier(movieTitle, identifierType, identifier))
+    if (info2->IsPython() &&
+        CFilenameAttributes(movieTitle, &m_regexpCache).GetIdentifier(identifierType, identifier))
     {
       const ADDON::CScraper::UniqueIDs uniqueIDs{{identifierType, identifier}};
       if (GetDetails(pItem, uniqueIDs, url, info2,
@@ -1681,15 +1710,14 @@ CVideoInfoScanner::~CVideoInfoScanner()
         if (idMovie != -1)
         {
           pItem->SetArt(art); // May have been filtered above
-          CVideoInfoTag* vtag{pItem->GetVideoInfoTag()};
 
           // Need to look up asset title in current table as, if importing, it may have a different id (primary key)
-          const std::string assetTitle{vtag->GetAssetInfo().GetTitle()};
+          const std::string assetTitle{tag->GetAssetInfo().GetTitle()};
           const int assetId{m_database.AddOrValidateVideoVersionType(assetTitle)};
 
           lResult = m_database.AddVideoAsset(VideoDbContentType::MOVIES, idMovie, assetId,
                                              VideoAssetType::VERSION, *pItem)
-                        ? vtag->m_iFileId
+                        ? tag->m_iFileId
                         : -1;
         }
       }
