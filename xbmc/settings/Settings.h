@@ -96,8 +96,7 @@ public:
       "videolibrary.musicvideoartwhitelist";
   static constexpr auto SETTING_VIDEOLIBRARY_SHOWPERFORMERS =
       "videolibrary.musicvideosallperformers";
-  static constexpr auto SETTING_VIDEOLIBRARY_IGNOREVIDEOVERSIONS =
-      "videolibrary.ignorevideoversions";
+  static constexpr auto SETTING_VIDEOLIBRARY_SIMILARVIDEOACTION = "videolibrary.similarvideoaction";
   static constexpr auto SETTING_VIDEOLIBRARY_IGNOREVIDEOEXTRAS = "videolibrary.ignorevideoextras";
   static constexpr auto SETTING_LOCALE_AUDIOLANGUAGE = "locale.audiolanguage";
   static constexpr auto SETTING_VIDEOPLAYER_PREFERDEFAULTFLAG = "videoplayer.preferdefaultflag";

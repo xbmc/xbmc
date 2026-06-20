@@ -27,6 +27,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/VideoVersionsSettings.h"
 #include "storage/MediaManager.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/RegExp.h"
@@ -266,7 +267,7 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersion()
 
         return ChooseVideoAndConvertToVideoVersion(items, m_videoAsset->GetVideoContentType(),
                                                    tag->m_type, tag->m_iDbId, videoDb,
-                                                   MediaRole::Parent);
+                                                   MediaRole::Parent, Mode::INTERACTIVE);
       }
 
       case CGUIDialogYesNo::DIALOG_RESULT_YES:
@@ -322,7 +323,7 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersion()
 
     return ChooseVideoAndConvertToVideoVersion(items, m_videoAsset->GetVideoContentType(),
                                                tag->m_type, tag->m_iDbId, videoDb,
-                                               MediaRole::Parent);
+                                               MediaRole::Parent, Mode::INTERACTIVE);
   }
   return false;
 }
@@ -457,18 +458,14 @@ bool CGUIDialogVideoManagerVersions::ManageVideoVersions(const std::shared_ptr<C
   return dialog->HasUpdatedItems();
 }
 
-bool CGUIDialogVideoManagerVersions::ChooseVideoAndConvertToVideoVersion(
-    CFileItemList& items,
-    VideoDbContentType itemType,
-    const std::string& mediaType,
-    int dbId,
-    CVideoDatabase& videoDb,
-    MediaRole role)
+namespace
+{
+std::shared_ptr<CFileItem> ChooseVideo(CFileItemList& items, MediaRole role)
 {
   if (items.Size() == 0)
   {
     CGUIDialogOK::ShowAndGetInput(role == MediaRole::NewVersion ? 40002 : 40030, 40031);
-    return false;
+    return nullptr;
   }
 
   // choose a video
@@ -477,7 +474,7 @@ bool CGUIDialogVideoManagerVersions::ChooseVideoAndConvertToVideoVersion(
   if (!dialog)
   {
     CLog::LogF(LOGERROR, "Unable to get WINDOW_DIALOG_SELECT instance!");
-    return false;
+    return nullptr;
   }
 
   // Load thumbs async
@@ -494,26 +491,35 @@ bool CGUIDialogVideoManagerVersions::ChooseVideoAndConvertToVideoVersion(
     loader.StopThread();
 
   if (!dialog->IsConfirmed())
-    return false;
+    return nullptr;
 
-  const std::shared_ptr<CFileItem> selectedItem{dialog->GetSelectedFileItem()};
+  return dialog->GetSelectedFileItem();
+}
+} // namespace
+
+bool CGUIDialogVideoManagerVersions::ChooseVideoAndConvertToVideoVersion(
+    CFileItemList& items,
+    VideoDbContentType itemType,
+    const std::string& mediaType,
+    int dbId,
+    CVideoDatabase& videoDb,
+    MediaRole role,
+    Mode mode)
+{
+  std::shared_ptr<CFileItem> selectedItem;
+
+  if (mode == Mode::INTERACTIVE)
+    selectedItem = ChooseVideo(items, role);
+  else if (items.Size() == 1)
+    selectedItem = items[0];
+
   if (!selectedItem)
-    return false;
-
-  CFileItemList list;
-  videoDb.GetVideoVersions(itemType, selectedItem->GetVideoInfoTag()->m_iDbId, list,
-                           VideoAssetType::VERSION);
-
-  // ask confirmation for the addition of a movie with multiple versions to another movie
-  if (list.Size() > 1 && !CGUIDialogYesNo::ShowAndGetInput(CVariant{40014}, CVariant{40037}))
   {
+    if (mode == Mode::NON_INTERACTIVE)
+      CLog::Log(LOGINFO,
+                "Automated video version creation stopped by multiple existing similar videos");
     return false;
   }
-
-  // choose a video version for the video
-  const int idVideoVersion{ChooseVideoAsset(selectedItem, VideoAssetType::VERSION, "")};
-  if (idVideoVersion < 0)
-    return false;
 
   int sourceDbId, targetDbId;
   switch (role)
@@ -530,7 +536,34 @@ bool CGUIDialogVideoManagerVersions::ChooseVideoAndConvertToVideoVersion(
       return false;
   }
 
-  return videoDb.ConvertVideoToVersion(itemType, sourceDbId, targetDbId, idVideoVersion,
+  CFileItemList list;
+  videoDb.GetVideoVersions(itemType, sourceDbId, list, VideoAssetType::VERSION);
+
+  // A movie with multiple versions would be added to another movie
+  // Ask for confirmation if allowed, automatic failure otherwise.
+  if (list.Size() > 1 && (mode == Mode::NON_INTERACTIVE ||
+                          !CGUIDialogYesNo::ShowAndGetInput(CVariant{40014}, CVariant{40037})))
+  {
+    if (mode == Mode::NON_INTERACTIVE)
+      CLog::Log(LOGINFO,
+                "Automated video version creation stopped by multiple versions of the source video "
+                "dbid {} path '{}'",
+                sourceDbId, CURL::GetRedacted(selectedItem->GetDynPath()));
+
+    return false;
+  }
+
+  // Selection of the version type. Leave unchanged by default.
+  int versionTypeId = -1;
+
+  if (mode == Mode::INTERACTIVE)
+  {
+    versionTypeId = ChooseVideoAsset(selectedItem, VideoAssetType::VERSION, "");
+    if (versionTypeId < 0)
+      return false;
+  }
+
+  return videoDb.ConvertVideoToVersion(itemType, sourceDbId, targetDbId, versionTypeId,
                                        VideoAssetType::VERSION,
                                        DeleteMovieCascadeAction::ALL_ASSETS);
 }
@@ -590,25 +623,44 @@ bool CGUIDialogVideoManagerVersions::ProcessVideoVersion(VideoDbContentType item
   if (list.Size() < 2)
     return false;
 
-  const MediaType mediaType{item.GetVideoInfoTag()->m_type};
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  const auto action = static_cast<SimilarVideoScanAction>(
+      settings->GetInt(CSettings::SETTING_VIDEOLIBRARY_SIMILARVIDEOACTION));
 
-  std::string path;
-  videodb.GetFilePathById(dbId, path, itemType);
-
-  if (!CGUIDialogYesNo::ShowAndGetInput(
-          CVariant{40008},
-          StringUtils::Format(
-              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(40009),
-              item.GetVideoInfoTag()->GetTitle(), path)))
+  switch (action)
   {
-    return false;
+    case SimilarVideoScanAction::ASK:
+    {
+      std::string path;
+      videodb.GetFilePathById(dbId, path, itemType);
+
+      if (!CGUIDialogYesNo::ShowAndGetInput(
+              CVariant{40008},
+              StringUtils::Format(
+                  CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(40009),
+                  item.GetVideoInfoTag()->GetTitle(), path)))
+      {
+        return false;
+      }
+      break;
+    }
+    case SimilarVideoScanAction::AUTO:
+      // permission granted through the settings
+      break;
+    case SimilarVideoScanAction::NONE:
+    default:
+      // no action or unknown value: abort
+      return false;
   }
 
   if (!PostProcessList(list, dbId))
     return false;
 
-  return ChooseVideoAndConvertToVideoVersion(list, itemType, mediaType, dbId, videodb,
-                                             MediaRole::NewVersion);
+  const MediaType mediaType{item.GetVideoInfoTag()->m_type};
+
+  return ChooseVideoAndConvertToVideoVersion(
+      list, itemType, mediaType, dbId, videodb, MediaRole::NewVersion,
+      action == SimilarVideoScanAction::ASK ? Mode::INTERACTIVE : Mode::NON_INTERACTIVE);
 }
 
 bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()

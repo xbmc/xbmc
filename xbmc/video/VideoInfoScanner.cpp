@@ -179,7 +179,8 @@ CVideoInfoScanner::CVideoInfoScanner()
 
   const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
-  m_ignoreVideoVersions = settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_IGNOREVIDEOVERSIONS);
+  m_similarVideoAction = static_cast<SimilarVideoScanAction>(
+      settings->GetInt(CSettings::SETTING_VIDEOLIBRARY_SIMILARVIDEOACTION));
   m_ignoreVideoExtras = settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_IGNOREVIDEOEXTRAS);
 }
 
@@ -1058,7 +1059,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
         const int dbId{static_cast<int>(AddVideo(pItem, info2, bDirNames, useLocal))};
         if (dbId < 0)
           return InfoRet::INFO_ERROR;
-        if (!m_ignoreVideoVersions && ProcessVideoVersion(VideoDbContentType::MOVIES, dbId))
+        if ((m_similarVideoAction == SimilarVideoScanAction::ASK ||
+             m_similarVideoAction == SimilarVideoScanAction::AUTO) &&
+            ProcessVideoVersion(VideoDbContentType::MOVIES, dbId))
           return InfoRet::HAVE_ALREADY;
         return InfoRet::ADDED;
       }
@@ -1082,7 +1085,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
       const int dbId{static_cast<int>(AddVideo(pItem, info2, bDirNames, useLocal))};
       if (dbId < 0)
         return InfoRet::INFO_ERROR;
-      if (!m_ignoreVideoVersions && ProcessVideoVersion(VideoDbContentType::MOVIES, dbId))
+      if ((m_similarVideoAction == SimilarVideoScanAction::ASK ||
+           m_similarVideoAction == SimilarVideoScanAction::AUTO) &&
+          ProcessVideoVersion(VideoDbContentType::MOVIES, dbId))
         return InfoRet::HAVE_ALREADY;
       return InfoRet::ADDED;
     }

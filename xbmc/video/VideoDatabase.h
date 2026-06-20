@@ -939,12 +939,13 @@ public:
   /*!
    * \brief Remove a video from the library and transfer all of its assets to another video of the
    * same type.
-   * \param itemType Type of the video being converted
-   * \param dbIdSource id of the video being converted
-   * \param dbIdTarget id that the video will be attached to
-   * \param idVideoVersion new versiontype of the default version of the video
-   * \param assetType new asset type of the default version of the video
-   * \param cascadeAction action to take on the assets of the video being converted
+   * \param itemType[in] Type of the video being converted
+   * \param dbIdSource[in] id of the video being converted
+   * \param dbIdTarget[in] id that the video will be attached to
+   * \param idVideoVersion[in] new versiontype of the default version of the video
+   *                           special value -1: keep the current versiontype of the video.
+   * \param assetType[in] new asset type of the default version of the video.
+   * \param cascadeAction[in] action to take on the assets of the video being converted
    *        (used to preserve streamdetails for bluray playlists)
    * \return true for success, false otherwise
    */
@@ -993,8 +994,17 @@ public:
   bool DeleteVideoAsset(int idFile);
   bool IsDefaultVideoVersion(int idFile);
   bool GetVideoVersionTypes(VideoDbContentType idContent,
-                            VideoAssetType asset,
+                            VideoAssetType assetType,
                             CFileItemList& items);
+
+  /*!
+   * \brief Check the validity of the video asset type id.
+   * \param[in] typeId Id of the video asset type
+   * \param[in] idContent db item type
+   * \param[in] asset type of the video asset type
+   * \return true when the id exists and matches the provided content and asset type, false otherwise.
+   */
+  bool IsValidVideoAssetType(int typeId, VideoDbContentType idContent, VideoAssetType asset);
   bool SetVideoVersionDefaultArt(int dbId, int idFrom, const MediaType& mediaType);
   void UpdateVideoVersionTypeTable();
   bool GetVideoVersionsNav(const std::string& strBaseDir,

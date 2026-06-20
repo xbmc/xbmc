@@ -4234,15 +4234,18 @@ void CVideoDatabase::GetSameVideoItems(const CFileItem& item,
 
         if (const int idPath{GetPathId(path)}; idPath > 0)
         {
-          sql = PrepareSQL("SELECT idMovie FROM movie "
-                           "JOIN files ON files.idFile = movie.idFile "
-                           "WHERE files.idPath = %i",
-                           idPath);
+          sql = PrepareSQL("SELECT DISTINCT vv.idMedia "
+                           "FROM videoversion vv "
+                           "  JOIN files ON files.idFile = vv.idFile "
+                           "WHERE files.idPath = %i "
+                           "AND vv.media_type = '%s' "
+                           "AND vv.itemType = %i ",
+                           idPath, mediaType.c_str(), VideoAssetType::VERSION);
 
           m_pDS->query(sql);
           while (!m_pDS->eof())
           {
-            itemIds.insert(m_pDS->fv("idMovie").get_asInt());
+            itemIds.insert(m_pDS->fv("idMedia").get_asInt());
             m_pDS->next();
           }
           m_pDS->close();
@@ -4254,12 +4257,14 @@ void CVideoDatabase::GetSameVideoItems(const CFileItem& item,
       if (matchingMask & Title)
       {
         if (item.GetVideoInfoTag()->HasYear())
-          sql = PrepareSQL("SELECT idMovie FROM movie WHERE c%02d = '%s' AND premiered LIKE '%i%%'",
-                           VIDEODB_ID_TITLE, item.GetVideoInfoTag()->GetTitle().c_str(),
-                           item.GetVideoInfoTag()->GetYear());
+          sql = PrepareSQL(
+              "SELECT DISTINCT idMovie FROM movie WHERE c%02d = '%s' AND premiered LIKE '%i%%'",
+              VIDEODB_ID_TITLE, item.GetVideoInfoTag()->GetTitle().c_str(),
+              item.GetVideoInfoTag()->GetYear());
         else
-          sql = PrepareSQL("SELECT idMovie FROM movie WHERE c%02d = '%s' AND LENGTH(premiered) < 4",
-                           VIDEODB_ID_TITLE, item.GetVideoInfoTag()->GetTitle().c_str());
+          sql = PrepareSQL(
+              "SELECT DISTINCT idMovie FROM movie WHERE c%02d = '%s' AND LENGTH(premiered) < 4",
+              VIDEODB_ID_TITLE, item.GetVideoInfoTag()->GetTitle().c_str());
 
         m_pDS->query(sql);
         while (!m_pDS->eof())
@@ -12294,9 +12299,13 @@ bool CVideoDatabase::ConvertVideoToVersion(VideoDbContentType itemType,
       DeleteMovie(dbIdSource, cascadeAction, DeleteMovieHashAction::HASH_PRESERVE);
   }
 
-  // Rename the default version
-  ExecuteQuery(PrepareSQL("UPDATE videoversion SET idType = %i, itemType = %i WHERE idFile = %i",
-                          idVideoVersion, assetType, idFile));
+  // Rename the default version when provided
+  if (idVideoVersion < 0)
+    ExecuteQuery(
+        PrepareSQL("UPDATE videoversion SET itemType = %i WHERE idFile = %i", assetType, idFile));
+  else
+    ExecuteQuery(PrepareSQL("UPDATE videoversion SET idType = %i, itemType = %i WHERE idFile = %i",
+                            idVideoVersion, assetType, idFile));
 
   CommitTransaction();
 
@@ -12691,6 +12700,30 @@ bool CVideoDatabase::GetVideoVersionTypes(VideoDbContentType idContent,
     CLog::LogF(LOGERROR, "failed");
   }
   return false;
+}
+
+bool CVideoDatabase::IsValidVideoAssetType(int typeId,
+                                           VideoDbContentType idContent,
+                                           VideoAssetType assetType)
+{
+  if (!m_pDB)
+    return false;
+
+  MediaType mediaType;
+
+  if (idContent == VideoDbContentType::MOVIES)
+    mediaType = MediaTypeMovie;
+  else
+    return false;
+
+  const std::string query =
+      PrepareSQL("SELECT 1 FROM videoversiontype "
+                 "WHERE id = %i "
+                 "AND name != '' "
+                 "AND itemType = %i "
+                 "AND owner IN (%i, %i)",
+                 typeId, assetType, VideoAssetTypeOwner::SYSTEM, VideoAssetTypeOwner::USER);
+  return GetSingleValueInt(query) == 1;
 }
 
 std::string CVideoDatabase::GetVideoVersionById(int id)

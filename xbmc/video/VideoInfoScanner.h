@@ -12,6 +12,7 @@
 #include "VideoDatabase.h"
 #include "addons/Scraper.h"
 #include "guilib/GUIListItem.h"
+#include "settings/VideoVersionsSettings.h"
 #include "utils/Artwork.h"
 #include "utils/RegExp.h"
 
@@ -325,7 +326,8 @@ namespace KODI::VIDEO
 
     bool m_bStop;
     bool m_scanAll;
-    bool m_ignoreVideoVersions{false};
+
+    SimilarVideoScanAction m_similarVideoAction{SimilarVideoScanAction::NONE};
     bool m_ignoreVideoExtras{false};
     CVideoDatabase m_database;
     std::set<int> m_pathsToClean;

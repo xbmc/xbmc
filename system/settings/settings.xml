@@ -985,10 +985,17 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
-        <setting id="videolibrary.ignorevideoversions" type="boolean" label="40202" help="40203">
+        <setting id="videolibrary.similarvideoaction" type="integer" label="40222" help="40203">
           <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="13551">0</option> <!-- off -->
+              <option label="863">1</option> <!-- ask -->
+              <option label="16316">2</option> <!-- auto -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
         </setting>
         <setting id="videolibrary.ignorevideoextras" type="boolean" label="40204" help="40205">
           <level>1</level>

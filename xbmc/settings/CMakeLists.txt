@@ -45,7 +45,8 @@ set(HEADERS AdvancedSettings.h
             SettingUtils.h
             SkinSettings.h
             SettingsComponent.h
-            SubtitlesSettings.h)
+            SubtitlesSettings.h
+            VideoVersionsSettings.h)
 
 if(TARGET ${APP_NAME_LC}::Bluray)
   list(APPEND SOURCES DiscSettings.cpp)

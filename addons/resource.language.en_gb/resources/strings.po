@@ -4050,6 +4050,7 @@ msgid "No"
 msgstr ""
 
 #. Value for setting 'Delete after watching'. Confirm delete.
+#. Value for setting 'Create versions for similar videos'
 #: system/settings/settings.xml
 msgctxt "#863"
 msgid "Ask"
@@ -7930,6 +7931,9 @@ msgctxt "#13550"
 msgid "Delay after change of refresh rate"
 msgstr ""
 
+#. value for setting 'Create versions for similar videos'
+#: system/settings/settings.xml
+#: xbmc/settings/DisplaySettings.cpp
 msgctxt "#13551"
 msgid "Off"
 msgstr ""
@@ -9578,8 +9582,10 @@ msgctxt "#16315"
 msgid "Lanczos3 - Optimised"
 msgstr ""
 
+#. value for setting 'Create versions for similar videos'
 #: xbmc/games/dialogs/osd/DialogGameVideoFilter.cpp
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+#: system/settings/settings.xml
 msgctxt "#16316"
 msgid "Auto"
 msgstr ""
@@ -24721,7 +24727,7 @@ msgstr ""
 #. Help for Ignore different video versions settting
 #: system/settings/settings.xml
 msgctxt "#40203"
-msgid "Select scanner action for different video versions.[CR][Enabled] Add different video versions to library seperately without confirmation.[CR][Disabled] Prompt for converting different video versions into additional versions of the original."
+msgid "Select the scanner action for different versions of a video.[CR][Off] Add versions of a video to the library as separate entries.[CR][Ask] Prompt if different versions should be added separately or grouped with the original.[CR][Auto] Automatically create and group the additional versions with the original."
 msgstr ""
 
 #. Ignore video extras settting
@@ -24736,7 +24742,7 @@ msgctxt "#40205"
 msgid "Select scanner action for video extras in \"extras\" folder.[CR][Enabled] Scan video extras like regular videos.[CR][Disabled] Add video extras to library for associated video."
 msgstr ""
 
-#empty strings from id 40206 to 40208
+#empty strings from id 40206 to 40208 freed in v22
 
 #. Button label for video assets
 #: xbmc/filesystem/VideoDatabaseDirectory.cpp
@@ -24773,7 +24779,7 @@ msgctxt "#40213"
 msgid "If selected the remote player volume level will be synchronized with the volume of this application.[CR]Warning: Global system volume level may be different than the application volume level - they are controlled independently.[CR]This may lead the remote player to be set to 100% volume level if the application has 100% volume level but the overall system volume level is smaller."
 msgstr ""
 
-#empty string id 40214
+#empty string id 40214 freed in v22
 
 #. Title of the dialog for version rename action from Versions Manager
 #: xbmc/video/dialogs/GUIDialogVideoManager.cpp
@@ -24811,7 +24817,15 @@ msgctxt "#40220"
 msgid "New extra name"
 msgstr ""
 
-#empty strings from id 40221 to 40399
+#empty string id 40221 freed in v22
+
+#. "Create separate versions of the same movie" setting
+#: system/settings/settings.xml
+msgctxt "#40222"
+msgid "Group the different versions of videos"
+msgstr ""
+
+#empty strings from id 40223 to 40399
 
 # Video versions
 
