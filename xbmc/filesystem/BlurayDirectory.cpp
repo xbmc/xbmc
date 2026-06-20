@@ -14,7 +14,6 @@
 #include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "Util.h"
-#include "bluray/BitReader.h"
 #include "bluray/M2TSParser.h"
 #include "bluray/MPLSParser.h"
 #include "bluray/PlaylistStructure.h"
@@ -37,11 +36,10 @@
 #include <algorithm>
 #include <cassert>
 #include <chrono>
-#include <cstddef>
+#include <cstdint>
 #include <map>
 #include <memory>
 #include <ranges>
-#include <span>
 #include <string>
 #include <unordered_set>
 #include <vector>
@@ -285,6 +283,8 @@ void SetStreamDetails(const CURL& url,
   // Subtitles
   for (const auto& subtitle : title.pgStreams)
     info->m_streamDetails.AddStream(new CStreamDetailSubtitle(subtitle));
+
+  info->m_streamDetails.DetermineBestStreams();
 }
 
 std::shared_ptr<CFileItem> GetFileItem(const CURL& url,
