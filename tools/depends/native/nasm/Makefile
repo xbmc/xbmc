@@ -8,8 +8,9 @@ VERSION=3.01
 SOURCE=$(APPNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
 SHA512=ca9550ad3239cfaa9546a908e8de86e11a7c7dd9d6006f42d272d0b025b601cdb205e60b8b3929f31123ef450dd0f0403e1300328cadf0ffdfd459f443944482
-FULL_URL=https://www.nasm.us/pub/nasm/releasebuilds/3.01/nasm-3.01.tar.xz
 include ../../download-files.include
+
+FULL_URL=https://www.nasm.us/pub/nasm/releasebuilds/3.01/nasm-3.01.tar.xz
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX)
