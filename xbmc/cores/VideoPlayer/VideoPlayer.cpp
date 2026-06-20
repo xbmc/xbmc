@@ -3591,35 +3591,72 @@ void CVideoPlayer::ExecuteTimeSeek(int64_t target, Direction direction, bool acc
   m_callback.OnPlayBackSeek(target, target - time);
 }
 
-std::optional<CVideoPlayer::SeekCandidate> CVideoPlayer::GetTimeOrPercentSeekCandidate(
-    int64_t time, Direction direction, SeekStep step)
+int64_t CVideoPlayer::CalcTimeOrPercentSeekTarget(int64_t time,
+                                                  int64_t maxTime,
+                                                  Direction direction,
+                                                  SeekStep step)
 {
-  int64_t target = 0;
   const std::shared_ptr<CAdvancedSettings> advancedSettings =
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
 
-  if (advancedSettings->m_videoUseTimeSeeking &&
-      m_processInfo->GetMaxTime() > 2000 * advancedSettings->m_videoTimeSeekForwardBig)
+  if (advancedSettings == nullptr)
+    return time;
+
+  // Calculate a time based jump
+  auto fnTimeDelta = [&advancedSettings, step, direction]()
   {
+    int64_t delta = 0;
     if (step == SeekStep::LARGE)
-      target = direction == Direction::FORWARD ? advancedSettings->m_videoTimeSeekForwardBig
-                                               : advancedSettings->m_videoTimeSeekBackwardBig;
+      delta = direction == Direction::FORWARD ? advancedSettings->m_videoTimeSeekForwardBig
+                                              : advancedSettings->m_videoTimeSeekBackwardBig;
     else
-      target = direction == Direction::FORWARD ? advancedSettings->m_videoTimeSeekForward
-                                               : advancedSettings->m_videoTimeSeekBackward;
-    target = time + target * 1000;
-  }
-  else
+      delta = direction == Direction::FORWARD ? advancedSettings->m_videoTimeSeekForward
+                                              : advancedSettings->m_videoTimeSeekBackward;
+    return delta * 1000;
+  };
+
+  // Calculate a percentage based jump
+  auto fnPercentDelta = [&advancedSettings, step, direction, maxTime]()
   {
-    int percent;
+    int percent = 0;
     if (step == SeekStep::LARGE)
       percent = direction == Direction::FORWARD ? advancedSettings->m_videoPercentSeekForwardBig
                                                 : advancedSettings->m_videoPercentSeekBackwardBig;
     else
       percent = direction == Direction::FORWARD ? advancedSettings->m_videoPercentSeekForward
                                                 : advancedSettings->m_videoPercentSeekBackward;
-    target = time + m_processInfo->GetMaxTime() * percent / 100;
+    return maxTime * percent / 100;
+  };
+
+  int64_t delta = 0;
+
+  if (!advancedSettings->m_videoSmoothPercentToTimeSeeking &&
+      advancedSettings->m_videoUseTimeSeeking &&
+      maxTime > 2000 * advancedSettings->m_videoTimeSeekForwardBig)
+  {
+    delta = fnTimeDelta();
   }
+  else if (!advancedSettings->m_videoSmoothPercentToTimeSeeking)
+  {
+    delta = fnPercentDelta();
+  }
+  else
+  {
+    const int64_t percentDelta = fnPercentDelta();
+    const int64_t timeDelta = fnTimeDelta();
+
+    delta = direction == Direction::FORWARD ? std::min(percentDelta, timeDelta)
+                                            : std::max(percentDelta, timeDelta);
+  }
+
+  return time + delta;
+}
+
+std::optional<CVideoPlayer::SeekCandidate> CVideoPlayer::GetTimeOrPercentSeekCandidate(
+    int64_t time, Direction direction, SeekStep step)
+{
+  const int64_t target =
+      CalcTimeOrPercentSeekTarget(time, m_processInfo->GetMaxTime(), direction, step);
 
   return SeekCandidate{target, [this, target, time, direction]()
                        {

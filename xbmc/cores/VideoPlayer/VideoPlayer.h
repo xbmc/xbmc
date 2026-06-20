@@ -530,6 +530,10 @@ protected:
     LARGE,
   };
 
+  static int64_t CalcTimeOrPercentSeekTarget(int64_t time,
+                                             int64_t maxTime,
+                                             Direction direction,
+                                             SeekStep step);
   std::optional<SeekCandidate> GetTimeOrPercentSeekCandidate(int64_t time,
                                                              Direction direction,
                                                              SeekStep step);

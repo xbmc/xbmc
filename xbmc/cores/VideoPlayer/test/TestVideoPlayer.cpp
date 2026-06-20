@@ -10,6 +10,10 @@
 #include "cores/IPlayerCallback.h"
 #include "cores/VideoPlayer/VideoPlayer.h"
 #include "jobs/JobManager.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
+
+#include <stdexcept>
 
 #include <gtest/gtest.h>
 
@@ -27,6 +31,12 @@ public:
   void OnQueueNextItem() override {}
 };
 
+enum class TestSeekStep
+{
+  NORMAL,
+  LARGE,
+};
+
 class CTestVideoPlayer : public CVideoPlayer
 {
 public:
@@ -38,6 +48,23 @@ public:
   std::optional<std::chrono::milliseconds> InvokeGetBookmarkPos(int idx)
   {
     return GetBookmarkPos(idx);
+  }
+
+  constexpr static SeekStep ConvertTestSeekStep(TestSeekStep step)
+  {
+    if (step == TestSeekStep::NORMAL)
+      return SeekStep::NORMAL;
+    else if (step == TestSeekStep::LARGE)
+      return SeekStep::LARGE;
+    throw std::out_of_range("missing mapping");
+  }
+
+  static int64_t InvokeCalcTimeOrPercentSeekTarget(int64_t time,
+                                                   int64_t maxTime,
+                                                   Direction direction,
+                                                   TestSeekStep step)
+  {
+    return CalcTimeOrPercentSeekTarget(time, maxTime, direction, ConvertTestSeekStep(step));
   }
 };
 
@@ -139,4 +166,159 @@ TEST_F(TestVideoPlayer, GetBookmarkPos)
 
   pos = player.InvokeGetBookmarkPos(2);
   EXPECT_FALSE(pos.has_value());
+}
+
+TEST_F(TestVideoPlayer, CalcTimeOrPercentSeekTargetCompat)
+{
+  const std::shared_ptr<CAdvancedSettings> advancedSettings =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  ASSERT_TRUE(advancedSettings != nullptr);
+
+  // Back compatibility mode
+  // time based jumps allowed
+  advancedSettings->m_videoSmoothPercentToTimeSeeking = false;
+  advancedSettings->m_videoUseTimeSeeking = true;
+
+  // ensure video long enough to engage time jumps
+  int64_t maxTime = 2000 * advancedSettings->m_videoTimeSeekForwardBig + 1000;
+
+  EXPECT_EQ(advancedSettings->m_videoTimeSeekForwardBig * 1000,
+            CTestVideoPlayer::InvokeCalcTimeOrPercentSeekTarget(0, maxTime, Direction::FORWARD,
+                                                                TestSeekStep::LARGE));
+
+  EXPECT_EQ(advancedSettings->m_videoTimeSeekForward * 1000,
+            CTestVideoPlayer::InvokeCalcTimeOrPercentSeekTarget(0, maxTime, Direction::FORWARD,
+                                                                TestSeekStep::NORMAL));
+
+  EXPECT_EQ(advancedSettings->m_videoTimeSeekBackwardBig * 1000,
+            CTestVideoPlayer::InvokeCalcTimeOrPercentSeekTarget(0, maxTime, Direction::BACKWARD,
+                                                                TestSeekStep::LARGE));
+
+  EXPECT_EQ(advancedSettings->m_videoTimeSeekBackward * 1000,
+            CTestVideoPlayer::InvokeCalcTimeOrPercentSeekTarget(0, maxTime, Direction::BACKWARD,
+                                                                TestSeekStep::NORMAL));
+
+  // video not long enough => percent based jumps
+  maxTime = 2000 * advancedSettings->m_videoTimeSeekForwardBig - 1000;
+
+  EXPECT_EQ(maxTime * advancedSettings->m_videoPercentSeekForwardBig / 100,
+            CTestVideoPlayer::InvokeCalcTimeOrPercentSeekTarget(0, maxTime, Direction::FORWARD,
+                                                                TestSeekStep::LARGE));
+
+  EXPECT_EQ(maxTime * advancedSettings->m_videoPercentSeekForward / 100,
+            CTestVideoPlayer::InvokeCalcTimeOrPercentSeekTarget(0, maxTime, Direction::FORWARD,
+                                                                TestSeekStep::NORMAL));
+
+  EXPECT_EQ(maxTime * advancedSettings->m_videoPercentSeekBackwardBig / 100,
+            CTestVideoPlayer::InvokeCalcTimeOrPercentSeekTarget(0, maxTime, Direction::BACKWARD,
+                                                                TestSeekStep::LARGE));
+
+  EXPECT_EQ(maxTime * advancedSettings->m_videoPercentSeekBackward / 100,
+            CTestVideoPlayer::InvokeCalcTimeOrPercentSeekTarget(0, maxTime, Direction::BACKWARD,
+                                                                TestSeekStep::NORMAL));
+}
+
+TEST_F(TestVideoPlayer, CalcTimeOrPercentSeekTargetPercent)
+{
+  const std::shared_ptr<CAdvancedSettings> advancedSettings =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  ASSERT_TRUE(advancedSettings != nullptr);
+
+  // Percent based only
+  advancedSettings->m_videoSmoothPercentToTimeSeeking = false;
+  advancedSettings->m_videoUseTimeSeeking = false;
+
+  // duration that would have engaged time based jumps otherwise
+  int64_t maxTime = 2000 * advancedSettings->m_videoTimeSeekForwardBig + 1000;
+
+  EXPECT_EQ(maxTime * advancedSettings->m_videoPercentSeekForwardBig / 100,
+            CTestVideoPlayer::InvokeCalcTimeOrPercentSeekTarget(0, maxTime, Direction::FORWARD,
+                                                                TestSeekStep::LARGE));
+
+  EXPECT_EQ(maxTime * advancedSettings->m_videoPercentSeekForward / 100,
+            CTestVideoPlayer::InvokeCalcTimeOrPercentSeekTarget(0, maxTime, Direction::FORWARD,
+                                                                TestSeekStep::NORMAL));
+
+  EXPECT_EQ(maxTime * advancedSettings->m_videoPercentSeekBackwardBig / 100,
+            CTestVideoPlayer::InvokeCalcTimeOrPercentSeekTarget(0, maxTime, Direction::BACKWARD,
+                                                                TestSeekStep::LARGE));
+
+  EXPECT_EQ(maxTime * advancedSettings->m_videoPercentSeekBackward / 100,
+            CTestVideoPlayer::InvokeCalcTimeOrPercentSeekTarget(0, maxTime, Direction::BACKWARD,
+                                                                TestSeekStep::NORMAL));
+}
+
+TEST_F(TestVideoPlayer, CalcTimeOrPercentSeekTargetSmooth)
+{
+  const std::shared_ptr<CAdvancedSettings> advancedSettings =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  ASSERT_TRUE(advancedSettings != nullptr);
+
+  // Smooth percent to time based jumps
+  advancedSettings->m_videoSmoothPercentToTimeSeeking = true;
+
+  // Tests pattern: find the threshold between percent-based and time-based using
+  // the advanced settings, then try a maxTime under and over the threshold
+
+  int64_t threshold = advancedSettings->m_videoTimeSeekForwardBig * 1000 * 100 /
+                      advancedSettings->m_videoPercentSeekForwardBig;
+
+  // percent based for small durations
+  int64_t maxTime = threshold / 2;
+
+  EXPECT_EQ(maxTime * advancedSettings->m_videoPercentSeekForwardBig / 100,
+            CTestVideoPlayer::InvokeCalcTimeOrPercentSeekTarget(0, maxTime, Direction::FORWARD,
+                                                                TestSeekStep::LARGE));
+  // time based for large durations
+  maxTime = threshold * 2;
+
+  EXPECT_EQ(advancedSettings->m_videoTimeSeekForwardBig * 1000,
+            CTestVideoPlayer::InvokeCalcTimeOrPercentSeekTarget(0, maxTime, Direction::FORWARD,
+                                                                TestSeekStep::LARGE));
+
+  // Repeat for the other types of jumps
+  threshold = advancedSettings->m_videoTimeSeekForward * 1000 * 100 /
+              advancedSettings->m_videoPercentSeekForward;
+
+  maxTime = threshold / 2;
+
+  EXPECT_EQ(maxTime * advancedSettings->m_videoPercentSeekForward / 100,
+            CTestVideoPlayer::InvokeCalcTimeOrPercentSeekTarget(0, maxTime, Direction::FORWARD,
+                                                                TestSeekStep::NORMAL));
+
+  maxTime = threshold * 2;
+
+  EXPECT_EQ(advancedSettings->m_videoTimeSeekForward * 1000,
+            CTestVideoPlayer::InvokeCalcTimeOrPercentSeekTarget(0, maxTime, Direction::FORWARD,
+                                                                TestSeekStep::NORMAL));
+
+  threshold = advancedSettings->m_videoTimeSeekBackwardBig * 1000 * 100 /
+              advancedSettings->m_videoPercentSeekBackwardBig;
+
+  maxTime = threshold / 2;
+
+  EXPECT_EQ(maxTime * advancedSettings->m_videoPercentSeekBackwardBig / 100,
+            CTestVideoPlayer::InvokeCalcTimeOrPercentSeekTarget(0, maxTime, Direction::BACKWARD,
+                                                                TestSeekStep::LARGE));
+
+  maxTime = threshold * 2;
+
+  EXPECT_EQ(advancedSettings->m_videoTimeSeekBackwardBig * 1000,
+            CTestVideoPlayer::InvokeCalcTimeOrPercentSeekTarget(0, maxTime, Direction::BACKWARD,
+                                                                TestSeekStep::LARGE));
+
+  threshold = advancedSettings->m_videoTimeSeekBackward * 1000 * 100 /
+              advancedSettings->m_videoPercentSeekBackward;
+
+  maxTime = threshold / 2;
+
+  EXPECT_EQ(maxTime * advancedSettings->m_videoPercentSeekBackward / 100,
+            CTestVideoPlayer::InvokeCalcTimeOrPercentSeekTarget(0, maxTime, Direction::BACKWARD,
+                                                                TestSeekStep::NORMAL));
+
+  maxTime = threshold * 2;
+
+  EXPECT_EQ(advancedSettings->m_videoTimeSeekBackward * 1000,
+            CTestVideoPlayer::InvokeCalcTimeOrPercentSeekTarget(0, maxTime, Direction::BACKWARD,
+                                                                TestSeekStep::NORMAL));
 }
