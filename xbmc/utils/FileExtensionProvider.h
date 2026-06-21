@@ -28,8 +28,11 @@ class CAdvancedSettings;
 class CFileExtensionProvider
 {
 public:
-  CFileExtensionProvider(ADDON::CAddonMgr& addonManager);
-  ~CFileExtensionProvider();
+  CFileExtensionProvider() = default;
+  ~CFileExtensionProvider() = default;
+
+  void Initialize(ADDON::CAddonMgr& addonManager);
+  void Deinitialize();
 
   /*!
    * @brief Returns a list of picture extensions
@@ -108,7 +111,7 @@ private:
 
   // Construction properties
   std::shared_ptr<CAdvancedSettings> m_advancedSettings;
-  ADDON::CAddonMgr &m_addonManager;
+  ADDON::CAddonMgr* m_addonManager{nullptr};
   std::optional<int> m_callbackId;
 
   mutable CCriticalSection m_critSection;

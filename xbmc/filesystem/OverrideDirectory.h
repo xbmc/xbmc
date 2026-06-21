@@ -21,6 +21,7 @@ public:
   bool Create(const CURL& url) override;
   bool Exists(const CURL& url) override;
   bool Remove(const CURL& url) override;
+  bool RemoveRecursive(const CURL& url) override;
 
 protected:
   virtual std::string TranslatePath(const CURL &url) = 0;
