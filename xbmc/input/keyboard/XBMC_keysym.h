@@ -290,6 +290,7 @@ enum XBMCKey
   XBMCK_LANGUAGE = 502,
   XBMCK_CHANNEL_UP = 503,
   XBMCK_CHANNEL_DOWN = 504,
+  XBMCK_SELECT = 505,
 
   /*
    * Extended keypad key symbols for Num Lock state-specific behaviors
