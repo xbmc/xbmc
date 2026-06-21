@@ -50,6 +50,8 @@
       <ok>Select</ok>
       <ok mod="longpress">ContextMenu</ok>
       <ok mod="ctrl">Enter</ok>
+      <select>Select</select>
+      <select mod="longpress">ContextMenu</select>
       <backspace>Back</backspace>
       <browser_back>Back</browser_back>
       <browser_back mod="longpress">ActivateWindow(Home)</browser_back>
