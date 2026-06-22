@@ -62,6 +62,7 @@ static const std::vector<ModifierNameXBMCMapping> ModifierNameXBMCMappings = {
     {XKB_LED_NAME_NUM, XBMCKMOD_NUM},
     {XKB_LED_NAME_SCROLL, XBMCKMOD_MODE}};
 
+// clang-format off
 constexpr auto XkbKeycodeXBMCMappings = make_map<xkb_keycode_t, XBMCKey>({
     // Function keys before start of ASCII printable character range
     {XKB_KEY_BackSpace, XBMCK_BACKSPACE},
@@ -219,6 +220,7 @@ constexpr auto XkbKeycodeXBMCMappings = make_map<xkb_keycode_t, XBMCKey>({
     {XKB_KEY_WEBOS_INVALID, XBMCK_LAST},
 #endif
 });
+// clang-format on
 
 constexpr auto XkbDeadKeyXBMCMapping = make_map<xkb_keycode_t, XBMCKey>({
     {XKB_KEY_dead_grave, XBMCK_GRAVE},
