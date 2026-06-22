@@ -497,24 +497,24 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
                   const std::shared_ptr<const CPVREpgInfoTag> tag(pItem->GetEPGInfoTag());
                   if (tag)
                   {
-                    if (tag->IsPlayable())
+                    const CDateTime start{tag->StartAsUTC()};
+                    const CDateTime end{tag->EndAsUTC()};
+                    const CDateTime now{CDateTime::GetUTCDateTime()};
+
+                    if (start <= now && now <= end)
+                    {
+                      // Current event
+                      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
+                          *pItem);
+                    }
+                    else if (tag->IsPlayable())
                     {
                       // VOD event
                       CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayEpgTag(*pItem);
                     }
                     else
                     {
-                      const CDateTime start{tag->StartAsUTC()};
-                      const CDateTime end{tag->EndAsUTC()};
-                      const CDateTime now{CDateTime::GetUTCDateTime()};
-
-                      if (start <= now && now <= end)
-                      {
-                        // Current event
-                        CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
-                            *pItem);
-                      }
-                      else if (now < start)
+                      if (now < start)
                       {
                         // Future event
                         if (CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(tag))
