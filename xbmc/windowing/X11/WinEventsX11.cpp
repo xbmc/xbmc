@@ -31,6 +31,7 @@
 
 using namespace KODI::WINDOWING::X11;
 
+// clang-format off
 static uint32_t SymMappingsX11[][2] =
 {
   {XK_BackSpace, XBMCK_BACKSPACE}
@@ -141,6 +142,7 @@ static uint32_t SymMappingsX11[][2] =
 , {XF86XK_AudioRandomPlay, XBMCK_SHUFFLE}
 , {XF86XK_AudioForward, XBMCK_FASTFORWARD}
 };
+// clang-format on
 
 CWinEventsX11::CWinEventsX11(CWinSystemX11& winSystem) : m_winSystem(winSystem)
 {
