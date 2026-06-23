@@ -23,9 +23,9 @@
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPBaseRenderer.h"
 #include "cores/RetroPlayer/savestates/ISavestate.h"
 #include "cores/RetroPlayer/savestates/SavestateDatabase.h"
+#include "cores/RetroPlayer/savestates/SavestateThumbnail.h"
 #include "cores/RetroPlayer/streams/RetroPlayerVideo.h"
 #include "filesystem/File.h"
-#include "pictures/Picture.h"
 #include "threads/SingleLock.h"
 #include "utils/ColorUtils.h"
 #include "utils/TransformMatrix.h"
@@ -869,34 +869,15 @@ void CRPRenderManager::SaveThumbnail(const std::string& thumbnailPath)
     return;
   }
 
-  std::vector<uint8_t> copiedData(sourceData, sourceData + sourceSize);
+  SavestateThumbnailPayload payload;
+  payload.thumbnailPath = thumbnailPath;
+  payload.pixels.assign(sourceData, sourceData + sourceSize);
+  payload.width = width;
+  payload.height = height;
+  payload.rotationCCW = rotationCCW;
+  payload.pixelFormat = sourceFormat;
 
-  const int stride = CRenderTranslator::TranslateWidthToBytes(width, sourceFormat);
-
-  unsigned int scaleWidth = 400;
-  unsigned int scaleHeight = 220;
-  CPicture::GetScale(width, height, scaleWidth, scaleHeight);
-
-  const int bytesPerPixel = 4;
-  std::vector<uint8_t> scaledImage(scaleWidth * scaleHeight * bytesPerPixel);
-
-  const AVPixelFormat outFormat = AV_PIX_FMT_BGR0;
-  const int scaleStride = CRenderTranslator::TranslateWidthToBytes(scaleWidth, outFormat);
-
-  if (CPicture::ScaleImage(copiedData.data(), width, height, stride, sourceFormat,
-                           scaledImage.data(), scaleWidth, scaleHeight, scaleStride, outFormat))
-  {
-    //! @todo Rotate image by rotationCCW
-    (void)rotationCCW;
-
-    CPicture::CreateThumbnailFromSurface(scaledImage.data(), scaleWidth, scaleHeight, scaleStride,
-                                         thumbnailPath);
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "Failed to scale image from size {}x{} to size {}x{}", width, height,
-              scaleWidth, scaleHeight);
-  }
+  WriteSavestateThumbnailPayload(payload);
 
   FreeVideoFrame(renderBuffer, std::move(cachedFrame));
 }

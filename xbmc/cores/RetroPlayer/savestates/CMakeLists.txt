@@ -2,6 +2,8 @@ set(SOURCES SavestateDatabase.cpp
             SavestateBlob.cpp
             SavestateCompression.cpp
             SavestateFlatBuffer.cpp
+            SavestateThumbnail.cpp
+            SavestateWriteQueue.cpp
 )
 
 set(HEADERS ISavestate.h
@@ -9,7 +11,10 @@ set(HEADERS ISavestate.h
             SavestateCompression.h
             SavestateDatabase.h
             SavestateFlatBuffer.h
+            SavestateThumbnail.h
             SavestateTypes.h
+            SavestateWriteQueue.h
+            SavestateWriteRequest.h
 )
 
 core_add_library(retroplayer_savestates)
