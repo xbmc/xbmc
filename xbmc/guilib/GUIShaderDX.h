@@ -99,6 +99,8 @@ private:
     DirectX::XMMATRIX world;
     DirectX::XMMATRIX view;
     DirectX::XMMATRIX projection;
+    DirectX::XMMATRIX m_wvp;
+    bool m_isDirty = true;
   };
   struct cbViewPort
   {

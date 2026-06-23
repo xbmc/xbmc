@@ -327,24 +327,28 @@ void XM_CALLCONV CGUIShaderDX::SetWVP(const XMMATRIX &w, const XMMATRIX &v, cons
   m_cbWorldViewProj.world = w;
   m_cbWorldViewProj.view = v;
   m_cbWorldViewProj.projection = p;
+  m_cbWorldViewProj.m_isDirty = true;
 }
 
 void CGUIShaderDX::SetWorld(const XMMATRIX &value)
 {
   m_bIsWVPDirty = true;
   m_cbWorldViewProj.world = value;
+  m_cbWorldViewProj.m_isDirty = true;
 }
 
 void CGUIShaderDX::SetView(const XMMATRIX &value)
 {
   m_bIsWVPDirty = true;
   m_cbWorldViewProj.view = value;
+  m_cbWorldViewProj.m_isDirty = true;
 }
 
 void CGUIShaderDX::SetProjection(const XMMATRIX &value)
 {
   m_bIsWVPDirty = true;
   m_cbWorldViewProj.projection = value;
+  m_cbWorldViewProj.m_isDirty = true;
 }
 
 void CGUIShaderDX::SetDepth(const float depth)
@@ -362,11 +366,16 @@ void CGUIShaderDX::ApplyChanges(void)
   {
     if (SUCCEEDED(pContext->Map(m_pWVPBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &res)))
     {
-      XMMATRIX worldView = XMMatrixMultiply(m_cbWorldViewProj.world, m_cbWorldViewProj.view);
-      XMMATRIX worldViewProj = XMMatrixMultiplyTranspose(worldView, m_cbWorldViewProj.projection);
-
       cbWorld* buffer = (cbWorld*)res.pData;
-      buffer->wvp = worldViewProj;
+
+      if (m_cbWorldViewProj.m_isDirty)
+      {
+        XMMATRIX worldView = XMMatrixMultiply(m_cbWorldViewProj.world, m_cbWorldViewProj.view);
+        m_cbWorldViewProj.m_wvp =
+            XMMatrixMultiplyTranspose(worldView, m_cbWorldViewProj.projection);
+        m_cbWorldViewProj.m_isDirty = false;
+      }
+      buffer->wvp = m_cbWorldViewProj.m_wvp;
       buffer->blackLevel = (DX::Windowing()->UseLimitedColor() ? 16.f / 255.f : 0.f);
       buffer->colorRange = (DX::Windowing()->UseLimitedColor() ? (235.f - 16.f) / 255.f : 1.0f);
       if (DX::Windowing()->IsTransferPQ())
