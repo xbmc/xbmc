@@ -8,6 +8,7 @@
 
 #include "SavestateFlatBuffer.h"
 
+#include "SavestateBlob.h"
 #include "XBDateTime.h"
 #include "savestate_generated.h"
 #include "utils/log.h"
@@ -20,7 +21,7 @@ using namespace RETRO;
 
 namespace
 {
-const uint8_t SCHEMA_VERSION = 3;
+const uint8_t SCHEMA_VERSION = 5;
 const uint8_t SCHEMA_MIN_VERSION = 1;
 
 /*!
@@ -183,6 +184,7 @@ unsigned int TranslateRotation(SAVESTATE::VideoRotation rotationCCW)
 
   return 0;
 }
+
 } // namespace
 
 CSavestateFlatBuffer::CSavestateFlatBuffer()
@@ -197,6 +199,31 @@ void CSavestateFlatBuffer::Reset()
   m_builder = std::make_unique<flatbuffers::FlatBufferBuilder>(INITIAL_FLATBUFFER_SIZE);
   m_data.clear();
   m_savestate = nullptr;
+
+  m_type = SAVE_TYPE::UNKNOWN;
+  m_slot = 0;
+  m_labelOffset.reset();
+  m_captionOffset.reset();
+  m_createdOffset.reset();
+  m_gameFileNameOffset.reset();
+  m_timestampFrames = 0;
+  m_timestampWallClock = 0.0;
+  m_emulatorAddonIdOffset.reset();
+  m_emulatorVersionOffset.reset();
+  m_pixelFormat = AV_PIX_FMT_NONE;
+  m_nominalWidth = 0;
+  m_nominalHeight = 0;
+  m_nominalDisplayAspectRatio = 0.0f;
+  m_maxWidth = 0;
+  m_maxHeight = 0;
+  m_videoData.clear();
+  m_videoDataDecompressed.clear();
+  m_videoWidth = 0;
+  m_videoHeight = 0;
+  m_displayAspectRatio = 0.0f;
+  m_rotationCCW = 0;
+  m_memoryData.Clear();
+  m_memoryDataDecompressed.clear();
 }
 
 bool CSavestateFlatBuffer::Serialize(const uint8_t*& data, size_t& size) const
@@ -437,14 +464,40 @@ void CSavestateFlatBuffer::SetMaxHeight(unsigned int maxHeight)
 
 const uint8_t* CSavestateFlatBuffer::GetVideoData() const
 {
+  if (!m_videoDataDecompressed.empty())
+    return m_videoDataDecompressed.data();
+
   if (m_savestate != nullptr && m_savestate->video_data())
     return m_savestate->video_data()->data();
 
   return nullptr;
 }
 
+bool CSavestateFlatBuffer::PrepareVideoData()
+{
+  m_videoDataDecompressed.clear();
+
+  if (m_savestate == nullptr)
+    return false;
+
+  if (m_savestate->video_data_compression() == SAVESTATE::CompressionType_Zstd)
+    return CSavestateBlob::PrepareVideoData(*m_savestate, m_videoDataDecompressed);
+
+  if (m_savestate->video_data_compression() != SAVESTATE::CompressionType_None)
+  {
+    CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Unsupported video compression type {}",
+              static_cast<unsigned int>(m_savestate->video_data_compression()));
+    return false;
+  }
+
+  return CSavestateBlob::HasRawVideoData(*m_savestate);
+}
+
 size_t CSavestateFlatBuffer::GetVideoSize() const
 {
+  if (!m_videoDataDecompressed.empty())
+    return m_videoDataDecompressed.size();
+
   if (m_savestate != nullptr && m_savestate->video_data())
     return m_savestate->video_data()->size();
 
@@ -453,12 +506,9 @@ size_t CSavestateFlatBuffer::GetVideoSize() const
 
 uint8_t* CSavestateFlatBuffer::GetVideoBuffer(size_t size)
 {
-  uint8_t* videoBuffer = nullptr;
+  m_videoData.assign(size, 0);
 
-  m_videoDataOffset =
-      std::make_unique<VectorOffset>(m_builder->CreateUninitializedVector(size, &videoBuffer));
-
-  return videoBuffer;
+  return m_videoData.empty() ? nullptr : m_videoData.data();
 }
 
 unsigned int CSavestateFlatBuffer::GetVideoWidth() const
@@ -515,32 +565,104 @@ void CSavestateFlatBuffer::SetRotationDegCCW(unsigned int rotationCCW)
 
 const uint8_t* CSavestateFlatBuffer::GetMemoryData() const
 {
+  if (!m_memoryDataDecompressed.empty())
+    return m_memoryDataDecompressed.data();
+
   if (m_savestate != nullptr && m_savestate->memory_data())
     return m_savestate->memory_data()->data();
 
   return nullptr;
 }
 
+bool CSavestateFlatBuffer::PrepareMemoryData(size_t expectedSize)
+{
+  m_memoryDataDecompressed.clear();
+
+  if (m_savestate == nullptr)
+    return false;
+
+  if (m_savestate->memory_data_compression() == SAVESTATE::CompressionType_Zstd)
+    return CSavestateBlob::PrepareMemoryData(*m_savestate, expectedSize, m_memoryDataDecompressed);
+
+  if (m_savestate->memory_data_compression() != SAVESTATE::CompressionType_None)
+  {
+    CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Unsupported memory compression type {}",
+              static_cast<unsigned int>(m_savestate->memory_data_compression()));
+    return false;
+  }
+
+  return CSavestateBlob::IsValidRawMemoryData(*m_savestate, expectedSize);
+}
+
 size_t CSavestateFlatBuffer::GetMemorySize() const
 {
+  if (!m_memoryDataDecompressed.empty())
+    return m_memoryDataDecompressed.size();
+
   if (m_savestate != nullptr && m_savestate->memory_data())
     return m_savestate->memory_data()->size();
 
   return 0;
 }
 
+bool CSavestateFlatBuffer::CopyMemoryDataTo(ISavestate& target) const
+{
+  auto* targetFlatBuffer = dynamic_cast<CSavestateFlatBuffer*>(&target);
+  if (targetFlatBuffer == nullptr || m_savestate == nullptr)
+    return false;
+
+  targetFlatBuffer->m_memoryData.Clear();
+  targetFlatBuffer->m_memoryDataDecompressed.clear();
+
+  if (m_savestate->memory_data_compression() == SAVESTATE::CompressionType_Zstd)
+  {
+    if (!CSavestateBlob::IsValidCopiedCompressedMemoryData(*m_savestate))
+      return false;
+
+    const auto* compressed = m_savestate->memory_data_compressed();
+    targetFlatBuffer->m_memoryData.compressed.assign(compressed->data(),
+                                                     compressed->data() + compressed->size());
+    targetFlatBuffer->m_memoryData.compression = SAVESTATE::CompressionType_Zstd;
+    targetFlatBuffer->m_memoryData.uncompressedSize = m_savestate->memory_data_uncompressed_size();
+    return true;
+  }
+
+  if (m_savestate->memory_data_compression() != SAVESTATE::CompressionType_None)
+  {
+    CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Unsupported memory compression type {}",
+              static_cast<unsigned int>(m_savestate->memory_data_compression()));
+    return false;
+  }
+
+  const auto* memoryData = m_savestate->memory_data();
+  if (memoryData == nullptr || !CSavestateBlob::IsValidMemoryDataSize(memoryData->size()))
+    return false;
+
+  if (memoryData->size() > 0)
+    targetFlatBuffer->m_memoryData.raw.assign(memoryData->data(),
+                                              memoryData->data() + memoryData->size());
+
+  return true;
+}
+
 uint8_t* CSavestateFlatBuffer::GetMemoryBuffer(size_t size)
 {
-  uint8_t* memoryBuffer = nullptr;
+  m_memoryData.Clear();
+  m_memoryData.raw.assign(size, 0);
 
-  m_memoryDataOffset =
-      std::make_unique<VectorOffset>(m_builder->CreateUninitializedVector(size, &memoryBuffer));
-
-  return memoryBuffer;
+  return m_memoryData.raw.empty() ? nullptr : m_memoryData.raw.data();
 }
 
 void CSavestateFlatBuffer::Finalize()
 {
+  if (m_builder == nullptr)
+    return;
+
+  const SavestateBlobOffsets videoBlob =
+      CSavestateBlob::CreateWriteOffsets(*m_builder, m_videoData, "video_data");
+  const SavestateBlobOffsets memoryBlob =
+      CSavestateBlob::CreateWriteOffsets(*m_builder, m_memoryData, "memory_data");
+
   // Helper class to build the nested Savestate table
   SAVESTATE::SavestateBuilder savestateBuilder(*m_builder);
 
@@ -604,11 +726,11 @@ void CSavestateFlatBuffer::Finalize()
 
   savestateBuilder.add_max_height(m_maxHeight);
 
-  if (m_videoDataOffset)
-  {
-    savestateBuilder.add_video_data(*m_videoDataOffset);
-    m_videoDataOffset.reset();
-  }
+  savestateBuilder.add_video_data(videoBlob.raw);
+  if (videoBlob.compressed.o != 0)
+    savestateBuilder.add_video_data_compressed(videoBlob.compressed);
+  savestateBuilder.add_video_data_compression(videoBlob.compressionType);
+  savestateBuilder.add_video_data_uncompressed_size(videoBlob.uncompressedSize);
 
   savestateBuilder.add_video_width(m_videoWidth);
 
@@ -618,11 +740,11 @@ void CSavestateFlatBuffer::Finalize()
 
   savestateBuilder.add_rotation_ccw(TranslateRotation(m_rotationCCW));
 
-  if (m_memoryDataOffset)
-  {
-    savestateBuilder.add_memory_data(*m_memoryDataOffset);
-    m_memoryDataOffset.reset();
-  }
+  savestateBuilder.add_memory_data(memoryBlob.raw);
+  if (memoryBlob.compressed.o != 0)
+    savestateBuilder.add_memory_data_compressed(memoryBlob.compressed);
+  savestateBuilder.add_memory_data_compression(memoryBlob.compressionType);
+  savestateBuilder.add_memory_data_uncompressed_size(memoryBlob.uncompressedSize);
 
   auto savestate = savestateBuilder.Finish();
   FinishSavestateBuffer(*m_builder, savestate);

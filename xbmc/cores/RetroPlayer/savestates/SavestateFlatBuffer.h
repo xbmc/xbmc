@@ -9,6 +9,7 @@
 #pragma once
 
 #include "ISavestate.h"
+#include "SavestateBlob.h"
 
 #include <memory>
 
@@ -49,13 +50,16 @@ public:
   unsigned int GetMaxWidth() const override;
   unsigned int GetMaxHeight() const override;
   const uint8_t* GetVideoData() const override;
+  bool PrepareVideoData() override;
   size_t GetVideoSize() const override;
   unsigned int GetVideoWidth() const override;
   unsigned int GetVideoHeight() const override;
   float GetDisplayAspectRatio() const override;
   unsigned int GetRotationDegCCW() const override;
   const uint8_t* GetMemoryData() const override;
+  bool PrepareMemoryData(size_t expectedSize) override;
   size_t GetMemorySize() const override;
+  bool CopyMemoryDataTo(ISavestate& target) const override;
   void SetType(SAVE_TYPE type) override;
   void SetSlot(uint8_t slot) override;
   void SetLabel(const std::string& label) override;
@@ -102,7 +106,6 @@ private:
   const SAVESTATE::Savestate* m_savestate = nullptr;
 
   using StringOffset = flatbuffers::Offset<flatbuffers::String>;
-  using VectorOffset = flatbuffers::Offset<flatbuffers::Vector<uint8_t>>;
 
   // Temporary deserialization variables
   SAVE_TYPE m_type = SAVE_TYPE::UNKNOWN;
@@ -121,12 +124,14 @@ private:
   float m_nominalDisplayAspectRatio{0.0f};
   unsigned int m_maxWidth{0};
   unsigned int m_maxHeight{0};
-  std::unique_ptr<VectorOffset> m_videoDataOffset;
+  std::vector<uint8_t> m_videoData;
+  std::vector<uint8_t> m_videoDataDecompressed;
   unsigned int m_videoWidth{0};
   unsigned int m_videoHeight{0};
   float m_displayAspectRatio{0.0f};
   unsigned int m_rotationCCW{0};
-  std::unique_ptr<VectorOffset> m_memoryDataOffset;
+  PendingSavestateBlob m_memoryData;
+  std::vector<uint8_t> m_memoryDataDecompressed;
 };
 } // namespace RETRO
 } // namespace KODI
