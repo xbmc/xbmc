@@ -13,10 +13,16 @@
 #include "utils/Archive.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 
 #include <math.h>
 
 const float VIDEOASPECT_EPSILON = 0.025f;
+
+namespace
+{
+constexpr int STREAM_DETAILS_ARCHIVE_VERSION = 1;
+}
 
 CStreamDetailVideo::CStreamDetailVideo() :
   CStreamDetail(CStreamDetail::VIDEO)
@@ -30,6 +36,8 @@ CStreamDetailVideo::CStreamDetailVideo(const VideoStreamInfo& info, int duration
     m_fAspect(info.videoAspectRatio),
     m_iDuration(duration),
     m_strCodec(info.codecName),
+    m_strProfile(info.profileName),
+    m_bProfileScanned(true),
     m_strStereoMode(info.stereoMode),
     m_strLanguage(info.language),
     m_strHdrType(CStreamDetails::HdrTypeToString(info.hdrType)),
@@ -38,6 +46,11 @@ CStreamDetailVideo::CStreamDetailVideo(const VideoStreamInfo& info, int duration
 }
 
 void CStreamDetailVideo::Archive(CArchive& ar)
+{
+  Archive(ar, 0);
+}
+
+void CStreamDetailVideo::Archive(CArchive& ar, int archiveVersion)
 {
   if (ar.IsStoring())
   {
@@ -50,6 +63,11 @@ void CStreamDetailVideo::Archive(CArchive& ar)
     ar << m_strLanguage;
     ar << m_strHdrType;
     ar << m_strHdrDetail;
+    if (archiveVersion >= 1)
+    {
+      ar << m_strProfile;
+      ar << m_bProfileScanned;
+    }
   }
   else
   {
@@ -62,11 +80,17 @@ void CStreamDetailVideo::Archive(CArchive& ar)
     ar >> m_strLanguage;
     ar >> m_strHdrType;
     ar >> m_strHdrDetail;
+    if (archiveVersion >= 1)
+    {
+      ar >> m_strProfile;
+      ar >> m_bProfileScanned;
+    }
   }
 }
 void CStreamDetailVideo::Serialize(CVariant& value) const
 {
   value["codec"] = m_strCodec;
+  value["profile"] = m_strProfile;
   value["aspect"] = m_fAspect;
   value["height"] = m_iHeight;
   value["width"] = m_iWidth;
@@ -189,6 +213,8 @@ CStreamDetailVideo& CStreamDetailVideo::operator=(const CStreamDetailVideo& that
     this->m_iHeight = that.m_iHeight;
     this->m_fAspect = that.m_fAspect;
     this->m_strCodec = that.m_strCodec;
+    this->m_strProfile = that.m_strProfile;
+    this->m_bProfileScanned = that.m_bProfileScanned;
     this->m_iDuration = that.m_iDuration;
     this->m_strStereoMode = that.m_strStereoMode;
     this->m_strLanguage = that.m_strLanguage;
@@ -247,9 +273,11 @@ bool CStreamDetails::operator ==(const CStreamDetails &right) const
 
   for (int iStream=1; iStream<=GetVideoStreamCount(); iStream++)
   {
-    if (GetVideoCodec(iStream)    != right.GetVideoCodec(iStream)    ||
-        GetVideoWidth(iStream)    != right.GetVideoWidth(iStream)    ||
-        GetVideoHeight(iStream)   != right.GetVideoHeight(iStream)   ||
+    if (GetVideoCodec(iStream) != right.GetVideoCodec(iStream) ||
+        GetVideoProfile(iStream) != right.GetVideoProfile(iStream) ||
+        HasVideoProfileScanned(iStream) != right.HasVideoProfileScanned(iStream) ||
+        GetVideoWidth(iStream) != right.GetVideoWidth(iStream) ||
+        GetVideoHeight(iStream) != right.GetVideoHeight(iStream) ||
         GetVideoDuration(iStream) != right.GetVideoDuration(iStream) ||
         fabs(GetVideoAspect(iStream) - right.GetVideoAspect(iStream)) > VIDEOASPECT_EPSILON)
       return false;
@@ -400,6 +428,37 @@ std::string CStreamDetails::GetVideoCodec(int idx) const
     return "";
 }
 
+std::string CStreamDetails::GetVideoProfile(int idx) const
+{
+  const CStreamDetailVideo* item =
+      dynamic_cast<const CStreamDetailVideo*>(GetNthStream(CStreamDetail::VIDEO, idx));
+  if (item)
+    return item->m_strProfile;
+  else
+    return "";
+}
+
+bool CStreamDetails::HasVideoProfileScanned(int idx) const
+{
+  const CStreamDetailVideo* item =
+      dynamic_cast<const CStreamDetailVideo*>(GetNthStream(CStreamDetail::VIDEO, idx));
+  if (item)
+    return item->m_bProfileScanned;
+  else
+    return false;
+}
+
+bool CStreamDetails::HasUnscannedVideoProfile() const
+{
+  for (const auto& iter : m_vecItems)
+  {
+    if (iter->m_eType == CStreamDetail::VIDEO &&
+        !static_cast<const CStreamDetailVideo*>(iter.get())->m_bProfileScanned)
+      return true;
+  }
+  return false;
+}
+
 float CStreamDetails::GetVideoAspect(int idx) const
 {
   const CStreamDetailVideo* item =
@@ -527,6 +586,7 @@ void CStreamDetails::Archive(CArchive& ar)
 {
   if (ar.IsStoring())
   {
+    ar << -STREAM_DETAILS_ARCHIVE_VERSION;
     ar << (int)m_vecItems.size();
 
     for (auto &iter : m_vecItems)
@@ -534,13 +594,32 @@ void CStreamDetails::Archive(CArchive& ar)
       // the type goes before the actual item.  When loading we need
       // to know the type before we can construct an instance to serialize
       ar << (int)iter->m_eType;
-      ar << (*iter);
+      if (iter->m_eType == CStreamDetail::VIDEO)
+        static_cast<CStreamDetailVideo*>(iter.get())->Archive(ar, STREAM_DETAILS_ARCHIVE_VERSION);
+      else
+        ar << (*iter);
     }
   }
   else
   {
-    int count;
+    int count = 0;
     ar >> count;
+
+    int archiveVersion = 0;
+    if (count < 0)
+    {
+      archiveVersion = -count;
+      ar >> count;
+    }
+    if (archiveVersion > STREAM_DETAILS_ARCHIVE_VERSION)
+    {
+      CLog::Log(
+          LOGWARNING,
+          "CStreamDetails: unsupported stream details archive version {}, ignoring stream details",
+          archiveVersion);
+      Reset();
+      return;
+    }
 
     Reset();
     for (int i=0; i<count; i++)
@@ -550,7 +629,9 @@ void CStreamDetails::Archive(CArchive& ar)
 
       ar >> type;
       p = NewStream(CStreamDetail::StreamType(type));
-      if (p)
+      if (p && p->m_eType == CStreamDetail::VIDEO)
+        static_cast<CStreamDetailVideo*>(p)->Archive(ar, archiveVersion);
+      else if (p)
         ar >> (*p);
     }
 
@@ -614,6 +695,34 @@ void CStreamDetails::DetermineBestStreams(void)
     if ((*champion == NULL) || (*champion)->IsWorseThan(*iter))
       *champion = iter.get();
   }  /* for each */
+}
+
+bool CStreamDetails::UpdateMissingVideoProfilesFrom(const CStreamDetails& source)
+{
+  bool changed = false;
+  int videoIndex = 0;
+
+  for (const auto& iter : m_vecItems)
+  {
+    if (iter->m_eType != CStreamDetail::VIDEO)
+      continue;
+
+    ++videoIndex;
+    auto* video = static_cast<CStreamDetailVideo*>(iter.get());
+    if (video->m_bProfileScanned)
+      continue;
+
+    const auto* sourceVideo = static_cast<const CStreamDetailVideo*>(
+        source.GetNthStream(CStreamDetail::VIDEO, videoIndex));
+    if (!sourceVideo || !sourceVideo->m_bProfileScanned)
+      continue;
+
+    video->m_bProfileScanned = true;
+    video->m_strProfile = sourceVideo->m_strProfile;
+    changed = true;
+  }
+
+  return changed;
 }
 
 std::string CStreamDetails::VideoDimsToResolutionDescription(int iWidth, int iHeight)

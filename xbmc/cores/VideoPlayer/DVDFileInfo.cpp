@@ -455,6 +455,13 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
       if (p->m_fAspect == 0.0f && p->m_iHeight > 0)
         p->m_fAspect = (float)p->m_iWidth / p->m_iHeight;
       p->m_strCodec = pDemux->GetStreamCodecName(stream->demuxerId, stream->uniqueId);
+      p->m_bProfileScanned = true;
+      if (stream->profile != AV_PROFILE_UNKNOWN)
+      {
+        const char* profile = avcodec_profile_name(stream->codec, stream->profile);
+        if (profile != nullptr)
+          p->m_strProfile = profile;
+      }
       p->m_iDuration = pDemux->GetStreamLength();
       p->m_strStereoMode = vstream->stereo_mode;
       p->m_strLanguage = vstream->language;
@@ -622,4 +629,3 @@ bool CDVDFileInfo::AddExternalSubtitleToDetails(const std::string &path, CStream
 
   return true;
 }
-
