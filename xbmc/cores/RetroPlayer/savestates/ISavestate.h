@@ -256,7 +256,7 @@ public:
    */
   virtual uint8_t* GetAchievementBuffer(size_t size) = 0;
   virtual void SetDiscState(const std::optional<GAME::GameClientDiscState>& state) = 0;
-  virtual void Finalize() = 0;
+  virtual void Finalize(bool compress) = 0;
   ///}
 
   /*!

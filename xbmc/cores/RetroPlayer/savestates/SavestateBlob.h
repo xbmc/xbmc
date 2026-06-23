@@ -91,7 +91,8 @@ public:
    */
   static SavestateBlobOffsets CreateWriteOffsets(flatbuffers::FlatBufferBuilder& builder,
                                                  const std::vector<uint8_t>& rawData,
-                                                 const char* fieldName);
+                                                 const char* fieldName,
+                                                 bool compress);
 
   /*!
    * \brief Create FlatBuffer offsets for pending raw or compressed blob data
@@ -107,7 +108,8 @@ public:
    */
   static SavestateBlobOffsets CreateWriteOffsets(flatbuffers::FlatBufferBuilder& builder,
                                                  const PendingSavestateBlob& pending,
-                                                 const char* fieldName);
+                                                 const char* fieldName,
+                                                 bool compress);
 
   /*!
    * \brief Validate and prepare compressed memory data for reading

@@ -25,6 +25,8 @@
 #include "games/addons/GameClient.h"
 #include "games/addons/disc/GameClientDiscModel.h"
 #include "games/addons/disc/GameClientDiscs.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/MathUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -378,7 +380,10 @@ bool CReversiblePlayback::CommitSavestate(const Snapshot& snapshot)
   if (!snapshot.video.empty())
     m_renderManager.CacheVideoFrame(savePath, snapshot.video);
   m_renderManager.SaveVideoFrame(savePath, *savestate, snapshot.video);
-  savestate->Finalize();
+  const bool compressSavedGame = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      CSettings::SETTING_GAMES_COMPRESSSAVEDGAMES);
+  savestate->Finalize(compressSavedGame);
+
   bool success;
   {
     std::unique_lock lock(m_savestateMutex);
