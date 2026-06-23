@@ -26,6 +26,9 @@
 #include "guishader_texture_noblend.h"
 #include "guishader_vert.h"
 
+#include <algorithm>
+#include <array>
+
 #include <d3dcompiler.h>
 
 using namespace DirectX;
@@ -33,8 +36,8 @@ using namespace Microsoft::WRL;
 
 // shaders bytecode holder
 // clang-format off
-static const D3D_SHADER_DATA cbPSShaderCode[SHADER_METHOD_RENDER_COUNT] =
-{
+constexpr std::array<D3D_SHADER_DATA, SHADER_METHOD_RENDER_COUNT> shaderCode =
+{{
   { guishader_default, sizeof(guishader_default) }, // SHADER_METHOD_RENDER_DEFAULT
   { guishader_texture_noblend, sizeof(guishader_texture_noblend) }, // SHADER_METHOD_RENDER_TEXTURE_NOBLEND
   { guishader_fonts, sizeof(guishader_fonts) }, // SHADER_METHOD_RENDER_FONT
@@ -46,8 +49,14 @@ static const D3D_SHADER_DATA cbPSShaderCode[SHADER_METHOD_RENDER_COUNT] =
   { guishader_interlaced_right, sizeof(guishader_interlaced_right) }, // SHADER_METHOD_RENDER_STEREO_INTERLACED_RIGHT
   { guishader_checkerboard_left, sizeof(guishader_checkerboard_left) }, // SHADER_METHOD_RENDER_STEREO_CHECKERBOARD_LEFT
   { guishader_checkerboard_right, sizeof(guishader_checkerboard_right) }, // SHADER_METHOD_RENDER_STEREO_CHECKERBOARD_RIGHT
-};
+}};
 // clang-format on
+
+// Build-time check of the count of shader code entries versus the count of shader methods.
+// The default initializer allows missing array initializer elements to slip without this.
+static_assert(std::ranges::none_of(shaderCode,
+                                   [](const auto& s)
+                                   { return s.pBytecode == nullptr || s.BytecodeLength == 0; }));
 
 CGUIShaderDX::CGUIShaderDX()
   : m_pSampLinear{nullptr},
@@ -75,40 +84,38 @@ CGUIShaderDX::~CGUIShaderDX()
 bool CGUIShaderDX::Initialize()
 {
   // Create input layout
-  D3D11_INPUT_ELEMENT_DESC layout[] =
-  {
-    { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,    0,  0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-    { "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-    { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,       0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-    { "TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT,       0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+  D3D11_INPUT_ELEMENT_DESC layout[] = {
+      {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+      {"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+      {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0},
+      {"TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0},
   };
 
   if (!m_vertexShader.Create(guishader_vert, sizeof(guishader_vert), layout, ARRAYSIZE(layout)))
-    return false;
+    goto error;
 
-  size_t i;
-  bool bSuccess = true;
-  for (i = 0; i < SHADER_METHOD_RENDER_COUNT; i++)
+  for (std::size_t i = 0; i < SHADER_METHOD_RENDER_COUNT; i++)
   {
-    if (!m_pixelShader[i].Create(cbPSShaderCode[i].pBytecode, cbPSShaderCode[i].BytecodeLength))
-    {
-      bSuccess = false;
-      break;
-    }
+    m_shaders[i].m_vs = &m_vertexShader;
+
+    if (!m_shaders[i].m_ps.Create(shaderCode[i].pBytecode, shaderCode[i].BytecodeLength))
+      goto error;
   }
 
-  if (!bSuccess)
-  {
-    m_vertexShader.Release();
-    for (size_t j = 0; j < i; j++)
-      m_pixelShader[j].Release();
-  }
-
-  if (!bSuccess || !CreateBuffers() || !CreateSamplers())
-    return false;
+  if (!CreateBuffers() || !CreateSamplers())
+    goto error;
 
   m_bCreated = true;
   return true;
+
+error:
+  Release();
+
+  std::ranges::for_each(m_shaders, [](auto& s) { s.m_ps.Release(); });
+
+  m_vertexShader.Release();
+
+  return false;
 }
 
 bool CGUIShaderDX::CreateBuffers()
@@ -193,10 +200,10 @@ void CGUIShaderDX::ApplyStateBlock(void)
 
   ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
 
-  m_vertexShader.BindShader();
+  m_shaders[m_currentShader].m_vs->BindShader();
   pContext->VSSetConstantBuffers(0, 1, m_pWVPBuffer.GetAddressOf());
 
-  m_pixelShader[m_currentShader].BindShader();
+  m_shaders[m_currentShader].m_ps.BindShader();
   pContext->PSSetConstantBuffers(0, 1, m_pWVPBuffer.GetAddressOf());
   pContext->PSSetConstantBuffers(1, 1, m_pVPBuffer.GetAddressOf());
 
@@ -213,7 +220,8 @@ void CGUIShaderDX::Begin(unsigned int flags)
   if (m_currentShader != flags)
   {
     m_currentShader = flags;
-    m_pixelShader[m_currentShader].BindShader();
+    m_shaders[m_currentShader].m_vs->BindShader();
+    m_shaders[m_currentShader].m_ps.BindShader();
   }
   ClipToScissorParams();
 }

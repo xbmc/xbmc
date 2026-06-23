@@ -133,6 +133,13 @@ private:
   size_t m_currentShader;
   CD3DVertexShader m_vertexShader;
   CD3DPixelShader m_pixelShader[SHADER_METHOD_RENDER_COUNT];
+  struct ShaderPair
+  {
+    CD3DVertexShader* m_vs = nullptr;
+    CD3DPixelShader m_ps;
+  };
+  ShaderPair m_shaders[SHADER_METHOD_RENDER_COUNT];
+
   Microsoft::WRL::ComPtr<ID3D11SamplerState> m_pSampLinear;
   Microsoft::WRL::ComPtr<ID3D11SamplerState> m_pSampNearestNeighbor;
 
