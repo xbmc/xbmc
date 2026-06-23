@@ -475,6 +475,9 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
       case LISTITEM_VIDEO_CODEC:
         value = tag->m_streamDetails.GetVideoCodec();
         return true;
+      case LISTITEM_VIDEO_PROFILE:
+        value = tag->m_streamDetails.GetVideoProfile();
+        return true;
       case LISTITEM_VIDEO_RESOLUTION:
         value = CStreamDetails::VideoDimsToResolutionDescription(
             tag->m_streamDetails.GetVideoWidth(), tag->m_streamDetails.GetVideoHeight());

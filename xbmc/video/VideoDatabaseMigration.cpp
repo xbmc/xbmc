@@ -1422,9 +1422,14 @@ void CVideoDatabase::UpdateTables(int iVersion)
     }
     m_pDS->close();
   }
+
+  if (iVersion < 148)
+  {
+    m_pDS->exec("ALTER TABLE streamdetails ADD strVideoProfile text");
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 147;
+  return 148;
 }

@@ -50,6 +50,7 @@ public:
   CStreamDetailVideo(const CStreamDetailVideo&) = default;
   CStreamDetailVideo& operator=(const CStreamDetailVideo& that);
   void Archive(CArchive& ar) override;
+  void Archive(CArchive& ar, int archiveVersion);
   void Serialize(CVariant& value) const override;
   bool IsWorseThan(const CStreamDetail &that) const override;
 
@@ -58,6 +59,8 @@ public:
   float m_fAspect = 0.0;
   int m_iDuration = 0;
   std::string m_strCodec;
+  std::string m_strProfile;
+  bool m_bProfileScanned = false;
   std::string m_strStereoMode;
   std::string m_strLanguage;
   std::string m_strHdrType;
@@ -114,6 +117,9 @@ public:
   const CStreamDetail* GetNthStream(CStreamDetail::StreamType type, int idx) const;
 
   std::string GetVideoCodec(int idx = 0) const;
+  std::string GetVideoProfile(int idx = 0) const;
+  bool HasVideoProfileScanned(int idx = 0) const;
+  bool HasUnscannedVideoProfile() const;
   float GetVideoAspect(int idx = 0) const;
   int GetVideoWidth(int idx = 0) const;
   int GetVideoHeight(int idx = 0) const;
@@ -133,6 +139,7 @@ public:
   void AddStream(CStreamDetail *item);
   void Reset(void);
   void DetermineBestStreams(void);
+  bool UpdateMissingVideoProfilesFrom(const CStreamDetails& source);
 
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;

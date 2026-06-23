@@ -128,8 +128,8 @@
 				</control>
 				<include content="InfoViewerButton">
 					<param name="control_id" value="102"/>
-					<param name="label" value="[COLOR button_focus]$LOCALIZE[31600]: [/COLOR]$VAR[VideoCodecVar]"/>
-					<param name="altlabel" value="$LOCALIZE[31600]: $VAR[VideoCodecVar]"/>
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31600]: [/COLOR]$VAR[VideoCodecVar]$INFO[ListItem.VideoProfile, (,)]"/>
+					<param name="altlabel" value="$LOCALIZE[31600]: $VAR[VideoCodecVar]$INFO[ListItem.VideoProfile, (,)]"/>
 					<param name="visible" value="!String.IsEmpty(ListItem.VideoCodec)"/>
 				</include>
 				<include content="InfoViewerButton">

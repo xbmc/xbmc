@@ -154,6 +154,7 @@ void CVideoDatabaseDDL::CreateTables(CDatabase& db)
   db.ExecuteQuery(
       "CREATE TABLE streamdetails (idFile integer, iStreamType integer, "
       "strVideoCodec text, fVideoAspect float, iVideoWidth integer, iVideoHeight integer, "
+      "strVideoProfile text, "
       "strAudioCodec text, iAudioChannels integer, strAudioLanguage text, "
       "strSubtitleLanguage text, iVideoDuration integer, strStereoMode text, "
       "strVideoLanguage text, strHdrType text, strHdrDetail text)");

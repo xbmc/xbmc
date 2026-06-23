@@ -6608,6 +6608,16 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///      - etc
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.VideoProfile`</b>,
+///                  \anchor ListItem_VideoProfile
+///                  _string_,
+///     @return The video codec profile of the currently selected video, if available.
+///      Example values:
+///      - <b>Main</b>
+///      - <b>Main 10</b>
+///      - etc
+///     <p>
+///   }
 ///   \table_row3{   <b>`ListItem.VideoResolution`</b>,
 ///                  \anchor ListItem_VideoResolution
 ///                  _string_,
@@ -7709,7 +7719,7 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 228> listitem_labels = {{
+constexpr std::array<InfoMap, 229> listitem_labels = {{
     {"thumb",                         LISTITEM_THUMB},
     {"icon",                          LISTITEM_ICON},
     {"actualicon",                    LISTITEM_ACTUAL_ICON},
@@ -7823,6 +7833,7 @@ constexpr std::array<InfoMap, 228> listitem_labels = {{
     {"set",                           LISTITEM_SET},
     {"setid",                         LISTITEM_SETID},
     {"videocodec",                    LISTITEM_VIDEO_CODEC},
+    {"videoprofile",                  LISTITEM_VIDEO_PROFILE},
     {"videoresolution",               LISTITEM_VIDEO_RESOLUTION},
     {"videowidth",                    LISTITEM_VIDEO_WIDTH},
     {"videoheight",                   LISTITEM_VIDEO_HEIGHT},
