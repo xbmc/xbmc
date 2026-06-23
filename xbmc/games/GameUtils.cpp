@@ -60,16 +60,6 @@ bool CGameUtils::FillInGameClient(CFileItem& item, std::string& savestatePath)
         RETRO::CSavestateDatabase db;
         std::unique_ptr<RETRO::ISavestate> save = RETRO::CSavestateDatabase::AllocateSavestate();
         db.GetSavestate(savestatePath, *save);
-
-        //! @todo Remove this when we can load compressed savestates
-        if (save->IsCompressed())
-        {
-          // "Error"
-          // "This savestate is compressed and can't be loaded by this version of Kodi."
-          CGUIDialogOK::ShowAndGetInput(257, 35298);
-          return false;
-        }
-
         item.GetGameInfoTag()->SetGameClient(save->GameClientID());
       }
       else

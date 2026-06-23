@@ -23,6 +23,7 @@ enum SaveType : uint8 {
 
 enum CompressionType : uint8 {
   None,
+  Zstd,
 }
 
 table Savestate {

@@ -302,17 +302,6 @@ void CDialogInGameSaves::OnLoad(CFileItem& focusedItem)
   }
   else
   {
-    //! @todo Remove this when support for savestate compression is added
-    RETRO::CSavestateDatabase db;
-    std::unique_ptr<RETRO::ISavestate> savestate = RETRO::CSavestateDatabase::AllocateSavestate();
-    if (db.GetSavestate(focusedItem.GetPath(), *savestate) && savestate->IsCompressed())
-    {
-      // "Error"
-      // "This savestate is compressed and can't be loaded by this version of Kodi."
-      CGUIDialogOK::ShowAndGetInput(257, 35298);
-      return;
-    }
-
     // "Error"
     // "An unknown error has occurred."
     CGUIDialogOK::ShowAndGetInput(257, 24071);

@@ -506,7 +506,6 @@ bool CSavestateFlatBuffer::PrepareVideoData()
   if (m_savestate == nullptr)
     return false;
 
-  //! @todo Add support for new compression types
   switch (m_savestate->video_data_compression())
   {
     case SAVESTATE::CompressionType_None:
@@ -517,6 +516,14 @@ bool CSavestateFlatBuffer::PrepareVideoData()
         CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Invalid video data");
         return false;
       }
+
+      break;
+    }
+    case SAVESTATE::CompressionType_Zstd:
+    {
+      if (!CSavestateBlob::PrepareVideoData(*m_savestate, m_videoDataDecompressed))
+        return false;
+
       break;
     }
     default:
@@ -632,7 +639,6 @@ bool CSavestateFlatBuffer::PrepareMemoryData(size_t expectedSize)
   if (m_savestate == nullptr)
     return false;
 
-  //! @todo Add support for new compression types
   switch (m_savestate->memory_data_compression())
   {
     case SAVESTATE::CompressionType_None:
@@ -642,6 +648,13 @@ bool CSavestateFlatBuffer::PrepareMemoryData(size_t expectedSize)
         CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Invalid memory size {}", expectedSize);
         return false;
       }
+      break;
+    }
+    case SAVESTATE::CompressionType_Zstd:
+    {
+      if (!CSavestateBlob::PrepareMemoryData(*m_savestate, expectedSize, m_memoryDataDecompressed))
+        return false;
+
       break;
     }
     default:
@@ -675,7 +688,6 @@ bool CSavestateFlatBuffer::CopyMemoryDataTo(ISavestate& target) const
   targetFlatBuffer->m_memoryData.Clear();
   targetFlatBuffer->m_memoryDataDecompressed.clear();
 
-  //! @todo Add support for new compression types
   switch (m_savestate->memory_data_compression())
   {
     case SAVESTATE::CompressionType_None:
@@ -695,6 +707,20 @@ bool CSavestateFlatBuffer::CopyMemoryDataTo(ISavestate& target) const
         targetFlatBuffer->m_memoryData.raw.assign(memoryData->data(),
                                                   memoryData->data() + memoryData->size());
       }
+
+      break;
+    }
+    case SAVESTATE::CompressionType_Zstd:
+    {
+      if (!CSavestateBlob::IsValidCopiedCompressedMemoryData(*m_savestate))
+        return false;
+
+      const auto* compressed = m_savestate->memory_data_compressed();
+
+      targetFlatBuffer->m_memoryData.compressed.assign(compressed->data(),
+                                                       compressed->data() + compressed->size());
+      targetFlatBuffer->m_memoryData.compression = SAVESTATE::CompressionType_Zstd;
+      targetFlatBuffer->m_memoryData.uncompressedSize = m_savestate->memory_data_uncompressed_size();
 
       break;
     }

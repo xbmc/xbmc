@@ -8,6 +8,7 @@
 
 #include "SavestateBlob.h"
 
+#include "SavestateCompression.h"
 #include "utils/log.h"
 
 #include <limits>
@@ -110,11 +111,12 @@ void PendingSavestateBlob::Clear()
 
 bool PendingSavestateBlob::HasCompressedData() const
 {
-  //! @todo Add support for new compression types
   switch (compression)
   {
     case SAVESTATE::CompressionType_None:
       return false;
+    case SAVESTATE::CompressionType_Zstd:
+      return !compressed.empty();
     default:
       break;
   }
@@ -128,7 +130,24 @@ SavestateBlobOffsets CSavestateBlob::CreateWriteOffsets(flatbuffers::FlatBufferB
 {
   SavestateBlobOffsets offsets;
 
-  //! @todo Compress rawData with zstd if a smaller representation is available
+  if (!rawData.empty())
+  {
+    std::vector<uint8_t> compressedData;
+    if (CSavestateCompression::CompressZstdIfSmaller(rawData.data(), rawData.size(),
+                                                     compressedData))
+    {
+      const std::vector<uint8_t> emptyData;
+      offsets.raw = builder.CreateVector(emptyData);
+      offsets.compressed = builder.CreateVector(compressedData);
+      offsets.compressionType = SAVESTATE::CompressionType_Zstd;
+      offsets.uncompressedSize = rawData.size();
+
+      CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Compressed {} from {} to {} bytes using zstd",
+                fieldName ? fieldName : "blob", rawData.size(), compressedData.size());
+
+      return offsets;
+    }
+  }
 
   offsets.raw = builder.CreateVector(rawData);
   return offsets;
@@ -186,10 +205,15 @@ bool CSavestateBlob::PrepareMemoryData(const SAVESTATE::Savestate& savestate,
     return false;
   }
 
-  //! @todo Decompress the memory data into decompressedMemoryData
-  CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Compressed memory data is not supported by this version");
+  decompressedMemoryData.resize(expectedSize);
+  if (!CSavestateCompression::DecompressZstd(compressed->data(), compressed->size(),
+                                             decompressedMemoryData.data(), expectedSize, "memory"))
+  {
+    decompressedMemoryData.clear();
+    return false;
+  }
 
-  return false;
+  return true;
 }
 
 bool CSavestateBlob::PrepareVideoData(const SAVESTATE::Savestate& savestate,
@@ -218,10 +242,15 @@ bool CSavestateBlob::PrepareVideoData(const SAVESTATE::Savestate& savestate,
     return false;
   }
 
-  //! @todo Decompress the video data into decompressedVideoData
+  decompressedVideoData.resize(expectedSize);
+  if (!CSavestateCompression::DecompressZstd(compressed->data(), compressed->size(),
+                                             decompressedVideoData.data(), expectedSize, "video"))
+  {
+    decompressedVideoData.clear();
+    return false;
+  }
 
-  CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Compressed video data is not supported by this version");
-  return false;
+  return true;
 }
 
 bool CSavestateBlob::IsValidRawMemoryData(const SAVESTATE::Savestate& savestate,
