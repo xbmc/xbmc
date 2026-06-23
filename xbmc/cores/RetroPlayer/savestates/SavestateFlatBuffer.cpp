@@ -389,7 +389,7 @@ AVPixelFormat CSavestateFlatBuffer::GetPixelFormat() const
   if (m_savestate != nullptr)
     return TranslatePixelFormat(m_savestate->pixel_format());
 
-  return AV_PIX_FMT_NONE;
+  return m_pixelFormat;
 }
 
 void CSavestateFlatBuffer::SetPixelFormat(AVPixelFormat pixelFormat)
@@ -470,6 +470,9 @@ const uint8_t* CSavestateFlatBuffer::GetVideoData() const
   if (m_savestate != nullptr && m_savestate->video_data())
     return m_savestate->video_data()->data();
 
+  if (!m_videoData.empty())
+    return m_videoData.data();
+
   return nullptr;
 }
 
@@ -501,6 +504,9 @@ size_t CSavestateFlatBuffer::GetVideoSize() const
   if (m_savestate != nullptr && m_savestate->video_data())
     return m_savestate->video_data()->size();
 
+  if (!m_videoData.empty())
+    return m_videoData.size();
+
   return 0;
 }
 
@@ -516,7 +522,7 @@ unsigned int CSavestateFlatBuffer::GetVideoWidth() const
   if (m_savestate != nullptr)
     return m_savestate->video_width();
 
-  return 0;
+  return m_videoWidth;
 }
 
 void CSavestateFlatBuffer::SetVideoWidth(unsigned int videoWidth)
@@ -529,7 +535,7 @@ unsigned int CSavestateFlatBuffer::GetVideoHeight() const
   if (m_savestate != nullptr)
     return m_savestate->video_height();
 
-  return 0;
+  return m_videoHeight;
 }
 
 void CSavestateFlatBuffer::SetVideoHeight(unsigned int videoHeight)
@@ -555,7 +561,7 @@ unsigned int CSavestateFlatBuffer::GetRotationDegCCW() const
   if (m_savestate != nullptr)
     return TranslateRotation(m_savestate->rotation_ccw());
 
-  return 0;
+  return m_rotationCCW;
 }
 
 void CSavestateFlatBuffer::SetRotationDegCCW(unsigned int rotationCCW)
