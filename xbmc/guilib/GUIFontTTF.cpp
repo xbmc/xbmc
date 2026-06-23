@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2024 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -382,39 +382,20 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
   uint32_t rawAlignment = alignment;
   bool dirtyCache(false);
 
-#if not defined(HAS_DX)
   // round coordinates to the pixel grid. otherwise, we might sample at the wrong positions.
   if (!scrolling)
     x = std::round(x);
   y = std::round(y);
-#else
-  x += dx;
-  y += dy;
-#endif
 
-#if not defined(HAS_DX)
-  // GL can scissor and shader clip
+  // GL, GLES and DX can scissor and shader clip
   const bool hardwareClipping = true;
-#else
-  // FIXME: remove static (CPU based) clipping for GLES/DX
-  const bool hardwareClipping = m_renderSystem->ScissorsCanEffectClipping();
-#endif
 
   // FIXME: remove positional stuff once GLES/DX are brought up to date
   CGUIFontCacheStaticPosition staticPos(x, y);
   CGUIFontCacheDynamicPosition dynamicPos;
 
-#if not defined(HAS_DX)
   // dummy positions for the time being
   dynamicPos = CGUIFontCacheDynamicPosition(0.0f, 0.0f, 0.0f);
-#else
-  if (hardwareClipping)
-  {
-    dynamicPos =
-        CGUIFontCacheDynamicPosition(context.ScaleFinalXCoord(x, y), context.ScaleFinalYCoord(x, y),
-                                     context.ScaleFinalZCoord(x, y));
-  }
-#endif
 
   CVertexBuffer unusedVertexBuffer;
   CVertexBuffer& vertexBuffer =
@@ -451,15 +432,8 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
     ValidateAlignments(alignment);
 
     const std::vector<Glyph> glyphs = GetHarfBuzzShapedGlyphs(text);
-    // save the origin, which is scaled separately
-#if not defined(HAS_DX)
-    // the origin is now at [0,0], and not at "random" locations anymore. positioning is done in the vertex shader.
     m_originX = 0;
     m_originY = 0;
-#else
-    m_originX = x;
-    m_originY = y;
-#endif
 
     // cache the ellipses width
     if (!m_ellipseCached)
@@ -713,11 +687,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
                                 scrolling, std::chrono::steady_clock::now(), dirtyCache);
       CVertexBuffer newVertexBuffer = CreateVertexBuffer(*tempVertices);
       vertexBuffer = newVertexBuffer;
-#if not defined(HAS_DX)
       m_vertexTrans.emplace_back(x, y, 0.0f, &vertexBuffer, context.GetClipRegion(), dx, dy);
-#else
-      m_vertexTrans.emplace_back(.0f, .0f, .0f, &vertexBuffer, context.GetClipRegion());
-#endif
     }
     else
     {
@@ -731,12 +701,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
   else
   {
     if (hardwareClipping)
-#if not defined(HAS_DX)
       m_vertexTrans.emplace_back(x, y, 0.0f, &vertexBuffer, context.GetClipRegion(), dx, dy);
-#else
-      m_vertexTrans.emplace_back(dynamicPos.m_x, dynamicPos.m_y, dynamicPos.m_z, &vertexBuffer,
-                                 context.GetClipRegion());
-#endif
     else
       /* Append the vertices from the cache to the set collected since the first Begin() call */
       m_vertex.insert(m_vertex.end(), vertices->begin(), vertices->end());
@@ -1143,86 +1108,17 @@ void CGUIFontTTF::RenderCharacter(CGraphicContext& context,
 
   // posX and posY are relative to our origin, and the textcell is offset
   // from our (posX, posY).  Plus, these are unscaled quantities compared to the underlying GUI resolution
-#if not defined(HAS_DX)
   CRect vertex((posX + ch->m_offsetX), (posY + ch->m_offsetY), (posX + ch->m_offsetX + width),
                (posY + ch->m_offsetY + height));
-#else
-  CRect vertex((posX + ch->m_offsetX) * context.GetGUIScaleX(),
-               (posY + ch->m_offsetY) * context.GetGUIScaleY(),
-               (posX + ch->m_offsetX + width) * context.GetGUIScaleX(),
-               (posY + ch->m_offsetY + height) * context.GetGUIScaleY());
-  vertex += CPoint(m_originX, m_originY);
-#endif
+
   CRect texture(ch->m_left, ch->m_top, ch->m_right, ch->m_bottom);
 
-#if defined(HAS_DX)
-  if (!m_renderSystem->ScissorsCanEffectClipping())
-    context.ClipRect(vertex, texture);
-
-  // transform our positions - note, no scaling due to GUI calibration/resolution occurs
-  float x[VERTEX_PER_GLYPH] = {context.ScaleFinalXCoord(vertex.x1, vertex.y1),
-                               context.ScaleFinalXCoord(vertex.x2, vertex.y1),
-                               context.ScaleFinalXCoord(vertex.x2, vertex.y2),
-                               context.ScaleFinalXCoord(vertex.x1, vertex.y2)};
-
-  if (roundX)
-  {
-    // We only round the "left" side of the character, and then use the direction of rounding to
-    // move the "right" side of the character.  This ensures that a constant width is kept when rendering
-    // the same letter at the same size at different places of the screen, avoiding the problem
-    // of the "left" side rounding one way while the "right" side rounds the other way, thus getting
-    // altering the width of thin characters substantially.  This only really works for positive
-    // coordinates (due to the direction of truncation for negatives) but this is the only case that
-    // really interests us anyway.
-    float rx0 = static_cast<float>(MathUtils::round_int(static_cast<double>(x[0])));
-    float rx3 = static_cast<float>(MathUtils::round_int(static_cast<double>(x[3])));
-    x[1] = static_cast<float>(MathUtils::truncate_int(static_cast<double>(x[1])));
-    x[2] = static_cast<float>(MathUtils::truncate_int(static_cast<double>(x[2])));
-    if (x[0] > 0.0f && rx0 > x[0])
-      x[1] += 1;
-    else if (x[0] < 0.0f && rx0 < x[0])
-      x[1] -= 1;
-    if (x[3] > 0.0f && rx3 > x[3])
-      x[2] += 1;
-    else if (x[3] < 0.0f && rx3 < x[3])
-      x[2] -= 1;
-    x[0] = rx0;
-    x[3] = rx3;
-  }
-
-  const float y[VERTEX_PER_GLYPH] = {
-      static_cast<float>(MathUtils::round_int(
-          static_cast<double>(context.ScaleFinalYCoord(vertex.x1, vertex.y1)))),
-      static_cast<float>(MathUtils::round_int(
-          static_cast<double>(context.ScaleFinalYCoord(vertex.x2, vertex.y1)))),
-      static_cast<float>(MathUtils::round_int(
-          static_cast<double>(context.ScaleFinalYCoord(vertex.x2, vertex.y2)))),
-      static_cast<float>(MathUtils::round_int(
-          static_cast<double>(context.ScaleFinalYCoord(vertex.x1, vertex.y2))))};
-
-  const float z[VERTEX_PER_GLYPH] = {
-      static_cast<float>(MathUtils::round_int(
-          static_cast<double>(context.ScaleFinalZCoord(vertex.x1, vertex.y1)))),
-      static_cast<float>(MathUtils::round_int(
-          static_cast<double>(context.ScaleFinalZCoord(vertex.x2, vertex.y1)))),
-      static_cast<float>(MathUtils::round_int(
-          static_cast<double>(context.ScaleFinalZCoord(vertex.x2, vertex.y2)))),
-      static_cast<float>(MathUtils::round_int(
-          static_cast<double>(context.ScaleFinalZCoord(vertex.x1, vertex.y2))))};
-
-  // tex coords converted to 0..1 range
-  const float tl = texture.x1 * m_textureScaleX;
-  const float tr = texture.x2 * m_textureScaleX;
-  const float tt = texture.y1 * m_textureScaleY;
-  const float tb = texture.y2 * m_textureScaleY;
-#else
   // when scaling by shader, we have to grow the vertex and texture coords
   // by .5 or we would omit pixels when animating.
   const float tl = (texture.x1 - .5f) * m_textureScaleX;
   const float tr = (texture.x2 + .5f) * m_textureScaleX;
   const float tt = (texture.y1 - .5f) * m_textureScaleY;
   const float tb = (texture.y2 + .5f) * m_textureScaleY;
-#endif
 
   vertices.resize(vertices.size() + VERTEX_PER_GLYPH);
   SVertex* v = &vertices[vertices.size() - VERTEX_PER_GLYPH];
@@ -1247,35 +1143,42 @@ void CGUIFontTTF::RenderCharacter(CGraphicContext& context,
 #endif
   }
 
-#if defined(HAS_DX)
-  for (int i = 0; i < VERTEX_PER_GLYPH; i++)
-  {
-    v[i].x = x[i];
-    v[i].y = y[i];
-    v[i].z = z[i];
-  }
-
-  v[0].u = tl;
-  v[0].v = tt;
-
-  v[1].u = tr;
-  v[1].v = tt;
-
-  v[2].u = tr;
-  v[2].v = tb;
-
-  v[3].u = tl;
-  v[3].v = tb;
-#else
-  // GL / GLES uses triangle strips, not quads, so have to rearrange the vertex order
-  // GL uses vertex shaders to manipulate text rotation/translation/scaling/clipping.
-
   // nudge position to align with raster grid. messes up kerning, but also avoids
   // linear filtering (when not scaled/rotated).
   float xOffset = 0.0f;
   if (roundX)
     xOffset = (vertex.x1 - std::floor(vertex.x1));
   float yOffset = (vertex.y1 - std::floor(vertex.y1));
+
+#if defined(HAS_DX)
+  // D3D: triangle lists
+
+  v[0].u = tl;
+  v[0].v = tt;
+  v[0].x = vertex.x1 - xOffset - 0.5f;
+  v[0].y = vertex.y1 - yOffset - 0.5f;
+  v[0].z = 0;
+
+  v[1].u = tr;
+  v[1].v = tt;
+  v[1].x = vertex.x2 - xOffset + 0.5f;
+  v[1].y = vertex.y1 - yOffset - 0.5f;
+  v[1].z = 0;
+
+  v[2].u = tr;
+  v[2].v = tb;
+  v[2].x = vertex.x2 - xOffset + 0.5f;
+  v[2].y = vertex.y2 - yOffset + 0.5f;
+  v[2].z = 0;
+
+  v[3].u = tl;
+  v[3].v = tb;
+  v[3].x = vertex.x1 - xOffset - 0.5f;
+  v[3].y = vertex.y2 - yOffset + 0.5f;
+  v[3].z = 0;
+#else
+  // GL / GLES uses triangle strips, not quads, so have to rearrange the vertex order
+  // GL uses vertex shaders to manipulate text rotation/translation/scaling/clipping.
 
   v[0].u = tl;
   v[0].v = tt;

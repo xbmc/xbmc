@@ -15,6 +15,8 @@
 #include "rendering/dx/RenderContext.h"
 #include "utils/log.h"
 
+#include <cassert>
+
 // stuff for freetype
 #include <ft2build.h>
 
@@ -66,31 +68,52 @@ bool CGUIFontTTFDX::FirstBegin()
     return false;
 
   CGUIShaderDX* pGUIShader = DX::Windowing()->GetGUIShader();
+  if (pGUIShader == nullptr)
+    return false;
+
+  // Set a shader first to trigger the internal clipping recalculations. The cached clipping data
+  // contains stale information from the previous draw otherwise.
+  // Mirrors the GL/GLES workaround
   pGUIShader->Begin(SHADER_METHOD_RENDER_FONT);
+
+  if (DX::Windowing()->ScissorsCanEffectClipping())
+  {
+    m_scissorClip = true;
+    // SHADER_METHOD_RENDER_FONT already activated
+  }
+  else
+  {
+    m_scissorClip = false;
+    DX::Windowing()->ResetScissors();
+    pGUIShader->Begin(SHADER_METHOD_RENDER_FONT_SHADER_CLIP);
+  }
 
   return true;
 }
 
 void CGUIFontTTFDX::LastEnd()
 {
+  // static vertex arrays are not supported anymore
+  assert(m_vertex.empty());
+
   CWinSystemBase* const winSystem = CServiceBroker::GetWinSystem();
   ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
   if (!pContext || !winSystem)
     return;
 
   typedef CGUIFontTTF::CTranslatedVertices trans;
-  bool transIsEmpty = std::all_of(m_vertexTrans.begin(), m_vertexTrans.end(),
-                                  [](trans& _) { return _.m_vertexBuffer->size <= 0; });
   // no chars to render
-  if (m_vertex.empty() && transIsEmpty)
+  if (std::all_of(m_vertexTrans.begin(), m_vertexTrans.end(),
+                  [](trans& _) { return _.m_vertexBuffer->size <= 0; }))
     return;
 
   CreateStaticIndexBuffer();
 
-  unsigned int offset = 0;
-  unsigned int stride = sizeof(SVertex);
-
   CGUIShaderDX* pGUIShader = DX::Windowing()->GetGUIShader();
+
+  if (pGUIShader == nullptr)
+    return;
+
   pGUIShader->SetDepth(CServiceBroker::GetWinSystem()->GetGfxContext().GetTransformDepth());
 
   // Set font texture as shader resource
@@ -99,24 +122,121 @@ void CGUIFontTTFDX::LastEnd()
   DX::Windowing()->SetAlphaBlendEnable(true);
   // Set our static index buffer
   pContext->IASetIndexBuffer(m_staticIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
-  // Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
+
   pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-  if (!m_vertex.empty())
-  {
-    // Deal with vertices that had to use software clipping
-    if (!UpdateDynamicVertexBuffer(&m_vertex[0], m_vertex.size()))
-      return;
+  // Store current scissors
+  CGraphicContext& context = winSystem->GetGfxContext();
+  CRect scissor;
+  if (m_scissorClip)
+    scissor = context.StereoCorrection(context.GetScissors());
 
-    // Set the dynamic vertex buffer to active in the input assembler
-    pContext->IASetVertexBuffers(0, 1, m_vertexBuffer.GetAddressOf(), &stride, &offset);
+  for (size_t i = 0; i < m_vertexTrans.size(); i++)
+  {
+    // ignore empty buffers
+    if (m_vertexTrans[i].m_vertexBuffer->size == 0)
+      continue;
+
+    if (m_scissorClip)
+    {
+      // Apply the clip rectangle
+      CRect clip = DX::Windowing()->ClipRectToScissorRect(m_vertexTrans[i].m_clip);
+      clip.Intersect(scissor);
+
+      // skip empty clip, a little improvement to not render invisible text
+      if (clip.IsEmpty())
+        continue;
+      DX::Windowing()->SetScissors(clip);
+    }
+    else
+    {
+      // clip using vertex shader
+      const float scaleX = context.GetGUIScaleX();
+      const float scaleY = context.GetGUIScaleY();
+
+      if (scaleX == 0 || scaleY == 0)
+      {
+        CLog::LogF(LOGERROR, "Invalid GUI scaling ({}x{}).", scaleX, scaleY);
+        continue;
+      }
+
+      const float x1 = (m_vertexTrans[i].m_clip.x1 - m_vertexTrans[i].m_translateX -
+                        m_vertexTrans[i].m_offsetX) /
+                       scaleX;
+      const float y1 = (m_vertexTrans[i].m_clip.y1 - m_vertexTrans[i].m_translateY -
+                        m_vertexTrans[i].m_offsetY) /
+                       scaleY;
+      const float x2 = (m_vertexTrans[i].m_clip.x2 - m_vertexTrans[i].m_translateX -
+                        m_vertexTrans[i].m_offsetX) /
+                       scaleX;
+      const float y2 = (m_vertexTrans[i].m_clip.y2 - m_vertexTrans[i].m_translateY -
+                        m_vertexTrans[i].m_offsetY) /
+                       scaleY;
+
+      pGUIShader->SetShaderClip(x1, y1, x2, y2);
+
+      // Texture steps
+      if (m_textureWidth == 0 || m_textureHeight == 0)
+      {
+        CLog::LogF(LOGERROR, "Invalid texture dimensions ({}x{}).", m_textureWidth,
+                   m_textureHeight);
+        continue;
+      }
+
+      const float stepX = 1.f / static_cast<float>(m_textureWidth);
+      const float stepY = 1.f / static_cast<float>(m_textureHeight);
+
+      pGUIShader->SetTexStep(stepX, stepY, 1, 1);
+    }
+
+    // calculate the fractional offset to the ideal position
+    float fractX =
+        context.ScaleFinalXCoord(m_vertexTrans[i].m_translateX, m_vertexTrans[i].m_translateY);
+    float fractY =
+        context.ScaleFinalYCoord(m_vertexTrans[i].m_translateX, m_vertexTrans[i].m_translateY);
+    fractX = -fractX + std::round(fractX);
+    fractY = -fractY + std::round(fractY);
+
+    // The multiplication order below is important and the reverse of the GL/GLES chain because of
+    // column-major vs row-major differences
+    // proj * model * gui * scroll * translation * scaling * correction factor
+    XMMATRIX world, view, proj;
+    pGUIShader->GetWVP(world, view, proj);
+
+    const XMMATRIX correction = XMMatrixTranslation(fractX, fractY, 0.0f);
+    const XMMATRIX scale = XMMatrixScaling(context.GetGUIScaleX(), context.GetGUIScaleY(), 1.0f);
+    const XMMATRIX translation =
+        XMMatrixTranslation(m_vertexTrans[i].m_translateX, m_vertexTrans[i].m_translateY, 0.0f);
+    const XMMATRIX offset =
+        XMMatrixTranslation(m_vertexTrans[i].m_offsetX, m_vertexTrans[i].m_offsetY, 0.0f);
+    const XMMATRIX gui =
+        XMLoadFloat3x4(reinterpret_cast<const XMFLOAT3X4*>(&context.GetGUIMatrix().m));
+
+    XMMATRIX matrix = XMMatrixMultiply(world, correction);
+    matrix = XMMatrixMultiply(matrix, scale);
+    matrix = XMMatrixMultiply(matrix, translation);
+    matrix = XMMatrixMultiply(matrix, offset);
+    matrix = XMMatrixMultiply(matrix, gui);
+    matrix = XMMatrixMultiply(matrix, view);
+    matrix = XMMatrixMultiplyTranspose(matrix, proj);
+
+    pGUIShader->SetMatrix(matrix);
+
+    CD3DBuffer* vbuffer =
+        reinterpret_cast<CD3DBuffer*>(m_vertexTrans[i].m_vertexBuffer->bufferHandle);
+    // Set the static vertex buffer to active in the input assembler
+    ID3D11Buffer* buffers[1] = {vbuffer->Get()};
+
+    unsigned int offsets = 0;
+    unsigned int strides = sizeof(SVertex);
+    pContext->IASetVertexBuffers(0, 1, buffers, &strides, &offsets);
 
     // Do the actual drawing operation, split into groups of characters no
     // larger than the pre-determined size of the element array
-    size_t size = m_vertex.size() / 4;
-    for (size_t character = 0; size > character; character += ELEMENT_ARRAY_MAX_CHAR_INDEX)
+    for (size_t character = 0; m_vertexTrans[i].m_vertexBuffer->size > character;
+         character += ELEMENT_ARRAY_MAX_CHAR_INDEX)
     {
-      size_t count = size - character;
+      size_t count = m_vertexTrans[i].m_vertexBuffer->size - character;
       count = std::min<size_t>(count, ELEMENT_ARRAY_MAX_CHAR_INDEX);
 
       // 6 indices and 4 vertices per character
@@ -124,64 +244,9 @@ void CGUIFontTTFDX::LastEnd()
     }
   }
 
-  if (!transIsEmpty)
-  {
-    // Deal with the vertices that can be hardware clipped and therefore translated
-
-    // Store current GPU transform
-    XMMATRIX view = pGUIShader->GetView();
-    // Store current scissor
-    CGraphicContext& context = winSystem->GetGfxContext();
-    CRect scissor = context.StereoCorrection(context.GetScissors());
-
-    for (size_t i = 0; i < m_vertexTrans.size(); i++)
-    {
-      // ignore empty buffers
-      if (m_vertexTrans[i].m_vertexBuffer->size == 0)
-        continue;
-
-      // Apply the clip rectangle
-      CRect clip = DX::Windowing()->ClipRectToScissorRect(m_vertexTrans[i].m_clip);
-      // Intersect with current scissors
-      clip.Intersect(scissor);
-
-      // skip empty clip, a little improvement to not render invisible text
-      if (clip.IsEmpty())
-        continue;
-
-      DX::Windowing()->SetScissors(clip);
-
-      // Apply the translation to the model view matrix
-      XMMATRIX translation =
-          XMMatrixTranslation(m_vertexTrans[i].m_translateX, m_vertexTrans[i].m_translateY,
-                              m_vertexTrans[i].m_translateZ);
-      pGUIShader->SetView(XMMatrixMultiply(translation, view));
-
-      CD3DBuffer* vbuffer =
-          reinterpret_cast<CD3DBuffer*>(m_vertexTrans[i].m_vertexBuffer->bufferHandle);
-      // Set the static vertex buffer to active in the input assembler
-      ID3D11Buffer* buffers[1] = {vbuffer->Get()};
-      pContext->IASetVertexBuffers(0, 1, buffers, &stride, &offset);
-
-      // Do the actual drawing operation, split into groups of characters no
-      // larger than the pre-determined size of the element array
-      for (size_t character = 0; m_vertexTrans[i].m_vertexBuffer->size > character;
-           character += ELEMENT_ARRAY_MAX_CHAR_INDEX)
-      {
-        size_t count = m_vertexTrans[i].m_vertexBuffer->size - character;
-        count = std::min<size_t>(count, ELEMENT_ARRAY_MAX_CHAR_INDEX);
-
-        // 6 indices and 4 vertices per character
-        pGUIShader->DrawIndexed(count * 6, 0, character * 4);
-      }
-    }
-
-    // restore scissor
+  // restore scissor
+  if (m_scissorClip)
     DX::Windowing()->SetScissors(scissor);
-
-    // Restore the original transform
-    pGUIShader->SetView(view);
-  }
 
   pGUIShader->RestoreBuffers();
 }

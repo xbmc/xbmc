@@ -42,6 +42,11 @@ public:
   ~CGUIShaderDX();
 
   bool Initialize();
+
+  /*!
+   * \brief Activate shaders and recalculate clipping information.
+   * \param flags Shader method to activate
+   */
   void Begin(unsigned int flags);
   void End(void);
   void ApplyStateBlock(void);
@@ -70,6 +75,10 @@ public:
    * \param[in] depth value -1=far to 1=near (GL convention).
    */
   void SetDepth(float depth);
+
+  void XM_CALLCONV SetMatrix(const DirectX::XMMATRIX& value);
+  void SetShaderClip(float x1, float y1, float x2, float y2);
+  void SetTexStep(float stepX, float stepY, float stepX2, float stepY2);
 
   void DrawQuad(Vertex& v1, Vertex& v2, Vertex& v3, Vertex& v4);
   void DrawIndexed(unsigned int indexCount, unsigned int startIndex, unsigned int startVertex);
@@ -114,6 +123,10 @@ private:
   struct cbWorld
   {
     DirectX::XMMATRIX wvp;
+    DirectX::XMMATRIX m_matrix;
+    DirectX::XMFLOAT4 m_shaderClip;
+    DirectX::XMFLOAT2 m_texStep;
+    DirectX::XMFLOAT2 m_texStep2;
     float blackLevel;
     float colorRange;
     float sdrPeakLum;
@@ -132,11 +145,19 @@ private:
   cbViewPort m_cbViewPort = {};
   cbWorldViewProj m_cbWorldViewProj = {};
   float m_depth = 1.f;
+  // Font vertex shader constants
+  DirectX::XMMATRIX m_matrix; // combined matrix
+  DirectX::XMFLOAT4 m_shaderClip; // clip rect (x1,y1,x2,y2) in font-local coords
+  DirectX::XMFLOAT2 m_texStep; // step (1/resolution) for the input texture 1
+  DirectX::XMFLOAT2 m_texStep2; // step (1/resolution) for the input texture 2
 
   bool m_bCreated = false;
   size_t m_currentShader = 0;
+
   CD3DVertexShader m_vertexShader;
-  CD3DPixelShader m_pixelShader[SHADER_METHOD_RENDER_COUNT];
+  CD3DVertexShader m_vertexShaderClip;
+  CD3DVertexShader m_vertexShaderSimple;
+
   struct ShaderPair
   {
     CD3DVertexShader* m_vs = nullptr;

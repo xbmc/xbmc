@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -61,6 +61,7 @@ private:
   std::unique_ptr<CD3DTexture> m_speedupTexture; // extra texture to speed up reallocations
   Microsoft::WRL::ComPtr<ID3D11Buffer> m_vertexBuffer;
   std::list<CD3DBuffer*> m_buffers;
+  bool m_scissorClip{false};
 
   static bool m_staticIndexBufferCreated;
   static Microsoft::WRL::ComPtr<ID3D11Buffer> m_staticIndexBuffer;
