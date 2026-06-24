@@ -15,7 +15,9 @@
 
 #include "D3DResource.h"
 #include "GUIFontTTF.h"
+#include "threads/CriticalSection.h"
 
+#include <atomic>
 #include <list>
 #include <memory>
 #include <vector>
@@ -63,6 +65,7 @@ private:
   std::list<CD3DBuffer*> m_buffers;
   bool m_scissorClip{false};
 
-  static bool m_staticIndexBufferCreated;
+  static CCriticalSection m_staticIndexBufferSection;
+  static std::atomic<bool> m_staticIndexBufferCreated;
   static Microsoft::WRL::ComPtr<ID3D11Buffer> m_staticIndexBuffer;
 };

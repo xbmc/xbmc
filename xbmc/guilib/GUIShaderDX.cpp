@@ -221,6 +221,12 @@ void CGUIShaderDX::Begin(unsigned int flags)
   if (!m_bCreated)
     return;
 
+  if (flags >= SHADER_METHOD_RENDER_COUNT)
+  {
+    CLog::LogF(LOGERROR, "Invalid shader method count {}.", flags);
+    return;
+  }
+
   if (m_currentShader != flags)
   {
     m_currentShader = flags;
@@ -429,7 +435,7 @@ void CGUIShaderDX::ApplyChanges(void)
       buffer->blackLevel = (DX::Windowing()->UseLimitedColor() ? 16.f / 255.f : 0.f);
       buffer->colorRange = (DX::Windowing()->UseLimitedColor() ? (235.f - 16.f) / 255.f : 1.0f);
       if (DX::Windowing()->IsTransferPQ())
-        buffer->sdrPeakLum = 10000.0f / DX::Windowing()->GetGuiSdrPeakLuminance();
+        buffer->sdrPeakLum = 10000.0f / std::max(1.0f, DX::Windowing()->GetGuiSdrPeakLuminance());
       buffer->PQ = (DX::Windowing()->IsTransferPQ() ? 1 : 0);
 
       pContext->Unmap(m_pWVPBuffer.Get(), 0);
@@ -507,9 +513,15 @@ void CGUIShaderDX::ClipToScissorParams(void)
     m_clipYFactor = guiMatrix.m[1][1] * view.m[1][1] * projection.m[1][1];
     m_clipYOffset = (guiMatrix.m[1][3] * view.m[1][1] + view.m[3][1]) * projection.m[1][1];
 
-    float clipW = (guiMatrix.m[2][3] * view.m[2][2] + view.m[3][2]) * projection.m[2][3];
-    float xMult = (viewPort.x2 - viewPort.x1) / (2 * clipW);
-    float yMult = (viewPort.y1 - viewPort.y2) / (2 * clipW); // correct for inverted window coordinate scheme
+    // projection.m[2][3] is the projection type. 0 = orthographic, 1 or -1 = perspective
+    // Orthographic projection: no perspective divide; projection.m[0][0]/m[1][1] already
+    // encode the full NDC scale, apply only the viewport mapping.
+    // Same treatment for broken transform stacks.
+    const float clipW = (guiMatrix.m[2][3] * view.m[2][2] + view.m[3][2]) * projection.m[2][3];
+    const float divisorW = (projection.m[2][3] == 0 || clipW == 0) ? 1.0f : clipW;
+    const float xMult = (viewPort.x2 - viewPort.x1) / (2 * divisorW);
+    const float yMult = (viewPort.y1 - viewPort.y2) /
+                        (2 * divisorW); // correct for inverted window coordinate scheme
 
     m_clipXFactor = m_clipXFactor * xMult;
     m_clipXOffset = m_clipXOffset * xMult + (viewPort.x2 + viewPort.x1) / 2;

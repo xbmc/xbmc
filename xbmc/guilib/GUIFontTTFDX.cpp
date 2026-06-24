@@ -16,6 +16,7 @@
 #include "utils/log.h"
 
 #include <cassert>
+#include <limits>
 
 // stuff for freetype
 #include <ft2build.h>
@@ -49,16 +50,6 @@ CGUIFontTTFDX::~CGUIFontTTFDX(void)
   DX::Windowing()->Unregister(this);
 
   m_vertexBuffer = nullptr;
-  m_staticIndexBuffer = nullptr;
-  if (!m_buffers.empty())
-  {
-    std::for_each(m_buffers.begin(), m_buffers.end(), [](CD3DBuffer* buf) {
-      if (buf)
-        delete buf;
-    });
-  }
-  m_buffers.clear();
-  m_staticIndexBufferCreated = false;
   m_vertexWidth = 0;
 }
 
@@ -108,6 +99,8 @@ void CGUIFontTTFDX::LastEnd()
     return;
 
   CreateStaticIndexBuffer();
+  if (m_staticIndexBuffer == nullptr)
+    return;
 
   CGUIShaderDX* pGUIShader = DX::Windowing()->GetGUIShader();
 
@@ -117,6 +110,8 @@ void CGUIFontTTFDX::LastEnd()
   pGUIShader->SetDepth(CServiceBroker::GetWinSystem()->GetGfxContext().GetTransformDepth());
 
   // Set font texture as shader resource
+  if (m_speedupTexture == nullptr)
+    return;
   pGUIShader->SetShaderViews(1, m_speedupTexture->GetAddressOfSRV());
   // Enable alpha blend
   DX::Windowing()->SetAlphaBlendEnable(true);
@@ -135,6 +130,11 @@ void CGUIFontTTFDX::LastEnd()
   {
     // ignore empty buffers
     if (m_vertexTrans[i].m_vertexBuffer->size == 0)
+      continue;
+
+    const CD3DBuffer* vBuffer =
+        reinterpret_cast<const CD3DBuffer*>(m_vertexTrans[i].m_vertexBuffer->bufferHandle);
+    if (vBuffer == nullptr)
       continue;
 
     if (m_scissorClip)
@@ -222,10 +222,8 @@ void CGUIFontTTFDX::LastEnd()
 
     pGUIShader->SetMatrix(matrix);
 
-    CD3DBuffer* vbuffer =
-        reinterpret_cast<CD3DBuffer*>(m_vertexTrans[i].m_vertexBuffer->bufferHandle);
     // Set the static vertex buffer to active in the input assembler
-    ID3D11Buffer* buffers[1] = {vbuffer->Get()};
+    ID3D11Buffer* buffers[1] = {vBuffer->Get()};
 
     unsigned int offsets = 0;
     unsigned int strides = sizeof(SVertex);
@@ -240,6 +238,12 @@ void CGUIFontTTFDX::LastEnd()
       count = std::min<size_t>(count, ELEMENT_ARRAY_MAX_CHAR_INDEX);
 
       // 6 indices and 4 vertices per character
+      if (count > std::numeric_limits<unsigned int>::max() / 6 ||
+          character > std::numeric_limits<unsigned int>::max() / 4)
+      {
+        CLog::LogF(LOGERROR, "Character index too large: {}", character);
+        break;
+      }
       pGUIShader->DrawIndexed(count * 6, 0, character * 4);
     }
   }
@@ -260,12 +264,18 @@ CVertexBuffer CGUIFontTTFDX::CreateVertexBuffer(const std::vector<SVertex>& vert
     buffer = new CD3DBuffer();
     if (!buffer->Create(D3D11_BIND_VERTEX_BUFFER, vertices.size(), sizeof(SVertex),
                         DXGI_FORMAT_UNKNOWN, D3D11_USAGE_IMMUTABLE, &vertices[0]))
+    {
       CLog::LogF(LOGERROR, "Failed to create vertex buffer.");
+      delete buffer;
+      buffer = nullptr;
+    }
     else
+    {
       AddReference((CGUIFontTTFDX*)this, buffer);
+    }
   }
 
-  return CVertexBuffer(reinterpret_cast<void*>(buffer), vertices.size() / 4, this);
+  return CVertexBuffer(reinterpret_cast<void*>(buffer), buffer ? vertices.size() / 4 : 0, this);
 }
 
 void CGUIFontTTFDX::AddReference(CGUIFontTTFDX* font, CD3DBuffer* pBuffer)
@@ -396,7 +406,14 @@ bool CGUIFontTTFDX::UpdateDynamicVertexBuffer(const SVertex* pSysMem, unsigned i
 
 void CGUIFontTTFDX::CreateStaticIndexBuffer(void)
 {
-  if (m_staticIndexBufferCreated)
+  // Fast path no mutex
+  if (m_staticIndexBufferCreated.load(std::memory_order_acquire))
+    return;
+
+  std::unique_lock lock(m_staticIndexBufferSection);
+
+  // Second protected check for thread safety
+  if (m_staticIndexBufferCreated.load(std::memory_order_relaxed))
     return;
 
   ComPtr<ID3D11Device> pDevice = DX::DeviceResources::Get()->GetD3DDevice();
@@ -420,18 +437,21 @@ void CGUIFontTTFDX::CreateStaticIndexBuffer(void)
 
   if (SUCCEEDED(
           pDevice->CreateBuffer(&desc, &initData, m_staticIndexBuffer.ReleaseAndGetAddressOf())))
-    m_staticIndexBufferCreated = true;
+    m_staticIndexBufferCreated.store(true, std::memory_order_release);
 }
 
-bool CGUIFontTTFDX::m_staticIndexBufferCreated = false;
+CCriticalSection CGUIFontTTFDX::m_staticIndexBufferSection;
+std::atomic<bool> CGUIFontTTFDX::m_staticIndexBufferCreated = false;
 ComPtr<ID3D11Buffer> CGUIFontTTFDX::m_staticIndexBuffer = nullptr;
 
 void CGUIFontTTFDX::OnDestroyDevice(bool fatal)
 {
-  m_staticIndexBufferCreated = false;
+  std::unique_lock lock(m_staticIndexBufferSection);
+
   m_vertexWidth = 0;
   m_staticIndexBuffer = nullptr;
   m_vertexBuffer = nullptr;
+  m_staticIndexBufferCreated.store(false, std::memory_order_relaxed);
 }
 
 void CGUIFontTTFDX::OnCreateDevice(void)

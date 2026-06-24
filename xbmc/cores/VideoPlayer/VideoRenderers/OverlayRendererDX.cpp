@@ -339,6 +339,9 @@ void COverlayImageDX::Render(SRenderState &state)
   ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
   CGUIShaderDX* pGUIShader = DX::Windowing()->GetGUIShader();
 
+  if (pGUIShader == nullptr)
+    return;
+
   XMMATRIX world, view, proj;
   pGUIShader->GetWVP(world, view, proj);
 
