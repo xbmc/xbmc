@@ -486,6 +486,11 @@ int CSelectionStreams::TypeIndexOf(StreamType type, int source, int64_t demuxerI
     return -1;
 }
 
+bool CSelectionStreams::Contains(StreamType type, int source, int64_t demuxerId, int id) const
+{
+  return TypeIndexOf(type, source, demuxerId, id) >= 0;
+}
+
 int CSelectionStreams::Source(StreamSource source, const std::string& filename)
 {
   int index = source - 1;
@@ -3799,7 +3804,14 @@ void CVideoPlayer::SetSubtitleVisible(bool bVisible)
 
 void CVideoPlayer::SetEnableStream(CCurrentStream& current, bool isEnabled)
 {
-  if (m_pDemuxer && STREAM_SOURCE_MASK(current.source) == STREAM_SOURCE_DEMUX)
+  // Guard against stale stream IDs reaching the demuxer after a stream
+  // change. CloseStream() calls this method with stream identification coming
+  // from m_Current* members that may belong to a previous demuxer session.
+  // m_SelectionStreams mirrors the current demuxer's state, so a stale stream
+  // from a prior session won't be found and EnableStream() won't be called.
+
+  if (m_pDemuxer && STREAM_SOURCE_MASK(current.source) == STREAM_SOURCE_DEMUX &&
+      m_SelectionStreams.Contains(current.type, current.source, current.demuxerId, current.id))
     m_pDemuxer->EnableStream(current.demuxerId, current.id, isEnabled);
 }
 
@@ -4380,6 +4392,11 @@ bool CVideoPlayer::CloseStream(CCurrentStream& current, bool bWaitForBuffers)
 
   if(bWaitForBuffers)
     SetCaching(CACHESTATE_DONE);
+
+  // CloseStream() primarily closes a stream player. SetEnableStream()
+  // call below should be moved away from this method to the places where
+  // stream enable/disable is actually intended, avoiding stale stream
+  // identification from reaching the demuxer.
 
   SetEnableStream(current, false);
 
