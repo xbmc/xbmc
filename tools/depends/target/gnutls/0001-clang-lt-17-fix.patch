@@ -1,0 +1,40 @@
+From 29c2027c963cf559817d0da37c1fc2efd0c1bd6a Mon Sep 17 00:00:00 2001
+From: Ryan Carsten Schmidt <git@ryandesign.com>
+Date: Thu, 30 Apr 2026 21:38:43 -0500
+Subject: [PATCH] Fix CRAU_MAYBE_UNUSED definition for old compilers
+
+Fix behavior change that caused build failure with clang versions older
+than 17, introduced in f5666f8f1f653cfe2bef808a9c9b61534f279ed1.
+
+Also ensure CRAU_MAYBE_UNUSED is always defined to something, for even
+older compilers.
+
+Fixes #1880
+
+Signed-off-by: Ryan Carsten Schmidt <git@ryandesign.com>
+---
+ lib/crau/crau.h | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/lib/crau/crau.h b/lib/crau/crau.h
+index 53d33555be..a580532684 100644
+--- a/lib/crau/crau.h
++++ b/lib/crau/crau.h
+@@ -255,10 +255,16 @@ void crau_data(struct crau_context_stack_st *stack, ...)
+ #    if __has_c_attribute (__maybe_unused__)
+ #     define CRAU_MAYBE_UNUSED [[__maybe_unused__]]
+ #    endif
+-#   elif defined(__GNUC__)
++#   endif
++#  endif /* CRAU_MAYBE_UNUSED */
++#  ifndef CRAU_MAYBE_UNUSED
++#   ifdef __GNUC__
+ #    define CRAU_MAYBE_UNUSED __attribute__((__unused__))
+ #   endif
+ #  endif /* CRAU_MAYBE_UNUSED */
++#  ifndef CRAU_MAYBE_UNUSED
++#   define CRAU_MAYBE_UNUSED
++#  endif /* CRAU_MAYBE_UNUSED */
+ 
+ void crau_push_context(struct crau_context_stack_st *stack CRAU_MAYBE_UNUSED,
+ 		       long context CRAU_MAYBE_UNUSED)
