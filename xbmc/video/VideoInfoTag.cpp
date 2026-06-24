@@ -28,6 +28,26 @@
 #include <string>
 #include <vector>
 
+namespace
+{
+std::vector<std::string> PreserveOrderUniqueTags(std::vector<std::string>&& tags)
+{
+  std::vector<std::string> uniqueTags;
+  uniqueTags.reserve(tags.size());
+
+  for (auto& tag : tags)
+  {
+    tag = StringUtils::Trim(tag);
+    if (tag.empty() || std::ranges::find(uniqueTags, tag) != uniqueTags.end())
+      continue;
+
+    uniqueTags.emplace_back(std::move(tag));
+  }
+
+  return uniqueTags;
+}
+} // namespace
+
 void CVideoInfoTag::Reset()
 {
   m_director.clear();
@@ -1830,7 +1850,7 @@ void CVideoInfoTag::SetSetOverview(std::string_view setOverview)
 
 void CVideoInfoTag::SetTags(std::vector<std::string> tags)
 {
-  m_tags = Trim(std::move(tags));
+  m_tags = PreserveOrderUniqueTags(std::move(tags));
 }
 
 void CVideoInfoTag::SetFile(std::string file)

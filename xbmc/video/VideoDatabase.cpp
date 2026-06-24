@@ -4987,7 +4987,10 @@ void CVideoDatabase::GetTags(int media_id, const std::string &media_type, std::v
     if (!m_pDS2)
       return;
 
-    std::string sql = PrepareSQL("SELECT tag.name FROM tag INNER JOIN tag_link ON tag_link.tag_id = tag.tag_id WHERE tag_link.media_id = %i AND tag_link.media_type = '%s' ORDER BY tag.tag_id", media_id, media_type.c_str());
+    std::string sql = PrepareSQL(
+        "SELECT tag.name FROM tag INNER JOIN tag_link ON tag_link.tag_id = tag.tag_id WHERE "
+        "tag_link.media_id = %i AND tag_link.media_type = '%s' ORDER BY tag_link.rowid",
+        media_id, media_type.c_str());
     m_pDS2->query(sql);
     while (!m_pDS2->eof())
     {
