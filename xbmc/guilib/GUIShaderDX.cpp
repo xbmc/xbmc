@@ -22,7 +22,6 @@
 #include "guishader_interlaced_right.h"
 #include "guishader_multi_texture_blend.h"
 #include "guishader_multi_texture_blend_nearest.h"
-#include "guishader_simple_vert.h"
 #include "guishader_texture.h"
 #include "guishader_texture_nearest.h"
 #include "guishader_texture_noblend.h"
@@ -78,9 +77,7 @@ bool CGUIShaderDX::Initialize()
 
   if (!m_vertexShader.Create(guishader_vert, sizeof(guishader_vert), layout, ARRAYSIZE(layout)) ||
       !m_vertexShaderClip.Create(guishader_clip_vert, sizeof(guishader_clip_vert), layout,
-                                 ARRAYSIZE(layout)) ||
-      !m_vertexShaderSimple.Create(guishader_simple_vert, sizeof(guishader_simple_vert), layout,
-                                   ARRAYSIZE(layout)))
+                                 ARRAYSIZE(layout)))
   {
     goto error;
   }
@@ -88,9 +85,7 @@ bool CGUIShaderDX::Initialize()
   for (std::size_t i = 0; i < SHADER_METHOD_RENDER_COUNT; i++)
   {
     // All methods except the two font ones share guishader_vert.hlsl
-    if (i == SHADER_METHOD_RENDER_FONT)
-      m_shaders[i].m_vs = &m_vertexShaderSimple;
-    else if (i == SHADER_METHOD_RENDER_FONT_SHADER_CLIP)
+    if (i == SHADER_METHOD_RENDER_FONT_SHADER_CLIP)
       m_shaders[i].m_vs = &m_vertexShaderClip;
     else
       m_shaders[i].m_vs = &m_vertexShader;
@@ -112,7 +107,6 @@ error:
 
   m_vertexShader.Release();
   m_vertexShaderClip.Release();
-  m_vertexShaderSimple.Release();
 
   return false;
 }
@@ -335,42 +329,37 @@ void XM_CALLCONV CGUIShaderDX::SetWVP(const XMMATRIX &w, const XMMATRIX &v, cons
 {
   m_bIsWVPDirty = true;
   m_cbWorldViewProj.world = w;
+  m_cbWorldViewProj.m_isWorldDirty = true;
   m_cbWorldViewProj.view = v;
   m_cbWorldViewProj.projection = p;
-  m_cbWorldViewProj.m_isDirty = true;
+  m_cbWorldViewProj.m_isVPDirty = true;
 }
 
 void CGUIShaderDX::SetWorld(const XMMATRIX &value)
 {
   m_bIsWVPDirty = true;
   m_cbWorldViewProj.world = value;
-  m_cbWorldViewProj.m_isDirty = true;
+  m_cbWorldViewProj.m_isWorldDirty = true;
 }
 
 void CGUIShaderDX::SetView(const XMMATRIX &value)
 {
   m_bIsWVPDirty = true;
   m_cbWorldViewProj.view = value;
-  m_cbWorldViewProj.m_isDirty = true;
+  m_cbWorldViewProj.m_isVPDirty = true;
 }
 
 void CGUIShaderDX::SetProjection(const XMMATRIX &value)
 {
   m_bIsWVPDirty = true;
   m_cbWorldViewProj.projection = value;
-  m_cbWorldViewProj.m_isDirty = true;
+  m_cbWorldViewProj.m_isVPDirty = true;
 }
 
 void CGUIShaderDX::SetDepth(const float depth)
 {
   m_bIsWVPDirty = true;
   m_depth = depth;
-}
-
-void XM_CALLCONV CGUIShaderDX::SetMatrix(const DirectX::XMMATRIX& value)
-{
-  m_bIsWVPDirty = true;
-  m_matrix = value;
 }
 
 void CGUIShaderDX::SetShaderClip(float x1, float y1, float x2, float y2)
@@ -391,6 +380,21 @@ void CGUIShaderDX::SetTexStep(float stepX, float stepY, float stepX2, float step
   m_texStep2.y = stepY2;
 }
 
+DirectX::XMMATRIX XM_CALLCONV CGUIShaderDX::GetWVP()
+{
+  if (m_cbWorldViewProj.m_isVPDirty)
+    m_cbWorldViewProj.m_vp = XMMatrixMultiply(m_cbWorldViewProj.view, m_cbWorldViewProj.projection);
+
+  if (m_cbWorldViewProj.m_isVPDirty || m_cbWorldViewProj.m_isWorldDirty)
+    m_cbWorldViewProj.m_wvp =
+        XMMatrixMultiplyTranspose(m_cbWorldViewProj.world, m_cbWorldViewProj.m_vp);
+
+  m_cbWorldViewProj.m_isWorldDirty = false;
+  m_cbWorldViewProj.m_isVPDirty = false;
+
+  return m_cbWorldViewProj.m_wvp;
+}
+
 void CGUIShaderDX::ApplyChanges(void)
 {
   ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
@@ -402,57 +406,44 @@ void CGUIShaderDX::ApplyChanges(void)
 
   D3D11_MAPPED_SUBRESOURCE res;
 
-  if (m_bIsWVPDirty)
+  if (m_bIsWVPDirty &&
+      SUCCEEDED(pContext->Map(m_pWVPBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &res)))
   {
-    if (SUCCEEDED(pContext->Map(m_pWVPBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &res)))
+    cbWorld* buffer = (cbWorld*)res.pData;
+
+    // Vertex shader constants
+    buffer->wvp = GetWVP();
+
+    if (m_currentShader == SHADER_METHOD_RENDER_FONT ||
+        m_currentShader == SHADER_METHOD_RENDER_FONT_SHADER_CLIP)
     {
-      cbWorld* buffer = (cbWorld*)res.pData;
-
-      // Vertex shader constants
-      if (m_currentShader == SHADER_METHOD_RENDER_FONT ||
-          m_currentShader == SHADER_METHOD_RENDER_FONT_SHADER_CLIP)
-      {
-        buffer->m_matrix = m_matrix;
-        buffer->m_shaderClip = m_shaderClip;
-        buffer->m_texStep = m_texStep;
-        buffer->m_texStep2 = m_texStep2;
-      }
-      else
-      {
-        if (m_cbWorldViewProj.m_isDirty)
-        {
-          XMMATRIX worldView = XMMatrixMultiply(m_cbWorldViewProj.world, m_cbWorldViewProj.view);
-          m_cbWorldViewProj.m_wvp =
-              XMMatrixMultiplyTranspose(worldView, m_cbWorldViewProj.projection);
-          m_cbWorldViewProj.m_isDirty = false;
-        }
-        buffer->wvp = m_cbWorldViewProj.m_wvp;
-      }
-      // Translate from GL convention (-1 far 1 near) to D3D (0 far 1 near)
-      buffer->depth = m_depth / 2.f + 0.5f;
-
-      // Pixel shader constants
-      buffer->blackLevel = (DX::Windowing()->UseLimitedColor() ? 16.f / 255.f : 0.f);
-      buffer->colorRange = (DX::Windowing()->UseLimitedColor() ? (235.f - 16.f) / 255.f : 1.0f);
-      if (DX::Windowing()->IsTransferPQ())
-        buffer->sdrPeakLum = 10000.0f / std::max(1.0f, DX::Windowing()->GetGuiSdrPeakLuminance());
-      buffer->PQ = (DX::Windowing()->IsTransferPQ() ? 1 : 0);
-
-      pContext->Unmap(m_pWVPBuffer.Get(), 0);
-
-      m_bIsWVPDirty = false;
+      buffer->m_shaderClip = m_shaderClip;
+      buffer->m_texStep = m_texStep;
+      buffer->m_texStep2 = m_texStep2;
     }
+
+    // Translate from GL convention (-1 far 1 near) to D3D (0 far 1 near)
+    buffer->depth = m_depth / 2.f + 0.5f;
+
+    // Pixel shader constants
+    buffer->blackLevel = (DX::Windowing()->UseLimitedColor() ? 16.f / 255.f : 0.f);
+    buffer->colorRange = (DX::Windowing()->UseLimitedColor() ? (235.f - 16.f) / 255.f : 1.0f);
+    if (DX::Windowing()->IsTransferPQ())
+      buffer->sdrPeakLum = 10000.0f / std::max(1.0f, DX::Windowing()->GetGuiSdrPeakLuminance());
+    buffer->PQ = (DX::Windowing()->IsTransferPQ() ? 1 : 0);
+
+    pContext->Unmap(m_pWVPBuffer.Get(), 0);
+
+    m_bIsWVPDirty = false;
   }
 
   // update view port buffer
-  if (m_bIsVPDirty)
+  if (m_bIsVPDirty &&
+      SUCCEEDED(pContext->Map(m_pVPBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &res)))
   {
-    if (SUCCEEDED(pContext->Map(m_pVPBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &res)))
-    {
-      *(cbViewPort*)res.pData = m_cbViewPort;
-      pContext->Unmap(m_pVPBuffer.Get(), 0);
-      m_bIsVPDirty = false;
-    }
+    *(cbViewPort*)res.pData = m_cbViewPort;
+    pContext->Unmap(m_pVPBuffer.Get(), 0);
+    m_bIsVPDirty = false;
   }
 }
 

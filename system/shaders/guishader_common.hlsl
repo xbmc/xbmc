@@ -35,7 +35,6 @@ SamplerState NearestSampler : register(s1);
 cbuffer cbWorld : register(b0)
 {
   float4x4 worldViewProj;
-  float4x4 m_matrix; // combined matrix
   float4   m_shaderClip; // clip rect (x1,y1,x2,y2) in font-local space
   float2   m_texStep; // tex step per position unit - equivalent of m_cordStep.xy
   float2   m_texStep2; // tex2 step per position unit - equivalent of m_cordStep.zw

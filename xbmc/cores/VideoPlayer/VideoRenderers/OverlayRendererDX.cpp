@@ -167,8 +167,7 @@ void COverlayQuadsDX::Render(SRenderState &state)
   if (pGUIShader == nullptr)
     return;
 
-  XMMATRIX world, view, proj;
-  pGUIShader->GetWVP(world, view, proj);
+  const XMMATRIX world = pGUIShader->GetWorld();
 
   if (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() ==
           RenderStereoMode::SPLIT_HORIZONTAL ||
@@ -185,11 +184,7 @@ void COverlayQuadsDX::Render(SRenderState &state)
   const XMMATRIX trans = XMMatrixTranslation(state.x, state.y, 0.0f);
   const XMMATRIX scale = XMMatrixScaling(state.width, state.height, 1.0f);
 
-  XMMATRIX matrix = XMMatrixMultiply(world, scale);
-  matrix = XMMatrixMultiply(matrix, trans);
-  matrix = XMMatrixMultiply(matrix, view);
-  matrix = XMMatrixMultiplyTranspose(matrix, proj);
-  pGUIShader->SetMatrix(matrix);
+  pGUIShader->SetWorld(XMMatrixMultiply(XMMatrixMultiply(world, scale), trans));
 
   const unsigned stride = sizeof(Vertex);
   const unsigned offset = 0;
@@ -207,6 +202,7 @@ void COverlayQuadsDX::Render(SRenderState &state)
   pGUIShader->Draw(m_count * 6, 0);
 
   // restoring transformation
+  pGUIShader->SetWorld(world);
   pGUIShader->RestoreBuffers();
 }
 
@@ -342,8 +338,7 @@ void COverlayImageDX::Render(SRenderState &state)
   if (pGUIShader == nullptr)
     return;
 
-  XMMATRIX world, view, proj;
-  pGUIShader->GetWVP(world, view, proj);
+  const XMMATRIX world = pGUIShader->GetWorld();
 
   if (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() ==
           RenderStereoMode::SPLIT_HORIZONTAL ||
@@ -378,6 +373,6 @@ void COverlayImageDX::Render(SRenderState &state)
   pGUIShader->Draw(4, 0);
 
   // restoring transformation
-  pGUIShader->SetWVP(world, view, proj);
+  pGUIShader->SetWorld(world);
   pGUIShader->RestoreBuffers();
 }

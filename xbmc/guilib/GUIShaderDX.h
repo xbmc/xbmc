@@ -76,7 +76,6 @@ public:
    */
   void SetDepth(float depth);
 
-  void XM_CALLCONV SetMatrix(const DirectX::XMMATRIX& value);
   void SetShaderClip(float x1, float y1, float x2, float y2);
   void SetTexStep(float stepX, float stepY, float stepX2, float stepY2);
 
@@ -110,8 +109,10 @@ private:
     DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
     DirectX::XMMATRIX view = DirectX::XMMatrixIdentity();
     DirectX::XMMATRIX projection = DirectX::XMMatrixIdentity();
-    DirectX::XMMATRIX m_wvp = DirectX::XMMatrixIdentity();
-    bool m_isDirty = false;
+    DirectX::XMMATRIX m_vp = DirectX::XMMatrixIdentity(); // cached view/projection
+    DirectX::XMMATRIX m_wvp = DirectX::XMMatrixIdentity(); // cached world/view/projection
+    bool m_isWorldDirty = false;
+    bool m_isVPDirty = false;
   };
   struct cbViewPort
   {
@@ -123,7 +124,6 @@ private:
   struct cbWorld
   {
     DirectX::XMMATRIX wvp;
-    DirectX::XMMATRIX m_matrix;
     DirectX::XMFLOAT4 m_shaderClip;
     DirectX::XMFLOAT2 m_texStep;
     DirectX::XMFLOAT2 m_texStep2;
@@ -140,13 +140,13 @@ private:
   void SetSamplers(void);
   void ApplyChanges(void);
   void ClipToScissorParams(void);
+  DirectX::XMMATRIX XM_CALLCONV GetWVP();
 
   // GUI constants
   cbViewPort m_cbViewPort = {};
   cbWorldViewProj m_cbWorldViewProj = {};
   float m_depth = 1.f;
   // Font vertex shader constants
-  DirectX::XMMATRIX m_matrix; // combined matrix
   DirectX::XMFLOAT4 m_shaderClip; // clip rect (x1,y1,x2,y2) in font-local coords
   DirectX::XMFLOAT2 m_texStep; // step (1/resolution) for the input texture 1
   DirectX::XMFLOAT2 m_texStep2; // step (1/resolution) for the input texture 2
@@ -156,7 +156,6 @@ private:
 
   CD3DVertexShader m_vertexShader;
   CD3DVertexShader m_vertexShaderClip;
-  CD3DVertexShader m_vertexShaderSimple;
 
   struct ShaderPair
   {

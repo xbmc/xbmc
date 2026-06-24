@@ -30,7 +30,7 @@ PS_INPUT VS(VS_INPUT input)
   // limit the vertices to the clipping area
   float4 position  = input.pos;
   position.xy = clamp(position.xy, m_shaderClip.xy, m_shaderClip.zw);
-  output.pos = mul(position, m_matrix);
+  output.pos = mul(position, worldViewProj);
   // set rendering depth
   output.pos.z = depth * output.pos.w;
 

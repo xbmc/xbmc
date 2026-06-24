@@ -200,8 +200,7 @@ void CGUIFontTTFDX::LastEnd()
     // The multiplication order below is important and the reverse of the GL/GLES chain because of
     // column-major vs row-major differences
     // proj * model * gui * scroll * translation * scaling * correction factor
-    XMMATRIX world, view, proj;
-    pGUIShader->GetWVP(world, view, proj);
+    const XMMATRIX world = pGUIShader->GetWorld();
 
     const XMMATRIX correction = XMMatrixTranslation(fractX, fractY, 0.0f);
     const XMMATRIX scale = XMMatrixScaling(context.GetGUIScaleX(), context.GetGUIScaleY(), 1.0f);
@@ -217,10 +216,8 @@ void CGUIFontTTFDX::LastEnd()
     matrix = XMMatrixMultiply(matrix, translation);
     matrix = XMMatrixMultiply(matrix, offset);
     matrix = XMMatrixMultiply(matrix, gui);
-    matrix = XMMatrixMultiply(matrix, view);
-    matrix = XMMatrixMultiplyTranspose(matrix, proj);
 
-    pGUIShader->SetMatrix(matrix);
+    pGUIShader->SetWorld(matrix);
 
     // Set the static vertex buffer to active in the input assembler
     ID3D11Buffer* buffers[1] = {vBuffer->Get()};
@@ -246,6 +243,7 @@ void CGUIFontTTFDX::LastEnd()
       }
       pGUIShader->DrawIndexed(count * 6, 0, character * 4);
     }
+    pGUIShader->SetWorld(world);
   }
 
   // restore scissor
