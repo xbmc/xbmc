@@ -385,7 +385,6 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
   // round coordinates to the pixel grid. otherwise, we might sample at the wrong positions.
   if (!scrolling)
     x = std::round(x);
-  y = std::round(y);
 
   // GL, GLES and DX can scissor and shader clip
   const bool hardwareClipping = true;
