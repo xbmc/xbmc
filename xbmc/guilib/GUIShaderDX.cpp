@@ -60,6 +60,49 @@ static_assert(std::ranges::none_of(shaderCode,
                                    [](const auto& s)
                                    { return s.pBytecode == nullptr || s.BytecodeLength == 0; }));
 
+void XM_CALLCONV CGUIShaderDX::CWorldViewProj::SetWVP(const XMMATRIX& w,
+                                                      const XMMATRIX& v,
+                                                      const XMMATRIX& p)
+{
+  m_isWorldDirty = true;
+  m_world = w;
+  m_isVPDirty = true;
+  m_view = v;
+  m_projection = p;
+}
+
+void CGUIShaderDX::CWorldViewProj::SetWorld(const XMMATRIX& value)
+{
+  m_isWorldDirty = true;
+  m_world = value;
+}
+
+void CGUIShaderDX::CWorldViewProj::SetView(const XMMATRIX& value)
+{
+  m_isVPDirty = true;
+  m_view = value;
+}
+
+void CGUIShaderDX::CWorldViewProj::SetProjection(const XMMATRIX& value)
+{
+  m_isVPDirty = true;
+  m_projection = value;
+}
+
+DirectX::XMMATRIX XM_CALLCONV CGUIShaderDX::CWorldViewProj::GetWVP() const
+{
+  if (m_isVPDirty)
+    m_cachedVP = XMMatrixMultiply(m_view, m_projection);
+
+  if (m_isVPDirty || m_isWorldDirty)
+    m_cachedWVP = XMMatrixMultiplyTranspose(m_world, m_cachedVP);
+
+  m_isWorldDirty = false;
+  m_isVPDirty = false;
+
+  return m_cachedWVP;
+}
+
 CGUIShaderDX::~CGUIShaderDX()
 {
   Release();
@@ -316,44 +359,38 @@ void CGUIShaderDX::Project(float& x, float& y, float& z) const
 {
   const XMVECTOR V = XMVectorSet(x, y, z, .0f);
 
-  const XMVECTOR screenCoord = XMVector3Project(
-      V, m_cbViewPort.TopLeftX, m_cbViewPort.TopLeftY, m_cbViewPort.Width, m_cbViewPort.Height,
-      0.0f, 1.0f, m_cbWorldViewProj.projection, m_cbWorldViewProj.view, m_cbWorldViewProj.world);
+  const XMVECTOR screenCoord =
+      XMVector3Project(V, m_cbViewPort.TopLeftX, m_cbViewPort.TopLeftY, m_cbViewPort.Width,
+                       m_cbViewPort.Height, 0.0f, 1.0f, m_cbWorldViewProj.GetProjection(),
+                       m_cbWorldViewProj.GetView(), m_cbWorldViewProj.GetWorld());
 
   x = XMVectorGetX(screenCoord);
   y = XMVectorGetY(screenCoord);
   z = .0f;
 }
 
-void XM_CALLCONV CGUIShaderDX::SetWVP(const XMMATRIX &w, const XMMATRIX &v, const XMMATRIX &p)
+void XM_CALLCONV CGUIShaderDX::SetWVP(const XMMATRIX& w, const XMMATRIX& v, const XMMATRIX& p)
 {
   m_bIsWVPDirty = true;
-  m_cbWorldViewProj.world = w;
-  m_cbWorldViewProj.m_isWorldDirty = true;
-  m_cbWorldViewProj.view = v;
-  m_cbWorldViewProj.projection = p;
-  m_cbWorldViewProj.m_isVPDirty = true;
+  m_cbWorldViewProj.SetWVP(w, v, p);
 }
 
-void CGUIShaderDX::SetWorld(const XMMATRIX &value)
+void CGUIShaderDX::SetWorld(const XMMATRIX& value)
 {
   m_bIsWVPDirty = true;
-  m_cbWorldViewProj.world = value;
-  m_cbWorldViewProj.m_isWorldDirty = true;
+  m_cbWorldViewProj.SetWorld(value);
 }
 
-void CGUIShaderDX::SetView(const XMMATRIX &value)
+void CGUIShaderDX::SetView(const XMMATRIX& value)
 {
   m_bIsWVPDirty = true;
-  m_cbWorldViewProj.view = value;
-  m_cbWorldViewProj.m_isVPDirty = true;
+  m_cbWorldViewProj.SetView(value);
 }
 
-void CGUIShaderDX::SetProjection(const XMMATRIX &value)
+void CGUIShaderDX::SetProjection(const XMMATRIX& value)
 {
   m_bIsWVPDirty = true;
-  m_cbWorldViewProj.projection = value;
-  m_cbWorldViewProj.m_isVPDirty = true;
+  m_cbWorldViewProj.SetProjection(value);
 }
 
 void CGUIShaderDX::SetDepth(const float depth)
@@ -380,21 +417,6 @@ void CGUIShaderDX::SetTexStep(float stepX, float stepY, float stepX2, float step
   m_texStep2.y = stepY2;
 }
 
-DirectX::XMMATRIX XM_CALLCONV CGUIShaderDX::GetWVP()
-{
-  if (m_cbWorldViewProj.m_isVPDirty)
-    m_cbWorldViewProj.m_vp = XMMatrixMultiply(m_cbWorldViewProj.view, m_cbWorldViewProj.projection);
-
-  if (m_cbWorldViewProj.m_isVPDirty || m_cbWorldViewProj.m_isWorldDirty)
-    m_cbWorldViewProj.m_wvp =
-        XMMatrixMultiplyTranspose(m_cbWorldViewProj.world, m_cbWorldViewProj.m_vp);
-
-  m_cbWorldViewProj.m_isWorldDirty = false;
-  m_cbWorldViewProj.m_isVPDirty = false;
-
-  return m_cbWorldViewProj.m_wvp;
-}
-
 void CGUIShaderDX::ApplyChanges(void)
 {
   ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
@@ -412,7 +434,7 @@ void CGUIShaderDX::ApplyChanges(void)
     cbWorld* buffer = (cbWorld*)res.pData;
 
     // Vertex shader constants
-    buffer->wvp = GetWVP();
+    buffer->wvp = m_cbWorldViewProj.GetWVP();
 
     if (m_currentShader == SHADER_METHOD_RENDER_FONT ||
         m_currentShader == SHADER_METHOD_RENDER_FONT_SHADER_CLIP)
@@ -468,9 +490,9 @@ void CGUIShaderDX::ClipToScissorParams(void)
   const TransformMatrix &guiMatrix = CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIMatrix();
   // get current GPU transforms
   XMFLOAT4X4 world, view, projection;
-  XMStoreFloat4x4(&world, m_cbWorldViewProj.world);
-  XMStoreFloat4x4(&view, m_cbWorldViewProj.view);
-  XMStoreFloat4x4(&projection, m_cbWorldViewProj.projection);
+  XMStoreFloat4x4(&world, m_cbWorldViewProj.GetWorld());
+  XMStoreFloat4x4(&view, m_cbWorldViewProj.GetView());
+  XMStoreFloat4x4(&projection, m_cbWorldViewProj.GetProjection());
 
   m_clipPossible = guiMatrix.m[0][1] == 0 &&
     guiMatrix.m[1][0]  == 0 &&

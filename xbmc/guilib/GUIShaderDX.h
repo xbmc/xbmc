@@ -55,19 +55,21 @@ public:
   void SetShaderViews(unsigned int numViews, ID3D11ShaderResourceView** views);
   void SetViewPort(D3D11_VIEWPORT viewPort);
 
-  void XM_CALLCONV GetWVP(DirectX::XMMATRIX &w, DirectX::XMMATRIX &v, DirectX::XMMATRIX &p)
+  void XM_CALLCONV GetWVP(DirectX::XMMATRIX& w, DirectX::XMMATRIX& v, DirectX::XMMATRIX& p)
   {
-    w = m_cbWorldViewProj.world;
-    v = m_cbWorldViewProj.view;
-    p = m_cbWorldViewProj.projection;
+    w = m_cbWorldViewProj.GetWorld();
+    v = m_cbWorldViewProj.GetView();
+    p = m_cbWorldViewProj.GetProjection();
   }
-  DirectX::XMMATRIX XM_CALLCONV GetWorld() const { return m_cbWorldViewProj.world; }
-  DirectX::XMMATRIX XM_CALLCONV GetView() const { return m_cbWorldViewProj.view; }
-  DirectX::XMMATRIX XM_CALLCONV GetProjection() const { return m_cbWorldViewProj.projection; }
-  void XM_CALLCONV SetWVP(const DirectX::XMMATRIX &w, const DirectX::XMMATRIX &v, const DirectX::XMMATRIX &p);
-  void XM_CALLCONV SetWorld(const DirectX::XMMATRIX &value);
-  void XM_CALLCONV SetView(const DirectX::XMMATRIX &value);
-  void XM_CALLCONV SetProjection(const DirectX::XMMATRIX &value);
+  DirectX::XMMATRIX XM_CALLCONV GetWorld() const { return m_cbWorldViewProj.GetWorld(); }
+  DirectX::XMMATRIX XM_CALLCONV GetView() const { return m_cbWorldViewProj.GetView(); }
+  DirectX::XMMATRIX XM_CALLCONV GetProjection() const { return m_cbWorldViewProj.GetProjection(); }
+  void XM_CALLCONV SetWVP(const DirectX::XMMATRIX& w,
+                          const DirectX::XMMATRIX& v,
+                          const DirectX::XMMATRIX& p);
+  void XM_CALLCONV SetWorld(const DirectX::XMMATRIX& value);
+  void XM_CALLCONV SetView(const DirectX::XMMATRIX& value);
+  void XM_CALLCONV SetProjection(const DirectX::XMMATRIX& value);
   void Project(float& x, float& y, float& z) const;
 
   /*!
@@ -104,16 +106,37 @@ public:
   }
 
 private:
-  struct cbWorldViewProj
+  class CWorldViewProj
   {
-    DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
-    DirectX::XMMATRIX view = DirectX::XMMatrixIdentity();
-    DirectX::XMMATRIX projection = DirectX::XMMatrixIdentity();
-    DirectX::XMMATRIX m_vp = DirectX::XMMatrixIdentity(); // cached view/projection
-    DirectX::XMMATRIX m_wvp = DirectX::XMMatrixIdentity(); // cached world/view/projection
-    bool m_isWorldDirty = false;
-    bool m_isVPDirty = false;
+  public:
+    void XM_CALLCONV GetWVP(DirectX::XMMATRIX& w, DirectX::XMMATRIX& v, DirectX::XMMATRIX& p) const
+    {
+      w = m_world;
+      v = m_view;
+      p = m_projection;
+    }
+    DirectX::XMMATRIX XM_CALLCONV GetWVP() const;
+    DirectX::XMMATRIX XM_CALLCONV GetWorld() const { return m_world; }
+    DirectX::XMMATRIX XM_CALLCONV GetView() const { return m_view; }
+    DirectX::XMMATRIX XM_CALLCONV GetProjection() const { return m_projection; }
+
+    void XM_CALLCONV SetWVP(const DirectX::XMMATRIX& w,
+                            const DirectX::XMMATRIX& v,
+                            const DirectX::XMMATRIX& p);
+    void XM_CALLCONV SetWorld(const DirectX::XMMATRIX& value);
+    void XM_CALLCONV SetView(const DirectX::XMMATRIX& value);
+    void XM_CALLCONV SetProjection(const DirectX::XMMATRIX& value);
+
+  private:
+    DirectX::XMMATRIX m_world = DirectX::XMMatrixIdentity();
+    DirectX::XMMATRIX m_view = DirectX::XMMatrixIdentity();
+    DirectX::XMMATRIX m_projection = DirectX::XMMatrixIdentity();
+    mutable DirectX::XMMATRIX m_cachedVP = DirectX::XMMatrixIdentity();
+    mutable DirectX::XMMATRIX m_cachedWVP = DirectX::XMMatrixIdentity();
+    mutable bool m_isVPDirty = false;
+    mutable bool m_isWorldDirty = false;
   };
+
   struct cbViewPort
   {
     float TopLeftX;
@@ -140,11 +163,10 @@ private:
   void SetSamplers(void);
   void ApplyChanges(void);
   void ClipToScissorParams(void);
-  DirectX::XMMATRIX XM_CALLCONV GetWVP();
 
   // GUI constants
   cbViewPort m_cbViewPort = {};
-  cbWorldViewProj m_cbWorldViewProj = {};
+  CWorldViewProj m_cbWorldViewProj;
   float m_depth = 1.f;
   // Font vertex shader constants
   DirectX::XMFLOAT4 m_shaderClip; // clip rect (x1,y1,x2,y2) in font-local coords
