@@ -3,10 +3,10 @@ DEPS = ../../Makefile.include Makefile 01-disable_testsuite.patch ../../download
 
 # lib name, version
 LIBNAME=nettle
-VERSION=3.7.3
+VERSION=4.0
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
-SHA512=9901eba305421adff6d551ac7f478dff3f68a339d444c776724ab0b977fe6be792b1d2950c8705acbe76bd924fd6d898a65eded546777884be3b436d0e052437
+SHA512=833303d94f5a67094011ad4dd931fffdb9adf679b4df241a544a08194a66e6e449398b704ba5b29d52c1c3b5ada6f6dc18b24d1adb3382a68470a11645bf13cd
 include ../../download-files.include
 
 ifeq ($(OS),osx)

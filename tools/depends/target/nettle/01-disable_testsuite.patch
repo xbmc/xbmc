@@ -1,11 +1,13 @@
+diff --git a/Makefile.in b/Makefile.in
+index 93999850..484b5761 100644
 --- a/Makefile.in
 +++ b/Makefile.in
-@@ -19,7 +19,7 @@
+@@ -20,7 +20,7 @@ OPT_NETTLE_SOURCES = @OPT_NETTLE_SOURCES@
+ FAT_OVERRIDE_LIST = @FAT_OVERRIDE_LIST@
+ FAT_EMULATE_LIST = @FAT_EMULATE_LIST@
  
- FAT_TEST_LIST = @FAT_TEST_LIST@
- 
--SUBDIRS = tools testsuite examples
-+SUBDIRS = tools examples
+-SUBDIRS = testsuite tools examples
++SUBDIRS = tools
  
  include config.make
  
