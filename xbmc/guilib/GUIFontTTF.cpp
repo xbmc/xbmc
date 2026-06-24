@@ -386,7 +386,6 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
   // round coordinates to the pixel grid. otherwise, we might sample at the wrong positions.
   if (!scrolling)
     x = std::round(x);
-  y = std::round(y);
 #else
   x += dx;
   y += dy;
