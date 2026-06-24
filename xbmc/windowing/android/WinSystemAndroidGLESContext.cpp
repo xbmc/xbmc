@@ -105,6 +105,20 @@ bool CWinSystemAndroidGLESContext::CreateNewWindow(const std::string& name,
   return true;
 }
 
+bool CWinSystemAndroidGLESContext::DestroyWindow()
+{
+  if (m_pGLContext.GetEGLSurface() != EGL_NO_SURFACE)
+    DestroySurface();
+
+  return CWinSystemAndroid::DestroyWindow();
+}
+
+bool CWinSystemAndroidGLESContext::DestroySurface()
+{
+  m_pGLContext.DestroySurface();
+  return true;
+}
+
 bool CWinSystemAndroidGLESContext::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
   CRenderSystemGLES::ResetRenderSystem(newWidth, newHeight);
@@ -126,7 +140,7 @@ void CWinSystemAndroidGLESContext::SetVSyncImpl(bool enable)
 
 void CWinSystemAndroidGLESContext::PresentRenderImpl(bool rendered)
 {
-  if (!m_nativeWindow)
+  if (!m_nativeWindow || m_pGLContext.GetEGLSurface() == EGL_NO_SURFACE)
   {
     usleep(10000);
     return;

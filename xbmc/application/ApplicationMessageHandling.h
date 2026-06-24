@@ -27,4 +27,8 @@ public:
 
 private:
   CApplication& m_app;
+
+#ifdef TARGET_ANDROID
+  bool m_androidSkinUnloadedForDisplayDestroy{false};
+#endif
 };

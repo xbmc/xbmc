@@ -1742,10 +1742,8 @@ void CXBMCApp::surfaceCreated(CJNISurfaceHolder holder)
 void CXBMCApp::surfaceDestroyed(CJNISurfaceHolder holder)
 {
   android_printf("CXBMCApp::%s", __FUNCTION__);
+
   // If we have exited XBMC, it no longer exists.
-  auto& components = CServiceBroker::GetAppComponents();
-  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
-  appPower->SetRenderGUI(false);
   if (!m_exiting)
     XBMC_DestroyDisplay();
 

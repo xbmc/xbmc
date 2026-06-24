@@ -149,6 +149,11 @@ bool CWinSystemAndroid::DestroyWindow()
   return true;
 }
 
+bool CWinSystemAndroid::DestroySurface()
+{
+  return true;
+}
+
 void CWinSystemAndroid::UpdateResolutions()
 {
   UpdateResolutions(true);
