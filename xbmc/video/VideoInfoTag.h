@@ -17,6 +17,7 @@
 #include "utils/StreamDetails.h"
 #include "video/Bookmark.h"
 
+#include <chrono>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -39,6 +40,13 @@ struct SActorInfo
   CScraperUrl thumbUrl;
   std::string thumb;
   int order{-1};
+};
+
+struct ChapterInfo
+{
+  unsigned int chapter{0}; // 1 based chapter number
+  std::chrono::milliseconds start{0};
+  std::chrono::milliseconds duration{0};
 };
 
 class CRating
@@ -379,6 +387,25 @@ public:
    */
   virtual bool SetResumePoint(double timeInSeconds, double totalTimeInSeconds, const std::string &playerState);
 
+  /*!
+   * @brief Set the video (bluray playlist) chapter information.
+   * @param chapters Vector of ChapterInfo containing information about the chapter timing.
+   */
+  void SetChapters(const std::vector<ChapterInfo>& chapters);
+
+  /*!
+   * @brief Get the chapter information (currently only set for bluray playlists).
+   * @return Vector of ChapterInfo containing information about the chapter timing.
+   */
+  std::vector<ChapterInfo>& GetChapters();
+  const std::vector<ChapterInfo>& GetChapters() const;
+
+  /*!
+   * @brief Indicate if the video (bluray playlist) has chapters.
+   * @return true if the bluray playlist has chapters, false otherwise.
+   */
+  bool HasChapters() const;
+
   const std::string& GetOriginalLanguage() const { return m_originalLanguage; }
 
   std::string m_basePath; // the base path of the video, for folder-based lookups
@@ -439,6 +466,7 @@ public:
   int m_relevance; // Used for actors' number of appearances
   int m_parsedDetails;
   std::vector<EmbeddedArtInfo> m_coverArt; ///< art information
+  std::vector<ChapterInfo> m_chapters;
 
   // TODO: cannot be private, because of 'struct SDbTableOffsets'
   unsigned int m_duration; ///< duration in seconds

@@ -9,6 +9,7 @@ set(SOURCES AudioSinkAE.cpp
             Edl.cpp
             Edl/EdlParserFactory.cpp
             Edl/EdlParsers/BeyondTVParser.cpp
+            Edl/EdlParsers/ChapterEdlParser.cpp
             Edl/EdlParsers/ComskipParser.cpp
             Edl/EdlParsers/EdlFileParser.cpp
             Edl/EdlParsers/MultipleEpisodeEdlParser.cpp
@@ -37,6 +38,7 @@ set(HEADERS AudioSinkAE.h
             Edl/EdlParser.h
             Edl/EdlParserFactory.h
             Edl/EdlParsers/BeyondTVParser.h
+            Edl/EdlParsers/ChapterEdlParser.h
             Edl/EdlParsers/ComskipParser.h
             Edl/EdlParsers/EdlFileParser.h
             Edl/EdlParsers/MultipleEpisodeEdlParser.h

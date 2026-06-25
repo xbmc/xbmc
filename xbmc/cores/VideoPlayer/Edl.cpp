@@ -9,7 +9,6 @@
 #include "Edl.h"
 
 #include "Edl/EdlParserFactory.h"
-#include "Edl/EdlParsers/MultipleEpisodeEdlParser.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "URL.h"
@@ -17,7 +16,6 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -64,12 +62,18 @@ bool CEdl::ReadEditDecisionLists(const CFileItem& fileItem,
   CLog::LogF(LOGDEBUG, "Checking for edit decision lists (EDL) for: {}",
              CURL::GetRedacted(fileItem.GetDynPath()));
 
-  // Run the multi-episode parser independently so episode start/end can be
-  // applied to any edits found by the file-based parsers
-  CEdlParserResult multiEpisodeResult;
-  CMultipleEpisodeEdlParser multiEpParser;
-  if (URIUtils::IsLocalOrLAN(fileItem.GetDynPath()) && multiEpParser.CanParse(fileItem))
-    multiEpisodeResult = multiEpParser.Parse(fileItem, fps, duration);
+  // Run the multi-episode and chapter parsers independently so episode/chapter
+  // start/end can be applied to any edits found by the file-based parsers
+  CEdlParserResult partFileResult;
+  for (const auto& parser : CEdlParserFactory::GetPartFileEdlParsersForItem(fileItem))
+  {
+    if (parser->CanParse(fileItem))
+    {
+      partFileResult = parser->Parse(fileItem, fps, duration);
+      if (!partFileResult.IsEmpty())
+        break;
+    }
+  }
 
   for (const auto& parser : CEdlParserFactory::GetEdlParsersForItem(fileItem))
   {
@@ -78,12 +82,12 @@ bool CEdl::ReadEditDecisionLists(const CFileItem& fileItem,
 
     CEdlParserResult result = parser->Parse(fileItem, fps, duration);
     if (!result.IsEmpty())
-      return ProcessParserResult(result, multiEpisodeResult, duration);
+      return ProcessParserResult(result, partFileResult, duration);
   }
 
   // No file-based EDL found; still apply multi-episode cuts alone if present
-  if (!multiEpisodeResult.IsEmpty())
-    return ProcessParserResult(multiEpisodeResult);
+  if (!partFileResult.IsEmpty())
+    return ProcessParserResult(partFileResult);
 
   return false;
 }

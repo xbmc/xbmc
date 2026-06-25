@@ -9,8 +9,10 @@
 #include "EdlParserFactory.h"
 
 #include "EdlParsers/BeyondTVParser.h"
+#include "EdlParsers/ChapterEdlParser.h"
 #include "EdlParsers/ComskipParser.h"
 #include "EdlParsers/EdlFileParser.h"
+#include "EdlParsers/MultipleEpisodeEdlParser.h"
 #include "EdlParsers/PvrEdlParser.h"
 #include "EdlParsers/VideoReDoParser.h"
 #include "FileItem.h"
@@ -35,6 +37,18 @@ std::vector<std::unique_ptr<IEdlParser>> CEdlParserFactory::GetEdlParsersForItem
     // Metadata-based parsers for other items (PVR, streams, etc.)
     parsers.emplace_back(std::make_unique<CPvrEdlParser>());
   }
+
+  return parsers;
+}
+
+std::vector<std::unique_ptr<IEdlParser>> CEdlParserFactory::GetPartFileEdlParsersForItem(
+    const CFileItem& item)
+{
+  std::vector<std::unique_ptr<IEdlParser>> parsers;
+
+  parsers.emplace_back(std::make_unique<CChapterEdlParser>());
+  if (URIUtils::IsLocalOrLAN(item.GetDynPath()))
+    parsers.emplace_back(std::make_unique<CMultipleEpisodeEdlParser>());
 
   return parsers;
 }

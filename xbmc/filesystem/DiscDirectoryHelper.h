@@ -22,7 +22,6 @@
 class CFileItem;
 class CFileItemList;
 class CURL;
-class CVideoInfoTag;
 
 namespace XFILE
 {

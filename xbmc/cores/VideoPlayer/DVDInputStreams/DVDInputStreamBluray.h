@@ -144,6 +144,9 @@ public:
   UpdateState UpdateItemFromSavedStates(CFileItem& item, double time, bool& closed) override;
   void UpdateStack(CFileItem& item) override;
 
+  std::vector<ChapterInfo> GetChapters() override;
+  std::chrono::milliseconds GetDuration() override;
+
 protected:
   struct SPlane;
 

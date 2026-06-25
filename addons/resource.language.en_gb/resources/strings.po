@@ -798,6 +798,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 #: xbmc/pvr/windows/GUIViewStatePVR.cpp
+#: xbmc/dialogs/GUIDialogSimpleMenu.cpp
 #: addons/skin.estuary/xml/Variables.xml
 #: addons/skin.estuary/xml/View_51_Poster.xml
 #: addons/skin.estuary/xml/DialogPVRInfo.xml
@@ -1624,6 +1625,7 @@ msgctxt "#334"
 msgid "Clean library..."
 msgstr ""
 
+#: xbmc/dialogs/GUIDialogSimpleMenu.cpp
 msgctxt "#335"
 msgid "Start"
 msgstr ""
@@ -2657,7 +2659,7 @@ msgstr ""
 #: xbmc/playlists/SmartPlaylist.cpp
 #: xbmc/PlayListPlayer.cpp
 #: xbmc/music/windows/GUIWindowMusicPlaylistEditor.cpp
-#: xbmc/video/dialogs/GUIDialogSimpleMenu.cpp
+#: xbmc/dialogs/GUIDialogSimpleMenu.cpp
 msgctxt "#559"
 msgid "Playlist"
 msgstr ""
@@ -14751,6 +14753,7 @@ msgstr ""
 
 #: addons/skin.estuary/xml/DialogSeekBar.xml
 #: addons/skin.estuary/xml/DialogFullScreenInfo.xml
+#: xbmc/dialogs/GUIDialogSimpleMenu.cpp
 msgctxt "#21396"
 msgid "Chapter"
 msgstr ""
@@ -15218,7 +15221,12 @@ msgctxt "#21485"
 msgid "Supported file extensions and media types"
 msgstr ""
 
-#empty strings from id 21486 to 21601
+#: xbmc/dialogs/GUIDialogSimpleMenu.cpp
+msgctxt "#21486"
+msgid "Chapters"
+msgstr ""
+
+#empty strings from id 21487 to 21601
 
 #: xbmc/Util.cpp
 msgctxt "#21602"
@@ -16979,6 +16987,7 @@ msgid "Title: {0:d}"
 msgstr ""
 
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
+#: xbmc/dialogs/GUIDialogSimpleMenu.cpp
 msgctxt "#25006"
 msgid "Select playback item"
 msgstr ""
@@ -17025,19 +17034,19 @@ msgid "Manual"
 msgstr ""
 
 #. Used to ask user if they want to use a playlist already assigned to an episode
-#: xbmc/video/dialogs/GUIDialogSimpleMenu.cpp
+#: xbmc/dialogs/GUIDialogSimpleMenu.cpp
 msgctxt "#25015"
 msgid "Selected playlist is already in use. Associate with this episode instead?"
 msgstr ""
 
 #. Inform user that no valid movie playlist has been found on disc
-#: xbmc/video/dialogs/GUIDialogSimpleMenu.cpp
+#: xbmc/dialogs/GUIDialogSimpleMenu.cpp
 msgctxt "#25016"
 msgid "No valid movie playlist has been found."
 msgstr ""
 
 #. Inform user that no valid episode playlist has been found on disc
-#: xbmc/video/dialogs/GUIDialogSimpleMenu.cpp
+#: xbmc/dialogs/GUIDialogSimpleMenu.cpp
 msgctxt "#25017"
 msgid "No valid episode playlist has been found."
 msgstr ""

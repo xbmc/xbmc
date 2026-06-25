@@ -29,7 +29,7 @@ class CEdlParserFactory
 {
 public:
   /*!
-   * @brief Get all EDL parsers applicable for the given file item
+   * @brief Get all EDL file/metadata parsers applicable for the given file item
    *
    * Returns file-based parsers for local/LAN items, or metadata-based
    * parsers (like PVR) for other items. The factory handles all context
@@ -39,6 +39,17 @@ public:
    * @return Vector of applicable parser instances
    */
   static std::vector<std::unique_ptr<IEdlParser>> GetEdlParsersForItem(const CFileItem& item);
+
+  /*!
+   * @brief Get all EDL parsers that play file segments of the given file item
+   *
+   * Returns the part file parsers.
+   *
+   * @param item The file item to get parsers for
+   * @return Vector of applicable parser instances
+   */
+  static std::vector<std::unique_ptr<IEdlParser>> GetPartFileEdlParsersForItem(
+      const CFileItem& item);
 };
 
 } // namespace EDL
