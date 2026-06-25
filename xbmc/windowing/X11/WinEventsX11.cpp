@@ -31,6 +31,7 @@
 
 using namespace KODI::WINDOWING::X11;
 
+// clang-format off
 static uint32_t SymMappingsX11[][2] =
 {
   {XK_BackSpace, XBMCK_BACKSPACE}
@@ -56,7 +57,7 @@ static uint32_t SymMappingsX11[][2] =
 , {XF86XK_AudioStop, XBMCK_MEDIA_STOP}
 , {XF86XK_AudioPause, XBMCK_MEDIA_PLAY_PAUSE}
 , {XF86XK_Mail, XBMCK_LAUNCH_MAIL}
-, {XF86XK_Select, XBMCK_LAUNCH_MEDIA_SELECT}
+, {XF86XK_Select, XBMCK_SELECT}
 , {XF86XK_Launch0, XBMCK_LAUNCH_APP1}
 , {XF86XK_Launch1, XBMCK_LAUNCH_APP2}
 , {XF86XK_WWW, XBMCK_LAUNCH_FILE_BROWSER}
@@ -141,6 +142,7 @@ static uint32_t SymMappingsX11[][2] =
 , {XF86XK_AudioRandomPlay, XBMCK_SHUFFLE}
 , {XF86XK_AudioForward, XBMCK_FASTFORWARD}
 };
+// clang-format on
 
 CWinEventsX11::CWinEventsX11(CWinSystemX11& winSystem) : m_winSystem(winSystem)
 {
