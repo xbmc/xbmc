@@ -4486,6 +4486,23 @@ constexpr std::array<InfoMap, 88> videoplayer = {{
 ///     @skinning_v22 **[New Infolabel]** \link RetroPlayer_GameClientPlatforms `RetroPlayer.GameClientPlatforms`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`RetroPlayer.AchievementsLoggedIn`</b>,
+///                  \anchor RetroPlayer_AchievementsLoggedIn
+///                  _boolean_,
+///     @return **True** if logged in to RetroAchievements\, **False** otherwise.
+///     <p><hr>
+///     @skinning_v22 **[New Boolean Condition]** \link RetroPlayer_AchievementsLoggedIn `RetroPlayer.AchievementsLoggedIn`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`RetroPlayer.RichPresence`</b>,
+///                  \anchor RetroPlayer_RichPresence
+///                  _string_,
+///     @return The RetroAchievements rich presence status for the currently-playing
+///     game\, or an empty string if no rich presence status is available.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link RetroPlayer_RichPresence `RetroPlayer.RichPresence`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`RetroPlayer.SupportsEject`</b>,
 ///                  \anchor RetroPlayer_SupportsEject
 ///                  _boolean_,
@@ -4565,7 +4582,7 @@ constexpr std::array<InfoMap, 88> videoplayer = {{
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 16> retroplayer = {{
+constexpr std::array<InfoMap, 18> retroplayer = {{
     {"title", RETROPLAYER_TITLE},
     {"platform", RETROPLAYER_PLATFORM},
     {"genres", RETROPLAYER_GENRES},
@@ -4575,6 +4592,8 @@ constexpr std::array<InfoMap, 16> retroplayer = {{
     {"gameclient", RETROPLAYER_GAME_CLIENT},
     {"gameclientname", RETROPLAYER_GAME_CLIENT_NAME},
     {"gameclientplatforms", RETROPLAYER_GAME_CLIENT_PLATFORMS},
+    {"richpresence", RETROPLAYER_RICH_PRESENCE},
+    {"achievementsloggedin", RETROPLAYER_ACHIEVEMENTS_LOGGED_IN},
     {"supportseject", RETROPLAYER_SUPPORTS_EJECT},
     {"discejected", RETROPLAYER_DISC_EJECTED},
     {"disclabel", RETROPLAYER_DISC_LABEL},
