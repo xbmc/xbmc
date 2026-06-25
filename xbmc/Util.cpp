@@ -1899,7 +1899,10 @@ void CUtil::GetVideoBasePathAndFileName(const std::string& videoPath,
   else
   {
     videoFileName = URIUtils::ReplaceExtension(URIUtils::GetFileName(videoPath), "");
-    basePath = URIUtils::GetParentPath(videoPath);
+    CURL url(videoPath);
+    // Strip URL options (e.g., query/fragment) before computing the parent path
+    url.SetOptions("");
+    basePath = URIUtils::GetParentPath(url.Get());
   }
 }
 

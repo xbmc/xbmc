@@ -629,7 +629,16 @@ const TestBaseData Paths[] = {
     {"archive://%5c%5cServer%5cMovies%5cmovie%5cmovie.tar.gz/BDMV/index.BDMV",
      "\\\\Server\\Movies\\movie\\", "movie"},
     {"archive://%5c%5cServer%5cMovies%5cmovie%5cdisc%201%5cmovie.tar.gz/file.mkv",
-     "\\\\Server\\Movies\\movie\\disc 1\\", "file"}};
+     "\\\\Server\\Movies\\movie\\disc 1\\", "file"},
+    // HTTP URL with query string
+    {"http://192.168.1.1/movie.mkv?session=abc", "http://192.168.1.1/", "movie"},
+    {"http://192.168.1.1/path/movie.mkv?session=abc", "http://192.168.1.1/path/", "movie"},
+    // Endpoint-style URL where the query selects the media
+    {"http://192.168.1.1/stream?file=movie.mkv", "http://192.168.1.1/", "stream"},
+    {"http://192.168.1.1/dir/stream?file=movie.mkv", "http://192.168.1.1/dir/", "stream"},
+    // HTTP URL with multi-param query string
+    {"http://192.168.0.110:80/immich/album-2025/VID_20250624_114200.mp4?index=1&play",
+     "http://192.168.0.110:80/immich/album-2025/", "VID_20250624_114200"}};
 
 TEST_P(TestVideoBasePathAndFileName, GetVideoBasePathAndFileName)
 {
