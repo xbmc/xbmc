@@ -36,7 +36,9 @@ class ID3DResource;
 class CGUIShaderDX
 {
 public:
-  CGUIShaderDX();
+  CGUIShaderDX() {}
+  CGUIShaderDX(const CGUIShaderDX&) = delete;
+  CGUIShaderDX& operator=(const CGUIShaderDX&) = delete;
   ~CGUIShaderDX();
 
   bool Initialize();
@@ -96,11 +98,11 @@ public:
 private:
   struct cbWorldViewProj
   {
-    DirectX::XMMATRIX world;
-    DirectX::XMMATRIX view;
-    DirectX::XMMATRIX projection;
-    DirectX::XMMATRIX m_wvp;
-    bool m_isDirty = true;
+    DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
+    DirectX::XMMATRIX view = DirectX::XMMatrixIdentity();
+    DirectX::XMMATRIX projection = DirectX::XMMatrixIdentity();
+    DirectX::XMMATRIX m_wvp = DirectX::XMMatrixIdentity();
+    bool m_isDirty = false;
   };
   struct cbViewPort
   {
@@ -131,8 +133,8 @@ private:
   cbWorldViewProj m_cbWorldViewProj = {};
   float m_depth = 1.f;
 
-  bool  m_bCreated;
-  size_t m_currentShader;
+  bool m_bCreated = false;
+  size_t m_currentShader = 0;
   CD3DVertexShader m_vertexShader;
   CD3DPixelShader m_pixelShader[SHADER_METHOD_RENDER_COUNT];
   struct ShaderPair
@@ -146,16 +148,16 @@ private:
   Microsoft::WRL::ComPtr<ID3D11SamplerState> m_pSampNearestNeighbor;
 
   // GUI buffers
-  bool m_bIsWVPDirty;
-  bool m_bIsVPDirty;
+  bool m_bIsWVPDirty = true;
+  bool m_bIsVPDirty = true;
   Microsoft::WRL::ComPtr<ID3D11Buffer> m_pWVPBuffer;
   Microsoft::WRL::ComPtr<ID3D11Buffer> m_pVPBuffer;
   Microsoft::WRL::ComPtr<ID3D11Buffer> m_pVertexBuffer;
 
   // clip to scissors params
-  bool m_clipPossible;
-  float m_clipXFactor;
-  float m_clipXOffset;
-  float m_clipYFactor;
-  float m_clipYOffset;
+  bool m_clipPossible = false;
+  float m_clipXFactor = 0.0f;
+  float m_clipXOffset = 0.0f;
+  float m_clipYFactor = 0.0f;
+  float m_clipYOffset = 0.0f;
 };

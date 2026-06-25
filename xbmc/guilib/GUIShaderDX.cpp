@@ -58,24 +58,6 @@ static_assert(std::ranges::none_of(shaderCode,
                                    [](const auto& s)
                                    { return s.pBytecode == nullptr || s.BytecodeLength == 0; }));
 
-CGUIShaderDX::CGUIShaderDX()
-  : m_pSampLinear{nullptr},
-    m_pSampNearestNeighbor{nullptr},
-    m_pVPBuffer(nullptr),
-    m_pWVPBuffer(nullptr),
-    m_pVertexBuffer(nullptr),
-    m_clipXFactor(0.0f),
-    m_clipXOffset(0.0f),
-    m_clipYFactor(0.0f),
-    m_clipYOffset(0.0f),
-    m_bIsWVPDirty(false),
-    m_bIsVPDirty(false),
-    m_bCreated(false),
-    m_currentShader(0),
-    m_clipPossible(false)
-{
-}
-
 CGUIShaderDX::~CGUIShaderDX()
 {
   Release();
@@ -135,9 +117,10 @@ bool CGUIShaderDX::CreateBuffers()
   CD3D11_BUFFER_DESC cbbd(buffSize, D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE); // it can change very frequently
   if (FAILED(pDevice->CreateBuffer(&cbbd, NULL, m_pWVPBuffer.ReleaseAndGetAddressOf())))
   {
-    CLog::LogF(LOGERROR, "Failed to create the constant buffer.");
+    CLog::LogF(LOGERROR, "Failed to create the world constant buffer.");
     return false;
   }
+  // class members have reasonable defaults for the initial buffer load
   m_bIsWVPDirty = true;
 
   CRect viewPort;
@@ -153,7 +136,11 @@ bool CGUIShaderDX::CreateBuffers()
   D3D11_SUBRESOURCE_DATA initData = { &m_cbViewPort, 0, 0 };
   // create viewport buffer
   if (FAILED(pDevice->CreateBuffer(&cbbd, &initData, m_pVPBuffer.ReleaseAndGetAddressOf())))
+  {
+    CLog::LogF(LOGERROR, "Failed to create the viewport constant buffer.");
     return false;
+  }
+  m_bIsVPDirty = false;
 
   return true;
 }
@@ -360,6 +347,12 @@ void CGUIShaderDX::SetDepth(const float depth)
 void CGUIShaderDX::ApplyChanges(void)
 {
   ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
+  if (pContext == nullptr)
+  {
+    CLog::LogF(LOGERROR, "Unable to retrieve device context.");
+    return;
+  }
+
   D3D11_MAPPED_SUBRESOURCE res;
 
   if (m_bIsWVPDirty)
