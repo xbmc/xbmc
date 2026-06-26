@@ -363,6 +363,9 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
           CLog::Log(LOGWARNING, "CGUIMediaWindow::OnMessage - updating in progress");
           return true;
         }
+        if (g_application.IsStopping())
+          return true;
+
         CUpdateGuard ug(m_vecItemsUpdating);
         if (message.GetNumStringParams())
         {
@@ -546,6 +549,12 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         SetInitialVisibility();
         return true;
       }
+
+      // Prevent the default CGUIWindow::OnMessage handler from running
+      // (which would call OnInitWindow -> Update -> GetDirectory) when the
+      // application is already shutting down.
+      if (g_application.IsStopping())
+        return true;
     }
     break;
   }
@@ -709,6 +718,10 @@ void CGUIMediaWindow::FormatAndSort(CFileItemList &items)
  */
 bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemList &items)
 {
+  // Never allow a directory load once the application is shutting down.
+  if (g_application.IsStopping())
+    return false;
+
   CURL pathToUrl(strDirectory);
 
   std::string strParentPath = m_history.GetParentPath(strDirectory);

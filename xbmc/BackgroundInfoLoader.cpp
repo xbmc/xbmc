@@ -11,6 +11,7 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "URL.h"
+#include "application/Application.h"
 #include "threads/Thread.h"
 #include "utils/log.h"
 
@@ -92,6 +93,10 @@ void CBackgroundInfoLoader::Run()
 
 void CBackgroundInfoLoader::Load(CFileItemList& items)
 {
+  // Never start a background load while the application is shutting down.
+  if (g_application.IsStopping())
+    return;
+
   StopThread();
 
   if (items.IsEmpty())
