@@ -9,6 +9,7 @@
 #pragma once
 
 #include <string>
+#include <string_view>
 #include <vector>
 
 class CURL;
@@ -384,6 +385,19 @@ public:
   static bool UpdateUrlEncoding(std::string &strFilename);
 
   static CURL AddCredentials(CURL url);
+
+  /*!
+   \brief Updates the URL encoding (if needed) of the hostname element of the given url path 
+   and returns the updated path.
+
+   Ensures that the hex encoded characters are lower case
+   Ensures that DOS paths use '\' as path separator and not '/'
+   as this can cause unintentional path mismatches
+
+   \param path Path to update
+   \return Updated path
+   */
+  static std::string SanitiseUrlEncoding(std::string_view path);
 
 private:
   static std::string resolvePath(const std::string &path);
