@@ -8,6 +8,9 @@
 
 #pragma once
 
+// No advantage to clobbering history when the formatted file is much less readable
+// clang-format off
+
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999 // do not change. value is used to avoid include in headers.
 #define WINDOW_HOME                       10000
@@ -206,3 +209,4 @@
 #define WINDOW_ADDON_START                14000
 #define WINDOW_ADDON_END                  14099
 
+// clang-format on
