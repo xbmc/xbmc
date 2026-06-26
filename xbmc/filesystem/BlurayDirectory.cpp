@@ -21,10 +21,6 @@
 #include "filesystem/BlurayCallback.h"
 #include "filesystem/Directory.h"
 #include "filesystem/DirectoryFactory.h"
-#include "resources/LocalizeStrings.h"
-#include "resources/ResourcesComponent.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
 #include "utils/EpisodeUtils.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/RegExp.h"
@@ -34,7 +30,6 @@
 #include "video/VideoInfoTag.h"
 
 #include <algorithm>
-#include <cassert>
 #include <chrono>
 #include <cstdint>
 #include <map>
@@ -56,11 +51,15 @@ namespace XFILE
 {
 namespace // Bluray parsing
 {
-void AddOptionsAndSort(const CURL& url, CFileItemList& items, bool blurayMenuSupport)
+void AddOptionsAndSortMethods(const CURL& url,
+                              CFileItemList& items,
+                              CDiscDirectoryHelper::AllTitles allTitlesType,
+                              bool blurayMenuSupport)
 {
   // Add all titles and menu options
-  CDiscDirectoryHelper::AddRootOptions(
-      url, items, blurayMenuSupport ? AddMenuOption::ADD_MENU : AddMenuOption::NO_MENU);
+  CDiscDirectoryHelper::AddRootOptions(url, items, allTitlesType,
+                                       blurayMenuSupport ? AddMenuOption::ADD_MENU
+                                                         : AddMenuOption::NO_MENU);
 
   items.AddSortMethod(SortBy::TRACK_NUMBER, 554,
                       LABEL_MASKS("%L", "%D", "%L", "")); // FileName, Duration | Foldername, empty
@@ -186,79 +185,6 @@ void RemoveDuplicatePlaylists(std::vector<PlaylistInformation>& playlists)
                 { return duplicatePlaylists.contains(p.playlist); });
 }
 
-void RemoveShortPlaylists(std::vector<PlaylistInformation>& playlists)
-{
-  const std::chrono::milliseconds minimumDuration{CServiceBroker::GetSettingsComponent()
-                                                      ->GetAdvancedSettings()
-                                                      ->m_minimumEpisodePlaylistDuration *
-                                                  1000};
-  if (std::ranges::any_of(playlists, [&minimumDuration](const PlaylistInformation& playlist)
-                          { return playlist.duration >= minimumDuration; }))
-  {
-    std::erase_if(playlists, [&minimumDuration](const PlaylistInformation& playlist)
-                  { return playlist.duration < minimumDuration; });
-  }
-}
-
-void GetMainPlaylist(std::vector<PlaylistInformation>& playlists, GetTitle job)
-{
-  // If any playlists have more than one chapter, discard those without
-  if (std::ranges::any_of(playlists,
-                          [](const PlaylistInformation& p) { return p.chapters.size() > 1; }))
-  {
-    std::erase_if(playlists, [](const PlaylistInformation& p) { return p.chapters.size() <= 1; });
-  }
-
-  const auto it{std::ranges::max_element(playlists, {}, &PlaylistInformation::duration)};
-  if (it == playlists.end())
-    return;
-
-  if (job == GetTitle::GET_TITLES_SINGLE)
-  {
-    playlists = {*it}; // Single longest title
-    return;
-  }
-
-  // All titles with duration of at least 70% of the longest title (to allow multiple editions on same disc)
-  const auto minimumDuration{it->duration * MAIN_TITLE_LENGTH_PERCENT / 100};
-  std::erase_if(playlists, [minimumDuration](const PlaylistInformation& playlist)
-                { return playlist.duration < minimumDuration; });
-}
-
-void SortPlaylists(std::vector<PlaylistInformation>& playlists, SortTitles sort, int mainPlaylist)
-{
-  std::ranges::sort(playlists,
-                    [&sort](const PlaylistInformation& i, const PlaylistInformation& j)
-                    {
-                      if (sort == SortTitles::SORT_TITLES_MOVIE)
-                      {
-                        if (i.duration == j.duration)
-                          return i.playlist < j.playlist;
-                        return i.duration > j.duration;
-                      }
-                      return i.playlist < j.playlist;
-                    });
-
-  const auto& pivot{
-      std::ranges::find_if(playlists, [&mainPlaylist](const PlaylistInformation& title)
-                           { return title.playlist == static_cast<unsigned int>(mainPlaylist); })};
-  if (pivot != playlists.end())
-    std::rotate(playlists.begin(), pivot, pivot + 1);
-}
-
-bool IncludePlaylist(GetTitle job,
-                     const PlaylistInformation& title,
-                     std::chrono::milliseconds minDuration,
-                     int mainPlaylist,
-                     unsigned int maxPlaylist)
-{
-  using enum GetTitle;
-  return job == GET_TITLES_ALL || job == GET_TITLES_EPISODES ||
-         (job == GET_TITLES_MAIN && title.duration >= minDuration) ||
-         (job == GET_TITLES_SINGLE && (title.playlist == static_cast<unsigned int>(mainPlaylist) ||
-                                       (mainPlaylist == -1 && title.playlist == maxPlaylist)));
-}
-
 void SetStreamDetails(const CURL& url,
                       const std::string& realPath,
                       CFileItem& item,
@@ -290,7 +216,6 @@ void SetStreamDetails(const CURL& url,
 std::shared_ptr<CFileItem> GetFileItem(const CURL& url,
                                        const std::string& realPath,
                                        PlaylistInformation& title,
-                                       const std::string& label,
                                        std::map<unsigned int, ClipInformation>& clipCache)
 {
   CURL path{url};
@@ -299,15 +224,6 @@ std::shared_ptr<CFileItem> GetFileItem(const CURL& url,
   const int duration{static_cast<int>(title.duration.count() / 1000)};
   item->GetVideoInfoTag()->SetDuration(duration);
   item->SetProperty("bluray_playlist", title.playlist);
-  const std::string buf{StringUtils::Format(label, title.playlist)};
-  item->SetTitle(buf);
-  item->SetLabel(buf);
-  const std::string chap{
-      StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25007),
-                          title.chapters.size(), StringUtils::SecondsToTimeString(duration))};
-  item->SetLabel2(chap);
-  item->SetSize(0);
-  item->SetArt("icon", "DefaultVideo.png");
 
   SetStreamDetails(url, realPath, *item, title, clipCache);
 
@@ -342,10 +258,7 @@ int GetMainPlaylistFromDisc(const CURL& url)
   return playlist;
 }
 
-bool FilterPlaylists(std::vector<PlaylistInformation>& playlists,
-                     GetTitle job,
-                     SortTitles sort,
-                     int mainPlaylist)
+bool FilterPlaylists(std::vector<PlaylistInformation>& playlists)
 {
   // Remove playlists with no clips
   std::erase_if(playlists,
@@ -355,7 +268,7 @@ bool FilterPlaylists(std::vector<PlaylistInformation>& playlists,
   std::erase_if(playlists,
                 [](const PlaylistInformation& playlist) { return playlist.duration < 1s; });
 
-  // Remove playlists with duplicate clips
+  // Remove playlists with repeated clips (same clip appearing more than once in the playlist)
   std::erase_if(playlists,
                 [](const PlaylistInformation& playlist)
                 {
@@ -366,122 +279,62 @@ bool FilterPlaylists(std::vector<PlaylistInformation>& playlists,
                 });
 
   // Remove duplicate playlists
-  // For episodes playlist selection happens in CDiscDirectoryHelper
-  if (job != GetTitle::GET_TITLES_ALL && job != GetTitle::GET_TITLES_EPISODES &&
-      playlists.size() > 1)
-    RemoveDuplicatePlaylists(playlists);
+  RemoveDuplicatePlaylists(playlists);
 
-  // Remove playlists below minimum duration (default 5 minutes) unless that would leave no playlists
-  if (job != GetTitle::GET_TITLES_ALL)
-    RemoveShortPlaylists(playlists);
-
-  // No playlists found
-  if (playlists.empty())
-    return false;
-
-  // For the main or single title select the longest playlist(s) that has >1 chapter
-  if (job == GetTitle::GET_TITLES_MAIN || job == GetTitle::GET_TITLES_SINGLE)
-    GetMainPlaylist(playlists, job);
-
-  // Sort
-  // Movies - placing main title - if present - first, then by duration
-  // Episodes - by playlist number
-  if (sort != SortTitles::SORT_TITLES_NONE)
-    SortPlaylists(playlists, sort, mainPlaylist);
-
-  return true;
+  return !playlists.empty();
 }
 
 void AddPlaylists(const CURL& url,
                   const std::string& realPath,
-                  GetTitle job,
                   CFileItemList& items,
-                  int mainPlaylist,
                   std::vector<PlaylistInformation>& playlists,
                   std::map<unsigned int, ClipInformation>& clipCache)
 {
   if (playlists.empty())
     return;
 
-  // Now we have curated playlists, find longest (for main title derivation)
-  const auto& it{std::ranges::max_element(playlists, {}, &PlaylistInformation::duration)};
-  const std::chrono::milliseconds maxDuration{it->duration};
-  const unsigned int maxPlaylist{it->playlist};
-
-  const std::chrono::milliseconds minDuration{maxDuration * MAIN_TITLE_LENGTH_PERCENT / 100};
   for (auto& title : playlists)
-  {
-    if (IncludePlaylist(job, title, minDuration, mainPlaylist, maxPlaylist))
-    {
-      items.Add(GetFileItem(
-          url, realPath, title,
-          title.playlist == static_cast<unsigned int>(mainPlaylist)
-              ? CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
-                    25004) /* Main Title */
-              : CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25005) /* Title */,
-          clipCache));
-    }
-  }
+    items.Add(GetFileItem(url, realPath, title, clipCache));
 }
-
 bool GetPlaylists(const CURL& url,
                   const std::string& realPath,
                   int flags,
-                  GetTitle job,
+                  int playlist,
                   CFileItemList& items,
-                  SortTitles sort,
                   std::map<unsigned int, ClipInformation>& clipCache)
 {
   try
   {
     std::vector<PlaylistInformation> playlists;
-    int mainPlaylist{-1};
-
-    // See if disc.inf for main playlist
-    if (job == GetTitle::GET_TITLES_MAIN)
-    {
-      mainPlaylist = GetMainPlaylistFromDisc(url);
-      if (mainPlaylist != -1)
-      {
-        // Only main playlist is needed
-        PlaylistInformation& t = playlists.emplace_back();
-        if (!GetPlaylistInfoFromDisc(url, realPath, mainPlaylist, false, t, clipCache))
-        {
-          CLog::LogF(LOGDEBUG, "Unable to get playlist {}", mainPlaylist);
-          playlists.pop_back();
-          mainPlaylist = -1;
-        }
-      }
-    }
-    else if (static_cast<int>(job) >= 0)
+    if (playlist >= 0)
     {
       // Single playlist
       PlaylistInformation& t = playlists.emplace_back();
-      mainPlaylist = static_cast<int>(job);
-      if (!GetPlaylistInfoFromDisc(url, realPath, mainPlaylist, false, t, clipCache))
+      if (!GetPlaylistInfoFromDisc(url, realPath, playlist, false, t, clipCache))
       {
-        CLog::LogF(LOGDEBUG, "Unable to get playlist {}", mainPlaylist);
+        CLog::LogF(LOGDEBUG, "Unable to get playlist {}", playlist);
         playlists.pop_back();
         return false;
       }
-    }
 
-    if (mainPlaylist >= 0)
-    {
-      items.Add(GetFileItem(
-          url, realPath, playlists[0],
-          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25005) /* Title */,
-          clipCache));
+      // Generate FileItem including stream details
+      items.Add(GetFileItem(url, realPath, playlists[0], clipCache));
     }
     else
     {
-      if (playlists.empty() && !GetPlaylistsFromDisc(url, realPath, flags, playlists, clipCache))
+      // Get all playlists for movie/episode determination in DiscDirectoryHelper
+      // or to retrieve all playlists
+
+      // Get all playlists on disc (parse all .mpls files)
+      if (!GetPlaylistsFromDisc(url, realPath, flags, playlists, clipCache))
         return false;
 
-      if (!FilterPlaylists(playlists, job, sort, mainPlaylist))
+      // Remove invalid playlists (no clips, repeated clips, duplicate playlists, length < 1s)
+      if (!FilterPlaylists(playlists))
         return false; // No playlists remain
 
-      AddPlaylists(url, realPath, job, items, mainPlaylist, playlists, clipCache);
+      // Generate FileItemList including stream details for each FileItem
+      AddPlaylists(url, realPath, items, playlists, clipCache);
     }
 
     return !items.IsEmpty();
@@ -566,9 +419,7 @@ bool GetPlaylistsInformation(const CURL& url,
     }
 
     // Get all titles on disc
-    // Sort by playlist for grouping later
-    GetPlaylists(url, realPath, flags, GetTitle::GET_TITLES_EPISODES, allTitles,
-                 SortTitles::SORT_TITLES_EPISODE, clipCache);
+    GetPlaylists(url, realPath, flags, ALL_PLAYLISTS, allTitles, clipCache);
 
     // Get information on all playlists
     // Including relationship between clips and playlists
@@ -749,109 +600,153 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
   if (!InitializeBluray(root))
     return false;
 
-  // /root                              - get main (length >70% longest) playlists
-  // /root/main	                        - get the single (most likely) main title playlist only
-  // /root/titles                       - get all playlists
+  // See if there is a playlist in disc.inf
+  const int mainPlaylist{GetMainPlaylistFromDisc(m_url)};
+
+  //
+  // These options also return 'All Titles' and 'Menu' options (if supported on disc)
+  //
+  // /root/titles                       - get main (length >70% longest) playlists (sorted by longest -> shortest - for movies)
+  // /root/titles/episodes              - get main playlists (sorted by longest -> shortest - for episodes)
+  //
+  // These options just return the requested playlist(s) (or nothing if not found)
+  //
+  // /root/main	                        - get the single main movie playlist only (assumes longest)
+  // /root/main/all                     - get all possible main movie playlists (ie. multiple versions on disc)
   // /root/episode/<season>/<episode>   - get playlists that correspond with S<season>E<episode>
-  //                                      if none found then return all playlists
   // /root/episode/all                  - get all episodes
-  if (file == "root")
+  //
+  // /root/titles/all                   - get all playlists (sorted by longest -> shortest - for movies)
+  // /root/titles/episodes/all          - get all playlists (sorted by playlist number - for episodes)
+  //
+
+  if (StringUtils::StartsWith(file, "root"))
   {
-    GetPlaylists(m_url, m_realPath, m_flags, GetTitle::GET_TITLES_MAIN, items,
-                 SortTitles::SORT_TITLES_MOVIE, m_clipCache);
-    AddOptionsAndSort(m_url, items, m_blurayMenuSupport);
-    return (items.Size() > 2);
-  }
-
-  if (file == "root/titles")
-    return GetPlaylists(m_url, m_realPath, m_flags, GetTitle::GET_TITLES_ALL, items,
-                        SortTitles::SORT_TITLES_MOVIE, m_clipCache);
-
-  if (file == "root/main")
-    return GetPlaylists(m_url, m_realPath, m_flags, GetTitle::GET_TITLES_SINGLE, items,
-                        SortTitles::SORT_TITLES_NONE, m_clipCache);
-
-  if (StringUtils::StartsWith(file, "root/episode"))
-  {
-    // Get episodes on disc by parsing file/path
-    // Done first as if called from VideoInfoScanner during library scan
-    //  not all episodes may be in database yet
-    std::string path = URIUtils::GetDiscBase(m_url.Get());
-    URIUtils::RemoveSlashAtEnd(path);
-    CFileItem item(path, false);
-    KODI::VIDEO::EPISODELIST episodesOnDisc;
-    CEpisodeUtils::EnumerateEpisodeItem(&item, episodesOnDisc);
-
-    // Now get any available information from database
-    const std::vector<CVideoInfoTag> episodesInDatabase{
-        CDiscDirectoryHelper::GetEpisodesOnDisc(m_url)};
-    if (!episodesInDatabase.empty())
-    {
-      // Update data with database information (where available)
-      for (auto& episode : episodesOnDisc)
-      {
-        const auto& it{std::ranges::find_if(
-            episodesInDatabase, [&episode](const CVideoInfoTag& e)
-            { return e.m_iSeason == episode.iSeason && e.m_iEpisode == episode.iEpisode; })};
-        if (it != episodesInDatabase.end())
-        {
-          episode.duration = it->GetDuration();
-          episode.strTitle = it->GetTitle();
-        }
-      }
-    }
-
-    int season{-1};
-    int episode{-1};
-    int episodeIndex{-1};
-    if (file != "root/episode/all")
-    {
-      // Get desired episode from path
-      CRegExp regex{true, CRegExp::autoUtf8, R"((root\/episode\/)(\d{1,4})\/(\d{1,4}))"};
-      if (regex.RegFind(file) == -1)
-        return false; // Invalid episode path
-      season = std::stoi(regex.GetMatch(2));
-      episode = std::stoi(regex.GetMatch(3));
-
-      // Check desired episode is on disc
-      const auto& it{
-          std::ranges::find_if(episodesOnDisc, [&season, &episode](const KODI::VIDEO::EPISODE& e)
-                               { return e.iSeason == season && e.iEpisode == episode; })};
-      if (it == episodesOnDisc.end())
-        return false; // Episode not on disc
-      episodeIndex = static_cast<int>(std::distance(episodesOnDisc.begin(), it));
-
-      // Add duration from scraper
-      it->duration = duration;
-    }
-
-    // Get playlist, clip and language information
     ClipMap clips;
     PlaylistMap playlists;
     CFileItemList allTitles;
     GetPlaylistsInformation(m_url, m_realPath, m_flags, allTitles, clips, playlists, m_clipCache);
 
-    // Get episode playlists
     CDiscDirectoryHelper helper;
-    helper.GetEpisodePlaylists(m_url, items, allTitles, episodeIndex, episodesOnDisc, clips,
-                               playlists);
 
-    // Heuristics failed so return all playlists
-    if (items.IsEmpty())
-      GetPlaylists(m_url, m_realPath, m_flags, GetTitle::GET_TITLES_EPISODES, items,
-                   SortTitles::SORT_TITLES_EPISODE, m_clipCache);
+    if (StringUtils::StartsWith(file, "root/titles") && file != "root/titles/episodes")
+    {
 
-    // Add all titles and menu options
-    AddOptionsAndSort(m_url, items, m_blurayMenuSupport);
+      if (file == "root/titles")
+        helper.GetMoviePlaylists(url, items, allTitles, mainPlaylist, GetTitle::MAIN, clips,
+                                 playlists);
+      else if (file == "root/titles/all")
+        helper.GetMoviePlaylists(url, items, allTitles, mainPlaylist, GetTitle::ALL, clips,
+                                 playlists);
+      else if (file == "root/titles/episodes/all")
+        helper.GetAllEpisodePlaylists(m_url, items, allTitles, GetTitle::ALL, {}, clips, playlists);
+      else
+        CLog::LogF(LOGDEBUG, "Invalid path {} for bluray playlist parsing", file);
 
-    return (items.Size() > 2);
+      const bool success{!items.IsEmpty()};
+
+      // Add all titles and menu option (if menus supported on disc)
+      if (!StringUtils::EndsWith(file, "/all"))
+        AddOptionsAndSortMethods(m_url, items, CDiscDirectoryHelper::AllTitles::MOVIES,
+                                 m_blurayMenuSupport);
+
+      return success;
+    }
+
+    if (StringUtils::StartsWith(file, "root/main"))
+    {
+      if (file == "root/main")
+        helper.GetMoviePlaylists(url, items, allTitles, mainPlaylist, GetTitle::SINGLE, clips,
+                                 playlists);
+      else if (file == "root/main/all")
+        helper.GetMoviePlaylists(url, items, allTitles, mainPlaylist, GetTitle::ALL, clips,
+                                 playlists);
+      else
+        CLog::LogF(LOGDEBUG, "Invalid path {} for bluray playlist parsing", file);
+
+      return !items.IsEmpty();
+    }
+
+    if (StringUtils::StartsWith(file, "root/episode") || file == "root/titles/episodes")
+    {
+      // Get episodes on disc by parsing file/path
+      // Done first as if called from VideoInfoScanner during library scan
+      //  not all episodes may be in database yet
+      std::string path = URIUtils::GetDiscBase(m_url.Get());
+      URIUtils::RemoveSlashAtEnd(path);
+      CFileItem item(path, false);
+      Episodes episodesOnDisc;
+      CEpisodeUtils::EnumerateEpisodeItem(&item, episodesOnDisc);
+
+      // Now get any available information from database
+      const std::vector<CVideoInfoTag> episodesInDatabase{
+          CDiscDirectoryHelper::GetEpisodesOnDisc(m_url)};
+      if (!episodesInDatabase.empty())
+      {
+        // Update data with database information (where available)
+        for (auto& episode : episodesOnDisc)
+        {
+          const auto& it{std::ranges::find_if(
+              episodesInDatabase, [&episode](const CVideoInfoTag& e)
+              { return e.m_iSeason == episode.iSeason && e.m_iEpisode == episode.iEpisode; })};
+          if (it != episodesInDatabase.end())
+          {
+            episode.duration = it->GetDuration();
+            episode.strTitle = it->GetTitle();
+          }
+        }
+      }
+
+      int episodeIndex{-1};
+      if (file != "root/episode/all" && file != "root/titles/episodes")
+      {
+        // Get desired episode from path
+        CRegExp regex{true, CRegExp::autoUtf8, R"((root\/episode\/)(\d{1,4})\/(\d{1,4}))"};
+        if (regex.RegFind(file) == -1)
+          return false; // Invalid episode path
+        const int season{std::stoi(regex.GetMatch(2))};
+        const int episode{std::stoi(regex.GetMatch(3))};
+
+        // Check desired episode is on disc
+        const auto& it{
+            std::ranges::find_if(episodesOnDisc, [&season, &episode](const Episode& e)
+                                 { return e.iSeason == season && e.iEpisode == episode; })};
+        if (it == episodesOnDisc.end())
+          return false; // Episode not on disc
+        episodeIndex = static_cast<int>(std::distance(episodesOnDisc.begin(), it));
+
+        // Add duration from scraper
+        it->duration = duration;
+      }
+
+      // Get episode playlists
+      bool success{false};
+      if (file == "root/titles/episodes")
+      {
+        helper.GetAllEpisodePlaylists(m_url, items, allTitles, GetTitle::MAIN, episodesOnDisc,
+                                      clips, playlists);
+        success = !items.IsEmpty();
+        AddOptionsAndSortMethods(m_url, items, CDiscDirectoryHelper::AllTitles::EPISODES,
+                                 m_blurayMenuSupport);
+      }
+      else
+      {
+        helper.GetEpisodePlaylists(m_url, items, allTitles, episodeIndex, episodesOnDisc, clips,
+                                   playlists);
+        success = !items.IsEmpty();
+      }
+
+      return success;
+    }
+
+    return false;
   }
 
+  // Single playlist (eg. bluray://host/BDMV/PLAYLIST/00001.mpls)
   if (URIUtils::IsBlurayPath(m_url.Get()))
   {
-    if (int playlist{URIUtils::GetBlurayPlaylistFromPath(m_url.Get())}; playlist >= 0)
-      return GetPlaylists(m_url, m_realPath, m_flags, static_cast<GetTitle>(playlist), items,
-                          SortTitles::SORT_TITLES_NONE, m_clipCache);
+    if (const int playlist{URIUtils::GetBlurayPlaylistFromPath(m_url.Get())}; playlist >= 0)
+      return GetPlaylists(m_url, m_realPath, m_flags, playlist, items, m_clipCache);
     return false;
   }
 

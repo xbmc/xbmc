@@ -64,14 +64,8 @@
  * @see xbmc/utils/test/testdata/
  */
 
-#include "ServiceBroker.h"
 #include "URL.h"
-#include "filesystem/MultiPathDirectory.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
-
-#include <utility>
 
 #include <gtest/gtest.h>
 
@@ -486,7 +480,6 @@ void RunParseTest(const std::string& filename, const TestURLParseDetailsData& pa
   EXPECT_EQ(param.expectedGetDiscBasePath, URIUtils::GetDiscBasePath(p));
   EXPECT_EQ(param.expectedGetDiscUnderlyingFile, URIUtils::GetDiscUnderlyingFile(curl));
   EXPECT_EQ(param.expectedGetBlurayFile, URIUtils::GetDiscFile(p));
-  EXPECT_EQ(param.expectedGetBlurayRootPath, URIUtils::GetBlurayRootPath(p));
   EXPECT_EQ(param.expectedGetBlurayTitlesPath, URIUtils::GetBlurayTitlesPath(p));
   EXPECT_EQ(param.expectedGetBlurayEpisodePath, URIUtils::GetBlurayEpisodePath(p, 1, 2));
   EXPECT_EQ(param.expectedGetBlurayAllEpisodesPath, URIUtils::GetBlurayAllEpisodesPath(p));
@@ -642,7 +635,6 @@ void RunParseTest(const std::string& filename, const TestURLParseDetailsData& pa
   write(jsonObj, "expectedGetDiscBasePath", URIUtils::GetDiscBasePath(p));
   write(jsonObj, "expectedGetDiscUnderlyingFile", URIUtils::GetDiscUnderlyingFile(curl));
   write(jsonObj, "expectedGetBlurayFile", URIUtils::GetDiscFile(p));
-  write(jsonObj, "expectedGetBlurayRootPath", URIUtils::GetBlurayRootPath(p));
   write(jsonObj, "expectedGetBlurayTitlesPath", URIUtils::GetBlurayTitlesPath(p));
   write(jsonObj, "expectedGetBlurayEpisodePath", URIUtils::GetBlurayEpisodePath(p, 1, 2));
   write(jsonObj, "expectedGetBlurayAllEpisodesPath", URIUtils::GetBlurayAllEpisodesPath(p));

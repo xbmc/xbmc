@@ -13,6 +13,7 @@
 #include "ServiceBroker.h"
 #include "StringUtils.h"
 #include "URL.h"
+#include "Util.h"
 #ifdef HAVE_LIBBLURAY
 #include "filesystem/BlurayDirectory.h"
 #endif
@@ -21,18 +22,15 @@
 #include "filesystem/StackDirectory.h"
 #include "network/DNSNameCache.h"
 #include "network/Network.h"
-#include "pvr/channels/PVRChannelsPath.h"
-#include "settings/AdvancedSettings.h"
-#include "utils/FileExtensionProvider.h"
-#include "utils/log.h"
-
 #if defined(TARGET_WINDOWS)
 #include "platform/win32/CharsetConverter.h"
 #endif
-
-#include "Util.h"
-#include "application/Application.h"
-
+#include "pvr/channels/PVRChannelsPath.h"
+#include "settings/AdvancedSettings.h"
+#include "utils/FileExtensionProvider.h"
+#if defined(TARGET_WINDOWS_STORE)
+#include "utils/log.h"
+#endif
 #include <algorithm>
 #include <array>
 #include <cassert>
@@ -703,14 +701,16 @@ std::string URIUtils::GetBlurayMenuPath(const std::string& path)
   return AddFileToFolder(GetBlurayPath(path), "menu");
 }
 
-std::string URIUtils::GetBlurayRootPath(const std::string& path)
+std::string URIUtils::GetBlurayTitlesPath(const std::string& path,
+                                          GetAllTitles getAllTitles,
+                                          AllTitlesOptions options)
 {
-  return AddFileToFolder(GetBlurayPath(path), "root");
-}
-
-std::string URIUtils::GetBlurayTitlesPath(const std::string& path)
-{
-  return AddFileToFolder(GetBlurayPath(path), "root", "titles");
+  std::string newPath{AddFileToFolder(GetBlurayPath(path), "root", "titles")};
+  if (options == AllTitlesOptions::EPISODES)
+    newPath = AddFileToFolder(newPath, "episodes");
+  if (getAllTitles == GetAllTitles::ALL)
+    newPath = AddFileToFolder(newPath, "all");
+  return newPath;
 }
 
 std::string URIUtils::GetBlurayMainTitlePath(const std::string& path)
