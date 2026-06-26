@@ -189,10 +189,14 @@ static const XBMCKEYTABLE XBMCKeyTable[] = {
     {XBMCK_STOP, 0, 0, XBMCVK_MEDIA_STOP, "stop"},
     {XBMCK_REWIND, 0, 0, XBMCVK_MEDIA_REWIND, "rewind"},
     {XBMCK_FASTFORWARD, 0, 0, XBMCVK_MEDIA_FASTFORWARD, "fastforward"},
-    {XBMCK_RECORD, 0, 0, XBMCVK_MEDIA_RECORD, "record"}
+    {XBMCK_RECORD, 0, 0, XBMCVK_MEDIA_RECORD, "record"},
+    {XBMCK_LAUNCH_MESSENGER, 0, 0, XBMCVK_LAUNCH_MESSENGER, "launch_messenger"},
+    {XBMCK_LAUNCH_PRESENTATION, 0, 0, XBMCVK_LAUNCH_PRESENTATION, "launch_presentation"},
+    {XBMCK_BRIGHTNESS_UP, 0, 0, XBMCVK_BRIGHTNESS_UP, "brightness_up"},
+    {XBMCK_BRIGHTNESS_DOWN, 0, 0, XBMCVK_BRIGHTNESS_DOWN, "brightness_down"},
 
     // Remote control keys
-    ,
+
     {XBMCK_SUBTITLE, 0, 0, XBMCVK_SUBTITLE, "subtitle"},
     {XBMCK_OK, 0, 0, XBMCVK_OK, "ok"},
     {XBMCK_LANGUAGE, 0, 0, XBMCVK_LANGUAGE, "language"},
@@ -207,6 +211,27 @@ static const XBMCKEYTABLE XBMCKeyTable[] = {
     {XBMCK_SETUP, 0, 0, XBMCVK_SETUP, "setup"},
     {XBMCK_RECALL_LAST, 0, 0, XBMCVK_RECALL_LAST, "recall_last"},
     {XBMCK_LIST, 0, 0, XBMCVK_LIST, "list"},
+    {XBMCK_DVD, 0, 0, XBMCVK_DVD, "dvd"},
+    {XBMCK_TV, 0, 0, XBMCVK_TV, "tv"},
+    {XBMCK_RADIO, 0, 0, XBMCVK_RADIO, "radio"},
+    {XBMCK_AUDIO, 0, 0, XBMCVK_AUDIO, "audio"},
+    {XBMCK_VIDEO, 0, 0, XBMCVK_VIDEO, "video"},
+    {XBMCK_CAMERA, 0, 0, XBMCVK_CAMERA, "camera"},
+    {XBMCK_TUNER, 0, 0, XBMCVK_TUNER, "tuner"},
+    {XBMCK_PVR, 0, 0, XBMCVK_PVR, "pvr"},
+    {XBMCK_FULLSCREEN, 0, 0, XBMCVK_FULLSCREEN, "fullscreen"},
+    {XBMCK_TITLE_MENU, 0, 0, XBMCVK_TITLE_MENU, "title_menu"},
+    {XBMCK_AUDIO_MODE, 0, 0, XBMCVK_AUDIO_MODE, "audio_mode"},
+    {XBMCK_AGAIN, 0, 0, XBMCVK_AGAIN, "again"},
+    {XBMCK_CHANNEL, 0, 0, XBMCVK_CHANNEL, "channel"},
+    {XBMCK_EXIT, 0, 0, XBMCVK_EXIT, "exit"},
+    {XBMCK_CONTEXT_MENU, 0, 0, XBMCVK_CONTEXT_MENU, "context_menu"},
+    {XBMCK_TIME, 0, 0, XBMCVK_TIME, "time"},
+    {XBMCK_RELOAD, 0, 0, XBMCVK_RELOAD, "reload"},
+    {XBMCK_VIDEO_DEFAULT, 0, 0, XBMCVK_VIDEO_DEFAULT, "video_default"},
+    {XBMCK_ANGLE, 0, 0, XBMCVK_ANGLE, "angle"},
+    {XBMCK_GOTO, 0, 0, XBMCVK_GOTO, "goto"},
+    {XBMCK_CABLE, 0, 0, XBMCVK_CABLE, "cable"},
 
     // Function keys
 

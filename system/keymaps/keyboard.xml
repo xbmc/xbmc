@@ -55,6 +55,8 @@
       <backspace>Back</backspace>
       <browser_back>Back</browser_back>
       <browser_back mod="longpress">ActivateWindow(Home)</browser_back>
+      <exit>Back</exit>
+      <exit mod="longpress">ActivateWindow(Home)</exit>
       <key id='65446'>Back</key>
       <m>Menu</m>
       <n mod="ctrl">ActivateWindow(PlayerControls)</n>
@@ -66,6 +68,8 @@
       <info>Info</info>
       <menu>ContextMenu</menu>
       <menu mod="longpress">Menu</menu>
+      <context_menu>ContextMenu</context_menu>
+      <context_menu mod="longpress">Menu</context_menu>
       <c>ContextMenu</c>
       <c mod="longpress">Menu</c>
       <space>Pause</space>
@@ -74,6 +78,7 @@
       <period>SkipNext</period>
       <comma>SkipPrevious</comma>
       <tab>FullScreen</tab>
+      <fullscreen>FullScreen</fullscreen>
       <printscreen>Screenshot</printscreen>
       <s mod="ctrl">Screenshot</s>
       <minus>VolumeDown</minus>
@@ -155,6 +160,28 @@
       <shuffle/>
       <recall_last/>
       <list>ActivateWindow(TVRecordings)</list>
+      <launch_messenger/>
+      <launch_presentation/>
+      <brightness_up/>
+      <brightness_down/>
+      <title_menu/>
+      <audio_mode/>
+      <again/>
+      <reload/>
+      <video_default/>
+      <angle/>
+      <goto/>
+      <cable/>
+      <dvd>PlayerControl(ShowVideoMenu)</dvd>
+      <tv>ActivateWindow(TVGuide)</tv>
+      <radio>ActivateWindow(RadioChannels)</radio>
+      <audio>ActivateWindow(music)</audio>
+      <video>ActivateWindow(videos)</video>
+      <camera>ActivateWindow(pictures)</camera>
+      <tuner>ActivateWindow(TVChannels)</tuner>
+      <channel>ActivateWindow(TVChannels)</channel>
+      <pvr>ActivateWindow(TVRecordings)</pvr>
+      <time>ActivateWindow(TVTimers)</time>
       <!-- ****************************************************** -->
       <!-- MS Media Center keyboard shortcuts sent by MCE remotes -->
       <!-- See http://msdn.microsoft.com/en-us/library/bb189249.aspx -->
