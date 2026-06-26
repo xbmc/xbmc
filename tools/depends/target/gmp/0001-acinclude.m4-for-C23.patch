@@ -1,0 +1,51 @@
+From 9cd0c36d0110191a5f42e268d7bd21a95a2aa883 Mon Sep 17 00:00:00 2001
+From: Marc Glisse <marc.glisse@inria.fr>
+Date: Wed, 29 Jan 2025 22:38:02 +0100
+Subject: [PATCH] Complete function prototype in acinclude.m4 for C23
+ compatibility
+
+Add parameter names to function prototype
+
+Upstream: https://gmplib.org/repo/gmp/rev/d66d66d82dbb
+Upstream: https://gmplib.org/repo/gmp/rev/8e7bb4ae7a18
+Signed-off-by: Marc Glisse <marc.glisse@inria.fr>
+[Julien: git patch adapted from two upstream mercurial changesets]
+Signed-off-by: Julien Olivain <ju.o@free.fr>
+---
+ ChangeLog    | 9 +++++++++
+ acinclude.m4 | 2 +-
+ 2 files changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/ChangeLog b/ChangeLog
+index 2902cd2..d808a8b 100644
+--- a/ChangeLog
++++ b/ChangeLog
+@@ -1,3 +1,12 @@
++2025-03-15  Khem Raj <raj.khem@gmail.com>
++
++	* acinclude.m4: Add parameter names to function prototype.
++
++2025-01-29  Rudi Heitbaum <rudi@heitbaum.com>
++	    Marc Glisse <marc.glisse@inria.fr>
++
++	* acinclude.m4: Complete function prototype.
++
+ 2023-07-29  Torbjörn Granlund  <tg@gmplib.org>
+ 
+ 	* Version 6.3.0 released.
+diff --git a/acinclude.m4 b/acinclude.m4
+index 9cf9483..b79a431 100644
+--- a/acinclude.m4
++++ b/acinclude.m4
+@@ -609,7 +609,7 @@ GMP_PROG_CC_WORKS_PART([$1], [long long reliability test 1],
+ 
+ #if defined (__GNUC__) && ! defined (__cplusplus)
+ typedef unsigned long long t1;typedef t1*t2;
+-void g(){}
++void g(int a,t1 const*b,t1 c,t2 d,t1 const*e,int f){}
+ void h(){}
+ static __inline__ t1 e(t2 rp,t2 up,int n,t1 v0)
+ {t1 c,x,r;int i;if(v0){c=1;for(i=1;i<n;i++){x=up[i];r=x+1;rp[i]=r;}}return c;}
+-- 
+2.49.0
+
