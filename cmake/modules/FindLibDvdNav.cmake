@@ -59,7 +59,7 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
                           --cmake-prefix-path=['${DEPENDS_PATH}/lib/cmake']
                           --prefix=${DEPENDS_PATH}
                           --libdir=lib
-                          --buildtype=release
+                          --buildtype=$<IF:$<CONFIG:Debug>,debug,release>
                           -Ddefault_library=${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_libType}
                           -Denable_docs=false
                           -Denable_examples=false
