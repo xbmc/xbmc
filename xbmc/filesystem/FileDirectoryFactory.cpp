@@ -10,6 +10,7 @@
 
 #include "AudioBookFileDirectory.h"
 #include "Directory.h"
+#include "DirectoryCache.h"
 #include "EpisodesDirectory.h"
 #include "FileItem.h"
 #if defined(HAS_ISO9660PP)
@@ -117,6 +118,17 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
               CURL itemUrl{item->GetPath()};
               if (URIUtils::HasParentInHostname(itemUrl))
                 item->SetPath(itemUrl.Get());
+            }
+
+            // Cache the archive listing so subsequent CDirectory::GetDirectory calls
+            // (e.g. from ScanArchiveForAssociatedItems) get a cache hit instead of
+            // re-opening the archive via the VFS addon
+            const std::string& archivePath = wrap->GetItems().GetPath();
+            constexpr int MAX_CACHE_ITEMS = 1000; // Don't cache very large archives
+            if (!archivePath.empty() && wrap->GetItems().Size() < MAX_CACHE_ITEMS)
+            {
+              const CURL realArchiveUrl{URIUtils::SubstitutePath(CURL{archivePath})};
+              g_directoryCache.SetDirectory(realArchiveUrl, wrap->GetItems(), CacheType::ONCE);
             }
 
             if (wrap->GetItems().Size() == 1)
