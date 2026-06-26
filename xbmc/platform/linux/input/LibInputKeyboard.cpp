@@ -8,6 +8,7 @@
 
 #include "LibInputKeyboard.h"
 
+#include "EvdevKeyMapping.h"
 #include "LangInfo.h"
 #include "LibInputSettings.h"
 #include "ServiceBroker.h"
@@ -475,14 +476,26 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
   event.key.keysym.scancode = scancode;
   event.key.keysym.unicode = unicode;
 
+  bool haveEvdevMapping = false;
+  if (event.key.keysym.sym == XBMCK_UNKNOWN && event.key.keysym.unicode == XBMCK_UNKNOWN)
+  {
+    auto evdevKey = CEvdevKeyMapping::XBMCKeyForEvdevCode(scancode);
+    if (evdevKey)
+    {
+      haveEvdevMapping = true;
+      event.key.keysym.sym = evdevKey.value();
+      CLog::LogF(LOGDEBUG, "mapped evdev code {:#02x} to key {:#02x}", scancode, evdevKey.value());
+    }
+  }
+
   std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
   if (appPort)
     appPort->OnEvent(event);
 
-  if (pressed && xkb_keymap_key_repeats(m_keymap.get(), xkbkey))
+  if (pressed && (xkb_keymap_key_repeats(m_keymap.get(), xkbkey) || haveEvdevMapping))
   {
-    libinput_event *ev = libinput_event_keyboard_get_base_event(e);
-    libinput_device *dev = libinput_event_get_device(ev);
+    libinput_event* ev = libinput_event_keyboard_get_base_event(e);
+    libinput_device* dev = libinput_event_get_device(ev);
     auto data = m_repeatData.find(dev);
     if (data != m_repeatData.end())
     {
