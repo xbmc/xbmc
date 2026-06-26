@@ -21,6 +21,11 @@ constexpr auto evdevMap = make_map<uint32_t, XBMCKey>({
     {KEY_LAST, XBMCK_RECALL_LAST},
     {KEY_LIST, XBMCK_LIST},
 
+    // ambiguously mapped in xkb, map via evdev
+    {KEY_AGAIN, XBMCK_AGAIN},
+    {KEY_CHANNEL, XBMCK_CHANNEL},
+    {KEY_EXIT, XBMCK_EXIT},
+
     // added in libxkbcommon 1.11.0 - see also XkbCompat.h
     {KEY_OK, XBMCK_OK}, // XKB_KEY_XF86OK
     {KEY_EPG, XBMCK_EPG}, // XKB_KEY_XF86MediaSelectProgramGuide
