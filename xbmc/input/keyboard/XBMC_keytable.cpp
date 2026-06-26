@@ -198,10 +198,12 @@ static const XBMCKEYTABLE XBMCKeyTable[] = {
     {XBMCK_LANGUAGE, 0, 0, XBMCVK_LANGUAGE, "language"},
     {XBMCK_CHANNEL_UP, 0, 0, XBMCVK_CHANNEL_UP, "channel_up"},
     {XBMCK_CHANNEL_DOWN, 0, 0, XBMCVK_CHANNEL_DOWN, "channel_down"},
-    {XBMCK_SELECT, 0, 0, XBMCVK_SELECT, "select"}
+    {XBMCK_SELECT, 0, 0, XBMCVK_SELECT, "select"},
+    {XBMCK_EJECT, 0, 0, XBMCVK_EJECT, "eject"},
+    {XBMCK_SHUFFLE, 0, 0, XBMCVK_SHUFFLE, "shuffle"},
 
     // Function keys
-    ,
+
     {XBMCK_F1, 0, 0, XBMCVK_F1, "f1"},
     {XBMCK_F2, 0, 0, XBMCVK_F2, "f2"},
     {XBMCK_F3, 0, 0, XBMCVK_F3, "f3"},
@@ -258,6 +260,7 @@ static const XBMCKEYTABLE XBMCKeyTable[] = {
     {XBMCK_HOMEPAGE, 0, 0, XBMCVK_HOMEPAGE, "homepage"},
     {XBMCK_CONFIG, 0, 0, XBMCVK_CONFIG, "config"},
     {XBMCK_EPG, 0, 0, XBMCVK_EPG, "epg"},
+    {XBMCK_PHONE, 0, 0, XBMCVK_PHONE, "phone"},
 
     /*
      * Numpad extended keypad keys at table end
