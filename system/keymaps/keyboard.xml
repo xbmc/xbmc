@@ -105,6 +105,7 @@
       <home>FirstPage</home>
       <end>LastPage</end>
       <power>ActivateWindow(ShutdownMenu)</power>
+      <power2>ActivateWindow(ShutdownMenu)</power2>
       <sleep>ActivateWindow(ShutdownMenu)</sleep>
       <!-- PVR windows -->
       <e>ActivateWindow(TVGuide)</e>
@@ -127,6 +128,7 @@
       <browser_favorites>ActivateWindow(FavouritesBrowser)</browser_favorites>
       <favorites>ActivateWindow(FavouritesBrowser)</favorites>
       <config>ActivateWindow(Settings)</config>
+      <setup>ActivateWindow(Settings)</setup>
       <browser_home>ActivateWindow(Home)</browser_home>
       <homepage>ActivateWindow(Home)</homepage>
       <volume_mute>Mute</volume_mute>
@@ -134,6 +136,8 @@
       <volume_up>VolumeUp</volume_up>
       <next_track>SkipNext</next_track>
       <prev_track>SkipPrevious</prev_track>
+      <next>SkipNext</next>
+      <previous>SkipPrevious</previous>
       <stop>Stop</stop>
       <play_pause>PlayPause</play_pause>
       <play_pause mod="longpress">Info</play_pause>
@@ -149,6 +153,8 @@
       <eject>EjectTray()</eject>
       <phone/>
       <shuffle/>
+      <recall_last/>
+      <list>ActivateWindow(TVRecordings)</list>
       <!-- ****************************************************** -->
       <!-- MS Media Center keyboard shortcuts sent by MCE remotes -->
       <!-- See http://msdn.microsoft.com/en-us/library/bb189249.aspx -->

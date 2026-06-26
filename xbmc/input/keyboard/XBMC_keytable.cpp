@@ -201,6 +201,12 @@ static const XBMCKEYTABLE XBMCKeyTable[] = {
     {XBMCK_SELECT, 0, 0, XBMCVK_SELECT, "select"},
     {XBMCK_EJECT, 0, 0, XBMCVK_EJECT, "eject"},
     {XBMCK_SHUFFLE, 0, 0, XBMCVK_SHUFFLE, "shuffle"},
+    {XBMCK_PREVIOUS, 0, 0, XBMCVK_PREVIOUS, "previous"},
+    {XBMCK_NEXT, 0, 0, XBMCVK_NEXT, "next"},
+    {XBMCK_POWER2, 0, 0, XBMCVK_POWER2, "power2"},
+    {XBMCK_SETUP, 0, 0, XBMCVK_SETUP, "setup"},
+    {XBMCK_RECALL_LAST, 0, 0, XBMCVK_RECALL_LAST, "recall_last"},
+    {XBMCK_LIST, 0, 0, XBMCVK_LIST, "list"},
 
     // Function keys
 

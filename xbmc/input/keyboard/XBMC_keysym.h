@@ -291,6 +291,12 @@ enum XBMCKey
   XBMCK_CHANNEL_UP = 503,
   XBMCK_CHANNEL_DOWN = 504,
   XBMCK_SELECT = 505,
+  XBMCK_PREVIOUS = 506,
+  XBMCK_NEXT = 507,
+  XBMCK_POWER2 = 508,
+  XBMCK_SETUP = 509,
+  XBMCK_RECALL_LAST = 510,
+  XBMCK_LIST = 511,
 
   /*
    * Extended keypad key symbols for Num Lock state-specific behaviors
