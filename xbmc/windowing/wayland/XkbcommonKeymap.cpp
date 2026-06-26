@@ -381,7 +381,15 @@ void CXkbcommonKeymap::XkbComposeTableDeleter::operator()(xkb_compose_table* tab
 
 xkb_keysym_t CXkbcommonKeymap::KeysymForKeycode(xkb_keycode_t code) const
 {
-  return xkb_state_key_get_one_sym(m_state.get(), code);
+  xkb_keysym_t keysym = xkb_state_key_get_one_sym(m_state.get(), code);
+
+  char keyname[64];
+  if (xkb_keysym_get_name(keysym, keyname, sizeof(keyname)) < 0)
+    keyname[0] = 0;
+
+  CLog::LogF(LOGDEBUG, "xkb keycode: {:#02x}, xkb keysym: {:#04x} ({})", code, keysym, keyname);
+
+  return keysym;
 }
 
 xkb_mod_mask_t CXkbcommonKeymap::CurrentModifiers() const
