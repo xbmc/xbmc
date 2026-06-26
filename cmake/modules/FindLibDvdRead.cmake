@@ -71,7 +71,7 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
                           --cmake-prefix-path=['${DEPENDS_PATH}/lib/cmake']
                           --prefix=${DEPENDS_PATH}
                           --libdir=lib
-                          --buildtype=release
+                          --buildtype=$<IF:$<CONFIG:Debug>,debug,release>
                           -Ddefault_library=static
                           -Denable_docs=false
                           ${DVDCSS}
