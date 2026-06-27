@@ -123,15 +123,15 @@ important, as xml tags are case-sensitive.
 | pagecontrol   | Used to set the <b>`<id>`</b> of the page control used to control this list.
 | scrolltime    | The time (in ms) to scroll from one item to another. By default, this is 200ms. The list will scroll smoothly from one item to another as needed. Set it to zero to disable the smooth scrolling. The scroll movement can be further adjusted by selecting one of the available [tween](http://kodi.wiki/view/Tweeners) methods.
 | focusposition | Specifies the focus position (from 0 -> number of displayable items - 1). The focused position doesn't change - instead, the items move up or down (or left and right) as focus changes.
-| startmovement | This will make the focused position scroll again at the beginning of the list. (ie. <b>`<startmovement>6</startmovement>`</b> if there are only 6 items below the focus, the focus moves up to the top) [Added in v22]
+| startmovement | This will make the focused position scroll again at the beginning of the list. (ie. <b>`<startmovement>6</startmovement>`</b> if there are only 6 items above the focus, the focus moves up to the top) [Added in v22]
 | endmovement   | This will make the focused position scroll again at the end of the list. (ie. <b>`<endmovement>6</endmovement>`</b> if there are only 6 items below the focus, the focus moves down to the bottom) [Added in v22]
-| movement      | This will make the focused position scroll again at the beginning and end of the list and is used as default value for <b>`<startmovement>`</b> and <b>`<endmovement>`</b> when they are not specified (ie. <b>`<movement>6</movement>`</b> if there are only 6 items below the focus, the focus moves down to the bottom)
+| movement      | This will make the focused position scroll again at the beginning and end of the list and is used as the value of <b>`<startmovement>`</b> and <b>`<endmovement>`</b> when they are not specified (ie. <b>`<movement>6</movement>`</b> if there are only 6 items below the focus, the focus moves down to the bottom, and if there are only 6 items above the focus, the focus moves up to the top)
 | itemlayout    | Specifies the layout of items in the list. Requires the height attribute set in a vertical list, and the width attribute set for a horizontal list. The <b>`<itemlayout>`</b> then contains as many label and image controls as required. [See here for more information](http://kodi.wiki/view/Container_Item_Layout).
 | focusedlayout | Specifies the layout of items in the list that have focus. Requires the height attribute set in a vertical list, and the width attribute set for a horizontal list. The <b>`<focusedlayout>`</b> then contains as many label and image controls as required. [See here for more information](http://kodi.wiki/view/Container_Item_Layout).
 | content       | Used to set the item content that this list will contain. Allows the skinner to setup a list anywhere they want with a static set of content, as a useful alternative to the grouplist control. [See here for more information](http://kodi.wiki/view/Static_List_Content).
 | preloaditems  | Used in association with the background image loader. [See here for more information](http://kodi.wiki/view/Background_Image_Loader).
 | autoscroll    | Used to make the container scroll automatically
-| aligny        | Can be top, center, or bottom. Aligns the list items within the available list area. Has no effect when items fill the list area. Defaults to center.
+| aligny        | Vertical alignment of the list items in the list area. The valid values are top, center, or bottom. The default is center. Has no effect when items fill the list area.
 
 
 --------------------------------------------------------------------------------
