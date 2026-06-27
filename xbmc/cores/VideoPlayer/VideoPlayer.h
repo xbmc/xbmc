@@ -621,6 +621,11 @@ protected:
   mutable CCriticalSection m_StateSection;
   XbmcThreads::EndTime<> m_syncTimer;
 
+  // HandlePlaySpeed: bounded wait for a real start PTS before anchoring the
+  // master clock after a (re)sync, so a transient all-NOPTS start does not pin
+  // the clock far behind the real stream position. Reset on flush.
+  std::chrono::steady_clock::time_point m_syncStartPtsWait{};
+
   CEdl m_Edl;
   bool m_SkipCommercials;
 
