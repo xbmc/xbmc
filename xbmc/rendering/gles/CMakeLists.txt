@@ -9,5 +9,9 @@ if(TARGET ${APP_NAME_LC}::OpenGLES)
               GLESShader.h
               GuiCompositeShaderGLES.h)
 
+if("webos" IN_LIST CORE_PLATFORM_NAME_LC)
+  list(APPEND HEADERS RenderSystemGLESWebOS.h)
+endif()
+
   core_add_library(rendering_gles)
 endif()
