@@ -1,0 +1,13 @@
+diff --git a/Makefile.am b/Makefile.am
+index e7cf8a0..33ca8b9 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -35,8 +35,6 @@ endif
+ SUBDIRS += po
+ if ENABLE_TOOLS
+ SUBDIRS += src/gl src
+-else
+-SUBDIRS += src/gl
+ endif
+ 
+ if ENABLE_TEST
