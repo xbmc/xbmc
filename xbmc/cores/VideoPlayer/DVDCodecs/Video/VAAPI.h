@@ -194,8 +194,7 @@ struct CVaapiConfig
   VADisplay dpy;
   VAProfile profile;
   VAConfigAttrib attrib;
-  CProcessInfo *processInfo;
-  bool driverIsMesa;
+  CProcessInfo* processInfo;
   int bitDepth;
   // VA fourcc requested for the surface pool. Carried through to processed
   // pictures so the renderer can pick its sampling path per-fourcc without
