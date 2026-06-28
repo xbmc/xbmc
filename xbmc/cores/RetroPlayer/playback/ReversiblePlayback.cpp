@@ -24,6 +24,8 @@
 #include "games/GameServices.h"
 #include "games/GameSettings.h"
 #include "games/addons/GameClient.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/MathUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -234,11 +236,15 @@ std::optional<SavestateWriteRequest> CReversiblePlayback::CaptureSavestateWriteR
   if (!thumbnail)
     CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: No thumbnail captured for savestate {}", savePath);
 
+  const bool compressSavedGame = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      CSettings::SETTING_GAMES_COMPRESSSAVEDGAMES);
+
   return SavestateWriteRequest{
       savePath,
       m_gameClient->GetGamePath(),
       std::move(savestate),
       std::move(thumbnail),
+      compressSavedGame,
   };
 }
 

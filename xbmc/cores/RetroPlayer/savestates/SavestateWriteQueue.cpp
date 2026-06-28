@@ -55,6 +55,7 @@ struct SavestateFileWriteRequest
   std::string savePath;
   std::string gamePath;
   std::unique_ptr<ISavestate> savestate;
+  bool compressSavedGame{true};
 };
 
 class CWriteCompletionGuard
@@ -145,7 +146,7 @@ public:
     if (m_request.savePath.empty() || m_request.gamePath.empty() || !m_request.savestate)
       return false;
 
-    m_request.savestate->Finalize();
+    m_request.savestate->Finalize(m_request.compressSavedGame);
 
     CSavestateDatabase database;
     const bool success =
@@ -201,7 +202,7 @@ void CSavestateWriteQueue::QueueSavestateWrite(SavestateWriteRequest request)
   std::optional<SavestateThumbnailPayload> thumbnail = std::move(request.thumbnail);
 
   if (!QueueSavestateFileWrite(std::move(request.savePath), std::move(request.gamePath),
-                               std::move(request.savestate)))
+                               std::move(request.savestate), request.compressSavedGame))
     return;
 
   if (thumbnail)
@@ -237,7 +238,8 @@ bool CSavestateWriteQueue::ArmWrite()
 
 bool CSavestateWriteQueue::QueueSavestateFileWrite(std::string savePath,
                                                    std::string gamePath,
-                                                   std::unique_ptr<ISavestate> savestate)
+                                                   std::unique_ptr<ISavestate> savestate,
+                                                   bool compressSavedGame)
 {
   if (!ArmWrite())
     return false;
@@ -246,6 +248,7 @@ bool CSavestateWriteQueue::QueueSavestateFileWrite(std::string savePath,
       std::move(savePath),
       std::move(gamePath),
       std::move(savestate),
+      compressSavedGame,
   };
 
   auto* job = new CSavestateWriteJob(std::move(request), m_refreshState, m_tracker);

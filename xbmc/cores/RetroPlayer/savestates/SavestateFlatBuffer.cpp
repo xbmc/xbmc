@@ -749,15 +749,15 @@ uint8_t* CSavestateFlatBuffer::GetMemoryBuffer(size_t size)
   return m_memoryData.raw.empty() ? nullptr : m_memoryData.raw.data();
 }
 
-void CSavestateFlatBuffer::Finalize()
+void CSavestateFlatBuffer::Finalize(bool compress)
 {
   if (m_builder == nullptr)
     return;
 
   const SavestateBlobOffsets videoBlob =
-      CSavestateBlob::CreateWriteOffsets(*m_builder, m_videoData, SCHEMA_VIDEO_DATA_FIELD_NAME);
+      CSavestateBlob::CreateWriteOffsets(*m_builder, m_videoData, SCHEMA_VIDEO_DATA_FIELD_NAME, compress);
   const SavestateBlobOffsets memoryBlob =
-      CSavestateBlob::CreateWriteOffsets(*m_builder, m_memoryData, SCHEMA_MEMORY_DATA_FIELD_NAME);
+      CSavestateBlob::CreateWriteOffsets(*m_builder, m_memoryData, SCHEMA_MEMORY_DATA_FIELD_NAME, compress);
 
   // Helper class to build the nested Savestate table
   SAVESTATE::SavestateBuilder savestateBuilder(*m_builder);

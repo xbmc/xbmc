@@ -40,6 +40,9 @@ struct SavestateWriteRequest
 
   //! Optional pre-copied thumbnail payload for the savestate
   std::optional<SavestateThumbnailPayload> thumbnail;
+
+  //! Whether to compress savestate payloads while finalizing for disk
+  bool compressSavedGame{true};
 };
 } // namespace RETRO
 } // namespace KODI
