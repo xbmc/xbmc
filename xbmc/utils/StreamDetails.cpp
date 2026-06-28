@@ -64,6 +64,7 @@ void CStreamDetailVideo::Archive(CArchive& ar)
     ar << m_strHdrType;
     ar << m_strHdrDetail;
     ar << static_cast<int>(m_source);
+    ar << m_version;
   }
   else
   {
@@ -79,6 +80,7 @@ void CStreamDetailVideo::Archive(CArchive& ar)
     int s;
     ar >> s;
     m_source = static_cast<Source>(s);
+    ar >> m_version;
   }
 }
 void CStreamDetailVideo::Serialize(CVariant& value) const
@@ -93,6 +95,7 @@ void CStreamDetailVideo::Serialize(CVariant& value) const
   value["hdrtype"] = m_strHdrType;
   value["hdrdetail"] = m_strHdrDetail;
   value["source"] = static_cast<int>(m_source);
+  value["version"] = m_version;
 }
 
 bool CStreamDetailVideo::IsWorseThan(const CStreamDetail &that) const
@@ -127,6 +130,7 @@ void CStreamDetailAudio::Archive(CArchive& ar)
     ar << m_strLanguage;
     ar << m_iChannels;
     ar << static_cast<int>(m_source);
+    ar << m_version;
   }
   else
   {
@@ -136,6 +140,7 @@ void CStreamDetailAudio::Archive(CArchive& ar)
     int s;
     ar >> s;
     m_source = static_cast<Source>(s);
+    ar >> m_version;
   }
 }
 void CStreamDetailAudio::Serialize(CVariant& value) const
@@ -144,6 +149,7 @@ void CStreamDetailAudio::Serialize(CVariant& value) const
   value["language"] = m_strLanguage;
   value["channels"] = m_iChannels;
   value["source"] = static_cast<int>(m_source);
+  value["version"] = m_version;
 }
 
 bool CStreamDetailAudio::IsWorseThan(const CStreamDetail &that) const
@@ -180,6 +186,7 @@ void CStreamDetailSubtitle::Archive(CArchive& ar)
   {
     ar << m_strLanguage;
     ar << static_cast<int>(m_source);
+    ar << m_version;
   }
   else
   {
@@ -187,12 +194,14 @@ void CStreamDetailSubtitle::Archive(CArchive& ar)
     int s;
     ar >> s;
     m_source = static_cast<Source>(s);
+    ar >> m_version;
   }
 }
 void CStreamDetailSubtitle::Serialize(CVariant& value) const
 {
   value["language"] = m_strLanguage;
   value["source"] = static_cast<int>(m_source);
+  value["version"] = m_version;
 }
 
 bool CStreamDetailSubtitle::IsWorseThan(const CStreamDetail &that) const
@@ -226,6 +235,7 @@ CStreamDetailVideo& CStreamDetailVideo::operator=(const CStreamDetailVideo& that
     this->m_strHdrTypeAlt = that.m_strHdrTypeAlt;
     this->m_strHdrDetail = that.m_strHdrDetail;
     this->m_source = that.m_source;
+    this->m_version = that.m_version;
   }
   return *this;
 }
@@ -237,6 +247,7 @@ CStreamDetailSubtitle& CStreamDetailSubtitle::operator=(const CStreamDetailSubti
     this->m_pParent = that.m_pParent;
     this->m_strLanguage = that.m_strLanguage;
     this->m_source = that.m_source;
+    this->m_version = that.m_version;
   }
   return *this;
 }
@@ -732,6 +743,12 @@ CStreamDetail::Source CStreamDetails::GetSource(CStreamDetail::StreamType type, 
 {
   const CStreamDetail* item = GetNthStream(type, idx);
   return item ? item->GetSource() : CStreamDetail::UNDEFINED;
+}
+
+int CStreamDetails::GetVersion(CStreamDetail::StreamType type, int idx) const
+{
+  const CStreamDetail* item = GetNthStream(type, idx);
+  return item ? item->GetVersion() : 0;
 }
 
 CStreamDetail::Source CStreamDetails::GetSources() const

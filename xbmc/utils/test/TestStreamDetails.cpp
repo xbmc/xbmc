@@ -498,3 +498,50 @@ TEST(TestStreamDetails, ShouldUpdateWithNewDetails_MixedSourcesUseHighest)
   EXPECT_FALSE(partialNfo.ShouldUpdateWithNewDetails(allMedia));
   EXPECT_TRUE(allMedia.ShouldUpdateWithNewDetails(partialNfo));
 }
+
+TEST(TestStreamDetails, Version_DefaultsToCurrentAndSurvivesCopy)
+{
+  // Every newly created stream carries the current version, and copying an item
+  // (as happens whenever a CVideoInfoTag is copied) must preserve it.
+  const CStreamDetails details = MakeTypicalStreamDetails(CStreamDetail::MEDIA);
+
+  EXPECT_EQ(CStreamDetail::STREAM_DETAILS_VERSION, details.GetVersion(CStreamDetail::VIDEO, 1));
+  EXPECT_EQ(CStreamDetail::STREAM_DETAILS_VERSION, details.GetVersion(CStreamDetail::AUDIO, 1));
+  EXPECT_EQ(CStreamDetail::STREAM_DETAILS_VERSION, details.GetVersion(CStreamDetail::SUBTITLE, 1));
+
+  const CStreamDetails copy{details};
+  EXPECT_EQ(CStreamDetail::STREAM_DETAILS_VERSION, copy.GetVersion(CStreamDetail::VIDEO, 1));
+  EXPECT_EQ(CStreamDetail::MEDIA, copy.GetSource(CStreamDetail::VIDEO, 1));
+}
+
+TEST(TestStreamDetails, Version_AbsentStreamReportsZero)
+{
+  // A stream that isn't there has no version, which must not be confused with
+  // version 1 (the marker for details that predate source tracking).
+  const CStreamDetails empty;
+  EXPECT_EQ(0, empty.GetVersion(CStreamDetail::VIDEO, 1));
+  EXPECT_EQ(0, MakeTypicalStreamDetails(CStreamDetail::MEDIA).GetVersion(CStreamDetail::VIDEO, 2));
+}
+
+TEST(TestStreamDetails, Source_SurvivesCopyAssignment)
+{
+  // CStreamDetailVideo and CStreamDetailSubtitle define their own operator=, which
+  // must carry the source and version across along with the stream data.
+  CStreamDetailVideo video;
+  video.m_strCodec = "h264";
+  video.SetSource(CStreamDetail::NFO);
+
+  CStreamDetailVideo videoCopy;
+  videoCopy = video;
+  EXPECT_EQ(CStreamDetail::NFO, videoCopy.GetSource());
+  EXPECT_EQ(CStreamDetail::STREAM_DETAILS_VERSION, videoCopy.GetVersion());
+
+  CStreamDetailSubtitle subtitle;
+  subtitle.m_strLanguage = "eng";
+  subtitle.SetSource(CStreamDetail::EXTERNAL);
+
+  CStreamDetailSubtitle subtitleCopy;
+  subtitleCopy = subtitle;
+  EXPECT_EQ(CStreamDetail::EXTERNAL, subtitleCopy.GetSource());
+  EXPECT_EQ(CStreamDetail::STREAM_DETAILS_VERSION, subtitleCopy.GetVersion());
+}
