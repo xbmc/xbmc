@@ -1421,7 +1421,10 @@ void CVideoDatabase::UpdateTables(int iVersion)
   }
 
   if (iVersion < 148)
+  {
     m_pDS->exec("ALTER TABLE streamdetails ADD iSource INTEGER DEFAULT 40");
+    m_pDS->exec("ALTER TABLE streamdetails ADD iVersion INTEGER DEFAULT 1");
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const

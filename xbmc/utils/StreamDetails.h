@@ -25,6 +25,8 @@ struct SubtitleStreamInfo;
 class CStreamDetail : public IArchivable, public ISerializable
 {
 public:
+  static constexpr int STREAM_DETAILS_VERSION = 2;
+
   enum StreamType {
     VIDEO,
     AUDIO,
@@ -50,6 +52,7 @@ public:
   virtual bool IsWorseThan(const CStreamDetail &that) const = 0;
   Source GetSource() const;
   void SetSource(Source source);
+  int GetVersion() const { return m_version; }
 
   const StreamType m_eType;
   Source m_source{UNDEFINED};
@@ -57,6 +60,13 @@ public:
 protected:
   CStreamDetails *m_pParent;
   friend class CStreamDetails;
+
+private:
+  int m_version{STREAM_DETAILS_VERSION};
+  friend class CVideoDatabase;
+  friend class CStreamDetailVideo;
+  friend class CStreamDetailAudio;
+  friend class CStreamDetailSubtitle;
 };
 
 class CStreamDetailVideo final : public CStreamDetail
