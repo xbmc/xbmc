@@ -280,7 +280,7 @@ void CDialogInGameSaves::OnNewSave()
   savestate->SetType(SAVE_TYPE::MANUAL);
   savestate->SetCreated(CDateTime::GetUTCDateTime());
 
-  savestate->Finalize();
+  savestate->Finalize(true);
 
   CFileItemPtr item = std::make_shared<CFileItem>();
   CSavestateDatabase::GetSavestateItem(*savestate, savestatePath, *item);
@@ -329,7 +329,7 @@ void CDialogInGameSaves::OnOverwrite(CFileItem& focusedItem)
     savestate->SetCaption(focusedItem.GetProperty(SAVESTATE_CAPTION).asString());
     savestate->SetCreated(CDateTime::GetUTCDateTime());
 
-    savestate->Finalize();
+    savestate->Finalize(true);
 
     CSavestateDatabase::GetSavestateItem(*savestate, savestatePath, focusedItem);
 

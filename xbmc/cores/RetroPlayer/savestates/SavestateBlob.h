@@ -44,11 +44,13 @@ class CSavestateBlob
 public:
   static SavestateBlobOffsets CreateWriteOffsets(flatbuffers::FlatBufferBuilder& builder,
                                                  const std::vector<uint8_t>& rawData,
-                                                 const char* fieldName);
+                                                 const char* fieldName,
+                                                 bool compress);
 
   static SavestateBlobOffsets CreateWriteOffsets(flatbuffers::FlatBufferBuilder& builder,
                                                  const PendingSavestateBlob& pending,
-                                                 const char* fieldName);
+                                                 const char* fieldName,
+                                                 bool compress);
 
   static bool PrepareMemoryData(const SAVESTATE::Savestate& savestate,
                                 size_t expectedSize,

@@ -97,11 +97,12 @@ bool PendingSavestateBlob::HasCompressedData() const
 
 SavestateBlobOffsets CSavestateBlob::CreateWriteOffsets(flatbuffers::FlatBufferBuilder& builder,
                                                         const std::vector<uint8_t>& rawData,
-                                                        const char* fieldName)
+                                                        const char* fieldName,
+                                                        bool compress)
 {
   SavestateBlobOffsets offsets;
 
-  if (!rawData.empty())
+  if (compress && !rawData.empty())
   {
     std::vector<uint8_t> compressedData;
     if (CSavestateCompression::CompressZstdIfSmaller(rawData.data(), rawData.size(),
@@ -121,21 +122,38 @@ SavestateBlobOffsets CSavestateBlob::CreateWriteOffsets(flatbuffers::FlatBufferB
   }
 
   offsets.raw = builder.CreateVector(rawData);
+  offsets.compressionType = SAVESTATE::CompressionType_None;
+  offsets.uncompressedSize = 0;
   return offsets;
 }
 
 SavestateBlobOffsets CSavestateBlob::CreateWriteOffsets(flatbuffers::FlatBufferBuilder& builder,
                                                         const PendingSavestateBlob& pending,
-                                                        const char* fieldName)
+                                                        const char* fieldName,
+                                                        bool compress)
 {
+  if (!compress)
+  {
+    if (pending.raw.empty() && pending.HasCompressedData())
+    {
+      CLog::Log(LOGDEBUG,
+                "RetroPlayer[SAVE]: Preserving compressed {} because raw data is unavailable",
+                fieldName ? fieldName : "blob");
+    }
+    else
+    {
+      return CreateWriteOffsets(builder, pending.raw, fieldName, false);
+    }
+  }
+
   if (!pending.HasCompressedData())
-    return CreateWriteOffsets(builder, pending.raw, fieldName);
+    return CreateWriteOffsets(builder, pending.raw, fieldName, true);
 
   if (pending.uncompressedSize == 0 || pending.compressed.size() > pending.uncompressedSize)
   {
     CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Invalid compressed {} pending blob",
               fieldName ? fieldName : "blob");
-    return CreateWriteOffsets(builder, pending.raw, fieldName);
+    return CreateWriteOffsets(builder, pending.raw, fieldName, true);
   }
 
   SavestateBlobOffsets offsets;

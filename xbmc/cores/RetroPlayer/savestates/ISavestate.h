@@ -227,7 +227,7 @@ public:
   virtual void SetDisplayAspectRatio(float displayAspectRatio) = 0;
   virtual void SetRotationDegCCW(unsigned int rotationCCW) = 0;
   virtual uint8_t* GetMemoryBuffer(size_t size) = 0;
-  virtual void Finalize() = 0;
+  virtual void Finalize(bool compress) = 0;
   ///}
 
   /*!

@@ -37,7 +37,8 @@ private:
   bool ArmWrite();
   bool QueueSavestateFileWrite(std::string savePath,
                                std::string gamePath,
-                               std::unique_ptr<ISavestate> savestate);
+                               std::unique_ptr<ISavestate> savestate,
+                               bool compressSavedGame);
   bool QueueThumbnailWrite(SavestateThumbnailPayload payload);
 
   CGUIGameMessenger& m_guiMessenger;

@@ -82,7 +82,7 @@ public:
   void SetDisplayAspectRatio(float displayAspectRatio) override;
   void SetRotationDegCCW(unsigned int rotationCCW) override;
   uint8_t* GetMemoryBuffer(size_t size) override;
-  void Finalize() override;
+  void Finalize(bool compress) override;
   bool Deserialize(std::vector<uint8_t> data) override;
 
 private:
