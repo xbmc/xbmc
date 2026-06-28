@@ -14,6 +14,7 @@
 #endif // HAS_OPTICAL_DRIVE
 #include "MusicInfoTagLoaderDatabase.h"
 #include "MusicInfoTagLoaderFFmpeg.h"
+#include "MusicInfoTagLoaderMatroska.h"
 #include "MusicInfoTagLoaderShn.h"
 #include "ServiceBroker.h"
 #include "TagLoaderTagLib.h"
@@ -87,8 +88,9 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CFileItem& i
     CMusicInfoTagLoaderSHN *pTagLoader = new CMusicInfoTagLoaderSHN();
     return pTagLoader;
   }
-  else if (strExtension == "mka" || strExtension == "dsf" ||
-           strExtension == "dff")
+  else if (strExtension == "mka" || strExtension == "mkv")
+    return new CMusicInfoTagLoaderMatroska();
+  else if (strExtension == "dsf" || strExtension == "dff")
     return new CMusicInfoTagLoaderFFmpeg();
 
   return NULL;

@@ -8,6 +8,7 @@
 
 #include "FileDirectoryFactory.h"
 
+#include "music/MusicDatabase.h"
 #include "music/MusicFileItemClassify.h"
 
 #if defined(HAS_ISO9660PP)
@@ -29,6 +30,7 @@
 #include "ServiceBroker.h"
 #include "SmartPlaylistDirectory.h"
 #include "URL.h"
+#include "Util.h"
 #include "XbtDirectory.h"
 #include "ZipDirectory.h"
 #include "addons/AudioDecoder.h"
@@ -37,6 +39,7 @@
 #include "addons/addoninfo/AddonInfo.h"
 #include "playlists/PlayListFactory.h"
 #include "playlists/SmartPlayList.h"
+#include "settings/MediaSourceSettings.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -45,6 +48,46 @@ using namespace KODI;
 using namespace KODI::ADDONS;
 using namespace XFILE;
 using namespace PLAYLIST;
+
+namespace
+{
+bool IsUnderMusicSource(const std::string& path)
+{
+  auto* sources = CMediaSourceSettings::GetInstance().GetSources("music");
+  if (!sources)
+    return false;
+  bool isSourceName = false;
+  return CUtil::GetMatchingSource(path, *sources, isSourceName) > -1;
+}
+
+/*!
+ * Return true if the file already has multiple chapter/song rows in the music DB
+ * (i.e. has been scanned by CAudioBookFileDirectory previously). Used to skip the
+ * FFmpeg probe in ContainsFiles() that otherwise stalls Play() for several seconds,
+ * especially over SMB/NFS.
+ */
+bool HasChaptersInMusicDb(const CURL& url)
+{
+  CMusicDatabase db;
+  if (!db.Open())
+    return false;
+
+  const std::string strPath = URIUtils::GetDirectory(url.Get());
+  const std::string strFileName = URIUtils::GetFileName(url.Get());
+
+  // PrepareSQL uses mprintf-style %s substitution that escapes single quotes
+  // (and other SQL metacharacters) safely, so apostrophes in paths or filenames
+  // are handled and there is no SQL injection surface here.
+  const std::string sql = db.PrepareSQL("SELECT COUNT(*) FROM song "
+                                        "JOIN path ON song.idPath = path.idPath "
+                                        "WHERE path.strPath = '%s' AND song.strFileName = '%s'",
+                                        strPath.c_str(), strFileName.c_str());
+
+  const int count = db.GetSingleValueInt(sql);
+  db.Close();
+  return count > 1;
+}
+} // namespace
 
 CFileDirectoryFactory::CFileDirectoryFactory(void) = default;
 
@@ -250,13 +293,25 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
 
   if (MUSIC::IsAudioBook(*pItem))
   {
+    // .mkv doubles as a video container — only treat a chaptered .mkv as an
+    // audiobook when browsed from a Music source, or a chaptered movie in a
+    // Video source would be expanded into chapter items.
+    if (strExtension == ".mkv" && !IsUnderMusicSource(url.Get()))
+      return nullptr;
+
+    // Already-expanded chapter rows (have a music tag and a positive end offset)
+    // are going to return nullptr regardless, so skip the music-DB open for them
+    // and only consult the DB on the not-yet-expanded path where it gates the
+    // expensive FFmpeg ContainsFiles() probe.
     if (!pItem->HasMusicInfoTag() || pItem->GetEndOffset() <= 0)
     {
+      if (HasChaptersInMusicDb(url))
+        return nullptr;
       auto pDir = std::make_unique<CAudioBookFileDirectory>();
       if (pDir->ContainsFiles(url))
         return pDir.release();
     }
-    return NULL;
+    return nullptr;
   }
   return NULL;
 }
