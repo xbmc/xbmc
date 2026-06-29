@@ -74,6 +74,7 @@ void CProcessorHD::UnInit()
 {
   std::unique_lock lock(m_section);
   m_enumerator = nullptr;
+  m_procCaps.m_valid = false;
   Close();
 }
 
