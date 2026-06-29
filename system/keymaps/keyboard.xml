@@ -172,6 +172,11 @@
       <angle/>
       <goto/>
       <cable/>
+      <option>ContextMenu</option>
+      <frame_back>analogseekback</frame_back>
+      <frame_forward>analogseekforward</frame_forward>
+      <properties>Info</properties>
+      <mp3>ActivateWindow(Music)</mp3>
       <dvd>PlayerControl(ShowVideoMenu)</dvd>
       <tv>ActivateWindow(TVGuide)</tv>
       <radio>ActivateWindow(RadioChannels)</radio>

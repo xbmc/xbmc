@@ -232,6 +232,11 @@ static const XBMCKEYTABLE XBMCKeyTable[] = {
     {XBMCK_ANGLE, 0, 0, XBMCVK_ANGLE, "angle"},
     {XBMCK_GOTO, 0, 0, XBMCVK_GOTO, "goto"},
     {XBMCK_CABLE, 0, 0, XBMCVK_CABLE, "cable"},
+    {XBMCK_OPTION, 0, 0, XBMCVK_OPTION, "option"},
+    {XBMCK_FRAME_BACK, 0, 0, XBMCVK_FRAME_BACK, "frame_back"},
+    {XBMCK_FRAME_FORWARD, 0, 0, XBMCVK_FRAME_FORWARD, "frame_forward"},
+    {XBMCK_PROPERTIES, 0, 0, XBMCVK_PROPERTIES, "properties"},
+    {XBMCK_MP3, 0, 0, XBMCVK_MP3, "mp3"},
 
     // Function keys
 

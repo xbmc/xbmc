@@ -322,6 +322,11 @@ enum XBMCKey
   XBMCK_ANGLE = 530,
   XBMCK_GOTO = 531,
   XBMCK_CABLE = 532,
+  XBMCK_OPTION = 533,
+  XBMCK_FRAME_BACK = 534,
+  XBMCK_FRAME_FORWARD = 535,
+  XBMCK_PROPERTIES = 536,
+  XBMCK_MP3 = 537,
 
   /*
    * Extended keypad key symbols for Num Lock state-specific behaviors
