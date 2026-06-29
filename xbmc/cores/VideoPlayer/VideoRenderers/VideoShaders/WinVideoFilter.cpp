@@ -30,6 +30,25 @@ using namespace Microsoft::WRL;
 
 //===================================================================
 
+CWinShader::~CWinShader()
+{
+  Unregister();
+}
+
+void CWinShader::OnDestroyDevice(bool fatal)
+{
+  // Nothing to save: the layout element descriptions cannot be retrieved from an existing input
+  // layout and were saved during the creation.
+  if (m_inputLayout != nullptr)
+    m_inputLayout.Reset();
+}
+
+void CWinShader::OnCreateDevice()
+{
+  if (!m_inputLayoutElementDesc.empty())
+    CreateInputLayoutResources(m_inputLayoutElementDesc);
+}
+
 bool CWinShader::CreateVertexBuffer(unsigned int count, unsigned int size)
 {
   if (!m_vb.Create(D3D11_BIND_VERTEX_BUFFER, count, size, DXGI_FORMAT_UNKNOWN, D3D11_USAGE_DYNAMIC))
@@ -45,7 +64,7 @@ bool CWinShader::CreateVertexBuffer(unsigned int count, unsigned int size)
   return true;
 }
 
-bool CWinShader::CreateInputLayout(D3D11_INPUT_ELEMENT_DESC *layout, unsigned numElements)
+bool CWinShader::CreateInputLayoutResources(std::span<const D3D11_INPUT_ELEMENT_DESC> elementDesc)
 {
   D3DX11_PASS_DESC desc = {};
   if (FAILED(m_effect.Get()->GetTechniqueByIndex(0)->GetPassByIndex(0)->GetDesc(&desc)))
@@ -55,7 +74,20 @@ bool CWinShader::CreateInputLayout(D3D11_INPUT_ELEMENT_DESC *layout, unsigned nu
   }
 
   ComPtr<ID3D11Device> pDevice = DX::DeviceResources::Get()->GetD3DDevice();
-  return SUCCEEDED(pDevice->CreateInputLayout(layout, numElements, desc.pIAInputSignature, desc.IAInputSignatureSize, &m_inputLayout));
+  return pDevice && SUCCEEDED(pDevice->CreateInputLayout(
+                        elementDesc.data(), elementDesc.size(), desc.pIAInputSignature,
+                        desc.IAInputSignatureSize, m_inputLayout.ReleaseAndGetAddressOf()));
+}
+
+bool CWinShader::CreateInputLayout(std::span<const D3D11_INPUT_ELEMENT_DESC> elementDesc)
+{
+  if (CreateInputLayoutResources(elementDesc))
+  {
+    m_inputLayoutElementDesc = elementDesc;
+    Register();
+    return true;
+  }
+  return false;
 }
 
 void CWinShader::SetTarget(CD3DTexture* target, ID3D11DepthStencilView* dsv)
@@ -299,12 +331,11 @@ bool COutputShader::Create(bool useLUT,
   }
 
   // Create input layout
-  D3D11_INPUT_ELEMENT_DESC layout[] =
-  {
-    { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-    { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+  static constexpr D3D11_INPUT_ELEMENT_DESC layout[] = {
+      {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+      {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
   };
-  return CWinShader::CreateInputLayout(layout, ARRAYSIZE(layout));
+  return CWinShader::CreateInputLayout(layout);
 }
 
 void COutputShader::Render(CD3DTexture& sourceTexture, CRect sourceRect, const CPoint points[4]
@@ -593,14 +624,13 @@ bool CYUV2RGBShader::Create(AVPixelFormat fmt, AVColorPrimaries dstPrimaries,
 
   CWinShader::CreateVertexBuffer(4, sizeof(Vertex));
   // Create input layout
-  D3D11_INPUT_ELEMENT_DESC layout[] =
-  {
-    { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,  0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-    { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,    0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-    { "TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT,    0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+  static constexpr D3D11_INPUT_ELEMENT_DESC layout[] = {
+      {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+      {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+      {"TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0},
   };
 
-  if (!CWinShader::CreateInputLayout(layout, ARRAYSIZE(layout)))
+  if (!CWinShader::CreateInputLayout(layout))
   {
     CLog::LogF(LOGERROR, "Failed to create input layout for Input Assembler.");
     return false;
@@ -843,12 +873,11 @@ bool CConvolutionShader1Pass::Create(ESCALINGMETHOD method, const std::shared_pt
     return false;
 
   // Create input layout
-  D3D11_INPUT_ELEMENT_DESC layout[] =
-  {
-    { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-    { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+  static constexpr D3D11_INPUT_ELEMENT_DESC layout[] = {
+      {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+      {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
   };
-  return CWinShader::CreateInputLayout(layout, ARRAYSIZE(layout));
+  return CWinShader::CreateInputLayout(layout);
 }
 
 void CConvolutionShader1Pass::Render(CD3DTexture& sourceTexture, CD3DTexture& target,
@@ -983,12 +1012,11 @@ bool CConvolutionShaderSeparable::Create(ESCALINGMETHOD method, const std::share
     return false;
 
   // Create input layout
-  D3D11_INPUT_ELEMENT_DESC layout[] =
-  {
-    { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-    { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+  static constexpr D3D11_INPUT_ELEMENT_DESC layout[] = {
+      {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+      {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
   };
-  return CWinShader::CreateInputLayout(layout, ARRAYSIZE(layout));
+  return CWinShader::CreateInputLayout(layout);
 }
 
 void CConvolutionShaderSeparable::Render(CD3DTexture& sourceTexture, CD3DTexture& target,
