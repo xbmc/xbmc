@@ -4582,8 +4582,8 @@ constexpr std::array<InfoMap, 18> retroplayer = {{
     {"discejected", RETROPLAYER_DISC_EJECTED},
     {"disclabel", RETROPLAYER_DISC_LABEL},
     {"emptytray", RETROPLAYER_EMPTY_TRAY},
-    {"achievementsrichpresence", RETROPLAYER_ACHIEVEMENTS_RICH_PRESENCE},
-    {"retroachievementsloggedin", RETROPLAYER_ACHIEVEMENTS_LOGGED_IN},
+    {"richpresence", RETROPLAYER_RICH_PRESENCE},
+    {"achievementsloggedin", RETROPLAYER_ACHIEVEMENTS_LOGGED_IN},
 }};
 // clang-format on
 
