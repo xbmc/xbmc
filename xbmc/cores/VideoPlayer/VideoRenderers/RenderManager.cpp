@@ -1149,8 +1149,9 @@ void CRenderManager::PrepareNextRender()
       m_videoDelay -
       static_cast<double>(CServiceBroker::GetWinSystem()->GetFrameLatencyAdjustment()));
 
+  const bool isPaused = m_dvdClock.IsPaused();
   double renderPts = frameOnScreen;
-  if (!m_dvdClock.IsPaused())
+  if (!isPaused)
     renderPts += m_displayLatency;
 
   double nextFramePts = m_Queue[m_queued.front()].pts;
@@ -1171,7 +1172,8 @@ void CRenderManager::PrepareNextRender()
 
       m_dvdClock.SetVsyncAdjust(-average);
     }
-    renderPts += frametime / 2 - m_clockSync.m_syncOffset;
+    if (!isPaused)
+      renderPts += frametime / 2 - m_clockSync.m_syncOffset;
   }
   else
   {
