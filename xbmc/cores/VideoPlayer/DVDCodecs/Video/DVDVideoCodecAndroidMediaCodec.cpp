@@ -1786,6 +1786,22 @@ void CDVDVideoCodecAndroidMediaCodec::ConfigureOutputFormat(CJNIMediaFormat& med
   if (crop_bottom)
     height = crop_bottom + 1 - crop_top;
 
+  // The MediaCodec output format's crop keys are unreliable on some vendor
+  // Dolby Vision decoder components (observed: width/height report the full
+  // padded decode surface, e.g. 3840x2160, instead of the SPS-conformance-
+  // cropped picture, e.g. 3840x1608 - see Kodi forum threads 377103, 370653
+  // and related long-standing reports). m_hints.width/height were already
+  // parsed correctly by ffmpeg's demuxer from the stream's SPS before the
+  // codec was even opened, so when the codec's own crop math disagrees with
+  // what we already know to be correct, prefer the known-good value.
+  if (m_mime == "video/dolby-vision" && m_hints.width > 0 && m_hints.height > 0 &&
+      (width != m_hints.width || height != m_hints.height) && width >= m_hints.width &&
+      height >= m_hints.height)
+  {
+    width = m_hints.width;
+    height = m_hints.height;
+  }
+
   m_videobuffer.iDisplayWidth  = m_videobuffer.iWidth  = width;
   m_videobuffer.iDisplayHeight = m_videobuffer.iHeight = height;
 
