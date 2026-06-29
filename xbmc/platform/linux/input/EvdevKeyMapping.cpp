@@ -20,6 +20,7 @@ constexpr auto evdevMap = make_map<uint32_t, XBMCKey>({
     {KEY_SETUP, XBMCK_SETUP},
     {KEY_LAST, XBMCK_RECALL_LAST},
     {KEY_LIST, XBMCK_LIST},
+    {KEY_MP3, XBMCK_MP3},
 
     // ambiguously mapped in xkb, map via evdev
     {KEY_AGAIN, XBMCK_AGAIN},
