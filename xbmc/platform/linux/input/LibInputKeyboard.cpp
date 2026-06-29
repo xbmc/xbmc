@@ -194,7 +194,11 @@ constexpr auto xkbMap = make_map<xkb_keysym_t, XBMCKey>({
     {XKB_KEY_XF86Clear, XBMCK_VIDEO_DEFAULT}, // KEY_CLEAR
     {XKB_KEY_XF86CycleAngle, XBMCK_ANGLE}, // KEY_ANGLE
     {XKB_KEY_XF86GoTo, XBMCK_GOTO}, // KEY_GOTO
-    {XKB_KEY_XF86MediaSelectCable, XBMCK_CABLE} // KEY_TV2
+    {XKB_KEY_XF86MediaSelectCable, XBMCK_CABLE}, // KEY_TV2
+    {XKB_KEY_XF86Option, XBMCK_OPTION}, // KEY_OPTION
+    {XKB_KEY_XF86FrameBack, XBMCK_FRAME_BACK}, // KEY_FRAMEBACK
+    {XKB_KEY_XF86FrameForward, XBMCK_FRAME_FORWARD}, // KEY_FRAMEFORWARD
+    {XKB_KEY_SunProps, XBMCK_PROPERTIES} // KEY_PROPS
 });
 
 constexpr auto logLevelMap = make_map<xkb_log_level, int>({{XKB_LOG_LEVEL_CRITICAL, LOGERROR},
