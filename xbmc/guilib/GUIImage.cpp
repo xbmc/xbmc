@@ -202,6 +202,21 @@ void CGUIImage::ProcessState()
     return;
   }
 
+  // finish an interrupted fade on its more visible side so the new fade starts clean
+  if (m_isTransitioning && (m_textureNext->ReadyToRender() || m_textureNext->GetFileName().empty()))
+  {
+    // an image-less current has nothing to show, so a ready incoming always wins
+    if (m_textureNext->ReadyToRender() &&
+        (!m_textureCurrent->ReadyToRender() || m_currentFadeTime * 2 >= m_crossFadeTime))
+    {
+      std::swap(m_textureCurrent, m_textureNext);
+      std::swap(m_nameCurrent, m_nameNext);
+    }
+    m_textureCurrent->SetAlpha(0xff);
+    m_currentFadeTime = 0;
+    MarkDirtyRegion();
+  }
+
   // replace the in-flight texture, so the latest request always wins
   m_textureNext->SetFileName(fileName);
   m_nameNext = fileName;
