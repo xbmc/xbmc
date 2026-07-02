@@ -156,7 +156,7 @@ void CURL::Parse(std::string strURL1)
   if (IsProtocol("rss") || IsProtocol("rsss") || IsProtocol("rar") || IsProtocol("apk") ||
       IsProtocol("xbt") || IsProtocol("zip") || IsProtocol("addons") || IsProtocol("image") ||
       IsProtocol("videodb") || IsProtocol("musicdb") || IsProtocol("androidapp") ||
-      IsProtocol("pvr") || IsProtocol("bluray"))
+      IsProtocol("pvr") || IsProtocol("bluray") || IsProtocol("episodes"))
     sep = "?";
   else if (IsProtocolEqual(strProtocol2, "http") || IsProtocolEqual(strProtocol2, "https") ||
            IsProtocolEqual(strProtocol2, "plugin") || IsProtocolEqual(strProtocol2, "addons") ||
@@ -848,7 +848,8 @@ bool CURL::HasParentInHostname() const
 
 bool CURL::HasEncodedHostname() const
 {
-  return HasParentInHostname() || IsProtocol("musicsearch") || IsProtocol("image");
+  return HasParentInHostname() || IsProtocol("musicsearch") || IsProtocol("image") ||
+         IsProtocol("episodes");
 }
 
 bool CURL::HasEncodedFilename() const

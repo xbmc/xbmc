@@ -4,7 +4,8 @@ set(SOURCES TestBcp47.cpp
             TestIso3166_1.cpp
             TestIso639_1.cpp
             TestIso639_2.cpp
-            TestI18nUtils.cpp)
+            TestI18nUtils.cpp
+            TestListFormatter.cpp)
 
 set(HEADERS TestI18nUtils.h)
 

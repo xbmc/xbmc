@@ -24,7 +24,6 @@
 #include "filesystem/VideoDatabaseDirectory/QueryParams.h"
 #include "games/GameUtils.h"
 #include "games/tags/GameInfoTag.h"
-#include "media/MediaLockState.h"
 #include "music/Album.h"
 #include "music/Artist.h"
 #include "music/MusicDatabase.h"
@@ -56,6 +55,7 @@
 #include "settings/lib/Setting.h"
 #include "utils/Archive.h"
 #include "utils/ArtUtils.h"
+#include "utils/EpisodeUtils.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/Mime.h"
 #include "utils/RegExp.h"
@@ -69,8 +69,12 @@
 #include "video/VideoInfoTag.h"
 #include "video/VideoUtils.h"
 
+#include <cstdint>
 #include <cstdlib>
+#include <map>
 #include <memory>
+#include <string>
+#include <vector>
 
 using namespace KODI;
 using namespace XFILE;
@@ -1308,7 +1312,9 @@ bool CFileItem::IsAlbum() const
   return m_bIsAlbum;
 }
 
-void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
+void CFileItem::UpdateInfo(const CFileItem& item,
+                           bool replaceLabels /* = true */,
+                           MultipleEpisodes replaceEpisodes /* = DONT_GROUP_MULTIPLE_EPISODES */)
 {
   if (item.HasVideoInfoTag())
   { // copy info across
@@ -1376,8 +1382,26 @@ void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
     SetInvalid();
   }
   SetDynPath(item.GetDynPath());
-  if (replaceLabels && !item.GetLabel().empty())
-    SetLabel(item.GetLabel());
+
+  // Alter label to episode number(s) if requested
+  std::string label;
+  if (replaceLabels)
+  {
+    if (replaceEpisodes == MultipleEpisodes::GROUP_MULTIPLE_EPISODES &&
+        item.HasProperty("episodes") && item.GetVideoContentType() == VideoDbContentType::EPISODES)
+    {
+      label = CEpisodeUtils::GetEpisodesLabel(item);
+
+      // Multiple episodes so use show plot rather than episode plot
+      if (HasVideoInfoTag() && item.HasProperty("episodes_show_plot"))
+        GetVideoInfoTag()->m_strPlot = item.GetProperty("episodes_show_plot").asString();
+    }
+    else if (!item.GetLabel().empty())
+      label = item.GetLabel();
+  }
+  if (!label.empty())
+    SetLabel(label);
+
   if (replaceLabels && !item.GetLabel2().empty())
     SetLabel2(item.GetLabel2());
   if (!item.GetArt().empty())

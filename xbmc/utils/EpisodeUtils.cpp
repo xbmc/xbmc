@@ -12,14 +12,22 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
+#include "i18n/ListFormatter.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
 #include <cctype>
+#include <iterator>
+#include <map>
+#include <memory>
+#include <set>
 #include <string>
 #include <string_view>
+#include <tuple>
 #include <vector>
 
 using namespace KODI;
@@ -368,4 +376,109 @@ bool CEpisodeUtils::EnumerateEpisodeItem(const CFileItem* item,
     return true;
   }
   return false;
+}
+
+namespace
+{
+std::vector<std::tuple<int, int, int>> ParseEpisodes(const std::string& input)
+{
+  std::map<int, std::set<int>> allEpisodes;
+
+  CRegExp pattern;
+  if (!pattern.RegComp(R"(S(\d{1,3})E(\d{1,3}))"))
+  {
+    CLog::LogF(LOGERROR, "Failed to compile episode regex pattern");
+    return {};
+  }
+
+  // Parse string
+  int pos = 0;
+  while ((pos = pattern.RegFind(input, pos)) >= 0)
+  {
+    int season = static_cast<int>(std::strtol(pattern.GetMatch(1).c_str(), nullptr, 10));
+    int episode = static_cast<int>(std::strtol(pattern.GetMatch(2).c_str(), nullptr, 10));
+    allEpisodes[season].insert(episode);
+    pos += pattern.GetFindLen();
+  }
+
+  // Now find ranges
+  std::vector<std::tuple<int, int, int>> result;
+  for (const auto& [season, episodes] : allEpisodes)
+  {
+    if (episodes.empty())
+      continue;
+
+    int rangeStart{*episodes.begin()};
+    int rangeEnd{rangeStart};
+    for (auto it = std::next(episodes.begin()); it != episodes.end(); ++it)
+    {
+      if (*it == rangeEnd + 1)
+        rangeEnd = *it;
+      else
+      {
+        result.emplace_back(season, rangeStart, rangeEnd);
+        rangeStart = rangeEnd = *it;
+      }
+    }
+    result.emplace_back(season, rangeStart, rangeEnd);
+  }
+
+  return result;
+}
+} // namespace
+
+std::string CEpisodeUtils::GetEpisodesLabel(const CFileItem& item)
+{
+  const std::string episodeString{item.GetProperty("episodes").asString("")};
+  const int numSpecials{item.GetProperty("episodes_specials").asInteger32(0)};
+  const auto episodes{ParseEpisodes(episodeString)};
+  const bool hasSpecials{numSpecials > 0};
+  bool singleSeason{!episodes.empty() &&
+                    std::get<0>(episodes.front()) == std::get<0>(episodes.back())};
+
+  constexpr int BASE{21486};
+  constexpr int RANGE{1};
+  constexpr int SEASON{2};
+  constexpr int SPECIALS{21490};
+
+  std::vector<std::string> labels;
+  if (!episodes.empty())
+  {
+    for (const auto& [season, startEpisode, endEpisode] : episodes)
+    {
+      if (singleSeason)
+      {
+        if (endEpisode == startEpisode)
+          labels.push_back(StringUtils::Format(
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(BASE),
+              startEpisode));
+        else
+          labels.push_back(StringUtils::Format(
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(BASE + RANGE),
+              startEpisode, endEpisode));
+      }
+      else
+      {
+        if (endEpisode == startEpisode)
+          labels.push_back(StringUtils::Format(
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(BASE + SEASON),
+              season, startEpisode));
+        else
+          labels.push_back(
+              StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                                      BASE + SEASON + RANGE),
+                                  season, startEpisode, endEpisode));
+      }
+    }
+  }
+  if (hasSpecials)
+    labels.push_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(SPECIALS));
+
+  // Generate label
+  using namespace KODI::UTILS::I18N;
+  const auto fmt =
+      CListFormatter::CreateInstance(CServiceBroker::GetResourcesComponent().GetLocalizeStrings());
+  const std::string label{fmt.Format(labels)};
+
+  return label;
 }

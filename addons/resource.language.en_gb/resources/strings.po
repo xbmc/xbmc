@@ -15218,7 +15218,37 @@ msgctxt "#21485"
 msgid "Supported file extensions and media types"
 msgstr ""
 
-#empty strings from id 21486 to 21601
+#. Used to show Episodes in Video->Files (eg. Episode n)
+#: xbmc/FileItem.cpp
+msgctxt "#21486"
+msgid "Episode {0:d}"
+msgstr ""
+
+#. Used to show Episodes in Video->Files (eg. Episodes m-n)
+#: xbmc/FileItem.cpp
+msgctxt "#21487"
+msgid "Episodes {0:d}-{1:d}"
+msgstr ""
+
+#. Used to show Episodes in Video->Files (eg. Season x Episode n)
+#: xbmc/FileItem.cpp
+msgctxt "#21488"
+msgid "Season {0:d} Episode {1:d}"
+msgstr ""
+
+#. Used to show Episodes in Video->Files (eg. Season x Episodes m-n)
+#: xbmc/FileItem.cpp
+msgctxt "#21489"
+msgid "Season {0:d} Episodes {1:d}-{2:d}"
+msgstr ""
+
+#. Used to show Specials in Video->Files (when there are no episodes) (eg. Specials)
+#: xbmc/FileItem.cpp
+msgctxt "#21490"
+msgid "Specials"
+msgstr ""
+
+#empty strings from id 21491 to 21601
 
 #: xbmc/Util.cpp
 msgctxt "#21602"
@@ -24453,7 +24483,58 @@ msgctxt "#39210"
 msgid "If enabled, Dolby Vision files will have level 5 (active area) metadata overridden to zero offsets. Enable if your display has issues with incorrectly cropped image in Dolby Vision playback."
 msgstr ""
 
-#empty strings from id 39211 to 39999
+#empty strings from id 39211 to 39899
+
+#. List formatting: pattern used to join a list of exactly two items, e.g. "A and B"
+#. STR_LIST_AND_TWO
+#: xbmc/utils/i18n/ListFormatter.h
+msgctxt "#39900"
+msgid "{0} and {1}"
+msgstr ""
+
+#. List formatting: pattern used to join the first item to the rest of a list of three or more items, e.g. "A" + "B, and C" -> "A, B, and C"
+#. Note the "B, and C" is used here as an example - the actual formatting of the last two item(s) of a list of three of more is determined by STR_LIST_AND_END
+#. STR_LIST_AND_START
+#: xbmc/utils/i18n/ListFormatter.h
+msgctxt "#39901"
+msgid "{0}, {1}"
+msgstr ""
+
+#. List formatting: pattern used to join an already-combined partial list to the next item, for the interior items of a list of four or more, e.g. "A, B" + "C" -> "A, B, C"
+#. STR_LIST_AND_MIDDLE
+#: xbmc/utils/i18n/ListFormatter.h
+msgctxt "#39902"
+msgid "{0}, {1}"
+msgstr ""
+
+#. List formatting: pattern used to join the already-combined partial list to the final item in a list of three or more items, e.g. "A, B" + "C" -> "A, B, and C"
+#. STR_LIST_AND_END
+#: xbmc/utils/i18n/ListFormatter.h
+msgctxt "#39903"
+msgid "{0}, and {1}"
+msgstr ""
+
+# 39904 to 39909 are reserved for language formatting
+
+#. List formatting: pattern used to join a list of exactly two items, e.g. "A or B"
+#. STR_LIST_OR_TWO
+#: xbmc/utils/i18n/ListFormatter.h
+msgctxt "#39910"
+msgid "{0} or {1}"
+msgstr ""
+
+#. List formatting: pattern used to join the already-combined partial list to the final item in a list of three or more items, e.g. "A, B" + "C" -> "A, B, or C"
+#. Note: the "or"-type list uses only TWO and END patterns; the START and MIDDLE joins for lists of three or more still use the AND-type comma pattern 
+#. (STR_LIST_AND_START / STR_LIST_AND_MIDDLE), with only the very last join switching to "or"
+#. STR_LIST_OR_END
+#: xbmc/utils/i18n/ListFormatter.h
+msgctxt "#39911"
+msgid "{0}, or {1}"
+msgstr ""
+
+# 39912 to 39949 are reserved for language formatting
+
+#empty strings from id 39950 to 39999
 
 # 40000 to 40800 are reserved for Video Versions feature
 
