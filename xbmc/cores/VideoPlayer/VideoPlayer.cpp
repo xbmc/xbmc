@@ -5526,7 +5526,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
   // The current chapter provided by the demuxer/inputstream is ahead by a cache duration most of the time.
   if (chapterNbEnabled)
   {
-    const std::chrono::milliseconds currentTime{llrint(m_State.time)};
+    const std::chrono::milliseconds currentTime{llrint(state.time)};
     const int playPosChapter = CalculateCurrentChapter(currentTime, state.chapters);
 
     // Successfully calculated a current chapter from the play position?
