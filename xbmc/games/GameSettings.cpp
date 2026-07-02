@@ -172,8 +172,8 @@ void CGameSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& sett
     }
     else
     {
-      if (settingId == SETTING_GAMES_ACHIEVEMENTS_PASSWORD)
-        m_settings->SetBool(SETTING_GAMES_ACHIEVEMENTS_LOGGED_IN, false);
+      // Login failed — clear the logged-in flag so the UI reflects the failure
+      m_settings->SetBool(SETTING_GAMES_ACHIEVEMENTS_LOGGED_IN, false);
     }
 
     m_settings->Save();
@@ -203,7 +203,9 @@ std::string CGameSettings::LoginToRA(const std::string& username,
   // Use CFile::LoadFile with User-Agent set via CURL protocol option.
   // LoadFile reads the response body even on HTTP 4xx so we get the
   // server's actual error message for wrong passwords (e.g. HTTP 401).
-  CURL loginUrl(StringUtils::Format(LOGIN_TO_RETRO_ACHIEVEMENTS_URL_TEMPLATE, username, password));
+  CURL loginUrl(StringUtils::Format(LOGIN_TO_RETRO_ACHIEVEMENTS_URL_TEMPLATE,
+                                   CURL::Encode(username),
+                                   CURL::Encode(password)));
   loginUrl.SetProtocolOption("user-agent", CSysInfo::GetUserAgent());
   loginUrl.SetProtocolOption("failonerror", "false");
 
@@ -266,7 +268,9 @@ bool CGameSettings::IsAccountVerified(const std::string& username, const std::st
   //        that confirms the token is valid. We request a=1 (1 recent achievement)
   //        to minimise the response payload.
   XFILE::CFile request;
-  const CURL verifyUrl(StringUtils::Format(VERIFY_ACCOUNT_URL_TEMPLATE, username, token));
+  const CURL verifyUrl(StringUtils::Format(VERIFY_ACCOUNT_URL_TEMPLATE,
+                                          CURL::Encode(username),
+                                          CURL::Encode(token)));
 
   CLog::Log(LOGDEBUG, "CGameSettings::IsAccountVerified -- verifying token for '{}'", username);
 

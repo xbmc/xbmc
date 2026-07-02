@@ -370,6 +370,7 @@ bool CCheevos::LoadData()
     CLog::Log(LOGWARNING, "CCheevos::LoadData -- RA auth error: {}", data["Error"].asString());
     auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
     settings->SetString("gamesachievements.token", "");
+    settings->SetBool("gamesachievements.loggedin", false);
     settings->Save();
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, "RetroAchievements",
                                           "Session expired. Please log in again in Settings.",
@@ -410,7 +411,7 @@ bool CCheevos::LoadData()
   // Store game title for the load notification
   m_gameTitle = raTitle;
 
-  // Load official achievements only (Flags == 5)
+  // Load official achievements only (Flags == FLAGS_CORE)
   m_activatedCheevoMap.clear();
   {
     std::lock_guard<std::mutex> lock(s_cheevoTitlesMutex);
@@ -808,16 +809,19 @@ void CCheevos::CallbackUrlId(const std::string& achievementUrl, unsigned int che
   // If this achievement ID is not in our official map it is unofficial/demoted.
   // The addon runtime activates ALL achievements from patch data regardless of
   // flags, so we filter here to avoid notifications and awards for unofficial ones.
-  std::lock_guard<std::mutex> titleLock(s_cheevoTitlesMutex);
-  auto titleIt = s_cheevoTitles.find(cheevoId);
-  if (titleIt == s_cheevoTitles.end())
+  std::string cheevoTitle;
+  std::string badgeUrl;
   {
-    CLog::Log(LOGDEBUG, "CCheevos::CallbackUrlId -- skipping unofficial achievement {}", cheevoId);
-    return;
-  }
-
-  const std::string cheevoTitle = titleIt->second.first;
-  const std::string badgeUrl = titleIt->second.second;
+    std::lock_guard<std::mutex> titleLock(s_cheevoTitlesMutex);
+    auto titleIt = s_cheevoTitles.find(cheevoId);
+    if (titleIt == s_cheevoTitles.end())
+    {
+      CLog::Log(LOGDEBUG, "CCheevos::CallbackUrlId -- skipping unofficial achievement {}", cheevoId);
+      return;
+    }
+    cheevoTitle = titleIt->second.first;
+    badgeUrl    = titleIt->second.second;
+  } // lock released — safe to do slow work below
 
   // Skip notification if already earned in a previous session.
   // LoadData marks earned achievements from the startsession Unlocks list.
@@ -969,6 +973,13 @@ void CCheevos::RichPresencePingThread()
     const std::string evaluation = GetRichPresenceEvaluation();
     if (evaluation.empty())
       continue;
+
+    // Update AchievementState so RETROPLAYER_RICH_PRESENCE InfoLabel is current
+    {
+      auto state = CServiceBroker::GetGameServices().GameSettings().GetAchievementState();
+      state.richPresence = evaluation;
+      CServiceBroker::GetGameServices().GameSettings().SetAchievementState(state);
+    }
 
     CLog::Log(LOGDEBUG, "CCheevos::RichPresencePingThread -- posting: {}", evaluation);
 
