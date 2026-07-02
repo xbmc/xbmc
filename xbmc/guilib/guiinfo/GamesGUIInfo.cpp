@@ -222,12 +222,6 @@ bool CGamesGUIInfo::GetLabel(std::string& value,
       }
       break;
     }
-
-    case RETROPLAYER_RICH_PRESENCE:
-    {
-      value = GameSettings().GetAchievementRichPresence();
-      return true;
-    }
     case RETROPLAYER_DISC_LABEL:
     {
       const auto& components = CServiceBroker::GetAppComponents();
@@ -236,6 +230,11 @@ bool CGamesGUIInfo::GetLabel(std::string& value,
       if (appPlayer)
         value = appPlayer->DiscLabel();
 
+      return true;
+    }
+    case RETROPLAYER_RICH_PRESENCE:
+    {
+      value = GameSettings().GetAchievementRichPresence();
       return true;
     }
     default:
