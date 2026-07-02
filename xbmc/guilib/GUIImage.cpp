@@ -252,6 +252,10 @@ void CGUIImage::ProcessAllocation()
 
 void CGUIImage::ProcessNoTransition(unsigned int currentTime)
 {
+  // keep the clock current while not fading (v21 never reset it), so a fade pending
+  // across a processing gap settles on resume instead of replaying stale content
+  m_lastRenderTime = currentTime;
+
   if (m_textureCurrent->Process(currentTime))
     MarkDirtyRegion();
 }
@@ -263,6 +267,10 @@ void CGUIImage::ProcessInstantTransition(unsigned int currentTime)
 
   m_nameNext = "";
   m_textureNext->SetFileName("");
+
+  // the incoming texture carries a partial alpha when it completes an in-flight fade
+  m_textureCurrent->SetAlpha(0xff);
+  m_currentFadeTime = 0;
 
   m_textureCurrent->Process(currentTime);
 
@@ -303,7 +311,6 @@ void CGUIImage::ProcessFadingTransition(unsigned int currentTime)
     m_textureNext->SetFileName("");
 
     m_currentFadeTime = 0;
-    m_lastRenderTime = 0;
     m_isTransitioning = false;
   }
 
@@ -374,7 +381,6 @@ void CGUIImage::FreeTextures(bool immediately /* = false */)
   }
 
   m_isTransitioning = false;
-  m_lastRenderTime = 0;
   m_currentFadeTime = 0;
 }
 
