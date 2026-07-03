@@ -9579,7 +9579,7 @@ msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16315"
-msgid "Lanczos3 - Optimised"
+msgid "Lanczos3 - Fast"
 msgstr ""
 
 #. value for setting 'Create versions for similar videos'
@@ -9622,7 +9622,7 @@ msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16323"
-msgid "Spline36 - Optimised"
+msgid "Spline36 - Fast"
 msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp

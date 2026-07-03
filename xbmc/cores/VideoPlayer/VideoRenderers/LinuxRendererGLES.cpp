@@ -771,9 +771,10 @@ void CLinuxRendererGLES::UpdateVideoFilter()
     // (YUV2RGBFilterShader with textureGather). On lower versions, fall through to
     // multi-pass FBO path. Matches GL 4.0+ single-pass / GL <4.0 multi-pass pattern.
     // On GLES, VAAPI maps to SHADER_NV12_RRG (GL maps it to SHADER_NV12).
+    // Only patterns the filter shader implements may pass: >8-bit planar
+    // (XBMC_YV12_HI) has no sampling block there and takes the multipass path.
     EShaderFormat fmt = GetShaderFormat();
-    if (fmt == SHADER_NV12 || fmt == SHADER_NV12_RRG ||
-        (fmt >= SHADER_YV12 && fmt <= SHADER_YV12_16))
+    if (fmt == SHADER_NV12 || fmt == SHADER_NV12_RRG || fmt == SHADER_YV12)
     {
       uint32_t major, minor;
       m_renderSystem->GetRenderVersion(major, minor);
