@@ -628,9 +628,18 @@ namespace XBMCAddon
     int getENGLISH_NAME() { return CLangCodeExpander::ENGLISH_NAME; }
 
     // TV power status (HDMI-CEC)
-    int getTV_POWER_NO_ADAPTER() { return static_cast<int>(PERIPHERALS::CecPowerStatus::NO_ADAPTER); }
-    int getTV_POWER_ON() { return static_cast<int>(PERIPHERALS::CecPowerStatus::ON); }
-    int getTV_POWER_STANDBY() { return static_cast<int>(PERIPHERALS::CecPowerStatus::STANDBY); }
+    int getTV_POWER_NO_ADAPTER()
+    {
+      return static_cast<int>(PERIPHERALS::CecPowerStatus::NO_ADAPTER);
+    }
+    int getTV_POWER_ON()
+    {
+      return static_cast<int>(PERIPHERALS::CecPowerStatus::ON);
+    }
+    int getTV_POWER_STANDBY()
+    {
+      return static_cast<int>(PERIPHERALS::CecPowerStatus::STANDBY);
+    }
     int getTV_POWER_TRANSITION_TO_ON()
     {
       return static_cast<int>(PERIPHERALS::CecPowerStatus::TRANSITION_TO_ON);
@@ -639,7 +648,10 @@ namespace XBMCAddon
     {
       return static_cast<int>(PERIPHERALS::CecPowerStatus::TRANSITION_TO_STANDBY);
     }
-    int getTV_POWER_UNKNOWN() { return static_cast<int>(PERIPHERALS::CecPowerStatus::UNKNOWN); }
+    int getTV_POWER_UNKNOWN()
+    {
+      return static_cast<int>(PERIPHERALS::CecPowerStatus::UNKNOWN);
+    }
 
     const int lLOGDEBUG = LOGDEBUG;
   }
