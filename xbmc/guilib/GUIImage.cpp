@@ -324,10 +324,11 @@ void CGUIImage::Render()
   if (!IsVisible())
     return;
 
+  m_textureCurrent->Render();
+
+  // incoming above outgoing (v21), so a fading-out tail hides behind the new image
   if (m_isTransitioning)
     m_textureNext->Render();
-
-  m_textureCurrent->Render();
 
   CGUIControl::Render();
 }
