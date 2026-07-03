@@ -607,7 +607,8 @@ namespace XBMCAddon
     ///
     /// @note This is the result of calling libCEC's GetTVPowerStatus.
     /// `TV_POWER_UNKNOWN` means the TV could not be found or queried on the CEC
-    /// bus. `TV_POWER_NO_ADAPTER` means no CEC adapter is present.
+    /// bus. `TV_POWER_NO_ADAPTER` means no CEC adapter is present. If more than
+    /// one CEC adapter is present, the status of the first one is returned.
     ///
     ///
     /// ------------------------------------------------------------------------

@@ -219,7 +219,8 @@ public:
   /*!
    * @brief Query the power status of the TV attached via HDMI-CEC.
    * @return The reported power status, or CecPowerStatus::NO_ADAPTER when no CEC
-   * adapter is present.
+   * adapter is present. If more than one CEC adapter is present, the status of
+   * the first one is returned.
    */
   CecPowerStatus GetTVPowerStatus();
 
