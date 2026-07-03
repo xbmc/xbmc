@@ -1893,3 +1893,25 @@ bool CPeripheralCecAdapter::ToggleDeviceState(CecStateChange mode /*= STATE_SWIT
 
   return false;
 }
+
+CecPowerStatus CPeripheralCecAdapter::GetTVPowerStatus(void)
+{
+  if (!IsRunning())
+    return CecPowerStatus::NO_ADAPTER;
+
+  // libCEC caches the power status internally and only re-requests it from the TV when needed. So
+  // this call is cheap.
+  switch (m_cecAdapter->GetDevicePowerStatus(CECDEVICE_TV))
+  {
+    case CEC_POWER_STATUS_ON:
+      return CecPowerStatus::ON;
+    case CEC_POWER_STATUS_STANDBY:
+      return CecPowerStatus::STANDBY;
+    case CEC_POWER_STATUS_IN_TRANSITION_STANDBY_TO_ON:
+      return CecPowerStatus::TRANSITION_TO_ON;
+    case CEC_POWER_STATUS_IN_TRANSITION_ON_TO_STANDBY:
+      return CecPowerStatus::TRANSITION_TO_STANDBY;
+    default:
+      return CecPowerStatus::UNKNOWN;
+  }
+}
