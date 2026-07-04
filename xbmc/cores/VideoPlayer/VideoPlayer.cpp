@@ -470,6 +470,19 @@ bool CSelectionStreams::Get(StreamType type, StreamFlags flag, SelectionStream& 
   return false;
 }
 
+bool CSelectionStreams::Contains(StreamType type, int source, int64_t demuxerId, int id) const
+{
+  if (id < 0)
+    return false;
+
+  return std::any_of(m_Streams.cbegin(), m_Streams.cend(),
+                     [type, source, demuxerId, id](const SelectionStream& stream)
+                     {
+                       return stream.type == type && stream.source == source &&
+                              stream.demuxerId == demuxerId && stream.id == id;
+                     });
+}
+
 int CSelectionStreams::TypeIndexOf(StreamType type, int source, int64_t demuxerId, int id) const
 {
   if (id < 0)
