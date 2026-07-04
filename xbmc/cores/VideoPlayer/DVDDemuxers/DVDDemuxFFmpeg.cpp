@@ -1249,6 +1249,14 @@ DemuxPacket* CDVDDemuxFFmpeg::ReadInternal(bool keep)
 
 DemuxPacket* CDVDDemuxFFmpeg::Read()
 {
+  if (m_pendingStreamChange)
+  {
+    m_pendingStreamChange = false;
+    DemuxPacket* pPacket = CDVDDemuxUtils::AllocateDemuxPacket(0);
+    pPacket->iStreamId = DMX_SPECIALID_STREAMCHANGE;
+    pPacket->demuxerId = m_demuxerId;
+    return pPacket;
+  }
   return ReadInternal(false);
 }
 
@@ -1300,7 +1308,19 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double* startpts)
     {
       DemuxPacket* pkt = Read();
       if (pkt)
+      {
+        // A stream change generated while waiting for the transport stream to
+        // become ready would be lost here (the packet is discarded). Remember
+        // it so it can be re-issued on the next Read() call: the player needs
+        // it to (re)open its streams with the now complete hints (extradata,
+        // dimensions). Otherwise, opening a mpegts H.264 file at a resume
+        // position keeps the initially failed codec (e.g. mediacodec rejects
+        // hints without dimensions and the player stays on the software
+        // decoder for the whole session).
+        if (pkt->iStreamId == DMX_SPECIALID_STREAMCHANGE)
+          m_pendingStreamChange = true;
         CDVDDemuxUtils::FreeDemuxPacket(pkt);
+      }
       else
         KODI::TIME::Sleep(10ms);
       m_pkt.result = -1;
