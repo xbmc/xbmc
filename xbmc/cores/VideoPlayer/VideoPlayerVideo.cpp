@@ -551,8 +551,11 @@ void CVideoPlayerVideo::Process()
 
       bRequestDrop = false;
       iDropDirective = CalcDropRequirement(pts);
-      if ((iDropDirective & DROP_VERYLATE) &&
-           m_bAllowDrop &&
+
+      // Framerate calibration exists to avoid dropping frames during normal playback before we're
+      // confident what the real framerate is. That doesn't apply during trick-play and
+      // DROP_VERYlATE must not be silently disabled.
+      if ((iDropDirective & DROP_VERYLATE) && (m_bAllowDrop || m_speed > DVD_PLAYSPEED_NORMAL) &&
           !bPacketDrop)
       {
         bRequestDrop = true;
