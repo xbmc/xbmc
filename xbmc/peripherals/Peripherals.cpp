@@ -828,7 +828,7 @@ bool CPeripherals::ToggleDeviceState(CecStateChange mode /*= STATE_SWITCH_TOGGLE
   return ret;
 }
 
-CecPowerStatus CPeripherals::GetTVPowerStatus()
+CecPowerStatus CPeripherals::GetDevicePowerStatus()
 {
   PeripheralVector peripherals;
 
@@ -838,7 +838,7 @@ CecPowerStatus CPeripherals::GetTVPowerStatus()
     {
       std::shared_ptr<CPeripheralCecAdapter> cecDevice =
           std::static_pointer_cast<CPeripheralCecAdapter>(peripheral);
-      return cecDevice->GetTVPowerStatus();
+      return cecDevice->GetDevicePowerStatus();
     }
   }
 

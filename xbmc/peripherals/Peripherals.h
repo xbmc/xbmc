@@ -217,12 +217,12 @@ public:
   bool ToggleDeviceState(const CecStateChange mode = STATE_SWITCH_TOGGLE);
 
   /*!
-   * @brief Query the power status of the TV attached via HDMI-CEC.
+   * @brief Query the power status of the device attached via HDMI-CEC.
    * @return The reported power status, or CecPowerStatus::NO_ADAPTER when no CEC
    * adapter is present. If more than one CEC adapter is present, the status of
    * the first one is returned.
    */
-  CecPowerStatus GetTVPowerStatus();
+  CecPowerStatus GetDevicePowerStatus();
 
   /*!
    * @brief Try to mute the audio via a peripheral.

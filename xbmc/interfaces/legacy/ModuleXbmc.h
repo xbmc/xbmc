@@ -592,22 +592,22 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
     ///
     /// \ingroup python_xbmc
-    /// @brief \python_func{ xbmc.getTVPowerStatus() }
-    /// Get the power status of the TV attached via HDMI-CEC.
+    /// @brief \python_func{ xbmc.getDevicePowerStatus() }
+    /// Get the power status of the device attached via HDMI-CEC.
     ///
     /// @return int - one of the following constants:
-    /// | Value                             | Description                          |
-    /// |----------------------------------:|:-------------------------------------|
-    /// | xbmc.TV_POWER_NO_ADAPTER          | No CEC adapter present               |
-    /// | xbmc.TV_POWER_ON                  | TV is powered on                     |
-    /// | xbmc.TV_POWER_STANDBY             | TV is in standby                     |
-    /// | xbmc.TV_POWER_TRANSITION_TO_ON    | TV is powering on                    |
-    /// | xbmc.TV_POWER_TRANSITION_TO_STANDBY | TV is going to standby             |
-    /// | xbmc.TV_POWER_UNKNOWN             | Power status could not be determined |
+    /// | Value                                   | Description                          |
+    /// |----------------------------------------:|:-------------------------------------|
+    /// | xbmc.DEVICE_POWER_NO_ADAPTER            | No CEC adapter present               |
+    /// | xbmc.DEVICE_POWER_ON                    | Device is powered on                 |
+    /// | xbmc.DEVICE_POWER_STANDBY               | Device is in standby                 |
+    /// | xbmc.DEVICE_POWER_TRANSITION_TO_ON      | Device is powering on                |
+    /// | xbmc.DEVICE_POWER_TRANSITION_TO_STANDBY | Device is going to standby           |
+    /// | xbmc.DEVICE_POWER_UNKNOWN               | Power status could not be determined |
     ///
-    /// @note This is the result of calling libCEC's GetTVPowerStatus.
-    /// `TV_POWER_UNKNOWN` means the TV could not be found or queried on the CEC
-    /// bus. `TV_POWER_NO_ADAPTER` means no CEC adapter is present. If more than
+    /// @note This is the result of calling libCEC's GetDevicePowerStatus.
+    /// `DEVICE_POWER_UNKNOWN` means the device could not be found or queried on the CEC
+    /// bus. `DEVICE_POWER_NO_ADAPTER` means no CEC adapter is present. If more than
     /// one CEC adapter is present, the status of the first one is returned.
     ///
     ///
@@ -617,14 +617,14 @@ namespace XBMCAddon
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
     /// ..
-    /// if xbmc.getTVPowerStatus() == xbmc.TV_POWER_ON:
-    ///     xbmc.log('TV is on')
+    /// if xbmc.getDevicePowerStatus() == xbmc.DEVICE_POWER_ON:
+    ///     xbmc.log('Device is on')
     /// ..
     /// ~~~~~~~~~~~~~
     ///
-    getTVPowerStatus();
+    getDevicePowerStatus();
 #else
-    int getTVPowerStatus();
+    int getDevicePowerStatus();
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -930,12 +930,12 @@ namespace XBMCAddon
     SWIG_CONSTANT_FROM_GETTER(int, ISO_639_2);
     SWIG_CONSTANT_FROM_GETTER(int, ENGLISH_NAME);
 
-    SWIG_CONSTANT_FROM_GETTER(int, TV_POWER_NO_ADAPTER);
-    SWIG_CONSTANT_FROM_GETTER(int, TV_POWER_ON);
-    SWIG_CONSTANT_FROM_GETTER(int, TV_POWER_STANDBY);
-    SWIG_CONSTANT_FROM_GETTER(int, TV_POWER_TRANSITION_TO_ON);
-    SWIG_CONSTANT_FROM_GETTER(int, TV_POWER_TRANSITION_TO_STANDBY);
-    SWIG_CONSTANT_FROM_GETTER(int, TV_POWER_UNKNOWN);
+    SWIG_CONSTANT_FROM_GETTER(int, DEVICE_POWER_NO_ADAPTER);
+    SWIG_CONSTANT_FROM_GETTER(int, DEVICE_POWER_ON);
+    SWIG_CONSTANT_FROM_GETTER(int, DEVICE_POWER_STANDBY);
+    SWIG_CONSTANT_FROM_GETTER(int, DEVICE_POWER_TRANSITION_TO_ON);
+    SWIG_CONSTANT_FROM_GETTER(int, DEVICE_POWER_TRANSITION_TO_STANDBY);
+    SWIG_CONSTANT_FROM_GETTER(int, DEVICE_POWER_UNKNOWN);
 #if 0
     void registerMonitor(Monitor* monitor);
     void unregisterMonitor(Monitor* monitor);

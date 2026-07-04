@@ -82,9 +82,9 @@ enum PeripheralType
 };
 
 /*!
- * \brief Power status of the TV attached via HDMI-CEC.
+ * \brief Power status of the device attached via HDMI-CEC.
  *
- * This is the result of calling libCEC's GetTVPowerStatus. UNKNOWN means the TV could not be found
+ * This is the result of calling libCEC's GetDevicePowerStatus. UNKNOWN means the device could not be found
  * or queried on the CEC bus. NO_ADAPTER means no CEC adapter is present.
  */
 enum class CecPowerStatus
