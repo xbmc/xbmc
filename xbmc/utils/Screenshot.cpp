@@ -68,18 +68,29 @@ void CScreenShot::TakeScreenshot(const std::string& filename, bool sync)
 
   CLog::Log(LOGDEBUG, "Saving screenshot {}", CURL::GetRedacted(filename));
 
-  //set alpha byte to 0xFF
-  for (int y = 0; y < surface->GetHeight(); y++)
+  unsigned int format = XB_FMT_A8R8G8B8;
+  if (surface->GetBitDepth() > 8)
   {
-    unsigned char* alphaptr = surface->GetBuffer() - 1 + y * surface->GetStride();
-    for (int x = 0; x < surface->GetWidth(); x++)
-      *(alphaptr += 4) = 0xFF;
+    // 10-bit capture: buffer is already RGBA16 with correct alpha, no swap needed
+    format = XB_FMT_RGBA16;
+  }
+  else
+  {
+    //set alpha byte to 0xFF
+    for (int y = 0; y < surface->GetHeight(); y++)
+    {
+      unsigned char* alphaptr = surface->GetBuffer() - 1 + y * surface->GetStride();
+      for (int x = 0; x < surface->GetWidth(); x++)
+        *(alphaptr += 4) = 0xFF;
+    }
   }
 
   //if sync is true, the png file needs to be completely written when this function returns
   if (sync)
   {
-    if (!CPicture::CreateThumbnailFromSurface(surface->GetBuffer(), surface->GetWidth(), surface->GetHeight(), surface->GetStride(), filename))
+    if (!CPicture::CreateThumbnailFromSurface(surface->GetBuffer(), surface->GetWidth(),
+                                              surface->GetHeight(), surface->GetStride(), filename,
+                                              format))
       CLog::Log(LOGERROR, "Unable to write screenshot {}", CURL::GetRedacted(filename));
 
     surface->ReleaseBuffer();
@@ -95,7 +106,9 @@ void CScreenShot::TakeScreenshot(const std::string& filename, bool sync)
 
     //write .png file asynchronous with CThumbnailWriter, prevents stalling of the render thread
     //buffer is deleted from CThumbnailWriter
-    CThumbnailWriter* thumbnailwriter = new CThumbnailWriter(surface->GetBuffer(), surface->GetWidth(), surface->GetHeight(), surface->GetStride(), filename);
+    CThumbnailWriter* thumbnailwriter =
+        new CThumbnailWriter(surface->GetBuffer(), surface->GetWidth(), surface->GetHeight(),
+                             surface->GetStride(), filename, format);
     CServiceBroker::GetJobManager()->AddJob(thumbnailwriter, nullptr);
   }
 }

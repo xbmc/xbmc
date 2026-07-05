@@ -28,6 +28,7 @@ public:
   int GetWidth() const { return m_width; }
   int GetHeight() const { return m_height; }
   int GetStride() const { return m_stride; }
+  int GetBitDepth() const { return m_bitDepth; }
   unsigned char* GetBuffer() const { return m_buffer; }
   void ReleaseBuffer()
   {
@@ -42,5 +43,6 @@ protected:
   int m_width{0};
   int m_height{0};
   int m_stride{0};
+  int m_bitDepth{8};
   unsigned char* m_buffer{nullptr};
 };

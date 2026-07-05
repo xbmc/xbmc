@@ -22,6 +22,7 @@ enum XB_FMT
   XB_FMT_A8          = 0x20,
   XB_FMT_RGBA8       = 0x40,
   XB_FMT_RGB8        = 0x80,
+  XB_FMT_RGBA16      = 0x100, // 16-bit per channel RGBA (for 10-bit+ screenshot capture)
   XB_FMT_MASK        = 0xFFFF,
   XB_FMT_OPAQUE      = 0x10000,
 };
