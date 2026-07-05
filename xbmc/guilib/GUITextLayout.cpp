@@ -90,9 +90,9 @@ void CGUITextLayout::Render(float x,
     if (align & XBFONT_JUSTIFIED && string.m_carriageReturn)
       align &= ~XBFONT_JUSTIFIED;
     if (solid)
-      m_font->DrawText(x, y, m_colors[0], shadowColor, string.m_text, align, maxWidth);
+      m_font->DrawText(x, y, m_colors[0], shadowColor, string.m_text, align, maxWidth, false);
     else
-      m_font->DrawText(x, y, m_colors, shadowColor, string.m_text, align, maxWidth);
+      m_font->DrawText(x, y, m_colors, shadowColor, string.m_text, align, maxWidth, false);
     y += m_font->GetLineHeight();
   }
   m_font->End();
@@ -196,7 +196,7 @@ void CGUITextLayout::RenderOutline(float x,
 
       // don't pass maxWidth through to the renderer for the same reason above: it will cause clipping
       // on the left.
-      m_borderFont->DrawText(bx, by, outlineColor, 0, string.m_text, align, 0);
+      m_borderFont->DrawText(bx, by, outlineColor, 0, string.m_text, align, 0, false);
       by += m_borderFont->GetLineHeight();
     }
     m_borderFont->End();
@@ -214,7 +214,7 @@ void CGUITextLayout::RenderOutline(float x,
       align &= ~XBFONT_JUSTIFIED;
 
     // don't pass maxWidth through to the renderer for the reason above.
-    m_font->DrawText(x, y, m_colors, 0, string.m_text, align, 0);
+    m_font->DrawText(x, y, m_colors, 0, string.m_text, align, 0, false);
     y += m_font->GetLineHeight();
   }
   m_font->End();
@@ -839,7 +839,7 @@ void CGUITextLayout::DrawText(CGUIFont* font,
   if (!font) return;
   vecText utf32;
   AppendToUTF32(text, 0, utf32);
-  font->DrawText(x, y, color, shadowColor, utf32, align, 0);
+  font->DrawText(x, y, color, shadowColor, utf32, align, 0, false);
 }
 
 void CGUITextLayout::AppendToUTF32(const std::wstring &utf16, character_t colStyle, vecText &utf32)

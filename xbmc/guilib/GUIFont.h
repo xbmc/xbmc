@@ -128,9 +128,10 @@ public:
                 KODI::UTILS::COLOR::Color shadowColor,
                 std::span<const character_t> text,
                 uint32_t alignment,
-                float maxPixelWidth)
+                float maxPixelWidth,
+                bool vScrolling)
   {
-    DrawText(x, y, std::span(&color, 1), shadowColor, text, alignment, maxPixelWidth);
+    DrawText(x, y, std::span(&color, 1), shadowColor, text, alignment, maxPixelWidth, vScrolling);
   };
 
   void DrawText(float x,
@@ -139,7 +140,8 @@ public:
                 KODI::UTILS::COLOR::Color shadowColor,
                 std::span<const character_t> text,
                 uint32_t alignment,
-                float maxPixelWidth);
+                float maxPixelWidth,
+                bool vScrolling);
 
   void DrawScrollingText(float x,
                          float y,
