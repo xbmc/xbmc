@@ -48,9 +48,6 @@ CGUIFontTTFDX::CGUIFontTTFDX(const std::string& fontIdent) : CGUIFontTTF(fontIde
 CGUIFontTTFDX::~CGUIFontTTFDX(void)
 {
   DX::Windowing()->Unregister(this);
-
-  m_vertexBuffer = nullptr;
-  m_vertexWidth = 0;
 }
 
 bool CGUIFontTTFDX::FirstBegin()
@@ -361,47 +358,6 @@ void CGUIFontTTFDX::DeleteHardwareTexture()
 {
 }
 
-bool CGUIFontTTFDX::UpdateDynamicVertexBuffer(const SVertex* pSysMem, unsigned int vertex_count)
-{
-  ComPtr<ID3D11Device> pDevice = DX::DeviceResources::Get()->GetD3DDevice();
-  ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
-
-  if (!pDevice || !pContext)
-    return false;
-
-  unsigned width = sizeof(SVertex) * vertex_count;
-  if (width > m_vertexWidth) // create or re-create
-  {
-    CD3D11_BUFFER_DESC bufferDesc(width, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DYNAMIC,
-                                  D3D11_CPU_ACCESS_WRITE);
-    D3D11_SUBRESOURCE_DATA initData = {};
-    initData.pSysMem = pSysMem;
-
-    if (FAILED(
-            pDevice->CreateBuffer(&bufferDesc, &initData, m_vertexBuffer.ReleaseAndGetAddressOf())))
-    {
-      CLog::LogF(LOGERROR, "Failed to create the vertex buffer.");
-      return false;
-    }
-
-    m_vertexWidth = width;
-  }
-  else
-  {
-    D3D11_MAPPED_SUBRESOURCE resource;
-    if (FAILED(pContext->Map(m_vertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &resource)))
-    {
-      CLog::LogF(LOGERROR, "Failed to update the vertex buffer.");
-      return false;
-    }
-
-    memcpy(resource.pData, pSysMem, width);
-    pContext->Unmap(m_vertexBuffer.Get(), 0);
-  }
-
-  return true;
-}
-
 void CGUIFontTTFDX::CreateStaticIndexBuffer(void)
 {
   // Fast path no mutex
@@ -446,9 +402,7 @@ void CGUIFontTTFDX::OnDestroyDevice(bool fatal)
 {
   std::unique_lock lock(m_staticIndexBufferSection);
 
-  m_vertexWidth = 0;
   m_staticIndexBuffer = nullptr;
-  m_vertexBuffer = nullptr;
   m_staticIndexBufferCreated.store(false, std::memory_order_relaxed);
 }
 
