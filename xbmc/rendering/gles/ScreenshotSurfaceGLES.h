@@ -18,5 +18,5 @@ public:
   static void Register();
   static std::unique_ptr<IScreenshotSurface> CreateSurface();
 
-  bool Capture() override;
+  bool Capture(const ScreenshotContext& ctx) override;
 };

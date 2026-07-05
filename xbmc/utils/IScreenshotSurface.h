@@ -8,11 +8,22 @@
 
 #pragma once
 
+class CGUIWindowManager;
+class CWinSystemBase;
+
+//! \brief Subsystem dependencies a screenshot surface needs at capture time,
+//! injected by CScreenShot so the surface does not reach for global state.
+struct ScreenshotContext
+{
+  CWinSystemBase& winSystem;
+  CGUIWindowManager& windowManager;
+};
+
 class IScreenshotSurface
 {
 public:
   virtual ~IScreenshotSurface() = default;
-  virtual bool Capture() { return false; }
+  virtual bool Capture(const ScreenshotContext& ctx) { return false; }
 
   int GetWidth() const { return m_width; }
   int GetHeight() const { return m_height; }
