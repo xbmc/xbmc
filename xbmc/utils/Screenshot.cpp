@@ -34,6 +34,12 @@ void CScreenShot::Register(const std::function<std::unique_ptr<IScreenshotSurfac
 
 void CScreenShot::TakeScreenshot(const std::string& filename, bool sync)
 {
+  if (m_screenShotSurfaces.empty())
+  {
+    CLog::Log(LOGERROR, "failed to take screenshot: no screenshot surface registered");
+    return;
+  }
+
   auto surface = m_screenShotSurfaces.back()();
 
   if (!surface)
@@ -47,8 +53,6 @@ void CScreenShot::TakeScreenshot(const std::string& filename, bool sync)
     CLog::Log(LOGERROR, "Screenshot {} failed", CURL::GetRedacted(filename));
     return;
   }
-
-  surface->CaptureVideo(true);
 
   CLog::Log(LOGDEBUG, "Saving screenshot {}", CURL::GetRedacted(filename));
 
