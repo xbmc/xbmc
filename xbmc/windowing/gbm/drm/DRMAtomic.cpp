@@ -21,6 +21,7 @@
 
 #include <drm_fourcc.h>
 #include <drm_mode.h>
+#include <fcntl.h>
 #include <unistd.h>
 
 using namespace KODI::WINDOWING::GBM;
@@ -230,6 +231,41 @@ bool CDRMAtomic::InitDrm()
 void CDRMAtomic::DestroyDrm()
 {
   CDRMUtils::DestroyDrm();
+}
+
+bool CDRMAtomic::SupportsAtomicModesetting()
+{
+  int numDevices = drmGetDevices2(0, nullptr, 0);
+  if (numDevices <= 0)
+    return false;
+
+  std::vector<drmDevicePtr> devices(numDevices);
+  if (drmGetDevices2(0, devices.data(), devices.size()) < 0)
+    return false;
+
+  bool atomic = false;
+  for (const auto device : devices)
+  {
+    if (!(device->available_nodes & 1 << DRM_NODE_PRIMARY))
+      continue;
+
+    int fd = open(device->nodes[DRM_NODE_PRIMARY], O_RDWR | O_CLOEXEC);
+    if (fd < 0)
+      continue;
+
+    // The atomic client cap is a device property gated on the driver's atomic
+    // support, not on any connector, so testing it needs only the fd.
+    if (drmSetClientCap(fd, DRM_CLIENT_CAP_ATOMIC, 1) == 0)
+      atomic = true;
+
+    close(fd);
+
+    if (atomic)
+      break;
+  }
+
+  drmFreeDevices(devices.data(), devices.size());
+  return atomic;
 }
 
 bool CDRMAtomic::SetVideoMode(const RESOLUTION_INFO& res, struct gbm_bo* bo)

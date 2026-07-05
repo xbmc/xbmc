@@ -36,6 +36,10 @@ public:
   bool SupportsFencing() override { return true; }
   bool AddProperty(CDRMObject* object, const char* name, uint64_t value);
 
+  // Probe whether any DRM device supports atomic modesetting, with no
+  // connector required. Used to decide atomic-vs-legacy before falling back.
+  static bool SupportsAtomicModesetting();
+
 private:
   void DrmAtomicCommit(int fb_id, int flags, bool rendered, bool videoLayer);
 

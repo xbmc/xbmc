@@ -138,13 +138,21 @@ bool CWinSystemGbm::InitWindowSystem()
     CLog::Log(LOGERROR, "CWinSystemGbm::{} - failed to initialize Atomic DRM", __FUNCTION__);
     m_DRM.reset();
 
-    m_DRM = std::make_shared<CDRMLegacy>();
-
-    if (!m_DRM->InitDrm())
+    // Legacy DRM is only for drivers with no atomic modesetting support. An
+    // atomic-capable driver that failed to init (e.g. no connector ready yet
+    // at cold boot) must never be demoted to legacy; go headless instead.
+    if (!CDRMAtomic::SupportsAtomicModesetting())
     {
-      CLog::Log(LOGERROR, "CWinSystemGbm::{} - failed to initialize Legacy DRM", __FUNCTION__);
-      m_DRM.reset();
+      m_DRM = std::make_shared<CDRMLegacy>();
+      if (!m_DRM->InitDrm())
+      {
+        CLog::Log(LOGERROR, "CWinSystemGbm::{} - failed to initialize Legacy DRM", __FUNCTION__);
+        m_DRM.reset();
+      }
+    }
 
+    if (!m_DRM)
+    {
       m_DRM = std::make_shared<COffScreenModeSetting>();
       if (!m_DRM->InitDrm())
       {
