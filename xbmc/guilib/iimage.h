@@ -10,6 +10,16 @@
 
 #include <string>
 
+//! \brief CICP color metadata (H.273 code points) to embed in an encoded image,
+//! e.g. the PNG cICP / sRGB chunk. Values are AVColorPrimaries /
+//! AVColorTransferCharacteristic / AVColorRange; -1 leaves a field unset.
+struct ImageColorMetadata
+{
+  int primaries = -1;
+  int transfer = -1;
+  int range = -1;
+};
+
 class IImage
 {
 public:
@@ -54,6 +64,13 @@ public:
    \brief Frees the output buffer allocated by CreateThumbnailFromSurface
    */
   virtual void ReleaseThumbnailBuffer() {}
+
+  /*!
+   \brief Set the color metadata to embed in the encoded output (e.g. the PNG
+          cICP/sRGB chunk). Default no-op; only encoders that support color
+          signaling override this.
+   */
+  virtual void SetColorMetadata(const ImageColorMetadata& color) {}
 
   unsigned int Width() const              { return m_width; }
   unsigned int Height() const             { return m_height; }

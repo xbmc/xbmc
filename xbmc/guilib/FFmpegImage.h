@@ -70,6 +70,7 @@ public:
                                   unsigned char* &bufferout,
                                   unsigned int &bufferoutSize) override;
   void ReleaseThumbnailBuffer() override;
+  void SetColorMetadata(const ImageColorMetadata& color) override;
 
   bool Initialize(unsigned char* buffer, size_t bufSize);
 
@@ -85,6 +86,8 @@ private:
   std::string m_strMimeType;
   void CleanupLocalOutputBuffer();
 
+  // CICP color metadata for the encoded output (fields default to unset).
+  ImageColorMetadata m_color;
 
   MemBuffer m_buf;
 

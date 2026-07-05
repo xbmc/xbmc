@@ -56,14 +56,24 @@ bool CPicture::GetThumbnailFromSurface(const unsigned char* buffer, int width, i
   return true;
 }
 
-bool CPicture::CreateThumbnailFromSurface(const unsigned char *buffer, int width, int height, int stride, const std::string &thumbFile)
+bool CPicture::CreateThumbnailFromSurface(const unsigned char* buffer,
+                                          int width,
+                                          int height,
+                                          int stride,
+                                          const std::string& thumbFile,
+                                          unsigned int format,
+                                          const ImageColorMetadata& color)
 {
   CLog::Log(LOGDEBUG, "cached image '{}' size {}x{}", CURL::GetRedacted(thumbFile), width, height);
 
   unsigned char *thumb = NULL;
   unsigned int thumbsize=0;
   IImage* pImage = ImageFactory::CreateLoader(thumbFile);
-  if(pImage == NULL || !pImage->CreateThumbnailFromSurface(const_cast<unsigned char*>(buffer), width, height, XB_FMT_A8R8G8B8, stride, thumbFile.c_str(), thumb, thumbsize))
+  if (pImage)
+    pImage->SetColorMetadata(color);
+  if (pImage == NULL ||
+      !pImage->CreateThumbnailFromSurface(const_cast<unsigned char*>(buffer), width, height, format,
+                                          stride, thumbFile.c_str(), thumb, thumbsize))
   {
     CLog::Log(LOGERROR, "Failed to CreateThumbnailFromSurface for {}",
               CURL::GetRedacted(thumbFile));
@@ -81,13 +91,21 @@ bool CPicture::CreateThumbnailFromSurface(const unsigned char *buffer, int width
   return ret;
 }
 
-CThumbnailWriter::CThumbnailWriter(unsigned char* buffer, int width, int height, int stride, const std::string& thumbFile):
-  m_thumbFile(thumbFile)
+CThumbnailWriter::CThumbnailWriter(unsigned char* buffer,
+                                   int width,
+                                   int height,
+                                   int stride,
+                                   const std::string& thumbFile,
+                                   unsigned int format,
+                                   const ImageColorMetadata& color)
+  : m_thumbFile(thumbFile)
 {
   m_buffer    = buffer;
   m_width     = width;
   m_height    = height;
   m_stride    = stride;
+  m_format = format;
+  m_color = color;
 }
 
 CThumbnailWriter::~CThumbnailWriter()
@@ -99,7 +117,8 @@ bool CThumbnailWriter::DoWork()
 {
   bool success = true;
 
-  if (!CPicture::CreateThumbnailFromSurface(m_buffer, m_width, m_height, m_stride, m_thumbFile))
+  if (!CPicture::CreateThumbnailFromSurface(m_buffer, m_width, m_height, m_stride, m_thumbFile,
+                                            m_format, m_color))
   {
     CLog::Log(LOGERROR, "CThumbnailWriter::DoWork unable to write {}",
               CURL::GetRedacted(m_thumbFile));
