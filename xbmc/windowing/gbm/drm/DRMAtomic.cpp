@@ -16,8 +16,10 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 
+#include <chrono>
 #include <errno.h>
 #include <string.h>
+#include <thread>
 
 #include <drm_fourcc.h>
 #include <drm_mode.h>
@@ -207,7 +209,30 @@ void CDRMAtomic::FlipPage(struct gbm_bo* bo, bool rendered, bool videoLayer, boo
 
 bool CDRMAtomic::InitDrm()
 {
-  if (!CDRMUtils::OpenDrm(true))
+  bool opened = CDRMUtils::OpenDrm(true);
+
+  // At cold boot a connector's EDID/HPD probe may not have completed, so
+  // OpenDrm(true) transiently fails with no connector even though an
+  // atomic-capable display is attached. Retry a few times with a short delay,
+  // but only when the hardware is atomic capable so a not-yet-ready display is
+  // given time to appear. Genuinely non-atomic hardware skips the retry and
+  // returns immediately, so a legacy fall-through is never delayed.
+  if (!opened && SupportsAtomicModesetting())
+  {
+    constexpr int maxPasses = 3;
+    constexpr auto retryDelay = std::chrono::milliseconds(500);
+
+    for (int pass = 1; !opened && pass < maxPasses; ++pass)
+    {
+      CLog::LogF(LOGWARNING,
+                 "atomic-capable device present but no connector ready, re-scanning ({}/{})", pass,
+                 maxPasses);
+      std::this_thread::sleep_for(retryDelay);
+      opened = CDRMUtils::OpenDrm(true);
+    }
+  }
+
+  if (!opened)
     return false;
 
   auto ret = drmSetClientCap(m_fd, DRM_CLIENT_CAP_ATOMIC, 1);
