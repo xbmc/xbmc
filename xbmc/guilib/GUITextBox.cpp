@@ -251,8 +251,8 @@ void CGUITextBox::Render()
         if (!lineString.m_text.empty() && lineString.m_carriageReturn)
           align &= ~XBFONT_JUSTIFIED; // last line of a paragraph shouldn't be justified
 
-        m_font->DrawText(posX, posY, m_colors, m_label.shadowColor, lineString.m_text, align,
-                         m_width);
+        m_font->DrawVScrollingText(posX, posY, m_colors, m_label.shadowColor, lineString.m_text,
+                                   align, m_width, m_scrollSpeed != 0.0f);
         posY += m_itemHeight;
         current++;
       }
