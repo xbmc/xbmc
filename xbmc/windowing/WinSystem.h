@@ -16,6 +16,7 @@
 #include "cores/VideoPlayer/VideoRenderers/DebugInfo.h"
 #include "guilib/DirtyRegion.h"
 #include "guilib/DispResource.h"
+#include "utils/DisplayInfo.h"
 #include "utils/HDRCapabilities.h"
 
 #include <memory>
@@ -243,6 +244,11 @@ public:
   virtual HDR_STATUS ToggleHDR() { return HDR_STATUS::HDR_UNSUPPORTED; }
   virtual HDR_STATUS GetOSHDRStatus() { return HDR_STATUS::HDR_UNSUPPORTED; }
   virtual CHDRCapabilities GetDisplayHDRCapabilities() const { return {}; }
+  virtual KODI::UTILS::Eotf GetEotf() const { return KODI::UTILS::Eotf::TRADITIONAL_SDR; }
+  virtual KODI::UTILS::Colorimetry GetColorimetry() const
+  {
+    return KODI::UTILS::Colorimetry::DEFAULT;
+  }
   static const char* SETTING_WINSYSTEM_IS_HDR_DISPLAY;
   virtual float GetGuiSdrPeakLuminance() const { return .0f; }
   virtual bool HasSystemSdrPeakLuminance() { return false; }
