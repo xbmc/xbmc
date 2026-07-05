@@ -8,8 +8,6 @@
 
 #include "ScreenshotSurfaceGL.h"
 
-#include "ServiceBroker.h"
-#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/Screenshot.h"
 #include "windowing/GraphicContext.h"
@@ -31,18 +29,10 @@ std::unique_ptr<IScreenshotSurface> CScreenshotSurfaceGL::CreateSurface()
   return std::make_unique<CScreenshotSurfaceGL>();
 }
 
-bool CScreenshotSurfaceGL::Capture()
+bool CScreenshotSurfaceGL::Capture(const ScreenshotContext& ctx)
 {
-  CWinSystemBase* winsystem = CServiceBroker::GetWinSystem();
-  if (!winsystem)
-    return false;
-
-  CGUIComponent* gui = CServiceBroker::GetGUI();
-  if (!gui)
-    return false;
-
-  std::unique_lock lock(winsystem->GetGfxContext());
-  gui->GetWindowManager().Render();
+  std::unique_lock lock(ctx.winSystem.GetGfxContext());
+  ctx.windowManager.Render();
 
   glReadBuffer(GL_BACK);
 

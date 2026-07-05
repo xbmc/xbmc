@@ -12,6 +12,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "filesystem/File.h"
+#include "guilib/GUIComponent.h"
 #include "jobs/JobManager.h"
 #include "pictures/Picture.h"
 #include "resources/LocalizeStrings.h"
@@ -48,7 +49,18 @@ void CScreenShot::TakeScreenshot(const std::string& filename, bool sync)
     return;
   }
 
-  if (!surface->Capture())
+  auto* winSystem = CServiceBroker::GetWinSystem();
+  auto* gui = CServiceBroker::GetGUI();
+  if (!winSystem || !gui)
+  {
+    CLog::Log(LOGERROR, "Screenshot {} failed: subsystems unavailable",
+              CURL::GetRedacted(filename));
+    return;
+  }
+
+  const ScreenshotContext ctx{*winSystem, gui->GetWindowManager()};
+
+  if (!surface->Capture(ctx))
   {
     CLog::Log(LOGERROR, "Screenshot {} failed", CURL::GetRedacted(filename));
     return;

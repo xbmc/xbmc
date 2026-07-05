@@ -8,8 +8,6 @@
 
 #include "ScreenshotSurfaceWindows.h"
 
-#include "ServiceBroker.h"
-#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "rendering/dx/DeviceResources.h"
 #include "utils/Screenshot.h"
@@ -33,18 +31,10 @@ std::unique_ptr<IScreenshotSurface> CScreenshotSurfaceWindows::CreateSurface()
   return std::unique_ptr<CScreenshotSurfaceWindows>(new CScreenshotSurfaceWindows());
 }
 
-bool CScreenshotSurfaceWindows::Capture()
+bool CScreenshotSurfaceWindows::Capture(const ScreenshotContext& ctx)
 {
-  CWinSystemBase* winsystem = CServiceBroker::GetWinSystem();
-  if (!winsystem)
-    return false;
-
-  CGUIComponent* gui = CServiceBroker::GetGUI();
-  if (!gui)
-    return false;
-
-  std::unique_lock lock(winsystem->GetGfxContext());
-  gui->GetWindowManager().Render();
+  std::unique_lock lock(ctx.winSystem.GetGfxContext());
+  ctx.windowManager.Render();
 
   auto deviceResources = DX::DeviceResources::Get();
   deviceResources->FinishCommandList();
