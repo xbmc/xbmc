@@ -70,6 +70,8 @@ public:
   bool IsHDRDisplay() override;
   HDR_STATUS ToggleHDR() override;
   HDR_STATUS GetOSHDRStatus() override;
+  KODI::UTILS::Eotf GetEotf() const override;
+  KODI::UTILS::Colorimetry GetColorimetry() const override;
 
   // HDR support
   bool IsHDROutput() const;
