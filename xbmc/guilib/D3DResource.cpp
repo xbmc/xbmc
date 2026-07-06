@@ -1248,7 +1248,7 @@ void CD3DPixelShader::UnbindShader()
 
   ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
   pContext->IASetInputLayout(nullptr);
-  pContext->VSSetShader(nullptr, nullptr, 0);
+  pContext->PSSetShader(nullptr, nullptr, 0);
 }
 
 void CD3DPixelShader::OnCreateDevice()

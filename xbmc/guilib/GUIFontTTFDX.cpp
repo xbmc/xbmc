@@ -15,6 +15,9 @@
 #include "rendering/dx/RenderContext.h"
 #include "utils/log.h"
 
+#include <cassert>
+#include <limits>
+
 // stuff for freetype
 #include <ft2build.h>
 
@@ -45,19 +48,6 @@ CGUIFontTTFDX::CGUIFontTTFDX(const std::string& fontIdent) : CGUIFontTTF(fontIde
 CGUIFontTTFDX::~CGUIFontTTFDX(void)
 {
   DX::Windowing()->Unregister(this);
-
-  m_vertexBuffer = nullptr;
-  m_staticIndexBuffer = nullptr;
-  if (!m_buffers.empty())
-  {
-    std::for_each(m_buffers.begin(), m_buffers.end(), [](CD3DBuffer* buf) {
-      if (buf)
-        delete buf;
-    });
-  }
-  m_buffers.clear();
-  m_staticIndexBufferCreated = false;
-  m_vertexWidth = 0;
 }
 
 bool CGUIFontTTFDX::FirstBegin()
@@ -66,122 +56,196 @@ bool CGUIFontTTFDX::FirstBegin()
     return false;
 
   CGUIShaderDX* pGUIShader = DX::Windowing()->GetGUIShader();
+  if (pGUIShader == nullptr)
+    return false;
+
+  // Set a shader first to trigger the internal clipping recalculations. The cached clipping data
+  // contains stale information from the previous draw otherwise.
+  // Mirrors the GL/GLES workaround
   pGUIShader->Begin(SHADER_METHOD_RENDER_FONT);
+
+  if (DX::Windowing()->ScissorsCanEffectClipping())
+  {
+    m_scissorClip = true;
+    // SHADER_METHOD_RENDER_FONT already activated
+  }
+  else
+  {
+    m_scissorClip = false;
+    DX::Windowing()->ResetScissors();
+    pGUIShader->Begin(SHADER_METHOD_RENDER_FONT_SHADER_CLIP);
+  }
 
   return true;
 }
 
 void CGUIFontTTFDX::LastEnd()
 {
+  // static vertex arrays are not supported anymore
+  assert(m_vertex.empty());
+
   CWinSystemBase* const winSystem = CServiceBroker::GetWinSystem();
   ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
   if (!pContext || !winSystem)
     return;
 
   typedef CGUIFontTTF::CTranslatedVertices trans;
-  bool transIsEmpty = std::all_of(m_vertexTrans.begin(), m_vertexTrans.end(),
-                                  [](trans& _) { return _.m_vertexBuffer->size <= 0; });
   // no chars to render
-  if (m_vertex.empty() && transIsEmpty)
+  if (std::all_of(m_vertexTrans.begin(), m_vertexTrans.end(),
+                  [](trans& _) { return _.m_vertexBuffer->size <= 0; }))
     return;
 
   CreateStaticIndexBuffer();
-
-  unsigned int offset = 0;
-  unsigned int stride = sizeof(SVertex);
+  if (m_staticIndexBuffer == nullptr)
+    return;
 
   CGUIShaderDX* pGUIShader = DX::Windowing()->GetGUIShader();
+
+  if (pGUIShader == nullptr)
+    return;
+
   pGUIShader->SetDepth(CServiceBroker::GetWinSystem()->GetGfxContext().GetTransformDepth());
 
   // Set font texture as shader resource
+  if (m_speedupTexture == nullptr)
+    return;
   pGUIShader->SetShaderViews(1, m_speedupTexture->GetAddressOfSRV());
   // Enable alpha blend
   DX::Windowing()->SetAlphaBlendEnable(true);
   // Set our static index buffer
   pContext->IASetIndexBuffer(m_staticIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
-  // Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
+
   pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-  if (!m_vertex.empty())
+  // Store current scissors
+  CGraphicContext& context = winSystem->GetGfxContext();
+  CRect scissor;
+  if (m_scissorClip)
+    scissor = context.StereoCorrection(context.GetScissors());
+
+  for (size_t i = 0; i < m_vertexTrans.size(); i++)
   {
-    // Deal with vertices that had to use software clipping
-    if (!UpdateDynamicVertexBuffer(&m_vertex[0], m_vertex.size()))
-      return;
+    // ignore empty buffers
+    if (m_vertexTrans[i].m_vertexBuffer->size == 0)
+      continue;
 
-    // Set the dynamic vertex buffer to active in the input assembler
-    pContext->IASetVertexBuffers(0, 1, m_vertexBuffer.GetAddressOf(), &stride, &offset);
+    const CD3DBuffer* vBuffer =
+        reinterpret_cast<const CD3DBuffer*>(m_vertexTrans[i].m_vertexBuffer->bufferHandle);
+    if (vBuffer == nullptr)
+      continue;
 
-    // Do the actual drawing operation, split into groups of characters no
-    // larger than the pre-determined size of the element array
-    size_t size = m_vertex.size() / 4;
-    for (size_t character = 0; size > character; character += ELEMENT_ARRAY_MAX_CHAR_INDEX)
+    if (m_scissorClip)
     {
-      size_t count = size - character;
-      count = std::min<size_t>(count, ELEMENT_ARRAY_MAX_CHAR_INDEX);
-
-      // 6 indices and 4 vertices per character
-      pGUIShader->DrawIndexed(count * 6, 0, character * 4);
-    }
-  }
-
-  if (!transIsEmpty)
-  {
-    // Deal with the vertices that can be hardware clipped and therefore translated
-
-    // Store current GPU transform
-    XMMATRIX view = pGUIShader->GetView();
-    // Store current scissor
-    CGraphicContext& context = winSystem->GetGfxContext();
-    CRect scissor = context.StereoCorrection(context.GetScissors());
-
-    for (size_t i = 0; i < m_vertexTrans.size(); i++)
-    {
-      // ignore empty buffers
-      if (m_vertexTrans[i].m_vertexBuffer->size == 0)
-        continue;
-
       // Apply the clip rectangle
       CRect clip = DX::Windowing()->ClipRectToScissorRect(m_vertexTrans[i].m_clip);
-      // Intersect with current scissors
       clip.Intersect(scissor);
 
       // skip empty clip, a little improvement to not render invisible text
       if (clip.IsEmpty())
         continue;
-
       DX::Windowing()->SetScissors(clip);
+    }
+    else
+    {
+      // clip using vertex shader
+      const float scaleX = context.GetGUIScaleX();
+      const float scaleY = context.GetGUIScaleY();
 
-      // Apply the translation to the model view matrix
-      XMMATRIX translation =
-          XMMatrixTranslation(m_vertexTrans[i].m_translateX, m_vertexTrans[i].m_translateY,
-                              m_vertexTrans[i].m_translateZ);
-      pGUIShader->SetView(XMMatrixMultiply(translation, view));
-
-      CD3DBuffer* vbuffer =
-          reinterpret_cast<CD3DBuffer*>(m_vertexTrans[i].m_vertexBuffer->bufferHandle);
-      // Set the static vertex buffer to active in the input assembler
-      ID3D11Buffer* buffers[1] = {vbuffer->Get()};
-      pContext->IASetVertexBuffers(0, 1, buffers, &stride, &offset);
-
-      // Do the actual drawing operation, split into groups of characters no
-      // larger than the pre-determined size of the element array
-      for (size_t character = 0; m_vertexTrans[i].m_vertexBuffer->size > character;
-           character += ELEMENT_ARRAY_MAX_CHAR_INDEX)
+      if (scaleX == 0 || scaleY == 0)
       {
-        size_t count = m_vertexTrans[i].m_vertexBuffer->size - character;
-        count = std::min<size_t>(count, ELEMENT_ARRAY_MAX_CHAR_INDEX);
-
-        // 6 indices and 4 vertices per character
-        pGUIShader->DrawIndexed(count * 6, 0, character * 4);
+        CLog::LogF(LOGERROR, "Invalid GUI scaling ({}x{}).", scaleX, scaleY);
+        continue;
       }
+
+      const float x1 = (m_vertexTrans[i].m_clip.x1 - m_vertexTrans[i].m_translateX -
+                        m_vertexTrans[i].m_offsetX) /
+                       scaleX;
+      const float y1 = (m_vertexTrans[i].m_clip.y1 - m_vertexTrans[i].m_translateY -
+                        m_vertexTrans[i].m_offsetY) /
+                       scaleY;
+      const float x2 = (m_vertexTrans[i].m_clip.x2 - m_vertexTrans[i].m_translateX -
+                        m_vertexTrans[i].m_offsetX) /
+                       scaleX;
+      const float y2 = (m_vertexTrans[i].m_clip.y2 - m_vertexTrans[i].m_translateY -
+                        m_vertexTrans[i].m_offsetY) /
+                       scaleY;
+
+      pGUIShader->SetShaderClip(x1, y1, x2, y2);
+
+      // Texture steps
+      if (m_textureWidth == 0 || m_textureHeight == 0)
+      {
+        CLog::LogF(LOGERROR, "Invalid texture dimensions ({}x{}).", m_textureWidth,
+                   m_textureHeight);
+        continue;
+      }
+
+      const float stepX = 1.f / static_cast<float>(m_textureWidth);
+      const float stepY = 1.f / static_cast<float>(m_textureHeight);
+
+      pGUIShader->SetTexStep(stepX, stepY, 1, 1);
     }
 
-    // restore scissor
-    DX::Windowing()->SetScissors(scissor);
+    // calculate the fractional offset to the ideal position
+    float fractX =
+        context.ScaleFinalXCoord(m_vertexTrans[i].m_translateX, m_vertexTrans[i].m_translateY);
+    float fractY =
+        context.ScaleFinalYCoord(m_vertexTrans[i].m_translateX, m_vertexTrans[i].m_translateY);
+    fractX = -fractX + std::round(fractX);
+    fractY = -fractY + std::round(fractY);
 
-    // Restore the original transform
-    pGUIShader->SetView(view);
+    // The multiplication order below is important and the reverse of the GL/GLES chain because of
+    // column-major vs row-major differences
+    // proj * model * gui * scroll * translation * scaling * correction factor
+    const XMMATRIX world = pGUIShader->GetWorld();
+
+    const XMMATRIX correction = XMMatrixTranslation(fractX, fractY, 0.0f);
+    const XMMATRIX scale = XMMatrixScaling(context.GetGUIScaleX(), context.GetGUIScaleY(), 1.0f);
+    const XMMATRIX translation =
+        XMMatrixTranslation(m_vertexTrans[i].m_translateX, m_vertexTrans[i].m_translateY, 0.0f);
+    const XMMATRIX offset =
+        XMMatrixTranslation(m_vertexTrans[i].m_offsetX, m_vertexTrans[i].m_offsetY, 0.0f);
+    const XMMATRIX gui =
+        XMLoadFloat3x4(reinterpret_cast<const XMFLOAT3X4*>(&context.GetGUIMatrix().m));
+
+    XMMATRIX matrix = XMMatrixMultiply(world, correction);
+    matrix = XMMatrixMultiply(matrix, scale);
+    matrix = XMMatrixMultiply(matrix, translation);
+    matrix = XMMatrixMultiply(matrix, offset);
+    matrix = XMMatrixMultiply(matrix, gui);
+
+    pGUIShader->SetWorld(matrix);
+
+    // Set the static vertex buffer to active in the input assembler
+    ID3D11Buffer* buffers[1] = {vBuffer->Get()};
+
+    unsigned int offsets = 0;
+    unsigned int strides = sizeof(SVertex);
+    pContext->IASetVertexBuffers(0, 1, buffers, &strides, &offsets);
+
+    // Do the actual drawing operation, split into groups of characters no
+    // larger than the pre-determined size of the element array
+    for (size_t character = 0; m_vertexTrans[i].m_vertexBuffer->size > character;
+         character += ELEMENT_ARRAY_MAX_CHAR_INDEX)
+    {
+      size_t count = m_vertexTrans[i].m_vertexBuffer->size - character;
+      count = std::min<size_t>(count, ELEMENT_ARRAY_MAX_CHAR_INDEX);
+
+      // 6 indices and 4 vertices per character
+      if (count > std::numeric_limits<unsigned int>::max() / 6 ||
+          character > std::numeric_limits<unsigned int>::max() / 4)
+      {
+        CLog::LogF(LOGERROR, "Character index too large: {}", character);
+        break;
+      }
+      pGUIShader->DrawIndexed(count * 6, 0, character * 4);
+    }
+    pGUIShader->SetWorld(world);
   }
+
+  // restore scissor
+  if (m_scissorClip)
+    DX::Windowing()->SetScissors(scissor);
 
   pGUIShader->RestoreBuffers();
 }
@@ -195,12 +259,18 @@ CVertexBuffer CGUIFontTTFDX::CreateVertexBuffer(const std::vector<SVertex>& vert
     buffer = new CD3DBuffer();
     if (!buffer->Create(D3D11_BIND_VERTEX_BUFFER, vertices.size(), sizeof(SVertex),
                         DXGI_FORMAT_UNKNOWN, D3D11_USAGE_IMMUTABLE, &vertices[0]))
+    {
       CLog::LogF(LOGERROR, "Failed to create vertex buffer.");
+      delete buffer;
+      buffer = nullptr;
+    }
     else
+    {
       AddReference((CGUIFontTTFDX*)this, buffer);
+    }
   }
 
-  return CVertexBuffer(reinterpret_cast<void*>(buffer), vertices.size() / 4, this);
+  return CVertexBuffer(reinterpret_cast<void*>(buffer), buffer ? vertices.size() / 4 : 0, this);
 }
 
 void CGUIFontTTFDX::AddReference(CGUIFontTTFDX* font, CD3DBuffer* pBuffer)
@@ -288,50 +358,16 @@ void CGUIFontTTFDX::DeleteHardwareTexture()
 {
 }
 
-bool CGUIFontTTFDX::UpdateDynamicVertexBuffer(const SVertex* pSysMem, unsigned int vertex_count)
-{
-  ComPtr<ID3D11Device> pDevice = DX::DeviceResources::Get()->GetD3DDevice();
-  ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
-
-  if (!pDevice || !pContext)
-    return false;
-
-  unsigned width = sizeof(SVertex) * vertex_count;
-  if (width > m_vertexWidth) // create or re-create
-  {
-    CD3D11_BUFFER_DESC bufferDesc(width, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DYNAMIC,
-                                  D3D11_CPU_ACCESS_WRITE);
-    D3D11_SUBRESOURCE_DATA initData = {};
-    initData.pSysMem = pSysMem;
-
-    if (FAILED(
-            pDevice->CreateBuffer(&bufferDesc, &initData, m_vertexBuffer.ReleaseAndGetAddressOf())))
-    {
-      CLog::LogF(LOGERROR, "Failed to create the vertex buffer.");
-      return false;
-    }
-
-    m_vertexWidth = width;
-  }
-  else
-  {
-    D3D11_MAPPED_SUBRESOURCE resource;
-    if (FAILED(pContext->Map(m_vertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &resource)))
-    {
-      CLog::LogF(LOGERROR, "Failed to update the vertex buffer.");
-      return false;
-    }
-
-    memcpy(resource.pData, pSysMem, width);
-    pContext->Unmap(m_vertexBuffer.Get(), 0);
-  }
-
-  return true;
-}
-
 void CGUIFontTTFDX::CreateStaticIndexBuffer(void)
 {
-  if (m_staticIndexBufferCreated)
+  // Fast path no mutex
+  if (m_staticIndexBufferCreated.load(std::memory_order_acquire))
+    return;
+
+  std::unique_lock lock(m_staticIndexBufferSection);
+
+  // Second protected check for thread safety
+  if (m_staticIndexBufferCreated.load(std::memory_order_relaxed))
     return;
 
   ComPtr<ID3D11Device> pDevice = DX::DeviceResources::Get()->GetD3DDevice();
@@ -355,18 +391,19 @@ void CGUIFontTTFDX::CreateStaticIndexBuffer(void)
 
   if (SUCCEEDED(
           pDevice->CreateBuffer(&desc, &initData, m_staticIndexBuffer.ReleaseAndGetAddressOf())))
-    m_staticIndexBufferCreated = true;
+    m_staticIndexBufferCreated.store(true, std::memory_order_release);
 }
 
-bool CGUIFontTTFDX::m_staticIndexBufferCreated = false;
+CCriticalSection CGUIFontTTFDX::m_staticIndexBufferSection;
+std::atomic<bool> CGUIFontTTFDX::m_staticIndexBufferCreated = false;
 ComPtr<ID3D11Buffer> CGUIFontTTFDX::m_staticIndexBuffer = nullptr;
 
 void CGUIFontTTFDX::OnDestroyDevice(bool fatal)
 {
-  m_staticIndexBufferCreated = false;
-  m_vertexWidth = 0;
+  std::unique_lock lock(m_staticIndexBufferSection);
+
   m_staticIndexBuffer = nullptr;
-  m_vertexBuffer = nullptr;
+  m_staticIndexBufferCreated.store(false, std::memory_order_relaxed);
 }
 
 void CGUIFontTTFDX::OnCreateDevice(void)
