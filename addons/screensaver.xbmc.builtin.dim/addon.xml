@@ -15,7 +15,7 @@
     <summary lang="be_BY">Ахоўнік экрана, што паступова зацямняе ваш экран</summary>
     <summary lang="bg_BG">Скрийнсейвър, който затъмнява екрана</summary>
     <summary lang="ca_ES">Estalvi de pantalla que enfosqueix la pantalla</summary>
-    <summary lang="cs_CZ">Spořič obrazovky, který ztmaví vaši obrazovku</summary>
+    <summary lang="cs_CZ">Spořič obrazovky, který ztmavuje obrazovku</summary>
     <summary lang="cy_GB">Arbedwr sgrin sy&apos;n pylu eich sgrin</summary>
     <summary lang="da_DK">Pauseskærm som dæmper din skærm</summary>
     <summary lang="de_DE">Bildschirmschoner zum Abdunkeln des Bildschirms</summary>
@@ -75,7 +75,7 @@
     <description lang="be_BY">Dim - просты ахоўнік экрана, які будзе паступова зацямняць экран. Значэнне зацямнення можа змяняцца ад 20 да 100%.</description>
     <description lang="bg_BG">Скрийнсейвърът &quot;Dim&quot; затъмнява екрана, до стойност, която Вие определяте предварително (между 20 и 100%).</description>
     <description lang="ca_ES">L&apos;estalvi de pantalla Dim és un estalvi de pantalla simple que enfosquirà (fos en negre) la seva pantalla a un valor que es pot configurar entre 20 i 100%.</description>
-    <description lang="cs_CZ">Spořič obrazovky Dim je jednoduchý spořič obrazovky, který ztmaví (posupně) vaši obrazovku podle nastavitelné hodnoty mezi 20 a 100 %.</description>
+    <description lang="cs_CZ">Spořič obrazovky Dim je jednoduchý spořič obrazovky, který obrazovku postupně ztmaví na nastavenou hodnotu mezi 20 a 100 %.</description>
     <description lang="cy_GB">Mae arbedwr sgrin Dim yn arbedwr sgrin syml sy&apos;n pylu (tywyllu) eich sgrin i werth gosodadwy rhwyg 20 a 100%.</description>
     <description lang="da_DK">Dæmpningspauseskærmen er en simpel pauseskærm, der dæmper (nedtoner) din skærm til en valgfri værdi mellem 20 og 100%.</description>
     <description lang="de_DE">Der Dimmer-Bildschirmschoner ist ein einfacher Bildschirmschoner, welcher den Bildschirm auf einen benutzerdefinierten Wert zwischen 20 und 100% abdunkelt.</description>
