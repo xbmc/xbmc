@@ -23,7 +23,6 @@
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/StereoscopicsManager.h"
-#include "interfaces/AnnouncementManager.h"
 #include "interfaces/python/XBPython.h"
 #include "jobs/JobManager.h"
 #include "music/MusicFileItemClassify.h"
@@ -273,6 +272,13 @@ bool UpdateDiscStackBookmark(CBookmark& bookmark,
   return true;
 }
 
+bool IsFinished(double timeInSeconds, double totalTimeInSeconds)
+{
+  // If the total time is unknown then we can't determine if finished
+  constexpr double FINISH_THRESHOLD{1.0}; // 1 second from end is considered finished
+  return totalTimeInSeconds > 0.0 && (totalTimeInSeconds - timeInSeconds) <= FINISH_THRESHOLD;
+}
+
 void UpdateStackAndItem(const CFileItem& file,
                         CFileItem& fileItem,
                         CBookmark& bookmark,
@@ -317,10 +323,8 @@ void UpdateStackAndItem(const CFileItem& file,
   }
   else
   {
-    constexpr double FINISH_THRESHOLD{1.0}; // 1 second from end is considered finished
-    const bool currentPartFinished{bookmark.timeInSeconds + FINISH_THRESHOLD >
-                                   bookmark.totalTimeInSeconds};
-    stackHelper->SetCurrentPartFinished(currentPartFinished);
+    stackHelper->SetCurrentPartFinished(
+        IsFinished(bookmark.timeInSeconds, bookmark.totalTimeInSeconds));
 
     ConvertRelativeStackTimesToAbsolute(bookmark, file, stackHelper);
   }
@@ -377,7 +381,8 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
     if (stackHelper->GetStack(file) != nullptr)
       UpdateStackAndItem(file, fileItem, bookmark, stackHelper);
 
-    if (WithinPercentOfEnd(bookmark, advancedSettings->m_videoIgnorePercentAtEnd))
+    if (WithinPercentOfEnd(bookmark, advancedSettings->m_videoIgnorePercentAtEnd) ||
+        IsFinished(bookmark.timeInSeconds, bookmark.totalTimeInSeconds))
     {
       bookmark.timeInSeconds = -1.0; // Finished (bookmark cleared)
     }
@@ -388,9 +393,8 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
   }
   else if (MUSIC::IsAudio(fileItem))
   {
-    if (bookmark.timeInSeconds >= bookmark.totalTimeInSeconds - 1)
+    if (IsFinished(bookmark.timeInSeconds, bookmark.totalTimeInSeconds))
     {
-      // If within 1 second of the end
       bookmark.timeInSeconds = -1.0; // Finished (bookmark cleared)
     }
   }

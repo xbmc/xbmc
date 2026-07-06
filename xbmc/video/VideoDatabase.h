@@ -309,6 +309,9 @@ public:
   int GetSeasonId(int idShow, int season) const;
 
   void GetEpisodesByBlurayPath(const std::string& path, std::vector<CVideoInfoTag>& episodes);
+  void GetEpisodesByBasePath(const std::string& path,
+                             std::vector<CVideoInfoTag>& episodes,
+                             int idShow = -1);
   void GetEpisodesByFile(const std::string& strFilenameAndPath, std::vector<CVideoInfoTag>& episodes);
   void GetEpisodesByFileId(int idFile, std::vector<CVideoInfoTag>& episodes);
   bool GetEpisodeMap(int idShow, EpisodeFileMap& fileMap, int idFile = -1) const;
@@ -639,6 +642,7 @@ public:
   void GetEpisodesByName(const std::string& strSearch, CFileItemList& items);
   void GetMusicVideosByName(const std::string& strSearch, CFileItemList& items);
 
+  std::string GetPlotByShowId(int idShow);
   void GetEpisodesByPlot(const std::string& strSearch, CFileItemList& items);
   void GetMoviesByPlot(const std::string& strSearch, CFileItemList& items);
 

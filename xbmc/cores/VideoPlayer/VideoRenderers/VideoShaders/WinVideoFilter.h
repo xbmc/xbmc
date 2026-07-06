@@ -14,6 +14,7 @@
 #include "utils/Geometry.h"
 
 #include <array>
+#include <span>
 #include <vector>
 
 #include <DirectXMath.h>
@@ -27,7 +28,7 @@ class CRenderBuffer;
 
 using namespace DirectX;
 
-class CWinShader
+class CWinShader : ID3DResource
 {
 public:
   /*!
@@ -36,9 +37,12 @@ public:
    */
   void SetFinalShader(bool final) { m_isFinalShader = final; }
 
+  void OnDestroyDevice(bool fatal) override;
+  void OnCreateDevice() override;
+
 protected:
   CWinShader() = default;
-  virtual ~CWinShader() = default;
+  virtual ~CWinShader();
 
   virtual bool CreateVertexBuffer(unsigned int vertCount, unsigned int vertSize);
   virtual bool LockVertexBuffer(void **data);
@@ -46,19 +50,28 @@ protected:
   virtual bool LoadEffect(const std::string& filename, DefinesMap* defines);
   virtual bool Execute(const std::vector<CD3DTexture*>& targets, unsigned int vertexIndexStep);
   virtual void SetStepParams(unsigned stepIndex) { }
-  virtual bool CreateInputLayout(D3D11_INPUT_ELEMENT_DESC *layout, unsigned numElements);
+
+  /*!
+   * \brief Create the input layout of the shader.
+   * \param[in] elementDesc Descriptions of the input layout element. They are expected to live at
+   *                        least as long as this object.
+   * \return true for success, false otherwise.
+   */
+  virtual bool CreateInputLayout(std::span<const D3D11_INPUT_ELEMENT_DESC> elementDesc);
 
   CD3DEffect m_effect;
   CD3DTexture* m_target = nullptr;
 
 private:
   void SetTarget(CD3DTexture* target, ID3D11DepthStencilView* dsv);
+  bool CreateInputLayoutResources(std::span<const D3D11_INPUT_ELEMENT_DESC> elementDesc);
 
   CD3DBuffer m_vb;
   CD3DBuffer m_ib;
   unsigned int m_vbsize = 0;
   unsigned int m_vertsize = 0;
-  Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout = nullptr;
+  Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+  std::span<const D3D11_INPUT_ELEMENT_DESC> m_inputLayoutElementDesc;
   bool m_isFinalShader{false};
 };
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -164,8 +164,10 @@ void COverlayQuadsDX::Render(SRenderState &state)
   ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
   CGUIShaderDX* pGUIShader = DX::Windowing()->GetGUIShader();
 
-  XMMATRIX world, view, proj;
-  pGUIShader->GetWVP(world, view, proj);
+  if (pGUIShader == nullptr)
+    return;
+
+  const XMMATRIX world = pGUIShader->GetWorld();
 
   if (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() ==
           RenderStereoMode::SPLIT_HORIZONTAL ||
@@ -179,8 +181,8 @@ void COverlayQuadsDX::Render(SRenderState &state)
                                   static_cast<int>(rect.Height()));
   }
 
-  XMMATRIX trans = XMMatrixTranslation(state.x, state.y, 0.0f);
-  XMMATRIX scale = XMMatrixScaling(state.width, state.height, 1.0f);
+  const XMMATRIX trans = XMMatrixTranslation(state.x, state.y, 0.0f);
+  const XMMATRIX scale = XMMatrixScaling(state.width, state.height, 1.0f);
 
   pGUIShader->SetWorld(XMMatrixMultiply(XMMatrixMultiply(world, scale), trans));
 
@@ -200,7 +202,7 @@ void COverlayQuadsDX::Render(SRenderState &state)
   pGUIShader->Draw(m_count * 6, 0);
 
   // restoring transformation
-  pGUIShader->SetWVP(world, view, proj);
+  pGUIShader->SetWorld(world);
   pGUIShader->RestoreBuffers();
 }
 
@@ -333,8 +335,10 @@ void COverlayImageDX::Render(SRenderState &state)
   ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
   CGUIShaderDX* pGUIShader = DX::Windowing()->GetGUIShader();
 
-  XMMATRIX world, view, proj;
-  pGUIShader->GetWVP(world, view, proj);
+  if (pGUIShader == nullptr)
+    return;
+
+  const XMMATRIX world = pGUIShader->GetWorld();
 
   if (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() ==
           RenderStereoMode::SPLIT_HORIZONTAL ||
@@ -369,6 +373,6 @@ void COverlayImageDX::Render(SRenderState &state)
   pGUIShader->Draw(4, 0);
 
   // restoring transformation
-  pGUIShader->SetWVP(world, view, proj);
+  pGUIShader->SetWorld(world);
   pGUIShader->RestoreBuffers();
 }

@@ -8,26 +8,20 @@
 
 #include "FileDirectoryFactory.h"
 
-#include "music/MusicFileItemClassify.h"
-
+#include "AudioBookFileDirectory.h"
+#include "Directory.h"
+#include "EpisodesDirectory.h"
+#include "FileItem.h"
 #if defined(HAS_ISO9660PP)
 #include "ISO9660Directory.h"
 #endif
+#include "PlaylistFileDirectory.h"
+#include "RSSDirectory.h"
+#include "ServiceBroker.h"
+#include "SmartPlaylistDirectory.h"
 #if defined(HAS_UDFREAD)
 #include "UDFDirectory.h"
 #endif
-#include "RSSDirectory.h"
-#include "UDFDirectory.h"
-#include "utils/URIUtils.h"
-#if defined(TARGET_ANDROID)
-#include "platform/android/filesystem/APKDirectory.h"
-#endif
-#include "AudioBookFileDirectory.h"
-#include "Directory.h"
-#include "FileItem.h"
-#include "PlaylistFileDirectory.h"
-#include "ServiceBroker.h"
-#include "SmartPlaylistDirectory.h"
 #include "URL.h"
 #include "XbtDirectory.h"
 #include "ZipDirectory.h"
@@ -35,9 +29,14 @@
 #include "addons/ExtsMimeSupportList.h"
 #include "addons/VFSEntry.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "music/MusicFileItemClassify.h"
+#if defined(TARGET_ANDROID)
+#include "platform/android/filesystem/APKDirectory.h"
+#endif
 #include "playlists/PlayListFactory.h"
 #include "playlists/SmartPlayList.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/log.h"
 
 using namespace ADDON;
@@ -153,6 +152,8 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
   if (pItem->IsRSS())
     return new CRSSDirectory();
 
+  if (url.IsProtocol("episodes"))
+    return new CEpisodesDirectory();
 
   if (pItem->IsDiscImage())
   {

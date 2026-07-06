@@ -1,37 +1,25 @@
 /*
- *      Copyright (C) 2005-2015 Team Kodi
- *      http://kodi.tv
+ *  Copyright (C) 2005-2026 Team Kodi
+ *  This file is part of Kodi - https://kodi.tv
  *
- *  This Program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2, or (at your option)
- *  any later version.
- *
- *  This Program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
- *  <http://www.gnu.org/licenses/>.
- *
+ *  SPDX-License-Identifier: GPL-2.0-or-later
+ *  See LICENSES/README.md for more information.
  */
 
 struct VS_INPUT
 {
-  float4 pos : POSITION;
-  float4 color: COLOR0;
-  float2 tex : TEXCOORD0;
-  float2 tex2 : TEXCOORD1;
+  float4 pos : POSITION; // equivalent of m_attrpos
+  float4 color: COLOR0; // equivalent of m_attrcol
+  float2 tex : TEXCOORD0; // equivalent of m_attrcord0
+  float2 tex2 : TEXCOORD1; // equivalent of m_attrcord1
 };
 
 struct PS_INPUT
 {
-  float4 pos : SV_POSITION;
-  float4 color: COLOR0;
-  float2 tex : TEXCOORD0;
-  float2 tex2 : TEXCOORD1;
+  float4 pos : SV_POSITION; // equivalent of gl_Position
+  float4 color: COLOR0; // equivalent of m_colour
+  float2 tex : TEXCOORD0; // equivalent of m_cord0
+  float2 tex2 : TEXCOORD1; // equivalent of m_cord1
 };
 
 SamplerState LinearSampler : register(s0)
@@ -47,6 +35,9 @@ SamplerState NearestSampler : register(s1);
 cbuffer cbWorld : register(b0)
 {
   float4x4 worldViewProj;
+  float4   m_shaderClip; // clip rect (x1,y1,x2,y2) in font-local space
+  float2   m_texStep; // tex step per position unit - equivalent of m_cordStep.xy
+  float2   m_texStep2; // tex2 step per position unit - equivalent of m_cordStep.zw
   float blackLevel;
   float colorRange;
   float sdrPeakLum;

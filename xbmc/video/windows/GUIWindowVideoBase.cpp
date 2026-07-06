@@ -58,7 +58,6 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
-#include "video/VideoDbUrl.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoScanner.h"
 #include "video/VideoLibraryQueue.h"
@@ -70,7 +69,12 @@
 #include "video/guilib/VideoSelectActionProcessor.h"
 #include "view/GUIViewState.h"
 
+#include <map>
 #include <memory>
+#include <ranges>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 using namespace XFILE;
 using namespace VIDEODATABASEDIRECTORY;
@@ -720,13 +724,61 @@ void CGUIWindowVideoBase::LoadVideoInfo(CFileItemList& items,
   if (!content.empty())
   {
     database.GetItemsForPath(content, items.GetPath(), dbItems);
+
+    // Determine episode ranges for multi-episode items sharing the same basePath (same file).
+    if (content == "episodes" && !dbItems.IsEmpty())
+    {
+      std::map<std::string, std::vector<int>> episodesByPath;
+      for (int i = 0; i < dbItems.Size(); i++)
+      {
+        const auto& dbItem = dbItems.Get(i);
+        if (dbItem->HasVideoInfoTag())
+          episodesByPath[dbItem->GetPath()].emplace_back(i);
+      }
+
+      std::unordered_map<int, std::string> showPlotCache;
+      for (const auto& episodes : episodesByPath | std::views::values)
+      {
+        if (episodes.size() < 2)
+          continue;
+
+        const auto& firstItem{dbItems.Get(episodes[0])};
+        int numSpecials{0};
+        std::string episodeString;
+        for (int e : episodes)
+        {
+          const auto* tag{dbItems.Get(e)->GetVideoInfoTag()};
+          if (!tag)
+            continue;
+          if (tag->m_iSeason == 0)
+            numSpecials++;
+          else
+            episodeString += fmt::format("S{:02d}E{:02d};", tag->m_iSeason, tag->m_iEpisode);
+        }
+
+        // Store on the first item (saved by SetFastLookup)
+        firstItem->SetProperty("episodes", episodeString);
+        firstItem->SetProperty("episodes_specials", numSpecials);
+
+        // Pre-fetch show plot for multi-episode range labels (as the individual episode plot is not relevant)
+        if (firstItem->HasVideoInfoTag())
+        {
+          const int idShow{firstItem->GetVideoInfoTag()->m_iIdShow};
+          auto [it, inserted] = showPlotCache.emplace(idShow, std::string{});
+          if (inserted)
+            it->second = database.GetPlotByShowId(idShow);
+          firstItem->SetProperty("episodes_show_plot", it->second);
+        }
+      }
+    }
+
     dbItems.SetFastLookup(true);
   }
 
   for (int i = 0; i < items.Size(); i++)
   {
-    CFileItemPtr pItem = items[i];
-    CFileItemPtr match;
+    const auto& pItem{items[i]};
+    std::shared_ptr<CFileItem> match;
 
     if (pItem->IsFolder() && !pItem->IsParentFolder())
     {
@@ -745,9 +797,18 @@ void CGUIWindowVideoBase::LoadVideoInfo(CFileItemList& items,
     }
     if (match)
     {
-      pItem->UpdateInfo(*match, replaceLabels);
+      pItem->UpdateInfo(*match, replaceLabels, MultipleEpisodes::GROUP_MULTIPLE_EPISODES);
 
-      if (stackItems)
+      if (match->HasProperty("episodes") && !pItem->GetPath().empty())
+      {
+        CURL url("episodes://");
+        url.SetHostName(pItem->GetPath());
+        if (pItem->HasVideoInfoTag())
+          url.SetOptions("?show=" + std::to_string(pItem->GetVideoInfoTag()->m_iIdShow));
+        pItem->SetPath(url.Get());
+        pItem->SetFolder(true);
+      }
+      else if (stackItems)
       {
         if (match->IsFolder())
           pItem->SetPath(match->GetVideoInfoTag()->m_strPath);
@@ -1159,6 +1220,10 @@ bool CGUIWindowVideoBase::GetDirectory(const std::string &strDirectory, CFileIte
   // No "normal" episodes should stack, and multi-parts should be supported)
   ADDON::ScraperPtr info = m_database.GetScraperForPath(strDirectory);
   if (info && info->Content() == ContentType::TVSHOWS)
+    m_stackingAvailable = false;
+
+  // Do not stack episodes that are in a multi-episode file
+  if (strDirectory.starts_with("episodes://"))
     m_stackingAvailable = false;
 
   if (m_stackingAvailable && !items.IsStack() && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MYVIDEOS_STACKVIDEOS))

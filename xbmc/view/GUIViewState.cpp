@@ -27,7 +27,6 @@
 #include "games/windows/GUIViewStateWindowGames.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/TextureManager.h"
 #include "music/GUIViewStateMusic.h"
 #include "pictures/GUIViewStatePictures.h"
 #include "playlists/PlayListFileItemClassify.h"
@@ -95,6 +94,9 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
 
   if (url.IsProtocol("library"))
     return new CGUIViewStateLibrary(items);
+
+  if (url.IsProtocol("episodes"))
+    return new CGUIViewStateVideoEpisodes(items);
 
   if (PLAYLIST::IsPlayList(items))
   {
