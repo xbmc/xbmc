@@ -421,6 +421,16 @@ bool CWinSystemWin32DX::IsHDROutput() const
   return m_deviceResources->IsHDROutput();
 }
 
+KODI::UTILS::Eotf CWinSystemWin32DX::GetEotf() const
+{
+  return IsHDROutput() ? KODI::UTILS::Eotf::PQ : KODI::UTILS::Eotf::TRADITIONAL_SDR;
+}
+
+KODI::UTILS::Colorimetry CWinSystemWin32DX::GetColorimetry() const
+{
+  return IsHDROutput() ? KODI::UTILS::Colorimetry::BT2020_RGB : KODI::UTILS::Colorimetry::DEFAULT;
+}
+
 bool CWinSystemWin32DX::IsTransferPQ() const
 {
   return m_deviceResources->IsTransferPQ();
