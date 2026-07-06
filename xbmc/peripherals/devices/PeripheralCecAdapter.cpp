@@ -108,6 +108,7 @@ void CPeripheralCecAdapter::ResetMembers(void)
   m_bHasButton = false;
   m_bIsReady = false;
   m_bHasConnectedAudioSystem = false;
+  m_bActAsAudioSystem = false;
   m_strMenuLanguage = "???";
   m_lastKeypress = {};
   m_lastChange = VOLUME_CHANGE_NONE;
@@ -471,6 +472,14 @@ bool CPeripheralCecAdapter::HasAudioControl(void)
 {
   std::unique_lock lock(m_critSection);
   return m_bHasConnectedAudioSystem;
+}
+
+bool CPeripheralCecAdapter::VolumeControlledByAmp(void) const
+{
+  // Delegate volume to a connected amplifier unless Kodi is itself acting as the
+  // audio system - in which case Kodi handles volume, and we must not treat our
+  // own audio-system role on the bus as an external amp and delegate to it.
+  return !m_bActAsAudioSystem;
 }
 
 void CPeripheralCecAdapter::SetAudioSystemConnected(bool bSetTo)
@@ -1407,6 +1416,14 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
     case LOCALISED_ID_TUNER_DEVICE:
       m_configuration.deviceTypes.Add(CEC_DEVICE_TYPE_TUNER);
       break;
+    case LOCALISED_ID_AVR:
+      // act as the CEC audio system, so devices on the bus (e.g. a TV or
+      // projector) route their volume keys to Kodi rather than to a separate
+      // amplifier. Kodi then handles volume itself, and - once it also claims
+      // active source (see SetInitialConfiguration) - receives remote navigation
+      // keys too, giving it the whole remote on a single logical address.
+      m_configuration.deviceTypes.Add(CEC_DEVICE_TYPE_AUDIO_SYSTEM);
+      break;
     case LOCALISED_ID_RECORDING_DEVICE:
     default:
       m_configuration.deviceTypes.Add(CEC_DEVICE_TYPE_RECORDING_DEVICE);
@@ -1469,6 +1486,7 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
   m_bPowerOffScreensaver = GetSettingBool("cec_standby_screensaver");
   m_bPowerOnScreensaver = GetSettingBool("cec_wake_screensaver");
   m_bSendInactiveSource = GetSettingBool("send_inactive_source");
+  m_bActAsAudioSystem = GetSettingInt("device_type") == LOCALISED_ID_AVR;
   m_configuration.bAutoWakeAVR = GetSettingBool("power_avr_on_as") ? 1 : 0;
 
   // read the mutually exclusive boolean settings
@@ -1637,8 +1655,10 @@ std::string CPeripheralCecAdapterUpdateThread::UpdateAudioSystemStatus(void)
   std::string strAmpName;
 
   /* disable the mute setting when an amp is found, because the amp handles the mute setting and
-       set PCM output to 100% */
-  if (m_adapter->m_cecAdapter->IsActiveDeviceType(CEC_DEVICE_TYPE_AUDIO_SYSTEM))
+       set PCM output to 100%. Skip this when Kodi handles volume itself (or acts as the audio
+       system), so volume keys drive Kodi's own volume instead of being sent to an amplifier. */
+  if (m_adapter->VolumeControlledByAmp() &&
+      m_adapter->m_cecAdapter->IsActiveDeviceType(CEC_DEVICE_TYPE_AUDIO_SYSTEM))
   {
     // request the OSD name of the amp
     std::string ampName(m_adapter->m_cecAdapter->GetDeviceOSDName(CECDEVICE_AUDIOSYSTEM));
@@ -1693,6 +1713,15 @@ bool CPeripheralCecAdapterUpdateThread::SetInitialConfiguration(void)
   std::string strAmpName = UpdateAudioSystemStatus();
   if (!strAmpName.empty())
     strNotification += StringUtils::Format("- {}", strAmpName);
+
+  // When acting as the CEC audio system, also claim active source. Volume already
+  // arrives via System Audio Control regardless, but the TV/projector only forwards
+  // remote navigation keys (Remote Control Pass Through) to the *active source*.
+  // Asserting it here - after the audio-system handshake has settled, not at the
+  // early bActivateSource step above which the handshake overrides - is what lets a
+  // single audio-system logical address receive both volume and navigation.
+  if (m_adapter->m_bActAsAudioSystem)
+    m_adapter->m_cecAdapter->SetActiveSource();
 
   m_adapter->m_bIsReady = true;
 

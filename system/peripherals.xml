@@ -33,7 +33,7 @@
     <setting key="double_tap_timeout_ms" type="int" min="50" max="1000" step="50" value="300" label="36047" order="16" />
     <setting key="button_repeat_rate_ms" type="int" min="0" max="250" step="10" value="0" label="36048" order="17" />
     <setting key="button_release_delay_ms" type="int" min="0" max="500" step="50" value="0" label="36049" order="18" />
-    <setting key="device_type" type="enum" value="36051" label="36013" lvalues="36051|36052|36053" order="19" />
+    <setting key="device_type" type="enum" value="36051" label="36013" lvalues="36051|36052|36053|36038" order="19" />
     <setting key="appearance" type="addon" addontype="kodi.game.controller" value="game.controller.cec.adapter" configurable="0"/>
   </peripheral>
 
