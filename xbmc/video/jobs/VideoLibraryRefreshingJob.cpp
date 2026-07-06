@@ -469,8 +469,6 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
           db.DeleteSeason(origDbId);
         else if (m_refreshAll)
           db.DeleteTvShow(origDbId);
-        else
-          db.DeleteDetailsForTvShow(origDbId);
       }
     }
 
