@@ -243,6 +243,9 @@ void CWinSystemGbm::UpdateResolutions()
   }
 
   CDisplaySettings::GetInstance().ApplyCalibrations();
+
+  // Ensure that scrubbed calibrations are always saved, otherwise would depend on calibration GUI
+  CDisplaySettings::GetInstance().UpdateCalibrations();
 }
 
 bool CWinSystemGbm::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
