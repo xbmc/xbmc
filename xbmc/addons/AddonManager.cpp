@@ -138,7 +138,14 @@ bool CAddonMgr::Init()
   }
 
   if (!m_database->Open())
+  {
     CLog::Log(LOGFATAL, "ADDONS: Failed to open database");
+    m_installedAddons.clear();
+    m_disabled.clear();
+    m_updateableAddons.clear();
+    m_updateRules = std::make_unique<CAddonUpdateRules>();
+    return false;
+  }
 
   FindAddons();
 
