@@ -2,6 +2,7 @@ set(SOURCES TestBookmark.cpp
             TestFilenameAttributes.cpp
             TestStacks.cpp
             TestVideoDbUrl.cpp
+            TestVideoContentUtils.cpp
             TestVideoFileItemClassify.cpp
             TestVideoInfoTag.cpp
             TestVideoUtils.cpp)

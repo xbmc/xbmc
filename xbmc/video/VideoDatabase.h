@@ -9,6 +9,7 @@
 #pragma once
 
 #include "Bookmark.h"
+#include "VideoContentUtils.h"
 #include "VideoInfoTag.h"
 #include "addons/Scraper.h"
 #include "dbwrappers/Database.h"
@@ -570,6 +571,11 @@ public:
    \return A content type string for the current path.
    */
   std::string GetContentForPath(const std::string& strPath);
+
+  /*!
+   * \brief Finds any episodes directly in a given path or archives that contain episodes in the path. 
+   */
+  KODI::VIDEO::TVShowEpisodePathResult GetEpisodesInPaths(const std::string& strPath) const;
 
   /*! \brief Get videos of the given content type from the given path
    \param content the content type to fetch.

@@ -5,6 +5,7 @@ set(SOURCES Bookmark.cpp
             PlayerController.cpp
             SetInfoTag.cpp
             Teletext.cpp
+            VideoContentUtils.cpp
             VideoDatabase.cpp
             VideoDatabaseDDL.cpp
             VideoDatabaseMigration.cpp
@@ -30,6 +31,7 @@ set(HEADERS Bookmark.h
             SetInfoTag.h
             Teletext.h
             TeletextDefines.h
+            VideoContentUtils.h
             VideoDatabase.h
             VideoDatabaseColumns.h
             VideoDatabaseDDL.h

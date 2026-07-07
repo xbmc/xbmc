@@ -8654,68 +8654,52 @@ bool CVideoDatabase::GetUseAllExternalAudioForVideo(const std::string& videoPath
   return false;
 }
 
+TVShowEpisodePathResult CVideoDatabase::GetEpisodesInPaths(const std::string& strPath) const
+{
+  TVShowEpisodePathResult result;
+
+  std::string sql = PrepareSQL("SELECT 1 FROM episode_view "
+                               "WHERE strPath = '%s' "
+                               "LIMIT 1",
+                               strPath.c_str());
+  m_pDS->query(sql);
+  if (m_pDS->num_rows())
+  {
+    result.episodesInThisPath = true;
+    return result;
+  }
+
+  // If the episodes are in individual archives
+  // then strPath may point to the directory containing the archive
+  // rather than the archive itself (eg. rar://).
+  // So see if there are any matches using the parentpathid.
+  sql = PrepareSQL("SELECT DISTINCT e.strPath FROM episode_view e "
+                   "JOIN path p ON e.c%02d = p.idPath "
+                   "WHERE p.strPath = '%s' ",
+                   VIDEODB_ID_EPISODE_PARENTPATHID, strPath.c_str());
+  m_pDS->query(sql);
+  while (!m_pDS->eof())
+  {
+    result.candidatePaths.emplace_back(m_pDS->fv(0).get_asString());
+    m_pDS->next();
+  }
+
+  return result;
+}
+
 std::string CVideoDatabase::GetContentForPath(const std::string& strPath)
 {
   SScanSettings settings;
-  bool foundDirectly = false;
-  ScraperPtr scraper = GetScraperForPath(strPath, settings, foundDirectly);
-  if (scraper)
-  {
-    if (scraper->Content() == ContentType::TVSHOWS)
-    {
-      // For TV shows scraped with 'Single TV show in folder OFF' - pointing to folder /TV Shows/
-      // For TV shows scraped with 'Single TV show in folder ON' - pointing to folder /Show (2002)/
-      //
-      // Contents of:                                                   Return
-      // ------------                                                   ------
-      // /TV Shows/                                                     tvshows (NB first case only)
-      // /TV Shows/Show (2002)/                                         seasons - if folder does NOT contain any episodes (eg. Season subfolders only)
-      // /TV Shows/Show (2002)/                                         episodes - if folder DOES contain episode(s)
-      // /TV Shows/Show (2002)/Season 1/                                episodes - if folder DOES contain episode(s)
-      // /TV Shows/Show (2002)/Season 1/                                seasons - if folder does NOT contain episode(s)
-      //                                                                @todo - this currently returns episodes if there is a single archive containing multiple episodes
-      //                                                                @todo - (although of no functional consequence)
-      // /TV Shows/Show (2002)/Season 1/episode.rar                     episodes - if the archive(s) contains an episode (the .rar is expanded by the vfs automatically)
-      // /TV Shows/Show (2002)/Season 1/episodes.rar                    seasons - if the archive does NOT contain any episodes (ie. they are in a subfolder of the archive)
-      // /TV Shows/Show (2002)/episodes.rar/Season 1                    episodes - if the archive contains episode(s) (expanded by the vfs)
-      // /TV Shows/Show (2002)/Seasons 1 and 2/episodes.rar/Season 1    episodes - if the archive contains episode(s) (expanded by the vfs)
+  bool scraperSetOnThisPath = false;
+  ScraperPtr scraper = GetScraperForPath(strPath, settings, scraperSetOnThisPath);
+  if (!scraper)
+    return "";
 
-      std::string sql = PrepareSQL("SELECT 1 FROM episode_view "
-                                   "WHERE strPath = '%s' "
-                                   "LIMIT 1",
-                                   strPath.c_str());
-
-      m_pDS->query(sql);
-      if (m_pDS->num_rows())
-        return "episodes";
-
-      // If the episodes are in individual archives
-      // then strPath may point to the directory containing the archive
-      // rather than the archive itself (eg. rar://).
-      // So see if there are any matches using the parentpathid.
-      sql = PrepareSQL("SELECT DISTINCT e.strPath FROM episode_view e "
-                       "JOIN path p ON e.c%02d = p.idPath "
-                       "WHERE p.strPath = '%s' ",
-                       VIDEODB_ID_EPISODE_PARENTPATHID, strPath.c_str());
-      m_pDS->query(sql);
-      if (m_pDS->num_rows())
-      {
-        while (!m_pDS->eof())
-        {
-          const CURL url(m_pDS->fv(0).get_asString());
-          if ((url.GetFileName().empty() && URIUtils::IsArchive(url)) || url.IsBlurayPath())
-            return "episodes"; // Episodes in root of archive
-          m_pDS->next();
-        }
-      }
-
-      // If the scraper was set directly on this path, it is a tvshows root
-      // unless the scraper is set for a single tv show in this folder
-      return foundDirectly && !settings.parent_name ? "tvshows" : "seasons";
-    }
+  if (scraper->Content() != ContentType::TVSHOWS)
     return TranslateContent(scraper->Content());
-  }
-  return "";
+
+  return DetermineContentForTVShows(scraperSetOnThisPath, settings.parent_name,
+                                    GetEpisodesInPaths(strPath));
 }
 
 void CVideoDatabase::GetMovieGenresByName(const std::string& strSearch, CFileItemList& items)
