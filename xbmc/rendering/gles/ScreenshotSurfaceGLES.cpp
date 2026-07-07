@@ -53,8 +53,7 @@ bool CScreenshotSurfaceGLES::Capture(const ScreenshotContext& ctx)
   m_width = viewport[2] - viewport[0];
   m_height = viewport[3] - viewport[1];
 
-  GLint redBits = 8;
-  glGetIntegerv(GL_RED_BITS, &redBits);
+  const int redBits = ctx.winSystem.GetOutputBitDepth();
 
   // GLES only guarantees GL_RGBA/GL_UNSIGNED_BYTE for glReadPixels.
   // Any other format must be queried via GL_IMPLEMENTATION_COLOR_READ_TYPE.
