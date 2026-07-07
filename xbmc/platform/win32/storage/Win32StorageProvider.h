@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "jobs/Job.h"
 #include "storage/IStorageProvider.h"
+#include "threads/CriticalSection.h"
 
 #include <vector>
 
@@ -39,7 +39,22 @@ public:
 
   virtual std::vector<std::string> GetDiskUsage();
 
-  virtual bool PumpDriveChangeEvents(IStorageEventsCallback *callback);
+  virtual bool PumpDriveChangeEvents(IStorageEventsCallback* callback);
+
+  // Translated from Windows messages
+  enum class StorageEventType
+  {
+    ADDED,
+    SAFELY_REMOVED,
+    UNSAFELY_REMOVED,
+  };
+
+  // Build a StorageDevice descriptor from a drive root (eg. "D:")
+  static MEDIA_DETECT::STORAGE::StorageDevice GetStorageDevice(const std::string& drive);
+
+  // Called from the windowing thread to queue a change for the next pump
+  static void QueueStorageEvent(StorageEventType type,
+                                const MEDIA_DETECT::STORAGE::StorageDevice& device);
 
   static void SetEvent() { xbevent = true; }
   static bool xbevent;
@@ -49,16 +64,13 @@ private:
                               Drive_Types eDriveType = ALL_DRIVES,
                               bool bonlywithmedia = false);
   static DEVINST GetDrivesDevInstByDiskNumber(long DiskNumber);
+
+  struct StorageEvent
+  {
+    StorageEventType type;
+    MEDIA_DETECT::STORAGE::StorageDevice device;
+  };
+
+  inline static std::vector<StorageEvent> m_events;
+  inline static CCriticalSection m_eventsSection;
 };
-
-class CDetectDisc : public CJob
-{
-public:
-  CDetectDisc(const std::string &strPath, const bool bautorun);
-  bool DoWork();
-
-private:
-  std::string  m_strPath;
-  bool        m_bautorun;
-};
-
