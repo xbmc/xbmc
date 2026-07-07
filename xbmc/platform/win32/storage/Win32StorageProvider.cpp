@@ -9,7 +9,6 @@
 
 #include "ServiceBroker.h"
 #include "filesystem/SpecialProtocol.h"
-#include "jobs/JobManager.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "storage/MediaManager.h"
@@ -17,6 +16,8 @@
 #include "utils/log.h"
 
 #include "platform/win32/CharsetConverter.h"
+
+#include <mutex>
 
 #include <SetupAPI.h>
 #include <ShlObj.h>
@@ -34,18 +35,22 @@ void CWin32StorageProvider::Initialize()
   // check for a DVD drive
   std::vector<CMediaSource> vShare;
   GetDrivesByType(vShare, DVD_DRIVES);
-  if(!vShare.empty())
+  if (!vShare.empty())
     CServiceBroker::GetMediaManager().SetHasOpticalDrive(true);
   else
     CLog::LogF(LOGDEBUG, "No optical drive found.");
 
 #ifdef HAS_OPTICAL_DRIVE
-  // Can be removed once the StorageHandler supports optical media
+  // A disc already present in a drive at startup is added as a source but does
+  // NOT autorun, matching Linux
   for (const auto& it : vShare)
+  {
     if (CServiceBroker::GetMediaManager().GetDriveStatus(it.strPath) ==
         DriveState::CLOSED_MEDIA_PRESENT)
-      CServiceBroker::GetJobManager()->AddJob(new CDetectDisc(it.strPath, false), nullptr);
-      // remove end
+    {
+      CServiceBroker::GetMediaManager().AddOpticalSource(it.strPath);
+    }
+  }
 #endif
 }
 
@@ -168,13 +173,6 @@ std::vector<std::string > CWin32StorageProvider::GetDiskUsage()
     }while( wcslen( pcBuffer.get() + iPos ) > 0 );
   }
   return result;
-}
-
-bool CWin32StorageProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
-{
-  bool b = xbevent;
-  xbevent = false;
-  return b;
 }
 
 void CWin32StorageProvider::GetDrivesByType(std::vector<CMediaSource>& localDrives,
@@ -378,27 +376,71 @@ DEVINST CWin32StorageProvider::GetDrivesDevInstByDiskNumber(long DiskNumber)
   return 0;
 }
 
-CDetectDisc::CDetectDisc(const std::string &strPath, const bool bautorun)
-  : m_strPath(strPath), m_bautorun(bautorun)
+MEDIA_DETECT::STORAGE::StorageDevice CWin32StorageProvider::GetStorageDevice(
+    const std::string& drive)
 {
+  using KODI::PLATFORM::WINDOWS::FromW;
+  using KODI::PLATFORM::WINDOWS::ToW;
+
+  MEDIA_DETECT::STORAGE::StorageDevice device;
+  device.path = drive; // e.g. "D:"
+  device.label = drive;
+
+  const std::wstring root = ToW(drive + "\\");
+  if (GetDriveTypeW(root.c_str()) == DRIVE_CDROM)
+    device.type = MEDIA_DETECT::STORAGE::Type::OPTICAL;
+
+  wchar_t volumeName[MAX_PATH + 1] = {};
+  if (GetVolumeInformationW(root.c_str(), volumeName, MAX_PATH, nullptr, nullptr, nullptr, nullptr,
+                            0) &&
+      volumeName[0] != L'\0')
+  {
+    device.label = FromW(volumeName);
+  }
+  return device;
 }
 
-bool CDetectDisc::DoWork()
+void CWin32StorageProvider::QueueStorageEvent(StorageEventType type,
+                                              const MEDIA_DETECT::STORAGE::StorageDevice& device)
 {
-#ifdef HAS_OPTICAL_DRIVE
-  CLog::LogF(LOGDEBUG, "Optical media found in drive {}", m_strPath);
-  CMediaSource share;
-  share.strPath = m_strPath;
-  share.strStatus = CServiceBroker::GetMediaManager().GetDiskLabel(share.strPath);
-  share.strDiskUniqueId = CServiceBroker::GetMediaManager().GetDiskUniqueId(share.strPath);
-  if (CServiceBroker::GetMediaManager().IsAudio(share.strPath))
-    share.strStatus = "Audio-CD";
-  else if(share.strStatus == "")
-    share.strStatus = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(446);
-  share.strName = share.strPath;
-  share.m_ignore = true;
-  share.m_iDriveType = SourceType::OPTICAL_DISC;
-  CServiceBroker::GetMediaManager().AddAutoSource(share, m_bautorun);
-#endif
-  return true;
+  std::unique_lock lock(m_eventsSection);
+  m_events.emplace_back(StorageEvent{type, device});
+}
+
+bool CWin32StorageProvider::PumpDriveChangeEvents(IStorageEventsCallback* callback)
+{
+  std::vector<StorageEvent> events;
+  {
+    std::unique_lock lock(m_eventsSection);
+    events.swap(m_events);
+  }
+
+  if (callback)
+  {
+    for (const auto& ev : events)
+    {
+      switch (ev.type)
+      {
+        case StorageEventType::ADDED:
+          callback->OnStorageAdded(ev.device);
+          break;
+        case StorageEventType::SAFELY_REMOVED:
+          callback->OnStorageSafelyRemoved(ev.device);
+          break;
+        case StorageEventType::UNSAFELY_REMOVED:
+          callback->OnStorageUnsafelyRemoved(ev.device);
+          break;
+      }
+    }
+  }
+
+  bool changed = !events.empty();
+
+  // legacy flag still used by the shell-notification (SD card) path
+  if (xbevent)
+  {
+    xbevent = false;
+    changed = true;
+  }
+  return changed;
 }
