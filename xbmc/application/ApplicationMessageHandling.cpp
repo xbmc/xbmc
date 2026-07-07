@@ -53,10 +53,12 @@
 #include "pvr/PVRManager.h"
 #include "pvr/guilib/PVRGUIActionsPowerManagement.h"
 #include "pvr/guilib/PVRGUIActionsRecordings.h"
+#include "rendering/RenderSystem.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
 #include "utils/ContentUtils.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/URIUtils.h"
@@ -64,6 +66,8 @@
 #include "windowing/WinSystem.h"
 
 #ifdef TARGET_ANDROID
+#include "windowing/android/WinSystemAndroid.h"
+
 #include "platform/android/activity/XBMCApp.h"
 #endif
 #ifdef TARGET_DARWIN_EMBEDDED
@@ -178,16 +182,68 @@ void CApplicationMessageHandling::OnApplicationMessage(MESSAGING::ThreadMessage*
 
 #ifdef TARGET_ANDROID
     case TMSG_DISPLAY_SETUP:
+    {
       // We might come from a refresh rate switch destroying the native window; use the context resolution
-      *static_cast<bool*>(pMsg->lpVoid) =
+      bool displaySetup =
           m_app.InitWindow(CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution());
-      m_app.GetComponent<CApplicationPowerHandling>()->SetRenderGUI(true);
+
+      if (displaySetup && m_androidSkinUnloadedForDisplayDestroy)
+      {
+        const auto skinHandling = m_app.GetComponent<CApplicationSkinHandling>();
+        const std::shared_ptr<CSettings> settings =
+            CServiceBroker::GetSettingsComponent()->GetSettings();
+
+        std::string skinId = settings->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
+        if (!skinHandling->LoadSkin(skinId))
+        {
+          CLog::Log(LOGERROR, "Failed to reload skin '{}' after Android display setup", skinId);
+
+          auto setting = settings->GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN);
+          if (setting)
+          {
+            std::string defaultSkin =
+                std::static_pointer_cast<const CSettingString>(setting)->GetDefault();
+            displaySetup = skinHandling->LoadSkin(defaultSkin);
+          }
+          else
+          {
+            CLog::Log(LOGFATAL, "Failed to load setting for: {}",
+                      CSettings::SETTING_LOOKANDFEEL_SKIN);
+            displaySetup = false;
+          }
+        }
+
+        if (displaySetup)
+        {
+          m_androidSkinUnloadedForDisplayDestroy = false;
+          if (CGUIComponent* gui = CServiceBroker::GetGUI(); gui)
+            gui->GetWindowManager().MarkDirty();
+        }
+      }
+
+      *static_cast<bool*>(pMsg->lpVoid) = displaySetup;
+      if (displaySetup)
+        m_app.GetComponent<CApplicationPowerHandling>()->SetRenderGUI(true);
       break;
+    }
 
     case TMSG_DISPLAY_DESTROY:
-      *static_cast<bool*>(pMsg->lpVoid) = CServiceBroker::GetWinSystem()->DestroyWindow();
+    {
       m_app.GetComponent<CApplicationPowerHandling>()->SetRenderGUI(false);
+      m_app.GetComponent<CApplicationPlayer>()->ClosePlayer();
+
+      if (CGUIComponent* gui = CServiceBroker::GetGUI(); gui && gui->GetSkinInfo())
+        m_androidSkinUnloadedForDisplayDestroy = true;
+
+      m_app.GetComponent<CApplicationSkinHandling>()->UnloadSkin();
+
+      if (CRenderSystemBase* renderSystem = CServiceBroker::GetRenderSystem())
+        renderSystem->DestroyRenderSystem();
+
+      auto winSystem = dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem());
+      *static_cast<bool*>(pMsg->lpVoid) = winSystem && winSystem->DestroySurface();
       break;
+    }
 
     case TMSG_RESUMEAPP:
     {
