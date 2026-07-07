@@ -431,6 +431,13 @@ KODI::UTILS::Colorimetry CWinSystemWin32DX::GetColorimetry() const
   return IsHDROutput() ? KODI::UTILS::Colorimetry::BT2020_RGB : KODI::UTILS::Colorimetry::DEFAULT;
 }
 
+int CWinSystemWin32DX::GetOutputBitDepth() const
+{
+  const bool is10bit =
+      m_deviceResources->GetBackBuffer().GetFormat() == DXGI_FORMAT_R10G10B10A2_UNORM;
+  return is10bit ? 10 : 8;
+}
+
 bool CWinSystemWin32DX::IsTransferPQ() const
 {
   return m_deviceResources->IsTransferPQ();
