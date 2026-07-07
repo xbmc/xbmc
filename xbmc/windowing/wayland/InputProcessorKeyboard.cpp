@@ -168,7 +168,7 @@ void CInputProcessorKeyboard::ConvertAndSendKey(std::uint32_t scancode, bool pre
     return;
   }
 
-  if (xbmcKey == XBMCK_UNKNOWN && utf32 == XBMCK_UNKNOWN)
+  if (xbmcKey == XBMCK_UNKNOWN && utf32 == 0)
   {
     auto evdevKey = CEvdevKeyMapping::XBMCKeyForEvdevCode(scancode);
     if (evdevKey)

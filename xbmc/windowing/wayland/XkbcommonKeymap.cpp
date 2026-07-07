@@ -552,7 +552,7 @@ std::uint32_t CXkbcommonKeymap::UnicodeCodepointForKeycode(xkb_keycode_t code) c
   }
 
   // check if it is a dead key and try to translate
-  if (unicode == XBMCK_UNKNOWN)
+  if (unicode == 0)
   {
     const uint32_t keysym = xkb_state_key_get_one_sym(m_state.get(), code);
     const std::optional<XBMCKey> xbmcKey = XkbDeadKeyXBMCMapping.get(keysym);

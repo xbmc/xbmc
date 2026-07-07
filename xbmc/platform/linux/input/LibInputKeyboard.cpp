@@ -505,7 +505,7 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
   event.key.keysym.unicode = unicode;
 
   bool haveEvdevMapping = false;
-  if (event.key.keysym.sym == XBMCK_UNKNOWN && event.key.keysym.unicode == XBMCK_UNKNOWN)
+  if (event.key.keysym.sym == XBMCK_UNKNOWN && event.key.keysym.unicode == 0)
   {
     auto evdevKey = CEvdevKeyMapping::XBMCKeyForEvdevCode(scancode);
     if (evdevKey)
@@ -653,7 +653,7 @@ std::uint32_t CLibInputKeyboard::UnicodeCodepointForKeycode(xkb_keycode_t code) 
   }
 
   // check if it is a dead key and try to translate
-  if (unicode == XBMCK_UNKNOWN)
+  if (unicode == 0)
   {
     const uint32_t keysym = xkb_state_key_get_one_sym(m_state.get(), code);
     const std::optional<XBMCKey> xbmcKey = TranslateDeadKey(keysym);
