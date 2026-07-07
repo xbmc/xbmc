@@ -143,7 +143,10 @@ bool CLinuxRendererGLES::ValidateRenderTarget()
       DeleteTexture(i);
     }
 
-     // create the yuv textures
+    // trigger update of video filters
+    m_scalingMethodGui = VS_SCALINGMETHOD_MAX;
+
+    // create the yuv textures
     UpdateVideoFilter();
     LoadShaders();
 
@@ -199,7 +202,7 @@ bool CLinuxRendererGLES::Configure(const VideoPicture &picture, float fps, unsig
   ManageRenderArea();
 
   m_bConfigured = true;
-  m_scalingMethodGui = (ESCALINGMETHOD)-1;
+  m_scalingMethodGui = VS_SCALINGMETHOD_MAX;
   m_scalingMethod = m_videoSettings.m_ScalingMethod;
 
   // Ensure that textures are recreated and rendering starts only after the 1st
@@ -767,8 +770,11 @@ void CLinuxRendererGLES::UpdateVideoFilter()
     // On GLES 3.1+, FAST scalers use a single-pass combined YUV+convolution shader
     // (YUV2RGBFilterShader with textureGather). On lower versions, fall through to
     // multi-pass FBO path. Matches GL 4.0+ single-pass / GL <4.0 multi-pass pattern.
+    // On GLES, VAAPI maps to SHADER_NV12_RRG (GL maps it to SHADER_NV12).
+    // Only patterns the filter shader implements may pass: >8-bit planar
+    // (XBMC_YV12_HI) has no sampling block there and takes the multipass path.
     EShaderFormat fmt = GetShaderFormat();
-    if (fmt == SHADER_NV12 || (fmt >= SHADER_YV12 && fmt <= SHADER_YV12_16))
+    if (fmt == SHADER_NV12 || fmt == SHADER_NV12_RRG || fmt == SHADER_YV12)
     {
       uint32_t major, minor;
       m_renderSystem->GetRenderVersion(major, minor);
@@ -1311,16 +1317,24 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field)
     LoadShaders(m_currentField);
   }
 
+  //! @todo Believed dead: every FBO invalidation clears m_bValidated, and
+  //! ValidateRenderTarget resets the filter cache so UpdateVideoFilter
+  //! recreates the FBO before any multipass render. Kept as a failsafe
+  //! against unenumerated invalidation paths.
   if (!m_fbo.fbo.IsValid())
   {
+    CLog::Log(LOGWARNING, "GLES: multipass FBO invalid at render time, recreating");
+
     if (!m_fbo.fbo.Initialize())
     {
       CLog::Log(LOGERROR, "GLES: Error initializing FBO");
       return;
     }
 
-    if (!m_fbo.fbo.CreateAndBindToTexture(GL_TEXTURE_2D, m_sourceWidth, m_sourceHeight, GL_RGBA,
-                                          GL_SHORT))
+    // Recreate with the format/type UpdateVideoFilter settled on, so the
+    // intermediate FBO keeps the bit depth configured by hqscalerprecision.
+    if (!m_fbo.fbo.CreateAndBindToTexture(GL_TEXTURE_2D, m_sourceWidth, m_sourceHeight,
+                                          m_intermediateFormat, m_intermediateType, GL_NEAREST))
     {
       CLog::Log(LOGERROR, "GLES: Error creating texture and binding to FBO");
       return;

@@ -202,9 +202,9 @@ bool CLinuxRendererGL::ValidateRenderTarget()
     }
 
     // trigger update of video filters
-    m_scalingMethodGui = (ESCALINGMETHOD)-1;
+    m_scalingMethodGui = VS_SCALINGMETHOD_MAX;
 
-     // create the yuv textures
+    // create the yuv textures
     UpdateVideoFilter();
     LoadShaders();
     if (m_renderMethod < 0)
@@ -244,7 +244,7 @@ bool CLinuxRendererGL::Configure(const VideoPicture &picture, float fps, unsigne
   ManageRenderArea();
 
   m_bConfigured = true;
-  m_scalingMethodGui = (ESCALINGMETHOD)-1;
+  m_scalingMethodGui = VS_SCALINGMETHOD_MAX;
   m_scalingMethod = m_videoSettings.m_ScalingMethod;
 
   // Ensure that textures are recreated and rendering starts only after the 1st
@@ -1313,15 +1313,24 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
     LoadShaders(m_currentField);
   }
 
+  //! @todo Believed dead: every FBO invalidation clears m_bValidated, and
+  //! ValidateRenderTarget resets the filter cache so UpdateVideoFilter
+  //! recreates the FBO before any multipass render. Kept as a failsafe
+  //! against unenumerated invalidation paths.
   if (!m_fbo.fbo.IsValid())
   {
+    CLog::Log(LOGWARNING, "GL: multipass FBO invalid at render time, recreating");
+
     if (!m_fbo.fbo.Initialize())
     {
       CLog::Log(LOGERROR, "GL: Error initializing FBO");
       return;
     }
 
-    if (!m_fbo.fbo.CreateAndBindToTexture(GL_TEXTURE_2D, m_sourceWidth, m_sourceHeight, GL_RGBA, GL_SHORT))
+    // Recreate with the format/type UpdateVideoFilter settled on, so the
+    // intermediate FBO keeps the bit depth configured by hqscalerprecision.
+    if (!m_fbo.fbo.CreateAndBindToTexture(GL_TEXTURE_2D, m_sourceWidth, m_sourceHeight,
+                                          m_intermediateFormat, m_intermediateType, GL_NEAREST))
     {
       CLog::Log(LOGERROR, "GL: Error creating texture and binding to FBO");
       return;
