@@ -45,7 +45,8 @@ public:
   ~CCaptureService();
 
   //! Register a request; the returned handle owns its lifetime.
-  //! \param callback optional; runs on a worker thread after completion
+  //! \param callback optional; runs on a worker thread after SUCCESSFUL
+  //! completion only; failures and cancels just wake the waiter
   std::unique_ptr<CCaptureHandle> Submit(const CaptureSpec& spec, CaptureCallback callback = {});
 
   //! Render thread, frame boundary: make newly submitted requests visible
