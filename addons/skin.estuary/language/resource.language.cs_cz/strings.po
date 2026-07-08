@@ -5,17 +5,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2023-09-06 17:24+0000\n"
-"Last-Translator: HansCR <h.vanek@gmail.com>\n"
+"PO-Revision-Date: 2026-07-08 09:23+0000\n"
+"Last-Translator: \"O. N.\" <n0vy0ndr4@gmail.com>\n"
 "Language-Team: Czech <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/cs_cz/>\n"
 "Language: cs_cz\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
-"X-Generator: Weblate 4.18.2\n"
+"X-Generator: Weblate 2026.7\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -134,7 +134,7 @@ msgstr "Zvolte hodnocení zobrazené pro položky médií"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add items from media and other views by using the context menu."
-msgstr ""
+msgstr "Nebyly nalezeny žádné oblíbené položky. Položky z médií a dalších zobrazení můžete přidat pomocí kontextové nabídky."
 
 msgctxt "#31026"
 msgid "Timeshift"
@@ -195,7 +195,7 @@ msgstr "Přetočit vpřed"
 
 msgctxt "#31040"
 msgid "Edit widgets"
-msgstr ""
+msgstr "Upravit widgety"
 
 msgctxt "#31041"
 msgid "Camera manufacturer"
@@ -223,7 +223,7 @@ msgstr "Odstranit skupinu"
 
 msgctxt "#31047"
 msgid "Movie title format"
-msgstr ""
+msgstr "Formát názvu filmu"
 
 msgctxt "#31048"
 msgid "Available"
@@ -231,15 +231,15 @@ msgstr "Dostupné"
 
 msgctxt "#31049"
 msgid "Original title"
-msgstr ""
+msgstr "Původní název"
 
 msgctxt "#31050"
 msgid "Original title (Localised title)"
-msgstr ""
+msgstr "Původní název (lokalizovaný název)"
 
 msgctxt "#31051"
 msgid "Localised title (Original title)"
-msgstr ""
+msgstr "Lokalizovaný název (původní název)"
 
 msgctxt "#31052"
 msgid "filtered"
@@ -332,7 +332,7 @@ msgstr "Končí v"
 #. Label to highlight that live stream is being played
 msgctxt "#31081"
 msgid "Live"
-msgstr ""
+msgstr "Živě"
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
@@ -418,12 +418,12 @@ msgstr "Široký seznam"
 #. viewtype name
 msgctxt "#31108"
 msgid "MediaList"
-msgstr ""
+msgstr "Seznam médií"
 
 # empty strings from id 31108 to 31108
 msgctxt "#31109"
 msgid "Video streams"
-msgstr ""
+msgstr "Video streamy"
 
 msgctxt "#31110"
 msgid "Enter files section"
@@ -435,7 +435,7 @@ msgstr "Zobrazte vlastní obrázky nebo si stáhněte jeden z mnoha doplňků ob
 
 msgctxt "#31112"
 msgid "Audio streams"
-msgstr ""
+msgstr "Zvukové streamy"
 
 msgctxt "#31113"
 msgid "Search local library"
@@ -447,7 +447,7 @@ msgstr "Vyhledat na YouTube"
 
 msgctxt "#31115"
 msgid "Subtitles streams"
-msgstr ""
+msgstr "Titulkové streamy"
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
@@ -483,7 +483,7 @@ msgstr "Stejný režisér"
 
 msgctxt "#31124"
 msgid "Media Details"
-msgstr ""
+msgstr "Detaily médií"
 
 msgctxt "#31125"
 msgid "Press up for actor info"
@@ -587,7 +587,7 @@ msgstr "Kategorie"
 
 msgctxt "#31149"
 msgid "Choose genre fanart pack"
-msgstr ""
+msgstr "Vybrat balíček fanartu žánrů"
 
 msgctxt "#31150"
 msgid "Origin"
@@ -712,23 +712,23 @@ msgstr "Výchozí akce pro filmy na hlavní obrazovce"
 
 msgctxt "#31177"
 msgid "Choose weather icon pack"
-msgstr ""
+msgstr "Vybrat balíček ikon počasí"
 
 # empty strings from id 31177 to 31596
 #. Button to select Player Process Info window
 msgctxt "#31597"
 msgid "Player info"
-msgstr ""
+msgstr "Informace o přehrávači"
 
 #. Label to show player cache
 msgctxt "#31598"
 msgid "Player cache"
-msgstr ""
+msgstr "Mezipaměť přehrávače"
 
 #. Label to show the video codec name
 msgctxt "#31599"
 msgid "Audio decoder"
-msgstr ""
+msgstr "Dekodér zvuku"
 
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name
@@ -794,22 +794,22 @@ msgstr "Systém"
 #. Audio channels
 msgctxt "#31612"
 msgid "channels"
-msgstr ""
+msgstr "kanály"
 
 #. Label to show the subtitle decoder name
 msgctxt "#31613"
 msgid "Subtitle decoder"
-msgstr ""
+msgstr "Dekodér titulků"
 
 #. Label to show the subtitle codec name
 msgctxt "#31614"
 msgid "Subtitle codec"
-msgstr ""
+msgstr "Kodek titulků"
 
 #. Label to show the subtitle language
 msgctxt "#31615"
 msgid "Subtitle language"
-msgstr ""
+msgstr "Jazyk titulků"
 
 #~ msgctxt "#31025"
 #~ msgid "No favourites found. You can add any item from media views to this list by using the context menu."
