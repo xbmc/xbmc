@@ -1936,10 +1936,14 @@ std::string URIUtils::SanitiseUrlEncoding(std::string_view path)
   // Some providers (eg. vfs rar) return paths with %2F instead of %2f,
   // which causes problems when comparing paths.
   // This only applies to the hostname element of the url
-  auto protocolEnd{path.find("://")};
+  constexpr std::string_view PROTOCOL_SEP = "://";
+  auto protocolEnd{path.find(PROTOCOL_SEP)};
   if (protocolEnd == std::string::npos)
     return std::string(path);
-  protocolEnd += 3;
+
+  protocolEnd += PROTOCOL_SEP.size();
+  if (protocolEnd >= path.size())
+    return std::string(path);
 
   auto hostEnd{path.find('/', protocolEnd)};
   if (hostEnd == std::string::npos)
@@ -1947,9 +1951,6 @@ std::string URIUtils::SanitiseUrlEncoding(std::string_view path)
 
   constexpr auto is_hex = [](char c) noexcept
   { return ('0' <= c && c <= '9') || ('a' <= c && c <= 'f') || ('A' <= c && c <= 'F'); };
-
-  if (protocolEnd >= path.size() || hostEnd > path.size())
-    return std::string(path);
 
   std::string out{path.substr(0, protocolEnd)};
   for (auto it = path.begin() + static_cast<long long>(protocolEnd);
