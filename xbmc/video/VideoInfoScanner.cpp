@@ -621,10 +621,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
           if (!setTag.GetTitle().empty())
             tag.m_set.SetTitle(setTag.GetTitle());
           if (!setTag.GetOverview().empty())
-          {
             tag.m_set.SetOverview(setTag.GetOverview());
-            tag.SetUpdateSetOverview(true);
-          }
           if (setTag.HasArt())
             tag.m_set.SetArt(setTag.GetArt());
           setUpdated = true;

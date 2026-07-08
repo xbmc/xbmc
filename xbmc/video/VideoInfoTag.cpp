@@ -100,7 +100,6 @@ void CVideoInfoTag::Reset()
   m_relevance = -1;
   m_parsedDetails = 0;
   m_coverArt.clear();
-  m_updateSetOverview = true;
 }
 
 bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathInfo, const TiXmlElement *additionalNode)
@@ -1430,7 +1429,6 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
 
   // Pre-Jarvis NFO file:
   // <set>A set</set>
-  m_updateSetOverview = false;
   if (XMLUtils::GetString(movie, "set", value))
     SetSet(value);
   // Jarvis+:
@@ -1443,10 +1441,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     {
       SetSet(value);
       if (XMLUtils::GetString(node, "overview", value))
-      {
         SetSetOverview(value);
-        m_updateSetOverview = true;
-      }
     }
   }
 
