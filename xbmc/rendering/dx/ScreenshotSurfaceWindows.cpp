@@ -8,15 +8,11 @@
 
 #include "ScreenshotSurfaceWindows.h"
 
-#include "guilib/GUIWindowManager.h"
 #include "rendering/dx/DeviceResources.h"
 #include "utils/Screenshot.h"
 #include "utils/log.h"
-#include "windowing/GraphicContext.h"
-#include "windowing/WinSystem.h"
 
 #include <cmath>
-#include <mutex>
 
 #include <wrl/client.h>
 
@@ -39,13 +35,6 @@ void CScreenshotSurfaceWindows::Register()
 std::unique_ptr<IScreenshotSurface> CScreenshotSurfaceWindows::CreateSurface()
 {
   return std::unique_ptr<CScreenshotSurfaceWindows>(new CScreenshotSurfaceWindows());
-}
-
-bool CScreenshotSurfaceWindows::Capture(const ScreenshotContext& ctx)
-{
-  std::unique_lock lock(ctx.winSystem.GetGfxContext());
-  ctx.windowManager.Render();
-  return Read(ctx);
 }
 
 bool CScreenshotSurfaceWindows::Read(const ScreenshotContext&)

@@ -10,6 +10,7 @@
 
 #include "rendering/capture/CaptureRequest.h"
 #include "rendering/capture/CaptureService.h"
+#include "utils/log.h"
 
 namespace KODI
 {
@@ -26,12 +27,13 @@ CCaptureHandle::CCaptureHandle(CCaptureService& service, std::shared_ptr<Capture
 
 CCaptureHandle::~CCaptureHandle()
 {
-  m_service.Cancel(m_request);
+  if (m_request)
+    m_service.Cancel(m_request);
 }
 
 bool CCaptureHandle::Wait(std::chrono::milliseconds timeout)
 {
-  if (!m_request->event.Wait(timeout))
+  if (!m_request || !m_request->event.Wait(timeout))
     return false;
 
   return m_service.GetState(*m_request) == CaptureState::DONE;
@@ -39,7 +41,18 @@ bool CCaptureHandle::Wait(std::chrono::milliseconds timeout)
 
 const CaptureResult& CCaptureHandle::GetResult() const
 {
+  if (!m_request)
+  {
+    CLog::LogF(LOGERROR, "called on a detached handle");
+    static const CaptureResult empty;
+    return empty;
+  }
   return m_request->result;
+}
+
+void CCaptureHandle::Detach()
+{
+  m_request.reset();
 }
 
 } // namespace CAPTURE

@@ -130,6 +130,20 @@ TEST_F(TestCaptureService, ContinuousStaysActive)
   EXPECT_EQ(m_service.TakeActive(CaptureContent::COMPOSITE).size(), 1u);
 }
 
+TEST_F(TestCaptureService, DetachedRequestCompletes)
+{
+  std::atomic<bool> ran{false};
+  auto handle = m_service.Submit({}, [&ran](const CaptureResult&) { ran = true; });
+  handle->Detach();
+
+  m_service.LatchFrame();
+  auto active = m_service.TakeActive(CaptureContent::COMPOSITE);
+  ASSERT_EQ(active.size(), 1u);
+
+  m_service.Complete(active[0], MakeResult());
+  EXPECT_TRUE(ConditionPoll::poll(10000, [&ran] { return ran.load(); }));
+}
+
 TEST_F(TestCaptureService, CancelledRequestPrunedAtLatch)
 {
   auto keep = m_service.Submit({});

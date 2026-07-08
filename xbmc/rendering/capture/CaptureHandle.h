@@ -38,6 +38,10 @@ public:
   //! Valid only after Wait() returned true.
   const CaptureResult& GetResult() const;
 
+  //! Release ownership without cancelling: the request completes or fails on
+  //! its own and its callback still runs. Wait() is unavailable afterwards.
+  void Detach();
+
 private:
   CCaptureService& m_service;
   std::shared_ptr<CaptureRequest> m_request;
