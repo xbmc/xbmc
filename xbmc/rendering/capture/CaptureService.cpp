@@ -9,6 +9,7 @@
 #include "CaptureService.h"
 
 #include "rendering/capture/CaptureHandle.h"
+#include "utils/log.h"
 
 #include <mutex>
 
@@ -113,11 +114,19 @@ void CCaptureService::Complete(const std::shared_ptr<CaptureRequest>& request, C
 
 void CCaptureService::Fail(const std::shared_ptr<CaptureRequest>& request)
 {
+  bool failed = false;
+
   {
     std::unique_lock lock(m_lock);
     if (request->state == CaptureState::LATCHED || request->state == CaptureState::PENDING)
+    {
       request->state = CaptureState::FAILED;
+      failed = true;
+    }
   }
+
+  if (failed)
+    CLog::LogF(LOGERROR, "capture request failed");
 
   request->event.Set();
   RemoveActive(request);

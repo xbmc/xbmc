@@ -8,15 +8,12 @@
 
 #include "ScreenshotSurfaceGL.h"
 
-#include "guilib/GUIWindowManager.h"
 #include "utils/Screenshot.h"
 #include "utils/log.h"
-#include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
 #include <cstring>
 #include <memory>
-#include <mutex>
 #include <vector>
 
 #include "system_gl.h"
@@ -29,13 +26,6 @@ void CScreenshotSurfaceGL::Register()
 std::unique_ptr<IScreenshotSurface> CScreenshotSurfaceGL::CreateSurface()
 {
   return std::make_unique<CScreenshotSurfaceGL>();
-}
-
-bool CScreenshotSurfaceGL::Capture(const ScreenshotContext& ctx)
-{
-  std::unique_lock lock(ctx.winSystem.GetGfxContext());
-  ctx.windowManager.Render();
-  return Read(ctx);
 }
 
 bool CScreenshotSurfaceGL::Read(const ScreenshotContext& ctx)

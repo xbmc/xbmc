@@ -850,16 +850,15 @@ void ServiceCaptureTaps()
     return;
 
   auto* winSystem = CServiceBroker::GetWinSystem();
-  auto* gui = CServiceBroker::GetGUI();
   auto surface = CScreenShot::CreateSurface();
-  if (!winSystem || !gui || !surface)
+  if (!winSystem || !surface)
   {
     for (const auto& request : requests)
       captureService->Fail(request);
     return;
   }
 
-  const ScreenshotContext ctx{*winSystem, gui->GetWindowManager()};
+  const ScreenshotContext ctx{*winSystem};
   if (!surface->Read(ctx))
   {
     for (const auto& request : requests)

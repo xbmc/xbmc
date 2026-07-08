@@ -8,22 +8,19 @@
 
 #pragma once
 
-class CGUIWindowManager;
 class CWinSystemBase;
 
-//! \brief Subsystem dependencies a screenshot surface needs at capture time,
-//! injected by CScreenShot so the surface does not reach for global state.
+//! \brief Subsystem dependencies a capture readback needs, injected so the
+//! surface does not reach for global state.
 struct ScreenshotContext
 {
   CWinSystemBase& winSystem;
-  CGUIWindowManager& windowManager;
 };
 
 class IScreenshotSurface
 {
 public:
   virtual ~IScreenshotSurface() = default;
-  virtual bool Capture(const ScreenshotContext& ctx) { return false; }
 
   //! \brief Read back the current framebuffer only; the caller guarantees a
   //! fully rendered frame and render-thread context.
