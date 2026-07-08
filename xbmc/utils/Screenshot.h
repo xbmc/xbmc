@@ -20,6 +20,9 @@ class CScreenShot
 public:
   static void Register(const std::function<std::unique_ptr<IScreenshotSurface>()>& createFunc);
 
+  //! \brief Create the platform's capture readback surface, null when none registered.
+  static std::unique_ptr<IScreenshotSurface> CreateSurface();
+
   static void TakeScreenshot();
   static void TakeScreenshot(const std::string &filename, bool sync);
 
