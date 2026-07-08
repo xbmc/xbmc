@@ -45,7 +45,11 @@ bool CScreenshotSurfaceGLES::Capture(const ScreenshotContext& ctx)
 {
   std::unique_lock lock(ctx.winSystem.GetGfxContext());
   ctx.windowManager.Render();
+  return Read(ctx);
+}
 
+bool CScreenshotSurfaceGLES::Read(const ScreenshotContext& ctx)
+{
   //get current viewport
   GLint viewport[4];
   glGetIntegerv(GL_VIEWPORT, viewport);

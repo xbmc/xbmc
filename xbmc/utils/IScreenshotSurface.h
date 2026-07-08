@@ -25,11 +25,23 @@ public:
   virtual ~IScreenshotSurface() = default;
   virtual bool Capture(const ScreenshotContext& ctx) { return false; }
 
+  //! \brief Read back the current framebuffer only; the caller guarantees a
+  //! fully rendered frame and render-thread context.
+  virtual bool Read(const ScreenshotContext& ctx) { return false; }
+
   int GetWidth() const { return m_width; }
   int GetHeight() const { return m_height; }
   int GetStride() const { return m_stride; }
   int GetBitDepth() const { return m_bitDepth; }
   unsigned char* GetBuffer() const { return m_buffer; }
+
+  //! \brief Transfer buffer ownership to the caller.
+  unsigned char* TakeBuffer()
+  {
+    unsigned char* buffer = m_buffer;
+    m_buffer = nullptr;
+    return buffer;
+  }
   void ReleaseBuffer()
   {
     if (m_buffer)
