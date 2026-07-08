@@ -45,7 +45,11 @@ bool CScreenshotSurfaceWindows::Capture(const ScreenshotContext& ctx)
 {
   std::unique_lock lock(ctx.winSystem.GetGfxContext());
   ctx.windowManager.Render();
+  return Read(ctx);
+}
 
+bool CScreenshotSurfaceWindows::Read(const ScreenshotContext&)
+{
   auto deviceResources = DX::DeviceResources::Get();
   deviceResources->FinishCommandList();
 
