@@ -242,7 +242,14 @@ public:
     if (strcmp(job->GetType(), GetType()) == 0)
     {
       const auto* dirJob = dynamic_cast<const CDirectoryJob*>(job);
-      if (dirJob && dirJob->m_url == m_url)
+      // Jobs must also agree on sort/limit/browse: two containers can be bound to the
+      // same content path but configured differently, and each must get its own results
+      // sorted/limited according to its own settings rather than merging into a single
+      // job and sharing whichever container's job happened to run first.
+      if (dirJob && dirJob->m_url == m_url && dirJob->m_sort.sortBy == m_sort.sortBy &&
+          dirJob->m_sort.sortOrder == m_sort.sortOrder &&
+          dirJob->m_sort.sortAttributes == m_sort.sortAttributes && dirJob->m_limit == m_limit &&
+          dirJob->m_browse == m_browse)
         return true;
     }
     return false;
