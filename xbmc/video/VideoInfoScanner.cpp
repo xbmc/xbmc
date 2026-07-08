@@ -1676,11 +1676,22 @@ CVideoInfoScanner::~CVideoInfoScanner()
       // Remove remote set art (if need)
       if (useRemoteArt == UseRemoteArtWithLocalScraper::NO)
         std::erase_if(art,
-                      [](const std::pair<std::string, std::string>& artItem)
+                      [](const auto& artItem)
                       {
                         const auto& [type, url] = artItem;
                         return StringUtils::StartsWith(type, "set.") && URIUtils::IsRemote(url);
                       });
+
+      // Art in SetInfoTag trumps set.* art in VideoInfoTag
+      std::erase_if(art,
+                    [&pItem](const auto& artItem)
+                    {
+                      const auto& [type, url] = artItem;
+                      if (StringUtils::StartsWith(type, "set."))
+                        // Remove set art from VideoInfoTag if same type art in SetInfoTag
+                        return pItem->GetVideoInfoTag()->m_set.GetArt().contains(type.substr(4));
+                      return false;
+                    });
 
       // Deal with 'Disc n' subdirectories
       // Unless dealing with a full nfo in which case details are taken from there already
