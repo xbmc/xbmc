@@ -431,6 +431,44 @@ TEST(TestStringUtils, AlphaNumericCompare)
   EXPECT_EQ(StringUtils::AlphaNumericCompare(L"12345678901234567890", L"12345678901234567890"), 0);
 }
 
+TEST(TestStringUtils, GetNordicCollationWeight)
+{
+  // Norwegian/Danish alphabet order: ... x y z æ ø å
+  for (const std::string_view lang : {"nor", "nob", "nno", "dan"})
+  {
+    const wchar_t ae = StringUtils::GetNordicCollationWeight(lang, L'æ'); // æ
+    const wchar_t oe = StringUtils::GetNordicCollationWeight(lang, L'ø'); // ø
+    const wchar_t aa = StringUtils::GetNordicCollationWeight(lang, L'å'); // å
+    EXPECT_GT(ae, L'z');
+    EXPECT_LT(ae, oe);
+    EXPECT_LT(oe, aa);
+    // Upper and lower case must weigh the same
+    EXPECT_EQ(ae, StringUtils::GetNordicCollationWeight(lang, L'Æ')); // Æ
+    EXPECT_EQ(oe, StringUtils::GetNordicCollationWeight(lang, L'Ø')); // Ø
+    EXPECT_EQ(aa, StringUtils::GetNordicCollationWeight(lang, L'Å')); // Å
+    // Swedish/Finnish ä/ö sort with æ/ø rather than folding to a/o
+    EXPECT_EQ(ae, StringUtils::GetNordicCollationWeight(lang, L'ä')); // ä
+    EXPECT_EQ(ae, StringUtils::GetNordicCollationWeight(lang, L'Ä')); // Ä
+    EXPECT_EQ(oe, StringUtils::GetNordicCollationWeight(lang, L'ö')); // ö
+    EXPECT_EQ(oe, StringUtils::GetNordicCollationWeight(lang, L'Ö')); // Ö
+  }
+
+  // Swedish/Finnish alphabet order: ... x y z å ä ö
+  for (const std::string_view lang : {"swe", "fin"})
+  {
+    const wchar_t aa = StringUtils::GetNordicCollationWeight(lang, L'å'); // å
+    const wchar_t ao = StringUtils::GetNordicCollationWeight(lang, L'ä'); // ä
+    const wchar_t oe = StringUtils::GetNordicCollationWeight(lang, L'ö'); // ö
+    EXPECT_GT(aa, L'z');
+    EXPECT_LT(aa, ao);
+    EXPECT_LT(ao, oe);
+  }
+
+  // No override for other languages or unrelated codepoints
+  EXPECT_EQ(StringUtils::GetNordicCollationWeight("eng", L'å'), 0); // å
+  EXPECT_EQ(StringUtils::GetNordicCollationWeight("nob", L'é'), 0); // é
+}
+
 TEST(TestStringUtils, TimeStringToSeconds)
 {
   EXPECT_EQ(77455, StringUtils::TimeStringToSeconds("21:30:55"));
