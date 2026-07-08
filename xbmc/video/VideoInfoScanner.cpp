@@ -649,7 +649,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
           movieSetArt.try_emplace(url.m_aspect.substr(4), url.m_url);
     }
     if (!movieSetArt.empty())
+    {
       tag.m_set.SetArt(movieSetArt);
+      setUpdated = true;
+    }
 
     return setUpdated;
   }
