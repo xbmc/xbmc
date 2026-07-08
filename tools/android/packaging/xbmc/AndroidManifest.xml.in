@@ -122,6 +122,11 @@
             android:name=".content.XBMCMediaContentProvider"
             android:authorities="@APP_PACKAGE@.media"
             android:exported="true" />
+        <!-- Must stay openly exported: URIs from this provider are stored in TvContract
+             preview programs, search suggestions and recommendations, and are later read
+             by the system TV launcher / Search UI, which cannot hold an app-defined
+             permission. Access is instead restricted by served-path validation in
+             XBMCFileContentProvider. -->
         <provider
             android:name=".content.XBMCFileContentProvider"
             android:authorities="@APP_PACKAGE@.file"

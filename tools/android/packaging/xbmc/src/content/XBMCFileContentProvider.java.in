@@ -97,8 +97,8 @@ public class XBMCFileContentProvider extends XBMCContentProvider
     {
       String decodedUrl = uri.getFragment();
       // Log.d(TAG, "  decodedUrl: " + decodedUrl);
-      if (decodedUrl == null)
-        return null;
+      if (!isServablePath(decodedUrl))
+        throw new FileNotFoundException("Refusing to serve path: " + decodedUrl);
 
       pipe = ParcelFileDescriptor.createPipe();
 
@@ -113,6 +113,22 @@ public class XBMCFileContentProvider extends XBMCContentProvider
     }
 
     return (pipe[0]);
+  }
+
+  // Callers only ever legitimately request Kodi VFS URLs (image://, special://,
+  // videodb://, smb://, http(s)://, ...), never bare filesystem paths. Requiring
+  // a scheme and rejecting ".." segments stops a caller from walking the pipe
+  // straight to an arbitrary local file (e.g. "/data/data/.../databases/x.db"
+  // or "special://home/../../../etc/hosts").
+  private static boolean isServablePath(String path)
+  {
+    if (path == null || path.isEmpty())
+      return false;
+    if (!path.contains("://"))
+      return false;
+    if (path.contains(".."))
+      return false;
+    return true;
   }
 
   static class TransferThread extends Thread
