@@ -11,13 +11,13 @@
  		}
 --- a/lib/util/fault.c
 +++ b/lib/util/fault.c
-@@ -150,7 +150,7 @@
+@@ -152,7 +152,7 @@
  			}
- 
+
  			DEBUG(0, ("smb_panic(): calling panic action [%s]\n", cmdstring));
 -			result = system(cmdstring);
 +			result = -1;
- 
+
  			if (result == -1)
  				DEBUG(0, ("smb_panic(): fork failed in panic action: %s\n",
 --- a/lib/util/sys_popen.c
@@ -25,16 +25,16 @@
 @@ -74,7 +74,7 @@
  		goto err_exit;
  	}
- 
+
 -	entry->child_pid = fork();
 +	entry->child_pid = -1;
- 
+
  	if (entry->child_pid == -1) {
  		DBG_ERR("fork failed: %s\n", strerror(errno));
 @@ -105,7 +105,7 @@
  		for (p = popen_chain; p; p = p->next)
  			close(p->fd);
- 
+
 -		ret = execv(argl[0], argl);
 +		ret = -1;
  		if (ret == -1) {
@@ -45,7 +45,7 @@
 @@ -511,7 +511,7 @@
  	ready_pipe_worker_fd = p[0];
  	ready_pipe_caller_fd = p[1];
- 
+
 -	pid = fork();
 +	pid = -1;
  	if (pid == -1) {
@@ -54,7 +54,7 @@
 @@ -580,7 +580,7 @@
  	close(event_pipe_caller_fd);
  	close(ready_pipe_caller_fd);
- 
+
 -	pid = fork();
 +	pid = -1;
  	if (pid == -1) {
@@ -62,10 +62,10 @@
  		_exit(0);
 --- a/lib/util/util_runcmd.c
 +++ b/lib/util/util_runcmd.c
-@@ -261,7 +261,6 @@
+@@ -264,7 +264,6 @@
  	}
  	va_end(ap);
- 
+
 -	(void)execvp(state->arg0, argv);
  	fprintf(stderr, "Failed to exec child - %s\n", strerror(errno));
  	_exit(255);
@@ -75,47 +75,27 @@
 @@ -159,7 +159,7 @@
  		return;
  	}
- 
+
 -	res = fork();
 +	res = -1;
  	if (res == -1) {
  		int err = errno;
  		close(fds[0]);
---- a/source3/lib/server_prefork.c
-+++ b/source3/lib/server_prefork.c
-@@ -109,7 +109,7 @@
- 		pfp->pool[i].allowed_clients = 1;
- 		pfp->pool[i].started = now;
- 
--		pid = fork();
-+		pid = -1;
- 		switch (pid) {
- 		case -1:
- 			DEBUG(1, ("Failed to prefork child n. %d !\n", i));
-@@ -199,7 +199,7 @@
- 		pfp->pool[i].allowed_clients = 1;
- 		pfp->pool[i].started = now;
- 
--		pid = fork();
-+		pid = -1;
- 		switch (pid) {
- 		case -1:
- 			DEBUG(1, ("Failed to prefork child n. %d !\n", j));
 --- a/source3/lib/smbrun.c
 +++ b/source3/lib/smbrun.c
-@@ -98,7 +98,7 @@
- 
+@@ -92,7 +92,7 @@
+
  	saved_handler = CatchChildLeaveStatus();
-                                    	
+
 -	if ((pid=fork()) < 0) {
 +	if ((pid=-1) < 0) {
  		DEBUG(0,("smbrun: fork failed with error %s\n", strerror(errno) ));
  		(void)CatchSignal(SIGCLD, saved_handler);
  		if (outfd) {
-@@ -193,15 +193,6 @@
+@@ -187,15 +187,6 @@
  				exit(82);
  		}
- 
+
 -		if (env != NULL) {
 -			execle("/bin/sh","sh","-c",
 -				newcmd ? (const char *)newcmd : cmd, NULL,
@@ -127,56 +107,54 @@
 -
  		SAFE_FREE(newcmd);
  	}
- 	
-@@ -263,7 +254,7 @@
- 
+
+@@ -251,7 +242,7 @@
+
  	saved_handler = CatchChildLeaveStatus();
-                                    	
+
 -	if ((pid=fork()) < 0) {
 +	if ((pid=-1) < 0) {
  		DEBUG(0, ("smbrunsecret: fork failed with error %s\n", strerror(errno)));
  		(void)CatchSignal(SIGCLD, saved_handler);
  		return errno;
-@@ -346,8 +333,6 @@
+@@ -334,8 +325,6 @@
  	   2 point to /dev/null from the startup code */
  	closefrom(3);
- 
--	execl("/bin/sh", "sh", "-c", cmd, NULL);  
+
+-	execl("/bin/sh", "sh", "-c", cmd, NULL);
 -
  	/* not reached */
  	exit(82);
  	return 1;
+--- a/source3/rpc_client/local_np.c
++++ b/source3/rpc_client/local_np.c
+@@ -336 +336 @@
+-	pid_t pid;
++	/* Process spawning is not available on darwin embedded targets. */
+@@ -383,3 +383 @@
+-	become_root();
+-	ret = posix_spawn(&pid, argv[0], NULL, NULL, argv, environ);
+-	unbecome_root();
++	ret = ENOSYS;
 --- a/source3/lib/util.c
 +++ b/source3/lib/util.c
-@@ -695,7 +695,7 @@
- 	cmd = lp_panic_action(talloc_tos(), lp_sub);
- 	if (cmd && *cmd) {
- 		DEBUG(0, ("smb_panic(): calling panic action [%s]\n", cmd));
--		result = system(cmd);
-+		result = -1;
- 
- 		if (result == -1)
- 			DEBUG(0, ("smb_panic(): fork failed in panic action: %s\n",
---- a/source4/heimdal/lib/roken/simple_exec.c
-+++ b/source4/heimdal/lib/roken/simple_exec.c
-@@ -155,7 +155,7 @@
- 	pipe(out_fd);
-     if(stderr_fd != NULL)
- 	pipe(err_fd);
+@@ -714 +714 @@
+-	result = system(cmd);
++	result = -1;
+--- a/third_party/heimdal/lib/roken/simple_exec.c
++++ b/third_party/heimdal/lib/roken/simple_exec.c
+@@ -172 +172 @@
 -    pid = fork();
 +    pid = -1;
-     switch(pid) {
-     case 0:
- 	va_start(ap, file);
-@@ -196,7 +196,6 @@
- 
+@@ -210,7 +210,6 @@
+
  	closefrom(3);
- 
+
 -	execv(file, argv);
  	exit((errno == ENOENT) ? EX_NOTFOUND : EX_NOEXEC);
      case -1:
  	if(stdin_fd != NULL) {
-@@ -233,12 +232,11 @@
+@@ -247,12 +246,11 @@
  simple_execvp_timed(const char *file, char *const args[],
  		    time_t (*func)(void *), void *ptr, time_t timeout)
  {
@@ -190,7 +168,7 @@
  	exit((errno == ENOENT) ? EX_NOTFOUND : EX_NOEXEC);
      default:
  	return wait_for_process_timed(pid, func, ptr, timeout);
-@@ -256,12 +254,11 @@
+@@ -270,12 +268,11 @@
  simple_execve_timed(const char *file, char *const args[], char *const envp[],
  		    time_t (*func)(void *), void *ptr, time_t timeout)
  {
@@ -206,10 +184,10 @@
  	return wait_for_process_timed(pid, func, ptr, timeout);
 --- a/source4/libcli/resolve/dns_ex.c
 +++ b/source4/libcli/resolve/dns_ex.c
-@@ -620,7 +620,7 @@
+@@ -622,7 +622,7 @@
  	}
  	tevent_fd_set_auto_close(state->fde);
- 
+
 -	state->child = fork();
 +	state->child = -1;
  	if (state->child == (pid_t)-1) {
@@ -218,22 +196,22 @@
 --- a/tests/fcntl_lock.c
 +++ b/tests/fcntl_lock.c
 @@ -50,7 +50,7 @@
- 
+
  	alarm(10);
- 
+
 -	if (!(pid=fork())) {
 +	if (!(pid=-1)) {
  		sleep(2);
  		fd = open(DATA, O_RDONLY);
- 
+
 --- a/third_party/popt/popt.c
 +++ b/third_party/popt/popt.c
 @@ -562,7 +562,7 @@
  #endif
- 
+
  /*@-nullstate@*/
 -    rc = execvp(argv[0], (char *const *)argv);
 +    rc = -1;
  /*@=nullstate@*/
- 
+
  exit:

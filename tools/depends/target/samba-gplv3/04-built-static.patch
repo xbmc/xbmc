@@ -18,15 +18,131 @@
          bld.INSTALL_FILES(dest, target, flat=True, destname=base)
 --- a/buildtools/wafsamba/wafsamba.py
 +++ b/buildtools/wafsamba/wafsamba.py
-@@ -241,7 +241,7 @@
+@@ -197,6 +197,8 @@
+     if subdir:
+         source = bld.SUBDIR(subdir, source)
+
++    library_source_is_empty = False
++    auto_builtin_metadata = False
+     # remember empty libraries, so we can strip the dependencies
+     if ((source == '') or (source == [])):
+         if deps == '' and public_deps == '':
+@@ -207,19 +209,24 @@
+                             rule=generate_empty_file,
+                             target=empty_c)
+         source=empty_c
++        library_source_is_empty = True
+ 
+     samba_deps = deps + ' ' + public_deps
+     samba_deps = TO_LIST(samba_deps)
+ 
++    if target_type == 'LIBRARY' and not (pyext or pyembed or require_builtin_deps):
++        provide_builtin_linking = True
++        auto_builtin_metadata = True
++
+     if BUILTIN_LIBRARY(bld, libname):
+         builtin_target = libname + '.builtin.objlist'
+-        builtin_cflags_end = '-D_PUBLIC_=_PRIVATE_'
++        builtin_cflags_end = '-D_PUBLIC_='
+         empty_target = libname
+         obj_target = None
+     else:
+         if provide_builtin_linking:
+             builtin_target = libname + '.builtin.objlist'
+-            builtin_cflags_end = '-D_PUBLIC_=_PRIVATE_'
++            builtin_cflags_end = '-D_PUBLIC_='
+         else:
+             builtin_target = None
+         empty_target = None
+@@ -239,6 +245,15 @@
+     # separately for the install library and the build library
+     if builtin_target:
+-        __t = __SAMBA_SUBSYSTEM_BUILTIN(bld, builtin_target, source,
++        builtin_source = []
++        if libname not in ['smbd_base']:
++            builtin_source = source
++        builtin_extra_cflags = []
++        if libname == 'ldb':
++            builtin_extra_cflags = [
++                '-DSTATIC_ldb_MODULES_PROTO=',
++                '-DSTATIC_ldb_MODULES=NULL',
++            ]
++        __t = __SAMBA_SUBSYSTEM_BUILTIN(bld, builtin_target, builtin_source,
+                                         deps=deps,
+                                         public_deps=public_deps,
+                                         includes=includes,
+@@ -250,6 +259,6 @@
+                                         includes=includes,
+                                         header_path=header_path,
+-                                        builtin_cflags=builtin_cflags,
++                                        builtin_cflags=TO_LIST(cflags) + TO_LIST(builtin_cflags) + builtin_extra_cflags,
+                                         builtin_cflags_end=builtin_cflags_end,
+                                         group=group,
+                                         depends_on=depends_on,
+@@ -277,8 +293,13 @@
+                             __require_builtin_deps=require_builtin_deps,
+                             global_include = global_include)
+     else:
++        if library_source_is_empty:
++            empty_source = source
++        else:
++            empty_source = []
++
+         et = bld.SAMBA_SUBSYSTEM(empty_target,
+-                                 source=[],
++                                 source=empty_source,
+                                  __force_empty=True,
+                                  __require_builtin_deps=True)
+         et.samba_builtin_subsystem = builtin_subsystem
+@@ -321,7 +327,7 @@
      if bld.env['ENABLE_RELRO'] is True:
          ldflags.extend(TO_LIST('-Wl,-z,relro,-z,now'))
- 
+
 -    features = 'c cshlib symlink_lib install_lib'
 +    features = 'c cstlib'
      if pyext:
          features += ' pyext'
      if pyembed:
+@@ -810,6 +816,11 @@
+         SET_TARGET_TYPE(bld, modname, 'DISABLED')
+         return
+
++    auto_builtin_metadata = False
++    if not (use_hostcc or pyext or pyembed or __require_builtin_deps):
++        provide_builtin_linking = True
++        auto_builtin_metadata = True
++
+     # remember empty subsystems, so we can strip the dependencies
+     if ((source == '') or (source == [])):
+         if not __force_empty and deps == '' and public_deps == '':
+@@ -901,8 +910,17 @@
+         if __require_builtin_deps:
+             raise Errors.WafError("subsystem[%s] provide_builtin_linking=True " +
+                                   "not allowed with __require_builtin_deps=True" %
+                                   modname)
+
++        if modname in ['gensec_util']:
++            source = []
++        builtin_extra_cflags = []
++        if modname == 'KRB_INIT_CTX':
++            builtin_extra_cflags = [
++                '-include',
++                'third_party/heimdal_build/config.h',
++                '-DPACKAGE_NAME="Samba"',
++            ]
+         builtin_target = modname + '.builtin.objlist'
+         tbuiltin = __SAMBA_SUBSYSTEM_BUILTIN(bld, builtin_target, source,
+                                              deps=deps,
+@@ -908,7 +921,7 @@
+                                              public_deps=public_deps,
+                                              includes=includes,
+                                              header_path=header_path,
+-                                             builtin_cflags=builtin_cflags,
++                                             builtin_cflags=TO_LIST(cflags) + TO_LIST(builtin_cflags) + builtin_extra_cflags,
+-                                             builtin_cflags_end='-D_PUBLIC_=_PRIVATE_',
++                                             builtin_cflags_end='-D_PUBLIC_=',
+                                              group=group,
+                                              depends_on=depends_on,
 --- a/source3/libsmb/smbclient.pc.in
 +++ b/source3/libsmb/smbclient.pc.in
 @@ -7,5 +7,7 @@
@@ -37,16 +153,87 @@
 +Requires.private: @REQUIRES_PRIVATE@
  Cflags: -I${includedir}
  URL: http://www.samba.org/
---- a/source4/heimdal/lib/hcrypto/camellia-ntt.h
-+++ b/source4/heimdal/lib/hcrypto/camellia-ntt.h
+--- a/auth/gensec/wscript_build
++++ b/auth/gensec/wscript_build
+@@ -2,9 +2,9 @@
+ bld.SAMBA_LIBRARY('gensec',
+-	source='gensec.c gensec_start.c gensec_util.c',
+-	autoproto='gensec_toplevel_proto.h',
+-	public_deps='tevent-util samba-util samba-errors auth_system_session samba-modules gensec_util asn1util',
+-	private_headers='gensec.h',
+-	deps='com_err',
+-	private_library=True,
+-	)
++        source='gensec.c gensec_start.c gensec_util.c spnego.c',
++        autoproto='gensec_toplevel_proto.h',
++        public_deps='tevent-util samba-util samba-errors auth_system_session samba-modules gensec_util asn1util',
++        private_headers='gensec.h',
++        deps='com_err samba-credentials SPNEGO_PARSE',
++        private_library=True,
++        )
+ 
+--- a/auth/gensec/gensec_start.c
++++ b/auth/gensec/gensec_start.c
+@@ -1092,7 +1092,9 @@
+ {
+-	static bool initialized = false;
++        static bool initialized = false;
++        extern NTSTATUS gensec_spnego_init(TALLOC_CTX *);
++        extern NTSTATUS gensec_ntlmssp_init(TALLOC_CTX *);
+ #define _MODULE_PROTO(init) extern NTSTATUS init(TALLOC_CTX *);
+ #ifdef STATIC_gensec_MODULES
+-	STATIC_gensec_MODULES_PROTO;
+-	init_module_fn static_init[] = { STATIC_gensec_MODULES };
++        STATIC_gensec_MODULES_PROTO;
++        init_module_fn static_init[] = { STATIC_gensec_MODULES };
+ #else
+@@ -1110,0 +1113,2 @@
++        gensec_spnego_init(NULL);
++        gensec_ntlmssp_init(NULL);
+--- a/libcli/security/wscript_build
++++ b/libcli/security/wscript_build
+@@ -20,7 +20,7 @@
+                   ],
+                   cflags=parser_cflags,
+                   private_library=True,
+-                  deps='stable_sort talloc ndr NDR_SECURITY NDR_CONDITIONAL_ACE')
++                  deps='stable_sort talloc ndr NDR_SECURITY NDR_CONDITIONAL_ACE auth_unix_token')
+
+ bld.SAMBA_LIBRARY('samba-security-trusts',
+                   source='''
+--- a/lib/ldb-samba/wscript_build
++++ b/lib/ldb-samba/wscript_build
+@@ -25,20 +25,3 @@
+                  deps='ldbsamba %s ldbwrap %s %s' % (pyparam_util, pyldb_util, pyauth),
+                  realname='samba/_ldb.so')
+
+-bld.SAMBA_MODULE('ldbsamba_extensions',
+-                 source='samba_extensions.c',
+-                 init_function='ldb_samba_extensions_init',
+-                 module_init_name='ldb_init_module',
+-                 subsystem='ldb',
+-                 deps='ldb ldbsamba CMDLINE_S4 gensec',
+-                 internal_module=False)
+-
+-
+-# the s4-internal ldap backend
+-bld.SAMBA_MODULE('ldb_ildap',
+-                 source='ldb_ildap.c',
+-                 init_function='ldb_ildap_init',
+-                 module_init_name='ldb_init_module',
+-                 deps='talloc cli-ldap samba-credentials auth_system_session',
+-                 internal_module=False,
+-                 subsystem='ldb')
+--- a/third_party/heimdal/lib/hcrypto/camellia-ntt.h
++++ b/third_party/heimdal/lib/hcrypto/camellia-ntt.h
 @@ -35,6 +35,10 @@
- 
+
  typedef u32 KEY_TABLE_TYPE[CAMELLIA_TABLE_WORD_LEN];
- 
+
 +/* symbol renaming */
 +#define Camellia_Ekeygen hc_Camellia_Ekeygen
 +#define Camellia_EncryptBlock hc_Camellia_EncryptBlock
 +#define Camellia_DecryptBlock hc_Camellia_DecryptBlock
- 
+
  void Camellia_Ekeygen(const int keyBitLength,
  		      const unsigned char *rawKey,
