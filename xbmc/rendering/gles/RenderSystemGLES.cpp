@@ -31,6 +31,8 @@
 #include "utils/EGLUtils.h"
 #endif
 
+#include <array>
+
 using namespace std::chrono_literals;
 
 CRenderSystemGLES::CRenderSystemGLES()
@@ -168,9 +170,31 @@ bool CRenderSystemGLES::DestroyRenderSystem()
   ReleaseShaders();
   // The DrawQuad callback holds a reference to m_quadDrawer; nothing may draw through it from now on.
   CGUITexture::UnregisterDrawQuad();
+  m_quadDrawer.Destroy();
+  m_guiVertexBuffer.Destroy();
+  m_guiQuadIndexBuffer.Destroy();
   m_bRenderCreated = false;
 
   return true;
+}
+
+void CRenderSystemGLES::BindGUIQuadIndices(std::size_t quadCount)
+{
+  const std::size_t needed = quadCount * 6;
+  if (m_guiQuadIndexBuffer && m_guiQuadIndices.size() >= needed)
+  {
+    m_guiQuadIndexBuffer.Bind();
+    return;
+  }
+
+  static constexpr std::array<GLushort, 6> pattern{0, 1, 2, 2, 3, 0};
+  m_guiQuadIndices.reserve(needed);
+  for (std::size_t quad = m_guiQuadIndices.size() / 6; quad < quadCount; ++quad)
+  {
+    for (GLushort offset : pattern)
+      m_guiQuadIndices.push_back(static_cast<GLushort>(quad * 4 + offset));
+  }
+  m_guiQuadIndexBuffer.SetData(m_guiQuadIndices.data(), m_guiQuadIndices.size(), GL_STATIC_DRAW);
 }
 
 bool CRenderSystemGLES::BeginRender()

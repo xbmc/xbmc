@@ -50,7 +50,6 @@ private:
   std::array<GLubyte, 4> m_col;
 
   PackedVertices m_packedVertices;
-  std::vector<GLushort> m_idx;
   CRenderSystemGLES *m_renderSystem;
   bool m_isGLES20{true};
 };
