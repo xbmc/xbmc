@@ -227,6 +227,10 @@ std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& f
 
           if (context)
           {
+            // dstRange is ignored for RGB destinations; the tables drive YUV->RGB
+            sws_setColorspaceDetails(context, sws_getCoefficients(picture.color_space),
+                                     picture.color_range == 1 ? 1 : 0,
+                                     sws_getCoefficients(AVCOL_SPC_BT709), 1, 0, 1 << 16, 1 << 16);
             uint8_t* planes[YuvImage::MAX_PLANES];
             int stride[YuvImage::MAX_PLANES];
             picture.videoBuffer->GetPlanes(planes);
