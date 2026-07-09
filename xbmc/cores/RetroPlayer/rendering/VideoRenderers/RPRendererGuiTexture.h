@@ -13,6 +13,10 @@
 #include "cores/RetroPlayer/buffers/BaseRenderBufferPool.h"
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 
+#if defined(HAS_GLES)
+#include "utils/GLBufferObject.h"
+#endif
+
 namespace KODI
 {
 namespace RETRO
@@ -61,6 +65,13 @@ public:
 protected:
   // protected implementation of CRPBaseRenderer
   void RenderInternal(bool clear, uint8_t alpha) override;
+
+private:
+#if defined(HAS_GLES)
+  KODI::UTILS::GL::CGLBufferObject m_posVBO{GL_ARRAY_BUFFER};
+  KODI::UTILS::GL::CGLBufferObject m_texVBO{GL_ARRAY_BUFFER};
+  KODI::UTILS::GL::CGLBufferObject m_IBO{GL_ELEMENT_ARRAY_BUFFER};
+#endif
 };
 } // namespace RETRO
 } // namespace KODI

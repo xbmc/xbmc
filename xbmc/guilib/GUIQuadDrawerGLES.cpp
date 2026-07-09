@@ -55,14 +55,6 @@ void CGUIQuadDrawerGLES::DrawQuad(const CRect& rect,
   GLint uniColLoc = renderSystem->GUIShaderGetUniCol();
   GLint depthLoc = renderSystem->GUIShaderGetDepth();
 
-  glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, 0, ver);
-  if (texture)
-    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, tex);
-
-  glEnableVertexAttribArray(posLoc);
-  if (texture)
-    glEnableVertexAttribArray(tex0Loc);
-
   // Setup Colors
   col[0] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::R, color);
   col[1] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::G, color);
@@ -88,12 +80,33 @@ void CGUIQuadDrawerGLES::DrawQuad(const CRect& rect,
     tex[2][1] = tex[3][1] = coords.y2;
   }
 
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+  m_posVBO.SetData(ver, GL_STREAM_DRAW);
+  glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, 0, 0);
+  glEnableVertexAttribArray(posLoc);
+  if (texture)
+  {
+    m_texVBO.SetData(tex, GL_STREAM_DRAW);
+    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, 0);
+    glEnableVertexAttribArray(tex0Loc);
+  }
+  m_IBO.SetDataOnce(idx);
+
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
   CRenderSystemBase::m_GUIElementCount++;
 
   glDisableVertexAttribArray(posLoc);
   if (texture)
     glDisableVertexAttribArray(tex0Loc);
 
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
   renderSystem->DisableGUIShader();
+}
+
+void CGUIQuadDrawerGLES::Destroy()
+{
+  m_posVBO.Destroy();
+  m_texVBO.Destroy();
+  m_IBO.Destroy();
 }

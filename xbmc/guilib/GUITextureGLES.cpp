@@ -162,22 +162,25 @@ void CGUITextureGLES::End()
 
     glUniform1f(depthLoc, m_depth);
 
+    m_renderSystem->StreamGUIVertices(m_packedVertices);
+    m_renderSystem->BindGUIQuadIndices(m_packedVertices.size() / 4);
+
     if(m_diffuse.size())
     {
       if (m_texture.m_textures[m_currentFrame]->GetSwizzle() == KD_TEX_SWIZ_111R)
         std::swap(tex0Loc, tex1Loc);
       glVertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
-                            (char*)m_packedVertices.data() + offsetof(PackedVertex, u2));
+                            reinterpret_cast<GLvoid*>(offsetof(PackedVertex, u2)));
       glEnableVertexAttribArray(tex1Loc);
     }
     glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
-                          (char*)m_packedVertices.data() + offsetof(PackedVertex, x));
+                          reinterpret_cast<GLvoid*>(offsetof(PackedVertex, x)));
     glEnableVertexAttribArray(posLoc);
     glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
-                          (char*)m_packedVertices.data() + offsetof(PackedVertex, u1));
+                          reinterpret_cast<GLvoid*>(offsetof(PackedVertex, u1)));
     glEnableVertexAttribArray(tex0Loc);
 
-    glDrawElements(GL_TRIANGLES, m_packedVertices.size()*6 / 4, GL_UNSIGNED_SHORT, m_idx.data());
+    glDrawElements(GL_TRIANGLES, m_packedVertices.size() * 6 / 4, GL_UNSIGNED_SHORT, 0);
     CRenderSystemBase::m_GUIElementCount++;
 
     if (m_diffuse.size())
@@ -185,6 +188,9 @@ void CGUITextureGLES::End()
 
     glDisableVertexAttribArray(posLoc);
     glDisableVertexAttribArray(tex0Loc);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   }
 
   if (m_diffuse.size())
@@ -272,16 +278,5 @@ void CGUITextureGLES::Draw(float *x, float *y, float *z, const CRect &texture, c
     vertices[i].y = y[i];
     vertices[i].z = z[i];
     m_packedVertices.push_back(vertices[i]);
-  }
-
-  if ((m_packedVertices.size() / 4) > (m_idx.size() / 6))
-  {
-    size_t i = m_packedVertices.size() - 4;
-    m_idx.push_back(i+0);
-    m_idx.push_back(i+1);
-    m_idx.push_back(i+2);
-    m_idx.push_back(i+2);
-    m_idx.push_back(i+3);
-    m_idx.push_back(i+0);
   }
 }
