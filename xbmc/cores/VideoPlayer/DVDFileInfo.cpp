@@ -51,6 +51,7 @@
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
+#include <libavutil/mastering_display_metadata.h>
 #include <libswscale/swscale.h>
 }
 
@@ -221,28 +222,101 @@ std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& f
 
           result = CTexture::CreateTexture(nWidth, nHeight);
           result->SetAlpha(false);
-          struct SwsContext* context =
-              sws_getContext(picture.iWidth, picture.iHeight, AV_PIX_FMT_YUV420P, nWidth, nHeight,
-                             AV_PIX_FMT_BGRA, SWS_FAST_BILINEAR, NULL, NULL, NULL);
+          result->SetOrientation(DegreeToOrientation(hint.orientation));
 
-          if (context)
+          uint8_t* planes[YuvImage::MAX_PLANES];
+          int stride[YuvImage::MAX_PLANES];
+          picture.videoBuffer->GetPlanes(planes);
+          picture.videoBuffer->GetStrides(stride);
+
+          bool converted = false;
+
+#if LIBSWSCALE_BUILD >= AV_VERSION_INT(9, 0, 100)
           {
-            // dstRange is ignored for RGB destinations; the tables drive YUV->RGB
-            sws_setColorspaceDetails(context, sws_getCoefficients(picture.color_space),
-                                     picture.color_range == 1 ? 1 : 0,
-                                     sws_getCoefficients(AVCOL_SPC_BT709), 1, 0, 1 << 16, 1 << 16);
-            uint8_t* planes[YuvImage::MAX_PLANES];
-            int stride[YuvImage::MAX_PLANES];
-            picture.videoBuffer->GetPlanes(planes);
-            picture.videoBuffer->GetStrides(stride);
-            uint8_t* src[4] = {planes[0], planes[1], planes[2], 0};
-            int srcStride[] = {stride[0], stride[1], stride[2], 0};
-            uint8_t* dst[] = {result->GetPixels(), 0, 0, 0};
-            int dstStride[] = {static_cast<int>(result->GetPitch()), 0, 0, 0};
-            result->SetOrientation(DegreeToOrientation(hint.orientation));
-            sws_scale(context, src, srcStride, 0, picture.iHeight, dst, dstStride);
-            sws_freeContext(context);
+            AVFrame* srcFrame = av_frame_alloc();
+            AVFrame* dstFrame = av_frame_alloc();
+            SwsContext* sws = sws_alloc_context();
+            if (srcFrame && dstFrame && sws)
+            {
+              srcFrame->width = static_cast<int>(picture.iWidth);
+              srcFrame->height = static_cast<int>(picture.iHeight);
+              srcFrame->format = picture.videoBuffer->GetFormat();
+              for (int i = 0; i < YuvImage::MAX_PLANES; i++)
+              {
+                srcFrame->data[i] = planes[i];
+                srcFrame->linesize[i] = stride[i];
+              }
+              srcFrame->colorspace = picture.color_space;
+              srcFrame->color_range =
+                  picture.color_range == 1 ? AVCOL_RANGE_JPEG : AVCOL_RANGE_MPEG;
+              srcFrame->color_primaries = picture.color_primaries;
+              srcFrame->color_trc = picture.color_transfer;
+              srcFrame->chroma_location = picture.chroma_position;
+
+              if (picture.hasDisplayMetadata)
+              {
+                AVMasteringDisplayMetadata* mdm =
+                    av_mastering_display_metadata_create_side_data(srcFrame);
+                if (mdm)
+                  *mdm = picture.displayMetadata;
+              }
+              if (picture.hasLightMetadata)
+              {
+                AVContentLightMetadata* clm = av_content_light_metadata_create_side_data(srcFrame);
+                if (clm)
+                  *clm = picture.lightMetadata;
+              }
+
+              dstFrame->width = static_cast<int>(nWidth);
+              dstFrame->height = static_cast<int>(nHeight);
+              dstFrame->format = AV_PIX_FMT_BGRA;
+              dstFrame->data[0] = result->GetPixels();
+              dstFrame->linesize[0] = static_cast<int>(result->GetPitch());
+              dstFrame->colorspace = AVCOL_SPC_RGB;
+              dstFrame->color_range = AVCOL_RANGE_JPEG;
+              dstFrame->color_primaries = AVCOL_PRI_BT709;
+              dstFrame->color_trc = AVCOL_TRC_BT709;
+
+              sws->flags = SWS_BILINEAR;
+              sws->intent = SWS_INTENT_PERCEPTUAL;
+
+              const int res = sws_scale_frame(sws, dstFrame, srcFrame);
+              if (res < 0)
+                CLog::LogF(LOGWARNING, "sws_scale_frame failed ({}), using legacy conversion", res);
+              else
+                converted = true;
+            }
+            sws_free_context(&sws);
+            av_frame_free(&srcFrame);
+            av_frame_free(&dstFrame);
           }
+#endif
+
+          if (!converted)
+          {
+            struct SwsContext* context = sws_getContext(
+                picture.iWidth, picture.iHeight, picture.videoBuffer->GetFormat(), nWidth, nHeight,
+                AV_PIX_FMT_BGRA, SWS_FAST_BILINEAR, NULL, NULL, NULL);
+
+            if (context)
+            {
+              // dstRange is ignored for RGB destinations; the tables drive YUV->RGB
+              sws_setColorspaceDetails(context, sws_getCoefficients(picture.color_space),
+                                       picture.color_range == 1 ? 1 : 0,
+                                       sws_getCoefficients(AVCOL_SPC_BT709), 1, 0, 1 << 16,
+                                       1 << 16);
+              uint8_t* src[4] = {planes[0], planes[1], planes[2], 0};
+              int srcStride[] = {stride[0], stride[1], stride[2], 0};
+              uint8_t* dst[] = {result->GetPixels(), 0, 0, 0};
+              int dstStride[] = {static_cast<int>(result->GetPitch()), 0, 0, 0};
+              sws_scale(context, src, srcStride, 0, picture.iHeight, dst, dstStride);
+              sws_freeContext(context);
+              converted = true;
+            }
+          }
+
+          if (!converted)
+            result.reset();
         }
         else
         {
