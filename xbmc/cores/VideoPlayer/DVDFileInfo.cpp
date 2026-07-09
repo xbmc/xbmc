@@ -153,6 +153,11 @@ std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& f
     std::unique_ptr<CProcessInfo> pProcessInfo(CProcessInfo::CreateInstance());
     std::vector<AVPixelFormat> pixFmts;
     pixFmts.push_back(AV_PIX_FMT_YUV420P);
+    pixFmts.push_back(AV_PIX_FMT_YUV420P10);
+    pixFmts.push_back(AV_PIX_FMT_YUV422P);
+    pixFmts.push_back(AV_PIX_FMT_YUV422P10);
+    pixFmts.push_back(AV_PIX_FMT_YUV444P);
+    pixFmts.push_back(AV_PIX_FMT_YUV444P10);
     pProcessInfo->SetPixFormats(pixFmts);
 
     CDVDStreamInfo hint(*demuxer->GetStream(demuxerId, nVideoStream), true);
