@@ -117,7 +117,7 @@ bool CRenderSystemGLES::InitRenderSystem()
 
   InitialiseShaders();
 
-  CGUITextureGLES::Register();
+  CGUITextureGLES::Register(m_quadDrawer);
 
   return true;
 }
