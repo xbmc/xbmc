@@ -155,7 +155,10 @@ endif()
 if(UNIX)
   option(FFMPEG_PATH        "Path to external ffmpeg?" "")
   option(ENABLE_INTERNAL_FSTRCMP "Enable internal fstrcmp?" OFF)
-  option(ENABLE_INTERNAL_GTEST "Enable internal gtest?" OFF)
+endif()
+
+if(HOST_CAN_EXECUTE_TARGET)
+  dependent_option(ENABLE_INTERNAL_GTEST "Enable internal gtest?")
 endif()
 
 # System options
@@ -584,15 +587,13 @@ if(HOST_CAN_EXECUTE_TARGET AND ENABLE_TESTING)
   copy_files_from_filelist_to_buildtree(${CMAKE_SOURCE_DIR}/cmake/installdata/test-reference-data.txt NO_INSTALL)
   add_executable(${APP_NAME_LC}-test EXCLUDE_FROM_ALL ${CMAKE_SOURCE_DIR}/xbmc/test/xbmc-test.cpp ${test_sources})
 
+  add_dependencies(${APP_NAME_LC}-test LIBRARY::Gtest)
+
   set_target_properties(PROPERTIES ENABLE_EXPORTS ON)
 
-  whole_archive(_TEST_LIBRARIES ${core_DEPENDS} ${GTEST_LIBRARY})
+  whole_archive(_TEST_LIBRARIES ${core_DEPENDS} LIBRARY::Gtest)
   target_link_libraries(${APP_NAME_LC}-test PRIVATE ${SYSTEM_LDFLAGS} ${_TEST_LIBRARIES} lib${APP_NAME_LC} ${DEPLIBS} ${CMAKE_DL_LIBS})
   unset(_TEST_LIBRARIES)
-
-  if (ENABLE_INTERNAL_GTEST)
-    add_dependencies(${APP_NAME_LC}-test ${APP_NAME_LC}-libraries generate-packaging gtest)
-  endif()
 
   # Enable unit-test related targets
   enable_testing()
