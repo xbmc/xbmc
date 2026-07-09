@@ -20,7 +20,7 @@ public:
 
   bool IsAllowed(const std::string &file) const override;
   bool IsInUse() const override;
-  void OnPostInstall(bool update, bool modal) override;
+  void OnPostInstall(bool update, bool modal, AddonOptPostInstValue optValue) override;
 };
 
 }

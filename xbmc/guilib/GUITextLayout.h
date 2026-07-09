@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "guilib/GUIVecText.h"
 #include "utils/ColorUtils.h"
 
 #include <stdint.h>
@@ -33,9 +34,6 @@ class CScrollInfo;
 // 5.  Each item in the vector is length-calculated, and then layout occurs governed by alignment and wrapping rules.
 // 6.  A new vector<CGUIString> is constructed
 
-typedef uint32_t character_t;
-typedef std::vector<character_t> vecText;
-
 class CGUIString
 {
 public:
@@ -43,12 +41,6 @@ public:
 
   CGUIString(iString start, iString end, bool carriageReturn);
 
-  std::string GetAsString() const;
-
-  // The text is UTF-16 and the data stored in a character_t hold multiple information by bits:
-  // <16 bits: are unicode code bits
-  // 16-24 bits: are color bits
-  // 24-32 bits: are style bits (see FONT_STYLE_* flags)
   vecText m_text;
   bool m_carriageReturn; // true if we have a carriage return here
 };
@@ -98,8 +90,6 @@ public:
   float GetTextWidth() const { return m_textWidth; }
 
   float GetTextWidth(const std::wstring &text) const;
-
-  float GetTextWidth(const vecText& text) const;
 
   /*! \brief Returns the precalculated height of the text to be rendered (in constant time).
    \return height of text
@@ -182,16 +172,21 @@ protected:
 private:
   inline bool IsSpace(character_t letter) const XBMC_FORCE_INLINE
   {
-    return (letter & 0xffff) == L' ';
+    return letter.letter == static_cast<char32_t>(' ');
   };
   inline bool CanWrapAtLetter(character_t letter) const XBMC_FORCE_INLINE
   {
-    character_t ch = letter & 0xffff;
-    //! @todo: unicode spaces are not handled, to check also all other GUI parts
-    return ch == L' ';
+    char32_t ch = letter.letter;
+    return ch == static_cast<char32_t>(' ') || (ch >= 0x4e00 && ch <= 0x9fff);
   };
-  static void AppendToUTF32(const std::string &utf8, character_t colStyle, vecText &utf32);
-  static void AppendToUTF32(const std::wstring &utf16, character_t colStyle, vecText &utf32);
+  static void AppendToUTF32(const std::string& utf8,
+                            int style,
+                            KODI::UTILS::COLOR::Color color,
+                            vecText& utf32);
+  static void AppendToUTF32(const std::wstring& utf16,
+                            int style,
+                            KODI::UTILS::COLOR::Color color,
+                            vecText& utf32);
   static void ParseText(const std::wstring& text,
                         uint32_t defaultStyle,
                         KODI::UTILS::COLOR::Color defaultColor,

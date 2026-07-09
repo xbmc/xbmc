@@ -25,7 +25,7 @@ CFontResource::CFontResource(const AddonInfoPtr& addonInfo)
 {
 }
 
-void CFontResource::OnPostInstall(bool update, bool modal)
+void CFontResource::OnPostInstall(bool update, bool modal, AddonOptPostInstValue optValue)
 {
   std::string skin = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
   const auto& deps =

@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "addons/IAddon.h"
 #include "threads/CriticalSection.h"
 
 #include <memory>
@@ -38,7 +39,7 @@ namespace ADDON
     std::shared_ptr<CAddonDll> GetActiveAddon();
 
     void OnPreInstall() const;
-    void OnPostInstall(bool update, bool modal) const;
+    void OnPostInstall(bool update, bool modal, AddonOptPostInstValue optValue) const;
     void OnPreUnInstall() const;
     void OnPostUnInstall() const;
 

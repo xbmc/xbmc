@@ -8,10 +8,7 @@
 
 #pragma once
 
-#include <vector>
-
-typedef uint32_t character_t;
-typedef std::vector<character_t> vecText;
+#include "guilib/GUIVecText.h"
 
 class IRssObserver
 {

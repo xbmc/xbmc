@@ -139,6 +139,7 @@ set(HEADERS AspectRatio.h
             GUITextureCallbackManager.h
             GUIToggleButtonControl.h
             GUIUtils.h
+            GUIVecText.h
             GUIVideoControl.h
             GUIVisualisationControl.h
             GUIWindow.h

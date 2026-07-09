@@ -27,7 +27,7 @@ class CAddonInfo;
 using AddonInfoPtr = std::shared_ptr<CAddonInfo>;
 
 void OnPreInstall(const AddonPtr& addon);
-void OnPostInstall(const AddonPtr& addon, bool update, bool modal);
+void OnPostInstall(const AddonPtr& addon, bool update, bool modal, AddonOptPostInstValue optValue);
 void OnPreUnInstall(const AddonPtr& addon);
 void OnPostUnInstall(const AddonPtr& addon);
 
@@ -391,7 +391,7 @@ public:
   AddonPtr GetRunningInstance() const override { return AddonPtr(); }
 
   void OnPreInstall() override{};
-  void OnPostInstall(bool update, bool modal) override{};
+  void OnPostInstall(bool update, bool modal, AddonOptPostInstValue optValue) override{};
   void OnPreUnInstall() override{};
   void OnPostUnInstall() override{};
 

@@ -149,7 +149,7 @@ CRepository::CRepository(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, Addo
   }
 }
 
-void CRepository::OnPostInstall(bool update, bool modal)
+void CRepository::OnPostInstall(bool update, bool modal, AddonOptPostInstValue optValue)
 {
   // The repo may contain game add-ons, which can introduce new file
   // extensions to the list of known game extensions

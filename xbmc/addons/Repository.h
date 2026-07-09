@@ -60,7 +60,7 @@ public:
   ResolveResult ResolvePathAndHash(AddonPtr const& addon) const;
 
   // Implementation of CAddon
-  void OnPostInstall(bool update, bool modal) override;
+  void OnPostInstall(bool update, bool modal, AddonOptPostInstValue optValue) override;
 
 private:
   static bool FetchChecksum(const std::string& url,
