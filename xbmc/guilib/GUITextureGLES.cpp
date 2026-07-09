@@ -46,6 +46,16 @@ CGUITextureGLES::CGUITextureGLES(
   m_isGLES20 = major == 2;
 }
 
+CGUITextureGLES::CGUITextureGLES(const CGUITextureGLES& texture)
+  : CGUITexture(texture),
+    m_col(texture.m_col),
+    m_packedVertices(texture.m_packedVertices),
+    m_idx(texture.m_idx),
+    m_renderSystem(texture.m_renderSystem),
+    m_isGLES20(texture.m_isGLES20)
+{
+}
+
 CGUITextureGLES* CGUITextureGLES::Clone() const
 {
   return new CGUITextureGLES(*this);
@@ -162,22 +172,25 @@ void CGUITextureGLES::End()
 
     glUniform1f(depthLoc, m_depth);
 
+    m_VBO.SetData(m_packedVertices.data(), m_packedVertices.size(), GL_STREAM_DRAW);
+    m_IBO.SetData(m_idx.data(), m_idx.size(), GL_STREAM_DRAW);
+
     if(m_diffuse.size())
     {
       if (m_texture.m_textures[m_currentFrame]->GetSwizzle() == KD_TEX_SWIZ_111R)
         std::swap(tex0Loc, tex1Loc);
       glVertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
-                            (char*)m_packedVertices.data() + offsetof(PackedVertex, u2));
+                            reinterpret_cast<GLvoid*>(offsetof(PackedVertex, u2)));
       glEnableVertexAttribArray(tex1Loc);
     }
     glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
-                          (char*)m_packedVertices.data() + offsetof(PackedVertex, x));
+                          reinterpret_cast<GLvoid*>(offsetof(PackedVertex, x)));
     glEnableVertexAttribArray(posLoc);
     glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
-                          (char*)m_packedVertices.data() + offsetof(PackedVertex, u1));
+                          reinterpret_cast<GLvoid*>(offsetof(PackedVertex, u1)));
     glEnableVertexAttribArray(tex0Loc);
 
-    glDrawElements(GL_TRIANGLES, m_packedVertices.size()*6 / 4, GL_UNSIGNED_SHORT, m_idx.data());
+    glDrawElements(GL_TRIANGLES, m_packedVertices.size() * 6 / 4, GL_UNSIGNED_SHORT, 0);
     CRenderSystemBase::m_GUIElementCount++;
 
     if (m_diffuse.size())
@@ -185,6 +198,9 @@ void CGUITextureGLES::End()
 
     glDisableVertexAttribArray(posLoc);
     glDisableVertexAttribArray(tex0Loc);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   }
 
   if (m_diffuse.size())

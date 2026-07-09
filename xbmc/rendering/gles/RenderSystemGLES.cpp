@@ -169,6 +169,7 @@ bool CRenderSystemGLES::DestroyRenderSystem()
   PresentRenderImpl(true);
 
   ReleaseShaders();
+  m_quadDrawer.Destroy();
   m_bRenderCreated = false;
 
   return true;

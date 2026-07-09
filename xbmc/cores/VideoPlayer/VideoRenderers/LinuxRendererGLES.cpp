@@ -1262,16 +1262,6 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
   GLint Uloc = pYUVShader->GetUcoordLoc();
   GLint Vloc = pYUVShader->GetVcoordLoc();
 
-  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, 0, m_vert);
-  glVertexAttribPointer(Yloc, 2, GL_FLOAT, 0, 0, m_tex[0]);
-  glVertexAttribPointer(Uloc, 2, GL_FLOAT, 0, 0, m_tex[1]);
-  glVertexAttribPointer(Vloc, 2, GL_FLOAT, 0, 0, m_tex[2]);
-
-  glEnableVertexAttribArray(vertLoc);
-  glEnableVertexAttribArray(Yloc);
-  glEnableVertexAttribArray(Uloc);
-  glEnableVertexAttribArray(Vloc);
-
   // Setup vertex position values
   for(int i = 0; i < 4; i++)
   {
@@ -1289,7 +1279,21 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
     m_tex[i][2][1] = m_tex[i][3][1] = planes[i].rect.y2;
   }
 
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+  m_singlePassPosVBO.SetData(m_vert, GL_STREAM_DRAW);
+  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, 0, 0);
+  glEnableVertexAttribArray(vertLoc);
+
+  m_singlePassTexVBO.SetData(m_tex, GL_STREAM_DRAW);
+  glVertexAttribPointer(Yloc, 2, GL_FLOAT, 0, 0, reinterpret_cast<GLvoid*>(0 * sizeof(m_tex[0])));
+  glVertexAttribPointer(Uloc, 2, GL_FLOAT, 0, 0, reinterpret_cast<GLvoid*>(1 * sizeof(m_tex[0])));
+  glVertexAttribPointer(Vloc, 2, GL_FLOAT, 0, 0, reinterpret_cast<GLvoid*>(2 * sizeof(m_tex[0])));
+  glEnableVertexAttribArray(Yloc);
+  glEnableVertexAttribArray(Uloc);
+  glEnableVertexAttribArray(Vloc);
+
+  m_singlePassIBO.SetDataOnce(idx);
+
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
 
   VerifyGLState();
 
@@ -1300,6 +1304,9 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
   glDisableVertexAttribArray(Yloc);
   glDisableVertexAttribArray(Uloc);
   glDisableVertexAttribArray(Vloc);
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
   VerifyGLState();
 }
@@ -1433,16 +1440,6 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field)
   GLint Uloc = pYUVShader->GetUcoordLoc();
   GLint Vloc = pYUVShader->GetVcoordLoc();
 
-  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, 0, vert);
-  glVertexAttribPointer(Yloc, 2, GL_FLOAT, 0, 0, tex[0]);
-  glVertexAttribPointer(Uloc, 2, GL_FLOAT, 0, 0, tex[1]);
-  glVertexAttribPointer(Vloc, 2, GL_FLOAT, 0, 0, tex[2]);
-
-  glEnableVertexAttribArray(vertLoc);
-  glEnableVertexAttribArray(Yloc);
-  glEnableVertexAttribArray(Uloc);
-  glEnableVertexAttribArray(Vloc);
-
   // Setup vertex position values
   // Set vertex coordinates
   vert[0][0] = vert[3][0] = 0.0f;
@@ -1460,7 +1457,21 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field)
     tex[i][2][1] = tex[i][3][1] = planes[i].rect.y2;
   }
 
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+  m_fboPosVBO.SetData(vert, GL_STREAM_DRAW);
+  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, 0, 0);
+  glEnableVertexAttribArray(vertLoc);
+
+  m_fboTexVBO.SetData(tex, GL_STREAM_DRAW);
+  glVertexAttribPointer(Yloc, 2, GL_FLOAT, 0, 0, reinterpret_cast<GLvoid*>(0 * sizeof(tex[0])));
+  glVertexAttribPointer(Uloc, 2, GL_FLOAT, 0, 0, reinterpret_cast<GLvoid*>(1 * sizeof(tex[0])));
+  glVertexAttribPointer(Vloc, 2, GL_FLOAT, 0, 0, reinterpret_cast<GLvoid*>(2 * sizeof(tex[0])));
+  glEnableVertexAttribArray(Yloc);
+  glEnableVertexAttribArray(Uloc);
+  glEnableVertexAttribArray(Vloc);
+
+  m_fboIBO.SetDataOnce(idx);
+
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
 
   VerifyGLState();
 
@@ -1475,6 +1486,9 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field)
   glDisableVertexAttribArray(Yloc);
   glDisableVertexAttribArray(Uloc);
   glDisableVertexAttribArray(Vloc);
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
   m_renderSystem->SetViewPort(viewport);
 
@@ -1527,12 +1541,6 @@ void CLinuxRendererGLES::RenderFromFBO()
   GLint vertLoc = m_pVideoFilterShader->GetVertexLoc();
   GLint loc = m_pVideoFilterShader->GetcoordLoc();
 
-  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, 0, vert);
-  glVertexAttribPointer(loc, 2, GL_FLOAT, 0, 0, tex);
-
-  glEnableVertexAttribArray(vertLoc);
-  glEnableVertexAttribArray(loc);
-
   // Setup vertex position values
   for(int i = 0; i < 4; i++)
   {
@@ -1547,10 +1555,23 @@ void CLinuxRendererGLES::RenderFromFBO()
   tex[1][0] = tex[2][0] = imgwidth;
   tex[2][1] = tex[3][1] = imgheight;
 
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+  m_fromFboPosVBO.SetData(vert, GL_STREAM_DRAW);
+  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, 0, 0);
+  glEnableVertexAttribArray(vertLoc);
+
+  m_fromFboTexVBO.SetData(tex, GL_STREAM_DRAW);
+  glVertexAttribPointer(loc, 2, GL_FLOAT, 0, 0, 0);
+  glEnableVertexAttribArray(loc);
+
+  m_fromFboIBO.SetDataOnce(idx);
+
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
 
   glDisableVertexAttribArray(loc);
   glDisableVertexAttribArray(vertLoc);
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
   VerifyGLState();
 

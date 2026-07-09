@@ -208,8 +208,10 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL Clang)
 endif()
 
 if(TARGET ${APP_NAME_LC}::OpenGl OR TARGET ${APP_NAME_LC}::OpenGLES)
-  list(APPEND SOURCES GLUtils.cpp)
-  list(APPEND HEADERS GLUtils.h)
+  list(APPEND SOURCES GLBufferObject.cpp
+                      GLUtils.cpp)
+  list(APPEND HEADERS GLBufferObject.h
+                      GLUtils.h)
 endif()
 
 if("gbm" IN_LIST CORE_PLATFORM_NAME_LC OR "wayland" IN_LIST CORE_PLATFORM_NAME_LC)

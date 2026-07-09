@@ -9,6 +9,7 @@
 #pragma once
 
 #include "utils/ColorUtils.h"
+#include "utils/GLBufferObject.h"
 #include "utils/Geometry.h"
 
 class CTexture;
@@ -24,4 +25,13 @@ public:
                 const CRect* texCoords,
                 float depth,
                 bool blending);
+
+  // Called explicitly by CRenderSystemGLES::DestroyRenderSystem() before the context is destroyed
+  // -- this object isn't destructed until CRenderSystemGLES itself is, long after that point.
+  void Destroy();
+
+private:
+  KODI::UTILS::GL::CGLBufferObject m_posVBO{GL_ARRAY_BUFFER};
+  KODI::UTILS::GL::CGLBufferObject m_texVBO{GL_ARRAY_BUFFER};
+  KODI::UTILS::GL::CGLBufferObject m_IBO{GL_ELEMENT_ARRAY_BUFFER};
 };
