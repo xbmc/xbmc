@@ -9,6 +9,7 @@
 #pragma once
 
 #include "GLESShader.h"
+#include "guilib/GUIQuadDrawerGLES.h"
 #include "rendering/RenderSystem.h"
 #include "utils/ColorUtils.h"
 #include "utils/Map.h"
@@ -160,4 +161,6 @@ protected:
   ShaderMethodGLES m_method = ShaderMethodGLES::SM_DEFAULT;
 
   GLint      m_viewPort[4];
+
+  CGUIQuadDrawerGLES m_quadDrawer;
 };

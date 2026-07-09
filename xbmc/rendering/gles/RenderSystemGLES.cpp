@@ -117,7 +117,7 @@ bool CRenderSystemGLES::InitRenderSystem()
 
   InitialiseShaders();
 
-  CGUITextureGLES::Register();
+  CGUITextureGLES::Register(m_quadDrawer);
 
   return true;
 }
@@ -166,6 +166,8 @@ bool CRenderSystemGLES::DestroyRenderSystem()
   PresentRenderImpl(true);
 
   ReleaseShaders();
+  // The DrawQuad callback holds a reference to m_quadDrawer; nothing may draw through it from now on.
+  CGUITexture::UnregisterDrawQuad();
   m_bRenderCreated = false;
 
   return true;
