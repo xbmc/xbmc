@@ -45,6 +45,10 @@ protected:
   void Draw(float* x, float* y, float* z, const CRect& texture, const CRect& diffuse, int orientation) override;
   void End() override;
 
+  // Call while the GL context is still valid: on app exit, CGUIWindowManager::DestroyWindows() (and
+  // this object's destructor) runs only after CRenderSystemGLES::DestroyRenderSystem() tears it down.
+  void Free() override;
+
 private:
   // Doesn't copy m_VBO/m_IBO -- each clone must own and (re)populate its own GL buffers rather
   // than share/double-delete the source's.

@@ -61,6 +61,12 @@ CGUITextureGLES* CGUITextureGLES::Clone() const
   return new CGUITextureGLES(*this);
 }
 
+void CGUITextureGLES::Free()
+{
+  m_VBO.Destroy();
+  m_IBO.Destroy();
+}
+
 void CGUITextureGLES::Begin(KODI::UTILS::COLOR::Color color)
 {
   CTexture* texture = m_texture.m_textures[m_currentFrame].get();
