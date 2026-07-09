@@ -35,6 +35,7 @@
 #include <unordered_map>
 
 #include <libsmbclient.h>
+#include <samba/version.h>
 
 using namespace XFILE;
 
@@ -449,6 +450,7 @@ void CSMB::Init()
       }
     }
 
+#if SAMBA_VERSION_MAJOR <= 4 && SAMBA_VERSION_MINOR <= 18
     // reads smb.conf so this MUST be after we create smb.conf
     // multiple smbc_init calls are ignored by libsmbclient.
     // note: this is important as it initializes the smb old
@@ -456,6 +458,7 @@ void CSMB::Init()
     // smbc_init is deprecated but still required for the old-interface
     // compatibility used by smbc_set_context / smbc_free_context.
     smbc_init(xb_smbc_auth, 0);
+#endif
 
     // setup our context
     m_context = smbc_new_context();
