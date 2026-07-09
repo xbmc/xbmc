@@ -25,6 +25,7 @@
 #include <memory>
 #include <string>
 #include <thread>
+#include <utility>
 #include <vector>
 
 #include <android/native_activity.h>
@@ -110,6 +111,9 @@ public:
   virtual void onAudioFocusChange(int focusChange);
   void doFrame(int64_t frameTimeNanos) override;
   void onVisibleBehindCanceled() override;
+  void onUserLeaveHint() override;
+  void onPipModeChanged(bool isInPipMode) override;
+  void onPipPlayPause() override;
 
   // implementation of CJNIInputManagerInputDeviceListener
   void onInputDeviceAdded(int deviceId) override;
@@ -228,6 +232,12 @@ private:
   void run();
   void stop();
   void SetupEnv();
+
+  bool ShouldEnterPip() const;
+  void UpdatePipParams();
+  void UpdatePipActions(bool playing);
+  void ClosePipObstructions();
+  std::pair<int, int> GetPipAspectRatio();
   static void SetDisplayModeCallback(void* modeVariant);
   static void KeepScreenOnCallback(void* onVariant);
   static void SetViewBackgroundColorCallback(void* mapVariant);
@@ -249,6 +259,12 @@ private:
   IInputDeviceEventHandler* m_inputDeviceEventHandler{nullptr};
   bool m_hasReqVisible{false};
   bool m_firstrun{true};
+  std::atomic<bool> m_isInPip{false};
+  bool m_pipSupported{false};
+  int m_lastPipNum{0};
+  int m_lastPipDen{0};
+  bool m_lastPipAutoEnter{false};
+  mutable CCriticalSection m_pipParamsSection;
   std::atomic<bool> m_exiting{false};
   int m_exitCode{0};
   bool m_bResumePlayback{false};

@@ -28,6 +28,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/VideoDatabaseFile.h"
 #include "guilib/GUIComponent.h"
+#include "guilib/GUIDialog.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "input/actions/Action.h"
@@ -37,6 +38,8 @@
 #include "messaging/ApplicationMessenger.h"
 #include "platform/xbmc.h"
 #include "powermanagement/PowerManager.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
@@ -60,6 +63,8 @@
 #include "platform/android/powermanagement/AndroidPowerSyscall.h"
 #include "platform/android/storage/AndroidStorageProvider.h"
 
+#include <algorithm>
+#include <cmath>
 #include <memory>
 #include <mutex>
 #include <sstream>
@@ -112,6 +117,11 @@
 #define PLAYBACK_STATE_VIDEO    0x0100
 #define PLAYBACK_STATE_AUDIO    0x0200
 #define PLAYBACK_STATE_CANNOT_PAUSE 0x0400
+
+namespace
+{
+constexpr const char* SETTING_USE_PIP = "videoplayer.usepictureinpicture";
+} // namespace
 
 using namespace ANNOUNCEMENT;
 using namespace jni;
@@ -227,7 +237,13 @@ void CXBMCApp::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
     {
       m_mediaSessionUpdated = false;
       UpdateSessionState();
+      UpdatePipParams();
     }
+
+    // While in PiP, a play/pause triggered from the PiP controls may open the video OSD;
+    // keep it closed so it does not obstruct the small window.
+    if (m_isInPip && (message == "OnPause" || message == "OnPlay" || message == "OnResume"))
+      ClosePipObstructions();
   }
   else if (flag & Info)
   {
@@ -265,6 +281,7 @@ void CXBMCApp::onStart()
     intentFilter.addAction(CJNIConnectivityManager::CONNECTIVITY_ACTION);
     registerReceiver(*this, intentFilter);
     m_mediaSession = std::make_unique<CJNIXBMCMediaSession>();
+    m_pipSupported = supportsPip();
     m_inputHandler.setDPI(GetDPI());
     runNativeOnUiThread(RegisterDisplayListenerCallback, nullptr);
   }
@@ -343,6 +360,9 @@ void CXBMCApp::onResume()
             static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
     }
   }
+  // The flag has been consumed; reset it so it never stays stale (onPause, the only
+  // other place it is cleared, early-returns while in PiP).
+  m_bResumePlayback = false;
 
   // Re-request Visible Behind
   if ((m_playback_state & PLAYBACK_STATE_PLAYING) && (m_playback_state & PLAYBACK_STATE_VIDEO))
@@ -352,6 +372,13 @@ void CXBMCApp::onResume()
 void CXBMCApp::onPause()
 {
   android_printf("CXBMCApp::%s", __FUNCTION__);
+
+  // In PiP the activity is paused but playback must continue. Query the framework
+  // state in addition to the cached flag: depending on the device, onPause may arrive
+  // before onPictureInPictureModeChanged when entering PiP.
+  if (m_isInPip || (m_pipSupported && isInPictureInPictureMode()))
+    return;
+
   m_bResumePlayback = false;
 
   const auto& components = CServiceBroker::GetAppComponents();
@@ -395,6 +422,8 @@ void CXBMCApp::onStop()
       CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
                                                  static_cast<void*>(new CAction(ACTION_PAUSE)));
   }
+
+  m_isInPip = false;
 }
 
 void CXBMCApp::onDestroy()
@@ -789,12 +818,15 @@ int CXBMCApp::GetDPI() const
   return dpi;
 }
 
+// While in PiP the Java side (XBMCVideoView.setPipFullWindow) forces the video surface to
+// fill the window, so any rect mapped here is discarded; no PiP-specific mapping is needed.
 CRect CXBMCApp::MapRenderToDroid(const CRect& srcRect)
 {
   float scaleX = 1.0;
   float scaleY = 1.0;
 
   CJNIRect r = getDisplayRect();
+
   if (r.width() && r.height())
   {
     RESOLUTION_INFO renderRes = CDisplaySettings::GetInstance().GetResolutionInfo(CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution());
@@ -919,6 +951,14 @@ void CXBMCApp::OnPlayBackStarted()
   CAndroidKey::SetHandleMediaKeys(false);
 
   RequestVisibleBehind(true);
+
+  // In PiP onPause early-returns, so the only KeepScreenOn(false) path is skipped; drive
+  // the screen-on state from playback instead while the small window is showing.
+  if (m_isInPip)
+    KeepScreenOn(true);
+
+  UpdatePipParams();
+  UpdatePipActions(true);
 }
 
 void CXBMCApp::OnPlayBackPaused()
@@ -931,6 +971,14 @@ void CXBMCApp::OnPlayBackPaused()
 
   RequestVisibleBehind(false);
   ReleaseAudioFocus();
+
+  // Release the screen-on lock while paused in PiP (onPause early-returns in PiP and would
+  // otherwise never clear it).
+  if (m_isInPip)
+    KeepScreenOn(false);
+
+  UpdatePipParams();
+  UpdatePipActions(false);
 }
 
 void CXBMCApp::OnPlayBackStopped()
@@ -945,6 +993,8 @@ void CXBMCApp::OnPlayBackStopped()
   RequestVisibleBehind(false);
   CAndroidKey::SetHandleMediaKeys(true);
   ReleaseAudioFocus();
+
+  UpdatePipParams();
 }
 
 const CJNIViewInputDevice CXBMCApp::GetInputDevice(int deviceId)
@@ -964,6 +1014,8 @@ void CXBMCApp::ProcessSlow()
   if ((m_playback_state & PLAYBACK_STATE_PLAYING) && !m_mediaSessionUpdated &&
       m_mediaSession->isActive())
     UpdateSessionState();
+
+  UpdatePipParams();
 }
 
 std::vector<androidPackage> CXBMCApp::GetApplications() const
@@ -1439,6 +1491,120 @@ void CXBMCApp::onVisibleBehindCanceled()
       CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
                                                  static_cast<void*>(new CAction(ACTION_PAUSE)));
   }
+}
+
+void CXBMCApp::onUserLeaveHint()
+{
+  if (!ShouldEnterPip())
+    return;
+
+  const auto [num, den] = GetPipAspectRatio();
+  // Playback is running when entering PiP, so the initial action is "pause".
+  enterPip(num, den, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(112));
+}
+
+bool CXBMCApp::ShouldEnterPip() const
+{
+  if (!m_pipSupported)
+    return false;
+
+  const auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent)
+    return false;
+
+  const auto settings = settingsComponent->GetSettings();
+  if (!settings || !settings->GetBool(SETTING_USE_PIP))
+    return false;
+
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (!appPlayer || !appPlayer->IsPlayingVideo() || appPlayer->IsPausedPlayback())
+    return false;
+
+  CGUIComponent* gui = CServiceBroker::GetGUI();
+  if (!gui)
+    return false;
+
+  return gui->GetWindowManager().GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO;
+}
+
+std::pair<int, int> CXBMCApp::GetPipAspectRatio()
+{
+  // The PiP window follows the video aspect ratio; the Java side forces the video
+  // surface to fill the window while in PiP, so the picture maps 1:1 without bars.
+  float ar = 0.0f;
+
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (appPlayer)
+    ar = appPlayer->GetRenderAspectRatio();
+
+  if (ar <= 0.1f)
+    return {16, 9};
+
+  ar = std::clamp(ar, 0.42f, 2.39f);
+  return {static_cast<int>(std::lround(ar * 10000)), 10000};
+}
+
+void CXBMCApp::onPipModeChanged(bool isInPipMode)
+{
+  android_printf("CXBMCApp::%s: %s", __FUNCTION__, isInPipMode ? "true" : "false");
+
+  m_isInPip = isInPipMode;
+
+  if (isInPipMode)
+    ClosePipObstructions();
+}
+
+void CXBMCApp::onPipPlayPause()
+{
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+                                             static_cast<void*>(new CAction(ACTION_PAUSE)));
+}
+
+void CXBMCApp::ClosePipObstructions()
+{
+  CGUIComponent* gui = CServiceBroker::GetGUI();
+  if (!gui)
+    return;
+
+  // ACTION_SHOW_OSD is a toggle and could re-open the OSD if it auto-hid (3s) between the
+  // active check and the action being processed. Close the dialog idempotently instead.
+  // The video OSD is KEEP_IN_MEMORY, so the pointer stays valid.
+  CGUIDialog* osd = gui->GetWindowManager().GetDialog(WINDOW_DIALOG_VIDEO_OSD);
+  if (osd && osd->IsDialogRunning())
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_WINDOW_CLOSE, -1, 1,
+                                               static_cast<void*>(osd));
+}
+
+void CXBMCApp::UpdatePipParams()
+{
+  if (!m_pipSupported || CJNIBuild::SDK_INT < 31)
+    return;
+
+  const bool autoEnter = ShouldEnterPip();
+  const auto [num, den] = GetPipAspectRatio();
+
+  // UpdatePipParams runs both from the announcement worker thread and from the app thread
+  // (ProcessSlow); guard the cache compare+update against concurrent access.
+  std::unique_lock lock(m_pipParamsSection);
+
+  // Avoid spamming the JNI/UI thread (called from ProcessSlow); only push on change.
+  if (num == m_lastPipNum && den == m_lastPipDen && autoEnter == m_lastPipAutoEnter)
+    return;
+
+  m_lastPipNum = num;
+  m_lastPipDen = den;
+  m_lastPipAutoEnter = autoEnter;
+
+  updatePipParams(autoEnter, num, den);
+}
+
+void CXBMCApp::UpdatePipActions(bool playing)
+{
+  if (m_isInPip && CJNIBuild::SDK_INT >= 26 && CJNIBuild::SDK_INT < 31)
+    updatePipActions(playing, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                                  playing ? 112 : 208));
 }
 
 void CXBMCApp::onVolumeChanged(int volume)
