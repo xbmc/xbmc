@@ -1027,7 +1027,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
           return InfoRet::INFO_ERROR;
 
         // Deal with set
-        if (UpdateSetInTag(*pItem->GetVideoInfoTag()) && !AddSet(pItem->GetVideoInfoTag()->m_set))
+        if (UpdateSetInTag(*item.GetVideoInfoTag()) && !AddSet(item.GetVideoInfoTag()->m_set))
           return InfoRet::INFO_ERROR;
       }
 
