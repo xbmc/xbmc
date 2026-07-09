@@ -1735,17 +1735,17 @@ void CDVDVideoCodecAndroidMediaCodec::ConfigureOutputFormat(CJNIMediaFormat& med
   if (mediaformat.containsKey(CJNIMediaFormat::KEY_SLICE_HEIGHT))
     slice_height = mediaformat.getInteger(CJNIMediaFormat::KEY_SLICE_HEIGHT);
 
-  if (CJNIBase::GetSDKVersion() >= 33)
-  {
-    if (mediaformat.containsKey(CJNIMediaFormat::KEY_CROP_LEFT))
-      crop_left = mediaformat.getInteger(CJNIMediaFormat::KEY_CROP_LEFT);
-    if (mediaformat.containsKey(CJNIMediaFormat::KEY_CROP_TOP))
-      crop_top = mediaformat.getInteger(CJNIMediaFormat::KEY_CROP_TOP);
-    if (mediaformat.containsKey(CJNIMediaFormat::KEY_CROP_RIGHT))
-      crop_right = mediaformat.getInteger(CJNIMediaFormat::KEY_CROP_RIGHT);
-    if (mediaformat.containsKey(CJNIMediaFormat::KEY_CROP_BOTTOM))
-      crop_bottom = mediaformat.getInteger(CJNIMediaFormat::KEY_CROP_BOTTOM);
-  }
+  // Use the crop keys directly instead of the constants defined in the MediaFormat class.
+  // These constants were formally introduced in API 33, but they had already been used
+  // directly in previous versions.
+  if (mediaformat.containsKey("crop-left"))
+    crop_left = mediaformat.getInteger("crop-left");
+  if (mediaformat.containsKey("crop-top"))
+    crop_top = mediaformat.getInteger("crop-top");
+  if (mediaformat.containsKey("crop-right"))
+    crop_right = mediaformat.getInteger("crop-right");
+  if (mediaformat.containsKey("crop-bottom"))
+    crop_bottom = mediaformat.getInteger("crop-bottom");
 
   // Note: These properties are not documented in the Android SDK but
   // are available in the MediaFormat object.
