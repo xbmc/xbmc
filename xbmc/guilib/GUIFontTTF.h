@@ -164,7 +164,8 @@ protected:
                         std::span<const character_t> text,
                         uint32_t alignment,
                         float maxPixelWidth,
-                        bool scrolling,
+                        bool hScrolling,
+                        bool vScrolling,
                         float dx = 0.0f,
                         float dy = 0.0f);
 
