@@ -16,6 +16,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <cassert>
 #include <cstdint>
 #include <cstring>
 #include <exception>
@@ -407,6 +408,8 @@ void CTextureBase::SetKDFormat(XB_FMT xbFMT)
 
 bool CTextureBase::ConvertToLegacy(uint32_t width, uint32_t height, uint8_t* src)
 {
+  // Covers only the swizzles TexturePacker emits today; SwizzleMap also lists RGB1/GGG1/111G/
+  // GGGA/GGGG, which fall through to a hard upload failure below if TexturePacker ever emits them.
   if (m_textureFormat == KD_TEX_FMT_SDR_BGRA8 && m_textureSwizzle == KD_TEX_SWIZ_RGBA)
   {
     m_format = XB_FMT_A8R8G8B8;
@@ -417,15 +420,22 @@ bool CTextureBase::ConvertToLegacy(uint32_t width, uint32_t height, uint8_t* src
   {
     if (m_textureSwizzle != KD_TEX_SWIZ_111R && m_textureSwizzle != KD_TEX_SWIZ_RRR1 &&
         m_textureSwizzle != KD_TEX_SWIZ_RRRR)
+    {
+      assert(false && "TexturePacker is not expected to emit this R8 swizzle; add a case here");
       return false;
+    }
   }
   else if (m_textureFormat == KD_TEX_FMT_SDR_RG8)
   {
     if (m_textureSwizzle != KD_TEX_SWIZ_RRRG)
+    {
+      assert(false && "TexturePacker is not expected to emit this RG8 swizzle; add a case here");
       return false;
+    }
   }
   else
   {
+    assert(false && "TexturePacker is not expected to emit this format/swizzle; add a case here");
     return false;
   }
 

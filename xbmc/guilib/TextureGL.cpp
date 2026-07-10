@@ -292,28 +292,43 @@ void CGLTexture::BindToUnit(unsigned int unit)
 
 void CGLTexture::SetSwizzle()
 {
+  GLenum swizzleTarget = GetSwizzleTarget();
+  if (swizzleTarget == GL_FALSE)
+    return;
+
   if (!SwizzleMap.contains(m_textureSwizzle))
     return;
 
   Textureswizzle swiz = SwizzleMap.at(m_textureSwizzle);
+  glTexParameteriv(GL_TEXTURE_2D, swizzleTarget, &swiz.r);
+}
 
-  // GL_TEXTURE_SWIZZLE_RGBA and GL_TEXTURE_SWIZZLE_RGBA_EXT should be the same
-  // token, but just to be sure...
+bool CGLTexture::SupportsFormat(KD_TEX_FMT textureFormat, KD_TEX_SWIZ textureSwizzle)
+{
+  // Non-identity swizzles need GL_ARB/EXT_texture_swizzle to be applied by SetSwizzle(),
+  // otherwise the texture is sampled with the wrong channel mapping.
+  return textureSwizzle == KD_TEX_SWIZ_RGBA || GetSwizzleTarget() != GL_FALSE;
+}
+
+GLenum CGLTexture::GetSwizzleTarget()
+{
+  if (m_swizzleTarget)
+    return *m_swizzleTarget;
+
+  // GL_TEXTURE_SWIZZLE_RGBA and GL_TEXTURE_SWIZZLE_RGBA_EXT should be the same token, but just
+  // to be sure we cache whichever one this GL implementation actually supports.
+  m_swizzleTarget = GL_FALSE;
 #if defined(GL_VERSION_3_3) || (GL_ARB_texture_swizzle)
   if (m_isOglVersion33orNewer ||
       CGLExtensions::IsExtensionSupported(CGLExtensions::ARB_texture_swizzle))
-  {
-    glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, &swiz.r);
-    return;
-  }
+    m_swizzleTarget = GL_TEXTURE_SWIZZLE_RGBA;
 #endif
 #if defined(GL_EXT_texture_swizzle)
-  if (CGLExtensions::IsExtensionSupported(CGLExtensions::EXT_texture_swizzle))
-  {
-    glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA_EXT, &swiz.r);
-    return;
-  }
+  if (*m_swizzleTarget == GL_FALSE &&
+      CGLExtensions::IsExtensionSupported(CGLExtensions::EXT_texture_swizzle))
+    m_swizzleTarget = GL_TEXTURE_SWIZZLE_RGBA_EXT;
 #endif
+  return *m_swizzleTarget;
 }
 
 TextureFormat CGLTexture::GetFormatGL(KD_TEX_FMT textureFormat)

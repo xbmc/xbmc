@@ -10,6 +10,8 @@
 
 #include "Texture.h"
 
+#include <optional>
+
 #include "system_gl.h"
 
 struct TextureFormat
@@ -44,10 +46,7 @@ public:
   void SyncGPU() override;
   void BindToUnit(unsigned int unit) override;
 
-  bool SupportsFormat(KD_TEX_FMT textureFormat, KD_TEX_SWIZ textureSwizzle) override
-  {
-    return true;
-  }
+  bool SupportsFormat(KD_TEX_FMT textureFormat, KD_TEX_SWIZ textureSwizzle) override;
 
   // GL interface
   GLuint GetTextureID() const;
@@ -56,8 +55,15 @@ protected:
   void SetSwizzle();
   TextureFormat GetFormatGL(KD_TEX_FMT textureFormat);
 
+  // Probed lazily, not in the constructor: instances can exist before InitRenderSystem() runs
+  // (e.g. CWinSystemX11::CreateIconPixmap()), and IsExtensionSupported() caches forever.
+  GLenum GetSwizzleTarget();
+
   GLuint m_texture{0};
   bool m_isOglVersion3orNewer{false};
   bool m_isOglVersion33orNewer{false};
+
+private:
+  std::optional<GLenum> m_swizzleTarget;
 };
 
