@@ -74,7 +74,6 @@ bool LoadXMLData(const std::string& filepath, CXBMCTinyXML& xmlDoc)
 }
 } // unnamed namespace
 
-
 GUIFontManager::GUIFontManager() = default;
 
 GUIFontManager::~GUIFontManager()
@@ -215,13 +214,12 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName,
       return nullptr;
     }
 
-    m_vecFontFiles.emplace_back(pFontFile);
+    m_vecFontFiles.push_back(std::unique_ptr<CGUIFontTTF>(pFontFile));
   }
 
   // font file is loaded, create our CGUIFont
   CGUIFont* pNewFont = new CGUIFont(strFontName, iStyle, textColor, shadowColor, lineSpacing,
                                     static_cast<float>(iSize), pFontFile);
-  m_vecFonts.emplace_back(pNewFont);
 
   // Store the original TTF font info in case we need to reload it in a different resolution
   OrigFontInfo fontInfo;
@@ -232,7 +230,8 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName,
   fontInfo.sourceRes = *sourceRes;
   fontInfo.preserveAspect = preserveAspect;
   fontInfo.border = border;
-  m_vecFontInfo.emplace_back(fontInfo);
+
+  m_fonts.emplace_back(FontEntry{std::unique_ptr<CGUIFont>(pNewFont), fontInfo});
 
   return pNewFont;
 }
@@ -271,55 +270,67 @@ bool GUIFontManager::OnMessage(CGUIMessage& message)
   return false;
 }
 
+std::string GUIFontManager::MakeFontIdent(const std::string& fileName,
+                                          float size,
+                                          float aspect,
+                                          bool border)
+{
+  return StringUtils::Format("{}_{:f}_{:f}{}", fileName, size, aspect, border ? "_border" : "");
+}
+
+bool GUIFontManager::ReloadFontEntry(CWinSystemBase& winSystem, FontEntry& entry)
+{
+  OrigFontInfo fontInfo = entry.origInfo;
+
+  float aspect = fontInfo.aspect;
+  float newSize = static_cast<float>(fontInfo.size);
+  std::string& strPath = fontInfo.fontFilePath;
+
+  RescaleFontSizeAndAspect(winSystem.GetGfxContext(), &newSize, &aspect, fontInfo.sourceRes,
+                           fontInfo.preserveAspect);
+
+  const std::string fontIdent = MakeFontIdent(fontInfo.fileName, newSize, aspect, fontInfo.border);
+  CGUIFontTTF* pFontFile = GetFontFile(fontIdent);
+  if (!pFontFile)
+  {
+    pFontFile = CGUIFontTTF::CreateGUIFontTTF(fontIdent);
+    if (!pFontFile || !pFontFile->Load(strPath, newSize, aspect, 1.0f, fontInfo.border))
+    {
+      delete pFontFile;
+      CLog::LogF(LOGERROR, "Couldn't re-load font file: '{}'", strPath);
+      return false;
+    }
+
+    m_vecFontFiles.push_back(std::unique_ptr<CGUIFontTTF>(pFontFile));
+  }
+
+  entry.font->SetFont(pFontFile);
+  return true;
+}
+
 void GUIFontManager::ReloadTTFFonts(void)
 {
   CWinSystemBase* const winSystem = CServiceBroker::GetWinSystem();
-  if (m_vecFonts.empty() || !winSystem)
+  if (m_fonts.empty() || !winSystem)
     return; // we haven't even loaded fonts in yet
 
-  for (size_t i = 0; i < m_vecFonts.size(); ++i)
+  for (auto& entry : m_fonts)
   {
-    const auto& font = m_vecFonts[i];
-    OrigFontInfo fontInfo = m_vecFontInfo[i];
-
-    float aspect = fontInfo.aspect;
-    float newSize = static_cast<float>(fontInfo.size);
-    std::string& strPath = fontInfo.fontFilePath;
-    std::string& strFilename = fontInfo.fileName;
-
-    RescaleFontSizeAndAspect(winSystem->GetGfxContext(), &newSize, &aspect, fontInfo.sourceRes,
-                             fontInfo.preserveAspect);
-
-    const std::string fontIdent = StringUtils::Format("{}_{:f}_{:f}{}", strFilename, newSize,
-                                                      aspect, fontInfo.border ? "_border" : "");
-    CGUIFontTTF* pFontFile = GetFontFile(fontIdent);
-    if (!pFontFile)
-    {
-      pFontFile = CGUIFontTTF::CreateGUIFontTTF(fontIdent);
-      if (!pFontFile || !pFontFile->Load(strPath, newSize, aspect, 1.0f, fontInfo.border))
-      {
-        delete pFontFile;
-        // This font could not be re-rasterised, but the rest still can. It
-        // keeps the CGUIFontTTF it already had, which m_vecFontFiles still
-        // owns, so it stays renderable at the old size.
-        CLog::LogF(LOGERROR, "Couldn't re-load font file: '{}'", strPath);
-        continue;
-      }
-
-      m_vecFontFiles.emplace_back(pFontFile);
-    }
-
-    font->SetFont(pFontFile);
+    // One font failing to re-rasterise is no reason to leave every later font
+    // at the old resolution. ReloadFontEntry has already logged the failure,
+    // and the entry keeps pointing at its previous CGUIFontTTF, which is still
+    // owned by m_vecFontFiles.
+    ReloadFontEntry(*winSystem, entry);
   }
 }
 
 void GUIFontManager::Unload(const std::string& strFontName)
 {
-  for (auto iFont = m_vecFonts.begin(); iFont != m_vecFonts.end(); ++iFont)
+  for (auto it = m_fonts.begin(); it != m_fonts.end(); ++it)
   {
-    if (StringUtils::EqualsNoCase((*iFont)->GetFontName(), strFontName))
+    if (StringUtils::EqualsNoCase(it->font->GetFontName(), strFontName))
     {
-      m_vecFonts.erase(iFont);
+      m_fonts.erase(it);
       return;
     }
   }
@@ -350,9 +361,9 @@ CGUIFontTTF* GUIFontManager::GetFontFile(const std::string& fontIdent)
 
 CGUIFont* GUIFontManager::GetFont(const std::string& strFontName, bool fallback /*= true*/)
 {
-  for (const auto& it : m_vecFonts)
+  for (const auto& entry : m_fonts)
   {
-    CGUIFont* pFont = it.get();
+    CGUIFont* pFont = entry.font.get();
     if (StringUtils::EqualsNoCase(pFont->GetFontName(), strFontName))
       return pFont;
   }
@@ -367,20 +378,20 @@ CGUIFont* GUIFontManager::GetFont(const std::string& strFontName, bool fallback 
 CGUIFont* GUIFontManager::GetDefaultFont(bool border)
 {
   // first find "font13" or "__defaultborder__"
-  size_t font13index = m_vecFonts.size();
+  size_t font13index = m_fonts.size();
   CGUIFont* font13border = nullptr;
-  for (size_t i = 0; i < m_vecFonts.size(); i++)
+  for (size_t i = 0; i < m_fonts.size(); i++)
   {
-    CGUIFont* font = m_vecFonts[i].get();
+    CGUIFont* font = m_fonts[i].font.get();
     if (font->GetFontName() == "font13")
       font13index = i;
     else if (font->GetFontName() == "__defaultborder__")
       font13border = font;
   }
   // no "font13" means no default font is found - use the first font found.
-  if (font13index == m_vecFonts.size())
+  if (font13index == m_fonts.size())
   {
-    if (m_vecFonts.empty())
+    if (m_fonts.empty())
       return nullptr;
 
     font13index = 0;
@@ -390,23 +401,22 @@ CGUIFont* GUIFontManager::GetDefaultFont(bool border)
   {
     if (!font13border)
     { // create it
-      const auto& font13 = m_vecFonts[font13index];
-      OrigFontInfo fontInfo = m_vecFontInfo[font13index];
+      const FontEntry& entry = m_fonts[font13index];
+      OrigFontInfo fontInfo = entry.origInfo;
       font13border = LoadTTF("__defaultborder__", fontInfo.fileName, KODI::UTILS::COLOR::BLACK, 0,
-                             fontInfo.size, font13->GetStyle(), true, 1.0f, fontInfo.aspect,
+                             fontInfo.size, entry.font->GetStyle(), true, 1.0f, fontInfo.aspect,
                              &fontInfo.sourceRes, fontInfo.preserveAspect);
     }
     return font13border;
   }
 
-  return m_vecFonts[font13index].get();
+  return m_fonts[font13index].font.get();
 }
 
 void GUIFontManager::Clear()
 {
-  m_vecFonts.clear();
+  m_fonts.clear();
   m_vecFontFiles.clear();
-  m_vecFontInfo.clear();
 
 #if defined(HAS_GL)
   CGUIFontTTFGL::DestroyStaticVertexBuffers();
