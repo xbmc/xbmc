@@ -20,6 +20,7 @@
 #include "utils/GlobalsHandling.h"
 #include "windowing/GraphicContext.h"
 
+#include <memory>
 #include <set>
 #include <utility>
 #include <vector>
@@ -31,6 +32,7 @@ struct AddonEvent;
 }
 class CGUIFont;
 class CGUIFontTTF;
+class CWinSystemBase;
 class CXBMCTinyXML;
 class TiXmlNode;
 class CSetting;
@@ -47,10 +49,24 @@ struct OrigFontInfo
   bool border;
 };
 
+/*!
+ \brief A loaded font together with the info needed to re-rasterise it.
+
+ These were two index-aligned vectors. Anything that erased from one without
+ erasing the other silently paired every later font with its neighbour's info,
+ so keep them in one entry and the misalignment cannot be expressed.
+ */
+struct FontEntry
+{
+  std::unique_ptr<CGUIFont> font;
+  OrigFontInfo origInfo;
+};
+
 struct FontMetadata
 {
   FontMetadata(const std::string& filename, const std::set<std::string>& familyNames)
-    : m_filename{filename}, m_familyNames{familyNames}
+    : m_filename{filename},
+      m_familyNames{familyNames}
   {
   }
 
@@ -114,6 +130,11 @@ public:
 
 protected:
   void ReloadTTFFonts();
+  void ReloadFontEntry(CWinSystemBase& winSystem, FontEntry& entry);
+  static std::string MakeFontIdent(const std::string& fileName,
+                                   float size,
+                                   float aspect,
+                                   bool border);
   static void RescaleFontSizeAndAspect(CGraphicContext& context,
                                        float* size,
                                        float* aspect,
@@ -123,9 +144,8 @@ protected:
   CGUIFontTTF* GetFontFile(const std::string& fontIdent);
   static void GetStyle(const TiXmlNode* fontNode, int& iStyle);
 
-  std::vector<std::unique_ptr<CGUIFont>> m_vecFonts;
+  std::vector<FontEntry> m_fonts;
   std::vector<std::unique_ptr<CGUIFontTTF>> m_vecFontFiles;
-  std::vector<OrigFontInfo> m_vecFontInfo;
   RESOLUTION_INFO m_skinResolution;
   bool m_canReload{true};
 
