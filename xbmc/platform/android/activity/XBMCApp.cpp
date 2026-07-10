@@ -1619,6 +1619,12 @@ void CXBMCApp::onAudioFocusChange(int focusChange)
   android_printf("Audio Focus changed: %d", focusChange);
   if (focusChange == CJNIAudioManager::AUDIOFOCUS_LOSS)
   {
+    // While in PiP the user deliberately started another app's audio (e.g. Spotify)
+    // while keeping the video visible. Keep Kodi playing instead of pausing/stopping,
+    // so the video does not end and drop back to the menu inside the small window.
+    if (m_isInPip)
+      return;
+
     if ((m_playback_state & PLAYBACK_STATE_PLAYING))
     {
       if (m_playback_state & PLAYBACK_STATE_CANNOT_PAUSE)
