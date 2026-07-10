@@ -1,5 +1,6 @@
 /configure
 /Makefile.include
+/Makefile.include.tmp
 /autom4te.cache/
 /**/.gitignore
 /**/.configured-*
