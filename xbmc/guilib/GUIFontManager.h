@@ -117,13 +117,19 @@ public:
    */
   std::vector<std::string> GetUserFontsFamilyNames();
 
-protected:
-  void ReloadTTFFonts();
-  bool ReloadFontEntry(CWinSystemBase& winSystem, FontEntry& entry);
-  static std::string MakeFontIdent(const std::string& fileName,
+  /*!
+   \brief Build the key under which a rasterised CGUIFontTTF is pooled.
+   \param fontFilePath the RESOLVED font file path, not the raw XML filename.
+          Two addons may ship a different font under the same basename.
+   */
+  static std::string MakeFontIdent(const std::string& fontFilePath,
                                    float size,
                                    float aspect,
                                    bool border);
+
+protected:
+  void ReloadTTFFonts();
+  bool ReloadFontEntry(CWinSystemBase& winSystem, FontEntry& entry);
   static void RescaleFontSizeAndAspect(CGraphicContext& context,
                                        float* size,
                                        float* aspect,

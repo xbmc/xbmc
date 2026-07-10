@@ -189,8 +189,7 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName,
   }
 
   // check if we already have this font file loaded (font object could differ only by color or style)
-  const std::string fontIdent =
-      StringUtils::Format("{}_{:f}_{:f}{}", strFilename, newSize, aspect, border ? "_border" : "");
+  const std::string fontIdent = MakeFontIdent(strPath, newSize, aspect, border);
 
   CGUIFontTTF* pFontFile = GetFontFile(fontIdent);
   if (!pFontFile)
@@ -271,12 +270,12 @@ bool GUIFontManager::OnMessage(CGUIMessage& message)
   return false;
 }
 
-std::string GUIFontManager::MakeFontIdent(const std::string& fileName,
+std::string GUIFontManager::MakeFontIdent(const std::string& fontFilePath,
                                           float size,
                                           float aspect,
                                           bool border)
 {
-  return StringUtils::Format("{}_{:f}_{:f}{}", fileName, size, aspect, border ? "_border" : "");
+  return StringUtils::Format("{}_{:f}_{:f}{}", fontFilePath, size, aspect, border ? "_border" : "");
 }
 
 bool GUIFontManager::ReloadFontEntry(CWinSystemBase& winSystem, FontEntry& entry)
@@ -290,7 +289,7 @@ bool GUIFontManager::ReloadFontEntry(CWinSystemBase& winSystem, FontEntry& entry
   RescaleFontSizeAndAspect(winSystem.GetGfxContext(), &newSize, &aspect, fontInfo.sourceRes,
                            fontInfo.preserveAspect);
 
-  const std::string fontIdent = MakeFontIdent(fontInfo.fileName, newSize, aspect, fontInfo.border);
+  const std::string fontIdent = MakeFontIdent(strPath, newSize, aspect, fontInfo.border);
   CGUIFontTTF* pFontFile = GetFontFile(fontIdent);
   if (!pFontFile)
   {

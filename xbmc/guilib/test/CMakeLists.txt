@@ -1,4 +1,5 @@
 set(SOURCES TestGUIControlFactory.cpp
+            TestGUIFontManager.cpp
             TestGUIFontParsing.cpp
             TestGamesGUIInfo.cpp)
 
