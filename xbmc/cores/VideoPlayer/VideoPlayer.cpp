@@ -5415,7 +5415,12 @@ void CVideoPlayer::UpdatePlayState(double timeout)
         m_pDemuxer->GetChapterName(p.first, i + 1);
       }
     }
-    state.time = m_clock.GetClock(false) * 1000 / DVD_TIME_BASE;
+    state.time = DVD_TIME_TO_MSEC(m_clock.GetClock(false));
+    // Let the clock catch up after seek
+    if (m_CurrentVideo.startpts != DVD_NOPTS_VALUE &&
+        state.time < DVD_TIME_TO_MSEC(m_CurrentVideo.startpts))
+      state.time = DVD_TIME_TO_MSEC(m_CurrentVideo.startpts);
+
     state.timeMax = m_pDemuxer->GetStreamLength();
   }
 
