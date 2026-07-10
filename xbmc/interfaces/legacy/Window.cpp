@@ -15,6 +15,7 @@
 #include "guilib/GUIButtonControl.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIEditControl.h"
+#include "guilib/GUIFontManager.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/actions/Action.h"
@@ -718,7 +719,13 @@ namespace XBMCAddon
         while (ref(window)->GetControl(pControl->iControlId));
       }
 
-      pControl->Create();
+      {
+        // Resolve <font> names against this window's addon font scope. The
+        // stack is thread_local, so pushing here cannot race the app thread.
+        // Empty for a non-WindowXML window, which pushes a harmless null scope.
+        GUIFontManager::CScopeGuard fontScope(g_fontManager, GetFontScopeKey());
+        pControl->Create();
+      }
 
       // set default navigation for control
       pControl->iControlUp = pControl->iControlId;

@@ -17,6 +17,7 @@
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonType.h"
 #include "guilib/GUIComponent.h"
+#include "guilib/GUIFontManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/TextureManager.h"
 #include "input/actions/Action.h"
@@ -89,7 +90,14 @@ namespace XBMCAddon
 
     };
 
-    WindowXML::~WindowXML() { XBMC_TRACE; deallocating();  }
+    WindowXML::~WindowXML()
+    {
+      XBMC_TRACE;
+      // Last chance to release the scope: a Python-held window can outlive its
+      // GUI teardown. A no-op if a skin change already Clear()ed the scope.
+      g_fontManager.UnloadFontScope(m_fontScopeKey);
+      deallocating();
+    }
 
     WindowXML::WindowXML(const String& xmlFilename,
                          const String& scriptPath,
@@ -143,10 +151,14 @@ namespace XBMCAddon
       }
 
       m_scriptPath = scriptPath;
-//      sXMLFileName = strSkinPath;
+      m_fontScopeKey = strSkinPath;
 
       interceptor = new WindowXMLInterceptor(this, lockingGetNextAvailableWindowId(),strSkinPath.c_str());
       setWindow(interceptor);
+      // Publish the scope key so a Control (which knows only its parent window
+      // id) can resolve fonts against this window's scope on setLabel. Mirrors
+      // the xmlfile property this class already round-trips.
+      ref(window)->SetProperty("fontscopekey", strSkinPath);
       interceptor->SetCoordsRes(res);
     }
 
@@ -424,6 +436,19 @@ namespace XBMCAddon
       URIUtils::RemoveSlashAtEnd(fallbackMediaPath);
       m_mediaDir = fallbackMediaPath;
 
+      // LoadFontsIntoScope is idempotent: it early-returns when the scope is
+      // already loaded, so a reopen does not re-parse. Passing a path that does
+      // not exist is fine and yields a loaded-but-empty scope. Load before the
+      // scope is pushed and before any control is created, so a control that
+      // resolves against this scope always sees it fully populated.
+      g_fontManager.LoadFontsIntoScope(
+          m_fontScopeKey, URIUtils::AddFileToFolder(tmpDir, "Font.xml"),
+          URIUtils::AddFileToFolder(m_mediaDir, "fonts"), ref(window)->GetCoordsRes());
+
+      // Pushed even when there is no Font.xml (empty scope): this marks the
+      // window as an addon window and enables the fallback warning.
+      GUIFontManager::CScopeGuard fontScope(g_fontManager, m_fontScopeKey);
+
       //CLog::Log(LOGDEBUG, "CGUIPythonWindowXML::AllocResources called: {}", fallbackMediaPath);
       CServiceBroker::GetGUI()->GetTextureManager().AddTexturePath(m_mediaDir);
       ref(window)->AllocResources(forceLoad);
@@ -435,6 +460,13 @@ namespace XBMCAddon
       XBMC_TRACE;
 
       ref(window)->FreeResources(forceUnLoad);
+
+      // CGUIWindow::FreeResources only calls ClearAll(), destroying the
+      // controls that hold our raw CGUIFont*, when forceUnload is set. Addon
+      // windows are LOAD_ON_GUI_INIT, so an ordinary close keeps the controls
+      // alive and the fonts must outlive it.
+      if (forceUnLoad)
+        g_fontManager.UnloadFontScope(m_fontScopeKey);
     }
 
     void WindowXML::Process(unsigned int currentTime, CDirtyRegionList &regions)
