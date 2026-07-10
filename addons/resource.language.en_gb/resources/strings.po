@@ -16798,6 +16798,7 @@ msgctxt "#24161"
 msgid "This prevents you from accidental tap/swipe/pan action when you grab the remote in your hand"
 msgstr ""
 
+#: system/settings/android.xml
 #: system/settings/darwin_tvos.xml
 msgctxt "#24162"
 msgid "Use Kodi virtual keyboard"
@@ -18085,7 +18086,13 @@ msgctxt "#34010"
 msgid "Siri remote pan gesture vertical sensitivity"
 msgstr ""
 
-#empty strings from id 34011 to 34099
+#. Description of setting with label #24162 "Use Kodi virtual keyboard"
+#: system/settings/android.xml
+msgctxt "#34011"
+msgid "When you need to enter some text, Kodi virtual keyboard will show up instead of the native Android on-screen keyboard."
+msgstr ""
+
+#empty strings from id 34012 to 34099
 
 #: system/settings/settings.xml
 msgctxt "#34100"
