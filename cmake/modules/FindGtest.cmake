@@ -39,6 +39,9 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
   endmacro()
 
   set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC gtest)
+  # search calls are case sensitive
+  set(${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME GTest)
+  set(${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME_PC gtest)
 
   SETUP_BUILD_VARS()
 
