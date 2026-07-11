@@ -70,7 +70,7 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
 
       if(GTEST_LIBRARY)
         get_target_property(_gtest_link_libraries PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} INTERFACE_LINK_LIBRARIES)
-        if(_gtest_link_libraries)
+        if(_gtest_link_libraries AND NOT _gtest_link_libraries STREQUAL "_gtest_link_libraries-NOTFOUND")
           list(TRANSFORM _gtest_link_libraries REPLACE "^-lgtest$" "${GTEST_LIBRARY}")
           set_target_properties(PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} PROPERTIES
                                                                                      INTERFACE_LINK_LIBRARIES "${_gtest_link_libraries}")
