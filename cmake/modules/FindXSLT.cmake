@@ -37,6 +37,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       list(APPEND CMAKE_ARGS -DBUILD_SHARED_LIBS=OFF)
     endif()
 
+    set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/libxslt/01-cmake-libxml2-module-mode.patch")
+    generate_patchcommand("${patches}")
+    unset(patches)
+
     BUILD_DEP_TARGET()
 
     set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LINK_LIBRARIES LibXml2::LibXml2)
