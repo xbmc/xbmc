@@ -9,12 +9,15 @@
 #pragma once
 
 #include "DVDDemux.h"
-
 #include "cea.h"
+#include "threads/CriticalSection.h"
+#include "threads/Event.h"
 
+#include <atomic>
 #include <memory>
 #include <queue>
 #include <string>
+#include <thread>
 #include <vector>
 
 class CDVDDemuxCC : public CDVDDemux
@@ -37,6 +40,10 @@ public:
   std::vector<DemuxPacket*> Read(DemuxPacket* packet);
 
 protected:
+  void RunVideoPacketFeedThread(); // m_videoPacketFeedThread entry point
+  void StartVideoPacketFeedThread();
+  void StopVideoPacketFeedThread();
+
   static void CaptionCallback(const cea_caption* cap, void* userdata);
   static void LogCallback(cea_log_level level, const char* msg, void* userdata);
 
@@ -46,6 +53,15 @@ protected:
   CDemuxStreamSubtitle CreateStream(int field, int channel) const;
   static std::string BuildStreamName(int field, int channel);
 
+  std::thread m_videoPacketFeedThread;
+  std::atomic<bool> m_stopVideoPacketFeedThread{false};
+
+  CEvent m_videoPacketFeedEvent;
+  CCriticalSection m_videoPacketFeedSection;
+  std::queue<DemuxPacket*> m_videoPacketFeedQueue;
+
+  // Guards m_streams/m_captionQueue.
+  mutable CCriticalSection m_captionSection;
   std::vector<CDemuxStreamSubtitle> m_streams;
   std::queue<DemuxPacket*> m_captionQueue;
 

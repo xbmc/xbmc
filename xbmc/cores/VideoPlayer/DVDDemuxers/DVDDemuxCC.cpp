@@ -19,6 +19,19 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <cstring>
+
+namespace
+{
+void FreeAndClearQueue(std::queue<DemuxPacket*>& queue)
+{
+  while (!queue.empty())
+  {
+    CDVDDemuxUtils::FreeDemuxPacket(queue.front());
+    queue.pop();
+  }
+}
+} // namespace
 
 CDVDDemuxCC::CDVDDemuxCC(AVCodecID codec, const uint8_t* extradata, int extrasize)
 {
@@ -33,6 +46,21 @@ CDVDDemuxCC::CDVDDemuxCC(AVCodecID codec, const uint8_t* extradata, int extrasiz
     m_extradata.assign(extradata, extradata + extrasize);
 
   InitLibcea();
+  StartVideoPacketFeedThread();
+}
+
+void CDVDDemuxCC::StartVideoPacketFeedThread()
+{
+  m_stopVideoPacketFeedThread = false;
+  m_videoPacketFeedThread = std::thread(&CDVDDemuxCC::RunVideoPacketFeedThread, this);
+}
+
+void CDVDDemuxCC::StopVideoPacketFeedThread()
+{
+  m_stopVideoPacketFeedThread = true;
+  m_videoPacketFeedEvent.Set();
+  if (m_videoPacketFeedThread.joinable())
+    m_videoPacketFeedThread.join();
 }
 
 bool CDVDDemuxCC::InitLibcea()
@@ -46,12 +74,6 @@ bool CDVDDemuxCC::InitLibcea()
 
   cea_set_log_callback(m_ceaCtx.get(), LogCallback, nullptr, CEA_LOG_INFO);
 
-  // Don't pass extradata to cea_set_demuxer: the extradata SPS may report a
-  // different max_num_reorder_frames than the actual in-stream SPS, and libcea
-  // never updates the window once it's set from extradata. Passing NULL lets
-  // libcea default to window=4 and auto-detect the correct value from the first
-  // in-stream SPS NAL. The packaging type (AVCC/Annex B) is set above from our
-  // own extradata check, which is all cea_set_demuxer actually needs from us.
   if (cea_set_demuxer(m_ceaCtx.get(), m_ceaCodec, m_ceaPkg, nullptr, 0) < 0)
   {
     CLog::Log(LOGERROR, "CDVDDemuxCC: failed to configure demuxer");
@@ -65,30 +87,37 @@ bool CDVDDemuxCC::InitLibcea()
 
 CDVDDemuxCC::~CDVDDemuxCC()
 {
-  while (!m_captionQueue.empty())
-  {
-    CDVDDemuxUtils::FreeDemuxPacket(m_captionQueue.front());
-    m_captionQueue.pop();
-  }
+  // Thread already joined, no lock needed for the queues below.
+  StopVideoPacketFeedThread();
+  FreeAndClearQueue(m_videoPacketFeedQueue);
+  FreeAndClearQueue(m_captionQueue);
 }
 
 void CDVDDemuxCC::Flush()
 {
-  // Drain any queued packets from before the seek
-  while (!m_captionQueue.empty())
+  StopVideoPacketFeedThread();
+
   {
-    CDVDDemuxUtils::FreeDemuxPacket(m_captionQueue.front());
-    m_captionQueue.pop();
+    std::lock_guard<CCriticalSection> lock(m_videoPacketFeedSection);
+    FreeAndClearQueue(m_videoPacketFeedQueue);
+  }
+
+  // Drain any queued packets from before the seek
+  {
+    std::lock_guard<CCriticalSection> lock(m_captionSection);
+    FreeAndClearQueue(m_captionQueue);
   }
 
   // Reinitialize libcea to clear its internal reorder buffer and decoder state.
   // Streams are intentionally kept so that VideoPlayer's selection stream list
   // remains consistent and the user's subtitle choice is preserved after seek.
   InitLibcea();
+  StartVideoPacketFeedThread();
 }
 
 CDemuxStream* CDVDDemuxCC::GetStream(int iStreamId) const
 {
+  std::lock_guard<CCriticalSection> lock(m_captionSection);
   for (const auto& stream : m_streams)
   {
     if (stream.uniqueId == iStreamId)
@@ -99,6 +128,7 @@ CDemuxStream* CDVDDemuxCC::GetStream(int iStreamId) const
 
 std::vector<CDemuxStream*> CDVDDemuxCC::GetStreams() const
 {
+  std::lock_guard<CCriticalSection> lock(m_captionSection);
   std::vector<CDemuxStream*> streams;
   streams.reserve(m_streams.size());
   for (const auto& stream : m_streams)
@@ -108,6 +138,7 @@ std::vector<CDemuxStream*> CDVDDemuxCC::GetStreams() const
 
 int CDVDDemuxCC::GetNrOfStreams() const
 {
+  std::lock_guard<CCriticalSection> lock(m_captionSection);
   return static_cast<int>(m_streams.size());
 }
 
@@ -124,13 +155,20 @@ std::vector<DemuxPacket*> CDVDDemuxCC::Read(DemuxPacket* pSrcPacket)
   // libcea needs: a smoothly increasing pts_ms across DTS discontinuities.
   double pts_dvd = (pSrcPacket->pts != DVD_NOPTS_VALUE) ? pSrcPacket->pts : pSrcPacket->dts;
 
-  const int64_t ptsMs = DVD_TIME_TO_MSEC(pts_dvd);
-  CLog::Log(LOGDEBUG, "CDVDDemuxCC: feed pts_ms={} size={}", ptsMs, pSrcPacket->iSize);
-  cea_feed_packet(m_ceaCtx.get(), pSrcPacket->pData, pSrcPacket->iSize, ptsMs);
+  // Copy: pSrcPacket's buffer is only valid for the duration of this call.
+  DemuxPacket* feedPkt = CDVDDemuxUtils::AllocateDemuxPacket(pSrcPacket->iSize);
+  feedPkt->iSize = pSrcPacket->iSize;
+  std::memcpy(feedPkt->pData, pSrcPacket->pData, pSrcPacket->iSize);
+  feedPkt->pts = pts_dvd;
 
-  if (m_captionQueue.empty())
-    return {};
+  {
+    std::lock_guard<CCriticalSection> lock(m_videoPacketFeedSection);
+    m_videoPacketFeedQueue.push(feedPkt);
+  }
+  m_videoPacketFeedEvent.Set();
 
+  // Drain whatever caption packets the feed thread has produced so far
+  std::lock_guard<CCriticalSection> lock(m_captionSection);
   std::vector<DemuxPacket*> packets;
   packets.reserve(m_captionQueue.size());
   while (!m_captionQueue.empty())
@@ -141,9 +179,40 @@ std::vector<DemuxPacket*> CDVDDemuxCC::Read(DemuxPacket* pSrcPacket)
   return packets;
 }
 
+void CDVDDemuxCC::RunVideoPacketFeedThread()
+{
+  while (!m_stopVideoPacketFeedThread)
+  {
+    m_videoPacketFeedEvent.Wait();
+    if (m_stopVideoPacketFeedThread)
+      break;
+
+    while (true)
+    {
+      DemuxPacket* pkt = nullptr;
+      {
+        std::lock_guard<CCriticalSection> lock(m_videoPacketFeedSection);
+        if (m_videoPacketFeedQueue.empty())
+          break;
+        pkt = m_videoPacketFeedQueue.front();
+        m_videoPacketFeedQueue.pop();
+      }
+
+      const int64_t ptsMs = DVD_TIME_TO_MSEC(pkt->pts);
+      cea_feed_packet(m_ceaCtx.get(), pkt->pData, pkt->iSize, ptsMs);
+      CDVDDemuxUtils::FreeDemuxPacket(pkt);
+    }
+  }
+}
+
 void CDVDDemuxCC::CaptionCallback(const cea_caption* cap, void* userdata)
 {
   CDVDDemuxCC* self = static_cast<CDVDDemuxCC*>(userdata);
+
+  // Called synchronously from cea_feed_packet() on the feed thread; guards
+  // m_streams/m_captionQueue against GetStream/GetStreams/GetNrOfStreams/Read.
+  std::lock_guard<CCriticalSection> lock(self->m_captionSection);
+
   self->EnsureStream(cap->field, cap->channel);
   // In rollup modes (RU2/RU3/RU4), skip CLEAR events. The next SHOW will finalize
   // the previous subtitle at its own PTS via DVDOverlayCodecCCText's "different text"
