@@ -65,9 +65,9 @@ protected:
   std::vector<CDemuxStreamSubtitle> m_streams;
   std::queue<DemuxPacket*> m_captionQueue;
 
-  // Stored to allow reinitialization on Flush()
-  cea_codec_type m_ceaCodec{CEA_CODEC_MPEG2};
-  cea_packaging_type m_ceaPkg{CEA_PACKAGING_ANNEX_B};
+  // Stored to allow reinitialization on Flush().
+  cea_codec_type m_ceaCodec;
+  cea_packaging_type m_ceaPkg;
   std::vector<uint8_t> m_extradata;
 
   struct CeaCtxDeleter
