@@ -319,15 +319,28 @@ std::unique_ptr<CTexture> CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
     return nullptr;
   }
 
+  ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetImmediateContext();
+  if (!pContext)
+    return nullptr;
+
   // There might be data to copy from the previous texture
-  if (newSpeedupTexture && m_speedupTexture)
+  if (m_speedupTexture)
   {
     CD3D11_BOX rect(0, 0, 0, m_textureWidth, m_textureHeight, 1);
-    ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetImmediateContext();
     pContext->CopySubresourceRegion(newSpeedupTexture->Get(), 0, 0, 0, 0, m_speedupTexture->Get(),
                                     0, &rect);
   }
 
+  // Zero the previously unused part of the resource
+  //! @todo avoid the CPU/GPU synchronization with a GPU clear
+  if (newHeight > m_textureHeight)
+  {
+    const unsigned int startRow = m_speedupTexture ? m_textureHeight : 0;
+    CD3D11_BOX rect(0, startRow, 0, m_textureWidth, newHeight, 1);
+    std::vector<uint8_t> black(m_textureWidth * (newHeight - startRow), 0);
+    pContext->UpdateSubresource(newSpeedupTexture->Get(), 0, &rect, black.data(), m_textureWidth,
+                                0);
+  }
   m_texture.reset();
 
   m_textureHeight = newHeight;
