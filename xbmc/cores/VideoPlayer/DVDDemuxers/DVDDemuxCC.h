@@ -14,6 +14,7 @@
 
 #include <memory>
 #include <queue>
+#include <string>
 #include <vector>
 
 class CDVDDemuxCC : public CDVDDemux
@@ -41,6 +42,9 @@ protected:
 
   bool InitLibcea();
   void EnsureStream(int field, int channel);
+  bool HasStream(int uniqueId) const;
+  CDemuxStreamSubtitle CreateStream(int field, int channel) const;
+  static std::string BuildStreamName(int field, int channel);
 
   std::vector<CDemuxStreamSubtitle> m_streams;
   std::queue<DemuxPacket*> m_captionQueue;

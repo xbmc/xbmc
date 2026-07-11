@@ -15,6 +15,7 @@
 #include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -155,8 +156,8 @@ void CDVDDemuxCC::CaptionCallback(const cea_caption* cap, void* userdata)
 
   const std::string text = cap->text ? cap->text : "";
   const double pts = DVD_MSEC_TO_TIME(static_cast<double>(cap->pts_ms));
-  CLog::Log(LOGDEBUG, "CDVDDemuxCC: cap field={} mode={:#x} pts_ms={} text={}",
-            cap->field, static_cast<int>(cap->mode), cap->pts_ms, text.empty() ? "<clear>" : text);
+  CLog::Log(LOGDEBUG, "CDVDDemuxCC: cap field={} mode={:#x} pts_ms={} text={}", cap->field,
+            static_cast<int>(cap->mode), cap->pts_ms, text.empty() ? "<clear>" : text);
 
   DemuxPacket* pkt = CDVDDemuxUtils::AllocateDemuxPacket(static_cast<int>(text.size()));
   pkt->iSize = static_cast<int>(text.size());
@@ -192,19 +193,40 @@ void CDVDDemuxCC::LogCallback(cea_log_level level, const char* msg, void* /*user
   CLog::Log(kodiLevel, "libcea: {}", msg);
 }
 
+bool CDVDDemuxCC::HasStream(int uniqueId) const
+{
+  return std::any_of(m_streams.begin(), m_streams.end(),
+                      [uniqueId](const auto& s) { return s.uniqueId == uniqueId; });
+}
+
 void CDVDDemuxCC::EnsureStream(int field, int channel)
 {
   const int uniqueId = (field - 1) * 2 + (channel - 1);
-  for (const auto& stream : m_streams)
+  if (HasStream(uniqueId))
+    return;
+
+  if (field == 3) // CEA-708: services are discovered and appended lazily, one at a time
   {
-    if (stream.uniqueId == uniqueId)
-      return;
+    m_streams.push_back(CreateStream(field, channel));
+    return;
   }
 
+  // EIA-608: a packet for CC N implies CC1..CC(N-1) are also present in the stream
+  // even if not yet observed, so backfill any lower channels that are missing. This
+  // avoids the subtitle dialog's CC list growing/reordering piecemeal as
+  // lower-numbered channels are separately discovered later.
+  for (int uid = 0; uid <= uniqueId; ++uid)
+  {
+    if (!HasStream(uid))
+      m_streams.push_back(CreateStream(uid / 2 + 1, uid % 2 + 1));
+  }
+}
+
+CDemuxStreamSubtitle CDVDDemuxCC::CreateStream(int field, int channel) const
+{
   CDemuxStreamSubtitle stream;
   stream.source = STREAM_SOURCE_VIDEOMUX;
-  stream.name =
-      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(39206); // "CC"
+  stream.name = BuildStreamName(field, channel);
   stream.language = "und";
 
   auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -212,8 +234,19 @@ void CDVDDemuxCC::EnsureStream(int field, int channel)
     stream.flags = FLAG_HEARING_IMPAIRED;
 
   stream.codec = AV_CODEC_ID_TEXT;
-  stream.uniqueId = uniqueId;
-  auto it = std::lower_bound(m_streams.begin(), m_streams.end(), uniqueId,
-                             [](const CDemuxStreamSubtitle& s, int id) { return s.uniqueId < id; });
-  m_streams.insert(it, std::move(stream));
+  stream.uniqueId = (field - 1) * 2 + (channel - 1);
+  return stream;
+}
+
+std::string CDVDDemuxCC::BuildStreamName(int field, int channel)
+{
+  const std::string ccLabel =
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(39206); // "CC"
+
+  if (field == 3) // CEA-708 service
+    return StringUtils::Format("{} CEA 708 Service {}", ccLabel, channel);
+
+  // EIA-608: field 1/channel 1-2 -> CC1/CC2, field 2/channel 1-2 -> CC3/CC4
+  const int ccNumber = (field - 1) * 2 + channel;
+  return StringUtils::Format("{}{} (CEA 608)", ccLabel, ccNumber);
 }

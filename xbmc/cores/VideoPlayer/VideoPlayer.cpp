@@ -1917,7 +1917,6 @@ void CVideoPlayer::ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket)
     if (m_pCCDemuxer->GetNrOfStreams() !=
         m_SelectionStreams.CountTypeOfSource(StreamType::SUBTITLE, STREAM_SOURCE_VIDEOMUX))
     {
-      m_SelectionStreams.Clear(StreamType::SUBTITLE, STREAM_SOURCE_VIDEOMUX);
       m_SelectionStreams.Update(NULL, m_pCCDemuxer.get(), "");
       UpdateContent();
       // Only open defaults if no CC subtitle is currently active. If one is already
