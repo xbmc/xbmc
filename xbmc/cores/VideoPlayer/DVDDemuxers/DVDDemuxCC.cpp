@@ -8,134 +8,90 @@
 
 #include "DVDDemuxCC.h"
 
-#include "DVDDemuxCC/CCBitstreamParserFactory.h"
-#include "DVDDemuxCC/CaptionBlock.h"
 #include "DVDDemuxUtils.h"
 #include "ServiceBroker.h"
-#include "cores/VideoPlayer/DVDCodecs/Overlay/contrib/cc_decoder708.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/ColorUtils.h"
-#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
-#include <iterator>
-#include <ranges>
-#include <utility>
-
-namespace COLOR = KODI::UTILS::COLOR;
-
-namespace
-{
-/*!
- * \brief Color formats for CC color conversion
- */
-enum class ColorFormat
-{
-  RGB,
-  ARGB
-};
-
-/*!
- * \brief Given the color code from the close caption decoder, returns the corresponding
- * color in rgb format (striping the alpha channel from argb)
- * 
- * \param[in] ccColor - a given color from the cc decoder
- * \param[in] format - the color format
- * \return the corresponding Color in rgb
- */
-constexpr COLOR::Color CCColorConversion(const uint8_t ccColor, ColorFormat format)
-{
-  COLOR::Color color = COLOR::NONE;
-  switch (ccColor)
-  {
-    case WHITE:
-      color = COLOR::WHITE;
-      break;
-    case GREEN:
-      color = COLOR::GREEN;
-      break;
-    case BLUE:
-      color = COLOR::BLUE;
-      break;
-    case CYAN:
-      color = COLOR::CYAN;
-      break;
-    case RED:
-      color = COLOR::RED;
-      break;
-    case YELLOW:
-      color = COLOR::YELLOW;
-      break;
-    case MAGENTA:
-      color = COLOR::MAGENTA;
-      break;
-    case BLACK:
-      color = COLOR::BLACK;
-      break;
-    default:
-      break;
-  }
-
-  if (format == ColorFormat::RGB)
-    return color & ~0xFF000000;
-
-  return color;
-}
-
-/*!
- * \brief Given the current buffer cc text and cc style attributes, apply the modifiers
- * \param[in,out] ccText - the text to display in the caption
- * \param[in] ccAttributes - The attributes (italic, color, underline) for the text
- */
-void ApplyStyleModifiers(std::string& ccText, const cc_attribute_t& ccAttributes)
-{
-  // Apply style modifiers to CC text
-  if (ccAttributes.italic > 0)
-  {
-    ccText = StringUtils::Format("<i>{}</i>", ccText);
-  }
-  if (ccAttributes.underline > 0)
-  {
-    ccText = StringUtils::Format("<u>{}</u>", ccText);
-  }
-  if (ccAttributes.foreground != WHITE)
-  {
-    ccText = StringUtils::Format(
-        "<font color=#{}>{}</u>",
-        COLOR::ConvertToHexRGB(CCColorConversion(ccAttributes.foreground, ColorFormat::RGB)),
-        ccText);
-  }
-}
-} // namespace
-
-bool reorder_sort(const CCaptionBlock& lhs, const CCaptionBlock& rhs)
-{
-  return (lhs.m_pts > rhs.m_pts);
-}
 
 CDVDDemuxCC::CDVDDemuxCC(AVCodecID codec, const uint8_t* extradata, int extrasize)
 {
-  m_hasData = false;
-  m_curPts = 0.0;
-  m_parser = CCBitstreamParserFactory::CreateParser(codec, std::span(extradata, extrasize));
+  m_ceaCodec = (codec == AV_CODEC_ID_H264) ? CEA_CODEC_H264 : CEA_CODEC_MPEG2;
+
+  // Detect AVCC packaging: extradata starts with version byte 0x01
+  m_ceaPkg = CEA_PACKAGING_ANNEX_B;
+  if (codec == AV_CODEC_ID_H264 && extrasize >= 7 && extradata && extradata[0] == 1)
+    m_ceaPkg = CEA_PACKAGING_AVCC;
+
+  if (extradata && extrasize > 0)
+    m_extradata.assign(extradata, extradata + extrasize);
+
+  InitLibcea();
+}
+
+bool CDVDDemuxCC::InitLibcea()
+{
+  m_ceaCtx.reset(cea_init_default());
+  if (!m_ceaCtx)
+  {
+    CLog::Log(LOGERROR, "CDVDDemuxCC: failed to initialize libcea");
+    return false;
+  }
+
+  cea_set_log_callback(m_ceaCtx.get(), LogCallback, nullptr, CEA_LOG_INFO);
+
+  // Don't pass extradata to cea_set_demuxer: the extradata SPS may report a
+  // different max_num_reorder_frames than the actual in-stream SPS, and libcea
+  // never updates the window once it's set from extradata. Passing NULL lets
+  // libcea default to window=4 and auto-detect the correct value from the first
+  // in-stream SPS NAL. The packaging type (AVCC/Annex B) is set above from our
+  // own extradata check, which is all cea_set_demuxer actually needs from us.
+  if (cea_set_demuxer(m_ceaCtx.get(), m_ceaCodec, m_ceaPkg, nullptr, 0) < 0)
+  {
+    CLog::Log(LOGERROR, "CDVDDemuxCC: failed to configure demuxer");
+    m_ceaCtx.reset();
+    return false;
+  }
+
+  cea_set_caption_callback(m_ceaCtx.get(), CaptionCallback, this);
+  return true;
 }
 
 CDVDDemuxCC::~CDVDDemuxCC()
 {
-  Dispose();
+  while (!m_captionQueue.empty())
+  {
+    CDVDDemuxUtils::FreeDemuxPacket(m_captionQueue.front());
+    m_captionQueue.pop();
+  }
+}
+
+void CDVDDemuxCC::Flush()
+{
+  // Drain any queued packets from before the seek
+  while (!m_captionQueue.empty())
+  {
+    CDVDDemuxUtils::FreeDemuxPacket(m_captionQueue.front());
+    m_captionQueue.pop();
+  }
+
+  // Reinitialize libcea to clear its internal reorder buffer and decoder state.
+  // Streams are intentionally kept so that VideoPlayer's selection stream list
+  // remains consistent and the user's subtitle choice is preserved after seek.
+  InitLibcea();
 }
 
 CDemuxStream* CDVDDemuxCC::GetStream(int iStreamId) const
 {
-  for (int i=0; i<GetNrOfStreams(); i++)
+  for (const auto& stream : m_streams)
   {
-    if (m_streams[i].uniqueId == iStreamId)
-      return const_cast<CDemuxStreamSubtitle*>(&m_streams[i]);
+    if (stream.uniqueId == iStreamId)
+      return const_cast<CDemuxStreamSubtitle*>(&stream);
   }
   return nullptr;
 }
@@ -143,188 +99,121 @@ CDemuxStream* CDVDDemuxCC::GetStream(int iStreamId) const
 std::vector<CDemuxStream*> CDVDDemuxCC::GetStreams() const
 {
   std::vector<CDemuxStream*> streams;
-
-  int num = GetNrOfStreams();
-  streams.reserve(num);
-  for (int i = 0; i < num; ++i)
-  {
-    streams.push_back(const_cast<CDemuxStreamSubtitle*>(&m_streams[i]));
-  }
-
+  streams.reserve(m_streams.size());
+  for (const auto& stream : m_streams)
+    streams.push_back(const_cast<CDemuxStreamSubtitle*>(&stream));
   return streams;
 }
 
 int CDVDDemuxCC::GetNrOfStreams() const
 {
-  return m_streams.size();
+  return static_cast<int>(m_streams.size());
 }
 
-DemuxPacket* CDVDDemuxCC::Read(DemuxPacket *pSrcPacket)
+std::vector<DemuxPacket*> CDVDDemuxCC::Read(DemuxPacket* pSrcPacket)
 {
-  DemuxPacket* pPacket = nullptr;
+  if (!m_ceaCtx || !pSrcPacket)
+    return {};
 
-  if (!pSrcPacket)
+  if (pSrcPacket->pts == DVD_NOPTS_VALUE && pSrcPacket->dts == DVD_NOPTS_VALUE)
+    return {};
+
+  // Called from ProcessVideoData after CheckContinuity, so pkt->pts reflects the
+  // final corrected timestamp including any discontinuity adjustment. This is what
+  // libcea needs: a smoothly increasing pts_ms across DTS discontinuities.
+  double pts_dvd = (pSrcPacket->pts != DVD_NOPTS_VALUE) ? pSrcPacket->pts : pSrcPacket->dts;
+
+  const int64_t ptsMs = DVD_TIME_TO_MSEC(pts_dvd);
+  CLog::Log(LOGDEBUG, "CDVDDemuxCC: feed pts_ms={} size={}", ptsMs, pSrcPacket->iSize);
+  cea_feed_packet(m_ceaCtx.get(), pSrcPacket->pData, pSrcPacket->iSize, ptsMs);
+
+  if (m_captionQueue.empty())
+    return {};
+
+  std::vector<DemuxPacket*> packets;
+  packets.reserve(m_captionQueue.size());
+  while (!m_captionQueue.empty())
   {
-    pPacket = Decode();
-    return pPacket;
+    packets.push_back(m_captionQueue.front());
+    m_captionQueue.pop();
   }
-
-  if (pSrcPacket->pts == DVD_NOPTS_VALUE)
-  {
-    return pPacket;
-  }
-
-  // Move temp buffer to reorder buffer
-  std::ranges::move(std::views::reverse(m_ccTempBuffer), std::back_inserter(m_ccReorderBuffer));
-
-  if (!m_parser)
-  {
-    CLog::Log(LOGERROR, "CDVDDemuxCC::Read - No parser available");
-    return pPacket;
-  }
-
-  CCPictureType picType = m_parser->ParsePacket(pSrcPacket, m_ccTempBuffer, m_ccReorderBuffer);
-
-  // Decode CC data when we encounter an I-frame or P-frame (reference frames).
-  // Reference frames ensure correct temporal ordering of CC data,
-  // as B-frames (CCPictureType::OTHER) may be reordered during decoding.
-  if ((picType == CCPictureType::I_FRAME || picType == CCPictureType::P_FRAME) &&
-      !m_ccReorderBuffer.empty())
-  {
-    if (!m_ccDecoder)
-    {
-      if (!OpenDecoder())
-        return nullptr;
-    }
-    std::sort(m_ccReorderBuffer.begin(), m_ccReorderBuffer.end(), reorder_sort);
-    pPacket = Decode();
-  }
-
-  return pPacket;
+  return packets;
 }
 
-void CDVDDemuxCC::Handler(int service, void *userdata)
+void CDVDDemuxCC::CaptionCallback(const cea_caption* cap, void* userdata)
 {
-  CDVDDemuxCC *ctx = static_cast<CDVDDemuxCC*>(userdata);
+  CDVDDemuxCC* self = static_cast<CDVDDemuxCC*>(userdata);
+  self->EnsureStream(cap->field, cap->channel);
+  // In rollup modes (RU2/RU3/RU4), skip CLEAR events. The next SHOW will finalize
+  // the previous subtitle at its own PTS via DVDOverlayCodecCCText's "different text"
+  // path, producing a zero-gap transition. Emitting a CLEAR here would set the previous
+  // subtitle's stop time to end_ms and then the next SHOW would start at start_ms —
+  // any difference between those two timestamps causes a visible blank frame (flash).
+  const bool isRollup = CEA_IS_ROLLUP(cap->mode);
+  if (!cap->text && isRollup)
+    return;
 
-  unsigned int idx;
+  const std::string text = cap->text ? cap->text : "";
+  const double pts = DVD_MSEC_TO_TIME(static_cast<double>(cap->pts_ms));
+  CLog::Log(LOGDEBUG, "CDVDDemuxCC: cap field={} mode={:#x} pts_ms={} text={}",
+            cap->field, static_cast<int>(cap->mode), cap->pts_ms, text.empty() ? "<clear>" : text);
 
-  // switch back from 608 fallback if we got 708
-  if (ctx->m_ccDecoder->m_seen608 && ctx->m_ccDecoder->m_seen708)
+  DemuxPacket* pkt = CDVDDemuxUtils::AllocateDemuxPacket(static_cast<int>(text.size()));
+  pkt->iSize = static_cast<int>(text.size());
+  if (!text.empty())
+    std::copy(text.begin(), text.end(), pkt->pData);
+  pkt->iStreamId = (cap->field - 1) * 2 + (cap->channel - 1);
+  pkt->pts = pts;
+  pkt->duration = 0;
+
+  self->m_captionQueue.push(pkt);
+}
+
+void CDVDDemuxCC::LogCallback(cea_log_level level, const char* msg, void* /*userdata*/)
+{
+  int kodiLevel = LOGINFO;
+  switch (level)
   {
-    for (idx = 0; idx < ctx->m_streamdata.size(); idx++)
-    {
-      if (ctx->m_streamdata[idx].service == 0)
-        break;
-    }
-    if (idx < ctx->m_streamdata.size())
-    {
-      ctx->m_streamdata.erase(ctx->m_streamdata.begin() + idx);
-      ctx->m_ccDecoder->m_seen608 = false;
-    }
-    if (service == 0)
+    case CEA_LOG_DEBUG:
+      kodiLevel = LOGDEBUG;
+      break;
+    case CEA_LOG_WARNING:
+      kodiLevel = LOGWARNING;
+      break;
+    case CEA_LOG_ERROR:
+      kodiLevel = LOGERROR;
+      break;
+    case CEA_LOG_FATAL:
+      kodiLevel = LOGFATAL;
+      break;
+    default:
+      break;
+  }
+  CLog::Log(kodiLevel, "libcea: {}", msg);
+}
+
+void CDVDDemuxCC::EnsureStream(int field, int channel)
+{
+  const int uniqueId = (field - 1) * 2 + (channel - 1);
+  for (const auto& stream : m_streams)
+  {
+    if (stream.uniqueId == uniqueId)
       return;
   }
 
-  for (idx = 0; idx < ctx->m_streamdata.size(); idx++)
-  {
-    if (ctx->m_streamdata[idx].service == service)
-      break;
-  }
-  if (idx >= ctx->m_streamdata.size())
-  {
-    CDemuxStreamSubtitle stream;
-    stream.source = STREAM_SOURCE_VIDEOMUX;
-    stream.name = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
-        39206); // Closed Caption "CC"
-    stream.language = "und";
+  CDemuxStreamSubtitle stream;
+  stream.source = STREAM_SOURCE_VIDEOMUX;
+  stream.name =
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(39206); // "CC"
+  stream.language = "und";
 
-    auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-    if (settings->GetBool(CSettings::SETTING_SUBTITLES_CAPTIONSIMPAIRED))
-      stream.flags = FLAG_HEARING_IMPAIRED;
+  auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  if (settings->GetBool(CSettings::SETTING_SUBTITLES_CAPTIONSIMPAIRED))
+    stream.flags = FLAG_HEARING_IMPAIRED;
 
-    stream.codec = AV_CODEC_ID_TEXT;
-    stream.uniqueId = service;
-    ctx->m_streams.push_back(std::move(stream));
-
-    streamdata data;
-    data.streamIdx = idx;
-    data.service = service;
-    ctx->m_streamdata.push_back(data);
-
-    if (service == 0)
-      ctx->m_ccDecoder->m_seen608 = true;
-    else
-      ctx->m_ccDecoder->m_seen708 = true;
-  }
-
-  ctx->m_streamdata[idx].pts = ctx->m_curPts;
-  ctx->m_streamdata[idx].hasData = true;
-  ctx->m_hasData = true;
-}
-
-bool CDVDDemuxCC::OpenDecoder()
-{
-  m_ccDecoder = std::make_unique<CDecoderCC708>();
-  m_ccDecoder->Init(Handler, this);
-  return true;
-}
-
-void CDVDDemuxCC::Dispose()
-{
-  m_streams.clear();
-  m_streamdata.clear();
-  m_ccDecoder.reset();
-  m_ccReorderBuffer.clear();
-  m_ccTempBuffer.clear();
-}
-
-DemuxPacket* CDVDDemuxCC::Decode()
-{
-  DemuxPacket* pPacket = nullptr;
-
-  while(!m_hasData && !m_ccReorderBuffer.empty())
-  {
-    auto& cc = m_ccReorderBuffer.back();
-    m_curPts = cc.m_pts;
-    m_ccDecoder->Decode(cc.m_data.data(), static_cast<int>(cc.m_data.size()));
-    m_ccReorderBuffer.pop_back();
-  }
-
-  if (m_hasData)
-  {
-    for (unsigned int i=0; i<m_streamdata.size(); i++)
-    {
-      if (m_streamdata[i].hasData)
-      {
-        int service = m_streamdata[i].service;
-
-        std::string data;
-        // CEA-608
-        if (service == 0)
-        {
-          data = m_ccDecoder->m_cc608decoder->text;
-          ApplyStyleModifiers(data, m_ccDecoder->m_cc608decoder->textattr);
-        }
-        // CEA-708
-        else
-        {
-          data = m_ccDecoder->m_cc708decoders[service].text;
-        }
-
-        pPacket = CDVDDemuxUtils::AllocateDemuxPacket(data.size());
-        pPacket->iSize = data.size();
-        if (pPacket->iSize)
-          std::copy(data.begin(), data.end(), pPacket->pData);
-
-        pPacket->iStreamId = service;
-        pPacket->pts = m_streamdata[i].pts;
-        pPacket->duration = 0;
-        m_streamdata[i].hasData = false;
-        break;
-      }
-      m_hasData = false;
-    }
-  }
-  return pPacket;
+  stream.codec = AV_CODEC_ID_TEXT;
+  stream.uniqueId = uniqueId;
+  auto it = std::lower_bound(m_streams.begin(), m_streams.end(), uniqueId,
+                             [](const CDemuxStreamSubtitle& s, int id) { return s.uniqueId < id; });
+  m_streams.insert(it, std::move(stream));
 }

@@ -10,6 +10,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   # Build macro for CEA
   macro(buildmacroCea)
+
+
     # Always build static internal library
     set(CMAKE_ARGS -DBUILD_SHARED_LIBS=OFF
                    ${EXTRA_ARGS})
