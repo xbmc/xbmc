@@ -2832,6 +2832,17 @@ void CLinuxRendererGL::CheckVideoParameters(int index)
   if (toneMap != m_toneMap || toneMapMethod != m_toneMapMethod)
   {
     m_reloadShaders = true;
+
+    //! @todo HACK for #28468; clean up properly in Piers beta 2
+    if (toneMap != m_toneMap)
+    {
+      VideoPicture tmp{};
+      tmp.color_space = toneMap ? AVCOL_SPC_UNSPECIFIED : buf.m_srcColSpace;
+      tmp.iWidth = m_sourceWidth;
+      tmp.iHeight = m_sourceHeight;
+      CServiceBroker::GetWinSystem()->SetColorimetry(&tmp);
+    }
+
     m_toneMap = toneMap;
     m_toneMapMethod = toneMapMethod;
   }
