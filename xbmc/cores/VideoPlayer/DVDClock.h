@@ -35,9 +35,10 @@ public:
   void Reset() { m_bReset = true; }
   void SetSpeed(int iSpeed);
   void SetSpeedAdjust(double adjust);
-  double GetSpeedAdjust();
+  double GetSpeedAdjust() const;
 
-  double GetClockSpeed(); /**< get the current speed of the clock relative normal system time */
+  double GetClockSpeed()
+      const; /**< get the current speed of the clock relative normal system time */
 
   /* tells clock at what framerate video is, to  *
    * allow it to adjust speed for a better match */
@@ -53,14 +54,15 @@ public:
   double GetVsyncAdjust();
 
   void Pause(bool pause);
+  bool IsPaused() const;
   void Advance(double time);
 
 protected:
-  double SystemToAbsolute(int64_t system);
-  int64_t AbsoluteToSystem(double absolute);
+  double SystemToAbsolute(int64_t system) const;
+  int64_t AbsoluteToSystem(double absolute) const;
   double SystemToPlaying(int64_t system);
 
-  CCriticalSection m_critSection;
+  mutable CCriticalSection m_critSection;
   int64_t m_systemUsed;
   int64_t m_startClock;
   int64_t m_pauseClock;
