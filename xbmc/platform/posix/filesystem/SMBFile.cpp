@@ -27,6 +27,7 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+#include <chrono>
 #include <cstring>
 #include <inttypes.h>
 #include <list>
@@ -45,39 +46,23 @@ using namespace XFILE;
 // scanner accesses every available share to look for artwork, which
 // quickly exhausts that limit when more than 20 shares exist.
 //
-// This cache holds at most MAX_CACHED_SERVERS (15) sessions alive,
-// evicting the least recently used share when the limit is reached.
-// The session count stays well below 20, preventing "Invalid argument"
-// errors.
+// This implementation overrides all four libsmbclient cache hooks
+// (get / add / remove / purge) so that a single LRU-based cache
+// is the sole, authoritative owner of every server connection.
+// MAX_CACHED_SERVERS (15) caps the number of tracked sessions.
 //
-// The cache key includes username and workgroup to correctly isolate
-// sessions when different credentials are used for the same server/share.
+// Eviction is synchronous - when the cache is full, the least recently
+// used entry is torn down immediately via remove_unused_server().
+// The call is made without holding g_cacheMutex, because on success
+// the library calls back into our own remove_cached_srv_fn which needs
+// to acquire that mutex (avoiding a self-deadlock). If the server
+// is still busy (open files), it is rotated to the front of the LRU
+// so that the next eviction picks a different victim.
 //
-// To avoid use-after-free after a network loss, cache hits always
-// re-fetch the real server pointer from libsmbclient.  If the pointer
-// changed, the old one is simply dropped - we never call
-// remove_unused_server on it, avoiding a double-free risk.
-//
-// The implementation caches the remove_unused_server function pointer
-// once at init and stores the SMBCSRV* directly in the LRU list so that
-// eviction never requires another library call.
-//
-// Safety measures:
-//   - The existing CSMB mutex serialises all library calls, including
-//     Deinit().  Only one thread can be inside xb_smbc_cache at a time,
-//     making additional synchronisation unnecessary.
-//   - The cache mutex (g_cacheMutex) is held during the entire cache
-//     operation and protects the LRU structures against the cleanup
-//     that Deinit() performs under the same lock.
-//   - On shutdown, the original library callback is restored before the
-//     SMB context is freed, and orig_cache_fn is nullified so any future
-//     call will return an error immediately.
-//   - Tracked servers are explicitly released in Deinit() via
-//     remove_unused_server.
-//
-// libsmbclient adds a small overhead of 1-3 sessions (transport, IPC$,
-// etc.) that are not visible to our cache.  With MAX_CACHED_SERVERS = 15
-// the total remains well below the Windows 20-session limit.
+// libsmbclient adds a small overhead of 1-3 sessions (transport,
+// IPC$, etc.) that are not visible to our cache.
+// WithMAX_CACHED_SERVERS = 15 the total remains well below
+// the Windows 20-session limit.
 // ---------------------------------------------------------------
 namespace
 {
@@ -89,7 +74,7 @@ constexpr size_t MAX_CACHED_SERVERS = 15;
 smbc_remove_unused_server_fn g_removeUnusedFn = nullptr;
 
 // Build a cache key from the four components that libsmbclient uses
-// internally.  Backslashes are used as separators because they cannot
+// internally. Backslashes are used as separators because they cannot
 // appear in share names or workgroup / user names.
 std::string MakeKey(const std::string& server,
                     const std::string& share,
@@ -114,155 +99,205 @@ struct CacheEntry
 };
 
 // LRU list - front is most-recently-used, back is least-recently-used.
-// The map provides O(1) lookup from key to list iterator.
 std::list<CacheEntry> g_lru;
+// Map from key to LRU iterator for O(1) lookup.
 std::unordered_map<std::string, std::list<CacheEntry>::iterator> g_map;
+// Reverse index: remove_cached_srv_fn only gives us an SMBCSRV*,
+// so we need to map back to a key to clean up g_lru/g_map.
+std::unordered_map<SMBCSRV*, std::string> g_srvToKey;
+// g_cacheMutex protects g_lru, g_map, and g_srvToKey. In practice
+// every caller already holds the global CSMB mutex, so this mutex
+// is not doing independent serialisation work - it is kept as cheap
+// future-proofing in case a code path ever calls the cache hooks
+// without the outer lock.
 std::mutex g_cacheMutex;
 
-// Original libsmbclient callback, saved during CSMB::Init().
-smbc_get_cached_srv_fn orig_cache_fn = nullptr;
-
 // -----------------------------------------------------------------
-// Evict the least-recently-used entry from the cache.
-// Must be called with g_cacheMutex held.
+// get_cached_srv_fn - pure lookup against our own tracking.
+// Because we own all four hooks, an entry that is not in g_map
+// genuinely does not exist yet; libsmbclient's SMBC_server()
+// will create a new connection and report it back via
+// xb_smbc_cache_add(). No network call happens here, ever.
 // -----------------------------------------------------------------
-void EvictOne(SMBCCTX* c)
-{
-  // Copy key and pointer by value - pop_back() will destroy the node.
-  const std::string evictKey = g_lru.back().key;
-  SMBCSRV* const evictSrv = g_lru.back().srv;
-
-  CLog::LogF(LOGDEBUG, "[SMB_SESSION_LIMIT] Server cache EVICT '{}'", evictKey);
-
-  if (g_removeUnusedFn && evictSrv)
-  {
-    int rc = g_removeUnusedFn(c, evictSrv);
-    if (rc != 0)
-      CLog::LogF(LOGWARNING, "[SMB_SESSION_LIMIT] remove_unused_server failed for '{}' (rc={})",
-                 evictKey, rc);
-  }
-  else if (!g_removeUnusedFn)
-  {
-    CLog::LogF(LOGWARNING, "[SMB_SESSION_LIMIT] remove_unused_server not available - "
-                           "evicting from tracking only");
-  }
-
-  g_map.erase(evictKey);
-  g_lru.pop_back();
-}
-
-// -----------------------------------------------------------------
-// Replacement for smbc_get_cached_srv_fn.
-//   - cache hit  -> move key to front, re-fetch real server pointer.
-//   - cache miss -> create new entry, evict LRU if needed.
-// The whole operation runs under g_cacheMutex; the outer smb mutex
-// guarantees only one thread is in here at a time.
-// -----------------------------------------------------------------
-SMBCSRV* xb_smbc_cache(
-    SMBCCTX* c, const char* server, const char* share, const char* workgroup, const char* username)
+SMBCSRV* xb_smbc_cache_get(SMBCCTX* /*c*/,
+                           const char* server,
+                           const char* share,
+                           const char* workgroup,
+                           const char* username)
 {
   std::lock_guard<std::mutex> lock(g_cacheMutex);
 
-  if (!orig_cache_fn)
-  {
-    CLog::LogF(LOGERROR, "[SMB_SESSION_LIMIT] orig_cache_fn is null - cannot create session");
-    return nullptr;
-  }
+  const std::string key = MakeKey(server ? server : "", share ? share : "",
+                                  username ? username : "", workgroup ? workgroup : "");
 
-  const std::string srv(server ? server : "");
-  const std::string shr(share ? share : "");
-  const std::string wg(workgroup ? workgroup : "");
-  const std::string usr(username ? username : "");
-  const std::string key = MakeKey(srv, shr, usr, wg);
-
-  // ---------- cache hit ---------------------------------------------------
   auto it = g_map.find(key);
-  if (it != g_map.end())
-  {
-    // Move to front (most recently used)
-    g_lru.splice(g_lru.begin(), g_lru, it->second);
-
-    SMBCSRV* oldSrv = it->second->srv; // remember the old pointer
-
-    // Always re-fetch the current server pointer from the library.
-    // This prevents use-after-free if the library recreated the
-    // server after a network loss.
-    SMBCSRV* realSrv = orig_cache_fn(c, server, share, workgroup, username);
-    if (realSrv)
-    {
-      // Server is valid. If the pointer changed, just update our entry
-      // without touching the old pointer - the library owns its lifetime.
-      if (realSrv != oldSrv)
-        it->second->srv = realSrv;
-
-      CLog::LogF(LOGDEBUG, "[SMB_SESSION_LIMIT] Server cache HIT for '{}'", key);
-      return realSrv;
-    }
-
-    // The library no longer has this server - remove the stale entry
-    // and fall through to the cache-miss path to create a fresh one.
-    CLog::LogF(LOGDEBUG, "[SMB_SESSION_LIMIT] Cached server no longer valid for '{}'", key);
-    g_lru.erase(it->second);
-    g_map.erase(it);
-    // intentional fall-through
-  }
-
-  // ---------- cache miss - create new entry --------------------------------
-  SMBCSRV* srvPtr = orig_cache_fn(c, server, share, workgroup, username);
-  if (!srvPtr)
-  {
-    CLog::LogF(LOGERROR, "[SMB_SESSION_LIMIT] orig_cache_fn failed for '{}'", key);
+  if (it == g_map.end())
     return nullptr;
-  }
 
-  // ---------- evict oldest if limit reached --------------------------------
-  if (g_lru.size() >= MAX_CACHED_SERVERS)
-    EvictOne(c);
-
-  // ---------- insert new entry at front ------------------------------------
-  g_lru.push_front({key, srvPtr});
-  g_map[key] = g_lru.begin();
-
-  CLog::LogF(LOGDEBUG, "[SMB_SESSION_LIMIT] Server cache CREATED for '{}' (total cached: {})", key,
-             g_lru.size());
-  return srvPtr;
+  // Move to front (most recently used)
+  g_lru.splice(g_lru.begin(), g_lru, it->second);
+  return it->second->srv;
 }
 
 // -----------------------------------------------------------------
-// Called from CSMB::Deinit() - remove every entry we still track.
-// Must be called before the SMB context is freed.
+// remove_cached_srv_fn - called whenever a server is actually torn
+// down: either by our own synchronous eviction, or by libsmbclient's
+// built-in staleness check. This keeps g_map/g_lru accurate.
+// -----------------------------------------------------------------
+int xb_smbc_cache_remove(SMBCCTX* /*c*/, SMBCSRV* srv)
+{
+  std::lock_guard<std::mutex> lock(g_cacheMutex);
+
+  auto keyIt = g_srvToKey.find(srv);
+  if (keyIt == g_srvToKey.end())
+    return 0; // not tracked - already gone, or never entered our cache
+
+  auto mapIt = g_map.find(keyIt->second);
+  if (mapIt != g_map.end())
+  {
+    g_lru.erase(mapIt->second);
+    g_map.erase(mapIt);
+  }
+  g_srvToKey.erase(keyIt);
+  return 0;
+}
+
+// -----------------------------------------------------------------
+// purge_cached_fn - tells smbc_free_context()'s shutdown path
+// whether we still hold anything. If we report "not fully purged",
+// it falls back to force-closing every remaining live server
+// itself - a safety net we must not silently disable.
+// -----------------------------------------------------------------
+int xb_smbc_cache_purge(SMBCCTX* /*c*/)
+{
+  std::lock_guard<std::mutex> lock(g_cacheMutex);
+  return g_lru.empty() ? 0 : 1;
+}
+
+// -----------------------------------------------------------------
+// Evict the LRU tail immediately.
+// remove_unused_server() is a synchronous network call (tree
+// disconnect + socket close), so it must run WITHOUT g_cacheMutex
+// held: on success it calls back into xb_smbc_cache_remove(),
+// which needs to take g_cacheMutex itself - holding it here too
+// would self-deadlock (std::mutex isn't recursive).
+// Must be called with the CSMB lock held, same as any other
+// libsmbclient call.
+// -----------------------------------------------------------------
+void EvictIfOverCapacity(SMBCCTX* c)
+{
+  // Try a few candidates - busy checks are cheap (no network I/O),
+  // so we can skip over busy entries to keep the tracked count tight.
+  constexpr int kMaxCandidates = 5;
+  for (int attempt = 0; attempt < kMaxCandidates; ++attempt)
+  {
+    // May perform more than one network round-trip if we've drifted over capacity.
+    SMBCSRV* victim = nullptr;
+    std::string victimKey;
+    {
+      std::lock_guard<std::mutex> lock(g_cacheMutex);
+      if (g_lru.size() <= MAX_CACHED_SERVERS)
+        return;
+      victim = g_lru.back().srv;
+      victimKey = g_lru.back().key;
+    }
+
+    if (!g_removeUnusedFn || !victim)
+      return;
+
+    auto start = std::chrono::steady_clock::now(); // measures elapsed time
+    int rc = g_removeUnusedFn(c, victim);
+    auto elapsedMs = std::chrono::duration_cast<std::chrono::milliseconds>(
+                         std::chrono::steady_clock::now() - start)
+                         .count();
+
+    if (rc == 0)
+    {
+      if (elapsedMs > 50)
+        CLog::LogF(LOGWARNING, "[SMB_SESSION_LIMIT] '{}' eviction took {} ms", victimKey,
+                   elapsedMs);
+      else
+        CLog::LogF(LOGDEBUG, "[SMB_SESSION_LIMIT] '{}' evicted (cache full)", victimKey);
+      // xb_smbc_cache_remove() already erased the entry for us.
+      continue; // re-check size; loop exits once back at/under capacity
+    }
+
+    // Still busy - rotate to front and try the next candidate.
+    {
+      std::lock_guard<std::mutex> lock(g_cacheMutex);
+      auto it = g_map.find(victimKey);
+      if (it != g_map.end() && it->second->srv == victim)
+        g_lru.splice(g_lru.begin(), g_lru, it->second);
+    }
+    CLog::LogF(LOGDEBUG, "[SMB_SESSION_LIMIT] '{}' still busy, trying next candidate", victimKey);
+  }
+}
+
+// -----------------------------------------------------------------
+// add_cached_srv_fn - called by libsmbclient exactly once,
+// right after it creates a genuinely new connection.
+// This is the single correct point for a new entry to enter our cache.
+// Eviction is performed immediately if we are over capacity.
+// -----------------------------------------------------------------
+int xb_smbc_cache_add(SMBCCTX* c,
+                      SMBCSRV* srv,
+                      const char* server,
+                      const char* share,
+                      const char* workgroup,
+                      const char* username)
+{
+  {
+    std::lock_guard<std::mutex> lock(g_cacheMutex);
+    const std::string key = MakeKey(server ? server : "", share ? share : "",
+                                    username ? username : "", workgroup ? workgroup : "");
+    g_lru.push_front({key, srv});
+    g_map[key] = g_lru.begin();
+    g_srvToKey[srv] = key;
+    CLog::LogF(LOGDEBUG, "[SMB_SESSION_LIMIT] Server cache ADD '{}' (total cached: {})", key,
+               g_lru.size());
+  }
+
+  EvictIfOverCapacity(c);
+  return 0;
+}
+
+// -----------------------------------------------------------------
+// Called from CSMB::Deinit() - synchronously close everything
+// we still track before the context is freed.
+// Snapshot the servers first, then call remove_unused_server()
+// WITHOUT g_cacheMutex held to avoid the deadlock described
+// in EvictIfOverCapacity. Entries that still fail (busy)
+// are left tracked; purge will then report "not fully purged" and
+// smbc_free_context()'s own force-close fallback will finish them.
 // -----------------------------------------------------------------
 void ClearServerCache(SMBCCTX* c)
 {
-  std::lock_guard<std::mutex> lock(g_cacheMutex);
-
-  // First, nullify the original callback so that any future calls
-  // (or waiting threads) will immediately see an error state.
-  orig_cache_fn = nullptr;
+  std::list<SMBCSRV*> toClose;
+  {
+    std::lock_guard<std::mutex> lock(g_cacheMutex);
+    for (const auto& entry : g_lru)
+      toClose.push_back(entry.srv);
+  }
 
   if (g_removeUnusedFn)
   {
-    for (const auto& entry : g_lru)
+    for (SMBCSRV* srv : toClose)
     {
-      if (entry.srv)
-      {
-        int rc = g_removeUnusedFn(c, entry.srv);
-        if (rc != 0)
-          CLog::LogF(LOGWARNING,
-                     "[SMB_SESSION_LIMIT] ClearServerCache: "
-                     "remove_unused_server failed for '{}' (rc={})",
-                     entry.key, rc);
-      }
+      if (!srv)
+        continue;
+      int rc = g_removeUnusedFn(c, srv);
+      if (rc != 0)
+        CLog::LogF(LOGWARNING,
+                   "[SMB_SESSION_LIMIT] ClearServerCache: remove_unused_server failed (rc={}) - "
+                   "left tracked for smbc_free_context's own cleanup",
+                   rc);
     }
   }
   else
   {
-    CLog::LogF(LOGWARNING, "[SMB_SESSION_LIMIT] ClearServerCache: "
-                           "remove_unused_server not available");
+    CLog::LogF(LOGWARNING,
+               "[SMB_SESSION_LIMIT] ClearServerCache: remove_unused_server not available");
   }
-
-  g_lru.clear();
-  g_map.clear();
 }
 } // unnamed namespace
 
@@ -317,20 +352,15 @@ void CSMB::Deinit()
 {
   std::unique_lock lock(*this);
 
-  // Save the original callback *before* ClearServerCache nullifies it.
-  smbc_get_cached_srv_fn oldCallback = orig_cache_fn;
-
-  // Clear the LRU cache, which also nullifies orig_cache_fn.
+  // Close everything we're still tracking before the context goes
+  // away. Our hooks are safe to leave installed: once cleared,
+  // they are inert no-ops.
   if (m_context)
     ClearServerCache(m_context);
 
   /* samba goes loco if deinited while it has some files opened */
   if (m_context)
   {
-    // Restore the original callback before we destroy the context
-    // so the library won't call our wrapper with a dead context.
-    smbc_setFunctionGetCachedServer(m_context, oldCallback);
-
     smbc_set_context(NULL);
     smbc_free_context(m_context, 1);
     m_context = NULL;
@@ -473,8 +503,12 @@ void CSMB::Init()
     smbc_setDebug(m_context, CServiceBroker::GetLogging().CanLogComponent(LOGSAMBA) ? 10 : 0);
     smbc_setLogCallback(m_context, this, xb_smbc_log);
     smbc_setFunctionAuthData(m_context, xb_smbc_auth);
-    orig_cache_fn = smbc_getFunctionGetCachedServer(m_context);
-    smbc_setFunctionGetCachedServer(m_context, xb_smbc_cache); // [Fix] Install LRU cache
+    // Install our cache hooks: get, add, remove, purge - we are
+    // the sole authoritative owner of server caching.
+    smbc_setFunctionGetCachedServer(m_context, xb_smbc_cache_get);
+    smbc_setFunctionAddCachedServer(m_context, xb_smbc_cache_add);
+    smbc_setFunctionRemoveCachedServer(m_context, xb_smbc_cache_remove);
+    smbc_setFunctionPurgeCachedServers(m_context, xb_smbc_cache_purge);
     smbc_setOptionOneSharePerServer(m_context, false);
     smbc_setOptionBrowseMaxLmbCount(m_context, 0);
     smbc_setTimeout(
@@ -496,7 +530,7 @@ void CSMB::Init()
       SMBCCTX* old_context = smbc_set_context(m_context);
 
       // There is a bug in old Samba versions where smbc_set_context may
-      // return an already freed pointer on subsequent inits.  IsFirstInit
+      // return an already freed pointer on subsequent inits. IsFirstInit
       // guarantees we only free the very first compatibility context once.
       if (old_context && IsFirstInit)
       {
