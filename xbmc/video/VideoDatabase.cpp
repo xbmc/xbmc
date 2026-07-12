@@ -55,7 +55,6 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
-#include "utils/i18n/TableLanguageCodes.h"
 #include "utils/log.h"
 #include "video/VideoDatabaseColumns.h"
 #include "video/VideoDatabaseDDL.h"
@@ -300,7 +299,9 @@ int CVideoDatabase::RunQuery(const std::string &sql)
   return rows;
 }
 
-bool CVideoDatabase::GetSubPaths(const std::string &basepath, std::vector<std::pair<int, std::string>>& subpaths)
+bool CVideoDatabase::GetSubPaths(const std::string& basepath,
+                                 std::vector<std::pair<int, std::string>>& subpaths,
+                                 bool excludeDiscPaths /* = true */)
 {
   std::string sql;
   try
@@ -308,13 +309,29 @@ bool CVideoDatabase::GetSubPaths(const std::string &basepath, std::vector<std::p
     if (!m_pDB || !m_pDS)
       return false;
 
+    // Generate encoded paths
     std::string path(basepath);
     URIUtils::AddSlashAtEnd(path);
-    sql = PrepareSQL(
-        "SELECT idPath,strPath FROM path WHERE SUBSTR(strPath,1,%i)='%s'"
-        " AND idPath NOT IN (SELECT idPath FROM files WHERE strFileName LIKE 'video_ts.ifo')"
-        " AND idPath NOT IN (SELECT idPath FROM files WHERE strFileName LIKE 'index.bdmv')",
-        StringUtils::utf8_strlen(path), path.c_str());
+    CURL url("udf://");
+    url.SetHostName(path);
+    std::string filePath{url.Get()};
+    URIUtils::RemoveSlashAtEnd(filePath);
+    url = CURL("bluray://");
+    url.SetHostName(filePath);
+    std::string isoPath{url.Get()};
+    URIUtils::RemoveSlashAtEnd(isoPath);
+    constexpr size_t udfPrefixLength = 6; // length of "udf://"
+    filePath = filePath.substr(udfPrefixLength); // Remove udf://
+
+    sql = "SELECT idPath, strPath FROM path WHERE (strPath LIKE '%s%%'";
+    if (excludeDiscPaths)
+      sql += " AND idPath NOT IN (SELECT idPath FROM files WHERE strFileName LIKE 'video_ts.ifo')"
+             " AND idPath NOT IN (SELECT idPath FROM files WHERE strFileName LIKE 'index.bdmv')";
+    sql += ") OR (strPath LIKE '%s%%' OR strPath LIKE 'bluray://%s%%'"
+           " OR strPath LIKE 'zip://%s%%' OR strPath LIKE 'rar://%s%%' OR strPath LIKE "
+           "'archive://%s%%')";
+    sql = PrepareSQL(sql, path.c_str(), isoPath.c_str(), filePath.c_str(), filePath.c_str(),
+                     filePath.c_str(), filePath.c_str());
 
     m_pDS->query(sql);
     while (!m_pDS->eof())
@@ -323,6 +340,7 @@ bool CVideoDatabase::GetSubPaths(const std::string &basepath, std::vector<std::p
       m_pDS->next();
     }
     m_pDS->close();
+
     return true;
   }
   catch (...)
@@ -5886,7 +5904,7 @@ void CVideoDatabase::RemoveContentForPath(const std::string& strPath,
       progress->ShowProgressBar(true);
     }
     std::vector<std::pair<int, std::string> > paths;
-    GetSubPaths(strPath, paths);
+    GetSubPaths(strPath, paths, false);
     int iCurr = 0;
     for (const auto& [pathId, path] : paths)
     {
