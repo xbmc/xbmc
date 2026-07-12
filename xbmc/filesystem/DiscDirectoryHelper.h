@@ -287,7 +287,17 @@ private:
       const std::vector<std::vector<CandidatePlaylistInformation>>& groups);
   void GetPlaylistsFromGroup(int episodeIndex,
                              const std::vector<CandidatePlaylistInformation>& group);
-  void UseGroupMethod(int episodeIndex, const Episodes& episodesOnDisc);
+  void UseGroupMethod(int episodeIndex,
+                      const Episodes& episodesOnDisc,
+                      const PlaylistMap& playlists);
+  bool CheckGroupDurations(const std::vector<CandidatePlaylistInformation>& group,
+                           const Episodes& episodesOnDisc,
+                           int durationTolerancePercent = DURATION_TOLERANCE_PERCENT) const;
+  bool CheckGroupDurations(const std::vector<CandidatePlaylistInformation>& groupA,
+                           const std::vector<CandidatePlaylistInformation>& groupB,
+                           int durationTolerancePercent = DURATION_TOLERANCE_PERCENT) const;
+  bool CheckGroup(const std::vector<CandidatePlaylistInformation>& group,
+                  const Episodes& episodesOnDisc) const;
   static std::chrono::milliseconds CalculateAverageOfShortEpisodes(
       const std::vector<CandidatePlaylistInformation>& group);
   void UseGroupsWithMultiplesMethod(int episodeIndex, const Episodes& episodesOnDisc);
@@ -338,6 +348,7 @@ private:
   std::vector<std::vector<CandidatePlaylistInformation>> m_allGroups;
   std::map<unsigned int, CandidatePlaylistInformation> m_candidatePlaylists;
   std::set<unsigned int> m_candidateSpecials;
+  std::vector<CandidatePlaylistInformation> m_nthLongestPlaylists;
 
   static bool GetItems(CFileItemList& items, const std::string& directory, bool silent = false);
 };

@@ -1650,6 +1650,125 @@ TEST_F(TestDiscDirectoryHelper,
   EXPECT_TRUE(std::ranges::includes(returned, expected));
 }
 
+// There is no play-all playlist, nor any consecutive groups of playlists (of the correct number)
+// There are n long playlists but there is a valid group of shorter playlists that is the same length as the number of episodes
+// (Example It Welcome to Derry S1D1 UK UHD)
+TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_ThreeEpisodes_GroupMethod_LongNumberOfPlaylists)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{MakeEpisode(1, 1, 2700), // 45 min
+                    MakeEpisode(1, 2, 2700), MakeEpisode(1, 3, 2700)};
+
+  PlaylistMap playlists{
+      {800u, MakePlaylist(800u, 42min, {1u}, {42min})},
+      {811u, MakePlaylist(811u, 2min, {7u}, {2min})},
+      {812u, MakePlaylist(812u, 3min, {8u}, {3min})},
+      {817u, MakePlaylist(817u, 47min, {2u}, {47min})},
+      {818u, MakePlaylist(818u, 48min, {3u}, {48min})},
+      {820u, MakePlaylist(820u, 12min, {4u}, {12min})},
+      {821u, MakePlaylist(821u, 13min, {5u}, {13min})},
+      {822u, MakePlaylist(822u, 14min, {6u}, {14min})},
+  };
+  ClipMap clips{
+      {1u, MakeClip(42min, {800u})}, {2u, MakeClip(47min, {817u})}, {3u, MakeClip(48min, {818u})},
+      {4u, MakeClip(12min, {820u})}, {5u, MakeClip(13min, {821u})}, {6u, MakeClip(14min, {822u})},
+      {7u, MakeClip(2min, {811u})},  {8u, MakeClip(3min, {812u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 0, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 800u);
+
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 1, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 817u);
+
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 2, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 818u);
+
+  EXPECT_FALSE(helper.GetEpisodePlaylists(url, items, allTitles, 3, episodes, clips,
+                                          playlists)); // Invalid episode index
+  EXPECT_EQ(items.Size(), 0);
+
+  EXPECT_TRUE(
+      helper.GetEpisodePlaylists(url, items, allTitles, ALL_PLAYLISTS, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 3); // All episodes
+  auto returned{GetPlaylists(items)};
+  std::set<unsigned int> expected{800u, 817u, 818u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::MAIN, episodes, clips,
+                                            playlists));
+  EXPECT_EQ(items.Size(), 6);
+  returned = GetPlaylists(items);
+  expected = {800u, 817u, 818u, 820u, 821u, 822u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::ALL, episodes, clips,
+                                            playlists));
+  EXPECT_EQ(items.Size(), 8);
+  returned = GetPlaylists(items);
+  expected = {800u, 811u, 812u, 817u, 818u, 820u, 821u, 822u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+}
+
+// There is no play-all playlist, nor any consecutive groups of playlists (of the correct number)
+// There are n long playlists but there is a valid group of shorter playlists that is the same length as the number of episodes
+// In this case the next longest playlist (after the longest 3) is too close in length to the longest playlists, so could be an episode as well
+TEST_F(TestDiscDirectoryHelper,
+       GetEpisodePlaylists_ThreeEpisodes_GroupMethod_LongNumberOfPlaylists_Fail)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{MakeEpisode(1, 1, 2700), // 45 min
+                    MakeEpisode(1, 2, 2700), MakeEpisode(1, 3, 2700)};
+
+  PlaylistMap playlists{
+      {800u, MakePlaylist(800u, 42min, {1u}, {42min})},
+      {811u, MakePlaylist(811u, 2min, {7u}, {2min})},
+      {812u, MakePlaylist(812u, 3min, {8u}, {3min})},
+      {817u, MakePlaylist(817u, 47min, {2u}, {47min})},
+      {818u, MakePlaylist(818u, 48min, {3u}, {48min})},
+      {820u, MakePlaylist(820u, 12min, {4u}, {12min})},
+      {821u, MakePlaylist(821u, 13min, {5u}, {13min})},
+      {822u, MakePlaylist(822u, 44min, {6u}, {44min})},
+  };
+  ClipMap clips{
+      {1u, MakeClip(42min, {800u})}, {2u, MakeClip(47min, {817u})}, {3u, MakeClip(48min, {818u})},
+      {4u, MakeClip(12min, {820u})}, {5u, MakeClip(13min, {821u})}, {6u, MakeClip(44min, {822u})},
+      {7u, MakeClip(2min, {811u})},  {8u, MakeClip(3min, {812u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_FALSE(helper.GetEpisodePlaylists(url, items, allTitles, 0, episodes, clips, playlists));
+  EXPECT_EQ(items.Size(), 0);
+
+  EXPECT_FALSE(
+      helper.GetEpisodePlaylists(url, items, allTitles, ALL_PLAYLISTS, episodes, clips, playlists));
+  EXPECT_EQ(items.Size(), 0);
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::MAIN, episodes, clips,
+                                            playlists));
+  EXPECT_EQ(items.Size(), 6);
+  auto returned{GetPlaylists(items)};
+  std::set<unsigned int> expected = {800u, 817u, 818u, 820u, 821u, 822u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::ALL, episodes, clips,
+                                            playlists));
+  EXPECT_EQ(items.Size(), 8);
+  returned = GetPlaylists(items);
+  expected = {800u, 811u, 812u, 817u, 818u, 820u, 821u, 822u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+}
+
 // Consecutive playlists → group method assigns the nth playlist to episode n
 // Playlist 800 = episode 1; 801 = episode 2; 802 = episodes 3 and 4
 // (Example The Expanse S1D2 R1 Bluray - episodes 9 and 10 are combined into a single playlist)
