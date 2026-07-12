@@ -57,12 +57,15 @@ public class Splash extends Activity
   private static final int CheckExternalStorage = 12;
   private static final int RecordAudioPermission = 13;
   private static final int RecordAudioInfo = 14;
+  private static final int AccessLocalNetworkPermission = 15;
+  private static final int AccessLocalNetworkInfo = 16;
   private static final int StartingXBMC = 99;
 
   private static final String TAG = "@APP_NAME@";
 
   private static final int RECORDAUDIO_RESULT_CODE = 8946;
   private static final int PERMISSION_RESULT_CODE = 8947;
+  private static final int LOCAL_NETWORK_RESULT_CODE = 8948;
 
   private String mErrorMsg = "";
 
@@ -110,7 +113,14 @@ public class Splash extends Activity
           break;
         case RecordAudioPermission:
           requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO},
-                  RECORDAUDIO_RESULT_CODE);
+                             RECORDAUDIO_RESULT_CODE);
+          break;
+        case AccessLocalNetworkInfo:
+          showInfoDialog(getString(R.string.networkperm_dialog, "@APP_NAME@"), AccessLocalNetworkPermission);
+          break;
+        case AccessLocalNetworkPermission:
+          requestPermissions(new String[]{Manifest.permission.ACCESS_LOCAL_NETWORK},
+                             LOCAL_NETWORK_RESULT_CODE);
           break;
         case CheckingPermissions:
           if (Build.VERSION.SDK_INT >= 33 || (Build.VERSION.SDK_INT >= 30 && !isAndroidTV()))
@@ -528,6 +538,18 @@ public class Splash extends Activity
       if (permissionCheck == PERMISSION_GRANTED)
         retVal = true;
     }
+
+    if (Build.VERSION.SDK_INT >= 37)
+    {
+      int permissionCheck;
+      permissionCheck = checkSelfPermission(Manifest.permission.ACCESS_LOCAL_NETWORK);
+      if (permissionCheck == PERMISSION_GRANTED)
+      {
+        retVal &= true;
+      } else {
+        retVal = false;
+      }
+    }
     return retVal;
   }
 
@@ -549,7 +571,27 @@ public class Splash extends Activity
       }
       case RECORDAUDIO_RESULT_CODE:
       {
-        mStateMachine.sendEmptyMessage(CheckingPermissionsDone);
+        // ACCESS_LOCAL_NETWORK manifest permission checks from SDK37+
+        if (Build.VERSION.SDK_INT >= 37) {
+          mStateMachine.sendEmptyMessage(AccessLocalNetworkInfo);
+        } else {
+          mStateMachine.sendEmptyMessage(CheckingPermissionsDone);
+        }
+        break;
+      }
+      case LOCAL_NETWORK_RESULT_CODE:
+      {
+        int permissionCheck;
+        permissionCheck = checkSelfPermission(Manifest.permission.ACCESS_LOCAL_NETWORK);
+        if (permissionCheck == PERMISSION_GRANTED) {
+          mPermissionOK &= true;
+          mStateMachine.sendEmptyMessage(CheckingPermissionsDone);
+        } else {
+          mPermissionOK = false;
+          mErrorMsg = getString(R.string.permission_denied);
+          mStateMachine.sendEmptyMessage(InError);
+        }
+        break;
       }
     }
   }
@@ -565,6 +607,13 @@ public class Splash extends Activity
         mPermissionOK = true;
       }
       mStateMachine.sendEmptyMessage(RecordAudioInfo);
+    }
+    else if (requestCode == RECORDAUDIO_RESULT_CODE)
+    {
+      if (Build.VERSION.SDK_INT >= 37)
+      {
+        mStateMachine.sendEmptyMessage(AccessLocalNetworkInfo);
+      }
     }
   }
 
