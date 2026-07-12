@@ -32,12 +32,12 @@ bool CScreenshotSurfaceGL::Read(const ScreenshotContext& ctx)
 {
   glReadBuffer(GL_BACK);
 
-  // get current viewport
+  // get current viewport: x, y, width, height
   GLint viewport[4];
   glGetIntegerv(GL_VIEWPORT, viewport);
 
-  m_width = viewport[2] - viewport[0];
-  m_height = viewport[3] - viewport[1];
+  m_width = viewport[2];
+  m_height = viewport[3];
 
   const int bitDepth = ctx.winSystem.GetOutputBitDepth();
   if (bitDepth > 8)
