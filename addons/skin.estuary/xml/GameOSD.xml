@@ -79,14 +79,14 @@
 				<animation effect="fade" time="200">VisibleChange</animation>
 				<include content="DialogBackgroundCommons">
 					<param name="width" value="700" />
-					<param name="height" value="560" />
+					<param name="height" value="720" />
 					<param name="header_label" value="$LOCALIZE[35221]" />
 					<param name="header_id" value="3" />
 				</include>
 				<control type="group" id="2000">
 					<top>80</top>
 					<control type="list" id="1103">
-						<height>560</height>
+						<height>720</height>
 						<orientation>vertical</orientation>
 						<itemlayout condition="!Control.IsVisible(2200)" width="700" height="80">
 							<control type="image">
@@ -242,6 +242,24 @@
 								<onclick>Stop</onclick>
 							</item>
 							<item>
+								<description>Leaderboards button</description>
+								<label>Leaderboards</label>
+								<label2>$INFO[RetroPlayer.LeaderboardsStatus]</label2>
+								<icon>osd/fullscreen/buttons/rating.png</icon>
+								<onclick condition="RetroPlayer.AchievementsLoggedIn + !String.IsEqual(RetroPlayer.LeaderboardsStatus,0 boards) + !String.IsEqual(RetroPlayer.LeaderboardsStatus,N/A)">ActivateWindow(gameleaderboards)</onclick>
+								<onclick condition="RetroPlayer.AchievementsLoggedIn">Notification(RetroAchievements,This game has no leaderboards,6000,DefaultIconWarning.png)</onclick>
+								<onclick condition="!RetroPlayer.AchievementsLoggedIn">Notification(RetroAchievements,Please log in to RetroAchievements in Settings,6000,DefaultIconWarning.png)</onclick>
+							</item>
+							<item>
+								<description>Achievements button</description>
+								<label>Achievements</label>
+								<label2>$INFO[RetroPlayer.AchievementsStatus]</label2>
+								<icon>osd/fullscreen/buttons/bookmarks.png</icon>
+								<onclick condition="RetroPlayer.AchievementsLoaded + RetroPlayer.AchievementsLoggedIn">ActivateWindow(gameachievements)</onclick>
+								<onclick condition="RetroPlayer.AchievementsLoggedIn + !RetroPlayer.AchievementsLoaded">Notification(RetroAchievements,This game does not support RetroAchievements,6000,DefaultIconWarning.png)</onclick>
+								<onclick condition="!RetroPlayer.AchievementsLoggedIn">Notification(RetroAchievements,Please log in to RetroAchievements in Settings,6000,DefaultIconWarning.png)</onclick>
+							</item>
+							<item>
 								<description>Settings button</description>
 								<label>$LOCALIZE[5]</label>
 								<icon>osd/fullscreen/buttons/settings.png</icon>
@@ -269,14 +287,14 @@
 				<animation effect="fade" time="200">VisibleChange</animation>
 				<include content="DialogBackgroundCommons">
 					<param name="width" value="700" />
-					<param name="height" value="640" />
+					<param name="height" value="800" />
 					<param name="header_label" value="$LOCALIZE[35221]" />
 					<param name="header_id" value="3" />
 				</include>
 				<control type="group" id="2000">
 					<top>80</top>
 					<control type="list" id="1103">
-						<height>640</height>
+						<height>800</height>
 						<orientation>vertical</orientation>
 						<itemlayout condition="!Control.IsVisible(2200)" width="700" height="80">
 							<control type="image">
@@ -436,6 +454,24 @@
 								<label2>$FEATURE[select,game.controller.snes] + $FEATURE[start,game.controller.default]</label2>
 								<icon>osd/fullscreen/buttons/stop.png</icon>
 								<onclick>Stop</onclick>
+							</item>
+							<item>
+								<description>Leaderboards button</description>
+								<label>Leaderboards</label>
+								<label2>$INFO[RetroPlayer.LeaderboardsStatus]</label2>
+								<icon>osd/fullscreen/buttons/rating.png</icon>
+								<onclick condition="RetroPlayer.AchievementsLoggedIn + !String.IsEqual(RetroPlayer.LeaderboardsStatus,0 boards) + !String.IsEqual(RetroPlayer.LeaderboardsStatus,N/A)">ActivateWindow(gameleaderboards)</onclick>
+								<onclick condition="RetroPlayer.AchievementsLoggedIn">Notification(RetroAchievements,This game has no leaderboards,6000,DefaultIconWarning.png)</onclick>
+								<onclick condition="!RetroPlayer.AchievementsLoggedIn">Notification(RetroAchievements,Please log in to RetroAchievements in Settings,6000,DefaultIconWarning.png)</onclick>
+							</item>
+							<item>
+								<description>Achievements button</description>
+								<label>Achievements</label>
+								<label2>$INFO[RetroPlayer.AchievementsStatus]</label2>
+								<icon>osd/fullscreen/buttons/bookmarks.png</icon>
+								<onclick condition="RetroPlayer.AchievementsLoaded + RetroPlayer.AchievementsLoggedIn">ActivateWindow(gameachievements)</onclick>
+								<onclick condition="RetroPlayer.AchievementsLoggedIn + !RetroPlayer.AchievementsLoaded">Notification(RetroAchievements,This game does not support RetroAchievements,6000,DefaultIconWarning.png)</onclick>
+								<onclick condition="!RetroPlayer.AchievementsLoggedIn">Notification(RetroAchievements,Please log in to RetroAchievements in Settings,6000,DefaultIconWarning.png)</onclick>
 							</item>
 							<item>
 								<description>Settings button</description>

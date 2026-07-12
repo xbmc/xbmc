@@ -801,6 +801,40 @@ public:
   {
     return m_instanceData->toKodi->InputEvent(m_instanceData->toKodi->kodiInstance, &event);
   }
+
+  //============================================================================
+  // RetroAchievements addon-to-Kodi callbacks
+  //============================================================================
+
+  /// @brief Notify Kodi that a game has been identified and loaded by rc_client
+  void KodiRCOnGameLoaded(const game_rc_game_loaded& data)
+  {
+    m_instanceData->toKodi->RCOnGameLoaded(m_instanceData->toKodi->kodiInstance, &data);
+  }
+
+  /// @brief Notify Kodi that an achievement was triggered
+  void KodiRCOnAchievementTriggered(const game_rc_achievement_triggered& data)
+  {
+    m_instanceData->toKodi->RCOnAchievementTriggered(m_instanceData->toKodi->kodiInstance, &data);
+  }
+
+  /// @brief Notify Kodi that all achievements have been unlocked (mastery)
+  void KodiRCOnGameCompleted(const char* title)
+  {
+    m_instanceData->toKodi->RCOnGameCompleted(m_instanceData->toKodi->kodiInstance, title);
+  }
+
+  /// @brief Update Kodi with the current rich presence evaluation string
+  void KodiRCOnRichPresenceUpdated(const char* evaluation)
+  {
+    m_instanceData->toKodi->RCOnRichPresenceUpdated(m_instanceData->toKodi->kodiInstance, evaluation);
+  }
+
+  /// @brief Notify Kodi of a login result
+  void KodiRCOnLoginResult(const game_rc_login_result& data)
+  {
+    m_instanceData->toKodi->RCOnLoginResult(m_instanceData->toKodi->kodiInstance, &data);
+  }
   //----------------------------------------------------------------------------
 
   ///@}

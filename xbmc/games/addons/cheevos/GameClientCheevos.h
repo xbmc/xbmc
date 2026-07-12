@@ -11,6 +11,8 @@
 #include <functional>
 #include <string>
 
+#include "kodi/c-api/addon-instance/game.h"
+
 struct AddonInstance_Game;
 
 namespace KODI
@@ -51,12 +53,23 @@ public:
   void RCEnableRichPresence(const std::string& script);
   void RCGetRichPresenceEvaluation(std::string& evaluation, RETRO::RConsoleID consoleID);
 
+  // RetroAchievements event receivers (addon -> Kodi)
+  void OnGameLoaded(const game_rc_game_loaded& data);
+  void OnAchievementTriggered(const game_rc_achievement_triggered& data);
+  void OnGameCompleted(const std::string& title);
+  void OnRichPresenceUpdated(const std::string& evaluation);
+  void OnLoginResult(const game_rc_login_result& data);
+
   void ActivateAchievement(unsigned int cheevoId, const std::string& memAddrExpression);
   void GetAchievementUrlId(const std::function<void(const std::string& achievementUrl,
                                                     unsigned int cheevoId)>& callback);
 
   // When the game is reset, the runtime should also be reset
   void RCResetRuntime();
+
+  bool GetMemory(unsigned int type, uint8_t*& data, size_t& size);
+
+  // RetroAchievements event receivers (addon -> Kodi)
 
 private:
   CGameClient& m_gameClient;

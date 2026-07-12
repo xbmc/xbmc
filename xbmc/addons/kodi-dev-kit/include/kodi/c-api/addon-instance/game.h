@@ -11,7 +11,8 @@
 
 #include "../addon_base.h"
 
-#include <stddef.h> /* size_t */
+#include <stddef.h>
+#include <stdint.h> /* size_t */
 
 #ifdef __cplusplus
 extern "C"
@@ -1221,6 +1222,71 @@ extern "C"
    *
    * Not to be used outside this header.
    */
+
+  //============================================================================
+  // RetroAchievements types
+  //============================================================================
+
+  /*! @brief Achievement data for addon-to-Kodi callbacks */
+  typedef struct game_rc_achievement
+  {
+    unsigned int id;
+    const char* title;
+    const char* description;
+    const char* badge_url;
+    const char* badge_locked_url;
+    unsigned int points;
+    uint8_t unlocked;       /*!< 0=locked, 1=unlocked softcore, 2=unlocked hardcore */
+    int64_t unlock_time;
+    float rarity;
+    float rarity_hardcore;
+  } game_rc_achievement;
+
+  /*! @brief Leaderboard data for addon-to-Kodi callbacks */
+  typedef struct game_rc_leaderboard
+  {
+    unsigned int id;
+    const char* title;
+    const char* description;
+    uint8_t format;         /*!< 0=TIME, 1=SCORE, 2=VALUE */
+    bool lower_is_better;
+  } game_rc_leaderboard;
+
+  /*! @brief Game loaded event data */
+  typedef struct game_rc_game_loaded
+  {
+    unsigned int game_id;
+    const char* title;
+    const char* badge_name;
+    unsigned int num_achievements;
+    unsigned int num_unlocked;
+    unsigned int num_leaderboards;
+    const game_rc_achievement* achievements;
+    unsigned int achievement_count;
+    const game_rc_leaderboard* leaderboards;
+    unsigned int leaderboard_count;
+  } game_rc_game_loaded;
+
+  /*! @brief Achievement triggered event data */
+  typedef struct game_rc_achievement_triggered
+  {
+    unsigned int id;
+    const char* title;
+    const char* description;
+    const char* badge_url;
+    unsigned int points;
+  } game_rc_achievement_triggered;
+
+  /*! @brief Login result event data */
+  typedef struct game_rc_login_result
+  {
+    bool success;
+    const char* username;
+    const char* display_name;
+    unsigned int points;
+    const char* error_message;
+  } game_rc_login_result;
+
   typedef struct AddonToKodiFuncTable_Game
   {
     KODI_HANDLE kodiInstance;
@@ -1238,6 +1304,11 @@ extern "C"
     void (*CloseStream)(KODI_HANDLE, KODI_GAME_STREAM_HANDLE);
     game_proc_address_t (*HwGetProcAddress)(KODI_HANDLE kodiInstance, const char* symbol);
     bool (*InputEvent)(KODI_HANDLE kodiInstance, const struct game_input_event* event);
+    void (*RCOnGameLoaded)(KODI_HANDLE kodiInstance, const game_rc_game_loaded* data);
+    void (*RCOnAchievementTriggered)(KODI_HANDLE kodiInstance, const game_rc_achievement_triggered* data);
+    void (*RCOnGameCompleted)(KODI_HANDLE kodiInstance, const char* title);
+    void (*RCOnRichPresenceUpdated)(KODI_HANDLE kodiInstance, const char* evaluation);
+    void (*RCOnLoginResult)(KODI_HANDLE kodiInstance, const game_rc_login_result* data);
   } AddonToKodiFuncTable_Game;
 
   /*!

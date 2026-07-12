@@ -10,6 +10,18 @@
 
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/game.h"
 #include "cores/RetroPlayer/cheevos/RConsoleIDs.h"
+#include "ServiceBroker.h"
+#include "games/GameServices.h"
+#include "games/GameSettings.h"
+#include "filesystem/CurlFile.h"
+#include "filesystem/Directory.h"
+#include "filesystem/File.h"
+#include "utils/URIUtils.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "utils/StringUtils.h"
+#include "utils/log.h"
 #include "games/addons/GameClient.h"
 
 namespace
@@ -41,6 +53,15 @@ void __cdecl GetCheevoUrlIdCallback(const void* context,
 
 using namespace KODI;
 using namespace GAME;
+
+namespace
+{
+constexpr unsigned int TOAST_DISPLAY_MS = 6000;
+constexpr unsigned int TOAST_MESSAGE_MS = 500;
+constexpr const char* SETTING_RA_LOGGED_IN = "gamesachievements.loggedin";
+constexpr const char* RA_BADGE_CACHE = "special://profile/addon_data/game.retroachievements/badges/";
+constexpr const char* RA_ICON_CACHE = "special://profile/addon_data/game.retroachievements/icons/";
+} // namespace
 
 CGameClientCheevos::CGameClientCheevos(CGameClient& gameClient, AddonInstance_Game& addonStruct)
   : m_gameClient(gameClient),
@@ -268,5 +289,63 @@ void CGameClientCheevos::RCResetRuntime()
   catch (...)
   {
     m_gameClient.LogException("RCResetRuntime()");
+  }
+}
+
+
+// RetroAchievements event receivers
+
+void CGameClientCheevos::OnGameLoaded(const game_rc_game_loaded& data)
+{
+  const std::string gameTitle = (data.title != nullptr) ? data.title : "";
+  const std::string countMsg =
+      StringUtils::Format("{}/{} achievements", data.num_unlocked, data.num_achievements);
+
+  CLog::Log(LOGINFO, "CGameClientCheevos: loaded '{}' ({}, {} leaderboards)",
+            gameTitle, countMsg, data.num_leaderboards);
+
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
+                                        gameTitle, countMsg, TOAST_DISPLAY_MS, false, TOAST_MESSAGE_MS);
+}
+
+void CGameClientCheevos::OnAchievementTriggered(const game_rc_achievement_triggered& data)
+{
+  const std::string title = (data.title != nullptr) ? data.title : "Achievement Unlocked!";
+  CLog::Log(LOGINFO, "CGameClientCheevos: achievement triggered id={} '{}'", data.id, title);
+
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
+                                        "Achievement Unlocked!", title, TOAST_DISPLAY_MS, false, TOAST_MESSAGE_MS);
+}
+
+void CGameClientCheevos::OnGameCompleted(const std::string& title)
+{
+  CLog::Log(LOGINFO, "CGameClientCheevos: mastered '{}'", title);
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
+                                        "Mastered!", title, TOAST_DISPLAY_MS, false, TOAST_MESSAGE_MS);
+}
+
+void CGameClientCheevos::OnRichPresenceUpdated(const std::string& evaluation)
+{
+  CLog::Log(LOGDEBUG, "CGameClientCheevos: rich presence: {}", evaluation);
+  auto& gameSettings = CServiceBroker::GetGameServices().GameSettings();
+  gameSettings.SetAchievementRichPresence(evaluation);
+}
+
+void CGameClientCheevos::OnLoginResult(const game_rc_login_result& data)
+{
+  if (data.success)
+  {
+    const std::string username = (data.username != nullptr) ? data.username : "";
+    CLog::Log(LOGINFO, "CGameClientCheevos: logged in as '{}' ({} points)",
+              username, data.points);
+
+    const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+    settings->SetBool(SETTING_RA_LOGGED_IN, true);
+    settings->Save();
+  }
+  else
+  {
+    const std::string error = (data.error_message != nullptr) ? data.error_message : "unknown";
+    CLog::Log(LOGWARNING, "CGameClientCheevos: login failed: {}", error);
   }
 }

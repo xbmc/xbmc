@@ -180,6 +180,11 @@ bool CGameClient::Initialize(void)
   m_ifc.game->toKodi->CloseStream = cb_close_stream;
   m_ifc.game->toKodi->HwGetProcAddress = cb_hw_get_proc_address;
   m_ifc.game->toKodi->InputEvent = cb_input_event;
+  m_ifc.game->toKodi->RCOnGameLoaded = cb_rc_on_game_loaded;
+  m_ifc.game->toKodi->RCOnAchievementTriggered = cb_rc_on_achievement_triggered;
+  m_ifc.game->toKodi->RCOnGameCompleted = cb_rc_on_game_completed;
+  m_ifc.game->toKodi->RCOnRichPresenceUpdated = cb_rc_on_rich_presence_updated;
+  m_ifc.game->toKodi->RCOnLoginResult = cb_rc_on_login_result;
 
   memset(m_ifc.game->toAddon, 0, sizeof(KodiToAddonFuncTable_Game));
 
@@ -781,6 +786,52 @@ bool CGameClient::cb_input_event(KODI_HANDLE kodiInstance, const game_input_even
     return false;
 
   return gameClient->Input().ReceiveInputEvent(*event);
+}
+
+void CGameClient::cb_rc_on_game_loaded(KODI_HANDLE kodiInstance, const game_rc_game_loaded* data)
+{
+  CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
+  if (gameClient == nullptr || data == nullptr)
+    return;
+
+  gameClient->Cheevos().OnGameLoaded(*data);
+}
+
+void CGameClient::cb_rc_on_achievement_triggered(KODI_HANDLE kodiInstance,
+                                                  const game_rc_achievement_triggered* data)
+{
+  CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
+  if (gameClient == nullptr || data == nullptr)
+    return;
+
+  gameClient->Cheevos().OnAchievementTriggered(*data);
+}
+
+void CGameClient::cb_rc_on_game_completed(KODI_HANDLE kodiInstance, const char* title)
+{
+  CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
+  if (gameClient == nullptr)
+    return;
+
+  gameClient->Cheevos().OnGameCompleted(title != nullptr ? title : "");
+}
+
+void CGameClient::cb_rc_on_rich_presence_updated(KODI_HANDLE kodiInstance, const char* evaluation)
+{
+  CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
+  if (gameClient == nullptr)
+    return;
+
+  gameClient->Cheevos().OnRichPresenceUpdated(evaluation != nullptr ? evaluation : "");
+}
+
+void CGameClient::cb_rc_on_login_result(KODI_HANDLE kodiInstance, const game_rc_login_result* data)
+{
+  CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
+  if (gameClient == nullptr || data == nullptr)
+    return;
+
+  gameClient->Cheevos().OnLoginResult(*data);
 }
 
 std::pair<std::string, std::string> CGameClient::ParseLibretroName(const std::string& addonName)

@@ -357,6 +357,24 @@ constexpr uint32_t RETROPLAYER_DISC_EJECTED          = 1701;
 constexpr uint32_t RETROPLAYER_DISC_LABEL            = 1702;
 constexpr uint32_t RETROPLAYER_EMPTY_TRAY            = 1703;
 
+// RetroAchievements aggregate InfoLabels
+constexpr uint32_t RETROPLAYER_ACHIEVEMENTS_TOTAL         = 1725;
+constexpr uint32_t RETROPLAYER_LEADERBOARDS_LOADED    = 1726;
+constexpr uint32_t RETROPLAYER_ACHIEVEMENTS_GAME_TITLE = 1724;
+constexpr uint32_t RETROPLAYER_ACHIEVEMENTS_UNLOCKED      = 1713;
+constexpr uint32_t RETROPLAYER_ACHIEVEMENTS_RICH_PRESENCE = 1714;
+constexpr uint32_t RETROPLAYER_ACHIEVEMENTS_LOADED        = 1715;
+constexpr uint32_t RETROPLAYER_ACHIEVEMENTS_LOGGED_IN     = 1721;
+constexpr uint32_t RETROPLAYER_ACHIEVEMENTS_STATUS        = 1722;
+constexpr uint32_t RETROPLAYER_LEADERBOARDS_STATUS        = 1723;
+
+// Per-achievement InfoLabels (index passed via GetData2())
+constexpr uint32_t RETROPLAYER_ACHIEVEMENT_TITLE       = 1716;
+constexpr uint32_t RETROPLAYER_ACHIEVEMENT_DESCRIPTION = 1717;
+constexpr uint32_t RETROPLAYER_ACHIEVEMENT_BADGE_URL   = 1718;
+constexpr uint32_t RETROPLAYER_ACHIEVEMENT_EARNED      = 1719;
+constexpr uint32_t RETROPLAYER_ACHIEVEMENT_POINTS      = 1720;
+
 // More VideoPlayer infolabels
 constexpr uint32_t VIDEOPLAYER_CHANNEL_LOGO          = 333;
 constexpr uint32_t VIDEOPLAYER_EPISODEPART           = 334;

@@ -12,5 +12,8 @@
 		<include condition="Window.IsDialogTopMost(gameports)">GameDialogPorts</include>
 		<include condition="Window.IsDialogTopMost(gameagents)">GameDialogAgents</include>
 		<include condition="Window.IsDialogTopMost(gamediscmanager)">GameDialogDiscManager</include>
+		<include condition="Window.IsDialogTopMost(gameachievements)">GameDialogAchievements</include>
+		<include condition="Window.IsDialogTopMost(gameleaderboards)">GameDialogLeaderboards</include>
+		<include condition="Window.IsDialogTopMost(gameleaderboardentries)">GameDialogLeaderboardEntries</include>
 	</controls>
 </window>

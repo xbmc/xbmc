@@ -11,7 +11,9 @@
 #include "settings/lib/ISettingCallback.h"
 #include "utils/Observer.h"
 
+#include <mutex>
 #include <string>
+#include <vector>
 
 class CSetting;
 class CSettings;
@@ -41,6 +43,150 @@ public:
   std::string GetRAUsername() const;
   std::string GetRAToken() const;
 
+  // Achievement state — updated by CCheevos when a game loads
+  struct AchievementInfo
+  {
+    std::string title;
+    std::string description;
+    std::string badgeUrl;
+    std::string lockedBadgeUrl;
+    std::string rarity;
+    std::string unlockedDate;
+    unsigned int points{0};
+    bool earned{false};
+  };
+
+  struct AchievementState
+  {
+    std::string gameTitle;
+    unsigned int gameId{0};
+    unsigned int totalAchievements{0};
+    unsigned int unlockedAchievements{0};
+    std::string richPresence;
+    std::vector<AchievementInfo> achievements;
+    bool loaded{false};
+  };
+
+  struct LeaderboardEntry
+  {
+    unsigned int rank{0};
+    std::string username;
+    std::string score;
+    std::string date;
+    bool isPlayer{false};
+  };
+
+  struct LeaderboardInfo
+  {
+    unsigned int id{0};
+    std::string title;
+    std::string description;
+    std::string format;
+    bool lowerIsBetter{false};
+    unsigned int totalEntries{0};
+    unsigned int playerRank{0};
+    std::string playerScore;
+    std::string topUsername;
+    std::string topScore;
+    std::vector<LeaderboardEntry> entries;
+  };
+
+  struct LeaderboardState
+  {
+    std::string gameTitle;
+    std::vector<LeaderboardInfo> leaderboards;
+    bool loaded{false};
+  };
+
+  void SetAchievementState(const AchievementState& state)
+  {
+    std::lock_guard<std::mutex> lock(m_achievementMutex);
+    m_achievementState = state;
+  }
+
+  void ClearAchievementState()
+  {
+    std::lock_guard<std::mutex> lock(m_achievementMutex);
+    m_achievementState = AchievementState{};
+  }
+
+  AchievementState GetAchievementState() const
+  {
+    std::lock_guard<std::mutex> lock(m_achievementMutex);
+    return m_achievementState;
+  }
+
+  void SetLeaderboardState(const LeaderboardState& state)
+  {
+    std::lock_guard<std::mutex> lock(m_achievementMutex);
+    m_leaderboardState = state;
+  }
+
+  void ClearLeaderboardState()
+  {
+    std::lock_guard<std::mutex> lock(m_achievementMutex);
+    m_leaderboardState = LeaderboardState{};
+  }
+
+  LeaderboardState GetLeaderboardState() const
+  {
+    std::lock_guard<std::mutex> lock(m_achievementMutex);
+    return m_leaderboardState;
+  }
+
+  void SetSelectedLeaderboardId(unsigned int id)
+  {
+    std::lock_guard<std::mutex> lock(m_achievementMutex);
+    m_selectedLeaderboardId = id;
+  }
+
+  unsigned int GetSelectedLeaderboardId() const
+  {
+    std::lock_guard<std::mutex> lock(m_achievementMutex);
+    return m_selectedLeaderboardId;
+  }
+
+  bool GetLeaderboardsLoaded() const
+  {
+    std::lock_guard<std::mutex> lock(m_achievementMutex);
+    return m_leaderboardState.loaded;
+  }
+
+  // Targeted getters for frequently-queried fields — avoids copying
+  // the full AchievementState struct on every InfoLabel query
+
+  unsigned int GetAchievementTotal() const
+  {
+    std::lock_guard<std::mutex> lock(m_achievementMutex);
+    return m_achievementState.totalAchievements;
+  }
+
+  unsigned int GetAchievementUnlocked() const
+  {
+    std::lock_guard<std::mutex> lock(m_achievementMutex);
+    return m_achievementState.unlockedAchievements;
+  }
+
+  void SetAchievementRichPresence(const std::string& rp)
+  {
+    std::lock_guard<std::mutex> lock(m_achievementMutex);
+    m_achievementState.richPresence = rp;
+  }
+
+  std::string GetAchievementRichPresence() const
+  {
+    std::lock_guard<std::mutex> lock(m_achievementMutex);
+    return m_achievementState.richPresence;
+  }
+
+  bool GetAchievementsLoaded() const
+  {
+    std::lock_guard<std::mutex> lock(m_achievementMutex);
+    return m_achievementState.loaded;
+  }
+
+  bool GetAchievementsLoggedIn() const;
+
   // Inherited from ISettingCallback
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
@@ -52,6 +198,13 @@ private:
 
   // Construction parameters
   std::shared_ptr<CSettings> m_settings;
+
+  LeaderboardState m_leaderboardState;
+  unsigned int m_selectedLeaderboardId{0};
+
+  // Current achievement state (mutex protects cross-thread access)
+  mutable std::mutex m_achievementMutex;
+  AchievementState m_achievementState;
 };
 
 } // namespace GAME

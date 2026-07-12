@@ -4559,13 +4559,91 @@ constexpr std::array<InfoMap, 88> videoplayer = {{
 ///     (e.g. an emulator might report "Nintendo - SNES / SFC / Game Boy / Color").
 ///     <p><hr>
 ///     @skinning_v22 **[New Infolabel]** \link RetroPlayer_GameClientPlatforms `RetroPlayer.GameClientPlatforms`\endlink
+///   \table_row3{   <b>`RetroPlayer.Achievements.Loaded`</b>,
+///                  \anchor RetroPlayer_Achievements_Loaded
+///                  _boolean_,
+///     @return **True** if RetroAchievements data has been loaded for the currently-playing game.
+///     <p><hr>
+///     @skinning_v22 **[New Boolean Condition]** \link RetroPlayer_Achievements_Loaded `RetroPlayer.Achievements.Loaded`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`RetroPlayer.Achievements.GameTitle`</b>,
+///                  \anchor RetroPlayer_Achievements_GameTitle
+///                  _string_,
+///     @return The RetroAchievements title of the currently-playing game.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link RetroPlayer_Achievements_GameTitle `RetroPlayer.Achievements.GameTitle`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`RetroPlayer.Achievements.Total`</b>,
+///                  \anchor RetroPlayer_Achievements_Total
+///                  _string_,
+///     @return The total number of achievements for the currently-playing game.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link RetroPlayer_Achievements_Total `RetroPlayer.Achievements.Total`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`RetroPlayer.Achievements.Unlocked`</b>,
+///                  \anchor RetroPlayer_Achievements_Unlocked
+///                  _string_,
+///     @return The number of achievements unlocked by the current user for the currently-playing game.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link RetroPlayer_Achievements_Unlocked `RetroPlayer.Achievements.Unlocked`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`RetroPlayer.Achievements.RichPresence`</b>,
+///                  \anchor RetroPlayer_Achievements_RichPresence
+///                  _string_,
+///     @return The current rich presence string for the currently-playing game, updated every 2 minutes.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link RetroPlayer_Achievements_RichPresence `RetroPlayer.Achievements.RichPresence`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`RetroPlayer.Achievement.Title(n)`</b>,
+///                  \anchor RetroPlayer_Achievement_Title
+///                  _string_,
+///     @return The title of the nth achievement (zero-based) for the currently-playing game.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link RetroPlayer_Achievement_Title `RetroPlayer.Achievement.Title(n)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`RetroPlayer.Achievement.Description(n)`</b>,
+///                  \anchor RetroPlayer_Achievement_Description
+///                  _string_,
+///     @return The description of the nth achievement (zero-based).
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link RetroPlayer_Achievement_Description `RetroPlayer.Achievement.Description(n)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`RetroPlayer.Achievement.BadgeUrl(n)`</b>,
+///                  \anchor RetroPlayer_Achievement_BadgeUrl
+///                  _string_,
+///     @return The badge image URL of the nth achievement (zero-based).
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link RetroPlayer_Achievement_BadgeUrl `RetroPlayer.Achievement.BadgeUrl(n)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`RetroPlayer.Achievement.Points(n)`</b>,
+///                  \anchor RetroPlayer_Achievement_Points
+///                  _string_,
+///     @return The point value of the nth achievement (zero-based).
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link RetroPlayer_Achievement_Points `RetroPlayer.Achievement.Points(n)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`RetroPlayer.Achievement.Earned(n)`</b>,
+///                  \anchor RetroPlayer_Achievement_Earned
+///                  _boolean_,
+///     @return **True** if the nth achievement (zero-based) has been earned by the current user.
+///     <p><hr>
+///     @skinning_v22 **[New Boolean Condition]** \link RetroPlayer_Achievement_Earned `RetroPlayer.Achievement.Earned(n)`\endlink
 ///     <p>
 ///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 16> retroplayer = {{
+constexpr std::array<InfoMap, 25> retroplayer = {{
     {"videofilter",   RETROPLAYER_VIDEO_FILTER},
     {"stretchmode",   RETROPLAYER_STRETCH_MODE},
     {"videorotation", RETROPLAYER_VIDEO_ROTATION},
@@ -4582,6 +4660,14 @@ constexpr std::array<InfoMap, 16> retroplayer = {{
     {"discejected", RETROPLAYER_DISC_EJECTED},
     {"disclabel", RETROPLAYER_DISC_LABEL},
     {"emptytray", RETROPLAYER_EMPTY_TRAY},
+    {"achievementstotal",        RETROPLAYER_ACHIEVEMENTS_TOTAL},
+    {"achievementsunlocked",     RETROPLAYER_ACHIEVEMENTS_UNLOCKED},
+    {"achievementsloaded",       RETROPLAYER_ACHIEVEMENTS_LOADED},
+    {"achievementsloggedin",     RETROPLAYER_ACHIEVEMENTS_LOGGED_IN},
+    {"achievementsstatus",       RETROPLAYER_ACHIEVEMENTS_STATUS},
+    {"leaderboardsstatus",       RETROPLAYER_LEADERBOARDS_STATUS},
+    {"leaderboardsloaded",       RETROPLAYER_LEADERBOARDS_LOADED},
+    {"achievementsgametitle",    RETROPLAYER_ACHIEVEMENTS_GAME_TITLE},
 }};
 // clang-format on
 
@@ -11285,6 +11371,24 @@ int CGUIInfoManager::TranslateSingleString(const std::string& strCondition, bool
         if (prop.Name() == i.str)
           return i.val;
       }
+
+      // Indexed achievement InfoLabels: RetroPlayer.Achievement.Title(n) etc.
+      // These are three-part labels: info[0]=retroplayer, info[1]=achievement, info[2]=title(n)
+      if (prop.Name() == "achievement" && info.size() > 2)
+      {
+        const Property& subprop = info[2];
+        const int idx = subprop.num_params() > 0 ? atoi(subprop.param().c_str()) : 0;
+        if (subprop.Name() == "title")
+          return AddMultiInfo(CGUIInfo(RETROPLAYER_ACHIEVEMENT_TITLE, 0, idx));
+        if (subprop.Name() == "description")
+          return AddMultiInfo(CGUIInfo(RETROPLAYER_ACHIEVEMENT_DESCRIPTION, 0, idx));
+        if (subprop.Name() == "badgeurl")
+          return AddMultiInfo(CGUIInfo(RETROPLAYER_ACHIEVEMENT_BADGE_URL, 0, idx));
+        if (subprop.Name() == "earned")
+          return AddMultiInfo(CGUIInfo(RETROPLAYER_ACHIEVEMENT_EARNED, 0, idx));
+        if (subprop.Name() == "points")
+          return AddMultiInfo(CGUIInfo(RETROPLAYER_ACHIEVEMENT_POINTS, 0, idx));
+      }
     }
     else if (cat.Name() == "slideshow")
     {
@@ -11504,6 +11608,31 @@ int CGUIInfoManager::TranslateSingleString(const std::string& strCondition, bool
         return SYSTEM_PLATFORM_ANDROID;
       else if (platform == "webos")
         return SYSTEM_PLATFORM_WEBOS;
+    }
+    if (info[0].Name() == "retroplayer" && info[1].Name() == "achievement")
+    {
+      // Three-part InfoLabel: RetroPlayer.Achievement.Title(n) etc.
+      const Property& subprop = info[2];
+      const int idx = subprop.num_params() > 0 ? atoi(subprop.param().c_str()) : 0;
+      if (subprop.Name() == "title")
+        return AddMultiInfo(CGUIInfo(RETROPLAYER_ACHIEVEMENT_TITLE, 0, idx));
+      if (subprop.Name() == "description")
+        return AddMultiInfo(CGUIInfo(RETROPLAYER_ACHIEVEMENT_DESCRIPTION, 0, idx));
+      if (subprop.Name() == "badgeurl")
+        return AddMultiInfo(CGUIInfo(RETROPLAYER_ACHIEVEMENT_BADGE_URL, 0, idx));
+      if (subprop.Name() == "earned")
+        return AddMultiInfo(CGUIInfo(RETROPLAYER_ACHIEVEMENT_EARNED, 0, idx));
+      if (subprop.Name() == "points")
+        return AddMultiInfo(CGUIInfo(RETROPLAYER_ACHIEVEMENT_POINTS, 0, idx));
+    }
+    if (info[0].Name() == "retroplayer" && info[1].Name() == "achievements")
+    {
+      const std::string label = "achievements" + info[2].Name();
+      for (const auto& i : retroplayer)
+      {
+        if (label == i.str)
+          return i.val;
+      }
     }
     if (info[0].Name() == "musicplayer")
     { //! @todo these two don't allow duration(foo) and also don't allow more than this number of levels...

@@ -951,4 +951,569 @@
 			<align>left</align>
 		</control>
 	</include>
+
+	<include name="GameDialogAchievements">
+		<control type="group">
+			<centertop>50%</centertop>
+			<centerleft>50%</centerleft>
+			<width>1200</width>
+			<height>870</height>
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="1200" />
+				<param name="height" value="870" />
+				<param name="header_label" value="$INFO[RetroPlayer.Title] ($INFO[Window.Property(WeightedProgress)])" />
+				<param name="header_id" value="2" />
+			</include>
+			<!-- Achievement list -->
+			<control type="list" id="3">
+				<top>80</top>
+				<left>20</left>
+				<width>1148</width>
+				<height>720</height>
+				<orientation>vertical</orientation>
+				<pagecontrol>62</pagecontrol>
+				<itemlayout width="1148" height="120">
+					<!-- Greyscale badge for unearned -->
+					<control type="image">
+						<left>0</left><top>15</top><width>80</width><height>80</height>
+						<texture colordiffuse="FF888888">$INFO[ListItem.Art(icon)]</texture>
+						<visible>!ListItem.Property(Earned)</visible>
+					</control>
+					<!-- Full colour badge for earned -->
+					<control type="image">
+						<left>0</left><top>15</top><width>80</width><height>80</height>
+						<texture>$INFO[ListItem.Art(icon)]</texture>
+						<visible>ListItem.Property(Earned)</visible>
+					</control>
+					<!-- Title -->
+					<control type="label">
+						<left>95</left><top>15</top><width>750</width><height>40</height>
+						<info>ListItem.Label</info>
+						<font>font25_title</font><align>left</align>
+					</control>
+					<!-- Description -->
+					<control type="label">
+						<left>95</left><top>55</top><width>750</width><height>28</height>
+						<info>ListItem.Label2</info>
+						<font>font12</font><align>left</align><textcolor>grey</textcolor>
+					</control>
+					<!-- Rarity -->
+					<control type="label">
+						<left>95</left><top>83</top><width>750</width><height>24</height>
+						<label>$INFO[ListItem.Property(RarityCategory)]</label>
+						<font>font12</font><align>left</align><textcolor>button_focus</textcolor>
+					</control>
+					<!-- Points -->
+					<control type="label">
+						<right>10</right><top>15</top><width>230</width><height>40</height>
+						<label>$INFO[ListItem.Property(Points)] pts</label>
+						<font>font25_title</font><align>right</align><textcolor>button_focus</textcolor>
+					</control>
+					<!-- Earned label -->
+					<control type="label">
+						<right>10</right><top>58</top><width>280</width><height>28</height>
+						<label>$INFO[ListItem.Property(UnlockedDate)]</label><font>font12</font><align>right</align>
+						<textcolor>green</textcolor>
+						<visible>ListItem.Property(Earned)</visible>
+					</control>
+				</itemlayout>
+				<focusedlayout width="1148" height="120">
+					<control type="image">
+						<texture colordiffuse="button_focus">lists/focus.png</texture>
+						<visible>Control.HasFocus(3)</visible>
+					</control>
+					<!-- Greyscale badge for unearned -->
+					<control type="image">
+						<left>0</left><top>15</top><width>80</width><height>80</height>
+						<texture colordiffuse="FF888888">$INFO[ListItem.Art(icon)]</texture>
+						<visible>!ListItem.Property(Earned)</visible>
+					</control>
+					<!-- Full colour badge for earned -->
+					<control type="image">
+						<left>0</left><top>15</top><width>80</width><height>80</height>
+						<texture>$INFO[ListItem.Art(icon)]</texture>
+						<visible>ListItem.Property(Earned)</visible>
+					</control>
+					<!-- Title -->
+					<control type="label">
+						<left>95</left><top>15</top><width>750</width><height>40</height>
+						<info>ListItem.Label</info>
+						<font>font25_title</font><align>left</align>
+					</control>
+					<!-- Description -->
+					<control type="label">
+						<left>95</left><top>55</top><width>750</width><height>28</height>
+						<info>ListItem.Label2</info>
+						<font>font12</font><align>left</align><textcolor>grey</textcolor>
+					</control>
+					<!-- Rarity -->
+					<control type="label">
+						<left>95</left><top>83</top><width>750</width><height>24</height>
+						<label>$INFO[ListItem.Property(RarityCategory)]</label>
+						<font>font12</font><align>left</align><textcolor>button_focus</textcolor>
+					</control>
+					<!-- Points -->
+					<control type="label">
+						<right>10</right><top>15</top><width>230</width><height>40</height>
+						<label>$INFO[ListItem.Property(Points)] pts</label>
+						<font>font25_title</font><align>right</align><textcolor>button_focus</textcolor>
+					</control>
+					<!-- Earned label -->
+					<control type="label">
+						<right>10</right><top>58</top><width>280</width><height>28</height>
+						<label>$INFO[ListItem.Property(UnlockedDate)]</label><font>font12</font><align>right</align>
+						<textcolor>green</textcolor>
+						<visible>ListItem.Property(Earned)</visible>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="scrollbar" id="62">
+				<top>80</top>
+				<right>0</right>
+				<width>12</width>
+				<height>720</height>
+				<orientation>vertical</orientation>
+			</control>
+		</control>
+	</include>
+
+	<include name="GameDialogLeaderboards">
+		<control type="image">
+			<left>0</left><top>0</top>
+			<width>1920</width><height>1080</height>
+			<texture colordiffuse="CC000000">colors/white.png</texture>
+		</control>
+		<control type="group">
+			<centertop>50%</centertop>
+			<centerleft>50%</centerleft>
+			<width>1200</width>
+			<height>810</height>
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="1200" />
+				<param name="height" value="810" />
+				<param name="header_label" value="$INFO[RetroPlayer.Title] Leaderboards" />
+				<param name="header_id" value="2" />
+			</include>
+			<control type="list" id="3">
+				<top>80</top>
+				<left>20</left>
+				<width>1148</width>
+				<height>680</height>
+				<orientation>vertical</orientation>
+				<pagecontrol>62</pagecontrol>
+				<itemlayout width="1148" height="110">
+					<control type="label">
+						<left>15</left><top>8</top><width>800</width><height>35</height>
+						<info>ListItem.Label</info>
+						<font>font25_title</font><align>left</align>
+					</control>
+					<control type="label">
+						<left>15</left><top>45</top><width>600</width><height>26</height>
+						<label>$INFO[ListItem.Property(Format)]</label>
+						<font>font12</font><align>left</align><textcolor>button_focus</textcolor>
+					</control>
+					<control type="label">
+						<left>15</left><top>73</top><width>800</width><height>26</height>
+						<info>ListItem.Label2</info>
+						<font>font12</font><align>left</align><textcolor>FFCCCCCC</textcolor>
+					</control>
+					<control type="label">
+						<right>10</right><top>8</top><width>300</width><height>35</height>
+						<label>$INFO[ListItem.Property(TopScore)]</label>
+						<font>font25_title</font><align>right</align>
+					</control>
+					<control type="label">
+						<right>10</right><top>45</top><width>300</width><height>26</height>
+						<label>by $INFO[ListItem.Property(TopUsername)]</label>
+						<font>font12</font><align>right</align><textcolor>FFCCCCCC</textcolor>
+						<visible>!String.IsEmpty(ListItem.Property(TopUsername))</visible>
+					</control>
+					<control type="label">
+						<right>10</right><top>73</top><width>300</width><height>26</height>
+						<label>$INFO[ListItem.Property(PlayerRank)]</label>
+						<font>font12</font><align>right</align><textcolor>green</textcolor>
+						<visible>!String.IsEmpty(ListItem.Property(PlayerRank))</visible>
+					</control>
+					<control type="label">
+						<right>10</right><top>73</top><width>300</width><height>26</height>
+						<label>Not ranked</label>
+						<font>font12</font><align>right</align><textcolor>FF888888</textcolor>
+						<visible>String.IsEmpty(ListItem.Property(PlayerRank))</visible>
+					</control>
+				</itemlayout>
+				<focusedlayout width="1148" height="110">
+					<control type="image">
+						<texture colordiffuse="button_focus">lists/focus.png</texture>
+						<visible>Control.HasFocus(3)</visible>
+					</control>
+					<control type="label">
+						<left>15</left><top>8</top><width>800</width><height>35</height>
+						<info>ListItem.Label</info>
+						<font>font25_title</font><align>left</align>
+					</control>
+					<control type="label">
+						<left>15</left><top>45</top><width>600</width><height>26</height>
+						<label>$INFO[ListItem.Property(Format)]</label>
+						<font>font12</font><align>left</align><textcolor>button_focus</textcolor>
+					</control>
+					<control type="label">
+						<left>15</left><top>73</top><width>800</width><height>26</height>
+						<info>ListItem.Label2</info>
+						<font>font12</font><align>left</align><textcolor>FFCCCCCC</textcolor>
+					</control>
+					<control type="label">
+						<right>10</right><top>8</top><width>300</width><height>35</height>
+						<label>$INFO[ListItem.Property(TopScore)]</label>
+						<font>font25_title</font><align>right</align>
+					</control>
+					<control type="label">
+						<right>10</right><top>45</top><width>300</width><height>26</height>
+						<label>by $INFO[ListItem.Property(TopUsername)]</label>
+						<font>font12</font><align>right</align><textcolor>FFCCCCCC</textcolor>
+						<visible>!String.IsEmpty(ListItem.Property(TopUsername))</visible>
+					</control>
+					<control type="label">
+						<right>10</right><top>73</top><width>300</width><height>26</height>
+						<label>$INFO[ListItem.Property(PlayerRank)]</label>
+						<font>font12</font><align>right</align><textcolor>green</textcolor>
+						<visible>!String.IsEmpty(ListItem.Property(PlayerRank))</visible>
+					</control>
+					<control type="label">
+						<right>10</right><top>73</top><width>300</width><height>26</height>
+						<label>Not ranked</label>
+						<font>font12</font><align>right</align><textcolor>FF888888</textcolor>
+						<visible>String.IsEmpty(ListItem.Property(PlayerRank))</visible>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="label">
+				<bottom>15</bottom>
+				<left>20</left>
+				<right>20</right>
+				<height>30</height>
+				<label>[B]Scores can only be submitted in Hardcore Mode[/B]</label>
+				<font>font13</font><align>center</align><textcolor>button_focus</textcolor>
+			</control>
+			<control type="scrollbar" id="62">
+				<top>80</top>
+				<right>0</right>
+				<width>12</width>
+				<height>680</height>
+				<orientation>vertical</orientation>
+			</control>
+		</control>
+	</include>
+	<include name="GameDialogLeaderboardEntries">
+		<control type="image">
+			<left>0</left><top>0</top>
+			<width>1920</width><height>1080</height>
+			<texture colordiffuse="CC000000">colors/white.png</texture>
+		</control>
+		<control type="group">
+			<centertop>50%</centertop>
+			<centerleft>50%</centerleft>
+			<width>1200</width>
+			<height>760</height>
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="1200" />
+				<param name="height" value="760" />
+				<param name="header_label" value="$INFO[Window.Property(HeaderLabel)]" />
+				<param name="header_id" value="2" />
+			</include>
+			<control type="group">
+				<top>82</top>
+				<left>20</left>
+				<width>1148</width>
+				<height>28</height>
+				<control type="label">
+					<left>8</left><width>60</width><height>28</height>
+					<label>Rank</label>
+					<font>font12</font><align>left</align><textcolor>FF555555</textcolor>
+				</control>
+				<control type="label">
+					<left>124</left><width>600</width><height>28</height>
+					<label>Player</label>
+					<font>font12</font><align>left</align><textcolor>FF555555</textcolor>
+				</control>
+				<control type="label">
+					<left>750</left><width>200</width><height>28</height>
+					<label>Date</label>
+					<font>font12</font><align>left</align><textcolor>FF555555</textcolor>
+				</control>
+				<control type="label">
+					<right>8</right><width>150</width><height>28</height>
+					<label>Score</label>
+					<font>font12</font><align>right</align><textcolor>FF555555</textcolor>
+				</control>
+			</control>
+			<control type="list" id="3">
+				<top>115</top>
+				<left>20</left>
+				<width>1148</width>
+				<height>520</height>
+				<orientation>vertical</orientation>
+				<pagecontrol>62</pagecontrol>
+				<itemlayout width="1148" height="52">
+					<control type="image">
+						<left>0</left><top>0</top><right>0</right><height>52</height>
+						<texture colordiffuse="222196A6">colors/white.png</texture>
+						<visible>ListItem.Property(IsPlayer)</visible>
+					</control>
+					<control type="image">
+						<left>0</left><top>0</top><width>4</width><height>52</height>
+						<texture colordiffuse="FFFFD700">colors/white.png</texture>
+						<visible>String.IsEqual(ListItem.Property(Rank),1)</visible>
+					</control>
+					<control type="image">
+						<left>0</left><top>0</top><width>4</width><height>52</height>
+						<texture colordiffuse="FFC8C8C8">colors/white.png</texture>
+						<visible>String.IsEqual(ListItem.Property(Rank),2)</visible>
+					</control>
+					<control type="image">
+						<left>0</left><top>0</top><width>4</width><height>52</height>
+						<texture colordiffuse="FFCD7F32">colors/white.png</texture>
+						<visible>String.IsEqual(ListItem.Property(Rank),3)</visible>
+					</control>
+					<control type="image">
+						<left>0</left><top>0</top><width>4</width><height>52</height>
+						<texture colordiffuse="FF2196A6">colors/white.png</texture>
+						<visible>ListItem.Property(IsPlayer)</visible>
+					</control>
+					<control type="label">
+						<left>8</left><top>9</top><width>55</width><height>35</height>
+						<label>$INFO[ListItem.Property(Rank)]</label>
+						<font>font25_title</font><align>left</align><textcolor>FFFFD700</textcolor>
+						<visible>String.IsEqual(ListItem.Property(Rank),1)</visible>
+					</control>
+					<control type="label">
+						<left>8</left><top>9</top><width>55</width><height>35</height>
+						<label>$INFO[ListItem.Property(Rank)]</label>
+						<font>font25_title</font><align>left</align><textcolor>FFC8C8C8</textcolor>
+						<visible>String.IsEqual(ListItem.Property(Rank),2)</visible>
+					</control>
+					<control type="label">
+						<left>8</left><top>9</top><width>55</width><height>35</height>
+						<label>$INFO[ListItem.Property(Rank)]</label>
+						<font>font25_title</font><align>left</align><textcolor>FFCD7F32</textcolor>
+						<visible>String.IsEqual(ListItem.Property(Rank),3)</visible>
+					</control>
+					<control type="label">
+						<left>8</left><top>9</top><width>55</width><height>35</height>
+						<label>$INFO[ListItem.Property(Rank)]</label>
+						<font>font13</font><align>left</align><textcolor>FF888888</textcolor>
+						<visible>!String.IsEqual(ListItem.Property(Rank),1) + !String.IsEqual(ListItem.Property(Rank),2) + !String.IsEqual(ListItem.Property(Rank),3) + !ListItem.Property(IsPlayer)</visible>
+					</control>
+					<control type="label">
+						<left>8</left><top>9</top><width>55</width><height>35</height>
+						<label>—</label>
+						<font>font13</font><align>left</align><textcolor>FF555555</textcolor>
+						<visible>ListItem.Property(IsPlayer)</visible>
+					</control>
+					<control type="image">
+						<left>68</left><top>3</top><width>46</width><height>46</height>
+						<texture>$INFO[ListItem.Art(thumb)]</texture>
+					</control>
+					<control type="label">
+						<left>124</left><top>9</top><width>580</width><height>35</height>
+						<info>ListItem.Label</info>
+						<font>font25_title</font><align>left</align>
+						<visible>!ListItem.Property(IsPlayer)</visible>
+					</control>
+					<control type="label">
+						<left>124</left><top>9</top><width>580</width><height>35</height>
+						<label>$INFO[ListItem.Label] (you)</label>
+						<font>font25_title</font><align>left</align><textcolor>button_focus</textcolor>
+						<visible>ListItem.Property(IsPlayer)</visible>
+					</control>
+					<control type="label">
+						<left>750</left><top>9</top><width>220</width><height>35</height>
+						<label>$INFO[ListItem.Property(DateSubmitted)]</label>
+						<font>font12</font><align>left</align><textcolor>FF666666</textcolor>
+						<visible>!ListItem.Property(IsPlayer)</visible>
+					</control>
+					<control type="label">
+						<right>8</right><top>9</top><width>160</width><height>35</height>
+						<info>ListItem.Label2</info>
+						<font>font25_title</font><align>right</align><textcolor>button_focus</textcolor>
+						<visible>!ListItem.Property(IsPlayer)</visible>
+					</control>
+					<control type="label">
+						<right>8</right><top>9</top><width>160</width><height>35</height>
+						<info>ListItem.Label2</info>
+						<font>font25_title</font><align>right</align><textcolor>green</textcolor>
+						<visible>ListItem.Property(IsPlayer) + !ListItem.Property(NotRanked)</visible>
+					</control>
+					<control type="label">
+						<right>8</right><top>15</top><width>160</width><height>35</height>
+						<label>Not ranked</label>
+						<font>font12</font><align>right</align><textcolor>FF666666</textcolor>
+						<visible>ListItem.Property(NotRanked)</visible>
+					</control>
+				</itemlayout>
+				<focusedlayout width="1148" height="52">
+					<control type="image">
+						<texture colordiffuse="button_focus">lists/focus.png</texture>
+						<visible>Control.HasFocus(3)</visible>
+					</control>
+					<control type="image">
+						<left>0</left><top>0</top><right>0</right><height>52</height>
+						<texture colordiffuse="222196A6">colors/white.png</texture>
+						<visible>ListItem.Property(IsPlayer)</visible>
+					</control>
+					<control type="image">
+						<left>0</left><top>0</top><width>4</width><height>52</height>
+						<texture colordiffuse="FFFFD700">colors/white.png</texture>
+						<visible>String.IsEqual(ListItem.Property(Rank),1)</visible>
+					</control>
+					<control type="image">
+						<left>0</left><top>0</top><width>4</width><height>52</height>
+						<texture colordiffuse="FFC8C8C8">colors/white.png</texture>
+						<visible>String.IsEqual(ListItem.Property(Rank),2)</visible>
+					</control>
+					<control type="image">
+						<left>0</left><top>0</top><width>4</width><height>52</height>
+						<texture colordiffuse="FFCD7F32">colors/white.png</texture>
+						<visible>String.IsEqual(ListItem.Property(Rank),3)</visible>
+					</control>
+					<control type="image">
+						<left>0</left><top>0</top><width>4</width><height>52</height>
+						<texture colordiffuse="FF2196A6">colors/white.png</texture>
+						<visible>ListItem.Property(IsPlayer)</visible>
+					</control>
+					<control type="label">
+						<left>8</left><top>9</top><width>55</width><height>35</height>
+						<label>$INFO[ListItem.Property(Rank)]</label>
+						<font>font25_title</font><align>left</align><textcolor>FFFFD700</textcolor>
+						<visible>String.IsEqual(ListItem.Property(Rank),1)</visible>
+					</control>
+					<control type="label">
+						<left>8</left><top>9</top><width>55</width><height>35</height>
+						<label>$INFO[ListItem.Property(Rank)]</label>
+						<font>font25_title</font><align>left</align><textcolor>FFC8C8C8</textcolor>
+						<visible>String.IsEqual(ListItem.Property(Rank),2)</visible>
+					</control>
+					<control type="label">
+						<left>8</left><top>9</top><width>55</width><height>35</height>
+						<label>$INFO[ListItem.Property(Rank)]</label>
+						<font>font25_title</font><align>left</align><textcolor>FFCD7F32</textcolor>
+						<visible>String.IsEqual(ListItem.Property(Rank),3)</visible>
+					</control>
+					<control type="label">
+						<left>8</left><top>9</top><width>55</width><height>35</height>
+						<label>$INFO[ListItem.Property(Rank)]</label>
+						<font>font13</font><align>left</align><textcolor>FF888888</textcolor>
+						<visible>!String.IsEqual(ListItem.Property(Rank),1) + !String.IsEqual(ListItem.Property(Rank),2) + !String.IsEqual(ListItem.Property(Rank),3) + !ListItem.Property(IsPlayer)</visible>
+					</control>
+					<control type="label">
+						<left>8</left><top>9</top><width>55</width><height>35</height>
+						<label>—</label>
+						<font>font13</font><align>left</align><textcolor>FF555555</textcolor>
+						<visible>ListItem.Property(IsPlayer)</visible>
+					</control>
+					<control type="image">
+						<left>68</left><top>3</top><width>46</width><height>46</height>
+						<texture>$INFO[ListItem.Art(thumb)]</texture>
+					</control>
+					<control type="label">
+						<left>124</left><top>9</top><width>580</width><height>35</height>
+						<info>ListItem.Label</info>
+						<font>font25_title</font><align>left</align>
+						<visible>!ListItem.Property(IsPlayer)</visible>
+					</control>
+					<control type="label">
+						<left>124</left><top>9</top><width>580</width><height>35</height>
+						<label>$INFO[ListItem.Label] (you)</label>
+						<font>font25_title</font><align>left</align><textcolor>button_focus</textcolor>
+						<visible>ListItem.Property(IsPlayer)</visible>
+					</control>
+					<control type="label">
+						<left>750</left><top>9</top><width>220</width><height>35</height>
+						<label>$INFO[ListItem.Property(DateSubmitted)]</label>
+						<font>font12</font><align>left</align><textcolor>FF666666</textcolor>
+						<visible>!ListItem.Property(IsPlayer)</visible>
+					</control>
+					<control type="label">
+						<right>8</right><top>9</top><width>160</width><height>35</height>
+						<info>ListItem.Label2</info>
+						<font>font25_title</font><align>right</align><textcolor>button_focus</textcolor>
+						<visible>!ListItem.Property(IsPlayer)</visible>
+					</control>
+					<control type="label">
+						<right>8</right><top>9</top><width>160</width><height>35</height>
+						<info>ListItem.Label2</info>
+						<font>font25_title</font><align>right</align><textcolor>green</textcolor>
+						<visible>ListItem.Property(IsPlayer) + !ListItem.Property(NotRanked)</visible>
+					</control>
+					<control type="label">
+						<right>8</right><top>15</top><width>160</width><height>35</height>
+						<label>Not ranked</label>
+						<font>font12</font><align>right</align><textcolor>FF666666</textcolor>
+						<visible>ListItem.Property(NotRanked)</visible>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="group">
+				<top>640</top>
+				<left>20</left>
+				<width>1148</width>
+				<height>52</height>
+				<control type="image">
+					<left>0</left><top>0</top><right>0</right><height>52</height>
+					<texture colordiffuse="222196A6">colors/white.png</texture>
+				</control>
+				<control type="image">
+					<left>0</left><top>0</top><width>4</width><height>52</height>
+					<texture colordiffuse="FF2196A6">colors/white.png</texture>
+				</control>
+				<control type="label">
+					<left>8</left><top>9</top><width>55</width><height>35</height>
+					<label>—</label>
+					<font>font13</font><align>left</align><textcolor>FF555555</textcolor>
+					<visible>String.IsEqual(Window.Property(PlayerRowNotRanked),true)</visible>
+				</control>
+				<control type="label">
+					<left>8</left><top>9</top><width>55</width><height>35</height>
+					<label>$INFO[Window.Property(PlayerRowRank)]</label>
+					<font>font25_title</font><align>left</align><textcolor>green</textcolor>
+					<visible>!String.IsEqual(Window.Property(PlayerRowNotRanked),true)</visible>
+				</control>
+				<control type="image">
+					<left>68</left><top>3</top><width>46</width><height>46</height>
+					<texture>$INFO[Window.Property(PlayerRowAvatarUrl)]</texture>
+				</control>
+				<control type="label">
+					<left>124</left><top>9</top><width>580</width><height>35</height>
+					<label>$INFO[Window.Property(PlayerRowUsername)] (you)</label>
+					<font>font25_title</font><align>left</align><textcolor>button_focus</textcolor>
+				</control>
+				<control type="label">
+					<right>8</right><top>9</top><width>160</width><height>35</height>
+					<label>Not ranked</label>
+					<font>font12</font><align>right</align><textcolor>FF666666</textcolor>
+					<visible>String.IsEqual(Window.Property(PlayerRowNotRanked),true)</visible>
+				</control>
+				<control type="label">
+					<right>8</right><top>9</top><width>160</width><height>35</height>
+					<label>$INFO[Window.Property(PlayerRowScore)]</label>
+					<font>font25_title</font><align>right</align><textcolor>green</textcolor>
+					<visible>!String.IsEqual(Window.Property(PlayerRowNotRanked),true)</visible>
+				</control>
+			</control>
+			<control type="label">
+				<bottom>15</bottom>
+				<left>20</left>
+				<right>20</right>
+				<height>30</height>
+				<label>[B]Scores can only be submitted in Hardcore Mode[/B]</label>
+				<font>font13</font><align>center</align><textcolor>button_focus</textcolor>
+			</control>
+			<control type="scrollbar" id="62">
+				<top>115</top>
+				<right>0</right>
+				<width>12</width>
+				<height>520</height>
+				<orientation>vertical</orientation>
+			</control>
+		</control>
+	</include>
 </includes>

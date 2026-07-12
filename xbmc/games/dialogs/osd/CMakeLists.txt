@@ -1,4 +1,7 @@
-set(SOURCES DialogGameAdvancedSettings.cpp
+set(SOURCES DialogGameAchievements.cpp
+            DialogGameLeaderboards.cpp
+            DialogGameLeaderboardEntries.cpp
+            DialogGameAdvancedSettings.cpp
             DialogGameOSD.cpp
             DialogGameOSDHelp.cpp
             DialogGameSaves.cpp
@@ -10,7 +13,10 @@ set(SOURCES DialogGameAdvancedSettings.cpp
             DialogInGameSaves.cpp
 )
 
-set(HEADERS DialogGameAdvancedSettings.h
+set(HEADERS DialogGameAchievements.h
+            DialogGameLeaderboards.h
+            DialogGameLeaderboardEntries.h
+            DialogGameAdvancedSettings.h
             DialogGameOSD.h
             DialogGameOSDHelp.h
             DialogGameSaves.h
