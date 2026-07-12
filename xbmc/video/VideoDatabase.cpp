@@ -11498,7 +11498,7 @@ void CVideoDatabase::InvalidatePathHash(const std::string& strPath)
                                                          : strPath};
 
   ScraperPtr info = GetScraperForPath(path, settings, foundDirectly);
-  SetPathHash(path, "");
+  SetPathHash(strPath, "");
   if (!info)
     return;
   if (info->Content() == ContentType::TVSHOWS ||
