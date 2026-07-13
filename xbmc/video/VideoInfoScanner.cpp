@@ -1655,8 +1655,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
     if (!libraryImport && !pItem->GetProperty("from_nfo").asBoolean(false) &&
         (::UTILS::DISCS::IsBlurayDiscImage(path) || URIUtils::IsBDFile(path)))
     {
-      if (CDiscDirectoryHelper::GetOrShowPlaylistSelection(*pItem, MenuDecision::SILENT))
+      CFileItemList items;
+      if (CDiscDirectoryHelper::GetOrShowPlaylistSelection(*pItem, items, MenuDecision::SILENT))
       {
+        *pItem = *items[0];
         path = pItem->GetDynPath();
         pItem->GetVideoInfoTag()->SetFileNameAndPath(path);
       }

@@ -659,7 +659,7 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
         helper.GetMoviePlaylists(url, items, allTitles, mainPlaylist, GetTitle::SINGLE, clips,
                                  playlists);
       else if (file == "root/main/all")
-        helper.GetMoviePlaylists(url, items, allTitles, mainPlaylist, GetTitle::ALL, clips,
+        helper.GetMoviePlaylists(url, items, allTitles, mainPlaylist, GetTitle::MAIN, clips,
                                  playlists);
       else
         CLog::LogF(LOGDEBUG, "Invalid path {} for bluray playlist parsing", file);

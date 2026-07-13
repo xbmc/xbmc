@@ -368,78 +368,80 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
   item->SetProperty("force_playlist_selection", true);
   const int idMovie{m_database.GetMovieId(oldPath)};
 
-  if (XFILE::CDiscDirectoryHelper::GetOrShowPlaylistSelection(
-          *item, XFILE::MenuDecision::SHOW_SIMPLE_MENU) &&
-      oldPath != item->GetDynPath())
+  CFileItemList items;
+  if (!XFILE::CDiscDirectoryHelper::GetOrShowPlaylistSelection(
+          *item, items, XFILE::MenuDecision::SHOW_SIMPLE_MENU) ||
+      items.IsEmpty())
+    return false;
+  if (oldPath == items[0]->GetDynPath())
+    return false;
+  *item = *items[0];
+
+  // Add playlist file as bluray://
+  int idFile;
+  bool videoDbSuccess{false};
+  m_database.BeginTransaction();
+  if (replaceExistingFile == ReplaceExistingFile::YES)
   {
-    // Add playlist file as bluray://
-    int idFile;
-    bool videoDbSuccess{false};
-    m_database.BeginTransaction();
-    if (replaceExistingFile == ReplaceExistingFile::YES)
-    {
-      idFile = m_database.SetFileForMedia(
-          item->GetDynPath(), item->GetVideoContentType(), item->GetVideoInfoTag()->m_iDbId,
-          CVideoDatabase::FileRecord{.m_idFile = item->GetVideoInfoTag()->m_iFileId,
-                                     .m_dateAdded = item->GetVideoInfoTag()->m_dateAdded});
-      videoDbSuccess = idFile > 0;
-      if (videoDbSuccess)
-      {
-        m_database.SetStreamDetailsForFile(item->GetVideoInfoTag()->m_streamDetails,
-                                           item->GetDynPath());
-
-        // Notify all windows to update the file item
-        CFileItem oldItem{*item};
-        oldItem.SetPath(oldPath);
-        CGUIMessage msg{GUI_MSG_NOTIFY_ALL,
-                        0,
-                        0,
-                        GUI_MSG_UPDATE_ITEM,
-                        GUI_MSG_FLAG_FORCE_UPDATE,
-                        std::make_shared<CFileItem>(oldItem)};
-        CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
-      }
-    }
-    else
-    {
-      // Choose a video version for the video
-      const int idVideoVersion{ChooseVideoAsset(item, VideoAssetType::VERSION, "")};
-      if (idVideoVersion < 0)
-        return false;
-
-      idFile = m_database.AddFile(item->GetDynPath(), "", item->GetVideoInfoTag()->m_dateAdded);
-      if (idFile > 0)
-      {
-        videoDbSuccess = true;
-        m_database.SetStreamDetailsForFileId(item->GetVideoInfoTag()->m_streamDetails, idFile);
-        if (!m_database.AddOrUpdateVideoVersion(item->GetVideoContentType(), idMovie, idFile,
-                                                idVideoVersion, VideoAssetType::VERSION))
-          return false;
-      }
-
-      // Remove (Disc n) from title if we are now spanning discs or folders
-      if (!URIUtils::CompareDiscPaths(m_videoAsset->GetDynPath(), item->GetDynPath()))
-        RemovePartNumberFromTitle();
-    }
-
+    idFile = m_database.SetFileForMedia(
+        item->GetDynPath(), item->GetVideoContentType(), item->GetVideoInfoTag()->m_iDbId,
+        CVideoDatabase::FileRecord{.m_idFile = item->GetVideoInfoTag()->m_iFileId,
+                                   .m_dateAdded = item->GetVideoInfoTag()->m_dateAdded});
+    videoDbSuccess = idFile > 0;
     if (videoDbSuccess)
     {
-      // New disc video version will not have any art so use the art from the disc
-      m_database.SetArtForItem(idFile, MediaTypeVideoVersion, item->GetArt());
-      m_database.CommitTransaction();
+      m_database.SetStreamDetailsForFile(item->GetVideoInfoTag()->m_streamDetails,
+                                         item->GetDynPath());
+
+      // Notify all windows to update the file item
+      CFileItem oldItem{*item};
+      oldItem.SetPath(oldPath);
+      CGUIMessage msg{GUI_MSG_NOTIFY_ALL,
+                      0,
+                      0,
+                      GUI_MSG_UPDATE_ITEM,
+                      GUI_MSG_FLAG_FORCE_UPDATE,
+                      std::make_shared<CFileItem>(oldItem)};
+      CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
     }
-    else
-      m_database.RollbackTransaction();
+  }
+  else
+  {
+    // Choose a video version for the video
+    const int idVideoVersion{ChooseVideoAsset(item, VideoAssetType::VERSION, "")};
+    if (idVideoVersion < 0)
+      return false;
 
-    // refresh data and controls
-    Refresh();
-    UpdateControls();
-    m_hasUpdatedItems = true;
+    idFile = m_database.AddFile(item->GetDynPath(), "", item->GetVideoInfoTag()->m_dateAdded);
+    if (idFile > 0)
+    {
+      videoDbSuccess = true;
+      m_database.SetStreamDetailsForFileId(item->GetVideoInfoTag()->m_streamDetails, idFile);
+      if (!m_database.AddOrUpdateVideoVersion(item->GetVideoContentType(), idMovie, idFile,
+                                              idVideoVersion, VideoAssetType::VERSION))
+        return false;
+    }
 
-    return videoDbSuccess;
+    // Remove (Disc n) from title if we are now spanning discs or folders
+    if (!URIUtils::CompareDiscPaths(m_videoAsset->GetDynPath(), item->GetDynPath()))
+      RemovePartNumberFromTitle();
   }
 
-  return false;
+  if (videoDbSuccess)
+  {
+    // New disc video version will not have any art so use the art from the disc
+    m_database.SetArtForItem(idFile, MediaTypeVideoVersion, item->GetArt());
+    m_database.CommitTransaction();
+  }
+  else
+    m_database.RollbackTransaction();
+
+  // refresh data and controls
+  Refresh();
+  UpdateControls();
+  m_hasUpdatedItems = true;
+
+  return videoDbSuccess;
 }
 
 bool CGUIDialogVideoManagerVersions::ManageVideoVersions(const std::shared_ptr<CFileItem>& item)
