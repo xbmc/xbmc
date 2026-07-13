@@ -57,6 +57,7 @@ bool CWinSystemWaylandWebOS::InitWindowSystem()
 
   m_webosRegistry = std::make_unique<CRegistry>(*GetConnection());
   m_webosRegistry->RequestSingleton(m_compositor, 1, 4);
+  m_webosRegistry->RequestSingleton(m_textModelFactory, 1, 1, false);
   // available since webOS 5.0
   m_webosRegistry->RequestSingleton(m_webosForeign, 1, 2, false);
   m_webosRegistry->Bind();
@@ -78,6 +79,8 @@ bool CWinSystemWaylandWebOS::DestroyWindowSystem()
 {
   m_exportedSurface = wayland::webos_exported_t{};
   m_webosForeign = wayland::webos_foreign_t{};
+  m_textModelFactory = wayland::text_model_factory_t{};
+  m_textInputSeat = wayland::seat_t{};
 
   if (m_webosRegistry)
   {
@@ -162,7 +165,37 @@ std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> CWinSystemWaylandWebOS::GetOSSc
 
 std::unique_ptr<CSeat> CWinSystemWaylandWebOS::CreateSeat(std::uint32_t name, wayland::seat_t& seat)
 {
+  if (!m_textInputSeat)
+    m_textInputSeat = seat;
   return std::make_unique<CSeatWebOS>(name, seat, *GetConnection());
+}
+
+bool CWinSystemWaylandWebOS::HasTextInput() const
+{
+  return m_textModelFactory && m_textInputSeat;
+}
+
+wayland::text_model_t CWinSystemWaylandWebOS::CreateTextModel()
+{
+  if (!HasTextInput())
+    return {};
+
+  return m_textModelFactory.create_text_model();
+}
+
+bool CWinSystemWaylandWebOS::ActivateTextModel(wayland::text_model_t& textModel)
+{
+  if (!textModel || !HasTextInput())
+    return false;
+
+  textModel.activate(++m_textModelSerial, m_textInputSeat, GetMainSurface());
+  return true;
+}
+
+void CWinSystemWaylandWebOS::DeactivateTextModel(wayland::text_model_t& textModel)
+{
+  if (textModel && m_textInputSeat)
+    textModel.deactivate(m_textInputSeat);
 }
 
 bool CWinSystemWaylandWebOS::OnAppLifecycleEventWrapper(LSHandle* sh, LSMessage* reply, void* ctx)

@@ -77,11 +77,6 @@
           </constraints>
           <control type="spinner" format="integer" delayed="false"/>
         </setting>
-        <setting id="input.tvosusekodikeyboard" type="boolean" label="24162" help="34008">
-          <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
       </group>
     </category>
   </section>

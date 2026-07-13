@@ -53,6 +53,11 @@ public:
   float GetGuiSdrPeakLuminance() const override;
   bool IsHDRDisplay() override;
 
+  bool HasTextInput() const;
+  wayland::text_model_t CreateTextModel();
+  bool ActivateTextModel(wayland::text_model_t& textModel);
+  void DeactivateTextModel(wayland::text_model_t& textModel);
+
 protected:
   std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;
   std::unique_ptr<CSeat> CreateSeat(std::uint32_t name, wayland::seat_t& seat) override;
@@ -68,6 +73,11 @@ private:
   wayland::compositor_t m_compositor;
   wayland::webos_exported_t m_exportedSurface;
   wayland::webos_foreign_t m_webosForeign;
+
+  // On-screen keyboard support
+  wayland::text_model_factory_t m_textModelFactory;
+  wayland::seat_t m_textInputSeat;
+  std::uint32_t m_textModelSerial{0};
 
   std::unique_ptr<HContext, int (*)(HContext*)> m_requestContext{new HContext(),
                                                                  HUnregisterServiceCallback};
