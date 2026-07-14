@@ -1715,11 +1715,24 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(CFileItem& item, MenuDecis
   if (!GetItems(items, directoryDuration, silent))
   {
     // No main movie or episode playlist found
-    if (!silent)
+    if (silent)
+      return false;
+
+    // Not silent so fallback to all titles
+    const std::string fallbackDirectory{
+        item.GetVideoContentType() == VideoDbContentType::EPISODES ||
+                item.GetVideoContentType() == VideoDbContentType::TVSHOWS
+            ? URIUtils::GetBlurayTitlesPath(originalDynPath, URIUtils::GetAllTitles::ALL,
+                                            URIUtils::AllTitlesOptions::EPISODES)
+            : URIUtils::GetBlurayTitlesPath(originalDynPath, URIUtils::GetAllTitles::ALL,
+                                            URIUtils::AllTitlesOptions::MOVIES)};
+    if (!GetItems(items, fallbackDirectory, silent))
+    {
       CGUIDialogOK::ShowAndGetInput(
           CVariant{257},
           CVariant{item.GetVideoContentType() == VideoDbContentType::EPISODES ? 25017 : 25016});
-    return false;
+      return false;
+    }
   }
 
   // Select item
