@@ -3058,55 +3058,63 @@ void CVideoPlayer::HandleMessages()
 
       CDVDMsgPlayerSeekChapter& msg(*std::static_pointer_cast<CDVDMsgPlayerSeekChapter>(pMsg));
       double start = DVD_NOPTS_VALUE;
-      int offset = 0;
+      int64_t offset = 0;
+      int newChapter{std::max(1, msg.GetChapter())};
+      bool inCut{false};
+      bool seekDone{false};
+      const int64_t beforeSeek = GetTime();
 
-      // This should always be the case.
+      const auto FinishChapterSeek = [this, &offset, &start, &newChapter, &seekDone, beforeSeek]()
+      {
+        FlushBuffers(start, true, true);
+        if (start != DVD_NOPTS_VALUE)
+        {
+          const int64_t targetTime{
+              m_Edl.GetTimeWithoutCuts(std::chrono::milliseconds(DVD_TIME_TO_MSEC(start))).count()};
+          offset = targetTime - beforeSeek;
+        }
+        m_callback.OnPlayBackSeekChapter(newChapter);
+        m_processInfo->SeekFinished(offset);
+        seekDone = true;
+      };
+
       if (m_pDemuxer)
       {
-        // SeekChapter does not know about EDL cuts as demuxers are EDL agnostic
-        // So get and adjust chapter time
-        const std::chrono::milliseconds position{m_pDemuxer->GetChapterPos(msg.GetChapter())};
-        const auto hasEdit{m_Edl.InEdit(position)};
-        double time{static_cast<double>(position.count())};
-        if (hasEdit)
+        const bool forward{newChapter > GetChapter()};
+        std::chrono::milliseconds position{m_pDemuxer->GetChapterPos(newChapter)};
+        const int chapterCount{m_pDemuxer->GetChapterCount()};
+        auto inEdit{m_Edl.InEdit(position)};
+        inCut = inEdit && inEdit.value()->action == EDL::Action::CUT;
+        if (inCut)
         {
-          const auto& edit{hasEdit.value()};
-          if (edit->action == EDL::Action::CUT)
+          const int step{forward ? 1 : -1};
+          while (inCut && ((forward && newChapter < chapterCount) || (!forward && newChapter > 1)))
           {
-            // Ensure moving backward/forward doesn't take us past the beginning/end point (which may be cut)
-            const bool forward{msg.GetChapter() > GetChapter()};
-            const std::chrono::milliseconds absoluteTime{forward ? edit->start : edit->end};
-            const std::chrono::milliseconds adjustedTime{m_Edl.GetTimeWithoutCuts(absoluteTime)};
-            const auto endTime{std::chrono::duration<double, std::milli>(m_State.timeMax)};
-            if (adjustedTime + 50ms > endTime)
-              // If close to end then use end of stream otherwise adjustedTime can be a few ms over the end
-              // and still cause the video to freeze
-              time = m_pDemuxer->GetStreamLength();
-            else
-              time = static_cast<double>(absoluteTime.count());
+            newChapter += step;
+            position = m_pDemuxer->GetChapterPos(newChapter);
+            inEdit = m_Edl.InEdit(position);
+            inCut = inEdit && inEdit.value()->action == EDL::Action::CUT;
           }
         }
 
-        if (m_pDemuxer->SeekTime(time, true, &start))
+        if (inCut && newChapter == 1)
         {
-          FlushBuffers(start, true, true);
-          int64_t beforeSeek = GetTime();
-          offset = DVD_TIME_TO_MSEC(start) - static_cast<int>(beforeSeek);
-          m_callback.OnPlayBackSeekChapter(msg.GetChapter());
+          // If the first chapter is in an edit, we can't seek to it, so just seek to the end of the edit
+          if (m_pDemuxer->SeekTime(static_cast<double>(inEdit.value()->end.count()), true, &start))
+            FinishChapterSeek();
+        }
+        else if (!inCut)
+        {
+          if (m_pDemuxer->SeekChapter(newChapter, &start))
+            FinishChapterSeek();
         }
       }
-      else if (m_pInputStream)
+      if (!inCut && !seekDone && m_pInputStream)
       {
         CDVDInputStream::IChapter* pChapter = m_pInputStream->GetIChapter();
-        if (pChapter && pChapter->SeekChapter(msg.GetChapter()))
-        {
-          FlushBuffers(start, true, true);
-          int64_t beforeSeek = GetTime();
-          offset = DVD_TIME_TO_MSEC(start) - static_cast<int>(beforeSeek);
-          m_callback.OnPlayBackSeekChapter(msg.GetChapter());
-        }
+        if (pChapter && pChapter->SeekChapter(newChapter))
+          FinishChapterSeek();
       }
-      m_processInfo->SeekFinished(offset);
     }
     else if (pMsg->IsType(CDVDMsg::DEMUXER_RESET))
     {
@@ -5546,12 +5554,12 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 
   // Convert to second resolution used outside of VideoPlayer for chapter positions
   std::vector<std::pair<std::string, int64_t>> chapters;
+  chapters.reserve(state.chapters.size());
   for (const auto& chapter : state.chapters)
   {
-    chapters.emplace_back(
-        chapter.first,
-        static_cast<int64_t>(std::chrono::round<std::chrono::seconds>(chapter.second).count()));
-  };
+    chapters.emplace_back(chapter.first,
+                          std::chrono::round<std::chrono::seconds>(chapter.second).count());
+  }
 
   CServiceBroker::GetDataCacheCore().SetChapters(chapters);
 
