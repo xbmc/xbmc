@@ -1154,29 +1154,30 @@ void CGUIFontTTF::RenderCharacter(CGraphicContext& context,
 
 #if defined(HAS_DX)
   // D3D: triangle lists
+  // D3D rasterizer uses half-pixel-center convention; no nudge needed.
 
   v[0].u = tl;
   v[0].v = tt;
-  v[0].x = vertex.x1 - xOffset - 0.5f;
-  v[0].y = vertex.y1 - yOffset - 0.5f;
+  v[0].x = vertex.x1 - xOffset;
+  v[0].y = vertex.y1 - yOffset;
   v[0].z = 0;
 
   v[1].u = tr;
   v[1].v = tt;
-  v[1].x = vertex.x2 - xOffset + 0.5f;
-  v[1].y = vertex.y1 - yOffset - 0.5f;
+  v[1].x = vertex.x2 - xOffset;
+  v[1].y = vertex.y1 - yOffset;
   v[1].z = 0;
 
   v[2].u = tr;
   v[2].v = tb;
-  v[2].x = vertex.x2 - xOffset + 0.5f;
-  v[2].y = vertex.y2 - yOffset + 0.5f;
+  v[2].x = vertex.x2 - xOffset;
+  v[2].y = vertex.y2 - yOffset;
   v[2].z = 0;
 
   v[3].u = tl;
   v[3].v = tb;
-  v[3].x = vertex.x1 - xOffset - 0.5f;
-  v[3].y = vertex.y2 - yOffset + 0.5f;
+  v[3].x = vertex.x1 - xOffset;
+  v[3].y = vertex.y2 - yOffset;
   v[3].z = 0;
 #else
   // GL / GLES uses triangle strips, not quads, so have to rearrange the vertex order
