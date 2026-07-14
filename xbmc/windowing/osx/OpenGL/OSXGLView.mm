@@ -12,6 +12,8 @@
 #include "utils/log.h"
 #import "windowing/osx/WinSystemOSX.h"
 
+#include <vector>
+
 #include "system_gl.h"
 
 @implementation OSXGLView
@@ -31,36 +33,48 @@
 
 - (id)initWithFrame:(NSRect)frameRect
 {
-  // clang-format off
-  NSOpenGLPixelFormatAttribute wattrs[] = {
-    NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersion3_2Core,
-    NSOpenGLPFAAccelerated,
-    NSOpenGLPFAAlphaSize, 8,
-    NSOpenGLPFAColorSize, 32,
-    NSOpenGLPFADepthSize, 24,
-    NSOpenGLPFADoubleBuffer,
-    NSOpenGLPFANoRecovery,
-    0
-  };
-  // clang-format on
-  auto createGLContext = [&wattrs]
+  auto createGLContext = [](NSOpenGLPixelFormatAttribute profile, bool accelerated)
   {
-    auto pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:wattrs];
+    // clang-format off
+    std::vector<NSOpenGLPixelFormatAttribute> wattrs = {
+      NSOpenGLPFAOpenGLProfile, profile,
+    };
+    if (accelerated)
+      wattrs.push_back(NSOpenGLPFAAccelerated);
+    wattrs.insert(wattrs.end(), {
+      NSOpenGLPFAAlphaSize, 8,
+      NSOpenGLPFAColorSize, 32,
+      NSOpenGLPFADepthSize, 24,
+      NSOpenGLPFADoubleBuffer,
+      NSOpenGLPFANoRecovery,
+      0
+    });
+    // clang-format on
+
+    auto pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:wattrs.data()];
     return [[NSOpenGLContext alloc] initWithFormat:pixelFormat shareContext:nil];
   };
 
   self = [super initWithFrame:frameRect];
   if (self)
   {
-    m_glcontext = createGLContext();
+    m_glcontext = createGLContext(NSOpenGLProfileVersion3_2Core, true);
     if (!m_glcontext)
     {
       CLog::Log(LOGERROR,
                 "failed to create NSOpenGLContext, falling back to legacy OpenGL profile");
-
-      wattrs[1] = NSOpenGLProfileVersionLegacy;
-      m_glcontext = createGLContext();
-      assert(m_glcontext);
+      m_glcontext = createGLContext(NSOpenGLProfileVersionLegacy, true);
+    }
+    if (!m_glcontext)
+    {
+      CLog::Log(LOGWARNING, "failed to create accelerated NSOpenGLContext, falling back to a "
+                            "software-rendered context");
+      m_glcontext = createGLContext(NSOpenGLProfileVersionLegacy, false);
+    }
+    if (!m_glcontext)
+    {
+      CLog::Log(LOGERROR, "failed to create any NSOpenGLContext");
+      return nil;
     }
   }
   self.wantsBestResolutionOpenGLSurface = YES;
