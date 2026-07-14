@@ -952,6 +952,20 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return InfoRet::ADDED;
   }
 
+  namespace
+  {
+  void ResolveBlurayPlaylist(CFileItem* item)
+  {
+    if (::UTILS::DISCS::IsBlurayDiscImage(item->GetPath()) || URIUtils::IsBDFile(item->GetPath()))
+    {
+      CFileItemList items;
+      if (CDiscDirectoryHelper::GetOrShowPlaylistSelection(*item, items, MenuDecision::SILENT) &&
+          !items.IsEmpty())
+        *item = *items[0];
+    }
+  }
+  } // unnamed namespace
+
   CInfoScanner::InfoRet CVideoInfoScanner::RetrieveInfoForMovie(CFileItem* pItem,
                                                                 bool bDirNames,
                                                                 ScraperPtr& info2,
@@ -1121,6 +1135,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
         applyEdition(pItem);
 
+        // Determine bluray playlist(s) (if possible)
+        // Also populates streamdetails if playlist(s) found
+        ResolveBlurayPlaylist(pItem);
+
         const int dbId{static_cast<int>(AddVideo(pItem, info2, bDirNames, useLocal))};
         if (dbId < 0)
           return InfoRet::INFO_ERROR;
@@ -1149,6 +1167,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
         return InfoRet::INFO_ERROR;
 
       applyEdition(pItem);
+
+      // Determine bluray playlist(s) (if possible)
+      // Also populates streamdetails if playlist(s) found
+      ResolveBlurayPlaylist(pItem);
 
       const int dbId{static_cast<int>(AddVideo(pItem, info2, bDirNames, useLocal))};
       if (dbId < 0)
@@ -1648,20 +1670,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
     {
       strTitle = StringUtils::Format("{} - {}x{} - {}", showInfo->m_strTitle,
                                      movieDetails.m_iSeason, movieDetails.m_iEpisode, strTitle);
-    }
-
-    // Determine bluray playlist (if possible)
-    // Also populates streamdetails
-    if (!libraryImport && !pItem->GetProperty("from_nfo").asBoolean(false) &&
-        (::UTILS::DISCS::IsBlurayDiscImage(path) || URIUtils::IsBDFile(path)))
-    {
-      CFileItemList items;
-      if (CDiscDirectoryHelper::GetOrShowPlaylistSelection(*pItem, items, MenuDecision::SILENT))
-      {
-        *pItem = *items[0];
-        path = pItem->GetDynPath();
-        pItem->GetVideoInfoTag()->SetFileNameAndPath(path);
-      }
     }
 
     if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
@@ -2324,6 +2332,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
           scraperItem.GetVideoInfoTag()->m_iSeason = guide->iSeason;
         if (scraperItem.GetVideoInfoTag()->m_iEpisode == -1)
           scraperItem.GetVideoInfoTag()->m_iEpisode = guide->iEpisode;
+
+        // Determine bluray playlist(s) (if possible)
+        // Also populates streamdetails if playlist(s) found
+        ResolveBlurayPlaylist(&scraperItem);
 
         if (AddVideo(&scraperItem, info, file->isFolder, useLocal, &showInfo, false,
                      ContentType::TVSHOWS) < 0)
