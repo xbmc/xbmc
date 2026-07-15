@@ -19,6 +19,8 @@ public:
   CSlideShowPicGLES() = default;
   ~CSlideShowPicGLES() override = default;
 
+  void Free() override;
+
 protected:
   void Render(float* x, float* y, CTexture* pTexture, KODI::UTILS::COLOR::Color color) override;
 
