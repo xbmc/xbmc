@@ -19,6 +19,13 @@ std::unique_ptr<CSlideShowPic> CSlideShowPic::CreateSlideShowPicture()
   return std::make_unique<CSlideShowPicGLES>();
 }
 
+void CSlideShowPicGLES::Free()
+{
+  m_posVBO.Destroy();
+  m_texVBO.Destroy();
+  m_IBO.Destroy();
+}
+
 void CSlideShowPicGLES::Render(float* x,
                                float* y,
                                CTexture* pTexture,
