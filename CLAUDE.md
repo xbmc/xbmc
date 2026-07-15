@@ -20,3 +20,4 @@ Never write comments that:
 - Reference the current task/ticket/PR ("added for the login fix")
 - Restate the function/variable name in prose
 - Span multiple paragraphs — one line, max two, per comment
+- Use non-ASCII characters (no smart quotes, em dashes, arrows, etc.) — plain ASCII only
