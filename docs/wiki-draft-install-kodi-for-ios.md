@@ -131,6 +131,8 @@ Kodi will uninstall from your device but will leave certain things, including da
 
 This section is for developers.
 
+For day-to-day development, open the generated Xcode project, select the Kodi scheme and target device, then build and run Kodi directly from Xcode. The `ipa` target is only needed when producing an archive for sideloading or distribution.
+
 1. Build Kodi for iOS using the normal Kodi iOS build instructions.
 2. Open the generated Xcode project.
 3. Select your development team and signing certificate.
