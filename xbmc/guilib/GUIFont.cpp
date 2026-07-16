@@ -87,13 +87,14 @@ std::string& CGUIFont::GetFontName()
   return m_strFontName;
 }
 
-void CGUIFont::DrawText(float x,
-                        float y,
-                        std::span<const KODI::UTILS::COLOR::Color> colors,
-                        KODI::UTILS::COLOR::Color shadowColor,
-                        std::span<const character_t> text,
-                        uint32_t alignment,
-                        float maxPixelWidth)
+void CGUIFont::DrawTextInternal(float x,
+                                float y,
+                                std::span<const KODI::UTILS::COLOR::Color> colors,
+                                KODI::UTILS::COLOR::Color shadowColor,
+                                std::span<const character_t> text,
+                                uint32_t alignment,
+                                float maxPixelWidth,
+                                bool isVScrolling)
 {
   CWinSystemBase* const winSystem = CServiceBroker::GetWinSystem();
   if (!m_font || !winSystem)
@@ -120,9 +121,10 @@ void CGUIFont::DrawText(float x,
     for (const auto& renderColor : renderColors)
       shadowColors.emplace_back((renderColor & 0xff000000) != 0 ? shadowColor : 0);
     m_font->DrawTextInternal(context, x + 1, y + 1, shadowColors, text, alignment, maxPixelWidth,
-                             false);
+                             false, isVScrolling);
   }
-  m_font->DrawTextInternal(context, x, y, renderColors, text, alignment, maxPixelWidth, false);
+  m_font->DrawTextInternal(context, x, y, renderColors, text, alignment, maxPixelWidth, false,
+                           isVScrolling);
 
   if (clip)
     context.RestoreClipRegion();
@@ -235,17 +237,17 @@ void CGUIFont::DrawScrollingText(float x,
     for (float dx = -offset; dx < maxWidth; dx += scrollInfo.m_totalWidth)
     {
       m_font->DrawTextInternal(context, x + 1, y + 1, shadowColors, text, alignment, textPixelWidth,
-                               scroll, dx);
+                               scroll, false, dx);
       m_font->DrawTextInternal(context, x + scrollInfo.m_textWidth + 1, y + 1, shadowColors,
-                               scrollInfo.m_suffix, alignment, suffixPixelWidth, scroll, dx);
+                               scrollInfo.m_suffix, alignment, suffixPixelWidth, scroll, false, dx);
     }
   }
   for (float dx = -offset; dx < maxWidth; dx += scrollInfo.m_totalWidth)
   {
     m_font->DrawTextInternal(context, x, y, renderColors, text, alignment, textPixelWidth, scroll,
-                             dx);
+                             false, dx);
     m_font->DrawTextInternal(context, x + scrollInfo.m_textWidth, y, renderColors,
-                             scrollInfo.m_suffix, alignment, suffixPixelWidth, scroll, dx);
+                             scrollInfo.m_suffix, alignment, suffixPixelWidth, scroll, false, dx);
   }
 
   context.RestoreClipRegion();

@@ -11,6 +11,8 @@
 #include "LangInfo.h"
 #include "utils/log.h"
 
+#include "platform/linux/input/EvdevKeyMapping.h"
+
 #include <cassert>
 #include <limits>
 #include <memory>
@@ -157,7 +159,7 @@ void CInputProcessorKeyboard::ConvertAndSendKey(std::uint32_t scancode, bool pre
     m_keymap->KeyComposerFlush();
   }
 
-  const XBMCKey xbmcKey{m_keymap->XBMCKeyForKeycode(xkbCode)};
+  XBMCKey xbmcKey{m_keymap->XBMCKeyForKeycode(xkbCode)};
   if (xbmcKey == XBMCKey::XBMCK_LAST)
   {
     // Such an event would carry no useful information in it and thus can be safely dropped here
@@ -166,7 +168,17 @@ void CInputProcessorKeyboard::ConvertAndSendKey(std::uint32_t scancode, bool pre
     return;
   }
 
-  XBMC_Event event{SendKey(scancode, xbmcKey, static_cast<std::uint16_t> (utf32), pressed)};
+  if (xbmcKey == XBMCK_UNKNOWN && utf32 == 0)
+  {
+    auto evdevKey = CEvdevKeyMapping::XBMCKeyForEvdevCode(scancode);
+    if (evdevKey)
+    {
+      xbmcKey = evdevKey.value();
+      CLog::LogF(LOGDEBUG, "mapped evdev code {:#02x} to key {:#02x}", scancode, evdevKey.value());
+    }
+  }
+
+  XBMC_Event event{SendKey(scancode, xbmcKey, static_cast<std::uint16_t>(utf32), pressed)};
 
   // In the past this checked `CXkbcommonKeymap::ShouldKeycodeRepeat()`, but this prevents
   // handling of long-presses, see #23273. So instead we repeat always and Kodi handles

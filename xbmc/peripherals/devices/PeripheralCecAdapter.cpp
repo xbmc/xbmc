@@ -1773,8 +1773,12 @@ void CPeripheralCecAdapterUpdateThread::Process(void)
 
 void CPeripheralCecAdapter::OnDeviceRemoved(void)
 {
-  std::unique_lock lock(m_critSection);
-  m_bDeviceRemoved = true;
+  {
+    std::unique_lock lock(m_critSection);
+    m_bDeviceRemoved = true;
+  }
+
+  CPeripheral::OnDeviceRemoved();
 }
 
 namespace PERIPHERALS

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2003-2018 Team Kodi
+ *  Copyright (C) 2003-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -139,7 +139,10 @@ public:
                 KODI::UTILS::COLOR::Color shadowColor,
                 std::span<const character_t> text,
                 uint32_t alignment,
-                float maxPixelWidth);
+                float maxPixelWidth)
+  {
+    DrawTextInternal(x, y, colors, shadowColor, text, alignment, maxPixelWidth, false);
+  }
 
   void DrawScrollingText(float x,
                          float y,
@@ -149,6 +152,18 @@ public:
                          uint32_t alignment,
                          float maxPixelWidth,
                          const CScrollInfo& scrollInfo);
+
+  void DrawVScrollingText(float x,
+                          float y,
+                          std::span<const KODI::UTILS::COLOR::Color> colors,
+                          KODI::UTILS::COLOR::Color shadowColor,
+                          std::span<const character_t> text,
+                          uint32_t alignment,
+                          float maxPixelWidth,
+                          bool isScrolling)
+  {
+    DrawTextInternal(x, y, colors, shadowColor, text, alignment, maxPixelWidth, isScrolling);
+  }
 
   bool UpdateScrollInfo(std::span<const character_t> text, CScrollInfo& scrollInfo);
 
@@ -182,4 +197,13 @@ protected:
 private:
   bool ClippedRegionIsEmpty(
       CGraphicContext& context, float x, float y, float width, uint32_t alignment) const;
+
+  void DrawTextInternal(float x,
+                        float y,
+                        std::span<const KODI::UTILS::COLOR::Color> colors,
+                        KODI::UTILS::COLOR::Color shadowColor,
+                        std::span<const character_t> text,
+                        uint32_t alignment,
+                        float maxPixelWidth,
+                        bool isVScrolling);
 };

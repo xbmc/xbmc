@@ -1138,10 +1138,10 @@ void CRenderManager::PrepareNextRender()
   if (!m_showVideo && !m_forceNext)
     return;
 
-  double frameOnScreen = m_dvdClock.GetClock();
-  double frametime = 1.0 /
-                     static_cast<double>(CServiceBroker::GetWinSystem()->GetGfxContext().GetFPS()) *
-                     DVD_TIME_BASE;
+  const double frameOnScreen = m_dvdClock.GetClock();
+  const double frametime =
+      1.0 / static_cast<double>(CServiceBroker::GetWinSystem()->GetGfxContext().GetFPS()) *
+      DVD_TIME_BASE;
 
   m_displayLatency = DVD_MSEC_TO_TIME(
       m_latencyTweak +
@@ -1149,11 +1149,13 @@ void CRenderManager::PrepareNextRender()
       m_videoDelay -
       static_cast<double>(CServiceBroker::GetWinSystem()->GetFrameLatencyAdjustment()));
 
-  double renderPts = frameOnScreen + m_displayLatency;
+  const bool isPaused = m_dvdClock.IsPaused();
+  double renderPts = frameOnScreen;
+  if (!isPaused)
+    renderPts += m_displayLatency;
 
-  double nextFramePts = m_Queue[m_queued.front()].pts;
-  if (m_dvdClock.GetClockSpeed() < 0)
-    nextFramePts = renderPts;
+  const double nextFramePts =
+      m_dvdClock.GetClockSpeed() < 0 ? renderPts : m_Queue[m_queued.front()].pts;
 
   if (m_clockSync.m_enabled)
   {
@@ -1162,14 +1164,15 @@ void CRenderManager::PrepareNextRender()
     m_clockSync.m_errCount ++;
     if (m_clockSync.m_errCount > 30)
     {
-      double average = m_clockSync.m_error / m_clockSync.m_errCount;
+      const double average = m_clockSync.m_error / m_clockSync.m_errCount;
       m_clockSync.m_syncOffset = average;
       m_clockSync.m_error = 0;
       m_clockSync.m_errCount = 0;
 
       m_dvdClock.SetVsyncAdjust(-average);
     }
-    renderPts += frametime / 2 - m_clockSync.m_syncOffset;
+    if (!isPaused)
+      renderPts += frametime / 2 - m_clockSync.m_syncOffset;
   }
   else
   {
@@ -1221,8 +1224,8 @@ void CRenderManager::PrepareNextRender()
       m_queued.pop_front();
     }
 
-    int lateframes = static_cast<int>((renderPts - m_Queue[idx].pts) *
-                                      static_cast<double>(m_fps / DVD_TIME_BASE));
+    const int lateframes = static_cast<int>((renderPts - m_Queue[idx].pts) *
+                                            static_cast<double>(m_fps / DVD_TIME_BASE));
     if (lateframes)
       m_lateframes += lateframes;
     else

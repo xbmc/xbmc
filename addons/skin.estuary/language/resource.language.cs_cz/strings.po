@@ -7,15 +7,15 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2026-07-08 09:23+0000\n"
-"Last-Translator: \"O. N.\" <n0vy0ndr4@gmail.com>\n"
+"PO-Revision-Date: 2026-07-15 17:38+0000\n"
+"Last-Translator: Michal Várady <miko.vaji@gmail.com>\n"
 "Language-Team: Czech <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/cs_cz/>\n"
 "Language: cs_cz\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
-"X-Generator: Weblate 2026.7\n"
+"X-Generator: Weblate 2026.7.1\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -43,7 +43,7 @@ msgstr "Zobrazit fanart médií jako pozadí"
 
 msgctxt "#31003"
 msgid "Cinema mode"
-msgstr "Režim kino"
+msgstr "Režim kina"
 
 msgctxt "#31004"
 msgid "Change mode"
@@ -101,12 +101,12 @@ msgstr "Nedávno sledované kanály"
 
 msgctxt "#31017"
 msgid "Rated"
-msgstr "Certifikace"
+msgstr "Věkové hodnocení"
 
 #. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
-msgstr "Nedávno sledované programy"
+msgstr "Nedávno poslouchané kanály"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -142,7 +142,7 @@ msgstr "Časový posun"
 
 msgctxt "#31027"
 msgid "Next aired"
-msgstr "Další vysílané"
+msgstr "Další vysílání"
 
 msgctxt "#31028"
 msgid "Show fanart"
@@ -247,7 +247,7 @@ msgstr "filtrováno"
 
 msgctxt "#31053"
 msgid "Arial based"
-msgstr "Založeno na Arial"
+msgstr "Založeno na písmu Arial"
 
 msgctxt "#31054"
 msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
@@ -360,7 +360,7 @@ msgstr "Zobrazit informace o počasí v horním panelu"
 
 msgctxt "#31095"
 msgid "Use slide animations"
-msgstr "Aktivovat animaci snímků"
+msgstr "Používat posuvné animace"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -387,12 +387,12 @@ msgstr "Posun"
 #. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
-msgstr "Infostěna"
+msgstr "Informační stěna"
 
 #. viewtype name
 msgctxt "#31102"
 msgid "Wall"
-msgstr "Zeď"
+msgstr "Stěna"
 
 msgctxt "#31103"
 msgid "Enter text here..."
@@ -400,7 +400,7 @@ msgstr "Sem zadejte text…"
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "Vaše knihovna je aktuálně prázdná. Abyste ji naplnili svými médii, vstupte do sekce „Soubory“, přidejte zdroj medií a nakonfigurujte ho. Poté, co bude zdroj přidán a zaindexován, budete moci procházet svou knihovnu."
+msgstr "Vaše knihovna je aktuálně prázdná. Abyste ji naplnili svými médii, vstupte do sekce „Soubory“, přidejte zdroj médií a nakonfigurujte jej. Poté, co bude zdroj přidán a zaindexován, budete moci procházet svou knihovnu."
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
@@ -471,7 +471,7 @@ msgstr "Zatím jste nenastavili poskytovatele informací o počasí. Aby bylo mo
 
 msgctxt "#31121"
 msgid "Set weather provider"
-msgstr "Nastavte poskytovatele počasí"
+msgstr "Nastavit poskytovatele počasí"
 
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
@@ -491,7 +491,7 @@ msgstr "Stiskněte nahoru pro zobrazení informací o herci"
 
 msgctxt "#31126"
 msgid "Press OK to read plot"
-msgstr "Stisknutím OK si přečtete zápletku"
+msgstr "Stisknutím OK si přečtete děj"
 
 msgctxt "#31127"
 msgid "Show icons"
@@ -503,7 +503,7 @@ msgstr "Přispěvatelé"
 
 msgctxt "#31129"
 msgid "General settings applying to all areas of the skin."
-msgstr "Obecná nastavení použitá na všechny oblasti vzhledu."
+msgstr "Obecná nastavení platná pro všechny oblasti vzhledu."
 
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
@@ -551,7 +551,7 @@ msgstr "Dekodér videa"
 #. Label to show the video pixel format
 msgctxt "#31140"
 msgid "Pixel format"
-msgstr "Formát obrazového bodu"
+msgstr "Formát pixelů"
 
 msgctxt "#31141"
 msgid "Changes for version"
@@ -627,7 +627,7 @@ msgstr "Dotykový režim"
 
 msgctxt "#31159"
 msgid "Artwork"
-msgstr "Obrázek"
+msgstr "Grafika"
 
 msgctxt "#31160"
 msgid "Show media flags"
@@ -673,7 +673,7 @@ msgstr "Zobrazit plakáty místo miniatur pro hudební videa"
 #. Description label for skin settings area
 msgctxt "#31169"
 msgid "Artwork related settings."
-msgstr "Nastavení související s grafikou alb."
+msgstr "Nastavení související s grafikou."
 
 #. Label for OSD settings category
 msgctxt "#31170"
@@ -708,7 +708,7 @@ msgstr "Výchozí akce pro seriály na hlavní obrazovce"
 #. Setting to control what happens when clicking a movie set on the home screen
 msgctxt "#31176"
 msgid "Default select action for movie sets on the home screen"
-msgstr "Výchozí akce pro filmy na hlavní obrazovce"
+msgstr "Výchozí akce při výběru sbírek filmů na domovské obrazovce"
 
 msgctxt "#31177"
 msgid "Choose weather icon pack"

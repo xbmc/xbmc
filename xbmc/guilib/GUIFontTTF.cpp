@@ -369,7 +369,8 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
                                    std::span<const character_t> text,
                                    uint32_t alignment,
                                    float maxPixelWidth,
-                                   bool scrolling,
+                                   bool hScrolling,
+                                   bool vScrolling,
                                    float dx,
                                    float dy)
 {
@@ -383,9 +384,10 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
   bool dirtyCache(false);
 
   // round coordinates to the pixel grid. otherwise, we might sample at the wrong positions.
-  if (!scrolling)
+  if (!hScrolling)
     x = std::round(x);
-  y = std::round(y);
+  if (!vScrolling)
+    y = std::round(y);
 
   // GL, GLES and DX can scissor and shader clip
   const bool hardwareClipping = true;
@@ -401,13 +403,13 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
   CVertexBuffer& vertexBuffer =
       hardwareClipping
           ? m_dynamicCache.Lookup(context, dynamicPos, colors, text, alignment, maxPixelWidth,
-                                  scrolling, std::chrono::steady_clock::now(), dirtyCache)
+                                  hScrolling, std::chrono::steady_clock::now(), dirtyCache)
           : unusedVertexBuffer;
   std::shared_ptr<std::vector<SVertex>> tempVertices = std::make_shared<std::vector<SVertex>>();
   std::shared_ptr<std::vector<SVertex>>& vertices =
       hardwareClipping ? tempVertices
                        : static_cast<std::shared_ptr<std::vector<SVertex>>&>(m_staticCache.Lookup(
-                             context, staticPos, colors, text, alignment, maxPixelWidth, scrolling,
+                             context, staticPos, colors, text, alignment, maxPixelWidth, hScrolling,
                              std::chrono::steady_clock::now(), dirtyCache));
 
   // reserves vertex vector capacity, only the ones that are going to be used
@@ -639,7 +641,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
 
           for (int i = 0; i < 3; i++)
           {
-            RenderCharacter(context, startX + cursorX, startY, period, color, !scrolling,
+            RenderCharacter(context, startX + cursorX, startY, period, color, !hScrolling,
                             *tempVertices);
             cursorX += period->m_advance;
           }
@@ -655,7 +657,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
 
         for (int i = 0; i < 3; i++)
         {
-          RenderCharacter(context, startX + cursorX, startY, period, color, !scrolling,
+          RenderCharacter(context, startX + cursorX, startY, period, color, !hScrolling,
                           *tempVertices);
           cursorX += period->m_advance;
         }
@@ -667,7 +669,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
           MathUtils::round_int(static_cast<double>(itGlyph->m_glyphPosition.x_offset) / 64));
       offsetY = static_cast<float>(
           MathUtils::round_int(static_cast<double>(itGlyph->m_glyphPosition.y_offset) / 64));
-      RenderCharacter(context, startX + cursorX + offsetX, startY - offsetY, ch, color, !scrolling,
+      RenderCharacter(context, startX + cursorX + offsetX, startY - offsetY, ch, color, !hScrolling,
                       *tempVertices);
       if (alignment & XBFONT_JUSTIFIED)
       {
@@ -684,15 +686,15 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
     {
       CVertexBuffer& vertexBuffer =
           m_dynamicCache.Lookup(context, dynamicPos, colors, text, rawAlignment, maxPixelWidth,
-                                scrolling, std::chrono::steady_clock::now(), dirtyCache);
+                                hScrolling, std::chrono::steady_clock::now(), dirtyCache);
       CVertexBuffer newVertexBuffer = CreateVertexBuffer(*tempVertices);
       vertexBuffer = newVertexBuffer;
       m_vertexTrans.emplace_back(x, y, 0.0f, &vertexBuffer, context.GetClipRegion(), dx, dy);
     }
     else
     {
-      m_staticCache.Lookup(context, staticPos, colors, text, rawAlignment, maxPixelWidth, scrolling,
-                           std::chrono::steady_clock::now(), dirtyCache) =
+      m_staticCache.Lookup(context, staticPos, colors, text, rawAlignment, maxPixelWidth,
+                           hScrolling, std::chrono::steady_clock::now(), dirtyCache) =
           *static_cast<CGUIFontCacheStaticValue*>(&tempVertices);
       /* Append the new vertices to the set collected since the first Begin() call */
       m_vertex.insert(m_vertex.end(), tempVertices->begin(), tempVertices->end());
@@ -1152,29 +1154,30 @@ void CGUIFontTTF::RenderCharacter(CGraphicContext& context,
 
 #if defined(HAS_DX)
   // D3D: triangle lists
+  // D3D rasterizer uses half-pixel-center convention; no nudge needed.
 
   v[0].u = tl;
   v[0].v = tt;
-  v[0].x = vertex.x1 - xOffset - 0.5f;
-  v[0].y = vertex.y1 - yOffset - 0.5f;
+  v[0].x = vertex.x1 - xOffset;
+  v[0].y = vertex.y1 - yOffset;
   v[0].z = 0;
 
   v[1].u = tr;
   v[1].v = tt;
-  v[1].x = vertex.x2 - xOffset + 0.5f;
-  v[1].y = vertex.y1 - yOffset - 0.5f;
+  v[1].x = vertex.x2 - xOffset;
+  v[1].y = vertex.y1 - yOffset;
   v[1].z = 0;
 
   v[2].u = tr;
   v[2].v = tb;
-  v[2].x = vertex.x2 - xOffset + 0.5f;
-  v[2].y = vertex.y2 - yOffset + 0.5f;
+  v[2].x = vertex.x2 - xOffset;
+  v[2].y = vertex.y2 - yOffset;
   v[2].z = 0;
 
   v[3].u = tl;
   v[3].v = tb;
-  v[3].x = vertex.x1 - xOffset - 0.5f;
-  v[3].y = vertex.y2 - yOffset + 0.5f;
+  v[3].x = vertex.x1 - xOffset;
+  v[3].y = vertex.y2 - yOffset;
   v[3].z = 0;
 #else
   // GL / GLES uses triangle strips, not quads, so have to rearrange the vertex order

@@ -394,14 +394,19 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         { // need to remove the disc cache
           CFileItemList items;
           items.SetPath(URIUtils::GetDirectory(newItem->GetPath()));
-          if (newItem->HasProperty("cachefilename"))
-          {
-            // Use stored cache file name
-            std::string crcfile = newItem->GetProperty("cachefilename").asString();
-            items.RemoveDiscCacheCRC(crcfile);
-          }
-          else
-            // No stored cache file name, attempt using truncated item path as list path
+
+          const bool hasCacheFilename = newItem->HasProperty("cachefilename");
+          const bool hasParentPath = newItem->HasProperty("ParentPath");
+
+          // Use the stored cache file name
+          if (hasCacheFilename)
+            items.RemoveDiscCacheCRC(newItem->GetProperty("cachefilename").asString());
+
+          if (hasParentPath)
+            RemoveDiscCache(newItem->GetProperty("ParentPath").asString());
+
+          // No stored cache file name or parent path, try the truncated item path as list path
+          if (!hasCacheFilename && !hasParentPath)
             items.RemoveDiscCache(GetID());
         }
       }
@@ -950,7 +955,7 @@ bool CGUIMediaWindow::Refresh(bool clearCache /* = false */)
     return false;
 
   if (clearCache)
-    m_vecItems->RemoveDiscCache(GetID());
+    RemoveDiscCache(strCurrentDirectory);
 
   bool ret = true;
 
@@ -2223,5 +2228,28 @@ bool CGUIMediaWindow::GetDirectoryItems(CURL &url, CFileItemList &items, bool us
   else
   {
     return m_rootDir.GetDirectory(url, items, useDir, false);
+  }
+}
+
+void CGUIMediaWindow::RemoveDiscCache(const std::string& directory) const
+{
+  CFileItemList items;
+  items.SetPath(directory);
+  items.RemoveDiscCache(GetID());
+
+  // Deeper clean when the window navigated the videodb directory
+  // There may be nested folders for movie sets or versions
+  if (!URIUtils::IsVideoDb(directory) || !m_history.IsInHistory(directory))
+    return;
+
+  CDirectoryHistory history = m_history;
+  for (std::string histPath = history.RemoveParentPath(); !histPath.empty();
+       histPath = history.RemoveParentPath())
+  {
+    if (histPath != directory)
+    {
+      items.SetPath(histPath);
+      items.RemoveDiscCache(GetID());
+    }
   }
 }
