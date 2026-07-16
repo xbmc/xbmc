@@ -133,7 +133,7 @@ namespace
 {
 inline bool LayoutSort(const StringSettingOption& i, const StringSettingOption& j)
 {
-  return (i.value < j.value);
+  return (i.label < j.label);
 }
 } // namespace
 
