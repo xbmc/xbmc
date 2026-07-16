@@ -8,6 +8,7 @@
 
 #include "LibInputKeyboard.h"
 
+#include "EvdevKeyMapping.h"
 #include "LangInfo.h"
 #include "LibInputSettings.h"
 #include "ServiceBroker.h"
@@ -138,9 +139,15 @@ constexpr auto xkbMap = make_map<xkb_keysym_t, XBMCKey>({
     {XKB_KEY_XF86Green, XBMCK_GREEN},
     {XKB_KEY_XF86Yellow, XBMCK_YELLOW},
     {XKB_KEY_XF86Blue, XBMCK_BLUE},
-    // Unmapped: XBMCK_ZOOM, XBMCK_TEXT
+    {XKB_KEY_XF86AspectRatio, XBMCK_ZOOM}, // KEY_ASPECT_RATIO
+    {XKB_KEY_XF86MediaSelectTeletext, XBMCK_TEXT}, // KEY_TEXT
     {XKB_KEY_XF86Favorites, XBMCK_FAVORITES},
-    // Unmapped: XBMCK_CONFIG
+    {XKB_KEY_XF86Tools, XBMCK_CONFIG}, // KEY_CONFIG
+    {XKB_KEY_XF86Presentation, XBMCK_LAUNCH_PRESENTATION}, // KEY_PRESENTATION
+    {XKB_KEY_XF86Messenger, XBMCK_LAUNCH_MESSENGER}, // KEY_MESSENGER
+    {XKB_KEY_XF86MediaPlayer, XBMCK_LAUNCH_MEDIA_SELECT}, // KEY_PLAYER
+    {XKB_KEY_XF86MonBrightnessUp, XBMCK_BRIGHTNESS_UP}, // KEY_BRIGHTNESSUP
+    {XKB_KEY_XF86MonBrightnessDown, XBMCK_BRIGHTNESS_DOWN}, // KEY_BRIGHTNESSDOWN
 
     // Numeric keys on remote controls
     {XKB_KEY_XF86Numeric0, XBMCK_0},
@@ -168,8 +175,30 @@ constexpr auto xkbMap = make_map<xkb_keysym_t, XBMCKey>({
     // XBMCK_REWIND clashes with XBMCK_MEDIA_REWIND
     {XKB_KEY_XF86Phone, XBMCK_PHONE},
     {XKB_KEY_XF86AudioPlay, XBMCK_PLAY},
-    {XKB_KEY_XF86AudioRandomPlay, XBMCK_SHUFFLE}
+    {XKB_KEY_XF86AudioRandomPlay, XBMCK_SHUFFLE},
     // XBMCK_FASTFORWARD clashes with XBMCK_MEDIA_FASTFORWARD
+    {XKB_KEY_XF86DVD, XBMCK_DVD},
+    {XKB_KEY_XF86MediaSelectTV, XBMCK_TV}, // KEY_TV
+    {XKB_KEY_XF86MediaSelectRadio, XBMCK_RADIO}, // KEY_RADIO
+    {XKB_KEY_XF86Audio, XBMCK_AUDIO},
+    {XKB_KEY_XF86Video, XBMCK_VIDEO},
+    {XKB_KEY_XF86WebCam, XBMCK_CAMERA}, // KEY_CAMERA
+    {XKB_KEY_XF86MediaSelectTuner, XBMCK_TUNER}, // KEY_TUNER
+    {XKB_KEY_XF86MediaSelectHome, XBMCK_PVR}, // KEY_PVR
+    {XKB_KEY_XF86FullScreen, XBMCK_FULLSCREEN}, // KEY_FULL_SCREEN
+    {XKB_KEY_XF86MediaTitleMenu, XBMCK_TITLE_MENU}, // KEY_TITLE
+    {XKB_KEY_XF86AudioChannelMode, XBMCK_AUDIO_MODE}, // KEY_MODE
+    {XKB_KEY_XF86ContextMenu, XBMCK_CONTEXT_MENU}, // KEY_CONTEXT_MENU
+    {XKB_KEY_XF86Time, XBMCK_TIME}, // KEY_TIME
+    {XKB_KEY_XF86Reload, XBMCK_RELOAD}, // KEY_REFRESH
+    {XKB_KEY_XF86Clear, XBMCK_VIDEO_DEFAULT}, // KEY_CLEAR
+    {XKB_KEY_XF86CycleAngle, XBMCK_ANGLE}, // KEY_ANGLE
+    {XKB_KEY_XF86GoTo, XBMCK_GOTO}, // KEY_GOTO
+    {XKB_KEY_XF86MediaSelectCable, XBMCK_CABLE}, // KEY_TV2
+    {XKB_KEY_XF86Option, XBMCK_OPTION}, // KEY_OPTION
+    {XKB_KEY_XF86FrameBack, XBMCK_FRAME_BACK}, // KEY_FRAMEBACK
+    {XKB_KEY_XF86FrameForward, XBMCK_FRAME_FORWARD}, // KEY_FRAMEFORWARD
+    {XKB_KEY_SunProps, XBMCK_PROPERTIES} // KEY_PROPS
 });
 
 constexpr auto logLevelMap = make_map<xkb_log_level, int>({{XKB_LOG_LEVEL_CRITICAL, LOGERROR},
@@ -475,14 +504,26 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
   event.key.keysym.scancode = scancode;
   event.key.keysym.unicode = unicode;
 
+  bool haveEvdevMapping = false;
+  if (event.key.keysym.sym == XBMCK_UNKNOWN && event.key.keysym.unicode == 0)
+  {
+    auto evdevKey = CEvdevKeyMapping::XBMCKeyForEvdevCode(scancode);
+    if (evdevKey)
+    {
+      haveEvdevMapping = true;
+      event.key.keysym.sym = evdevKey.value();
+      CLog::LogF(LOGDEBUG, "mapped evdev code {:#02x} to key {:#02x}", scancode, evdevKey.value());
+    }
+  }
+
   std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
   if (appPort)
     appPort->OnEvent(event);
 
-  if (pressed && xkb_keymap_key_repeats(m_keymap.get(), xkbkey))
+  if (pressed && (xkb_keymap_key_repeats(m_keymap.get(), xkbkey) || haveEvdevMapping))
   {
-    libinput_event *ev = libinput_event_keyboard_get_base_event(e);
-    libinput_device *dev = libinput_event_get_device(ev);
+    libinput_event* ev = libinput_event_keyboard_get_base_event(e);
+    libinput_device* dev = libinput_event_get_device(ev);
     auto data = m_repeatData.find(dev);
     if (data != m_repeatData.end())
     {
@@ -612,7 +653,7 @@ std::uint32_t CLibInputKeyboard::UnicodeCodepointForKeycode(xkb_keycode_t code) 
   }
 
   // check if it is a dead key and try to translate
-  if (unicode == XBMCK_UNKNOWN)
+  if (unicode == 0)
   {
     const uint32_t keysym = xkb_state_key_get_one_sym(m_state.get(), code);
     const std::optional<XBMCKey> xbmcKey = TranslateDeadKey(keysym);

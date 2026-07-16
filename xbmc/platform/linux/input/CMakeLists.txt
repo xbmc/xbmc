@@ -18,9 +18,14 @@ if("gbm" IN_LIST CORE_PLATFORM_NAME_LC)
                         LibInputKeyboard.h
                         LibInputPointer.h
                         LibInputSettings.h
-                        LibInputTouch.h
-                        XkbCompat.h)
+                        LibInputTouch.h)
   endif()
+endif()
+
+if(("gbm" IN_LIST CORE_PLATFORM_NAME_LC AND TARGET ${APP_NAME_LC}::LibInput) OR "wayland" IN_LIST CORE_PLATFORM_NAME_LC)
+  list(APPEND SOURCES EvdevKeyMapping.cpp)
+  list(APPEND HEADERS EvdevKeyMapping.h
+                      XkbCompat.h)
 endif()
 
 if(SOURCES)
