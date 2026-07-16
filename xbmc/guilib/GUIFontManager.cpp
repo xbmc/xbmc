@@ -463,7 +463,10 @@ void GUIFontManager::LoadFonts(const std::string& fontSet)
   // Try to load the fontset from Font.xml
   const std::string fontsetFilePath = skin->GetSkinPath("Font.xml", &m_skinResolution);
   if (LoadFontsFromFile(fontsetFilePath, fontSet, firstFontset))
+  {
+    LoadAddonFonts(fontSet);
     return;
+  }
 
   // If we got here, then the requested fontset was not found in the skin's Font.xml file
   // Look at additional fontsets that are defined in .xml files in the skin's fonts directory
@@ -472,7 +475,10 @@ void GUIFontManager::LoadFonts(const std::string& fontSet)
                            ".xml", DIR_FLAG_BYPASS_CACHE);
   for (int i = 0; i < xmlFileItems.Size(); i++)
     if (LoadFontsFromFile(xmlFileItems[i]->GetPath(), fontSet, firstFontset))
+    {
+      LoadAddonFonts(fontSet);
       return;
+    }
 
   // Requested fontset was not found, try the first
   if (!firstFontset.empty())
@@ -486,6 +492,36 @@ void GUIFontManager::LoadFonts(const std::string& fontSet)
   else
     CLog::LogF(LOGERROR, "No valid <fontset> found in '{}' or in xml files in fonts directory",
                fontsetFilePath);
+}
+
+void GUIFontManager::LoadAddonFonts(const std::string& fontSet)
+{
+  // GetAddons() filters to enabled add-ons, so disabled ones contribute nothing.
+  VECADDONS addons;
+  CServiceBroker::GetAddonMgr().GetAddons(addons, AddonType::RESOURCE_FONT);
+  for (const auto& addon : addons)
+  {
+    const auto fontResource = std::static_pointer_cast<CFontResource>(addon);
+    const std::string addonFontsetFilePath =
+        CSpecialProtocol::TranslatePathConvertCase(fontResource->Path() + "/resources/Font.xml");
+    if (!CFileUtils::Exists(addonFontsetFilePath))
+      continue;
+
+    // Match the active fontset by name first, so an add-on can ship per-fontset
+    // variants if it wants to. Otherwise fall back to the add-on's own first
+    // fontset: an add-on cannot know what the active skin happens to call its
+    // fontsets, and requiring the names to coincide would make its fonts
+    // disappear whenever the user picks a different one.
+    std::string addonFirstFontset;
+    if (LoadFontsFromFile(addonFontsetFilePath, fontSet, addonFirstFontset))
+      continue;
+
+    if (!addonFirstFontset.empty())
+    {
+      std::string unused;
+      LoadFontsFromFile(addonFontsetFilePath, addonFirstFontset, unused);
+    }
+  }
 }
 
 void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
