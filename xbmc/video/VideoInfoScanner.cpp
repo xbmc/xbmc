@@ -1637,7 +1637,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
             : UseRemoteArtWithLocalScraper::YES};
 
     std::string path{pItem->GetPath()};
-    const int playlist{pItem->HasVideoInfoTag() ? pItem->GetVideoInfoTag()->m_iTrack : -1};
+    const int playlist{pItem->GetProperty("bluray_playlist").asInteger32(-1)};
     if (playlist > -1 && (::UTILS::DISCS::IsBlurayDiscImage(path) || URIUtils::IsBDFile(path)))
     {
       path = URIUtils::GetBlurayPlaylistPath(path, playlist);
@@ -1899,6 +1899,15 @@ CVideoInfoScanner::~CVideoInfoScanner()
         infoTag.Reset();
       auto result = loader->Load(infoTag, false);
 
+      // m_iTrack is reused to carry the disc playlist parsed from a <playlist> NFO tag (movies,
+      // episodes); music videos are the only content type using it as a real track number, so
+      // leave those untouched.
+      if ((!scraper || scraper->Content() != ContentType::MUSICVIDEOS) && infoTag.m_iTrack > -1)
+      {
+        item.SetProperty("bluray_playlist", infoTag.m_iTrack);
+        infoTag.m_iTrack = -1;
+      }
+
       // keep some properties only if advancedsettings.xml says so
       if (!m_advancedSettings->m_bVideoLibraryImportWatchedState)
         infoTag.ResetPlayCount();
@@ -1986,7 +1995,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                                   : ART::AdditionalIdentifiers::NONE);
         }
         else if (content == ContentType::MOVIE_VERSIONS ||
-                 (pItem->HasVideoVersions() && pItem->GetVideoInfoTag()->m_iTrack > -1))
+                 (pItem->HasVideoVersions() &&
+                  pItem->GetProperty("bluray_playlist").asInteger32(-1) > -1))
         {
           // Add playlist identifier only when there are multiple versions of the movie on the same disc
           path =
@@ -2384,6 +2394,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
       }
 
       *pItem->GetVideoInfoTag() = movieDetails;
+
+      // m_iTrack is reused to carry the disc playlist parsed from a <playlist> NFO tag (movies,
+      // episodes); music videos are the only content type using it as a real track number, so
+      // leave those untouched.
+      CVideoInfoTag* tag{pItem->GetVideoInfoTag()};
+      if ((!scraper || scraper->Content() != ContentType::MUSICVIDEOS) && tag->m_iTrack > -1)
+      {
+        pItem->SetProperty("bluray_playlist", tag->m_iTrack);
+        tag->m_iTrack = -1;
+      }
       return true;
     }
     return false; // no info found, or cancelled

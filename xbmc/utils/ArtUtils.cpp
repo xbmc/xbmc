@@ -256,13 +256,12 @@ std::string GetLocalArtBaseFilename(const CFileItem& item,
       }
       case PLAYLIST:
       {
-        const CVideoInfoTag* tag{item.GetVideoInfoTag()};
-        if (tag->m_iTrack > -1)
+        const int playlist{item.GetProperty("bluray_playlist").asInteger32(-1)};
+        if (playlist > -1)
         {
           std::string baseFile{file};
           URIUtils::RemoveExtension(baseFile);
-          strFile =
-              fmt::format("{}-{:05}{}", baseFile, tag->m_iTrack, URIUtils::GetExtension(file));
+          strFile = fmt::format("{}-{:05}{}", baseFile, playlist, URIUtils::GetExtension(file));
           useFolder = false;
         }
         break;
