@@ -18,8 +18,10 @@
 
 #include <compare>
 #include <map>
+#include <mutex>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 /*!
@@ -201,6 +203,31 @@ public:
 
   using Iterator = std::vector<std::shared_ptr<CFileItem>>::iterator;
   Iterator erase(Iterator first, Iterator last);
+
+  template<class Pred>
+  friend size_t erase_if(CFileItemList& list, Pred pred)
+  {
+    std::unique_lock lock(list.m_lock);
+    auto& items = list.m_items;
+    auto out = items.begin();
+    size_t count = 0;
+    for (auto it = items.begin(); it != items.end(); ++it)
+    {
+      if (pred(*it))
+        ++count;
+      else if (out != it)
+        *out++ = std::move(*it);
+      else
+        ++out;
+    }
+    items.erase(out, items.end());
+    if (count > 0 && list.m_fastLookup)
+    {
+      list.m_map.clear();
+      list.AddFastLookupItems(items);
+    }
+    return count;
+  }
 
   auto cbegin() const { return m_items.cbegin(); }
   auto cend() const { return m_items.cend(); }
