@@ -106,8 +106,9 @@ void CPeripheralBus::UnregisterRemovedDevices(const PeripheralScanResults& resul
                 PeripheralTypeTranslator::TypeToString(peripheral->Type()),
                 peripheral->FileLocation(), peripheral->DeviceName(),
                 peripheral->VendorIdAsString(), peripheral->ProductIdAsString());
-      peripheral->OnDeviceRemoved();
     }
+
+    peripheral->OnDeviceRemoved();
 
     m_manager.OnDeviceDeleted(*this, *peripheral);
   }

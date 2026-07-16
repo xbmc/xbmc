@@ -100,6 +100,15 @@ CPeripheral::~CPeripheral(void)
   ClearSettings();
 }
 
+void CPeripheral::OnDeviceRemoved(void)
+{
+  if (m_controllerInput)
+  {
+    m_controllerInput->Deinitialize();
+    m_controllerInput.reset();
+  }
+}
+
 bool CPeripheral::operator==(const CPeripheral& right) const
 {
   return m_type == right.m_type && m_strLocation == right.m_strLocation &&

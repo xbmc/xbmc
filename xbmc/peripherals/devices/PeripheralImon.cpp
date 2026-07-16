@@ -32,6 +32,8 @@ void CPeripheralImon::OnDeviceRemoved()
     if (--m_lCountOfImonsConflictWithDInput == 0)
       ActionOnImonConflict(false);
   }
+
+  CPeripheral::OnDeviceRemoved();
 }
 
 bool CPeripheralImon::InitialiseFeature(const PeripheralFeature feature)
