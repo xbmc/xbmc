@@ -49,6 +49,11 @@ public:
   //! \brief Returns url associated with obtained URL (NFO_URL et al).
   const CScraperUrl& ScraperUrl() const { return m_url; }
 
+  //! \brief Returns the bluray playlist the loaded info refers to, -1 if none was given.
+  //! Only carried by nfos (a <playlist> element); other loaders have no notion of a playlist.
+  //! Valid once Load() has been called.
+  virtual int GetBlurayPlaylist() const { return -1; }
+
   //! \brief Returns current scaper info.
   const ADDON::ScraperPtr GetAddonInfo() const { return m_info; }
 

@@ -476,10 +476,10 @@ bool CBlurayDirectory::GetPlaylistsInformation(const CURL& url,
 
     for (const auto& title : allTitles)
     {
-      const int playlist{title->GetProperty("bluray_playlist").asInteger32(0)};
+      const int playlist{title->GetProperty("bluray_playlist").asInteger32(-1)};
       PlaylistInformation titleInfo;
-      if (!GetPlaylistInfoFromDisc(url, realPath, playlist, StreamDetails::DEFER, titleInfo,
-                                   clipCache))
+      if (playlist == -1 || !GetPlaylistInfoFromDisc(url, realPath, playlist, StreamDetails::DEFER,
+                                                     titleInfo, clipCache))
       {
         CLog::LogF(LOGDEBUG, "Unable to get playlist {}", playlist);
         continue;

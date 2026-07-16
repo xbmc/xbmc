@@ -55,6 +55,13 @@ public:
   ADDON::ScraperPtr GetScraperInfo() { return m_info; }
   const CScraperUrl &ScraperUrl() const { return m_scurl; }
 
+  /*! \brief The bluray playlist given by a <playlist> element, if any.
+   Read from the same (indexed) element as GetDetails(), so multi-version nfos give the playlist
+   belonging to the version that was parsed.
+   \return the playlist number, or -1 if the nfo does not specify one
+   */
+  int GetBlurayPlaylist() const;
+
 private:
   CInfoScanner::InfoType TryParsing(ADDON::AddonType addonType) const;
   CInfoScanner::InfoType TryParsing(const CURL& nfoPath,

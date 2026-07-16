@@ -1794,7 +1794,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
             : UseRemoteArtWithLocalScraper::YES};
 
     std::string path{pItem->GetPath()};
-    const int playlist{pItem->HasVideoInfoTag() ? pItem->GetVideoInfoTag()->m_iTrack : -1};
+    const int playlist{pItem->GetProperty("bluray_playlist").asInteger32(-1)};
     if (playlist > -1 && (::UTILS::DISCS::IsBlurayDiscImage(path) || URIUtils::IsBDFile(path)))
     {
       path = URIUtils::GetBlurayPlaylistPath(path, playlist);
@@ -2062,6 +2062,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
         infoTag.Reset();
       auto result = loader->Load(infoTag, false);
 
+      // A <playlist> nfo element identifies the disc playlist the info belongs to
+      if (const int playlist{loader->GetBlurayPlaylist()}; playlist > -1)
+        item.SetProperty("bluray_playlist", playlist);
+
       // keep some properties only if advancedsettings.xml says so
       if (!m_advancedSettings->m_bVideoLibraryImportWatchedState)
         infoTag.ResetPlayCount();
@@ -2149,7 +2153,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                                   : ART::AdditionalIdentifiers::NONE);
         }
         else if (content == ContentType::MOVIE_VERSIONS ||
-                 (pItem->HasVideoVersions() && pItem->GetVideoInfoTag()->m_iTrack > -1))
+                 (pItem->HasVideoVersions() &&
+                  pItem->GetProperty("bluray_playlist").asInteger32(-1) > -1))
         {
           // Add playlist identifier only when there are multiple versions of the movie on the same disc
           path =
@@ -2553,6 +2558,11 @@ CVideoInfoScanner::~CVideoInfoScanner()
       }
 
       *pItem->GetVideoInfoTag() = movieDetails;
+
+      // A <playlist> nfo element identifies the disc playlist the info belongs to
+      if (const int playlist{loader ? loader->GetBlurayPlaylist() : -1}; playlist > -1)
+        pItem->SetProperty("bluray_playlist", playlist);
+
       return true;
     }
     return false; // no info found, or cancelled
