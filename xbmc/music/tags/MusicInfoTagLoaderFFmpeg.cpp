@@ -70,6 +70,38 @@ bool CMusicInfoTagLoaderFFmpeg::Load(const std::string& strFileName, CMusicInfoT
     return false;
   }
 
+  // Embedded cover art, e.g. Matroska (.mka) attachments following the Matroska
+  // Cover Art Guidelines (single "front cover" image named cover.jpg/cover.png)
+  for (unsigned int i = 0; i < fctx->nb_streams; ++i)
+  {
+    const AVStream* stream = fctx->streams[i];
+    if ((stream->disposition & AV_DISPOSITION_ATTACHED_PIC) == 0)
+      continue;
+
+    const AVDictionaryEntry* filenameTag =
+        av_dict_get(stream->metadata, "filename", nullptr, AV_DICT_IGNORE_SUFFIX);
+    const AVDictionaryEntry* mimeTag =
+        av_dict_get(stream->metadata, "mimetype", nullptr, AV_DICT_IGNORE_SUFFIX);
+
+    if (filenameTag && mimeTag &&
+        (StringUtils::EqualsNoCase(filenameTag->value, "cover.jpg") ||
+         StringUtils::EqualsNoCase(filenameTag->value, "cover.png")))
+    {
+      // Validate attached picture data before publishing cover art metadata.
+      // Malformed/empty packets (null data or zero size) would cause undefined behavior
+      // in EmbeddedArt::Set (which does m_data.assign(data, data+size)).
+      if (stream->attached_pic.data != nullptr && stream->attached_pic.size > 0)
+      {
+        tag.SetCoverArtInfo(stream->attached_pic.size, mimeTag->value);
+        if (art)
+          art->Set(stream->attached_pic.data, stream->attached_pic.size, mimeTag->value);
+      }
+      // Per Matroska cover art guidelines, only one cover stream is expected,
+      // so break even if this attachment was invalid (no point continuing to scan).
+      break;
+    }
+  }
+
   /* ffmpeg supports the return of ID3v2 metadata but has its own naming system
      for some, but not all, of the keys. In particular the key for the conductor
      tag TPE3 is called "performer".
