@@ -11473,7 +11473,6 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
           if (tag->IsDefaultVideoVersion())
             SetDefaultVideoVersion(VideoDbContentType::MOVIES, lastMovieId, tag->m_iFileId);
         }
-        scanner.AddVideo(&item, nullptr, useFolders, true, nullptr, true, ContentType::MOVIES);
         current++;
       }
       else if (StringUtils::CompareNoCase(movie->Value(), MediaTypeMusicVideo, 10) == 0)
@@ -12671,14 +12670,15 @@ bool CVideoDatabase::SetDefaultVideoVersion(VideoDbContentType itemType, int dbI
   if (path.empty())
     return false;
 
+  int idOldFile{-1};
+
   try
   {
     BeginTransaction();
 
     if (itemType == VideoDbContentType::MOVIES)
     {
-      const int idOldFile{
-          GetSingleValueInt(PrepareSQL("SELECT idFile FROM movie WHERE idMovie=%i", dbId))};
+      idOldFile = GetSingleValueInt(PrepareSQL("SELECT idFile FROM movie WHERE idMovie=%i", dbId));
 
       if (idOldFile != idFile)
       {
@@ -12699,6 +12699,16 @@ bool CVideoDatabase::SetDefaultVideoVersion(VideoDbContentType itemType, int dbI
     }
 
     CommitTransaction();
+
+    if (itemType == VideoDbContentType::MOVIES)
+    {
+      if (idOldFile == idFile)
+        CLog::LogF(LOGDEBUG, "Default version of movie id {} unchanged (file id {})", dbId, idFile);
+      else
+        CLog::LogF(LOGDEBUG, "Default version of movie id {} changed from file id {} to file id {}",
+                   dbId, idOldFile, idFile);
+    }
+
     return true;
   }
   catch (...)
