@@ -70,7 +70,8 @@ PY_MODULES = py_cv_module_grp=n/a \
 # are not installed outside of the cpython build tree, and cause failure in kodi linking
 # If we wish to support them in the future, we should create "system libs" for them
 PY_MODULES+= py_cv_module__decimal=n/a \
-             py_cv_module__sha2=n/a
+             py_cv_module__sha2=n/a \
+             py_cv_module__zstd=n/a
 
 
 ifeq ($(OS), darwin_embedded)
