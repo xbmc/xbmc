@@ -27,6 +27,7 @@
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUISliderControl.h"
 #include "guilib/GUITextBox.h"
+#include "guilib/GUIVideoControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/listproviders/StaticProvider.h"
 #include "utils/StringUtils.h"
@@ -551,6 +552,30 @@ namespace XBMCAddon
                                          (float) dwPosY,
                                          (float) dwWidth,
                                          (float) dwHeight);
+      pGUIControl->SetVisible(m_visible);
+      return pGUIControl;
+    }
+
+    // ============================================================
+
+    // ============================================================
+    // ============================================================
+    ControlVideoWindow::ControlVideoWindow(long x, long y, long width, long height)
+    {
+      dwPosX = x;
+      dwPosY = y;
+      dwWidth = width;
+      dwHeight = height;
+    }
+
+    CGUIControl* ControlVideoWindow::Create()
+    {
+      pGUIControl = new CGUIVideoControl(iParentId,
+                                          iControlId,
+                                          (float)dwPosX,
+                                          (float)dwPosY,
+                                          (float)dwWidth,
+                                          (float)dwHeight);
       pGUIControl->SetVisible(m_visible);
       return pGUIControl;
     }

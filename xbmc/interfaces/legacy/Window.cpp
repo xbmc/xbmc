@@ -311,6 +311,9 @@ namespace XBMCAddon
       case CGUIControl::GUICONTROL_SLIDER:
         pControl = new ControlSlider();
         break;
+      case CGUIControl::GUICONTROL_VIDEO:
+        pControl = new ControlVideoWindow();
+        break;
       case CGUIControl::GUICONTAINER_LIST:
       case CGUIControl::GUICONTAINER_WRAPLIST:
       case CGUIControl::GUICONTAINER_FIXEDLIST:
