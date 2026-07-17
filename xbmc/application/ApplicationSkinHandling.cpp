@@ -50,6 +50,8 @@
 #include "video/dialogs/GUIDialogFullScreenInfo.h"
 #include "windowing/WinSystem.h"
 
+#include <set>
+
 using namespace KODI::MESSAGING;
 
 CApplicationSkinHandling::CApplicationSkinHandling(IMsgTargetCallback* msgCb,
@@ -283,6 +285,12 @@ bool CApplicationSkinHandling::LoadCustomWindows()
   std::vector<std::string> vecSkinPath;
   skin->GetSkinPaths(vecSkinPath);
 
+  // A skin can have more than one <res> folder (e.g. a resolution/aspect-matched folder
+  // plus a default fallback folder). The same custom*.xml is commonly present, unchanged,
+  // in more than one of these folders, so track which files have already been processed
+  // to tell an expected duplicate from a genuine window id collision.
+  std::set<std::string> processedSkinFiles;
+
   for (const auto& skinPath : vecSkinPath)
   {
     CLog::Log(LOGINFO, "Loading custom window XMLs from skin path {}", skinPath);
@@ -298,6 +306,9 @@ bool CApplicationSkinHandling::LoadCustomWindows()
         std::string skinFile = URIUtils::GetFileName(item->GetPath());
         if (StringUtils::StartsWithNoCase(skinFile, "custom"))
         {
+          std::string skinFileLower = skinFile;
+          StringUtils::ToLower(skinFileLower);
+
           CXBMCTinyXML xmlDoc;
           if (!xmlDoc.LoadFile(item->GetPath()))
           {
@@ -341,6 +352,20 @@ bool CApplicationSkinHandling::LoadCustomWindows()
           if (id == WINDOW_INVALID ||
               CServiceBroker::GetGUI()->GetWindowManager().GetWindow(windowId))
           {
+            // A skin file of the same name was already successfully loaded from a
+            // higher-priority skin path (e.g. the resolution-matched <res> folder). This is
+            // the expected fallback duplicate from a lower-priority <res> folder, not a
+            // genuine id collision, so skip it quietly.
+            if (id != WINDOW_INVALID &&
+                processedSkinFiles.find(skinFileLower) != processedSkinFiles.end())
+            {
+              CLog::Log(LOGDEBUG,
+                        "Skipping duplicate custom window {} already loaded from a "
+                        "higher-priority skin path",
+                        skinFile);
+              continue;
+            }
+
             // No id specified or id already in use
             CLog::Log(LOGERROR, "No id specified or id already in use for custom window in {}",
                       skinFile);
@@ -390,6 +415,7 @@ bool CApplicationSkinHandling::LoadCustomWindows()
                                                    : CGUIWindow::KEEP_IN_MEMORY);
 
           CServiceBroker::GetGUI()->GetWindowManager().AddCustomWindow(pWindow);
+          processedSkinFiles.insert(skinFileLower);
         }
       }
     }
