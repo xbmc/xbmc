@@ -115,6 +115,7 @@
       <!-- PVR windows -->
       <e>ActivateWindow(TVGuide)</e>
       <epg>ActivateWindow(TVGuide)</epg>
+      <guide>ActivateWindow(TVGuide)</guide>
       <h>ActivateWindow(TVChannels)</h>
       <j>ActivateWindow(RadioChannels)</j>
       <k>ActivateWindow(TVRecordings)</k>
