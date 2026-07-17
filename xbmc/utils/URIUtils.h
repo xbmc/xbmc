@@ -401,6 +401,8 @@ public:
    */
   static std::string SanitiseUrlEncoding(std::string_view path);
 
+  static std::string GetDecodedPath(const std::string& path);
+
 private:
   static std::string resolvePath(const std::string &path);
 

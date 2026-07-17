@@ -1993,3 +1993,12 @@ std::string URIUtils::SanitiseUrlEncoding(std::string_view path)
   out += path.substr(hostEnd);
   return out;
 }
+
+std::string URIUtils::GetDecodedPath(const std::string& path)
+{
+  std::string decodedPath{path};
+  static constexpr unsigned int MAX_DECODE_PASSES = 5;
+  for (unsigned int i = 0; decodedPath.find('%') != std::string::npos && i < MAX_DECODE_PASSES; ++i)
+    decodedPath = CURL::Decode(decodedPath);
+  return decodedPath;
+}

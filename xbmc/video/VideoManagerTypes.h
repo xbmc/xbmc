@@ -10,6 +10,8 @@
 
 #include "media/MediaType.h"
 
+#include <cstdint>
+
 enum class VideoAssetTypeOwner
 {
   UNKNOWN = -1,
@@ -33,6 +35,15 @@ enum class MediaRole
 {
   NewVersion,
   Parent
+};
+
+enum class VersionConversionResult : uint8_t
+{
+  SUCCESS,
+  CANCELLED,
+  FAILED,
+  NOT_NEEDED,
+  NOT_ALLOWED
 };
 
 static constexpr int VIDEO_VERSION_ID_BEGIN = 40400;

@@ -24797,7 +24797,13 @@ msgctxt "#40041"
 msgid "Assign playlist to current movie version?"
 msgstr ""
 
-#empty strings with id 40042 to 40201
+#. Different video version found dialog text for blurays
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
+msgctxt "#40042"
+msgid "Found a different version of the movie \"{0:s}\" in playlist {1:s} of {2:s} - length {3:s}. Would you like to convert it into an additional version of the original?"
+msgstr ""
+
+#empty strings with id 40043 to 40201
 
 #. Ignore different video versions settting
 #: system/settings/settings.xml

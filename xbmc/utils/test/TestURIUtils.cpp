@@ -2595,3 +2595,14 @@ TEST_F(TestURIUtils, IsLocalOrLAN)
   // videodb:// is a virtual path - not HD, not LAN, not an internet stream
   EXPECT_FALSE(URIUtils::IsLocalOrLAN("videodb://tvshows/titles/1/1/42"));
 }
+
+TEST_F(TestURIUtils, GetDecodedPath)
+{
+  std::string encoded = "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fmovie.iso%2f/BDMV/PLAYLIST/00800.mpls";
+  std::string decoded = "bluray://udf://smb://somepath/path/movie.iso//BDMV/PLAYLIST/00800.mpls";
+  EXPECT_EQ(decoded, URIUtils::GetDecodedPath(encoded));
+  
+  encoded = "bluray://smb%3a%2f%2fsomepath%2fpath%2f/BDMV/PLAYLIST/00800.mpls";
+  decoded = "bluray://smb://somepath/path//BDMV/PLAYLIST/00800.mpls";
+  EXPECT_EQ(decoded, URIUtils::GetDecodedPath(encoded));
+}
