@@ -1950,7 +1950,8 @@
         "ratings",
         "runtime",
         "uniqueid",
-        "trailer"
+        "trailer",
+        "status"
       ]
     }
   },
