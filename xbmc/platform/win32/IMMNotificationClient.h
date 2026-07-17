@@ -10,6 +10,9 @@
 
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include "platform/win32/CharsetConverter.h"
@@ -20,6 +23,28 @@
 
 using KODI::PLATFORM::WINDOWS::FromW;
 
+namespace KODI::PLATFORM::WINDOWS::INTERNAL
+{
+inline bool DeviceSettingMatchesEndpoint(std::string setting, std::string endpointId)
+{
+  if (setting.empty() || endpointId.empty())
+    return false;
+
+  StringUtils::ToLower(setting);
+  StringUtils::ToLower(endpointId);
+  return setting.find(endpointId) != std::string::npos;
+}
+
+inline bool ConfiguredDeviceMatchesEndpoint(const std::string& audioDevice,
+                                            const std::string& passthroughDevice,
+                                            bool passthroughEnabled,
+                                            const std::string& endpointId)
+{
+  return DeviceSettingMatchesEndpoint(audioDevice, endpointId) ||
+         (passthroughEnabled && DeviceSettingMatchesEndpoint(passthroughDevice, endpointId));
+}
+} // namespace KODI::PLATFORM::WINDOWS::INTERNAL
+
 class CMMNotificationClient : public IMMNotificationClient
 {
   LONG _cRef;
@@ -29,6 +54,8 @@ class CMMNotificationClient : public IMMNotificationClient
 public:
   CMMNotificationClient() : _cRef(1), _pEnumerator(nullptr)
   {
+    CoCreateInstance(CLSID_MMDeviceEnumerator, nullptr, CLSCTX_ALL, IID_IMMDeviceEnumerator,
+                     reinterpret_cast<void**>(_pEnumerator.GetAddressOf()));
   }
 
   ~CMMNotificationClient() = default;
@@ -111,14 +138,14 @@ public:
   HRESULT STDMETHODCALLTYPE OnDeviceAdded(LPCWSTR pwstrDeviceId)
   {
     CLog::Log(LOGDEBUG, "{}: Added device: {}", __FUNCTION__, FromW(pwstrDeviceId));
-    NotifyAE();
+    NotifyAEForDevice(pwstrDeviceId);
     return S_OK;
   }
 
   HRESULT STDMETHODCALLTYPE OnDeviceRemoved(LPCWSTR pwstrDeviceId)
   {
     CLog::Log(LOGDEBUG, "{}: Removed device: {}", __FUNCTION__, FromW(pwstrDeviceId));
-    NotifyAE();
+    NotifyAEDeviceCountChange();
     return S_OK;
   }
 
@@ -142,7 +169,10 @@ public:
       break;
     }
     CLog::Log(LOGDEBUG, "{}: New device state is DEVICE_STATE_{}", __FUNCTION__, pszState);
-    NotifyAE();
+    if (dwNewState == DEVICE_STATE_ACTIVE)
+      NotifyAEForDevice(pwstrDeviceId);
+    else
+      NotifyAEDeviceCountChange();
     return S_OK;
   }
 
@@ -162,5 +192,73 @@ public:
   {
     if(!CWin32PowerSyscall::IsSuspending())
       CServiceBroker::GetActiveAE()->DeviceChange();
+  }
+
+  void STDMETHODCALLTYPE NotifyAEForDevice(LPCWSTR pwstrDeviceId)
+  {
+    if (CWin32PowerSyscall::IsSuspending())
+      return;
+
+    const std::string endpointId = GetAudioEndpointId(pwstrDeviceId);
+    const auto settingsComponent = CServiceBroker::GetSettingsComponent();
+    const auto settings = settingsComponent ? settingsComponent->GetSettings() : nullptr;
+
+    // Preserve the existing full reconfiguration when endpoint resolution
+    // fails, or when the configured PCM/enabled passthrough endpoint returns. Default-
+    // device changes retain their dedicated OnDefaultDeviceChanged path above.
+    if (endpointId.empty() || !settings ||
+        KODI::PLATFORM::WINDOWS::INTERNAL::ConfiguredDeviceMatchesEndpoint(
+            settings->GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE),
+            settings->GetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE),
+            settings->GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH), endpointId))
+    {
+      CServiceBroker::GetActiveAE()->DeviceChange();
+      return;
+    }
+
+    // An unrelated endpoint (for example Bluetooth headphones) still changes
+    // the selectable device list, but must not tear down a healthy active sink.
+    // DeviceCountChange refreshes enumeration and only reconfigures when the
+    // current sink has actually disappeared.
+    CLog::Log(LOGDEBUG,
+              "{}: Refreshing audio devices without reconfiguring the active sink for unrelated "
+              "endpoint {}",
+              __FUNCTION__, endpointId);
+    CServiceBroker::GetActiveAE()->DeviceCountChange("");
+  }
+
+  void STDMETHODCALLTYPE NotifyAEDeviceCountChange()
+  {
+    if (!CWin32PowerSyscall::IsSuspending())
+      CServiceBroker::GetActiveAE()->DeviceCountChange("");
+  }
+
+  std::string GetAudioEndpointId(LPCWSTR pwstrDeviceId)
+  {
+    if (!pwstrDeviceId)
+      return {};
+
+    if (!_pEnumerator)
+      return {};
+
+    Microsoft::WRL::ComPtr<IMMDevice> device;
+    HRESULT hr = _pEnumerator->GetDevice(pwstrDeviceId, device.GetAddressOf());
+    if (FAILED(hr))
+      return {};
+
+    Microsoft::WRL::ComPtr<IPropertyStore> properties;
+    hr = device->OpenPropertyStore(STGM_READ, properties.GetAddressOf());
+    if (FAILED(hr))
+      return {};
+
+    PROPVARIANT endpointId;
+    PropVariantInit(&endpointId);
+    hr = properties->GetValue(PKEY_AudioEndpoint_GUID, &endpointId);
+    std::string result;
+    if (SUCCEEDED(hr) && endpointId.vt == VT_LPWSTR && endpointId.pwszVal)
+      result = FromW(endpointId.pwszVal);
+    PropVariantClear(&endpointId);
+
+    return result;
   }
 };
