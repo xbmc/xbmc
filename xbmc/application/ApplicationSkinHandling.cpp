@@ -116,6 +116,15 @@ bool CApplicationSkinHandling::LoadSkin(const std::string& skinID)
 
   UnloadSkin();
 
+  if (currentWindowID == WINDOW_SCREENSAVER)
+  {
+    // the screensaver may have just been woken up as part of UnloadSkin(), which navigates back
+    // to whatever window was active before the screensaver kicked in; restore that window
+    // instead of blindly reactivating the (now defunct) screensaver window
+    currentWindowID = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
+    currentFocusedControlID = -1;
+  }
+
   skin->Start();
 
   // migrate any skin-specific settings that are still stored in guisettings.xml
