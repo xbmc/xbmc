@@ -16,7 +16,6 @@
 #include "FileItem.h"
 #include "threads/CriticalSection.h"
 
-#include <compare>
 #include <map>
 #include <mutex>
 #include <string>
@@ -200,9 +199,6 @@ public:
 
   auto begin() const { return m_items.begin(); }
   auto end() const { return m_items.end(); }
-
-  using Iterator = std::vector<std::shared_ptr<CFileItem>>::iterator;
-  Iterator erase(Iterator first, Iterator last);
 
   template<class Pred>
   friend size_t erase_if(CFileItemList& list, Pred pred)
