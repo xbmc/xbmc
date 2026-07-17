@@ -23,6 +23,7 @@
 #include "addons/addoninfo/AddonType.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
+#include "application/ApplicationPowerHandling.h"
 #include "dialogs/GUIDialogButtonMenu.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogSubMenu.h"
@@ -250,6 +251,11 @@ void CApplicationSkinHandling::UnloadSkin()
   }
 
   gui->GetAudioManager().Enable(false);
+
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+  if (appPower && appPower->IsInScreenSaver())
+    appPower->WakeUpScreenSaverAndDPMS();
 
   gui->GetWindowManager().DeInitialize();
 
