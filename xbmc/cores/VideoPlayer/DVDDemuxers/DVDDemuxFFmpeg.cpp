@@ -684,6 +684,7 @@ void CDVDDemuxFFmpeg::Flush()
   m_displayTime = 0;
   m_dtsAtDisplayTime = DVD_NOPTS_VALUE;
   m_seekToKeyFrame = false;
+  m_streamChangeDuringSeek = false;
 }
 
 void CDVDDemuxFFmpeg::Abort()
@@ -1205,6 +1206,20 @@ DemuxPacket* CDVDDemuxFFmpeg::ReadInternal(bool keep)
 
 DemuxPacket* CDVDDemuxFFmpeg::Read()
 {
+  // A stream change was detected and discarded while SeekTime() was waiting for the
+  // transport stream to become ready. Deliver the deferred marker now, before any real
+  // data packet, so VideoPlayer::Process() still reopens the video codec with complete
+  // hints (see SeekTime()'s m_checkTransportStream wait loop).
+  if (m_streamChangeDuringSeek)
+  {
+    m_streamChangeDuringSeek = false;
+
+    DemuxPacket* pPacket = CDVDDemuxUtils::AllocateDemuxPacket(0);
+    pPacket->iStreamId = DMX_SPECIALID_STREAMCHANGE;
+    pPacket->demuxerId = GetDemuxerId();
+    return pPacket;
+  }
+
   return ReadInternal(false);
 }
 
@@ -1253,9 +1268,21 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double* startpts)
 
     while (!IsTransportStreamReady())
     {
-      DemuxPacket* pkt = Read();
+      // Call ReadInternal() directly rather than Read(): this loop must keep draining
+      // real packets until the transport stream is ready, so it must not be short-circuited
+      // by the deferred stream-change marker that Read() may hand out (see m_streamChangeDuringSeek).
+      DemuxPacket* pkt = ReadInternal(false);
       if (pkt)
+      {
+        // Read() would normally hand this marker to VideoPlayer so it can reopen the video
+        // codec with complete hints once mpegts/H.264 extradata parsing finishes. This loop
+        // discards it instead, so remember it and let the next Read() call after SeekTime()
+        // deliver it, once the caller starts reading normally again.
+        if (pkt->iStreamId == DMX_SPECIALID_STREAMCHANGE)
+          m_streamChangeDuringSeek = true;
+
         CDVDDemuxUtils::FreeDemuxPacket(pkt);
+      }
       else
         KODI::TIME::Sleep(10ms);
       m_pkt.result = -1;

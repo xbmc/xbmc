@@ -179,5 +179,10 @@ protected:
   double m_dtsAtDisplayTime;
   bool m_seekToKeyFrame = false;
   double m_startTime = 0;
+
+  // set when a DMX_SPECIALID_STREAMCHANGE packet is discarded by the m_checkTransportStream
+  // wait loop in SeekTime(); the next Read() call then synthesizes the marker so
+  // VideoPlayer::Process() still gets notified of the stream change it would otherwise miss
+  bool m_streamChangeDuringSeek = false;
   std::vector<ChapterFFmpeg> m_chapters;
 };
