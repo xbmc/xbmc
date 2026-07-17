@@ -128,6 +128,13 @@ public:
   void SetWrap(bool bWrap=true);
   void SetMaxHeight(float fHeight);
 
+  /*! \brief Set the font used to render this text, replacing the one given at construction
+   Invalidates any cached layout so that the next call to Update()/UpdateW() re-lays out the
+   text using the new font, even if the text itself has not changed.
+   \param font the new font to use
+   */
+  void SetFont(CGUIFont* font);
+
   static void DrawText(CGUIFont* font,
                        float x,
                        float y,

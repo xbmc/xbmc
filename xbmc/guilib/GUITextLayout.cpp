@@ -55,6 +55,17 @@ void CGUITextLayout::SetWrap(bool bWrap)
   m_wrap = bWrap;
 }
 
+void CGUITextLayout::SetFont(CGUIFont* font)
+{
+  const bool usingMonoFont = m_font != nullptr && m_font == m_monoFont;
+  m_varFont = font;
+  m_font = usingMonoFont ? m_monoFont : font;
+
+  // invalidate the cached text so the next Update()/UpdateW() re-lays out using the new font
+  m_lastUtf8Text.clear();
+  m_lastText.clear();
+}
+
 void CGUITextLayout::Render(float x,
                             float y,
                             float angle,
