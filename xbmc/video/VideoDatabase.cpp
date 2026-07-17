@@ -11285,9 +11285,11 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
         item.SetArt(artItem.GetArt());
         if (item.GetVideoInfoTag()->m_set.HasTitle())
         {
-          std::string setPath = URIUtils::AddFileToFolder(
-              movieSetsDir, CUtil::MakeLegalFileName(item.GetVideoInfoTag()->m_set.GetTitle(),
-                                                     LegalPath::WIN32_COMPAT));
+          std::string safeSetTitle = CUtil::MakeLegalFileName(
+              item.GetVideoInfoTag()->m_set.GetTitle(), LegalPath::WIN32_COMPAT);
+          if (URIUtils::HasEncodedFilename(CURL(movieSetsDir)))
+            safeSetTitle = CURL::Encode(safeSetTitle);
+          std::string setPath = URIUtils::AddFileToFolder(movieSetsDir, safeSetTitle);
           if (CDirectory::Exists(setPath))
           {
             KODI::ART::Artwork setArt;
