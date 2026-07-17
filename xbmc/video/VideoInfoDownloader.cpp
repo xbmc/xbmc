@@ -62,9 +62,11 @@ void CVideoInfoDownloader::Process()
   // note here that we're calling our external functions but we're calling them with
   // no progress bar set, so they're effectively calling our internal functions directly.
   m_found = 0;
+  m_result = false;
   if (m_state == FIND_MOVIE)
   {
-    if (!(m_found=FindMovie(m_movieTitle, m_movieYear, m_movieList)))
+    m_found = FindMovie(m_movieTitle, m_movieYear, m_movieList);
+    if (!m_found)
       CLog::Log(LOGERROR, "{}: Error looking up item {} ({})", __FUNCTION__, m_movieTitle,
                 m_movieYear);
     m_state = DO_NOTHING;
@@ -80,19 +82,22 @@ void CVideoInfoDownloader::Process()
   }
   else if (m_state == GET_DETAILS)
   {
-    if (!GetDetails(m_uniqueIDs, m_url, m_movieDetails))
+    m_result = GetDetails(m_uniqueIDs, m_url, m_movieDetails);
+    if (!m_result)
       CLog::Log(LOGERROR, "{}: Error getting details from {}", __FUNCTION__,
                 m_url.GetFirstThumbUrl());
   }
   else if (m_state == GET_EPISODE_DETAILS)
   {
-    if (!GetEpisodeDetails(m_url, m_movieDetails))
+    m_result = GetEpisodeDetails(m_url, m_movieDetails);
+    if (!m_result)
       CLog::Log(LOGERROR, "{}: Error getting episode details from {}", __FUNCTION__,
                 m_url.GetFirstThumbUrl());
   }
   else if (m_state == GET_EPISODE_LIST)
   {
-    if (!GetEpisodeList(m_url, m_episode))
+    m_result = GetEpisodeList(m_url, m_episode);
+    if (!m_result)
       CLog::Log(LOGERROR, "{}: Error getting episode list from {}", __FUNCTION__,
                 m_url.GetFirstThumbUrl());
   }
@@ -177,8 +182,9 @@ bool CVideoInfoDownloader::GetDetails(const ADDON::CScraper::UniqueIDs& uniqueID
       CThread::Sleep(1ms);
     }
     movieDetails = m_movieDetails;
+    bool result = m_result;
     CloseThread();
-    return true;
+    return result;
   }
   else  // unthreaded
     return m_info->GetVideoDetails(*m_http, m_uniqueIDs, url, true /*fMovie*/, movieDetails);
@@ -212,8 +218,9 @@ bool CVideoInfoDownloader::GetEpisodeDetails(const CScraperUrl &url,
       CThread::Sleep(1ms);
     }
     movieDetails = m_movieDetails;
+    bool result = m_result;
     CloseThread();
-    return true;
+    return result;
   }
   else  // unthreaded
     return m_info->GetVideoDetails(*m_http, m_uniqueIDs, url, false /*fMovie*/, movieDetails);
@@ -247,8 +254,9 @@ bool CVideoInfoDownloader::GetEpisodeList(const CScraperUrl& url,
       CThread::Sleep(1ms);
     }
     movieDetails = m_episode;
+    bool result = m_result;
     CloseThread();
-    return true;
+    return result;
   }
   else  // unthreaded
     return !(movieDetails = m_info->GetEpisodeList(*m_http, url)).empty();
