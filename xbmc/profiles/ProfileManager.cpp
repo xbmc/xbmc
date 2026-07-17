@@ -404,7 +404,9 @@ void CProfileManager::FinalizeLoadProfile()
   networkManager.NetworkMessage(CNetworkBase::SERVICES_UP, 1);
 
   // reload the add-ons, or we will first load all add-ons from the master account without checking disabled status
-  addonManager.ReInit();
+  if (!addonManager.ReInit())
+    CLog::Log(LOGERROR, "Failed to reinitialize the add-on manager for profile \"{}\"",
+              GetCurrentProfile().getName());
 
   // let CApplication know that we are logging into a new profile
   g_application.SetLoggingIn(true);
