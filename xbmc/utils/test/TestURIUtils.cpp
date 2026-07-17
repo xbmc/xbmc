@@ -1268,6 +1268,25 @@ TEST_F(TestURIUtils, AddFileToFolder)
   EXPECT_EQ(ref, var);
 }
 
+TEST_F(TestURIUtils, AddFileToFolderEncodedFilename)
+{
+  // Base folders that report an encoded filename (e.g. WebDAV) must have any raw, human
+  // readable segment percent-encoded before being appended, otherwise the resulting URL
+  // ends up with mixed encoding (see xbmc/video/VideoInfoScanner.cpp GetMovieSetInfoFolder).
+  const std::string base = "davs://user:pass@host/Movie%20Set%20Information%20Folder/";
+  std::string title = "Star Wars Collection";
+
+  if (URIUtils::HasEncodedFilename(CURL(base)))
+    title = CURL::Encode(title);
+  const std::string result = URIUtils::AddFileToFolder(base, title);
+
+  const std::string ref =
+      "davs://user:pass@host/Movie%20Set%20Information%20Folder/Star%20Wars%20Collection";
+  EXPECT_EQ(ref, result);
+  // No literal spaces should remain in the filename portion of the URL.
+  EXPECT_EQ(std::string::npos, CURL(result).GetFileName().find(' '));
+}
+
 TEST_F(TestURIUtils, HasParentInHostname)
 {
   EXPECT_TRUE(URIUtils::HasParentInHostname(CURL("zip://")));

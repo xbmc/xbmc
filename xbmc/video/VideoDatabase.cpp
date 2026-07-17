@@ -10673,8 +10673,10 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           }
         }
 
-        const std::string itemPath = URIUtils::AddFileToFolder(
-            movieSetsDir, CUtil::MakeLegalFileName(title, LegalPath::WIN32_COMPAT));
+        std::string safeTitle = CUtil::MakeLegalFileName(title, LegalPath::WIN32_COMPAT);
+        if (URIUtils::HasEncodedFilename(CURL(movieSetsDir)))
+          safeTitle = CURL::Encode(safeTitle);
+        const std::string itemPath = URIUtils::AddFileToFolder(movieSetsDir, safeTitle);
         if (CDirectory::Exists(itemPath) || CDirectory::Create(itemPath))
         {
           // get set information and generate .nfo
