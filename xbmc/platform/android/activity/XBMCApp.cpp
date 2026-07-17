@@ -282,6 +282,7 @@ void CXBMCApp::onStart()
     registerReceiver(*this, intentFilter);
     m_mediaSession = std::make_unique<CJNIXBMCMediaSession>();
     m_pipSupported = supportsPip();
+    CLog::Log(LOGINFO, "CXBMCApp: PiP supported by device: {}", m_pipSupported ? "yes" : "no");
     m_inputHandler.setDPI(GetDPI());
     runNativeOnUiThread(RegisterDisplayListenerCallback, nullptr);
   }
@@ -1495,37 +1496,68 @@ void CXBMCApp::onVisibleBehindCanceled()
 
 void CXBMCApp::onUserLeaveHint()
 {
-  if (!ShouldEnterPip())
+  // Log the gate decision only from this user-triggered path. UpdatePipParams() queries the
+  // same gate every ProcessSlow tick to compute auto-enter and must stay silent to avoid
+  // flooding the debug log.
+  if (!ShouldEnterPip(true))
     return;
 
   const auto [num, den] = GetPipAspectRatio();
+  CLog::LogF(LOGDEBUG, "entering PiP");
   // Playback is running when entering PiP, so the initial action is "pause".
   enterPip(num, den, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(112));
 }
 
-bool CXBMCApp::ShouldEnterPip() const
+bool CXBMCApp::ShouldEnterPip(bool logReason) const
 {
   if (!m_pipSupported)
+  {
+    if (logReason)
+      CLog::LogF(LOGDEBUG, "PiP not entered: not supported by this device");
     return false;
+  }
 
   const auto settingsComponent = CServiceBroker::GetSettingsComponent();
   if (!settingsComponent)
+  {
+    if (logReason)
+      CLog::LogF(LOGDEBUG, "PiP not entered: no settings component");
     return false;
+  }
 
   const auto settings = settingsComponent->GetSettings();
   if (!settings || !settings->GetBool(SETTING_USE_PIP))
+  {
+    if (logReason)
+      CLog::LogF(LOGDEBUG, "PiP not entered: setting disabled");
     return false;
+  }
 
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
   if (!appPlayer || !appPlayer->IsPlayingVideo() || appPlayer->IsPausedPlayback())
+  {
+    if (logReason)
+      CLog::LogF(LOGDEBUG, "PiP not entered: no video playing or playback paused");
     return false;
+  }
 
   CGUIComponent* gui = CServiceBroker::GetGUI();
   if (!gui)
+  {
+    if (logReason)
+      CLog::LogF(LOGDEBUG, "PiP not entered: no GUI component");
     return false;
+  }
 
-  return gui->GetWindowManager().GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO;
+  if (gui->GetWindowManager().GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
+  {
+    if (logReason)
+      CLog::LogF(LOGDEBUG, "PiP not entered: active window is not fullscreen video");
+    return false;
+  }
+
+  return true;
 }
 
 std::pair<int, int> CXBMCApp::GetPipAspectRatio()

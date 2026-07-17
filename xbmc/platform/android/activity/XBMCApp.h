@@ -233,7 +233,9 @@ private:
   void stop();
   void SetupEnv();
 
-  bool ShouldEnterPip() const;
+  // When logReason is true, the specific gate that rejected PiP entry is written to the
+  // debug log. Callers on hot paths (UpdatePipParams) pass false to avoid log spam.
+  bool ShouldEnterPip(bool logReason = false) const;
   void UpdatePipParams();
   void UpdatePipActions(bool playing);
   void ClosePipObstructions();
