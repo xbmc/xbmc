@@ -102,6 +102,13 @@ bool HasSystemSdrPeakLuminance(const std::string& /*condition*/,
   return CServiceBroker::GetWinSystem()->HasSystemSdrPeakLuminance();
 }
 
+bool HasMultipleMonitors(const std::string& /*condition*/,
+                         const std::string& /*value*/,
+                         const SettingConstPtr& /*setting*/)
+{
+  return CServiceBroker::GetWinSystem()->GetConnectedOutputs().size() > 1;
+}
+
 bool SupportsVideoSuperResolution(const std::string& /*condition*/,
                                   const std::string& /*value*/,
                                   const SettingConstPtr& /*setting*/)
@@ -453,6 +460,7 @@ void CSettingConditions::Initialize()
   m_complexConditions.try_emplace("hasrumblecontroller", HasRumbleController);
   m_complexConditions.try_emplace("haspowerofffeature", HasPowerOffFeature);
   m_complexConditions.try_emplace("hassystemsdrpeakluminance", HasSystemSdrPeakLuminance);
+  m_complexConditions.try_emplace("hasmultiplemonitors", HasMultipleMonitors);
   m_complexConditions.try_emplace("supportsscreenmove", SupportsScreenMove);
   m_complexConditions.try_emplace("supportsvideosuperresolution", SupportsVideoSuperResolution);
   m_complexConditions.try_emplace("supportsdolbyvision", SupportsDolbyVision);

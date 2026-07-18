@@ -25065,3 +25065,9 @@ msgstr ""
 msgctxt "#40802"
 msgid "If enabled, a confirmation dialog will be displayed when files shall be deleted. If disabled, files will be deleted without user confirmation."
 msgstr ""
+
+#. Description of setting with label #246 "Monitor"
+#: system/settings/settings.xml
+msgctxt "#40803"
+msgid "Monitor change requires restart in GBM mode."
+msgstr ""
