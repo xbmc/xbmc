@@ -225,10 +225,23 @@ enum VIDEODB_SET_IDS // this enum MUST match the offset struct further down!! an
 
 constexpr int DB_SET_OFFSETS_SIZE = 3;
 
-const std::array<SDbTableOffsets, DB_SET_OFFSETS_SIZE> DbSetOffsets = {{
-    {VIDEODB_TYPE_STRING, my_offsetof(CSetInfoTag, m_title)},
-    {VIDEODB_TYPE_STRING, my_offsetof(CSetInfoTag, m_overview)},
-    {VIDEODB_TYPE_STRING, my_offsetof(CSetInfoTag, m_originalTitle)},
+struct CSetInfoTagOffsets
+{
+  static constexpr std::string CSetInfoTag::*Title = &CSetInfoTag::m_title;
+  static constexpr std::string CSetInfoTag::*Overview = &CSetInfoTag::m_overview;
+  static constexpr std::string CSetInfoTag::*OriginalTitle = &CSetInfoTag::m_originalTitle;
+};
+
+struct SDbSetTableOffsets
+{
+  int type{VIDEODB_TYPE_UNUSED};
+  std::string CSetInfoTag::*member{nullptr};
+};
+
+constexpr std::array<SDbSetTableOffsets, DB_SET_OFFSETS_SIZE> DbSetOffsets = {{
+    {VIDEODB_TYPE_STRING, CSetInfoTagOffsets::Title},
+    {VIDEODB_TYPE_STRING, CSetInfoTagOffsets::Overview},
+    {VIDEODB_TYPE_STRING, CSetInfoTagOffsets::OriginalTitle},
 }};
 
 enum VIDEODB_TV_IDS // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)

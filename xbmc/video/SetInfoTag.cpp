@@ -87,7 +87,10 @@ void CSetInfoTag::Merge(const CSetInfoTag& other)
   if (other.HasOriginalTitle())
     m_originalTitle = other.GetOriginalTitle();
   if (other.HasOverview())
+  {
     m_overview = other.GetOverview();
+    m_updateSetOverview = other.m_updateSetOverview;
+  }
   if (!other.m_art.empty())
     m_art = other.m_art;
 }
@@ -98,6 +101,7 @@ void CSetInfoTag::Copy(const CSetInfoTag& other)
   m_title = other.GetTitle();
   m_originalTitle = other.GetOriginalTitle();
   m_overview = other.GetOverview();
+  m_updateSetOverview = other.m_updateSetOverview;
   m_art = other.m_art;
 }
 

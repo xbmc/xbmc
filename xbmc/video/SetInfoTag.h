@@ -62,13 +62,15 @@ public:
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;
 
+private:
+  friend struct CSetInfoTagOffsets;
+
   std::string m_title; // Title of the movie set
   std::string m_originalTitle; // Original title of movie set (from scraper)
   std::string m_overview; // Overview/description of the movie set
   KODI::ART::Artwork m_art; // Art information
   int m_id{-1}; // ID of movie set in database
 
-private:
   bool m_updateSetOverview{false}; // If overview has been set
 
   /* \brief Parse our native XML format for video info.

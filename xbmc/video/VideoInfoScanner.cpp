@@ -620,10 +620,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
           if (!setTag.GetTitle().empty())
             tag.m_set.SetTitle(setTag.GetTitle());
           if (!setTag.GetOverview().empty())
-          {
             tag.m_set.SetOverview(setTag.GetOverview());
-            tag.SetUpdateSetOverview(true);
-          }
           if (setTag.HasArt())
             tag.m_set.SetArt(setTag.GetArt());
           setUpdated = true;
@@ -651,7 +648,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
           movieSetArt.try_emplace(url.m_aspect.substr(4), url.m_url);
     }
     if (!movieSetArt.empty())
+    {
       tag.m_set.SetArt(movieSetArt);
+      setUpdated = true;
+    }
 
     return setUpdated;
   }
@@ -1026,7 +1026,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
           return InfoRet::INFO_ERROR;
 
         // Deal with set
-        if (UpdateSetInTag(*pItem->GetVideoInfoTag()) && !AddSet(pItem->GetVideoInfoTag()->m_set))
+        if (UpdateSetInTag(*item.GetVideoInfoTag()) && !AddSet(item.GetVideoInfoTag()->m_set))
           return InfoRet::INFO_ERROR;
       }
 
@@ -1676,11 +1676,22 @@ CVideoInfoScanner::~CVideoInfoScanner()
       // Remove remote set art (if need)
       if (useRemoteArt == UseRemoteArtWithLocalScraper::NO)
         std::erase_if(art,
-                      [](const std::pair<std::string, std::string>& artItem)
+                      [](const auto& artItem)
                       {
                         const auto& [type, url] = artItem;
                         return StringUtils::StartsWith(type, "set.") && URIUtils::IsRemote(url);
                       });
+
+      // Art in SetInfoTag trumps set.* art in VideoInfoTag
+      std::erase_if(art,
+                    [&pItem](const auto& artItem)
+                    {
+                      const auto& [type, url] = artItem;
+                      if (StringUtils::StartsWith(type, "set."))
+                        // Remove set art from VideoInfoTag if same type art in SetInfoTag
+                        return pItem->GetVideoInfoTag()->m_set.GetArt().contains(type.substr(4));
+                      return false;
+                    });
 
       // Deal with 'Disc n' subdirectories
       // Unless dealing with a full nfo in which case details are taken from there already

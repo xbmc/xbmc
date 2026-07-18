@@ -2297,7 +2297,7 @@ int CVideoDatabase::SetDetailsForMovie(CVideoInfoTag& details,
     if (details.m_set.HasTitle())
     {
       idSet = AddSet(details.m_set.GetTitle(), details.m_set.GetOverview(),
-                     details.m_set.GetOriginalTitle(), details.GetUpdateSetOverview());
+                     details.m_set.GetOriginalTitle(), details.m_set.GetUpdateSetOverview());
       details.m_set.SetID(idSet);
       for (const auto& [type, url] : artwork)
       {
@@ -4428,8 +4428,7 @@ void CVideoDatabase::GetDetailsFromDB(const dbiplus::sql_record* const record,
     switch (offsets[i].type)
     {
       case VIDEODB_TYPE_STRING:
-        *reinterpret_cast<std::string*>((reinterpret_cast<char*>(&details)) + offsets[i].offset) =
-            record->at(i + idxOffset).get_asString();
+        details.*(offsets[i].member) = record->at(i + idxOffset).get_asString();
         break;
       case VIDEODB_TYPE_UNUSED: // Skip the unused field to avoid populating unused data
         continue;
@@ -4742,7 +4741,7 @@ CSetInfoTag CVideoDatabase::GetDetailsForSet(const dbiplus::sql_record* const re
 
   GetDetailsFromDB(record, VIDEODB_ID_SET_MIN, VIDEODB_ID_SET_MAX, DbSetOffsets, details, 1);
 
-  details.m_id = idSet;
+  details.SetID(idSet);
 
   return details;
 }
@@ -10680,7 +10679,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           // get set information and generate .nfo
           CSetInfoTag set{GetDetailsForSet(*m_pDS)};
           KODI::ART::Artwork artwork;
-          if (GetArtForItem(set.m_id, MediaTypeVideoCollection, artwork) && !artwork.empty())
+          if (GetArtForItem(set.GetID(), MediaTypeVideoCollection, artwork) && !artwork.empty())
           {
             // Remove local urls as files saved in the set folder
             std::erase_if(artwork, [](const auto& art) { return !URIUtils::IsRemote(art.second); });
