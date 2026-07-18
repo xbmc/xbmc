@@ -208,12 +208,6 @@ void CFileItemList::Remove(const CFileItem* pItem)
   }
 }
 
-CFileItemList::Iterator CFileItemList::erase(Iterator first, Iterator last)
-{
-  std::unique_lock lock(m_lock);
-  return m_items.erase(first, last);
-}
-
 void CFileItemList::Remove(int iItem)
 {
   std::unique_lock lock(m_lock);

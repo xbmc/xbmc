@@ -1530,10 +1530,8 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr& item, const std::s
     // Remove ZIP, RAR files and folders
     CFileItemList playlist;
     playlist.Copy(*m_vecItems, true);
-    playlist.erase(std::remove_if(playlist.begin(), playlist.end(),
-                                  [](const std::shared_ptr<CFileItem>& i)
-                                  { return i->IsZIP() || i->IsRAR() || i->IsFolder(); }),
-                   playlist.end());
+    erase_if(playlist, [](const std::shared_ptr<CFileItem>& i)
+             { return i->IsZIP() || i->IsRAR() || i->IsFolder(); });
 
     // Chosen item
     int mediaToPlay =

@@ -423,9 +423,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
         CDirectory::GetDirectory(strDirectory, items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
                                  DIR_FLAG_DEFAULTS);
         // do not consider inner folders with .nomedia
-        items.erase(std::remove_if(items.begin(), items.end(), [](const CFileItemPtr& item)
-                                   { return item->IsFolder() && HasNoMedia(item->GetPath()); }),
-                    items.end());
+        erase_if(items, [](const std::shared_ptr<CFileItem>& item)
+                 { return item->IsFolder() && HasNoMedia(item->GetPath()); });
         items.Stack();
 
         // force sorting consistency to avoid hash mismatch between platforms
@@ -1424,22 +1423,20 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
 
     // Remove folders
-    items.erase(
-        std::remove_if(items.begin(), items.end(),
-                       [&](const CFileItemPtr& i)
-                       {
-                         const std::string fileAndPath(StringUtils::ToUpper(i->GetPath()));
-                         std::string file;
-                         std::string path;
-                         URIUtils::Split(fileAndPath, path, file);
-                         return (std::count_if(foldersToRemove.begin(), foldersToRemove.end(),
-                                               [&](const std::string& removePath)
-                                               { return path.rfind(removePath, 0) == 0; }) > 0) &&
-                                file != "VIDEO_TS.IFO" &&
-                                (file != "INDEX.BDMV" ||
-                                 fileAndPath.find("BACKUP/INDEX.BDMV") != std::string::npos);
-                       }),
-        items.end());
+    erase_if(items,
+             [&](const std::shared_ptr<CFileItem>& i)
+             {
+               const std::string fileAndPath(StringUtils::ToUpper(i->GetPath()));
+               std::string file;
+               std::string path;
+               URIUtils::Split(fileAndPath, path, file);
+               return (std::count_if(foldersToRemove.begin(), foldersToRemove.end(),
+                                     [&](const std::string& removePath)
+                                     { return path.rfind(removePath, 0) == 0; }) > 0) &&
+                      file != "VIDEO_TS.IFO" &&
+                      (file != "INDEX.BDMV" ||
+                       fileAndPath.find("BACKUP/INDEX.BDMV") != std::string::npos);
+             });
 
     // enumerate
     for (int i=0;i<items.Size();++i)
