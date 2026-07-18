@@ -73,9 +73,6 @@ ifeq ($(OS),android)
 endif
 	cd $(PLATFORM); cp ../16-kodi.conf ./Configurations/
 	cd $(PLATFORM); $(CONFIGURE)
-	if test "$(OS)" = "darwin_embedded"; then \
-		sed -E -ie "s|static volatile sig_atomic_t intr_signal;|static volatile intr_signal;|" "$(PLATFORM)/crypto/ui/ui_openssl.c"; \
-	fi
 	sed -ie "s|PROGRAMS=|PROGRAMS=#|" "$(PLATFORM)/Makefile";
 	touch $@
 
