@@ -1583,8 +1583,8 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
   {
     m_skipGuiRender = false;
 
-    // a new capture request marks the window manager dirty so a frame really
-    // renders, since an idle GUI would otherwise skip it
+    // a new request, or a latched one-shot still awaiting service, marks the
+    // window manager dirty so an otherwise-idle GUI really renders a frame to tap
     if (const auto captureService = CServiceBroker::GetCaptureService();
         captureService && captureService->LatchFrame())
       CServiceBroker::GetGUI()->GetWindowManager().MarkDirty();

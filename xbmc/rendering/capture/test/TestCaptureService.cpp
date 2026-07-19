@@ -154,3 +154,253 @@ TEST_F(TestCaptureService, CancelledRequestPrunedAtLatch)
   EXPECT_TRUE(m_service.LatchFrame());
   EXPECT_EQ(m_service.TakeActive(CaptureContent::COMPOSITE).size(), 1u);
 }
+
+TEST_F(TestCaptureService, ContinuousWaitNextSeesEachComplete)
+{
+  CaptureSpec spec;
+  spec.cadence = CaptureCadence::CONTINUOUS;
+  auto handle = m_service.Submit(spec);
+
+  m_service.LatchFrame();
+  auto active = m_service.TakeActive(CaptureContent::COMPOSITE);
+  ASSERT_EQ(active.size(), 1u);
+
+  m_service.Complete(active[0], MakeResult());
+  EXPECT_TRUE(handle->WaitNext(1000ms));
+
+  m_service.Complete(active[0], MakeResult());
+  EXPECT_TRUE(handle->WaitNext(1000ms));
+
+  // no third delivery: WaitNext times out
+  EXPECT_FALSE(handle->WaitNext(10ms));
+}
+
+TEST_F(TestCaptureService, ContinuousFailIsTerminal)
+{
+  CaptureSpec spec;
+  spec.cadence = CaptureCadence::CONTINUOUS;
+  auto handle = m_service.Submit(spec);
+
+  m_service.LatchFrame();
+  auto active = m_service.TakeActive(CaptureContent::COMPOSITE);
+  ASSERT_EQ(active.size(), 1u);
+
+  // whether a tap can serve is fixed by the configuration, so a failure ends
+  // the stream rather than retrying it frame after frame
+  m_service.Fail(active[0]);
+  EXPECT_FALSE(handle->WaitNext(10ms));
+  EXPECT_EQ(handle->GetState(), CaptureState::FAILED);
+  EXPECT_TRUE(m_service.TakeActive(CaptureContent::COMPOSITE).empty());
+}
+
+TEST_F(TestCaptureService, OneShotFailIsTerminal)
+{
+  auto handle = m_service.Submit({});
+
+  m_service.LatchFrame();
+  auto active = m_service.TakeActive(CaptureContent::COMPOSITE);
+  ASSERT_EQ(active.size(), 1u);
+
+  m_service.Fail(active[0]);
+  EXPECT_FALSE(handle->WaitNext(1000ms));
+  EXPECT_EQ(handle->GetState(), CaptureState::FAILED);
+  EXPECT_TRUE(m_service.TakeActive(CaptureContent::COMPOSITE).empty());
+}
+
+TEST_F(TestCaptureService, MostRecentRequestWins)
+{
+  // pure LIFO: the newest request is the serviced consumer whatever its
+  // cadence, so a continuous submitted after a one-shot buries it (accepted).
+  auto oneshot = m_service.Submit({});
+  CaptureSpec cont;
+  cont.cadence = CaptureCadence::CONTINUOUS;
+  auto continuous = m_service.Submit(cont); // most recent, sits on top
+
+  m_service.LatchFrame();
+  auto active = m_service.TakeActive(CaptureContent::COMPOSITE);
+  ASSERT_EQ(active.size(), 1u);
+  EXPECT_EQ(active[0]->spec.cadence, CaptureCadence::CONTINUOUS);
+}
+
+TEST_F(TestCaptureService, WaitNextFalseOnCancel)
+{
+  CaptureSpec spec;
+  spec.cadence = CaptureCadence::CONTINUOUS;
+  auto handle = m_service.Submit(spec);
+
+  m_service.LatchFrame();
+  auto active = m_service.TakeActive(CaptureContent::COMPOSITE);
+  ASSERT_EQ(active.size(), 1u);
+
+  m_service.Cancel(active[0]);
+  EXPECT_FALSE(handle->WaitNext(1000ms));
+  EXPECT_EQ(handle->GetState(), CaptureState::CANCELLED);
+}
+
+TEST_F(TestCaptureService, CopyResultLatestWins)
+{
+  CaptureSpec spec;
+  spec.cadence = CaptureCadence::CONTINUOUS;
+  auto handle = m_service.Submit(spec);
+
+  m_service.LatchFrame();
+  auto active = m_service.TakeActive(CaptureContent::COMPOSITE);
+  ASSERT_EQ(active.size(), 1u);
+
+  m_service.Complete(active[0], MakeResult());
+  CaptureResult second = MakeResult();
+  second.width = 8;
+  m_service.Complete(active[0], std::move(second));
+
+  // two deliveries between waits collapse to a single wake with the latest result
+  EXPECT_TRUE(handle->WaitNext(1000ms));
+  EXPECT_EQ(handle->CopyResult().width, 8u);
+  EXPECT_FALSE(handle->WaitNext(10ms));
+}
+
+TEST_F(TestCaptureService, OneShotWaitNextSeesDelivery)
+{
+  auto handle = m_service.Submit({});
+
+  m_service.LatchFrame();
+  auto active = m_service.TakeActive(CaptureContent::COMPOSITE);
+  ASSERT_EQ(active.size(), 1u);
+
+  m_service.Complete(active[0], MakeResult());
+  EXPECT_TRUE(handle->WaitNext(1000ms));
+  EXPECT_EQ(handle->CopyResult().width, 4u);
+
+  // a finished one-shot delivers exactly once
+  EXPECT_FALSE(handle->WaitNext(10ms));
+  EXPECT_EQ(handle->GetState(), CaptureState::DONE);
+}
+
+TEST_F(TestCaptureService, OneShotPreemptsContinuous)
+{
+  CaptureSpec spec;
+  spec.cadence = CaptureCadence::CONTINUOUS;
+  auto continuous = m_service.Submit(spec);
+
+  m_service.LatchFrame();
+  ASSERT_EQ(m_service.TakeActive(CaptureContent::COMPOSITE).size(), 1u);
+
+  auto oneshot = m_service.Submit({});
+  m_service.LatchFrame();
+
+  // the one-shot pushed onto the stack top; only it is serviced this loop
+  auto active = m_service.TakeActive(CaptureContent::COMPOSITE);
+  ASSERT_EQ(active.size(), 1u);
+  EXPECT_EQ(active[0]->spec.cadence, CaptureCadence::ONESHOT);
+  m_service.Complete(active[0], MakeResult());
+  EXPECT_TRUE(oneshot->Wait(1000ms));
+
+  // the continuous request resumes as stack top on the next loop
+  m_service.LatchFrame();
+  active = m_service.TakeActive(CaptureContent::COMPOSITE);
+  ASSERT_EQ(active.size(), 1u);
+  EXPECT_EQ(active[0]->spec.cadence, CaptureCadence::CONTINUOUS);
+  m_service.Complete(active[0], MakeResult());
+  EXPECT_TRUE(continuous->WaitNext(1000ms));
+}
+
+TEST_F(TestCaptureService, StackedOneShotsServeNewestFirst)
+{
+  auto lower = m_service.Submit({});
+  auto upper = m_service.Submit({});
+
+  // newest first: the top one-shot serves, then the one under it becomes the
+  // top on the next loop and serves (each forces a frame while it is chosen)
+  EXPECT_TRUE(m_service.LatchFrame());
+  auto active = m_service.TakeActive(CaptureContent::COMPOSITE);
+  ASSERT_EQ(active.size(), 1u);
+  m_service.Complete(active[0], MakeResult());
+  EXPECT_TRUE(upper->Wait(1000ms));
+
+  EXPECT_TRUE(m_service.LatchFrame());
+  active = m_service.TakeActive(CaptureContent::COMPOSITE);
+  ASSERT_EQ(active.size(), 1u);
+  m_service.Complete(active[0], MakeResult());
+  EXPECT_TRUE(lower->Wait(1000ms));
+
+  EXPECT_FALSE(m_service.LatchFrame());
+}
+
+TEST_F(TestCaptureService, LoneContinuousDoesNotForceFrames)
+{
+  CaptureSpec spec;
+  spec.cadence = CaptureCadence::CONTINUOUS;
+  auto handle = m_service.Submit(spec);
+
+  // arrival forces exactly one frame; steady state never does (unchanged
+  // frames are still skipped during a continuous capture)
+  EXPECT_TRUE(m_service.LatchFrame());
+  EXPECT_FALSE(m_service.LatchFrame());
+}
+
+TEST_F(TestCaptureService, StarvedRequestTimesOutClean)
+{
+  CaptureSpec spec;
+  spec.content = CaptureContent::VIDEO;
+  auto handle = m_service.Submit(spec);
+
+  m_service.LatchFrame();
+
+  // no tap ever serves it (no video layer drawn): waits time out, nothing
+  // crashes, and handle destruction reclaims the request
+  EXPECT_FALSE(handle->Wait(10ms));
+  EXPECT_FALSE(handle->WaitNext(10ms));
+  handle.reset();
+
+  EXPECT_FALSE(m_service.LatchFrame());
+  EXPECT_TRUE(m_service.TakeActive(CaptureContent::VIDEO).empty());
+}
+
+TEST_F(TestCaptureService, UnservedOneShotFailsAtFrameEnd)
+{
+  CaptureSpec spec;
+  spec.content = CaptureContent::VIDEO;
+  auto handle = m_service.Submit(spec);
+
+  // latched and granted a forced render, but no tap serves it (no video drawn)
+  EXPECT_TRUE(m_service.LatchFrame());
+  EXPECT_NE(handle->GetState(), CaptureState::FAILED);
+
+  // the frame was drawn and every tap ran without serving it, so it cannot be
+  // served in this configuration
+  m_service.FrameComplete();
+  EXPECT_EQ(handle->GetState(), CaptureState::FAILED);
+  EXPECT_TRUE(m_service.TakeActive(CaptureContent::VIDEO).empty());
+  EXPECT_FALSE(m_service.LatchFrame()); // and it no longer forces frames
+}
+
+TEST_F(TestCaptureService, UnservedContinuousFailsAtFrameEnd)
+{
+  CaptureSpec spec;
+  spec.content = CaptureContent::VIDEO;
+  spec.cadence = CaptureCadence::CONTINUOUS;
+  auto handle = m_service.Submit(spec);
+
+  // a CONTINUOUS request gets the same judgement as a one-shot: without it the
+  // request would be re-latched every frame forever, starving everything below
+  m_service.LatchFrame();
+  m_service.FrameComplete();
+
+  EXPECT_EQ(handle->GetState(), CaptureState::FAILED);
+  EXPECT_TRUE(m_service.TakeActive(CaptureContent::VIDEO).empty());
+}
+
+TEST_F(TestCaptureService, ServedContinuousSurvivesFrameEnd)
+{
+  CaptureSpec spec;
+  spec.cadence = CaptureCadence::CONTINUOUS;
+  auto handle = m_service.Submit(spec);
+
+  m_service.LatchFrame();
+  auto active = m_service.TakeActive(CaptureContent::COMPOSITE);
+  ASSERT_EQ(active.size(), 1u);
+  m_service.Complete(active[0], MakeResult());
+  m_service.FrameComplete();
+
+  EXPECT_NE(handle->GetState(), CaptureState::FAILED);
+  EXPECT_TRUE(handle->WaitNext(1000ms));
+}
