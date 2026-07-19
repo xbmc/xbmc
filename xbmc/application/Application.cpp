@@ -877,6 +877,7 @@ void ServiceCaptureTaps()
   for (const auto& request : requests)
     captureService->Complete(request, result);
 }
+
 } // namespace
 
 void CApplication::Render()
@@ -939,10 +940,15 @@ void CApplication::Render()
   if (compositing)
     CServiceBroker::GetWinSystem()->CompositeGui();
 
-  // serve pending requests from the finished frame; only a frame that really
-  // drew counts
+  // serve pending requests from the finished frame, then fail any left
+  // unserved. Both need a frame that really drew: on a skipped frame nothing
+  // could be served, so FrameComplete would kill live requests.
   if (hasRendered)
+  {
     ServiceCaptureTaps();
+    if (const auto captureService = CServiceBroker::GetCaptureService())
+      captureService->FrameComplete();
+  }
 
   CServiceBroker::GetRenderSystem()->EndRender();
 

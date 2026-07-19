@@ -1,8 +1,10 @@
-set(SOURCES CaptureHandle.cpp
+set(SOURCES CaptureBlit.cpp
+            CaptureHandle.cpp
             CaptureMetadata.cpp
             CaptureService.cpp)
 
-set(HEADERS CaptureHandle.h
+set(HEADERS CaptureBlit.h
+            CaptureHandle.h
             CaptureMetadata.h
             CaptureRequest.h
             CaptureService.h

@@ -24,8 +24,20 @@
 #include <deque>
 #include <list>
 #include <map>
+#include <memory>
 
 #include "PlatformDefs.h"
+
+namespace KODI
+{
+namespace RENDERING
+{
+namespace CAPTURE
+{
+class CCaptureBlit;
+}
+} // namespace RENDERING
+} // namespace KODI
 
 class CRenderCapture;
 struct VideoPicture;
@@ -151,10 +163,15 @@ protected:
   void DeleteRenderer();
   void ManageCaptures();
 
+  //! Video-only tap: serve VIDEO capture requests from the just-presented frame.
+  void ServiceVideoCaptures();
+
   void UpdateLatencyTweak();
   void CheckEnableClockSync();
 
   CBaseRenderer *m_pRenderer = nullptr;
+  //! Owns the video tap's private FBO; render-thread only, reset in UnInit
+  std::unique_ptr<KODI::RENDERING::CAPTURE::CCaptureBlit> m_captureBlit;
   OVERLAY::CRenderer m_overlays;
   CDebugRenderer m_debugRenderer;
   mutable CCriticalSection m_statelock;

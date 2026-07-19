@@ -17,6 +17,9 @@
 #include "application/Application.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "messaging/ApplicationMessenger.h"
+#include "rendering/capture/CaptureBlit.h"
+#include "rendering/capture/CaptureMetadata.h"
+#include "rendering/capture/CaptureService.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -412,6 +415,7 @@ void CRenderManager::UnInit()
   m_overlays.UnInit();
   m_debugRenderer.Dispose();
 
+  m_captureBlit.reset();
   DeleteRenderer();
 
   m_renderState = STATE_UNCONFIGURED;
@@ -667,6 +671,53 @@ void CRenderManager::RenderCapture(CRenderCapture* capture)
     capture->SetState(CAPTURESTATE_FAILED);
 }
 
+void CRenderManager::ServiceVideoCaptures()
+{
+  using namespace KODI::RENDERING::CAPTURE;
+
+  const auto captureService = CServiceBroker::GetCaptureService();
+  if (!captureService)
+    return;
+
+  const auto requests = captureService->TakeActive(CaptureContent::VIDEO);
+  if (requests.empty())
+    return;
+
+  // video composited outside Kodi's GL (D2P plane, Android video surface,
+  // webOS video plane) leaves nothing at the present point to copy
+  if (m_pRenderer->HasVideoPlane())
+  {
+    for (const auto& request : requests)
+      captureService->Fail(request);
+    return;
+  }
+
+  CRect src;
+  CRect dst;
+  CRect view;
+  m_pRenderer->GetVideoRect(src, dst, view);
+
+  if (!m_captureBlit)
+    m_captureBlit = std::make_unique<CCaptureBlit>();
+
+  for (const auto& request : requests)
+  {
+    const unsigned int width =
+        request->spec.width ? request->spec.width : static_cast<unsigned int>(dst.Width());
+    const unsigned int height =
+        request->spec.height ? request->spec.height : static_cast<unsigned int>(dst.Height());
+
+    CaptureResult result;
+    if (m_captureBlit->Blit(dst, width, height) && m_captureBlit->Read(result))
+    {
+      result.color = GetOutputColorMetadata(*CServiceBroker::GetWinSystem());
+      captureService->Complete(request, std::move(result));
+    }
+    else
+      captureService->Fail(request);
+  }
+}
+
 void CRenderManager::RemoveCaptures()
 {
   std::unique_lock lock(m_captCritSect);
@@ -724,6 +775,7 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
   if (!gui && m_pRenderer->IsGuiLayer())
     return;
 
+  bool presented = false;
   if (!gui || m_pRenderer->IsGuiLayer())
   {
     SPresent& m = m_Queue[m_presentsource];
@@ -734,7 +786,13 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
       PresentBlend(clear, flags, alpha);
     else
       PresentSingle(clear, flags, alpha);
+
+    presented = true;
   }
+
+  // the just-presented region is pure video: OSD, GUI and subtitles come later
+  if (presented)
+    ServiceVideoCaptures();
 
   if (gui)
   {
