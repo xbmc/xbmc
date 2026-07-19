@@ -58,12 +58,10 @@ bool CRendererStarfish::Configure(const VideoPicture& picture,
   SetViewMode(m_videoSettings.m_ViewMode);
   ManageRenderArea();
 
-  if (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
-      picture.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)
-  {
-    if (CServiceBroker::GetWinSystem()->IsHDRDisplay())
-      CServiceBroker::GetWinSystem()->GetGfxContext().SetTransferPQ(true);
-  }
+  const bool transferPQ = CServiceBroker::GetWinSystem()->IsHDRDisplay() &&
+                          (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
+                           picture.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION);
+  CServiceBroker::GetWinSystem()->GetGfxContext().SetTransferPQ(transferPQ);
 
   m_configured = true;
 
