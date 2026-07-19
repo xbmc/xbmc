@@ -848,21 +848,20 @@ void ServiceCaptureTaps()
   const auto requests = captureService->TakeActive(CaptureContent::COMPOSITE);
   if (requests.empty())
     return;
+  const auto& request = requests.front(); // at most one consumer per frame
 
   auto* winSystem = CServiceBroker::GetWinSystem();
   auto surface = CScreenShot::CreateSurface();
   if (!winSystem || !surface)
   {
-    for (const auto& request : requests)
-      captureService->Fail(request);
+    captureService->Fail(request);
     return;
   }
 
   const ScreenshotContext ctx{*winSystem};
   if (!surface->Read(ctx))
   {
-    for (const auto& request : requests)
-      captureService->Fail(request);
+    captureService->Fail(request);
     return;
   }
 
@@ -873,9 +872,9 @@ void ServiceCaptureTaps()
   result.stride = static_cast<unsigned int>(surface->GetStride());
   result.bitDepth = surface->GetBitDepth();
   result.color = GetOutputColorMetadata(*winSystem);
+  result.content = CaptureContent::COMPOSITE; // this tap is the composite half
 
-  for (const auto& request : requests)
-    captureService->Complete(request, result);
+  captureService->Complete(request, result);
 }
 
 } // namespace

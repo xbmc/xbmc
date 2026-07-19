@@ -25,10 +25,23 @@ namespace RENDERING
 namespace CAPTURE
 {
 
+//! \brief What a capture request wants copied out.
+//!
+//! Captures are served by taps: points in the render loop where a finished
+//! frame is copied out before it is overwritten. There are two, and they see
+//! different pixels because they run at different moments:
+//! - the video-only tap (CRenderManager::ServiceVideoCaptures) runs right after
+//!   the video is presented, before any GUI, OSD or subtitle is drawn;
+//! - the composite tap (ServiceCaptureTaps in Application.cpp) runs after
+//!   compositing, before the swap.
+//! VIDEO is served by the first, COMPOSITE by the second, and BOTH by each in
+//! turn in one frame, yielding a video-only and a composite capture told apart
+//! by CaptureResult::content.
 enum class CaptureContent
 {
   COMPOSITE,
   VIDEO,
+  BOTH,
 };
 
 enum class CaptureCadence
@@ -61,6 +74,9 @@ struct CaptureResult
   unsigned int stride{0};
   int bitDepth{8};
   ImageColorMetadata color;
+  //! which tap produced this result; stamped at delivery so a BOTH consumer
+  //! knows whether it holds the video-only or the composite capture
+  CaptureContent content{CaptureContent::COMPOSITE};
   //! HDR mastering/light metadata of the captured content, carried verbatim so
   //! an SDR tonemap has the same source peak the thumbnail extractor uses
   bool hasDisplayMetadata{false};

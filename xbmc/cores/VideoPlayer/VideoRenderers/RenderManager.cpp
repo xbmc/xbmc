@@ -566,6 +566,7 @@ void CRenderManager::ServiceVideoCaptures()
       result.displayMetadata = m_picture.displayMetadata;
       result.hasLightMetadata = m_picture.hasLightMetadata;
       result.lightMetadata = m_picture.lightMetadata;
+      result.content = CaptureContent::VIDEO; // this tap delivers video-only
       captureService->Complete(request, std::move(result));
     }
     else

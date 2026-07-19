@@ -72,7 +72,9 @@ public:
   std::vector<std::shared_ptr<CaptureRequest>> TakeActive(CaptureContent content);
 
   //! Render thread: deliver a serviced request. ONESHOT requests finish;
-  //! CONTINUOUS requests stay registered for the next frame.
+  //! CONTINUOUS requests stay registered for the next frame. A BOTH request
+  //! finishes on its composite delivery; the video-only delivery, which comes
+  //! first, leaves it running.
   void Complete(const std::shared_ptr<CaptureRequest>& request, CaptureResult result);
 
   //! Render thread: fail a serviced request and wake its waiter, whatever its
@@ -103,7 +105,7 @@ public:
   void FailAll();
 
 private:
-  void Dispatch(const std::shared_ptr<CaptureRequest>& request);
+  void Dispatch(const std::shared_ptr<CaptureRequest>& request, CaptureResult result);
   void RemoveActive(const std::shared_ptr<CaptureRequest>& request);
 
   mutable CCriticalSection m_lock;
