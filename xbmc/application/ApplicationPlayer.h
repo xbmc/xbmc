@@ -67,10 +67,6 @@ public:
   EINTERLACEMETHOD GetDeinterlacingMethodDefault() const;
   bool Supports(ESCALINGMETHOD method) const;
   bool Supports(ERENDERFEATURE feature) const;
-  unsigned int RenderCaptureAlloc();
-  void RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags = 0);
-  void RenderCaptureRelease(unsigned int captureId);
-  bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size);
   bool IsExternalPlaying() const;
   bool IsRemotePlaying() const;
 

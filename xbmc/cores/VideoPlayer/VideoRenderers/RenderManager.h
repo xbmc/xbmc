@@ -23,7 +23,6 @@
 #include <atomic>
 #include <deque>
 #include <list>
-#include <map>
 #include <memory>
 
 #include "PlatformDefs.h"
@@ -39,7 +38,6 @@ class CCaptureBlit;
 } // namespace RENDERING
 } // namespace KODI
 
-class CRenderCapture;
 struct VideoPicture;
 
 class CWinRenderer;
@@ -96,11 +94,6 @@ public:
    * \param save If true, the value will be saved to resolution info
    */
   void SetSubtitleVerticalPosition(const int value, bool save);
-
-  unsigned int AllocRenderCapture();
-  void ReleaseRenderCapture(unsigned int captureId);
-  void StartRenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags);
-  bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size);
 
   // Functions called from GUI
   bool Supports(ERENDERFEATURE feature) const;
@@ -161,7 +154,6 @@ protected:
   bool Configure();
   void CreateRenderer();
   void DeleteRenderer();
-  void ManageCaptures();
 
   //! Video-only tap: serve VIDEO capture requests from the just-presented frame.
   void ServiceVideoCaptures();
@@ -260,14 +252,4 @@ protected:
     bool m_enabled;
   };
   CClockSync m_clockSync;
-
-  void RenderCapture(CRenderCapture* capture);
-  void RemoveCaptures();
-  CCriticalSection m_captCritSect;
-  std::map<unsigned int, CRenderCapture*> m_captures;
-  static unsigned int m_nextCaptureId;
-  unsigned int m_captureWaitCounter = 0;
-  //set to true when adding something to m_captures, set to false when m_captures is made empty
-  //std::list::empty() isn't thread safe, using an extra bool will save a lock per render when no captures are requested
-  bool m_hasCaptures = false;
 };

@@ -24,7 +24,6 @@ extern "C" {
 #include <libavutil/pixdesc.h>
 }
 
-class CRenderCapture;
 class CRenderSystemGL;
 
 class CTexture;
@@ -73,7 +72,6 @@ public:
   void ReleaseBuffer(int idx) override;
   void RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;
   void Update() override;
-  bool RenderCapture(int index, CRenderCapture* capture) override;
   CRenderInfo GetRenderInfo() override;
   bool ConfigChanged(const VideoPicture &picture) override;
 
@@ -82,7 +80,6 @@ public:
   bool Supports(ERENDERFEATURE feature) const override;
   bool Supports(ESCALINGMETHOD method) const override;
 
-  CRenderCapture* GetRenderCapture() override;
   bool IsGuiLayer() override;
   bool HasVideoPlane() override { return false; }
 

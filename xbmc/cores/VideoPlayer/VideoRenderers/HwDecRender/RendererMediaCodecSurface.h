@@ -21,7 +21,6 @@ public:
   static CBaseRenderer* Create(CVideoBuffer *buffer);
   static bool Register();
 
-  bool RenderCapture(int index, CRenderCapture* capture) override;
   void AddVideoPicture(const VideoPicture& picture, int index) override;
   void ReleaseBuffer(int idx) override;
   bool Configure(const VideoPicture& picture, float fps, unsigned int orientation) override;
