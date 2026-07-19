@@ -11,6 +11,7 @@
 #include "rendering/capture/CaptureTypes.h"
 #include "threads/Event.h"
 
+#include <cstdint>
 #include <functional>
 
 namespace KODI
@@ -22,8 +23,8 @@ namespace CAPTURE
 
 enum class CaptureState
 {
-  PENDING, //!< submitted, not yet visible to taps
-  LATCHED, //!< picked up at a frame boundary, serviced by taps
+  PENDING, //!< submitted and not yet latched, or standing by below the stack top
+  LATCHED, //!< the stack top, serviced by this frame's taps
   DONE,
   FAILED,
   CANCELLED,
@@ -39,6 +40,11 @@ struct CaptureRequest
   CaptureCallback callback;
   CaptureState state{CaptureState::PENDING};
   CaptureResult result;
+  //! Completed deliveries; a CONTINUOUS request accumulates one per served frame
+  uint64_t deliveries{0};
+  //! Cleared when the request is latched, set when a tap delivers. If it is
+  //! still false at FrameComplete, a frame drew and no tap served the request.
+  bool served{false};
   CEvent event;
 };
 
