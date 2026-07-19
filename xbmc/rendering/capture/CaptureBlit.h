@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "rendering/capture/CaptureTypes.h"
 #include "utils/Geometry.h"
 
 #include <cstdint>
@@ -19,8 +20,6 @@ namespace RENDERING
 {
 namespace CAPTURE
 {
-
-struct CaptureResult;
 
 /*!
  \brief Scaled copy of already-presented pixels into a private FBO, plus readback.
@@ -41,13 +40,19 @@ public:
   CCaptureBlit& operator=(const CCaptureBlit&) = delete;
 
   //! \brief Copy srcRect (display coordinates, top-left origin) scaled to width x height.
-  bool Blit(const CRect& srcRect, unsigned int width, unsigned int height);
+  //! NATIVE keeps the output depth in the copy; BGRA8 requantizes to 8-bit during it.
+  bool Blit(const CRect& srcRect,
+            unsigned int width,
+            unsigned int height,
+            CaptureFormat format = CaptureFormat::BGRA8);
 
   //! \brief Read the copied pixels back; valid after a successful Blit().
   bool Read(CaptureResult& result);
 
 private:
-  bool EnsureFramebuffer(unsigned int width, unsigned int height);
+  bool EnsureFramebuffer(unsigned int width, unsigned int height, bool highDepth);
+  bool ReadBGRA8(CaptureResult& result);
+  bool ReadHighDepth(CaptureResult& result);
   void Release();
 
   //! GL object names as plain integers so this header stays GL-free
@@ -55,6 +60,10 @@ private:
   uint32_t m_texture{0};
   unsigned int m_width{0};
   unsigned int m_height{0};
+  //! target holds the output's native depth instead of 8-bit BGRA
+  bool m_isHighDepth{false};
+  //! output surface depth captured at Blit() time, valid when m_isHighDepth
+  int m_outputBitDepth{8};
   //! GLES2 no-blit path: pixels staged by Blit() for Read()
   std::vector<uint8_t> m_staged;
 };

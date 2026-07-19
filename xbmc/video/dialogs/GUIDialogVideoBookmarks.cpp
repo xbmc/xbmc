@@ -489,6 +489,8 @@ bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
     spec.content = CaptureContent::VIDEO;
     spec.width = width;
     spec.height = height;
+    // native depth so HDR passthrough sessions tonemap from full precision
+    spec.format = CaptureFormat::NATIVE;
     const auto handle = captureService->Submit(spec);
 
     // sync-screenshot wait pattern: on the render thread pump real frames,

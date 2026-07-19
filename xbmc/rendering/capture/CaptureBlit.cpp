@@ -31,7 +31,7 @@ namespace CAPTURE
 #if defined(HAS_GL) || HAS_GLES >= 2
 namespace
 {
-//! Integer source region clamped to the output surface; zoom pushes destRect beyond it.
+// Integer source region clamped to the output surface; zoom pushes destRect beyond it.
 bool ClampToOutput(const CRect& srcRect, int& x0, int& y0, int& x1, int& y1, int& fbHeight)
 {
   const CGraphicContext& gfx = CServiceBroker::GetWinSystem()->GetGfxContext();
@@ -64,12 +64,22 @@ void CCaptureBlit::Release()
   m_height = 0;
 }
 
-bool CCaptureBlit::EnsureFramebuffer(unsigned int width, unsigned int height)
+bool CCaptureBlit::EnsureFramebuffer(unsigned int width, unsigned int height, bool highDepth)
 {
-  if (m_fbo && width == m_width && height == m_height)
+  if (m_fbo && width == m_width && height == m_height && highDepth == m_isHighDepth)
     return true;
 
   Release();
+
+  // high-depth target: GL_RGBA16 is required color-renderable in GL 3.2;
+  // GLES3 has no renderable RGBA16 so the 10-bit GL_RGB10_A2 core format is used
+#ifdef HAS_GL
+  const GLint internalFormat = highDepth ? GL_RGBA16 : GL_RGBA8;
+  const GLenum type = highDepth ? GL_UNSIGNED_SHORT : GL_UNSIGNED_BYTE;
+#else
+  const GLint internalFormat = highDepth ? GL_RGB10_A2 : GL_RGBA8;
+  const GLenum type = highDepth ? GL_UNSIGNED_INT_2_10_10_10_REV : GL_UNSIGNED_BYTE;
+#endif
 
   GLint prevTexture{0};
   glGetIntegerv(GL_TEXTURE_BINDING_2D, &prevTexture);
@@ -80,8 +90,8 @@ bool CCaptureBlit::EnsureFramebuffer(unsigned int width, unsigned int height)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, static_cast<GLsizei>(width),
-               static_cast<GLsizei>(height), 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+  glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, static_cast<GLsizei>(width),
+               static_cast<GLsizei>(height), 0, GL_RGBA, type, nullptr);
   glBindTexture(GL_TEXTURE_2D, static_cast<GLuint>(prevTexture));
 
   glGenFramebuffers(1, &m_fbo);
@@ -97,10 +107,14 @@ bool CCaptureBlit::EnsureFramebuffer(unsigned int width, unsigned int height)
 
   m_width = width;
   m_height = height;
+  m_isHighDepth = highDepth;
   return true;
 }
 
-bool CCaptureBlit::Blit(const CRect& srcRect, unsigned int width, unsigned int height)
+bool CCaptureBlit::Blit(const CRect& srcRect,
+                        unsigned int width,
+                        unsigned int height,
+                        CaptureFormat format)
 {
   if (width == 0 || height == 0)
     return false;
@@ -113,6 +127,11 @@ bool CCaptureBlit::Blit(const CRect& srcRect, unsigned int width, unsigned int h
   if (!ClampToOutput(srcRect, x0, y0, x1, y1, fbHeight))
     return false;
 
+  // native depth is only distinct from BGRA8 when the output runs above 8 bits
+  const int outputBitDepth = CServiceBroker::GetWinSystem()->GetOutputBitDepth();
+  const bool highDepth = format == CaptureFormat::NATIVE && outputBitDepth > 8;
+  m_outputBitDepth = outputBitDepth;
+
   GLint prevReadFBO{0};
   GLint prevDrawFBO{0};
   glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &prevReadFBO);
@@ -121,7 +140,7 @@ bool CCaptureBlit::Blit(const CRect& srcRect, unsigned int width, unsigned int h
   if (scissor)
     glDisable(GL_SCISSOR_TEST);
 
-  bool ok = EnsureFramebuffer(width, height);
+  bool ok = EnsureFramebuffer(width, height, highDepth);
   if (ok)
   {
     while (glGetError() != GL_NO_ERROR)
@@ -155,6 +174,18 @@ bool CCaptureBlit::Read(CaptureResult& result)
   glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &prevReadFBO);
   glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo);
 
+  bool ok = false;
+  if (m_isHighDepth)
+    ok = ReadHighDepth(result);
+  else
+    ok = ReadBGRA8(result);
+
+  glBindFramebuffer(GL_READ_FRAMEBUFFER, static_cast<GLuint>(prevReadFBO));
+  return ok;
+}
+
+bool CCaptureBlit::ReadBGRA8(CaptureResult& result)
+{
   const unsigned int stride = m_width * 4;
   std::shared_ptr<uint8_t[]> pixels(new uint8_t[stride * m_height]);
 #ifdef HAS_GL
@@ -164,10 +195,7 @@ bool CCaptureBlit::Read(CaptureResult& result)
   glReadPixels(0, 0, static_cast<GLsizei>(m_width), static_cast<GLsizei>(m_height), GL_RGBA,
                GL_UNSIGNED_BYTE, pixels.get());
 #endif
-  const bool ok = glGetError() == GL_NO_ERROR;
-  glBindFramebuffer(GL_READ_FRAMEBUFFER, static_cast<GLuint>(prevReadFBO));
-
-  if (!ok)
+  if (glGetError() != GL_NO_ERROR)
   {
     CLog::LogF(LOGERROR, "glReadPixels failed");
     return false;
@@ -188,6 +216,100 @@ bool CCaptureBlit::Read(CaptureResult& result)
   return true;
 }
 
+bool CCaptureBlit::ReadHighDepth(CaptureResult& result)
+{
+  const unsigned int stride = m_width * 8;
+
+#ifdef HAS_GL
+  // desktop GL converts any framebuffer depth to 16-bit per channel on readback
+  std::shared_ptr<uint8_t[]> pixels(new uint8_t[stride * m_height]);
+  glReadPixels(0, 0, static_cast<GLsizei>(m_width), static_cast<GLsizei>(m_height), GL_RGBA,
+               GL_UNSIGNED_SHORT, pixels.get());
+  if (glGetError() != GL_NO_ERROR)
+  {
+    CLog::LogF(LOGERROR, "glReadPixels 16-bit failed");
+    return false;
+  }
+
+  uint16_t* alpha = reinterpret_cast<uint16_t*>(pixels.get()) + 3;
+  for (unsigned int i = 0; i < m_width * m_height; i++, alpha += 4)
+    *alpha = 0xFFFF;
+
+  result.pixels = std::move(pixels);
+  result.width = m_width;
+  result.height = m_height;
+  result.stride = stride;
+  result.bitDepth = m_outputBitDepth;
+  return true;
+#else
+  // GLES negotiates the readback type; only GL_RGBA is guaranteed beyond 8-bit
+  GLint readFormat = GL_RGBA;
+  GLint readType = GL_UNSIGNED_BYTE;
+  glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT, &readFormat);
+  glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_TYPE, &readType);
+
+  if (readFormat == GL_RGBA && readType == GL_UNSIGNED_INT_2_10_10_10_REV)
+  {
+    std::vector<uint32_t> packed(m_width * m_height);
+    glReadPixels(0, 0, static_cast<GLsizei>(m_width), static_cast<GLsizei>(m_height), GL_RGBA,
+                 GL_UNSIGNED_INT_2_10_10_10_REV, packed.data());
+    if (glGetError() != GL_NO_ERROR)
+    {
+      CLog::LogF(LOGERROR, "glReadPixels 10-bit failed");
+      return false;
+    }
+
+    std::shared_ptr<uint8_t[]> pixels(new uint8_t[stride * m_height]);
+    uint16_t* dst = reinterpret_cast<uint16_t*>(pixels.get());
+    for (unsigned int i = 0; i < m_width * m_height; i++, dst += 4)
+    {
+      const uint32_t p = packed[i];
+      // renormalize 10-bit to the full 16-bit scale
+      const uint16_t r = static_cast<uint16_t>((p >> 0) & 0x3FF);
+      const uint16_t g = static_cast<uint16_t>((p >> 10) & 0x3FF);
+      const uint16_t b = static_cast<uint16_t>((p >> 20) & 0x3FF);
+      dst[0] = static_cast<uint16_t>((r << 6) | (r >> 4));
+      dst[1] = static_cast<uint16_t>((g << 6) | (g >> 4));
+      dst[2] = static_cast<uint16_t>((b << 6) | (b >> 4));
+      dst[3] = 0xFFFF;
+    }
+
+    result.pixels = std::move(pixels);
+    result.width = m_width;
+    result.height = m_height;
+    result.stride = stride;
+    result.bitDepth = m_outputBitDepth;
+    return true;
+  }
+
+  if (readFormat == GL_RGBA && readType == GL_UNSIGNED_SHORT)
+  {
+    std::shared_ptr<uint8_t[]> pixels(new uint8_t[stride * m_height]);
+    glReadPixels(0, 0, static_cast<GLsizei>(m_width), static_cast<GLsizei>(m_height), GL_RGBA,
+                 GL_UNSIGNED_SHORT, pixels.get());
+    if (glGetError() != GL_NO_ERROR)
+    {
+      CLog::LogF(LOGERROR, "glReadPixels 16-bit failed");
+      return false;
+    }
+
+    uint16_t* alpha = reinterpret_cast<uint16_t*>(pixels.get()) + 3;
+    for (unsigned int i = 0; i < m_width * m_height; i++, alpha += 4)
+      *alpha = 0xFFFF;
+
+    result.pixels = std::move(pixels);
+    result.width = m_width;
+    result.height = m_height;
+    result.stride = stride;
+    result.bitDepth = m_outputBitDepth;
+    return true;
+  }
+
+  // driver offers no high-depth readback: 8-bit output coding, tonemap goes by tags
+  return ReadBGRA8(result);
+#endif
+}
+
 #elif HAS_GLES == 2
 
 CCaptureBlit::~CCaptureBlit() = default;
@@ -196,15 +318,18 @@ void CCaptureBlit::Release()
 {
 }
 
-bool CCaptureBlit::EnsureFramebuffer(unsigned int width, unsigned int height)
+bool CCaptureBlit::EnsureFramebuffer(unsigned int width, unsigned int height, bool highDepth)
 {
   return false;
 }
 
-bool CCaptureBlit::Blit(const CRect& srcRect, unsigned int width, unsigned int height)
+bool CCaptureBlit::Blit(const CRect& srcRect,
+                        unsigned int width,
+                        unsigned int height,
+                        CaptureFormat format)
 {
-  // GLES2 has no framebuffer blit: read the region at native size and let the
-  // consumer-side conversion scale to the requested size
+  // GLES2 has no framebuffer blit and no high-depth readback: read the region
+  // at native size in 8-bit; the consumer-side conversion scales and goes by tags
   int x0{0};
   int y0{0};
   int x1{0};
@@ -267,12 +392,15 @@ void CCaptureBlit::Release()
 {
 }
 
-bool CCaptureBlit::EnsureFramebuffer(unsigned int width, unsigned int height)
+bool CCaptureBlit::EnsureFramebuffer(unsigned int width, unsigned int height, bool highDepth)
 {
   return false;
 }
 
-bool CCaptureBlit::Blit(const CRect& srcRect, unsigned int width, unsigned int height)
+bool CCaptureBlit::Blit(const CRect& srcRect,
+                        unsigned int width,
+                        unsigned int height,
+                        CaptureFormat format)
 {
   //! @todo D3D11 sub-region staging copy so the video tap serves Windows
   return false;

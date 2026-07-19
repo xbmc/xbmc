@@ -197,7 +197,9 @@ namespace XBMCAddon
         if (!m_handle->WaitNext(std::chrono::milliseconds(msec ? msec : 1000)))
           return false;
         const KODI::RENDERING::CAPTURE::CaptureResult result = m_handle->CopyResult();
-        return KODI::RENDERING::CAPTURE::CaptureToBGRA(result, m_width, m_height, m_buffer.get());
+        // legacy contract: raw output-coded 8-bit BGRA, never tonemapped; an
+        // HDR session delivers PQ/HLG-coded bytes exactly as glReadPixels did
+        return KODI::RENDERING::CAPTURE::CaptureCopyBGRA8(result, m_width, m_height, m_buffer.get());
       }
 #endif
 

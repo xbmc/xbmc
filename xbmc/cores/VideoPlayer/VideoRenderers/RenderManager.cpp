@@ -523,7 +523,7 @@ void CRenderManager::ServiceVideoCaptures()
     return;
 
   // video composited outside Kodi's GL (D2P plane, Android video surface,
-  // webOS video plane) leaves nothing at the present point to copy
+  // webOS video plane) leaves nothing in the framebuffer to copy
   if (m_pRenderer->HasVideoPlane())
   {
     for (const auto& request : requests)
@@ -536,20 +536,36 @@ void CRenderManager::ServiceVideoCaptures()
   CRect view;
   m_pRenderer->GetVideoRect(src, dst, view);
 
+  // zoom modes push destRect past the output; the copy is clamped to the
+  // visible region, so native-size targets must be sized from it too
+  const CGraphicContext& gfx = CServiceBroker::GetWinSystem()->GetGfxContext();
+  CRect visible{dst};
+  visible.Intersect(
+      CRect(0.0f, 0.0f, static_cast<float>(gfx.GetWidth()), static_cast<float>(gfx.GetHeight())));
+
   if (!m_captureBlit)
     m_captureBlit = std::make_unique<CCaptureBlit>();
 
   for (const auto& request : requests)
   {
     const unsigned int width =
-        request->spec.width ? request->spec.width : static_cast<unsigned int>(dst.Width());
+        request->spec.width ? request->spec.width : static_cast<unsigned int>(visible.Width());
     const unsigned int height =
-        request->spec.height ? request->spec.height : static_cast<unsigned int>(dst.Height());
+        request->spec.height ? request->spec.height : static_cast<unsigned int>(visible.Height());
 
     CaptureResult result;
-    if (m_captureBlit->Blit(dst, width, height) && m_captureBlit->Read(result))
+    if (m_captureBlit->Blit(visible, width, height, request->spec.format) &&
+        m_captureBlit->Read(result))
     {
       result.color = GetOutputColorMetadata(*CServiceBroker::GetWinSystem());
+      // the presented PQ is the content's during passthrough, so carry its
+      // mastering metadata verbatim: the source peak an SDR tonemap needs.
+      // NOTE: m_picture, not m_pConfigPicture, which Configure() has already
+      // reset by the time this frame reaches CONFIGURED.
+      result.hasDisplayMetadata = m_picture.hasDisplayMetadata;
+      result.displayMetadata = m_picture.displayMetadata;
+      result.hasLightMetadata = m_picture.hasLightMetadata;
+      result.lightMetadata = m_picture.lightMetadata;
       captureService->Complete(request, std::move(result));
     }
     else
@@ -608,7 +624,7 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
     presented = true;
   }
 
-  // the just-presented region is pure video: OSD, GUI and subtitles come later
+  // the just-presented region is video-only: OSD, GUI and subtitles come later
   if (presented)
     ServiceVideoCaptures();
 
