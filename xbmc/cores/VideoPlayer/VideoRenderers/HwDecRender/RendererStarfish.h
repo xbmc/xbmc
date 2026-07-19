@@ -38,7 +38,6 @@ public:
   void Update() override;
   void RenderUpdate(
       int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;
-  bool RenderCapture(int index, CRenderCapture* capture) override;
   bool ConfigChanged(const VideoPicture& picture) override;
 
 protected:

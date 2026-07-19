@@ -373,11 +373,6 @@ public:
   bool Supports(ESCALINGMETHOD method) const override;
   bool Supports(ERENDERFEATURE feature) const override;
 
-  unsigned int RenderCaptureAlloc() override;
-  void RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags) override;
-  void RenderCaptureRelease(unsigned int captureId) override;
-  bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size) override;
-
   // IDispResource interface
   void OnLostDisplay() override;
   void OnResetDisplay() override;

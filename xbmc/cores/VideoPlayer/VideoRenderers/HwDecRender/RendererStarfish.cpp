@@ -178,11 +178,6 @@ bool CRendererStarfish::IsGuiLayer()
   return false;
 }
 
-bool CRendererStarfish::RenderCapture(int index, CRenderCapture* capture)
-{
-  return false;
-}
-
 void CRendererStarfish::UnInit()
 {
   m_configured = false;

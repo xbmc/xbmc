@@ -2,7 +2,6 @@ set(SOURCES BaseRenderer.cpp
             ColorManager.cpp
             OverlayRenderer.cpp
             OverlayRendererUtil.cpp
-            RenderCapture.cpp
             RenderFactory.cpp
             RenderFlags.cpp
             RenderManager.cpp
@@ -13,7 +12,6 @@ set(HEADERS BaseRenderer.h
             DebugInfo.h
             OverlayRenderer.h
             OverlayRendererUtil.h
-            RenderCapture.h
             RenderFactory.h
             RenderFlags.h
             RenderInfo.h
@@ -22,11 +20,9 @@ set(HEADERS BaseRenderer.h
 
 if(CORE_SYSTEM_NAME STREQUAL windows OR CORE_SYSTEM_NAME STREQUAL windowsstore)
   list(APPEND SOURCES WinRenderer.cpp
-                      OverlayRendererDX.cpp
-                      RenderCaptureDX.cpp)
+                      OverlayRendererDX.cpp)
   list(APPEND HEADERS WinRenderer.h
-                      OverlayRendererDX.h
-                      RenderCapture.h)
+                      OverlayRendererDX.h)
 endif()
 
 if(TARGET ${APP_NAME_LC}::OpenGl OR TARGET ${APP_NAME_LC}::OpenGLES)
@@ -36,11 +32,9 @@ endif()
 
 if(TARGET ${APP_NAME_LC}::OpenGl)
   list(APPEND SOURCES LinuxRendererGL.cpp
-                      OverlayRendererGL.cpp
-                      RenderCaptureGL.cpp)
+                      OverlayRendererGL.cpp)
   list(APPEND HEADERS LinuxRendererGL.h
-                      OverlayRendererGL.h
-                      RenderCaptureGL.h)
+                      OverlayRendererGL.h)
 endif()
 
 if(TARGET ${APP_NAME_LC}::OpenGLES AND ("android" IN_LIST CORE_PLATFORM_NAME_LC OR
@@ -50,11 +44,9 @@ if(TARGET ${APP_NAME_LC}::OpenGLES AND ("android" IN_LIST CORE_PLATFORM_NAME_LC 
                             "x11" IN_LIST CORE_PLATFORM_NAME_LC OR
                             "wayland" IN_LIST CORE_PLATFORM_NAME_LC))
   list(APPEND SOURCES LinuxRendererGLES.cpp
-                      OverlayRendererGLES.cpp
-                      RenderCaptureGLES.cpp)
+                      OverlayRendererGLES.cpp)
   list(APPEND HEADERS LinuxRendererGLES.h
-                      OverlayRendererGLES.cpp
-                      RenderCaptureGLES.h)
+                      OverlayRendererGLES.cpp)
 endif()
 
 core_add_library(videorenderers)

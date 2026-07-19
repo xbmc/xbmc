@@ -10,7 +10,6 @@
 
 /* to use the same as player */
 #include "../VideoPlayer/DVDClock.h"
-#include "RenderCapture.h"
 #include "RenderFactory.h"
 #include "RenderFlags.h"
 #include "ServiceBroker.h"
@@ -25,7 +24,6 @@
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
-#include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
@@ -42,8 +40,6 @@ void CRenderManager::CClockSync::Reset()
   m_syncOffset = 0;
   m_enabled = false;
 }
-
-unsigned int CRenderManager::m_nextCaptureId = 0;
 
 CRenderManager::CRenderManager(CDVDClock &clock, IRenderMsg *player) :
   m_dvdClock(clock),
@@ -359,8 +355,6 @@ void CRenderManager::FrameMove()
   // to use during the render pass. PrepareOverlays MarkDirty's on libass
   // changes and on PGS/DVB/SPU arrival/disappearance.
   m_overlays.PrepareOverlays(m_presentsource);
-
-  ManageCaptures();
 }
 
 void CRenderManager::PreInit()
@@ -421,7 +415,6 @@ void CRenderManager::UnInit()
   m_renderState = STATE_UNCONFIGURED;
   m_picture.Reset();
   m_bRenderGUI = false;
-  RemoveCaptures();
 
   m_initEvent.Set();
 }
@@ -517,160 +510,6 @@ void CRenderManager::DeleteRenderer()
   }
 }
 
-unsigned int CRenderManager::AllocRenderCapture()
-{
-  if (m_pRenderer)
-  {
-    CRenderCapture* capture = m_pRenderer->GetRenderCapture();
-    if (capture)
-    {
-      m_captures[m_nextCaptureId] = capture;
-      return m_nextCaptureId++;
-    }
-  }
-
-  return m_nextCaptureId;
-}
-
-void CRenderManager::ReleaseRenderCapture(unsigned int captureId)
-{
-  std::unique_lock lock(m_captCritSect);
-
-  std::map<unsigned int, CRenderCapture*>::iterator it;
-  it = m_captures.find(captureId);
-
-  if (it != m_captures.end())
-    it->second->SetState(CAPTURESTATE_NEEDSDELETE);
-}
-
-void CRenderManager::StartRenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags)
-{
-  std::unique_lock lock(m_captCritSect);
-
-  std::map<unsigned int, CRenderCapture*>::iterator it;
-  it = m_captures.find(captureId);
-  if (it == m_captures.end())
-  {
-    CLog::Log(LOGERROR, "CRenderManager::Capture - unknown capture id: {}", captureId);
-    return;
-  }
-
-  CRenderCapture *capture = it->second;
-
-  capture->SetState(CAPTURESTATE_NEEDSRENDER);
-  capture->SetUserState(CAPTURESTATE_WORKING);
-  capture->SetWidth(width);
-  capture->SetHeight(height);
-  capture->SetFlags(flags);
-  capture->GetEvent().Reset();
-
-  if (CServiceBroker::GetAppMessenger()->IsProcessThread())
-  {
-    if (flags & CAPTUREFLAG_IMMEDIATELY)
-    {
-      //render capture and read out immediately
-      RenderCapture(capture);
-      capture->SetUserState(capture->GetState());
-      capture->GetEvent().Set();
-    }
-  }
-
-  if (!m_captures.empty())
-    m_hasCaptures = true;
-}
-
-bool CRenderManager::RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size)
-{
-  std::unique_lock lock(m_captCritSect);
-
-  std::map<unsigned int, CRenderCapture*>::iterator it;
-  it = m_captures.find(captureId);
-  if (it == m_captures.end())
-    return false;
-
-  m_captureWaitCounter++;
-
-  {
-    if (!millis)
-      millis = 1000;
-
-    CSingleExit exitlock(m_captCritSect);
-    if (!it->second->GetEvent().Wait(std::chrono::milliseconds(millis)))
-    {
-      m_captureWaitCounter--;
-      return false;
-    }
-  }
-
-  m_captureWaitCounter--;
-
-  if (it->second->GetUserState() != CAPTURESTATE_DONE)
-    return false;
-
-  unsigned int srcSize = it->second->GetWidth() * it->second->GetHeight() * 4;
-  unsigned int bytes = std::min(srcSize, size);
-
-  memcpy(buffer, it->second->GetPixels(), bytes);
-  return true;
-}
-
-void CRenderManager::ManageCaptures()
-{
-  //no captures, return here so we don't do an unnecessary lock
-  if (!m_hasCaptures)
-    return;
-
-  std::unique_lock lock(m_captCritSect);
-
-  std::map<unsigned int, CRenderCapture*>::iterator it = m_captures.begin();
-  while (it != m_captures.end())
-  {
-    CRenderCapture* capture = it->second;
-
-    if (capture->GetState() == CAPTURESTATE_NEEDSDELETE)
-    {
-      delete capture;
-      it = m_captures.erase(it);
-      continue;
-    }
-
-    if (capture->GetState() == CAPTURESTATE_NEEDSRENDER)
-      RenderCapture(capture);
-    else if (capture->GetState() == CAPTURESTATE_NEEDSREADOUT)
-      capture->ReadOut();
-
-    if (capture->GetState() == CAPTURESTATE_DONE || capture->GetState() == CAPTURESTATE_FAILED)
-    {
-      //tell the thread that the capture is done or has failed
-      capture->SetUserState(capture->GetState());
-      capture->GetEvent().Set();
-
-      if (capture->GetFlags() & CAPTUREFLAG_CONTINUOUS)
-      {
-        capture->SetState(CAPTURESTATE_NEEDSRENDER);
-
-        //if rendering this capture continuously, and readout is async, render a new capture immediately
-        if (capture->IsAsync() && !(capture->GetFlags() & CAPTUREFLAG_IMMEDIATELY))
-          RenderCapture(capture);
-      }
-      ++it;
-    }
-    else
-    {
-      ++it;
-    }
-  }
-
-  if (m_captures.empty())
-    m_hasCaptures = false;
-}
-
-void CRenderManager::RenderCapture(CRenderCapture* capture)
-{
-  if (!m_pRenderer || !m_pRenderer->RenderCapture(m_presentsource, capture))
-    capture->SetState(CAPTURESTATE_FAILED);
-}
-
 void CRenderManager::ServiceVideoCaptures()
 {
   using namespace KODI::RENDERING::CAPTURE;
@@ -716,27 +555,6 @@ void CRenderManager::ServiceVideoCaptures()
     else
       captureService->Fail(request);
   }
-}
-
-void CRenderManager::RemoveCaptures()
-{
-  std::unique_lock lock(m_captCritSect);
-
-  while (m_captureWaitCounter > 0)
-  {
-    for (auto entry : m_captures)
-    {
-      entry.second->GetEvent().Set();
-    }
-    CSingleExit lockexit(m_captCritSect);
-    KODI::TIME::Sleep(10ms);
-  }
-
-  for (auto entry : m_captures)
-  {
-    delete entry.second;
-  }
-  m_captures.clear();
 }
 
 void CRenderManager::SetViewMode(int iViewMode)
