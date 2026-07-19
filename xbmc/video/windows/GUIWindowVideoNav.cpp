@@ -627,63 +627,38 @@ void CGUIWindowVideoNav::DoSearch(const std::string& strSearch, CFileItemList& i
   const auto entries = std::array{
       Entry{20338,
             [&strSearch, &tempItems, this]() { m_database.GetMoviesByName(strSearch, tempItems); }},
-      Entry{20359, [&strSearch, &tempItems,
-                    this]() { m_database.GetEpisodesByName(strSearch, tempItems); }},
-      Entry{20364, [&strSearch, &tempItems,
-                    this]() { m_database.GetTvShowsByName(strSearch, tempItems); }},
-      Entry{20391, [&strSearch, &tempItems,
-                    this]() { m_database.GetMusicVideosByName(strSearch, tempItems); }},
-      Entry{558, [&strSearch, &tempItems,
-                  this]() { m_database.GetMusicVideosByAlbum(strSearch, tempItems); }},
-      Entry{20342,
-            [&strSearch, &tempItems, this]() {
-              m_database.GetMovieGenresByName(strSearch, tempItems);
-            },
-            515},
-      Entry{20343,
-            [&strSearch, &tempItems, this]() {
-              m_database.GetTvShowGenresByName(strSearch, tempItems);
-            },
-            515},
-      Entry{20389,
-            [&strSearch, &tempItems, this]() {
-              m_database.GetMusicVideoGenresByName(strSearch, tempItems);
-            },
-            515},
-      Entry{20342,
-            [&strSearch, &tempItems, this]() {
-              m_database.GetMovieActorsByName(strSearch, tempItems);
-            },
-            20337},
-      Entry{20343,
-            [&strSearch, &tempItems, this]() {
-              m_database.GetTvShowsActorsByName(strSearch, tempItems);
-            },
-            20337},
-      Entry{20389,
-            [&strSearch, &tempItems, this]() {
-              m_database.GetMusicVideoArtistsByName(strSearch, tempItems);
-            },
-            20337},
-      Entry{20342,
-            [&strSearch, &tempItems, this]() {
-              m_database.GetMovieDirectorsByName(strSearch, tempItems);
-            },
-            20339},
-      Entry{20343,
-            [&strSearch, &tempItems, this]() {
-              m_database.GetTvShowsDirectorsByName(strSearch, tempItems);
-            },
-            20339},
-      Entry{20389,
-            [&strSearch, &tempItems, this]() {
-              m_database.GetMusicVideoDirectorsByName(strSearch, tempItems);
-            },
-            20339},
-      Entry{20365, [&strSearch, &tempItems,
-                    this]() { m_database.GetEpisodesByPlot(strSearch, tempItems); }},
+      Entry{20359, [&strSearch, &tempItems, this]()
+            { m_database.GetEpisodesByName(strSearch, tempItems); }},
+      Entry{20364, [&strSearch, &tempItems, this]()
+            { m_database.GetTvShowsByName(strSearch, tempItems); }},
+      Entry{20391, [&strSearch, &tempItems, this]()
+            { m_database.GetMusicVideosByName(strSearch, tempItems); }},
+      Entry{558, [&strSearch, &tempItems, this]()
+            { m_database.GetMusicVideosByAlbum(strSearch, tempItems); }},
+      Entry{20342, [&strSearch, &tempItems, this]()
+            { m_database.GetMovieGenresByName(strSearch, tempItems); }, 515},
+      Entry{20343, [&strSearch, &tempItems, this]()
+            { m_database.GetTvShowGenresByName(strSearch, tempItems); }, 515},
+      Entry{20389, [&strSearch, &tempItems, this]()
+            { m_database.GetMusicVideoGenresByName(strSearch, tempItems); }, 515},
+      Entry{20342, [&strSearch, &tempItems, this]()
+            { m_database.GetMovieActorsByName(strSearch, tempItems); }, 20337},
+      Entry{20343, [&strSearch, &tempItems, this]()
+            { m_database.GetTvShowsActorsByName(strSearch, tempItems); }, 20337},
+      Entry{20389, [&strSearch, &tempItems, this]()
+            { m_database.GetMusicVideoArtistsByName(strSearch, tempItems); }, 20337},
+      Entry{20342, [&strSearch, &tempItems, this]()
+            { m_database.GetMovieDirectorsByName(strSearch, tempItems); }, 20339},
+      Entry{20343, [&strSearch, &tempItems, this]()
+            { m_database.GetTvShowsDirectorsByName(strSearch, tempItems); }, 20339},
+      Entry{20389, [&strSearch, &tempItems, this]()
+            { m_database.GetMusicVideoDirectorsByName(strSearch, tempItems); }, 20339},
+      Entry{20365, [&strSearch, &tempItems, this]()
+            { m_database.GetEpisodesByPlot(strSearch, tempItems); }},
       Entry{20323,
             [&strSearch, &tempItems, this]() { m_database.GetMoviesByPlot(strSearch, tempItems); }},
+      Entry{40211, [&strSearch, &tempItems, this]()
+            { m_database.GetMovieExtrasByName(strSearch, tempItems); }},
   };
 
   std::for_each(entries.begin(), entries.end(), [this, &items, &tempItems](const auto& entry) {
