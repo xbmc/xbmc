@@ -13,6 +13,11 @@
 #include <cstdint>
 #include <memory>
 
+extern "C"
+{
+#include <libavutil/mastering_display_metadata.h>
+}
+
 namespace KODI
 {
 namespace RENDERING
@@ -32,6 +37,12 @@ enum class CaptureCadence
   CONTINUOUS,
 };
 
+enum class CaptureFormat
+{
+  BGRA8, //!< 8-bit BGRA, requantized from the output depth during the copy
+  NATIVE, //!< the output surface's coding at its native depth
+};
+
 struct CaptureSpec
 {
   CaptureContent content{CaptureContent::COMPOSITE};
@@ -39,6 +50,7 @@ struct CaptureSpec
   //! 0x0 requests the native output size; nonzero requests a scaled capture
   unsigned int width{0};
   unsigned int height{0};
+  CaptureFormat format{CaptureFormat::BGRA8};
 };
 
 struct CaptureResult
@@ -49,6 +61,12 @@ struct CaptureResult
   unsigned int stride{0};
   int bitDepth{8};
   ImageColorMetadata color;
+  //! HDR mastering/light metadata of the captured content, carried verbatim so
+  //! an SDR tonemap has the same source peak the thumbnail extractor uses
+  bool hasDisplayMetadata{false};
+  AVMasteringDisplayMetadata displayMetadata{};
+  bool hasLightMetadata{false};
+  AVContentLightMetadata lightMetadata{};
 };
 
 } // namespace CAPTURE
