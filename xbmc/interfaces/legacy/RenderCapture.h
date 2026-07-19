@@ -14,8 +14,13 @@
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "commons/Buffer.h"
+#include "rendering/capture/CaptureConvert.h"
+#include "rendering/capture/CaptureHandle.h"
+#include "rendering/capture/CaptureService.h"
 
-#include <climits>
+#include <chrono>
+#include <cstdint>
+#include <memory>
 
 namespace XBMCAddon
 {
@@ -37,26 +42,16 @@ namespace XBMCAddon
     //
     class RenderCapture : public AddonClass
     {
-      unsigned int m_captureId;
-      unsigned int m_width;
-      unsigned int m_height;
-      uint8_t *m_buffer;
+      //! the service outlives the handle: it is unregistered before script shutdown
+      std::shared_ptr<KODI::RENDERING::CAPTURE::CCaptureService> m_service;
+      std::unique_ptr<KODI::RENDERING::CAPTURE::CCaptureHandle> m_handle;
+      unsigned int m_width{0};
+      unsigned int m_height{0};
+      std::unique_ptr<uint8_t[]> m_buffer;
 
     public:
-      inline RenderCapture()
-      {
-        m_captureId = UINT_MAX;
-        m_buffer = nullptr;
-        m_width = 0;
-        m_height = 0;
-      }
-      inline ~RenderCapture() override
-      {
-        auto& components = CServiceBroker::GetAppComponents();
-        const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-        appPlayer->RenderCaptureRelease(m_captureId);
-        delete [] m_buffer;
-      }
+      RenderCapture() = default;
+      ~RenderCapture() override = default;
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
@@ -153,7 +148,7 @@ namespace XBMCAddon
           return XbmcCommons::Buffer(0);
 
         size_t size = m_width * m_height * 4;
-        return XbmcCommons::Buffer(m_buffer, size);
+        return XbmcCommons::Buffer(m_buffer.get(), size);
       }
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -174,29 +169,35 @@ namespace XBMCAddon
       inline void capture(int width, int height)
 #endif
       {
-        auto& components = CServiceBroker::GetAppComponents();
-        const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+        // cancel any previous request before its buffer goes away
+        m_handle.reset();
 
-        if (m_buffer)
-        {
-          appPlayer->RenderCaptureRelease(m_captureId);
-          delete [] m_buffer;
-        }
-        m_captureId = appPlayer->RenderCaptureAlloc();
         m_width = width;
         m_height = height;
-        m_buffer = new uint8_t[m_width*m_height*4];
-        appPlayer->RenderCapture(m_captureId, m_width, m_height, CAPTUREFLAG_CONTINUOUS);
+        m_buffer = std::make_unique<uint8_t[]>(static_cast<size_t>(m_width) * m_height * 4);
+
+        m_service = CServiceBroker::GetCaptureService();
+        if (!m_service)
+          return;
+
+        KODI::RENDERING::CAPTURE::CaptureSpec spec;
+        spec.content = KODI::RENDERING::CAPTURE::CaptureContent::VIDEO;
+        spec.cadence = KODI::RENDERING::CAPTURE::CaptureCadence::CONTINUOUS;
+        spec.width = m_width;
+        spec.height = m_height;
+        m_handle = m_service->Submit(spec);
       }
 
 // hide these from swig
 #ifndef SWIG
       inline bool GetPixels(unsigned int msec)
       {
-        auto& components = CServiceBroker::GetAppComponents();
-        const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-        return appPlayer->RenderCaptureGetPixels(m_captureId, msec, m_buffer,
-                                                 m_width * m_height * 4);
+        if (!m_handle)
+          return false;
+        if (!m_handle->WaitNext(std::chrono::milliseconds(msec ? msec : 1000)))
+          return false;
+        const KODI::RENDERING::CAPTURE::CaptureResult result = m_handle->CopyResult();
+        return KODI::RENDERING::CAPTURE::CaptureToBGRA(result, m_width, m_height, m_buffer.get());
       }
 #endif
 
