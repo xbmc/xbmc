@@ -35,6 +35,7 @@
 #include "settings/SettingsComponent.h"
 #include "threads/SystemClock.h"
 #include "utils/Crc32.h"
+#include "utils/Screenshot.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -493,27 +494,8 @@ bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
     spec.format = CaptureFormat::NATIVE;
     const auto handle = captureService->Submit(spec);
 
-    // sync-screenshot wait pattern: on the render thread pump real frames,
-    // since a plain wait would deadlock the frame the capture needs
-    const auto appMessenger = CServiceBroker::GetAppMessenger();
-    const bool processThread = appMessenger && appMessenger->IsProcessThread();
-    CGUIComponent* gui = CServiceBroker::GetGUI();
-
-    XbmcThreads::EndTime<> timeout(1000ms);
-    bool done = false;
-    while (!done && !timeout.IsTimePast())
-    {
-      done = handle->Wait(processThread ? 5ms : 50ms);
-      if (!done)
-      {
-        if (handle->GetState() == CaptureState::FAILED)
-          break;
-        if (processThread && gui)
-          gui->GetWindowManager().ProcessRenderLoop(false);
-      }
-    }
-
-    if (done)
+    // PumpForCapture lives on CScreenShot: it is the friend of CGUIWindowManager
+    if (CScreenShot::PumpForCapture(*handle, 1000ms))
       hasImage = CaptureToBGRA(handle->GetResult(), width, height, pixels.data());
   }
 

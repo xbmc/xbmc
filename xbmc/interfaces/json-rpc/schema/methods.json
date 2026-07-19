@@ -5520,6 +5520,26 @@
     "params": [],
     "returns": "string"
   },
+  "GUI.TakeScreenshot": {
+    "type": "method",
+    "description": "Takes a screenshot into the configured screenshot folder",
+    "transport": "Response",
+    "permission": "ControlGUI",
+    "params": [
+      {
+        "name": "content",
+        "type": "string",
+        "enum": [
+          "composite",
+          "video",
+          "both"
+        ],
+        "default": "composite",
+        "description": "composite captures the full display output, video only the video frame, both writes two files, the video frame and the full composite, from the same rendered frame. Files are written asynchronously; the method acknowledges the request and does not wait for the write."
+      }
+    ],
+    "returns": "string"
+  },
   "Addons.GetAddons": {
     "type": "method",
     "description": "Gets all available addons",

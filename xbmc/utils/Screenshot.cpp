@@ -11,7 +11,6 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
-#include "filesystem/File.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "messaging/ApplicationMessenger.h"
@@ -24,14 +23,12 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/windows/GUIControlSettings.h"
-#include "threads/Event.h"
 #include "threads/SystemClock.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
 #include <chrono>
 
-using namespace XFILE;
 using namespace std::chrono_literals;
 
 std::vector<std::function<std::unique_ptr<IScreenshotSurface>()>> CScreenShot::m_screenShotSurfaces;
@@ -78,7 +75,9 @@ void WriteCapture(const KODI::RENDERING::CAPTURE::CaptureResult& result,
 }
 } // namespace
 
-void CScreenShot::TakeScreenshot(const std::string& filename, bool sync)
+void CScreenShot::TakeScreenshot(const std::string& filename,
+                                 bool sync,
+                                 KODI::RENDERING::CAPTURE::CaptureContent content)
 {
   using namespace KODI::RENDERING::CAPTURE;
 
@@ -91,82 +90,127 @@ void CScreenShot::TakeScreenshot(const std::string& filename, bool sync)
 
   CLog::Log(LOGDEBUG, "Saving screenshot {}", CURL::GetRedacted(filename));
 
-  if (!sync)
-  {
-    //make sure the file exists to avoid concurrency issues
-    XFILE::CFile file;
-    if (file.OpenForWrite(filename))
-      file.Close();
-    else
-      CLog::Log(LOGERROR, "Unable to create file {}", CURL::GetRedacted(filename));
-  }
-
-  // the capture itself is always async; shared event so a post-timeout
-  // straggler callback signals harmlessly
-  const auto written = std::make_shared<CEvent>();
-  auto handle = captureService->Submit({},
-                                       [filename, written](const CaptureResult& result)
-                                       {
-                                         WriteCapture(result, filename);
-                                         written->Set();
-                                       });
+  // screenshots are tagged captures whatever their content: native depth
+  // kept, the display's coding carried as cICP by the writer
+  CaptureSpec spec;
+  spec.content = content;
+  spec.format = CaptureFormat::NATIVE;
 
   if (!sync)
   {
+    // async: the write runs on the service worker, and ONLY on a successful
+    // delivery (the callback never fires on failure), so a failed capture
+    // leaves no empty file behind
+    auto handle = captureService->Submit(
+        spec, [filename](const CaptureResult& result) { WriteCapture(result, filename); });
     handle->Detach();
     return;
   }
 
-  // sync contract: return only when the file is written. On the render
-  // thread wait by pumping real frames (the busy-dialog pattern); a plain
-  // wait there would deadlock the frame the capture needs.
+  // sync contract: return only when the file is written. Pump the render
+  // loop while waiting (see PumpForCapture), then write inline.
+  auto handle = captureService->Submit(spec);
+  if (PumpForCapture(*handle, 2000ms))
+    WriteCapture(handle->GetResult(), filename);
+  else
+    CLog::Log(LOGERROR, "Screenshot {} failed", CURL::GetRedacted(filename));
+}
+
+bool CScreenShot::PumpForCapture(KODI::RENDERING::CAPTURE::CCaptureHandle& handle,
+                                 std::chrono::milliseconds timeout)
+{
+  using namespace KODI::RENDERING::CAPTURE;
+
   const auto appMessenger = CServiceBroker::GetAppMessenger();
   const bool processThread = appMessenger && appMessenger->IsProcessThread();
   auto* gui = CServiceBroker::GetGUI();
 
-  XbmcThreads::EndTime<> timeout(2000ms);
-  bool done = false;
-  while (!done && !timeout.IsTimePast())
+  XbmcThreads::EndTime<> deadline(timeout);
+  while (!deadline.IsTimePast())
   {
-    done = written->Wait(processThread ? 5ms : 50ms);
-    if (!done && processThread && gui)
+    if (handle.Wait(processThread ? 5ms : 50ms))
+      return true;
+    if (handle.GetState() == CaptureState::FAILED)
+      return false;
+    if (processThread && gui)
       gui->GetWindowManager().ProcessRenderLoop(false);
   }
-
-  if (!done)
-    CLog::Log(LOGERROR, "Screenshot {} failed", CURL::GetRedacted(filename));
+  return false;
 }
+
+namespace
+{
+// Resolve the configured screenshot folder, prompting for it once if unset.
+std::string ResolveScreenshotDir()
+{
+  std::shared_ptr<CSettingPath> setting = std::static_pointer_cast<CSettingPath>(
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(
+          CSettings::SETTING_DEBUG_SCREENSHOTPATH));
+  if (!setting)
+    return {};
+
+  std::string dir = setting->GetValue();
+  if (dir.empty())
+  {
+    if (!CGUIControlButtonSetting::GetPath(
+            setting, &CServiceBroker::GetResourcesComponent().GetLocalizeStrings()))
+      return {};
+    dir = setting->GetValue();
+  }
+
+  URIUtils::RemoveSlashAtEnd(dir);
+  return dir;
+}
+} // namespace
 
 void CScreenShot::TakeScreenshot()
 {
-  std::shared_ptr<CSettingPath> screenshotSetting = std::static_pointer_cast<CSettingPath>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(CSettings::SETTING_DEBUG_SCREENSHOTPATH));
-  if (!screenshotSetting)
+  TakeScreenshot(KODI::RENDERING::CAPTURE::CaptureContent::COMPOSITE);
+}
+
+void CScreenShot::TakeScreenshot(KODI::RENDERING::CAPTURE::CaptureContent content)
+{
+  const std::string dir = ResolveScreenshotDir();
+  if (dir.empty())
     return;
 
-  std::string strDir = screenshotSetting->GetValue();
-  if (strDir.empty())
+  const std::string file =
+      CUtil::GetNextFilename(URIUtils::AddFileToFolder(dir, "screenshot{:05}.png"), 65535);
+  if (!file.empty())
+    TakeScreenshot(file, false, content);
+  else
+    CLog::Log(LOGWARNING, "Too many screen shots or invalid folder");
+}
+
+void CScreenShot::TakeScreenshotBoth()
+{
+  using namespace KODI::RENDERING::CAPTURE;
+
+  const auto captureService = CServiceBroker::GetCaptureService();
+  if (!captureService)
+    return;
+
+  const std::string dir = ResolveScreenshotDir();
+  if (dir.empty())
+    return;
+
+  const std::string composite =
+      CUtil::GetNextFilename(URIUtils::AddFileToFolder(dir, "screenshot{:05}.png"), 65535);
+  if (composite.empty())
   {
-    if (!CGUIControlButtonSetting::GetPath(
-            screenshotSetting, &CServiceBroker::GetResourcesComponent().GetLocalizeStrings()))
-      return;
-
-    strDir = screenshotSetting->GetValue();
+    CLog::Log(LOGWARNING, "Too many screen shots or invalid folder");
+    return;
   }
+  // derive the video name from the same NNNNN so the pair is obvious
+  const std::string video = composite.substr(0, composite.length() - 4) + "-video.png";
 
-  URIUtils::RemoveSlashAtEnd(strDir);
-
-  if (!strDir.empty())
-  {
-    std::string file =
-        CUtil::GetNextFilename(URIUtils::AddFileToFolder(strDir, "screenshot{:05}.png"), 65535);
-
-    if (!file.empty())
-    {
-      TakeScreenshot(file, false);
-    }
-    else
-    {
-      CLog::Log(LOGWARNING, "Too many screen shots or invalid folder");
-    }
-  }
+  // one request, both taps, same frame; the callback names each file by the
+  // content delivered
+  CaptureSpec spec;
+  spec.content = CaptureContent::BOTH;
+  spec.format = CaptureFormat::NATIVE;
+  auto handle = captureService->Submit(spec, [composite, video](const CaptureResult& result) {
+    WriteCapture(result, result.content == CaptureContent::VIDEO ? video : composite);
+  });
+  handle->Detach();
 }

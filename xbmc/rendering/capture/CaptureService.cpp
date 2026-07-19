@@ -32,6 +32,17 @@ std::unique_ptr<CCaptureHandle> CCaptureService::Submit(const CaptureSpec& spec,
   request->spec = spec;
   request->callback = std::move(callback);
 
+  // BOTH delivers a video-only and a composite capture, told apart only by
+  // result.content in the callback; Wait/CopyResult could hand back only one
+  if (spec.content == CaptureContent::BOTH && !request->callback)
+  {
+    CLog::LogF(LOGERROR, "BOTH capture requires a callback; Wait/CopyResult "
+                         "cannot tell the video-only and composite captures apart");
+    request->state = CaptureState::FAILED;
+    request->event.Set();
+    return std::make_unique<CCaptureHandle>(*this, std::move(request));
+  }
+
   {
     std::unique_lock lock(m_lock);
     m_pending.push_back(request);
@@ -100,14 +111,15 @@ std::vector<std::shared_ptr<CaptureRequest>> CCaptureService::TakeActive(Capture
 {
   std::vector<std::shared_ptr<CaptureRequest>> matches;
   std::unique_lock lock(m_lock);
-  // exactly one request is LATCHED per frame; return it wherever it sits
+  // exactly one request is LATCHED per frame; return it wherever it sits. A
+  // BOTH request is served by the video tap and the composite tap alike.
   for (const auto& request : m_stack)
   {
-    if (request->state == CaptureState::LATCHED && request->spec.content == content)
-    {
+    if (request->state != CaptureState::LATCHED)
+      continue;
+    if (request->spec.content == content || request->spec.content == CaptureContent::BOTH)
       matches.push_back(request);
-      break;
-    }
+    break;
   }
   return matches;
 }
@@ -121,14 +133,21 @@ void CCaptureService::Complete(const std::shared_ptr<CaptureRequest>& request, C
     std::unique_lock lock(m_lock);
     if (request->state == CaptureState::LATCHED)
     {
-      request->result = std::move(result);
+      request->result = result;
       request->deliveries++;
       request->served = true;
       dispatch = true;
       if (request->spec.cadence == CaptureCadence::ONESHOT)
       {
-        request->state = CaptureState::DONE;
-        finished = true;
+        // a BOTH request keeps running after its video-only delivery so the
+        // composite tap can deliver in the same frame; the composite tap
+        // always runs, after video, so it finishes there
+        if (!(request->spec.content == CaptureContent::BOTH &&
+              result.content == CaptureContent::VIDEO))
+        {
+          request->state = CaptureState::DONE;
+          finished = true;
+        }
       }
     }
     else
@@ -142,8 +161,10 @@ void CCaptureService::Complete(const std::shared_ptr<CaptureRequest>& request, C
 
   if (finished)
     RemoveActive(request);
+  // dispatch a copy so a second delivery cannot overwrite the first callback's
+  // result before the worker reads it (a BOTH request delivers twice)
   if (dispatch && request->callback)
-    Dispatch(request);
+    Dispatch(request, result);
 }
 
 void CCaptureService::Fail(const std::shared_ptr<CaptureRequest>& request)
@@ -248,9 +269,10 @@ void CCaptureService::FailAll()
   m_callbackQueue.CancelJobs();
 }
 
-void CCaptureService::Dispatch(const std::shared_ptr<CaptureRequest>& request)
+void CCaptureService::Dispatch(const std::shared_ptr<CaptureRequest>& request, CaptureResult result)
 {
-  m_callbackQueue.Submit([request] { request->callback(request->result); });
+  m_callbackQueue.Submit(
+      [request, result = std::move(result)] { request->callback(result); });
 }
 
 void CCaptureService::RemoveActive(const std::shared_ptr<CaptureRequest>& request)

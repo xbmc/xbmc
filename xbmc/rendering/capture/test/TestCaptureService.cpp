@@ -24,13 +24,14 @@ using namespace std::chrono_literals;
 namespace
 {
 
-CaptureResult MakeResult()
+CaptureResult MakeResult(CaptureContent content = CaptureContent::COMPOSITE)
 {
   CaptureResult result;
   result.width = 4;
   result.height = 2;
   result.stride = 16;
   result.bitDepth = 8;
+  result.content = content;
   result.pixels = std::shared_ptr<uint8_t[]>(new uint8_t[32]());
   return result;
 }
@@ -205,6 +206,49 @@ TEST_F(TestCaptureService, OneShotFailIsTerminal)
   EXPECT_FALSE(handle->WaitNext(1000ms));
   EXPECT_EQ(handle->GetState(), CaptureState::FAILED);
   EXPECT_TRUE(m_service.TakeActive(CaptureContent::COMPOSITE).empty());
+}
+
+TEST_F(TestCaptureService, BothServedByBothTapsSameFrame)
+{
+  CaptureSpec spec;
+  spec.content = CaptureContent::BOTH;
+  int videoFiles = 0;
+  int compositeFiles = 0;
+  auto handle = m_service.Submit(spec, [&](const CaptureResult& r) {
+    if (r.content == CaptureContent::VIDEO)
+      videoFiles++;
+    else if (r.content == CaptureContent::COMPOSITE)
+      compositeFiles++;
+  });
+
+  m_service.LatchFrame();
+  // a BOTH request is handed to both taps in the one frame
+  ASSERT_EQ(m_service.TakeActive(CaptureContent::VIDEO).size(), 1u);
+  auto both = m_service.TakeActive(CaptureContent::COMPOSITE);
+  ASSERT_EQ(both.size(), 1u);
+
+  // video-only first: does not finish the request
+  m_service.Complete(both[0], MakeResult(CaptureContent::VIDEO));
+  EXPECT_TRUE(m_service.TakeActive(CaptureContent::COMPOSITE).size() == 1u);
+
+  // composite half finishes it
+  m_service.Complete(both[0], MakeResult(CaptureContent::COMPOSITE));
+  EXPECT_TRUE(m_service.TakeActive(CaptureContent::COMPOSITE).empty());
+
+  EXPECT_TRUE(ConditionPoll::poll(10000, [&] { return videoFiles == 1 && compositeFiles == 1; }));
+}
+
+TEST_F(TestCaptureService, BothWithoutCallbackRefused)
+{
+  CaptureSpec spec;
+  spec.content = CaptureContent::BOTH;
+  auto handle = m_service.Submit(spec); // no callback to consume the two captures
+
+  // refused up front: BOTH is callback-only, a synchronous consumer would get
+  // an ambiguous single half
+  EXPECT_EQ(handle->GetState(), CaptureState::FAILED);
+  EXPECT_FALSE(handle->Wait(10ms));
+  EXPECT_TRUE(m_service.TakeActive(CaptureContent::VIDEO).empty());
 }
 
 TEST_F(TestCaptureService, MostRecentRequestWins)
