@@ -22,6 +22,7 @@
 #include <vector>
 
 class CGUIDialog;
+class CGUIDialogVideoBookmarks;
 class CGUIMediaWindow;
 class CScreenShot;
 
@@ -50,6 +51,8 @@ namespace KODI
 class CGUIWindowManager : public KODI::MESSAGING::IMessageTarget
 {
   friend CGUIDialog;
+  //! CGUIDialogVideoBookmarks pumps frames for its sync video capture wait
+  friend CGUIDialogVideoBookmarks;
   friend CGUIMediaWindow;
   friend CScreenShot;
 
