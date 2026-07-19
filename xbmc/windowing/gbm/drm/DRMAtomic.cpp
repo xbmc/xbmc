@@ -16,11 +16,14 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 
+#include <chrono>
 #include <errno.h>
 #include <string.h>
+#include <thread>
 
 #include <drm_fourcc.h>
 #include <drm_mode.h>
+#include <fcntl.h>
 #include <unistd.h>
 
 using namespace KODI::WINDOWING::GBM;
@@ -206,7 +209,30 @@ void CDRMAtomic::FlipPage(struct gbm_bo* bo, bool rendered, bool videoLayer, boo
 
 bool CDRMAtomic::InitDrm()
 {
-  if (!CDRMUtils::OpenDrm(true))
+  bool opened = CDRMUtils::OpenDrm(true);
+
+  // At cold boot a connector's EDID/HPD probe may not have completed, so
+  // OpenDrm(true) transiently fails with no connector even though an
+  // atomic-capable display is attached. Retry a few times with a short delay,
+  // but only when the hardware is atomic capable so a not-yet-ready display is
+  // given time to appear. Genuinely non-atomic hardware skips the retry and
+  // returns immediately, so a legacy fall-through is never delayed.
+  if (!opened && SupportsAtomicModesetting())
+  {
+    constexpr int maxPasses = 3;
+    constexpr auto retryDelay = std::chrono::milliseconds(500);
+
+    for (int pass = 1; !opened && pass < maxPasses; ++pass)
+    {
+      CLog::LogF(LOGWARNING,
+                 "atomic-capable device present but no connector ready, re-scanning ({}/{})", pass,
+                 maxPasses);
+      std::this_thread::sleep_for(retryDelay);
+      opened = CDRMUtils::OpenDrm(true);
+    }
+  }
+
+  if (!opened)
     return false;
 
   auto ret = drmSetClientCap(m_fd, DRM_CLIENT_CAP_ATOMIC, 1);
@@ -230,6 +256,41 @@ bool CDRMAtomic::InitDrm()
 void CDRMAtomic::DestroyDrm()
 {
   CDRMUtils::DestroyDrm();
+}
+
+bool CDRMAtomic::SupportsAtomicModesetting()
+{
+  int numDevices = drmGetDevices2(0, nullptr, 0);
+  if (numDevices <= 0)
+    return false;
+
+  std::vector<drmDevicePtr> devices(numDevices);
+  if (drmGetDevices2(0, devices.data(), devices.size()) < 0)
+    return false;
+
+  bool atomic = false;
+  for (const auto device : devices)
+  {
+    if (!(device->available_nodes & 1 << DRM_NODE_PRIMARY))
+      continue;
+
+    int fd = open(device->nodes[DRM_NODE_PRIMARY], O_RDWR | O_CLOEXEC);
+    if (fd < 0)
+      continue;
+
+    // The atomic client cap is a device property gated on the driver's atomic
+    // support, not on any connector, so testing it needs only the fd.
+    if (drmSetClientCap(fd, DRM_CLIENT_CAP_ATOMIC, 1) == 0)
+      atomic = true;
+
+    close(fd);
+
+    if (atomic)
+      break;
+  }
+
+  drmFreeDevices(devices.data(), devices.size());
+  return atomic;
 }
 
 bool CDRMAtomic::SetVideoMode(const RESOLUTION_INFO& res, struct gbm_bo* bo)

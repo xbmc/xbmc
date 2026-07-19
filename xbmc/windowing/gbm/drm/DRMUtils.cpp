@@ -496,8 +496,9 @@ bool CDRMUtils::OpenDrm(bool needConnector)
     if (renderPath)
     {
       m_renderDevicePath = renderPath;
+      close(m_renderFd);
       m_renderFd = open(renderPath, O_RDWR | O_CLOEXEC);
-      if (m_renderFd != 0)
+      if (m_renderFd >= 0)
         CLog::LogF(LOGDEBUG, "Opened render node: {}", renderPath);
     }
 
