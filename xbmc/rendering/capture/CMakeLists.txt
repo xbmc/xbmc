@@ -1,9 +1,11 @@
 set(SOURCES CaptureBlit.cpp
+            CaptureConvert.cpp
             CaptureHandle.cpp
             CaptureMetadata.cpp
             CaptureService.cpp)
 
 set(HEADERS CaptureBlit.h
+            CaptureConvert.h
             CaptureHandle.h
             CaptureMetadata.h
             CaptureRequest.h

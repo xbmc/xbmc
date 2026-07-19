@@ -25,11 +25,15 @@
 #include "messaging/ApplicationMessenger.h"
 #include "pictures/Picture.h"
 #include "profiles/ProfileManager.h"
+#include "rendering/capture/CaptureConvert.h"
+#include "rendering/capture/CaptureHandle.h"
+#include "rendering/capture/CaptureService.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "threads/SystemClock.h"
 #include "utils/Crc32.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -40,6 +44,7 @@
 #include "view/ViewState.h"
 
 #include <algorithm>
+#include <chrono>
 #include <mutex>
 #include <string>
 #include <vector>
@@ -51,6 +56,7 @@
 #define CONTROL_THUMBS                11
 
 using namespace KODI::VIDEO;
+using namespace std::chrono_literals;
 
 CGUIDialogVideoBookmarks::CGUIDialogVideoBookmarks()
   : CGUIDialog(WINDOW_DIALOG_VIDEO_BOOKMARKS, "VideoOSDBookmarks.xml")
@@ -471,11 +477,43 @@ bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
     }
   }
 
-  uint8_t *pixels = (uint8_t*)malloc(height * width * 4);
-  unsigned int captureId = appPlayer->RenderCaptureAlloc();
+  using namespace KODI::RENDERING::CAPTURE;
 
-  appPlayer->RenderCapture(captureId, width, height, CAPTUREFLAG_IMMEDIATELY);
-  bool hasImage = appPlayer->RenderCaptureGetPixels(captureId, 1000, pixels, height * width * 4);
+  std::vector<uint8_t> pixels(height * width * 4);
+  bool hasImage = false;
+
+  const auto captureService = CServiceBroker::GetCaptureService();
+  if (captureService)
+  {
+    CaptureSpec spec;
+    spec.content = CaptureContent::VIDEO;
+    spec.width = width;
+    spec.height = height;
+    const auto handle = captureService->Submit(spec);
+
+    // sync-screenshot wait pattern: on the render thread pump real frames,
+    // since a plain wait would deadlock the frame the capture needs
+    const auto appMessenger = CServiceBroker::GetAppMessenger();
+    const bool processThread = appMessenger && appMessenger->IsProcessThread();
+    CGUIComponent* gui = CServiceBroker::GetGUI();
+
+    XbmcThreads::EndTime<> timeout(1000ms);
+    bool done = false;
+    while (!done && !timeout.IsTimePast())
+    {
+      done = handle->Wait(processThread ? 5ms : 50ms);
+      if (!done)
+      {
+        if (handle->GetState() == CaptureState::FAILED)
+          break;
+        if (processThread && gui)
+          gui->GetWindowManager().ProcessRenderLoop(false);
+      }
+    }
+
+    if (done)
+      hasImage = CaptureToBGRA(handle->GetResult(), width, height, pixels.data());
+  }
 
   if (hasImage)
   {
@@ -486,20 +524,15 @@ bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
         StringUtils::Format("{:08x}_{}.jpg", crc, (int)bookmark.timeInSeconds);
     bookmark.thumbNailImage = URIUtils::AddFileToFolder(profileManager->GetBookmarksThumbFolder(), bookmark.thumbNailImage);
 
-    if (!CPicture::CreateThumbnailFromSurface(pixels, width, height, width * 4,
-                                                         bookmark.thumbNailImage))
+    if (!CPicture::CreateThumbnailFromSurface(pixels.data(), width, height, width * 4,
+                                              bookmark.thumbNailImage))
     {
+      CLog::Log(LOGERROR, "CGUIDialogVideoBookmarks: failed to create thumbnail");
       bookmark.thumbNailImage.clear();
     }
-    else
-      CLog::Log(LOGERROR,"CGUIDialogVideoBookmarks: failed to create thumbnail");
-
-    appPlayer->RenderCaptureRelease(captureId);
   }
   else
-    CLog::Log(LOGERROR,"CGUIDialogVideoBookmarks: failed to create thumbnail 2");
-
-  free(pixels);
+    CLog::Log(LOGERROR, "CGUIDialogVideoBookmarks: failed to capture video frame");
 
   CVideoDatabase videoDatabase;
   if (!videoDatabase.Open())
