@@ -80,6 +80,7 @@ public:
     RECONFIGURE,
     SUSPEND,
     DEVICECHANGE,
+    DEFAULTDEVICECHANGE,
     DEVICECOUNTCHANGE,
     MUTE,
     VOLUME,
@@ -268,6 +269,7 @@ public:
   bool IsSettingVisible(const std::string &settingId) override;
   void KeepConfiguration(unsigned int millis) override;
   void DeviceChange() override;
+  void DefaultDeviceChange() override;
   void DeviceCountChange(const std::string& driver) override;
   bool GetCurrentSinkFormat(AEAudioFormat &SinkFormat) override;
 
@@ -311,6 +313,7 @@ protected:
   void Dispose();
   void LoadSettings();
   void ValidateOutputDevices(bool saveChanges);
+  void HandleDeviceCountChange(const std::string& driver, bool defaultDeviceChanged);
   bool NeedReconfigureBuffers();
   bool NeedReconfigureSink();
   void ApplySettingsToFormat(AEAudioFormat& format,
@@ -372,6 +375,9 @@ protected:
   CEngineStats m_stats;
   IAEEncoder *m_encoder;
   std::string m_currDevice;
+  std::string m_openedDevice;
+  std::string m_openedDriver;
+  bool m_currentDeviceFollowsDefault{false};
   std::unique_ptr<CActiveAESettings> m_settingsHandler;
 
   // buffers

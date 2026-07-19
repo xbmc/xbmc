@@ -270,6 +270,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           {
             SinkReply reply;
             reply.format = m_sinkFormat;
+            reply.device = &m_device;
             //! @todo
             //! use max raw packet size, for now use max size of an IEC packed packet
             //! maxIECPpacket > maxRawPacket
@@ -965,6 +966,10 @@ void CActiveAESink::OpenSink()
     m_extError = true;
     return;
   }
+
+  m_device = device;
+  const AESinkDevice openedDevice = CAESinkFactory::ParseDevice(m_device);
+  GetDeviceFriendlyName(openedDevice.name);
 
   m_sink->SetVolume(m_volume);
 

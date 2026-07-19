@@ -62,7 +62,7 @@ public:
   static bool HasSinks();
 
   static AESinkDevice ParseDevice(const std::string& device);
-  static std::unique_ptr<IAESink> Create(const std::string& device, AEAudioFormat& desiredFormat);
+  static std::unique_ptr<IAESink> Create(std::string& device, AEAudioFormat& desiredFormat);
   static void EnumerateEx(std::vector<AESinkInfo>& list, bool force, const std::string& driver);
   static void Cleanup();
 

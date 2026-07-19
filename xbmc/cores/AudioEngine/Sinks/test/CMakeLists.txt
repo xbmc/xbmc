@@ -1,3 +1,5 @@
+set(SOURCES TestActiveAEDeviceChange.cpp)
+
 if(MACOSX)
   list(APPEND SOURCES TestAESinkDARWINOSX.cpp)
 endif()

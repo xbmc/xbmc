@@ -22,6 +22,7 @@ set(HEADERS AEResampleFactory.h
             Encoders/AEEncoderFFmpeg.h
             Engines/ActiveAE/ActiveAE.h
             Engines/ActiveAE/ActiveAEBuffer.h
+            Engines/ActiveAE/ActiveAEDeviceChange.h
             Engines/ActiveAE/ActiveAEFilter.h
             Engines/ActiveAE/ActiveAESink.h
             Engines/ActiveAE/ActiveAESound.h
