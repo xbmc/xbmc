@@ -2828,19 +2828,19 @@ void CActiveAE::ValidateOutputDevices(bool saveChanges)
 
 void CActiveAE::HandleDeviceCountChange(const std::string& driver, bool defaultDeviceChanged)
 {
-  CLog::Log(LOGDEBUG, "CActiveAE - {}device change event from driver: {}",
-            defaultDeviceChanged ? "default " : "count ", driver);
+  if (defaultDeviceChanged)
+    CLog::LogF(LOGDEBUG, "default device change event");
+  else
+    CLog::LogF(LOGDEBUG, "device count change event from driver: {}", driver);
 
   const std::string currentDriver = m_openedDriver;
   const std::string currentDevice = m_openedDevice;
 
   m_sink.EnumerateSinkList(true, driver);
 
-  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   const bool passthrough = m_mode == MODE_RAW;
   const std::string configuredDevice =
-      settings->GetString(passthrough ? CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE
-                                      : CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE);
+      passthrough ? m_settings.passthroughdevice : m_settings.device;
   const AESinkDevice configured = CAESinkFactory::ParseDevice(configuredDevice);
   const std::string validatedDevice = m_sink.ValidateOuputDevice(configuredDevice, passthrough);
   const AESinkDevice validated = CAESinkFactory::ParseDevice(validatedDevice);
