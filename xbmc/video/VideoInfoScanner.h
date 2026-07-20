@@ -275,6 +275,9 @@ namespace KODI::VIDEO
      */
     std::string GetFastHash(const std::string &directory, const std::vector<std::string> &excludes) const;
 
+    /*! \brief As above but from an already known raw modification time */
+    std::string GetFastHash(const std::vector<std::string>& excludes, int64_t time) const;
+
     /*! \brief Retrieve a "fast" hash of the given directory recursively (if available)
      Performs a stat() on the directory, and uses modified time to create a "fast"
      hash of each folder. If no modified time is available, the create time is used,
