@@ -46,12 +46,28 @@ void CGUIControlGroupMask::Process(unsigned int currentTime, CDirtyRegionList& d
 
   for (auto* control : m_children)
   {
-    control->UpdateVisibility(nullptr);
+    control->UpdateVisibility(m_item);
     // dirty regions are greedy atm, and should be restricted to the m_renderRegion
     control->DoProcess(currentTime, dirtyregions);
   }
 
   CServiceBroker::GetWinSystem()->GetGfxContext().RestoreOrigin();
+  m_item = nullptr;
+}
+
+void CGUIControlGroupMask::UpdateVisibility(const CGUIListItem* item)
+{
+  CGUIControlGroup::UpdateVisibility(item);
+  m_item = item;
+}
+
+void CGUIControlGroupMask::UpdateInfo(const CGUIListItem* item)
+{
+  for (auto* control : m_children)
+  {
+    control->UpdateInfo(item);
+    control->UpdateVisibility(item);
+  }
 }
 
 void CGUIControlGroupMask::Render()
