@@ -966,7 +966,7 @@ void CMediaPipelineWebOS::SetupBitstreamConverter(CDVDStreamInfo& hint)
     {
       m_bitstream = std::make_unique<CBitstreamConverter>();
       if (m_bitstream->Open(hint.codec, hint.extradata.GetData(),
-                            static_cast<int>(hint.extradata.GetSize()), true))
+                            static_cast<int>(hint.extradata.GetSize())))
       {
         if (hint.codec == AV_CODEC_ID_HEVC)
         {
