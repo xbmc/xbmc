@@ -27,8 +27,11 @@ public:
 
   void Process(unsigned int currentTime, CDirtyRegionList& dirtyregions) override;
   void Render() override;
+  void UpdateVisibility(const CGUIListItem* item = nullptr) override;
+  void UpdateInfo(const CGUIListItem* item) override;
   EVENT_RESULT SendMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
 
 private:
   STENCIL_LAYER m_stencilLayer{STENCIL_LAYER::NONE};
+  const CGUIListItem* m_item{nullptr};
 };
