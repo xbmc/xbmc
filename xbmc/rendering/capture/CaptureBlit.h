@@ -62,7 +62,10 @@ private:
   bool m_isHighDepth{false};
   //! output surface depth captured at Blit() time, valid when m_isHighDepth
   int m_outputBitDepth{8};
-  //! GLES2 no-blit path: pixels read by Blit() for Read()
+  //! true when Blit() read the region directly (no scaling) into m_staged
+  bool m_useStaged{false};
+  //! pixels read straight from the framebuffer when no scaling is needed
+  //! (always on GLES2, and on GL/GLES3 for a native-size request)
   ReadbackBuffer m_staged;
 };
 

@@ -9,6 +9,7 @@
 #include "CaptureBlit.h"
 
 #include "ServiceBroker.h"
+#include "rendering/RenderSystem.h"
 #include "rendering/capture/CaptureReadback.h"
 #include "rendering/capture/CaptureTypes.h"
 #include "utils/MathUtils.h"
@@ -46,6 +47,20 @@ bool ClampToOutput(const CRect& srcRect, int& x0, int& y0, int& x1, int& y1, int
 #endif
 
 #if defined(HAS_GL) || HAS_GLES == 3
+
+namespace
+{
+// glBlitFramebuffer is core in GL 3.0 and GLES 3.0, but the context version is
+// a runtime fact: some winsystems request an ES2 context even where the ES3
+// headers were present at build time, so gate on what the driver reports
+bool HasFramebufferBlit()
+{
+  unsigned int major{0};
+  unsigned int minor{0};
+  CServiceBroker::GetRenderSystem()->GetRenderVersion(major, minor);
+  return major >= 3;
+}
+} // namespace
 
 CCaptureBlit::~CCaptureBlit()
 {
@@ -127,15 +142,43 @@ bool CCaptureBlit::Blit(const CRect& srcRect,
   if (!ClampToOutput(srcRect, x0, y0, x1, y1, fbHeight))
     return false;
 
+  // an ES2 context has no framebuffer blit: read the region at its native size
+  // and let the consumer's swscale resize, as the GLES2 and Direct3D paths do
+  if (!HasFramebufferBlit())
+  {
+    m_width = static_cast<unsigned int>(x1 - x0);
+    m_height = static_cast<unsigned int>(y1 - y0);
+    m_useStaged = ReadFramebufferRegion(x0, fbHeight - y1, m_width, m_height, 8, true, m_staged);
+    return m_useStaged;
+  }
+
   // native depth is only distinct from BGRA8 when the output runs above 8 bits
   const int outputBitDepth = CServiceBroker::GetWinSystem()->GetOutputBitDepth();
   const bool highDepth = format == CaptureFormat::NATIVE && outputBitDepth > 8;
+  const int readDepth = highDepth ? outputBitDepth : 8;
   m_outputBitDepth = outputBitDepth;
+
+  const unsigned int srcWidth = static_cast<unsigned int>(x1 - x0);
+  const unsigned int srcHeight = static_cast<unsigned int>(y1 - y0);
 
   GLint prevReadFBO{0};
   GLint prevDrawFBO{0};
   glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &prevReadFBO);
   glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &prevDrawFBO);
+
+  // no scaling: read the region straight from the just-drawn framebuffer, no
+  // FBO round trip (the driver requantizes a deep surface to 8 bits on read)
+  if (width == srcWidth && height == srcHeight)
+  {
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, static_cast<GLuint>(prevDrawFBO));
+    const bool ok =
+        ReadFramebufferRegion(x0, fbHeight - y1, srcWidth, srcHeight, readDepth, true, m_staged);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, static_cast<GLuint>(prevReadFBO));
+    m_useStaged = ok;
+    return ok;
+  }
+
+  m_useStaged = false;
   const GLboolean scissor = glIsEnabled(GL_SCISSOR_TEST);
   if (scissor)
     glDisable(GL_SCISSOR_TEST);
@@ -167,6 +210,19 @@ bool CCaptureBlit::Blit(const CRect& srcRect,
 
 bool CCaptureBlit::Read(CaptureResult& result)
 {
+  // native-size request: the pixels were read straight into m_staged by Blit()
+  if (m_useStaged)
+  {
+    if (!m_staged.pixels)
+      return false;
+    result.pixels = std::move(m_staged.pixels);
+    result.width = m_staged.width;
+    result.height = m_staged.height;
+    result.stride = m_staged.stride;
+    result.bitDepth = m_staged.bitDepth;
+    return true;
+  }
+
   if (!m_fbo)
     return false;
 
