@@ -8,6 +8,7 @@
 
 #include "ServiceBroker.h"
 #include "guilib/GUIControlGroupMask.h"
+#include "guilib/GUIListItem.h"
 #include "guilib/GUITexture.h"
 #include "rendering/RenderSystem.h"
 #include "windowing/WinSystem.h"
@@ -68,12 +69,20 @@ public:
   CTestControl() : CGUIControl(0, 0, 0.0f, 0.0f, 1.0f, 1.0f) {}
   CTestControl* Clone() const override { return new CTestControl(*this); }
 
+  void UpdateInfo(const CGUIListItem* item) override { infoItem = item; }
+  void UpdateVisibility(const CGUIListItem* item) override
+  {
+    visibilityItem = item;
+    CGUIControl::UpdateVisibility(item);
+  }
   void Render() override
   {
     stencilLayer = CServiceBroker::GetWinSystem()->GetGfxContext().GetStencilLayer();
     ++renderCount;
   }
 
+  const CGUIListItem* infoItem{nullptr};
+  const CGUIListItem* visibilityItem{nullptr};
   STENCIL_LAYER stencilLayer{STENCIL_LAYER::INVALID};
   unsigned int renderCount{0};
 };
@@ -136,6 +145,51 @@ protected:
   std::vector<StencilDraw> draws;
 };
 } // namespace
+
+TEST_F(TestGUIControlGroupMask, UpdateInfoPropagatesItem)
+{
+  CGUIControlGroupMask group(0, 0, 0.0f, 0.0f, 1.0f, 1.0f);
+  auto* child = new CTestControl;
+  group.AddControl(child);
+  CGUIListItem item;
+
+  group.UpdateInfo(&item);
+
+  EXPECT_EQ(&item, child->infoItem);
+  EXPECT_EQ(&item, child->visibilityItem);
+}
+
+TEST_F(TestGUIControlGroupMask, ProcessPropagatesAndClearsItem)
+{
+  CGUIControlGroupMask group(0, 0, 0.0f, 0.0f, 1.0f, 1.0f);
+  auto* child = new CTestControl;
+  group.AddControl(child);
+  CGUIListItem item;
+  CDirtyRegionList dirtyRegions;
+
+  group.UpdateVisibility(&item);
+  group.Process(0, dirtyRegions);
+  EXPECT_EQ(&item, child->visibilityItem);
+
+  group.Process(0, dirtyRegions);
+  EXPECT_EQ(nullptr, child->visibilityItem);
+}
+
+TEST_F(TestGUIControlGroupMask, NestedGroupMaskPropagatesItem)
+{
+  CGUIControlGroupMask group(0, 0, 0.0f, 0.0f, 1.0f, 1.0f);
+  auto* nestedGroup = new CGUIControlGroupMask(0, 0, 0.0f, 0.0f, 1.0f, 1.0f);
+  auto* child = new CTestControl;
+  nestedGroup->AddControl(child);
+  group.AddControl(nestedGroup);
+  CGUIListItem item;
+  CDirtyRegionList dirtyRegions;
+
+  group.UpdateVisibility(&item);
+  group.Process(0, dirtyRegions);
+
+  EXPECT_EQ(&item, child->visibilityItem);
+}
 
 TEST_P(TestGUIControlGroupMaskRendering, RotationTransitionsReleaseLayer)
 {
