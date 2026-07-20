@@ -69,7 +69,11 @@ bool CDatabaseManager::InitializeInternal()
   const std::shared_ptr<CAdvancedSettings> advancedSettings =
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
 
-  // NOTE: CAddonDatabase initialized in the constructor
+  // Ensure the addon database is ready for the current profile by running
+  // its update procedure, just like the other databases.
+  if (ADDON::CAddonDatabase db; !UpdateDatabase(db))
+    return false;
+
   // NOTE: Order here is important. In particular, CTextureDatabase has to be updated
   //       before CVideoDatabase.
   if (CViewDatabase db; !UpdateDatabase(db))

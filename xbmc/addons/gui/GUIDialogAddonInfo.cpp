@@ -850,8 +850,8 @@ bool CGUIDialogAddonInfo::SetItem(const CFileItemPtr& item)
 
   m_item = std::make_shared<CFileItem>(*item);
   m_localAddon.reset();
-  if (CServiceBroker::GetAddonMgr().GetAddon(item->GetAddonInfo()->ID(), m_localAddon,
-                                             OnlyEnabled::CHOICE_NO))
+  if (!CServiceBroker::GetAddonMgr().GetAddon(item->GetAddonInfo()->ID(), m_localAddon,
+                                              OnlyEnabled::CHOICE_NO))
   {
     CLog::LogF(LOGDEBUG, "Addon with id {} not found locally.", item->GetAddonInfo()->ID());
   }
