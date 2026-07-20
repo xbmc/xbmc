@@ -441,9 +441,23 @@ CVideoInfoScanner::~CVideoInfoScanner()
       { // need to fetch the folder
         CDirectory::GetDirectory(strDirectory, items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
                                  DIR_FLAG_DEFAULTS);
-        // do not consider inner folders with .nomedia
-        erase_if(items, [](const std::shared_ptr<CFileItem>& item)
-                 { return item->IsFolder() && HasNoMedia(item->GetPath()); });
+
+        // mark subfolders whose stored fast hash matches the listing mtime digest;
+        // the disc structure probes in Stack() and the recursion loop (which also
+        // drops them from m_pathsToScan) skip marked items. Full listing hashes
+        // never match here, so folders containing subfolders are still visited.
+        for (int i = items.Size() - 1; i >= 0; --i)
+        {
+          if (!items[i]->IsFolder())
+            continue;
+          std::string dbh;
+          if (m_advancedSettings->m_bVideoLibraryUseFastHash &&
+              m_database.GetPathHash(items[i]->GetPath(), dbh) && !dbh.empty() &&
+              StringUtils::EqualsNoCase(GetFastHash(items[i]->GetPath(), regexps), dbh))
+            items[i]->SetProperty("unchanged", true);
+          else if (HasNoMedia(items[i]->GetPath()))
+            items.Remove(i);
+        }
         items.Stack();
 
         // force sorting consistency to avoid hash mismatch between platforms
@@ -578,6 +592,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (content != ContentType::TVSHOWS && settings.recurse > 0 && pItem->IsFolder() &&
           !pItem->IsParentFolder() && !PLAYLIST::IsPlayList(*pItem))
       {
+        if (pItem->GetProperty("unchanged").asBoolean())
+        {
+          CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '{}' due to no change (fasthash)",
+                    CURL::GetRedacted(pItem->GetPath()));
+          m_pathsToScan.erase(pItem->GetPath());
+          continue;
+        }
         if (const auto [scanComplete, foundContentOnRecursion] = DoScan(pItem->GetPath());
             scanComplete == ScanComplete::Stopped)
         {
