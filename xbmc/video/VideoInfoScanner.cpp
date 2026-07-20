@@ -437,7 +437,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                                      : GetFastHash(items[i]->GetPath(), regexps),
                                         dbh))
           {
-            items[i]->SetProperty("unchanged", true);
+            items[i]->SetProperty(PROPERTY_UNCHANGED, true);
             CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '{}' due to no change (fasthash)",
                       CURL::GetRedacted(items[i]->GetPath()));
           }
@@ -578,7 +578,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (content != ContentType::TVSHOWS && settings.recurse > 0 && pItem->IsFolder() &&
           !pItem->IsParentFolder() && !PLAYLIST::IsPlayList(*pItem))
       {
-        if (pItem->GetProperty("unchanged").asBoolean())
+        if (pItem->GetProperty(PROPERTY_UNCHANGED).asBoolean())
         {
           m_pathsToScan.erase(pItem->GetPath());
           continue;

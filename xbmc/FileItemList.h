@@ -23,6 +23,10 @@
 #include <utility>
 #include <vector>
 
+//! item property set by the video library scanner on subfolders whose fast hash matches
+//! the stored hash; Stack() skips the disc structure probes for such folders
+static constexpr const char* PROPERTY_UNCHANGED{"unchanged"};
+
 /*!
   \brief Represents a list of files
   \sa CFileItemList, CFileItem
