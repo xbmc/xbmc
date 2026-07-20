@@ -8,11 +8,11 @@
 
 #pragma once
 
+#include "rendering/capture/CaptureReadback.h"
 #include "rendering/capture/CaptureTypes.h"
 #include "utils/Geometry.h"
 
 #include <cstdint>
-#include <vector>
 
 namespace KODI
 {
@@ -51,8 +51,6 @@ public:
 
 private:
   bool EnsureFramebuffer(unsigned int width, unsigned int height, bool highDepth);
-  bool ReadBGRA8(CaptureResult& result);
-  bool ReadHighDepth(CaptureResult& result);
   void Release();
 
   //! GL object names as plain integers so this header stays GL-free
@@ -64,8 +62,8 @@ private:
   bool m_isHighDepth{false};
   //! output surface depth captured at Blit() time, valid when m_isHighDepth
   int m_outputBitDepth{8};
-  //! GLES2 no-blit path: pixels staged by Blit() for Read()
-  std::vector<uint8_t> m_staged;
+  //! GLES2 no-blit path: pixels read by Blit() for Read()
+  ReadbackBuffer m_staged;
 };
 
 } // namespace CAPTURE

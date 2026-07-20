@@ -9,6 +9,7 @@
 #include "CaptureBlit.h"
 
 #include "ServiceBroker.h"
+#include "rendering/capture/CaptureReadback.h"
 #include "rendering/capture/CaptureTypes.h"
 #include "utils/MathUtils.h"
 #include "utils/log.h"
@@ -16,7 +17,6 @@
 #include "windowing/WinSystem.h"
 
 #include <algorithm>
-#include <cstring>
 #include <utility>
 
 #include "system_gl.h"
@@ -174,140 +174,21 @@ bool CCaptureBlit::Read(CaptureResult& result)
   glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &prevReadFBO);
   glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo);
 
-  bool ok = false;
-  if (m_isHighDepth)
-    ok = ReadHighDepth(result);
-  else
-    ok = ReadBGRA8(result);
-
+  // the FBO already holds top-down rows (the blit inverted them), so no flip
+  ReadbackBuffer buffer;
+  const bool ok = ReadFramebufferRegion(0, 0, m_width, m_height,
+                                        m_isHighDepth ? m_outputBitDepth : 8, false, buffer);
   glBindFramebuffer(GL_READ_FRAMEBUFFER, static_cast<GLuint>(prevReadFBO));
-  return ok;
-}
 
-bool CCaptureBlit::ReadBGRA8(CaptureResult& result)
-{
-  const unsigned int stride = m_width * 4;
-  std::shared_ptr<uint8_t[]> pixels(new uint8_t[stride * m_height]);
-#ifdef HAS_GL
-  glReadPixels(0, 0, static_cast<GLsizei>(m_width), static_cast<GLsizei>(m_height), GL_BGRA,
-               GL_UNSIGNED_BYTE, pixels.get());
-#else
-  glReadPixels(0, 0, static_cast<GLsizei>(m_width), static_cast<GLsizei>(m_height), GL_RGBA,
-               GL_UNSIGNED_BYTE, pixels.get());
-#endif
-  if (glGetError() != GL_NO_ERROR)
-  {
-    CLog::LogF(LOGERROR, "glReadPixels failed");
+  if (!ok)
     return false;
-  }
 
-#ifndef HAS_GL
-  // GLES reads RGBA; the capture contract is BGRA
-  uint8_t* swap = pixels.get();
-  for (unsigned int i = 0; i < m_width * m_height; i++, swap += 4)
-    std::swap(swap[0], swap[2]);
-#endif
-
-  result.pixels = std::move(pixels);
-  result.width = m_width;
-  result.height = m_height;
-  result.stride = stride;
-  result.bitDepth = 8;
+  result.pixels = std::move(buffer.pixels);
+  result.width = buffer.width;
+  result.height = buffer.height;
+  result.stride = buffer.stride;
+  result.bitDepth = buffer.bitDepth;
   return true;
-}
-
-bool CCaptureBlit::ReadHighDepth(CaptureResult& result)
-{
-  const unsigned int stride = m_width * 8;
-
-#ifdef HAS_GL
-  // desktop GL converts any framebuffer depth to 16-bit per channel on readback
-  std::shared_ptr<uint8_t[]> pixels(new uint8_t[stride * m_height]);
-  glReadPixels(0, 0, static_cast<GLsizei>(m_width), static_cast<GLsizei>(m_height), GL_RGBA,
-               GL_UNSIGNED_SHORT, pixels.get());
-  if (glGetError() != GL_NO_ERROR)
-  {
-    CLog::LogF(LOGERROR, "glReadPixels 16-bit failed");
-    return false;
-  }
-
-  uint16_t* alpha = reinterpret_cast<uint16_t*>(pixels.get()) + 3;
-  for (unsigned int i = 0; i < m_width * m_height; i++, alpha += 4)
-    *alpha = 0xFFFF;
-
-  result.pixels = std::move(pixels);
-  result.width = m_width;
-  result.height = m_height;
-  result.stride = stride;
-  result.bitDepth = m_outputBitDepth;
-  return true;
-#else
-  // GLES negotiates the readback type; only GL_RGBA is guaranteed beyond 8-bit
-  GLint readFormat = GL_RGBA;
-  GLint readType = GL_UNSIGNED_BYTE;
-  glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT, &readFormat);
-  glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_TYPE, &readType);
-
-  if (readFormat == GL_RGBA && readType == GL_UNSIGNED_INT_2_10_10_10_REV)
-  {
-    std::vector<uint32_t> packed(m_width * m_height);
-    glReadPixels(0, 0, static_cast<GLsizei>(m_width), static_cast<GLsizei>(m_height), GL_RGBA,
-                 GL_UNSIGNED_INT_2_10_10_10_REV, packed.data());
-    if (glGetError() != GL_NO_ERROR)
-    {
-      CLog::LogF(LOGERROR, "glReadPixels 10-bit failed");
-      return false;
-    }
-
-    std::shared_ptr<uint8_t[]> pixels(new uint8_t[stride * m_height]);
-    uint16_t* dst = reinterpret_cast<uint16_t*>(pixels.get());
-    for (unsigned int i = 0; i < m_width * m_height; i++, dst += 4)
-    {
-      const uint32_t p = packed[i];
-      // renormalize 10-bit to the full 16-bit scale
-      const uint16_t r = static_cast<uint16_t>((p >> 0) & 0x3FF);
-      const uint16_t g = static_cast<uint16_t>((p >> 10) & 0x3FF);
-      const uint16_t b = static_cast<uint16_t>((p >> 20) & 0x3FF);
-      dst[0] = static_cast<uint16_t>((r << 6) | (r >> 4));
-      dst[1] = static_cast<uint16_t>((g << 6) | (g >> 4));
-      dst[2] = static_cast<uint16_t>((b << 6) | (b >> 4));
-      dst[3] = 0xFFFF;
-    }
-
-    result.pixels = std::move(pixels);
-    result.width = m_width;
-    result.height = m_height;
-    result.stride = stride;
-    result.bitDepth = m_outputBitDepth;
-    return true;
-  }
-
-  if (readFormat == GL_RGBA && readType == GL_UNSIGNED_SHORT)
-  {
-    std::shared_ptr<uint8_t[]> pixels(new uint8_t[stride * m_height]);
-    glReadPixels(0, 0, static_cast<GLsizei>(m_width), static_cast<GLsizei>(m_height), GL_RGBA,
-                 GL_UNSIGNED_SHORT, pixels.get());
-    if (glGetError() != GL_NO_ERROR)
-    {
-      CLog::LogF(LOGERROR, "glReadPixels 16-bit failed");
-      return false;
-    }
-
-    uint16_t* alpha = reinterpret_cast<uint16_t*>(pixels.get()) + 3;
-    for (unsigned int i = 0; i < m_width * m_height; i++, alpha += 4)
-      *alpha = 0xFFFF;
-
-    result.pixels = std::move(pixels);
-    result.width = m_width;
-    result.height = m_height;
-    result.stride = stride;
-    result.bitDepth = m_outputBitDepth;
-    return true;
-  }
-
-  // driver offers no high-depth readback: 8-bit output coding, tonemap goes by tags
-  return ReadBGRA8(result);
-#endif
 }
 
 #elif HAS_GLES == 2
@@ -340,47 +221,21 @@ bool CCaptureBlit::Blit(const CRect& srcRect,
 
   m_width = static_cast<unsigned int>(x1 - x0);
   m_height = static_cast<unsigned int>(y1 - y0);
-  m_staged.resize(m_width * m_height * 4);
 
-  while (glGetError() != GL_NO_ERROR)
-    ;
-  glReadPixels(x0, fbHeight - y1, static_cast<GLsizei>(m_width), static_cast<GLsizei>(m_height),
-               GL_RGBA, GL_UNSIGNED_BYTE, m_staged.data());
-  if (glGetError() != GL_NO_ERROR)
-  {
-    CLog::LogF(LOGERROR, "glReadPixels failed");
-    m_staged.clear();
-    return false;
-  }
-  return true;
+  // window rows are bottom-up: flip to top-down, 8-bit only on GLES2
+  return ReadFramebufferRegion(x0, fbHeight - y1, m_width, m_height, 8, true, m_staged);
 }
 
 bool CCaptureBlit::Read(CaptureResult& result)
 {
-  if (m_staged.empty())
+  if (!m_staged.pixels)
     return false;
 
-  const unsigned int stride = m_width * 4;
-  std::shared_ptr<uint8_t[]> pixels(new uint8_t[stride * m_height]);
-  for (unsigned int y = 0; y < m_height; y++)
-  {
-    // flip to top-down rows and swap RGBA to BGRA
-    const uint8_t* src = m_staged.data() + (m_height - 1 - y) * stride;
-    uint8_t* dst = pixels.get() + y * stride;
-    for (unsigned int x = 0; x < m_width; x++, src += 4, dst += 4)
-    {
-      dst[0] = src[2];
-      dst[1] = src[1];
-      dst[2] = src[0];
-      dst[3] = src[3];
-    }
-  }
-
-  result.pixels = std::move(pixels);
-  result.width = m_width;
-  result.height = m_height;
-  result.stride = stride;
-  result.bitDepth = 8;
+  result.pixels = std::move(m_staged.pixels);
+  result.width = m_staged.width;
+  result.height = m_staged.height;
+  result.stride = m_staged.stride;
+  result.bitDepth = m_staged.bitDepth;
   return true;
 }
 
