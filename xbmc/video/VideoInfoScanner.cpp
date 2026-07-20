@@ -422,9 +422,25 @@ CVideoInfoScanner::~CVideoInfoScanner()
       { // need to fetch the folder
         CDirectory::GetDirectory(strDirectory, items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
                                  DIR_FLAG_DEFAULTS);
-        // do not consider inner folders with .nomedia
-        erase_if(items, [](const std::shared_ptr<CFileItem>& item)
-                 { return item->IsFolder() && HasNoMedia(item->GetPath()); });
+
+        // withhold provably unchanged subfolders from further probes, and
+        // discard subfolders with .nomedia
+        for (int i = items.Size() - 1; i >= 0; --i)
+        {
+          if (!items[i]->IsFolder())
+            continue;
+          std::string dbh;
+          if (m_advancedSettings->m_bVideoLibraryUseFastHash &&
+              m_database.GetPathHash(items[i]->GetPath(), dbh) && !dbh.empty() &&
+              StringUtils::EqualsNoCase(GetFastHash(items[i]->GetPath(), regexps), dbh))
+          {
+            items[i]->SetProperty("unchanged", true);
+            CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '{}' due to no change (fasthash)",
+                      CURL::GetRedacted(items[i]->GetPath()));
+          }
+          else if (HasNoMedia(items[i]->GetPath()))
+            items.Remove(i);
+        }
         items.Stack();
 
         // force sorting consistency to avoid hash mismatch between platforms
@@ -559,6 +575,11 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (content != ContentType::TVSHOWS && settings.recurse > 0 && pItem->IsFolder() &&
           !pItem->IsParentFolder() && !PLAYLIST::IsPlayList(*pItem))
       {
+        if (pItem->GetProperty("unchanged").asBoolean())
+        {
+          m_pathsToScan.erase(pItem->GetPath());
+          continue;
+        }
         if (const auto [scanComplete, foundContentOnRecursion] = DoScan(pItem->GetPath());
             scanComplete == ScanComplete::Stopped)
         {
