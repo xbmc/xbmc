@@ -496,7 +496,7 @@ void CGUITextLayout::ParseText(const std::wstring& text,
         if (end != std::wstring::npos)
         {
           std::string t;
-          g_charsetConverter.wToUTF8(text.substr(pos), t);
+          g_charsetConverter.wToUTF8(text.substr(pos, end - pos), t);
           tabs = atoi(t.c_str());
           pos = end + 7;
         }

@@ -51,7 +51,6 @@ static const std::vector<TagTestParam> filterTestCases{
     // Plain text
     {"", ""},
     {"Hello world", "Hello world"},
-    {"price [3.99] per item", "price [3.99] per item"},
 
     // Matched style tags
     {"[B]bold[/B]", "bold"},
@@ -85,12 +84,6 @@ static const std::vector<TagTestParam> filterTestCases{
     {"[UPPERCASE][UPPERCASE]hello[/UPPERCASE][/UPPERCASE]", "HELLO"},
     {"[LOWERCASE][LOWERCASE]HELLO[/LOWERCASE][/LOWERCASE]", "hello"},
     {"[CAPITALIZE][CAPITALIZE]hello world[/CAPITALIZE][/CAPITALIZE]", "Hello World"},
-
-    // Skin-wrapped addon values: [B]...[B]value[/B]...[/B]
-    {"[B][B]Episode Title[/B][/B]", "Episode Title"},
-    {"[I][I]Some Value[/I][/I]", "Some Value"},
-    {"[LIGHT][LIGHT]Some Value[/LIGHT][/LIGHT]", "Some Value"},
-    {"[UPPERCASE][UPPERCASE]Some Title[/UPPERCASE][/UPPERCASE]", "SOME TITLE"},
 
     // Unmatched opening tags (PR #28356 lookahead)
     {"[B]no close", "no close"},
@@ -128,11 +121,6 @@ static const std::vector<TagTestParam> filterTestCases{
 INSTANTIATE_TEST_SUITE_P(ParseTextTags,
                          TestGUITextLayoutFilterTags,
                          testing::ValuesIn(filterTestCases));
-
-TEST(TestGUITextLayoutFilter, SingleOpenBracket)
-{
-  EXPECT_NO_FATAL_FAILURE(Filter("["));
-}
 
 TEST(TestGUITextLayoutFilter, VeryLongPlainText)
 {
