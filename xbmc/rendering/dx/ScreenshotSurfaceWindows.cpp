@@ -8,24 +8,14 @@
 
 #include "ScreenshotSurfaceWindows.h"
 
+#include "rendering/capture/CaptureReadback.h"
 #include "rendering/dx/DeviceResources.h"
 #include "utils/Screenshot.h"
 #include "utils/log.h"
 
-#include <cmath>
-
 #include <wrl/client.h>
 
 using namespace Microsoft::WRL;
-
-namespace
-{
-// Project a 10-bit sample onto the 16-bit scale so full scale maps to full scale
-uint16_t Expand10To16(uint32_t v)
-{
-  return static_cast<uint16_t>(std::lround(v * 65535.0 / 1023.0));
-}
-} // namespace
 
 void CScreenshotSurfaceWindows::Register()
 {
@@ -76,18 +66,8 @@ bool CScreenshotSurfaceWindows::Read(const ScreenshotContext&)
           const uint32_t* pixels10 = reinterpret_cast<const uint32_t*>(
               static_cast<const uint8_t*>(res.pData) + y * res.RowPitch);
           uint16_t* pixels16 = reinterpret_cast<uint16_t*>(m_buffer + y * m_stride);
-
-          for (int x = 0; x < m_width; x++, pixels10++, pixels16 += 4)
-          {
-            // actual bit per channel is A2B10G10R10
-            uint32_t pixel = *pixels10;
-            pixels16[0] = Expand10To16(pixel & 0x3FF); // R
-            pixel >>= 10;
-            pixels16[1] = Expand10To16(pixel & 0x3FF); // G
-            pixel >>= 10;
-            pixels16[2] = Expand10To16(pixel & 0x3FF); // B
-            pixels16[3] = 0xFFFF; // A
-          }
+          KODI::RENDERING::CAPTURE::Unpack1010102ToRGBA16(
+              pixels10, pixels16, static_cast<unsigned int>(m_width));
         }
       }
       else

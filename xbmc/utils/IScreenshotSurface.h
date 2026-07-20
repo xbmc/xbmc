@@ -20,7 +20,8 @@ struct ScreenshotContext
 class IScreenshotSurface
 {
 public:
-  virtual ~IScreenshotSurface() = default;
+  //! frees the buffer only when the caller did not take ownership via TakeBuffer
+  virtual ~IScreenshotSurface() { delete[] m_buffer; }
 
   //! \brief Read back the current framebuffer only; the caller guarantees a
   //! fully rendered frame and render-thread context.
@@ -39,14 +40,6 @@ public:
     m_buffer = nullptr;
     return buffer;
   }
-  void ReleaseBuffer()
-  {
-    if (m_buffer)
-    {
-      delete m_buffer;
-      m_buffer = nullptr;
-    }
-  };
 
 protected:
   int m_width{0};
