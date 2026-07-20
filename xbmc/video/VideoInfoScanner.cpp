@@ -824,13 +824,22 @@ CVideoInfoScanner::~CVideoInfoScanner()
         idSeason = m_database.GetSeasonId(idTvShow, pItem->GetVideoInfoTag()->m_iSeason);
     }
 
+    // If we only want to refresh show details (and not the episodes), the
+    // episode-folder hash comparison below is irrelevant: it exists purely to decide
+    // whether episodes need to be re-scanned.
+    const bool refreshShowInfoOnly =
+        idTvShow > -1 && pItem->IsFolder() && !isSeason && !fetchEpisodes;
+
     // Enumerate episodes here as this compares hashes of folders containing episodes from this show
     //  and we want to do this before processing nfo files
     EPISODELIST files;
-    if (!EnumerateSeriesFolder(pItem, files))
-      return InfoRet::HAVE_ALREADY;
-    if (files.empty()) // no update or no files
-      return InfoRet::NOT_NEEDED;
+    if (!refreshShowInfoOnly)
+    {
+      if (!EnumerateSeriesFolder(pItem, files))
+        return InfoRet::HAVE_ALREADY;
+      if (files.empty()) // no update or no files
+        return InfoRet::NOT_NEEDED;
+    }
 
     if (ProgressCancelled(pDlgProgress, pItem->IsFolder() ? 20353 : 20361,
                           pItem->IsFolder() ? pItem->GetVideoInfoTag()->m_strShowTitle
@@ -847,7 +856,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     if (useLocal)
       std::tie(result, loader) = ReadInfoTag(*pItem, info2, bDirNames, true);
 
-    if (result == InfoType::FULL && idTvShow < 0)
+    if (result == InfoType::FULL && (idTvShow < 0 || refreshShowInfoOnly))
     {
 
       long lResult = AddVideo(pItem, info2, bDirNames, useLocal);
