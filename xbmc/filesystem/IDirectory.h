@@ -25,6 +25,13 @@ namespace XFILE
  */
 static constexpr size_t MAX_ITEM_RESOLVE_ATTEMPTS{5};
 
+/*! \brief Optional item properties a GetDirectory implementation may set.
+ Raw stat times in seconds since epoch, exactly as the filesystem reported
+ them, no local time conversion; consumers decide any mtime/ctime fallback.
+ */
+static constexpr const char* DIR_PROPERTY_STAT_MTIME{"stat:st_mtime"};
+static constexpr const char* DIR_PROPERTY_STAT_CTIME{"stat:st_ctime"};
+
 enum class CacheType
 {
   NEVER = 0, ///< Never cache this directory to memory
