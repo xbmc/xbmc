@@ -18,9 +18,19 @@
 #include "windowing/WinSystem.h"
 
 #include <algorithm>
+#include <cstring>
 #include <utility>
 
+#if defined(HAS_GL) || HAS_GLES >= 2
 #include "system_gl.h"
+#endif
+
+#if !defined(HAS_GL) && HAS_GLES != 2 && HAS_GLES != 3
+#include "guilib/D3DResource.h"
+#include "rendering/dx/DeviceResources.h"
+
+#include <wrl/client.h>
+#endif
 
 namespace KODI
 {
@@ -29,7 +39,6 @@ namespace RENDERING
 namespace CAPTURE
 {
 
-#if defined(HAS_GL) || HAS_GLES >= 2
 namespace
 {
 // Integer source region clamped to the output surface; zoom pushes destRect beyond it.
@@ -44,7 +53,6 @@ bool ClampToOutput(const CRect& srcRect, int& x0, int& y0, int& x1, int& y1, int
   return x1 > x0 && y1 > y0;
 }
 } // namespace
-#endif
 
 #if defined(HAS_GL) || HAS_GLES == 3
 
@@ -313,13 +321,116 @@ bool CCaptureBlit::Blit(const CRect& srcRect,
                         unsigned int height,
                         CaptureFormat format)
 {
-  //! @todo D3D11 sub-region staging copy so the video tap serves Windows
-  return false;
+  // Direct3D cannot scale in a copy, so the tap always reads the source region
+  // at its native size into m_staged; the consumer's swscale conversion scales
+  // and requantizes. width/height are advisory here.
+  int x0{0};
+  int y0{0};
+  int x1{0};
+  int y1{0};
+  int fbHeight{0};
+  if (!ClampToOutput(srcRect, x0, y0, x1, y1, fbHeight))
+    return false;
+
+  const unsigned int rw = static_cast<unsigned int>(x1 - x0);
+  const unsigned int rh = static_cast<unsigned int>(y1 - y0);
+
+  auto deviceResources = DX::DeviceResources::Get();
+  deviceResources->FinishCommandList();
+  Microsoft::WRL::ComPtr<ID3D11DeviceContext> context = deviceResources->GetImmediateContext();
+  Microsoft::WRL::ComPtr<ID3D11Device> device = deviceResources->GetD3DDevice();
+  CD3DTexture& backbuffer = deviceResources->GetBackBuffer();
+  if (!backbuffer.Get())
+    return false;
+
+  D3D11_TEXTURE2D_DESC desc = {};
+  backbuffer.GetDesc(&desc);
+  const DXGI_FORMAT sourceFormat = desc.Format;
+  desc.Width = rw;
+  desc.Height = rh;
+  desc.MipLevels = 1;
+  desc.ArraySize = 1;
+  desc.Usage = D3D11_USAGE_STAGING;
+  desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+  desc.BindFlags = 0;
+  desc.MiscFlags = 0;
+
+  Microsoft::WRL::ComPtr<ID3D11Texture2D> staging;
+  if (FAILED(device->CreateTexture2D(&desc, nullptr, &staging)))
+  {
+    CLog::LogF(LOGERROR, "capture staging texture creation failed");
+    return false;
+  }
+
+  // D3D textures are top-left origin: the box maps directly, no Y flip
+  const D3D11_BOX box{static_cast<UINT>(x0), static_cast<UINT>(y0), 0,
+                      static_cast<UINT>(x1), static_cast<UINT>(y1), 1};
+  context->CopySubresourceRegion(staging.Get(), 0, 0, 0, 0, backbuffer.Get(), 0, &box);
+
+  D3D11_MAPPED_SUBRESOURCE mapped;
+  if (FAILED(context->Map(staging.Get(), 0, D3D11_MAP_READ, 0, &mapped)))
+  {
+    CLog::LogF(LOGERROR, "capture staging map failed");
+    return false;
+  }
+
+  if (sourceFormat == DXGI_FORMAT_R10G10B10A2_UNORM && format == CaptureFormat::NATIVE)
+  {
+    m_staged.stride = rw * 8; // RGBA16
+    m_staged.bitDepth = 10;
+    m_staged.pixels.reset(new uint8_t[static_cast<size_t>(m_staged.stride) * rh]);
+    for (unsigned int y = 0; y < rh; y++)
+    {
+      const uint32_t* src = reinterpret_cast<const uint32_t*>(
+          static_cast<const uint8_t*>(mapped.pData) + static_cast<size_t>(y) * mapped.RowPitch);
+      Unpack1010102ToRGBA16(
+          src, reinterpret_cast<uint16_t*>(m_staged.pixels.get() + static_cast<size_t>(y) * m_staged.stride),
+          rw);
+    }
+  }
+  else if (sourceFormat == DXGI_FORMAT_R10G10B10A2_UNORM)
+  {
+    // BGRA8 requested from a 10-bit swapchain: Direct3D cannot decimate in the
+    // copy (GL/GLES get it free on read), so unpack 10->8 bit here
+    m_staged.stride = rw * 4;
+    m_staged.bitDepth = 8;
+    m_staged.pixels.reset(new uint8_t[static_cast<size_t>(m_staged.stride) * rh]);
+    for (unsigned int y = 0; y < rh; y++)
+    {
+      const uint32_t* src = reinterpret_cast<const uint32_t*>(
+          static_cast<const uint8_t*>(mapped.pData) + static_cast<size_t>(y) * mapped.RowPitch);
+      Unpack1010102ToBGRA8(src, m_staged.pixels.get() + static_cast<size_t>(y) * m_staged.stride, rw);
+    }
+  }
+  else
+  {
+    // B8G8R8A8_UNORM is stored BGRA already, matching the capture contract
+    m_staged.stride = rw * 4;
+    m_staged.bitDepth = 8;
+    m_staged.pixels.reset(new uint8_t[static_cast<size_t>(m_staged.stride) * rh]);
+    for (unsigned int y = 0; y < rh; y++)
+      std::memcpy(m_staged.pixels.get() + static_cast<size_t>(y) * m_staged.stride,
+                  static_cast<const uint8_t*>(mapped.pData) + static_cast<size_t>(y) * mapped.RowPitch,
+                  m_staged.stride);
+  }
+  m_staged.width = rw;
+  m_staged.height = rh;
+  context->Unmap(staging.Get(), 0);
+  m_useStaged = true;
+  return true;
 }
 
 bool CCaptureBlit::Read(CaptureResult& result)
 {
-  return false;
+  if (!m_useStaged || !m_staged.pixels)
+    return false;
+
+  result.pixels = std::move(m_staged.pixels);
+  result.width = m_staged.width;
+  result.height = m_staged.height;
+  result.stride = m_staged.stride;
+  result.bitDepth = m_staged.bitDepth;
+  return true;
 }
 
 #endif
