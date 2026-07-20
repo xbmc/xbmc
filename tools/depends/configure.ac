@@ -185,7 +185,7 @@ case $build in
   *darwin*)
     build_os="osx"
     if test "x$build_cpu" = "xx86_64"; then
-      host_includes="-arch x86_64 -mmacosx-version-min=10.14"
+      host_includes="-arch x86_64 -mmacosx-version-min=10.15"
     else
       host_includes="-arch arm64 -mmacosx-version-min=11.0"
     fi
@@ -521,7 +521,7 @@ case $host in
           AC_MSG_ERROR(invalid architecture (--with-cpu=$use_cpu))
         fi
 
-        target_minver="10.14"
+        target_minver="10.15"
       ;;
       aarch64-apple-darwin*)
         MC_CHECK_NOT_CPU([$use_cpu], "*86")
