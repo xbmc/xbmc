@@ -459,7 +459,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
               StringUtils::EqualsNoCase(rawTime != 0 ? GetFastHash(regexps, rawTime)
                                                      : GetFastHash(items[i]->GetPath(), regexps),
                                         dbh))
-            items[i]->SetProperty("unchanged", true);
+            items[i]->SetProperty(PROPERTY_UNCHANGED, true);
           else if (HasNoMedia(items[i]->GetPath()))
             items.Remove(i);
         }
@@ -597,7 +597,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (content != ContentType::TVSHOWS && settings.recurse > 0 && pItem->IsFolder() &&
           !pItem->IsParentFolder() && !PLAYLIST::IsPlayList(*pItem))
       {
-        if (pItem->GetProperty("unchanged").asBoolean())
+        if (pItem->GetProperty(PROPERTY_UNCHANGED).asBoolean())
         {
           CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '{}' due to no change (fasthash)",
                     CURL::GetRedacted(pItem->GetPath()));

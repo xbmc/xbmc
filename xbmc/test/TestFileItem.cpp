@@ -7,17 +7,24 @@
  */
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "Util.h"
+#include "filesystem/Directory.h"
 #include "media/MediaType.h"
+#include "platform/Filesystem.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/SettingsManager.h"
+#include "utils/URIUtils.h"
 #include "video/VideoInfoTag.h"
+
+#include <fstream>
 
 #include <gtest/gtest.h>
 
@@ -1100,3 +1107,36 @@ INSTANTIATE_TEST_SUITE_P(EpisodeLabel,
                          ValuesIn(EpisodeLabelCases),
                          [](const testing::TestParamInfo<EpisodeLabelTestCase>& info)
                          { return info.param.testName; });
+
+TEST(TestFileItemList, StackSkipsUnchangedFolders)
+{
+  std::error_code ec;
+  const std::string tempPath = KODI::PLATFORM::FILESYSTEM::create_temp_directory(ec);
+  EXPECT_FALSE(ec);
+  std::string moviePath = URIUtils::AddFileToFolder(tempPath, "movie");
+  EXPECT_TRUE(CUtil::CreateDirectoryEx(moviePath));
+  {
+    std::ofstream of(URIUtils::AddFileToFolder(moviePath, "VIDEO_TS.IFO"));
+  }
+  URIUtils::AddSlashAtEnd(moviePath);
+
+  {
+    // a disc structure folder is converted to a file item
+    // (the list needs a path or Stack() bails out as a virtual directory root)
+    CFileItemList items(tempPath);
+    items.Add(std::make_shared<CFileItem>(moviePath, true));
+    items.Stack();
+    EXPECT_FALSE(items[0]->IsFolder());
+  }
+  {
+    // unless it is marked unchanged by the library scanner
+    CFileItemList items(tempPath);
+    const auto folder = std::make_shared<CFileItem>(moviePath, true);
+    folder->SetProperty(PROPERTY_UNCHANGED, true);
+    items.Add(folder);
+    items.Stack();
+    EXPECT_TRUE(items[0]->IsFolder());
+  }
+
+  XFILE::CDirectory::RemoveRecursive(tempPath);
+}

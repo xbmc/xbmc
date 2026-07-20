@@ -675,7 +675,7 @@ void ConvertDiscFoldersToFiles(std::vector<std::shared_ptr<CFileItem>> items)
   auto folderItems{items | std::views::filter(
                                [](const std::shared_ptr<CFileItem>& item) {
                                  return item->IsFolder() &&
-                                        !item->GetProperty("unchanged").asBoolean();
+                                        !item->GetProperty(PROPERTY_UNCHANGED).asBoolean();
                                })};
   for (const auto& item : folderItems)
   {
