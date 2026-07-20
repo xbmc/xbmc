@@ -25069,5 +25069,5 @@ msgstr ""
 #. Description of setting with label #246 "Monitor"
 #: system/settings/settings.xml
 msgctxt "#40803"
-msgid "Monitor change requires restart in GBM mode."
+msgid "Monitor change may require restart."
 msgstr ""
