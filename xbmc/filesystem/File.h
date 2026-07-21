@@ -207,6 +207,9 @@ private:
 
   unsigned int m_flags = 0;
   CURL                m_curl;
+  // URL of the currently open file (substituted, no credentials), used to invalidate
+  // the stat cache when the file is written to or truncated via this handle
+  CURL m_openedUrl;
   std::unique_ptr<IFile> m_pFile;
   std::unique_ptr<CFileStreamBuffer> m_pBuffer;
   std::unique_ptr<BitstreamStats> m_bitStreamStats;
