@@ -125,6 +125,7 @@ class ISpeechRecognition;
 namespace XFILE
 {
 class CBlurayDiscCache;
+class CStatCache;
 }
 
 namespace KODI::UTILS::I18N
@@ -251,6 +252,10 @@ public:
   static void UnregisterBlurayDiscCache();
   static std::shared_ptr<XFILE::CBlurayDiscCache> GetBlurayDiscCache();
 
+  static void RegisterStatCache(const std::shared_ptr<XFILE::CStatCache>& cache);
+  static void UnregisterStatCache();
+  static std::shared_ptr<XFILE::CStatCache> GetStatCache();
+
 private:
   std::shared_ptr<CAppParams> m_appParams;
   std::unique_ptr<CLog> m_logging;
@@ -271,6 +276,7 @@ private:
   std::shared_ptr<CSlideShowDelegator> m_slideshowDelegator;
   std::shared_ptr<CDNSNameCache> m_dnsNameCache;
   std::shared_ptr<XFILE::CBlurayDiscCache> m_blurayDiscCache;
+  std::shared_ptr<XFILE::CStatCache> m_statCache;
 };
 
 XBMC_GLOBAL_REF(CServiceBroker, g_serviceBroker);
