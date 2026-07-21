@@ -119,6 +119,9 @@ make -j$(getconf _NPROCESSORS_ONLN)
 ./configure --host=aarch64-apple-darwin --with-platform=ios --with-sdk=11.0
 ```
 
+> [!NOTE]  
+> `--with-platform=ios-simulator` targets the iOS Simulator instead of device hardware (`iphonesimulator` SDK rather than `iphoneos`).
+
 ### 4.1. Advanced Configure Options
 
 
@@ -302,7 +305,7 @@ ls -l /Users/Shared/xbmc-depends
 **Start Xcode, open the Kodi project file** (`kodi.xcodeproj`) located in `$HOME/kodi-build` and hit `Build`.
 
 > [!WARNING]  
-> If you have selected a specific iOS SDK Version in step 4 then you might need to adapt the active target to use the same iOS SDK version, otherwise build will fail. Be sure to select a device configuration. Building for simulator is not supported.
+> If you have selected a specific iOS SDK Version in step 4 then you might need to adapt the active target to use the same iOS SDK version, otherwise build will fail. Be sure to select a device configuration matching what you configured.
 
 **Alternatively**, you can also build via Xcode from the command-line with `xcodebuild`:
 

@@ -495,6 +495,10 @@ case $host in
         target_platform=iphoneos
         platform_os="darwin_embedded"
       ;;
+      ios-simulator)
+        target_platform=iphonesimulator
+        platform_os="darwin_embedded"
+      ;;
       macos)
         target_platform=macosx
         platform_os="osx"
@@ -566,7 +570,7 @@ case $host in
 esac
 
 case $use_platform in
-  ios|tvos|macos)
+  ios|ios-simulator|tvos|macos)
     ;;
   webos)
     ;;
