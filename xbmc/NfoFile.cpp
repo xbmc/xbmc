@@ -11,16 +11,17 @@
 
 #include "NfoFile.h"
 
-#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonSystemSettings.h"
 #include "addons/addoninfo/AddonType.h"
 #include "filesystem/File.h"
-#include "music/Album.h"
-#include "music/Artist.h"
+#include "utils/StringUtils.h"
+#include "utils/XMLUtils.h"
 #include "video/VideoInfoDownloader.h"
 
+#include <cstdint>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -39,21 +40,25 @@ CInfoScanner::InfoType CNfoFile::TryParsing(ADDON::AddonType addonType) const
   using enum CInfoScanner::InfoType;
   using enum ADDON::AddonType;
 
-  if (addonType == SCRAPER_ALBUMS)
-  {
-    CAlbum album;
-    return GetDetails(album) ? FULL : NONE;
-  }
-  if (addonType == SCRAPER_ARTISTS)
-  {
-    CArtist artist;
-    return GetDetails(artist) ? FULL : NONE;
-  }
+  // Classification only needs the root element (to avoid a full ParseNative)
+  // and its "override" attribute (for videos)
+  if (m_headPos >= m_doc.size())
+    return NONE;
+
+  CXBMCTinyXML doc;
+  doc.Parse(m_doc.substr(m_headPos), TIXML_ENCODING_UNKNOWN);
+  const TiXmlElement* root = doc.RootElement();
+  if (!root)
+    return NONE;
+
+  if (addonType == SCRAPER_ALBUMS || addonType == SCRAPER_ARTISTS)
+    return FULL;
+
   if (addonType == SCRAPER_MOVIES || addonType == SCRAPER_TVSHOWS ||
       addonType == SCRAPER_MUSICVIDEOS)
   {
-    if (CVideoInfoTag details; GetDetails(details))
-      return details.GetOverride() ? OVERRIDE : FULL;
+    return StringUtils::EqualsNoCase(XMLUtils::GetAttribute(root, "override"), "true") ? OVERRIDE
+                                                                                       : FULL;
   }
   return NONE;
 }
