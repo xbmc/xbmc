@@ -85,7 +85,7 @@ constexpr auto TextureMapping =  make_map<KD_TEX_FMT, TextureFormat>(
   {KD_TEX_FMT_ETC2_RGBA8, {GL_COMPRESSED_RGBA8_ETC2_EAC, GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC}},
 #endif
 
-#if defined(GL_KHR_texture_compression_astc_ldr) || (GL_KHR_texture_compression_astc_hdr)
+#if defined(GL_KHR_texture_compression_astc_ldr) || defined(GL_KHR_texture_compression_astc_hdr)
   {KD_TEX_FMT_ASTC_LDR_4x4, {GL_COMPRESSED_RGBA_ASTC_4x4_KHR, GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR}},
   {KD_TEX_FMT_ASTC_LDR_5x4, {GL_COMPRESSED_RGBA_ASTC_5x4_KHR, GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR}},
   {KD_TEX_FMT_ASTC_LDR_5x5, {GL_COMPRESSED_RGBA_ASTC_5x5_KHR, GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR}},
@@ -318,7 +318,7 @@ GLenum CGLTexture::GetSwizzleTarget()
   // GL_TEXTURE_SWIZZLE_RGBA and GL_TEXTURE_SWIZZLE_RGBA_EXT should be the same token, but just
   // to be sure we cache whichever one this GL implementation actually supports.
   m_swizzleTarget = GL_FALSE;
-#if defined(GL_VERSION_3_3) || (GL_ARB_texture_swizzle)
+#if defined(GL_VERSION_3_3) || defined(GL_ARB_texture_swizzle)
   if (m_isOglVersion33orNewer ||
       CGLExtensions::IsExtensionSupported(CGLExtensions::ARB_texture_swizzle))
     m_swizzleTarget = GL_TEXTURE_SWIZZLE_RGBA;

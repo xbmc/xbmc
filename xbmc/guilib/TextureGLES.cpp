@@ -45,7 +45,7 @@ constexpr auto TextureMappingGLES20 = make_map<KD_TEX_FMT, TextureFormat>(
   {KD_TEX_FMT_SDR_RGBA8, {GL_RGBA}},
 #endif
 
-#if defined(GL_EXT_texture_format_BGRA8888) || (GL_IMG_texture_format_BGRA8888)
+#if defined(GL_EXT_texture_format_BGRA8888) || defined(GL_IMG_texture_format_BGRA8888)
   {KD_TEX_FMT_SDR_BGRA8, {GL_BGRA_EXT}},
 #endif
 
@@ -123,7 +123,7 @@ constexpr auto TextureMappingGLESExtensions = make_map<KD_TEX_FMT, TextureFormat
   {KD_TEX_FMT_BPTC_RGBA8, {GL_COMPRESSED_RGBA_BPTC_UNORM_EXT, GL_COMPRESSED_SRGB_ALPHA_BPTC_UNORM_EXT}},
 #endif
 
-#if defined(GL_KHR_texture_compression_astc_ldr) || (GL_KHR_texture_compression_astc_hdr)
+#if defined(GL_KHR_texture_compression_astc_ldr) || defined(GL_KHR_texture_compression_astc_hdr)
   {KD_TEX_FMT_ASTC_LDR_4x4, {GL_COMPRESSED_RGBA_ASTC_4x4_KHR, GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR}},
   {KD_TEX_FMT_ASTC_LDR_5x4, {GL_COMPRESSED_RGBA_ASTC_5x4_KHR, GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR}},
   {KD_TEX_FMT_ASTC_LDR_5x5, {GL_COMPRESSED_RGBA_ASTC_5x5_KHR, GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR}},
