@@ -12018,6 +12018,22 @@ bool CGUIInfoManager::GetInt(int& value,
   return m_infoProviders.GetInt(value, m_currentFile.get(), contextWindow, CGUIInfo(info));
 }
 
+bool CGUIInfoManager::GetFloat(float& value,
+                               int info,
+                               int contextWindow,
+                               const CGUIListItem* item /* = nullptr */) const
+{
+  if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
+    return GetMultiInfoFloat(value, m_multiInfo[info - MULTI_INFO_START], contextWindow, item);
+
+  int intValue;
+  if (!GetInt(intValue, info, contextWindow, item))
+    return false;
+
+  value = static_cast<float>(intValue);
+  return true;
+}
+
 INFO::InfoPtr CGUIInfoManager::Register(const std::string& expression, int context)
 {
   std::string condition(CGUIInfoLabel::ReplaceLocalize(expression));
@@ -12277,6 +12293,35 @@ bool CGUIInfoManager::GetMultiInfoInt(int& value,
   }
 
   return m_infoProviders.GetInt(value, m_currentFile.get(), contextWindow, info);
+}
+
+bool CGUIInfoManager::GetMultiInfoFloat(float& value,
+                                        const CGUIInfo& info,
+                                        int contextWindow,
+                                        const CGUIListItem* item) const
+{
+  if (info.GetInfo() >= LISTITEM_START && info.GetInfo() <= LISTITEM_END)
+  {
+    std::shared_ptr<CGUIListItem> itemPtr;
+    if (!item)
+    {
+      itemPtr = GUIINFO::GetCurrentListItem(contextWindow, info.GetData1(), info.GetData2(),
+                                            info.GetInfoFlag());
+      item = itemPtr.get();
+    }
+    if (item && info.GetInfo() == LISTITEM_PROPERTY && item->HasProperty(info.GetData3()))
+    {
+      value = item->GetProperty(info.GetData3()).asFloat();
+      return true;
+    }
+  }
+
+  int intValue;
+  if (!GetMultiInfoInt(intValue, info, contextWindow, item))
+    return false;
+
+  value = static_cast<float>(intValue);
+  return true;
 }
 
 std::string CGUIInfoManager::GetMultiInfoLabel(const CGUIInfo& constinfo,
