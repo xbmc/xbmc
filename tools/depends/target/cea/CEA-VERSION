@@ -1,0 +1,7 @@
+LIBNAME=libcea
+VERSION=0.1.7
+BASE_URL=https://github.com/enen92/libcea/archive/refs/heads/
+ARCHIVE=main.tar.gz
+SHA512=dd4f5a1cb378cf7f579b888c600d68cd244fd2828807ca4ab96a6ccd096376fe1ffad63e83a70cb0d63c6b20e832c16508fe8b1c0ccd35fb9d897f57d8c0fc5f
+BYPRODUCT=libcea.a
+BYPRODUCT_WIN=cea.lib

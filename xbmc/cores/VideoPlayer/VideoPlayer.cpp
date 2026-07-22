@@ -1777,36 +1777,6 @@ void CVideoPlayer::Process()
     CheckBetterStream(m_CurrentRadioRDS, pStream);
     CheckBetterStream(m_CurrentAudioID3, pStream);
 
-    // demux video stream
-    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_SUBTITLES_PARSECAPTIONS) && CheckIsCurrent(m_CurrentVideo, pStream, pPacket))
-    {
-      if (m_pCCDemuxer)
-      {
-        bool first = true;
-        while (!m_bAbortRequest)
-        {
-          DemuxPacket *pkt = m_pCCDemuxer->Read(first ? pPacket : NULL);
-          if (!pkt)
-            break;
-
-          first = false;
-          if (m_pCCDemuxer->GetNrOfStreams() !=
-              m_SelectionStreams.CountTypeOfSource(StreamType::SUBTITLE, STREAM_SOURCE_VIDEOMUX))
-          {
-            m_SelectionStreams.Clear(StreamType::SUBTITLE, STREAM_SOURCE_VIDEOMUX);
-            m_SelectionStreams.Update(NULL, m_pCCDemuxer.get(), "");
-            UpdateContent();
-            OpenDefaultStreams(false);
-          }
-          CDemuxStream *pSubStream = m_pCCDemuxer->GetStream(pkt->iStreamId);
-          if (pSubStream && m_CurrentSubtitle.id == pkt->iStreamId && m_CurrentSubtitle.source == STREAM_SOURCE_VIDEOMUX)
-            ProcessSubData(pSubStream, pkt);
-          else
-            CDVDDemuxUtils::FreeDemuxPacket(pkt);
-        }
-      }
-    }
-
     if (IsInMenuInternal())
     {
       if (std::shared_ptr<CDVDInputStream::IMenus> menu = std::dynamic_pointer_cast<CDVDInputStream::IMenus>(m_pInputStream))
@@ -1933,6 +1903,38 @@ void CVideoPlayer::ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket)
   }
   if (checkcont && (m_CurrentVideo.avsync == CCurrentStream::AV_SYNC_CHECK))
     m_CurrentVideo.avsync = CCurrentStream::AV_SYNC_NONE;
+
+  // Feed the CC demuxer here, after CheckContinuity has applied any discontinuity
+  // correction to pPacket->pts/dts. Feeding before CheckContinuity ran caused
+  // pts spikes at DTS discontinuities (the raw uncorrected jump value) to be passed
+  // to libcea, poisoning its reorder buffer and timing calculations.
+  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_SUBTITLES_PARSECAPTIONS) &&
+      m_pCCDemuxer)
+  {
+    auto ccPackets = m_pCCDemuxer->Read(pPacket);
+
+    if (m_pCCDemuxer->GetNrOfStreams() !=
+        m_SelectionStreams.CountTypeOfSource(StreamType::SUBTITLE, STREAM_SOURCE_VIDEOMUX))
+    {
+      m_SelectionStreams.Update(NULL, m_pCCDemuxer.get(), "");
+      UpdateContent();
+      // Only open defaults if no CC subtitle is currently active. If one is already
+      // playing, keep it — don't flush the libass track just because a new CC field
+      // (e.g. CEA-708 alongside EIA-608) was discovered mid-stream.
+      if (m_CurrentSubtitle.source != STREAM_SOURCE_VIDEOMUX)
+        OpenDefaultStreams(false);
+    }
+    for (DemuxPacket* pkt : ccPackets)
+    {
+      CDemuxStream* pSubStream = m_pCCDemuxer->GetStream(pkt->iStreamId);
+      if (pSubStream && m_CurrentSubtitle.id == pkt->iStreamId &&
+          m_CurrentSubtitle.source == STREAM_SOURCE_VIDEOMUX)
+        ProcessSubData(pSubStream, pkt);
+      else
+        CDVDDemuxUtils::FreeDemuxPacket(pkt);
+    }
+  }
 
   bool drop = false;
   if (CheckPlayerInit(m_CurrentVideo))
@@ -4481,6 +4483,9 @@ void CVideoPlayer::FlushBuffers(double pts, bool accurate, bool sync)
   m_VideoPlayerTeletext->Flush();
   m_VideoPlayerRadioRDS->Flush();
   m_VideoPlayerAudioID3->Flush();
+
+  if (m_pCCDemuxer)
+    m_pCCDemuxer->Flush();
 
   if (m_playSpeed == DVD_PLAYSPEED_NORMAL || m_playSpeed == DVD_PLAYSPEED_PAUSE ||
       m_processInfo->IsTempoAllowed(static_cast<float>(m_playSpeed) / DVD_PLAYSPEED_NORMAL))

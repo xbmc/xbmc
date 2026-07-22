@@ -9,14 +9,16 @@
 #pragma once
 
 #include "DVDDemux.h"
-#include "DVDDemuxCC/CaptionBlock.h"
-#include "DVDDemuxCC/ICCBitstreamParser.h"
+#include "cea.h"
+#include "threads/CriticalSection.h"
+#include "threads/Event.h"
 
+#include <atomic>
 #include <memory>
+#include <queue>
+#include <string>
+#include <thread>
 #include <vector>
-
-class CDecoderCC708;
-class ICCBitstreamParser;
 
 class CDVDDemuxCC : public CDVDDemux
 {
@@ -25,9 +27,9 @@ public:
   ~CDVDDemuxCC() override;
 
   bool Reset() override { return true; }
-  void Flush() override {};
-  DemuxPacket* Read() override { return NULL; }
-  bool SeekTime(double time, bool backwards = false, double* startpts = NULL) override
+  void Flush() override; // drains the queue and reinitializes libcea
+  DemuxPacket* Read() override { return nullptr; }
+  bool SeekTime(double time, bool backwards = false, double* startpts = nullptr) override
   {
     return true;
   }
@@ -35,27 +37,42 @@ public:
   std::vector<CDemuxStream*> GetStreams() const override;
   int GetNrOfStreams() const override;
 
-  DemuxPacket* Read(DemuxPacket *packet);
-  static void Handler(int service, void *userdata);
+  std::vector<DemuxPacket*> Read(DemuxPacket* packet);
 
 protected:
-  bool OpenDecoder();
-  void Dispose();
-  DemuxPacket* Decode();
+  void RunVideoPacketFeedThread(); // m_videoPacketFeedThread entry point
+  void StartVideoPacketFeedThread();
+  void StopVideoPacketFeedThread();
 
-  struct streamdata
-  {
-    int streamIdx;
-    int service;
-    bool hasData ;
-    double pts;
-  };
-  std::vector<streamdata> m_streamdata;
+  static void CaptionCallback(const cea_caption* cap, void* userdata);
+  static void LogCallback(cea_log_level level, const char* msg, void* userdata);
+
+  bool InitLibcea();
+  void EnsureStream(int field, int channel);
+  bool HasStream(int uniqueId) const;
+  CDemuxStreamSubtitle CreateStream(int field, int channel) const;
+  static std::string BuildStreamName(int field, int channel);
+
+  std::thread m_videoPacketFeedThread;
+  std::atomic<bool> m_stopVideoPacketFeedThread{false};
+
+  CEvent m_videoPacketFeedEvent;
+  CCriticalSection m_videoPacketFeedSection;
+  std::queue<DemuxPacket*> m_videoPacketFeedQueue;
+
+  // Guards m_streams/m_captionQueue.
+  mutable CCriticalSection m_captionSection;
   std::vector<CDemuxStreamSubtitle> m_streams;
-  bool m_hasData;
-  double m_curPts;
-  std::vector<CCaptionBlock> m_ccReorderBuffer;
-  std::vector<CCaptionBlock> m_ccTempBuffer;
-  std::unique_ptr<CDecoderCC708> m_ccDecoder;
-  std::unique_ptr<ICCBitstreamParser> m_parser;
+  std::queue<DemuxPacket*> m_captionQueue;
+
+  // Stored to allow reinitialization on Flush().
+  cea_codec_type m_ceaCodec;
+  cea_packaging_type m_ceaPkg;
+  std::vector<uint8_t> m_extradata;
+
+  struct CeaCtxDeleter
+  {
+    void operator()(cea_ctx* ctx) const { cea_free(ctx); }
+  };
+  std::unique_ptr<cea_ctx, CeaCtxDeleter> m_ceaCtx;
 };

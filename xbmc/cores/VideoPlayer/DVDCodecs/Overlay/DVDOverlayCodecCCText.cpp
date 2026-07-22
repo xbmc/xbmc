@@ -16,6 +16,8 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <cctype>
+
 namespace
 {
 // Muxed Closed Caption subtitles don't have the stop PTS value,
@@ -73,6 +75,21 @@ OverlayMessage CDVDOverlayCodecCCText::Decode(DemuxPacket* pPacket)
 
   if (TagConv.Init())
   {
+    // Escape literal '<' as &lt; so ConvertLine's tag parser doesn't treat them
+    // as HTML tags. Leave '<' followed by a letter or '/' untouched (valid tags).
+    for (size_t i = 0; i < text.size(); ++i)
+    {
+      if (text[i] == '<')
+      {
+        const size_t next = i + 1;
+        if (next >= text.size() ||
+            (!std::isalpha(static_cast<unsigned char>(text[next])) && text[next] != '/'))
+        {
+          text.replace(i, 1, "&lt;");
+          i += 3; // skip past the 4-char entity (loop will i++ once more)
+        }
+      }
+    }
     TagConv.ConvertLine(text);
     TagConv.CloseTag(text);
 
@@ -115,6 +132,38 @@ void CDVDOverlayCodecCCText::PostProcess(std::string& text)
   // we have to remove them all because it causes to display empty box "tofu"
   //! @todo This must be removed after the rework of the CC decoders
   StringUtils::Replace(text, "\r", "");
+
+  // Escape literal '{' (not followed by '\') as \{ to prevent the subtitle
+  // renderer from treating them as override block openers.
+  std::string result;
+  result.reserve(text.size());
+  bool inTag = false;
+  for (size_t i = 0; i < text.size(); ++i)
+  {
+    if (!inTag && text[i] == '{')
+    {
+      if (i + 1 < text.size() && text[i + 1] == '\\')
+      {
+        inTag = true; // ASS override tag opener, keep as-is
+        result += '{';
+      }
+      else
+      {
+        result += "\\{"; // literal '{' from CC text
+      }
+    }
+    else if (inTag && text[i] == '}')
+    {
+      inTag = false;
+      result += '}';
+    }
+    else
+    {
+      result += text[i];
+    }
+  }
+  text = std::move(result);
+
   CSubtitlesAdapter::PostProcess(text);
 }
 

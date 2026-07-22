@@ -115,6 +115,7 @@ public:
   explicit CDemuxStream(StreamType t) : type(t) {}
   virtual ~CDemuxStream() = default;
   CDemuxStream(CDemuxStream&&) = default;
+  CDemuxStream& operator=(CDemuxStream&&) = default;
 
   virtual std::string GetStreamName();
 
