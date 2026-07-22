@@ -345,10 +345,16 @@ public:
 
   PeripheralType m_type = PERIPHERAL_UNKNOWN;
   std::string m_strLocation;
+  // Stable physical/topology location, used to key per-adapter settings. Empty if unavailable.
+  std::string m_strPhysicalLocation;
   int m_iVendorId = 0;
   int m_iProductId = 0;
   PeripheralType m_mappedType = PERIPHERAL_UNKNOWN;
   std::string m_strDeviceName;
+  // Generic name from the peripherals.xml mapping. Kept separate from m_strDeviceName,
+  // which a bus may override with a per-adapter name, so a settings file keyed by the
+  // generic name can still be found.
+  std::string m_strMappedDeviceName;
   PeripheralBusType m_busType = PERIPHERAL_BUS_UNKNOWN;
   PeripheralBusType m_mappedBusType = PERIPHERAL_BUS_UNKNOWN;
   unsigned int m_iSequence = 0; // when more than one adapter of the same type is found

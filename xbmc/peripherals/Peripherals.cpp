@@ -469,6 +469,7 @@ bool CPeripherals::GetMappingForDevice(const CPeripheralBus& bus,
                 strProductId, mapping.m_strDeviceName,
                 PeripheralTypeTranslator::TypeToString(mapping.m_mappedTo));
       result.m_mappedType = mapping.m_mappedTo;
+      result.m_strMappedDeviceName = mapping.m_strDeviceName;
       if (result.m_strDeviceName.empty() && !mapping.m_strDeviceName.empty())
         result.m_strDeviceName = mapping.m_strDeviceName;
       return true;
