@@ -20,6 +20,14 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LOCATION_POSTFIX "dylib")
     endif()
 
+    if(WIN32 OR WINDOWS_STORE)
+      # libcec installs the .dll and its import .lib into the install prefix root
+      # on Windows (LIB_DESTINATION "." in its CheckPlatformSupport.cmake), not
+      # bin/ and lib/. Point the module at that layout so the library is found.
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LOCATION_PATH ".")
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_IMPLIB_PATH ".")
+    endif()
+
     set(CMAKE_ARGS -DBUILD_SHARED_LIBS=ON
                    -DSKIP_PYTHON_WRAPPER=ON
                    -DDISABLE_BUILDINFO=ON
