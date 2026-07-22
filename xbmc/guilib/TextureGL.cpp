@@ -27,7 +27,7 @@ namespace
 // clang-format off
 constexpr auto TextureMapping =  make_map<KD_TEX_FMT, TextureFormat>(
 {
-#if defined(GL_EXT_texture_sRGB_R8) && (GL_EXT_texture_sRGB_RG8)
+#if defined(GL_EXT_texture_sRGB_R8) && defined(GL_EXT_texture_sRGB_RG8)
   {KD_TEX_FMT_SDR_R8, {GL_R8, GL_SR8_EXT, GL_RED}},
   {KD_TEX_FMT_SDR_RG8, {GL_RG8, GL_SRG8_EXT, GL_RG}},
 #else
@@ -50,7 +50,7 @@ constexpr auto TextureMapping =  make_map<KD_TEX_FMT, TextureFormat>(
   {KD_TEX_FMT_HDR_RGBA16f, {GL_RGBA16F, GL_FALSE, GL_RGBA, GL_HALF_FLOAT}},
 #endif
 
-#if defined(GL_EXT_texture_compression_s3tc) && (GL_EXT_texture_sRGB)
+#if defined(GL_EXT_texture_compression_s3tc) && defined(GL_EXT_texture_sRGB)
   {KD_TEX_FMT_S3TC_RGB8, {GL_COMPRESSED_RGB_S3TC_DXT1_EXT, GL_COMPRESSED_SRGB_S3TC_DXT1_EXT}},
   {KD_TEX_FMT_S3TC_RGB8_A1, {GL_COMPRESSED_RGBA_S3TC_DXT1_EXT, GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT}},
   {KD_TEX_FMT_S3TC_RGB8_A4, {GL_COMPRESSED_RGBA_S3TC_DXT3_EXT, GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT}},

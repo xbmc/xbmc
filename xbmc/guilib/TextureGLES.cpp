@@ -65,7 +65,7 @@ constexpr auto TextureMappingGLES20 = make_map<KD_TEX_FMT, TextureFormat>(
 #if defined(GL_ES_VERSION_3_0)
 constexpr auto TextureMappingGLES30 = make_map<KD_TEX_FMT, TextureFormat>(
 {
-#if defined(GL_EXT_texture_sRGB_R8) && (GL_EXT_texture_sRGB_RG8) // in gl2ext.h, but spec says >= 3.0
+#if defined(GL_EXT_texture_sRGB_R8) && defined(GL_EXT_texture_sRGB_RG8) // in gl2ext.h, but spec says >= 3.0
   {KD_TEX_FMT_SDR_R8, {GL_R8, GL_SR8_EXT, GL_RED}},
   {KD_TEX_FMT_SDR_RG8, {GL_RG8, GL_SRG8_EXT, GL_RG}},
 #else
@@ -98,7 +98,7 @@ constexpr auto TextureMappingGLES30 = make_map<KD_TEX_FMT, TextureFormat>(
 // Common GLES extensions (texture compression)
 constexpr auto TextureMappingGLESExtensions = make_map<KD_TEX_FMT, TextureFormat>(
 {
-#if defined(GL_EXT_texture_compression_s3tc) && (GL_EXT_texture_compression_s3tc_srgb)
+#if defined(GL_EXT_texture_compression_s3tc) && defined(GL_EXT_texture_compression_s3tc_srgb)
   {KD_TEX_FMT_S3TC_RGB8, {GL_COMPRESSED_RGB_S3TC_DXT1_EXT, GL_COMPRESSED_SRGB_S3TC_DXT1_EXT}},
   {KD_TEX_FMT_S3TC_RGB8_A1, {GL_COMPRESSED_RGBA_S3TC_DXT1_EXT, GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT}},
   {KD_TEX_FMT_S3TC_RGB8_A4, {GL_COMPRESSED_RGBA_S3TC_DXT3_EXT, GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT}},
