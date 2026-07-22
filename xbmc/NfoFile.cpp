@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -35,6 +35,17 @@ std::vector<ScraperPtr> GetScrapers(AddonType type, const ScraperPtr& selectedSc
 
 } // unnamed namespace
 
+const TiXmlElement* CNfoFile::GetRootElement() const
+{
+  if (!m_xmlParsed)
+  {
+    if (m_headPos < m_doc.size())
+      m_xmlDoc.Parse(m_doc.substr(m_headPos), TIXML_ENCODING_UNKNOWN);
+    m_xmlParsed = true;
+  }
+  return m_xmlDoc.RootElement();
+}
+
 CInfoScanner::InfoType CNfoFile::TryParsing(ADDON::AddonType addonType) const
 {
   using enum CInfoScanner::InfoType;
@@ -42,12 +53,7 @@ CInfoScanner::InfoType CNfoFile::TryParsing(ADDON::AddonType addonType) const
 
   // Classification only needs the root element (to avoid a full ParseNative)
   // and its "override" attribute (for videos)
-  if (m_headPos >= m_doc.size())
-    return NONE;
-
-  CXBMCTinyXML doc;
-  doc.Parse(m_doc.substr(m_headPos), TIXML_ENCODING_UNKNOWN);
-  const TiXmlElement* root = doc.RootElement();
+  const TiXmlElement* root = GetRootElement();
   if (!root)
     return NONE;
 
@@ -180,6 +186,8 @@ void CNfoFile::Close()
   m_doc.clear();
   m_headPos = 0;
   m_scurl.Clear();
+  m_xmlDoc.Clear();
+  m_xmlParsed = false;
 }
 
 namespace
