@@ -14,7 +14,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   macro(buildmacroTagLib)
     # Darwin systems use a system tbd that isnt found as a static lib
-    # Other platforms when using ENABLE_INTERNAL_TAGLIB, we want the static lib
+    # Other platforms we want the static lib
     if(NOT CMAKE_SYSTEM_NAME STREQUAL "Darwin")
       # Requires cmake 3.24 for ZLIB_USE_STATIC_LIBS to actually do something
       set(ZLIB_USE_STATIC_LIBS ON)
@@ -55,7 +55,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   # If there is a potential this library can be built internally
   # Check its dependencies to allow forcing this lib to be built if one of its
   # dependencies requires being rebuilt
-  if(ENABLE_INTERNAL_TAGLIB)
+  if((WIN32 OR WINDOWS_STORE) OR KODI_DEPENDSBUILD)
     # Dependency list of this find module for an INTERNAL build
     set(${CMAKE_FIND_PACKAGE_NAME}_DEPLIST Utfcpp)
 
@@ -94,9 +94,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     endif()
   endif()
 
-  if(("${${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION}" VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_TAGLIB) OR
-     (((CORE_SYSTEM_NAME STREQUAL linux AND NOT "webos" IN_LIST CORE_PLATFORM_NAME_LC) OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_TAGLIB) OR
-     (DEFINED ${CMAKE_FIND_PACKAGE_NAME}_FORCE_BUILD))
+  if(("${${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION}" VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND
+     ((WIN32 OR WINDOWS_STORE) OR KODI_DEPENDSBUILD)) OR (DEFINED ${CMAKE_FIND_PACKAGE_NAME}_FORCE_BUILD))
     message(STATUS "Building ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}: \(version \"${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER}\"\)")
     cmake_language(EVAL CODE "
       buildmacro${CMAKE_FIND_PACKAGE_NAME}()
@@ -122,7 +121,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     endif()
   else()
     if(TagLib_FIND_REQUIRED)
-      message(FATAL_ERROR "TagLib not found. You may want to try -DENABLE_INTERNAL_TAGLIB=ON")
+      message(FATAL_ERROR "TagLib not found.")
     endif()
   endif()
 endif()

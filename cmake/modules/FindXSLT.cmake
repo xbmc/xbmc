@@ -50,7 +50,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   # If there is a potential this library can be built internally
   # Check its dependencies to allow forcing this lib to be built if one of its
   # dependencies requires being rebuilt
-  if(ENABLE_INTERNAL_XSLT)
+  if((WIN32 OR WINDOWS_STORE) OR KODI_DEPENDSBUILD)
     # Dependency list of this find module for an INTERNAL build
     set(${CMAKE_FIND_PACKAGE_NAME}_DEPLIST LibXml2)
 
@@ -72,9 +72,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     endif()
   endif()
 
-  if(("${${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION}" VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_XSLT) OR
-     (((CORE_SYSTEM_NAME STREQUAL linux AND NOT "webos" IN_LIST CORE_PLATFORM_NAME_LC) OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_XSLT) OR
-     (DEFINED ${CMAKE_FIND_PACKAGE_NAME}_FORCE_BUILD))
+  if(("${${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION}" VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND
+     ((WIN32 OR WINDOWS_STORE) OR KODI_DEPENDSBUILD)) OR (DEFINED ${CMAKE_FIND_PACKAGE_NAME}_FORCE_BUILD))
     message(STATUS "Building ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}: \(version \"${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER}\"\)")
     # Build lib
     cmake_language(EVAL CODE "
@@ -100,7 +99,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     ADD_MULTICONFIG_BUILDMACRO()
   else()
     if(XSLT_FIND_REQUIRED)
-      message(FATAL_ERROR "XSLT library was not found. You may want to try -DENABLE_INTERNAL_XSLT=ON")
+      message(FATAL_ERROR "XSLT library was not found.")
     endif()
   endif()
 endif()
