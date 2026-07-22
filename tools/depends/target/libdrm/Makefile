@@ -2,9 +2,9 @@ include ../../Makefile.include
 DEPS =../../Makefile.include Makefile ../../download-files.include
 
 LIBNAME=libdrm
-VERSION=2.4.115
+VERSION=2.4.134
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.xz
-SHA512=0c38d3cfd76f627b899f052527c2939d5fc87a417422dceb0761839ba21e69736703a87ba170b5ba7a4aca2506a240760c8c97ca1781a7fb78468225295293bd
+SHA512=ef2abddea59d1e93c83a48de920431b839ab50d6071ef4da3cf126e7d64ba7b235f2e34e1169d49ad9de2937a0a18acd66bb8d324b067239b1136e0ddbe792a1
 include ../../download-files.include
 
 MESON_BUILD_TYPE=release
