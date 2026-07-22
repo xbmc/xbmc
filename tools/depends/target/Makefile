@@ -88,7 +88,27 @@ ifeq ($(OS),linux)
   DEPENDS += dbus libuuid alsa-lib libdrm libxkbcommon libinput libudev libevdev mtdev pipewire
 
   # CI purposes only. Use linux/webos targets to test tools/depends makefile builds
-  DEPENDS += dav1d ffmpeg
+  DEPENDS += brotli \
+             cec \
+             curl \
+             dav1d \
+             exiv2 \
+             ffmpeg \
+             lcms2 \
+             libass \
+             libbluray \
+             liblzo2 \
+             libnfs \
+             libxslt \
+             mariadb \
+             nlohmann_json \
+             nghttp2 \
+             p8-platform \
+             pcre2 \
+             taglib \
+             tinyxml2 \
+             udfread \
+             utfcpp
 
   ALSA_LIB = alsa-lib
   LIBUUID = libuuid
@@ -128,7 +148,7 @@ ifeq ($(OS),linux)
 
   ifeq ($(TARGET_PLATFORM),webos)
     DEPENDS += libdovi wayland waylandpp wayland-protocols webos-wayland-extensions webos-userland
-    EXCLUDED_DEPENDS += dbus mtdev libevdev libinput linux-system-x11-libs pipewire mesa
+    EXCLUDED_DEPENDS += cec dbus mtdev libevdev libinput linux-system-x11-libs pipewire mesa
   endif
 
   ifneq (,$(findstring gbm,$(TARGET_PLATFORM)))
@@ -187,7 +207,7 @@ pythonmodule-pil: bzip2 $(PYMODULE_DEPS) $(ZLIB) libjpeg-turbo libpng freetype2 
 pythonmodule-pycryptodome: $(PYMODULE_DEPS) python3 pythonmodule-setuptools
 pythonmodule-setuptools: $(PYMODULE_DEPS) python3
 samba-gplv3: gnutls $(ZLIB)
-taglib: utf8-cpp $(ZLIB)
+taglib: utfcpp $(ZLIB)
 wayland: expat libffi
 waylandpp: wayland $(WAYLANDPP_DEPS)
 xz: gettext
