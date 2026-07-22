@@ -12,16 +12,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   macro(buildmacroCEC)
 
-    find_package(P8Platform REQUIRED ${SEARCH_QUIET})
-
     set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
-
-    set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/001-all-cmakelists.patch"
-                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/002-all-libceccmakelists.patch"
-                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/003-all-remove_git_info.patch")
-
-    generate_patchcommand("${patches}")
-    unset(patches)
 
     set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SHARED_LIB TRUE)
 
@@ -32,6 +23,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     set(CMAKE_ARGS -DBUILD_SHARED_LIBS=ON
                    -DSKIP_PYTHON_WRAPPER=ON
                    -DDISABLE_BUILDINFO=ON
+                   -DDISABLE_CLIENT=ON
+                   -DDISABLE_STATIC=ON
+                   -DCMAKE_INSTALL_LIBDIR=lib
+                   -DCMAKE_INSTALL_INCLUDEDIR=include
                    -DCMAKE_PLATFORM_NO_VERSIONED_SONAME=ON)
 
     BUILD_DEP_TARGET()
@@ -41,19 +36,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       add_custom_command(TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} POST_BUILD
                          COMMAND ${INSTALL_NAME_TOOL} -id ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY})
     endif()
-
-    add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} LIBRARY::P8Platform)
   endmacro()
-
-  # If there is a potential this library can be built internally
-  # Check its dependencies to allow forcing this lib to be built if one of its
-  # dependencies requires being rebuilt
-  if(ENABLE_INTERNAL_CEC)
-    # Dependency list of this find module for an INTERNAL build
-    set(${CMAKE_FIND_PACKAGE_NAME}_DEPLIST P8Platform)
-
-    check_dependency_build(${CMAKE_FIND_PACKAGE_NAME} "${${CMAKE_FIND_PACKAGE_NAME}_DEPLIST}")
-  endif()
 
   set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC cec)
   set(${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME libcec)
