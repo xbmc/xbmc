@@ -126,6 +126,8 @@ void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
     lpszType = "group"; break;
   case CGUIControl::GUICONTROL_GROUPLIST:
     lpszType = "grouplist"; break;
+  case CGUIControl::GUICONTROL_GROUPMASK:
+    lpszType = "groupmask"; break;
   case CGUIControl::GUICONTROL_SCROLLBAR:
     lpszType = "scrollbar"; break;
   case CGUIControl::GUICONTROL_LISTLABEL:

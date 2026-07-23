@@ -14,6 +14,7 @@ set(SOURCES DDSImage.cpp
             GUIControlFactory.cpp
             GUIControlGroup.cpp
             GUIControlGroupList.cpp
+            GUIControlGroupMask.cpp
             GUIControlLookup.cpp
             GUIControlProfiler.cpp
             GUIDialog.cpp
@@ -94,6 +95,7 @@ set(HEADERS AspectRatio.h
             GUIControlFactory.h
             GUIControlGroup.h
             GUIControlGroupList.h
+            GUIControlGroupMask.h
             GUIControlProfiler.h
             GUIControlLookup.h
             GUIDialog.h

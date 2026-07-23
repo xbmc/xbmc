@@ -59,6 +59,20 @@ enum RENDER_ORDER
   RENDER_ORDER_FRONT_TO_BACK,
 };
 
+enum class STENCIL_LAYER
+{
+  LAYER0 = 0,
+  LAYER1 = 1,
+  LAYER2 = 2,
+  LAYER3 = 3,
+  LAYER4 = 4,
+  LAYER5 = 5,
+  LAYER6 = 6,
+  LAYER7 = 7,
+  NONE,
+  INVALID,
+};
+
 class CGraphicContext : public CCriticalSection
 {
 public:
@@ -219,6 +233,26 @@ public:
   void SetTransferPQ(bool PQ) { m_isTransferPQ = PQ; }
   bool IsTransferPQ() const { return m_isTransferPQ; }
 
+  /*! \brief Reserves an aabb to which a stencil drawcall should be made. Returns the bucket (or rather layer)
+   to which the drawcall has to be applied to. If all 8 available buckets are full for a given area, it will
+   signal so. 
+
+   \param newRect the requested area the element wants to render to
+   \sa returns an available layer, or signals that all available buckets are full
+   */
+  STENCIL_LAYER AddStencilRectToBucket(const CRect& newRect);
+  /*! \brief Clears all stencil buckets. Should be called at the start of a new frame */
+  void ClearStencilBuckets();
+
+  /*! \brief Pushes a new stencil layer to the stack. Child elements should render using this layer.
+   \param stencilLayer the layer which to be added.
+   */
+  void SetStencilLayer(const STENCIL_LAYER stencilLayer);
+  /*! \brief Pops the current stencil layer */
+  void RestoreStencilLayer();
+  /*! \brief Returns the current stencil layer */
+  STENCIL_LAYER GetStencilLayer();
+
 protected:
 
   void UpdateCameraPosition(const CPoint &camera, const float &factor);
@@ -239,6 +273,9 @@ protected:
   RESOLUTION_INFO m_windowResolution;
   std::stack<CPoint> m_cameras;
   std::stack<CPoint> m_origins;
+  std::stack<STENCIL_LAYER> m_stencilLayers;
+
+  std::array<std::vector<CRect>, 8> m_stencilBuckets;
   std::stack<CRect> m_clipRegions;
   std::stack<float> m_stereoFactors;
   std::stack<CRect> m_viewStack;

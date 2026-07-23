@@ -15,6 +15,7 @@
 #include "TextureManager.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
@@ -22,6 +23,7 @@
 
 CreateGUITextureFunc CGUITexture::m_createGUITextureFunc;
 DrawQuadFunc CGUITexture::m_drawQuadFunc;
+DrawStencilQuadFunc CGUITexture::m_drawStencilQuadFunc;
 
 CTextureInfo::CTextureInfo()
 {
@@ -41,6 +43,17 @@ void CGUITexture::Register(const CreateGUITextureFunc& createFunction,
 {
   m_createGUITextureFunc = createFunction;
   m_drawQuadFunc = drawQuadFunction;
+  m_drawStencilQuadFunc = nullptr;
+  CLog::LogF(LOGDEBUG, "Stencil quad drawing not implemented for this rendering backend.");
+}
+
+void CGUITexture::Register(const CreateGUITextureFunc& createFunction,
+                           const DrawQuadFunc& drawQuadFunction,
+                           const DrawStencilQuadFunc& drawStencilQuadFunction)
+{
+  m_createGUITextureFunc = createFunction;
+  m_drawQuadFunc = drawQuadFunction;
+  m_drawStencilQuadFunc = drawStencilQuadFunction;
 }
 
 CGUITexture* CGUITexture::CreateTexture(
@@ -70,6 +83,15 @@ void CGUITexture::DrawQuad(const CRect& coords,
         "No GUITexture DrawQuad function available. Did you forget to register?");
 
   m_drawQuadFunc(coords, color, texture, texCoords, depth, blending);
+}
+
+void CGUITexture::DrawStencilQuad(const CRect& coords, const STENCIL_LAYER mask)
+{
+
+  if (!m_drawStencilQuadFunc)
+    return;
+
+  m_drawStencilQuadFunc(coords, mask);
 }
 
 CGUITexture::CGUITexture(
