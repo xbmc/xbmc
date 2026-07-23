@@ -3,6 +3,7 @@ set(SOURCES TestDirectory.cpp
             TestDiscDirectoryHelper.cpp
             TestFile.cpp
             TestFileFactory.cpp
+            TestStatCache.cpp
             TestZipFile.cpp
             TestZipManager.cpp)
 

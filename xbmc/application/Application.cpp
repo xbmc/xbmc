@@ -62,6 +62,7 @@
 #include "filesystem/DirectoryCache.h"
 #include "filesystem/DllLibCurl.h"
 #include "filesystem/File.h"
+#include "filesystem/StatCache.h"
 #include "music/MusicFileItemClassify.h"
 #include "network/DNSNameCache.h"
 #include "network/NetworkFileItemClassify.h"
@@ -274,6 +275,8 @@ bool CApplication::Create()
   CServiceBroker::RegisterKeyboardLayoutManager(keyboardLayoutManager);
 
   CServiceBroker::RegisterDNSNameCache(std::make_shared<CDNSNameCache>());
+
+  CServiceBroker::RegisterStatCache(std::make_shared<XFILE::CStatCache>());
 
   m_ServiceManager = std::make_unique<CServiceManager>();
 
@@ -1753,6 +1756,8 @@ bool CApplication::Cleanup()
     }
 
     CServiceBroker::UnregisterDNSNameCache();
+
+    CServiceBroker::UnregisterStatCache();
 
     CServiceBroker::UnregisterKeyboardLayoutManager();
 

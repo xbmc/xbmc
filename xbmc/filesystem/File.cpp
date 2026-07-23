@@ -16,6 +16,7 @@
 #include "FileFactory.h"
 #include "IFile.h"
 #include "ServiceBroker.h"
+#include "StatCache.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPowerHandling.h"
 #include "commons/Exception.h"
@@ -30,6 +31,18 @@
 #include "utils/log.h"
 
 using namespace XFILE;
+
+namespace
+{
+// creating, deleting or renaming a file changes its parent directory's own
+// metadata (e.g. modification time), so any cached stat for the parent is stale
+void InvalidateParentStat(const CURL& url)
+{
+  if (const auto statCache = CServiceBroker::GetStatCache())
+    // Strip options before computing the parent path
+    statCache->Remove(CURL(URIUtils::GetParentPath(url.GetWithoutOptions())));
+}
+} // namespace
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -377,6 +390,7 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
       m_bitStreamStats->Start();
     }
 
+    m_openedUrl = url;
     return true;
   }
   XBMCCOMMONS_HANDLE_UNCHECKED
@@ -419,6 +433,11 @@ bool CFile::OpenForWrite(const CURL& file, bool bOverWrite)
     {
       // add this file to our directory cache (if it's stored)
       g_directoryCache.AddFile(url);
+      // the file is about to change, so any cached stat is now stale
+      if (const auto statCache = CServiceBroker::GetStatCache())
+        statCache->Remove(url);
+      InvalidateParentStat(url);
+      m_openedUrl = url;
       return true;
     }
     return false;
@@ -535,6 +554,12 @@ int CFile::Stat(const CURL& file, struct __stat64* buffer)
     return -1;
 
   CURL url(URIUtils::SubstitutePath(file));
+
+  const auto statCache = CServiceBroker::GetStatCache();
+
+  if (statCache && statCache->Get(url, buffer))
+    return 0;
+
   CURL authUrl = URIUtils::AddCredentials(url);
 
   try
@@ -542,7 +567,10 @@ int CFile::Stat(const CURL& file, struct __stat64* buffer)
     std::unique_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile)
       return -1;
-    return pFile->Stat(authUrl, buffer);
+    const int ret = pFile->Stat(authUrl, buffer);
+    if (ret == 0 && statCache)
+      statCache->Set(url, buffer);
+    return ret;
   }
   XBMCCOMMONS_HANDLE_UNCHECKED
   catch (CRedirectException *pRedirectEx)
@@ -564,6 +592,8 @@ int CFile::Stat(const CURL& file, struct __stat64* buffer)
 
           if (!pImp->Stat(newAuthUrl, buffer))
           {
+            if (statCache)
+              statCache->Set(url, buffer);
             return 0;
           }
         }
@@ -572,6 +602,8 @@ int CFile::Stat(const CURL& file, struct __stat64* buffer)
       {
         if (pImp.get() && !pImp->Stat(authUrl, buffer))
         {
+          if (statCache)
+            statCache->Set(url, buffer);
           return 0;
         }
       }
@@ -676,6 +708,7 @@ void CFile::Close()
 
     m_pBuffer.reset();
     m_pFile.reset();
+    m_openedUrl.Reset();
   }
   XBMCCOMMONS_HANDLE_UNCHECKED
   catch (...) { CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__); }
@@ -725,7 +758,14 @@ int CFile::Truncate(int64_t iSize)
 
   try
   {
-    return m_pFile->Truncate(iSize);
+    const int ret = m_pFile->Truncate(iSize);
+    if (ret == 0)
+    {
+      // the file's size just changed, so any cached stat is now stale
+      if (const auto statCache = CServiceBroker::GetStatCache())
+        statCache->Remove(m_openedUrl);
+    }
+    return ret;
   }
   XBMCCOMMONS_HANDLE_UNCHECKED
   catch (...) { CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__); }
@@ -877,7 +917,14 @@ ssize_t CFile::Write(const void* lpBuf, size_t uiBufSize)
       return m_pFile->Write(&dummyBuf, 0);
     }
 
-    return m_pFile->Write(lpBuf, uiBufSize);
+    const ssize_t ret = m_pFile->Write(lpBuf, uiBufSize);
+    if (ret > 0)
+    {
+      // the file's content/size just changed, so any cached stat is now stale
+      if (const auto statCache = CServiceBroker::GetStatCache())
+        statCache->Remove(m_openedUrl);
+    }
+    return ret;
   }
   XBMCCOMMONS_HANDLE_UNCHECKED
   catch (...) { CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__); }
@@ -905,6 +952,9 @@ bool CFile::Delete(const CURL& file)
     if(pFile->Delete(authUrl))
     {
       g_directoryCache.ClearFile(url);
+      if (const auto statCache = CServiceBroker::GetStatCache())
+        statCache->Remove(url);
+      InvalidateParentStat(url);
       return true;
     }
   }
@@ -940,6 +990,15 @@ bool CFile::Rename(const CURL& file, const CURL& newFile)
     {
       g_directoryCache.ClearFile(url);
       g_directoryCache.AddFile(urlnew);
+      if (const auto statCache = CServiceBroker::GetStatCache())
+      {
+        // Rename() is also used for directories, so any cached stats for entries below
+        // url/urlnew are now stale too, not just the entry for the (possible) directory itself
+        statCache->RemoveRecursive(url);
+        statCache->RemoveRecursive(urlnew);
+      }
+      InvalidateParentStat(url);
+      InvalidateParentStat(urlnew);
       return true;
     }
   }
@@ -962,12 +1021,19 @@ bool CFile::SetHidden(const CURL& file, bool hidden)
     CURL url(URIUtils::SubstitutePath(file));
     std::unique_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
 
-    CURL authUrl = URIUtils::AddCredentials(std::move(url));
+    const CURL authUrl = URIUtils::AddCredentials(url);
 
     if (!pFile)
       return false;
 
-    return pFile->SetHidden(authUrl, hidden);
+    if (pFile->SetHidden(authUrl, hidden))
+    {
+      // st_mode can reflect the hidden attribute, so any cached stat is now stale
+      if (const auto statCache = CServiceBroker::GetStatCache())
+        statCache->Remove(url);
+      return true;
+    }
+    return false;
   }
   catch(...)
   {

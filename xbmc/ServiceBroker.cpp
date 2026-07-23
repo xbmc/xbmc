@@ -496,6 +496,21 @@ std::shared_ptr<XFILE::CBlurayDiscCache> CServiceBroker::GetBlurayDiscCache()
   return g_serviceBroker.m_blurayDiscCache;
 }
 
+void CServiceBroker::RegisterStatCache(const std::shared_ptr<XFILE::CStatCache>& cache)
+{
+  g_serviceBroker.m_statCache = cache;
+}
+
+void CServiceBroker::UnregisterStatCache()
+{
+  g_serviceBroker.m_statCache.reset();
+}
+
+std::shared_ptr<XFILE::CStatCache> CServiceBroker::GetStatCache()
+{
+  return g_serviceBroker.m_statCache;
+}
+
 CSubTagRegistryManager& CServiceBroker::GetSubTagRegistry()
 {
   return g_application.m_ServiceManager->GetSubTagRegistryManager();

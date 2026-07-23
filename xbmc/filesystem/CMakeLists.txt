@@ -51,6 +51,7 @@ set(SOURCES AddonsDirectory.cpp
             SpecialProtocolDirectory.cpp
             SpecialProtocolFile.cpp
             StackDirectory.cpp
+            StatCache.cpp
             VideoDatabaseDirectory.cpp
             VideoDatabaseFile.cpp
             VirtualDirectory.cpp
@@ -117,6 +118,7 @@ set(HEADERS AddonsDirectory.h
             SpecialProtocolDirectory.h
             SpecialProtocolFile.h
             StackDirectory.h
+            StatCache.h
             VideoDatabaseDirectory.h
             VideoDatabaseFile.h
             VirtualDirectory.h
