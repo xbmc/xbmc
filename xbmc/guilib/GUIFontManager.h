@@ -20,6 +20,7 @@
 #include "utils/GlobalsHandling.h"
 #include "windowing/GraphicContext.h"
 
+#include <memory>
 #include <set>
 #include <utility>
 #include <vector>
@@ -27,6 +28,7 @@
 // Forward
 class CGUIFont;
 class CGUIFontTTF;
+class CWinSystemBase;
 class CXBMCTinyXML;
 class TiXmlNode;
 class CSetting;
@@ -43,10 +45,17 @@ struct OrigFontInfo
   bool border;
 };
 
+struct FontEntry
+{
+  std::unique_ptr<CGUIFont> font;
+  OrigFontInfo origInfo;
+};
+
 struct FontMetadata
 {
   FontMetadata(const std::string& filename, const std::set<std::string>& familyNames)
-    : m_filename{filename}, m_familyNames{familyNames}
+    : m_filename{filename},
+      m_familyNames{familyNames}
   {
   }
 
@@ -108,8 +117,19 @@ public:
    */
   std::vector<std::string> GetUserFontsFamilyNames();
 
+  /*!
+   \brief Build the key under which a rasterised CGUIFontTTF is pooled.
+   \param fontFilePath the RESOLVED font file path, not the raw XML filename.
+          Two addons may ship a different font under the same basename.
+   */
+  static std::string MakeFontIdent(const std::string& fontFilePath,
+                                   float size,
+                                   float aspect,
+                                   bool border);
+
 protected:
   void ReloadTTFFonts();
+  bool ReloadFontEntry(CWinSystemBase& winSystem, FontEntry& entry);
   static void RescaleFontSizeAndAspect(CGraphicContext& context,
                                        float* size,
                                        float* aspect,
@@ -119,9 +139,8 @@ protected:
   CGUIFontTTF* GetFontFile(const std::string& fontIdent);
   static void GetStyle(const TiXmlNode* fontNode, int& iStyle);
 
-  std::vector<std::unique_ptr<CGUIFont>> m_vecFonts;
+  std::vector<FontEntry> m_fonts;
   std::vector<std::unique_ptr<CGUIFontTTF>> m_vecFontFiles;
-  std::vector<OrigFontInfo> m_vecFontInfo;
   RESOLUTION_INFO m_skinResolution;
   bool m_canReload{true};
 
