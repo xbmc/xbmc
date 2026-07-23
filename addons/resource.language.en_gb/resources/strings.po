@@ -8565,7 +8565,12 @@ msgctxt "#14128"
 msgid "Allow double refresh rates"
 msgstr ""
 
-#empty strings from id 14129 to 14186
+#: system/settings/settings.xml
+msgctxt "#14129"
+msgid "Keep current refresh rate when compatible"
+msgstr ""
+
+#empty strings from id 14130 to 14186
 
 #: system/settings/settings.xml
 msgctxt "#14187"
@@ -21694,7 +21699,13 @@ msgctxt "#36445"
 msgid "Select this option to allow using double refresh rates (playing 29.97 FPS video on a 59.94 Hz monitor or playing 30 FPS video on a 60 Hz monitor). You may want to use this option if your monitor doesn't have a 29.97 Hz or 30 Hz mode."
 msgstr ""
 
-#empty strings from id 36446 to 36459
+#. Description of setting with label #14129 "Keep current refresh rate when compatible"
+#: system/settings/settings.xml
+msgctxt "#36446"
+msgid "Keep the current display mode when its refresh rate is an exact multiple of the video's frame rate (for example, 23.976 FPS at 119.88 Hz). This avoids a display mode change but may increase power use or affect display processing."
+msgstr ""
+
+#empty strings from id 36447 to 36459
 
 #. Description of settings with label #14112 "Enable event logging"
 #: system/settings/settings.xml

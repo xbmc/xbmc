@@ -119,6 +119,9 @@ class CResolutionUtils
 {
 public:
   static RESOLUTION ChooseBestResolution(float fps, int width, int height, bool is3D);
+
+  /*! \brief Return true when refreshRate is an integer multiple of frameRate. */
+  static bool IsRefreshRateMultiple(float refreshRate, float frameRate);
   static bool HasWhitelist();
   static void PrintWhitelist();
 

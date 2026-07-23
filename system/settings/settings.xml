@@ -3167,6 +3167,11 @@
           </dependencies>
           <control type="toggle" />
         </setting>
+        <setting id="videoscreen.keepcompatiblerefreshrate" type="boolean" parent="videoscreen.whitelist" label="14129" help="36446">
+          <level>3</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
       </group>
       <group id="4" label="14232">
         <setting id="videoscreen.stereoscopicmode" type="integer" label="36500" help="36539">
