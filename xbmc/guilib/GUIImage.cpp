@@ -202,11 +202,22 @@ void CGUIImage::ProcessState()
     return;
   }
 
-  // can't set new texture during animation.
+  // finish an interrupted fade on its more visible side so the new fade starts clean
   if (m_isTransitioning && (m_textureNext->ReadyToRender() || m_textureNext->GetFileName().empty()))
-    return;
+  {
+    // an image-less current has nothing to show, so a ready incoming always wins
+    if (m_textureNext->ReadyToRender() &&
+        (!m_textureCurrent->ReadyToRender() || m_currentFadeTime * 2 >= m_crossFadeTime))
+    {
+      std::swap(m_textureCurrent, m_textureNext);
+      std::swap(m_nameCurrent, m_nameNext);
+    }
+    m_textureCurrent->SetAlpha(0xff);
+    m_currentFadeTime = 0;
+    MarkDirtyRegion();
+  }
 
-  // finally, we can request a new image.
+  // replace the in-flight texture, so the latest request always wins
   m_textureNext->SetFileName(fileName);
   m_nameNext = fileName;
   m_isTransitioning = true;
@@ -241,6 +252,10 @@ void CGUIImage::ProcessAllocation()
 
 void CGUIImage::ProcessNoTransition(unsigned int currentTime)
 {
+  // keep the clock current while not fading (v21 never reset it), so a fade pending
+  // across a processing gap settles on resume instead of replaying stale content
+  m_lastRenderTime = currentTime;
+
   if (m_textureCurrent->Process(currentTime))
     MarkDirtyRegion();
 }
@@ -252,6 +267,10 @@ void CGUIImage::ProcessInstantTransition(unsigned int currentTime)
 
   m_nameNext = "";
   m_textureNext->SetFileName("");
+
+  // the incoming texture carries a partial alpha when it completes an in-flight fade
+  m_textureCurrent->SetAlpha(0xff);
+  m_currentFadeTime = 0;
 
   m_textureCurrent->Process(currentTime);
 
@@ -292,7 +311,6 @@ void CGUIImage::ProcessFadingTransition(unsigned int currentTime)
     m_textureNext->SetFileName("");
 
     m_currentFadeTime = 0;
-    m_lastRenderTime = 0;
     m_isTransitioning = false;
   }
 
@@ -306,10 +324,11 @@ void CGUIImage::Render()
   if (!IsVisible())
     return;
 
+  m_textureCurrent->Render();
+
+  // incoming above outgoing (v21), so a fading-out tail hides behind the new image
   if (m_isTransitioning)
     m_textureNext->Render();
-
-  m_textureCurrent->Render();
 
   CGUIControl::Render();
 }
@@ -363,7 +382,6 @@ void CGUIImage::FreeTextures(bool immediately /* = false */)
   }
 
   m_isTransitioning = false;
-  m_lastRenderTime = 0;
   m_currentFadeTime = 0;
 }
 
@@ -594,6 +612,9 @@ std::string CGUIImage::GetFallback(const std::string& currentName)
 
 std::string CGUIImage::GetDescription(void) const
 {
+  // report the incoming texture as soon as it resolves so Control.GetLabel doesn't lag the fade
+  if (m_isTransitioning && (m_textureNext->ReadyToRender() || m_textureNext->GetFileName().empty()))
+    return m_textureNext->GetFileName();
   return GetFileName();
 }
 
