@@ -55,6 +55,7 @@ public:
     capath.clear();
     ciphers.clear();
     connecttimeout = DEFAULT_CONNECT_TIMEOUT;
+    verifyserver = false;
     compression = false;
   };
   std::string type;
@@ -69,6 +70,7 @@ public:
   std::string capath;
   std::string ciphers;
   unsigned int connecttimeout{DEFAULT_CONNECT_TIMEOUT};
+  bool verifyserver{false};
   bool compression;
 };
 

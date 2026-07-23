@@ -1,0 +1,81 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -557,6 +557,12 @@
+   SET(zlib_status "yes (using bundled zlib)")
+ ENDIF()
+ 
++install(EXPORT mariadbTargets
++  FILE mariadbConfig.cmake
++  DESTINATION lib/cmake/mariadb
++  NAMESPACE mariadb::
++)
++
+ MESSAGE1(STATUS "MariaDB Connector/c configuration:
+ -- Static PLUGINS ${PLUGINS_STATIC}
+ -- Dynamic PLUGINS ${PLUGINS_DYNAMIC}
+--- a/plugins/auth/CMakeLists.txt
++++ b/plugins/auth/CMakeLists.txt
+@@ -65,8 +65,10 @@
+ 
+   INCLUDE_DIRECTORIES(${REF10_DIR})
+   ADD_LIBRARY(ed25519_ref10 OBJECT ${REF10_SOURCES})
+-  SET_PROPERTY(TARGET ed25519_ref10 PROPERTY POSITION_INDEPENDENT_CODE ON)
++  SET_PROPERTY(TARGET ed25519_ref10 PROPERTY POSITION_INDEPENDENT_CODE ON EXPORT_NAME mariadbTargets)
+ 
++  install(TARGETS ed25519_ref10 EXPORT mariadbTargets)
++
+   IF(WITH_SSL STREQUAL "SCHANNEL")
+     SET(PARSEC_EXTRA_LIBS ed25519_ref10)
+   ENDIF()
+--- a/cmake/install_plugins.cmake
++++ b/cmake/install_plugins.cmake
+@@ -8,7 +8,7 @@
+ # plugin installation
+ 
+ MACRO(INSTALL_PLUGIN name binary_dir)
+-  INSTALL(TARGETS ${name} COMPONENT ClientPlugins DESTINATION ${INSTALL_PLUGINDIR})
++  INSTALL(TARGETS ${name} COMPONENT ClientPlugins DESTINATION ${INSTALL_PLUGINDIR} EXPORT mariadbTargets)
+   IF(MSVC)
+     INSTALL(FILES $<TARGET_PDB_FILE:${name}> COMPONENT Debuginfo
+       DESTINATION symbols CONFIGURATIONS Debug RelWithDebInfo)
+--- a/libmariadb/CMakeLists.txt
++++ b/libmariadb/CMakeLists.txt
+@@ -500,23 +500,37 @@
+   SET_TARGET_PROPERTIES(mariadbclient PROPERTIES OUTPUT_NAME "${LIBMARIADB_STATIC_NAME}")
+ ENDIF()
+ 
++if(INSTALL_STATIC)
++set_target_properties(mariadbclient PROPERTIES EXPORT_NAME mariadbTargets)
++target_include_directories(mariadbclient INTERFACE $<INSTALL_INTERFACE:include>)
+ INSTALL(TARGETS mariadbclient
++          EXPORT mariadbTargets
+           COMPONENT Development
+           DESTINATION ${INSTALL_LIBDIR})
++endif()
++
++if(INSTALL_SHARED)
++target_include_directories(libmariadb INTERFACE $<INSTALL_INTERFACE:include>)
+ IF(WIN32)
+ INSTALL(TARGETS libmariadb
+         COMPONENT SharedLibraries
+-        DESTINATION ${INSTALL_LIBDIR})
++        EXPORT mariadbTargets
++        RUNTIME DESTINATION ${INSTALL_BINDIR}
++        LIBRARY DESTINATION ${INSTALL_LIBDIR}
++        ARCHIVE DESTINATION ${INSTALL_LIBDIR})
+ ELSE()
+ # in cmake 3.12+ we can use
+ #INSTALL(TARGETS libmariadb LIBRARY DESTINATION ${INSTALL_LIBDIR}
+ #        COMPONENT SharedLibraries NAMELINK_COMPONENT Development)
+ # but as long as we build on CentOS 7 with its cmake 2.8.12.2 we have to use
+ INSTALL(TARGETS libmariadb LIBRARY DESTINATION ${INSTALL_LIBDIR}
++        EXPORT mariadbTargets
+         COMPONENT SharedLibraries NAMELINK_SKIP)
+ INSTALL(TARGETS libmariadb LIBRARY DESTINATION ${INSTALL_LIBDIR}
++        EXPORT mariadbTargets
+         COMPONENT Development NAMELINK_ONLY)
+ ENDIF()
++endif()
+ 
+ IF(MSVC)
+    # On Windows, install PDB
