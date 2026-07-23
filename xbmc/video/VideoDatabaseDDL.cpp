@@ -9,7 +9,6 @@
 #include "video/VideoDatabaseDDL.h"
 
 #include "ServiceBroker.h"
-#include "dbwrappers/dataset.h"
 #include "media/MediaType.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
@@ -156,7 +155,8 @@ void CVideoDatabaseDDL::CreateTables(CDatabase& db)
       "strVideoCodec text, fVideoAspect float, iVideoWidth integer, iVideoHeight integer, "
       "strAudioCodec text, iAudioChannels integer, strAudioLanguage text, "
       "strSubtitleLanguage text, iVideoDuration integer, strStereoMode text, "
-      "strVideoLanguage text, strHdrType text, strHdrDetail text)");
+      "strVideoLanguage text, strHdrType text, strHdrDetail text, iSource integer, iVersion "
+      "integer)");
 
   CLog::Log(LOGINFO, "create sets table");
   db.ExecuteQuery("CREATE TABLE `sets` ( idSet integer primary key, strSet text, strOverview text, "

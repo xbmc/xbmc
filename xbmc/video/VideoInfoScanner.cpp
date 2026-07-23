@@ -1663,12 +1663,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
 
     if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-            CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS) &&
-        !movieDetails.HasStreamDetails())
+            CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
     {
-      CDVDFileInfo::GetFileStreamDetails(pItem);
-      CLog::Log(LOGDEBUG, "VideoInfoScanner: Extracted filestream details from video file {}",
-                CURL::GetRedacted(path));
+      if (!movieDetails.HasNFOStreamDetails())
+      {
+        CDVDFileInfo::GetFileStreamDetails(pItem);
+        CLog::LogF(LOGDEBUG, "Extracted filestream details from video file {}",
+                   CURL::GetRedacted(path));
+      }
+      else
+        CLog::LogF(LOGDEBUG, "Filestream details from NFO file");
     }
 
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new item to {}:{}", content,
