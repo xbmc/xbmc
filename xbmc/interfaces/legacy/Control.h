@@ -2503,6 +2503,49 @@ namespace XBMCAddon
     };
     /// @}
 
+    // ControlVideoWindow class
+    ///
+    /// \defgroup python_xbmcgui_control_videowindow Subclass - ControlVideoWindow
+    /// \ingroup python_xbmcgui_control
+    /// @{
+    /// @brief **Used to embed the video window inside a group of other controls.**
+    ///
+    /// \python_class{ ControlVideoWindow(x, y, width, height) }
+    ///
+    /// The video window control is a placeholder that shows the video output of
+    /// the current playing video within an area of the skin, positioned and
+    /// sized like any other control.
+    ///
+    /// @note This class include also all calls from \ref python_xbmcgui_control "Control"
+    ///
+    /// @param x                    integer - x coordinate of control.
+    /// @param y                    integer - y coordinate of control.
+    /// @param width                integer - width of control.
+    /// @param height               integer - height of control.
+    ///
+    ///
+    ///--------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ...
+    /// self.videowindow = xbmcgui.ControlVideoWindow(100, 250, 125, 75)
+    /// ...
+    /// ~~~~~~~~~~~~~
+    ///
+    class ControlVideoWindow : public Control
+    {
+    public:
+      ControlVideoWindow(long x, long y, long width, long height);
+
+#ifndef SWIG
+      CGUIControl* Create() override;
+
+      inline ControlVideoWindow() = default;
+#endif
+    };
+    /// @}
+
     // ControlRadioButton class
     ///
     /// \defgroup python_xbmcgui_control_radiobutton Subclass - ControlRadioButton
