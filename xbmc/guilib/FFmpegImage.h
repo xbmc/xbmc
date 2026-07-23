@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "guilib/TextureScaling.h"
 #include "iimage.h"
 
 #include <cstdint>
@@ -62,6 +63,11 @@ public:
 
   bool LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize,
                            unsigned int width, unsigned int height) override;
+  bool LoadImageFromMemory(unsigned char* buffer,
+                           unsigned int bufSize,
+                           unsigned int width,
+                           unsigned int height,
+                           TEXTURE_SCALING scalingMethod) override;
   bool Decode(unsigned char * const pixels, unsigned int width, unsigned int height,
               unsigned int pitch, unsigned int format) override;
   bool CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width,
@@ -72,6 +78,8 @@ public:
   void ReleaseThumbnailBuffer() override;
 
   bool Initialize(unsigned char* buffer, size_t bufSize);
+
+  void SetScalingMethod(TEXTURE_SCALING method) { m_scalingMethod = method; }
 
   std::shared_ptr<Frame> ReadFrame();
 
@@ -94,4 +102,5 @@ private:
 
   AVFrame* m_pFrame;
   uint8_t* m_outputBuffer;
+  TEXTURE_SCALING m_scalingMethod{TEXTURE_SCALING::LINEAR};
 };

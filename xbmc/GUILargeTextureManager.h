@@ -10,6 +10,7 @@
 
 #include "guilib/AspectRatio.h"
 #include "guilib/TextureManager.h"
+#include "guilib/TextureScaling.h"
 #include "jobs/IJobCallback.h"
 #include "jobs/Job.h"
 #include "threads/CriticalSection.h"
@@ -36,7 +37,8 @@ public:
                unsigned int targetWidth,
                unsigned int targetHeight,
                CAspectRatio::AspectRatio aspectRatio,
-               const bool useCache);
+               const bool useCache,
+               TEXTURE_SCALING scalingMethod);
   ~CImageLoader() override;
 
   /*!
@@ -52,6 +54,7 @@ private:
   unsigned int m_targetWidth; ///< target width of the image
   unsigned int m_targetHeight; ///< target height of the image
   CAspectRatio::AspectRatio m_aspectRatio; ///< aspect ratio mode of the image
+  TEXTURE_SCALING m_scalingMethod{TEXTURE_SCALING::LINEAR};
 };
 
 /*!
@@ -100,7 +103,8 @@ public:
                 unsigned int height,
                 CAspectRatio::AspectRatio aspectRatio,
                 bool firstRequest,
-                bool useCache = true);
+                bool useCache = true,
+                TEXTURE_SCALING scalingMethod = TEXTURE_SCALING::LINEAR);
 
   /*!
    \brief Request a texture to be unloaded.
@@ -119,7 +123,8 @@ public:
                     unsigned int width,
                     unsigned int height,
                     CAspectRatio::AspectRatio aspectRatio,
-                    bool immediately = false);
+                    bool immediately = false,
+                    TEXTURE_SCALING scalingMethod = TEXTURE_SCALING::LINEAR);
 
   /*!
    \brief Cleanup images that are no longer in use.
@@ -139,7 +144,8 @@ private:
     explicit CLargeTexture(const std::string& path,
                            unsigned int targetWidth,
                            unsigned int targetHeight,
-                           CAspectRatio::AspectRatio aspectRatio);
+                           CAspectRatio::AspectRatio aspectRatio,
+                           TEXTURE_SCALING scalingMethod);
     virtual ~CLargeTexture();
 
     void AddRef();
@@ -152,6 +158,7 @@ private:
     unsigned int GetTargetWidth() const { return m_targetWidth; }
     unsigned int GetTargetHeight() const { return m_targetHeight; }
     CAspectRatio::AspectRatio GetAspectRatio() const { return m_aspectRatio; }
+    TEXTURE_SCALING GetScalingMethod() const { return m_scalingMethod; }
 
   private:
     static const unsigned int TIME_TO_DELETE = 2000;
@@ -162,6 +169,7 @@ private:
     unsigned int m_targetWidth;
     unsigned int m_targetHeight;
     CAspectRatio::AspectRatio m_aspectRatio;
+    TEXTURE_SCALING m_scalingMethod;
     unsigned int m_timeToDelete;
   };
 
@@ -169,7 +177,8 @@ private:
                   unsigned int width,
                   unsigned int height,
                   CAspectRatio::AspectRatio aspectRatio,
-                  bool useCache = true);
+                  bool useCache = true,
+                  TEXTURE_SCALING scalingMethod = TEXTURE_SCALING::LINEAR);
 
   std::vector< std::pair<unsigned int, CLargeTexture *> > m_queued;
   std::vector<CLargeTexture *> m_allocated;

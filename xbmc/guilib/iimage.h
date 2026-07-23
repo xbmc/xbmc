@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "guilib/TextureScaling.h"
+
 #include <string>
 
 class IImage
@@ -25,6 +27,25 @@ public:
    \return true if the image could be loaded
    */
   virtual bool LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height)=0;
+
+  /*!
+   \brief Load an image from memory with an explicit scaling method
+   \param buffer The memory location where the image data can be found
+   \param bufSize The size of the buffer
+   \param width The ideal width of the texture
+   \param height The ideal height of the texture
+   \param scalingMethod Scaling algorithm to use while decoding
+   \return true if the image could be loaded
+   */
+  virtual bool LoadImageFromMemory(unsigned char* buffer,
+                                   unsigned int bufSize,
+                                   unsigned int width,
+                                   unsigned int height,
+                                   TEXTURE_SCALING scalingMethod)
+  {
+    return LoadImageFromMemory(buffer, bufSize, width, height);
+  }
+
   /*!
    \brief Decodes the previously loaded image data to the output buffer in 32 bit raw bits
    \param pixels The output buffer
