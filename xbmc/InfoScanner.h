@@ -70,9 +70,10 @@ protected:
     Completed
   };
 
-  enum class ContentFound : bool
+  enum class ContentFound
   {
     None,
+    ExistingContentFound,
     NewContentFound
   };
 

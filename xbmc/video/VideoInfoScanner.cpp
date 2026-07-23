@@ -370,6 +370,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     CFileItemList items;
     bool foundDirectly = false;
     bool bSkip = false;
+    bool bExistingContent = false;
 
     SScanSettings settings;
     ScraperPtr info =
@@ -443,6 +444,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '{}' due to no change{}",
                   CURL::GetRedacted(strDirectory), !fastHash.empty() ? " (fasthash)" : "");
         bSkip = true;
+
+        // Has content
+        if (!hash.empty())
+          bExistingContent = true;
       }
       else if (hash.empty())
       { // directory empty or non-existent - add to clean list and skip
@@ -532,7 +537,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     if (m_handle)
       OnDirectoryScanned(strDirectory);
 
-    bool foundSomethingInArchive = false;
+    bool foundSomethingInSubfolder = false;
     for (int i = 0; i < items.Size(); ++i)
     {
       CFileItemPtr pItem = items[i];
@@ -565,33 +570,37 @@ CVideoInfoScanner::~CVideoInfoScanner()
           m_bStop = true;
         }
         // If this subdirectory is an archive and content was found inside it,
-        // store the hash for the physical parent directory instead of the archive (eg. rar://) path.
+        // or if it is empty but there are subdirectories with content (eg. Disc 1),
+        // store the hash for the physical parent directory instead of the archive (eg. rar://) path,
+        // or no path.
         // This ensures change detection works correctly on the real filesystem path.
         else if (!foundSomething && !m_bStop &&
-                 foundContentOnRecursion == ContentFound::NewContentFound &&
-                 (content == ContentType::MOVIES || content == ContentType::MUSICVIDEOS) &&
-                 URIUtils::IsArchive(CURL(pItem->GetPath())))
+                 (foundContentOnRecursion == ContentFound::NewContentFound ||
+                  foundContentOnRecursion == ContentFound::ExistingContentFound) &&
+                 (content == ContentType::MOVIES || content == ContentType::MUSICVIDEOS))
         {
-          foundSomethingInArchive = true;
+          foundSomethingInSubfolder = true;
         }
       }
     }
 
-    // If the direct scan found nothing but an archive subfolder scan did,
+    // If the direct scan found nothing but a subfolder scan did,
     // store the hash for the physical directory so it is used for change detection
-    // rather than the archive (eg. rar://) virtual path.
-    if (!bSkip && !m_bStop && foundSomethingInArchive && !URIUtils::IsArchive(CURL(strDirectory)))
+    // rather than the archive (eg. rar://) virtual path, or not storing path at all.
+    if (!bSkip && !m_bStop && foundSomethingInSubfolder && !URIUtils::IsArchive(CURL(strDirectory)))
     {
       m_database.SetPathHash(strDirectory, hash);
-      CLog::LogF(LOGDEBUG,
-                 "Stored hash for physical dir '{}' after finding content in "
-                 "archive subfolder",
+      CLog::LogF(LOGDEBUG, "Stored hash for physical dir '{}' after finding content in a subfolder",
                  CURL::GetRedacted(strDirectory));
     }
 
-    return std::make_pair(m_bStop ? ScanComplete::Stopped : ScanComplete::Completed,
-                          foundSomething || foundSomethingInArchive ? ContentFound::NewContentFound
-                                                                    : ContentFound::None);
+    ContentFound contentFound = ContentFound::None;
+    if (foundSomething)
+      contentFound = ContentFound::NewContentFound;
+    else if (bExistingContent || foundSomethingInSubfolder)
+      contentFound = ContentFound::ExistingContentFound;
+
+    return std::make_pair(m_bStop ? ScanComplete::Stopped : ScanComplete::Completed, contentFound);
   }
 
   bool CVideoInfoScanner::UpdateSetInTag(CVideoInfoTag& tag)
