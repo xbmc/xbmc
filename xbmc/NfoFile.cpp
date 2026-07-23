@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -11,16 +11,17 @@
 
 #include "NfoFile.h"
 
-#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonSystemSettings.h"
 #include "addons/addoninfo/AddonType.h"
 #include "filesystem/File.h"
-#include "music/Album.h"
-#include "music/Artist.h"
+#include "utils/StringUtils.h"
+#include "utils/XMLUtils.h"
 #include "video/VideoInfoDownloader.h"
 
+#include <cstdint>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -34,26 +35,36 @@ std::vector<ScraperPtr> GetScrapers(AddonType type, const ScraperPtr& selectedSc
 
 } // unnamed namespace
 
+const TiXmlElement* CNfoFile::GetRootElement() const
+{
+  if (!m_xmlParsed)
+  {
+    if (m_headPos < m_doc.size())
+      m_xmlDoc.Parse(m_doc.substr(m_headPos), TIXML_ENCODING_UNKNOWN);
+    m_xmlParsed = true;
+  }
+  return m_xmlDoc.RootElement();
+}
+
 CInfoScanner::InfoType CNfoFile::TryParsing(ADDON::AddonType addonType) const
 {
   using enum CInfoScanner::InfoType;
   using enum ADDON::AddonType;
 
-  if (addonType == SCRAPER_ALBUMS)
-  {
-    CAlbum album;
-    return GetDetails(album) ? FULL : NONE;
-  }
-  if (addonType == SCRAPER_ARTISTS)
-  {
-    CArtist artist;
-    return GetDetails(artist) ? FULL : NONE;
-  }
+  // Classification only needs the root element (to avoid a full ParseNative)
+  // and its "override" attribute (for videos)
+  const TiXmlElement* root = GetRootElement();
+  if (!root)
+    return NONE;
+
+  if (addonType == SCRAPER_ALBUMS || addonType == SCRAPER_ARTISTS)
+    return FULL;
+
   if (addonType == SCRAPER_MOVIES || addonType == SCRAPER_TVSHOWS ||
       addonType == SCRAPER_MUSICVIDEOS)
   {
-    if (CVideoInfoTag details; GetDetails(details))
-      return details.GetOverride() ? OVERRIDE : FULL;
+    return StringUtils::EqualsNoCase(XMLUtils::GetAttribute(root, "override"), "true") ? OVERRIDE
+                                                                                       : FULL;
   }
   return NONE;
 }
@@ -175,6 +186,8 @@ void CNfoFile::Close()
   m_doc.clear();
   m_headPos = 0;
   m_scurl.Clear();
+  m_xmlDoc.Clear();
+  m_xmlParsed = false;
 }
 
 namespace

@@ -9,6 +9,7 @@
 #pragma once
 
 #include "IVideoInfoTagLoader.h"
+#include "NfoFile.h"
 
 #include <string>
 #include <vector>
@@ -39,4 +40,10 @@ protected:
   std::string FindNFO(const CFileItem& item, bool movieFolder) const;
 
   std::string m_path; //!< Path to nfo file
+
+private:
+  // Cache of the parsed nfo file, populated on the first call to Load()
+  CNfoFile m_nfoReader;
+  bool m_nfoParsed = false;
+  CInfoScanner::InfoType m_parseResult = CInfoScanner::InfoType::NONE;
 };
