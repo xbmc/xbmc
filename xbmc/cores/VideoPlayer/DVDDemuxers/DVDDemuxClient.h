@@ -43,6 +43,7 @@ public:
   void EnableStream(int id, bool enable) override;
   void OpenStream(int id) override;
   void SetVideoResolution(unsigned int width, unsigned int height) override;
+  int GetStreamLength() override;
 
 protected:
   void RequestStreams();

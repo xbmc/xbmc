@@ -688,6 +688,21 @@ bool CDVDDemuxClient::SeekTime(double timems, bool backwards, double *startpts)
   return false;
 }
 
+int CDVDDemuxClient::GetStreamLength()
+{
+  if (m_pInput)
+  {
+    CDVDInputStream::IDisplayTime* pDisplayTime = m_pInput->GetIDisplayTime();
+    if (pDisplayTime)
+    {
+      int total = pDisplayTime->GetTotalTime();
+      if (total > 0)
+        return total;
+    }
+  }
+  return 0;
+}
+
 void CDVDDemuxClient::SetSpeed (int speed)
 {
   if (m_IDemux)

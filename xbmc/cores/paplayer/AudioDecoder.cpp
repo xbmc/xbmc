@@ -158,7 +158,8 @@ int64_t CAudioDecoder::Seek(int64_t time)
   if (!m_codec)
     return 0;
   if (time < 0) time = 0;
-  if (time > m_codec->m_TotalTime) time = m_codec->m_TotalTime;
+  if (m_codec->m_TotalTime > 0 && time > m_codec->m_TotalTime)
+    time = m_codec->m_TotalTime;
   return m_codec->Seek(time);
 }
 
