@@ -17,8 +17,6 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "commons/Exception.h"
-#include "dialogs/GUIDialogBusy.h"
-#include "guilib/GUIWindowManager.h"
 #include "jobs/Job.h"
 #include "jobs/JobManager.h"
 #include "messaging/ApplicationMessenger.h"
@@ -153,9 +151,20 @@ bool CDirectory::GetDirectory(const CURL& url, CFileItemList &items, const std::
   return GetDirectory(url, items, hints);
 }
 
-bool CDirectory::GetDirectory(const CURL& url, CFileItemList &items, const CHints &hints)
+bool CDirectory::GetDirectory(const CURL& url, CFileItemList& items, const CHints& hints)
 {
-  CURL realURL = URIUtils::SubstitutePath(url);
+  const CURL realURL = URIUtils::SubstitutePath(url);
+  // FORCE_CACHE flag bypasses the IDirectory creation (which is slow for rar:// archives) and uses the cache directly
+  // BYPASS_CACHE will override this
+  if ((hints.flags & DIR_FLAG_FORCE_CACHE) == DIR_FLAG_FORCE_CACHE &&
+      !(hints.flags & DIR_FLAG_BYPASS_CACHE) && hints.mask.empty() &&
+      g_directoryCache.GetDirectory(realURL, items, true))
+  {
+    items.SetURL(url);
+    PostProcessDirectory(url, realURL, items, hints);
+    return true;
+  }
+
   std::shared_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realURL));
   return CDirectory::GetDirectory(url, pDirectory, items, hints);
 }
@@ -167,7 +176,7 @@ bool CDirectory::GetDirectory(const CURL& url,
 {
   try
   {
-    CURL realURL = URIUtils::SubstitutePath(url);
+    const CURL realURL = URIUtils::SubstitutePath(url);
     if (!pDirectory)
       return false;
 
@@ -268,37 +277,8 @@ bool CDirectory::GetDirectory(const CURL& url,
         }
       }
     }
-    // filter hidden files
-    //! @todo we shouldn't be checking the gui setting here, callers should use getHidden instead
-    if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_SHOWHIDDEN) && !(hints.flags & DIR_FLAG_GET_HIDDEN))
-    {
-      for (int i = 0; i < items.Size(); ++i)
-      {
-        if (items[i]->GetProperty("file:hidden").asBoolean())
-        {
-          items.Remove(i);
-          i--; // don't confuse loop
-        }
-      }
-    }
 
-    //  Should any of the files we read be treated as a directory?
-    //  Disable for database folders, as they already contain the extracted items
-    if (!(hints.flags & DIR_FLAG_NO_FILE_DIRS) && !MUSIC::IsMusicDb(items) &&
-        !VIDEO::IsVideoDb(items) && !PLAYLIST::IsSmartPlayList(items))
-      FilterFileDirectories(items, hints.mask);
-
-    // Correct items for path substitution
-    const std::string pathToUrl(url.Get());
-    const std::string pathToUrl2(realURL.Get());
-    if (pathToUrl != pathToUrl2)
-    {
-      for (int i = 0; i < items.Size(); ++i)
-      {
-        CFileItemPtr item = items[i];
-        item->SetPath(URIUtils::SubstitutePath(item->GetPath(), true));
-      }
-    }
+    PostProcessDirectory(url, realURL, items, hints);
 
     return true;
   }
@@ -474,6 +454,46 @@ void CDirectory::FilterFileDirectories(CFileItemList &items, const std::string &
         items.Remove(i);
         i--; // don't confuse loop
       }
+    }
+  }
+}
+
+void CDirectory::PostProcessDirectory(const CURL& url,
+                                      const CURL& realUrl,
+                                      CFileItemList& items,
+                                      const CHints& hints)
+{
+  // filter hidden files
+  //! @todo we shouldn't be checking the gui setting here, callers should use getHidden instead
+  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_FILELISTS_SHOWHIDDEN) &&
+      !(hints.flags & DIR_FLAG_GET_HIDDEN))
+  {
+    for (int i = 0; i < items.Size(); ++i)
+    {
+      if (items[i]->GetProperty("file:hidden").asBoolean())
+      {
+        items.Remove(i);
+        i--; // don't confuse loop
+      }
+    }
+  }
+
+  //  Should any of the files we read be treated as a directory?
+  //  Disable for database folders, as they already contain the extracted items
+  if (!(hints.flags & DIR_FLAG_NO_FILE_DIRS) && !MUSIC::IsMusicDb(items) &&
+      !VIDEO::IsVideoDb(items) && !PLAYLIST::IsSmartPlayList(items))
+    FilterFileDirectories(items, hints.mask);
+
+  // Correct items for path substitution
+  const std::string pathToUrl(url.Get());
+  const std::string pathToUrl2(realUrl.Get());
+  if (pathToUrl != pathToUrl2)
+  {
+    for (int i = 0; i < items.Size(); ++i)
+    {
+      CFileItemPtr item = items[i];
+      item->SetPath(URIUtils::SubstitutePath(item->GetPath(), true));
     }
   }
 }
