@@ -1,0 +1,39 @@
+--- a/src/dvd_reader.c
++++ b/src/dvd_reader.c
+@@ -95,36 +95,11 @@ static inline int _private_gettimeofday( struct timeval *tv, void *tz )
+ #endif
+ #endif /* _WIN32 */
+ 
+-/* Compat wrapper for stat() */
+ 
+-#if defined(_WIN32)
+-/* can't re-define stat (used in both function name and struct name) */
+-typedef struct _stat64 dvdstat_t;
+-static inline int dvdstat(const char *path, dvdstat_t *st)
+-{
+-  wchar_t *wpath, *it;
+-  int ret;
+-
+-  wpath = _utf8_to_wchar(path);
+-  if (!wpath) {
+-    return -1;
+-  }
+-
+-  /* need to strip possible trailing \\ */
+-  for (it = wpath; *it; it++)
+-    if ((*it == '\\' || *it == '/') && *(it+1) == 0)
+-      *it = 0;
+-
+-  ret = _wstat64(wpath, st);
+-  free(wpath);
+-  return ret;
+-}
+-#else
+ typedef struct stat dvdstat_t;
+ static inline int dvdstat(const char *file, dvdstat_t *st) {
+   return stat(file, st);
+ }
+-#endif
+ 
+ #define DEFAULT_UDF_CACHE_LEVEL 1
+ 

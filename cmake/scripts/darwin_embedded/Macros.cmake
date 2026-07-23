@@ -19,7 +19,26 @@ function(core_link_library lib wraplib)
   set(check_arg "")
   if(TARGET ${lib})
     set(target ${lib})
-    set(link_lib $<TARGET_FILE:${lib}>)
+
+    get_target_property(_ALIASTARGET ${target} ALIASED_TARGET)
+    if(_ALIASTARGET)
+      set(LIB_TARGET ${_ALIASTARGET})
+    else()
+      set(LIB_TARGET ${target})
+    endif()
+
+    string(FIND "${LIB_TARGET}" "PkgConfig::" pclib_target_found)
+    if(${pclib_target_found} GREATER_EQUAL 0)
+      # PkgConfig targets are interface targets, and do not have the property to
+      # fulfill TARGET_FILE genex. Manually retrieve lib from pop front of INTERFACE_LINK_LIBRARIES
+
+      get_target_property(pc_link_libs_target ${LIB_TARGET} INTERFACE_LINK_LIBRARIES)
+      list(POP_FRONT pc_link_libs_target _lib_path)
+      set(link_lib ${_lib_path})
+    else()
+      set(link_lib $<TARGET_FILE:${LIB_TARGET}>)
+    endif()
+
     set(check_arg ${ARGV2})
     set(data_arg  ${ARGV3})
 
@@ -39,7 +58,24 @@ function(core_link_library lib wraplib)
   elseif(check_arg STREQUAL archives)
     foreach(_data_arg ${data_arg})
       if(TARGET ${_data_arg})
-        list(APPEND extra_libs $<TARGET_FILE:${_data_arg}>)
+        get_target_property(_extra_ALIASTARGET ${_data_arg} ALIASED_TARGET)
+        if(_extra_ALIASTARGET)
+          set(DATA_TARGET ${_extra_ALIASTARGET})
+        else()
+          set(DATA_TARGET ${_data_arg})
+        endif()
+
+        string(FIND "${DATA_TARGET}" "PkgConfig::" pctarget_found)
+        if(${pctarget_found} GREATER_EQUAL 0)
+          # PkgConfig targets are interface targets, and do not have the property to
+          # fulfill TARGET_FILE genex. Manually retrieve lib from pop front of INTERFACE_LINK_LIBRARIES
+
+          get_target_property(pc_link_libs ${DATA_TARGET} INTERFACE_LINK_LIBRARIES)
+          list(POP_FRONT pc_link_libs _data_lib_path)
+          list(APPEND extra_libs ${_data_lib_path})
+        else()
+          list(APPEND extra_libs $<TARGET_FILE:${DATA_TARGET}>)
+        endif()
       else()
         list(APPEND extra_libs ${_data_arg})
       endif()

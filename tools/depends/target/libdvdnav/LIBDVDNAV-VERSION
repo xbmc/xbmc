@@ -1,8 +1,6 @@
 LIBNAME=libdvdnav
-BASE_URL=https://github.com/xbmc/libdvdnav
-VERSION=6.1.1-Next-Nexus-Alpha2-2
-FULL_URL=$(BASE_URL)/archive/$(VERSION).tar.gz
-ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
-SHA512=51e6fc033121241354a5f0b3fc9a430577ae3ff6bb7f31445aa548ef4893037fb80eea3b2c6774c81e9ebaf9c45e9b490c98c2c65eb38f9f7daba84b236f7e1d
+VERSION=7.0.0
+ARCHIVE=$(LIBNAME)-$(VERSION).tar.bz2
+SHA512=8d12d476e352def9716ecbd7ba184a70dd9bae87dcde669b8647a0ef9ac1991f617c9918c043e159eb353302c4cc50fb71bc591ceaeba1d3b9d47af77fa72c71
 BYPRODUCT=libdvdnav.a
-BYPRODUCT_WIN=libdvdnav.dll
+BYPRODUCT_WIN=dvdnav.lib
