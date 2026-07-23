@@ -23,7 +23,7 @@
 +                    deps='talloc')
 --- a/libcli/smbreadline/wscript_configure
 +++ b/libcli/smbreadline/wscript_configure
-@@ -1,85 +1,3 @@
+@@ -1,87 +1,3 @@
  #!/usr/bin/env python
  
  
@@ -77,10 +77,12 @@
 -#    endif
 -#  endif
 -#endif
--int main(void) {rl_completion_t f; return 0;}
+-int main(void) {rl_completion_func_t f; return 0;}
 -''',
--'HAVE_RL_COMPLETION_FUNC_T', execute=False, addmain=False,
--msg='Checking for rl_completion_t')
+-                'HAVE_RL_COMPLETION_FUNC_T',
+-                execute=False,
+-                addmain=False,
+-                msg='Checking for rl_completion_func_t')
 -
 -conf.CHECK_CODE('''
 -#ifdef HAVE_READLINE_READLINE_H
