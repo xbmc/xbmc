@@ -29,6 +29,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
 #include "network/NetworkServices.h"
+#include "peripherals/Peripherals.h"
 #include "playlists/PlayListTypes.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
@@ -384,6 +385,15 @@ namespace XBMCAddon
       return appPower->GlobalIdleTime();
     }
 
+    int getDevicePowerStatus()
+    {
+      XBMC_TRACE;
+      // libCEC may block briefly on a CEC bus request when its cache is stale,
+      // so release the GIL for the duration of the call.
+      DelayedCallGuard dg;
+      return static_cast<int>(CServiceBroker::GetPeripherals().GetDevicePowerStatus());
+    }
+
     String getCacheThumbName(const String& path)
     {
       XBMC_TRACE;
@@ -616,6 +626,32 @@ namespace XBMCAddon
     int getISO_639_1() { return CLangCodeExpander::ISO_639_1; }
     int getISO_639_2(){ return CLangCodeExpander::ISO_639_2; }
     int getENGLISH_NAME() { return CLangCodeExpander::ENGLISH_NAME; }
+
+    // Device power status (HDMI-CEC)
+    int getDEVICE_POWER_NO_ADAPTER()
+    {
+      return static_cast<int>(PERIPHERALS::CecPowerStatus::NO_ADAPTER);
+    }
+    int getDEVICE_POWER_ON()
+    {
+      return static_cast<int>(PERIPHERALS::CecPowerStatus::ON);
+    }
+    int getDEVICE_POWER_STANDBY()
+    {
+      return static_cast<int>(PERIPHERALS::CecPowerStatus::STANDBY);
+    }
+    int getDEVICE_POWER_TRANSITION_TO_ON()
+    {
+      return static_cast<int>(PERIPHERALS::CecPowerStatus::TRANSITION_TO_ON);
+    }
+    int getDEVICE_POWER_TRANSITION_TO_STANDBY()
+    {
+      return static_cast<int>(PERIPHERALS::CecPowerStatus::TRANSITION_TO_STANDBY);
+    }
+    int getDEVICE_POWER_UNKNOWN()
+    {
+      return static_cast<int>(PERIPHERALS::CecPowerStatus::UNKNOWN);
+    }
 
     const int lLOGDEBUG = LOGDEBUG;
   }

@@ -81,6 +81,22 @@ enum PeripheralType
   PERIPHERAL_MOUSE,
 };
 
+/*!
+ * \brief Power status of the device attached via HDMI-CEC.
+ *
+ * This is the result of calling libCEC's GetDevicePowerStatus. UNKNOWN means the device could not be found
+ * or queried on the CEC bus. NO_ADAPTER means no CEC adapter is present.
+ */
+enum class CecPowerStatus
+{
+  NO_ADAPTER = -1, //!< no CEC adapter present, or libCEC not built
+  ON = 0,
+  STANDBY = 1,
+  TRANSITION_TO_ON = 2,
+  TRANSITION_TO_STANDBY = 3,
+  UNKNOWN = 4,
+};
+
 class CPeripheral;
 using PeripheralPtr = std::shared_ptr<CPeripheral>;
 using PeripheralVector = std::vector<PeripheralPtr>;
