@@ -64,10 +64,8 @@ CPluginDirectory::~CPluginDirectory(void)
 {
 }
 
-bool CPluginDirectory::StartScript(const std::string& strPath, bool resume)
+bool CPluginDirectory::StartScript(const CURL& url, bool resume)
 {
-  CURL url(strPath);
-
   ADDON::AddonPtr addon;
   // try the plugin type first, and if not found, try an unknown type
   if (!CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, AddonType::PLUGIN,
@@ -81,17 +79,22 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool resume)
     return false;
   }
 
+  const std::string& path = url.Get();
+
   // clear out our status variables
   m_fileResult = std::make_unique<CFileItem>();
   m_listItems->Clear();
-  m_listItems->SetPath(strPath);
+  m_listItems->SetPath(path);
   m_listItems->SetLabel(addon->Name());
   m_cancelled = false;
   m_success = false;
   m_totalItems = 0;
 
+  if (path.empty())
+    return false;
+
   // run the script
-  return RunScript(this, addon, strPath, resume);
+  return RunScript(this, addon, url, resume);
 }
 
 bool CPluginDirectory::GetResolvedPluginResult(CFileItem& resultItem)
@@ -140,7 +143,7 @@ bool CPluginDirectory::GetPluginResult(const std::string& strPath, CFileItem &re
   CURL url(strPath);
   CPluginDirectory newDir;
 
-  bool success = newDir.StartScript(strPath, resume);
+  bool success = newDir.StartScript(url, resume);
 
   if (success)
   { // update the play path and metadata, saving the old one as needed
@@ -469,7 +472,7 @@ void CPluginDirectory::AddSortMethod(int handle,
 bool CPluginDirectory::GetDirectory(const CURL& url, CFileItemList& items)
 {
   const std::string pathToUrl(url.Get());
-  bool success = StartScript(pathToUrl, false);
+  bool success = StartScript(url, false);
 
   // append the items to the list
   items.Assign(*m_listItems, true); // true to keep the current items
@@ -477,10 +480,9 @@ bool CPluginDirectory::GetDirectory(const CURL& url, CFileItemList& items)
   return success;
 }
 
-bool CPluginDirectory::RunScriptWithParams(const std::string& strPath, bool resume)
+bool CPluginDirectory::RunScriptWithParams(const CURL& url, bool resume)
 {
-  CURL url(strPath);
-  if (url.GetHostName().empty()) // called with no script - should never happen
+  if (url.Get().empty() || url.GetHostName().empty()) // called with no script - should never happen
     return false;
 
   AddonPtr addon;
@@ -493,7 +495,7 @@ bool CPluginDirectory::RunScriptWithParams(const std::string& strPath, bool resu
     return false;
   }
 
-  return ExecuteScript(addon, strPath, resume) >= 0;
+  return ExecuteScript(addon, url, resume) >= 0;
 }
 
 void CPluginDirectory::SetResolvedUrl(int handle, bool success, const CFileItem *resultItem)

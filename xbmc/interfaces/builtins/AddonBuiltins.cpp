@@ -95,7 +95,7 @@ static int RunPlugin(const std::vector<std::string>& params)
     if (!item.IsFolder())
     {
       item.SetPath(params[0]);
-      XFILE::CPluginDirectory::RunScriptWithParams(item.GetPath(), false);
+      XFILE::CPluginDirectory::RunScriptWithParams(item.GetURL(), false);
     }
   }
   else

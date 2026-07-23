@@ -33,17 +33,12 @@ ADDON::AddonPtr CScriptRunner::GetAddon() const
 CScriptRunner::CScriptRunner() : m_scriptDone(true)
 { }
 
-bool CScriptRunner::StartScript(const ADDON::AddonPtr& addon, const std::string& path)
-{
-  return RunScriptInternal(addon, path, 0, false);
-}
-
 bool CScriptRunner::RunScript(const ADDON::AddonPtr& addon,
-                              const std::string& path,
+                              const CURL& url,
                               int handle,
                               bool resume)
 {
-  return RunScriptInternal(addon, path, handle, resume, true);
+  return RunScriptInternal(addon, url, handle, resume, true);
 }
 
 void CScriptRunner::SetDone()
@@ -51,20 +46,15 @@ void CScriptRunner::SetDone()
   m_scriptDone.Set();
 }
 
-int CScriptRunner::ExecuteScript(const ADDON::AddonPtr& addon, const std::string& path, bool resume)
+int CScriptRunner::ExecuteScript(const ADDON::AddonPtr& addon, const CURL& path, bool resume)
 {
   return ExecuteScript(addon, path, -1, resume);
 }
 
-int CScriptRunner::ExecuteScript(const ADDON::AddonPtr& addon,
-                                 const std::string& path,
-                                 int handle,
-                                 bool resume)
+int CScriptRunner::ExecuteScript(const ADDON::AddonPtr& addon, CURL url, int handle, bool resume)
 {
-  if (addon == nullptr || path.empty())
+  if (addon == nullptr)
     return false;
-
-  CURL url(path);
 
   // get options and remove them from the URL because we can then use the url
   // to generate the base path which is passed to the add-on script
@@ -92,13 +82,10 @@ int CScriptRunner::ExecuteScript(const ADDON::AddonPtr& addon,
   return scriptId;
 }
 
-bool CScriptRunner::RunScriptInternal(const ADDON::AddonPtr& addon,
-                                      const std::string& path,
-                                      int handle,
-                                      bool resume,
-                                      bool wait /* = true */)
+bool CScriptRunner::RunScriptInternal(
+    const ADDON::AddonPtr& addon, const CURL& url, int handle, bool resume, bool wait /* = true */)
 {
-  if (addon == nullptr || path.empty())
+  if (addon == nullptr)
     return false;
 
   // reset our wait event
@@ -107,7 +94,7 @@ bool CScriptRunner::RunScriptInternal(const ADDON::AddonPtr& addon,
   // store the add-on
   m_addon = addon;
 
-  int scriptId = ExecuteScript(addon, path, handle, resume);
+  int scriptId = ExecuteScript(addon, url, handle, resume);
   if (scriptId < 0)
     return false;
 
