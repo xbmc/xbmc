@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012-2018 Team Kodi
+ *  Copyright (C) 2012-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -10,6 +10,7 @@
 #include "ServiceBroker.h"
 #include "cores/FFmpeg.h"
 #include "guilib/Texture.h"
+#include "guilib/TextureFormats.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -389,11 +390,60 @@ void CFFmpegImage::FreeIOCtx(AVIOContext** ioctx)
   av_freep(ioctx);
 }
 
+unsigned int CFFmpegImage::GetKDFormat()
+{
+  if (!m_pFrame || !m_pFrame->data[0])
+    return KD_TEX_FMT_UNKNOWN;
+
+  switch (m_pFrame->format)
+  {
+    case AV_PIX_FMT_GRAY8:
+      return KD_TEX_FMT_SDR_R8;
+    case AV_PIX_FMT_GRAY8A:
+      return KD_TEX_FMT_SDR_RG8;
+    default:
+      return KD_TEX_FMT_UNKNOWN;
+  }
+}
+
+unsigned int CFFmpegImage::GetKDSwizzle()
+{
+  if (!m_pFrame || !m_pFrame->data[0])
+    return KD_TEX_SWIZ_RGBA;
+
+  switch (m_pFrame->format)
+  {
+    case AV_PIX_FMT_GRAY8:
+      return KD_TEX_SWIZ_RRR1;
+    case AV_PIX_FMT_GRAY8A:
+      return KD_TEX_SWIZ_RRRG;
+    default:
+      return KD_TEX_SWIZ_RGBA;
+  }
+}
+
 bool CFFmpegImage::Decode(unsigned char * const pixels, unsigned int width, unsigned int height,
                           unsigned int pitch, unsigned int format)
 {
-  if (m_width == 0 || m_height == 0 || format != XB_FMT_A8R8G8B8)
+  if (m_width == 0 || m_height == 0)
     return false;
+
+  AVPixelFormat dstFormat = AV_PIX_FMT_RGB32;
+
+  switch (format)
+  {
+    case KD_TEX_FMT_SDR_R8:
+      dstFormat = AV_PIX_FMT_GRAY8;
+      break;
+    case KD_TEX_FMT_SDR_RG8:
+      dstFormat = AV_PIX_FMT_GRAY8A;
+      break;
+    case XB_FMT_A8R8G8B8:
+      dstFormat = AV_PIX_FMT_RGB32;
+      break;
+    default:
+      return false;
+  }
 
   if (pixels == nullptr)
   {
@@ -407,7 +457,7 @@ bool CFFmpegImage::Decode(unsigned char * const pixels, unsigned int width, unsi
     return false;
   }
 
-  return DecodeFrame(m_pFrame, width, height, pitch, pixels);
+  return DecodeFrame(m_pFrame, width, height, pitch, pixels, dstFormat);
 }
 
 int CFFmpegImage::EncodeFFmpegFrame(AVCodecContext *avctx, AVPacket *pkt, int *got_packet, AVFrame *frame)
@@ -454,7 +504,12 @@ int CFFmpegImage::DecodeFFmpegFrame(AVCodecContext *avctx, AVFrame *frame, int *
   return 0;
 }
 
-bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int height, unsigned int pitch, unsigned char * const pixels)
+bool CFFmpegImage::DecodeFrame(AVFrame* frame,
+                               unsigned int width,
+                               unsigned int height,
+                               unsigned int pitch,
+                               unsigned char* const pixels,
+                               AVPixelFormat dstFormat)
 {
   if (pixels == nullptr)
   {
@@ -470,7 +525,8 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
   }
 
   // we align on 16 as the input provided by the Texture also aligns the buffer size to 16
-  int size = av_image_fill_arrays(pictureRGB->data, pictureRGB->linesize, NULL, AV_PIX_FMT_RGB32, width, height, 16);
+  const int size = av_image_fill_arrays(pictureRGB->data, pictureRGB->linesize, NULL, dstFormat,
+                                        width, height, 16);
   if (size < 0)
   {
     CLog::LogF(LOGERROR, "Could not allocate AVFrame member with {} x {} pixels", width, height);
@@ -492,7 +548,7 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
   else
   {
     // We need an extra buffer and copy it manually afterwards
-    pictureRGB->format = AV_PIX_FMT_RGB32;
+    pictureRGB->format = dstFormat;
     pictureRGB->width = width;
     pictureRGB->height = height;
     // we copy the data manually later so give a chance to intrinsics (e.g. mmx, neon)
@@ -511,7 +567,7 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
   AVPixelFormat pixFormat = ConvertFormats(frame);
 
   SwsContext* context = sws_getContext(m_originalWidth, m_originalHeight, pixFormat, width, height,
-                                       AV_PIX_FMT_RGB32, SWS_BICUBIC, NULL, NULL, NULL);
+                                       dstFormat, SWS_BICUBIC, NULL, NULL, NULL);
 
   if (range == AVCOL_RANGE_JPEG)
   {
@@ -779,7 +835,8 @@ std::shared_ptr<Frame> CFFmpegImage::ReadFrame()
 
   frame->m_pitch = avframe->width * 4;
   frame->m_pImage = (unsigned char*) av_malloc(avframe->height * frame->m_pitch);
-  DecodeFrame(avframe, avframe->width, avframe->height, frame->m_pitch, frame->m_pImage);
+  DecodeFrame(avframe, avframe->width, avframe->height, frame->m_pitch, frame->m_pImage,
+              AV_PIX_FMT_RGB32);
   av_frame_free(&avframe);
   return frame;
 }
