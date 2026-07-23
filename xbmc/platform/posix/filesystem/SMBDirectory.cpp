@@ -155,6 +155,9 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     item->SetFolder(isDir);
     if (!isDir)
       item->SetSize(size);
+    else if (const int64_t rawTime = (st.st_mtime == 0) ? st.st_ctime : st.st_mtime; rawTime != 0)
+      item->SetProperty("raw_mtime",
+                        rawTime); // raw value; the DateTime above is local-time converted
     if (hidden)
       item->SetProperty("file:hidden", true);
   }

@@ -43,6 +43,17 @@ TEST_F(TestURIUtils, PathHasParent)
   EXPECT_FALSE(URIUtils::PathHasParent("/path/to/movie.avi", "/path/2/"));
 }
 
+TEST_F(TestURIUtils, RemoveDiscPath)
+{
+  EXPECT_EQ("smb://somepath/Movie/",
+            URIUtils::RemoveDiscPath("smb://somepath/Movie/BDMV/index.bdmv"));
+  EXPECT_EQ("smb://somepath/Movie/",
+            URIUtils::RemoveDiscPath("smb://somepath/Movie/VIDEO_TS/VIDEO_TS.IFO"));
+  // base of a disc file sitting directly in the movie folder has no trailing slash
+  EXPECT_EQ("smb://somepath/Movie", URIUtils::RemoveDiscPath("smb://somepath/Movie/VIDEO_TS.IFO"));
+  EXPECT_EQ("", URIUtils::RemoveDiscPath("smb://somepath/Movie/movie.mkv"));
+}
+
 TEST_F(TestURIUtils, GetDirectory)
 {
   EXPECT_EQ("/path/to/", URIUtils::GetDirectory("/path/to/movie.avi"));

@@ -672,8 +672,11 @@ void ChangeFolderToFile(const std::shared_ptr<CFileItem>& item, const std::strin
 
 void ConvertDiscFoldersToFiles(std::vector<std::shared_ptr<CFileItem>> items)
 {
-  auto folderItems{items | std::views::filter([](const std::shared_ptr<CFileItem>& item)
-                                              { return item->IsFolder(); })};
+  auto folderItems{items | std::views::filter(
+                               [](const std::shared_ptr<CFileItem>& item) {
+                                 return item->IsFolder() &&
+                                        !item->GetProperty(PROPERTY_UNCHANGED).asBoolean();
+                               })};
   for (const auto& item : folderItems)
   {
     if (auto playPath{VIDEO::UTILS::GetOpticalMediaPath(*item)}; !playPath.empty())

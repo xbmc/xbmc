@@ -422,9 +422,28 @@ CVideoInfoScanner::~CVideoInfoScanner()
       { // need to fetch the folder
         CDirectory::GetDirectory(strDirectory, items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
                                  DIR_FLAG_DEFAULTS);
-        // do not consider inner folders with .nomedia
-        erase_if(items, [](const std::shared_ptr<CFileItem>& item)
-                 { return item->IsFolder() && HasNoMedia(item->GetPath()); });
+
+        // withhold provably unchanged subfolders from further probes, and
+        // discard subfolders with .nomedia
+        for (int i = items.Size() - 1; i >= 0; --i)
+        {
+          if (!items[i]->IsFolder())
+            continue;
+          std::string dbh;
+          const int64_t rawTime = items[i]->GetProperty("raw_mtime").asInteger(0);
+          if (m_advancedSettings->m_bVideoLibraryUseFastHash &&
+              m_database.GetPathHash(items[i]->GetPath(), dbh) && !dbh.empty() &&
+              StringUtils::EqualsNoCase(rawTime != 0 ? GetFastHash(regexps, rawTime)
+                                                     : GetFastHash(items[i]->GetPath(), regexps),
+                                        dbh))
+          {
+            items[i]->SetProperty(PROPERTY_UNCHANGED, true);
+            CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '{}' due to no change (fasthash)",
+                      CURL::GetRedacted(items[i]->GetPath()));
+          }
+          else if (HasNoMedia(items[i]->GetPath()))
+            items.Remove(i);
+        }
         items.Stack();
 
         // force sorting consistency to avoid hash mismatch between platforms
@@ -515,6 +534,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
       }
       else
       {
+        // an all-folder listing can never import; store the hash here or the
+        // mismatch recurs every scan
+        if ((content == ContentType::MOVIES || content == ContentType::MUSICVIDEOS) &&
+            !URIUtils::IsArchive(CURL(strDirectory)) &&
+            std::all_of(items.begin(), items.end(),
+                        [](const auto& item) { return item->IsFolder(); }))
+          m_database.SetPathHash(strDirectory, hash);
         if (m_bClean)
           m_pathsToClean.insert(m_database.GetPathId(strDirectory));
         CLog::Log(LOGDEBUG, "VideoInfoScanner: No (new) information was found in dir {}",
@@ -554,11 +580,43 @@ CVideoInfoScanner::~CVideoInfoScanner()
         continue;
       }
 
+      // Disc rips are anchored in files/path several ways: BD subfolder rips
+      // under the raw BDMV/ row (older imports or failed playlist detection)
+      // or under a bluray:// playlist row (current imports); DVD rips under
+      // VIDEO_TS/; flat rips with the structure file directly in the movie
+      // folder. In every form the movie folder itself, the item the scanner
+      // lists, has no hashed row, so each parent rescan re-imports the movie
+      // from NFO. Store its fast hash here; GetMovieId resolves all anchor
+      // forms. ISOs hash normally as plain files and never reach this block.
+      if (content == ContentType::MOVIES && m_advancedSettings->m_bVideoLibraryUseFastHash &&
+          !URIUtils::IsPlugin(strDirectory) && !pItem->IsFolder() &&
+          URIUtils::IsOpticalMediaFile(pItem->GetPath()))
+      {
+        std::string discFolder = URIUtils::RemoveDiscPath(pItem->GetPath());
+        URIUtils::AddSlashAtEnd(discFolder);
+        if (!URIUtils::PathEquals(discFolder, strDirectory, true))
+        {
+          const int64_t rawTime = pItem->GetProperty("raw_mtime").asInteger(0);
+          const std::string fh =
+              rawTime != 0 ? GetFastHash(regexps, rawTime) : GetFastHash(discFolder, regexps);
+          std::string dbh;
+          if (!fh.empty() &&
+              !(m_database.GetPathHash(discFolder, dbh) && StringUtils::EqualsNoCase(fh, dbh)) &&
+              m_database.HasMovieInfo(pItem->GetDynPath()))
+            m_database.SetPathHash(discFolder, fh);
+        }
+      }
+
       // if we have a directory item (non-playlist) we then recurse into that folder
       // do not recurse for tv shows - we have already looked recursively for episodes
       if (content != ContentType::TVSHOWS && settings.recurse > 0 && pItem->IsFolder() &&
           !pItem->IsParentFolder() && !PLAYLIST::IsPlayList(*pItem))
       {
+        if (pItem->GetProperty(PROPERTY_UNCHANGED).asBoolean())
+        {
+          m_pathsToScan.erase(pItem->GetPath());
+          continue;
+        }
         if (const auto [scanComplete, foundContentOnRecursion] = DoScan(pItem->GetPath());
             scanComplete == ScanComplete::Stopped)
         {
@@ -685,6 +743,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
     for (int i = 0; i < items.Size(); ++i)
     {
       CFileItemPtr pItem = items[i];
+
+      if (pItem->GetProperty(PROPERTY_UNCHANGED).asBoolean())
+        continue;
 
       // we do this since we may have a override per dir
       ScraperPtr info2 = m_database.GetScraperForPath(
@@ -2450,11 +2511,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
   std::string CVideoInfoScanner::GetFastHash(const std::string &directory,
       const std::vector<std::string> &excludes) const
   {
-    CDigest digest{CDigest::Type::MD5};
-
-    if (!excludes.empty())
-      digest.Update(StringUtils::Join(excludes, "|"));
-
     struct __stat64 buffer;
     if (XFILE::CFile::Stat(directory, &buffer) == 0)
     {
@@ -2462,12 +2518,21 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (!time)
         time = buffer.st_ctime;
       if (time)
-      {
-        digest.Update((unsigned char *)&time, sizeof(time));
-        return digest.Finalize();
-      }
+        return GetFastHash(excludes, time);
     }
     return "";
+  }
+
+  std::string CVideoInfoScanner::GetFastHash(const std::vector<std::string>& excludes,
+                                             int64_t time) const
+  {
+    CDigest digest{CDigest::Type::MD5};
+
+    if (!excludes.empty())
+      digest.Update(StringUtils::Join(excludes, "|"));
+
+    digest.Update((unsigned char*)&time, sizeof(time));
+    return digest.Finalize();
   }
 
   std::string CVideoInfoScanner::GetRecursiveFastHash(const std::string &directory,
