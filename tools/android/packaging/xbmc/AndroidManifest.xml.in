@@ -43,6 +43,7 @@
 
     <application
         android:banner="@mipmap/banner"
+        android:enableOnBackInvokedCallback="false"
         android:hasCode="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -96,11 +97,12 @@
         -->
         <activity
             android:name=".Main"
-            android:configChanges="orientation|keyboard|keyboardHidden|navigation|touchscreen|screenLayout|screenSize|colorMode"
+            android:configChanges="orientation|keyboard|keyboardHidden|navigation|touchscreen|screenLayout|screenSize|smallestScreenSize|density|colorMode"
             android:finishOnTaskLaunch="true"
             android:launchMode="singleInstance"
             android:exported="true"
             android:screenOrientation="sensorLandscape"
+            android:supportsPictureInPicture="true"
             android:theme="@style/AppTheme">
 
             <!-- Tell NativeActivity the name of or .so -->

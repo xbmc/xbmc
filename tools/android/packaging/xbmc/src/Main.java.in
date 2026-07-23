@@ -4,10 +4,20 @@ import @APP_PACKAGE@.channels.util.TvUtil;
 
 import static android.content.pm.PackageManager.FEATURE_LEANBACK;
 
+import android.annotation.TargetApi;
 import android.app.NativeActivity;
+import android.app.PendingIntent;
+import android.app.PictureInPictureParams;
+import android.app.RemoteAction;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Configuration;
 import android.graphics.Rect;
+import android.graphics.drawable.Icon;
 import android.hardware.input.InputManager;
 import android.media.AudioManager;
 import android.os.Build;
@@ -16,6 +26,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.util.Rational;
 import android.view.Choreographer;
 import android.view.View;
 import android.view.WindowInsets;
@@ -24,11 +35,13 @@ import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Main extends NativeActivity implements Choreographer.FrameCallback
 {
   private static final String TAG = "@APP_NAME@";
+  private static final String PIP_PLAY_PAUSE_ACTION = "@APP_PACKAGE@.PIP_PLAY_PAUSE";
 
   public static Main MainActivity = null;
   public XBMCMainView mMainView = null;
@@ -37,6 +50,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   private XBMCInputDeviceListener mInputDeviceListener;
   private XBMCJsonRPC mJsonRPC = null;
   private View mDecorView = null;
+  private BroadcastReceiver mPipActionReceiver;
   private Handler handler = new Handler(Looper.myLooper());
 
   private class DelayedIntent
@@ -52,6 +66,8 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   private ArrayList<DelayedIntent> mDelayedIntents = new ArrayList<>();
   private boolean mPaused = true;
   private static boolean mActivityRunning = false;
+  // Guards a one-time log; updatePipParams runs on every playback state change.
+  private static boolean mPipParamsSkipLogged = false;
 
   // Launchers that support the Recommended Content API
   private final Set<String> mRecommendedLaunchers = new HashSet<String>() {{
@@ -66,6 +82,12 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   native void _doFrame(long frameTimeNanos);
 
   native void _onVisibleBehindCanceled();
+
+  native void _onUserLeaveHint();
+
+  native void _onPictureInPictureModeChanged(boolean isInPipMode);
+
+  native void _onPipPlayPause();
 
   private Runnable leanbackUpdateRunnable = new Runnable()
   {
@@ -148,6 +170,12 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
         handler.postDelayed(leanbackUpdateRunnable, 30 * 1000);
       }
     }
+
+    // Log PiP capability once. FEATURE_PICTURE_IN_PICTURE is optional and frequently absent
+    // on Android TV boxes, so a "PiP does not work" report can be told apart from a real bug.
+    Log.i(TAG, "Main: PiP support: sdk=" + Build.VERSION.SDK_INT
+        + " feature=" + getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
+        + " -> " + (supportsPip() ? "supported" : "unsupported"));
 
     // register the InputDeviceListener implementation
     mInputDeviceListener = new XBMCInputDeviceListener();
@@ -287,6 +315,60 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   }
 
   @Override
+  protected void onUserLeaveHint()
+  {
+    super.onUserLeaveHint();
+    final boolean attempt = supportsPip();
+    Log.d(TAG, "Main: onUserLeaveHint: PiP "
+        + (attempt ? "will be attempted (native gate decides)" : "not attempted (unsupported)"));
+    if (attempt)
+    {
+      try
+      {
+        _onUserLeaveHint();
+      }
+      catch (UnsatisfiedLinkError e)
+      {
+        Log.e(TAG, "Main: Native not registered");
+      }
+    }
+  }
+
+  @Override
+  public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, Configuration newConfig)
+  {
+    super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
+
+    if (isInPictureInPictureMode)
+      registerPipActionReceiver();
+    else
+      unregisterPipActionReceiver();
+
+    // Force any active video surface to fill the PiP window; the window aspect ratio
+    // follows the video, so margin-based AR positioning is unnecessary and would only
+    // apply stale fullscreen values to the small window
+    RelativeLayout videoLayout = findViewById(R.id.VideoLayout);
+    if (videoLayout != null)
+    {
+      for (int i = 0; i < videoLayout.getChildCount(); i++)
+      {
+        View child = videoLayout.getChildAt(i);
+        if (child instanceof XBMCVideoView)
+          ((XBMCVideoView) child).setPipFullWindow(isInPictureInPictureMode);
+      }
+    }
+
+    try
+    {
+      _onPictureInPictureModeChanged(isInPictureInPictureMode);
+    }
+    catch (UnsatisfiedLinkError e)
+    {
+      Log.e(TAG, "Main: Native not registered");
+    }
+  }
+
+  @Override
   public void onActivityResult(int requestCode, int resultCode,
                                Intent resultData)
   {
@@ -339,6 +421,182 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
         _callNative(funcAddr, variantAddr);
       }
     });
+  }
+
+  public boolean supportsPip()
+  {
+    return Build.VERSION.SDK_INT >= VERSION_CODES.O
+        && getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE);
+  }
+
+  @TargetApi(VERSION_CODES.O)
+  public void enterPip(final int num, final int den, final String pauseLabel)
+  {
+    if (!supportsPip())
+      return;
+
+    runOnUiThread(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        try
+        {
+          PictureInPictureParams.Builder builder = new PictureInPictureParams.Builder()
+              .setAspectRatio(clampAspectRatio(num, den));
+          // On API < 31 the PiP window shows no automatic MediaSession controls, so
+          // provide our own play/pause action (playback is always running when entering).
+          if (Build.VERSION.SDK_INT < VERSION_CODES.S)
+            builder.setActions(buildPipActions(true, pauseLabel));
+          if (!enterPictureInPictureMode(builder.build()))
+            Log.w(TAG, "Main: enterPictureInPictureMode refused by system");
+        }
+        catch (IllegalStateException | IllegalArgumentException e)
+        {
+          Log.e(TAG, "Main: Unable to enter PiP mode: " + e.getMessage());
+        }
+      }
+    });
+  }
+
+  @TargetApi(VERSION_CODES.S)
+  public void updatePipParams(final boolean autoEnter, final int num, final int den)
+  {
+    if (Build.VERSION.SDK_INT < VERSION_CODES.S || !supportsPip())
+    {
+      // Auto-enter PiP (setAutoEnterEnabled) requires Android 12 (API 31). On older devices
+      // PiP is instead entered from onUserLeaveHint. Log the skip once to explain the absence.
+      if (Build.VERSION.SDK_INT < VERSION_CODES.S && !mPipParamsSkipLogged)
+      {
+        mPipParamsSkipLogged = true;
+        Log.d(TAG, "Main: updatePipParams skipped: auto-enter needs Android 12 (API 31); sdk="
+            + Build.VERSION.SDK_INT);
+      }
+      return;
+    }
+
+    runOnUiThread(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        try
+        {
+          PictureInPictureParams params = new PictureInPictureParams.Builder()
+              .setAspectRatio(clampAspectRatio(num, den))
+              .setAutoEnterEnabled(autoEnter)
+              .build();
+          setPictureInPictureParams(params);
+        }
+        catch (IllegalStateException | IllegalArgumentException e)
+        {
+          Log.e(TAG, "Main: Unable to update PiP params: " + e.getMessage());
+        }
+      }
+    });
+  }
+
+  @TargetApi(VERSION_CODES.O)
+  public void updatePipActions(final boolean playing, final String label)
+  {
+    if (Build.VERSION.SDK_INT < VERSION_CODES.O || Build.VERSION.SDK_INT >= VERSION_CODES.S
+        || !supportsPip())
+      return;
+
+    runOnUiThread(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        try
+        {
+          PictureInPictureParams params = new PictureInPictureParams.Builder()
+              .setActions(buildPipActions(playing, label))
+              .build();
+          setPictureInPictureParams(params);
+        }
+        catch (IllegalStateException | IllegalArgumentException e)
+        {
+          Log.e(TAG, "Main: Unable to update PiP actions: " + e.getMessage());
+        }
+      }
+    });
+  }
+
+  @TargetApi(VERSION_CODES.O)
+  private List<RemoteAction> buildPipActions(boolean playing, String label)
+  {
+    List<RemoteAction> actions = new ArrayList<>();
+    Intent intent = new Intent(PIP_PLAY_PAUSE_ACTION);
+    intent.setPackage(getPackageName());
+    PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent,
+        PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+    Icon icon = Icon.createWithResource(this,
+        playing ? android.R.drawable.ic_media_pause : android.R.drawable.ic_media_play);
+    actions.add(new RemoteAction(icon, label, label, pendingIntent));
+    return actions;
+  }
+
+  @TargetApi(VERSION_CODES.O)
+  private void registerPipActionReceiver()
+  {
+    if (mPipActionReceiver == null)
+    {
+      mPipActionReceiver = new BroadcastReceiver()
+      {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+          try
+          {
+            _onPipPlayPause();
+          }
+          catch (UnsatisfiedLinkError e)
+          {
+            Log.e(TAG, "Main: Native not registered");
+          }
+        }
+      };
+    }
+
+    IntentFilter filter = new IntentFilter(PIP_PLAY_PAUSE_ACTION);
+    if (Build.VERSION.SDK_INT >= VERSION_CODES.TIRAMISU)
+      registerReceiver(mPipActionReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+    else
+      registerReceiver(mPipActionReceiver, filter);
+  }
+
+  private void unregisterPipActionReceiver()
+  {
+    if (mPipActionReceiver == null)
+      return;
+
+    try
+    {
+      unregisterReceiver(mPipActionReceiver);
+    }
+    catch (IllegalArgumentException e)
+    {
+      Log.e(TAG, "Main: PiP receiver not registered");
+    }
+  }
+
+  /**
+   * Clamps the aspect ratio to the range allowed by Android for PiP
+   * (~0.418 to 2.39), falling back to 16:9 for invalid input.
+   */
+  private Rational clampAspectRatio(int num, int den)
+  {
+    if (num <= 0 || den <= 0)
+      return new Rational(16, 9);
+
+    float ratio = (float) num / (float) den;
+    if (ratio < 0.42f)
+      return new Rational(42, 100);
+    if (ratio > 2.39f)
+      return new Rational(239, 100);
+
+    return new Rational(num, den);
   }
 
   /**
