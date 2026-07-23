@@ -2787,7 +2787,7 @@
   <section id="system" label="13000" help="36349">
     <category id="display" label="14220" help="36603">
       <group id="1" label="16000">
-        <setting id="videoscreen.monitor" type="string" label="246" help="">
+        <setting id="videoscreen.monitor" type="string" label="246" help="40803">
           <requirement>
             <or>
               <condition>HAVE_X11</condition>
@@ -2804,7 +2804,12 @@
             <options>monitors</options>
           </constraints>
           <dependencies>
-            <dependency type="enable" on="property" name="SupportsScreenMove" />
+            <dependency type="enable">
+              <or>
+                <condition on="property" name="SupportsScreenMove" />
+                <condition on="property" name="HasMultipleMonitors" />
+              </or>
+            </dependency>
             <dependency type="update" setting="videoscreen.screenmode" />
           </dependencies>
           <control type="spinner" format="string" delayed="true" />
