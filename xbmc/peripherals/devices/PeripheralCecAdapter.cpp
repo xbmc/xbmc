@@ -305,7 +305,11 @@ std::optional<CKey> CPeripheralCecAdapter::GetCecKey()
   if (buttonCode <= 0)
     return {};
 
-  std::optional<CKey> key = CKey{static_cast<uint32_t>(buttonCode), holdTime};
+  std::optional<CKey> key;
+  if (holdTime > HOLD_THRESHOLD_MS)
+    key = CKey{static_cast<uint32_t>(buttonCode | CKey::MODIFIER_LONG), holdTime, CKey::MODIFIER_LONG};
+  else
+    key = CKey{static_cast<uint32_t>(buttonCode), holdTime};
 
   ResetButton();
   return key;
