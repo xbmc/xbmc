@@ -8,4 +8,4 @@ set(APP_INCLUDE_DIR ${includedir}/${APP_NAME_LC})
 configure_file(${CMAKE_SOURCE_DIR}/cmake/KodiConfig.cmake.in
                ${CORE_BUILD_DIR}/scripts/${APP_NAME}Config.cmake @ONLY)
 
-message(STATUS "WASM build: install ${APP_NAME_LC}.js / ${APP_NAME_LC}.wasm from build tree")
+message(STATUS "WASM build: install ${APP_NAME_LC}.js / ${APP_NAME_LC}.wasm from build tree; use target package_tizen for Tizen staging")

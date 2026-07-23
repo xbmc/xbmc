@@ -102,6 +102,11 @@ public:
   int Run();
   bool Cleanup();
 
+#ifdef TARGET_WASM
+  /*! \brief Single frame for Emscripten main loop (browser). */
+  void WasmRunIteration();
+#endif
+
   void FrameMove(bool processEvents, bool processGUI = true) override;
   void Render() override;
 

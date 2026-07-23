@@ -14,6 +14,10 @@ set(SOURCES AppEnvironment.cpp
             AppParamParser.cpp
             AppParams.cpp)
 
+if(CORE_SYSTEM_NAME STREQUAL wasm)
+  list(APPEND SOURCES ${CMAKE_SOURCE_DIR}/xbmc/platform/wasm/ApplicationWasm.cpp)
+endif()
+
 set(HEADERS AppEnvironment.h
             AppInboundProtocol.h
             Application.h
