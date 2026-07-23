@@ -23,6 +23,7 @@
 #include "UDFDirectory.h"
 #endif
 #include "URL.h"
+#include "Util.h"
 #include "XbtDirectory.h"
 #include "ZipDirectory.h"
 #include "addons/AudioDecoder.h"
@@ -35,6 +36,7 @@
 #endif
 #include "playlists/PlayListFactory.h"
 #include "playlists/SmartPlayList.h"
+#include "settings/MediaSourceSettings.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -44,6 +46,18 @@ using namespace KODI;
 using namespace KODI::ADDONS;
 using namespace XFILE;
 using namespace PLAYLIST;
+
+namespace
+{
+bool IsUnderMusicSource(const std::string& path)
+{
+  auto* sources = CMediaSourceSettings::GetInstance().GetSources("music");
+  if (!sources)
+    return false;
+  bool isSourceName = false;
+  return CUtil::GetMatchingSource(path, *sources, isSourceName) > -1;
+}
+} // namespace
 
 CFileDirectoryFactory::CFileDirectoryFactory(void) = default;
 
@@ -251,6 +265,12 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
 
   if (MUSIC::IsAudioBook(*pItem))
   {
+    // .mkv doubles as a video container — only treat a chaptered .mkv as an
+    // audiobook when browsed from a Music source, or a chaptered movie in a
+    // Video source would be expanded into chapter items.
+    if (strExtension == ".mkv" && !IsUnderMusicSource(url.Get()))
+      return nullptr;
+
     if (!pItem->HasMusicInfoTag() || pItem->GetEndOffset() <= 0)
     {
       auto pDir = std::make_unique<CAudioBookFileDirectory>();

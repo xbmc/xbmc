@@ -56,7 +56,7 @@ bool IsAudio(const CFileItem& item)
 
 bool IsAudioBook(const CFileItem& item)
 {
-  return item.IsType(".m4b") || item.IsType(".mka");
+  return item.IsType(".m4b") || item.IsType(".mka") || item.IsType(".mkv");
 }
 
 bool IsCDDA(const CFileItem& item)

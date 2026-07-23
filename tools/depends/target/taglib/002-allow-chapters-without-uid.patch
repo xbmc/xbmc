@@ -1,0 +1,45 @@
+--- a/taglib/matroska/ebml/ebmlmkchapters.cpp
++++ b/taglib/matroska/ebml/ebmlmkchapters.cpp
+@@ -25,6 +25,7 @@
+ 
+ #include "ebmlmkchapters.h"
+ #include "ebmlstringelement.h"
++#include <atomic>
+ #include "ebmluintelement.h"
+ #include "matroskachapters.h"
+ #include "matroskachapteredition.h"
+@@ -33,6 +34,20 @@
+ 
+ namespace {
+ 
++// Counter for synthesising a unique ChapterUID when the source file omits
++// the MkChapterUID element (out-of-spec but produced by some muxers, e.g.
++// older FFmpeg or audiobook generators). MKVToolNix / MediaInfo / FFmpeg
++// all tolerate UID-less chapters; without this synth, the call sites in
++// MkChapters::parse() filter such chapters out via the `chapter.uid()`
++// check and they are silently lost.
++//
++// High bit set as a marker; counter starts at 1 and increments per atom
++// so each parsed UID-less chapter gets a distinct value within the
++// process lifetime. Real ChapterUIDs are random 64-bit values from
++// muxers; the (1ULL << 63) | n encoding makes collision practically
++// impossible while keeping the distinction local to TagLib.
++static std::atomic<Matroska::Chapter::UID> synthesisedChapterUidCounter{1};
++
+ Matroska::Chapter parseChapterAtom(
+   const std::unique_ptr<EBML::Element> &atomElement)
+ {
+@@ -67,6 +82,13 @@
+       }
+     }
+   }
++  // Spec-noncompliant: ChapterAtom missing ChapterUID. Synthesise a
++  // process-unique UID so the chapter survives downstream `chapter.uid()`
++  // filters. See synthesisedChapterUidCounter comment above.
++  if(chapterUid == 0)
++    chapterUid = (1ULL << 63) |
++                 synthesisedChapterUidCounter.fetch_add(1, std::memory_order_relaxed);
++
+   return Matroska::Chapter(chapterTimeStart, chapterTimeEnd, chapterDisplays,
+     chapterUid, chapterHidden);
+ }
