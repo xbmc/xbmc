@@ -178,6 +178,7 @@ protected:
   int m_displayTime = 0;
   double m_dtsAtDisplayTime;
   bool m_seekToKeyFrame = false;
+  bool m_pendingStreamChange = false;
   double m_startTime = 0;
   std::vector<ChapterFFmpeg> m_chapters;
 };
