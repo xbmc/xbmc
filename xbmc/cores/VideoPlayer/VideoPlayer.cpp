@@ -4482,6 +4482,10 @@ void CVideoPlayer::FlushBuffers(double pts, bool accurate, bool sync)
   m_VideoPlayerRadioRDS->Flush();
   m_VideoPlayerAudioID3->Flush();
 
+  // drop queued pre-seek frames to avoid starving RenderManager's buffer pool so post-seek overlays/subtitles do not get dropped
+  if (sync)
+    m_renderManager.DiscardBuffer();
+
   if (m_playSpeed == DVD_PLAYSPEED_NORMAL || m_playSpeed == DVD_PLAYSPEED_PAUSE ||
       m_processInfo->IsTempoAllowed(static_cast<float>(m_playSpeed) / DVD_PLAYSPEED_NORMAL))
   {
