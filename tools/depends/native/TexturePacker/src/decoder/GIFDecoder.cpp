@@ -60,6 +60,7 @@ bool GIFDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
         frame.rgbaImage.width = width;
         frame.rgbaImage.bbp = 32;
         frame.rgbaImage.pitch = pitch;
+        frame.rgbaImage.size = height * pitch;
         frame.delay = extractedFrames[i]->m_delay;
 
         frames.frameList.push_back(frame);
