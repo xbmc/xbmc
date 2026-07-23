@@ -197,6 +197,17 @@ public:
   const CLabelInfo& GetLabelInfo() const { return m_label; }
   CLabelInfo& GetLabelInfo() { return m_label; }
 
+  /*! \brief Set the font used to render this label
+   Updates both the label info and the underlying text layout, so that the new font actually
+   takes effect on the next render.
+   \param font the new font to use
+   */
+  void SetLabelFont(CGUIFont* font)
+  {
+    m_label.font = font;
+    m_textLayout.SetFont(font);
+  }
+
   /*! \brief Check a left aligned and right aligned label for overlap and cut the labels off so that no overlap occurs
 
    If a left-aligned label occupies some of the same space on screen as a right-aligned label, then we may be able to
