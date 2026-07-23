@@ -19,6 +19,7 @@
 #include "threads/SystemClock.h"
 #include "utils/Base64.h"
 #include "utils/Map.h"
+#include "utils/URIUtils.h"
 #include "utils/XTimeUtils.h"
 
 #include <algorithm>
@@ -1998,8 +1999,13 @@ bool CCurlFile::GetHttpHeader(const CURL &url, CHttpHeader &headers)
 {
   try
   {
+    // Apply any stored credentials (passwords.xml). CFile::Stat() does this for its callers,
+    // but this helper drives CCurlFile directly, so without it an authenticated http/dav
+    // source is queried anonymously and gets a 401.
+    const CURL authUrl = URIUtils::AddCredentials(url);
+
     CCurlFile file;
-    if(file.Stat(url, NULL) == 0)
+    if (file.Stat(authUrl, NULL) == 0)
     {
       headers = file.GetHttpHeader();
       return true;
@@ -2020,9 +2026,14 @@ bool CCurlFile::GetMimeType(const CURL &url, std::string &content, const std::st
   if (!useragent.empty())
     file.SetUserAgent(useragent);
 
+  // Apply any stored credentials (passwords.xml). CFile::Stat() does this for its callers,
+  // but this helper drives CCurlFile directly, so without it an authenticated http/dav
+  // source is queried anonymously, gets a 401 and mime type detection always fails.
+  const CURL authUrl = URIUtils::AddCredentials(url);
+
   struct __stat64 buffer;
   std::string redactUrl = url.GetRedacted();
-  if( file.Stat(url, &buffer) == 0 )
+  if (file.Stat(authUrl, &buffer) == 0)
   {
     if (buffer.st_mode == _S_IFDIR)
       content = "x-directory/normal";
@@ -2042,9 +2053,14 @@ bool CCurlFile::GetContentType(const CURL &url, std::string &content, const std:
   if (!useragent.empty())
     file.SetUserAgent(useragent);
 
+  // Apply any stored credentials (passwords.xml). CFile::Stat() does this for its callers,
+  // but this helper drives CCurlFile directly, so without it an authenticated http/dav
+  // source is queried anonymously, gets a 401 and content type detection always fails.
+  const CURL authUrl = URIUtils::AddCredentials(url);
+
   struct __stat64 buffer;
   std::string redactUrl = url.GetRedacted();
-  if (file.Stat(url, &buffer) == 0)
+  if (file.Stat(authUrl, &buffer) == 0)
   {
     if (buffer.st_mode == _S_IFDIR)
       content = "x-directory/normal";
