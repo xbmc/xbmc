@@ -26,10 +26,16 @@
 
 class CProfileManager;
 class CSettingsManager;
+class CXBMCTinyXML;
 class CVariant;
 struct IntegerSettingOption;
 
-class TiXmlElement;
+namespace tinyxml2
+{
+class XMLDocument;
+class XMLElement;
+} // namespace tinyxml2
+
 namespace ADDON
 {
   class IAddon;
@@ -40,7 +46,6 @@ class DatabaseSettings
 public:
   static constexpr unsigned int DEFAULT_CONNECT_TIMEOUT = 5; // secs
 
-  DatabaseSettings() { Reset(); }
   void Reset()
   {
     type.clear();
@@ -56,20 +61,21 @@ public:
     ciphers.clear();
     connecttimeout = DEFAULT_CONNECT_TIMEOUT;
     compression = false;
-  };
-  std::string type;
-  std::string host;
-  std::string port;
-  std::string user;
-  std::string pass;
-  std::string name;
-  std::string key;
-  std::string cert;
-  std::string ca;
-  std::string capath;
-  std::string ciphers;
+  }
+
+  std::string type{};
+  std::string host{};
+  std::string port{};
+  std::string user{};
+  std::string pass{};
+  std::string name{};
+  std::string key{};
+  std::string cert{};
+  std::string ca{};
+  std::string capath{};
+  std::string ciphers{};
   unsigned int connecttimeout{DEFAULT_CONNECT_TIMEOUT};
-  bool compression;
+  bool compression{false};
 };
 
 struct TVShowRegexp
@@ -140,10 +146,12 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
      */
     void UnregisterSettingsLoadedCallback(int handle);
 
-    static void GetCustomTVRegexps(const TiXmlElement* pRootElement, SETTINGS_TVSHOWLIST& settings);
-    static void GetCustomRegexps(const TiXmlElement* pRootElement,
+    static void GetCustomTVRegexps(const tinyxml2::XMLElement* pRootElement,
+                                   SETTINGS_TVSHOWLIST& settings);
+    static void GetCustomRegexps(const tinyxml2::XMLElement* pRootElement,
                                  std::vector<std::string>& settings);
-    static void GetCustomExtensions(const TiXmlElement* pRootElement, std::string& extensions);
+    static void GetCustomExtensions(const tinyxml2::XMLElement* pRootElement,
+                                    std::string& extensions);
 
     std::string m_audioDefaultPlayer;
     float m_audioPlayCountMinimumPercent;
@@ -390,6 +398,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_enableMultimediaKeys;
     std::vector<std::string> m_settingsFiles;
     void ParseSettingsFile(const std::string &file);
+    void ParseSettingsXML(const tinyxml2::XMLElement* pRootElement);
 
     float GetLatencyTweak(float refreshrate, bool isHDREnabled) const;
     bool m_initialized{false};
@@ -421,10 +430,14 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     uint32_t m_nfsTimeout;
     int m_nfsRetries;
 
-  private:
+  protected:
+    void Redact(tinyxml2::XMLDocument& input) const;
     void Initialize();
+
+  private:
     void Clear();
-    void SetExtraArtwork(const TiXmlElement* arttypes, std::vector<std::string>& artworkMap) const;
+    void SetExtraArtwork(const tinyxml2::XMLElement* arttypes,
+                         std::vector<std::string>& artworkMap) const;
 
     std::vector<std::string> m_videoStackStrings;
     std::vector<std::string> m_folderStackStrings;

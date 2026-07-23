@@ -552,14 +552,22 @@ public:
   \return True if the setting values were successfully loaded, false otherwise
   */
   bool Load(const TiXmlElement* root);
+
   /*!
    \brief Loads setting values from the given XML element.
 
    \param root XML element containing setting values
-   \param hide Whether to hide the loaded settings or not
    \return True if the setting values were successfully loaded, false otherwise
    */
   bool LoadHidden(const TiXmlElement *root) { return CSettingsBase::LoadHiddenValuesFromXml(root); }
+
+  /*!
+   \brief Loads setting values from the givenn (XML) file.
+
+   \param file File name of XML file containing setting values
+   \return True if the setting values were successfully loaded, false otherwise
+   */
+  bool LoadHidden(const std::string& file);
 
   /*!
    \brief Saves the setting values to the given (XML) file.

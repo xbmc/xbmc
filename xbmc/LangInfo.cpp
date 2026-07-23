@@ -631,25 +631,24 @@ bool CLangInfo::UseLocaleCollation()
   return m_collationtype == 2;
 }
 
-void CLangInfo::LoadTokens(const TiXmlNode* pTokens, Tokens& vecTokens)
+void CLangInfo::LoadTokens(const tinyxml2::XMLElement* pTokens, Tokens& vecTokens)
 {
   if (pTokens && !pTokens->NoChildren())
   {
-    const TiXmlElement *pToken = pTokens->FirstChildElement("token");
+    const auto* pToken = pTokens->FirstChildElement("token");
     while (pToken)
     {
-      std::string strSep= " ._";
-      if (pToken->Attribute("separators"))
-        strSep = pToken->Attribute("separators");
+      const char* attr = pToken->Attribute("separators");
+      const std::string_view strSep = attr ? attr : " ._";
       if (pToken->FirstChild() && pToken->FirstChild()->Value())
       {
         if (strSep.empty())
-          vecTokens.insert(pToken->FirstChild()->ValueStr());
+          vecTokens.insert(pToken->FirstChild()->Value());
         else
-          for (unsigned int i=0;i<strSep.size();++i)
-            vecTokens.insert(pToken->FirstChild()->ValueStr() + strSep[i]);
+          for (const char sep : strSep)
+            vecTokens.insert(std::string(pToken->FirstChild()->Value()) + sep);
       }
-      pToken = pToken->NextSiblingElement();
+      pToken = pToken->NextSiblingElement("token");
     }
   }
 }
