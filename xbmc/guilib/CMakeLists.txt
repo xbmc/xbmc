@@ -183,9 +183,11 @@ if(TARGET ${APP_NAME_LC}::OpenGl OR TARGET ${APP_NAME_LC}::OpenGLES)
 
   if(TARGET ${APP_NAME_LC}::OpenGLES)
     list(APPEND SOURCES GUIFontTTFGLES.cpp
+                        GUIQuadDrawerGLES.cpp
                         GUITextureGLES.cpp
                         TextureGLES.cpp)
     list(APPEND HEADERS GUIFontTTFGLES.h
+                        GUIQuadDrawerGLES.h
                         GUITextureGLES.h
                         TextureGLES.h)
   endif()

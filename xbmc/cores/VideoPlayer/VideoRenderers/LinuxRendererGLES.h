@@ -8,18 +8,19 @@
 
 #pragma once
 
+#include "BaseRenderer.h"
+#include "FrameBufferObject.h"
+#include "RenderFlags.h"
+#include "RenderInfo.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "cores/VideoSettings.h"
+#include "guilib/Shader.h"
+#include "utils/GLBufferObject.h"
+#include "windowing/GraphicContext.h"
+
 #include <vector>
 
 #include "system_gl.h"
-
-#include "BaseRenderer.h"
-#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
-#include "cores/VideoSettings.h"
-#include "FrameBufferObject.h"
-#include "guilib/Shader.h"
-#include "RenderFlags.h"
-#include "RenderInfo.h"
-#include "windowing/GraphicContext.h"
 
 extern "C" {
 #include <libavutil/mastering_display_metadata.h>
@@ -234,6 +235,18 @@ protected:
   // HDR FBO compositing: when active, IsGuiLayer() returns false so
   // video renders separately from GUI via RenderUpdateVideo()
   bool m_hdrFboActive{false};
+
+  KODI::UTILS::GL::CGLBufferObject m_singlePassPosVBO{GL_ARRAY_BUFFER};
+  KODI::UTILS::GL::CGLBufferObject m_singlePassTexVBO{GL_ARRAY_BUFFER};
+  KODI::UTILS::GL::CGLBufferObject m_singlePassIBO{GL_ELEMENT_ARRAY_BUFFER};
+
+  KODI::UTILS::GL::CGLBufferObject m_fboPosVBO{GL_ARRAY_BUFFER};
+  KODI::UTILS::GL::CGLBufferObject m_fboTexVBO{GL_ARRAY_BUFFER};
+  KODI::UTILS::GL::CGLBufferObject m_fboIBO{GL_ELEMENT_ARRAY_BUFFER};
+
+  KODI::UTILS::GL::CGLBufferObject m_fromFboPosVBO{GL_ARRAY_BUFFER};
+  KODI::UTILS::GL::CGLBufferObject m_fromFboTexVBO{GL_ARRAY_BUFFER};
+  KODI::UTILS::GL::CGLBufferObject m_fromFboIBO{GL_ELEMENT_ARRAY_BUFFER};
 
 private:
   void ClearBackBuffer();

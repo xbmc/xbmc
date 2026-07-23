@@ -10,6 +10,7 @@
 
 #include "GUITexture.h"
 #include "utils/ColorUtils.h"
+#include "utils/GLBufferObject.h"
 
 #include <array>
 #include <vector>
@@ -24,21 +25,15 @@ struct PackedVertex
 };
 typedef std::vector<PackedVertex> PackedVertices;
 
+class CGUIQuadDrawerGLES;
 class CRenderSystemGLES;
 
 class CGUITextureGLES : public CGUITexture
 {
 public:
-  static void Register();
+  static void Register(CGUIQuadDrawerGLES& quadDrawer);
   static CGUITexture* CreateTexture(
       float posX, float posY, float width, float height, const CTextureInfo& texture);
-
-  static void DrawQuad(const CRect& coords,
-                       KODI::UTILS::COLOR::Color color,
-                       CTexture* texture = nullptr,
-                       const CRect* texCoords = nullptr,
-                       const float depth = 1.0,
-                       const bool blending = true);
 
   CGUITextureGLES(float posX, float posY, float width, float height, const CTextureInfo& texture);
   ~CGUITextureGLES() override = default;
@@ -50,8 +45,14 @@ protected:
   void Draw(float* x, float* y, float* z, const CRect& texture, const CRect& diffuse, int orientation) override;
   void End() override;
 
+  // Call while the GL context is still valid: on app exit, CGUIWindowManager::DestroyWindows() (and
+  // this object's destructor) runs only after CRenderSystemGLES::DestroyRenderSystem() tears it down.
+  void Free() override;
+
 private:
-  CGUITextureGLES(const CGUITextureGLES& texture) = default;
+  // Doesn't copy m_VBO/m_IBO -- each clone must own and (re)populate its own GL buffers rather
+  // than share/double-delete the source's.
+  CGUITextureGLES(const CGUITextureGLES& texture);
 
   std::array<GLubyte, 4> m_col;
 
@@ -59,5 +60,8 @@ private:
   std::vector<GLushort> m_idx;
   CRenderSystemGLES *m_renderSystem;
   bool m_isGLES20{true};
+
+  KODI::UTILS::GL::CGLBufferObject m_VBO{GL_ARRAY_BUFFER};
+  KODI::UTILS::GL::CGLBufferObject m_IBO{GL_ELEMENT_ARRAY_BUFFER};
 };
 

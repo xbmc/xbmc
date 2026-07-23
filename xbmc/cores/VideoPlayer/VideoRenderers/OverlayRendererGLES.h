@@ -10,6 +10,7 @@
 #pragma once
 
 #include "OverlayRenderer.h"
+#include "utils/GLBufferObject.h"
 
 #include "system_gl.h"
 
@@ -38,6 +39,11 @@ public:
   float m_u;
   float m_v;
   bool m_pma; /*< is alpha in texture premultiplied in the values */
+
+private:
+  KODI::UTILS::GL::CGLBufferObject m_posVBO{GL_ARRAY_BUFFER};
+  KODI::UTILS::GL::CGLBufferObject m_texVBO{GL_ARRAY_BUFFER};
+  KODI::UTILS::GL::CGLBufferObject m_IBO{GL_ELEMENT_ARRAY_BUFFER};
 };
 
 class COverlayGlyphGLES : public COverlay
@@ -56,13 +62,13 @@ public:
     GLfloat x, y, z;
   };
 
-  std::vector<VERTEX> m_vertex;
-
   GLuint m_texture = 0;
-  GLuint m_VBO = 0;
-  GLsizei m_vertexCount = 0;
   float m_u;
   float m_v;
+
+private:
+  KODI::UTILS::GL::CGLBufferObject m_VBO{GL_ARRAY_BUFFER};
+  GLsizei m_vertexCount = 0;
 };
 
 } // namespace OVERLAY
