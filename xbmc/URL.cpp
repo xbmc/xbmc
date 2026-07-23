@@ -20,14 +20,11 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #ifndef TARGET_POSIX
-#include <sys\stat.h>
+#include <sys/stat.h>
 #endif
 
 #include <array>
-#include <iterator>
-#include <ranges>
 #include <string>
-#include <system_error>
 #include <vector>
 
 #include <fmt/xchar.h>
@@ -111,11 +108,8 @@ void CURL::Parse(std::string strURL1)
     SetFileName(std::move(strURL));
     return;
   }
-  else
-  {
-    SetProtocol(strURL.substr(0, iPos));
-    iPos += 3;
-  }
+  SetProtocol(strURL.substr(0, iPos));
+  iPos += 3;
 
   // virtual protocols
   // why not handle all format 2 (protocol://file) style urls here?
@@ -142,10 +136,6 @@ void CURL::Parse(std::string strURL1)
     }
   }
 
-  // check for username/password - should occur before first /
-  if (iPos == std::string::npos)
-    iPos = 0;
-
   // for protocols supporting options, chop that part off here
   // maybe we should invert this list instead?
   size_t iEnd = strURL.length();
@@ -159,11 +149,12 @@ void CURL::Parse(std::string strURL1)
       IsProtocol("pvr") || IsProtocol("bluray") || IsProtocol("episodes"))
     sep = "?";
   else if (IsProtocolEqual(strProtocol2, "http") || IsProtocolEqual(strProtocol2, "https") ||
-           IsProtocolEqual(strProtocol2, "plugin") || IsProtocolEqual(strProtocol2, "addons") ||
-           IsProtocolEqual(strProtocol2, "rtsp") || IsProtocolEqual(strProtocol2, "nfs"))
+           IsProtocolEqual(strProtocol2, "plugin") || IsProtocolEqual(strProtocol2, "rtsp"))
     sep = "?;#|";
   else if (IsProtocolEqual(strProtocol2, "ftp") || IsProtocolEqual(strProtocol2, "ftps"))
     sep = "?;|";
+  else if (IsProtocolEqual(strProtocol2, "nfs"))
+    sep = "?|";
 
   if (sep)
   {
