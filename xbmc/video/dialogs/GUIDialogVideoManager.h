@@ -29,6 +29,10 @@ public:
   virtual void SetSelectedVideoAsset(const std::shared_ptr<CFileItem>& asset);
   virtual bool HasUpdatedItems() const { return m_hasUpdatedItems; }
 
+  static int ChooseVideoAsset(const std::shared_ptr<CFileItem>& item,
+                              VideoAssetType assetType,
+                              const std::string& defaultName);
+
 protected:
   void OnInitWindow() override;
   void OnDeinitWindow(int nextWindowID) override;
@@ -53,9 +57,6 @@ protected:
 
   void UpdateControls();
 
-  static int ChooseVideoAsset(const std::shared_ptr<CFileItem>& item,
-                              VideoAssetType assetType,
-                              const std::string& defaultName);
   void AppendItemFolderToFileBrowserSources(std::vector<CMediaSource>& sources);
   void RefreshSelectedVideoAsset();
 

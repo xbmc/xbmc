@@ -160,9 +160,11 @@ public:
 
   /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path to main title.
    \param path the ISO/index.BDMV path.
+   \param getAllTitles whether to get a single title or those within 70% of longest (most likely to be movies/episodes)
    \return the bluray:// root/main path.
    */
-  static std::string GetBlurayMainTitlePath(const std::string& path);
+  static std::string GetBlurayMainTitlePath(const std::string& path,
+                                            GetAllTitles getAllTitles = GetAllTitles::LONG);
 
   /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path to a given episode.
    \param path the ISO/index.BDMV path.
@@ -398,6 +400,8 @@ public:
    \return Updated path
    */
   static std::string SanitiseUrlEncoding(std::string_view path);
+
+  static std::string GetDecodedPath(const std::string& path);
 
 private:
   static std::string resolvePath(const std::string &path);

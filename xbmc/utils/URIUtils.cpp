@@ -713,9 +713,12 @@ std::string URIUtils::GetBlurayTitlesPath(const std::string& path,
   return newPath;
 }
 
-std::string URIUtils::GetBlurayMainTitlePath(const std::string& path)
+std::string URIUtils::GetBlurayMainTitlePath(const std::string& path, GetAllTitles getAllTitles)
 {
-  return AddFileToFolder(GetBlurayPath(path), "root", "main");
+  std::string newPath{AddFileToFolder(GetBlurayPath(path), "root", "main")};
+  if (getAllTitles == GetAllTitles::ALL)
+    newPath = AddFileToFolder(newPath, "all");
+  return newPath;
 }
 
 std::string URIUtils::GetBlurayEpisodePath(const std::string& path, int season, int episode)
@@ -1989,4 +1992,13 @@ std::string URIUtils::SanitiseUrlEncoding(std::string_view path)
 
   out += path.substr(hostEnd);
   return out;
+}
+
+std::string URIUtils::GetDecodedPath(const std::string& path)
+{
+  std::string decodedPath{path};
+  static constexpr unsigned int MAX_DECODE_PASSES = 5;
+  for (unsigned int i = 0; decodedPath.find('%') != std::string::npos && i < MAX_DECODE_PASSES; ++i)
+    decodedPath = CURL::Decode(decodedPath);
+  return decodedPath;
 }

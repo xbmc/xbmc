@@ -30,17 +30,17 @@ using namespace std::chrono_literals;
 
 static constexpr int ALL_PLAYLISTS{-1};
 
-enum class GetTitle : int
+enum class GetTitle : uint8_t
 {
-  SINGLE = -1,
-  MAIN = -2,
-  EPISODES = -3,
-  ALL = -4
+  SINGLE,
+  MAIN,
+  EPISODES,
+  ALL
 };
 
 enum class SortTitles : uint8_t
 {
-  SORT_TITLES_NONE = 0,
+  SORT_TITLES_NONE,
   SORT_TITLES_EPISODE,
   SORT_TITLES_MOVIE
 };
@@ -260,11 +260,13 @@ public:
 
   /*!
    * \brief Either shows simple menu to select playlist, chooses main feature (movie/episode) playlists or returns if disc menu will be used later.
-   * \param item FileItem containing details of desired movie/episode. This is updated with the selected playlist.
+   * \param item FileItem containing details of desired movie/episode.
    * \param playback Determines if the simple dialog should be shown or the main title selected (if possible).
    * \return true if a playlist was selected or if the disc menu will be used later, false if the user cancelled.
    */
-  static bool GetOrShowPlaylistSelection(CFileItem& item, MenuDecision playback);
+  static bool GetOrShowPlaylistSelection(const CFileItem& item,
+                                         CFileItemList& items,
+                                         MenuDecision playback);
 
 protected:
   static bool GetDirectoryItems(const std::string& path,

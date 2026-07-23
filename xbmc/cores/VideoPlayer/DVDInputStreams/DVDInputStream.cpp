@@ -247,8 +247,7 @@ CDVDInputStream::UpdateState CDVDInputStream::UpdateItemFromPlaylistDetails(
     closed = false; // Feed back to VideoPlayer
 
   const int playlist{it3->playlist};
-  if (item.HasVideoInfoTag())
-    item.GetVideoInfoTag()->m_iTrack = playlist;
+  item.SetProperty("bluray_playlist", playlist);
   CLog::LogF(LOGDEBUG, "Main playlist {}", playlist);
 
   if (type == DVDSTREAM_TYPE_DVD && item.GetProperty("update_stream_details").asBoolean(false) &&

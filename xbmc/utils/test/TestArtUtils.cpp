@@ -283,7 +283,7 @@ TEST_P(GetLocalArtBaseFilenameTest, GetLocalArtBaseFilename)
   CVideoInfoTag* tag{item.GetVideoInfoTag()};
   tag->m_iSeason = GetParam().season;
   tag->m_iEpisode = GetParam().episode;
-  tag->m_iTrack = GetParam().playlist;
+  item.SetProperty("bluray_playlist", GetParam().playlist);
   bool useFolder = GetParam().force_use_folder ? true : GetParam().isFolder;
 
   const std::string res =
@@ -899,7 +899,7 @@ TEST_P(TestLocalArt, GetLocalArt)
   CVideoInfoTag* tag{item.GetVideoInfoTag()};
   tag->m_iSeason = GetParam().season;
   tag->m_iEpisode = GetParam().episode;
-  tag->m_iTrack = GetParam().playlist;
+  item.SetProperty("bluray_playlist", GetParam().playlist);
   std::string path = ART::GetLocalArt(item, GetParam().art, GetParam().use_folder,
                                       GetParam().additionalIdentifiers);
   EXPECT_EQ(path, GetParam().base);

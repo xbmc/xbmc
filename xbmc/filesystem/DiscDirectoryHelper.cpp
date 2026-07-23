@@ -17,13 +17,16 @@
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/VideoVersionsSettings.h"
 #include "threads/IRunnable.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoManagerTypes.h"
 
 #include <algorithm>
 #include <array>
@@ -1191,6 +1194,12 @@ void CDiscDirectoryHelper::PopulateEpisodeFileItems(const CURL& url,
         CLog::LogF(LOGERROR, "Playlist {} missing in playlist map", playlist.playlist);
         continue;
       }
+      if (playlist.index >= episodesOnDisc.size())
+      {
+        CLog::LogF(LOGERROR, "Playlist {} index out of range ({}) in episodesOnDisc ({})",
+                   playlist.playlist, playlist.index, episodesOnDisc.size());
+        continue;
+      }
       const auto& information{playlists.find(playlist.playlist)->second};
       const auto newItem{GenerateEpisodeItem(url, playlist.playlist, information,
                                              episodesOnDisc[playlist.index], false)}; // Episode
@@ -1648,26 +1657,31 @@ std::vector<CVideoInfoTag> CDiscDirectoryHelper::GetEpisodesOnDisc(const CURL& u
   return episodesOnDisc;
 }
 
-bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(CFileItem& item, MenuDecision playback)
+bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
+                                                      CFileItemList& items,
+                                                      MenuDecision playback)
 {
   const bool silent{playback == MenuDecision::SILENT};
-  const std::string originalDynPath{
-      item.GetDynPath()}; // Overwritten by dialog selection. Needed for screen refresh.
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  const auto action = static_cast<SimilarVideoScanAction>(
+      settings->GetInt(CSettings::SETTING_VIDEOLIBRARY_SIMILARVIDEOACTION));
+  const bool returnMultipleItems{(silent && action != SimilarVideoScanAction::NONE &&
+                                  item.GetVideoContentType() == VideoDbContentType::MOVIES)};
 
   const std::string directory{
-      [&item, &originalDynPath, playback]
+      [&item, &playback, &returnMultipleItems]
       {
         const bool forceSelection{item.GetProperty("force_playlist_selection").asBoolean(false)};
 
         // All episodes
         if (item.HasProperty("episodes_start"))
-          return URIUtils::GetBlurayAllEpisodesPath(originalDynPath);
+          return URIUtils::GetBlurayAllEpisodesPath(item.GetDynPath());
 
         // Single episode
         if (item.GetVideoContentType() == VideoDbContentType::EPISODES && !forceSelection)
         {
           const CVideoInfoTag* tag{item.GetVideoInfoTag()};
-          return URIUtils::GetBlurayEpisodePath(originalDynPath, tag->m_iSeason, tag->m_iEpisode);
+          return URIUtils::GetBlurayEpisodePath(item.GetDynPath(), tag->m_iSeason, tag->m_iEpisode);
         }
 
         // Playlists > 70% longest
@@ -1676,19 +1690,23 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(CFileItem& item, MenuDecis
         if (playback == SHOW_SIMPLE_MENU)
         {
           if (item.GetVideoContentType() == EPISODES || item.GetVideoContentType() == TVSHOWS)
-          {
-            return URIUtils::GetBlurayTitlesPath(originalDynPath, URIUtils::GetAllTitles::LONG,
+            return URIUtils::GetBlurayTitlesPath(item.GetDynPath(), URIUtils::GetAllTitles::LONG,
                                                  URIUtils::AllTitlesOptions::EPISODES);
-          }
           else
-          {
-            return URIUtils::GetBlurayTitlesPath(originalDynPath, URIUtils::GetAllTitles::LONG,
+            return URIUtils::GetBlurayTitlesPath(item.GetDynPath(), URIUtils::GetAllTitles::LONG,
                                                  URIUtils::AllTitlesOptions::MOVIES);
-          }
         }
 
-        // Single main title
-        return URIUtils::GetBlurayMainTitlePath(originalDynPath);
+        if (item.GetVideoContentType() == EPISODES || item.GetVideoContentType() == TVSHOWS ||
+            forceSelection)
+          // Single main title
+          return URIUtils::GetBlurayMainTitlePath(item.GetDynPath());
+        else if (returnMultipleItems)
+          // Versions
+          return URIUtils::GetBlurayMainTitlePath(item.GetDynPath(), URIUtils::GetAllTitles::ALL);
+        else
+          // Single main title
+          return URIUtils::GetBlurayMainTitlePath(item.GetDynPath());
       }()};
 
   // Get playlists that are already used (to avoid duplicates in file table)
@@ -1711,8 +1729,8 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(CFileItem& item, MenuDecis
   }
 
   // Get items
-  CFileItemList items;
-  if (!GetItems(items, directoryDuration, silent))
+  CFileItemList sourceItems;
+  if (!GetItems(sourceItems, directoryDuration, silent))
   {
     // No main movie or episode playlist found
     if (silent)
@@ -1722,9 +1740,9 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(CFileItem& item, MenuDecis
     const std::string fallbackDirectory{
         item.GetVideoContentType() == VideoDbContentType::EPISODES ||
                 item.GetVideoContentType() == VideoDbContentType::TVSHOWS
-            ? URIUtils::GetBlurayTitlesPath(originalDynPath, URIUtils::GetAllTitles::ALL,
+            ? URIUtils::GetBlurayTitlesPath(item.GetDynPath(), URIUtils::GetAllTitles::ALL,
                                             URIUtils::AllTitlesOptions::EPISODES)
-            : URIUtils::GetBlurayTitlesPath(originalDynPath, URIUtils::GetAllTitles::ALL,
+            : URIUtils::GetBlurayTitlesPath(item.GetDynPath(), URIUtils::GetAllTitles::ALL,
                                             URIUtils::AllTitlesOptions::MOVIES)};
     if (!GetItems(items, fallbackDirectory, silent))
     {
@@ -1741,14 +1759,15 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(CFileItem& item, MenuDecis
   {
     if (playback == MenuDecision::SHOW_SIMPLE_MENU)
     {
-      usedPlaylists = database.GetPlaylistsByPath(URIUtils::GetBlurayPlaylistPath(originalDynPath));
+      usedPlaylists =
+          database.GetPlaylistsByPath(URIUtils::GetBlurayPlaylistPath(item.GetDynPath()));
 
       // If replacing existing playlist (FORCE_PLAYLIST_SELECTION), remove it from exclude list
       // as user could choose the same playlist again
       if (item.GetProperty("force_playlist_selection").asBoolean(false))
       {
         CRegExp regex{true, CRegExp::autoUtf8, R"(\/(\d{5}).mpls$)"};
-        if (regex.RegFind(originalDynPath) != -1)
+        if (regex.RegFind(item.GetDynPath()) != -1)
         {
           const int playlist{std::stoi(regex.GetMatch(1))};
           std::erase_if(usedPlaylists, [&playlist](const CVideoDatabase::PlaylistInfo& p)
@@ -1759,7 +1778,8 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(CFileItem& item, MenuDecis
       // Use simple menu dialog to select playlist
       while (true)
       {
-        if (!CGUIDialogSimpleMenu::ShowPlaylistSelection(item, selectedItem, items, usedPlaylists))
+        if (!CGUIDialogSimpleMenu::ShowPlaylistSelection(item, selectedItem, sourceItems,
+                                                         usedPlaylists))
           return false;
 
         // If a non-folder item is selected, we're done
@@ -1767,7 +1787,7 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(CFileItem& item, MenuDecis
           break;
 
         // Folder selected - retrieve all titles within it
-        if (!GetItems(items, selectedItem.GetDynPath(), silent))
+        if (!GetItems(sourceItems, selectedItem.GetDynPath(), silent))
           return false;
       }
     }
@@ -1775,20 +1795,43 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(CFileItem& item, MenuDecis
   else
   {
     // Silent
-    if (items.Size() > 1)
+    if (sourceItems.Size() > 1 && !returnMultipleItems)
     {
       CLog::LogF(LOGERROR, "Unable to automatically determine main playlist for {}", directory);
       return false;
     }
   }
 
-  if (selectedItem.GetPath().empty())
-    selectedItem = *items[0]; // Main item
+  auto GenerateItem{
+      [](const CFileItem& originalItem, const CFileItem& selectedItem, const CFileItem& item)
+      {
+        auto newItem{std::make_shared<CFileItem>(originalItem)};
+        newItem->SetDynPath(selectedItem.GetDynPath());
+        const auto tag{newItem->GetVideoInfoTag()};
+        tag->SetFileNameAndPath(selectedItem.GetDynPath());
+        tag->m_streamDetails = selectedItem.GetVideoInfoTag()->m_streamDetails;
+        if (tag->GetAssetInfo().GetTitle().empty())
+          tag->GetAssetInfo().SetTitle(
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                  VIDEO_VERSION_ID_DEFAULT));
+        newItem->SetProperty("bluray_playlist", selectedItem.GetProperty("bluray_playlist"));
+        newItem->SetProperty("original_listitem_url", item.GetDynPath());
+        return newItem;
+      }};
 
-  item.SetDynPath(selectedItem.GetDynPath());
-  item.GetVideoInfoTag()->m_streamDetails = selectedItem.GetVideoInfoTag()->m_streamDetails;
-  item.SetProperty("original_listitem_url", originalDynPath);
-
+  items.Clear();
+  if (!selectedItem.GetPath().empty())
+    // If SelectedItem is not empty then we have a user selected playlist, so return it
+    items.Add(GenerateItem(item, selectedItem, item));
+  else if (!returnMultipleItems)
+    // Return single item
+    items.Add(GenerateItem(item, *sourceItems[0], item));
+  else
+  {
+    // Return all items
+    for (const auto& sourceItem : sourceItems)
+      items.Add(GenerateItem(item, *sourceItem, item));
+  }
   return true;
 }
 

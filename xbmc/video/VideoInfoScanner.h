@@ -10,6 +10,7 @@
 
 #include "InfoScanner.h"
 #include "VideoDatabase.h"
+#include "VideoManagerTypes.h"
 #include "addons/Scraper.h"
 #include "settings/VideoVersionsSettings.h"
 #include "utils/Artwork.h"
@@ -318,7 +319,25 @@ namespace KODI::VIDEO
     bool ProcessItemByVideoInfoTag(const CFileItem *item, EPISODELIST &episodeList);
 
     bool AddVideoExtras(CFileItemList& items, ADDON::ContentType content, const std::string& path);
-    bool ProcessVideoVersion(VideoDbContentType itemType, int dbId);
+    static std::pair<VersionConversionResult, int> ProcessVideoVersion(VideoDbContentType itemType,
+                                                                       int dbId,
+                                                                       int targetDbId = -1);
+    static void RemovePartNumberFromTitle(int dbId,
+                                          VideoDbContentType itemType,
+                                          CVideoDatabase& db);
+
+    /*!
+     * \brief Add bluray playlists found for the same disc as movie and/or versions.
+     * \param[in] blurayItems all candidate playlists found for the disc
+     * \param[in] scraper scraper used for the lookup
+     * \param[in] bDirNames whether directory names are used for identification
+     * \param[in] useLocal whether to use local information for artwork etc.
+     * \return InfoRet::INFO_ERROR on failure, InfoRet::ADDED if movie added, InfoRet::HAVE_ALREADY if versions added
+     */
+    InfoRet AddBlurayPlaylistVersions(const CFileItemList& blurayItems,
+                                      const ADDON::ScraperPtr& scraper,
+                                      bool bDirNames,
+                                      bool useLocal);
 
     std::pair<InfoType, std::unique_ptr<IVideoInfoTagLoader>> ReadInfoTag(
         CFileItem& item, const ADDON::ScraperPtr& scraper, bool lookInFolder, bool resetTag);

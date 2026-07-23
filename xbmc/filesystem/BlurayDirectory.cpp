@@ -428,9 +428,10 @@ bool GetPlaylistsInformation(const CURL& url,
 
     for (const auto& title : allTitles)
     {
-      const int playlist{title->GetProperty("bluray_playlist").asInteger32(0)};
+      const int playlist{title->GetProperty("bluray_playlist").asInteger32(-1)};
       PlaylistInformation titleInfo;
-      if (!GetPlaylistInfoFromDisc(url, realPath, playlist, false, titleInfo, clipCache))
+      if (playlist == -1 ||
+          !GetPlaylistInfoFromDisc(url, realPath, playlist, false, titleInfo, clipCache))
       {
         CLog::LogF(LOGDEBUG, "Unable to get playlist {}", playlist);
         continue;
@@ -659,7 +660,7 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
         helper.GetMoviePlaylists(url, items, allTitles, mainPlaylist, GetTitle::SINGLE, clips,
                                  playlists);
       else if (file == "root/main/all")
-        helper.GetMoviePlaylists(url, items, allTitles, mainPlaylist, GetTitle::ALL, clips,
+        helper.GetMoviePlaylists(url, items, allTitles, mainPlaylist, GetTitle::MAIN, clips,
                                  playlists);
       else
         CLog::LogF(LOGDEBUG, "Invalid path {} for bluray playlist parsing", file);
