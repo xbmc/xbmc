@@ -9,6 +9,10 @@
 #pragma once
 
 #include "guilib/guiinfo/GUIInfoProvider.h"
+namespace KODI::GAME
+{
+class CGameSettings;
+} // namespace KODI::GAME
 
 namespace KODI::GUILIB::GUIINFO
 {
@@ -19,6 +23,7 @@ class CGamesGUIInfo : public CGUIInfoProvider
 {
 public:
   CGamesGUIInfo() = default;
+  explicit CGamesGUIInfo(const KODI::GAME::CGameSettings& gs) : m_gameSettings(&gs) {}
   ~CGamesGUIInfo() override = default;
 
   // KODI::GUILIB::GUIINFO::IGUIInfoProvider implementation
@@ -36,6 +41,11 @@ public:
                const CGUIListItem* item,
                int contextWindow,
                const CGUIInfo& info) const override;
+
+private:
+  const KODI::GAME::CGameSettings& GameSettings() const;
+
+  const KODI::GAME::CGameSettings* m_gameSettings{nullptr};
 };
 
 } // namespace KODI::GUILIB::GUIINFO
