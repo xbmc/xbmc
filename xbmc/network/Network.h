@@ -28,9 +28,11 @@ public:
 
    virtual bool GetHostMacAddress(unsigned long host, std::string& mac) const = 0;
 
-   virtual std::string GetCurrentIPAddress() const = 0;
+   virtual std::string GetCurrentIPv4Address() const = 0;
    virtual std::string GetCurrentNetmask() const = 0;
    virtual std::string GetCurrentDefaultGateway(void) const = 0;
+   virtual std::string GetCurrentIPv6Address() const = 0;
+   virtual std::string GetCurrentIPv6DefaultGateway() const = 0;
 };
 
 class CSettings;
@@ -84,6 +86,7 @@ public:
 
   // Get/set the nameserver(s)
   virtual std::vector<std::string> GetNameServers(void) = 0;
+  virtual std::vector<std::string> GetIPv6NameServers(void) { return {}; }
 
   // callback from application controlled thread to handle any setup
   void NetworkMessage(EMESSAGE message, int param);

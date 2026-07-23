@@ -533,7 +533,7 @@ CUPnP::CUPnP()
   // keep main IP around
   if (CServiceBroker::GetNetwork().GetFirstConnectedInterface())
   {
-    m_IP = CServiceBroker::GetNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
+    m_IP = CServiceBroker::GetNetwork().GetFirstConnectedInterface()->GetCurrentIPv4Address().c_str();
   }
   NPT_List<NPT_IpAddress> list;
   if (NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetIPAddresses(list)) && list.GetItemCount())

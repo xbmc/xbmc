@@ -47,11 +47,14 @@ public:
   std::string cpuFrequency;
   std::string osVersionInfo;
   std::string macAddress;
-  std::string ipAddress;
+  std::string ipv4Address;
   std::string netMask;
   std::string gatewayAddress;
   std::string networkLinkState;
   std::vector<std::string> dnsServers;
+  std::string ipv6Address;
+  std::string ipv6GatewayAddress;
+  std::vector<std::string> ipv6DnsServers;
   std::string batteryLevel;
 };
 
@@ -68,13 +71,16 @@ private:
   static bool SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays);
   static std::string GetSystemUpTime(bool bTotalUptime);
   static std::string GetMACAddress();
-  static std::string GetIPAddress();
+  static std::string GetIPv4Address();
   static std::string GetNetMask();
   static std::string GetGatewayAddress();
   static std::string GetNetworkLinkState();
   static std::string GetVideoEncoder();
   static std::string GetBatteryLevel();
   static std::vector<std::string> GetDNSServers();
+  static std::string GetIPv6Address();
+  static std::string GetIPv6GatewayAddress();
+  static std::vector<std::string> GetIPv6DNSServers();
 
   CSysData m_info;
 };

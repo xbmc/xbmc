@@ -20,6 +20,8 @@
 #include <androidjni/NetworkInfo.h>
 #include <androidjni/RouteInfo.h>
 #include <arpa/inet.h>
+#include <linux/if_addr.h>
+#include <linux/rtnetlink.h>
 #include <net/if_arp.h>
 #include <netinet/in.h>
 #include <sys/wait.h>
@@ -40,7 +42,11 @@ std::vector<std::string> CNetworkInterfaceAndroid::GetNameServers()
   ret.reserve(lia.size());
   for (int i=0; i < lia.size(); ++i)
   {
-    ret.push_back(lia.get(i).getHostAddress());
+    CJNIInetAddress addr = lia.get(i);
+    if (addr.getAddress().size() > 4) // IPv4 only
+      continue;
+
+    ret.push_back(addr.getHostAddress());
   }
 
   return ret;
@@ -143,7 +149,7 @@ bool CNetworkInterfaceAndroid::GetHostMacAddress(unsigned long host_ip, std::str
   return false;
 }
 
-std::string CNetworkInterfaceAndroid::GetCurrentIPAddress() const
+std::string CNetworkInterfaceAndroid::GetCurrentIPv4Address() const
 {
   CJNIList<CJNILinkAddress> lla = m_lp.getLinkAddresses();
   if (lla.size() == 0)
@@ -197,10 +203,108 @@ std::string CNetworkInterfaceAndroid::GetCurrentDefaultGateway() const
     if (!ri.isDefaultRoute())
       continue;
 
-    return ri.getGateway().getHostAddress();
+    CJNIInetAddress gw = ri.getGateway();
+    if (!gw || gw.getAddress().size() > 4) // IPv4 gateways only
+      continue;
+
+    return gw.getHostAddress();
   }
 
   return "";
+}
+
+// Gets the Highest Rank Permanent IPv6 Address on the current interface.
+std::string CNetworkInterfaceAndroid::GetCurrentIPv6Address() const
+{
+  CJNIList<CJNILinkAddress> lla = m_lp.getLinkAddresses();
+
+  std::string address;
+  unsigned int bestRank = 0;
+
+  for (int i = 0; i < lla.size(); ++i)
+  {
+    CJNILinkAddress la = lla.get(i);
+    CJNIInetAddress ia = la.getAddress();
+
+    // IPv6 addresses are 16 bytes, IPv4 are 4 bytes.
+    if (ia.getAddress().size() <= 4)
+      continue;
+
+    // Only consider globally scoped addresses. link-local (fe80::/10), and loopback are skipped.
+    if (la.getScope() != RT_SCOPE_UNIVERSE)
+      continue;
+
+    int flags = la.getFlags();
+
+    // Remove anything that is not a permanent address
+    int disqualify = IFA_F_DEPRECATED | IFA_F_DADFAILED | IFA_F_TEMPORARY;
+    if (!(flags & IFA_F_OPTIMISTIC))
+      disqualify |= IFA_F_TENTATIVE;
+
+    if (flags & disqualify)
+      continue;
+
+    // There are still more types of permanent addresses, apply a rank to the types.
+    // STABLE_PRIVACY: explicitly RFC 7217 — kernel-vouched stable
+    // PERMANENT:      manually configured or EUI-64 SLAAC
+    // MANAGETEMPADDR: the stable parent that generates temporaries
+    // Anything else global that passed the filter
+    unsigned int rank = 1;
+    if (flags & IFA_F_STABLE_PRIVACY)
+      rank = 4;
+    else if (flags & IFA_F_PERMANENT)
+      rank = 3;
+    else if (flags & IFA_F_MANAGETEMPADDR)
+      rank = 2;
+
+    // Keep the highest rank.
+    if (rank <= bestRank)
+      continue;
+
+    address = ia.getHostAddress();
+    bestRank = rank;
+  }
+
+  return address;
+}
+
+// Gets the IPv6 default gateway on the current interface. RouteInfo does not
+// expose route metrics, so the first IPv6 default route is returned.
+std::string CNetworkInterfaceAndroid::GetCurrentIPv6DefaultGateway() const
+{
+  CJNIList<CJNIRouteInfo> ris = m_lp.getRoutes();
+
+  for (int i = 0; i < ris.size(); ++i)
+  {
+    CJNIRouteInfo ri = ris.get(i);
+    if (!ri.isDefaultRoute())
+      continue;
+
+    CJNIInetAddress gw = ri.getGateway();
+    if (!gw || gw.getAddress().size() <= 4) // IPv6 gateways only
+      continue;
+
+    return gw.getHostAddress();
+  }
+
+  return "";
+}
+
+std::vector<std::string> CNetworkInterfaceAndroid::GetIPv6NameServers()
+{
+  std::vector<std::string> ret;
+
+  CJNIList<CJNIInetAddress> lia = m_lp.getDnsServers();
+  for (int i = 0; i < lia.size(); ++i)
+  {
+    CJNIInetAddress addr = lia.get(i);
+    if (addr.getAddress().size() <= 4) // IPv6 only
+      continue;
+
+    ret.push_back(addr.getHostAddress());
+  }
+
+  return ret;
 }
 
 std::string CNetworkInterfaceAndroid::GetHostName()
@@ -277,7 +381,9 @@ CNetworkInterface* CNetworkAndroid::GetFirstConnectedInterface()
   {
     for (CNetworkInterface* intf : m_interfaces)
     {
-      if (intf->IsEnabled() && intf->IsConnected() && !intf->GetCurrentDefaultGateway().empty())
+      if (intf->IsEnabled() && intf->IsConnected() &&
+          (!intf->GetCurrentDefaultGateway().empty() ||
+           !intf->GetCurrentIPv6DefaultGateway().empty()))
         return intf;
     }
   }
@@ -290,6 +396,16 @@ std::vector<std::string> CNetworkAndroid::GetNameServers()
   CNetworkInterfaceAndroid* intf = static_cast<CNetworkInterfaceAndroid*>(GetFirstConnectedInterface());
   if (intf)
     return intf->GetNameServers();
+
+  return std::vector<std::string>();
+}
+
+std::vector<std::string> CNetworkAndroid::GetIPv6NameServers()
+{
+  CNetworkInterfaceAndroid* intf =
+      static_cast<CNetworkInterfaceAndroid*>(GetFirstConnectedInterface());
+  if (intf)
+    return intf->GetIPv6NameServers();
 
   return std::vector<std::string>();
 }

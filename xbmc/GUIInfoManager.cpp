@@ -2225,19 +2225,47 @@ constexpr std::array<InfoMap, 6> system_param = {{
 ///     @return The network DNS 2 address.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Network.IPv6Address`</b>,
+///                  \anchor Network_IPv6Address
+///                  _string_,
+///     @return The system's IPv6 Address. e.g. 2001:db8::1
+///     <p>
+///   }
+///   \table_row3{   <b>`Network.IPv6GatewayAddress`</b>,
+///                  \anchor Network_IPv6GatewayAddress
+///                  _string_,
+///     @return The network IPv6 gateway address.
+///     <p>
+///   }
+///   \table_row3{   <b>`Network.IPv6DNS1Address`</b>,
+///                  \anchor Network_IPv6DNS1Address
+///                  _string_,
+///     @return The network IPv6 DNS 1 address.
+///     <p>
+///   }
+///   \table_row3{   <b>`Network.IPv6DNS2Address`</b>,
+///                  \anchor Network_IPv6DNS2Address
+///                  _string_,
+///     @return The network IPv6 DNS 2 address.
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 8> network_labels = {{
-    {"isdhcp", NETWORK_IS_DHCP},
-    {"ipaddress",       NETWORK_IP_ADDRESS}, //labels from here
-    {"linkstate",       NETWORK_LINK_STATE},
-    {"macaddress",      NETWORK_MAC_ADDRESS},
-    {"subnetmask",      NETWORK_SUBNET_MASK},
-    {"gatewayaddress",  NETWORK_GATEWAY_ADDRESS},
-    {"dns1address",     NETWORK_DNS1_ADDRESS},
-    {"dns2address",     NETWORK_DNS2_ADDRESS},
+constexpr std::array<InfoMap, 12> network_labels = {{
+    {"isdhcp",              NETWORK_IS_DHCP},
+    {"ipaddress",           NETWORK_IP_ADDRESS}, //labels from here
+    {"linkstate",           NETWORK_LINK_STATE},
+    {"macaddress",          NETWORK_MAC_ADDRESS},
+    {"subnetmask",          NETWORK_SUBNET_MASK},
+    {"gatewayaddress",      NETWORK_GATEWAY_ADDRESS},
+    {"dns1address",         NETWORK_DNS1_ADDRESS},
+    {"dns2address",         NETWORK_DNS2_ADDRESS},
+    {"ipv6address",         NETWORK_IPV6_ADDRESS},
+    {"ipv6gatewayaddress",  NETWORK_IPV6_GATEWAY_ADDRESS},
+    {"ipv6dns1address",     NETWORK_IPV6_DNS1_ADDRESS},
+    {"ipv6dns2address",     NETWORK_IPV6_DNS2_ADDRESS},
 }};
 // clang-format on
 

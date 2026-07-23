@@ -107,7 +107,7 @@ bool CNetworkInterfaceWin10::GetHostMacAddress(unsigned long host, std::string& 
   return false;
 }
 
-std::string CNetworkInterfaceWin10::GetCurrentIPAddress(void) const
+std::string CNetworkInterfaceWin10::GetCurrentIPv4Address(void) const
 {
   std::string result = "0.0.0.0";
 
@@ -161,6 +161,89 @@ std::string CNetworkInterfaceWin10::GetCurrentDefaultGateway(void) const
   return result;
 }
 
+// Gets the Highest Rank Permanent IPv6 Address on the current interface.
+std::string CNetworkInterfaceWin10::GetCurrentIPv6Address(void) const
+{
+  std::string address;
+  unsigned int bestRank = 0;
+
+  for (PIP_ADAPTER_UNICAST_ADDRESS_LH address = m_adapterAddr->FirstUnicastAddress; address; address = address->Next)
+  {
+    if (address->Address.lpSockaddr->sa_family != AF_INET6)
+      continue;
+
+    // Only fully configured (DAD passed) addresses are usable.
+    if (address->DadState != IpDadStatePreferred)
+      continue;
+
+    const auto* sa6 = reinterpret_cast<const struct sockaddr_in6*>(address->Address.lpSockaddr);
+
+    // Only globally scoped addresses. link-local (fe80::/10), loopback and
+    // multicast are skipped.
+    if (IN6_IS_ADDR_LINKLOCAL(&sa6->sin6_addr) || IN6_IS_ADDR_LOOPBACK(&sa6->sin6_addr) ||
+        IN6_IS_ADDR_MULTICAST(&sa6->sin6_addr))
+      continue;
+
+    // Distinguish the stable public address from an RFC 4941 temporary
+    // (privacy) address. On Windows the only reliable signal is the
+    // DNS-eligible flag: the stable, publishable address carries it while
+    // temporary addresses do not. Note IP_ADAPTER_ADDRESS_TRANSIENT is NOT a
+    // temporary privacy address - it marks a failover-cluster address - so it
+    // must not be used here. The suffix origin cannot separate them either,
+    // because Windows assigns both a randomized interface identifier by
+    // default (both report IpSuffixOriginRandom).
+    const bool dnsEligible = (address->Flags & IP_ADAPTER_ADDRESS_DNS_ELIGIBLE) != 0;
+
+    // Rank by suffix origin, preferring explicitly configured addresses.
+    unsigned int rank;
+    switch (address->SuffixOrigin)
+    {
+      case IpSuffixOriginManual:
+        rank = 3; // statically configured
+        break;
+      case IpSuffixOriginDhcp:
+      case IpSuffixOriginLinkLayerAddress:
+        rank = 2; // DHCPv6 or EUI-64 SLAAC
+        break;
+      default:
+        rank = 1; // randomized interface identifier or other
+        break;
+    }
+
+    // A DNS-eligible (stable public) address must always win over a temporary
+    // privacy address, whatever their suffix origins.
+    if (dnsEligible)
+      rank += 10;
+
+    // Keep the highest rank.
+    if (rank <= bestRank)
+      continue;
+
+    std::string str = CNetworkBase::GetIpStr(address->Address.lpSockaddr);
+    if (str.empty())
+      continue;
+
+    address = str;
+    bestRank = rank;
+  }
+
+  return address;
+}
+
+// Gets the IPv6 default gateway on the current interface. Windows does not
+// expose per-gateway route metrics here, so the first IPv6 gateway is returned.
+std::string CNetworkInterfaceWin10::GetCurrentIPv6DefaultGateway(void) const
+{
+  for (PIP_ADAPTER_GATEWAY_ADDRESS_LH gateway = m_adapterAddr->FirstGatewayAddress; gateway;
+       gateway = gateway->Next)
+  {
+    if (gateway->Address.lpSockaddr->sa_family == AF_INET6)
+      return CNetworkBase::GetIpStr(gateway->Address.lpSockaddr);
+  }
+
+  return "";
+}
+
 CNetworkWin10::CNetworkWin10() : CNetworkBase()
 {
   queryInterfaceList();
@@ -199,7 +282,9 @@ CNetworkInterface* CNetworkWin10::GetFirstConnectedInterface()
   std::unique_lock lock(m_critSection);
   for (CNetworkInterface* intf : m_interfaces)
   {
-    if (intf->IsEnabled() && intf->IsConnected() && !intf->GetCurrentDefaultGateway().empty())
+    if (intf->IsEnabled() && intf->IsConnected() &&
+        (!intf->GetCurrentDefaultGateway().empty() ||
+         !intf->GetCurrentIPv6DefaultGateway().empty()))
       return intf;
   }
 
@@ -253,13 +338,13 @@ void CNetworkWin10::queryInterfaceList()
   const ULONG flags = GAA_FLAG_INCLUDE_GATEWAYS | GAA_FLAG_INCLUDE_PREFIX;
   ULONG ulOutBufLen;
 
-  if (GetAdaptersAddresses(AF_INET, flags, nullptr, nullptr, &ulOutBufLen) != ERROR_BUFFER_OVERFLOW)
+  if (GetAdaptersAddresses(AF_UNSPEC, flags, nullptr, nullptr, &ulOutBufLen) != ERROR_BUFFER_OVERFLOW)
     return;
 
   m_adapterAddresses.resize(ulOutBufLen);
   auto adapterAddresses = reinterpret_cast<PIP_ADAPTER_ADDRESSES>(m_adapterAddresses.data());
 
-  if (GetAdaptersAddresses(AF_INET, flags, nullptr, adapterAddresses, &ulOutBufLen) == NO_ERROR)
+  if (GetAdaptersAddresses(AF_UNSPEC, flags, nullptr, adapterAddresses, &ulOutBufLen) == NO_ERROR)
   {
     for (PIP_ADAPTER_ADDRESSES adapter = adapterAddresses; adapter; adapter = adapter->Next)
     {
@@ -292,6 +377,39 @@ std::vector<std::string> CNetworkWin10::GetNameServers(void)
         result.push_back(strIp);
 
       addr = addr->Next;
+    }
+  }
+
+  return result;
+}
+
+std::vector<std::string> CNetworkWin10::GetIPv6NameServers(void)
+{
+  std::vector<std::string> result;
+
+  // GetNetworkParams only reports IPv4 DNS servers, so query the adapter
+  // addresses directly to collect the IPv6 ones.
+  const ULONG flags = GAA_FLAG_SKIP_UNICAST | GAA_FLAG_SKIP_ANYCAST | GAA_FLAG_SKIP_MULTICAST | GAA_FLAG_SKIP_FRIENDLY_NAME;
+  ULONG ulOutBufLen;
+
+  if (GetAdaptersAddresses(AF_INET6, flags, nullptr, nullptr, &ulOutBufLen) != ERROR_BUFFER_OVERFLOW)
+    return result;
+
+  std::vector<uint8_t> buffer(ulOutBufLen);
+  auto adapterAddresses = reinterpret_cast<PIP_ADAPTER_ADDRESSES>(buffer.data());
+
+  if (GetAdaptersAddresses(AF_INET6, flags, nullptr, adapterAddresses, &ulOutBufLen) == NO_ERROR)
+  {
+    for (PIP_ADAPTER_ADDRESSES adapter = adapterAddresses; adapter; adapter = adapter->Next)
+    {
+      if (adapter->IfType == IF_TYPE_SOFTWARE_LOOPBACK || adapter->OperStatus != IF_OPER_STATUS::IfOperStatusUp)
+        continue;
+      for (PIP_ADAPTER_DNS_SERVER_ADDRESS dnsAddress = adapter->FirstDnsServerAddress; dnsAddress; dnsAddress = dnsAddress->Next)
+      {
+        std::string strIp = CNetworkBase::GetIpStr(dnsAddress->Address.lpSockaddr);
+        if (!strIp.empty())
+          result.push_back(strIp);
+      }
     }
   }
 

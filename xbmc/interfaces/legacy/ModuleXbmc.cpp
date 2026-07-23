@@ -242,7 +242,7 @@ namespace XBMCAddon
       snprintf(cTitleIP, sizeof(cTitleIP), "127.0.0.1");
       CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
       if (iface)
-        return iface->GetCurrentIPAddress();
+        return iface->GetCurrentIPv4Address();
 
       return cTitleIP;
     }
