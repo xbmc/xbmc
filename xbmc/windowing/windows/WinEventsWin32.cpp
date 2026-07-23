@@ -790,31 +790,33 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
             {
               CServiceBroker::GetPeripherals().TriggerDeviceScan(PERIPHERALS::PERIPHERAL_BUS_USB);
             }
-            // check if an usb or optical media was inserted or removed
-            if (((_DEV_BROADCAST_HEADER*) lParam)->dbcd_devicetype == DBT_DEVTYP_VOLUME)
+            // check if a usb volume or optical media was inserted or removed
+            if (((_DEV_BROADCAST_HEADER*)lParam)->dbcd_devicetype == DBT_DEVTYP_VOLUME)
             {
-              PDEV_BROADCAST_VOLUME lpdbv = (PDEV_BROADCAST_VOLUME)((_DEV_BROADCAST_HEADER*) lParam);
-              // optical medium
-              if (lpdbv -> dbcv_flags & DBTF_MEDIA)
+              PDEV_BROADCAST_VOLUME lpdbv = (PDEV_BROADCAST_VOLUME)((_DEV_BROADCAST_HEADER*)lParam);
+
+              std::string strdrive =
+                  StringUtils::Format("{}:", CWIN32Util::FirstDriveFromMask(lpdbv->dbcv_unitmask));
+
+              MEDIA_DETECT::STORAGE::StorageDevice device =
+                  CWin32StorageProvider::GetStorageDevice(strdrive);
+
+              // DBTF_MEDIA set => optical disc (media) change rather than a USB volume
+              if (lpdbv->dbcv_flags & DBTF_MEDIA)
+                device.type = MEDIA_DETECT::STORAGE::Type::OPTICAL;
+
+              if (wParam == DBT_DEVICEARRIVAL)
               {
-                std::string strdrive = StringUtils::Format(
-                    "{}:", CWIN32Util::FirstDriveFromMask(lpdbv->dbcv_unitmask));
-                if(wParam == DBT_DEVICEARRIVAL)
-                {
-                  CLog::LogF(LOGDEBUG, "Drive {} Media has arrived.", strdrive);
-                  CServiceBroker::GetJobManager()->AddJob(new CDetectDisc(strdrive, true), nullptr);
-                }
-                else
-                {
-                  CLog::LogF(LOGDEBUG, "Drive {} Media was removed.", strdrive);
-                  CMediaSource share;
-                  share.strPath = strdrive;
-                  share.strName = share.strPath;
-                  CServiceBroker::GetMediaManager().RemoveAutoSource(share);
-                }
+                CLog::LogF(LOGDEBUG, "Drive {} Media has arrived.", strdrive);
+                CWin32StorageProvider::QueueStorageEvent(
+                    CWin32StorageProvider::StorageEventType::ADDED, device);
               }
               else
-                CWin32StorageProvider::SetEvent();
+              {
+                CLog::LogF(LOGDEBUG, "Drive {} Media was removed.", strdrive);
+                CWin32StorageProvider::QueueStorageEvent(
+                    CWin32StorageProvider::StorageEventType::SAFELY_REMOVED, device);
+              }
             }
             break;
           default:;

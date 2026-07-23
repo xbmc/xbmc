@@ -19,8 +19,6 @@
 #include <memory>
 #include <vector>
 
-#include "PlatformDefs.h"
-
 class CFileItem;
 
 class CNetworkLocation
@@ -60,6 +58,15 @@ public:
 
   void AddAutoSource(const CMediaSource &share, bool bAutorun=false);
   void RemoveAutoSource(const CMediaSource &share);
+
+#if defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
+  /*! \brief Build and register an optical-disc auto source for the given device path.
+   * Adds the source WITHOUT triggering autorun.
+   * \param devicePath The optical drive path (e.g. "D:")
+   */
+  void AddOpticalSource(const std::string& devicePath);
+#endif
+
   bool IsDiscInDrive(const std::string& devicePath="");
   bool IsAudio(const std::string& devicePath="");
   bool HasOpticalDrive();
@@ -129,7 +136,7 @@ protected:
 #ifdef HAS_OPTICAL_DRIVE
   std::map<std::string,MEDIA_DETECT::CCdInfo*> m_mapCdInfo;
 #endif
-  bool m_bhasoptical;
+  bool m_bOpticalDrivePresent;
   std::string m_strFirstAvailDrive;
 
 private:
