@@ -169,6 +169,11 @@ bool CMusicCodecInfoFFmpeg::GetMusicCodecInfo(const std::string& strFileName,
 
     avformat_close_input(&fctx);
   }
+  else
+  {
+    avformat_free_context(fctx);
+    fctx = nullptr;
+  }
   av_free(ioctx->buffer);
   av_free(ioctx);
   return haveInfo;
