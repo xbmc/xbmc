@@ -262,6 +262,8 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
     {
       TiXmlElement stream("video");
       XMLUtils::SetString(&stream, "codec", m_streamDetails.GetVideoCodec(iStream));
+      if (m_streamDetails.HasVideoProfileScanned(iStream))
+        XMLUtils::SetString(&stream, "profile", m_streamDetails.GetVideoProfile(iStream));
       XMLUtils::SetFloat(&stream, "aspect", m_streamDetails.GetVideoAspect(iStream));
       XMLUtils::SetInt(&stream, "width", m_streamDetails.GetVideoWidth(iStream));
       XMLUtils::SetInt(&stream, "height", m_streamDetails.GetVideoHeight(iStream));
@@ -1511,6 +1513,11 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
         auto* p = new CStreamDetailVideo();
         if (XMLUtils::GetString(nodeDetail, "codec", value))
           p->m_strCodec = StringUtils::Trim(value);
+        if (XMLUtils::GetString(nodeDetail, "profile", value))
+        {
+          p->m_strProfile = StringUtils::Trim(value);
+          p->m_bProfileScanned = true;
+        }
 
         XMLUtils::GetFloat(nodeDetail, "aspect", p->m_fAspect);
         XMLUtils::GetInt(nodeDetail, "width", p->m_iWidth);

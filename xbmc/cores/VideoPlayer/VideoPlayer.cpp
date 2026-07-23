@@ -73,6 +73,11 @@
 #include <mutex>
 #include <utility>
 
+extern "C"
+{
+#include <libavcodec/avcodec.h>
+}
+
 using namespace KODI;
 using namespace std::chrono_literals;
 
@@ -5933,6 +5938,12 @@ void CVideoPlayer::GetVideoStreamInfo(int streamId, VideoStreamInfo& info) const
   info.width = s.width;
   info.height = s.height;
   info.codecName = s.codec;
+  if (s.profile != AV_PROFILE_UNKNOWN)
+  {
+    const char* profile = avcodec_profile_name(s.codecId, s.profile);
+    if (profile != nullptr)
+      info.profileName = profile;
+  }
   info.videoAspectRatio = s.aspect_ratio;
   info.stereoMode = s.stereo_mode;
   info.flags = s.flags;

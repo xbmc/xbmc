@@ -80,6 +80,7 @@ struct VideoStreamInfo : StreamInfo
   CRect DestRect;
   CRect VideoRect;
   std::string stereoMode;
+  std::string profileName;
   int angles = 0;
   StreamHdrType hdrType = StreamHdrType::HDR_TYPE_NONE;
   StreamHdrType hdrTypeAlt = StreamHdrType::HDR_TYPE_NONE;

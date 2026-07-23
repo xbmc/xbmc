@@ -41,6 +41,98 @@ TEST(TestVideoInfoTag, ReadTVShowSeasons)
   EXPECT_EQ(details.m_seasons, reference);
 }
 
+TEST(TestVideoInfoTag, SaveNativeStreamDetailsWritesVideoProfile)
+{
+  CVideoInfoTag details;
+  auto* video = new CStreamDetailVideo();
+  video->m_strCodec = "hevc";
+  video->m_strProfile = "Main 10";
+  video->m_bProfileScanned = true;
+  details.m_streamDetails.AddStream(video);
+
+  CXBMCTinyXML xmlDoc;
+  EXPECT_TRUE(details.Save(&xmlDoc, "movie"));
+
+  TiXmlPrinter printer;
+  xmlDoc.Accept(&printer);
+  EXPECT_NE(std::string(printer.Str()).find("<profile>Main 10</profile>"), std::string::npos);
+}
+
+TEST(TestVideoInfoTag, SaveNativeStreamDetailsOmitsUnknownVideoProfile)
+{
+  CVideoInfoTag details;
+  auto* video = new CStreamDetailVideo();
+  video->m_strCodec = "hevc";
+  video->m_bProfileScanned = false;
+  details.m_streamDetails.AddStream(video);
+
+  CXBMCTinyXML xmlDoc;
+  EXPECT_TRUE(details.Save(&xmlDoc, "movie"));
+
+  TiXmlPrinter printer;
+  xmlDoc.Accept(&printer);
+  EXPECT_EQ(std::string(printer.Str()).find("<profile"), std::string::npos);
+}
+
+TEST(TestVideoInfoTag, SaveNativeStreamDetailsWritesEmptyScannedVideoProfile)
+{
+  CVideoInfoTag details;
+  auto* video = new CStreamDetailVideo();
+  video->m_strCodec = "hevc";
+  video->m_strProfile.clear();
+  video->m_bProfileScanned = true;
+  details.m_streamDetails.AddStream(video);
+
+  CXBMCTinyXML xmlDoc;
+  EXPECT_TRUE(details.Save(&xmlDoc, "movie"));
+
+  TiXmlPrinter printer;
+  xmlDoc.Accept(&printer);
+  EXPECT_NE(std::string(printer.Str()).find("<profile"), std::string::npos);
+}
+
+TEST(TestVideoInfoTag, LoadNativeStreamDetailsReadsVideoProfile)
+{
+  const std::string document =
+      R"(<movie><fileinfo><streamdetails><video><codec>hevc</codec><profile>Main 10</profile></video></streamdetails></fileinfo></movie>)";
+
+  CXBMCTinyXML doc;
+  doc.Parse(document, TIXML_ENCODING_UNKNOWN);
+
+  CVideoInfoTag details;
+  EXPECT_TRUE(details.Load(doc.RootElement(), true, false));
+  EXPECT_EQ(details.m_streamDetails.GetVideoProfile(), "Main 10");
+  EXPECT_TRUE(details.m_streamDetails.HasVideoProfileScanned());
+}
+
+TEST(TestVideoInfoTag, LoadNativeStreamDetailsReadsEmptyVideoProfile)
+{
+  const std::string document =
+      R"(<movie><fileinfo><streamdetails><video><codec>hevc</codec><profile></profile></video></streamdetails></fileinfo></movie>)";
+
+  CXBMCTinyXML doc;
+  doc.Parse(document, TIXML_ENCODING_UNKNOWN);
+
+  CVideoInfoTag details;
+  EXPECT_TRUE(details.Load(doc.RootElement(), true, false));
+  EXPECT_EQ(details.m_streamDetails.GetVideoProfile(), "");
+  EXPECT_TRUE(details.m_streamDetails.HasVideoProfileScanned());
+}
+
+TEST(TestVideoInfoTag, LoadNativeStreamDetailsWithoutVideoProfile)
+{
+  const std::string document =
+      R"(<movie><fileinfo><streamdetails><video><codec>hevc</codec></video></streamdetails></fileinfo></movie>)";
+
+  CXBMCTinyXML doc;
+  doc.Parse(document, TIXML_ENCODING_UNKNOWN);
+
+  CVideoInfoTag details;
+  EXPECT_TRUE(details.Load(doc.RootElement(), true, false));
+  EXPECT_EQ(details.m_streamDetails.GetVideoProfile(), "");
+  EXPECT_FALSE(details.m_streamDetails.HasVideoProfileScanned());
+}
+
 // Trick to make protected methods accessible for testing
 class CVideoInfoTagTest : public CVideoInfoTag
 {
