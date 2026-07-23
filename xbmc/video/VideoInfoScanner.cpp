@@ -724,14 +724,17 @@ CVideoInfoScanner::~CVideoInfoScanner()
         FoundSomeInfo = false;
         break;
       }
-      if (ret == InfoRet::CANCELLED || ret == InfoRet::INFO_ERROR)
+      if (ret == InfoRet::CANCELLED)
+      {
+        break;
+      }
+      if (ret == InfoRet::INFO_ERROR)
       {
         CLog::Log(LOGWARNING,
                   "VideoInfoScanner: Error {} occurred while retrieving"
                   "information for {}.",
                   static_cast<int>(ret), CURL::GetRedacted(pItem->GetPath()));
-        FoundSomeInfo = false;
-        break;
+        continue;
       }
       if (ret == InfoRet::ADDED || ret == InfoRet::HAVE_ALREADY)
         FoundSomeInfo = true;
