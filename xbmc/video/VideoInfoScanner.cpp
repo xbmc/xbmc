@@ -799,13 +799,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
         pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_type == MediaTypeSeason;
 
     int idTvShow = -1;
-    int idSeason = -1;
     std::string strPath = pItem->GetPath();
     if (pItem->IsFolder())
     {
       idTvShow = m_database.GetTvShowId(strPath);
-      if (isSeason && idTvShow > -1)
-        idSeason = m_database.GetSeasonId(idTvShow, pItem->GetVideoInfoTag()->m_iSeason);
     }
     else if (pItem->IsPlugin() && pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iIdShow >= 0)
     {
@@ -820,8 +817,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
     {
       strPath = URIUtils::GetDirectory(strPath);
       idTvShow = m_database.GetTvShowId(strPath);
-      if (isSeason && idTvShow > -1)
-        idSeason = m_database.GetSeasonId(idTvShow, pItem->GetVideoInfoTag()->m_iSeason);
     }
 
     // If we only want to refresh show details (and not the episodes), the
@@ -835,11 +830,22 @@ CVideoInfoScanner::~CVideoInfoScanner()
     EPISODELIST files;
     if (!refreshShowInfoOnly)
     {
-      if (!EnumerateSeriesFolder(pItem, files))
+      const auto epResult = EnumerateSeriesFolder(pItem, files);
+      if (epResult == EpisodeResult::NOT_CHANGED)
         return InfoRet::HAVE_ALREADY;
-      if (files.empty()) // no update or no files
+      if (epResult == EpisodeResult::NO_MEDIA)
+        return InfoRet::NOT_NEEDED;
+      if (epResult == EpisodeResult::NO_EPISODES)
+        return InfoRet::NOT_NEEDED;
+      if (isSeason && idTvShow < 0)
         return InfoRet::NOT_NEEDED;
     }
+
+    const auto setFolderHash = [this, pItem]
+    {
+      if (pItem->IsFolder())
+        m_database.SetPathHash(pItem->GetPath(), pItem->GetProperty("hash").asString());
+    };
 
     if (ProgressCancelled(pDlgProgress, pItem->IsFolder() ? 20353 : 20361,
                           pItem->IsFolder() ? pItem->GetVideoInfoTag()->m_strShowTitle
@@ -858,17 +864,19 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     if (result == InfoType::FULL && (idTvShow < 0 || refreshShowInfoOnly))
     {
-
-      long lResult = AddVideo(pItem, info2, bDirNames, useLocal);
+      const long lResult = AddVideo(pItem, info2, bDirNames, useLocal);
       if (lResult < 0)
         return InfoRet::INFO_ERROR;
-      if (fetchEpisodes)
+      if (fetchEpisodes && !files.empty())
       {
-        InfoRet ret = RetrieveInfoForEpisodes(pItem, lResult, files, info2, useLocal, pDlgProgress);
+        const InfoRet ret =
+            RetrieveInfoForEpisodes(pItem, lResult, files, info2, useLocal, pDlgProgress);
         if (ret == InfoRet::ADDED)
-          m_database.SetPathHash(pItem->GetPath(), pItem->GetProperty("hash").asString());
+          setFolderHash();
         return ret;
       }
+      if (files.empty())
+        setFolderHash();
       return InfoRet::ADDED;
     }
     if (result == InfoType::URL || result == InfoType::COMBINED)
@@ -878,11 +886,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
 
     // Process episodes added later after nfo is scanned in case there is an episode group and parsing url
-    if (idTvShow > -1 && (!isSeason || idSeason > -1) && (fetchEpisodes || !pItem->IsFolder()))
+    if (idTvShow > -1 && (fetchEpisodes || !pItem->IsFolder()))
     {
-      InfoRet ret = RetrieveInfoForEpisodes(pItem, idTvShow, files, info2, useLocal, pDlgProgress);
-      if (ret == InfoRet::ADDED)
-        m_database.SetPathHash(strPath, pItem->GetProperty("hash").asString());
+      const InfoRet ret = files.empty() ? InfoRet::NOT_NEEDED
+                                        : RetrieveInfoForEpisodes(pItem, idTvShow, files, info2,
+                                                                  useLocal, pDlgProgress);
+      if (ret == InfoRet::ADDED || ret == InfoRet::NOT_NEEDED)
+        setFolderHash();
       return ret;
     }
 
@@ -912,15 +922,19 @@ CVideoInfoScanner::~CVideoInfoScanner()
         if ((lResult = AddVideo(pItem, info2, false, useLocal)) < 0)
           return InfoRet::INFO_ERROR;
 
-        if (fetchEpisodes)
+        if (fetchEpisodes && !files.empty())
         {
-          InfoRet ret =
+          const InfoRet ret =
               RetrieveInfoForEpisodes(pItem, lResult, files, info2, useLocal, pDlgProgress, true);
           if (ret == InfoRet::ADDED)
           {
-            m_database.SetPathHash(pItem->GetPath(), pItem->GetProperty("hash").asString());
+            setFolderHash();
             return InfoRet::ADDED;
           }
+        }
+        else if (files.empty())
+        {
+          setFolderHash();
         }
         return InfoRet::ADDED;
       }
@@ -942,12 +956,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if ((lResult = AddVideo(pItem, info2, false, useLocal)) < 0)
         return InfoRet::INFO_ERROR;
     }
-    if (fetchEpisodes)
+    if (fetchEpisodes && !files.empty())
     {
-      InfoRet ret =
+      const InfoRet ret =
           RetrieveInfoForEpisodes(pItem, lResult, files, info2, useLocal, pDlgProgress, true);
       if (ret == InfoRet::ADDED)
-        m_database.SetPathHash(pItem->GetPath(), pItem->GetProperty("hash").asString());
+        setFolderHash();
+    }
+    else if (lResult >= 0 && files.empty())
+    {
+      setFolderHash();
     }
     return InfoRet::ADDED;
   }
@@ -1300,7 +1318,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return ret;
   }
 
-  bool CVideoInfoScanner::EnumerateSeriesFolder(CFileItem* item, EPISODELIST& episodeList)
+  CVideoInfoScanner::EpisodeResult CVideoInfoScanner::EnumerateSeriesFolder(
+      CFileItem* item, EPISODELIST& episodeList)
   {
     CFileItemList items;
     const std::vector<std::string>& regexps = m_advancedSettings->m_tvshowExcludeFromScanRegExps;
@@ -1319,7 +1338,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         m_pathsToScan.erase(it);
 
       if (HasNoMedia(item->GetPath()))
-        return true;
+        return EpisodeResult::NO_MEDIA;
 
       std::string hash, dbHash;
       bool allowEmptyHash = false;
@@ -1336,7 +1355,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
       else if (m_advancedSettings->m_bVideoLibraryUseFastHash)
         hash = GetRecursiveFastHash(item->GetPath(), regexps);
 
-      if (m_database.GetPathHash(item->GetPath(), dbHash) && (allowEmptyHash || !hash.empty()) && StringUtils::EqualsNoCase(dbHash, hash))
+      const bool pathKnown = m_database.GetPathHash(item->GetPath(), dbHash);
+      if (pathKnown && (allowEmptyHash || !hash.empty()) && StringUtils::EqualsNoCase(dbHash, hash))
       {
         // fast hashes match - no need to process anything
         bSkip = true;
@@ -1362,7 +1382,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
           // sort by filename as always present for any files, but keep case sensitivity
           items.Sort(SortBy::FILE, SortOrder::ASCENDING, SortAttributeNone);
           GetPathHash(items, hash);
-          if (StringUtils::EqualsNoCase(dbHash, hash))
+          if (pathKnown && StringUtils::EqualsNoCase(dbHash, hash))
           {
             // slow hashes match - no need to process anything
             bSkip = true;
@@ -1377,7 +1397,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         // update our dialog with our progress
         if (m_handle)
           OnDirectoryScanned(item->GetPath());
-        return false;
+        return EpisodeResult::NOT_CHANGED;
       }
 
       if (dbHash.empty())
@@ -1447,6 +1467,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
                        fileAndPath.find("BACKUP/INDEX.BDMV") != std::string::npos);
              });
 
+    bool hasEpisodeCandidates = false;
+
     // enumerate
     for (int i=0;i<items.Size();++i)
     {
@@ -1462,6 +1484,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (CUtil::ExcludeFileOrFolder(items[i]->GetPath(), regexps, &m_regexpCache))
         continue;
 
+      hasEpisodeCandidates = true;
+
       /*
        * Check if the media source has already set the season and episode or original air date in
        * the VideoInfoTag. If it has, do not try to parse any of them from the file path to avoid
@@ -1474,7 +1498,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Could not enumerate file {}",
                   CURL::GetRedacted(items[i]->GetPath()));
     }
-    return true;
+    if (!hasEpisodeCandidates)
+      return EpisodeResult::NO_FILES;
+    return episodeList.empty() ? EpisodeResult::NO_EPISODES : EpisodeResult::FOUND_EPISODES;
   }
 
   bool CVideoInfoScanner::ProcessItemByVideoInfoTag(const CFileItem *item, EPISODELIST &episodeList)
