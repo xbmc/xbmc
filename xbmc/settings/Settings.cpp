@@ -448,6 +448,8 @@ void CSettings::InitializeOptionFillers()
       "playerqueuetimesizes", CPlayerSettings::SettingOptionsQueueTimeSizesFiller);
   GetSettingsManager()->RegisterSettingOptionsFiller(
       "playerqueuedatasizes", CPlayerSettings::SettingOptionsQueueDataSizesFiller);
+  GetSettingsManager()->RegisterSettingOptionsFiller(
+      "playerfastforwardspeeds", CPlayerSettings::SettingOptionsFastForwardSpeeds);
 }
 
 void CSettings::UninitializeOptionFillers()
@@ -502,6 +504,7 @@ void CSettings::UninitializeOptionFillers()
   GetSettingsManager()->UnregisterSettingOptionsFiller("filecachechunksizes");
   GetSettingsManager()->UnregisterSettingOptionsFiller("playerqueuetimesizes");
   GetSettingsManager()->UnregisterSettingOptionsFiller("playerqueuedatasizes");
+  GetSettingsManager()->UnregisterSettingOptionsFiller("playerfastforwardspeeds");
 }
 
 void CSettings::InitializeConditions()

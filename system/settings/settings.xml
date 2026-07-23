@@ -101,6 +101,14 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
+        <setting id="videoplayer.maxsmoothff" type="integer" label="13558" help="37117">
+          <level>2</level>
+          <default>4</default>
+          <constraints>
+            <options>playerfastforwardspeeds</options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
       </group>
       <group id="3" label="14231">
         <setting id="videoplayer.rendermethod" type="integer" label="13415" help="36153">
