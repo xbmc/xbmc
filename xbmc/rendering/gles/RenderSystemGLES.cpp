@@ -31,6 +31,10 @@
 #include "utils/EGLUtils.h"
 #endif
 
+#ifdef TARGET_WEBOS
+#include "platform/linux/WebOSTVPlatformConfig.h"
+#endif
+
 using namespace std::chrono_literals;
 
 CRenderSystemGLES::CRenderSystemGLES()
@@ -100,6 +104,14 @@ bool CRenderSystemGLES::InitRenderSystem()
     {
       CLog::Log(LOGDEBUG, "OpenGL(ES): debugging requested but the required extension isn't available (GL_KHR_debug)");
     }
+  }
+#endif
+
+#ifdef TARGET_WEBOS
+  if (WebOSTVPlatformConfig::GetWebOSVersion() <= 4)
+  {
+    m_RenderVersionMajor = 2;
+    m_RenderVersionMinor = 0;
   }
 #endif
 
