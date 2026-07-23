@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017-2018 Team Kodi
+ *  Copyright (C) 2017-2018, 2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -17,16 +17,19 @@ namespace ADDON
   class CSettingUrlEncodedString : public CSettingString
   {
   public:
-    explicit CSettingUrlEncodedString(const std::string& id,
+    explicit CSettingUrlEncodedString(std::string_view id,
                                       CSettingsManager* settingsManager = nullptr);
-    CSettingUrlEncodedString(const std::string& id,
+    CSettingUrlEncodedString(std::string_view id,
                              int label,
                              const std::string& value,
                              CSettingsManager* settingsManager = nullptr);
-    CSettingUrlEncodedString(const std::string &id, const CSettingUrlEncodedString &setting);
+    CSettingUrlEncodedString(std::string_view id, const CSettingUrlEncodedString& setting);
     ~CSettingUrlEncodedString() override = default;
 
-    SettingPtr Clone(const std::string &id) const override { return std::make_shared<CSettingUrlEncodedString>(id, *this); }
+    SettingPtr Clone(std::string_view id) const override
+    {
+      return std::make_shared<CSettingUrlEncodedString>(id, *this);
+    }
 
     std::string GetDecodedValue() const;
     bool SetDecodedValue(const std::string& decodedValue);

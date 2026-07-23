@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2025 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -8,6 +8,7 @@
 
 #include "test/TestUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/XMLUtils.h"
 #include "video/VideoInfoTag.h"
 
 #include <map>
@@ -65,11 +66,8 @@ TEST(TestVideoInfoTag, SaveTVShowSeasons)
   CXBMCTinyXML xmlDoc;
   details.ForwardSaveTvShowSeasons(&xmlDoc);
 
-  TiXmlPrinter printer;
-  xmlDoc.Accept(&printer);
-  std::string result = printer.Str();
-
-  EXPECT_EQ(result, referenceXml);
+  EXPECT_EQ(referenceXml, XMLUtils::NodeStringSerialization(xmlDoc.RootElement(),
+                                                            XMLUtils::SerializationFormat::PRETTY));
 }
 
 TEST(TestVideoInfoTag, SetUniqueIDs)

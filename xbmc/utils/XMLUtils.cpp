@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -724,4 +724,92 @@ void XMLUtils::SetDateTime(TiXmlNode* pRootNode, const char *strTag, const CDate
 void XMLUtils::SetDateTime(tinyxml2::XMLNode* rootNode, const char* tag, const CDateTime& dateTime)
 {
   SetString(rootNode, tag, dateTime.IsValid() ? dateTime.GetAsDBDateTime() : "");
+}
+
+std::string XMLUtils::NodeStringSerialization(const TiXmlNode* node, SerializationFormat format)
+{
+  if (!node)
+    return {};
+
+  TiXmlDocument tempdoc;
+
+  const TiXmlDocument* doc = node->GetDocument();
+  if (doc == nullptr || (doc != nullptr && node != doc->RootElement()))
+  {
+    // TinyXML nodes may be freestanding. Copy and attach to a document for serialization.
+    tempdoc.LinkEndChild(node->Clone());
+    doc = &tempdoc;
+  }
+
+  TiXmlPrinter printer;
+  if (format == SerializationFormat::COMPACT)
+    printer.SetStreamPrinting();
+  doc->Accept(&printer);
+
+  return printer.Str();
+}
+
+std::string XMLUtils::NodeStringSerialization(const tinyxml2::XMLNode* node,
+                                              SerializationFormat format)
+{
+  if (!node)
+    return {};
+
+  tinyxml2::XMLDocument tempdoc;
+
+  // Every node in TinyXML-2 must be owned by a document, but special measures are still needed
+  // to serialize a non-root node
+  const tinyxml2::XMLDocument* doc = node->GetDocument();
+  if (doc == nullptr)
+    return {};
+
+  if (node != doc->RootElement())
+  {
+    tempdoc.LinkEndChild(node->DeepClone(&tempdoc));
+    doc = &tempdoc;
+  }
+
+  tinyxml2::XMLPrinter printer(nullptr, format == SerializationFormat::PRETTY ? false : true);
+  doc->Accept(&printer);
+
+  return printer.CStr();
+}
+
+bool XMLUtils::RemoveNode(TiXmlNode* node)
+{
+  if (node == nullptr)
+    return false;
+
+  TiXmlNode* parent = node->Parent();
+
+  if (parent == nullptr)
+    return false;
+
+  // TinyXml doesn't allow removal of the root of the document and does nothing.
+  if (parent->Type() == TiXmlNode::TINYXML_DOCUMENT)
+    return false;
+
+  if (!parent->RemoveChild(node))
+    return false;
+
+  return true;
+}
+
+bool XMLUtils::RemoveNode(tinyxml2::XMLNode* node)
+{
+  if (node == nullptr)
+    return false;
+
+  tinyxml2::XMLNode* parent = node->Parent();
+
+  if (parent == nullptr)
+    return false;
+
+  // TinyXml doesn't allow removal of the root of the document and does nothing.
+  if (parent->ToDocument() != nullptr)
+    return false;
+
+  parent->DeleteChild(node);
+
+  return true;
 }
