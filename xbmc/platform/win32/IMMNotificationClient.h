@@ -75,7 +75,7 @@ public:
   HRESULT STDMETHODCALLTYPE OnDefaultDeviceChanged(EDataFlow flow, ERole role, LPCWSTR pwstrDeviceId)
   {
     // if the default device changes this function is called four times.
-    // therefore we call CServiceBroker::GetActiveAE()->DeviceChange() only for one role.
+    // therefore we notify AE only for one role.
     std::string pszFlow = "?????";
     std::string pszRole = "?????";
 
@@ -99,7 +99,8 @@ public:
       break;
     case eCommunications:
       pszRole = "eCommunications";
-      NotifyAE();
+      if (flow == eRender)
+        NotifyAEDefaultDeviceChange();
       break;
     }
 
@@ -111,14 +112,14 @@ public:
   HRESULT STDMETHODCALLTYPE OnDeviceAdded(LPCWSTR pwstrDeviceId)
   {
     CLog::Log(LOGDEBUG, "{}: Added device: {}", __FUNCTION__, FromW(pwstrDeviceId));
-    NotifyAE();
+    NotifyAEDeviceCountChange();
     return S_OK;
   }
 
   HRESULT STDMETHODCALLTYPE OnDeviceRemoved(LPCWSTR pwstrDeviceId)
   {
     CLog::Log(LOGDEBUG, "{}: Removed device: {}", __FUNCTION__, FromW(pwstrDeviceId));
-    NotifyAE();
+    NotifyAEDeviceCountChange();
     return S_OK;
   }
 
@@ -142,7 +143,7 @@ public:
       break;
     }
     CLog::Log(LOGDEBUG, "{}: New device state is DEVICE_STATE_{}", __FUNCTION__, pszState);
-    NotifyAE();
+    NotifyAEDeviceCountChange();
     return S_OK;
   }
 
@@ -158,9 +159,15 @@ public:
     return S_OK;
   }
 
-  void STDMETHODCALLTYPE NotifyAE()
+  void STDMETHODCALLTYPE NotifyAEDefaultDeviceChange()
   {
-    if(!CWin32PowerSyscall::IsSuspending())
-      CServiceBroker::GetActiveAE()->DeviceChange();
+    if (!CWin32PowerSyscall::IsSuspending())
+      CServiceBroker::GetActiveAE()->DefaultDeviceChange();
+  }
+
+  void STDMETHODCALLTYPE NotifyAEDeviceCountChange()
+  {
+    if (!CWin32PowerSyscall::IsSuspending())
+      CServiceBroker::GetActiveAE()->DeviceCountChange("");
   }
 };
