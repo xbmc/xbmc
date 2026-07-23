@@ -12,8 +12,31 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 #include <gtest/gtest.h>
+
+namespace
+{
+std::vector<std::string> GetSavedTags(const CXBMCTinyXML& doc)
+{
+  std::vector<std::string> tags;
+
+  const TiXmlElement* movie = doc.RootElement();
+  if (!movie)
+    return tags;
+
+  const TiXmlElement* tag = movie->FirstChildElement("tag");
+  while (tag)
+  {
+    if (tag->FirstChild())
+      tags.emplace_back(tag->FirstChild()->ValueStr());
+    tag = tag->NextSiblingElement("tag");
+  }
+
+  return tags;
+}
+} // namespace
 
 TEST(TestVideoInfoTag, ReadTVShowSeasons)
 {
@@ -39,6 +62,71 @@ TEST(TestVideoInfoTag, ReadTVShowSeasons)
       {1, {"season 1", ""}}, {3, {"", "plot 3"}}, {4, {"season 4", "plot 4"}}};
 
   EXPECT_EQ(details.m_seasons, reference);
+}
+
+TEST(TestVideoInfoTag, LoadNativePreservesTagOrder)
+{
+  const std::string document =
+      R"(<movie>
+           <tag>secret agent</tag>
+           <tag>undercover</tag>
+           <tag>killing</tag>
+           <tag>british secret service</tag>
+           <tag>mi6</tag>
+         </movie>)";
+
+  CXBMCTinyXML doc;
+  doc.Parse(document, TIXML_ENCODING_UNKNOWN);
+
+  CVideoInfoTag details;
+  EXPECT_TRUE(details.Load(doc.RootElement(), true, false));
+
+  const std::vector<std::string> reference = {"secret agent", "undercover", "killing",
+                                              "british secret service", "mi6"};
+  EXPECT_EQ(details.m_tags, reference);
+}
+
+TEST(TestVideoInfoTag, SaveAfterLoadNativePreservesTagOrder)
+{
+  const std::string document =
+      R"(<movie>
+           <tag>secret agent</tag>
+           <tag>undercover</tag>
+           <tag>killing</tag>
+           <tag>british secret service</tag>
+           <tag>mi6</tag>
+         </movie>)";
+
+  CXBMCTinyXML doc;
+  doc.Parse(document, TIXML_ENCODING_UNKNOWN);
+
+  CVideoInfoTag details;
+  EXPECT_TRUE(details.Load(doc.RootElement(), true, false));
+
+  CXBMCTinyXML savedDoc;
+  EXPECT_TRUE(details.Save(&savedDoc, "movie"));
+
+  const std::vector<std::string> reference = {"secret agent", "undercover", "killing",
+                                              "british secret service", "mi6"};
+  EXPECT_EQ(GetSavedTags(savedDoc), reference);
+}
+
+TEST(TestVideoInfoTag, SetTagsDeduplicatesWithoutReordering)
+{
+  CVideoInfoTag details;
+  details.SetTags({"secret agent", "undercover", "secret agent", "mi6"});
+
+  const std::vector<std::string> reference = {"secret agent", "undercover", "mi6"};
+  EXPECT_EQ(details.m_tags, reference);
+}
+
+TEST(TestVideoInfoTag, SetTagsKeepsAssignedOrder)
+{
+  CVideoInfoTag details;
+  details.SetTags({"mi6", "secret agent", "undercover"});
+
+  const std::vector<std::string> reference = {"mi6", "secret agent", "undercover"};
+  EXPECT_EQ(details.m_tags, reference);
 }
 
 // Trick to make protected methods accessible for testing
