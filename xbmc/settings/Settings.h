@@ -191,6 +191,7 @@ public:
   static constexpr auto SETTING_SCRAPERS_MOVIESDEFAULT = "scrapers.moviesdefault";
   static constexpr auto SETTING_SCRAPERS_TVSHOWSDEFAULT = "scrapers.tvshowsdefault";
   static constexpr auto SETTING_SCRAPERS_MUSICVIDEOSDEFAULT = "scrapers.musicvideosdefault";
+  static constexpr auto SETTING_GAMES_COMPRESSSAVEDGAMES = "games.compresssavedgames";
   static constexpr auto SETTING_PVRMANAGER_PRESELECTPLAYINGCHANNEL =
       "pvrmanager.preselectplayingchannel";
   static constexpr auto SETTING_PVRMANAGER_BACKENDCHANNELGROUPSORDER =

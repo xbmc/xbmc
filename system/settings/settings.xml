@@ -2746,6 +2746,13 @@
           </control>
         </setting>
       </group>
+      <group id="2" label="35174">
+        <setting id="games.compresssavedgames" type="boolean" label="35175" help="35176">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+      </group>
     </category>
     <category id="gamesachievements" label="15312">
       <group id="1" label="15313">

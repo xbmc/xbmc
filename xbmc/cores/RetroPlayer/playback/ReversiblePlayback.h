@@ -13,8 +13,8 @@
 #include "threads/CriticalSection.h"
 #include "utils/Observer.h"
 
-#include <future>
 #include <memory>
+#include <optional>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -33,7 +33,9 @@ class CCheevos;
 class CGUIGameMessenger;
 class CRPRenderManager;
 class CSavestateDatabase;
+class CSavestateWriteQueue;
 class IMemoryStream;
+struct SavestateWriteRequest;
 
 class CReversiblePlayback : public IPlayback, public IGameLoopCallback, public Observer
 {
@@ -76,10 +78,10 @@ private:
   void AdvanceFrames(uint64_t frames);
   void UpdatePlaybackStats();
   void UpdateMemoryStream();
-  void CommitSavestate(bool autosave,
-                       const std::string& savePath,
-                       const CDateTime& nowUTC,
-                       uint64_t timestampFrames);
+  std::optional<SavestateWriteRequest> CaptureSavestateWriteRequest(bool autosave,
+                                                                    const std::string& savePath,
+                                                                    const CDateTime& nowUTC,
+                                                                    uint64_t timestampFrames);
 
   // Construction parameter
   GAME::CGameClient* const m_gameClient;
@@ -94,8 +96,8 @@ private:
 
   // Savestate functionality
   std::unique_ptr<CSavestateDatabase> m_savestateDatabase;
+  std::unique_ptr<CSavestateWriteQueue> m_savestateWriteQueue;
   std::string m_autosavePath{};
-  std::vector<std::future<void>> m_savestateThreads;
   CCriticalSection m_savestateMutex;
 
   // Playback stats

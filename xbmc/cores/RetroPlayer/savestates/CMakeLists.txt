@@ -1,14 +1,24 @@
 set(SOURCES SavestateDatabase.cpp
+            SavestateBlob.cpp
+            SavestateCompression.cpp
             SavestateFlatBuffer.cpp
+            SavestateThumbnail.cpp
+            SavestateWriteQueue.cpp
 )
 
 set(HEADERS ISavestate.h
+            SavestateBlob.h
+            SavestateCompression.h
             SavestateDatabase.h
             SavestateFlatBuffer.h
+            SavestateThumbnail.h
             SavestateTypes.h
+            SavestateWriteQueue.h
+            SavestateWriteRequest.h
 )
 
 core_add_library(retroplayer_savestates)
+target_link_libraries(${CORE_LIBRARY} PRIVATE LIBRARY::ZSTD)
 
 set(DEPENDS retroplayer_messages)
 

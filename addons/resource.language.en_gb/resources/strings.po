@@ -18957,7 +18957,25 @@ msgctxt "#35173"
 msgid "No controllers connected"
 msgstr ""
 
-#empty strings from id 35174 to 35199
+#. Group heading for saved game settings
+#: system/settings/settings.xml
+msgctxt "#35174"
+msgid "Saved Games"
+msgstr ""
+
+#. Setting name for compressing saved games
+#: system/settings/settings.xml
+msgctxt "#35175"
+msgid "Compress saved games"
+msgstr ""
+
+#. Description for the setting with label #35175 "Compress saved games"
+#: system/settings/settings.xml
+msgctxt "#35176"
+msgid "Compress saved games to reduce storage use. Compressed saved games cannot be opened in previous versions of Kodi."
+msgstr ""
+
+#empty strings from id 35177 to 35199
 
 #. This string is an early meme from the late 1990's that made fun of the poor translation in the 16-bit game Zero Wing from the late 1980's. DO NOT TRANSLATE!
 #: system/settings/settings.xml
