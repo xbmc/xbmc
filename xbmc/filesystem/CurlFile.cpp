@@ -59,6 +59,55 @@ constexpr auto proxyType2CUrlProxyType{make_map<XFILE::CCurlFile::ProxyType, lon
 
 std::vector<uint8_t> cachedCaCertsBlob; // cached CA certs file
 
+// Errors that indicate a transient network/transport problem rather than the
+// remote resource actually being absent. Exists()/Stat() must retry these
+// instead of reporting "file doesn't exist", otherwise a flaky connection
+// aborts playback of a file that is really there.
+bool IsTransientCurlError(CURLcode result)
+{
+  switch (result)
+  {
+    case CURLE_OPERATION_TIMEDOUT:
+    case CURLE_COULDNT_CONNECT:
+    case CURLE_COULDNT_RESOLVE_HOST:
+    case CURLE_COULDNT_RESOLVE_PROXY:
+    case CURLE_RECV_ERROR:
+    case CURLE_SEND_ERROR:
+    case CURLE_GOT_NOTHING:
+    case CURLE_SSL_CONNECT_ERROR:
+    case CURLE_HTTP2_STREAM:
+    case CURLE_PARTIAL_FILE:
+      return true;
+    default:
+      return false;
+  }
+}
+
+// Runs easy_perform, retrying on IsTransientCurlError() up to m_curlretries times.
+// Used by Exists()/Stat() so a flaky connection on the pre-play probe doesn't get
+// misreported as the file not existing.
+CURLcode PerformWithRetry(CURL_HANDLE* easyHandle, const CURL& url, const char* function)
+{
+  CURLcode result;
+  const int maxRetries =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_curlretries;
+  int retry = 0;
+  while (true)
+  {
+    result = g_curlInterface.easy_perform(easyHandle);
+    if (!IsTransientCurlError(result) || retry >= maxRetries)
+      return result;
+
+    retry++;
+    CLog::Log(LOGWARNING, "{} - <{}> Transient error {}({}), retry {}", function, url.GetRedacted(),
+              g_curlInterface.easy_strerror(result), result, retry);
+
+    // Fast failures (connection refused, resolve errors) would otherwise burn the
+    // whole retry budget instantly; back off so a brief outage can recover.
+    KODI::TIME::Sleep(std::min(retry * 500ms, 2000ms));
+  }
+}
+
 } // unnamed namespace
 
 #define FILLBUFFER_OK         0
@@ -1373,7 +1422,7 @@ bool CCurlFile::Exists(const CURL& url)
       g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_NOCWD);
   }
 
-  CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
+  CURLcode result = PerformWithRetry(m_state->m_easyHandle, url2, "CCurlFile::Exists");
 
   if (result == CURLE_WRITE_ERROR || result == CURLE_OK)
   {
@@ -1399,7 +1448,7 @@ bool CCurlFile::Exists(const CURL& url)
         list = g_curlInterface.slist_append(list, "Range: bytes=0-1"); /* try to only request 1 byte */
         g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_HTTPHEADER, list);
 
-        CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
+        CURLcode result = PerformWithRetry(m_state->m_easyHandle, url2, "CCurlFile::Exists");
         g_curlInterface.slist_free_all(list);
 
         if (result == CURLE_WRITE_ERROR || result == CURLE_OK)
@@ -1580,7 +1629,7 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
       g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_NOCWD);
   }
 
-  CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
+  CURLcode result = PerformWithRetry(m_state->m_easyHandle, url2, "CCurlFile::Stat");
 
   if(result == CURLE_HTTP_RETURNED_ERROR)
   {
@@ -1611,8 +1660,7 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
 #endif
     g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_NOPROGRESS, 0);
 
-    result = g_curlInterface.easy_perform(m_state->m_easyHandle);
-
+    result = PerformWithRetry(m_state->m_easyHandle, url2, "CCurlFile::Stat");
   }
 
   if( result != CURLE_ABORTED_BY_CALLBACK && result != CURLE_OK )
