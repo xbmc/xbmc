@@ -10,7 +10,6 @@
 
 #include <cstdint>
 #include <cstring>
-#include <map>
 #include <string>
 #include <vector>
 
@@ -30,7 +29,6 @@ static constexpr int DREC_SIZE = 16;
 static constexpr int CHDR_SIZE = 46;
 static constexpr int ECDREC_SIZE = 22;
 
-class CURL;
 namespace XFILE
 {
 class CFile;
@@ -38,7 +36,8 @@ class CFile;
 
 inline const std::string PATH_TRAVERSAL(R"_((^|\/|\\)\.{2}($|\/|\\))_");
 
-struct SZipEntry {
+struct SZipEntry
+{
   unsigned int header = 0;
   unsigned short version = 0;
   unsigned short flags = 0;
@@ -53,45 +52,22 @@ struct SZipEntry {
   unsigned short eclength = 0; // extra field length (central file header)
   unsigned short clength = 0; // file comment length (central file header)
   uint64_t lhdrOffset = 0; // Relative offset of local header
-  int64_t offset = 0;         // offset in file to compressed data
+  int64_t offset = 0; // offset in file to compressed data
   char name[255];
 
-  SZipEntry()
-  {
-    name[0] = '\0';
-  }
+  SZipEntry() { name[0] = '\0'; }
 };
 
-class CZipManager
+namespace XFILE::Zip
 {
-public:
-  CZipManager();
-  ~CZipManager();
+// Core ZIP central directory parser — no caching, no state
+bool ParseZipCentralDirectory(const std::string& zipPath, std::vector<SZipEntry>& entries);
 
-  bool GetZipList(const CURL& url, std::vector<SZipEntry>& items);
-  bool GetZipEntry(const CURL& url, SZipEntry& item);
-  bool ExtractArchive(const std::string& strArchive, const std::string& strPath);
-  bool ExtractArchive(const CURL& archive, const std::string& strPath);
-  void release(const std::string& strPath); // release resources used by list zip
-  static void readHeader(const char* buffer, SZipEntry& info);
-  static void readCHeader(const char* buffer, SZipEntry& info);
+// Header parsing utilities (used by CZipFile::UnpackFromMemory)
+void ReadLocalHeader(const char* buffer, SZipEntry& info);
+void ReadCentralHeader(const char* buffer, SZipEntry& info);
 
-  static bool IsZip64(XFILE::CFile& file);
-  static void ParseZip64ExtraField(const char* buf, uint16_t length, SZipEntry& info);
-
-private:
-  std::map<std::string,std::vector<SZipEntry> > mZipMap;
-  std::map<std::string, int64_t> mZipDate;
-
-  static bool ReadZip64EOCD(XFILE::CFile& file, uint64_t& cdirOffset, uint64_t& cdirSize);
-
-  template<typename T>
-  static T ReadUnaligned(const void* mem)
-  {
-    T var;
-    std::memcpy(&var, mem, sizeof(T));
-    return var;
-  }
-};
-
-extern CZipManager g_ZipManager;
+// ZIP64 support
+bool IsZip64(CFile& file);
+void ParseZip64ExtraField(const char* buf, uint16_t length, SZipEntry& info);
+} // namespace XFILE::Zip

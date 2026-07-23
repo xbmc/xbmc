@@ -8,15 +8,20 @@
 
 #include "ZipDirectory.h"
 
+#include "File.h"
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "URL.h"
-#include "ZipManager.h"
+#include "Zip.h"
+#include "cache/CacheComponent.h"
+#include "cache/FileSystemCache.h"
 #include "filesystem/Directorization.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
 #include <cstdint>
+#include <cstring>
 #include <vector>
 
 namespace XFILE
@@ -38,6 +43,25 @@ std::shared_ptr<CFileItem> ZipEntryToFileItem(const SZipEntry& entry,
 
   return item;
 }
+
+bool GetZipEntries(const CURL& urlZip, std::vector<SZipEntry>& zipEntries)
+{
+  auto& cache = CServiceBroker::GetCacheComponent()->GetZipCache();
+  const std::string strFile = urlZip.GetHostName();
+
+  struct __stat64 statData = {};
+  if (CFile::Stat(strFile, &statData))
+    return false;
+
+  if (!cache.GetCachedList(strFile, statData.st_mtime, zipEntries))
+  {
+    if (!Zip::ParseZipCentralDirectory(strFile, zipEntries))
+      return false;
+    cache.StoreList(strFile, statData.st_mtime, zipEntries);
+  }
+
+  return true;
+}
 } // namespace
 
   CZipDirectory::CZipDirectory() = default;
@@ -53,7 +77,7 @@ std::shared_ptr<CFileItem> ZipEntryToFileItem(const SZipEntry& entry,
       urlZip = URIUtils::CreateArchivePath("zip", urlOrig);
 
     std::vector<SZipEntry> zipEntries;
-    if (!g_ZipManager.GetZipList(urlZip, zipEntries))
+    if (!GetZipEntries(urlZip, zipEntries))
       return false;
 
     // prepare the ZIP entries for directorization
@@ -71,16 +95,37 @@ std::shared_ptr<CFileItem> ZipEntryToFileItem(const SZipEntry& entry,
   bool CZipDirectory::ContainsFiles(const CURL& url)
   {
     std::vector<SZipEntry> items;
-    g_ZipManager.GetZipList(url, items);
-    if (!items.empty())
-    {
-      if (items.size() > 1)
-        return true;
-
+    if (!GetZipEntries(url, items))
       return false;
-    }
 
-    return false;
+    return items.size() > 1;
   }
-}
 
+  bool CZipDirectory::ExtractArchive(const std::string& strArchive, const std::string& strPath)
+  {
+    const CURL pathToUrl(strArchive);
+    return ExtractArchive(pathToUrl, strPath);
+  }
+
+  bool CZipDirectory::ExtractArchive(const CURL& archive, const std::string& strPath)
+  {
+    CURL url = URIUtils::CreateArchivePath("zip", archive);
+
+    std::vector<SZipEntry> entries;
+    if (!GetZipEntries(url, entries))
+      return false;
+
+    for (const auto& it : entries)
+    {
+      if (it.name[strlen(it.name) - 1] == '/') // skip dirs
+        continue;
+      std::string strFilePath(it.name);
+
+      CURL zipPath = URIUtils::CreateArchivePath("zip", archive, strFilePath);
+      const CURL pathToUrl(strPath + strFilePath);
+      if (!CFile::Copy(zipPath, pathToUrl))
+        return false;
+    }
+    return true;
+  }
+  } // namespace XFILE
