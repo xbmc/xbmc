@@ -114,6 +114,14 @@ public:
   void ToggleMute(void);
   bool IsMuted(void);
 
+  /*!
+   * @brief Whether volume should be delegated to a connected CEC amplifier.
+   * @return True unless Kodi is itself acting as the CEC audio system (device
+   *         type "Amplifier / AVR device"), in which case Kodi handles volume
+   *         internally rather than delegating it to an amplifier on the bus.
+   */
+  bool VolumeControlledByAmp(void) const;
+
   // CPeripheral callbacks
   void OnSettingChanged(const std::string& strChangedSetting) override;
   void OnDeviceRemoved(void) override;
@@ -180,6 +188,7 @@ private:
   bool m_bHasButton;
   bool m_bIsReady;
   bool m_bHasConnectedAudioSystem;
+  bool m_bActAsAudioSystem;
   std::string m_strMenuLanguage;
   CDateTime m_standbySent;
   std::vector<CecButtonPress> m_buttonQueue;
