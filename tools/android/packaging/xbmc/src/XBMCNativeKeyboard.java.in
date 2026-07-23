@@ -1,0 +1,164 @@
+package @APP_PACKAGE@;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.TextView;
+
+public class XBMCNativeKeyboard
+{
+  private static final String TAG = "@APP_NAME@";
+
+  private native void _onTextChanged(String text);
+  private native void _onInputFinished(String text);
+  private native void _onInputCanceled();
+
+  private AlertDialog mDialog = null;
+  private EditText mEditText = null;
+  private boolean mCallbackSent = true;
+
+  public XBMCNativeKeyboard()
+  {
+  }
+
+  @SuppressWarnings("deprecation")
+  public void show(final String heading, final String initialText, final boolean hiddenInput)
+  {
+    Main.MainActivity.runOnUiThread(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        Log.d(TAG, "XBMCNativeKeyboard.show");
+        mCallbackSent = false;
+
+        mEditText = new EditText(Main.MainActivity);
+        mEditText.setSingleLine(true);
+        mEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        if (hiddenInput)
+          mEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        else
+          mEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+        mEditText.setText(initialText);
+        mEditText.setSelection(mEditText.getText().length());
+        mEditText.addTextChangedListener(new TextWatcher()
+        {
+          @Override
+          public void beforeTextChanged(CharSequence s, int start, int count, int after)
+          {
+          }
+
+          @Override
+          public void onTextChanged(CharSequence s, int start, int before, int count)
+          {
+          }
+
+          @Override
+          public void afterTextChanged(Editable s)
+          {
+            _onTextChanged(s.toString());
+          }
+        });
+        mEditText.setOnEditorActionListener(new TextView.OnEditorActionListener()
+        {
+          @Override
+          public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+          {
+            if (actionId == EditorInfo.IME_ACTION_DONE)
+            {
+              finishInput();
+              return true;
+            }
+            return false;
+          }
+        });
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(Main.MainActivity);
+        builder.setTitle(heading);
+        builder.setView(mEditText);
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
+        {
+          @Override
+          public void onClick(DialogInterface dialog, int which)
+          {
+            finishInput();
+          }
+        });
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener()
+        {
+          @Override
+          public void onDismiss(DialogInterface dialog)
+          {
+            cancelInput();
+          }
+        });
+
+        mDialog = builder.create();
+        mDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        mDialog.show();
+      }
+    });
+  }
+
+  public void setText(final String text)
+  {
+    Main.MainActivity.runOnUiThread(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        if (mEditText == null)
+          return;
+
+        mEditText.setText(text);
+        mEditText.setSelection(mEditText.getText().length());
+      }
+    });
+  }
+
+  public void hide()
+  {
+    Main.MainActivity.runOnUiThread(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        if (mDialog != null)
+          mDialog.dismiss();
+      }
+    });
+  }
+
+  // Called on the UI thread when the user confirms the input (positive button or IME action).
+  private void finishInput()
+  {
+    if (mCallbackSent)
+      return;
+
+    mCallbackSent = true;
+    Log.d(TAG, "XBMCNativeKeyboard.finishInput");
+    _onInputFinished(mEditText.getText().toString());
+    if (mDialog != null)
+      mDialog.dismiss();
+  }
+
+  // Called on the UI thread when the dialog is dismissed without confirmation
+  // (back button, outside touch or hide()). Guarded so the native callback is
+  // only ever sent once per show().
+  private void cancelInput()
+  {
+    if (mCallbackSent)
+      return;
+
+    mCallbackSent = true;
+    Log.d(TAG, "XBMCNativeKeyboard.cancelInput");
+    _onInputCanceled();
+  }
+}
