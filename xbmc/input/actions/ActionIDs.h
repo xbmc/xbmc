@@ -469,6 +469,14 @@ constexpr const int ACTION_DIALOG_SELECT_AUDIO = 271;
 //! Open the dialog window to select a subtitle stream
 constexpr const int ACTION_DIALOG_SELECT_SUBTITLE = 272;
 
+constexpr const int ACTION_VSHIFT_TOP = 280; //!< shift video image to top
+constexpr const int ACTION_VSHIFT_CENTER = 281; //!< center video image
+constexpr const int ACTION_VSHIFT_BOTTOM = 282; //!< shift video image to bottom
+constexpr const int ACTION_VSHIFT_TOP239 =
+    283; //!< shift video image to top compensating for 2.39:1 black bars
+constexpr const int ACTION_VSHIFT_BOTTOM239 =
+    284; //!< shift video image to bottom compensating for 2.39:1 black bars
+
 // Voice actions
 constexpr const int ACTION_VOICE_RECOGNIZE = 300;
 
