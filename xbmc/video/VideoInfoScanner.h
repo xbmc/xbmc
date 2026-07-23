@@ -15,8 +15,10 @@
 #include "utils/Artwork.h"
 #include "utils/RegExp.h"
 
+#include <functional>
 #include <set>
 #include <string>
+#include <string_view>
 #include <vector>
 
 class CAdvancedSettings;
@@ -332,6 +334,27 @@ namespace KODI::VIDEO
     std::set<int> m_pathsToClean;
     std::shared_ptr<CAdvancedSettings> m_advancedSettings;
     CVideoDatabase::ScraperCache m_scraperCache;
+
+  private:
+    /*!
+     * \brief Remove paths that share missing ancestors with \p directory from the list of paths
+     *        to scan
+     * \param[in] directory The non-existent directory
+     */
+    void SkipRelatedDirectories(std::string_view directory);
+
+    /*!
+     * \brief Removes the directory and sub directories of \p directory from the paths to be
+     *        scanned. Paths must end with a directory separator.
+     * \param[in] directories List of paths
+     * \param[in] directory Path of the directory to remove
+     * \param[in] f function to execute before the removal of a path
+     * \return number of elements removed
+     */
+    static size_t RemoveSubDirectories(std::set<std::string, std::less<>>& directories,
+                                       std::string_view directory,
+                                       std::function<void(const std::string&)> f);
+
     mutable KODI::REGEXP::RegExpCache m_regexpCache;
   };
   } // namespace KODI::VIDEO

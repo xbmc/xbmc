@@ -166,7 +166,6 @@ void OnDirectoryScanned(const std::string& strDirectory)
   msg.SetStringParam(strDirectory);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 }
-
 } // namespace
 
 namespace KODI::VIDEO
@@ -256,17 +255,39 @@ CVideoInfoScanner::~CVideoInfoScanner()
         else if (!CDirectory::Exists(directory))
         {
           /*
-           * Note that this will skip clean (if m_bClean is enabled) if the directory really
-           * doesn't exist rather than a NAS being switched off.  A manual clean from settings
-           * will still pick up and remove it though.
+           * Note that this will skip clean (if m_bClean is enabled) for the directory and its
+           * sub-directories if the directory really doesn't exist rather than a NAS being switched
+           * off. A manual clean from settings will still pick up and remove it though.
            */
-          CLog::Log(LOGWARNING, "{} directory '{}' does not exist - skipping scan{}.", __FUNCTION__,
-                    CURL::GetRedacted(directory), m_bClean ? " and clean" : "");
-          m_pathsToScan.erase(m_pathsToScan.begin());
+          CLog::LogF(LOGWARNING, "directory '{}' does not exist - skipping scan{}.",
+                     CURL::GetRedacted(directory), m_bClean ? " and clean" : "");
+          m_pathsToScan.erase(directory);
+
+          SkipRelatedDirectories(directory);
         }
-        else if ([[maybe_unused]] const auto [scanComplete, foundContent] = DoScan(directory);
-                 scanComplete == ScanComplete::Stopped)
-          bCancelled = true;
+        else
+        {
+          if ([[maybe_unused]] const auto [scanComplete, foundContent] = DoScan(directory);
+              scanComplete == ScanComplete::Stopped)
+          {
+            bCancelled = true;
+          }
+          else
+          {
+            // The remaining sub directories under the path to scan were not found on disk, skip
+            // the individual scans.
+            // Happens mostly for TV Shows that are in the library and were deleted from a sub
+            // directory of a defined source.
+            std::function<void(const std::string&)> f;
+            if (m_bClean)
+              f = [this](const std::string& dir)
+              { m_pathsToClean.insert(m_database.GetPathId(dir)); };
+
+            if (auto count = RemoveSubDirectories(m_pathsToScan, directory, f))
+              CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipped {} missing sub directories of {}.",
+                        count, directory);
+          }
+        }
       }
 
       if (!bCancelled)
@@ -362,9 +383,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
      * the check for file or folder exclusion to prevent an infinite while loop
      * in Process().
      */
-    std::set<std::string>::iterator it = m_pathsToScan.find(strDirectory);
-    if (it != m_pathsToScan.end())
-      m_pathsToScan.erase(it);
+    m_pathsToScan.erase(strDirectory);
 
     // load subfolder
     CFileItemList items;
@@ -1314,9 +1333,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
        * Remove this path from the list we're processing in order to avoid hitting
        * it twice in the main loop.
        */
-      std::set<std::string>::iterator it = m_pathsToScan.find(item->GetPath());
-      if (it != m_pathsToScan.end())
-        m_pathsToScan.erase(it);
+      m_pathsToScan.erase(item->GetPath());
 
       if (HasNoMedia(item->GetPath()))
         return true;
@@ -2759,4 +2776,56 @@ CVideoInfoScanner::~CVideoInfoScanner()
   {
     return CGUIDialogVideoManagerVersions::ProcessVideoVersion(itemType, dbId);
   }
-}
+
+  void CVideoInfoScanner::SkipRelatedDirectories(std::string_view originalDirectory)
+  {
+    std::string directory{originalDirectory};
+
+    // Look for an existing parent directory
+    std::string parentDir = URIUtils::GetParentPath(directory);
+    while (!parentDir.empty() && parentDir != directory && !CDirectory::Exists(parentDir))
+    {
+      directory = parentDir;
+      parentDir = URIUtils::GetParentPath(directory);
+    }
+
+    if (directory != originalDirectory)
+    {
+      const std::string& parentMsg =
+          parentDir.empty()
+              ? "no existing root parent directory found"
+              : StringUtils::Format("first existing parent directory is '{}'", parentDir);
+
+      CLog::LogF(LOGWARNING, "{}, skipping '{}' and its sub directories", parentMsg, directory);
+    }
+
+    if (auto count = RemoveSubDirectories(m_pathsToScan, directory, nullptr))
+      CLog::LogF(LOGWARNING, "skipped {} sub directories.", count);
+  }
+
+  size_t CVideoInfoScanner::RemoveSubDirectories(std::set<std::string, std::less<>>& directories,
+                                                 std::string_view directory,
+                                                 std::function<void(const std::string&)> f)
+  {
+    size_t count{0};
+
+    if (!URIUtils::HasSlashAtEnd(directory))
+    {
+      CLog::LogF(LOGWARNING, "The parameter '{}' doesn't end with a path separator. Skipping...",
+                 directory);
+      return count;
+    }
+
+    auto it{directories.lower_bound(directory)};
+
+    while (it != directories.end() && (*it).starts_with(directory))
+    {
+      if (f)
+        f(*it);
+
+      it = directories.erase(it);
+      ++count;
+    }
+    return count;
+  }
+  } // namespace KODI::VIDEO
