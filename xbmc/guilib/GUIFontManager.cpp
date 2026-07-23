@@ -10,6 +10,7 @@
 
 #include "FileItemList.h"
 #include "GUIComponent.h"
+#include "GUIFontParsing.h"
 #include "GUIFontTTF.h"
 #include "GUIWindowManager.h"
 #include "addons/AddonManager.h"
@@ -28,7 +29,6 @@
 #include "GUIFontTTFGLES.h"
 #endif
 #include "FileItem.h"
-#include "GUIControlFactory.h"
 #include "GUIFont.h"
 #include "ServiceBroker.h"
 #include "URL.h"
@@ -47,6 +47,8 @@
 
 using namespace XFILE;
 using namespace ADDON;
+
+thread_local std::vector<GUIFontManager::ScopeStackEntry> GUIFontManager::ms_scopeStack;
 
 namespace
 {
@@ -73,7 +75,6 @@ bool LoadXMLData(const std::string& filepath, CXBMCTinyXML& xmlDoc)
   return true;
 }
 } // unnamed namespace
-
 
 GUIFontManager::GUIFontManager() = default;
 
@@ -136,7 +137,9 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName,
                                   float lineSpacing,
                                   float aspect,
                                   const RESOLUTION_INFO* sourceRes,
-                                  bool preserveAspect)
+                                  bool preserveAspect,
+                                  std::vector<FontEntry>* destination,
+                                  const std::string& extraSearchDir)
 {
   CWinSystemBase* const winSystem = CServiceBroker::GetWinSystem();
   if (!winSystem)
@@ -149,10 +152,14 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName,
 
   float originalAspect = aspect;
 
-  //check if font already exists
-  CGUIFont* pFont = GetFont(strFontName, false);
-  if (pFont)
-    return pFont;
+  std::vector<FontEntry>& fonts = destination ? *destination : m_fonts;
+
+  //check if font already exists in the destination
+  for (const auto& entry : fonts)
+  {
+    if (StringUtils::EqualsNoCase(entry.font->GetFontName(), strFontName))
+      return entry.font.get();
+  }
 
   if (!sourceRes) // no source res specified, so assume the skin res
     sourceRes = &m_skinResolution;
@@ -160,22 +167,30 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName,
   float newSize = static_cast<float>(iSize);
   RescaleFontSizeAndAspect(context, &newSize, &aspect, *sourceRes, preserveAspect);
 
-  // First try to load the font from the skin
+  // An addon-scoped load looks in the addon's own fonts directory first. Were
+  // the skin searched first, an addon font whose file name happens to match one
+  // the active skin ships would silently resolve to the skin's file, which is
+  // exactly the skin dependence a scope exists to remove. A skin load, which
+  // passes no extra search directory, keeps looking in the skin first.
+  const std::string skinFontsDir = URIUtils::AddFileToFolder(context.GetMediaDir(), "fonts");
+
   std::string strPath;
-  if (!CURL::IsFullPath(strFilename))
-  {
-    strPath = URIUtils::AddFileToFolder(context.GetMediaDir(), "fonts", strFilename);
-  }
-  else
+  if (CURL::IsFullPath(strFilename))
     strPath = strFilename;
+  else if (!extraSearchDir.empty())
+    strPath = URIUtils::AddFileToFolder(extraSearchDir, strFilename);
+  else
+    strPath = URIUtils::AddFileToFolder(skinFontsDir, strFilename);
 
 #ifdef TARGET_POSIX
   strPath = CSpecialProtocol::TranslatePathConvertCase(strPath);
 #endif
 
-  // Check if the file exists, otherwise try loading it from the global media dir
+  // Check if the file exists, otherwise fall back to the skin, then to the
+  // global media dirs, then to any resource.font addon.
   std::string file = URIUtils::GetFileName(strFilename);
-  if (!CheckFont(strPath, "special://home/media/Fonts", file) &&
+  if (!CheckFont(strPath, skinFontsDir, file) &&
+      !CheckFont(strPath, "special://home/media/Fonts", file) &&
       !CheckFont(strPath, "special://xbmc/media/Fonts", file))
   {
     VECADDONS addons;
@@ -189,8 +204,7 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName,
   }
 
   // check if we already have this font file loaded (font object could differ only by color or style)
-  const std::string fontIdent =
-      StringUtils::Format("{}_{:f}_{:f}{}", strFilename, newSize, aspect, border ? "_border" : "");
+  const std::string fontIdent = MakeFontIdent(strPath, newSize, aspect, border);
 
   CGUIFontTTF* pFontFile = GetFontFile(fontIdent);
   if (!pFontFile)
@@ -205,12 +219,14 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName,
       // font could not be loaded - try Arial.ttf, which we distribute
       if (strFilename != "arial.ttf")
       {
-        CLog::LogF(LOGERROR, "Couldn't load font name: {}({}), trying arial.ttf", strFontName,
-                   strFilename);
+        CLog::LogF(LOGERROR, "Couldn't load font name: {}({}), trying arial.ttf",
+                   EscapeFontName(strFontName), EscapeFontName(strFilename));
         return LoadTTF(strFontName, "arial.ttf", textColor, shadowColor, iSize, iStyle, border,
-                       lineSpacing, originalAspect);
+                       lineSpacing, originalAspect, sourceRes, preserveAspect, destination,
+                       extraSearchDir);
       }
-      CLog::LogF(LOGERROR, "Couldn't load font name:{} file:{}", strFontName, strPath);
+      CLog::LogF(LOGERROR, "Couldn't load font name:{} file:{}", EscapeFontName(strFontName),
+                 EscapeFontName(strPath));
 
       return nullptr;
     }
@@ -221,7 +237,6 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName,
   // font file is loaded, create our CGUIFont
   CGUIFont* pNewFont = new CGUIFont(strFontName, iStyle, textColor, shadowColor, lineSpacing,
                                     static_cast<float>(iSize), pFontFile);
-  m_vecFonts.emplace_back(pNewFont);
 
   // Store the original TTF font info in case we need to reload it in a different resolution
   OrigFontInfo fontInfo;
@@ -232,7 +247,8 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName,
   fontInfo.sourceRes = *sourceRes;
   fontInfo.preserveAspect = preserveAspect;
   fontInfo.border = border;
-  m_vecFontInfo.emplace_back(fontInfo);
+
+  fonts.emplace_back(FontEntry{std::unique_ptr<CGUIFont>(pNewFont), fontInfo});
 
   return pNewFont;
 }
@@ -271,56 +287,71 @@ bool GUIFontManager::OnMessage(CGUIMessage& message)
   return false;
 }
 
+std::string GUIFontManager::MakeFontIdent(const std::string& fontFilePath,
+                                          float size,
+                                          float aspect,
+                                          bool border)
+{
+  return StringUtils::Format("{}_{:f}_{:f}{}", fontFilePath, size, aspect, border ? "_border" : "");
+}
+
+bool GUIFontManager::ReloadFontEntry(CWinSystemBase& winSystem, FontEntry& entry)
+{
+  OrigFontInfo fontInfo = entry.origInfo;
+
+  float aspect = fontInfo.aspect;
+  float newSize = static_cast<float>(fontInfo.size);
+  std::string& strPath = fontInfo.fontFilePath;
+
+  RescaleFontSizeAndAspect(winSystem.GetGfxContext(), &newSize, &aspect, fontInfo.sourceRes,
+                           fontInfo.preserveAspect);
+
+  const std::string fontIdent = MakeFontIdent(strPath, newSize, aspect, fontInfo.border);
+  CGUIFontTTF* pFontFile = GetFontFile(fontIdent);
+  if (!pFontFile)
+  {
+    pFontFile = CGUIFontTTF::CreateGUIFontTTF(fontIdent);
+    if (!pFontFile || !pFontFile->Load(strPath, newSize, aspect, 1.0f, fontInfo.border))
+    {
+      delete pFontFile;
+      CLog::LogF(LOGERROR, "Couldn't re-load font file: '{}'", EscapeFontName(strPath));
+      return false;
+    }
+
+    m_vecFontFiles.emplace_back(pFontFile);
+  }
+
+  entry.font->SetFont(pFontFile);
+  return true;
+}
+
 void GUIFontManager::ReloadTTFFonts(void)
 {
   CWinSystemBase* const winSystem = CServiceBroker::GetWinSystem();
-  if (m_vecFonts.empty() || !winSystem)
-    return; // we haven't even loaded fonts in yet
+  if (!winSystem)
+    return;
 
-  for (size_t i = 0; i < m_vecFonts.size(); ++i)
+  for (auto& entry : m_fonts)
   {
-    const auto& font = m_vecFonts[i];
-    OrigFontInfo fontInfo = m_vecFontInfo[i];
+    if (!ReloadFontEntry(*winSystem, entry))
+      return;
+  }
 
-    float aspect = fontInfo.aspect;
-    float newSize = static_cast<float>(fontInfo.size);
-    std::string& strPath = fontInfo.fontFilePath;
-    std::string& strFilename = fontInfo.fileName;
-
-    RescaleFontSizeAndAspect(winSystem->GetGfxContext(), &newSize, &aspect, fontInfo.sourceRes,
-                             fontInfo.preserveAspect);
-
-    const std::string fontIdent = StringUtils::Format("{}_{:f}_{:f}{}", strFilename, newSize,
-                                                      aspect, fontInfo.border ? "_border" : "");
-    CGUIFontTTF* pFontFile = GetFontFile(fontIdent);
-    if (!pFontFile)
+  std::unique_lock lock(m_critSection);
+  for (auto& [key, scope] : m_scopedFonts)
+  {
+    for (auto& entry : scope.fonts)
     {
-      pFontFile = CGUIFontTTF::CreateGUIFontTTF(fontIdent);
-      if (!pFontFile || !pFontFile->Load(strPath, newSize, aspect, 1.0f, fontInfo.border))
-      {
-        delete pFontFile;
-        // font could not be loaded
-        CLog::LogF(LOGERROR, "Couldn't re-load font file: '{}'", strPath);
+      if (!ReloadFontEntry(*winSystem, entry))
         return;
-      }
-
-      m_vecFontFiles.emplace_back(pFontFile);
     }
-
-    font->SetFont(pFontFile);
   }
 }
 
 void GUIFontManager::Unload(const std::string& strFontName)
 {
-  for (auto iFont = m_vecFonts.begin(); iFont != m_vecFonts.end(); ++iFont)
-  {
-    if (StringUtils::EqualsNoCase((*iFont)->GetFontName(), strFontName))
-    {
-      m_vecFonts.erase(iFont);
-      return;
-    }
-  }
+  EraseFirstByName(m_fonts, strFontName,
+                   [](const FontEntry& entry) { return entry.font->GetFontName(); });
 }
 
 void GUIFontManager::FreeFontFile(CGUIFontTTF* pFont)
@@ -348,37 +379,273 @@ CGUIFontTTF* GUIFontManager::GetFontFile(const std::string& fontIdent)
 
 CGUIFont* GUIFontManager::GetFont(const std::string& strFontName, bool fallback /*= true*/)
 {
-  for (const auto& it : m_vecFonts)
+  if (strFontName.empty())
+    return nullptr;
+
+  // Innermost scope first. Empty for skin windows, which is the common case:
+  // one branch on an empty vector.
+  for (auto it = ms_scopeStack.rbegin(); it != ms_scopeStack.rend(); ++it)
   {
-    CGUIFont* pFont = it.get();
+    if (it->key.empty()) // null-scope marker for a window with no addon font scope
+      continue;
+
+    // Re-resolve the key under the lock rather than caching a FontScope*, so a
+    // concurrent Clear()/UnloadFontScope() cannot leave us dereferencing an
+    // erased map node.
+    std::unique_lock lock(m_critSection);
+    const auto scopeIt = m_scopedFonts.find(it->key);
+    if (scopeIt == m_scopedFonts.end())
+      continue;
+
+    for (const auto& entry : scopeIt->second.fonts)
+    {
+      if (StringUtils::EqualsNoCase(entry.font->GetFontName(), strFontName))
+        return entry.font.get();
+    }
+  }
+
+  for (const auto& entry : m_fonts)
+  {
+    CGUIFont* pFont = entry.font.get();
     if (StringUtils::EqualsNoCase(pFont->GetFontName(), strFontName))
       return pFont;
   }
 
-  // fall back to "font13" if we have none
-  if (fallback && !strFontName.empty() && !StringUtils::EqualsNoCase(strFontName, "font13"))
-    return GetFont("font13");
+  if (!fallback)
+    return nullptr;
+
+  WarnFontFallback(strFontName);
+
+  if (StringUtils::EqualsNoCase(strFontName, "font13"))
+    return nullptr;
+
+  // Resolve the default from the global set directly rather than recursing,
+  // which would re-walk the whole scope stack.
+  for (const auto& entry : m_fonts)
+  {
+    if (StringUtils::EqualsNoCase(entry.font->GetFontName(), "font13"))
+      return entry.font.get();
+  }
 
   return nullptr;
+}
+
+void GUIFontManager::WarnFontFallback(const std::string& strFontName)
+{
+  // Only addon windows have a scope, so skin windows never warn. Dedup is per
+  // scope, so a 30-label dialog missing two fonts logs two lines, not thirty.
+  if (ms_scopeStack.empty() || ms_scopeStack.back().key.empty())
+    return;
+
+  // Re-resolve under the lock rather than caching a FontScope*, so a concurrent
+  // Clear()/UnloadFontScope() cannot leave us dereferencing an erased map node.
+  std::unique_lock lock(m_critSection);
+  const auto scopeIt = m_scopedFonts.find(ms_scopeStack.back().key);
+  if (scopeIt == m_scopedFonts.end())
+    return;
+
+  FontScope& scope = scopeIt->second;
+  if (!scope.warned.insert(strFontName).second)
+    return;
+
+  CLog::LogF(LOGWARNING,
+             "Font '{}' is defined by neither the addon window '{}' nor the active skin, "
+             "falling back to 'font13'",
+             EscapeFontName(strFontName), ms_scopeStack.back().key);
+}
+
+void GUIFontManager::PushFontScope(const std::string& scopeKey)
+{
+  // An empty key means the window has no addon font scope (a plain
+  // xbmcgui.Window, or any non-WindowXML window). Push a null-scope marker so
+  // push/pop stays balanced; GetFont and WarnFontFallback skip null entries.
+  if (scopeKey.empty())
+  {
+    ms_scopeStack.emplace_back(ScopeStackEntry{""});
+    return;
+  }
+
+  {
+    // Ensure the scope node (and its `warned` set) exists and survives; the key
+    // is re-resolved under the lock on every lookup, so we never cache the
+    // pointer.
+    std::unique_lock lock(m_critSection);
+    m_scopedFonts[scopeKey]; // default-constructs an unloaded scope
+  }
+
+  ms_scopeStack.emplace_back(ScopeStackEntry{scopeKey});
+}
+
+void GUIFontManager::PopFontScope()
+{
+  if (ms_scopeStack.empty())
+  {
+    CLog::LogF(LOGERROR, "Font scope stack underflow, unbalanced push/pop");
+    return;
+  }
+
+  ms_scopeStack.pop_back();
+}
+
+size_t GUIFontManager::FontScopeDepth() const
+{
+  return ms_scopeStack.size();
+}
+
+std::string GUIFontManager::InnermostFontScopeKey() const
+{
+  if (ms_scopeStack.empty())
+    return {};
+
+  return ms_scopeStack.back().key;
+}
+
+void GUIFontManager::MarkFontScopeLoaded(const std::string& scopeKey)
+{
+  std::unique_lock lock(m_critSection);
+  m_scopedFonts[scopeKey].loaded = true;
+}
+
+bool GUIFontManager::IsFontScopeLoaded(const std::string& scopeKey) const
+{
+  std::unique_lock lock(m_critSection);
+  const auto it = m_scopedFonts.find(scopeKey);
+  return it != m_scopedFonts.end() && it->second.loaded;
+}
+
+void GUIFontManager::UnloadFontScope(const std::string& scopeKey)
+{
+  std::unique_lock lock(m_critSection);
+  m_scopedFonts.erase(scopeKey); // absent key: silent no-op, by contract
+}
+
+std::string GUIFontManager::GetSkinDefaultFontFileName() const
+{
+  // Mirrors GetDefaultFont's choice: "font13" if the skin defines it, otherwise
+  // the first font it loaded. In practice that file is the skin's body face,
+  // and it follows the fontset the user picked in settings.
+  const FontEntry* first = nullptr;
+  for (const auto& entry : m_fonts)
+  {
+    if (!first)
+      first = &entry;
+
+    if (StringUtils::EqualsNoCase(entry.font->GetFontName(), "font13"))
+      return entry.origInfo.fileName;
+  }
+
+  return first ? first->origInfo.fileName : std::string{};
+}
+
+bool GUIFontManager::LoadFontsIntoScope(const std::string& scopeKey,
+                                        const std::string& fontXmlPath,
+                                        const std::string& extraSearchDir,
+                                        const RESOLUTION_INFO& sourceRes)
+{
+  {
+    std::unique_lock lock(m_critSection);
+    if (m_scopedFonts[scopeKey].loaded)
+      return true;
+  }
+
+  std::vector<FontDefinition> definitions;
+
+  // LoadXMLData is the existing file-scope helper at GUIFontManager.cpp:55. It
+  // checks existence, logs LOGDEBUG when absent and LOGERROR when malformed, so
+  // the caller need not probe with CFile::Exists first.
+  CXBMCTinyXML xmlDoc;
+  if (!fontXmlPath.empty() && LoadXMLData(fontXmlPath, xmlDoc))
+  {
+    // Never hand an addon-authored document to the skin's ResolveIncludes.
+    StripIncludes(xmlDoc.RootElement());
+
+    const TiXmlElement* fontsetElement = xmlDoc.RootElement()->FirstChildElement("fontset");
+    const TiXmlElement* chosen = nullptr;
+    for (; fontsetElement; fontsetElement = fontsetElement->NextSiblingElement("fontset"))
+    {
+      const char* idAttr = fontsetElement->Attribute("id");
+      if (!idAttr)
+        continue;
+
+      if (!chosen)
+        chosen = fontsetElement; // first fontset, the fallback
+      if (StringUtils::EqualsNoCase(idAttr, "Default"))
+      {
+        chosen = fontsetElement;
+        break;
+      }
+    }
+
+    if (chosen)
+      definitions = ParseFontSet(chosen->FirstChild("font"));
+    else
+      CLog::LogF(LOGERROR, "No valid <fontset> in addon font file '{}'", fontXmlPath);
+  }
+  // LoadXMLData already logged the absent/malformed case. An addon with no
+  // Font.xml lands here and gets a loaded-but-empty scope, which is correct.
+
+  const std::string skinTypeface = GetSkinDefaultFontFileName();
+
+  for (const FontDefinition& def : definitions)
+  {
+    // No <filename> means "use whatever typeface the skin uses". The addon
+    // still owns the size and the style, and the file it inherits is one the
+    // skin already loaded, so it needs no confinement check.
+    std::string fileName = def.fileName;
+    std::string searchDir = extraSearchDir;
+    if (fileName.empty())
+    {
+      if (skinTypeface.empty())
+      {
+        CLog::LogF(LOGWARNING, "Font '{}' inherits the skin typeface, but the skin loaded none",
+                   EscapeFontName(def.name));
+        continue;
+      }
+
+      fileName = skinTypeface;
+      searchDir.clear(); // resolve it where the skin did, not in the addon
+      CLog::LogF(LOGDEBUG, "Font '{}' inherits the skin typeface '{}'", EscapeFontName(def.name),
+                 EscapeFontName(fileName));
+    }
+    else if (!IsAddonSafeFontFilename(fileName))
+    {
+      CLog::LogF(LOGWARNING, "Rejecting font '{}': filename '{}' is not confined to the addon",
+                 EscapeFontName(def.name), EscapeFontName(fileName));
+      continue;
+    }
+
+    std::vector<FontEntry>* destination = nullptr;
+    {
+      std::unique_lock lock(m_critSection);
+      destination = &m_scopedFonts[scopeKey].fonts;
+    }
+
+    LoadTTF(def.name, fileName, def.textColor, def.shadowColor, def.size, def.style, false,
+            def.lineSpacing, def.aspect, &sourceRes, false, destination, searchDir);
+  }
+
+  std::unique_lock lock(m_critSection);
+  m_scopedFonts[scopeKey].loaded = true; // loaded, even if empty
+  return true;
 }
 
 CGUIFont* GUIFontManager::GetDefaultFont(bool border)
 {
   // first find "font13" or "__defaultborder__"
-  size_t font13index = m_vecFonts.size();
+  size_t font13index = m_fonts.size();
   CGUIFont* font13border = nullptr;
-  for (size_t i = 0; i < m_vecFonts.size(); i++)
+  for (size_t i = 0; i < m_fonts.size(); i++)
   {
-    CGUIFont* font = m_vecFonts[i].get();
+    CGUIFont* font = m_fonts[i].font.get();
     if (font->GetFontName() == "font13")
       font13index = i;
     else if (font->GetFontName() == "__defaultborder__")
       font13border = font;
   }
   // no "font13" means no default font is found - use the first font found.
-  if (font13index == m_vecFonts.size())
+  if (font13index == m_fonts.size())
   {
-    if (m_vecFonts.empty())
+    if (m_fonts.empty())
       return nullptr;
 
     font13index = 0;
@@ -388,23 +655,28 @@ CGUIFont* GUIFontManager::GetDefaultFont(bool border)
   {
     if (!font13border)
     { // create it
-      const auto& font13 = m_vecFonts[font13index];
-      OrigFontInfo fontInfo = m_vecFontInfo[font13index];
+      const FontEntry& entry = m_fonts[font13index];
+      OrigFontInfo fontInfo = entry.origInfo;
       font13border = LoadTTF("__defaultborder__", fontInfo.fileName, KODI::UTILS::COLOR::BLACK, 0,
-                             fontInfo.size, font13->GetStyle(), true, 1.0f, fontInfo.aspect,
+                             fontInfo.size, entry.font->GetStyle(), true, 1.0f, fontInfo.aspect,
                              &fontInfo.sourceRes, fontInfo.preserveAspect);
     }
     return font13border;
   }
 
-  return m_vecFonts[font13index].get();
+  return m_fonts[font13index].font.get();
 }
 
 void GUIFontManager::Clear()
 {
-  m_vecFonts.clear();
+  m_fonts.clear();
   m_vecFontFiles.clear();
-  m_vecFontInfo.clear();
+
+  {
+    std::unique_lock lock(m_critSection);
+    m_scopedFonts.clear();
+  }
+  ms_scopeStack.clear();
 
 #if defined(HAS_GL)
   CGUIFontTTFGL::DestroyStaticVertexBuffers();
@@ -439,7 +711,7 @@ bool GUIFontManager::LoadFontsFromFile(const std::string& fontsetFilePath,
         if (StringUtils::EqualsNoCase(fontSet, idAttr))
         {
           // Found the requested fontset, so load the fonts and return
-          CLog::LogF(LOGINFO, "Loading <fontset> with name '{}' from '{}'", fontSet,
+          CLog::LogF(LOGINFO, "Loading <fontset> with name '{}' from '{}'", EscapeFontName(fontSet),
                      fontsetFilePath);
           LoadFonts(fontsetElement->FirstChild("font"));
           return true;
@@ -478,7 +750,7 @@ void GUIFontManager::LoadFonts(const std::string& fontSet)
     CLog::LogF(LOGWARNING,
                "Fontset with name '{}' was not found, "
                "defaulting to first fontset '{}' ",
-               fontSet, firstFontset);
+               EscapeFontName(fontSet), EscapeFontName(firstFontset));
     LoadFonts(firstFontset);
   }
   else
@@ -488,59 +760,18 @@ void GUIFontManager::LoadFonts(const std::string& fontSet)
 
 void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
 {
-  while (fontNode)
+  for (const FontDefinition& def : ParseFontSet(fontNode))
   {
-    std::string fontName;
-    std::string fileName;
-    int iSize = 20;
-    float aspect = 1.0f;
-    float lineSpacing = 1.0f;
-    KODI::UTILS::COLOR::Color shadowColor = 0;
-    KODI::UTILS::COLOR::Color textColor = 0;
-    int iStyle = FONT_STYLE_NORMAL;
-
-    XMLUtils::GetString(fontNode, "name", fontName);
-    XMLUtils::GetInt(fontNode, "size", iSize);
-    XMLUtils::GetFloat(fontNode, "linespacing", lineSpacing);
-    XMLUtils::GetFloat(fontNode, "aspect", aspect);
-    CGUIControlFactory::GetColor(fontNode, "shadow", shadowColor);
-    CGUIControlFactory::GetColor(fontNode, "color", textColor);
-    XMLUtils::GetString(fontNode, "filename", fileName);
-    GetStyle(fontNode, iStyle);
-
-    if (!fontName.empty() && URIUtils::HasExtension(fileName, ".ttf"))
+    // Only an addon font scope may omit <filename>, to inherit the skin's
+    // typeface. A skin has nothing to inherit from.
+    if (def.fileName.empty())
     {
-      LoadTTF(fontName, fileName, textColor, shadowColor, iSize, iStyle, false, lineSpacing,
-              aspect);
+      CLog::LogF(LOGWARNING, "Skin font '{}' has no <filename>", EscapeFontName(def.name));
+      continue;
     }
-    fontNode = fontNode->NextSibling("font");
-  }
-}
 
-void GUIFontManager::GetStyle(const TiXmlNode* fontNode, int& iStyle)
-{
-  std::string style;
-  iStyle = FONT_STYLE_NORMAL;
-  if (XMLUtils::GetString(fontNode, "style", style))
-  {
-    std::vector<std::string> styles = StringUtils::Tokenize(style, " ");
-    for (const std::string& i : styles)
-    {
-      if (i == "bold")
-        iStyle |= FONT_STYLE_BOLD;
-      else if (i == "italics")
-        iStyle |= FONT_STYLE_ITALICS;
-      else if (i == "bolditalics") // backward compatibility
-        iStyle |= (FONT_STYLE_BOLD | FONT_STYLE_ITALICS);
-      else if (i == "uppercase")
-        iStyle |= FONT_STYLE_UPPERCASE;
-      else if (i == "lowercase")
-        iStyle |= FONT_STYLE_LOWERCASE;
-      else if (i == "capitalize")
-        iStyle |= FONT_STYLE_CAPITALIZE;
-      else if (i == "lighten")
-        iStyle |= FONT_STYLE_LIGHT;
-    }
+    LoadTTF(def.name, def.fileName, def.textColor, def.shadowColor, def.size, def.style, false,
+            def.lineSpacing, def.aspect);
   }
 }
 
