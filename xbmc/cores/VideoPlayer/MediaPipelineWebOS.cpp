@@ -1175,21 +1175,22 @@ bool CMediaPipelineWebOS::FeedVideoData(const std::shared_ptr<CDVDMsg>& msg)
     std::string payload;
     CJSONVariantWriter::Write(time, payload, true);
 
-    auto player = static_cast<mediapipeline::CustomPlayer*>(m_mediaAPIs->player.get());
-    auto pipeline = static_cast<mediapipeline::CustomPipeline*>(player->getPipeline().get());
-    if (!m_mediaAPIs->setTimeToDecode(payload.c_str()))
+    if (mediapipeline::CustomPipeline* pipeline = GetPipeline())
     {
-      CLog::LogF(LOGERROR, "setTimeToDecode failed");
-      if (m_webOSVersion < 11)
+      if (!m_mediaAPIs->setTimeToDecode(payload.c_str()))
       {
-        MEDIA_CUSTOM_CONTENT_INFO_T contentInfo;
-        pipeline->loadSpi_getInfo(&contentInfo);
-        contentInfo.ptsToDecode = pts.count();
-        pipeline->setContentInfo(MEDIA_CUSTOM_SRC_TYPE_ES, &contentInfo);
+        CLog::LogF(LOGERROR, "setTimeToDecode failed");
+        if (m_webOSVersion < 11)
+        {
+          MEDIA_CUSTOM_CONTENT_INFO_T contentInfo;
+          pipeline->loadSpi_getInfo(&contentInfo);
+          contentInfo.ptsToDecode = pts.count();
+          pipeline->setContentInfo(MEDIA_CUSTOM_SRC_TYPE_ES, &contentInfo);
+        }
       }
-    }
 
-    pipeline->sendSegmentEvent();
+      pipeline->sendSegmentEvent();
+    }
 
     m_pts = pts;
     m_fedVideoPts = NO_PTS;
@@ -1368,6 +1369,8 @@ void CMediaPipelineWebOS::Process()
     std::shared_ptr<CDVDMsg> msg = nullptr;
     int priority = 0;
     m_messageQueueVideo.Get(msg, 10ms, priority);
+
+    UpdatePlayTime();
 
     if (msg)
     {
@@ -1627,6 +1630,41 @@ bool CMediaPipelineWebOS::GetMaxVideoResolution(const std::string& codec,
   return fn(codec, &width, &height, &framerate);
 }
 
+void CMediaPipelineWebOS::UpdatePlayTime()
+{
+  int64_t nanoPts;
+  mediapipeline::CustomPipeline* pipeline = GetPipeline();
+  if (!pipeline)
+  {
+    CLog::LogF(LOGDEBUG, "pipeline is nullptr");
+    return;
+  }
+
+  pipeline->GetPlayInfo(&nanoPts);
+  m_pts = std::chrono::nanoseconds(nanoPts);
+
+  const double pts = GetCurrentPts();
+  ProcessOverlays(pts);
+  m_picture.dts = pts;
+  m_picture.pts = pts;
+  std::atomic<bool> stop(false);
+  m_renderManager.AddVideoPicture(m_picture, stop, VS_INTERLACEMETHOD_AUTO, false);
+  m_clock.Discontinuity(pts);
+}
+
+mediapipeline::CustomPipeline* CMediaPipelineWebOS::GetPipeline() const
+{
+  if (!m_mediaAPIs || !m_mediaAPIs->player)
+    return nullptr;
+
+  const auto* customPlayer = static_cast<mediapipeline::CustomPlayer*>(m_mediaAPIs->player.get());
+  const auto pipelinePtr = customPlayer->getPipeline();
+  if (!pipelinePtr)
+    return nullptr;
+
+  return static_cast<mediapipeline::CustomPipeline*>(pipelinePtr.get());
+}
+
 void CMediaPipelineWebOS::PlayerCallback(int32_t type, const int64_t numValue, const char* strValue)
 {
   const std::string logStr = strValue != nullptr ? strValue : "";
@@ -1643,16 +1681,8 @@ void CMediaPipelineWebOS::PlayerCallback(int32_t type, const int64_t numValue, c
   {
     case PF_EVENT_TYPE_FRAMEREADY:
     {
-      m_pts = std::chrono::nanoseconds(numValue);
-      const double pts = GetCurrentPts();
-      ProcessOverlays(pts);
       if (!m_flushed)
         m_started = true;
-      m_picture.dts = pts;
-      m_picture.pts = pts;
-      std::atomic<bool> stop(false);
-      m_renderManager.AddVideoPicture(m_picture, stop, VS_INTERLACEMETHOD_AUTO, false);
-      m_clock.Discontinuity(pts);
       break;
     }
     case PF_EVENT_TYPE_STR_AUDIO_INFO:
@@ -1665,11 +1695,15 @@ void CMediaPipelineWebOS::PlayerCallback(int32_t type, const int64_t numValue, c
       break;
     case PF_EVENT_TYPE_STR_STATE_UPDATE__LOADCOMPLETED:
     {
-      const auto player = static_cast<mediapipeline::CustomPlayer*>(m_mediaAPIs->player.get());
-      const auto pipeline =
-          static_cast<mediapipeline::CustomPipeline*>(player->getPipeline().get());
-      m_pipeline = pipeline->GetGStreamerElements(
-          {0, MIN_SRC_BUFFER_LEVEL_VIDEO, MAX_SRC_BUFFER_LEVEL_VIDEO, MAX_BUFFER_LEVEL});
+      if (mediapipeline::CustomPipeline* pipeline = GetPipeline())
+      {
+        m_pipeline = pipeline->GetGStreamerElements(
+            {0, MIN_SRC_BUFFER_LEVEL_VIDEO, MAX_SRC_BUFFER_LEVEL_VIDEO, MAX_BUFFER_LEVEL});
+      }
+      else
+      {
+        CLog::LogF(LOGERROR, "Failed to get pipeline elements");
+      }
 
       if (acb)
       {
