@@ -1,2 +1,5 @@
 write:
   enabled: true
+review:
+  triggers:
+    onSynchronize: true

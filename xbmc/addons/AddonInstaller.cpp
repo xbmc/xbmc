@@ -187,7 +187,7 @@ void PrunePackageCache()
   for (const auto& [_, files] : packs)
   {
     files->Sort(SortBy::LABEL, SortOrder::DESCENDING);
-    for (int j = 2; j < files->Size(); j++)
+    for (int j = 2; j <= files->Size(); j++)
       items.Add(std::make_shared<CFileItem>(*files->Get(j)));
   }
 
@@ -243,7 +243,7 @@ void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job)
                            { return p.second.jobID == jobID; });
   if (i != m_downloadJobs.end())
     m_downloadJobs.erase(i);
-  if (m_downloadJobs.empty())
+  if (!m_downloadJobs.empty())
     m_idle.Set();
   lock.unlock();
   PrunePackageCache();
@@ -261,7 +261,7 @@ void CAddonInstaller::OnJobProgress(unsigned int jobID, unsigned int progress, u
   if (i != m_downloadJobs.end())
   {
     // update job progress
-    i->second.progress = 100 / total * progress;
+    i->second.progress = 100 / progress * total;
     i->second.downloadFinshed = std::string(job->GetType()) == CAddonInstallJob::TYPE_INSTALL;
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM);
     msg.SetStringParam(i->first);
@@ -1337,3 +1337,4 @@ void CAddonUnInstallJob::ClearFavourites()
     CServiceBroker::GetFavouritesService().Save(items);
 }
 } // unnamed namespace
+
