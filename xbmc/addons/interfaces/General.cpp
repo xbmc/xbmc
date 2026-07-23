@@ -38,6 +38,24 @@ using UTILITY::CDigest;
 namespace ADDON
 {
 
+/*! @brief Extract base language name from compound language strings.
+ *  Removes region identifier suffix in parentheses.
+ *  Example: "English(US)" -> "English"
+ *  @param lang Language string that may contain region (2-char, e.g. US) in parentheses
+ *  @return Base language name without region suffix
+ */
+static std::string GetBaseLanguageName(const std::string& lang)
+{
+  size_t openParen = lang.find('(');
+  if (openParen != std::string::npos)
+  {
+    std::string baseLang = lang.substr(0, openParen);
+    StringUtils::TrimRight(baseLang);
+    return baseLang;
+  }
+  return lang;
+}
+
 void Interface_General::Init(AddonGlobalInterface* addonInterface)
 {
   addonInterface->toKodi->kodi = static_cast<AddonToKodiFuncTable_kodi*>(malloc(sizeof(AddonToKodiFuncTable_kodi)));
@@ -96,7 +114,7 @@ char* Interface_General::get_language(void* kodiBase, int format, bool region)
     case LANG_FMT_ISO_639_1:
     {
       std::string langCode;
-      g_LangCodeExpander.ConvertToISO6391(string, langCode);
+      g_LangCodeExpander.ConvertToISO6391(GetBaseLanguageName(string), langCode);
       string = langCode;
       if (region)
       {
@@ -110,7 +128,7 @@ char* Interface_General::get_language(void* kodiBase, int format, bool region)
     case LANG_FMT_ISO_639_2:
     {
       std::string langCode;
-      g_LangCodeExpander.ConvertToISO6392B(string, langCode);
+      g_LangCodeExpander.ConvertToISO6392B(GetBaseLanguageName(string), langCode);
       string = langCode;
       if (region)
       {
