@@ -522,12 +522,18 @@ void CRenderManager::ServiceVideoCaptures()
   if (requests.empty())
     return;
 
-  // video composited outside Kodi's GL (D2P plane, Android video surface,
-  // webOS video plane) leaves nothing in the framebuffer to copy
+  // the renderer does not draw video into the framebuffer, so the copy-back
+  // below would capture the GUI (if any) instead of the video; fail the request
   if (m_pRenderer->HasVideoPlane())
   {
     for (const auto& request : requests)
-      captureService->Fail(request);
+    {
+      CaptureResult result;
+      if (m_pRenderer->CaptureVideoFrame(request->spec, result))
+        captureService->Complete(request, std::move(result));
+      else
+        captureService->Fail(request);
+    }
     return;
   }
 

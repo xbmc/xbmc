@@ -44,6 +44,12 @@ enum RenderMethods
 
 struct VideoPicture;
 
+namespace KODI::RENDERING::CAPTURE
+{
+struct CaptureSpec;
+struct CaptureResult;
+} // namespace KODI::RENDERING::CAPTURE
+
 class CBaseRenderer
 {
 public:
@@ -62,6 +68,17 @@ public:
   virtual bool NeedBuffer(int idx) { return false; }
   virtual bool IsGuiLayer() { return true; }
   virtual bool HasVideoPlane() { return !IsGuiLayer(); }
+  //! \brief Render this renderer's video frame for screencap into result.
+  //!
+  //! Screencap copies each frame back from the framebuffer, which serves every
+  //! renderer that composites its video there. A renderer that routes video
+  //! around the framebuffer (DRMPRIME direct-to-plane) overrides this to
+  //! produce its own frame instead. Default: capture unavailable.
+  virtual bool CaptureVideoFrame(const KODI::RENDERING::CAPTURE::CaptureSpec& spec,
+                                 KODI::RENDERING::CAPTURE::CaptureResult& result)
+  {
+    return false;
+  }
   // Render info, can be called before configure
   virtual CRenderInfo GetRenderInfo() { return CRenderInfo(); }
   virtual void Update() = 0;
