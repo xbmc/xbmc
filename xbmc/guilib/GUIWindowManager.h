@@ -23,6 +23,7 @@
 
 class CGUIDialog;
 class CGUIMediaWindow;
+class CScreenShot;
 
 #ifdef TARGET_WINDOWS_STORE
 #pragma pack(push, 8)
@@ -50,6 +51,8 @@ class CGUIWindowManager : public KODI::MESSAGING::IMessageTarget
 {
   friend CGUIDialog;
   friend CGUIMediaWindow;
+  friend CScreenShot;
+
 public:
   CGUIWindowManager();
   ~CGUIWindowManager() override;

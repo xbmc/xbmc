@@ -121,6 +121,8 @@
 #include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "pvr/guilib/PVRGUIActionsPowerManagement.h"
 #include "rendering/RenderSystem.h"
+#include "rendering/capture/CaptureMetadata.h"
+#include "rendering/capture/CaptureService.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
@@ -261,6 +263,10 @@ bool CApplication::Create()
 
   // Register JobManager service
   CServiceBroker::RegisterJobManager(std::make_shared<CJobManager>());
+
+  // Screen capture service
+  CServiceBroker::RegisterCaptureService(
+      std::make_shared<KODI::RENDERING::CAPTURE::CCaptureService>());
 
   // Announcement service
   m_pAnnouncementManager = std::make_shared<ANNOUNCEMENT::CAnnouncementManager>();
@@ -827,6 +833,52 @@ bool CApplication::OnSettingsSaving() const
   return !m_bStop;
 }
 
+namespace
+{
+// capture tap: serve pending requests from the finished frame before it is
+// presented.
+void ServiceCaptureTaps()
+{
+  using namespace KODI::RENDERING::CAPTURE;
+
+  const auto captureService = CServiceBroker::GetCaptureService();
+  if (!captureService)
+    return;
+
+  const auto requests = captureService->TakeActive(CaptureContent::COMPOSITE);
+  if (requests.empty())
+    return;
+
+  auto* winSystem = CServiceBroker::GetWinSystem();
+  auto surface = CScreenShot::CreateSurface();
+  if (!winSystem || !surface)
+  {
+    for (const auto& request : requests)
+      captureService->Fail(request);
+    return;
+  }
+
+  const ScreenshotContext ctx{*winSystem};
+  if (!surface->Read(ctx))
+  {
+    for (const auto& request : requests)
+      captureService->Fail(request);
+    return;
+  }
+
+  CaptureResult result;
+  result.pixels.reset(surface->TakeBuffer());
+  result.width = static_cast<unsigned int>(surface->GetWidth());
+  result.height = static_cast<unsigned int>(surface->GetHeight());
+  result.stride = static_cast<unsigned int>(surface->GetStride());
+  result.bitDepth = surface->GetBitDepth();
+  result.color = GetOutputColorMetadata(*winSystem);
+
+  for (const auto& request : requests)
+    captureService->Complete(request, result);
+}
+} // namespace
+
 void CApplication::Render()
 {
   // do not render if we are stopped or in background
@@ -886,6 +938,11 @@ void CApplication::Render()
 
   if (compositing)
     CServiceBroker::GetWinSystem()->CompositeGui();
+
+  // serve pending requests from the finished frame; only a frame that really
+  // drew counts
+  if (hasRendered)
+    ServiceCaptureTaps();
 
   CServiceBroker::GetRenderSystem()->EndRender();
 
@@ -1562,6 +1619,12 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
   {
     m_skipGuiRender = false;
 
+    // a new capture request marks the window manager dirty so a frame really
+    // renders, since an idle GUI would otherwise skip it
+    if (const auto captureService = CServiceBroker::GetCaptureService();
+        captureService && captureService->LatchFrame())
+      CServiceBroker::GetGUI()->GetWindowManager().MarkDirty();
+
     /*! @todo look into the possibility to use this for GBM
     int fps = 0;
 
@@ -1678,6 +1741,8 @@ bool CApplication::Cleanup()
     GetComponent<CApplicationSkinHandling>()->UnloadSkin();
 
     CServiceBroker::UnregisterTextureCache();
+
+    CServiceBroker::UnregisterCaptureService();
 
     // stop all remaining scripts; must be done after skin has been unloaded,
     // not before some windows still need it when deinitializing during skin

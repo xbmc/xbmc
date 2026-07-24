@@ -48,6 +48,14 @@ namespace MESSAGING
 {
 class CApplicationMessenger;
 }
+
+namespace RENDERING
+{
+namespace CAPTURE
+{
+class CCaptureService;
+}
+} // namespace RENDERING
 } // namespace KODI
 
 class CAppParams;
@@ -228,6 +236,11 @@ public:
   static void UnregisterJobManager();
   static std::shared_ptr<CJobManager> GetJobManager();
 
+  static void RegisterCaptureService(
+      const std::shared_ptr<KODI::RENDERING::CAPTURE::CCaptureService>& captureService);
+  static void UnregisterCaptureService();
+  static std::shared_ptr<KODI::RENDERING::CAPTURE::CCaptureService> GetCaptureService();
+
   static void RegisterAppMessenger(
       const std::shared_ptr<KODI::MESSAGING::CApplicationMessenger>& appMessenger);
   static void UnregisterAppMessenger();
@@ -265,6 +278,7 @@ private:
   std::shared_ptr<CCPUInfo> m_cpuInfo;
   std::shared_ptr<CTextureCache> m_textureCache;
   std::shared_ptr<CJobManager> m_jobManager;
+  std::shared_ptr<KODI::RENDERING::CAPTURE::CCaptureService> m_captureService;
   std::shared_ptr<KODI::MESSAGING::CApplicationMessenger> m_appMessenger;
   std::shared_ptr<KODI::KEYBOARD::CKeyboardLayoutManager> m_keyboardLayoutManager;
   std::shared_ptr<speech::ISpeechRecognition> m_speechRecognition;
