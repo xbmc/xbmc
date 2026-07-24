@@ -121,6 +121,9 @@ make -j$(getconf _NPROCESSORS_ONLN)
 ./configure --host=aarch64-apple-darwin --with-platform=tvos --with-sdk=11.0
 ```
 
+> [!NOTE]  
+> `--with-platform=tvos-simulator` targets the tvOS Simulator instead of device hardware.
+
 ### 4.1. Advanced Configure Options
 
 
@@ -284,9 +287,6 @@ This will create a `Kodi.app` file located in `$HOME/kodi-build/build/Debug-appl
 
 > [!WARNING]  
 > If you have selected a specific tvOS SDK Version in step 4 then you might need to adapt the active target to use the same tvOS SDK version, otherwise build will fail. Be sure to select a device configuration.
-
-> [!WARNING]  
-> Building for simulator is NOT supported.
 
 ### 6.2. Build with xcodebuild
 Alternatively, you can also build via Xcode from the command-line with `xcodebuild`, triggered by CMake:

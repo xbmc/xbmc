@@ -50,7 +50,7 @@ ifeq ($(OS),darwin_embedded)
 endif
 	cd $(PLATFORM); patch -p1 -i ../002-darwin-dlopen_searchpath.patch
 	cd $(PLATFORM); patch -p1 -i ../003-all-libxml_searchname.patch
-ifeq ($(TARGET_PLATFORM),appletvos)
+ifeq ($(findstring appletv,$(TARGET_PLATFORM)),appletv)
 	cd $(PLATFORM); patch -p1 -i ../tvos.patch
 endif
 ifeq ($(TARGET_PLATFORM),windows)

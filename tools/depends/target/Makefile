@@ -44,7 +44,7 @@ endif
 
 ifeq ($(OS),darwin_embedded)
   EXCLUDED_DEPENDS = libusb libcdio libcdio-gplv3
-  ifeq ($(TARGET_PLATFORM),appletvos)
+  ifeq ($(findstring appletv,$(TARGET_PLATFORM)),appletv)
     EXCLUDED_DEPENDS += libshairplay libplist
   endif
   DEPENDS += darwin-embedded-entitlements
