@@ -80,10 +80,12 @@ private:
    * \param[in] videoDb Database connection
    * \param[in] role NewVersion: dbId will be converted to a version of the movie chosen by
    *                 the user from the whole library.
+   *                 Parent: dbId will have another movie chosen by the user from the whole library
+   *                 as a new version.
    * \param[in] interaction INTERACTIVE: ask the user to choose and confirm as needed.
    *                        NON_INTERACTIVE false: no user interaction allowed, use heuristics in
    *                        place of user input
-   * Parent: dbId will have another movie chosen by the user from the whole library as a new version.
+   * \param[in] setDefaultVersion true to make the new version the default for the media
    *
    * \return True: success, a version was created and attached, false otherwise.
    */
@@ -93,7 +95,9 @@ private:
                                                   int dbId,
                                                   CVideoDatabase& videoDb,
                                                   MediaRole role,
-                                                  Mode mode);
+                                                  Mode mode,
+                                                  bool setDefaultVersion);
+
   /*!
    * \brief Use a file picker to select a file to add as a new version of a movie.
    * \return True when a version was added, false otherwise
