@@ -32,11 +32,12 @@ public:
   void ReleaseBuffer(int idx) override;
   bool NeedBuffer(int idx) override;
   bool IsGuiLayer() override { return false; }
+  bool CaptureVideoFrame(const KODI::RENDERING::CAPTURE::CaptureSpec& spec,
+                         KODI::RENDERING::CAPTURE::CaptureResult& result) override;
   CRenderInfo GetRenderInfo() override;
   void Update() override;
   void RenderUpdate(
       int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;
-  bool RenderCapture(int index, CRenderCapture* capture) override;
   bool ConfigChanged(const VideoPicture& picture) override;
 
   // Feature support

@@ -9,7 +9,6 @@
 #pragma once
 
 #include "DebugInfo.h"
-#include "RenderCapture.h"
 #include "RenderInfo.h"
 #include "VideoShaders/ShaderFormats.h"
 #include "cores/IPlayer.h"
@@ -45,6 +44,12 @@ enum RenderMethods
 
 struct VideoPicture;
 
+namespace KODI::RENDERING::CAPTURE
+{
+struct CaptureSpec;
+struct CaptureResult;
+} // namespace KODI::RENDERING::CAPTURE
+
 class CBaseRenderer
 {
 public:
@@ -63,11 +68,21 @@ public:
   virtual bool NeedBuffer(int idx) { return false; }
   virtual bool IsGuiLayer() { return true; }
   virtual bool HasVideoPlane() { return !IsGuiLayer(); }
+  //! \brief Render this renderer's video frame for screencap into result.
+  //!
+  //! Screencap copies each frame back from the framebuffer, which serves every
+  //! renderer that composites its video there. A renderer that routes video
+  //! around the framebuffer (DRMPRIME direct-to-plane) overrides this to
+  //! produce its own frame instead. Default: capture unavailable.
+  virtual bool CaptureVideoFrame(const KODI::RENDERING::CAPTURE::CaptureSpec& spec,
+                                 KODI::RENDERING::CAPTURE::CaptureResult& result)
+  {
+    return false;
+  }
   // Render info, can be called before configure
   virtual CRenderInfo GetRenderInfo() { return CRenderInfo(); }
   virtual void Update() = 0;
   virtual void RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha) = 0;
-  virtual bool RenderCapture(int index, CRenderCapture* capture) = 0;
   virtual bool ConfigChanged(const VideoPicture &picture) = 0;
 
   // Feature support
@@ -97,8 +112,6 @@ public:
 
   // Gets debug info from render buffer
   virtual DEBUG_INFO_VIDEO GetDebugInfo(int idx) { return {}; }
-
-  virtual CRenderCapture* GetRenderCapture() { return nullptr; }
 
 protected:
   void CalcDestRect(float offsetX,

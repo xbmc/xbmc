@@ -16,6 +16,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   find_library(OPENGLES_gl_LIBRARY NAMES GLESv2 OpenGLES
                                    HINTS ${PC_OPENGLES_LIBDIR} ${CMAKE_OSX_SYSROOT}/System/Library
                                    PATH_SUFFIXES Frameworks)
+  find_library(OPENGLES3_gl_LIBRARY NAMES GLESv3
+                                    HINTS ${PC_OPENGLES_LIBDIR})
   if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     # Emscripten exposes GLES via the GL link name instead of a filesystem library.
     set(OPENGLES_gl_LIBRARY GL)
@@ -58,6 +60,13 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                                                             INTERFACE_INCLUDE_DIRECTORIES "${OPENGLES3_INCLUDE_DIR}")
         set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
                                                                          INTERFACE_COMPILE_DEFINITIONS HAS_GLES=3)
+        # Android splits the ES3 entry points (glBlitFramebuffer et al) into a
+        # separate stub; Mesa exports them from libGLESv2 and ships no libGLESv3,
+        # so link the ES3 stub only where it exists
+        if(OPENGLES3_gl_LIBRARY)
+          set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
+                                                                              INTERFACE_LINK_LIBRARIES "${OPENGLES3_gl_LIBRARY}")
+        endif()
       else()
         set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
                                                                          INTERFACE_COMPILE_DEFINITIONS HAS_GLES=2)

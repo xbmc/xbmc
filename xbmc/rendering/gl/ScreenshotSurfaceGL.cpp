@@ -8,16 +8,11 @@
 
 #include "ScreenshotSurfaceGL.h"
 
-#include "ServiceBroker.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
+#include "rendering/capture/CaptureReadback.h"
 #include "utils/Screenshot.h"
-#include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
 #include <memory>
-#include <mutex>
-#include <vector>
 
 #include "system_gl.h"
 
@@ -31,37 +26,27 @@ std::unique_ptr<IScreenshotSurface> CScreenshotSurfaceGL::CreateSurface()
   return std::make_unique<CScreenshotSurfaceGL>();
 }
 
-bool CScreenshotSurfaceGL::Capture()
+bool CScreenshotSurfaceGL::Read(const ScreenshotContext& ctx)
 {
-  CWinSystemBase* winsystem = CServiceBroker::GetWinSystem();
-  if (!winsystem)
-    return false;
-
-  CGUIComponent* gui = CServiceBroker::GetGUI();
-  if (!gui)
-    return false;
-
-  std::unique_lock lock(winsystem->GetGfxContext());
-  gui->GetWindowManager().Render();
+  using namespace KODI::RENDERING::CAPTURE;
 
   glReadBuffer(GL_BACK);
 
-  // get current viewport
+  // get current viewport: x, y, width, height
   GLint viewport[4];
   glGetIntegerv(GL_VIEWPORT, viewport);
 
-  m_width = viewport[2] - viewport[0];
-  m_height = viewport[3] - viewport[1];
-  m_stride = m_width * 4;
-  std::vector<uint8_t> surface(m_stride * m_height);
+  // window rows are bottom-up: flip to top-down
+  ReadbackBuffer buffer;
+  if (!ReadFramebufferRegion(viewport[0], viewport[1], static_cast<unsigned int>(viewport[2]),
+                             static_cast<unsigned int>(viewport[3]), ctx.winSystem.GetOutputBitDepth(),
+                             true, buffer))
+    return false;
 
-  // read pixels from the backbuffer
-  glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_BGRA, GL_UNSIGNED_BYTE, static_cast<GLvoid*>(surface.data()));
-
-  // make a new buffer and copy the read image to it with the Y axis inverted
-  m_buffer = new unsigned char[m_stride * m_height];
-  for (int y = 0; y < m_height; y++)
-    memcpy(m_buffer + y * m_stride, surface.data() + (m_height - y - 1) * m_stride, m_stride);
-
+  m_width = static_cast<int>(buffer.width);
+  m_height = static_cast<int>(buffer.height);
+  m_stride = static_cast<int>(buffer.stride);
+  m_bitDepth = buffer.bitDepth;
+  m_buffer = reinterpret_cast<unsigned char*>(buffer.pixels.release());
   return m_buffer != nullptr;
 }

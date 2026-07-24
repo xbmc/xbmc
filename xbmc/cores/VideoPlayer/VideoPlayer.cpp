@@ -5732,26 +5732,6 @@ bool CVideoPlayer::Supports(ERENDERFEATURE feature) const
   return m_renderManager.Supports(feature);
 }
 
-unsigned int CVideoPlayer::RenderCaptureAlloc()
-{
-  return m_renderManager.AllocRenderCapture();
-}
-
-void CVideoPlayer::RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags)
-{
-  m_renderManager.StartRenderCapture(captureId, width, height, flags);
-}
-
-void CVideoPlayer::RenderCaptureRelease(unsigned int captureId)
-{
-  m_renderManager.ReleaseRenderCapture(captureId);
-}
-
-bool CVideoPlayer::RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size)
-{
-  return m_renderManager.RenderCaptureGetPixels(captureId, millis, buffer, size);
-}
-
 void CVideoPlayer::VideoParamsChange()
 {
   m_messenger.Put(std::make_shared<CDVDMsg>(CDVDMsg::PLAYER_AVCHANGE));

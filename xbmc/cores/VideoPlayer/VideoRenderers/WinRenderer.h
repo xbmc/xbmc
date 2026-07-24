@@ -12,7 +12,6 @@
 #include "windows/RendererBase.h"
 
 struct VideoPicture;
-class CRenderCapture;
 
 class CWinRenderer : public CBaseRenderer
 {
@@ -24,7 +23,6 @@ public:
   static bool Register();
 
   void Update() override;
-  bool RenderCapture(int index, CRenderCapture* capture) override;
 
   // Player functions
   bool Configure(const VideoPicture &picture, float fps, unsigned int orientation) override;
@@ -48,8 +46,6 @@ public:
 
   // Debug info video
   DEBUG_INFO_VIDEO GetDebugInfo(int idx) override;
-
-  CRenderCapture* GetRenderCapture() override;
 
 protected:
   void PreInit();

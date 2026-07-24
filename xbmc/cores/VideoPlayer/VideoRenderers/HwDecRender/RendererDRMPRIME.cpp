@@ -12,7 +12,6 @@
 #include "cores/VideoPlayer/Buffers/VideoBufferDRMPRIME.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/VideoLayerBridgeDRMPRIME.h"
-#include "cores/VideoPlayer/VideoRenderers/RenderCapture.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "settings/DisplaySettings.h"
@@ -23,6 +22,12 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/gbm/WinSystemGbm.h"
 #include "windowing/gbm/drm/DRMAtomic.h"
+
+// Video-plane screencap lives in its own GLES unit; the GL import/draw/readback
+// includes stay there. Unavailable on a GL-only build (delegate not compiled).
+#if defined(HAS_GLES)
+#include "cores/VideoPlayer/VideoRenderers/HwDecRender/DRMPRIMECaptureGLES.h"
+#endif
 
 using namespace KODI::WINDOWING::GBM;
 
@@ -213,6 +218,23 @@ bool CRendererDRMPRIME::NeedBuffer(int index)
   return false;
 }
 
+bool CRendererDRMPRIME::CaptureVideoFrame(const KODI::RENDERING::CAPTURE::CaptureSpec& spec,
+                                          KODI::RENDERING::CAPTURE::CaptureResult& result)
+{
+#if defined(HAS_GLES)
+  if (m_iLastRenderBuffer < 0)
+    return false;
+
+  auto* buffer = dynamic_cast<CVideoBufferDRMPRIME*>(m_buffers[m_iLastRenderBuffer].videoBuffer);
+  if (!buffer || !buffer->IsValid())
+    return false;
+
+  return CaptureDRMPRIMEVideo(buffer, spec, result);
+#else
+  return false;
+#endif
+}
+
 CRenderInfo CRendererDRMPRIME::GetRenderInfo()
 {
   CRenderInfo info;
@@ -258,13 +280,6 @@ void CRendererDRMPRIME::RenderUpdate(
   m_videoLayerBridge->SetVideoPlane(buffer, m_planeDestRect);
 
   m_iLastRenderBuffer = index;
-}
-
-bool CRendererDRMPRIME::RenderCapture(int index, CRenderCapture* capture)
-{
-  capture->BeginRender();
-  capture->EndRender();
-  return true;
 }
 
 bool CRendererDRMPRIME::ConfigChanged(const VideoPicture& picture)

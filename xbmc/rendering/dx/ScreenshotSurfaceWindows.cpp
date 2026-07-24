@@ -8,16 +8,10 @@
 
 #include "ScreenshotSurfaceWindows.h"
 
-#include "ServiceBroker.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
+#include "rendering/capture/CaptureReadback.h"
 #include "rendering/dx/DeviceResources.h"
 #include "utils/Screenshot.h"
 #include "utils/log.h"
-#include "windowing/GraphicContext.h"
-#include "windowing/WinSystem.h"
-
-#include <mutex>
 
 #include <wrl/client.h>
 
@@ -33,19 +27,8 @@ std::unique_ptr<IScreenshotSurface> CScreenshotSurfaceWindows::CreateSurface()
   return std::unique_ptr<CScreenshotSurfaceWindows>(new CScreenshotSurfaceWindows());
 }
 
-bool CScreenshotSurfaceWindows::Capture()
+bool CScreenshotSurfaceWindows::Read(const ScreenshotContext&)
 {
-  CWinSystemBase* winsystem = CServiceBroker::GetWinSystem();
-  if (!winsystem)
-    return false;
-
-  CGUIComponent* gui = CServiceBroker::GetGUI();
-  if (!gui)
-    return false;
-
-  std::unique_lock lock(winsystem->GetGfxContext());
-  gui->GetWindowManager().Render();
-
   auto deviceResources = DX::DeviceResources::Get();
   deviceResources->FinishCommandList();
 
@@ -72,35 +55,27 @@ bool CScreenshotSurfaceWindows::Capture()
     {
       m_width = desc.Width;
       m_height = desc.Height;
-      m_stride = res.RowPitch;
-      m_buffer = new unsigned char[m_height * m_stride];
       if (desc.Format == DXGI_FORMAT_R10G10B10A2_UNORM)
       {
-        // convert R10G10B10A2 -> B8G8R8A8
+        // 10-bit swapchain: unpack to RGBA16 instead of decimating to 8-bit
+        m_bitDepth = 10;
+        m_stride = m_width * 8; // 4 channels x 2 bytes
+        m_buffer = new unsigned char[m_height * m_stride];
         for (int y = 0; y < m_height; y++)
         {
-          uint32_t* pixels10 = reinterpret_cast<uint32_t*>(static_cast<uint8_t*>(res.pData) + y * res.RowPitch);
-          uint8_t* pixels8 = m_buffer + y * m_stride;
-
-          for (int x = 0; x < m_width; x++, pixels10++, pixels8 += 4)
-          {
-            // actual bit per channel is A2B10G10R10
-            uint32_t pixel = *pixels10;
-            // R
-            pixels8[2] = static_cast<uint8_t>((pixel & 0x3FF) * 255 / 1023);
-            // G
-            pixel >>= 10;
-            pixels8[1] = static_cast<uint8_t>((pixel & 0x3FF) * 255 / 1023);
-            // B
-            pixel >>= 10;
-            pixels8[0] = static_cast<uint8_t>((pixel & 0x3FF) * 255 / 1023);
-            // A
-            pixels8[3] = 0xFF;
-          }
+          const uint32_t* pixels10 = reinterpret_cast<const uint32_t*>(
+              static_cast<const uint8_t*>(res.pData) + y * res.RowPitch);
+          uint16_t* pixels16 = reinterpret_cast<uint16_t*>(m_buffer + y * m_stride);
+          KODI::RENDERING::CAPTURE::Unpack1010102ToRGBA16(
+              pixels10, pixels16, static_cast<unsigned int>(m_width));
         }
       }
       else
+      {
+        m_stride = res.RowPitch;
+        m_buffer = new unsigned char[m_height * m_stride];
         memcpy(m_buffer, res.pData, m_height * m_stride);
+      }
       pImdContext->Unmap(pCopyTexture.Get(), 0);
     }
     else
