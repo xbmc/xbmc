@@ -99,7 +99,9 @@ include(cmake/scripts/common/DependencyOptions.cmake)
 # general
 option(VERBOSE            "Enable verbose output?" OFF)
 option(VERBOSE_FIND       "Enable verbose output of library searches only?" OFF)
-option(ENABLE_BLURAY_JAR "Enable building libbluray jar libraries (requires ENABLE_INTERNAL_BLURAY=ON)?" ON)
+if((WIN32 OR WINDOWS_STORE) OR KODI_DEPENDSBUILD)
+  option(ENABLE_BLURAY_JAR "Enable building libbluray jar libraries?" ON)
+endif()
 option(ENABLE_CLANGTIDY   "Enable clang-tidy support?" OFF)
 option(ENABLE_CPPCHECK    "Enable cppcheck support?" OFF)
 option(ENABLE_DVDCSS      "Enable libdvdcss support?" ON)
@@ -119,23 +121,8 @@ option(ENABLE_INTERNAL_CROSSGUID "Enable internal crossguid?" ON)
 option(ENABLE_INTERNAL_FFMPEG "Enable internal ffmpeg?" OFF)
 
 # These are built for all platforms not using system libs or disabled by user
-dependent_option(ENABLE_INTERNAL_ASS "Enable internal libass?")
-dependent_option(ENABLE_INTERNAL_BLURAY "Enable internal libbluray?")
-dependent_option(ENABLE_INTERNAL_CEC "Enable internal libcec?")
-dependent_option(ENABLE_INTERNAL_CURL "Enable internal libcurl?")
-dependent_option(ENABLE_INTERNAL_DAV1D "Enable internal dav1d?")
-dependent_option(ENABLE_INTERNAL_EXIV2 "Enable internal exiv2?")
 dependent_option(ENABLE_INTERNAL_FLATBUFFERS "Enable internal flatbuffers?")
 dependent_option(ENABLE_INTERNAL_FMT "Enable internal fmt?")
-dependent_option(ENABLE_INTERNAL_LCMS2  "Enable internal lcms2?")
-dependent_option(ENABLE_INTERNAL_LIBMICROHTTPD  "Enable internal libmicrohttpd?")
-dependent_option(ENABLE_INTERNAL_LZO2 "Enable internal lzo2?")
-dependent_option(ENABLE_INTERNAL_NFS "Enable internal libnfs?")
-dependent_option(ENABLE_INTERNAL_PCRE2 "Enable internal pcre2?")
-dependent_option(ENABLE_INTERNAL_MARIADBCLIENT "Enable internal mariadb-c-connector?")
-dependent_option(ENABLE_INTERNAL_NLOHMANNJSON "Enable internal nlohmannjson?")
-dependent_option(ENABLE_INTERNAL_UDFREAD "Enable internal libudfread?")
-dependent_option(ENABLE_INTERNAL_XSLT "Enable internal libxslt?")
 
 # If ENABLE_INTERNAL_FMT is ON, we force ENABLE_INTERNAL_SPDLOG ON as it has a hard
 # dependency on fmt
@@ -143,12 +130,6 @@ if(ENABLE_INTERNAL_FMT)
   option(ENABLE_INTERNAL_SPDLOG "Enable internal spdlog Forced" ON)
 else()
   dependent_option(ENABLE_INTERNAL_SPDLOG "Enable internal spdlog?")
-endif()
-
-dependent_option(ENABLE_INTERNAL_TAGLIB "Enable internal taglib?")
-
-if(KODI_DEPENDSBUILD OR WIN32 OR WINDOWS_STORE)
-  dependent_option(ENABLE_INTERNAL_TINYXML2 "Enable internal TinyXML2?")
 endif()
 
 # Internal Depends - supported on UNIX platforms

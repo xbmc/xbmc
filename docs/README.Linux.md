@@ -127,7 +127,7 @@ sudo make -C tools/depends/target/waylandpp PREFIX=/usr/local
 > Complete list of dependencies is available **[here](https://github.com/xbmc/xbmc/tree/master/tools/depends/target)**.
 
 ### 3.2. Enable internal dependencies
-Some dependencies can be configured to build before Kodi. That's the case with `flatbuffers`, `crossguid`, `fmt`, `spdlog`, `fstrcmp`, `nlohmann-json` and `dav1d`. To enable the internal build of a dependency, append `-DENABLE_INTERNAL_<DEPENDENCY_NAME>=ON` to the configure command below. For example, configuring an X11 build with internal `fmt` would become `cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DENABLE_INTERNAL_FMT=ON` instead of `cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local`.
+Some dependencies can be configured to build before Kodi. That's the case with `flatbuffers`, `crossguid`, `fmt`, `spdlog`, `fstrcmp`. To enable the internal build of a dependency, append `-DENABLE_INTERNAL_<DEPENDENCY_NAME>=ON` to the configure command below. For example, configuring an X11 build with internal `fmt` would become `cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DENABLE_INTERNAL_FMT=ON` instead of `cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local`.
 Internal dependencies that are based on cmake upstream (currently crossguid, ffmpeg, fmt, spdlog) can have their build type overridden by defining `-D<DEPENDENCY_NAME>_BUILD_TYPE=<buildtype>`. Build Type can be one of `Release, RelWithDebInfo, Debug, MinSizeRel`. eg `-DFFMPEG_BUILD_TYPE=RelWithDebInfo`. If not provided, the build type will be the same as the core Kodi project.
 
 > [!NOTE]  

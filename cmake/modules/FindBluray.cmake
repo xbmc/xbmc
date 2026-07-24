@@ -175,7 +175,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   # If there is a potential this library can be built internally
   # Check its dependencies to allow forcing this lib to be built if one of its
   # dependencies requires being rebuilt
-  if(ENABLE_INTERNAL_BLURAY)
+  if((WIN32 OR WINDOWS_STORE) OR KODI_DEPENDSBUILD)
     # Todo: other dependencies
     # fontconfig freetype2 libxml2 Iconv
 
@@ -193,9 +193,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   SEARCH_EXISTING_PACKAGES()
 
-  if((${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_BLURAY) OR
-     (((CORE_SYSTEM_NAME STREQUAL linux AND NOT "webos" IN_LIST CORE_PLATFORM_NAME_LC) OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_BLURAY) OR
-     (DEFINED ${CMAKE_FIND_PACKAGE_NAME}_FORCE_BUILD))
+  if(("${${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION}" VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND
+     ((WIN32 OR WINDOWS_STORE) OR KODI_DEPENDSBUILD)) OR (DEFINED ${CMAKE_FIND_PACKAGE_NAME}_FORCE_BUILD))
     message(STATUS "Building ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}: \(version \"${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER}\"\)")
 
     cmake_language(EVAL CODE "
