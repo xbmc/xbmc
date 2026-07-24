@@ -17,6 +17,7 @@
 #include "rendering/capture/CaptureReadback.h"
 #include "rendering/capture/CaptureTypes.h"
 #include "rendering/gles/RenderSystemGLES.h"
+#include "utils/log.h"
 
 #include <memory>
 
@@ -35,13 +36,23 @@ bool CaptureDRMPRIMEVideo(CVideoBufferDRMPRIME* buffer,
 
   auto* renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
   if (!renderSystem)
+  {
+    CLog::Log(LOGWARNING,
+              "CaptureDRMPRIMEVideo: no GLES render system; video screenshot unavailable");
     return false;
+  }
 
   // the capture runs with the GL context current, so the display is at hand
   CDRMPRIMETexture texture;
   texture.Init(eglGetCurrentDisplay());
   if (!texture.Map(buffer))
+  {
+    CLog::Log(LOGWARNING,
+              "CaptureDRMPRIMEVideo: OES import of the video buffer failed ({}x{}); video "
+              "screenshot unavailable on this driver",
+              buffer->GetWidth(), buffer->GetHeight());
     return false;
+  }
 
   const VideoPicture& picture = buffer->GetPicture();
   const unsigned int width = spec.width ? spec.width : buffer->GetWidth();
@@ -75,6 +86,11 @@ bool CaptureDRMPRIMEVideo(CVideoBufferDRMPRIME* buffer,
 
   // no separate ES2 gate: the sized formats fail completeness on an ES2 context
   bool ok = glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
+  if (!ok)
+    CLog::Log(LOGWARNING,
+              "CaptureDRMPRIMEVideo: {} capture FBO incomplete at {}x{}; video screenshot "
+              "unavailable on this driver",
+              highDepth ? "10-bit" : "8-bit", width, height);
   if (ok)
   {
     glViewport(0, 0, static_cast<GLsizei>(width), static_cast<GLsizei>(height));
