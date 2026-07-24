@@ -5427,6 +5427,18 @@ bool IsChapterFullyCut(const CEdl& edl,
   }
   return false;
 }
+
+// Translate a raw demuxer/inputstream chapter number to the corresponding 1-based visible
+// chapter number using a just-built rawChapters map. Returns 0 if rawChapter has no visible
+// counterpart (e.g. it was filtered out as fully cut).
+int ToVisibleChapter(const std::vector<int>& rawChapters, int rawChapter)
+{
+  const auto it = std::ranges::find(rawChapters, rawChapter);
+  if (it != rawChapters.end())
+    return static_cast<int>(std::distance(rawChapters.begin(), it)) + 1;
+
+  return 0;
+}
 } // namespace
 
 void CVideoPlayer::UpdatePlayState(double timeout)
@@ -5456,16 +5468,6 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 
   if (m_pDemuxer)
   {
-    if (IsInMenuInternal() && pMenu && !pMenu->CanSeek())
-    {
-      state.chapter = 0;
-    }
-    else
-    {
-      state.chapter = m_pDemuxer->GetChapter();
-      chapterNbEnabled = true;
-    }
-
     const std::chrono::milliseconds rawStreamLength{m_pDemuxer->GetStreamLength()};
 
     state.chapters.clear();
@@ -5489,6 +5491,17 @@ void CVideoPlayer::UpdatePlayState(double timeout)
         state.rawChapters.emplace_back(i + 1);
       }
     }
+
+    if (IsInMenuInternal() && pMenu && !pMenu->CanSeek())
+    {
+      state.chapter = 0;
+    }
+    else
+    {
+      state.chapter = ToVisibleChapter(state.rawChapters, m_pDemuxer->GetChapter());
+      chapterNbEnabled = true;
+    }
+
     state.time = DVD_TIME_TO_MSEC(m_clock.GetClock());
     // Let the clock catch up after seek
     if (m_CurrentVideo.startpts != DVD_NOPTS_VALUE &&
@@ -5523,16 +5536,6 @@ void CVideoPlayer::UpdatePlayState(double timeout)
     CDVDInputStream::IChapter* pChapter = m_pInputStream->GetIChapter();
     if (pChapter)
     {
-      if (IsInMenuInternal() && pMenu && !pMenu->CanSeek())
-      {
-        state.chapter = 0;
-      }
-      else
-      {
-        state.chapter = pChapter->GetChapter();
-        chapterNbEnabled = true;
-      }
-
       state.chapters.clear();
       state.rawChapters.clear();
       if (const int chapterCount = pChapter->GetChapterCount(); chapterCount > 0)
@@ -5549,6 +5552,16 @@ void CVideoPlayer::UpdatePlayState(double timeout)
           pChapter->GetChapterName(p.first, i + 1);
           state.rawChapters.emplace_back(i + 1);
         }
+      }
+
+      if (IsInMenuInternal() && pMenu && !pMenu->CanSeek())
+      {
+        state.chapter = 0;
+      }
+      else
+      {
+        state.chapter = ToVisibleChapter(state.rawChapters, pChapter->GetChapter());
+        chapterNbEnabled = true;
       }
     }
 
