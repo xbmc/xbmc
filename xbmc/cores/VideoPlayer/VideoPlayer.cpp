@@ -71,6 +71,7 @@
 #include <limits>
 #include <memory>
 #include <mutex>
+#include <ranges>
 #include <utility>
 
 using namespace KODI;
@@ -3078,11 +3079,14 @@ void CVideoPlayer::HandleMessages()
         seekDone = true;
       };
 
+      // newChapter is kept in "visible" chapter numbering throughout (as reported by
+      // GetChapter()/GetChapterCount()); it is translated to the demuxer/inputstream's own
+      // chapter numbering via ToRawChapter() only at the point of calling into them.
       if (m_pDemuxer)
       {
         const bool forward{newChapter > GetChapter()};
-        std::chrono::milliseconds position{m_pDemuxer->GetChapterPos(newChapter)};
-        const int chapterCount{m_pDemuxer->GetChapterCount()};
+        std::chrono::milliseconds position{m_pDemuxer->GetChapterPos(ToRawChapter(newChapter))};
+        const int chapterCount{GetChapterCount()};
         auto inEdit{m_Edl.InEdit(position)};
         inCut = inEdit && inEdit.value()->action == EDL::Action::CUT;
         if (inCut)
@@ -3091,7 +3095,7 @@ void CVideoPlayer::HandleMessages()
           while (inCut && ((forward && newChapter < chapterCount) || (!forward && newChapter > 1)))
           {
             newChapter += step;
-            position = m_pDemuxer->GetChapterPos(newChapter);
+            position = m_pDemuxer->GetChapterPos(ToRawChapter(newChapter));
             inEdit = m_Edl.InEdit(position);
             inCut = inEdit && inEdit.value()->action == EDL::Action::CUT;
           }
@@ -3105,15 +3109,25 @@ void CVideoPlayer::HandleMessages()
         }
         else if (!inCut)
         {
-          if (m_pDemuxer->SeekChapter(newChapter, &start))
+          if (m_pDemuxer->SeekChapter(ToRawChapter(newChapter), &start))
             FinishChapterSeek();
         }
       }
       if (!inCut && !seekDone && m_pInputStream)
       {
         CDVDInputStream::IChapter* pChapter = m_pInputStream->GetIChapter();
-        if (pChapter && pChapter->SeekChapter(newChapter))
-          FinishChapterSeek();
+        if (pChapter)
+        {
+          const int rawChapter{ToRawChapter(newChapter)};
+          if (pChapter->SeekChapter(rawChapter))
+          {
+            // IChapter::SeekChapter() has no startpts out param, unlike the demuxer's
+            // SeekChapter()/SeekTime(), so approximate the landed position with the
+            // chapter's nominal (raw) start instead of leaving start/offset at 0.
+            start = DVD_MSEC_TO_TIME(static_cast<double>(pChapter->GetChapterPos(rawChapter).count()));
+            FinishChapterSeek();
+          }
+        }
       }
     }
     else if (pMsg->IsType(CDVDMsg::DEMUXER_RESET))
@@ -5162,6 +5176,15 @@ std::optional<std::chrono::milliseconds> CVideoPlayer::GetChapterPosMs(int chapt
   return std::nullopt;
 }
 
+int CVideoPlayer::ToRawChapter(int visibleChapter) const
+{
+  std::unique_lock lock(m_StateSection);
+  if (visibleChapter > 0 && visibleChapter <= static_cast<int>(m_State.rawChapters.size()))
+    return m_State.rawChapters[visibleChapter - 1];
+
+  return visibleChapter;
+}
+
 int CVideoPlayer::GetPreviousChapter()
 {
   // 5-second grace period from chapter start to skip backwards to previous chapter
@@ -5378,6 +5401,32 @@ int CalculateCurrentChapter(
 
   return 0;
 }
+
+// A chapter is fully cut (i.e. not reachable/visible to the user) if its whole
+// [start, end) span, on the original (pre-EDL) timeline, is covered by the union of one or
+// more contiguous/overlapping EDL CUTs.
+bool IsChapterFullyCut(const CEdl& edl,
+                       std::chrono::milliseconds chapterStart,
+                       std::chrono::milliseconds chapterEnd)
+{
+  if (!edl.HasCuts())
+    return false;
+
+  // GetRawEditList() is sorted ascending by start
+  std::chrono::milliseconds covered{chapterStart};
+  for (const EDL::Edit& edit : edl.GetRawEditList())
+  {
+    if (edit.action != EDL::Action::CUT || edit.end <= covered)
+      continue;
+    if (edit.start > covered)
+      break; // gap between cuts - some visible content remains
+
+    covered = edit.end;
+    if (covered >= chapterEnd)
+      return true;
+  }
+  return false;
+}
 } // namespace
 
 void CVideoPlayer::UpdatePlayState(double timeout)
@@ -5417,14 +5466,27 @@ void CVideoPlayer::UpdatePlayState(double timeout)
       chapterNbEnabled = true;
     }
 
+    const std::chrono::milliseconds rawStreamLength{m_pDemuxer->GetStreamLength()};
+
     state.chapters.clear();
+    state.rawChapters.clear();
     if (const int chapterCount = m_pDemuxer->GetChapterCount(); chapterCount > 0)
     {
       for (int i = 0, ie = chapterCount; i < ie; ++i)
       {
-        auto& p = state.chapters.emplace_back(
-            std::string{}, m_Edl.GetTimeWithoutCuts(m_pDemuxer->GetChapterPos(i + 1)));
+        const std::chrono::milliseconds rawStart{m_pDemuxer->GetChapterPos(i + 1)};
+        // GetStreamLength() returns 0 when the duration is unknown (e.g. live/network
+        // streams)
+        const std::chrono::milliseconds rawEnd{
+            i + 1 < ie ? m_pDemuxer->GetChapterPos(i + 2)
+                       : (rawStreamLength > rawStart ? rawStreamLength
+                                                      : std::chrono::milliseconds::max())};
+        if (IsChapterFullyCut(m_Edl, rawStart, rawEnd))
+          continue;
+
+        auto& p = state.chapters.emplace_back(std::string{}, m_Edl.GetTimeWithoutCuts(rawStart));
         m_pDemuxer->GetChapterName(p.first, i + 1);
+        state.rawChapters.emplace_back(i + 1);
       }
     }
     state.time = DVD_TIME_TO_MSEC(m_clock.GetClock());
@@ -5433,7 +5495,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
         state.time < DVD_TIME_TO_MSEC(m_CurrentVideo.startpts))
       state.time = DVD_TIME_TO_MSEC(m_CurrentVideo.startpts);
 
-    state.timeMax = m_pDemuxer->GetStreamLength();
+    state.timeMax = static_cast<double>(rawStreamLength.count());
   }
 
   state.canpause = false;
@@ -5444,6 +5506,20 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 
   if (m_pInputStream)
   {
+    CDVDInputStream::ITimes* pTimes = m_pInputStream->GetITimes();
+    CDVDInputStream::IDisplayTime* pDisplayTime = m_pInputStream->GetIDisplayTime();
+
+    CDVDInputStream::ITimes::Times times;
+    const bool haveTimes = pTimes && pTimes->GetTimes(times);
+
+    // Raw (pre-EDL) upper bound of the stream, needed below to tell whether the last
+    // chapter is fully contained within a trailing EDL cut.
+    std::chrono::milliseconds rawStreamEnd{std::chrono::milliseconds::max()};
+    if (haveTimes)
+      rawStreamEnd = std::chrono::milliseconds(DVD_TIME_TO_MSEC(times.ptsEnd - times.ptsStart));
+    else if (pDisplayTime && pDisplayTime->GetTotalTime() > 0)
+      rawStreamEnd = std::chrono::milliseconds(pDisplayTime->GetTotalTime());
+
     CDVDInputStream::IChapter* pChapter = m_pInputStream->GetIChapter();
     if (pChapter)
     {
@@ -5458,21 +5534,25 @@ void CVideoPlayer::UpdatePlayState(double timeout)
       }
 
       state.chapters.clear();
+      state.rawChapters.clear();
       if (const int chapterCount = pChapter->GetChapterCount(); chapterCount > 0)
       {
         for (int i = 0, ie = chapterCount; i < ie; ++i)
         {
-          auto& p = state.chapters.emplace_back(std::string{}, pChapter->GetChapterPos(i + 1));
+          const std::chrono::milliseconds rawStart{pChapter->GetChapterPos(i + 1)};
+          const std::chrono::milliseconds rawEnd{i + 1 < ie ? pChapter->GetChapterPos(i + 2)
+                                                             : rawStreamEnd};
+          if (IsChapterFullyCut(m_Edl, rawStart, rawEnd))
+            continue;
+
+          auto& p = state.chapters.emplace_back(std::string{}, m_Edl.GetTimeWithoutCuts(rawStart));
           pChapter->GetChapterName(p.first, i + 1);
+          state.rawChapters.emplace_back(i + 1);
         }
       }
     }
 
-    CDVDInputStream::ITimes* pTimes = m_pInputStream->GetITimes();
-    CDVDInputStream::IDisplayTime* pDisplayTime = m_pInputStream->GetIDisplayTime();
-
-    CDVDInputStream::ITimes::Times times;
-    if (pTimes && pTimes->GetTimes(times))
+    if (haveTimes)
     {
       state.startTime = times.startTime;
       state.time = (m_clock.GetClock() - times.ptsStart) * 1000 / DVD_TIME_BASE;
