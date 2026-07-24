@@ -9,7 +9,6 @@
 #pragma once
 
 #include "DebugInfo.h"
-#include "RenderCapture.h"
 #include "RenderInfo.h"
 #include "VideoShaders/ShaderFormats.h"
 #include "cores/IPlayer.h"
@@ -67,7 +66,6 @@ public:
   virtual CRenderInfo GetRenderInfo() { return CRenderInfo(); }
   virtual void Update() = 0;
   virtual void RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha) = 0;
-  virtual bool RenderCapture(int index, CRenderCapture* capture) = 0;
   virtual bool ConfigChanged(const VideoPicture &picture) = 0;
 
   // Feature support
@@ -97,8 +95,6 @@ public:
 
   // Gets debug info from render buffer
   virtual DEBUG_INFO_VIDEO GetDebugInfo(int idx) { return {}; }
-
-  virtual CRenderCapture* GetRenderCapture() { return nullptr; }
 
 protected:
   void CalcDestRect(float offsetX,

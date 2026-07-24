@@ -10,19 +10,20 @@
 
 /* to use the same as player */
 #include "../VideoPlayer/DVDClock.h"
-#include "RenderCapture.h"
 #include "RenderFactory.h"
 #include "RenderFlags.h"
 #include "ServiceBroker.h"
 #include "application/Application.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "messaging/ApplicationMessenger.h"
+#include "rendering/capture/CaptureBlit.h"
+#include "rendering/capture/CaptureMetadata.h"
+#include "rendering/capture/CaptureService.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
-#include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
@@ -39,8 +40,6 @@ void CRenderManager::CClockSync::Reset()
   m_syncOffset = 0;
   m_enabled = false;
 }
-
-unsigned int CRenderManager::m_nextCaptureId = 0;
 
 CRenderManager::CRenderManager(CDVDClock &clock, IRenderMsg *player) :
   m_dvdClock(clock),
@@ -356,8 +355,6 @@ void CRenderManager::FrameMove()
   // to use during the render pass. PrepareOverlays MarkDirty's on libass
   // changes and on PGS/DVB/SPU arrival/disappearance.
   m_overlays.PrepareOverlays(m_presentsource);
-
-  ManageCaptures();
 }
 
 void CRenderManager::PreInit()
@@ -412,12 +409,12 @@ void CRenderManager::UnInit()
   m_overlays.UnInit();
   m_debugRenderer.Dispose();
 
+  m_captureBlit.reset();
   DeleteRenderer();
 
   m_renderState = STATE_UNCONFIGURED;
   m_picture.Reset();
   m_bRenderGUI = false;
-  RemoveCaptures();
 
   m_initEvent.Set();
 }
@@ -513,179 +510,68 @@ void CRenderManager::DeleteRenderer()
   }
 }
 
-unsigned int CRenderManager::AllocRenderCapture()
+void CRenderManager::ServiceVideoCaptures()
 {
-  if (m_pRenderer)
+  using namespace KODI::RENDERING::CAPTURE;
+
+  const auto captureService = CServiceBroker::GetCaptureService();
+  if (!captureService)
+    return;
+
+  const auto requests = captureService->TakeActive(CaptureContent::VIDEO);
+  if (requests.empty())
+    return;
+
+  // video composited outside Kodi's GL (D2P plane, Android video surface,
+  // webOS video plane) leaves nothing in the framebuffer to copy
+  if (m_pRenderer->HasVideoPlane())
   {
-    CRenderCapture* capture = m_pRenderer->GetRenderCapture();
-    if (capture)
-    {
-      m_captures[m_nextCaptureId] = capture;
-      return m_nextCaptureId++;
-    }
-  }
-
-  return m_nextCaptureId;
-}
-
-void CRenderManager::ReleaseRenderCapture(unsigned int captureId)
-{
-  std::unique_lock lock(m_captCritSect);
-
-  std::map<unsigned int, CRenderCapture*>::iterator it;
-  it = m_captures.find(captureId);
-
-  if (it != m_captures.end())
-    it->second->SetState(CAPTURESTATE_NEEDSDELETE);
-}
-
-void CRenderManager::StartRenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags)
-{
-  std::unique_lock lock(m_captCritSect);
-
-  std::map<unsigned int, CRenderCapture*>::iterator it;
-  it = m_captures.find(captureId);
-  if (it == m_captures.end())
-  {
-    CLog::Log(LOGERROR, "CRenderManager::Capture - unknown capture id: {}", captureId);
+    for (const auto& request : requests)
+      captureService->Fail(request);
     return;
   }
 
-  CRenderCapture *capture = it->second;
+  CRect src;
+  CRect dst;
+  CRect view;
+  m_pRenderer->GetVideoRect(src, dst, view);
 
-  capture->SetState(CAPTURESTATE_NEEDSRENDER);
-  capture->SetUserState(CAPTURESTATE_WORKING);
-  capture->SetWidth(width);
-  capture->SetHeight(height);
-  capture->SetFlags(flags);
-  capture->GetEvent().Reset();
+  // zoom modes push destRect past the output; the copy is clamped to the
+  // visible region, so native-size targets must be sized from it too
+  const CGraphicContext& gfx = CServiceBroker::GetWinSystem()->GetGfxContext();
+  CRect visible{dst};
+  visible.Intersect(
+      CRect(0.0f, 0.0f, static_cast<float>(gfx.GetWidth()), static_cast<float>(gfx.GetHeight())));
 
-  if (CServiceBroker::GetAppMessenger()->IsProcessThread())
+  if (!m_captureBlit)
+    m_captureBlit = std::make_unique<CCaptureBlit>();
+
+  for (const auto& request : requests)
   {
-    if (flags & CAPTUREFLAG_IMMEDIATELY)
+    const unsigned int width =
+        request->spec.width ? request->spec.width : static_cast<unsigned int>(visible.Width());
+    const unsigned int height =
+        request->spec.height ? request->spec.height : static_cast<unsigned int>(visible.Height());
+
+    CaptureResult result;
+    if (m_captureBlit->Blit(visible, width, height, request->spec.format) &&
+        m_captureBlit->Read(result))
     {
-      //render capture and read out immediately
-      RenderCapture(capture);
-      capture->SetUserState(capture->GetState());
-      capture->GetEvent().Set();
-    }
-  }
-
-  if (!m_captures.empty())
-    m_hasCaptures = true;
-}
-
-bool CRenderManager::RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size)
-{
-  std::unique_lock lock(m_captCritSect);
-
-  std::map<unsigned int, CRenderCapture*>::iterator it;
-  it = m_captures.find(captureId);
-  if (it == m_captures.end())
-    return false;
-
-  m_captureWaitCounter++;
-
-  {
-    if (!millis)
-      millis = 1000;
-
-    CSingleExit exitlock(m_captCritSect);
-    if (!it->second->GetEvent().Wait(std::chrono::milliseconds(millis)))
-    {
-      m_captureWaitCounter--;
-      return false;
-    }
-  }
-
-  m_captureWaitCounter--;
-
-  if (it->second->GetUserState() != CAPTURESTATE_DONE)
-    return false;
-
-  unsigned int srcSize = it->second->GetWidth() * it->second->GetHeight() * 4;
-  unsigned int bytes = std::min(srcSize, size);
-
-  memcpy(buffer, it->second->GetPixels(), bytes);
-  return true;
-}
-
-void CRenderManager::ManageCaptures()
-{
-  //no captures, return here so we don't do an unnecessary lock
-  if (!m_hasCaptures)
-    return;
-
-  std::unique_lock lock(m_captCritSect);
-
-  std::map<unsigned int, CRenderCapture*>::iterator it = m_captures.begin();
-  while (it != m_captures.end())
-  {
-    CRenderCapture* capture = it->second;
-
-    if (capture->GetState() == CAPTURESTATE_NEEDSDELETE)
-    {
-      delete capture;
-      it = m_captures.erase(it);
-      continue;
-    }
-
-    if (capture->GetState() == CAPTURESTATE_NEEDSRENDER)
-      RenderCapture(capture);
-    else if (capture->GetState() == CAPTURESTATE_NEEDSREADOUT)
-      capture->ReadOut();
-
-    if (capture->GetState() == CAPTURESTATE_DONE || capture->GetState() == CAPTURESTATE_FAILED)
-    {
-      //tell the thread that the capture is done or has failed
-      capture->SetUserState(capture->GetState());
-      capture->GetEvent().Set();
-
-      if (capture->GetFlags() & CAPTUREFLAG_CONTINUOUS)
-      {
-        capture->SetState(CAPTURESTATE_NEEDSRENDER);
-
-        //if rendering this capture continuously, and readout is async, render a new capture immediately
-        if (capture->IsAsync() && !(capture->GetFlags() & CAPTUREFLAG_IMMEDIATELY))
-          RenderCapture(capture);
-      }
-      ++it;
+      result.color = GetOutputColorMetadata(*CServiceBroker::GetWinSystem());
+      // the presented PQ is the content's during passthrough, so carry its
+      // mastering metadata verbatim: the source peak an SDR tonemap needs.
+      // NOTE: m_picture, not m_pConfigPicture, which Configure() has already
+      // reset by the time this frame reaches CONFIGURED.
+      result.hasDisplayMetadata = m_picture.hasDisplayMetadata;
+      result.displayMetadata = m_picture.displayMetadata;
+      result.hasLightMetadata = m_picture.hasLightMetadata;
+      result.lightMetadata = m_picture.lightMetadata;
+      result.content = CaptureContent::VIDEO; // this tap delivers video-only
+      captureService->Complete(request, std::move(result));
     }
     else
-    {
-      ++it;
-    }
+      captureService->Fail(request);
   }
-
-  if (m_captures.empty())
-    m_hasCaptures = false;
-}
-
-void CRenderManager::RenderCapture(CRenderCapture* capture)
-{
-  if (!m_pRenderer || !m_pRenderer->RenderCapture(m_presentsource, capture))
-    capture->SetState(CAPTURESTATE_FAILED);
-}
-
-void CRenderManager::RemoveCaptures()
-{
-  std::unique_lock lock(m_captCritSect);
-
-  while (m_captureWaitCounter > 0)
-  {
-    for (auto entry : m_captures)
-    {
-      entry.second->GetEvent().Set();
-    }
-    CSingleExit lockexit(m_captCritSect);
-    KODI::TIME::Sleep(10ms);
-  }
-
-  for (auto entry : m_captures)
-  {
-    delete entry.second;
-  }
-  m_captures.clear();
 }
 
 void CRenderManager::SetViewMode(int iViewMode)
@@ -724,6 +610,7 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
   if (!gui && m_pRenderer->IsGuiLayer())
     return;
 
+  bool presented = false;
   if (!gui || m_pRenderer->IsGuiLayer())
   {
     SPresent& m = m_Queue[m_presentsource];
@@ -734,7 +621,13 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
       PresentBlend(clear, flags, alpha);
     else
       PresentSingle(clear, flags, alpha);
+
+    presented = true;
   }
+
+  // the just-presented region is video-only: OSD, GUI and subtitles come later
+  if (presented)
+    ServiceVideoCaptures();
 
   if (gui)
   {

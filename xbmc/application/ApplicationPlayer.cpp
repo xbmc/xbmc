@@ -991,38 +991,6 @@ bool CApplicationPlayer::Supports(ERENDERFEATURE feature) const
     return false;
 }
 
-unsigned int CApplicationPlayer::RenderCaptureAlloc()
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    return player->RenderCaptureAlloc();
-  else
-    return 0;
-}
-
-void CApplicationPlayer::RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags)
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    player->RenderCapture(captureId, width, height, flags);
-}
-
-void CApplicationPlayer::RenderCaptureRelease(unsigned int captureId)
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    player->RenderCaptureRelease(captureId);
-}
-
-bool CApplicationPlayer::RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size)
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    return player->RenderCaptureGetPixels(captureId, millis, buffer, size);
-  else
-    return false;
-}
-
 bool CApplicationPlayer::IsExternalPlaying() const
 {
   const std::shared_ptr<const IPlayer> player = GetInternal();
