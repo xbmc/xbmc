@@ -118,7 +118,12 @@ public:
     if (!GetInstance().CanLogComponent(component))
       return;
 
+#if FMT_VERSION >= 120200
+    GetInstance().FormatAndLogInternal(level, component, format.str,
+                                       fmt::make_format_args(args...));
+#else
     GetInstance().FormatAndLogInternal(level, component, format, fmt::make_format_args(args...));
+#endif
   }
 
   template<typename... Args>
@@ -127,8 +132,13 @@ public:
                   fmt::format_string<Args...> format,
                   Args&&... args)
   {
+#if FMT_VERSION >= 120200
+    GetInstance().FormatAndLogInternal(loggerName, MapLogLevel(level), format.str,
+                                       fmt::make_format_args(args...));
+#else
     GetInstance().FormatAndLogInternal(loggerName, MapLogLevel(level), format,
                                        fmt::make_format_args(args...));
+#endif
   }
 
 #ifdef TARGET_WINDOWS
