@@ -40,13 +40,16 @@
 #include <utility>
 #include <vector>
 
+// clang-format off
 #define SETTING_AUDIO_VOLUME                   "audio.volume"
 #define SETTING_AUDIO_VOLUME_AMPLIFICATION     "audio.volumeamplification"
 #define SETTING_AUDIO_CENTERMIXLEVEL           "audio.centermixlevel"
 #define SETTING_AUDIO_DELAY                    "audio.delay"
 #define SETTING_AUDIO_STREAM                   "audio.stream"
 #define SETTING_AUDIO_PASSTHROUGH              "audio.digitalanalog"
+#define SETTING_AUDIO_ISPASSTHROUGH            "audio.isplayingpassthrough"
 #define SETTING_AUDIO_MAKE_DEFAULT             "audio.makedefault"
+// clang-format on
 
 CGUIDialogAudioSettings::CGUIDialogAudioSettings()
   : CGUIDialogSettingsManualBase(WINDOW_DIALOG_AUDIO_OSD_SETTINGS, "DialogSettings.xml")
@@ -73,6 +76,12 @@ void CGUIDialogAudioSettings::FrameMove()
     GetSettingsManager()->SetNumber(SETTING_AUDIO_DELAY,
                                     static_cast<double>(videoSettings.m_AudioDelay));
     GetSettingsManager()->SetBool(SETTING_AUDIO_PASSTHROUGH, CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH));
+
+    // the player may switch in/out of passthrough asynchronously (e.g. after the passthrough
+    // setting above is toggled, or the stream's own properties change) - keep this in sync every
+    // frame so the volume/amplification/centermix dependencies below get re-evaluated as soon as
+    // it actually changes, rather than only when the passthrough setting itself changes
+    GetSettingsManager()->SetBool(SETTING_AUDIO_ISPASSTHROUGH, appPlayer->IsPassthrough());
   }
 
   CGUIDialogSettingsManualBase::FrameMove();
@@ -247,15 +256,16 @@ void CGUIDialogAudioSettings::InitializeSettings()
     appPlayer->GetAudioCapabilities(m_audioCaps);
   }
 
-  // register IsPlayingPassthrough condition
-  GetSettingsManager()->AddDynamicCondition("IsPlayingPassthrough", IsPlayingPassthrough);
+  AddToggle(groupAudio, SETTING_AUDIO_ISPASSTHROUGH, 348, SettingLevel::Basic,
+            appPlayer->IsPassthrough(), false, false);
 
   CSettingDependency dependencyAudioOutputPassthroughDisabled(SettingDependencyType::Enable, GetSettingsManager());
   dependencyAudioOutputPassthroughDisabled.Or()
       ->Add(std::make_shared<CSettingDependencyCondition>(SETTING_AUDIO_PASSTHROUGH, "false",
                                                           SettingDependencyOperator::Equals, false,
                                                           GetSettingsManager()))
-      ->Add(std::make_shared<CSettingDependencyCondition>("IsPlayingPassthrough", "", "", true,
+      ->Add(std::make_shared<CSettingDependencyCondition>(SETTING_AUDIO_ISPASSTHROUGH, "false",
+                                                          SettingDependencyOperator::Equals, false,
                                                           GetSettingsManager()));
   SettingDependencies depsAudioOutputPassthroughDisabled;
   depsAudioOutputPassthroughDisabled.push_back(dependencyAudioOutputPassthroughDisabled);
@@ -281,9 +291,10 @@ void CGUIDialogAudioSettings::InitializeSettings()
 
   // downmix: center mix level
   {
-    AddSlider(groupAudio, SETTING_AUDIO_CENTERMIXLEVEL, 39112, SettingLevel::Basic,
-              videoSettings.m_CenterMixLevel, 14050, -10, 1, 30,
-              -1, false, false, true, 39113);
+    std::shared_ptr<CSettingInt> settingAudioCenterMixLevel =
+        AddSlider(groupAudio, SETTING_AUDIO_CENTERMIXLEVEL, 39112, SettingLevel::Basic,
+                  videoSettings.m_CenterMixLevel, 14050, -10, 1, 30, -1, false, false, true, 39113);
+    settingAudioCenterMixLevel->SetDependencies(depsAudioOutputPassthroughDisabled);
   }
 
   // audio delay setting
@@ -337,15 +348,6 @@ void CGUIDialogAudioSettings::AddAudioStreams(const std::shared_ptr<CSettingGrou
     m_audioStream = 0;
 
   AddList(group, settingId, 460, SettingLevel::Basic, m_audioStream, AudioStreamsOptionFiller, 460);
-}
-
-bool CGUIDialogAudioSettings::IsPlayingPassthrough(const std::string& condition,
-                                                   const std::string& value,
-                                                   const SettingConstPtr& setting)
-{
-  const auto& components = CServiceBroker::GetAppComponents();
-  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-  return appPlayer->IsPassthrough();
 }
 
 namespace
