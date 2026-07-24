@@ -89,6 +89,15 @@ void CVideoPlayerWebOS::GetVideoResolution(unsigned int& width, unsigned int& he
     CVideoPlayer::GetVideoResolution(width, height);
 }
 
+bool CVideoPlayerWebOS::OnAudioPassthroughSettingChanged()
+{
+  // the Starfish pipeline only selects passthrough when a stream is opened
+  if (m_mediaPipelineWebOS)
+    return false;
+
+  return CVideoPlayer::OnAudioPassthroughSettingChanged();
+}
+
 void CVideoPlayerWebOS::UpdateContent()
 {
   CVideoPlayer::UpdateContent();
