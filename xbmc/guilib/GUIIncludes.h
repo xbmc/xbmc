@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "SkinMapManager.h"
 #include "interfaces/info/InfoBool.h"
 
 #include <functional>
@@ -33,12 +34,12 @@ public:
   ~CGUIIncludes();
 
   /*!
-   \brief Clear all include components (defaults, constants, variables, expressions and includes)
+   \brief Clear all include components (defaults, constants, variables, expressions, includes and maps)
   */
   void Clear();
 
   /*!
-   \brief Load all include components(defaults, constants, variables, expressions and includes)
+   \brief Load all include components (defaults, constants, variables, expressions, includes and maps)
    from the main entrypoint \code{file}. Flattens nested expressions and expressions in variable
    conditions after loading all other included files.
 
@@ -64,6 +65,14 @@ public:
    */
   const INFO::CSkinVariableString* CreateSkinVariable(const std::string& name, int context);
 
+  /*!
+   \brief Look up a value in a skin-defined map.
+   \param mapName  the skin-defined map name
+   \param key      the raw infolabel value to look up
+   \return mapped display string, or \p key unchanged if no mapping exists
+  */
+  std::string LookupSkinMap(std::string_view mapName, std::string_view key) const;
+
 private:
   enum ResolveParamsResult
   {
@@ -73,7 +82,7 @@ private:
   };
 
   /*!
-   \brief Load all include components (defaults, constants, variables, expressions and includes)
+   \brief Load all include components (defaults, constants, variables, expressions, includes and maps)
    from the given \code{file}.
 
    \param file the file to load
@@ -88,6 +97,12 @@ private:
   void LoadVariables(const TiXmlElement *node);
   void LoadConstants(const TiXmlElement *node);
   void LoadExpressions(const TiXmlElement *node);
+
+  /*!
+   \brief Load all <map> elements from the given XML node.
+   \param node the root element of an includes file
+  */
+  void LoadMaps(const TiXmlElement* node);
 
   /*!
    \brief Resolve all expressions containing other expressions to a single evaluatable expression.
@@ -139,4 +154,6 @@ private:
   std::unordered_map<std::string, TiXmlElement, StringHash, std::equal_to<>> m_skinvariables;
   std::unordered_map<std::string, std::string, StringHash, std::equal_to<>> m_constants;
   std::unordered_map<std::string, std::string, StringHash, std::equal_to<>> m_expressions;
+
+  KODI::GUILIB::CSkinMapManager m_skinMapManager;
 };

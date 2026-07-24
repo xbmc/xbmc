@@ -133,10 +133,20 @@ private:
   class CInfoPortion
   {
   public:
+    /*!
+     \brief Construct an info portion.
+     \param info registered info label ID, or 0 for a plain string portion
+     \param prefix string to prepend to the resolved value (supports $COMMA, $LBRACKET, $RBRACKET)
+     \param postfix string to append to the resolved value (supports $COMMA, $LBRACKET, $RBRACKET)
+     \param escaped if true, the resolved value is escaped and quoted (used by $ESCINFO, $ESCVAR, $ESCMAP)
+     \param mapName if non-empty, the resolved infolabel value is looked up in this skin map before display (used by $MAP and $ESCMAP)
+     \since v22
+    */
     CInfoPortion(int info,
                  const std::string& prefix,
                  const std::string& postfix,
-                 bool escaped = false);
+                 bool escaped = false,
+                 const std::string& mapName = "");
     bool NeedsUpdate(std::string_view label) const;
     std::string Get() const;
     int GetInfo() const { return m_info; }
@@ -145,8 +155,10 @@ private:
     int m_info;
     bool m_escaped;
     mutable std::string m_label;
+    mutable std::string m_rawLabel; ///< last un-mapped label for $MAP[...] portions
     std::string m_prefix;
     std::string m_postfix;
+    std::string m_mapName; ///< non-empty when this portion uses $MAP[...] lookup
   };
 
   /*! \brief Parse a provided label string into the list of info portions that may compose the label. Info portions mean the portions of complex
