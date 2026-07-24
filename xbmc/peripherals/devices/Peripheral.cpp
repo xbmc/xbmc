@@ -70,6 +70,7 @@ CPeripheral::CPeripheral(CPeripherals& manager,
 {
   PeripheralTypeTranslator::FormatHexString(scanResult.m_iVendorId, m_strVendorId);
   PeripheralTypeTranslator::FormatHexString(scanResult.m_iProductId, m_strProductId);
+  m_strPhysicalLocation = scanResult.m_strPhysicalLocation;
   if (scanResult.m_iSequence > 0)
   {
     m_strFileLocation =
@@ -170,28 +171,65 @@ bool CPeripheral::Initialise(void)
 
   m_manager.GetSettingsFromMapping(*this);
 
+  const std::string busStr = PeripheralTypeTranslator::BusTypeToString(m_mappedBusType);
+
   std::string safeDeviceName = m_strDeviceName;
   StringUtils::Replace(safeDeviceName, ' ', '_');
+  safeDeviceName = CUtil::MakeLegalFileName(std::move(safeDeviceName), LegalPath::WIN32_COMPAT);
 
+  // Disambiguates settings for adapters of the same model (identical vendor/product/name).
+  std::string safeLocation = m_strPhysicalLocation;
+  StringUtils::Replace(safeLocation, ' ', '_');
+  safeLocation = CUtil::MakeLegalFileName(std::move(safeLocation), LegalPath::WIN32_COMPAT);
+
+  // Settings file name without a location component (backward compatible).
+  std::string legacyFile;
   if (m_iVendorId == 0x0000 && m_iProductId == 0x0000)
   {
-    m_strSettingsFile = StringUtils::Format(
-        "special://profile/peripheral_data/{}_{}.xml",
-        PeripheralTypeTranslator::BusTypeToString(m_mappedBusType),
-        CUtil::MakeLegalFileName(std::move(safeDeviceName), LegalPath::WIN32_COMPAT));
+    legacyFile = StringUtils::Format("special://profile/peripheral_data/{}_{}.xml", busStr,
+                                     safeDeviceName);
   }
   else
   {
-    // Backwards compatibility - old settings files didn't include the device name
-    m_strSettingsFile = StringUtils::Format(
-        "special://profile/peripheral_data/{}_{}_{}.xml",
-        PeripheralTypeTranslator::BusTypeToString(m_mappedBusType), m_strVendorId, m_strProductId);
+    legacyFile = StringUtils::Format("special://profile/peripheral_data/{}_{}_{}.xml", busStr,
+                                     m_strVendorId, m_strProductId);
 
-    if (!CFileUtils::Exists(m_strSettingsFile))
-      m_strSettingsFile = StringUtils::Format(
-          "special://profile/peripheral_data/{}_{}_{}_{}.xml",
-          PeripheralTypeTranslator::BusTypeToString(m_mappedBusType), m_strVendorId, m_strProductId,
-          CUtil::MakeLegalFileName(std::move(safeDeviceName), LegalPath::WIN32_COMPAT));
+    // even older layout also included the device name
+    if (!CFileUtils::Exists(legacyFile))
+      legacyFile = StringUtils::Format("special://profile/peripheral_data/{}_{}_{}_{}.xml", busStr,
+                                       m_strVendorId, m_strProductId, safeDeviceName);
+  }
+
+  // Settings file scoped to this adapter's physical location. The display name
+  // must not be part of the identity (it can change - e.g. a CEC adapter is
+  // "HDMI" alone but "HDMI 1"/"HDMI 2" once a second one appears - which would
+  // orphan the saved settings).
+  std::string locationFile;
+  if (m_iVendorId == 0x0000 && m_iProductId == 0x0000)
+  {
+    locationFile = StringUtils::Format("special://profile/peripheral_data/{}_{}.xml", busStr,
+                                       safeLocation);
+  }
+  else
+  {
+    locationFile = StringUtils::Format("special://profile/peripheral_data/{}_{}_{}_{}.xml", busStr,
+                                       m_strVendorId, m_strProductId, safeLocation);
+  }
+
+  // Write to the per-location file, but keep reading the legacy file until it is superseded by
+  // a write, so read-only sessions don't migrate.
+  if (safeLocation.empty())
+  {
+    m_strSettingsFile = legacyFile;
+    m_strSettingsFileLoad = legacyFile;
+  }
+  else
+  {
+    m_strSettingsFile = locationFile;
+    if (!CFileUtils::Exists(locationFile) && CFileUtils::Exists(legacyFile))
+      m_strSettingsFileLoad = legacyFile;
+    else
+      m_strSettingsFileLoad = locationFile;
   }
 
   // Load settings and initialize state
@@ -639,7 +677,7 @@ void CPeripheral::PersistSettings(bool bExiting /* = false */)
 void CPeripheral::LoadPersistedSettings(void)
 {
   CXBMCTinyXML2 doc;
-  if (doc.LoadFile(m_strSettingsFile))
+  if (doc.LoadFile(m_strSettingsFileLoad))
   {
     const auto* setting = doc.RootElement()->FirstChildElement("setting");
     while (setting != nullptr)

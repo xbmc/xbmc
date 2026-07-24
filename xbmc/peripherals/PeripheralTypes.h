@@ -345,6 +345,8 @@ public:
 
   PeripheralType m_type = PERIPHERAL_UNKNOWN;
   std::string m_strLocation;
+  // Stable physical/topology location, used to key per-adapter settings. Empty if unavailable.
+  std::string m_strPhysicalLocation;
   int m_iVendorId = 0;
   int m_iProductId = 0;
   PeripheralType m_mappedType = PERIPHERAL_UNKNOWN;

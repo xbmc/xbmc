@@ -1,8 +1,5 @@
 include ../../Makefile.include CEC-VERSION ../../download-files.include
-DEPS = ../../Makefile.include Makefile CEC-VERSION ../../download-files.include \
-                            001-all-cmakelists.patch \
-                            002-all-libceccmakelists.patch \
-                            003-all-remove_git_info.patch
+DEPS = ../../Makefile.include Makefile CEC-VERSION ../../download-files.include
 
 LIBDYLIB=$(PLATFORM)/build/src/$(LIBNAME)/$(BYPRODUCT)
 ifeq (darwin, $(findstring darwin, $(HOST)))
@@ -13,6 +10,10 @@ CMAKE_OPTIONS=-DBUILD_SHARED_LIBS=1 \
               -DSKIP_PYTHON_WRAPPER:STRING=1 \
               -DCMAKE_PLATFORM_NO_VERSIONED_SONAME=1 \
               -DDISABLE_BUILDINFO=ON \
+              -DDISABLE_CLIENT=ON \
+              -DDISABLE_STATIC=ON \
+              -DCMAKE_INSTALL_LIBDIR=lib \
+              -DCMAKE_INSTALL_INCLUDEDIR=include \
               -DCMAKE_INSTALL_PREFIX=$(PREFIX) \
               -DCMAKE_BUILD_TYPE=Debug
 
@@ -21,9 +22,6 @@ all: .installed-$(PLATFORM)
 .configured-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)/build
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p1 -i ../001-all-cmakelists.patch
-	cd $(PLATFORM); patch -p1 -i ../002-all-libceccmakelists.patch
-	cd $(PLATFORM); patch -p1 -i ../003-all-remove_git_info.patch
 	cd $(PLATFORM)/build; $(CMAKE) ${CMAKE_OPTIONS} ..
 	touch $@
 

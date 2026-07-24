@@ -325,8 +325,10 @@ protected:
   PeripheralBusType m_mappedBusType;
   std::string m_strLocation;
   std::string m_strDeviceName;
-  std::string m_strSettingsFile;
+  std::string m_strSettingsFile; // settings file to write
+  std::string m_strSettingsFileLoad; // settings file to read
   std::string m_strFileLocation;
+  std::string m_strPhysicalLocation; // stable physical/topology location
   int m_iVendorId;
   std::string m_strVendorId;
   int m_iProductId;
