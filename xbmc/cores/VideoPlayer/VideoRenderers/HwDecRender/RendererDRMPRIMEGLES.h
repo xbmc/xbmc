@@ -32,6 +32,8 @@ class BaseYUV2RGBGLSLShader;
 }
 } // namespace Shaders
 
+class CRenderSystemGLES;
+
 class CRendererDRMPRIMEGLES : public CBaseRenderer
 {
 public:
@@ -41,6 +43,13 @@ public:
   // Registration
   static CBaseRenderer* Create(CVideoBuffer* buffer);
   static void Register();
+
+  //! Draw an imported DRMPRIME OES texture as a quad at dest (4 points,
+  //! full-frame texcoords) with SM_TEXTURE_RGBA_OES; sets no contrast or
+  //! brightness. Shared by Render() and direct-to-plane screencap.
+  static void DrawTexture(CRenderSystemGLES& renderSystem,
+                          GLuint texture,
+                          const CPoint dest[4]);
 
   // Player functions
   bool Configure(const VideoPicture& picture, float fps, unsigned int orientation) override;
