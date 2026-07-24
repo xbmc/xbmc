@@ -23,6 +23,12 @@
 #include "windowing/gbm/WinSystemGbm.h"
 #include "windowing/gbm/drm/DRMAtomic.h"
 
+// Video-plane screencap lives in its own GLES unit; the GL import/draw/readback
+// includes stay there. Unavailable on a GL-only build (delegate not compiled).
+#if defined(HAS_GLES)
+#include "cores/VideoPlayer/VideoRenderers/HwDecRender/DRMPRIMECaptureGLES.h"
+#endif
+
 using namespace KODI::WINDOWING::GBM;
 
 CRendererDRMPRIME::~CRendererDRMPRIME()
@@ -210,6 +216,23 @@ bool CRendererDRMPRIME::NeedBuffer(int index)
     return true;
 
   return false;
+}
+
+bool CRendererDRMPRIME::CaptureVideoFrame(const KODI::RENDERING::CAPTURE::CaptureSpec& spec,
+                                          KODI::RENDERING::CAPTURE::CaptureResult& result)
+{
+#if defined(HAS_GLES)
+  if (m_iLastRenderBuffer < 0)
+    return false;
+
+  auto* buffer = dynamic_cast<CVideoBufferDRMPRIME*>(m_buffers[m_iLastRenderBuffer].videoBuffer);
+  if (!buffer || !buffer->IsValid())
+    return false;
+
+  return CaptureDRMPRIMEVideo(buffer, spec, result);
+#else
+  return false;
+#endif
 }
 
 CRenderInfo CRendererDRMPRIME::GetRenderInfo()

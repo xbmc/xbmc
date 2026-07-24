@@ -522,12 +522,19 @@ void CRenderManager::ServiceVideoCaptures()
   if (requests.empty())
     return;
 
-  // video composited outside Kodi's GL (D2P plane, Android video surface,
-  // webOS video plane) leaves nothing in the framebuffer to copy
+  // video on a hardware plane is not in the framebuffer, so the copy-back below
+  // cannot see it. Ask the renderer to produce its own frame instead: DRMPRIME
+  // direct-to-plane does, Android video surface and webOS decline and fail.
   if (m_pRenderer->HasVideoPlane())
   {
     for (const auto& request : requests)
-      captureService->Fail(request);
+    {
+      CaptureResult result;
+      if (m_pRenderer->CaptureVideoFrame(request->spec, result))
+        captureService->Complete(request, std::move(result));
+      else
+        captureService->Fail(request);
+    }
     return;
   }
 
