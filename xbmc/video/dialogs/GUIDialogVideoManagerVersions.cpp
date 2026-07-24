@@ -666,9 +666,11 @@ bool CGUIDialogVideoManagerVersions::ProcessVideoVersion(VideoDbContentType item
 
   const MediaType mediaType{item.GetVideoInfoTag()->m_type};
 
+  const auto isDefault = settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_NEWVERSIONSAREDEFAULT);
+
   return ChooseVideoAndConvertToVideoVersion(
       list, itemType, mediaType, dbId, videodb, MediaRole::NewVersion,
-      action == SimilarVideoScanAction::ASK ? Mode::INTERACTIVE : Mode::NON_INTERACTIVE, true);
+      action == SimilarVideoScanAction::ASK ? Mode::INTERACTIVE : Mode::NON_INTERACTIVE, isDefault);
 }
 
 bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
