@@ -267,7 +267,7 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersion()
 
         return ChooseVideoAndConvertToVideoVersion(items, m_videoAsset->GetVideoContentType(),
                                                    tag->m_type, tag->m_iDbId, videoDb,
-                                                   MediaRole::Parent, Mode::INTERACTIVE);
+                                                   MediaRole::Parent, Mode::INTERACTIVE, false);
       }
 
       case CGUIDialogYesNo::DIALOG_RESULT_YES:
@@ -323,7 +323,7 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersion()
 
     return ChooseVideoAndConvertToVideoVersion(items, m_videoAsset->GetVideoContentType(),
                                                tag->m_type, tag->m_iDbId, videoDb,
-                                               MediaRole::Parent, Mode::INTERACTIVE);
+                                               MediaRole::Parent, Mode::INTERACTIVE, false);
   }
   return false;
 }
@@ -504,7 +504,8 @@ bool CGUIDialogVideoManagerVersions::ChooseVideoAndConvertToVideoVersion(
     int dbId,
     CVideoDatabase& videoDb,
     MediaRole role,
-    Mode mode)
+    Mode mode,
+    bool setDefaultVersion)
 {
   std::shared_ptr<CFileItem> selectedItem;
 
@@ -563,9 +564,16 @@ bool CGUIDialogVideoManagerVersions::ChooseVideoAndConvertToVideoVersion(
       return false;
   }
 
-  return videoDb.ConvertVideoToVersion(itemType, sourceDbId, targetDbId, versionTypeId,
-                                       VideoAssetType::VERSION,
-                                       DeleteMovieCascadeAction::ALL_ASSETS);
+  const int idFile = videoDb.GetFileIdByMovie(sourceDbId);
+
+  if (!videoDb.ConvertVideoToVersion(itemType, sourceDbId, targetDbId, versionTypeId,
+                                     VideoAssetType::VERSION, DeleteMovieCascadeAction::ALL_ASSETS))
+    return false;
+
+  if (setDefaultVersion)
+    return (idFile >= 0 && videoDb.SetDefaultVideoVersion(itemType, targetDbId, idFile));
+
+  return true;
 }
 
 bool CGUIDialogVideoManagerVersions::GetAllOtherMovies(const std::shared_ptr<CFileItem>& item,
@@ -658,9 +666,11 @@ bool CGUIDialogVideoManagerVersions::ProcessVideoVersion(VideoDbContentType item
 
   const MediaType mediaType{item.GetVideoInfoTag()->m_type};
 
+  const auto isDefault = settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_NEWVERSIONSAREDEFAULT);
+
   return ChooseVideoAndConvertToVideoVersion(
       list, itemType, mediaType, dbId, videodb, MediaRole::NewVersion,
-      action == SimilarVideoScanAction::ASK ? Mode::INTERACTIVE : Mode::NON_INTERACTIVE);
+      action == SimilarVideoScanAction::ASK ? Mode::INTERACTIVE : Mode::NON_INTERACTIVE, isDefault);
 }
 
 bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()

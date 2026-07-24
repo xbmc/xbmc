@@ -997,6 +997,14 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
+        <setting id="videolibrary.newversionsaredefault" type="boolean" label="40223" help="40224" parent="videolibrary.similarvideoaction">
+          <level>2</level>
+          <default>true</default>
+          <dependencies>
+            <dependency type="visible" setting="videolibrary.similarvideoaction" operator="greaterthan">0</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
         <setting id="videolibrary.ignorevideoextras" type="boolean" label="40204" help="40205">
           <level>1</level>
           <default>true</default>
