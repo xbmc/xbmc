@@ -50,6 +50,7 @@ struct SPlayerState
     menuType = MenuType::NONE;
     chapter = 0;
     chapters.clear();
+    rawChapters.clear();
     m_bookmarks.clear();
     canpause = false;
     canseek = false;
@@ -78,9 +79,15 @@ struct SPlayerState
   MenuType menuType;
   bool streamsReady;
 
-  int chapter; // 1-based current chapter. <=0 means no chapter / unknown
-  // name and start timestamp of chapters.
+  // 1-based current chapter, numbered among the chapters visible to the user (i.e. excluding
+  // chapters fully hidden by an EDL cut). <=0 means no chapter / unknown
+  int chapter;
+  // name and start timestamp of chapters visible to the user (chapters fully contained within
+  // an EDL cut are omitted).
   std::vector<std::pair<std::string, std::chrono::milliseconds>> chapters;
+  // for each entry in `chapters`, the corresponding 1-based chapter index reported by the
+  // demuxer/inputstream, used to translate a visible chapter number back to a seekable one.
+  std::vector<int> rawChapters;
   // position of the bookmarks
   std::vector<std::chrono::milliseconds> m_bookmarks;
 
@@ -514,6 +521,10 @@ protected:
   void UpdateFileItemStreamDetails(CFileItem& item, UpdateStreamDetails update);
   int GetPreviousChapter();
   std::optional<std::chrono::milliseconds> GetChapterPosMs(int chapterIdx = -1) const;
+  // Translate a 1-based visible chapter number (as seen by GetChapter()/GetChapterCount())
+  // to the 1-based chapter index expected by the demuxer/inputstream. Falls back to
+  // returning visibleChapter unchanged if no mapping is available yet.
+  int ToRawChapter(int visibleChapter) const;
   int GetPreviousBookmark(std::chrono::milliseconds ts);
   int GetNextBookmark(std::chrono::milliseconds ts);
   std::optional<std::chrono::milliseconds> GetBookmarkPos(int idx);
