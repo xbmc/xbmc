@@ -5815,6 +5815,18 @@ void CVideoPlayer::OnResetDisplay()
   m_VideoPlayerAudio->SendMessage(std::make_shared<CDVDMsg>(CDVDMsg::PLAYER_DISPLAY_RESET), 1);
 }
 
+bool CVideoPlayer::OnAudioPassthroughSettingChanged()
+{
+  if (!m_VideoPlayerAudio->IsInited())
+    return false;
+
+  // Re-check whether the current audio stream should now be passthrough or decoded, without
+  // restarting the demuxer/BD navigation or losing the current playback position.
+  CLog::Log(LOGINFO, "VideoPlayer: audio passthrough setting changed, checking for passthrough");
+  m_VideoPlayerAudio->SendMessage(std::make_shared<CDVDMsg>(CDVDMsg::PLAYER_AUDIO_RECONFIGURE), 1);
+  return true;
+}
+
 void CVideoPlayer::UpdateFileItemStreamDetails(CFileItem& item, UpdateStreamDetails update)
 {
   if (update == UpdateStreamDetails::UPDATE_IF_FLAGGED)

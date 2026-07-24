@@ -281,6 +281,7 @@ public:
   bool HasRDS() const override;
   bool HasID3() const override;
   bool IsPassthrough() const override;
+  bool OnAudioPassthroughSettingChanged() override;
   bool CanSeek() const override;
   void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride) override;
   bool SeekScene(Direction seekDirection) override;

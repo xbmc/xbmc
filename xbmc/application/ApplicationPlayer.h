@@ -140,6 +140,7 @@ public:
   bool IsPlayingGame() const;
   bool IsPlayingRDS() const;
   bool IsLiveStream() const;
+  void OnAudioPassthroughSettingChanged();
   void LoadPage(int p, int sp, unsigned char* buffer);
   bool OnAction(const CAction &action);
   void OnNothingToQueueNotify();

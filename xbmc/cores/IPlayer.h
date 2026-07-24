@@ -97,6 +97,13 @@ public:
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions& options){ return false;}
   virtual bool QueueNextFile(const CFileItem &file) { return false; }
   virtual void OnNothingToQueueNotify() {}
+  /*!
+   \brief Called when a live-adjustable audio output setting changes (e.g. "Allow passthrough")
+   while this player is open. Implementations able to reconfigure their audio pipeline in place
+   should do so and return true. The default returns false, telling the caller no in-place
+   handling was possible so it should fall back to closing and reopening the file.
+  */
+  virtual bool OnAudioPassthroughSettingChanged() { return false; }
   virtual bool CloseFile(bool reopen = false) = 0;
   virtual bool IsPlaying() const { return false;}
   virtual bool CanPause() const { return true; }

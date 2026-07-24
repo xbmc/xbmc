@@ -19,7 +19,6 @@
 #include "application/ApplicationVolumeHandling.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "messaging/ApplicationMessenger.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
@@ -134,9 +133,7 @@ void CApplicationSettingsHandling::OnSettingChanged(const std::shared_ptr<const 
           CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution(), true);
   }
   else if (settingId == CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH)
-  {
-    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_RESTART);
-  }
+    components.GetComponent<CApplicationPlayer>()->OnAudioPassthroughSettingChanged();
 }
 
 void CApplicationSettingsHandling::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
