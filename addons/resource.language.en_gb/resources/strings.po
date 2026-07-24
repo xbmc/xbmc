@@ -24906,7 +24906,19 @@ msgctxt "#40222"
 msgid "Group the different versions of videos"
 msgstr ""
 
-#empty strings from id 40223 to 40399
+#. "The newly scanned versions replace the default versions of movies" setting
+#: system/settings/settings.xml
+msgctxt "#40223"
+msgid "Make the most recent version the default version"
+msgstr ""
+
+#. Help for setting New versions replace the default versions
+#: system/settings/settings.xml
+msgctxt "#40224"
+msgid "Make the most recently scanned version of a movie the movie's default version.[CR]Helps identify new movie versions as recently added and locate them when the \"Unwatched\" filter of the library is turned on."
+msgstr ""
+
+#empty strings from id 40225 to 40399
 
 # Video versions
 
