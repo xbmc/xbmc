@@ -508,6 +508,20 @@ void CStereoscopicsManager::ApplyStereoMode(const RenderStereoMode mode, bool no
     CServiceBroker::GetWinSystem()->GetGfxContext().SetStereoMode(mode);
     CLog::Log(LOGDEBUG, "StereoscopicsManager: stereo mode changed to {}",
               ConvertGuiStereoModeToString(mode));
+    {
+      const auto& components = CServiceBroker::GetAppComponents();
+      const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+      if (appPlayer && !appPlayer->IsPlaying())
+      {
+        const RESOLUTION_INFO curInfo =
+            CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
+        const bool is3D = (mode != RenderStereoMode::OFF && mode != RenderStereoMode::MONO);
+        RESOLUTION res = CResolutionUtils::ChooseBestResolution(
+            curInfo.fRefreshRate, curInfo.iScreenWidth, curInfo.iScreenHeight, is3D);
+        CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoResolution(res, true);
+      }
+    }
+
     if (notify)
       CGUIDialogKaiToast::QueueNotification(
           CGUIDialogKaiToast::Info,
