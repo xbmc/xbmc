@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2016-2018 Team Kodi
+ *  Copyright (C) 2016-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -144,6 +144,13 @@ struct CVideoPlayAndQueue : IContextMenuItem
 struct CTVShowScanForNewContent : CStaticContextMenuAction
 {
   CTVShowScanForNewContent() : CStaticContextMenuAction(13349) {} // Scan for new content
+  bool IsVisible(const CFileItem& item) const override;
+  bool Execute(const std::shared_ptr<CFileItem>& item) const override;
+};
+
+struct CVideoShowExtras : CStaticContextMenuAction
+{
+  CVideoShowExtras() : CStaticContextMenuAction(40211) {} // Extras
   bool IsVisible(const CFileItem& item) const override;
   bool Execute(const std::shared_ptr<CFileItem>& item) const override;
 };

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2016-2018 Team Kodi
+ *  Copyright (C) 2016-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -23,6 +23,7 @@
 #include "utils/PlayerUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "video/VideoDbUrl.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoLibraryQueue.h"
@@ -464,6 +465,44 @@ bool CTVShowScanForNewContent::Execute(const std::shared_ptr<CFileItem>& item) c
                                                     : item->GetPath()};
   CVideoLibraryQueue::GetInstance().ScanLibrary(strPath, true /* scanAll */,
                                                 true /* showProgress */);
+  return true;
+}
+
+bool CVideoShowExtras::IsVisible(const CFileItem& item) const
+{
+  return item.HasVideoInfoTag() && item.HasVideoExtras();
+}
+bool CVideoShowExtras::Execute(const std::shared_ptr<CFileItem>& item) const
+{
+  CVideoDbUrl videoUrl;
+  if (!videoUrl.FromString(item->GetPath()))
+    return false;
+
+  CVariant movieIdVariant;
+  if (!videoUrl.GetOption("movieid", movieIdVariant))
+    return false;
+
+  const int movieId = movieIdVariant.asInteger(-1);
+  if (movieId < 0)
+    return false;
+
+  const std::string path = StringUtils::Format("videodb://movies/titles/{}/{}/", movieId,
+                                               static_cast<int>(VideoAssetType::EXTRA));
+
+  const int target = WINDOW_VIDEO_NAV;
+
+  auto& windowMgr = CServiceBroker::GetGUI()->GetWindowManager();
+
+  if (target == windowMgr.GetActiveWindow())
+  {
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, target, 0, GUI_MSG_UPDATE);
+    msg.SetStringParam(path);
+    windowMgr.SendMessage(msg);
+  }
+  else
+  {
+    windowMgr.ActivateWindow(target, {path, "return"});
+  }
   return true;
 }
 
