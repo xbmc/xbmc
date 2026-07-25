@@ -294,7 +294,7 @@ Alternatively, you can also build via Xcode from the command-line with `xcodebui
 Change to build directory:
 ```
 cd $HOME/kodi-build
-xcodebuild -config "Debug" -jobs $(getconf _NPROCESSORS_ONLN)
+xcodebuild -config "Debug"
 ```
 
 This will create a `Kodi.app` file located in `$HOME/kodi-build/build/Debug-appletvos`. This App can be deployed via Xcode to an AppleTV via `Window -> Devices and Simulators -> Select device and click +`
