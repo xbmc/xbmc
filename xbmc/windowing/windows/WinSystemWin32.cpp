@@ -1332,7 +1332,10 @@ bool CWinSystemWin32::MessagePump()
 void CWinSystemWin32::SetTogglingHDR(bool toggling)
 {
   if (toggling)
+  {
     SetTimer(m_hWnd, ID_TIMER_HDR, 6000U, nullptr);
+    ResolutionChanged();
+  }
 
   m_IsTogglingHDR = toggling;
 }
