@@ -12,8 +12,10 @@ else()
                 )
 endif()
 
+set(env_vars ${EXTRA_ENV_VARS})
+
 if(CROSSCOMPILING)
-  set(pkgconf "PKG_CONFIG_LIBDIR=${DEPENDS_PATH}/lib/pkgconfig")
+  list(APPEND env_vars "PKG_CONFIG_LIBDIR=${DEPENDS_PATH}/lib/pkgconfig")
   list(APPEND ffmpeg_conf --pkg-config=${PKG_CONFIG_EXECUTABLE}
                           --pkg-config-flags=--static
                           --enable-cross-compile
@@ -127,7 +129,7 @@ endif()
 
 if(ENABLE_DAV1D)
   list(APPEND ffmpeg_conf --enable-libdav1d)
-  set(pkgconf_path "PKG_CONFIG_PATH=${PKG_CONFIG_PATH}")
+  list(APPEND env_vars "PKG_CONFIG_PATH=${PKG_CONFIG_PATH}")
 else()
   list(APPEND ffmpeg_conf --disable-libdav1d)
 endif()
@@ -161,7 +163,7 @@ include(ExternalProject)
 externalproject_add(ffmpeg
                     SOURCE_DIR ${CMAKE_SOURCE_DIR}
                     ${sourceplugin_patch}
-                    CONFIGURE_COMMAND ${pkgconf} ${pkgconf_path} <SOURCE_DIR>/configure
+                    CONFIGURE_COMMAND ${env_vars} <SOURCE_DIR>/configure
                       --prefix=${CMAKE_INSTALL_PREFIX}
                       --extra-version="kodi-${FFMPEG_VER}"
                       ${ffmpeg_conf}
