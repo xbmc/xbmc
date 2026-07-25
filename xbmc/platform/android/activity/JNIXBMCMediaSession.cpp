@@ -149,10 +149,9 @@ void CJNIXBMCMediaSession::OnForwardRequested()
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
   if (appPlayer->IsPlaying())
   {
-    if (!appPlayer->IsPaused())
-      CServiceBroker::GetAppMessenger()->PostMsg(
-          TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-          static_cast<void*>(new CAction(ACTION_PLAYER_FORWARD)));
+    CServiceBroker::GetAppMessenger()->PostMsg(
+        TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+        static_cast<void*>(new CAction(ACTION_PLAYER_FORWARD)));
   }
 }
 
@@ -162,10 +161,8 @@ void CJNIXBMCMediaSession::OnRewindRequested()
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
   if (appPlayer->IsPlaying())
   {
-    if (!appPlayer->IsPaused())
-      CServiceBroker::GetAppMessenger()->PostMsg(
-          TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-          static_cast<void*>(new CAction(ACTION_PLAYER_REWIND)));
+    CServiceBroker::GetAppMessenger()->PostMsg(
+        TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_REWIND)));
   }
 }
 
