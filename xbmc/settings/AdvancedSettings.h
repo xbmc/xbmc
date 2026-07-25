@@ -301,6 +301,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_minimumEpisodePlaylistDuration; // seconds
     bool m_disableEpisodeRanges{false};
     bool m_bNoRemoteArtWithLocalScraper{false};
+    bool m_ignoreFolderNamesInArchives{true};
 
     CLangInfo::Tokens m_vecTokens;
 
