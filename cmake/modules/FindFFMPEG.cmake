@@ -194,10 +194,6 @@ macro(buildFFMPEG)
       set(postproc_pkg_config_search "postproc=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libpostproc`")
     endif()
 
-    if(CMAKE_GENERATOR STREQUAL Xcode)
-      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_GENERATOR CMAKE_GENERATOR "Unix Makefiles")
-    endif()
-
     BUILD_DEP_TARGET()
 
     find_program(BASH_COMMAND bash)
