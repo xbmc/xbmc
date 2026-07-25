@@ -1248,6 +1248,11 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="videolibrary.flattenversions" type="boolean" label="40229" help="40230">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videolibrary.flattentvshows" type="integer" label="20412" help="36144">
           <level>2</level>
           <default>1</default> <!-- if only one season -->

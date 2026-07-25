@@ -24984,7 +24984,19 @@ msgctxt "#40228"
 msgid "After scrape"
 msgstr ""
 
-#empty strings from id 40229 to 40399
+#. "Flatten movie versions" setting
+#: system/settings/settings.xml
+msgctxt "#40229"
+msgid "Flatten movie versions"
+msgstr ""
+
+#. Help for setting Flatten movie versions
+#: system/settings/settings.xml
+msgctxt "#40230"
+msgid "Turn on to show individual versions in the movies view, turn off to group them"
+msgstr ""
+
+#empty strings from id 40231 to 40399
 
 # Video versions
 
