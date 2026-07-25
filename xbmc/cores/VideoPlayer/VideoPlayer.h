@@ -557,6 +557,17 @@ protected:
   void ExecuteTimeSeek(int64_t target, Direction direction, bool accurate);
   bool EvaluateIsStreaming() const;
 
+  struct SpeedChangeNotifications
+  {
+    bool resumed{false};
+    bool speedChanged{false};
+  };
+  // decides which IPlayerCallback notifications a PLAYER_SETSPEED transition should raise.
+  // resuming directly from paused into FF/RW (while paused) skips the
+  // normal Pause()/SetSpeed(1.0) unpause path, so it needs to raise OnPlayBackResumed itself;
+  // resuming to normal speed is excluded as that path already covers it.
+  static SpeedChangeNotifications GetSpeedChangeNotifications(int previousSpeed, int newSpeed);
+
   bool m_players_created;
 
   CFileItem m_item;
