@@ -711,7 +711,9 @@ bool CApplicationPlayer::OnPlaybackAction(const CAction& action)
       break;
   }
 
-  if (IsPaused())
+  const bool wasPaused = IsPaused();
+  // FF/RW while paused is only supported for video outside of menus
+  if (wasPaused && (!IsPlayingVideo() || IsPlayingGame() || IsInMenu()))
     return false;
 
   switch (action.GetID())
@@ -721,6 +723,8 @@ bool CApplicationPlayer::OnPlaybackAction(const CAction& action)
     {
       const bool rewind = action.GetID() == ACTION_PLAYER_REWIND;
       float playSpeed = GetPlaySpeed();
+      if (playSpeed == 0)
+        playSpeed = 1;
 
       if (rewind && playSpeed == 1) // Enables Rewinding
         playSpeed *= -2;
@@ -737,6 +741,10 @@ bool CApplicationPlayer::OnPlaybackAction(const CAction& action)
         playSpeed = 1;
 
       SetPlaySpeed(playSpeed);
+
+      CGUIComponent* gui = CServiceBroker::GetGUI();
+      if (wasPaused && gui)
+        gui->GetAudioManager().Enable(IsPaused());
       return true;
     }
 
@@ -752,19 +760,30 @@ bool CApplicationPlayer::OnPlaybackAction(const CAction& action)
       const int power = std::abs(static_cast<int>(action.GetAmount() * MAX_FFWD_SPEED + 0.5f));
       // 1 -> 2^MAX_FFWD_SPEED
       int speed = 1 << power;
+      // speed 1 would unpause
+      if (speed == 1 && wasPaused)
+        return false;
       if (speed != 1 && action.GetID() == ACTION_ANALOG_REWIND)
         speed = -speed;
       SetPlaySpeed(static_cast<float>(speed));
       if (speed == 1)
         CLog::Log(LOGDEBUG, "Resetting playspeed");
+
+      CGUIComponent* gui = CServiceBroker::GetGUI();
+      if (wasPaused && gui)
+        gui->GetAudioManager().Enable(IsPaused());
       return true;
     }
 
     case ACTION_PLAYER_INCREASE_TEMPO:
+      if (wasPaused)
+        return false;
       CPlayerUtils::AdvanceTempoStep(*this, TempoStepChange::INCREASE);
       return true;
 
     case ACTION_PLAYER_DECREASE_TEMPO:
+      if (wasPaused)
+        return false;
       CPlayerUtils::AdvanceTempoStep(*this, TempoStepChange::DECREASE);
       return true;
 
