@@ -3350,7 +3350,13 @@ void CVideoPlayer::HandleMessages()
         m_State.timestamp = m_clock.GetAbsoluteClock();
       }
 
-      if (speed != DVD_PLAYSPEED_PAUSE && m_playSpeed != DVD_PLAYSPEED_PAUSE && speed != m_playSpeed)
+      const SpeedChangeNotifications notifications =
+          GetSpeedChangeNotifications(m_playSpeed, speed);
+
+      if (notifications.resumed)
+        m_callback.OnPlayBackResumed();
+
+      if (notifications.speedChanged)
       {
         m_callback.OnPlayBackSpeedChanged(speed / DVD_PLAYSPEED_NORMAL);
         m_processInfo->SeekFinished(0);
@@ -3370,10 +3376,15 @@ void CVideoPlayer::HandleMessages()
           (m_playSpeed != DVD_PLAYSPEED_NORMAL && m_playSpeed != DVD_PLAYSPEED_PAUSE &&
            !m_processInfo->IsTempoAllowed(static_cast<float>(m_playSpeed) / DVD_PLAYSPEED_NORMAL));
 
-      // Seek when returning to normal 1.0x or tempo play from FF/RW
+      // Seek when returning to normal 1.0x/tempo play, or to pause, from FF/RW
       // back from RW: clock is not in sync with current pts
       // back from FF: fill the empty audio queue to avoid no audio
-      if ((speed == DVD_PLAYSPEED_NORMAL || isTempoSpeed) && wasFFRW)
+      // back to pause: without this the clock stays at its pre-FF/RW value, so the
+      // pre-buffering that normally happens while paused (reading ahead until the
+      // queues are full) decodes and displays those frames immediately instead of
+      // holding them, since their pts is now behind the stale clock
+      if ((speed == DVD_PLAYSPEED_NORMAL || speed == DVD_PLAYSPEED_PAUSE || isTempoSpeed) &&
+          wasFFRW)
       {
         double iTime = m_VideoPlayerVideo->GetCurrentPts();
         if (iTime == DVD_NOPTS_VALUE)
@@ -3522,6 +3533,23 @@ void CVideoPlayer::SetCaching(ECacheState state)
   m_caching = state;
 
   m_clock.SetSpeedAdjust(0);
+}
+
+CVideoPlayer::SpeedChangeNotifications CVideoPlayer::GetSpeedChangeNotifications(int previousSpeed,
+                                                                                 int newSpeed)
+{
+  SpeedChangeNotifications notifications;
+
+  const bool wasPaused = (previousSpeed == DVD_PLAYSPEED_PAUSE);
+
+  if (wasPaused && newSpeed != DVD_PLAYSPEED_PAUSE && newSpeed != DVD_PLAYSPEED_NORMAL)
+    notifications.resumed = true;
+
+  if (newSpeed != DVD_PLAYSPEED_PAUSE && newSpeed != previousSpeed &&
+      !(wasPaused && newSpeed == DVD_PLAYSPEED_NORMAL))
+    notifications.speedChanged = true;
+
+  return notifications;
 }
 
 void CVideoPlayer::SetPlaySpeed(int speed)

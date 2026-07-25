@@ -20,6 +20,7 @@
 #include "application/Application.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationPowerHandling.h"
+#include "guilib/GUIAudioManager.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/actions/Action.h"
@@ -167,9 +168,13 @@ static int PlayerControl(const std::vector<std::string>& params)
   }
   else if (paramlow =="rewind" || paramlow == "forward")
   {
-    if (appPlayer->IsPlaying() && !appPlayer->IsPaused())
+    // paused seeking (FF/RW while paused) is only supported for video for now
+    if (appPlayer->IsPlaying() && (appPlayer->IsPlayingVideo() || !appPlayer->IsPaused()))
     {
       float playSpeed = appPlayer->GetPlaySpeed();
+      // allow FF/RW when paused
+      if (playSpeed == 0)
+        playSpeed = 1;
 
       if (paramlow == "rewind" && playSpeed == 1) // Enables Rewinding
         playSpeed *= -2;
@@ -188,6 +193,10 @@ static int PlayerControl(const std::vector<std::string>& params)
         playSpeed = 1;
 
       appPlayer->SetPlaySpeed(playSpeed);
+
+      CGUIComponent* gui = CServiceBroker::GetGUI();
+      if (gui)
+        gui->GetAudioManager().Enable(appPlayer->IsPaused());
     }
   }
   else if (paramlow == "tempoup" || paramlow == "tempodown")
