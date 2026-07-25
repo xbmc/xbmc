@@ -467,6 +467,9 @@ void CDataCacheCore::SetStateSeeking(bool active)
 {
   std::unique_lock lock(m_stateSection);
 
+  if (m_stateInfo.m_stateSeeking == active)
+    return;
+
   m_stateInfo.m_stateSeeking = active;
   m_playerStateChanged = true;
 }
