@@ -17,7 +17,9 @@ ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
                     ac_cv_func_posix_spawn=no ac_cv_func_posix_spawnp=no \
                     ac_cv_func_forkpty=no ac_cv_lib_util_forkpty=no \
                     ac_cv_func_getgroups=no \
-                    ac_cv_func_system=no
+                    ac_cv_func_system=no \
+                    ac_cv_func_dup3=no \
+                    ac_cv_func_pipe2=no
     export SDKROOT
   endif
   ifeq ($(OS), osx)
