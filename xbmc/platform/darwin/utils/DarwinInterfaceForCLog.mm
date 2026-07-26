@@ -10,7 +10,7 @@
 
 #include <string>
 
-#import <Foundation/Foundation.h>
+#include <os/log.h>
 #include <spdlog/sinks/dist_sink.h>
 #include <spdlog/spdlog.h>
 
@@ -35,7 +35,28 @@ void CDarwinInterfaceForCLog::log(const spdlog::details::log_msg& msg)
   spdlog::memory_buf_t formatted;
   m_formatter->format(msg, formatted);
   formatted.push_back('\0');
-  NSLog(@"%s", formatted.data());
+
+  os_log_type_t logType;
+  switch (msg.level)
+  {
+    case spdlog::level::trace:
+    case spdlog::level::debug:
+      logType = OS_LOG_TYPE_DEBUG;
+      break;
+    case spdlog::level::info:
+      logType = OS_LOG_TYPE_INFO;
+      break;
+    case spdlog::level::err:
+      logType = OS_LOG_TYPE_ERROR;
+      break;
+    case spdlog::level::critical:
+      logType = OS_LOG_TYPE_FAULT;
+      break;
+    default:
+      logType = OS_LOG_TYPE_DEFAULT;
+      break;
+  }
+  os_log_with_type(OS_LOG_DEFAULT, logType, "%{public}s", formatted.data());
 }
 
 void CDarwinInterfaceForCLog::flush()
