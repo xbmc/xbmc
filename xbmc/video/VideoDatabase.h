@@ -601,9 +601,12 @@ public:
   /*! \brief retrieve subpaths of a given path.  Assumes a hierarchical folder structure
    \param basepath the root path to retrieve subpaths for
    \param subpaths the returned subpaths
+   \param excludeDiscPaths exclude disc paths that contain VIDEO_TS.IFO or INDEX.BDMV (default true)
    \return true if we successfully retrieve subpaths (may be zero), false on error
    */
-  bool GetSubPaths(const std::string& basepath, std::vector< std::pair<int, std::string> >& subpaths);
+  bool GetSubPaths(const std::string& basepath,
+                   std::vector<std::pair<int, std::string>>& subpaths,
+                   bool excludeDiscPaths = true);
 
   bool GetSourcePath(const std::string &path, std::string &sourcePath);
   bool GetSourcePath(const std::string& path,
