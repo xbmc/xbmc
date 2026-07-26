@@ -17,7 +17,8 @@ if(NOT TARGET ANT::ANT)
   # ANT is platform agnostic. Add hints for either native or target depends paths
   find_program(ANT_EXECUTABLE ant${ant_extension}
                               HINTS ${NATIVEPREFIX}/share/ant/bin
-                                    ${DEPENDS_PATH}/share/ant/bin)
+                                    ${DEPENDS_PATH}/share/ant/bin
+                              ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
   if(ANT_EXECUTABLE)
     execute_process(COMMAND ${ANT_EXECUTABLE} -version
