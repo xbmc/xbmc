@@ -1,11 +1,11 @@
 include ../../Makefile.include
-DEPS =../../Makefile.include Makefile ../../download-files.include \
-                      01-all-py312-setuptools.patch
+DEPS =../../Makefile.include Makefile ../../download-files.include
 
 LIBNAME=mesa
-VERSION=23.0.1
+VERSION=26.1.5
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.xz
-SHA512=9bbe0ba0b1a16fe10b35b6aa3a821d96ab9c4ce4ad38056e2c32271e50b48fd5ef6e1a0babadded631f2b136dfb15acf0c41475d73ee28d132c861ce96517e24
+BASE_URL=https://archive.mesa3d.org
+SHA512=8b1714e0fe63d3077c0d761245680724537a94db65e17dedb7124c7c861f070a13493a060695e81b2ca9b6889007b52c7b5788dace8fe5d8e2e1ed67efdbbf07
 include ../../download-files.include
 
 MESON_BUILD_TYPE=release
@@ -17,24 +17,19 @@ endif
 ifeq ($(CPU), x86_64)
   MESA_GALLIUM_DRIVERS=iris
 else ifeq ($(CPU), $(filter $(CPU), arm aarch64))
-  MESA_GALLIUM_DRIVERS=kmsro,vc4,swrast,panfrost
+  MESA_GALLIUM_DRIVERS=vc4,softpipe,panfrost
 endif
 
 ifeq ($(RENDER_SYSTEM),gles)
   MESA_EXTRA=-Dplatforms=wayland
 endif
 
-# configuration settings
 CONFIGURE = $(NATIVEPREFIX)/bin/python3 $(NATIVEPREFIX)/bin/meson \
 	--prefix=$(PREFIX) \
 	--libdir=lib \
 	--buildtype=$(MESON_BUILD_TYPE) \
-	-Ddri-drivers= \
 	-Dgallium-drivers="$(MESA_GALLIUM_DRIVERS)" \
 	-Dgallium-extra-hud=false \
-	-Dgallium-omx=disabled \
-	-Dgallium-nine=false \
-	-Dgallium-opencl=disabled \
 	-Dvulkan-drivers= \
 	-Dshader-cache=true \
 	-Dshared-glapi=enabled \
@@ -46,14 +41,10 @@ CONFIGURE = $(NATIVEPREFIX)/bin/python3 $(NATIVEPREFIX)/bin/meson \
 	-Dlmsensors=false \
 	-Dbuild-tests=false \
 	-Dselinux=false \
-	-Dosmesa=false \
-	-Ddri3=disabled \
 	-Dglx=disabled \
 	-Dglvnd=false \
 	-Dllvm=false \
-	-Dgallium-vdpau=disabled \
 	-Dgallium-va=disabled \
-	-Dgallium-xa=disabled \
 	-Dgles1=disabled \
 	-Dgles2=enabled \
 	$(MESA_EXTRA)
@@ -77,7 +68,6 @@ all: .installed-$(PLATFORM)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); rm -rf build; mkdir -p build
-	cd $(PLATFORM); patch -p1 -i ../01-all-py312-setuptools.patch
 	cd $(PLATFORM); $(CONFIGURE) . build
 	touch $@
 
