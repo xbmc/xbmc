@@ -68,6 +68,13 @@
   PRINT_SIGNATURE();
 }
 
+- (BOOL)application:(UIApplication*)app
+            openURL:(NSURL*)url
+            options:(NSDictionary<UIApplicationOpenURLOptionsKey, id>*)options
+{
+  return NO;
+}
+
 - (void)screenDidConnect:(NSNotification *)aNotification
 {
   [IOSScreenManager updateResolutions];
