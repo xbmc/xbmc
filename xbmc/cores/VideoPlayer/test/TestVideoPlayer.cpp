@@ -39,6 +39,14 @@ public:
   {
     return GetBookmarkPos(idx);
   }
+
+  void SetCurrentVideoId(int id) { m_CurrentVideo.id = id; }
+  void SetCurrentAudioId(int id) { m_CurrentAudio.id = id; }
+  void SetHasVideo(bool hasVideo) { m_HasVideo = hasVideo; }
+  void SetHasAudio(bool hasAudio) { m_HasAudio = hasAudio; }
+  bool GetHasVideo() const { return m_HasVideo; }
+  bool GetHasAudio() const { return m_HasAudio; }
+  void InvokeUpdateHasVideoAudio() { UpdateHasVideoAudio(); }
 };
 
 class TestVideoPlayer : public testing::Test
@@ -139,4 +147,39 @@ TEST_F(TestVideoPlayer, GetBookmarkPos)
 
   pos = player.InvokeGetBookmarkPos(2);
   EXPECT_FALSE(pos.has_value());
+}
+
+TEST_F(TestVideoPlayer, UpdateHasVideoAudioClearsStaleVideoFlag)
+{
+  // simulates a mixed playlist transition from a music video to an audio-only
+  // track: the previous item left m_HasVideo true, but the new item has no
+  // video stream (m_CurrentVideo.id < 0), so the stale flag must be cleared
+  CTestPlayerCallback playercallback;
+  CTestVideoPlayer player(playercallback);
+
+  player.SetHasVideo(true);
+  player.SetHasAudio(true);
+  player.SetCurrentVideoId(-1);
+  player.SetCurrentAudioId(0);
+
+  player.InvokeUpdateHasVideoAudio();
+
+  EXPECT_FALSE(player.GetHasVideo());
+  EXPECT_TRUE(player.GetHasAudio());
+}
+
+TEST_F(TestVideoPlayer, UpdateHasVideoAudioKeepsFlagsWhenStreamsOpen)
+{
+  CTestPlayerCallback playercallback;
+  CTestVideoPlayer player(playercallback);
+
+  player.SetHasVideo(true);
+  player.SetHasAudio(true);
+  player.SetCurrentVideoId(0);
+  player.SetCurrentAudioId(0);
+
+  player.InvokeUpdateHasVideoAudio();
+
+  EXPECT_TRUE(player.GetHasVideo());
+  EXPECT_TRUE(player.GetHasAudio());
 }

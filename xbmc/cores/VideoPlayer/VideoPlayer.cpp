@@ -1032,6 +1032,17 @@ void CVideoPlayer::CloseDemuxer()
   CServiceBroker::GetDataCacheCore().SignalSubtitleInfoChange();
 }
 
+void CVideoPlayer::UpdateHasVideoAudio()
+{
+  // a playlist item transition (e.g. music video to audio-only track) reuses this
+  // running player instance without a CloseFile(), so a stale true from the previous
+  // item must be cleared here if no stream was opened for the current item
+  if (m_CurrentVideo.id < 0)
+    m_HasVideo = false;
+  if (m_CurrentAudio.id < 0)
+    m_HasAudio = false;
+}
+
 void CVideoPlayer::OpenDefaultStreams(bool reset)
 {
   // if input stream dictate, we will open later
@@ -1081,6 +1092,8 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
     CloseStream(m_CurrentAudio, true);
     m_processInfo->ResetAudioCodecInfo();
   }
+
+  UpdateHasVideoAudio();
 
   // enable or disable subtitles
   bool visible = m_processInfo->GetVideoSettings().m_SubtitleOn;
@@ -1244,11 +1257,10 @@ bool CVideoPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
       UpdateContent();
       OpenDefaultStreams(false);
 
-      // reevaluate HasVideo/Audio, we may have switched from/to a radio channel
-      if(m_CurrentVideo.id < 0)
-        m_HasVideo = false;
-      if(m_CurrentAudio.id < 0)
-        m_HasAudio = false;
+      // OpenDefaultStreams() returns early while DVD/BD navigation controls stream
+      // selection, so reevaluate here as well (we may have switched from/to a radio
+      // channel)
+      UpdateHasVideoAudio();
 
       return true;
     }
