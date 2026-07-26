@@ -499,6 +499,9 @@ void CGUITextLayout::ParseText(const std::wstring& text,
           pos = end + 7;
         }
       }
+      // Equivalent of newStyle for other formatting tags to have the tag text discarded.
+      if (!tabs)
+        tabs = -1;
     }
     else if (text.compare(pos, 3, L"CR]") == 0 && on)
     {
