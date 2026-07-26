@@ -34,6 +34,12 @@ void CScreenShot::Register(const std::function<std::unique_ptr<IScreenshotSurfac
 
 void CScreenShot::TakeScreenshot(const std::string& filename, bool sync)
 {
+  if (m_screenShotSurfaces.empty())
+  {
+    CLog::Log(LOGERROR, "no screenshot surface registered for this platform");
+    return;
+  }
+
   auto surface = m_screenShotSurfaces.back()();
 
   if (!surface)
