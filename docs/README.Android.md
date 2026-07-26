@@ -354,7 +354,7 @@ adb -e install -r images/xbmcapp-debug.apk
 
 Launch Kodi on Android Emulator without the GUI:
 ```
-adb shell am start -a android.intent.action.MAIN -n org.xbmc.xbmc/android.app.NativeActivity
+adb shell am start -n org.xbmc.kodi/org.xbmc.kodi.Splash
 ```
 
 Kill a misbehaving Kodi:
