@@ -313,7 +313,8 @@ void CGLESTexture::LoadToGPU()
     return;
   }
 
-  if ((m_textureFormat & KD_TEX_FMT_SDR) || (m_textureFormat & KD_TEX_FMT_HDR))
+  const int formatType = m_textureFormat & KD_TEX_FMT_TYPE_MASK;
+  if (formatType == KD_TEX_FMT_SDR || formatType == KD_TEX_FMT_HDR)
   {
     glTexImage2D(GL_TEXTURE_2D, 0, glesFormat.internalFormat, m_textureWidth, m_textureHeight, 0,
                  glesFormat.format, glesFormat.type, m_pixels);
@@ -406,7 +407,7 @@ void CGLESTexture::SwapBlueRedSwizzle(GLint& component)
 TextureFormat CGLESTexture::GetFormatGLES20(KD_TEX_FMT textureFormat)
 {
   TextureFormat glFormat;
-  const int formatType = m_textureFormat & KD_TEX_FMT_TYPE_MASK;
+  const int formatType = textureFormat & KD_TEX_FMT_TYPE_MASK;
 
   // GLES 2.0 does not support swizzling. But for some Kodi formats+swizzles,
   // we can map GLES formats (Luminance, Luminance-Alpha, BGRA). The swizzle
@@ -460,7 +461,7 @@ TextureFormat CGLESTexture::GetFormatGLES20(KD_TEX_FMT textureFormat)
 TextureFormat CGLESTexture::GetFormatGLES30(KD_TEX_FMT textureFormat)
 {
   TextureFormat glFormat;
-  const int formatType = m_textureFormat & KD_TEX_FMT_TYPE_MASK;
+  const int formatType = textureFormat & KD_TEX_FMT_TYPE_MASK;
 
   if (formatType == KD_TEX_FMT_SDR || formatType == KD_TEX_FMT_HDR ||
       formatType == KD_TEX_FMT_ETC1 || formatType == KD_TEX_FMT_ETC2)
