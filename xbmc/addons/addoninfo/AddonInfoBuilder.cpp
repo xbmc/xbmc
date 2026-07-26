@@ -33,6 +33,18 @@ namespace
 {
 // Note that all of these characters are url-safe
 const std::string VALID_ADDON_IDENTIFIER_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_@!$";
+
+std::string GetSharedLibraryNameRegexPattern()
+{
+  // in most cases suffix starts with a dot
+  // but even if it's not a dot, having a leading \ is still safe as it simply turns next character into literal match
+  std::string suffix = CCompileInfo::CCompileInfo::GetSharedLibrarySuffix();
+  if (!suffix.empty())
+    suffix.insert(suffix.cbegin(), '\\');
+
+  // linux is different and has the version number after the suffix
+  return "^.*" + suffix + R"(\.?\d*\.?\d*\.?\d*$)";
+}
 }
 
 namespace ADDON
@@ -653,10 +665,7 @@ bool CAddonInfoBuilder::ParseXMLTypes(CAddonType& addonType,
 
       try
       {
-        // linux is different and has the version number after the suffix
-        static const std::regex libRegex("^.*" +
-                                        CCompileInfo::CCompileInfo::GetSharedLibrarySuffix() +
-                                        "\\.?[0-9]*\\.?[0-9]*\\.?[0-9]*$");
+        static const std::regex libRegex{GetSharedLibraryNameRegexPattern()};
         if (std::regex_match(library, libRegex))
         {
           info->SetBinary(true);
