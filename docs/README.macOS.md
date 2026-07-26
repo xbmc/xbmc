@@ -281,7 +281,7 @@ Alternatively, you can also build via Xcode from the command-line with `xcodebui
 Build Kodi:
 ```
 cd $HOME/kodi-build
-xcodebuild -config "Debug" -jobs $(getconf _NPROCESSORS_ONLN)
+xcodebuild -config "Debug"
 ```
 
 > [!TIP]
@@ -291,7 +291,7 @@ xcodebuild -config "Debug" -jobs $(getconf _NPROCESSORS_ONLN)
 
 Build Kodi:
 ```
-/Users/Shared/xbmc-depends/x86_64-darwin17.5.0-native/bin/cmake --build . --config "Debug" -- -verbose -jobs $(getconf _NPROCESSORS_ONLN)
+/Users/Shared/xbmc-depends/x86_64-darwin17.5.0-native/bin/cmake --build . --config "Debug" -- -verbose
 ```
 
 > [!TIP]

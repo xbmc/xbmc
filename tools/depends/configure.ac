@@ -910,13 +910,6 @@ EOF
 
 AC_OUTPUT
 
-if test "$platform_os" = "darwin_embedded"; then
-  if test "$use_platform" = "ios"; then
-    simulator_sdk_path=[`$use_xcrun --sdk iphonesimulator --show-sdk-path`]
-    echo -e "use simulator:\t $simulator_sdk_path"
-  fi
-fi
-
 cp -vf target/config.site $prefix/$deps_dir/share
 cp -vf target/config-binaddons.site $prefix/$tool_dir/share
 cp -vf target/Toolchain.cmake $prefix/$deps_dir/share
@@ -948,4 +941,10 @@ echo -e "depends:\t\t $prefix/$deps_dir"
 if test "$platform_os" = "android"; then
   echo -e "ndk-api-level:\t $use_ndk_api"
   echo -e "build-tools:\t $build_tools_path"
+fi
+if test "$platform_os" = "darwin_embedded"; then
+  if test "$use_platform" = "ios"; then
+    simulator_sdk_path=[`$use_xcrun --sdk iphonesimulator --show-sdk-path`]
+    echo -e "use simulator:\t $simulator_sdk_path"
+  fi
 fi

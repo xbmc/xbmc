@@ -312,7 +312,7 @@ ls -l /Users/Shared/xbmc-depends
 Build Kodi:
 ```
 cd $HOME/kodi-build
-xcodebuild -config "Debug" -jobs $(getconf _NPROCESSORS_ONLN)
+xcodebuild -config "Debug"
 ```
 
 > [!TIP]
