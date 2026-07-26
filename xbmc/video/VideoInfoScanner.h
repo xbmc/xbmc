@@ -314,7 +314,16 @@ namespace KODI::VIDEO
                                   const CVideoInfoTag& showInfo,
                                   CGUIDialogProgress* pDlgProgress = nullptr);
 
-    bool EnumerateSeriesFolder(CFileItem* item, EPISODELIST& episodeList);
+    enum class EpisodeResult
+    {
+      NO_MEDIA, //!< .nomedia file is present
+      NO_FILES, //!< No episode candidate files found
+      NO_EPISODES, //!< Episode candidate files found, but none could be parsed
+      NOT_CHANGED, //!< No new episodes found (directory hash unchanged)
+      FOUND_EPISODES //!< Episodes found
+    };
+
+    EpisodeResult EnumerateSeriesFolder(CFileItem* item, EPISODELIST& episodeList);
     bool ProcessItemByVideoInfoTag(const CFileItem *item, EPISODELIST &episodeList);
 
     bool AddVideoExtras(CFileItemList& items, ADDON::ContentType content, const std::string& path);
