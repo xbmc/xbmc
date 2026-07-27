@@ -81,6 +81,7 @@ void CGUIIncludes::Clear()
   m_skinvariables.clear();
   m_files.clear();
   m_expressions.clear();
+  m_skinMapManager.Clear();
 }
 
 void CGUIIncludes::Load(const std::string &file)
@@ -118,6 +119,7 @@ bool CGUIIncludes::Load_Internal(const std::string &file)
   LoadExpressions(root);
   LoadVariables(root);
   LoadIncludes(root);
+  LoadMaps(root);
 
   m_files.push_back(file);
 
@@ -187,6 +189,11 @@ void CGUIIncludes::LoadVariables(const TiXmlElement *node)
 
     child = child->NextSiblingElement("variable");
   }
+}
+
+void CGUIIncludes::LoadMaps(const TiXmlElement* node)
+{
+  m_skinMapManager.LoadMaps(node);
 }
 
 void CGUIIncludes::LoadIncludes(const TiXmlElement *node)
@@ -721,4 +728,9 @@ const INFO::CSkinVariableString* CGUIIncludes::CreateSkinVariable(const std::str
   if (it != m_skinvariables.end())
     return INFO::CSkinVariable::CreateFromXML(it->second, context);
   return NULL;
+}
+
+std::string CGUIIncludes::LookupSkinMap(std::string_view mapName, std::string_view key) const
+{
+  return m_skinMapManager.Lookup(mapName, key);
 }

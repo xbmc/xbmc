@@ -288,7 +288,7 @@
 						<right>50</right>
 						<height>30</height>
 						<aligny>center</aligny>
-						<label>$VAR[StreamCodecVar]$VAR[StreamHDRTypeVar, | ]$INFO[ListItem.Property(stream.resolution), | ]$VAR[StreamBitrateVar, | , kbps]$INFO[ListItem.Property(stream.fps), | , fps]$VAR[VideoStreamDialogItemLabelVar, - [LIGHT],[/LIGHT]]</label>
+						<label>$MAP[DefaultCodecMap, ListItem.Property(stream.codec)]$MAP[DefaultHdrMap, ListItem.Property(stream.hdrtype), | ]$INFO[ListItem.Property(stream.resolution), | ]$VAR[StreamBitrateVar, | , kbps]$INFO[ListItem.Property(stream.fps), | , fps]$VAR[VideoStreamDialogItemLabelVar, - [LIGHT],[/LIGHT]]</label>
 					</control>
 					<control type="label">
 						<left>50</left>
@@ -337,7 +337,7 @@
 						<height>30</height>
 						<aligny>center</aligny>
 						<scroll>true</scroll>
-						<label>$VAR[StreamCodecVar]$VAR[StreamHDRTypeVar, | ]$INFO[ListItem.Property(stream.resolution), | ]$VAR[StreamBitrateVar, | , kbps]$INFO[ListItem.Property(stream.fps), | , fps]$VAR[VideoStreamDialogItemLabelVar, - [LIGHT],[/LIGHT]]</label>
+						<label>$MAP[DefaultCodecMap, ListItem.Property(stream.codec)]$MAP[DefaultHdrMap, ListItem.Property(stream.hdrtype), | ]$INFO[ListItem.Property(stream.resolution), | ]$VAR[StreamBitrateVar, | , kbps]$INFO[ListItem.Property(stream.fps), | , fps]$VAR[VideoStreamDialogItemLabelVar, - [LIGHT],[/LIGHT]]</label>
 					</control>
 					<control type="label">
 						<left>50</left>
@@ -484,7 +484,7 @@
 						<height>20</height>
 						<font>font10</font>
 						<aligny>center</aligny>
-						<label>$VAR[StreamCodecVar]$VAR[StreamChannelsVar, ]$INFO[ListItem.Property(stream.description), | ]</label>
+						<label>$MAP[DefaultAltAudioMap, ListItem.Property(stream.codec)]$INFO[ListItem.Property(stream.channels), ]$INFO[ListItem.Property(stream.description), | ]</label>
 						<textcolor>grey</textcolor>
 					</control>
 					<control type="image">
@@ -534,7 +534,7 @@
 						<font>font10</font>
 						<aligny>center</aligny>
 						<scroll>true</scroll>
-						<label>$VAR[StreamCodecVar]$VAR[StreamChannelsVar, ]$INFO[ListItem.Property(stream.description), | ]</label>
+						<label>$MAP[DefaultAltAudioMap, ListItem.Property(stream.codec)]$INFO[ListItem.Property(stream.channels), ]$INFO[ListItem.Property(stream.description), | ]</label>
 					</control>
 					<control type="image">
 						<right>10</right>

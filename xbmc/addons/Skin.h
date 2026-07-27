@@ -198,6 +198,13 @@ public:
   void ToggleDebug();
   const INFO::CSkinVariableString* CreateSkinVariable(const std::string& name, int context);
 
+  /*! \brief Look up a value in a skin-defined map.
+   \param mapName  the name of the map to look up
+   \param key      the raw infolabel value to look up
+   \return mapped display string, or \p key unchanged if no mapping exists
+  */
+  std::string LookupSkinMap(std::string_view mapName, std::string_view key) const;
+
   static void SettingOptionsSkinColorsFiller(const std::shared_ptr<const CSetting>& setting,
                                              std::vector<StringSettingOption>& list,
                                              std::string& current);

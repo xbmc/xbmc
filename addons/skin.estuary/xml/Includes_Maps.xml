@@ -1,0 +1,122 @@
+<includes>
+	<map name="DefaultCodecMap">
+		<!-- Audio codec lookup -->
+		<entry key="aac">AAC</entry>
+		<entry key="aac_lc">AAC-LC</entry>
+		<entry key="aac_ssr">AAC-SSR</entry>
+		<entry key="aac_ltp">AAC-LTP</entry>
+		<entry key="he_aac_v2">HE-AACv2</entry>
+		<entry key="he_aac">HE-AAC</entry>
+		<entry key="aac_latm">AAC</entry>
+		<entry key="ac3">Dolby Digital</entry>
+		<entry key="aif">AIFF</entry>
+		<entry key="aifc">AIFF</entry>
+		<entry key="aiff">AIFF</entry>
+		<entry key="alac">ALAC</entry>
+		<entry key="ape">APE</entry>
+		<entry key="avc">AVC</entry>
+		<entry key="cdda">CDDA</entry>
+		<entry key="dolbydigital">Dolby Digital</entry>
+		<entry key="dca">DTS</entry>
+		<entry key="dts">DTS</entry>
+		<entry key="dtshd_hra">DTS-HD HRA</entry>
+		<entry key="dtshd_ma">DTS-HD MA</entry>
+		<entry key="dtsma">DTS-HD MA</entry>
+		<entry key="dtshd_ma_x">DTS-HD MA &#8226; DTS:X</entry>
+		<entry key="dtshd_ma_x_imax">DTS-HD MA &#8226; DTS:X IMAX</entry>
+		<entry key="eac3">Dolby Digital+</entry>
+		<entry key="eac3_ddp_atmos">Dolby Digital+ &#8226; Atmos</entry>
+		<entry key="flac">FLAC</entry>
+		<entry key="mp1">MP1</entry>
+		<entry key="mp2">MP2</entry>
+		<entry key="mp3">MP3</entry>
+		<entry key="mp3float">MP3</entry>
+		<entry key="ogg">OGG</entry>
+		<entry key="opus">OPUS</entry>
+		<entry key="pcm">PCM</entry>
+		<entry key="pcm_bluray">PCM</entry>
+		<entry key="pcm_s16le">PCM</entry>
+		<entry key="pcm_s24le">PCM</entry>
+		<entry key="truehd">TrueHD</entry>
+		<entry key="truehd_atmos">TrueHD &#8226; Atmos</entry>
+		<entry key="vorbis">Vorbis</entry>
+		<entry key="wav">WAV</entry>
+		<entry key="wavpack">WAVP</entry>
+		<entry key="wmapro">WMA-PRO</entry>
+		<entry key="wmav2">WMA</entry>
+		<!-- Video codec lookup -->
+		<entry key="av1">AV1</entry>
+		<entry key="avc1">AVC1</entry>
+		<entry key="div3">DivX</entry>
+		<entry key="divx">DivX</entry>
+		<entry key="dx50">DivX</entry>
+		<entry key="flv">FLV</entry>
+		<entry key="h264">H.264</entry>
+		<entry key="hev1">H.265</entry>
+		<entry key="hevc">H.265</entry>
+		<entry key="hvc1">H.265</entry>
+		<entry key="mpeg1">MPEG-1</entry>
+		<entry key="mpeg2">MPEG-2</entry>
+		<entry key="mpeg2video">MPEG-2</entry>
+		<entry key="mp4v">MPEG-4</entry>
+		<entry key="mpeg4">MPEG-4</entry>
+		<entry key="theora">Theora</entry>
+		<entry key="vc1">VC-1</entry>
+		<entry key="vc-1">VC-1</entry>
+		<entry key="vp8">VP8</entry>
+		<entry key="vp9">VP9</entry>
+		<entry key="wmv">WMV</entry>
+		<entry key="wmv3">WMV</entry>
+		<entry key="wvc1">VC-1</entry>
+		<entry key="xvid">XviD</entry>
+		<!-- Subtitle codec lookup -->
+		<entry key="ass">ASS</entry>
+		<entry key="dvb_subtitle">DVB-SUB</entry>
+		<entry key="dvb_teletext">DVB-Text</entry>
+		<entry key="dvd_subtitle">VobSub</entry>
+		<entry key="hdmv_pgs_subtitle">PGS</entry>
+		<entry key="microdvd">MicroDVD</entry>
+		<entry key="mov_text">Timed Text</entry>
+		<entry key="mpl2">MPL2</entry>
+		<entry key="realtext">RealText</entry>
+		<entry key="sami">SAMI</entry>
+		<entry key="srt">SubRip</entry>
+		<entry key="ssa">SSA</entry>
+		<entry key="subrip">Subrip</entry>
+		<entry key="text">Text</entry>
+		<entry key="ttml">TTML</entry>
+		<entry key="vplayer">VPlayer</entry>
+		<entry key="webvtt">WebVTT</entry>
+		<entry key="xsub">XSUB</entry>
+	</map>
+	<map name="DefaultAltAudioMap" ref="DefaultCodecMap">
+		<entry key="dtshd_ma_x">DTS-HD MA / DTS:X</entry>
+		<entry key="dtshd_ma_x_imax">DTS-HD MA / DTS:X IMAX</entry>
+		<entry key="eac3_ddp_atmos">Dolby Digital+ / Atmos</entry>
+		<entry key="truehd_atmos">Dolby TrueHD / Atmos</entry>
+	</map>
+	<map name="DefaultResolutionMap">
+		<entry key="480">SD</entry>
+		<entry key="540">SD</entry>
+		<entry key="576">SD</entry>
+		<entry key="720">HD</entry>
+		<entry key="1080">HD</entry>
+		<entry key="4K">UHD</entry>
+		<entry key="8K">UHD</entry>
+	</map>
+	<map name="DefaultHdrMap">
+		<entry key="dolbyvision">Dolby Vision</entry>
+		<entry key="hdr10plus">HDR10+</entry>
+		<entry key="hdr10">HDR10</entry>
+		<entry key="hlg">HLG</entry>
+	</map>
+	<map name="DefaultAudioTrackMap" ref="DefaultCodecMap">
+		<entry key="aac_latm">AAC LATM</entry>
+		<entry key="mp3float">MP3 Float</entry>
+		<entry key="pcm_bluray">PCM Bluray</entry>
+		<entry key="pcm_s16le">PCM S16LE</entry>
+		<entry key="pcm_s24le">PCM S24LE</entry>
+		<entry key="wavpack">WAVPACK</entry>
+		<entry key="wmav2">WMAv2</entry>
+	</map>
+</includes>
