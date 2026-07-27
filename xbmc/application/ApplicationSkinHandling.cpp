@@ -241,15 +241,7 @@ void CApplicationSkinHandling::UnloadSkin()
     return;
 
   std::shared_ptr<ADDON::CSkinInfo> skin = gui->GetSkinInfo();
-  if (!skin)
-  {
-    if (!m_saveSkinOnUnloading)
-      m_saveSkinOnUnloading = true;
-
-    return;
-  }
-
-  if (m_saveSkinOnUnloading)
+  if (skin && m_saveSkinOnUnloading)
     skin->SaveSettings();
   else if (!m_saveSkinOnUnloading)
     m_saveSkinOnUnloading = true;

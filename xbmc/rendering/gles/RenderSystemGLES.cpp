@@ -156,9 +156,6 @@ bool CRenderSystemGLES::ResetRenderSystem(int width, int height)
 
 bool CRenderSystemGLES::DestroyRenderSystem()
 {
-  if (!m_bRenderCreated)
-    return true;
-
   ResetScissors();
   CDirtyRegionList dirtyRegions;
   CDirtyRegion dirtyWindow(CServiceBroker::GetWinSystem()->GetGfxContext().GetViewWindow());

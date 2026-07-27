@@ -36,7 +36,6 @@ public:
                        RESOLUTION_INFO& res) override;
 
   bool DestroyWindow() override;
-  virtual bool DestroySurface();
   void UpdateResolutions() override;
 
   void InitiateModeChange();
