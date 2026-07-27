@@ -34,7 +34,7 @@ public:
   bool Exists(const CURL& url) override { return true; }
   float GetProgress() const override;
   void CancelDirectory() override;
-  static bool RunScriptWithParams(const std::string& strPath, bool resume);
+  static bool RunScriptWithParams(const CURL& url, bool resume);
 
   /*! \brief Get a reproducible CFileItem by trying to recursively resolve the plugin paths
   up to a maximum allowed limit. If no plugin paths exist it will be ignored.
@@ -80,7 +80,7 @@ protected:
   bool IsCancelled() const override { return m_cancelled; }
 
 private:
-  bool StartScript(const std::string& strPath, bool resume);
+  bool StartScript(const CURL& url, bool resume);
 
   std::unique_ptr<CFileItemList> m_listItems;
   std::unique_ptr<CFileItem> m_fileResult;
