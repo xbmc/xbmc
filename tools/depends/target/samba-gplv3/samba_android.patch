@@ -23,6 +23,48 @@
  	pw->pw_shell = strdup(p->pw_shell);
  	if (pw->pw_shell == NULL) {
  		goto fail;
+--- a/third_party/heimdal/lib/base/json.c
++++ b/third_party/heimdal/lib/base/json.c
+@@ -41 +41 @@
+-#ifndef WIN32
++#if !defined(WIN32) && !defined(ANDROID)
+@@ -142 +142 @@
+-#ifndef WIN32
++#if !defined(WIN32) && !defined(ANDROID)
+@@ -151,8 +151,8 @@
+ int
+ heim_locale_is_utf8(void)
+ {
+-#ifdef WIN32
+-    return 0; /* XXX Implement */
++#if defined(WIN32) || defined(ANDROID)
++    return 0; /* XXX Implement */
+ #else
+     static int locale_is_utf8 = -1;
+     static heim_base_once_t once = HEIM_BASE_ONCE_INIT;
+--- a/source3/lib/dumpcore.c
++++ b/source3/lib/dumpcore.c
+@@ -323 +323 @@
+-	umask(~(0700));
++	umask(0077);
+--- a/source3/rpc_client/local_np.c
++++ b/source3/rpc_client/local_np.c
+@@ -336 +336,3 @@
+-	pid_t pid;
++#ifndef ANDROID
++	pid_t pid;
++#endif
+@@ -383,3 +385,7 @@
++#ifdef ANDROID
++	ret = ENOSYS;
++#else
+-	become_root();
+-	ret = posix_spawn(&pid, argv[0], NULL, NULL, argv, environ);
+-	unbecome_root();
++	become_root();
++	ret = posix_spawn(&pid, argv[0], NULL, NULL, argv, environ);
++	unbecome_root();
++#endif
 --- a/nsswitch/libwbclient/wbc_sid.c
 +++ b/nsswitch/libwbclient/wbc_sid.c
 @@ -1054,9 +1054,13 @@

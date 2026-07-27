@@ -1,8 +1,8 @@
 --- a/buildtools/wafsamba/samba_autoconf.py
 +++ b/buildtools/wafsamba/samba_autoconf.py
 @@ -320,7 +320,7 @@
- 
- 
+
+
  @conf
 -def CHECK_SIZEOF(conf, vars, headers=None, define=None, critical=True):
 +def CHECK_SIZEOF(conf, vars, headers=None, define=None, cflags='', critical=True):
@@ -25,12 +25,51 @@
  
  
  @conf
+--- a/buildtools/wafsamba/samba_deps.py
++++ b/buildtools/wafsamba/samba_deps.py
+@@ -8 +8,2 @@
+-from waflib import ConfigSet
++from waflib import ConfigSet
++from waflib.TaskGen import feature, after_method
+@@ -373,6 +374,22 @@
+         t.samba_deps_extended = t.samba_deps[:]
+         t.samba_includes_extended = TO_LIST(t.samba_includes)[:]
+         t.cflags = getattr(t, 'samba_cflags', '')
++        if getattr(t, 'samba_use_hostcc', False):
++            t.env = t.env.derive()
++            if t.env.HOSTCC:
++                t.env.CC = TO_LIST(t.env.HOSTCC)
++                t.env.LINK_CC = TO_LIST(t.env.HOSTCC)
++            t.env.CFLAGS = ['-MMD', '-D_GNU_SOURCE']
++            t.env.CPPFLAGS = []
++            t.env.LINKFLAGS = []
++            t.env.LDFLAGS = []
++            t.env.ARCH = []
+ 
++@feature('cprogram')
++@after_method('apply_link')
++def samba_hostcc_link_task_env(self):
++    if getattr(self, 'samba_use_hostcc', False) and getattr(self, 'link_task', None):
++        self.link_task.env = self.env
++
+ def replace_builtin_subsystem_deps(bld, tgt_list):
+     '''replace dependencies based on builtin subsystems/libraries
+--- a/buildtools/wafsamba/wafsamba.py
++++ b/buildtools/wafsamba/wafsamba.py
+@@ -564,6 +564,7 @@
+         samba_modules  = modules,
+         top            = True,
+         samba_subsystem= subsystem_name,
++        samba_use_hostcc = use_hostcc,
+         install_path   = None,
+         samba_inst_path= install_path,
+         samba_install  = install,
 --- a/buildtools/wafsamba/samba_conftests.py
 +++ b/buildtools/wafsamba/samba_conftests.py
 @@ -101,25 +101,24 @@
                      else:
                          conf.DEFINE(flag_split[0], flag_split[1])
- 
+
 -    if conf.CHECK_CODE('if (sizeof(off_t) < 8) return 1',
 -                       define,
 -                       execute=True,
@@ -41,7 +80,7 @@
 +        conf.undefine("SIZEOF_OFF_T")
 +        conf.DEFINE(define, 1)
          return True
- 
+
 -    if conf.CHECK_CODE('if (sizeof(off_t) < 8) return 1',
 -                       define,
 -                       execute=True,
@@ -53,7 +92,7 @@
 +        conf.undefine("SIZEOF_OFF_T")
          conf.DEFINE('_FILE_OFFSET_BITS', 64)
          return True
- 
+
 -    if conf.CHECK_CODE('if (sizeof(off_t) < 8) return 1',
 -                       define,
 -                       execute=True,
@@ -66,17 +105,6 @@
          conf.DEFINE('_LARGE_FILES', 1)
          return True
      return False
---- a/buildtools/wafsamba/wscript
-+++ b/buildtools/wafsamba/wscript
-@@ -317,7 +317,7 @@
-     conf.CHECK_CODE('printf("hello world")',
-                     define='HAVE_SIMPLE_C_PROG',
-                     mandatory=True,
--                    execute=True,
-+                    execute=False,
-                     headers='stdio.h',
-                     msg='Checking simple C program')
- 
 --- a/lib/replace/wscript
 +++ b/lib/replace/wscript
 @@ -41,6 +41,7 @@
@@ -95,16 +123,16 @@
 +                       execute=False,
                         addmain=False,
                         msg='Checking for working strptime')
- 
+
 @@ -707,7 +708,7 @@
- 
+
      conf.CHECK_CODE('#include "tests/snprintf.c"',
                      define="HAVE_C99_VSNPRINTF",
 -                    execute=True,
 +                    execute=False,
                      addmain=False,
                      msg="Checking for C99 vsnprintf")
- 
+
 @@ -802,7 +803,7 @@
                      exit(0);
                      ''',
@@ -112,7 +140,7 @@
 -                    execute=True,
 +                    execute=False,
                      mandatory=True) # lets see if we get a mandatory failure for this one
- 
+
      # look for a method of finding the list of network interfaces
 @@ -814,6 +815,7 @@
                             #define %s 1
@@ -129,8 +157,39 @@
 -                           execute=True):
 +                           execute=False):
              break
- 
+
      conf.RECURSE('system')
+--- a/lib/replace/replace.h
++++ b/lib/replace/replace.h
+@@ -30,7 +30,21 @@
+ #ifndef NO_CONFIG_H
+ #include "config.h"
+-#endif
++#endif
+-
++#ifdef _SAMBA_HOSTCC_
++/* Host tools must not use target header probes. */
++#undef HAVE_STRLCPY
++#undef HAVE_STRLCAT
++#undef HAVE_GETPROGNAME
++#undef HAVE_SETPROGNAME
++#undef HAVE_STROPTS_H
++#undef HAVE_SYS_STROPTS_H
++#undef HAVE_SYS_SYSCTL_H
++#undef HAVE_NETINET_IN6_H
++#undef HAVE_NETINET6_IN6_H
++#undef HAVE_NETINET_IN6_MACHTYPES_H
++#undef HAVE_NETINET_IN6_VAR_H
++#endif
++
+ #ifdef HAVE_STANDARDS_H
+ #include <standards.h>
+ #endif
+--- a/lib/replace/replace.c
++++ b/lib/replace/replace.c
+@@ -1258 +1258 @@
+-#ifdef HAVE_LINUX_IOCTL
++#if defined(HAVE_LINUX_IOCTL) && defined(FICLONERANGE)
 --- a/lib/socket/wscript
 +++ b/lib/socket/wscript
 @@ -4,4 +4,5 @@
@@ -145,18 +204,18 @@
 @@ -51,6 +51,10 @@
  /* Max allowable allococation - 256mb - 0x10000000 */
  #define MAX_ALLOC_SIZE (1024*1024*256)
- 
+
 +#ifndef YPERR_KEY
 +#define YPERR_KEY 5
 +#endif
 +
  static enum protocol_types Protocol = PROTOCOL_COREPLUS;
- 
+
  enum protocol_types get_Protocol(void)
 --- a/source3/wscript
 +++ b/source3/wscript
 @@ -156,7 +156,7 @@
- 
+
      # Check for inotify support (Skip if we are SunOS)
      #NOTE: illumos provides sys/inotify.h but is not an exact match for linux
 -    host_os = sys.platform
@@ -165,14 +224,14 @@
          conf.CHECK_HEADERS('sys/inotify.h')
          if conf.env.HAVE_SYS_INOTIFY_H:
 @@ -455,8 +455,8 @@
- 
+
      # FIXME: these should be tests for features, but the old build system just
      # checks for OSes.
 -    host_os = sys.platform
 -    Logs.info("building on %s" % host_os)
 +    host_os = os.getenv('HOST', sys.platform)
 +    Logs.info("building for %s" % host_os)
- 
+
      # Python doesn't have case switches... :/
      # FIXME: original was *linux* | gnu* | k*bsd*-gnu | kopensolaris*-gnu | *qnx*)
 @@ -1027,7 +1027,7 @@
@@ -191,25 +250,25 @@
 -                execute=True,
 +                execute=False,
                  msg='Checking whether fcntl locking is available')
- 
+
      conf.CHECK_CODE('''
 --- a/tests/summary.c
 +++ b/tests/summary.c
 @@ -9,7 +9,7 @@
  #endif
- 
+
  #if !(defined(HAVE_IFACE_GETIFADDRS) || defined(HAVE_IFACE_IFCONF) || defined(HAVE_IFACE_IFREQ) || defined(HAVE_IFACE_AIX))
 -#warning "WARNING: No automated network interface determination"
 +#error "ERROR: No automated network interface determination"
  #endif
- 
+
  #if !(defined(USE_SETEUID) || defined(USE_SETREUID) || defined(USE_SETRESUID) || defined(USE_SETUIDX) || defined(HAVE_LINUX_THREAD_CREDENTIALS))
 --- a/third_party/popt/poptconfig.c
 +++ b/third_party/popt/poptconfig.c
 @@ -24,7 +24,7 @@
  #if defined(HAVE_GLOB_H)
  #include <glob.h>
- 
+
 -#if defined(__LCLINT__)
 +#if defined(HAVE_GLOB) && defined(__LCLINT__)
  /*@-declundef -exportheader -incondefs -protoparammatch -redecl -type @*/
@@ -218,12 +277,12 @@
 @@ -104,7 +104,7 @@
      if (pat[0] == '@' && pat[1] != '(')
  	pat++;
- 
+
 -#if defined(HAVE_GLOB_H)
 +#if defined(HAVE_GLOB)
      if (glob_pattern_p(pat, 0)) {
  	glob_t _g, *pglob = &_g;
- 
+
 @@ -125,7 +125,7 @@
  	} else
  	    rc = POPT_ERROR_ERRNO;
@@ -238,16 +297,16 @@
 @@ -86,7 +86,7 @@
      if (istr == NULL)
  	return NULL;
- 
+
 -#ifdef HAVE_LANGINFO_H
 +#ifdef HAVE_NL_LANGINFO
      codeset = nl_langinfo ((nl_item)CODESET);
  #endif
- 
+
 --- a/third_party/popt/poptint.h
 +++ b/third_party/popt/poptint.h
 @@ -174,7 +174,7 @@
- 
+
  #ifdef HAVE_LANGINFO_H
  #include <langinfo.h>
 -#if defined(__LCLINT__)
@@ -255,12 +314,77 @@
  /*@-declundef -incondefs @*/
  extern char *nl_langinfo (nl_item __item)
  	/*@*/;
+--- a/third_party/heimdal_build/wscript_build
++++ b/third_party/heimdal_build/wscript_build
+@@ -72,6 +72,11 @@
+         + template_str \
+         + ' --one-code-file "${SRC[0].abspath(env)}" ${ASN1NAME}'
+
++    asn1_rule += ' && ( test ! -f "asn1_${ASN1NAME}.x" || mv "asn1_${ASN1NAME}.x" "asn1_${ASN1NAME}.c" )'
++    asn1_rule += ' && ( test ! -f "${ASN1NAME}.hx" || mv "${ASN1NAME}.hx" "${ASN1NAME}.h" )'
++    asn1_rule += ' && ( test ! -f "${ASN1NAME}-priv.hx" || mv "${ASN1NAME}-priv.hx" "${ASN1NAME}-priv.h" )'
++    asn1_rule += ' && ( test -f "${ASN1NAME}_oids.c" || touch "${ASN1NAME}_oids.c" )'
++
+     source = TO_LIST(source)
+
+     if option_file is not None:
+@@ -98,7 +103,7 @@
+     t.env.ASN1OPTIONS  = options
+     t.env.BLDBIN       = os.path.normpath(os.path.join(bld.srcnode.abspath(bld.env), '..'))
+     if option_file is not None:
+-        t.env.OPTION_FILE = "--option-file='%s'" % \
++        t.env.OPTION_FILE = "--option-file=%s" % \
+             os.path.normpath(os.path.join(bld.path.abspath(), option_file))
+
+     cfile = out_files[0]
+--- a/third_party/heimdal/lib/krb5/krb5_locl.h
++++ b/third_party/heimdal/lib/krb5/krb5_locl.h
+@@ -215,6 +215,10 @@
+ #define KEYTAB_DEFAULT "FILE:" SYSCONFDIR "/krb5.keytab"
+ #define KEYTAB_DEFAULT_MODIFY "FILE:" SYSCONFDIR "/krb5.keytab"
+
++#ifndef LOCALSTATEDIR
++#define LOCALSTATEDIR "/var"
++#endif
++
+ #ifndef CLIENT_KEYTAB_DEFAULT
+ #define CLIENT_KEYTAB_DEFAULT	"FILE:" LOCALSTATEDIR "/user/%{euid}/client.keytab";
+ #endif
+--- a/third_party/heimdal/lib/base/expand_path.c
++++ b/third_party/heimdal/lib/base/expand_path.c
+@@ -31,6 +31,26 @@
+
+ #include "baselocl.h"
+
++#ifndef LOCALSTATEDIR
++#define LOCALSTATEDIR "/var"
++#endif
++
++#ifndef LIBDIR
++#define LIBDIR "/lib"
++#endif
++
++#ifndef BINDIR
++#define BINDIR "/bin"
++#endif
++
++#ifndef LIBEXECDIR
++#define LIBEXECDIR "/libexec"
++#endif
++
++#ifndef SBINDIR
++#define SBINDIR "/sbin"
++#endif
++
+ #include <stdarg.h>
+
+ typedef int PTYPE;
 --- a/wscript
 +++ b/wscript
 @@ -175,7 +175,7 @@
      conf.SAMBA_CHECK_PYTHON()
      conf.SAMBA_CHECK_PYTHON_HEADERS()
- 
+
 -    if sys.platform == 'darwin' and not conf.env['HAVE_ENVIRON_DECL']:
 +    if os.getenv('HOST', sys.platform).find('darwin') > -1 and not conf.env['HAVE_ENVIRON_DECL']:
          # Mac OSX needs to have this and it's also needed that the python is compiled with this
@@ -269,22 +393,19 @@
 @@ -183,7 +183,7 @@
          if not conf.CHECK_SHLIB_W_PYTHON("Checking if -undefined dynamic_lookup is not need"):
              conf.env.append_value('cshlib_LINKFLAGS', ['-undefined', 'dynamic_lookup'])
- 
+
 -    if sys.platform == 'darwin':
 +    if os.getenv('HOST', sys.platform).find('darwin') > -1:
          conf.ADD_LDFLAGS('-framework CoreFoundation')
- 
+
      conf.RECURSE('dynconfig')
---- a/wscript_configure_embedded_heimdal
-+++ b/wscript_configure_embedded_heimdal
-@@ -8 +8,10 @@
- conf.RECURSE('source4/heimdal_build')
-+
-+def check_system_heimdal_binary(name):
-+    if not conf.find_program(name, var=name.upper()):
-+        raise Exception("not conf.find_program(%s, var=%s)" % (name, name.upper()))
-+    conf.define('USING_SYSTEM_%s' % name.upper(), 1)
-+    return True
-+
-+check_system_heimdal_binary("compile_et")
-+check_system_heimdal_binary("asn1_compile")
+--- a/wscript_build
++++ b/wscript_build
+@@ -20,6 +20,7 @@
+ # these are includes which appear in public headers, but with #ifdef conditional
+ # compilation, so they are safe
+ bld.env.public_headers_skip = ['lib/param/param_proto.h', 'lib/param/param_functions.h']
++bld.env.public_headers_allow_broken = True
+
+ version=samba_version.load_version(bld.env, is_install=bld.is_install)
+ bld.SAMBA_MKVERSION('version.h')
