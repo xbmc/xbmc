@@ -10673,10 +10673,8 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           }
         }
 
-        std::string safeTitle = CUtil::MakeLegalFileName(title, LegalPath::WIN32_COMPAT);
-        if (URIUtils::HasEncodedFilename(CURL(movieSetsDir)))
-          safeTitle = CURL::Encode(safeTitle);
-        const std::string itemPath = URIUtils::AddFileToFolder(movieSetsDir, safeTitle);
+        const std::string itemPath = URIUtils::AddFileToFolderMatchingEncoding(
+            movieSetsDir, CUtil::MakeLegalFileName(title, LegalPath::WIN32_COMPAT));
         if (CDirectory::Exists(itemPath) || CDirectory::Create(itemPath))
         {
           // get set information and generate .nfo
@@ -11285,11 +11283,9 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
         item.SetArt(artItem.GetArt());
         if (item.GetVideoInfoTag()->m_set.HasTitle())
         {
-          std::string safeSetTitle = CUtil::MakeLegalFileName(
-              item.GetVideoInfoTag()->m_set.GetTitle(), LegalPath::WIN32_COMPAT);
-          if (URIUtils::HasEncodedFilename(CURL(movieSetsDir)))
-            safeSetTitle = CURL::Encode(safeSetTitle);
-          std::string setPath = URIUtils::AddFileToFolder(movieSetsDir, safeSetTitle);
+          std::string setPath = URIUtils::AddFileToFolderMatchingEncoding(
+              movieSetsDir, CUtil::MakeLegalFileName(item.GetVideoInfoTag()->m_set.GetTitle(),
+                                                     LegalPath::WIN32_COMPAT));
           if (CDirectory::Exists(setPath))
           {
             KODI::ART::Artwork setArt;

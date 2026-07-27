@@ -1891,10 +1891,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
         CSettings::SETTING_VIDEOLIBRARY_MOVIESETSFOLDER);
     if (path.empty())
       return "";
-    std::string safeTitle = CUtil::MakeLegalFileName(setTitle, LegalPath::WIN32_COMPAT);
-    if (URIUtils::HasEncodedFilename(CURL(path)))
-      safeTitle = CURL::Encode(safeTitle);
-    path = URIUtils::AddFileToFolder(path, safeTitle);
+    path = URIUtils::AddFileToFolderMatchingEncoding(
+        path, CUtil::MakeLegalFileName(setTitle, LegalPath::WIN32_COMPAT));
     URIUtils::AddSlashAtEnd(path);
     CLog::Log(LOGDEBUG,
         "VideoInfoScanner: Looking for local artwork for movie set '{}' in folder '{}'",
