@@ -460,6 +460,12 @@ const TestNFSURLParsingData nfsParsingData[] = {
     // NFS URL with encoded spaces in path
     {"nfs://192.168.1.100/Public/My%20Videos/Movie%202020.mkv?type=video", "nfs", "192.168.1.100",
      "Public/My%20Videos/Movie%202020.mkv", "?type=video", "mkv"},
+    // '#' in directory name - must remain part of the file name
+    {"nfs://192.168.178.23/share/#recently-added/movie.mkv", "nfs", "192.168.178.23",
+     "share/#recently-added/movie.mkv", "", "mkv"},
+    // ';' in directory name - must remain part of the file name
+    {"nfs://192.168.178.23/share/Comedy;Drama/movie.mkv", "nfs", "192.168.178.23",
+     "share/Comedy;Drama/movie.mkv", "", "mkv"},
 };
 
 INSTANTIATE_TEST_SUITE_P(NFSParsing, TestNFSURLParsing, ValuesIn(nfsParsingData));

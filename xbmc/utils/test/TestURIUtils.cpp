@@ -2358,6 +2358,26 @@ TEST_F(TestURIUtils, CheckConsistencyBetweenFileNameUtilities)
     EXPECT_EQ("movie.avi", URIUtils_Split("nfs://127.0.0.1/srv/share/movie.avi|option=true"));
   }
   {
+    EXPECT_EQ("srv/share/#recently-added/movie.avi",
+              CURL("nfs://127.0.0.1/srv/share/#recently-added/movie.avi").GetFileName());
+
+    EXPECT_EQ("movie.avi",
+              URIUtils::GetFileName("nfs://127.0.0.1/srv/share/#recently-added/movie.avi"));
+    EXPECT_EQ("movie.avi",
+              CURL_FileName_URIUtils_Split("nfs://127.0.0.1/srv/share/#recently-added/movie.avi"));
+    EXPECT_EQ("movie.avi", URIUtils_Split("nfs://127.0.0.1/srv/share/#recently-added/movie.avi"));
+  }
+  {
+    EXPECT_EQ("srv/share/Comedy;Drama/movie.avi",
+              CURL("nfs://127.0.0.1/srv/share/Comedy;Drama/movie.avi").GetFileName());
+
+    EXPECT_EQ("movie.avi",
+              URIUtils::GetFileName("nfs://127.0.0.1/srv/share/Comedy;Drama/movie.avi"));
+    EXPECT_EQ("movie.avi",
+              CURL_FileName_URIUtils_Split("nfs://127.0.0.1/srv/share/Comedy;Drama/movie.avi"));
+    EXPECT_EQ("movie.avi", URIUtils_Split("nfs://127.0.0.1/srv/share/Comedy;Drama/movie.avi"));
+  }
+  {
     EXPECT_EQ("a:b", URIUtils::GetFileName("/hello/there/a:b"));
     EXPECT_EQ("a:b", CURL_FileName_URIUtils_Split("/hello/there/a:b"));
     EXPECT_EQ("a:b", URIUtils_Split("/hello/there/a:b"));
