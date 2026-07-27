@@ -37,7 +37,7 @@ public:
   /*!
    * @brief Create a new instance of the PVR database.
    */
-  CPVRDatabase() = default;
+  CPVRDatabase();
   ~CPVRDatabase() override = default;
 
   /*!

@@ -8,6 +8,7 @@
 
 #include "AddonDatabase.h"
 
+#include "DatabaseTypes.h"
 #include "XBDateTime.h"
 #include "addons/AddonBuilder.h"
 #include "addons/addoninfo/AddonInfo.h"
@@ -189,7 +190,9 @@ void CAddonDatabaseSerializer::DeserializeExtensions(const CVariant& variant,
   return;
 }
 
-CAddonDatabase::CAddonDatabase() = default;
+CAddonDatabase::CAddonDatabase() : CDatabase(KODI::DATABASE::TYPE_ADDONS)
+{
+}
 
 CAddonDatabase::~CAddonDatabase() = default;
 

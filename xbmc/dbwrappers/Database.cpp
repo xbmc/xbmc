@@ -228,8 +228,9 @@ bool CDatabase::DatasetLayout::HasFilterFields() const
   return std::ranges::any_of(m_fields, [](const auto& field) { return field.fetch; });
 }
 
-CDatabase::CDatabase()
-  : m_profileManager(*CServiceBroker::GetSettingsComponent()->GetProfileManager())
+CDatabase::CDatabase(const std::string& dbType)
+  : m_profileManager(*CServiceBroker::GetSettingsComponent()->GetProfileManager()),
+    m_type(dbType)
 {
 }
 

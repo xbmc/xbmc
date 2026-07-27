@@ -34,7 +34,7 @@ public:
   /*!
    * @brief Create a new instance of the EPG database.
    */
-  CPVREpgDatabase() = default;
+  CPVREpgDatabase();
 
   /*!
    * @brief Destroy this instance.
