@@ -1,0 +1,5 @@
+LIBNAME=PyYAML
+VERSION=6.0.2
+ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
+FULL_URL=https://files.pythonhosted.org/packages/54/ed/79a089b6be93607fa5cdaedf301d7dfb23af5f25c398d5ead2525b063e17/pyyaml-6.0.2.tar.gz
+SHA512=a675e0056bb6af9119c7f2796e349ced05afca64118a5b444d66dafcb6a774cf274eeba7eab044b86eb6c12a9d7c785c654f6cf229e1d190340dd06ea76e25ec

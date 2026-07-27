@@ -48,7 +48,7 @@ ifeq ($(OS),linux)
   EXPAT = expat
 
   ifeq ($(RENDER_SYSTEM),gles)
-    NATIVE += MarkupSafe Mako
+    NATIVE += MarkupSafe Mako PyYAML
   endif
 
   ifeq ($(TARGET_PLATFORM),webos)
@@ -91,6 +91,7 @@ openssl: zlib
 pcre2: cmake
 pkgconf: meson ninja
 pugixml: cmake
+PyYAML: Mako
 python3: $(EXPAT) $(LIBFFI) pkg-config zlib openssl autoconf-archive
 pythonmodule-pybind11: pythonmodule-setuptools python3
 pythonmodule-setuptools: python3
