@@ -21,6 +21,7 @@
 #include "PNGDecoder.h"
 
 #include "SimpleFS.h"
+#include "guilib/TextureFormats.h"
 
 #include <png.h>
 
@@ -214,6 +215,7 @@ bool PNGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   frame.rgbaImage.width = temp_width;
   frame.rgbaImage.bbp = 32;
   frame.rgbaImage.pitch = 4 * temp_width;
+  frame.rgbaImage.size = 4 * temp_width * temp_height;
 
   frames.frameList.push_back(frame);
   // clean up
