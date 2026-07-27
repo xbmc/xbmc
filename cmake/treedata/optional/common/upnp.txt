@@ -1,2 +1,3 @@
 lib/libUPnP upnp # UPNP
 xbmc/network/upnp network/upnp # UPNP
+xbmc/network/upnp/test test/network/upnp # UPNP
