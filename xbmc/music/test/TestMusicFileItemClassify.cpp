@@ -126,6 +126,54 @@ INSTANTIATE_TEST_SUITE_P(TestMusicFileItemClassify,
                          AudioBookTest,
                          testing::ValuesIn(audiobook_tests));
 
+class AudioBookMkvTest : public testing::WithParamInterface<AudioClassifyTest>, public testing::Test
+{
+};
+
+TEST_P(AudioBookMkvTest, IsAudioBook)
+{
+  const AudioClassifyTest& param = GetParam();
+
+  // Construct CFileItem at test runtime (after fixture SetUp)
+  CFileItem item(param.path, false);
+
+  switch (param.tag_type)
+  {
+    case 1:
+      item.GetVideoInfoTag()->m_strFileNameAndPath = param.path;
+      break;
+    case 2:
+      item.GetGameInfoTag()->SetGameClient("some_client");
+      break;
+    case 3:
+      item.GetMusicInfoTag()->SetPlayCount(1);
+      break;
+    case 4:
+      item.GetPictureInfoTag()->SetInfo("foo", "bar");
+      break;
+    default:
+      break;
+  }
+
+  EXPECT_EQ(MUSIC::IsAudioBook(item), param.result);
+}
+
+const auto audiobook_mkv_tests = std::array{
+    // Plain .mkv with no MusicInfoTag - most .mkv files are video
+    AudioClassifyTest{"/home/user/episode.mkv", false},
+    // A VideoInfoTag (e.g. a scraped TV episode)
+    AudioClassifyTest{"/home/user/episode.mkv", false, "", 1},
+    // A GameInfoTag or PictureInfoTag isn't a MusicInfoTag
+    AudioClassifyTest{"/home/user/episode.mkv", false, "", 2},
+    AudioClassifyTest{"/home/user/episode.mkv", false, "", 4},
+    // A MusicInfoTag set (a real mkv audiobook catalogued in the music library) IS an audiobook
+    AudioClassifyTest{"/home/user/book.mkv", true, "", 3},
+};
+
+INSTANTIATE_TEST_SUITE_P(TestMusicFileItemClassify,
+                         AudioBookMkvTest,
+                         testing::ValuesIn(audiobook_mkv_tests));
+
 class CuesheetTest : public testing::WithParamInterface<SimpleDefinition>, public testing::Test
 {
 };
