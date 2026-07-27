@@ -120,6 +120,26 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS TAGLIB_STATIC)
       ADD_TARGET_COMPILE_DEFINITION()
     endif()
+
+    # <MODULE>_VERSION is only set by buildmacroTagLib, so its presence means the
+    # internal build won and the system version found earlier (if any) is not what we link.
+    if(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION)
+      set(_taglib_ver ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION})
+    else()
+      set(_taglib_ver ${${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION})
+    endif()
+
+    # Matroska tag reading needs TagLib's Matroska API (2.2), but is gated at 2.3 for the EBML
+    # MasterElement recursion fix and chapters-without-edition tolerance - both hit untrusted media.
+    # CACHE INTERNAL because core_require_dep is a function: plain variables never reach the caller.
+    if(_taglib_ver AND NOT _taglib_ver VERSION_LESS 2.3)
+      set(TAGLIB_HAS_MATROSKA ON CACHE INTERNAL "TagLib provides the Matroska tag API")
+    else()
+      set(TAGLIB_HAS_MATROSKA OFF CACHE INTERNAL "TagLib provides the Matroska tag API")
+      message(STATUS "TagLib ${_taglib_ver} lacks the Matroska tag API (need >= 2.3): "
+                     "Matroska music tags will fall back to FFmpeg")
+    endif()
+    unset(_taglib_ver)
   else()
     if(TagLib_FIND_REQUIRED)
       message(FATAL_ERROR "TagLib not found. You may want to try -DENABLE_INTERNAL_TAGLIB=ON")
