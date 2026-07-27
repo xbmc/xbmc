@@ -21,7 +21,9 @@
 #include "music/MusicEmbeddedCoverLoaderFFmpeg.h"
 #include "music/tags/MusicCodecInfoFFmpeg.h"
 #include "music/tags/MusicInfoTag.h"
+#ifdef HAS_TAGLIB_MATROSKA
 #include "music/tags/MusicInfoTagLoaderMatroska.h"
+#endif // HAS_TAGLIB_MATROSKA
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
@@ -91,11 +93,20 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url, CFileItemList& items
     separators.push_back(musicsep); // add custom music separator from as.xml
 
   const bool isAudioBook = url.IsFileType("m4b");
+
+#ifdef HAS_TAGLIB_MATROSKA
+  constexpr bool useMatroskaTags = true;
+#else
+  // Without TagLib's Matroska API, mka/mkv fall back to the FFmpeg metadata path that
+  // handled them before Matroska tag support existed - fewer tags, but not an empty album.
+  constexpr bool useMatroskaTags = false;
+#endif
+
   // Some tags are relevant to the whole album - these are read first
   CMusicInfoTag albumtag;
 
   AVDictionaryEntry* tag = nullptr;
-  if (isAudioBook)
+  if (isAudioBook || !useMatroskaTags)
   {
     while ((tag = av_dict_get(m_fctx->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)))
     {
@@ -110,6 +121,7 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url, CFileItemList& items
     }
   }
 
+#ifdef HAS_TAGLIB_MATROSKA
   std::map<std::string, std::string> fileTags;
   std::map<unsigned long long, std::map<std::string, std::string>> chapterTags;
   std::vector<std::tuple<unsigned long long, std::string, double, double, unsigned long long>>
@@ -128,6 +140,7 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url, CFileItemList& items
     for (const auto& t : fileTags)
       CMusicInfoTagLoaderMatroska::ParseTag(t.first, t.second, separators, musicsep, albumtag);
   }
+#endif // HAS_TAGLIB_MATROSKA
 
   std::string thumb;
   thumb = IMAGE_FILES::URLFromFile(url.Get(), "music");
@@ -182,7 +195,7 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url, CFileItemList& items
     std::shared_ptr<CFileItem> item(new CFileItem(url.Get(), false));
     *item->GetMusicInfoTag() = albumtag;
 
-    if (isAudioBook)
+    if (isAudioBook || !useMatroskaTags)
     {
       while ((tag = av_dict_get(m_fctx->chapters[i]->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)))
       {
@@ -207,6 +220,7 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url, CFileItemList& items
       item->GetMusicInfoTag()->SetDuration(
           CUtil::ConvertMilliSecsToSecsInt(item->GetEndOffset() - item->GetStartOffset()));
     }
+#ifdef HAS_TAGLIB_MATROSKA
     else
     {
       // process chapter tags for this track using file-order chapter UID
@@ -226,6 +240,7 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url, CFileItemList& items
         }
       }
     }
+#endif // HAS_TAGLIB_MATROSKA
 
     item->GetMusicInfoTag()->SetTrackNumber(i + 1);
     item->GetMusicInfoTag()->SetLoaded(true);
