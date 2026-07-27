@@ -1287,9 +1287,9 @@ bool URIUtils::IsSmb(const std::string& strFile)
   return IsProtocol(strFile, "smb");
 }
 
-bool URIUtils::IsURL(const std::string& strFile)
+bool URIUtils::IsURL(std::string_view file)
 {
-  return strFile.find("://") != std::string::npos;
+  return file.find("://") != std::string::npos;
 }
 
 bool URIUtils::IsFTP(const std::string& strFile)
@@ -1640,17 +1640,19 @@ void URIUtils::AddSlashAtEnd(std::string& strFolder)
   }
 }
 
-bool URIUtils::HasSlashAtEnd(const std::string& strFile, bool checkURL /* = false */)
+bool URIUtils::HasSlashAtEnd(std::string_view file, bool checkURL /* = false */)
 {
-  if (strFile.empty()) return false;
-  if (checkURL && IsURL(strFile))
-  {
-    CURL url(strFile);
-    const std::string& file = url.GetFileName();
-    return file.empty() || HasSlashAtEnd(file, false);
-  }
-  char kar = strFile.c_str()[strFile.size() - 1];
+  if (file.empty())
+    return false;
 
+  if (checkURL && IsURL(file))
+  {
+    CURL url(std::string{file});
+    const std::string& filename = url.GetFileName();
+    return filename.empty() || HasSlashAtEnd(filename, false);
+  }
+
+  const char kar = file.back();
   if (kar == '/' || kar == '\\')
     return true;
 
