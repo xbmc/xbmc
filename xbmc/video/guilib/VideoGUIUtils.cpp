@@ -264,14 +264,14 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
       }
     }
 
-    int watchedMode;
+    WatchedMode watchedMode;
     if (m_resume)
-      watchedMode = WatchedModeUnwatched;
+      watchedMode = WatchedMode::UNWATCHED;
     else
       watchedMode = CMediaSettings::GetInstance().GetWatchedMode(items.GetContent());
 
-    const bool unwatchedOnly = watchedMode == WatchedModeUnwatched;
-    const bool watchedOnly = watchedMode == WatchedModeWatched;
+    const bool unwatchedOnly = watchedMode == WatchedMode::UNWATCHED;
+    const bool watchedOnly = watchedMode == WatchedMode::WATCHED;
     bool fetchedPlayCounts = false;
     for (const auto& i : items)
     {

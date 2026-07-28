@@ -32,6 +32,8 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoLibraryQueue.h"
 
+#include <algorithm>
+#include <array>
 #include <limits.h>
 #include <mutex>
 #include <string>
@@ -155,15 +157,17 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
   pElement = settings->FirstChildElement("myvideos");
   if (pElement)
   {
+    constexpr int minValue = static_cast<int>(WatchedMode::ALL);
+    constexpr int maxValue = static_cast<int>(WatchedMode::COUNT) - 1;
     int tmp;
-    if (XMLUtils::GetInt(pElement, "watchmodemovies", tmp, (int)WatchedModeAll, (int)WatchedModeWatched))
-      m_watchedModes["movies"] = (WatchedMode)tmp;
-    if (XMLUtils::GetInt(pElement, "watchmodetvshows", tmp, (int)WatchedModeAll, (int)WatchedModeWatched))
-      m_watchedModes["tvshows"] = (WatchedMode)tmp;
-    if (XMLUtils::GetInt(pElement, "watchmodemusicvideos", tmp, (int)WatchedModeAll, (int)WatchedModeWatched))
-      m_watchedModes["musicvideos"] = (WatchedMode)tmp;
-    if (XMLUtils::GetInt(pElement, "watchmoderecordings", tmp, static_cast<int>(WatchedModeAll), static_cast<int>(WatchedModeWatched)))
-      m_watchedModes["recordings"] = static_cast<WatchedMode>(tmp);
+    if (XMLUtils::GetInt(pElement, "watchmodemovies", tmp, minValue, maxValue))
+      m_watchedModes["movies"] = WatchedMode{tmp};
+    if (XMLUtils::GetInt(pElement, "watchmodetvshows", tmp, minValue, maxValue))
+      m_watchedModes["tvshows"] = WatchedMode{tmp};
+    if (XMLUtils::GetInt(pElement, "watchmodemusicvideos", tmp, minValue, maxValue))
+      m_watchedModes["musicvideos"] = WatchedMode{tmp};
+    if (XMLUtils::GetInt(pElement, "watchmoderecordings", tmp, minValue, maxValue))
+      m_watchedModes["recordings"] = WatchedMode{tmp};
 
     const TiXmlElement *pChild = pElement->FirstChildElement("playlist");
     if (pChild)
@@ -267,10 +271,14 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
       return false;
   }
 
-  XMLUtils::SetInt(pNode, "watchmodemovies", m_watchedModes.find("movies")->second);
-  XMLUtils::SetInt(pNode, "watchmodetvshows", m_watchedModes.find("tvshows")->second);
-  XMLUtils::SetInt(pNode, "watchmodemusicvideos", m_watchedModes.find("musicvideos")->second);
-  XMLUtils::SetInt(pNode, "watchmoderecordings", m_watchedModes.find("recordings")->second);
+  XMLUtils::SetInt(pNode, "watchmodemovies",
+                   static_cast<int>(m_watchedModes.find("movies")->second));
+  XMLUtils::SetInt(pNode, "watchmodetvshows",
+                   static_cast<int>(m_watchedModes.find("tvshows")->second));
+  XMLUtils::SetInt(pNode, "watchmodemusicvideos",
+                   static_cast<int>(m_watchedModes.find("musicvideos")->second));
+  XMLUtils::SetInt(pNode, "watchmoderecordings",
+                   static_cast<int>(m_watchedModes.find("recordings")->second));
 
   TiXmlElement videoPlaylistNode("playlist");
   playlistNode = pNode->InsertEndChild(videoPlaylistNode);
@@ -367,33 +375,29 @@ void CMediaSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& set
     CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "OnRefresh");
 }
 
-int CMediaSettings::GetWatchedMode(const std::string &content) const
+WatchedMode CMediaSettings::GetWatchedMode(const std::string& content) const
 {
   std::unique_lock lock(m_critical);
-  WatchedModes::const_iterator it = m_watchedModes.find(GetWatchedContent(content));
-  if (it != m_watchedModes.end())
+  if (const auto it = m_watchedModes.find(GetWatchedContent(content)); it != m_watchedModes.end())
     return it->second;
 
-  return WatchedModeAll;
+  return WatchedMode::ALL;
 }
 
 void CMediaSettings::SetWatchedMode(const std::string &content, WatchedMode mode)
 {
   std::unique_lock lock(m_critical);
-  WatchedModes::iterator it = m_watchedModes.find(GetWatchedContent(content));
-  if (it != m_watchedModes.end())
+  if (const auto it = m_watchedModes.find(GetWatchedContent(content)); it != m_watchedModes.end())
     it->second = mode;
 }
 
-void CMediaSettings::CycleWatchedMode(const std::string &content)
+void CMediaSettings::CycleWatchedMode(const std::string& content)
 {
   std::unique_lock lock(m_critical);
-  WatchedModes::iterator it = m_watchedModes.find(GetWatchedContent(content));
-  if (it != m_watchedModes.end())
+  if (const auto it = m_watchedModes.find(GetWatchedContent(content)); it != m_watchedModes.end())
   {
-    it->second = (WatchedMode)((int)it->second + 1);
-    if (it->second > WatchedModeWatched)
-      it->second = WatchedModeAll;
+    int next_val = (static_cast<int>(it->second) + 1) % static_cast<int>(WatchedMode::COUNT);
+    it->second = WatchedMode{next_val};
   }
 }
 
@@ -403,4 +407,31 @@ std::string CMediaSettings::GetWatchedContent(const std::string &content)
     return "tvshows";
 
   return content;
+}
+
+std::string CMediaSettings::LocalizeWatchedMode(WatchedMode mode)
+{
+  static constexpr int UNMAPPED = -1;
+
+  static constexpr auto messagesMap = []()
+  {
+    // WatchedMode::COUNT itself is excluded from the array
+    std::array<int, static_cast<std::size_t>(WatchedMode::COUNT)> messages{};
+    messages.fill(UNMAPPED);
+
+    messages[static_cast<int>(WatchedMode::ALL)] = 16100; // All videos
+    messages[static_cast<int>(WatchedMode::UNWATCHED)] = 16101; // Unwatched
+    messages[static_cast<int>(WatchedMode::WATCHED)] = 16102; // Watched
+
+    return messages;
+  }();
+
+  // Compile-time check that every enum value has a message
+  static_assert(std::ranges::find(messagesMap, UNMAPPED) == messagesMap.end(),
+                "message number missing for enum value");
+
+  // Special handling for the COUNT sentinel value, excluded from the array
+  // message 13205: Unknown
+  const int msgId = mode == WatchedMode::COUNT ? 13205 : messagesMap[static_cast<int>(mode)];
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(msgId);
 }

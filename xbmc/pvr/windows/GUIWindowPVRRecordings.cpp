@@ -224,14 +224,14 @@ bool CGUIWindowPVRRecordingsBase::Update(const std::string& strDirectory,
 
 void CGUIWindowPVRRecordingsBase::UpdateButtons()
 {
-  int iWatchMode = CMediaSettings::GetInstance().GetWatchedMode("recordings");
+  const WatchedMode watchedMode = CMediaSettings::GetInstance().GetWatchedMode("recordings");
   int iStringId = 257; // "Error"
 
-  if (iWatchMode == WatchedModeAll)
+  if (watchedMode == WatchedMode::ALL)
     iStringId = 22015; // "All recordings"
-  else if (iWatchMode == WatchedModeUnwatched)
+  else if (watchedMode == WatchedMode::UNWATCHED)
     iStringId = 16101; // "Unwatched"
-  else if (iWatchMode == WatchedModeWatched)
+  else if (watchedMode == WatchedMode::WATCHED)
     iStringId = 16102; // "Watched"
 
   SET_CONTROL_LABEL(CONTROL_BTNSHOWMODE,
@@ -452,7 +452,7 @@ bool CGUIWindowPVRRecordingsBase::GetFilteredItems(const std::string& filter, CF
 {
   bool listchanged = CGUIWindowPVRBase::GetFilteredItems(filter, items);
 
-  int watchMode = CMediaSettings::GetInstance().GetWatchedMode("recordings");
+  const WatchedMode watchedMode = CMediaSettings::GetInstance().GetWatchedMode("recordings");
 
   CFileItemPtr item;
   for (int i = 0; i < items.Size(); i++)
@@ -466,8 +466,8 @@ bool CGUIWindowPVRRecordingsBase::GetFilteredItems(const std::string& filter, CF
       continue;
 
     int iPlayCount = item->GetPVRRecordingInfoTag()->GetPlayCount();
-    if ((watchMode == WatchedModeWatched && iPlayCount == 0) ||
-        (watchMode == WatchedModeUnwatched && iPlayCount > 0))
+    if ((watchedMode == WatchedMode::WATCHED && iPlayCount == 0) ||
+        (watchedMode == WatchedMode::UNWATCHED && iPlayCount > 0))
     {
       items.Remove(i);
       i--;

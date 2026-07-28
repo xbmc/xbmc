@@ -221,10 +221,11 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTNSHOWALL)
       {
-        if (CMediaSettings::GetInstance().GetWatchedMode(m_vecItems->GetContent()) == WatchedModeAll)
-          CMediaSettings::GetInstance().SetWatchedMode(m_vecItems->GetContent(), WatchedModeUnwatched);
+        const std::string content = m_vecItems->GetContent();
+        if (CMediaSettings::GetInstance().GetWatchedMode(content) == WatchedMode::ALL)
+          CMediaSettings::GetInstance().SetWatchedMode(content, WatchedMode::UNWATCHED);
         else
-          CMediaSettings::GetInstance().SetWatchedMode(m_vecItems->GetContent(), WatchedModeAll);
+          CMediaSettings::GetInstance().SetWatchedMode(content, WatchedMode::ALL);
         CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
         OnFilterItems(GetProperty("filter").asString());
         UpdateButtons();
@@ -412,7 +413,8 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
                         (itemsSize == 2 && iFlatten == 1 &&                                                // flatten if one season + specials
                          (items[firstIndex]->GetVideoInfoTag()->m_iSeason == 0 || items[firstIndex + 1]->GetVideoInfoTag()->m_iSeason == 0));
 
-        if (iFlatten > 0 && !bFlatten && (WatchedMode)CMediaSettings::GetInstance().GetWatchedMode("tvshows") == WatchedModeUnwatched)
+        if (iFlatten > 0 && !bFlatten &&
+            CMediaSettings::GetInstance().GetWatchedMode("tvshows") == WatchedMode::UNWATCHED)
         {
           int count = 0;
           for(int i = 0; i < items.Size(); i++)
@@ -589,12 +591,11 @@ void CGUIWindowVideoNav::UpdateButtons()
 
   SET_CONTROL_LABEL(CONTROL_FILTER, strLabel);
 
-  int watchMode = CMediaSettings::GetInstance().GetWatchedMode(m_vecItems->GetContent());
-  SET_CONTROL_LABEL(
-      CONTROL_BTNSHOWMODE,
-      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(16100 + watchMode));
+  WatchedMode watchedMode = CMediaSettings::GetInstance().GetWatchedMode(m_vecItems->GetContent());
+  SET_CONTROL_LABEL(CONTROL_BTNSHOWMODE,
+                    CMediaSettings::GetInstance().LocalizeWatchedMode(watchedMode));
 
-  SET_CONTROL_SELECTED(GetID(), CONTROL_BTNSHOWALL, watchMode != WatchedModeAll);
+  SET_CONTROL_SELECTED(GetID(), CONTROL_BTNSHOWALL, watchedMode != WatchedMode::ALL);
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNPARTYMODE, g_partyModeManager.IsEnabled());
 
@@ -1112,7 +1113,7 @@ bool CGUIWindowVideoNav::ApplyWatchedFilter(CFileItemList &items)
       (PLAYLIST::IsSmartPlayList(items) || items.IsLibraryFolder()))
     node = NodeType::TITLE_TVSHOWS; // so that the check below works
 
-  int watchMode = CMediaSettings::GetInstance().GetWatchedMode(m_vecItems->GetContent());
+  WatchedMode watchedMode = CMediaSettings::GetInstance().GetWatchedMode(m_vecItems->GetContent());
 
   for (int i = 0; i < items.Size(); i++)
   {
@@ -1120,11 +1121,11 @@ bool CGUIWindowVideoNav::ApplyWatchedFilter(CFileItemList &items)
 
     if (item->HasVideoInfoTag() && (node == NodeType::TITLE_TVSHOWS || node == NodeType::SEASONS))
     {
-      if (watchMode == WatchedModeUnwatched)
+      if (watchedMode == WatchedMode::UNWATCHED)
         item->GetVideoInfoTag()->m_iEpisode = (int)item->GetProperty("unwatchedepisodes").asInteger();
-      if (watchMode == WatchedModeWatched)
+      if (watchedMode == WatchedMode::WATCHED)
         item->GetVideoInfoTag()->m_iEpisode = (int)item->GetProperty("watchedepisodes").asInteger();
-      if (watchMode == WatchedModeAll)
+      if (watchedMode == WatchedMode::ALL)
         item->GetVideoInfoTag()->m_iEpisode = (int)item->GetProperty("totalepisodes").asInteger();
       item->SetProperty("numepisodes", item->GetVideoInfoTag()->m_iEpisode);
       listchanged = true;
@@ -1132,9 +1133,9 @@ bool CGUIWindowVideoNav::ApplyWatchedFilter(CFileItemList &items)
 
     if (filterWatched)
     {
-      if(!item->IsParentFolder() && // Don't delete the go to parent folder
-         ((watchMode == WatchedModeWatched   && item->GetVideoInfoTag()->GetPlayCount() == 0) ||
-          (watchMode == WatchedModeUnwatched && item->GetVideoInfoTag()->GetPlayCount() > 0)))
+      if (!item->IsParentFolder() && // Don't delete the go to parent folder
+          ((watchedMode == WatchedMode::WATCHED && item->GetVideoInfoTag()->GetPlayCount() == 0) ||
+           (watchedMode == WatchedMode::UNWATCHED && item->GetVideoInfoTag()->GetPlayCount() > 0)))
       {
         items.Remove(i);
         i--;

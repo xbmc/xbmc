@@ -6774,6 +6774,7 @@ msgstr ""
 #: xbmc/pvr/channels/PVRChannel.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRClientPriorities.cpp
 #: xbmc/pvr/guilib/guiinfo/PVRGUIInfo.cpp
+#: xbmc/settings/MediaSettings.cpp
 #: xbmc/video/dialogs/GUIDialogAudioSubtitleSettings.cpp
 #: xbmc/video/PlayerController.cpp
 #: xbmc/video/dialogs/GUIDialogAudioSettings.cpp
@@ -9403,17 +9404,21 @@ msgstr ""
 
 #empty strings from id 16042 to 16099
 
-#: xbmc/video/windows/GUIWindowVideoNav.cpp
+#: xbmc/settings/MediaSettings.cpp
 #: xbmc/video/windows/VideoFileItemListModifier.cpp
 msgctxt "#16100"
 msgid "All videos"
 msgstr ""
 
+#: xbmc/settings/MediaSettings.cpp
+#: xbmc/pvr/windows/GUIWindowPVRRecordings.cpp
 msgctxt "#16101"
 msgid "Unwatched"
 msgstr ""
 
 #: addons/skin.estuary/xml/Home.xml
+#: xbmc/settings/MediaSettings.cpp
+#: xbmc/pvr/windows/GUIWindowPVRRecordings.cpp
 msgctxt "#16102"
 msgid "Watched"
 msgstr ""
