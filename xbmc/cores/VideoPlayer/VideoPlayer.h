@@ -601,7 +601,6 @@ protected:
     double lastpts{0.0}; // holds last display pts during ff/rw operations
     int64_t lasttime{0};
     double lastseekpts{0.0};
-    double lastabstime{0.0};
 
     void Reset(double pts)
     {

@@ -2385,7 +2385,6 @@ void CVideoPlayer::HandlePlaySpeed()
       {
         m_SpeedState.lastpts  = m_VideoPlayerVideo->GetCurrentPts();
         m_SpeedState.lasttime = GetTime();
-        m_SpeedState.lastabstime = m_clock.GetAbsoluteClock();
 
         double error;
         error  = m_clock.GetClock() - m_SpeedState.lastpts;
