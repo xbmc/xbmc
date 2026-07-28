@@ -31,6 +31,7 @@
 #include "windowing/WinSystem.h"
 
 #include <algorithm>
+#include <cmath>
 #include <cstdlib>
 #include <float.h>
 #include <mutex>
@@ -81,13 +82,68 @@ std::string ModeFlagsToString(unsigned int flags, bool identifier)
   return res;
 }
 
+// Encodes a mode's signalled content aspect ratio (e.g. a DRM CEA VIC flag) as a single
+// character so that otherwise-identical width/height/refresh/flags modes that only differ in
+// signalled aspect ratio (a 4:3 and a 16:9 VIC at the same SD timing) round-trip to distinct
+// resolutions through the compact identifier string. '0' means unspecified, which also matches
+// identifiers saved before this encoding existed.
+char AspectRatioToChar(float aspectRatio)
+{
+  if (aspectRatio <= 0.0f)
+    return '0';
+  if (std::fabs(aspectRatio - 4.0f / 3.0f) < 0.01f)
+    return '4';
+  if (std::fabs(aspectRatio - 16.0f / 9.0f) < 0.01f)
+    return '6';
+  if (std::fabs(aspectRatio - 64.0f / 27.0f) < 0.01f)
+    return '2';
+  if (std::fabs(aspectRatio - 256.0f / 135.0f) < 0.01f)
+    return '5';
+  return '0';
+}
+
+float CharToAspectRatio(char c)
+{
+  switch (c)
+  {
+    case '4':
+      return 4.0f / 3.0f;
+    case '6':
+      return 16.0f / 9.0f;
+    case '2':
+      return 64.0f / 27.0f;
+    case '5':
+      return 256.0f / 135.0f;
+    default:
+      return 0.0f;
+  }
+}
+
+// Human-readable label for a mode's signalled aspect ratio, e.g. " (4:3)"; empty when unspecified.
+std::string AspectRatioLabel(float aspectRatio)
+{
+  switch (AspectRatioToChar(aspectRatio))
+  {
+    case '4':
+      return " (4:3)";
+    case '6':
+      return " (16:9)";
+    case '2':
+      return " (64:27)";
+    case '5':
+      return " (256:135)";
+    default:
+      return "";
+  }
+}
+
 // True when this mode is uncalibrated. Only works for live modes; dead or stale modes are
 // considered non-default always.
-bool IsDefaultCalibration(const RESOLUTION_INFO& info)
+bool IsDefaultCalibration(const RESOLUTION_INFO& info, float defaultPixelRatio)
 {
   return info.Overscan.left == 0 && info.Overscan.top == 0 && info.Overscan.right == info.iWidth &&
          info.Overscan.bottom == info.iHeight && info.iSubtitles == info.iHeight &&
-         info.fPixelRatio == 1.0f;
+         std::fabs(info.fPixelRatio - defaultPixelRatio) <= 0.0001f;
 }
 } // unnamed namespace
 
@@ -510,6 +566,8 @@ void CDisplaySettings::AddResolutionInfo(const RESOLUTION_INFO &resolution)
   std::unique_lock lock(m_critical);
   RESOLUTION_INFO res(resolution);
 
+  m_defaultPixelRatios[res.strMode] = res.fPixelRatio;
+
   if((res.dwFlags & D3DPRESENTFLAG_MODE3DTB) == 0)
   {
     /* add corrections for some special case modes frame packing modes */
@@ -529,6 +587,15 @@ void CDisplaySettings::AddResolutionInfo(const RESOLUTION_INFO &resolution)
     }
   }
   m_resolutions.push_back(res);
+}
+
+float CDisplaySettings::GetDefaultPixelRatio(const std::string& mode) const
+{
+  std::unique_lock lock(m_critical);
+  auto it = m_defaultPixelRatios.find(mode);
+  if (it != m_defaultPixelRatios.end())
+    return it->second;
+  return 1.0f;
 }
 
 void CDisplaySettings::ApplyCalibrations()
@@ -553,6 +620,10 @@ void CDisplaySettings::ApplyCalibrations()
             ((itCal->Overscan.right == 1280 && itCal->Overscan.bottom == 720) ||
              (itCal->Overscan.right == 1920 && itCal->Overscan.bottom == 1080)))
           break;
+
+        float defaultPixelRatio = 1.0f;
+        if (auto it = m_defaultPixelRatios.find(itCal->strMode); it != m_defaultPixelRatios.end())
+          defaultPixelRatio = it->second;
 
         // overscan
         m_resolutions[res].Overscan.left = itCal->Overscan.left;
@@ -585,11 +656,14 @@ void CDisplaySettings::ApplyCalibrations()
         if (m_resolutions[res].iSubtitles > m_resolutions[res].iHeight * 3 / 2)
           m_resolutions[res].iSubtitles = m_resolutions[res].iHeight * 3 / 2;
 
-        m_resolutions[res].fPixelRatio = itCal->fPixelRatio;
-        if (m_resolutions[res].fPixelRatio < 0.5f)
-          m_resolutions[res].fPixelRatio = 0.5f;
-        if (m_resolutions[res].fPixelRatio > 2.0f)
-          m_resolutions[res].fPixelRatio = 2.0f;
+        if (std::fabs(itCal->fPixelRatio - defaultPixelRatio) > 0.0001f)
+        {
+          m_resolutions[res].fPixelRatio = itCal->fPixelRatio;
+          if (m_resolutions[res].fPixelRatio < 0.5f)
+            m_resolutions[res].fPixelRatio = 0.5f;
+          if (m_resolutions[res].fPixelRatio > 2.0f)
+            m_resolutions[res].fPixelRatio = 2.0f;
+        }
         break;
       }
     }
@@ -619,7 +693,11 @@ void CDisplaySettings::UpdateCalibrations()
     if (res != m_resolutions.cend())
     {
       // A calibration whose mode is live and still at its defaults holds no user adjustment.
-      if (IsDefaultCalibration(*res))
+      float defaultPixelRatio = 1.0f;
+      if (auto defIt = m_defaultPixelRatios.find(res->strMode); defIt != m_defaultPixelRatios.end())
+        defaultPixelRatio = defIt->second;
+
+      if (IsDefaultCalibration(*res, defaultPixelRatio))
       {
         it = m_calibrations.erase(it);
         continue;
@@ -644,7 +722,7 @@ DisplayMode CDisplaySettings::GetCurrentDisplayMode() const
   return DM_FULLSCREEN;
 }
 
-RESOLUTION CDisplaySettings::FindBestMatchingResolution(const std::map<RESOLUTION, RESOLUTION_INFO> &resolutionInfos, int width, int height, float refreshrate, unsigned flags)
+RESOLUTION CDisplaySettings::FindBestMatchingResolution(const std::map<RESOLUTION, RESOLUTION_INFO> &resolutionInfos, int width, int height, float refreshrate, unsigned flags, float aspectRatio)
 {
   // find the closest match to these in our res vector.  If we have the screen, we score the res
   RESOLUTION bestRes = RES_DESKTOP;
@@ -666,6 +744,15 @@ RESOLUTION CDisplaySettings::FindBestMatchingResolution(const std::map<RESOLUTIO
       bestScore = score;
       bestRes = it->first;
     }
+    else if (score == bestScore && aspectRatio > 0.0f)
+    {
+      // Otherwise-identical candidates (e.g. a 4:3 and a 16:9 VIC at the same SD timing) are
+      // disambiguated by which one's signalled aspect ratio is closer to the requested one.
+      const RESOLUTION_INFO &best = resolutionInfos.at(bestRes);
+      if (std::fabs(info.fSignalledAspectRatio - aspectRatio) <
+          std::fabs(best.fSignalledAspectRatio - aspectRatio))
+        bestRes = it->first;
+    }
   }
 
   return bestRes;
@@ -680,7 +767,8 @@ RESOLUTION CDisplaySettings::GetResolutionFromString(const std::string &strResol
     return RES_WINDOW;
   else if (strResolution.size() >= 20)
   {
-    // format: WWWWWHHHHHRRR.RRRRRP333, where W = width, H = height, R = refresh, P = interlace, 3 = stereo mode
+    // format: WWWWWHHHHHRRR.RRRRRP333A, where W = width, H = height, R = refresh, P = interlace,
+    // 3 = stereo mode, A = signalled content aspect ratio (added later; absent means unspecified)
     const auto width =
         static_cast<int>(std::strtol(StringUtils::Mid(strResolution, 0, 5).c_str(), nullptr, 10));
     const auto height =
@@ -698,12 +786,16 @@ RESOLUTION CDisplaySettings::GetResolutionFromString(const std::string &strResol
     else if(StringUtils::Mid(strResolution, 20,3) == "tab")
       flags |= D3DPRESENTFLAG_MODE3DTB;
 
+    float aspectRatio = 0.0f;
+    if (strResolution.size() > 23)
+      aspectRatio = CharToAspectRatio(strResolution[23]);
+
     std::map<RESOLUTION, RESOLUTION_INFO> resolutionInfos;
     for (size_t resolution = RES_DESKTOP; resolution < CDisplaySettings::GetInstance().ResolutionInfoSize(); resolution++)
       resolutionInfos.try_emplace(static_cast<RESOLUTION>(resolution),
                                   CDisplaySettings::GetInstance().GetResolutionInfo(resolution));
 
-    return FindBestMatchingResolution(resolutionInfos, width, height, refresh, flags);
+    return FindBestMatchingResolution(resolutionInfos, width, height, refresh, flags, aspectRatio);
   }
 
   return RES_DESKTOP;
@@ -721,9 +813,10 @@ std::string CDisplaySettings::GetStringFromResolution(RESOLUTION resolution, flo
     // also handle RES_DESKTOP resolutions with non-default refresh rates
     if (resolution != RES_DESKTOP || (refreshrate > 0.0f && refreshrate != info.fRefreshRate))
     {
-      return StringUtils::Format("{:05}{:05}{:09.5f}{}", info.iScreenWidth, info.iScreenHeight,
+      return StringUtils::Format("{:05}{:05}{:09.5f}{}{}", info.iScreenWidth, info.iScreenHeight,
                                  refreshrate > 0.0f ? refreshrate : info.fRefreshRate,
-                                 ModeFlagsToString(info.dwFlags, true));
+                                 ModeFlagsToString(info.dwFlags, true),
+                                 AspectRatioToChar(info.fSignalledAspectRatio));
     }
   }
 
@@ -753,9 +846,12 @@ void CDisplaySettings::SettingOptionsModesFiller(const std::shared_ptr<const CSe
       const std::string screenmode =
           GetStringFromResolution(static_cast<RESOLUTION>(index), mode.fRefreshRate);
 
+      const std::string aspectLabel = AspectRatioLabel(mode.fSignalledAspectRatio);
+
       list.emplace_back(
-          StringUtils::Format("{}x{}{} {:0.2f}Hz", mode.iScreenWidth, mode.iScreenHeight,
-                              ModeFlagsToString(mode.dwFlags, false), mode.fRefreshRate),
+          StringUtils::Format("{}x{}{} {:0.2f}Hz{}", mode.iScreenWidth, mode.iScreenHeight,
+                              ModeFlagsToString(mode.dwFlags, false), mode.fRefreshRate,
+                              aspectLabel),
           screenmode);
     }
   }

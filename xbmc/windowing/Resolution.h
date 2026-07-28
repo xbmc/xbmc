@@ -98,6 +98,10 @@ struct RESOLUTION_INFO
   //!< Pixel aspect ratio
   float fPixelRatio;
 
+  //!< Content aspect ratio signalled for this mode (e.g. DRM picture-aspect-ratio VIC flag),
+  //!< 0 when the mode does not signal a specific content aspect ratio
+  float fSignalledAspectRatio{0.0f};
+
   //!< Refresh rate
   float fRefreshRate;
 
@@ -118,7 +122,8 @@ public:
 class CResolutionUtils
 {
 public:
-  static RESOLUTION ChooseBestResolution(float fps, int width, int height, bool is3D);
+  static RESOLUTION ChooseBestResolution(float fps, int width, int height, bool is3D,
+                                          float contentAspectRatio = 0.0f);
   static bool HasWhitelist();
   static void PrintWhitelist();
 
@@ -130,7 +135,8 @@ public:
   static void GetMaxAllowedScreenResolution(unsigned int& width, unsigned int& height);
 
 protected:
-  static void FindResolutionFromWhitelist(float fps, int width, int height, bool is3D, RESOLUTION &resolution);
+  static void FindResolutionFromWhitelist(float fps, int width, int height, bool is3D,
+                                           RESOLUTION& resolution, float contentAspectRatio = 0.0f);
   static bool FindResolutionFromOverride(float fps, int width, bool is3D, RESOLUTION &resolution, float& weight, bool fallback);
   static float RefreshWeight(float refresh, float fps);
 };

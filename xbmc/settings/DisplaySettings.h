@@ -68,6 +68,7 @@ public:
   RESOLUTION_INFO& GetResolutionInfo(RESOLUTION resolution);
   size_t ResolutionInfoSize() const { return m_resolutions.size(); }
   void AddResolutionInfo(const RESOLUTION_INFO &resolution);
+  float GetDefaultPixelRatio(const std::string& mode) const;
 
   const RESOLUTION_INFO& GetCurrentResolutionInfo() const { return GetResolutionInfo(m_currentResolution); }
   RESOLUTION_INFO& GetCurrentResolutionInfo() { return GetResolutionInfo(m_currentResolution); }
@@ -146,7 +147,7 @@ protected:
   static std::string GetStringFromResolution(RESOLUTION resolution, float refreshrate = 0.0f);
   static RESOLUTION GetResolutionForScreen();
 
-  static RESOLUTION FindBestMatchingResolution(const std::map<RESOLUTION, RESOLUTION_INFO> &resolutionInfos, int width, int height, float refreshrate, unsigned int flags);
+  static RESOLUTION FindBestMatchingResolution(const std::map<RESOLUTION, RESOLUTION_INFO> &resolutionInfos, int width, int height, float refreshrate, unsigned int flags, float aspectRatio = 0.0f);
 
 private:
   // holds the real gui resolution
@@ -155,6 +156,7 @@ private:
   using ResolutionInfos = std::vector<RESOLUTION_INFO>;
   ResolutionInfos m_resolutions;
   ResolutionInfos m_calibrations;
+  std::map<std::string, float> m_defaultPixelRatios;
 
   float m_zoomAmount{1.0f}; // current zoom amount
   float m_pixelRatio{1.0f}; // current pixel ratio

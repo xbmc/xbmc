@@ -18,6 +18,8 @@
 
 #include "PlatformDefs.h"
 
+#include <algorithm>
+
 using namespace KODI::WINDOWING::GBM;
 
 namespace
@@ -531,7 +533,7 @@ bool CDRMUtils::InitDrm()
   }
 
 #if defined(DRM_CLIENT_CAP_ASPECT_RATIO)
-  ret = drmSetClientCap(m_fd, DRM_CLIENT_CAP_ASPECT_RATIO, 0);
+  ret = drmSetClientCap(m_fd, DRM_CLIENT_CAP_ASPECT_RATIO, 1);
   if (ret != 0)
     CLog::LogF(LOGERROR, "Aspect ratio capability is not supported: {}", strerror(errno));
 #endif
@@ -818,6 +820,41 @@ RESOLUTION_INFO CDRMUtils::GetResolutionInfo(drmModeModeInfoPtr mode)
     res.fRefreshRate = mode->vrefresh;
   res.iSubtitles = res.iHeight;
   res.fPixelRatio = 1.0f;
+  res.fSignalledAspectRatio = 0.0f;
+
+  std::string aspectSuffix;
+#if defined(DRM_MODE_FLAG_PIC_AR_4_3)
+  if (res.iScreenWidth > 0 && res.iScreenHeight > 0)
+  {
+    const float res_ratio = static_cast<float>(res.iScreenWidth) / res.iScreenHeight;
+    switch (mode->flags & DRM_MODE_FLAG_PIC_AR_MASK)
+    {
+      case DRM_MODE_FLAG_PIC_AR_4_3:
+        res.fSignalledAspectRatio = 4.0f / 3.0f;
+        res.fPixelRatio = res.fSignalledAspectRatio / res_ratio;
+        aspectSuffix = " (4:3)";
+        break;
+      case DRM_MODE_FLAG_PIC_AR_16_9:
+        res.fSignalledAspectRatio = 16.0f / 9.0f;
+        res.fPixelRatio = res.fSignalledAspectRatio / res_ratio;
+        aspectSuffix = " (16:9)";
+        break;
+      case DRM_MODE_FLAG_PIC_AR_64_27:
+        res.fSignalledAspectRatio = 64.0f / 27.0f;
+        res.fPixelRatio = res.fSignalledAspectRatio / res_ratio;
+        aspectSuffix = " (64:27)";
+        break;
+      case DRM_MODE_FLAG_PIC_AR_256_135:
+        res.fSignalledAspectRatio = 256.0f / 135.0f;
+        res.fPixelRatio = res.fSignalledAspectRatio / res_ratio;
+        aspectSuffix = " (256:135)";
+        break;
+      default:
+        break;
+    }
+  }
+#endif
+
   res.bFullScreen = true;
 
   if (mode->flags & DRM_MODE_FLAG_3D_MASK)
@@ -832,9 +869,9 @@ RESOLUTION_INFO CDRMUtils::GetResolutionInfo(drmModeModeInfoPtr mode)
   else
     res.dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
 
-  res.strMode =
-      StringUtils::Format("{}x{}{} @ {:.6f} Hz", res.iScreenWidth, res.iScreenHeight,
-                          res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "", res.fRefreshRate);
+  res.strMode = StringUtils::Format("{}x{}{} @ {:.6f} Hz{}", res.iScreenWidth, res.iScreenHeight,
+                                     res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "",
+                                     res.fRefreshRate, aspectSuffix);
   return res;
 }
 
@@ -852,7 +889,12 @@ std::vector<RESOLUTION_INFO> CDRMUtils::GetModes()
   {
     RESOLUTION_INFO res = GetResolutionInfo(m_connector->GetModeForIndex(i));
     res.strId = std::to_string(i);
-    resolutions.push_back(res);
+
+    auto existing = std::find_if(resolutions.begin(), resolutions.end(),
+                                  [&](const RESOLUTION_INFO& other)
+                                  { return other.strMode == res.strMode; });
+    if (existing == resolutions.end())
+      resolutions.push_back(res);
   }
 
   return resolutions;

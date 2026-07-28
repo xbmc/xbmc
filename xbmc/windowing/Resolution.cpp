@@ -19,6 +19,7 @@
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
 
+#include <cmath>
 #include <cstdlib>
 #include <limits>
 
@@ -28,6 +29,18 @@ namespace
 const char* SETTING_VIDEOSCREEN_WHITELIST_PULLDOWN{"videoscreen.whitelistpulldown"};
 const char* SETTING_VIDEOSCREEN_WHITELIST_DOUBLEREFRESHRATE{
     "videoscreen.whitelistdoublerefreshrate"};
+
+// Extra selection cost for a candidate mode whose signalled content aspect ratio (e.g. a DRM
+// CEA picture-aspect-ratio VIC flag) does not match the aspect ratio of the video being played.
+// Zero when either side has no signalled/known aspect ratio, so modes without VIC aspect
+// signalling (the vast majority) are unaffected.
+unsigned int AspectMismatchPenalty(float infoAspectRatio, float contentAspectRatio)
+{
+  if (infoAspectRatio <= 0.0f || contentAspectRatio <= 0.0f)
+    return 0;
+
+  return static_cast<unsigned int>(std::fabs(infoAspectRatio - contentAspectRatio) * 1000.0f);
+}
 
 } // namespace
 
@@ -54,7 +67,8 @@ float RESOLUTION_INFO::DisplayRatio() const
   return iWidth * fPixelRatio / iHeight;
 }
 
-RESOLUTION CResolutionUtils::ChooseBestResolution(float fps, int width, int height, bool is3D)
+RESOLUTION CResolutionUtils::ChooseBestResolution(float fps, int width, int height, bool is3D,
+                                                   float contentAspectRatio)
 {
   RESOLUTION res = CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution();
   float weight = 0.0f;
@@ -63,7 +77,8 @@ RESOLUTION CResolutionUtils::ChooseBestResolution(float fps, int width, int heig
   {
     if (!FindResolutionFromOverride(fps, width, is3D, res, weight, true)) //if that fails find it from a fallback
     {
-      FindResolutionFromWhitelist(fps, width, height, is3D, res); //find a refreshrate from whitelist
+      FindResolutionFromWhitelist(fps, width, height, is3D, res,
+                                   contentAspectRatio); //find a refreshrate from whitelist
     }
   }
 
@@ -72,7 +87,9 @@ RESOLUTION CResolutionUtils::ChooseBestResolution(float fps, int width, int heig
   return res;
 }
 
-void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int height, bool is3D, RESOLUTION &resolution)
+void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int height, bool is3D,
+                                                     RESOLUTION& resolution,
+                                                     float contentAspectRatio)
 {
   RESOLUTION_INFO curr = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(resolution);
   CLog::Log(LOGINFO,
@@ -127,7 +144,8 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
       CLog::Log(LOGDEBUG,
                 "[WHITELIST] Matched an exact resolution with an exact refresh rate {} ({})",
                 info.strMode, i);
-      unsigned int pen = abs(info.iScreenHeight - height) + abs(info.iScreenWidth - width);
+      unsigned int pen = abs(info.iScreenHeight - height) + abs(info.iScreenWidth - width) +
+                          AspectMismatchPenalty(info.fSignalledAspectRatio, contentAspectRatio);
       if (pen < penalty)
       {
         resolution = i;
@@ -162,7 +180,8 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
         CLog::Log(LOGDEBUG,
                   "[WHITELIST] Matched an exact resolution with double the refresh rate {} ({})",
                   info.strMode, i);
-        unsigned int pen = abs(info.iScreenHeight - height) + abs(info.iScreenWidth - width);
+        unsigned int pen = abs(info.iScreenHeight - height) + abs(info.iScreenWidth - width) +
+                            AspectMismatchPenalty(info.fSignalledAspectRatio, contentAspectRatio);
         if (pen < penalty)
         {
           resolution = i;
@@ -203,7 +222,8 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
             LOGDEBUG,
             "[WHITELIST] Matched an exact resolution with a 3:2 pulldown refresh rate {} ({})",
             info.strMode, i);
-        unsigned int pen = abs(info.iScreenHeight - height) + abs(info.iScreenWidth - width);
+        unsigned int pen = abs(info.iScreenHeight - height) + abs(info.iScreenWidth - width) +
+                            AspectMismatchPenalty(info.fSignalledAspectRatio, contentAspectRatio);
         if (pen < penalty)
         {
           resolution = i;

@@ -32,6 +32,20 @@
 
 using namespace std::chrono_literals;
 
+namespace
+{
+// The content aspect ratio, derived from the display (post-DAR) picture dimensions, used to
+// prefer a whitelisted mode whose signalled aspect ratio (e.g. a DRM CEA VIC flag) matches the
+// video being played, when several modes share the same timing.
+float ContentAspectRatio(const VideoPicture& picture)
+{
+  if (picture.iDisplayWidth == 0 || picture.iDisplayHeight == 0)
+    return 0.0f;
+
+  return static_cast<float>(picture.iDisplayWidth) / picture.iDisplayHeight;
+}
+} // namespace
+
 void CRenderManager::CClockSync::Reset()
 {
   m_error = 0;
@@ -706,7 +720,8 @@ RESOLUTION CRenderManager::GetResolution()
 
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF)
     res = CResolutionUtils::ChooseBestResolution(m_fps, m_picture.iWidth, m_picture.iHeight,
-                                                 !m_picture.stereoMode.empty());
+                                                 !m_picture.stereoMode.empty(),
+                                                 ContentAspectRatio(m_picture));
 
   return res;
 }
@@ -898,7 +913,8 @@ void CRenderManager::UpdateResolution()
       if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF && m_fps > 0.0f)
       {
         RESOLUTION res = CResolutionUtils::ChooseBestResolution(
-            m_fps, m_picture.iWidth, m_picture.iHeight, !m_picture.stereoMode.empty());
+            m_fps, m_picture.iWidth, m_picture.iHeight, !m_picture.stereoMode.empty(),
+            ContentAspectRatio(m_picture));
         CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoResolution(res, false);
         UpdateLatencyTweak();
         if (m_pRenderer)
