@@ -24,12 +24,9 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   
     set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
   
-    set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/002-allow-chapters-without-uid.patch")
     if(WIN32 OR WINDOWS_STORE)
-      list(APPEND patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/001-cmake-pdb-debug.patch")
+      generate_patchcommand("${CMAKE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/001-cmake-pdb-debug.patch")
     endif()
-    generate_patchcommand("${patches}")
-    unset(patches)
 
     if(WINDOWS_STORE)
       set(EXTRA_ARGS -DPLATFORM_WINRT=ON)
@@ -129,14 +126,14 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       set(_taglib_ver ${${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION})
     endif()
 
-    # Matroska tag reading needs TagLib's Matroska API (2.2), but is gated at 2.3 for the EBML
-    # MasterElement recursion fix and chapters-without-edition tolerance - both hit untrusted media.
+    # Matroska tag reading needs TagLib's Matroska API (2.2), but is gated at 2.3.1: earlier 2.x
+    # crash or silently drop chapters on malformed media Kodi is expected to scan without failing.
     # CACHE INTERNAL because core_require_dep is a function: plain variables never reach the caller.
-    if(_taglib_ver AND NOT _taglib_ver VERSION_LESS 2.3)
+    if(_taglib_ver AND NOT _taglib_ver VERSION_LESS 2.3.1)
       set(TAGLIB_HAS_MATROSKA ON CACHE INTERNAL "TagLib provides the Matroska tag API")
     else()
       set(TAGLIB_HAS_MATROSKA OFF CACHE INTERNAL "TagLib provides the Matroska tag API")
-      message(STATUS "TagLib ${_taglib_ver} lacks the Matroska tag API (need >= 2.3): "
+      message(STATUS "TagLib ${_taglib_ver} lacks the Matroska tag API (need >= 2.3.1): "
                      "Matroska music tags will fall back to FFmpeg")
     endif()
     unset(_taglib_ver)

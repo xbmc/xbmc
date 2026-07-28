@@ -145,9 +145,8 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url, CFileItemList& items
   std::string thumb;
   thumb = IMAGE_FILES::URLFromFile(url.Get(), "music");
   /*! Look for any embedded cover art
-  * This can be dropped when taglib 2.3.1 is released with the embedded cover art performance
-  * fix for Matroska files and we can just use TagLib to read the embedded cover art for Matroska
-  * files. Until then, we need to use FFmpeg to read the embedded cover art for Matroska files.
+  * FFmpeg rather than TagLib: TagLib reads whole Matroska attachments eagerly, which is slow for
+  * large attachments over SMB/NFS. Still unfixed as of TagLib 2.3.1 (it was expected there).
   */
   CMusicEmbeddedCoverLoaderFFmpeg::GetEmbeddedCover(m_fctx, albumtag);
 

@@ -45,11 +45,10 @@ using namespace XFILE;
 using namespace TagLib;
 
 /*!
-* Read embedded cover art from attachments using TagLib (performance issue in TagLib 2.3 
-* need to be resolved for Matroska large files with large attachments over SMB/NFS.
-* This should be done in TagLib 2.3.1 (there is a PR open to fix this). Once resolved, we
-* can drop the FFmpeg embedded cover art loading and just use TagLib for Matroska files.
-* This is a static method that can will be used once 2.3.1 is released before Piers final  
+* Read embedded cover art from attachments using TagLib. Unused: TagLib reads whole Matroska
+* attachments eagerly, which is slow for large attachments over SMB/NFS, so cover art comes from
+* FFmpeg instead. Still unfixed as of TagLib 2.3.1 (it was expected there); once TagLib reads
+* attachment data lazily this can replace the FFmpeg path.
 
 static void GetMatroskaEmbeddedCover(TagLib::Matroska::File& matroskaFile,
                                      CMusicInfoTag& tag,
