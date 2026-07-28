@@ -1321,6 +1321,9 @@ void CPeripheralCecAdapter::CecLogMessage(void* cbParam, const cec_log_message* 
 
 void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configuration& config)
 {
+  // these values are reported by libCEC, so they must not be marked as changed. sending them back
+  // to libCEC when the settings are persisted would needlessly reconfigure the adapter, and make
+  // Kodi the active source again when 'activate_source' is enabled
   bool bChanged(false);
 
   // set the primary device type
@@ -1335,13 +1338,13 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
 
   // set the connected device
   m_configuration.baseDevice = config.baseDevice;
-  bChanged |=
-      SetSetting("connected_device",
-                 config.baseDevice == CECDEVICE_AUDIOSYSTEM ? LOCALISED_ID_AVR : LOCALISED_ID_TV);
+  bChanged |= SetSetting(
+      "connected_device",
+      config.baseDevice == CECDEVICE_AUDIOSYSTEM ? LOCALISED_ID_AVR : LOCALISED_ID_TV, false);
 
   // set the HDMI port number
   m_configuration.iHDMIPort = config.iHDMIPort;
-  bChanged |= SetSetting("cec_hdmi_port", config.iHDMIPort);
+  bChanged |= SetSetting("cec_hdmi_port", config.iHDMIPort, false);
 
   // set the physical address, when baseDevice or iHDMIPort are not set
   std::string strPhysicalAddress("0");
@@ -1352,7 +1355,7 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
     m_configuration.iPhysicalAddress = config.iPhysicalAddress;
     strPhysicalAddress = StringUtils::Format("{:x}", config.iPhysicalAddress);
   }
-  bChanged |= SetSetting("physical_address", strPhysicalAddress);
+  bChanged |= SetSetting("physical_address", strPhysicalAddress, false);
 
   // set the devices to wake when starting
   m_configuration.wakeDevices = config.wakeDevices;
@@ -1365,16 +1368,17 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
 
   // set the boolean settings
   m_configuration.bActivateSource = config.bActivateSource;
-  bChanged |= SetSetting("activate_source", m_configuration.bActivateSource == 1);
+  bChanged |= SetSetting("activate_source", m_configuration.bActivateSource == 1, false);
 
   m_configuration.iDoubleTapTimeoutMs = config.iDoubleTapTimeoutMs;
-  bChanged |= SetSetting("double_tap_timeout_ms", (int)m_configuration.iDoubleTapTimeoutMs);
+  bChanged |= SetSetting("double_tap_timeout_ms", (int)m_configuration.iDoubleTapTimeoutMs, false);
 
   m_configuration.iButtonRepeatRateMs = config.iButtonRepeatRateMs;
-  bChanged |= SetSetting("button_repeat_rate_ms", (int)m_configuration.iButtonRepeatRateMs);
+  bChanged |= SetSetting("button_repeat_rate_ms", (int)m_configuration.iButtonRepeatRateMs, false);
 
   m_configuration.iButtonReleaseDelayMs = config.iButtonReleaseDelayMs;
-  bChanged |= SetSetting("button_release_delay_ms", (int)m_configuration.iButtonReleaseDelayMs);
+  bChanged |=
+      SetSetting("button_release_delay_ms", (int)m_configuration.iButtonReleaseDelayMs, false);
 
   m_configuration.bPowerOffOnStandby = config.bPowerOffOnStandby;
 
@@ -1484,8 +1488,10 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
 
   if (GetSettingBool("pause_playback_on_deactivate"))
   {
-    SetSetting("pause_or_stop_playback_on_deactivate", LOCALISED_ID_PAUSE);
-    SetSetting("pause_playback_on_deactivate", false);
+    // migration of a deprecated setting. the new value is read when it's needed, so it doesn't
+    // have to be marked as changed
+    SetSetting("pause_or_stop_playback_on_deactivate", LOCALISED_ID_PAUSE, false);
+    SetSetting("pause_playback_on_deactivate", false, false);
   }
 }
 
@@ -1540,7 +1546,8 @@ bool CPeripheralCecAdapter::WriteLogicalAddresses(const cec_logical_addresses& a
       if (addresses[iPtr])
         strPowerOffDevices += StringUtils::Format(" {:X}", iPtr);
     StringUtils::Trim(strPowerOffDevices);
-    bChanged = SetSetting(strAdvancedSettingName, strPowerOffDevices);
+    // reported by libCEC, so don't mark it as changed
+    bChanged = SetSetting(strAdvancedSettingName, strPowerOffDevices, false);
   }
 
   int iSettingPowerOffDevices = LOCALISED_ID_NONE;
@@ -1550,7 +1557,7 @@ bool CPeripheralCecAdapter::WriteLogicalAddresses(const cec_logical_addresses& a
     iSettingPowerOffDevices = LOCALISED_ID_TV;
   else if (addresses[CECDEVICE_AUDIOSYSTEM])
     iSettingPowerOffDevices = LOCALISED_ID_AVR;
-  return SetSetting(strSettingName, iSettingPowerOffDevices) || bChanged;
+  return SetSetting(strSettingName, iSettingPowerOffDevices, false) || bChanged;
 }
 
 CPeripheralCecAdapterUpdateThread::CPeripheralCecAdapterUpdateThread(

@@ -210,18 +210,30 @@ public:
    * @return The value or an empty string if it wasn't found.
    */
   virtual const std::string GetSettingString(const std::string& strKey) const;
-  virtual bool SetSetting(const std::string& strKey, const std::string& strValue);
+
+  /*!
+   * @brief Set the value of a setting.
+   * @param strKey The key of the setting.
+   * @param strValue The new value.
+   * @param bNotify True to notify the peripheral of the change when the settings are persisted,
+   *        false when the value originates from the peripheral itself and doesn't have to be
+   *        sent back to it.
+   * @return True when the value changed, false otherwise.
+   */
+  virtual bool SetSetting(const std::string& strKey,
+                          const std::string& strValue,
+                          bool bNotify = true);
   virtual void SetSettingVisible(const std::string& strKey, bool bSetTo);
   virtual bool IsSettingVisible(const std::string& strKey) const;
 
   virtual int GetSettingInt(const std::string& strKey) const;
-  virtual bool SetSetting(const std::string& strKey, int iValue);
+  virtual bool SetSetting(const std::string& strKey, int iValue, bool bNotify = true);
 
   virtual bool GetSettingBool(const std::string& strKey) const;
-  virtual bool SetSetting(const std::string& strKey, bool bValue);
+  virtual bool SetSetting(const std::string& strKey, bool bValue, bool bNotify = true);
 
   virtual float GetSettingFloat(const std::string& strKey) const;
-  virtual bool SetSetting(const std::string& strKey, float fValue);
+  virtual bool SetSetting(const std::string& strKey, float fValue, bool bNotify = true);
 
   virtual void SetAddonSetting(const std::string& strKey, const std::string& addonId);
 
