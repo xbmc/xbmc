@@ -2,10 +2,20 @@ AC_PREREQ(2.59)
 AC_INIT([xbmc-depends], [2.00], [https://github.com/xbmc/xbmc])
 :${CFLAGS=""}
 AC_CONFIG_AUX_DIR([build-aux])
-AC_CONFIG_FILES([native/config.site.native Makefile.include
+# Only touch Makefile.include's mtime if its content actually changed, since every
+# dependency's rebuild stamp depends on it and an unconditional rewrite here would
+# force a full rebuild of all dependencies on every ./configure run.
+AC_CONFIG_FILES([native/config.site.native
+                 Makefile.include.tmp:Makefile.include.in
                  target/config.site target/config-binaddons.site
                  target/Toolchain.cmake target/Toolchain_binaddons.cmake
                  native/Toolchain-Native.cmake])
+AC_CONFIG_COMMANDS([Makefile.include],
+  [if test -f Makefile.include && cmp -s Makefile.include.tmp Makefile.include; then
+     rm -f Makefile.include.tmp
+   else
+     mv -f Makefile.include.tmp Makefile.include
+   fi])
 AC_CANONICAL_HOST
 AC_CANONICAL_BUILD
 
