@@ -36,7 +36,6 @@
 #include <unordered_map>
 
 #include <libsmbclient.h>
-#include <samba/version.h>
 
 using namespace XFILE;
 
@@ -332,9 +331,8 @@ void xb_smbc_auth(
 {
 }
 
-// This flag protects against an old Samba bug where smbc_set_context()
-// returns an already freed pointer on subsequent inits. It is still
-// needed on some current Samba 4.0 installations.
+// Track whether initialization has completed so an existing SMB configuration
+// directory is accepted only during the first initialization.
 bool CSMB::IsFirstInit = true;
 
 CSMB::CSMB()
@@ -480,16 +478,6 @@ void CSMB::Init()
       }
     }
 
-#if SAMBA_VERSION_MAJOR <= 4 && SAMBA_VERSION_MINOR <= 18
-    // reads smb.conf so this MUST be after we create smb.conf
-    // multiple smbc_init calls are ignored by libsmbclient.
-    // note: this is important as it initializes the smb old
-    // interface compatibility. Samba 3.4.0 or higher has the new interface.
-    // smbc_init is deprecated but still required for the old-interface
-    // compatibility used by smbc_set_context / smbc_free_context.
-    smbc_init(xb_smbc_auth, 0);
-#endif
-
     // setup our context
     m_context = smbc_new_context();
     if (!m_context)
@@ -530,16 +518,8 @@ void CSMB::Init()
     if (smbc_init_context(m_context))
     {
       // setup context using the smb old interface compatibility
-      SMBCCTX* old_context = smbc_set_context(m_context);
-
-      // There is a bug in old Samba versions where smbc_set_context may
-      // return an already freed pointer on subsequent inits. IsFirstInit
-      // guarantees we only free the very first compatibility context once.
-      if (old_context && IsFirstInit)
-      {
-        smbc_free_context(old_context, 1);
-        IsFirstInit = false;
-      }
+      smbc_set_context(m_context);
+      IsFirstInit = false;
 
       // Cache the remove_unused_server function pointer.
       g_removeUnusedFn = smbc_getFunctionRemoveUnusedServer(m_context);
