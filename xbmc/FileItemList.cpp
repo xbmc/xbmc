@@ -364,8 +364,11 @@ void CFileItemList::Sort(SortDescription sortDescription)
             sortDescription.sortBy == SortBy::MPAA || sortDescription.sortBy == SortBy::YEAR ||
             sortDescription.sortBy == SortBy::PLAYLIST_ORDER ||
             sortDescription.sortBy == SortBy::LAST_PLAYED ||
-            sortDescription.sortBy == SortBy::PLAYCOUNT ||
-            sortDescription.sortBy == SortBy::TIME) ||
+            sortDescription.sortBy == SortBy::PLAYCOUNT || sortDescription.sortBy == SortBy::TIME ||
+            sortDescription.sortBy == SortBy::TOP250 || sortDescription.sortBy == SortBy::VOTES ||
+            sortDescription.sortBy == SortBy::GENRE || sortDescription.sortBy == SortBy::COUNTRY ||
+            sortDescription.sortBy == SortBy::STUDIO || sortDescription.sortBy == SortBy::RANDOM ||
+            sortDescription.sortBy == SortBy::PATH) ||
            m_sortIgnoreFolders)
   {
     sortDescription.sortAttributes =
