@@ -33,6 +33,9 @@ using namespace PERIPHERALS;
 namespace
 {
 constexpr const int CONTROL_ID_PERIPHERAL_ICON = 100;
+
+// Setting that holds the controller profile of a peripheral
+constexpr std::string_view SETTING_APPEARANCE = "appearance";
 } // namespace
 
 CGUIDialogPeripheralSettings::CGUIDialogPeripheralSettings()
@@ -46,7 +49,7 @@ CGUIDialogPeripheralSettings::~CGUIDialogPeripheralSettings()
   if (m_item != NULL)
     delete m_item;
 
-  m_settingsMap.clear();
+  m_changedValues.clear();
 }
 
 bool CGUIDialogPeripheralSettings::OnMessage(CGUIMessage& message)
@@ -63,6 +66,9 @@ bool CGUIDialogPeripheralSettings::OnMessage(CGUIMessage& message)
 
 void CGUIDialogPeripheralSettings::OnDeinitWindow(int nextWindowID)
 {
+  // discard any values that weren't applied by confirming the dialog
+  m_changedValues.clear();
+
   UpdateIcon({});
   CGUIDialogSettingsManualBase::OnDeinitWindow(nextWindowID);
 }
@@ -95,33 +101,27 @@ void CGUIDialogPeripheralSettings::OnSettingChanged(const std::shared_ptr<const 
 
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
 
-  const std::string& settingId = setting->GetId();
-
-  // we need to copy the new value of the setting from the copy to the
-  // original setting
-  std::map<std::string, std::shared_ptr<CSetting>>::iterator itSetting =
-      m_settingsMap.find(settingId);
-  if (itSetting == m_settingsMap.end())
+  // ignore the values that are set while the controls are being created
+  if (m_initialising)
     return;
 
-  itSetting->second->FromString(setting->ToString());
+  const std::string& settingId = setting->GetId();
 
   // Get peripheral associated with this setting
   PeripheralPtr peripheral;
   if (m_item != nullptr)
     peripheral = CServiceBroker::GetPeripherals().GetByPath(m_item->GetPath());
 
-  if (!peripheral)
+  if (!peripheral || !peripheral->HasSetting(settingId))
     return;
 
-  if (peripheral->SetSetting(settingId, setting->ToString()))
-    peripheral->OnSettingChanged(settingId);
+  // Remember the new value. It is applied to the peripheral when the dialog is confirmed, so
+  // that changes don't take effect while the user is still making them
+  m_changedValues[settingId] = setting->ToString();
 
-  // Refresh peripheral icon
-  UpdateIcon(peripheral->ControllerProfile());
-
-  // Persist settings so that the new setting takes effect immediately
-  Save();
+  // Refresh peripheral icon to show the selected appearance
+  if (settingId == SETTING_APPEARANCE)
+    UpdateIcon(CServiceBroker::GetGameControllerManager().GetController(setting->ToString()));
 }
 
 void CGUIDialogPeripheralSettings::UpdateIcon(const GAME::ControllerPtr& controller)
@@ -141,9 +141,22 @@ bool CGUIDialogPeripheralSettings::Save()
   if (!peripheral)
     return true;
 
+  // Apply the changed values. CPeripheral keeps track of the settings that actually changed, and
+  // notifies the peripheral of those changes when they are persisted
+  for (const auto& [settingId, value] : m_changedValues)
+    peripheral->SetSetting(settingId, value);
+
+  m_changedValues.clear();
+
   peripheral->PersistSettings();
 
   return true;
+}
+
+void CGUIDialogPeripheralSettings::OnCancel()
+{
+  // discard the changed values
+  m_changedValues.clear();
 }
 
 void CGUIDialogPeripheralSettings::OnResetSettings()
@@ -157,6 +170,9 @@ void CGUIDialogPeripheralSettings::OnResetSettings()
 
   if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{10041}, CVariant{10042}))
     return;
+
+  // the settings that were changed in this dialog are replaced by the defaults
+  m_changedValues.clear();
 
   // reset the settings in the peripheral
   peripheral->ResetDefaultSettings();
@@ -210,7 +226,7 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
     return;
   }
 
-  m_settingsMap.clear();
+  m_changedValues.clear();
   CGUIDialogSettingsManualBase::InitializeSettings();
 
   const std::shared_ptr<CSettingCategory> category = AddCategory("peripheralsettings", -1);
@@ -324,7 +340,6 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
     {
       settingCopy->SetLevel(SettingLevel::Basic);
       group->AddSetting(settingCopy);
-      m_settingsMap.insert(std::make_pair(setting->GetId(), setting));
     }
   }
 
