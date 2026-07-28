@@ -1788,6 +1788,15 @@ std::string URIUtils::AddFileToFolder(const std::string& strFolder,
   return strResult;
 }
 
+std::string URIUtils::AddFileToFolderMatchingEncoding(const std::string& strFolder,
+                                                      const std::string& strFile)
+{
+  if (HasEncodedFilename(CURL(strFolder)))
+    return AddFileToFolder(strFolder, CURL::Encode(strFile));
+
+  return AddFileToFolder(strFolder, strFile);
+}
+
 std::string URIUtils::GetDirectory(const std::string &strFilePath)
 {
   // Will from a full filename return the directory the file resides in.

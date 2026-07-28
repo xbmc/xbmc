@@ -1268,6 +1268,94 @@ TEST_F(TestURIUtils, AddFileToFolder)
   EXPECT_EQ(ref, var);
 }
 
+TEST_F(TestURIUtils, AddFileToFolderMatchingEncodingEncodedFolder)
+{
+  // Base folders that report an encoded filename (e.g. WebDAV) must have any raw, human
+  // readable segment percent-encoded before being appended, otherwise the resulting URL
+  // ends up with mixed encoding (see xbmc/video/VideoInfoScanner.cpp GetMovieSetInfoFolder).
+  std::string ref = "davs://user:pass@host/Movie%20Set%20Information%20Folder/"
+                    "Star%20Wars%20Collection";
+  std::string var = URIUtils::AddFileToFolderMatchingEncoding(
+      "davs://user:pass@host/Movie%20Set%20Information%20Folder/", "Star Wars Collection");
+  EXPECT_EQ(ref, var);
+  // No literal space may remain in the filename portion of the URL.
+  EXPECT_EQ(std::string::npos, CURL(var).GetFileName().find(' '));
+
+  // Same for the non-secure WebDAV, http and https protocols.
+  ref = "dav://host/sets/Star%20Wars%20Collection";
+  var = URIUtils::AddFileToFolderMatchingEncoding("dav://host/sets/", "Star Wars Collection");
+  EXPECT_EQ(ref, var);
+
+  ref = "http://host/sets/Star%20Wars%20Collection";
+  var = URIUtils::AddFileToFolderMatchingEncoding("http://host/sets/", "Star Wars Collection");
+  EXPECT_EQ(ref, var);
+
+  ref = "https://host/sets/Star%20Wars%20Collection";
+  var = URIUtils::AddFileToFolderMatchingEncoding("https://host/sets/", "Star Wars Collection");
+  EXPECT_EQ(ref, var);
+
+  // A missing slash at the end of the folder is handled as by AddFileToFolder().
+  ref = "https://host/sets/Star%20Wars%20Collection";
+  var = URIUtils::AddFileToFolderMatchingEncoding("https://host/sets", "Star Wars Collection");
+  EXPECT_EQ(ref, var);
+
+  // An empty segment leaves the folder untouched (bar the trailing slash).
+  ref = "https://host/sets/";
+  var = URIUtils::AddFileToFolderMatchingEncoding("https://host/sets/", "");
+  EXPECT_EQ(ref, var);
+}
+
+TEST_F(TestURIUtils, AddFileToFolderMatchingEncodingSpecialCharacters)
+{
+  // Characters that are legal in a file name but not in a URL must be encoded as well,
+  // otherwise the server sees a query/fragment/separator instead of a name.
+  std::string ref = "https://host/sets/Fast%20%26%20Furious%20Collection";
+  std::string var =
+      URIUtils::AddFileToFolderMatchingEncoding("https://host/sets/", "Fast & Furious Collection");
+  EXPECT_EQ(ref, var);
+
+  ref = "https://host/sets/Marvel%27s%20Avengers";
+  var = URIUtils::AddFileToFolderMatchingEncoding("https://host/sets/", "Marvel's Avengers");
+  EXPECT_EQ(ref, var);
+
+  // A percent sign in the title must be escaped, not passed through as an escape sequence.
+  ref = "https://host/sets/100%25%20Collection";
+  var = URIUtils::AddFileToFolderMatchingEncoding("https://host/sets/", "100% Collection");
+  EXPECT_EQ(ref, var);
+
+  // Non-ASCII titles are encoded byte-wise (UTF-8, lowercase hex as produced by URLEncode).
+  ref = "https://host/sets/Am%c3%a9lie%20Collection";
+  var = URIUtils::AddFileToFolderMatchingEncoding("https://host/sets/", "Amélie Collection");
+  EXPECT_EQ(ref, var);
+
+  // Characters exempt from encoding per RFC1738 are kept verbatim.
+  ref = "https://host/sets/Alien-Quadrilogy_(1979).!";
+  var =
+      URIUtils::AddFileToFolderMatchingEncoding("https://host/sets/", "Alien-Quadrilogy_(1979).!");
+  EXPECT_EQ(ref, var);
+}
+
+TEST_F(TestURIUtils, AddFileToFolderMatchingEncodingUnencodedFolder)
+{
+  // Folders that don't use an encoded file name must behave exactly like AddFileToFolder(),
+  // i.e. the segment is appended verbatim and stays human readable.
+  const std::array<std::string, 5> folders = {"/home/user/sets/", "smb://host/share/sets/",
+                                              "nfs://host/export/sets/", "C:\\videos\\sets\\",
+                                              "ftp://host/sets/"};
+
+  const std::string title = "Star Wars Collection";
+  for (const auto& folder : folders)
+  {
+    const std::string var = URIUtils::AddFileToFolderMatchingEncoding(folder, title);
+    EXPECT_EQ(URIUtils::AddFileToFolder(folder, title), var) << "folder: " << folder;
+    EXPECT_NE(std::string::npos, var.find(title)) << "folder: " << folder;
+  }
+
+  // An empty folder is passed through unchanged as well.
+  EXPECT_EQ(URIUtils::AddFileToFolder("", "Star Wars Collection"),
+            URIUtils::AddFileToFolderMatchingEncoding("", "Star Wars Collection"));
+}
+
 TEST_F(TestURIUtils, HasParentInHostname)
 {
   EXPECT_TRUE(URIUtils::HasParentInHostname(CURL("zip://")));

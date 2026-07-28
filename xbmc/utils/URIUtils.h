@@ -354,6 +354,21 @@ public:
     return AddFileToFolder(newPath, args...);
   }
 
+  /*!
+   \brief Append a segment to a folder, matching the folder's filename encoding.
+
+   Sources whose paths keep the filename portion percent-encoded (WebDAV, http, ...)
+   cannot resolve a path built by appending a raw, human readable segment, because the
+   result ends up with mixed encoding. This helper percent-encodes \p strFile when
+   \p strFolder reports an encoded filename and appends it verbatim otherwise.
+
+   \param strFolder base folder, either a local path or a URL
+   \param strFile raw (unencoded) segment to append
+   \return the combined path, consistently encoded
+   */
+  static std::string AddFileToFolderMatchingEncoding(const std::string& strFolder,
+                                                     const std::string& strFile);
+
   static bool HasParentInHostname(const CURL& url);
   static bool HasEncodedHostname(const CURL& url);
   static bool HasEncodedFilename(const CURL& url);
