@@ -2484,7 +2484,15 @@ void CVideoPlayer::HandlePlaySpeed()
         {
           error  = (m_clock.GetClock() - m_SpeedState.lastseekpts) / 1000;
 
-          if (std::abs(error) > 1000 || (m_VideoPlayerVideo->IsRewindStalled() && std::abs(error) > 100))
+          // While rewinding, the demuxer resumes from a keyframe before the seek target;
+          // seeking again before its read position reaches the clock discards that progress.
+          const bool demuxerCatchingUp =
+              m_playSpeed < 0 &&
+              (m_CurrentVideo.dts == DVD_NOPTS_VALUE || m_CurrentVideo.dts < m_clock.GetClock());
+
+          if (!demuxerCatchingUp &&
+              (std::abs(error) > 1000 ||
+               (m_VideoPlayerVideo->IsRewindStalled() && std::abs(error) > 100)))
           {
             CLog::Log(LOGDEBUG, "CVideoPlayer::Process - Seeking to catch up, error was: {:f}",
                       error);
