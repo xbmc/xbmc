@@ -2037,6 +2037,32 @@ bool CM2TSParser::GetStreamsFromFile(const std::string& path,
                  "need MAX_PACKETS_TO_PARSE ({}) increase.",
                  clipFile, packetCount, totalBytesRead, MAX_PACKETS_TO_PARSE);
 
+    // Report the details determined for each audio stream
+    for (const TSAudioStreamInfo& audioStream : GetAudioStreams(streams))
+    {
+      CLog::LogFC(LOGDEBUG, LOGBLURAY,
+                  "Clip {} - audio stream PID 0x{} type 0x{} ({}) - {} channels, {}Hz, substream "
+                  "{}, XLL {}, XLL X {}, XLL X IMAX {}, Atmos {}, dependant stream {}, headers "
+                  "parsed {}",
+                  clip, fmt::format("{:04x}", audioStream.pid),
+                  fmt::format("{:02x}", static_cast<int>(audioStream.streamType)),
+                  GetStreamTypeName(audioStream.streamType), audioStream.channels,
+                  audioStream.sampleRate, audioStream.hasSubstream, audioStream.isXLL,
+                  audioStream.isXLLX, audioStream.isXLLXIMAX, audioStream.isAtmos,
+                  audioStream.hasDependantStream, audioStream.seen);
+
+      // A zero channel count means the elementary stream was never successfully parsed - the
+      // parsers have several early exits (no sync word found, truncated header, unknown mode)
+      if (audioStream.channels == 0)
+        CLog::LogF(LOGDEBUG,
+                   "Clip {} - no channel count determined for audio stream PID 0x{} type 0x{} "
+                   "({}) - headers parsed {}, completed {}",
+                   clip, fmt::format("{:04x}", audioStream.pid),
+                   fmt::format("{:02x}", static_cast<int>(audioStream.streamType)),
+                   GetStreamTypeName(audioStream.streamType), audioStream.seen,
+                   audioStream.completed);
+    }
+
     CLog::LogFC(LOGDEBUG, LOGBLURAY, "Finished analysing {} for stream details.", clipFile);
 
     return true;

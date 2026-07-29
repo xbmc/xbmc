@@ -18,6 +18,7 @@
 #include <ranges>
 #include <vector>
 
+#include <fmt/format.h>
 #include <libbluray/bluray.h>
 
 namespace XFILE
@@ -306,10 +307,21 @@ void CStreamParser::ConvertBlurayPlaylistInformation(const BlurayPlaylistInforma
         case AUDIO_DTSHD_MASTER:
         case AUDIO_AC3PLUS_SECONDARY:
         case AUDIO_DTSHD_SECONDARY:
-          p.audioStreams.emplace_back(PopulateAudioStreamInfo(
-              stream,
-              bs != s.end() ? dynamic_cast<TSAudioStreamInfo*>(bs->second.get()) : nullptr));
+        {
+          const auto* bsai{bs != s.end() ? dynamic_cast<TSAudioStreamInfo*>(bs->second.get())
+                                         : nullptr};
+          if (!bsai && !s.empty())
+            CLog::LogF(LOGDEBUG,
+                       "Playlist {} - no parsed stream information for audio PID 0x{} coding 0x{} "
+                       "- {} - channel count will be unknown",
+                       b.playlist, fmt::format("{:04x}", stream.packetIdentifier),
+                       fmt::format("{:02x}", static_cast<int>(stream.coding)),
+                       bs == s.end() ? "packet identifier not present in stream map"
+                                     : "stream in map is not an audio stream");
+
+          p.audioStreams.emplace_back(PopulateAudioStreamInfo(stream, bsai));
           break;
+        }
         case SUB_PG:
         case SUB_TEXT:
         {
