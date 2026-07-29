@@ -44,7 +44,9 @@ constexpr unsigned int SYNC_BYTE = 0x47;
 constexpr unsigned int TS_HEADER_SIZE = 4;
 constexpr unsigned int ADAPTATION_FIELD_MASK = 0x02;
 constexpr unsigned int PACKETS_TO_PARSE =
-    8000; // Based on testing this is enough to analyse all streams
+    8000; // Based on testing this is enough to analyse all streams in most clips
+constexpr unsigned int MAX_PACKETS_TO_PARSE =
+    60000; // Some clips need considerably more data before all streams can be analysed
 constexpr unsigned int BUFFER_SIZE{BDAV_PACKET_SIZE * PACKETS_TO_PARSE};
 constexpr int TIMESTAMP_SIZE = 4;
 
@@ -1941,12 +1943,6 @@ bool CM2TSParser::GetStreamsFromFile(const std::string& path,
 
     std::vector<std::byte> buffer;
     buffer.resize(BUFFER_SIZE);
-    ssize_t bytesRead = file.Read(buffer.data(), BUFFER_SIZE);
-    file.Close();
-    if (bytesRead > 0)
-      buffer.resize(bytesRead);
-    else
-      return false;
 
     // Assemblers
     std::unordered_map<unsigned int, SectionAssembler> pidSection;
@@ -1957,16 +1953,26 @@ bool CM2TSParser::GetStreamsFromFile(const std::string& path,
     bool patParsed{false};
     bool pmtParsed{false};
     bool allStreamsComplete{false};
-    int offset{0};
     unsigned int packetCount{0};
-    const int size{static_cast<int>(buffer.size())};
+    ssize_t totalBytesRead{0};
 
-    while (packetCount < PACKETS_TO_PARSE && offset + BDAV_PACKET_SIZE <= size)
+    // The file is read in BUFFER_SIZE chunks, stopping as soon as all streams are complete.
+    while (packetCount < MAX_PACKETS_TO_PARSE && !allStreamsComplete)
     {
-      if (offset + BDAV_PACKET_SIZE <= size)
+      const ssize_t bytesRead{file.Read(buffer.data(), BUFFER_SIZE)};
+      if (bytesRead < 0)
       {
-        CLog::LogFC(LOGDEBUG, LOGBLURAY, "Parsing BDAV packet at offset 0x{}",
-                    fmt::format("{:06x}", offset));
+        CLog::LogF(LOGERROR, "Error reading clip file {}", clipFile);
+        break;
+      }
+      if (bytesRead == 0)
+        break; // End of file
+      totalBytesRead += bytesRead;
+
+      const int size{static_cast<int>(bytesRead)};
+      int offset{0};
+      while (packetCount < MAX_PACKETS_TO_PARSE && offset + BDAV_PACKET_SIZE <= size)
+      {
         std::span packet{buffer.data() + offset + TIMESTAMP_SIZE, TS_PACKET_SIZE};
         ParseTSPacket(packet, patParsed, pmtParsed, pmtPIDs, pidSection, pesSection, streams);
         packetCount++;
@@ -1984,7 +1990,16 @@ bool CM2TSParser::GetStreamsFromFile(const std::string& path,
             break; // All streams completed
         }
       }
+
+      // CFile::Read returns less than requested only at the end of the file or on error. Any bytes
+      // after the last whole packet in the chunk would misalign the next one, so do not continue.
+      if (bytesRead < static_cast<ssize_t>(BUFFER_SIZE))
+        break;
     }
+    file.Close();
+
+    if (totalBytesRead == 0)
+      return false;
 
     // Deal with Dolby Vision enhancement streams
     if (const auto videoStreamsVector{GetVideoStreams(streams)};
@@ -2000,10 +2015,10 @@ bool CM2TSParser::GetStreamsFromFile(const std::string& path,
     }
 
     if (!allStreamsComplete)
-      CLog::LogFC(
-          LOGDEBUG, LOGBLURAY,
-          "Not all stream details determined from {} - may need PACKETS_TO_PARSE ({}) increase.",
-          clipFile, PACKETS_TO_PARSE);
+      CLog::LogF(LOGDEBUG,
+                 "Not all stream details determined from {} after {} packets ({} bytes) - may "
+                 "need MAX_PACKETS_TO_PARSE ({}) increase.",
+                 clipFile, packetCount, totalBytesRead, MAX_PACKETS_TO_PARSE);
 
     CLog::LogFC(LOGDEBUG, LOGBLURAY, "Finished analysing {} for stream details.", clipFile);
 
