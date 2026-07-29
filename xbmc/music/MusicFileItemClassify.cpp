@@ -13,7 +13,8 @@
 #include "URL.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
+
+#include <string>
 
 namespace KODI::MUSIC
 {
@@ -56,7 +57,8 @@ bool IsAudio(const CFileItem& item)
 
 bool IsAudioBook(const CFileItem& item)
 {
-  return item.IsType(".m4b") || item.IsType(".mka") || item.IsType(".mkv");
+  return item.IsType(".m4b") || item.IsType(".mka") ||
+         (item.IsType(".mkv") && item.HasMusicInfoTag());
 }
 
 bool IsCDDA(const CFileItem& item)
