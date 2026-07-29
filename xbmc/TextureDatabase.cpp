@@ -8,6 +8,7 @@
 
 #include "TextureDatabase.h"
 
+#include "DatabaseTypes.h"
 #include "URL.h"
 #include "XBDateTime.h"
 #include "dbwrappers/dataset.h"
@@ -91,7 +92,9 @@ void CTextureRule::GetAvailableFields(std::vector<std::string>& fieldList)
                          [](const auto& f) { return std::string(f.string); });
 }
 
-CTextureDatabase::CTextureDatabase() = default;
+CTextureDatabase::CTextureDatabase() : CDatabase(KODI::DATABASE::TYPE_TEXTURES)
+{
+}
 
 CTextureDatabase::~CTextureDatabase() = default;
 

@@ -314,10 +314,7 @@ bool CProfileManager::LoadProfile(unsigned int index)
   // Stop all texture cache jobs and close the old profile's texture database
   CServiceBroker::GetTextureCache()->Deinitialize();
 
-  // Reset database manager state while the texture cache is quiet.
-  // The manager holds no persistent connections; this call just clears
-  // m_dbStatus so the next Initialize() re-runs schema checks and
-  // migrations for the new profile.
+  // Reset database manager state once database users are stopped (ex. texture cache)
   CServiceBroker::GetDatabaseManager().Deinitialize();
 
   SetCurrentProfileId(index);
@@ -334,15 +331,14 @@ bool CProfileManager::LoadProfile(unsigned int index)
 
   CreateProfileFolders();
 
-  // Update/migrate databases for the new profile first, then re-start the
-  // texture cache. The cache opens its own connection, but the Textures DB
-  // schema must be current before that happens - the order matters.
+  // Prepare the new profile's databases for use, including schema checks and migrations
   if (!CServiceBroker::GetDatabaseManager().Initialize())
   {
     CLog::Log(LOGFATAL, "CProfileManager: unable to initialize databases for profile \"{}\"",
               m_profiles.at(index).getName());
     return false;
   }
+  // Depends on database initialization, order matters.
   CServiceBroker::GetTextureCache()->Initialize();
   CServiceBroker::GetInputManager().LoadKeymaps();
 

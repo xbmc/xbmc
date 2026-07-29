@@ -1,6 +1,7 @@
 set(SOURCES AddonsOperations.cpp
             ApplicationOperations.cpp
             AudioLibrary.cpp
+            DatabaseOperations.cpp
             FavouritesOperations.cpp
             FileItemHandler.cpp
             FileOperations.cpp
@@ -22,6 +23,7 @@ set(SOURCES AddonsOperations.cpp
 set(HEADERS AddonsOperations.h
             ApplicationOperations.h
             AudioLibrary.h
+            DatabaseOperations.h
             FavouritesOperations.h
             FileItemHandler.h
             FileOperations.h
