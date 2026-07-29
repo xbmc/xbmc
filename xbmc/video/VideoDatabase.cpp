@@ -312,29 +312,46 @@ bool CVideoDatabase::GetSubPaths(const std::string& basepath,
     if (!m_pDB || !m_pDS)
       return false;
 
-    // Generate encoded paths
     std::string path(basepath);
     URIUtils::AddSlashAtEnd(path);
-    CURL url("udf://");
-    url.SetHostName(path);
-    std::string filePath{url.Get()};
-    URIUtils::RemoveSlashAtEnd(filePath);
-    url = CURL("bluray://");
-    url.SetHostName(filePath);
-    std::string isoPath{url.Get()};
-    URIUtils::RemoveSlashAtEnd(isoPath);
-    constexpr size_t udfPrefixLength = 6; // length of "udf://"
-    filePath = filePath.substr(udfPrefixLength); // Remove udf://
 
-    sql = "SELECT idPath, strPath FROM path WHERE (strPath LIKE '%s%%'";
+    const auto startsWith{[this](const std::string& prefix)
+                          {
+                            return PrepareSQL("SUBSTR(strPath,1,%i)='%s'",
+                                              StringUtils::utf8_strlen(prefix), prefix.c_str());
+                          }};
+
+    sql = "SELECT idPath, strPath FROM path WHERE " + startsWith(path);
     if (excludeDiscPaths)
-      sql += " AND idPath NOT IN (SELECT idPath FROM files WHERE strFileName LIKE 'video_ts.ifo')"
-             " AND idPath NOT IN (SELECT idPath FROM files WHERE strFileName LIKE 'index.bdmv')";
-    sql += ") OR (strPath LIKE '%s%%' OR strPath LIKE 'bluray://%s%%'"
-           " OR strPath LIKE 'zip://%s%%' OR strPath LIKE 'rar://%s%%' OR strPath LIKE "
-           "'archive://%s%%')";
-    sql = PrepareSQL(sql, path.c_str(), isoPath.c_str(), filePath.c_str(), filePath.c_str(),
-                     filePath.c_str(), filePath.c_str());
+    {
+      sql += " AND idPath NOT IN (SELECT idPath FROM files WHERE strFileName='video_ts.ifo')"
+             " AND idPath NOT IN (SELECT idPath FROM files WHERE strFileName='index.bdmv')";
+    }
+    else
+    {
+      // Generate encoded paths
+      // Terminal slashes removed as there is an encoded slash immediately prior
+      //  eg. zip://D%3a%5cMovies%5c'
+      CURL url("udf://");
+      url.SetHostName(path);
+      std::string filePath{url.Get()};
+      URIUtils::RemoveSlashAtEnd(filePath);
+      url = CURL("bluray://");
+      url.SetHostName(filePath);
+      std::string blurayIsoPath{url.Get()};
+      URIUtils::RemoveSlashAtEnd(blurayIsoPath);
+      constexpr size_t udfPrefixLength = 6; // length of "udf://"
+      filePath = filePath.substr(udfPrefixLength); // Remove udf://
+
+      // Return encoded media paths for content removal
+      // clang format-off
+      for (const std::string& prefix : {blurayIsoPath, "bluray://" + filePath, "zip://" + filePath,
+                                        "rar://" + filePath, "archive://" + filePath})
+      {
+        sql += " OR " + startsWith(prefix);
+      }
+      // clang format-on
+    }
 
     m_pDS->query(sql);
     while (!m_pDS->eof())
