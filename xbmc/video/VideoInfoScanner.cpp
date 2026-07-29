@@ -621,7 +621,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       // forms. ISOs hash normally as plain files and never reach this block.
       if (content == ContentType::MOVIES && m_advancedSettings->m_bVideoLibraryUseFastHash &&
           !URIUtils::IsPlugin(strDirectory) && !pItem->IsFolder() &&
-          URIUtils::IsOpticalMediaFile(pItem->GetPath()))
+          !URIUtils::IsStack(pItem->GetPath()) && URIUtils::IsOpticalMediaFile(pItem->GetPath()))
       {
         std::string discFolder = URIUtils::RemoveDiscPath(pItem->GetPath());
         URIUtils::AddSlashAtEnd(discFolder);
@@ -779,7 +779,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     {
       CFileItemPtr pItem = items[i];
 
-      if (pItem->GetProperty(PROPERTY_UNCHANGED).asBoolean())
+      if (pItem->IsFolder() && pItem->GetProperty(PROPERTY_UNCHANGED).asBoolean())
         continue;
 
       // we do this since we may have a override per dir
