@@ -2064,16 +2064,12 @@ bool CM2TSParser::GetStreams(const CURL& url,
 {
   streams.clear();
 
-  // Find longest MT2S in playlist
-  const auto& it{std::ranges::max_element(playlistInformation.playItems, {},
-                                          [](const PlayItemInformation& item)
-                                          { return item.outTime - item.inTime; })};
-
-  if (it == playlistInformation.playItems.end() || it->angleClips.empty())
+  // Find longest M2TS in playlist
+  const ClipInformation* playItemClip{GetLongestPlayItemClip(playlistInformation)};
+  if (!playItemClip)
     return false;
 
-  if (unsigned int clip{it->angleClips.begin()->clip};
-      !GetStreamsFromFile(url.GetHostName(), clip, it->angleClips.begin()->codec, streams))
+  if (!GetStreamsFromFile(url.GetHostName(), playItemClip->clip, playItemClip->codec, streams))
     return false;
 
   if (!playlistInformation.extensionSubPlayItems.empty() &&
