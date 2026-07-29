@@ -420,6 +420,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
 
     std::string hash, dbHash;
+    bool listingHash = false; // hash came from GetPathHash over a fetched listing
     if (content == ContentType::MOVIES || content == ContentType::MUSICVIDEOS)
     {
       if (m_handle)
@@ -477,7 +478,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
         items.Sort(SortBy::FILE, SortOrder::ASCENDING, SortAttributeNone);
 
         // check whether to re-use previously computed fast hash
-        if (!CanFastHash(items, regexps) || fastHash.empty())
+        listingHash = !CanFastHash(items, regexps) || fastHash.empty();
+        if (listingHash)
           GetPathHash(items, hash);
         else
           hash = fastHash;
@@ -486,7 +488,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (StringUtils::EqualsNoCase(hash, dbHash))
       { // hash matches - skipping
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '{}' due to no change{}",
-                  CURL::GetRedacted(strDirectory), !fastHash.empty() ? " (fasthash)" : "");
+                  CURL::GetRedacted(strDirectory), listingHash ? "" : " (fasthash)");
         bSkip = true;
       }
       else if (hash.empty())
@@ -560,10 +562,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
       }
       else
       {
-        // an all-folder listing can never import; store the hash here or the
-        // mismatch recurs every scan
+        // an all-folder listing has nothing to directly import, so foundSomething
+        // is false here even when nothing changed; store the hash or GetPathHash
+        // output never matches dbHash and every scan repeats the full rescan.
+        // Only store a listing-hash, as an mtime-hash would match the fasthash
+        // gate before the listing is fetched, hiding content that never imported.
         if ((content == ContentType::MOVIES || content == ContentType::MUSICVIDEOS) &&
-            !URIUtils::IsArchive(CURL(strDirectory)) &&
+            listingHash && !URIUtils::IsArchive(CURL(strDirectory)) &&
             std::all_of(items.begin(), items.end(),
                         [](const auto& item) { return item->IsFolder(); }))
           m_database.SetPathHash(strDirectory, hash);
