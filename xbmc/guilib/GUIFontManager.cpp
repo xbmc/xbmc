@@ -299,9 +299,11 @@ void GUIFontManager::ReloadTTFFonts(void)
       if (!pFontFile || !pFontFile->Load(strPath, newSize, aspect, 1.0f, fontInfo.border))
       {
         delete pFontFile;
-        // font could not be loaded
+        // This font could not be re-rasterised, but the rest still can. It
+        // keeps the CGUIFontTTF it already had, which m_vecFontFiles still
+        // owns, so it stays renderable at the old size.
         CLog::LogF(LOGERROR, "Couldn't re-load font file: '{}'", strPath);
-        return;
+        continue;
       }
 
       m_vecFontFiles.emplace_back(pFontFile);
