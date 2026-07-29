@@ -8,16 +8,19 @@
 
 #include "CaptureConvert.h"
 
+#include "rendering/capture/CapturePixels.h"
 #include "rendering/capture/CaptureTypes.h"
 #include "utils/log.h"
 
 #include <algorithm>
+#include <cstddef>
 #include <cstring>
 #include <vector>
 
 extern "C"
 {
 #include <libavutil/mastering_display_metadata.h>
+#include <libavutil/pixdesc.h>
 #include <libswscale/swscale.h>
 }
 
@@ -31,58 +34,99 @@ namespace CAPTURE
 namespace
 {
 
-// Limited-range RGB expanded to full on a copy: swscale forces JPEG range on RGB input.
-std::vector<uint8_t> ExpandRange(const CaptureResult& result)
+bool CaptureIsDeep(AVPixelFormat format)
 {
-  std::vector<uint8_t> out(static_cast<size_t>(result.stride) * result.height);
-  std::memcpy(out.data(), result.pixels.get(), out.size());
+  const AVPixFmtDescriptor* desc = av_pix_fmt_desc_get(format);
+  return desc && desc->comp[0].depth > 8;
+}
 
-  if (result.bitDepth > 8)
+// source coding to width x height BGRA8, channel order and orientation only, no
+// tonemap: the Python RenderCapture contract and the SDR fallback.
+bool RawToBGRA8(const CaptureResult& result,
+                const uint8_t* src0,
+                unsigned int width,
+                unsigned int height,
+                uint8_t* buffer)
+{
+  // byte-exact fast path for a BGRA source at the requested size (the Python
+  // RenderCapture contract): a stride-aware row copy, no swscale rounding
+  if (result.format == AV_PIX_FMT_BGRA && result.width == width && result.height == height &&
+      result.stride > 0)
   {
-    // 16-bit samples: limited range 16..235 scaled by 257
-    constexpr int lo = 16 * 257;
-    constexpr int hi = 235 * 257;
-    uint16_t* samples = reinterpret_cast<uint16_t*>(out.data());
-    const size_t count = out.size() / 2;
-    for (size_t i = 0; i < count; i++)
-    {
-      if (i % 4 == 3)
-        continue; // alpha
-      const int64_t v = static_cast<int64_t>(samples[i] - lo) * 65535 / (hi - lo);
-      samples[i] = static_cast<uint16_t>(std::clamp<int64_t>(v, 0, 65535));
-    }
+    for (unsigned int y = 0; y < height; y++)
+      std::memcpy(buffer + static_cast<size_t>(y) * width * 4,
+                  src0 + static_cast<size_t>(y) * result.stride, static_cast<size_t>(width) * 4);
+    return true;
   }
-  else
+
+  SwsContext* context =
+      sws_getContext(static_cast<int>(result.width), static_cast<int>(result.height), result.format,
+                     static_cast<int>(width), static_cast<int>(height), AV_PIX_FMT_BGRA,
+                     SWS_BILINEAR, nullptr, nullptr, nullptr);
+  if (!context)
+    return false;
+
+  const uint8_t* src[] = {src0, nullptr, nullptr, nullptr};
+  const int srcStride[] = {result.stride, 0, 0, 0};
+  uint8_t* dst[] = {buffer, nullptr, nullptr, nullptr};
+  const int dstStride[] = {static_cast<int>(width * 4), 0, 0, 0};
+  sws_scale(context, src, srcStride, 0, static_cast<int>(result.height), dst, dstStride);
+  sws_freeContext(context);
+  return true;
+}
+
+// swscale forces full range on RGB input, so limited-range RGB is expanded to full
+bool ExpandRange(const CaptureResult& result, const uint8_t* src0, std::vector<uint8_t>& out)
+{
+  const int stride = static_cast<int>(result.width * 8);
+  out.resize(static_cast<size_t>(stride) * result.height);
+
+  SwsContext* context =
+      sws_getContext(static_cast<int>(result.width), static_cast<int>(result.height), result.format,
+                     static_cast<int>(result.width), static_cast<int>(result.height),
+                     AV_PIX_FMT_RGBA64LE, SWS_BILINEAR, nullptr, nullptr, nullptr);
+  if (!context)
+    return false;
+
+  const uint8_t* src[] = {src0, nullptr, nullptr, nullptr};
+  const int srcStride[] = {result.stride, 0, 0, 0};
+  uint8_t* dst[] = {out.data(), nullptr, nullptr, nullptr};
+  const int dstStride[] = {stride, 0, 0, 0};
+  sws_scale(context, src, srcStride, 0, static_cast<int>(result.height), dst, dstStride);
+  sws_freeContext(context);
+
+  // 16..235 scaled by 257 to 16-bit -> full 0..65535, alpha left alone
+  constexpr int64_t lo = 16 * 257;
+  constexpr int64_t hi = 235 * 257;
+  uint16_t* samples = reinterpret_cast<uint16_t*>(out.data());
+  const size_t count = out.size() / 2;
+  for (size_t i = 0; i < count; i++)
   {
-    constexpr int lo = 16;
-    constexpr int hi = 235;
-    for (size_t i = 0; i < out.size(); i++)
-    {
-      if (i % 4 == 3)
-        continue; // alpha
-      const int v = (static_cast<int>(out[i]) - lo) * 255 / (hi - lo);
-      out[i] = static_cast<uint8_t>(std::clamp(v, 0, 255));
-    }
+    if (i % 4 == 3)
+      continue; // alpha
+    const int64_t v = (static_cast<int64_t>(samples[i]) - lo) * 65535 / (hi - lo);
+    samples[i] = static_cast<uint16_t>(std::clamp<int64_t>(v, 0, 65535));
   }
-  return out;
+  return true;
 }
 
 // Color-managed conversion honoring the capture's tags: PQ/HLG BT.2020 input
 // tonemapped to 8-bit sRGB BT.709, matching what the thumbnail extractor does.
 bool ConvertColorManaged(const CaptureResult& result,
+                         const uint8_t* src0,
                          unsigned int width,
                          unsigned int height,
                          uint8_t* buffer)
 {
-  const AVPixelFormat srcFormat = result.bitDepth > 8 ? AV_PIX_FMT_RGBA64LE : AV_PIX_FMT_BGRA;
-
-  // limited-range input must be pre-expanded; the expanded copy outlives sws
   std::vector<uint8_t> expanded;
-  const uint8_t* srcData = result.pixels.get();
-  if (result.color.range == AVCOL_RANGE_MPEG)
+  const uint8_t* srcData = src0;
+  AVPixelFormat srcFormat = result.format;
+  int srcStride = result.stride;
+  if (result.color.range == AVCOL_RANGE_MPEG && ExpandRange(result, src0, expanded))
   {
-    expanded = ExpandRange(result);
     srcData = expanded.data();
+    srcFormat = AV_PIX_FMT_RGBA64LE;
+    srcStride = static_cast<int>(result.width * 8);
   }
 
   bool converted = false;
@@ -98,9 +142,9 @@ bool ConvertColorManaged(const CaptureResult& result,
       srcFrame->height = static_cast<int>(result.height);
       srcFrame->format = srcFormat;
       srcFrame->data[0] = const_cast<uint8_t*>(srcData);
-      srcFrame->linesize[0] = static_cast<int>(result.stride);
+      srcFrame->linesize[0] = srcStride; // signed; negative = bottom-up
       srcFrame->colorspace = AVCOL_SPC_RGB;
-      srcFrame->color_range = AVCOL_RANGE_JPEG;
+      srcFrame->color_range = AVCOL_RANGE_JPEG; // full: raw was full, or expanded above
       srcFrame->color_primaries = static_cast<AVColorPrimaries>(result.color.primaries);
       srcFrame->color_trc = static_cast<AVColorTransferCharacteristic>(result.color.transfer);
 
@@ -154,12 +198,11 @@ bool ConvertColorManaged(const CaptureResult& result,
                        SWS_BILINEAR, nullptr, nullptr, nullptr);
     if (!context)
       return false;
-
     const uint8_t* src[] = {srcData, nullptr, nullptr, nullptr};
-    const int srcStride[] = {static_cast<int>(result.stride), 0, 0, 0};
+    const int srcStrides[] = {srcStride, 0, 0, 0};
     uint8_t* dst[] = {buffer, nullptr, nullptr, nullptr};
     const int dstStride[] = {static_cast<int>(width * 4), 0, 0, 0};
-    sws_scale(context, src, srcStride, 0, static_cast<int>(result.height), dst, dstStride);
+    sws_scale(context, src, srcStrides, 0, static_cast<int>(result.height), dst, dstStride);
     sws_freeContext(context);
     converted = true;
   }
@@ -177,29 +220,12 @@ bool CaptureCopyBGRA8(const CaptureResult& result,
   if (!result.pixels || result.width == 0 || result.height == 0 || width == 0 || height == 0)
     return false;
 
-  if (result.width == width && result.height == height)
-  {
-    // matching size: stride-aware row copy, the tap already delivers BGRA
-    for (unsigned int y = 0; y < height; y++)
-      std::memcpy(buffer + y * width * 4, result.pixels.get() + y * result.stride, width * 4);
-    return true;
-  }
-
-  // size mismatch: native-size copies from platforms without a scaling blit
-  SwsContext* context =
-      sws_getContext(static_cast<int>(result.width), static_cast<int>(result.height),
-                     AV_PIX_FMT_BGRA, static_cast<int>(width), static_cast<int>(height),
-                     AV_PIX_FMT_BGRA, SWS_BILINEAR, nullptr, nullptr, nullptr);
-  if (!context)
+  CScopedCapturePixels lock(*result.pixels);
+  if (!lock.data())
     return false;
 
-  uint8_t* src[] = {result.pixels.get(), nullptr, nullptr, nullptr};
-  const int srcStride[] = {static_cast<int>(result.stride), 0, 0, 0};
-  uint8_t* dst[] = {buffer, nullptr, nullptr, nullptr};
-  const int dstStride[] = {static_cast<int>(width * 4), 0, 0, 0};
-  sws_scale(context, src, srcStride, 0, static_cast<int>(result.height), dst, dstStride);
-  sws_freeContext(context);
-  return true;
+  return RawToBGRA8(result, CaptureSrcRow0(lock.data(), result.stride, result.height), width,
+                    height, buffer);
 }
 
 bool CaptureToBGRA(const CaptureResult& result,
@@ -214,10 +240,15 @@ bool CaptureToBGRA(const CaptureResult& result,
   const bool hdr = result.color.transfer == AVCOL_TRC_SMPTE2084 ||
                    result.color.transfer == AVCOL_TRC_ARIB_STD_B67;
 
-  if (result.bitDepth > 8 || hdr)
-    return ConvertColorManaged(result, width, height, buffer);
+  CScopedCapturePixels lock(*result.pixels);
+  if (!lock.data())
+    return false;
+  const uint8_t* src0 = CaptureSrcRow0(lock.data(), result.stride, result.height);
 
-  return CaptureCopyBGRA8(result, width, height, buffer);
+  if (CaptureIsDeep(result.format) || hdr)
+    return ConvertColorManaged(result, src0, width, height, buffer);
+
+  return RawToBGRA8(result, src0, width, height, buffer);
 }
 
 } // namespace CAPTURE

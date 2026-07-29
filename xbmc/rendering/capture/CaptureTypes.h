@@ -9,6 +9,7 @@
 #pragma once
 
 #include "guilib/iimage.h"
+#include "rendering/capture/CapturePixels.h"
 
 #include <cstdint>
 #include <memory>
@@ -16,6 +17,7 @@
 extern "C"
 {
 #include <libavutil/mastering_display_metadata.h>
+#include <libavutil/pixfmt.h>
 }
 
 namespace KODI
@@ -68,11 +70,14 @@ struct CaptureSpec
 
 struct CaptureResult
 {
-  std::shared_ptr<uint8_t[]> pixels;
+  //! the captured bytes; read on the consumer thread via CScopedCapturePixels
+  std::shared_ptr<ICapturePixels> pixels;
   unsigned int width{0};
   unsigned int height{0};
-  unsigned int stride{0};
-  int bitDepth{8};
+  //! signed ffmpeg linesize; negative when the delivered bytes are bottom-up
+  int stride{0};
+  //! source coding of the bytes, handed straight to swscale by the consumer
+  AVPixelFormat format{AV_PIX_FMT_NONE};
   ImageColorMetadata color;
   //! which tap produced this result; stamped at delivery so a BOTH consumer
   //! knows whether it holds the video-only or the composite capture

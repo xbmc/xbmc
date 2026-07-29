@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "rendering/RenderSystem.h"
+#include "rendering/capture/CapturePixels.h"
 #include "rendering/capture/CaptureReadback.h"
 #include "rendering/capture/CaptureTypes.h"
 #include "utils/MathUtils.h"
@@ -19,6 +20,7 @@
 
 #include <algorithm>
 #include <cstring>
+#include <memory>
 #include <utility>
 
 #if defined(HAS_GL) || HAS_GLES >= 2
@@ -51,6 +53,16 @@ bool ClampToOutput(const CRect& srcRect, int& x0, int& y0, int& x1, int& y1, int
   x1 = std::min(gfx.GetWidth(), MathUtils::round_int(srcRect.x2));
   y1 = std::min(fbHeight, MathUtils::round_int(srcRect.y2));
   return x1 > x0 && y1 > y0;
+}
+
+// Move a readback buffer's pixels and shape into a delivered CaptureResult.
+void FillResult(CaptureResult& result, ReadbackBuffer& buffer)
+{
+  result.pixels = std::make_shared<CHeapCapturePixels>(std::move(buffer.pixels));
+  result.width = buffer.width;
+  result.height = buffer.height;
+  result.stride = buffer.stride;
+  result.format = buffer.format;
 }
 } // namespace
 
@@ -223,11 +235,7 @@ bool CCaptureBlit::Read(CaptureResult& result)
   {
     if (!m_staged.pixels)
       return false;
-    result.pixels = std::move(m_staged.pixels);
-    result.width = m_staged.width;
-    result.height = m_staged.height;
-    result.stride = m_staged.stride;
-    result.bitDepth = m_staged.bitDepth;
+    FillResult(result, m_staged);
     return true;
   }
 
@@ -247,11 +255,7 @@ bool CCaptureBlit::Read(CaptureResult& result)
   if (!ok)
     return false;
 
-  result.pixels = std::move(buffer.pixels);
-  result.width = buffer.width;
-  result.height = buffer.height;
-  result.stride = buffer.stride;
-  result.bitDepth = buffer.bitDepth;
+  FillResult(result, buffer);
   return true;
 }
 
@@ -295,11 +299,7 @@ bool CCaptureBlit::Read(CaptureResult& result)
   if (!m_staged.pixels)
     return false;
 
-  result.pixels = std::move(m_staged.pixels);
-  result.width = m_staged.width;
-  result.height = m_staged.height;
-  result.stride = m_staged.stride;
-  result.bitDepth = m_staged.bitDepth;
+  FillResult(result, m_staged);
   return true;
 }
 
@@ -374,48 +374,17 @@ bool CCaptureBlit::Blit(const CRect& srcRect,
     return false;
   }
 
-  if (sourceFormat == DXGI_FORMAT_R10G10B10A2_UNORM && format == CaptureFormat::NATIVE)
-  {
-    m_staged.stride = rw * 8; // RGBA16
-    m_staged.bitDepth = 10;
-    m_staged.pixels.reset(new uint8_t[static_cast<size_t>(m_staged.stride) * rh]);
-    for (unsigned int y = 0; y < rh; y++)
-    {
-      const uint32_t* src = reinterpret_cast<const uint32_t*>(
-          static_cast<const uint8_t*>(mapped.pData) + static_cast<size_t>(y) * mapped.RowPitch);
-      Unpack1010102ToRGBA16(src,
-                            reinterpret_cast<uint16_t*>(m_staged.pixels.get() +
-                                                        static_cast<size_t>(y) * m_staged.stride),
-                            rw);
-    }
-  }
-  else if (sourceFormat == DXGI_FORMAT_R10G10B10A2_UNORM)
-  {
-    // BGRA8 requested from a 10-bit swapchain: Direct3D cannot decimate in the
-    // copy (GL/GLES get it free on read), so unpack 10->8 bit here
-    m_staged.stride = rw * 4;
-    m_staged.bitDepth = 8;
-    m_staged.pixels.reset(new uint8_t[static_cast<size_t>(m_staged.stride) * rh]);
-    for (unsigned int y = 0; y < rh; y++)
-    {
-      const uint32_t* src = reinterpret_cast<const uint32_t*>(
-          static_cast<const uint8_t*>(mapped.pData) + static_cast<size_t>(y) * mapped.RowPitch);
-      Unpack1010102ToBGRA8(src, m_staged.pixels.get() + static_cast<size_t>(y) * m_staged.stride,
-                           rw);
-    }
-  }
-  else
-  {
-    // B8G8R8A8_UNORM is stored BGRA already, matching the capture contract
-    m_staged.stride = rw * 4;
-    m_staged.bitDepth = 8;
-    m_staged.pixels.reset(new uint8_t[static_cast<size_t>(m_staged.stride) * rh]);
-    for (unsigned int y = 0; y < rh; y++)
-      std::memcpy(m_staged.pixels.get() + static_cast<size_t>(y) * m_staged.stride,
-                  static_cast<const uint8_t*>(mapped.pData) +
-                      static_cast<size_t>(y) * mapped.RowPitch,
-                  m_staged.stride);
-  }
+  // no CPU unpack: swscale on the consumer expands or decimates the packed
+  // 10-bit as its target needs. width/height are advisory here.
+  const bool packed10 = sourceFormat == DXGI_FORMAT_R10G10B10A2_UNORM;
+  m_staged.stride = static_cast<int>(rw * 4);
+  m_staged.format = packed10 ? AV_PIX_FMT_X2BGR10LE : AV_PIX_FMT_BGRA;
+  m_staged.pixels.reset(new uint8_t[static_cast<size_t>(m_staged.stride) * rh]);
+  for (unsigned int y = 0; y < rh; y++)
+    std::memcpy(m_staged.pixels.get() + static_cast<size_t>(y) * m_staged.stride,
+                static_cast<const uint8_t*>(mapped.pData) +
+                    static_cast<size_t>(y) * mapped.RowPitch,
+                m_staged.stride);
   m_staged.width = rw;
   m_staged.height = rh;
   context->Unmap(staging.Get(), 0);
@@ -428,11 +397,7 @@ bool CCaptureBlit::Read(CaptureResult& result)
   if (!m_useStaged || !m_staged.pixels)
     return false;
 
-  result.pixels = std::move(m_staged.pixels);
-  result.width = m_staged.width;
-  result.height = m_staged.height;
-  result.stride = m_staged.stride;
-  result.bitDepth = m_staged.bitDepth;
+  FillResult(result, m_staged);
   return true;
 }
 

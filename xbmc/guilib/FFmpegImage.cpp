@@ -573,14 +573,21 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
                                              unsigned char* &bufferout,
                                              unsigned int &bufferoutSize)
 {
-  // It seems XB_FMT_A8R8G8B8 mean RGBA and not ARGB
-  if (format != XB_FMT_A8R8G8B8 && format != XB_FMT_RGBA16)
+  // XB_FMT_A8R8G8B8 is BGRA byte order. The OPAQUE flag drops a source alpha via
+  // an X-variant; the capture path also passes RGBA8 and packed X2BGR10.
+  const bool opaque = (format & XB_FMT_OPAQUE) != 0;
+  const unsigned int baseFormat = format & XB_FMT_MASK;
+  if (baseFormat != XB_FMT_A8R8G8B8 && baseFormat != XB_FMT_RGBA8 && baseFormat != XB_FMT_RGBA16 &&
+      baseFormat != XB_FMT_X2BGR10)
   {
     CLog::Log(LOGERROR, "Supplied format: {} is not supported.", format);
     return false;
   }
 
-  bool is16bit = (format == XB_FMT_RGBA16);
+  bool is16bit = (baseFormat == XB_FMT_RGBA16 || baseFormat == XB_FMT_X2BGR10);
+
+  // XB_FMT_OPAQUE 16-bit sources carry undefined alpha; RGB48 output drops it
+  const AVPixelFormat fmt16bit = opaque ? AV_PIX_FMT_RGB48BE : AV_PIX_FMT_RGBA64BE;
 
   bool jpg_output = false;
   if (m_strMimeType == "image/jpeg" || m_strMimeType == "image/jpg")
@@ -614,9 +621,7 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
   tdm.avOutctx->width = width;
   tdm.avOutctx->time_base.num = 1;
   tdm.avOutctx->time_base.den = 1;
-  tdm.avOutctx->pix_fmt = jpg_output ? AV_PIX_FMT_YUVJ420P
-                          : is16bit  ? AV_PIX_FMT_RGBA64BE
-                                     : AV_PIX_FMT_RGBA;
+  tdm.avOutctx->pix_fmt = jpg_output ? AV_PIX_FMT_YUVJ420P : is16bit ? fmt16bit : AV_PIX_FMT_RGBA;
   tdm.avOutctx->flags = AV_CODEC_FLAG_QSCALE;
   tdm.avOutctx->mb_lmin = tdm.avOutctx->qmin * FF_QP2LAMBDA;
   tdm.avOutctx->mb_lmax = tdm.avOutctx->qmax * FF_QP2LAMBDA;
@@ -669,7 +674,7 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
   }
 
   AVPixelFormat intermediateFmt = jpg_output ? AV_PIX_FMT_YUV420P
-                                  : is16bit  ? AV_PIX_FMT_RGBA64BE
+                                  : is16bit  ? fmt16bit
                                              : AV_PIX_FMT_RGBA;
   if (av_image_fill_arrays(tdm.frame_temporary->data, tdm.frame_temporary->linesize,
                            tdm.intermediateBuffer, intermediateFmt, width, height, 16) < 0)
@@ -682,11 +687,25 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
   uint8_t* src[] = { bufferin, NULL, NULL, NULL };
   int srcStride[] = { (int) pitch, 0, 0, 0};
 
-  //input size == output size which means only pix_fmt conversion
-  AVPixelFormat srcFmt = is16bit ? AV_PIX_FMT_RGBA64LE : AV_PIX_FMT_RGB32;
-  AVPixelFormat dstFmt = jpg_output ? AV_PIX_FMT_YUV420P
-                         : is16bit  ? AV_PIX_FMT_RGBA64BE
-                                    : AV_PIX_FMT_RGBA;
+  //input size == output size which means only pix_fmt conversion; opaque uses an
+  //X-variant source so swscale drops the framebuffer alpha
+  AVPixelFormat srcFmt;
+  switch (baseFormat)
+  {
+    case XB_FMT_RGBA8:
+      srcFmt = opaque ? AV_PIX_FMT_RGB0 : AV_PIX_FMT_RGBA;
+      break;
+    case XB_FMT_RGBA16:
+      srcFmt = AV_PIX_FMT_RGBA64LE;
+      break;
+    case XB_FMT_X2BGR10:
+      srcFmt = AV_PIX_FMT_X2BGR10LE;
+      break;
+    default: // XB_FMT_A8R8G8B8
+      srcFmt = opaque ? AV_PIX_FMT_BGR0 : AV_PIX_FMT_RGB32;
+      break;
+  }
+  AVPixelFormat dstFmt = jpg_output ? AV_PIX_FMT_YUV420P : is16bit ? fmt16bit : AV_PIX_FMT_RGBA;
   tdm.sws = sws_getContext(width, height, srcFmt, width, height, dstFmt, 0, 0, 0, 0);
   if (!tdm.sws)
   {
@@ -735,9 +754,7 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
   tdm.frame_input->linesize[1] = tdm.frame_temporary->linesize[1];
   tdm.frame_input->linesize[2] = tdm.frame_temporary->linesize[2];
   // this is deprecated but mjpeg is not yet transitioned
-  tdm.frame_input->format = jpg_output ? AV_PIX_FMT_YUVJ420P
-                            : is16bit  ? AV_PIX_FMT_RGBA64BE
-                                       : AV_PIX_FMT_RGBA;
+  tdm.frame_input->format = jpg_output ? AV_PIX_FMT_YUVJ420P : is16bit ? fmt16bit : AV_PIX_FMT_RGBA;
 
   // CICP color signaling (PNG cICP/sRGB chunk). Only the PNG (RGB) path uses
   // it; JPEG ignores it. A negative code leaves the field unset.

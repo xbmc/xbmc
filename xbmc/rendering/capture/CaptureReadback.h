@@ -11,6 +11,11 @@
 #include <cstdint>
 #include <memory>
 
+extern "C"
+{
+#include <libavutil/pixfmt.h>
+}
+
 namespace KODI
 {
 namespace RENDERING
@@ -18,27 +23,25 @@ namespace RENDERING
 namespace CAPTURE
 {
 
-//! Pixels read back from the GPU; rows are top-down, BGRA8 or RGBA16.
+//! Raw pixels read back from the GPU, tagged with their coding. No swap, flip,
+//! expand, or alpha fixup happens here; the consumer's swscale does it in one pass.
 struct ReadbackBuffer
 {
   std::unique_ptr<uint8_t[]> pixels;
   unsigned int width{0};
   unsigned int height{0};
-  unsigned int stride{0};
-  int bitDepth{8};
+  //! signed linesize; negative when the rows are bottom-up
+  int stride{0};
+  AVPixelFormat format{AV_PIX_FMT_NONE};
 };
 
-//! Read a width x height region of the currently bound read framebuffer,
-//! starting at (x, y) in GL (bottom-left origin) coordinates.
-//!
-//! bitDepth 8 delivers BGRA8; a deeper request delivers RGBA16 with opaque
-//! alpha. On GLES the deep readback type is negotiated via
-//! GL_IMPLEMENTATION_COLOR_READ_*; when the driver offers nothing beyond
-//! 8-bit the call still succeeds with out.bitDepth == 8 (the caller tonemaps
-//! by tags). flipY reverses bottom-up window rows to top-down; pass false for
-//! a target that is already top-down (the capture blit FBO). Returns false on
-//! GL error, leaving out untouched. This is the single readback path shared by
-//! the screenshot surfaces and the capture blit.
+//! Read a width x height region of the bound read framebuffer at (x, y) in GL
+//! (bottom-left origin) coordinates. The bytes land verbatim in out.pixels;
+//! out.format names their coding and out.stride is signed (negative when flipY,
+//! i.e. bottom-up window rows). bitDepth selects an 8-bit or deep readback; on
+//! GLES the deep type is negotiated and falls back to 8-bit when none is offered.
+//! Returns false on GL error, leaving out untouched. The single GPU readback
+//! shared by the screenshot surfaces and the capture blit.
 bool ReadFramebufferRegion(int x,
                            int y,
                            unsigned int width,
@@ -46,19 +49,6 @@ bool ReadFramebufferRegion(int x,
                            int bitDepth,
                            bool flipY,
                            ReadbackBuffer& out);
-
-//! Expand one row of packed 10:10:10:2 RGBA (as delivered by
-//! GL_UNSIGNED_INT_2_10_10_10_REV or DXGI R10G10B10A2) to RGBA16, projecting
-//! each 10-bit sample onto the full 16-bit scale so 1023 maps to 65535, with
-//! opaque alpha. The single home of the 10-bit expansion convention; the GL
-//! path and the Direct3D staging path both call it. dst holds width*4 uint16_t.
-void Unpack1010102ToRGBA16(const uint32_t* src, uint16_t* dst, unsigned int width);
-
-//! Decimate one row of packed 10:10:10:2 RGBA to 8-bit BGRA (v * 255 / 1023,
-//! matching the GL driver's UNSIGNED_BYTE readback), opaque alpha. The Direct3D
-//! staging copy has no free conversion, so a BGRA8 request from a 10-bit
-//! swapchain unpacks through here. dst holds width*4 bytes.
-void Unpack1010102ToBGRA8(const uint32_t* src, uint8_t* dst, unsigned int width);
 
 } // namespace CAPTURE
 } // namespace RENDERING

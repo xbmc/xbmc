@@ -7,10 +7,12 @@
  */
 
 #include "rendering/capture/CaptureConvert.h"
+#include "rendering/capture/CapturePixels.h"
 #include "rendering/capture/CaptureTypes.h"
 
 #include <cmath>
 #include <cstring>
+#include <memory>
 #include <vector>
 
 extern "C"
@@ -40,14 +42,22 @@ uint16_t PQCode(double nits)
   return static_cast<uint16_t>(code * 65535.0 + 0.5);
 }
 
-CaptureResult MakeBGRA8(unsigned int width, unsigned int height)
+// Copy bytes into a fresh heap-backed capture with BT.709/sRGB tags.
+CaptureResult MakeResult(unsigned int width,
+                         unsigned int height,
+                         int stride,
+                         AVPixelFormat format,
+                         const std::vector<uint8_t>& bytes)
 {
+  auto pixels = std::make_unique<uint8_t[]>(bytes.size());
+  std::memcpy(pixels.get(), bytes.data(), bytes.size());
+
   CaptureResult result;
   result.width = width;
   result.height = height;
-  result.stride = width * 4;
-  result.bitDepth = 8;
-  result.pixels = std::shared_ptr<uint8_t[]>(new uint8_t[result.stride * height]);
+  result.stride = stride;
+  result.format = format;
+  result.pixels = std::make_shared<CHeapCapturePixels>(std::move(pixels));
   result.color.primaries = AVCOL_PRI_BT709;
   result.color.transfer = AVCOL_TRC_BT709;
   result.color.range = AVCOL_RANGE_JPEG;
@@ -60,13 +70,14 @@ TEST(TestCaptureConvert, SDRSameSizeByteExact)
 {
   constexpr unsigned int width = 4;
   constexpr unsigned int height = 2;
-  CaptureResult result = MakeBGRA8(width, height);
-  for (unsigned int i = 0; i < width * height * 4; i++)
-    result.pixels[i] = static_cast<uint8_t>(i * 7 + 3);
+  std::vector<uint8_t> input(width * height * 4);
+  for (size_t i = 0; i < input.size(); i++)
+    input[i] = static_cast<uint8_t>(i * 7 + 3);
 
+  CaptureResult result = MakeResult(width, height, width * 4, AV_PIX_FMT_BGRA, input);
   std::vector<uint8_t> buffer(width * height * 4, 0);
   ASSERT_TRUE(CaptureToBGRA(result, width, height, buffer.data()));
-  EXPECT_EQ(std::memcmp(buffer.data(), result.pixels.get(), buffer.size()), 0);
+  EXPECT_EQ(std::memcmp(buffer.data(), input.data(), buffer.size()), 0);
 }
 
 TEST(TestCaptureConvert, SDRStrideAwareByteExact)
@@ -74,18 +85,17 @@ TEST(TestCaptureConvert, SDRStrideAwareByteExact)
   constexpr unsigned int width = 3;
   constexpr unsigned int height = 2;
   constexpr unsigned int stride = 16; // 4 padding bytes per row
-  CaptureResult result = MakeBGRA8(width, height);
-  result.stride = stride;
-  result.pixels = std::shared_ptr<uint8_t[]>(new uint8_t[stride * height]());
+  std::vector<uint8_t> input(stride * height, 0);
   for (unsigned int y = 0; y < height; y++)
     for (unsigned int i = 0; i < width * 4; i++)
-      result.pixels[y * stride + i] = static_cast<uint8_t>(y * 100 + i);
+      input[y * stride + i] = static_cast<uint8_t>(y * 100 + i);
 
+  CaptureResult result = MakeResult(width, height, stride, AV_PIX_FMT_BGRA, input);
   std::vector<uint8_t> buffer(width * height * 4, 0xAA);
   ASSERT_TRUE(CaptureToBGRA(result, width, height, buffer.data()));
   for (unsigned int y = 0; y < height; y++)
     for (unsigned int i = 0; i < width * 4; i++)
-      EXPECT_EQ(buffer[y * width * 4 + i], result.pixels[y * stride + i]);
+      EXPECT_EQ(buffer[y * width * 4 + i], input[y * stride + i]);
 }
 
 TEST(TestCaptureConvert, CopyBGRA8IgnoresHDRTagsNoTonemap)
@@ -96,15 +106,17 @@ TEST(TestCaptureConvert, CopyBGRA8IgnoresHDRTagsNoTonemap)
   // color-managed path the way CaptureToBGRA does.
   constexpr unsigned int width = 4;
   constexpr unsigned int height = 2;
-  CaptureResult result = MakeBGRA8(width, height);
+  std::vector<uint8_t> input(width * height * 4);
+  for (size_t i = 0; i < input.size(); i++)
+    input[i] = static_cast<uint8_t>(i * 11 + 5);
+
+  CaptureResult result = MakeResult(width, height, width * 4, AV_PIX_FMT_BGRA, input);
   result.color.primaries = AVCOL_PRI_BT2020;
   result.color.transfer = AVCOL_TRC_SMPTE2084; // PQ tag on an 8-bit buffer
-  for (unsigned int i = 0; i < width * height * 4; i++)
-    result.pixels[i] = static_cast<uint8_t>(i * 11 + 5);
 
   std::vector<uint8_t> buffer(width * height * 4, 0);
   ASSERT_TRUE(CaptureCopyBGRA8(result, width, height, buffer.data()));
-  EXPECT_EQ(std::memcmp(buffer.data(), result.pixels.get(), buffer.size()), 0);
+  EXPECT_EQ(std::memcmp(buffer.data(), input.data(), buffer.size()), 0);
 }
 
 TEST(TestCaptureConvert, PQRampHonorsMasteringPeak)
@@ -113,22 +125,13 @@ TEST(TestCaptureConvert, PQRampHonorsMasteringPeak)
   const std::vector<double> nits = {0.0, 1.0, 10.0, 50.0, 100.0, 203.0, 400.0, 1000.0, 10000.0};
   const unsigned int width = 4;
   const unsigned int height = nits.size();
+  const unsigned int stride = width * 8;
 
-  CaptureResult result;
-  result.width = width;
-  result.height = height;
-  result.stride = width * 8;
-  result.bitDepth = 10;
-  result.pixels = std::shared_ptr<uint8_t[]>(new uint8_t[result.stride * height]);
-  result.color.primaries = AVCOL_PRI_BT2020;
-  result.color.transfer = AVCOL_TRC_SMPTE2084;
-  result.color.range = AVCOL_RANGE_JPEG;
-  result.hasDisplayMetadata = true;
-
+  std::vector<uint8_t> input(stride * height);
   for (unsigned int y = 0; y < height; y++)
   {
     const uint16_t code = PQCode(nits[y]);
-    uint16_t* row = reinterpret_cast<uint16_t*>(result.pixels.get() + y * result.stride);
+    uint16_t* row = reinterpret_cast<uint16_t*>(input.data() + y * stride);
     for (unsigned int x = 0; x < width; x++)
     {
       row[x * 4 + 0] = code;
@@ -137,6 +140,11 @@ TEST(TestCaptureConvert, PQRampHonorsMasteringPeak)
       row[x * 4 + 3] = 0xFFFF;
     }
   }
+
+  CaptureResult result = MakeResult(width, height, stride, AV_PIX_FMT_RGBA64LE, input);
+  result.color.primaries = AVCOL_PRI_BT2020;
+  result.color.transfer = AVCOL_TRC_SMPTE2084;
+  result.hasDisplayMetadata = true;
 
   // convert the same ramp under two mastering peaks; a lower peak must map the
   // shared 203-nit row brighter, proving swscale honors the metadata we feed

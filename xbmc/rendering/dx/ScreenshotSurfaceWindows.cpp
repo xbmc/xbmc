@@ -8,7 +8,6 @@
 
 #include "ScreenshotSurfaceWindows.h"
 
-#include "rendering/capture/CaptureReadback.h"
 #include "rendering/dx/DeviceResources.h"
 #include "utils/Screenshot.h"
 #include "utils/log.h"
@@ -55,27 +54,13 @@ bool CScreenshotSurfaceWindows::Read(const ScreenshotContext&)
     {
       m_width = desc.Width;
       m_height = desc.Height;
-      if (desc.Format == DXGI_FORMAT_R10G10B10A2_UNORM)
-      {
-        // 10-bit swapchain: unpack to RGBA16 instead of decimating to 8-bit
-        m_bitDepth = 10;
-        m_stride = m_width * 8; // 4 channels x 2 bytes
-        m_buffer = new unsigned char[m_height * m_stride];
-        for (int y = 0; y < m_height; y++)
-        {
-          const uint32_t* pixels10 = reinterpret_cast<const uint32_t*>(
-              static_cast<const uint8_t*>(res.pData) + y * res.RowPitch);
-          uint16_t* pixels16 = reinterpret_cast<uint16_t*>(m_buffer + y * m_stride);
-          KODI::RENDERING::CAPTURE::Unpack1010102ToRGBA16(pixels10, pixels16,
-                                                          static_cast<unsigned int>(m_width));
-        }
-      }
-      else
-      {
-        m_stride = res.RowPitch;
-        m_buffer = new unsigned char[m_height * m_stride];
-        memcpy(m_buffer, res.pData, m_height * m_stride);
-      }
+      // no CPU unpack: swscale on the consumer expands the packed 10-bit; D3D
+      // is top-left origin so the rows are already top-down
+      m_stride = static_cast<int>(res.RowPitch);
+      m_format =
+          (desc.Format == DXGI_FORMAT_R10G10B10A2_UNORM) ? AV_PIX_FMT_X2BGR10LE : AV_PIX_FMT_BGRA;
+      m_buffer = new unsigned char[static_cast<size_t>(m_height) * m_stride];
+      memcpy(m_buffer, res.pData, static_cast<size_t>(m_height) * m_stride);
       pImdContext->Unmap(pCopyTexture.Get(), 0);
     }
     else

@@ -122,6 +122,7 @@
 #include "pvr/guilib/PVRGUIActionsPowerManagement.h"
 #include "rendering/RenderSystem.h"
 #include "rendering/capture/CaptureMetadata.h"
+#include "rendering/capture/CapturePixels.h"
 #include "rendering/capture/CaptureService.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
@@ -866,11 +867,12 @@ void ServiceCaptureTaps()
   }
 
   CaptureResult result;
-  result.pixels.reset(surface->TakeBuffer());
+  result.pixels =
+      std::make_shared<CHeapCapturePixels>(std::unique_ptr<uint8_t[]>(surface->TakeBuffer()));
   result.width = static_cast<unsigned int>(surface->GetWidth());
   result.height = static_cast<unsigned int>(surface->GetHeight());
-  result.stride = static_cast<unsigned int>(surface->GetStride());
-  result.bitDepth = surface->GetBitDepth();
+  result.stride = surface->GetStride();
+  result.format = surface->GetFormat();
   result.color = GetOutputColorMetadata(*winSystem);
   result.content = CaptureContent::COMPOSITE; // this tap is the composite half
 

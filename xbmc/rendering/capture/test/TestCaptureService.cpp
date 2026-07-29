@@ -9,7 +9,9 @@
 #include "ServiceBroker.h"
 #include "jobs/JobManager.h"
 #include "rendering/capture/CaptureHandle.h"
+#include "rendering/capture/CapturePixels.h"
 #include "rendering/capture/CaptureService.h"
+#include "rendering/capture/CaptureTypes.h"
 #include "test/MtTestUtils.h"
 
 #include <atomic>
@@ -30,9 +32,9 @@ CaptureResult MakeResult(CaptureContent content = CaptureContent::COMPOSITE)
   result.width = 4;
   result.height = 2;
   result.stride = 16;
-  result.bitDepth = 8;
+  result.format = AV_PIX_FMT_BGRA;
   result.content = content;
-  result.pixels = std::shared_ptr<uint8_t[]>(new uint8_t[32]());
+  result.pixels = std::make_shared<CHeapCapturePixels>(std::make_unique<uint8_t[]>(32));
   return result;
 }
 

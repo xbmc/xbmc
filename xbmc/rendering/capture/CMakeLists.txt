@@ -9,6 +9,7 @@ set(HEADERS CaptureBlit.h
             CaptureConvert.h
             CaptureHandle.h
             CaptureMetadata.h
+            CapturePixels.h
             CaptureReadback.h
             CaptureRequest.h
             CaptureService.h

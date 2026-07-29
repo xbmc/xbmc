@@ -44,8 +44,8 @@ bool CScreenshotSurfaceGLES::Read(const ScreenshotContext& ctx)
 
   m_width = static_cast<int>(buffer.width);
   m_height = static_cast<int>(buffer.height);
-  m_stride = static_cast<int>(buffer.stride);
-  m_bitDepth = buffer.bitDepth;
+  m_stride = buffer.stride;
+  m_format = buffer.format;
   m_buffer = reinterpret_cast<unsigned char*>(buffer.pixels.release());
   return m_buffer != nullptr;
 }
