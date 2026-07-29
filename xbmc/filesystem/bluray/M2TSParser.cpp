@@ -135,6 +135,7 @@ constexpr unsigned int CH8_16_SINGLE_CHANNEL_ALTERNATE_MASK = 0b00110;
 constexpr unsigned int CH8_16_DUAL_CHANNEL_ALTERNATE_MASK = 0b11001;
 
 // LPCM
+constexpr unsigned int LPCM_HEADER_SIZE = 4;
 inline const std::map<unsigned int, unsigned int> LPCM_SAMPLE_RATES = {
     {1u, 48000u}, {4u, 96000u}, {5u, 192000u}};
 inline constexpr std::array LPCM_CHANNEL_COUNTS{0u, 1u, 0u, 2u, 3u, 3u, 4u, 4u,
@@ -1127,18 +1128,22 @@ bool ParseTrueHDBitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo*
 
 bool ParseLPCMBitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* streamInfo)
 {
-  // Sub-stream ID (should be 0xA0-0xAF for LPCM)
-  if (unsigned int sub_stream_id{GetByte(buffer, 1)}; (sub_stream_id & 0xA0) != 0xA0)
+  // The PES payload of an HDMV LPCM stream starts with a four byte audio data header - the first
+  // two bytes are the payload size, followed by the channel assignment and sampling frequency
+  if (buffer.size() < LPCM_HEADER_SIZE)
     return false;
 
-  unsigned int header{GetByte(buffer, 2)};
-  unsigned int channel_info{GetBits(header, 8, 4)};
-  unsigned int sample_rate_code{GetBits(header, 4, 4)};
+  const unsigned int header{GetByte(buffer, 2)};
+  const unsigned int channel_info{GetBits(header, 8, 4)};
+  const unsigned int sample_rate_code{GetBits(header, 4, 4)};
 
-  if (channel_info < LPCM_CHANNEL_COUNTS.size())
-    streamInfo->channels = LPCM_CHANNEL_COUNTS[channel_info];
-  if (LPCM_SAMPLE_RATES.contains(sample_rate_code))
-    streamInfo->sampleRate = LPCM_SAMPLE_RATES.find(sample_rate_code)->second;
+  // Both fields must be known values, otherwise this is not an audio data header
+  if (channel_info >= LPCM_CHANNEL_COUNTS.size() || LPCM_CHANNEL_COUNTS[channel_info] == 0 ||
+      !LPCM_SAMPLE_RATES.contains(sample_rate_code))
+    return false;
+
+  streamInfo->channels = LPCM_CHANNEL_COUNTS[channel_info];
+  streamInfo->sampleRate = LPCM_SAMPLE_RATES.find(sample_rate_code)->second;
 
   streamInfo->completed = (++streamInfo->seen) >= HEADERS_PARSED_FOR_COMPLETE;
 
@@ -1864,9 +1869,8 @@ void ProcessStream(const PESPacket& pesPacket, const std::shared_ptr<TSStreamInf
         ParseTrueHDBitstream(pesPacket.data, audioInfo);
       break;
     case AUDIO_LPCM:
-      if (pesPacket.streamId == 0xBD)
-        if (auto* audioInfo{dynamic_cast<TSAudioStreamInfo*>(streamInfo.get())})
-          ParseLPCMBitstream(pesPacket.data, audioInfo);
+      if (auto* audioInfo{dynamic_cast<TSAudioStreamInfo*>(streamInfo.get())})
+        ParseLPCMBitstream(pesPacket.data, audioInfo);
       break;
     case SUB_PG:
     case SUB_IG:
