@@ -31,6 +31,7 @@
 #include "utils/log.h"
 
 #include <chrono>
+#include <memory>
 
 using namespace std::chrono_literals;
 
@@ -194,16 +195,40 @@ void CScreenShot::TakeScreenshot()
 
 void CScreenShot::TakeScreenshot(KODI::RENDERING::CAPTURE::CaptureContent content)
 {
-  const std::string dir = ResolveScreenshotDir();
-  if (dir.empty())
+  using namespace KODI::RENDERING::CAPTURE;
+
+  const auto captureService = CServiceBroker::GetCaptureService();
+  if (!captureService)
     return;
 
-  const std::string file =
-      CUtil::GetNextFilename(URIUtils::AddFileToFolder(dir, "screenshot{:05}.png"), 65535);
-  if (!file.empty())
-    TakeScreenshot(file, false, content);
-  else
-    CLog::Log(LOGWARNING, "Too many screen shots or invalid folder");
+  CaptureSpec spec;
+  spec.content = content;
+  spec.format = CaptureFormat::NATIVE;
+
+  // Submitted before any filesystem work so the readback grabs the current frame;
+  // the folder dialog (when the path is unset), naming, and write all run in the
+  // callback afterward, so none of them delay the capture.
+  auto handle =
+      captureService->Submit(spec,
+                             [](const CaptureResult& result)
+                             {
+                               const std::string dir = ResolveScreenshotDir();
+                               if (dir.empty())
+                               {
+                                 CLog::Log(LOGWARNING, "No screenshot path configured");
+                                 return;
+                               }
+                               const std::string file = CUtil::GetNextFilename(
+                                   URIUtils::AddFileToFolder(dir, "screenshot{:05}.png"), 65535);
+                               if (file.empty())
+                               {
+                                 CLog::Log(LOGWARNING, "Too many screen shots or invalid folder");
+                                 return;
+                               }
+                               CLog::Log(LOGDEBUG, "Saving screenshot {}", CURL::GetRedacted(file));
+                               WriteCapture(result, file);
+                             });
+  handle->Detach();
 }
 
 void CScreenShot::TakeScreenshotBoth()
@@ -214,27 +239,36 @@ void CScreenShot::TakeScreenshotBoth()
   if (!captureService)
     return;
 
-  const std::string dir = ResolveScreenshotDir();
-  if (dir.empty())
-    return;
-
-  const std::string composite =
-      CUtil::GetNextFilename(URIUtils::AddFileToFolder(dir, "screenshot{:05}.png"), 65535);
-  if (composite.empty())
-  {
-    CLog::Log(LOGWARNING, "Too many screen shots or invalid folder");
-    return;
-  }
-  // derive the video name from the same NNNNN so the pair is obvious
-  const std::string video = composite.substr(0, composite.length() - 4) + "-video.png";
-
-  // one request, both taps, same frame; the callback names each file by the
-  // content delivered
+  auto composite = std::make_shared<std::string>();
   CaptureSpec spec;
   spec.content = CaptureContent::BOTH;
   spec.format = CaptureFormat::NATIVE;
   auto handle = captureService->Submit(
-      spec, [composite, video](const CaptureResult& result)
-      { WriteCapture(result, result.content == CaptureContent::VIDEO ? video : composite); });
+      spec,
+      [composite](const CaptureResult& result)
+      {
+        if (composite->empty())
+        {
+          const std::string dir = ResolveScreenshotDir();
+          if (dir.empty())
+          {
+            CLog::Log(LOGWARNING, "No screenshot path configured");
+            return;
+          }
+          *composite =
+              CUtil::GetNextFilename(URIUtils::AddFileToFolder(dir, "screenshot{:05}.png"), 65535);
+        }
+        if (composite->empty())
+        {
+          CLog::Log(LOGWARNING, "Too many screen shots or invalid folder");
+          return;
+        }
+        // derive the video name from the same NNNNN so the pair is obvious
+        const std::string file = result.content == CaptureContent::VIDEO
+                                     ? composite->substr(0, composite->length() - 4) + "-video.png"
+                                     : *composite;
+        CLog::Log(LOGDEBUG, "Saving screenshot {}", CURL::GetRedacted(file));
+        WriteCapture(result, file);
+      });
   handle->Detach();
 }
