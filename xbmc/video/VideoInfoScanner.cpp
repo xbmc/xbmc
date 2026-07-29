@@ -446,15 +446,22 @@ CVideoInfoScanner::~CVideoInfoScanner()
         // the disc structure probes in Stack() and the recursion loop (which also
         // drops them from m_pathsToScan) skip marked items. Full listing hashes
         // never match here, so folders containing subfolders are still visited.
+        std::vector<CRegExp> stackRegExps{m_advancedSettings->m_folderStackRegExps};
         for (int i = items.Size() - 1; i >= 0; --i)
         {
           if (!items[i]->IsFolder())
             continue;
+          // a marked folder-stack member (label like "cd1") stays a folder in
+          // Stack() and its stack cannot form; leave such folders unmarked
+          std::string label = StringUtils::ToLower(items[i]->GetLabel());
+          URIUtils::RemoveSlashAtEnd(label);
           std::string dbh;
           int64_t rawTime = items[i]->GetProperty(DIR_PROPERTY_STAT_MTIME).asInteger(0);
           if (rawTime == 0)
             rawTime = items[i]->GetProperty(DIR_PROPERTY_STAT_CTIME).asInteger(0);
           if (m_advancedSettings->m_bVideoLibraryUseFastHash &&
+              std::none_of(stackRegExps.begin(), stackRegExps.end(),
+                           [&label](CRegExp& re) { return re.RegFind(label) != -1; }) &&
               m_database.GetPathHash(items[i]->GetPath(), dbh) && !dbh.empty() &&
               StringUtils::EqualsNoCase(rawTime != 0 ? GetFastHash(regexps, rawTime)
                                                      : GetFastHash(items[i]->GetPath(), regexps),
