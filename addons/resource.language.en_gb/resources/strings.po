@@ -19714,7 +19714,13 @@ msgctxt "#36053"
 msgid "Tuner Device"
 msgstr ""
 
-#empty strings from id 36054 to 36095
+#. Label of CEC setting double_tap_timeout_ms: a repeated identical button press within this many ms is treated as a duplicate and dropped (double-tap dedup). 0 disables it.
+#: system/peripherals.xml
+msgctxt "#36054"
+msgid "Remote button double press timeout (ms) (0 = off)"
+msgstr ""
+
+#empty strings from id 36055 to 36095
 
 #. Label of setting "System / Display / Use system HDR/SDR brightness balance"
 #: system/settings/settings.xml
