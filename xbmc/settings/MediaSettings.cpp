@@ -395,10 +395,13 @@ void CMediaSettings::CycleWatchedMode(const std::string& content)
 {
   std::unique_lock lock(m_critical);
   if (const auto it = m_watchedModes.find(GetWatchedContent(content)); it != m_watchedModes.end())
-  {
-    int next_val = (static_cast<int>(it->second) + 1) % static_cast<int>(WatchedMode::COUNT);
-    it->second = WatchedMode{next_val};
-  }
+    CycleWatchedMode(it->second);
+}
+
+void CMediaSettings::CycleWatchedMode(WatchedMode& mode)
+{
+  const int next_val = (static_cast<int>(mode) + 1) % static_cast<int>(WatchedMode::COUNT);
+  mode = WatchedMode{next_val};
 }
 
 std::string CMediaSettings::GetWatchedContent(const std::string &content)

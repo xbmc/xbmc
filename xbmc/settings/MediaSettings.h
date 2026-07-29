@@ -74,6 +74,13 @@ public:
   void CycleWatchedMode(const std::string &content);
 
   /*!
+   * \brief Cycle the watched mode \p mode
+   * \param[in] mode
+   * \sa GetWatchMode, SetWatchMode
+   */
+  void CycleWatchedMode(WatchedMode& mode);
+
+  /*!
    * \brief Returns the localized name of the watched mode \p mode
    * \param[in] mode The watch mode to localize
    * \return localized name
