@@ -68,6 +68,7 @@ void CGUIDialogPeripheralSettings::OnDeinitWindow(int nextWindowID)
 {
   // discard any values that weren't applied by confirming the dialog
   m_changedValues.clear();
+  m_resetRequested = false;
 
   UpdateIcon({});
   CGUIDialogSettingsManualBase::OnDeinitWindow(nextWindowID);
@@ -141,12 +142,20 @@ bool CGUIDialogPeripheralSettings::Save()
   if (!peripheral)
     return true;
 
+  // A reset was confirmed in this dialog, so let the peripheral reset itself now that the
+  // dialog is confirmed too. This covers what resetting means beyond the values shown here,
+  // such as a joystick's button map. The changed values are applied on top, so a setting
+  // edited after the reset still wins
+  if (m_resetRequested)
+    peripheral->ResetDefaultSettings();
+
   // Apply the changed values. CPeripheral keeps track of the settings that actually changed, and
   // notifies the peripheral of those changes when they are persisted
   for (const auto& [settingId, value] : m_changedValues)
     peripheral->SetSetting(settingId, value);
 
   m_changedValues.clear();
+  m_resetRequested = false;
 
   peripheral->PersistSettings();
 
@@ -157,6 +166,7 @@ void CGUIDialogPeripheralSettings::OnCancel()
 {
   // discard the changed values
   m_changedValues.clear();
+  m_resetRequested = false;
 }
 
 void CGUIDialogPeripheralSettings::OnResetSettings()
@@ -171,17 +181,17 @@ void CGUIDialogPeripheralSettings::OnResetSettings()
   if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{10041}, CVariant{10042}))
     return;
 
-  // the settings that were changed in this dialog are replaced by the defaults
-  m_changedValues.clear();
+  // Buffer the defaults like any other change made in this dialog: they are shown in the
+  // controls straight away, but only reach the peripheral once the dialog itself is
+  // confirmed, and are discarded if it isn't. Confirming this prompt says which values to
+  // put in the dialog, not that the dialog is done.
+  m_pendingDefaults = CServiceBroker::GetPeripherals().GetDefaultSettingsFromMapping(*peripheral);
+  m_resetRequested = true;
 
-  // reset the settings in the peripheral
-  peripheral->ResetDefaultSettings();
-
-  // re-create all settings and their controls
+  // re-create all settings and their controls, so they show the defaults
   SetupView();
 
-  // Persist settings so that resetting takes effect immediately
-  Save();
+  m_pendingDefaults.clear();
 }
 
 void CGUIDialogPeripheralSettings::SetupView()
@@ -338,6 +348,14 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
 
     if (settingCopy != NULL && settingCopy->GetControl() != NULL)
     {
+      // Seed the control with the default the user asked to reset to, and remember it as a
+      // change so that confirming the dialog applies it through the usual path. Done here
+      // rather than by resetting the peripheral, which would take effect before the dialog
+      // is confirmed.
+      const auto itDefault = m_pendingDefaults.find(settingCopy->GetId());
+      if (itDefault != m_pendingDefaults.end() && settingCopy->FromString(itDefault->second))
+        m_changedValues[settingCopy->GetId()] = itDefault->second;
+
       settingCopy->SetLevel(SettingLevel::Basic);
       group->AddSetting(settingCopy);
     }
