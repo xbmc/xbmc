@@ -123,6 +123,7 @@ inline constexpr std::array TRUEHD_SAMPLE_RATES{48000u, 96000u, 192000u, 0u, 0u,
                                                 44100u, 88200u, 176400u, 0u, 0u, 0u, 0u, 0u};
 
 constexpr unsigned int TRUEHD_MINIMUM_HEADER_SIZE = 26;
+constexpr unsigned int TRUEHD_EXTENDED_HEADER_SIZE = 30; // Includes extra channel meaning
 constexpr unsigned int TRUEHD_HEADER_SIGNATURE = 0xB752;
 constexpr unsigned int DOLBY_FLAG = 0xBA;
 constexpr unsigned int CH8_SINGLE_CHANNEL_MASK = 0b1100110000110;
@@ -1071,7 +1072,7 @@ bool ParseTrueHDHeader(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
   bool ch16_present{GetBits(substream_info, 8, 1) == 1};
   uint64_t channel_meaning{GetQWord(buffer, 18)};
   if (bool extra_channel_meaning_present{(GetBits64(channel_meaning, 1, 1) == 1)};
-      extra_channel_meaning_present && ch16_present)
+      extra_channel_meaning_present && ch16_present && buffer.size() >= TRUEHD_EXTENDED_HEADER_SIZE)
   {
     unsigned int extra{GetDWord(buffer, 26)};
     unsigned int ch16_channel_count{GetBits(extra, 17, 5)};
@@ -1088,25 +1089,29 @@ bool ParseTrueHDHeader(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
 bool ParseTrueHDBitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* streamInfo)
 {
   unsigned int offset{0};
-  while (true)
+  while (offset + TRUEHD_MINIMUM_HEADER_SIZE <= buffer.size())
   {
-    // Search for first 3 bytes of header
+    // Search for first 3 bytes of the major sync
     const auto data{buffer.subspan(offset)};
-    auto result{std::ranges::search(data, TRUEHD_COMMON_SYNC)};
-    if (result.empty() ||
-        static_cast<unsigned int>(data.end() - result.begin()) < TRUEHD_MINIMUM_HEADER_SIZE)
+    const auto result{std::ranges::search(data, TRUEHD_COMMON_SYNC)};
+    if (result.empty())
       break;
 
-    offset += std::distance(data.begin(), result.begin());
+    const unsigned int syncOffset{
+        offset + static_cast<unsigned int>(std::distance(data.begin(), result.begin()))};
+    if (syncOffset + TRUEHD_MINIMUM_HEADER_SIZE > buffer.size())
+      break; // Not enough data for a header
 
-    // Check signature
-    if (GetWord(buffer, offset + 8) != TRUEHD_HEADER_SIGNATURE)
-      break;
-
-    if (const unsigned int flag{GetByte(buffer, offset + 3)}; flag == DOLBY_FLAG)
-      ParseTrueHDHeader(buffer.subspan(offset), streamInfo);
-
-    offset += TRUEHD_MINIMUM_HEADER_SIZE;
+    // Check the rest of the major sync and the signature. Only a minor sync (or audio data) will
+    // be found between major syncs, so a match here may be coincidental - keep looking if so.
+    if (GetByte(buffer, syncOffset + 3) == DOLBY_FLAG &&
+        GetWord(buffer, syncOffset + 8) == TRUEHD_HEADER_SIGNATURE)
+    {
+      ParseTrueHDHeader(buffer.subspan(syncOffset), streamInfo);
+      offset = syncOffset + TRUEHD_MINIMUM_HEADER_SIZE;
+    }
+    else
+      offset = syncOffset + 1;
   }
 
   return true;
