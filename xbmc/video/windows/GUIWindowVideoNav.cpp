@@ -216,7 +216,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTNSHOWMODE)
       {
-        CMediaSettings::GetInstance().CycleWatchedMode(m_watchedMode);
+        CMediaSettings::CycleWatchedMode(m_watchedMode);
         if (m_persistWatchedMode)
         {
           CMediaSettings::GetInstance().SetWatchedMode(m_vecItems->GetContent(), m_watchedMode);
@@ -404,10 +404,9 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
     m_persistWatchedMode = true;
     if (const CVariant prop = items.GetProperty(PROPERTY_WATCHED_MODE); prop.isInteger())
     {
-      const int wm = prop.asInteger();
-      if (wm >= 0 && wm < static_cast<int>(WatchedMode::COUNT))
+      if (const auto wm = CMediaSettings::ToWatchedMode(prop.asInteger()); wm.has_value())
       {
-        m_watchedMode = WatchedMode{wm};
+        m_watchedMode = wm.value();
         m_persistWatchedMode = false;
       }
     }

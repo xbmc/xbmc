@@ -157,16 +157,14 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
   pElement = settings->FirstChildElement("myvideos");
   if (pElement)
   {
-    constexpr int minValue = static_cast<int>(WatchedMode::ALL);
-    constexpr int maxValue = static_cast<int>(WatchedMode::COUNT) - 1;
     int tmp;
-    if (XMLUtils::GetInt(pElement, "watchmodemovies", tmp, minValue, maxValue))
+    if (XMLUtils::GetInt(pElement, "watchmodemovies", tmp) && IsValidWatchedMode(tmp))
       m_watchedModes["movies"] = WatchedMode{tmp};
-    if (XMLUtils::GetInt(pElement, "watchmodetvshows", tmp, minValue, maxValue))
+    if (XMLUtils::GetInt(pElement, "watchmodetvshows", tmp) && IsValidWatchedMode(tmp))
       m_watchedModes["tvshows"] = WatchedMode{tmp};
-    if (XMLUtils::GetInt(pElement, "watchmodemusicvideos", tmp, minValue, maxValue))
+    if (XMLUtils::GetInt(pElement, "watchmodemusicvideos", tmp) && IsValidWatchedMode(tmp))
       m_watchedModes["musicvideos"] = WatchedMode{tmp};
-    if (XMLUtils::GetInt(pElement, "watchmoderecordings", tmp, minValue, maxValue))
+    if (XMLUtils::GetInt(pElement, "watchmoderecordings", tmp) && IsValidWatchedMode(tmp))
       m_watchedModes["recordings"] = WatchedMode{tmp};
 
     const TiXmlElement *pChild = pElement->FirstChildElement("playlist");
@@ -400,7 +398,7 @@ void CMediaSettings::CycleWatchedMode(const std::string& content)
 
 void CMediaSettings::CycleWatchedMode(WatchedMode& mode)
 {
-  const int next_val = (static_cast<int>(mode) + 1) % static_cast<int>(WatchedMode::COUNT);
+  const int next_val = (static_cast<int>(mode) + 1) % WatchedModesCount();
   mode = WatchedMode{next_val};
 }
 
@@ -435,6 +433,22 @@ std::string CMediaSettings::LocalizeWatchedMode(WatchedMode mode)
 
   // Special handling for the COUNT sentinel value, excluded from the array
   // message 13205: Unknown
-  const int msgId = mode == WatchedMode::COUNT ? 13205 : messagesMap[static_cast<int>(mode)];
+  const int msgId = (mode == WatchedMode::COUNT) ? 13205 : messagesMap[static_cast<int>(mode)];
   return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(msgId);
+}
+
+bool CMediaSettings::IsValidWatchedMode(int value)
+{
+  return value >= static_cast<int>(WatchedMode::ALL) &&
+         value < static_cast<int>(WatchedMode::COUNT);
+}
+
+std::optional<WatchedMode> CMediaSettings::ToWatchedMode(int value)
+{
+  return IsValidWatchedMode(value) ? std::optional{WatchedMode{value}} : std::nullopt;
+}
+
+int CMediaSettings::WatchedModesCount()
+{
+  return static_cast<int>(WatchedMode::COUNT);
 }

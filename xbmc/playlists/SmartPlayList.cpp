@@ -1393,8 +1393,7 @@ bool CSmartPlaylist::Load(const CVariant &obj)
   {
     if (const CVariant v = obj[TAG_WATCHEDMODE]; v.isInteger())
     {
-      if (const int wm = v.asInteger(); wm >= 0 && wm < static_cast<int>(WatchedMode::COUNT))
-        m_watchedMode = WatchedMode{wm};
+      m_watchedMode = CMediaSettings::ToWatchedMode(v.asInteger());
     }
   }
 
@@ -1457,11 +1456,8 @@ bool CSmartPlaylist::LoadFromXML(const TiXmlNode *root, const std::string &encod
     m_orderField = CSmartPlaylistRule::TranslateOrder(order->FirstChild()->Value());
   }
 
-  if (int wm; XMLUtils::GetInt(root, TAG_WATCHEDMODE, wm) && wm >= 0 &&
-              wm < static_cast<int>(WatchedMode::COUNT))
-    m_watchedMode = WatchedMode{wm};
-  else
-    m_watchedMode.reset();
+  if (int wm; XMLUtils::GetInt(root, TAG_WATCHEDMODE, wm))
+    m_watchedMode = CMediaSettings::ToWatchedMode(wm);
 
   return true;
 }

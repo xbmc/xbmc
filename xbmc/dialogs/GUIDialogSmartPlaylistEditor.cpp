@@ -424,7 +424,7 @@ void CGUIDialogSmartPlaylistEditor::OnWatchedMode()
   dialog->Add(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(571)); // "Default"
 
   // Actual watched mode values
-  for (int i = 0; i < static_cast<int>(WatchedMode::COUNT); i++)
+  for (int i = 0; i < CMediaSettings::WatchedModesCount(); i++)
     dialog->Add(CMediaSettings::GetInstance().LocalizeWatchedMode(WatchedMode{i}));
 
   // Dialog indexes: 0 for nullopt, index = value + 1 otherwise

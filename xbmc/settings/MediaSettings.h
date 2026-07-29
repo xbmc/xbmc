@@ -74,13 +74,6 @@ public:
   void CycleWatchedMode(const std::string &content);
 
   /*!
-   * \brief Cycle the watched mode \p mode
-   * \param[in] mode
-   * \sa GetWatchMode, SetWatchMode
-   */
-  void CycleWatchedMode(WatchedMode& mode);
-
-  /*!
    * \brief Returns the localized name of the watched mode \p mode
    * \param[in] mode The watch mode to localize
    * \return localized name
@@ -102,6 +95,18 @@ public:
   void SetMusicNeedsUpdate(int version) { m_musicNeedsUpdate = version; }
   int GetVideoNeedsUpdate() const { return m_videoNeedsUpdate; }
   void SetVideoNeedsUpdate(int version) { m_videoNeedsUpdate = version; }
+
+  // Centralized WatchedMode logic for pseudo-encapsulation
+  /*!
+   * \brief Cycle the watched mode \p mode
+   * \param[in] mode
+   * \sa GetWatchMode, SetWatchMode
+   */
+  static void CycleWatchedMode(WatchedMode& mode);
+
+  static bool IsValidWatchedMode(int value);
+  static std::optional<WatchedMode> ToWatchedMode(int value);
+  static int WatchedModesCount();
 
 protected:
   CMediaSettings() = default;
