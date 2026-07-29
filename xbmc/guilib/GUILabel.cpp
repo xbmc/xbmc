@@ -51,6 +51,12 @@ bool CGUILabel::SetScrolling(bool scrolling)
   return changed;
 }
 
+void CGUILabel::SetLabelFont(CGUIFont* font)
+{
+  m_label.font = font;
+  m_textLayout.SetFont(font);
+}
+
 bool CGUILabel::SetOverflow(OVER_FLOW overflow)
 {
   bool changed = m_overflowType != overflow;
