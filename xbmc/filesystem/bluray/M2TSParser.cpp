@@ -621,8 +621,9 @@ bool ParseAC3Bitstream(const std::span<std::byte>& buffer,
   header = GetWord(buffer, offset + 6);
   const unsigned int acmod{GetBits(header, 16, 3)};
 
-  // Set sample rate
-  if (const auto& sampleRates{AC3_SAMPLE_RATES}; fscod < sampleRates.size())
+  // Set sample rate - a reserved code has no rate
+  if (const auto& sampleRates{AC3_SAMPLE_RATES};
+      fscod < sampleRates.size() && sampleRates[fscod] != 0)
     streamInfo->sampleRate = sampleRates[fscod];
 
   // Set channel count
@@ -1027,10 +1028,10 @@ bool ParseTrueHDHeader(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
   unsigned int format_info{GetDWord(buffer, 4)};
   unsigned int flags{GetWord(buffer, 10)};
 
-  // Set sample rate
+  // Set sample rate - a reserved code has no rate
   const auto& sampleRates{TRUEHD_SAMPLE_RATES};
-  if (unsigned int audio_sampling_frequency{GetBits(format_info, 32, 4)};
-      audio_sampling_frequency < sampleRates.size())
+  if (const unsigned int audio_sampling_frequency{GetBits(format_info, 32, 4)};
+      audio_sampling_frequency < sampleRates.size() && sampleRates[audio_sampling_frequency] != 0)
     streamInfo->sampleRate = sampleRates[audio_sampling_frequency];
 
   bool ch6_multichannel_type{GetBits(format_info, 28, 1) == 1};
