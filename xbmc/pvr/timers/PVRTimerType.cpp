@@ -56,13 +56,14 @@ std::vector<std::shared_ptr<CPVRTimerType>> CPVRTimerType::GetAllTypes()
                    PVR_TIMER_TYPE_SUPPORTS_START_TIME | PVR_TIMER_TYPE_SUPPORTS_END_TIME |
                    PVR_TIMER_TYPE_SUPPORTS_FIRST_DAY | PVR_TIMER_TYPE_SUPPORTS_WEEKDAYS));
 
-  // one time read-only time-based reminder (created by timer rule)
+  // one time time-based reminder (created by timer rule)
   iTypeId++;
   allTypes.emplace_back(std::make_shared<CPVRTimerType>(
       iTypeId,
       PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_IS_REMINDER |
           PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE | PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
-          PVR_TIMER_TYPE_SUPPORTS_START_TIME | PVR_TIMER_TYPE_SUPPORTS_END_TIME,
+          PVR_TIMER_TYPE_SUPPORTS_START_TIME | PVR_TIMER_TYPE_SUPPORTS_END_TIME |
+          PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES,
       CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
           819))); // One time (Scheduled by timer rule)
 
@@ -78,13 +79,14 @@ std::vector<std::shared_ptr<CPVRTimerType>> CPVRTimerType::GetAllTypes()
                    PVR_TIMER_TYPE_SUPPORTS_END_ANYTIME | PVR_TIMER_TYPE_SUPPORTS_FIRST_DAY |
                    PVR_TIMER_TYPE_SUPPORTS_WEEKDAYS | PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN));
 
-  // one time read-only epg-based reminder (created by timer rule)
+  // one time epg-based reminder (created by timer rule)
   iTypeId++;
   allTypes.emplace_back(std::make_shared<CPVRTimerType>(
       iTypeId,
       PVR_TIMER_TYPE_IS_REMINDER | PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE |
           PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE | PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
-          PVR_TIMER_TYPE_SUPPORTS_START_TIME | PVR_TIMER_TYPE_SUPPORTS_START_MARGIN,
+          PVR_TIMER_TYPE_SUPPORTS_START_TIME | PVR_TIMER_TYPE_SUPPORTS_START_MARGIN |
+          PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES,
       CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
           819))); // One time (Scheduled by timer rule)
 
