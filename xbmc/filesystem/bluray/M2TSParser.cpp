@@ -107,14 +107,17 @@ inline constexpr std::array DTS_SYNCWORD_XLL_X{std::byte{0x02}, std::byte{0x00},
 inline constexpr std::array DTS_SYNCWORD_XLL_X_IMAX{
     std::byte{0xF1}, std::byte{0x40}, std::byte{0x00}, std::byte{0xD0}}; // DTS-HD MA + IMAX
 
-inline constexpr std::array DTS_SAMPLE_RATES{8000u,  16000u, 32000u,  64000u,  128000u, 22050u,
-                                             44100u, 88200u, 176400u, 352800u, 12000u,  24000u,
-                                             48000u, 96000u, 192000u, 384000u};
+inline constexpr std::array DTS_SAMPLE_RATES{0u,     8000u,  16000u, 32000u, 0u, 0u,
+                                             11025u, 22050u, 44100u, 0u,     0u, 12000u,
+                                             24000u, 48000u, 96000u, 192000u};
 inline constexpr std::array DTS_CHANNEL_COUNTS{1u, 2u, 2u, 2u, 2u, 3u, 3u, 4u,
                                                4u, 5u, 6u, 6u, 6u, 7u, 8u, 8u};
 
 constexpr unsigned int DTS_HEADER_SIZE = 14;
 constexpr unsigned int HEADERS_PARSED_FOR_COMPLETE = 2;
+// The DTS:X and IMAX extension sync words are not present in every frame, so more frames need to
+// be examined before concluding an extension substream is plain DTS-HD Master Audio
+constexpr unsigned int DTS_HEADERS_PARSED_FOR_EXTENSION = 16;
 
 // TrueHD
 inline constexpr std::array TRUEHD_COMMON_SYNC = {std::byte{0xF8}, std::byte{0x72},
@@ -967,7 +970,7 @@ bool ParseDTSBitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
   if (!dtsData)
     return false;
 
-  unsigned int offset{0};
+  bool substreamPresent{dtsData->syncWord == DTSSyncWords::SUBSTREAM};
   if (dtsData->syncWord == DTSSyncWords::CORE_16BIT_BE)
   {
     // Parse 16-bit DTS core header
@@ -984,7 +987,7 @@ bool ParseDTSBitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
     const auto& sampleRates{DTS_SAMPLE_RATES};
     const auto& channelCounts{DTS_CHANNEL_COUNTS};
 
-    if (sfreq < sampleRates.size())
+    if (sfreq < sampleRates.size() && sampleRates[sfreq] != 0)
       streamInfo->sampleRate = sampleRates[sfreq];
 
     if (amode < channelCounts.size())
@@ -994,15 +997,12 @@ bool ParseDTSBitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
       streamInfo->channels++; // Add LFE channel
 
     // See if there is a DTS substream header in this block
-    if (auto substream{
-            FindDTSSyncWord(buffer, dtsData->syncPos + DTS_HEADER_SIZE, DTS_SYNCWORD_SUBSTREAM)};
-        !substream.has_value())
-      return true;
-    else
-      offset = *substream;
+    substreamPresent =
+        FindDTSSyncWord(buffer, dtsData->syncPos + DTS_HEADER_SIZE, DTS_SYNCWORD_SUBSTREAM)
+            .has_value();
   }
 
-  if (dtsData->syncWord == DTSSyncWords::SUBSTREAM || offset > 0)
+  if (substreamPresent)
   {
     // Substream header found
     streamInfo->hasSubstream = true;
@@ -1018,7 +1018,14 @@ bool ParseDTSBitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
       streamInfo->isXLLXIMAX = true;
   }
 
-  streamInfo->completed = (++streamInfo->seen) >= HEADERS_PARSED_FOR_COMPLETE;
+  // An XLL substream may still be DTS:X or DTS:X IMAX - neither marker is in every frame, so keep
+  // examining frames until one of them is found. An IMAX stream is identified by its own marker,
+  // so finding either marker is enough to name the codec.
+  const unsigned int headersRequired{streamInfo->isXLL && !streamInfo->isXLLX &&
+                                             !streamInfo->isXLLXIMAX
+                                         ? DTS_HEADERS_PARSED_FOR_EXTENSION
+                                         : HEADERS_PARSED_FOR_COMPLETE};
+  streamInfo->completed = (++streamInfo->seen) >= headersRequired;
 
   return true;
 }
