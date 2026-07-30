@@ -21,9 +21,13 @@
 #include "music/MusicEmbeddedCoverLoaderFFmpeg.h"
 #include "music/tags/MusicCodecInfoFFmpeg.h"
 #include "music/tags/MusicInfoTag.h"
-#ifdef HAS_TAGLIB_MATROSKA
+#include <taglib/taglib.h>
+#if (TAGLIB_MAJOR_VERSION > 2) ||                                                                  \
+    (TAGLIB_MAJOR_VERSION == 2 &&                                                                  \
+     (TAGLIB_MINOR_VERSION > 3 || (TAGLIB_MINOR_VERSION == 3 && TAGLIB_PATCH_VERSION >= 1)))
 #include "music/tags/MusicInfoTagLoaderMatroska.h"
-#endif // HAS_TAGLIB_MATROSKA
+#define HAS_TAGLIB_MATROSKA
+#endif
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"

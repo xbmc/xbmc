@@ -18,6 +18,14 @@
 #include <tuple>
 #include <vector>
 
+#include <taglib/taglib.h>
+
+// TagLib's Matroska API needs 2.3.1 - earlier 2.x crash on an invalid seek head and drop
+// chapters carrying no UID.
+#if (TAGLIB_MAJOR_VERSION > 2) ||                                                                  \
+    (TAGLIB_MAJOR_VERSION == 2 &&                                                                  \
+     (TAGLIB_MINOR_VERSION > 3 || (TAGLIB_MINOR_VERSION == 3 && TAGLIB_PATCH_VERSION >= 1)))
+
 namespace MUSIC_INFO
 {
 class CMusicInfoTagLoaderMatroska : public IMusicInfoTagLoader
@@ -67,3 +75,5 @@ private:
                                       CMusicInfoTag& musictag);
 };
 } // namespace MUSIC_INFO
+
+#endif // TagLib >= 2.3.1
