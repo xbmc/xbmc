@@ -44,7 +44,17 @@ bool CPeripheralBusCEC::PerformDeviceScan(PeripheralScanResults& results)
     result.m_iVendorId = deviceList[iDevicePtr].iVendorId;
     result.m_iProductId = deviceList[iDevicePtr].iProductId;
     result.m_strLocation = deviceList[iDevicePtr].strComName;
+    // physical device path, stable across reboots/replugs unlike the com port name
+    result.m_strPhysicalLocation = deviceList[iDevicePtr].strComPath;
+    if (result.m_strPhysicalLocation.empty())
+      result.m_strPhysicalLocation = deviceList[iDevicePtr].strComName;
     result.m_type = PERIPHERAL_CEC;
+
+    // Display name assigned by libCEC (e.g. "HDMI 1"/"HDMI 2" for the kernel CEC
+    // nodes on a multi-HDMI board, "USB-CEC Adapter N" for USB), so multiple
+    // adapters aren't listed as identical entries. Left empty for adapters libCEC
+    // didn't name, which then fall back to the generic peripherals.xml mapping.
+    result.m_strDeviceName = deviceList[iDevicePtr].strDeviceName;
 
     // override the bus type, so users don't have to reconfigure their adapters
     switch (deviceList[iDevicePtr].adapterType)
