@@ -888,6 +888,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
   float buttonGap = 5;
   int startMovement = 0;
   int endMovement = 0;
+  int pageItems = 0;
   FixedListAlignY fixedListAlignY = FixedListAlignY::CENTER;
   CAspectRatio aspect;
   std::string allowHiddenFocus;
@@ -1203,6 +1204,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
 
   XMLUtils::GetBoolean(pControlNode, "showonepage", showOnePage);
   XMLUtils::GetInt(pControlNode, "focusposition", focusPosition);
+  XMLUtils::GetInt(pControlNode, "pageitems", pageItems);
   XMLUtils::GetInt(pControlNode, "scrolltime", scrollTime);
   XMLUtils::GetInt(pControlNode, "preloaditems", preloadItems, 0, 2);
 
@@ -1624,7 +1626,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
 
       control = new CGUIFixedListContainer(parentID, id, posX, posY, width, height, orientation,
                                            scroller, preloadItems, focusPosition, startMovement,
-                                           endMovement, fixedListAlignY);
+                                           endMovement, pageItems, fixedListAlignY);
       CGUIFixedListContainer* fcontrol = static_cast<CGUIFixedListContainer*>(control);
       fcontrol->LoadLayout(pControlNode);
       fcontrol->LoadListProvider(pControlNode, defaultControl, defaultAlways);
