@@ -135,7 +135,9 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url, CFileItemList& items
   {
     CMusicInfoTagLoaderMatroska::GetMatroskaMusicTags(url.Get(), fileTags, chapterTags,
                                                       chapterOrder);
-    if (fileTags.empty())
+    // Album-level tags are optional: some multi-chapter .mka/.mkv only carry track tags
+    // (Matroska targetTypeValue 30). Still expand chapters when TagLib found any.
+    if (fileTags.empty() && chapterOrder.empty())
       return true;
     /*!
      * initially just get the (file) Album level tags to be use in subsequent tracks
