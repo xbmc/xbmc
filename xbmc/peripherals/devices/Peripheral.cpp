@@ -515,7 +515,7 @@ const std::string CPeripheral::GetSettingString(const std::string& strKey) const
   return "";
 }
 
-bool CPeripheral::SetSetting(const std::string& strKey, bool bValue)
+bool CPeripheral::SetSetting(const std::string& strKey, bool bValue, bool bNotify /* = true */)
 {
   bool bChanged(false);
   std::map<std::string, PeripheralDeviceSetting>::iterator it = m_settings.find(strKey);
@@ -527,14 +527,14 @@ bool CPeripheral::SetSetting(const std::string& strKey, bool bValue)
     {
       bChanged = boolSetting->GetValue() != bValue;
       boolSetting->SetValue(bValue);
-      if (bChanged && m_bInitialised)
+      if (bChanged && bNotify && m_bInitialised)
         m_changedSettings.insert(strKey);
     }
   }
   return bChanged;
 }
 
-bool CPeripheral::SetSetting(const std::string& strKey, int iValue)
+bool CPeripheral::SetSetting(const std::string& strKey, int iValue, bool bNotify /* = true */)
 {
   bool bChanged(false);
   std::map<std::string, PeripheralDeviceSetting>::iterator it = m_settings.find(strKey);
@@ -546,14 +546,14 @@ bool CPeripheral::SetSetting(const std::string& strKey, int iValue)
     {
       bChanged = intSetting->GetValue() != iValue;
       intSetting->SetValue(iValue);
-      if (bChanged && m_bInitialised)
+      if (bChanged && bNotify && m_bInitialised)
         m_changedSettings.insert(strKey);
     }
   }
   return bChanged;
 }
 
-bool CPeripheral::SetSetting(const std::string& strKey, float fValue)
+bool CPeripheral::SetSetting(const std::string& strKey, float fValue, bool bNotify /* = true */)
 {
   bool bChanged(false);
   std::map<std::string, PeripheralDeviceSetting>::iterator it = m_settings.find(strKey);
@@ -565,7 +565,7 @@ bool CPeripheral::SetSetting(const std::string& strKey, float fValue)
     {
       bChanged = floatSetting->GetValue() != static_cast<double>(fValue);
       floatSetting->SetValue(static_cast<double>(fValue));
-      if (bChanged && m_bInitialised)
+      if (bChanged && bNotify && m_bInitialised)
         m_changedSettings.insert(strKey);
     }
   }
@@ -587,7 +587,9 @@ bool CPeripheral::IsSettingVisible(const std::string& strKey) const
   return false;
 }
 
-bool CPeripheral::SetSetting(const std::string& strKey, const std::string& strValue)
+bool CPeripheral::SetSetting(const std::string& strKey,
+                             const std::string& strValue,
+                             bool bNotify /* = true */)
 {
   bool bChanged(false);
   std::map<std::string, PeripheralDeviceSetting>::iterator it = m_settings.find(strKey);
@@ -607,7 +609,7 @@ bool CPeripheral::SetSetting(const std::string& strKey, const std::string& strVa
 
         bChanged = !StringUtils::EqualsNoCase(stringSetting->GetValue(), strValue);
         stringSetting->SetValue(strValue);
-        if (bChanged && m_bInitialised)
+        if (bChanged && bNotify && m_bInitialised)
           m_changedSettings.insert(strKey);
 
         if (strKey == SETTING_LAST_ACTIVE && !strValue.empty())
@@ -619,11 +621,13 @@ bool CPeripheral::SetSetting(const std::string& strKey, const std::string& strVa
       }
     }
     else if ((*it).second.m_setting->GetType() == SettingType::Integer)
-      bChanged = SetSetting(strKey, strValue.empty() ? 0 : atoi(strValue.c_str()));
+      bChanged = SetSetting(strKey, strValue.empty() ? 0 : atoi(strValue.c_str()), bNotify);
     else if ((*it).second.m_setting->GetType() == SettingType::Number)
-      bChanged = SetSetting(strKey, (float)(strValue.empty() ? 0 : atof(strValue.c_str())));
+      bChanged =
+          SetSetting(strKey, (float)(strValue.empty() ? 0 : atof(strValue.c_str())), bNotify);
     else if ((*it).second.m_setting->GetType() == SettingType::Boolean)
-      bChanged = SetSetting(strKey, strValue == "1" || StringUtils::EqualsNoCase(strValue, "true"));
+      bChanged = SetSetting(strKey, strValue == "1" || StringUtils::EqualsNoCase(strValue, "true"),
+                            bNotify);
   }
   return bChanged;
 }

@@ -479,6 +479,28 @@ bool CPeripherals::GetMappingForDevice(const CPeripheralBus& bus,
   return false;
 }
 
+bool CPeripherals::MappingMatchesPeripheral(const PeripheralDeviceMapping& mapping,
+                                            const CPeripheral& peripheral)
+{
+  bool bProductMatch = false;
+  if (mapping.m_PeripheralID.empty())
+    bProductMatch = true;
+  else
+  {
+    for (const auto& peripheralID : mapping.m_PeripheralID)
+      if (peripheralID.m_iVendorId == peripheral.VendorId() &&
+          peripheralID.m_iProductId == peripheral.ProductId())
+        bProductMatch = true;
+  }
+
+  bool bBusMatch =
+      (mapping.m_busType == PERIPHERAL_BUS_UNKNOWN || mapping.m_busType == peripheral.GetBusType());
+  bool bClassMatch =
+      (mapping.m_class == PERIPHERAL_UNKNOWN || mapping.m_class == peripheral.Type());
+
+  return bBusMatch && bProductMatch && bClassMatch;
+}
+
 void CPeripherals::GetSettingsFromMapping(CPeripheral& peripheral) const
 {
   std::unique_lock lock(m_critSectionMappings);
@@ -486,28 +508,36 @@ void CPeripherals::GetSettingsFromMapping(CPeripheral& peripheral) const
   /* check all mappings in the order in which they are defined in peripherals.xml */
   for (const auto& mapping : m_mappings)
   {
-    bool bProductMatch = false;
-    if (mapping.m_PeripheralID.empty())
-      bProductMatch = true;
-    else
-    {
-      for (const auto& peripheralID : mapping.m_PeripheralID)
-        if (peripheralID.m_iVendorId == peripheral.VendorId() &&
-            peripheralID.m_iProductId == peripheral.ProductId())
-          bProductMatch = true;
-    }
-
-    bool bBusMatch = (mapping.m_busType == PERIPHERAL_BUS_UNKNOWN ||
-                      mapping.m_busType == peripheral.GetBusType());
-    bool bClassMatch =
-        (mapping.m_class == PERIPHERAL_UNKNOWN || mapping.m_class == peripheral.Type());
-
-    if (bBusMatch && bProductMatch && bClassMatch)
+    if (MappingMatchesPeripheral(mapping, peripheral))
     {
       for (auto itr = mapping.m_settings.begin(); itr != mapping.m_settings.end(); ++itr)
         peripheral.AddSetting((*itr).first, (*itr).second.m_setting, (*itr).second.m_order);
     }
   }
+}
+
+std::map<std::string, std::string> CPeripherals::GetDefaultSettingsFromMapping(
+    const CPeripheral& peripheral) const
+{
+  std::map<std::string, std::string> defaults;
+
+  std::unique_lock lock(m_critSectionMappings);
+
+  /* check all mappings in the order in which they are defined in peripherals.xml, so a later
+   * mapping overrides an earlier one exactly as it does in GetSettingsFromMapping() */
+  for (const auto& mapping : m_mappings)
+  {
+    if (MappingMatchesPeripheral(mapping, peripheral))
+    {
+      for (const auto& [settingId, deviceSetting] : mapping.m_settings)
+      {
+        if (deviceSetting.m_setting)
+          defaults[settingId] = deviceSetting.m_setting->ToString();
+      }
+    }
+  }
+
+  return defaults;
 }
 
 #define SS(x) ((x) ? x : "")

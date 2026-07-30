@@ -163,6 +163,15 @@ public:
   void GetSettingsFromMapping(CPeripheral& peripheral) const;
 
   /*!
+   * @brief Get the default values defined in the mappings file for a peripheral, without
+   * applying them to it.
+   * @param peripheral The peripheral to get the defaults for.
+   * @return The default value of each setting, keyed by setting id.
+   */
+  std::map<std::string, std::string> GetDefaultSettingsFromMapping(
+      const CPeripheral& peripheral) const;
+
+  /*!
    * @brief Trigger a device scan on all known busses
    */
   void TriggerDeviceScan(const PeripheralBusType type = PERIPHERAL_BUS_UNKNOWN);
@@ -366,6 +375,8 @@ public:
 
 private:
   bool LoadMappings();
+  static bool MappingMatchesPeripheral(const PeripheralDeviceMapping& mapping,
+                                       const CPeripheral& peripheral);
   bool GetMappingForDevice(const CPeripheralBus& bus, PeripheralScanResult& result) const;
   static void GetSettingsFromMappingsFile(
       tinyxml2::XMLElement* xmlNode, std::map<std::string, PeripheralDeviceSetting>& m_settings);
