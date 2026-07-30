@@ -28,9 +28,19 @@
 
 namespace MUSIC_INFO
 {
+enum class MatroskaTrackTagRoute
+{
+  BindFirstChapter, //!< Single-chapter file: bind to the only chapter
+  BindChapterUid, //!< Multi-chapter: bind by TagChapterUID (caller falls back if missing)
+  BindFileTags //!< Multi-chapter with no ChapterUID, or unknown-UID fallback target
+};
+
 class CMusicInfoTagLoaderMatroska : public IMusicInfoTagLoader
 {
 public:
+  using ChapterOrder =
+      std::vector<std::tuple<unsigned long long, std::string, double, double, unsigned long long>>;
+
   CMusicInfoTagLoaderMatroska() = default;
   ~CMusicInfoTagLoaderMatroska() override = default;
 
@@ -51,13 +61,28 @@ public:
       const std::string& fileName,
       std::map<std::string, std::string>& fileTags,
       std::map<unsigned long long, std::map<std::string, std::string>>& chapterTags,
-      std::vector<std::tuple<unsigned long long, std::string, double, double, unsigned long long>>&
-          chapterOrder,
+      ChapterOrder& chapterOrder,
       CMusicInfoTag* coverTag = nullptr);
 
   // Placeholder UID used when TagLib finds no Chapters element, so song-level
   // tags with targetTypeValue 30 still have somewhere to land. Not a real track.
   static constexpr unsigned long long DummyChapterUid = 999000999000999ULL;
+
+  //! True unless both album-level tags and the chapter list are empty.
+  static bool HasMatroskaDirectoryContent(const std::map<std::string, std::string>& fileTags,
+                                          const ChapterOrder& chapterOrder);
+
+  //! False for the synthetic DummyChapterUid placeholder only.
+  static constexpr bool IsRealChapterUid(unsigned long long uid)
+  {
+    return uid != DummyChapterUid;
+  }
+
+  static size_t CountRealChapters(const ChapterOrder& chapterOrder);
+
+  //! Where a targetTypeValue 30 simple tag should bind.
+  static MatroskaTrackTagRoute ResolveTargetType30Route(int chapterCount,
+                                                        unsigned long long chapterUid);
 
 private:
   // Internal overload used by Load() — reuses an already-open stream
@@ -66,8 +91,7 @@ private:
       MatroskaTagLibStream& matroskaStream,
       std::map<std::string, std::string>& fileTags,
       std::map<unsigned long long, std::map<std::string, std::string>>& chapterTags,
-      std::vector<std::tuple<unsigned long long, std::string, double, double, unsigned long long>>&
-          chapterOrder,
+      ChapterOrder& chapterOrder,
       CMusicInfoTag* coverTag = nullptr,
       EmbeddedArt* art = nullptr);
 

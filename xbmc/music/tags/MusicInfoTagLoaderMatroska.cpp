@@ -160,8 +160,7 @@ bool CMusicInfoTagLoaderMatroska::Load(const std::string& strFileName,
   // (single file parse — avoids opening the Matroska file twice)
   std::map<std::string, std::string> fileTags;
   std::map<unsigned long long, std::map<std::string, std::string>> chapterTags;
-  std::vector<std::tuple<unsigned long long, std::string, double, double, unsigned long long>>
-      chapterOrder;
+  ChapterOrder chapterOrder;
   GetMatroskaMusicTags(strFileName, matroskaStream, fileTags, chapterTags, chapterOrder, &tag, art);
 
   if (fileTags.empty())
@@ -396,8 +395,7 @@ void CMusicInfoTagLoaderMatroska::GetMatroskaMusicTags(
     const std::string& fileName,
     std::map<std::string, std::string>& fileTags,
     std::map<unsigned long long, std::map<std::string, std::string>>& chapterTags,
-    std::vector<std::tuple<unsigned long long, std::string, double, double, unsigned long long>>&
-        chapterOrder,
+    ChapterOrder& chapterOrder,
     CMusicInfoTag* coverTag)
 {
   MatroskaTagLibStream matroskaStream(fileName);
@@ -411,6 +409,35 @@ void CMusicInfoTagLoaderMatroska::GetMatroskaMusicTags(
   GetMatroskaMusicTags(fileName, matroskaStream, fileTags, chapterTags, chapterOrder, coverTag);
 }
 
+bool CMusicInfoTagLoaderMatroska::HasMatroskaDirectoryContent(
+    const std::map<std::string, std::string>& fileTags,
+    const ChapterOrder& chapterOrder)
+{
+  return !fileTags.empty() || !chapterOrder.empty();
+}
+
+size_t CMusicInfoTagLoaderMatroska::CountRealChapters(const ChapterOrder& chapterOrder)
+{
+  size_t count = 0;
+  for (const auto& chapter : chapterOrder)
+  {
+    if (IsRealChapterUid(std::get<0>(chapter)))
+      ++count;
+  }
+  return count;
+}
+
+MatroskaTrackTagRoute CMusicInfoTagLoaderMatroska::ResolveTargetType30Route(
+    int chapterCount,
+    unsigned long long chapterUid)
+{
+  if (chapterCount == 1)
+    return MatroskaTrackTagRoute::BindFirstChapter;
+  if (chapterUid != 0)
+    return MatroskaTrackTagRoute::BindChapterUid;
+  return MatroskaTrackTagRoute::BindFileTags;
+}
+
 /*!
 *  use TagLib to read hierarchy of tags in file and populate album and chapter
 * (track) tags. this creates a map of chapterUid to track tags for each chapter.
@@ -420,8 +447,7 @@ void CMusicInfoTagLoaderMatroska::GetMatroskaMusicTags(
     MatroskaTagLibStream& matroskaStream,
     std::map<std::string, std::string>& fileTags,
     std::map<unsigned long long, std::map<std::string, std::string>>& chapterTags,
-    std::vector<std::tuple<unsigned long long, std::string, double, double, unsigned long long>>&
-        chapterOrder,
+    ChapterOrder& chapterOrder,
     CMusicInfoTag* coverTag,
     EmbeddedArt* art)
 {
@@ -704,30 +730,29 @@ void CMusicInfoTagLoaderMatroska::GetMatroskaMusicTags(
           }
         };
 
-        if (chapterCount == 1)
+        switch (ResolveTargetType30Route(chapterCount, chapterUid))
         {
-          // Single chapter: route to the only chapter with duplicate check
-          unsigned long long firstChapterUid = std::get<0>(chapterOrder[0]);
-          auto firstIt = chapterTags.find(firstChapterUid);
-          if (firstIt != chapterTags.end())
-            addToChapterTags(firstIt->second);
-        }
-        else if (chapterUid != 0)
-        {
-          // Multiple chapters: any non-zero TagChapterUID is valid (including 1).
-          // TagLib reports 0 when the tag has no ChapterUID target.
-          auto chapterIt = chapterTags.find(chapterUid);
-          if (chapterIt != chapterTags.end())
-            addToChapterTags(chapterIt->second);
-          else
-            // ChapterUID present but not in the Chapters element.
+          case MatroskaTrackTagRoute::BindFirstChapter:
+          {
+            unsigned long long firstChapterUid = std::get<0>(chapterOrder[0]);
+            auto firstIt = chapterTags.find(firstChapterUid);
+            if (firstIt != chapterTags.end())
+              addToChapterTags(firstIt->second);
+            break;
+          }
+          case MatroskaTrackTagRoute::BindChapterUid:
+          {
+            auto chapterIt = chapterTags.find(chapterUid);
+            if (chapterIt != chapterTags.end())
+              addToChapterTags(chapterIt->second);
+            else
+              // ChapterUID present but not in the Chapters element.
+              addToFileTags();
+            break;
+          }
+          case MatroskaTrackTagRoute::BindFileTags:
             addToFileTags();
-        }
-        else
-        {
-          // targetTypeValue 30 with no TagChapterUID: cannot bind to a track in a
-          // multi-chapter file. Keep as file-level rather than dropping the tag.
-          addToFileTags();
+            break;
         }
       }
     }

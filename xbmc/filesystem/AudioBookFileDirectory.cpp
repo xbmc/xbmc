@@ -128,8 +128,7 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url, CFileItemList& items
 #ifdef HAS_TAGLIB_MATROSKA
   std::map<std::string, std::string> fileTags;
   std::map<unsigned long long, std::map<std::string, std::string>> chapterTags;
-  std::vector<std::tuple<unsigned long long, std::string, double, double, unsigned long long>>
-      chapterOrder;
+  CMusicInfoTagLoaderMatroska::ChapterOrder chapterOrder;
 
   if (!isAudioBook)
   {
@@ -137,7 +136,7 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url, CFileItemList& items
                                                       chapterOrder);
     // Album-level tags are optional: some multi-chapter .mka/.mkv only carry track tags
     // (Matroska targetTypeValue 30). Still expand chapters when TagLib found any.
-    if (fileTags.empty() && chapterOrder.empty())
+    if (!CMusicInfoTagLoaderMatroska::HasMatroskaDirectoryContent(fileTags, chapterOrder))
       return true;
     /*!
      * initially just get the (file) Album level tags to be use in subsequent tracks
@@ -186,7 +185,7 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url, CFileItemList& items
     for (const auto& chapter : chapterOrder)
     {
       const auto chapUid = std::get<0>(chapter);
-      if (chapUid == CMusicInfoTagLoaderMatroska::DummyChapterUid)
+      if (!CMusicInfoTagLoaderMatroska::IsRealChapterUid(chapUid))
         continue;
 
       ++track;
@@ -220,7 +219,7 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url, CFileItemList& items
       items.Add(item);
     }
 
-    if (track > 0)
+    if (CMusicInfoTagLoaderMatroska::CountRealChapters(chapterOrder) > 0)
       return true;
     // TagLib found no real chapters — fall through to the FFmpeg path below.
   }
