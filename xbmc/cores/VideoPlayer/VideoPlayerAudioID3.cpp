@@ -17,6 +17,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "utils/log.h"
 
+#include <taglib/taglib.h>
 #include <taglib/attachedpictureframe.h>
 #include <taglib/commentsframe.h>
 #include <taglib/id3v1genres.h>

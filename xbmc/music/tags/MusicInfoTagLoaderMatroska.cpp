@@ -8,6 +8,15 @@
 
 #include "MusicInfoTagLoaderMatroska.h"
 
+#include <taglib/taglib.h>
+
+// TagLib's Matroska API needs 2.3.1 - earlier 2.x crash on an invalid seek head and drop
+// chapters carrying no UID. Without this gate the whole TU is empty, and the
+// <taglib/matroska*.h> includes below do not exist before TagLib 2.2.
+#if (TAGLIB_MAJOR_VERSION > 2) ||                                                                  \
+    (TAGLIB_MAJOR_VERSION == 2 &&                                                                  \
+     (TAGLIB_MINOR_VERSION > 3 || (TAGLIB_MINOR_VERSION == 3 && TAGLIB_PATCH_VERSION >= 1)))
+
 #include "MatroskaTagLibStream.h"
 #include "MusicCodecInfoFFmpeg.h"
 #include "MusicInfoTag.h"
@@ -740,3 +749,5 @@ void CMusicInfoTagLoaderMatroska::GetMatroskaMusicTags(
               fileName, e.what());
   }
 }
+
+#endif // TagLib >= 2.3.1
