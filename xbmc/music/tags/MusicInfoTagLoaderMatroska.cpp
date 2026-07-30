@@ -675,68 +675,59 @@ void CMusicInfoTagLoaderMatroska::GetMatroskaMusicTags(
       }
       else if (targetTypeValue == 30)
       {
+        auto addToFileTags = [&]()
+        {
+          if (fileTags.find(TagName) == fileTags.end())
+          {
+            fileTags[TagName] = TagValue;
+          }
+          else if (std::find(std::begin(MULTIPLE_VALUE_TAGS), std::end(MULTIPLE_VALUE_TAGS),
+                             TagName) != std::end(MULTIPLE_VALUE_TAGS))
+          {
+            std::string currentValue = fileTags[TagName];
+            if (AppendIfNotDuplicate(currentValue, TagValue, TagName))
+              fileTags[TagName] = currentValue;
+          }
+        };
+
+        auto addToChapterTags = [&](std::map<std::string, std::string>& chapterTagList)
+        {
+          auto it = chapterTagList.find(TagName);
+          if (it == chapterTagList.end())
+          {
+            chapterTagList.emplace(TagName, TagValue);
+          }
+          else if (std::find(std::begin(MULTIPLE_VALUE_TAGS), std::end(MULTIPLE_VALUE_TAGS),
+                             TagName) != std::end(MULTIPLE_VALUE_TAGS))
+          {
+            AppendIfNotDuplicate(it->second, TagValue, TagName);
+          }
+        };
+
         if (chapterCount == 1)
         {
           // Single chapter: route to the only chapter with duplicate check
           unsigned long long firstChapterUid = std::get<0>(chapterOrder[0]);
           auto firstIt = chapterTags.find(firstChapterUid);
           if (firstIt != chapterTags.end())
-          {
-            auto& chapterTagList = firstIt->second;
-            auto it = chapterTagList.find(TagName);
-            if (it == chapterTagList.end())
-            {
-              chapterTagList.emplace(TagName, TagValue);
-            }
-            else
-            {
-              if (std::find(std::begin(MULTIPLE_VALUE_TAGS), std::end(MULTIPLE_VALUE_TAGS),
-                            TagName) != std::end(MULTIPLE_VALUE_TAGS))
-              {
-                AppendIfNotDuplicate(it->second, TagValue, TagName);
-              }
-            }
-          }
+            addToChapterTags(firstIt->second);
         }
-        else if (chapterUid > 1)
+        else if (chapterUid != 0)
         {
-          // Multiple chapters: route to the chapter with matching UID
+          // Multiple chapters: any non-zero TagChapterUID is valid (including 1).
+          // TagLib reports 0 when the tag has no ChapterUID target.
           auto chapterIt = chapterTags.find(chapterUid);
           if (chapterIt != chapterTags.end())
-          {
-            auto& chapterTagList = chapterIt->second;
-            auto it = chapterTagList.find(TagName);
-            if (it == chapterTagList.end())
-            {
-              chapterTagList.emplace(TagName, TagValue);
-            }
-            else
-            {
-              if (std::find(std::begin(MULTIPLE_VALUE_TAGS), std::end(MULTIPLE_VALUE_TAGS),
-                            TagName) != std::end(MULTIPLE_VALUE_TAGS))
-              {
-                AppendIfNotDuplicate(it->second, TagValue, TagName);
-              }
-            }
-          }
+            addToChapterTags(chapterIt->second);
           else
-          {
-            // so this chapter was not in the Chapters element. Fall back to fileTags.
-            if (fileTags.find(TagName) == fileTags.end())
-            {
-              fileTags[TagName] = TagValue;
-            }
-            else
-            {
-              if (std::find(std::begin(MULTIPLE_VALUE_TAGS), std::end(MULTIPLE_VALUE_TAGS),
-                            TagName) != std::end(MULTIPLE_VALUE_TAGS))
-              {
-                std::string currentValue = fileTags[TagName];
-                if (AppendIfNotDuplicate(currentValue, TagValue, TagName))
-                  fileTags[TagName] = currentValue;
-              }
-            }
-          }
+            // ChapterUID present but not in the Chapters element.
+            addToFileTags();
+        }
+        else
+        {
+          // targetTypeValue 30 with no TagChapterUID: cannot bind to a track in a
+          // multi-chapter file. Keep as file-level rather than dropping the tag.
+          addToFileTags();
         }
       }
     }
