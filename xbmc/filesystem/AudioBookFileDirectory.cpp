@@ -259,10 +259,24 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url, CFileItemList& items
       else if (StringUtils::CompareNoCase(tag->key, "album") == 0)
         chapalbum = tag->value;
     }
+
+    /*!
+    * The FFmpeg chapter fields overlay whatever albumtag already carries. When TagLib found
+    * album tags but no usable chapters the file-level FFmpeg metadata above was skipped, so
+    * album/author/desc are empty here and must not overwrite what TagLib supplied. The title
+    * is always chapter level - the album level TITLE that TagLib copies into albumtag would
+    * otherwise leave every track named after the album.
+    */
+    if (chapalbum.empty())
+      chapalbum = album.empty() ? title : album;
+    if (chapauthor.empty())
+      chapauthor = author;
+
     item->GetMusicInfoTag()->SetTitle(chaptitle);
-    item->GetMusicInfoTag()->SetAlbum(chapalbum.empty() ? album.empty() ? title : album
-                                                        : chapalbum);
-    item->GetMusicInfoTag()->SetArtist(chapauthor.empty() ? author : chapauthor);
+    if (!chapalbum.empty())
+      item->GetMusicInfoTag()->SetAlbum(chapalbum);
+    if (!chapauthor.empty())
+      item->GetMusicInfoTag()->SetArtist(chapauthor);
     if (!desc.empty())
       item->GetMusicInfoTag()->SetComment(desc);
 
