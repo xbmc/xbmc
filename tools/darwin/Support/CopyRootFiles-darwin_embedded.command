@@ -33,9 +33,6 @@ ${SYNC} "$SRCROOT/xbmc/platform/darwin/Credits.html"  "$TARGET_BUILD_DIR/$EXECUT
 ${ADDONSYNC} "$SRCROOT/addons"  "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome"
 ${SYNC} "$SRCROOT/media"    "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome"
 
-# extracted eggs
-${SYNC} "$XBMC_DEPENDS/share/$APP_NAME/addons" "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome"
-
 # sync skin.estuary
 SYNCSKIN_B=${SKINSYNC}
 if [ -f "$SRCROOT/addons/skin.estuary/media/Textures.xbt" ]; then
