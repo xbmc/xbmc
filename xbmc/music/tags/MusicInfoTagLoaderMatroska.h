@@ -55,6 +55,10 @@ public:
           chapterOrder,
       CMusicInfoTag* coverTag = nullptr);
 
+  // Placeholder UID used when TagLib finds no Chapters element, so song-level
+  // tags with targetTypeValue 30 still have somewhere to land. Not a real track.
+  static constexpr unsigned long long DummyChapterUid = 999000999000999ULL;
+
 private:
   // Internal overload used by Load() — reuses an already-open stream
   static void GetMatroskaMusicTags(

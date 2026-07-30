@@ -175,6 +175,57 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url, CFileItemList& items
 
   float chapter_size = 0;
   bool chapter_error = false;
+
+#ifdef HAS_TAGLIB_MATROSKA
+  // Drive chaptered Matroska music from TagLib's chapter list — same UIDs, order,
+  // micro-chapter filter, and timings as chapterTags. Indexing chapterOrder with
+  // FFmpeg's chapter index diverges when either side skips or reorders chapters.
+  if (!isAudioBook && useMatroskaTags)
+  {
+    unsigned int track = 0;
+    for (const auto& chapter : chapterOrder)
+    {
+      const auto chapUid = std::get<0>(chapter);
+      if (chapUid == CMusicInfoTagLoaderMatroska::DummyChapterUid)
+        continue;
+
+      ++track;
+      std::shared_ptr<CFileItem> item(new CFileItem(url.Get(), false));
+      *item->GetMusicInfoTag() = albumtag;
+
+      auto it = chapterTags.find(chapUid);
+      if (it != chapterTags.end())
+      {
+        for (const auto& Tracktag : it->second)
+          CMusicInfoTagLoaderMatroska::ParseTag(Tracktag.first, Tracktag.second, separators,
+                                                musicsep, *item->GetMusicInfoTag());
+      }
+
+      item->SetStartOffset(CUtil::ConvertSecsToMilliSecs(std::get<2>(chapter)));
+      item->SetEndOffset(CUtil::ConvertSecsToMilliSecs(std::get<3>(chapter)));
+      item->GetMusicInfoTag()->SetDuration(
+          CUtil::ConvertMilliSecsToSecsInt(item->GetEndOffset() - item->GetStartOffset()));
+
+      item->GetMusicInfoTag()->SetTrackNumber(track);
+      item->GetMusicInfoTag()->SetLoaded(true);
+
+      item->SetLabel(StringUtils::Format("{0:02}. {1} - {2}", track,
+                                         item->GetMusicInfoTag()->GetAlbum(),
+                                         item->GetMusicInfoTag()->GetTitle()));
+
+      item->SetProperty("item_start", item->GetStartOffset());
+      item->SetProperty("audio_bookmark", item->GetStartOffset());
+      if (!thumb.empty())
+        item->SetArt("thumb", thumb);
+      items.Add(item);
+    }
+
+    if (track > 0)
+      return true;
+    // TagLib found no real chapters — fall through to the FFmpeg path below.
+  }
+#endif // HAS_TAGLIB_MATROSKA
+
   for (unsigned int i = 0; m_fctx->chapters && i < m_fctx->nb_chapters; ++i)
   {
     if (!m_fctx->chapters[i] || m_fctx->chapters[i]->start < 0) // null or negative start time
@@ -200,52 +251,28 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url, CFileItemList& items
     std::shared_ptr<CFileItem> item(new CFileItem(url.Get(), false));
     *item->GetMusicInfoTag() = albumtag;
 
-    if (isAudioBook || !useMatroskaTags)
+    while ((tag = av_dict_get(m_fctx->chapters[i]->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)))
     {
-      while ((tag = av_dict_get(m_fctx->chapters[i]->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)))
-      {
-        if (StringUtils::CompareNoCase(tag->key, "title") == 0)
-          chaptitle = tag->value;
-        else if (StringUtils::CompareNoCase(tag->key, "artist") == 0)
-          chapauthor = tag->value;
-        else if (StringUtils::CompareNoCase(tag->key, "album") == 0)
-          chapalbum = tag->value;
-      }
-      item->GetMusicInfoTag()->SetTitle(chaptitle);
-      item->GetMusicInfoTag()->SetAlbum(chapalbum.empty() ? album.empty() ? title : album
-                                                          : chapalbum);
-      item->GetMusicInfoTag()->SetArtist(chapauthor.empty() ? author : chapauthor);
-      if (!desc.empty())
-        item->GetMusicInfoTag()->SetComment(desc);
+      if (StringUtils::CompareNoCase(tag->key, "title") == 0)
+        chaptitle = tag->value;
+      else if (StringUtils::CompareNoCase(tag->key, "artist") == 0)
+        chapauthor = tag->value;
+      else if (StringUtils::CompareNoCase(tag->key, "album") == 0)
+        chapalbum = tag->value;
+    }
+    item->GetMusicInfoTag()->SetTitle(chaptitle);
+    item->GetMusicInfoTag()->SetAlbum(chapalbum.empty() ? album.empty() ? title : album
+                                                        : chapalbum);
+    item->GetMusicInfoTag()->SetArtist(chapauthor.empty() ? author : chapauthor);
+    if (!desc.empty())
+      item->GetMusicInfoTag()->SetComment(desc);
 
-      item->SetStartOffset(CUtil::ConvertSecsToMilliSecs(m_fctx->chapters[i]->start *
-                                                         av_q2d(m_fctx->chapters[i]->time_base)));
-      item->SetEndOffset(CUtil::ConvertSecsToMilliSecs(m_fctx->chapters[i]->end *
+    item->SetStartOffset(CUtil::ConvertSecsToMilliSecs(m_fctx->chapters[i]->start *
                                                        av_q2d(m_fctx->chapters[i]->time_base)));
-      item->GetMusicInfoTag()->SetDuration(
-          CUtil::ConvertMilliSecsToSecsInt(item->GetEndOffset() - item->GetStartOffset()));
-    }
-#ifdef HAS_TAGLIB_MATROSKA
-    else
-    {
-      // process chapter tags for this track using file-order chapter UID
-      if (i < chapterOrder.size())
-      {
-        auto it = chapterTags.find(std::get<0>(chapterOrder[i]));
-        if (it != chapterTags.end())
-        {
-          for (const auto& Tracktag : it->second)
-            CMusicInfoTagLoaderMatroska::ParseTag(Tracktag.first, Tracktag.second, separators,
-                                                  musicsep, *item->GetMusicInfoTag());
-
-          item->SetStartOffset(CUtil::ConvertSecsToMilliSecs(std::get<2>(chapterOrder[i])));
-          item->SetEndOffset(CUtil::ConvertSecsToMilliSecs(std::get<3>(chapterOrder[i])));
-          item->GetMusicInfoTag()->SetDuration(
-              CUtil::ConvertMilliSecsToSecsInt(item->GetEndOffset() - item->GetStartOffset()));
-        }
-      }
-    }
-#endif // HAS_TAGLIB_MATROSKA
+    item->SetEndOffset(CUtil::ConvertSecsToMilliSecs(m_fctx->chapters[i]->end *
+                                                     av_q2d(m_fctx->chapters[i]->time_base)));
+    item->GetMusicInfoTag()->SetDuration(
+        CUtil::ConvertMilliSecsToSecsInt(item->GetEndOffset() - item->GetStartOffset()));
 
     item->GetMusicInfoTag()->SetTrackNumber(i + 1);
     item->GetMusicInfoTag()->SetLoaded(true);

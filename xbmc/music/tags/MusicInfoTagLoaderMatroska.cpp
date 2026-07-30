@@ -511,7 +511,7 @@ void CMusicInfoTagLoaderMatroska::GetMatroskaMusicTags(
     *  - use the next chapter's start time, or
     *  - use the file duration for the last chapter.
     */
-    constexpr unsigned long long DummyChapterUid = 999000999000999;
+    constexpr unsigned long long DummyChapterUid = CMusicInfoTagLoaderMatroska::DummyChapterUid;
     if (chapterCount == 0)
     {
       chapterOrder.push_back(
