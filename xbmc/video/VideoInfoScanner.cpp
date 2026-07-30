@@ -1703,7 +1703,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     if (!libraryImport)
       GetArtwork(pItem, content, videoFolder, useLocal && !pItem->IsPlugin(),
-                 showInfo ? showInfo->m_strPath : "", useRemoteArt);
+                 showInfo ? URIUtils::AddFileToFolder(showInfo->m_strPath, ".actors") : "",
+                 useRemoteArt);
 
     // ensure the art map isn't completely empty by specifying an empty thumb
     KODI::ART::Artwork art = pItem->GetArt();
@@ -2149,8 +2150,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
     std::string parentDir = URIUtils::GetParentPath(pItem->GetPath());
     if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
             CSettings::SETTING_VIDEOLIBRARY_ACTORTHUMBS))
-      FetchActorThumbs(movieDetails.m_cast, actorArtPath.empty() ? parentDir : actorArtPath,
+    {
+      // .actors sits alongside the nfo, so for a disc folder it is in BDMV/VIDEO_TS
+      const std::string mediaDir{URIUtils::IsOpticalMediaFile(pItem->GetPath())
+                                     ? URIUtils::GetDirectory(pItem->GetPath())
+                                     : parentDir};
+      FetchActorThumbs(movieDetails.m_cast,
+                       actorArtPath.empty() ? URIUtils::AddFileToFolder(mediaDir, ".actors")
+                                            : actorArtPath,
                        useRemoteArt);
+    }
     if (bApplyToDir)
       ApplyThumbToFolder(parentDir, art["thumb"]);
   }
@@ -2668,24 +2677,24 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
   void CVideoInfoScanner::FetchActorThumbs(
       std::vector<SActorInfo>& actors,
-      const std::string& strPath,
+      const std::string& actorsDir,
       UseRemoteArtWithLocalScraper useRemoteArt /* = YES */) const
   {
     CFileItemList items;
     // don't try to fetch anything local with plugin source
-    if (!URIUtils::IsPlugin(strPath))
-    {
-      std::string actorsDir = URIUtils::AddFileToFolder(strPath, ".actors");
-      if (CDirectory::Exists(actorsDir))
-        CDirectory::GetDirectory(actorsDir, items, ".png|.jpg|.tbn", DIR_FLAG_NO_FILE_DIRS |
-                                 DIR_FLAG_NO_FILE_INFO);
-    }
+    if (!URIUtils::IsPlugin(actorsDir) && CDirectory::Exists(actorsDir))
+      CDirectory::GetDirectory(actorsDir, items, ".png|.jpg|.tbn",
+                               DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO);
     for (std::vector<SActorInfo>::iterator i = actors.begin(); i != actors.end(); ++i)
     {
       if (i->thumb.empty())
       {
+        // Must match how the name is turned into a filename when exporting (see
+        // CVideoDatabase::GetSafeFile()), or an actor whose name contains a character that is not
+        // legal in a filename (ie. a trailing '.') can never be matched to their own exported thumb
         std::string thumbFile = i->strName;
         StringUtils::Replace(thumbFile, ' ', '_');
+        thumbFile = CUtil::MakeLegalFileName(std::move(thumbFile));
         for (int j = 0; j < items.Size(); j++)
         {
           std::string compare = URIUtils::GetFileName(items[j]->GetPath());

@@ -126,7 +126,7 @@ namespace KODI::VIDEO
      \param content content type of the item.
      \param bApplyToDir whether we should apply any thumbs to a folder.  Defaults to false.
      \param useLocal whether we should use local thumbs. Defaults to true.
-     \param actorArtPath the path to search for actor thumbs. Defaults to empty.
+     \param actorArtPath the directory containing actor thumbs. Defaults to empty.
      \param useRemoteArt use remote art if also using local scraper. Defaults to yes.
      */
     void GetArtwork(
@@ -256,12 +256,13 @@ namespace KODI::VIDEO
     /*! \brief Fetch thumbs for actors
      Updates each actor with their thumb (local or online)
      \param actors - vector of SActorInfo
-     \param strPath - path on filesystem to look for local thumbs
+     \param actorsDir - directory holding the local thumbs (ie. a .actors folder, or the actors
+            folder of a library export). Used as given, nothing is appended.
      \param useRemoteArt - use remote art (ie. http://) even if derived from local .nfo file. Defaults to yes.
      */
     void FetchActorThumbs(
         std::vector<SActorInfo>& actors,
-        const std::string& strPath,
+        const std::string& actorsDir,
         UseRemoteArtWithLocalScraper useRemoteArt = UseRemoteArtWithLocalScraper::YES) const;
 
     static int GetPathHash(const CFileItemList &items, std::string &hash);
