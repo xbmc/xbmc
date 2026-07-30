@@ -1,4 +1,8 @@
 if(ENABLE_MOLD)
+  option(ENABLE_SEPARATE_DEBUG
+         "Enable mold separate debug file support"
+         OFF)
+
   if(CMAKE_CXX_COMPILER_ID STREQUAL GNU AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 12)
     # GCC < 12 doesn't support -fuse-ld=mold, so we have to use tools prefix path
     # if mold is installed in a non-standard dir, users can set -DMOLD_PREFIX=/path/to/mold_install_prefix
@@ -67,6 +71,12 @@ if(ENABLE_MOLD)
       set(CMAKE_EXE_LINKER_FLAGS "${LD_FLAGS} ${COMPILER_ARGS} ${CMAKE_EXE_LINKER_FLAGS}")
       set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
       set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
+      if(ENABLE_SEPARATE_DEBUG)
+        add_link_options(
+          "$<$<STREQUAL:$<TARGET_PROPERTY:TYPE>,EXECUTABLE>:LINKER:--separate-debug-file>"
+        )
+        message(STATUS "Mold separate debug file enabled")
+      endif()
       message(STATUS "Linker: mold")
     endif()
     mark_as_advanced(MOLD_EXECUTABLE CMAKE_LINKER)
