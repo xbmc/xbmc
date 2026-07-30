@@ -12,6 +12,7 @@
 #include "Util.h"
 #include "network/DNSNameCache.h"
 #include "network/WakeOnAccess.h"
+#include "utils/Set.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -52,6 +53,9 @@ constexpr std::string_view MARIADB_10_HACK_PREFIX = "5.5.5-";
 // Minimum MySQL and MariaDB versions required for the default large index size needed by utf8mb4
 constexpr std::string_view MIN_MYSQL_STR = "5.7.9";
 constexpr std::string_view MIN_MARIADB_STR = "10.2.5";
+
+// Fallback storage engine when the server default storage engine is not usable.
+constexpr std::string_view DEFAULT_STORAGE_ENGINE = "InnoDB";
 
 struct MySQLDbVersion
 {
@@ -94,6 +98,26 @@ bool IsValidIdentifier(std::string_view id)
 
   return std::ranges::all_of(id, [](char c)
                              { return StringUtils::isasciialphanum(c) || c == '_' || c == '$'; });
+}
+
+/*!
+ * \brief Storage engines that must never be used for Kodi databases.
+ *        All names must be in lower case.
+ * MyISAM: maximum index key length too low for the utf8mb4 character set
+ */
+constexpr auto BLACKLISTED_ENGINES = make_set<std::string_view>({"myisam"});
+
+constexpr bool isLowercaseString(std::string_view w)
+{
+  return std::ranges::all_of(w, [](char c) { return StringUtils::isasciilowercaseletter(c); });
+}
+static_assert(std::ranges::all_of(BLACKLISTED_ENGINES,
+                                  [](std::string_view t) { return isLowercaseString(t); }),
+              "all engines must be in lower case");
+
+bool IsBlacklistedEngine(std::string_view engine)
+{
+  return BLACKLISTED_ENGINES.contains(StringUtils::ToLower(engine));
 }
 } // unnamed namespace
 
@@ -407,6 +431,8 @@ int MysqlDatabase::copy(const char* backup_name)
       throw DbErrors("The source database was unexpectedly empty.");
     }
 
+    const std::string resolvedEngine = ResolveStorageEngine();
+
     // create the new database
     sqlcmd = StringUtils::Format("CREATE DATABASE `{}` {}", backup_name, SQL_CHARSET_COLLATION);
     ret = query_with_reconnect(sqlcmd);
@@ -427,7 +453,7 @@ int MysqlDatabase::copy(const char* backup_name)
         continue;
       }
 
-      // copy the table definition
+      // Copy the table definition
       sqlcmd = StringUtils::Format("CREATE TABLE `{}`.`{}` LIKE `{}`", backup_name, row[0], row[0]);
       ret = query_with_reconnect(sqlcmd);
       if (ret != MYSQL_OK)
@@ -436,8 +462,15 @@ int MysqlDatabase::copy(const char* backup_name)
         throw DbErrors("Can't copy schema for table '%s' (%d)", row[0], ret);
       }
 
-      // copied tables inherit the charset and collation of the original.
-      // set the character set and collation of the table (including current and future columns)
+      // The copy inherits the storage engine, alter it for safety before setting the character set
+      if (!ChangeStorageEngine(backup_name, row[0], resolvedEngine))
+      {
+        mysql_free_result(res);
+        throw DbErrors("Unable to change the storage engine of '%s'.'%s'", backup_name, row[0]);
+      }
+
+      // The copy inherits the charset and collation of the original.
+      // Set the character set and collation of the table (including current and future columns)
       sqlcmd = StringUtils::Format("ALTER TABLE `{}`.{} CONVERT TO {}", backup_name, row[0],
                                    SQL_CHARSET_COLLATION);
       ret = query_with_reconnect(sqlcmd);
@@ -2201,4 +2234,103 @@ void MysqlDataset::interrupt()
   // Impossible
 }
 
+std::string MysqlDatabase::GetServerDefaultEngine()
+{
+  // @@default_storage_engine is available since MySQL/MariaDB 5.5
+  static constexpr std::string_view query{"SELECT @@default_storage_engine"};
+  if (MYSQL_OK == query_with_reconnect(query))
+  {
+    if (MYSQL_RES* res = mysql_store_result(conn); res != nullptr)
+    {
+      std::string engine;
+      // A row is always expected - don't need to distinguish EOF from error
+      if (const MYSQL_ROW row = mysql_fetch_row(res); row != nullptr && row[0] != nullptr)
+        engine = row[0];
+      mysql_free_result(res);
+
+      if (!engine.empty())
+        return engine;
+    }
+  }
+  CLog::Log(LOGWARNING, "MYSQL: Unable to retrieve the server default storage engine ({}).",
+            mysql_errno(conn));
+  return {};
+}
+
+bool MysqlDatabase::ChangeStorageEngine(std::string_view db,
+                                        const char* table,
+                                        std::string_view targetEngine)
+{
+  const std::string engineQuery{
+      StringUtils::Format("SELECT engine FROM information_schema.tables "
+                          "WHERE table_schema = '{}' AND table_name = '{}'",
+                          db, table)};
+
+  if (const int ret = query_with_reconnect(engineQuery); ret != MYSQL_OK)
+  {
+    CLog::LogF(LOGERROR, "Metadata query failed ({})", ret);
+    return false;
+  }
+
+  MYSQL_RES* res = mysql_store_result(conn);
+  if (res == nullptr)
+  {
+    CLog::LogF(LOGERROR, "Unable to retrieve results");
+    return false;
+  }
+
+  const MYSQL_ROW row = mysql_fetch_row(res);
+  // A row is always expected - don't need to distinguish EOF from error
+  const std::string currentEngine = (row != nullptr && row[0] != nullptr) ? row[0] : "";
+  mysql_free_result(res);
+
+  if (currentEngine.empty())
+  {
+    CLog::LogF(LOGERROR, "No current storage engine returned");
+    return false;
+  }
+
+  if (StringUtils::EqualsNoCase(currentEngine, targetEngine))
+  {
+    return true;
+  }
+  else
+  {
+    CLog::Log(LOGINFO, "MYSQL: Migrating '{}'.`{}` from engine {} to {}.", db, table, currentEngine,
+              targetEngine);
+
+    const std::string sqlCmd =
+        StringUtils::Format("ALTER TABLE `{}`.`{}` ENGINE = {}", db, table, targetEngine);
+    if (const int ret = query_with_reconnect(sqlCmd); ret == MYSQL_OK)
+      return true;
+    else
+      CLog::LogF(LOGERROR, "Can't migrate table {} to engine {} ({})", table, targetEngine, ret);
+  }
+  return false;
+}
+
+std::string MysqlDatabase::ResolveStorageEngine()
+{
+  const std::string serverDefault = GetServerDefaultEngine();
+  if (!serverDefault.empty())
+  {
+    if (IsBlacklistedEngine(serverDefault))
+    {
+      CLog::Log(LOGWARNING,
+                "MYSQL: Server default storage engine '{}' is blacklisted. Falling back to the "
+                "application default.",
+                serverDefault);
+    }
+    else
+    {
+      CLog::Log(LOGINFO, "MYSQL: Using server default storage engine '{}' for database copy.",
+                serverDefault);
+      return serverDefault;
+    }
+  }
+
+  CLog::Log(LOGINFO, "MYSQL: Falling back to {} storage engine for database copy.",
+            DEFAULT_STORAGE_ENGINE);
+  return std::string{DEFAULT_STORAGE_ENGINE};
+}
 } // namespace dbiplus
