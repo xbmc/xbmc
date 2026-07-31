@@ -23,6 +23,7 @@ set(SOURCES DDSImage.cpp
             GUIFont.cpp
             GUIFontCache.cpp
             GUIFontManager.cpp
+            GUIFontParsing.cpp
             GUIFontTTF.cpp
             GUIImage.cpp
             GUIIncludes.cpp
@@ -103,6 +104,7 @@ set(HEADERS AspectRatio.h
             GUIFont.h
             GUIFontCache.h
             GUIFontManager.h
+            GUIFontParsing.h
             GUIFontTTF.h
             GUIImage.h
             GUIIncludes.h
