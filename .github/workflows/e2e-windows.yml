@@ -1,0 +1,140 @@
+name: E2E (Windows)
+
+# End-to-end smoke test for docs/E2E-TESTING.md, Windows edition.
+#
+# Builds Kodi from source on a GitHub-hosted Windows runner and runs the exact same
+# tools/e2e scenario suite against kodi.exe unmodified, via the existing desktop
+# KodiProcess launcher (tools/e2e/driver/launcher.py) - Windows needs no new launcher
+# class or conftest.py change at all: kodi.exe supports -p/--portable through the same
+# CAppParamParser code path as macOS/Linux (unlike Android/iOS, which have none), and
+# Python's subprocess.Popen.send_signal(SIGTERM) is already special-cased on Windows to
+# call TerminateProcess() rather than raise.
+#
+# Unlike the other source-built jobs, Windows doesn't use tools/depends'
+# autotools (./bootstrap/./configure/make) at all: third-party dependencies are
+# downloaded as prebuilt binary packages from mirrors.kodi.tv (tools/buildsteps/windows/
+# download-dependencies.bat) plus an MSYS2 environment for the handful of things built
+# from source (download-msys2.bat) - see docs/README.Windows.md sections 4 and 6 for the
+# documented manual build flow this mirrors.
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Nightly against master. The suite is too expensive to run on every PR by
+    # default, so a schedule guarantees at least one result per day.
+    - cron: "20 4 * * *"
+  push:
+    branches: [master]
+  # Opt-in per PR via the "e2e" label: `labeled` starts a run when the label is
+  # added, and `synchronize` re-runs it on later pushes to an already-labelled PR.
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, labeled]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-windows-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  windows-smoke:
+    # PR runs are opt-in: the suite costs hours of runner time across six
+    # workflows, too much for every push to every PR. Schedule, master pushes and
+    # manual dispatches always run.
+    if: >-
+      github.event_name != 'pull_request' ||
+      contains(github.event.pull_request.labels.*.name, 'e2e')
+    # windows-2022 ships VS2022 (17.14.x) and CMake 3.31.6 out of the box - both above
+    # docs/README.Windows.md's minimums, and pinned rather than windows-latest so the
+    # toolchain stays predictable.
+    runs-on: windows-2022
+    timeout-minutes: 180
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      # project/BuildDependencies/scripts/*.list pins the prebuilt dependency package
+      # versions, and tools/buildsteps/windows pins the MSYS2 revision/package set
+      # (download-msys2.bat's own "msysver") - hash both so the cache only invalidates
+      # when what actually gets downloaded/installed would change, not on every push.
+      - name: Restore Windows build dependencies (prebuilt packages + MSYS2)
+        id: depends-cache
+        uses: actions/cache/restore@v6
+        with:
+          path: project\BuildDependencies
+          key: windows-x64-depends-${{ hashFiles('project/BuildDependencies/scripts/**', 'tools/buildsteps/windows/**') }}
+
+      # Prebuilt package mirror pull - see tools/buildsteps/windows/download-dependencies.bat.
+      # Working directory matters: the script computes its own repo-root WORKSPACE as
+      # three levels up from its own path, so it must be run from underneath
+      # tools/buildsteps/windows/ rather than invoked with a full path from elsewhere.
+      - name: Download prebuilt Windows dependencies
+        shell: cmd
+        working-directory: tools\buildsteps\windows\x64
+        run: download-dependencies.bat
+
+      - name: Download and set up MSYS2 build environment
+        shell: cmd
+        working-directory: tools\buildsteps\windows\x64
+        run: download-msys2.bat
+
+      - name: Generate Visual Studio project
+        shell: cmd
+        # Not exercised by this suite's scenarios, and unlike osx/linux (where it's a
+        # legitimate desktop-JDK target - see cmake/modules/FindBluray.cmake) getting
+        # BD-J's ant/JDK auto-detection right here is unverified on this runner image;
+        # skip it rather than risk an unrelated build failure over an untested feature.
+        run: cmake -G "Visual Studio 17 2022" -A x64 -B build -S . -DENABLE_BLURAY_JAR=OFF
+
+      - name: Build Kodi
+        shell: cmd
+        run: cmake --build build --config Debug --parallel
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.3.1
+        with:
+          enable-cache: true
+          cache-dependency-glob: "tools/e2e/uv.lock"
+
+      - name: Run E2E smoke test
+        working-directory: tools/e2e
+        env:
+          KODI_BINARY: ${{ github.workspace }}\build\Debug\kodi.exe
+        run: uv run pytest scenarios -v --junitxml=../../e2e-results.xml
+
+      - name: Upload Kodi log
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: kodi-windows-log
+          path: |
+            build/Debug/portable_data/temp/kodi.log
+            build/Debug/portable_data/temp/process-output.log
+          if-no-files-found: warn
+
+      - name: Upload screenshot
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: kodi-windows-screenshot
+          path: build/Debug/portable_data/screenshots/*.png
+          if-no-files-found: warn
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-results-windows
+          path: e2e-results.xml
+          if-no-files-found: warn
+
+      # Skipped on an exact key hit, and !cancelled() so a cancelled run doesn't
+      # persist a half-populated tree under a key a later run would trust.
+      - name: Save Windows build dependencies cache
+        if: '!cancelled() && steps.depends-cache.outputs.cache-hit != ''true'''
+        uses: actions/cache/save@v6
+        with:
+          path: project\BuildDependencies
+          key: windows-x64-depends-${{ hashFiles('project/BuildDependencies/scripts/**', 'tools/buildsteps/windows/**') }}
