@@ -24,12 +24,9 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   
     set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
   
-    set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/002-allow-chapters-without-uid.patch")
     if(WIN32 OR WINDOWS_STORE)
-      list(APPEND patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/001-cmake-pdb-debug.patch")
+      generate_patchcommand("${CMAKE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/001-cmake-pdb-debug.patch")
     endif()
-    generate_patchcommand("${patches}")
-    unset(patches)
 
     if(WINDOWS_STORE)
       set(EXTRA_ARGS -DPLATFORM_WINRT=ON)
@@ -120,6 +117,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS TAGLIB_STATIC)
       ADD_TARGET_COMPILE_DEFINITION()
     endif()
+
   else()
     if(TagLib_FIND_REQUIRED)
       message(FATAL_ERROR "TagLib not found. You may want to try -DENABLE_INTERNAL_TAGLIB=ON")

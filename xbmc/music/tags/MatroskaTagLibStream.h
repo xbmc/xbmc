@@ -22,6 +22,12 @@
 #include <taglib/tbytevector.h>
 #include <taglib/tiostream.h>
 
+// TagLib::offset_t below needs 2.0, but the Matroska tag API this stream exists to feed needs
+// 2.3.1 - earlier 2.x crash on an invalid seek head and drop chapters carrying no UID.
+#if (TAGLIB_MAJOR_VERSION > 2) ||                                                                  \
+    (TAGLIB_MAJOR_VERSION == 2 &&                                                                  \
+     (TAGLIB_MINOR_VERSION > 3 || (TAGLIB_MINOR_VERSION == 3 && TAGLIB_PATCH_VERSION >= 1)))
+
 /*!
  * VFS-backed TagLib IOStream adapter with read-ahead buffering.
  * Allows TagLib to read through Kodi's virtual filesystem
@@ -270,3 +276,5 @@ private:
   int64_t m_bufStart = -1; //!< File offset where buffer contents begin
   size_t m_bufFill = 0; //!< Number of valid bytes in the buffer
 };
+
+#endif // TagLib >= 2.3.1
