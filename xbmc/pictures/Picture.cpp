@@ -64,7 +64,8 @@ bool CPicture::CreateThumbnailFromSurface(const unsigned char* buffer,
                                           unsigned int format,
                                           const ImageColorMetadata& color)
 {
-  CLog::Log(LOGDEBUG, "cached image '{}' size {}x{}", CURL::GetRedacted(thumbFile), width, height);
+  CLog::Log(LOGDEBUG, "encoding image '{}' size {}x{}", CURL::GetRedacted(thumbFile), width,
+            height);
 
   unsigned char *thumb = NULL;
   unsigned int thumbsize=0;
