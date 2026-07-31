@@ -1,0 +1,203 @@
+name: E2E (Linux X11)
+
+# End-to-end smoke test for docs/E2E-TESTING.md, X11 edition.
+#
+# Runs the same tools/e2e suite as e2e-linux.yml, against Kodi's X11
+# windowing backend (xbmc/windowing/X11) instead of GBM. docs/E2E-TESTING.md
+# picked GBM as the primary Linux headless job (closer to real set-top
+# deployments); this adds X11 coverage alongside it, not in its place.
+#
+# Built with --with-rendersystem=gl (not gles, unlike the GBM/Wayland jobs):
+# real desktop OpenGL/GLX, exercising xbmc/rendering/gl and GLContextGLX
+# rather than the GLES/EGL path. This also means tools/depends does NOT build
+# its own Mesa here (tools/depends/target/Makefile only builds Mesa for
+# RENDER_SYSTEM=gles; for gl it symlinks the system's own gl.pc/glu.pc/egl.pc
+# instead, via the linux-system-gl-libs target) - rendering runs against
+# Ubuntu's own Mesa/llvmpipe, the same software GLX path any desktop Linux
+# box without a GPU already uses.
+#
+# No GPU, no display server: Xvfb provides the display. Direct GLX rendering
+# via llvmpipe works with a plain Xvfb invocation, no special flags needed.
+#
+# New/unproven, like the iOS/tvOS Simulator jobs (docs/E2E-TESTING.md).
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Nightly against master. The suite is too expensive to run on every PR by
+    # default, so a schedule guarantees at least one result per day.
+    - cron: "40 4 * * *"
+  push:
+    branches: [master]
+  # Opt-in per PR via the "e2e" label: `labeled` starts a run when the label is
+  # added, and `synchronize` re-runs it on later pushes to an already-labelled PR.
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, labeled]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-linux-x11-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  linux-x11-smoke:
+    # PR runs are opt-in: the suite costs hours of runner time across six
+    # workflows, too much for every push to every PR. Schedule, master pushes and
+    # manual dispatches always run.
+    if: >-
+      github.event_name != 'pull_request' ||
+      contains(github.event.pull_request.labels.*.name, 'e2e')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    env:
+      HOST_TRIPLET: x86_64-linux-gnu
+      DEPENDS_PREFIX: /home/runner/xbmc-x11-depends
+      CCACHE_DIR: /home/runner/.cache/kodi-e2e-x11-ccache
+      DISPLAY: ":99"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      # The X11/XCB dev packages are what tools/depends' own linux-system-x11-libs
+      # target (tools/depends/target/Makefile) expects to already exist - it only
+      # symlinks them in, it doesn't build or install them. libgl-dev/libegl-dev/
+      # libglu1-mesa-dev are the equivalent for linux-system-gl-libs (this job's
+      # RENDER_SYSTEM=gl skips building Mesa entirely) - libgl-dev alone pulls in
+      # a working Mesa GLX runtime (libglx-mesa0), and libgl1-mesa-dri provides
+      # the llvmpipe driver it loads at runtime with no GPU present.
+      - name: Install build tools and non-depends libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential autoconf automake autopoint cmake gawk gperf \
+            gettext libtool meson nasm ninja-build pkg-config swig \
+            python3-dev unzip zip ccache \
+            libass-dev libcurl4-openssl-dev libexiv2-dev libflatbuffers-dev \
+            libfmt-dev liblzo2-dev libpcre2-dev nlohmann-json3-dev \
+            libspdlog-dev libtag1-dev libtinyxml2-dev \
+            libgl-dev libegl-dev libglu1-mesa-dev libgl1-mesa-dri \
+            xvfb x11-utils \
+            libx11-dev libxext-dev libxrandr-dev libxrender-dev libxfixes-dev \
+            libxdamage-dev libxxf86vm-dev libxshmfence-dev libxt-dev libice-dev \
+            libsm-dev libxmu-dev x11proto-dev libx11-xcb-dev libxcb1-dev \
+            libxcb-dri2-0-dev libxcb-dri3-dev libxcb-glx0-dev libxcb-xfixes0-dev \
+            libxcb-present-dev libxcb-randr0-dev libxcb-render0-dev \
+            libxcb-shape0-dev libxcb-shm0-dev libxcb-sync-dev libxau-dev \
+            libxdmcp-dev libpthread-stubs0-dev
+
+      - name: Compute tools/depends cache key
+        id: depends-key
+        run: echo "hash=$(git rev-parse HEAD:tools/depends)" >> "$GITHUB_OUTPUT"
+
+      - name: Restore Kodi dependencies cache (tools/depends)
+        id: depends-cache
+        uses: actions/cache/restore@v6
+        with:
+          path: |
+            ${{ env.DEPENDS_PREFIX }}
+            tools/depends
+          key: linux-x11-glx-${{ runner.arch }}-depends-${{ steps.depends-key.outputs.hash }}
+
+      - name: Restore ccache
+        uses: actions/cache/restore@v6
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: linux-x11-glx-${{ runner.arch }}-ccache-${{ github.sha }}
+          restore-keys: |
+            linux-x11-glx-${{ runner.arch }}-ccache-
+
+      - name: Configure and build dependencies
+        working-directory: tools/depends
+        run: |
+          ./bootstrap
+          ./configure --host="${HOST_TRIPLET}" --with-rendersystem=gl --prefix="${DEPENDS_PREFIX}" \
+            --with-ffmpeg-options="--disable-vaapi --disable-vdpau --cpu=x86-64"
+          outer_jobs=$(( $(nproc) / 2 ))
+          [ "$outer_jobs" -lt 1 ] && outer_jobs=1
+          make -j"$outer_jobs"
+
+      - name: Generate Kodi build system
+        run: |
+          make -C tools/depends/target/cmakebuildsys \
+            CMAKE_EXTRA_ARGUMENTS="-DCORE_PLATFORM_NAME=x11 -DAPP_RENDER_SYSTEM=gl"
+
+      - name: Build Kodi
+        run: make -j"$(nproc)" -C build
+
+      - name: Show ccache stats
+        if: always()
+        run: ccache -s || true
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.3.1
+        with:
+          enable-cache: true
+          cache-dependency-glob: "tools/e2e/uv.lock"
+
+      # Waited for via xdpyinfo since Xvfb prints no "ready" message.
+      - name: Start headless X server (Xvfb)
+        run: |
+          Xvfb "${DISPLAY}" -screen 0 1920x1080x24 &
+          for _ in $(seq 1 30); do
+            xdpyinfo -display "${DISPLAY}" >/dev/null 2>&1 && break
+            sleep 1
+          done
+          xdpyinfo -display "${DISPLAY}" >/dev/null 2>&1 || {
+            echo "::error::Xvfb did not become ready on display ${DISPLAY} in time"
+            exit 1
+          }
+
+      # kodi-x11 runs straight from the build tree (not "make install"), so
+      # LD_LIBRARY_PATH is needed for other depends libs (ffmpeg, etc.) - GL/EGL
+      # themselves come from the system, not DEPENDS_PREFIX, in this job.
+      - name: Run E2E smoke test
+        working-directory: tools/e2e
+        env:
+          KODI_BINARY: ${{ github.workspace }}/build/kodi-x11
+          LD_LIBRARY_PATH: ${{ env.DEPENDS_PREFIX }}/${{ env.HOST_TRIPLET }}-debug/lib
+        run: uv run pytest scenarios -v --junitxml=../../e2e-results.xml
+
+      - name: Upload Kodi log
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: kodi-linux-x11-log
+          path: |
+            build/portable_data/temp/kodi.log
+            build/portable_data/temp/process-output.log
+          if-no-files-found: warn
+
+      - name: Upload screenshot
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: kodi-linux-x11-screenshot
+          path: build/portable_data/screenshots/*.png
+          if-no-files-found: warn
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-results-linux-x11
+          path: e2e-results.xml
+          if-no-files-found: warn
+
+      - name: Save Kodi dependencies cache (tools/depends)
+        if: '!cancelled() && steps.depends-cache.outputs.cache-hit != ''true'''
+        uses: actions/cache/save@v6
+        with:
+          path: |
+            ${{ env.DEPENDS_PREFIX }}
+            tools/depends
+          key: linux-x11-glx-${{ runner.arch }}-depends-${{ steps.depends-key.outputs.hash }}
+
+      - name: Save ccache
+        if: '!cancelled()'
+        uses: actions/cache/save@v6
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: linux-x11-glx-${{ runner.arch }}-ccache-${{ github.sha }}
