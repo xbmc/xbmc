@@ -1,0 +1,197 @@
+name: E2E (macOS)
+
+# End-to-end smoke test for docs/E2E-TESTING.md.
+#
+# Builds Kodi from source on a GitHub-hosted macOS runner, launches it with a
+# disposable portable profile, confirms the JSON-RPC webserver responds to a ping,
+# takes and sanity-checks a screenshot, asks it to quit cleanly, and checks the log
+# for fatal errors. See tools/e2e/README.md for what this does and does not cover.
+#
+# Intentionally not wired into required PR checks: build time and reliability of
+# building Kodi from source on a hosted macOS runner haven't been proven out yet.
+# Triggers on workflow_dispatch (any branch/ref) or on push to any branch that touches
+# tools/e2e/** or this file, so it can be exercised on a feature branch before merge.
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Nightly against master. The suite is too expensive to run on every PR by
+    # default, so a schedule guarantees at least one result per day.
+    - cron: "20 3 * * *"
+  push:
+    branches: [master]
+  # Opt-in per PR via the "e2e" label: `labeled` starts a run when the label is
+  # added, and `synchronize` re-runs it on later pushes to an already-labelled PR.
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, labeled]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-macos-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  macos-smoke:
+    # PR runs are opt-in: the suite costs hours of runner time across six
+    # workflows, too much for every push to every PR. Schedule, master pushes and
+    # manual dispatches always run.
+    if: >-
+      github.event_name != 'pull_request' ||
+      contains(github.event.pull_request.labels.*.name, 'e2e')
+    # macos-14 is Apple Silicon (arm64). Bump deliberately, don't float on
+    # macos-latest, so cache keys and toolchain behavior stay predictable.
+    runs-on: macos-14
+    timeout-minutes: 180
+    env:
+      HOST_TRIPLET: aarch64-apple-darwin
+      CCACHE_DIR: /Users/runner/.cache/kodi-e2e-ccache
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Install ccache
+        run: brew install ccache
+
+      # hashFiles('tools/depends/**') looks like the obvious cache-key input, but that
+      # glob also matches the (huge, untracked) extracted/built dependency trees that
+      # end up inside tools/depends after a build, not just its checked-in recipe
+      # files - hashing all of that blows past GitHub's hard 120s hashFiles timeout.
+      # Use the git tree hash of tools/depends instead: it only reflects committed
+      # files, changes exactly when the depends recipes change, and is effectively
+      # instant regardless of how much build output has accumulated alongside it.
+      - name: Compute tools/depends cache key
+        id: depends-key
+        run: echo "hash=$(git rev-parse HEAD:tools/depends)" >> "$GITHUB_OUTPUT"
+
+      # tools/depends output is the single biggest time cost in this workflow
+      # (building ffmpeg and friends from scratch can take well over an hour).
+      # It only needs to be rebuilt when the depends build system itself changes.
+      #
+      # Restore/save are split (rather than the combined actions/cache action) because
+      # its save step defaults to post-if: success() - a later step failing (e.g. Build
+      # Kodi) would silently skip saving, discarding a fully-built depends tree. Saving
+      # explicitly with if: always() keeps it even when a later step fails.
+      # Caching only the install prefix isn't enough: make's up-to-date checks for
+      # each dependency key off .configured-*/.installed-* stamp files, the
+      # extracted/built source trees under tools/depends/{native,target}/*/, the
+      # generated Makefile.include, and each package's own (git-tracked) Makefile/
+      # VERSION/patch files and download-files.include - and actions/checkout always
+      # hands all of the latter back with mtime "now", always newer than any cached
+      # stamp, which invalidates every dependency's stamp regardless of the prefix
+      # cache. Caching the whole tools/depends tree (not enumerating individual
+      # paths within it) sidesteps having to know which specific files matter: on a
+      # hit the key already guarantees byte-identical content (it's the tools/depends
+      # tree hash - see below), and tar preserves each file's original mtime on
+      # restore, so the correct relative ordering (sources older than stamps) comes
+      # back automatically, for anything currently in the tree and anything added to
+      # it later.
+      - name: Restore Kodi dependencies cache (tools/depends)
+        id: depends-cache
+        uses: actions/cache/restore@v6
+        with:
+          path: |
+            /Users/Shared/xbmc-depends
+            tools/depends
+          key: macos-${{ runner.arch }}-depends-${{ steps.depends-key.outputs.hash }}
+
+      # Secondary cache: speeds up rebuilding xbmc/ core sources across commits even
+      # when tools/depends itself didn't change.
+      - name: Restore ccache
+        uses: actions/cache/restore@v6
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: macos-${{ runner.arch }}-ccache-${{ github.sha }}
+          restore-keys: |
+            macos-${{ runner.arch }}-ccache-
+
+      - name: Configure and build dependencies
+        working-directory: tools/depends
+        run: |
+          ./bootstrap
+          ./configure --host="${HOST_TRIPLET}" --with-platform=macos
+          make -j"$(sysctl -n hw.ncpu)"
+
+      - name: Generate Kodi build system
+        run: make -C tools/depends/target/cmakebuildsys
+
+      - name: Build Kodi
+        run: make -j"$(sysctl -n hw.ncpu)" -C build
+
+      - name: Show ccache stats
+        if: always()
+        run: ccache -s || true
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.3.1
+        with:
+          enable-cache: true
+          cache-dependency-glob: "tools/e2e/uv.lock"
+
+      - name: Run E2E smoke test
+        working-directory: tools/e2e
+        env:
+          # macOS builds Kodi as a Kodi.app bundle (CMakeLists.txt MACOSX_BUNDLE), not a
+          # bare kodi.bin like Linux - see driver/launcher.py's _resolve_app_root for how
+          # the test driver locates portable_data relative to this.
+          KODI_BINARY: ${{ github.workspace }}/build/Kodi.app/Contents/MacOS/Kodi
+        run: uv run pytest scenarios -v --junitxml=../../e2e-results.xml
+
+      - name: Upload Kodi log
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: kodi-macos-log
+          # portable_data lives under the .app bundle's Resources/<AppName>, not next
+          # to the binary in Contents/MacOS - see driver/launcher.py's
+          # _resolve_app_root. process-output.log (driver-captured stdout/stderr)
+          # covers crashes early enough that Kodi's own kodi.log never got created.
+          path: |
+            build/Kodi.app/Contents/Resources/Kodi/portable_data/temp/kodi.log
+            build/Kodi.app/Contents/Resources/Kodi/portable_data/temp/process-output.log
+          if-no-files-found: warn
+
+      - name: Upload screenshot
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: kodi-macos-screenshot
+          path: build/Kodi.app/Contents/Resources/Kodi/portable_data/screenshots/*.png
+          if-no-files-found: warn
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-results
+          path: e2e-results.xml
+          if-no-files-found: warn
+
+      # Skipped on an exact key hit: nothing changed, so re-uploading would just waste
+      # time. On a miss (including a partial/failed build), save whatever got built.
+      #
+      # !cancelled() matters here: actions/cache is write-once per key, and a push
+      # that cancels an in-flight run (this workflow's own concurrency group does
+      # exactly that) can stop this step at an arbitrary, partial point - always()
+      # alone would still save that incomplete state under this tools/depends
+      # tree's permanent key, and every later run would keep restoring and
+      # rebuilding past that same incomplete point forever. A genuine build
+      # failure is still fine to save partial progress from - only a
+      # cancellation isn't a real stopping point.
+      - name: Save Kodi dependencies cache (tools/depends)
+        if: '!cancelled() && steps.depends-cache.outputs.cache-hit != ''true'''
+        uses: actions/cache/save@v6
+        with:
+          path: |
+            /Users/Shared/xbmc-depends
+            tools/depends
+          key: macos-${{ runner.arch }}-depends-${{ steps.depends-key.outputs.hash }}
+
+      - name: Save ccache
+        if: '!cancelled()'
+        uses: actions/cache/save@v6
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: macos-${{ runner.arch }}-ccache-${{ github.sha }}
