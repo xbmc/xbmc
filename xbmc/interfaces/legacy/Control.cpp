@@ -266,6 +266,9 @@ namespace XBMCAddon
       if (pGUIControl)
       {
         XBMCAddonUtils::GuiLock lock(languageHook, false);
+        // PythonSetLabel re-resolves the font at runtime; scope it to the owning
+        // window so an addon-defined <font> still resolves.
+        GUIFontManager::CScopeGuard fontScope(g_fontManager, GetParentWindowFontScopeKey());
         static_cast<CGUIButtonControl*>(pGUIControl)->PythonSetLabel(strFont, strText, textColor, shadowColor, focusedColor);
         static_cast<CGUIButtonControl*>(pGUIControl)->SetLabel2(strText2);
         static_cast<CGUIButtonControl*>(pGUIControl)->PythonSetDisabledColor(disabledColor);
@@ -682,6 +685,9 @@ namespace XBMCAddon
       if (pGUIControl)
       {
         XBMCAddonUtils::GuiLock lock(languageHook, false);
+        // PythonSetLabel re-resolves the font at runtime; scope it to the owning
+        // window so an addon-defined <font> still resolves.
+        GUIFontManager::CScopeGuard fontScope(g_fontManager, GetParentWindowFontScopeKey());
         static_cast<CGUIRadioButtonControl*>(pGUIControl)->PythonSetLabel(strFont, strText, textColor, shadowColor, focusedColor);
         static_cast<CGUIRadioButtonControl*>(pGUIControl)->PythonSetDisabledColor(disabledColor);
       }
@@ -743,6 +749,15 @@ namespace XBMCAddon
     // ============================================================
     // ============================================================
     Control::~Control() { deallocating(); }
+
+    String Control::GetParentWindowFontScopeKey() const
+    {
+      CGUIWindow* window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(iParentId);
+      if (!window)
+        return {};
+
+      return window->GetProperty("fontscopekey").asString();
+    }
 
     CGUIControl* Control::Create()
     {
