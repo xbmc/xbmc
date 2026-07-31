@@ -1,0 +1,258 @@
+name: E2E (iOS/tvOS Simulator)
+
+# End-to-end smoke test for docs/E2E-TESTING.md, iOS and tvOS editions.
+#
+# Cross-builds Kodi's app for the Simulator ABI (via tools/depends), boots a
+# Simulator device, installs the .app, and runs the tools/e2e scenario suite
+# against it via `xcrun simctl` - see tools/e2e/driver/ios_launcher.py for how the
+# simctl-based launcher stands in for the desktop KodiProcess launcher. Neither
+# platform has a "-p"/"--portable" flag, same as Android, but the Simulator shares
+# the host filesystem/network directly, so unlike Android there's no
+# adb-forward-style bridging step needed.
+#
+# One workflow for both: IOSKodiProcess is generic over any darwin_embedded
+# Simulator app, so the two legs differ only in which depends platform they
+# configure and which simctl runtime/device type they pick. The Simulator ABIs are
+# far less exercised than the device ones, so treat build failures on either leg
+# as plausibly a build-system gap rather than a CI-wiring issue.
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Nightly against master. The suite is too expensive to run on every PR by
+    # default, so a schedule guarantees at least one result per day.
+    - cron: "40 3 * * *"
+  push:
+    branches: [master]
+  # Opt-in per PR via the "e2e" label: `labeled` starts a run when the label is
+  # added, and `synchronize` re-runs it on later pushes to an already-labelled PR.
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, labeled]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-apple-simulator-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  simulator-smoke:
+    # PR runs are opt-in: the suite costs hours of runner time across six
+    # workflows, too much for every push to every PR. Schedule, master pushes and
+    # manual dispatches always run.
+    if: >-
+      github.event_name != 'pull_request' ||
+      contains(github.event.pull_request.labels.*.name, 'e2e')
+    # macos-14 is Apple Silicon (arm64), matching e2e-macos.yml's own pin - the
+    # Simulator ABI for --host=aarch64-apple-darwin is arm64 either way, so this
+    # keeps the build and the simulator device on the same architecture.
+    runs-on: macos-14
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: ios
+            display_name: iOS
+            depends_platform: ios-simulator
+            runtime_prefix: com.apple.CoreSimulator.SimRuntime.iOS-
+            device_pattern: iPhone
+            cmake_extra_arguments: ""
+          - platform: tvos
+            display_name: tvOS
+            depends_platform: tvos-simulator
+            runtime_prefix: com.apple.CoreSimulator.SimRuntime.tvOS-
+            device_pattern: Apple TV
+            cmake_extra_arguments: "-DENABLE_BLURAY_JAR=OFF"
+    name: ${{ matrix.display_name }} Simulator
+    env:
+      HOST_TRIPLET: aarch64-apple-darwin
+      DEPENDS_PREFIX: /Users/Shared/xbmc-depends
+      CCACHE_DIR: /Users/runner/.cache/kodi-e2e-${{ matrix.platform }}-ccache
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      # GitHub's macOS runner images ship several Xcode versions side by side under
+      # /Applications - pick the newest installed rather than pinning an exact
+      # version that may not exist (or may have been superseded) on a given image.
+      - name: Select latest available Xcode
+        run: |
+          latest_xcode=$(find /Applications -maxdepth 1 -name 'Xcode_*.app' | sort -V | tail -1)
+          if [ -n "$latest_xcode" ]; then
+            sudo xcode-select -s "$latest_xcode"
+          fi
+          xcodebuild -version
+
+      - name: Install ccache
+        run: brew install ccache
+
+      - name: Compute tools/depends cache key
+        id: depends-key
+        run: echo "hash=$(git rev-parse HEAD:tools/depends)" >> "$GITHUB_OUTPUT"
+
+      # Cache the whole tools/depends tree (not individual paths within it), keyed on
+      # its own git tree hash, so restored stamp-file/source-tree mtime ordering stays
+      # correct.
+      - name: Restore Kodi dependencies cache (tools/depends)
+        id: depends-cache
+        uses: actions/cache/restore@v6
+        with:
+          path: |
+            ${{ env.DEPENDS_PREFIX }}
+            tools/depends
+          key: ${{ matrix.depends_platform }}-${{ runner.arch }}-depends-${{ steps.depends-key.outputs.hash }}
+
+      - name: Restore ccache
+        uses: actions/cache/restore@v6
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ${{ matrix.depends_platform }}-${{ runner.arch }}-ccache-${{ github.sha }}
+          restore-keys: |
+            ${{ matrix.depends_platform }}-${{ runner.arch }}-ccache-
+
+      - name: Configure and build dependencies
+        working-directory: tools/depends
+        run: |
+          ./bootstrap
+          ./configure --host="${HOST_TRIPLET}" --with-platform=${{ matrix.depends_platform }} --prefix="${DEPENDS_PREFIX}"
+          make -j"$(sysctl -n hw.ncpu)"
+
+      - name: Generate Xcode project
+        run: make -C tools/depends/target/cmakebuildsys CMAKE_EXTRA_ARGUMENTS="${{ matrix.cmake_extra_arguments }}"
+
+      # CODE_SIGNING_ALLOWED=NO matches the equivalent flag in the old buildbot
+      # script (tools/buildsteps/ios/make-xbmc) - the generated project already
+      # disables code signing at the CMake level for any non-depends darwin_embedded
+      # target (tools/depends/target/Toolchain.cmake.in), but the Simulator doesn't
+      # require a real signing identity anyway, so this is defensive, not load-bearing.
+      - name: Build Kodi
+        working-directory: build
+        run: xcodebuild -config Debug -jobs "$(sysctl -n hw.ncpu)" CODE_SIGNING_ALLOWED=NO
+
+      - name: Show ccache stats
+        if: always()
+        run: ccache -s || true
+
+      - name: Find built Kodi.app
+        id: app
+        run: |
+          app_path=$(find build -name 'Kodi.app' -path '*Debug*' -print -quit)
+          if [ -z "$app_path" ]; then
+            echo "::error::No Debug Kodi.app found under build/ after xcodebuild"
+            exit 1
+          fi
+          echo "path=$(realpath "$app_path")" >> "$GITHUB_OUTPUT"
+
+      # Discovered dynamically: device type and runtime identifiers shift with
+      # whichever Xcode version the runner image ships. The device type comes from the
+      # chosen runtime's own supportedDeviceTypes, so it is guaranteed valid for that
+      # runtime - picking the newest of each independently can pair a device type the
+      # runtime rejects with "SimError code=403: Incompatible device".
+      - name: Create and boot a Simulator device
+        id: sim
+        env:
+          RUNTIME_PREFIX: ${{ matrix.runtime_prefix }}
+          DEVICE_PATTERN: ${{ matrix.device_pattern }}
+        run: |
+          runtime_json=$(xcrun simctl list --json runtimes | jq -c --arg prefix "$RUNTIME_PREFIX" '
+            [.runtimes[] | select(.identifier | startswith($prefix))]
+            | sort_by(.version) | last')
+          runtime_id=$(echo "$runtime_json" | jq -r '.identifier // empty')
+          device_type=$(echo "$runtime_json" | jq -r --arg pattern "$DEVICE_PATTERN" '
+            [.supportedDeviceTypes[]? | select(.name | test($pattern))] | last | .identifier // empty')
+          if [ -z "$device_type" ] || [ -z "$runtime_id" ]; then
+            echo "::error::Could not find a $DEVICE_PATTERN device type / matching runtime via simctl"
+            xcrun simctl list
+            exit 1
+          fi
+          udid=$(xcrun simctl create Kodi-E2E "$device_type" "$runtime_id")
+          xcrun simctl bootstatus "$udid" -b
+          echo "udid=$udid" >> "$GITHUB_OUTPUT"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.3.1
+        with:
+          enable-cache: true
+          cache-dependency-glob: "tools/e2e/uv.lock"
+
+      - name: Run E2E smoke test on Simulator
+        working-directory: tools/e2e
+        env:
+          KODI_APP: ${{ steps.app.outputs.path }}
+          KODI_SIMULATOR_DEVICE: ${{ steps.sim.outputs.udid }}
+        run: uv run pytest scenarios -v --junitxml=../../e2e-results.xml
+
+      # The app's data container only exists once installed, so this can't be
+      # resolved until after the test run - independent of driver/ios_launcher.py's
+      # own (in-process) resolution of the same path, purely for CI artifact upload.
+      # kodi.log is searched for rather than assumed at
+      # Library/Preferences/Kodi/temp/kodi.log: special://logpath does not resolve the
+      # same way special://home does on this platform, so the log can sit outside the
+      # profile directory that the settings and screenshots use.
+      - name: Locate Kodi profile dir for artifact collection
+        if: always()
+        id: profile
+        run: |
+          bundle_id=$(/usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" "${{ steps.app.outputs.path }}/Info.plist" 2>/dev/null || true)
+          dir=""
+          log=""
+          if [ -n "$bundle_id" ]; then
+            container=$(xcrun simctl get_app_container "${{ steps.sim.outputs.udid }}" "$bundle_id" data 2>/dev/null || true)
+            if [ -n "$container" ]; then
+              dir="$container/Library/Preferences/Kodi"
+              log=$(find "$container" -name 'kodi.log' -print -quit 2>/dev/null)
+            fi
+          fi
+          echo "dir=$dir" >> "$GITHUB_OUTPUT"
+          echo "log=$log" >> "$GITHUB_OUTPUT"
+
+      - name: Upload Kodi log
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: kodi-${{ matrix.platform }}-log
+          path: ${{ steps.profile.outputs.log }}
+          if-no-files-found: warn
+
+      - name: Upload screenshot
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: kodi-${{ matrix.platform }}-screenshot
+          path: ${{ steps.profile.outputs.dir }}/screenshots/*.png
+          if-no-files-found: warn
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-results-${{ matrix.platform }}
+          path: e2e-results.xml
+          if-no-files-found: warn
+
+      - name: Delete Simulator device
+        if: always()
+        run: |
+          xcrun simctl shutdown "${{ steps.sim.outputs.udid }}" || true
+          xcrun simctl delete "${{ steps.sim.outputs.udid }}" || true
+
+      # Skipped on an exact key hit, and !cancelled() so a cancelled run doesn't
+      # persist a half-built tree under a key a later run would trust.
+      - name: Save Kodi dependencies cache (tools/depends)
+        if: '!cancelled() && steps.depends-cache.outputs.cache-hit != ''true'''
+        uses: actions/cache/save@v6
+        with:
+          path: |
+            ${{ env.DEPENDS_PREFIX }}
+            tools/depends
+          key: ${{ matrix.depends_platform }}-${{ runner.arch }}-depends-${{ steps.depends-key.outputs.hash }}
+
+      - name: Save ccache
+        if: '!cancelled()'
+        uses: actions/cache/save@v6
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ${{ matrix.depends_platform }}-${{ runner.arch }}-ccache-${{ github.sha }}
