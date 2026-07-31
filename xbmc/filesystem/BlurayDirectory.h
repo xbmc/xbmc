@@ -19,11 +19,14 @@
 #include <map>
 #include <optional>
 #include <string>
+#include <vector>
 
 #include <libbluray/bluray.h>
 
 class CFileItem;
 class CFileItemList;
+
+class TestBlurayDirectory;
 
 namespace XFILE
 {
@@ -54,6 +57,8 @@ public:
   std::string GetBlurayID();
 
 private:
+  friend class ::TestBlurayDirectory;
+
   /*!
    \brief Populate the stream details of a playlist on this disc.
    Deriving these means parsing the playlist's m2ts, so it is only done once a playlist is known
@@ -63,6 +68,39 @@ private:
    \param item the item to populate
    */
   void SetPlaylistStreamDetails(unsigned int playlist, CFileItem& item);
+
+  /*!
+   \brief Discard the playlists that are not a movie/episode.
+   Removes those with no clips, shorter than a second, with a clip repeated within them, and those
+   that duplicate an earlier playlist.
+   \param playlists the playlists to filter, in place
+   \return true if any playlist remains
+   */
+  static bool FilterPlaylists(std::vector<PlaylistInformation>& playlists);
+
+  /*!
+   \brief Get the playlist(s) on the disc as FileItems, without their stream details.
+   \param playlist a single playlist to return, or ALL_PLAYLISTS for every valid one
+   \return true if any playlist was found
+   */
+  static bool GetPlaylists(const CURL& url,
+                           const std::string& realPath,
+                           int flags,
+                           int playlist,
+                           CFileItemList& items,
+                           std::map<unsigned int, ClipInformation>& clipCache);
+
+  /*!
+   \brief Describe every playlist on the disc and the clips they share, caching the result.
+   \return true if the information was read from the disc and cached
+   */
+  static bool GetPlaylistsInformation(const CURL& url,
+                                      const std::string& realPath,
+                                      int flags,
+                                      CFileItemList& allTitles,
+                                      ClipMap& clips,
+                                      PlaylistMap& playlists,
+                                      std::map<unsigned int, ClipInformation>& clipCache);
 
   enum class DiscInfo : uint8_t
   {
