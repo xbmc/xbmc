@@ -1,0 +1,13 @@
+[project]
+name = "kodi-e2e"
+version = "0.1.0"
+description = "Kodi end-to-end test driver (proof of concept)"
+requires-python = ">=3.9"
+dependencies = [
+    "pytest>=7,<9",
+    "requests>=2,<3",
+    "pillow>=10,<12",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["scenarios"]
