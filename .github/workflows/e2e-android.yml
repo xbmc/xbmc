@@ -1,0 +1,254 @@
+name: E2E (Android emulator)
+
+# End-to-end smoke test for docs/E2E-TESTING.md, Android edition.
+#
+# Cross-builds Kodi's Android APK from source via tools/depends, boots a
+# hardware-accelerated x86_64 emulator (reactivecircus/android-emulator-runner),
+# installs the APK, and runs the tools/e2e scenario suite against it over
+# adb-forwarded JSON-RPC. Android has no "-p"/"--portable" flag, so
+# tools/e2e/driver/android_launcher.py manages a fixed on-device profile directory
+# in place of the desktop KodiProcess launcher.
+#
+# x86_64 (not arm64) is deliberate: it's the ABI the emulator can run with KVM
+# hardware acceleration on a GitHub-hosted Linux runner - an arm64 build would only
+# run under much slower binary translation, if at all.
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Nightly against master. The suite is too expensive to run on every PR by
+    # default, so a schedule guarantees at least one result per day.
+    - cron: "0 4 * * *"
+  push:
+    branches: [master]
+  # Opt-in per PR via the "e2e" label: `labeled` starts a run when the label is
+  # added, and `synchronize` re-runs it on later pushes to an already-labelled PR.
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, labeled]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-android-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  android-emulator-smoke:
+    # PR runs are opt-in: the suite costs hours of runner time across six
+    # workflows, too much for every push to every PR. Schedule, master pushes and
+    # manual dispatches always run.
+    if: >-
+      github.event_name != 'pull_request' ||
+      contains(github.event.pull_request.labels.*.name, 'e2e')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    env:
+      HOST_TRIPLET: x86_64-linux-android
+      DEPENDS_PREFIX: /home/runner/xbmc-android-depends
+      CCACHE_DIR: /home/runner/.cache/kodi-e2e-android-ccache
+      # ANDROID_HOME is already set by the runner image to its preinstalled SDK; both
+      # the tools/depends configure below and the sdkmanager install step target it,
+      # so the NDK ends up exactly where --with-sdk-path's default lookup expects it.
+      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      # Kept in sync with docs/README.Android.md's package list and NDK/SDK revision
+      # pin (r28c / 28.2.13676358) so this job builds against the same toolchain the
+      # docs tell contributors to use locally.
+      - name: Install build tools and non-depends libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            autoconf bison build-essential ccache curl flex gawk gperf \
+            lib32stdc++6 lib32z1 lib32z1-dev libcurl4-openssl-dev unzip zip zlib1g-dev
+
+      - name: Install Android SDK components (NDK r28c, platform, build-tools)
+        run: |
+          yes | "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null
+          "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" \
+            "platform-tools" "platforms;android-37.0" "build-tools;37.0.0" "ndk;28.2.13676358"
+
+      # All build types (including debug) sign via the same "release" signingConfig
+      # in tools/android/packaging/xbmc/build.gradle.in, which falls back to this
+      # exact path/password/alias (tools/android/packaging/Makefile.in) when the
+      # KODI_ANDROID_* env vars aren't set - matches docs/README.Android.md 3.3.
+      - name: Create Android debug signing key
+        run: |
+          mkdir -p ~/.android
+          keytool -genkey -keystore ~/.android/debug.keystore -v -alias androiddebugkey \
+            -dname "CN=Android Debug,O=Android,C=US" -keypass android -storepass android \
+            -keyalg RSA -keysize 2048 -validity 10000
+
+      - name: Compute tools/depends cache key
+        id: depends-key
+        run: echo "hash=$(git rev-parse HEAD:tools/depends)" >> "$GITHUB_OUTPUT"
+
+      # Cache the whole tools/depends tree, not individual paths within it, keyed on
+      # its own git tree hash: restored stamp-file/source-tree mtime ordering stays
+      # correct, and it rebuilds only when the depends recipes change.
+      # Cross-compiling ffmpeg, python3 and the rest of the Android dependency stack
+      # is the single biggest time cost in this job.
+      - name: Restore Kodi dependencies cache (tools/depends)
+        id: depends-cache
+        uses: actions/cache/restore@v6
+        with:
+          path: |
+            ${{ env.DEPENDS_PREFIX }}
+            tools/depends
+          key: android-${{ runner.arch }}-depends-${{ steps.depends-key.outputs.hash }}
+
+      - name: Restore ccache
+        uses: actions/cache/restore@v6
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: android-${{ runner.arch }}-ccache-${{ github.sha }}
+          restore-keys: |
+            android-${{ runner.arch }}-ccache-
+
+      - name: Configure and build dependencies
+        working-directory: tools/depends
+        run: |
+          ./bootstrap
+          ./configure --host="${HOST_TRIPLET}" \
+            --with-sdk-path="${ANDROID_SDK_ROOT}" \
+            --with-tarballs="${DEPENDS_PREFIX}/xbmc-tarballs" \
+            --prefix="${DEPENDS_PREFIX}"
+          make -j"$(nproc)"
+
+      - name: Generate Kodi build system
+        run: make -C tools/depends/target/cmakebuildsys
+
+      - name: Build Kodi
+        run: make -j"$(nproc)" -C build
+
+      - name: Show ccache stats
+        if: always()
+        run: ccache -s || true
+
+      # The "apk" cmake target (cmake/scripts/android/Install.cmake) lives in the
+      # generated build tree, not the source tree - docs/README.Android.md's own
+      # step 8 example (run from the source checkout) only works there because it
+      # assumes a prior `cd` into a custom BUILD_DIR; `build` here is the default one
+      # from the previous two steps.
+      - name: Package debug APK
+        run: make -C build apk
+
+      - name: Find built APK
+        id: apk
+        run: |
+          apk_path=$(find . -maxdepth 1 -name 'kodiapp-x86_64-debug.apk' -print -quit)
+          if [ -z "$apk_path" ]; then
+            echo "::error::No kodiapp-x86_64-debug.apk found at repo root after 'make apk'"
+            exit 1
+          fi
+          echo "path=$(realpath "$apk_path")" >> "$GITHUB_OUTPUT"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.3.1
+        with:
+          enable-cache: true
+          cache-dependency-glob: "tools/e2e/uv.lock"
+
+      # GitHub-hosted Linux runners support KVM nested virtualization, but the device
+      # node isn't group-writable by default - this is the standard workaround (also
+      # used by reactivecircus/android-emulator-runner's own docs) to get hardware
+      # acceleration instead of silently falling back to much slower software
+      # emulation (or timing out inside this job's budget altogether).
+      - name: Enable KVM group perms
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      # api-level 30 is the lowest that exercises the same MANAGE_EXTERNAL_STORAGE
+      # consent path real modern devices use (see driver/android_launcher.py's module
+      # docstring) - anything lower would silently skip that code path instead of
+      # proving the pre-grant workaround actually works.
+      - name: Run E2E smoke test on emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          target: google_apis
+          arch: x86_64
+          profile: pixel_5
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          # Chained onto one line deliberately: each line of `script` runs as its own
+          # shell invocation, so a `cd` does not carry over to the next line and uv
+          # would run from the repo root, where it has no project.
+          # Log/screenshot collection belongs in this same script rather than a later
+          # workflow step: this action shuts the emulator down as part of its own
+          # composite step, leaving no device for adb to talk to afterwards.
+          #
+          # Collected with plain `adb pull` over the external-storage profile path,
+          # matching driver/android_launcher.py (see that module's docstring). Not
+          # `run-as`: that re-execs inside adbd's mount namespace, which has no view of
+          # /storage at all, so every path under it comes back "Permission denied".
+          # `adb root` first because nothing less can read the profile at all - uid
+          # shell gets "Permission denied" even on a file Kodi is actively writing, and
+          # run-as cannot see /storage (driver/android_launcher.py's module docstring
+          # has the full picture). Reading as root is safe; only *writing* as root is
+          # what mislabels files. Repeated here rather than left to the launcher's own
+          # call so that logs still get collected when pytest dies before it ever
+          # launches Kodi - the exact runs whose logs are worth having. Screenshots
+          # come out of special://temp/ alongside kodi.log, for the same reason.
+          script: >
+            cd tools/e2e &&
+            KODI_APK="${{ steps.apk.outputs.path }}" uv run pytest scenarios -v --junitxml=../../e2e-results.xml ;
+            test_exit=$? ;
+            mkdir -p ../../android-artifacts/screenshots ;
+            adb root ; adb wait-for-device ;
+            adb pull /storage/emulated/0/Android/data/org.xbmc.kodi/files/.kodi/temp/kodi.log ../../android-artifacts/kodi.log ;
+            for f in $(adb shell ls -1 /storage/emulated/0/Android/data/org.xbmc.kodi/files/.kodi/temp/*.png 2>/dev/null | tr -d '\r'); do adb exec-out cat "$f" > "../../android-artifacts/screenshots/$(basename $f)"; done ;
+            adb logcat -d > ../../android-artifacts/logcat.txt ;
+            exit $test_exit
+
+      - name: Upload Kodi log and logcat
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: kodi-android-log
+          path: |
+            android-artifacts/kodi.log
+            android-artifacts/logcat.txt
+          if-no-files-found: warn
+
+      - name: Upload screenshot
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: kodi-android-screenshot
+          path: android-artifacts/screenshots/*.png
+          if-no-files-found: warn
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-results-android
+          path: e2e-results.xml
+          if-no-files-found: warn
+
+      # !cancelled() matters: the concurrency group cancels in-flight runs on a new
+      # push, and a cancelled run's half-built tree would otherwise be saved
+      # permanently under this tools/depends tree's one cache key.
+      - name: Save Kodi dependencies cache (tools/depends)
+        if: '!cancelled() && steps.depends-cache.outputs.cache-hit != ''true'''
+        uses: actions/cache/save@v6
+        with:
+          path: |
+            ${{ env.DEPENDS_PREFIX }}
+            tools/depends
+          key: android-${{ runner.arch }}-depends-${{ steps.depends-key.outputs.hash }}
+
+      - name: Save ccache
+        if: '!cancelled()'
+        uses: actions/cache/save@v6
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: android-${{ runner.arch }}-ccache-${{ github.sha }}
