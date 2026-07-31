@@ -1,0 +1,289 @@
+name: E2E (Linux GBM/Wayland)
+
+# End-to-end smoke test for docs/E2E-TESTING.md, GBM and Wayland editions.
+#
+# Builds Kodi the way docs/README.Linux.md documents (plain `cmake` against
+# system packages), not via tools/depends: tools/depends on Linux exists to
+# smoke-test its own recipes and to support platforms with no usable system
+# libs at all (real embedded/cross-compiled targets), not as how a real Linux
+# build is meant to be maintained or run - so this tests what a real Ubuntu
+# user's Kodi build actually looks like, not a custom-built stand-in for it.
+#
+# One workflow for both backends: the build is identical apart from
+# CORE_PLATFORM_NAME, a handful of backend-specific apt packages, and how the
+# runner gets a display. GBM uses the vkms virtual KMS driver; Wayland runs
+# headless Weston. Both fall back to software rendering (llvmpipe) via Ubuntu's
+# own Mesa - the same headless setup Weston/Mutter/IGT use in their own CI. This
+# exercises Kodi's real DRM/GBM/EGL/GLES pipeline end to end; what it can't cover
+# is real GPU driver behavior and HW video decode (V4L2/VAAPI).
+#
+# Two libraries don't come from Ubuntu. ffmpeg because Kodi requires >= 7.0
+# (cmake/modules/FindFFMPEG.cmake) and Ubuntu 24.04 ships 6.1, so the build
+# genuinely can't proceed without it. TagLib by choice: Matroska tag support is
+# preprocessor-gated on TagLib >= 2.3.1, so Ubuntu's 1.13.1 builds fine but
+# silently compiles that feature out - building it internally is what keeps the
+# feature in the binary under test. Both use -DENABLE_INTERNAL_*=ON.
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Nightly against master. The suite is too expensive to run on every PR by
+    # default, so a schedule guarantees at least one result per day.
+    - cron: "0 3 * * *"
+  push:
+    branches: [master]
+  # Opt-in per PR via the "e2e" label: `labeled` starts a run when the label is
+  # added, and `synchronize` re-runs it on later pushes to an already-labelled PR.
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, labeled]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-linux-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  linux-smoke:
+    # PR runs are opt-in: the suite costs hours of runner time across six
+    # workflows, too much for every push to every PR. Schedule, master pushes and
+    # manual dispatches always run.
+    if: >-
+      github.event_name != 'pull_request' ||
+      contains(github.event.pull_request.labels.*.name, 'e2e')
+    # Pinned rather than ubuntu-latest so kernel module availability and the apt
+    # package set stay predictable.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: gbm
+            # libdisplay-info-dev is a hard requirement for GBM windowing
+            # (docs/README.Linux.md section 3.3).
+            extra_packages: libinput-dev libudev-dev libdisplay-info-dev libgbm-dev
+          - platform: wayland
+            extra_packages: libgbm-dev libwayland-dev wayland-protocols waylandpp-dev weston
+    name: Linux ${{ matrix.platform }}
+    env:
+      CCACHE_DIR: /home/runner/.cache/kodi-e2e-${{ matrix.platform }}-system-ccache
+      # No logind session on GH Actions runners, so nothing else creates this.
+      XDG_RUNTIME_DIR: /tmp/xdg-runtime-kodi-e2e
+      WAYLAND_DISPLAY: wayland-1
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      # vkms ships in linux-modules-extra, not installed by default on the runner
+      # image. Kodi's CDRMUtils::OpenDrm() iterates DRM primary nodes and takes
+      # the first one with a connected connector - the runner also has its own
+      # pre-existing virtual card (present before this step even runs), so
+      # vkms's connector reporting connected is what makes Kodi pick it, not it
+      # being the only card. chmod instead of running Kodi as root: the card
+      # node is group "video", which the runner user isn't in (and a group
+      # change wouldn't take effect without a new login session anyway).
+      - name: Load vkms virtual display driver
+        if: matrix.platform == 'gbm'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y "linux-modules-extra-$(uname -r)"
+          sudo modprobe vkms
+          sudo chmod 666 /dev/dri/card*
+          ls -l /dev/dri
+
+      # Follows docs/README.Linux.md section 3's package list, trimmed to skip
+      # what's genuinely optional (Bluetooth/AirPlay/PulseAudio/etc - those are
+      # optional cmake deps that just disable the corresponding feature when
+      # absent). libcdio-dev/libcdio++-dev and libgtest-dev are still included
+      # even though this runner has no optical drive and doesn't run Kodi's own
+      # unit tests: ENABLE_OPTICAL and ENABLE_TESTING both default to ON
+      # (CMakeLists.txt), and testing the default configuration is the point.
+      # libgif-dev/libjpeg-dev aren't for Kodi itself but for TexturePacker
+      # (tools/depends/native/TexturePacker), a required_buildtools executable
+      # built and run during the build regardless of platform. libmicrohttpd-dev
+      # is genuinely required here despite being an optional cmake dep everywhere
+      # else: without it, MicroHttpd isn't found, HAS_WEB_SERVER never gets
+      # defined (cmake/modules/FindMicroHttpd.cmake), and CWebServer's code
+      # compiles out entirely - NetworkServices::Start()'s whole
+      # #ifdef HAS_WEB_SERVER block silently never runs, so the E2E harness's
+      # webserver/JSON-RPC port never opens and every test times out with no
+      # error logged at all. libunistring-dev: libmicrohttpd.pc pulls in gnutls
+      # transitively, which needs -lunistring at final link time, not just to build.
+      - name: Install build tools and libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential cmake gawk gperf gettext libtool meson nasm \
+            ninja-build pkg-config swig python3-dev unzip zip ccache uuid-dev \
+            libass-dev libcurl4-openssl-dev libexiv2-dev libflatbuffers-dev \
+            libfmt-dev libfreetype-dev libfribidi-dev libfstrcmp-dev \
+            libharfbuzz-dev liblzo2-dev libpcre2-dev libssl-dev libsqlite3-dev \
+            libtinyxml-dev zlib1g-dev libcdio-dev libcdio++-dev libgtest-dev \
+            libgif-dev libjpeg-dev nlohmann-json3-dev libmicrohttpd-dev \
+            libunistring-dev libspdlog-dev libtinyxml2-dev libcrossguid-dev \
+            libdbus-1-dev libasound2-dev libdav1d-dev \
+            libdrm-dev libxkbcommon-dev \
+            libegl-dev libegl1 libegl-mesa0 libgles2-mesa-dev libgl1-mesa-dri \
+            ${{ matrix.extra_packages }}
+
+      # Ubuntu 24.04's libdrm-dev is 2.4.125 (packages.ubuntu.com), which predates
+      # the kernel's vkms-to-faux_device conversion: libdrm's xf86drm.c has no
+      # DRM_BUS_FAUX entry in its subsystem-type table until 2.4.134, so
+      # drmGetDevices2() can't classify vkms's /sys/dev/char/226:0 ->
+      # .../devices/faux/vkms/drm/card0 and silently drops it - CDRMUtils::OpenDrm()
+      # then reports "No drm devices found" even though the node is directly
+      # openable. tools/depends/target/libdrm bumped to 2.4.134 for the same reason
+      # (github.com/xbmc/xbmc/pull/28644), but this build doesn't use
+      # tools/depends, so the fix has to be applied here too: same version, same
+      # Kodi mirror URL, same meson options as that recipe. Installed to
+      # /usr/local rather than a scoped prefix: Debian/Ubuntu's default
+      # pkg-config and ld.so search paths both check /usr/local ahead of /usr, so
+      # cmake's pkg_check_modules and kodi-gbm's runtime linker both pick this up
+      # automatically with no PKG_CONFIG_PATH/LD_LIBRARY_PATH needed.
+      - name: Build libdrm 2.4.134 (Ubuntu 24.04's predates vkms faux-bus support)
+        if: matrix.platform == 'gbm'
+        run: |
+          curl -fsSL -o libdrm.tar.xz https://mirrors.kodi.tv/build-deps/sources/libdrm-2.4.134.tar.xz
+          echo "ef2abddea59d1e93c83a48de920431b839ab50d6071ef4da3cf126e7d64ba7b235f2e34e1169d49ad9de2937a0a18acd66bb8d324b067239b1136e0ddbe792a1  libdrm.tar.xz" | sha512sum -c -
+          mkdir libdrm-src
+          tar -xf libdrm.tar.xz -C libdrm-src --strip-components=1
+          meson setup libdrm-src libdrm-build \
+            --prefix=/usr/local --libdir=lib --buildtype=release \
+            -Ddefault_library=shared -Dnouveau=disabled -Domap=disabled \
+            -Dexynos=disabled -Dtegra=disabled -Dintel=disabled \
+            -Dradeon=disabled -Damdgpu=disabled -Dvmwgfx=disabled \
+            -Dvc4=disabled -Dfreedreno=disabled -Detnaviv=disabled \
+            -Dcairo-tests=disabled -Dman-pages=disabled -Dvalgrind=disabled \
+            -Dfreedreno-kgsl=false -Dinstall-test-programs=false -Dudev=false
+          ninja -C libdrm-build
+          sudo ninja -C libdrm-build install
+          sudo ldconfig
+
+      - name: Restore ccache
+        uses: actions/cache/restore@v6
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: linux-${{ matrix.platform }}-system-${{ runner.arch }}-ccache-${{ github.sha }}
+          restore-keys: |
+            linux-${{ matrix.platform }}-system-${{ runner.arch }}-ccache-
+
+      # -DENABLE_INTERNAL_FFMPEG=ON: without KODI_DEPENDSBUILD (which this build
+      # doesn't set), FindFFMPEG.cmake FATAL_ERRORs instead of falling back to
+      # building ffmpeg itself when no suitable system version is found - the
+      # automatic fallback only applies to depends/Windows builds.
+      #
+      # -DENABLE_INTERNAL_TAGLIB=ON: not needed to build - Matroska tag support
+      # is preprocessor-gated on TAGLIB_*_VERSION >= 2.3.1, so Ubuntu 24.04's
+      # 1.13.1 compiles it out rather than failing. Built internally so that
+      # feature is actually present in the binary this suite exercises.
+      - name: Configure Kodi
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug \
+            -DCORE_PLATFORM_NAME=${{ matrix.platform }} -DAPP_RENDER_SYSTEM=gles \
+            -DENABLE_INTERNAL_FFMPEG=ON -DENABLE_INTERNAL_TAGLIB=ON
+
+      # required_buildtools (CMakeLists.txt) are each a separate nested
+      # ExternalProject with their own CMakeLists.txt/find_package() calls -
+      # Kodi's own top-level configure never probes their dependencies (e.g.
+      # TexturePacker needs GIF/JPEG, neither of which is in Kodi's own
+      # required_deps), so a missing one only surfaces once the main build
+      # reaches that target. These are small/fast, so building them first
+      # fails in seconds instead of minutes into the main build.
+      # FlatC isn't listed: it's found as a system binary here (apt's flatc),
+      # so FindFlatC.cmake never creates a build-flatc target to build at all.
+      - name: Build required build tools
+        run: cmake --build build --target build-JsonSchemaBuilder buildtexturepacker -- -j"$(nproc)"
+
+      - name: Build Kodi
+        run: cmake --build build -- -j"$(nproc)"
+
+      - name: Show ccache stats
+        if: always()
+        run: ccache -s || true
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.3.1
+        with:
+          enable-cache: true
+          cache-dependency-glob: "tools/e2e/uv.lock"
+
+      # /dev/dri/card* does not reliably survive the ~30-40 minutes of building
+      # between the setup step and Kodi actually starting, so re-assert the module
+      # and the permissions immediately before use.
+      - name: Re-assert vkms virtual display driver
+        if: matrix.platform == 'gbm'
+        run: |
+          sudo modprobe vkms
+          sudo chmod 666 /dev/dri/card*
+          ls -l /dev/dri
+
+      # --socket/WAYLAND_DISPLAY set explicitly since Weston only exports it to
+      # its own child processes, not this shell. Polled for the socket file
+      # since Weston prints no "ready" message.
+      - name: Start headless Wayland compositor (Weston)
+        if: matrix.platform == 'wayland'
+        run: |
+          mkdir -p "${XDG_RUNTIME_DIR}"
+          chmod 0700 "${XDG_RUNTIME_DIR}"
+          weston --backend=headless-backend.so --renderer=gl \
+            --socket="${WAYLAND_DISPLAY}" --no-config --idle-time=0 &
+          for _ in $(seq 1 30); do
+            [ -S "${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}" ] && break
+            sleep 1
+          done
+          [ -S "${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}" ] || {
+            echo "::error::Weston did not create ${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY} in time"
+            exit 1
+          }
+
+      # The runner has no audio hardware; that's fine - ActiveAE startup isn't
+      # error-checked (Application.cpp's m_pActiveAE->Start()), so Kodi runs with
+      # no sink. No input devices either, which CLibInputHandler treats as
+      # non-fatal. Everything is driven over JSON-RPC.
+      #
+      # ENABLE_APP_AUTONAME (default ON, single-platform Linux build) names the
+      # binary kodi-<platform>; it runs in place from the build tree, so
+      # portable_data lands at build/portable_data (POSIX GetHomePath() resolves
+      # to the binary's directory - xbmc/Util.cpp). No LD_LIBRARY_PATH needed:
+      # every library comes from the system's normal linker paths.
+      - name: Run E2E smoke test
+        working-directory: tools/e2e
+        env:
+          KODI_BINARY: ${{ github.workspace }}/build/kodi-${{ matrix.platform }}
+        run: uv run pytest scenarios -v --junitxml=../../e2e-results.xml
+
+      - name: Upload Kodi log
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: kodi-linux-${{ matrix.platform }}-log
+          path: |
+            build/portable_data/temp/kodi.log
+            build/portable_data/temp/process-output.log
+          if-no-files-found: warn
+
+      - name: Upload screenshot
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: kodi-linux-${{ matrix.platform }}-screenshot
+          path: build/portable_data/screenshots/*.png
+          if-no-files-found: warn
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-results-linux-${{ matrix.platform }}
+          path: e2e-results.xml
+          if-no-files-found: warn
+
+      - name: Save ccache
+        if: '!cancelled()'
+        uses: actions/cache/save@v6
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: linux-${{ matrix.platform }}-system-${{ runner.arch }}-ccache-${{ github.sha }}
