@@ -19,16 +19,12 @@ name: E2E (Windows)
 
 on:
   workflow_dispatch:
-  schedule:
-    # Nightly against master. The suite is too expensive to run on every PR by
-    # default, so a schedule guarantees at least one result per day.
-    - cron: "20 4 * * *"
   push:
     branches: [master]
-  # Opt-in per PR via the "e2e" label: `labeled` starts a run when the label is
-  # added, and `synchronize` re-runs it on later pushes to an already-labelled PR.
+  # Every commit of a PR, once it is out of draft: `synchronize` covers pushes to
+  # an open PR, `ready_for_review` starts a run when a draft is marked ready.
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review, labeled]
+    types: [opened, synchronize, reopened, ready_for_review]
 
 permissions:
   contents: read
@@ -39,12 +35,10 @@ concurrency:
 
 jobs:
   windows-smoke:
-    # PR runs are opt-in: the suite costs hours of runner time across six
-    # workflows, too much for every push to every PR. Schedule, master pushes and
-    # manual dispatches always run.
+    # Draft PRs are skipped - they run as soon as they are marked ready for review.
     if: >-
       github.event_name != 'pull_request' ||
-      contains(github.event.pull_request.labels.*.name, 'e2e')
+      github.event.pull_request.draft == false
     # windows-2022 ships VS2022 (17.14.x) and CMake 3.31.6 out of the box - both above
     # docs/README.Windows.md's minimums, and pinned rather than windows-latest so the
     # toolchain stays predictable.
