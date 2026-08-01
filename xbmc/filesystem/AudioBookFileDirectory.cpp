@@ -17,7 +17,6 @@
 #include "dbwrappers/Database.h"
 #include "filesystem/File.h"
 #include "imagefiles/ImageFileURL.h"
-#include "music/MusicDatabase.h"
 #include "music/MusicEmbeddedCoverLoaderFFmpeg.h"
 #include "music/tags/MusicCodecInfoFFmpeg.h"
 #include "music/tags/MusicInfoTag.h"
@@ -243,59 +242,9 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url, CFileItemList& items
   return true;
 }
 
-/*!
- * Next 4 methods were impelmented to help resolve slow initial play of
- * Matroska files by PaPlayer when testing THIS code originally writtten for 21.3
- * PaPlayer was calling Exists() and ContainsFiles() during initial playback to determine
- * if the file is an audiobook. There will be a PR to implement these soon.
- * CAudioBookFileDirectory is a Library scanning class and should never be used
- * during playback, if the file has been scanned into the music database.
- */
-int CAudioBookFileDirectory::GetSongCountFromDatabase(const CURL& url)
-{
-  CMusicDatabase db;
-  if (!db.Open())
-    return -1;
-
-  std::string strPath = URIUtils::GetDirectory(url.Get());
-  std::string strFileName = URIUtils::GetFileName(url.Get());
-
-  // db.PrepareSQL() uses mprintf-style %s substitution that escapes single
-  // quotes (and other SQL metacharacters) safely, so apostrophes in paths
-  // or filenames are handled and there is no SQL injection surface here.
-  std::string sql = db.PrepareSQL("SELECT COUNT(*) FROM song "
-                                  "JOIN path ON song.idPath = path.idPath "
-                                  "WHERE path.strPath = '%s' AND song.strFileName = '%s'",
-                                  strPath.c_str(), strFileName.c_str());
-
-  int count = db.GetSingleValueInt(sql);
-  db.Close();
-
-  return (count >= 0) ? count : -1;
-}
-
 bool CAudioBookFileDirectory::Exists(const CURL& url)
 {
-  // Fast path: check the music database to avoid any file I/O.
-  // During playback this is called frequently (e.g. from IsAudioBook()),
-  // so it must be fast and must not open the actual media file.
-  int dbSongCount = GetSongCountFromDatabase(url);
-  if (dbSongCount > 1)
-    return true;
-  if (dbSongCount >= 0)
-    return false; // 0 or 1 songs - not a multi-chapter audiobook
-
-  // DB unavailable (-1). Return false to avoid blocking playback.
-  // The file will be properly detected during library scan when the DB
-  // is available. Returning true here risks triggering GetDirectory()
-  // which opens more file/DB handles and can deadlock during playback.
-  return false;
-}
-
-bool CAudioBookFileDirectory::HasChaptersInDatabase(const CURL& url)
-{
-  int dbSongCount = GetSongCountFromDatabase(url);
-  return dbSongCount > 1;
+  return CFile::Exists(url);
 }
 
 bool CAudioBookFileDirectory::ContainsFiles(const CURL& url)
