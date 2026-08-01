@@ -44,7 +44,9 @@ constexpr unsigned int SYNC_BYTE = 0x47;
 constexpr unsigned int TS_HEADER_SIZE = 4;
 constexpr unsigned int ADAPTATION_FIELD_MASK = 0x02;
 constexpr unsigned int PACKETS_TO_PARSE =
-    8000; // Based on testing this is enough to analyse all streams
+    8000; // Based on testing this is enough to analyse all streams in most clips
+constexpr unsigned int MAX_PACKETS_TO_PARSE =
+    60000; // Some clips need considerably more data before all streams can be analysed
 constexpr unsigned int BUFFER_SIZE{BDAV_PACKET_SIZE * PACKETS_TO_PARSE};
 constexpr int TIMESTAMP_SIZE = 4;
 
@@ -105,14 +107,17 @@ inline constexpr std::array DTS_SYNCWORD_XLL_X{std::byte{0x02}, std::byte{0x00},
 inline constexpr std::array DTS_SYNCWORD_XLL_X_IMAX{
     std::byte{0xF1}, std::byte{0x40}, std::byte{0x00}, std::byte{0xD0}}; // DTS-HD MA + IMAX
 
-inline constexpr std::array DTS_SAMPLE_RATES{8000u,  16000u, 32000u,  64000u,  128000u, 22050u,
-                                             44100u, 88200u, 176400u, 352800u, 12000u,  24000u,
-                                             48000u, 96000u, 192000u, 384000u};
+inline constexpr std::array DTS_SAMPLE_RATES{0u,     8000u,  16000u, 32000u, 0u, 0u,
+                                             11025u, 22050u, 44100u, 0u,     0u, 12000u,
+                                             24000u, 48000u, 96000u, 192000u};
 inline constexpr std::array DTS_CHANNEL_COUNTS{1u, 2u, 2u, 2u, 2u, 3u, 3u, 4u,
                                                4u, 5u, 6u, 6u, 6u, 7u, 8u, 8u};
 
 constexpr unsigned int DTS_HEADER_SIZE = 14;
 constexpr unsigned int HEADERS_PARSED_FOR_COMPLETE = 2;
+// The DTS:X and IMAX extension sync words are not present in every frame, so more frames need to
+// be examined before concluding an extension substream is plain DTS-HD Master Audio
+constexpr unsigned int DTS_HEADERS_PARSED_FOR_EXTENSION = 16;
 
 // TrueHD
 inline constexpr std::array TRUEHD_COMMON_SYNC = {std::byte{0xF8}, std::byte{0x72},
@@ -121,6 +126,7 @@ inline constexpr std::array TRUEHD_SAMPLE_RATES{48000u, 96000u, 192000u, 0u, 0u,
                                                 44100u, 88200u, 176400u, 0u, 0u, 0u, 0u, 0u};
 
 constexpr unsigned int TRUEHD_MINIMUM_HEADER_SIZE = 26;
+constexpr unsigned int TRUEHD_EXTENDED_HEADER_SIZE = 30; // Includes extra channel meaning
 constexpr unsigned int TRUEHD_HEADER_SIGNATURE = 0xB752;
 constexpr unsigned int DOLBY_FLAG = 0xBA;
 constexpr unsigned int CH8_SINGLE_CHANNEL_MASK = 0b1100110000110;
@@ -129,6 +135,7 @@ constexpr unsigned int CH8_16_SINGLE_CHANNEL_ALTERNATE_MASK = 0b00110;
 constexpr unsigned int CH8_16_DUAL_CHANNEL_ALTERNATE_MASK = 0b11001;
 
 // LPCM
+constexpr unsigned int LPCM_HEADER_SIZE = 4;
 inline const std::map<unsigned int, unsigned int> LPCM_SAMPLE_RATES = {
     {1u, 48000u}, {4u, 96000u}, {5u, 192000u}};
 inline constexpr std::array LPCM_CHANNEL_COUNTS{0u, 1u, 0u, 2u, 3u, 3u, 4u, 4u,
@@ -618,8 +625,9 @@ bool ParseAC3Bitstream(const std::span<std::byte>& buffer,
   header = GetWord(buffer, offset + 6);
   const unsigned int acmod{GetBits(header, 16, 3)};
 
-  // Set sample rate
-  if (const auto& sampleRates{AC3_SAMPLE_RATES}; fscod < sampleRates.size())
+  // Set sample rate - a reserved code has no rate
+  if (const auto& sampleRates{AC3_SAMPLE_RATES};
+      fscod < sampleRates.size() && sampleRates[fscod] != 0)
     streamInfo->sampleRate = sampleRates[fscod];
 
   // Set channel count
@@ -963,7 +971,7 @@ bool ParseDTSBitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
   if (!dtsData)
     return false;
 
-  unsigned int offset{0};
+  bool substreamPresent{dtsData->syncWord == DTSSyncWords::SUBSTREAM};
   if (dtsData->syncWord == DTSSyncWords::CORE_16BIT_BE)
   {
     // Parse 16-bit DTS core header
@@ -980,7 +988,7 @@ bool ParseDTSBitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
     const auto& sampleRates{DTS_SAMPLE_RATES};
     const auto& channelCounts{DTS_CHANNEL_COUNTS};
 
-    if (sfreq < sampleRates.size())
+    if (sfreq < sampleRates.size() && sampleRates[sfreq] != 0)
       streamInfo->sampleRate = sampleRates[sfreq];
 
     if (amode < channelCounts.size())
@@ -990,15 +998,12 @@ bool ParseDTSBitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
       streamInfo->channels++; // Add LFE channel
 
     // See if there is a DTS substream header in this block
-    if (auto substream{
-            FindDTSSyncWord(buffer, dtsData->syncPos + DTS_HEADER_SIZE, DTS_SYNCWORD_SUBSTREAM)};
-        !substream.has_value())
-      return true;
-    else
-      offset = *substream;
+    substreamPresent =
+        FindDTSSyncWord(buffer, dtsData->syncPos + DTS_HEADER_SIZE, DTS_SYNCWORD_SUBSTREAM)
+            .has_value();
   }
 
-  if (dtsData->syncWord == DTSSyncWords::SUBSTREAM || offset > 0)
+  if (substreamPresent)
   {
     // Substream header found
     streamInfo->hasSubstream = true;
@@ -1014,7 +1019,14 @@ bool ParseDTSBitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
       streamInfo->isXLLXIMAX = true;
   }
 
-  streamInfo->completed = (++streamInfo->seen) >= HEADERS_PARSED_FOR_COMPLETE;
+  // An XLL substream may still be DTS:X or DTS:X IMAX - neither marker is in every frame, so keep
+  // examining frames until one of them is found. An IMAX stream is identified by its own marker,
+  // so finding either marker is enough to name the codec.
+  const unsigned int headersRequired{streamInfo->isXLL && !streamInfo->isXLLX &&
+                                             !streamInfo->isXLLXIMAX
+                                         ? DTS_HEADERS_PARSED_FOR_EXTENSION
+                                         : HEADERS_PARSED_FOR_COMPLETE};
+  streamInfo->completed = (++streamInfo->seen) >= headersRequired;
 
   return true;
 }
@@ -1024,10 +1036,10 @@ bool ParseTrueHDHeader(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
   unsigned int format_info{GetDWord(buffer, 4)};
   unsigned int flags{GetWord(buffer, 10)};
 
-  // Set sample rate
+  // Set sample rate - a reserved code has no rate
   const auto& sampleRates{TRUEHD_SAMPLE_RATES};
-  if (unsigned int audio_sampling_frequency{GetBits(format_info, 32, 4)};
-      audio_sampling_frequency < sampleRates.size())
+  if (const unsigned int audio_sampling_frequency{GetBits(format_info, 32, 4)};
+      audio_sampling_frequency < sampleRates.size() && sampleRates[audio_sampling_frequency] != 0)
     streamInfo->sampleRate = sampleRates[audio_sampling_frequency];
 
   bool ch6_multichannel_type{GetBits(format_info, 28, 1) == 1};
@@ -1069,7 +1081,7 @@ bool ParseTrueHDHeader(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
   bool ch16_present{GetBits(substream_info, 8, 1) == 1};
   uint64_t channel_meaning{GetQWord(buffer, 18)};
   if (bool extra_channel_meaning_present{(GetBits64(channel_meaning, 1, 1) == 1)};
-      extra_channel_meaning_present && ch16_present)
+      extra_channel_meaning_present && ch16_present && buffer.size() >= TRUEHD_EXTENDED_HEADER_SIZE)
   {
     unsigned int extra{GetDWord(buffer, 26)};
     unsigned int ch16_channel_count{GetBits(extra, 17, 5)};
@@ -1086,25 +1098,29 @@ bool ParseTrueHDHeader(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
 bool ParseTrueHDBitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* streamInfo)
 {
   unsigned int offset{0};
-  while (true)
+  while (offset + TRUEHD_MINIMUM_HEADER_SIZE <= buffer.size())
   {
-    // Search for first 3 bytes of header
+    // Search for first 3 bytes of the major sync
     const auto data{buffer.subspan(offset)};
-    auto result{std::ranges::search(data, TRUEHD_COMMON_SYNC)};
-    if (result.empty() ||
-        static_cast<unsigned int>(data.end() - result.begin()) < TRUEHD_MINIMUM_HEADER_SIZE)
+    const auto result{std::ranges::search(data, TRUEHD_COMMON_SYNC)};
+    if (result.empty())
       break;
 
-    offset += std::distance(data.begin(), result.begin());
+    const unsigned int syncOffset{
+        offset + static_cast<unsigned int>(std::distance(data.begin(), result.begin()))};
+    if (syncOffset + TRUEHD_MINIMUM_HEADER_SIZE > buffer.size())
+      break; // Not enough data for a header
 
-    // Check signature
-    if (GetWord(buffer, offset + 8) != TRUEHD_HEADER_SIGNATURE)
-      break;
-
-    if (const unsigned int flag{GetByte(buffer, offset + 3)}; flag == DOLBY_FLAG)
-      ParseTrueHDHeader(buffer.subspan(offset), streamInfo);
-
-    offset += TRUEHD_MINIMUM_HEADER_SIZE;
+    // Check the rest of the major sync and the signature. Only a minor sync (or audio data) will
+    // be found between major syncs, so a match here may be coincidental - keep looking if so.
+    if (GetByte(buffer, syncOffset + 3) == DOLBY_FLAG &&
+        GetWord(buffer, syncOffset + 8) == TRUEHD_HEADER_SIGNATURE)
+    {
+      ParseTrueHDHeader(buffer.subspan(syncOffset), streamInfo);
+      offset = syncOffset + TRUEHD_MINIMUM_HEADER_SIZE;
+    }
+    else
+      offset = syncOffset + 1;
   }
 
   return true;
@@ -1112,18 +1128,22 @@ bool ParseTrueHDBitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo*
 
 bool ParseLPCMBitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* streamInfo)
 {
-  // Sub-stream ID (should be 0xA0-0xAF for LPCM)
-  if (unsigned int sub_stream_id{GetByte(buffer, 1)}; (sub_stream_id & 0xA0) != 0xA0)
+  // The PES payload of an HDMV LPCM stream starts with a four byte audio data header - the first
+  // two bytes are the payload size, followed by the channel assignment and sampling frequency
+  if (buffer.size() < LPCM_HEADER_SIZE)
     return false;
 
-  unsigned int header{GetByte(buffer, 2)};
-  unsigned int channel_info{GetBits(header, 8, 4)};
-  unsigned int sample_rate_code{GetBits(header, 4, 4)};
+  const unsigned int header{GetByte(buffer, 2)};
+  const unsigned int channel_info{GetBits(header, 8, 4)};
+  const unsigned int sample_rate_code{GetBits(header, 4, 4)};
 
-  if (channel_info < LPCM_CHANNEL_COUNTS.size())
-    streamInfo->channels = LPCM_CHANNEL_COUNTS[channel_info];
-  if (LPCM_SAMPLE_RATES.contains(sample_rate_code))
-    streamInfo->sampleRate = LPCM_SAMPLE_RATES.find(sample_rate_code)->second;
+  // Both fields must be known values, otherwise this is not an audio data header
+  if (channel_info >= LPCM_CHANNEL_COUNTS.size() || LPCM_CHANNEL_COUNTS[channel_info] == 0 ||
+      !LPCM_SAMPLE_RATES.contains(sample_rate_code))
+    return false;
+
+  streamInfo->channels = LPCM_CHANNEL_COUNTS[channel_info];
+  streamInfo->sampleRate = LPCM_SAMPLE_RATES.find(sample_rate_code)->second;
 
   streamInfo->completed = (++streamInfo->seen) >= HEADERS_PARSED_FOR_COMPLETE;
 
@@ -1849,9 +1869,8 @@ void ProcessStream(const PESPacket& pesPacket, const std::shared_ptr<TSStreamInf
         ParseTrueHDBitstream(pesPacket.data, audioInfo);
       break;
     case AUDIO_LPCM:
-      if (pesPacket.streamId == 0xBD)
-        if (auto* audioInfo{dynamic_cast<TSAudioStreamInfo*>(streamInfo.get())})
-          ParseLPCMBitstream(pesPacket.data, audioInfo);
+      if (auto* audioInfo{dynamic_cast<TSAudioStreamInfo*>(streamInfo.get())})
+        ParseLPCMBitstream(pesPacket.data, audioInfo);
       break;
     case SUB_PG:
     case SUB_IG:
@@ -1941,12 +1960,6 @@ bool CM2TSParser::GetStreamsFromFile(const std::string& path,
 
     std::vector<std::byte> buffer;
     buffer.resize(BUFFER_SIZE);
-    ssize_t bytesRead = file.Read(buffer.data(), BUFFER_SIZE);
-    file.Close();
-    if (bytesRead > 0)
-      buffer.resize(bytesRead);
-    else
-      return false;
 
     // Assemblers
     std::unordered_map<unsigned int, SectionAssembler> pidSection;
@@ -1957,16 +1970,26 @@ bool CM2TSParser::GetStreamsFromFile(const std::string& path,
     bool patParsed{false};
     bool pmtParsed{false};
     bool allStreamsComplete{false};
-    int offset{0};
     unsigned int packetCount{0};
-    const int size{static_cast<int>(buffer.size())};
+    ssize_t totalBytesRead{0};
 
-    while (packetCount < PACKETS_TO_PARSE && offset + BDAV_PACKET_SIZE <= size)
+    // The file is read in BUFFER_SIZE chunks, stopping as soon as all streams are complete.
+    while (packetCount < MAX_PACKETS_TO_PARSE && !allStreamsComplete)
     {
-      if (offset + BDAV_PACKET_SIZE <= size)
+      const ssize_t bytesRead{file.Read(buffer.data(), BUFFER_SIZE)};
+      if (bytesRead < 0)
       {
-        CLog::LogFC(LOGDEBUG, LOGBLURAY, "Parsing BDAV packet at offset 0x{}",
-                    fmt::format("{:06x}", offset));
+        CLog::LogF(LOGERROR, "Error reading clip file {}", clipFile);
+        break;
+      }
+      if (bytesRead == 0)
+        break; // End of file
+      totalBytesRead += bytesRead;
+
+      const int size{static_cast<int>(bytesRead)};
+      int offset{0};
+      while (packetCount < MAX_PACKETS_TO_PARSE && offset + BDAV_PACKET_SIZE <= size)
+      {
         std::span packet{buffer.data() + offset + TIMESTAMP_SIZE, TS_PACKET_SIZE};
         ParseTSPacket(packet, patParsed, pmtParsed, pmtPIDs, pidSection, pesSection, streams);
         packetCount++;
@@ -1984,7 +2007,16 @@ bool CM2TSParser::GetStreamsFromFile(const std::string& path,
             break; // All streams completed
         }
       }
+
+      // CFile::Read returns less than requested only at the end of the file or on error. Any bytes
+      // after the last whole packet in the chunk would misalign the next one, so do not continue.
+      if (bytesRead < static_cast<ssize_t>(BUFFER_SIZE))
+        break;
     }
+    file.Close();
+
+    if (totalBytesRead == 0)
+      return false;
 
     // Deal with Dolby Vision enhancement streams
     if (const auto videoStreamsVector{GetVideoStreams(streams)};
@@ -2000,10 +2032,36 @@ bool CM2TSParser::GetStreamsFromFile(const std::string& path,
     }
 
     if (!allStreamsComplete)
-      CLog::LogFC(
-          LOGDEBUG, LOGBLURAY,
-          "Not all stream details determined from {} - may need PACKETS_TO_PARSE ({}) increase.",
-          clipFile, PACKETS_TO_PARSE);
+      CLog::LogF(LOGDEBUG,
+                 "Not all stream details determined from {} after {} packets ({} bytes) - may "
+                 "need MAX_PACKETS_TO_PARSE ({}) increase.",
+                 clipFile, packetCount, totalBytesRead, MAX_PACKETS_TO_PARSE);
+
+    // Report the details determined for each audio stream
+    for (const TSAudioStreamInfo& audioStream : GetAudioStreams(streams))
+    {
+      CLog::LogFC(LOGDEBUG, LOGBLURAY,
+                  "Clip {} - audio stream PID 0x{} type 0x{} ({}) - {} channels, {}Hz, substream "
+                  "{}, XLL {}, XLL X {}, XLL X IMAX {}, Atmos {}, dependant stream {}, headers "
+                  "parsed {}",
+                  clip, fmt::format("{:04x}", audioStream.pid),
+                  fmt::format("{:02x}", static_cast<int>(audioStream.streamType)),
+                  GetStreamTypeName(audioStream.streamType), audioStream.channels,
+                  audioStream.sampleRate, audioStream.hasSubstream, audioStream.isXLL,
+                  audioStream.isXLLX, audioStream.isXLLXIMAX, audioStream.isAtmos,
+                  audioStream.hasDependantStream, audioStream.seen);
+
+      // A zero channel count means the elementary stream was never successfully parsed - the
+      // parsers have several early exits (no sync word found, truncated header, unknown mode)
+      if (audioStream.channels == 0)
+        CLog::LogF(LOGDEBUG,
+                   "Clip {} - no channel count determined for audio stream PID 0x{} type 0x{} "
+                   "({}) - headers parsed {}, completed {}",
+                   clip, fmt::format("{:04x}", audioStream.pid),
+                   fmt::format("{:02x}", static_cast<int>(audioStream.streamType)),
+                   GetStreamTypeName(audioStream.streamType), audioStream.seen,
+                   audioStream.completed);
+    }
 
     CLog::LogFC(LOGDEBUG, LOGBLURAY, "Finished analysing {} for stream details.", clipFile);
 
@@ -2032,16 +2090,12 @@ bool CM2TSParser::GetStreams(const CURL& url,
 {
   streams.clear();
 
-  // Find longest MT2S in playlist
-  const auto& it{std::ranges::max_element(playlistInformation.playItems, {},
-                                          [](const PlayItemInformation& item)
-                                          { return item.outTime - item.inTime; })};
-
-  if (it == playlistInformation.playItems.end() || it->angleClips.empty())
+  // Find longest M2TS in playlist
+  const ClipInformation* playItemClip{GetLongestPlayItemClip(playlistInformation)};
+  if (!playItemClip)
     return false;
 
-  if (unsigned int clip{it->angleClips.begin()->clip};
-      !GetStreamsFromFile(url.GetHostName(), clip, it->angleClips.begin()->codec, streams))
+  if (!GetStreamsFromFile(url.GetHostName(), playItemClip->clip, playItemClip->codec, streams))
     return false;
 
   if (!playlistInformation.extensionSubPlayItems.empty() &&

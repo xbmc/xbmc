@@ -11,11 +11,14 @@
 #include "M2TSParser.h"
 #include "PlaylistStructure.h"
 #include "filesystem/DiscDirectoryHelper.h"
+#include "utils/log.h"
 
+#include <algorithm>
 #include <map>
-#include <span>
+#include <ranges>
 #include <vector>
 
+#include <fmt/format.h>
 #include <libbluray/bluray.h>
 
 namespace XFILE
@@ -260,9 +263,26 @@ void CStreamParser::ConvertBlurayPlaylistInformation(const BlurayPlaylistInforma
     p.clips.emplace_back(clip.clip);
     p.clipDuration[clip.clip] = clip.duration;
   }
-  if (!b.clips.empty() && !b.clips[0].programs.empty())
+  // Stream information must come from the same clip the M2TS analysis used (see
+  // CM2TSParser::GetStreams), otherwise the packet identifiers will not correspond and no parsed
+  // details will be found for some (or all) streams
+  const ClipInformation* streamClip{nullptr};
+  if (const ClipInformation * playItemClip{GetLongestPlayItemClip(b)}; playItemClip)
   {
-    for (const StreamInformation& stream : b.clips[0].programs[0].streams)
+    if (const auto it{std::ranges::find(b.clips, playItemClip->clip, &ClipInformation::clip)};
+        it != b.clips.end())
+      streamClip = &*it;
+    else
+      CLog::LogFC(LOGDEBUG, LOGBLURAY,
+                  "Playlist {} - no clip information for clip {} - falling back to first clip",
+                  b.playlist, playItemClip->clip);
+  }
+  if (!streamClip && !b.clips.empty())
+    streamClip = &b.clips[0];
+
+  if (streamClip && !streamClip->programs.empty())
+  {
+    for (const StreamInformation& stream : streamClip->programs[0].streams)
     {
       // Find stream in StreamMap to get accurate details
       const auto bs{s.find(stream.packetIdentifier)};
@@ -287,10 +307,21 @@ void CStreamParser::ConvertBlurayPlaylistInformation(const BlurayPlaylistInforma
         case AUDIO_DTSHD_MASTER:
         case AUDIO_AC3PLUS_SECONDARY:
         case AUDIO_DTSHD_SECONDARY:
-          p.audioStreams.emplace_back(PopulateAudioStreamInfo(
-              stream,
-              bs != s.end() ? dynamic_cast<TSAudioStreamInfo*>(bs->second.get()) : nullptr));
+        {
+          const auto* bsai{bs != s.end() ? dynamic_cast<TSAudioStreamInfo*>(bs->second.get())
+                                         : nullptr};
+          if (!bsai && !s.empty())
+            CLog::LogF(LOGDEBUG,
+                       "Playlist {} - no parsed stream information for audio PID 0x{} coding 0x{} "
+                       "- {} - channel count will be unknown",
+                       b.playlist, fmt::format("{:04x}", stream.packetIdentifier),
+                       fmt::format("{:02x}", static_cast<int>(stream.coding)),
+                       bs == s.end() ? "packet identifier not present in stream map"
+                                     : "stream in map is not an audio stream");
+
+          p.audioStreams.emplace_back(PopulateAudioStreamInfo(stream, bsai));
           break;
+        }
         case SUB_PG:
         case SUB_TEXT:
         {

@@ -1932,6 +1932,9 @@ std::string CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
 {
   std::string strMovieName{m_strPath};
 
+  const bool ignoreFolderNamesInArchives{
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_ignoreFolderNamesInArchives};
+
   if (IsMultiPath())
     strMovieName = CMultiPathDirectory::GetFirstPath(m_strPath);
   if (strMovieName.empty())
@@ -1993,7 +1996,7 @@ std::string CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
         }
       }
       const std::string folder{URIUtils::GetDirectory(url.GetFileName())};
-      if (folder.empty())
+      if (folder.empty() || ignoreFolderNamesInArchives)
       {
         // Not in folder in archive so use folder archive is in
         const std::string name{strMovieName};
