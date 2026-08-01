@@ -28,12 +28,12 @@
 #include "video/VideoInfoTag.h"
 
 #include <chrono>
-#include <functional>
 #include <limits>
 #include <memory>
 #include <string>
 #include <vector>
 
+#include <libbluray/bluray-version.h>
 #include <libbluray/bluray.h>
 #include <libbluray/log_control.h>
 
@@ -971,6 +971,21 @@ int CDVDInputStreamBluray::GetChapter()
     return static_cast<int>(bd_get_current_chapter(m_bd) + 1);
   else
     return 0;
+}
+
+void CDVDInputStreamBluray::GetChapterName(std::string& name, int ch)
+{
+  name.clear();
+
+#if (BLURAY_VERSION >= BLURAY_VERSION_CODE(1, 5, 0))
+  if (ch == -1 || ch > GetChapterCount())
+    ch = GetChapter();
+  if (ch < 1 || ch > GetChapterCount())
+    return;
+
+  if (m_titleInfo && m_titleInfo->chapters && m_titleInfo->chapters[ch - 1].chapter_name)
+    name = m_titleInfo->chapters[ch - 1].chapter_name;
+#endif
 }
 
 bool CDVDInputStreamBluray::SeekChapter(int ch)
