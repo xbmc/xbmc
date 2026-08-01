@@ -1,6 +1,6 @@
 --- a/meson.build
 +++ b/meson.build
-@@ -51,8 +51,8 @@
+@@ -53,8 +53,8 @@
  endif
  
  if host_machine.system() == 'darwin'
