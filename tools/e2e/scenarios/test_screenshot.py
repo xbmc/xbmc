@@ -24,6 +24,10 @@ RENDER_TIMEOUT = 90.0
 SCREENSHOT_TIMEOUT = 15.0  # per-attempt budget for one screenshot file to appear/settle
 RETRY_INTERVAL = 2.0
 MIN_EXPECTED_DIMENSION = 100  # sanity floor, well below any real Kodi window size
+# A rendered Estuary home screen measures above 90% by _painted_fraction; a frame
+# holding nothing but a mouse cursor measures 0.03%. 5% sits between the two with room
+# either side for a darker skin or a busier cursor.
+MIN_PAINTED_FRACTION = 0.05
 
 
 def _wait_for_new_screenshot(kodi: KodiProcess, existing: set, timeout: float):
@@ -55,9 +59,22 @@ def _wait_for_new_screenshot(kodi: KodiProcess, existing: set, timeout: float):
     raise TimeoutError(f"No new screenshot appeared in {kodi.screenshot_dir} within {timeout}s")
 
 
+def _painted_fraction(image: Image.Image) -> float:
+    """Fraction of pixels that differ from the most common one.
+
+    A GUI that drew nothing is not necessarily one flat colour: a frame that is 99.97%
+    black with a mouse cursor in it still spans luminance 0 to 255, so "more than one
+    colour" accepts it. Measured on real frames, this separates cleanly - an Estuary
+    home screen sits above 90%, a cursor on black at 0.03%.
+    """
+    histogram = image.convert("L").histogram()
+    total = sum(histogram)
+    return (total - max(histogram)) / total
+
+
 def _capture_non_blank_screenshot(kodi: KodiProcess, client: KodiJsonRpcClient, timeout: float):
     deadline = time.monotonic() + timeout
-    last_value = None
+    last_painted = None
     while True:
         existing_screenshots = set(kodi.screenshot_dir.glob("*.png"))
         client.execute_action("screenshot")
@@ -76,17 +93,16 @@ def _capture_non_blank_screenshot(kodi: KodiProcess, client: KodiJsonRpcClient, 
                 f"Screenshot {screenshot_path} is implausibly small ({width}x{height})"
             )
 
-            # A single solid color (all-black being the classic symptom) means
-            # something rendered a context but never actually drew the GUI into it.
-            last_value = image.convert("L").getextrema()
+            last_painted = _painted_fraction(image)
 
-        if last_value[0] != last_value[1]:
+        if last_painted >= MIN_PAINTED_FRACTION:
             return screenshot_path
 
         if time.monotonic() >= deadline:
             raise TimeoutError(
-                f"No non-blank screenshot within {timeout}s - still a single solid "
-                f"color (value {last_value[0]}) on the last attempt ({screenshot_path})"
+                f"Kodi never rendered a frame within {timeout}s - only "
+                f"{last_painted:.2%} of the last screenshot ({screenshot_path}) differs "
+                f"from its background, against a {MIN_PAINTED_FRACTION:.0%} threshold"
             )
         time.sleep(RETRY_INTERVAL)
 
