@@ -2,24 +2,19 @@ name: E2E (Linux X11)
 
 # End-to-end smoke test for docs/E2E-TESTING.md, X11 edition.
 #
-# Runs the same tools/e2e suite as e2e-linux.yml, against Kodi's X11
-# windowing backend (xbmc/windowing/X11) instead of GBM. docs/E2E-TESTING.md
-# picked GBM as the primary Linux headless job (closer to real set-top
-# deployments); this adds X11 coverage alongside it, not in its place.
+# Runs the same tools/e2e suite as e2e-linux.yml, against Kodi's X11 windowing
+# backend (xbmc/windowing/X11). docs/E2E-TESTING.md picked GBM as the primary
+# Linux headless job (closer to real set-top deployments); this adds X11
+# coverage alongside it, not in its place.
 #
-# Built with --with-rendersystem=gl (not gles, unlike the GBM/Wayland jobs):
-# real desktop OpenGL/GLX, exercising xbmc/rendering/gl and GLContextGLX
-# rather than the GLES/EGL path. This also means tools/depends does NOT build
-# its own Mesa here (tools/depends/target/Makefile only builds Mesa for
-# RENDER_SYSTEM=gles; for gl it symlinks the system's own gl.pc/glu.pc/egl.pc
-# instead, via the linux-system-gl-libs target) - rendering runs against
-# Ubuntu's own Mesa/llvmpipe, the same software GLX path any desktop Linux
-# box without a GPU already uses.
+# Built with APP_RENDER_SYSTEM=gl, not gles like the GBM/Wayland jobs: real
+# desktop OpenGL/GLX, exercising xbmc/rendering/gl and GLContextGLX rather than
+# the GLES/EGL path. That is the reason this is a separate workflow rather than
+# a third leg of e2e-linux.yml's matrix.
 #
-# No GPU, no display server: Xvfb provides the display. Direct GLX rendering
-# via llvmpipe works with a plain Xvfb invocation, no special flags needed.
-#
-# New/unproven, like the iOS/tvOS Simulator jobs (docs/E2E-TESTING.md).
+# No GPU, no display server: Xvfb provides the display and Mesa falls back to
+# llvmpipe, the same software GLX path any desktop Linux box without a GPU
+# already uses.
 
 on:
   workflow_dispatch:
@@ -54,12 +49,11 @@ jobs:
     # xbmc/windowing/X11/CMakeLists.txt. Mesa stopped shipping that header when EGL
     # headers moved to libglvnd, which does not carry it - 22.04's libegl1-mesa-dev
     # is the newest Ubuntu that still provides it. Once Kodi can build X11 without
-    # the header this should move back to match the other jobs.
+    # the header this should move to 24.04 to match the other jobs, and most of the
+    # ENABLE_INTERNAL_* flags below can go with it.
     runs-on: ubuntu-22.04
     timeout-minutes: 180
     env:
-      HOST_TRIPLET: x86_64-linux-gnu
-      DEPENDS_PREFIX: /home/runner/xbmc-x11-depends
       CCACHE_DIR: /home/runner/.cache/kodi-e2e-x11-ccache
       DISPLAY: ":99"
 
@@ -67,71 +61,74 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-      # The X11/XCB dev packages are what tools/depends' own linux-system-x11-libs
-      # target (tools/depends/target/Makefile) expects to already exist - it only
-      # symlinks them in, it doesn't build or install them. libgl-dev/libegl-dev/
-      # libglu1-mesa-dev are the equivalent for linux-system-gl-libs (this job's
-      # RENDER_SYSTEM=gl skips building Mesa entirely) - libgl-dev alone pulls in
-      # a working Mesa GLX runtime (libglx-mesa0), and libgl1-mesa-dri provides
-      # the llvmpipe driver it loads at runtime with no GPU present.
-      - name: Install build tools and non-depends libraries
+      # Same system-package approach as e2e-linux.yml, so this tests what a distro
+      # user's build looks like rather than a tools/depends stand-in.
+      #
+      # X11 itself needs little: cmake/platform/linux/x11.cmake requires EGL, X,
+      # XRandR, LibDRM>=2.4.95 and OpenGl. libgl-dev pulls in a working Mesa GLX
+      # runtime and libgl1-mesa-dri provides the llvmpipe driver it loads with no
+      # GPU present.
+      #
+      # libflatbuffers-dev is deliberately absent: 22.04 ships 2.0.0 while this tree
+      # targets 23.3.3, and a system flatc would be picked up by FindFlatC and
+      # generate schemas the internal library cannot read. Leaving it out makes Kodi
+      # build both the library and flatc itself, in matching versions.
+      - name: Install build tools and libraries
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            build-essential autoconf automake autopoint cmake gawk gperf \
-            gettext libtool meson nasm ninja-build pkg-config swig \
-            python3-dev unzip zip ccache \
-            libass-dev libcurl4-openssl-dev libexiv2-dev libflatbuffers-dev \
-            libfmt-dev liblzo2-dev libpcre2-dev nlohmann-json3-dev \
-            libspdlog-dev libtag1-dev libtinyxml2-dev \
+            build-essential cmake gawk gperf gettext libtool meson nasm \
+            ninja-build pkg-config swig python3-dev unzip zip ccache uuid-dev \
+            libass-dev libcurl4-openssl-dev libexiv2-dev \
+            libfmt-dev libfreetype-dev libfribidi-dev libfstrcmp-dev \
+            libharfbuzz-dev liblzo2-dev libpcre2-dev libssl-dev libsqlite3-dev \
+            libtinyxml-dev zlib1g-dev libcdio-dev libcdio++-dev libgtest-dev \
+            libgif-dev libjpeg-dev nlohmann-json3-dev libmicrohttpd-dev \
+            libunistring-dev libspdlog-dev libtinyxml2-dev libcrossguid-dev \
+            libdbus-1-dev libasound2-dev libdav1d-dev libdrm-dev \
             libgl-dev libegl-dev libegl1-mesa-dev libglu1-mesa-dev libgl1-mesa-dri \
-            xvfb x11-utils \
-            libx11-dev libxext-dev libxrandr-dev libxrender-dev libxfixes-dev \
-            libxdamage-dev libxxf86vm-dev libxshmfence-dev libxt-dev libice-dev \
-            libsm-dev libxmu-dev x11proto-dev libx11-xcb-dev libxcb1-dev \
-            libxcb-dri2-0-dev libxcb-dri3-dev libxcb-glx0-dev libxcb-xfixes0-dev \
-            libxcb-present-dev libxcb-randr0-dev libxcb-render0-dev \
-            libxcb-shape0-dev libxcb-shm0-dev libxcb-sync-dev libxau-dev \
-            libxdmcp-dev libpthread-stubs0-dev
+            libx11-dev libxext-dev libxrandr-dev \
+            xvfb x11-utils
 
-      - name: Compute tools/depends cache key
-        id: depends-key
-        run: echo "hash=$(git rev-parse HEAD:tools/depends)" >> "$GITHUB_OUTPUT"
-
-      - name: Restore Kodi dependencies cache (tools/depends)
-        id: depends-cache
-        uses: actions/cache/restore@v6
-        with:
-          path: |
-            ${{ env.DEPENDS_PREFIX }}
-            tools/depends
-          key: linux-x11-glx-${{ runner.arch }}-depends-${{ steps.depends-key.outputs.hash }}
-
+      # Keyed on the runner image, not just the arch: a cache built on a different
+      # Ubuntu release is useless here and, for anything holding prebuilt binaries,
+      # actively harmful.
       - name: Restore ccache
         uses: actions/cache/restore@v6
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: linux-x11-glx-${{ runner.arch }}-ccache-${{ github.sha }}
+          key: linux-x11-ubuntu2204-${{ runner.arch }}-ccache-${{ github.sha }}
           restore-keys: |
-            linux-x11-glx-${{ runner.arch }}-ccache-
+            linux-x11-ubuntu2204-${{ runner.arch }}-ccache-
 
-      - name: Configure and build dependencies
-        working-directory: tools/depends
+      # 22.04 predates most of what this tree targets, so more is built internally
+      # here than in e2e-linux.yml: ffmpeg (needs >= 7.0, 22.04 has 4.4), TagLib
+      # (Matroska tag support is gated on >= 2.3.1, 22.04 has 1.11.1), fmt (8.1.1 vs
+      # 12.1.0), spdlog (1.9.2 vs 1.17.0, and it couples tightly to fmt), exiv2
+      # (0.27 vs 0.28, a breaking API change) and flatbuffers (2.0.0 vs 23.3.3).
+      - name: Configure Kodi
         run: |
-          ./bootstrap
-          ./configure --host="${HOST_TRIPLET}" --with-rendersystem=gl --prefix="${DEPENDS_PREFIX}" \
-            --with-ffmpeg-options="--disable-vaapi --disable-vdpau --cpu=x86-64"
-          outer_jobs=$(( $(nproc) / 2 ))
-          [ "$outer_jobs" -lt 1 ] && outer_jobs=1
-          make -j"$outer_jobs"
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug \
+            -DCORE_PLATFORM_NAME=x11 -DAPP_RENDER_SYSTEM=gl \
+            -DENABLE_INTERNAL_FFMPEG=ON -DENABLE_INTERNAL_TAGLIB=ON \
+            -DENABLE_INTERNAL_FMT=ON -DENABLE_INTERNAL_SPDLOG=ON \
+            -DENABLE_INTERNAL_EXIV2=ON -DENABLE_INTERNAL_FLATBUFFERS=ON
 
-      - name: Generate Kodi build system
+      # required_buildtools (CMakeLists.txt) are each a separate nested
+      # ExternalProject with their own find_package() calls - Kodi's own top-level
+      # configure never probes their dependencies, so a missing one only surfaces
+      # once the main build reaches that target. These are small and fast, so
+      # building them first fails in seconds instead of minutes into the main build.
+      # build-flatc is included here, unlike e2e-linux.yml, because no system flatc
+      # is installed for it to find.
+      - name: Build required build tools
         run: |
-          make -C tools/depends/target/cmakebuildsys \
-            CMAKE_EXTRA_ARGUMENTS="-DCORE_PLATFORM_NAME=x11 -DAPP_RENDER_SYSTEM=gl"
+          cmake --build build \
+            --target build-flatc build-JsonSchemaBuilder buildtexturepacker \
+            -- -j"$(nproc)"
 
       - name: Build Kodi
-        run: make -j"$(nproc)" -C build
+        run: cmake --build build -- -j"$(nproc)"
 
       - name: Show ccache stats
         if: always()
@@ -156,14 +153,14 @@ jobs:
             exit 1
           }
 
-      # kodi-x11 runs straight from the build tree (not "make install"), so
-      # LD_LIBRARY_PATH is needed for other depends libs (ffmpeg, etc.) - GL/EGL
-      # themselves come from the system, not DEPENDS_PREFIX, in this job.
+      # ENABLE_APP_AUTONAME (default ON, single-platform Linux build) names the
+      # binary kodi-x11; it runs in place from the build tree, so portable_data
+      # lands at build/portable_data. No LD_LIBRARY_PATH needed: every library
+      # comes from the system's normal linker paths or is statically linked in.
       - name: Run E2E smoke test
         working-directory: tools/e2e
         env:
           KODI_BINARY: ${{ github.workspace }}/build/kodi-x11
-          LD_LIBRARY_PATH: ${{ env.DEPENDS_PREFIX }}/${{ env.HOST_TRIPLET }}-debug/lib
         run: uv run pytest scenarios -v --junitxml=../../e2e-results.xml
 
       - name: Upload Kodi log
@@ -192,18 +189,9 @@ jobs:
           path: e2e-results.xml
           if-no-files-found: warn
 
-      - name: Save Kodi dependencies cache (tools/depends)
-        if: '!cancelled() && steps.depends-cache.outputs.cache-hit != ''true'''
-        uses: actions/cache/save@v6
-        with:
-          path: |
-            ${{ env.DEPENDS_PREFIX }}
-            tools/depends
-          key: linux-x11-glx-${{ runner.arch }}-depends-${{ steps.depends-key.outputs.hash }}
-
       - name: Save ccache
         if: '!cancelled()'
         uses: actions/cache/save@v6
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: linux-x11-glx-${{ runner.arch }}-ccache-${{ github.sha }}
+          key: linux-x11-ubuntu2204-${{ runner.arch }}-ccache-${{ github.sha }}
