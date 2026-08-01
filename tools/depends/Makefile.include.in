@@ -31,6 +31,10 @@ SHA256SUM=@SHA256SUM@
 SHASUM=@SHASUM@
 HASH_TOOL_FLAGS=-c --status
 
+ifeq ($(findstring apple-darwin,@use_host@),apple-darwin)
+  APPLE_DEPLOYMENT_TARGET=@target_minver@
+endif
+
 HAS_ZLIB=@has_zlib@
 NEED_LIBICONV=@need_libiconv@
 LINK_ICONV=@link_iconv@
