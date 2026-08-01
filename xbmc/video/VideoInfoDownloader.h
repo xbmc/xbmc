@@ -13,6 +13,7 @@
 #include "addons/Scraper.h"
 #include "threads/Thread.h"
 
+#include <atomic>
 #include <string>
 #include <vector>
 
@@ -80,8 +81,9 @@ protected:
   CVideoInfoTag       m_movieDetails;
   CScraperUrl         m_url;
   KODI::VIDEO::EPISODELIST m_episode;
-  LOOKUP_STATE m_state = DO_NOTHING;
-  int m_found = 0;
+  std::atomic<LOOKUP_STATE> m_state{DO_NOTHING};
+  std::atomic<int> m_found{0};
+  std::atomic<bool> m_result{false};
   ADDON::ScraperPtr   m_info;
 
   // threaded stuff
