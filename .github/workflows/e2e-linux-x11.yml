@@ -49,7 +49,13 @@ jobs:
     if: >-
       github.event_name != 'pull_request' ||
       contains(github.event.pull_request.labels.*.name, 'e2e')
-    runs-on: ubuntu-24.04
+    # 22.04, not 24.04 like the other Linux jobs: xbmc/windowing/X11/GLContextEGL.h
+    # includes <EGL/eglextchromium.h>, and GLContextEGL.cpp is unconditional in
+    # xbmc/windowing/X11/CMakeLists.txt. Mesa stopped shipping that header when EGL
+    # headers moved to libglvnd, which does not carry it - 22.04's libegl1-mesa-dev
+    # is the newest Ubuntu that still provides it. Once Kodi can build X11 without
+    # the header this should move back to match the other jobs.
+    runs-on: ubuntu-22.04
     timeout-minutes: 180
     env:
       HOST_TRIPLET: x86_64-linux-gnu
@@ -78,7 +84,7 @@ jobs:
             libass-dev libcurl4-openssl-dev libexiv2-dev libflatbuffers-dev \
             libfmt-dev liblzo2-dev libpcre2-dev nlohmann-json3-dev \
             libspdlog-dev libtag1-dev libtinyxml2-dev \
-            libgl-dev libegl-dev libglu1-mesa-dev libgl1-mesa-dri \
+            libgl-dev libegl-dev libegl1-mesa-dev libglu1-mesa-dev libgl1-mesa-dri \
             xvfb x11-utils \
             libx11-dev libxext-dev libxrandr-dev libxrender-dev libxfixes-dev \
             libxdamage-dev libxxf86vm-dev libxshmfence-dev libxt-dev libice-dev \
