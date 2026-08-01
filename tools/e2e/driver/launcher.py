@@ -25,6 +25,7 @@ from __future__ import annotations
 import signal
 import socket
 import subprocess
+import sys
 import time
 from pathlib import Path
 
@@ -98,6 +99,16 @@ class KodiProcess:
 
     @property
     def log_path(self) -> Path:
+        """Where Kodi writes kodi.log, which is not the same place on every platform.
+
+        InitDirectoriesWin32() (xbmc/settings/SettingsComponent.cpp) points
+        special://logpath at the profile root and special://temp at cache/, while every
+        other platform points logpath at temp/. Reading the wrong path is silent: the
+        file simply does not exist, read_log() returns "" and assert_clean_shutdown's
+        FATAL check passes vacuously.
+        """
+        if sys.platform == "win32":
+            return self.portable_data_dir / "kodi.log"
         return self.portable_data_dir / "temp" / "kodi.log"
 
     @property
