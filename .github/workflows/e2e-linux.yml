@@ -185,18 +185,6 @@ jobs:
             -DCORE_PLATFORM_NAME=${{ matrix.platform }} -DAPP_RENDER_SYSTEM=gles \
             -DENABLE_INTERNAL_FFMPEG=ON -DENABLE_INTERNAL_TAGLIB=ON
 
-      # required_buildtools (CMakeLists.txt) are each a separate nested
-      # ExternalProject with their own CMakeLists.txt/find_package() calls -
-      # Kodi's own top-level configure never probes their dependencies (e.g.
-      # TexturePacker needs GIF/JPEG, neither of which is in Kodi's own
-      # required_deps), so a missing one only surfaces once the main build
-      # reaches that target. These are small/fast, so building them first
-      # fails in seconds instead of minutes into the main build.
-      # FlatC isn't listed: it's found as a system binary here (apt's flatc),
-      # so FindFlatC.cmake never creates a build-flatc target to build at all.
-      - name: Build required build tools
-        run: cmake --build build --target build-JsonSchemaBuilder buildtexturepacker -- -j"$(nproc)"
-
       - name: Build Kodi
         run: cmake --build build -- -j"$(nproc)"
 

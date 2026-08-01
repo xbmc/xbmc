@@ -114,19 +114,6 @@ jobs:
             -DENABLE_INTERNAL_FMT=ON -DENABLE_INTERNAL_SPDLOG=ON \
             -DENABLE_INTERNAL_EXIV2=ON -DENABLE_INTERNAL_FLATBUFFERS=ON
 
-      # required_buildtools (CMakeLists.txt) are each a separate nested
-      # ExternalProject with their own find_package() calls - Kodi's own top-level
-      # configure never probes their dependencies, so a missing one only surfaces
-      # once the main build reaches that target. These are small and fast, so
-      # building them first fails in seconds instead of minutes into the main build.
-      # build-flatc is included here, unlike e2e-linux.yml, because no system flatc
-      # is installed for it to find.
-      - name: Build required build tools
-        run: |
-          cmake --build build \
-            --target build-flatc build-JsonSchemaBuilder buildtexturepacker \
-            -- -j"$(nproc)"
-
       - name: Build Kodi
         run: cmake --build build -- -j"$(nproc)"
 
