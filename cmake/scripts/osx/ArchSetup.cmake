@@ -53,11 +53,6 @@ list(APPEND DEPLIBS "-framework DiskArbitration" "-framework IOKit"
                     "-framework GameController" "-framework Speech"
                     "-framework AVFoundation")
 
-if(ARCH STREQUAL aarch64)
-  set(CMAKE_OSX_DEPLOYMENT_TARGET 11.0)
-else()
-  set(CMAKE_OSX_DEPLOYMENT_TARGET 10.15)
-endif()
 set(CMAKE_XCODE_ATTRIBUTE_CLANG_LINK_OBJC_RUNTIME OFF)
 
 include(cmake/scripts/darwin/Macros.cmake)

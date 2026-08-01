@@ -40,6 +40,7 @@ elseif(OS STREQUAL darwin_embedded)
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
+  set(CMAKE_OSX_DEPLOYMENT_TARGET @target_minver@)
   set(CMAKE_OSX_SYSROOT @use_sdk_path@)
   set(CMAKE_LIBRARY_PATH ${CMAKE_FIND_ROOT_PATH}/lib:@use_sdk_path@/lib:/usr/X11R6/lib)
   set(CMAKE_INCLUDE_PATH ${CMAKE_FIND_ROOT_PATH}/include:@use_sdk_path@/include:/usr/X11R6/include)
