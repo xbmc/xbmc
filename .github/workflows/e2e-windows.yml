@@ -113,14 +113,22 @@ jobs:
       # puts the debug info in the object file instead. The variable is honoured
       # because CMP0141 is NEW here - CMakeLists.txt raises cmake_minimum_required to
       # 3.30.6 under if(WIN32).
+      # CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION is passed by hand because
+      # cmake/scripts/windows/ArchSetup.cmake:4 gates on it to enforce a minimum
+      # Windows SDK, and only the Visual Studio generator populates it - under Ninja it
+      # is empty, compares less than the minimum, and the configure aborts with
+      # "Detected Windows SDK version is .". vcvarsall exports the version it actually
+      # selected as WindowsSDKVersion, with a trailing backslash to strip.
       - name: Configure Kodi
         shell: cmd
         run: |
           for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) do set VSPATH=%%i
           call "%VSPATH%\VC\Auxiliary\Build\vcvarsall.bat" x64
+          echo Windows SDK selected by vcvarsall: %WindowsSDKVersion%
           cmake -G Ninja -B build -S . ^
             -DCMAKE_BUILD_TYPE=Debug ^
-            -DCMAKE_MSVC_DEBUG_INFORMATION_FORMAT=Embedded
+            -DCMAKE_MSVC_DEBUG_INFORMATION_FORMAT=Embedded ^
+            -DCMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION=%WindowsSDKVersion:~0,-1%
 
       - name: Build Kodi
         shell: cmd
