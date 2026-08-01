@@ -1,0 +1,105 @@
+--- a/msvc/include/inttypes.h
++++ /dev/null
+@@ -1,32 +0,0 @@
+-/*
+- * Copyright (C) 2000-2001 the xine project
+- *
+- * This file is part of xine, a unix video player.
+- *
+- * xine is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * xine is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software Foundation,
+- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+- * WIN32 PORT,
+- * by Matthew Grooms <elon@altavista.com>
+- *
+- * inttypes.h - Standard integer definitions.
+- *
+- */
+-
+-#ifndef _SYS_INTTYPES_H_
+-#define _SYS_INTTYPES_H_
+-
+-#include <config.h>
+-
+-#endif
+--- a/src/read_cache.c
++++ b/src/read_cache.c
+@@ -87,11 +87,7 @@
+ # if READ_CACHE_TRACE
+ #  define dprintf(fmt, ...) fprintf(MSG_OUT, "libdvdnav: %s: "fmt,  __func__ , __VA_ARGS__)
+ # else
+-#ifdef _MSC_VER
+-#  define dprintf(fmt, str) /* Nowt */
+-#else
+ #  define dprintf(fmt, ...) /* Nowt */
+-#endif /* _MSC_VER */
+ # endif
+ #endif
+ 
+--- a/msvc/include/sys/time.h
++++ b/msvc/include/sys/time.h
+@@ -25,4 +25,9 @@
+  *                             timer functions.
+  */
+ 
++#pragma once
+ #include <time.h>
++
++#ifdef _MSC_VER
++#include <WinSock2.h>
++#endif
+--- a/msvc/include/timer.h
++++ b/msvc/include/timer.h
+@@ -1,5 +1,5 @@
+ #include <time.h>
+-#include <winsock.h>
++#include <winsock2.h>
+ #include "pthread.h"
+ 
+ #ifndef _ITIMER_
+--- a/src/dvdnav/dvdnav.h
++++ b/src/dvdnav/dvdnav.h
+@@ -48,6 +48,7 @@ extern "C" {
+ #include <dvdnav/dvdnav_events.h>
+ 
+ #include <stdarg.h>
++#include <stdint.h>
+ 
+ /*********************************************************************
+  * dvdnav data types                                                 *
+--- a/src/dvdnav_internal.h
++++ b/src/dvdnav_internal.h
+@@ -43,7 +43,7 @@ static inline int _private_gettimeofday( struct timeval *tv, void *tz )
+ {
+   struct timeb t;
+   ftime( &t );
+-  tv->tv_sec = t.time;
++  tv->tv_sec = (long)t.time;
+   tv->tv_usec = t.millitm * 1000;
+   return 0;
+ }
+@@ -232,13 +232,8 @@ DVDNAV_API int64_t dvdnav_convert_time(const dvd_time_t *time);
+ #define printerrf(format, args...) \
+     do { if (this) snprintf(this->err_str, MAX_ERR_LEN, format, ## args); } while (0)
+ #else
+-#ifdef _MSC_VER
+-#define printerrf(str) \
+-    do { if (this) snprintf(this->err_str, MAX_ERR_LEN, str); } while (0)
+-#else
+ #define printerrf(...) \
+     do { if (this) snprintf(this->err_str, MAX_ERR_LEN, __VA_ARGS__); } while (0)
+-#endif /* _MSC_VER */
+ #endif
+ #define printerr(str) \
+     do { if (this) strncpy(this->err_str, str, MAX_ERR_LEN - 1); } while (0)

@@ -1,0 +1,30 @@
+--- a/src/device.c
++++ b/src/device.c
+@@ -636,13 +636,21 @@ static int libc_read ( dvdcss_t dvdcss, void *p_buffer, int i_blocks )
+     off_t i_size, i_ret, i_ret_blocks;
+ 
+     i_size = (off_t)i_blocks * (off_t)DVDCSS_BLOCK_SIZE;
+-    i_ret = read( dvdcss->i_fd, p_buffer, i_size );
+-
+-    if( i_ret < 0 )
+-    {
+-        print_error( dvdcss, "read error" );
++    i_ret = 0;
++    while (i_ret < i_size)
++    {
++      off_t i_r;
++      i_r = read(dvdcss->i_fd, ((char*)p_buffer) + i_ret, i_size - i_ret);
++      if (i_r < 0)
++      {
++        print_error(dvdcss, "read error");
+         dvdcss->i_pos = -1;
+-        return i_ret;
++        return i_r;
++      }
++      if (i_r == 0)
++        break;
++
++      i_ret += i_r;
+     }
+ 
+     i_ret_blocks = i_ret / DVDCSS_BLOCK_SIZE;

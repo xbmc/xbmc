@@ -1,0 +1,91 @@
+--- a/src/dvd_reader.c
++++ b/src/dvd_reader.c
+@@ -33,6 +33,11 @@
+ #include <limits.h>         /* PATH_MAX */
+ #include <dirent.h>         /* opendir, readdir */
+ #include <ctype.h>          /* isalpha */
++#ifndef WIN32
++#if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_APP)
++#define getenv(x) NULL
++#endif
++#endif
+ 
+ #if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__bsdi__) || defined(__APPLE__)
+ # define SYS_BSD 1
+@@ -121,76 +126,6 @@ static inline int dvdstat(const char *file, dvdstat_t *st) {
+ }
+ #endif
+ 
+-#if defined(_WIN32)
+-/* UTF-8 aware version of opendir()/readdir() */
+-
+-#include <io.h>
+-
+-typedef struct {
+-  intptr_t handle;
+-  struct _wfinddata_t went;
+-  struct dirent ent;
+-} win32_dir_t;
+-
+-win32_dir_t *win32_opendir(const char *path)
+-{
+-  char    *filespec;
+-  wchar_t *wfilespec;
+-  win32_dir_t *d;
+-
+-  d = calloc(1, sizeof(*d));
+-  if (!d)
+-    return NULL;
+-
+-  filespec = malloc(strlen(path) + 3);
+-  if (!filespec) {
+-    goto fail;
+-  }
+-  sprintf(filespec, "%s\\*", path);
+-
+-  wfilespec = _utf8_to_wchar(filespec);
+-  free(filespec);
+-  if (!wfilespec) {
+-    goto fail;
+-  }
+-
+-  d->handle = _wfindfirst(wfilespec, &d->went);
+-  free(wfilespec);
+-  if (d->handle != -1) {
+-    return d;
+-  }
+-
+- fail:
+-  free(d);
+-  return NULL;
+-}
+-
+-static struct dirent *win32_readdir(win32_dir_t *dir)
+-{
+-  if (dir->went.name[0]) {
+-    if (!WideCharToMultiByte(CP_UTF8, 0, dir->went.name, -1, dir->ent.d_name, sizeof(dir->ent.d_name), NULL, NULL))
+-      dir->ent.d_name[0] = 0; /* allow reading next */
+-    dir->went.name[0] = 0;
+-    _wfindnext(dir->handle, &dir->went);
+-    return &dir->ent;
+-  }
+-
+-  return NULL;
+-}
+-
+-static void win32_closedir(win32_dir_t *dir)
+-{
+-  _findclose(dir->handle);
+-  free(dir);
+-}
+-
+-#define DIR       win32_dir_t
+-#define opendir   win32_opendir
+-#define readdir   win32_readdir
+-#define closedir  win32_closedir
+-
+-#endif /* _WIN32 */
+-
+ #define DEFAULT_UDF_CACHE_LEVEL 1
+ 
+ struct dvd_reader_device_s {

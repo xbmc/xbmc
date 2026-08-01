@@ -317,8 +317,7 @@ void Win32DllLoader::OverrideImports(const std::string &dll)
 
 bool Win32DllLoader::NeedsHooking(const char *dllName)
 {
-  if ( !StringUtils::EndsWithNoCase(dllName, "libdvdcss-2.dll")
-  && !StringUtils::EndsWithNoCase(dllName, "libdvdnav.dll"))
+  if (!StringUtils::EndsWithNoCase(dllName, "dvdnav.dll"))
     return false;
 
   LibraryLoader *loader = DllLoaderContainer::GetModule(dllName);

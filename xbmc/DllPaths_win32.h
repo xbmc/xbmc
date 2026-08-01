@@ -9,4 +9,4 @@
 #pragma once
 
 /* VideoPlayer */
-#define DLL_PATH_LIBDVDNAV     "special://xbmcbin/libdvdnav.dll"
+#define DLL_PATH_LIBDVDNAV     "special://xbmcbin/dvdnav.dll"

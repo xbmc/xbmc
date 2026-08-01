@@ -37,6 +37,19 @@
 #include <memory>
 #include <string>
 
+/*****************************************************************************
+* iovec structure: vectored data entry
+*****************************************************************************/
+#ifdef TARGET_WINDOWS
+struct iovec
+{
+  void *iov_base;     /* Pointer to data. */
+  size_t iov_len;     /* Length of data.  */
+};
+#else
+#   include <sys/uio.h>                                      /* struct iovec */
+#endif
+
 using namespace std::chrono_literals;
 
 namespace

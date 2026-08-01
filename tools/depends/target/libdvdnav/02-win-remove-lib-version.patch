@@ -1,0 +1,11 @@
+--- a/src/meson.build
++++ b/src/meson.build
+@@ -36,7 +36,7 @@
+     ],
+     c_args: [api_export_flags],
+     gnu_symbol_visibility: 'hidden',
+-    version: dvdnav_soname_version,
++#    version: dvdnav_soname_version,
+     install: true,
+ )
+ 
