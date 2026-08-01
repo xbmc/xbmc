@@ -1831,8 +1831,17 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
 
   items.Clear();
   if (!selectedItem.GetPath().empty())
+  {
     // If SelectedItem is not empty then we have a user selected playlist, so return it
-    items.Add(GenerateItem(item, selectedItem, item));
+    const auto newItem{GenerateItem(item, selectedItem, item)};
+
+    // GenerateItem points the paths in the tag at the newly selected playlist
+    // Flag so CSaveFileStateJob can tell playlist has changed
+    if (selectedItem.GetDynPath() != item.GetDynPath())
+      newItem->SetProperty("new_playlist_path", true);
+
+    items.Add(newItem);
+  }
   else if (!returnMultipleItems)
     // Return single item
     items.Add(GenerateItem(item, *sourceItems[0], item));

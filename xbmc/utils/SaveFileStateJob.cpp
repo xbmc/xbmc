@@ -234,6 +234,8 @@ void CSaveFileState::DoWork(CFileItem& item,
                   !URIUtils::IsStack(tag->m_strFileNameAndPath) &&
                   tag->m_strFileNameAndPath != item.GetDynPath())
                 return true; // Bluray path to update
+              if (item.GetProperty("new_playlist_path").asBoolean(false))
+                return true; // Bluray playlist replaced by user selection
               if (item.GetProperty("new_stack_path").asBoolean(false))
                 return true; // Stack path to update
               return false;
@@ -269,6 +271,9 @@ void CSaveFileState::DoWork(CFileItem& item,
           CGUIMessage message(GUI_MSG_NOTIFY_ALL, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 0, msgItem);
           CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
         }
+
+        CLog::LogF(LOGDEBUG, "Finished saving file state for video item {} (listing update {})",
+                   redactPath, updateListing ? "sent" : "not needed");
 
         videodatabase.Close();
       }
