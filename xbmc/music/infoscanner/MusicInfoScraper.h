@@ -13,11 +13,12 @@
 #include "addons/Scraper.h"
 #include "threads/Thread.h"
 
+#include <memory>
 #include <vector>
 
 namespace XFILE
 {
-class CurlFile;
+class IHttpClient;
 }
 
 namespace MUSIC_GRABBER
@@ -75,7 +76,7 @@ protected:
   int m_iArtist;
   bool m_bSucceeded;
   bool m_bCanceled;
-  XFILE::CCurlFile* m_http;
+  std::unique_ptr<XFILE::IHttpClient> m_http;
   ADDON::ScraperPtr m_scraper;
 };
 
