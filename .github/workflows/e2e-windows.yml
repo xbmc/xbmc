@@ -44,10 +44,30 @@ jobs:
     # toolchain stays predictable.
     runs-on: windows-2022
     timeout-minutes: 180
+    env:
+      CCACHE_DIR: ${{ github.workspace }}\.ccache
+      CCACHE_COMPILERCHECK: content
+      CCACHE_SLOPPINESS: include_file_mtime,include_file_ctime,time_macros
+      CCACHE_BASEDIR: ${{ github.workspace }}
+      # Larger than the 1G the other jobs use: /Z7 puts debug info inside each object
+      # file rather than a shared PDB, so cached objects are substantially bigger.
+      CCACHE_MAXSIZE: "2G"
 
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+
+      # Ninja rather than the Visual Studio generator: MSBuild ignores
+      # CMAKE_<LANG>_COMPILER_LAUNCHER, which is how Kodi's own FindCCache.cmake wires
+      # ccache in, so with -G "Visual Studio" the cache would be configured and then
+      # silently unused. Ninja honours it, at the cost of having to enter the MSVC
+      # environment ourselves - see the vcvarsall preamble below.
+      - name: Install ccache and ninja
+        shell: pwsh
+        run: |
+          choco install ccache ninja -y --no-progress
+          ccache --version
+          ninja --version
 
       # project/BuildDependencies/scripts/*.list pins the prebuilt dependency package
       # versions, and tools/buildsteps/windows pins the MSYS2 revision/package set
@@ -74,17 +94,45 @@ jobs:
         working-directory: tools\buildsteps\windows\x64
         run: download-msys2.bat
 
-      - name: Generate Visual Studio project
+      - name: Restore ccache
+        uses: actions/cache/restore@v6
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: windows-x64-ccache-${{ github.sha }}
+          restore-keys: |
+            windows-x64-ccache-
+
+      # vcvarsall puts the MSVC toolchain on PATH, which the Visual Studio generator
+      # would have located by itself. Its effect does not outlive the step, so every
+      # step that compiles repeats the preamble; vswhere is used rather than a
+      # hardcoded path because the installed VS edition differs between runner images.
+      #
+      # CMAKE_MSVC_DEBUG_INFORMATION_FORMAT=Embedded is what makes caching possible at
+      # all: the default /Zi routes debug info through mspdbsrv into a shared PDB,
+      # which ccache cannot reproduce from a cache hit, so it declines to cache. /Z7
+      # puts the debug info in the object file instead. The variable is honoured
+      # because CMP0141 is NEW here - CMakeLists.txt raises cmake_minimum_required to
+      # 3.30.6 under if(WIN32).
+      - name: Configure Kodi
         shell: cmd
-        # Not exercised by this suite's scenarios, and unlike osx/linux (where it's a
-        # legitimate desktop-JDK target - see cmake/modules/FindBluray.cmake) getting
-        # BD-J's ant/JDK auto-detection right here is unverified on this runner image;
-        # skip it rather than risk an unrelated build failure over an untested feature.
-        run: cmake -G "Visual Studio 17 2022" -A x64 -B build -S . -DENABLE_BLURAY_JAR=OFF
+        run: |
+          for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) do set VSPATH=%%i
+          call "%VSPATH%\VC\Auxiliary\Build\vcvarsall.bat" x64
+          cmake -G Ninja -B build -S . ^
+            -DCMAKE_BUILD_TYPE=Debug ^
+            -DCMAKE_MSVC_DEBUG_INFORMATION_FORMAT=Embedded
 
       - name: Build Kodi
         shell: cmd
-        run: cmake --build build --config Debug --parallel
+        run: |
+          for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) do set VSPATH=%%i
+          call "%VSPATH%\VC\Auxiliary\Build\vcvarsall.bat" x64
+          cmake --build build
+
+      - name: Show ccache stats
+        if: always()
+        shell: pwsh
+        run: ccache -s
 
       - name: Install uv
         uses: astral-sh/setup-uv@v8.3.1
@@ -95,7 +143,9 @@ jobs:
       - name: Run E2E smoke test
         working-directory: tools/e2e
         env:
-          KODI_BINARY: ${{ github.workspace }}\build\Debug\kodi.exe
+          # No Debug/ segment: Ninja is a single-config generator, so the binary and
+          # its portable_data land directly under build/.
+          KODI_BINARY: ${{ github.workspace }}\build\kodi.exe
         run: uv run pytest scenarios -v --junitxml=../../e2e-results.xml
 
       - name: Upload Kodi log
@@ -108,9 +158,9 @@ jobs:
           # special://logpath at the profile folder on Windows alone. cache/ is picked
           # up too since that is what special://temp maps to.
           path: |
-            build/Debug/portable_data/kodi.log
-            build/Debug/portable_data/temp/process-output.log
-            build/Debug/portable_data/cache/*.log
+            build/portable_data/kodi.log
+            build/portable_data/temp/process-output.log
+            build/portable_data/cache/*.log
           if-no-files-found: warn
 
       - name: Upload screenshot
@@ -118,7 +168,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: kodi-windows-screenshot
-          path: build/Debug/portable_data/screenshots/*.png
+          path: build/portable_data/screenshots/*.png
           if-no-files-found: warn
 
       - name: Upload test results
@@ -137,3 +187,13 @@ jobs:
         with:
           path: project\BuildDependencies
           key: windows-x64-depends-${{ hashFiles('project/BuildDependencies/scripts/**', 'tools/buildsteps/windows/**') }}
+
+      - name: Save ccache
+        # Not on pull_request: cache entries are immutable, so every push to a
+        # PR would add another entry rather than replace one, and the repo's 10GB
+        # budget then evicts the entries that are actually useful. PR runs still restore.
+        if: "!cancelled() && github.event_name != 'pull_request'"
+        uses: actions/cache/save@v6
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: windows-x64-ccache-${{ github.sha }}
