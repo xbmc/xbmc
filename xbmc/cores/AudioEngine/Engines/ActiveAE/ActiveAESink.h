@@ -38,6 +38,7 @@ struct SinkConfig
 struct SinkReply
 {
   AEAudioFormat format;
+  const std::string* device;
   float cacheTotal;
   float latency;
   bool hasVolume;

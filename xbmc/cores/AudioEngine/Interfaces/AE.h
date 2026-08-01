@@ -254,6 +254,11 @@ public:
   virtual void DeviceChange() {}
 
   /*!
+   * \brief Notify AE that the system default output device changed
+   */
+  virtual void DefaultDeviceChange() {}
+
+  /*!
    * \brief Instruct AE to re-initialize, e.g. after ELD change event
    */
   virtual void DeviceCountChange(const std::string& driver) {}
