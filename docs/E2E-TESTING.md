@@ -18,14 +18,17 @@
 > ([.github/workflows/e2e-linux-x11.yml](../.github/workflows/e2e-linux-x11.yml))
 > - GBM is the most representative of the three, matching how Kodi set-top
 > deployments run with no compositor at all, while Wayland and X11 cover Kodi running
-> as a client under a compositor/display server. GBM and Wayland build against
-> Ubuntu's own system packages (per docs/README.Linux.md) rather than tools/depends,
-> which on Linux exists to smoke-test its own recipes and support platforms with no
-> usable system libs, not as the way a real Linux build is maintained - so those two
-> test what a real Ubuntu user's build looks like. ffmpeg is the exception: Kodi
-> requires >= 7.0 and Ubuntu 24.04 ships 6.1, so cmake builds it via ExternalProject
-> as it would for any user on this release. X11 still builds via tools/depends and so
-> tests a different configuration from its two siblings. Android on a
+> as a client under a compositor/display server. All three build against Ubuntu's
+> own system packages (per docs/README.Linux.md) rather than tools/depends, which on
+> Linux exists to smoke-test its own recipes and support platforms with no usable
+> system libs, not as the way a real Linux build is maintained - so they test what a
+> real Ubuntu user's build looks like. Anything the distro ships too old for this
+> tree is built via ExternalProject instead, as it would be for any user on that
+> release: ffmpeg everywhere (Kodi requires >= 7.0), and rather more on X11, which
+> runs on 22.04 because it is the last Ubuntu carrying a header its windowing code
+> needs. X11 is also the only one built for desktop GL/GLX rather than GLES, which is
+> why it has its own workflow rather than a third leg of the GBM/Wayland matrix.
+> Android on a
 > hardware-accelerated emulator
 > ([.github/workflows/e2e-android.yml](../.github/workflows/e2e-android.yml)),
 > Windows ([.github/workflows/e2e-windows.yml](../.github/workflows/e2e-windows.yml)),
