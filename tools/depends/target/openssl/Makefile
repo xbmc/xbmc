@@ -42,7 +42,7 @@ else
     export SDKROOT CFLAGS
     OPENSSLPLATFORM=kodi-iphoneos-arm64
 
-    ifeq ($(TARGET_PLATFORM),appletvos)
+    ifeq ($(findstring appletv,$(TARGET_PLATFORM)),appletv)
       OPENSSLPLATFORM=kodi-appletvos-arm64
       # Need to add "no-async" to avoid "'setcontext' is unavailable: not available on tvOS" error
       TARGETOPT+= no-async

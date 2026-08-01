@@ -22,6 +22,7 @@
 #include "guilib/DispResource.h"
 #include "guilib/Texture.h"
 #include "messaging/ApplicationMessenger.h"
+#include "rendering/gles/ScreenshotSurfaceGLES.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -197,6 +198,7 @@ bool CWinSystemTVOS::CreateNewWindow(const std::string& name, bool fullScreen, R
   VIDEOPLAYER::CProcessInfoIOS::Register();
   RETRO::CRPProcessInfoIOS::Register();
   RETRO::CRPProcessInfoIOS::RegisterRendererFactory(new RETRO::CRendererFactoryOpenGLES);
+  CScreenshotSurfaceGLES::Register();
 
   return true;
 }

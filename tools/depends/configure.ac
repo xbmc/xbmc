@@ -501,6 +501,10 @@ case $host in
         target_platform=appletvos
         platform_os="darwin_embedded"
       ;;
+      tvos-simulator)
+        target_platform=appletvsimulator
+        platform_os="darwin_embedded"
+      ;;
       ios)
         target_platform=iphoneos
         platform_os="darwin_embedded"
@@ -580,7 +584,7 @@ case $host in
 esac
 
 case $use_platform in
-  ios|ios-simulator|tvos|macos)
+  ios|ios-simulator|tvos|tvos-simulator|macos)
     ;;
   webos)
     ;;
