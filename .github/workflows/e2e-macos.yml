@@ -47,6 +47,16 @@ jobs:
     env:
       HOST_TRIPLET: aarch64-apple-darwin
       CCACHE_DIR: /Users/runner/.cache/kodi-e2e-ccache
+      # ccache's defaults are a poor fit for CI: restoring the cache rewrites every
+      # file's mtime, which defeats direct mode, and a Debug build hashes the build
+      # directory because debug info embeds absolute paths. Together those held the
+      # hit rate near 10%. compilercheck=content also matters wherever the compiler
+      # itself comes out of a restored tools/depends tree.
+      CCACHE_COMPILERCHECK: content
+      CCACHE_SLOPPINESS: include_file_mtime,include_file_ctime,time_macros
+      CCACHE_NOHASHDIR: "true"
+      CCACHE_BASEDIR: ${{ github.workspace }}
+      CCACHE_MAXSIZE: "1G"
 
     steps:
       - name: Checkout
@@ -190,7 +200,11 @@ jobs:
           key: macos-${{ runner.arch }}-depends-${{ steps.depends-key.outputs.hash }}
 
       - name: Save ccache
-        if: '!cancelled()'
+        # Not on pull_request: cache entries are immutable, so every push to a
+        # labelled PR would add another ~600MB entry rather than replace one, and
+        # the repo's 10GB budget then evicts the entries that are actually useful.
+        # PR runs still restore.
+        if: "!cancelled() && github.event_name != 'pull_request'"
         uses: actions/cache/save@v6
         with:
           path: ${{ env.CCACHE_DIR }}
