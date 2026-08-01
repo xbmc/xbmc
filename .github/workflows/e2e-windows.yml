@@ -103,9 +103,14 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: kodi-windows-log
+          # kodi.log sits at the profile root here, not under temp/:
+          # InitDirectoriesWin32() (xbmc/settings/SettingsComponent.cpp) points
+          # special://logpath at the profile folder on Windows alone. cache/ is picked
+          # up too since that is what special://temp maps to.
           path: |
-            build/Debug/portable_data/temp/kodi.log
+            build/Debug/portable_data/kodi.log
             build/Debug/portable_data/temp/process-output.log
+            build/Debug/portable_data/cache/*.log
           if-no-files-found: warn
 
       - name: Upload screenshot
