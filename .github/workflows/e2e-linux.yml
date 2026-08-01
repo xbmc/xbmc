@@ -73,9 +73,6 @@ jobs:
       CCACHE_NOHASHDIR: "true"
       CCACHE_BASEDIR: ${{ github.workspace }}
       CCACHE_MAXSIZE: "1G"
-      # No logind session on GH Actions runners, so nothing else creates this.
-      XDG_RUNTIME_DIR: /tmp/xdg-runtime-kodi-e2e
-      WAYLAND_DISPLAY: wayland-1
 
     steps:
       - name: Checkout
@@ -215,9 +212,21 @@ jobs:
       # --socket/WAYLAND_DISPLAY set explicitly since Weston only exports it to
       # its own child processes, not this shell. Polled for the socket file
       # since Weston prints no "ready" message.
+      # XDG_RUNTIME_DIR and WAYLAND_DISPLAY are scoped to this step and exported to
+      # later ones from here, rather than declared on the job. CWinSystemGbm::
+      # InitWindowSystem() refuses to start when either DISPLAY or WAYLAND_DISPLAY is
+      # set, so the gbm leg has to run with them genuinely absent - a job-level
+      # declaration would apply to both legs, and a matrix value would still define
+      # WAYLAND_DISPLAY as an empty string, which getenv() reports as set.
       - name: Start headless Wayland compositor (Weston)
         if: matrix.platform == 'wayland'
+        env:
+          # No logind session on GH Actions runners, so nothing else creates this.
+          XDG_RUNTIME_DIR: /tmp/xdg-runtime-kodi-e2e
+          WAYLAND_DISPLAY: wayland-1
         run: |
+          echo "XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR}" >> "$GITHUB_ENV"
+          echo "WAYLAND_DISPLAY=${WAYLAND_DISPLAY}" >> "$GITHUB_ENV"
           mkdir -p "${XDG_RUNTIME_DIR}"
           chmod 0700 "${XDG_RUNTIME_DIR}"
           weston --backend=headless-backend.so --renderer=gl \
