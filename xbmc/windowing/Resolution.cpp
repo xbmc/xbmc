@@ -28,6 +28,34 @@ namespace
 const char* SETTING_VIDEOSCREEN_WHITELIST_PULLDOWN{"videoscreen.whitelistpulldown"};
 const char* SETTING_VIDEOSCREEN_WHITELIST_DOUBLEREFRESHRATE{
     "videoscreen.whitelistdoublerefreshrate"};
+const char* SETTING_VIDEOSCREEN_KEEP_COMPATIBLE_REFRESH_RATE{
+    "videoscreen.keepcompatiblerefreshrate"};
+
+bool IsCurrentResolutionAllowed(RESOLUTION resolution)
+{
+  const auto indexList = CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(
+      CSettings::SETTING_VIDEOSCREEN_WHITELIST);
+  if (indexList.empty())
+    return true;
+
+  const RESOLUTION_INFO currentInfo =
+      CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(resolution);
+  for (const auto& mode : indexList)
+  {
+    const RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(
+        CDisplaySettings::GetInstance().GetResFromString(mode.asString()));
+    if (info.iScreenWidth == currentInfo.iScreenWidth &&
+        info.iScreenHeight == currentInfo.iScreenHeight &&
+        (info.dwFlags & D3DPRESENTFLAG_MODEMASK) ==
+            (currentInfo.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
+        MathUtils::FloatEquals(info.fRefreshRate, currentInfo.fRefreshRate, 0.01f))
+    {
+      return true;
+    }
+  }
+
+  return false;
+}
 
 } // namespace
 
@@ -57,6 +85,7 @@ float RESOLUTION_INFO::DisplayRatio() const
 RESOLUTION CResolutionUtils::ChooseBestResolution(float fps, int width, int height, bool is3D)
 {
   RESOLUTION res = CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution();
+  const RESOLUTION currentResolution{res};
   float weight = 0.0f;
 
   if (!FindResolutionFromOverride(fps, width, is3D, res, weight, false)) //find a refreshrate from overrides
@@ -64,12 +93,43 @@ RESOLUTION CResolutionUtils::ChooseBestResolution(float fps, int width, int heig
     if (!FindResolutionFromOverride(fps, width, is3D, res, weight, true)) //if that fails find it from a fallback
     {
       FindResolutionFromWhitelist(fps, width, height, is3D, res); //find a refreshrate from whitelist
+
+      if (res != currentResolution &&
+          CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+              SETTING_VIDEOSCREEN_KEEP_COMPATIBLE_REFRESH_RATE) &&
+          IsCurrentResolutionAllowed(currentResolution))
+      {
+        const RESOLUTION_INFO currentInfo =
+            CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(currentResolution);
+        const RESOLUTION_INFO selectedInfo =
+            CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(res);
+        if (currentInfo.iScreenWidth == selectedInfo.iScreenWidth &&
+            currentInfo.iScreenHeight == selectedInfo.iScreenHeight &&
+            (currentInfo.dwFlags & D3DPRESENTFLAG_MODEMASK) ==
+                (selectedInfo.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
+            IsRefreshRateMultiple(currentInfo.fRefreshRate, fps))
+        {
+          CLog::Log(LOGDEBUG,
+                    "[WHITELIST] Keeping compatible current refresh rate {} instead of {}",
+                    currentInfo.fRefreshRate, selectedInfo.fRefreshRate);
+          res = currentResolution;
+        }
+      }
     }
   }
 
   CLog::Log(LOGINFO, "Display resolution ADJUST : {} ({}) (weight: {:.3f})",
             CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(res).strMode, res, weight);
   return res;
+}
+
+bool CResolutionUtils::IsRefreshRateMultiple(float refreshRate, float frameRate)
+{
+  if (refreshRate <= 0.0f || frameRate <= 0.0f)
+    return false;
+
+  const int multiple = MathUtils::round_int(static_cast<double>(refreshRate / frameRate));
+  return multiple >= 1 && MathUtils::FloatEquals(refreshRate, frameRate * multiple, 0.01f);
 }
 
 void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int height, bool is3D, RESOLUTION &resolution)
