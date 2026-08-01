@@ -31,7 +31,7 @@ Hence: root for access, but create nothing. Kodi is launched once to build its o
 profile tree (_prime_profile_dir), and seeding rewrites file contents in place
 (_overwrite_remote_file) so the inode, owner and SELinux label stay as Kodi made them.
 Screenshots go to special://temp/ for the same reason - a directory Kodi already
-created. Test isolation wipes userdata and lets Kodi rebuild it.
+created. Test isolation clears userdata and lets Kodi rebuild it.
 
 Kodi's storage/microphone consent flow (tools/android/packaging/xbmc/src/
 Splash.java.in) blocks first launch on an interactive MANAGE_EXTERNAL_STORAGE settings
@@ -66,6 +66,9 @@ GUISETTINGS = f"{DATA_DIR}/userdata/guisettings.xml"
 # Reused as the screenshot target because this launcher must not create directories
 # out here at all - see the module docstring.
 SCREENSHOT_DIR = f"{DATA_DIR}/temp"
+# How long userdata must go unchanged before Kodi is considered safe to stop during
+# profile priming - see _wait_for_profile_settled.
+PROFILE_SETTLE_SECONDS = 5.0
 
 
 class AndroidKodiProcess:
@@ -183,18 +186,47 @@ class AndroidKodiProcess:
         self._adb("root", check=False)
         self._adb("wait-for-device", check=False)
 
+    def _wait_for_profile_settled(self, deadline: float) -> None:
+        """Waits until nothing under userdata has changed for PROFILE_SETTLE_SECONDS.
+
+        guisettings.xml appears early in startup, but Kodi keeps creating the profile
+        after that - the databases in particular. Stopping in between leaves e.g.
+        MyVideos*.db present but without its schema, and the next launch dies on
+        "no such table: version" and never reaches the webserver.
+        """
+        previous_listing = None
+        settled_at = None
+        while time.monotonic() < deadline:
+            listing = self._shell(
+                "sh", "-c", shlex.quote(f"ls -lR {DATA_DIR}/userdata"), check=False
+            ).stdout
+            if listing != previous_listing:
+                previous_listing = listing
+                settled_at = None
+            elif settled_at is None:
+                settled_at = time.monotonic()
+            elif time.monotonic() - settled_at >= PROFILE_SETTLE_SECONDS:
+                return
+            time.sleep(1.0)
+        raise TimeoutError(
+            f"Kodi kept writing to {DATA_DIR}/userdata for the whole "
+            f"{self.startup_timeout}s, so the profile never reached a state safe to "
+            f"stop it in. Logcat tail:\n{self._logcat_tail()}"
+        )
+
     def _prime_profile_dir(self) -> None:
         """Launches Kodi once so that it creates its own profile tree.
 
         Nothing else may create anything under it (module docstring), so every file
         this launcher touches afterwards has to be one Kodi made here first. Kodi
         with no guisettings.xml starts up on defaults with the webserver off, which
-        is all this needs: it only has to get far enough to write that file out.
+        is all this needs.
         """
         self._shell("am", "start", "-W", "-n", SPLASH_ACTIVITY)
         deadline = time.monotonic() + self.startup_timeout
         while time.monotonic() < deadline:
             if self._shell("test", "-f", GUISETTINGS, check=False).returncode == 0:
+                self._wait_for_profile_settled(deadline)
                 self._shell("am", "force-stop", PACKAGE)
                 return
             time.sleep(1.0)
@@ -215,7 +247,19 @@ class AndroidKodiProcess:
         self._shell("appops", "set", PACKAGE, "MANAGE_EXTERNAL_STORAGE", "allow")
 
     def _reset_userdata(self) -> None:
-        self._shell("rm", "-rf", f"{DATA_DIR}/userdata", check=False)
+        # Database/ is kept. Deleting it means Kodi has to recreate every database on
+        # the next priming launch, which is the work _wait_for_profile_settled then has
+        # to wait out; the databases hold nothing this suite asserts on. Iterated in the
+        # shell rather than with `find -delete` since Android's toybox find is minimal.
+        self._shell(
+            "sh",
+            "-c",
+            shlex.quote(
+                f"cd {DATA_DIR}/userdata 2>/dev/null || exit 0; "
+                'ls -A | grep -vx Database | while read -r entry; do rm -rf "$entry"; done'
+            ),
+            check=False,
+        )
 
     def _seed_settings(self) -> None:
         self._overwrite_remote_file(
@@ -227,9 +271,10 @@ class AndroidKodiProcess:
         self._restart_adbd_as_root()
         self._install()
         self._grant_permissions()
-        # Only userdata, so screenshots and logs from a previous run stay available
-        # for CI to collect. _prime_profile_dir then has Kodi rebuild it, which is the
-        # only way the files come back with an owner and SELinux label the app can use.
+        # Only userdata, so screenshots and logs from a previous run stay available for
+        # CI to collect. _prime_profile_dir then has Kodi rebuild what was cleared,
+        # which is the only way those files come back with an owner and SELinux label
+        # the app can use.
         self._reset_userdata()
         self._prime_profile_dir()
         self._seed_settings()
