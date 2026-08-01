@@ -37,7 +37,6 @@ public:
       m_texture.reset(texture->Clone());
       m_texture->AllocResources();
       m_fadeTime = fadeTime;
-      m_fading = false;
     };
     ~CFadingTexture()
     {
@@ -45,8 +44,7 @@ public:
     };
 
     std::unique_ptr<CGUITexture> m_texture; ///< texture to fade out
-    unsigned int m_fadeTime; ///< time to fade out (ms)
-    bool         m_fading;   ///< whether we're fading out
+    unsigned int m_fadeTime; ///< time left to fade out (ms)
 
   private:
     CFadingTexture(const CFadingTexture&) = delete;
@@ -101,9 +99,10 @@ protected:
   std::string GetFallback(const std::string& currentName);
   void ProcessState();
   void ProcessAllocation();
-  void ProcessNoTransition(unsigned int currentTime);
-  void ProcessInstantTransition(unsigned int currentTime);
-  void ProcessFadingTransition(unsigned int currentTime);
+  void ProcessInstantTransition();
+  void StartFadeTransition();
+  void ProcessFades(unsigned int currentTime, unsigned int frameTime);
+  bool ProcessFading(CFadingTexture& texture, unsigned int frameTime, unsigned int currentTime);
 
   /*!
    * \brief Update the diffuse color based on the current item infos
@@ -125,6 +124,10 @@ protected:
 
   std::unique_ptr<CGUITexture> m_textureCurrent;
   std::unique_ptr<CGUITexture> m_textureNext;
+
+  // bounded, so fast image changes can't pile up textures
+  static constexpr size_t MAX_FADING_TEXTURES = 2;
+  std::vector<std::unique_ptr<CFadingTexture>> m_fadingTextures; ///< fading out, oldest first
 
   std::string m_nameCurrent{};
   std::string m_nameNext{};
