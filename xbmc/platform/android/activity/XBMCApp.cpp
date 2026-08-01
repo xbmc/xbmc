@@ -12,6 +12,7 @@
 #include "CompileInfo.h"
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
 #include "utils/Mime.h"
 // Audio Engine includes for Factory and interfaces
@@ -1401,31 +1402,47 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
     }
     else
     {
-      CFileItem* item = new CFileItem(targetFile, false);
-      if (IsVideoDb(*item))
-      {
-        *(item->GetVideoInfoTag()) = XFILE::CVideoDatabaseFile::GetVideoTag(item->GetURL());
-        item->SetPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
-      }
-
       if (KODI::PLAYLIST::CPlayListFactory::IsPlaylist(targeturl))
       {
+        auto item = std::make_unique<CFileItem>(targetFile, false);
+
         std::string mimeType = CMime::GetMimeType(*item);
         if (!mimeType.empty())
         {
           item->SetMimeType(mimeType);
         }
 
-        CFileItemList* list = new CFileItemList();
-        list->Add(std::make_shared<CFileItem>(*item));
+        auto list = std::make_unique<CFileItemList>();
 
-        delete item;
+        std::unique_ptr<KODI::PLAYLIST::CPlayList> playlist(
+            KODI::PLAYLIST::CPlayListFactory::Create(*item));
+
+        if (playlist && playlist->Load(item->GetPath()))
+        {
+          for (int i = 0; i < playlist->size(); i++)
+          {
+            list->Add((*playlist)[i]);
+          }
+        }
+        else
+        {
+          // Fallback: If playlist parsing fails, append the original item
+          // to prevent sending an empty list to TMSG_MEDIA_PLAY
+          list->Add(std::make_shared<CFileItem>(*item));
+        }
 
         CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, -1, -1,
-                                                   static_cast<void*>(list));
+                                                   static_cast<void*>(list.release()));
       }
       else
       {
+        CFileItem* item = new CFileItem(targetFile, false);
+        if (IsVideoDb(*item))
+        {
+          *(item->GetVideoInfoTag()) = XFILE::CVideoDatabaseFile::GetVideoTag(item->GetURL());
+          item->SetPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
+        }
+
         CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
       }
     }
