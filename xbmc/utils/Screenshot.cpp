@@ -54,8 +54,6 @@ void CScreenShot::TakeScreenshot(const std::string& filename, bool sync)
     return;
   }
 
-  surface->CaptureVideo(true);
-
   CLog::Log(LOGDEBUG, "Saving screenshot {}", CURL::GetRedacted(filename));
 
   //set alpha byte to 0xFF
