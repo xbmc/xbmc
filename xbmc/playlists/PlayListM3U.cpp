@@ -194,6 +194,34 @@ bool CPlayListM3U::Load(const std::string& strFileName)
           newItem->SetProperty(prop.first, prop.second);
         }
 
+        const std::string inputSlave = newItem->GetProperty("input-slave").asString();
+
+        if (!inputSlave.empty())
+        {
+          std::vector<std::string> subtitles = StringUtils::Split(inputSlave, "#");
+
+          size_t index = 1;
+          while (newItem->HasProperty(StringUtils::Format("subtitle:{}", index)))
+            ++index;
+
+          for (std::string& subtitle : subtitles)
+          {
+            StringUtils::Trim(subtitle);
+
+            if (!subtitle.empty())
+            {
+              CUtil::GetQualifiedFilename(m_strBasePath, subtitle);
+
+              CFileItem subtitleItem(subtitle, false);
+
+              if (VIDEO::IsSubtitle(subtitleItem))
+              {
+                newItem->SetProperty(StringUtils::Format("subtitle:{}", index++), subtitle);
+              }
+            }
+          }
+        }
+
         newItem->SetMimeType(newItem->GetProperty("mimetype").asString());
         if (!newItem->GetMimeType().empty())
           newItem->SetContentLookup(false);
