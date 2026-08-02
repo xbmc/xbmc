@@ -69,8 +69,8 @@ unsigned int CaptureXbFormat(AVPixelFormat format)
   }
 }
 
-// Encode a delivered capture to the destination file; runs on the caller's
-// thread (sync) or the capture service's callback worker (async).
+// Encode a delivered capture to the destination file; runs on the capture
+// service's callback worker.
 void WriteCapture(const KODI::RENDERING::CAPTURE::CaptureResult& result,
                   const std::string& filename)
 {
@@ -101,7 +101,6 @@ void WriteCapture(const KODI::RENDERING::CAPTURE::CaptureResult& result,
 } // namespace
 
 void CScreenShot::TakeScreenshot(const std::string& filename,
-                                 bool sync,
                                  KODI::RENDERING::CAPTURE::CaptureContent content)
 {
   using namespace KODI::RENDERING::CAPTURE;
@@ -121,24 +120,12 @@ void CScreenShot::TakeScreenshot(const std::string& filename,
   spec.content = content;
   spec.format = CaptureFormat::NATIVE;
 
-  if (!sync)
-  {
-    // async: the write runs on the service worker, and ONLY on a successful
-    // delivery (the callback never fires on failure), so a failed capture
-    // leaves no empty file behind
-    auto handle = captureService->Submit(spec, [filename](const CaptureResult& result)
-                                         { WriteCapture(result, filename); });
-    handle->Detach();
-    return;
-  }
-
-  // sync contract: return only when the file is written. Pump the render
-  // loop while waiting (see PumpForCapture), then write inline.
-  auto handle = captureService->Submit(spec);
-  if (PumpForCapture(*handle, 2000ms))
-    WriteCapture(handle->GetResult(), filename);
-  else
-    CLog::Log(LOGERROR, "Screenshot {} failed", CURL::GetRedacted(filename));
+  // the write runs on the service worker, and ONLY on a successful
+  // delivery (the callback never fires on failure), so a failed capture
+  // leaves no empty file behind
+  auto handle = captureService->Submit(spec, [filename](const CaptureResult& result)
+                                       { WriteCapture(result, filename); });
+  handle->Detach();
 }
 
 bool CScreenShot::PumpForCapture(KODI::RENDERING::CAPTURE::CCaptureHandle& handle,

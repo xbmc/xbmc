@@ -34,7 +34,6 @@ public:
   //! \brief Screenshot of the given content into the configured folder.
   static void TakeScreenshot(KODI::RENDERING::CAPTURE::CaptureContent content);
   static void TakeScreenshot(const std::string& filename,
-                             bool sync,
                              KODI::RENDERING::CAPTURE::CaptureContent content =
                                  KODI::RENDERING::CAPTURE::CaptureContent::COMPOSITE);
 
@@ -47,9 +46,8 @@ public:
   //! success. On the render/process thread the wait pumps real frames (a
   //! plain wait there would starve the frame the capture needs); off-thread
   //! it waits passively. Returns false as soon as the request fails.
-  //! Callers other than screenshots (bookmark thumbnails) route through here
-  //! so the private render-loop pump needs only the one friend declaration in
-  //! CGUIWindowManager.
+  //! Pumping calls the private CGUIWindowManager::ProcessRenderLoop; other
+  //! waiters (the bookmarks dialog) call this instead of becoming friends.
   static bool PumpForCapture(KODI::RENDERING::CAPTURE::CCaptureHandle& handle,
                              std::chrono::milliseconds timeout);
 

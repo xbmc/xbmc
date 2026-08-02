@@ -307,18 +307,17 @@ static int RefreshRSS(const std::vector<std::string>& params)
 /*! \brief Take a screenshot.
  *  \param params The parameters.
  *  \details params[0] = URL to save file to. Blank to use default.
- *           params[1] = "sync" to run synchronously (optional).
  *           Any parameter may be "video" for a video-only screenshot.
  */
 static int Screenshot(const std::vector<std::string>& params)
 {
   std::string strSaveToPath;
-  bool sync = false;
   bool video = false;
   for (const std::string& param : params)
   {
     if (StringUtils::EqualsNoCase(param, "sync"))
-      sync = true;
+      CLog::Log(LOGERROR, "TakeScreenshot: the 'sync' parameter was removed; "
+                          "the screenshot is written asynchronously");
     else if (StringUtils::EqualsNoCase(param, "video"))
       video = true;
     else if (strSaveToPath.empty())
@@ -349,7 +348,7 @@ static int Screenshot(const std::vector<std::string>& params)
 
       if (!file.empty())
       {
-        CScreenShot::TakeScreenshot(file, sync, content);
+        CScreenShot::TakeScreenshot(file, content);
       }
       else
       {
@@ -357,7 +356,7 @@ static int Screenshot(const std::vector<std::string>& params)
       }
     }
     else
-      CScreenShot::TakeScreenshot(strSaveToPath, sync, content);
+      CScreenShot::TakeScreenshot(strSaveToPath, content);
   }
   else
     CScreenShot::TakeScreenshot(content);
@@ -591,11 +590,10 @@ static int ToggleDirty(const std::vector<std::string>&)
 ///     @param[in] ident                 Stereo mode identifier.
 ///   }
 ///   \table_row2_l{
-///     <b>`TakeScreenshot(url[\,sync\,video)`</b>
+///     <b>`TakeScreenshot(url[\,video])`</b>
 ///     ,
 ///     Takes a Screenshot
 ///     @param[in] url                   URL to save file to. Blank to use default.
-///     @param[in] sync                  Add "sync" to run synchronously (optional).
 ///     @param[in] video                 Add "video" to capture the video frame only\,
 ///     without GUI\, OSD or subtitles (optional).
 ///   }
