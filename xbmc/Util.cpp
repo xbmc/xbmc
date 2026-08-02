@@ -1395,7 +1395,7 @@ void CUtil::DeleteVideoDatabaseDirectoryCache()
 
 void CUtil::DeleteDirectoryCache(const std::string &prefix)
 {
-  std::string searchPath = "special://temp/";
+  std::string searchPath = "special://temp/archive_cache/";
   CFileItemList items;
   if (!XFILE::CDirectory::GetDirectory(searchPath, items, ".fi", DIR_FLAG_NO_FILE_DIRS))
     return;
