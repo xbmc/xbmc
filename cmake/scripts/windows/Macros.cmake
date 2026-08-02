@@ -57,6 +57,9 @@ function(add_precompiled_header target pch_header pch_source)
       set_target_properties(${PCH_PCH_TARGET}_pch PROPERTIES COMPILE_PDB_NAME vc140
                                                              COMPILE_PDB_OUTPUT_DIRECTORY ${PRECOMPILEDHEADER_DIR}
                                                              FOLDER "Build Utilities")
+      # pch.h pulls in dep headers (fmt, spdlog), so this needs the same dep include
+      # dirs the core libraries get, and must wait on the deps that are built in-tree.
+      core_target_link_libraries(${PCH_PCH_TARGET}_pch)
     endif()
     # From VS2012 onwards, precompiled headers have to be linked against (LNK2011).
     target_link_libraries(${target} PUBLIC ${PCH_PCH_TARGET}_pch)
