@@ -111,6 +111,15 @@ macro(buildFFMPEG)
                                         --win10=${win10})
     set(INSTALL_COMMAND ${CMAKE_COMMAND} -E true)
 
+    # The msys script writes the import libs, so no target produces them as far as CMake
+    # knows. Ninja refuses to load a graph whose link inputs have no rule, so declare them.
+    foreach(_ffmpeg_pkg IN ITEMS ${FFMPEG_PKGS})
+      string(REGEX REPLACE "[>]?=.*" "" _libname ${_ffmpeg_pkg})
+      string(REPLACE "lib" "" _name ${_libname})
+      list(APPEND _ffmpeg_byproducts ${MINGW_LIBS_DIR}/lib/${_name}.lib)
+    endforeach()
+    set(BUILD_BYPRODUCTS ${_ffmpeg_byproducts})
+
     BUILD_DEP_TARGET()
 
     set(FFMPEG_INCLUDE_DIRS ${MINGW_LIBS_DIR}/include)

@@ -8,6 +8,15 @@
 
 #include "MusicInfoTagLoaderMatroska.h"
 
+#include <taglib/taglib.h>
+
+// TagLib's Matroska API needs 2.3.1 - earlier 2.x crash on an invalid seek head and drop
+// chapters carrying no UID. Without this gate the whole TU is empty, and the
+// <taglib/matroska*.h> includes below do not exist before TagLib 2.2.
+#if (TAGLIB_MAJOR_VERSION > 2) ||                                                                  \
+    (TAGLIB_MAJOR_VERSION == 2 &&                                                                  \
+     (TAGLIB_MINOR_VERSION > 3 || (TAGLIB_MINOR_VERSION == 3 && TAGLIB_PATCH_VERSION >= 1)))
+
 #include "MatroskaTagLibStream.h"
 #include "MusicCodecInfoFFmpeg.h"
 #include "MusicInfoTag.h"
@@ -45,11 +54,10 @@ using namespace XFILE;
 using namespace TagLib;
 
 /*!
-* Read embedded cover art from attachments using TagLib (performance issue in TagLib 2.3 
-* need to be resolved for Matroska large files with large attachments over SMB/NFS.
-* This should be done in TagLib 2.3.1 (there is a PR open to fix this). Once resolved, we
-* can drop the FFmpeg embedded cover art loading and just use TagLib for Matroska files.
-* This is a static method that can will be used once 2.3.1 is released before Piers final  
+* Read embedded cover art from attachments using TagLib. Unused: TagLib reads whole Matroska
+* attachments eagerly, which is slow for large attachments over SMB/NFS, so cover art comes from
+* FFmpeg instead. Still unfixed as of TagLib 2.3.1 (it was expected there); once TagLib reads
+* attachment data lazily this can replace the FFmpeg path.
 
 static void GetMatroskaEmbeddedCover(TagLib::Matroska::File& matroskaFile,
                                      CMusicInfoTag& tag,
@@ -741,3 +749,5 @@ void CMusicInfoTagLoaderMatroska::GetMatroskaMusicTags(
               fileName, e.what());
   }
 }
+
+#endif // TagLib >= 2.3.1

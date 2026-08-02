@@ -22,6 +22,7 @@
 #include <ranges>
 #include <vector>
 
+#include <taglib/taglib.h>
 #include <taglib/aifffile.h>
 #include <taglib/apefile.h>
 #include <taglib/apetag.h>

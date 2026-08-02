@@ -1,7 +1,7 @@
 ![Kodi Logo](resources/banner_slim.png)
 
 # Debian/Ubuntu build guide
-This guide has been tested with Ubuntu 16.04.4 (Xenial) x86_64, 18.04 (Bionic) and 20.04 (Focal). Please read it in full before you proceed to familiarize yourself with the build procedure.
+This guide has been tested with Ubuntu 16.04.4 (Xenial) x86_64, 18.04 (Bionic), 20.04 (Focal), 22.04 (Jammy), 24.04 (Noble) and 26.04 (Resolute). Please read it in full before you proceed to familiarize yourself with the build procedure.
 
 Several other distributions have **[specific build guides](README.md)** and a general **[Linux build guide](README.Linux.md)** is also available.
 
@@ -129,7 +129,7 @@ Install build dependencies manually:
 sudo apt install autoconf automake autopoint autotools-dev cmake \
   curl debhelper default-jre doxygen gawk gcc gdc gettext gperf \
   libasound2-dev libass-dev libavahi-client-dev libavahi-common-dev \
-  libbluetooth-dev libbluray-dev libbz2-dev libcdio-dev \
+  libbluetooth-dev libbluray-dev libbz2-dev libcdio-dev libcdio++-dev \
   libcrossguid-dev libcurl4-openssl-dev libcwiid-dev libdbus-1-dev \
   libdrm-dev libegl1-mesa-dev libenca-dev libexiv2-dev libflac-dev \
   libfmt-dev libfontconfig-dev libfreetype6-dev libfribidi-dev \
@@ -177,8 +177,11 @@ sudo apt install libglew-dev libwayland-dev libxkbcommon-dev waylandpp-dev wayla
 
 Similarly, building for GBM also requires some extra packages:
 ```
-sudo apt install libgbm-dev libinput-dev libxkbcommon-dev
+sudo apt install libgbm-dev libinput-dev libxkbcommon-dev libdisplay-info-dev
 ```
+
+> [!NOTE]  
+> `libdisplay-info-dev` is packaged from 24.04 (Noble) onward. On 22.04 (Jammy) and older, build it from source - GBM requires it and there is no internal build option: https://gitlab.freedesktop.org/emersion/libdisplay-info
 
 Optional packages that you might want to install for extra functionality (generating doxygen documentation, for instance):
 ```

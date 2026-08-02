@@ -14,7 +14,12 @@
 #endif // HAS_OPTICAL_DRIVE
 #include "MusicInfoTagLoaderDatabase.h"
 #include "MusicInfoTagLoaderFFmpeg.h"
+#include <taglib/taglib.h>
+#if (TAGLIB_MAJOR_VERSION > 2) ||                                                                  \
+    (TAGLIB_MAJOR_VERSION == 2 &&                                                                  \
+     (TAGLIB_MINOR_VERSION > 3 || (TAGLIB_MINOR_VERSION == 3 && TAGLIB_PATCH_VERSION >= 1)))
 #include "MusicInfoTagLoaderMatroska.h"
+#endif
 #include "MusicInfoTagLoaderShn.h"
 #include "ServiceBroker.h"
 #include "TagLoaderTagLib.h"
@@ -88,9 +93,16 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CFileItem& i
     CMusicInfoTagLoaderSHN *pTagLoader = new CMusicInfoTagLoaderSHN();
     return pTagLoader;
   }
+#if (TAGLIB_MAJOR_VERSION > 2) ||                                                                  \
+    (TAGLIB_MAJOR_VERSION == 2 &&                                                                  \
+     (TAGLIB_MINOR_VERSION > 3 || (TAGLIB_MINOR_VERSION == 3 && TAGLIB_PATCH_VERSION >= 1)))
   else if (strExtension == "mka" || strExtension == "mkv")
     return new CMusicInfoTagLoaderMatroska();
-  else if (strExtension == "dsf" || strExtension == "dff")
+#endif
+  // mka/mkv fall through to FFmpeg when the Matroska reader is gated out - IsAudioBook() still
+  // admits them from a music source either way, so they would otherwise get no tags at all.
+  else if (strExtension == "mka" || strExtension == "mkv" || strExtension == "dsf" ||
+           strExtension == "dff")
     return new CMusicInfoTagLoaderFFmpeg();
 
   return NULL;
