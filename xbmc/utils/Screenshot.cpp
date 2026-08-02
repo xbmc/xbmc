@@ -113,9 +113,8 @@ void CScreenShot::TakeScreenshot(const std::string& filename,
   spec.content = content;
   spec.format = CaptureFormat::NATIVE;
 
-  // the write runs on the service worker, and ONLY on a successful
-  // delivery (the callback never fires on failure), so a failed capture
-  // leaves no empty file behind
+  // failure dispatches an empty result because some consumers must act on
+  // it (a bookmark still writes its DB row); here WriteCapture declines it
   auto handle = captureService->Submit(spec, [filename](const CaptureResult& result)
                                        { WriteCapture(result, filename); });
   handle->Detach();
