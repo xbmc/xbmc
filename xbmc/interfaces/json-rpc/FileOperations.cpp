@@ -141,7 +141,7 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const std::string& method,
 
       if ((media == "video" && items[i]->HasVideoInfoTag()) ||
           (media == "music" && items[i]->HasMusicInfoTag()) ||
-          (media == "picture" && items[i]->HasPictureInfoTag()) ||
+          (media == "pictures" && items[i]->HasPictureInfoTag()) ||
           URIUtils::IsUPnP(items.GetPath()))
         filteredFiles.Add(items[i]);
       else
