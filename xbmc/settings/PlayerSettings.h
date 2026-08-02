@@ -22,4 +22,7 @@ public:
   static void SettingOptionsQueueDataSizesFiller(const SettingConstPtr& setting,
                                                  std::vector<IntegerSettingOption>& list,
                                                  int& current);
+  static void SettingOptionsFastForwardSpeeds(const SettingConstPtr& setting,
+                                              std::vector<IntegerSettingOption>& list,
+                                              int& current);
 };

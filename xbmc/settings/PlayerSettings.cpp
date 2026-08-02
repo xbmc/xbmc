@@ -47,3 +47,16 @@ void CPlayerSettings::SettingOptionsQueueDataSizesFiller(const SettingConstPtr& 
   list.emplace_back(StringUtils::Format(mb, 512), 512);
   list.emplace_back(StringUtils::Format(gb, 1), 1024);
 }
+
+void CPlayerSettings::SettingOptionsFastForwardSpeeds(const SettingConstPtr& setting,
+                                                      std::vector<IntegerSettingOption>& list,
+                                                      int& current)
+{
+  const std::string& x = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13559);
+
+  list.emplace_back(StringUtils::Format(x, 2), 2);
+  list.emplace_back(StringUtils::Format(x, 4), 4);
+  list.emplace_back(StringUtils::Format(x, 8), 8);
+  list.emplace_back(StringUtils::Format(x, 16), 16);
+  list.emplace_back(StringUtils::Format(x, 32), 32);
+}

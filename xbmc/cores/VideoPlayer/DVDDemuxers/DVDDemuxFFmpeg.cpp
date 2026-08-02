@@ -705,8 +705,13 @@ void CDVDDemuxFFmpeg::SetSpeed(int iSpeed)
     av_read_play(m_pFormatContext);
   m_speed = iSpeed;
 
+  int maxSmoothFF = 4;
+  if (auto comp = CServiceBroker::GetSettingsComponent(); comp != nullptr)
+    if (auto settings = comp->GetSettings(); settings != nullptr)
+      maxSmoothFF = settings->GetInt(CSettings::SETTING_VIDEOPLAYER_MAX_SMOOTH_FF_SPEED);
+
   AVDiscard discard = AVDISCARD_NONE;
-  if (m_speed > 4 * DVD_PLAYSPEED_NORMAL)
+  if (m_speed > maxSmoothFF * DVD_PLAYSPEED_NORMAL)
     discard = AVDISCARD_NONKEY;
   else if (m_speed > 2 * DVD_PLAYSPEED_NORMAL)
     discard = AVDISCARD_BIDIR;
