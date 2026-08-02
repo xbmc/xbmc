@@ -4410,81 +4410,6 @@ constexpr std::array<InfoMap, 88> videoplayer = {{
 /// \subsection modules__infolabels_boolean_conditions_RetroPlayer RetroPlayer
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
-///   \table_row3{   <b>`RetroPlayer.VideoFilter`</b>,
-///                  \anchor RetroPlayer_VideoFilter
-///                  _string_,
-///     @return The video filter of the currently-playing game.
-///     The following values are possible:
-///       - <b>`nearest`</b> (Nearest neighbor\, i.e. pixelate)
-///       - <b>`linear`</b> (Bilinear filtering\, i.e. smooth blur)
-///     <p><hr>
-///     @skinning_v18 **[New Infolabel]** \link RetroPlayer_VideoFilter `RetroPlayer.VideoFilter`\endlink
-///     <p>
-///   }
-///   \table_row3{   <b>`RetroPlayer.StretchMode`</b>,
-///                  \anchor RetroPlayer_StretchMode
-///                  _string_,
-///     @return The stretch mode of the currently-playing game.
-///     The following values are possible:
-///       - <b>`normal`</b> (Show the game normally)
-///       - <b>`4:3`</b> (Stretch to a 4:3 aspect ratio)
-///       - <b>`fullscreen`</b> (Stretch to the full viewing area)
-///       - <b>`original`</b> (Shrink to the original resolution)
-///     <p><hr>
-///     @skinning_v18 **[New Infolabel]** \link RetroPlayer_StretchMode `RetroPlayer.StretchMode`\endlink
-///     <p>
-///   }
-///   \table_row3{   <b>`RetroPlayer.VideoRotation`</b>,
-///                  \anchor RetroPlayer_VideoRotation
-///                  _integer_,
-///     @return The video rotation of the currently-playing game
-///     in degrees counter-clockwise.
-///     The following values are possible:
-///       - <b>`0`</b>
-///       - <b>`90`</b> (Shown in the GUI as 270 degrees)
-///       - <b>`180`</b>
-///       - <b>`270`</b> (Shown in the GUI as 90 degrees)
-///     <p><hr>
-///     @skinning_v18 **[New Infolabel]** \link RetroPlayer_VideoRotation `RetroPlayer.VideoRotation`\endlink
-///     <p>
-///   }
-///   \table_row3{   <b>`RetroPlayer.SupportsEject`</b>,
-///                  \anchor RetroPlayer_SupportsEject
-///                  _boolean_,
-///     @return **True** if the game's disc can be ejected\, **False** if the
-///     game isn't disc-based or doesn't support ejecting the disc.
-///     <p><hr>
-///     @skinning_v22 **[New Boolean Condition]** \link RetroPlayer_SupportsEject `RetroPlayer.SupportsEject`\endlink
-///     <p>
-///   }
-///   \table_row3{   <b>`RetroPlayer.DiscEjected`</b>,
-///                  \anchor RetroPlayer_DiscEjected
-///                  _boolean_,
-///     @return **True** if the game's disc is ejected (tray is open)\, **False**
-///     if the game isn't disc-based or the tray is closed.
-///     <p><hr>
-///     @skinning_v22 **[New Boolean Condition]** \link RetroPlayer_DiscEjected `RetroPlayer.DiscEjected`\endlink
-///     <p>
-///   }
-///   \table_row3{   <b>`RetroPlayer.DiscLabel`</b>,
-///                  \anchor RetroPlayer_DiscLabel
-///                  _string_,
-///     @return The human-readable label of the currently inserted disc\, or
-///     an empty string if no disc is in the tray/floppy drive or the game
-///     isn't disc-based.
-///     <p><hr>
-///     @skinning_v22 **[New Infolabel]** \link RetroPlayer_DiscLabel `RetroPlayer.DiscLabel`\endlink
-///     <p>
-///   }
-///   \table_row3{   <b>`RetroPlayer.EmptyTray`</b>,
-///                  \anchor RetroPlayer_EmptyTray
-///                  _boolean_,
-///     @return **True** if the selected disc state is "No disc"\, **False** if a
-///     disc is selected or the game isn't disc-based.
-///     <p><hr>
-///     @skinning_v22 **[New Boolean Condition]** \link RetroPlayer_EmptyTray `RetroPlayer.EmptyTray`\endlink
-///     <p>
-///   }
 ///   \table_row3{   <b>`RetroPlayer.Title`</b>,
 ///                  \anchor RetroPlayer_Title
 ///                  _string_,
@@ -4561,14 +4486,103 @@ constexpr std::array<InfoMap, 88> videoplayer = {{
 ///     @skinning_v22 **[New Infolabel]** \link RetroPlayer_GameClientPlatforms `RetroPlayer.GameClientPlatforms`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`RetroPlayer.AchievementsLoggedIn`</b>,
+///                  \anchor RetroPlayer_AchievementsLoggedIn
+///                  _boolean_,
+///     @return **True** if logged in to RetroAchievements\, **False** otherwise.
+///     <p><hr>
+///     @skinning_v22 **[New Boolean Condition]** \link RetroPlayer_AchievementsLoggedIn `RetroPlayer.AchievementsLoggedIn`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`RetroPlayer.RichPresence`</b>,
+///                  \anchor RetroPlayer_RichPresence
+///                  _string_,
+///     @return The RetroAchievements rich presence status for the currently-playing
+///     game\, or an empty string if no rich presence status is available.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link RetroPlayer_RichPresence `RetroPlayer.RichPresence`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`RetroPlayer.SupportsEject`</b>,
+///                  \anchor RetroPlayer_SupportsEject
+///                  _boolean_,
+///     @return **True** if the game's disc can be ejected\, **False** if the
+///     game isn't disc-based or doesn't support ejecting the disc.
+///     <p><hr>
+///     @skinning_v22 **[New Boolean Condition]** \link RetroPlayer_SupportsEject `RetroPlayer.SupportsEject`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`RetroPlayer.DiscEjected`</b>,
+///                  \anchor RetroPlayer_DiscEjected
+///                  _boolean_,
+///     @return **True** if the game's disc is ejected (tray is open)\, **False**
+///     if the game isn't disc-based or the tray is closed.
+///     <p><hr>
+///     @skinning_v22 **[New Boolean Condition]** \link RetroPlayer_DiscEjected `RetroPlayer.DiscEjected`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`RetroPlayer.DiscLabel`</b>,
+///                  \anchor RetroPlayer_DiscLabel
+///                  _string_,
+///     @return The human-readable label of the currently inserted disc\, or
+///     an empty string if no disc is in the tray/floppy drive or the game
+///     isn't disc-based.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link RetroPlayer_DiscLabel `RetroPlayer.DiscLabel`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`RetroPlayer.EmptyTray`</b>,
+///                  \anchor RetroPlayer_EmptyTray
+///                  _boolean_,
+///     @return **True** if the selected disc state is "No disc"\, **False** if a
+///     disc is selected or the game isn't disc-based.
+///     <p><hr>
+///     @skinning_v22 **[New Boolean Condition]** \link RetroPlayer_EmptyTray `RetroPlayer.EmptyTray`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`RetroPlayer.VideoFilter`</b>,
+///                  \anchor RetroPlayer_VideoFilter
+///                  _string_,
+///     @return The video filter of the currently-playing game.
+///     The following values are possible:
+///       - <b>`nearest`</b> (Nearest neighbor\, i.e. pixelate)
+///       - <b>`linear`</b> (Bilinear filtering\, i.e. smooth blur)
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link RetroPlayer_VideoFilter `RetroPlayer.VideoFilter`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`RetroPlayer.StretchMode`</b>,
+///                  \anchor RetroPlayer_StretchMode
+///                  _string_,
+///     @return The stretch mode of the currently-playing game.
+///     The following values are possible:
+///       - <b>`normal`</b> (Show the game normally)
+///       - <b>`4:3`</b> (Stretch to a 4:3 aspect ratio)
+///       - <b>`fullscreen`</b> (Stretch to the full viewing area)
+///       - <b>`original`</b> (Shrink to the original resolution)
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link RetroPlayer_StretchMode `RetroPlayer.StretchMode`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`RetroPlayer.VideoRotation`</b>,
+///                  \anchor RetroPlayer_VideoRotation
+///                  _integer_,
+///     @return The video rotation of the currently-playing game
+///     in degrees counter-clockwise.
+///     The following values are possible:
+///       - <b>`0`</b>
+///       - <b>`90`</b> (Shown in the GUI as 270 degrees)
+///       - <b>`180`</b>
+///       - <b>`270`</b> (Shown in the GUI as 90 degrees)
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link RetroPlayer_VideoRotation `RetroPlayer.VideoRotation`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 16> retroplayer = {{
-    {"videofilter",   RETROPLAYER_VIDEO_FILTER},
-    {"stretchmode",   RETROPLAYER_STRETCH_MODE},
-    {"videorotation", RETROPLAYER_VIDEO_ROTATION},
+constexpr std::array<InfoMap, 18> retroplayer = {{
     {"title", RETROPLAYER_TITLE},
     {"platform", RETROPLAYER_PLATFORM},
     {"genres", RETROPLAYER_GENRES},
@@ -4578,10 +4592,15 @@ constexpr std::array<InfoMap, 16> retroplayer = {{
     {"gameclient", RETROPLAYER_GAME_CLIENT},
     {"gameclientname", RETROPLAYER_GAME_CLIENT_NAME},
     {"gameclientplatforms", RETROPLAYER_GAME_CLIENT_PLATFORMS},
+    {"richpresence", RETROPLAYER_RICH_PRESENCE},
+    {"achievementsloggedin", RETROPLAYER_ACHIEVEMENTS_LOGGED_IN},
     {"supportseject", RETROPLAYER_SUPPORTS_EJECT},
     {"discejected", RETROPLAYER_DISC_EJECTED},
     {"disclabel", RETROPLAYER_DISC_LABEL},
     {"emptytray", RETROPLAYER_EMPTY_TRAY},
+    {"videofilter", RETROPLAYER_VIDEO_FILTER},
+    {"stretchmode", RETROPLAYER_STRETCH_MODE},
+    {"videorotation", RETROPLAYER_VIDEO_ROTATION},
 }};
 // clang-format on
 

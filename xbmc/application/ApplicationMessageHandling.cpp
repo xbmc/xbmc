@@ -406,6 +406,7 @@ void CApplicationMessageHandling::OnApplicationMessage(MESSAGING::ThreadMessage*
       {
         m_app.CurrentFileItem().UpdateInfo(*item);
         CServiceBroker::GetGUI()->GetInfoManager().UpdateCurrentItem(m_app.CurrentFileItem());
+        pMsg->SetResult(0);
       }
     }
     break;

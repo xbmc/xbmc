@@ -42,6 +42,7 @@ class CShaderPresetFactory;
 
 namespace GAME
 {
+class CAchievementRuntime;
 class CAgentInput;
 class CControllerManager;
 class CGameSettings;
@@ -84,6 +85,8 @@ public:
 
   std::string GetSavestatesFolder() const;
 
+  CAchievementRuntime& AchievementRuntime() { return *m_achievementRuntime; }
+
   CGameSettings& GameSettings() { return *m_gameSettings; }
 
   RETRO::CGUIGameRenderManager& GameRenderManager() { return m_gameRenderManager; }
@@ -108,6 +111,7 @@ private:
   CFileExtensionProvider& m_fileExtensionProvider;
 
   // Game services
+  std::unique_ptr<CAchievementRuntime> m_achievementRuntime;
   std::unique_ptr<CGameSettings> m_gameSettings;
   std::unique_ptr<CAgentInput> m_agentInput;
   std::unique_ptr<SHADER::CShaderPresetFactory> m_videoShaders;

@@ -18,6 +18,9 @@
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "cores/RetroPlayer/RetroPlayerUtils.h"
+#include "games/AchievementRuntime.h"
+#include "games/GameServices.h"
+#include "games/GameSettings.h"
 #include "games/addons/GameClient.h"
 #include "games/tags/GameInfoTag.h"
 #include "guilib/GUIComponent.h"
@@ -64,6 +67,14 @@ const CGameInfoTag* GetGUIGameTag()
 
 //! @todo Savestates were removed from v18
 //#define FILEITEM_PROPERTY_SAVESTATE_DURATION  "duration"
+
+const CAchievementRuntime& CGamesGUIInfo::AchievementRuntime() const
+{
+  if (m_achievementRuntime)
+    return *m_achievementRuntime;
+
+  return CServiceBroker::GetGameServices().AchievementRuntime();
+}
 
 bool CGamesGUIInfo::InitCurrentItem(CFileItem* item)
 {
@@ -222,6 +233,11 @@ bool CGamesGUIInfo::GetLabel(std::string& value,
 
       return true;
     }
+    case RETROPLAYER_RICH_PRESENCE:
+    {
+      value = AchievementRuntime().GetRichPresence();
+      return true;
+    }
     default:
       break;
   }
@@ -272,6 +288,11 @@ bool CGamesGUIInfo::GetBool(bool& value,
 
       value = appPlayer && appPlayer->IsTrayEmpty();
 
+      return true;
+    }
+    case RETROPLAYER_ACHIEVEMENTS_LOGGED_IN:
+    {
+      value = CServiceBroker::GetGameServices().GameSettings().GetAchievementsLoggedIn();
       return true;
     }
     default:

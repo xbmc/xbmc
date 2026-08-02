@@ -9,6 +9,7 @@
 #include "FileItem.h"
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
+#include "games/AchievementRuntime.h"
 #include "games/tags/GameInfoTag.h"
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
@@ -60,6 +61,22 @@ TEST_F(TestGamesGUIInfo, TranslatesRetroPlayerLabels)
             RETROPLAYER_GAME_CLIENT_NAME);
   EXPECT_EQ(infoManager.TranslateString("RetroPlayer.GameClientPlatforms"),
             RETROPLAYER_GAME_CLIENT_PLATFORMS);
+  EXPECT_EQ(infoManager.TranslateString("RetroPlayer.RichPresence"), RETROPLAYER_RICH_PRESENCE);
+  EXPECT_EQ(infoManager.TranslateString("RetroPlayer.AchievementsLoggedIn"),
+            RETROPLAYER_ACHIEVEMENTS_LOGGED_IN);
+}
+
+TEST_F(TestGamesGUIInfo, GetsRichPresenceFromAchievementState)
+{
+  CAchievementRuntime achievementRuntime;
+  achievementRuntime.SetRichPresence("Fighting Lavos");
+
+  CGamesGUIInfo gamesGUIInfo{achievementRuntime};
+  std::string value;
+
+  EXPECT_TRUE(
+      gamesGUIInfo.GetLabel(value, nullptr, 0, CGUIInfo(RETROPLAYER_RICH_PRESENCE), nullptr));
+  EXPECT_EQ(value, "Fighting Lavos");
 }
 
 TEST_F(TestGamesGUIInfo, GetLabelRequiresCurrentGameInGUIInfoManager)

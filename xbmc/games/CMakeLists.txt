@@ -1,8 +1,10 @@
-set(SOURCES GameServices.cpp
+set(SOURCES AchievementRuntime.cpp
+            GameServices.cpp
             GameSettings.cpp
             GameUtils.cpp)
 
-set(HEADERS GameServices.h
+set(HEADERS AchievementRuntime.h
+            GameServices.h
             GameSettings.h
             GameTypes.h
             GameUtils.h)

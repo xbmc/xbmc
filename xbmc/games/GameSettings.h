@@ -41,6 +41,8 @@ public:
   std::string GetRAUsername() const;
   std::string GetRAToken() const;
 
+  bool GetAchievementsLoggedIn() const;
+
   // Inherited from ISettingCallback
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 

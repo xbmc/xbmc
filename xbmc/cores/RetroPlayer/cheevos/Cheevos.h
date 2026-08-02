@@ -10,8 +10,13 @@
 
 #include "RConsoleIDs.h"
 
-#include <cstdint>
+#include <atomic>
+#include <condition_variable>
+#include <deque>
+#include <functional>
+#include <mutex>
 #include <string>
+#include <thread>
 #include <unordered_map>
 #include <vector>
 
@@ -27,31 +32,107 @@ namespace RETRO
 class CCheevos
 {
 public:
+  ~CCheevos();
   CCheevos(GAME::CGameClient* gameClient,
            const std::string& userName,
            const std::string& loginToken);
+
+  /*!
+   * \brief Stop background work before the game client is closed
+   */
+  void Stop();
+
+  /*!
+   * \brief Perform the actual HTTP login exchange with RetroAchievements
+   *
+   * Call this with the user's PASSWORD when they press the Login button.
+   * On success the returned token is stored internally and persisted to
+   * settings — the password is never stored.
+   *
+   * Uses the r=login2 endpoint with credentials in the HTTPS POST body:
+   *
+   *   - https://api-docs.retroachievements.org/connect/standalone.html
+   *
+   * \param password  The user's account password (not a token)
+   *
+   * \return true on successful login.
+   */
+  bool RCLogin(const std::string& password);
+
+  /*!
+   * \brief Reset the runtime
+   */
   void ResetRuntime();
+
+  /*!
+   * \brief Fetch achievement patch data for the loaded game
+   */
+  bool LoadData();
+
+  /*!
+   * \brief Enable rich presence
+   */
   void EnableRichPresence();
+
   std::string GetRichPresenceEvaluation();
 
+  /*!
+   * \brief Achievement activation and trigger detection
+   */
   void ActivateAchievement();
-  static void CallbackUrlId(const std::string& achievementUrl, unsigned int cheevoId);
-  void CheckTriggeredAchievement();
 
-  static std::unordered_map<unsigned, std::vector<std::string>> m_activatedCheevoMap;
+  void CallbackUrlId(const std::string& achievementUrl, unsigned int cheevoId);
 
 private:
-  bool LoadData();
+  using ActivatedCheevoMap = std::unordered_map<unsigned, std::vector<std::string>>;
+  using CheevoTitleMap = std::unordered_map<unsigned, std::pair<std::string, std::string>>;
+
+  /*!
+   * \brief Rich presence periodic ping thread
+   */
+  void RichPresencePingThread();
+
+  // Helper functions
+  void DownloadThread();
+  bool QueueDownload(std::function<void()> task);
   RConsoleID ConsoleID();
 
-  GAME::CGameClient* const m_gameClient;
+  const std::string RA_USER_AGENT;
+
+  // Construction parameters
+  GAME::CGameClient* m_gameClient;
   std::string m_userName;
   std::string m_loginToken;
-  std::string m_romHash;
+
+  bool m_richPresenceLoaded{false};
   std::string m_richPresenceScript;
-  uint32_t m_gameID{};
-  RConsoleID m_consoleID = RConsoleID::RC_INVALID_ID;
-  bool m_richPresenceLoaded{};
+
+  // Published as a complete snapshot after loading and copied by readers
+  std::mutex m_activatedCheevoMutex;
+  ActivatedCheevoMap m_activatedCheevoMap;
+  std::string m_gameTitle;
+  unsigned int m_gameId{0};
+
+  // So CallbackUrlId can look up titles
+  std::mutex m_cheevoTitlesMutex;
+  CheevoTitleMap m_cheevoTitles;
+
+  // Set true when RA flags this emulator as unsupported
+  bool m_unsupportedEmulator{false};
+
+  // Persistent achievement callback — must outlive game session, so stored as member
+  std::function<void(const std::string&, unsigned int)> m_cheevoCallback;
+
+  // Rich presence periodic ping
+  std::atomic<bool> m_richPresenceRunning{false};
+  std::thread m_richPresenceThread;
+
+  // Bounded background image download queue.
+  std::mutex m_downloadThreadsMutex;
+  std::condition_variable m_downloadCondition;
+  std::deque<std::function<void()>> m_downloadQueue;
+  bool m_downloadRunning{true};
+  std::thread m_downloadThread;
 };
 } // namespace RETRO
 } // namespace KODI
