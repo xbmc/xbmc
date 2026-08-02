@@ -15,5 +15,6 @@
     <string name="no_find_apk">Impossibile trovare il pacchetto.</string>
     <string name="waiting_external">In attesa dell\'archiviazione esterna…</string>
     <string name="notice_dialog">%1$s richiede l\'accesso ai file e ai media del tuo dispositivo per funzionare. Consentilo tramite la seguente finestra di dialogo o %1$s verrà chiuso.</string>
-    <string name="record_audio_dialog">%1$s chiede l\'autorizzazione per registrare l\'audio. Questa autorizzazione viene usata solo per la ricerca vocale. Consenti o nega l\'autorizzazione nella seguente finestra di dialogo.</string>
+    <string name="record_audio_dialog">%1$s richiede il permesso di registrare l\'audio. Viene utilizzato solo per la ricerca vocale. Autorizza o nega nella finestra di dialogo seguente.</string>
+    <string name="networkperm_dialog">%1$s richiede l\'accesso alla rete per funzionare. Consentilo tramite la seguente finestra di dialogo o %1$s verrà chiuso.</string>
 </resources>
