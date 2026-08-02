@@ -126,7 +126,7 @@ jobs:
           call "%VSPATH%\VC\Auxiliary\Build\vcvarsall.bat" x64
           echo Windows SDK selected by vcvarsall: %WindowsSDKVersion%
           cmake -G Ninja -B build -S . ^
-            -DCMAKE_BUILD_TYPE=Debug ^
+            -DCMAKE_BUILD_TYPE=Release ^
             -DCMAKE_MSVC_DEBUG_INFORMATION_FORMAT=Embedded ^
             -DCMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION=%WindowsSDKVersion:~0,-1%
 
