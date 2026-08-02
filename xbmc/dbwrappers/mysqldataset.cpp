@@ -308,7 +308,7 @@ int MysqlDatabase::connect(bool create_new)
       {
         const std::string sqlcmd{
             StringUtils::Format("CREATE DATABASE `{}` {}", db, SQL_CHARSET_COLLATION)};
-        const int ret = query_with_reconnect(sqlcmd.c_str());
+        const int ret = query_with_reconnect(sqlcmd);
         if (ret != MYSQL_OK)
         {
           throw DbErrors("Can't create new database: '%s' (%d)", db.c_str(), ret);
@@ -370,7 +370,7 @@ int MysqlDatabase::drop()
     throw DbErrors("Can't drop database: no active connection...");
 
   const std::string sqlcmd{StringUtils::Format("DROP DATABASE `{}`", db)};
-  const int ret = query_with_reconnect(sqlcmd.c_str());
+  const int ret = query_with_reconnect(sqlcmd);
   if (ret != MYSQL_OK)
     throw DbErrors("Can't drop database: '%s' (%d)", db.c_str(), ret);
 
@@ -392,7 +392,7 @@ int MysqlDatabase::copy(const char* backup_name)
 
   // grab a list of base tables only (no views)
   std::string sqlcmd{"SHOW FULL TABLES WHERE Table_type = 'BASE TABLE'"};
-  ret = query_with_reconnect(sqlcmd.c_str());
+  ret = query_with_reconnect(sqlcmd);
   if (ret != MYSQL_OK)
     throw DbErrors("Can't determine base tables for copy (%d)", ret);
 
@@ -409,7 +409,7 @@ int MysqlDatabase::copy(const char* backup_name)
 
     // create the new database
     sqlcmd = StringUtils::Format("CREATE DATABASE `{}` {}", backup_name, SQL_CHARSET_COLLATION);
-    ret = query_with_reconnect(sqlcmd.c_str());
+    ret = query_with_reconnect(sqlcmd);
     if (ret != MYSQL_OK)
     {
       mysql_free_result(res);
@@ -429,7 +429,7 @@ int MysqlDatabase::copy(const char* backup_name)
 
       // copy the table definition
       sqlcmd = StringUtils::Format("CREATE TABLE `{}`.`{}` LIKE `{}`", backup_name, row[0], row[0]);
-      ret = query_with_reconnect(sqlcmd.c_str());
+      ret = query_with_reconnect(sqlcmd);
       if (ret != MYSQL_OK)
       {
         mysql_free_result(res);
@@ -440,7 +440,7 @@ int MysqlDatabase::copy(const char* backup_name)
       // set the character set and collation of the table (including current and future columns)
       sqlcmd = StringUtils::Format("ALTER TABLE `{}`.{} CONVERT TO {}", backup_name, row[0],
                                    SQL_CHARSET_COLLATION);
-      ret = query_with_reconnect(sqlcmd.c_str());
+      ret = query_with_reconnect(sqlcmd);
       if (ret != MYSQL_OK)
       {
         mysql_free_result(res);
@@ -450,7 +450,7 @@ int MysqlDatabase::copy(const char* backup_name)
       // copy the table data
       sqlcmd = StringUtils::Format("INSERT INTO `{}`.`{}` SELECT * FROM `{}`", backup_name, row[0],
                                    row[0]);
-      ret = query_with_reconnect(sqlcmd.c_str());
+      ret = query_with_reconnect(sqlcmd);
       if (ret != MYSQL_OK)
       {
         mysql_free_result(res);
@@ -483,7 +483,7 @@ int MysqlDatabase::drop_analytics()
       "SELECT DISTINCT table_name, index_name FROM information_schema.statistics WHERE index_name "
       "!= 'PRIMARY' AND table_schema = '{}'",
       db)};
-  ret = query_with_reconnect(sqlcmd.c_str());
+  ret = query_with_reconnect(sqlcmd);
   if (ret != MYSQL_OK)
     throw DbErrors("Can't determine list of indexes to drop (%d)", ret);
 
@@ -496,7 +496,7 @@ int MysqlDatabase::drop_analytics()
     while ((row = mysql_fetch_row(res)) != nullptr)
     {
       sqlcmd = StringUtils::Format("ALTER TABLE `{}`.`{}` DROP INDEX `{}`", db, row[0], row[1]);
-      ret = query_with_reconnect(sqlcmd.c_str());
+      ret = query_with_reconnect(sqlcmd);
 
       if (ret != MYSQL_OK)
       {
@@ -512,7 +512,7 @@ int MysqlDatabase::drop_analytics()
   // next topic is a views list
   sqlcmd = StringUtils::Format(
       "SELECT table_name FROM information_schema.views WHERE table_schema = '{}'", db);
-  ret = query_with_reconnect(sqlcmd.c_str());
+  ret = query_with_reconnect(sqlcmd);
   if (ret != MYSQL_OK)
     throw DbErrors("Can't determine list of views to drop. (%d)", ret);
 
@@ -524,7 +524,7 @@ int MysqlDatabase::drop_analytics()
     {
       /* we do not need IF EXISTS because these views are exist */
       sqlcmd = StringUtils::Format("DROP VIEW `{}`.`{}`", db, row[0]);
-      ret = query_with_reconnect(sqlcmd.c_str());
+      ret = query_with_reconnect(sqlcmd);
       if (ret != MYSQL_OK)
       {
         mysql_free_result(res);
@@ -550,7 +550,7 @@ int MysqlDatabase::drop_analytics()
     while ((row = mysql_fetch_row(res)) != nullptr)
     {
       sqlcmd = StringUtils::Format("DROP TRIGGER `{}`.`{}`", db, row[0]);
-      ret = query_with_reconnect(sqlcmd.c_str());
+      ret = query_with_reconnect(sqlcmd);
       if (ret != MYSQL_OK)
       {
         mysql_free_result(res);
@@ -577,7 +577,7 @@ int MysqlDatabase::drop_analytics()
     while ((row = mysql_fetch_row(res)) != nullptr)
     {
       sqlcmd = StringUtils::Format("DROP FUNCTION `{}`.`{}`", db, row[0]);
-      ret = query_with_reconnect(sqlcmd.c_str());
+      ret = query_with_reconnect(sqlcmd);
       if (ret != MYSQL_OK)
       {
         mysql_free_result(res);
@@ -590,13 +590,13 @@ int MysqlDatabase::drop_analytics()
   return 1;
 }
 
-int MysqlDatabase::query_with_reconnect(const char* query)
+int MysqlDatabase::query_with_reconnect(std::string_view query)
 {
   int attempts = 5;
   int result;
 
   // try to reconnect if server is gone
-  while (((result = mysql_real_query(conn, query, strlen(query))) != MYSQL_OK) &&
+  while (((result = mysql_real_query(conn, query.data(), query.size())) != MYSQL_OK) &&
          ((result = mysql_errno(conn)) == CR_SERVER_GONE_ERROR || result == CR_SERVER_LOST) &&
          (attempts-- > 0))
   {
@@ -620,7 +620,7 @@ long MysqlDatabase::nextid(const char* sname)
   int id;
   std::string sqlcmd{
       StringUtils::Format("SELECT nextid FROM {} WHERE seq_name = '{}'", seq_table, sname)};
-  int err = query_with_reconnect(sqlcmd.c_str());
+  int err = query_with_reconnect(sqlcmd);
   CLog::LogFC(LOGDEBUG, LOGDATABASE, "will request");
   if (err != 0)
   {
@@ -635,7 +635,7 @@ long MysqlDatabase::nextid(const char* sname)
       sqlcmd = StringUtils::Format("INSERT INTO {} (nextid,seq_name) VALUES ({},'{}')", seq_table,
                                    id, sname);
       mysql_free_result(res);
-      err = query_with_reconnect(sqlcmd.c_str());
+      err = query_with_reconnect(sqlcmd);
       if (err != 0)
         return DB_UNEXPECTED_RESULT;
 
@@ -647,7 +647,7 @@ long MysqlDatabase::nextid(const char* sname)
       sqlcmd = StringUtils::Format("UPDATE {} SET nextid=%d WHERE seq_name = '{}'", seq_table, id,
                                    sname);
       mysql_free_result(res);
-      err = query_with_reconnect(sqlcmd.c_str());
+      err = query_with_reconnect(sqlcmd);
       if (err != 0)
         return DB_UNEXPECTED_RESULT;
 
@@ -1817,7 +1817,7 @@ void MysqlDataset::make_query(StringList& _sql)
     {
       query = i;
       Dataset::parse_sql(query);
-      if ((static_cast<MysqlDatabase*>(db)->query_with_reconnect(query.c_str())) != MYSQL_OK)
+      if ((static_cast<MysqlDatabase*>(db)->query_with_reconnect(query)) != MYSQL_OK)
       {
         throw DbErrors("%s", db->getErrorMsg());
       }
@@ -1937,7 +1937,7 @@ int MysqlDataset::exec(const std::string& sql)
   const auto start = std::chrono::steady_clock::now();
 
   const int res =
-      db->setErr(static_cast<MysqlDatabase*>(db)->query_with_reconnect(qry.c_str()), qry.c_str());
+      db->setErr(static_cast<MysqlDatabase*>(db)->query_with_reconnect(qry), qry.c_str());
 
   const auto end = std::chrono::steady_clock::now();
   const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
@@ -1985,8 +1985,7 @@ bool MysqlDataset::query(const std::string& query)
   MYSQL_RES* stmt = nullptr;
 
   if (static_cast<MysqlDatabase*>(db)->setErr(
-          static_cast<MysqlDatabase*>(db)->query_with_reconnect(qry.c_str()), qry.c_str()) !=
-      MYSQL_OK)
+          static_cast<MysqlDatabase*>(db)->query_with_reconnect(qry), qry.c_str()) != MYSQL_OK)
     throw DbErrors("%s", db->getErrorMsg());
 
   MYSQL* conn = handle();

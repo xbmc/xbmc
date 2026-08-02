@@ -75,7 +75,7 @@ public:
   std::string vprepare(std::string_view format, va_list args) override;
 
   bool in_transaction() override { return _in_transaction; }
-  int query_with_reconnect(const char* query);
+  int query_with_reconnect(std::string_view query);
   void configure_connection();
 
 private:
