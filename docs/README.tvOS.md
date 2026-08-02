@@ -15,7 +15,7 @@ This guide has been tested using Xcode 11.3.1 running on MacOS 10.15.2 (Catalina
 6. **[Build Kodi](#6-build-kodi)**  
   6.1. **[Build with Xcode](#61-build-with-xcode)**  
   6.2. **[Build with xcodebuild](#62-build-with-xcodebuild)**  
-7. **[Packaging to distribute as deb](#7-packaging-to-distribute-as-deb)**  
+7. **[Packaging to distribute as deb or ipa](#7-packaging-to-distribute-as-deb-or-ipa)**
   7.1. **[Package via Xcode](#71-package-via-xcode)**  
   7.2. **[Package via Xcodebuild](#72-package-via-xcodebuild)**  
 8. **[Signing](#8-signing)**  
@@ -307,8 +307,10 @@ This will create a `Kodi.app` file located in `$HOME/kodi-build/build/Debug-appl
 
 **[back to top](#table-of-contents)** | **[back to section top](#6-build)**
 
-## 7. Packaging to distribute as deb
-CMake generates a target called `deb` which will package Kodi ready for distribution. After Kodi has been built, the target can be triggered by selecting it in Xcode active scheme or manually running
+## 7. Packaging to distribute as deb or ipa
+CMake generates CPack-backed `deb` and `ipa` targets for distribution packages. The `deb` target creates a package for jailbroken devices. The `ipa` target creates an unsigned IPA archive with the app bundle under `Payload/`.
+
+After Kodi has been built, either target can be triggered by selecting it in Xcode active scheme or manually running.
 
 ## 7.1. Package via Xcode
 
@@ -317,12 +319,12 @@ Start Xcode, open the Kodi project file created in **[Generate XCode Project Fil
 > [!TIP]
 > (`kodi.xcodeproj`) is located in `$HOME/kodi-build`
 
-Click on `Product` in the top menu bar, and then go to `Scheme`, then select `deb`
+Click on `Product` in the top menu bar, and then go to `Scheme`, then select `deb` or `ipa`
 
 Hit `Build`
 
 > [!TIP]
-> The generated package will be located at $HOME/kodi-build/tools/darwin/packaging/tvos.
+> The generated package will be located at `$HOME/kodi-build/tools/darwin/packaging/darwin_embedded`.
 
 ## 7.2. Package via Xcodebuild
 
@@ -332,8 +334,20 @@ cd $HOME/kodi-build
 xcodebuild -target deb
 ```
 
+To create an unsigned IPA instead:
+```
+cd $HOME/kodi-build
+xcodebuild -target ipa
+```
+
+To build both packages in one command:
+```
+cd $HOME/kodi-build
+xcodebuild -target deb -target ipa
+```
+
 > [!TIP]
-> The generated package will be located at $HOME/kodi-build/tools/darwin/packaging/tvos.
+> The generated package will be located at `$HOME/kodi-build/tools/darwin/packaging/darwin_embedded`.
 
 **[back to top](#table-of-contents)**
 
@@ -361,9 +375,9 @@ In that case Kodi will be sandboxed like any other app. All Kodi files are then 
 
 ## 8.2. Using iOS App Signer to install
 
-  1. Build the deb target via xcodebuild or Xcode as per **[Build Kodi](#6-build-kodi)**
+  1. Build the ipa target via xcodebuild or Xcode as per **[Packaging to distribute as deb or ipa](#7-packaging-to-distribute-as-deb-or-ipa)**
   2. Open iOS Appsigner
-  3. Browse to $HOME/kodi/build/tools/darwin/packaging/tvos for your input file
+  3. Browse to `$HOME/kodi-build/tools/darwin/packaging/darwin_embedded` for your input file
   4. Select your signing certificate
   5. Select your provisioning profile
   6. Click start and select save location for the ipa file
@@ -378,7 +392,7 @@ In that case Kodi will be sandboxed like any other app. All Kodi files are then 
 There are a number of different methods that can be used to install kodi on an AppleTV 4/4K.
 
 ## 9.1. Jailbroken devices
-On jailbroken devices the resulting deb file created from **[Packaging to distribute as deb](#7-packaging-to-distribute-as-deb)** can be copied to the tvOS device via *ssh/scp* and installed manually. You need to SSH into the tvOS device and issue:
+On jailbroken devices the resulting deb file created from **[Packaging to distribute as deb or ipa](#7-packaging-to-distribute-as-deb-or-ipa)** can be copied to the tvOS device via *ssh/scp* and installed manually. You need to SSH into the tvOS device and issue:
 ```
 dpkg -i <name of the deb file>
 ```
@@ -398,7 +412,7 @@ The Apple TV 4K cannot be connected to mac via a cable so the connection must be
   6. Enter the verification code displayed on your AppleTV into the Device window pane for the device and click Connect.
 
 Xcode sets up the Apple TV for wireless debugging and pairs with the device.
-Once your Apple TV has been connected in Xcode, you can deploy either the **[Deb](#7-packaging-to-distribute-as-deb)** or **[App](#6-build)** file.
+Once your Apple TV has been connected in Xcode, you can deploy the built **[App](#6-build)** file. To install an IPA, sign the package first as described in **[Using iOS App Signer to install](#82-using-ios-app-signer-to-install)**.
 
   1. Choose Window > Devices and Simulators, then in the window that appears, click Devices.
   2. On your Mac, select the Apple TV in the Devices pane.

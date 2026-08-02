@@ -5,5 +5,6 @@ XBMC_PLATFORM_DIR=tvos
 cd $WORKSPACE/build;xcodebuild -configuration $Configuration -jobs $BUILDTHREADS \
   -parallelizeTargets \
   -target deb \
+  -target ipa \
   SDKROOT=appletvos$SDK_VERSION XBMC_DEPENDS_ROOT=$XBMC_DEPENDS_ROOT \
   CODE_SIGNING_ALLOWED="NO"

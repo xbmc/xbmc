@@ -1,0 +1,4 @@
+#!/bin/sh
+chown -R mobile:mobile /Applications/@APP_NAME@.app
+/usr/bin/uicache
+echo 'finish:respringing ...'

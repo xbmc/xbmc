@@ -1,0 +1,2 @@
+#!/bin/sh
+find /Applications/@APP_NAME@.app -delete
