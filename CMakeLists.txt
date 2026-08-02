@@ -598,6 +598,16 @@ if(HOST_CAN_EXECUTE_TARGET AND ENABLE_TESTING)
   # Enable unit-test related targets
   enable_testing()
   gtest_add_tests(${APP_NAME_LC}-test "" ${test_sources})
+  find_program(TEST_DPKG_DEB_EXECUTABLE NAMES dpkg-deb)
+  find_program(TEST_RSYNC_EXECUTABLE NAMES rsync)
+  if(TEST_DPKG_DEB_EXECUTABLE AND TEST_RSYNC_EXECUTABLE)
+    add_test(NAME TestDarwinEmbeddedDebPackaging
+             COMMAND ${CMAKE_COMMAND}
+                     -DKODI_SOURCE_DIR=${CMAKE_SOURCE_DIR}
+                     -DTEST_BINARY_DIR=${CMAKE_BINARY_DIR}/test
+                     -DDPKG_DEB_EXECUTABLE=${TEST_DPKG_DEB_EXECUTABLE}
+                     -P ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/darwin_embedded/test/TestDebPackaging.cmake)
+  endif()
   add_custom_target(check ${CMAKE_CTEST_COMMAND} WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
   add_dependencies(check ${APP_NAME_LC}-test)
 
