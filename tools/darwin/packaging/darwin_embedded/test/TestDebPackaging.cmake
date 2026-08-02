@@ -9,9 +9,17 @@ endif()
 set(_test_root "${TEST_BINARY_DIR}/darwin-embedded-deb-${TEST_PLATFORM}")
 set(_packaging_dir "${_test_root}/tools/darwin/packaging/darwin_embedded")
 set(_app_dir "${_test_root}/build/Debug-${TEST_PLATFORM}/Kodi.app")
+set(_dsym_dir "${_test_root}/build/Debug-${TEST_PLATFORM}/Kodi.app.dSYM")
+set(DARWIN_EMBEDDED_DSYM_TARGET_DIR "${_test_root}/dsyms")
 file(REMOVE_RECURSE "${_test_root}")
-file(MAKE_DIRECTORY "${_packaging_dir}" "${_app_dir}")
+file(MAKE_DIRECTORY "${_packaging_dir}" "${_app_dir}" "${_dsym_dir}"
+                    "${DARWIN_EMBEDDED_DSYM_TARGET_DIR}")
 file(WRITE "${_app_dir}/payload.txt" "packaged\n")
+file(WRITE "${_dsym_dir}/symbols" "symbols\n")
+file(WRITE "${_packaging_dir}/../gitrev-posix" "#!/bin/sh\nprintf 'safe-revision'\n")
+file(CHMOD "${_packaging_dir}/../gitrev-posix"
+     PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE
+                 WORLD_READ WORLD_EXECUTE)
 
 get_filename_component(_dpkg_bin_dir "${DPKG_DEB_EXECUTABLE}" DIRECTORY)
 get_filename_component(NATIVEPREFIX "${_dpkg_bin_dir}" DIRECTORY)
@@ -42,6 +50,10 @@ set(_package
   "${_packaging_dir}/${TEST_BUNDLE_IDENTIFIER}64_22.0-0~alpha1_${TEST_PLATFORM}-arm.deb")
 if(NOT EXISTS "${_package}")
   message(FATAL_ERROR "Expected package was not created: ${_package}")
+endif()
+if(NOT EXISTS
+   "${DARWIN_EMBEDDED_DSYM_TARGET_DIR}/safe-revision-Kodi.app.dSYM.tar.bz2")
+  message(FATAL_ERROR "Expected dSYM archive was not created")
 endif()
 
 execute_process(
@@ -78,3 +90,48 @@ foreach(_field IN ITEMS Package Version Architecture)
       "Package ${_field} is '${_metadata}', expected '${_expected_metadata}'")
   endif()
 endforeach()
+
+set(_unsafe_dir "${_packaging_dir}/../unsafe-package")
+file(MAKE_DIRECTORY "${_unsafe_dir}")
+file(WRITE "${_unsafe_dir}/sentinel" "keep\n")
+set(PLATFORM_BUNDLE_IDENTIFIER "../unsafe-package")
+configure_file(
+  "${KODI_SOURCE_DIR}/tools/darwin/packaging/darwin_embedded/mkdeb-darwin_embedded.sh.in"
+  "${_packaging_dir}/mkdeb-unsafe.sh"
+  @ONLY)
+execute_process(
+  COMMAND sh "${_packaging_dir}/mkdeb-unsafe.sh" Debug
+  RESULT_VARIABLE _unsafe_result
+  OUTPUT_VARIABLE _unsafe_output
+  ERROR_VARIABLE _unsafe_error)
+if(_unsafe_result EQUAL 0)
+  message(FATAL_ERROR "Packaging accepted an unsafe package identifier")
+endif()
+if(NOT "${_unsafe_output}${_unsafe_error}" MATCHES "Invalid package identifier")
+  message(FATAL_ERROR "Packaging failed for the wrong reason")
+endif()
+if(NOT EXISTS "${_unsafe_dir}/sentinel")
+  message(FATAL_ERROR "Unsafe package identifier removed a directory outside its staging path")
+endif()
+
+set(PLATFORM_BUNDLE_IDENTIFIER "${TEST_BUNDLE_IDENTIFIER}")
+file(WRITE "${_packaging_dir}/../gitrev-posix" "#!/bin/sh\nprintf '../unsafe-revision'\n")
+configure_file(
+  "${KODI_SOURCE_DIR}/tools/darwin/packaging/darwin_embedded/mkdeb-darwin_embedded.sh.in"
+  "${_packaging_dir}/mkdeb-unsafe-revision.sh"
+  @ONLY)
+execute_process(
+  COMMAND sh "${_packaging_dir}/mkdeb-unsafe-revision.sh" Debug
+  RESULT_VARIABLE _unsafe_revision_result
+  OUTPUT_VARIABLE _unsafe_revision_output
+  ERROR_VARIABLE _unsafe_revision_error)
+if(_unsafe_revision_result EQUAL 0)
+  message(FATAL_ERROR "Packaging accepted an unsafe git revision")
+endif()
+if(NOT "${_unsafe_revision_output}${_unsafe_revision_error}" MATCHES
+   "Invalid git revision")
+  message(FATAL_ERROR "dSYM packaging failed for the wrong reason")
+endif()
+if(EXISTS "${DARWIN_EMBEDDED_DSYM_TARGET_DIR}/../unsafe-revision-Kodi.app.dSYM.tar.bz2")
+  message(FATAL_ERROR "Unsafe git revision wrote a dSYM archive outside its target directory")
+endif()

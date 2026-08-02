@@ -7,7 +7,7 @@ set -ex
 NATIVEPREFIX=@NATIVEPREFIX@
 SWITCH=`echo $1 | tr [A-Z] [a-z]`
 DIRNAME=`dirname $0`
-DSYM_TARGET_DIR=/Users/Shared/xbmc-depends/dSyms
+DSYM_TARGET_DIR=@DARWIN_EMBEDDED_DSYM_TARGET_DIR@
 DSYM_FILENAME=@APP_NAME@.app.dSYM
 PP_DEVICE=iOS
 if [ "@PLATFORM@" = "appletvos" ]; then
@@ -29,7 +29,14 @@ fi
 
 # copy bzip2 of dsym to xbmc-depends install dir
 if [ -d "$DSYM" ] && [ -d "$DSYM_TARGET_DIR" ]; then
-  tar -C "$DSYM/.." -c "$DSYM_FILENAME/" | bzip2 > "$DSYM_TARGET_DIR/`$DIRNAME/../gitrev-posix`-${DSYM_FILENAME}.tar.bz2"
+  GITREV=$("$DIRNAME/../gitrev-posix")
+  case "$GITREV" in
+    ""|*[!A-Za-z0-9._-]*)
+      echo "Invalid git revision: $GITREV" >&2
+      exit 1
+      ;;
+  esac
+  tar -C "$DSYM/.." -c "$DSYM_FILENAME/" | bzip2 > "$DSYM_TARGET_DIR/${GITREV}-${DSYM_FILENAME}.tar.bz2"
 fi
 
 if [ ! -d "$APP" ]; then
@@ -39,12 +46,17 @@ fi
 
 if [ -f "${NATIVEPREFIX}/bin/dpkg-deb" ]; then
   # make sure we pick up our tar, gnutar will fail when dpkg -i
-  bin_path=$(cd "${NATIVEPREFIX}/bin"; pwd)
-  export PATH=${bin_path}:${PATH}
+  export PATH="${NATIVEPREFIX}/bin:${PATH}"
 fi
 
 PACKAGE="@PLATFORM_BUNDLE_IDENTIFIER@"
 PACKAGE_ARM64="${PACKAGE}64"
+case "$PACKAGE" in
+  ""|"."|".."|*/*)
+    echo "Invalid package identifier: $PACKAGE" >&2
+    exit 1
+    ;;
+esac
 
 VERSION=@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@
 REVISION=0
@@ -56,6 +68,12 @@ fi
 [ -n "$2" ] && REVISION="$2"
 
 ARCHIVE=${PACKAGE_ARM64}_${VERSION}-${REVISION}_@PLATFORM@-arm.deb
+case "$ARCHIVE" in
+  ""|"."|".."|*/*)
+    echo "Invalid package archive name: $ARCHIVE" >&2
+    exit 1
+    ;;
+esac
 
 SIZE="$(du -s -k "$APP" | awk '{print $1}')"
 
