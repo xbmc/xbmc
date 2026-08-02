@@ -42,7 +42,6 @@ public:
   virtual void ReleaseDescriptor() {}
 
   uint32_t m_fb_id = 0;
-  uint32_t m_handles[AV_DRM_MAX_PLANES] = {};
 
 protected:
   explicit CVideoBufferDRMPRIME(int id);
