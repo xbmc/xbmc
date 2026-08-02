@@ -496,6 +496,16 @@ macro(BUILD_DEP_TARGET)
     else()
       set(BUILD_BYPRODUCTS BUILD_BYPRODUCTS "${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY}")
     endif()
+
+    # For a windows shared dep, LIBRARY is the dll but consumers link the import lib.
+    # Ninja rejects a graph containing a link input that no rule produces, so declare both.
+    if(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_IMPLIB)
+      if(DEFINED ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_IMPLIB_DEBUG)
+        list(APPEND BUILD_BYPRODUCTS "$<IF:$<CONFIG:Debug,RelWithDebInfo>,${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_IMPLIB_DEBUG},${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_IMPLIB_RELEASE}>")
+      else()
+        list(APPEND BUILD_BYPRODUCTS "${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_IMPLIB}")
+      endif()
+    endif()
   endif()
 
   if(NOT INSTALL_DIR)
