@@ -939,6 +939,20 @@ bool CDateTime::SetFromUTCDateTime(const time_t &dateTime)
   return SetFromUTCDateTime(tmp);
 }
 
+namespace
+{
+//! \brief Whether broken-down date/time fields are in range for a valid date.
+//!
+//! The POSIX implementation of KODI::TIME::SystemTimeToFileTime() normalizes
+//! out-of-range fields instead of failing, so parsers have to reject them
+//! explicitly to behave the same on every platform.
+bool IsValidDateTimeRange(int year, int month, int day, int hour, int minute, int second)
+{
+  return year >= 1601 && month >= 1 && month <= 12 && day >= 1 && day <= 31 && hour >= 0 &&
+         hour <= 23 && minute >= 0 && minute <= 59 && second >= 0 && second <= 59;
+}
+} // namespace
+
 bool CDateTime::SetFromW3CDate(const std::string &dateTime)
 {
   std::string date;
@@ -959,6 +973,9 @@ bool CDateTime::SetFromW3CDate(const std::string &dateTime)
     month = atoi(date.substr(5, 2).c_str());
     day   = atoi(date.substr(8, 2).c_str());
   }
+
+  if (!IsValidDateTimeRange(year, month, day, 0, 0, 0))
+    return false;
 
   CDateTime tmpDateTime(year, month, day, 0, 0, 0);
   if (tmpDateTime.IsValid())
@@ -1006,6 +1023,9 @@ bool CDateTime::SetFromW3CDateTime(const std::string &dateTime, bool ignoreTimez
 
   if (time.length() >= 8)
     sec  = atoi(time.substr(6, 2).c_str());
+
+  if (!IsValidDateTimeRange(year, month, day, hour, min, sec))
+    return false;
 
   CDateTime tmpDateTime(year, month, day, hour, min, sec);
   if (!tmpDateTime.IsValid())
