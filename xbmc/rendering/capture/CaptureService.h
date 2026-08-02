@@ -40,7 +40,7 @@ class CCaptureHandle;
  Threading contract:
  - Submit()/Cancel(): any thread; they never touch the graphics context.
  - LatchFrame()/TakeActive()/Complete()/Fail()/FrameComplete(): render thread.
- - Completion callbacks run on the service's job queue, never on the
+ - Callbacks run on the service's job queue, never on the
    render thread and never under the registry lock.
  - One lock guards the registry and all request state; the atomic pending
    flag is checked before locking, so the steady-state per-frame cost of
@@ -54,8 +54,8 @@ public:
   ~CCaptureService();
 
   //! Register a request; the returned handle owns its lifetime.
-  //! \param callback optional; runs on a worker thread after SUCCESSFUL
-  //! completion only; failures and cancels just wake the waiter
+  //! \param callback optional; runs on a worker thread on every delivery and
+  //! once with an empty result (null pixels) on failure; cancels never fire it
   std::unique_ptr<CCaptureHandle> Submit(const CaptureSpec& spec, CaptureCallback callback = {});
 
   //! Render thread, frame boundary: push newly submitted requests onto the

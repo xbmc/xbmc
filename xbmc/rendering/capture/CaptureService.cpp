@@ -187,7 +187,12 @@ void CCaptureService::Fail(const std::shared_ptr<CaptureRequest>& request)
 
   request->event.Set();
   if (failed)
+  {
     RemoveActive(request);
+    // a callback consumer learns of the failure from the empty result
+    if (request->callback)
+      Dispatch(request, {});
+  }
 }
 
 void CCaptureService::FrameComplete()

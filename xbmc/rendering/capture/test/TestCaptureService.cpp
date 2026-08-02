@@ -103,6 +103,27 @@ TEST_F(TestCaptureService, FailWakesWaiter)
   EXPECT_FALSE(handle->Wait(1000ms));
 }
 
+TEST_F(TestCaptureService, FailDispatchesEmptyResult)
+{
+  std::atomic<int> calls{0};
+  std::atomic<bool> empty{false};
+  auto handle = m_service.Submit({},
+                                 [&](const CaptureResult& result)
+                                 {
+                                   empty = !result.pixels;
+                                   calls++;
+                                 });
+
+  m_service.LatchFrame();
+  auto active = m_service.TakeActive(CaptureContent::COMPOSITE);
+  ASSERT_EQ(active.size(), 1u);
+
+  // a failed capture reports through the callback with an empty result
+  m_service.Fail(active[0]);
+  EXPECT_TRUE(ConditionPoll::poll(10000, [&calls] { return calls.load() == 1; }));
+  EXPECT_TRUE(empty.load());
+}
+
 TEST_F(TestCaptureService, CallbackRunsOnWorker)
 {
   std::atomic<bool> ran{false};

@@ -199,6 +199,8 @@ void CScreenShot::TakeScreenshot(KODI::RENDERING::CAPTURE::CaptureContent conten
       captureService->Submit(spec,
                              [](const CaptureResult& result)
                              {
+                               if (!result.pixels)
+                                 return;
                                const std::string dir = ResolveScreenshotDir();
                                if (dir.empty())
                                {
@@ -234,6 +236,8 @@ void CScreenShot::TakeScreenshotBoth()
       spec,
       [composite](const CaptureResult& result)
       {
+        if (!result.pixels)
+          return;
         if (composite->empty())
         {
           const std::string dir = ResolveScreenshotDir();
