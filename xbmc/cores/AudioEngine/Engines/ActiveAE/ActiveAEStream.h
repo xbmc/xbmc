@@ -118,6 +118,8 @@ public:
   std::unique_ptr<CActiveAEBufferPool> GetResampleBuffers();
   std::unique_ptr<CActiveAEBufferPool> GetAtempoBuffers();
 
+  bool IsAtempoActive() const;
+
   AEAudioFormat m_inputFormat;
   std::deque<CSampleBuffer*> m_outputSamples;
   std::deque<CSampleBuffer*> m_inputSamples;

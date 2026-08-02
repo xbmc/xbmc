@@ -210,9 +210,17 @@ double CActiveAEStream::CalcResampleRatio(double error)
 std::chrono::milliseconds CActiveAEStream::GetErrorInterval()
 {
   std::chrono::milliseconds ret = m_errorInterval;
-  double rr = m_processingBuffers->GetRR();
+
+  // If atempo is active, we don't want to slow down the sync checks.
+  // The normal 3x wait is meant to keep standard resampling smooth,
+  // but for Atempo it just makes sync recovery take too long.
+  if (m_processingBuffers->IsAtempoActive())
+    return ret;
+
+  const double rr = m_processingBuffers->GetRR();
   if (rr > 1.02 || rr < 0.98)
     ret *= 3;
+
   return ret;
 }
 
@@ -785,4 +793,9 @@ bool CActiveAEStreamBuffers::HasWork()
     return true;
 
   return false;
+}
+
+bool CActiveAEStreamBuffers::IsAtempoActive() const
+{
+  return m_atempoBuffers && m_atempoBuffers->GetTempo() != 1.0f;
 }
