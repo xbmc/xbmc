@@ -622,6 +622,10 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
   if (!programProp.isNull())
     m_initialProgramNumber = static_cast<int>(programProp.asInteger());
 
+  // The transport stream re-open below skips avformat_find_stream_info(), so put back what the
+  // first probe established before the streams are built from it.
+  RestoreProbedStreamParameters();
+
   // in case of mpegts and we have not seen pat/pmt, defer creation of streams
   if (!skipCreateStreams || m_pFormatContext->nb_programs > 0)
   {
@@ -684,10 +688,13 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
   if (m_checkTransportStream && m_streaminfo)
   {
     int64_t duration = m_pFormatContext->duration;
+    SaveProbedStreamParameters();
     std::shared_ptr<CDVDInputStream> pInputStream = m_pInput;
     Dispose();
     m_reopen = true;
-    if (!Open(pInputStream, false))
+    const bool opened = Open(pInputStream, false);
+    ClearProbedStreamParameters();
+    if (!opened)
       return false;
     m_pFormatContext->duration = duration;
   }
@@ -1625,6 +1632,137 @@ void CDVDDemuxFFmpeg::CreateStreams(unsigned int program)
     for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
       addStreamKeepingChanges(static_cast<int>(i));
   }
+}
+
+void CDVDDemuxFFmpeg::SaveProbedStreamParameters()
+{
+  ClearProbedStreamParameters();
+
+  if (!m_pFormatContext)
+    return;
+
+  for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
+  {
+    const AVStream* st = m_pFormatContext->streams[i];
+    if (!st || !st->codecpar)
+      continue;
+
+    ProbedStream probed;
+    probed.codecpar.reset(avcodec_parameters_alloc());
+    if (!probed.codecpar)
+      continue;
+
+    if (avcodec_parameters_copy(probed.codecpar.get(), st->codecpar) < 0)
+      continue;
+
+    probed.rFrameRate = st->r_frame_rate;
+    probed.avgFrameRate = st->avg_frame_rate;
+    probed.sampleAspectRatio = st->sample_aspect_ratio;
+    m_probedStreams[static_cast<int>(i)] = std::move(probed);
+  }
+}
+
+void CDVDDemuxFFmpeg::RestoreProbedStreamParameters()
+{
+  if (m_probedStreams.empty() || !m_pFormatContext)
+    return;
+
+  unsigned int restored = 0;
+
+  for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
+  {
+    const auto it = m_probedStreams.find(static_cast<int>(i));
+    if (it == m_probedStreams.end())
+      continue;
+
+    AVStream* st = m_pFormatContext->streams[i];
+    const AVCodecParameters* probed = it->second.codecpar.get();
+    if (!st || !st->codecpar || !probed)
+      continue;
+
+    if (st->codecpar->codec_type != probed->codec_type ||
+        st->codecpar->codec_id != probed->codec_id)
+    {
+      CLog::LogF(LOGDEBUG, "stream {} changed across the re-open, keeping the current parameters",
+                 i);
+      continue;
+    }
+
+    if (probed->codec_type == AVMEDIA_TYPE_VIDEO && (probed->width == 0 || probed->height == 0))
+    {
+      CLog::LogF(LOGDEBUG, "stream {} was not fully probed, leaving it to the demuxer", i);
+      continue;
+    }
+
+    // Only fill in what the re-open does not know, and never extradata or ch_layout:
+    // ResetVideoStreams() clears extradata so that TransportStreamVideoState() waits for the
+    // demuxer to find it again, which is what starts playback on an i-frame; a restored ch_layout
+    // outlives the channel count the demuxer resets from the PMT, which IsProgramChange() then
+    // reads as a change and rebuilds the streams for nothing.
+    AVCodecParameters* cur = st->codecpar;
+
+    if (cur->profile == AV_PROFILE_UNKNOWN)
+      cur->profile = probed->profile;
+    if (cur->level == AV_LEVEL_UNKNOWN)
+      cur->level = probed->level;
+    if (cur->format < 0) // AV_PIX_FMT_NONE / AV_SAMPLE_FMT_NONE
+      cur->format = probed->format;
+    if (cur->bit_rate == 0)
+      cur->bit_rate = probed->bit_rate;
+    if (cur->bits_per_coded_sample == 0)
+      cur->bits_per_coded_sample = probed->bits_per_coded_sample;
+    if (cur->bits_per_raw_sample == 0)
+      cur->bits_per_raw_sample = probed->bits_per_raw_sample;
+
+    if (cur->codec_type == AVMEDIA_TYPE_VIDEO)
+    {
+      if (cur->width == 0 || cur->height == 0)
+      {
+        cur->width = probed->width;
+        cur->height = probed->height;
+      }
+      if (cur->sample_aspect_ratio.num == 0)
+        cur->sample_aspect_ratio = probed->sample_aspect_ratio;
+      if (cur->field_order == AV_FIELD_UNKNOWN)
+        cur->field_order = probed->field_order;
+      if (cur->color_range == AVCOL_RANGE_UNSPECIFIED)
+        cur->color_range = probed->color_range;
+      if (cur->color_primaries == AVCOL_PRI_UNSPECIFIED)
+        cur->color_primaries = probed->color_primaries;
+      if (cur->color_trc == AVCOL_TRC_UNSPECIFIED)
+        cur->color_trc = probed->color_trc;
+      if (cur->color_space == AVCOL_SPC_UNSPECIFIED)
+        cur->color_space = probed->color_space;
+      if (cur->chroma_location == AVCHROMA_LOC_UNSPECIFIED)
+        cur->chroma_location = probed->chroma_location;
+
+      if (st->r_frame_rate.num == 0 || st->r_frame_rate.den == 0)
+        st->r_frame_rate = it->second.rFrameRate;
+      if (st->avg_frame_rate.num == 0 || st->avg_frame_rate.den == 0)
+        st->avg_frame_rate = it->second.avgFrameRate;
+      if (st->sample_aspect_ratio.num == 0)
+        st->sample_aspect_ratio = it->second.sampleAspectRatio;
+    }
+    else if (cur->codec_type == AVMEDIA_TYPE_AUDIO)
+    {
+      if (cur->sample_rate == 0)
+        cur->sample_rate = probed->sample_rate;
+      if (cur->block_align == 0)
+        cur->block_align = probed->block_align;
+      if (cur->frame_size == 0)
+        cur->frame_size = probed->frame_size;
+    }
+
+    restored++;
+  }
+
+  CLog::LogF(LOGDEBUG, "restored the probed parameters of {} of {} streams after the re-open",
+             restored, m_probedStreams.size());
+}
+
+void CDVDDemuxFFmpeg::ClearProbedStreamParameters()
+{
+  m_probedStreams.clear();
 }
 
 void CDVDDemuxFFmpeg::DisposeStreams()
