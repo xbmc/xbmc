@@ -29,6 +29,7 @@ xbmc/playlists                                  playlists
 xbmc/powermanagement                            powermanagement
 xbmc/programs                                   programs
 xbmc/rendering                                  rendering
+xbmc/rendering/capture                          rendering_capture
 xbmc/resources                                  resources
 xbmc/speech                                     speech
 xbmc/storage                                    storage
