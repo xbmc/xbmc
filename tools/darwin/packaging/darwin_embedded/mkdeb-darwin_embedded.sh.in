@@ -1,0 +1,136 @@
+#!/bin/sh
+
+set -ex
+
+# usage: ./mkdeb-ios.sh release/debug (case insensitive)
+# Allows us to run mkdeb-ios.sh from anywhere in the tree, rather than the tools/darwin/packaging/ios folder only
+NATIVEPREFIX=@NATIVEPREFIX@
+SWITCH=`echo $1 | tr [A-Z] [a-z]`
+DIRNAME=`dirname $0`
+DSYM_TARGET_DIR=@DARWIN_EMBEDDED_DSYM_TARGET_DIR@
+DSYM_FILENAME=@APP_NAME@.app.dSYM
+PP_DEVICE=iOS
+if [ "@PLATFORM@" = "appletvos" ]; then
+  PP_DEVICE=tvOS
+fi
+
+if [ "${SWITCH#*debug}" != "${SWITCH}" ]; then
+  echo "Packaging Debug target for ${PP_DEVICE}"
+  APP="$DIRNAME/../../../../build/Debug-@PLATFORM@/@APP_NAME@.app"
+  DSYM="$DIRNAME/../../../../build/Debug-@PLATFORM@/$DSYM_FILENAME"
+elif [ "${SWITCH#*release}" != "${SWITCH}" ]; then
+  echo "Packaging Release target for ${PP_DEVICE}"
+  APP="$DIRNAME/../../../../build/Release-@PLATFORM@/@APP_NAME@.app"
+  DSYM="$DIRNAME/../../../../build/Release-@PLATFORM@/$DSYM_FILENAME"
+else
+  echo "You need to specify the build target"
+  exit 1
+fi
+
+# copy bzip2 of dsym to xbmc-depends install dir
+if [ -d "$DSYM" ] && [ -d "$DSYM_TARGET_DIR" ]; then
+  GITREV=$("$DIRNAME/../gitrev-posix")
+  case "$GITREV" in
+    ""|*[!A-Za-z0-9._-]*)
+      echo "Invalid git revision: $GITREV" >&2
+      exit 1
+      ;;
+  esac
+  tar -C "$DSYM/.." -c "$DSYM_FILENAME/" | bzip2 > "$DSYM_TARGET_DIR/${GITREV}-${DSYM_FILENAME}.tar.bz2"
+fi
+
+if [ ! -d "$APP" ]; then
+  echo "@APP_NAME@.app not found! are you sure you built $1 target?"
+  exit 1
+fi
+
+if [ -f "${NATIVEPREFIX}/bin/dpkg-deb" ]; then
+  # make sure we pick up our tar, gnutar will fail when dpkg -i
+  export PATH="${NATIVEPREFIX}/bin:${PATH}"
+fi
+
+PACKAGE="@PLATFORM_BUNDLE_IDENTIFIER@"
+PACKAGE_ARM64="${PACKAGE}64"
+case "$PACKAGE" in
+  ""|"."|".."|*/*)
+    echo "Invalid package identifier: $PACKAGE" >&2
+    exit 1
+    ;;
+esac
+
+VERSION=@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@
+REVISION=0
+
+if [ "@APP_VERSION_TAG_LC@" != "" ]; then
+  REVISION=$REVISION~@APP_VERSION_TAG_LC@
+fi
+# customize revision string
+[ -n "$2" ] && REVISION="$2"
+
+ARCHIVE=${PACKAGE_ARM64}_${VERSION}-${REVISION}_@PLATFORM@-arm.deb
+case "$ARCHIVE" in
+  ""|"."|".."|*/*)
+    echo "Invalid package archive name: $ARCHIVE" >&2
+    exit 1
+    ;;
+esac
+
+SIZE="$(du -s -k "$APP" | awk '{print $1}')"
+
+echo "Creating $PACKAGE package version $VERSION revision $REVISION"
+rm -rf "$DIRNAME/$PACKAGE"
+rm -rf "$DIRNAME/$ARCHIVE"
+
+# create debian control file.
+mkdir -p "$DIRNAME/$PACKAGE/DEBIAN"
+chmod 755 "$DIRNAME/$PACKAGE/DEBIAN"
+echo "Package: $PACKAGE_ARM64"                  >  "$DIRNAME/$PACKAGE/DEBIAN/control"
+echo "Name: @APP_NAME@-${PP_DEVICE} (64-bit)"   >> "$DIRNAME/$PACKAGE/DEBIAN/control"
+echo "Pre-Depends: cy+cpu.arm64"                >> "$DIRNAME/$PACKAGE/DEBIAN/control"
+echo "Conflicts: $PACKAGE"                      >> "$DIRNAME/$PACKAGE/DEBIAN/control"
+echo "Replaces: $PACKAGE"                       >> "$DIRNAME/$PACKAGE/DEBIAN/control"
+echo "Priority: Extra"                          >> "$DIRNAME/$PACKAGE/DEBIAN/control"
+echo "Version: $VERSION-$REVISION"              >> "$DIRNAME/$PACKAGE/DEBIAN/control"
+if [ "@PLATFORM@" = "iphoneos" ]; then
+  echo "Architecture: iphoneos-arm"             >> "$DIRNAME/$PACKAGE/DEBIAN/control"
+else
+  echo "Architecture: appletvos-arm64"          >> "$DIRNAME/$PACKAGE/DEBIAN/control"
+fi
+echo "Installed-Size: $SIZE"                    >> "$DIRNAME/$PACKAGE/DEBIAN/control"
+echo "Description: @APP_NAME@ Entertainment Center for ${PP_DEVICE}" >> "$DIRNAME/$PACKAGE/DEBIAN/control"
+echo "Homepage: @APP_WEBSITE@"                  >> "$DIRNAME/$PACKAGE/DEBIAN/control"
+echo "Maintainer: Memphiz et al."               >> "$DIRNAME/$PACKAGE/DEBIAN/control"
+echo "Author: Team-@APP_NAME@"                  >> "$DIRNAME/$PACKAGE/DEBIAN/control"
+echo "Section: Multimedia"                      >> "$DIRNAME/$PACKAGE/DEBIAN/control"
+echo "Icon: file:///Applications/@APP_NAME@.app/AppIcon57x57.png" >> "$DIRNAME/$PACKAGE/DEBIAN/control"
+
+# prerm: called on remove and upgrade - get rid of existing bits.
+echo "#!/bin/sh"                                  >  "$DIRNAME/$PACKAGE/DEBIAN/prerm"
+echo "find /Applications/@APP_NAME@.app -delete"  >> "$DIRNAME/$PACKAGE/DEBIAN/prerm"
+chmod 755 "$DIRNAME/$PACKAGE/DEBIAN/prerm"
+
+# postinst: update the app cache after installation.
+echo "#!/bin/sh"                                  >  "$DIRNAME/$PACKAGE/DEBIAN/postinst"
+echo "chown -R mobile:mobile /Applications/@APP_NAME@.app" >> "$DIRNAME/$PACKAGE/DEBIAN/postinst"
+echo "/usr/bin/uicache"                           >> "$DIRNAME/$PACKAGE/DEBIAN/postinst"
+echo "echo 'finish:respringing ...'"              >> "$DIRNAME/$PACKAGE/DEBIAN/postinst"
+chmod 755 "$DIRNAME/$PACKAGE/DEBIAN/postinst"
+
+# prep @APP_NAME@.app
+mkdir -p "$DIRNAME/$PACKAGE/Applications"
+rsync -a --no-links "$APP" "$DIRNAME/$PACKAGE/Applications/"
+find "$DIRNAME/$PACKAGE/Applications/" -name '.svn' -exec rm -rf {} \;
+find "$DIRNAME/$PACKAGE/Applications/" -name '.git*' -exec rm -rf {} \;
+find "$DIRNAME/$PACKAGE/Applications/" -name '.DS_Store' -exec rm -rf {} \;
+
+echo "Packaging $PACKAGE"
+# Tell tar, pax, etc. on Mac OS X 10.4+ not to archive extended attributes.
+export COPYFILE_DISABLE=true
+export COPY_EXTENDED_ATTRIBUTES_DISABLE=true
+
+dpkg-deb -bZ xz --no-uniform-compression --root-owner-group "$DIRNAME/$PACKAGE" "$DIRNAME/$ARCHIVE"
+dpkg-deb --info "$DIRNAME/$ARCHIVE"
+dpkg-deb --contents "$DIRNAME/$ARCHIVE"
+
+# clean up by removing package dir
+rm -rf "$DIRNAME/$PACKAGE"

@@ -134,29 +134,18 @@ if(APP_VERSION_TAG_LC)
 endif()
 if(CORE_PLATFORM_NAME_LC STREQUAL tvos)
   set(DARWIN_EMBEDDED_DEVICE tvOS)
-  set(DARWIN_EMBEDDED_DEB_ARCHITECTURE appletvos-arm64)
 else()
   set(DARWIN_EMBEDDED_DEVICE iOS)
-  set(DARWIN_EMBEDDED_DEB_ARCHITECTURE iphoneos-arm)
 endif()
 
 set(DARWIN_EMBEDDED_CPACK_FILE_NAME
     ${DARWIN_EMBEDDED_PACKAGE_ARM64}_${DARWIN_EMBEDDED_VERSION}-${DARWIN_EMBEDDED_REVISION}_${PLATFORM}-arm)
-set(DARWIN_EMBEDDED_DEB_CPACK_CONFIG CPackConfig-deb.cmake)
 set(DARWIN_EMBEDDED_IPA_CPACK_CONFIG CPackConfig-ipa.cmake)
 
+configure_file(${CMAKE_SOURCE_DIR}/tools/darwin/packaging/darwin_embedded/mkdeb-darwin_embedded.sh.in
+               ${DARWIN_EMBEDDED_CPACK_DIR}/mkdeb-darwin_embedded.sh @ONLY)
 configure_file(${CMAKE_SOURCE_DIR}/tools/darwin/packaging/darwin_embedded/cpack_install-darwin_embedded.cmake.in
                ${DARWIN_EMBEDDED_CPACK_DIR}/cpack_install-darwin_embedded.cmake @ONLY)
-configure_file(${CMAKE_SOURCE_DIR}/tools/darwin/packaging/darwin_embedded/cpack_postinst-darwin_embedded.in
-               ${DARWIN_EMBEDDED_CPACK_DIR}/postinst @ONLY)
-configure_file(${CMAKE_SOURCE_DIR}/tools/darwin/packaging/darwin_embedded/cpack_prerm-darwin_embedded.in
-               ${DARWIN_EMBEDDED_CPACK_DIR}/prerm @ONLY)
-
-set(DARWIN_EMBEDDED_CPACK_KIND deb)
-set(DARWIN_EMBEDDED_CPACK_GENERATOR DEB)
-set(DARWIN_EMBEDDED_CPACK_PACKAGE_NAME ${DARWIN_EMBEDDED_PACKAGE_ARM64})
-configure_file(${CMAKE_SOURCE_DIR}/tools/darwin/packaging/darwin_embedded/CPackConfig-darwin_embedded.cmake.in
-               ${DARWIN_EMBEDDED_CPACK_DIR}/${DARWIN_EMBEDDED_DEB_CPACK_CONFIG} @ONLY)
 
 set(DARWIN_EMBEDDED_CPACK_KIND ipa)
 set(DARWIN_EMBEDDED_CPACK_GENERATOR ZIP)
@@ -168,8 +157,7 @@ configure_file(${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/Credits.html.in
                ${CMAKE_BINARY_DIR}/xbmc/platform/darwin/Credits.html @ONLY)
 
 add_custom_target(deb
-    COMMAND ${CMAKE_COMMAND} -E env COPYFILE_DISABLE=true COPY_EXTENDED_ATTRIBUTES_DISABLE=true
-            ${CMAKE_CPACK_COMMAND} -C ${CORE_BUILD_CONFIG} --config ${DARWIN_EMBEDDED_DEB_CPACK_CONFIG}
+    COMMAND sh ./mkdeb-darwin_embedded.sh ${CORE_BUILD_CONFIG}
     WORKING_DIRECTORY ${DARWIN_EMBEDDED_CPACK_DIR})
 add_dependencies(deb ${APP_NAME_LC})
 
