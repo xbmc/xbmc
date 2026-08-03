@@ -11,27 +11,28 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
-#include "filesystem/File.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/TextureFormats.h"
 #include "messaging/ApplicationMessenger.h"
 #include "pictures/Picture.h"
 #include "rendering/capture/CaptureHandle.h"
+#include "rendering/capture/CapturePixels.h"
 #include "rendering/capture/CaptureService.h"
+#include "rendering/capture/CaptureTypes.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/SettingPath.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/windows/GUIControlSettings.h"
-#include "threads/Event.h"
 #include "threads/SystemClock.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
 #include <chrono>
+#include <memory>
 
-using namespace XFILE;
 using namespace std::chrono_literals;
 
 std::vector<std::function<std::unique_ptr<IScreenshotSurface>()>> CScreenShot::m_screenShotSurfaces;
@@ -50,35 +51,57 @@ std::unique_ptr<IScreenshotSurface> CScreenShot::CreateSurface()
 
 namespace
 {
-// Encode a delivered capture to the destination file; runs on the caller's
-// thread (sync) or the capture service's callback worker (async).
+// Map a capture's source coding to the encoder's XB_FMT input format.
+unsigned int CaptureXbFormat(AVPixelFormat format)
+{
+  switch (format)
+  {
+    case AV_PIX_FMT_BGRA:
+      return XB_FMT_A8R8G8B8;
+    case AV_PIX_FMT_RGBA:
+      return XB_FMT_RGBA8;
+    case AV_PIX_FMT_RGBA64LE:
+      return XB_FMT_RGBA16;
+    case AV_PIX_FMT_X2BGR10LE:
+      return XB_FMT_X2BGR10;
+    default:
+      return XB_FMT_UNKNOWN;
+  }
+}
+
+// Encode a delivered capture to the destination file; runs on the capture
+// service's callback worker.
 void WriteCapture(const KODI::RENDERING::CAPTURE::CaptureResult& result,
                   const std::string& filename)
 {
-  unsigned int format = XB_FMT_A8R8G8B8;
-  if (result.bitDepth > 8)
+  using namespace KODI::RENDERING::CAPTURE;
+  if (!result.pixels)
   {
-    // 10-bit capture: buffer is already RGBA16 with correct alpha, no swap needed
-    format = XB_FMT_RGBA16;
-  }
-  else
-  {
-    //set alpha byte to 0xFF
-    for (unsigned int y = 0; y < result.height; y++)
-    {
-      unsigned char* alphaptr = result.pixels.get() + y * result.stride + 3;
-      for (unsigned int x = 0; x < result.width; x++, alphaptr += 4)
-        *alphaptr = 0xFF;
-    }
+    CLog::Log(LOGERROR, "Unable to write screenshot {}: no pixels", CURL::GetRedacted(filename));
+    return;
   }
 
-  if (!CPicture::CreateThumbnailFromSurface(result.pixels.get(), result.width, result.height,
-                                            result.stride, filename, format, result.color))
+  CScopedCapturePixels lock(*result.pixels);
+  if (!lock.data())
+  {
+    CLog::Log(LOGERROR, "Unable to write screenshot {}: pixel lock failed",
+              CURL::GetRedacted(filename));
+    return;
+  }
+
+  // OPAQUE: the encoder drops the framebuffer alpha through an X-variant source
+  const unsigned int format = CaptureXbFormat(result.format) | XB_FMT_OPAQUE;
+  const uint8_t* src0 = CaptureSrcRow0(lock.data(), result.stride, result.height);
+
+  if (!CPicture::CreateThumbnailFromSurface(src0, result.width, result.height,
+                                            static_cast<unsigned int>(result.stride), filename,
+                                            format, result.color))
     CLog::Log(LOGERROR, "Unable to write screenshot {}", CURL::GetRedacted(filename));
 }
 } // namespace
 
-void CScreenShot::TakeScreenshot(const std::string& filename, bool sync)
+void CScreenShot::TakeScreenshot(const std::string& filename,
+                                 KODI::RENDERING::CAPTURE::CaptureContent content)
 {
   using namespace KODI::RENDERING::CAPTURE;
 
@@ -91,82 +114,152 @@ void CScreenShot::TakeScreenshot(const std::string& filename, bool sync)
 
   CLog::Log(LOGDEBUG, "Saving screenshot {}", CURL::GetRedacted(filename));
 
-  if (!sync)
-  {
-    //make sure the file exists to avoid concurrency issues
-    XFILE::CFile file;
-    if (file.OpenForWrite(filename))
-      file.Close();
-    else
-      CLog::Log(LOGERROR, "Unable to create file {}", CURL::GetRedacted(filename));
-  }
+  // screenshots are tagged captures whatever their content: native depth
+  // kept, the display's coding carried as cICP by the writer
+  CaptureSpec spec;
+  spec.content = content;
+  spec.format = CaptureFormat::NATIVE;
 
-  // the capture itself is always async; shared event so a post-timeout
-  // straggler callback signals harmlessly
-  const auto written = std::make_shared<CEvent>();
-  auto handle = captureService->Submit({},
-                                       [filename, written](const CaptureResult& result)
-                                       {
-                                         WriteCapture(result, filename);
-                                         written->Set();
-                                       });
+  // the write runs on the service worker, and ONLY on a successful
+  // delivery (the callback never fires on failure), so a failed capture
+  // leaves no empty file behind
+  auto handle = captureService->Submit(spec, [filename](const CaptureResult& result)
+                                       { WriteCapture(result, filename); });
+  handle->Detach();
+}
 
-  if (!sync)
-  {
-    handle->Detach();
-    return;
-  }
+bool CScreenShot::PumpForCapture(KODI::RENDERING::CAPTURE::CCaptureHandle& handle,
+                                 std::chrono::milliseconds timeout)
+{
+  using namespace KODI::RENDERING::CAPTURE;
 
-  // sync contract: return only when the file is written. On the render
-  // thread wait by pumping real frames (the busy-dialog pattern); a plain
-  // wait there would deadlock the frame the capture needs.
   const auto appMessenger = CServiceBroker::GetAppMessenger();
   const bool processThread = appMessenger && appMessenger->IsProcessThread();
   auto* gui = CServiceBroker::GetGUI();
 
-  XbmcThreads::EndTime<> timeout(2000ms);
-  bool done = false;
-  while (!done && !timeout.IsTimePast())
+  XbmcThreads::EndTime<> deadline(timeout);
+  while (!deadline.IsTimePast())
   {
-    done = written->Wait(processThread ? 5ms : 50ms);
-    if (!done && processThread && gui)
+    if (handle.Wait(processThread ? 5ms : 50ms))
+      return true;
+    if (handle.GetState() == CaptureState::FAILED)
+      return false;
+    if (processThread && gui)
       gui->GetWindowManager().ProcessRenderLoop(false);
   }
-
-  if (!done)
-    CLog::Log(LOGERROR, "Screenshot {} failed", CURL::GetRedacted(filename));
+  return false;
 }
+
+namespace
+{
+// Resolve the configured screenshot folder, prompting for it once if unset.
+std::string ResolveScreenshotDir()
+{
+  std::shared_ptr<CSettingPath> setting = std::static_pointer_cast<CSettingPath>(
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(
+          CSettings::SETTING_DEBUG_SCREENSHOTPATH));
+  if (!setting)
+    return {};
+
+  std::string dir = setting->GetValue();
+  if (dir.empty())
+  {
+    if (!CGUIControlButtonSetting::GetPath(
+            setting, &CServiceBroker::GetResourcesComponent().GetLocalizeStrings()))
+      return {};
+    dir = setting->GetValue();
+  }
+
+  URIUtils::RemoveSlashAtEnd(dir);
+  return dir;
+}
+} // namespace
 
 void CScreenShot::TakeScreenshot()
 {
-  std::shared_ptr<CSettingPath> screenshotSetting = std::static_pointer_cast<CSettingPath>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(CSettings::SETTING_DEBUG_SCREENSHOTPATH));
-  if (!screenshotSetting)
+  TakeScreenshot(KODI::RENDERING::CAPTURE::CaptureContent::COMPOSITE);
+}
+
+void CScreenShot::TakeScreenshot(KODI::RENDERING::CAPTURE::CaptureContent content)
+{
+  using namespace KODI::RENDERING::CAPTURE;
+
+  const auto captureService = CServiceBroker::GetCaptureService();
+  if (!captureService)
     return;
 
-  std::string strDir = screenshotSetting->GetValue();
-  if (strDir.empty())
-  {
-    if (!CGUIControlButtonSetting::GetPath(
-            screenshotSetting, &CServiceBroker::GetResourcesComponent().GetLocalizeStrings()))
-      return;
+  CaptureSpec spec;
+  spec.content = content;
+  spec.format = CaptureFormat::NATIVE;
 
-    strDir = screenshotSetting->GetValue();
-  }
+  // Submitted before any filesystem work so the readback grabs the current frame;
+  // the folder dialog (when the path is unset), naming, and write all run in the
+  // callback afterward, so none of them delay the capture.
+  auto handle =
+      captureService->Submit(spec,
+                             [](const CaptureResult& result)
+                             {
+                               if (!result.pixels)
+                                 return;
+                               const std::string dir = ResolveScreenshotDir();
+                               if (dir.empty())
+                               {
+                                 CLog::Log(LOGWARNING, "No screenshot path configured");
+                                 return;
+                               }
+                               const std::string file = CUtil::GetNextFilename(
+                                   URIUtils::AddFileToFolder(dir, "screenshot{:05}.png"), 65535);
+                               if (file.empty())
+                               {
+                                 CLog::Log(LOGWARNING, "Too many screen shots or invalid folder");
+                                 return;
+                               }
+                               CLog::Log(LOGDEBUG, "Saving screenshot {}", CURL::GetRedacted(file));
+                               WriteCapture(result, file);
+                             });
+  handle->Detach();
+}
 
-  URIUtils::RemoveSlashAtEnd(strDir);
+void CScreenShot::TakeScreenshotBoth()
+{
+  using namespace KODI::RENDERING::CAPTURE;
 
-  if (!strDir.empty())
-  {
-    std::string file =
-        CUtil::GetNextFilename(URIUtils::AddFileToFolder(strDir, "screenshot{:05}.png"), 65535);
+  const auto captureService = CServiceBroker::GetCaptureService();
+  if (!captureService)
+    return;
 
-    if (!file.empty())
-    {
-      TakeScreenshot(file, false);
-    }
-    else
-    {
-      CLog::Log(LOGWARNING, "Too many screen shots or invalid folder");
-    }
-  }
+  auto composite = std::make_shared<std::string>();
+  CaptureSpec spec;
+  spec.content = CaptureContent::BOTH;
+  spec.format = CaptureFormat::NATIVE;
+  auto handle = captureService->Submit(
+      spec,
+      [composite](const CaptureResult& result)
+      {
+        if (!result.pixels)
+          return;
+        if (composite->empty())
+        {
+          const std::string dir = ResolveScreenshotDir();
+          if (dir.empty())
+          {
+            CLog::Log(LOGWARNING, "No screenshot path configured");
+            return;
+          }
+          *composite =
+              CUtil::GetNextFilename(URIUtils::AddFileToFolder(dir, "screenshot{:05}.png"), 65535);
+        }
+        if (composite->empty())
+        {
+          CLog::Log(LOGWARNING, "Too many screen shots or invalid folder");
+          return;
+        }
+        // derive the video name from the same NNNNN so the pair is obvious
+        const std::string file = result.content == CaptureContent::VIDEO
+                                     ? composite->substr(0, composite->length() - 4) + "-video.png"
+                                     : *composite;
+        CLog::Log(LOGDEBUG, "Saving screenshot {}", CURL::GetRedacted(file));
+        WriteCapture(result, file);
+      });
+  handle->Detach();
 }

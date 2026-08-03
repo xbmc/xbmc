@@ -8,7 +8,6 @@
 
 #include "RendererMediaCodecSurface.h"
 
-#include "../RenderCapture.h"
 #include "../RenderFactory.h"
 #include "../RenderFlags.h"
 #include "DVDCodecs/Video/DVDVideoCodecAndroidMediaCodec.h"
@@ -85,13 +84,6 @@ CRenderInfo CRendererMediaCodecSurface::GetRenderInfo()
   CRenderInfo info;
   info.max_buffer_size = 4;
   return info;
-}
-
-bool CRendererMediaCodecSurface::RenderCapture(int index, CRenderCapture* capture)
-{
-  capture->BeginRender();
-  capture->EndRender();
-  return true;
 }
 
 void CRendererMediaCodecSurface::AddVideoPicture(const VideoPicture &picture, int index)

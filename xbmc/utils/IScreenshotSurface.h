@@ -8,6 +8,11 @@
 
 #pragma once
 
+extern "C"
+{
+#include <libavutil/pixfmt.h>
+}
+
 class CWinSystemBase;
 
 //! \brief Subsystem dependencies a capture readback needs, injected so the
@@ -20,7 +25,8 @@ struct ScreenshotContext
 class IScreenshotSurface
 {
 public:
-  virtual ~IScreenshotSurface() = default;
+  //! frees the buffer only when the caller did not take ownership via TakeBuffer
+  virtual ~IScreenshotSurface() { delete[] m_buffer; }
 
   //! \brief Read back the current framebuffer only; the caller guarantees a
   //! fully rendered frame and render-thread context.
@@ -28,8 +34,10 @@ public:
 
   int GetWidth() const { return m_width; }
   int GetHeight() const { return m_height; }
+  //! signed linesize; negative when the delivered rows are bottom-up
   int GetStride() const { return m_stride; }
-  int GetBitDepth() const { return m_bitDepth; }
+  //! source coding of the delivered bytes, handed to the consumer's swscale
+  AVPixelFormat GetFormat() const { return m_format; }
   unsigned char* GetBuffer() const { return m_buffer; }
 
   //! \brief Transfer buffer ownership to the caller.
@@ -39,19 +47,11 @@ public:
     m_buffer = nullptr;
     return buffer;
   }
-  void ReleaseBuffer()
-  {
-    if (m_buffer)
-    {
-      delete m_buffer;
-      m_buffer = nullptr;
-    }
-  };
 
 protected:
   int m_width{0};
   int m_height{0};
   int m_stride{0};
-  int m_bitDepth{8};
+  AVPixelFormat m_format{AV_PIX_FMT_NONE};
   unsigned char* m_buffer{nullptr};
 };

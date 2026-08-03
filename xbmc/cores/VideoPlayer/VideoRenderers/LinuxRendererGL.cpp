@@ -11,8 +11,6 @@
 
 #include "LinuxRendererGL.h"
 
-#include "RenderCapture.h"
-#include "RenderCaptureGL.h"
 #include "RenderFactory.h"
 #include "ServiceBroker.h"
 #include "VideoShaders/VideoFilterShaderGL.h"
@@ -1778,50 +1776,6 @@ void CLinuxRendererGL::RenderRGB(int index, int field)
   glBindTexture(m_textureTarget, 0);
 }
 
-bool CLinuxRendererGL::RenderCapture(int index, CRenderCapture* capture)
-{
-  if (!m_bValidated)
-    return false;
-
-  // save current video rect
-  CRect saveSize = m_destRect;
-
-  saveRotatedCoords();//backup current m_rotatedDestCoords
-
-  // new video rect is capture size
-  m_destRect.SetRect(0, 0, (float)capture->GetWidth(), (float)capture->GetHeight());
-  MarkDirty();
-  syncDestRectToRotatedPoints();//syncs the changed destRect to m_rotatedDestCoords
-
-  //invert Y axis to get non-inverted image
-  glDisable(GL_BLEND);
-  glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-
-  glMatrixModview.Push();
-  glMatrixModview->Translatef(0.0f, capture->GetHeight(), 0.0f);
-  glMatrixModview->Scalef(1.0f, -1.0f, 1.0f);
-  glMatrixModview.Load();
-
-  capture->BeginRender();
-
-  Render(RENDER_FLAG_NOOSD, index);
-  // read pixels
-  glReadPixels(0, CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight() - capture->GetHeight(), capture->GetWidth(), capture->GetHeight(),
-               GL_BGRA, GL_UNSIGNED_BYTE, capture->GetRenderBuffer());
-
-  capture->EndRender();
-
-  // revert model view matrix
-  glMatrixModview.PopLoad();
-
-  // restore original video rect
-  m_destRect = saveSize;
-  restoreRotatedCoords();//restores the previous state of the rotated dest coords
-
-  return true;
-}
-
-
 GLint CLinuxRendererGL::GetInternalFormat(GLint format, int bpp)
 {
   unsigned int major, minor;
@@ -2846,9 +2800,4 @@ void CLinuxRendererGL::CheckVideoParameters(int index)
     m_toneMap = toneMap;
     m_toneMapMethod = toneMapMethod;
   }
-}
-
-CRenderCapture* CLinuxRendererGL::GetRenderCapture()
-{
-  return new CRenderCaptureGL;
 }

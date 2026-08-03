@@ -122,6 +122,7 @@
 #include "pvr/guilib/PVRGUIActionsPowerManagement.h"
 #include "rendering/RenderSystem.h"
 #include "rendering/capture/CaptureMetadata.h"
+#include "rendering/capture/CapturePixels.h"
 #include "rendering/capture/CaptureService.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
@@ -848,35 +849,36 @@ void ServiceCaptureTaps()
   const auto requests = captureService->TakeActive(CaptureContent::COMPOSITE);
   if (requests.empty())
     return;
+  const auto& request = requests.front(); // at most one consumer per frame
 
   auto* winSystem = CServiceBroker::GetWinSystem();
   auto surface = CScreenShot::CreateSurface();
   if (!winSystem || !surface)
   {
-    for (const auto& request : requests)
-      captureService->Fail(request);
+    captureService->Fail(request);
     return;
   }
 
   const ScreenshotContext ctx{*winSystem};
   if (!surface->Read(ctx))
   {
-    for (const auto& request : requests)
-      captureService->Fail(request);
+    captureService->Fail(request);
     return;
   }
 
   CaptureResult result;
-  result.pixels.reset(surface->TakeBuffer());
+  result.pixels =
+      std::make_shared<CHeapCapturePixels>(std::unique_ptr<uint8_t[]>(surface->TakeBuffer()));
   result.width = static_cast<unsigned int>(surface->GetWidth());
   result.height = static_cast<unsigned int>(surface->GetHeight());
-  result.stride = static_cast<unsigned int>(surface->GetStride());
-  result.bitDepth = surface->GetBitDepth();
+  result.stride = surface->GetStride();
+  result.format = surface->GetFormat();
   result.color = GetOutputColorMetadata(*winSystem);
+  result.content = CaptureContent::COMPOSITE; // this tap is the composite half
 
-  for (const auto& request : requests)
-    captureService->Complete(request, result);
+  captureService->Complete(request, result);
 }
+
 } // namespace
 
 void CApplication::Render()
@@ -939,10 +941,15 @@ void CApplication::Render()
   if (compositing)
     CServiceBroker::GetWinSystem()->CompositeGui();
 
-  // serve pending requests from the finished frame; only a frame that really
-  // drew counts
+  // serve pending requests from the finished frame, then fail any left
+  // unserved. Both need a frame that really drew: on a skipped frame nothing
+  // could be served, so FrameComplete would kill live requests.
   if (hasRendered)
+  {
     ServiceCaptureTaps();
+    if (const auto captureService = CServiceBroker::GetCaptureService())
+      captureService->FrameComplete();
+  }
 
   CServiceBroker::GetRenderSystem()->EndRender();
 
@@ -1583,8 +1590,8 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
   {
     m_skipGuiRender = false;
 
-    // a new capture request marks the window manager dirty so a frame really
-    // renders, since an idle GUI would otherwise skip it
+    // a new request, or a latched one-shot still awaiting service, marks the
+    // window manager dirty so an otherwise-idle GUI really renders a frame to tap
     if (const auto captureService = CServiceBroker::GetCaptureService();
         captureService && captureService->LatchFrame())
       CServiceBroker::GetGUI()->GetWindowManager().MarkDirty();

@@ -12,20 +12,9 @@
 #include "utils/Screenshot.h"
 #include "utils/log.h"
 
-#include <cmath>
-
 #include <wrl/client.h>
 
 using namespace Microsoft::WRL;
-
-namespace
-{
-// Project a 10-bit sample onto the 16-bit scale so full scale maps to full scale
-uint16_t Expand10To16(uint32_t v)
-{
-  return static_cast<uint16_t>(std::lround(v * 65535.0 / 1023.0));
-}
-} // namespace
 
 void CScreenshotSurfaceWindows::Register()
 {
@@ -65,37 +54,13 @@ bool CScreenshotSurfaceWindows::Read(const ScreenshotContext&)
     {
       m_width = desc.Width;
       m_height = desc.Height;
-      if (desc.Format == DXGI_FORMAT_R10G10B10A2_UNORM)
-      {
-        // 10-bit swapchain: unpack to RGBA16 instead of decimating to 8-bit
-        m_bitDepth = 10;
-        m_stride = m_width * 8; // 4 channels x 2 bytes
-        m_buffer = new unsigned char[m_height * m_stride];
-        for (int y = 0; y < m_height; y++)
-        {
-          const uint32_t* pixels10 = reinterpret_cast<const uint32_t*>(
-              static_cast<const uint8_t*>(res.pData) + y * res.RowPitch);
-          uint16_t* pixels16 = reinterpret_cast<uint16_t*>(m_buffer + y * m_stride);
-
-          for (int x = 0; x < m_width; x++, pixels10++, pixels16 += 4)
-          {
-            // actual bit per channel is A2B10G10R10
-            uint32_t pixel = *pixels10;
-            pixels16[0] = Expand10To16(pixel & 0x3FF); // R
-            pixel >>= 10;
-            pixels16[1] = Expand10To16(pixel & 0x3FF); // G
-            pixel >>= 10;
-            pixels16[2] = Expand10To16(pixel & 0x3FF); // B
-            pixels16[3] = 0xFFFF; // A
-          }
-        }
-      }
-      else
-      {
-        m_stride = res.RowPitch;
-        m_buffer = new unsigned char[m_height * m_stride];
-        memcpy(m_buffer, res.pData, m_height * m_stride);
-      }
+      // no CPU unpack: swscale on the consumer expands the packed 10-bit; D3D
+      // is top-left origin so the rows are already top-down
+      m_stride = static_cast<int>(res.RowPitch);
+      m_format =
+          (desc.Format == DXGI_FORMAT_R10G10B10A2_UNORM) ? AV_PIX_FMT_X2BGR10LE : AV_PIX_FMT_BGRA;
+      m_buffer = new unsigned char[static_cast<size_t>(m_height) * m_stride];
+      memcpy(m_buffer, res.pData, static_cast<size_t>(m_height) * m_stride);
       pImdContext->Unmap(pCopyTexture.Get(), 0);
     }
     else

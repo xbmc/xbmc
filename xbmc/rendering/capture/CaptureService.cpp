@@ -32,6 +32,17 @@ std::unique_ptr<CCaptureHandle> CCaptureService::Submit(const CaptureSpec& spec,
   request->spec = spec;
   request->callback = std::move(callback);
 
+  // BOTH delivers a video-only and a composite capture, told apart only by
+  // result.content in the callback; Wait/CopyResult could hand back only one
+  if (spec.content == CaptureContent::BOTH && !request->callback)
+  {
+    CLog::LogF(LOGERROR, "BOTH capture requires a callback; Wait/CopyResult "
+                         "cannot tell the video-only and composite captures apart");
+    request->state = CaptureState::FAILED;
+    request->event.Set();
+    return std::make_unique<CCaptureHandle>(*this, std::move(request));
+  }
+
   {
     std::unique_lock lock(m_lock);
     m_pending.push_back(request);
@@ -43,7 +54,7 @@ std::unique_ptr<CCaptureHandle> CCaptureService::Submit(const CaptureSpec& spec,
 
 bool CCaptureService::LatchFrame()
 {
-  if (!m_hasPending.load(std::memory_order_acquire) && m_active.empty())
+  if (!m_hasPending.load(std::memory_order_acquire) && m_stack.empty())
     return false;
 
   bool needsFrame = false;
@@ -52,18 +63,46 @@ bool CCaptureService::LatchFrame()
     std::unique_lock lock(m_lock);
     m_hasPending.store(false, std::memory_order_relaxed);
 
-    std::erase_if(m_active, [](const std::shared_ptr<CaptureRequest>& request)
-                  { return request->state == CaptureState::CANCELLED; });
+    std::erase_if(m_stack,
+                  [](const std::shared_ptr<CaptureRequest>& request) {
+                    return request->state == CaptureState::CANCELLED ||
+                           request->state == CaptureState::FAILED;
+                  });
 
+    // arriving requests push onto the stack top in submission order; each
+    // forces one frame so an idle GUI still renders something to tap
     for (auto& request : m_pending)
     {
       if (request->state != CaptureState::PENDING)
         continue;
-      request->state = CaptureState::LATCHED;
-      m_active.push_back(request);
+      m_stack.push_back(request);
       needsFrame = true;
     }
     m_pending.clear();
+
+    // one consumer per render loop: the most recent request wins whatever its
+    // cadence, so a one-shot submitted just before a continuous is buried
+    // until the continuous is gone (a rare late or lost screenshot, accepted)
+    for (auto& request : m_stack)
+    {
+      if (request->state == CaptureState::LATCHED)
+        request->state = CaptureState::PENDING;
+    }
+    std::shared_ptr<CaptureRequest> latchedRequest;
+    if (!m_stack.empty())
+      latchedRequest = m_stack.back();
+
+    if (latchedRequest)
+    {
+      latchedRequest->served = false; // FrameComplete judges this at the end of the frame
+      latchedRequest->state = CaptureState::LATCHED;
+    }
+
+    // the latched one-shot forces frames until it serves or FrameComplete fails
+    // it; a buried one-shot waits quietly and a lone CONTINUOUS never forces,
+    // so unchanged frames are still skipped during a steady continuous capture
+    if (latchedRequest && latchedRequest->spec.cadence == CaptureCadence::ONESHOT)
+      needsFrame = true;
   }
 
   return needsFrame;
@@ -72,10 +111,16 @@ bool CCaptureService::LatchFrame()
 std::vector<std::shared_ptr<CaptureRequest>> CCaptureService::TakeActive(CaptureContent content)
 {
   std::vector<std::shared_ptr<CaptureRequest>> matches;
-  for (const auto& request : m_active)
+  std::unique_lock lock(m_lock);
+  // exactly one request is LATCHED per frame; return it wherever it sits. A
+  // BOTH request is served by the video tap and the composite tap alike.
+  for (const auto& request : m_stack)
   {
-    if (request->spec.content == content)
+    if (request->state != CaptureState::LATCHED)
+      continue;
+    if (request->spec.content == content || request->spec.content == CaptureContent::BOTH)
       matches.push_back(request);
+    break;
   }
   return matches;
 }
@@ -89,12 +134,21 @@ void CCaptureService::Complete(const std::shared_ptr<CaptureRequest>& request, C
     std::unique_lock lock(m_lock);
     if (request->state == CaptureState::LATCHED)
     {
-      request->result = std::move(result);
+      request->result = result;
+      request->deliveries++;
+      request->served = true;
       dispatch = true;
       if (request->spec.cadence == CaptureCadence::ONESHOT)
       {
-        request->state = CaptureState::DONE;
-        finished = true;
+        // a BOTH request keeps running after its video-only delivery so the
+        // composite tap can deliver in the same frame; the composite tap
+        // always runs, after video, so it finishes there
+        if (!(request->spec.content == CaptureContent::BOTH &&
+              result.content == CaptureContent::VIDEO))
+        {
+          request->state = CaptureState::DONE;
+          finished = true;
+        }
       }
     }
     else
@@ -108,8 +162,10 @@ void CCaptureService::Complete(const std::shared_ptr<CaptureRequest>& request, C
 
   if (finished)
     RemoveActive(request);
+  // dispatch a copy so a second delivery cannot overwrite the first callback's
+  // result before the worker reads it (a BOTH request delivers twice)
   if (dispatch && request->callback)
-    Dispatch(request);
+    Dispatch(request, result);
 }
 
 void CCaptureService::Fail(const std::shared_ptr<CaptureRequest>& request)
@@ -126,10 +182,37 @@ void CCaptureService::Fail(const std::shared_ptr<CaptureRequest>& request)
   }
 
   if (failed)
-    CLog::LogF(LOGERROR, "capture request failed");
+    CLog::LogF(LOGERROR, "capture request failed (content {}, {}x{})",
+               static_cast<int>(request->spec.content), request->spec.width, request->spec.height);
 
   request->event.Set();
-  RemoveActive(request);
+  if (failed)
+  {
+    RemoveActive(request);
+    // a callback consumer learns of the failure from the empty result
+    if (request->callback)
+      Dispatch(request, {});
+  }
+}
+
+void CCaptureService::FrameComplete()
+{
+  std::shared_ptr<CaptureRequest> unserved;
+
+  {
+    std::unique_lock lock(m_lock);
+    for (const auto& request : m_stack)
+    {
+      if (request->state != CaptureState::LATCHED)
+        continue;
+      if (!request->served)
+        unserved = request;
+      break; // at most one request is latched per frame
+    }
+  }
+
+  if (unserved)
+    Fail(unserved);
 }
 
 void CCaptureService::Cancel(const std::shared_ptr<CaptureRequest>& request)
@@ -150,6 +233,18 @@ CaptureState CCaptureService::GetState(const CaptureRequest& request) const
   return request.state;
 }
 
+uint64_t CCaptureService::GetDeliveries(const CaptureRequest& request) const
+{
+  std::unique_lock lock(m_lock);
+  return request.deliveries;
+}
+
+CaptureResult CCaptureService::CopyResult(const CaptureRequest& request) const
+{
+  std::unique_lock lock(m_lock);
+  return request.result;
+}
+
 void CCaptureService::FailAll()
 {
   std::vector<std::shared_ptr<CaptureRequest>> all;
@@ -164,13 +259,13 @@ void CCaptureService::FailAll()
     all = std::move(m_pending);
     m_pending.clear();
 
-    for (auto& request : m_active)
+    for (auto& request : m_stack)
     {
-      if (request->state == CaptureState::LATCHED)
+      if (request->state == CaptureState::LATCHED || request->state == CaptureState::PENDING)
         request->state = CaptureState::FAILED;
     }
-    all.insert(all.end(), m_active.begin(), m_active.end());
-    m_active.clear();
+    all.insert(all.end(), m_stack.begin(), m_stack.end());
+    m_stack.clear();
   }
 
   for (auto& request : all)
@@ -179,15 +274,15 @@ void CCaptureService::FailAll()
   m_callbackQueue.CancelJobs();
 }
 
-void CCaptureService::Dispatch(const std::shared_ptr<CaptureRequest>& request)
+void CCaptureService::Dispatch(const std::shared_ptr<CaptureRequest>& request, CaptureResult result)
 {
-  m_callbackQueue.Submit([request] { request->callback(request->result); });
+  m_callbackQueue.Submit([request, result = std::move(result)] { request->callback(result); });
 }
 
 void CCaptureService::RemoveActive(const std::shared_ptr<CaptureRequest>& request)
 {
   std::unique_lock lock(m_lock);
-  std::erase(m_active, request);
+  std::erase(m_stack, request);
 }
 
 } // namespace CAPTURE

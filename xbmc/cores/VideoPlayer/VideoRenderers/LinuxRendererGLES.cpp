@@ -8,8 +8,6 @@
 
 #include "LinuxRendererGLES.h"
 
-#include "RenderCapture.h"
-#include "RenderCaptureGLES.h"
 #include "RenderFactory.h"
 #include "ServiceBroker.h"
 #include "VideoShaders/VideoFilterShaderGLES.h"
@@ -1565,57 +1563,6 @@ void CLinuxRendererGLES::RenderFromFBO()
   VerifyGLState();
 }
 
-bool CLinuxRendererGLES::RenderCapture(int index, CRenderCapture* capture)
-{
-  if (!m_bValidated)
-  {
-    return false;
-  }
-
-  // save current video rect
-  CRect saveSize = m_destRect;
-  saveRotatedCoords(); // backup current m_rotatedDestCoords
-
-  // new video rect is thumbnail size
-  m_destRect.SetRect(0, 0, static_cast<float>(capture->GetWidth()), static_cast<float>(capture->GetHeight()));
-  MarkDirty();
-  syncDestRectToRotatedPoints(); // syncs the changed destRect to m_rotatedDestCoords
-
-  // clear framebuffer and invert Y axis to get non-inverted image
-  glDisable(GL_BLEND);
-
-  glMatrixModview.Push();
-  glMatrixModview->Translatef(0.0f, capture->GetHeight(), 0.0f);
-  glMatrixModview->Scalef(1.0f, -1.0f, 1.0f);
-  glMatrixModview.Load();
-
-  capture->BeginRender();
-
-  Render(RENDER_FLAG_NOOSD, index);
-  // read pixels
-  glReadPixels(0, CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight() - capture->GetHeight(), capture->GetWidth(), capture->GetHeight(),
-               GL_RGBA, GL_UNSIGNED_BYTE, capture->GetRenderBuffer());
-
-  // OpenGLES returns in RGBA order but CRenderCapture needs BGRA order
-  // XOR Swap RGBA -> BGRA
-  unsigned char* pixels = static_cast<unsigned char*>(capture->GetRenderBuffer());
-  for (unsigned int i = 0; i < capture->GetWidth() * capture->GetHeight(); i++, pixels += 4)
-  {
-    std::swap(pixels[0], pixels[2]);
-  }
-
-  capture->EndRender();
-
-  // revert model view matrix
-  glMatrixModview.PopLoad();
-
-  // restore original video rect
-  m_destRect = saveSize;
-  restoreRotatedCoords(); // restores the previous state of the rotated dest coords
-
-  return true;
-}
-
 //********************************************************************************************************/
 // YUV texture creation, deletion, copying + clearing
 //********************************************************************************************************/
@@ -2252,11 +2199,6 @@ CRenderInfo CLinuxRendererGLES::GetRenderInfo()
 bool CLinuxRendererGLES::IsGuiLayer()
 {
   return !m_hdrFboActive;
-}
-
-CRenderCapture* CLinuxRendererGLES::GetRenderCapture()
-{
-  return new CRenderCaptureGLES;
 }
 
 void CLinuxRendererGLES::CheckVideoParameters(int index)
