@@ -134,6 +134,7 @@ using Episodes = std::vector<KODI::VIDEO::EPISODE>;
 static constexpr std::chrono::milliseconds MAX_EPISODE_DIFFERENCE{30 * 1000}; // 30 seconds
 static constexpr std::chrono::milliseconds MIN_SPECIAL_DURATION{5 * 60 * 1000}; // 5 minutes
 static constexpr int DURATION_TOLERANCE_PERCENT{20};
+static constexpr int DURATION_TOLERANCE_RELAXED_PLAYALLPLAYLIST_PERCENT{5};
 
 // Movies
 static constexpr std::chrono::milliseconds MIN_MOVIE_DURATION{30 * 60 * 1000}; // 30 minutes
@@ -290,6 +291,7 @@ protected:
                                 bool silent = false);
 
 private:
+  void Reset();
   void InitialiseEpisodePlaylistSearch(int episodeIndex, const Episodes& episodesOnDisc);
   void StorePlayAllPlaylist(
       unsigned int playlistNumber,
@@ -298,7 +300,9 @@ private:
       const std::map<unsigned int, std::vector<unsigned int>>& playAllPlaylistClipMap);
   void FindPlayAllPlaylists(const ClipMap& clips, const PlaylistMap& playlists);
   void FindGroups(const PlaylistMap& playlists, const Episodes& episodesOnDisc);
+  void FindRelaxedPlayAllPlaylists(const PlaylistMap& playlists);
   void UsePlayAllPlaylistMethod(int episodeIndex, const PlaylistMap& playlists);
+  void UseRelaxedPlayAllPlaylistMethod(int episodeIndex, const PlaylistMap& playlists);
   void UseLongOrCommonMethodForSingleEpisode(int episodeIndex, const PlaylistMap& playlists);
   static std::vector<std::vector<CandidatePlaylistInformation>> GetGroupsWithoutDuplicates(
       const std::vector<std::vector<CandidatePlaylistInformation>>& groups);
@@ -331,6 +335,9 @@ private:
                                 int episodeIndex,
                                 const Episodes& episodesOnDisc,
                                 const PlaylistMap& playlists) const;
+  void LogEpisodePlaylistSearchResult(const CFileItemList& items,
+                                      int episodeIndex,
+                                      const Episodes& episodesOnDisc) const;
   bool FilterAllEpisodesPlaylists(std::vector<PlaylistInformation>& playlists, GetTitle job);
 
   //! Describes the streams of a title, supplied by the disc's directory implementation
@@ -363,7 +370,15 @@ private:
   };
 
   std::set<CandidatePlaylistInformation, Compare> m_playAllPlaylists;
+
+  // UsePlayAllPlaylistMethod() selects the clip corresponding to each requested episode,
+  // then looks up that clip in m_playAllPlaylistsMap.
+  // The resulting single-episode playlist numbers become m_candidatePlaylists.
+  // play-all playlist (map index) -> clip (second map index) -> single-episode playlists
   std::map<unsigned int, std::map<unsigned int, std::vector<unsigned int>>> m_playAllPlaylistsMap;
+
+  std::map<unsigned int, std::vector<unsigned int>> m_playAllPlaylistEpisodeMap;
+
   std::vector<std::vector<CandidatePlaylistInformation>> m_groups;
   std::vector<std::vector<CandidatePlaylistInformation>> m_allGroups;
   std::map<unsigned int, CandidatePlaylistInformation> m_candidatePlaylists;

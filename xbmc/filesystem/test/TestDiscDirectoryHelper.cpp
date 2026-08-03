@@ -692,6 +692,158 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_ExtraClips2)
 // Playlist 100 = play-all; 800 = episode 1; 802 = episode 2; 804 = episode 3
 // Playlists not sequential to prevent group matching
 // Play-all playlist is allowed to have short clips at the beginning and/or end (eg. intro/ending credits)
+// Clip 6 is an ending clip, and is present at the end of each episode as well
+// Example is Planet Earth (2006) S1D1
+TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_ExtraClips2a)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{
+      MakeEpisode(1, 1, 2400), // 40 minutes
+      MakeEpisode(1, 2, 2400),
+      MakeEpisode(1, 3, 2400),
+  };
+
+  PlaylistMap playlists{
+      {1u, MakePlaylist(1u, 5min, {4u}, {5min})},
+      {10u, MakePlaylist(10u, 5min, {5u}, {5min})},
+      {100u, MakePlaylist(100u, 7500500ms, {1u, 2u, 3u, 6u}, {45min, 42min, 38min, 500ms})},
+      {800u, MakePlaylist(800u, 2700500ms, {1u, 6u}, {45min, 500ms})},
+      {802u, MakePlaylist(802u, 2520500ms, {2u, 6u}, {42min, 500ms})},
+      {804u, MakePlaylist(804u, 2280500ms, {3u, 6u}, {38min, 500ms})},
+  };
+  ClipMap clips{
+      {1u, MakeClip(45min, {100u, 800u})}, {2u, MakeClip(42min, {100u, 802u})},
+      {3u, MakeClip(38min, {100u, 804u})}, {4u, MakeClip(5min, {1u})},
+      {5u, MakeClip(5min, {10u})},         {6u, MakeClip(500ms, {100u, 800u, 802u, 804u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 0, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 800);
+
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 1, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 802);
+
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 2, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 804);
+
+  EXPECT_FALSE(helper.GetEpisodePlaylists(url, items, allTitles, 3, episodes, clips,
+                                          playlists)); // Invalid episode index
+  EXPECT_EQ(items.Size(), 0);
+
+  EXPECT_TRUE(
+      helper.GetEpisodePlaylists(url, items, allTitles, ALL_PLAYLISTS, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 3); // All episodes
+  auto returned{GetPlaylists(items)};
+  std::set<unsigned int> expected{800u, 802u, 804u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::MAIN, episodes, clips,
+                                            playlists));
+  EXPECT_EQ(items.Size(), 3);
+  returned = GetPlaylists(items);
+  expected = {800u, 802u, 804u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::ALL, episodes, clips,
+                                            playlists));
+  EXPECT_EQ(items.Size(), 6);
+  returned = GetPlaylists(items);
+  expected = {1u, 10u, 100u, 800u, 802u, 804u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+}
+
+// Disc has a play-all playlist (clips shared with individual episode playlists)
+// Playlist 100 = play-all; 800 = episode 1; 802 = episode 2; 804 = episode 3; 806 = episode 4
+// Playlists not sequential to prevent group matching
+// Play-all playlist is allowed to have short clips at the beginning and/or end (eg. intro/ending credits)
+// Clip 6 is an intro clip, and is present at the start of each episode as well
+TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_ExtraClips2b)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{
+      MakeEpisode(1, 1, 2700), // 45 minutes
+      MakeEpisode(1, 2, 2520), // 42 minutes
+      MakeEpisode(1, 3, 2280), // 38 minutes
+      MakeEpisode(1, 4, 2400), // 40 minutes
+  };
+
+  PlaylistMap playlists{
+      {1u, MakePlaylist(1u, 5min, {7u}, {5min})},
+      {10u, MakePlaylist(10u, 5min, {8u}, {5min})},
+      {100u,
+       MakePlaylist(100u, 9900500ms, {6u, 1u, 2u, 3u, 4u}, {500ms, 45min, 42min, 38min, 40min})},
+      {800u, MakePlaylist(800u, 2700500ms, {6u, 1u}, {500ms, 45min})},
+      {802u, MakePlaylist(802u, 2520500ms, {6u, 2u}, {500ms, 42min})},
+      {804u, MakePlaylist(804u, 2280500ms, {6u, 3u}, {500ms, 38min})},
+      {806u, MakePlaylist(806u, 2400500ms, {6u, 4u}, {500ms, 40min})},
+  };
+  ClipMap clips{
+      {1u, MakeClip(45min, {100u, 800u})},
+      {2u, MakeClip(42min, {100u, 802u})},
+      {3u, MakeClip(38min, {100u, 804u})},
+      {4u, MakeClip(40min, {100u, 806u})},
+      {6u, MakeClip(500ms, {100u, 800u, 802u, 804u, 806u})},
+      {7u, MakeClip(5min, {1u})},
+      {8u, MakeClip(5min, {10u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 0, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 800);
+
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 1, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 802);
+
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 2, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 804);
+
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 3, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 806);
+
+  EXPECT_FALSE(helper.GetEpisodePlaylists(url, items, allTitles, 4, episodes, clips,
+                                          playlists)); // Invalid episode index
+  EXPECT_EQ(items.Size(), 0);
+
+  EXPECT_TRUE(
+      helper.GetEpisodePlaylists(url, items, allTitles, ALL_PLAYLISTS, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 4); // All episodes
+  auto returned{GetPlaylists(items)};
+  std::set<unsigned int> expected{800u, 802u, 804u, 806u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::MAIN, episodes, clips,
+                                            playlists));
+  EXPECT_EQ(items.Size(), 4);
+  returned = GetPlaylists(items);
+  expected = {800u, 802u, 804u, 806u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::ALL, episodes, clips,
+                                            playlists));
+  EXPECT_EQ(items.Size(), 7);
+  returned = GetPlaylists(items);
+  expected = {1u, 10u, 100u, 800u, 802u, 804u, 806u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+}
+
+// Disc has a play-all playlist (clips shared with individual episode playlists)
+// Playlist 100 = play-all; 800 = episode 1; 802 = episode 2; 804 = episode 3
+// Playlists not sequential to prevent group matching
+// Play-all playlist is allowed to have short clips at the beginning and/or end (eg. intro/ending credits)
 // Clip 6 is an intro clip and clip 7 is an ending clip
 TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_ExtraClips3)
 {
@@ -1002,6 +1154,242 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_Fail3)
   EXPECT_EQ(items.Size(), 6);
   returned = GetPlaylists(items);
   expected = {1u, 10u, 100u, 800u, 802u, 804u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+}
+
+//
+// ---- GetEpisodePlaylists – relaxed play-all playlist method -------------------------
+//
+
+// Disc has a play-all playlist (clips shared with individual episode playlists)
+// Playlist 600 = play-all; 601-608 = episodes 1-8
+// Clip layout is more complex and fails PlayAllPlaylist method
+// Similar to the Last Airbender (2005) Bluray S1D1
+TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_RelaxedPlayAllPlaylist)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{
+      MakeEpisode(1, 1, 2400), // 40 minutes
+      MakeEpisode(1, 2, 2400), MakeEpisode(1, 3, 2400), MakeEpisode(1, 4, 2400),
+      MakeEpisode(1, 5, 2400), MakeEpisode(1, 6, 2400), MakeEpisode(1, 7, 2400),
+      MakeEpisode(1, 8, 2400),
+  };
+
+  PlaylistMap playlists{
+      {600u, MakePlaylist(600u, 19411s,
+                          {1100u, 1000u, 1001u, 1002u, 1003u, 1004u, 1005u, 1006u, 1007u, 1008u,
+                           1009u, 1010u, 1011u, 1012u, 1013u, 1014u},
+                          {1s, 2400s, 30s, 2400s, 30s, 2400s, 30s, 2400s, 30s, 2400s, 30s, 2400s,
+                           30s, 2400s, 30s, 2400s})},
+      {601u, MakePlaylist(601u, 2401s, {1100u, 1000u}, {1s, 2400s})},
+      {602u, MakePlaylist(602u, 2431s, {1100u, 1001u, 1002u}, {1s, 30s, 2400s})},
+      {603u, MakePlaylist(603u, 2431s, {1100u, 1003u, 1004u}, {1s, 30s, 2400s})},
+      {604u, MakePlaylist(604u, 2431s, {1100u, 1005u, 1006u}, {1s, 30s, 2400s})},
+      {605u, MakePlaylist(605u, 2431s, {1100u, 1007u, 1008u}, {1s, 30s, 2400s})},
+      {606u, MakePlaylist(606u, 2431s, {1100u, 1009u, 1010u}, {1s, 30s, 2400s})},
+      {607u, MakePlaylist(607u, 2431s, {1100u, 1011u, 1012u}, {1s, 30s, 2400s})},
+      {608u, MakePlaylist(608u, 2431s, {1100u, 1013u, 1014u}, {1s, 30s, 2400s})}};
+  ClipMap clips{
+      {1000u, MakeClip(2400s, {600u, 601u})},
+      {1001u, MakeClip(30s, {600u, 602u})},
+      {1002u, MakeClip(2400s, {600u, 602u})},
+      {1003u, MakeClip(30s, {600u, 603u})},
+      {1004u, MakeClip(2400s, {600u, 603u})},
+      {1005u, MakeClip(30s, {600u, 604u})},
+      {1006u, MakeClip(2400s, {600u, 604u})},
+      {1007u, MakeClip(30s, {600u, 605u})},
+      {1008u, MakeClip(2400s, {600u, 605u})},
+      {1009u, MakeClip(30s, {600u, 606u})},
+      {1010u, MakeClip(2400s, {600u, 606u})},
+      {1011u, MakeClip(30s, {600u, 607u})},
+      {1012u, MakeClip(2400s, {600u, 607u})},
+      {1013u, MakeClip(30s, {600u, 608u})},
+      {1014u, MakeClip(2400s, {600u, 608u})},
+      {1100u, MakeClip(1s, {600u, 601u, 602u, 603u, 604u, 605u, 606u, 607u, 608u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 0, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 601);
+
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 7, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 608);
+
+  EXPECT_FALSE(helper.GetEpisodePlaylists(url, items, allTitles, 8, episodes, clips,
+                                          playlists)); // Invalid episode index
+  EXPECT_EQ(items.Size(), 0);
+
+  EXPECT_TRUE(
+      helper.GetEpisodePlaylists(url, items, allTitles, ALL_PLAYLISTS, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 8); // All episodes
+  auto returned{GetPlaylists(items)};
+  std::set<unsigned int> expected{601u, 602u, 603u, 604u, 605u, 606u, 607u, 608u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::MAIN, episodes, clips,
+                                            playlists));
+  EXPECT_EQ(items.Size(), 9);
+  returned = GetPlaylists(items);
+  expected = {600u, 601u, 602u, 603u, 604u, 605u, 606u, 607u, 608u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::ALL, episodes, clips,
+                                            playlists));
+  EXPECT_EQ(items.Size(), 9);
+  returned = GetPlaylists(items);
+  expected = {600u, 601u, 602u, 603u, 604u, 605u, 606u, 607u, 608u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+}
+
+// Disc has a play-all playlist (clips shared with individual episode playlists)
+// Playlist 600 = play-all; 601-607 = episodes 1-7
+// Clip layout is more complex and fails PlayAllPlaylist method
+// Fail as only 7 episodes and 9 playlists in the group
+TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_RelaxedPlayAllPlaylist_Fail)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{
+      MakeEpisode(1, 1, 2400), // 40 minutes
+      MakeEpisode(1, 2, 2400), MakeEpisode(1, 3, 2400), MakeEpisode(1, 4, 2400),
+      MakeEpisode(1, 5, 2400), MakeEpisode(1, 6, 2400), MakeEpisode(1, 7, 2400),
+  };
+
+  PlaylistMap playlists{
+      {600u, MakePlaylist(600u, 19411s,
+                          {1100u, 1000u, 1001u, 1002u, 1003u, 1004u, 1005u, 1006u, 1007u, 1008u,
+                           1009u, 1010u, 1011u, 1012u, 1013u, 1014u},
+                          {1s, 2400s, 30s, 2400s, 30s, 2400s, 30s, 2400s, 30s, 2400s, 30s, 2400s,
+                           30s, 2400s, 30s, 2400s})},
+      {601u, MakePlaylist(601u, 2401s, {1100u, 1000u}, {1s, 2400s})},
+      {602u, MakePlaylist(602u, 2431s, {1100u, 1001u, 1002u}, {1s, 30s, 2400s})},
+      {603u, MakePlaylist(603u, 2431s, {1100u, 1003u, 1004u}, {1s, 30s, 2400s})},
+      {604u, MakePlaylist(604u, 2431s, {1100u, 1005u, 1006u}, {1s, 30s, 2400s})},
+      {605u, MakePlaylist(605u, 2431s, {1100u, 1007u, 1008u}, {1s, 30s, 2400s})},
+      {606u, MakePlaylist(606u, 2431s, {1100u, 1009u, 1010u}, {1s, 30s, 2400s})},
+      {607u, MakePlaylist(607u, 2431s, {1100u, 1011u, 1012u}, {1s, 30s, 2400s})},
+      {608u, MakePlaylist(608u, 2431s, {1100u, 1013u, 1014u}, {1s, 30s, 2400s})}};
+  ClipMap clips{
+      {1000u, MakeClip(2400s, {600u, 601u})},
+      {1001u, MakeClip(30s, {600u, 602u})},
+      {1002u, MakeClip(2400s, {600u, 602u})},
+      {1003u, MakeClip(30s, {600u, 603u})},
+      {1004u, MakeClip(2400s, {600u, 603u})},
+      {1005u, MakeClip(30s, {600u, 604u})},
+      {1006u, MakeClip(2400s, {600u, 604u})},
+      {1007u, MakeClip(30s, {600u, 605u})},
+      {1008u, MakeClip(2400s, {600u, 605u})},
+      {1009u, MakeClip(30s, {600u, 606u})},
+      {1010u, MakeClip(2400s, {600u, 606u})},
+      {1011u, MakeClip(30s, {600u, 607u})},
+      {1012u, MakeClip(2400s, {600u, 607u})},
+      {1013u, MakeClip(30s, {600u, 608u})},
+      {1014u, MakeClip(2400s, {600u, 608u})},
+      {1100u, MakeClip(1s, {600u, 601u, 602u, 603u, 604u, 605u, 606u, 607u, 608u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_FALSE(helper.GetEpisodePlaylists(url, items, allTitles, 0, episodes, clips, playlists));
+  EXPECT_EQ(items.Size(), 0);
+
+  EXPECT_FALSE(
+      helper.GetEpisodePlaylists(url, items, allTitles, ALL_PLAYLISTS, episodes, clips, playlists));
+  EXPECT_EQ(items.Size(), 0);
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::MAIN, episodes, clips,
+                                            playlists));
+  EXPECT_EQ(items.Size(), 9);
+  auto returned{GetPlaylists(items)};
+  std::set<unsigned int> expected{600u, 601u, 602u, 603u, 604u, 605u, 606u, 607u, 608u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::ALL, episodes, clips,
+                                            playlists));
+  EXPECT_EQ(items.Size(), 9);
+  returned = GetPlaylists(items);
+  expected = {600u, 601u, 602u, 603u, 604u, 605u, 606u, 607u, 608u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+}
+
+// Disc has a play-all playlist (clips shared with individual episode playlists)
+// Playlist 600 = play-all; 601-608 = episodes 1-8
+// Clip layout is more complex and fails PlayAllPlaylist method
+// Fail as the playlist durations don't add up to the total duration of the first (play-all) playlist
+// Second playlist 602 is too long
+TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_RelaxedPlayAllPlaylist_Fail2)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{
+      MakeEpisode(1, 1, 2400), // 40 minutes
+      MakeEpisode(1, 2, 2400), MakeEpisode(1, 3, 2400), MakeEpisode(1, 4, 2400),
+      MakeEpisode(1, 5, 2400), MakeEpisode(1, 6, 2400), MakeEpisode(1, 7, 2400),
+      MakeEpisode(1, 8, 2400),
+  };
+
+  PlaylistMap playlists{
+      {600u, MakePlaylist(600u, 19411s,
+                          {1100u, 1000u, 1001u, 1022u, 1003u, 1004u, 1005u, 1006u, 1007u, 1008u,
+                           1009u, 1010u, 1011u, 1012u, 1013u, 1014u},
+                          {1s, 2400s, 30s, 2400s, 30s, 2400s, 30s, 2400s, 30s, 2400s, 30s, 2400s,
+                           30s, 2400s, 30s, 2400s})},
+      {601u, MakePlaylist(601u, 2401s, {1100u, 1000u}, {1s, 2400s})},
+      {602u, MakePlaylist(602u, 4431s, {1100u, 1001u, 1002u}, {1s, 30s, 4400s})},
+      {603u, MakePlaylist(603u, 2431s, {1100u, 1003u, 1004u}, {1s, 30s, 2400s})},
+      {604u, MakePlaylist(604u, 2431s, {1100u, 1005u, 1006u}, {1s, 30s, 2400s})},
+      {605u, MakePlaylist(605u, 2431s, {1100u, 1007u, 1008u}, {1s, 30s, 2400s})},
+      {606u, MakePlaylist(606u, 2431s, {1100u, 1009u, 1010u}, {1s, 30s, 2400s})},
+      {607u, MakePlaylist(607u, 2431s, {1100u, 1011u, 1012u}, {1s, 30s, 2400s})},
+      {608u, MakePlaylist(608u, 2431s, {1100u, 1013u, 1014u}, {1s, 30s, 2400s})}};
+  ClipMap clips{
+      {1000u, MakeClip(2400s, {600u, 601u})},
+      {1001u, MakeClip(30s, {600u, 602u})},
+      {1002u, MakeClip(4400s, {602u})},
+      {1003u, MakeClip(30s, {600u, 603u})},
+      {1004u, MakeClip(2400s, {600u, 603u})},
+      {1005u, MakeClip(30s, {600u, 604u})},
+      {1006u, MakeClip(2400s, {600u, 604u})},
+      {1007u, MakeClip(30s, {600u, 605u})},
+      {1008u, MakeClip(2400s, {600u, 605u})},
+      {1009u, MakeClip(30s, {600u, 606u})},
+      {1010u, MakeClip(2400s, {600u, 606u})},
+      {1011u, MakeClip(30s, {600u, 607u})},
+      {1012u, MakeClip(2400s, {600u, 607u})},
+      {1013u, MakeClip(30s, {600u, 608u})},
+      {1014u, MakeClip(2400s, {600u, 608u})},
+      {1022u, MakeClip(2400s, {600u})},
+      {1100u, MakeClip(1s, {600u, 601u, 602u, 603u, 604u, 605u, 606u, 607u, 608u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_FALSE(helper.GetEpisodePlaylists(url, items, allTitles, 0, episodes, clips, playlists));
+  EXPECT_EQ(items.Size(), 0);
+
+  EXPECT_FALSE(
+      helper.GetEpisodePlaylists(url, items, allTitles, ALL_PLAYLISTS, episodes, clips, playlists));
+  EXPECT_EQ(items.Size(), 0);
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::MAIN, episodes, clips,
+                                            playlists));
+  EXPECT_EQ(items.Size(), 9);
+  auto returned{GetPlaylists(items)};
+  std::set<unsigned int> expected{600u, 601u, 602u, 603u, 604u, 605u, 606u, 607u, 608u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::ALL, episodes, clips,
+                                            playlists));
+  EXPECT_EQ(items.Size(), 9);
+  returned = GetPlaylists(items);
+  expected = {600u, 601u, 602u, 603u, 604u, 605u, 606u, 607u, 608u};
   EXPECT_TRUE(std::ranges::includes(returned, expected));
 }
 
