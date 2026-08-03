@@ -886,6 +886,23 @@ CecPowerStatus CPeripherals::GetDevicePowerStatus(const std::string& adapterName
   return CecPowerStatus::NO_ADAPTER;
 }
 
+std::vector<std::string> CPeripherals::GetCecAdapterNames() const
+{
+  std::vector<std::string> names;
+
+  if (SupportsCEC())
+  {
+    PeripheralVector peripherals;
+    GetPeripheralsWithFeature(peripherals, FEATURE_CEC);
+
+    for (const auto& peripheral : peripherals)
+      names.emplace_back(peripheral->DeviceName().empty() ? peripheral->Location()
+                                                          : peripheral->DeviceName());
+  }
+
+  return names;
+}
+
 EventPollHandlePtr CPeripherals::RegisterEventPoller()
 {
   return m_eventScanner->RegisterPollHandle();

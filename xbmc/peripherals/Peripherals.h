@@ -236,6 +236,13 @@ public:
   CecPowerStatus GetDevicePowerStatus(const std::string& adapterName = "");
 
   /*!
+   * @brief Get the names of the CEC adapters that are present.
+   * @return The name of each adapter, or its location when the bus didn't name it. These are the
+   * names that GetDevicePowerStatus() matches against.
+   */
+  std::vector<std::string> GetCecAdapterNames() const;
+
+  /*!
    * @brief Try to mute the audio via a peripheral.
    * @return True when this change was handled by a peripheral (and should not be handled by
    * anything else), false otherwise.

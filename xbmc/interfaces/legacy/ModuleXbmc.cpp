@@ -427,6 +427,12 @@ namespace XBMCAddon
       return static_cast<int>(CServiceBroker::GetPeripherals().GetDevicePowerStatus(adapterName));
     }
 
+    std::vector<String> getCecAdapterNames()
+    {
+      XBMC_TRACE;
+      return CServiceBroker::GetPeripherals().GetCecAdapterNames();
+    }
+
     String getCacheThumbName(const String& path)
     {
       XBMC_TRACE;

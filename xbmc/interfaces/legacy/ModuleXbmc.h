@@ -665,6 +665,32 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
     ///
     /// \ingroup python_xbmc
+    /// @brief \python_func{ xbmc.getCecAdapterNames() }
+    /// Get the names of the HDMI-CEC adapters that are present.
+    ///
+    /// @return list - the name of each adapter, in the form that
+    /// \ref getDevicePowerStatus accepts.
+    ///
+    ///
+    /// ------------------------------------------------------------------------
+    /// @python_v22 New function added.
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// for adapter in xbmc.getCecAdapterNames():
+    ///     xbmc.log(f'{adapter}: {xbmc.getDevicePowerStatus(adapter)}')
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
+    getCecAdapterNames();
+#else
+    std::vector<String> getCecAdapterNames();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+    ///
+    /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.getCacheThumbName(path) }
     /// Get thumb cache filename.
     ///
