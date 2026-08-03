@@ -859,17 +859,27 @@ bool CPeripherals::ToggleDeviceState(CecStateChange mode /*= STATE_SWITCH_TOGGLE
   return ret;
 }
 
-CecPowerStatus CPeripherals::GetDevicePowerStatus()
+CecPowerStatus CPeripherals::GetDevicePowerStatus(const std::string& adapterName /* = "" */)
 {
   PeripheralVector peripherals;
 
   if (SupportsCEC() && GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
   {
-    for (auto& peripheral : peripherals)
+    for (const auto& peripheral : peripherals)
     {
+      /* an empty name matches every adapter, so the first one that has a status is returned */
+      if (!adapterName.empty() &&
+          !StringUtils::EqualsNoCase(peripheral->DeviceName(), adapterName) &&
+          !StringUtils::EqualsNoCase(peripheral->Location(), adapterName))
+        continue;
+
       std::shared_ptr<CPeripheralCecAdapter> cecDevice =
           std::static_pointer_cast<CPeripheralCecAdapter>(peripheral);
-      return cecDevice->GetDevicePowerStatus();
+
+      /* adapters that aren't running report NO_ADAPTER, so keep looking */
+      const CecPowerStatus status = cecDevice->GetDevicePowerStatus();
+      if (status != CecPowerStatus::NO_ADAPTER)
+        return status;
     }
   }
 

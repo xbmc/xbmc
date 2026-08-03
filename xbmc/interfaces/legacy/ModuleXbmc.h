@@ -618,9 +618,13 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
     ///
     /// \ingroup python_xbmc
-    /// @brief \python_func{ xbmc.getDevicePowerStatus() }
+    /// @brief \python_func{ xbmc.getDevicePowerStatus([adapterName]) }
     /// Get the power status of the device attached via HDMI-CEC.
     ///
+    /// @param adapterName           [opt] string - the CEC adapter to query, either its name
+    ///                              (e.g. `HDMI 1`) or, for an adapter that the driver didn't
+    ///                              name, its port. Defaults to empty, which queries the first
+    ///                              adapter that reports a status.
     /// @return int - one of the following constants:
     /// | Value                                   | Description                          |
     /// |----------------------------------------:|:-------------------------------------|
@@ -633,8 +637,10 @@ namespace XBMCAddon
     ///
     /// @note This is the result of calling libCEC's GetDevicePowerStatus.
     /// `DEVICE_POWER_UNKNOWN` means the device could not be found or queried on the CEC
-    /// bus. `DEVICE_POWER_NO_ADAPTER` means no CEC adapter is present. If more than
-    /// one CEC adapter is present, the status of the first one is returned.
+    /// bus. `DEVICE_POWER_NO_ADAPTER` means no CEC adapter is present, no adapter matches
+    /// the given name, or the matching adapter isn't running.
+    ///
+    /// @note The name is matched case insensitively.
     ///
     ///
     /// ------------------------------------------------------------------------
@@ -645,12 +651,15 @@ namespace XBMCAddon
     /// ..
     /// if xbmc.getDevicePowerStatus() == xbmc.DEVICE_POWER_ON:
     ///     xbmc.log('Device is on')
+    ///
+    /// if xbmc.getDevicePowerStatus('HDMI 2') == xbmc.DEVICE_POWER_STANDBY:
+    ///     xbmc.log('The device on HDMI 2 is in standby')
     /// ..
     /// ~~~~~~~~~~~~~
     ///
-    getDevicePowerStatus();
+    getDevicePowerStatus(...);
 #else
-    int getDevicePowerStatus();
+    int getDevicePowerStatus(const String& adapterName = emptyString);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS

@@ -418,13 +418,13 @@ namespace XBMCAddon
       return appPower->GlobalIdleTime();
     }
 
-    int getDevicePowerStatus()
+    int getDevicePowerStatus(const String& adapterName /* = emptyString */)
     {
       XBMC_TRACE;
       // libCEC may block briefly on a CEC bus request when its cache is stale,
       // so release the GIL for the duration of the call.
       DelayedCallGuard dg;
-      return static_cast<int>(CServiceBroker::GetPeripherals().GetDevicePowerStatus());
+      return static_cast<int>(CServiceBroker::GetPeripherals().GetDevicePowerStatus(adapterName));
     }
 
     String getCacheThumbName(const String& path)

@@ -227,11 +227,13 @@ public:
 
   /*!
    * @brief Query the power status of the device attached via HDMI-CEC.
-   * @return The reported power status, or CecPowerStatus::NO_ADAPTER when no CEC
-   * adapter is present. If more than one CEC adapter is present, the status of
-   * the first one is returned.
+   * @param adapterName The name of the CEC adapter to query, matched case insensitively against
+   * the adapter's device name and against its location, so unnamed adapters can be addressed by
+   * port. When empty, the first adapter that reports a status is queried.
+   * @return The reported power status, or CecPowerStatus::NO_ADAPTER when no CEC adapter is
+   * present, when no adapter matches the name, or when the matching adapter isn't running.
    */
-  CecPowerStatus GetDevicePowerStatus();
+  CecPowerStatus GetDevicePowerStatus(const std::string& adapterName = "");
 
   /*!
    * @brief Try to mute the audio via a peripheral.
