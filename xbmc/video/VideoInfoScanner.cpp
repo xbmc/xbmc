@@ -62,6 +62,7 @@
 #include "video/dialogs/GUIDialogVideoManagerVersions.h"
 
 #include <algorithm>
+#include <map>
 #include <memory>
 #include <ranges>
 #include <set>
@@ -2685,38 +2686,43 @@ CVideoInfoScanner::~CVideoInfoScanner()
     if (!URIUtils::IsPlugin(actorsDir) && CDirectory::Exists(actorsDir))
       CDirectory::GetDirectory(actorsDir, items, ".png|.jpg|.tbn",
                                DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO);
-    for (std::vector<SActorInfo>::iterator i = actors.begin(); i != actors.end(); ++i)
+
+    // Index the thumbs by filename (without extension)
+    std::map<std::string, std::string> thumbs;
+    for (const auto& item : items)
     {
-      if (i->thumb.empty())
+      if (item->IsFolder())
+        continue;
+
+      std::string name{URIUtils::GetFileName(item->GetPath())};
+      URIUtils::RemoveExtension(name);
+      thumbs.try_emplace(std::move(name), item->GetPath());
+    }
+
+    for (auto& actor : actors)
+    {
+      if (actor.thumb.empty())
       {
         // Must match how the name is turned into a filename when exporting (see
         // CVideoDatabase::GetSafeFile()), or an actor whose name contains a character that is not
         // legal in a filename (ie. a trailing '.') can never be matched to their own exported thumb
-        std::string thumbFile = i->strName;
+        std::string thumbFile = actor.strName;
         StringUtils::Replace(thumbFile, ' ', '_');
         thumbFile = CUtil::MakeLegalFileName(std::move(thumbFile));
-        for (int j = 0; j < items.Size(); j++)
+        if (const auto thumb{thumbs.find(thumbFile)}; thumb != thumbs.end())
+          actor.thumb = thumb->second;
+        if (!actor.thumbUrl.GetFirstUrlByType().m_url.empty())
         {
-          std::string compare = URIUtils::GetFileName(items[j]->GetPath());
-          URIUtils::RemoveExtension(compare);
-          if (!items[j]->IsFolder() && compare == thumbFile)
-          {
-            i->thumb = items[j]->GetPath();
-            break;
-          }
-        }
-        if (!i->thumbUrl.GetFirstUrlByType().m_url.empty())
-        {
-          const std::string thumb{CScraperUrl::GetThumbUrl(i->thumbUrl.GetFirstUrlByType())};
+          const std::string thumb{CScraperUrl::GetThumbUrl(actor.thumbUrl.GetFirstUrlByType())};
           const bool notUsingThisRemoteArt{useRemoteArt == UseRemoteArtWithLocalScraper::NO &&
                                            URIUtils::IsRemote(thumb)};
-          if (i->thumb.empty() && !notUsingThisRemoteArt)
-            i->thumb = thumb;
+          if (actor.thumb.empty() && !notUsingThisRemoteArt)
+            actor.thumb = thumb;
           if (notUsingThisRemoteArt)
-            i->thumbUrl.Clear();
+            actor.thumbUrl.Clear();
         }
       }
-      CacheArtwork(i->thumb, m_artRetrievalTiming == ArtRetrievalTiming::SYNCHRONOUS);
+      CacheArtwork(actor.thumb, m_artRetrievalTiming == ArtRetrievalTiming::SYNCHRONOUS);
     }
   }
 
