@@ -184,9 +184,9 @@ void RemoveDuplicatePlaylists(std::vector<PlaylistInformation>& playlists)
   // The stream number table describes what a playlist exposes rather than what its clip contains,
   // so two playlists sharing a clip but offering different streams are not seen as identical.
   std::unordered_set<unsigned int> duplicatePlaylists;
-  for (unsigned int i = 0; i < playlists.size() - 1; ++i)
+  for (size_t i = 0; i + 1 < playlists.size(); ++i)
   {
-    for (unsigned int j = i + 1; j < playlists.size(); ++j)
+    for (size_t j = i + 1; j < playlists.size(); ++j)
     {
       if (playlists[i].audioStreams == playlists[j].audioStreams &&
           playlists[i].pgStreams == playlists[j].pgStreams &&
