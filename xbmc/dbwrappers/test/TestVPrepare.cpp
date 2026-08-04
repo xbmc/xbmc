@@ -19,7 +19,7 @@
 namespace
 {
 template<std::derived_from<dbiplus::Database> T>
-std::string PrepareSQL(std::string_view sqlFormat, ...)
+std::string TestPrepareSQL(std::string_view sqlFormat, ...)
 {
   std::string strResult;
   T db;
@@ -31,7 +31,68 @@ std::string PrepareSQL(std::string_view sqlFormat, ...)
 
   return strResult;
 }
+
+//! \brief Reaches the protected conversion pass. Abstract and never instantiated, so the pure
+//! virtuals of Database can stay unimplemented.
+class TestDatabase : public dbiplus::Database
+{
+public:
+  using dbiplus::Database::EscapeStringConversions;
+};
+
+std::string TestEscapeStringConversions(std::string_view format)
+{
+  std::string result{format};
+  TestDatabase::EscapeStringConversions(result);
+  return result;
+}
 } // namespace
+
+struct EscapeConversionsTest
+{
+  std::string format;
+  std::string expected;
+};
+
+const auto EscapeConversionsTests = std::array{
+    // nothing to rewrite
+    EscapeConversionsTest{"", ""},
+    EscapeConversionsTest{"SELECT foo", "SELECT foo"},
+    // %s is the escaping conversion and becomes %q
+    EscapeConversionsTest{"%s", "%q"},
+    EscapeConversionsTest{"WHERE name = '%s'", "WHERE name = '%q'"},
+    EscapeConversionsTest{"%s%s", "%q%q"},
+    // %% is a literal percent, so the %s that %%s hides is the literal "%s" and must survive
+    EscapeConversionsTest{"%%s", "%%s"},
+    EscapeConversionsTest{"strftime(\"%%s\",c01)", "strftime(\"%%s\",c01)"},
+    // ... while the LIKE wildcard idiom is a literal percent followed by a conversion
+    EscapeConversionsTest{"'%%%s%%'", "'%%%q%%'"},
+    EscapeConversionsTest{"'%%%s'", "'%%%q'"},
+    EscapeConversionsTest{"'%s%%'", "'%q%%'"},
+    // a literal %s does not consume the conversion that follows it
+    EscapeConversionsTest{"%%s '%s'", "%%s '%q'"},
+    // any other conversion is stepped over whole, keeping the scan in step with the percents that
+    // follow it. VIDEODB_ID_* queries look exactly like this.
+    EscapeConversionsTest{"%i %s", "%i %q"},
+    EscapeConversionsTest{"WHERE c%02d LIKE '%%%s%%'", "WHERE c%02d LIKE '%%%q%%'"},
+    // a trailing percent has no second half to read
+    EscapeConversionsTest{"100%", "100%"},
+};
+
+class EscapeConversionsTester : public testing::WithParamInterface<EscapeConversionsTest>,
+                                public testing::Test
+{
+};
+
+TEST_P(EscapeConversionsTester, EscapeStringConversions)
+{
+  const auto params = GetParam();
+  EXPECT_EQ(params.expected, TestEscapeStringConversions(params.format));
+}
+
+INSTANTIATE_TEST_SUITE_P(TestDbWrappers,
+                         EscapeConversionsTester,
+                         testing::ValuesIn(EscapeConversionsTests));
 
 struct VPrepareNoParamTest
 {
@@ -79,17 +140,59 @@ class VPrepareNoParamTester : public testing::WithParamInterface<VPrepareNoParam
 TEST_P(VPrepareNoParamTester, Sqlite)
 {
   const auto params = GetParam();
-  EXPECT_EQ(params.expectedSqlite, PrepareSQL<dbiplus::SqliteDatabase>(params.format));
+  EXPECT_EQ(params.expectedSqlite, TestPrepareSQL<dbiplus::SqliteDatabase>(params.format));
 }
 
 #if defined(HAS_MYSQL) || defined(HAS_MARIADB)
 TEST_P(VPrepareNoParamTester, MySql)
 {
   const auto params = GetParam();
-  EXPECT_EQ(params.expectedMySql, PrepareSQL<dbiplus::MysqlDatabase>(params.format));
+  EXPECT_EQ(params.expectedMySql, TestPrepareSQL<dbiplus::MysqlDatabase>(params.format));
 }
 #endif
 
 INSTANTIATE_TEST_SUITE_P(TestDbWrappers,
                          VPrepareNoParamTester,
                          testing::ValuesIn(VPrepareNoParamTests));
+
+/*!
+ * Sqlite only: escaping a value is what these cover, and MySQL escapes through
+ * mysql_real_escape_string(), which needs the live connection a unit test has no way to hand it.
+ * Which conversions become %q is backend independent - the pass is shared - so the format strings
+ * below still stand in for both.
+ */
+struct VPrepareStringParamTest
+{
+  std::string format;
+  std::string param;
+  std::string expected;
+};
+
+const auto VPrepareStringParamTests = std::array{
+    // %s is the escaping conversion: a quote in the value has to come out doubled
+    VPrepareStringParamTest{"WHERE name = '%s'", "O'Brien", "WHERE name = 'O''Brien'"},
+    // ... including behind the LIKE wildcards, where the %% before it is a literal percent and
+    // does not turn the %s into the literal "%s" that %%s asks for
+    VPrepareStringParamTest{"WHERE name LIKE '%%%s%%'", "O'Brien", "WHERE name LIKE '%O''Brien%'"},
+    VPrepareStringParamTest{"WHERE name LIKE '%%%s'", "O'Brien", "WHERE name LIKE '%O''Brien'"},
+    VPrepareStringParamTest{"WHERE name LIKE '%s%%'", "O'Brien", "WHERE name LIKE 'O''Brien%'"},
+    // a literal %s still survives, and does not consume the conversion that follows it
+    VPrepareStringParamTest{"CAST(strftime(\"%%s\",c01) AS REAL) = '%s'", "O'Brien",
+                            "CAST(strftime(\"%s\",c01) AS REAL) = 'O''Brien'"},
+};
+
+class VPrepareStringParamTester : public testing::WithParamInterface<VPrepareStringParamTest>,
+                                  public testing::Test
+{
+};
+
+TEST_P(VPrepareStringParamTester, Sqlite)
+{
+  const auto params = GetParam();
+  EXPECT_EQ(params.expected,
+            TestPrepareSQL<dbiplus::SqliteDatabase>(params.format, params.param.c_str()));
+}
+
+INSTANTIATE_TEST_SUITE_P(TestDbWrappers,
+                         VPrepareStringParamTester,
+                         testing::ValuesIn(VPrepareStringParamTests));
