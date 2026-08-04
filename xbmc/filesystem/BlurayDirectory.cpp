@@ -493,6 +493,7 @@ void CBlurayDirectory::Dispose()
     bd_close(m_bd);
     m_bd = nullptr;
   }
+  m_blurayInitialized = false;
 }
 
 bool CBlurayDirectory::Resolve(CFileItem& item) const
@@ -531,19 +532,19 @@ std::string CBlurayDirectory::GetBasePath(const CURL& url)
   return url2.Get(); // BDMV
 }
 
-std::string CBlurayDirectory::GetBlurayTitle() const
+std::string CBlurayDirectory::GetBlurayTitle()
 {
   return GetDiscInfoString(DiscInfo::TITLE);
 }
 
-std::string CBlurayDirectory::GetBlurayID() const
+std::string CBlurayDirectory::GetBlurayID()
 {
   return GetDiscInfoString(DiscInfo::ID);
 }
 
-std::string CBlurayDirectory::GetDiscInfoString(DiscInfo info) const
+std::string CBlurayDirectory::GetDiscInfoString(DiscInfo info)
 {
-  if (!m_blurayInitialized)
+  if (!EnsureBlurayOpen())
     return "";
 
   const BLURAY_DISC_INFO* discInfo{GetDiscInfo()};
@@ -597,8 +598,10 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
   URIUtils::RemoveSlashAtEnd(file);
   URIUtils::RemoveSlashAtEnd(root);
 
-  if (!InitializeBluray(root))
-    return false;
+  // Resolve the path but leave the disc closed.
+  // Most requests are now served from the disc cache or by parsing a single playlist.
+  // Neither needs libbluray, so opening it is deferred.
+  SetRealPath(root);
 
   // See if there is a playlist in disc.inf
   const int mainPlaylist{GetMainPlaylistFromDisc(m_url)};
@@ -648,7 +651,7 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
       // Add all titles and menu option (if menus supported on disc)
       if (!StringUtils::EndsWith(file, "/all"))
         AddOptionsAndSortMethods(m_url, items, CDiscDirectoryHelper::AllTitles::MOVIES,
-                                 m_blurayMenuSupport);
+                                 HasMenuSupport());
 
       return success;
     }
@@ -727,7 +730,7 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
                                       clips, playlists);
         success = !items.IsEmpty();
         AddOptionsAndSortMethods(m_url, items, CDiscDirectoryHelper::AllTitles::EPISODES,
-                                 m_blurayMenuSupport);
+                                 HasMenuSupport());
       }
       else
       {
@@ -782,8 +785,25 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
   return true;
 }
 
-bool CBlurayDirectory::InitializeBluray(const std::string& root)
+void CBlurayDirectory::SetRealPath(const std::string& root)
 {
+  m_realPath = root;
+
+  if (const auto fileHandler{CDirectoryFactory::Create(CURL{root})}; fileHandler)
+    m_realPath = fileHandler->ResolveMountPoint(root);
+}
+
+bool CBlurayDirectory::EnsureBlurayOpen()
+{
+  if (m_blurayInitialized)
+    return true;
+
+  if (m_realPath.empty())
+  {
+    CLog::LogF(LOGERROR, "No disc path, SetRealPath must be called first");
+    return false;
+  }
+
   bd_set_debug_handler(CBlurayCallback::bluray_logger);
   bd_set_debug_mask(DBG_CRIT | DBG_BLURAY | DBG_NAV);
 
@@ -799,22 +819,36 @@ bool CBlurayDirectory::InitializeBluray(const std::string& root)
   g_LangCodeExpander.ConvertToISO6392T(g_langInfo.GetDVDMenuLanguage(), langCode);
   bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_MENU_LANG, langCode.c_str());
 
-  m_realPath = root;
-
-  if (const auto fileHandler{CDirectoryFactory::Create(CURL{root})}; fileHandler)
-    m_realPath = fileHandler->ResolveMountPoint(root);
-
   if (!bd_open_files(m_bd, &m_realPath, CBlurayCallback::dir_open, CBlurayCallback::file_open))
   {
-    CLog::LogF(LOGERROR, "Failed to open {}", CURL::GetRedacted(root));
+    CLog::LogF(LOGERROR, "Failed to open {}", CURL::GetRedacted(m_realPath));
+    Dispose();
     return false;
   }
   m_blurayInitialized = true;
 
-  const BLURAY_DISC_INFO* discInfo{GetDiscInfo()};
-  m_blurayMenuSupport = discInfo && !discInfo->no_menu_support;
-
   return true;
+}
+
+bool CBlurayDirectory::InitializeBluray(const std::string& root)
+{
+  SetRealPath(root);
+  return EnsureBlurayOpen();
+}
+
+bool CBlurayDirectory::HasMenuSupport()
+{
+  // Only libbluray can answer this, so the disc has to be opened
+  if (!EnsureBlurayOpen())
+    return false;
+
+  const BLURAY_DISC_INFO* discInfo{GetDiscInfo()};
+  const bool menuSupport{discInfo && !discInfo->no_menu_support};
+
+  CLog::LogF(LOGDEBUG, "Disc {} {} menus", CURL::GetRedacted(m_realPath),
+             menuSupport ? "supports" : "does not support");
+
+  return menuSupport;
 }
 
 const BLURAY_DISC_INFO* CBlurayDirectory::GetDiscInfo() const
