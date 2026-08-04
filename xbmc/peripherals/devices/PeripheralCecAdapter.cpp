@@ -68,6 +68,12 @@ using namespace std::chrono_literals;
 /* time in seconds to suppress source activation after receiving OnStop */
 #define CEC_SUPPRESS_ACTIVATE_SOURCE_AFTER_ON_STOP 2
 
+#if CEC_LIB_VERSION_MAJOR < 8
+/* delay in ms before a held button starts repeating. libCEC gained a field of its own for
+   this in 8.0.0; older versions take it from iDoubleTapTimeoutMs */
+#define CEC_BUTTON_REPEAT_DELAY_MS 300
+#endif
+
 CPeripheralCecAdapter::CPeripheralCecAdapter(CPeripherals& manager,
                                              const PeripheralScanResult& scanResult,
                                              CPeripheralBus* bus)
@@ -1483,6 +1489,12 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
 
   // double tap prevention timeout in ms
   m_configuration.iDoubleTapTimeoutMs = GetSettingInt("double_tap_timeout_ms");
+#if CEC_LIB_VERSION_MAJOR < 8
+  // libCEC before 8.0.0 does no double tap prevention and reads this field as the button
+  // repeat delay instead, where the setting's "off" would make repeats start immediately
+  if (m_configuration.iDoubleTapTimeoutMs == 0)
+    m_configuration.iDoubleTapTimeoutMs = CEC_BUTTON_REPEAT_DELAY_MS;
+#endif
   m_configuration.iButtonRepeatRateMs = GetSettingInt("button_repeat_rate_ms");
   m_configuration.iButtonReleaseDelayMs = GetSettingInt("button_release_delay_ms");
 
