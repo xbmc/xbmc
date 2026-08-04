@@ -1,4 +1,4 @@
-From 3e72cabeaea5eb952823989703aa98c44444f687 Mon Sep 17 00:00:00 2001
+From 95f270edb8494b6784fdcf3adc522fea7ed1634b Mon Sep 17 00:00:00 2001
 From: Lukas Rusak <lorusak@gmail.com>
 Date: Sat, 10 Apr 2021 08:17:11 -0700
 Subject: [PATCH] ffmpeg: windows: configure: allow building static
@@ -8,10 +8,10 @@ Subject: [PATCH] ffmpeg: windows: configure: allow building static
  1 file changed, 3 insertions(+)
 
 diff --git a/configure b/configure
-index ab1c0e1e78..e00e3a8c96 100755
+index ad7a945f2c..4b0ddd9b11 100755
 --- a/configure
 +++ b/configure
-@@ -6152,6 +6152,8 @@ case $target_os in
+@@ -6235,6 +6235,8 @@ case $target_os in
          enabled x86_32 && check_ldflags -Wl,--large-address-aware
          add_cppflags -DWIN32_LEAN_AND_MEAN
          shlibdir_default="$bindir_default"
@@ -20,7 +20,7 @@ index ab1c0e1e78..e00e3a8c96 100755
          SLIBPREF=""
          SLIBSUF=".dll"
          SLIBNAME_WITH_VERSION='$(SLIBPREF)$(FULLNAME)-$(LIBVERSION)$(SLIBSUF)'
-@@ -6203,6 +6205,7 @@ case $target_os in
+@@ -6286,6 +6288,7 @@ case $target_os in
          add_cppflags -DWIN32_LEAN_AND_MEAN
          shlibdir_default="$bindir_default"
          LIBPREF=""
