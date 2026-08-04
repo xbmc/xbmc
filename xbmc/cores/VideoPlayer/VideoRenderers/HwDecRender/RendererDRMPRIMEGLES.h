@@ -53,7 +53,7 @@ public:
   bool Configure(const VideoPicture& picture, float fps, unsigned int orientation) override;
   bool IsConfigured() override { return m_configured; }
   bool IsGuiLayer() override;
-  bool HasVideoPlane() override { return false; }
+  bool VideoBypassesFramebuffer() override { return false; }
   void AddVideoPicture(const VideoPicture& picture, int index) override;
   void UnInit() override;
   bool Flush(bool saveBuffers) override;

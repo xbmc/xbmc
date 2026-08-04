@@ -67,13 +67,13 @@ public:
   virtual void ReleaseBuffer(int idx) { }
   virtual bool NeedBuffer(int idx) { return false; }
   virtual bool IsGuiLayer() { return true; }
-  virtual bool HasVideoPlane() { return !IsGuiLayer(); }
+  //! True when video never reaches the framebuffer: a DRM plane, an Android
+  //! SurfaceView, the Amlogic video layer. Such a renderer must produce its
+  //! own capture frame; every other renderer is served by reading the framebuffer.
+  virtual bool VideoBypassesFramebuffer() { return !IsGuiLayer(); }
   //! \brief Render this renderer's video frame for screencap into result.
-  //!
-  //! Screencap copies each frame back from the framebuffer, which serves every
-  //! renderer that composites its video there. A renderer that routes video
-  //! around the framebuffer (DRMPRIME direct-to-plane) overrides this to
-  //! produce its own frame instead. Default: capture unavailable.
+  //! Overridden by renderers whose VideoBypassesFramebuffer() is true.
+  //! Default: capture unavailable.
   virtual bool CaptureVideoFrame(const KODI::RENDERING::CAPTURE::CaptureSpec& spec,
                                  KODI::RENDERING::CAPTURE::CaptureResult& result)
   {
