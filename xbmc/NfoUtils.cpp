@@ -21,10 +21,10 @@ namespace
 constexpr int VERSION_LEGACY = 0; // nfo has no version attribute and predates version support
 
 // Current nfo versions
-constexpr int VERSION_MOVIE = 0;
-constexpr int VERSION_TVSHOW = 0;
-constexpr int VERSION_EPISODEDETAILS = 0;
-constexpr int VERSION_MUSICVIDEOS = 0;
+constexpr int VERSION_MOVIE = 1;
+constexpr int VERSION_TVSHOW = 1;
+constexpr int VERSION_EPISODEDETAILS = 1;
+constexpr int VERSION_MUSICVIDEOS = 1;
 
 struct nfoDetails
 {
@@ -66,23 +66,73 @@ constexpr int CurrentNfoVersion(std::string_view tag)
   return VERSION_LEGACY;
 }
 
+// When there are no uniqueid tags, convert <id>xxx</id> tags to <uniqueid>xxx</uniqueid>
+// All <id> tags are removed regardless.
+bool ConvertIdToUniqueId(TiXmlElement* root)
+{
+  const bool hasUniqueId = (nullptr != root->FirstChildElement("uniqueid"));
+
+  TiXmlNode* id = root->FirstChildElement("id");
+
+  // The original code read only the first <id> value. Convert the first, remove the rest
+  if (!hasUniqueId && id != nullptr)
+  {
+    if (const TiXmlNode* idChild = id->FirstChild(); idChild != nullptr)
+    {
+      if (std::string value = idChild->ValueStr(); !value.empty())
+      {
+        if (nullptr == XMLUtils::SetString(root, "uniqueid", value))
+        {
+          CLog::LogF(LOGERROR, "unable to add uniqueid tag, value {}", value);
+          return false;
+        }
+      }
+    }
+  }
+
+  for (TiXmlNode* node = id; node != nullptr;)
+    node = XMLUtils::RemoveAndReturnNextSibling(node, "id");
+
+  return true;
+}
+
 bool UpgradeMovie(TiXmlElement* root, int currentVersion)
 {
+  if (currentVersion < 1)
+  {
+    if (!ConvertIdToUniqueId(root))
+      return false;
+  }
   return true;
 }
 
 bool UpgradeTvShow(TiXmlElement* root, int currentVersion)
 {
+  if (currentVersion < 1)
+  {
+    if (!ConvertIdToUniqueId(root))
+      return false;
+  }
   return true;
 }
 
 bool UpgradeEpisodeDetails(TiXmlElement* root, int currentVersion)
 {
+  if (currentVersion < 1)
+  {
+    if (!ConvertIdToUniqueId(root))
+      return false;
+  }
   return true;
 }
 
 bool UpgradeMusicVideos(TiXmlElement* root, int currentVersion)
 {
+  if (currentVersion < 1)
+  {
+    if (!ConvertIdToUniqueId(root))
+      return false;
+  }
   return true;
 }
 } // namespace
