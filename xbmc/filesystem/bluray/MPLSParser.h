@@ -24,6 +24,18 @@ enum class ENCODING_TYPE : uint8_t;
 
 using namespace std::chrono_literals;
 
+/*!
+ \brief Whether a playlist's stream details are wanted.
+ Deriving them means reading the .clpi of every clip the playlist references and parsing the m2ts
+ of the longest, so during playlist determination - where only the structure of each playlist on
+ the disc matters - they are deferred until a playlist is known to be wanted.
+ */
+enum class StreamDetails : bool
+{
+  DEFER,
+  INCLUDE
+};
+
 enum class BLURAY_PLAYBACK_TYPE : unsigned int
 {
   SEQUENTIAL = 1,
@@ -118,6 +130,7 @@ struct ClipInformation
   std::string codec;
   std::chrono::milliseconds time{0ms}; // calculated from playItem
   std::chrono::milliseconds duration{0ms}; // calculated from playItem
+  bool streamsRead{false}; // whether the clip's .clpi has been read
   std::vector<ProgramInformation> programs;
 };
 
@@ -188,9 +201,26 @@ struct PlayItemInformation
 class CMPLSParser
 {
 public:
+  /*!
+   \brief Parse a playlist's .mpls into playlistInformation.
+   \param streamDetails when INCLUDE, the .clpi of each clip the playlist references is read for
+          its stream information. When DEFER the clips are recorded by number only, which is all
+          playlist determination needs and costs no further reads.
+   */
   static bool ReadMPLS(const CURL& url,
                        unsigned int playlist,
                        BlurayPlaylistInformation& playlistInformation,
-                       std::map<unsigned int, ClipInformation>& clipCache);
+                       std::map<unsigned int, ClipInformation>& clipCache,
+                       StreamDetails streamDetails);
+
+  /*!
+   \brief Fill in the stream information of a playlist read with StreamDetails::DEFER, by reading
+   the .clpi of each of its clips that has not been read yet.
+   \return true if every clip's stream information is now present, in which case
+           playlistInformation.clipStreamsRead is set
+   */
+  static bool ReadClipStreams(const CURL& url,
+                              BlurayPlaylistInformation& playlistInformation,
+                              std::map<unsigned int, ClipInformation>& clipCache);
 };
 } // namespace XFILE

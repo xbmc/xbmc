@@ -244,11 +244,72 @@ AudioStreamInfo PopulateAudioStreamInfo(const StreamInformation& stream,
 
   return asi;
 }
+
+// Add one elementary stream to the playlist, refined by the M2TS analysis in s where it has been
+// done (s is empty when stream details were deferred).
+void AddStream(const StreamInformation& stream,
+               const StreamMap& s,
+               unsigned int playlist,
+               PlaylistInformation& p)
+{
+  // Find stream in StreamMap to get accurate details
+  const auto bs{s.find(stream.packetIdentifier)};
+  switch (stream.coding)
+  {
+    using enum ENCODING_TYPE;
+    case VIDEO_MPEG2:
+    case VIDEO_VC1:
+    case VIDEO_H264:
+    case VIDEO_H264_MVC:
+    case VIDEO_HEVC:
+      p.videoStreams.emplace_back(PopulateVideoStreamInfo(
+          stream, bs != s.end() ? dynamic_cast<TSVideoStreamInfo*>(bs->second.get()) : nullptr));
+      break;
+    case AUDIO_LPCM:
+    case AUDIO_AC3:
+    case AUDIO_DTS:
+    case AUDIO_TRUHD:
+    case AUDIO_AC3PLUS:
+    case AUDIO_DTSHD:
+    case AUDIO_DTSHD_MASTER:
+    case AUDIO_AC3PLUS_SECONDARY:
+    case AUDIO_DTSHD_SECONDARY:
+    {
+      const auto* bsai{bs != s.end() ? dynamic_cast<TSAudioStreamInfo*>(bs->second.get())
+                                     : nullptr};
+      if (!bsai && !s.empty())
+        CLog::LogF(LOGDEBUG,
+                   "Playlist {} - no parsed stream information for audio PID 0x{} coding 0x{} "
+                   "- {} - channel count will be unknown",
+                   playlist, fmt::format("{:04x}", stream.packetIdentifier),
+                   fmt::format("{:02x}", static_cast<int>(stream.coding)),
+                   bs == s.end() ? "packet identifier not present in stream map"
+                                 : "stream in map is not an audio stream");
+
+      p.audioStreams.emplace_back(PopulateAudioStreamInfo(stream, bsai));
+      break;
+    }
+    case SUB_PG:
+    case SUB_TEXT:
+    {
+      SubtitleStreamInfo ssi;
+      ssi.valid = true;
+      ssi.language = stream.language;
+
+      p.pgStreams.emplace_back(std::move(ssi));
+      break;
+    }
+    case SUB_IG:
+    default:
+      break;
+  }
+}
 } // namespace
 
 void CStreamParser::ConvertBlurayPlaylistInformation(const BlurayPlaylistInformation& b,
                                                      PlaylistInformation& p,
-                                                     const StreamMap& s)
+                                                     const StreamMap& s,
+                                                     StreamDetails streamDetails)
 {
   // Parse BlurayPlaylistInformation (from MPLS) and stream information (from M2TS) into PlaylistInformation
   p.clear();
@@ -263,6 +324,25 @@ void CStreamParser::ConvertBlurayPlaylistInformation(const BlurayPlaylistInforma
     p.clips.emplace_back(clip.clip);
     p.clipDuration[clip.clip] = clip.duration;
   }
+
+  if (streamDetails == StreamDetails::DEFER)
+  {
+    // Neither the .clpi nor the m2ts has been read, so describe the streams from the play item's
+    // stream number table. That gives the coding and language of every stream the playlist
+    // exposes, which is what telling playlists apart and listing their languages needs - only the
+    // details the m2ts carries (channel counts, resolutions) are missing.
+    if (const PlayItemInformation * playItem{GetLongestPlayItem(b)}; playItem)
+    {
+      for (const auto* streams : {&playItem->videoStreams, &playItem->audioStreams,
+                                  &playItem->presentationGraphicStreams})
+      {
+        for (const StreamInformation& stream : *streams)
+          AddStream(stream, s, b.playlist, p);
+      }
+    }
+    return;
+  }
+
   // Stream information must come from the same clip the M2TS analysis used (see
   // CM2TSParser::GetStreams), otherwise the packet identifiers will not correspond and no parsed
   // details will be found for some (or all) streams
@@ -283,60 +363,7 @@ void CStreamParser::ConvertBlurayPlaylistInformation(const BlurayPlaylistInforma
   if (streamClip && !streamClip->programs.empty())
   {
     for (const StreamInformation& stream : streamClip->programs[0].streams)
-    {
-      // Find stream in StreamMap to get accurate details
-      const auto bs{s.find(stream.packetIdentifier)};
-      switch (stream.coding)
-      {
-        using enum ENCODING_TYPE;
-        case VIDEO_MPEG2:
-        case VIDEO_VC1:
-        case VIDEO_H264:
-        case VIDEO_H264_MVC:
-        case VIDEO_HEVC:
-          p.videoStreams.emplace_back(PopulateVideoStreamInfo(
-              stream,
-              bs != s.end() ? dynamic_cast<TSVideoStreamInfo*>(bs->second.get()) : nullptr));
-          break;
-        case AUDIO_LPCM:
-        case AUDIO_AC3:
-        case AUDIO_DTS:
-        case AUDIO_TRUHD:
-        case AUDIO_AC3PLUS:
-        case AUDIO_DTSHD:
-        case AUDIO_DTSHD_MASTER:
-        case AUDIO_AC3PLUS_SECONDARY:
-        case AUDIO_DTSHD_SECONDARY:
-        {
-          const auto* bsai{bs != s.end() ? dynamic_cast<TSAudioStreamInfo*>(bs->second.get())
-                                         : nullptr};
-          if (!bsai && !s.empty())
-            CLog::LogF(LOGDEBUG,
-                       "Playlist {} - no parsed stream information for audio PID 0x{} coding 0x{} "
-                       "- {} - channel count will be unknown",
-                       b.playlist, fmt::format("{:04x}", stream.packetIdentifier),
-                       fmt::format("{:02x}", static_cast<int>(stream.coding)),
-                       bs == s.end() ? "packet identifier not present in stream map"
-                                     : "stream in map is not an audio stream");
-
-          p.audioStreams.emplace_back(PopulateAudioStreamInfo(stream, bsai));
-          break;
-        }
-        case SUB_PG:
-        case SUB_TEXT:
-        {
-          SubtitleStreamInfo ssi;
-          ssi.valid = true;
-          ssi.language = stream.language;
-
-          p.pgStreams.emplace_back(std::move(ssi));
-          break;
-        }
-        case SUB_IG:
-        default:
-          break;
-      }
-    }
+      AddStream(stream, s, b.playlist, p);
   }
 }
 } // namespace XFILE

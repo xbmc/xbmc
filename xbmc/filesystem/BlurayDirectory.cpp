@@ -80,20 +80,34 @@ std::string GetCachePath(const CURL& url, const std::string& realPath)
 bool GetPlaylistInfoFromCache(const CURL& url,
                               const std::string& realPath,
                               unsigned int playlist,
+                              StreamDetails streamDetails,
                               BlurayPlaylistInformation& bpi,
                               std::map<unsigned int, ClipInformation>& clipCache)
 {
-  // Check cache
-  if (const std::string path{GetCachePath(url, realPath)};
-      !CServiceBroker::GetBlurayDiscCache()->GetPlaylistInfo(path, playlist, bpi))
-  {
-    // Retrieve from disc
-    if (!CMPLSParser::ReadMPLS(url, playlist, bpi, clipCache))
-      return false;
+  const std::string path{GetCachePath(url, realPath)};
 
-    // Cache and return
-    CServiceBroker::GetBlurayDiscCache()->SetPlaylistInfo(path, playlist, bpi);
+  // Check cache
+  if (CServiceBroker::GetBlurayDiscCache()->GetPlaylistInfo(path, playlist, bpi))
+  {
+    if (streamDetails == StreamDetails::DEFER || bpi.clipStreamsRead)
+      return true;
+
+    // The cached playlist was read without its clips' stream information
+    // Retrieve that rather than parsing the .mpls a second time
+    if (CMPLSParser::ReadClipStreams(url, bpi, clipCache))
+    {
+      CServiceBroker::GetBlurayDiscCache()->SetPlaylistInfo(path, playlist, bpi);
+      return true;
+    }
   }
+
+  // Retrieve from disc
+  bpi = {}; // May hold a cached entry that could not be upgraded
+  if (!CMPLSParser::ReadMPLS(url, playlist, bpi, clipCache, streamDetails))
+    return false;
+
+  // Cache and return
+  CServiceBroker::GetBlurayDiscCache()->SetPlaylistInfo(path, playlist, bpi);
 
   return true;
 }
@@ -101,16 +115,16 @@ bool GetPlaylistInfoFromCache(const CURL& url,
 bool GetPlaylistInfoFromDisc(const CURL& url,
                              const std::string& realPath,
                              unsigned int playlist,
-                             bool parseM2TS,
+                             StreamDetails streamDetails,
                              PlaylistInformation& playlistInformation,
                              std::map<unsigned int, ClipInformation>& clipCache)
 {
   BlurayPlaylistInformation bpi;
-  if (!GetPlaylistInfoFromCache(url, realPath, playlist, bpi, clipCache))
+  if (!GetPlaylistInfoFromCache(url, realPath, playlist, streamDetails, bpi, clipCache))
     return false;
 
   StreamMap streams;
-  if (parseM2TS)
+  if (streamDetails == StreamDetails::INCLUDE)
   {
     const std::string path{GetCachePath(url, realPath)};
 
@@ -126,7 +140,7 @@ bool GetPlaylistInfoFromDisc(const CURL& url,
     }
   }
 
-  CStreamParser::ConvertBlurayPlaylistInformation(bpi, playlistInformation, streams);
+  CStreamParser::ConvertBlurayPlaylistInformation(bpi, playlistInformation, streams, streamDetails);
 
   return true;
 }
@@ -155,7 +169,7 @@ bool GetPlaylistsFromDisc(const CURL& url,
       const unsigned int playlist{static_cast<unsigned int>(std::stoi(pl.GetMatch(1)))};
 
       PlaylistInformation& t = playlists.emplace_back();
-      if (!GetPlaylistInfoFromDisc(url, realPath, playlist, false, t, clipCache))
+      if (!GetPlaylistInfoFromDisc(url, realPath, playlist, StreamDetails::DEFER, t, clipCache))
       {
         CLog::LogF(LOGDEBUG, "Unable to get playlist {}", playlist);
         playlists.pop_back();
@@ -167,6 +181,8 @@ bool GetPlaylistsFromDisc(const CURL& url,
 
 void RemoveDuplicatePlaylists(std::vector<PlaylistInformation>& playlists)
 {
+  // The stream number table describes what a playlist exposes rather than what its clip contains,
+  // so two playlists sharing a clip but offering different streams are not seen as identical.
   std::unordered_set<unsigned int> duplicatePlaylists;
   for (unsigned int i = 0; i < playlists.size() - 1; ++i)
   {
@@ -191,7 +207,8 @@ bool SetStreamDetails(const CURL& url,
                       PlaylistInformation& title,
                       std::map<unsigned int, ClipInformation>& clipCache)
 {
-  if (!GetPlaylistInfoFromDisc(url, realPath, title.playlist, true, title, clipCache))
+  if (!GetPlaylistInfoFromDisc(url, realPath, title.playlist, StreamDetails::INCLUDE, title,
+                               clipCache))
     return false;
 
   // Video stream (first one only)
@@ -214,12 +231,6 @@ bool SetStreamDetails(const CURL& url,
   info->m_streamDetails.DetermineBestStreams();
   return true;
 }
-
-enum class StreamDetails : bool
-{
-  DEFER,
-  INCLUDE
-};
 
 std::shared_ptr<CFileItem> GetFileItem(const CURL& url,
                                        const std::string& realPath,
@@ -326,9 +337,10 @@ bool GetPlaylists(const CURL& url,
     std::vector<PlaylistInformation> playlists;
     if (playlist >= 0)
     {
-      // Single playlist
+      // Single playlist. Read the stream details now, as GetFileItem wants them straight away and
+      // asking for them later would mean reading the .mpls a second time.
       PlaylistInformation& t = playlists.emplace_back();
-      if (!GetPlaylistInfoFromDisc(url, realPath, playlist, false, t, clipCache))
+      if (!GetPlaylistInfoFromDisc(url, realPath, playlist, StreamDetails::INCLUDE, t, clipCache))
       {
         CLog::LogF(LOGDEBUG, "Unable to get playlist {}", playlist);
         playlists.pop_back();
@@ -448,7 +460,8 @@ bool GetPlaylistsInformation(const CURL& url,
     {
       const int playlist{title->GetProperty("bluray_playlist").asInteger32(0)};
       PlaylistInformation titleInfo;
-      if (!GetPlaylistInfoFromDisc(url, realPath, playlist, false, titleInfo, clipCache))
+      if (!GetPlaylistInfoFromDisc(url, realPath, playlist, StreamDetails::DEFER, titleInfo,
+                                   clipCache))
       {
         CLog::LogF(LOGDEBUG, "Unable to get playlist {}", playlist);
         continue;
