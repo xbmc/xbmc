@@ -14,8 +14,10 @@
 #include "bluray/PlaylistStructure.h"
 #include "threads/CriticalSection.h"
 
+#include <cstdint>
 #include <map>
 #include <optional>
+#include <string>
 
 struct Disc
 {
@@ -31,9 +33,12 @@ struct Disc
 
   std::optional<bool> menuSupport;
   std::optional<int> mainPlaylist;
+
+  //! When this disc was last used, to decide which to drop when the cache is full. Mutable as
+  //! recency is not part of what the cache holds, so reading a disc's information updates it too.
+  mutable uint64_t lastUsed{0};
 };
 
-using CacheMapEntry = std::pair<std::string, Disc>;
 using CacheMap = std::map<std::string, Disc, std::less<>>;
 
 namespace XFILE
@@ -48,7 +53,6 @@ public:
 
   void Clear();
 
-  CacheMap::iterator SetDisc(const std::string& path);
   void SetPlaylistInfo(const std::string& path,
                        unsigned int playlist,
                        const BlurayPlaylistInformation& playlistInfo);
@@ -87,10 +91,29 @@ public:
    */
   bool GetMainPlaylist(const std::string& path, int& mainPlaylist) const;
 
+  //! Drop everything held for a disc, as its information no longer describes what is in the drive
   void ClearDisc(const std::string& path);
 
 private:
+  /*!
+   \brief Find a disc, recording that it has been used. m_cs must be held.
+   \return the disc, or nullptr if nothing is held for it
+   */
+  const Disc* Find(const std::string& path) const;
+
+  /*!
+   \brief Find a disc, adding it if nothing is held for it yet, and recording that it has been
+   used. Adding may drop the least recently used disc. m_cs must be held.
+   */
+  Disc& FindOrCreate(const std::string& path);
+
+  //! Drop the least recently used discs until the cache is within its limit. m_cs must be held.
+  void Evict();
+
   CacheMap m_cache;
+
+  //! Ticks on every use, to order the discs by how recently they were used
+  mutable uint64_t m_useCounter{0};
 
   mutable CCriticalSection m_cs;
 };
