@@ -53,8 +53,11 @@ bool CPeripheralBusCEC::PerformDeviceScan(PeripheralScanResults& results)
     // Display name assigned by libCEC (e.g. "HDMI 1"/"HDMI 2" for the kernel CEC
     // nodes on a multi-HDMI board, "USB-CEC Adapter N" for USB), so multiple
     // adapters aren't listed as identical entries. Left empty for adapters libCEC
-    // didn't name, which then fall back to the generic peripherals.xml mapping.
+    // didn't name, and by libCEC older than 8.0.0, which has no per-adapter name to
+    // report; both fall back to the generic name from the peripherals.xml mapping.
+#if CEC_LIB_VERSION_MAJOR >= 8
     result.m_strDeviceName = deviceList[iDevicePtr].strDeviceName;
+#endif
 
     // override the bus type, so users don't have to reconfigure their adapters
     switch (deviceList[iDevicePtr].adapterType)
