@@ -474,9 +474,35 @@ CVideoInfoScanner::~CVideoInfoScanner()
       { // need to fetch the folder
         CDirectory::GetDirectory(strDirectory, items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
                                  DIR_FLAG_DEFAULTS);
-        // do not consider inner folders with .nomedia
-        erase_if(items, [](const std::shared_ptr<CFileItem>& item)
-                 { return item->IsFolder() && HasNoMedia(item->GetPath()); });
+
+        // mark subfolders whose stored fast hash matches the listing mtime digest;
+        // the disc structure probes in Stack() and the recursion loop (which also
+        // drops them from m_pathsToScan) skip marked items. Full listing hashes
+        // never match here, so folders containing subfolders are still visited.
+        std::vector<CRegExp> stackRegExps{m_advancedSettings->m_folderStackRegExps};
+        for (int i = items.Size() - 1; i >= 0; --i)
+        {
+          if (!items[i]->IsFolder())
+            continue;
+          // a marked folder-stack member (label like "cd1") stays a folder in
+          // Stack() and its stack cannot form; leave such folders unmarked
+          std::string label = StringUtils::ToLower(items[i]->GetLabel());
+          URIUtils::RemoveSlashAtEnd(label);
+          std::string dbh;
+          int64_t rawTime = items[i]->GetProperty(DIR_PROPERTY_STAT_MTIME).asInteger(0);
+          if (rawTime == 0)
+            rawTime = items[i]->GetProperty(DIR_PROPERTY_STAT_CTIME).asInteger(0);
+          if (m_advancedSettings->m_bVideoLibraryUseFastHash &&
+              std::none_of(stackRegExps.begin(), stackRegExps.end(),
+                           [&label](CRegExp& re) { return re.RegFind(label) != -1; }) &&
+              m_database.GetPathHash(items[i]->GetPath(), dbh) && !dbh.empty() &&
+              StringUtils::EqualsNoCase(rawTime != 0 ? GetFastHash(regexps, rawTime)
+                                                     : GetFastHash(items[i]->GetPath(), regexps),
+                                        dbh))
+            items[i]->SetProperty(PROPERTY_UNCHANGED, true);
+          else if (HasNoMedia(items[i]->GetPath()))
+            items.Remove(i);
+        }
         items.Stack();
 
         // force sorting consistency to avoid hash mismatch between platforms
@@ -611,6 +637,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (content != ContentType::TVSHOWS && settings.recurse > 0 && pItem->IsFolder() &&
           !pItem->IsParentFolder() && !PLAYLIST::IsPlayList(*pItem))
       {
+        if (pItem->GetProperty(PROPERTY_UNCHANGED).asBoolean())
+        {
+          CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '{}' due to no change (fasthash)",
+                    CURL::GetRedacted(pItem->GetPath()));
+          m_pathsToScan.erase(pItem->GetPath());
+          continue;
+        }
         if (const auto [scanComplete, foundContentOnRecursion] = DoScan(pItem->GetPath());
             scanComplete == ScanComplete::Stopped)
         {
@@ -2532,11 +2565,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
   std::string CVideoInfoScanner::GetFastHash(const std::string &directory,
       const std::vector<std::string> &excludes) const
   {
-    CDigest digest{CDigest::Type::MD5};
-
-    if (!excludes.empty())
-      digest.Update(StringUtils::Join(excludes, "|"));
-
     struct __stat64 buffer;
     if (XFILE::CFile::Stat(directory, &buffer) == 0)
     {
@@ -2544,12 +2572,21 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (!time)
         time = buffer.st_ctime;
       if (time)
-      {
-        digest.Update((unsigned char *)&time, sizeof(time));
-        return digest.Finalize();
-      }
+        return GetFastHash(excludes, time);
     }
     return "";
+  }
+
+  std::string CVideoInfoScanner::GetFastHash(const std::vector<std::string>& excludes,
+                                             int64_t time) const
+  {
+    CDigest digest{CDigest::Type::MD5};
+
+    if (!excludes.empty())
+      digest.Update(StringUtils::Join(excludes, "|"));
+
+    digest.Update((unsigned char*)&time, sizeof(time));
+    return digest.Finalize();
   }
 
   std::string CVideoInfoScanner::GetRecursiveFastHash(const std::string &directory,
