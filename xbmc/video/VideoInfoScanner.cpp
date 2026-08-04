@@ -453,6 +453,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
 
     std::string hash, dbHash;
+    bool listingHash = false; // hash came from GetPathHash over a fetched listing
     if (content == ContentType::MOVIES || content == ContentType::MUSICVIDEOS)
     {
       if (m_handle)
@@ -510,7 +511,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
         items.Sort(SortBy::FILE, SortOrder::ASCENDING, SortAttributeNone);
 
         // check whether to re-use previously computed fast hash
-        if (!CanFastHash(items, regexps) || fastHash.empty())
+        listingHash = !CanFastHash(items, regexps) || fastHash.empty();
+        if (listingHash)
           GetPathHash(items, hash);
         else
           hash = fastHash;
@@ -519,7 +521,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (StringUtils::EqualsNoCase(hash, dbHash))
       { // hash matches - skipping
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '{}' due to no change{}",
-                  CURL::GetRedacted(strDirectory), !fastHash.empty() ? " (fasthash)" : "");
+                  CURL::GetRedacted(strDirectory), listingHash ? "" : " (fasthash)");
         bSkip = true;
       }
       else if (hash.empty())
@@ -593,6 +595,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
       }
       else
       {
+        // an all-folder listing has nothing to directly import, so foundSomething
+        // is false here even when nothing changed; store the hash or GetPathHash
+        // output never matches dbHash and every scan repeats the full rescan.
+        // Only store a listing-hash, as an mtime-hash would match the fasthash
+        // gate before the listing is fetched, hiding content that never imported.
+        if ((content == ContentType::MOVIES || content == ContentType::MUSICVIDEOS) &&
+            listingHash && !URIUtils::IsArchive(CURL(strDirectory)) &&
+            std::all_of(items.begin(), items.end(),
+                        [](const auto& item) { return item->IsFolder(); }))
+          m_database.SetPathHash(strDirectory, hash);
         if (m_bClean)
           m_pathsToClean.insert(m_database.GetPathId(strDirectory));
         CLog::Log(LOGDEBUG, "VideoInfoScanner: No (new) information was found in dir {}",
@@ -630,6 +642,35 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
         // no further processing required
         continue;
+      }
+
+      // Disc rips are anchored in files/path several ways: BD subfolder rips
+      // under the raw BDMV/ row (older imports or failed playlist detection)
+      // or under a bluray:// playlist row (current imports); DVD rips under
+      // VIDEO_TS/; flat rips with the structure file directly in the movie
+      // folder. In every form the movie folder itself, the item the scanner
+      // lists, has no hashed row, so each parent rescan re-imports the movie
+      // from NFO. Store its fast hash here; GetMovieId resolves all anchor
+      // forms. ISOs hash normally as plain files and never reach this block.
+      if (content == ContentType::MOVIES && m_advancedSettings->m_bVideoLibraryUseFastHash &&
+          !URIUtils::IsPlugin(strDirectory) && !pItem->IsFolder() &&
+          !URIUtils::IsStack(pItem->GetPath()) && URIUtils::IsOpticalMediaFile(pItem->GetPath()))
+      {
+        std::string discFolder = URIUtils::RemoveDiscPath(pItem->GetPath());
+        URIUtils::AddSlashAtEnd(discFolder);
+        if (!URIUtils::PathEquals(discFolder, strDirectory, true))
+        {
+          int64_t rawTime = pItem->GetProperty(DIR_PROPERTY_STAT_MTIME).asInteger(0);
+          if (rawTime == 0)
+            rawTime = pItem->GetProperty(DIR_PROPERTY_STAT_CTIME).asInteger(0);
+          const std::string fh =
+              rawTime != 0 ? GetFastHash(regexps, rawTime) : GetFastHash(discFolder, regexps);
+          std::string dbh;
+          if (!fh.empty() &&
+              !(m_database.GetPathHash(discFolder, dbh) && StringUtils::EqualsNoCase(fh, dbh)) &&
+              m_database.HasMovieInfo(pItem->GetDynPath()))
+            m_database.SetPathHash(discFolder, fh);
+        }
       }
 
       // if we have a directory item (non-playlist) we then recurse into that folder
@@ -770,6 +811,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
     for (int i = 0; i < items.Size(); ++i)
     {
       CFileItemPtr pItem = items[i];
+
+      if (pItem->IsFolder() && pItem->GetProperty(PROPERTY_UNCHANGED).asBoolean())
+        continue;
 
       // we do this since we may have a override per dir
       ScraperPtr info2 = m_database.GetScraperForPath(
