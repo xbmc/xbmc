@@ -12,8 +12,12 @@
 #include "IDirectory.h"
 #include "URL.h"
 #include "bluray/MPLSParser.h"
+#if defined(HAS_UDFREAD)
+#include "filesystem/UDFContext.h"
+#endif
 
 #include <map>
+#include <optional>
 #include <string>
 
 #include <libbluray/bluray.h>
@@ -99,6 +103,11 @@ private:
   std::string m_realPath;
   BLURAY* m_bd{nullptr};
   bool m_blurayInitialized{false};
+
+#if defined(HAS_UDFREAD)
+  //! Keeps a disc image's UDF volume mounted for as long as this disc is in use
+  std::optional<CUDFMount> m_udfMount;
+#endif
 
   std::map<unsigned int, ClipInformation> m_clipCache;
 };
