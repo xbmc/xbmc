@@ -185,13 +185,14 @@ void RemoveDuplicatePlaylists(std::vector<PlaylistInformation>& playlists)
                 { return duplicatePlaylists.contains(p.playlist); });
 }
 
-void SetStreamDetails(const CURL& url,
+bool SetStreamDetails(const CURL& url,
                       const std::string& realPath,
                       CFileItem& item,
                       PlaylistInformation& title,
                       std::map<unsigned int, ClipInformation>& clipCache)
 {
-  GetPlaylistInfoFromDisc(url, realPath, title.playlist, true, title, clipCache);
+  if (!GetPlaylistInfoFromDisc(url, realPath, title.playlist, true, title, clipCache))
+    return false;
 
   // Video stream (first one only)
   CVideoInfoTag* info{item.GetVideoInfoTag()};
@@ -211,12 +212,20 @@ void SetStreamDetails(const CURL& url,
     info->m_streamDetails.AddStream(new CStreamDetailSubtitle(subtitle));
 
   info->m_streamDetails.DetermineBestStreams();
+  return true;
 }
+
+enum class StreamDetails : bool
+{
+  DEFER,
+  INCLUDE
+};
 
 std::shared_ptr<CFileItem> GetFileItem(const CURL& url,
                                        const std::string& realPath,
                                        PlaylistInformation& title,
-                                       std::map<unsigned int, ClipInformation>& clipCache)
+                                       std::map<unsigned int, ClipInformation>& clipCache,
+                                       StreamDetails getStreamDetails)
 {
   CURL path{url};
   path.SetFileName(StringUtils::Format("BDMV/PLAYLIST/{:05}.mpls", title.playlist));
@@ -225,7 +234,12 @@ std::shared_ptr<CFileItem> GetFileItem(const CURL& url,
   item->GetVideoInfoTag()->SetDuration(duration);
   item->SetProperty("bluray_playlist", title.playlist);
 
-  SetStreamDetails(url, realPath, *item, title, clipCache);
+  // Stream details are deferred when the playlist is only a candidate
+  // as parsing the m2ts is expensive
+  if (getStreamDetails == StreamDetails::INCLUDE &&
+      !SetStreamDetails(url, realPath, *item, title, clipCache))
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "Unable to get stream details for playlist {} of {}",
+                title.playlist, CURL::GetRedacted(url.Get()));
 
   return item;
 }
@@ -294,7 +308,7 @@ void AddPlaylists(const CURL& url,
     return;
 
   for (auto& title : playlists)
-    items.Add(GetFileItem(url, realPath, title, clipCache));
+    items.Add(GetFileItem(url, realPath, title, clipCache, StreamDetails::DEFER));
 }
 bool GetPlaylists(const CURL& url,
                   const std::string& realPath,
@@ -318,7 +332,7 @@ bool GetPlaylists(const CURL& url,
       }
 
       // Generate FileItem including stream details
-      items.Add(GetFileItem(url, realPath, playlists[0], clipCache));
+      items.Add(GetFileItem(url, realPath, playlists[0], clipCache, StreamDetails::INCLUDE));
     }
     else
     {
@@ -333,7 +347,7 @@ bool GetPlaylists(const CURL& url,
       if (!FilterPlaylists(playlists))
         return false; // No playlists remain
 
-      // Generate FileItemList including stream details for each FileItem
+      // Generate FileItemList (stream details are filled in later, per selected playlist)
       AddPlaylists(url, realPath, items, playlists, clipCache);
     }
 
@@ -532,6 +546,17 @@ std::string CBlurayDirectory::GetBasePath(const CURL& url)
   return url2.Get(); // BDMV
 }
 
+void CBlurayDirectory::SetPlaylistStreamDetails(unsigned int playlist, CFileItem& item)
+{
+  // Only the playlist number is needed, the rest is read from the disc (or the disc cache)
+  PlaylistInformation information;
+  information.playlist = playlist;
+
+  if (!XFILE::SetStreamDetails(m_url, m_realPath, item, information, m_clipCache))
+    CLog::LogF(LOGDEBUG, "Unable to get stream details for playlist {} of {}", playlist,
+               CURL::GetRedacted(m_url.Get()));
+}
+
 std::string CBlurayDirectory::GetBlurayTitle()
 {
   return GetDiscInfoString(DiscInfo::TITLE);
@@ -630,7 +655,8 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     CFileItemList allTitles;
     GetPlaylistsInformation(m_url, m_realPath, m_flags, allTitles, clips, playlists, m_clipCache);
 
-    CDiscDirectoryHelper helper;
+    CDiscDirectoryHelper helper{[this](unsigned int playlist, CFileItem& item)
+                                { SetPlaylistStreamDetails(playlist, item); }};
 
     if (StringUtils::StartsWith(file, "root/titles") && file != "root/titles/episodes")
     {

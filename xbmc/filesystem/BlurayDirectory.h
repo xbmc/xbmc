@@ -50,6 +50,16 @@ public:
   std::string GetBlurayID();
 
 private:
+  /*!
+   \brief Populate the stream details of a playlist on this disc.
+   Deriving these means parsing the playlist's m2ts, so it is only done once a playlist is known
+   to be wanted rather than for every playlist on the disc during playlist determination. Handed to
+   CDiscDirectoryHelper as a StreamDetailsProvider so that it stays agnostic of the disc type.
+   \param playlist the playlist to describe
+   \param item the item to populate
+   */
+  void SetPlaylistStreamDetails(unsigned int playlist, CFileItem& item);
+
   enum class DiscInfo : uint8_t
   {
     TITLE,

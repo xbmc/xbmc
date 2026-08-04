@@ -82,6 +82,12 @@ CDiscDirectoryHelper::CDiscDirectoryHelper()
                                                    1000);
 }
 
+CDiscDirectoryHelper::CDiscDirectoryHelper(StreamDetailsProvider getStreamDetails)
+  : CDiscDirectoryHelper()
+{
+  m_getStreamDetails = std::move(getStreamDetails);
+}
+
 void CDiscDirectoryHelper::InitialiseEpisodePlaylistSearch(int episodeIndex,
                                                            const Episodes& episodesOnDisc)
 {
@@ -1142,6 +1148,25 @@ std::shared_ptr<CFileItem> GenerateEpisodeItem(const CURL& url,
 
   return item;
 }
+
+// Stream details are deferred during title determination, as deriving them for every title on a
+// disc is expensive.
+void AddStreamDetails(const StreamDetailsProvider& getStreamDetails,
+                      const CFileItemList& allTitles,
+                      unsigned int playlist,
+                      CFileItem& item)
+{
+  if (!getStreamDetails)
+    return;
+
+  if (!allTitles.Contains(item.GetPath()))
+  {
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "Playlist {} not found in disc titles", playlist);
+    return;
+  }
+
+  getStreamDetails(playlist, item);
+}
 } // namespace
 
 void CDiscDirectoryHelper::EndEpisodePlaylistSearch()
@@ -1201,12 +1226,7 @@ void CDiscDirectoryHelper::PopulateEpisodeFileItems(const CURL& url,
         continue;
       }
 
-      if (const auto detailsItem{allTitles.Get(newItem->GetPath())}; detailsItem)
-        newItem->GetVideoInfoTag()->m_streamDetails =
-            detailsItem->GetVideoInfoTag()->m_streamDetails;
-      else
-        CLog::LogFC(LOGDEBUG, LOGBLURAY, "Failed to find streamdetails for playlist {}",
-                    playlist.playlist);
+      AddStreamDetails(m_getStreamDetails, allTitles, playlist.playlist, *newItem);
 
       items.Add(newItem);
     }
@@ -1234,11 +1254,7 @@ void CDiscDirectoryHelper::PopulateEpisodeFileItems(const CURL& url,
         continue;
       }
 
-      if (const auto detailsItem{allTitles.Get(newItem->GetPath())}; detailsItem)
-        newItem->GetVideoInfoTag()->m_streamDetails =
-            detailsItem->GetVideoInfoTag()->m_streamDetails;
-      else
-        CLog::LogFC(LOGDEBUG, LOGBLURAY, "Failed to find streamdetails for playlist {}", playlist);
+      AddStreamDetails(m_getStreamDetails, allTitles, playlist, *newItem);
 
       items.Add(newItem);
     }
@@ -1248,7 +1264,7 @@ void CDiscDirectoryHelper::PopulateEpisodeFileItems(const CURL& url,
 bool CDiscDirectoryHelper::GetEpisodePlaylists(
     const CURL& url,
     CFileItemList& items,
-    const CFileItemList& allTitles, // FileItem for each playlist including stream details
+    const CFileItemList& allTitles, // FileItem for each playlist on the disc (no stream details)
     int episodeIndex,
     const Episodes& episodesOnDiscUnsorted,
     const ClipMap& clips,
@@ -1329,7 +1345,8 @@ void PopulateAllEpisodesFileItems(const CURL& url,
                                   CFileItemList& items,
                                   const CFileItemList& allTitles,
                                   const std::vector<PlaylistInformation>& playlists,
-                                  const PlaylistMap& playlistMap)
+                                  const PlaylistMap& playlistMap,
+                                  const StreamDetailsProvider& getStreamDetails)
 {
   // Sort by playlist
   auto sortedPlaylists = playlists;
@@ -1351,11 +1368,7 @@ void PopulateAllEpisodesFileItems(const CURL& url,
       continue;
     }
 
-    if (const auto detailsItem{allTitles.Get(newItem->GetPath())}; detailsItem)
-      newItem->GetVideoInfoTag()->m_streamDetails = detailsItem->GetVideoInfoTag()->m_streamDetails;
-    else
-      CLog::LogFC(LOGDEBUG, LOGBLURAY, "Failed to find streamdetails for playlist {}",
-                  playlist.playlist);
+    AddStreamDetails(getStreamDetails, allTitles, playlist.playlist, *newItem);
 
     items.Add(newItem);
   }
@@ -1381,7 +1394,7 @@ bool CDiscDirectoryHelper::FilterAllEpisodesPlaylists(std::vector<PlaylistInform
 bool CDiscDirectoryHelper::GetAllEpisodePlaylists(
     const CURL& url,
     CFileItemList& items,
-    const CFileItemList& allTitles, // FileItem for each playlist including stream details
+    const CFileItemList& allTitles, // FileItem for each playlist on the disc (no stream details)
     GetTitle job,
     const Episodes& episodesOnDiscUnsorted,
     const ClipMap& clips,
@@ -1409,7 +1422,7 @@ bool CDiscDirectoryHelper::GetAllEpisodePlaylists(
   if (!FilterAllEpisodesPlaylists(playlists, job))
     return false;
   EndEpisodePlaylistSearch();
-  PopulateAllEpisodesFileItems(url, items, allTitles, playlists, playlistMap);
+  PopulateAllEpisodesFileItems(url, items, allTitles, playlists, playlistMap, m_getStreamDetails);
 
   return !items.IsEmpty();
 }
@@ -1534,8 +1547,9 @@ void PopulateMovieFileItems(
     const CURL& url,
     CFileItemList& items,
     int mainPlaylist,
-    const CFileItemList& allTitles, // FileItem for each playlist including stream details
-    const std::vector<PlaylistInformation>& playlists)
+    const CFileItemList& allTitles, // FileItem for each playlist on the disc (no stream details)
+    const std::vector<PlaylistInformation>& playlists,
+    const StreamDetailsProvider& getStreamDetails)
 {
   // Sort by duration (putting mainPlaylist first if present)
   auto sortedPlaylists = playlists;
@@ -1564,11 +1578,7 @@ void PopulateMovieFileItems(
       continue;
     }
 
-    if (const auto detailsItem{allTitles.Get(newItem->GetPath())}; detailsItem)
-      newItem->GetVideoInfoTag()->m_streamDetails = detailsItem->GetVideoInfoTag()->m_streamDetails;
-    else
-      CLog::LogFC(LOGDEBUG, LOGBLURAY, "Failed to find streamdetails for playlist {}",
-                  playlist.playlist);
+    AddStreamDetails(getStreamDetails, allTitles, playlist.playlist, *newItem);
 
     items.Add(newItem);
   }
@@ -1594,7 +1604,7 @@ bool CDiscDirectoryHelper::GetMoviePlaylists(const CURL& url,
   if (!FilterMoviePlaylists(playlists, job))
     return false;
   GetMainMoviePlaylists(playlists, job, mainPlaylist);
-  PopulateMovieFileItems(url, items, mainPlaylist, allTitles, playlists);
+  PopulateMovieFileItems(url, items, mainPlaylist, allTitles, playlists, m_getStreamDetails);
   EndMoviePlaylistSearch();
 
   return !items.IsEmpty();
