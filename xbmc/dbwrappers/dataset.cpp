@@ -73,6 +73,26 @@ std::string Database::prepare(const char* format, ...)
   return result;
 }
 
+std::string Database::EscapeStringConversions(std::string format)
+{
+  size_t pos = 0;
+  while ((pos = format.find('%', pos)) != std::string::npos && pos + 1 < format.size())
+  {
+    if (format[pos + 1] == '%') // literal percent, neither half starts a conversion
+      pos += 2;
+    else if (format[pos + 1] == 's')
+    {
+      format.replace(pos, 2, "%q");
+      pos += 2;
+    }
+    else
+      // Some other conversion (%i, %02d, %I64 ...). Its remaining characters cannot contain a
+      // percent, so resuming the search after this one is enough to stay in step.
+      pos += 2;
+  }
+  return format;
+}
+
 //************* Dataset implementation ***************
 
 Dataset::Dataset() = default;
