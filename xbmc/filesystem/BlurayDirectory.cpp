@@ -255,7 +255,6 @@ int GetMainPlaylistFromDisc(const CURL& url)
 
   if (file.Open(discInfPath))
   {
-    CLog::LogF(LOGDEBUG, "disc.inf found");
     CRegExp pl{true, CRegExp::autoUtf8, R"((?:playlists=)(\d+))"};
     uint8_t maxLines{100};
     while ((maxLines > 0) && file.ReadLine(line))
@@ -268,6 +267,11 @@ int GetMainPlaylistFromDisc(const CURL& url)
       }
     }
     file.Close();
+
+    if (playlist >= 0)
+      CLog::LogF(LOGDEBUG, "disc.inf main playlist {}", playlist);
+    else
+      CLog::LogF(LOGDEBUG, "disc.inf found but no main playlist");
   }
   return playlist;
 }
@@ -625,11 +629,8 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
 
   // Resolve the path but leave the disc closed.
   // Most requests are now served from the disc cache or by parsing a single playlist.
-  // Neither needs libbluray, so opening it is deferred.
+  // Neither needs libbluray or disc.inf, so both are deferred.
   SetRealPath(root);
-
-  // See if there is a playlist in disc.inf
-  const int mainPlaylist{GetMainPlaylistFromDisc(m_url)};
 
   //
   // These options also return 'All Titles' and 'Menu' options (if supported on disc)
@@ -662,10 +663,10 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     {
 
       if (file == "root/titles")
-        helper.GetMoviePlaylists(url, items, allTitles, mainPlaylist, GetTitle::MAIN, clips,
+        helper.GetMoviePlaylists(m_url, items, allTitles, GetMainPlaylist(), GetTitle::MAIN, clips,
                                  playlists);
       else if (file == "root/titles/all")
-        helper.GetMoviePlaylists(url, items, allTitles, mainPlaylist, GetTitle::ALL, clips,
+        helper.GetMoviePlaylists(m_url, items, allTitles, GetMainPlaylist(), GetTitle::ALL, clips,
                                  playlists);
       else if (file == "root/titles/episodes/all")
         helper.GetAllEpisodePlaylists(m_url, items, allTitles, GetTitle::ALL, {}, clips, playlists);
@@ -685,10 +686,10 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     if (StringUtils::StartsWith(file, "root/main"))
     {
       if (file == "root/main")
-        helper.GetMoviePlaylists(url, items, allTitles, mainPlaylist, GetTitle::SINGLE, clips,
-                                 playlists);
+        helper.GetMoviePlaylists(m_url, items, allTitles, GetMainPlaylist(), GetTitle::SINGLE,
+                                 clips, playlists);
       else if (file == "root/main/all")
-        helper.GetMoviePlaylists(url, items, allTitles, mainPlaylist, GetTitle::ALL, clips,
+        helper.GetMoviePlaylists(m_url, items, allTitles, GetMainPlaylist(), GetTitle::ALL, clips,
                                  playlists);
       else
         CLog::LogF(LOGDEBUG, "Invalid path {} for bluray playlist parsing", file);
@@ -864,17 +865,39 @@ bool CBlurayDirectory::InitializeBluray(const std::string& root)
 
 bool CBlurayDirectory::HasMenuSupport()
 {
+  const std::string path{GetCachePath(m_url, m_realPath)};
+
+  if (bool menuSupport{false};
+      CServiceBroker::GetBlurayDiscCache()->GetMenuSupport(path, menuSupport))
+    return menuSupport;
+
   // Only libbluray can answer this, so the disc has to be opened
   if (!EnsureBlurayOpen())
-    return false;
+    return false; // Not cached, so a disc that failed to open is retried rather than written off
 
   const BLURAY_DISC_INFO* discInfo{GetDiscInfo()};
   const bool menuSupport{discInfo && !discInfo->no_menu_support};
+  CServiceBroker::GetBlurayDiscCache()->SetMenuSupport(path, menuSupport);
 
   CLog::LogF(LOGDEBUG, "Disc {} {} menus", CURL::GetRedacted(m_realPath),
              menuSupport ? "supports" : "does not support");
 
   return menuSupport;
+}
+
+int CBlurayDirectory::GetMainPlaylist()
+{
+  const std::string path{GetCachePath(m_url, m_realPath)};
+
+  if (int mainPlaylist{-1};
+      CServiceBroker::GetBlurayDiscCache()->GetMainPlaylist(path, mainPlaylist))
+    return mainPlaylist;
+
+  // Cache main playlist from disc.inf (or -1 if not found)
+  const int mainPlaylist{GetMainPlaylistFromDisc(m_url)};
+  CServiceBroker::GetBlurayDiscCache()->SetMainPlaylist(path, mainPlaylist);
+
+  return mainPlaylist;
 }
 
 const BLURAY_DISC_INFO* CBlurayDirectory::GetDiscInfo() const

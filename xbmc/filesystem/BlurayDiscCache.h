@@ -15,6 +15,7 @@
 #include "threads/CriticalSection.h"
 
 #include <map>
+#include <optional>
 
 struct Disc
 {
@@ -27,6 +28,9 @@ struct Disc
   CFileItemList itemMap;
 
   std::map<unsigned int, XFILE::StreamMap, std::less<>> streamMap;
+
+  std::optional<bool> menuSupport;
+  std::optional<int> mainPlaylist;
 };
 
 using CacheMapEntry = std::pair<std::string, Disc>;
@@ -55,6 +59,8 @@ public:
   void SetPlaylistStreamInfo(const std::string& path,
                              unsigned int playlist,
                              const StreamMap& streams);
+  void SetMenuSupport(const std::string& path, bool menuSupport);
+  void SetMainPlaylist(const std::string& path, int mainPlaylist);
 
   bool GetPlaylistInfo(const std::string& path,
                        unsigned int playlist,
@@ -66,6 +72,20 @@ public:
   bool GetPlaylistStreamInfo(const std::string& path,
                              unsigned int playlist,
                              StreamMap& streams) const;
+
+  /*!
+   \brief Get whether this disc supports menus, if already determined.
+   \param[out] menuSupport set only when true is returned
+   \return true if the disc has been probed for menu support before
+   */
+  bool GetMenuSupport(const std::string& path, bool& menuSupport) const;
+
+  /*!
+   \brief Get the main playlist named in the disc's disc.inf, if already looked for.
+   \param[out] mainPlaylist set only when true is returned, -1 when the disc names no playlist
+   \return true if the disc has been examined for a main playlist before
+   */
+  bool GetMainPlaylist(const std::string& path, int& mainPlaylist) const;
 
   void ClearDisc(const std::string& path);
 

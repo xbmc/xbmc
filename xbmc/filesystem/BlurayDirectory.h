@@ -81,9 +81,15 @@ private:
   bool EnsureBlurayOpen();
 
   /*!
-   \brief Get whether this disc supports menus, opening it only if needed.
+   \brief Get whether this disc supports menus, opening it only on the first call per disc.
    */
   bool HasMenuSupport();
+
+  /*!
+   \brief Get the main playlist named in the disc's disc.inf, reading it only once per disc.
+   \return the playlist number, or -1 if the disc names none
+   */
+  int GetMainPlaylist();
 
   void Dispose();
   std::string GetDiscInfoString(DiscInfo info);
