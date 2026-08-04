@@ -137,9 +137,11 @@ endif()
 
 if(TARGET ${APP_NAME_LC}::Udfread)
   list(APPEND SOURCES UDFBlockInput.cpp
+                      UDFContext.cpp
                       UDFDirectory.cpp
                       UDFFile.cpp)
   list(APPEND HEADERS UDFBlockInput.h
+                      UDFContext.h
                       UDFDirectory.h
                       UDFFile.h)
 endif()

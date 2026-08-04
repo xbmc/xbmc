@@ -14,36 +14,21 @@
 
 using namespace XFILE;
 
-CUDFFile::CUDFFile() : m_bi{std::make_unique<CUDFBlockInput>()}
+CUDFFile::~CUDFFile()
 {
+  Close();
 }
 
 bool CUDFFile::Open(const CURL& url)
 {
-  if (m_udf && m_file)
+  if (m_context && m_file)
     return true;
 
-  m_udf = udfread_init();
-
-  if (!m_udf)
+  m_context = CUDFContext::Get(url.GetHostName());
+  if (!m_context)
     return false;
 
-  auto bi = m_bi->GetBlockInput(url.GetHostName());
-
-  if (!bi)
-  {
-    udfread_close(m_udf);
-    return false;
-  }
-
-  if (udfread_open_input(m_udf, bi) < 0)
-  {
-    bi->close(bi);
-    udfread_close(m_udf);
-    return false;
-  }
-
-  m_file = udfread_file_open(m_udf, url.GetFileName().c_str());
+  m_file = udfread_file_open(m_context->GetHandle(), url.GetFileName().c_str());
   if (!m_file)
   {
     Close();
@@ -55,22 +40,19 @@ bool CUDFFile::Open(const CURL& url)
 
 void CUDFFile::Close()
 {
+  // The file must be closed before the volume it was opened from is let go
   if (m_file)
   {
     udfread_file_close(m_file);
     m_file = nullptr;
   }
 
-  if (m_udf)
-  {
-    udfread_close(m_udf);
-    m_udf = nullptr;
-  }
+  m_context.reset();
 }
 
 int CUDFFile::Stat(const CURL& url, struct __stat64* buffer)
 {
-  if (!m_udf || !m_file || !buffer)
+  if (!m_context || !m_file || !buffer)
     return -1;
 
   *buffer = {};

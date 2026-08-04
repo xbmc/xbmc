@@ -21,6 +21,9 @@
 #include "filesystem/BlurayCallback.h"
 #include "filesystem/Directory.h"
 #include "filesystem/DirectoryFactory.h"
+#if defined(HAS_UDFREAD)
+#include "filesystem/UDFContext.h"
+#endif
 #include "utils/EpisodeUtils.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/RegExp.h"
@@ -644,6 +647,13 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
   // Most requests are now served from the disc cache or by parsing a single playlist.
   // Neither needs libbluray or disc.inf, so both are deferred.
   SetRealPath(root);
+
+#if defined(HAS_UDFREAD)
+  // Serving this request means reading a number of small files from the disc - a playlist for every
+  // title when determining them, and then the m2ts of the one wanted. On a disc image each of those
+  // opens would otherwise re-mount the image's UDF volume, so keep it mounted throughout.
+  const CUDFMount mount{root}; // The path the reads below are built from, not the resolved one
+#endif
 
   //
   // These options also return 'All Titles' and 'Menu' options (if supported on disc)
