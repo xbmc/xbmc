@@ -1431,6 +1431,17 @@
           </dependencies>
           <control type="toggle" />
         </setting>
+	    <setting id="videolibrary.artretrievaltiming" type="integer" label="40225" help="40226">
+		  <level>3</level>
+		  <default>1</default>
+		  <constraints>
+		    <options>
+		      <option label="40227">0</option> <!-- during scrape -->
+			  <option label="40228">1</option> <!-- after scrape -->
+			</options>
+		  </constraints>
+		  <control type="list" format="string" />
+	    </setting>
       </group>
     </category>
     <category id="music" label="14216" help="38108">

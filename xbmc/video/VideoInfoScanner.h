@@ -15,6 +15,7 @@
 #include "utils/Artwork.h"
 #include "utils/RegExp.h"
 
+#include <cstdint>
 #include <functional>
 #include <set>
 #include <string>
@@ -339,6 +340,14 @@ namespace KODI::VIDEO
 
     SimilarVideoScanAction m_similarVideoAction{SimilarVideoScanAction::NONE};
     bool m_ignoreVideoExtras{false};
+
+    enum class ArtRetrievalTiming : uint8_t
+    {
+      SYNCHRONOUS = 0, //!< retrieve art synchronously during scrape
+      BACKGROUND = 1 //!< retrieve art in background after scrape
+    };
+
+    ArtRetrievalTiming m_artRetrievalTiming{ArtRetrievalTiming::BACKGROUND};
     CVideoDatabase m_database;
     std::set<int> m_pathsToClean;
     std::shared_ptr<CAdvancedSettings> m_advancedSettings;

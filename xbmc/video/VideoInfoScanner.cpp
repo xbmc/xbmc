@@ -166,6 +166,37 @@ void OnDirectoryScanned(const std::string& strDirectory)
   msg.SetStringParam(strDirectory);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 }
+
+void CacheArtwork(const std::string& url, bool retrieveArtDuringScrape)
+{
+  if (url.empty())
+    return;
+
+  const auto& textureCache = CServiceBroker::GetTextureCache();
+  if (!retrieveArtDuringScrape)
+  {
+    textureCache->BackgroundCacheImage(url);
+    return;
+  }
+
+  bool needsRecaching{false};
+  if (!textureCache->CheckCachedImage(url, needsRecaching).empty() && !needsRecaching)
+    return; // already cached
+
+  // Fetch art or recache as needed
+  // This will be slow, but that is the point of the setting - to get the art during scraping
+  constexpr int MAX_SYNC_CACHE_ATTEMPTS = 3;
+  for (int attempt = 1; attempt <= MAX_SYNC_CACHE_ATTEMPTS; ++attempt)
+  {
+    if (!textureCache->CacheImage(url).empty())
+      return; // succeeded
+  }
+
+  // Synchronous fetch failed after several attempts (network timeout, etc.)
+  // Fall back to the resilient background path.
+  textureCache->BackgroundCacheImage(url);
+  CLog::LogF(LOGDEBUG, "Synchronous art caching for {} failed", url);
+}
 } // namespace
 
 namespace KODI::VIDEO
@@ -182,6 +213,8 @@ CVideoInfoScanner::CVideoInfoScanner()
   m_similarVideoAction = static_cast<SimilarVideoScanAction>(
       settings->GetInt(CSettings::SETTING_VIDEOLIBRARY_SIMILARVIDEOACTION));
   m_ignoreVideoExtras = settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_IGNOREVIDEOEXTRAS);
+  m_artRetrievalTiming = static_cast<ArtRetrievalTiming>(
+      settings->GetInt(CSettings::SETTING_VIDEOLIBRARY_ARTRETRIEVALTIMING));
 }
 
 CVideoInfoScanner::~CVideoInfoScanner()
@@ -1329,6 +1362,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
                         useLocal && !item->IsPlugin(), useRemoteArt, &m_regexpCache);
         for (const auto& [season, art] : seasonArt)
         {
+          for (const auto& url : art | std::views::values)
+            CacheArtwork(url, m_artRetrievalTiming == ArtRetrievalTiming::SYNCHRONOUS);
+
           const int seasonID{m_database.AddSeason(static_cast<int>(showID), season)};
           m_database.SetArtForItem(seasonID, MediaTypeSeason, art);
         }
@@ -1829,8 +1865,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
         KODI::ART::SeasonsArtwork seasonArt;
 
         if (!libraryImport)
+        {
           GetSeasonThumbs(movieDetails, seasonArt, CVideoThumbLoader::GetArtTypes(MediaTypeSeason),
                           useLocal && !pItem->IsPlugin(), useRemoteArt, &m_regexpCache);
+          for (const auto& seasonArtwork : seasonArt | std::views::values)
+            for (const auto& url : seasonArtwork | std::views::values)
+              CacheArtwork(url, m_artRetrievalTiming == ArtRetrievalTiming::SYNCHRONOUS);
+        }
 
         lResult = m_database.SetDetailsForTvShow(multipath, movieDetails, art, seasonArt);
         movieDetails.m_iDbId = lResult;
@@ -2099,10 +2140,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
 
     for (const auto& artType : artTypes)
-    {
       if (art.contains(artType))
-        CServiceBroker::GetTextureCache()->BackgroundCacheImage(art[artType]);
-    }
+        CacheArtwork(art.at(artType), m_artRetrievalTiming == ArtRetrievalTiming::SYNCHRONOUS);
 
     pItem->SetArt(art);
 
@@ -2667,9 +2706,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
           if (notUsingThisRemoteArt)
             i->thumbUrl.Clear();
         }
-        if (!i->thumb.empty())
-          CServiceBroker::GetTextureCache()->BackgroundCacheImage(i->thumb);
       }
+      CacheArtwork(i->thumb, m_artRetrievalTiming == ArtRetrievalTiming::SYNCHRONOUS);
     }
   }
 
