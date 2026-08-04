@@ -525,24 +525,35 @@ void CDiscDirectoryHelper::FindRelaxedPlayAllPlaylists(const PlaylistMap& playli
   // More relaxed assumptions than FindPlayAllPlaylists. Ignores clips.
   //   1) The playall playlist will be first and the episode playlists will be sequentially numbered
   //      after it as part of a group
-  //   2) There will only be n+1 playlists longer than the minimum episode duration
-  //      (the playall playlist and the n episode playlists) in the group
-  //   3) The sum of the durations of the episode playlsits will be within 5% of the duration
+  //   2) There will be at most n+1 playlists longer than the minimum episode duration
+  //      (the playall playlist and the n episode playlists) in the group. There may be fewer if a
+  //      playlist contains more than one episode (eg. a double episode), in which case each
+  //      episode playlist must be a whole multiple of the shortest episode playlist and those
+  //      multiples must account for all n episodes
+  //   3) The sum of the durations of the episode playlists will be within 5% of the duration
   //      of the playall playlist
 
+  // A group of two cannot be distinguished from a pair of episodes, so require at least the
+  // playall playlist and two episode playlists
+  static constexpr size_t MIN_RELAXED_PLAYALL_GROUP_SIZE{3};
+
   // Only look for play all playlists if enough playlists and more than one episode on disc and groups found
-  if (m_numEpisodes < 2 || playlists.size() < m_numEpisodes || m_groups.empty())
+  if (m_numEpisodes < 2 || playlists.size() < MIN_RELAXED_PLAYALL_GROUP_SIZE || m_allGroups.empty())
     return;
 
-  for (const auto& group : m_groups)
+  for (const auto& group : m_allGroups)
   {
-    // Group is n+1 playlists
-    if (group.size() != m_numEpisodes + 1)
+    // Group is at most n+1 playlists
+    if (group.size() < MIN_RELAXED_PLAYALL_GROUP_SIZE || group.size() > m_numEpisodes + 1)
       continue;
 
     // Group is consecutively numbered
     if (!ArePlaylistsConsecutive(group))
       continue;
+
+    const unsigned int playAllPlaylist{group.front().playlist};
+    const auto playAllPlaylistDuration{
+        static_cast<int>(group.front().duration.count() / 1000)}; // For logging
 
     // Potential episode playlists duration's sum is within 5% of the playall playlist duration
     const std::chrono::milliseconds episodesDuration{std::accumulate(
@@ -550,15 +561,60 @@ void CDiscDirectoryHelper::FindRelaxedPlayAllPlaylists(const PlaylistMap& playli
         [](auto acc, const CandidatePlaylistInformation& p) { return acc + p.duration; })};
     if (!CheckDurationsWithinTolerance(episodesDuration, group.front().duration,
                                        DURATION_TOLERANCE_RELAXED_PLAYALLPLAYLIST_PERCENT))
-      continue;
-
-    m_playAllPlaylistEpisodeMap[group.front().playlist] = [&]
     {
-      std::vector<unsigned int> episodePlaylists;
-      std::for_each(group.begin() + 1, group.end(), [&](const CandidatePlaylistInformation& i)
-                    { episodePlaylists.emplace_back(i.playlist); });
-      return episodePlaylists;
-    }();
+      CLog::LogFC(LOGDEBUG, LOGBLURAY,
+                  "Rejecting potential play all playlist {} duration {} - the {} following "
+                  "playlist(s) in the group total {}",
+                  playAllPlaylist, playAllPlaylistDuration, group.size() - 1,
+                  static_cast<int>(episodesDuration.count() / 1000));
+      continue;
+    }
+
+    // Each episode playlist must be a whole multiple of the shortest and the multiples must add
+    // up to the number of episodes on disc. For a group of n+1 every multiple will be one.
+    std::vector<CandidatePlaylistInformation> episodePlaylists(std::ranges::next(group.begin()),
+                                                               group.end());
+    if (!CalculateGroupMultiples(episodePlaylists, m_numEpisodes))
+    {
+      // CalculateGroupMultiples() fails either because a playlist is not a whole multiple of the
+      // shortest episode playlist, or because the multiples do not add up to the number of
+      // episodes on disc. The multiples are assigned either way, so report which it was.
+      if (const auto& notMultiple{
+              std::ranges::find(episodePlaylists, 0, &CandidatePlaylistInformation::multiple)};
+          notMultiple != episodePlaylists.end())
+      {
+        CLog::LogFC(
+            LOGDEBUG, LOGBLURAY,
+            "Rejecting potential play all playlist {} duration {} - episode playlist {} "
+            "duration {} is not a whole multiple of {} (the average shortest episode "
+            "playlist in the group)",
+            playAllPlaylist, playAllPlaylistDuration, notMultiple->playlist,
+            static_cast<int>(notMultiple->duration.count() / 1000),
+            static_cast<int>(CalculateAverageOfShortEpisodes(episodePlaylists).count() / 1000));
+      }
+      else
+      {
+        const auto multiples{episodePlaylists |
+                             std::views::transform(&CandidatePlaylistInformation::multiple)};
+        CLog::LogFC(LOGDEBUG, LOGBLURAY,
+                    "Rejecting potential play all playlist {} duration {} - the {} following "
+                    "playlist(s) in the group account for {} episode(s), not the {} on disc",
+                    playAllPlaylist, playAllPlaylistDuration, episodePlaylists.size(),
+                    std::accumulate(multiples.begin(), multiples.end(), 0), m_numEpisodes);
+      }
+      continue;
+    }
+
+    CLog::LogFC(LOGDEBUG, LOGBLURAY,
+                "Potential play all playlist {} duration {} with {} episode playlist(s)",
+                playAllPlaylist, playAllPlaylistDuration, episodePlaylists.size());
+    for (const auto& episodePlaylist : episodePlaylists)
+      CLog::LogFC(LOGDEBUG, LOGBLURAY, "Episode playlist {} duration {} contains {} episode(s)",
+                  episodePlaylist.playlist,
+                  static_cast<int>(episodePlaylist.duration.count() / 1000),
+                  episodePlaylist.multiple);
+
+    m_playAllPlaylistEpisodeMap[playAllPlaylist] = std::move(episodePlaylists);
   }
 
   if (m_playAllPlaylistEpisodeMap.empty())
@@ -643,34 +699,40 @@ void CDiscDirectoryHelper::UseRelaxedPlayAllPlaylistMethod(int episodeIndex,
 
   CLog::LogFC(LOGDEBUG, LOGBLURAY, "Using candidate play all playlist {}", playAllPlaylist);
 
-  unsigned int i{0};
-  const int episodeOffset{episodeIndex - static_cast<int>(m_numSpecials)};
-  for (const auto& singleEpisodePlaylist : episodes)
+  // Start at numSpecials as specials (S00) are before episodes in episodesOnDisc
+  unsigned int index{m_numSpecials};
+  for (const auto& episodePlaylist : episodes)
   {
-    if (m_allEpisodes == AllEpisodes::ALL || std::cmp_equal(i, episodeOffset))
+    const unsigned int singleEpisodePlaylist{episodePlaylist.playlist};
+    if (!playlists.contains(singleEpisodePlaylist))
     {
-      if (!playlists.contains(singleEpisodePlaylist))
-      {
-        CLog::LogF(LOGERROR, "Single episode playlist {} missing in playlist map",
-                   singleEpisodePlaylist);
-        return;
-      }
-      // Get playlist information
-      const PlaylistInformation& singleEpisodePlaylistInformation{
-          playlists.find(singleEpisodePlaylist)->second};
-
-      CLog::LogFC(LOGDEBUG, LOGBLURAY, "Candidate playlist {} duration {}", singleEpisodePlaylist,
-                  static_cast<int>(singleEpisodePlaylistInformation.duration.count() / 1000));
-
-      m_candidatePlaylists.try_emplace(
-          singleEpisodePlaylist,
-          CandidatePlaylistInformation{.playlist = singleEpisodePlaylist,
-                                       .index = i + m_numSpecials,
-                                       .duration = singleEpisodePlaylistInformation.duration,
-                                       .clips = singleEpisodePlaylistInformation.clips,
-                                       .languages = singleEpisodePlaylistInformation.languages});
+      CLog::LogF(LOGERROR, "Single episode playlist {} missing in playlist map",
+                 singleEpisodePlaylist);
+      return;
     }
-    ++i;
+    // Get playlist information
+    const PlaylistInformation& singleEpisodePlaylistInformation{
+        playlists.find(singleEpisodePlaylist)->second};
+
+    // A playlist may cover more than one episode (a double/triple episode)
+    for (int i = 0; i < episodePlaylist.multiple; ++i)
+    {
+      if (m_allEpisodes == AllEpisodes::ALL || std::cmp_equal(index, episodeIndex))
+      {
+        CLog::LogFC(LOGDEBUG, LOGBLURAY, "Candidate playlist {} duration {}", singleEpisodePlaylist,
+                    static_cast<int>(singleEpisodePlaylistInformation.duration.count() / 1000));
+
+        m_candidatePlaylists.try_emplace(
+            singleEpisodePlaylist,
+            CandidatePlaylistInformation{.playlist = singleEpisodePlaylist,
+                                         .index = index,
+                                         .duration = singleEpisodePlaylistInformation.duration,
+                                         .multiple = episodePlaylist.multiple,
+                                         .clips = singleEpisodePlaylistInformation.clips,
+                                         .languages = singleEpisodePlaylistInformation.languages});
+      }
+      ++index;
+    }
   }
 }
 
@@ -922,7 +984,8 @@ void CDiscDirectoryHelper::UseGroupMethod(int episodeIndex,
       bool nextPlaylistIsClose{false};
       if (tmp.size() > m_nthLongestPlaylists.size())
       {
-        std::ranges::nth_element(tmp, tmp.begin() + (m_nthLongestPlaylists.size()),
+        std::ranges::nth_element(tmp,
+                                 tmp.begin() + static_cast<unsigned>(m_nthLongestPlaylists.size()),
                                  [](const PlaylistInformation& a, const PlaylistInformation& b)
                                  { return a.duration > b.duration; });
 
@@ -947,18 +1010,59 @@ void CDiscDirectoryHelper::UseGroupMethod(int episodeIndex,
 
 namespace
 {
+// A playlist containing more than one episode is normally shorter than the individual episode
+// playlists for those episodes added together, because the intro/recap/end credits that each
+// single episode playlist carries appear only once. Every additional episode in the playlist
+// omits another set, so the shortfall that can be tolerated grows with the number of episodes.
+//
+// In the other direction there is nothing to omit - a multiple episode playlist should not be
+// materially longer than the individual episode playlists added together. So the upper bound is
+// a fixed percentage that does not grow with the number of episodes.
+
+// Both bounds are a percentage of the whole multiple
+constexpr double MULTIPLE_UPPER_TOLERANCE_PERCENT{5.0};
+constexpr double MULTIPLE_LOWER_TOLERANCE_PERCENT{15.0};
+
+// The lower tolerance is increased by this factor for each episode in the playlist beyond the
+// first (ie. 15%, 16.5%, 18.15%, ...), up to a maximum
+constexpr double MULTIPLE_LOWER_TOLERANCE_GROWTH_FACTOR{1.1};
+constexpr double MULTIPLE_LOWER_TOLERANCE_MAX_PERCENT{50.0};
+
+// The range of multiples of a single episode's duration that a playlist containing the given
+// number of episodes may occupy
+constexpr std::pair<double, double> MultipleBounds(int episodes)
+{
+  double lowerTolerancePercent{MULTIPLE_LOWER_TOLERANCE_PERCENT};
+  for (int episode = 1; episode < episodes; ++episode)
+    lowerTolerancePercent *= MULTIPLE_LOWER_TOLERANCE_GROWTH_FACTOR;
+  lowerTolerancePercent = std::min(lowerTolerancePercent, MULTIPLE_LOWER_TOLERANCE_MAX_PERCENT);
+
+  const auto count{static_cast<double>(episodes)};
+  return {count * (1.0 - lowerTolerancePercent / 100.0),
+          count * (1.0 + MULTIPLE_UPPER_TOLERANCE_PERCENT / 100.0)};
+}
+
+// Returns the number of episodes that duration represents as a multiple of averageShortest, or 0
+// if it does not fall within the tolerated range for any number of episodes.
+// A playlist cannot hold more episodes than there are on the disc. The ranges are disjoint for
+// the first few multiples but begin to overlap as the tolerated shortfall accumulates, so search
+// ascending and take the fewest episodes that fit.
 int CalculateMultiple(std::chrono::milliseconds duration,
                       std::chrono::milliseconds averageShortest,
-                      double multiplePercent)
+                      unsigned int numEpisodes)
 {
-  if (averageShortest == 0ms)
+  if (averageShortest <= 0ms || duration <= 0ms)
     return 0;
 
-  double multiple{static_cast<double>(duration.count()) /
-                  static_cast<double>(averageShortest.count())};
-  int integerMultiple{static_cast<int>(std::round(multiple))};
-  if (abs(multiple - integerMultiple) < multiplePercent / 100.0)
-    return integerMultiple;
+  const double multiple{static_cast<double>(duration.count()) /
+                        static_cast<double>(averageShortest.count())};
+
+  for (int episodes = 1; std::cmp_less_equal(episodes, numEpisodes); ++episodes)
+  {
+    const auto [lower, upper]{MultipleBounds(episodes)};
+    if (multiple >= lower && multiple <= upper)
+      return episodes;
+  }
 
   return 0;
 }
@@ -997,6 +1101,29 @@ std::chrono::milliseconds CDiscDirectoryHelper::CalculateAverageOfShortEpisodes(
   return averageShortest;
 }
 
+// Assign each playlist in the group the number of episodes it is likely to contain, being the
+// whole multiple of the average shortest playlist in the group that its duration represents.
+// Returns false unless every playlist is such a multiple and the multiples account for exactly
+// numEpisodes episodes.
+bool CDiscDirectoryHelper::CalculateGroupMultiples(std::vector<CandidatePlaylistInformation>& group,
+                                                   unsigned int numEpisodes)
+{
+  const std::chrono::milliseconds averageShortest{CalculateAverageOfShortEpisodes(group)};
+
+  for (auto& playlist : group)
+    playlist.multiple = CalculateMultiple(playlist.duration, averageShortest, numEpisodes);
+
+  // Check there are no playlists that are not a multiple
+  if (std::ranges::any_of(group,
+                          [](const CandidatePlaylistInformation& i) { return i.multiple == 0; }))
+    return false;
+
+  // Check that multiples add up to numEpisodes
+  auto groupMultiples{group | std::views::transform(&CandidatePlaylistInformation::multiple)};
+  return std::accumulate(groupMultiples.begin(), groupMultiples.end(), 0) ==
+         static_cast<int>(numEpisodes);
+}
+
 void CDiscDirectoryHelper::UseGroupsWithMultiplesMethod(int episodeIndex,
                                                         const Episodes& episodesOnDisc)
 {
@@ -1005,27 +1132,10 @@ void CDiscDirectoryHelper::UseGroupsWithMultiplesMethod(int episodeIndex,
   CLog::LogFC(LOGDEBUG, LOGBLURAY, "Using groups with multiples method");
   for (auto& group : GetGroupsWithoutDuplicates(m_allGroups))
   {
-    // Calculate multiples
-    const std::chrono::milliseconds averageShortest{CalculateAverageOfShortEpisodes(group)};
-
-    // Multiples of average shortest playlists (within 15% of the average)
-    constexpr double MULTIPLE_PERCENT{15.0};
-    for (auto& playlist : group)
-      playlist.multiple = CalculateMultiple(playlist.duration, averageShortest, MULTIPLE_PERCENT);
-
-    // Check there are no playlists that are not a multiple
-    if (std::ranges::any_of(group,
-                            [](const CandidatePlaylistInformation& i) { return i.multiple == 0; }))
-      continue;
-
-    // Check that multiples add up to numEpisodes
-    auto groupMultiples{group | std::views::transform(&CandidatePlaylistInformation::multiple)};
-    if (std::accumulate(groupMultiples.begin(), groupMultiples.end(), 0) !=
-        static_cast<int>(m_numEpisodes))
+    if (!CalculateGroupMultiples(group, m_numEpisodes))
       continue;
 
     // Save candidate episode(s)
-    const int episodeOffset{episodeIndex - static_cast<int>(m_numSpecials)};
     unsigned int index{
         m_numSpecials}; // Start at numSpecials as specials (S00) are before episodes in episodesOnDisc
     for (const auto& playlist : group)
@@ -1033,7 +1143,7 @@ void CDiscDirectoryHelper::UseGroupsWithMultiplesMethod(int episodeIndex,
       auto playlistInformation{playlist};
       for (int i = 0; i < playlist.multiple; ++i)
       {
-        if (m_allEpisodes == AllEpisodes::ALL || std::cmp_equal(index, episodeOffset))
+        if (m_allEpisodes == AllEpisodes::ALL || std::cmp_equal(index, episodeIndex))
         {
           playlistInformation.index = index;
           m_candidatePlaylists.try_emplace(playlist.playlist, playlistInformation);
@@ -1457,7 +1567,7 @@ bool CDiscDirectoryHelper::GetEpisodePlaylists(
   InitialiseEpisodePlaylistSearch(episodeIndex, episodesOnDisc);
   FindPlayAllPlaylists(clips, playlists);
   FindGroups(playlists, episodesOnDisc);
-  FindRelaxedPlayAllPlaylists(playlists); // Uses m_groups
+  FindRelaxedPlayAllPlaylists(playlists); // Uses m_allGroups
   FindCandidatePlaylists(episodesOnDisc, episodeIndex, playlists);
   FindSpecials(playlists);
   EndEpisodePlaylistSearch();

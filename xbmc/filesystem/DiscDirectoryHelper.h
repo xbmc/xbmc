@@ -321,6 +321,8 @@ private:
                   const Episodes& episodesOnDisc) const;
   static std::chrono::milliseconds CalculateAverageOfShortEpisodes(
       const std::vector<CandidatePlaylistInformation>& group);
+  static bool CalculateGroupMultiples(std::vector<CandidatePlaylistInformation>& group,
+                                      unsigned int numEpisodes);
   void UseGroupsWithMultiplesMethod(int episodeIndex, const Episodes& episodesOnDisc);
   void ChooseSingleBestPlaylist(const Episodes& episodesOnDisc);
   void AddIdenticalPlaylists(const PlaylistMap& playlists);
@@ -377,7 +379,11 @@ private:
   // play-all playlist (map index) -> clip (second map index) -> single-episode playlists
   std::map<unsigned int, std::map<unsigned int, std::vector<unsigned int>>> m_playAllPlaylistsMap;
 
-  std::map<unsigned int, std::vector<unsigned int>> m_playAllPlaylistEpisodeMap;
+  // UseRelaxedPlayAllPlaylistMethod() walks the episode playlists in order, using each one's
+  // multiple to determine how many consecutive episodes it covers (a multiple > 1 is a double
+  // or triple episode).
+  // play-all playlist -> episode playlists, in episode order
+  std::map<unsigned int, std::vector<CandidatePlaylistInformation>> m_playAllPlaylistEpisodeMap;
 
   std::vector<std::vector<CandidatePlaylistInformation>> m_groups;
   std::vector<std::vector<CandidatePlaylistInformation>> m_allGroups;
