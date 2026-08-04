@@ -601,7 +601,9 @@ public:
   /*! \brief retrieve subpaths of a given path.  Assumes a hierarchical folder structure
    \param basepath the root path to retrieve subpaths for
    \param subpaths the returned subpaths
-   \param excludeDiscPaths exclude disc paths that contain VIDEO_TS.IFO or INDEX.BDMV (default true)
+   \param excludeDiscPaths true - exclude disc paths that contain VIDEO_TS.IFO or INDEX.BDMV
+                             (default)
+                           false - include encoded paths for cleaning (eg. bluray://, zip:// etc.)
    \return true if we successfully retrieve subpaths (may be zero), false on error
    */
   bool GetSubPaths(const std::string& basepath,
