@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -339,6 +339,14 @@ inline void CJSONRPC::BuildResponse(const CVariant& request, JSONRPC_STATUS code
       break;
     case ACK:
       response["result"] = "OK";
+      break;
+    case NotFound:
+      response["error"]["code"] = NotFound;
+      response["error"]["message"] = "Not found.";
+      break;
+    case Unavailable:
+      response["error"]["code"] = Unavailable;
+      response["error"]["message"] = "Requested item is unavailable.";
       break;
     case InvalidRequest:
       response["error"]["code"] = InvalidRequest;

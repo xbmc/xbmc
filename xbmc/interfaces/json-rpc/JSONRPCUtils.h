@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012-2018 Team Kodi
+ *  Copyright (C) 2012-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -24,7 +24,7 @@ namespace JSONRPC
 {
   /*!
    \ingroup jsonrpc
-   \brief Possible statuc codes of a response
+   \brief Possible status codes of a response
    to a JSON-RPC request
    */
   enum JSONRPC_STATUS
@@ -36,8 +36,10 @@ namespace JSONRPC
     InvalidParams = -32602,
     InternalError = -32603,
     ParseError = -32700,
-    //-32099..-32000 Reserved for implementation-defined server-errors.
+    //-32100..-32000 Reserved for implementation-defined server-errors.
     BadPermission = -32099,
+    NotFound = -32098,
+    Unavailable = -32097,
     FailedToExecute = -32100
   };
 
