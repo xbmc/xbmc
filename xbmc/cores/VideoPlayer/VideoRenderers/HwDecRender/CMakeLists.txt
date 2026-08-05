@@ -49,7 +49,7 @@ if(CORE_SYSTEM_NAME STREQUAL android)
 endif()
 
 if("gbm" IN_LIST CORE_PLATFORM_NAME_LC OR "wayland" IN_LIST CORE_PLATFORM_NAME_LC)
-  if("gbm" IN_LIST CORE_PLATFORM_NAME_LC)
+  if("gbm" IN_LIST CORE_PLATFORM_NAME_LC AND TARGET ${APP_NAME_LC}::OpenGLES)
     list(APPEND SOURCES RendererDRMPRIME.cpp
                         VideoLayerBridgeDRMPRIME.cpp)
     list(APPEND HEADERS RendererDRMPRIME.h
