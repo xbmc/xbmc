@@ -9,11 +9,10 @@
 #pragma once
 
 #include "IFile.h"
-#include "filesystem/UDFBlockInput.h"
+#include "filesystem/UDFContext.h"
 
 #include <memory>
 
-class udfread;
 typedef struct udfread_file UDFFILE;
 
 namespace XFILE
@@ -22,8 +21,10 @@ namespace XFILE
 class CUDFFile : public IFile
 {
 public:
-  CUDFFile();
-  ~CUDFFile() override = default;
+  CUDFFile() = default;
+
+  //! Closes the file, so that the volume it was opened from is not left mounted
+  ~CUDFFile() override;
 
   bool Open(const CURL& url) override;
   void Close() override;
@@ -39,9 +40,9 @@ public:
   bool Exists(const CURL& url) override;
 
 private:
-  std::unique_ptr<CUDFBlockInput> m_bi{nullptr};
+  //! The mounted volume, held for as long as this file is open
+  std::shared_ptr<CUDFContext> m_context;
 
-  udfread* m_udf{nullptr};
   UDFFILE* m_file{nullptr};
 };
 

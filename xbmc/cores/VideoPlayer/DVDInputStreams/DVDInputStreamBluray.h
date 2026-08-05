@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -11,10 +11,14 @@
 #include "BlurayStateSerializer.h"
 #include "DVDInputStream.h"
 #include "threads/CriticalSection.h"
+#if defined(HAS_UDFREAD)
+#include "filesystem/UDFContext.h"
+#endif
 
 #include <chrono>
 #include <list>
 #include <memory>
+#include <optional>
 #include <string>
 
 extern "C"
@@ -195,6 +199,11 @@ protected:
     void FreeTitleInfo();
     std::unique_ptr<CDVDInputStreamFile> m_pstream;
     std::string m_rootPath;
+
+#if defined(HAS_UDFREAD)
+    // Keeps a disc image's UDF volume mounted for as long as the disc is open
+    std::optional<XFILE::CUDFMount> m_udfMount;
+#endif
 
     /*! Bluray state serializer handler */
     CBlurayStateSerializer m_blurayStateSerializer;

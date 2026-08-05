@@ -14,6 +14,7 @@
 
 #include <chrono>
 #include <cstdint>
+#include <functional>
 #include <map>
 #include <set>
 #include <string>
@@ -138,6 +139,12 @@ static constexpr int DURATION_TOLERANCE_PERCENT{20};
 static constexpr std::chrono::milliseconds MIN_MOVIE_DURATION{30 * 60 * 1000}; // 30 minutes
 static constexpr int MAIN_TITLE_LENGTH_PERCENT{70};
 
+/*!
+ \brief Populates the stream details of item for the given title on the disc.
+ Supplied by the disc's directory implementation.
+ */
+using StreamDetailsProvider = std::function<void(unsigned int title, CFileItem& item)>;
+
 class CDiscDirectoryHelper
 {
   enum class IsSpecial : bool
@@ -173,6 +180,14 @@ class CDiscDirectoryHelper
 
 public:
   CDiscDirectoryHelper();
+
+  /*!
+   * \brief Construct a helper that can describe the streams of the titles it returns.
+   * \param getStreamDetails supplied by the disc's directory implementation. When empty the
+   *        returned items carry no stream details.
+   */
+  explicit CDiscDirectoryHelper(StreamDetailsProvider getStreamDetails);
+
   CDiscDirectoryHelper(const CDiscDirectoryHelper&) = delete;
   CDiscDirectoryHelper& operator=(const CDiscDirectoryHelper&) = delete;
 
@@ -315,6 +330,9 @@ private:
                                 const Episodes& episodesOnDisc,
                                 const PlaylistMap& playlists) const;
   bool FilterAllEpisodesPlaylists(std::vector<PlaylistInformation>& playlists, GetTitle job);
+
+  //! Describes the streams of a title, supplied by the disc's directory implementation
+  StreamDetailsProvider m_getStreamDetails;
 
   std::chrono::milliseconds m_minEpisodeDuration{0ms};
 
