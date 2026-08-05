@@ -2,6 +2,8 @@ if(NOT CMAKE_TOOLCHAIN_FILE)
   message(FATAL_ERROR "CMAKE_TOOLCHAIN_FILE required for ios/tvos. See ${CMAKE_SOURCE_DIR}/cmake/README.md")
 endif()
 
+enable_language(OBJC OBJCXX)
+
 set(CORE_MAIN_SOURCE ${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/${CORE_PLATFORM_NAME_LC}/XBMCApplication.mm)
 set(PLATFORM_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/${CORE_PLATFORM_NAME_LC}/Info.plist.in)
 
