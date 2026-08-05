@@ -2568,6 +2568,50 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_FiveEpisodes_GroupMethod_Exa
   EXPECT_TRUE(std::ranges::includes(returned, expected));
 }
 
+// As GetEpisodePlaylists_FiveEpisodes_GroupMethod_ExactNumberOfPlaylists
+// Simulates the disc scanning process where the durations of the episodes are only known after they have been scanned
+// Playlist 7 is shorter, but within tolerance
+// (Example Twisted Metal S1D2 UK UHD)
+TEST_F(TestDiscDirectoryHelper,
+       GetEpisodePlaylists_FiveEpisodes_GroupMethod_ExactNumberOfPlaylists_PartialDurations)
+{
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  static constexpr std::array<unsigned int, 5> DURATIONS{1740, 1920, 1740, 1440, 1980};
+
+  PlaylistMap playlists{
+      {0u, MakePlaylist(0u, 1702s, {0u, 2u}, {1702s})},
+      {1u, MakePlaylist(1u, 1886s, {3u, 2u}, {1886s})},
+      {2u, MakePlaylist(2u, 1697s, {7u, 2u}, {1697s})},
+      {7u, MakePlaylist(7u, 1422s, {10u, 2u}, {1422s})},
+      {8u, MakePlaylist(8u, 1952s, {11u, 2u}, {1952s})},
+  };
+  ClipMap clips{
+      {0u, MakeClip(1702s, {0u})},  {2u, MakeClip(0min, {0u, 1u, 2u, 7u, 8u})},
+      {3u, MakeClip(1886s, {1u})},  {7u, MakeClip(1697s, {2u})},
+      {10u, MakeClip(1422s, {7u})}, {11u, MakeClip(1952s, {8u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  static constexpr std::array<unsigned int, 5> EXPECTED_PLAYLISTS{0u, 1u, 2u, 7u, 8u};
+  for (int episodeIndex = 0; episodeIndex < static_cast<int>(DURATIONS.size()); ++episodeIndex)
+  {
+    // Only the durations of the episodes scanned so far are known
+    Episodes episodes;
+    for (int i = 0; i < static_cast<int>(DURATIONS.size()); ++i)
+      episodes.emplace_back(MakeEpisode(1, i + 1, i <= episodeIndex ? DURATIONS[i] : 0));
+
+    CDiscDirectoryHelper helper;
+    EXPECT_TRUE(
+        helper.GetEpisodePlaylists(url, items, allTitles, episodeIndex, episodes, clips, playlists))
+        << "episode index " << episodeIndex;
+    ASSERT_EQ(items.Size(), 1) << "episode index " << episodeIndex;
+    EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), EXPECTED_PLAYLISTS[episodeIndex]);
+  }
+}
+
 // There is no play-all playlist, nor any consecutive groups of playlists (of the correct number)
 // There are only n playlists of the appropriate l length, so the assumption is these map to episodes
 // in ascending numerical order.

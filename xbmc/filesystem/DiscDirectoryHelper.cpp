@@ -298,6 +298,27 @@ bool CheckDurationsWithinTolerance(std::chrono::milliseconds episodeDuration,
   return episodeDuration > 0ms && std::chrono::abs(playlistDuration - episodeDuration) <= tolerance;
 }
 
+bool AnyEpisodeDurationKnown(const Episodes& episodesOnDisc)
+{
+  return std::ranges::any_of(episodesOnDisc, [](const Episode& e) { return e.duration > 0; });
+}
+
+// Whether a playlist's duration is within tolerance of any of the episode durations known for the
+// disc.
+//
+// Episode durations are filled in as a disc is scanned, so on any given search some of them may
+// still be zero. Comparing against each known duration in turn (rather than against their average)
+// keeps the outcome stable as the scan progresses whereas the average can fluctuate.
+bool MatchesAnyEpisodeDuration(const Episodes& episodesOnDisc,
+                               std::chrono::milliseconds playlistDuration)
+{
+  // CheckDurationsWithinTolerance() rejects a zero episode duration, so unknown episodes are
+  // ignored here
+  return std::ranges::any_of(
+      episodesOnDisc, [playlistDuration](const Episode& e)
+      { return CheckDurationsWithinTolerance(e.duration * 1000ms, playlistDuration); });
+}
+
 std::chrono::milliseconds GetAverageEpisodeDuration(const Episodes& episodesOnDisc)
 {
   auto nonZeroEpisodes{episodesOnDisc |
@@ -516,12 +537,11 @@ void CDiscDirectoryHelper::FindGroups(const PlaylistMap& playlists, const Episod
   if (m_groups.empty() && m_numSpecials == 0)
   {
     CLog::LogFC(LOGDEBUG, LOGBLURAY, "Looking exact number of non-consecutive playlists");
-    // Remove playlists whose durations are not within 20% of episodes' average
-    const auto episodeDuration{GetAverageEpisodeDuration(episodesOnDisc)};
-    if (episodeDuration > 0ms)
+    // Remove playlists whose durations are not within 20% of one of the episodes' durations
+    if (AnyEpisodeDurationKnown(episodesOnDisc))
     {
-      std::erase_if(longPlaylists, [episodeDuration](const PlaylistMapEntry& p)
-                    { return !CheckDurationsWithinTolerance(episodeDuration, p.second.duration); });
+      std::erase_if(longPlaylists, [&episodesOnDisc](const PlaylistMapEntry& p)
+                    { return !MatchesAnyEpisodeDuration(episodesOnDisc, p.second.duration); });
     }
 
     // See if exact number remaining
