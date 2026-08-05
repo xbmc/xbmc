@@ -386,8 +386,8 @@ constexpr unsigned int OFFSET_STREAM_TABLE_NUM_VIDEO_STREAMS = 4;
 constexpr unsigned int OFFSET_STREAM_TABLE_NUM_AUDIO_STREAMS = 5;
 constexpr unsigned int OFFSET_STREAM_TABLE_NUM_PG_STREAMS = 6;
 constexpr unsigned int OFFSET_STREAM_TABLE_NUM_IG_STREAMS = 7;
-constexpr unsigned int OFFSET_STREAM_TABLE_NUM_SECONDARY_VIDEO_STREAMS = 8;
-constexpr unsigned int OFFSET_STREAM_TABLE_NUM_SECONDARY_AUDIO_STREAMS = 9;
+constexpr unsigned int OFFSET_STREAM_TABLE_NUM_SECONDARY_AUDIO_STREAMS = 8;
+constexpr unsigned int OFFSET_STREAM_TABLE_NUM_SECONDARY_VIDEO_STREAMS = 9;
 constexpr unsigned int OFFSET_STREAM_TABLE_NUM_PIP_STREAMS = 10;
 constexpr unsigned int OFFSET_STREAM_TABLE_NUM_DV_STREAMS = 11;
 
@@ -501,10 +501,10 @@ bool ParsePlayItem(std::vector<std::byte>& buffer,
       GetByte(buffer, offset + OFFSET_STREAM_TABLE_NUM_PG_STREAMS)};
   const unsigned int numInteractiveGraphicStreams{
       GetByte(buffer, offset + OFFSET_STREAM_TABLE_NUM_IG_STREAMS)};
-  const unsigned int numSecondaryVideoStreams{
-      GetByte(buffer, offset + OFFSET_STREAM_TABLE_NUM_SECONDARY_VIDEO_STREAMS)};
   const unsigned int numSecondaryAudioStreams{
       GetByte(buffer, offset + OFFSET_STREAM_TABLE_NUM_SECONDARY_AUDIO_STREAMS)};
+  const unsigned int numSecondaryVideoStreams{
+      GetByte(buffer, offset + OFFSET_STREAM_TABLE_NUM_SECONDARY_VIDEO_STREAMS)};
   const unsigned int numPictureInPictureSubtitleStreams{
       GetByte(buffer, offset + OFFSET_STREAM_TABLE_NUM_PIP_STREAMS)};
   const unsigned int numDolbyVisionStreams{
@@ -537,6 +537,15 @@ bool ParsePlayItem(std::vector<std::byte>& buffer,
   {
     playItem.presentationGraphicStreams.emplace_back(
         ParseStream(buffer, offset, STREAM_TYPE::PRESENTATION_GRAPHIC_STREAM));
+  }
+
+  // The picture-in-picture subtitle entries share the presentation graphic block, immediately
+  // following it
+  playItem.pictureInPictureSubtitleStreams.reserve(numPictureInPictureSubtitleStreams);
+  for (unsigned int k = 0; k < numPictureInPictureSubtitleStreams; ++k)
+  {
+    playItem.pictureInPictureSubtitleStreams.emplace_back(
+        ParseStream(buffer, offset, STREAM_TYPE::PICTURE_IN_PICTURE_SUBTITLE_STREAM));
   }
 
   playItem.interactiveGraphicStreams.reserve(numInteractiveGraphicStreams);
