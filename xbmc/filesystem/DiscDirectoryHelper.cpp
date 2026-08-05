@@ -22,6 +22,7 @@
 #include "settings/VideoVersionsSettings.h"
 #include "threads/IRunnable.h"
 #include "utils/RegExp.h"
+#include "utils/StreamUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -321,6 +322,74 @@ std::chrono::milliseconds GetAverageEpisodeDuration(const Episodes& episodesOnDi
   return std::chrono::milliseconds(count ? static_cast<long long>(sum / count) : 0) * 1000;
 }
 
+// Whether candidateStream offers everything stream does.
+//
+// The two must have the same language, name and flags - and the candidate must then
+// carry it at least as well - ie. no fewer channels and no 'poorer' a codec.
+bool IsStreamCovered(const AudioStreamInfo& stream, const AudioStreamInfo& candidateStream)
+{
+  if (stream.language != candidateStream.language || stream.name != candidateStream.name ||
+      stream.flags != candidateStream.flags)
+    return false;
+
+  // A channel count of zero means unknown, so only compare them when both are known
+  if (stream.channels > 0 && candidateStream.channels > 0 &&
+      stream.channels > candidateStream.channels)
+    return false;
+
+  return StreamUtils::GetCodecPriority(stream.codecName) <=
+         StreamUtils::GetCodecPriority(candidateStream.codecName);
+}
+
+// Subtitle streams have no comparable ordering of quality, so they have to match
+bool IsStreamCovered(const SubtitleStreamInfo& stream, const SubtitleStreamInfo& candidateStream)
+{
+  return stream == candidateStream;
+}
+
+// Whether every stream of subset has a distinct counterpart in superset that covers it. Streams are
+// matched without regard to their position in the stream number table, as a playlist may list the
+// same streams in a different order, to present a particular one first.
+template<typename T>
+bool AreStreamsContained(const std::vector<T>& subset, const std::vector<T>& superset)
+{
+  if (subset.size() > superset.size())
+    return false;
+
+  // A stream can only account for one of subset's streams, so that a playlist offering the same
+  // stream twice is not contained in one offering it once
+  std::vector<bool> matched(superset.size(), false);
+  for (const T& stream : subset)
+  {
+    bool found{false};
+    for (size_t i = 0; i < superset.size() && !found; ++i)
+    {
+      if (!matched[i] && IsStreamCovered(stream, superset[i]))
+      {
+        matched[i] = true;
+        found = true;
+      }
+    }
+
+    if (!found)
+      return false;
+  }
+
+  return true;
+}
+
+// Whether playlist offers no audio or subtitle stream that candidate does not also offer, ie. it is
+// the same content with a reduced set of streams.
+// False when the streams of candidate are unknown, as nothing can then be concluded.
+bool IsStreamSubset(const PlaylistInformation& playlist, const PlaylistInformation& candidate)
+{
+  if (candidate.audioStreams.empty() && candidate.pgStreams.empty())
+    return false;
+
+  return AreStreamsContained(playlist.audioStreams, candidate.audioStreams) &&
+         AreStreamsContained(playlist.pgStreams, candidate.pgStreams);
+}
+
 template<std::ranges::input_range R>
 bool ArePlaylistsConsecutive(const R& items)
 {
@@ -354,6 +423,7 @@ void CDiscDirectoryHelper::StorePlayAllPlaylist(
       .playlist = playlistNumber,
       .playAllPlaylistEpisodesStartOffset = playAllPlaylistEpisodesStartOffset,
       .duration = playlistInformation.duration,
+      .chapters = static_cast<unsigned int>(playlistInformation.chapters.size()),
       .clips = playlistInformation.clips,
       .languages = playlistInformation.languages});
   m_playAllPlaylistsMap[playlistNumber] = playAllPlaylistClipMap;
@@ -424,10 +494,12 @@ void CDiscDirectoryHelper::FindGroups(const PlaylistMap& playlists, const Episod
 
   for (const auto& [playlist, playlistInformation] : longPlaylists)
   {
-    CandidatePlaylistInformation groupPlaylist{.playlist = playlist,
-                                               .duration = playlistInformation.duration,
-                                               .clips = {},
-                                               .languages = {}};
+    CandidatePlaylistInformation groupPlaylist{
+        .playlist = playlist,
+        .duration = playlistInformation.duration,
+        .chapters = static_cast<unsigned int>(playlistInformation.chapters.size()),
+        .clips = playlistInformation.clips,
+        .languages = playlistInformation.languages};
     if (!m_groups.empty() && m_groups.back().back().playlist == playlist - 1)
       m_groups.back().emplace_back(groupPlaylist);
     else
@@ -462,8 +534,10 @@ void CDiscDirectoryHelper::FindGroups(const PlaylistMap& playlists, const Episod
                                const auto& [playlist, playlistInformation] = PlaylistInformation;
                                return {.playlist = playlist,
                                        .duration = playlistInformation.duration,
-                                       .clips = {},
-                                       .languages = {}};
+                                       .chapters = static_cast<unsigned int>(
+                                           playlistInformation.chapters.size()),
+                                       .clips = playlistInformation.clips,
+                                       .languages = playlistInformation.languages};
                              });
       m_groups.emplace_back(std::move(group));
     }
@@ -483,10 +557,12 @@ void CDiscDirectoryHelper::FindGroups(const PlaylistMap& playlists, const Episod
                              std::views::transform(
                                  [](const PlaylistInformation& p)
                                  {
-                                   return CandidatePlaylistInformation{.playlist = p.playlist,
-                                                                       .duration = p.duration,
-                                                                       .clips = p.clips,
-                                                                       .languages = p.languages};
+                                   return CandidatePlaylistInformation{
+                                       .playlist = p.playlist,
+                                       .duration = p.duration,
+                                       .chapters = static_cast<unsigned int>(p.chapters.size()),
+                                       .clips = p.clips,
+                                       .languages = p.languages};
                                  }) |
                              std::views::filter([this](const CandidatePlaylistInformation& cpi)
                                                 { return !m_playAllPlaylists.contains(cpi); }),
@@ -678,6 +754,8 @@ void CDiscDirectoryHelper::UsePlayAllPlaylistMethod(int episodeIndex, const Play
                 .playlist = singleEpisodePlaylist,
                 .index = i + m_numSpecials - playlistInformation.playAllPlaylistEpisodesStartOffset,
                 .duration = singleEpisodePlaylistInformation.duration,
+                .chapters =
+                    static_cast<unsigned int>(singleEpisodePlaylistInformation.chapters.size()),
                 .clips = singleEpisodePlaylistInformation.clips,
                 .languages = singleEpisodePlaylistInformation.languages});
       }
@@ -728,6 +806,8 @@ void CDiscDirectoryHelper::UseRelaxedPlayAllPlaylistMethod(int episodeIndex,
                                          .index = index,
                                          .duration = singleEpisodePlaylistInformation.duration,
                                          .multiple = episodePlaylist.multiple,
+                                         .chapters = static_cast<unsigned int>(
+                                             singleEpisodePlaylistInformation.chapters.size()),
                                          .clips = singleEpisodePlaylistInformation.clips,
                                          .languages = singleEpisodePlaylistInformation.languages});
       }
@@ -781,6 +861,7 @@ void CDiscDirectoryHelper::UseLongOrCommonMethodForSingleEpisode(int episodeInde
                       .playlist = playlist,
                       .index = m_allEpisodes == AllEpisodes::ALL ? m_numSpecials : episodeIndex,
                       .duration = playlistInformation.duration,
+                      .chapters = static_cast<unsigned int>(playlistInformation.chapters.size()),
                       .clips = playlistInformation.clips,
                       .languages = playlistInformation.languages});
   }
@@ -792,12 +873,13 @@ void CDiscDirectoryHelper::UseLongOrCommonMethodForSingleEpisode(int episodeInde
     CLog::LogFC(LOGDEBUG, LOGBLURAY, "Candidate playlist {}", *commonPlaylist);
     m_candidatePlaylists.try_emplace(
         *commonPlaylist,
-        CandidatePlaylistInformation{.playlist = *commonPlaylist,
-                                     .index = m_allEpisodes == AllEpisodes::ALL ? m_numSpecials
-                                                                                : episodeIndex,
-                                     .duration = playlistInformation.duration,
-                                     .clips = playlistInformation.clips,
-                                     .languages = playlistInformation.languages});
+        CandidatePlaylistInformation{
+            .playlist = *commonPlaylist,
+            .index = m_allEpisodes == AllEpisodes::ALL ? m_numSpecials : episodeIndex,
+            .duration = playlistInformation.duration,
+            .chapters = static_cast<unsigned int>(playlistInformation.chapters.size()),
+            .clips = playlistInformation.clips,
+            .languages = playlistInformation.languages});
   }
 }
 
@@ -832,6 +914,7 @@ void CDiscDirectoryHelper::GetPlaylistsFromGroup(
                                      CandidatePlaylistInformation{.playlist = group[i].playlist,
                                                                   .index = i + m_numSpecials,
                                                                   .duration = group[i].duration,
+                                                                  .chapters = group[i].chapters,
                                                                   .clips = group[i].clips,
                                                                   .languages = group[i].languages});
     CLog::LogFC(LOGDEBUG, LOGBLURAY, "Candidate playlist {}", group[i].playlist);
@@ -1218,8 +1301,14 @@ void CDiscDirectoryHelper::ChooseSingleBestPlaylist(const Episodes& episodesOnDi
 
 void CDiscDirectoryHelper::AddIdenticalPlaylists(const PlaylistMap& playlists)
 {
+  // Collect the additions separately, so newly added playlists are not themselves
+  // used as candidates to match against
+  CandidatePlaylistsMap identicalPlaylists;
+
   for (const auto& [candidatePlaylist, candidatePlaylistInformation] : m_candidatePlaylists)
   {
+    const auto candidate{playlists.find(candidatePlaylist)};
+
     // Find all other playlists of same duration with same clips
     for (const auto& [playlist, playlistInformation] : playlists)
     {
@@ -1228,13 +1317,33 @@ void CDiscDirectoryHelper::AddIdenticalPlaylists(const PlaylistMap& playlists)
           candidatePlaylistInformation.languages != playlistInformation.languages &&
           candidatePlaylistInformation.clips == playlistInformation.clips)
       {
+        // A playlist offering no streams the candidate does not already offer is a reduced
+        // presentation of the same content rather than an alternative, so there is nothing to
+        // choose between them
+        if (candidate != playlists.end() && IsStreamSubset(playlistInformation, candidate->second))
+        {
+          CLog::LogFC(LOGDEBUG, LOGBLURAY,
+                      "Ignoring playlist {} - its streams are a subset of those of playlist {}",
+                      playlist, candidatePlaylist);
+          continue;
+        }
+
         CLog::LogFC(LOGDEBUG, LOGBLURAY,
                     "Adding playlist {} as same duration and clips as playlist {}", playlist,
                     candidatePlaylist);
-        m_candidatePlaylists.try_emplace(playlist, candidatePlaylistInformation);
+
+        // Copy the candidate but with this playlist's own number and languages
+        CandidatePlaylistInformation identicalPlaylistInformation{candidatePlaylistInformation};
+        identicalPlaylistInformation.playlist = playlist;
+        identicalPlaylistInformation.chapters =
+            static_cast<unsigned int>(playlistInformation.chapters.size());
+        identicalPlaylistInformation.languages = playlistInformation.languages;
+        identicalPlaylists.try_emplace(playlist, identicalPlaylistInformation);
       }
     }
   }
+
+  m_candidatePlaylists.merge(identicalPlaylists);
 }
 
 void CDiscDirectoryHelper::FindCandidatePlaylists(const Episodes& episodesOnDisc,
@@ -2083,8 +2192,10 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
     // Silent
     if (sourceItems.Size() > 1 && !returnMultipleItems)
     {
-      CLog::LogF(LOGERROR, "Unable to automatically determine main playlist for {}", directory);
-      return false;
+      CLog::LogFC(LOGDEBUG, LOGBLURAY,
+                  "Automatically selected playlist {} of the {} offered for {}",
+                  sourceItems[0]->GetProperty("bluray_playlist").asInteger32(0), sourceItems.Size(),
+                  CURL::GetRedacted(directory));
     }
   }
 

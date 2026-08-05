@@ -179,6 +179,8 @@ class CDiscDirectoryHelper
     }
   };
 
+  using CandidatePlaylistsMap = std::map<unsigned int, CandidatePlaylistInformation>;
+
 public:
   CDiscDirectoryHelper();
 
@@ -387,7 +389,7 @@ private:
 
   std::vector<std::vector<CandidatePlaylistInformation>> m_groups;
   std::vector<std::vector<CandidatePlaylistInformation>> m_allGroups;
-  std::map<unsigned int, CandidatePlaylistInformation> m_candidatePlaylists;
+  CandidatePlaylistsMap m_candidatePlaylists;
   std::set<unsigned int> m_candidateSpecials;
   std::vector<CandidatePlaylistInformation> m_nthLongestPlaylists;
 
