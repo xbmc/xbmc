@@ -62,6 +62,7 @@
 #include "video/dialogs/GUIDialogVideoManagerVersions.h"
 
 #include <algorithm>
+#include <map>
 #include <memory>
 #include <ranges>
 #include <set>
@@ -1780,7 +1781,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     if (!libraryImport)
       GetArtwork(pItem, content, videoFolder, useLocal && !pItem->IsPlugin(),
-                 showInfo ? showInfo->m_strPath : "", useRemoteArt);
+                 showInfo ? URIUtils::AddFileToFolder(showInfo->m_strPath, ".actors") : "",
+                 useRemoteArt);
 
     // ensure the art map isn't completely empty by specifying an empty thumb
     KODI::ART::Artwork art = pItem->GetArt();
@@ -2226,8 +2228,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
     std::string parentDir = URIUtils::GetParentPath(pItem->GetPath());
     if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
             CSettings::SETTING_VIDEOLIBRARY_ACTORTHUMBS))
-      FetchActorThumbs(movieDetails.m_cast, actorArtPath.empty() ? parentDir : actorArtPath,
+    {
+      // .actors sits alongside the nfo, so for a disc folder it is in BDMV/VIDEO_TS
+      const std::string mediaDir{URIUtils::IsOpticalMediaFile(pItem->GetPath())
+                                     ? URIUtils::GetDirectory(pItem->GetPath())
+                                     : parentDir};
+      FetchActorThumbs(movieDetails.m_cast,
+                       actorArtPath.empty() ? URIUtils::AddFileToFolder(mediaDir, ".actors")
+                                            : actorArtPath,
                        useRemoteArt);
+    }
     if (bApplyToDir)
       ApplyThumbToFolder(parentDir, art["thumb"]);
   }
@@ -2749,46 +2759,51 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
   void CVideoInfoScanner::FetchActorThumbs(
       std::vector<SActorInfo>& actors,
-      const std::string& strPath,
+      const std::string& actorsDir,
       UseRemoteArtWithLocalScraper useRemoteArt /* = YES */) const
   {
     CFileItemList items;
     // don't try to fetch anything local with plugin source
-    if (!URIUtils::IsPlugin(strPath))
+    if (!URIUtils::IsPlugin(actorsDir) && CDirectory::Exists(actorsDir))
+      CDirectory::GetDirectory(actorsDir, items, ".png|.jpg|.tbn",
+                               DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO);
+
+    // Index the thumbs by filename (without extension)
+    std::map<std::string, std::string> thumbs;
+    for (const auto& item : items)
     {
-      std::string actorsDir = URIUtils::AddFileToFolder(strPath, ".actors");
-      if (CDirectory::Exists(actorsDir))
-        CDirectory::GetDirectory(actorsDir, items, ".png|.jpg|.tbn", DIR_FLAG_NO_FILE_DIRS |
-                                 DIR_FLAG_NO_FILE_INFO);
+      if (item->IsFolder())
+        continue;
+
+      std::string name{URIUtils::GetFileName(item->GetPath())};
+      URIUtils::RemoveExtension(name);
+      thumbs.try_emplace(std::move(name), item->GetPath());
     }
-    for (std::vector<SActorInfo>::iterator i = actors.begin(); i != actors.end(); ++i)
+
+    for (auto& actor : actors)
     {
-      if (i->thumb.empty())
+      if (actor.thumb.empty())
       {
-        std::string thumbFile = i->strName;
+        // Must match how the name is turned into a filename when exporting (see
+        // CVideoDatabase::GetSafeFile()), or an actor whose name contains a character that is not
+        // legal in a filename (ie. a trailing '.') can never be matched to their own exported thumb
+        std::string thumbFile = actor.strName;
         StringUtils::Replace(thumbFile, ' ', '_');
-        for (int j = 0; j < items.Size(); j++)
+        thumbFile = CUtil::MakeLegalFileName(std::move(thumbFile));
+        if (const auto thumb{thumbs.find(thumbFile)}; thumb != thumbs.end())
+          actor.thumb = thumb->second;
+        if (!actor.thumbUrl.GetFirstUrlByType().m_url.empty())
         {
-          std::string compare = URIUtils::GetFileName(items[j]->GetPath());
-          URIUtils::RemoveExtension(compare);
-          if (!items[j]->IsFolder() && compare == thumbFile)
-          {
-            i->thumb = items[j]->GetPath();
-            break;
-          }
-        }
-        if (!i->thumbUrl.GetFirstUrlByType().m_url.empty())
-        {
-          const std::string thumb{CScraperUrl::GetThumbUrl(i->thumbUrl.GetFirstUrlByType())};
+          const std::string thumb{CScraperUrl::GetThumbUrl(actor.thumbUrl.GetFirstUrlByType())};
           const bool notUsingThisRemoteArt{useRemoteArt == UseRemoteArtWithLocalScraper::NO &&
                                            URIUtils::IsRemote(thumb)};
-          if (i->thumb.empty() && !notUsingThisRemoteArt)
-            i->thumb = thumb;
+          if (actor.thumb.empty() && !notUsingThisRemoteArt)
+            actor.thumb = thumb;
           if (notUsingThisRemoteArt)
-            i->thumbUrl.Clear();
+            actor.thumbUrl.Clear();
         }
       }
-      CacheArtwork(i->thumb, m_artRetrievalTiming == ArtRetrievalTiming::SYNCHRONOUS);
+      CacheArtwork(actor.thumb, m_artRetrievalTiming == ArtRetrievalTiming::SYNCHRONOUS);
     }
   }
 
