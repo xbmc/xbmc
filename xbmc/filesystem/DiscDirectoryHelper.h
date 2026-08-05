@@ -172,6 +172,10 @@ class CDiscDirectoryHelper
     std::vector<unsigned int> clips;
     std::string languages;
 
+    // Set only when several episodes share this playlist
+    std::chrono::milliseconds episodeStart{0ms};
+    std::chrono::milliseconds episodeDuration{0ms};
+
     // Used for inserting into a set where playlist is the key
     auto operator<=>(const CandidatePlaylistInformation& rhs) const noexcept
     {
@@ -326,10 +330,15 @@ private:
   static bool CalculateGroupMultiples(std::vector<CandidatePlaylistInformation>& group,
                                       unsigned int numEpisodes);
   void UseGroupsWithMultiplesMethod(int episodeIndex, const Episodes& episodesOnDisc);
+  void UseSingleEpisodeClipsPlaylistMethod(int episodeIndex,
+                                           const Episodes& episodesOnDisc,
+                                           const ClipMap& clips,
+                                           const PlaylistMap& playlists);
   void ChooseSingleBestPlaylist(const Episodes& episodesOnDisc);
   void AddIdenticalPlaylists(const PlaylistMap& playlists);
   void FindCandidatePlaylists(const Episodes& episodesOnDisc,
                               int episodeIndex,
+                              const ClipMap& clips,
                               const PlaylistMap& playlists);
   void FindSpecials(const PlaylistMap& playlists);
   static void EndEpisodePlaylistSearch();

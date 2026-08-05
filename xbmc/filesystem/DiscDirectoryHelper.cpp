@@ -1263,6 +1263,106 @@ void CDiscDirectoryHelper::UseGroupsWithMultiplesMethod(int episodeIndex,
     CLog::LogFC(LOGDEBUG, LOGBLURAY, "No candidate playlists found");
 }
 
+void CDiscDirectoryHelper::UseSingleEpisodeClipsPlaylistMethod(int episodeIndex,
+                                                               const Episodes& episodesOnDisc,
+                                                               const ClipMap& clips,
+                                                               const PlaylistMap& playlists)
+{
+  // Method 3 - Some discs author the episodes as a single playlist made up of one clip per episode,
+  //            with no individual episode playlists at all, so there is nothing for the play-all
+  //            playlist or group methods to point at (example Tin Man S1D1 UK BD).
+  //
+  // Assumptions
+  //   1) There is exactly one playlist at least the minimum episode duration long
+  //   2) It has one clip per episode on disc, each at least the minimum episode duration long
+  //   3) Where an episode's duration is known, it matches the duration of the clip in its position
+  //   4) The clips are in episode order
+
+  if (m_numSpecials > 0)
+    return; // No way of telling which clip is the special
+
+  // Find the sole playlist long enough to hold the episodes
+  auto longPlaylists{playlists | std::views::values |
+                     std::views::filter([this](const PlaylistInformation& p)
+                                        { return p.duration >= m_minEpisodeDuration; })};
+  const auto it{std::ranges::begin(longPlaylists)};
+  const auto end{std::ranges::end(longPlaylists)};
+  if (it == end || std::ranges::next(it) != end)
+    return; // No playlist, or more than one, long enough to hold all the episodes
+
+  const PlaylistInformation& information{*it};
+  if (information.clips.size() != m_numEpisodes)
+    return;
+
+  CLog::LogFC(LOGDEBUG, LOGBLURAY, "Using single playlist with episode clips method");
+
+  // Derive the start of each clip within the playlist, validating as we go
+  std::vector<std::chrono::milliseconds> clipStarts;
+  clipStarts.reserve(information.clips.size());
+  std::chrono::milliseconds start{0ms};
+  for (unsigned int index = 0; const unsigned int clip : information.clips)
+  {
+    const auto clipIt{clips.find(clip)};
+    if (clipIt == clips.end())
+    {
+      CLog::LogF(LOGERROR, "Clip {} missing in clip map", clip);
+      return;
+    }
+
+    const std::chrono::milliseconds clipDuration{clipIt->second.duration};
+    if (clipDuration < m_minEpisodeDuration)
+    {
+      CLog::LogFC(LOGDEBUG, LOGBLURAY, "Rejecting playlist {} - clip {} duration {} is too short",
+                  information.playlist, clip, static_cast<int>(clipDuration.count() / 1000));
+      return;
+    }
+
+    // Only episodes scraped so far have a duration, so unknown ones are left to the check above
+    const std::chrono::milliseconds episodeDuration{episodesOnDisc[index].duration * 1000ms};
+    if (episodeDuration > 0ms && !CheckDurationsWithinTolerance(episodeDuration, clipDuration))
+    {
+      CLog::LogFC(LOGDEBUG, LOGBLURAY,
+                  "Rejecting playlist {} - clip {} duration {} does not match episode {} duration "
+                  "{}",
+                  information.playlist, clip, static_cast<int>(clipDuration.count() / 1000),
+                  episodesOnDisc[index].iEpisode, episodesOnDisc[index].duration);
+      return;
+    }
+
+    clipStarts.emplace_back(start);
+    start += clipDuration;
+    ++index;
+  }
+
+  // Save the candidate episode. Only one entry can be stored
+  unsigned int index{0};
+  std::chrono::milliseconds episodeStart{0ms};
+  std::chrono::milliseconds episodeDuration{information.duration};
+  if (m_allEpisodes == AllEpisodes::SINGLE)
+  {
+    index = static_cast<unsigned int>(episodeIndex);
+    episodeStart = clipStarts[index];
+    episodeDuration = clips.find(information.clips[index])->second.duration;
+  }
+
+  CLog::LogFC(LOGDEBUG, LOGBLURAY,
+              "Candidate playlist {} for episode {} - starts at {} runs for {}",
+              information.playlist, episodesOnDisc[index].iEpisode,
+              static_cast<int>(episodeStart.count() / 1000),
+              static_cast<int>(episodeDuration.count() / 1000));
+
+  m_candidatePlaylists.try_emplace(
+      information.playlist, CandidatePlaylistInformation{
+                                .playlist = information.playlist,
+                                .index = index,
+                                .duration = information.duration,
+                                .chapters = static_cast<unsigned int>(information.chapters.size()),
+                                .clips = information.clips,
+                                .languages = information.languages,
+                                .episodeStart = episodeStart,
+                                .episodeDuration = episodeDuration});
+}
+
 void CDiscDirectoryHelper::ChooseSingleBestPlaylist(const Episodes& episodesOnDisc)
 {
   // Rebuild candidatePlaylists
@@ -1368,6 +1468,7 @@ void CDiscDirectoryHelper::AddIdenticalPlaylists(const PlaylistMap& playlists)
 
 void CDiscDirectoryHelper::FindCandidatePlaylists(const Episodes& episodesOnDisc,
                                                   int episodeIndex,
+                                                  const ClipMap& clips,
                                                   const PlaylistMap& playlists)
 {
   // At this stage we have a number of ways of trying to determine the correct playlist for an episode
@@ -1383,6 +1484,9 @@ void CDiscDirectoryHelper::FindCandidatePlaylists(const Episodes& episodesOnDisc
   // 2b) For single episode discs, look for the longest playlist.
   //     There are some discs where there are extras that are longer than the episode itself, in this case
   //     we look for the playlist with a common starting number (eg. 1, 800 etc..)
+  //
+  // 3) Using a single playlist that holds every episode as a clip, where the disc has no individual
+  //    episode playlists at all.
 
   if (m_allEpisodes == AllEpisodes::ALL)
     CLog::LogFC(LOGDEBUG, LOGBLURAY, "Looking for all episodes on disc");
@@ -1401,6 +1505,9 @@ void CDiscDirectoryHelper::FindCandidatePlaylists(const Episodes& episodesOnDisc
 
   if (m_candidatePlaylists.empty() && !m_allGroups.empty() && m_numEpisodes > 1)
     UseGroupsWithMultiplesMethod(episodeIndex, episodesOnDisc);
+
+  if (m_candidatePlaylists.empty() && m_numEpisodes > 1 && m_isSpecial == IsSpecial::EPISODE)
+    UseSingleEpisodeClipsPlaylistMethod(episodeIndex, episodesOnDisc, clips, playlists);
 
   // Now deal with the possibility there may be more than one playlist (per episode)
   // For this, see which is closest in duration to the desired episode duration (from the scraper)
@@ -1477,7 +1584,9 @@ std::shared_ptr<CFileItem> GenerateEpisodeItem(const CURL& url,
                                                unsigned int playlist,
                                                const PlaylistInformation& information,
                                                const Episode& episode,
-                                               bool isSpecial)
+                                               bool isSpecial,
+                                               std::chrono::milliseconds episodeStart = 0ms,
+                                               std::chrono::milliseconds episodeDuration = 0ms)
 {
   CURL path{url};
   std::string buf{StringUtils::Format("BDMV/PLAYLIST/{:05}.mpls", playlist)};
@@ -1485,13 +1594,23 @@ std::shared_ptr<CFileItem> GenerateEpisodeItem(const CURL& url,
   const auto item{std::make_shared<CFileItem>(path.Get(), false)};
 
   // Get clips
-  const std::chrono::milliseconds duration{information.duration};
+  const std::chrono::milliseconds duration{episodeDuration > 0ms ? episodeDuration
+                                                                 : information.duration};
 
   // Get languages
   const std::string langs{information.languages};
 
   CVideoInfoTag* itemTag{item->GetVideoInfoTag()};
   itemTag->SetDuration(static_cast<int>(duration.count() / 1000));
+
+  // Write an episode bookmark
+  if (episodeStart > 0ms)
+  {
+    itemTag->m_EpBookmark.timeInSeconds = static_cast<double>(episodeStart.count()) / 1000.0;
+    itemTag->m_EpBookmark.totalTimeInSeconds =
+        static_cast<double>(information.duration.count()) / 1000.0;
+  }
+
   item->SetProperty("bluray_playlist", playlist);
 
   // Get episode title
@@ -1603,7 +1722,8 @@ void CDiscDirectoryHelper::PopulateEpisodeFileItems(const CURL& url,
       }
       const auto& information{playlists.find(playlist.playlist)->second};
       const auto newItem{GenerateEpisodeItem(url, playlist.playlist, information,
-                                             episodesOnDisc[playlist.index], false)}; // Episode
+                                             episodesOnDisc[playlist.index], false, // Episode
+                                             playlist.episodeStart, playlist.episodeDuration)};
       if (!newItem)
       {
         CLog::LogFC(LOGDEBUG, LOGBLURAY, "Failed to generate FileItem for playlist {}",
@@ -1697,7 +1817,7 @@ bool CDiscDirectoryHelper::GetEpisodePlaylists(
   FindPlayAllPlaylists(clips, playlists);
   FindGroups(playlists, episodesOnDisc);
   FindRelaxedPlayAllPlaylists(playlists); // Uses m_allGroups
-  FindCandidatePlaylists(episodesOnDisc, episodeIndex, playlists);
+  FindCandidatePlaylists(episodesOnDisc, episodeIndex, clips, playlists);
   FindSpecials(playlists);
   EndEpisodePlaylistSearch();
   PopulateEpisodeFileItems(url, items, allTitles, episodeIndex, episodesOnDisc, playlists);
@@ -2227,6 +2347,12 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
         const auto tag{newItem->GetVideoInfoTag()};
         tag->SetFileNameAndPath(selectedItem.GetDynPath());
         tag->m_streamDetails = selectedItem.GetVideoInfoTag()->m_streamDetails;
+
+        // Episode bookmarks
+        if (const CBookmark & bookmark{selectedItem.GetVideoInfoTag()->m_EpBookmark};
+            bookmark.IsSet())
+          tag->m_EpBookmark = bookmark;
+
         if (tag->GetAssetInfo().GetTitle().empty())
           tag->GetAssetInfo().SetTitle(
               CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
@@ -2258,6 +2384,7 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
     for (const auto& sourceItem : sourceItems)
       items.Add(GenerateItem(item, *sourceItem, item));
   }
+
   return true;
 }
 

@@ -2666,6 +2666,167 @@ TEST_F(TestDiscDirectoryHelper,
   EXPECT_TRUE(std::ranges::includes(returned, expected));
 }
 
+// The disc has a single long playlist holding one clip per episode and no individual episode
+// playlists, so every episode resolves to that playlist. Each episode after the first carries an
+// episode bookmark giving the start of its clip.
+// (Example Tin Man S1D1 UK BD)
+TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_ThreeEpisodes_SingleEpisodeClipsPlaylistMethod)
+{
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{MakeEpisode(1, 1, 5400), // 90 min
+                    MakeEpisode(1, 2, 5400), MakeEpisode(1, 3, 5400)};
+
+  PlaylistMap playlists{
+      {0u, MakePlaylist(0u, 16065s, {0u, 1u, 2u}, {5492s, 5262s, 5311s})},
+      {1u, MakePlaylist(1u, 16s, {4u, 5u}, {10s, 6s})}, // Logo/trailer
+  };
+  ClipMap clips{
+      {0u, MakeClip(5492s, {0u})}, {1u, MakeClip(5262s, {0u})}, {2u, MakeClip(5311s, {0u})},
+      {4u, MakeClip(10s, {1u})},   {5u, MakeClip(6s, {1u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  // Each episode is the same playlist, offset by the durations of the clips before it
+  static constexpr std::array<std::pair<unsigned int, double>, 3> EXPECTED{
+      {{5492u, 0.0}, {5262u, 5492.0}, {5311u, 10754.0}}};
+
+  for (int episodeIndex = 0; episodeIndex < static_cast<int>(EXPECTED.size()); ++episodeIndex)
+  {
+    const auto& [expectedDuration, expectedStart]{EXPECTED[episodeIndex]};
+
+    CDiscDirectoryHelper helper;
+    EXPECT_TRUE(
+        helper.GetEpisodePlaylists(url, items, allTitles, episodeIndex, episodes, clips, playlists))
+        << "episode index " << episodeIndex;
+    ASSERT_EQ(items.Size(), 1) << "episode index " << episodeIndex;
+    EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 0u);
+
+    // The episode's duration is its own clip, not the whole playlist
+    const CVideoInfoTag* tag{items[0]->GetVideoInfoTag()};
+    EXPECT_EQ(tag->GetDuration(), static_cast<int>(expectedDuration));
+
+    // The first episode starts at zero so needs no bookmark
+    EXPECT_DOUBLE_EQ(tag->m_EpBookmark.timeInSeconds, expectedStart);
+    if (expectedStart > 0.0)
+    {
+      EXPECT_DOUBLE_EQ(tag->m_EpBookmark.totalTimeInSeconds, 16065.0);
+    }
+  }
+
+  CDiscDirectoryHelper helper;
+
+  EXPECT_TRUE(
+      helper.GetEpisodePlaylists(url, items, allTitles, ALL_PLAYLISTS, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 1); // All episodes
+  auto returned{GetPlaylists(items)};
+  std::set<unsigned int> expected{0u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::MAIN, episodes, clips,
+                                            playlists));
+  ASSERT_EQ(items.Size(), 1);
+  returned = GetPlaylists(items);
+  expected = {0u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::ALL, episodes, clips,
+                                            playlists));
+  ASSERT_EQ(items.Size(), 2);
+  returned = GetPlaylists(items);
+  expected = {0u, 1u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+}
+
+// As above, but a clip does not match the duration of the episode in its position, so the disc
+// does not fit the single-playlist assumption and no playlist is returned.
+TEST_F(TestDiscDirectoryHelper,
+       GetEpisodePlaylists_ThreeEpisodes_SingleEpisodeClipsPlaylistMethod_ClipDurationMismatch)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{MakeEpisode(1, 1, 5400), // 90 min
+                    MakeEpisode(1, 2, 5400), MakeEpisode(1, 3, 5400)};
+
+  PlaylistMap playlists{
+      {0u, MakePlaylist(0u, 14265s, {0u, 1u, 2u}, {5492s, 5262s, 3511s})}, // Clip 2 far too short
+      {1u, MakePlaylist(1u, 16s, {4u, 5u}, {10s, 6s})},
+  };
+  ClipMap clips{
+      {0u, MakeClip(5492s, {0u})}, {1u, MakeClip(5262s, {0u})}, {2u, MakeClip(3511s, {0u})},
+      {4u, MakeClip(10s, {1u})},   {5u, MakeClip(6s, {1u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_FALSE(helper.GetEpisodePlaylists(url, items, allTitles, 0, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 0);
+
+  EXPECT_FALSE(
+      helper.GetEpisodePlaylists(url, items, allTitles, ALL_PLAYLISTS, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 0);
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::MAIN, episodes, clips,
+                                            playlists));
+  ASSERT_EQ(items.Size(), 1);
+  auto returned{GetPlaylists(items)};
+  std::set<unsigned int> expected = {0u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::ALL, episodes, clips,
+                                            playlists));
+  ASSERT_EQ(items.Size(), 2);
+  returned = GetPlaylists(items);
+  expected = {0u, 1u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+}
+
+// As above, but the playlist has more clips than there are episodes on the disc, so which clip is
+// which episode cannot be determined and no playlist is returned.
+TEST_F(TestDiscDirectoryHelper,
+       GetEpisodePlaylists_ThreeEpisodes_SingleEpisodeClipsPlaylistMethod_TooManyClips)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{MakeEpisode(1, 1, 5400), // 90 min
+                    MakeEpisode(1, 2, 5400), MakeEpisode(1, 3, 5400)};
+
+  PlaylistMap playlists{
+      {0u, MakePlaylist(0u, 21465s, {0u, 1u, 2u, 3u}, {5492s, 5262s, 5311s, 5400s})},
+      {1u, MakePlaylist(1u, 16s, {4u, 5u}, {10s, 6s})},
+  };
+  ClipMap clips{
+      {0u, MakeClip(5492s, {0u})}, {1u, MakeClip(5262s, {0u})}, {2u, MakeClip(5311s, {0u})},
+      {3u, MakeClip(5400s, {0u})}, {4u, MakeClip(10s, {1u})},   {5u, MakeClip(6s, {1u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_FALSE(helper.GetEpisodePlaylists(url, items, allTitles, 0, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 0);
+
+  EXPECT_FALSE(
+      helper.GetEpisodePlaylists(url, items, allTitles, ALL_PLAYLISTS, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 0);
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::MAIN, episodes, clips,
+                                            playlists));
+  ASSERT_EQ(items.Size(), 1);
+  auto returned{GetPlaylists(items)};
+  std::set<unsigned int> expected = {0u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::ALL, episodes, clips,
+                                            playlists));
+  ASSERT_EQ(items.Size(), 2);
+  returned = GetPlaylists(items);
+  expected = {0u, 1u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+}
+
 // There is no play-all playlist, nor any consecutive groups of playlists (of the correct number)
 // There are n long playlists but there is a valid group of shorter playlists that is the same length as the number of episodes
 // (Example It Welcome to Derry S1D1 UK UHD)
