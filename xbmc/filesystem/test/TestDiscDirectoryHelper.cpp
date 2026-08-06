@@ -2433,6 +2433,78 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_ThreeEpisodes_GroupMethod_Wi
   EXPECT_TRUE(std::ranges::includes(returned, expected));
 }
 
+// As GetEpisodePlaylists_ThreeEpisodes_GroupMethod_WithSpecial, but the episodes are given with the
+// special last rather than first
+TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_ThreeEpisodes_GroupMethod_WithSpecialLast)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{
+      MakeEpisode(1, 1, 2700), // 45 min
+      MakeEpisode(1, 2, 2700), MakeEpisode(1, 3, 2700), MakeEpisode(0, 1, 1800), // Special
+  };
+
+  PlaylistMap playlists{
+      {1u, MakePlaylist(1u, 5min, {4u}, {5min})},
+      {10u, MakePlaylist(10u, 5min, {5u}, {5min})},
+      {800u, MakePlaylist(800u, 45min, {1u}, {45min})},
+      {801u, MakePlaylist(801u, 42min, {2u}, {42min})},
+      {802u, MakePlaylist(802u, 38min, {3u}, {38min})},
+  };
+  ClipMap clips{
+      {1u, MakeClip(45min, {800u})}, {2u, MakeClip(42min, {801u})}, {3u, MakeClip(38min, {802u})},
+      {4u, MakeClip(5min, {1u})},    {5u, MakeClip(5min, {10u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 0, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 800);
+
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 1, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 801);
+
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 2, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 802);
+
+  // The special, at the end of the list rather than the start
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 3, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 2);
+  auto returned{GetPlaylists(items)};
+  std::set<unsigned int> expected{1u, 10u};
+  EXPECT_TRUE(std::ranges::includes(
+      returned, expected)); // Any of the 2 remaining playlists could be the special
+
+  EXPECT_FALSE(helper.GetEpisodePlaylists(url, items, allTitles, 4, episodes, clips,
+                                          playlists)); // Invalid episode index
+  ASSERT_EQ(items.Size(), 0);
+
+  EXPECT_TRUE(
+      helper.GetEpisodePlaylists(url, items, allTitles, ALL_PLAYLISTS, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 3); // All episodes
+  returned = GetPlaylists(items);
+  expected = {800u, 801u, 802u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::MAIN, episodes, clips,
+                                            playlists));
+  ASSERT_EQ(items.Size(), 3);
+  returned = GetPlaylists(items);
+  expected = {800u, 801u, 802u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::ALL, episodes, clips,
+                                            playlists));
+  ASSERT_EQ(items.Size(), 5);
+  returned = GetPlaylists(items);
+  expected = {1u, 10u, 800u, 801u, 802u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+}
+
 // Consecutive playlists → group method assigns the nth playlist to episode n
 // Playlist 800 = episode 1; 801 = episode 2; 802 = episode 3
 // The group is 800-803. The episodes are mapped to the start of the group

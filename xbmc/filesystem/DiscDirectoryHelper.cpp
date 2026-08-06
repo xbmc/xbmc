@@ -141,6 +141,12 @@ void CDiscDirectoryHelper::InitialiseEpisodePlaylistSearch(int episodeIndex,
 
 namespace
 {
+void SortEpisodes(Episodes& episodes)
+{
+  std::ranges::sort(episodes, std::ranges::less{}, [](const Episode& e)
+                    { return std::tie(e.iSeason, e.iEpisode, e.iSubepisode); });
+}
+
 bool IsPotentialPlayAllPlaylist(const PlaylistInformation& playlistInformation,
                                 unsigned int numEpisodes)
 {
@@ -1976,8 +1982,14 @@ bool CDiscDirectoryHelper::GetEpisodePlaylists(
 
   // Sort (subsequent routines assume that specials (season 0) are before episodes)
   auto episodesOnDisc{episodesOnDiscUnsorted};
-  std::ranges::sort(episodesOnDisc, std::ranges::less{}, [](const Episode& e)
-                    { return std::tie(e.iSeason, e.iEpisode, e.iSubepisode); });
+  SortEpisodes(episodesOnDisc);
+  if (episodeIndex >= 0)
+  {
+    // Adjust index
+    const auto& wantedEpisode{episodesOnDiscUnsorted[episodeIndex]};
+    const auto it{std::ranges::find(episodesOnDisc, wantedEpisode)};
+    episodeIndex = static_cast<int>(std::ranges::distance(episodesOnDisc.begin(), it));
+  }
 
   InitialiseEpisodePlaylistSearch(episodeIndex, episodesOnDisc);
   FindPlayAllPlaylists(clips, playlists);
@@ -2109,8 +2121,7 @@ bool CDiscDirectoryHelper::GetAllEpisodePlaylists(
   if (!episodesOnDiscUnsorted.empty())
   {
     auto episodesOnDisc{episodesOnDiscUnsorted};
-    std::ranges::sort(episodesOnDisc, std::ranges::less{}, [](const Episode& e)
-                      { return std::tie(e.iSeason, e.iEpisode, e.iSubepisode); });
+    SortEpisodes(episodesOnDisc);
 
     InitialiseEpisodePlaylistSearch(ALL_PLAYLISTS, episodesOnDisc);
     FindPlayAllPlaylists(clips, playlistMap);
