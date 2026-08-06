@@ -74,3 +74,79 @@ TEST(TestStreamDetails, VideoAspectToAspectDescription)
 {
   EXPECT_STREQ("2.40", CStreamDetails::VideoAspectToAspectDescription(2.39f).c_str());
 }
+
+TEST(TestStreamDetails, VideoAspectToAspectDescriptionCommonRatios)
+{
+  // Every entry in the table must classify as itself.
+  EXPECT_STREQ("1.00", CStreamDetails::VideoAspectToAspectDescription(1.00f).c_str());
+  EXPECT_STREQ("1.19", CStreamDetails::VideoAspectToAspectDescription(1.19f).c_str());
+  EXPECT_STREQ("1.33", CStreamDetails::VideoAspectToAspectDescription(1.33f).c_str());
+  EXPECT_STREQ("1.37", CStreamDetails::VideoAspectToAspectDescription(1.37f).c_str());
+  EXPECT_STREQ("1.66", CStreamDetails::VideoAspectToAspectDescription(1.66f).c_str());
+  EXPECT_STREQ("1.78", CStreamDetails::VideoAspectToAspectDescription(1.78f).c_str());
+  EXPECT_STREQ("1.85", CStreamDetails::VideoAspectToAspectDescription(1.85f).c_str());
+  EXPECT_STREQ("2.00", CStreamDetails::VideoAspectToAspectDescription(2.00f).c_str());
+  EXPECT_STREQ("2.20", CStreamDetails::VideoAspectToAspectDescription(2.20f).c_str());
+  EXPECT_STREQ("2.35", CStreamDetails::VideoAspectToAspectDescription(2.35f).c_str());
+  EXPECT_STREQ("2.40", CStreamDetails::VideoAspectToAspectDescription(2.40f).c_str());
+  EXPECT_STREQ("2.55", CStreamDetails::VideoAspectToAspectDescription(2.55f).c_str());
+  EXPECT_STREQ("2.76", CStreamDetails::VideoAspectToAspectDescription(2.76f).c_str());
+}
+
+TEST(TestStreamDetails, VideoAspectToAspectDescriptionBoundaries)
+{
+  // The cutoff between two adjacent entries is their geometric mean. Probe either side of
+  // every cutoff so that a change to the table cannot silently move one.
+  EXPECT_STREQ("1.00", CStreamDetails::VideoAspectToAspectDescription(1.0899f).c_str());
+  EXPECT_STREQ("1.19", CStreamDetails::VideoAspectToAspectDescription(1.0919f).c_str());
+
+  EXPECT_STREQ("1.19", CStreamDetails::VideoAspectToAspectDescription(1.2571f).c_str());
+  EXPECT_STREQ("1.33", CStreamDetails::VideoAspectToAspectDescription(1.2591f).c_str());
+
+  EXPECT_STREQ("1.33", CStreamDetails::VideoAspectToAspectDescription(1.3489f).c_str());
+  EXPECT_STREQ("1.37", CStreamDetails::VideoAspectToAspectDescription(1.3509f).c_str());
+
+  EXPECT_STREQ("1.37", CStreamDetails::VideoAspectToAspectDescription(1.5070f).c_str());
+  EXPECT_STREQ("1.66", CStreamDetails::VideoAspectToAspectDescription(1.5090f).c_str());
+
+  EXPECT_STREQ("1.66", CStreamDetails::VideoAspectToAspectDescription(1.7180f).c_str());
+  EXPECT_STREQ("1.78", CStreamDetails::VideoAspectToAspectDescription(1.7200f).c_str());
+
+  EXPECT_STREQ("1.78", CStreamDetails::VideoAspectToAspectDescription(1.8137f).c_str());
+  EXPECT_STREQ("1.85", CStreamDetails::VideoAspectToAspectDescription(1.8157f).c_str());
+
+  EXPECT_STREQ("1.85", CStreamDetails::VideoAspectToAspectDescription(1.9225f).c_str());
+  EXPECT_STREQ("2.00", CStreamDetails::VideoAspectToAspectDescription(1.9245f).c_str());
+
+  EXPECT_STREQ("2.00", CStreamDetails::VideoAspectToAspectDescription(2.0966f).c_str());
+  EXPECT_STREQ("2.20", CStreamDetails::VideoAspectToAspectDescription(2.0986f).c_str());
+
+  EXPECT_STREQ("2.20", CStreamDetails::VideoAspectToAspectDescription(2.2728f).c_str());
+  EXPECT_STREQ("2.35", CStreamDetails::VideoAspectToAspectDescription(2.2748f).c_str());
+
+  EXPECT_STREQ("2.35", CStreamDetails::VideoAspectToAspectDescription(2.3739f).c_str());
+  EXPECT_STREQ("2.40", CStreamDetails::VideoAspectToAspectDescription(2.3759f).c_str());
+
+  EXPECT_STREQ("2.40", CStreamDetails::VideoAspectToAspectDescription(2.4729f).c_str());
+  EXPECT_STREQ("2.55", CStreamDetails::VideoAspectToAspectDescription(2.4749f).c_str());
+
+  EXPECT_STREQ("2.55", CStreamDetails::VideoAspectToAspectDescription(2.6519f).c_str());
+  EXPECT_STREQ("2.76", CStreamDetails::VideoAspectToAspectDescription(2.6539f).c_str());
+}
+
+TEST(TestStreamDetails, VideoAspectToAspectDescriptionEdgeCases)
+{
+  // An unset aspect is not classified, and neither is a negative one - it is not a ratio.
+  EXPECT_STREQ("", CStreamDetails::VideoAspectToAspectDescription(0.0f).c_str());
+  EXPECT_STREQ("", CStreamDetails::VideoAspectToAspectDescription(-1.0f).c_str());
+
+  // The cutoffs are derived from the table rather than written out to four decimal places,
+  // so a value inside the rounding error of an old hand-written cutoff now falls on the side
+  // the geometric mean actually puts it. sqrt(1.00*1.19) is 1.0908712, not 1.0909.
+  EXPECT_STREQ("1.19", CStreamDetails::VideoAspectToAspectDescription(1.09088f).c_str());
+
+  // The table classifies but never rejects: anything above the widest entry is reported as
+  // that entry, however implausible. Pinned so that the behaviour is a decision, not an
+  // accident, for any caller tempted to use this as a validity check.
+  EXPECT_STREQ("2.76", CStreamDetails::VideoAspectToAspectDescription(4.5f).c_str());
+}
