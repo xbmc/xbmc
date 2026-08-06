@@ -244,8 +244,9 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
     // see if there is a unique nfo file in this folder, and if so, use that
     // if we are looking for a specific episode nfo the file name must end with SxxEyy
     // (otherwise it could match the wrong episode nfo)
-    const std::string strPath{item.IsFolder() ? item.GetPath()
-                                              : URIUtils::GetDirectory(item.GetPath())};
+    const std::string strPath{item.IsFolder()  ? item.GetPath()
+                              : item.IsStack() ? CStackDirectory::GetBasePath(item.GetPath())
+                                               : URIUtils::GetDirectory(item.GetPath())};
     CFileItemList items;
     if (CDirectory::GetDirectory(strPath, items, ".nfo", DIR_FLAG_DEFAULTS) && !items.IsEmpty())
     {

@@ -2587,6 +2587,12 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
           // Single main title
           return URIUtils::GetBlurayMainTitlePath(item.GetDynPath());
       }()};
+  if (directory.empty())
+  {
+    CLog::LogF(LOGERROR, "Unable to derive a bluray path from {}",
+               CURL::GetRedacted(item.GetDynPath()));
+    return false;
+  }
 
   // Get playlists that are already used (to avoid duplicates in file table)
   std::vector<CVideoDatabase::PlaylistInfo> usedPlaylists{};
