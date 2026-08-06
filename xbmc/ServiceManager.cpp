@@ -90,6 +90,8 @@ bool CServiceManager::InitForTesting()
   m_subTagRegistryManager = std::make_unique<KODI::UTILS::I18N::CSubTagRegistryManager>();
   m_subTagRegistryManager->Initialize();
 
+  m_mediaManager = std::make_unique<CMediaManager>();
+
   init_level = 1;
   return true;
 }
@@ -97,6 +99,7 @@ bool CServiceManager::InitForTesting()
 void CServiceManager::DeinitTesting()
 {
   init_level = 0;
+  m_mediaManager.reset();
   m_subTagRegistryManager.reset();
   m_fileExtensionProvider->Deinitialize();
   m_extsMimeSupportList.reset();
