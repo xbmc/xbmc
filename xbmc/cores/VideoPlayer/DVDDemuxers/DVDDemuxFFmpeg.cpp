@@ -36,6 +36,8 @@
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
+#include <cstdio>
+#include <cstdlib>
 #include <map>
 #include <memory>
 #include <mutex>
@@ -1668,6 +1670,51 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
                          pStream->codecpar->field_order == AV_FIELD_BB ||
                          pStream->codecpar->field_order == AV_FIELD_TB ||
                          pStream->codecpar->field_order == AV_FIELD_BT;
+
+        // mkvmerge derives DefaultDuration as the modal frame duration when
+        // the source provides no exact rate, and Matroska block timestamps
+        // are stored at the default TimestampScale of 1ms. Real 23.976
+        // content then declares 42ms -> 500/21 = 23.810fps (29.97 -> 33ms ->
+        // 30.303, 59.94 -> 17ms -> 58.824). The wrong rate misses the
+        // resolution whitelist at playback start and the later measured-rate
+        // correction (CalcFrameRate) forces a display mode switch seconds
+        // into playback. Snap such millisecond-quantised declarations back
+        // to the standard rate; rates quantising to the same duration
+        // (23.976 vs 24) are resolved with the muxer's own statistics tags,
+        // or by preferring the fractional rate when no statistics exist (PAL
+        // rates quantise exactly and never enter this path). CalcFrameRate
+        // remains the backstop if a snap were ever wrong.
+        if (m_bMatroska && !st->interlaced && !st->bVFR)
+        {
+          double statsFps = 0.0;
+          const AVDictionaryEntry* statFrames =
+              av_dict_get(pStream->metadata, "NUMBER_OF_FRAMES", nullptr, AV_DICT_IGNORE_SUFFIX);
+          const AVDictionaryEntry* statDuration =
+              av_dict_get(pStream->metadata, "DURATION", nullptr, AV_DICT_IGNORE_SUFFIX);
+          if (statFrames && statDuration)
+          {
+            int hours = 0;
+            int minutes = 0;
+            double seconds = 0.0;
+            const int64_t frameCount = std::atoll(statFrames->value);
+            if (sscanf(statDuration->value, "%d:%d:%lf", &hours, &minutes, &seconds) == 3)
+            {
+              const double totalSeconds = hours * 3600.0 + minutes * 60.0 + seconds;
+              if (frameCount > 0 && totalSeconds > 0.0)
+                statsFps = static_cast<double>(frameCount) / totalSeconds;
+            }
+          }
+
+          const int declaredRate = st->iFpsRate;
+          const int declaredScale = st->iFpsScale;
+          if (CDVDDemuxUtils::SnapMsQuantisedFrameRate(st->iFpsRate, st->iFpsScale, statsFps))
+            CLog::Log(LOGINFO,
+                      "CDVDDemuxFFmpeg::AddStream - stream {}: snapping ms-quantised container "
+                      "fps {:.3f} ({}/{}) to {}/{} (statistics fps: {:.3f})",
+                      pStream->index,
+                      static_cast<double>(declaredRate) / declaredScale, declaredRate,
+                      declaredScale, st->iFpsRate, st->iFpsScale, statsFps);
+        }
 
         st->iWidth = pStream->codecpar->width;
         st->iHeight = pStream->codecpar->height;
