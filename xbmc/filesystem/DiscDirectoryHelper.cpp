@@ -304,6 +304,66 @@ bool CheckDurationsWithinTolerance(std::chrono::milliseconds episodeDuration,
   return episodeDuration > 0ms && std::chrono::abs(playlistDuration - episodeDuration) <= tolerance;
 }
 
+// Whether the clips of a potential play all playlist look like the episodes on the disc.
+//
+// Having the right number of clips does not make a playlist the episodes - a disc's extras are
+// commonly gathered into a play all playlist of their own (examples The Expanse S3D3 and The Last
+// of Us S2D1 Bluray, where the featurettes are collected alongside the episodes). Two things
+// tell them apart:
+//   1) Episodes of one another are of near-equal duration
+//   2) Each clip is of a length matching the episode it would be given
+//
+// The first alone is not enough, as a disc's extras can happen to be of similar lengths, and the
+// second alone is not enough, as only one episode's duration is known on a disc's first search.
+//
+// The tolerance is loose because this only has to reject clips plainly unlike the episodes - a
+// disc's episodes can legitimately vary in length, a feature length finale most of all, and a
+// scraper commonly gives no more than the broadcast slot.
+bool ArePlayAllPlaylistClipsEpisodes(const ClipMap& clips,
+                                     const PlaylistInformation& playlistInformation,
+                                     const Episodes& episodesOnDisc,
+                                     unsigned int numSpecials,
+                                     std::chrono::milliseconds minEpisodeDuration)
+{
+  // Any short clip is an intro or credits rather than an episode (see ProcessPlaylistClips())
+  std::vector<std::chrono::milliseconds> durations;
+  durations.reserve(playlistInformation.clips.size());
+  for (const unsigned int clip : playlistInformation.clips)
+  {
+    if (const auto it{clips.find(clip)};
+        it != clips.end() && it->second.duration >= minEpisodeDuration)
+      durations.emplace_back(it->second.duration);
+  }
+
+  if (durations.empty())
+    return false;
+
+  // Of near-equal duration
+  const std::chrono::milliseconds mean{std::accumulate(durations.begin(), durations.end(), 0ms) /
+                                       static_cast<int>(durations.size())};
+  if (!std::ranges::all_of(durations,
+                           [mean](const std::chrono::milliseconds duration) {
+                             return CheckDurationsWithinTolerance(
+                                 mean, duration, DURATION_TOLERANCE_SCRAPED_PERCENT);
+                           }))
+    return false;
+
+  // Of a length matching the episode each would be given
+  for (size_t index = 0; const std::chrono::milliseconds duration : durations)
+  {
+    const size_t episode{numSpecials + index++};
+    if (episode >= episodesOnDisc.size())
+      break;
+
+    const std::chrono::milliseconds scrapedDuration{episodesOnDisc[episode].duration * 1000ms};
+    if (scrapedDuration > 0ms && !CheckDurationsWithinTolerance(scrapedDuration, duration,
+                                                                DURATION_TOLERANCE_SCRAPED_PERCENT))
+      return false;
+  }
+
+  return true;
+}
+
 bool AnyEpisodeDurationKnown(const Episodes& episodesOnDisc)
 {
   return std::ranges::any_of(episodesOnDisc, [](const Episode& e) { return e.duration > 0; });
@@ -644,7 +704,9 @@ void CDiscDirectoryHelper::StorePlayAllPlaylist(
   m_playAllPlaylistsMap[playlistNumber] = playAllPlaylistClipMap;
 }
 
-void CDiscDirectoryHelper::FindPlayAllPlaylists(const ClipMap& clips, const PlaylistMap& playlists)
+void CDiscDirectoryHelper::FindPlayAllPlaylists(const ClipMap& clips,
+                                                const PlaylistMap& playlists,
+                                                const Episodes& episodesOnDisc)
 {
   // Look for a potential play all playlist (gives episode order)
   //
@@ -654,6 +716,7 @@ void CDiscDirectoryHelper::FindPlayAllPlaylists(const ClipMap& clips, const Play
   //   3) Each clip (bar the last) will be at least MIN_EPISODE_DURATION long
   //   4) Each potential individual episode playlist containing a clip from the potential play all playlist
   //      will have at most one other clip before/after
+  //   5) The clips look like the episodes (see ArePlayAllPlaylistClipsEpisodes())
 
   // Only look for play all playlists if enough playlists and more than one episode on disc
   if (m_numEpisodes < 2 || playlists.size() < m_numEpisodes)
@@ -663,6 +726,16 @@ void CDiscDirectoryHelper::FindPlayAllPlaylists(const ClipMap& clips, const Play
   {
     if (!IsPotentialPlayAllPlaylist(playlistInformation, m_numEpisodes))
       continue;
+
+    if (!ArePlayAllPlaylistClipsEpisodes(clips, playlistInformation, episodesOnDisc, m_numSpecials,
+                                         m_minEpisodeDuration))
+    {
+      CLog::LogFC(LOGDEBUG, LOGBLURAY,
+                  "Rejecting potential play all playlist {} - its clips are the wrong length to be "
+                  "the episodes",
+                  playlistNumber);
+      continue;
+    }
 
     std::map<unsigned int, std::vector<unsigned int>> playAllPlaylistClipMap;
     unsigned int playAllPlaylistEpisodesStartOffset{0};
@@ -2027,7 +2100,7 @@ bool CDiscDirectoryHelper::GetEpisodePlaylists(
   }
 
   InitialiseEpisodePlaylistSearch(episodeIndex, episodesOnDisc);
-  FindPlayAllPlaylists(clips, playlists);
+  FindPlayAllPlaylists(clips, playlists, episodesOnDisc);
   FindGroups(playlists, episodesOnDisc);
   FindRelaxedPlayAllPlaylists(playlists); // Uses m_allGroups
   FindCandidatePlaylists(episodesOnDisc, episodeIndex, clips, playlists);
@@ -2159,7 +2232,7 @@ bool CDiscDirectoryHelper::GetAllEpisodePlaylists(
     SortEpisodes(episodesOnDisc);
 
     InitialiseEpisodePlaylistSearch(ALL_PLAYLISTS, episodesOnDisc);
-    FindPlayAllPlaylists(clips, playlistMap);
+    FindPlayAllPlaylists(clips, playlistMap, episodesOnDisc);
   }
 
   std::vector<PlaylistInformation> playlists;

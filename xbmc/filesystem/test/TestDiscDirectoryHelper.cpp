@@ -40,19 +40,7 @@ public:
     // Force all advanced settings to be reset to defaults
     const auto settings = CServiceBroker::GetSettingsComponent();
     const auto advancedSettings = settings->GetAdvancedSettings();
-    m_oldMinimumEpisodePlaylistDuration = advancedSettings->m_minimumEpisodePlaylistDuration;
-    advancedSettings->m_minimumEpisodePlaylistDuration = 10 * 60; // 10 minutes
   }
-
-  ~AdvancedSettingsResetBase() override
-  {
-    const auto settings = CServiceBroker::GetSettingsComponent();
-    settings->GetAdvancedSettings()->m_minimumEpisodePlaylistDuration =
-        m_oldMinimumEpisodePlaylistDuration;
-  }
-
-private:
-  int m_oldMinimumEpisodePlaylistDuration{0};
 };
 
 class TestDiscDirectoryHelper : public AdvancedSettingsResetBase
@@ -226,8 +214,8 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_EmptyInputs)
   CFileItemList allTitles;
   Episodes episodes{MakeEpisode(1, 1, 3600)};
 
-  PlaylistMap playlists{{800u, MakePlaylist(800u, 5min, {1u}, {5min})}};
-  ClipMap clips{{1u, MakeClip(5min, {800u})}};
+  PlaylistMap playlists{{800u, MakePlaylist(800u, 4min, {1u}, {4min})}};
+  ClipMap clips{{1u, MakeClip(4min, {800u})}};
   ASSERT_TRUE(Validate(clips, playlists));
 
   EXPECT_FALSE(helper.GetEpisodePlaylists(url, items, allTitles, 0, episodes, {}, {}));
@@ -249,8 +237,8 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_AllPlaylistsBelowMinEpisodeD
   CFileItemList allTitles;
   Episodes episodes{MakeEpisode(1, 1, 3600)};
 
-  PlaylistMap playlists{{800u, MakePlaylist(800u, 5min, {1u}, {5min})}};
-  ClipMap clips{{1u, MakeClip(5min, {800u})}};
+  PlaylistMap playlists{{800u, MakePlaylist(800u, 4min, {1u}, {4min})}};
+  ClipMap clips{{1u, MakeClip(4min, {800u})}};
   ASSERT_TRUE(Validate(clips, playlists));
 
   EXPECT_FALSE(helper.GetEpisodePlaylists(url, items, allTitles, 0, episodes, clips, playlists));
@@ -317,13 +305,13 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_SingleEpisode_MultiplePlayli
   Episodes episodes{MakeEpisode(1, 1, 3600)};
 
   PlaylistMap playlists{{800u, MakePlaylist(800u, 60min, {1u}, {60min})},
-                        {1u, MakePlaylist(1u, 5min, {2u}, {5min})},
-                        {10u, MakePlaylist(10u, 5min, {3u}, {5min})},
-                        {100u, MakePlaylist(100u, 5min, {4u}, {5min})}};
+                        {1u, MakePlaylist(1u, 4min, {2u}, {4min})},
+                        {10u, MakePlaylist(10u, 4min, {3u}, {4min})},
+                        {100u, MakePlaylist(100u, 4min, {4u}, {4min})}};
   ClipMap clips{{1u, MakeClip(60min, {800u})},
-                {2u, MakeClip(5min, {1u})},
-                {3u, MakeClip(5min, {10u})},
-                {4u, MakeClip(5min, {100u})}};
+                {2u, MakeClip(4min, {1u})},
+                {3u, MakeClip(4min, {10u})},
+                {4u, MakeClip(4min, {100u})}};
   ASSERT_TRUE(Validate(clips, playlists));
 
   EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 0, episodes, clips, playlists));
@@ -362,12 +350,12 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_SingleEpisode_MultiplePlayli
   Episodes episodes{MakeEpisode(1, 1, 3600)};
 
   PlaylistMap playlists{{800u, MakePlaylist(800u, 60min, {1u}, {60min})},
-                        {1u, MakePlaylist(1u, 5min, {2u}, {5min})},
-                        {10u, MakePlaylist(10u, 5min, {3u}, {5min})},
+                        {1u, MakePlaylist(1u, 4min, {2u}, {4min})},
+                        {10u, MakePlaylist(10u, 4min, {3u}, {4min})},
                         {100u, MakePlaylist(100u, 40min, {4u}, {40min})}};
   ClipMap clips{{1u, MakeClip(60min, {800u})},
-                {2u, MakeClip(5min, {1u})},
-                {3u, MakeClip(5min, {10u})},
+                {2u, MakeClip(4min, {1u})},
+                {3u, MakeClip(4min, {10u})},
                 {4u, MakeClip(40min, {100u})}};
   ASSERT_TRUE(Validate(clips, playlists));
 
@@ -411,12 +399,12 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_SingleEpisode_MultiplePlayli
                     MakeEpisode(1, 1, 3600)};
 
   PlaylistMap playlists{{800u, MakePlaylist(800u, 60min, {1u}, {60min})},
-                        {1u, MakePlaylist(1u, 5min, {2u}, {5min})},
-                        {10u, MakePlaylist(10u, 5min, {3u}, {5min})},
+                        {1u, MakePlaylist(1u, 6min, {2u}, {6min})},
+                        {10u, MakePlaylist(10u, 6min, {3u}, {6min})},
                         {100u, MakePlaylist(100u, 30min, {4u}, {30min})}};
   ClipMap clips{{1u, MakeClip(60min, {800u})},
-                {2u, MakeClip(5min, {1u})},
-                {3u, MakeClip(5min, {10u})},
+                {2u, MakeClip(6min, {1u})},
+                {3u, MakeClip(6min, {10u})},
                 {4u, MakeClip(30min, {100u})}};
   ASSERT_TRUE(Validate(clips, playlists));
 
@@ -442,9 +430,9 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_SingleEpisode_MultiplePlayli
 
   EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::MAIN, episodes, clips,
                                             playlists));
-  ASSERT_EQ(items.Size(), 2);
+  ASSERT_EQ(items.Size(), 4);
   returned = GetPlaylists(items);
-  expected = {100u, 800u};
+  expected = {1u, 10u, 100u, 800u};
   EXPECT_TRUE(std::ranges::includes(returned, expected));
 
   EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::ALL, episodes, clips,
@@ -475,8 +463,8 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist)
   };
 
   PlaylistMap playlists{
-      {1u, MakePlaylist(1u, 5min, {4u}, {5min})},
-      {10u, MakePlaylist(10u, 5min, {5u}, {5min})},
+      {1u, MakePlaylist(1u, 4min, {4u}, {4min})},
+      {10u, MakePlaylist(10u, 4min, {5u}, {4min})},
       {100u, MakePlaylist(100u, 125min, {1u, 2u, 3u}, {45min, 42min, 38min})},
       {800u, MakePlaylist(800u, 45min, {1u}, {45min})},
       {802u, MakePlaylist(802u, 42min, {2u}, {42min})},
@@ -484,8 +472,8 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist)
   };
   ClipMap clips{
       {1u, MakeClip(45min, {100u, 800u})}, {2u, MakeClip(42min, {100u, 802u})},
-      {3u, MakeClip(38min, {100u, 804u})}, {4u, MakeClip(5min, {1u})},
-      {5u, MakeClip(5min, {10u})},
+      {3u, MakeClip(38min, {100u, 804u})}, {4u, MakeClip(4min, {1u})},
+      {5u, MakeClip(4min, {10u})},
   };
   ASSERT_TRUE(Validate(clips, playlists));
 
@@ -545,8 +533,8 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_WithSpecial)
   };
 
   PlaylistMap playlists{
-      {1u, MakePlaylist(1u, 5min, {4u}, {5min})},
-      {10u, MakePlaylist(10u, 5min, {5u}, {5min})},
+      {1u, MakePlaylist(1u, 6min, {4u}, {6min})},
+      {10u, MakePlaylist(10u, 6min, {5u}, {6min})},
       {100u, MakePlaylist(100u, 125min, {1u, 2u, 3u}, {45min, 42min, 38min})},
       {800u, MakePlaylist(800u, 45min, {1u}, {45min})},
       {802u, MakePlaylist(802u, 42min, {2u}, {42min})},
@@ -554,8 +542,8 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_WithSpecial)
   };
   ClipMap clips{
       {1u, MakeClip(45min, {100u, 800u})}, {2u, MakeClip(42min, {100u, 802u})},
-      {3u, MakeClip(38min, {100u, 804u})}, {4u, MakeClip(5min, {1u})},
-      {5u, MakeClip(5min, {10u})},
+      {3u, MakeClip(38min, {100u, 804u})}, {4u, MakeClip(6min, {1u})},
+      {5u, MakeClip(6min, {10u})},
   };
   ASSERT_TRUE(Validate(clips, playlists));
 
@@ -590,9 +578,9 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_WithSpecial)
 
   EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::MAIN, episodes, clips,
                                             playlists));
-  ASSERT_EQ(items.Size(), 3);
+  ASSERT_EQ(items.Size(), 5);
   returned = GetPlaylists(items);
-  expected = {800u, 802u, 804u};
+  expected = {1u, 10u, 800u, 802u, 804u};
   EXPECT_TRUE(std::ranges::includes(returned, expected));
 
   EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::ALL, episodes, clips,
@@ -621,8 +609,8 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_ExtraClips)
   };
 
   PlaylistMap playlists{
-      {1u, MakePlaylist(1u, 5min, {4u}, {5min})},
-      {10u, MakePlaylist(10u, 5min, {5u}, {5min})},
+      {1u, MakePlaylist(1u, 4min, {4u}, {4min})},
+      {10u, MakePlaylist(10u, 4min, {5u}, {4min})},
       {100u, MakePlaylist(100u, 128min, {6u, 1u, 2u, 3u}, {3min, 45min, 42min, 38min})},
       {800u, MakePlaylist(800u, 45min, {1u}, {45min})},
       {802u, MakePlaylist(802u, 42min, {2u}, {42min})},
@@ -630,8 +618,8 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_ExtraClips)
   };
   ClipMap clips{
       {1u, MakeClip(45min, {100u, 800u})}, {2u, MakeClip(42min, {100u, 802u})},
-      {3u, MakeClip(38min, {100u, 804u})}, {4u, MakeClip(5min, {1u})},
-      {5u, MakeClip(5min, {10u})},         {6u, MakeClip(3min, {100u})},
+      {3u, MakeClip(38min, {100u, 804u})}, {4u, MakeClip(4min, {1u})},
+      {5u, MakeClip(4min, {10u})},         {6u, MakeClip(3min, {100u})},
   };
   ASSERT_TRUE(Validate(clips, playlists));
 
@@ -691,8 +679,8 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_ExtraClips2)
   };
 
   PlaylistMap playlists{
-      {1u, MakePlaylist(1u, 5min, {4u}, {5min})},
-      {10u, MakePlaylist(10u, 5min, {5u}, {5min})},
+      {1u, MakePlaylist(1u, 4min, {4u}, {4min})},
+      {10u, MakePlaylist(10u, 4min, {5u}, {4min})},
       {100u, MakePlaylist(100u, 128min, {1u, 2u, 3u, 6u}, {45min, 42min, 38min, 3min})},
       {800u, MakePlaylist(800u, 45min, {1u}, {45min})},
       {802u, MakePlaylist(802u, 42min, {2u}, {42min})},
@@ -700,8 +688,8 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_ExtraClips2)
   };
   ClipMap clips{
       {1u, MakeClip(45min, {100u, 800u})}, {2u, MakeClip(42min, {100u, 802u})},
-      {3u, MakeClip(38min, {100u, 804u})}, {4u, MakeClip(5min, {1u})},
-      {5u, MakeClip(5min, {10u})},         {6u, MakeClip(3min, {100u})},
+      {3u, MakeClip(38min, {100u, 804u})}, {4u, MakeClip(4min, {1u})},
+      {5u, MakeClip(4min, {10u})},         {6u, MakeClip(3min, {100u})},
   };
   ASSERT_TRUE(Validate(clips, playlists));
 
@@ -762,8 +750,8 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_ExtraClips2a
   };
 
   PlaylistMap playlists{
-      {1u, MakePlaylist(1u, 5min, {4u}, {5min})},
-      {10u, MakePlaylist(10u, 5min, {5u}, {5min})},
+      {1u, MakePlaylist(1u, 4min, {4u}, {4min})},
+      {10u, MakePlaylist(10u, 4min, {5u}, {4min})},
       {100u, MakePlaylist(100u, 7500500ms, {1u, 2u, 3u, 6u}, {45min, 42min, 38min, 500ms})},
       {800u, MakePlaylist(800u, 2700500ms, {1u, 6u}, {45min, 500ms})},
       {802u, MakePlaylist(802u, 2520500ms, {2u, 6u}, {42min, 500ms})},
@@ -771,8 +759,8 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_ExtraClips2a
   };
   ClipMap clips{
       {1u, MakeClip(45min, {100u, 800u})}, {2u, MakeClip(42min, {100u, 802u})},
-      {3u, MakeClip(38min, {100u, 804u})}, {4u, MakeClip(5min, {1u})},
-      {5u, MakeClip(5min, {10u})},         {6u, MakeClip(500ms, {100u, 800u, 802u, 804u})},
+      {3u, MakeClip(38min, {100u, 804u})}, {4u, MakeClip(4min, {1u})},
+      {5u, MakeClip(4min, {10u})},         {6u, MakeClip(500ms, {100u, 800u, 802u, 804u})},
   };
   ASSERT_TRUE(Validate(clips, playlists));
 
@@ -833,8 +821,8 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_ExtraClips2b
   };
 
   PlaylistMap playlists{
-      {1u, MakePlaylist(1u, 5min, {7u}, {5min})},
-      {10u, MakePlaylist(10u, 5min, {8u}, {5min})},
+      {1u, MakePlaylist(1u, 4min, {7u}, {4min})},
+      {10u, MakePlaylist(10u, 4min, {8u}, {4min})},
       {100u,
        MakePlaylist(100u, 9900500ms, {6u, 1u, 2u, 3u, 4u}, {500ms, 45min, 42min, 38min, 40min})},
       {800u, MakePlaylist(800u, 2700500ms, {6u, 1u}, {500ms, 45min})},
@@ -848,8 +836,8 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_ExtraClips2b
       {3u, MakeClip(38min, {100u, 804u})},
       {4u, MakeClip(40min, {100u, 806u})},
       {6u, MakeClip(500ms, {100u, 800u, 802u, 804u, 806u})},
-      {7u, MakeClip(5min, {1u})},
-      {8u, MakeClip(5min, {10u})},
+      {7u, MakeClip(4min, {1u})},
+      {8u, MakeClip(4min, {10u})},
   };
   ASSERT_TRUE(Validate(clips, playlists));
 
@@ -913,8 +901,8 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_ExtraClips3)
   };
 
   PlaylistMap playlists{
-      {1u, MakePlaylist(1u, 5min, {4u}, {5min})},
-      {10u, MakePlaylist(10u, 5min, {5u}, {5min})},
+      {1u, MakePlaylist(1u, 4min, {4u}, {4min})},
+      {10u, MakePlaylist(10u, 4min, {5u}, {4min})},
       {100u, MakePlaylist(100u, 131min, {6u, 1u, 2u, 3u, 7u}, {3min, 45min, 42min, 38min, 3min})},
       {800u, MakePlaylist(800u, 45min, {1u}, {45min})},
       {802u, MakePlaylist(802u, 42min, {2u}, {42min})},
@@ -922,8 +910,8 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_ExtraClips3)
   };
   ClipMap clips{
       {1u, MakeClip(45min, {100u, 800u})}, {2u, MakeClip(42min, {100u, 802u})},
-      {3u, MakeClip(38min, {100u, 804u})}, {4u, MakeClip(5min, {1u})},
-      {5u, MakeClip(5min, {10u})},         {6u, MakeClip(3min, {100u})},
+      {3u, MakeClip(38min, {100u, 804u})}, {4u, MakeClip(4min, {1u})},
+      {5u, MakeClip(4min, {10u})},         {6u, MakeClip(3min, {100u})},
       {7u, MakeClip(3min, {100u})},
   };
   ASSERT_TRUE(Validate(clips, playlists));
@@ -984,8 +972,8 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_ExtraIndivid
   };
 
   PlaylistMap playlists{
-      {1u, MakePlaylist(1u, 5min, {4u}, {5min})},
-      {10u, MakePlaylist(10u, 5min, {5u}, {5min})},
+      {1u, MakePlaylist(1u, 4min, {4u}, {4min})},
+      {10u, MakePlaylist(10u, 4min, {5u}, {4min})},
       {100u, MakePlaylist(100u, 125min, {1u, 2u, 3u}, {45min, 42min, 38min})},
       {800u, MakePlaylist(800u, 48min, {1u, 6u}, {45min, 3min})},
       {802u, MakePlaylist(802u, 48min, {7u, 2u, 8u}, {3min, 42min, 3min})},
@@ -993,8 +981,8 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_ExtraIndivid
   };
   ClipMap clips{
       {1u, MakeClip(45min, {100u, 800u})}, {2u, MakeClip(42min, {100u, 802u})},
-      {3u, MakeClip(38min, {100u, 804u})}, {4u, MakeClip(5min, {1u})},
-      {5u, MakeClip(5min, {10u})},         {6u, MakeClip(3min, {800u})},
+      {3u, MakeClip(38min, {100u, 804u})}, {4u, MakeClip(4min, {1u})},
+      {5u, MakeClip(4min, {10u})},         {6u, MakeClip(3min, {800u})},
       {7u, MakeClip(3min, {802u})},        {8u, MakeClip(3min, {802u})},
       {9u, MakeClip(3min, {804u})},
   };
@@ -1055,8 +1043,8 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_Fail)
   };
 
   PlaylistMap playlists{
-      {1u, MakePlaylist(1u, 5min, {4u}, {5min})},
-      {10u, MakePlaylist(10u, 5min, {5u}, {5min})},
+      {1u, MakePlaylist(1u, 4min, {4u}, {4min})},
+      {10u, MakePlaylist(10u, 4min, {5u}, {4min})},
       {100u, MakePlaylist(100u, 125min, {1u, 2u, 3u}, {45min, 42min, 38min})},
       {800u, MakePlaylist(800u, 45min, {1u}, {45min})},
       {802u, MakePlaylist(802u, 42min, {2u}, {42min})},
@@ -1065,8 +1053,8 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_Fail)
   };
   ClipMap clips{
       {1u, MakeClip(45min, {100u, 800u})}, {2u, MakeClip(42min, {100u, 802u})},
-      {3u, MakeClip(38min, {100u})},       {4u, MakeClip(5min, {1u})},
-      {5u, MakeClip(5min, {10u})},         {6u, MakeClip(38min, {804u})},
+      {3u, MakeClip(38min, {100u})},       {4u, MakeClip(4min, {1u})},
+      {5u, MakeClip(4min, {10u})},         {6u, MakeClip(38min, {804u})},
       {7u, MakeClip(40min, {900u})},
   };
   ASSERT_TRUE(Validate(clips, playlists));
@@ -1114,8 +1102,8 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_Fail2)
   };
 
   PlaylistMap playlists{
-      {1u, MakePlaylist(1u, 5min, {4u}, {5min})},
-      {10u, MakePlaylist(10u, 5min, {5u}, {5min})},
+      {1u, MakePlaylist(1u, 4min, {4u}, {4min})},
+      {10u, MakePlaylist(10u, 4min, {5u}, {4min})},
       {100u, MakePlaylist(100u, 155min, {6u, 1u, 2u, 3u, 7u}, {15min, 45min, 42min, 38min, 15min})},
       {800u, MakePlaylist(800u, 45min, {1u}, {45min})},
       {802u, MakePlaylist(802u, 42min, {2u}, {42min})},
@@ -1124,8 +1112,8 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_Fail2)
   };
   ClipMap clips{
       {1u, MakeClip(45min, {100u, 800u})}, {2u, MakeClip(42min, {100u, 802u})},
-      {3u, MakeClip(38min, {100u, 804u})}, {4u, MakeClip(5min, {1u})},
-      {5u, MakeClip(5min, {10u})},         {6u, MakeClip(15min, {100u})},
+      {3u, MakeClip(38min, {100u, 804u})}, {4u, MakeClip(4min, {1u})},
+      {5u, MakeClip(4min, {10u})},         {6u, MakeClip(15min, {100u})},
       {7u, MakeClip(15min, {100u})},       {8u, MakeClip(40min, {900u})},
   };
   ASSERT_TRUE(Validate(clips, playlists));
@@ -1173,8 +1161,8 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_Fail3)
   };
 
   PlaylistMap playlists{
-      {1u, MakePlaylist(1u, 5min, {4u}, {5min})},
-      {10u, MakePlaylist(10u, 5min, {5u}, {5min})},
+      {1u, MakePlaylist(1u, 4min, {4u}, {4min})},
+      {10u, MakePlaylist(10u, 4min, {5u}, {4min})},
       {100u, MakePlaylist(100u, 125min, {1u, 2u, 3u}, {45min, 42min, 38min})},
       {800u, MakePlaylist(800u, 48min, {1u, 6u}, {45min, 3min})},
       {802u, MakePlaylist(802u, 60min, {7u, 2u, 8u}, {3min, 42min, 15min})},
@@ -1182,8 +1170,8 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_Fail3)
   };
   ClipMap clips{
       {1u, MakeClip(45min, {100u, 800u})}, {2u, MakeClip(42min, {100u, 802u})},
-      {3u, MakeClip(38min, {100u, 804u})}, {4u, MakeClip(5min, {1u})},
-      {5u, MakeClip(5min, {10u})},         {6u, MakeClip(3min, {800u})},
+      {3u, MakeClip(38min, {100u, 804u})}, {4u, MakeClip(4min, {1u})},
+      {5u, MakeClip(4min, {10u})},         {6u, MakeClip(3min, {800u})},
       {7u, MakeClip(3min, {802u})},        {8u, MakeClip(15min, {802u})},
       {9u, MakeClip(3min, {804u})},
   };
@@ -1209,6 +1197,166 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_Fail3)
   ASSERT_EQ(items.Size(), 6);
   returned = GetPlaylists(items);
   expected = {1u, 10u, 100u, 800u, 802u, 804u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+}
+
+// The disc gathers its four featurettes into a play all playlist (355) as well as its four episodes
+// (800-803, which have no play all playlist of their own).
+// (Example The Expanse (2015) S3D3 UK Bluray)
+TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_OfExtrasIgnored)
+{
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{
+      MakeEpisode(0, 24), // Featurettes, of unknown length
+      MakeEpisode(0, 25),       MakeEpisode(0, 26),       MakeEpisode(0, 27),
+      MakeEpisode(3, 10, 2520), // 42 minutes
+      MakeEpisode(3, 11, 2640), MakeEpisode(3, 12, 2520), MakeEpisode(3, 13, 2520),
+  };
+
+  PlaylistMap playlists{
+      {351u, MakePlaylist(351u, 2200s, {301u, 302u}, {2196s, 4s})}, // The featurettes
+      {352u, MakePlaylist(352u, 378s, {304u, 305u}, {374s, 4s})},
+      {353u, MakePlaylist(353u, 381s, {307u, 308u}, {377s, 4s})},
+      {354u, MakePlaylist(354u, 345s, {50609u, 50610u}, {341s, 4s})},
+      {355u, MakePlaylist(355u, 3292s, {301u, 304u, 307u, 50609u, 50610u}, // Their play all
+                          {2196s, 374s, 377s, 341s, 4s})},
+      {800u, MakePlaylist(800u, 2532s, {800u}, {2532s})}, // The episodes
+      {801u, MakePlaylist(801u, 2667s, {801u}, {2667s})},
+      {802u, MakePlaylist(802u, 2529s, {802u}, {2529s})},
+      {803u, MakePlaylist(803u, 2495s, {50606u}, {2495s})},
+      // The disc also offers each featurette's clip on its own
+      {301u, MakePlaylist(301u, 2196s, {301u}, {2196s})},
+      {304u, MakePlaylist(304u, 374s, {304u}, {374s})},
+      {307u, MakePlaylist(307u, 377s, {307u}, {377s})},
+      {1106u, MakePlaylist(1106u, 341s, {50609u}, {341s})},
+      {1107u, MakePlaylist(1107u, 4s, {50610u}, {4s})},
+  };
+  ClipMap clips{
+      {301u, MakeClip(2196s, {301u, 351u, 355u})},
+      {302u, MakeClip(4s, {351u})},
+      {304u, MakeClip(374s, {304u, 352u, 355u})},
+      {305u, MakeClip(4s, {352u})},
+      {307u, MakeClip(377s, {307u, 353u, 355u})},
+      {308u, MakeClip(4s, {353u})},
+      {50609u, MakeClip(341s, {354u, 355u, 1106u})},
+      {50610u, MakeClip(4s, {354u, 355u, 1107u})},
+      {800u, MakeClip(2532s, {800u})},
+      {801u, MakeClip(2667s, {801u})},
+      {802u, MakeClip(2529s, {802u})},
+      {50606u, MakeClip(2495s, {803u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  // The episodes follow the featurettes in episodesOnDisc, so are at indexes 4 to 7
+  static constexpr std::array<unsigned int, 4> EXPECTED_PLAYLISTS{800u, 801u, 802u, 803u};
+  for (int episode = 0; episode < static_cast<int>(EXPECTED_PLAYLISTS.size()); ++episode)
+  {
+    CDiscDirectoryHelper helper;
+    EXPECT_TRUE(
+        helper.GetEpisodePlaylists(url, items, allTitles, episode + 4, episodes, clips, playlists))
+        << "episode " << episode + 10;
+    ASSERT_EQ(items.Size(), 1) << "episode " << episode + 10;
+    EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), EXPECTED_PLAYLISTS[episode]);
+  }
+
+  CDiscDirectoryHelper helper;
+
+  EXPECT_FALSE(helper.GetEpisodePlaylists(url, items, allTitles, 8, episodes, clips,
+                                          playlists)); // Invalid episode index
+  ASSERT_EQ(items.Size(), 0);
+
+  EXPECT_TRUE(
+      helper.GetEpisodePlaylists(url, items, allTitles, ALL_PLAYLISTS, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 4); // All episodes
+  auto returned{GetPlaylists(items)};
+  std::set<unsigned int> expected{800u, 801u, 802u, 803u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::MAIN, episodes, clips,
+                                            playlists));
+  ASSERT_EQ(items.Size(), 13);
+  returned = GetPlaylists(items);
+  expected = {301u, 304u, 307u, 351u, 352u, 353u, 354u, 355u, 800u, 801u, 802u, 803u, 1106u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::ALL, episodes, clips,
+                                            playlists));
+  ASSERT_EQ(items.Size(), 14);
+  returned = GetPlaylists(items);
+  expected = {301u, 304u, 307u, 351u, 352u, 353u, 354u, 355u, 800u, 801u, 802u, 803u, 1106u, 1107u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+}
+
+// As GetEpisodePlaylists_PlayAllPlaylist_OfExtrasIgnored, but the extras gathered into playlist 201
+// are of similar lengths to one another, so being near-equal does not tell them from episodes.
+// (Example The Last of Us S2D1 Bluray)
+TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_OfSimilarLengthExtrasIgnored)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{
+      MakeEpisode(2, 1, 3540), // 59 minutes
+      MakeEpisode(2, 2, 3420),
+      MakeEpisode(2, 3, 3420),
+  };
+
+  PlaylistMap playlists{
+      // A play all playlist of the three extras, which are of similar lengths to one another
+      {201u, MakePlaylist(201u, 1813s, {71u, 72u, 70u}, {533s, 548s, 732s})},
+      {202u, MakePlaylist(202u, 533s, {71u}, {533s})},
+      {203u, MakePlaylist(203u, 548s, {72u}, {548s})},
+      {204u, MakePlaylist(204u, 732s, {70u}, {732s})},
+      {207u, MakePlaylist(207u, 673s, {68u}, {673s})},
+      {801u, MakePlaylist(801u, 3529s, {63u}, {3529s})}, // The episodes
+      {802u, MakePlaylist(802u, 3373s, {65u}, {3373s})},
+      {803u, MakePlaylist(803u, 3369s, {66u}, {3369s})},
+  };
+  ClipMap clips{
+      {63u, MakeClip(3529s, {801u})},      {65u, MakeClip(3373s, {802u})},
+      {66u, MakeClip(3369s, {803u})},      {68u, MakeClip(673s, {207u})},
+      {70u, MakeClip(732s, {201u, 204u})}, {71u, MakeClip(533s, {201u, 202u})},
+      {72u, MakeClip(548s, {201u, 203u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  static constexpr std::array<unsigned int, 3> EXPECTED_PLAYLISTS{801u, 802u, 803u};
+  for (int episodeIndex = 0; episodeIndex < static_cast<int>(EXPECTED_PLAYLISTS.size());
+       ++episodeIndex)
+  {
+    EXPECT_TRUE(
+        helper.GetEpisodePlaylists(url, items, allTitles, episodeIndex, episodes, clips, playlists))
+        << "episode index " << episodeIndex;
+    ASSERT_EQ(items.Size(), 1) << "episode index " << episodeIndex;
+    EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), EXPECTED_PLAYLISTS[episodeIndex]);
+  }
+
+  EXPECT_FALSE(helper.GetEpisodePlaylists(url, items, allTitles, 4, episodes, clips,
+                                          playlists)); // Invalid episode index
+  ASSERT_EQ(items.Size(), 0);
+
+  EXPECT_TRUE(
+      helper.GetEpisodePlaylists(url, items, allTitles, ALL_PLAYLISTS, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 3); // All episodes
+  auto returned{GetPlaylists(items)};
+  std::set<unsigned int> expected{801u, 802u, 803u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::MAIN, episodes, clips,
+                                            playlists));
+  ASSERT_EQ(items.Size(), 8);
+  returned = GetPlaylists(items);
+  expected = {201u, 202u, 203u, 204u, 207u, 801u, 802u, 803u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::ALL, episodes, clips,
+                                            playlists));
+  ASSERT_EQ(items.Size(), 8);
+  returned = GetPlaylists(items);
+  expected = {201u, 202u, 203u, 204u, 207u, 801u, 802u, 803u};
   EXPECT_TRUE(std::ranges::includes(returned, expected));
 }
 
@@ -2242,15 +2390,15 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_ThreeEpisodes_GroupMethod)
   };
 
   PlaylistMap playlists{
-      {1u, MakePlaylist(1u, 5min, {4u}, {5min})},
-      {10u, MakePlaylist(10u, 5min, {5u}, {5min})},
+      {1u, MakePlaylist(1u, 4min, {4u}, {4min})},
+      {10u, MakePlaylist(10u, 4min, {5u}, {4min})},
       {800u, MakePlaylist(800u, 45min, {1u}, {45min})},
       {801u, MakePlaylist(801u, 42min, {2u}, {42min})},
       {802u, MakePlaylist(802u, 38min, {3u}, {38min})},
   };
   ClipMap clips{
       {1u, MakeClip(45min, {800u})}, {2u, MakeClip(42min, {801u})}, {3u, MakeClip(38min, {802u})},
-      {4u, MakeClip(5min, {1u})},    {5u, MakeClip(5min, {10u})},
+      {4u, MakeClip(4min, {1u})},    {5u, MakeClip(4min, {10u})},
   };
   ASSERT_TRUE(Validate(clips, playlists));
 
@@ -2309,15 +2457,15 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_ThreeEpisodes_GroupMethod_Lo
   };
 
   PlaylistMap playlists{
-      {1u, MakePlaylist(1u, 5min, {4u}, {5min})},
-      {10u, MakePlaylist(10u, 5min, {5u}, {5min})},
+      {1u, MakePlaylist(1u, 4min, {4u}, {4min})},
+      {10u, MakePlaylist(10u, 4min, {5u}, {4min})},
       {800u, MakePlaylist(800u, 142min, {1u}, {142min})},
       {801u, MakePlaylist(801u, 45min, {2u}, {45min})},
       {802u, MakePlaylist(802u, 38min, {3u}, {38min})},
   };
   ClipMap clips{
       {1u, MakeClip(142min, {800u})}, {2u, MakeClip(45min, {801u})}, {3u, MakeClip(38min, {802u})},
-      {4u, MakeClip(5min, {1u})},     {5u, MakeClip(5min, {10u})},
+      {4u, MakeClip(4min, {1u})},     {5u, MakeClip(4min, {10u})},
   };
   ASSERT_TRUE(Validate(clips, playlists));
 
@@ -2376,15 +2524,15 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_ThreeEpisodes_GroupMethod_Wi
   };
 
   PlaylistMap playlists{
-      {1u, MakePlaylist(1u, 5min, {4u}, {5min})},
-      {10u, MakePlaylist(10u, 5min, {5u}, {5min})},
+      {1u, MakePlaylist(1u, 6min, {4u}, {6min})},
+      {10u, MakePlaylist(10u, 6min, {5u}, {6min})},
       {800u, MakePlaylist(800u, 45min, {1u}, {45min})},
       {801u, MakePlaylist(801u, 42min, {2u}, {42min})},
       {802u, MakePlaylist(802u, 38min, {3u}, {38min})},
   };
   ClipMap clips{
       {1u, MakeClip(45min, {800u})}, {2u, MakeClip(42min, {801u})}, {3u, MakeClip(38min, {802u})},
-      {4u, MakeClip(5min, {1u})},    {5u, MakeClip(5min, {10u})},
+      {4u, MakeClip(6min, {1u})},    {5u, MakeClip(6min, {10u})},
   };
   ASSERT_TRUE(Validate(clips, playlists));
 
@@ -2420,9 +2568,9 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_ThreeEpisodes_GroupMethod_Wi
 
   EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::MAIN, episodes, clips,
                                             playlists));
-  ASSERT_EQ(items.Size(), 3);
+  ASSERT_EQ(items.Size(), 5);
   returned = GetPlaylists(items);
-  expected = {800u, 801u, 802u};
+  expected = {1u, 10u, 800u, 801u, 802u};
   EXPECT_TRUE(std::ranges::includes(returned, expected));
 
   EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::ALL, episodes, clips,
@@ -2447,15 +2595,15 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_ThreeEpisodes_GroupMethod_Wi
   };
 
   PlaylistMap playlists{
-      {1u, MakePlaylist(1u, 5min, {4u}, {5min})},
-      {10u, MakePlaylist(10u, 5min, {5u}, {5min})},
+      {1u, MakePlaylist(1u, 6min, {4u}, {6min})},
+      {10u, MakePlaylist(10u, 6min, {5u}, {6min})},
       {800u, MakePlaylist(800u, 45min, {1u}, {45min})},
       {801u, MakePlaylist(801u, 42min, {2u}, {42min})},
       {802u, MakePlaylist(802u, 38min, {3u}, {38min})},
   };
   ClipMap clips{
       {1u, MakeClip(45min, {800u})}, {2u, MakeClip(42min, {801u})}, {3u, MakeClip(38min, {802u})},
-      {4u, MakeClip(5min, {1u})},    {5u, MakeClip(5min, {10u})},
+      {4u, MakeClip(6min, {1u})},    {5u, MakeClip(6min, {10u})},
   };
   ASSERT_TRUE(Validate(clips, playlists));
 
@@ -2492,9 +2640,9 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_ThreeEpisodes_GroupMethod_Wi
 
   EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::MAIN, episodes, clips,
                                             playlists));
-  ASSERT_EQ(items.Size(), 3);
+  ASSERT_EQ(items.Size(), 5);
   returned = GetPlaylists(items);
-  expected = {800u, 801u, 802u};
+  expected = {1u, 10u, 800u, 801u, 802u};
   EXPECT_TRUE(std::ranges::includes(returned, expected));
 
   EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::ALL, episodes, clips,
@@ -2593,8 +2741,8 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_ThreeEpisodes_GroupMethod_Lo
   };
 
   PlaylistMap playlists{
-      {1u, MakePlaylist(1u, 5min, {4u}, {5min})},
-      {10u, MakePlaylist(10u, 5min, {5u}, {5min})},
+      {1u, MakePlaylist(1u, 4min, {4u}, {4min})},
+      {10u, MakePlaylist(10u, 4min, {5u}, {4min})},
       {800u, MakePlaylist(800u, 45min, {1u}, {45min})},
       {801u, MakePlaylist(801u, 42min, {2u}, {42min})},
       {802u, MakePlaylist(802u, 38min, {3u}, {38min})},
@@ -2602,7 +2750,7 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_ThreeEpisodes_GroupMethod_Lo
   };
   ClipMap clips{
       {1u, MakeClip(45min, {800u})}, {2u, MakeClip(42min, {801u})}, {3u, MakeClip(38min, {802u})},
-      {4u, MakeClip(5min, {1u})},    {5u, MakeClip(5min, {10u})},   {7u, MakeClip(38min, {803u})},
+      {4u, MakeClip(4min, {1u})},    {5u, MakeClip(4min, {10u})},   {7u, MakeClip(38min, {803u})},
   };
   ASSERT_TRUE(Validate(clips, playlists));
 
@@ -2660,17 +2808,17 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_ThreeEpisodes_GroupMethod_Tw
   };
 
   PlaylistMap playlists{
-      {1u, MakePlaylist(1u, 5min, {4u}, {5min})},
+      {1u, MakePlaylist(1u, 4min, {4u}, {4min})},
       {2u, MakePlaylist(2u, 45min, {6u}, {45min})},
       {3u, MakePlaylist(3u, 45min, {7u}, {45min})},
-      {10u, MakePlaylist(10u, 5min, {5u}, {5min})},
+      {10u, MakePlaylist(10u, 4min, {5u}, {4min})},
       {800u, MakePlaylist(800u, 45min, {1u}, {45min})},
       {801u, MakePlaylist(801u, 42min, {2u}, {42min})},
       {802u, MakePlaylist(802u, 38min, {3u}, {38min})},
   };
   ClipMap clips{
       {1u, MakeClip(45min, {800u})}, {2u, MakeClip(42min, {801u})}, {3u, MakeClip(38min, {802u})},
-      {4u, MakeClip(5min, {1u})},    {5u, MakeClip(5min, {10u})},   {6u, MakeClip(45min, {2u})},
+      {4u, MakeClip(4min, {1u})},    {5u, MakeClip(4min, {10u})},   {6u, MakeClip(45min, {2u})},
       {7u, MakeClip(45min, {3u})},
   };
   ASSERT_TRUE(Validate(clips, playlists));
@@ -2729,7 +2877,7 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_TwoEpisodes_GroupMethod_TwoG
   };
 
   PlaylistMap playlists{
-      {1u, MakePlaylist(1u, 5min, {4u}, {5min})},
+      {1u, MakePlaylist(1u, 4min, {4u}, {4min})},
       {2u, MakePlaylist(2u, 30min, {5u}, {30min})},
       {3u, MakePlaylist(3u, 30min, {6u}, {30min})},
       {801u, MakePlaylist(801u, 45min, {1u}, {45min})},
@@ -2739,7 +2887,7 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_TwoEpisodes_GroupMethod_TwoG
   };
   ClipMap clips{
       {1u, MakeClip(45min, {801u, 851u})}, {2u, MakeClip(42min, {802u, 852u})},
-      {4u, MakeClip(5min, {1u})},          {5u, MakeClip(30min, {2u})},
+      {4u, MakeClip(4min, {1u})},          {5u, MakeClip(30min, {2u})},
       {6u, MakeClip(30min, {3u})},
   };
   ASSERT_TRUE(Validate(clips, playlists));
@@ -2794,15 +2942,15 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_ThreeEpisodes_GroupMethod_Fa
   };
 
   PlaylistMap playlists{
-      {1u, MakePlaylist(1u, 5min, {4u}, {5min})},
-      {10u, MakePlaylist(10u, 5min, {5u}, {5min})},
+      {1u, MakePlaylist(1u, 4min, {4u}, {4min})},
+      {10u, MakePlaylist(10u, 4min, {5u}, {4min})},
       {800u, MakePlaylist(800u, 45min, {1u}, {45min})},
-      {801u, MakePlaylist(801u, 5min, {2u}, {5min})},
+      {801u, MakePlaylist(801u, 4min, {2u}, {4min})},
       {802u, MakePlaylist(802u, 38min, {3u}, {38min})},
   };
   ClipMap clips{
-      {1u, MakeClip(45min, {800u})}, {2u, MakeClip(5min, {801u})}, {3u, MakeClip(38min, {802u})},
-      {4u, MakeClip(5min, {1u})},    {5u, MakeClip(5min, {10u})},
+      {1u, MakeClip(45min, {800u})}, {2u, MakeClip(4min, {801u})}, {3u, MakeClip(38min, {802u})},
+      {4u, MakeClip(4min, {1u})},    {5u, MakeClip(4min, {10u})},
   };
   ASSERT_TRUE(Validate(clips, playlists));
 
@@ -2847,8 +2995,8 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_ThreeEpisodes_GroupMethod_Fa
   };
 
   PlaylistMap playlists{
-      {1u, MakePlaylist(1u, 5min, {4u}, {5min})},
-      {10u, MakePlaylist(10u, 5min, {5u}, {5min})},
+      {1u, MakePlaylist(1u, 4min, {4u}, {4min})},
+      {10u, MakePlaylist(10u, 4min, {5u}, {4min})},
       {800u, MakePlaylist(800u, 45min, {1u}, {45min})},
       {801u, MakePlaylist(801u, 142min, {2u}, {142min})},
       {802u, MakePlaylist(802u, 38min, {3u}, {38min})},
@@ -2856,7 +3004,7 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_ThreeEpisodes_GroupMethod_Fa
   };
   ClipMap clips{
       {1u, MakeClip(45min, {800u})}, {2u, MakeClip(142min, {801u})}, {3u, MakeClip(38min, {802u})},
-      {4u, MakeClip(5min, {1u})},    {5u, MakeClip(5min, {10u})},    {7u, MakeClip(40min, {803u})},
+      {4u, MakeClip(4min, {1u})},    {5u, MakeClip(4min, {10u})},    {7u, MakeClip(40min, {803u})},
   };
   ASSERT_TRUE(Validate(clips, playlists));
 
@@ -3489,15 +3637,15 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_FourEpisodesOneDouble_GroupM
   };
 
   PlaylistMap playlists{
-      {1u, MakePlaylist(1u, 5min, {4u}, {5min})},
-      {10u, MakePlaylist(10u, 5min, {5u}, {5min})},
+      {1u, MakePlaylist(1u, 4min, {4u}, {4min})},
+      {10u, MakePlaylist(10u, 4min, {5u}, {4min})},
       {800u, MakePlaylist(800u, 45min, {1u}, {45min})},
       {801u, MakePlaylist(801u, 42min, {2u}, {42min})},
       {802u, MakePlaylist(802u, 85min, {3u}, {85min})},
   };
   ClipMap clips{
       {1u, MakeClip(45min, {800u})}, {2u, MakeClip(42min, {801u})}, {3u, MakeClip(85min, {802u})},
-      {4u, MakeClip(5min, {1u})},    {5u, MakeClip(5min, {10u})},
+      {4u, MakeClip(4min, {1u})},    {5u, MakeClip(4min, {10u})},
   };
   ASSERT_TRUE(Validate(clips, playlists));
 
@@ -3562,8 +3710,8 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_FourEpisodesOneDouble_GroupM
   };
 
   PlaylistMap playlists{
-      {1u, MakePlaylist(1u, 5min, {4u}, {5min})},
-      {10u, MakePlaylist(10u, 5min, {5u}, {5min})},
+      {1u, MakePlaylist(1u, 4min, {4u}, {4min})},
+      {10u, MakePlaylist(10u, 4min, {5u}, {4min})},
       {800u, MakePlaylist(800u, 45min, {1u}, {45min})},
       {801u, MakePlaylist(801u, 42min, {2u}, {42min})},
       {802u, MakePlaylist(802u, 85min, {3u},
@@ -3573,7 +3721,7 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_FourEpisodesOneDouble_GroupM
   };
   ClipMap clips{
       {1u, MakeClip(45min, {800u})}, {2u, MakeClip(42min, {801u})}, {3u, MakeClip(85min, {802u})},
-      {4u, MakeClip(5min, {1u})},    {5u, MakeClip(5min, {10u})},
+      {4u, MakeClip(4min, {1u})},    {5u, MakeClip(4min, {10u})},
   };
   ASSERT_TRUE(Validate(clips, playlists));
 
@@ -3633,15 +3781,15 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_FourEpisodesOneDouble_GroupM
   };
 
   PlaylistMap playlists{
-      {1u, MakePlaylist(1u, 5min, {4u}, {5min})},
-      {10u, MakePlaylist(10u, 5min, {5u}, {5min})},
+      {1u, MakePlaylist(1u, 4min, {4u}, {4min})},
+      {10u, MakePlaylist(10u, 4min, {5u}, {4min})},
       {800u, MakePlaylist(800u, 45min, {1u}, {45min})},
       {801u, MakePlaylist(801u, 42min, {2u}, {42min})},
       {802u, MakePlaylist(802u, 57min, {3u}, {57min})},
   };
   ClipMap clips{
       {1u, MakeClip(45min, {800u})}, {2u, MakeClip(42min, {801u})}, {3u, MakeClip(57min, {802u})},
-      {4u, MakeClip(5min, {1u})},    {5u, MakeClip(5min, {10u})},
+      {4u, MakeClip(4min, {1u})},    {5u, MakeClip(4min, {10u})},
   };
   ASSERT_TRUE(Validate(clips, playlists));
 
@@ -3730,11 +3878,11 @@ TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_AllPlaylistsTooShort)
 
   PlaylistMap playlists{
       {1u, MakePlaylist(1u, 20min, {1u}, {20min})},
-      {2u, MakePlaylist(2u, 5min, {2u}, {5min})},
+      {2u, MakePlaylist(2u, 4min, {2u}, {4min})},
   };
   ClipMap clips{
       {1u, MakeClip(20min, {1u})},
-      {2u, MakeClip(5min, {2u})},
+      {2u, MakeClip(4min, {2u})},
   };
   ASSERT_TRUE(Validate(clips, playlists));
 
@@ -3767,18 +3915,18 @@ TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_MultiplePlaylists)
   // 120min = longest
   //  90min = 75% of longest → included in MAIN (>= 70% threshold of 84min)
   //  80min = 67% of longest → excluded in MAIN (< 84min)
-  //   5min = too short      → filtered by MIN_MOVIE_DURATION for SINGLE/MAIN
+  //   4min = too short      → filtered by MIN_MOVIE_DURATION for SINGLE/MAIN
   PlaylistMap playlists{
       {1u, MakePlaylist(1u, 120min, {1u}, {120min})},
       {2u, MakePlaylist(2u, 90min, {2u}, {90min})},
       {3u, MakePlaylist(3u, 80min, {3u}, {80min})},
-      {4u, MakePlaylist(4u, 5min, {4u}, {5min})},
+      {4u, MakePlaylist(4u, 4min, {4u}, {4min})},
   };
   ClipMap clips{
       {1u, MakeClip(120min, {1u})},
       {2u, MakeClip(90min, {2u})},
       {3u, MakeClip(80min, {3u})},
-      {4u, MakeClip(5min, {4u})},
+      {4u, MakeClip(4min, {4u})},
   };
   ASSERT_TRUE(Validate(clips, playlists));
 
@@ -3900,12 +4048,12 @@ TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_ChapterFiltering)
   PlaylistMap playlists{
       {1u, MakePlaylist(1u, 120min, {1u}, {60min, 60min})}, // 2 chapters
       {2u, MakePlaylist(2u, 115min, {2u}, {115min})}, // 1 chapter
-      {3u, MakePlaylist(3u, 5min, {3u}, {5min})}, // Too short
+      {3u, MakePlaylist(3u, 4min, {3u}, {4min})}, // Too short
   };
   ClipMap clips{
       {1u, MakeClip(120min, {1u})},
       {2u, MakeClip(115min, {2u})},
-      {3u, MakeClip(5min, {3u})},
+      {3u, MakeClip(4min, {3u})},
   };
   ASSERT_TRUE(Validate(clips, playlists));
 
@@ -3940,12 +4088,12 @@ TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_ChapterFiltering_MainPlaylistP
   PlaylistMap playlists{
       {1u, MakePlaylist(1u, 120min, {1u}, {60min, 60min})}, // 2 chapters
       {2u, MakePlaylist(2u, 80min, {2u}, {80min})}, // 1 chapter, mainPlaylist
-      {3u, MakePlaylist(3u, 5min, {3u}, {5min})}, // Too short
+      {3u, MakePlaylist(3u, 4min, {3u}, {4min})}, // Too short
   };
   ClipMap clips{
       {1u, MakeClip(120min, {1u})},
       {2u, MakeClip(80min, {2u})},
-      {3u, MakeClip(5min, {3u})},
+      {3u, MakeClip(4min, {3u})},
   };
   ASSERT_TRUE(Validate(clips, playlists));
 

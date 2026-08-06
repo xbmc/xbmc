@@ -135,6 +135,10 @@ static constexpr std::chrono::milliseconds MAX_EPISODE_DIFFERENCE{30 * 1000}; //
 static constexpr std::chrono::milliseconds MIN_SPECIAL_DURATION{5 * 60 * 1000}; // 5 minutes
 static constexpr int DURATION_TOLERANCE_PERCENT{20};
 static constexpr int DURATION_TOLERANCE_RELAXED_PLAYALLPLAYLIST_PERCENT{5};
+// For comparing a playlist against a scraped episode duration, which is approximate and often no
+// more than the broadcast slot rounded to whole minutes (eg. Battlestar Galactica (2003), where an
+// hour is given for 44 minutes of content). Only wide mismatches are meaningful.
+static constexpr int DURATION_TOLERANCE_SCRAPED_PERCENT{40};
 
 // Movies
 static constexpr std::chrono::milliseconds MIN_MOVIE_DURATION{30 * 60 * 1000}; // 30 minutes
@@ -304,7 +308,9 @@ private:
       unsigned int playAllPlaylistEpisodesStartOffset,
       const PlaylistInformation& playlistInformation,
       const std::map<unsigned int, std::vector<unsigned int>>& playAllPlaylistClipMap);
-  void FindPlayAllPlaylists(const ClipMap& clips, const PlaylistMap& playlists);
+  void FindPlayAllPlaylists(const ClipMap& clips,
+                            const PlaylistMap& playlists,
+                            const Episodes& episodesOnDisc);
   void FindGroups(const PlaylistMap& playlists, const Episodes& episodesOnDisc);
   void FindRelaxedPlayAllPlaylists(const PlaylistMap& playlists);
   void UsePlayAllPlaylistMethod(int episodeIndex, const PlaylistMap& playlists);
