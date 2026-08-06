@@ -2930,6 +2930,140 @@ TEST_F(TestDiscDirectoryHelper,
   }
 }
 
+// As GetEpisodePlaylists_FiveEpisodes_GroupMethod_ExactNumberOfPlaylists_PartialDurations, but the
+// last episode is feature length
+// (Example The Expanse S6D2 UK Bluray - episode 6 is the feature length finale)
+TEST_F(TestDiscDirectoryHelper,
+       GetEpisodePlaylists_ThreeEpisodes_GroupMethod_ExactNumberOfPlaylists_LongFinale)
+{
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  static constexpr std::array<unsigned int, 3> DURATIONS{2820, 2880, 3780};
+
+  PlaylistMap playlists{
+      {0u, MakePlaylist(0u, 27s, {6u}, {27s})}, // Too short to be an episode
+      {1u, MakePlaylist(1u, 2829s, {2u}, {2829s})}, {3u, MakePlaylist(3u, 2886s, {3u}, {2886s})},
+      {4u, MakePlaylist(4u, 3815s, {4u}, {3815s})}, // The finale
+      {7u, MakePlaylist(7u, 16s, {7u}, {16s})},
+  };
+  ClipMap clips{
+      {2u, MakeClip(2829s, {1u})}, {3u, MakeClip(2886s, {3u})}, {4u, MakeClip(3815s, {4u})},
+      {6u, MakeClip(27s, {0u})},   {7u, MakeClip(16s, {7u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  static constexpr std::array<unsigned int, 3> EXPECTED_PLAYLISTS{1u, 3u, 4u};
+  for (int episodeIndex = 0; episodeIndex < static_cast<int>(DURATIONS.size()); ++episodeIndex)
+  {
+    // Only the durations of the episodes scanned so far are known
+    Episodes episodes;
+    for (int i = 0; i < static_cast<int>(DURATIONS.size()); ++i)
+      episodes.emplace_back(MakeEpisode(6, i + 4, i <= episodeIndex ? DURATIONS[i] : 0));
+
+    CDiscDirectoryHelper helper;
+    EXPECT_TRUE(
+        helper.GetEpisodePlaylists(url, items, allTitles, episodeIndex, episodes, clips, playlists))
+        << "episode index " << episodeIndex;
+    ASSERT_EQ(items.Size(), 1) << "episode index " << episodeIndex;
+    EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), EXPECTED_PLAYLISTS[episodeIndex]);
+  }
+
+  CDiscDirectoryHelper helper;
+  Episodes episodes;
+  for (int i = 0; i < static_cast<int>(DURATIONS.size()); ++i)
+    episodes.emplace_back(MakeEpisode(1, i + 1, DURATIONS[i]));
+
+  EXPECT_TRUE(
+      helper.GetEpisodePlaylists(url, items, allTitles, ALL_PLAYLISTS, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 3); // All episodes
+  auto returned{GetPlaylists(items)};
+  std::set<unsigned int> expected{1u, 3u, 4u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::MAIN, episodes, clips,
+                                            playlists));
+  ASSERT_EQ(items.Size(), 3);
+  returned = GetPlaylists(items);
+  expected = {1u, 3u, 4u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::ALL, episodes, clips,
+                                            playlists));
+  ASSERT_EQ(items.Size(), 5);
+  returned = GetPlaylists(items);
+  expected = {0u, 1u, 3u, 4u, 7u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+}
+
+// There is no play-all playlist, nor any consecutive groups of playlists (of the correct number)
+// There is one more playlist long enough to be an episode than there are episodes - playlist 810 is
+// a feature length extra - so the one whose duration is nothing like an episode's is removed, and
+// the rest map to episodes in ascending numerical order
+TEST_F(TestDiscDirectoryHelper,
+       GetEpisodePlaylists_FiveEpisodes_GroupMethod_ExactNumberOfPlaylists_LongExtraRemoved)
+{
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{
+      MakeEpisode(1, 1, 2700), // 45 min
+      MakeEpisode(1, 2, 2700), MakeEpisode(1, 3, 2700),
+      MakeEpisode(1, 4, 2700), MakeEpisode(1, 5, 2700),
+  };
+
+  // Non-consecutive, so there is no group of playlists to use
+  PlaylistMap playlists{
+      {800u, MakePlaylist(800u, 2700s, {1u}, {2700s})},
+      {802u, MakePlaylist(802u, 2640s, {2u}, {2640s})},
+      {804u, MakePlaylist(804u, 2760s, {3u}, {2760s})},
+      {806u, MakePlaylist(806u, 2700s, {4u}, {2700s})},
+      {808u, MakePlaylist(808u, 2580s, {5u}, {2580s})},
+      {810u, MakePlaylist(810u, 6000s, {6u}, {6000s})}, // Feature length extra
+  };
+  ClipMap clips{
+      {1u, MakeClip(2700s, {800u})}, {2u, MakeClip(2640s, {802u})}, {3u, MakeClip(2760s, {804u})},
+      {4u, MakeClip(2700s, {806u})}, {5u, MakeClip(2580s, {808u})}, {6u, MakeClip(6000s, {810u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  static constexpr std::array<unsigned int, 5> EXPECTED_PLAYLISTS{800u, 802u, 804u, 806u, 808u};
+  for (int episodeIndex = 0; episodeIndex < static_cast<int>(EXPECTED_PLAYLISTS.size());
+       ++episodeIndex)
+  {
+    CDiscDirectoryHelper helper;
+    EXPECT_TRUE(
+        helper.GetEpisodePlaylists(url, items, allTitles, episodeIndex, episodes, clips, playlists))
+        << "episode index " << episodeIndex;
+    ASSERT_EQ(items.Size(), 1) << "episode index " << episodeIndex;
+    EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), EXPECTED_PLAYLISTS[episodeIndex]);
+  }
+
+  CDiscDirectoryHelper helper;
+
+  EXPECT_TRUE(
+      helper.GetEpisodePlaylists(url, items, allTitles, ALL_PLAYLISTS, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 5); // All episodes
+  auto returned{GetPlaylists(items)};
+  std::set<unsigned int> expected{800u, 802u, 804u, 806u, 808u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::MAIN, episodes, clips,
+                                            playlists));
+  ASSERT_EQ(items.Size(), 6);
+  returned = GetPlaylists(items);
+  expected = {800u, 802u, 804u, 806u, 808u, 810u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::ALL, episodes, clips,
+                                            playlists));
+  ASSERT_EQ(items.Size(), 6);
+  returned = GetPlaylists(items);
+  expected = {800u, 802u, 804u, 806u, 808u, 810u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+}
+
 // There is no play-all playlist, nor any consecutive groups of playlists (of the correct number)
 // There are only n playlists of the appropriate l length, so the assumption is these map to episodes
 // in ascending numerical order.

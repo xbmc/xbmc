@@ -325,6 +325,35 @@ bool MatchesAnyEpisodeDuration(const Episodes& episodesOnDisc,
       { return CheckDurationsWithinTolerance(e.duration * 1000ms, playlistDuration); });
 }
 
+// Whether each playlist matches the duration of the episode in the same position, taking the
+// playlists in ascending order as the episodes are.
+//
+// Only the episodes scraped so far have a duration, so the rest are not checked. That keeps the
+// outcome the same however far through a disc the scan has got, where a tolerance window derived
+// from the durations known so far moves as more of them arrive.
+bool PlaylistsMatchEpisodeDurationsInOrder(const PlaylistMap& playlists,
+                                           const Episodes& episodesOnDisc)
+{
+  if (playlists.size() != episodesOnDisc.size())
+    return false;
+
+  for (size_t index = 0; const PlaylistInformation& playlist : std::views::values(playlists))
+  {
+    const std::chrono::milliseconds episodeDuration{episodesOnDisc[index].duration * 1000ms};
+    if (episodeDuration > 0ms && !CheckDurationsWithinTolerance(episodeDuration, playlist.duration))
+    {
+      CLog::LogFC(LOGDEBUG, LOGBLURAY,
+                  "Playlist {} duration {} does not match episode {} duration {}",
+                  playlist.playlist, static_cast<int>(playlist.duration.count() / 1000),
+                  episodesOnDisc[index].iEpisode, episodesOnDisc[index].duration);
+      return false;
+    }
+    ++index;
+  }
+
+  return true;
+}
+
 std::chrono::milliseconds GetAverageEpisodeDuration(const Episodes& episodesOnDisc)
 {
   auto nonZeroEpisodes{episodesOnDisc |
@@ -702,15 +731,19 @@ void CDiscDirectoryHelper::FindGroups(const PlaylistMap& playlists, const Episod
   if (m_groups.empty() && m_numSpecials == 0)
   {
     CLog::LogFC(LOGDEBUG, LOGBLURAY, "Looking exact number of non-consecutive playlists");
-    // Remove playlists whose durations are not within 20% of one of the episodes' durations
-    if (AnyEpisodeDurationKnown(episodesOnDisc))
+
+    // Where there are more playlists than episodes, remove those whose durations are not within
+    // 20% of any of the episodes, in the hope of leaving exactly numEpisodes of them
+    if (longPlaylists.size() != m_numEpisodes && AnyEpisodeDurationKnown(episodesOnDisc))
     {
       std::erase_if(longPlaylists, [&episodesOnDisc](const PlaylistMapEntry& p)
                     { return !MatchesAnyEpisodeDuration(episodesOnDisc, p.second.duration); });
     }
 
-    // See if exact number remaining
-    if (longPlaylists.size() == m_numEpisodes)
+    // Exactly numEpisodes playlists are the episodes, provided each matches the duration of the
+    // episode in its position
+    if (longPlaylists.size() == m_numEpisodes &&
+        PlaylistsMatchEpisodeDurationsInOrder(longPlaylists, episodesOnDisc))
     {
       std::vector<CandidatePlaylistInformation> group;
       std::ranges::transform(longPlaylists, std::back_inserter(group),
