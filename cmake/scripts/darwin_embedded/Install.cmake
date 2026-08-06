@@ -114,12 +114,6 @@ add_custom_command(TARGET ${APP_NAME_LC} POST_BUILD
             ${CMAKE_SOURCE_DIR}/tools/darwin/Support/Codesign.command
 )
 
-if(CORE_PLATFORM_NAME_LC STREQUAL tvos)
-  add_custom_command(TARGET ${APP_NAME_LC} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${DEPENDS_PATH}/share/${APP_NAME_LC} $<TARGET_FILE_DIR:${APP_NAME_LC}>/AppData/AppHome
-  )
-endif()
-
 set(DEPENDS_ROOT_FOR_XCODE ${NATIVEPREFIX}/..)
 
 set(DARWIN_EMBEDDED_CPACK_DIR ${CMAKE_BINARY_DIR}/tools/darwin/packaging/darwin_embedded)

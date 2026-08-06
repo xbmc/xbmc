@@ -19,10 +19,6 @@ ifeq ($(OS),android)
   PILPATHLIB=$(PILPATH)/lib
   PYTHONPATH=$(PILPATH):$(PYTHON_SITE_PKG)
   LDFLAGS+= -L$(PREFIX)/lib/dummy-lib$(APP_NAME)/ -l$(APP_NAME) -lm
-else ifeq ($(OS),darwin_embedded)
-  PILPATH=$(PREFIX)/share/$(APP_NAME)/addons/script.module.pil
-  PILPATHLIB=$(PILPATH)/lib
-  PYTHONPATH=$(PILPATH):$(PYTHON_SITE_PKG)
 endif
 
 SED_FLAG=-i
@@ -75,8 +71,6 @@ endif
 $(PILPATHLIB):
 ifeq ($(OS),android)
 	mkdir -p $(PILPATHLIB)
-else ifeq ($(OS),darwin_embedded)
-	mkdir -p $(PILPATHLIB)
 endif
 
 .installed-$(PLATFORM): .configured-$(PLATFORM) $(PILPATHLIB)
@@ -89,8 +83,6 @@ ifeq ($(OS),android)
                           -e "s/\.*with.*joinpath('\(.*\)').*/__file__ = os.path.join(os.environ[\"KODI_ANDROID_LIBS\"], '\1')/" \
                           -e 's/^        /    /' \
                               _imaging*.py
-else ifeq ($(OS),darwin_embedded)
-	unzip -o $(PLATFORM)/dist/pillow-*.egg -d $(PILPATHLIB)
 else ifeq ($(TARGET_PLATFORM),webos)
 	unzip -o $(PLATFORM)/dist/pillow-*.egg -d $(PILPATH)
 endif
