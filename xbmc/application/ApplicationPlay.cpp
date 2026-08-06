@@ -253,8 +253,11 @@ bool CApplicationPlay::GetPlaylistIfDisc()
     case SILENT:
     {
       // Select playlist, showing simple menu if needed
-      if (!CDiscDirectoryHelper::GetOrShowPlaylistSelection(m_item, menuDecision))
+      CFileItemList items;
+      if (!CDiscDirectoryHelper::GetOrShowPlaylistSelection(m_item, items, menuDecision) ||
+          items.IsEmpty())
         return false; // User cancelled
+      m_item = *items[0];
 
       // Reset any resume state as new playlist chosen
       m_options.starttime = m_options.startpercent = 0.0;

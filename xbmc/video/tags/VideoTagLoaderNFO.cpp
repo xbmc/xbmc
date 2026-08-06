@@ -122,6 +122,14 @@ CInfoScanner::InfoType CVideoTagLoaderNFO::Load(CVideoInfoTag& tag,
   return result;
 }
 
+int CVideoTagLoaderNFO::GetBlurayPlaylist() const
+{
+  if (!m_nfoParsed)
+    return -1;
+
+  return m_nfoReader.GetBlurayPlaylist();
+}
+
 std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
                                         bool movieFolder) const
 {

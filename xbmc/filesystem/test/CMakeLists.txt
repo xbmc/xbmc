@@ -6,6 +6,10 @@ set(SOURCES TestDirectory.cpp
             TestZipFile.cpp
             TestZipManager.cpp)
 
+if(TARGET ${APP_NAME_LC}::Bluray)
+  list(APPEND SOURCES TestBlurayDirectory.cpp)
+endif()
+
 if(TARGET ${APP_NAME_LC}::MicroHttpd)
   list(APPEND SOURCES TestHTTPDirectory.cpp)
 endif()

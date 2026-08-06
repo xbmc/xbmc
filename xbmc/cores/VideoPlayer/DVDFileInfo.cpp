@@ -373,6 +373,12 @@ bool CDVDFileInfo::CanExtract(const CFileItem& fileItem)
       fileItem.IsDiscImage() || VIDEO::IsDVDFile(fileItem, false, true))
     return false;
 
+  // A resolved disc item keeps the disc file in its path while its dynpath is the bluray://
+  // playlist, so the checks above (which look at one or the other) can miss it
+  if (URIUtils::IsBlurayPath(fileItem.GetDynPath()) ||
+      URIUtils::IsOpticalMediaFile(fileItem.GetPath()) || URIUtils::IsDiscImage(fileItem.GetPath()))
+    return false;
+
   // For HTTP/FTP we only allow extraction when on a LAN
   if (URIUtils::IsRemote(fileItem.GetPath()) && !URIUtils::IsOnLAN(fileItem.GetPath()) &&
       (URIUtils::IsFTP(fileItem.GetPath()) || URIUtils::IsHTTP(fileItem.GetPath())))

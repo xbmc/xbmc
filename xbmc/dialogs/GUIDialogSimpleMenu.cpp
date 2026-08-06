@@ -54,7 +54,7 @@ bool CGUIDialogSimpleMenu::ShowPlaylistSelection(
     if (!usedPlaylists.empty())
     {
       // See if playlist already used
-      const int newPlaylist{selectedItem.GetProperty("bluray_playlist").asInteger32(0)};
+      const int newPlaylist{selectedItem.GetProperty("bluray_playlist").asInteger32(-1)};
       auto matchingPlaylists{usedPlaylists |
                              std::views::filter([newPlaylist](const CVideoDatabase::PlaylistInfo& p)
                                                 { return p.playlist == newPlaylist; })};

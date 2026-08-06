@@ -33,6 +33,9 @@ public:
                               bool prioritise,
                               std::vector<EmbeddedArt>* = nullptr) override;
 
+  //! \brief Returns the bluray playlist from a <playlist> nfo element, -1 if there isn't one.
+  int GetBlurayPlaylist() const override;
+
 protected:
   //! \brief Find nfo file for item
   //! \param item The item to find NFO file for

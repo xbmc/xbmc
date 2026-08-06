@@ -46,6 +46,14 @@ const TiXmlElement* CNfoFile::GetRootElement() const
   return m_xmlDoc.RootElement();
 }
 
+int CNfoFile::GetBlurayPlaylist() const
+{
+  int playlist{-1};
+  if (const TiXmlElement * root{GetRootElement()}; root)
+    XMLUtils::GetInt(root, "playlist", playlist);
+  return playlist;
+}
+
 CInfoScanner::InfoType CNfoFile::TryParsing(ADDON::AddonType addonType) const
 {
   using enum CInfoScanner::InfoType;
