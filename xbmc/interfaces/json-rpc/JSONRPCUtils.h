@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012-2018 Team Kodi
+ *  Copyright (C) 2012-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -22,73 +22,79 @@ class CVideoInfoTag;
 
 namespace JSONRPC
 {
-  /*!
-   \ingroup jsonrpc
-   \brief Possible statuc codes of a response
-   to a JSON-RPC request
-   */
-  enum JSONRPC_STATUS
+/*!
+ \ingroup jsonrpc
+ \brief Possible status codes of a response
+ to a JSON-RPC request
+ */
+enum JSONRPC_STATUS
+{
+  OK = 0,
+  ACK = -1,
+  InvalidRequest = -32600,
+  MethodNotFound = -32601,
+  InvalidParams = -32602,
+  InternalError = -32603,
+  ParseError = -32700,
+  //-32100..-32000 Reserved for implementation-defined server-errors.
+  BadPermission = -32099,
+  NotFound = -32098,
+  Unavailable = -32097,
+  FailedToExecute = -32100
+};
+
+/*!
+ \brief Function pointer for JSON-RPC methods
+ */
+typedef JSONRPC_STATUS (*MethodCall)(const std::string& method,
+                                     ITransportLayer* transport,
+                                     IClient* client,
+                                     const CVariant& parameterObject,
+                                     CVariant& result);
+
+/*!
+ \ingroup jsonrpc
+ \brief Permission categories for json rpc methods
+
+ A JSON-RPC method will only be called if the caller
+ has the correct permissions to execute the method.
+ The method call needs to be perfectly threadsafe.
+ */
+enum OperationPermission
+{
+  ReadData = 0x1,
+  ControlPlayback = 0x2,
+  ControlNotify = 0x4,
+  ControlPower = 0x8,
+  UpdateData = 0x10,
+  RemoveData = 0x20,
+  Navigate = 0x40,
+  WriteFile = 0x80,
+  ControlSystem = 0x100,
+  ControlGUI = 0x200,
+  ManageAddon = 0x400,
+  ExecuteAddon = 0x800,
+  ControlPVR = 0x1000
+};
+
+const int OPERATION_PERMISSION_ALL =
+    (ReadData | ControlPlayback | ControlNotify | ControlPower | UpdateData | RemoveData |
+     Navigate | WriteFile | ControlSystem | ControlGUI | ManageAddon | ExecuteAddon | ControlPVR);
+
+const int OPERATION_PERMISSION_NOTIFICATION =
+    (ControlPlayback | ControlNotify | ControlPower | UpdateData | RemoveData | Navigate |
+     WriteFile | ControlSystem | ControlGUI | ManageAddon | ExecuteAddon | ControlPVR);
+
+/*!
+ \brief Returns a string representation for the
+ given OperationPermission
+ \param permission Specific OperationPermission
+ \return String representation of the given OperationPermission
+ */
+inline const char* PermissionToString(const OperationPermission& permission)
+{
+  switch (permission)
   {
-    OK = 0,
-    ACK = -1,
-    InvalidRequest = -32600,
-    MethodNotFound = -32601,
-    InvalidParams = -32602,
-    InternalError = -32603,
-    ParseError = -32700,
-    //-32099..-32000 Reserved for implementation-defined server-errors.
-    BadPermission = -32099,
-    FailedToExecute = -32100
-  };
-
-  /*!
-   \brief Function pointer for JSON-RPC methods
-   */
-  typedef JSONRPC_STATUS (*MethodCall) (const std::string &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result);
-
-  /*!
-   \ingroup jsonrpc
-   \brief Permission categories for json rpc methods
-
-   A JSON-RPC method will only be called if the caller
-   has the correct permissions to execute the method.
-   The method call needs to be perfectly threadsafe.
-  */
-  enum OperationPermission
-  {
-    ReadData        =    0x1,
-    ControlPlayback =    0x2,
-    ControlNotify   =    0x4,
-    ControlPower    =    0x8,
-    UpdateData      =   0x10,
-    RemoveData      =   0x20,
-    Navigate        =   0x40,
-    WriteFile       =   0x80,
-    ControlSystem   =  0x100,
-    ControlGUI      =  0x200,
-    ManageAddon     =  0x400,
-    ExecuteAddon    =  0x800,
-    ControlPVR      = 0x1000
-  };
-
-  const int OPERATION_PERMISSION_ALL = (ReadData | ControlPlayback | ControlNotify | ControlPower |
-                                        UpdateData | RemoveData | Navigate | WriteFile | ControlSystem |
-                                        ControlGUI | ManageAddon | ExecuteAddon | ControlPVR);
-
-  const int OPERATION_PERMISSION_NOTIFICATION = (ControlPlayback | ControlNotify | ControlPower | UpdateData |
-                                                 RemoveData | Navigate | WriteFile | ControlSystem |
-                                                 ControlGUI | ManageAddon | ExecuteAddon | ControlPVR);
-
-  /*!
-    \brief Returns a string representation for the
-    given OperationPermission
-    \param permission Specific OperationPermission
-    \return String representation of the given OperationPermission
-    */
-  inline const char *PermissionToString(const OperationPermission &permission)
-  {
-    switch (permission)
-    {
     case ReadData:
       return "ReadData";
     case ControlPlayback:

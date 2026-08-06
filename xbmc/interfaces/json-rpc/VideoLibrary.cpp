@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2016-2018 Team Kodi
+ *  Copyright (C) 2016-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -96,7 +96,7 @@ JSONRPC_STATUS CVideoLibrary::GetMovieDetails(const std::string &method, ITransp
   if (!videodatabase.GetMovieInfo("", infos, id, -1, //! @todo API support for video version id
                                   -1, RequiresAdditionalDetails(MediaTypeMovie, parameterObject)) ||
       infos.m_iDbId <= 0)
-    return InvalidParams;
+    return NotFound;
 
   HandleFileItem("movieid", true, "moviedetails", std::make_shared<CFileItem>(infos),
                  parameterObject, parameterObject["properties"], result, false);
@@ -128,7 +128,7 @@ JSONRPC_STATUS CVideoLibrary::GetMovieSetDetails(const std::string &method, ITra
   // Get movie set details
   CVideoInfoTag infos;
   if (!videodatabase.GetSetInfo(id, infos) || infos.m_iDbId <= 0)
-    return InvalidParams;
+    return NotFound;
 
   HandleFileItem("setid", false, "setdetails", std::make_shared<CFileItem>(infos), parameterObject,
                  parameterObject["properties"], result, false);
@@ -197,7 +197,7 @@ JSONRPC_STATUS CVideoLibrary::GetTVShowDetails(const std::string &method, ITrans
   CFileItemPtr fileItem(new CFileItem());
   CVideoInfoTag infos;
   if (!videodatabase.GetTvShowInfo("", infos, id, fileItem.get(), RequiresAdditionalDetails(MediaTypeTvShow, parameterObject)) || infos.m_iDbId <= 0)
-    return InvalidParams;
+    return NotFound;
 
   fileItem->SetFromVideoInfoTag(infos);
   HandleFileItem("tvshowid", true, "tvshowdetails", fileItem, parameterObject, parameterObject["properties"], result, false);
@@ -232,7 +232,7 @@ JSONRPC_STATUS CVideoLibrary::GetSeasonDetails(const std::string &method, ITrans
   CVideoInfoTag infos;
   if (!videodatabase.GetSeasonInfo(id, infos) ||
       infos.m_iDbId <= 0 || infos.m_iIdShow <= 0)
-    return InvalidParams;
+    return NotFound;
 
   CFileItemPtr pItem = std::make_shared<CFileItem>(infos);
   HandleFileItem("seasonid", false, "seasondetails", pItem, parameterObject, parameterObject["properties"], result, false);
@@ -306,7 +306,7 @@ JSONRPC_STATUS CVideoLibrary::GetEpisodeDetails(const std::string &method, ITran
 
   CVideoInfoTag infos;
   if (!videodatabase.GetEpisodeInfo("", infos, id, RequiresAdditionalDetails(MediaTypeEpisode, parameterObject)) || infos.m_iDbId <= 0)
-    return InvalidParams;
+    return NotFound;
 
   CFileItemPtr pItem = std::make_shared<CFileItem>(infos);
   // We need to set the correct base path to get the valid fanart
@@ -379,7 +379,7 @@ JSONRPC_STATUS CVideoLibrary::GetMusicVideoDetails(const std::string &method, IT
 
   CVideoInfoTag infos;
   if (!videodatabase.GetMusicVideoInfo("", infos, id, RequiresAdditionalDetails(MediaTypeMusicVideo, parameterObject)) || infos.m_iDbId <= 0)
-    return InvalidParams;
+    return NotFound;
 
   HandleFileItem("musicvideoid", true, "musicvideodetails", std::make_shared<CFileItem>(infos),
                  parameterObject, parameterObject["properties"], result, false);
@@ -613,7 +613,7 @@ JSONRPC_STATUS CVideoLibrary::SetMovieDetails(const std::string &method, ITransp
   CVideoInfoTag infos;
   if (!videodatabase.GetMovieInfo("", infos, id, -1) || //! @todo API support for video version id)
       infos.m_iDbId <= 0)
-    return InvalidParams;
+    return NotFound;
 
   // get artwork
   KODI::ART::Artwork artwork;
@@ -659,7 +659,7 @@ JSONRPC_STATUS CVideoLibrary::SetMovieSetDetails(const std::string &method, ITra
   if (infos.m_iDbId <= 0)
   {
     videodatabase.Close();
-    return InvalidParams;
+    return NotFound;
   }
 
   // get artwork
@@ -690,7 +690,7 @@ JSONRPC_STATUS CVideoLibrary::SetTVShowDetails(const std::string &method, ITrans
 
   CVideoInfoTag infos;
   if (!videodatabase.GetTvShowInfo("", infos, id) || infos.m_iDbId <= 0)
-    return InvalidParams;
+    return NotFound;
 
   // get artwork
   KODI::ART::Artwork artwork;
@@ -730,7 +730,7 @@ JSONRPC_STATUS CVideoLibrary::SetSeasonDetails(const std::string &method, ITrans
   if (infos.m_iDbId <= 0 || infos.m_iIdShow <= 0)
   {
     videodatabase.Close();
-    return InvalidParams;
+    return NotFound;
   }
 
   // get artwork
@@ -766,14 +766,14 @@ JSONRPC_STATUS CVideoLibrary::SetEpisodeDetails(const std::string &method, ITran
   if (infos.m_iDbId <= 0)
   {
     videodatabase.Close();
-    return InvalidParams;
+    return NotFound;
   }
 
   int tvshowid = videodatabase.GetTvShowForEpisode(id);
   if (tvshowid <= 0)
   {
     videodatabase.Close();
-    return InvalidParams;
+    return NotFound;
   }
 
   // get artwork
@@ -820,7 +820,7 @@ JSONRPC_STATUS CVideoLibrary::SetMusicVideoDetails(const std::string &method, IT
   if (infos.m_iDbId <= 0)
   {
     videodatabase.Close();
-    return InvalidParams;
+    return NotFound;
   }
 
   // get artwork
@@ -869,7 +869,7 @@ JSONRPC_STATUS CVideoLibrary::RefreshMovie(const std::string &method, ITransport
   CVideoInfoTag infos;
   if (!videodatabase.GetMovieInfo("", infos, id, -1) || //! @todo API support for video version id
       infos.m_iDbId <= 0)
-    return InvalidParams;
+    return NotFound;
 
   bool ignoreNfo = parameterObject["ignorenfo"].asBoolean();
   std::string searchTitle = parameterObject["title"].asString();
@@ -890,7 +890,7 @@ JSONRPC_STATUS CVideoLibrary::RefreshTVShow(const std::string &method, ITranspor
   CFileItemPtr item(new CFileItem());
   CVideoInfoTag infos;
   if (!videodatabase.GetTvShowInfo("", infos, id, item.get()) || infos.m_iDbId <= 0)
-    return InvalidParams;
+    return NotFound;
 
   item->SetFromVideoInfoTag(infos);
 
@@ -912,7 +912,7 @@ JSONRPC_STATUS CVideoLibrary::RefreshEpisode(const std::string &method, ITranspo
 
   CVideoInfoTag infos;
   if (!videodatabase.GetEpisodeInfo("", infos, id) || infos.m_iDbId <= 0)
-    return InvalidParams;
+    return NotFound;
 
   CFileItemPtr item = std::make_shared<CFileItem>(infos);
   // We need to set the correct base path to get the valid fanart
@@ -937,7 +937,7 @@ JSONRPC_STATUS CVideoLibrary::RefreshMusicVideo(const std::string &method, ITran
 
   CVideoInfoTag infos;
   if (!videodatabase.GetMusicVideoInfo("", infos, id) || infos.m_iDbId <= 0)
-    return InvalidParams;
+    return NotFound;
 
   bool ignoreNfo = parameterObject["ignorenfo"].asBoolean();
   std::string searchTitle = parameterObject["title"].asString();

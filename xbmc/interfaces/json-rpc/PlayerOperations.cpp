@@ -24,6 +24,7 @@
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationPowerHandling.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
+#include "filesystem/File.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/actions/Action.h"
@@ -76,6 +77,22 @@ void AppendSubtitleStreamFlagsAsBooleans(CVariant& list, StreamFlags flags)
   list["isdefault"] = ((flags & StreamFlags::FLAG_DEFAULT) != 0);
   list["isforced"] = ((flags & StreamFlags::FLAG_FORCED) != 0);
   list["isimpaired"] = ((flags & StreamFlags::FLAG_HEARING_IMPAIRED) != 0);
+}
+
+bool IsReachable(const CFileItem& item)
+{
+  const std::string& path = item.GetDynPath();
+
+  // Only plain files can be cheaply verified. Anything resolved by a plugin, served
+  // over the network as a stream, or addressed as a container is left to the player.
+  // Stacks in particular have no CFileFactory loader, so CFile::Exists() would always
+  // report them missing.
+  if (item.IsFolder() || path.empty() || URIUtils::IsPlugin(path) || URIUtils::IsUPnP(path) ||
+      URIUtils::IsInternetStream(path) || URIUtils::IsBlurayPath(path) || URIUtils::IsStack(path))
+    return true;
+
+  // Bypass the directory cache; a cached hit would mask a share that has gone away.
+  return XFILE::CFile::Exists(path, false);
 }
 
 } // namespace
@@ -1044,6 +1061,11 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
         // Handle "resume" option
         if (list.Size() == 1)
           HandleResumeOption(optionResume, *list[0]);
+
+        // Playback is posted asynchronously, so nothing after this point can be reported
+        // back to the caller. Report an addressable single item that cannot be reached.
+        if (list.Size() == 1 && !IsReachable(*list[0]))
+          return Unavailable;
 
         auto l = new CFileItemList(); //don't delete
         l->Copy(list);
