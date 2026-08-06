@@ -343,6 +343,165 @@ std::chrono::milliseconds GetAverageEpisodeDuration(const Episodes& episodesOnDi
   return std::chrono::milliseconds(count ? static_cast<long long>(sum / count) : 0) * 1000;
 }
 
+// Where an episode starts within a playlist, and how long it runs for
+// Zero for both means the episode is the whole playlist
+using EpisodeExtent = std::pair<std::chrono::milliseconds, std::chrono::milliseconds>;
+
+// The extent of every episode of a playlist covering several of them, in episode order
+using EpisodeExtents = std::vector<EpisodeExtent>;
+
+// Where each episode of a playlist made up of one clip per episode starts, and how long it runs
+// for. Returns an empty vector when the clips do not line up with the episodes on disc.
+//
+// The clips are taken to be in episode order and each is checked against the duration of the
+// episode in its position. Only the episodes scraped so far have a duration, so the rest are
+// checked only for being long enough to be an episode at all.
+EpisodeExtents DivideClipsIntoEpisodes(const PlaylistInformation& information,
+                                       const ClipMap& clips,
+                                       const Episodes& episodesOnDisc,
+                                       std::chrono::milliseconds minEpisodeDuration)
+{
+  if (information.clips.size() != episodesOnDisc.size())
+    return {};
+
+  EpisodeExtents episodes;
+  episodes.reserve(information.clips.size());
+  std::chrono::milliseconds start{0ms};
+  for (size_t index = 0; const unsigned int clip : information.clips)
+  {
+    const auto clipIt{clips.find(clip)};
+    if (clipIt == clips.end())
+    {
+      CLog::LogF(LOGERROR, "Clip {} missing in clip map", clip);
+      return {};
+    }
+
+    const std::chrono::milliseconds clipDuration{clipIt->second.duration};
+    if (clipDuration < minEpisodeDuration)
+    {
+      CLog::LogFC(LOGDEBUG, LOGBLURAY, "Rejecting playlist {} - clip {} duration {} is too short",
+                  information.playlist, clip, static_cast<int>(clipDuration.count() / 1000));
+      return {};
+    }
+
+    const std::chrono::milliseconds episodeDuration{episodesOnDisc[index].duration * 1000ms};
+    if (episodeDuration > 0ms && !CheckDurationsWithinTolerance(episodeDuration, clipDuration))
+    {
+      CLog::LogFC(LOGDEBUG, LOGBLURAY,
+                  "Rejecting playlist {} - clip {} duration {} does not match episode {} duration "
+                  "{}",
+                  information.playlist, clip, static_cast<int>(clipDuration.count() / 1000),
+                  episodesOnDisc[index].iEpisode, episodesOnDisc[index].duration);
+      return {};
+    }
+
+    episodes.emplace_back(start, clipDuration);
+    start += clipDuration;
+    ++index;
+  }
+
+  return episodes;
+}
+
+// Look for the number of chapters per episode that divides the playlist into runs of near-equal
+// duration, each long enough to be an episode, with too little left over at the end to be another.
+// Returns an empty vector when the chapters do not divide up that way.
+//
+// A chapter is where it starts within the playlist, so an episode of chaptersPerEpisode chapters
+// runs from the start of its first chapter to the start of the chapter that begins the next episode
+// - or to the end of the playlist for the last of them.
+EpisodeExtents DivideChaptersIntoEpisodes(const std::vector<std::chrono::milliseconds>& chapters,
+                                          std::chrono::milliseconds playlistDuration,
+                                          unsigned int numEpisodes,
+                                          std::chrono::milliseconds minEpisodeDuration)
+{
+  if (numEpisodes < 2 || chapters.size() < numEpisodes)
+    return {};
+
+  // Where the given chapter starts within the playlist
+  // An index of one past the last chapter returns the end of the playlist
+  const auto chapterStart{
+      [&chapters, playlistDuration](size_t chapter) -> std::chrono::milliseconds
+      { return chapter < chapters.size() ? chapters[chapter] : playlistDuration; }};
+
+  const size_t maxChaptersPerEpisode{chapters.size() / numEpisodes};
+  for (size_t chaptersPerEpisode = 1; chaptersPerEpisode <= maxChaptersPerEpisode;
+       ++chaptersPerEpisode)
+  {
+    // Derive the start and duration of each episode from the chapters
+    EpisodeExtents episodes;
+    episodes.reserve(numEpisodes);
+    for (unsigned int episode = 0; episode < numEpisodes; ++episode)
+    {
+      const std::chrono::milliseconds start{chapterStart(episode * chaptersPerEpisode)};
+      const std::chrono::milliseconds end{chapterStart((episode + 1) * chaptersPerEpisode)};
+      episodes.emplace_back(start, end - start);
+    }
+
+    // Whatever is left over must be too short to be an episode of its own, otherwise this is not
+    // the number of chapters per episode
+    if (playlistDuration - chapterStart(numEpisodes * chaptersPerEpisode) >= minEpisodeDuration)
+      continue;
+
+    // Every run must be long enough to be an episode
+    const auto durations{episodes | std::views::values};
+    if (std::ranges::any_of(durations, [minEpisodeDuration](const std::chrono::milliseconds d)
+                            { return d < minEpisodeDuration; }))
+      continue;
+
+    // The runs must be of near-equal duration
+    const std::chrono::milliseconds mean{std::accumulate(durations.begin(), durations.end(), 0ms) /
+                                         numEpisodes};
+    if (std::ranges::all_of(durations, [mean](const std::chrono::milliseconds d)
+                            { return CheckDurationsWithinTolerance(mean, d); }))
+      return episodes;
+  }
+
+  return {};
+}
+
+// Divides a playlist covering more than one episode into them by its chapters, for the methods that
+// map several episodes onto a single playlist. Returns an empty vector when the playlist covers
+// only one episode, or when its chapters give no boundaries between them.
+EpisodeExtents DivideMultipleEpisodePlaylist(const PlaylistInformation& information,
+                                             int multiple,
+                                             std::chrono::milliseconds minEpisodeDuration)
+{
+  if (multiple < 2)
+    return {};
+
+  EpisodeExtents episodes{DivideChaptersIntoEpisodes(information.chapters, information.duration,
+                                                     static_cast<unsigned int>(multiple),
+                                                     minEpisodeDuration)};
+  if (episodes.empty())
+  {
+    CLog::LogFC(LOGDEBUG, LOGBLURAY,
+                "Playlist {} covers {} episodes but its {} chapters do not divide into that many "
+                "of near-equal duration",
+                information.playlist, multiple, information.chapters.size());
+  }
+
+  return episodes;
+}
+
+// The extent of the offset'th episode of a playlist that has been divided into episodes, or zero
+// start and duration where it has not - taken as the episode being the whole playlist.
+EpisodeExtent GetEpisodeExtent(const EpisodeExtents& episodes,
+                               size_t offset,
+                               unsigned int playlist,
+                               int numEpisodesInPlaylist)
+{
+  if (offset >= episodes.size())
+    return {0ms, 0ms};
+
+  const auto& [start, duration]{episodes[offset]};
+  CLog::LogFC(LOGDEBUG, LOGBLURAY, "Episode {} of {} in playlist {} - starts at {} runs for {}",
+              offset + 1, numEpisodesInPlaylist, playlist, static_cast<int>(start.count() / 1000),
+              static_cast<int>(duration.count() / 1000));
+
+  return {start, duration};
+}
+
 // Whether candidateStream offers everything stream does.
 //
 // The two must have the same language, name and flags - and the candidate must then
@@ -812,6 +971,14 @@ void CDiscDirectoryHelper::UseRelaxedPlayAllPlaylistMethod(int episodeIndex,
     const PlaylistInformation& singleEpisodePlaylistInformation{
         playlists.find(singleEpisodePlaylist)->second};
 
+    // Where a playlist covers more than one episode, see if its chapters give the boundaries
+    // between them. Only for a single episode, as one covering them all is the whole playlist.
+    const EpisodeExtents episodeExtents{
+        m_allEpisodes == AllEpisodes::SINGLE
+            ? DivideMultipleEpisodePlaylist(singleEpisodePlaylistInformation,
+                                            episodePlaylist.multiple, m_minEpisodeDuration)
+            : EpisodeExtents{}};
+
     // A playlist may cover more than one episode (a double/triple episode)
     for (int i = 0; i < episodePlaylist.multiple; ++i)
     {
@@ -819,6 +986,11 @@ void CDiscDirectoryHelper::UseRelaxedPlayAllPlaylistMethod(int episodeIndex,
       {
         CLog::LogFC(LOGDEBUG, LOGBLURAY, "Candidate playlist {} duration {}", singleEpisodePlaylist,
                     static_cast<int>(singleEpisodePlaylistInformation.duration.count() / 1000));
+
+        // The extent of this episode within the playlist, when the chapters gave it
+        const auto [episodeStart, episodeDuration]{
+            GetEpisodeExtent(episodeExtents, static_cast<size_t>(i), singleEpisodePlaylist,
+                             episodePlaylist.multiple)};
 
         m_candidatePlaylists.try_emplace(
             singleEpisodePlaylist,
@@ -829,7 +1001,9 @@ void CDiscDirectoryHelper::UseRelaxedPlayAllPlaylistMethod(int episodeIndex,
                                          .chapters = static_cast<unsigned int>(
                                              singleEpisodePlaylistInformation.chapters.size()),
                                          .clips = singleEpisodePlaylistInformation.clips,
-                                         .languages = singleEpisodePlaylistInformation.languages});
+                                         .languages = singleEpisodePlaylistInformation.languages,
+                                         .episodeStart = episodeStart,
+                                         .episodeDuration = episodeDuration});
       }
       ++index;
     }
@@ -1228,7 +1402,8 @@ bool CDiscDirectoryHelper::CalculateGroupMultiples(std::vector<CandidatePlaylist
 }
 
 void CDiscDirectoryHelper::UseGroupsWithMultiplesMethod(int episodeIndex,
-                                                        const Episodes& episodesOnDisc)
+                                                        const Episodes& episodesOnDisc,
+                                                        const PlaylistMap& playlists)
 {
   // No groups of numEpisodes length so see if there could be double episode playlists
   // Assume more than one playlist
@@ -1244,11 +1419,29 @@ void CDiscDirectoryHelper::UseGroupsWithMultiplesMethod(int episodeIndex,
     for (const auto& playlist : group)
     {
       auto playlistInformation{playlist};
+
+      if (!playlists.contains(playlist.playlist))
+      {
+        CLog::LogF(LOGERROR, "Playlist {} missing in playlist map", playlist.playlist);
+        return;
+      }
+
+      // Where a playlist covers more than one episode, see if its chapters give the boundaries
+      // between them. Only for a single episode, as one covering them all is the whole playlist.
+      const EpisodeExtents episodeExtents{
+          m_allEpisodes == AllEpisodes::SINGLE
+              ? DivideMultipleEpisodePlaylist(playlists.find(playlist.playlist)->second,
+                                              playlist.multiple, m_minEpisodeDuration)
+              : EpisodeExtents{}};
+
       for (int i = 0; i < playlist.multiple; ++i)
       {
         if (m_allEpisodes == AllEpisodes::ALL || std::cmp_equal(index, episodeIndex))
         {
           playlistInformation.index = index;
+          std::tie(playlistInformation.episodeStart, playlistInformation.episodeDuration) =
+              GetEpisodeExtent(episodeExtents, static_cast<size_t>(i), playlist.playlist,
+                               playlist.multiple);
           m_candidatePlaylists.try_emplace(playlist.playlist, playlistInformation);
           CLog::LogFC(LOGDEBUG, LOGBLURAY, "Candidate playlist {} for episode {}",
                       playlist.playlist, episodesOnDisc[index].iEpisode);
@@ -1296,60 +1489,25 @@ void CDiscDirectoryHelper::UseSingleEpisodeClipsPlaylistMethod(int episodeIndex,
 
   CLog::LogFC(LOGDEBUG, LOGBLURAY, "Using single playlist with episode clips method");
 
-  // Derive the start of each clip within the playlist, validating as we go
-  std::vector<std::chrono::milliseconds> clipStarts;
-  clipStarts.reserve(information.clips.size());
-  std::chrono::milliseconds start{0ms};
-  for (unsigned int index = 0; const unsigned int clip : information.clips)
-  {
-    const auto clipIt{clips.find(clip)};
-    if (clipIt == clips.end())
-    {
-      CLog::LogF(LOGERROR, "Clip {} missing in clip map", clip);
-      return;
-    }
+  const EpisodeExtents episodeExtents{
+      DivideClipsIntoEpisodes(information, clips, episodesOnDisc, m_minEpisodeDuration)};
+  if (episodeExtents.empty())
+    return;
 
-    const std::chrono::milliseconds clipDuration{clipIt->second.duration};
-    if (clipDuration < m_minEpisodeDuration)
-    {
-      CLog::LogFC(LOGDEBUG, LOGBLURAY, "Rejecting playlist {} - clip {} duration {} is too short",
-                  information.playlist, clip, static_cast<int>(clipDuration.count() / 1000));
-      return;
-    }
+  // Save the candidate episode. Only one entry can be stored, as m_candidatePlaylists is keyed on
+  // playlist and every episode here shares the same playlist. When all episodes are wanted, the
+  // playlist is returned once, covering them all.
+  const unsigned int index{
+      m_allEpisodes == AllEpisodes::SINGLE ? static_cast<unsigned int>(episodeIndex) : 0u};
 
-    // Only episodes scraped so far have a duration, so unknown ones are left to the check above
-    const std::chrono::milliseconds episodeDuration{episodesOnDisc[index].duration * 1000ms};
-    if (episodeDuration > 0ms && !CheckDurationsWithinTolerance(episodeDuration, clipDuration))
-    {
-      CLog::LogFC(LOGDEBUG, LOGBLURAY,
-                  "Rejecting playlist {} - clip {} duration {} does not match episode {} duration "
-                  "{}",
-                  information.playlist, clip, static_cast<int>(clipDuration.count() / 1000),
-                  episodesOnDisc[index].iEpisode, episodesOnDisc[index].duration);
-      return;
-    }
+  CLog::LogFC(LOGDEBUG, LOGBLURAY, "Candidate playlist {} for episode {}", information.playlist,
+              episodesOnDisc[index].iEpisode);
 
-    clipStarts.emplace_back(start);
-    start += clipDuration;
-    ++index;
-  }
-
-  // Save the candidate episode. Only one entry can be stored
-  unsigned int index{0};
-  std::chrono::milliseconds episodeStart{0ms};
-  std::chrono::milliseconds episodeDuration{information.duration};
-  if (m_allEpisodes == AllEpisodes::SINGLE)
-  {
-    index = static_cast<unsigned int>(episodeIndex);
-    episodeStart = clipStarts[index];
-    episodeDuration = clips.find(information.clips[index])->second.duration;
-  }
-
-  CLog::LogFC(LOGDEBUG, LOGBLURAY,
-              "Candidate playlist {} for episode {} - starts at {} runs for {}",
-              information.playlist, episodesOnDisc[index].iEpisode,
-              static_cast<int>(episodeStart.count() / 1000),
-              static_cast<int>(episodeDuration.count() / 1000));
+  const auto [episodeStart,
+              episodeDuration]{m_allEpisodes == AllEpisodes::SINGLE
+                                   ? GetEpisodeExtent(episodeExtents, index, information.playlist,
+                                                      static_cast<int>(m_numEpisodes))
+                                   : EpisodeExtent{0ms, 0ms}};
 
   m_candidatePlaylists.try_emplace(
       information.playlist, CandidatePlaylistInformation{
@@ -1504,7 +1662,7 @@ void CDiscDirectoryHelper::FindCandidatePlaylists(const Episodes& episodesOnDisc
     UseGroupMethod(episodeIndex, episodesOnDisc, playlists);
 
   if (m_candidatePlaylists.empty() && !m_allGroups.empty() && m_numEpisodes > 1)
-    UseGroupsWithMultiplesMethod(episodeIndex, episodesOnDisc);
+    UseGroupsWithMultiplesMethod(episodeIndex, episodesOnDisc, playlists);
 
   if (m_candidatePlaylists.empty() && m_numEpisodes > 1 && m_isSpecial == IsSpecial::EPISODE)
     UseSingleEpisodeClipsPlaylistMethod(episodeIndex, episodesOnDisc, clips, playlists);
@@ -1652,7 +1810,8 @@ std::shared_ptr<CFileItem> GenerateEpisodeItem(const CURL& url,
 void AddStreamDetails(const StreamDetailsProvider& getStreamDetails,
                       const CFileItemList& allTitles,
                       unsigned int playlist,
-                      CFileItem& item)
+                      CFileItem& item,
+                      std::chrono::milliseconds episodeDuration = 0ms)
 {
   if (!getStreamDetails)
     return;
@@ -1664,6 +1823,12 @@ void AddStreamDetails(const StreamDetailsProvider& getStreamDetails,
   }
 
   getStreamDetails(playlist, item);
+
+  if (episodeDuration > 0ms)
+  {
+    item.GetVideoInfoTag()->m_streamDetails.SetVideoDuration(
+        0, static_cast<int>(episodeDuration.count() / 1000));
+  }
 }
 } // namespace
 
@@ -1731,7 +1896,8 @@ void CDiscDirectoryHelper::PopulateEpisodeFileItems(const CURL& url,
         continue;
       }
 
-      AddStreamDetails(m_getStreamDetails, allTitles, playlist.playlist, *newItem);
+      AddStreamDetails(m_getStreamDetails, allTitles, playlist.playlist, *newItem,
+                       playlist.episodeDuration);
 
       items.Add(newItem);
     }
@@ -2352,6 +2518,20 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
         if (const CBookmark & bookmark{selectedItem.GetVideoInfoTag()->m_EpBookmark};
             bookmark.IsSet())
           tag->m_EpBookmark = bookmark;
+
+        // The duration of the playlist, or of the episode's part of it where several share one, is
+        // measured from the disc and so is preferred over the scraper's.
+        // Loose sanity check that the scraper and found durations are similar, to avoid a
+        // mis-identified playlist from overwriting the episode's duration and affecting future
+        // playlist identification.
+        static constexpr int SCRAPED_DURATION_TOLERANCE_PERCENT{50};
+        const unsigned int scrapedDuration{tag->GetStaticDuration()};
+        if (const unsigned int discDuration{selectedItem.GetVideoInfoTag()->GetDuration()};
+            discDuration > 0 &&
+            (scrapedDuration == 0 ||
+             CheckDurationsWithinTolerance(scrapedDuration * 1000ms, discDuration * 1000ms,
+                                           SCRAPED_DURATION_TOLERANCE_PERCENT)))
+          tag->SetDuration(static_cast<int>(discDuration));
 
         if (tag->GetAssetInfo().GetTitle().empty())
           tag->GetAssetInfo().SetTitle(

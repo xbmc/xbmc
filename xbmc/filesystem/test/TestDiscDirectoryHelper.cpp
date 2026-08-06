@@ -14,6 +14,7 @@
 #include "filesystem/DiscDirectoryHelper.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/StringUtils.h"
 #include "video/Episode.h"
 
 #include <array>
@@ -58,10 +59,28 @@ class TestDiscDirectoryHelper : public AdvancedSettingsResetBase
 {
 };
 
+// A playlist holds where each of its chapters starts, not duration
+// Chapters are given here as durations, as a disc describes them and as
+// the .mpls parser logs them, and turned into the start times a playlist
+// actually holds.
+std::vector<std::chrono::milliseconds> MakeChapterStarts(
+    const std::vector<std::chrono::milliseconds>& chapterDurations)
+{
+  std::vector<std::chrono::milliseconds> starts;
+  starts.reserve(chapterDurations.size());
+  std::chrono::milliseconds start{0ms};
+  for (const std::chrono::milliseconds duration : chapterDurations)
+  {
+    starts.emplace_back(start);
+    start += duration;
+  }
+  return starts;
+}
+
 PlaylistInformation MakePlaylist(unsigned int playlist,
                                  std::chrono::milliseconds duration,
                                  std::vector<unsigned int> clips,
-                                 std::vector<std::chrono::milliseconds> chapterDurations,
+                                 const std::vector<std::chrono::milliseconds>& chapterDurations,
                                  std::string languages = "",
                                  std::vector<AudioStreamInfo> audioStreams = {},
                                  std::vector<SubtitleStreamInfo> pgStreams = {})
@@ -70,7 +89,7 @@ PlaylistInformation MakePlaylist(unsigned int playlist,
   info.playlist = playlist;
   info.duration = duration;
   info.clips = std::move(clips);
-  info.chapters = std::move(chapterDurations);
+  info.chapters = MakeChapterStarts(chapterDurations);
   info.languages = std::move(languages);
   info.audioStreams = std::move(audioStreams);
   info.pgStreams = std::move(pgStreams);
@@ -165,10 +184,21 @@ bool Validate(ClipMap& clips, PlaylistMap& playlists)
     if (duration != playlistInformation.duration)
       return false; // Playlist duration does not match total of the clips(s)
 
-    const auto chapter_duration{std::accumulate(playlistInformation.chapters.begin(),
-                                                playlistInformation.chapters.end(), 0ms)};
-    if (chapter_duration != playlistInformation.duration)
-      return false; // Playlist duration does not match total of the chapter(s)
+    // Chapters are where each starts within the playlist, so they run from its beginning, in order,
+    // and all begin before it ends
+    if (!playlistInformation.chapters.empty())
+    {
+      if (playlistInformation.chapters.front() != 0ms)
+        return false; // First chapter does not start at the beginning of the playlist
+
+      if (!std::ranges::is_sorted(playlistInformation.chapters) ||
+          std::ranges::adjacent_find(playlistInformation.chapters) !=
+              playlistInformation.chapters.end())
+        return false; // Chapters are not in ascending order of where they start
+
+      if (playlistInformation.chapters.back() >= playlistInformation.duration)
+        return false; // A chapter starts at or after the end of the playlist
+    }
   }
 
   for (const auto& clipInfo : clips | std::views::values)
@@ -1710,7 +1740,7 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_RelaxedPlayAllPlaylist_WithF
   };
 
   PlaylistMap playlists{
-      {250u, MakePlaylist(250u, 1474s, {1093u, 1062u}, {1s, 1473s})},
+      {250u, MakePlaylist(250u, 1475s, {1093u, 1062u}, {1s, 1474s})},
       {251u, MakePlaylist(251u, 1464s, {1096u}, {1464s})},
       {252u, MakePlaylist(252u, 1471s, {1097u}, {1471s})},
       {253u, MakePlaylist(253u, 1464s, {1098u}, {1464s})},
@@ -1718,16 +1748,22 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_RelaxedPlayAllPlaylist_WithF
       {255u, MakePlaylist(255u, 1127s, {1100u}, {1127s})},
       {256u, MakePlaylist(256u, 678s, {1101u}, {678s})},
       {257u, MakePlaylist(257u, 2191s, {1102u}, {2191s})},
-      {600u, MakePlaylist(600u, 6952s, {1093u, 1062u, 1086u, 1095u}, {1s, 1473s, 47s, 5431s})},
-      {601u, MakePlaylist(601u, 1474s, {1093u, 1062u}, {1s, 1473s})},
-      {602u, MakePlaylist(602u, 5479s, {1093u, 1086u, 1095u}, {1s, 47s, 5431s})}, // Four episodes
-      {1601u, MakePlaylist(1601u, 1473s, {1062u}, {1473s})},
+      {600u, MakePlaylist(600u, 6953s, {1093u, 1062u, 1086u, 1095u}, {1s, 1474s, 47s, 5431s})},
+      {601u, MakePlaylist(601u, 1475s, {1093u, 1062u}, {1s, 1474s})},
+      // Four episodes, each marked up with three chapters, then a two chapter credits tail
+      {602u, MakePlaylist(602u, 5479s, {1093u, 1086u, 1095u},
+                          {516s, 444s, 434s, // Episode 18
+                           306s, 546s, 502s, // Episode 19
+                           394s, 370s, 581s, // Episode 20
+                           499s, 354s, 488s, // Episode 21
+                           44s, 1s})}, // Credits
+      {1601u, MakePlaylist(1601u, 1474s, {1062u}, {1474s})},
       {1602u, MakePlaylist(1602u, 47s, {1086u}, {47s})},
       {1617u, MakePlaylist(1617u, 1s, {1093u}, {1s})},
       {1619u, MakePlaylist(1619u, 5431s, {1095u}, {5431s})},
   };
   ClipMap clips{
-      {1062u, MakeClip(1473s, {250u, 600u, 601u, 1601u})},
+      {1062u, MakeClip(1474s, {250u, 600u, 601u, 1601u})},
       {1086u, MakeClip(47s, {600u, 602u, 1602u})},
       {1093u, MakeClip(1s, {250u, 600u, 601u, 602u, 1617u})},
       {1095u, MakeClip(5431s, {600u, 602u, 1619u})},
@@ -1741,14 +1777,38 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_RelaxedPlayAllPlaylist_WithF
   };
   ASSERT_TRUE(Validate(clips, playlists));
 
-  static constexpr std::array<unsigned int, 5> expectedPlaylists{601u, 602u, 602u, 602u, 602u};
-  for (int episodeIndex = 0; episodeIndex < static_cast<int>(expectedPlaylists.size());
-       ++episodeIndex)
+  // Episode 17 is a playlist of its own, so runs for all of it. Episodes 18-21 share playlist 602,
+  // each running for its own three chapters of it, and each after the first carrying an episode
+  // bookmark of where it starts.
+  struct Expected
   {
+    unsigned int playlist;
+    int duration;
+    double bookmark;
+  };
+  static constexpr std::array<Expected, 5> EXPECTED{{{601u, 1475, 0.0},
+                                                     {602u, 1394, 0.0},
+                                                     {602u, 1354, 1394.0},
+                                                     {602u, 1345, 2748.0},
+                                                     {602u, 1341, 4093.0}}};
+
+  for (int episodeIndex = 0; episodeIndex < static_cast<int>(EXPECTED.size()); ++episodeIndex)
+  {
+    const auto& expectedEpisode{EXPECTED[episodeIndex]};
+
     EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, episodeIndex, episodes, clips,
                                            playlists));
-    ASSERT_EQ(items.Size(), 1);
-    EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), expectedPlaylists[episodeIndex]);
+    ASSERT_EQ(items.Size(), 1) << "episode index " << episodeIndex;
+    EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), expectedEpisode.playlist);
+
+    const CVideoInfoTag* tag{items[0]->GetVideoInfoTag()};
+    EXPECT_EQ(tag->GetDuration(), expectedEpisode.duration) << "episode index " << episodeIndex;
+    EXPECT_DOUBLE_EQ(tag->m_EpBookmark.timeInSeconds, expectedEpisode.bookmark)
+        << "episode index " << episodeIndex;
+    if (expectedEpisode.bookmark > 0.0)
+    {
+      EXPECT_DOUBLE_EQ(tag->m_EpBookmark.totalTimeInSeconds, 5479.0);
+    }
   }
 
   EXPECT_FALSE(helper.GetEpisodePlaylists(url, items, allTitles, 5, episodes, clips,
@@ -1762,6 +1822,192 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_RelaxedPlayAllPlaylist_WithF
   const auto returned{GetPlaylists(items)};
   const std::set<unsigned int> expected{601u, 602u};
   EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  // Asking for all episodes gives the whole of 602, not one episode of it
+  const auto allEpisodeItem{std::ranges::find_if(
+      items, [](const auto& i) { return GetPlaylistFromPath(i->GetPath()) == 602u; })};
+  ASSERT_NE(allEpisodeItem, items.cend());
+  EXPECT_EQ((*allEpisodeItem)->GetVideoInfoTag()->GetDuration(), 5479);
+  EXPECT_DOUBLE_EQ((*allEpisodeItem)->GetVideoInfoTag()->m_EpBookmark.timeInSeconds, 0.0);
+}
+
+// As GetEpisodePlaylists_RelaxedPlayAllPlaylist_WithFourEpisodePlaylist, but with the stream
+// details a disc's directory supplies. Those describe the whole playlist, so for the episodes
+// sharing 602 the duration must be replaced with the episode's own - otherwise every one of them is
+// reported as running for the length of all four.
+TEST_F(TestDiscDirectoryHelper,
+       GetEpisodePlaylists_RelaxedPlayAllPlaylist_FourEpisodePlaylistStreamDetails)
+{
+  CURL url("bluray://test/");
+  CFileItemList items;
+  Episodes episodes{
+      MakeEpisode(3, 17, 1500), // 25 minutes
+      MakeEpisode(3, 18, 1380), MakeEpisode(3, 19, 1380),
+      MakeEpisode(3, 20, 1380), MakeEpisode(3, 21, 1440),
+  };
+
+  PlaylistMap playlists{
+      {600u, MakePlaylist(600u, 6953s, {1093u, 1062u, 1086u, 1095u}, {1s, 1474s, 47s, 5431s})},
+      {601u, MakePlaylist(601u, 1475s, {1093u, 1062u}, {1s, 1474s})},
+      {602u, MakePlaylist(602u, 5479s, {1093u, 1086u, 1095u},
+                          {516s, 444s, 434s, 306s, 546s, 502s, 394s, 370s, 581s, 499s, 354s, 488s,
+                           44s, 1s})},
+  };
+  ClipMap clips{
+      {1062u, MakeClip(1474s, {600u, 601u})},
+      {1086u, MakeClip(47s, {600u, 602u})},
+      {1093u, MakeClip(1s, {600u, 601u, 602u})},
+      {1095u, MakeClip(5431s, {600u, 602u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  // Every playlist on the disc, as CBlurayDirectory supplies them
+  CFileItemList allTitles;
+  for (const unsigned int playlist : std::views::keys(playlists))
+  {
+    allTitles.Add(std::make_shared<CFileItem>(
+        StringUtils::Format("bluray://test/BDMV/PLAYLIST/{:05}.mpls", playlist), false));
+  }
+
+  // Describes the streams of a whole playlist, as CBlurayDirectory::SetStreamDetails does
+  CDiscDirectoryHelper helper{
+      [&playlists](unsigned int playlist, CFileItem& item)
+      {
+        VideoStreamInfo video;
+        video.valid = true;
+        const auto duration{static_cast<int>(playlists.at(playlist).duration.count() / 1000)};
+        item.GetVideoInfoTag()->m_streamDetails.SetStreams(video, duration, AudioStreamInfo{},
+                                                           SubtitleStreamInfo{});
+      }};
+
+  // Episode 17 has playlist 601 to itself, so runs for all of it. Episodes 18-21 share 602 and each
+  // runs for its own three chapters of it.
+  static constexpr std::array<int, 5> EXPECTED_DURATIONS{1475, 1394, 1354, 1345, 1341};
+  for (int episodeIndex = 0; episodeIndex < static_cast<int>(EXPECTED_DURATIONS.size());
+       ++episodeIndex)
+  {
+    EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, episodeIndex, episodes, clips,
+                                           playlists));
+    ASSERT_EQ(items.Size(), 1) << "episode index " << episodeIndex;
+
+    const CVideoInfoTag* tag{items[0]->GetVideoInfoTag()};
+    EXPECT_EQ(tag->m_streamDetails.GetVideoDuration(), EXPECTED_DURATIONS[episodeIndex])
+        << "episode index " << episodeIndex;
+    EXPECT_EQ(tag->GetDuration(), static_cast<unsigned int>(EXPECTED_DURATIONS[episodeIndex]))
+        << "episode index " << episodeIndex;
+  }
+}
+
+// As GetEpisodePlaylists_RelaxedPlayAllPlaylist_WithFourEpisodePlaylist, but playlist 602's
+// chapters do not divide into four runs of near-equal duration.
+TEST_F(TestDiscDirectoryHelper,
+       GetEpisodePlaylists_RelaxedPlayAllPlaylist_FourEpisodePlaylistChaptersDoNotDivide)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{
+      MakeEpisode(3, 17, 1500), // 25 minutes
+      MakeEpisode(3, 18, 1380), MakeEpisode(3, 19, 1380),
+      MakeEpisode(3, 20, 1380), MakeEpisode(3, 21, 1440),
+  };
+
+  PlaylistMap playlists{
+      {600u, MakePlaylist(600u, 6952s, {1093u, 1062u, 1086u, 1095u}, {1s, 1473s, 47s, 5431s})},
+      {601u, MakePlaylist(601u, 1474s, {1093u, 1062u}, {1s, 1473s})},
+      // One chapter per episode would divide evenly, but the runs are nothing like equal
+      {602u, MakePlaylist(602u, 5479s, {1093u, 1086u, 1095u}, {2500s, 1200s, 1100s, 679s})},
+  };
+  ClipMap clips{
+      {1062u, MakeClip(1473s, {600u, 601u})},
+      {1086u, MakeClip(47s, {600u, 602u})},
+      {1093u, MakeClip(1s, {600u, 601u, 602u})},
+      {1095u, MakeClip(5431s, {600u, 602u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  static constexpr std::array<unsigned int, 5> EXPECTED_PLAYLISTS{601u, 602u, 602u, 602u, 602u};
+  for (int episodeIndex = 0; episodeIndex < static_cast<int>(EXPECTED_PLAYLISTS.size());
+       ++episodeIndex)
+  {
+    EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, episodeIndex, episodes, clips,
+                                           playlists));
+    ASSERT_EQ(items.Size(), 1) << "episode index " << episodeIndex;
+    EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), EXPECTED_PLAYLISTS[episodeIndex]);
+
+    // No episode bookmark, and the whole playlist as the duration
+    const CVideoInfoTag* tag{items[0]->GetVideoInfoTag()};
+    EXPECT_DOUBLE_EQ(tag->m_EpBookmark.timeInSeconds, 0.0) << "episode index " << episodeIndex;
+    if (EXPECTED_PLAYLISTS[episodeIndex] == 602u)
+    {
+      EXPECT_EQ(tag->GetDuration(), 5479) << "episode index " << episodeIndex;
+    }
+  }
+}
+
+// Disc has a play-all playlist (clips shared with individual episode playlists)
+// Playlist 600 = play-all; 601 = episode 17; 602 = episode 18; 603 = episodes 19 and 20 as one
+// continuous stream, marked up with three chapters each and a two chapter credits tail
+// Similar to Avatar the Last Airbender (2005) Bluray S2D3
+TEST_F(TestDiscDirectoryHelper,
+       GetEpisodePlaylists_RelaxedPlayAllPlaylist_WithDoubleEpisodeChapters)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{
+      MakeEpisode(2, 17, 1470), // 24.5 minutes
+      MakeEpisode(2, 18, 1470),
+      MakeEpisode(2, 19, 1470),
+      MakeEpisode(2, 20, 1470),
+  };
+
+  PlaylistMap playlists{
+      {600u, MakePlaylist(600u, 5894s, {1093u, 1062u, 1086u, 1101u, 1102u},
+                          {1s, 1473s, 1473s, 46s, 2901s})},
+      {601u, MakePlaylist(601u, 1474s, {1093u, 1062u}, {1s, 1473s})},
+      {602u, MakePlaylist(602u, 1474s, {1093u, 1086u}, {1s, 1473s})},
+      {603u, MakePlaylist(603u, 2948s, {1093u, 1101u, 1102u},
+                          {520s, 540s, 414s, // Episode 19
+                           480s, 500s, 448s, // Episode 20
+                           45s, 1s})}, // Credits
+  };
+  ClipMap clips{
+      {1062u, MakeClip(1473s, {600u, 601u})},          {1086u, MakeClip(1473s, {600u, 602u})},
+      {1093u, MakeClip(1s, {600u, 601u, 602u, 603u})}, {1101u, MakeClip(46s, {600u, 603u})},
+      {1102u, MakeClip(2901s, {600u, 603u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  struct Expected
+  {
+    unsigned int playlist;
+    int duration;
+    double bookmark;
+  };
+  static constexpr std::array<Expected, 4> EXPECTED{
+      {{601u, 1474, 0.0}, {602u, 1474, 0.0}, {603u, 1474, 0.0}, {603u, 1428, 1474.0}}};
+
+  for (int episodeIndex = 0; episodeIndex < static_cast<int>(EXPECTED.size()); ++episodeIndex)
+  {
+    const auto& expectedEpisode{EXPECTED[episodeIndex]};
+
+    EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, episodeIndex, episodes, clips,
+                                           playlists));
+    ASSERT_EQ(items.Size(), 1) << "episode index " << episodeIndex;
+    EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), expectedEpisode.playlist);
+
+    const CVideoInfoTag* tag{items[0]->GetVideoInfoTag()};
+    EXPECT_EQ(tag->GetDuration(), expectedEpisode.duration) << "episode index " << episodeIndex;
+    EXPECT_DOUBLE_EQ(tag->m_EpBookmark.timeInSeconds, expectedEpisode.bookmark)
+        << "episode index " << episodeIndex;
+    if (expectedEpisode.bookmark > 0.0)
+    {
+      EXPECT_DOUBLE_EQ(tag->m_EpBookmark.totalTimeInSeconds, 2948.0);
+    }
+  }
 }
 
 // Disc has a play-all playlist (clips shared with individual episode playlists)
@@ -3019,6 +3265,77 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_FourEpisodesOneDouble_GroupM
   returned = GetPlaylists(items);
   expected = {1u, 10u, 800u, 801u, 802u};
   EXPECT_TRUE(std::ranges::includes(returned, expected));
+}
+
+// As GetEpisodePlaylists_FourEpisodesOneDouble_GroupMethod, but the double episode playlist 802 is
+// marked up with three chapters per episode and a single credits chapter, so where episode 4 starts
+// within it can be told
+TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_FourEpisodesOneDouble_GroupMethod_Chapters)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{
+      MakeEpisode(1, 1, 2700), // 45 min
+      MakeEpisode(1, 2, 2700),
+      MakeEpisode(1, 3, 2700),
+      MakeEpisode(1, 4, 2700),
+  };
+
+  PlaylistMap playlists{
+      {1u, MakePlaylist(1u, 5min, {4u}, {5min})},
+      {10u, MakePlaylist(10u, 5min, {5u}, {5min})},
+      {800u, MakePlaylist(800u, 45min, {1u}, {45min})},
+      {801u, MakePlaylist(801u, 42min, {2u}, {42min})},
+      {802u, MakePlaylist(802u, 85min, {3u},
+                          {900s, 850s, 800s, // Episode 3
+                           880s, 870s, 780s, // Episode 4
+                           20s})}, // Credits
+  };
+  ClipMap clips{
+      {1u, MakeClip(45min, {800u})}, {2u, MakeClip(42min, {801u})}, {3u, MakeClip(85min, {802u})},
+      {4u, MakeClip(5min, {1u})},    {5u, MakeClip(5min, {10u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  struct Expected
+  {
+    unsigned int playlist;
+    int duration;
+    double bookmark;
+  };
+  static constexpr std::array<Expected, 4> EXPECTED{
+      {{800u, 2700, 0.0}, {801u, 2520, 0.0}, {802u, 2550, 0.0}, {802u, 2530, 2550.0}}};
+
+  for (int episodeIndex = 0; episodeIndex < static_cast<int>(EXPECTED.size()); ++episodeIndex)
+  {
+    const auto& expectedEpisode{EXPECTED[episodeIndex]};
+
+    EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, episodeIndex, episodes, clips,
+                                           playlists));
+    ASSERT_EQ(items.Size(), 1) << "episode index " << episodeIndex;
+    EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), expectedEpisode.playlist);
+
+    const CVideoInfoTag* tag{items[0]->GetVideoInfoTag()};
+    EXPECT_EQ(tag->GetDuration(), expectedEpisode.duration) << "episode index " << episodeIndex;
+    EXPECT_DOUBLE_EQ(tag->m_EpBookmark.timeInSeconds, expectedEpisode.bookmark)
+        << "episode index " << episodeIndex;
+    if (expectedEpisode.bookmark > 0.0)
+    {
+      EXPECT_DOUBLE_EQ(tag->m_EpBookmark.totalTimeInSeconds, 5100.0);
+    }
+  }
+
+  // Asking for all episodes gives the whole of 802, not one episode of it
+  EXPECT_TRUE(
+      helper.GetEpisodePlaylists(url, items, allTitles, ALL_PLAYLISTS, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 3);
+  const auto allEpisodeItem{std::ranges::find_if(
+      items, [](const auto& i) { return GetPlaylistFromPath(i->GetPath()) == 802u; })};
+  ASSERT_NE(allEpisodeItem, items.cend());
+  EXPECT_EQ((*allEpisodeItem)->GetVideoInfoTag()->GetDuration(), 5100);
+  EXPECT_DOUBLE_EQ((*allEpisodeItem)->GetVideoInfoTag()->m_EpBookmark.timeInSeconds, 0.0);
 }
 
 // Consecutive playlists → group method assigns the nth playlist to episode n

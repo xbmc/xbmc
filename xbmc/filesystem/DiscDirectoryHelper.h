@@ -329,7 +329,9 @@ private:
       const std::vector<CandidatePlaylistInformation>& group);
   static bool CalculateGroupMultiples(std::vector<CandidatePlaylistInformation>& group,
                                       unsigned int numEpisodes);
-  void UseGroupsWithMultiplesMethod(int episodeIndex, const Episodes& episodesOnDisc);
+  void UseGroupsWithMultiplesMethod(int episodeIndex,
+                                    const Episodes& episodesOnDisc,
+                                    const PlaylistMap& playlists);
   void UseSingleEpisodeClipsPlaylistMethod(int episodeIndex,
                                            const Episodes& episodesOnDisc,
                                            const ClipMap& clips,
