@@ -23,6 +23,8 @@
 #include <string>
 #include <vector>
 
+inline constexpr const char* OUTPUT_NAME_DEFAULT = "Default";
+
 struct RESOLUTION_WHR
 {
   // user-defined ctor required for XCode 15.2 and emplace_back
@@ -286,6 +288,23 @@ public:
   virtual DEBUG_INFO_RENDER GetDebugInfo() { return {}; }
 
   virtual std::vector<std::string> GetConnectedOutputs() { return {}; }
+
+  /*!
+    * \brief Returns the number of physical monitors/outputs.
+    *
+    * Every backend's GetConnectedOutputs() includes OUTPUT_NAME_DEFAULT as
+    * the first entry; this is a placeholder (not a physical display) that
+    * means "let the system choose". This method excludes that placeholder
+    * from the count.
+    *
+    * \return Number of physical monitors/outputs.
+    */
+  virtual size_t GetPhysicalOutputCount()
+  {
+    const auto outputs = GetConnectedOutputs();
+    return (!outputs.empty() && outputs[0] == OUTPUT_NAME_DEFAULT) ? outputs.size() - 1
+                                                                   : outputs.size();
+  }
 
   /*!
    * \brief Return true when HDR display is available and enabled in settings

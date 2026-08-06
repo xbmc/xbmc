@@ -381,7 +381,13 @@ std::unique_ptr<CVideoSync> CWinSystemGbm::GetVideoSync(CVideoReferenceClock* cl
 
 std::vector<std::string> CWinSystemGbm::GetConnectedOutputs()
 {
-  return m_DRM->GetConnectedConnectorNames();
+  std::vector<std::string> outputs;
+  outputs.emplace_back(OUTPUT_NAME_DEFAULT);
+  for (const auto& name : m_DRM->GetConnectedConnectorNames())
+  {
+    outputs.emplace_back(name);
+  }
+  return outputs;
 }
 
 bool CWinSystemGbm::SetVideoOutput(const VideoPicture* videoPicture)

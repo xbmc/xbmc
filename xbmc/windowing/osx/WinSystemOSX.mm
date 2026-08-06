@@ -53,7 +53,6 @@ using namespace std::chrono_literals;
 namespace
 {
 constexpr int MAX_DISPLAYS = 32;
-constexpr const char* DEFAULT_SCREEN_NAME = "Default";
 } // namespace
 
 static std::array<NSWindowController*, MAX_DISPLAYS> blankingWindowControllers;
@@ -172,12 +171,6 @@ EdgeInsets GetScreenEdgeInsets(NSUInteger screenIdx)
 
 NSString* screenNameForDisplay(NSUInteger screenIdx)
 {
-  // screen id 0 is always called "Default"
-  if (screenIdx == 0)
-  {
-    return @(DEFAULT_SCREEN_NAME);
-  }
-
   const CGDirectDisplayID displayID = GetDisplayID(screenIdx);
   NSString* screenName = GetScreenName(screenIdx);
 
@@ -1334,18 +1327,12 @@ std::unique_ptr<CVideoSync> CWinSystemOSX::GetVideoSync(CVideoReferenceClock* cl
 std::vector<std::string> CWinSystemOSX::GetConnectedOutputs()
 {
   std::vector<std::string> outputs;
-  outputs.emplace_back(DEFAULT_SCREEN_NAME);
+  outputs.emplace_back(OUTPUT_NAME_DEFAULT);
 
-  // screen 0 is always the "Default" setting, avoid duplicating the available
-  // screens here.
   const NSUInteger numDisplays = NSScreen.screens.count;
-  if (numDisplays > 1)
+  for (NSUInteger disp = 0; disp < numDisplays; disp++)
   {
-    for (NSUInteger disp = 1; disp <= numDisplays - 1; disp++)
-    {
-      NSString* const dispName = screenNameForDisplay(disp);
-      outputs.emplace_back(dispName.UTF8String);
-    }
+    outputs.emplace_back(screenNameForDisplay(disp).UTF8String);
   }
 
   return outputs;

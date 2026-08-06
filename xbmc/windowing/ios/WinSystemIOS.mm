@@ -475,7 +475,7 @@ CVEAGLContext CWinSystemIOS::GetEAGLContextObj()
 std::vector<std::string> CWinSystemIOS::GetConnectedOutputs()
 {
   std::vector<std::string> outputs;
-  outputs.emplace_back("Default");
+  outputs.emplace_back(OUTPUT_NAME_DEFAULT);
   outputs.emplace_back(CONST_TOUCHSCREEN);
   if ([[UIScreen screens] count] > 1)
   {
