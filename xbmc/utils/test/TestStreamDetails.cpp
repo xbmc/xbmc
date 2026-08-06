@@ -82,9 +82,12 @@ TEST(TestStreamDetails, VideoAspectToAspectDescriptionCommonRatios)
   EXPECT_STREQ("1.19", CStreamDetails::VideoAspectToAspectDescription(1.19f).c_str());
   EXPECT_STREQ("1.33", CStreamDetails::VideoAspectToAspectDescription(1.33f).c_str());
   EXPECT_STREQ("1.37", CStreamDetails::VideoAspectToAspectDescription(1.37f).c_str());
+  EXPECT_STREQ("1.43", CStreamDetails::VideoAspectToAspectDescription(1.43f).c_str());
+  EXPECT_STREQ("1.50", CStreamDetails::VideoAspectToAspectDescription(1.50f).c_str());
   EXPECT_STREQ("1.66", CStreamDetails::VideoAspectToAspectDescription(1.66f).c_str());
   EXPECT_STREQ("1.78", CStreamDetails::VideoAspectToAspectDescription(1.78f).c_str());
   EXPECT_STREQ("1.85", CStreamDetails::VideoAspectToAspectDescription(1.85f).c_str());
+  EXPECT_STREQ("1.90", CStreamDetails::VideoAspectToAspectDescription(1.90f).c_str());
   EXPECT_STREQ("2.00", CStreamDetails::VideoAspectToAspectDescription(2.00f).c_str());
   EXPECT_STREQ("2.20", CStreamDetails::VideoAspectToAspectDescription(2.20f).c_str());
   EXPECT_STREQ("2.35", CStreamDetails::VideoAspectToAspectDescription(2.35f).c_str());
@@ -106,8 +109,14 @@ TEST(TestStreamDetails, VideoAspectToAspectDescriptionBoundaries)
   EXPECT_STREQ("1.33", CStreamDetails::VideoAspectToAspectDescription(1.3489f).c_str());
   EXPECT_STREQ("1.37", CStreamDetails::VideoAspectToAspectDescription(1.3509f).c_str());
 
-  EXPECT_STREQ("1.37", CStreamDetails::VideoAspectToAspectDescription(1.5070f).c_str());
-  EXPECT_STREQ("1.66", CStreamDetails::VideoAspectToAspectDescription(1.5090f).c_str());
+  EXPECT_STREQ("1.37", CStreamDetails::VideoAspectToAspectDescription(1.3987f).c_str());
+  EXPECT_STREQ("1.43", CStreamDetails::VideoAspectToAspectDescription(1.4007f).c_str());
+
+  EXPECT_STREQ("1.43", CStreamDetails::VideoAspectToAspectDescription(1.4636f).c_str());
+  EXPECT_STREQ("1.50", CStreamDetails::VideoAspectToAspectDescription(1.4656f).c_str());
+
+  EXPECT_STREQ("1.50", CStreamDetails::VideoAspectToAspectDescription(1.5770f).c_str());
+  EXPECT_STREQ("1.66", CStreamDetails::VideoAspectToAspectDescription(1.5790f).c_str());
 
   EXPECT_STREQ("1.66", CStreamDetails::VideoAspectToAspectDescription(1.7180f).c_str());
   EXPECT_STREQ("1.78", CStreamDetails::VideoAspectToAspectDescription(1.7200f).c_str());
@@ -115,8 +124,11 @@ TEST(TestStreamDetails, VideoAspectToAspectDescriptionBoundaries)
   EXPECT_STREQ("1.78", CStreamDetails::VideoAspectToAspectDescription(1.8137f).c_str());
   EXPECT_STREQ("1.85", CStreamDetails::VideoAspectToAspectDescription(1.8157f).c_str());
 
-  EXPECT_STREQ("1.85", CStreamDetails::VideoAspectToAspectDescription(1.9225f).c_str());
-  EXPECT_STREQ("2.00", CStreamDetails::VideoAspectToAspectDescription(1.9245f).c_str());
+  EXPECT_STREQ("1.85", CStreamDetails::VideoAspectToAspectDescription(1.8738f).c_str());
+  EXPECT_STREQ("1.90", CStreamDetails::VideoAspectToAspectDescription(1.8758f).c_str());
+
+  EXPECT_STREQ("1.90", CStreamDetails::VideoAspectToAspectDescription(1.9484f).c_str());
+  EXPECT_STREQ("2.00", CStreamDetails::VideoAspectToAspectDescription(1.9504f).c_str());
 
   EXPECT_STREQ("2.00", CStreamDetails::VideoAspectToAspectDescription(2.0966f).c_str());
   EXPECT_STREQ("2.20", CStreamDetails::VideoAspectToAspectDescription(2.0986f).c_str());
@@ -149,4 +161,26 @@ TEST(TestStreamDetails, VideoAspectToAspectDescriptionEdgeCases)
   // that entry, however implausible. Pinned so that the behaviour is a decision, not an
   // accident, for any caller tempted to use this as a validity check.
   EXPECT_STREQ("2.76", CStreamDetails::VideoAspectToAspectDescription(4.5f).c_str());
+}
+
+TEST(TestStreamDetails, VideoAspectToAspectDescriptionRealContent)
+{
+  // Measured aspects taken from real releases rather than from the table itself.
+  EXPECT_STREQ("1.43",
+               CStreamDetails::VideoAspectToAspectDescription(1.4375f).c_str()); // IMAX 15/70
+  EXPECT_STREQ("1.90", CStreamDetails::VideoAspectToAspectDescription(2048.0f / 1080.0f)
+                           .c_str()); // DCI full container
+  EXPECT_STREQ("1.78", CStreamDetails::VideoAspectToAspectDescription(1920.0f / 1080.0f).c_str());
+  EXPECT_STREQ("2.35", CStreamDetails::VideoAspectToAspectDescription(3840.0f / 1632.0f).c_str());
+}
+
+TEST(TestStreamDetails, VideoAspectToAspectDescriptionRelabelledRanges)
+{
+  // Adding a ratio necessarily moves the cutoffs either side of it, so these four ranges are
+  // reported differently than they were before 1.43, 1.50 and 1.90 existed in the table. Each
+  // is a correction - content at 1.90 is not 1.85 - but the change is user visible, so pin it.
+  EXPECT_STREQ("1.43", CStreamDetails::VideoAspectToAspectDescription(1.42f).c_str()); // was 1.37
+  EXPECT_STREQ("1.50", CStreamDetails::VideoAspectToAspectDescription(1.48f).c_str()); // was 1.37
+  EXPECT_STREQ("1.50", CStreamDetails::VideoAspectToAspectDescription(1.55f).c_str()); // was 1.66
+  EXPECT_STREQ("1.90", CStreamDetails::VideoAspectToAspectDescription(1.90f).c_str()); // was 1.85
 }
