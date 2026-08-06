@@ -70,6 +70,42 @@ TEST(TestStreamDetails, VideoDimsToResolutionDescription)
                CStreamDetails::VideoDimsToResolutionDescription(1920, 1080).c_str());
 }
 
+TEST(TestStreamDetails, VideoDimsToResolutionDescriptionCommonResolutions)
+{
+  EXPECT_STREQ("480", CStreamDetails::VideoDimsToResolutionDescription(640, 480).c_str());
+  EXPECT_STREQ("480", CStreamDetails::VideoDimsToResolutionDescription(720, 480).c_str());
+  EXPECT_STREQ("480", CStreamDetails::VideoDimsToResolutionDescription(854, 480).c_str());
+  EXPECT_STREQ("540", CStreamDetails::VideoDimsToResolutionDescription(960, 540).c_str());
+  EXPECT_STREQ("540", CStreamDetails::VideoDimsToResolutionDescription(960, 544).c_str());
+  EXPECT_STREQ("576", CStreamDetails::VideoDimsToResolutionDescription(720, 576).c_str());
+  EXPECT_STREQ("576", CStreamDetails::VideoDimsToResolutionDescription(1024, 576).c_str());
+  EXPECT_STREQ("720", CStreamDetails::VideoDimsToResolutionDescription(1280, 720).c_str());
+  EXPECT_STREQ("1080", CStreamDetails::VideoDimsToResolutionDescription(1920, 1080).c_str());
+  EXPECT_STREQ("4K", CStreamDetails::VideoDimsToResolutionDescription(3840, 2160).c_str());
+  EXPECT_STREQ("4K", CStreamDetails::VideoDimsToResolutionDescription(4096, 2160).c_str());
+  EXPECT_STREQ("8K", CStreamDetails::VideoDimsToResolutionDescription(7680, 4320).c_str());
+  EXPECT_STREQ("8K", CStreamDetails::VideoDimsToResolutionDescription(8192, 4320).c_str());
+
+  // Scope framing within a 1080p container.
+  EXPECT_STREQ("1080", CStreamDetails::VideoDimsToResolutionDescription(1920, 800).c_str());
+  // Cropped 4K, as HandBrake writes a 2.35:1 title.
+  EXPECT_STREQ("4K", CStreamDetails::VideoDimsToResolutionDescription(3840, 1632).c_str());
+}
+
+TEST(TestStreamDetails, VideoDimsToResolutionDescriptionEdgeCases)
+{
+  EXPECT_STREQ("", CStreamDetails::VideoDimsToResolutionDescription(0, 1080).c_str());
+  EXPECT_STREQ("", CStreamDetails::VideoDimsToResolutionDescription(1920, 0).c_str());
+  EXPECT_STREQ("", CStreamDetails::VideoDimsToResolutionDescription(0, 0).c_str());
+
+  // Anything past the widest bucket is not described at all, rather than clamped to 8K.
+  EXPECT_STREQ("", CStreamDetails::VideoDimsToResolutionDescription(9000, 5000).c_str());
+
+  // Each bucket bounds width AND height, so portrait content falls through to whichever
+  // bucket is tall enough to hold it. 1080x1920 is described as 4K.
+  EXPECT_STREQ("4K", CStreamDetails::VideoDimsToResolutionDescription(1080, 1920).c_str());
+}
+
 TEST(TestStreamDetails, VideoAspectToAspectDescription)
 {
   EXPECT_STREQ("2.40", CStreamDetails::VideoAspectToAspectDescription(2.39f).c_str());

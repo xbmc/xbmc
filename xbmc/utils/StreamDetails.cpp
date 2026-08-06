@@ -621,29 +621,15 @@ std::string CStreamDetails::VideoDimsToResolutionDescription(int iWidth, int iHe
   if (iWidth == 0 || iHeight == 0)
     return "";
 
-  // Anamorphic NTSC DVD
-  else if (iWidth <= 854 && iHeight <= 480)
-    return "480";
-  // 960x540 (sometimes 544 which is multiple of 16)
-  else if (iWidth <= 960 && iHeight <= 544)
-    return "540";
-  // includes 768x576, 720x576 and 1024x576
-  else if (iWidth <= 1024 && iHeight <= 576)
-    return "576";
-  // 1280x720
-  else if (iWidth <= 1280 && iHeight <= 962)
-    return "720";
-  // 1920x1080
-  else if (iWidth <= 1920 && iHeight <= 1440)
-    return "1080";
-  // 4K
-  else if (iWidth <= 4096 && iHeight <= 3072)
-    return "4K";
-  // 8K
-  else if (iWidth <= 8192 && iHeight <= 6144)
-    return "8K";
-  else
-    return "";
+  // The first entry the content fits within on both axes describes it. Anything larger than
+  // the last entry is left undescribed rather than clamped to it.
+  for (const auto& resolution : COMMON_RESOLUTIONS)
+  {
+    if (iWidth <= resolution.maxWidth && iHeight <= resolution.maxHeight)
+      return std::string(resolution.label);
+  }
+
+  return "";
 }
 
 std::string CStreamDetails::VideoAspectToAspectDescription(float fAspect)

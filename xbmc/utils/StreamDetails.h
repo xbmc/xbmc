@@ -105,6 +105,37 @@ public:
   bool operator !=(const CStreamDetails &that) const;
 
   /*!
+   * \brief An upper bound on coded dimensions, and the label Kodi reports for content
+   *        fitting within it.
+   */
+  struct Resolution
+  {
+    int maxWidth;
+    int maxHeight;
+    std::string_view label;
+  };
+
+  /*!
+   * \brief The vocabulary of resolution labels Kodi reports, in ascending order.
+   *
+   * Content is described by the first entry it fits within on both axes. See
+   * VideoDimsToResolutionDescription().
+   *
+   * \note Bounding both axes means portrait content is described by whichever entry is tall
+   *       enough to hold it, so 1080x1920 is "4K". Content larger than the last entry is not
+   *       described at all rather than clamped to it.
+   */
+  static constexpr auto COMMON_RESOLUTIONS = std::to_array<Resolution>({
+      {854, 480, "480"}, // anamorphic NTSC DVD
+      {960, 544, "540"}, // 960x540, sometimes 544 as a multiple of 16
+      {1024, 576, "576"}, // includes 768x576, 720x576 and 1024x576
+      {1280, 962, "720"},
+      {1920, 1440, "1080"},
+      {4096, 3072, "4K"},
+      {8192, 6144, "8K"},
+  });
+
+  /*!
    * \brief A common aspect ratio, and the label Kodi reports for content closest to it.
    */
   struct AspectRatio
