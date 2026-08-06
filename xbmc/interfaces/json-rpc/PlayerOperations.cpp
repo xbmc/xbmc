@@ -87,9 +87,8 @@ bool IsReachable(const CFileItem& item)
   // over the network as a stream, or addressed as a container is left to the player.
   // Stacks in particular have no CFileFactory loader, so CFile::Exists() would always
   // report them missing.
-  if (item.IsFolder() || path.empty() || URIUtils::IsPlugin(path) ||
-      URIUtils::IsUPnP(path) || URIUtils::IsInternetStream(path) ||
-      URIUtils::IsBlurayPath(path) || URIUtils::IsStack(path))
+  if (item.IsFolder() || path.empty() || URIUtils::IsPlugin(path) || URIUtils::IsUPnP(path) ||
+      URIUtils::IsInternetStream(path) || URIUtils::IsBlurayPath(path) || URIUtils::IsStack(path))
     return true;
 
   // Bypass the directory cache; a cached hit would mask a share that has gone away.
