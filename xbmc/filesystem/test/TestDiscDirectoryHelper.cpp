@@ -2725,6 +2725,78 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_ThreeEpisodes_GroupMethod_Eq
   EXPECT_TRUE(std::ranges::includes(returned, expected));
 }
 
+// As GetEpisodePlaylists_ThreeEpisodes_GroupMethod_EqualEpisodeDurations, at the point in a scan
+// where the episodes already identified have taken their duration from the disc while the one being
+// looked for still has the scraper's hour long slot. The disc then looks inconsistent with itself,
+// and the last episode must still be found.
+// (Example Battlestar Galactica (2003) S1D3 Bluray, scanning the last episode of the disc)
+TEST_F(TestDiscDirectoryHelper,
+       GetEpisodePlaylists_ThreeEpisodes_GroupMethod_PartlyMeasuredDurations)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{
+      MakeEpisode(1, 11, 2625), // Measured from the disc when these were identified
+      MakeEpisode(1, 12, 2623), MakeEpisode(1, 13, 3600), // Still the scraper's hour long slot
+  };
+
+  PlaylistMap playlists{
+      {20u, MakePlaylist(20u, 2625s, {11u}, {2625s})},
+      {21u, MakePlaylist(21u, 2623s, {12u}, {2623s})},
+      {22u, MakePlaylist(22u, 2625s, {13u}, {2625s})},
+      {30u, MakePlaylist(30u, 2625s, {11u}, {2625s})}, // Duplicates of 20-22
+      {31u, MakePlaylist(31u, 2623s, {12u}, {2623s})},
+      {32u, MakePlaylist(32u, 2625s, {13u}, {2625s})},
+      {52u, MakePlaylist(52u, 752s, {14u}, {752s})}, // Extras, one of them nearer the hour
+      {99u, MakePlaylist(99u, 2908s, {15u}, {2908s})},
+  };
+  ClipMap clips{
+      {11u, MakeClip(2625s, {20u, 30u})}, {12u, MakeClip(2623s, {21u, 31u})},
+      {13u, MakeClip(2625s, {22u, 32u})}, {14u, MakeClip(752s, {52u})},
+      {15u, MakeClip(2908s, {99u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 0, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 20u);
+
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 1, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 21u);
+
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 2, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 22u);
+
+  EXPECT_FALSE(helper.GetEpisodePlaylists(url, items, allTitles, 3, episodes, clips,
+                                          playlists)); // Invalid episode index
+  ASSERT_EQ(items.Size(), 0);
+
+  EXPECT_TRUE(
+      helper.GetEpisodePlaylists(url, items, allTitles, ALL_PLAYLISTS, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 3); // All episodes
+  auto returned{GetPlaylists(items)};
+  std::set<unsigned int> expected = {20u, 21u, 22u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::MAIN, episodes, clips,
+                                            playlists));
+  ASSERT_EQ(items.Size(), 8);
+  returned = GetPlaylists(items);
+  expected = {20u, 21u, 22u, 30u, 31u, 32u, 52u, 99u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::ALL, episodes, clips,
+                                            playlists));
+  ASSERT_EQ(items.Size(), 8);
+  returned = GetPlaylists(items);
+  expected = {20u, 21u, 22u, 30u, 31u, 32u, 52u, 99u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+}
+
 // Consecutive playlists → group method assigns the nth playlist to episode n
 // Playlist 800 = episode 1; 801 = episode 2; 802 = episode 3
 // The group is 800-803. The episodes are mapped to the start of the group
@@ -3616,6 +3688,63 @@ TEST_F(TestDiscDirectoryHelper,
   returned = GetPlaylists(items);
   expected = {800u, 811u, 812u, 817u, 818u, 820u, 821u, 822u};
   EXPECT_TRUE(std::ranges::includes(returned, expected));
+}
+
+// The disc offers each of its two episodes three times over (800/814/816 and 807/815/817), and has
+// two extras that happen to be consecutively numbered (820 and 821, and again as 824 and 825).
+// A run of two extras is as many playlists as there are episodes, so their multiples add up, but
+// they are minutes long where an episode is an hour - the group is not the episodes.
+// (Example Dune Prophecy S1D1 UK Bluray)
+TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_TwoEpisodes_GroupsWithMultiples_ExtrasRejected)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{MakeEpisode(1, 1, 3960), MakeEpisode(1, 2, 3780)}; // 66 and 63 minutes
+
+  static const std::string ALL_LANGS{"eng,fra,deu,ita,spa,ces"};
+  PlaylistMap playlists{
+      {800u, MakePlaylist(800u, 3945s, {75u}, {3945s}, ALL_LANGS)}, // Episode 1
+      {807u, MakePlaylist(807u, 3767s, {76u}, {3767s}, ALL_LANGS)}, // Episode 2
+      {812u, MakePlaylist(812u, 356s, {81u}, {356s}, "eng")}, // Extras
+      {813u, MakePlaylist(813u, 324s, {82u}, {324s}, "eng")},
+      {814u, MakePlaylist(814u, 3945s, {75u}, {3945s}, ALL_LANGS)}, // The episodes again
+      {815u, MakePlaylist(815u, 3767s, {76u}, {3767s}, ALL_LANGS)},
+      {816u, MakePlaylist(816u, 3945s, {75u}, {3945s}, "eng")},
+      {817u, MakePlaylist(817u, 3767s, {76u}, {3767s}, "eng")},
+      {820u, MakePlaylist(820u, 356s, {81u}, {356s}, "eng")}, // And the extras again
+      {821u, MakePlaylist(821u, 324s, {82u}, {324s}, "eng")},
+      {824u, MakePlaylist(824u, 356s, {81u}, {356s}, "eng")},
+      {825u, MakePlaylist(825u, 324s, {82u}, {324s}, "eng")},
+  };
+  ClipMap clips{
+      {75u, MakeClip(3945s, {800u, 814u, 816u})},
+      {76u, MakeClip(3767s, {807u, 815u, 817u})},
+      {81u, MakeClip(356s, {812u, 820u, 824u})},
+      {82u, MakeClip(324s, {813u, 821u, 825u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  // Each episode gets the playlist offering its own clip, and never an extra. Which of the copies
+  // is offered is not important, so they are identified by the clip they hold.
+  static constexpr std::array<unsigned int, 2> EXPECTED_CLIPS{75u, 76u};
+  for (int episodeIndex = 0; episodeIndex < static_cast<int>(EXPECTED_CLIPS.size()); ++episodeIndex)
+  {
+    EXPECT_TRUE(
+        helper.GetEpisodePlaylists(url, items, allTitles, episodeIndex, episodes, clips, playlists))
+        << "episode index " << episodeIndex;
+    ASSERT_GT(items.Size(), 0) << "episode index " << episodeIndex;
+
+    for (const auto& item : items)
+    {
+      const unsigned int playlist{GetPlaylistFromPath(item->GetPath())};
+      ASSERT_TRUE(playlists.contains(playlist));
+      const std::vector<unsigned int> expectedClips{EXPECTED_CLIPS[episodeIndex]};
+      EXPECT_EQ(playlists.at(playlist).clips, expectedClips)
+          << "episode index " << episodeIndex << " given playlist " << playlist;
+    }
+  }
 }
 
 // Consecutive playlists → group method assigns the nth playlist to episode n

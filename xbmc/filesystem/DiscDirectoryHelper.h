@@ -329,6 +329,8 @@ private:
   bool CheckGroupDurations(const std::vector<CandidatePlaylistInformation>& groupA,
                            const std::vector<CandidatePlaylistInformation>& groupB,
                            int durationTolerancePercent = DURATION_TOLERANCE_PERCENT) const;
+  bool CheckGroupMultipleDurations(const std::vector<CandidatePlaylistInformation>& group,
+                                   const Episodes& episodesOnDisc) const;
   bool CheckGroup(const std::vector<CandidatePlaylistInformation>& group,
                   const Episodes& episodesOnDisc) const;
   static std::chrono::milliseconds CalculateAverageOfShortEpisodes(

@@ -1258,6 +1258,47 @@ bool CDiscDirectoryHelper::CheckGroupDurations(
                              });
 }
 
+// Whether each playlist of a group is of a length consistent with the episodes it would cover.
+//
+// A group here has fewer playlists than there are episodes, as a playlist may cover several of
+// them, so the playlists cannot be compared with the episodes one for one as CheckGroupDurations()
+// does. Divide each playlist's duration by the number of episodes it covers instead, and compare
+// that with each of them. Only the check episodes scraped so far (no duration otherwise)
+bool CDiscDirectoryHelper::CheckGroupMultipleDurations(
+    const std::vector<CandidatePlaylistInformation>& group, const Episodes& episodesOnDisc) const
+{
+  size_t index{m_numSpecials}; // Specials (S00) are before episodes in episodesOnDisc
+  for (const auto& playlist : group)
+  {
+    if (playlist.multiple < 1)
+      return false;
+
+    const std::chrono::milliseconds episodeFromPlaylistDuration{playlist.duration /
+                                                                playlist.multiple};
+    for (int i = 0; i < playlist.multiple; ++i, ++index)
+    {
+      if (index >= episodesOnDisc.size())
+        return false;
+
+      const std::chrono::milliseconds scrapedDuration{episodesOnDisc[index].duration * 1000ms};
+      if (scrapedDuration > 0ms &&
+          !CheckDurationsWithinTolerance(scrapedDuration, episodeFromPlaylistDuration,
+                                         DURATION_TOLERANCE_SCRAPED_PERCENT))
+      {
+        CLog::LogFC(LOGDEBUG, LOGBLURAY,
+                    "Rejecting group - playlist {} covers {} episode(s) at {} each, which does not "
+                    "match episode {} duration {}",
+                    playlist.playlist, playlist.multiple,
+                    static_cast<int>(episodeFromPlaylistDuration.count() / 1000),
+                    episodesOnDisc[index].iEpisode, episodesOnDisc[index].duration);
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
 // Decide if the group identified is likely to contain the episodes
 // We might be in a position where we have a group of shorter playlists but the actual episode (longer)
 // playlists are not in a group
@@ -1362,13 +1403,32 @@ void CDiscDirectoryHelper::UseGroupMethod(int episodeIndex,
     {
       // Now ensure there are no other playlists of similar length to the longest
       // Get the next longest playlist
+      //
+      // A playlist offering the same clips for the same length as one already chosen is another
+      // copy of that episode rather than a rival for it, so it is left out - a disc commonly offers
+      // each episode several times over, once per set of audio and subtitle streams, and those
+      // copies must not be taken for other playlists of a similar length
+      const auto isCopyOfChosenPlaylist{
+          [this](const PlaylistInformation& p)
+          {
+            return std::ranges::any_of(m_nthLongestPlaylists,
+                                       [&p](const CandidatePlaylistInformation& chosen)
+                                       {
+                                         return chosen.playlist != p.playlist &&
+                                                chosen.duration == p.duration &&
+                                                chosen.clips == p.clips;
+                                       });
+          }};
+
       std::vector<PlaylistInformation> tmp;
       tmp.reserve(playlists.size());
-      std::ranges::copy(
-          playlists | std::views::values |
-              std::views::filter([this](const PlaylistInformation& p)
-                                 { return !m_playAllPlaylists.contains(p.playlist); }),
-          std::back_inserter(tmp));
+      std::ranges::copy(playlists | std::views::values |
+                            std::views::filter(
+                                [this, &isCopyOfChosenPlaylist](const PlaylistInformation& p) {
+                                  return !m_playAllPlaylists.contains(p.playlist) &&
+                                         !isCopyOfChosenPlaylist(p);
+                                }),
+                        std::back_inserter(tmp));
 
       // If there is no playlist beyond the m_nthLongestPlaylists ones, there is nothing
       // to compare against, so there cannot be a next playlist of similar length
@@ -1525,6 +1585,11 @@ void CDiscDirectoryHelper::UseGroupsWithMultiplesMethod(int episodeIndex,
   for (auto& group : GetGroupsWithoutDuplicates(m_allGroups))
   {
     if (!CalculateGroupMultiples(group, m_numEpisodes))
+      continue;
+
+    // The multiples adding up does not make the group the episodes - a run of extras can do that
+    // too, so check the playlists are of a length to hold the episodes they would be given
+    if (!CheckGroupMultipleDurations(group, episodesOnDisc))
       continue;
 
     // Save candidate episode(s)
