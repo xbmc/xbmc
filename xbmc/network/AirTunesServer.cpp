@@ -150,6 +150,23 @@ void CAirTunesServer::RefreshCoverArt(const char *outputFilename/* = NULL*/)
   //update the ui
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_REFRESH_THUMBS);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
+
+  // The info manager and the application hold separate items; only the latter is serialised.
+  const std::string pipeName =
+      ServerInstance != nullptr && ServerInstance->m_pPipe != nullptr
+          ? ServerInstance->m_pPipe->GetName()
+          : std::string{};
+  if (!pipeName.empty())
+  {
+    // UpdateInfo overwrites the mime type, and an empty url clears the previous thumbnail.
+    CFileItem* item = new CFileItem();
+    item->SetPath(pipeName);
+    item->SetMimeType("audio/x-xbmc-pcm");
+    item->SetArt("thumb", CFile::Exists(coverArtFile) ? coverArtFile : "");
+
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_UPDATE_PLAYER_ITEM, -1, -1,
+                                               static_cast<void*>(item));
+  }
 }
 
 void CAirTunesServer::SetMetadataFromBuffer(const char *buffer, unsigned int size)
