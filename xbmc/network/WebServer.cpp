@@ -1242,6 +1242,21 @@ struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
       MHD_OPTION_END);
 }
 
+namespace
+{
+uint16_t GetDaemonPort(struct MHD_Daemon* daemon)
+{
+  if (daemon == nullptr)
+    return 0;
+
+  const union MHD_DaemonInfo* info = MHD_get_daemon_info(daemon, MHD_DAEMON_INFO_BIND_PORT);
+  if (info == nullptr)
+    return 0;
+
+  return info->port;
+}
+} // namespace
+
 bool CWebServer::Start(uint16_t port, const std::string& username, const std::string& password)
 {
   SetCredentials(username, password);
@@ -1256,13 +1271,27 @@ bool CWebServer::Start(uint16_t port, const std::string& username, const std::st
       closesocket(v6testSock);
       m_daemon_ip6 = StartMHD(MHD_USE_IPv6, port);
     }
-    m_daemon_ip4 = StartMHD(0, port);
+
+    // both daemons have to listen on the same port, so when the operating system picks it the
+    // IPv4 daemon must be given the port the IPv6 daemon was assigned rather than picking again
+    uint16_t listenPort = port;
+    if (port == 0 && m_daemon_ip6 != nullptr)
+    {
+      listenPort = GetDaemonPort(m_daemon_ip6);
+      if (listenPort == 0)
+      {
+        MHD_stop_daemon(m_daemon_ip6);
+        m_daemon_ip6 = nullptr;
+      }
+    }
+
+    m_daemon_ip4 = StartMHD(0, listenPort);
 
     m_running = (m_daemon_ip6 != nullptr) || (m_daemon_ip4 != nullptr);
     if (m_running)
     {
-      m_port = port;
-      m_logger->info("Started");
+      m_port = listenPort != 0 ? listenPort : GetDaemonPort(m_daemon_ip4);
+      m_logger->info("Started on port {}", m_port);
     }
     else
       m_logger->error("Failed to start");
@@ -1277,10 +1306,16 @@ bool CWebServer::Stop()
     return true;
 
   if (m_daemon_ip6 != nullptr)
+  {
     MHD_stop_daemon(m_daemon_ip6);
+    m_daemon_ip6 = nullptr;
+  }
 
   if (m_daemon_ip4 != nullptr)
+  {
     MHD_stop_daemon(m_daemon_ip4);
+    m_daemon_ip4 = nullptr;
+  }
 
   m_running = false;
   m_logger->info("Stopped");
@@ -1292,6 +1327,11 @@ bool CWebServer::Stop()
 bool CWebServer::IsStarted()
 {
   return m_running;
+}
+
+uint16_t CWebServer::GetPort() const
+{
+  return m_port;
 }
 
 bool CWebServer::WebServerSupportsSSL()
