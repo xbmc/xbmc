@@ -123,14 +123,13 @@ bool CRendererDRMPRIMEGLES::Configure(const VideoPicture& picture,
 
   EGLDisplay eglDisplay = winSystemEGL->GetEGLDisplay();
 
+  m_texturePool.ReleaseAll();
+  m_texturePool.Init(eglDisplay);
+
   for (auto&& buf : m_buffers)
   {
     if (!buf.fence)
-    {
-      buf.texture.Init(eglDisplay);
-      buf.yuvTexture.Init(eglDisplay);
       buf.fence = std::make_unique<CEGLFence>(eglDisplay);
-    }
   }
 
   m_configured = true;
@@ -271,6 +270,7 @@ void CRendererDRMPRIMEGLES::UnInit()
     CServiceBroker::GetWinSystem()->SetVideoOutput(nullptr);
   }
 
+  m_texturePool.ReleaseAll();
   m_yuvShader.reset();
   m_configured = false;
 }
@@ -283,8 +283,6 @@ void CRendererDRMPRIMEGLES::AddVideoPicture(const VideoPicture& picture, int ind
     CLog::LogF(LOGERROR, "unreleased video buffer");
     if (buf.fence)
       buf.fence->DestroyFence();
-    buf.texture.Unmap();
-    buf.yuvTexture.Unmap();
     buf.videoBuffer->Release();
   }
   buf.videoBuffer = picture.videoBuffer;
@@ -311,9 +309,6 @@ void CRendererDRMPRIMEGLES::ReleaseBuffer(int index)
 
   if (buf.fence)
     buf.fence->DestroyFence();
-
-  buf.texture.Unmap();
-  buf.yuvTexture.Unmap();
 
   if (buf.videoBuffer)
   {
@@ -469,10 +464,11 @@ void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
   // the user can toggle the setting at runtime and the next frame picks
   // up the new path without any rebuild.
   auto* winSystem = CServiceBroker::GetWinSystem();
-  const bool useYUVPath =
-      m_yuvShader && winSystem && winSystem->UseLimitedColor() && buf.yuvTexture.Map(buffer);
+  CDRMPRIMETextureYUV* yuvTexture = nullptr;
+  if (m_yuvShader && winSystem && winSystem->UseLimitedColor())
+    yuvTexture = m_texturePool.GetYUV(buffer);
 
-  if (useYUVPath)
+  if (yuvTexture)
   {
     // Limited-range YUV path: per-plane sampler2D + BaseYUV2RGBGLSLShader.
     // Vertex/cord array setup is taken from CLinuxRendererGLES::RenderSinglePass
@@ -481,18 +477,18 @@ void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
     // -- specifically, the SHADER_NV12_RRG case binds the UV texture to BOTH
     // U and V samplers so .r returns U and .g returns V via the GR88 / GR1616
     // import.
-    const int numPlanes = buf.yuvTexture.GetNumPlanes();
+    const int numPlanes = yuvTexture->GetNumPlanes();
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, buf.yuvTexture.GetTexture(0));
+    glBindTexture(GL_TEXTURE_2D, yuvTexture->GetTexture(0));
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, buf.yuvTexture.GetTexture(1));
+    glBindTexture(GL_TEXTURE_2D, yuvTexture->GetTexture(1));
     glActiveTexture(GL_TEXTURE2);
     // 3-plane (YV12_HI): plane 2 is V. 2-plane (NV12_RRG): rebind plane 1
     // (UV) so sampV samples the same texture as sampU.
-    glBindTexture(GL_TEXTURE_2D, buf.yuvTexture.GetTexture(numPlanes == 3 ? 2 : 1));
+    glBindTexture(GL_TEXTURE_2D, yuvTexture->GetTexture(numPlanes == 3 ? 2 : 1));
     glActiveTexture(GL_TEXTURE0);
 
-    const CSizeInt texSize = buf.yuvTexture.GetTextureSize();
+    const CSizeInt texSize = yuvTexture->GetTextureSize();
     m_yuvShader->SetWidth(texSize.Width());
     m_yuvShader->SetHeight(texSize.Height());
     m_yuvShader->SetAlpha(1.0f);
@@ -563,10 +559,11 @@ void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
   }
 
   // Full-range OES path (unchanged).
-  if (!buf.texture.Map(buffer))
+  CDRMPRIMETexture* texture = m_texturePool.GetOES(buffer);
+  if (!texture)
     return;
 
-  DrawTexture(*renderSystem, buf.texture.GetTexture(), m_rotatedDestCoords);
+  DrawTexture(*renderSystem, texture->GetTexture(), m_rotatedDestCoords);
 
   buf.fence->DestroyFence();
   buf.fence->CreateFence();

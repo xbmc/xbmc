@@ -60,9 +60,9 @@ void CDRMPRIMETexture::Init(EGLDisplay eglDisplay)
   m_eglImage = std::make_unique<CEGLImage>(eglDisplay);
 }
 
-bool CDRMPRIMETexture::Map(CVideoBufferDRMPRIME* buffer)
+bool CDRMPRIMETexture::Import(CVideoBufferDRMPRIME* buffer)
 {
-  if (m_primebuffer)
+  if (m_imported)
     return true;
 
   if (!buffer->AcquireDescriptor())
@@ -113,25 +113,20 @@ bool CDRMPRIMETexture::Map(CVideoBufferDRMPRIME* buffer)
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     m_eglImage->UploadImage(m_textureTarget);
     glBindTexture(m_textureTarget, 0);
+    m_imported = true;
   }
 
-  m_primebuffer = buffer;
-  m_primebuffer->Acquire();
-
-  return true;
+  buffer->ReleaseDescriptor();
+  return m_imported;
 }
 
-void CDRMPRIMETexture::Unmap()
+void CDRMPRIMETexture::Reset()
 {
-  if (!m_primebuffer)
+  if (!m_imported)
     return;
 
   m_eglImage->DestroyImage();
-
-  m_primebuffer->ReleaseDescriptor();
-
-  m_primebuffer->Release();
-  m_primebuffer = nullptr;
+  m_imported = false;
 }
 
 namespace
@@ -193,9 +188,9 @@ bool CDRMPRIMETextureYUV::SupportsFormat(uint32_t fourcc)
 // extended to the per-plane texture array.
 CDRMPRIMETextureYUV::~CDRMPRIMETextureYUV()
 {
-  // Release any active mapping (EGL images, descriptor, buffer ref).
-  Unmap();
-  // Delete the GL texture objects that Map() may have generated.
+  // Release any active mapping (EGL images).
+  Reset();
+  // Delete the GL texture objects that Import() may have generated.
   for (int i = 0; i < MAX_PLANES; i++)
   {
     if (m_textures[i])
@@ -210,15 +205,15 @@ void CDRMPRIMETextureYUV::Init(EGLDisplay eglDisplay)
 
 // Descriptor acquire/release lifecycle and the per-plane
 // glIsTexture/glGenTextures + glBindTexture + glTexParameteri x4 +
-// UploadImage + unbind sequence are taken from CDRMPRIMETexture::Map
-// (above) and CVaapi2Texture::Map (VaapiEGL.cpp:438-560). What is new
+// UploadImage + unbind sequence are taken from CDRMPRIMETexture::Import
+// (above) and CVaapi2Texture::Import (VaapiEGL.cpp). What is new
 // here is the per-plane DRM fourcc derivation (single-layer N-plane
 // descriptor split into N separate EGL images) and the multi-plane
 // loop. Single-layer-N-plane is the shape ffmpeg HW decoders and the
 // SW-decode -> DMA path produce.
-bool CDRMPRIMETextureYUV::Map(CVideoBufferDRMPRIME* buffer)
+bool CDRMPRIMETextureYUV::Import(CVideoBufferDRMPRIME* buffer)
 {
-  if (m_primebuffer)
+  if (m_imported)
     return true;
 
   if (!buffer->AcquireDescriptor())
@@ -289,7 +284,7 @@ bool CDRMPRIMETextureYUV::Map(CVideoBufferDRMPRIME* buffer)
 
     if (!m_eglImages[i]->CreateImage(attribs))
     {
-      // Roll back any planes we already imported in this Map() call.
+      // Roll back any planes we already imported in this Import() call.
       for (int j = 0; j < i; j++)
         m_eglImages[j]->DestroyImage();
       m_numPlanes = 0;
@@ -308,16 +303,14 @@ bool CDRMPRIMETextureYUV::Map(CVideoBufferDRMPRIME* buffer)
     glBindTexture(GL_TEXTURE_2D, 0);
   }
 
-  m_primebuffer = buffer;
-  m_primebuffer->Acquire();
+  buffer->ReleaseDescriptor();
+  m_imported = true;
   return true;
 }
 
-// DestroyImage + ReleaseDescriptor + buffer Release + null sequence is
-// taken from CDRMPRIMETexture::Unmap (above), looped over planes.
-void CDRMPRIMETextureYUV::Unmap()
+void CDRMPRIMETextureYUV::Reset()
 {
-  if (!m_primebuffer)
+  if (!m_imported)
     return;
 
   for (int i = 0; i < m_numPlanes; i++)
@@ -326,8 +319,111 @@ void CDRMPRIMETextureYUV::Unmap()
       m_eglImages[i]->DestroyImage();
   }
   m_numPlanes = 0;
+  m_imported = false;
+}
 
-  m_primebuffer->ReleaseDescriptor();
-  m_primebuffer->Release();
-  m_primebuffer = nullptr;
+void CDRMPRIMETexturePool::Init(EGLDisplay eglDisplay)
+{
+  m_eglDisplay = eglDisplay;
+}
+
+CDRMPRIMETexture* CDRMPRIMETexturePool::GetOES(CVideoBufferDRMPRIME* buffer)
+{
+  const auto identity = DRMPRIME::ComputeDmaBufIdentity(buffer->GetDescriptor(), buffer->GetWidth(),
+                                                        buffer->GetHeight());
+  if (!identity)
+    return nullptr;
+
+  // the OES import bakes the colorspace and range hints into the image
+  const VideoPicture& picture = buffer->GetPicture();
+  const uint64_t salt = (static_cast<uint64_t>(GetEGLColorSpace(picture)) << 32) |
+                        static_cast<uint32_t>(GetEGLColorRange(picture));
+
+  uint32_t handle = m_oesCache.Lookup(*identity, salt);
+  if (!handle)
+  {
+    size_t slot;
+    if (!m_oesFree.empty())
+    {
+      slot = m_oesFree.back();
+      m_oesFree.pop_back();
+    }
+    else
+    {
+      slot = m_oesEntries.size();
+      m_oesEntries.push_back(std::make_unique<CDRMPRIMETexture>());
+      m_oesEntries[slot]->Init(m_eglDisplay);
+    }
+
+    if (!m_oesEntries[slot]->Import(buffer))
+    {
+      m_oesFree.push_back(slot);
+      return nullptr;
+    }
+    handle = static_cast<uint32_t>(slot) + 1;
+    m_oesCache.Insert(*identity, handle, salt);
+  }
+
+  for (uint32_t doomed : m_oesCache.Reap(handle, 0))
+  {
+    m_oesEntries[doomed - 1]->Reset();
+    m_oesFree.push_back(doomed - 1);
+  }
+
+  return m_oesEntries[handle - 1].get();
+}
+
+CDRMPRIMETextureYUV* CDRMPRIMETexturePool::GetYUV(CVideoBufferDRMPRIME* buffer)
+{
+  const auto identity = DRMPRIME::ComputeDmaBufIdentity(buffer->GetDescriptor(), buffer->GetWidth(),
+                                                        buffer->GetHeight());
+  if (!identity)
+    return nullptr;
+
+  uint32_t handle = m_yuvCache.Lookup(*identity);
+  if (!handle)
+  {
+    size_t slot;
+    if (!m_yuvFree.empty())
+    {
+      slot = m_yuvFree.back();
+      m_yuvFree.pop_back();
+    }
+    else
+    {
+      slot = m_yuvEntries.size();
+      m_yuvEntries.push_back(std::make_unique<CDRMPRIMETextureYUV>());
+      m_yuvEntries[slot]->Init(m_eglDisplay);
+    }
+
+    if (!m_yuvEntries[slot]->Import(buffer))
+    {
+      m_yuvFree.push_back(slot);
+      return nullptr;
+    }
+    handle = static_cast<uint32_t>(slot) + 1;
+    m_yuvCache.Insert(*identity, handle);
+  }
+
+  for (uint32_t doomed : m_yuvCache.Reap(handle, 0))
+  {
+    m_yuvEntries[doomed - 1]->Reset();
+    m_yuvFree.push_back(doomed - 1);
+  }
+
+  return m_yuvEntries[handle - 1].get();
+}
+
+void CDRMPRIMETexturePool::ReleaseAll()
+{
+  for (auto& entry : m_oesEntries)
+    entry->Reset();
+  for (auto& entry : m_yuvEntries)
+    entry->Reset();
+  m_oesCache.TakeAll();
+  m_yuvCache.TakeAll();
+  m_oesEntries.clear();
+  m_yuvEntries.clear();
+  m_oesFree.clear();
+  m_yuvFree.clear();
 }

@@ -45,7 +45,7 @@ bool CaptureDRMPRIMEVideo(CVideoBufferDRMPRIME* buffer,
   // the capture runs with the GL context current, so the display is at hand
   CDRMPRIMETexture texture;
   texture.Init(eglGetCurrentDisplay());
-  if (!texture.Map(buffer))
+  if (!texture.Import(buffer))
   {
     CLog::Log(LOGWARNING,
               "CaptureDRMPRIMEVideo: OES import of the video buffer failed ({}x{}); video "
@@ -143,7 +143,7 @@ bool CaptureDRMPRIMEVideo(CVideoBufferDRMPRIME* buffer,
     glEnable(GL_SCISSOR_TEST);
   glDeleteFramebuffers(1, &fbo);
   glDeleteTextures(1, &fboTexture);
-  texture.Unmap();
+  texture.Reset();
   return ok;
 #endif
 }
