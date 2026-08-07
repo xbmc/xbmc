@@ -27,7 +27,7 @@
           "id": {
             "type": "string",
             "required": true,
-            "description": "Name of a namespace, method or type"
+            "description": "Name of a namespace, method, type, notification or error"
           },
           "type": {
             "type": "string",
@@ -36,7 +36,8 @@
               "method",
               "namespace",
               "type",
-              "notification"
+              "notification",
+              "error"
             ],
             "description": "Type of the given name"
           },
