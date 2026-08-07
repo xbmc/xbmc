@@ -12,7 +12,6 @@
 #include "filesystem/DirectoryCache.h"
 #include "filesystem/DllLibCurl.h"
 #include "utils/AlarmClock.h"
-#include "utils/LangCodeExpander.h"
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
 #endif
@@ -22,8 +21,6 @@
 std::map<std::string, std::string> CSpecialProtocol::m_pathMap;
 
 #include "filesystem/ZipManager.h"
-
-CLangCodeExpander g_LangCodeExpander;
 
 XFILE::CDirectoryCache g_directoryCache;
 

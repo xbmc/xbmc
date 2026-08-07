@@ -56,6 +56,20 @@ static std::string GetBaseLanguageName(const std::string& lang)
   return lang;
 }
 
+//! \brief The active region, named in the notation a language format implies
+static std::string GetRegionInFormat(int format)
+{
+  switch (format)
+  {
+    case LANG_FMT_ISO_639_1:
+      return g_langInfo.GetRegionCodeAlpha2();
+    case LANG_FMT_ISO_639_2:
+      return g_langInfo.GetRegionCodeAlpha3();
+    default:
+      return g_langInfo.GetCurrentRegion();
+  }
+}
+
 void Interface_General::Init(AddonGlobalInterface* addonInterface)
 {
   addonInterface->toKodi->kodi = static_cast<AddonToKodiFuncTable_kodi*>(malloc(sizeof(AddonToKodiFuncTable_kodi)));
@@ -114,38 +128,28 @@ char* Interface_General::get_language(void* kodiBase, int format, bool region)
     case LANG_FMT_ISO_639_1:
     {
       std::string langCode;
-      g_LangCodeExpander.ConvertToISO6391(GetBaseLanguageName(string), langCode);
+      CLangCodeExpander::ConvertToISO6391(GetBaseLanguageName(string), langCode);
       string = langCode;
-      if (region)
-      {
-        std::string region2Code;
-        g_LangCodeExpander.ConvertToISO6391(g_langInfo.GetRegionLocale(), region2Code);
-        if (!region2Code.empty())
-          string += "-" + region2Code;
-      }
       break;
     }
     case LANG_FMT_ISO_639_2:
     {
       std::string langCode;
-      g_LangCodeExpander.ConvertToISO6392B(GetBaseLanguageName(string), langCode);
+      CLangCodeExpander::ConvertToISO6392B(GetBaseLanguageName(string), langCode);
       string = langCode;
-      if (region)
-      {
-        std::string region3Code;
-        g_LangCodeExpander.ConvertToISO6392B(g_langInfo.GetRegionLocale(), region3Code);
-        if (!region3Code.empty())
-          string += "-" + region3Code;
-      }
       break;
     }
     case LANG_FMT_ENGLISH_NAME:
     default:
-    {
-      if (region)
-        string += "-" + g_langInfo.GetCurrentRegion();
       break;
-    }
+  }
+
+  // The separator joins a language to a region, so it is written only where there are both - a
+  // language with no ISO 639-1 code, Asturian for one, leaves the conversion above empty
+  if (region && !string.empty())
+  {
+    if (const std::string regionCode{GetRegionInFormat(format)}; !regionCode.empty())
+      string += "-" + regionCode;
   }
 
   return strdup(string.c_str());

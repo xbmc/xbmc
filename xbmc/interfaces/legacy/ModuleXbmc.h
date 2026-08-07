@@ -876,6 +876,9 @@ namespace XBMCAddon
     /// | xbmc.ENGLISH_NAME | Full language name in English (default)
     /// @return                          Converted Language string
     ///
+    /// @python_v22 A BCP 47 tag is accepted as input, for example \p en-AU, which the stream
+    /// language functions of \ref python_Player "Player" now return.
+    ///
     ///
     /// ------------------------------------------------------------------------
     /// @python_v13 New function added.

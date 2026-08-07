@@ -13,6 +13,7 @@
 #include "interfaces/legacy/Exception.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -73,7 +74,7 @@ namespace XBMCAddon
       streamDetail->m_iDuration = m_duration;
       streamDetail->m_strCodec = m_codec;
       streamDetail->m_strStereoMode = m_stereoMode;
-      streamDetail->m_strLanguage = m_language;
+      streamDetail->m_strLanguage = CLangCodeExpander::AsISO6392B(m_language);
       streamDetail->m_strHdrType = m_hdrType;
 
       return streamDetail;
@@ -91,7 +92,7 @@ namespace XBMCAddon
       auto streamDetail = new CStreamDetailAudio();
       streamDetail->m_iChannels = m_channels;
       streamDetail->m_strCodec = m_codec;
-      streamDetail->m_strLanguage = m_language;
+      streamDetail->m_strLanguage = CLangCodeExpander::AsISO6392B(m_language);
 
       return streamDetail;
     }
@@ -104,7 +105,7 @@ namespace XBMCAddon
     CStreamDetailSubtitle* SubtitleStreamDetail::ToStreamDetailSubtitle() const
     {
       auto streamDetail = new CStreamDetailSubtitle();
-      streamDetail->m_strLanguage = m_language;
+      streamDetail->m_strLanguage = CLangCodeExpander::AsISO6392B(m_language);
 
       return streamDetail;
     }

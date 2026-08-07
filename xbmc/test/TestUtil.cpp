@@ -8,6 +8,7 @@
 
 #include "ServiceBroker.h"
 #include "Util.h"
+#include "cores/VideoPlayer/Interface/StreamInfo.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "video/FilenameAttributes.h"
@@ -842,3 +843,53 @@ TEST_P(TestMatchingSource, GetMatchingSource)
 }
 
 INSTANTIATE_TEST_SUITE_P(GetMatchingSource, TestMatchingSource, ValuesIn(SourcesToMatch));
+
+struct TestExternalStreamData
+{
+  std::string videoPath;
+  std::string associatedFile;
+  std::string language;
+  unsigned int flag;
+};
+
+// clang-format off
+const TestExternalStreamData ExternalStreams[] = {
+    // The language is a BCP 47 tag, which uses the alpha-2 code where one exists, whichever form
+    // the filename used
+    {"/movies/BigBuckBunny.mkv", "/movies/BigBuckBunny.en.srt", "en", StreamFlags::FLAG_NONE},
+    {"/movies/BigBuckBunny.mkv", "/movies/BigBuckBunny.eng.srt", "en", StreamFlags::FLAG_NONE},
+    // A language with no ISO 639-1 code keeps its alpha-3 form
+    {"/movies/BigBuckBunny.mkv", "/movies/BigBuckBunny.ady.srt", "ady", StreamFlags::FLAG_NONE},
+    // _ stands in for the BCP 47 - subtag separator, since - separates filename tokens
+    {"/movies/BigBuckBunny.mkv", "/movies/BigBuckBunny.en_AU.srt", "en-AU", StreamFlags::FLAG_NONE},
+    {"/movies/BigBuckBunny.mkv", "/movies/BigBuckBunny.pt_BR.srt", "pt-BR", StreamFlags::FLAG_NONE},
+    // Flags, before and after the language
+    {"/movies/BigBuckBunny.mkv", "/movies/BigBuckBunny.forced.en.srt", "en", StreamFlags::FLAG_FORCED},
+    {"/movies/BigBuckBunny.mkv", "/movies/BigBuckBunny.en.forced.srt", "en", StreamFlags::FLAG_FORCED},
+    {"/movies/BigBuckBunny.mkv", "/movies/BigBuckBunny.en.default.srt", "en", StreamFlags::FLAG_DEFAULT},
+    {"/movies/BigBuckBunny.mkv", "/movies/BigBuckBunny.en.original.srt", "en", StreamFlags::FLAG_ORIGINAL},
+    {"/movies/BigBuckBunny.mkv", "/movies/BigBuckBunny.en.impaired.srt", "en", StreamFlags::FLAG_HEARING_IMPAIRED},
+    // No language in the filename
+    {"/movies/BigBuckBunny.mkv", "/movies/BigBuckBunny.srt", "", StreamFlags::FLAG_NONE},
+    // The language nearest the extension is the stream's, and anything before it is its name
+    {"/movies/BigBuckBunny.mkv", "/movies/BigBuckBunny.director.en.srt", "en", StreamFlags::FLAG_NONE},
+    {"/movies/BigBuckBunny.mkv", "/movies/BigBuckBunny.en.fr.srt", "fr", StreamFlags::FLAG_NONE},
+};
+// clang-format on
+
+class TestExternalStreamDetails : public Test, public WithParamInterface<TestExternalStreamData>
+{
+};
+
+TEST_P(TestExternalStreamDetails, GetExternalStreamDetailsFromFilename)
+{
+  const ExternalStreamInfo info =
+      CUtil::GetExternalStreamDetailsFromFilename(GetParam().videoPath, GetParam().associatedFile);
+
+  EXPECT_EQ(info.language.AsBcp47(), GetParam().language);
+  EXPECT_EQ(info.flag, GetParam().flag);
+}
+
+INSTANTIATE_TEST_SUITE_P(GetExternalStreamDetailsFromFilename,
+                         TestExternalStreamDetails,
+                         ValuesIn(ExternalStreams));

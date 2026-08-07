@@ -633,7 +633,8 @@
       },
       "language": {
         "type": "string",
-        "required": true
+        "required": true,
+        "description": "BCP 47 language tag, e.g. en or en-AU. Empty when the stream declares none; an unrecognized one is passed through unchanged."
       },
       "codec": {
         "type": "string",
@@ -683,7 +684,8 @@
       },
       "language": {
         "type": "string",
-        "required": true
+        "required": true,
+        "description": "BCP 47 language tag, e.g. en or en-AU. Empty when the stream declares none; an unrecognized one is passed through unchanged."
       },
       "codec": {
         "type": "string",
@@ -713,7 +715,8 @@
       },
       "language": {
         "type": "string",
-        "required": true
+        "required": true,
+        "description": "BCP 47 language tag, e.g. en or en-AU. Empty when the stream declares none; an unrecognized one is passed through unchanged."
       },
       "isdefault": {
         "type": "boolean",
@@ -2087,7 +2090,8 @@
               "type": "string"
             },
             "language": {
-              "type": "string"
+              "type": "string",
+              "description": "BCP 47 language tag, e.g. en. Library values name a language only, never a region or script. Empty when the stream declares none; an unrecognized one is passed through unchanged."
             },
             "channels": {
               "type": "integer"
@@ -2117,7 +2121,17 @@
             "duration": {
               "type": "integer"
             },
+            "stereomode": {
+              "type": "string"
+            },
+            "language": {
+              "type": "string",
+              "description": "BCP 47 language tag, e.g. en. Library values name a language only, never a region or script. Empty when the stream declares none; an unrecognized one is passed through unchanged."
+            },
             "hdrtype": {
+              "type": "string"
+            },
+            "hdrdetail": {
               "type": "string"
             }
           },
@@ -2131,7 +2145,8 @@
           "type": "object",
           "properties": {
             "language": {
-              "type": "string"
+              "type": "string",
+              "description": "BCP 47 language tag, e.g. en. Library values name a language only, never a region or script. Empty when the stream declares none; an unrecognized one is passed through unchanged."
             }
           },
           "additionalProperties": false

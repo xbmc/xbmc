@@ -135,7 +135,7 @@ public:
   FFmpegExtraData extraData;
 
   StreamFlags flags{StreamFlags::FLAG_NONE};
-  std::string language; // RFC 5646 language code (empty string if undefined)
+  KODI::UTILS::CLanguageTag language;
   bool disabled{false}; // set when stream is disabled. (when no decoder exists)
 
   std::string name;

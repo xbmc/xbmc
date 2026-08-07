@@ -8,6 +8,10 @@
 
 #include "GUIInfoUtils.h"
 
+#include "ServiceBroker.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
+#include "utils/LanguageTag.h"
 #include "utils/StreamUtils.h"
 #include "utils/StringUtils.h"
 
@@ -29,4 +33,13 @@ std::optional<std::string> CGUIInfoUtils::FormatAudioChannels(const std::string&
   }
 
   return std::nullopt;
+}
+
+std::string CGUIInfoUtils::FormatLanguage(const KODI::UTILS::CLanguageTag& language)
+{
+  const std::string name{language.GetEnglishName()};
+  if (!name.empty())
+    return name;
+
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // Unknown
 }

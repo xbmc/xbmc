@@ -18,6 +18,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUISliderControl.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/guiinfo/GUIInfoUtils.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "resources/LocalizeStrings.h"
@@ -28,7 +29,6 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/SubtitlesSettings.h"
-#include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "video/dialogs/GUIDialogAudioSettings.h"
@@ -82,12 +82,9 @@ bool CPlayerController::OnAction(const CAction &action)
         std::string sub;
         if (subsOn)
         {
-          std::string lang;
           SubtitleStreamInfo info;
           appPlayer->GetSubtitleStreamInfo(CURRENT_STREAM, info);
-          if (!g_LangCodeExpander.Lookup(info.language, lang))
-            lang =
-                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // Unknown
+          const std::string lang{GUILIB::GUIINFO::CGUIInfoUtils::FormatLanguage(info.language)};
 
           if (info.name.empty())
             sub = lang;
@@ -143,14 +140,12 @@ bool CPlayerController::OnAction(const CAction &action)
           appPlayer->SetSubtitleVisible(true);
         }
 
-        std::string sub, lang;
+        std::string sub;
         if (currentSubVisible)
         {
           SubtitleStreamInfo info;
           appPlayer->GetSubtitleStreamInfo(currentSub, info);
-          if (!g_LangCodeExpander.Lookup(info.language, lang))
-            lang =
-                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // Unknown
+          const std::string lang{GUILIB::GUIINFO::CGUIInfoUtils::FormatLanguage(info.language)};
 
           if (info.name.empty())
             sub = lang;
@@ -274,13 +269,10 @@ bool CPlayerController::OnAction(const CAction &action)
           currentAudio = 0;
         appPlayer->SetAudioStream(currentAudio); // Set the audio stream to the one selected
 
-        std::string lan;
         AudioStreamInfo info;
         appPlayer->GetAudioStreamInfo(currentAudio, info);
-        if (!g_LangCodeExpander.Lookup(info.language, lan))
-          lan = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // Unknown
 
-        std::string textInfo = lan;
+        std::string textInfo{GUILIB::GUIINFO::CGUIInfoUtils::FormatLanguage(info.language)};
         if (!info.name.empty())
           textInfo += " - " + info.name;
         if (!info.codecDesc.empty())

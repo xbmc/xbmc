@@ -23,6 +23,7 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/guiinfo/GUIInfoUtils.h"
 #include "profiles/ProfileManager.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
@@ -35,7 +36,6 @@
 #include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingsManager.h"
 #include "utils/FileUtils.h"
-#include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -390,11 +390,8 @@ void CGUIDialogSubtitleSettings::SubtitleStreamsOptionFiller(
     appPlayer->GetSubtitleStreamInfo(i, info);
 
     std::string strItem;
-    std::string strLanguage;
-
-    if (!g_LangCodeExpander.Lookup(info.language, strLanguage))
-      strLanguage =
-          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // Unknown
+    const std::string strLanguage{
+        KODI::GUILIB::GUIINFO::CGUIInfoUtils::FormatLanguage(info.language)};
 
     if (info.name.empty())
       strItem = strLanguage;

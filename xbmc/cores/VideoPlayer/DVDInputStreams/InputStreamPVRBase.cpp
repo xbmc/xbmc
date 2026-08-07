@@ -17,6 +17,8 @@
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
 
+using namespace KODI::UTILS;
+
 CInputStreamPVRBase::CInputStreamPVRBase(const CFileItem& fileitem)
   : CDVDInputStream(DVDSTREAM_TYPE_PVRMANAGER, fileitem),
     m_StreamProps(std::make_shared<PVR_STREAM_PROPERTIES>()),
@@ -345,7 +347,7 @@ void CInputStreamPVRBase::UpdateStreamMap()
 
     dStream->codec = (AVCodecID)stream.iCodecId;
     dStream->uniqueId = stream.iPID;
-    dStream->language = stream.strLanguage;
+    dStream->language = CLanguageTag::Parse(stream.strLanguage);
 
     newStreamMap[stream.iPID] = dStream;
   }

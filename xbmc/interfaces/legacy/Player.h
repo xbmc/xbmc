@@ -576,6 +576,9 @@ namespace XBMCAddon
       ///
       /// @return                    Stream name
       ///
+      /// @python_v22 Languages are now BCP 47 tags, for example \p en or \p en-AU, where they
+      /// were ISO 639-2 three letter codes.
+      ///
       getSubtitles();
 #else
       String getSubtitles();
@@ -588,6 +591,9 @@ namespace XBMCAddon
       /// Get Subtitle stream names.
       ///
       /// @return                    List of subtitle streams as name
+      ///
+      /// @python_v22 Languages are now BCP 47 tags, for example \p en or \p en-AU, where they
+      /// were ISO 639-2 three letter codes.
       ///
       getAvailableSubtitleStreams();
 #else
@@ -743,6 +749,9 @@ namespace XBMCAddon
       ///
       /// @return                    List of audio streams as name
       ///
+      /// @python_v22 Languages are now BCP 47 tags, for example \p en or \p en-AU, where they
+      /// were ISO 639-2 three letter codes.
+      ///
       getAvailableAudioStreams();
 #else
       std::vector<String> getAvailableAudioStreams();
@@ -778,6 +787,9 @@ namespace XBMCAddon
       /// Get Video stream names
       ///
       /// @return                    List of video streams as name
+      ///
+      /// @python_v22 Languages are now BCP 47 tags, for example \p en or \p en-AU, where they
+      /// were ISO 639-2 three letter codes.
       ///
       getAvailableVideoStreams();
 #else

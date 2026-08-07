@@ -1745,7 +1745,7 @@ bool CApplication::Cleanup()
     //  are still allocated.
 
     CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Clear();
-    g_LangCodeExpander.Clear();
+    CLangCodeExpander::Clear();
     g_charsetConverter.clear();
     g_directoryCache.Clear();
     //CServiceBroker::GetInputManager().ClearKeymaps(); //! @todo

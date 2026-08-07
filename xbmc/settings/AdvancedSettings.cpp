@@ -1095,7 +1095,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     m_cachePath = tmp;
   URIUtils::AddSlashAtEnd(m_cachePath);
 
-  g_LangCodeExpander.LoadUserCodes(pRootElement->FirstChildElement("languagecodes"));
+  CLangCodeExpander::LoadUserCodes(pRootElement->FirstChildElement("languagecodes"));
 
   // trailer matching regexps
   const TiXmlElement* pTrailerMatching = pRootElement->FirstChildElement("trailermatching");

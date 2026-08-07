@@ -81,6 +81,23 @@ namespace XBMCAddon
       return lang;
     }
 
+    /*! @brief The active region, named in the notation a language format implies.
+     *  @param format One of the values getLanguage accepts
+     *  @return The region, or an empty string where it is not a known one
+     */
+    static std::string GetRegionInFormat(int format)
+    {
+      switch (format)
+      {
+        case CLangCodeExpander::ISO_639_1:
+          return g_langInfo.GetRegionCodeAlpha2();
+        case CLangCodeExpander::ISO_639_2:
+          return g_langInfo.GetRegionCodeAlpha3();
+        default:
+          return g_langInfo.GetCurrentRegion();
+      }
+    }
+
     void log(const char* msg, int level)
     {
       // check for a valid loglevel
@@ -209,51 +226,33 @@ namespace XBMCAddon
     String getLanguage(int format /* = CLangCodeExpander::ENGLISH_NAME */, bool region /*= false*/)
     {
       XBMC_TRACE;
-      std::string lang = g_langInfo.GetEnglishLanguageName();
+      const std::string englishName{g_langInfo.GetEnglishLanguageName()};
 
+      std::string language;
       switch (format)
       {
-      case CLangCodeExpander::ENGLISH_NAME:
-        {
-          if (region)
-          {
-            std::string region = "-" + g_langInfo.GetCurrentRegion();
-            return (lang += region);
-          }
-          return lang;
-        }
-      case CLangCodeExpander::ISO_639_1:
-        {
-          std::string langCode;
-          g_LangCodeExpander.ConvertToISO6391(GetBaseLanguageName(lang), langCode);
-          if (region)
-          {
-            std::string region = g_langInfo.GetRegionLocale();
-            std::string region2Code;
-            g_LangCodeExpander.ConvertToISO6391(region, region2Code);
-            region2Code = "-" + region2Code;
-            return (langCode += region2Code);
-          }
-          return langCode;
-        }
-      case CLangCodeExpander::ISO_639_2:
-        {
-          std::string langCode;
-          g_LangCodeExpander.ConvertToISO6392B(GetBaseLanguageName(lang), langCode);
-          if (region)
-          {
-            std::string region = g_langInfo.GetRegionLocale();
-            std::string region3Code;
-            g_LangCodeExpander.ConvertToISO6392B(region, region3Code);
-            region3Code = "-" + region3Code;
-            return (langCode += region3Code);
-          }
-
-          return langCode;
-        }
-      default:
-        return "";
+        case CLangCodeExpander::ENGLISH_NAME:
+          language = englishName;
+          break;
+        case CLangCodeExpander::ISO_639_1:
+          CLangCodeExpander::ConvertToISO6391(GetBaseLanguageName(englishName), language);
+          break;
+        case CLangCodeExpander::ISO_639_2:
+          CLangCodeExpander::ConvertToISO6392B(GetBaseLanguageName(englishName), language);
+          break;
+        default:
+          return "";
       }
+
+      // The separator joins a language to a region, so it is written only where there are both - a
+      // language with no ISO 639-1 code, Asturian for one, leaves the conversion above empty
+      if (region && !language.empty())
+      {
+        if (const std::string regionCode{GetRegionInFormat(format)}; !regionCode.empty())
+          language += "-" + regionCode;
+      }
+
+      return language;
     }
 
     String getIPAddress()
@@ -559,20 +558,22 @@ namespace XBMCAddon
       {
       case CLangCodeExpander::ENGLISH_NAME:
         {
-          g_LangCodeExpander.Lookup(language, convertedLanguage);
+          CLangCodeExpander::Lookup(language, convertedLanguage);
           // maybe it's a check whether the language exists or not
           if (convertedLanguage.empty())
           {
-            g_LangCodeExpander.ConvertToISO6392B(language, convertedLanguage);
-            g_LangCodeExpander.Lookup(convertedLanguage, convertedLanguage);
+            CLangCodeExpander::ConvertToISO6392B(language, convertedLanguage);
+            CLangCodeExpander::Lookup(convertedLanguage, convertedLanguage);
           }
           break;
         }
       case CLangCodeExpander::ISO_639_1:
-        g_LangCodeExpander.ConvertToISO6391(language, convertedLanguage);
+        if (const auto tag = KODI::UTILS::CLanguageTag::TryParse(language); tag.has_value())
+          convertedLanguage = tag->AsIso6391();
         break;
       case CLangCodeExpander::ISO_639_2:
-        g_LangCodeExpander.ConvertToISO6392B(language, convertedLanguage);
+        if (const auto tag = KODI::UTILS::CLanguageTag::TryParse(language); tag.has_value())
+          convertedLanguage = tag->AsIso6392B();
         break;
       default:
         return "";
