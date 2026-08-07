@@ -2689,32 +2689,37 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
         newItem->SetDynPath(selectedItem.GetDynPath());
         const auto tag{newItem->GetVideoInfoTag()};
         tag->SetFileNameAndPath(selectedItem.GetDynPath());
-        tag->m_streamDetails = selectedItem.GetVideoInfoTag()->m_streamDetails;
+        if (selectedItem.HasVideoInfoTag())
+        {
+          if (selectedItem.GetVideoInfoTag()->HasStreamDetails())
+            tag->m_streamDetails = selectedItem.GetVideoInfoTag()->m_streamDetails;
 
-        // Episode bookmarks
-        if (const CBookmark & bookmark{selectedItem.GetVideoInfoTag()->m_EpBookmark};
-            bookmark.IsSet())
-          tag->m_EpBookmark = bookmark;
+          // Episode bookmarks
+          if (const CBookmark& bookmark{selectedItem.GetVideoInfoTag()->m_EpBookmark};
+              bookmark.IsSet())
+            tag->m_EpBookmark = bookmark;
 
-        // The duration of the playlist, or of the episode's part of it where several share one, is
-        // measured from the disc and so is preferred over the scraper's.
-        // Loose sanity check that the scraper and found durations are similar, to avoid a
-        // mis-identified playlist from overwriting the episode's duration and affecting future
-        // playlist identification.
-        static constexpr int SCRAPED_DURATION_TOLERANCE_PERCENT{50};
-        const unsigned int scrapedDuration{tag->GetStaticDuration()};
-        if (const unsigned int discDuration{selectedItem.GetVideoInfoTag()->GetDuration()};
-            discDuration > 0 &&
-            (scrapedDuration == 0 ||
-             CheckDurationsWithinTolerance(scrapedDuration * 1000ms, discDuration * 1000ms,
-                                           SCRAPED_DURATION_TOLERANCE_PERCENT)))
-          tag->SetDuration(static_cast<int>(discDuration));
+          // The duration of the playlist, or of the episode's part of it where several share one, is
+          // measured from the disc and so is preferred over the scraper's.
+          // Loose sanity check that the scraper and found durations are similar, to avoid a
+          // mis-identified playlist from overwriting the episode's duration and affecting future
+          // playlist identification.
+          static constexpr int SCRAPED_DURATION_TOLERANCE_PERCENT{50};
+          const unsigned int scrapedDuration{tag->GetStaticDuration()};
+          if (const unsigned int discDuration{selectedItem.GetVideoInfoTag()->GetDuration()};
+              discDuration > 0 &&
+              (scrapedDuration == 0 ||
+               CheckDurationsWithinTolerance(scrapedDuration * 1000ms, discDuration * 1000ms,
+                                             SCRAPED_DURATION_TOLERANCE_PERCENT)))
+            tag->SetDuration(static_cast<int>(discDuration));
+        }
 
         if (tag->GetAssetInfo().GetTitle().empty())
           tag->GetAssetInfo().SetTitle(
               CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
                   VIDEO_VERSION_ID_DEFAULT));
-        newItem->SetProperty("bluray_playlist", selectedItem.GetProperty("bluray_playlist"));
+        if (selectedItem.HasProperty("bluray_playlist"))
+          newItem->SetProperty("bluray_playlist", selectedItem.GetProperty("bluray_playlist"));
         newItem->SetProperty("original_listitem_url", item.GetDynPath());
         return newItem;
       }};
