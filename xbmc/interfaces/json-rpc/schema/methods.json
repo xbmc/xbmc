@@ -5959,6 +5959,53 @@
     ],
     "returns": "boolean"
   },
+  "PVR.GetPlayableBroadcasts": {
+    "type": "method",
+    "description": "Retrieves the playable broadcasts of a specific channel within a time range",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      {
+        "name": "channelid",
+        "$ref": "Library.Id",
+        "required": true
+      },
+      {
+        "name": "starttime",
+        "type": "string",
+        "required": true,
+        "description":
+            "start of the time range, in the same format as PVR.Details.Broadcast.starttime"
+      },
+      {
+        "name": "endtime",
+        "type": "string",
+        "required": true,
+        "description": "end of the time range, in the same format as PVR.Details.Broadcast.endtime"
+      },
+      {
+        "name": "limits",
+        "$ref": "List.Limits",
+        "description": "bounds the broadcasts examined, not the ids returned"
+      }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "limits": {
+          "$ref": "List.LimitsReturned",
+          "required": true
+        },
+        "broadcastids": {
+          "type": "array",
+          "required": true,
+          "items": {
+            "$ref": "Library.Id"
+          }
+        }
+      }
+    }
+  },
   "PVR.GetTimers": {
     "type": "method",
     "description": "Retrieves the timers",
