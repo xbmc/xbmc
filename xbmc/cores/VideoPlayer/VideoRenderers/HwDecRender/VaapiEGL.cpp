@@ -13,6 +13,7 @@
 #include "utils/log.h"
 
 #include <drm_fourcc.h>
+#include <unistd.h>
 #include <va/va_drmcommon.h>
 
 using namespace VAAPI;
@@ -23,19 +24,15 @@ void CVaapi2Texture::Init(InteropInfo& interop)
   m_hasPlaneModifiers = CEGLUtils::HasExtension(m_interop.eglDisplay, "EGL_EXT_image_dma_buf_import_modifiers");
 }
 
-bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
+bool CVaapi2Texture::Import(CVaapiRenderPicture* pic)
 {
-  if (m_vaapiPic)
+  if (m_imported)
     return true;
 
-  m_vaapiPic = pic;
-  m_vaapiPic->Acquire();
-
-  // Pairs with the Acquire() above; nulling lets a retry see unmapped state.
-  auto failMap = [this]()
+  auto failImport = [this]()
   {
-    m_vaapiPic->Release();
-    m_vaapiPic = nullptr;
+    // also destroys images/textures a partly failed import created
+    Reset();
     return false;
   };
 
@@ -50,12 +47,12 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
 
   if (status != VA_STATUS_SUCCESS)
   {
-    CLog::Log(LOGWARNING, "CVaapi2Texture::Map: vaExportSurfaceHandle failed - Error: {} ({})",
+    CLog::Log(LOGWARNING, "CVaapi2Texture::Import: vaExportSurfaceHandle failed - Error: {} ({})",
               vaErrorStr(status), status);
-    return failMap();
+    return failImport();
   }
 
-  // Take ownership of the exported fds (RAII closes them on Unmap). num_objects
+  // Take ownership of the exported fds (RAII closes them on Reset). num_objects
   // is bounded by the libva descriptor's fixed objects[] array == m_drmFDs.size().
   for (uint32_t object = 0; object < surface.num_objects && object < m_drmFDs.size(); object++)
     m_drmFDs[object].attach(surface.objects[object].fd);
@@ -63,9 +60,9 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
   status = vaSyncSurface(pic->vadsp, pic->procPic.videoSurface);
   if (status != VA_STATUS_SUCCESS)
   {
-    CLog::Log(LOGERROR, "CVaapi2Texture::Map: vaSyncSurface - Error: {} ({})", vaErrorStr(status),
-              status);
-    return failMap();
+    CLog::Log(LOGERROR, "CVaapi2Texture::Import: vaSyncSurface - Error: {} ({})",
+              vaErrorStr(status), status);
+    return failImport();
   }
 
   m_textureSize.Set(pic->DVDPic.iWidth, pic->DVDPic.iHeight);
@@ -77,17 +74,17 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
     if (layer.num_planes != 1)
     {
       CLog::Log(LOGDEBUG,
-                "CVaapi2Texture::Map: DRM-exported layer has {} planes - only 1 supported",
+                "CVaapi2Texture::Import: DRM-exported layer has {} planes - only 1 supported",
                 layer.num_planes);
-      return failMap();
+      return failImport();
     }
     // Driver-supplied object_index is untrusted; reject OOB before indexing.
     if (layer.object_index[plane] >= surface.num_objects)
     {
       CLog::Log(LOGERROR,
-                "CVaapi2Texture::Map: layer {} plane {} object_index {} >= num_objects {}", layerNo,
-                plane, layer.object_index[plane], surface.num_objects);
-      return failMap();
+                "CVaapi2Texture::Import: layer {} plane {} object_index {} >= num_objects {}",
+                layerNo, plane, layer.object_index[plane], surface.num_objects);
+      return failImport();
     }
     auto const& object = surface.objects[layer.object_index[plane]];
 
@@ -121,15 +118,15 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
             }
             break;
           default:
-            failMap();
+            failImport();
             throw std::logic_error("Impossible layer number");
         }
         break;
       default:
         CLog::Log(LOGDEBUG,
-                  "CVaapi2Texture::Map: DRM-exported surface {} layers - only 1 or 2 supported",
+                  "CVaapi2Texture::Import: DRM-exported surface {} layers - only 1 or 2 supported",
                   surface.num_layers);
-        return failMap();
+        return failImport();
     }
 
     // Mesa Y210 / Y212 / Y216 import quirk: Mesa imports those DRM fourccs
@@ -168,7 +165,7 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
     if (!texture->eglImage)
     {
       CEGLUtils::Log(LOGERROR, "Failed to import VA DRM surface into EGL image");
-      return failMap();
+      return failImport();
     }
 
     glGenTextures(1, &texture->glTexture);
@@ -177,13 +174,12 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
     glBindTexture(m_interop.textureTarget, 0);
   }
 
+  m_imported = true;
   return true;
 }
 
-void CVaapi2Texture::Unmap()
+void CVaapi2Texture::Reset()
 {
-  if (!m_vaapiPic)
-    return;
 
   for (auto texture : {&m_y, &m_vu})
   {
@@ -200,8 +196,7 @@ void CVaapi2Texture::Unmap()
     fd.reset();
   }
 
-  m_vaapiPic->Release();
-  m_vaapiPic = nullptr;
+  m_imported = false;
 }
 
 GLuint CVaapi2Texture::GetTextureY()
@@ -217,6 +212,124 @@ GLuint CVaapi2Texture::GetTextureVU()
 CSizeInt CVaapi2Texture::GetTextureSize()
 {
   return m_textureSize;
+}
+
+namespace
+{
+
+// separate-layers export: one plane per layer, keyed like the DRMPRIME path
+std::optional<DRMPRIME::DmaBufIdentity> IdentityFromVaDescriptor(
+    const VADRMPRIMESurfaceDescriptor& surface)
+{
+  if (surface.num_objects < 1 || surface.num_objects > AV_DRM_MAX_PLANES ||
+      surface.num_layers < 1 || surface.num_layers > AV_DRM_MAX_PLANES)
+    return std::nullopt;
+
+  DRMPRIME::DmaBufIdentity identity;
+  identity.nbObjects = surface.num_objects;
+  for (uint32_t i = 0; i < surface.num_objects; i++)
+  {
+    if (!DRMPRIME::StatInode(surface.objects[i].fd, identity.inode[i]))
+      return std::nullopt;
+    identity.modifier[i] = surface.objects[i].drm_format_modifier;
+  }
+
+  identity.width = surface.width;
+  identity.height = surface.height;
+  identity.format = surface.fourcc;
+  identity.nbPlanes = surface.num_layers;
+  for (uint32_t i = 0; i < surface.num_layers; i++)
+  {
+    identity.objectIndex[i] = surface.layers[i].object_index[0];
+    identity.offset[i] = surface.layers[i].offset[0];
+    identity.pitch[i] = surface.layers[i].pitch[0];
+  }
+
+  return identity;
+}
+
+} // namespace
+
+void CVaapiTexturePool::Init(InteropInfo& interop)
+{
+  m_interop = interop;
+}
+
+CVaapi2Texture* CVaapiTexturePool::Get(CVaapiRenderPicture* pic)
+{
+  VADRMPRIMESurfaceDescriptor surface;
+  VAStatus status = vaExportSurfaceHandle(
+      pic->vadsp, pic->procPic.videoSurface, VA_SURFACE_ATTRIB_MEM_TYPE_DRM_PRIME_2,
+      VA_EXPORT_SURFACE_READ_ONLY | VA_EXPORT_SURFACE_SEPARATE_LAYERS, &surface);
+  if (status != VA_STATUS_SUCCESS)
+  {
+    CLog::Log(LOGWARNING, "CVaapiTexturePool::{}: vaExportSurfaceHandle failed - Error: {} ({})",
+              __FUNCTION__, vaErrorStr(status), status);
+    return nullptr;
+  }
+
+  // this export only identifies the memory; Import on a miss re-exports its own fds
+  const auto identity = IdentityFromVaDescriptor(surface);
+  for (uint32_t i = 0; i < surface.num_objects; i++)
+    close(surface.objects[i].fd);
+  if (!identity)
+    return nullptr;
+
+  uint32_t handle = m_cache.Lookup(*identity);
+  if (handle)
+  {
+    // Import syncs only on a miss; a cached texture still needs this frame's decode done
+    status = vaSyncSurface(pic->vadsp, pic->procPic.videoSurface);
+    if (status != VA_STATUS_SUCCESS)
+    {
+      CLog::Log(LOGERROR, "CVaapiTexturePool::{}: vaSyncSurface - Error: {} ({})", __FUNCTION__,
+                vaErrorStr(status), status);
+      return nullptr;
+    }
+  }
+  else
+  {
+    size_t slot;
+    if (!m_free.empty())
+    {
+      slot = m_free.back();
+      m_free.pop_back();
+    }
+    else
+    {
+      slot = m_entries.size();
+      m_entries.push_back(std::make_unique<CVaapi2Texture>());
+      m_entries[slot]->Init(m_interop);
+    }
+
+    if (!m_entries[slot]->Import(pic))
+    {
+      m_free.push_back(slot);
+      return nullptr;
+    }
+    handle = static_cast<uint32_t>(slot) + 1;
+    m_cache.Insert(*identity, handle);
+  }
+
+  for (uint32_t doomed : m_cache.Reap(handle, 0))
+  {
+    m_entries[doomed - 1]->Reset();
+    m_free.push_back(doomed - 1);
+  }
+
+  return m_entries[handle - 1].get();
+}
+
+void CVaapiTexturePool::ReleaseAll()
+{
+  m_cache.TakeAll();
+  for (auto& entry : m_entries)
+  {
+    if (entry)
+      entry->Reset();
+  }
+  m_entries.clear();
+  m_free.clear();
 }
 
 bool CVaapi2Texture::TestEsh(VADisplay vaDpy, EGLDisplay eglDisplay, std::uint32_t rtFormat, std::int32_t pixelFormat)

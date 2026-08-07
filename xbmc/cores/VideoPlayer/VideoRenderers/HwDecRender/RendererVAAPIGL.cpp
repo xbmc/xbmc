@@ -91,11 +91,10 @@ bool CRendererVAAPIGL::Configure(const VideoPicture& picture, float fps, unsigne
     interop.glEGLImageTargetTexture2DOES = (PFNGLEGLIMAGETARGETTEXTURE2DOESPROC)eglGetProcAddress("glEGLImageTargetTexture2DOES");
     interop.eglDisplay = CRendererVAAPIGL::m_pWinSystem->GetEGLDisplay();
 
+    m_texturePool.ReleaseAll();
+    m_texturePool.Init(interop);
     for (auto &tex : m_vaapiTextures)
-    {
-      tex = std::make_unique<VAAPI::CVaapi2Texture>();
-      tex->Init(interop);
-    }
+      tex = nullptr;
   }
 
   for (auto &fence : m_fences)
@@ -111,9 +110,7 @@ bool CRendererVAAPIGL::Flush(bool saveBuffers)
   for (auto &vaapiTexture : m_vaapiTextures)
   {
     if (m_isVAAPIBuffer)
-    {
-      vaapiTexture->Unmap();
-    }
+      vaapiTexture = nullptr;
   }
   return CLinuxRendererGL::Flush(saveBuffers);
 }
@@ -220,7 +217,9 @@ bool CRendererVAAPIGL::UploadTexture(int index)
     return UploadNV12Texture(index);
   }
 
-  m_vaapiTextures[index]->Map(pic);
+  m_vaapiTextures[index] = m_texturePool.Get(pic);
+  if (!m_vaapiTextures[index])
+    return false;
 
   const YuvImage& im = buf.image;
   CYuvPlane (&planes)[3] = buf.fields[0];
@@ -300,8 +299,7 @@ void CRendererVAAPIGL::ReleaseBuffer(int idx)
     m_fences[idx] = {};
   }
   if (m_isVAAPIBuffer)
-  {
-    m_vaapiTextures[idx]->Unmap();
-  }
+    m_vaapiTextures[idx] = nullptr;
+
   CLinuxRendererGL::ReleaseBuffer(idx);
 }

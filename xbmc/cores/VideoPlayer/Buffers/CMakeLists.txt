@@ -1,7 +1,8 @@
 set(SOURCES VideoBuffer.cpp)
 set(HEADERS VideoBuffer.h)
 
-if("gbm" IN_LIST CORE_PLATFORM_NAME_LC OR "wayland" IN_LIST CORE_PLATFORM_NAME_LC)
+if("gbm" IN_LIST CORE_PLATFORM_NAME_LC OR "wayland" IN_LIST CORE_PLATFORM_NAME_LC
+   OR "x11" IN_LIST CORE_PLATFORM_NAME_LC)
   list(APPEND SOURCES DmaBufIdentity.cpp
                       DmaBufIdentityCache.cpp
                       VideoBufferDMA.cpp

@@ -52,7 +52,8 @@ protected:
   EShaderFormat GetShaderFormat() override;
 
   bool m_isVAAPIBuffer = true;
-  std::unique_ptr<VAAPI::CVaapiTexture> m_vaapiTextures[NUM_BUFFERS];
+  VAAPI::CVaapiTexturePool m_texturePool;
+  VAAPI::CVaapiTexture* m_vaapiTextures[NUM_BUFFERS]{};
   GLsync m_fences[NUM_BUFFERS];
   static VAAPI::IVaapiWinSystem *m_pWinSystem;
 };
