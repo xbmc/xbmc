@@ -13,6 +13,10 @@
 #include "PVROperations.h"
 #include "ServiceBroker.h"
 #include "Util.h"
+#include "VideoLibrarySetSourceContent.h"
+#include "addons/AddonManager.h"
+#include "addons/Scraper.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "imagefiles/ImageFileURL.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/SortUtils.h"
@@ -975,6 +979,82 @@ JSONRPC_STATUS CVideoLibrary::Scan(const std::string &method, ITransportLayer *t
                           parameterObject["showdialogs"].asBoolean() ? "true" : "false");
 
   CServiceBroker::GetAppMessenger()->SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
+  return ACK;
+}
+
+JSONRPC_STATUS CVideoLibrary::SetSourceContent(const std::string& method,
+                                               ITransportLayer* transport,
+                                               IClient* client,
+                                               const CVariant& parameterObject,
+                                               CVariant& result)
+{
+  ParsedSetSourceContent parsed;
+  const JSONRPC_STATUS status = ParseSetSourceContentParams(parameterObject, parsed);
+  if (status != OK)
+  {
+    return status;
+  }
+
+  // SetScraperForPath() stores the path verbatim, GetScraperForPath() reads it back as a
+  // directory, so an unterminated path would never be found again.
+  if (!URIUtils::IsMultiPath(parsed.path))
+  {
+    URIUtils::AddSlashAtEnd(parsed.path);
+  }
+
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+  {
+    return InternalError;
+  }
+
+  // allAudio has no parameter, but SetScraperForPath() writes it in every branch.
+  KODI::VIDEO::SScanSettings existing;
+  videodatabase.GetScraperForPath(parsed.path, existing);
+  parsed.settings.m_allExtAudio = existing.m_allExtAudio;
+
+  ADDON::ScraperPtr scraper;
+  if (parsed.content != ADDON::ContentType::NONE)
+  {
+    // By type: a scraper serving more than one content type has an instance per type, and the
+    // binding is stored with the instance's own content.
+    ADDON::AddonPtr addon;
+    ADDON::CAddonMgr& addonMgr = CServiceBroker::GetAddonMgr();
+    if (!addonMgr.GetAddon(parsed.scraperId, addon, ADDON::ScraperTypeFromContent(parsed.content),
+                           ADDON::OnlyEnabled::CHOICE_YES))
+    {
+      return addonMgr.GetAddon(parsed.scraperId, addon, ADDON::OnlyEnabled::CHOICE_YES)
+                 ? InvalidParams
+                 : NotFound;
+    }
+
+    scraper = std::dynamic_pointer_cast<ADDON::CScraper>(addon);
+    if (!scraper)
+    {
+      return InvalidParams;
+    }
+
+    // Without supplied XML a failure is the scraper's own defaults, not the caller's doing.
+    if (!scraper->SetPathSettings(parsed.content, parsed.scraperSettings) &&
+        !parsed.scraperSettings.empty())
+    {
+      return InvalidParams;
+    }
+  }
+  else if (parsed.clearMode == SourceContentClearMode::REMOVE)
+  {
+    videodatabase.RemoveContentForPath(parsed.path);
+  }
+
+  videodatabase.SetScraperForPath(parsed.path, scraper, parsed.settings);
+
+  CUtil::DeleteVideoDatabaseDirectoryCache();
+
+  if (parsed.refresh)
+  {
+    CVideoLibraryQueue::GetInstance().ScanLibrary(parsed.path, true, true);
+  }
+
   return ACK;
 }
 

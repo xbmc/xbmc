@@ -164,6 +164,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "VideoLibrary.RemoveEpisode",                   CVideoLibrary::RemoveEpisode },
   { "VideoLibrary.RemoveMusicVideo",                CVideoLibrary::RemoveMusicVideo },
   { "VideoLibrary.Scan",                            CVideoLibrary::Scan },
+  { "VideoLibrary.SetSourceContent",                CVideoLibrary::SetSourceContent },
   { "VideoLibrary.Export",                          CVideoLibrary::Export },
   { "VideoLibrary.Clean",                           CVideoLibrary::Clean },
 
