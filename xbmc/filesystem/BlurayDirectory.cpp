@@ -438,6 +438,10 @@ void ProcessPlaylist(PlaylistMap& playlists, PlaylistInformation& titleInfo, Cli
     }
   }
 
+  info.videoStreams = titleInfo.videoStreams;
+  info.audioStreams = titleInfo.audioStreams;
+  info.pgStreams = titleInfo.pgStreams;
+
   // Get languages
   const std::string langs{fmt::format(
       "{}", fmt::join(titleInfo.audioStreams | std::views::transform(&StreamInfo::language), ","))};
