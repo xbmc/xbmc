@@ -1039,17 +1039,19 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
     pVideoPicture->iFlags |= DVP_FLAG_DROPPED;
   }
 
-  pVideoPicture->pixelFormat = m_pCodecContext->sw_pix_fmt;
+  // On a hwaccel path the frame's own format is the hardware surface, so sw_pix_fmt wins wherever
+  // libavcodec has filled it in. It leaves it unset for decoders that wrap an external library,
+  // which allocate their own frames and so reach neither place it is assigned.
+  pVideoPicture->pixelFormat = m_pCodecContext->sw_pix_fmt != AV_PIX_FMT_NONE
+                                   ? m_pCodecContext->sw_pix_fmt
+                                   : static_cast<AVPixelFormat>(m_pFrame->format);
 
   pVideoPicture->chroma_position = m_pCodecContext->chroma_sample_location;
   pVideoPicture->color_primaries = m_pCodecContext->color_primaries == AVCOL_PRI_UNSPECIFIED ? m_hints.colorPrimaries : m_pCodecContext->color_primaries;
   pVideoPicture->m_originalColorPrimaries = pVideoPicture->color_primaries;
   pVideoPicture->color_transfer = m_pCodecContext->color_trc == AVCOL_TRC_UNSPECIFIED ? m_hints.colorTransferCharacteristic : m_pCodecContext->color_trc;
   pVideoPicture->color_space = m_pCodecContext->colorspace == AVCOL_SPC_UNSPECIFIED ? m_hints.colorSpace : m_pCodecContext->colorspace;
-  // sw_pix_fmt always describes the actual pixel layout (pix_fmt is opaque
-  // for hwaccel paths like AV_PIX_FMT_VAAPI). libavutil api covers every
-  // codec, chroma layout, and bit depth without per-profile enumeration.
-  const AVPixFmtDescriptor* desc = av_pix_fmt_desc_get(m_pCodecContext->sw_pix_fmt);
+  const AVPixFmtDescriptor* desc = av_pix_fmt_desc_get(pVideoPicture->pixelFormat);
   pVideoPicture->colorBits = desc ? desc->comp[0].depth : 8;
 
   if (m_pCodecContext->color_range == AVCOL_RANGE_JPEG ||
