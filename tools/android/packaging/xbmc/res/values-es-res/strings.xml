@@ -16,4 +16,5 @@
     <string name="notice_dialog">%1$s requiere acceso al almacenamiento del dispositivo para funcionar. Por favor, permítelo en el siguente cuadro de dialogo o %1$s terminará.</string>
     <string name="waiting_external">Esperando al almacenamiento externo…</string>
     <string name="record_audio_dialog">%1$s pide permiso para grabar audio. Solo se usa para la búsqueda por voz. Por favor, permite o deniega en el siguiente cuadro de diálogo.</string>
+    <string name="networkperm_dialog">%1$s requiere aceso a las funcioens de red. Por favor, permítalo en el siguiente diálogo o %1$s forzará la salida.</string>
 </resources>
