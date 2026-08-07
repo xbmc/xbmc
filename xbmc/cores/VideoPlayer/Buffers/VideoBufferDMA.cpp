@@ -72,6 +72,14 @@ void CVideoBufferDMA::SetDimensions(int width,
                                     const int (&strides)[YuvImage::MAX_PLANES],
                                     const int (&planeOffsets)[YuvImage::MAX_PLANES])
 {
+  // invalidate only on real change: every decoded picture repeats these values
+  bool changed = m_width != static_cast<uint32_t>(width) ||
+                 m_height != static_cast<uint32_t>(height);
+  for (uint32_t i = 0; !changed && i < m_planes; i++)
+    changed = m_strides[i] != strides[i] || m_offsets[i] != planeOffsets[i];
+  if (changed)
+    InvalidateIdentity();
+
   m_width = width;
   m_height = height;
 
@@ -177,6 +185,7 @@ void CVideoBufferDMA::SyncEnd()
 
 void CVideoBufferDMA::Destroy()
 {
+  InvalidateIdentity();
   m_bo->ReleaseMemory();
   m_bo->DestroyBufferObject();
 

@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "cores/VideoPlayer/Buffers/DmaBufIdentity.h"
 #include "cores/VideoPlayer/Buffers/VideoBuffer.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 
@@ -41,12 +42,21 @@ public:
   virtual bool AcquireDescriptor() { return true; }
   virtual void ReleaseDescriptor() {}
 
+  //! \brief Memoized identity of the current descriptor; nullopt when absent or unreadable.
+  const std::optional<DRMPRIME::DmaBufIdentity>& GetIdentity(
+      const DRMPRIME::StatInodeFn& statInode = DRMPRIME::StatInode);
+  void InvalidateIdentity();
+
   uint32_t m_fb_id = 0;
 
 protected:
   explicit CVideoBufferDRMPRIME(int id);
 
   VideoPicture m_picture;
+
+private:
+  std::optional<DRMPRIME::DmaBufIdentity> m_identity;
+  bool m_identityValid{false};
 };
 
 class CVideoBufferDRMPRIMEFFmpeg : public CVideoBufferDRMPRIME
