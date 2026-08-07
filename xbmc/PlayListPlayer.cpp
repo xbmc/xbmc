@@ -467,9 +467,18 @@ void CPlayListPlayer::ClearPlaylist(Id playlistId)
   CPlayList& playlist = GetPlaylist(playlistId);
   playlist.Clear();
 
-  // its likely that the playlist changed
-  CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
-  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+  // the current position indexes items that no longer exist
+  if (m_iCurrentPlayList == playlistId)
+  {
+    // Reset() announces the change itself
+    Reset();
+  }
+  else
+  {
+    // its likely that the playlist changed
+    CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
+    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+  }
 }
 
 CPlayList& CPlayListPlayer::GetPlaylist(Id playlistId)
