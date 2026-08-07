@@ -38,6 +38,10 @@ CRendererDRMPRIME::~CRendererDRMPRIME()
   winSystem->SetHDR(nullptr);
   winSystem->SetColorimetry(nullptr);
 
+  // queue the video plane off before FindGuiPlane nulls m_video_plane
+  if (m_videoLayerBridge)
+    m_videoLayerBridge->Disable();
+
   //! @todo Restore single-plane state after D2P playback: null m_video_plane
   //! via direct FindGuiPlane, mirroring Create's direct FindVideoAndGuiPlane.
   //! D2P cannot share single-plane's teardown via winSystem->SetVideoOutput
