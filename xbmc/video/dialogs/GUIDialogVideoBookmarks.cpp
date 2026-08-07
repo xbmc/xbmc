@@ -35,7 +35,6 @@
 #include "settings/SettingsComponent.h"
 #include "threads/SystemClock.h"
 #include "utils/Crc32.h"
-#include "utils/Screenshot.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -57,7 +56,6 @@
 #define CONTROL_THUMBS                11
 
 using namespace KODI::VIDEO;
-using namespace std::chrono_literals;
 
 CGUIDialogVideoBookmarks::CGUIDialogVideoBookmarks()
   : CGUIDialog(WINDOW_DIALOG_VIDEO_BOOKMARKS, "VideoOSDBookmarks.xml")
@@ -480,60 +478,76 @@ bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
 
   using namespace KODI::RENDERING::CAPTURE;
 
-  std::vector<uint8_t> pixels(height * width * 4);
-  bool hasImage = false;
-
   const auto captureService = CServiceBroker::GetCaptureService();
-  if (captureService)
-  {
-    CaptureSpec spec;
-    spec.content = CaptureContent::VIDEO;
-    spec.width = width;
-    spec.height = height;
-    // native depth so HDR passthrough sessions tonemap from full precision
-    spec.format = CaptureFormat::NATIVE;
-    const auto handle = captureService->Submit(spec);
-
-    // PumpForCapture lives on CScreenShot: it is the friend of CGUIWindowManager
-    if (CScreenShot::PumpForCapture(*handle, 1000ms))
-      hasImage = CaptureToBGRA(handle->GetResult(), width, height, pixels.data());
-  }
-
-  if (hasImage)
-  {
-    const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
-
-    auto crc = Crc32::ComputeFromLowerCase(g_application.CurrentFileItem().GetDynPath());
-    bookmark.thumbNailImage =
-        StringUtils::Format("{:08x}_{}.jpg", crc, (int)bookmark.timeInSeconds);
-    bookmark.thumbNailImage = URIUtils::AddFileToFolder(profileManager->GetBookmarksThumbFolder(), bookmark.thumbNailImage);
-
-    if (!CPicture::CreateThumbnailFromSurface(pixels.data(), width, height, width * 4,
-                                              bookmark.thumbNailImage))
-    {
-      CLog::Log(LOGERROR, "CGUIDialogVideoBookmarks: failed to create thumbnail");
-      bookmark.thumbNailImage.clear();
-    }
-  }
-  else
-    CLog::Log(LOGERROR, "CGUIDialogVideoBookmarks: failed to capture video frame");
-
-  CVideoDatabase videoDatabase;
-  if (!videoDatabase.Open())
+  if (!captureService)
     return false;
 
-  if (tag)
-    videoDatabase.AddBookMarkForEpisode(*tag, bookmark);
-  else
-  {
-    const std::string path{g_application.CurrentFileItem().GetDynPath()};
-    videoDatabase.AddBookMarkToFile(path, bookmark, CBookmark::STANDARD);
+  // deterministic thumb path (file CRC + bookmark time), resolved here so the
+  // worker callback needs no g_application or profile access
+  const std::string dynPath{g_application.CurrentFileItem().GetDynPath()};
+  const std::shared_ptr<CProfileManager> profileManager =
+      CServiceBroker::GetSettingsComponent()->GetProfileManager();
+  bookmark.thumbNailImage = URIUtils::AddFileToFolder(
+      profileManager->GetBookmarksThumbFolder(),
+      StringUtils::Format("{:08x}_{}.jpg", Crc32::ComputeFromLowerCase(dynPath),
+                          (int)bookmark.timeInSeconds));
 
+  // player OSD markers are an in-memory player update; done on this thread so
+  // the marker shows at once and the worker touches no player state
+  if (!tag)
+  {
     std::vector<std::chrono::milliseconds> positions = appPlayer->GetBookmarks();
     CBookmark::AddToPositions(bookmark, positions);
     appPlayer->SetBookmarks(positions);
   }
-  videoDatabase.Close();
+
+  // tag is a caller local (episode list); copy it for the deferred callback
+  const bool episode{tag != nullptr};
+  CVideoInfoTag episodeTag;
+  if (episode)
+    episodeTag = *tag;
+
+  // convert (HDR tonemap), encode and the DB write run on the capture service
+  // worker, off the render thread; the render thread pays only the readback tap
+  CaptureSpec spec;
+  spec.content = CaptureContent::VIDEO;
+  spec.width = width;
+  spec.height = height;
+  // native depth so HDR passthrough sessions tonemap from full precision
+  spec.format = CaptureFormat::NATIVE;
+
+  auto handle = captureService->Submit(
+      spec,
+      [bookmark, width, height, dynPath, episode, episodeTag](const CaptureResult& result) mutable
+      {
+        std::vector<uint8_t> pixels(static_cast<size_t>(height) * width * 4);
+        const bool converted = CaptureToBGRA(result, width, height, pixels.data());
+        const bool encoded =
+            converted && CPicture::CreateThumbnailFromSurface(pixels.data(), width, height,
+                                                              width * 4, bookmark.thumbNailImage);
+        if (!encoded)
+        {
+          CLog::Log(LOGERROR, "CGUIDialogVideoBookmarks: failed to create bookmark thumbnail");
+          bookmark.thumbNailImage.clear();
+        }
+
+        CVideoDatabase videoDatabase;
+        if (videoDatabase.Open())
+        {
+          if (episode)
+            videoDatabase.AddBookMarkForEpisode(episodeTag, bookmark);
+          else
+            videoDatabase.AddBookMarkToFile(dynPath, bookmark, CBookmark::STANDARD);
+          videoDatabase.Close();
+        }
+
+        // an open bookmarks dialog reloads the now-written thumb on the app thread
+        if (auto* gui = CServiceBroker::GetGUI())
+          gui->GetWindowManager().SendThreadMessage(
+              CGUIMessage(GUI_MSG_REFRESH_LIST, 0, WINDOW_DIALOG_VIDEO_BOOKMARKS));
+      });
+  handle->Detach();
+
   return true;
 }
 

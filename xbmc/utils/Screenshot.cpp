@@ -11,10 +11,7 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
 #include "guilib/TextureFormats.h"
-#include "messaging/ApplicationMessenger.h"
 #include "pictures/Picture.h"
 #include "rendering/capture/CaptureHandle.h"
 #include "rendering/capture/CapturePixels.h"
@@ -26,14 +23,10 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/windows/GUIControlSettings.h"
-#include "threads/SystemClock.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
-#include <chrono>
 #include <memory>
-
-using namespace std::chrono_literals;
 
 std::vector<std::function<std::unique_ptr<IScreenshotSurface>()>> CScreenShot::m_screenShotSurfaces;
 
@@ -120,34 +113,11 @@ void CScreenShot::TakeScreenshot(const std::string& filename,
   spec.content = content;
   spec.format = CaptureFormat::NATIVE;
 
-  // the write runs on the service worker, and ONLY on a successful
-  // delivery (the callback never fires on failure), so a failed capture
-  // leaves no empty file behind
+  // failure dispatches an empty result because some consumers must act on
+  // it (a bookmark still writes its DB row); here WriteCapture declines it
   auto handle = captureService->Submit(spec, [filename](const CaptureResult& result)
                                        { WriteCapture(result, filename); });
   handle->Detach();
-}
-
-bool CScreenShot::PumpForCapture(KODI::RENDERING::CAPTURE::CCaptureHandle& handle,
-                                 std::chrono::milliseconds timeout)
-{
-  using namespace KODI::RENDERING::CAPTURE;
-
-  const auto appMessenger = CServiceBroker::GetAppMessenger();
-  const bool processThread = appMessenger && appMessenger->IsProcessThread();
-  auto* gui = CServiceBroker::GetGUI();
-
-  XbmcThreads::EndTime<> deadline(timeout);
-  while (!deadline.IsTimePast())
-  {
-    if (handle.Wait(processThread ? 5ms : 50ms))
-      return true;
-    if (handle.GetState() == CaptureState::FAILED)
-      return false;
-    if (processThread && gui)
-      gui->GetWindowManager().ProcessRenderLoop(false);
-  }
-  return false;
 }
 
 namespace

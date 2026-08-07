@@ -225,10 +225,19 @@ bool CRendererDRMPRIMEGLES::Configure(const VideoPicture& picture,
     }
     else
     {
-      CLog::Log(LOGWARNING, "RendererDRMPRIMEGLES::Configure: limited-range "
-                            "YUV shader compile/link failed; OES path will "
-                            "be used regardless of user setting");
+      CLog::Log(LOGERROR, "RendererDRMPRIMEGLES::Configure: limited-range "
+                          "YUV shader compile/link failed");
     }
+  }
+
+  if (!m_yuvShader && winSystem->UseLimitedColor())
+  {
+    CLog::Log(LOGERROR,
+              "RendererDRMPRIMEGLES::Configure: fourcc {:#x} cannot be converted to limited "
+              "range; switching videoscreen.limitedrange off so the GUI matches the video",
+              sourceFourcc);
+    CServiceBroker::GetSettingsComponent()->GetSettings()->SetBool(
+        CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE, false);
   }
 
   winSystem->SetColorimetry(&picture);

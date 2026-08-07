@@ -706,7 +706,9 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
       break;
   }
   AVPixelFormat dstFmt = jpg_output ? AV_PIX_FMT_YUV420P : is16bit ? fmt16bit : AV_PIX_FMT_RGBA;
-  tdm.sws = sws_getContext(width, height, srcFmt, width, height, dstFmt, 0, 0, 0, 0);
+  // SWS_ACCURATE_RND skips RGB->YUV fast paths that ignore the range set below
+  tdm.sws = sws_getContext(width, height, srcFmt, width, height, dstFmt,
+                           jpg_output ? SWS_ACCURATE_RND : 0, nullptr, nullptr, nullptr);
   if (!tdm.sws)
   {
     CLog::Log(LOGERROR, "Could not setup scaling context for thumbnail: {}", destFile);

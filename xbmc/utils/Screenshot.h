@@ -11,16 +11,10 @@
 #include "IScreenshotSurface.h"
 #include "rendering/capture/CaptureTypes.h"
 
-#include <chrono>
 #include <functional>
 #include <memory>
 #include <string>
 #include <vector>
-
-namespace KODI::RENDERING::CAPTURE
-{
-class CCaptureHandle;
-}
 
 class CScreenShot
 {
@@ -41,15 +35,6 @@ public:
   //! rendered frame into two files in the configured folder
   //! (screenshotNNNNN.png and screenshotNNNNN-video.png).
   static void TakeScreenshotBoth();
-
-  //! \brief Block until a one-shot capture is delivered, returning true on
-  //! success. On the render/process thread the wait pumps real frames (a
-  //! plain wait there would starve the frame the capture needs); off-thread
-  //! it waits passively. Returns false as soon as the request fails.
-  //! Pumping calls the private CGUIWindowManager::ProcessRenderLoop; other
-  //! waiters (the bookmarks dialog) call this instead of becoming friends.
-  static bool PumpForCapture(KODI::RENDERING::CAPTURE::CCaptureHandle& handle,
-                             std::chrono::milliseconds timeout);
 
 private:
   static std::vector<std::function<std::unique_ptr<IScreenshotSurface>()>> m_screenShotSurfaces;
