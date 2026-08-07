@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "utils/StringUtils.h"
+
 #include <algorithm>
 #include <array>
 #include <string_view>
@@ -285,6 +287,11 @@ inline constexpr std::array<ISO3166_1, ISO3166_1_COUNT> TableISO3166_1 = {{
 // clang-format on
 
 static_assert(std::ranges::is_sorted(TableISO3166_1, {}, &ISO3166_1::alpha2));
+
+static_assert(std::ranges::all_of(
+    TableISO3166_1,
+    [](std::string_view name) { return StringUtils::IsAsciiTrimmed(name); },
+    &ISO3166_1::name));
 
 constexpr auto CreateTableISO3166_1ByAlpha3()
 {
