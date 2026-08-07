@@ -79,6 +79,12 @@ TEST(TestI18nIso639_2, LookupByName)
   EXPECT_TRUE(result.has_value());
   EXPECT_EQ(*result, "fin");
 
+  // A name is matched with EqualsNoCase and nothing trims it, so a stray space in the table
+  // leaves the entry unreachable
+  result = CIso639_2::LookupByName("Flemish");
+  EXPECT_TRUE(result.has_value());
+  EXPECT_EQ(*result, "nld");
+
   result = CIso639_2::LookupByName("not a language");
   EXPECT_FALSE(result.has_value());
 }

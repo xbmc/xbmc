@@ -581,7 +581,7 @@ constexpr std::array<struct LCENTRY, ISO639_2_ADDL_NAMES_COUNT> TableISO639_2_Na
     {StringToLongCode("nds"), "German, Low"},
     {StringToLongCode("nds"), "Saxon Low"},
     {StringToLongCode("new"), "Newari"},
-    {StringToLongCode("nld"), "Flemish "},
+    {StringToLongCode("nld"), "Flemish"},
     {StringToLongCode("nno"), "Nynorsk, Norwegian"},
     {StringToLongCode("nob"), "Norwegian Bokmål"},
     {StringToLongCode("nso"), "Sepedi"},
