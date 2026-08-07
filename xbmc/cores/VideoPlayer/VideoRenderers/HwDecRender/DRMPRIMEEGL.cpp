@@ -62,7 +62,7 @@ void CDRMPRIMETexture::Init(EGLDisplay eglDisplay)
 
 bool CDRMPRIMETexture::Map(CVideoBufferDRMPRIME* buffer)
 {
-  if (m_primebuffer)
+  if (m_mapped)
     return true;
 
   if (!buffer->AcquireDescriptor())
@@ -113,25 +113,20 @@ bool CDRMPRIMETexture::Map(CVideoBufferDRMPRIME* buffer)
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     m_eglImage->UploadImage(m_textureTarget);
     glBindTexture(m_textureTarget, 0);
+    m_mapped = true;
   }
 
-  m_primebuffer = buffer;
-  m_primebuffer->Acquire();
-
-  return true;
+  buffer->ReleaseDescriptor();
+  return m_mapped;
 }
 
 void CDRMPRIMETexture::Unmap()
 {
-  if (!m_primebuffer)
+  if (!m_mapped)
     return;
 
   m_eglImage->DestroyImage();
-
-  m_primebuffer->ReleaseDescriptor();
-
-  m_primebuffer->Release();
-  m_primebuffer = nullptr;
+  m_mapped = false;
 }
 
 namespace
@@ -193,7 +188,7 @@ bool CDRMPRIMETextureYUV::SupportsFormat(uint32_t fourcc)
 // extended to the per-plane texture array.
 CDRMPRIMETextureYUV::~CDRMPRIMETextureYUV()
 {
-  // Release any active mapping (EGL images, descriptor, buffer ref).
+  // Release any active mapping (EGL images).
   Unmap();
   // Delete the GL texture objects that Map() may have generated.
   for (int i = 0; i < MAX_PLANES; i++)
@@ -218,7 +213,7 @@ void CDRMPRIMETextureYUV::Init(EGLDisplay eglDisplay)
 // SW-decode -> DMA path produce.
 bool CDRMPRIMETextureYUV::Map(CVideoBufferDRMPRIME* buffer)
 {
-  if (m_primebuffer)
+  if (m_mapped)
     return true;
 
   if (!buffer->AcquireDescriptor())
@@ -308,16 +303,14 @@ bool CDRMPRIMETextureYUV::Map(CVideoBufferDRMPRIME* buffer)
     glBindTexture(GL_TEXTURE_2D, 0);
   }
 
-  m_primebuffer = buffer;
-  m_primebuffer->Acquire();
+  buffer->ReleaseDescriptor();
+  m_mapped = true;
   return true;
 }
 
-// DestroyImage + ReleaseDescriptor + buffer Release + null sequence is
-// taken from CDRMPRIMETexture::Unmap (above), looped over planes.
 void CDRMPRIMETextureYUV::Unmap()
 {
-  if (!m_primebuffer)
+  if (!m_mapped)
     return;
 
   for (int i = 0; i < m_numPlanes; i++)
@@ -326,8 +319,105 @@ void CDRMPRIMETextureYUV::Unmap()
       m_eglImages[i]->DestroyImage();
   }
   m_numPlanes = 0;
+  m_mapped = false;
+}
 
-  m_primebuffer->ReleaseDescriptor();
-  m_primebuffer->Release();
-  m_primebuffer = nullptr;
+void CDRMPRIMETexturePool::Init(EGLDisplay eglDisplay)
+{
+  m_eglDisplay = eglDisplay;
+}
+
+CDRMPRIMETexture* CDRMPRIMETexturePool::GetOES(CVideoBufferDRMPRIME* buffer)
+{
+  const auto& identity = buffer->GetIdentity();
+  if (!identity)
+    return nullptr;
+
+  // the OES import bakes the colorspace and range hints into the image
+  const VideoPicture& picture = buffer->GetPicture();
+  const uint64_t salt = (static_cast<uint64_t>(GetEGLColorSpace(picture)) << 32) |
+                        static_cast<uint32_t>(GetEGLColorRange(picture));
+
+  uint32_t handle = m_oesCache.Lookup(*identity, salt);
+  if (!handle)
+  {
+    size_t slot;
+    if (!m_oesFree.empty())
+    {
+      slot = m_oesFree.back();
+      m_oesFree.pop_back();
+    }
+    else
+    {
+      slot = m_oesEntries.size();
+      m_oesEntries.push_back(std::make_unique<CDRMPRIMETexture>());
+      m_oesEntries[slot]->Init(m_eglDisplay);
+    }
+
+    if (!m_oesEntries[slot]->Map(buffer))
+    {
+      m_oesFree.push_back(slot);
+      return nullptr;
+    }
+    handle = static_cast<uint32_t>(slot) + 1;
+    m_oesCache.Insert(*identity, handle, salt);
+  }
+
+  for (uint32_t doomed : m_oesCache.Reap(handle, 0))
+  {
+    m_oesEntries[doomed - 1]->Unmap();
+    m_oesFree.push_back(doomed - 1);
+  }
+
+  return m_oesEntries[handle - 1].get();
+}
+
+CDRMPRIMETextureYUV* CDRMPRIMETexturePool::GetYUV(CVideoBufferDRMPRIME* buffer)
+{
+  const auto& identity = buffer->GetIdentity();
+  if (!identity)
+    return nullptr;
+
+  uint32_t handle = m_yuvCache.Lookup(*identity);
+  if (!handle)
+  {
+    size_t slot;
+    if (!m_yuvFree.empty())
+    {
+      slot = m_yuvFree.back();
+      m_yuvFree.pop_back();
+    }
+    else
+    {
+      slot = m_yuvEntries.size();
+      m_yuvEntries.push_back(std::make_unique<CDRMPRIMETextureYUV>());
+      m_yuvEntries[slot]->Init(m_eglDisplay);
+    }
+
+    if (!m_yuvEntries[slot]->Map(buffer))
+    {
+      m_yuvFree.push_back(slot);
+      return nullptr;
+    }
+    handle = static_cast<uint32_t>(slot) + 1;
+    m_yuvCache.Insert(*identity, handle);
+  }
+
+  for (uint32_t doomed : m_yuvCache.Reap(handle, 0))
+  {
+    m_yuvEntries[doomed - 1]->Unmap();
+    m_yuvFree.push_back(doomed - 1);
+  }
+
+  return m_yuvEntries[handle - 1].get();
+}
+
+void CDRMPRIMETexturePool::ReleaseAll()
+{
+  m_oesCache.TakeAll();
+  m_yuvCache.TakeAll();
+  m_oesEntries.clear();
+  m_yuvEntries.clear();
+  m_oesFree.clear();
+  m_yuvFree.clear();
 }
