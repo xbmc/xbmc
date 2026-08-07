@@ -24500,7 +24500,19 @@ msgctxt "#39210"
 msgid "If enabled, Dolby Vision files will have level 5 (active area) metadata overridden to zero offsets. Enable if your display has issues with incorrectly cropped image in Dolby Vision playback."
 msgstr ""
 
-#empty strings from id 39211 to 39899
+#. Title of the setting that suppresses subtitles whose language matches the audio language
+#: system/settings/settings.xml
+msgctxt "#39211"
+msgid "Don't show subtitles in the audio language"
+msgstr ""
+
+#. Help text for setting "Don't show subtitles in the audio language" of label #39211
+#: system/settings/settings.xml
+msgctxt "#39212"
+msgid "Prevent subtitles from being turned on automatically when they are in the same language as the audio track being played. This is decided when playback starts, subtitles can still be selected manually afterwards and changing the audio track during playback does not re-evaluate them. Forced subtitles, which usually only translate foreign language parts, are not affected, and this setting is ignored when subtitles for the hearing impaired are preferred. Both the audio track and the subtitles must declare their language for the comparison to be possible."
+msgstr ""
+
+#empty strings from id 39213 to 39899
 
 #. List formatting: pattern used to join a list of exactly two items, e.g. "A and B"
 #. STR_LIST_AND_TWO
