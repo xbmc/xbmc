@@ -159,6 +159,13 @@ private:
   void PushCecKeypress(const CecButtonPress& key);
   void GetNextKey(void);
 
+  /*!
+   * @brief Move volume control between the amp and Kodi.
+   * @param bSetTo True to let the amp handle volume and mute, false to keep them in Kodi.
+   *
+   * Unmutes Kodi and sets its volume to maximum when the amp takes over, so that all attenuation
+   * happens in one place. Does nothing when control is already where it is asked to be.
+   */
   void SetAmpControlsVolume(bool bSetTo);
   void SetAmpMuted(bool bSetTo);
   void SetMenuLanguage(const char* strLanguage);

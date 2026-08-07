@@ -478,6 +478,24 @@ bool CPeripheralCecAdapter::HasAudioControl(void)
 
 void CPeripheralCecAdapter::SetAmpControlsVolume(bool bSetTo)
 {
+  {
+    std::unique_lock lock(m_critSection);
+    if (m_bAmpControlsVolume == bSetTo)
+      return;
+  }
+
+  /* hand Kodi's volume over before the amp takes it: from that point on a mute keypress is
+     forwarded to the amp rather than clearing Kodi's own mute, which would leave Kodi muted
+     with no way to unmute it. setting the volume to maximum lets Kodi pass its audio through
+     unchanged, so the amp is the only thing attenuating it */
+  if (bSetTo)
+  {
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+    appVolume->SetMute(false);
+    appVolume->SetVolume(CApplicationVolumeHandling::VOLUME_MAXIMUM, false);
+  }
+
   std::unique_lock lock(m_critSection);
   m_bAmpControlsVolume = bSetTo;
 }
@@ -1693,12 +1711,7 @@ std::string CPeripheralCecAdapterUpdateThread::UpdateAudioSystemStatus(void)
   CLog::Log(LOGDEBUG, "{} - CEC capable amplifier found ({}). volume will be controlled on the amp",
             __FUNCTION__, ampName);
 
-  /* the amp handles volume and mute from here on, so let Kodi pass its audio through unchanged */
   m_adapter->SetAmpControlsVolume(true);
-  auto& components = CServiceBroker::GetAppComponents();
-  const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
-  appVolume->SetMute(false);
-  appVolume->SetVolume(CApplicationVolumeHandling::VOLUME_MAXIMUM, false);
 
   /* adopt the amp's mute state, so the first mute keypress does not toggle it the wrong way */
   const uint8_t audioStatus = m_adapter->m_cecAdapter->AudioStatus();
