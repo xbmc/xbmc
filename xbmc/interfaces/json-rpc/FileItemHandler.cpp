@@ -375,8 +375,15 @@ void CFileItemHandler::HandleFileItem(const char* ID,
     {
       if (allowFile)
       {
-        if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->GetPath().empty())
+        //! @todo get rid of "videos with versions as folder" hack!
+        if (fields.contains("filetype") && item->GetProperty("IsHybridFolder").asBoolean(false))
+        {
+          object["file"] = item->GetPath().c_str();
+        }
+        else if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->GetPath().empty())
+        {
           object["file"] = item->GetVideoInfoTag()->GetPath().c_str();
+        }
         if (item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetURL().empty())
           object["file"] = item->GetMusicInfoTag()->GetURL().c_str();
         if (item->HasPVRTimerInfoTag() && !item->GetPVRTimerInfoTag()->Path().empty())
