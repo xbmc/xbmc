@@ -1039,12 +1039,19 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
     pVideoPicture->iFlags |= DVP_FLAG_DROPPED;
   }
 
-  // On a hwaccel path the frame's own format is the hardware surface, so sw_pix_fmt wins wherever
-  // libavcodec has filled it in. It leaves it unset for decoders that wrap an external library,
-  // which allocate their own frames and so reach neither place it is assigned.
-  pVideoPicture->pixelFormat = m_pCodecContext->sw_pix_fmt != AV_PIX_FMT_NONE
-                                   ? m_pCodecContext->sw_pix_fmt
-                                   : static_cast<AVPixelFormat>(m_pFrame->format);
+  // sw_pix_fmt is unset for a decoder that allocates its own frames, since it reaches neither
+  // place libavcodec assigns it. Fall back to the frame, which is the picture actually handed to
+  // the renderer, but never to a hardware surface, which describes no layout.
+  pVideoPicture->pixelFormat = m_pCodecContext->sw_pix_fmt;
+  if (pVideoPicture->pixelFormat == AV_PIX_FMT_NONE)
+  {
+    const auto frameFormat = static_cast<AVPixelFormat>(m_pFrame->format);
+    const AVPixFmtDescriptor* frameDesc = av_pix_fmt_desc_get(frameFormat);
+    if (frameDesc && !(frameDesc->flags & AV_PIX_FMT_FLAG_HWACCEL))
+    {
+      pVideoPicture->pixelFormat = frameFormat;
+    }
+  }
 
   pVideoPicture->chroma_position = m_pCodecContext->chroma_sample_location;
   pVideoPicture->color_primaries = m_pCodecContext->color_primaries == AVCOL_PRI_UNSPECIFIED ? m_hints.colorPrimaries : m_pCodecContext->color_primaries;
