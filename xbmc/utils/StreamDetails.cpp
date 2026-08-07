@@ -621,65 +621,38 @@ std::string CStreamDetails::VideoDimsToResolutionDescription(int iWidth, int iHe
   if (iWidth == 0 || iHeight == 0)
     return "";
 
-  // Anamorphic NTSC DVD
-  else if (iWidth <= 854 && iHeight <= 480)
-    return "480";
-  // 960x540 (sometimes 544 which is multiple of 16)
-  else if (iWidth <= 960 && iHeight <= 544)
-    return "540";
-  // includes 768x576, 720x576 and 1024x576
-  else if (iWidth <= 1024 && iHeight <= 576)
-    return "576";
-  // 1280x720
-  else if (iWidth <= 1280 && iHeight <= 962)
-    return "720";
-  // 1920x1080
-  else if (iWidth <= 1920 && iHeight <= 1440)
-    return "1080";
-  // 4K
-  else if (iWidth <= 4096 && iHeight <= 3072)
-    return "4K";
-  // 8K
-  else if (iWidth <= 8192 && iHeight <= 6144)
-    return "8K";
-  else
-    return "";
+  // The first entry the content fits within on both axes describes it. Anything larger than
+  // the last entry is left undescribed rather than clamped to it.
+  for (const auto& resolution : COMMON_RESOLUTIONS)
+  {
+    if (iWidth <= resolution.maxWidth && iHeight <= resolution.maxHeight)
+      return std::string(resolution.label);
+  }
+
+  return "";
 }
 
 std::string CStreamDetails::VideoAspectToAspectDescription(float fAspect)
 {
-  if (fAspect == 0.0f)
+  if (fAspect <= 0.0f)
     return "";
 
   // Given that we're never going to be able to handle every single possibility in
   // aspect ratios, particularly when cropping prior to video encoding is taken into account
   // the best we can do is take the "common" aspect ratios, and return the closest one available.
-  // The cutoffs are the geometric mean of the two aspect ratios either side.
-  if (fAspect < 1.0909f) // sqrt(1.00*1.19)
-    return "1.00";
-  else if (fAspect < 1.2581f) // sqrt(1.19*1.33)
-    return "1.19";
-  else if (fAspect < 1.3499f) // sqrt(1.33*1.37)
-    return "1.33";
-  else if (fAspect < 1.5080f) // sqrt(1.37*1.66)
-    return "1.37";
-  else if (fAspect < 1.7190f) // sqrt(1.66*1.78)
-    return "1.66";
-  else if (fAspect < 1.8147f) // sqrt(1.78*1.85)
-    return "1.78";
-  else if (fAspect < 1.9235f) // sqrt(1.85*2.00)
-    return "1.85";
-  else if (fAspect < 2.0976f) // sqrt(2.00*2.20)
-    return "2.00";
-  else if (fAspect < 2.2738f) // sqrt(2.20*2.35)
-    return "2.20";
-  else if (fAspect < 2.3749f) // sqrt(2.35*2.40)
-    return "2.35";
-  else if (fAspect < 2.4739f) // sqrt(2.40*2.55)
-    return "2.40";
-  else if (fAspect < 2.6529f) // sqrt(2.55*2.76)
-    return "2.55";
-  return "2.76";
+  // The cutoff between two adjacent ratios is their geometric mean.
+  //
+  // Comparing squares avoids a square root per entry, and keeps the cutoffs derived from the
+  // table rather than hand-computed alongside it: for positive values,
+  //   fAspect < sqrt(a*b)  is equivalent to  fAspect*fAspect < a*b
+  const float squared = fAspect * fAspect;
+  for (size_t i = 0; i + 1 < COMMON_ASPECT_RATIOS.size(); ++i)
+  {
+    if (squared < COMMON_ASPECT_RATIOS[i].ratio * COMMON_ASPECT_RATIOS[i + 1].ratio)
+      return std::string(COMMON_ASPECT_RATIOS[i].label);
+  }
+
+  return std::string(COMMON_ASPECT_RATIOS.back().label);
 }
 
 bool CStreamDetails::SetStreams(const VideoStreamInfo& videoInfo, int videoDuration, const AudioStreamInfo& audioInfo, const SubtitleStreamInfo& subtitleInfo)
