@@ -257,18 +257,28 @@ CVideoInfoScanner::~CVideoInfoScanner()
           }
           else
           {
-            // The remaining sub directories under the path to scan were not found on disk, skip
-            // the individual scans.
+            // Skip the individual scans of the sub directories still queued under the path to
+            // scan. Not all of them are missing - disc folders are consumed by Stack() and
+            // season folders are not recursed into.
             // Happens mostly for TV Shows that are in the library and were deleted from a sub
             // directory of a defined source.
-            std::function<void(const std::string&)> f;
-            if (m_bClean)
-              f = [this](const std::string& dir)
-              { m_pathsToClean.insert(m_database.GetPathId(dir)); };
+            size_t missing{0};
+            auto f{[this, &missing](const std::string& dir)
+                   {
+                     if (m_bClean)
+                       m_pathsToClean.insert(m_database.GetPathId(dir));
 
-            if (auto count = RemoveSubDirectories(m_pathsToScan, directory, f))
+                     // CPluginDirectory::Exists always says yes, so treat a plugin path as missing
+                     if (!URIUtils::IsPlugin(dir) && CDirectory::Exists(dir))
+                       return;
+
+                     ++missing;
+                   }};
+
+            RemoveSubDirectories(m_pathsToScan, directory, f);
+            if (missing)
               CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipped {} missing sub directories of {}.",
-                        count, directory);
+                        missing, directory);
           }
         }
       }
