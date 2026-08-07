@@ -3311,6 +3311,11 @@ void CFFmpegPostproc::Close()
   {
     avfilter_graph_free(&m_pFilterGraph);
   }
+  // Free and null the filter frames to make Close() idempotent and clearer
+  av_frame_free(&m_pFilterFrameIn);
+  m_pFilterFrameIn = nullptr;
+  av_frame_free(&m_pFilterFrameOut);
+  m_pFilterFrameOut = nullptr;
 }
 
 void CFFmpegPostproc::Flush()
@@ -3324,8 +3329,48 @@ void CFFmpegPostproc::Flush()
 
 bool CFFmpegPostproc::UpdateDeintMethod(EINTERLACEMETHOD method)
 {
-  /// \todo switching between certain methods could be done without deinit/init
-  return (m_diMethod == method);
+  if (m_diMethod == method)
+    return true;
+
+  // NONE, RENDER_BOB and DEINTERLACE are all handled internally by this
+  // postproc's Init()/AddPicture()/Filter() (DEINTERLACE builds a bwdif
+  // avfilter graph, the other two just pass the frame through), so we can
+  // switch between them in place. Any other method needs a different
+  // postproc class (see COutput::InitCycle), so ask the caller to discard us.
+  if (method != VS_INTERLACEMETHOD_NONE && method != VS_INTERLACEMETHOD_RENDER_BOB &&
+      method != VS_INTERLACEMETHOD_DEINTERLACE)
+    return false;
+
+  // If switching to progressive and the user prefers the VAAPI render (skip)
+  // path, don't swallow the switch here - COutput::InitCycle only consults
+  // that setting when creating a postproc from scratch, so we must return
+  // false and let it discard us in order to honor the preference.
+  if (method == VS_INTERLACEMETHOD_NONE)
+  {
+    bool preferVaapiRender = false;
+    if (auto settingsComponent = CServiceBroker::GetSettingsComponent())
+    {
+      if (auto settings = settingsComponent->GetSettings())
+        preferVaapiRender = settings->GetBool(SETTING_VIDEOPLAYER_PREFERVAAPIRENDER);
+    }
+    if (preferVaapiRender)
+    {
+      CLog::Log(LOGDEBUG, LOGVIDEO,
+                "CFFmpegPostproc::UpdateDeintMethod - prefer VAAPI render set; requesting caller "
+                "to replace ffmpeg postproc");
+      return false;
+    }
+  }
+
+  Close();
+  if (!Init(method))
+    return false;
+
+  m_DVDPic.pts = DVD_NOPTS_VALUE;
+  m_frametime = 0;
+  m_lastOutPts = DVD_NOPTS_VALUE;
+  m_step = 0;
+  return true;
 }
 
 bool CFFmpegPostproc::DoesSync()
