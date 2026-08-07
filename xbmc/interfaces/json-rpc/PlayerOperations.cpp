@@ -114,6 +114,8 @@ void OverlayCurrentSongTag(CFileItem& item)
     tag.SetAlbum(current->GetAlbum());
   if (!current->GetGenre().empty())
     tag.SetGenre(current->GetGenre());
+  if (!current->GetStationName().empty())
+    tag.SetStationName(current->GetStationName());
 }
 
 } // namespace
