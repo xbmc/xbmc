@@ -8,6 +8,7 @@ set(SOURCES TestAutoSwitch.cpp
             TestLangInfo.cpp
             TestMediaSource.cpp
             TestPasswordManager.cpp
+            TestPlayListPlayer.cpp
             TestURL.cpp
             TestUtil.cpp
             TestUtils.cpp)
