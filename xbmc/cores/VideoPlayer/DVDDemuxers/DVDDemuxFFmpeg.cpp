@@ -1645,23 +1645,17 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         if (m_bAVI && pStream->codecpar->codec_id == AV_CODEC_ID_H264)
           st->bPTSInvalid = true;
 
-        AVRational r_frame_rate = pStream->r_frame_rate;
+        AVRational frameRate = av_guess_frame_rate(m_pFormatContext, pStream, nullptr);
 
-        //average fps is more accurate for mkv files
-        if (m_bMatroska && pStream->avg_frame_rate.den && pStream->avg_frame_rate.num)
+        // av_guess_frame_rate prefers r_frame_rate, which is the peak rate for VFR
+        // content; average fps is more accurate where the container provides it
+        if (m_bMatroska && pStream->avg_frame_rate.num > 0 && pStream->avg_frame_rate.den > 0)
+          frameRate = pStream->avg_frame_rate;
+
+        if (frameRate.num > 0 && frameRate.den > 0)
         {
-          st->iFpsRate = pStream->avg_frame_rate.num;
-          st->iFpsScale = pStream->avg_frame_rate.den;
-        }
-        else if (r_frame_rate.den && r_frame_rate.num)
-        {
-          st->iFpsRate = r_frame_rate.num;
-          st->iFpsScale = r_frame_rate.den;
-        }
-        else
-        {
-          st->iFpsRate  = 0;
-          st->iFpsScale = 0;
+          st->iFpsRate = frameRate.num;
+          st->iFpsScale = frameRate.den;
         }
 
         st->interlaced = pStream->codecpar->field_order == AV_FIELD_TT ||
