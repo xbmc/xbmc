@@ -226,6 +226,23 @@ public:
   bool ToggleDeviceState(const CecStateChange mode = STATE_SWITCH_TOGGLE);
 
   /*!
+   * @brief Query the power status of the device attached via HDMI-CEC.
+   * @param adapterName The name of the CEC adapter to query, matched case insensitively against
+   * the adapter's device name and against its location, so unnamed adapters can be addressed by
+   * port. When empty, the first adapter that reports a status is queried.
+   * @return The reported power status, or CecPowerStatus::NO_ADAPTER when no CEC adapter is
+   * present, when no adapter matches the name, or when the matching adapter isn't running.
+   */
+  CecPowerStatus GetDevicePowerStatus(const std::string& adapterName = "");
+
+  /*!
+   * @brief Get the names of the CEC adapters that are present.
+   * @return The name of each adapter, or its location when the bus didn't name it. These are the
+   * names that GetDevicePowerStatus() matches against.
+   */
+  std::vector<std::string> GetCecAdapterNames() const;
+
+  /*!
    * @brief Try to mute the audio via a peripheral.
    * @return True when this change was handled by a peripheral (and should not be handled by
    * anything else), false otherwise.

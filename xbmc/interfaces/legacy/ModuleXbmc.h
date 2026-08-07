@@ -618,6 +618,79 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
     ///
     /// \ingroup python_xbmc
+    /// @brief \python_func{ xbmc.getDevicePowerStatus([adapterName]) }
+    /// Get the power status of the device attached via HDMI-CEC.
+    ///
+    /// @param adapterName           [opt] string - the CEC adapter to query, either its name
+    ///                              (e.g. `HDMI 1`) or, for an adapter that the driver didn't
+    ///                              name, its port. Defaults to empty, which queries the first
+    ///                              adapter that reports a status.
+    /// @return int - one of the following constants:
+    /// | Value                                   | Description                          |
+    /// |----------------------------------------:|:-------------------------------------|
+    /// | xbmc.DEVICE_POWER_NO_ADAPTER            | No CEC adapter present               |
+    /// | xbmc.DEVICE_POWER_ON                    | Device is powered on                 |
+    /// | xbmc.DEVICE_POWER_STANDBY               | Device is in standby                 |
+    /// | xbmc.DEVICE_POWER_TRANSITION_TO_ON      | Device is powering on                |
+    /// | xbmc.DEVICE_POWER_TRANSITION_TO_STANDBY | Device is going to standby           |
+    /// | xbmc.DEVICE_POWER_UNKNOWN               | Power status could not be determined |
+    ///
+    /// @note This is the result of calling libCEC's GetDevicePowerStatus.
+    /// `DEVICE_POWER_UNKNOWN` means the device could not be found or queried on the CEC
+    /// bus. `DEVICE_POWER_NO_ADAPTER` means no CEC adapter is present, no adapter matches
+    /// the given name, or the matching adapter isn't running.
+    ///
+    /// @note The name is matched case insensitively.
+    ///
+    ///
+    /// ------------------------------------------------------------------------
+    /// @python_v22 New function added.
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// if xbmc.getDevicePowerStatus() == xbmc.DEVICE_POWER_ON:
+    ///     xbmc.log('Device is on')
+    ///
+    /// if xbmc.getDevicePowerStatus('HDMI 2') == xbmc.DEVICE_POWER_STANDBY:
+    ///     xbmc.log('The device on HDMI 2 is in standby')
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
+    getDevicePowerStatus(...);
+#else
+    int getDevicePowerStatus(const String& adapterName = emptyString);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+    ///
+    /// \ingroup python_xbmc
+    /// @brief \python_func{ xbmc.getCecAdapterNames() }
+    /// Get the names of the HDMI-CEC adapters that are present.
+    ///
+    /// @return list - the name of each adapter, in the form that
+    /// \ref getDevicePowerStatus accepts.
+    ///
+    ///
+    /// ------------------------------------------------------------------------
+    /// @python_v22 New function added.
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// for adapter in xbmc.getCecAdapterNames():
+    ///     xbmc.log(f'{adapter}: {xbmc.getDevicePowerStatus(adapter)}')
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
+    getCecAdapterNames();
+#else
+    std::vector<String> getCecAdapterNames();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+    ///
+    /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.getCacheThumbName(path) }
     /// Get thumb cache filename.
     ///
@@ -917,6 +990,13 @@ namespace XBMCAddon
     SWIG_CONSTANT_FROM_GETTER(int, ISO_639_1);
     SWIG_CONSTANT_FROM_GETTER(int, ISO_639_2);
     SWIG_CONSTANT_FROM_GETTER(int, ENGLISH_NAME);
+
+    SWIG_CONSTANT_FROM_GETTER(int, DEVICE_POWER_NO_ADAPTER);
+    SWIG_CONSTANT_FROM_GETTER(int, DEVICE_POWER_ON);
+    SWIG_CONSTANT_FROM_GETTER(int, DEVICE_POWER_STANDBY);
+    SWIG_CONSTANT_FROM_GETTER(int, DEVICE_POWER_TRANSITION_TO_ON);
+    SWIG_CONSTANT_FROM_GETTER(int, DEVICE_POWER_TRANSITION_TO_STANDBY);
+    SWIG_CONSTANT_FROM_GETTER(int, DEVICE_POWER_UNKNOWN);
 #if 0
     void registerMonitor(Monitor* monitor);
     void unregisterMonitor(Monitor* monitor);
