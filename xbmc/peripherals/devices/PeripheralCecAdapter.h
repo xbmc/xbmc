@@ -159,7 +159,8 @@ private:
   void PushCecKeypress(const CecButtonPress& key);
   void GetNextKey(void);
 
-  void SetAudioSystemConnected(bool bSetTo);
+  void SetAmpControlsVolume(bool bSetTo);
+  void SetAmpMuted(bool bSetTo);
   void SetMenuLanguage(const char* strLanguage);
   void OnTvStandby(void);
 
@@ -179,7 +180,8 @@ private:
   bool m_bStarted;
   bool m_bHasButton;
   bool m_bIsReady;
-  bool m_bHasConnectedAudioSystem;
+  /* set while an amp is present and has system audio mode on: it, not Kodi, handles volume */
+  bool m_bAmpControlsVolume;
   std::string m_strMenuLanguage;
   CDateTime m_standbySent;
   std::vector<CecButtonPress> m_buttonQueue;
