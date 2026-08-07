@@ -108,10 +108,25 @@ TEST_F(TestBlurayDirectory, FilterPlaylists_RemovesPlaylistsShorterThanASecond)
   EXPECT_EQ(PlaylistNumbers(playlists), std::vector<unsigned int>{801u});
 }
 
-TEST_F(TestBlurayDirectory, FilterPlaylists_RemovesPlaylistsWithARepeatedClip)
+// A playlist playing nothing but the same clip over and over is a loop (eg. a menu background)
+TEST_F(TestBlurayDirectory, FilterPlaylists_RemovesLoopingPlaylists)
 {
   std::vector<PlaylistInformation> playlists{
-      MakePlaylist(800u, 2h, {1u, 2u, 1u}),
+      MakePlaylist(800u, 2h, {1u, 1u, 1u}),
+      MakePlaylist(801u, 2h, {3u, 4u}),
+  };
+
+  EXPECT_TRUE(FilterPlaylists(playlists));
+  EXPECT_EQ(PlaylistNumbers(playlists), std::vector<unsigned int>{801u});
+
+  // A reel assembled from a few clips played over and over is a loop too
+  // (Example: Fast X, where playlist 149 plays 3 clips 251 times)
+  std::vector<unsigned int> reel;
+  for (int i = 0; i < 30; i++)
+    reel.insert(reel.end(), {1u, 2u, 3u});
+
+  playlists = {
+      MakePlaylist(800u, 2h, reel),
       MakePlaylist(801u, 2h, {3u, 4u}),
   };
 
@@ -119,9 +134,22 @@ TEST_F(TestBlurayDirectory, FilterPlaylists_RemovesPlaylistsWithARepeatedClip)
   EXPECT_EQ(PlaylistNumbers(playlists), std::vector<unsigned int>{801u});
 }
 
+// A movie can revisit a clip, so a playlist that isn't looping over its clips is kept.
+// (Example: Blackhat, where the feature is clips 0,4,4 and the disc holds nothing else)
+TEST_F(TestBlurayDirectory, FilterPlaylists_KeepsPlaylistsRevisitingAClip)
+{
+  std::vector<PlaylistInformation> playlists{
+      MakePlaylist(800u, 2h, {0u, 4u, 4u}),
+      MakePlaylist(801u, 2h, {3u, 4u}),
+  };
+
+  EXPECT_TRUE(FilterPlaylists(playlists));
+  EXPECT_EQ(PlaylistNumbers(playlists), (std::vector<unsigned int>{800u, 801u}));
+}
+
 // Duplicates are matched on clips, chapters, audio and subtitle streams.
-// The earlier playlist is the one kept.
-TEST_F(TestBlurayDirectory, FilterPlaylists_RemovesDuplicatesKeepingTheFirst)
+// The lowest numbered playlist is the one kept, whatever order the disc lists them in.
+TEST_F(TestBlurayDirectory, FilterPlaylists_RemovesDuplicatesKeepingTheLowestNumbered)
 {
   std::vector<PlaylistInformation> playlists{
       MakePlaylist(800u, 2h, {1u, 2u}),
@@ -130,6 +158,15 @@ TEST_F(TestBlurayDirectory, FilterPlaylists_RemovesDuplicatesKeepingTheFirst)
 
   EXPECT_TRUE(FilterPlaylists(playlists));
   EXPECT_EQ(PlaylistNumbers(playlists), std::vector<unsigned int>{800u});
+
+  playlists = {
+      MakePlaylist(801u, 2h, {1u, 2u}),
+      MakePlaylist(799u, 2h, {1u, 2u}),
+      MakePlaylist(800u, 2h, {1u, 2u}),
+  };
+
+  EXPECT_TRUE(FilterPlaylists(playlists));
+  EXPECT_EQ(PlaylistNumbers(playlists), std::vector<unsigned int>{799u});
 }
 
 // Differing in any compared field is enough to be a distinct title
@@ -155,7 +192,20 @@ TEST_F(TestBlurayDirectory, FilterPlaylists_KeepsPlaylistsDifferingByChapters)
   EXPECT_EQ(PlaylistNumbers(playlists), (std::vector<unsigned int>{800u, 801u}));
 }
 
-// Three copies must all collapse to the first, not just the adjacent pair
+// Playlists can play the same clips from the same chapter starts but to different out times,
+// making them distinct cuts rather than copies
+TEST_F(TestBlurayDirectory, FilterPlaylists_KeepsPlaylistsDifferingByDuration)
+{
+  std::vector<PlaylistInformation> playlists{
+      MakePlaylist(800u, 2h, {1u}, {1min, 2min}),
+      MakePlaylist(801u, 2h + 3min, {1u}, {1min, 2min}),
+  };
+
+  EXPECT_TRUE(FilterPlaylists(playlists));
+  EXPECT_EQ(PlaylistNumbers(playlists), (std::vector<unsigned int>{800u, 801u}));
+}
+
+// Three copies must all collapse to one, not just the adjacent pair
 TEST_F(TestBlurayDirectory, FilterPlaylists_RemovesAllCopiesOfADuplicate)
 {
   std::vector<PlaylistInformation> playlists{

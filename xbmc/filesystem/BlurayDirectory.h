@@ -71,8 +71,11 @@ private:
 
   /*!
    \brief Discard the playlists that are not a movie/episode.
-   Removes those with no clips, shorter than a second, with a clip repeated within them, and those
-   that duplicate an earlier playlist.
+   Removes those with no clips, those shorter than a second, those looping over their clips, and
+   all but one of each set of identical playlists (the lowest numbered of them is the one kept).
+   A playlist loops when it holds a single clip played more than once, or plays its clips
+   MIN_LOOPED_CLIP_PLAYS times over on average, as a menu background does. One that merely
+   revisits a clip is kept.
    \param playlists the playlists to filter, in place
    \return true if any playlist remains
    */
