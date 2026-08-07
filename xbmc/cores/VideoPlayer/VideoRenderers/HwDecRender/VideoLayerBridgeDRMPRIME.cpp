@@ -28,6 +28,10 @@ CVideoLayerBridgeDRMPRIME::~CVideoLayerBridgeDRMPRIME()
 {
   Release(m_prev_buffer);
   Release(m_buffer);
+
+  // the plane-off commit from Disable has run by now, so these are plain frees
+  for (uint32_t fbId : m_fbCache.TakeAll())
+    drmModeRmFB(m_DRM->GetFileDescriptor(), fbId);
 }
 
 void CVideoLayerBridgeDRMPRIME::Disable()
@@ -41,16 +45,18 @@ void CVideoLayerBridgeDRMPRIME::Disable()
   m_DRM->AddProperty(plane, "CRTC_ID", 0);
 }
 
-void CVideoLayerBridgeDRMPRIME::Acquire(CVideoBufferDRMPRIME* buffer)
+void CVideoLayerBridgeDRMPRIME::Acquire(CVideoBufferDRMPRIME* buffer, uint32_t fbId)
 {
   // release the buffer that is no longer presented on screen
   Release(m_prev_buffer);
 
   // release the buffer currently being presented next call
   m_prev_buffer = m_buffer;
+  m_prev_fb_id = m_fb_id;
 
   // reference count the buffer that is going to be presented on screen
   m_buffer = buffer;
+  m_fb_id = fbId;
   m_buffer->Acquire();
 }
 
@@ -59,15 +65,11 @@ void CVideoLayerBridgeDRMPRIME::Release(CVideoBufferDRMPRIME* buffer)
   if (!buffer)
     return;
 
-  Unmap(buffer);
   buffer->Release();
 }
 
-bool CVideoLayerBridgeDRMPRIME::Map(CVideoBufferDRMPRIME* buffer)
+bool CVideoLayerBridgeDRMPRIME::PrepareBuffer(CVideoBufferDRMPRIME* buffer)
 {
-  if (buffer->m_fb_id)
-    return true;
-
   if (!buffer->AcquireDescriptor())
   {
     CLog::Log(LOGERROR, "CVideoLayerBridgeDRMPRIME::{} - failed to acquire descriptor",
@@ -75,7 +77,45 @@ bool CVideoLayerBridgeDRMPRIME::Map(CVideoBufferDRMPRIME* buffer)
     return false;
   }
 
+  const auto identity = DRMPRIME::ComputeDmaBufIdentity(buffer->GetDescriptor(), buffer->GetWidth(),
+                                                        buffer->GetHeight());
+  if (!identity)
+  {
+    buffer->ReleaseDescriptor();
+    CLog::Log(LOGERROR, "CVideoLayerBridgeDRMPRIME::{} - failed to identify buffer memory",
+              __FUNCTION__);
+    return false;
+  }
+
+  uint32_t fbId = m_fbCache.Lookup(*identity);
+  if (!fbId)
+  {
+    fbId = CreateFramebuffer(buffer);
+    if (!fbId)
+    {
+      buffer->ReleaseDescriptor();
+      return false;
+    }
+    m_fbCache.Insert(*identity, fbId);
+  }
+  buffer->ReleaseDescriptor();
+
+  if (m_buffer != buffer)
+    Acquire(buffer, fbId);
+  else
+    m_fb_id = fbId;
+
+  // reap after the id shift so protection covers the new presented pair
+  for (uint32_t doomed : m_fbCache.Reap(m_fb_id, m_prev_fb_id))
+    drmModeRmFB(m_DRM->GetFileDescriptor(), doomed);
+
+  return true;
+}
+
+uint32_t CVideoLayerBridgeDRMPRIME::CreateFramebuffer(CVideoBufferDRMPRIME* buffer)
+{
   AVDRMFrameDescriptor* descriptor = buffer->GetDescriptor();
+  uint32_t fbId = 0;
   uint32_t objectHandles[AV_DRM_MAX_PLANES] = {};
   uint32_t handles[4] = {}, pitches[4] = {}, offsets[4] = {}, flags = 0;
   uint64_t modifier[4] = {};
@@ -119,10 +159,12 @@ bool CVideoLayerBridgeDRMPRIME::Map(CVideoBufferDRMPRIME* buffer)
     // add the video frame FB
     ret = drmModeAddFB2WithModifiers(m_DRM->GetFileDescriptor(), buffer->GetWidth(),
                                      buffer->GetHeight(), layer->format, handles, pitches, offsets,
-                                     modifier, &buffer->m_fb_id, flags);
+                                     modifier, &fbId, flags);
     if (ret < 0)
-      CLog::Log(LOGERROR, "CVideoLayerBridgeDRMPRIME::{} - failed to add fb {}, ret = {}",
-                __FUNCTION__, buffer->m_fb_id, ret);
+      CLog::Log(LOGERROR,
+                "CVideoLayerBridgeDRMPRIME::{} - failed to add fb, format {:#x} modifier {:#x} "
+                "ret = {}",
+                __FUNCTION__, layer->format, modifier[0], ret);
   }
 
   // close the GEM handles now: the fb holds its own references, and the
@@ -139,21 +181,9 @@ bool CVideoLayerBridgeDRMPRIME::Map(CVideoBufferDRMPRIME* buffer)
   }
 
   if (ret < 0)
-    return false;
+    return 0;
 
-  Acquire(buffer);
-  return true;
-}
-
-void CVideoLayerBridgeDRMPRIME::Unmap(CVideoBufferDRMPRIME* buffer)
-{
-  if (buffer->m_fb_id)
-  {
-    drmModeRmFB(m_DRM->GetFileDescriptor(), buffer->m_fb_id);
-    buffer->m_fb_id = 0;
-  }
-
-  buffer->ReleaseDescriptor();
+  return fbId;
 }
 
 void CVideoLayerBridgeDRMPRIME::Configure(CVideoBufferDRMPRIME* buffer)
@@ -181,13 +211,10 @@ void CVideoLayerBridgeDRMPRIME::SetVideoPlane(CVideoBufferDRMPRIME* buffer, cons
   if (!plane)
     return;
 
-  if (!Map(buffer))
-  {
-    Unmap(buffer);
+  if (!PrepareBuffer(buffer))
     return;
-  }
 
-  m_DRM->AddProperty(plane, "FB_ID", buffer->m_fb_id);
+  m_DRM->AddProperty(plane, "FB_ID", m_fb_id);
   m_DRM->AddProperty(plane, "CRTC_ID", m_DRM->GetCrtc()->GetCrtcId());
   m_DRM->AddProperty(plane, "SRC_X", 0);
   m_DRM->AddProperty(plane, "SRC_Y", 0);
@@ -201,13 +228,13 @@ void CVideoLayerBridgeDRMPRIME::SetVideoPlane(CVideoBufferDRMPRIME* buffer, cons
 
 void CVideoLayerBridgeDRMPRIME::UpdateVideoPlane()
 {
-  if (!m_buffer || !m_buffer->m_fb_id)
+  if (!m_buffer || !m_fb_id)
     return;
 
   auto plane = m_DRM->GetVideoPlane();
   if (!plane)
     return;
 
-  m_DRM->AddProperty(plane, "FB_ID", m_buffer->m_fb_id);
+  m_DRM->AddProperty(plane, "FB_ID", m_fb_id);
   m_DRM->AddProperty(plane, "CRTC_ID", m_DRM->GetCrtc()->GetCrtcId());
 }

@@ -41,8 +41,6 @@ public:
   virtual bool AcquireDescriptor() { return true; }
   virtual void ReleaseDescriptor() {}
 
-  uint32_t m_fb_id = 0;
-
 protected:
   explicit CVideoBufferDRMPRIME(int id);
 
