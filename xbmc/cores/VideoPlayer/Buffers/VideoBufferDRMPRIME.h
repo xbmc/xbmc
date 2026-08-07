@@ -37,7 +37,7 @@ public:
   virtual uint32_t GetHeight() const { return GetPicture().iHeight; }
 
   virtual AVDRMFrameDescriptor* GetDescriptor() const = 0;
-  virtual bool IsValid() const { return true; }
+  virtual bool IsValid() const;
   virtual bool AcquireDescriptor() { return true; }
   virtual void ReleaseDescriptor() {}
 
@@ -61,7 +61,6 @@ public:
   {
     return reinterpret_cast<AVDRMFrameDescriptor*>(m_pFrame->data[0]);
   }
-  bool IsValid() const override;
 
 protected:
   AVFrame* m_pFrame = nullptr;
