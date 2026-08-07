@@ -264,6 +264,28 @@ TEST_F(TestDateTime, SetFromW3CDateTime)
   EXPECT_EQ(dateTime2.GetSecond(), 30);
 }
 
+TEST_F(TestDateTime, SetFromW3CDateInvalid)
+{
+  CDateTime dateTime;
+  EXPECT_FALSE(dateTime.SetFromW3CDate("not a date"));
+  EXPECT_FALSE(dateTime.IsValid());
+  EXPECT_FALSE(dateTime.SetFromW3CDate("1994-13-05"));
+  EXPECT_FALSE(dateTime.SetFromW3CDate("1994-11-32"));
+  EXPECT_FALSE(dateTime.SetFromW3CDate("0000-11-05"));
+}
+
+TEST_F(TestDateTime, SetFromW3CDateTimeInvalid)
+{
+  CDateTime dateTime;
+  EXPECT_FALSE(dateTime.SetFromW3CDateTime("not a date"));
+  EXPECT_FALSE(dateTime.IsValid());
+  EXPECT_FALSE(dateTime.SetFromW3CDateTime("1994-13-05T13:15:30Z"));
+  EXPECT_FALSE(dateTime.SetFromW3CDateTime("1994-11-32T13:15:30Z"));
+  EXPECT_FALSE(dateTime.SetFromW3CDateTime("1994-11-05T24:15:30Z"));
+  EXPECT_FALSE(dateTime.SetFromW3CDateTime("1994-11-05T13:61:30Z"));
+  EXPECT_FALSE(dateTime.SetFromW3CDateTime("1994-11-05T13:15:61Z"));
+}
+
 TEST_F(TestDateTime, SetFromUTCDateTime)
 {
   CDateTime dateTime1;
