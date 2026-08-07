@@ -57,6 +57,12 @@ CVideoBufferDRMPRIME::CVideoBufferDRMPRIME(int id) : CVideoBuffer(id)
   m_pixFormat = AV_PIX_FMT_DRM_PRIME;
 }
 
+bool CVideoBufferDRMPRIME::IsValid() const
+{
+  AVDRMFrameDescriptor* descriptor = GetDescriptor();
+  return descriptor && descriptor->nb_layers;
+}
+
 CVideoBufferDRMPRIMEFFmpeg::CVideoBufferDRMPRIMEFFmpeg(IVideoBufferPool& pool, int id)
   : CVideoBufferDRMPRIME(id)
 {
@@ -77,12 +83,6 @@ void CVideoBufferDRMPRIMEFFmpeg::SetRef(AVFrame* frame)
 void CVideoBufferDRMPRIMEFFmpeg::Unref()
 {
   av_frame_unref(m_pFrame);
-}
-
-bool CVideoBufferDRMPRIMEFFmpeg::IsValid() const
-{
-  AVDRMFrameDescriptor* descriptor = GetDescriptor();
-  return descriptor && descriptor->nb_layers;
 }
 
 CVideoBufferPoolDRMPRIMEFFmpeg::~CVideoBufferPoolDRMPRIMEFFmpeg()

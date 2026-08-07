@@ -24,8 +24,6 @@
 #include "windowing/gbm/WinSystemGbm.h"
 #include "windowing/gbm/drm/DRMAtomic.h"
 
-#include <typeinfo>
-
 using namespace KODI::WINDOWING::GBM;
 
 CRendererDRMPRIME::~CRendererDRMPRIME()
@@ -186,12 +184,9 @@ void CRendererDRMPRIME::AddVideoPicture(const VideoPicture& picture, int index)
   buf.videoBuffer = picture.videoBuffer;
   buf.videoBuffer->Acquire();
 
-  //! @todo skip only the exact CVideoBufferDRMPRIMEFFmpeg type, which
-  //! CDVDVideoCodecDRMPRIME always fills at decode; its subclass
-  //! CVideoBufferDMA also arrives from CAddonVideoCodec unfilled, so it is
-  //! set here (a duplicate set for the ffmpeg software path, accepted).
+  // CDVDVideoCodecDRMPRIME fills its buffers at decode; CVideoBufferDMA arrives unfilled
   auto* drmBuffer = dynamic_cast<CVideoBufferDRMPRIME*>(picture.videoBuffer);
-  if (drmBuffer && typeid(*drmBuffer) != typeid(CVideoBufferDRMPRIMEFFmpeg))
+  if (drmBuffer && !dynamic_cast<CVideoBufferDRMPRIMEFFmpeg*>(drmBuffer))
     drmBuffer->SetPictureParams(picture);
 }
 
