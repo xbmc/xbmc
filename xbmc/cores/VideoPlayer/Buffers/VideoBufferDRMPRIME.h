@@ -47,8 +47,6 @@ public:
       const DRMPRIME::StatInodeFn& statInode = DRMPRIME::StatInode);
   void InvalidateIdentity();
 
-  uint32_t m_fb_id = 0;
-
 protected:
   explicit CVideoBufferDRMPRIME(int id);
 
