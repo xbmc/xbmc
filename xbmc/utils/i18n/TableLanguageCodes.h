@@ -224,13 +224,16 @@ inline constexpr std::array<ISO639, LANGUAGE_CODES_COUNT> LanguageCodes = {{
 
 static_assert(std::ranges::is_sorted(LanguageCodes, {}, &ISO639::iso639_1));
 
-// ISO 639-1 renamed these codes in 1989. Media tagged with the old spelling still has to be
-// understood, so they live here rather than in the table above, whose ISO 639-2/B codes have to
-// stay unique for the reverse lookup to have one answer per language.
+// ISO 639-1 withdrew these codes. Media tagged with the old spelling still has to be understood,
+// so they live here rather than in the table above, whose ISO 639-2/B codes have to stay unique
+// for the reverse lookup to have one answer per language.
 // Sorted by alpha-2
-inline constexpr auto DeprecatedLanguageCodes = std::array<ISO639, 2>{{
+inline constexpr auto DeprecatedLanguageCodes = std::array<ISO639, 5>{{
     {"in", "ind"}, // Indonesian, now id
     {"iw", "heb"}, // Hebrew, now he
+    {"ji", "yid"}, // Yiddish, now yi
+    {"jw", "jav"}, // Javanese, now jv
+    {"mo", "rum"}, // Moldavian, merged into Romanian (ro) in 2008
 }};
 
 static_assert(std::ranges::is_sorted(DeprecatedLanguageCodes, {}, &ISO639::iso639_1));

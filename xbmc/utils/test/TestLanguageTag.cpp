@@ -249,15 +249,27 @@ TEST(TestLanguageTag, RecognizesOnlyRealLanguages)
 
 TEST(TestLanguageTag, PrefersTheCurrentCodeOverTheDeprecatedOne)
 {
-  // ISO 639-1 renamed these two in 1989. Both spellings are still in the tables so that media
-  // tagged with the old one is understood, but a tag Kodi hands out names the current code.
+  // ISO 639-1 withdrew these five. Both spellings are still in the tables so that media tagged
+  // with the old one is understood, but a tag Kodi hands out names the current code.
   EXPECT_EQ(CLanguageTag::Parse("heb").AsBcp47(), "he");
   EXPECT_EQ(CLanguageTag::Parse("ind").AsBcp47(), "id");
+  EXPECT_EQ(CLanguageTag::Parse("yid").AsBcp47(), "yi");
+  EXPECT_EQ(CLanguageTag::Parse("jav").AsBcp47(), "jv");
+  EXPECT_EQ(CLanguageTag::Parse("rum").AsBcp47(), "ro");
 
   // Reading the deprecated spelling still yields the language, so nothing stops being understood
   EXPECT_EQ(CLanguageTag::Parse("iw").AsIso6392B(), "heb");
   EXPECT_EQ(CLanguageTag::Parse("in").AsIso6392B(), "ind");
+  EXPECT_EQ(CLanguageTag::Parse("ji").AsIso6392B(), "yid");
+  EXPECT_EQ(CLanguageTag::Parse("jw").AsIso6392B(), "jav");
+  EXPECT_EQ(CLanguageTag::Parse("mo").AsIso6392B(), "rum");
+
+  // ...and a track tagged with it satisfies a preference expressed with the current code
   EXPECT_TRUE(CLanguageTag::Parse("iw").Matches(CLanguageTag::Parse("he")));
+  EXPECT_TRUE(CLanguageTag::Parse("in").Matches(CLanguageTag::Parse("id")));
+  EXPECT_TRUE(CLanguageTag::Parse("ji").Matches(CLanguageTag::Parse("yi")));
+  EXPECT_TRUE(CLanguageTag::Parse("jw").Matches(CLanguageTag::Parse("jv")));
+  EXPECT_TRUE(CLanguageTag::Parse("mo").Matches(CLanguageTag::Parse("ro")));
 }
 
 TEST(TestLanguageTag, NarrowingDropsTheRegionFromTheEnglishName)
