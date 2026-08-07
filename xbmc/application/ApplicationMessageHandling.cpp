@@ -402,7 +402,7 @@ void CApplicationMessageHandling::OnApplicationMessage(MESSAGING::ThreadMessage*
     case TMSG_UPDATE_PLAYER_ITEM:
     {
       std::unique_ptr<CFileItem> item{static_cast<CFileItem*>(pMsg->lpVoid)};
-      if (item)
+      if (item && m_app.CurrentFileItem().IsSamePath(item.get()))
       {
         m_app.CurrentFileItem().UpdateInfo(*item);
         CServiceBroker::GetGUI()->GetInfoManager().UpdateCurrentItem(m_app.CurrentFileItem());
