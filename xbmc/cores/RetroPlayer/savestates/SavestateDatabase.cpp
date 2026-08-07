@@ -122,6 +122,15 @@ bool CSavestateDatabase::GetSavestatesNav(CFileItemList& items,
 {
   const std::string savesFolder = MakePath(gamePath);
 
+  // MakePath() gives back nothing if it couldn't make the folder, and listing
+  // an empty path walks the root of the filesystem instead. Every directory
+  // there then turns up as a savestate to load.
+  if (savesFolder.empty())
+  {
+    CLog::Log(LOGERROR, "Failed to find a savestate folder for {}", CURL::GetRedacted(gamePath));
+    return false;
+  }
+
   XFILE::CDirectory::CHints hints;
   hints.mask = SAVESTATE_EXTENSION;
 
