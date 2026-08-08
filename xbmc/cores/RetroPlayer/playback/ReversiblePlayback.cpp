@@ -16,16 +16,22 @@
 #include "cores/RetroPlayer/rendering/RPRenderManager.h"
 #include "cores/RetroPlayer/savestates/ISavestate.h"
 #include "cores/RetroPlayer/savestates/SavestateDatabase.h"
+#include "cores/RetroPlayer/savestates/SavestateThumbnail.h"
+#include "cores/RetroPlayer/savestates/SavestateWriteQueue.h"
+#include "cores/RetroPlayer/savestates/SavestateWriteRequest.h"
 #include "cores/RetroPlayer/streams/memory/DeltaPairMemoryStream.h"
 #include "filesystem/File.h"
 #include "games/GameServices.h"
 #include "games/GameSettings.h"
 #include "games/addons/GameClient.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/MathUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
+#include <cstring>
 #include <memory>
 #include <mutex>
 
@@ -45,7 +51,8 @@ CReversiblePlayback::CReversiblePlayback(GAME::CGameClient* gameClient,
     m_cheevos(cheevos),
     m_guiMessenger(guiMessenger),
     m_gameLoop(this, fps),
-    m_savestateDatabase(new CSavestateDatabase)
+    m_savestateDatabase(new CSavestateDatabase),
+    m_savestateWriteQueue(std::make_unique<CSavestateWriteQueue>(m_guiMessenger))
 {
   UpdateMemoryStream();
 
@@ -68,10 +75,8 @@ void CReversiblePlayback::Initialize()
 
 void CReversiblePlayback::Deinitialize()
 {
-  // Wait for autosave tasks
-  for (std::future<void>& task : m_savestateThreads)
-    task.wait();
-  m_savestateThreads.clear();
+  if (m_savestateWriteQueue)
+    m_savestateWriteQueue->Wait();
 
   m_gameLoop.Stop();
 }
@@ -167,53 +172,32 @@ std::string CReversiblePlayback::CreateSavestate(bool autosave,
   // Capture the current video frame
   m_renderManager.CacheVideoFrame(savePath);
 
-  {
-    std::unique_lock lock(m_savestateMutex);
+  std::optional<SavestateWriteRequest> request =
+      CaptureSavestateWriteRequest(autosave, savePath, nowUTC, timestampFrames);
+  if (!request)
+    return "";
 
-    // Prune any finished autosave threads
-    m_savestateThreads.erase(std::remove_if(m_savestateThreads.begin(), m_savestateThreads.end(),
-                                            [](std::future<void>& task) {
-                                              return task.wait_for(std::chrono::seconds(0)) ==
-                                                     std::future_status::ready;
-                                            }),
-                             m_savestateThreads.end());
-
-    // Save async to not block game loop
-    std::future<void> task =
-        std::async(std::launch::async, [this, autosave, savePath, nowUTC, timestampFrames]()
-                   { CommitSavestate(autosave, savePath, nowUTC, timestampFrames); });
-
-    m_savestateThreads.emplace_back(std::move(task));
-  }
+  m_savestateWriteQueue->QueueSavestateWrite(std::move(*request));
 
   return savePath;
 }
 
-void CReversiblePlayback::CommitSavestate(bool autosave,
-                                          const std::string& savePath,
-                                          const CDateTime& nowUTC,
-                                          uint64_t timestampFrames)
+std::optional<SavestateWriteRequest> CReversiblePlayback::CaptureSavestateWriteRequest(
+    bool autosave, const std::string& savePath, const CDateTime& nowUTC, uint64_t timestampFrames)
 {
   std::unique_ptr<ISavestate> savestate = CSavestateDatabase::AllocateSavestate();
   std::unique_ptr<ISavestate> loadedSavestate;
 
   const size_t memorySize = m_gameClient->SerializeSize();
-  uint8_t* const memoryData = savestate->GetMemoryBuffer(memorySize);
+  if (memorySize == 0)
+    return std::nullopt;
 
-  // Copy the savestate memory
-  {
-    std::unique_lock lock(m_mutex);
-    if (m_memoryStream && m_memoryStream->CurrentFrame() != nullptr)
-    {
-      std::memcpy(memoryData, m_memoryStream->CurrentFrame(), memorySize);
-    }
-    else
-    {
-      lock.unlock();
-      if (!m_gameClient->Serialize(memoryData, memorySize))
-        return;
-    }
-  }
+  uint8_t* const memoryData = savestate->GetMemoryBuffer(memorySize);
+  if (memoryData == nullptr)
+    return std::nullopt;
+
+  if (!m_gameClient->Serialize(memoryData, memorySize))
+    return std::nullopt;
 
   // Attempt to get existing properties
   {
@@ -246,22 +230,22 @@ void CReversiblePlayback::CommitSavestate(bool autosave,
 
   m_renderManager.SaveVideoFrame(savePath, *savestate);
 
-  savestate->Finalize();
+  const std::string thumbnailPath = CSavestateDatabase::MakeThumbnailPath(savePath);
+  std::optional<SavestateThumbnailPayload> thumbnail =
+      CreateSavestateThumbnailPayload(thumbnailPath, *savestate);
+  if (!thumbnail)
+    CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: No thumbnail captured for savestate {}", savePath);
 
-  bool success;
-  {
-    std::unique_lock lock(m_savestateMutex);
-    success = m_savestateDatabase->AddSavestate(savePath, m_gameClient->GetGamePath(), *savestate);
-  }
+  const bool compressSavedGame = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      CSettings::SETTING_GAMES_COMPRESSSAVEDGAMES);
 
-  if (success)
-  {
-    std::string thumbnailPath = CSavestateDatabase::MakeThumbnailPath(savePath);
-    m_renderManager.SaveThumbnail(thumbnailPath);
-  }
-
-  // Notify the GUI that the metadata for this savestate should be refreshed
-  m_guiMessenger.RefreshSavestates(savePath, savestate.get());
+  return SavestateWriteRequest{
+      savePath,
+      m_gameClient->GetGamePath(),
+      std::move(savestate),
+      std::move(thumbnail),
+      compressSavedGame,
+  };
 }
 
 bool CReversiblePlayback::LoadSavestate(const std::string& savestatePath)
@@ -277,10 +261,14 @@ bool CReversiblePlayback::LoadSavestate(const std::string& savestatePath)
   std::unique_ptr<ISavestate> savestate = CSavestateDatabase::AllocateSavestate();
   if (m_savestateDatabase->GetSavestate(savestatePath, *savestate))
   {
-    if (savestate->GetMemorySize() != memorySize)
+    if (!savestate->PrepareMemoryData(memorySize))
     {
-      CLog::Log(LOGERROR, "Invalid memory size, got {}, expected {}", memorySize,
-                savestate->GetMemorySize());
+      CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Failed to prepare memory data");
+    }
+    else if (savestate->GetMemorySize() != memorySize)
+    {
+      CLog::Log(LOGERROR, "Invalid memory size, got {}, expected {}", savestate->GetMemorySize(),
+                memorySize);
     }
     else
     {

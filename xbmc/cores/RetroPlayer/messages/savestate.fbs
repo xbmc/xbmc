@@ -11,7 +11,7 @@ include "video.fbs";
 namespace KODI.RETRO.SAVESTATE;
 
 // Savestate schema
-// Version 4
+// Version 5
 
 file_identifier "SAV_";
 
@@ -19,6 +19,11 @@ enum SaveType : uint8 {
   Unknown,
   Auto,
   Manual
+}
+
+enum CompressionType : uint8 {
+  None,
+  Zstd
 }
 
 table Savestate {
@@ -58,9 +63,15 @@ table Savestate {
   video_height:uint16 (id: 20);
   display_aspect_ratio:float (id: 23);
   rotation_ccw:VideoRotation (id: 21);
+  video_data_compressed:[uint8] (id: 27);
+  video_data_compression:CompressionType = None (id: 28);
+  video_data_uncompressed_size:uint64 = 0 (id: 29);
 
   // Memory properties
   memory_data:[uint8] (id: 10);
+  memory_data_compressed:[uint8] (id: 24);
+  memory_data_compression:CompressionType = None (id: 25);
+  memory_data_uncompressed_size:uint64 = 0 (id: 26);
 }
 
 root_type Savestate;

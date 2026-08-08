@@ -15,6 +15,7 @@ CMAKE_OPTIONS=-DCMAKE_INSTALL_PREFIX=$(PREFIX) \
               -DCURL_USE_OPENSSL=ON \
               -DOPENSSL_ROOT_DIR=$(PREFIX) \
               -DCURL_BROTLI=ON \
+              -DCURL_ZSTD=ON \
               -DUSE_NGHTTP2=ON \
               -DUSE_LIBIDN2=OFF \
               -DCURL_USE_LIBSSH2=OFF \

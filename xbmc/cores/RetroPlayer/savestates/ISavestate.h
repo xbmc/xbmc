@@ -148,6 +148,11 @@ public:
   virtual const uint8_t* GetVideoData() const = 0;
 
   /*!
+   * \brief Validate and prepare the frame's video data for reading
+   */
+  virtual bool PrepareVideoData() = 0;
+
+  /*!
    * \brief The size of the frame's video data, in bytes
    */
   virtual size_t GetVideoSize() const = 0;
@@ -183,9 +188,19 @@ public:
   virtual const uint8_t* GetMemoryData() const = 0;
 
   /*!
+   * \brief Validate and prepare the memory data for reading
+   */
+  virtual bool PrepareMemoryData(size_t expectedSize) = 0;
+
+  /*!
    * \brief The size of the memory region returned by GetMemoryData()
    */
   virtual size_t GetMemorySize() const = 0;
+
+  /*!
+   * \brief Copy the memory data to another savestate without requiring decompression
+   */
+  virtual bool CopyMemoryDataTo(ISavestate& target) const = 0;
   ///}
 
   /// @name Builders for setting individual fields
@@ -212,7 +227,7 @@ public:
   virtual void SetDisplayAspectRatio(float displayAspectRatio) = 0;
   virtual void SetRotationDegCCW(unsigned int rotationCCW) = 0;
   virtual uint8_t* GetMemoryBuffer(size_t size) = 0;
-  virtual void Finalize() = 0;
+  virtual void Finalize(bool compress) = 0;
   ///}
 
   /*!
