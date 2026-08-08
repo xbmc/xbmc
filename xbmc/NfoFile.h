@@ -13,6 +13,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "InfoScanner.h"
+#include "NfoUtils.h"
 #include "URL.h"
 #include "addons/Scraper.h"
 #include "utils/XBMCTinyXML.h"
@@ -39,15 +40,17 @@ public:
     if (document)
     {
       CXBMCTinyXML doc;
-      doc.Parse(document, TIXML_ENCODING_UNKNOWN);
+      if (!IngestXml(doc, document))
+        return false;
+
       return details.Load(doc.RootElement(), true, prioritise);
     }
 
-    const TiXmlElement* root = GetRootElement();
-    if (!root)
-      return false;
+    // version upgrade applied when the document was cached
+    if (const TiXmlElement* root = GetRootElement(); root != nullptr)
+      return details.Load(root, true, prioritise);
 
-    return details.Load(root, true, prioritise);
+    return false;
   }
 
   void Close();
@@ -73,6 +76,26 @@ private:
 
   // Returns the root element of m_doc (from m_headPos)
   const TiXmlElement* GetRootElement() const;
+
+  /*!
+   * \brief Read the Xml text into the provided CXBMCTinyXML instance.
+   * \param[in,out] doc CXBMCTinyXML instance
+   * \param[in] docText XML text
+   * \return true and a populated \p doc for success, false and empty \p doc for failure.
+   */
+  static bool IngestXml(CXBMCTinyXML& doc, const std::string& xmlText)
+  {
+    // defined inline to satisfy linker for private static function used by public template caller
+    if (doc.Parse(xmlText, TIXML_ENCODING_UNKNOWN))
+    {
+      if (TiXmlElement* root = doc.RootElement(); root != nullptr)
+        if (CNfoUtils::Upgrade(root))
+          return true;
+    }
+
+    doc.Clear();
+    return false;
+  }
 
   std::string m_doc;
   size_t m_headPos = 0;
