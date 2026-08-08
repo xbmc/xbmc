@@ -3653,6 +3653,10 @@
           "recording"
         ]
       },
+      "stationname": {
+        "type": "string",
+        "description": "Name of the radio station an internet stream is served by"
+      },
       "albumartist": {
         "$ref": "Array.String"
       },
@@ -3969,7 +3973,8 @@
         "datenew",
         "customproperties",
         "albumduration",
-        "songvideourl"
+        "songvideourl",
+        "stationname"
       ]
     }
   },

@@ -33,6 +33,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "music/MusicDatabase.h"
 #include "music/MusicFileItemClassify.h"
+#include "music/tags/MusicInfoTag.h"
 #include "pictures/SlideShowDelegator.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
@@ -93,6 +94,28 @@ bool IsReachable(const CFileItem& item)
 
   // Bypass the directory cache; a cached hit would mask a share that has gone away.
   return XFILE::CFile::Exists(path, false);
+}
+
+void OverlayCurrentSongTag(CFileItem& item)
+{
+  const MUSIC_INFO::CMusicInfoTag* current{
+      CServiceBroker::GetGUI()->GetInfoManager().GetCurrentSongTag()};
+  if (!current)
+    return;
+
+  // Only copy what the source actually supplied, so anything the item already carries in its
+  // own right survives.
+  MUSIC_INFO::CMusicInfoTag& tag{*item.GetMusicInfoTag()};
+  if (!current->GetTitle().empty())
+    tag.SetTitle(current->GetTitle());
+  if (!current->GetArtist().empty())
+    tag.SetArtist(current->GetArtist());
+  if (!current->GetAlbum().empty())
+    tag.SetAlbum(current->GetAlbum());
+  if (!current->GetGenre().empty())
+    tag.SetGenre(current->GetGenre());
+  if (!current->GetStationName().empty())
+    tag.SetStationName(current->GetStationName());
 }
 
 } // namespace
@@ -204,7 +227,12 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const std::string &method, ITransportL
     {
       fileItem = std::make_shared<CFileItem>(g_application.CurrentFileItem());
       if (IsPVRChannel())
+      {
+        // Metadata that arrives mid-stream reaches only the item held by the GUI, so overlay
+        // it here. The channel item stays authoritative for identity, path and artwork.
+        OverlayCurrentSongTag(*fileItem);
         break;
+      }
 
       if (player == Video)
       {
