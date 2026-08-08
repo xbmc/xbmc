@@ -15,10 +15,9 @@
 #include "FileItemList.h"
 #include "PasswordManager.h"
 #include "ServiceBroker.h"
+#include "StatCache.h"
 #include "URL.h"
 #include "commons/Exception.h"
-#include "dialogs/GUIDialogBusy.h"
-#include "guilib/GUIWindowManager.h"
 #include "jobs/Job.h"
 #include "jobs/JobManager.h"
 #include "messaging/ApplicationMessenger.h"
@@ -35,6 +34,18 @@ using namespace XFILE;
 using namespace std::chrono_literals;
 
 #define TIME_TO_BUSY_DIALOG 500
+
+namespace
+{
+// a directory being created or removed changes its parent directory's own
+// metadata (e.g. modification time), so any cached stat for the parent is stale
+void InvalidateParentStat(const CURL& url)
+{
+  if (const auto statCache = CServiceBroker::GetStatCache())
+    // Strip options before computing the parent path
+    statCache->Remove(CURL(URIUtils::GetParentPath(url.GetWithoutOptions())));
+}
+} // namespace
 
 class CGetDirectory
 {
@@ -355,11 +366,17 @@ bool CDirectory::Create(const CURL& url)
 {
   try
   {
-    CURL authURL = URIUtils::AddCredentials(URIUtils::SubstitutePath(url));
+    const CURL realURL = URIUtils::SubstitutePath(url);
+    const CURL authURL = URIUtils::AddCredentials(realURL);
 
     std::unique_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(authURL));
     if (pDirectory && pDirectory->Create(authURL))
+    {
+      if (const auto statCache = CServiceBroker::GetStatCache())
+        statCache->Remove(realURL);
+      InvalidateParentStat(realURL);
       return true;
+    }
   }
   XBMCCOMMONS_HANDLE_UNCHECKED
   catch (...) { CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__); }
@@ -425,6 +442,10 @@ bool CDirectory::Remove(const CURL& url)
       if(pDirectory->Remove(authUrl))
       {
         g_directoryCache.ClearFile(realURL);
+        if (const auto statCache = CServiceBroker::GetStatCache())
+          // Drop any cached stats for child entries as well
+          statCache->RemoveRecursive(realURL);
+        InvalidateParentStat(realURL);
         return true;
       }
   }
@@ -447,6 +468,9 @@ bool CDirectory::RemoveRecursive(const CURL& url)
       if(pDirectory->RemoveRecursive(authUrl))
       {
         g_directoryCache.ClearFile(realURL);
+        if (const auto statCache = CServiceBroker::GetStatCache())
+          statCache->RemoveRecursive(realURL);
+        InvalidateParentStat(realURL);
         return true;
       }
   }
