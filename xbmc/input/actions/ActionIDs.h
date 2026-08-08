@@ -48,10 +48,12 @@ constexpr const int ACTION_SHOW_GUI = 18;
 //! Toggle quick-access zoom modes. Can be used in videoFullScreen.zml window id=2005
 constexpr const int ACTION_ASPECT_RATIO = 19;
 
-//! Seek +1% in the movie. Can be used in videoFullScreen.xml window id=2005
+//! Seek forward during video playback. While paused, advance one frame.
+//! Can be used in videoFullScreen.xml window id=2005
 constexpr const int ACTION_STEP_FORWARD = 20;
 
-//! Seek -1% in the movie. Can be used in videoFullScreen.xml window id=2005
+//! Seek backward during video playback. While paused, step backward one frame.
+//! Can be used in videoFullScreen.xml window id=2005
 constexpr const int ACTION_STEP_BACK = 21;
 
 //! Seek +10% in the movie. Can be used in videoFullScreen.xml window id=2005
@@ -217,8 +219,8 @@ constexpr const int ACTION_PLAYER_PROGRAM_SELECT = 70;
 
 constexpr const int ACTION_PLAYER_RESOLUTION_SELECT = 71;
 
-//! Jumps a few seconds back during playback of movie. Can be used in videoFullScreen.xml
-//! window id=2005
+//! Jumps a few seconds back during video playback. While paused, steps backward one frame.
+//! Can be used in videoFullScreen.xml window id=2005
 constexpr const int ACTION_SMALL_STEP_BACK = 76;
 
 //! FF in current file played. global action, can be used anywhere
