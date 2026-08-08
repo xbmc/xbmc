@@ -43,6 +43,10 @@ using namespace std::chrono_literals;
 
 #define CEC_LIB_SUPPORTED_VERSION LIBCEC_VERSION_TO_UINT(4, 0, 0)
 
+/* SystemAudioModeStatus() was added in libCEC 7.1.0 */
+#define CEC_LIB_HAS_SYSTEM_AUDIO_MODE_STATUS \
+  (CEC_LIB_VERSION_MAJOR > 7 || (CEC_LIB_VERSION_MAJOR == 7 && CEC_LIB_VERSION_MINOR >= 1))
+
 /* time in seconds to ignore standby commands from devices after the screensaver has been activated
  */
 #define SCREENSAVER_TIMEOUT 20
@@ -113,14 +117,13 @@ void CPeripheralCecAdapter::ResetMembers(void)
   m_bStarted = false;
   m_bHasButton = false;
   m_bIsReady = false;
-  m_bHasConnectedAudioSystem = false;
+  m_bAmpControlsVolume = false;
   m_strMenuLanguage = "???";
   m_lastKeypress = {};
   m_lastChange = VOLUME_CHANGE_NONE;
   m_iExitCode = EXITCODE_QUIT;
 
-  //! @todo fetch the correct initial value when system audiostatus is
-  //! implemented in libCEC
+  /* replaced by the amp's own mute state once it reports one */
   m_bIsMuted = false;
 
   m_bGoingToStandby = false;
@@ -476,13 +479,37 @@ void CPeripheralCecAdapter::Process(void)
 bool CPeripheralCecAdapter::HasAudioControl(void)
 {
   std::unique_lock lock(m_critSection);
-  return m_bHasConnectedAudioSystem;
+  return m_bAmpControlsVolume;
 }
 
-void CPeripheralCecAdapter::SetAudioSystemConnected(bool bSetTo)
+void CPeripheralCecAdapter::SetAmpControlsVolume(bool bSetTo)
+{
+  {
+    std::unique_lock lock(m_critSection);
+    if (m_bAmpControlsVolume == bSetTo)
+      return;
+  }
+
+  /* hand Kodi's volume over before the amp takes it: from that point on a mute keypress is
+     forwarded to the amp rather than clearing Kodi's own mute, which would leave Kodi muted
+     with no way to unmute it. setting the volume to maximum lets Kodi pass its audio through
+     unchanged, so the amp is the only thing attenuating it */
+  if (bSetTo)
+  {
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+    appVolume->SetMute(false);
+    appVolume->SetVolume(CApplicationVolumeHandling::VOLUME_MAXIMUM, false);
+  }
+
+  std::unique_lock lock(m_critSection);
+  m_bAmpControlsVolume = bSetTo;
+}
+
+void CPeripheralCecAdapter::SetAmpMuted(bool bSetTo)
 {
   std::unique_lock lock(m_critSection);
-  m_bHasConnectedAudioSystem = bSetTo;
+  m_bIsMuted = bSetTo;
 }
 
 void CPeripheralCecAdapter::ProcessVolumeChange(void)
@@ -755,6 +782,18 @@ void CPeripheralCecAdapter::CecCommand(void* cbParam, const cec_command* command
             adapter->PushCecKeypress(key);
           }
         }
+        break;
+      case CEC_OPCODE_SET_SYSTEM_AUDIO_MODE:
+      case CEC_OPCODE_SYSTEM_AUDIO_MODE_STATUS:
+        /* the amp only acts on volume keypresses while system audio mode is on, so follow it for
+           as long as it is: volume falls back to Kodi's own the moment the amp bows out */
+        if (command->initiator == CECDEVICE_AUDIOSYSTEM && command->parameters.size == 1)
+          adapter->SetAmpControlsVolume(command->parameters[0] == CEC_SYSTEM_AUDIO_STATUS_ON);
+        break;
+      case CEC_OPCODE_REPORT_AUDIO_STATUS:
+        if (command->initiator == CECDEVICE_AUDIOSYSTEM && command->parameters.size == 1)
+          adapter->SetAmpMuted((command->parameters[0] & CEC_AUDIO_MUTE_STATUS_MASK) ==
+                               CEC_AUDIO_MUTE_STATUS_MASK);
         break;
       default:
         break;
@@ -1655,30 +1694,42 @@ std::string CPeripheralCecAdapterUpdateThread::UpdateAudioSystemStatus(void)
 {
   std::string strAmpName;
 
-  /* disable the mute setting when an amp is found, because the amp handles the mute setting and
-       set PCM output to 100% */
-  if (m_adapter->m_cecAdapter->IsActiveDeviceType(CEC_DEVICE_TYPE_AUDIO_SYSTEM))
+  if (!m_adapter->m_cecAdapter->IsActiveDeviceType(CEC_DEVICE_TYPE_AUDIO_SYSTEM))
   {
-    // request the OSD name of the amp
-    std::string ampName(m_adapter->m_cecAdapter->GetDeviceOSDName(CECDEVICE_AUDIOSYSTEM));
-    CLog::Log(LOGDEBUG,
-              "{} - CEC capable amplifier found ({}). volume will be controlled on the amp",
-              __FUNCTION__, ampName);
-    strAmpName += ampName;
-
-    // set amp present
-    m_adapter->SetAudioSystemConnected(true);
-    auto& components = CServiceBroker::GetAppComponents();
-    const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
-    appVolume->SetMute(false);
-    appVolume->SetVolume(CApplicationVolumeHandling::VOLUME_MAXIMUM, false);
-  }
-  else
-  {
-    // set amp present
     CLog::Log(LOGDEBUG, "{} - no CEC capable amplifier found", __FUNCTION__);
-    m_adapter->SetAudioSystemConnected(false);
+    m_adapter->SetAmpControlsVolume(false);
+    return strAmpName;
   }
+
+  // request the OSD name of the amp
+  std::string ampName(m_adapter->m_cecAdapter->GetDeviceOSDName(CECDEVICE_AUDIOSYSTEM));
+  strAmpName += ampName;
+
+#if CEC_LIB_HAS_SYSTEM_AUDIO_MODE_STATUS
+  /* an amp only acts on volume keypresses while system audio mode is on. handing it the volume
+     while it is off leaves the user with no working volume control at all, since CEC 1.4b has no
+     way to change the volume anywhere else. */
+  if (m_adapter->m_cecAdapter->SystemAudioModeStatus() != CEC_SYSTEM_AUDIO_STATUS_ON)
+  {
+    CLog::Log(LOGDEBUG,
+              "{} - CEC capable amplifier found ({}), but system audio mode is off. volume will be "
+              "controlled by Kodi",
+              __FUNCTION__, ampName);
+    m_adapter->SetAmpControlsVolume(false);
+    return strAmpName;
+  }
+#endif
+
+  CLog::Log(LOGDEBUG, "{} - CEC capable amplifier found ({}). volume will be controlled on the amp",
+            __FUNCTION__, ampName);
+
+  m_adapter->SetAmpControlsVolume(true);
+
+  /* adopt the amp's mute state, so the first mute keypress does not toggle it the wrong way */
+  const uint8_t audioStatus = m_adapter->m_cecAdapter->AudioStatus();
+  if (audioStatus != CEC_AUDIO_VOLUME_STATUS_UNKNOWN)
+    m_adapter->SetAmpMuted((audioStatus & CEC_AUDIO_MUTE_STATUS_MASK) ==
+                           CEC_AUDIO_MUTE_STATUS_MASK);
 
   return strAmpName;
 }
