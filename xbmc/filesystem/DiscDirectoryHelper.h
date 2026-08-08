@@ -143,6 +143,12 @@ static constexpr int DURATION_TOLERANCE_SCRAPED_PERCENT{40};
 // Movies
 static constexpr std::chrono::milliseconds MIN_MOVIE_DURATION{30 * 60 * 1000}; // 30 minutes
 static constexpr int MAIN_TITLE_LENGTH_PERCENT{70};
+// A playlist offering the movie as fully as the longest one is accepted as another edition of it
+// even when shorter than MAIN_TITLE_LENGTH_PERCENT. Editions do differ considerably in length (eg.
+// Das Boot (1981), whose theatrical cut is barely half the length of the television one), but an
+// extra offering the same languages and resolution as the movie is not an edition of it, however
+// long it runs (eg. Fast X (2023), whose 35 minutes of deleted scenes accompany a 2 hour movie).
+static constexpr int MIN_EDITION_LENGTH_PERCENT{40};
 
 /*!
  \brief Populates the stream details of item for the given title on the disc.
