@@ -443,7 +443,7 @@ CVEAGLContext CWinSystemTVOS::GetEAGLContextObj()
 std::vector<std::string> CWinSystemTVOS::GetConnectedOutputs()
 {
   std::vector<std::string> outputs;
-  outputs.emplace_back("Default");
+  outputs.emplace_back(OUTPUT_NAME_DEFAULT);
   outputs.emplace_back(CONST_HDMI);
 
   return outputs;
