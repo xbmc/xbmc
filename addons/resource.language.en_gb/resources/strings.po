@@ -17120,7 +17120,13 @@ msgctxt "#25020"
 msgid "Mb/s"
 msgstr ""
 
-#empty strings from id 25021 to 29800
+#. Luminance unit of measure for the Dolby Vision brightness info labels (candela per square metre)
+#: xbmc/guilib/guiinfo/PlayerGUIInfo.cpp
+msgctxt "#25021"
+msgid "nits"
+msgstr ""
+
+#empty strings from id 25022 to 29800
 
 #: unused
 msgctxt "#29801"

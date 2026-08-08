@@ -76,6 +76,22 @@ private:
   std::string GetCurrentSeekTime(TIME_FORMAT format) const;
   std::string GetSeekTime(TIME_FORMAT format) const;
 
+  /*!
+   * @brief Get a Dolby Vision info label for the frame currently on screen.
+   * @param info The PLAYER_PROCESS_DOVI_* label id.
+   * @param value Will be filled with the requested value. Untouched if the frame does not carry it.
+   * @return True if the value was filled successfully, false otherwise.
+   */
+  bool GetDoviLabel(int info, std::string& value) const;
+
+  /*!
+   * @brief Get a Dolby Vision info label for the frame currently on screen as an integer.
+   * @param info The PLAYER_PROCESS_DOVI_* label id.
+   * @param value Will be filled with the requested value. Untouched if the frame does not carry it.
+   * @return True if the value was filled successfully, false otherwise.
+   */
+  bool GetDoviInt(int info, int& value) const;
+
   std::string GetContentRanges(int iInfo) const;
   std::vector<std::pair<float, float>> GetEditList(const CDataCacheCore& data,
                                                    std::time_t duration) const;

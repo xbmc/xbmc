@@ -1216,11 +1216,175 @@ constexpr std::array<InfoMap, 10> player_times = {{
 ///     @skinning_v22 **[New Infolabel]** \link Player_Process_subtitledecoder `Player.Process(subtitledecoder)`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Player.Process(hdrtype)`</b>,
+///                  \anchor Player_Process_hdrtype
+///                  _string_,
+///     @return The HDR type carried by the video frame currently on screen (e.g. **dolbyvision**\,
+///             **hdr10**\, **hdr10plus**\, **hlg**). Empty when the frame is not HDR. Unlike
+///             `VideoPlayer.HdrType`\, which reports the type declared by the stream\, this reports
+///             the type of the frame on screen; a stream declared **hdr10** whose frames carry
+///             HDR10+ dynamic metadata reports **hdr10plus** here. A stream carrying both Dolby
+///             Vision and HDR10+ reports **dolbyvision**\, the primary type declared by the
+///             bitstream. This describes the decoded frame\, not the renderer's output: a Dolby
+///             Vision frame tone mapped to SDR still reports **dolbyvision**. Populated wherever
+///             the video decoder sets the picture's HDR type\, which covers the libavcodec decode
+///             paths\, Android MediaCodec and add-on supplied codecs; platform decoders that do not
+///             set it report empty.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link Player_Process_hdrtype `Player.Process(hdrtype)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.Process(dovieltype)`</b>,
+///                  \anchor Player_Process_dovieltype
+///                  _string_,
+///     @return The Dolby Vision enhancement layer type carried by the video frame currently on
+///             screen\, either **MEL** (minimal enhancement layer) or **FEL** (full enhancement
+///             layer). Empty when the frame carries no enhancement layer. Populated on decode paths
+///             that run through CDVDVideoCodecFFmpeg (software decode\, VAAPI\, VDPAU\, DXVA/D3D11
+///             and VideoToolbox); empty on platform decoders such as Android MediaCodec\, DRMPRIME
+///             and webOS.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link Player_Process_dovieltype `Player.Process(dovieltype)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.Process(dovil1min)`</b>,
+///                  \anchor Player_Process_dovil1min
+///                  _string_,
+///     @return The Dolby Vision level 1 minimum brightness carried by the video frame currently on
+///             screen\, including the localized unit of measure (e.g. **0.0050 nits**). Also
+///             available as an integer for use with `Integer.IsGreater` and similar conditions\,
+///             which returns the raw 12 bit PQ code in the range [0\, 4095]\, because the value in
+///             cd/m2 is fractional below 1. Empty if the frame carries no Dolby Vision level 1
+///             metadata. Populated on decode paths that run through CDVDVideoCodecFFmpeg (software
+///             decode\, VAAPI\, VDPAU\, DXVA/D3D11 and VideoToolbox); empty on platform decoders
+///             such as Android MediaCodec\, DRMPRIME and webOS.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link Player_Process_dovil1min `Player.Process(dovil1min)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.Process(dovil1max)`</b>,
+///                  \anchor Player_Process_dovil1max
+///                  _string_,
+///     @return The Dolby Vision level 1 maximum brightness carried by the video frame currently on
+///             screen\, including the localized unit of measure (e.g. **1001 nits**). Also
+///             available as an integer for use with `Integer.IsGreater` and similar conditions\,
+///             which returns the raw 12 bit PQ code in the range [0\, 4095]\, because the value in
+///             cd/m2 is fractional below 1. Empty if the frame carries no Dolby Vision level 1
+///             metadata. Populated on decode paths that run through CDVDVideoCodecFFmpeg (software
+///             decode\, VAAPI\, VDPAU\, DXVA/D3D11 and VideoToolbox); empty on platform decoders
+///             such as Android MediaCodec\, DRMPRIME and webOS.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link Player_Process_dovil1max `Player.Process(dovil1max)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.Process(dovil1avg)`</b>,
+///                  \anchor Player_Process_dovil1avg
+///                  _string_,
+///     @return The Dolby Vision level 1 average brightness carried by the video frame currently on
+///             screen\, including the localized unit of measure (e.g. **52.4 nits**). Also
+///             available as an integer for use with `Integer.IsGreater` and similar conditions\,
+///             which returns the raw 12 bit PQ code in the range [0\, 4095]\, because the value in
+///             cd/m2 is fractional below 1. Empty if the frame carries no Dolby Vision level 1
+///             metadata. Populated on decode paths that run through CDVDVideoCodecFFmpeg (software
+///             decode\, VAAPI\, VDPAU\, DXVA/D3D11 and VideoToolbox); empty on platform decoders
+///             such as Android MediaCodec\, DRMPRIME and webOS.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link Player_Process_dovil1avg `Player.Process(dovil1avg)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.Process(dovil5leftoffset)`</b>,
+///                  \anchor Player_Process_dovil5leftoffset
+///                  _string_,
+///     @return The Dolby Vision level 5 active area left offset carried by the video frame
+///             currently on screen\, in pixels (e.g. **0**). The four level 5 offsets are separate
+///             labels because skin conditions cannot split a string\, so a combined value could not
+///             drive a visible condition. Also available as an integer for use with
+///             `Integer.IsGreater` and similar conditions. Empty if the frame carries no Dolby
+///             Vision level 5 metadata. Populated on decode paths that run through
+///             CDVDVideoCodecFFmpeg (software decode\, VAAPI\, VDPAU\, DXVA/D3D11 and
+///             VideoToolbox); empty on platform decoders such as Android MediaCodec\, DRMPRIME and
+///             webOS.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link Player_Process_dovil5leftoffset `Player.Process(dovil5leftoffset)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.Process(dovil5rightoffset)`</b>,
+///                  \anchor Player_Process_dovil5rightoffset
+///                  _string_,
+///     @return The Dolby Vision level 5 active area right offset carried by the video frame
+///             currently on screen\, in pixels (e.g. **0**). Also available as an integer for use
+///             with `Integer.IsGreater` and similar conditions. Empty if the frame carries no Dolby
+///             Vision level 5 metadata. Populated on decode paths that run through
+///             CDVDVideoCodecFFmpeg (software decode\, VAAPI\, VDPAU\, DXVA/D3D11 and
+///             VideoToolbox); empty on platform decoders such as Android MediaCodec\, DRMPRIME and
+///             webOS.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link Player_Process_dovil5rightoffset `Player.Process(dovil5rightoffset)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.Process(dovil5topoffset)`</b>,
+///                  \anchor Player_Process_dovil5topoffset
+///                  _string_,
+///     @return The Dolby Vision level 5 active area top offset carried by the video frame currently
+///             on screen\, in pixels (e.g. **276**). Also available as an integer for use with
+///             `Integer.IsGreater` and similar conditions. Empty if the frame carries no Dolby
+///             Vision level 5 metadata. Populated on decode paths that run through
+///             CDVDVideoCodecFFmpeg (software decode\, VAAPI\, VDPAU\, DXVA/D3D11 and
+///             VideoToolbox); empty on platform decoders such as Android MediaCodec\, DRMPRIME and
+///             webOS.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link Player_Process_dovil5topoffset `Player.Process(dovil5topoffset)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.Process(dovil5bottomoffset)`</b>,
+///                  \anchor Player_Process_dovil5bottomoffset
+///                  _string_,
+///     @return The Dolby Vision level 5 active area bottom offset carried by the video frame
+///             currently on screen\, in pixels (e.g. **276**). Also available as an integer for use
+///             with `Integer.IsGreater` and similar conditions. Empty if the frame carries no Dolby
+///             Vision level 5 metadata. Populated on decode paths that run through
+///             CDVDVideoCodecFFmpeg (software decode\, VAAPI\, VDPAU\, DXVA/D3D11 and
+///             VideoToolbox); empty on platform decoders such as Android MediaCodec\, DRMPRIME and
+///             webOS.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link Player_Process_dovil5bottomoffset `Player.Process(dovil5bottomoffset)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.Process(dovil6maxcll)`</b>,
+///                  \anchor Player_Process_dovil6maxcll
+///                  _string_,
+///     @return The Dolby Vision level 6 maximum content light level carried by the video frame
+///             currently on screen\, in cd/m2 (e.g. **1000**). This is the Dolby Vision value and
+///             can differ from the one signalled by the HDR10 content light level metadata. Also
+///             available as an integer for use with `Integer.IsGreater` and similar conditions.
+///             Empty if the frame carries no Dolby Vision level 6 metadata. Populated on decode
+///             paths that run through CDVDVideoCodecFFmpeg (software decode\, VAAPI\, VDPAU\,
+///             DXVA/D3D11 and VideoToolbox); empty on platform decoders such as Android
+///             MediaCodec\, DRMPRIME and webOS.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link Player_Process_dovil6maxcll `Player.Process(dovil6maxcll)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.Process(dovil6maxfall)`</b>,
+///                  \anchor Player_Process_dovil6maxfall
+///                  _string_,
+///     @return The Dolby Vision level 6 maximum frame average light level carried by the video
+///             frame currently on screen\, in cd/m2 (e.g. **400**). This is the Dolby Vision value
+///             and can differ from the one signalled by the HDR10 content light level metadata.
+///             Also available as an integer for use with `Integer.IsGreater` and similar
+///             conditions. Empty if the frame carries no Dolby Vision level 6 metadata. Populated
+///             on decode paths that run through CDVDVideoCodecFFmpeg (software decode\, VAAPI\,
+///             VDPAU\, DXVA/D3D11 and VideoToolbox); empty on platform decoders such as Android
+///             MediaCodec\, DRMPRIME and webOS.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link Player_Process_dovil6maxfall `Player.Process(dovil6maxfall)`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 20> player_process = {{
+constexpr std::array<InfoMap, 31> player_process = {{
     {"videodecoder",        PLAYER_PROCESS_VIDEODECODER},
     {"deintmethod",         PLAYER_PROCESS_DEINTMETHOD},
     {"pixformat",           PLAYER_PROCESS_PIXELFORMAT},
@@ -1241,6 +1405,17 @@ constexpr std::array<InfoMap, 20> player_process = {{
     {"videoqueuedatalevel", PLAYER_PROCESS_VIDEO_QUEUE_DATA_LEVEL},
     {"videoscantype",       PLAYER_PROCESS_VIDEOSCANTYPE},
     {"subtitledecoder",     PLAYER_PROCESS_SUBTITLEDECODER},
+    {"hdrtype",             PLAYER_PROCESS_HDR_TYPE},
+    {"dovieltype",          PLAYER_PROCESS_DOVI_EL_TYPE},
+    {"dovil1min",           PLAYER_PROCESS_DOVI_L1_MIN},
+    {"dovil1max",           PLAYER_PROCESS_DOVI_L1_MAX},
+    {"dovil1avg",           PLAYER_PROCESS_DOVI_L1_AVG},
+    {"dovil5leftoffset",    PLAYER_PROCESS_DOVI_L5_LEFT_OFFSET},
+    {"dovil5rightoffset",   PLAYER_PROCESS_DOVI_L5_RIGHT_OFFSET},
+    {"dovil5topoffset",     PLAYER_PROCESS_DOVI_L5_TOP_OFFSET},
+    {"dovil5bottomoffset",  PLAYER_PROCESS_DOVI_L5_BOTTOM_OFFSET},
+    {"dovil6maxcll",        PLAYER_PROCESS_DOVI_L6_MAX_CLL},
+    {"dovil6maxfall",       PLAYER_PROCESS_DOVI_L6_MAX_FALL},
 }};
 // clang-format on
 

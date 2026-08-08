@@ -28,18 +28,59 @@
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "utils/StreamDetails.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
 
+#include <algorithm>
 #include <charconv>
 #include <chrono>
 #include <cmath>
+#include <cstdint>
 #include <memory>
 
 using namespace KODI::GUILIB::GUIINFO;
+
+namespace
+{
+
+// SMPTE ST.2084 inverse EOTF constants m1, m2, c1, c2 and c3.
+constexpr double PQ_M1 = 2610.0 / 16384.0;
+constexpr double PQ_M2 = 2523.0 / 4096.0 * 128.0;
+constexpr double PQ_C1 = 3424.0 / 4096.0;
+constexpr double PQ_C2 = 2413.0 / 4096.0 * 32.0;
+constexpr double PQ_C3 = 2392.0 / 4096.0 * 32.0;
+
+// Full scale of a 12 bit PQ code, and the peak luminance it encodes.
+constexpr double PQ_12BIT_MAX = 4095.0;
+constexpr double PQ_PEAK_NITS = 10000.0;
+
+// Dolby Vision brightness spans eight orders of magnitude, so the number of
+// decimals has to follow the value or dim scenes collapse to "0".
+constexpr double NITS_FRACTIONAL_MAX = 1.0;
+constexpr double NITS_ONE_DECIMAL_MAX = 100.0;
+
+// Convert a 12 bit PQ encoded brightness value to cd/m2 (nits) by applying the
+// SMPTE ST.2084 inverse EOTF. See ITU-R BT.2100 Table 4.
+double PqToNits(int pq)
+{
+  const double e = std::pow(std::clamp(pq / PQ_12BIT_MAX, 0.0, 1.0), 1.0 / PQ_M2);
+  return std::pow(std::max(e - PQ_C1, 0.0) / (PQ_C2 - PQ_C3 * e), 1.0 / PQ_M1) * PQ_PEAK_NITS;
+}
+
+std::string FormatNits(double nits)
+{
+  if (nits < NITS_FRACTIONAL_MAX)
+    return StringUtils::Format("{:.4f}", nits);
+  if (nits < NITS_ONE_DECIMAL_MAX)
+    return StringUtils::Format("{:.1f}", nits);
+  return StringUtils::Format("{:.0f}", nits);
+}
+
+} // namespace
 
 CPlayerGUIInfo::CPlayerGUIInfo()
   : m_appPlayer(CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>()),
@@ -374,6 +415,21 @@ bool CPlayerGUIInfo::GetLabel(std::string& value,
     case PLAYER_PROCESS_VIDEO_QUEUE_DATA_LEVEL:
       value = std::to_string(CServiceBroker::GetDataCacheCore().GetVideoQueueDataLevel());
       return true;
+    case PLAYER_PROCESS_HDR_TYPE:
+      value = CStreamDetails::HdrTypeToString(
+          CServiceBroker::GetDataCacheCore().GetVideoFrameMetadata().hdrType);
+      return true;
+    case PLAYER_PROCESS_DOVI_EL_TYPE:
+    case PLAYER_PROCESS_DOVI_L1_MIN:
+    case PLAYER_PROCESS_DOVI_L1_MAX:
+    case PLAYER_PROCESS_DOVI_L1_AVG:
+    case PLAYER_PROCESS_DOVI_L5_LEFT_OFFSET:
+    case PLAYER_PROCESS_DOVI_L5_RIGHT_OFFSET:
+    case PLAYER_PROCESS_DOVI_L5_TOP_OFFSET:
+    case PLAYER_PROCESS_DOVI_L5_BOTTOM_OFFSET:
+    case PLAYER_PROCESS_DOVI_L6_MAX_CLL:
+    case PLAYER_PROCESS_DOVI_L6_MAX_FALL:
+      return GetDoviLabel(info.GetInfo(), value);
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // PLAYLIST_*
@@ -441,6 +497,16 @@ bool CPlayerGUIInfo::GetInt(int& value,
     case PLAYER_PROCESS_VIDEO_QUEUE_DATA_LEVEL:
       value = CServiceBroker::GetDataCacheCore().GetVideoQueueDataLevel();
       return true;
+    case PLAYER_PROCESS_DOVI_L1_MIN:
+    case PLAYER_PROCESS_DOVI_L1_MAX:
+    case PLAYER_PROCESS_DOVI_L1_AVG:
+    case PLAYER_PROCESS_DOVI_L5_LEFT_OFFSET:
+    case PLAYER_PROCESS_DOVI_L5_RIGHT_OFFSET:
+    case PLAYER_PROCESS_DOVI_L5_TOP_OFFSET:
+    case PLAYER_PROCESS_DOVI_L5_BOTTOM_OFFSET:
+    case PLAYER_PROCESS_DOVI_L6_MAX_CLL:
+    case PLAYER_PROCESS_DOVI_L6_MAX_FALL:
+      return GetDoviInt(info.GetInfo(), value);
     default:
       break;
   }
@@ -690,6 +756,92 @@ bool CPlayerGUIInfo::GetBool(bool& value,
   }
 
   return false;
+}
+
+bool CPlayerGUIInfo::GetDoviLabel(int info, std::string& value) const
+{
+  if (info == PLAYER_PROCESS_DOVI_EL_TYPE)
+  {
+    const DoviFrameMetadata dovi = CServiceBroker::GetDataCacheCore().GetVideoFrameMetadata().dovi;
+    if (!dovi.valid || dovi.elType == DoviElType::NONE)
+      return false;
+
+    value = DoviElTypeToString(dovi.elType);
+    return true;
+  }
+
+  int number = 0;
+  if (!GetDoviInt(info, number))
+    return false;
+
+  switch (info)
+  {
+    case PLAYER_PROCESS_DOVI_L1_MIN:
+    case PLAYER_PROCESS_DOVI_L1_MAX:
+    case PLAYER_PROCESS_DOVI_L1_AVG:
+      value = FormatNits(PqToNits(number));
+      value += " " + CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25021);
+      return true;
+    default:
+      value = std::to_string(number);
+      return true;
+  }
+}
+
+bool CPlayerGUIInfo::GetDoviInt(int info, int& value) const
+{
+  const DoviFrameMetadata dovi = CServiceBroker::GetDataCacheCore().GetVideoFrameMetadata().dovi;
+
+  switch (info)
+  {
+    case PLAYER_PROCESS_DOVI_L1_MIN:
+      if (!dovi.hasLevel1)
+        return false;
+      value = dovi.level1MinPq;
+      return true;
+    case PLAYER_PROCESS_DOVI_L1_MAX:
+      if (!dovi.hasLevel1)
+        return false;
+      value = dovi.level1MaxPq;
+      return true;
+    case PLAYER_PROCESS_DOVI_L1_AVG:
+      if (!dovi.hasLevel1)
+        return false;
+      value = dovi.level1AvgPq;
+      return true;
+    case PLAYER_PROCESS_DOVI_L5_LEFT_OFFSET:
+      if (!dovi.hasLevel5)
+        return false;
+      value = dovi.level5LeftOffset;
+      return true;
+    case PLAYER_PROCESS_DOVI_L5_RIGHT_OFFSET:
+      if (!dovi.hasLevel5)
+        return false;
+      value = dovi.level5RightOffset;
+      return true;
+    case PLAYER_PROCESS_DOVI_L5_TOP_OFFSET:
+      if (!dovi.hasLevel5)
+        return false;
+      value = dovi.level5TopOffset;
+      return true;
+    case PLAYER_PROCESS_DOVI_L5_BOTTOM_OFFSET:
+      if (!dovi.hasLevel5)
+        return false;
+      value = dovi.level5BottomOffset;
+      return true;
+    case PLAYER_PROCESS_DOVI_L6_MAX_CLL:
+      if (!dovi.hasLevel6)
+        return false;
+      value = dovi.level6MaxCll;
+      return true;
+    case PLAYER_PROCESS_DOVI_L6_MAX_FALL:
+      if (!dovi.hasLevel6)
+        return false;
+      value = dovi.level6MaxFall;
+      return true;
+    default:
+      return false;
+  }
 }
 
 std::string CPlayerGUIInfo::GetContentRanges(int iInfo) const
