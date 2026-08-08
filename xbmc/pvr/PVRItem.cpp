@@ -92,6 +92,12 @@ std::shared_ptr<CPVRChannel> CPVRItem::GetChannel() const
   {
     return m_item->GetPVRRecordingInfoTag()->Channel();
   }
+  else if (URIUtils::IsPVRChannel(m_item->GetDynPath()))
+  {
+    // Item has no channel tag attached (e.g. a plain item created by an add-on that only
+    // knows the item's path). Resolve via path instead.
+    return CServiceBroker::GetPVRManager().ChannelGroups()->GetByPath(m_item->GetDynPath());
+  }
   else if (URIUtils::IsPVR(m_item->GetDynPath()))
   {
     CLog::LogF(LOGERROR, "Unsupported item type!");
@@ -131,6 +137,12 @@ std::shared_ptr<CPVRRecording> CPVRItem::GetRecording() const
   {
     return CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(
         m_item->GetEPGInfoTag());
+  }
+  else if (URIUtils::IsPVRRecording(m_item->GetDynPath()))
+  {
+    // Item has no recording tag attached (e.g. a plain item created by an add-on that only
+    // knows the item's path). Resolve via path instead.
+    return CServiceBroker::GetPVRManager().Recordings()->GetByPath(m_item->GetDynPath());
   }
   else if (URIUtils::IsPVR(m_item->GetDynPath()))
   {
