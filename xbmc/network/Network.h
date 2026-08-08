@@ -8,10 +8,11 @@
 
 #pragma once
 
+#include "settings/lib/ISettingCallback.h"
+#include "threads/CriticalSection.h"
+
 #include <string>
 #include <vector>
-
-#include "settings/lib/ISettingCallback.h"
 
 #include "PlatformDefs.h"
 
@@ -115,6 +116,13 @@ public:
   static std::string GetMaskByPrefixLength(uint8_t prefixLength);
 
   std::unique_ptr<CNetworkServices> m_services;
+
+protected:
+  // Serializes access to the platform interface list (GetInterfaceList()/m_interfaces).
+  // The list is iterated by IsLocalHost()/HasInterfaceForIP()/IsAvailable() etc. from many
+  // threads while platform code rebuilds it, so all access must be guarded. Recursive so a
+  // locked accessor may call another (e.g. iOS GetFirstConnectedInterface -> queryInterfaceList).
+  CCriticalSection m_lockInterfaceList;
 };
 
 //creates, binds and listens tcp sockets on the desired port. Set bindLocal to
