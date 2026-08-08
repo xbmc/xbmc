@@ -95,6 +95,15 @@ TEST(TestUtil, ValidatePath)
   EXPECT_EQ(CUtil::ValidatePath(path, true), "smb://foo/bar/");
   path = "smb:\\\\foo\\\\bar\\";
   EXPECT_EQ(CUtil::ValidatePath(path, true), "smb://foo/bar/");
+
+  path = "data:text/plain,a//b?c%23d+e";
+  EXPECT_EQ(CUtil::ValidatePath(path, true), "data:text/plain,a//b?c%23d+e");
+
+  path = "data:text/plain,bad\\value";
+  EXPECT_EQ(CUtil::ValidatePath(path, true), "data:text/plain,bad\\value");
+
+  path = "artist:folder//title.mkv";
+  EXPECT_EQ(CUtil::ValidatePath(path, true), "artist:folder/title.mkv");
 }
 
 struct TestUtilCleanStringData
