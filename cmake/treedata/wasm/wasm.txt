@@ -1,10 +1,8 @@
-xbmc/cores/AudioEngine/Sinks/webaudio  cores_AudioEngine_Sinks_webaudio
 xbmc/cores/RetroPlayer/shaders/gles   cores/RetroPlayer/shaders/gles
 xbmc/cores/VideoPlayer/Process/wasm   videoplayer_process_wasm
 xbmc/filesystem/wasm                  filesystem_wasm
 xbmc/input/touch                      input_touch
 xbmc/input/touch/generic              input_touch_generic
-xbmc/interfaces/json-rpc/wasm         interfaces_jsonrpc_wasm
 xbmc/platform/common/speech           platform/common/speech
 xbmc/platform/posix                   platform/posix
 xbmc/platform/posix/filesystem        platform/posix/filesystem
