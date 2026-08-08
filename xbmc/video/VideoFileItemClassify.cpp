@@ -41,6 +41,9 @@ bool IsDiscStub(const CFileItem& item)
 
 bool IsDVDFile(const CFileItem& item, bool bVobs /*= true*/, bool bIfos /*= true*/)
 {
+  if (URIUtils::IsContainerPath(item.GetDynPath()))
+    return false;
+
   const std::string strFileName = URIUtils::GetFileName(item.GetDynPath());
   if (bIfos)
   {

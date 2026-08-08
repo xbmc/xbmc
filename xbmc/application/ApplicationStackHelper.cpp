@@ -14,6 +14,7 @@
 #include "URL.h"
 #include "cores/IPlayer.h"
 #include "cores/VideoPlayer/DVDFileInfo.h"
+#include "filesystem/Directory.h"
 #include "filesystem/StackDirectory.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
@@ -90,6 +91,10 @@ bool CApplicationStackHelper::InitializeStack(const CFileItem& item)
   if (db.Open())
     haveTimes = db.GetStackTimes(item.GetDynPath(), times);
 
+  // Times from database, otherwise derive below as
+  // fallback for a stack scanned before they were recorded
+  const bool timesFromDatabase{haveTimes};
+
   // If no times and is a regular (file) stack then get times from files
   // Not possible for BD/DVD (folder) stacks due as the playlist/title not known yet
   if (!haveTimes && !IsPlayingDiscStack())
@@ -97,15 +102,27 @@ bool CApplicationStackHelper::InitializeStack(const CFileItem& item)
     std::chrono::milliseconds totalTime{0ms};
     for (int i = 0; i < m_originalStackItems.Size(); ++i)
     {
-      int duration;
       const auto& part{m_originalStackItems.Get(i)};
-      if (!CDVDFileInfo::GetFileDuration(part->GetDynPath(), duration))
+      const std::string& partPath{part->GetDynPath()};
+
+      std::chrono::milliseconds partTime{0ms};
+      if (URIUtils::IsBlurayPath(partPath))
+      {
+        CFileItemList parts;
+        if (CDirectory::GetDirectory(partPath, parts, "", DIR_FLAG_DEFAULTS) && !parts.IsEmpty() &&
+            parts[0]->HasVideoInfoTag())
+          partTime = std::chrono::seconds{parts[0]->GetVideoInfoTag()->GetDuration()};
+      }
+      else if (int duration{0}; CDVDFileInfo::GetFileDuration(partPath, duration))
+        partTime = std::chrono::milliseconds{duration};
+
+      if (partTime <= 0ms)
       {
         Clear();
-        CLog::LogF(LOGERROR, "Unable to get file duration from {}", part->GetDynPath());
+        CLog::LogF(LOGERROR, "Unable to get file duration from {}", partPath);
         return false;
       }
-      totalTime += std::chrono::milliseconds{duration};
+      totalTime += partTime;
       times.emplace_back(totalTime);
     }
     if (db.IsOpen())
@@ -124,11 +141,14 @@ bool CApplicationStackHelper::InitializeStack(const CFileItem& item)
       const auto& part{GetStackPartInformation(*m_originalStackItems.Get(i))};
       part->stackItem->SetEndOffset(times[i].count());
       part->startTime = i == 0 ? 0ms : times[i - 1];
+      CLog::LogF(LOGDEBUG, "Stack part {} runs from {}ms to {}ms", i, part->startTime.count(),
+                 times[i].count());
     }
     SetStackTotalTime(totalTime); // Set total time
     m_knownStackParts = static_cast<int>(times.size());
-    CLog::LogF(LOGDEBUG, "Initialized stack with {} (known) parts and total time {}ms",
-               m_knownStackParts, totalTime.count());
+    CLog::LogF(LOGDEBUG, "Initialized stack with {} (known) parts and total time {}ms (times {})",
+               m_knownStackParts, totalTime.count(),
+               timesFromDatabase ? "from the database" : "derived from the parts");
   }
 
   // Remember if this was a disc stack

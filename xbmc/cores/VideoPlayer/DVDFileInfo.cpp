@@ -379,6 +379,11 @@ bool CDVDFileInfo::CanExtract(const CFileItem& fileItem)
       URIUtils::IsOpticalMediaFile(fileItem.GetPath()) || URIUtils::IsDiscImage(fileItem.GetPath()))
     return false;
 
+  // ..nor from a stack still holding unresolved disc parts.
+  // A stack of bluray:// playlists is extractable and DemuxerToStreamDetails() sums their durations
+  if (URIUtils::IsDiscImageStack(fileItem.GetDynPath()))
+    return false;
+
   // For HTTP/FTP we only allow extraction when on a LAN
   if (URIUtils::IsRemote(fileItem.GetPath()) && !URIUtils::IsOnLAN(fileItem.GetPath()) &&
       (URIUtils::IsFTP(fileItem.GetPath()) || URIUtils::IsHTTP(fileItem.GetPath())))
