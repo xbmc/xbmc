@@ -1,0 +1,142 @@
+diff --git a/configure.ac b/configure.ac
+--- a/configure.ac
++++ b/configure.ac
+@@ -317,39 +317,7 @@ then
+        # ac_sys_system and ac_sys_release are used for setting
+        # a lot of different things including 'define_xopen_source'
+        # in the case statement below.
+-	case "$host" in
+-	*-*-linux-android*)
+-		ac_sys_system=Linux-android
+-		;;
+-	*-*-linux*)
+-		ac_sys_system=Linux
+-		;;
+-	*-*-darwin*)
+-		ac_sys_system=Darwin
+-		;;
+-	*-*-cygwin*)
+-		ac_sys_system=Cygwin
+-		;;
+-	*-apple-ios*)
+-		ac_sys_system=iOS
+-		;;
+-	*-*-darwin*)
+-		ac_sys_system=Darwin
+-		;;
+-	*-*-vxworks*)
+-	    ac_sys_system=VxWorks
+-	    ;;
+-	*-*-emscripten)
+-	    ac_sys_system=Emscripten
+-	    ;;
+-	*-*-wasi*)
+-	    ac_sys_system=WASI
+-	    ;;
+-	*)
+-		# for now, limit cross builds to known configurations
+-		MACHDEP="unknown"
+-		AC_MSG_ERROR([cross build not supported for $host])
+-	esac
++	ac_sys_system=iOS
+ 	ac_sys_release=
+     else
+ 	ac_sys_system=`uname -s`
+@@ -570,7 +538,6 @@ AC_ARG_ENABLE([framework],
+ 	case $enableval in
+ 	no)
+ 		case $ac_sys_system in
+-			iOS) AC_MSG_ERROR([iOS builds must use --enable-framework]) ;;
+ 			*)
+ 				PYTHONFRAMEWORK=
+ 				PYTHONFRAMEWORKDIR=no-framework
+@@ -680,7 +647,6 @@ AC_ARG_ENABLE([framework],
+ 		esac
+ 	],[
+ 	case $ac_sys_system in
+-		iOS) AC_MSG_ERROR([iOS builds must use --enable-framework]) ;;
+ 		*)
+ 			PYTHONFRAMEWORK=
+ 			PYTHONFRAMEWORKDIR=no-framework
+@@ -764,29 +730,9 @@ AC_SUBST([APP_STORE_COMPLIANCE_PATCH])
+ 
+ AC_SUBST([_PYTHON_HOST_PLATFORM])
+ if test "$cross_compiling" = yes; then
+-	case "$host" in
+-	*-*-linux*)
+-		case "$host_cpu" in
+-		arm*)
+-			_host_ident=arm
+-			;;
+-		*)
+-			_host_ident=$host_cpu
+-		esac
+-		;;
+-	*-*-cygwin*)
+-		_host_ident=
+-		;;
+-	*-*-darwin*)
+-		;;
+-	*-apple-ios*)
+-		_host_os=`echo $host | cut -d '-' -f3`
+-		_host_device=`echo $host | cut -d '-' -f4`
+-		_host_device=${_host_device:=os}
+ 
+ 		# IPHONEOS_DEPLOYMENT_TARGET is the minimum supported iOS version
+ 		AC_MSG_CHECKING([iOS deployment target])
+-		IPHONEOS_DEPLOYMENT_TARGET=$(echo ${_host_os} | cut -c4-)
+ 		IPHONEOS_DEPLOYMENT_TARGET=${IPHONEOS_DEPLOYMENT_TARGET:=13.0}
+ 		AC_MSG_RESULT([$IPHONEOS_DEPLOYMENT_TARGET])
+ 
+@@ -798,30 +744,6 @@ if test "$cross_compiling" = yes; then
+ 				_host_ident=${IPHONEOS_DEPLOYMENT_TARGET}-$host_cpu-iphone${_host_device}
+ 				;;
+ 		esac
+-		;;
+-	*-*-darwin*)
+-		case "$host_cpu" in
+-		arm*)
+-			_host_ident=arm
+-			;;
+-		*)
+-			_host_ident=$host_cpu
+-		esac
+-		;;
+-	*-*-vxworks*)
+-		_host_ident=$host_cpu
+-		;;
+-	*-*-emscripten)
+-		_host_ident=$(emcc -dumpversion | cut -f1 -d-)-$host_cpu
+-		;;
+-	wasm32-*-* | wasm64-*-*)
+-		_host_ident=$host_cpu
+-		;;
+-	*)
+-		# for now, limit cross builds to known configurations
+-		MACHDEP="unknown"
+-		AC_MSG_ERROR([cross build not supported for $host])
+-	esac
+ 	_PYTHON_HOST_PLATFORM="$MACHDEP${_host_ident:+-$_host_ident}"
+ fi
+ 
+@@ -3658,7 +3580,7 @@ then
+ 			fi
+ 			LINKFORSHARED="$LINKFORSHARED"
+ 		elif test $ac_sys_system = "iOS"; then
+-			LINKFORSHARED="-Wl,-stack_size,$stack_size $LINKFORSHARED "'$(PYTHONFRAMEWORKDIR)/$(PYTHONFRAMEWORK)'
++			LINKFORSHARED="-Wl,-stack_size,$stack_size $LINKFORSHARED "
+ 		fi
+ 		;;
+ 	OpenUNIX*|UnixWare*) LINKFORSHARED="-Wl,-Bexport";;
+diff --git a/Lib/_ios_support.py b/Lib/_ios_support.py
+--- a/Lib/_ios_support.py
++++ b/Lib/_ios_support.py
+@@ -13,7 +13,7 @@ else:
+     lib = util.find_library("objc")
+     if lib is None:
+         # Failed to load the objc library
+-        raise ImportError("ObjC runtime library couldn't be loaded")
++        lib = "/usr/lib/libobjc.dylib"
+ 
+     objc = cdll.LoadLibrary(lib)
+     objc.objc_getClass.restype = c_void_p
