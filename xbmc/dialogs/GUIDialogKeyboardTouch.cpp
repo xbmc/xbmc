@@ -9,6 +9,8 @@
 #include "GUIDialogKeyboardTouch.h"
 #if defined(TARGET_DARWIN_EMBEDDED)
 #include "platform/darwin/ios-common/DarwinEmbedKeyboard.h"
+#elif defined(TARGET_WEBOS)
+#include "windowing/wayland/WebOSKeyboard.h"
 #endif
 
 CGUIDialogKeyboardTouch::CGUIDialogKeyboardTouch()
@@ -23,6 +25,8 @@ bool CGUIDialogKeyboardTouch::ShowAndGetInput(char_callback_t pCallback, const s
 {
 #if defined(TARGET_DARWIN_EMBEDDED)
   m_keyboard.reset(new CDarwinEmbedKeyboard());
+#elif defined(TARGET_WEBOS)
+  m_keyboard = std::make_unique<KODI::WINDOWING::WAYLAND::CWebOSKeyboard>();
 #endif
 
   if (!m_keyboard)
@@ -83,4 +87,18 @@ void CGUIDialogKeyboardTouch::Process()
     m_confirmed = m_keyboard->ShowAndGetInput(m_pCharCallback, m_initialString, m_typedString, m_heading, m_bHiddenInput);
   }
   Close();
+}
+
+void CGUIDialogKeyboardTouch::Process(unsigned int currentTime, CDirtyRegionList& dirtyregions)
+{
+  if (m_keyboard && m_keyboard->ConsumeRenderDirty())
+    MarkDirtyRegion();
+  CGUIDialog::Process(currentTime, dirtyregions);
+}
+
+void CGUIDialogKeyboardTouch::Render()
+{
+  CGUIDialog::Render();
+  if (m_keyboard)
+    m_keyboard->Render();
 }
