@@ -173,6 +173,17 @@ public:
   virtual std::string vprepare(std::string_view format, va_list args) = 0;
 
   virtual bool in_transaction() { return false; }
+
+protected:
+  /*! \brief Rewrite each "%s" conversion sequence to "%q", the quote-escaping form.
+   \param format - C printf compliant format string
+   \return the format string with its "%s" sequences replaced by "%q"
+
+   Scanning is left to right so that %% is consumed as the literal percent it is. Only the position
+   of the preceding percents separates the two readings: in "%%s" the %s is the literal "%s" and
+   must survive untouched, in the LIKE wildcard idiom '%%%s%%' it is a conversion.
+   */
+  static std::string EscapeStringConversions(std::string format);
 };
 
 /******************* Class Dataset definition *********************
