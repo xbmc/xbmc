@@ -8,6 +8,9 @@
 
 #include "URL.h"
 
+#include <array>
+#include <string_view>
+
 #include <gtest/gtest.h>
 
 using ::testing::Test;
@@ -257,6 +260,164 @@ TEST_F(TestCURL, TestPaths)
   EXPECT_EQ(url.GetProtocol(), "bluray");
   EXPECT_EQ(url.GetFileType(), "mpls");
   EXPECT_EQ(url.Get(), path);
+}
+
+TEST_F(TestCURL, TestOpaqueDataURI)
+{
+  const std::string uri{"data:text/plain;charset=UTF-8,+/:=%25?,;https://example.test/a"};
+  const std::string schemeSpecificPart{"text/plain;charset=UTF-8,+/:=%25?,;https://example.test/a"};
+  CURL url(uri);
+
+  EXPECT_EQ("data", url.GetProtocol());
+  EXPECT_EQ(schemeSpecificPart, url.GetFileName());
+  EXPECT_TRUE(url.GetHostName().empty());
+  EXPECT_TRUE(url.GetDomain().empty());
+  EXPECT_TRUE(url.GetUserName().empty());
+  EXPECT_TRUE(url.GetPassWord().empty());
+  EXPECT_TRUE(url.GetShareName().empty());
+  EXPECT_TRUE(url.GetFileType().empty());
+  EXPECT_TRUE(url.GetOptions().empty());
+  EXPECT_TRUE(url.GetProtocolOptions().empty());
+  EXPECT_EQ(uri, url.Get());
+  EXPECT_EQ(uri, url.GetWithoutOptions());
+  EXPECT_EQ(uri, url.GetWithoutUserDetails());
+  EXPECT_EQ("data:[REDACTED]", url.GetWithoutUserDetails(true));
+  EXPECT_EQ("data:[REDACTED]", url.GetRedacted());
+  EXPECT_EQ("data:[REDACTED]", CURL::GetRedacted(uri));
+  EXPECT_EQ("data:", url.GetWithoutFilename());
+
+  const CURL reparsed(url.Get());
+  EXPECT_EQ("data", reparsed.GetProtocol());
+  EXPECT_EQ(schemeSpecificPart, reparsed.GetFileName());
+  EXPECT_EQ(uri, reparsed.Get());
+}
+
+TEST_F(TestCURL, TestOpaqueDataURIRedactionIsBounded)
+{
+  constexpr std::string_view payloadSecret{"PAYLOAD_SECRET"};
+  constexpr std::string_view fragmentSecret{"FRAGMENT_SECRET"};
+  constexpr std::string_view protocolOptionSecret{"PROTOCOL_OPTION_SECRET"};
+  constexpr std::string_view expected{"data:[REDACTED]"};
+
+  std::string uri{"data:text/plain,"};
+  uri.append(1024 * 1024, 'x');
+  // Keep the input malformed so this covers the failed-open logging path as
+  // well as valid opaque resources.
+  uri += ' ';
+  uri += payloadSecret;
+  uri += '%';
+  uri += '#';
+  uri += fragmentSecret;
+
+  CURL url{uri};
+  url.SetProtocolOptions(std::string{protocolOptionSecret});
+
+  EXPECT_EQ(url.Get(), url.GetWithoutUserDetails(false));
+
+  const std::string redacted = url.GetWithoutUserDetails(true);
+  EXPECT_EQ(expected, redacted);
+  EXPECT_EQ(expected.size(), redacted.size());
+  EXPECT_EQ(std::string::npos, redacted.find(payloadSecret));
+  EXPECT_EQ(std::string::npos, redacted.find(fragmentSecret));
+  EXPECT_EQ(std::string::npos, redacted.find(protocolOptionSecret));
+  EXPECT_EQ(expected, url.GetRedacted());
+  EXPECT_EQ(expected, CURL::GetRedacted(uri));
+}
+
+TEST_F(TestCURL, TestOpaqueDataURIFragment)
+{
+  const std::string uri{"data:text/plain,a%23b#fragment?with=https://example.test/"};
+  CURL url(uri);
+
+  EXPECT_EQ("data", url.GetProtocol());
+  EXPECT_EQ("text/plain,a%23b", url.GetFileName());
+  EXPECT_EQ("#fragment?with=https://example.test/", url.GetOptions());
+  EXPECT_EQ(uri, url.Get());
+  EXPECT_EQ("data:text/plain,a%23b", url.GetWithoutOptions());
+  EXPECT_EQ(uri, url.GetWithoutUserDetails());
+  EXPECT_EQ("data:[REDACTED]", url.GetWithoutUserDetails(true));
+  EXPECT_EQ("data:[REDACTED]", url.GetRedacted());
+
+  const CURL reparsed(url.Get());
+  EXPECT_EQ("text/plain,a%23b", reparsed.GetFileName());
+  EXPECT_EQ("#fragment?with=https://example.test/", reparsed.GetOptions());
+  EXPECT_EQ(uri, reparsed.Get());
+}
+
+TEST_F(TestCURL, TestOpaqueDataURISchemeIsCaseInsensitive)
+{
+  const CURL url{"DATA:text/plain,Hello"};
+
+  EXPECT_EQ("data", url.GetProtocol());
+  EXPECT_EQ("text/plain,Hello", url.GetFileName());
+  EXPECT_EQ("data:text/plain,Hello", url.Get());
+  EXPECT_TRUE(CURL::IsFullPath("DATA:text/plain,Hello"));
+}
+
+TEST_F(TestCURL, TestColonNamesRemainLocalPaths)
+{
+  constexpr std::array<std::string_view, 3> paths{"relative:name", "artist:title.mkv",
+                                                  "scheme+extension:value"};
+
+  for (const std::string_view path : paths)
+  {
+    SCOPED_TRACE(path);
+    const CURL url{std::string{path}};
+
+    EXPECT_TRUE(url.GetProtocol().empty());
+    EXPECT_EQ(path, url.GetFileName());
+    EXPECT_EQ(path, url.Get());
+    EXPECT_FALSE(CURL::IsFullPath(std::string{path}));
+  }
+}
+
+TEST_F(TestCURL, TestDOSPathsRemainLocalPaths)
+{
+  constexpr std::array<std::string_view, 3> paths{"C:/foo", "C:foo", "C:\\foo"};
+
+  for (const std::string_view path : paths)
+  {
+    SCOPED_TRACE(path);
+    const CURL url{std::string{path}};
+
+    EXPECT_TRUE(url.GetProtocol().empty());
+    EXPECT_TRUE(CURL::IsFullPath(std::string{path}));
+
+#if defined(TARGET_WINDOWS)
+    const std::string expected = path == "C:/foo" ? "C:\\foo" : std::string{path};
+#else
+    const std::string expected{path};
+#endif
+    EXPECT_EQ(expected, url.GetFileName());
+    EXPECT_EQ(expected, url.Get());
+  }
+}
+
+TEST_F(TestCURL, TestFullPathClassification)
+{
+  EXPECT_TRUE(CURL::IsFullPath("data:text/plain,Hello"));
+  EXPECT_TRUE(CURL::IsFullPath("DATA:text/plain,Hello"));
+  EXPECT_TRUE(CURL::IsFullPath("https://example.com/file"));
+  EXPECT_TRUE(CURL::IsFullPath("special://home/file"));
+  EXPECT_TRUE(CURL::IsFullPath("plugin://plugin.video.example/"));
+  EXPECT_TRUE(CURL::IsFullPath("/tmp/file"));
+
+  EXPECT_TRUE(CURL::IsFullPath("C:/tmp/file"));
+  EXPECT_TRUE(CURL::IsFullPath("C:\\tmp\\file"));
+  EXPECT_TRUE(CURL::IsFullPath("C:relative-file"));
+  EXPECT_TRUE(CURL::IsFullPath("\\\\server\\share\\file"));
+
+  const CURL oneLetterScheme("x://host/path");
+  EXPECT_EQ("x", oneLetterScheme.GetProtocol());
+  EXPECT_EQ("host", oneLetterScheme.GetHostName());
+  EXPECT_EQ("path", oneLetterScheme.GetFileName());
+
+  EXPECT_FALSE(CURL::IsFullPath("relative:name"));
+  EXPECT_FALSE(CURL::IsFullPath("artist:title.mkv"));
+  EXPECT_FALSE(CURL::IsFullPath("scheme+extension:value"));
+  EXPECT_FALSE(CURL::IsFullPath("relative/path"));
+  EXPECT_FALSE(CURL::IsFullPath("1invalid:value"));
+  EXPECT_FALSE(CURL::IsFullPath("invalid scheme:value"));
 }
 
 TEST_F(TestCURL, TestExtensions)

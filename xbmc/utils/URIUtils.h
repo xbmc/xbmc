@@ -295,7 +295,28 @@ public:
   static bool IsContainerPath(const std::string& strFile);
   static bool IsFavourite(const std::string& strFile);
   static bool IsUPnP(const std::string& strFile);
+
+  /*!
+   * \brief Check whether a string has Kodi's historical hierarchical URL form
+   *
+   * This intentionally checks for \c :// rather than recognizing every URI.
+   * Use IsURI() when RFC 3986 generic URI recognition is required.
+   */
   static bool IsURL(std::string_view file);
+
+  /*!
+   * \brief Check whether a string matches the RFC 3986 generic URI syntax
+   *
+   * This validates the complete generic URI production, including its scheme,
+   * authority, path, query, and fragment syntax. Individual URI schemes can
+   * impose additional restrictions that are not checked here.
+   *
+   * Some syntactically valid URIs are also valid platform path forms, such as
+   * \c C:/file and \c C:relative. Callers interpreting filesystem paths must
+   * resolve that ambiguity using path-specific helpers such as IsDOSPath().
+   */
+  static bool IsURI(std::string_view uri);
+
   static bool IsVideoDb(const std::string& strFile);
   static bool IsAPK(const std::string& strFile);
   static bool IsZIP(const std::string& strFile);
@@ -430,4 +451,3 @@ private:
 
   static const CAdvancedSettings* m_advancedSettings;
 };
-
