@@ -49,6 +49,7 @@ void CURL::Reset()
   m_options.Clear();
   m_protocolOptions.Clear();
   m_iPort = 0;
+  m_isOpaque = false;
 }
 
 void CURL::Parse(std::string strURL1)
@@ -61,6 +62,7 @@ void CURL::Parse(std::string strURL1)
   // format 1: protocol://[username:password]@hostname[:port]/directoryandfile
   // format 2: protocol://file
   // format 3: drive:directoryandfile
+  // format 4: protocol:scheme-specific-part
   //
   // first need 2 check if this is a protocol or just a normal drive & path
   if (strURL.empty())
@@ -69,6 +71,29 @@ void CURL::Parse(std::string strURL1)
   // form is format 1 or 2
   // format 1: protocol://[domain;][username:password]@hostname[:port]/directoryandfile
   // format 2: protocol://file
+
+  // data: is the opaque URI scheme supported by Kodi's VFS. Parse it before
+  // looking for :// because that sequence is also valid inside its payload.
+  if (StringUtils::StartsWithNoCase(strURL, "data:") &&
+      !StringUtils::StartsWithNoCase(strURL, "data://"))
+  {
+    const size_t schemeEnd = strURL.find(':');
+    SetProtocol(strURL.substr(0, schemeEnd));
+
+    // A fragment is not part of the RFC 2397 data. CURL has no separate
+    // fragment component, so preserve it using the existing options field.
+    const size_t fragment = strURL.find('#', schemeEnd + 1);
+    if (fragment != std::string::npos)
+      SetOptions(strURL.substr(fragment));
+
+    // SetFileName() derives share and extension fields using hierarchical path
+    // rules, which do not apply to an opaque scheme-specific part.
+    const size_t schemeSpecificLength =
+        fragment == std::string::npos ? std::string::npos : fragment - schemeEnd - 1;
+    m_strFileName = strURL.substr(schemeEnd + 1, schemeSpecificLength);
+    m_isOpaque = true;
+    return;
+  }
 
   // decode protocol
   size_t iPos = strURL.find("://");
@@ -413,6 +438,9 @@ std::string CURL::GetWithoutOptions() const
   if (m_strProtocol.empty())
     return m_strFileName;
 
+  if (m_isOpaque)
+    return m_strProtocol + ':' + m_strFileName;
+
   std::string strGet = GetWithoutFilename();
 
   // Prevent double slash when concatenating host part and filename part
@@ -427,6 +455,17 @@ std::string CURL::GetWithoutOptions() const
 
 std::string CURL::GetWithoutUserDetails(bool redact) const
 {
+  if (m_isOpaque)
+  {
+    // data: is currently Kodi's only opaque URI. Its scheme-specific part is
+    // the resource itself and may be both sensitive and very large, so never
+    // copy it (or its options) into redacted output.
+    if (redact)
+      return "data:[REDACTED]";
+
+    return Get();
+  }
+
   std::string strURL;
 
   if (IsProtocol("stack"))
@@ -512,6 +551,9 @@ std::string CURL::GetWithoutFilename() const
   if (m_strProtocol.empty())
     return "";
 
+  if (m_isOpaque)
+    return m_strProtocol + ':';
+
   unsigned int sizeneed = m_strProtocol.length() + m_strDomain.length() + m_strUserName.length() +
                           m_strPassword.length() + m_strHostName.length() + 10;
 
@@ -595,6 +637,12 @@ bool CURL::IsFullPath(const std::string& url)
     return true;
   if (StringUtils::StartsWith(url, "\\\\")) // \\UNC\path\to\file
     return true;
+
+  // Generic URI syntax does not imply a full Kodi path. Only the supported
+  // data: scheme is added to the historical path checks above.
+  if (StringUtils::StartsWithNoCase(url, "data:"))
+    return true;
+
   return false;
 }
 
