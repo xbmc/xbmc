@@ -704,19 +704,37 @@ void CLinuxRendererGLES::UpdateVideoFilter()
 
   // TODO: GL also checks nonLinStretchChanged and cmsChanged in the early exit
   // and the reload check below. Add when non-linear stretch and CMS are ported to GLES.
+  const bool hwScaled = IsHwScaled();
   if (m_scalingMethodGui == m_videoSettings.m_ScalingMethod &&
-      viewRect.Height() == m_lastViewRect.Height() && viewRect.Width() == m_lastViewRect.Width())
+      viewRect.Height() == m_lastViewRect.Height() && viewRect.Width() == m_lastViewRect.Width() &&
+      hwScaled == m_lastHwScaled)
   {
     return;
   }
 
-  // Viewport-only change doesn't need shader reload -- only method changes do
-  if (m_scalingMethod != m_videoSettings.m_ScalingMethod)
+  // Viewport-only change doesn't need shader reload -- only method changes do.
+  // hwScaled toggling also needs a reload even when the GUI-configured
+  // method didn't change: e.g. an HQ method (Lanczos/Spline/...) was already
+  // selected, then hardware scaling turned on mid-stream (OnResetDisplay) -
+  // m_scalingMethod == m_videoSettings.m_ScalingMethod would stay true
+  // throughout, so without this check the stale HQ shader/FBO built for the
+  // native (pre-hw-scale) size would never get re-evaluated.
+  if (m_scalingMethod != m_videoSettings.m_ScalingMethod || hwScaled != m_lastHwScaled)
     m_reloadShaders = true;
 
   m_scalingMethodGui = m_videoSettings.m_ScalingMethod;
   m_scalingMethod = m_scalingMethodGui;
   m_lastViewRect = viewRect;
+  m_lastHwScaled = hwScaled;
+
+  if (hwScaled)
+  {
+    // Hardware scaling already produced a display-sized texture. Skip the
+    // convolution scaler: its intermediate FBO is still allocated at the
+    // native decode size, so it would downscale the already scaled texture
+    // before upscaling it again. Use plain bilinear sampling instead.
+    m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
+  }
 
   if(!Supports(m_scalingMethod))
   {

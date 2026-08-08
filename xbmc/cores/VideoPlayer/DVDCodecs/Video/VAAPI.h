@@ -11,6 +11,8 @@
 #include "DVDVideoCodec.h"
 #include "cores/VideoPlayer/Buffers/VideoBuffer.h"
 #include "cores/VideoSettings.h"
+#include "guilib/DispResource.h"
+#include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 #include "threads/SharedSection.h"
@@ -200,6 +202,9 @@ struct CVaapiConfig
   // pictures so the renderer can pick its sampling path per-fourcc without
   // re-inspecting the surface.
   std::int32_t pixelFormat{};
+  // Target output size for VPP hardware scaling. 0/0 disables scaling.
+  int scaleWidth{};
+  int scaleHeight{};
 };
 
 /**
@@ -245,6 +250,8 @@ struct CVaapiProcessedPicture
     source = rhs.source;
     crop = rhs.crop;
     fourcc = rhs.fourcc;
+    outWidth = rhs.outWidth;
+    outHeight = rhs.outHeight;
     return *this;
   };
 
@@ -257,6 +264,13 @@ struct CVaapiProcessedPicture
   // VA fourcc of the underlying surface. Set by COutput from
   // CVaapiConfig::pixelFormat.
   std::int32_t fourcc{};
+  // Actual size of the surface named by videoSurface, when it differs from
+  // CVaapiConfig::vidWidth/vidHeight (e.g. CVppPostproc produced a hardware-
+  // scaled output surface). 0/0 means "use vidWidth/vidHeight" - the size
+  // every non-scaling postproc (CSkipPostproc, CFFmpegPostproc, and
+  // CVppPostproc when not scaling) already produces.
+  unsigned int outWidth = 0;
+  unsigned int outHeight = 0;
 };
 
 class CVaapiRenderPicture : public CVideoBuffer
@@ -290,6 +304,8 @@ public:
     FLUSH,
     PRECLEANUP,
     TIMEOUT,
+    // Display resolution changed; payload is SScaleTarget.
+    SETSCALETARGET,
   };
   enum InSignal
   {
@@ -297,6 +313,15 @@ public:
     ERROR,
     STATS,
   };
+};
+
+/**
+ * Payload for COutputControlProtocol::SETSCALETARGET.
+ */
+struct SScaleTarget
+{
+  int width;
+  int height;
 };
 
 class COutputDataProtocol : public Protocol
@@ -380,6 +405,7 @@ protected:
   CPostproc *m_pp;
   std::list<std::shared_ptr<CPostproc>> m_discardedPostprocs;
   SDiMethods m_diMethods;
+  bool m_scaleTargetChanged = false;
 };
 
 //-----------------------------------------------------------------------------
@@ -532,8 +558,7 @@ public:
 // VAAPI main class
 //-----------------------------------------------------------------------------
 
-class CDecoder
- : public IHardwareDecoder
+class CDecoder : public IHardwareDecoder, public IDispResource, public ISettingCallback
 {
    friend class CVaapiBufferPool;
 
@@ -555,6 +580,11 @@ public:
   const std::string Name() override { return "vaapi"; }
   void SetCodecControl(int flags) override;
 
+  // Update the VPP scaling target when the display mode changes.
+  void OnResetDisplay() override;
+
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
+
   void FFReleaseBuffer(uint8_t *data);
   static int FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
 
@@ -570,6 +600,16 @@ public:
 protected:
   void SetWidthHeight(int width, int height);
   bool ConfigVAAPI();
+
+  // Returns the VPP scaling target, or 0/0 if disabled. aspect is the
+  // decoded picture's sample aspect ratio (CVaapiConfig::aspect).
+  static void GetScaleTarget(
+      int vidWidth, int vidHeight, AVRational aspect, int& scaleWidth, int& scaleHeight);
+
+  void RefreshScaleTarget();
+
+  void UpdateDispResourceRegistration();
+
   bool CheckStatus(VAStatus vdp_st, int line);
   void FiniVAAPIOutput();
   void ReturnRenderPicture(CVaapiRenderPicture *renderPic);
@@ -590,6 +630,9 @@ protected:
   CVaapiConfig  m_vaapiConfig;
   CVideoSurfaces m_videoSurfaces;
   int m_getBufferError;
+
+  bool m_registeredDispResource = false;
+  CCriticalSection m_dispResourceSection;
 
   COutput m_vaapiOutput;
   CVaapiBufferStats m_bufferStats;
@@ -694,6 +737,10 @@ protected:
   int m_currentIdx;
   int m_frameCount;
   EINTERLACEMETHOD m_vppMethod;
+  // Output surface size used by the VPP pipeline.
+  int m_scaleWidth = 0;
+  int m_scaleHeight = 0;
+  bool m_scalingRequested = false;
   ReadyToDispose m_cbDispose = nullptr;
   COutput *m_pOut = nullptr;
 };

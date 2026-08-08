@@ -68,7 +68,10 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
     return failMap();
   }
 
-  m_textureSize.Set(pic->DVDPic.iWidth, pic->DVDPic.iHeight);
+  // Use the actual surface size. When VPP hardware scaling is active this
+  // differs from DVDPic.iWidth/iHeight.
+  m_textureSize.Set(pic->procPic.outWidth ? pic->procPic.outWidth : pic->DVDPic.iWidth,
+                    pic->procPic.outHeight ? pic->procPic.outHeight : pic->DVDPic.iHeight);
 
   for (uint32_t layerNo = 0; layerNo < surface.num_layers; layerNo++)
   {
