@@ -167,25 +167,29 @@ constexpr uint32_t SYSTEM_INTERNET_STATE             = 159;
 constexpr uint32_t SYSTEM_HAS_INPUT_HIDDEN           = 160;
 constexpr uint32_t SYSTEM_HAS_PVR_ADDON              = 161;
 
-constexpr uint32_t SYSTEM_ALARM_LESS_OR_EQUAL        = 180;
-constexpr uint32_t SYSTEM_PROFILECOUNT               = 181;
-constexpr uint32_t SYSTEM_ISFULLSCREEN               = 182;
-constexpr uint32_t SYSTEM_ISSTANDALONE               = 183;
-constexpr uint32_t SYSTEM_IDLE_SHUTDOWN_INHIBITED    = 184;
-constexpr uint32_t SYSTEM_HAS_SHUTDOWN               = 185;
-constexpr uint32_t SYSTEM_HAS_PVR                    = 186;
-constexpr uint32_t SYSTEM_STARTUP_WINDOW             = 187;
-constexpr uint32_t SYSTEM_STEREOSCOPIC_MODE          = 188;
-constexpr uint32_t SYSTEM_BUILD_VERSION_SHORT        = 189;
+constexpr uint32_t SYSTEM_ALARM_LESS_OR_EQUAL        = 162;
+constexpr uint32_t SYSTEM_PROFILECOUNT               = 163;
+constexpr uint32_t SYSTEM_ISFULLSCREEN               = 164;
+constexpr uint32_t SYSTEM_ISSTANDALONE               = 165;
+constexpr uint32_t SYSTEM_IDLE_SHUTDOWN_INHIBITED    = 166;
+constexpr uint32_t SYSTEM_HAS_SHUTDOWN               = 167;
+constexpr uint32_t SYSTEM_HAS_PVR                    = 168;
+constexpr uint32_t SYSTEM_STARTUP_WINDOW             = 169;
+constexpr uint32_t SYSTEM_STEREOSCOPIC_MODE          = 170;
+constexpr uint32_t SYSTEM_BUILD_VERSION_SHORT        = 171;
 
-constexpr uint32_t NETWORK_IP_ADDRESS                = 190;
-constexpr uint32_t NETWORK_MAC_ADDRESS               = 191;
-constexpr uint32_t NETWORK_IS_DHCP                   = 192;
-constexpr uint32_t NETWORK_LINK_STATE                = 193;
-constexpr uint32_t NETWORK_SUBNET_MASK               = 194;
-constexpr uint32_t NETWORK_GATEWAY_ADDRESS           = 195;
-constexpr uint32_t NETWORK_DNS1_ADDRESS              = 196;
-constexpr uint32_t NETWORK_DNS2_ADDRESS              = 197;
+constexpr uint32_t NETWORK_IP_ADDRESS                = 172;
+constexpr uint32_t NETWORK_MAC_ADDRESS               = 173;
+constexpr uint32_t NETWORK_IS_DHCP                   = 174;
+constexpr uint32_t NETWORK_LINK_STATE                = 175;
+constexpr uint32_t NETWORK_SUBNET_MASK               = 176;
+constexpr uint32_t NETWORK_GATEWAY_ADDRESS           = 177;
+constexpr uint32_t NETWORK_DNS1_ADDRESS              = 178;
+constexpr uint32_t NETWORK_DNS2_ADDRESS              = 179;
+constexpr uint32_t NETWORK_IPV6_ADDRESS              = 180;
+constexpr uint32_t NETWORK_IPV6_GATEWAY_ADDRESS      = 181;
+constexpr uint32_t NETWORK_IPV6_DNS1_ADDRESS         = 182;
+constexpr uint32_t NETWORK_IPV6_DNS2_ADDRESS         = 183;
 
 // Keep musicplayer infolabels that work with offset and position together
 constexpr uint32_t MUSICPLAYER_TITLE                 = 200;

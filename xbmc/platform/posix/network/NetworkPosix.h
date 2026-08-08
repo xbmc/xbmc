@@ -25,7 +25,7 @@ public:
 
   bool IsEnabled() const override;
   bool IsConnected() const override;
-  std::string GetCurrentIPAddress() const override;
+  std::string GetCurrentIPv4Address() const override;
   std::string GetCurrentNetmask() const override;
 
   std::string GetMacAddress() const override;
@@ -38,6 +38,7 @@ protected:
 private:
   std::string m_interfaceMacAdr;
   char m_interfaceMacAddrRaw[6];
+  bool HasUsableIPv6Address() const;
 };
 
 class CNetworkPosix : public CNetworkBase

@@ -33,9 +33,11 @@ public:
 
   virtual bool GetHostMacAddress(unsigned long host, std::string& mac) const;
 
-  virtual std::string GetCurrentIPAddress() const;
+  virtual std::string GetCurrentIPv4Address() const;
   virtual std::string GetCurrentNetmask() const;
   virtual std::string GetCurrentDefaultGateway(void) const;
+  virtual std::string GetCurrentIPv6Address() const;
+  virtual std::string GetCurrentIPv6DefaultGateway() const;
 
 private:
   PIP_ADAPTER_ADDRESSES m_adapterAddr;
@@ -51,6 +53,7 @@ public:
     std::vector<CNetworkInterface*>& GetInterfaceList(void) override;
     CNetworkInterface* GetFirstConnectedInterface() override;
     std::vector<std::string> GetNameServers(void) override;
+    std::vector<std::string> GetIPv6NameServers(void) override;
 
     bool PingHost(unsigned long host, unsigned int timeout_ms = 2000) override;
 

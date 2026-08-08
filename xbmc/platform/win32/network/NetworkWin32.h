@@ -35,9 +35,11 @@ public:
    bool GetHostMacAddress(unsigned long host, std::string& mac) const override;
    bool GetHostMacAddress(struct sockaddr* host, std::string& mac) const;
 
-   std::string GetCurrentIPAddress() const override;
+   std::string GetCurrentIPv4Address() const override;
    std::string GetCurrentNetmask() const override;
    std::string GetCurrentDefaultGateway(void) const override;
+   std::string GetCurrentIPv6Address() const override;
+   std::string GetCurrentIPv6DefaultGateway() const override;
 
 private:
    IP_ADAPTER_ADDRESSES m_adapter;
@@ -59,6 +61,7 @@ public:
 
    // Get/set the nameserver(s)
    std::vector<std::string> GetNameServers(void) override;
+   std::vector<std::string> GetIPv6NameServers(void) override;
 
    friend class CNetworkInterfaceWin32;
 

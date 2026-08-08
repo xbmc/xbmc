@@ -452,7 +452,7 @@ NPT_Result CUPnPRenderer::GetMetadata(NPT_String& meta)
     NPT_String ip;
     if (CServiceBroker::GetNetwork().GetFirstConnectedInterface())
     {
-      ip = CServiceBroker::GetNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
+      ip = CServiceBroker::GetNetwork().GetFirstConnectedInterface()->GetCurrentIPv4Address().c_str();
     }
     // build url, use the internal device http server to serv the image
     NPT_HttpUrlQuery query;

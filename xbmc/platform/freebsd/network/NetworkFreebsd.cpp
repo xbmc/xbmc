@@ -13,6 +13,7 @@
 
 #include <array>
 #include <errno.h>
+#include <set>
 
 #include <arpa/inet.h>
 #include <ifaddrs.h>
@@ -22,9 +23,12 @@
 #include <net/route.h>
 #include <netinet/if_ether.h>
 #include <netinet/in.h>
+#include <netinet6/in6_var.h>
 #include <resolv.h>
+#include <sys/ioctl.h>
 #include <sys/sockio.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
 CNetworkInterfaceFreebsd::CNetworkInterfaceFreebsd(CNetworkPosix* network,
                                                    std::string interfaceName,
@@ -81,6 +85,172 @@ std::string CNetworkInterfaceFreebsd::GetCurrentDefaultGateway() const
   free(buf);
 
   return result;
+}
+
+// Walk the kernel routing table (via sysctl net.route dump) and return the
+// next-hop gateway of the IPv6 default route (destination ::/0).
+std::string CNetworkInterfaceFreebsd::GetCurrentIPv6DefaultGateway() const
+{
+  std::string gateway;
+  int mib[] = {CTL_NET, PF_ROUTE, 0, AF_INET6, NET_RT_FLAGS, RTF_GATEWAY};
+
+  size_t needed = 0;
+  if (sysctl(mib, sizeof(mib) / sizeof(int), nullptr, &needed, nullptr, 0) < 0)
+    return gateway;
+
+  char* buf = (char*)malloc(needed);
+  if (buf == nullptr)
+    return gateway;
+
+  if (sysctl(mib, sizeof(mib) / sizeof(int), buf, &needed, nullptr, 0) < 0)
+  {
+    free(buf);
+    return gateway;
+  }
+
+  struct rt_msghdr* rtm;
+  for (char* next = buf; next < buf + needed; next += rtm->rtm_msglen)
+  {
+    rtm = reinterpret_cast<struct rt_msghdr*>(next);
+    struct sockaddr* sa = reinterpret_cast<struct sockaddr*>(rtm + 1);
+    struct sockaddr* sa_tab[RTAX_MAX] = {};
+    for (int i = 0; i < RTAX_MAX; i++)
+    {
+      if (rtm->rtm_addrs & (1 << i))
+      {
+        sa_tab[i] = sa;
+        sa = reinterpret_cast<struct sockaddr*>(reinterpret_cast<char*>(sa) + SA_SIZE(sa));
+      }
+    }
+
+    if ((rtm->rtm_addrs & (RTA_DST | RTA_GATEWAY)) != (RTA_DST | RTA_GATEWAY) ||
+        sa_tab[RTAX_DST]->sa_family != AF_INET6 || sa_tab[RTAX_GATEWAY]->sa_family != AF_INET6)
+      continue;
+
+    // default route has an unspecified (::) destination
+    if (!IN6_IS_ADDR_UNSPECIFIED(
+            &(reinterpret_cast<struct sockaddr_in6*>(sa_tab[RTAX_DST]))->sin6_addr))
+      continue;
+
+    struct in6_addr gwAddr =
+        (reinterpret_cast<struct sockaddr_in6*>(sa_tab[RTAX_GATEWAY]))->sin6_addr;
+
+    // A default gateway is almost always link-local. FreeBSD (KAME) embeds the
+    // scope (interface index) in bytes 2-3 of a link-local address rather than
+    // in sin6_scope_id; clear it so inet_ntop renders "fe80::1" and not
+    // "fe80:4::1".
+    if (IN6_IS_ADDR_LINKLOCAL(&gwAddr))
+      gwAddr.s6_addr[2] = gwAddr.s6_addr[3] = 0;
+
+    char dstStr6[INET6_ADDRSTRLEN];
+    if (inet_ntop(AF_INET6, &gwAddr, dstStr6, INET6_ADDRSTRLEN) != nullptr)
+      gateway = dstStr6;
+    break;
+  }
+
+  free(buf);
+
+  return gateway;
+}
+
+// Some IN6_IFF_* address flags may be absent depending on the FreeBSD release;
+// provide fallbacks so the ranking compiles regardless.
+#ifndef IN6_IFF_ANYCAST
+#define IN6_IFF_ANYCAST 0x01
+#endif
+#ifndef IN6_IFF_TENTATIVE
+#define IN6_IFF_TENTATIVE 0x02
+#endif
+#ifndef IN6_IFF_DUPLICATED
+#define IN6_IFF_DUPLICATED 0x04
+#endif
+#ifndef IN6_IFF_DETACHED
+#define IN6_IFF_DETACHED 0x08
+#endif
+#ifndef IN6_IFF_DEPRECATED
+#define IN6_IFF_DEPRECATED 0x10
+#endif
+#ifndef IN6_IFF_AUTOCONF
+#define IN6_IFF_AUTOCONF 0x40
+#endif
+#ifndef IN6_IFF_TEMPORARY
+#define IN6_IFF_TEMPORARY 0x80
+#endif
+
+// Gets the highest-ranked permanent IPv6 address on the current interface.
+// getifaddrs does not expose per-address state, so each candidate's flags are
+// queried with SIOCGIFAFLAG_IN6 to filter out temporary/deprecated addresses
+// and prefer stable ones, mirroring the Linux/macOS behaviour.
+std::string CNetworkInterfaceFreebsd::GetCurrentIPv6Address() const
+{
+  std::string address;
+
+  struct ifaddrs* interfaces = nullptr;
+  if (getifaddrs(&interfaces) != 0)
+    return address;
+
+  // SIOCGIFAFLAG_IN6 needs an AF_INET6 socket
+  int sock = socket(AF_INET6, SOCK_DGRAM, 0);
+  if (sock < 0)
+  {
+    freeifaddrs(interfaces);
+    return address;
+  }
+
+  unsigned int bestRank = 0;
+
+  for (struct ifaddrs* iface = interfaces; iface != nullptr; iface = iface->ifa_next)
+  {
+    if (iface->ifa_name != m_interfaceName ||
+        (iface->ifa_flags & (IFF_UP | IFF_RUNNING)) != (IFF_UP | IFF_RUNNING) ||
+        iface->ifa_addr == nullptr || iface->ifa_addr->sa_family != AF_INET6)
+      continue;
+
+    const struct sockaddr_in6* addr6 =
+        reinterpret_cast<const struct sockaddr_in6*>(iface->ifa_addr);
+
+    // Only consider globally scoped addresses; skip link-local (fe80::/10)
+    // and loopback (::1).
+    if (IN6_IS_ADDR_LINKLOCAL(&addr6->sin6_addr) || IN6_IS_ADDR_LOOPBACK(&addr6->sin6_addr))
+      continue;
+
+    // Query the address-specific flags.
+    struct in6_ifreq ifr6 = {};
+    strncpy(ifr6.ifr_name, iface->ifa_name, sizeof(ifr6.ifr_name) - 1);
+    memcpy(&ifr6.ifr_ifru.ifru_addr, addr6, sizeof(struct sockaddr_in6));
+
+    if (ioctl(sock, SIOCGIFAFLAG_IN6, &ifr6) < 0)
+      continue;
+
+    const int flags = ifr6.ifr_ifru.ifru_flags6;
+
+    // Remove anything that is not a usable permanent address. FreeBSD has no
+    // optimistic-DAD flag, so a tentative address is never usable.
+    if (flags & (IN6_IFF_DEPRECATED | IN6_IFF_DUPLICATED | IN6_IFF_TEMPORARY | IN6_IFF_TENTATIVE |
+                 IN6_IFF_DETACHED | IN6_IFF_ANYCAST))
+      continue;
+
+    // Rank the remaining permanent candidates (highest wins).
+    // !AUTOCONF: manually configured or DHCPv6 — explicitly assigned
+    // AUTOCONF:  SLAAC (EUI-64, or the stable source of temporaries)
+    unsigned int rank = (flags & IN6_IFF_AUTOCONF) ? 1 : 2;
+
+    // Keep the highest rank.
+    if (rank <= bestRank)
+      continue;
+
+    char str6[INET6_ADDRSTRLEN];
+    if (inet_ntop(AF_INET6, &addr6->sin6_addr, str6, sizeof(str6)) == nullptr)
+      continue;
+
+    address = str6;
+    bestRank = rank;
+  }
+
+  close(sock);
+  freeifaddrs(interfaces);
+
+  return address;
 }
 
 bool CNetworkInterfaceFreebsd::GetHostMacAddress(unsigned long host_ip, std::string& mac) const
@@ -188,10 +358,14 @@ void CNetworkFreebsd::queryInterfaceList()
   if (getifaddrs(&list) < 0)
     return;
 
-  struct ifaddrs* cur;
-  for (cur = list; cur != NULL; cur = cur->ifa_next)
+  // getifaddrs reports a separate entry per address, so an interface appears
+  // once per bound address (and, on an IPv6-only host, never via an AF_INET
+  // entry). Walk every entry and add each interface once, keyed by name, so
+  // IPv6-only interfaces are enumerated too.
+  std::set<std::string> added;
+  for (struct ifaddrs* cur = list; cur != NULL; cur = cur->ifa_next)
   {
-    if (cur->ifa_addr->sa_family != AF_INET)
+    if (cur->ifa_name == nullptr || !added.insert(cur->ifa_name).second)
       continue;
 
     GetMacAddress(cur->ifa_name, macAddrRaw);
@@ -216,6 +390,30 @@ std::vector<std::string> CNetworkFreebsd::GetNameServers()
   {
     std::string ns = inet_ntoa(_res.nsaddr_list[i].sin_addr);
     result.push_back(ns);
+  }
+
+  return result;
+}
+
+std::vector<std::string> CNetworkFreebsd::GetIPv6NameServers()
+{
+  std::vector<std::string> result;
+
+  res_init();
+
+  // _res.nsaddr_list only holds the IPv4 servers; the resolver keeps any IPv6
+  // servers in an extension array. res_getservers() returns both families.
+  union res_sockaddr_union servers[MAXNS];
+  int count = res_getservers(&_res, servers, MAXNS);
+
+  for (int i = 0; i < count; i++)
+  {
+    if (servers[i].sin6.sin6_family != AF_INET6)
+      continue;
+
+    char buf[INET6_ADDRSTRLEN] = {};
+    if (inet_ntop(AF_INET6, &servers[i].sin6.sin6_addr, buf, sizeof(buf)) != nullptr)
+      result.emplace_back(buf);
   }
 
   return result;

@@ -13,6 +13,7 @@
 
 #include <array>
 #include <errno.h>
+#include <set>
 
 #import <Foundation/Foundation.h>
 #import <SystemConfiguration/SystemConfiguration.h>
@@ -23,6 +24,8 @@
 #include <net/if_types.h>
 #include <net/route.h>
 #include <netinet/if_ether.h>
+#include <netinet6/in6_var.h>
+#include <sys/ioctl.h>
 #include <sys/sockio.h>
 #include <unistd.h>
 
@@ -35,88 +38,216 @@ CNetworkInterfaceMacOS::CNetworkInterfaceMacOS(CNetworkPosix* network,
 
 std::string CNetworkInterfaceMacOS::GetCurrentDefaultGateway() const
 {
+  return GetGateway(AF_INET);
+}
+
+std::string CNetworkInterfaceMacOS::GetCurrentIPv6DefaultGateway() const
+{
+  return GetGateway(AF_INET6);
+}
+
+// Walk the kernel routing table (via sysctl net.route dump) and return the
+// next-hop gateway of the default route (destination ::/0 or 0.0.0.0/0) for
+// the requested address family.
+std::string CNetworkInterfaceMacOS::GetGateway(int family) const
+{
   std::string gateway;
-  int mib[] = {CTL_NET, PF_ROUTE, 0, 0, NET_RT_FLAGS, RTF_GATEWAY};
-  int afinet_type[] = {AF_INET, AF_INET6};
+  int mib[] = {CTL_NET, PF_ROUTE, 0, family, NET_RT_FLAGS, RTF_GATEWAY};
 
-  for (int ip_type = 0; ip_type <= 1; ip_type++)
+  size_t needed = 0;
+  if (sysctl(mib, sizeof(mib) / sizeof(int), nullptr, &needed, nullptr, 0) < 0)
+    return gateway;
+
+  char* buf = new char[needed];
+
+  if (sysctl(mib, sizeof(mib) / sizeof(int), buf, &needed, nullptr, 0) < 0)
   {
-    mib[3] = afinet_type[ip_type];
-
-    size_t needed = 0;
-    if (sysctl(mib, sizeof(mib) / sizeof(int), nullptr, &needed, nullptr, 0) < 0)
-      return "";
-
-    char* buf;
-    if ((buf = new char[needed]) == 0)
-      return "";
-
-    if (sysctl(mib, sizeof(mib) / sizeof(int), buf, &needed, nullptr, 0) < 0)
-    {
-      CLog::Log(LOGERROR, "sysctl: net.route.0.0.dump");
-      delete[] buf;
-      return gateway;
-    }
-
-    struct rt_msghdr* rt;
-    for (char* p = buf; p < buf + needed; p += rt->rtm_msglen)
-    {
-      rt = reinterpret_cast<struct rt_msghdr*>(p);
-      struct sockaddr* sa = reinterpret_cast<struct sockaddr*>(rt + 1);
-      struct sockaddr* sa_tab[RTAX_MAX];
-      for (int i = 0; i < RTAX_MAX; i++)
-      {
-        if (rt->rtm_addrs & (1 << i))
-        {
-          sa_tab[i] = sa;
-          sa = reinterpret_cast<struct sockaddr*>(
-              reinterpret_cast<char*>(sa) +
-              ((sa->sa_len) > 0 ? (1 + (((sa->sa_len) - 1) | (sizeof(long) - 1))) : sizeof(long)));
-        }
-        else
-        {
-          sa_tab[i] = nullptr;
-        }
-      }
-
-      if (((rt->rtm_addrs & (RTA_DST | RTA_GATEWAY)) == (RTA_DST | RTA_GATEWAY)) &&
-          sa_tab[RTAX_DST]->sa_family == afinet_type[ip_type] &&
-          sa_tab[RTAX_GATEWAY]->sa_family == afinet_type[ip_type])
-      {
-        if (afinet_type[ip_type] == AF_INET)
-        {
-          if ((reinterpret_cast<struct sockaddr_in*>(sa_tab[RTAX_DST]))->sin_addr.s_addr == 0)
-          {
-            char dstStr4[INET_ADDRSTRLEN];
-            char srcStr4[INET_ADDRSTRLEN];
-            memcpy(srcStr4,
-                   &(reinterpret_cast<struct sockaddr_in*>(sa_tab[RTAX_GATEWAY]))->sin_addr,
-                   sizeof(struct in_addr));
-            if (inet_ntop(AF_INET, srcStr4, dstStr4, INET_ADDRSTRLEN) != nullptr)
-              gateway = dstStr4;
-            break;
-          }
-        }
-        else if (afinet_type[ip_type] == AF_INET6)
-        {
-          if ((reinterpret_cast<struct sockaddr_in*>(sa_tab[RTAX_DST]))->sin_addr.s_addr == 0)
-          {
-            char dstStr6[INET6_ADDRSTRLEN];
-            char srcStr6[INET6_ADDRSTRLEN];
-            memcpy(srcStr6,
-                   &(reinterpret_cast<struct sockaddr_in6*>(sa_tab[RTAX_GATEWAY]))->sin6_addr,
-                   sizeof(struct in6_addr));
-            if (inet_ntop(AF_INET6, srcStr6, dstStr6, INET6_ADDRSTRLEN) != nullptr)
-              gateway = dstStr6;
-            break;
-          }
-        }
-      }
-    }
-    free(buf);
+    CLog::Log(LOGERROR, "sysctl: net.route.0.0.dump");
+    delete[] buf;
+    return gateway;
   }
 
+  struct rt_msghdr* rt;
+  for (char* p = buf; p < buf + needed; p += rt->rtm_msglen)
+  {
+    rt = reinterpret_cast<struct rt_msghdr*>(p);
+    struct sockaddr* sa = reinterpret_cast<struct sockaddr*>(rt + 1);
+    struct sockaddr* sa_tab[RTAX_MAX];
+    for (int i = 0; i < RTAX_MAX; i++)
+    {
+      if (rt->rtm_addrs & (1 << i))
+      {
+        sa_tab[i] = sa;
+        // Routing-socket sockaddrs are padded to sizeof(uint32_t) on Darwin
+        // (not sizeof(long)); the latter overshoots 28-byte sockaddr_in6
+        // entries and corrupts parsing of subsequent addresses.
+        sa = reinterpret_cast<struct sockaddr*>(
+            reinterpret_cast<char*>(sa) +
+            ((sa->sa_len) > 0 ? (1 + (((sa->sa_len) - 1) | (sizeof(uint32_t) - 1)))
+                              : sizeof(uint32_t)));
+      }
+      else
+      {
+        sa_tab[i] = nullptr;
+      }
+    }
+
+    if (((rt->rtm_addrs & (RTA_DST | RTA_GATEWAY)) != (RTA_DST | RTA_GATEWAY)) ||
+        sa_tab[RTAX_DST]->sa_family != family || sa_tab[RTAX_GATEWAY]->sa_family != family)
+      continue;
+
+    if (family == AF_INET)
+    {
+      // default route has an all-zero (0.0.0.0) destination
+      if ((reinterpret_cast<struct sockaddr_in*>(sa_tab[RTAX_DST]))->sin_addr.s_addr != 0)
+        continue;
+
+      char dstStr4[INET_ADDRSTRLEN];
+      if (inet_ntop(AF_INET,
+                    &(reinterpret_cast<struct sockaddr_in*>(sa_tab[RTAX_GATEWAY]))->sin_addr,
+                    dstStr4, INET_ADDRSTRLEN) != nullptr)
+        gateway = dstStr4;
+      break;
+    }
+    else if (family == AF_INET6)
+    {
+      // default route has an unspecified (::) destination
+      if (!IN6_IS_ADDR_UNSPECIFIED(
+              &(reinterpret_cast<struct sockaddr_in6*>(sa_tab[RTAX_DST]))->sin6_addr))
+        continue;
+
+      struct in6_addr gwAddr =
+          (reinterpret_cast<struct sockaddr_in6*>(sa_tab[RTAX_GATEWAY]))->sin6_addr;
+
+      // Darwin embeds the scope (interface index) of a link-local address in
+      // bytes 2-3 of the address itself (the KAME convention) rather than in
+      // sin6_scope_id. A default gateway is almost always link-local, so clear
+      // the embedded id first or inet_ntop renders it literally (e.g.
+      // "fe80:4::1" instead of "fe80::1").
+      if (IN6_IS_ADDR_LINKLOCAL(&gwAddr))
+        gwAddr.s6_addr[2] = gwAddr.s6_addr[3] = 0;
+
+      char dstStr6[INET6_ADDRSTRLEN];
+      if (inet_ntop(AF_INET6, &gwAddr, dstStr6, INET6_ADDRSTRLEN) != nullptr)
+        gateway = dstStr6;
+      break;
+    }
+  }
+
+  delete[] buf;
+
   return gateway;
+}
+
+// Some IN6_IFF_* address flags are only present in recent SDKs; provide
+// fallbacks so the ranking compiles regardless of deployment target.
+#ifndef IN6_IFF_TENTATIVE
+#define IN6_IFF_TENTATIVE 0x0002
+#endif
+#ifndef IN6_IFF_DUPLICATED
+#define IN6_IFF_DUPLICATED 0x0004
+#endif
+#ifndef IN6_IFF_DEPRECATED
+#define IN6_IFF_DEPRECATED 0x0010
+#endif
+#ifndef IN6_IFF_AUTOCONF
+#define IN6_IFF_AUTOCONF 0x0040
+#endif
+#ifndef IN6_IFF_TEMPORARY
+#define IN6_IFF_TEMPORARY 0x0080
+#endif
+#ifndef IN6_IFF_OPTIMISTIC
+#define IN6_IFF_OPTIMISTIC 0x0200
+#endif
+#ifndef IN6_IFF_SECURED
+#define IN6_IFF_SECURED 0x0400
+#endif
+
+// Gets the highest-ranked permanent IPv6 address on the current interface.
+// getifaddrs does not expose per-address state, so each candidate's flags are
+// queried with SIOCGIFAFLAG_IN6 to filter out temporary/deprecated addresses
+// and prefer stable ones, mirroring the Linux/Android behaviour.
+std::string CNetworkInterfaceMacOS::GetCurrentIPv6Address() const
+{
+  std::string address;
+
+  struct ifaddrs* interfaces = nullptr;
+  if (getifaddrs(&interfaces) != 0)
+    return address;
+
+  // SIOCGIFAFLAG_IN6 needs an AF_INET6 socket
+  int sock = socket(AF_INET6, SOCK_DGRAM, 0);
+  if (sock < 0)
+  {
+    freeifaddrs(interfaces);
+    return address;
+  }
+
+  unsigned int bestRank = 0;
+
+  for (struct ifaddrs* iface = interfaces; iface != nullptr; iface = iface->ifa_next)
+  {
+    if (iface->ifa_name != m_interfaceName ||
+        (iface->ifa_flags & (IFF_UP | IFF_RUNNING)) != (IFF_UP | IFF_RUNNING) ||
+        iface->ifa_addr == nullptr || iface->ifa_addr->sa_family != AF_INET6)
+      continue;
+
+    const struct sockaddr_in6* addr6 =
+        reinterpret_cast<const struct sockaddr_in6*>(iface->ifa_addr);
+
+    // Only consider globally scoped addresses; skip link-local (fe80::/10)
+    // and loopback (::1).
+    if (IN6_IS_ADDR_LINKLOCAL(&addr6->sin6_addr) || IN6_IS_ADDR_LOOPBACK(&addr6->sin6_addr))
+      continue;
+
+    // Query the address-specific flags.
+    struct in6_ifreq ifr6 = {};
+    strncpy(ifr6.ifr_name, iface->ifa_name, sizeof(ifr6.ifr_name) - 1);
+    memcpy(&ifr6.ifr_ifru.ifru_addr, addr6, sizeof(struct sockaddr_in6));
+
+    if (ioctl(sock, SIOCGIFAFLAG_IN6, &ifr6) < 0)
+      continue;
+
+    const int flags = ifr6.ifr_ifru.ifru_flags6;
+
+    // Remove anything that is not a usable permanent address. A tentative
+    // address is still usable if it is optimistic (RFC 4429).
+    int disqualify = IN6_IFF_DEPRECATED | IN6_IFF_DUPLICATED | IN6_IFF_TEMPORARY;
+    if (!(flags & IN6_IFF_OPTIMISTIC))
+      disqualify |= IN6_IFF_TENTATIVE;
+
+    if (flags & disqualify)
+      continue;
+
+    // Rank the remaining permanent candidates (highest wins). These three
+    // categories are exhaustive for an address that passed the filter above.
+    // SECURED:   RFC 7217 stable-privacy address
+    // !AUTOCONF: manually configured or DHCPv6 — explicitly assigned
+    // AUTOCONF:  SLAAC parent (EUI-64, or the stable source of temporaries)
+    unsigned int rank;
+    if (flags & IN6_IFF_SECURED)
+      rank = 3;
+    else if (!(flags & IN6_IFF_AUTOCONF))
+      rank = 2;
+    else
+      rank = 1;
+
+    // Keep the highest rank.
+    if (rank <= bestRank)
+      continue;
+
+    char str6[INET6_ADDRSTRLEN];
+    if (inet_ntop(AF_INET6, &addr6->sin6_addr, str6, sizeof(str6)) == nullptr)
+      continue;
+
+    address = str6;
+    bestRank = rank;
+  }
+
+  close(sock);
+  freeifaddrs(interfaces);
+
+  return address;
 }
 
 bool CNetworkInterfaceMacOS::GetHostMacAddress(unsigned long host_ip, std::string& mac) const
@@ -221,10 +352,14 @@ void CNetworkMacOS::queryInterfaceList()
   if (getifaddrs(&list) < 0)
     return;
 
-  struct ifaddrs* cur;
-  for (cur = list; cur != NULL; cur = cur->ifa_next)
+  // getifaddrs reports a separate entry per address, so an interface appears
+  // once per bound address (and, on an IPv6-only host, never via an AF_INET
+  // entry). Walk every entry and add each interface once, keyed by name, so
+  // IPv6-only interfaces are enumerated too.
+  std::set<std::string> added;
+  for (struct ifaddrs* cur = list; cur != NULL; cur = cur->ifa_next)
   {
-    if (cur->ifa_addr->sa_family != AF_INET)
+    if (cur->ifa_name == nullptr || !added.insert(cur->ifa_name).second)
       continue;
 
     GetMacAddress(cur->ifa_name, macAddrRaw);
@@ -239,42 +374,79 @@ void CNetworkMacOS::queryInterfaceList()
   freeifaddrs(list);
 }
 
-std::vector<std::string> CNetworkMacOS::GetNameServers()
+namespace
 {
-  __block std::vector<std::string> result;
+// Query the active system resolver configuration and return every nameserver
+// (both IPv4 and IPv6). Callers filter by address family.
+//
+// The dynamic store (State:/Network/Global/DNS) reflects the resolvers
+// actually in use, including those supplied by DHCP. SCPreferences only
+// exposes manually entered DNS, so it returns nothing on a typical
+// DHCP-configured machine.
+std::vector<std::string> QueryDNSServers()
+{
+  std::vector<std::string> result;
   @autoreleasepool
   {
-    // Create an SCPreferencesRef object for the system preferences
-    SCPreferencesRef preferences = SCPreferencesCreate(nullptr, CFSTR("GetDNSInfo"), nullptr);
-    if (!preferences)
+    SCDynamicStoreRef store =
+        SCDynamicStoreCreate(nullptr, CFSTR("GetDNSInfo"), nullptr, nullptr);
+    if (!store)
     {
       CLog::Log(LOGWARNING, "Unable to determine nameservers");
       return result;
     }
 
-    // Get the current DNS configuration from system preferences
-    CFDictionaryRef currentDNSConfig =
-        static_cast<CFDictionaryRef>(SCPreferencesGetValue(preferences, kSCPrefNetworkServices));
-    if (currentDNSConfig)
+    CFStringRef key = SCDynamicStoreKeyCreateNetworkGlobalEntity(
+        nullptr, kSCDynamicStoreDomainState, kSCEntNetDNS);
+    CFDictionaryRef dnsConfig =
+        static_cast<CFDictionaryRef>(SCDynamicStoreCopyValue(store, key));
+    CFRelease(key);
+
+    if (dnsConfig)
     {
-      NSDictionary* networkServices = (__bridge NSDictionary*)currentDNSConfig;
-      [networkServices
-          enumerateKeysAndObjectsUsingBlock:^(NSString* key, NSDictionary* service, BOOL* stop) {
-            NSDictionary* dnsSettings = service[static_cast<NSString*>(kSCEntNetDNS)];
-            NSArray* dnsServers = dnsSettings[static_cast<NSString*>(kSCPropNetDNSServerAddresses)];
-            for (NSString* dnsServer in dnsServers)
-            {
-              result.emplace_back(dnsServer.UTF8String);
-            }
-          }];
-      CFRelease(preferences);
+      NSDictionary* dnsSettings = (__bridge NSDictionary*)dnsConfig;
+      NSArray* dnsServers = dnsSettings[static_cast<NSString*>(kSCPropNetDNSServerAddresses)];
+      for (NSString* dnsServer in dnsServers)
+      {
+        result.emplace_back(dnsServer.UTF8String);
+      }
+      CFRelease(dnsConfig);
     }
+    CFRelease(store);
+  }
+
+  return result;
+}
+} // namespace
+
+std::vector<std::string> CNetworkMacOS::GetNameServers()
+{
+  std::vector<std::string> result;
+
+  // a ':' only appears in IPv6 address literals
+  for (const auto& server : QueryDNSServers())
+  {
+    if (server.find(':') == std::string::npos)
+      result.emplace_back(server);
   }
 
   if (result.empty())
   {
     CLog::Log(LOGWARNING, "Unable to determine nameservers");
   }
+  return result;
+}
+
+std::vector<std::string> CNetworkMacOS::GetIPv6NameServers()
+{
+  std::vector<std::string> result;
+
+  for (const auto& server : QueryDNSServers())
+  {
+    if (server.find(':') != std::string::npos)
+      result.emplace_back(server);
+  }
+
   return result;
 }
 

@@ -24,6 +24,7 @@ public:
                            const CJNILinkProperties& lp,
                            const CJNINetworkInterface& intf);
   std::vector<std::string> GetNameServers();
+  std::vector<std::string> GetIPv6NameServers();
 
   // CNetworkInterface interface
 public:
@@ -32,9 +33,11 @@ public:
   std::string GetMacAddress() const override;
   void GetMacAddressRaw(char rawMac[6]) const override;
   bool GetHostMacAddress(unsigned long host_ip, std::string& mac) const override;
-  std::string GetCurrentIPAddress() const override;
+  std::string GetCurrentIPv4Address() const override;
   std::string GetCurrentNetmask() const override;
   std::string GetCurrentDefaultGateway() const override;
+  std::string GetCurrentIPv6Address() const override;
+  std::string GetCurrentIPv6DefaultGateway() const override;
 
   std::string GetHostName();
 
@@ -58,6 +61,7 @@ public:
   std::vector<CNetworkInterface*>& GetInterfaceList() override;
   CNetworkInterface* GetFirstConnectedInterface() override;
   std::vector<std::string> GetNameServers() override;
+  std::vector<std::string> GetIPv6NameServers() override;
 
   // Ping remote host
   using CNetworkBase::PingHost;

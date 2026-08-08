@@ -14,6 +14,7 @@
 #include <utility>
 
 #include <arpa/inet.h>
+#include <ifaddrs.h>
 #include <net/if.h>
 #include <netinet/in.h>
 #include <sys/ioctl.h>
@@ -56,15 +57,45 @@ bool CNetworkInterfacePosix::IsConnected() const
 
   // ignore loopback
   int iRunning = ((ifr.ifr_flags & IFF_RUNNING) && (!(ifr.ifr_flags & IFF_LOOPBACK)));
-
-  if (ioctl(m_network->GetSocket(), SIOCGIFADDR, &ifr) < 0)
+  if (!iRunning)
     return false;
 
-  // return only interfaces which has ip address
-  return iRunning && (0 != memcmp(ifr.ifr_addr.sa_data + sizeof(short), &zero, sizeof(int)));
+  // accept the interface if it has a non-zero IPv4 address bound...
+  if (ioctl(m_network->GetSocket(), SIOCGIFADDR, &ifr) >= 0 &&
+      0 != memcmp(ifr.ifr_addr.sa_data + sizeof(short), &zero, sizeof(int)))
+    return true;
+
+  // ...otherwise fall back to checking for a usable (non-link-local) IPv6 address,
+  // so IPv6-only interfaces are still reported as connected
+  return HasUsableIPv6Address();
+}
+bool CNetworkInterfacePosix::HasUsableIPv6Address() const
+{
+  struct ifaddrs* interfaces = nullptr;
+  if (getifaddrs(&interfaces) != 0)
+    return false;
+
+  bool found = false;
+  for (struct ifaddrs* iface = interfaces; iface != nullptr; iface = iface->ifa_next)
+  {
+    if (iface->ifa_addr == nullptr || iface->ifa_addr->sa_family != AF_INET6 ||
+        (iface->ifa_flags & (IFF_UP | IFF_RUNNING)) != (IFF_UP | IFF_RUNNING) ||
+        m_interfaceName != iface->ifa_name)
+      continue;
+
+    const auto* addr6 = reinterpret_cast<const struct sockaddr_in6*>(iface->ifa_addr);
+    if (IN6_IS_ADDR_LINKLOCAL(&addr6->sin6_addr))
+      continue;
+
+    found = true;
+    break;
+  }
+
+  freeifaddrs(interfaces);
+  return found;
 }
 
-std::string CNetworkInterfacePosix::GetCurrentIPAddress() const
+std::string CNetworkInterfacePosix::GetCurrentIPv4Address() const
 {
   std::string result;
 
