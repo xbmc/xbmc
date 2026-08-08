@@ -41,6 +41,7 @@ std::optional<CBcp47> CBcp47::ParseTag(std::string str, const CSubTagRegistryMan
     registry = &CServiceBroker::GetSubTagRegistry();
 
   CBcp47 tag;
+  tag.m_registry = registry;
   tag.m_type = p->m_type;
   tag.m_language = std::move(p->m_language);
   tag.m_extLangs = std::move(p->m_extLangs);
@@ -226,19 +227,53 @@ std::string CBcp47::Format(Bcp47FormattingStyle style) const
 
 void CBcp47::Canonicalize()
 {
-  // RFC 5646 - 4.5
+  // RFC 5646 - 4.5, whose steps are applied in order
   //
   // 1. Sort the extensions alphabetically
   std::ranges::sort(m_extensions, {}, &Bcp47Extension::name);
 
-  //! @todo once registry support is available:
-  //! @todo grandfathered tags preferred replacements
-  //! @todo subtags replacement with preferred values
-  //! @todo extlang replacement for canonical form - recreate extlang for extlang form
-  //! @todo reordering of variants using prefixes
-  //! @todo replacement of deprecated with preferred
-  //! @todo suppress script - not part of official canonicalization, but tags should not use
-  //! a script unless it adds information
+  //! @todo 2. Replace a redundant or grandfathered tag by its preferred value - that value is an
+  //! extended language range and can span several subtags, so it has to be parsed rather than
+  //! substituted
+
+  // 3. Replace a subtag by its preferred value. Language and region only for now, which the RFC
+  //    notes covers renamed countries and clerical corrections to ISO 639-1. A subtag deprecated
+  //    without a preferred value is already canonical and stays. The registry spells a preferred
+  //    value as its own record does, so a region arrives upper case while the tag holds subtags
+  //    in lower case.
+  bool replaced{false};
+
+  if (m_registrySubTags.has_value())
+  {
+    const TagSubTags& subTags = m_registrySubTags.value();
+
+    if (subTags.m_language.has_value() && !subTags.m_language->m_preferredValue.empty())
+    {
+      m_language = StringUtils::ToLower(subTags.m_language->m_preferredValue);
+      replaced = true;
+    }
+
+    if (subTags.m_region.has_value() && !subTags.m_region->m_preferredValue.empty())
+    {
+      m_region = StringUtils::ToLower(subTags.m_region->m_preferredValue);
+      replaced = true;
+    }
+  }
+
+  // The cached records still describe the subtags that were dropped, so formatting by description
+  // would name what the replacement retired.
+  if (replaced)
+  {
+    m_registrySubTags.reset();
+    LoadRegistrySubTags(m_registry);
+  }
+
+  //! @todo the rest of step 3 - extlang and variant preferred values. An extlang also replaces
+  //! the primary language subtag, and the canonical form carries no extlang at all, so this is
+  //! also where the extlang form would be recreated
+  //! @todo what 4.5 leaves optional - reordering variants by the 4.1 recommendations, and
+  //! regularizing subtag case - plus suppressing a script that adds no information, which the
+  //! RFC does not count as canonicalization at all
 }
 
 void CBcp47::LoadRegistrySubTags(const CSubTagRegistryManager* registry)

@@ -84,5 +84,9 @@ private:
   //! @todo when the implementation is mature, revisit whether to keep all fields of the subtags
   //! or just the descriptions, and whether to use std::optional or a smart pointer
   std::optional<TagSubTags> m_registrySubTags;
+
+  //! The registry the tag was parsed against, so canonicalization resolves a replacement subtag
+  //! against the same one. Not owned - a registry outlives the tags parsed from it.
+  const CSubTagRegistryManager* m_registry{nullptr};
 };
 } // namespace KODI::UTILS::I18N
