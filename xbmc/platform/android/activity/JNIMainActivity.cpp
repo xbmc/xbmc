@@ -49,6 +49,10 @@ void CJNIMainActivity::RegisterNatives(JNIEnv* env)
         {"_callNative", "(JJ)V", reinterpret_cast<void*>(&CJNIMainActivity::_callNative)},
         {"_onVisibleBehindCanceled", "()V",
          reinterpret_cast<void*>(&CJNIMainActivity::_onVisibleBehindCanceled)},
+        {"_onUserLeaveHint", "()V", reinterpret_cast<void*>(&CJNIMainActivity::_onUserLeaveHint)},
+        {"_onPictureInPictureModeChanged", "(Z)V",
+         reinterpret_cast<void*>(&CJNIMainActivity::_onPictureInPictureModeChanged)},
+        {"_onPipPlayPause", "()V", reinterpret_cast<void*>(&CJNIMainActivity::_onPipPlayPause)},
     };
     env->RegisterNatives(cMain, methods, sizeof(methods) / sizeof(methods[0]));
   }
@@ -107,6 +111,32 @@ void CJNIMainActivity::_onVisibleBehindCanceled(JNIEnv* env, jobject context)
     m_appInstance->onVisibleBehindCanceled();
 }
 
+void CJNIMainActivity::_onUserLeaveHint(JNIEnv* env, jobject context)
+{
+  (void)env;
+  (void)context;
+  if (m_appInstance)
+    m_appInstance->onUserLeaveHint();
+}
+
+void CJNIMainActivity::_onPictureInPictureModeChanged(JNIEnv* env,
+                                                      jobject context,
+                                                      jboolean isInPipMode)
+{
+  (void)env;
+  (void)context;
+  if (m_appInstance)
+    m_appInstance->onPipModeChanged(isInPipMode);
+}
+
+void CJNIMainActivity::_onPipPlayPause(JNIEnv* env, jobject context)
+{
+  (void)env;
+  (void)context;
+  if (m_appInstance)
+    m_appInstance->onPipPlayPause();
+}
+
 void CJNIMainActivity::runNativeOnUiThread(void (*callback)(void*), void* variant)
 {
   call_method<void>(m_context,
@@ -160,4 +190,31 @@ CJNIRect CJNIMainActivity::getDisplayRect()
 {
   return call_method<jhobject>(m_context,
                                "getDisplayRect", "()Landroid/graphics/Rect;");
+}
+
+void CJNIMainActivity::enterPip(int num, int den, const std::string& pauseLabel)
+{
+  call_method<void>(m_context, "enterPip", "(IILjava/lang/String;)V", num, den,
+                    jcast<jhstring>(pauseLabel));
+}
+
+void CJNIMainActivity::updatePipParams(bool autoEnter, int num, int den)
+{
+  call_method<void>(m_context, "updatePipParams", "(ZII)V", autoEnter, num, den);
+}
+
+void CJNIMainActivity::updatePipActions(bool playing, const std::string& label)
+{
+  call_method<void>(m_context, "updatePipActions", "(ZLjava/lang/String;)V", playing,
+                    jcast<jhstring>(label));
+}
+
+bool CJNIMainActivity::supportsPip()
+{
+  return call_method<jboolean>(m_context, "supportsPip", "()Z");
+}
+
+bool CJNIMainActivity::isInPictureInPictureMode()
+{
+  return call_method<jboolean>(m_context, "isInPictureInPictureMode", "()Z");
 }

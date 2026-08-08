@@ -24,6 +24,8 @@ public class XBMCVideoView extends SurfaceView implements
 
   public boolean mIsCreated = false;
   private RelativeLayout mVideoLayout = null;
+  private boolean mPipFullWindow = false;
+  private RelativeLayout.LayoutParams mSavedLayoutParams = null;
 
   public static XBMCVideoView createVideoView()
   {
@@ -57,6 +59,12 @@ public class XBMCVideoView extends SurfaceView implements
     getHolder().setFormat(PixelFormat.TRANSPARENT);
 
     mVideoLayout = (RelativeLayout) Main.MainActivity.findViewById(R.id.VideoLayout);
+
+    // A view created while already in PiP mode must behave as if setPipFullWindow(true)
+    // had been called on it (the mode-change callback ran before this view existed)
+    if (android.os.Build.VERSION.SDK_INT >= 26
+        && Main.MainActivity.isInPictureInPictureMode())
+      mPipFullWindow = true;
   }
 
   public void add()
@@ -106,6 +114,11 @@ public class XBMCVideoView extends SurfaceView implements
       {
         try
         {
+          // While in picture-in-picture mode the view is forced to fill the window and
+          // margin-based positioning must not interfere (see setPipFullWindow)
+          if (mPipFullWindow)
+            return;
+
           // Android does not allow to adjust AR and/or size of a frame on a Surface.
           // Instead, we render fullscreen on the surface and adjust the size of the surface for AR
           // For zoom, we adjust the margins of the layout containing the surface to achieve the desired result
@@ -113,6 +126,50 @@ public class XBMCVideoView extends SurfaceView implements
           RelativeLayout.LayoutParams mp = new RelativeLayout.LayoutParams(getLayoutParams());
           mp.setMargins(left, top, mVideoLayout.getWidth() - right, mVideoLayout.getHeight() - bottom);
           setLayoutParams(mp);
+          requestLayout();
+        }
+        catch (Exception e)
+        {
+          e.printStackTrace();
+        }
+      }
+    });
+  }
+
+  public void setPipFullWindow(final boolean enable)
+  {
+    Main.MainActivity.runOnUiThread(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        try
+        {
+          if (enable == mPipFullWindow)
+            return;
+          mPipFullWindow = enable;
+          if (enable)
+          {
+            // Fill the whole window: the PiP window aspect ratio follows the video, so
+            // the surface content maps 1:1. MATCH_PARENT keeps tracking window resizes
+            // without any further rect updates. Save the current layout so it can be
+            // restored on exit even when playback is paused (no new frame would
+            // otherwise trigger a native rect update).
+            mSavedLayoutParams = (RelativeLayout.LayoutParams) getLayoutParams();
+            RelativeLayout.LayoutParams mp = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+            mp.setMargins(0, 0, 0, 0);
+            setLayoutParams(mp);
+          }
+          else if (mSavedLayoutParams != null)
+          {
+            // Known limitation: restore uses the snapshot captured on PiP entry. If the
+            // video geometry changes while in PiP and PiP is left while paused, the stale
+            // geometry persists until the next rendered frame; it self-heals on play via
+            // the native setSurfaceRect path.
+            setLayoutParams(mSavedLayoutParams);
+            mSavedLayoutParams = null;
+          }
           requestLayout();
         }
         catch (Exception e)
