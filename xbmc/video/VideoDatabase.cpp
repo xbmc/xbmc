@@ -2839,6 +2839,9 @@ int CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath,
   if (newIdFile < 0)
     return -1;
 
+  if (newIdFile == oldIdFile)
+    return newIdFile; // Nothing to do, and the file must not be deleted below
+
   try
   {
     m_pDS->exec(
@@ -2864,8 +2867,21 @@ int CVideoDatabase::SetFileForMovie(const std::string& fileAndPath,
   if (newIdFile < 0)
     return -1;
 
+  if (newIdFile == oldIdFile)
+    return newIdFile; // Nothing to do
+
   try
   {
+    // The file played may already be a version of the movie in its own right
+    // eg. selecting a known version playlist through the bluray menu
+    if (GetSingleValueInt(PrepareSQL("SELECT COUNT(1) FROM videoversion WHERE idFile=%i", newIdFile)) >
+        0)
+    {
+      CLog::LogF(LOGDEBUG, "File {} ({}) is already a version - keeping both it and file {}",
+                 newIdFile, CURL::GetRedacted(fileAndPath), oldIdFile);
+      return newIdFile;
+    }
+
     m_pDS->exec(PrepareSQL("UPDATE movie SET idFile=%i WHERE idFile=%i AND idMovie=%i", newIdFile,
                            oldIdFile, idMovie));
     m_pDS->exec(PrepareSQL(
@@ -2896,6 +2912,9 @@ int CVideoDatabase::SetFileForUnknown(const std::string& fileAndPath, int oldIdF
 
   if (newIdFile < 0)
     return -1;
+
+  if (newIdFile == oldIdFile)
+    return newIdFile; // Nothing to do, and the file must not be deleted below
 
   try
   {
