@@ -21,10 +21,11 @@
 // Version when the migration system was added. Early exit for upgrades to that version or lower
 constexpr int VERSION_BEFORE_MIGRATION_SYSTEM = 2;
 
+
+/*
 CSettingsMigration::CSettingsMigration()
 {
-  /*
-   * Placeholder for the creation of migration steps. Could look something like this:
+  // Placeholder for the creation of migration steps. Could look something like this:
 
   std::vector<std::shared_ptr<ISettingsMigrationStep>> migrations{
       std::make_shared<CSettingsMigrationToV3>(),
@@ -33,8 +34,18 @@ CSettingsMigration::CSettingsMigration()
   };
 
   CSettingsMigration(std::move(migrations));
-  */
 }
+*/
+
+CSettingsMigration::CSettingsMigration()
+{
+  std::vector<std::shared_ptr<ISettingsMigrationStep>> migrations{
+      std::make_shared<CSettingsMigrationToV3>(),
+  };
+
+  CSettingsMigration(std::move(migrations));
+}
+
 
 CSettingsMigration::CSettingsMigration(StepList steps)
 {
