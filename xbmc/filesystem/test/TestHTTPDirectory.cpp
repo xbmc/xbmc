@@ -21,7 +21,6 @@
 #include "utils/URIUtils.h"
 #include "utils/XTimeUtils.h"
 
-#include <random>
 #include <stdlib.h>
 
 #include <gtest/gtest.h>
@@ -68,15 +67,7 @@ using namespace XFILE;
 class TestHTTPDirectory : public testing::Test
 {
 protected:
-  TestHTTPDirectory() : m_sourcePath(XBMC_REF_FILE_PATH(SOURCE_PATH))
-  {
-    std::random_device rd;
-    std::mt19937 mt(rd());
-    std::uniform_int_distribution<uint16_t> dist(49152, 65535);
-    m_webServerPort = dist(mt);
-
-    m_baseUrl = StringUtils::Format("http://" WEBSERVER_HOST ":{}", m_webServerPort);
-  }
+  TestHTTPDirectory() : m_sourcePath(XBMC_REF_FILE_PATH(SOURCE_PATH)) {}
 
   ~TestHTTPDirectory() override = default;
 
@@ -87,7 +78,9 @@ protected:
 
     SetupMediaSources();
 
-    m_webServer.Start(m_webServerPort, "", "");
+    ASSERT_TRUE(m_webServer.Start(0, "", ""));
+    m_baseUrl = StringUtils::Format("http://" WEBSERVER_HOST ":{}", m_webServer.GetPort());
+
     m_webServer.RegisterRequestHandler(&m_vfsHandler);
   }
 
@@ -212,7 +205,6 @@ protected:
   }
 
   CWebServer m_webServer;
-  uint16_t m_webServerPort;
   std::string m_baseUrl;
   std::string const m_sourcePath;
   CHTTPVfsHandler m_vfsHandler;

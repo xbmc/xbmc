@@ -28,7 +28,6 @@
 #include "utils/Variant.h"
 
 #include <errno.h>
-#include <random>
 #include <stdlib.h>
 
 #include <gtest/gtest.h>
@@ -51,16 +50,6 @@ protected:
     : webserver(),
       sourcePath(XBMC_REF_FILE_PATH("xbmc/network/test/data/webserver/"))
   {
-    static uint16_t port;
-    if (port == 0)
-    {
-      std::random_device rd;
-      std::mt19937 mt(rd());
-      std::uniform_int_distribution<uint16_t> dist(49152, 65535);
-      port = dist(mt);
-    }
-    webserverPort = port;
-    baseUrl = StringUtils::Format("http://" WEBSERVER_HOST ":{}", webserverPort);
   }
   ~TestWebServer() override = default;
 
@@ -71,7 +60,9 @@ protected:
 
     SetupMediaSources();
 
-    webserver.Start(webserverPort, GetServerUsername(), GetServerPassword());
+    ASSERT_TRUE(webserver.Start(0, GetServerUsername(), GetServerPassword()));
+    baseUrl = StringUtils::Format("http://" WEBSERVER_HOST ":{}", webserver.GetPort());
+
     webserver.RegisterRequestHandler(&m_jsonRpcHandler);
     webserver.RegisterRequestHandler(&m_vfsHandler);
   }
@@ -367,12 +358,29 @@ protected:
   CHTTPVfsHandler m_vfsHandler;
   std::string baseUrl;
   std::string sourcePath;
-  uint16_t webserverPort;
 };
 
 TEST_F(TestWebServer, IsStarted)
 {
   ASSERT_TRUE(webserver.IsStarted());
+}
+
+TEST_F(TestWebServer, ReportsThePortAssignedByTheOperatingSystem)
+{
+  ASSERT_TRUE(webserver.IsStarted());
+  EXPECT_NE(0, webserver.GetPort());
+}
+
+TEST_F(TestWebServer, TwoServersDoNotShareAPort)
+{
+  CWebServer other;
+  ASSERT_TRUE(other.Start(0, "", ""));
+
+  EXPECT_NE(0, other.GetPort());
+  EXPECT_NE(webserver.GetPort(), other.GetPort());
+
+  other.Stop();
+  EXPECT_EQ(0, other.GetPort());
 }
 
 TEST_F(TestWebServer, CanGetJsonRpcApiDescriptionWithHttpGet)
