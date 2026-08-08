@@ -18,6 +18,7 @@
 #include "filesystem/File.h"
 #include "imagefiles/ImageFileURL.h"
 #include "music/MusicEmbeddedCoverLoaderFFmpeg.h"
+#include "music/tags/MatroskaTagMapping.h"
 #include "music/tags/MusicCodecInfoFFmpeg.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/tags/MusicInfoTagLoaderMatroska.h"
@@ -125,7 +126,7 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url, CFileItemList& items
      * (chapters) processed below to create Kodi music Songs
     */
     for (const auto& t : fileTags)
-      CMusicInfoTagLoaderMatroska::ParseTag(t.first, t.second, separators, musicsep, albumtag);
+      MatroskaTagMapping::MapTag(t.first, t.second, separators, musicsep, albumtag);
   }
 
   std::string thumb;
@@ -215,8 +216,8 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url, CFileItemList& items
         if (it != chapterTags.end())
         {
           for (const auto& Tracktag : it->second)
-            CMusicInfoTagLoaderMatroska::ParseTag(Tracktag.first, Tracktag.second, separators,
-                                                  musicsep, *item->GetMusicInfoTag());
+            MatroskaTagMapping::MapTag(Tracktag.first, Tracktag.second, separators, musicsep,
+                                       *item->GetMusicInfoTag());
 
           item->SetStartOffset(CUtil::ConvertSecsToMilliSecs(std::get<2>(chapterOrder[i])));
           item->SetEndOffset(CUtil::ConvertSecsToMilliSecs(std::get<3>(chapterOrder[i])));

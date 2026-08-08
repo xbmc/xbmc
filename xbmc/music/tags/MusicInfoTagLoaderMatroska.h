@@ -30,12 +30,6 @@ public:
             CMusicInfoTag& tag,
             EmbeddedArt* art = nullptr) override;
 
-  static void ParseTag(const std::string& key,
-                       const std::string& value,
-                       std::vector<std::string>& separators,
-                       const std::string& musicsep,
-                       CMusicInfoTag& tag);
-
   // Static overload for external callers (e.g. AudioBookFileDirectory) —
   // opens its own MatroskaTagLibStream internally.
   // If coverTag is non-null, embedded cover art info is set on it.
@@ -58,12 +52,5 @@ private:
           chapterOrder,
       CMusicInfoTag* coverTag = nullptr,
       EmbeddedArt* art = nullptr);
-
-  static void AddRole(const std::vector<std::string>& data,
-                      const std::vector<std::string>& separators,
-                      CMusicInfoTag& musictag);
-  static void AddCommaDelimitedString(const std::vector<std::string>& data,
-                                      const std::vector<std::string>& separators,
-                                      CMusicInfoTag& musictag);
 };
 } // namespace MUSIC_INFO
