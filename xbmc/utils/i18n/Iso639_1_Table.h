@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "utils/StringUtils.h"
 #include "utils/i18n/Iso639.h"
 
 #include <algorithm>
@@ -221,6 +222,11 @@ constexpr std::array<struct LCENTRY, ISO639_1_COUNT> TableISO639_1 = {{
 }};
 // clang-format on
 
+static_assert(std::ranges::all_of(
+    TableISO639_1,
+    [](std::string_view name) { return StringUtils::IsAsciiTrimmed(name); },
+    &LCENTRY::name));
+
 inline constexpr int ISO639_1_DEPRECATED_COUNT = 7;
 
 // clang-format off
@@ -251,6 +257,11 @@ inline constexpr std::array<struct LCENTRY, ISO639_1_DEPRECATED_COUNT> TableISO6
     {StringToLongCode("bh"), "Bihari"},
 }};
 // clang-format on
+
+static_assert(std::ranges::all_of(
+    TableISO639_1_Depr,
+    [](std::string_view name) { return StringUtils::IsAsciiTrimmed(name); },
+    &LCENTRY::name));
 
 // Prepare sorted arrays to enable binary search
 
