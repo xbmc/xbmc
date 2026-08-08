@@ -658,7 +658,7 @@ void CGUITextLayout::WrapText(const vecText &text, float maxWidth)
     auto skipLeadingSpaces = [&](vecText::const_iterator& it)
     {
       it = std::find_if_not(it, line.m_text.end(),
-                            std::bind_front(&CGUITextLayout::CanWrapAtLetter, this));
+                            std::bind_front(&CGUITextLayout::IsSpace, this));
     };
 
     auto current = line.m_text.begin();
