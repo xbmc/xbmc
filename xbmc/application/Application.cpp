@@ -70,6 +70,7 @@
 #ifdef HAS_FILESYSTEM_NFS
 #include "filesystem/NFSFile.h"
 #endif
+#include "cache/CacheComponent.h"
 #include "filesystem/PluginDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIAudioManager.h"
@@ -281,6 +282,9 @@ bool CApplication::Create()
   CServiceBroker::RegisterKeyboardLayoutManager(keyboardLayoutManager);
 
   CServiceBroker::RegisterDNSNameCache(std::make_shared<CDNSNameCache>());
+
+  m_pCacheComponent = std::make_unique<CCacheComponent>();
+  m_pCacheComponent->Init();
 
   m_ServiceManager = std::make_unique<CServiceManager>();
 
@@ -1771,6 +1775,12 @@ bool CApplication::Cleanup()
     {
       m_pGUI->Deinit();
       m_pGUI.reset();
+    }
+
+    if (m_pCacheComponent)
+    {
+      m_pCacheComponent->Deinit();
+      m_pCacheComponent.reset();
     }
 
     if (winSystem)
