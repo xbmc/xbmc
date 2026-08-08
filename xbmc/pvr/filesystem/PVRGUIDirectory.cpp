@@ -95,7 +95,9 @@ bool ResolveFromDynPath(CFileItem& item)
         CServiceBroker::GetPVRManager().Recordings()->GetByPath(item.GetDynPath())};
     if (recording)
     {
+      const int64_t startOffset{item.GetStartOffset()};
       item = CFileItem(recording); // Replace original item with a PVR recording item
+      item.SetStartOffset(startOffset);
       return true;
     }
   }
