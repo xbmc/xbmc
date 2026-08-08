@@ -690,7 +690,7 @@ bool CSystemGUIInfo::GetBool(bool& value,
         if (window)
         {
           value = CMediaSettings::GetInstance().GetWatchedMode(
-                      window->CurrentDirectory().GetContent()) == WatchedModeUnwatched;
+                      window->CurrentDirectory().GetContent()) == WatchedMode::UNWATCHED;
           return true;
         }
       }

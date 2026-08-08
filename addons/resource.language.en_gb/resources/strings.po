@@ -2741,6 +2741,7 @@ msgid "Date added"
 msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp
+#: xbmc/dialogs/GUIDialogSmartPlaylistEditor.cpp
 #: xbmc/settings/SubtitlesSettings.cpp
 msgctxt "#571"
 msgid "Default"
@@ -6774,6 +6775,7 @@ msgstr ""
 #: xbmc/pvr/channels/PVRChannel.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRClientPriorities.cpp
 #: xbmc/pvr/guilib/guiinfo/PVRGUIInfo.cpp
+#: xbmc/settings/MediaSettings.cpp
 #: xbmc/video/dialogs/GUIDialogAudioSubtitleSettings.cpp
 #: xbmc/video/PlayerController.cpp
 #: xbmc/video/dialogs/GUIDialogAudioSettings.cpp
@@ -9415,17 +9417,21 @@ msgstr ""
 
 #empty strings from id 16042 to 16099
 
-#: xbmc/video/windows/GUIWindowVideoNav.cpp
+#: xbmc/settings/MediaSettings.cpp
 #: xbmc/video/windows/VideoFileItemListModifier.cpp
 msgctxt "#16100"
 msgid "All videos"
 msgstr ""
 
+#: xbmc/settings/MediaSettings.cpp
+#: xbmc/pvr/windows/GUIWindowPVRRecordings.cpp
 msgctxt "#16101"
 msgid "Unwatched"
 msgstr ""
 
 #: addons/skin.estuary/xml/Home.xml
+#: xbmc/settings/MediaSettings.cpp
+#: xbmc/pvr/windows/GUIWindowPVRRecordings.cpp
 msgctxt "#16102"
 msgid "Watched"
 msgstr ""
@@ -14479,7 +14485,13 @@ msgctxt "#20478"
 msgid "DV profile"
 msgstr ""
 
-#empty strings from id 20479 to 21329
+#. Used in the smart playlist editor to define a watched mode
+#: xbmc/dialogs/GUIDialogSmartPlaylistEditor.cpp
+msgctxt "#20479"
+msgid "Watched Mode"
+msgstr ""
+
+#empty strings from id 20480 to 21329
 #up to 21329 is reserved for the video db !! !
 
 #: system/settings/settings.xml
