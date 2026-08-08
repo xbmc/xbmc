@@ -16,6 +16,7 @@ xbmc/games/dialogs/disc/test      test/games/dialogs/disc
 xbmc/guilib/test                  test/guilib
 xbmc/imagefiles/test              test/imagefiles
 xbmc/input/keyboard/test          test/input/keyboard
+xbmc/interfaces/json-rpc/test     test/jsonrpc
 xbmc/interfaces/python/test       test/python
 xbmc/music/tags/test              test/music_tags
 xbmc/music/test                   test/music
