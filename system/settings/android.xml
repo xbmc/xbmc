@@ -28,5 +28,14 @@
         </setting>
       </group>
     </category>
+    <category id="input">
+      <group id="2">
+        <setting id="input.androidusekodikeyboard" type="boolean" label="24162" help="34011">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>
   </section>
 </settings>
