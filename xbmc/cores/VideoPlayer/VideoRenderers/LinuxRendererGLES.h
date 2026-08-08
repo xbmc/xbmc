@@ -72,7 +72,7 @@ public:
   bool Flush(bool saveBuffers) override;
   void SetBufferSize(int numBuffers) override { m_NumYUVBuffers = numBuffers; }
   bool IsGuiLayer() override;
-  bool HasVideoPlane() override { return false; }
+  bool VideoBypassesFramebuffer() override { return false; }
   void ReleaseBuffer(int idx) override;
   void RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;
   void Update() override;

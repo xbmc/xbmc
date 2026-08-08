@@ -214,7 +214,7 @@ bool CRenderManager::Configure()
 
     m_playerPort->UpdateRenderInfo(info);
     m_playerPort->UpdateGuiRender(true);
-    m_playerPort->UpdateVideoRender(m_pRenderer->HasVideoPlane());
+    m_playerPort->UpdateVideoRender(m_pRenderer->VideoBypassesFramebuffer());
 
     m_queued.clear();
     m_discard.clear();
@@ -349,7 +349,8 @@ void CRenderManager::FrameMove()
     m_bRenderGUI = true;
   }
 
-  m_playerPort->UpdateGuiRender(IsGuiLayer() || !m_pRenderer->HasVideoPlane() || firstFrame);
+  m_playerPort->UpdateGuiRender(IsGuiLayer() || !m_pRenderer->VideoBypassesFramebuffer() ||
+                                firstFrame);
 
   // Run libass for the current PTS and cache the output for ConvertLibass
   // to use during the render pass. PrepareOverlays MarkDirty's on libass
@@ -522,12 +523,18 @@ void CRenderManager::ServiceVideoCaptures()
   if (requests.empty())
     return;
 
-  // video composited outside Kodi's GL (D2P plane, Android video surface,
-  // webOS video plane) leaves nothing in the framebuffer to copy
-  if (m_pRenderer->HasVideoPlane())
+  // the renderer does not draw video into the framebuffer, so the copy-back
+  // below would capture the GUI (if any) instead of the video; fail the request
+  if (m_pRenderer->VideoBypassesFramebuffer())
   {
     for (const auto& request : requests)
-      captureService->Fail(request);
+    {
+      CaptureResult result;
+      if (m_pRenderer->CaptureVideoFrame(request->spec, result))
+        captureService->Complete(request, std::move(result));
+      else
+        captureService->Fail(request);
+    }
     return;
   }
 

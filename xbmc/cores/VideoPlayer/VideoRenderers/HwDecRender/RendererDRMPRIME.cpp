@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/Buffers/VideoBufferDRMPRIME.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "cores/VideoPlayer/VideoRenderers/HwDecRender/DRMPRIMECaptureGLES.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/VideoLayerBridgeDRMPRIME.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
@@ -220,6 +221,19 @@ bool CRendererDRMPRIME::NeedBuffer(int index)
     return true;
 
   return false;
+}
+
+bool CRendererDRMPRIME::CaptureVideoFrame(const KODI::RENDERING::CAPTURE::CaptureSpec& spec,
+                                          KODI::RENDERING::CAPTURE::CaptureResult& result)
+{
+  if (m_iLastRenderBuffer < 0)
+    return false;
+
+  auto* buffer = dynamic_cast<CVideoBufferDRMPRIME*>(m_buffers[m_iLastRenderBuffer].videoBuffer);
+  if (!buffer || !buffer->IsValid())
+    return false;
+
+  return CaptureDRMPRIMEVideo(buffer, spec, result);
 }
 
 CRenderInfo CRendererDRMPRIME::GetRenderInfo()

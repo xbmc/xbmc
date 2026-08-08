@@ -81,7 +81,7 @@ public:
   bool Supports(ESCALINGMETHOD method) const override;
 
   bool IsGuiLayer() override;
-  bool HasVideoPlane() override { return false; }
+  bool VideoBypassesFramebuffer() override { return false; }
 
 protected:
 

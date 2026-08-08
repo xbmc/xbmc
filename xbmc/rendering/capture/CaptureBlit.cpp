@@ -135,7 +135,7 @@ bool CCaptureBlit::EnsureFramebuffer(unsigned int width, unsigned int height, bo
   const GLenum status = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
   if (status != GL_FRAMEBUFFER_COMPLETE)
   {
-    CLog::LogF(LOGERROR, "capture framebuffer incomplete: {:#x}", status);
+    CLog::LogF(LOGWARNING, "capture framebuffer incomplete: {:#x}", status);
     Release();
     return false;
   }
@@ -217,7 +217,7 @@ bool CCaptureBlit::Blit(const CRect& srcRect,
                       static_cast<GLint>(width), 0, GL_COLOR_BUFFER_BIT, GL_LINEAR);
     ok = glGetError() == GL_NO_ERROR;
     if (!ok)
-      CLog::LogF(LOGERROR, "glBlitFramebuffer failed");
+      CLog::LogF(LOGWARNING, "glBlitFramebuffer failed");
   }
 
   glBindFramebuffer(GL_READ_FRAMEBUFFER, static_cast<GLuint>(prevReadFBO));
@@ -358,7 +358,7 @@ bool CCaptureBlit::Blit(const CRect& srcRect,
   Microsoft::WRL::ComPtr<ID3D11Texture2D> staging;
   if (FAILED(device->CreateTexture2D(&desc, nullptr, &staging)))
   {
-    CLog::LogF(LOGERROR, "capture staging texture creation failed");
+    CLog::LogF(LOGWARNING, "capture staging texture creation failed");
     return false;
   }
 
@@ -370,7 +370,7 @@ bool CCaptureBlit::Blit(const CRect& srcRect,
   D3D11_MAPPED_SUBRESOURCE mapped;
   if (FAILED(context->Map(staging.Get(), 0, D3D11_MAP_READ, 0, &mapped)))
   {
-    CLog::LogF(LOGERROR, "capture staging map failed");
+    CLog::LogF(LOGWARNING, "capture staging map failed");
     return false;
   }
 
