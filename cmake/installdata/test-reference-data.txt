@@ -8,6 +8,15 @@ xbmc/cores/VideoPlayer/Edl/test/testdata/mplayertimebasedinterleavedcuts.edl
 xbmc/cores/VideoPlayer/Edl/test/testdata/mplayertimebasedmixed.edl
 xbmc/cores/VideoPlayer/Edl/test/testdata/snapstream.mkv.chapters.xml
 xbmc/cores/VideoPlayer/Edl/test/testdata/videoredo.Vprj
+xbmc/filesystem/test/data/audiobook/chaptered.mka
+xbmc/filesystem/test/data/audiobook/chapternames-only.mka
+xbmc/filesystem/test/data/audiobook/microchapter.mka
+xbmc/filesystem/test/data/audiobook/noendtimes.mka
+xbmc/filesystem/test/data/audiobook/partnumber.mka
+xbmc/filesystem/test/data/audiobook/precedence.mka
+xbmc/filesystem/test/data/audiobook/repeated.mka
+xbmc/filesystem/test/data/audiobook/singlefile.mka
+xbmc/filesystem/test/data/audiobook/twoeditions.mka
 xbmc/filesystem/test/data/httpdirectory/apache-default.html
 xbmc/filesystem/test/data/httpdirectory/apache-fancy.html
 xbmc/filesystem/test/data/httpdirectory/apache-html.html
