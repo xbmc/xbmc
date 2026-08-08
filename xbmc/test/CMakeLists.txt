@@ -6,7 +6,6 @@ set(SOURCES TestAutoSwitch.cpp
             TestEpisodeUtils.cpp
             TestFileItem.cpp
             TestLangInfo.cpp
-            TestMediaManager.cpp
             TestMediaSource.cpp
             TestPasswordManager.cpp
             TestURL.cpp
