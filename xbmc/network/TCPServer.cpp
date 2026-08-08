@@ -496,6 +496,9 @@ bool CTCPServer::InitializeTCP()
 
 void CTCPServer::Deinitialize()
 {
+  // unregister first so no Announce callback runs during teardown
+  CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
+
   std::unique_lock lock(m_connectionsCritSection);
 
   for (unsigned int i = 0; i < m_connections.size(); i++)
@@ -516,8 +519,6 @@ void CTCPServer::Deinitialize()
     sdp_close((sdp_session_t*)m_sdpd);
   m_sdpd = NULL;
 #endif
-
-  CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
 }
 
 CTCPServer::CTCPClient::CTCPClient()
