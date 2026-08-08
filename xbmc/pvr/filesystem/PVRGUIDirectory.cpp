@@ -76,7 +76,7 @@ bool CPVRGUIDirectory::SupportsWriteFileOperations() const
 
 namespace
 {
-void ResolveNonPVRItem(CFileItem& item)
+bool ResolveFromDynPath(CFileItem& item)
 {
   if (URIUtils::IsPVRChannel(item.GetDynPath()))
   {
@@ -84,40 +84,55 @@ void ResolveNonPVRItem(CFileItem& item)
         CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelGroupMemberByPath(
             item.GetDynPath())};
     if (groupMember)
+    {
       item = CFileItem(groupMember); // Replace original item with a PVR channel item
+      return true;
+    }
   }
   else if (URIUtils::IsPVRRecording(item.GetDynPath()))
   {
     const std::shared_ptr<CPVRRecording> recording{
         CServiceBroker::GetPVRManager().Recordings()->GetByPath(item.GetDynPath())};
     if (recording)
+    {
+      const int64_t startOffset{item.GetStartOffset()};
       item = CFileItem(recording); // Replace original item with a PVR recording item
+      item.SetStartOffset(startOffset);
+      return true;
+    }
   }
   else if (URIUtils::IsPVRGuideItem(item.GetDynPath()))
   {
     const std::shared_ptr<CPVREpgInfoTag> epgTag{
         CServiceBroker::GetPVRManager().EpgContainer().GetTagByPath(item.GetDynPath())};
     if (epgTag)
+    {
       item = CFileItem(epgTag); // Replace original item with a PVR EPG tag item
+      return true;
+    }
   }
-  else
-  {
-    CLog::LogF(LOGWARNING, "Unhandled item ({}).", item.GetDynPath());
-  }
+
+  CLog::LogF(LOGWARNING, "Unhandled or unresolvable item ({}).", item.GetDynPath());
+  return false;
 }
 } // unnamed namespace
 
 bool CPVRGUIDirectory::Resolve(CFileItem& item)
 {
-  // Item passed in could be carrying a plugin URL as path and a PVR channel URL as dyn path
-  // for example. We need to resolve those items to PVR items carrying a PVR URL as path before
-  // we can continue.
-  if (!URIUtils::IsPVR(item.GetPath()))
+  // Item passed in could be carrying a plugin URL as path and a PVR channel URL as dyn path,
+  // or it could already carry a PVR URL as path but without the actual PVR object attached,
+  // e.g. an item created by an add-on that only knows the item's path (rather than by
+  // PVR-internal code, which always attaches the object). We need to resolve those items to
+  // PVR items carrying the actual PVR object before we can continue.
+  const bool hasPVRTag{item.HasPVRChannelInfoTag() || item.HasPVRRecordingInfoTag() ||
+                       item.HasEPGInfoTag() || item.HasPVRTimerInfoTag()};
+  if (!hasPVRTag)
   {
-    if (URIUtils::IsPVR(item.GetDynPath()))
-      ResolveNonPVRItem(item);
-    else
+    if (!URIUtils::IsPVR(item.GetDynPath()))
       return false; // Neither path nor dyn path contain a PVR URL. Not resolvable here.
+
+    if (!ResolveFromDynPath(item))
+      return false;
   }
   return CServiceBroker::GetPVRManager().PlaybackState()->OnPreparePlayback(item);
 }

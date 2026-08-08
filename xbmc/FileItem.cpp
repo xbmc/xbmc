@@ -2405,6 +2405,18 @@ CBookmark CFileItem::GetResumePoint() const
 {
   if (HasVideoInfoTag())
     return GetVideoInfoTag()->GetResumePoint();
+
+  if (URIUtils::IsPVRRecording(GetPath()))
+  {
+    // Item does not carry a recording tag, e.g. because it was created by an add-on that only
+    // knows the item's path (rather than by PVR-internal code, which always attaches the tag).
+    // Resolve the item to be able to obtain its actual resume point.
+    const std::shared_ptr<CFileItem> loadedItem{
+        CServiceBroker::GetPVRManager().Get<PVR::GUI::Utils>().LoadItem(*this)};
+    if (loadedItem)
+      return loadedItem->GetResumePoint();
+  }
+
   return CBookmark();
 }
 

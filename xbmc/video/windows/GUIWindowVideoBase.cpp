@@ -56,6 +56,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "utils/guilib/GUIContentUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
@@ -232,6 +233,9 @@ bool CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem)
   // "Videos/Video Add-ons" lists addons in the video window
   if (fileItem.HasAddonInfo())
     return CGUIDialogAddonInfo::ShowForItem(std::make_shared<CFileItem>(fileItem));
+
+  if (URIUtils::IsPVR(fileItem.GetPath()))
+    return KODI::UTILS::GUILIB::CGUIContentUtils::ShowInfoForItem(fileItem);
 
   // Video version
   if (fileItem.HasVideoInfoTag() && fileItem.GetVideoInfoTag()->m_type == MediaTypeVideoVersion)
