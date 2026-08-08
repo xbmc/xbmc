@@ -9,6 +9,7 @@
 #pragma once
 
 #include "DVDResource.h"
+#include "cores/VideoFrameMetadata.h"
 #include "cores/VideoPlayer/Buffers/VideoBuffer.h"
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
@@ -68,6 +69,7 @@ public:
   StreamHdrType hdrType;
   StreamHdrType hdrTypeAlt;
   std::string strDVELType;
+  DoviFrameMetadata dovi;
 
   bool hasDisplayMetadata = false;
   AVMasteringDisplayMetadata displayMetadata;

@@ -1153,7 +1153,7 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
     pVideoPicture->hasLightMetadata = true;
   }
 
-  DoviElType elType = DoviElType::NONE;
+  pVideoPicture->dovi = {};
 
   if (pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)
   {
@@ -1163,11 +1163,39 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
       const AVDOVIMetadata* dovi = reinterpret_cast<const AVDOVIMetadata*>(sd->data);
       const AVDOVIRpuDataHeader* header = av_dovi_get_header(dovi);
       if (header)
-        elType = GetDoviElType(*header, av_dovi_get_mapping(dovi));
+      {
+        DoviFrameMetadata& meta = pVideoPicture->dovi;
+        meta.valid = true;
+        meta.elType = GetDoviElType(*header, av_dovi_get_mapping(dovi));
+
+        if (const AVDOVIDmData* level = av_dovi_find_level(dovi, 1))
+        {
+          meta.hasLevel1 = true;
+          meta.level1MinPq = level->l1.min_pq;
+          meta.level1MaxPq = level->l1.max_pq;
+          meta.level1AvgPq = level->l1.avg_pq;
+        }
+
+        if (const AVDOVIDmData* level = av_dovi_find_level(dovi, 5))
+        {
+          meta.hasLevel5 = true;
+          meta.level5LeftOffset = level->l5.left_offset;
+          meta.level5RightOffset = level->l5.right_offset;
+          meta.level5TopOffset = level->l5.top_offset;
+          meta.level5BottomOffset = level->l5.bottom_offset;
+        }
+
+        if (const AVDOVIDmData* level = av_dovi_find_level(dovi, 6))
+        {
+          meta.hasLevel6 = true;
+          meta.level6MaxCll = level->l6.max_cll;
+          meta.level6MaxFall = level->l6.max_fall;
+        }
+      }
     }
   }
 
-  const std::string_view strElType = DoviElTypeToString(elType);
+  const std::string_view strElType = DoviElTypeToString(pVideoPicture->dovi.elType);
   if (pVideoPicture->strDVELType != strElType)
     pVideoPicture->strDVELType = strElType;
 
