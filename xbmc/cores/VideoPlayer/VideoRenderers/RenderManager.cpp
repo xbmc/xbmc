@@ -1047,8 +1047,12 @@ void CRenderManager::PrepareNextRender()
   if (!isPaused)
     renderPts += m_displayLatency;
 
+  // GetClockSpeed() keeps reporting the last active speed while paused
+  // so must also check isPaused - otherwise a paused frame
+  // buffer that was recently rewinding never holds back on the current pts, and buffered
+  // frames get displayed as fast as they decode instead of waiting to be unpaused.
   const double nextFramePts =
-      m_dvdClock.GetClockSpeed() < 0 ? renderPts : m_Queue[m_queued.front()].pts;
+      (!isPaused && m_dvdClock.GetClockSpeed() < 0) ? renderPts : m_Queue[m_queued.front()].pts;
 
   if (m_clockSync.m_enabled)
   {
