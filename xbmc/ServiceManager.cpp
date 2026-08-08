@@ -55,8 +55,7 @@
 using namespace KODI;
 
 CServiceManager::CServiceManager()
-  : m_fileExtensionProvider(std::make_unique<CFileExtensionProvider>()),
-    m_mediaManager(std::make_unique<CMediaManager>())
+  : m_fileExtensionProvider(std::make_unique<CFileExtensionProvider>())
 {
 }
 
