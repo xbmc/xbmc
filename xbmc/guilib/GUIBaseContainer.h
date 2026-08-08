@@ -130,6 +130,17 @@ protected:
   virtual void Reset();
   virtual size_t GetNumItems() const { return m_items.size(); }
   virtual int GetCurrentPage() const;
+  /*! \brief Get the number of fully visible items in the current page.
+   \return number of items fully visible in the current viewport, or the calculated item count if
+   the screen range cannot be determined.
+   */
+  int GetPageSize() const;
+  /*! \brief Get the visible screen range for this container's scroll orientation in skin coordinates.
+   \param screenStart start of the visible screen range.
+   \param screenEnd end of the visible screen range.
+   \return true if the screen range was determined, false otherwise.
+   */
+  virtual bool GetScreenRange(float& screenStart, float& screenEnd) const;
   bool InsideLayout(const CGUIListItemLayout *layout, const CPoint &point) const;
   void OnFocus() override;
   void OnUnFocus() override;
