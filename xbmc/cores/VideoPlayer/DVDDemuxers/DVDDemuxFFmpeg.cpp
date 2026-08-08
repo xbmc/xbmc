@@ -1285,21 +1285,48 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double* startpts)
   int ret;
   {
     std::unique_lock lock(m_critSection);
-    ret = av_seek_frame(m_pFormatContext, m_seekStream, seek_pts, backwards ? AVSEEK_FLAG_BACKWARD : 0);
+
+    int64_t starttime = m_pFormatContext->start_time;
+    if (m_checkTransportStream)
+    {
+      AVStream* st = m_pFormatContext->streams[m_seekStream];
+      starttime =
+          av_rescale(static_cast<int64_t>(m_startTime), st->time_base.num, st->time_base.den);
+    }
+
+    // Neither timing is always known. AV_NOPTS_VALUE is INT64_MIN, so an unknown value
+    // would drag the threshold below every possible target and mark each seek as past the
+    // end. GetStreamLength() rejects the same values.
+    const bool timingsKnown =
+        m_pFormatContext->duration > 0 && starttime != static_cast<int64_t>(AV_NOPTS_VALUE);
+    const bool beyondEof = timingsKnown && seek_pts >= (m_pFormatContext->duration + starttime);
+
+    // A target past the end of the stream has no index entry that could satisfy it, so
+    // av_seek_frame() falls back to seek_frame_generic(), which walks the file packet by
+    // packet looking for a timestamp that cannot be there. On a network source that reads
+    // the entire remainder of the file before reporting failure - a stall of minutes on a
+    // large stream. The outcome is already known here, so skip the search and go straight
+    // to the end of stream handling below.
+    // Two sources keep asking av_seek_frame() anyway: a transport stream compares a target
+    // in stream ticks against a duration in AV_TIME_BASE units, and a realtime source may
+    // have grown past the duration it recorded. Neither verdict is ours to make up front.
+    const bool skipSeek = beyondEof && !m_checkTransportStream && !m_pInput->IsRealtime();
+
+    if (skipSeek)
+    {
+      CLog::Log(LOGDEBUG,
+                "CDVDDemuxFFmpeg::{} - target {} is past the end of the stream, skipping the seek",
+                __FUNCTION__, seek_pts);
+      ret = -1;
+    }
+    else
+      ret = av_seek_frame(m_pFormatContext, m_seekStream, seek_pts,
+                          backwards ? AVSEEK_FLAG_BACKWARD : 0);
 
     if (ret < 0)
     {
-      int64_t starttime = m_pFormatContext->start_time;
-      if (m_checkTransportStream)
-      {
-        AVStream* st = m_pFormatContext->streams[m_seekStream];
-        starttime =
-            av_rescale(static_cast<int64_t>(m_startTime), st->time_base.num, st->time_base.den);
-      }
-
       // demuxer can return failure, if seeking behind eof
-      if (m_pFormatContext->duration &&
-          seek_pts >= (m_pFormatContext->duration + starttime))
+      if (beyondEof)
       {
         // force eof
         // files of realtime streams may grow
