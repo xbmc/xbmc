@@ -7,6 +7,7 @@
  */
 
 #include "utils/StreamDetails.h"
+#include "utils/Variant.h"
 
 #include <gtest/gtest.h>
 
@@ -219,4 +220,39 @@ TEST(TestStreamDetails, VideoAspectToAspectDescriptionRelabelledRanges)
   EXPECT_STREQ("1.50", CStreamDetails::VideoAspectToAspectDescription(1.48f).c_str()); // was 1.37
   EXPECT_STREQ("1.50", CStreamDetails::VideoAspectToAspectDescription(1.55f).c_str()); // was 1.66
   EXPECT_STREQ("1.90", CStreamDetails::VideoAspectToAspectDescription(1.90f).c_str()); // was 1.85
+}
+
+// The classes store ISO 639-2/B, because the streamdetails table is filtered by smart playlist
+// SQL, but JSON-RPC is served BCP 47. Serialize is where that widening happens.
+TEST(TestStreamDetails, SerializeWidensLanguageToBcp47)
+{
+  CStreamDetailAudio audio;
+  CStreamDetailSubtitle subtitle;
+  CStreamDetailVideo video;
+
+  CVariant value;
+
+  // BCP 47 prefers the alpha-2 code where the language has one
+  audio.m_strLanguage = "eng";
+  audio.Serialize(value);
+  EXPECT_EQ(value["language"].asString(), "en");
+
+  // A language whose B and T forms differ still resolves to its alpha-2
+  audio.m_strLanguage = "chi";
+  audio.Serialize(value);
+  EXPECT_EQ(value["language"].asString(), "zh");
+
+  // One with no alpha-2 keeps its three letter form, so length cannot tell the notations apart
+  subtitle.m_strLanguage = "ady";
+  subtitle.Serialize(value);
+  EXPECT_EQ(value["language"].asString(), "ady");
+
+  // Anything the standards do not know is passed through rather than dropped
+  video.m_strLanguage = "not a language";
+  video.Serialize(value);
+  EXPECT_EQ(value["language"].asString(), "not a language");
+
+  subtitle.m_strLanguage = "";
+  subtitle.Serialize(value);
+  EXPECT_EQ(value["language"].asString(), "");
 }

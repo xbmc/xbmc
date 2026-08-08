@@ -21,6 +21,8 @@
 #include <fmt/format.h>
 #include <libbluray/bluray.h>
 
+using namespace KODI::UTILS;
+
 namespace XFILE
 {
 namespace
@@ -240,7 +242,7 @@ AudioStreamInfo PopulateAudioStreamInfo(const StreamInformation& stream,
     }
   }
 
-  asi.language = stream.language;
+  asi.language = CLanguageTag::Parse(stream.language);
 
   return asi;
 }
@@ -294,7 +296,7 @@ void AddStream(const StreamInformation& stream,
     {
       SubtitleStreamInfo ssi;
       ssi.valid = true;
-      ssi.language = stream.language;
+      ssi.language = CLanguageTag::Parse(stream.language);
 
       p.pgStreams.emplace_back(std::move(ssi));
       break;

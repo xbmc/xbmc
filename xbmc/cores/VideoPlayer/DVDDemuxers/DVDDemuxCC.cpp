@@ -29,6 +29,8 @@
 
 namespace COLOR = KODI::UTILS::COLOR;
 
+using namespace KODI::UTILS;
+
 namespace
 {
 /*!
@@ -237,7 +239,7 @@ void CDVDDemuxCC::Handler(int service, void *userdata)
     stream.source = STREAM_SOURCE_VIDEOMUX;
     stream.name = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
         39206); // Closed Caption "CC"
-    stream.language = "und";
+    stream.language = CLanguageTag::Undetermined();
 
     auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
     if (settings->GetBool(CSettings::SETTING_SUBTITLES_CAPTIONSIMPAIRED))

@@ -118,8 +118,8 @@ std::optional<ParsedBcp47Tag> CBcp47Parser::TryGenericParse(const std::string& s
   if (!extensionsRaw.empty())
   {
     // The string starts with -a-xxxx..., with a the extension name and xxxx the extension text,
-    // at least 2 characters.
-    assert(extensionsRaw.length() >= std::size("-a-xx"));
+    // at least 2 characters. std::size counts the terminator, so the shortest form is one less.
+    assert(extensionsRaw.length() >= std::size("-a-xx") - 1);
 
     char key = extensionsRaw[1];
     std::vector<std::string> extSegments;

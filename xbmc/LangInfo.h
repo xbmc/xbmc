@@ -11,6 +11,7 @@
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
 #include "utils/GlobalsHandling.h"
+#include "utils/LanguageTag.h"
 #include "utils/Locale.h"
 #include "utils/Speed.h"
 #include "utils/Temperature.h"
@@ -90,9 +91,6 @@ public:
   std::string GetGuiCharSet() const;
   std::string GetSubtitleCharSet() const;
 
-  // three char language code (not win32 specific)
-  const std::string& GetLanguageCode() const { return m_languageCodeGeneral; }
-
   /*!
    * \brief Convert an english language name to an addon locale,
    *        by searching in the installed language addons.
@@ -123,16 +121,15 @@ public:
    *                      the returned value can fallback to a general language code (e.g. eng), otherwise an empty value is returned.
    * \return The language code (user-defined also allowed). The value can be empty when allowFallback if set to false.
    */
-  const std::string& GetAudioLanguage(bool allowFallback) const;
+  const KODI::UTILS::CLanguageTag& GetAudioLanguage(bool allowFallback) const;
 
   /*
    * \brief Set the audio language.
    * \param language The language can either be a two char language code,
    *        or a three char language code, or a language name in english,
    *        also user-defined languages are allowed.
-   * \param isIso6392 Defines that language is in ISO 639-2 format, otherwise will be considered as ISO 639-1 format.
    */
-  void SetAudioLanguage(const std::string& language, bool isIso6392 = false);
+  void SetAudioLanguage(const std::string& language);
 
   /*
    * \brief Get the subtitle language in ISO 639-2 format.
@@ -140,23 +137,34 @@ public:
    *                      the returned value can fallback to a general language code (e.g. eng), otherwise an empty value is returned.
    * \return The language code (user-defined also allowed). The value can be empty when allowFallback if set to false.
    */
-  const std::string& GetSubtitleLanguage(bool allowFallback) const;
+  const KODI::UTILS::CLanguageTag& GetSubtitleLanguage(bool allowFallback) const;
 
   /*
    * \brief Set the subtitle language.
    * \param language The language can either be a two char language code,
    *        or a three char language code, or a language name in english,
    *        also user-defined languages are allowed.
-   * \param isIso6392 Defines that language is in ISO 639-2 format, otherwise will be considered as ISO 639-1 format.
    */
-  void SetSubtitleLanguage(const std::string& language, bool isIso6392 = false);
+  void SetSubtitleLanguage(const std::string& language);
 
-  const std::string GetDVDMenuLanguage() const;
-  const std::string GetDVDAudioLanguage() const;
-  const std::string GetDVDSubtitleLanguage() const;
+  KODI::UTILS::CLanguageTag GetDVDMenuLanguage() const;
+  KODI::UTILS::CLanguageTag GetDVDAudioLanguage() const;
+  KODI::UTILS::CLanguageTag GetDVDSubtitleLanguage() const;
   const std::string& GetTimeZone() const;
 
   const std::string& GetRegionLocale() const;
+
+  /*!
+   * \brief The current region as an ISO 3166-1 alpha-2 code.
+   * \return The code, lowercase, or an empty string when the region is not a known one.
+   */
+  std::string GetRegionCodeAlpha2() const;
+
+  /*!
+   * \brief The current region as an ISO 3166-1 alpha-3 code.
+   * \return The code, lowercase, or an empty string when the region is not a known one.
+   */
+  std::string GetRegionCodeAlpha3() const;
 
   const std::locale& GetOriginalLocale() const;
 
@@ -280,6 +288,26 @@ protected:
     void SetSpeedUnit(const std::string& strUnit);
     void SetTimeZone(const std::string& strTimeZone);
 
+    /*!
+     * \brief The language and territory this region describes.
+     * \note langinfo.xml states them separately and in a form that varies by platform. The
+     *       locale is the composed value, normalized, and knows how to render itself.
+     */
+    CLocale GetLocale() const;
+
+    /*!
+     * \brief The region as an ISO 3166-1 alpha-2 code.
+     * \note The stored form differs by platform, Windows widening it to alpha-3 when read.
+     * \return The code, lowercase, or an empty string when the region is not a known one.
+     */
+    std::string GetCodeAlpha2() const;
+
+    /*!
+     * \brief The region as an ISO 3166-1 alpha-3 code.
+     * \return The code, lowercase, or an empty string when the region is not a known one.
+     */
+    std::string GetCodeAlpha3() const;
+
     class custom_numpunct : public std::numpunct<char>
     {
     public:
@@ -302,7 +330,6 @@ protected:
     */
     void SetGlobalLocale(CLangInfo& langInfo);
     std::string m_strLangLocaleName;
-    std::string m_strLangLocaleCodeTwoChar;
     std::string m_strRegionLocaleName;
     std::string m_strName;
     std::string m_strDateFormatLong;
@@ -345,9 +372,10 @@ protected:
   CTemperature::Unit m_temperatureUnit;
   CSpeed::Unit m_speedUnit;
 
-  std::string m_audioLanguage; // ISO 639-2 three char (not win32 specific)
-  std::string m_subtitleLanguage; // ISO 639-2 three char (not win32 specific)
-  std::string m_languageCodeGeneral; // ISO 639-2 three char (not win32-specific)
+  KODI::UTILS::CLanguageTag m_audioLanguage;
+  KODI::UTILS::CLanguageTag m_subtitleLanguage;
+  //! The UI language, which an unset audio or subtitle preference falls back to
+  KODI::UTILS::CLanguageTag m_languageCodeGeneral;
 };
 
 

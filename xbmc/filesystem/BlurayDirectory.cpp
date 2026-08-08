@@ -25,7 +25,7 @@
 #include "filesystem/UDFContext.h"
 #endif
 #include "utils/EpisodeUtils.h"
-#include "utils/LangCodeExpander.h"
+#include "utils/LanguageTag.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -48,6 +48,7 @@
 #include <libbluray/bluray.h>
 #include <libbluray/log_control.h>
 
+using namespace KODI::UTILS;
 using namespace std::chrono_literals;
 
 namespace XFILE
@@ -444,7 +445,9 @@ void ProcessPlaylist(PlaylistMap& playlists, PlaylistInformation& titleInfo, Cli
 
   // Get languages
   const std::string langs{fmt::format(
-      "{}", fmt::join(titleInfo.audioStreams | std::views::transform(&StreamInfo::language), ","))};
+      "{}", fmt::join(titleInfo.audioStreams | std::views::transform([](const auto& stream)
+                                                                    { return stream.language.AsBcp47(); }),
+                      ","))};
   info.languages = langs;
   titleInfo.languages = langs;
 
@@ -889,9 +892,8 @@ bool CBlurayDirectory::EnsureBlurayOpen()
     return false;
   }
 
-  std::string langCode;
-  g_LangCodeExpander.ConvertToISO6392T(g_langInfo.GetDVDMenuLanguage(), langCode);
-  bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_MENU_LANG, langCode.c_str());
+  const std::string menuLang{g_langInfo.GetDVDMenuLanguage().AsIso6392T()};
+  bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_MENU_LANG, menuLang.c_str());
 
   if (!bd_open_files(m_bd, &m_realPath, CBlurayCallback::dir_open, CBlurayCallback::file_open))
   {
