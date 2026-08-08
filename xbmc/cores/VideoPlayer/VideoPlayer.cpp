@@ -832,6 +832,15 @@ bool CVideoPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options
   m_bCloseRequest = false;
   m_renderManager.PreInit();
 
+  // CFileItem builds its CURL members lazily inside const getters, so the first "read" of them
+  // is really a write. From here on m_item is used by two threads: the player thread resolves
+  // the mime type from it (see Process()) while this thread passes the very same item to
+  // OnPlayBackStarted() below. Whichever gets there first fills the cache under the other one,
+  // which then walks a half-built map and crashes. Fill them while we are still single
+  // threaded, so both sides only ever read.
+  m_item.GetURL();
+  m_item.GetDynURL();
+
   Create();
   m_messenger.Init();
 
