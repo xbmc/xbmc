@@ -6080,7 +6080,7 @@ void CVideoPlayer::GetVideoStreamInfo(int streamId, VideoStreamInfo& info) const
       info.hdrDetail =
           s.dovi.dv_profile == 0 ? "" : std::to_string(static_cast<int>(s.dovi.dv_profile));
     // distinguish HDR10 from HLG base
-    if (s.dovi.dv_profile == 8)
+    if (s.dovi.dv_profile == 8 || s.dovi.dv_profile == 10)
     {
       info.hdrDetail += ".";
       info.hdrDetail += std::to_string(static_cast<int>(s.dovi.dv_bl_signal_compatibility_id));

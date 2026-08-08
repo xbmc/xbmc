@@ -570,7 +570,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
                                 ? ""
                                 : std::to_string(static_cast<int>(vstream->dovi.dv_profile));
         // distinguish HDR10 from HLG base
-        if (vstream->dovi.dv_profile == 8)
+        if (vstream->dovi.dv_profile == 8 || vstream->dovi.dv_profile == 10)
         {
           p->m_strHdrDetail += ".";
           p->m_strHdrDetail +=
