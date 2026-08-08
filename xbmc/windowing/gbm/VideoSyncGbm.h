@@ -36,7 +36,6 @@ private:
   int m_fd = -1;
   uint32_t m_crtcId = 0;
   uint64_t m_sequence = 0;
-  uint64_t m_offset = 0;
   std::atomic<bool> m_abort{false};
 
   CWinSystemBase* m_winSystem;
