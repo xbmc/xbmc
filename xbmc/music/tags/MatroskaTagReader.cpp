@@ -28,6 +28,7 @@
 #include <taglib/matroskachapteredition.h>
 #include <taglib/matroskachapters.h>
 #include <taglib/matroskafile.h>
+#include <taglib/matroskaproperties.h>
 #include <taglib/matroskasimpletag.h>
 #include <taglib/matroskatag.h>
 #include <taglib/tlist.h>
@@ -171,9 +172,20 @@ MatroskaAlbum ReadWithTagLib(const CURL& url)
       return album;
 
     double fileDuration = 0.0;
-    TagLib::AudioProperties* audioProps = matroskaFile->audioProperties();
+    TagLib::Matroska::Properties* audioProps = matroskaFile->audioProperties();
     if (audioProps)
+    {
       fileDuration = static_cast<double>(audioProps->lengthInSeconds());
+
+      /*!
+      * The Segment title names the file rather than its album, and FFmpeg's demuxer reports it as
+      * an unprefixed title. Say the same, so that a file holding one song is titled the same way
+      * whichever reader read it.
+      */
+      const std::string segmentTitle = audioProps->title().to8Bit(true);
+      if (!segmentTitle.empty())
+        fileTags["TITLE"] = segmentTitle;
+    }
 
     /*!
     * Collect the chapters in file order, each keeping its display name, so that a chapter which
@@ -324,31 +336,27 @@ MatroskaAlbum ReadWithTagLib(const CURL& url)
 
         TagName = StringUtils::ToUpper(tag.name().to8Bit(true));
         TagValue = tag.toString().to8Bit(true);
+
         /*!
-        * TITLE with targetTypeValue 50 is the Album title in Matroska spec
-        * ALBUM was used in Kodi 21.3 for ffmpeg tag reding compatibility
-        * targetTypeValue 60 used by MP3Tag for concerts, maps to ALBUM in Kodi music
+        * A name says what the tag is, the TargetTypeValue says which level it applies to, and only
+        * both together say which Kodi field it means: an ARTIST at 50 is the album's, at 30 the
+        * track's. TagLib hands over the name alone, so the level is written into the key here, in
+        * the ALBUM/ form FFmpeg's demuxer produces, and MatroskaTagMapping reads one shape from
+        * either reader.
+        *
+        * 60 is what MP3tag writes for a concert, and means the album here too.
         */
-        if (TagName == "TITLE")
+        const std::string key = "ALBUM/" + TagName;
+        if (fileTags.find(key) == fileTags.end())
         {
-          if (fileTags.find("ALBUM") == fileTags.end())
-            fileTags["ALBUM"] = TagValue;
-          if (fileTags.find("TITLE") == fileTags.end())
-            fileTags["TITLE"] = TagValue;
+          fileTags[key] = TagValue;
         }
-        else if (fileTags.find(TagName) == fileTags.end())
+        else if (std::find(std::begin(MULTIPLE_VALUE_TAGS), std::end(MULTIPLE_VALUE_TAGS),
+                           TagName) != std::end(MULTIPLE_VALUE_TAGS))
         {
-          fileTags[TagName] = TagValue;
-        }
-        else
-        {
-          if (std::find(std::begin(MULTIPLE_VALUE_TAGS), std::end(MULTIPLE_VALUE_TAGS), TagName) !=
-              std::end(MULTIPLE_VALUE_TAGS))
-          {
-            std::string currentValue = fileTags[TagName];
-            if (AppendIfNotDuplicate(currentValue, TagValue, TagName))
-              fileTags[TagName] = currentValue;
-          }
+          std::string currentValue = fileTags[key];
+          if (AppendIfNotDuplicate(currentValue, TagValue, TagName))
+            fileTags[key] = currentValue;
         }
       }
     }

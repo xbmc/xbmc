@@ -36,6 +36,11 @@
  * builds carry the patch, a distro 2.3.1 does not. Move this floor to the first release carrying
  * the fix upstream.
  */
-#if TAGLIB_VERSION_INT >= 20301
+/*!
+ * Defining KODI_NO_TAGLIB_MATROSKA builds the FFmpeg reader instead, whatever TagLib is linked.
+ * It exists so that the configuration distributions below the floor actually get can be built and
+ * tested without holding an old TagLib, and is not a user facing option.
+ */
+#if TAGLIB_VERSION_INT >= 20301 && !defined(KODI_NO_TAGLIB_MATROSKA)
 #define HAS_TAGLIB_MATROSKA 1
 #endif
