@@ -57,6 +57,11 @@ if(TARGET ${APP_NAME_LC}::Bluray)
   list(APPEND SOURCES TestBluray.cpp)
 endif()
 
+# Needs EGL to create a headless GL context; skips itself at runtime when no driver is available.
+if(TARGET ${APP_NAME_LC}::EGL AND (TARGET ${APP_NAME_LC}::OpenGl OR TARGET ${APP_NAME_LC}::OpenGLES))
+  list(APPEND SOURCES TestGLBufferObject.cpp)
+endif()
+
 set(HEADERS TestGlobalsHandlingPattern1.h)
 
 core_add_test_library(utils_test)
