@@ -676,7 +676,10 @@ bool CGUIDialogVideoManagerVersions::GetAllOtherMovies(const std::shared_ptr<CFi
 }
 
 std::pair<VersionConversionResult, int> CGUIDialogVideoManagerVersions::ProcessVideoVersion(
-    VideoDbContentType itemType, int dbId, int targetDbId /* = -1 */)
+    VideoDbContentType itemType,
+    int dbId,
+    int targetDbId /* = -1 */,
+    bool canBecomeDefault /* = true */)
 {
   if (itemType != VideoDbContentType::MOVIES)
     return {VersionConversionResult::FAILED, NO_VERSION};
@@ -763,7 +766,10 @@ std::pair<VersionConversionResult, int> CGUIDialogVideoManagerVersions::ProcessV
   const Mode mode{action == SimilarVideoScanAction::ASK ? Mode::INTERACTIVE
                                                         : Mode::NON_INTERACTIVE};
 
-  const bool isDefault{settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_NEWVERSIONSAREDEFAULT)};
+  // The second and subsequent playlists of a bluray are added without displacing the default,
+  // which the first one returned
+  const bool isDefault{canBecomeDefault &&
+                       settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_NEWVERSIONSAREDEFAULT)};
 
   if (targetItem)
     return ConvertToVideoVersion(targetItem, itemType, dbId, videodb, MediaRole::NewVersion, mode,

@@ -4698,6 +4698,13 @@ TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_SingleBestOfEqualLengthPlaylis
   ASSERT_EQ(items.Size(), 1);
   EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 800u);
 
+  // The best also leads the versions, as the first of them becomes the default
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::MAIN, clips, playlists));
+  ASSERT_EQ(items.Size(), 2);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 800u);
+  EXPECT_EQ(GetPlaylistFromPath(items[1]->GetPath()), 1666u);
+
   // An edition that is genuinely longer is still the single best, however few streams it offers
   playlists[1666u] = MakePlaylist(1666u, 120min, {710u, 294u, 679u, 680u, 710u}, {60min, 60min},
                                   "eng", MakeAudioStreams(1), MakeSubtitleStreams(1), 1080);

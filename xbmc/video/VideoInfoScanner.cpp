@@ -3171,8 +3171,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
           m_similarVideoAction != SimilarVideoScanAction::AUTO)
         continue;
 
-      const auto [result, chosenTargetMovieDbId] =
-          ProcessVideoVersion(ContentToVideoDbType(ContentType::MOVIES), newMovieDbId, targetDbId);
+      // The playlists are ordered with the disc's main title first, so only that one may become
+      // the default version - otherwise each playlist added after it displaces it in turn, leaving
+      // the shortest of them as the default
+      const bool isMainPlaylist{item == blurayItems.Get(0)};
+      const auto [result, chosenTargetMovieDbId] = ProcessVideoVersion(
+          ContentToVideoDbType(ContentType::MOVIES), newMovieDbId, targetDbId, isMainPlaylist);
       if (result == VersionConversionResult::SUCCESS)
       {
         CLog::LogF(LOGDEBUG, "Added bluray playlist '{}' as a version of movie id {}",
@@ -3198,9 +3202,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
   }
 
   std::pair<VersionConversionResult, int> CVideoInfoScanner::ProcessVideoVersion(
-      VideoDbContentType itemType, int dbId, int targetDbId /* = -1 */)
+      VideoDbContentType itemType,
+      int dbId,
+      int targetDbId /* = -1 */,
+      bool canBecomeDefault /* = true */)
   {
-    return CGUIDialogVideoManagerVersions::ProcessVideoVersion(itemType, dbId, targetDbId);
+    return CGUIDialogVideoManagerVersions::ProcessVideoVersion(itemType, dbId, targetDbId,
+                                                               canBecomeDefault);
   }
 
   void CVideoInfoScanner::RemovePartNumberFromTitle(int dbId,

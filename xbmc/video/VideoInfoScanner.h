@@ -335,9 +335,8 @@ namespace KODI::VIDEO
     bool ProcessItemByVideoInfoTag(const CFileItem *item, EPISODELIST &episodeList);
 
     bool AddVideoExtras(CFileItemList& items, ADDON::ContentType content, const std::string& path);
-    static std::pair<VersionConversionResult, int> ProcessVideoVersion(VideoDbContentType itemType,
-                                                                       int dbId,
-                                                                       int targetDbId = -1);
+    static std::pair<VersionConversionResult, int> ProcessVideoVersion(
+        VideoDbContentType itemType, int dbId, int targetDbId = -1, bool canBecomeDefault = true);
     static void RemovePartNumberFromTitle(int dbId,
                                           VideoDbContentType itemType,
                                           CVideoDatabase& db);

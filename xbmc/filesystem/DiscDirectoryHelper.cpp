@@ -2428,7 +2428,35 @@ bool IsSamePresentation(const PlaylistInformation& a,
                              [&aClips](unsigned int clip) { return aClips.contains(clip); });
 }
 
-//! \brief Whether a presents the content more fully than b, so is the presentation to keep.
+/*!
+ * \brief The playlist presenting the movie most fully of those of (near) the longest length.
+ *
+ * Playlists within MOVIE_EQUAL_LENGTH_TOLERANCE of one another are the same movie presented
+ * differently rather than separate editions of it, so the longest is not necessarily the best -
+ * a sing along wrapping the movie in a bumper runs a second or two longer while offering fewer
+ * streams. Only the streams are compared, as holding the same content in more chapters makes a
+ * playlist no fuller a presentation of it.
+ */
+const PlaylistInformation& GetBestMoviePlaylist(const std::vector<PlaylistInformation>& playlists)
+{
+  const auto offersMoreStreams{[](const PlaylistInformation& a, const PlaylistInformation& b)
+                               {
+                                 if (a.audioStreams.size() != b.audioStreams.size())
+                                   return a.audioStreams.size() > b.audioStreams.size();
+                                 return a.pgStreams.size() > b.pgStreams.size();
+                               }};
+
+  const auto longest{std::ranges::max_element(playlists, {}, &PlaylistInformation::duration)};
+  const PlaylistInformation* best{&*longest};
+  for (const auto& playlist : playlists)
+  {
+    if (std::chrono::abs(playlist.duration - longest->duration) <= MOVIE_EQUAL_LENGTH_TOLERANCE &&
+        offersMoreStreams(playlist, *best))
+      best = &playlist;
+  }
+  return *best;
+}
+
 bool IsRicherPresentation(const PlaylistInformation& a, const PlaylistInformation& b)
 {
   if (a.audioStreams.size() != b.audioStreams.size())
@@ -2609,25 +2637,9 @@ void GetMainMoviePlaylists(std::vector<PlaylistInformation>& playlists,
     // Single longest playlist. Where playlists are of (near) identical length they are the same
     // movie presented differently rather than another edition of it (eg. a sing along, which wraps
     // the movie in a bumper and drops the other audio tracks), so the fullest presentation is used
-    // Only the streams are compared, as a playlist holding the same content in more chapters is
-    // no fuller a presentation of it
-    const auto offersMoreStreams{[](const PlaylistInformation& a, const PlaylistInformation& b)
-                                 {
-                                   if (a.audioStreams.size() != b.audioStreams.size())
-                                     return a.audioStreams.size() > b.audioStreams.size();
-                                   return a.pgStreams.size() > b.pgStreams.size();
-                                 }};
-
-    const PlaylistInformation* best{&*it};
-    for (const auto& playlist : playlists)
-    {
-      if (std::chrono::abs(playlist.duration - it->duration) <= MOVIE_EQUAL_LENGTH_TOLERANCE &&
-          offersMoreStreams(playlist, *best))
-        best = &playlist;
-    }
-
-    LogMoviePlaylist(best == &*it ? "Using longest -" : "Using fullest of the longest -", *best);
-    playlists = {*best};
+    const PlaylistInformation& best{GetBestMoviePlaylist(playlists)};
+    LogMoviePlaylist(&best == &*it ? "Using longest -" : "Using fullest of the longest -", best);
+    playlists = {best};
     return;
   }
 
@@ -2739,6 +2751,17 @@ void PopulateMovieFileItems(
 
                       return a.playlist < b.playlist;
                     });
+
+  // The first item becomes the default version, so the best playlist leads. Of playlists of (near)
+  // identical length the longest is not necessarily the fullest presentation of the movie
+  if (std::ranges::none_of(sortedPlaylists, [mainPlaylist](const PlaylistInformation& playlist)
+                           { return std::cmp_equal(playlist.playlist, mainPlaylist); }))
+  {
+    const auto best{std::ranges::find(sortedPlaylists,
+                                      GetBestMoviePlaylist(sortedPlaylists).playlist,
+                                      &PlaylistInformation::playlist)};
+    std::rotate(sortedPlaylists.begin(), best, std::next(best));
+  }
 
   for (const auto& playlist : sortedPlaylists)
   {
