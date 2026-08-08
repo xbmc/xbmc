@@ -18,14 +18,16 @@ class CMusicInfoTag;
 /*!
  * \brief Maps Matroska SimpleTag names onto CMusicInfoTag fields.
  *
- * Deliberately free of any TagLib dependency, so that a reader of Matroska tags can use it
- * whatever it parsed the file with. CMusicInfoTagLoaderMatroska handles single files,
- * CAudioBookFileDirectory handles chaptered ones; keeping the mapping here is what stops the two
- * disagreeing about what a tag name means.
+ * Deliberately free of any TagLib dependency. The same key/value pairs reach Kodi from two
+ * readers - TagLib's Matroska API where available (see HAS_TAGLIB_MATROSKA in TagLibVersion.h),
+ * FFmpeg's Matroska demuxer otherwise - and both have to agree on what a tag name means. Keeping
+ * the mapping in one always-compiled place is what stops the two readers drifting apart, and it
+ * is why gating the TagLib reader costs fidelity rather than whole tags.
  *
  * Tag names are as written in the file (see https://www.matroska.org/technical/tagging.html),
  * upper-cased by the caller. The comma delimited variants (INVOLVEDPEOPLE, INSTRUMENTS) are
- * outside the spec, which says to use one SimpleTag per value, but taggers write them anyway.
+ * outside the spec, which says to use one SimpleTag per value, but FFmpeg returns only the last
+ * of a repeated set (https://trac.ffmpeg.org/ticket/9641), so taggers write them anyway.
  */
 namespace MatroskaTagMapping
 {

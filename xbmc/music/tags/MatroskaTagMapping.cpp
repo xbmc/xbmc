@@ -13,12 +13,25 @@
 
 #include <exception>
 #include <string>
+#include <string_view>
 #include <vector>
 
 using namespace MUSIC_INFO;
 
 namespace
 {
+/*!
+ * \brief Apply one tag, reporting whether the name was one this knows.
+ *
+ * Separate from MapTag() so that a name it does not know can be retried with FFmpeg's ALBUM/
+ * prefix removed - see MapTag().
+ */
+bool Map(const std::string& key,
+         const std::string& value,
+         const std::vector<std::string>& separators,
+         const std::string& musicsep,
+         CMusicInfoTag& tag);
+
 void AddRole(const std::vector<std::string>& data,
              const std::vector<std::string>& separators,
              CMusicInfoTag& musictag);
@@ -33,21 +46,53 @@ void MUSIC_INFO::MatroskaTagMapping::MapTag(const std::string& key,
                                             const std::string& musicsep,
                                             CMusicInfoTag& tag)
 {
+  if (Map(key, value, separators, musicsep, tag))
+    return;
+
+  /*!
+  * FFmpeg's demuxer has no TargetTypeValue to carry, so it prefixes a tag with the TargetType name
+  * the file gives it and a slash: a TargetTypeValue 50 COMPOSER arrives as ALBUM/COMPOSER. Under
+  * the prefix the name is the ordinary one, so strip it and try again. The two whose meaning
+  * changes with the prefix, ALBUM/TITLE and ALBUM/ARTIST, are matched above and never reach here.
+  *
+  * ALBUM is the conventional TargetType name for TargetTypeValue 50; a file naming it otherwise is
+  * not recognised.
+  */
+  constexpr std::string_view albumPrefix = "ALBUM/";
+  if (key.starts_with(albumPrefix))
+    Map(key.substr(albumPrefix.size()), value, separators, musicsep, tag);
+}
+
+namespace
+{
+bool Map(const std::string& key,
+         const std::string& value,
+         const std::vector<std::string>& separators,
+         const std::string& musicsep,
+         CMusicInfoTag& tag)
+{
   /*!
   * Matroska Tag spec does not allow storing multi values in a single tag, but some tools
   * do it anyway using a delimiter. So we need to split the value using the separator and
   * then join it back using the music item separator from as.xml if needed.
+  *
+  * The spaced spellings (ALBUM ARTIST, ARTIST SORT, ...) are what mp3tag writes; the
+  * underscored and run-together ones are what the spec and most other taggers use. The ALBUM/
+  * prefixed ones come from FFmpeg's demuxer alone - see MapTag() - and mean the same tag at
+  * album level; only these two change field with the prefix.
   */
-  if (key == "ALBUM")
+  if (key == "ALBUM" || key == "ALBUM/TITLE")
     tag.SetAlbum(value);
   else if (key == "ARTIST")
     // tag.SetArtist(StringUtils::Join(StringUtils::Split(value, separators), musicsep));
     tag.SetArtist(value);
   else if (key == "ARTISTS")
     tag.SetMusicBrainzArtistHints(StringUtils::Split(value, separators));
-  else if (key == "ALBUMARTISTS" || key == "ALBUM/ARTISTS")
+  else if (key == "ALBUMARTISTS" || key == "ALBUM/ARTISTS" || key == "ALBUM ARTISTS" ||
+           key == "ALBUM/ARTISTS")
     tag.SetAlbumArtist(value);
-  else if (key == "ALBUMARTIST" || key == "ALBUM/ARTIST")
+  else if (key == "ALBUMARTIST" || key == "ALBUM/ARTIST" || key == "ALBUM ARTIST" ||
+           key == "ALBUM/ARTIST")
     tag.SetAlbumArtist(StringUtils::Join(StringUtils::Split(value, separators), musicsep));
   else if (key == "TITLE")
     tag.SetTitle(value);
@@ -86,9 +131,9 @@ void MUSIC_INFO::MatroskaTagMapping::MapTag(const std::string& key,
   // true trims any whitespace around the genre(s)
   else if (key == "COMMENT")
     tag.SetComment(value);
-  else if (key == "ARTIST-SORT" || key == "ARTISTSORT")
+  else if (key == "ARTIST-SORT" || key == "ARTISTSORT" || key == "ARTIST SORT")
     tag.SetArtistSort(StringUtils::Join(StringUtils::Split(value, separators), musicsep));
-  else if (key == "ALBUMARTISTSORT" || key == "SORT_ALBUM/ARTIST")
+  else if (key == "ALBUMARTISTSORT" || key == "SORT_ALBUM/ARTIST" || key == "ALBUM ARTIST SORT")
     tag.SetAlbumArtistSort(StringUtils::Join(StringUtils::Split(value, separators), musicsep));
   else if (key == "COMPOSERSORT")
     tag.SetComposerSort(StringUtils::Join(StringUtils::Split(value, separators), musicsep));
@@ -164,10 +209,12 @@ void MUSIC_INFO::MatroskaTagMapping::MapTag(const std::string& key,
 
     AddCommaDelimitedString(tagdata, separators, tag);
   }
+  else
+    return false;
+
+  return true;
 }
 
-namespace
-{
 void AddRole(const std::vector<std::string>& data,
              const std::vector<std::string>& separators,
              CMusicInfoTag& musictag)
