@@ -143,6 +143,272 @@ bool AppendIfNotDuplicate(std::string& currentValue,
 }
 
 /*!
+* Tags that carry several values, which the Matroska spec writes as a SimpleTag repeated per value
+* (https://www.matroska.org/technical/tagging.html). Kodi holds multiple values in one delimited
+* string, so a repeat concatenates rather than replaces.
+*/
+constexpr std::array<const char*, 21> MULTIPLE_VALUE_TAGS = {"ALBUMARTISTS",
+                                                             "ALBUMARTISTSORT",
+                                                             "ARTIST",
+                                                             "ARTISTS",
+                                                             "ARTISTSORT",
+                                                             "ARRANGER",
+                                                             "BAND",
+                                                             "COMPOSER",
+                                                             "COMPOSERSORT",
+                                                             "CONDUCTOR",
+                                                             "ENGINEER",
+                                                             "GENRE",
+                                                             "LYRICIST",
+                                                             "MIXER",
+                                                             "MOOD",
+                                                             "MUSICBRAINZ_ALBUMARTISTID",
+                                                             "MUSICBRAINZ_ARTISTID",
+                                                             "PERFORMER",
+                                                             "PRODUCER",
+                                                             "REMIXED",
+                                                             "WRITER"};
+
+/*!
+* Record one tag, keeping any value the same name already carries if the name is one that holds
+* several. The key is what the map is filed under and the name is what decides that, which differ
+* for an album level tag: ALBUM/ARTIST is filed apart from the track's, but takes several values
+* for the same reason ARTIST does.
+*/
+void AddTagValue(std::map<std::string, std::string>& tags,
+                 const std::string& key,
+                 const std::string& name,
+                 const std::string& value)
+{
+  const auto it = tags.find(key);
+  if (it == tags.end())
+  {
+    tags.emplace(key, value);
+    return;
+  }
+
+  if (std::find(std::begin(MULTIPLE_VALUE_TAGS), std::end(MULTIPLE_VALUE_TAGS), name) !=
+      std::end(MULTIPLE_VALUE_TAGS))
+    AppendIfNotDuplicate(it->second, value, name);
+}
+
+/*!
+* The file's own properties: how long it runs, and the Segment title.
+*
+* The Segment title names the file rather than its album, and FFmpeg's demuxer reports it as an
+* unprefixed title. Say the same, so that a file holding one song is titled the same way whichever
+* reader read it.
+*/
+double ReadFileProperties(TagLib::Matroska::File& file,
+                          std::map<std::string, std::string>& fileTags)
+{
+  const TagLib::Matroska::Properties* audioProps = file.audioProperties();
+  if (!audioProps)
+    return 0.0;
+
+  const std::string segmentTitle = audioProps->title().to8Bit(true);
+  if (!segmentTitle.empty())
+    fileTags["TITLE"] = segmentTitle;
+
+  return static_cast<double>(audioProps->lengthInSeconds());
+}
+
+/*!
+* Collect one edition's chapters in file order, each keeping its display name so that a chapter
+* carrying no tags of its own still has something to name its track with.
+*
+* A file can hold several editions - an ordered presentation cut alongside the full transfer, say -
+* of which only one is what gets played. Take the one flagged default, falling back to the first, so
+* the tracks come from a single running order instead of every edition's chapters concatenated.
+*
+* \param editionUid The edition the chapters came from, which its tags name.
+* \param unselectedChapterUids The chapters of the editions left behind, so that a tag naming one of
+*        them can be told apart from a tag naming a chapter this file does not have at all.
+* \param chapterIndex Where a chapter's tags live, by the ChapterUID the SimpleTags name it with.
+*/
+void CollectChapters(TagLib::Matroska::File& file,
+                     MatroskaAlbum& album,
+                     unsigned long long& editionUid,
+                     std::set<unsigned long long>& unselectedChapterUids,
+                     std::map<unsigned long long, size_t>& chapterIndex)
+{
+  const TagLib::Matroska::Chapters* chapters = file.chapters();
+  if (!chapters)
+    return;
+
+  const TagLib::Matroska::Chapters::ChapterEditionList& editions = chapters->chapterEditionList();
+  const TagLib::Matroska::ChapterEdition* selectedEdition = nullptr;
+  for (const auto& edition : editions)
+  {
+    if (!selectedEdition || edition.isDefault())
+      selectedEdition = &edition;
+    if (edition.isDefault())
+      break;
+  }
+
+  for (const auto& edition : editions)
+  {
+    if (&edition == selectedEdition)
+      continue;
+    for (const auto& chapter : edition.chapterList())
+      unselectedChapterUids.insert(chapter.uid());
+  }
+
+  if (!selectedEdition)
+    return;
+
+  editionUid = selectedEdition->uid();
+  for (const auto& chapter : selectedEdition->chapterList())
+  {
+    const unsigned long long chapUid = chapter.uid();
+
+    std::string chapterName;
+    if (chapUid > 0 && !chapter.displayList().isEmpty())
+    {
+      // Match VB behavior: keep the last display name
+      for (const auto& display : chapter.displayList())
+        chapterName = display.string().toCString(true);
+    }
+
+    chapterIndex[chapUid] = album.chapters.size();
+    ChapterTags& entry = album.chapters.emplace_back();
+    entry.tags.emplace("CHAPTERNAME", chapterName);
+    entry.start = static_cast<double>(chapter.timeStart()) / 1000000000.0;
+    entry.end = static_cast<double>(chapter.timeEnd()) / 1000000000.0;
+  }
+}
+
+/*!
+* Give an end to any chapter that declares none, which is out of spec but written anyway: the next
+* chapter's start, or the file duration for the last one.
+*/
+void FillMissingEndTimes(MatroskaAlbum& album, double fileDuration)
+{
+  for (size_t i = 0; i < album.chapters.size(); ++i)
+  {
+    if (album.chapters[i].end > 0.0)
+      continue;
+    album.chapters[i].end =
+        (i + 1 < album.chapters.size()) ? album.chapters[i + 1].start : fileDuration;
+  }
+}
+
+/*!
+* Sort every SimpleTag onto the album or onto a chapter.
+*
+* Album level tags go first so that a TargetTypeValue 30 tag reaching the album finds one already
+* there rather than establishing it. A tag naming an edition belongs to that edition alone: files
+* with several carry one TITLE each, and taking whichever came first names the album after an
+* edition that is not the one being read. A zero EditionUID applies to all editions.
+*/
+void CollectSimpleTags(const TagLib::Matroska::SimpleTagsList& list,
+                       MatroskaAlbum& album,
+                       unsigned long long editionUid,
+                       const std::set<unsigned long long>& unselectedChapterUids,
+                       const std::map<unsigned long long, size_t>& chapterIndex)
+{
+  auto& fileTags = album.fileTags;
+
+  auto namesAnotherEdition = [editionUid](const TagLib::Matroska::SimpleTag& tag)
+  { return tag.editionUid() != 0 && tag.editionUid() != editionUid; };
+  auto isAlbumLevel = [](unsigned long long targetTypeValue)
+  { return targetTypeValue == 50 || targetTypeValue == 60; }; // 60 is MP3tag's concert
+
+  for (const TagLib::Matroska::SimpleTag& tag : list)
+  {
+    if (!isAlbumLevel(tag.targetTypeValue()) || namesAnotherEdition(tag))
+      continue;
+
+    /*!
+    * A name says what the tag is, the TargetTypeValue says which level it applies to, and only
+    * both together say which Kodi field it means: an ARTIST at 50 is the album's, at 30 the
+    * track's. TagLib hands over the name alone, so the level is written into the key here, in
+    * the ALBUM/ form FFmpeg's demuxer produces, and MatroskaTagMapping reads one shape from
+    * either reader.
+    */
+    const std::string name = StringUtils::ToUpper(tag.name().to8Bit(true));
+    AddTagValue(fileTags, "ALBUM/" + name, name, tag.toString().to8Bit(true));
+  }
+
+  for (const TagLib::Matroska::SimpleTag& tag : list)
+  {
+    const unsigned long long targetTypeValue = tag.targetTypeValue();
+    if (isAlbumLevel(targetTypeValue) || namesAnotherEdition(tag))
+      continue;
+
+    const std::string name = StringUtils::ToUpper(tag.name().to8Bit(true));
+    const std::string value = tag.toString().to8Bit(true);
+
+    /*!
+    * A tag with no TargetTypeValue describes the file: taggers that ignore the spec write album
+    * metadata that way, and dropping it would lose the lot. Its TITLE names both the album and the
+    * file, neither overwriting what a level-bearing tag already established.
+    */
+    if (targetTypeValue == 0)
+    {
+      if (name == "TITLE")
+      {
+        fileTags.emplace("ALBUM", value);
+        fileTags.emplace("TITLE", value);
+      }
+      else
+      {
+        AddTagValue(fileTags, name, name, value);
+      }
+      continue;
+    }
+
+    if (targetTypeValue != 30)
+      continue;
+
+    /*!
+    * A tag naming a chapter of an edition that was not selected describes a track this file will
+    * not produce. Neither merging it into a chapter it does not describe nor promoting it to the
+    * album is right, so it goes no further.
+    */
+    const unsigned long long chapterUid = tag.chapterUid();
+    if (unselectedChapterUids.count(chapterUid) != 0)
+      continue;
+
+    /*!
+    * A tag with no ChapterUID describes the only track there is - MP3tag writes song tags that
+    * way - so a single chapter file takes it. One naming a chapter goes to that chapter, and
+    * one naming a chapter this file does not have falls back to the album.
+    */
+    ChapterTags* target = nullptr;
+    if (album.chapters.size() == 1)
+      target = &album.chapters.front();
+    else if (chapterUid > 1)
+    {
+      if (const auto it = chapterIndex.find(chapterUid); it != chapterIndex.end())
+        target = &album.chapters[it->second];
+    }
+
+    // Either the file has no chapters at all, or names one it does not contain. Either way the tag
+    // describes the file rather than a track of it.
+    AddTagValue(target ? target->tags : fileTags, name, name, value);
+  }
+}
+
+/*!
+* Name a track after its chapter's display name where nothing better named it.
+*
+* A chapter carrying only a ChapterDisplay name still names its track - taggers that write chapter
+* names rather than per-chapter tags are common. The TargetTypeValue 30 TITLE read above says the
+* same thing more precisely, so it keeps precedence and this only fills the gap.
+*/
+void FillTitlesFromDisplayNames(MatroskaAlbum& album)
+{
+  for (auto& chapter : album.chapters)
+  {
+    const auto chapterName = chapter.tags.find("CHAPTERNAME");
+    if (chapterName == chapter.tags.end() || chapterName->second.empty())
+      continue;
+    chapter.tags.emplace("TITLE", chapterName->second);
+  }
+}
+
+/*!
  * Read with TagLib, which follows the whole SimpleTag hierarchy: TargetTypeValue, EditionUID and
  * ChapterUID all survive, so album level tags stay apart from a chapter's own, repeated tags all
  * arrive, and both stay tied to the edition they belong to.
@@ -150,10 +416,6 @@ bool AppendIfNotDuplicate(std::string& currentValue,
 MatroskaAlbum ReadWithTagLib(const CURL& url)
 {
   MatroskaAlbum album;
-  auto& fileTags = album.fileTags;
-
-  //! Where a chapter's tags live, by the ChapterUID the SimpleTags name it with.
-  std::map<unsigned long long, size_t> chapterIndex;
 
   MatroskaTagLibStream matroskaStream(url.Get());
   if (!matroskaStream.open())
@@ -171,313 +433,17 @@ MatroskaAlbum ReadWithTagLib(const CURL& url)
     if (!matroskatag)
       return album;
 
-    double fileDuration = 0.0;
-    TagLib::Matroska::Properties* audioProps = matroskaFile->audioProperties();
-    if (audioProps)
-    {
-      fileDuration = static_cast<double>(audioProps->lengthInSeconds());
+    const double fileDuration = ReadFileProperties(*matroskaFile, album.fileTags);
 
-      /*!
-      * The Segment title names the file rather than its album, and FFmpeg's demuxer reports it as
-      * an unprefixed title. Say the same, so that a file holding one song is titled the same way
-      * whichever reader read it.
-      */
-      const std::string segmentTitle = audioProps->title().to8Bit(true);
-      if (!segmentTitle.empty())
-        fileTags["TITLE"] = segmentTitle;
-    }
-
-    /*!
-    * Collect the chapters in file order, each keeping its display name, so that a chapter which
-    * carries no tags of its own still has something to name its track with.
-    * Micro chapters (less than 1 second long) are skipped as they are not
-    * real tracks/songs — they can occur in some Matroska files as artifacts.
-    */
     unsigned long long editionUid = 0;
     std::set<unsigned long long> unselectedChapterUids;
-    TagLib::Matroska::Chapters* chapters = matroskaFile->chapters();
-    if (chapters)
-    {
-      /*!
-      * A file can hold several editions - an ordered presentation cut alongside the full
-      * transfer, say - of which only one is what gets played. Take the one flagged default,
-      * falling back to the first, so the tracks come from a single running order instead of
-      * every edition's chapters concatenated.
-      */
-      const TagLib::Matroska::Chapters::ChapterEditionList& editions =
-          chapters->chapterEditionList();
-      const TagLib::Matroska::ChapterEdition* selectedEdition = nullptr;
-      for (const auto& edition : editions)
-      {
-        if (!selectedEdition || edition.isDefault())
-          selectedEdition = &edition;
-        if (edition.isDefault())
-          break;
-      }
+    std::map<unsigned long long, size_t> chapterIndex;
+    CollectChapters(*matroskaFile, album, editionUid, unselectedChapterUids, chapterIndex);
+    FillMissingEndTimes(album, fileDuration);
 
-      /*!
-      * The chapters of the editions left behind, so that a tag naming one of them can be told
-      * apart from a tag naming a chapter this file does not have at all.
-      */
-      for (const auto& edition : editions)
-      {
-        if (&edition == selectedEdition)
-          continue;
-        for (const auto& chapter : edition.chapterList())
-          unselectedChapterUids.insert(chapter.uid());
-      }
-
-      if (selectedEdition)
-      {
-        editionUid = selectedEdition->uid();
-        for (const auto& chapter : selectedEdition->chapterList())
-        {
-          unsigned long long chapUid = chapter.uid();
-
-          std::string chapterName;
-          if (chapUid > 0 && !chapter.displayList().isEmpty())
-          {
-            // Match VB behavior: keep the last display name
-            for (const auto& display : chapter.displayList())
-              chapterName = display.string().toCString(true);
-          }
-
-          chapterIndex[chapUid] = album.chapters.size();
-          ChapterTags& entry = album.chapters.emplace_back();
-          entry.tags.emplace("CHAPTERNAME", chapterName);
-          entry.start = static_cast<double>(chapter.timeStart()) / 1000000000.0;
-          entry.end = static_cast<double>(chapter.timeEnd()) / 1000000000.0;
-        }
-      }
-    }
-
-    /*!
-    * Parsing Matroska tags create a dummy chapter if no chapters are present
-    * to hold song tags for later processing for Kodi internal tags.
-    * Some taggers like MP3tag save song tags as chapter tags with
-    * TargetTypeValue 30 but no ChapterUid, so need to save these somewhere.
-    *
-    * If chapters exist, fix any that have no end time set (endTime <= 0):
-    *  (out of spec but some taggers do this, Kodi neds to deal with this internally)
-    *  - use the next chapter's start time, or
-    *  - use the file duration for the last chapter.
-    */
-    if (!album.chapters.empty())
-    {
-      for (size_t i = 0; i < album.chapters.size(); ++i)
-      {
-        if (album.chapters[i].end > 0.0)
-          continue;
-        // the next chapter's start, or the file duration for the last one
-        album.chapters[i].end =
-            (i + 1 < album.chapters.size()) ? album.chapters[i + 1].start : fileDuration;
-      }
-    }
-
-    /*!
-    * Define tags that support multiple values and need to be concatenated into a
-    * single internal Kodi tag with a separator if more than one value is
-    * present. This is needed to support multiple same key tags (Matroska spec)
-    */
-    static constexpr std::array<const char*, 21> MULTIPLE_VALUE_TAGS = {"ALBUMARTISTS",
-                                                                        "ALBUMARTISTSORT",
-                                                                        "ARTIST",
-                                                                        "ARTISTS",
-                                                                        "ARTISTSORT",
-                                                                        "ARRANGER",
-                                                                        "BAND",
-                                                                        "COMPOSER",
-                                                                        "COMPOSERSORT",
-                                                                        "CONDUCTOR",
-                                                                        "ENGINEER",
-                                                                        "GENRE",
-                                                                        "LYRICIST",
-                                                                        "MIXER",
-                                                                        "MOOD",
-                                                                        "MUSICBRAINZ_ALBUMARTISTID",
-                                                                        "MUSICBRAINZ_ARTISTID",
-                                                                        "PERFORMER",
-                                                                        "PRODUCER",
-                                                                        "REMIXED",
-                                                                        "WRITER"};
-
-    /*!
-    * Read all simple tags and group them by file (album or song files with no
-    * chapters) or by chapter/track (if target type value is 30).
-    * Delimiter separated lists are outside the Matroska spec
-    * (see https://www.matroska.org/technical/tagging.html) it states to use
-    * multiple simple tags for eg 2 or more composers. To ensure Kodi can use
-    * multiple same name tags need create a single tag with multiple values in
-    * a delimited string (Kodi handles multiple values with
-    * delimited strings).
-    *
-    * Two pass approach:
-    * Pass 1: Process album-level tags (targetTypeValue == 50) first so album
-    *         metadata is established before track-level tags are processed.
-    *         Special handling for TITLE tag which maps to ALBUM in Kodi.
-    * Pass 2: Process file-level (targetTypeValue == 0) and chapter/song
-    *         (targetTypeValue == 30) tags.
-    */
-    std::string TagName;
-    std::string TagValue;
-    const TagLib::Matroska::SimpleTagsList& list = matroskatag->simpleTagsList();
-    // Pass 1: Process album-level tags (targetTypeValue == 50)
-    for (const TagLib::Matroska::SimpleTag& tag : list)
-    {
-      if (tag.targetTypeValue() == 50 || tag.targetTypeValue() == 60)
-      {
-        /*!
-        * A tag naming an edition belongs to that edition alone. Files with several editions carry
-        * one such TITLE each, and taking whichever came first in the file names the album after an
-        * edition that is not the one being read. A zero EditionUID applies to all editions.
-        */
-        if (tag.editionUid() != 0 && tag.editionUid() != editionUid)
-          continue;
-
-        TagName = StringUtils::ToUpper(tag.name().to8Bit(true));
-        TagValue = tag.toString().to8Bit(true);
-
-        /*!
-        * A name says what the tag is, the TargetTypeValue says which level it applies to, and only
-        * both together say which Kodi field it means: an ARTIST at 50 is the album's, at 30 the
-        * track's. TagLib hands over the name alone, so the level is written into the key here, in
-        * the ALBUM/ form FFmpeg's demuxer produces, and MatroskaTagMapping reads one shape from
-        * either reader.
-        *
-        * 60 is what MP3tag writes for a concert, and means the album here too.
-        */
-        const std::string key = "ALBUM/" + TagName;
-        if (fileTags.find(key) == fileTags.end())
-        {
-          fileTags[key] = TagValue;
-        }
-        else if (std::find(std::begin(MULTIPLE_VALUE_TAGS), std::end(MULTIPLE_VALUE_TAGS),
-                           TagName) != std::end(MULTIPLE_VALUE_TAGS))
-        {
-          std::string currentValue = fileTags[key];
-          if (AppendIfNotDuplicate(currentValue, TagValue, TagName))
-            fileTags[key] = currentValue;
-        }
-      }
-    }
-
-    // Pass 2: Process remaining tags (file-level and chapter/song tags)
-    for (const TagLib::Matroska::SimpleTag& tag : list)
-    {
-      unsigned long long chapterUid = tag.chapterUid();
-      std::string TagName = StringUtils::ToUpper(tag.name().to8Bit(true));
-      unsigned long long targetTypeValue = tag.targetTypeValue();
-
-      if (targetTypeValue == 50 || targetTypeValue == 60)
-        continue; // already processed in Pass 1
-
-      // A tag naming another edition describes tracks this file will not produce - see Pass 1.
-      if (tag.editionUid() != 0 && tag.editionUid() != editionUid)
-        continue;
-
-      TagName = StringUtils::ToUpper(tag.name().to8Bit(true));
-      TagValue = tag.toString().to8Bit(true);
-
-      /*!
-      * No targetTypeValue should be considered as an 'Album' level tag to avoid losing metadata
-      * for files that don't follow the Matroska spec and don't set targetTypeValue.
-      */
-      if (targetTypeValue == 0)
-      {
-        if (TagName == "TITLE")
-        {
-          if (fileTags.find("ALBUM") == fileTags.end())
-            fileTags["ALBUM"] = TagValue;
-          if (fileTags.find("TITLE") == fileTags.end())
-            fileTags["TITLE"] = TagValue;
-        }
-        else
-        {
-          if (fileTags.find(TagName) == fileTags.end())
-          {
-            fileTags[TagName] = TagValue;
-          }
-          else
-          {
-            if (std::find(std::begin(MULTIPLE_VALUE_TAGS), std::end(MULTIPLE_VALUE_TAGS),
-                          TagName) != std::end(MULTIPLE_VALUE_TAGS))
-            {
-              std::string currentValue = fileTags[TagName];
-              if (AppendIfNotDuplicate(currentValue, TagValue, TagName))
-                fileTags[TagName] = currentValue;
-            }
-          }
-        }
-      }
-      else if (targetTypeValue == 30)
-      {
-        /*!
-        * A tag naming a chapter of an edition that was not selected describes a track this file
-        * will not produce. Neither merging it into a chapter it does not describe nor promoting
-        * it to the album is right, so it goes no further.
-        */
-        if (unselectedChapterUids.count(chapterUid) != 0)
-          continue;
-
-        /*!
-        * A tag with no ChapterUID describes the only track there is - MP3tag writes song tags that
-        * way - so a single chapter file takes it. One naming a chapter goes to that chapter, and
-        * one naming a chapter this file does not have falls back to the album.
-        */
-        ChapterTags* target = nullptr;
-        if (album.chapters.size() == 1)
-          target = &album.chapters.front();
-        else if (chapterUid > 1)
-        {
-          if (const auto it = chapterIndex.find(chapterUid); it != chapterIndex.end())
-            target = &album.chapters[it->second];
-        }
-
-        if (target)
-        {
-          auto it = target->tags.find(TagName);
-          if (it == target->tags.end())
-            target->tags.emplace(TagName, TagValue);
-          else if (std::find(std::begin(MULTIPLE_VALUE_TAGS), std::end(MULTIPLE_VALUE_TAGS),
-                             TagName) != std::end(MULTIPLE_VALUE_TAGS))
-            AppendIfNotDuplicate(it->second, TagValue, TagName);
-        }
-        else
-        {
-          // Either the file has no chapters at all, or names one it does not contain. Either way
-          // the tag describes the file rather than a track of it.
-          if (fileTags.find(TagName) == fileTags.end())
-          {
-            fileTags[TagName] = TagValue;
-          }
-          else
-          {
-            if (std::find(std::begin(MULTIPLE_VALUE_TAGS), std::end(MULTIPLE_VALUE_TAGS),
-                          TagName) != std::end(MULTIPLE_VALUE_TAGS))
-            {
-              std::string currentValue = fileTags[TagName];
-              if (AppendIfNotDuplicate(currentValue, TagValue, TagName))
-                fileTags[TagName] = currentValue;
-            }
-          }
-        }
-      }
-    }
-
-    /*!
-    * A chapter carrying only a ChapterDisplay name still names its track - taggers that write
-    * chapter names rather than per-chapter tags are common. The TargetTypeValue 30 TITLE read
-    * above says the same thing more precisely, so it keeps precedence and this only fills the gap.
-    */
-    for (auto& chapter : album.chapters)
-    {
-      auto& chapterTagList = chapter.tags;
-      const auto chapterName = chapterTagList.find("CHAPTERNAME");
-      if (chapterName == chapterTagList.end() || chapterName->second.empty())
-        continue;
-      if (chapterTagList.find("TITLE") == chapterTagList.end())
-        chapterTagList.emplace("TITLE", chapterName->second);
-    }
+    CollectSimpleTags(matroskatag->simpleTagsList(), album, editionUid, unselectedChapterUids,
+                      chapterIndex);
+    FillTitlesFromDisplayNames(album);
 
     // bufferedStream and matroskaFile are destroyed when scope exits.
   }
