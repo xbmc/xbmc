@@ -8,12 +8,15 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "URL.h"
 #include "filesystem/Directory.h"
 #include "filesystem/StackDirectory.h"
 #include "test/TestUtils.h"
 #include "utils/URIUtils.h"
+#include "video/VideoFileItemClassify.h"
 
 #include <string>
+#include <vector>
 
 #include <gtest/gtest.h>
 
@@ -171,6 +174,93 @@ TEST_F(TestStacks, TestMovieFilesStackFolderFilesDiscPart)
     EXPECT_EQ(URIUtils::IsDVDFile(paths[0]), true);
     EXPECT_EQ(URIUtils::IsBDFile(paths[1]), true);
   }
+}
+
+TEST_F(TestStacks, TestStackIsNotItselfADiscFile)
+{
+  // stack://<part1> , <part2>\BDMV\index.bdmv should not be taken for a plain Blu-ray file, which can make
+  // GetParentPath() truncate the url mid-stack and ultimately produced a bluray:// url rooted at the folder
+  // of the last part.
+  const std::string bdStack{
+      R"(stack://D:\Movies\Movie_PART1\BDMV\index.bdmv , D:\Movies\Movie_PART2\BDMV\index.bdmv)"};
+  const std::string dvdStack{
+      R"(stack://D:\Movies\Movie_PART1\VIDEO_TS\VIDEO_TS.IFO , D:\Movies\Movie_PART2\VIDEO_TS\VIDEO_TS.IFO)"};
+
+  EXPECT_FALSE(URIUtils::IsBDFile(bdStack));
+  EXPECT_FALSE(URIUtils::IsDVDFile(dvdStack));
+  EXPECT_FALSE(URIUtils::IsOpticalMediaFile(bdStack));
+  EXPECT_FALSE(URIUtils::IsOpticalMediaFile(dvdStack));
+
+  // CURL keeps the whole remainder of a stack:// url in its filename, so it must agree
+  EXPECT_FALSE(CURL(bdStack).IsBDFile());
+  EXPECT_FALSE(CURL(dvdStack).IsDVDFile());
+  EXPECT_FALSE(CURL(bdStack).IsOpticalMediaFile());
+
+  // KODI::VIDEO::IsDVDFile() does not delegate to URIUtils, so it needs its own guard - without
+  // it a DVD folder stack takes the disc branch in eg. CFileItem::GetLocalMetadataPath and
+  // CGUIDialogVideoInfo::DeleteVideoItemFromDatabase, which then act on the folder of the parts
+  EXPECT_FALSE(KODI::VIDEO::IsDVDFile(CFileItem(dvdStack, false)));
+
+  // ..but the individual members still are disc files
+  std::vector<std::string> paths;
+  CStackDirectory::GetPaths(bdStack, paths);
+  ASSERT_EQ(paths.size(), 2U);
+  EXPECT_TRUE(URIUtils::IsBDFile(paths[0]));
+  EXPECT_TRUE(URIUtils::IsBDFile(paths[1]));
+
+  CStackDirectory::GetPaths(dvdStack, paths);
+  ASSERT_EQ(paths.size(), 2U);
+  EXPECT_TRUE(KODI::VIDEO::IsDVDFile(CFileItem(paths[0], false)));
+  EXPECT_TRUE(KODI::VIDEO::IsDVDFile(CFileItem(paths[1], false)));
+
+  // The stack is unwrapped intact (not truncated at the last separator of the whole url)
+  EXPECT_EQ(URIUtils::GetParentPath(bdStack), R"(D:\Movies\)");
+}
+
+TEST_F(TestStacks, TestStackIsNotItselfADiscImage)
+{
+  // A stack of .ISOs must not be classified from its tail either - otherwise it takes the disc
+  // branch in eg. CVideoDatabase::GetMovieId/GetVideoVersionsByPath, which asks for a bluray://
+  // playlist path that a container cannot have. Use IsDiscImageStack() to spot these instead
+  const std::string isoStack{R"(stack://D:\Movies\Movie.CD1.iso , D:\Movies\Movie.CD2.iso)"};
+
+  EXPECT_FALSE(URIUtils::IsDiscImage(isoStack));
+  EXPECT_FALSE(CURL(isoStack).IsDiscImage());
+  EXPECT_FALSE(CFileItem(isoStack, false).IsDiscImage());
+
+  // The stack as a whole is still recognised as one holding disc parts..
+  EXPECT_TRUE(URIUtils::IsDiscImageStack(isoStack));
+
+  // ..and the individual members are still disc images
+  std::vector<std::string> paths;
+  CStackDirectory::GetPaths(isoStack, paths);
+  ASSERT_EQ(paths.size(), 2U);
+  EXPECT_TRUE(URIUtils::IsDiscImage(paths[0]));
+  EXPECT_TRUE(URIUtils::IsDiscImage(paths[1]));
+
+  // A single .ISO is unaffected
+  EXPECT_TRUE(URIUtils::IsDiscImage(R"(D:\Movies\Movie.iso)"));
+  EXPECT_TRUE(CURL(R"(D:\Movies\Movie.iso)").IsDiscImage());
+}
+
+TEST_F(TestStacks, TestStackHasNoBlurayPath)
+{
+  // Each member of a stack of disc folders is its own disc, so there is no single disc root to
+  // put in a bluray:// url.
+  const std::string bdStack{
+      R"(stack://D:\Movies\Movie_PART1\BDMV\index.bdmv , D:\Movies\Movie_PART2\BDMV\index.bdmv)"};
+
+  EXPECT_TRUE(URIUtils::GetBlurayMainTitlePath(bdStack).empty());
+  EXPECT_TRUE(URIUtils::GetBlurayPlaylistPath(bdStack).empty());
+  EXPECT_TRUE(URIUtils::GetBlurayPlaylistPath(bdStack, 800).empty());
+  EXPECT_TRUE(URIUtils::GetBlurayTitlesPath(bdStack).empty());
+  EXPECT_TRUE(URIUtils::GetBlurayEpisodePath(bdStack, 1, 2).empty());
+  EXPECT_TRUE(URIUtils::GetBlurayAllEpisodesPath(bdStack).empty());
+  EXPECT_TRUE(URIUtils::GetBlurayMenuPath(bdStack).empty());
+
+  // A single disc folder is unaffected
+  EXPECT_EQ(URIUtils::GetBlurayMainTitlePath(R"(D:\Movies\Movie_PART1\BDMV\index.bdmv)"),
+            R"(bluray://D%3a%5cMovies%5cMovie_PART1%5c/root/main)");
 }
 
 TEST_F(TestStacks, TestMovieFilesStackFolderFilesDiscNPart)

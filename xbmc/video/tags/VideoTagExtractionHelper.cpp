@@ -22,6 +22,9 @@ namespace KODI::VIDEO::TAGS
 
 bool CVideoTagExtractionHelper::IsExtractionSupportedFor(const CFileItem& item)
 {
+  if (URIUtils::IsContainerPath(item.GetDynPath()))
+    return false;
+
   return CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
              CSettings::SETTING_MYVIDEOS_USETAGS) &&
          URIUtils::HasExtension(item.GetDynPath(), ".mkv|.mp4|.avi|.m4v");

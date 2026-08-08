@@ -26,11 +26,11 @@
   "expectedGet":
       "stack://zip://%2fpath%2fto%2farchive%2fsome-archive-file.CD1.zip/video.avi , zip://%2fpath%2fto%2farchive%2fsome-archive-file.CD2.zip/video.avi",
   "expectedGetBasePath": "zip://%2fpath%2fto%2farchive%2fsome-archive-file.CD1.zip/",
-  "expectedGetBlurayAllEpisodesPath": "root/episode/all",
-  "expectedGetBlurayEpisodePath": "root/episode/1/2",
-  "expectedGetBlurayPlaylistPath": "BDMV/PLAYLIST/",
-  "expectedGetBlurayRootPath": "root",
-  "expectedGetBlurayTitlesPath": "root/titles",
+  "expectedGetBlurayAllEpisodesPath": "",
+  "expectedGetBlurayEpisodePath": "",
+  "expectedGetBlurayPlaylistPath": "",
+  "expectedGetBlurayRootPath": "",
+  "expectedGetBlurayTitlesPath": "",
   "expectedGetDirectory":
       "stack://zip://%2fpath%2fto%2farchive%2fsome-archive-file.CD1.zip/video.avi , zip://%2fpath%2fto%2farchive%2fsome-archive-file.CD2.zip/",
   "expectedGetDiscBase": "/path/to/archive/",
