@@ -11,6 +11,7 @@
 #include "dataset.h"
 
 #include <string>
+#include <string_view>
 
 #ifdef HAS_MYSQL
 #include <mysql/mysql.h>
@@ -75,12 +76,35 @@ public:
   std::string vprepare(std::string_view format, va_list args) override;
 
   bool in_transaction() override { return _in_transaction; }
-  int query_with_reconnect(const char* query);
+  int query_with_reconnect(std::string_view query);
   void configure_connection();
 
 private:
   char et_getdigit(double* val, int* cnt) const;
   std::string mysql_vmprintf(const char* zFormat, va_list ap);
+
+  /*!
+   * \brief Query the server's default storage engine.
+   * \return the server's default storage engine, empty in case of error.
+   */
+  std::string GetServerDefaultEngine();
+
+  /*!
+   * \brief Set the storage engine of a table.
+   *        No action if \p targetEngine is already the engine of the table.
+   * \param[in] db Schema/database name containing the table.
+   * \param[in] table Table name
+   * \param[in] targetEngine Engine name to set
+   * \return true for success or no change necessary, false for failure.
+   */
+  bool ChangeStorageEngine(std::string_view db, const char* table, std::string_view targetEngine);
+
+  /*!
+   * \brief Resolve the storage engine to use when copying tables.
+   *        Use the server default if not blacklisted with fallback to hardcoded default
+   * \return Resolved engine name, never empty.
+   */
+  std::string ResolveStorageEngine();
 };
 
 /***************** Class MysqlDataset definition *******************

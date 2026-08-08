@@ -324,34 +324,36 @@ public:
   /* The next several isasciiXX and asciiXXvalue functions are locale independent (US-ASCII only),
    * as opposed to standard ::isXX (::isalpha, ::isdigit...) which are locale dependent.
    * Next functions get parameter as char and don't need double cast ((int)(unsigned char) is required for standard functions). */
-  [[nodiscard]] inline static bool isasciidigit(char chr) noexcept // locale independent
+  [[nodiscard]] constexpr static bool isasciidigit(char chr) noexcept // locale independent
   {
     return chr >= '0' && chr <= '9';
   }
-  [[nodiscard]] inline static bool isasciixdigit(char chr) noexcept // locale independent
+  [[nodiscard]] constexpr static bool isasciixdigit(char chr) noexcept // locale independent
   {
     return (chr >= '0' && chr <= '9') || (chr >= 'a' && chr <= 'f') || (chr >= 'A' && chr <= 'F');
   }
   [[nodiscard]] static int asciidigitvalue(char chr) noexcept; // locale independent
   [[nodiscard]] static int asciixdigitvalue(char chr) noexcept; // locale independent
-  [[nodiscard]] inline static bool isasciiuppercaseletter(char chr) noexcept // locale independent
+  [[nodiscard]] constexpr static bool isasciiuppercaseletter(
+      char chr) noexcept // locale independent
   {
     return (chr >= 'A' && chr <= 'Z');
   }
-  [[nodiscard]] inline static bool isasciilowercaseletter(char chr) noexcept // locale independent
+  [[nodiscard]] constexpr static bool isasciilowercaseletter(
+      char chr) noexcept // locale independent
   {
     return (chr >= 'a' && chr <= 'z');
   }
-  [[nodiscard]] inline static bool isasciiletter(char chr) noexcept // locale independent
+  [[nodiscard]] constexpr static bool isasciiletter(char chr) noexcept // locale independent
   {
     return isasciiuppercaseletter(chr) || isasciilowercaseletter(chr);
   }
-  [[nodiscard]] inline static bool IsAsciiLetters(
+  [[nodiscard]] constexpr static bool IsAsciiLetters(
       std::string_view str) noexcept // locale independent
   {
     return std::ranges::all_of(str, [](char c) { return StringUtils::isasciiletter(c); }, {});
   }
-  [[nodiscard]] inline static bool isasciialphanum(char chr) noexcept // locale independent
+  [[nodiscard]] constexpr static bool isasciialphanum(char chr) noexcept // locale independent
   {
     return isasciiletter(chr) || isasciidigit(chr);
   }
