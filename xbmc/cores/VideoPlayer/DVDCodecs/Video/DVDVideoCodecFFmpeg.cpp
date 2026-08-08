@@ -16,6 +16,7 @@
 #endif
 #include "ServiceBroker.h"
 #include "cores/FFmpeg.h"
+#include "cores/VideoFrameMetadata.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoSettings.h"
@@ -27,8 +28,11 @@
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
+#include <algorithm>
+#include <cstdint>
 #include <memory>
 #include <mutex>
+#include <string_view>
 
 extern "C" {
 #include <libavcodec/defs.h>
@@ -65,6 +69,32 @@ enum EFilterFlags {
   FILTER_DEINTERLACE_HALFED  = 0x20,  //< do half rate deinterlacing
   FILTER_ROTATE              = 0x40,  //< rotate image according to the codec hints
 };
+
+namespace
+{
+
+// vdr_in_max of an NLQ that carries no residual data (2^23)
+constexpr uint64_t NLQ_VDR_IN_MAX_UNSET = 8388608;
+
+DoviElType GetDoviElType(const AVDOVIRpuDataHeader& header, const AVDOVIDataMapping* mapping)
+{
+  if (header.el_spatial_resampling_filter_flag != 1 || header.disable_residual_flag != 0)
+    return DoviElType::NONE;
+
+  if (mapping && std::ranges::any_of(mapping->nlq,
+                                     [](const AVDOVINLQParams& nlq)
+                                     {
+                                       return nlq.nlq_offset != 0 ||
+                                              nlq.vdr_in_max != NLQ_VDR_IN_MAX_UNSET ||
+                                              nlq.linear_deadzone_slope != 0 ||
+                                              nlq.linear_deadzone_threshold != 0;
+                                     }))
+    return DoviElType::FEL;
+
+  return DoviElType::MEL;
+}
+
+} // namespace
 
 //------------------------------------------------------------------------------
 // Video Buffers
@@ -1123,33 +1153,23 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
     pVideoPicture->hasLightMetadata = true;
   }
 
+  DoviElType elType = DoviElType::NONE;
+
   if (pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)
   {
     sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_DOVI_METADATA);
     if (sd)
     {
-      AVDOVIMetadata* dovi = (AVDOVIMetadata*)sd->data;
-      const AVDOVIRpuDataHeader* hdr = av_dovi_get_header(dovi);
-      const AVDOVIDataMapping* mapping = av_dovi_get_mapping(dovi);
-
-      if (hdr != nullptr && hdr->el_spatial_resampling_filter_flag == 1 &&
-          hdr->disable_residual_flag == 0)
-      {
-        pVideoPicture->strDVELType = "MEL";
-        for (int i = 0; i < 3; i++)
-        {
-          if (mapping != nullptr &&
-              (mapping->nlq[i].nlq_offset != 0 || mapping->nlq[i].vdr_in_max != 8388608 ||
-               mapping->nlq[i].linear_deadzone_slope != 0 ||
-               mapping->nlq[i].linear_deadzone_threshold != 0))
-          {
-            pVideoPicture->strDVELType = "FEL";
-            break;
-          }
-        }
-      }
+      const AVDOVIMetadata* dovi = reinterpret_cast<const AVDOVIMetadata*>(sd->data);
+      const AVDOVIRpuDataHeader* header = av_dovi_get_header(dovi);
+      if (header)
+        elType = GetDoviElType(*header, av_dovi_get_mapping(dovi));
     }
   }
+
+  const std::string_view strElType = DoviElTypeToString(elType);
+  if (pVideoPicture->strDVELType != strElType)
+    pVideoPicture->strDVELType = strElType;
 
   if (pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_HDR10 ||
       pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)
