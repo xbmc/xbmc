@@ -189,13 +189,27 @@ protected:
 private:
   inline bool IsSpace(character_t letter) const XBMC_FORCE_INLINE
   {
-    return (letter & 0xffff) == L' ';
+    character_t ch = letter & 0xffff;
+    return ch == L' ' || ch == L'\u3000';
+  };
+  inline bool isCombiningMark(character_t letter) const XBMC_FORCE_INLINE
+  {
+    character_t ch = letter & 0xffff;
+    return (ch >= 0xFE00 && ch <= 0xFE0F) || // Variation selectors
+           (ch >= 0x0300 && ch <= 0x036F) || // Combining diacritical marks
+           (ch >= 0x1DC0 && ch <= 0x1DFF) || // Combining diacritical marks supplement
+           (ch >= 0x20D0 && ch <= 0x20FF); // Combining diacritical marks for symbols
   };
   inline bool CanWrapAtLetter(character_t letter) const XBMC_FORCE_INLINE
   {
     character_t ch = letter & 0xffff;
-    //! @todo: unicode spaces are not handled, to check also all other GUI parts
-    return ch == L' ';
+    if (ch == L' ' || ch == L'\u3000') // spaces
+      return true;
+    if ((ch >= 0x4E00 && ch <= 0x9FFF) || // CJK Unified Ideographs
+        (ch >= 0x3400 && ch <= 0x4DBF) || // CJK Ext-A
+        (ch >= 0xF900 && ch <= 0xFAFF)) // CJK Compatibility Ideographs
+      return true;
+    return false;
   };
   static void AppendToUTF32(const std::string &utf8, character_t colStyle, vecText &utf32);
   static void AppendToUTF32(const std::wstring &utf16, character_t colStyle, vecText &utf32);
