@@ -886,7 +886,9 @@ endfunction()
 # sets meson_properties_string to PARENT_SCOPE
 function(create_mesonproperties)
 
-  string(APPEND output_string "pkg_config_libdir = '${DEPENDS_PATH}/lib/pkgconfig'\n")
+  if(CMAKE_CROSSCOMPILING)
+    string(APPEND output_string "pkg_config_libdir = '${DEPENDS_PATH}/lib/pkgconfig'\n")
+  endif()
   if(CMAKE_TOOLCHAIN_FILE)
     string(APPEND output_string "cmake_toolchain_file = '${CMAKE_TOOLCHAIN_FILE}'\n")
   endif()
@@ -944,6 +946,10 @@ function(create_mesonbuiltin)
   string(APPEND output_string "libdir = 'lib'\n")
   string(APPEND output_string "bindir = 'bin'\n")
   string(APPEND output_string "includedir = 'include'\n")
+
+  if(NOT CMAKE_CROSSCOMPILING)
+    string(APPEND output_string "pkg_config_path = '${DEPENDS_PATH}/lib/pkgconfig'\n")
+  endif()
 
   # Easiest to just prepend header at the end of the full string creation
   string(PREPEND output_string "[built-in options]\n")
