@@ -19744,7 +19744,19 @@ msgctxt "#36054"
 msgid "Remote button double press timeout (ms) (0 = off)"
 msgstr ""
 
-#empty strings from id 36055 to 36095
+#. Item list value of setting with label #36009 "Put devices in standby mode when activating the screensaver"
+#: system/peripherals.xml
+msgctxt "#36055"
+msgid "Always"
+msgstr ""
+
+#. Item list value of setting with label #36009 "Put devices in standby mode when activating the screensaver"
+#: system/peripherals.xml
+msgctxt "#36056"
+msgid "Unless media is playing"
+msgstr ""
+
+#empty strings from id 36057 to 36095
 
 #. Label of setting "System / Display / Use system HDR/SDR brightness balance"
 #: system/settings/settings.xml
