@@ -9,6 +9,7 @@
 #pragma once
 
 #include "EdlEdit.h"
+#include "VideoFrameMetadata.h"
 #include "threads/CriticalSection.h"
 
 #include <atomic>
@@ -64,6 +65,24 @@ public:
    * @return True if interlaced, otherwise false
    */
   bool IsVideoInterlaced();
+
+  /*!
+   * @brief Set the metadata of the video frame currently being presented.
+   *
+   * Called at present time rather than at decode time, so that the values
+   * reported by the info labels belong to the frame actually on screen rather
+   * than to a frame still queued for display.
+   *
+   * @param metadata The metadata of the presented frame
+   */
+  void SetVideoFrameMetadata(const VideoFrameMetadata& metadata);
+
+  /*!
+   * @brief Get the metadata of the video frame currently being presented.
+   * @return The metadata of the presented frame. DoviFrameMetadata::valid is
+   *         false when the frame carries no Dolby Vision RPU.
+   */
+  VideoFrameMetadata GetVideoFrameMetadata() const;
 
   // player audio info
   void SetAudioDecoderName(std::string name);
@@ -227,7 +246,7 @@ public:
 protected:
   std::atomic_bool m_hasAVInfoChanges = false;
 
-  CCriticalSection m_videoPlayerSection;
+  mutable CCriticalSection m_videoPlayerSection;
   struct SPlayerVideoInfo
   {
     std::string decoderName;
@@ -243,6 +262,7 @@ protected:
     int liveBitRate;
     int queueLevel;
     int queueDataLevel;
+    VideoFrameMetadata frameMetadata;
   } m_playerVideoInfo;
 
   CCriticalSection m_audioPlayerSection;

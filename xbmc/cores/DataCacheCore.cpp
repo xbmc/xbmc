@@ -249,6 +249,20 @@ bool CDataCacheCore::IsVideoInterlaced()
   return m_playerVideoInfo.m_isInterlaced;
 }
 
+void CDataCacheCore::SetVideoFrameMetadata(const VideoFrameMetadata& metadata)
+{
+  std::unique_lock lock(m_videoPlayerSection);
+
+  m_playerVideoInfo.frameMetadata = metadata;
+}
+
+VideoFrameMetadata CDataCacheCore::GetVideoFrameMetadata() const
+{
+  std::unique_lock lock(m_videoPlayerSection);
+
+  return m_playerVideoInfo.frameMetadata;
+}
+
 // player audio info
 void CDataCacheCore::SetAudioDecoderName(std::string name)
 {
