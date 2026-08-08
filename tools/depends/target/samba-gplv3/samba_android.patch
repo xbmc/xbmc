@@ -106,3 +106,28 @@
  
  typedef struct winbindd_gr {
  	fstring gr_name;
+--- a/lib/util/overflow.h
++++ b/lib/util/overflow.h
+@@ -51,7 +51,20 @@
+ * @return True  pointer would over flow
+ *         False pointer would not overflow
+ */
++#if defined(__ANDROID__) && defined(__aarch64__)
++/*
++ * Android 11 and newer may tag heap pointers in the top byte. Such pointers
++ * are intentionally greater than INTPTR_MAX, so comparing them directly with
++ * INTPTR_MAX makes every non-zero offset look like an overflow. Ignore the
++ * top-byte tag when checking the address portion for overflow.
++ */
++#define ptr_overflow(ptr, offset, type) \
++	((uintptr_t)(offset) > \
++	 (((UINTPTR_MAX >> 8) - \
++	   ((uintptr_t)(ptr) & (UINTPTR_MAX >> 8))) / sizeof(type)))
++#else
+ #define ptr_overflow(ptr, offset, type) \
+-	offset_outside_range((ptr), ((type*)INTPTR_MAX), (offset))
++	offset_outside_range((ptr), ((type*)INTPTR_MAX), (offset))
++#endif
+-
++
+ #endif
