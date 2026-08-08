@@ -5911,6 +5911,11 @@ void CVideoPlayer::UpdateRenderBuffers(int queued, int discard, int free)
   m_processInfo->UpdateRenderBuffers(queued, discard, free);
 }
 
+void CVideoPlayer::UpdateVideoFrameMetadata(const VideoFrameMetadata& metadata)
+{
+  m_processInfo->SetVideoFrameMetadata(metadata);
+}
+
 void CVideoPlayer::UpdateGuiRender(bool gui)
 {
   m_processInfo->SetGuiRender(gui);

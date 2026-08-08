@@ -10,6 +10,7 @@
 
 #include "DVDClock.h"
 #include "DebugRenderer.h"
+#include "cores/VideoFrameMetadata.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 #include "cores/VideoPlayer/VideoRenderers/OverlayRenderer.h"
@@ -57,6 +58,7 @@ protected:
   virtual void UpdateClockSync(bool enabled) = 0;
   virtual void UpdateRenderInfo(CRenderInfo &info) = 0;
   virtual void UpdateRenderBuffers(int queued, int discard, int free) = 0;
+  virtual void UpdateVideoFrameMetadata(const VideoFrameMetadata& metadata) = 0;
   virtual void UpdateGuiRender(bool gui) = 0;
   virtual void UpdateVideoRender(bool video) = 0;
   virtual CVideoSettings GetVideoSettings() const = 0;
@@ -217,7 +219,14 @@ protected:
     double         pts;
     EFIELDSYNC     presentfield;
     EPRESENTMETHOD presentmethod;
+    VideoFrameMetadata frameMetadata;
   } m_Queue[NUM_BUFFERS]{};
+
+  /// Metadata last published to the player, so identical consecutive frames do
+  /// not re-enter the data cache lock. Written on the app thread, or under
+  /// m_statelock in UnInit(), which Render() cannot overlap because the render
+  /// state is no longer STATE_CONFIGURED by then.
+  VideoFrameMetadata m_publishedFrameMetadata;
 
   std::deque<int> m_free;
   std::deque<int> m_queued;

@@ -223,6 +223,9 @@ bool CRenderManager::Configure()
     m_presentsourcePast = -1;
     for (int i=1; i < m_QueueSize; i++)
       m_free.push_back(i);
+    for (SPresent& p : m_Queue)
+      p.frameMetadata = {};
+    m_publishedFrameMetadata = {};
 
     m_bRenderGUI = true;
     m_bTriggerUpdateResolution = true;
@@ -414,6 +417,7 @@ void CRenderManager::UnInit()
 
   m_renderState = STATE_UNCONFIGURED;
   m_picture.Reset();
+  m_publishedFrameMetadata = {};
   m_bRenderGUI = false;
 
   m_initEvent.Set();
@@ -452,6 +456,14 @@ bool CRenderManager::Flush(bool wait, bool saveBuffers)
         m_presentstep = PRESENT_IDLE;
         for (int i = 1; i < m_QueueSize; i++)
           m_free.push_back(i);
+      }
+
+      // gated on saveBuffers rather than on the Flush return value, which has
+      // no consistent meaning across renderers
+      if (!saveBuffers)
+      {
+        for (SPresent& p : m_Queue)
+          p.frameMetadata = {};
       }
 
       m_flushEvent.Set();
@@ -677,8 +689,13 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
 
   const SPresent& m = m_Queue[m_presentsource];
 
+  VideoFrameMetadata frameMetadata;
+
   {
     std::unique_lock lock(m_presentlock);
+
+    // re-indexed rather than reusing m, whose binding above is not synchronised
+    frameMetadata = m_Queue[m_presentsource].frameMetadata;
 
     if (m_presentstep == PRESENT_FRAME)
     {
@@ -697,6 +714,12 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
     }
 
     m_presentevent.notifyAll();
+  }
+
+  if (frameMetadata != m_publishedFrameMetadata)
+  {
+    m_publishedFrameMetadata = frameMetadata;
+    m_playerPort->UpdateVideoFrameMetadata(frameMetadata);
   }
 }
 
@@ -908,6 +931,8 @@ bool CRenderManager::AddVideoPicture(const VideoPicture& picture, volatile std::
   m.presentfield = displayField;
   m.presentmethod = presentmethod;
   m.pts = picture.pts;
+  m.frameMetadata.hdrType = picture.hdrType;
+  m.frameMetadata.dovi = picture.dovi;
   m_queued.push_back(m_free.front());
   m_free.pop_front();
   m_playerPort->UpdateRenderBuffers(m_queued.size(), m_discard.size(), m_free.size());

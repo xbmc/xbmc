@@ -407,6 +407,7 @@ protected:
   void UpdateClockSync(bool enabled) override;
   void UpdateRenderInfo(CRenderInfo &info) override;
   void UpdateRenderBuffers(int queued, int discard, int free) override;
+  void UpdateVideoFrameMetadata(const VideoFrameMetadata& metadata) override;
   void UpdateGuiRender(bool gui) override;
   void UpdateVideoRender(bool video) override;
 

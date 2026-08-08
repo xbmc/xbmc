@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "cores/VideoFrameMetadata.h"
 #include "cores/VideoPlayer/Buffers/VideoBuffer.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderInfo.h"
 #include "cores/VideoSettings.h"
@@ -56,6 +57,8 @@ public:
   int GetVideoQueueDataLevel();
   void SetVideoInterlaced(bool interlaced);
   bool GetVideoInterlaced();
+  void SetVideoFrameMetadata(const VideoFrameMetadata& metadata);
+  VideoFrameMetadata GetVideoFrameMetadata() const;
   virtual EINTERLACEMETHOD GetFallbackDeintMethod();
   virtual void SetSwDeinterlacingMethods();
   void UpdateDeinterlacingMethods(std::list<EINTERLACEMETHOD> &methods);
@@ -157,6 +160,7 @@ protected:
   int m_videoQueueLevel = 0;
   int m_videoQueueDataLevel = 0;
   bool m_videoIsInterlaced;
+  VideoFrameMetadata m_videoFrameMetadata;
   std::list<EINTERLACEMETHOD> m_deintMethods;
   EINTERLACEMETHOD m_deintMethodDefault;
   mutable CCriticalSection m_videoCodecSection;

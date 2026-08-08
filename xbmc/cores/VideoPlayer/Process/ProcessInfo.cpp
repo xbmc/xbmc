@@ -78,6 +78,7 @@ void CProcessInfo::ResetVideoCodecInfo()
   m_videoQueueLevel = 0;
   m_videoQueueDataLevel = 0;
   m_videoIsInterlaced = false;
+  m_videoFrameMetadata = {};
   m_deintMethods.clear();
   m_deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE);
   m_deintMethodDefault = EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE;
@@ -96,6 +97,7 @@ void CProcessInfo::ResetVideoCodecInfo()
     m_dataCache->SetVideoLiveBitRate(m_videoLiveBitRate);
     m_dataCache->SetVideoQueueLevel(m_videoQueueLevel);
     m_dataCache->SetVideoQueueDataLevel(m_videoQueueDataLevel);
+    m_dataCache->SetVideoFrameMetadata(m_videoFrameMetadata);
   }
 }
 
@@ -294,6 +296,23 @@ bool CProcessInfo::GetVideoInterlaced()
   std::unique_lock lock(m_videoCodecSection);
 
   return m_videoIsInterlaced;
+}
+
+void CProcessInfo::SetVideoFrameMetadata(const VideoFrameMetadata& metadata)
+{
+  std::unique_lock lock(m_videoCodecSection);
+
+  m_videoFrameMetadata = metadata;
+
+  if (m_dataCache)
+    m_dataCache->SetVideoFrameMetadata(m_videoFrameMetadata);
+}
+
+VideoFrameMetadata CProcessInfo::GetVideoFrameMetadata() const
+{
+  std::unique_lock lock(m_videoCodecSection);
+
+  return m_videoFrameMetadata;
 }
 
 EINTERLACEMETHOD CProcessInfo::GetFallbackDeintMethod()
