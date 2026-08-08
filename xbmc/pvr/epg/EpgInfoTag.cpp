@@ -31,6 +31,13 @@
 
 using namespace PVR;
 
+namespace
+{
+// Playability moves with programme and catchup window boundaries, so an answer from the
+// client stays good for far longer than the interval callers ask at.
+constexpr auto PLAYABLE_CACHE_DURATION{std::chrono::seconds(30)};
+} // unnamed namespace
+
 const std::string CPVREpgInfoTag::IMAGE_OWNER_PATTERN = "epgtag_{}";
 
 CPVREpgInfoTag::CPVREpgInfoTag(int iEpgID,
@@ -540,6 +547,8 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag& tag, bool bUpdateBroadcastId /
     m_iUniqueBroadcastID = tag.m_iUniqueBroadcastID;
     m_iconPath = tag.m_iconPath;
     m_channelData = tag.m_channelData;
+
+    m_isPlayableAsked.reset();
   }
 
   return bChanged;
@@ -599,16 +608,26 @@ bool CPVREpgInfoTag::IsRecordable() const
 
 bool CPVREpgInfoTag::IsPlayable() const
 {
+  std::unique_lock lock(m_critSection);
+
+  const auto now{std::chrono::steady_clock::now()};
+  if (m_isPlayableAsked && (now - *m_isPlayableAsked) < PLAYABLE_CACHE_DURATION)
+  {
+    return m_isPlayable;
+  }
+
   bool bIsPlayable = false;
 
-  std::unique_lock lock(m_critSection);
   const std::shared_ptr<const CPVRClient> client =
       CServiceBroker::GetPVRManager().GetClient(m_channelData->ClientId());
   if (!client || (client->IsPlayable(shared_from_this(), bIsPlayable) != PVR_ERROR_NO_ERROR))
   {
-    // fallback
-    bIsPlayable = false;
+    // fallback. Not cached; the client may be able to answer on the next call.
+    return false;
   }
+
+  m_isPlayable = bIsPlayable;
+  m_isPlayableAsked = now;
   return bIsPlayable;
 }
 

@@ -13,7 +13,9 @@
 #include "threads/CriticalSection.h"
 #include "utils/ISerializable.h"
 
+#include <chrono>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -546,6 +548,10 @@ private:
   unsigned int m_iFlags = 0; /*!< the flags applicable to this EPG entry */
   std::string m_strSeriesLink; /*!< series link */
   bool m_bIsGapTag = false;
+
+  mutable bool m_isPlayable{false}; /*!< the last playability answer given by the client */
+  mutable std::optional<std::chrono::steady_clock::time_point>
+      m_isPlayableAsked; /*!< when that answer was given, unset if never */
 
   mutable CCriticalSection m_critSection;
   std::shared_ptr<CPVREpgChannelData> m_channelData;
