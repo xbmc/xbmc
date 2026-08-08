@@ -19,9 +19,8 @@ extern "C"
 #include <libavutil/pixdesc.h>
 }
 
-CVideoBufferDMA::CVideoBufferDMA(
-    IVideoBufferPool& pool, int id, uint32_t fourcc, uint32_t planes, uint64_t size)
-  : CVideoBufferDRMPRIMEFFmpeg(pool, id),
+CVideoBufferDMA::CVideoBufferDMA(int id, uint32_t fourcc, uint32_t planes, uint64_t size)
+  : CVideoBufferDRMPRIME(id),
     m_bo(CBufferObject::GetBufferObject(true)),
     m_planes(planes),
     m_fourcc(fourcc),
@@ -73,6 +72,14 @@ void CVideoBufferDMA::SetDimensions(int width,
                                     const int (&strides)[YuvImage::MAX_PLANES],
                                     const int (&planeOffsets)[YuvImage::MAX_PLANES])
 {
+  // invalidate only on real change: every decoded picture repeats these values
+  bool changed = m_width != static_cast<uint32_t>(width) ||
+                 m_height != static_cast<uint32_t>(height);
+  for (uint32_t i = 0; !changed && i < m_planes; i++)
+    changed = m_strides[i] != strides[i] || m_offsets[i] != planeOffsets[i];
+  if (changed)
+    InvalidateIdentity();
+
   m_width = width;
   m_height = height;
 
@@ -178,6 +185,7 @@ void CVideoBufferDMA::SyncEnd()
 
 void CVideoBufferDMA::Destroy()
 {
+  InvalidateIdentity();
   m_bo->ReleaseMemory();
   m_bo->DestroyBufferObject();
 

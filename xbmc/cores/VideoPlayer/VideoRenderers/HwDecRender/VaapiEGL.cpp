@@ -12,6 +12,8 @@
 #include "utils/EGLUtils.h"
 #include "utils/log.h"
 
+#include <unistd.h>
+
 #include <drm_fourcc.h>
 #include <va/va_drmcommon.h>
 
@@ -25,17 +27,13 @@ void CVaapi2Texture::Init(InteropInfo& interop)
 
 bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
 {
-  if (m_vaapiPic)
+  if (m_mapped)
     return true;
 
-  m_vaapiPic = pic;
-  m_vaapiPic->Acquire();
-
-  // Pairs with the Acquire() above; nulling lets a retry see unmapped state.
   auto failMap = [this]()
   {
-    m_vaapiPic->Release();
-    m_vaapiPic = nullptr;
+    for (auto& fd : m_drmFDs)
+      fd.reset();
     return false;
   };
 
@@ -177,12 +175,13 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
     glBindTexture(m_interop.textureTarget, 0);
   }
 
+  m_mapped = true;
   return true;
 }
 
 void CVaapi2Texture::Unmap()
 {
-  if (!m_vaapiPic)
+  if (!m_mapped)
     return;
 
   for (auto texture : {&m_y, &m_vu})
@@ -200,8 +199,7 @@ void CVaapi2Texture::Unmap()
     fd.reset();
   }
 
-  m_vaapiPic->Release();
-  m_vaapiPic = nullptr;
+  m_mapped = false;
 }
 
 GLuint CVaapi2Texture::GetTextureY()
@@ -217,6 +215,124 @@ GLuint CVaapi2Texture::GetTextureVU()
 CSizeInt CVaapi2Texture::GetTextureSize()
 {
   return m_textureSize;
+}
+
+namespace
+{
+
+// separate-layers export: one plane per layer, keyed like the DRMPRIME path
+std::optional<DRMPRIME::DmaBufIdentity> IdentityFromVaDescriptor(
+    const VADRMPRIMESurfaceDescriptor& surface)
+{
+  if (surface.num_objects < 1 || surface.num_objects > AV_DRM_MAX_PLANES ||
+      surface.num_layers < 1 || surface.num_layers > AV_DRM_MAX_PLANES)
+    return std::nullopt;
+
+  DRMPRIME::DmaBufIdentity identity;
+  identity.nbObjects = surface.num_objects;
+  for (uint32_t i = 0; i < surface.num_objects; i++)
+  {
+    if (!DRMPRIME::StatInode(surface.objects[i].fd, identity.inode[i]))
+      return std::nullopt;
+    identity.modifier[i] = surface.objects[i].drm_format_modifier;
+  }
+
+  identity.width = surface.width;
+  identity.height = surface.height;
+  identity.format = surface.fourcc;
+  identity.nbPlanes = surface.num_layers;
+  for (uint32_t i = 0; i < surface.num_layers; i++)
+  {
+    identity.objectIndex[i] = surface.layers[i].object_index[0];
+    identity.offset[i] = surface.layers[i].offset[0];
+    identity.pitch[i] = surface.layers[i].pitch[0];
+  }
+
+  return identity;
+}
+
+} // namespace
+
+void CVaapiTexturePool::Init(InteropInfo& interop)
+{
+  m_interop = interop;
+}
+
+CVaapi2Texture* CVaapiTexturePool::Get(CVaapiRenderPicture* pic)
+{
+  VADRMPRIMESurfaceDescriptor surface;
+  VAStatus status = vaExportSurfaceHandle(
+      pic->vadsp, pic->procPic.videoSurface, VA_SURFACE_ATTRIB_MEM_TYPE_DRM_PRIME_2,
+      VA_EXPORT_SURFACE_READ_ONLY | VA_EXPORT_SURFACE_SEPARATE_LAYERS, &surface);
+  if (status != VA_STATUS_SUCCESS)
+  {
+    CLog::Log(LOGWARNING, "CVaapiTexturePool::{}: vaExportSurfaceHandle failed - Error: {} ({})",
+              __FUNCTION__, vaErrorStr(status), status);
+    return nullptr;
+  }
+
+  // this export only identifies the memory; Map on a miss re-exports its own fds
+  const auto identity = IdentityFromVaDescriptor(surface);
+  for (uint32_t i = 0; i < surface.num_objects; i++)
+    close(surface.objects[i].fd);
+  if (!identity)
+    return nullptr;
+
+  uint32_t handle = m_cache.Lookup(*identity);
+  if (handle)
+  {
+    // Map syncs only on a miss; a cached texture still needs this frame's decode done
+    status = vaSyncSurface(pic->vadsp, pic->procPic.videoSurface);
+    if (status != VA_STATUS_SUCCESS)
+    {
+      CLog::Log(LOGERROR, "CVaapiTexturePool::{}: vaSyncSurface - Error: {} ({})", __FUNCTION__,
+                vaErrorStr(status), status);
+      return nullptr;
+    }
+  }
+  else
+  {
+    size_t slot;
+    if (!m_free.empty())
+    {
+      slot = m_free.back();
+      m_free.pop_back();
+    }
+    else
+    {
+      slot = m_entries.size();
+      m_entries.push_back(std::make_unique<CVaapi2Texture>());
+      m_entries[slot]->Init(m_interop);
+    }
+
+    if (!m_entries[slot]->Map(pic))
+    {
+      m_free.push_back(slot);
+      return nullptr;
+    }
+    handle = static_cast<uint32_t>(slot) + 1;
+    m_cache.Insert(*identity, handle);
+  }
+
+  for (uint32_t doomed : m_cache.Reap(handle, 0))
+  {
+    m_entries[doomed - 1]->Unmap();
+    m_free.push_back(doomed - 1);
+  }
+
+  return m_entries[handle - 1].get();
+}
+
+void CVaapiTexturePool::ReleaseAll()
+{
+  m_cache.TakeAll();
+  for (auto& entry : m_entries)
+  {
+    if (entry)
+      entry->Unmap();
+  }
+  m_entries.clear();
+  m_free.clear();
 }
 
 bool CVaapi2Texture::TestEsh(VADisplay vaDpy, EGLDisplay eglDisplay, std::uint32_t rtFormat, std::int32_t pixelFormat)

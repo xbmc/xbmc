@@ -57,6 +57,30 @@ CVideoBufferDRMPRIME::CVideoBufferDRMPRIME(int id) : CVideoBuffer(id)
   m_pixFormat = AV_PIX_FMT_DRM_PRIME;
 }
 
+bool CVideoBufferDRMPRIME::IsValid() const
+{
+  AVDRMFrameDescriptor* descriptor = GetDescriptor();
+  return descriptor && descriptor->nb_layers;
+}
+
+const std::optional<DRMPRIME::DmaBufIdentity>& CVideoBufferDRMPRIME::GetIdentity(
+    const DRMPRIME::StatInodeFn& statInode)
+{
+  if (!m_identityValid)
+  {
+    m_identity =
+        DRMPRIME::ComputeDmaBufIdentity(GetDescriptor(), GetWidth(), GetHeight(), statInode);
+    m_identityValid = true;
+  }
+  return m_identity;
+}
+
+void CVideoBufferDRMPRIME::InvalidateIdentity()
+{
+  m_identity.reset();
+  m_identityValid = false;
+}
+
 CVideoBufferDRMPRIMEFFmpeg::CVideoBufferDRMPRIMEFFmpeg(IVideoBufferPool& pool, int id)
   : CVideoBufferDRMPRIME(id)
 {
@@ -71,18 +95,14 @@ CVideoBufferDRMPRIMEFFmpeg::~CVideoBufferDRMPRIMEFFmpeg()
 
 void CVideoBufferDRMPRIMEFFmpeg::SetRef(AVFrame* frame)
 {
+  InvalidateIdentity();
   av_frame_move_ref(m_pFrame, frame);
 }
 
 void CVideoBufferDRMPRIMEFFmpeg::Unref()
 {
+  InvalidateIdentity();
   av_frame_unref(m_pFrame);
-}
-
-bool CVideoBufferDRMPRIMEFFmpeg::IsValid() const
-{
-  AVDRMFrameDescriptor* descriptor = GetDescriptor();
-  return descriptor && descriptor->nb_layers;
 }
 
 CVideoBufferPoolDRMPRIMEFFmpeg::~CVideoBufferPoolDRMPRIMEFFmpeg()

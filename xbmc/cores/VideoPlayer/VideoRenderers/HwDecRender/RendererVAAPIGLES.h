@@ -64,7 +64,8 @@ protected:
   // YUY2 / Y210 / Y212 / Y216). Captured at Configure and read by
   // GetShaderFormat to pick the matching sampling path.
   std::int32_t m_vaapiFourcc{};
-  std::unique_ptr<VAAPI::CVaapiTexture> m_vaapiTextures[NUM_BUFFERS];
+  VAAPI::CVaapiTexturePool m_texturePool;
+  VAAPI::CVaapiTexture* m_vaapiTextures[NUM_BUFFERS]{};
   std::array<std::unique_ptr<KODI::UTILS::EGL::CEGLFence>, NUM_BUFFERS> m_fences;
   static VAAPI::IVaapiWinSystem *m_pWinSystem;
 };
