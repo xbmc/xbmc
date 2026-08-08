@@ -41,6 +41,7 @@ public:
                          int fixedPosition,
                          int startCursorRange,
                          int endCursorRange,
+                         int pageItems,
                          FixedListAlignY alignY);
   ~CGUIFixedListContainer(void) override;
   CGUIFixedListContainer* Clone() const override { return new CGUIFixedListContainer(*this); }
@@ -59,6 +60,7 @@ protected:
   bool HasNextPage() const override;
   bool HasPreviousPage() const override;
   int GetCurrentPage() const override;
+  void SetPageControlRange() override;
 
 private:
   /*!
@@ -72,10 +74,11 @@ private:
    \sa m_fixedCursor, m_cursorRange
    */
   void GetCursorRange(int &minCursor, int &maxCursor) const;
+  int GetPageItems() const;
 
   int m_fixedCursor; ///< default position the skinner wishes to use for the focused item
   int m_startCursorRange; ///< range that the focused item can vary when at the beginning end of the list
   int m_endCursorRange; ///< range that the focused item can vary when at the end of the list
+  int m_pageItems; ///< number of items to move by on page up/down, 0 uses the calculated page size
   FixedListAlignY m_alignY; //!< Vertical alignment of the items
 };
-

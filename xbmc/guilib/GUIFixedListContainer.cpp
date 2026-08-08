@@ -9,6 +9,7 @@
 #include "GUIFixedListContainer.h"
 
 #include "GUIListItemLayout.h"
+#include "GUIMessage.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 
@@ -26,6 +27,7 @@ CGUIFixedListContainer::CGUIFixedListContainer(int parentID,
                                                int fixedPosition,
                                                int startCursorRange,
                                                int endCursorRange,
+                                               int pageItems,
                                                FixedListAlignY alignY)
   : CGUIBaseContainer(
         parentID, controlID, posX, posY, width, height, orientation, scroller, preloadItems)
@@ -35,6 +37,7 @@ CGUIFixedListContainer::CGUIFixedListContainer(int parentID,
   m_fixedCursor = fixedPosition;
   m_startCursorRange = startCursorRange;
   m_endCursorRange = endCursorRange;
+  m_pageItems = pageItems;
   m_alignY = alignY;
   SetCursor(m_fixedCursor);
 }
@@ -47,13 +50,13 @@ bool CGUIFixedListContainer::OnAction(const CAction &action)
   {
   case ACTION_PAGE_UP:
     {
-      Scroll(-m_itemsPerPage);
+      Scroll(-GetPageItems());
       return true;
     }
     break;
   case ACTION_PAGE_DOWN:
     {
-      Scroll(m_itemsPerPage);
+      Scroll(GetPageItems());
       return true;
     }
     break;
@@ -292,15 +295,27 @@ bool CGUIFixedListContainer::HasPreviousPage() const
 
 bool CGUIFixedListContainer::HasNextPage() const
 {
-  return (GetOffset() < (int)m_items.size() - m_itemsPerPage && (int)m_items.size() >= m_itemsPerPage);
+  const int pageItems = GetPageItems();
+  return (GetOffset() < (int)m_items.size() - pageItems && (int)m_items.size() >= pageItems);
 }
 
 int CGUIFixedListContainer::GetCurrentPage() const
 {
   int offset = CorrectOffset(GetOffset(), GetCursor());
-  if (offset + m_itemsPerPage - GetCursor() >= (int)GetRows())  // last page
-    return (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage;
-  return offset / m_itemsPerPage + 1;
+  const int pageItems = GetPageItems();
+  if (offset + pageItems - GetCursor() >= (int)GetRows()) // last page
+    return (GetRows() + pageItems - 1) / pageItems;
+  return offset / pageItems + 1;
+}
+
+void CGUIFixedListContainer::SetPageControlRange()
+{
+  if (m_pageControl)
+  {
+    CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, GetPageItems(), GetRows());
+    SendWindowMessage(msg);
+    m_lastPageControlOffset.reset();
+  }
 }
 
 void CGUIFixedListContainer::GetCursorRange(int &minCursor, int &maxCursor) const
@@ -341,4 +356,9 @@ void CGUIFixedListContainer::GetCursorRange(int &minCursor, int &maxCursor) cons
 
   while (maxCursor - minCursor > static_cast<int>(m_items.size()) - 1)
     fn(minCursor, maxCursor, m_fixedCursor);
+}
+
+int CGUIFixedListContainer::GetPageItems() const
+{
+  return m_pageItems > 0 ? m_pageItems : m_itemsPerPage;
 }
