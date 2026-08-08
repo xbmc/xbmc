@@ -112,3 +112,63 @@ TEST(TestDVDDemuxUtils, ReadChaptersInvalid)
   output = CDVDDemuxUtils::LoadChapters(std::span<AVChapter*>{&avcptr, 0});
   EXPECT_TRUE(output.empty());
 }
+
+struct TestSnapRate
+{
+  int inRate;
+  int inScale;
+  double hintFps;
+  bool expectSnapped;
+  int expectRate;
+  int expectScale;
+};
+
+// clang-format off
+const TestSnapRate testSnapRates[] = {
+  // 42ms header (real 23.976 quantised to whole ms): no statistics -> fractional bias
+  {500, 21, 0.0, true, 24000, 1001},
+  // statistics resolve the 42ms tie in either direction
+  {500, 21, 23.976, true, 24000, 1001},
+  {500, 21, 24.0001, true, 24, 1},
+  // statistics contradicting every candidate: leave the rate alone
+  {500, 21, 30.0, false, 500, 21},
+  {500, 21, 23.80, false, 500, 21},
+  // 33ms sibling (29.97/30) and 17ms sibling (59.94/60)
+  {1000, 33, 0.0, true, 30000, 1001},
+  {1000, 33, 30.0001, true, 30, 1},
+  {1000, 17, 0.0, true, 60000, 1001},
+  {1000, 17, 59.9401, true, 60000, 1001},
+  // PAL rates quantise to whole milliseconds exactly: already standard
+  {25, 1, 0.0, false, 25, 1},
+  {50, 1, 0.0, false, 50, 1},
+  // exact and float-rounded declarations are not 1000/N shaped
+  {24000, 1001, 0.0, false, 24000, 1001},
+  {23976, 1000, 0.0, false, 23976, 1000},
+  // near-standard but not millisecond-quantised: not the muxer fingerprint
+  {2497, 100, 0.0, false, 2497, 100},
+  // legitimate non-standard rates
+  {48, 1, 0.0, false, 48, 1},
+  {120, 1, 0.0, false, 120, 1},
+  // whole-millisecond durations that map to no standard rate
+  {1000, 41, 0.0, false, 1000, 41},
+  {1000, 8, 0.0, false, 1000, 8},
+  {20, 1, 0.0, false, 20, 1},
+};
+// clang-format on
+
+class SnapRateTester : public testing::WithParamInterface<TestSnapRate>, public testing::Test
+{
+};
+
+TEST_P(SnapRateTester, TestSnapMsQuantisedFrameRate)
+{
+  const TestSnapRate& param = GetParam();
+  int rate = param.inRate;
+  int scale = param.inScale;
+  EXPECT_EQ(param.expectSnapped,
+            CDVDDemuxUtils::SnapMsQuantisedFrameRate(rate, scale, param.hintFps));
+  EXPECT_EQ(param.expectRate, rate);
+  EXPECT_EQ(param.expectScale, scale);
+}
+
+INSTANTIATE_TEST_SUITE_P(TestDVDDemuxUtils, SnapRateTester, testing::ValuesIn(testSnapRates));
