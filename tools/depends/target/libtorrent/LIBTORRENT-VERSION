@@ -1,0 +1,9 @@
+LIBNAME=libtorrent
+VERSION=0ee81446e15fbcee4c4d278edd6f4edd9006c96b
+ARCHIVE=$(VERSION).tar.gz
+SHA512=ca0f6334bbef991dd2d0a10f353e92db5dc9c6885aa53428c2fcb31b402340a6ee3ac2d1e0c072e3e7a0d0452ae0dad857376c0c1015c1de4405054b0d8e57ee
+BYPRODUCT=libtorrent-rasterbar.a
+BYPRODUCT_WIN=torrent-rasterbar.lib
+
+# TODO
+BASE_URL=https://github.com/arvidn/libtorrent/archive

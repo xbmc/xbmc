@@ -440,6 +440,10 @@ void CSettingConditions::Initialize()
   m_simpleConditions.emplace("has_optical_drive");
 #endif
 
+#ifdef HAS_LIBTORRENT
+  m_simpleConditions.insert("has_libtorrent");
+#endif
+
   // add complex conditions
 
   m_complexConditions.try_emplace("addonhassettings", AddonHasSettings);
