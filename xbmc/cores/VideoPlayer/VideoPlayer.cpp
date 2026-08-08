@@ -87,6 +87,18 @@ using namespace std::chrono_literals;
       return (lh) > (rh); \
   } while(0)
 
+namespace
+{
+/*!
+ * \brief Check whether a stream declares a usable language, i.e. it is neither missing
+ *        nor explicitly undetermined. Some media leave the language of a stream unset.
+ */
+bool IsKnownLanguage(const std::string& language)
+{
+  return !language.empty() && language != "und";
+}
+} // unnamed namespace
+
 class PredicateSubtitleFilter
 {
 private:
@@ -98,6 +110,7 @@ private:
   bool m_isPrefForced;
   bool m_isPrefHearingImp;
   bool m_isSubNone;
+  bool m_hideSameAudioLang;
   int m_subStream;
 
 public:
@@ -116,6 +129,10 @@ public:
     m_isPrefOriginal = StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageOriginal);
     m_isPrefForced = StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageForcedOnly);
     m_isPrefHearingImp = settings->GetBool(CSettings::SETTING_ACCESSIBILITY_SUBHEARING);
+    // A hearing impaired user needs the subtitles of the language being listened to,
+    // so that preference wins over hiding them
+    m_hideSameAudioLang = settings->GetBool(CSettings::SETTING_SUBTITLES_HIDESAMEAUDIOLANGUAGE) &&
+                          !m_isPrefHearingImp;
 
     m_subLang = g_langInfo.GetSubtitleLanguage(false);
     if (m_subLang.empty()) // No language set (due to none, original, forced_only settings)
@@ -149,6 +166,16 @@ public:
     }
 
     const bool isSameSubLang = g_LangCodeExpander.CompareISO639Codes(ss.language, m_subLang);
+
+    // The user does not want to read subtitles in a language they are already listening to.
+    // Forced subtitles are kept, as they usually only translate foreign language parts.
+    // Both languages must be declared, a stream that states none is never assumed to match.
+    if (m_hideSameAudioLang && (ss.flags & FLAG_FORCED) == 0 &&
+        IsKnownLanguage(m_playedAudioLang) && IsKnownLanguage(ss.language) &&
+        g_LangCodeExpander.CompareISO639Codes(ss.language, m_playedAudioLang))
+    {
+      return true;
+    }
 
     if (m_isPrefHearingImp)
     {

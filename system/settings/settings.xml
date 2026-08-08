@@ -603,6 +603,11 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
+        <setting id="subtitles.hidesameaudiolanguage" type="boolean" label="39211" help="39212">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
       </group>
       <group id="3" label="37032">
         <setting id="accessibility.audiovisual" type="boolean" label="37034" help="37035">
