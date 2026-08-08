@@ -83,6 +83,42 @@ using KODI::UTILITY::CDigest;
 
 namespace
 {
+/*!
+ * \brief Get the video extras folder directly below \p directory that \p path belongs to.
+ *        A disc (BDMV/VIDEO_TS) in such a folder is listed as a playable file below it, so the
+ *        whole path has to be considered and not only the name of the listed item.
+ * \param[in] directory The directory being scanned. Must end with a directory separator
+ * \param[in] path Path of an item listed in \p directory
+ * \return Path of the video extras folder (ending with a directory separator), or empty if
+ *         \p path doesn't belong to one
+ */
+std::string GetExtrasFolder(std::string_view directory, const std::string& path)
+{
+  std::string current{path};
+  URIUtils::RemoveSlashAtEnd(current);
+
+  // Walk up until the direct child of the scanned directory is reached
+  while (!current.empty())
+  {
+    std::string parent{URIUtils::GetParentPath(current)};
+    if (parent.empty() || URIUtils::PathEquals(parent, current, true))
+      break;
+
+    if (URIUtils::PathEquals(parent, std::string{directory}, true))
+    {
+      if (!VIDEO::IsVideoExtrasFolderName(URIUtils::GetFileOrFolderName(current)))
+        break;
+
+      URIUtils::AddSlashAtEnd(current);
+      return current;
+    }
+
+    current = std::move(parent);
+    URIUtils::RemoveSlashAtEnd(current);
+  }
+  return {};
+}
+
 //! \brief The grouping of similar videos setting, for logging
 const char* SimilarVideoScanActionToStr(SimilarVideoScanAction action)
 {
@@ -465,6 +501,18 @@ CVideoInfoScanner::~CVideoInfoScanner()
     if (content == ContentType::NONE || ignoreFolder)
       return std::make_pair(ScanComplete::Completed, ContentFound::None);
 
+    // A video extras folder (eg. "Extras", "Bonus Disc") holds no movie of its own. Skip it and
+    // anything below it when video extras are ignored.
+    // A path with content set on it (a source root) is never skipped.
+    if (m_ignoreVideoExtras && content == ContentType::MOVIES && !foundDirectly &&
+        IsVideoExtrasFolderName(URIUtils::GetFileOrFolderName(strDirectory)))
+    {
+      CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping extras dir '{}'",
+                CURL::GetRedacted(strDirectory));
+      RemoveSubDirectories(m_pathsToScan, strDirectory, {});
+      return std::make_pair(ScanComplete::Completed, ContentFound::None);
+    }
+
     if (URIUtils::IsPlugin(strDirectory) && !CPluginDirectory::IsMediaLibraryScanningAllowed(TranslateContent(content), strDirectory))
     {
       CLog::Log(
@@ -599,6 +647,34 @@ CVideoInfoScanner::~CVideoInfoScanner()
         items.SetPath(URIUtils::GetParentPath(item->GetPath()));
       }
     }
+
+    // Drop everything belonging to a video extras folder (eg. "Extras", "Bonus Disc") when video
+    // extras are ignored. Stack() has already turned such a folder into a playable file item when
+    // it holds a disc structure (BDMV/VIDEO_TS), so the path of the item is matched and not only
+    // its name. Done after hashing so that the stored hash still describes the whole listing.
+    if (m_ignoreVideoExtras && content == ContentType::MOVIES)
+    {
+      for (int i = items.Size() - 1; i >= 0; --i)
+      {
+        const std::string extrasFolder{GetExtrasFolder(strDirectory, items[i]->GetPath())};
+        if (extrasFolder.empty())
+          continue;
+
+        // Leave a folder with content set on it (a source root) alone
+        SScanSettings extrasSettings;
+        bool extrasFoundDirectly{false};
+        if (m_database.GetScraperForPath(extrasFolder, extrasSettings, extrasFoundDirectly,
+                                         &m_scraperCache) &&
+            extrasFoundDirectly)
+          continue;
+
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Ignoring extras item '{}'",
+                  CURL::GetRedacted(items[i]->GetPath()));
+        RemoveSubDirectories(m_pathsToScan, extrasFolder, {});
+        items.Remove(i);
+      }
+    }
+
     bool foundSomething = false;
     if (!bSkip)
     {
