@@ -1381,7 +1381,8 @@ void CFileItem::UpdateInfo(const CFileItem& item,
     m_epgSearchFilter = item.m_epgSearchFilter;
     SetInvalid();
   }
-  SetDynPath(item.GetDynPath());
+  if (item.HasDynPath())
+    SetDynPath(item.GetDynPath());
 
   // Alter label to episode number(s) if requested
   std::string label;
@@ -1472,7 +1473,8 @@ void CFileItem::MergeInfo(const CFileItem& item)
     m_epgSearchFilter = item.m_epgSearchFilter;
     SetInvalid();
   }
-  SetDynPath(item.GetDynPath());
+  if (item.HasDynPath())
+    SetDynPath(item.GetDynPath());
   if (!item.GetLabel().empty())
     SetLabel(item.GetLabel());
   if (!item.GetLabel2().empty())
@@ -1695,6 +1697,11 @@ const std::string &CFileItem::GetDynPath() const
     return m_strDynPath;
   else
     return m_strPath;
+}
+
+bool CFileItem::HasDynPath() const
+{
+  return !m_strDynPath.empty();
 }
 
 void CFileItem::SetDynPath(std::string path)

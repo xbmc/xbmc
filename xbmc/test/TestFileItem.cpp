@@ -1008,6 +1008,62 @@ TEST(TestFileItem, TestSimplePathSet)
   EXPECT_EQ("/local/path/dynamic/file.txt", item.GetDynURL().Get());
 }
 
+namespace
+{
+// A plugin item as it looks once playback has resolved it: the path is still the original
+// plugin url, and the dyn path is the thing actually being played.
+// See CPluginDirectory::GetPluginResult.
+CFileItem MakeResolvedPluginItem()
+{
+  CFileItem item;
+  item.SetPath("plugin://plugin.video.test/play/1");
+  item.SetDynPath("/resolved/real-stream.mkv");
+  return item;
+}
+
+// What an add-on hands to Player.updateInfoTag: the original url, and no dyn path of its own.
+CFileItem MakeAddonUpdateItem()
+{
+  CFileItem item;
+  item.SetPath("plugin://plugin.video.test/play/1");
+  return item;
+}
+} // namespace
+
+TEST(TestFileItem, UpdateInfoKeepsAResolvedDynPath)
+{
+  CFileItem target = MakeResolvedPluginItem();
+
+  CFileItem source = MakeAddonUpdateItem();
+  source.SetLabel("Updated title");
+
+  target.UpdateInfo(source);
+
+  EXPECT_EQ("Updated title", target.GetLabel());
+  EXPECT_EQ("/resolved/real-stream.mkv", target.GetDynPath());
+}
+
+TEST(TestFileItem, UpdateInfoTakesADynPathTheSourceActuallyHas)
+{
+  CFileItem target = MakeResolvedPluginItem();
+
+  CFileItem source = MakeAddonUpdateItem();
+  source.SetDynPath("/resolved/replacement.mkv");
+
+  target.UpdateInfo(source);
+
+  EXPECT_EQ("/resolved/replacement.mkv", target.GetDynPath());
+}
+
+TEST(TestFileItem, MergeInfoKeepsAResolvedDynPath)
+{
+  CFileItem target = MakeResolvedPluginItem();
+
+  target.MergeInfo(MakeAddonUpdateItem());
+
+  EXPECT_EQ("/resolved/real-stream.mkv", target.GetDynPath());
+}
+
 TEST(TestFileItem, TestLabel)
 {
   CFileItem item("My Item Label");
