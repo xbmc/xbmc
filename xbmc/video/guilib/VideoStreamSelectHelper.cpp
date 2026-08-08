@@ -512,7 +512,8 @@ void KODI::VIDEO::GUILIB::OpenDialogSelectSubtitleStream()
     }
     else if (id != STREAM_ID_NONE)
     {
-      appPlayer->SetSubtitle(id);
+      if (id != appPlayer->GetSubtitle())
+        appPlayer->SetSubtitle(id);
 
       if (!appPlayer->GetSubtitleVisible())
         appPlayer->SetSubtitleVisible(true);
