@@ -1208,7 +1208,144 @@ TEST_F(TestURIUtils, IsUPnP)
 TEST_F(TestURIUtils, IsURL)
 {
   EXPECT_TRUE(URIUtils::IsURL("someprotocol://path/to/file"));
+  EXPECT_TRUE(URIUtils::IsURL("https://example.com/file"));
+  EXPECT_TRUE(URIUtils::IsURL("special://home/file"));
+  EXPECT_TRUE(URIUtils::IsURL("plugin://plugin.video.example/"));
+  EXPECT_TRUE(URIUtils::IsURL("x://host/path"));
+
+  EXPECT_FALSE(URIUtils::IsURL("data:text/plain,Hello"));
+  EXPECT_FALSE(URIUtils::IsURL("data:text/plain;base64,SGVsbG8="));
+  EXPECT_FALSE(URIUtils::IsURL("scheme+extension:value"));
+  EXPECT_FALSE(URIUtils::IsURL("scheme-extension:value"));
+  EXPECT_FALSE(URIUtils::IsURL("scheme.extension:value"));
+  EXPECT_FALSE(URIUtils::IsURL("relative:name"));
+  EXPECT_FALSE(URIUtils::IsURL("artist:title.mkv"));
   EXPECT_FALSE(URIUtils::IsURL("/path/to/file"));
+  EXPECT_FALSE(URIUtils::IsURL("C:/path/to/file"));
+  EXPECT_FALSE(URIUtils::IsURL("C:\\path\\to\\file"));
+  EXPECT_FALSE(URIUtils::IsURL("C:relative-file"));
+  EXPECT_FALSE(URIUtils::IsURL("x:value"));
+  EXPECT_FALSE(URIUtils::IsURL("1scheme:value"));
+  EXPECT_FALSE(URIUtils::IsURL("+scheme:value"));
+  EXPECT_FALSE(URIUtils::IsURL("scheme value:data"));
+  EXPECT_FALSE(URIUtils::IsURL(":value"));
+  EXPECT_FALSE(URIUtils::IsURL("relative/path"));
+}
+
+TEST_F(TestURIUtils, IsURI)
+{
+  EXPECT_TRUE(URIUtils::IsURI("data:text/plain,Hello"));
+  EXPECT_TRUE(URIUtils::IsURI("DATA:text/plain;base64,SGVsbG8="));
+  EXPECT_TRUE(URIUtils::IsURI("https://example.com/file"));
+  EXPECT_TRUE(URIUtils::IsURI("special://home/file"));
+  EXPECT_TRUE(URIUtils::IsURI("x://host/path"));
+  EXPECT_TRUE(URIUtils::IsURI("scheme+extension:value"));
+  EXPECT_TRUE(URIUtils::IsURI("scheme-extension:value"));
+  EXPECT_TRUE(URIUtils::IsURI("scheme.extension:value"));
+  EXPECT_TRUE(URIUtils::IsURI("scheme1:value"));
+  EXPECT_TRUE(URIUtils::IsURI("urn:isbn:0451450523"));
+  EXPECT_TRUE(URIUtils::IsURI("relative:name"));
+  EXPECT_TRUE(URIUtils::IsURI("artist:title.mkv"));
+  EXPECT_TRUE(URIUtils::IsURI("x:value"));
+  EXPECT_TRUE(URIUtils::IsURI("C:/path/to/file"));
+  EXPECT_TRUE(URIUtils::IsURI("C:relative-file"));
+  EXPECT_TRUE(URIUtils::IsURI("scheme:"));
+
+  EXPECT_FALSE(URIUtils::IsURI("/path/to/file"));
+  EXPECT_FALSE(URIUtils::IsURI("C:\\path\\to\\file"));
+  EXPECT_FALSE(URIUtils::IsURI("1scheme:value"));
+  EXPECT_FALSE(URIUtils::IsURI("+scheme:value"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme value:data"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme_value:data"));
+  EXPECT_FALSE(URIUtils::IsURI(":value"));
+  EXPECT_FALSE(URIUtils::IsURI("relative/path"));
+}
+
+TEST_F(TestURIUtils, IsURIAndDOSPathAmbiguity)
+{
+  EXPECT_TRUE(URIUtils::IsURI("C:/path/to/file"));
+  EXPECT_TRUE(URIUtils::IsDOSPath("C:/path/to/file"));
+  EXPECT_TRUE(URIUtils::IsURI("C:relative-file"));
+  EXPECT_TRUE(URIUtils::IsDOSPath("C:relative-file"));
+
+  EXPECT_FALSE(URIUtils::IsURI("C:\\path\\to\\file"));
+  EXPECT_TRUE(URIUtils::IsDOSPath("C:\\path\\to\\file"));
+}
+
+TEST_F(TestURIUtils, IsURIGenericComponents)
+{
+  EXPECT_TRUE(URIUtils::IsURI("scheme:/absolute/path"));
+  EXPECT_TRUE(URIUtils::IsURI("scheme:path:with@characters"));
+  EXPECT_TRUE(URIUtils::IsURI(
+      "scheme://user:pass@example.com:8042/path;parameter?query=/?:@&+$,;#fragment/?:@&+$,;"));
+  EXPECT_TRUE(
+      URIUtils::IsURI("scheme://user%20name@exa%6dple.test:123/a%2fb?x=%23#fragment%20value"));
+  EXPECT_TRUE(URIUtils::IsURI("scheme:%00"));
+  EXPECT_TRUE(URIUtils::IsURI("scheme:path?query?part#fragment?part"));
+
+  // Generic validity does not imply validity under an individual scheme.
+  EXPECT_TRUE(URIUtils::IsURI("http:/"));
+  EXPECT_TRUE(URIUtils::IsURI("data:"));
+
+  // Empty authority hosts and ports are allowed by the generic grammar even
+  // when an individual scheme, such as HTTPS, imposes stricter requirements.
+  EXPECT_TRUE(URIUtils::IsURI("scheme://"));
+  EXPECT_TRUE(URIUtils::IsURI("scheme://@:/"));
+  EXPECT_TRUE(URIUtils::IsURI("file:///tmp/file"));
+  EXPECT_TRUE(URIUtils::IsURI("scheme://host:/"));
+  EXPECT_TRUE(URIUtils::IsURI("scheme://host:999999999999999999999999/path"));
+
+  // An IPv4address is a subset of reg-name. A dotted numeric string that is
+  // not an IPv4address can therefore still be a syntactically valid host.
+  EXPECT_TRUE(URIUtils::IsURI("scheme://999.999.999.999/path"));
+
+  EXPECT_FALSE(URIUtils::IsURI("scheme:value with space"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme:value\\with\\backslashes"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme:%"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme:%0"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme:%GG"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme://user%GG@host/path"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme://host%GG/path"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme:path?query%GG"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme:path#fragment%GG"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme://user@@host/path"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme://host:port/path"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme://host:80:90/path"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme://host/path[invalid]"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme:path?query[invalid]"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme:path#fragment#invalid"));
+}
+
+TEST_F(TestURIUtils, IsURIIPLiteral)
+{
+  EXPECT_TRUE(URIUtils::IsURI("scheme://192.0.2.1/path"));
+  EXPECT_TRUE(URIUtils::IsURI("scheme://[2001:db8::7]/path"));
+  EXPECT_TRUE(URIUtils::IsURI("scheme://[1:2:3:4:5:6:7:8]/path"));
+  EXPECT_TRUE(URIUtils::IsURI("scheme://[::]/path"));
+  EXPECT_TRUE(URIUtils::IsURI("scheme://[2001:db8::]/path"));
+  EXPECT_TRUE(URIUtils::IsURI("scheme://[::ffff:192.0.2.128]/path"));
+  EXPECT_TRUE(URIUtils::IsURI("scheme://[1:2:3:4:5:6:192.0.2.128]/path"));
+  EXPECT_TRUE(URIUtils::IsURI("scheme://[v1.alpha:beta]/path"));
+  EXPECT_TRUE(URIUtils::IsURI("scheme://[VF.alpha:beta]:123/path"));
+
+  EXPECT_FALSE(URIUtils::IsURI("scheme://[2001:db8:::7]/path"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme://[1::2::3]/path"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme://[1:2:3:4:5:6:7]/path"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme://[1:2:3:4:5:6:7:8:9]/path"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme://[12345::]/path"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme://[::ffff:192.0.2.999]/path"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme://[::ffff:192.0.02.1]/path"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme://[fe80::1%25eth0]/path"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme://[v1.]/path"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme://[v.address]/path"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme://[v1]/path"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme://[vG.address]/path"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme://[v1.address%20value]/path"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme://[192.0.2.1]/path"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme://[::1]junk/path"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme://[::1]:port/path"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme://[2001:db8::7/path"));
+  EXPECT_FALSE(URIUtils::IsURI("scheme://2001:db8::7/path"));
 }
 
 TEST_F(TestURIUtils, IsVideoDb)
