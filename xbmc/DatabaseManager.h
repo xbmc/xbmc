@@ -41,9 +41,10 @@ public:
   bool Initialize();
 
   /*! \brief Reset the database manager state.
-   Must be called on profile changes (LoadProfile / LogOff) so that the
-   next call to Initialize() re-runs the schema version check and migration
-   for all databases under the new profile's database folder.
+   Call this immediately before Initialize() when switching profile, so that
+   Initialize() re-runs the schema version check and migration for all databases
+   under the new profile's database folder. No database can be opened again until
+   Initialize() has run.
    */
   void Deinitialize();
 
