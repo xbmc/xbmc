@@ -73,15 +73,15 @@ void CSettingsValueXmlSerializer::SerializeGroup(TiXmlNode* parent,
     SerializeSetting(parent, setting);
 }
 
-void CSettingsValueXmlSerializer::SerializeSetting(TiXmlNode* parent,
-                                                   const std::shared_ptr<CSetting>& setting) const
+bool CSettingsValueXmlSerializer::SerializeSetting(TiXmlNode* parent,
+                                                   const std::shared_ptr<CSetting>& setting)
 {
   if (!setting)
-    return;
+    return true;
 
   // ignore references and action settings (which don't have a value)
   if (setting->IsReference() || setting->GetType() == SettingType::Action)
-    return;
+    return true;
 
   TiXmlElement settingElement(SETTING_XML_ELM_SETTING);
   settingElement.SetAttribute(SETTING_XML_ATTR_ID, setting->GetId());
@@ -92,11 +92,13 @@ void CSettingsValueXmlSerializer::SerializeSetting(TiXmlNode* parent,
 
   // add the value
   TiXmlText value(setting->ToString());
-  settingElement.InsertEndChild(value);
 
-  if (!parent->InsertEndChild(settingElement))
+  if (settingElement.InsertEndChild(value) == nullptr ||
+      parent->InsertEndChild(settingElement) == nullptr)
   {
     CLog::Log(LOGWARNING, "CSettingsValueXmlSerializer: unable to write <{} id=\"{}\"> tag",
               SETTING_XML_ELM_SETTING, setting->GetId());
+    return false;
   }
+  return true;
 }

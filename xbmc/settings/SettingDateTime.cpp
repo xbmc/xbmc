@@ -24,11 +24,11 @@ CSettingDate::CSettingDate(const std::string& id,
   : CSettingString(id, label, value, settingsManager)
 { }
 
-CSettingDate::CSettingDate(const std::string &id, const CSettingDate &setting)
+CSettingDate::CSettingDate(std::string_view id, const CSettingDate& setting)
   : CSettingString(id, setting)
 { }
 
-SettingPtr CSettingDate::Clone(const std::string &id) const
+SettingPtr CSettingDate::Clone(std::string_view id) const
 {
   return std::make_shared<CSettingDate>(id, *this);
 }
@@ -53,22 +53,22 @@ bool CSettingDate::SetDate(const CDateTime& date)
   return SetValue(date.GetAsDBDate());
 }
 
-CSettingTime::CSettingTime(const std::string& id, CSettingsManager* settingsManager /* = nullptr */)
+CSettingTime::CSettingTime(std::string_view id, CSettingsManager* settingsManager /* = nullptr */)
   : CSettingString(id, settingsManager)
 { }
 
-CSettingTime::CSettingTime(const std::string& id,
+CSettingTime::CSettingTime(std::string_view id,
                            int label,
                            const std::string& value,
                            CSettingsManager* settingsManager /* = nullptr */)
   : CSettingString(id, label, value, settingsManager)
 { }
 
-CSettingTime::CSettingTime(const std::string &id, const CSettingTime &setting)
+CSettingTime::CSettingTime(std::string_view id, const CSettingTime& setting)
   : CSettingString(id, setting)
 { }
 
-SettingPtr CSettingTime::Clone(const std::string &id) const
+SettingPtr CSettingTime::Clone(std::string_view id) const
 {
   return std::make_shared<CSettingTime>(id, *this);
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2013-2018 Team Kodi
+ *  Copyright (C) 2013-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -12,6 +12,7 @@
 #include "Setting.h"
 #include "SettingDefinitions.h"
 #include "SettingSection.h"
+#include "SettingsMigration.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
@@ -26,19 +27,37 @@
 const uint32_t CSettingsManager::Version = 2;
 const uint32_t CSettingsManager::MinimumSupportedVersion = 0;
 
-bool ParseSettingIdentifier(const std::string& settingId, std::string& categoryTag, std::string& settingTag)
+namespace
 {
-  static const std::string Separator = ".";
+std::unique_ptr<TiXmlElement> Clone(const TiXmlElement* root)
+{
+  if (TiXmlNode* cloneNode = root->Clone(); cloneNode != nullptr)
+  {
+    if (TiXmlElement* clone = cloneNode->ToElement(); clone != nullptr)
+      return std::unique_ptr<TiXmlElement>(clone);
+
+    delete cloneNode;
+  }
+  return {};
+}
+} // namespace
+
+bool CSettingsManager::ParseSettingIdentifier(std::string_view settingId,
+                                              std::string& categoryTag,
+                                              std::string& settingTag)
+{
+  constexpr std::string_view separator = ".";
 
   if (settingId.empty())
     return false;
 
-  std::vector<std::string> parts = StringUtils::Split(settingId, Separator);
+  std::vector<std::string> parts = StringUtils::Split(settingId, separator);
   if (parts.empty() || parts.at(0).empty())
     return false;
 
   if (parts.size() == 1)
   {
+    categoryTag = "";
     settingTag = parts.at(0);
     return true;
   }
@@ -48,7 +67,7 @@ bool ParseSettingIdentifier(const std::string& settingId, std::string& categoryT
   parts.erase(parts.begin());
 
   // put together the setting tag
-  settingTag = StringUtils::Join(parts, Separator);
+  settingTag = StringUtils::Join(parts, separator);
 
   return true;
 }
@@ -167,6 +186,41 @@ bool CSettingsManager::Load(const TiXmlElement* root,
     m_logger->error("unable to read setting values from version {} (current version: {})", version,
                     Version);
     return false;
+  }
+
+  updated = false;
+
+  // Scoped to remain alive until the end of the function
+  std::unique_ptr<TiXmlElement> writableRoot;
+
+  if (version < Version)
+  {
+    // Local deep copy to keep the rest of the settings reading code const
+    writableRoot = Clone(root);
+
+    if (writableRoot != nullptr)
+    {
+      CSettingsMigration migration{};
+      if (migration.UpdateXMLSettings(writableRoot.get(), version, Version))
+      {
+        // Continue loading with the modified xml document
+        root = writableRoot.get();
+        // Always mark settings updated to have them serialized with the new version number after load,
+        // even if no setting was modified (impacted setting not present in the file for example)
+        updated = true;
+      }
+    }
+
+    if (!updated)
+    {
+      m_logger->error(
+          "Unable to create an in-memory copy of the settings for the settings upgrade, or "
+          "unrecoverable upgrade failure. The settings that would have been upgraded will have "
+          "default values.");
+      // Must continue even with a catastrophic upgrade failure. All settings would otherwise be
+      // reset to default, much worse than missing the upgrade of a few settings.
+      //! @todo rework Kodi startup and handling of settings load problem.
+    }
   }
 
   if (!Deserialize(root, updated, loadedSettings))
@@ -791,8 +845,6 @@ bool CSettingsManager::Deserialize(const TiXmlNode* node,
                                    bool& updated,
                                    LoadedSettings* loadedSettings /* = nullptr */)
 {
-  updated = false;
-
   if (!node)
     return false;
 
@@ -1076,33 +1128,7 @@ bool CSettingsManager::LoadSetting(const TiXmlNode* node, const SettingPtr& sett
   if (setting->IsReference())
     settingId = setting->GetReferencedId();
 
-  const TiXmlElement* settingElement = nullptr;
-  // try to split the setting identifier into category and subsetting identifier (v1-)
-  std::string categoryTag;
-  std::string settingTag;
-  if (ParseSettingIdentifier(settingId, categoryTag, settingTag))
-  {
-    const TiXmlNode* categoryNode = node;
-    if (!categoryTag.empty())
-      categoryNode = node->FirstChild(categoryTag);
-
-    if (categoryNode)
-      settingElement = categoryNode->FirstChildElement(settingTag);
-  }
-
-  if (!settingElement)
-  {
-    // check if the setting is stored using its full setting identifier (v2+)
-    settingElement = node->FirstChildElement(SETTING_XML_ELM_SETTING);
-    while (settingElement)
-    {
-      const char* id = settingElement->Attribute(SETTING_XML_ATTR_ID);
-      if (id && settingId.compare(id) == 0)
-        break;
-
-      settingElement = settingElement->NextSiblingElement(SETTING_XML_ELM_SETTING);
-    }
-  }
+  const TiXmlElement* settingElement = LocateSetting(node, settingId);
 
   if (!settingElement)
     return false;
@@ -1461,4 +1487,43 @@ std::pair<CSettingsManager::SettingMap::iterator, bool> CSettingsManager::Insert
 {
   StringUtils::ToLower(settingId);
   return m_settings.try_emplace(settingId, setting);
+}
+
+const TiXmlElement* CSettingsManager::LocateSetting(const TiXmlNode* node,
+                                                    std::string_view settingId)
+{
+  if (node == nullptr || settingId.empty())
+    return nullptr;
+
+  const TiXmlElement* settingElement = nullptr;
+
+  // Attempt v2 first, more likely to be found as the switch from v1 happened in 2013
+
+  // check if the setting is stored using its full setting identifier (v2+)
+  settingElement = node->FirstChildElement(SETTING_XML_ELM_SETTING);
+  while (settingElement)
+  {
+    const char* id = settingElement->Attribute(SETTING_XML_ATTR_ID);
+    if (id && settingId.compare(id) == 0)
+      break;
+
+    settingElement = settingElement->NextSiblingElement(SETTING_XML_ELM_SETTING);
+  }
+
+  if (!settingElement)
+  {
+    // try to split the setting identifier into category and subsetting identifier (v1)
+    std::string categoryTag;
+    std::string settingTag;
+    if (ParseSettingIdentifier(settingId, categoryTag, settingTag))
+    {
+      const TiXmlNode* categoryNode = node;
+      if (!categoryTag.empty())
+        categoryNode = node->FirstChild(categoryTag);
+
+      if (categoryNode)
+        settingElement = categoryNode->FirstChildElement(settingTag);
+    }
+  }
+  return settingElement;
 }

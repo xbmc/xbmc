@@ -22,21 +22,26 @@ namespace
 constexpr const char* XML_ELM_CONSTRAINTS = "constraints";
 } // unnamed namespace
 
-CSettingPath::CSettingPath(const std::string &id, CSettingsManager *settingsManager /* = nullptr */)
+CSettingPath::CSettingPath(std::string_view id, CSettingsManager* settingsManager /* = nullptr */)
   : CSettingString(id, settingsManager)
-{ }
+{
+}
 
-CSettingPath::CSettingPath(const std::string &id, int label, const std::string &value, CSettingsManager *settingsManager /* = nullptr */)
+CSettingPath::CSettingPath(std::string_view id,
+                           int label,
+                           const std::string& value,
+                           CSettingsManager* settingsManager /* = nullptr */)
   : CSettingString(id, label, value, settingsManager)
-{ }
+{
+}
 
-CSettingPath::CSettingPath(const std::string &id, const CSettingPath &setting)
+CSettingPath::CSettingPath(std::string_view id, const CSettingPath& setting)
   : CSettingString(id, setting)
 {
   copy(setting);
 }
 
-SettingPtr CSettingPath::Clone(const std::string &id) const
+SettingPtr CSettingPath::Clone(std::string_view id) const
 {
   return std::make_shared<CSettingPath>(id, *this);
 }
