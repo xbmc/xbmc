@@ -878,6 +878,52 @@ CRect CGraphicContext::GenerateAABB(const CRect &rect) const
                 std::max(std::max(std::max(y1, y2), y3), y4));
 }
 
+// simple bucket "allocator". It could be improved to cram more rects into the
+// available layers, but realistically, it should suffice. there are 8 layers
+// available, as a typical stencil buffer is 8 bits.
+STENCIL_LAYER CGraphicContext::AddStencilRectToBucket(const CRect& newRect)
+{
+  for (size_t i = 0; i < m_stencilBuckets.size(); i++)
+  {
+    // try to find 
+    bool intersects = false;
+    for (auto& existingRect : m_stencilBuckets[i])
+      intersects |= existingRect.Intersects(newRect);
+
+    if (!intersects)
+    {
+      m_stencilBuckets[i].emplace_back(newRect);
+      return STENCIL_LAYER(i);
+    }
+  }
+
+  return STENCIL_LAYER::INVALID;
+} 
+
+void CGraphicContext::ClearStencilBuckets()
+{
+  for (auto& bucket : m_stencilBuckets)
+    bucket.clear();
+}
+
+void CGraphicContext::SetStencilLayer(const STENCIL_LAYER stencilLayer)
+{
+  m_stencilLayers.push(stencilLayer);
+}
+
+void CGraphicContext::RestoreStencilLayer()
+{
+  if (!m_stencilLayers.empty())
+    m_stencilLayers.pop();
+}
+
+STENCIL_LAYER CGraphicContext::GetStencilLayer()
+{
+  if (m_stencilLayers.empty())
+    return STENCIL_LAYER::NONE;
+  return m_stencilLayers.top();
+}
+
 // NOTE: This routine is currently called (twice) every time there is a <camera>
 //       tag in the skin.  It actually only has to be called before we render
 //       something, so another option is to just save the camera coordinates
