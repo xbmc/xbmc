@@ -64,3 +64,18 @@ public:
 private:
   StepList m_steps; // steps sorted by TargetVersion() in constructor
 };
+
+class CSettingsMigrationToV3 : public ISettingsMigrationStep
+{
+public:
+  int TargetVersion() const override { return 3; }
+  bool Apply(TiXmlElement* root) override
+  {
+    constexpr std::string_view oldSettingId = "videolibrary.dvdautorun";
+    constexpr std::string_view newSettingId = "videolibrary.dvdautoaction";
+
+    return CSettingsMigration::SettingConversionResult::FAILURE !=
+           CSettingsMigration::ConvertSettingBoolToInt(root, oldSettingId, newSettingId,
+                                                       {.m_default = 0, .m_false = 0, .m_true = 1});
+  }
+};

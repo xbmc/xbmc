@@ -8,31 +8,13 @@
 
 #include "MediaManager.h"
 
-#include "FileItem.h"
-#include "ServiceBroker.h"
-#include "URL.h"
-#include "guilib/GUIComponent.h"
-#include "resources/LocalizeStrings.h"
-#include "resources/ResourcesComponent.h"
-#include "utils/URIUtils.h"
-
-#include <mutex>
-#ifdef TARGET_WINDOWS
-#include "platform/win32/WIN32Util.h"
-#include "utils/CharsetConverter.h"
-#endif
-#include "guilib/GUIWindowManager.h"
-#ifdef HAS_OPTICAL_DRIVE
-#ifndef TARGET_WINDOWS
-//! @todo switch all ports to use auto sources
-#include <map>
-#include <utility>
-#include "DetectDVDType.h"
-#endif
-#endif
 #include "Autorun.h"
 #include "AutorunMediaJob.h"
+#include "FileItem.h"
+#include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
+#include "ServiceBroker.h"
+#include "URL.h"
 #include "addons/VFSEntry.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogPlayEject.h"
@@ -40,18 +22,36 @@
 #include "filesystem/BlurayDiscCache.h"
 #endif
 #include "filesystem/File.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
 #include "jobs/JobManager.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#ifdef TARGET_WINDOWS
+#include "utils/CharsetConverter.h"
+#endif
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+
+#ifdef HAS_OPTICAL_DRIVE
+#ifndef TARGET_WINDOWS
+//! @todo switch all ports to use auto sources
+#include "DetectDVDType.h"
+
+#include <map>
+#include <utility>
+#endif
+#endif
 
 #include <string>
 #include <vector>
@@ -64,7 +64,7 @@ const char MEDIA_SOURCES_XML[] = { "special://profile/mediasources.xml" };
 
 CMediaManager::CMediaManager()
 {
-  m_bhasoptical = false;
+  m_bOpticalDrivePresent = false;
 }
 
 void CMediaManager::Stop()
@@ -380,7 +380,9 @@ void CMediaManager::RemoveAutoSource(const CMediaSource &share)
   CMediaSourceSettings::GetInstance().DeleteSource("music", share.strName, share.strPath, true);
   CMediaSourceSettings::GetInstance().DeleteSource("programs", share.strName, share.strPath, true);
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
-  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage( msg );
+  CGUIComponent* gui = CServiceBroker::GetGUI();
+  if (gui)
+    gui->GetWindowManager().SendThreadMessage(msg);
 
 #ifdef HAS_OPTICAL_DRIVE
   // delete cached CdInfo if any
@@ -404,7 +406,7 @@ std::string CMediaManager::TranslateDevicePath(const std::string& devicePath, bo
 #endif
 
 #ifdef TARGET_WINDOWS
-  if(!m_bhasoptical)
+  if (!m_bOpticalDrivePresent)
     return "";
 
   if(bReturnAsDevice == false)
@@ -421,17 +423,20 @@ bool CMediaManager::IsDiscInDrive(const std::string& devicePath)
 {
 #ifdef HAS_OPTICAL_DRIVE
 #ifdef TARGET_WINDOWS
-  if(!m_bhasoptical)
+  if (!m_bOpticalDrivePresent)
     return false;
 
   std::string strDevice = TranslateDevicePath(devicePath, false);
-  std::map<std::string,CCdInfo*>::iterator it;
-  std::unique_lock waitLock(m_muAutoSource);
-  it = m_mapCdInfo.find(strDevice);
-  if(it != m_mapCdInfo.end())
-    return true;
-  else
-    return false;
+
+  // m_mapCdInfo is only populated for audio CDs
+  {
+    std::unique_lock waitLock(m_muAutoSource);
+    if (m_mapCdInfo.contains(strDevice))
+      return true;
+  }
+
+  // Check physical drive state (for video discs)
+  return GetDriveStatus(devicePath) == DriveState::CLOSED_MEDIA_PRESENT;
 #else
   if(URIUtils::IsDVD(devicePath) || devicePath.empty())
     return MEDIA_DETECT::CDetectDVDMedia::IsDiscInDrive();   //! @todo switch all ports to use auto sources
@@ -447,7 +452,7 @@ bool CMediaManager::IsAudio(const std::string& devicePath)
 {
 #ifdef HAS_OPTICAL_DRIVE
 #ifdef TARGET_WINDOWS
-  if(!m_bhasoptical)
+  if (!m_bOpticalDrivePresent)
     return false;
 
   CCdInfo* pCdInfo = GetCdInfo(devicePath);
@@ -478,7 +483,7 @@ DriveState CMediaManager::GetDriveStatus(const std::string& devicePath)
 {
 #ifdef HAS_OPTICAL_DRIVE
 #ifdef TARGET_WINDOWS
-  if (!m_bhasoptical || !m_platformDiscDriveHander)
+  if (!m_bOpticalDrivePresent || !m_platformDiscDriveHander)
     return DriveState::NOT_READY;
 
   std::string translatedDevicePath = TranslateDevicePath(devicePath, true);
@@ -495,7 +500,7 @@ DriveState CMediaManager::GetDriveStatus(const std::string& devicePath)
 CCdInfo* CMediaManager::GetCdInfo(const std::string& devicePath)
 {
 #ifdef TARGET_WINDOWS
-  if(!m_bhasoptical)
+  if (!m_bOpticalDrivePresent)
     return NULL;
 
   std::string strDevice = TranslateDevicePath(devicePath, false);
@@ -524,7 +529,7 @@ CCdInfo* CMediaManager::GetCdInfo(const std::string& devicePath)
 
 bool CMediaManager::RemoveCdInfo(const std::string& devicePath)
 {
-  if(!m_bhasoptical)
+  if (!m_bOpticalDrivePresent)
     return false;
 
   std::string strDevice = TranslateDevicePath(devicePath, false);
@@ -548,7 +553,7 @@ std::string CMediaManager::GetDiskLabel(const std::string& devicePath)
 #ifdef TARGET_WINDOWS_STORE
   return ""; // GetVolumeInformationW nut support in UWP app
 #elif defined(TARGET_WINDOWS)
-  if(!m_bhasoptical)
+  if (!m_bOpticalDrivePresent)
     return "";
 
   std::string mediaPath = CServiceBroker::GetMediaManager().TranslateDevicePath(devicePath);
@@ -699,7 +704,7 @@ std::shared_ptr<IDiscDriveHandler> CMediaManager::GetDiscDriveHandler()
 void CMediaManager::SetHasOpticalDrive(bool bstatus)
 {
   std::unique_lock waitLock(m_muAutoSource);
-  m_bhasoptical = bstatus;
+  m_bOpticalDrivePresent = bstatus;
 }
 
 bool CMediaManager::Eject(const std::string& mountpath)
@@ -755,13 +760,21 @@ void CMediaManager::ProcessEvents()
   std::unique_lock lock(m_CritSecStorageProvider);
   if (m_platformStorage->PumpDriveChangeEvents(this))
   {
-#if defined(HAS_OPTICAL_DRIVE) && defined(TARGET_DARWIN_OSX)
+#if defined(HAS_OPTICAL_DRIVE)
+#if defined(TARGET_DARWIN_OSX)
     // darwins GetFirstOpticalDeviceFileName only gives us something
     // when a disc is inserted
     // so we have to refresh m_strFirstAvailDrive when this happens after Initialize
     // was called (e.x. the disc was inserted after the start of xbmc)
     // else TranslateDevicePath wouldn't give the correct device
     m_strFirstAvailDrive = m_platformStorage->GetFirstOpticalDeviceFileName();
+#elif defined(TARGET_WINDOWS)
+    // On Windows, virtual drives can appear or disappear at any time.
+    // Re-scan to get the current state of optical drives and update
+    // m_bhasoptical and m_strFirstAvailDrive accordingly.
+    m_strFirstAvailDrive = m_platformStorage->GetFirstOpticalDeviceFileName();
+    SetHasOpticalDrive(!m_strFirstAvailDrive.empty());
+#endif
 #endif
 
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
@@ -775,47 +788,128 @@ std::vector<std::string> CMediaManager::GetDiskUsage()
   return m_platformStorage->GetDiskUsage();
 }
 
+#if defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
+void CMediaManager::AddOpticalSource(const std::string& devicePath)
+{
+  CMediaSource share;
+  share.strPath = devicePath;
+  share.strName = devicePath;
+
+  RemoveAutoSource(share);
+
+  share.strStatus = GetDiskLabel(share.strPath);
+  share.strDiskUniqueId = GetDiskUniqueId(share.strPath);
+  if (IsAudio(share.strPath))
+    share.strStatus = "Audio-CD";
+  else if (share.strStatus.empty())
+    share.strStatus = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(446);
+
+  share.m_ignore = true;
+  share.m_iDriveType = SourceType::OPTICAL_DISC;
+  AddAutoSource(share, false);
+}
+#endif
+
 void CMediaManager::OnStorageAdded(const MEDIA_DETECT::STORAGE::StorageDevice& device)
 {
 #ifdef HAS_OPTICAL_DRIVE
-  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  if (settings->GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION) !=
-          static_cast<int>(AutoCDAction::NONE) ||
-      settings->GetBool(CSettings::SETTING_DVDS_AUTORUN))
+  if (device.type == MEDIA_DETECT::STORAGE::Type::OPTICAL)
   {
-    if (settings->GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION) ==
-        static_cast<int>(AutoCDAction::RIP))
+#ifdef TARGET_WINDOWS
+    SetHasOpticalDrive(true); // In case drive appeared after startup (eg. virtual drive)
+    if (m_strFirstAvailDrive.empty())
+      m_strFirstAvailDrive = device.path;
+    AddOpticalSource(device.path);
+#endif
+
+    const std::shared_ptr<CSettings> settings{
+        CServiceBroker::GetSettingsComponent()->GetSettings()};
+
+    CCdInfo* pInfo{GetCdInfo(device.path)};
+    const bool isAudioDisc{pInfo && // If it returns null, it is likely to be a protected video disc
+                           pInfo->IsAudio(1)};
+
+    if (isAudioDisc)
     {
-      CServiceBroker::GetJobManager()->AddJob(new CAutorunMediaJob(device.label, device.path), this,
-                                              CJob::PRIORITY_LOW);
+      const auto cdAutoAction{
+          static_cast<AutoCDAction>(settings->GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION))};
+      CLog::LogF(LOGDEBUG, "Audio CD detected with path {}, auto action is {}", device.path,
+                 static_cast<int>(cdAutoAction));
+
+      bool processed{true};
+      using enum AutoCDAction;
+      if (cdAutoAction == RIP || cdAutoAction == PLAY)
+      {
+        // Will fallback to play if HAS_CDDA_RIPPER not defined
+        if (!MEDIA_DETECT::CAutorun::ExecuteAutorun(device.path))
+        {
+          CLog::LogF(LOGDEBUG, "Could not execute autorun (rip/play) for audio CD with path {}",
+                     device.path);
+          processed = false;
+        }
+      }
+      if (cdAutoAction == NONE || !processed)
+      {
+        CGUIDialogKaiToast::QueueNotification(
+            CGUIDialogKaiToast::Info,
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13019), device.label,
+            TOAST_DISPLAY_TIME, false);
+      }
     }
     else
     {
-      if (device.type == MEDIA_DETECT::STORAGE::Type::OPTICAL)
+      const auto dvdAutoAction{
+          static_cast<AutoDVDAction>(settings->GetInt(CSettings::SETTING_DVDS_AUTOACTION))};
+      CLog::LogF(LOGDEBUG, "Video disc detected with path {}, auto action is {}", device.path,
+                 static_cast<int>(dvdAutoAction));
+
+      bool processed{true};
+      using enum AutoDVDAction;
+      if (dvdAutoAction == BROWSE)
       {
-        if (MEDIA_DETECT::CAutorun::ExecuteAutorun(device.path))
-        {
-          return;
-        }
-        CLog::Log(LOGDEBUG, "{}: Could not execute autorun for optical disc with path {}",
-                  __FUNCTION__, device.path);
+        CServiceBroker::GetJobManager()->AddJob(new CAutorunMediaJob(device.label, device.path),
+                                                this, CJob::PRIORITY_HIGH);
       }
-      CServiceBroker::GetJobManager()->AddJob(new CAutorunMediaJob(device.label, device.path), this,
-                                              CJob::PRIORITY_HIGH);
+      else if (dvdAutoAction == PLAY)
+      {
+        if (!MEDIA_DETECT::CAutorun::ExecuteAutorun(device.path))
+        {
+          CLog::LogF(LOGDEBUG, "Could not execute autorun for video disc with path {}",
+                     device.path);
+          processed = false;
+        }
+      }
+      if (dvdAutoAction == NONE || !processed)
+      {
+        CGUIDialogKaiToast::QueueNotification(
+            CGUIDialogKaiToast::Info,
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13019), device.label,
+            TOAST_DISPLAY_TIME, false);
+      }
     }
   }
   else
+#endif
   {
+    // Non-optical (or no optical support) - eg. USB stick
     CGUIDialogKaiToast::QueueNotification(
         CGUIDialogKaiToast::Info,
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13021), device.label,
         TOAST_DISPLAY_TIME, false);
   }
-#endif
 }
 
 void CMediaManager::OnStorageSafelyRemoved(const MEDIA_DETECT::STORAGE::StorageDevice& device)
 {
+#ifdef TARGET_WINDOWS
+  if (device.type == MEDIA_DETECT::STORAGE::Type::OPTICAL)
+  {
+    CMediaSource share;
+    share.strPath = device.path;
+    share.strName = device.path;
+    RemoveAutoSource(share);
+  }
+#endif
   CGUIDialogKaiToast::QueueNotification(
       CGUIDialogKaiToast::Info,
       CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13023), device.label,
@@ -824,6 +918,15 @@ void CMediaManager::OnStorageSafelyRemoved(const MEDIA_DETECT::STORAGE::StorageD
 
 void CMediaManager::OnStorageUnsafelyRemoved(const MEDIA_DETECT::STORAGE::StorageDevice& device)
 {
+#ifdef TARGET_WINDOWS
+  if (device.type == MEDIA_DETECT::STORAGE::Type::OPTICAL)
+  {
+    CMediaSource share;
+    share.strPath = device.path;
+    share.strName = device.path;
+    RemoveAutoSource(share);
+  }
+#endif
   CGUIDialogKaiToast::QueueNotification(
       CGUIDialogKaiToast::Warning,
       CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13022), device.label);
