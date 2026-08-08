@@ -22507,7 +22507,26 @@ msgctxt "#36642"
 msgid "No orphaned add-ons to remove."
 msgstr ""
 
-#empty strings from id 36643 to 36898
+#. Label for a video playback setting
+#: system/settings/linux.xml
+msgctxt "#36643"
+msgid "Use VAAPI hardware scaling"
+msgstr ""
+
+#. Help text for setting with label #36643
+#: system/settings/linux.xml
+msgctxt "#36644"
+msgid "Scales decoded video to the display resolution using the VAAPI video processing pipeline's hardware scaler, instead of the renderer's shader-based scaling."
+msgstr ""
+
+#. Value shown in place of the scaling method spinner when VAAPI hardware
+#. scaling is enabled in settings
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#36645"
+msgid "VAAPI hardware scaling enabled"
+msgstr ""
+
+#empty strings from id 36646 to 36898
 
 #. Description of setting with label #729 "Enable SSL"
 #: system/settings/settings.xml

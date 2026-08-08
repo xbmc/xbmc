@@ -81,6 +81,11 @@ CRendererVAAPIGLES::~CRendererVAAPIGLES()
 bool CRendererVAAPIGLES::Configure(const VideoPicture& picture, float fps, unsigned int orientation)
 {
   CVaapiRenderPicture *pic = dynamic_cast<CVaapiRenderPicture*>(picture.videoBuffer);
+  if (!pic)
+  {
+    CLog::Log(LOGERROR, "CRendererVAAPIGLES::Configure - videoBuffer is not a CVaapiRenderPicture");
+    return false;
+  }
   if (pic->procPic.videoSurface != VA_INVALID_ID)
     m_isVAAPIBuffer = true;
   else
@@ -116,6 +121,13 @@ bool CRendererVAAPIGLES::Configure(const VideoPicture& picture, float fps, unsig
 bool CRendererVAAPIGLES::ConfigChanged(const VideoPicture& picture)
 {
   CVaapiRenderPicture *pic = dynamic_cast<CVaapiRenderPicture*>(picture.videoBuffer);
+  if (!pic)
+  {
+    CLog::Log(LOGERROR,
+              "CRendererVAAPIGLES::ConfigChanged - videoBuffer is not a CVaapiRenderPicture");
+    return false;
+  }
+
   if ((pic->procPic.videoSurface != VA_INVALID_ID && !m_isVAAPIBuffer) ||
       (pic->procPic.videoSurface == VA_INVALID_ID && m_isVAAPIBuffer))
     return true;
@@ -264,6 +276,8 @@ bool CRendererVAAPIGLES::UploadTexture(int index)
     return false;
   }
 
+  m_hwScaled = false;
+
   m_vaapiTextures[index]->Map(pic);
 
   YuvImage &im = buf.image;
@@ -311,7 +325,21 @@ bool CRendererVAAPIGLES::UploadTexture(int index)
     VerifyGLState();
   }
 
-  CalculateTextureSourceRects(index, 3);
+  // Adjust texture coordinates when VPP produced a resized surface.
+  m_hwScaled = (pic->procPic.outWidth != 0 && pic->procPic.outHeight != 0);
+  // Guard against an invalid source size
+  if (m_hwScaled && m_sourceWidth > 0 && m_sourceHeight > 0)
+  {
+    const CRect savedSourceRect = m_sourceRect;
+    const float scaleX = static_cast<float>(size.Width()) / m_sourceWidth;
+    const float scaleY = static_cast<float>(size.Height()) / m_sourceHeight;
+    m_sourceRect = CRect(savedSourceRect.x1 * scaleX, savedSourceRect.y1 * scaleY,
+                         savedSourceRect.x2 * scaleX, savedSourceRect.y2 * scaleY);
+    CalculateTextureSourceRects(index, 3);
+    m_sourceRect = savedSourceRect;
+  }
+  else
+    CalculateTextureSourceRects(index, 3);
   return true;
 }
 

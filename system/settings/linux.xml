@@ -173,6 +173,18 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="videoplayer.vaapihwscaling" type="boolean" parent="videoplayer.usevaapi" label="36643" help="36644">
+          <requirement>HAS_GLES</requirement>
+          <visible>true</visible>
+          <dependencies>
+            <dependency type="enable">
+              <condition setting="videoplayer.usevaapi" operator="is">true</condition>
+            </dependency>
+          </dependencies>
+          <level>3</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.useprimedecoder" type="boolean" label="13430" help="36172">
           <requirement>HAS_GLES</requirement>
           <visible>false</visible>
