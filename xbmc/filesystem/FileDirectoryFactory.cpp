@@ -297,7 +297,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
     // .mkv doubles as a video container — only treat a chaptered .mkv as an
     // audiobook when browsed from a Music source, or a chaptered movie in a
     // Video source would be expanded into chapter items.
-    if (strExtension == ".mkv" && !IsUnderMusicSource(url.Get()))
+    if ((strExtension == ".mkv" || strExtension == ".mp4") && !IsUnderMusicSource(url.Get()))
       return nullptr;
 
     // Already-expanded chapter rows (have a music tag and a positive end offset)
