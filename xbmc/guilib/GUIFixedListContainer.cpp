@@ -9,6 +9,7 @@
 #include "GUIFixedListContainer.h"
 
 #include "GUIListItemLayout.h"
+#include "GUIMessage.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 
@@ -47,13 +48,14 @@ bool CGUIFixedListContainer::OnAction(const CAction &action)
   {
   case ACTION_PAGE_UP:
     {
-      Scroll(-m_itemsPerPage);
+      SelectItem(std::max(GetSelectedItem() - m_itemsPerPage, 0));
       return true;
     }
     break;
   case ACTION_PAGE_DOWN:
     {
-      Scroll(m_itemsPerPage);
+      SelectItem(
+          std::min(GetSelectedItem() + m_itemsPerPage, static_cast<int>(m_items.size()) - 1));
       return true;
     }
     break;
@@ -86,6 +88,18 @@ bool CGUIFixedListContainer::OnAction(const CAction &action)
     break;
   }
   return CGUIBaseContainer::OnAction(action);
+}
+
+bool CGUIFixedListContainer::OnMessage(CGUIMessage& message)
+{
+  if (message.GetControlId() == GetID() && message.GetMessage() == GUI_MSG_PAGE_CHANGE &&
+      message.GetSenderId() == m_pageControl && IsVisible())
+  {
+    SelectItem(message.GetParam1());
+    return true;
+  }
+
+  return CGUIBaseContainer::OnMessage(message);
 }
 
 bool CGUIFixedListContainer::MoveUp(bool wrapAround)
@@ -282,6 +296,17 @@ void CGUIFixedListContainer::SelectItem(int item)
     SetCursor(cursor);
     ScrollToOffset(item - GetCursor());
     MarkDirtyRegion();
+  }
+}
+
+void CGUIFixedListContainer::UpdatePageControl(int offset)
+{
+  const int item = CorrectOffset(offset, GetCursor());
+  if (m_pageControl && m_lastPageControlOffset != item)
+  {
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, item);
+    SendWindowMessage(msg);
+    m_lastPageControlOffset = item;
   }
 }
 
