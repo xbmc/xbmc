@@ -145,3 +145,25 @@ TEST(TestDmaBufIdentityCache, TakeAllReturnsEverythingAndEmpties)
   EXPECT_EQ(cache.Size(), 0u);
   EXPECT_TRUE(cache.Reap(0, 0).empty());
 }
+
+TEST(TestDmaBufIdentityCache, InvalidateAllFreesEverythingExceptProtected)
+{
+  CDmaBufIdentityCache cache{4};
+  cache.Insert(MakeIdentity(7), 100);
+  cache.Insert(MakeIdentity(8), 200);
+  cache.Insert(MakeIdentity(9), 300);
+
+  cache.InvalidateAll();
+  EXPECT_EQ(cache.Size(), 0u);
+  EXPECT_EQ(cache.Lookup(MakeIdentity(7)), 0u);
+
+  auto reaped = cache.Reap(100, 0);
+  std::sort(reaped.begin(), reaped.end());
+  ASSERT_EQ(reaped.size(), 2u);
+  EXPECT_EQ(reaped[0], 200u);
+  EXPECT_EQ(reaped[1], 300u);
+
+  reaped = cache.Reap(0, 0);
+  ASSERT_EQ(reaped.size(), 1u);
+  EXPECT_EQ(reaped[0], 100u);
+}

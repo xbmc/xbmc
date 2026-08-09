@@ -188,6 +188,11 @@ uint32_t CVideoLayerBridgeDRMPRIME::CreateFramebuffer(CVideoBufferDRMPRIME* buff
 
 void CVideoLayerBridgeDRMPRIME::Configure(CVideoBufferDRMPRIME* buffer)
 {
+  // a new renderer generation brings a new buffer pool; old entries can never match again
+  m_fbCache.InvalidateAll();
+  for (uint32_t doomed : m_fbCache.Reap(m_fb_id, m_prev_fb_id))
+    drmModeRmFB(m_DRM->GetFileDescriptor(), doomed);
+
   auto plane = m_DRM->GetVideoPlane();
   if (!plane)
     return;

@@ -31,6 +31,9 @@ public:
   //! \brief Handles to destroy now (doomed plus LRU overflow); protectA/protectB are never returned.
   std::vector<uint32_t> Reap(uint32_t protectA, uint32_t protectB);
 
+  //! \brief Invalidate every entry; handles surface through later Reap calls, honoring protection.
+  void InvalidateAll();
+
   //! \brief Every live and doomed handle; the cache is emptied.
   std::vector<uint32_t> TakeAll();
 

@@ -80,6 +80,13 @@ std::vector<uint32_t> CDmaBufIdentityCache::Reap(uint32_t protectA, uint32_t pro
   return reaped;
 }
 
+void CDmaBufIdentityCache::InvalidateAll()
+{
+  for (const Entry& entry : m_entries)
+    m_doomed.push_back(entry.handle);
+  m_entries.clear();
+}
+
 std::vector<uint32_t> CDmaBufIdentityCache::TakeAll()
 {
   std::vector<uint32_t> all = std::move(m_doomed);
