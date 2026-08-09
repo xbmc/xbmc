@@ -71,7 +71,8 @@ PlaylistInformation MakePlaylist(unsigned int playlist,
                                  const std::vector<std::chrono::milliseconds>& chapterDurations,
                                  std::string languages = "",
                                  std::vector<AudioStreamInfo> audioStreams = {},
-                                 std::vector<SubtitleStreamInfo> pgStreams = {})
+                                 std::vector<SubtitleStreamInfo> pgStreams = {},
+                                 int height = 0)
 {
   PlaylistInformation info;
   info.playlist = playlist;
@@ -81,6 +82,12 @@ PlaylistInformation MakePlaylist(unsigned int playlist,
   info.languages = std::move(languages);
   info.audioStreams = std::move(audioStreams);
   info.pgStreams = std::move(pgStreams);
+  if (height > 0)
+  {
+    VideoStreamInfo videoStream;
+    videoStream.height = height;
+    info.videoStreams.emplace_back(videoStream);
+  }
   return info;
 }
 
@@ -101,6 +108,17 @@ SubtitleStreamInfo MakeSubtitleStream(std::string language)
   info.valid = true;
   info.language = std::move(language);
   return info;
+}
+
+// For tests only interested in how many streams a playlist exposes
+std::vector<AudioStreamInfo> MakeAudioStreams(size_t count)
+{
+  return std::vector<AudioStreamInfo>(count);
+}
+
+std::vector<SubtitleStreamInfo> MakeSubtitleStreams(size_t count)
+{
+  return std::vector<SubtitleStreamInfo>(count);
 }
 
 ClipInfo MakeClip(std::chrono::milliseconds duration, std::vector<unsigned int> playlists)
@@ -4241,5 +4259,636 @@ TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_ChapterFiltering_MainPlaylistP
   ASSERT_EQ(items.Size(), 3);
   returned = GetPlaylists(items);
   expected = {1u, 2u, 3u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+}
+
+//
+// ---- GetMoviePlaylists - duplicate presentations ------------------------------
+//
+
+// A disc may present the same content through several playlists, each exposing a different set of
+// streams. The richest presentation is the one kept, wherever it appears in the list.
+// (Example: 28 Days Later)
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_RemovesDuplicatesKeepingTheRichest)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{
+      {120u, MakePlaylist(120u, 120min, {196u}, {120min}, "eng", MakeAudioStreams(3),
+                          MakeSubtitleStreams(6))},
+      {121u, MakePlaylist(121u, 120min, {196u}, {120min}, "eng", MakeAudioStreams(3),
+                          MakeSubtitleStreams(4))},
+      {122u, MakePlaylist(122u, 120min, {196u}, {120min}, "eng", MakeAudioStreams(2),
+                          MakeSubtitleStreams(2))},
+  };
+  ClipMap clips{{196u, MakeClip(120min, {120u, 121u, 122u})}};
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::MAIN, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 120u);
+
+  // More audio streams wins over more subtitle streams, whatever the playlist order
+  playlists = {
+      {800u, MakePlaylist(800u, 120min, {196u}, {120min}, "eng", MakeAudioStreams(9),
+                          MakeSubtitleStreams(0))},
+      {805u, MakePlaylist(805u, 120min, {196u}, {120min}, "eng", MakeAudioStreams(1),
+                          MakeSubtitleStreams(8))},
+  };
+  clips = {{196u, MakeClip(120min, {800u, 805u})}};
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::MAIN, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 800u);
+}
+
+// The playlist the disc names as the main one is the copy kept, even where another copy of the
+// same presentation exposes more streams, as the rest of the search identifies the movie by it.
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_RemovesDuplicatesKeepingTheMainPlaylist)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  // Playlist 121 (mainPlaylist) presents the same content as 120 and 122, but less fully than
+  // either of them
+  PlaylistMap playlists{
+      {120u, MakePlaylist(120u, 120min, {196u}, {120min}, "eng", MakeAudioStreams(3),
+                          MakeSubtitleStreams(6))},
+      {121u, MakePlaylist(121u, 120min, {196u}, {120min}, "eng", MakeAudioStreams(1),
+                          MakeSubtitleStreams(1))}, // mainPlaylist
+      {122u, MakePlaylist(122u, 120min, {196u}, {120min}, "eng", MakeAudioStreams(2),
+                          MakeSubtitleStreams(2))},
+  };
+  ClipMap clips{{196u, MakeClip(120min, {120u, 121u, 122u})}};
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, 121, GetTitle::MAIN, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 121u);
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, 121, GetTitle::SINGLE, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 121u);
+
+  // The main playlist is kept wherever it appears in the list
+  playlists = {
+      {800u, MakePlaylist(800u, 120min, {196u}, {120min}, "eng", MakeAudioStreams(1),
+                          MakeSubtitleStreams(1))}, // mainPlaylist
+      {805u, MakePlaylist(805u, 120min, {196u}, {120min}, "eng", MakeAudioStreams(9),
+                          MakeSubtitleStreams(8))},
+  };
+  clips = {{196u, MakeClip(120min, {800u, 805u})}};
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, 800, GetTitle::MAIN, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 800u);
+}
+
+// The same content is often presented in playlists both with and without chapter marks.
+// The chaptered presentation is the one kept, unless another exposes more streams.
+// (Example: Battlestar Galactica Razor)
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_RemovesDuplicatesKeepingTheChaptered)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{
+      {800u, MakePlaylist(800u, 120min, {1u}, {60min, 60min}, "eng")},
+      {801u, MakePlaylist(801u, 120min, {1u}, {120min}, "eng")},
+  };
+  ClipMap clips{{1u, MakeClip(120min, {800u, 801u})}};
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::MAIN, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 800u);
+
+  // Streams take precedence over chapters
+  playlists = {
+      {800u, MakePlaylist(800u, 120min, {1u}, {60min, 60min}, "eng", MakeAudioStreams(1))},
+      {801u, MakePlaylist(801u, 120min, {1u}, {120min}, "eng", MakeAudioStreams(9))},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::MAIN, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 801u);
+}
+
+// Playlists playing the same clips at different in/out times are distinct editions of the movie,
+// however different their stream tables
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_KeepsPlaylistsDifferingByDuration)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{
+      {800u, MakePlaylist(800u, 120min, {1u}, {120min}, "eng", MakeAudioStreams(9))},
+      {801u, MakePlaylist(801u, 140min, {2u}, {140min}, "eng", MakeAudioStreams(1))},
+  };
+  ClipMap clips{
+      {1u, MakeClip(120min, {800u})},
+      {2u, MakeClip(140min, {801u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::MAIN, clips, playlists));
+  ASSERT_EQ(items.Size(), 2);
+  const auto returned{GetPlaylists(items)};
+  const std::set<unsigned int> expected{800u, 801u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+}
+
+// A disc can hold several copies of the clips joining the movie's longer ones and give each copy of
+// the movie its own copies of them, so that the copies reference different clips while presenting
+// identical content.
+// (Example: Avatar (2009), playlists 800 and 801)
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_RemovesDuplicatesBuiltFromCopiedClips)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{
+      {800u, MakePlaylist(800u, 120min, {1u, 2u, 3u}, {90min, 14s, (29min + 46s)}, "eng")},
+      {801u, MakePlaylist(801u, 120min, {1u, 4u, 5u}, {90min, 14s, (29min + 46s)}, "eng")},
+  };
+  ClipMap clips{
+      {1u, MakeClip(90min, {800u, 801u})}, // Shared
+      {2u, MakeClip(14s, {800u})},           {3u, MakeClip((29min + 46s), {800u})},
+      {4u, MakeClip(14s, {801u})}, // A copy of clip 2
+      {5u, MakeClip((29min + 46s), {801u})}, // A copy of clip 3
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::MAIN, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 800u);
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::SINGLE, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 800u);
+
+  EXPECT_TRUE(helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::ALL, clips, playlists));
+  EXPECT_EQ(items.Size(), 2);
+  const auto& returned{GetPlaylists(items)};
+  std::set<unsigned int> expected{800u, 801u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+}
+
+// Playlists that share no clip are not copies of one another, however alike their durations and
+// chapters - two unrelated titles can run for the same length
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_KeepsPlaylistsSharingNoClip)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{
+      {1u, MakePlaylist(1u, 120min, {1u, 2u}, {60min, 60min}, "eng")},
+      {2u, MakePlaylist(2u, 120min, {3u, 4u}, {60min, 60min}, "eng")},
+  };
+  ClipMap clips{
+      {1u, MakeClip(60min, {1u})},
+      {2u, MakeClip(60min, {1u})},
+      {3u, MakeClip(60min, {2u})},
+      {4u, MakeClip(60min, {2u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::MAIN, clips, playlists));
+  ASSERT_EQ(items.Size(), 2);
+  const auto returned{GetPlaylists(items)};
+  const std::set<unsigned int> expected{1u, 2u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+}
+
+// Discs hiding the movie among copies of itself can hold hundreds of them
+// (Example: John Wick: Chapter 3 - Parabellum (2019), with 385)
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_RemovesHundredsOfDuplicates)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  // Each copy of the movie shares its long clip and uses its own copies of the two short ones
+  PlaylistMap playlists;
+  ClipMap clips{{1u, MakeClip(90min, {})}};
+  for (unsigned int i = 0; i < 200; ++i)
+  {
+    const unsigned int playlist{800u + i};
+    const unsigned int first{2u + i * 2};
+    playlists.emplace(playlist, MakePlaylist(playlist, 120min, {1u, first, first + 1u},
+                                             {90min, 14s, (29min + 46s)}, "eng"));
+    clips[1u].playlists.emplace_back(playlist);
+    clips.emplace(first, MakeClip(14s, {playlist}));
+    clips.emplace(first + 1u, MakeClip((29min + 46s), {playlist}));
+  }
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::MAIN, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 800u);
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::SINGLE, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 800u);
+
+  EXPECT_TRUE(helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::ALL, clips, playlists));
+  EXPECT_EQ(items.Size(), 200);
+}
+
+// Playlists of the same overall length cut into clips of the same durations are only the same
+// presentation when they are cut into the same number of chapters
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_KeepsCopiedClipsHoldingDifferentChapters)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{
+      {800u, MakePlaylist(800u, 120min, {1u, 2u}, {90min, 30min}, "eng")},
+      {801u, MakePlaylist(801u, 120min, {3u, 4u}, {40min, 40min, 40min}, "eng")},
+  };
+  ClipMap clips{
+      {1u, MakeClip(90min, {800u})},
+      {2u, MakeClip(30min, {800u})},
+      {3u, MakeClip(90min, {801u})},
+      {4u, MakeClip(30min, {801u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::MAIN, clips, playlists));
+  ASSERT_EQ(items.Size(), 2);
+  auto returned{GetPlaylists(items)};
+  std::set<unsigned int> expected{800u, 801u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::SINGLE, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 800u);
+
+  EXPECT_TRUE(helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::ALL, clips, playlists));
+  EXPECT_EQ(items.Size(), 2);
+  returned = GetPlaylists(items);
+  expected = {800u, 801u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+}
+
+// Playlists playing clips of different durations are distinct editions of the movie
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_KeepsPlaylistsWhoseClipsAreCutDifferently)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{
+      {800u, MakePlaylist(800u, 120min, {1u, 2u}, {30min, 90min}, "eng")},
+      {801u, MakePlaylist(801u, 120min, {3u, 4u}, {40min, 80min}, "eng")},
+  };
+  ClipMap clips{
+      {1u, MakeClip(30min, {800u})},
+      {2u, MakeClip(90min, {800u})},
+      {3u, MakeClip(40min, {801u})},
+      {4u, MakeClip(80min, {801u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::MAIN, clips, playlists));
+  ASSERT_EQ(items.Size(), 2);
+  auto returned{GetPlaylists(items)};
+  std::set<unsigned int> expected{800u, 801u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::SINGLE, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 800u);
+
+  EXPECT_TRUE(helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::ALL, clips, playlists));
+  EXPECT_EQ(items.Size(), 2);
+  returned = GetPlaylists(items);
+  expected = {800u, 801u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+}
+
+// The copies a disc holds are all titles, so all are listed when every title is asked for
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_KeepsDuplicatesWhenAllTitlesAreAskedFor)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{
+      {800u, MakePlaylist(800u, 120min, {1u}, {120min}, "eng", MakeAudioStreams(9))},
+      {801u, MakePlaylist(801u, 120min, {1u}, {120min}, "eng", MakeAudioStreams(1))},
+  };
+  ClipMap clips{{1u, MakeClip(120min, {800u, 801u})}};
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::ALL, clips, playlists));
+  ASSERT_EQ(items.Size(), 2);
+}
+
+//
+// ---- GetMoviePlaylists - editions with differing languages -------------------
+//
+
+// The editions of a movie don't necessarily offer the same languages - more dubs may have been
+// made of one release than of another. An edition is not discarded for offering fewer.
+// (Example: The Wicker Man, where the 1:41 cut has English audio only and the 1:28 cut is
+// English and French)
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_EditionsWithDifferingLanguages)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{
+      {0u, MakePlaylist(0u, 101min, {4u}, {50min, 51min}, "eng", {}, {}, 1080)},
+      {10u, MakePlaylist(10u, 88min, {0u}, {44min, 44min}, "eng,fra", {}, {}, 1080)},
+  };
+  ClipMap clips{
+      {0u, MakeClip(88min, {10u})},
+      {4u, MakeClip(101min, {0u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::MAIN, clips, playlists));
+  ASSERT_EQ(items.Size(), 2);
+  const auto returned{GetPlaylists(items)};
+  const std::set<unsigned int> expected{0u, 10u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  // The longest of the editions is the single best
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::SINGLE, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 0u);
+}
+
+//
+// ---- GetMoviePlaylists - the single best of playlists of the same length -----
+//
+
+// Playlists of (near) identical length are the same movie presented differently, so the single
+// best is the fullest of them rather than the longest by a second or two.
+// (Example: Snow White (2025), whose sing along runs 2 seconds longer than the movie but drops
+// an audio track and half the subtitles)
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_SingleBestOfEqualLengthPlaylists)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{
+      // The movie
+      {800u, MakePlaylist(800u, 108min + 49s, {294u, 679u, 680u}, {54min, 54min + 49s},
+                          "eng,eng,fra", MakeAudioStreams(3), MakeSubtitleStreams(17), 1080)},
+      // The sing along - the movie wrapped in a bumper, with fewer streams
+      {1666u,
+       MakePlaylist(1666u, 108min + 51s, {710u, 294u, 679u, 680u, 710u}, {54min, 54min + 51s},
+                    "eng,fra", MakeAudioStreams(2), MakeSubtitleStreams(9), 1080)},
+  };
+  ClipMap clips{
+      {294u, MakeClip(50min, {800u, 1666u})},
+      {679u, MakeClip(30min, {800u, 1666u})},
+      {680u, MakeClip(28min + 49s, {800u, 1666u})},
+      {710u, MakeClip(1s, {1666u})},
+  };
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::SINGLE, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 800u);
+
+  // The best also leads the versions, as the first of them becomes the default
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::MAIN, clips, playlists));
+  ASSERT_EQ(items.Size(), 2);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 800u);
+  EXPECT_EQ(GetPlaylistFromPath(items[1]->GetPath()), 1666u);
+
+  // An edition that is genuinely longer is still the single best, however few streams it offers
+  playlists[1666u] = MakePlaylist(1666u, 120min, {710u, 294u, 679u, 680u, 710u}, {60min, 60min},
+                                  "eng", MakeAudioStreams(1), MakeSubtitleStreams(1), 1080);
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::SINGLE, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 1666u);
+}
+
+//
+// ---- GetMoviePlaylists - resolution ------------------------------------------
+//
+
+// A standard definition extra is not a version of the movie
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_Resolution)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  // The extra is longer than the movie (as a 'play all' playlist of the extras could be)
+  PlaylistMap playlists{
+      {1u, MakePlaylist(1u, 120min, {1u}, {60min, 60min}, "eng", {}, {}, 1080)}, // The movie
+      {2u, MakePlaylist(2u, 150min, {2u}, {75min, 75min}, "eng", {}, {}, 480)}, // Extra
+  };
+  ClipMap clips{
+      {1u, MakeClip(120min, {1u})},
+      {2u, MakeClip(150min, {2u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::MAIN, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 1u);
+
+  // SINGLE returns the longest of the remaining candidates, not the longest on the disc
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::SINGLE, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 1u);
+
+  EXPECT_TRUE(helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::ALL, clips, playlists));
+  ASSERT_EQ(items.Size(), 2);
+  const auto& returned{GetPlaylists(items)};
+  const std::set<unsigned int> expected{1u, 2u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+}
+
+// Every version of the movie is presented at the same resolution, so all are kept - and an
+// interlaced version is not discarded in favour of a lower resolution progressive one
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_Resolution_MultipleVersions)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{
+      {1u,
+       MakePlaylist(1u, 120min, {1u}, {60min, 60min}, "eng", {}, {}, 1080)}, // Theatrical (1080i)
+      {2u, MakePlaylist(2u, 140min, {2u}, {70min, 70min}, "eng", {}, {}, 1080)}, // Extended
+      {3u, MakePlaylist(3u, 100min, {3u}, {50min, 50min}, "eng", {}, {}, 720)}, // Extra (720p)
+  };
+  ClipMap clips{
+      {1u, MakeClip(120min, {1u})},
+      {2u, MakeClip(140min, {2u})},
+      {3u, MakeClip(100min, {3u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::MAIN, clips, playlists));
+  ASSERT_EQ(items.Size(), 2);
+  auto returned{GetPlaylists(items)};
+  std::set<unsigned int> expected{1u, 2u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::SINGLE, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 2u);
+
+  EXPECT_TRUE(helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::ALL, clips, playlists));
+  ASSERT_EQ(items.Size(), 3);
+  returned = GetPlaylists(items);
+  expected = {1u, 2u, 3u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+}
+
+// Playlists without video stream information are neither discarded nor used for comparison,
+// and the known main playlist is never discarded for its resolution
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_Resolution_UnknownAndMainPlaylist)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{
+      {1u, MakePlaylist(1u, 120min, {1u}, {60min, 60min}, "eng", {}, {}, 1080)},
+      {2u, MakePlaylist(2u, 110min, {2u}, {55min, 55min}, "eng")}, // No video information
+      {3u, MakePlaylist(3u, 100min, {3u}, {50min, 50min}, "eng", {}, {}, 480)}, // mainPlaylist
+  };
+  ClipMap clips{
+      {1u, MakeClip(120min, {1u})},
+      {2u, MakeClip(110min, {2u})},
+      {3u, MakeClip(100min, {3u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(helper.GetMoviePlaylists(url, items, allTitles, 3, GetTitle::MAIN, clips, playlists));
+  ASSERT_EQ(items.Size(), 3);
+  auto returned{GetPlaylists(items)};
+  std::set<unsigned int> expected{1u, 2u, 3u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, 3, GetTitle::SINGLE, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 3u);
+
+  EXPECT_TRUE(helper.GetMoviePlaylists(url, items, allTitles, 3, GetTitle::ALL, clips, playlists));
+  ASSERT_EQ(items.Size(), 3);
+  returned = GetPlaylists(items);
+  expected = {1u, 2u, 3u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+}
+
+//
+// ---- GetMoviePlaylists - seamlessly branched discs ---------------------------
+//
+
+// A seamlessly branched disc holding a theatrical (800) and a special edition (801) built from
+// shared clips. Each of those clips is also playable on its own (for scene selection), and one of
+// them (1629) is longer than MIN_MOVIE_DURATION. Playlists 805 and 806 present the same content
+// as 800 and 801 but expose the original language only.
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_SeamlesslyBranchedDisc)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  const std::string allLanguages{"eng,eng,eng,fra,spa"};
+  PlaylistMap playlists{
+      {800u,
+       MakePlaylist(800u, 137min, {705u, 749u, 757u}, {68min, 69min}, allLanguages, {}, {}, 1080)},
+      {801u, MakePlaylist(801u, 154min, {705u, 749u, 755u, 757u}, {77min, 77min}, allLanguages, {},
+                          {}, 1080)},
+      {805u, MakePlaylist(805u, 137min, {705u, 749u, 757u}, {68min, 69min}, "eng", {}, {}, 1080)},
+      {806u,
+       MakePlaylist(806u, 154min, {705u, 749u, 755u, 757u}, {77min, 77min}, "eng", {}, {}, 1080)},
+      // The individually playable clips of the two editions
+      {1491u, MakePlaylist(1491u, 9min, {705u}, {9min}, allLanguages, {}, {}, 1080)},
+      {1629u, MakePlaylist(1629u, 33min, {749u}, {33min}, allLanguages, {}, {}, 1080)},
+      {1635u, MakePlaylist(1635u, 17min, {755u}, {17min}, allLanguages, {}, {}, 1080)},
+      {1637u, MakePlaylist(1637u, 95min, {757u}, {95min}, allLanguages, {}, {}, 1080)},
+  };
+  ClipMap clips{
+      {705u, MakeClip(9min, {800u, 801u, 805u, 806u, 1491u})},
+      {749u, MakeClip(33min, {800u, 801u, 805u, 806u, 1629u})},
+      {755u, MakeClip(17min, {801u, 806u, 1635u})},
+      {757u, MakeClip(95min, {800u, 801u, 805u, 806u, 1637u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::MAIN, clips, playlists));
+  ASSERT_EQ(items.Size(), 2);
+  auto returned{GetPlaylists(items)};
+  std::set<unsigned int> expected{800u, 801u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::SINGLE, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 801u); // Longest edition
+
+  EXPECT_TRUE(helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::ALL, clips, playlists));
+  EXPECT_EQ(items.Size(), 8);
+  returned = GetPlaylists(items);
+  expected = {800u, 801u, 805u, 806u, 1491u, 1629u, 1635u, 1637u};
   EXPECT_TRUE(std::ranges::includes(returned, expected));
 }

@@ -335,9 +335,8 @@ namespace KODI::VIDEO
     bool ProcessItemByVideoInfoTag(const CFileItem *item, EPISODELIST &episodeList);
 
     bool AddVideoExtras(CFileItemList& items, ADDON::ContentType content, const std::string& path);
-    static std::pair<VersionConversionResult, int> ProcessVideoVersion(VideoDbContentType itemType,
-                                                                       int dbId,
-                                                                       int targetDbId = -1);
+    static std::pair<VersionConversionResult, int> ProcessVideoVersion(
+        VideoDbContentType itemType, int dbId, int targetDbId = -1, bool canBecomeDefault = true);
     static void RemovePartNumberFromTitle(int dbId,
                                           VideoDbContentType itemType,
                                           CVideoDatabase& db);
@@ -363,6 +362,9 @@ namespace KODI::VIDEO
 
     SimilarVideoScanAction m_similarVideoAction{SimilarVideoScanAction::NONE};
     bool m_ignoreVideoExtras{false};
+
+    //! Whether the folder a movie is in names it (the scraper's "movies are in separate folders")
+    bool m_useFolderNames{false};
 
     enum class ArtRetrievalTiming : uint8_t
     {
@@ -396,6 +398,20 @@ namespace KODI::VIDEO
                                        std::string_view directory,
                                        std::function<void(const std::string&)> f);
 
+    /*!
+     * \brief Look for the name of an edition known to the library (ex. "Director's Cut") within the
+     *        name of the folder holding a disc. The longest match wins, and a match at the very
+     *        start of the folder name is ignored as that is a movie whose title is an edition name
+     *        (ex. "The Final Cut (2004)") rather than a version of another movie.
+     * \param[in] folderName Name of the folder holding the disc
+     * \return The edition's name as held in the library, empty if none was recognised
+     */
+    std::string GetEditionFromFolderName(const std::string& folderName);
+
     mutable KODI::REGEXP::RegExpCache m_regexpCache;
+
+    //! Editions known to the library, cached for the duration of a scan
+    std::vector<std::string> m_videoVersionTypes;
+    bool m_videoVersionTypesCached{false};
   };
   } // namespace KODI::VIDEO

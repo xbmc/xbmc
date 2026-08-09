@@ -13,9 +13,20 @@
 #include "URL.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/FileUtils.h"
+#include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoInfoTag.h"
+
+#include <memory>
+#include <string>
+
+namespace
+{
+//! \brief Folder names holding bonus content rather than a video of their own
+constexpr const char* VIDEO_EXTRAS_FOLDER_REGEXP{
+    R"(^(extras|bonus[ ._-]*(dis[ck]|content|feature)s?)$)"};
+} // namespace
 
 namespace KODI::VIDEO
 {
@@ -137,10 +148,18 @@ bool IsVideoDb(const CFileItem& item)
   return URIUtils::IsVideoDb(item.GetPath());
 }
 
+bool IsVideoExtrasFolderName(std::string_view name)
+{
+  thread_local REGEXP::RegExpCache cache;
+
+  const std::shared_ptr<CRegExp> regexp{
+      REGEXP::GetRegExp(VIDEO_EXTRAS_FOLDER_REGEXP, &cache, true, CRegExp::autoUtf8)};
+  return regexp && regexp->RegFind(std::string{name}) >= 0;
+}
+
 bool IsVideoExtrasFolder(const CFileItem& item)
 {
-  return item.IsFolder() &&
-         StringUtils::EqualsNoCase(URIUtils::GetFileOrFolderName(item.GetPath()), "extras");
+  return item.IsFolder() && IsVideoExtrasFolderName(URIUtils::GetFileOrFolderName(item.GetPath()));
 }
 
 } // namespace KODI::VIDEO

@@ -372,4 +372,47 @@ std::shared_ptr<CFileItem> LoadVideoFilesFolderInfo(const CFileItem& folder)
   }
   return loadedItem;
 }
+
+std::string NormaliseEditionName(const std::string& name)
+{
+  std::string apostropheless{name};
+  StringUtils::Replace(apostropheless, "\xE2\x80\x99", ""); // Right single quotation mark
+
+  std::string result{" "};
+  result.reserve(apostropheless.size() + 2);
+  for (const char c : apostropheless)
+  {
+    if (StringUtils::isasciialphanum(c) || static_cast<unsigned char>(c) >= 0x80)
+      result.push_back(c);
+    else if (c != '\'' && result.back() != ' ')
+      result.push_back(' ');
+  }
+  if (result.back() != ' ')
+    result.push_back(' ');
+
+  StringUtils::ToLower(result);
+  return result;
+}
+
+std::string FindEditionInName(const std::string& name, const std::vector<std::string>& editions)
+{
+  const std::string normalisedName{NormaliseEditionName(name)};
+
+  std::string match;
+  size_t matchLength{0};
+  for (const std::string& edition : editions)
+  {
+    const std::string normalisedEdition{NormaliseEditionName(edition)};
+
+    // A name that starts with an edition belongs to a movie whose title happens to be one, not to a
+    // version of some other movie. Longer matches win, so the shorter ones they contain are ignored
+    if (const size_t pos{normalisedName.find(normalisedEdition)};
+        pos != std::string::npos && pos > 0 && normalisedEdition.size() > matchLength)
+    {
+      match = edition;
+      matchLength = normalisedEdition.size();
+    }
+  }
+  return match;
+}
 } // namespace KODI::VIDEO::UTILS
