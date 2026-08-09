@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <atomic>
 #include <set>
 #include <string>
 #include <utility>
@@ -81,7 +82,7 @@ protected:
   std::set<std::string, std::less<>> m_pathsToScan; //!< Set of paths to scan
   bool m_showDialog = false; //!< Whether or not to show progress bar dialog
   CGUIDialogProgressBarHandle* m_handle = nullptr; //!< Progress bar handle
-  bool m_bRunning = false; //!< Whether or not scanner is running
-  bool m_bCanInterrupt = false; //!< Whether or not scanner is currently interruptible
+  std::atomic<bool> m_bRunning{false}; //!< Whether or not scanner is running
+  std::atomic<bool> m_bCanInterrupt{false}; //!< Whether or not scanner is currently interruptible
   bool m_bClean = false; //!< Whether or not to perform cleaning during scanning
 };

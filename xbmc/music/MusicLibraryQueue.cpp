@@ -25,6 +25,7 @@
 #include "utils/Variant.h"
 
 #include <mutex>
+#include <ranges>
 #include <utility>
 
 CMusicLibraryQueue::CMusicLibraryQueue()
@@ -263,6 +264,17 @@ void CMusicLibraryQueue::CancelJob(CMusicLibraryJob *job)
 void CMusicLibraryQueue::CancelAllJobs()
 {
   std::unique_lock lock(m_critical);
+
+  // Ask any job that is already being processed to stop to prevent slow shutdown
+  for (const auto& jobs : m_jobs | std::views::values)
+  {
+    for (const auto& job : jobs)
+    {
+      if (job->CanBeCancelled())
+        job->Cancel();
+    }
+  }
+
   CJobQueue::CancelJobs();
 
   // remove all scanning jobs

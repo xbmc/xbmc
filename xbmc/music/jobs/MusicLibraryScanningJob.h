@@ -11,6 +11,7 @@
 #include "music/infoscanner/MusicInfoScanner.h"
 #include "music/jobs/MusicLibraryJob.h"
 
+#include <atomic>
 #include <string>
 
 /*!
@@ -44,6 +45,7 @@ protected:
 
 private:
   MUSIC_INFO::CMusicInfoScanner m_scanner;
+  std::atomic<bool> m_cancelled{false};
   std::string m_directory;
   bool m_showProgress;
   int m_flags;

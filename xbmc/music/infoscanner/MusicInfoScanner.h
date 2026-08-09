@@ -14,6 +14,7 @@
 #include "threads/Thread.h"
 #include "utils/RegExp.h"
 
+#include <atomic>
 #include <string>
 
 class CAlbum;
@@ -278,7 +279,8 @@ protected:
 
   int m_currentItem;
   int m_itemCount;
-  bool m_bStop;
+  //! Sticky - never reset, so a scanner instance is good for one scan only
+  std::atomic<bool> m_bStop{false};
   bool m_needsCleanup = false;
   int m_scanType = 0; // 0 - load from files, 1 - albums, 2 - artists
   int m_idSourcePath;
