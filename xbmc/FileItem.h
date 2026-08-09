@@ -137,6 +137,7 @@ public:
   void SetDynURL(const CURL& url);
   const std::string &GetDynPath() const;
   void SetDynPath(std::string path);
+  bool HasDynPath() const;
 
   CFileItem& operator=(const CFileItem& item);
   void Archive(CArchive& ar) override;
