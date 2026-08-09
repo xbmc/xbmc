@@ -21,19 +21,33 @@
 // Version when the migration system was added. Early exit for upgrades to that version or lower
 constexpr int VERSION_BEFORE_MIGRATION_SYSTEM = 2;
 
-CSettingsMigration::CSettingsMigration()
+namespace
 {
-  /*
-   * Placeholder for the creation of migration steps. Could look something like this:
+class CSettingsMigrationToV3 : public ISettingsMigrationStep
+{
+public:
+  int TargetVersion() const override { return 3; }
+  bool Apply(TiXmlElement* root) override
+  {
+    constexpr std::string_view oldSettingId = "dvds.autorun";
+    constexpr std::string_view newSettingId = "dvds.autoaction";
 
-  std::vector<std::shared_ptr<ISettingsMigrationStep>> migrations{
+    return CSettingsMigration::SettingConversionResult::FAILURE !=
+           CSettingsMigration::ConvertSettingBoolToInt(root, oldSettingId, newSettingId,
+                                                       {.m_default = 0, .m_false = 0, .m_true = 1});
+  }
+};
+
+CSettingsMigration::StepList BuildMigrationSteps()
+{
+  return {
       std::make_shared<CSettingsMigrationToV3>(),
-      std::make_shared<CSettingsMigrationToV4>(),
-      etc...
   };
+}
+} // namespace
 
-  CSettingsMigration(std::move(migrations));
-  */
+CSettingsMigration::CSettingsMigration() : CSettingsMigration(BuildMigrationSteps())
+{
 }
 
 CSettingsMigration::CSettingsMigration(StepList steps)
