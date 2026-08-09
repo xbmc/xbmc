@@ -58,8 +58,10 @@ if("gbm" IN_LIST CORE_PLATFORM_NAME_LC OR "wayland" IN_LIST CORE_PLATFORM_NAME_L
 
   if(TARGET ${APP_NAME_LC}::OpenGLES)
     list(APPEND SOURCES RendererDRMPRIMEGLES.cpp
+                        DRMPRIMECaptureGLES.cpp
                         DRMPRIMEEGL.cpp)
     list(APPEND HEADERS RendererDRMPRIMEGLES.h
+                        DRMPRIMECaptureGLES.h
                         DRMPRIMEEGL.h)
   endif()
 endif()
