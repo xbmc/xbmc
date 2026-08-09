@@ -481,19 +481,34 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
                          "empty. Please report this bug.");
   }
 
-  // don't re-open mpegts streams with hevc encoding as the params are not correctly detected again
-  if (iformat && (strcmp(iformat->name, "mpegts") == 0) && !url.IsProtocol("tcp") && !fileinfo &&
-      !isBluray && m_pFormatContext->nb_streams > 0 && m_pFormatContext->streams != nullptr &&
-      m_pFormatContext->streams[0]->codecpar->codec_id != AV_CODEC_ID_HEVC)
+  // Don't apply the mpegts analyzeduration optimization if any stream needs full analysis:
+  // HEVC params break on reopen; DTS and TrueHD need full analyzeduration for extensions and channels
+  // (DTS channel/sample-rate detection is unreliable at a truncated analyzeduration even for core DTS).
+  bool skipTsOptimization = false;
+  bool isMpegTsWithStreams = iformat && (strcmp(iformat->name, "mpegts") == 0) &&
+                             m_pFormatContext->nb_streams > 0 &&
+                             m_pFormatContext->streams != nullptr;
+  if (isMpegTsWithStreams)
+  {
+    for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
+    {
+      AVCodecID codec = m_pFormatContext->streams[i]->codecpar->codec_id;
+      if (codec == AV_CODEC_ID_HEVC || codec == AV_CODEC_ID_DTS || codec == AV_CODEC_ID_TRUEHD)
+      {
+        skipTsOptimization = true;
+        break;
+      }
+    }
+  }
+
+  if (isMpegTsWithStreams && !url.IsProtocol("tcp") && !fileinfo && !isBluray &&
+      !skipTsOptimization)
   {
     av_opt_set_int(m_pFormatContext, "analyzeduration", 500000, 0);
     m_checkTransportStream = true;
     skipCreateStreams = true;
   }
-  else if (!iformat || ((strcmp(iformat->name, "mpegts") != 0) ||
-                        ((strcmp(iformat->name, "mpegts") == 0) &&
-                         m_pFormatContext->nb_streams > 0 && m_pFormatContext->streams != nullptr &&
-                         m_pFormatContext->streams[0]->codecpar->codec_id == AV_CODEC_ID_HEVC)))
+  else if (!iformat || strcmp(iformat->name, "mpegts") != 0 || skipTsOptimization)
   {
     m_streaminfo = true;
   }
