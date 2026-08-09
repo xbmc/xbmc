@@ -92,8 +92,8 @@ bool CVideoSyncGbm::Setup()
     return false;
   }
 
-  CLog::Log(LOGINFO, "CVideoSyncGbm::{}: opened (fd:{} crtc:{} seq:{} ns:{}:{})", __FUNCTION__,
-            m_fd, m_crtcId, m_sequence, ns, MonotonicToHostCounter(ns));
+  CLog::Log(LOGINFO, "CVideoSyncGbm::{}: opened (fd:{} crtc:{} seq:{} ns:{})", __FUNCTION__, m_fd,
+            m_crtcId, m_sequence, ns);
   return true;
 }
 
