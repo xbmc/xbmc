@@ -123,6 +123,11 @@ void CVideoSyncGbm::Run(CEvent& stopEvent)
     if (sequence == m_sequence)
       continue;
 
+    // Zero is how the kernel marks a timestamp it could not determine
+    // e.g. during a modeset
+    if (ns == 0)
+      continue;
+
     m_refClock->UpdateClock(sequence - m_sequence, MonotonicToHostCounter(ns));
     m_sequence = sequence;
   }
