@@ -20,10 +20,33 @@
 #include <assert.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include <unistd.h>
 #include <xf86drm.h>
 #include <xf86drmMode.h>
+
+namespace
+{
+/*!
+ * \brief Express a DRM vblank timestamp in the reference clock's time base
+ *
+ * DRM reports vblank timestamps on CLOCK_MONOTONIC while CurrentHostCounter(),
+ * and therefore CVideoReferenceClock, uses CLOCK_MONOTONIC_RAW. Read both
+ * clocks here rather than applying an offset sampled earlier: the elapsed time
+ * since the vblank then cancels, and the two clocks do not tick at the same
+ * rate so any offset kept from before is already out of date.
+ */
+uint64_t MonotonicToHostCounter(uint64_t ns)
+{
+  struct timespec ts;
+  if (clock_gettime(CLOCK_MONOTONIC, &ts) != 0)
+    return CurrentHostCounter();
+
+  const uint64_t now = static_cast<uint64_t>(ts.tv_sec) * 1000000000ULL + ts.tv_nsec;
+  return CurrentHostCounter() - (now - ns);
+}
+} // namespace
 
 CVideoSyncGbm::CVideoSyncGbm(CVideoReferenceClock* clock)
   : CVideoSync(clock), m_winSystem(CServiceBroker::GetWinSystem())
@@ -63,7 +86,6 @@ bool CVideoSyncGbm::Setup()
   m_crtcId = crtc->GetCrtcId();
   m_fd = drm->GetFileDescriptor();
   int s = drmCrtcGetSequence(m_fd, m_crtcId, &m_sequence, &ns);
-  m_offset = CurrentHostCounter() - ns;
   if (s != 0)
   {
     CLog::Log(LOGWARNING, "CVideoSyncGbm::{}: drmCrtcGetSequence failed ({})", __FUNCTION__, s);
@@ -71,7 +93,7 @@ bool CVideoSyncGbm::Setup()
   }
 
   CLog::Log(LOGINFO, "CVideoSyncGbm::{}: opened (fd:{} crtc:{} seq:{} ns:{}:{})", __FUNCTION__,
-            m_fd, m_crtcId, m_sequence, ns, m_offset + ns);
+            m_fd, m_crtcId, m_sequence, ns, MonotonicToHostCounter(ns));
   return true;
 }
 
@@ -101,7 +123,7 @@ void CVideoSyncGbm::Run(CEvent& stopEvent)
     if (sequence == m_sequence)
       continue;
 
-    m_refClock->UpdateClock(sequence - m_sequence, m_offset + ns);
+    m_refClock->UpdateClock(sequence - m_sequence, MonotonicToHostCounter(ns));
     m_sequence = sequence;
   }
 }
