@@ -705,6 +705,24 @@ bool CVideoDatabase::SetPathHash(const std::string &path, const std::string &has
   return false;
 }
 
+void CVideoDatabase::ClearPathHash(const std::string& strPath)
+{
+  try
+  {
+    if (nullptr == m_pDB || nullptr == m_pDS)
+      return;
+
+    std::string path{strPath};
+    URIUtils::AddSlashAtEnd(path);
+
+    m_pDS->exec(PrepareSQL("update path set strHash='' where strPath='%s'", path.c_str()));
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "({}) failed", strPath);
+  }
+}
+
 bool CVideoDatabase::LinkMovieToTvshow(int idMovie, int idShow, bool bRemove)
 {
    try
@@ -11661,11 +11679,22 @@ void CVideoDatabase::InvalidatePathHash(const std::string& strPath)
   SScanSettings settings;
   bool foundDirectly;
 
-  const std::string path{URIUtils::IsBlurayPath(strPath) ? URIUtils::GetDiscBasePath(strPath)
-                                                         : strPath};
+  // A disc rip is anchored in files/path on its disc structure (a bluray:// playlist row,
+  // or a BDMV/ or VIDEO_TS/ row), but the scanner hashes the movie folder that contains
+  // that structure.
+  const std::string path{URIUtils::IsBlurayPath(strPath) || URIUtils::IsDiscPath(strPath)
+                             ? URIUtils::GetDiscBasePath(strPath)
+                             : strPath};
 
   ScraperPtr info = GetScraperForPath(path, settings, foundDirectly);
+
+  // strPath is a known row (it comes from a files/path join), so it can be set directly.
+  // (SetPathHash includes AddPath if the path is not already known)
+  // Subsequently use ClearPathHash to ensure no paths added inadvertently.
+  // SetPathHash (via AddPath) also handles zip:// <-> archive:// aliasing
   SetPathHash(strPath, "");
+  if (path != strPath)
+    ClearPathHash(path);
   if (!info)
     return;
   if (info->Content() == ContentType::TVSHOWS ||
@@ -11677,7 +11706,7 @@ void CVideoDatabase::InvalidatePathHash(const std::string& strPath)
       std::string strParent;
       if (URIUtils::GetParentPath(path, strParent) &&
           (!URIUtils::IsPlugin(path) || !CURL(strParent).GetHostName().empty()))
-        SetPathHash(strParent, "");
+        ClearPathHash(strParent);
     }
   }
 }

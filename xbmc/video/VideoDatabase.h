@@ -1258,6 +1258,11 @@ private:
                  std::string& strFileName) const;
   void InvalidatePathHash(const std::string& strPath);
 
+  /*! \brief Clear the hash of a path, without adding it to the path table if unknown
+   \param strPath the path to clear the hash of
+   */
+  void ClearPathHash(const std::string& strPath);
+
   /*! \brief Get a safe filename from a given string
    \param dir directory to use for the file
    \param name movie, show name, or actor to get a safe filename for
