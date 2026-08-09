@@ -494,6 +494,7 @@ void CPVRClient::ResetProperties()
   m_menuhooks.reset();
   m_timertypes.clear();
   m_clientCapabilities.clear();
+  m_epgTagPlayableImplemented = true;
 
   m_ifc.pvr->props->strUserPath = m_strUserPath.c_str();
   m_ifc.pvr->props->strClientPath = m_strClientPath.c_str();
@@ -989,14 +990,23 @@ PVR_ERROR CPVRClient::IsRecordable(const std::shared_ptr<const CPVREpgInfoTag>& 
 PVR_ERROR CPVRClient::IsPlayable(const std::shared_ptr<const CPVREpgInfoTag>& tag,
                                  bool& bIsPlayable) const
 {
-  return DoAddonCall(
+  const PVR_ERROR error{DoAddonCall(
       std::source_location::current().function_name(),
       [tag, &bIsPlayable](const AddonInstance* addon)
       {
         CAddonEpgTag addonTag(*tag);
         return addon->toAddon->IsEPGTagPlayable(addon, &addonTag, &bIsPlayable);
       },
-      m_clientCapabilities.SupportsEPG());
+      m_clientCapabilities.SupportsEPG() && m_epgTagPlayableImplemented)};
+
+  // The function is optional and the answer cannot change while the add-on is loaded, so
+  // take it once rather than on every tag.
+  if (error == PVR_ERROR_NOT_IMPLEMENTED)
+  {
+    m_epgTagPlayableImplemented = false;
+  }
+
+  return error;
 }
 
 void CPVRClient::WriteStreamProperties(std::span<PVR_NAMED_VALUE*> properties,
