@@ -25,6 +25,7 @@
 #include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/Mp4ChplReader.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -156,6 +157,35 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url, CFileItemList& items
 
   float chapter_size = 0;
   bool chapter_error = false;
+
+  ChplChapterResult neroChapterResult{chplNone};
+  std::vector<ChplChapter> nero;
+
+  if (m_fctx->nb_chapters > 1)
+  {
+
+    if (isAudioBook)
+    {
+      neroChapterResult = CChplChapterReader::ScanNeroChapters(url, nero);
+      if (neroChapterResult.IsError())
+      {
+        CLog::Log(LOGERROR,
+                  "AudioBookFileDirectory: Error scanning for Nero style chapters in file {}. The "
+                  "error returned was {}",
+                  url.GetRedacted(), *neroChapterResult.errorMessage);
+      }
+      else if (neroChapterResult.IsNone())
+      { // can't get here without some form of chapter so must be QT style chapters (chap atom)
+        CLog::Log(
+            LOGDEBUG,
+            "AudioBookFileDirectory: Scanned for nero style chapters but didn't find any in {}, "
+            "using QT chapters",
+            url.GetRedacted());
+      }
+    }
+  }
+    const size_t ns = nero.size();
+
   for (unsigned int i = 0; m_fctx->chapters && i < m_fctx->nb_chapters; ++i)
   {
     if (!m_fctx->chapters[i] || m_fctx->chapters[i]->start < 0) // null or negative start time
@@ -191,6 +221,9 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url, CFileItemList& items
           chapauthor = tag->value;
         else if (StringUtils::CompareNoCase(tag->key, "album") == 0)
           chapalbum = tag->value;
+        // Prefer nero titles if we have them over QT titles and they are different
+        if (neroChapterResult.IsFound() && (i < ns) && (nero[i].title != chaptitle))
+          chaptitle = nero[i].title;
       }
       item->GetMusicInfoTag()->SetTitle(chaptitle);
       item->GetMusicInfoTag()->SetAlbum(chapalbum.empty() ? album.empty() ? title : album
