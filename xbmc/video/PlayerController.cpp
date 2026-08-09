@@ -31,9 +31,12 @@
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "video/VideoStreamSelect.h"
 #include "video/dialogs/GUIDialogAudioSettings.h"
 #include "video/guilib/VideoStreamSelectHelper.h"
 #include "windowing/WinSystem.h"
+
+#include <algorithm>
 
 using namespace KODI;
 using namespace UTILS;
@@ -117,54 +120,68 @@ bool CPlayerController::OnAction(const CAction &action)
         if (appPlayer->GetSubtitleCount() == 0)
           return true;
 
-        int currentSub = appPlayer->GetSubtitle();
-        bool currentSubVisible = true;
+        using namespace KODI::VIDEO;
+        const std::vector<SubtitleStreamInfoExt> streams =
+            CVideoStreamSelect::GetSubtitleStreams(appPlayer.get());
+
+        // Find the current logical sub track from the internal id
+        const int currentStreamId = appPlayer->GetSubtitle();
+        auto it = std::ranges::find(streams, currentStreamId, &SubtitleStreamInfoExt::streamId);
+        if (it == streams.end())
+          return true;
+
+        bool subVisible = true;
 
         if (appPlayer->GetSubtitleVisible())
         {
-          currentSub += (action.GetID() == ACTION_PREV_SUBTITLE) ? -1 : 1;
-          if (currentSub < 0 || currentSub >= appPlayer->GetSubtitleCount())
+          int delta = action.GetID() == ACTION_PREV_SUBTITLE ? -1 : 1;
+
+          // The position before begin() is UB. Clamp.
+          if (it == streams.begin() && delta < 0)
+            subVisible = false;
+          else
+            std::advance(it, delta);
+
+          if (it == streams.end())
           {
-            currentSub = 0;
+            it = streams.begin();
             if (action.GetID() != ACTION_CYCLE_SUBTITLE)
-            {
-              appPlayer->SetSubtitleVisible(false);
-              currentSubVisible = false;
-            }
+              subVisible = false;
           }
-          appPlayer->SetSubtitle(currentSub);
+
+          if (!subVisible)
+            appPlayer->SetSubtitleVisible(false);
+          if (currentStreamId != it->streamId)
+            appPlayer->SetSubtitle(it->streamId);
         }
         else if (action.GetID() != ACTION_CYCLE_SUBTITLE)
         {
-          if (currentSub == 0 && action.GetID() == ACTION_PREV_SUBTITLE)
+          if (it == streams.begin() && action.GetID() == ACTION_PREV_SUBTITLE)
           {
-            currentSub = appPlayer->GetSubtitleCount() - 1;
-            appPlayer->SetSubtitle(currentSub);
+            it = std::prev(streams.end());
+            if (currentStreamId != it->streamId)
+              appPlayer->SetSubtitle(it->streamId);
           }
           appPlayer->SetSubtitleVisible(true);
         }
 
-        std::string sub, lang;
-        if (currentSubVisible)
+        std::string sub;
+        if (subVisible)
         {
-          SubtitleStreamInfo info;
-          appPlayer->GetSubtitleStreamInfo(currentSub, info);
-          if (!g_LangCodeExpander.Lookup(info.language, lang))
-            lang =
-                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // Unknown
+          sub = it->languageDesc;
 
-          if (info.name.empty())
-            sub = lang;
-          else
-            sub = StringUtils::Format("{} - {}", lang, info.name);
+          if (!it->name.empty())
+            sub += " - " + it->name;
 
-          if (!info.codecDesc.empty())
-            sub.append(StringUtils::Format(" ({})", info.codecDesc));
-          else if (!info.codecName.empty())
-            sub.append(StringUtils::Format(" ({})", info.codecName));
+          if (!it->codecDesc.empty())
+            sub += " (" + it->codecDesc + ")";
+          else if (!it->codecName.empty())
+            sub += " (" + it->codecName + ")";
         }
         else
+        {
           sub = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1223);
+        }
 
         CGUIDialogKaiToast::QueueNotification(
             CGUIDialogKaiToast::Info,
@@ -268,27 +285,31 @@ bool CPlayerController::OnAction(const CAction &action)
         if (appPlayer->GetAudioStreamCount() == 1)
           return true;
 
-        int currentAudio = appPlayer->GetAudioStream();
-        int audioStreamCount = appPlayer->GetAudioStreamCount();
+        using namespace KODI::VIDEO;
+        const std::vector<AudioStreamInfoExt> streams =
+            CVideoStreamSelect::GetAudioStreams(appPlayer.get());
 
-        if (++currentAudio >= audioStreamCount)
-          currentAudio = 0;
-        appPlayer->SetAudioStream(currentAudio); // Set the audio stream to the one selected
+        // Find the current logical sub track from the internal id
+        const int currentStreamId = appPlayer->GetAudioStream();
+        auto it = std::ranges::find(streams, currentStreamId, &AudioStreamInfoExt::streamId);
+        if (it == streams.end())
+          return true;
+        const int currentIndex = static_cast<int>(std::distance(streams.begin(), it));
 
-        std::string lan;
-        AudioStreamInfo info;
-        appPlayer->GetAudioStreamInfo(currentAudio, info);
-        if (!g_LangCodeExpander.Lookup(info.language, lan))
-          lan = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // Unknown
+        const int newIndex = (currentIndex + 1) % streams.size();
 
-        std::string textInfo = lan;
-        if (!info.name.empty())
-          textInfo += " - " + info.name;
-        if (!info.codecDesc.empty())
-          textInfo += " (" + info.codecDesc + ")";
+        it = streams.begin() + newIndex;
+        appPlayer->SetAudioStream(it->streamId);
+
+        // Toast
+        std::string textInfo = it->languageDesc;
+        if (!it->name.empty())
+          textInfo += " - " + it->name;
+        if (!it->codecDesc.empty())
+          textInfo += " (" + it->codecDesc + ")";
 
         std::string caption = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(460);
-        caption += StringUtils::Format(" ({}/{})", currentAudio + 1, audioStreamCount);
+        caption += StringUtils::Format(" ({}/{})", newIndex + 1, streams.size());
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, caption, textInfo,
                                               DisplTime, false, MsgTime);
         return true;
@@ -305,18 +326,28 @@ bool CPlayerController::OnAction(const CAction &action)
         if (appPlayer->GetVideoStreamCount() == 1)
           return true;
 
-        int currentVideo = appPlayer->GetVideoStream();
-        int videoStreamCount = appPlayer->GetVideoStreamCount();
+        using namespace KODI::VIDEO;
+        const std::vector<VideoStreamInfoExt> streams =
+            CVideoStreamSelect::GetVideoStreams(appPlayer.get());
 
-        if (++currentVideo >= videoStreamCount)
-          currentVideo = 0;
-        appPlayer->SetVideoStream(currentVideo);
-        VideoStreamInfo info;
-        appPlayer->GetVideoStreamInfo(currentVideo, info);
+        // Find the current logical sub track from the internal id
+        const int currentStreamId = appPlayer->GetVideoStream();
+        auto it = std::ranges::find(streams, currentStreamId, &VideoStreamInfoExt::streamId);
+        if (it == streams.end())
+          return true;
+        const int currentIndex = static_cast<int>(std::distance(streams.begin(), it));
+
+        const int newIndex = (currentIndex + 1) % streams.size();
+
+        it = streams.begin() + newIndex;
+        appPlayer->SetVideoStream(it->streamId);
+
+        // Toast
         std::string caption =
             CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(38031);
-        caption += StringUtils::Format(" ({}/{})", currentVideo + 1, videoStreamCount);
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, caption, info.name, DisplTime, false, MsgTime);
+        caption += StringUtils::Format(" ({}/{})", newIndex + 1, streams.size());
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, caption, it->name,
+                                              DisplTime, false, MsgTime);
         return true;
       }
 
