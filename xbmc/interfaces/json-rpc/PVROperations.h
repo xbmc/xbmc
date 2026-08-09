@@ -41,6 +41,11 @@ namespace JSONRPC
                                                  IClient* client,
                                                  const CVariant& parameterObject,
                                                  CVariant& result);
+    static JSONRPC_STATUS GetPlayableBroadcasts(const std::string& method,
+                                                ITransportLayer* transport,
+                                                IClient* client,
+                                                const CVariant& parameterObject,
+                                                CVariant& result);
     static JSONRPC_STATUS GetTimers(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSONRPC_STATUS GetTimerDetails(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSONRPC_STATUS GetRecordings(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
