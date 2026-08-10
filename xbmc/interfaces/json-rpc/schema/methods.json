@@ -5274,6 +5274,78 @@
     ],
     "returns": "string"
   },
+  "VideoLibrary.SetSourceContent": {
+    "type": "method",
+    "description": "Assigns a content type and scraper to a video source path, as the 'Set content' dialog does",
+    "transport": "Response",
+    "permission": "UpdateData",
+    "params": [
+      {
+        "name": "path",
+        "type": "string",
+        "required": true,
+        "minLength": 1,
+        "description": "Path the content binding applies to. A trailing separator is added if missing"
+      },
+      {
+        "name": "content",
+        "type": "string",
+        "required": true,
+        "enum": [ "movies", "tvshows", "musicvideos", "none" ],
+        "description": "Content type to bind, or \"none\" to clear the binding"
+      },
+      {
+        "name": "scraperid",
+        "type": "string",
+        "default": "",
+        "description": "Addon id of the scraper. Required unless content is \"none\""
+      },
+      {
+        "name": "scrapersettings",
+        "type": "string",
+        "default": "",
+        "description": "Scraper settings as XML. Scraper defaults are used when empty"
+      },
+      {
+        "name": "scanrecursive",
+        "type": "boolean",
+        "default": true,
+        "description": "Scan sub folders. Ignored for tvshows and when containssingleitem is set"
+      },
+      {
+        "name": "usedirectorynames",
+        "type": "boolean",
+        "default": false,
+        "description": "Take the item name from the containing folder. Ignored for tvshows"
+      },
+      {
+        "name": "containssingleitem",
+        "type": "boolean",
+        "default": false,
+        "description": "The path holds one item, named after the folder the scan started in"
+      },
+      {
+        "name": "noupdate",
+        "type": "boolean",
+        "default": false,
+        "description": "Exclude the path from library updates"
+      },
+      {
+        "name": "clearmode",
+        "type": "string",
+        "default": "clear",
+        "enum": [ "clear", "exclude", "remove" ],
+        "description": "Only used when content is \"none\". \"clear\" unbinds the scraper, \"exclude\" also excludes the path from scanning, \"remove\" additionally deletes the items already scraped from it"
+      },
+      {
+        "name": "refresh",
+        "type": "boolean",
+        "default": false,
+        "description": "Scan the path once the binding has been applied"
+      }
+    ],
+    "returns": "string"
+  },
   "VideoLibrary.Export": {
     "type": "method",
     "description": "Exports all items from the video library",
