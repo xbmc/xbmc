@@ -1218,14 +1218,19 @@ int CMusicDatabase::AddSong(const int idSong,
 
 bool CMusicDatabase::GetSong(int idSong, CSong& song)
 {
+  return TryGetSong(idSong, song) == GetResult::Ok;
+}
+
+CMusicDatabase::GetResult CMusicDatabase::TryGetSong(int idSong, CSong& song)
+{
   try
   {
     song.Clear();
 
     if (nullptr == m_pDB)
-      return false;
+      return GetResult::Error;
     if (nullptr == m_pDS)
-      return false;
+      return GetResult::Error;
 
     std::string strSQL =
         PrepareSQL("SELECT songview.*,songartistview.* FROM songview "
@@ -1235,12 +1240,12 @@ bool CMusicDatabase::GetSong(int idSong, CSong& song)
                    idSong);
 
     if (!m_pDS->query(strSQL))
-      return false;
+      return GetResult::Error;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
     {
       m_pDS->close();
-      return false;
+      return GetResult::NotFound;
     }
 
     int songArtistOffset = song_enumCount;
@@ -1259,14 +1264,14 @@ bool CMusicDatabase::GetSong(int idSong, CSong& song)
       m_pDS->next();
     }
     m_pDS->close(); // cleanup recordset data
-    return true;
+    return GetResult::Ok;
   }
   catch (...)
   {
     CLog::LogF(LOGERROR, "({}) failed", idSong);
   }
 
-  return false;
+  return GetResult::Error;
 }
 
 bool CMusicDatabase::UpdateSong(CSong& song, bool bArtists /*= true*/, bool bArtistLinks /*= true*/)
@@ -1612,15 +1617,25 @@ int CMusicDatabase::UpdateAlbum(int idAlbum,
 
 bool CMusicDatabase::GetAlbum(int idAlbum, CAlbum& album, bool getSongs /* = true */)
 {
+  if (TryGetAlbum(idAlbum, album, getSongs) != GetResult::Ok)
+    return false;
+
+  return !getSongs || !album.songs.empty();
+}
+
+CMusicDatabase::GetResult CMusicDatabase::TryGetAlbum(int idAlbum,
+                                                      CAlbum& album,
+                                                      bool getSongs /* = true */)
+{
   try
   {
     if (nullptr == m_pDB)
-      return false;
+      return GetResult::Error;
     if (nullptr == m_pDS)
-      return false;
+      return GetResult::Error;
 
     if (idAlbum == -1)
-      return false; // not in the database
+      return GetResult::NotFound; // not in the database
 
     //Get album, song and album song info data using separate queries/datasets because we can have
     //multiple roles per artist for songs and that makes a single combined join impractical
@@ -1635,11 +1650,11 @@ bool CMusicDatabase::GetAlbum(int idAlbum, CAlbum& album, bool getSongs /* = tru
 
     CLog::Log(LOGDEBUG, "{}", sql);
     if (!m_pDS->query(sql))
-      return false;
+      return GetResult::Error;
     if (m_pDS->num_rows() == 0)
     {
       m_pDS->close();
-      return false;
+      return GetResult::NotFound;
     }
 
     int albumArtistOffset = album_enumCount;
@@ -1670,11 +1685,11 @@ bool CMusicDatabase::GetAlbum(int idAlbum, CAlbum& album, bool getSongs /* = tru
 
       CLog::Log(LOGDEBUG, "{}", sql);
       if (!m_pDS->query(sql))
-        return false;
+        return GetResult::Error;
       if (m_pDS->num_rows() == 0) //Album with no songs
       {
         m_pDS->close();
-        return false;
+        return GetResult::Ok;
       }
 
       int songArtistOffset = song_enumCount;
@@ -1703,14 +1718,14 @@ bool CMusicDatabase::GetAlbum(int idAlbum, CAlbum& album, bool getSongs /* = tru
       m_pDS->close(); // cleanup recordset data
     }
 
-    return true;
+    return GetResult::Ok;
   }
   catch (...)
   {
     CLog::LogF(LOGERROR, "({}) failed", idAlbum);
   }
 
-  return false;
+  return GetResult::Error;
 }
 
 bool CMusicDatabase::ClearAlbumLastScrapedTime(int idAlbum)
@@ -2089,18 +2104,25 @@ bool CMusicDatabase::UpdateArtistScrapedMBID(int idArtist,
 
 bool CMusicDatabase::GetArtist(int idArtist, CArtist& artist, bool fetchAll /* = false */)
 {
+  return TryGetArtist(idArtist, artist, fetchAll) == GetResult::Ok;
+}
+
+CMusicDatabase::GetResult CMusicDatabase::TryGetArtist(int idArtist,
+                                                       CArtist& artist,
+                                                       bool fetchAll /* = false */)
+{
   try
   {
     auto start = std::chrono::steady_clock::now();
     if (nullptr == m_pDB)
-      return false;
+      return GetResult::Error;
     if (nullptr == m_pDS)
-      return false;
+      return GetResult::Error;
     if (nullptr == m_pDS2)
-      return false;
+      return GetResult::Error;
 
     if (idArtist == -1)
-      return false; // not in the database
+      return GetResult::NotFound; // not in the database
 
     std::string strSQL;
     if (fetchAll)
@@ -2112,11 +2134,11 @@ bool CMusicDatabase::GetArtist(int idArtist, CArtist& artist, bool fetchAll /* =
       strSQL = PrepareSQL("SELECT * FROM artistview WHERE artistview.idArtist = %i", idArtist);
 
     if (!m_pDS->query(strSQL))
-      return false;
+      return GetResult::Error;
     if (m_pDS->num_rows() == 0)
     {
       m_pDS->close();
-      return false;
+      return GetResult::NotFound;
     }
     std::string debugSQL = strSQL + " - ";
     int discographyOffset = artist_enumCount;
@@ -2168,44 +2190,49 @@ bool CMusicDatabase::GetArtist(int idArtist, CArtist& artist, bool fetchAll /* =
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
     CLog::LogF(LOGDEBUG, "{} - took {} ms", debugSQL, duration.count());
-    return true;
+    return GetResult::Ok;
   }
   catch (...)
   {
     CLog::LogF(LOGERROR, "({}) failed", idArtist);
   }
 
-  return false;
+  return GetResult::Error;
 }
 
 bool CMusicDatabase::GetArtistExists(int idArtist)
 {
+  return TryGetArtistExists(idArtist) == GetResult::Ok;
+}
+
+CMusicDatabase::GetResult CMusicDatabase::TryGetArtistExists(int idArtist)
+{
   try
   {
     if (nullptr == m_pDB)
-      return false;
+      return GetResult::Error;
     if (nullptr == m_pDS)
-      return false;
+      return GetResult::Error;
 
     std::string strSQL =
         PrepareSQL("SELECT 1 FROM artist WHERE artist.idArtist = %i LIMIT 1", idArtist);
 
     if (!m_pDS->query(strSQL))
-      return false;
+      return GetResult::Error;
     if (m_pDS->num_rows() == 0)
     {
       m_pDS->close();
-      return false;
+      return GetResult::NotFound;
     }
     m_pDS->close(); // cleanup recordset data
-    return true;
+    return GetResult::Ok;
   }
   catch (...)
   {
     CLog::LogF(LOGERROR, "({}) failed", idArtist);
   }
 
-  return false;
+  return GetResult::Error;
 }
 
 int CMusicDatabase::GetLastArtist() const
