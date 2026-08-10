@@ -79,3 +79,12 @@ TEST_F(TestMusicDatabase, DiscographyRecoversLeftoverTables)
   EXPECT_EQ(0, items.Size());
   ExpectNoScratchTables();
 }
+
+TEST_F(TestMusicDatabase, CommitTransactionSucceedsWithoutAGUI)
+{
+  // The test process has no GUI, so there are no library info booleans to refresh
+  m_db.BeginTransaction();
+  ASSERT_TRUE(m_db.ExecuteQuery("INSERT INTO discography VALUES (2, 'Album', '2026', 'release')"));
+  EXPECT_TRUE(m_db.CommitTransaction());
+  EXPECT_EQ("1", m_db.GetSingleValue("SELECT COUNT(*) FROM discography"));
+}
