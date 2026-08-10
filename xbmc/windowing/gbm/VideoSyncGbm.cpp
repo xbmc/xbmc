@@ -92,8 +92,8 @@ bool CVideoSyncGbm::Setup()
     return false;
   }
 
-  CLog::Log(LOGINFO, "CVideoSyncGbm::{}: opened (fd:{} crtc:{} seq:{} ns:{}:{})", __FUNCTION__,
-            m_fd, m_crtcId, m_sequence, ns, MonotonicToHostCounter(ns));
+  CLog::Log(LOGINFO, "CVideoSyncGbm::{}: opened (fd:{} crtc:{} seq:{} ns:{})", __FUNCTION__, m_fd,
+            m_crtcId, m_sequence, ns);
   return true;
 }
 
@@ -121,6 +121,11 @@ void CVideoSyncGbm::Run(CEvent& stopEvent)
     }
 
     if (sequence == m_sequence)
+      continue;
+
+    // Zero is how the kernel marks a timestamp it could not determine
+    // e.g. during a modeset
+    if (ns == 0)
       continue;
 
     m_refClock->UpdateClock(sequence - m_sequence, MonotonicToHostCounter(ns));
