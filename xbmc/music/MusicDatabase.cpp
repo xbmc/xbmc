@@ -11510,17 +11510,17 @@ int CMusicDatabase::GetSongIDFromPath(const std::string& filePath)
 
 bool CMusicDatabase::CommitTransaction()
 {
-  if (CDatabase::CommitTransaction())
-  { // number of items in the db has likely changed, so reset the infomanager cache
-    CGUIComponent* gui = CServiceBroker::GetGUI();
-    if (gui)
-    {
-      gui->GetInfoManager().GetInfoProviders().GetLibraryInfoProvider().SetLibraryBool(
-          LIBRARY_HAS_MUSIC, GetSongsCount() > 0);
-      return true;
-    }
+  if (!CDatabase::CommitTransaction())
+    return false;
+
+  // number of items in the db has likely changed, so reset the infomanager cache
+  if (CGUIComponent* gui = CServiceBroker::GetGUI())
+  {
+    gui->GetInfoManager().GetInfoProviders().GetLibraryInfoProvider().SetLibraryBool(
+        LIBRARY_HAS_MUSIC, GetSongsCount() > 0);
   }
-  return false;
+
+  return true;
 }
 
 bool CMusicDatabase::SetScraperAll(const std::string& strBaseDir, const ADDON::ScraperPtr& scraper)
