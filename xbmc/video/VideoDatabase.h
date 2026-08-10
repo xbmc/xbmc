@@ -18,6 +18,7 @@
 
 #include <array>
 #include <functional>
+#include <map>
 #include <memory>
 #include <set>
 #include <stdexcept>
@@ -850,6 +851,14 @@ public:
   bool SetArtForItem(int mediaId, const MediaType& mediaType, const KODI::ART::Artwork& art);
   bool GetArtForItem(int mediaId, const MediaType& mediaType, KODI::ART::Artwork& art);
   std::string GetArtForItem(int mediaId, const MediaType &mediaType, const std::string &artType);
+
+  /*!
+   \brief Retrieve the thumbs already held for a group of actors
+   \param names the actors' names, matched as CVideoDatabase::AddActor() would match them
+   \return the art url for each of those actors that is in the library and has a thumb, keyed on
+           the name as the library holds it, which may differ in case from the name asked for
+   */
+  std::map<std::string, std::string> GetArtForActors(const std::vector<std::string>& names);
 
   void UpdateArtForItem(int mediaId, const MediaType& mediaType) const;
 

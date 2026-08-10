@@ -318,6 +318,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
   {
     try
     {
+      m_actorThumbs.clear();
+
       const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
       if (m_showDialog && !settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_BACKGROUNDUPDATE))
@@ -2477,7 +2479,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                      bool bApplyToDir,
                                      bool useLocal,
                                      const std::string& actorArtPath,
-                                     UseRemoteArtWithLocalScraper useRemoteArt /* = yes */) const
+                                     UseRemoteArtWithLocalScraper useRemoteArt /* = yes */)
   {
     int artLevel = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
         CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL);
@@ -3159,10 +3161,48 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
   }
 
-  void CVideoInfoScanner::FetchActorThumbs(
-      std::vector<SActorInfo>& actors,
-      const std::string& actorsDir,
-      UseRemoteArtWithLocalScraper useRemoteArt /* = YES */) const
+  namespace
+  {
+  std::string PrepareActorName(const std::string& name)
+  {
+    std::string folded{name};
+    StringUtils::Trim(folded);
+    StringUtils::ToLower(folded);
+    return folded;
+  }
+  } // namespace
+
+  void CVideoInfoScanner::ResolveActorThumbs(const std::vector<SActorInfo>& actors)
+  {
+    std::vector<std::string> unresolved;
+    for (const auto& actor : actors)
+    {
+      if (!actor.thumb.empty() && !m_actorThumbs.contains(PrepareActorName(actor.strName)))
+        unresolved.push_back(actor.strName);
+    }
+    if (unresolved.empty())
+      return;
+
+    const auto stored{m_database.GetArtForActors(unresolved)};
+
+    // Record every name asked about, so that one without art is not asked about again
+    for (const auto& name : unresolved)
+      m_actorThumbs.try_emplace(PrepareActorName(name));
+
+    const auto& textureCache{CServiceBroker::GetTextureCache()};
+    for (const auto& [name, url] : stored)
+    {
+      // Scraped art (http) is not reused, so that local art still takes preference over it. Note
+      // that this is not IsRemote(), which is also true of a file on a share - those are exactly
+      // the copies worth reusing
+      if (!url.empty() && !URIUtils::IsHTTP(url) && textureCache->HasCachedImage(url))
+        m_actorThumbs.insert_or_assign(PrepareActorName(name), url);
+    }
+  }
+
+  void CVideoInfoScanner::FetchActorThumbs(std::vector<SActorInfo>& actors,
+                                           const std::string& actorsDir,
+                                           UseRemoteArtWithLocalScraper useRemoteArt /* = YES */)
   {
     CFileItemList items;
     // don't try to fetch anything local with plugin source
@@ -3215,14 +3255,35 @@ CVideoInfoScanner::~CVideoInfoScanner()
         listedHashes.emplace(thumb.url, thumb.hash);
     }
 
+    // Art is held per actor, not per actor per film, so an actor is resolved once and the
+    // answer kept for the rest of the scan
+    const auto& textureCache{CServiceBroker::GetTextureCache()};
+    ResolveActorThumbs(actors);
+
     // Cache thumbs together (with hashes)
     std::vector<ArtToCache> thumbsToCache;
     thumbsToCache.reserve(actors.size());
-    for (const auto& actor : actors)
+    for (auto& actor : actors)
     {
+      if (actor.thumb.empty())
+        continue;
+
+      const std::string foldedName{PrepareActorName(actor.strName)};
+      const auto known{m_actorThumbs.find(foldedName)};
+
+      if (known != m_actorThumbs.end() && !known->second.empty() && known->second != actor.thumb)
+      {
+        actor.thumb = known->second;
+        continue;
+      }
+
       const auto hash{listedHashes.find(actor.thumb)};
       thumbsToCache.push_back(
           ArtToCache{actor.thumb, hash != listedHashes.end() ? hash->second : std::string{}});
+
+      // Scraped art (http) is not reused, so that local art still takes preference
+      if (!foldedName.empty() && !URIUtils::IsHTTP(actor.thumb))
+        m_actorThumbs.insert_or_assign(foldedName, actor.thumb);
     }
 
     CacheArtwork(std::move(thumbsToCache), m_artRetrievalTiming == ArtRetrievalTiming::SYNCHRONOUS);
