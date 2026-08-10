@@ -369,9 +369,23 @@ void CWinSystemGbm::OnLostDevice()
   CLog::Log(LOGDEBUG, "{} - notify display change event", __FUNCTION__);
   m_dispReset = true;
 
-  std::unique_lock lock(m_resourceSection);
-  for (auto resource : m_resources)
+  // OnLostDisplay() may cause resources to be unregistered, so don't iterate
+  // the live vector while callbacks are being dispatched.
+  std::vector<IDispResource*> resources;
+  {
+    std::unique_lock lock(m_resourceSection);
+    resources = m_resources;
+  }
+
+  for (auto resource : resources)
+  {
+    {
+      std::unique_lock lock(m_resourceSection);
+      if (find(m_resources.begin(), m_resources.end(), resource) == m_resources.end())
+        continue;
+    }
     resource->OnLostDisplay();
+  }
 }
 
 std::unique_ptr<CVideoSync> CWinSystemGbm::GetVideoSync(CVideoReferenceClock* clock)
