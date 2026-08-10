@@ -79,6 +79,37 @@ TEST(TestExecuteAddonParams, ObjectParamsBecomeKeyValueArguments)
   EXPECT_EQ("info=builtin", argv[2]);
 }
 
+TEST(TestExecuteAddonParams, ACommaInAnObjectValueStaysInOneArgument)
+{
+  const std::vector<std::string> argv = ArgumentsSeenByTheAddon(
+      ParseExecuteAddonParams(MakeRequest(ObjectParams("title", "Peaches, Herb"))).command);
+
+  ASSERT_EQ(2U, argv.size());
+  EXPECT_EQ(ADDON_ID, argv[0]);
+  EXPECT_EQ("title=Peaches, Herb", argv[1]);
+}
+
+TEST(TestExecuteAddonParams, AQuoteInAnObjectValueStaysInOneArgument)
+{
+  const std::vector<std::string> argv = ArgumentsSeenByTheAddon(
+      ParseExecuteAddonParams(MakeRequest(ObjectParams("quote", "say \"hi\", then go"))).command);
+
+  ASSERT_EQ(2U, argv.size());
+  EXPECT_EQ("quote=say \"hi\", then go", argv[1]);
+}
+
+TEST(TestExecuteAddonParams, ACommaInAnArrayValueStaysInOneArgument)
+{
+  CVariant params(CVariant::VariantTypeArray);
+  params.push_back("Peaches, Herb");
+
+  const std::vector<std::string> argv =
+      ArgumentsSeenByTheAddon(ParseExecuteAddonParams(MakeRequest(params)).command);
+
+  ASSERT_EQ(2U, argv.size());
+  EXPECT_EQ("Peaches, Herb", argv[1]);
+}
+
 TEST(TestExecuteAddonParams, WaitIsReadFromTheDeclaredTopLevelParameter)
 {
   CVariant request = MakeRequest(ObjectParams("info", "builtin"));
