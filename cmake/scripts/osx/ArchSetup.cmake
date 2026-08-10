@@ -24,15 +24,6 @@ else()
   endif()
 endif()
 
-# Tahoe seems to be setting environment variables at the xcode project level that
-# causes issues on shell based build objects that we use. Forcefully blank the most
-# problematic variables
-set(CMAKE_XCODE_ATTRIBUTE_DRIVERKIT_DEPLOYMENT_TARGET "")
-set(CMAKE_XCODE_ATTRIBUTE_WATCHOS_DEPLOYMENT_TARGET "")
-set(CMAKE_XCODE_ATTRIBUTE_XROS_DEPLOYMENT_TARGET "")
-set(CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET "")
-set(CMAKE_XCODE_ATTRIBUTE_TVOS_DEPLOYMENT_TARGET "")
-
 # m1 macs can execute x86_64 code via rosetta
 if(CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm64" AND
    CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
@@ -53,11 +44,6 @@ list(APPEND DEPLIBS "-framework DiskArbitration" "-framework IOKit"
                     "-framework GameController" "-framework Speech"
                     "-framework AVFoundation")
 
-if(ARCH STREQUAL aarch64)
-  set(CMAKE_OSX_DEPLOYMENT_TARGET 11.0)
-else()
-  set(CMAKE_OSX_DEPLOYMENT_TARGET 10.15)
-endif()
 set(CMAKE_XCODE_ATTRIBUTE_CLANG_LINK_OBJC_RUNTIME OFF)
 
 include(cmake/scripts/darwin/Macros.cmake)
