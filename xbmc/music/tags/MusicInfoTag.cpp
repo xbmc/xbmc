@@ -991,6 +991,7 @@ void CMusicInfoTag::Serialize(CVariant& value) const
   value["samplerate"] = m_samplerate;
   value["channels"] = m_channels;
   value["songvideourl"] = m_songVideoURL;
+  value["stationname"] = m_stationName;
 }
 
 void CMusicInfoTag::ToSortable(SortItem& sortable, Field field) const
