@@ -74,8 +74,8 @@ set(APACHE_COMMONS_TEXT_URL ${KODI_MIRROR}/build-deps/sources/${APACHE_COMMONS_T
 set(APACHE_COMMONS_TEXT_URL_HASH SHA512=6d1fcbd85a85f38e95ea33c9ab7f58798723b0e6357077246a135c417e75c7b39e278ebdb77fcc8f9b56b52b1eeff113eea9463eaaaee8d38df9afdc149b6421)
 
 if(NOT groovy_SOURCE_DIR)
-  # file wont be downloaded if EXPECTED_HASH matches existing archive
-  file(DOWNLOAD ${GROOVY_URL} ${TARBALL_DIR}/${GROOVY_ARCHIVE} SHOW_PROGRESS EXPECTED_HASH ${GROOVY_URL_HASH})
+  # file won't be downloaded if HASH matches existing archive
+  core_file_download(${GROOVY_URL} ${TARBALL_DIR}/${GROOVY_ARCHIVE} HASH ${GROOVY_URL_HASH})
 
   set(groovy_exe_name groovy)
   if(WIN32 OR WINDOWS_STORE)
@@ -109,8 +109,8 @@ if(NOT groovy_SOURCE_DIR)
 endif()
 
 if(NOT apache-commons-lang_SOURCE_DIR)
-  # file wont be downloaded if EXPECTED_HASH matches existing archive
-  file(DOWNLOAD ${APACHE_COMMONS_LANG_URL} ${TARBALL_DIR}/${APACHE_COMMONS_LANG_ARCHIVE} SHOW_PROGRESS EXPECTED_HASH ${APACHE_COMMONS_LANG_URL_HASH})
+  # file won't be downloaded if HASH matches existing archive
+  core_file_download(${APACHE_COMMONS_LANG_URL} ${TARBALL_DIR}/${APACHE_COMMONS_LANG_ARCHIVE} HASH ${APACHE_COMMONS_LANG_URL_HASH})
 
   if(NOT EXISTS ${DEPENDS_PATH}/share/java/lang/commons-lang3-${APACHE_COMMONS_LANG_VER}.jar)
 
@@ -128,8 +128,8 @@ if(NOT apache-commons-lang_SOURCE_DIR)
 endif()
 
 if(NOT apache-commons-text_SOURCE_DIR)
-  # file wont be downloaded if EXPECTED_HASH matches existing archive
-  file(DOWNLOAD ${APACHE_COMMONS_TEXT_URL} ${TARBALL_DIR}/${APACHE_COMMONS_TEXT_ARCHIVE} SHOW_PROGRESS EXPECTED_HASH ${APACHE_COMMONS_TEXT_URL_HASH})
+  # file won't be downloaded if HASH matches existing archive
+  core_file_download(${APACHE_COMMONS_TEXT_URL} ${TARBALL_DIR}/${APACHE_COMMONS_TEXT_ARCHIVE} HASH ${APACHE_COMMONS_TEXT_URL_HASH})
 
   if(NOT EXISTS ${DEPENDS_PATH}/share/java/text/commons-text-${APACHE_COMMONS_TEXT_VER}.jar)
 

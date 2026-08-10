@@ -493,6 +493,90 @@ function(core_optional_package_lib)
   set(final_message ${final_message} PARENT_SCOPE)
 endfunction()
 
+# Download a file, retrying failed attempts.
+# file(DOWNLOAD) fails the configure on the first timeout or mirror hiccup.
+# Arguments:
+#   url         url to download from
+#   destination full path of the file to write
+# Optional Arguments:
+#   HASH:        expected hash in cmake <ALGO>=<value> notation. A destination
+#                already matching it is kept, a download not matching it is
+#                retried.
+#   RETRIES:     number of retries after a failed attempt (default: 3)
+#   RETRY_DELAY: seconds to wait between attempts (default: 5)
+# On return:
+#   The file is downloaded to destination, otherwise a FATAL_ERROR is raised.
+#   A failed attempt never leaves a partial file behind.
+function(core_file_download url destination)
+  cmake_parse_arguments(arg "" "HASH;RETRIES;RETRY_DELAY" "" ${ARGN})
+
+  # An empty variable expands to nothing, so a mistyped HASH ${VAR} would leave
+  # the keyword bare and download the file unverified
+  if(arg_KEYWORDS_MISSING_VALUES)
+    message(FATAL_ERROR "core_file_download - missing value for: ${arg_KEYWORDS_MISSING_VALUES}")
+  endif()
+  if(arg_UNPARSED_ARGUMENTS)
+    message(FATAL_ERROR "core_file_download - unknown arguments: ${arg_UNPARSED_ARGUMENTS}")
+  endif()
+
+  if(NOT DEFINED arg_RETRIES)
+    set(arg_RETRIES 3)
+  endif()
+  if(NOT DEFINED arg_RETRY_DELAY)
+    set(arg_RETRY_DELAY 5)
+  endif()
+
+  if(DEFINED arg_HASH)
+    if(NOT arg_HASH MATCHES "^([A-Za-z0-9_]+)=([0-9A-Fa-f]+)$")
+      message(FATAL_ERROR "core_file_download - malformed HASH: ${arg_HASH}, expected <ALGO>=<value>")
+    endif()
+    string(TOUPPER ${CMAKE_MATCH_1} hash_algo)
+    string(TOLOWER ${CMAKE_MATCH_2} expected_hash)
+
+    # Nothing to do if we already have a good copy of the file
+    if(EXISTS ${destination})
+      file(${hash_algo} ${destination} existing_hash)
+      if(existing_hash STREQUAL expected_hash)
+        return()
+      endif()
+      file(REMOVE ${destination})
+    endif()
+  endif()
+
+  math(EXPR attempts "${arg_RETRIES} + 1")
+  set(attempt 1)
+  while(TRUE)
+    file(DOWNLOAD ${url} ${destination} SHOW_PROGRESS STATUS dl_status LOG dl_log)
+    list(GET dl_status 0 dl_retcode)
+    list(GET dl_status 1 dl_error)
+
+    if(dl_retcode EQUAL 0 AND DEFINED arg_HASH)
+      file(${hash_algo} ${destination} dl_hash)
+      if(NOT dl_hash STREQUAL expected_hash)
+        set(dl_retcode 1)
+        set(dl_error "hash mismatch, expected ${hash_algo}=${expected_hash}, got ${hash_algo}=${dl_hash}")
+      endif()
+    endif()
+
+    if(dl_retcode EQUAL 0)
+      break()
+    endif()
+
+    # Leave nothing behind that a later run could mistake for a good copy
+    file(REMOVE ${destination})
+
+    if(attempt GREATER_EQUAL attempts)
+      message(FATAL_ERROR "core_file_download - failed to download ${url} after ${attempts} attempts:"
+                          " ${dl_error}\nlog: ${dl_log}")
+    endif()
+
+    message(STATUS "core_file_download - download of ${url} failed (attempt ${attempt} of ${attempts}):"
+                   " ${dl_error}. Retrying in ${arg_RETRY_DELAY} seconds")
+    execute_process(COMMAND ${CMAKE_COMMAND} -E sleep ${arg_RETRY_DELAY})
+    math(EXPR attempt "${attempt} + 1")
+  endwhile()
+endfunction()
+
 function(core_file_read_filtered result filepattern)
   # Reads STRINGS from text files
   #  with comments filtered out
