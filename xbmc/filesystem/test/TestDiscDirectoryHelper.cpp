@@ -2042,8 +2042,8 @@ TEST_F(TestDiscDirectoryHelper,
         VideoStreamInfo video;
         video.valid = true;
         const auto duration{static_cast<int>(playlists.at(playlist).duration.count() / 1000)};
-        item.GetVideoInfoTag()->m_streamDetails.SetStreams(video, duration, AudioStreamInfo{},
-                                                           SubtitleStreamInfo{});
+        item.GetVideoInfoTag()->m_streamDetails.SetStreams(
+            video, duration, AudioStreamInfo{}, SubtitleStreamInfo{}, CStreamDetail::MEDIA);
       }};
 
   // Episode 17 has playlist 601 to itself, so runs for all of it. Episodes 18-21 share 602 and each

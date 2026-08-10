@@ -24,12 +24,15 @@ TEST(TestStreamDetails, General)
   video->m_strCodec = "h264";
   video->m_strStereoMode = "left_right";
   video->m_strLanguage = "eng";
+  video->SetSource(CStreamDetail::MEDIA);
 
   audio->m_iChannels = 2;
   audio->m_strCodec = "aac";
   audio->m_strLanguage = "eng";
+  audio->SetSource(CStreamDetail::MEDIA);
 
   subtitle->m_strLanguage = "eng";
+  subtitle->SetSource(CStreamDetail::MEDIA);
 
   a.AddStream(video);
   a.AddStream(audio);
@@ -44,6 +47,7 @@ TEST(TestStreamDetails, General)
   EXPECT_EQ(0, a.GetVideoHeight());
   EXPECT_EQ(0, a.GetVideoDuration());
   EXPECT_STREQ("", a.GetStereoMode().c_str());
+  EXPECT_EQ(CStreamDetail::MEDIA, a.GetSources());
 
   EXPECT_EQ(1, a.GetStreamCount(CStreamDetail::AUDIO));
   EXPECT_EQ(1, a.GetAudioStreamCount());
@@ -219,4 +223,325 @@ TEST(TestStreamDetails, VideoAspectToAspectDescriptionRelabelledRanges)
   EXPECT_STREQ("1.50", CStreamDetails::VideoAspectToAspectDescription(1.48f).c_str()); // was 1.37
   EXPECT_STREQ("1.50", CStreamDetails::VideoAspectToAspectDescription(1.55f).c_str()); // was 1.66
   EXPECT_STREQ("1.90", CStreamDetails::VideoAspectToAspectDescription(1.90f).c_str()); // was 1.85
+}
+
+namespace
+{
+// Builds a CStreamDetails with one video stream (h264, 1920x1080, 1.78, 5400s),
+// one audio stream (aac, eng, 6 ch) and one subtitle stream (eng).
+// Each stream type receives its own source value so individual source
+// differences can be isolated per test.
+CStreamDetails MakeTypicalStreamDetails(CStreamDetail::Source videoSrc,
+                                        CStreamDetail::Source audioSrc,
+                                        CStreamDetail::Source subtitleSrc)
+{
+  CStreamDetails details;
+
+  auto* video = new CStreamDetailVideo();
+  video->m_strCodec = "h264";
+  video->m_iWidth = 1920;
+  video->m_iHeight = 1080;
+  video->m_fAspect = 1.78f;
+  video->m_iDuration = 5400;
+  video->m_strStereoMode = "left_right";
+  video->m_strLanguage = "eng";
+  video->SetSource(videoSrc);
+  details.AddStream(video);
+
+  auto* audio = new CStreamDetailAudio();
+  audio->m_strCodec = "aac";
+  audio->m_strLanguage = "eng";
+  audio->m_iChannels = 6;
+  audio->SetSource(audioSrc);
+  details.AddStream(audio);
+
+  auto* subtitle = new CStreamDetailSubtitle();
+  subtitle->m_strLanguage = "eng";
+  subtitle->SetSource(subtitleSrc);
+  details.AddStream(subtitle);
+
+  details.DetermineBestStreams();
+  return details;
+}
+
+// Convenience overload: all streams get the same source
+CStreamDetails MakeTypicalStreamDetails(CStreamDetail::Source source)
+{
+  return MakeTypicalStreamDetails(source, source, source);
+}
+} // namespace
+
+TEST(TestStreamDetails, Equality_BothEmpty)
+{
+  // Two default-constructed objects carry no streams, so there is nothing
+  // for the source comparison to trip on; they must be equal.
+  const CStreamDetails a;
+  const CStreamDetails b;
+  EXPECT_TRUE(a == b);
+  EXPECT_FALSE(a != b);
+}
+
+TEST(TestStreamDetails, Equality_SelfComparison)
+{
+  // operator== has a `this == &right` identity fast-path - verify it fires
+  // and that operator!= is its consistent negation.
+  const CStreamDetails a = MakeTypicalStreamDetails(CStreamDetail::MEDIA);
+  EXPECT_TRUE(a == a);
+  EXPECT_FALSE(a != a);
+}
+
+TEST(TestStreamDetails, Equality_IdenticalContentAndSource)
+{
+  // Baseline: two independently built objects with the same content and the
+  // same source must compare equal.
+  const CStreamDetails a = MakeTypicalStreamDetails(CStreamDetail::MEDIA);
+  const CStreamDetails b = MakeTypicalStreamDetails(CStreamDetail::MEDIA);
+  EXPECT_TRUE(a == b);
+  EXPECT_FALSE(a != b);
+}
+
+TEST(TestStreamDetails, Equality_SameContentDifferentVideoSource_MediaVsNfo)
+{
+  // Content-identical objects whose VIDEO stream carries different sources
+  // (MEDIA vs NFO) must NOT be equal.
+
+  const CStreamDetails media =
+      MakeTypicalStreamDetails(CStreamDetail::MEDIA, CStreamDetail::MEDIA, CStreamDetail::MEDIA);
+  const CStreamDetails nfo =
+      MakeTypicalStreamDetails(CStreamDetail::NFO, CStreamDetail::MEDIA, CStreamDetail::MEDIA);
+
+  EXPECT_FALSE(media == nfo);
+  EXPECT_TRUE(media != nfo);
+}
+
+TEST(TestStreamDetails, Equality_SameContentDifferentAudioSource_MediaVsNfo)
+{
+  // As above, but only the AUDIO stream's source differs; the video and
+  // subtitle sources match. Verifies the audio loop in operator== is reached.
+  const CStreamDetails media =
+      MakeTypicalStreamDetails(CStreamDetail::MEDIA, CStreamDetail::MEDIA, CStreamDetail::MEDIA);
+  const CStreamDetails nfo =
+      MakeTypicalStreamDetails(CStreamDetail::MEDIA, CStreamDetail::NFO, CStreamDetail::MEDIA);
+
+  EXPECT_FALSE(media == nfo);
+  EXPECT_TRUE(media != nfo);
+}
+
+TEST(TestStreamDetails, Equality_SameContentDifferentSubtitleSource_MediaVsNfo)
+{
+  // As above, but only the SUBTITLE stream's source differs. Verifies the
+  // subtitle loop in operator== is reached even when video and audio match.
+  const CStreamDetails media =
+      MakeTypicalStreamDetails(CStreamDetail::MEDIA, CStreamDetail::MEDIA, CStreamDetail::MEDIA);
+  const CStreamDetails nfo =
+      MakeTypicalStreamDetails(CStreamDetail::MEDIA, CStreamDetail::MEDIA, CStreamDetail::NFO);
+
+  EXPECT_FALSE(media == nfo);
+  EXPECT_TRUE(media != nfo);
+}
+
+TEST(TestStreamDetails, Equality_BothNfoSource_SameContent)
+{
+  // When both sides have source=NFO and identical content they must still
+  // compare equal.
+  const CStreamDetails a = MakeTypicalStreamDetails(CStreamDetail::NFO);
+  const CStreamDetails b = MakeTypicalStreamDetails(CStreamDetail::NFO);
+
+  EXPECT_TRUE(a == b);
+  EXPECT_FALSE(a != b);
+}
+
+TEST(TestStreamDetails, Equality_DifferentContentSameSource)
+{
+  // Content differs while source is identical - must NOT be equal.
+  const CStreamDetails a =
+      MakeTypicalStreamDetails(CStreamDetail::MEDIA, CStreamDetail::MEDIA, CStreamDetail::MEDIA);
+
+  CStreamDetails b;
+
+  auto* video = new CStreamDetailVideo();
+  video->m_strCodec = "hevc";
+  video->m_iWidth = 1920;
+  video->m_iHeight = 1080;
+  video->m_fAspect = 1.78f;
+  video->m_iDuration = 5400;
+  video->m_strStereoMode = "left_right";
+  video->m_strLanguage = "eng";
+  video->SetSource(CStreamDetail::MEDIA);
+  b.AddStream(video);
+
+  auto* audio = new CStreamDetailAudio();
+  audio->m_strCodec = "aac";
+  audio->m_strLanguage = "eng";
+  audio->m_iChannels = 6;
+  audio->SetSource(CStreamDetail::MEDIA);
+  b.AddStream(audio);
+
+  auto* subtitle = new CStreamDetailSubtitle();
+  subtitle->m_strLanguage = "eng";
+  subtitle->SetSource(CStreamDetail::MEDIA);
+  b.AddStream(subtitle);
+
+  b.DetermineBestStreams();
+
+  EXPECT_FALSE(a == b);
+  EXPECT_TRUE(a != b);
+}
+
+TEST(TestStreamDetails, GetSource_PerStreamAndOutOfRange)
+{
+  // GetSource() addresses an individual stream; index 1 is the first stream of
+  // that type. An index with no matching stream must report UNDEFINED rather
+  // than the item's overall source.
+  const CStreamDetails details =
+      MakeTypicalStreamDetails(CStreamDetail::NFO, CStreamDetail::MEDIA, CStreamDetail::EXTERNAL);
+
+  EXPECT_EQ(CStreamDetail::NFO, details.GetSource(CStreamDetail::VIDEO, 1));
+  EXPECT_EQ(CStreamDetail::MEDIA, details.GetSource(CStreamDetail::AUDIO, 1));
+  EXPECT_EQ(CStreamDetail::EXTERNAL, details.GetSource(CStreamDetail::SUBTITLE, 1));
+
+  EXPECT_EQ(CStreamDetail::UNDEFINED, details.GetSource(CStreamDetail::VIDEO, 2));
+  EXPECT_EQ(CStreamDetail::UNDEFINED, details.GetSource(CStreamDetail::AUDIO, 99));
+}
+
+TEST(TestStreamDetails, GetSources_Empty)
+{
+  // With no streams at all there is no source to report.
+  const CStreamDetails details;
+  EXPECT_EQ(CStreamDetail::UNDEFINED, details.GetSources());
+}
+
+TEST(TestStreamDetails, GetSources_ReturnsHighestOfMixedSources)
+{
+  // GetSources() collapses the per-stream sources to the single highest-ranked
+  // one, so an item is only as overwritable as its most authoritative stream.
+  EXPECT_EQ(CStreamDetail::NFO, MakeTypicalStreamDetails(CStreamDetail::MEDIA, CStreamDetail::NFO,
+                                                         CStreamDetail::EXTERNAL)
+                                    .GetSources());
+
+  EXPECT_EQ(CStreamDetail::MEDIA,
+            MakeTypicalStreamDetails(CStreamDetail::UNDEFINED, CStreamDetail::EXTERNAL,
+                                     CStreamDetail::MEDIA)
+                .GetSources());
+
+  EXPECT_EQ(
+      CStreamDetail::LEGACY,
+      MakeTypicalStreamDetails(CStreamDetail::LEGACY, CStreamDetail::MEDIA, CStreamDetail::MEDIA)
+          .GetSources());
+}
+
+TEST(TestStreamDetails, SetSources_AppliesToEveryStream)
+{
+  // SetSources() overwrites the source of every stream, whatever it was before.
+  CStreamDetails details =
+      MakeTypicalStreamDetails(CStreamDetail::MEDIA, CStreamDetail::EXTERNAL, CStreamDetail::MEDIA);
+  details.SetSources(CStreamDetail::NFO);
+
+  EXPECT_EQ(CStreamDetail::NFO, details.GetSource(CStreamDetail::VIDEO, 1));
+  EXPECT_EQ(CStreamDetail::NFO, details.GetSource(CStreamDetail::AUDIO, 1));
+  EXPECT_EQ(CStreamDetail::NFO, details.GetSource(CStreamDetail::SUBTITLE, 1));
+  EXPECT_EQ(CStreamDetail::NFO, details.GetSources());
+}
+
+TEST(TestStreamDetails, ShouldUpdateWithNewDetails_HigherOrEqualSourceWins)
+{
+  // New details replace existing ones when their source ranks at least as high.
+  const CStreamDetails media = MakeTypicalStreamDetails(CStreamDetail::MEDIA);
+  const CStreamDetails nfo = MakeTypicalStreamDetails(CStreamDetail::NFO);
+  const CStreamDetails external = MakeTypicalStreamDetails(CStreamDetail::EXTERNAL);
+
+  // Equal source - an update of like with like is allowed
+  EXPECT_TRUE(media.ShouldUpdateWithNewDetails(media));
+
+  // Higher-ranked new source - allowed
+  EXPECT_TRUE(media.ShouldUpdateWithNewDetails(nfo));
+  EXPECT_TRUE(external.ShouldUpdateWithNewDetails(media));
+
+  // Lower-ranked new source - refused
+  EXPECT_FALSE(nfo.ShouldUpdateWithNewDetails(media));
+  EXPECT_FALSE(media.ShouldUpdateWithNewDetails(external));
+}
+
+TEST(TestStreamDetails, ShouldUpdateWithNewDetails_LegacyIsNeverOverwritten)
+{
+  // Details migrated from a pre-source-tracking library are ranked LEGACY, above
+  // every other source, because they may themselves have come from an nfo. Nothing
+  // silently replaces them; only an explicit rescan (which writes directly) can.
+  const CStreamDetails legacy = MakeTypicalStreamDetails(CStreamDetail::LEGACY);
+
+  EXPECT_FALSE(legacy.ShouldUpdateWithNewDetails(MakeTypicalStreamDetails(CStreamDetail::MEDIA)));
+  EXPECT_FALSE(legacy.ShouldUpdateWithNewDetails(MakeTypicalStreamDetails(CStreamDetail::NFO)));
+  EXPECT_FALSE(
+      legacy.ShouldUpdateWithNewDetails(MakeTypicalStreamDetails(CStreamDetail::EXTERNAL)));
+  EXPECT_TRUE(legacy.ShouldUpdateWithNewDetails(legacy));
+}
+
+TEST(TestStreamDetails, ShouldUpdateWithNewDetails_EmptyDetails)
+{
+  // An item with no details yet accepts anything, and nothing is ever replaced by
+  // an empty set (UNDEFINED ranks below every real source).
+  const CStreamDetails empty;
+  const CStreamDetails media = MakeTypicalStreamDetails(CStreamDetail::MEDIA);
+
+  EXPECT_TRUE(empty.ShouldUpdateWithNewDetails(media));
+  EXPECT_FALSE(media.ShouldUpdateWithNewDetails(empty));
+}
+
+TEST(TestStreamDetails, ShouldUpdateWithNewDetails_MixedSourcesUseHighest)
+{
+  // Only the highest-ranked stream of each side is considered, so a single NFO
+  // stream protects the whole item.
+  const CStreamDetails partialNfo =
+      MakeTypicalStreamDetails(CStreamDetail::NFO, CStreamDetail::MEDIA, CStreamDetail::MEDIA);
+  const CStreamDetails allMedia = MakeTypicalStreamDetails(CStreamDetail::MEDIA);
+
+  EXPECT_FALSE(partialNfo.ShouldUpdateWithNewDetails(allMedia));
+  EXPECT_TRUE(allMedia.ShouldUpdateWithNewDetails(partialNfo));
+}
+
+TEST(TestStreamDetails, Version_DefaultsToCurrentAndSurvivesCopy)
+{
+  // Every newly created stream carries the current version, and copying an item
+  // (as happens whenever a CVideoInfoTag is copied) must preserve it.
+  const CStreamDetails details = MakeTypicalStreamDetails(CStreamDetail::MEDIA);
+
+  EXPECT_EQ(CStreamDetail::STREAM_DETAILS_VERSION, details.GetVersion(CStreamDetail::VIDEO, 1));
+  EXPECT_EQ(CStreamDetail::STREAM_DETAILS_VERSION, details.GetVersion(CStreamDetail::AUDIO, 1));
+  EXPECT_EQ(CStreamDetail::STREAM_DETAILS_VERSION, details.GetVersion(CStreamDetail::SUBTITLE, 1));
+
+  const CStreamDetails copy{details};
+  EXPECT_EQ(CStreamDetail::STREAM_DETAILS_VERSION, copy.GetVersion(CStreamDetail::VIDEO, 1));
+  EXPECT_EQ(CStreamDetail::MEDIA, copy.GetSource(CStreamDetail::VIDEO, 1));
+}
+
+TEST(TestStreamDetails, Version_AbsentStreamReportsZero)
+{
+  // A stream that isn't there has no version, which must not be confused with
+  // version 1 (the marker for details that predate source tracking).
+  const CStreamDetails empty;
+  EXPECT_EQ(0, empty.GetVersion(CStreamDetail::VIDEO, 1));
+  EXPECT_EQ(0, MakeTypicalStreamDetails(CStreamDetail::MEDIA).GetVersion(CStreamDetail::VIDEO, 2));
+}
+
+TEST(TestStreamDetails, Source_SurvivesCopyAssignment)
+{
+  // CStreamDetailVideo and CStreamDetailSubtitle define their own operator=, which
+  // must carry the source and version across along with the stream data.
+  CStreamDetailVideo video;
+  video.m_strCodec = "h264";
+  video.SetSource(CStreamDetail::NFO);
+
+  CStreamDetailVideo videoCopy;
+  videoCopy = video;
+  EXPECT_EQ(CStreamDetail::NFO, videoCopy.GetSource());
+  EXPECT_EQ(CStreamDetail::STREAM_DETAILS_VERSION, videoCopy.GetVersion());
+
+  CStreamDetailSubtitle subtitle;
+  subtitle.m_strLanguage = "eng";
+  subtitle.SetSource(CStreamDetail::EXTERNAL);
+
+  CStreamDetailSubtitle subtitleCopy;
+  subtitleCopy = subtitle;
+  EXPECT_EQ(CStreamDetail::EXTERNAL, subtitleCopy.GetSource());
+  EXPECT_EQ(CStreamDetail::STREAM_DETAILS_VERSION, subtitleCopy.GetVersion());
 }

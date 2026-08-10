@@ -2156,12 +2156,27 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
 
     if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-            CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS) &&
-        !movieDetails.HasStreamDetails())
+            CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
     {
-      CDVDFileInfo::GetFileStreamDetails(pItem);
-      CLog::Log(LOGDEBUG, "VideoInfoScanner: Extracted filestream details from video file {}",
-                CURL::GetRedacted(path));
+      // At this stage potential sources of stream details are:
+      // NFO - Local NFO (CVideoTagLoaderNFO)
+      // NFO - NFO embedded in MKV (CVideoTagLoaderFFmpeg::LoadMKV() → CNfoFile::GetDetails())
+      // NFO - Library import (ImportFromXML)
+      // MEDIA - Bluray (ResolveBlurayPlaylist())
+      // EXTERNAL - Plugin content (CVideoTagLoaderPlugin)
+      if (!movieDetails.HasStreamDetails())
+      {
+        if (CDVDFileInfo::GetFileStreamDetails(pItem))
+          CLog::LogF(LOGDEBUG, "Extracted filestream details from video file {}",
+                     CURL::GetRedacted(path));
+        else
+          CLog::LogF(LOGDEBUG, "No filestream details extracted from video file {}",
+                     CURL::GetRedacted(path));
+      }
+      else if (movieDetails.HasNFOStreamDetails())
+        CLog::LogF(LOGDEBUG, "Filestream details from NFO file for {}", CURL::GetRedacted(path));
+      else
+        CLog::LogF(LOGDEBUG, "Filestream details already present for {}", CURL::GetRedacted(path));
     }
 
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new item to {}:{}", content,

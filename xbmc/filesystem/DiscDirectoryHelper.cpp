@@ -3019,7 +3019,8 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
         tag->SetFileNameAndPath(selectedItem.GetDynPath());
         if (selectedItem.HasVideoInfoTag())
         {
-          if (selectedItem.GetVideoInfoTag()->HasStreamDetails())
+          // Don't overwrite streamdetails that came from an nfo
+          if (selectedItem.GetVideoInfoTag()->HasStreamDetails() && !tag->HasNFOStreamDetails())
             tag->m_streamDetails = selectedItem.GetVideoInfoTag()->m_streamDetails;
 
           // Episode bookmarks
