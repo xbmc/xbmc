@@ -10,6 +10,7 @@
 
 #include "FileItem.h"
 #include "utils/StringUtils.h"
+#include "video/Bookmark.h"
 #include "video/VideoInfoTag.h"
 
 namespace
@@ -54,6 +55,19 @@ std::unique_ptr<CFileItem> ContentUtils::GeneratePlayableTrailerItem(const CFile
   CVideoInfoTag* videoInfoTag = trailerItem->GetVideoInfoTag();
   *videoInfoTag = *item.GetVideoInfoTag();
   videoInfoTag->m_streamDetails.Reset();
+  videoInfoTag->SetFileNameAndPath(item.GetVideoInfoTag()->m_strTrailer);
+  videoInfoTag->m_strFile.clear();
+  videoInfoTag->m_strPath.clear();
+  CBookmark resumePoint;
+  resumePoint.type = CBookmark::RESUME;
+  videoInfoTag->SetResumePoint(resumePoint);
+  videoInfoTag->m_iBookmarkId = -1;
+  // Assign a new bookmark rather than Reset(), which doesn't clear the saved player state
+  CBookmark epBookmark;
+  epBookmark.type = CBookmark::EPISODE;
+  videoInfoTag->m_EpBookmark = epBookmark;
+  videoInfoTag->ResetPlayCount();
+  videoInfoTag->m_lastPlayed.Reset();
   videoInfoTag->m_strTitle = StringUtils::Format("{} ({})", videoInfoTag->m_strTitle, label);
   trailerItem->SetArt(item.GetArt());
   videoInfoTag->m_iDbId = -1;
