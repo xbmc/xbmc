@@ -1,4 +1,5 @@
-set(SOURCES TestJSONRPCPermission.cpp
+set(SOURCES TestAddonsExecuteAddon.cpp
+            TestJSONRPCPermission.cpp
             TestJSONRPCStatus.cpp
             TestVideoLibrarySetSourceContent.cpp)
 
