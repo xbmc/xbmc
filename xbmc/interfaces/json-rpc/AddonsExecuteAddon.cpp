@@ -30,7 +30,7 @@ std::string BuildArguments(const CVariant& params)
       {
         argv += ",";
       }
-      argv += it->first + "=" + it->second.asString();
+      argv += StringUtils::Paramify(it->first + "=" + it->second.asString());
     }
   }
   else if (params.isArray())
