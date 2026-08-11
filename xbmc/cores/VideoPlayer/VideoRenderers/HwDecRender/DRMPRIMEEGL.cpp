@@ -344,12 +344,25 @@ void RecycleDoomed(DRMPRIME::CDmaBufIdentityCache& cache,
   }
 }
 
+// some buffer types build the descriptor in AcquireDescriptor, so acquire before reading it
+std::optional<DRMPRIME::DmaBufIdentity> AcquiredIdentity(CVideoBufferDRMPRIME* buffer)
+{
+  if (!buffer->AcquireDescriptor())
+  {
+    CLog::Log(LOGERROR, "CDRMPRIMETexturePool - failed to acquire descriptor");
+    return std::nullopt;
+  }
+  const auto identity = DRMPRIME::ComputeDmaBufIdentity(buffer->GetDescriptor(), buffer->GetWidth(),
+                                                        buffer->GetHeight());
+  buffer->ReleaseDescriptor();
+  return identity;
+}
+
 } // namespace
 
 CDRMPRIMETexture* CDRMPRIMETexturePool::GetOES(CVideoBufferDRMPRIME* buffer)
 {
-  const auto identity = DRMPRIME::ComputeDmaBufIdentity(buffer->GetDescriptor(), buffer->GetWidth(),
-                                                        buffer->GetHeight());
+  const auto identity = AcquiredIdentity(buffer);
   if (!identity)
     return nullptr;
 
@@ -391,8 +404,7 @@ CDRMPRIMETexture* CDRMPRIMETexturePool::GetOES(CVideoBufferDRMPRIME* buffer)
 
 CDRMPRIMETextureYUV* CDRMPRIMETexturePool::GetYUV(CVideoBufferDRMPRIME* buffer)
 {
-  const auto identity = DRMPRIME::ComputeDmaBufIdentity(buffer->GetDescriptor(), buffer->GetWidth(),
-                                                        buffer->GetHeight());
+  const auto identity = AcquiredIdentity(buffer);
   if (!identity)
     return nullptr;
 

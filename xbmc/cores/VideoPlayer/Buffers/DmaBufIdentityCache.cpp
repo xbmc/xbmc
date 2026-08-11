@@ -8,6 +8,8 @@
 
 #include "DmaBufIdentityCache.h"
 
+#include "utils/log.h"
+
 #include <algorithm>
 
 namespace DRMPRIME
@@ -80,6 +82,14 @@ std::vector<uint32_t> CDmaBufIdentityCache::Reap(std::span<const uint32_t> prote
     if (victim == m_entries.end())
       break;
 
+    if (!m_warnedEviction)
+    {
+      m_warnedEviction = true;
+      CLog::Log(LOGWARNING,
+                "CDmaBufIdentityCache: {} entries exceed cap {}, evicting LRU; expect per-frame "
+                "reimports",
+                m_entries.size(), m_maxEntries);
+    }
     reaped.push_back(victim->handle);
     m_entries.erase(victim);
   }

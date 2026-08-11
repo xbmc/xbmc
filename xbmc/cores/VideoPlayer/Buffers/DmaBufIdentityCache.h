@@ -58,6 +58,7 @@ private:
   std::vector<uint32_t> m_doomed;
   uint64_t m_useCounter{0};
   size_t m_maxEntries;
+  bool m_warnedEviction{false};
 };
 
 } // namespace DRMPRIME

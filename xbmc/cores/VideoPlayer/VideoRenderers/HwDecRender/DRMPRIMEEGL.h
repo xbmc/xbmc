@@ -91,7 +91,8 @@ protected:
 class CDRMPRIMETexturePool
 {
 public:
-  static constexpr size_t MAX_ENTRIES = 16;
+  // must exceed the decoder's dma-buf pool (v4l2m2m has been seen with 20+ CAPTURE buffers)
+  static constexpr size_t MAX_ENTRIES = 32;
 
   void Init(EGLDisplay eglDisplay);
   //! \brief Imported OES texture for the buffer's dma-buf; nullptr on import failure.
