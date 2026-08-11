@@ -74,35 +74,46 @@ def _painted_fraction(image: Image.Image) -> float:
 
 def _capture_non_blank_screenshot(kodi: KodiProcess, client: KodiJsonRpcClient, timeout: float):
     deadline = time.monotonic() + timeout
-    last_painted = None
+    last_failure = None
     while True:
         existing_screenshots = set(kodi.screenshot_dir.glob("*.png"))
         client.execute_action("screenshot")
 
         remaining = max(deadline - time.monotonic(), 1.0)
-        screenshot_path = _wait_for_new_screenshot(
-            kodi, existing_screenshots, min(SCREENSHOT_TIMEOUT, remaining)
-        )
-
-        with Image.open(screenshot_path) as image:
-            image.verify()  # raises if the PNG is truncated/corrupt
-
-        with Image.open(screenshot_path) as image:
-            width, height = image.size
-            assert width >= MIN_EXPECTED_DIMENSION and height >= MIN_EXPECTED_DIMENSION, (
-                f"Screenshot {screenshot_path} is implausibly small ({width}x{height})"
+        try:
+            screenshot_path = _wait_for_new_screenshot(
+                kodi, existing_screenshots, min(SCREENSHOT_TIMEOUT, remaining)
             )
+        except TimeoutError as error:
+            # A screenshot dispatched while Home.xml is still loading may produce no
+            # file at all (see RENDER_TIMEOUT) - one of the outcomes this loop exists to
+            # absorb, so spend the whole budget on it rather than one attempt's share.
+            last_failure = str(error)
+        else:
+            with Image.open(screenshot_path) as image:
+                image.verify()  # raises if the PNG is truncated/corrupt
 
-            last_painted = _painted_fraction(image)
+            with Image.open(screenshot_path) as image:
+                width, height = image.size
+                # Not retried, unlike a blank or missing frame: a real window that came
+                # up at an implausible size will still be that size on the next attempt.
+                assert width >= MIN_EXPECTED_DIMENSION and height >= MIN_EXPECTED_DIMENSION, (
+                    f"Screenshot {screenshot_path} is implausibly small ({width}x{height})"
+                )
 
-        if last_painted >= MIN_PAINTED_FRACTION:
-            return screenshot_path
+                painted = _painted_fraction(image)
+
+            if painted >= MIN_PAINTED_FRACTION:
+                return screenshot_path
+
+            last_failure = (
+                f"only {painted:.2%} of the last screenshot ({screenshot_path}) differs "
+                f"from its background, against a {MIN_PAINTED_FRACTION:.0%} threshold"
+            )
 
         if time.monotonic() >= deadline:
             raise TimeoutError(
-                f"Kodi never rendered a frame within {timeout}s - only "
-                f"{last_painted:.2%} of the last screenshot ({screenshot_path}) differs "
-                f"from its background, against a {MIN_PAINTED_FRACTION:.0%} threshold"
+                f"Kodi never rendered a frame within {timeout}s - {last_failure}"
             )
         time.sleep(RETRY_INTERVAL)
 
