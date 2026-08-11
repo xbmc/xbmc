@@ -2410,6 +2410,10 @@ void CApplication::Process()
   CServiceBroker::GetAppMessenger()->ProcessMessages();
   if (m_bStop) return; //we're done, everything has been unloaded
 
+  // the main loop reaches this with no GUI message handler suspended on the stack, which
+  // is what a deferred skin reload is waiting for
+  GetComponent<CApplicationSkinHandling>()->ProcessPendingSkinReload();
+
   // do any processing that isn't needed on each run
   if( m_slowTimer.GetElapsedMilliseconds() > 500 )
   {
