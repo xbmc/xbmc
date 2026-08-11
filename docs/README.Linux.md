@@ -3,6 +3,8 @@
 # Linux build guide
 This is the general Linux build guide. Please read it in full before you proceed to familiarize yourself with the build procedure.
 
+Builds with VAAPI or DRMPRIME video acceleration require Linux kernel 5.3 or later at runtime: the video player identifies dma-buf memory by inode, which the kernel allocates uniquely from 5.3 on.
+
 Several distribution **[specific build guides](README.md)** are available.
 
 ## Table of Contents
