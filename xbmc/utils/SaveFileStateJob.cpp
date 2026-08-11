@@ -106,6 +106,61 @@ void CSaveFileState::DoWork(CFileItem& item,
           }
         }
 
+        if (item.HasVideoInfoTag())
+        {
+          const CVideoInfoTag* tag{item.GetVideoInfoTag()};
+
+          // The tag's path is already pointed at what was played
+          const std::string oldPath{tag->m_iFileId >= 0
+                                        ? videodatabase.GetFileAndPathById(tag->m_iFileId)
+                                        : std::string{}};
+
+          const bool fileNeedsRenaming{
+              [&item, tag, &oldPath, &progressTrackingFile]
+              {
+                if (tag->m_iFileId < 0)
+                  return false; // No file to rename
+                if (tag->m_iDbId < 0 && item.GetVideoContentType() != VideoDbContentType::UNKNOWN)
+                  return false; // No video db item to update
+                if (URIUtils::IsBluraySelectPath(oldPath) && oldPath != progressTrackingFile)
+                  return true; // Playlist now known for a title scanned without one
+                if (URIUtils::IsBlurayPath(item.GetDynPath()) &&
+                    !URIUtils::IsStack(tag->m_strFileNameAndPath) &&
+                    tag->m_strFileNameAndPath != item.GetDynPath())
+                  return true; // Bluray path to update
+                if (item.GetProperty("new_playlist_path").asBoolean(false))
+                  return true; // Bluray playlist replaced by user selection
+                if (item.GetProperty("new_stack_path").asBoolean(false))
+                  return true; // Stack path to update
+                return false;
+              }()};
+
+          if (fileNeedsRenaming && oldPath != progressTrackingFile)
+          {
+            videodatabase.BeginTransaction();
+            if (videodatabase.RenameFile(tag->m_iFileId, progressTrackingFile))
+            {
+              videodatabase.CommitTransaction();
+              CLog::LogF(LOGDEBUG, "Renamed file {} from {} to {}", tag->m_iFileId,
+                         CURL::GetRedacted(oldPath), CURL::GetRedacted(progressTrackingFile));
+              item.GetVideoInfoTag()->SetFileNameAndPath(progressTrackingFile);
+            }
+            else
+            {
+              videodatabase.RollbackTransaction();
+              CLog::LogF(LOGWARNING, "Unable to rename file {} from {} to {}", tag->m_iFileId,
+                         CURL::GetRedacted(oldPath), CURL::GetRedacted(progressTrackingFile));
+
+              // The entry still names what it did before, so that is what this playback is
+              // recorded against. Recording it against the name the rename was refused would add
+              // a file no library item refers to, taking the resume point and the stream details
+              // with it.
+              if (!oldPath.empty())
+                progressTrackingFile = oldPath;
+            }
+          }
+        }
+
         bool updateListing = false;
         // No resume & watched status for livetv
         if (!item.IsLiveTV())
@@ -216,47 +271,6 @@ void CSaveFileState::DoWork(CFileItem& item,
               videodatabase.RollbackTransaction();
             }
           }
-        }
-
-        // See if idFile of library item needs updating
-        const CVideoInfoTag* tag{item.HasVideoInfoTag() ? item.GetVideoInfoTag() : nullptr};
-
-        const bool updateNeeded{
-            [&item, &tag]
-            {
-              if (!tag || tag->m_iFileId < 0)
-                return false; // No tag or file to update
-              if (tag->m_iDbId < 0 && item.GetVideoContentType() != VideoDbContentType::UNKNOWN)
-                return false; // No video db item to update
-              if (URIUtils::IsBlurayPath(item.GetDynPath()) &&
-                  !URIUtils::IsStack(tag->m_strFileNameAndPath) &&
-                  tag->m_strFileNameAndPath != item.GetDynPath())
-                return true; // Bluray path to update
-              if (item.GetProperty("new_playlist_path").asBoolean(false))
-                return true; // Bluray playlist replaced by user selection
-              if (item.GetProperty("new_stack_path").asBoolean(false))
-                return true; // Stack path to update
-              return false;
-            }()};
-
-        if (updateNeeded)
-        {
-          videodatabase.BeginTransaction();
-          // tag->m_iFileId contains the idFile originally played and may be different to the idFile
-          // in the movie table entry if it's a non-default video version
-          const int newFileId{videodatabase.SetFileForMedia(
-              progressTrackingFile, item.GetVideoContentType(), tag->m_iDbId,
-              CVideoDatabase::FileRecord{.m_idFile = tag->m_iFileId,
-                                         .m_playCount = tag->GetPlayCount(),
-                                         .m_lastPlayed = tag->m_lastPlayed,
-                                         .m_dateAdded = tag->m_dateAdded})};
-          if (newFileId > 0)
-          {
-            videodatabase.CommitTransaction();
-            item.GetVideoInfoTag()->m_iFileId = newFileId;
-          }
-          else
-            videodatabase.RollbackTransaction();
         }
 
         if (updateListing)

@@ -2137,6 +2137,24 @@ CVideoInfoScanner::~CVideoInfoScanner()
       art["thumb"] = "";
 
     CVideoInfoTag &movieDetails = *pItem->GetVideoInfoTag();
+
+    // A disc whose playlist couldn't be determined is recorded under a 'select' path rather than
+    // the index.bdmv (or ISO) shared by everything on the disc.
+    if (!pItem->IsFolder() && (content == ContentType::MOVIES || content == ContentType::TVSHOWS) &&
+        (::UTILS::DISCS::IsBlurayDiscImage(path) || URIUtils::IsBDFile(path)))
+    {
+      const bool isEpisode{content == ContentType::TVSHOWS};
+      if (const std::string selectPath{
+              isEpisode ? URIUtils::GetBluraySelectPath(path, movieDetails.m_iSeason,
+                                                        movieDetails.m_iEpisode)
+                        : URIUtils::GetBluraySelectPath(path)};
+          !selectPath.empty())
+      {
+        path = selectPath;
+        pItem->SetDynPath(path);
+      }
+    }
+
     if (movieDetails.m_basePath.empty())
       movieDetails.m_basePath = pItem->GetBaseMoviePath(videoFolder);
     movieDetails.m_parentPathID =

@@ -24,5 +24,8 @@ public:
   bool GetDirectory(const CURL& url, CFileItemList& items) override;
   bool ContainsFiles(const CURL& url) override { return false; }
   bool Resolve(CFileItem& item) const override;
+
+  // Needed to return select paths
+  bool AllowAll() const override { return true; }
 };
 } // namespace XFILE
