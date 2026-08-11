@@ -5506,7 +5506,7 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///                  _string_,
 ///     @return The total number of discs belonging to an album.
 ///     <p><hr>
-///     @skinning_v19 **[New Infolabel]** \link ListItem.Property(Album_Totaldiscs) `ListItem.Property(Album_Totaldiscs)`\endlink
+///     @skinning_v19 **[New Infolabel]** \link ListItem_Property_Album_Totaldiscs `ListItem.Property(Album_Totaldiscs)`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Album_Isboxset)`</b>,
@@ -5514,7 +5514,7 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///                  _string_,
 ///     @return **True** if the album is a boxset.
 ///     <p><hr>
-///     @skinning_v19 **[New Infobool]** \link ListItem.Property(Album_Isboxset) `ListItem.Property(Album_Isboxset)`\endlink
+///     @skinning_v19 **[New Infobool]** \link ListItem_Property_Album_Isboxset `ListItem.Property(Album_Isboxset)`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Album_Duration)`</b>,
@@ -6985,7 +6985,7 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.HasReminderRule`</b>,
-///                  \anchor ListItem_ListItem.HasReminderRule
+///                  \anchor ListItem_HasReminderRule
 ///                  _boolean_,
 ///     @return **True** if the item was scheduled by a reminder timer rule (PVR).
 ///     <p><hr>
@@ -7574,7 +7574,7 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///     @return The number of audio channels of a song.
 ///     (possible values: see \ref ListItem_AudioChannels "ListItem.AudioChannels").
 ///     <p><hr>
-///     @skinning_v19 **[New Infolabel]** \link ListItem_No_Of_Channels `ListItem.NoOfChannels`\endlink
+///     @skinning_v19 **[New Infolabel]** \link ListItem_MusicChannels `ListItem.MusicChannels`\endlink
 ///
 ///     @skinning_v22 **[Infolabel Updated]** \link ListItem_MusicChannels `ListItem.MusicChannels`\endlink
 ///     added optional format parameter
@@ -10681,7 +10681,7 @@ constexpr std::array<InfoMap, 63> slideshow = {{
 /// <hr>
 /// \subsection modules_rm_infolabels_booleans_v19 Kodi v19 (Matrix)
 /// @skinning_v19 **[Removed Infolabels]** The following infolabels have been removed:
-///   - `System.Platform.Linux.RaspberryPi` - use \link System_Platform_Linux `System.Platform.Linux`\endlink instead
+///   - `System.Platform.Linux.RaspberryPi` - use \link System_PlatformLinux `System.Platform.Linux`\endlink instead
 ///
 /// <hr>
 /// \subsection modules_rm_infolabels_booleans_v18 Kodi v18 (Leia)
