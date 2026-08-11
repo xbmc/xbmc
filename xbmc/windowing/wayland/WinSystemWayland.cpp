@@ -444,6 +444,7 @@ std::vector<std::string> CWinSystemWayland::GetConnectedOutputs()
 {
   std::unique_lock lock(m_outputsMutex);
   std::vector<std::string> outputs;
+  outputs.emplace_back(OUTPUT_NAME_DEFAULT);
   std::ranges::transform(m_outputs, std::back_inserter(outputs),
                          [this](decltype(m_outputs)::value_type const& pair)
                          { return UserFriendlyOutputName(pair.second); });
