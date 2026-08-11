@@ -13,6 +13,7 @@ namespace KODI::DATABASE
 
 static constexpr const char* TYPE_ADDONS = "addons";
 static constexpr const char* TYPE_EPG = "epg";
+static constexpr const char* TYPE_GAMES = "games";
 static constexpr const char* TYPE_MUSIC = "music";
 static constexpr const char* TYPE_TEXTURES = "textures";
 static constexpr const char* TYPE_TV = "tv";
