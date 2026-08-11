@@ -5246,6 +5246,20 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///     @return **True** if the current Season/Episode is a Special.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.Property(isbookmark)`</b>,
+///                  \anchor ListItem_Property_IsBookmark
+///                  _boolean_,
+///     @return **True** if the item is a bookmark.
+///     @note Only set on items in the video bookmarks dialog.
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.Property(ischapter)`</b>,
+///                  \anchor ListItem_Property_IsChapter
+///                  _boolean_,
+///     @return **True** if the item is a chapter.
+///     @note Only set on items in the video bookmarks dialog.
+///     <p>
+///   }
 ///   \table_row3{   <b>`ListItem.Property(DateLabel)`</b>,
 ///                  \anchor ListItem_Property_DateLabel
 ///                  _boolean_,
