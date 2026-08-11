@@ -63,8 +63,11 @@ reasoning.
 
 1. Pings, reads `lookandfeel.enablerssfeeds` via `Settings.GetSettingValue` and asserts
    it's the documented default (`false`).
-2. Sets it to `true` via `Settings.SetSettingValue`, reads it back, and asserts the
-   change persisted.
+2. Sets it to `true` via `Settings.SetSettingValue` and reads it back, which proves
+   only that the running instance applied it.
+3. Shuts Kodi down and asserts the new value is in the `guisettings.xml` it wrote.
+   Kodi flushes settings to disk only on a clean shutdown, so this is the only step
+   that actually covers persistence.
 
 ## Layout
 

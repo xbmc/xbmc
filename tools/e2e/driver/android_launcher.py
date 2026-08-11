@@ -327,6 +327,11 @@ class AndroidKodiProcess:
         data = self._read_remote_file(f"{DATA_DIR}/temp/kodi.log")
         return data.decode(errors="replace") if data is not None else ""
 
+    def read_guisettings(self) -> str:
+        """The on-device guisettings.xml as Kodi last wrote it - see KodiProcess."""
+        data = self._read_remote_file(GUISETTINGS)
+        return data.decode(errors="replace") if data is not None else ""
+
     def kill_if_running(self) -> None:
         if self._started and self._is_running():
             self._shell("am", "force-stop", PACKAGE)

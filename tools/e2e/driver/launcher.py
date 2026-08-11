@@ -209,6 +209,18 @@ class KodiProcess:
             return ""
         return self.log_path.read_text(errors="replace")
 
+    def read_guisettings(self) -> str:
+        """The profile's guisettings.xml as Kodi last wrote it, or "" if absent.
+
+        Kodi flushes settings to disk only on a clean shutdown, so this is meaningful
+        only after assert_clean_shutdown. Reading a setting back over JSON-RPC instead
+        proves only that it reached the in-memory CSettings.
+        """
+        settings_file = self.portable_data_dir / "userdata" / "guisettings.xml"
+        if not settings_file.exists():
+            return ""
+        return settings_file.read_text(errors="replace")
+
     def kill_if_running(self) -> None:
         if self.process is not None and self.process.poll() is None:
             self.process.kill()

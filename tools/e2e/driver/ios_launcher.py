@@ -176,6 +176,18 @@ class IOSKodiProcess:
             return ""
         return matches[0].read_text(errors="replace")
 
+    def read_guisettings(self) -> str:
+        """The container's guisettings.xml as Kodi last wrote it - see KodiProcess.
+
+        Read from _profile_dir, not searched for like kodi.log above: settings live
+        under special://home, which does resolve to the profile directory here.
+        """
+        assert self._profile_dir is not None, "start() was not called"
+        settings_file = self._profile_dir / "userdata" / "guisettings.xml"
+        if not settings_file.exists():
+            return ""
+        return settings_file.read_text(errors="replace")
+
     def kill_if_running(self) -> None:
         if self._is_running():
             self._terminate()
