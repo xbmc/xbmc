@@ -473,12 +473,6 @@ void CProfileManager::LogOff()
     networkManager.NetworkMessage(CNetworkBase::SERVICES_DOWN, 1);
   }
 
-  // Reset the database manager so the master profile's databases are
-  // re-initialized cleanly when the login screen is shown again.
-  CServiceBroker::GetDatabaseManager().Deinitialize();
-
-  // LoadMasterProfileForLogin calls LoadProfile, which closes and re-opens
-  // all databases at the correct point in the switch sequence.
   LoadMasterProfileForLogin();
 
   g_passwordManager.bMasterUser = false;
