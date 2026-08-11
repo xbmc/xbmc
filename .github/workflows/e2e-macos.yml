@@ -7,10 +7,8 @@ name: E2E (macOS)
 # takes and sanity-checks a screenshot, asks it to quit cleanly, and checks the log
 # for fatal errors. See tools/e2e/README.md for what this does and does not cover.
 #
-# Intentionally not wired into required PR checks: build time and reliability of
-# building Kodi from source on a hosted macOS runner haven't been proven out yet.
-# Triggers on workflow_dispatch (any branch/ref) or on push to any branch that touches
-# tools/e2e/** or this file, so it can be exercised on a feature branch before merge.
+# Runs on every non-draft PR commit, on pushes to master, and on workflow_dispatch
+# (any branch/ref), so it can also be exercised on a feature branch before merge.
 
 on:
   workflow_dispatch:

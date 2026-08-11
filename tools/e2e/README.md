@@ -133,41 +133,48 @@ KODI_APP=/path/to/Kodi.app uv run pytest scenarios -v
 
 ## CI
 
-Six workflows run this suite, all triggered manually
-(`workflow_dispatch`) or by pushes touching `tools/e2e/**` rather than wired into
-every PR, since build time and reliability haven't been proven out yet:
+Six workflows run this suite, each on `workflow_dispatch`, on pushes to `master`, and
+on every commit of a pull request once it is out of draft. Two of them build a
+two-platform matrix, so a full run is eight jobs, each building Kodi from source:
 
 - `.github/workflows/e2e-macos.yml` — builds Kodi from source (via
   `tools/depends`, cached) on a GitHub-hosted macOS runner and runs the suite
   against the `Kodi.app` bundle.
-- `.github/workflows/e2e-linux.yml` — builds Kodi's GBM windowing backend
-  on a GitHub-hosted Ubuntu runner, using `tools/depends` (cached, like the macOS
-  job) for the GBM/media dependency stack (mesa, libdrm, libinput,
-  libdisplay-info, ffmpeg, dav1d), plus a handful of system packages for
-  libraries `tools/depends` doesn't build on Linux. Runs on a virtual KMS display
-  (the `vkms` kernel module) with Mesa built for software GLES rendering,
-  exercising the real DRM/GBM/EGL/GLES pipeline on a headless GPU-less runner.
+- `.github/workflows/e2e-linux.yml` — builds Kodi's GBM and Wayland windowing
+  backends (a two-leg matrix) with `APP_RENDER_SYSTEM=gles` on a GitHub-hosted Ubuntu
+  runner. Builds against Ubuntu's own packages the way `docs/README.Linux.md`
+  documents, rather than `tools/depends`; only ffmpeg and TagLib are built internally
+  (`-DENABLE_INTERNAL_FFMPEG=ON -DENABLE_INTERNAL_TAGLIB=ON`), since Ubuntu 24.04's
+  are too old for Kodi's minimum and for Matroska tag support respectively. GBM gets
+  its display from the `vkms` virtual KMS driver and Wayland from a headless Weston;
+  both render through Mesa's llvmpipe, exercising the real DRM/GBM/EGL/GLES pipeline
+  on a GPU-less runner.
+- `.github/workflows/e2e-linux-x11.yml` — the same suite against the X11 backend,
+  built with `APP_RENDER_SYSTEM=gl` for real desktop OpenGL/GLX (`xbmc/rendering/gl`,
+  `GLContextGLX`) rather than the GLES/EGL path the GBM/Wayland legs take - which is
+  why it is a separate workflow and not a third leg of that matrix. Xvfb provides the
+  display, Mesa falls back to llvmpipe.
 - `.github/workflows/e2e-android.yml` — cross-builds the Android debug APK from
   source (via `tools/depends --host=x86_64-linux-android`, cached), boots a
   hardware-accelerated x86_64 emulator (`reactivecircus/android-emulator-runner`),
   installs the APK, and runs the suite over an adb-forwarded JSON-RPC connection.
-- `.github/workflows/e2e-apple-simulator.yml` — cross-builds the iOS app for the Simulator
-  ABI from source (via `tools/depends --host=aarch64-apple-darwin
-  --with-platform=ios-simulator`, cached, then `xcodebuild`), creates and boots a
-  Simulator device via `xcrun simctl`, installs the app, and runs the suite over a
-  direct (unforwarded) JSON-RPC connection. The Simulator ABI is far less exercised
-  than the device one, so treat build failures here as plausibly a build-system gap,
+- `.github/workflows/e2e-apple-simulator.yml` — cross-builds the app for the iOS and
+  tvOS Simulator ABIs (a two-leg matrix, via `tools/depends
+  --host=aarch64-apple-darwin --with-platform=ios-simulator`/`tvos-simulator`, cached,
+  then `xcodebuild`), creates and boots a Simulator device via `xcrun simctl`,
+  installs the app, and runs the suite over a direct (unforwarded) JSON-RPC
+  connection. One workflow for both legs because `driver/ios_launcher.py` is generic
+  over any darwin_embedded Simulator app. The Simulator ABIs are far less exercised
+  than the device ones, so treat build failures here as plausibly a build-system gap,
   not just a test/CI-wiring issue.
-- `.github/workflows/e2e-apple-simulator.yml` — same approach as the iOS job, reusing
-  `driver/ios_launcher.py` unmodified since it's generic over any darwin_embedded
-  Simulator app, built via `--with-platform=tvos-simulator`.
 - `.github/workflows/e2e-windows.yml` — builds Kodi from source on a GitHub-hosted
   Windows runner and runs the suite against `kodi.exe` directly. Unlike the other
   source-built jobs, dependencies aren't compiled via `tools/depends` at all - they're
   downloaded as prebuilt packages from `mirrors.kodi.tv`
   (`tools/buildsteps/windows/download-dependencies.bat`) plus an MSYS2 environment for
-  the rest (`download-msys2.bat`), then built via `cmake --build` (the Visual Studio
-  generator), per `docs/README.Windows.md`.
+  the rest (`download-msys2.bat`), per `docs/README.Windows.md`. Built with the Ninja
+  generator, which honours `CMAKE_<LANG>_COMPILER_LAUNCHER` where MSBuild ignores it,
+  so ccache is actually used.
 
 ### Android: reaching the on-device profile
 
