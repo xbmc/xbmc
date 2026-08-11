@@ -21,8 +21,9 @@ authentication disabled, and a screenshot output directory configured - a dispos
 iOS (see `driver/ios_launcher.py`), neither of which has a `-p` flag to rely on.
 Every scenario ends by asking Kodi to quit via `driver/assertions.py`'s
 `assert_clean_shutdown`, which asserts a clean (`0`) exit code and scans the log for
-`FATAL` lines - so a crash or hang fails loudly regardless of which scenario was
-running.
+fatal-level lines - so a crash or hang fails loudly regardless of which scenario was
+running. Those lines read as either `FATAL` or `critical` depending on how spdlog was
+built, and both are matched; see the comment in `driver/assertions.py`.
 
 `scenarios/test_startup.py`:
 

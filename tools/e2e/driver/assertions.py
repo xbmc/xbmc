@@ -13,13 +13,21 @@ import requests
 from driver.kodi_client import KodiJsonRpcClient
 from driver.launcher import KodiProcess
 
-FATAL_LOG_LINE = re.compile(r"\bFATAL\b")
+# LOGFATAL prints as either "FATAL" or "critical", depending on how spdlog was built:
+# xbmc/utils/log.h's SPDLOG_LEVEL_NAMES override only reaches a header-only spdlog, and
+# cmake/modules/FindSpdlog.cmake sets SPDLOG_COMPILED_LIB, which keeps spdlog's own
+# names. Kodi's own unit test accepts both spellings too (xbmc/utils/test/Testlog.cpp).
+#
+# Anchored on the level field of the log pattern ("%7l <%n>: %v", xbmc/utils/log.cpp):
+# "critical" is also an ordinary word in log *messages* ("critical section"), which a
+# loose search would flag.
+FATAL_LOG_LINE = re.compile(r"\b(?:FATAL|CRITICAL)\s+<[^>]*>:", re.IGNORECASE)
 
 
 def assert_clean_shutdown(
     kodi: KodiProcess, client: KodiJsonRpcClient, timeout: float = 30.0
 ) -> None:
-    """Quits Kodi and asserts it exited cleanly (code 0, no FATAL log lines)."""
+    """Quits Kodi and asserts it exited cleanly (code 0, no fatal-level log lines)."""
     try:
         client.quit()
     except requests.exceptions.RequestException:
@@ -36,4 +44,4 @@ def assert_clean_shutdown(
     )
 
     fatal_lines = [line for line in log_text.splitlines() if FATAL_LOG_LINE.search(line)]
-    assert not fatal_lines, f"Found FATAL log line(s): {fatal_lines}"
+    assert not fatal_lines, f"Found fatal-level log line(s): {fatal_lines}"
