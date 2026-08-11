@@ -85,7 +85,7 @@ void CFileExtensionProvider::Deinitialize()
     m_addonManager = nullptr;
   }
 
-  m_advancedSettings.reset();
+  // The lazy extension lists still dereference the settings after deinitialization.
   m_addonExtensions.clear();
 }
 
