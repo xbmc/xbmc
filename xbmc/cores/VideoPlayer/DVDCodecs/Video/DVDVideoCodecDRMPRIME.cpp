@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/Buffers/VideoBufferDMA.h"
 #include "cores/VideoPlayer/Buffers/VideoBufferDRMPRIME.h"
+#include "cores/VideoPlayer/Buffers/VideoBufferPoolDMA.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "settings/Settings.h"
@@ -258,8 +259,14 @@ int CDVDVideoCodecDRMPRIME::GetBuffer(struct AVCodecContext* avctx, AVFrame* fra
     }
 
     CDVDVideoCodecDRMPRIME* ctx = static_cast<CDVDVideoCodecDRMPRIME*>(avctx->opaque);
-    auto buffer = dynamic_cast<CVideoBufferDMA*>(
-        ctx->m_processInfo.GetVideoBufferManager().Get(avctx->pix_fmt, size, nullptr));
+    // no lock: ffmpeg serializes get_buffer2 calls even with frame threading
+    if (!ctx->m_swVideoBufferPool || !ctx->m_swVideoBufferPool->IsCompatible(avctx->pix_fmt, size))
+    {
+      ctx->m_swVideoBufferPool = std::make_shared<CVideoBufferPoolDMA>();
+      ctx->m_swVideoBufferPool->Configure(avctx->pix_fmt, size);
+    }
+
+    auto* buffer = static_cast<CVideoBufferDMA*>(ctx->m_swVideoBufferPool->Get());
     if (!buffer)
       return -1;
 
