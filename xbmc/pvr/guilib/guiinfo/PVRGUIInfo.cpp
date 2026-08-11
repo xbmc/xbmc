@@ -55,11 +55,21 @@
 #include <memory>
 #include <mutex>
 #include <string>
+#include <tuple>
+#include <utility>
 #include <vector>
 
 using namespace PVR;
 using namespace KODI::GUILIB::GUIINFO;
 using namespace std::chrono_literals;
+
+namespace
+{
+std::tuple<int, unsigned int, CDateTime, CDateTime> MakePlayableCacheKey(const CPVREpgInfoTag& tag)
+{
+  return {tag.EpgID(), tag.UniqueBroadcastID(), tag.StartAsUTC(), tag.EndAsUTC()};
+}
+} // unnamed namespace
 
 CPVRGUIInfo::CPVRGUIInfo() : CThread("PVRGUIInfo")
 {
@@ -101,6 +111,7 @@ void CPVRGUIInfo::ResetProperties()
   m_bIsPlayingActiveRecording = false;
   m_bHasTVChannels = false;
   m_bHasRadioChannels = false;
+  m_playableCache.clear();
 
   ClearQualityInfo(m_qualityInfo);
   ClearDescrambleInfo(m_descrambleInfo);
@@ -199,6 +210,10 @@ void CPVRGUIInfo::Process()
 
     if (!m_bStop)
       UpdateTimeshiftData();
+    std::this_thread::yield();
+
+    if (!m_bStop)
+      UpdatePlayableCache();
     std::this_thread::yield();
 
     if (!m_bStop)
@@ -326,6 +341,63 @@ void CPVRGUIInfo::UpdateMisc()
 void CPVRGUIInfo::UpdateTimeshiftData()
 {
   m_timesInfo.Update();
+}
+
+bool CPVRGUIInfo::IsPlayable(const std::shared_ptr<const CPVREpgInfoTag>& tag) const
+{
+  const auto key{MakePlayableCacheKey(*tag)};
+
+  {
+    std::unique_lock lock(m_critSection);
+    const auto it{m_playableCache.find(key)};
+    if (it != m_playableCache.end())
+    {
+      it->second.queried = true;
+      return it->second.playable;
+    }
+  }
+
+  // Not cached yet, for instance because the tag just became visible. Ask the client once,
+  // outside the lock; from here on the answer is refreshed by the update thread.
+  const bool playable{tag->IsPlayable()};
+
+  std::unique_lock lock(m_critSection);
+  m_playableCache.insert_or_assign(key, PlayableCacheEntry{tag, playable, true});
+  return playable;
+}
+
+void CPVRGUIInfo::UpdatePlayableCache()
+{
+  std::vector<std::pair<PlayableCacheKey, std::shared_ptr<const CPVREpgInfoTag>>> tags;
+  {
+    std::unique_lock lock(m_critSection);
+    for (auto it = m_playableCache.begin(); it != m_playableCache.end();)
+    {
+      if (it->second.queried)
+      {
+        it->second.queried = false;
+        tags.emplace_back(it->first, it->second.tag);
+        ++it;
+      }
+      else
+      {
+        // Nobody asked for this tag since the last update, so it is no longer displayed.
+        it = m_playableCache.erase(it);
+      }
+    }
+  }
+
+  // Asking the client can block for as long as the client takes to answer, and the rendering
+  // thread reads the cache for every visible tag, so this must happen without the lock held.
+  for (const auto& [key, tag] : tags)
+  {
+    const bool playable{tag->IsPlayable()};
+
+    std::unique_lock lock(m_critSection);
+    const auto it{m_playableCache.find(key)};
+    if (it != m_playableCache.end())
+      it->second.playable = playable;
+  }
 }
 
 bool CPVRGUIInfo::InitCurrentItem(CFileItem* item)
@@ -1562,7 +1634,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem* item,
     case LISTITEM_ISPLAYABLE:
       if (item->IsEPG())
       {
-        bValue = item->GetEPGInfoTag()->IsPlayable();
+        bValue = IsPlayable(item->GetEPGInfoTag());
         return true;
       }
       break;
