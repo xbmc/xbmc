@@ -391,7 +391,6 @@ void CDVDVideoCodecDRMPRIME::UpdateProcessInfo(struct AVCodecContext* avctx,
 {
   const char* pixFmtName = av_get_pix_fmt_name(pix_fmt);
   m_processInfo.SetVideoPixelFormat(pixFmtName ? pixFmtName : "");
-  m_processInfo.SetVideoDimensions(avctx->coded_width, avctx->coded_height);
 
   if (avctx->codec && avctx->codec->name)
     m_name = std::string("ff-") + avctx->codec->name;
@@ -628,6 +627,12 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecDRMPRIME::GetPicture(VideoPicture* pVideo
               err, ret);
     return VC_ERROR;
   }
+
+  // ffmpeg's v4l2m2m resizes without re-invoking our GetFormat callback; republish from the frames
+  int piWidth, piHeight;
+  m_processInfo.GetVideoDimensions(piWidth, piHeight);
+  if (m_pFrame->width != piWidth || m_pFrame->height != piHeight)
+    m_processInfo.SetVideoDimensions(m_pFrame->width, m_pFrame->height);
 
   SetPictureParams(pVideoPicture);
 
