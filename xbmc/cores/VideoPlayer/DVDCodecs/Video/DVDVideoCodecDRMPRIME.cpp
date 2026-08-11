@@ -259,12 +259,16 @@ int CDVDVideoCodecDRMPRIME::GetBuffer(struct AVCodecContext* avctx, AVFrame* fra
     }
 
     CDVDVideoCodecDRMPRIME* ctx = static_cast<CDVDVideoCodecDRMPRIME*>(avctx->opaque);
-    // no lock: ffmpeg serializes get_buffer2 calls even with frame threading
+    // no lock: ffmpeg serializes get_buffer2 even with frame threading, and the codec's
+    // own accesses are safe because avcodec flush/free join the frame threads first
     if (!ctx->m_swVideoBufferPool || !ctx->m_swVideoBufferPool->IsCompatible(avctx->pix_fmt, size))
     {
       ctx->m_swVideoBufferPool = std::make_shared<CVideoBufferPoolDMA>();
       ctx->m_swVideoBufferPool->Configure(avctx->pix_fmt, size);
     }
+
+    if (!ctx->m_swVideoBufferPool->IsConfigured())
+      return -1;
 
     CVideoBufferDMA* buffer = ctx->m_swVideoBufferPool->Get();
     if (!buffer)

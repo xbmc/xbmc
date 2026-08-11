@@ -962,7 +962,8 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame
   { // we have a new frame from decoder
 
     VASurfaceID surf = (VASurfaceID)(uintptr_t)pFrame->data[3];
-    // surface IDs are only meaningful within the decoder generation that allocated them
+    // surface IDs are only meaningful within the decoder generation that allocated them;
+    // comparing the opaque is safe: FFGetBuffer's Acquire keeps the old decoder alive
     if (pFrame->buf[0] && av_buffer_get_opaque(pFrame->buf[0]) != this)
     {
       CLog::Log(LOGWARNING, "VAAPI::Decode - ignoring frame of a previous decoder generation");
