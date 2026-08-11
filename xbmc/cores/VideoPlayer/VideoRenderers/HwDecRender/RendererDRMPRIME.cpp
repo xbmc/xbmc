@@ -37,20 +37,6 @@ CRendererDRMPRIME::~CRendererDRMPRIME()
   winSystem->SetGuiCompositing(false);
   winSystem->SetHDR(nullptr);
   winSystem->SetColorimetry(nullptr);
-
-  // queue the video plane off before FindGuiPlane nulls m_video_plane
-  if (m_videoLayerBridge)
-    m_videoLayerBridge->Disable();
-
-  //! @todo Restore single-plane state after D2P playback: null m_video_plane
-  //! via direct FindGuiPlane, mirroring Create's direct FindVideoAndGuiPlane.
-  //! D2P cannot share single-plane's teardown via winSystem->SetVideoOutput
-  //! (nullptr) because the renderer factory hands Create a CVideoBuffer*
-  //! (not a VideoPicture*) and start has no buffer-shaped winsystem entry.
-  //! Future: unified plane API for D2P and single-plane to share teardown.
-  auto drm = winSystem->GetDrm();
-  auto* gui = drm->GetGuiPlane();
-  drm->FindGuiPlane(gui->GetFormat(), gui->GetModifier());
 }
 
 CBaseRenderer* CRendererDRMPRIME::Create(CVideoBuffer* buffer)
