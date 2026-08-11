@@ -22,13 +22,16 @@ uint32_t CDmaBufIdentityCache::Lookup(const DmaBufIdentity& identity, uint64_t s
       it->lastUse = ++m_useCounter;
       return it->handle;
     }
+  }
 
+  for (auto it = m_entries.begin(); it != m_entries.end(); ++it)
+  {
     // same memory in a new shape: the old object can never be valid again
     if (it->salt == salt && it->identity.SameMemory(identity))
     {
       m_doomed.push_back(it->handle);
       m_entries.erase(it);
-      return 0;
+      break;
     }
   }
   return 0;

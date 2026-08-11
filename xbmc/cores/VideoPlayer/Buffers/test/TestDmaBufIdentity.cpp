@@ -162,6 +162,10 @@ TEST(TestDmaBufIdentity, LayoutFieldChangesBreakEquality)
   d.nb_objects = 2;
   d.objects[1].fd = 40;
   EXPECT_TRUE(differs(d, 1920, 1080));
+
+  d = MakeDescriptor();
+  d.nb_layers = 2;
+  EXPECT_TRUE(differs(d, 1920, 1080));
 }
 
 TEST(TestDmaBufIdentity, MultiObjectSecondInodeCompared)

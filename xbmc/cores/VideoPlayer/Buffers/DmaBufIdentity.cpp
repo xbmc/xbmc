@@ -15,9 +15,7 @@ namespace DRMPRIME
 
 bool StatInode(int fd, uint64_t& inode)
 {
-  struct stat st
-  {
-  };
+  struct stat st = {};
   if (fstat(fd, &st) != 0)
     return false;
 
@@ -43,10 +41,15 @@ bool DmaBufIdentity::SameMemory(const DmaBufIdentity& other) const
   return true;
 }
 
-std::optional<DmaBufIdentity> ComputeDmaBufIdentity(const AVDRMFrameDescriptor* descriptor,
-                                                    uint32_t width,
-                                                    uint32_t height,
-                                                    const StatInodeFn& statInode)
+namespace
+{
+
+// templated so the hot path calls StatInode directly, without a std::function
+template<typename StatFn>
+std::optional<DmaBufIdentity> Compute(const AVDRMFrameDescriptor* descriptor,
+                                      uint32_t width,
+                                      uint32_t height,
+                                      const StatFn& statInode)
 {
   if (!descriptor || descriptor->nb_layers < 1 || descriptor->nb_objects < 1 ||
       descriptor->nb_objects > AV_DRM_MAX_PLANES)
@@ -68,6 +71,7 @@ std::optional<DmaBufIdentity> ComputeDmaBufIdentity(const AVDRMFrameDescriptor* 
   identity.width = width;
   identity.height = height;
   identity.format = layer.format;
+  identity.nbLayers = descriptor->nb_layers;
   identity.nbPlanes = layer.nb_planes;
   for (int i = 0; i < layer.nb_planes; i++)
   {
@@ -77,6 +81,23 @@ std::optional<DmaBufIdentity> ComputeDmaBufIdentity(const AVDRMFrameDescriptor* 
   }
 
   return identity;
+}
+
+} // namespace
+
+std::optional<DmaBufIdentity> ComputeDmaBufIdentity(const AVDRMFrameDescriptor* descriptor,
+                                                    uint32_t width,
+                                                    uint32_t height)
+{
+  return Compute(descriptor, width, height, &StatInode);
+}
+
+std::optional<DmaBufIdentity> ComputeDmaBufIdentity(const AVDRMFrameDescriptor* descriptor,
+                                                    uint32_t width,
+                                                    uint32_t height,
+                                                    const StatInodeFn& statInode)
+{
+  return Compute(descriptor, width, height, statInode);
 }
 
 } // namespace DRMPRIME

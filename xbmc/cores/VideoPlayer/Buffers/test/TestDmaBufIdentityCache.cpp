@@ -69,6 +69,18 @@ TEST(TestDmaBufIdentityCache, ExactLayoutRequiredForHit)
   EXPECT_EQ(reaped[0], 100u);
 }
 
+TEST(TestDmaBufIdentityCache, ExactMatchWinsOverStaleSameMemoryEntry)
+{
+  CDmaBufIdentityCache cache{4};
+  cache.Insert(MakeIdentity(7, 1920), 100);
+  cache.Insert(MakeIdentity(7, 2048), 200);
+
+  // same memory under an old layout sits first in scan order; the exact match must still win
+  EXPECT_EQ(cache.Lookup(MakeIdentity(7, 2048)), 200u);
+  EXPECT_EQ(cache.Size(), 2u);
+  EXPECT_TRUE(cache.Reap({}).empty());
+}
+
 TEST(TestDmaBufIdentityCache, FdRecyclingCannotAlias)
 {
   CDmaBufIdentityCache cache{4};

@@ -239,6 +239,7 @@ std::optional<DRMPRIME::DmaBufIdentity> IdentityFromVaDescriptor(
   identity.width = surface.width;
   identity.height = surface.height;
   identity.format = surface.fourcc;
+  identity.nbLayers = surface.num_layers;
   identity.nbPlanes = surface.num_layers;
   for (uint32_t i = 0; i < surface.num_layers; i++)
   {
