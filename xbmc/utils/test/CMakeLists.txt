@@ -7,6 +7,7 @@ set(SOURCES TestAlarmClock.cpp
             TestCharsetConverter.cpp
             TestCPUInfo.cpp
             TestComponentContainer.cpp
+            TestContentUtils.cpp
             TestCrc32.cpp
             TestDatabaseUtils.cpp
             TestDigest.cpp
