@@ -12,6 +12,8 @@
 #include "utils/EGLUtils.h"
 #include "utils/log.h"
 
+#include <algorithm>
+
 #include <drm_fourcc.h>
 #include <unistd.h>
 #include <va/va_drmcommon.h>
@@ -255,7 +257,8 @@ void CVaapiTexturePool::Init(InteropInfo& interop)
   m_interop = interop;
 }
 
-CVaapi2Texture* CVaapiTexturePool::Get(CVaapiRenderPicture* pic)
+CVaapi2Texture* CVaapiTexturePool::Get(CVaapiRenderPicture* pic,
+                                       std::span<CVaapiTexture* const> inUse)
 {
   VADRMPRIMESurfaceDescriptor surface;
   VAStatus status = vaExportSurfaceHandle(
@@ -311,7 +314,19 @@ CVaapi2Texture* CVaapiTexturePool::Get(CVaapiRenderPicture* pic)
     m_cache.Insert(*identity, handle);
   }
 
-  for (uint32_t doomed : m_cache.Reap(handle, 0))
+  // protect the returned texture and every texture in use. scan m_entries, not the
+  // cache: a texture whose cache entry Lookup already doomed is gone from the cache
+  // but can still be in use
+  std::vector<uint32_t> protect;
+  protect.reserve(inUse.size() + 1);
+  protect.push_back(handle);
+  for (size_t slot = 0; slot < m_entries.size(); slot++)
+  {
+    if (std::find(inUse.begin(), inUse.end(), m_entries[slot].get()) != inUse.end())
+      protect.push_back(static_cast<uint32_t>(slot) + 1);
+  }
+
+  for (uint32_t doomed : m_cache.Reap(protect))
   {
     m_entries[doomed - 1]->Reset();
     m_free.push_back(doomed - 1);

@@ -263,7 +263,7 @@ bool CRendererVAAPIGLES::UploadTexture(int index)
     return false;
   }
 
-  m_vaapiTextures[index] = m_texturePool.Get(pic);
+  m_vaapiTextures[index] = m_texturePool.Get(pic, m_vaapiTextures);
   if (!m_vaapiTextures[index])
     return false;
 

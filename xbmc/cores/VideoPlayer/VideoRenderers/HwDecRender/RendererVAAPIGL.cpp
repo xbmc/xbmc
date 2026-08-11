@@ -217,7 +217,7 @@ bool CRendererVAAPIGL::UploadTexture(int index)
     return UploadNV12Texture(index);
   }
 
-  m_vaapiTextures[index] = m_texturePool.Get(pic);
+  m_vaapiTextures[index] = m_texturePool.Get(pic, m_vaapiTextures);
   if (!m_vaapiTextures[index])
     return false;
 

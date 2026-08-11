@@ -42,11 +42,15 @@ void CDmaBufIdentityCache::Insert(const DmaBufIdentity& identity, uint32_t handl
   m_entries.push_back(Entry{identity, salt, handle, ++m_useCounter});
 }
 
-std::vector<uint32_t> CDmaBufIdentityCache::Reap(uint32_t protectA, uint32_t protectB)
+std::vector<uint32_t> CDmaBufIdentityCache::Reap(std::span<const uint32_t> protectedHandles)
 {
   std::vector<uint32_t> reaped;
 
-  auto protectedHandle = [&](uint32_t handle) { return handle == protectA || handle == protectB; };
+  auto protectedHandle = [&](uint32_t handle)
+  {
+    return std::find(protectedHandles.begin(), protectedHandles.end(), handle) !=
+           protectedHandles.end();
+  };
 
   auto it = m_doomed.begin();
   while (it != m_doomed.end())

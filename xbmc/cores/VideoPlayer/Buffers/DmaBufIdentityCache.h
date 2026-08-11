@@ -11,6 +11,8 @@
 #include "cores/VideoPlayer/Buffers/DmaBufIdentity.h"
 
 #include <cstdint>
+#include <initializer_list>
+#include <span>
 #include <vector>
 
 namespace DRMPRIME
@@ -28,8 +30,12 @@ public:
   //! \brief Register a nonzero handle for identity+salt.
   void Insert(const DmaBufIdentity& identity, uint32_t handle, uint64_t salt = 0);
 
-  //! \brief Handles to destroy now (doomed plus LRU overflow); protectA/protectB are never returned.
-  std::vector<uint32_t> Reap(uint32_t protectA, uint32_t protectB);
+  //! \brief Handles to destroy now (doomed plus LRU overflow); protected handles are never returned.
+  std::vector<uint32_t> Reap(std::span<const uint32_t> protectedHandles);
+  std::vector<uint32_t> Reap(std::initializer_list<uint32_t> protectedHandles)
+  {
+    return Reap(std::span<const uint32_t>(protectedHandles.begin(), protectedHandles.size()));
+  }
 
   //! \brief Invalidate every entry; handles surface through later Reap calls, honoring protection.
   void InvalidateAll();

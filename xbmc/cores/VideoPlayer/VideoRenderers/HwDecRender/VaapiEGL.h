@@ -16,6 +16,7 @@
 #include <array>
 #include <cstdint>
 #include <memory>
+#include <span>
 #include <vector>
 
 #include <va/va.h>
@@ -98,7 +99,8 @@ public:
 
   void Init(InteropInfo& interop);
   //! \brief Imported texture for the picture's surface dma-buf; nullptr on export or import failure.
-  CVaapi2Texture* Get(CVaapiRenderPicture* pic);
+  //! Textures in inUse are protected from eviction while a render slot still names them.
+  CVaapi2Texture* Get(CVaapiRenderPicture* pic, std::span<CVaapiTexture* const> inUse);
   //! \brief Reset and drop every cached texture; needs the GL context current.
   void ReleaseAll();
 

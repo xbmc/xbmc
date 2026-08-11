@@ -64,7 +64,7 @@ TEST(TestDmaBufIdentityCache, ExactLayoutRequiredForHit)
   EXPECT_EQ(cache.Lookup(MakeIdentity(7, 2048)), 0u);
   EXPECT_EQ(cache.Size(), 0u);
 
-  const auto reaped = cache.Reap(0, 0);
+  const auto reaped = cache.Reap({});
   ASSERT_EQ(reaped.size(), 1u);
   EXPECT_EQ(reaped[0], 100u);
 }
@@ -87,9 +87,9 @@ TEST(TestDmaBufIdentityCache, ReapDrainsDoomedExceptProtected)
   EXPECT_EQ(cache.Lookup(MakeIdentity(7, 2048)), 0u); // dooms 100
 
   // 100 is protected: stays queued
-  EXPECT_TRUE(cache.Reap(100, 0).empty());
+  EXPECT_TRUE(cache.Reap({100}).empty());
 
-  const auto reaped = cache.Reap(0, 0);
+  const auto reaped = cache.Reap({});
   ASSERT_EQ(reaped.size(), 1u);
   EXPECT_EQ(reaped[0], 100u);
 }
@@ -105,7 +105,7 @@ TEST(TestDmaBufIdentityCache, EvictionOverCapIsLRU)
   // touch the oldest so it is no longer the LRU victim
   EXPECT_EQ(cache.Lookup(MakeIdentity(1)), 100u);
 
-  const auto reaped = cache.Reap(0, 0);
+  const auto reaped = cache.Reap({});
   ASSERT_EQ(reaped.size(), 2u);
   EXPECT_NE(std::find(reaped.begin(), reaped.end(), 200u), reaped.end());
   EXPECT_NE(std::find(reaped.begin(), reaped.end(), 300u), reaped.end());
@@ -122,10 +122,25 @@ TEST(TestDmaBufIdentityCache, EvictionNeverReturnsProtected)
   cache.Insert(MakeIdentity(3), 300);
 
   // the two LRU victims are protected: only 300 is evictable, cap stays exceeded
-  const auto reaped = cache.Reap(100, 200);
+  const auto reaped = cache.Reap({100, 200});
   ASSERT_EQ(reaped.size(), 1u);
   EXPECT_EQ(reaped[0], 300u);
   EXPECT_EQ(cache.Size(), 2u);
+}
+
+TEST(TestDmaBufIdentityCache, EvictionHonorsMoreThanTwoProtectedHandles)
+{
+  CDmaBufIdentityCache cache{1};
+  cache.Insert(MakeIdentity(1), 100);
+  cache.Insert(MakeIdentity(2), 200);
+  cache.Insert(MakeIdentity(3), 300);
+  cache.Insert(MakeIdentity(4), 400);
+
+  // three protected handles: only 400 is evictable, cap stays exceeded
+  const auto reaped = cache.Reap({100, 200, 300});
+  ASSERT_EQ(reaped.size(), 1u);
+  EXPECT_EQ(reaped[0], 400u);
+  EXPECT_EQ(cache.Size(), 3u);
 }
 
 TEST(TestDmaBufIdentityCache, TakeAllReturnsEverythingAndEmpties)
@@ -143,7 +158,7 @@ TEST(TestDmaBufIdentityCache, TakeAllReturnsEverythingAndEmpties)
   EXPECT_EQ(all[1], 200u);
   EXPECT_EQ(all[2], 300u);
   EXPECT_EQ(cache.Size(), 0u);
-  EXPECT_TRUE(cache.Reap(0, 0).empty());
+  EXPECT_TRUE(cache.Reap({}).empty());
 }
 
 TEST(TestDmaBufIdentityCache, InvalidateAllFreesEverythingExceptProtected)
@@ -157,13 +172,13 @@ TEST(TestDmaBufIdentityCache, InvalidateAllFreesEverythingExceptProtected)
   EXPECT_EQ(cache.Size(), 0u);
   EXPECT_EQ(cache.Lookup(MakeIdentity(7)), 0u);
 
-  auto reaped = cache.Reap(100, 0);
+  auto reaped = cache.Reap({100});
   std::sort(reaped.begin(), reaped.end());
   ASSERT_EQ(reaped.size(), 2u);
   EXPECT_EQ(reaped[0], 200u);
   EXPECT_EQ(reaped[1], 300u);
 
-  reaped = cache.Reap(0, 0);
+  reaped = cache.Reap({});
   ASSERT_EQ(reaped.size(), 1u);
   EXPECT_EQ(reaped[0], 100u);
 }

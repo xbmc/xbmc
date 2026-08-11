@@ -106,7 +106,7 @@ bool CVideoLayerBridgeDRMPRIME::PrepareBuffer(CVideoBufferDRMPRIME* buffer)
     m_fb_id = fbId;
 
   // reap after the id shift so protection covers the new presented pair
-  for (uint32_t doomed : m_fbCache.Reap(m_fb_id, m_prev_fb_id))
+  for (uint32_t doomed : m_fbCache.Reap({m_fb_id, m_prev_fb_id}))
     drmModeRmFB(m_DRM->GetFileDescriptor(), doomed);
 
   return true;
@@ -190,7 +190,7 @@ void CVideoLayerBridgeDRMPRIME::Configure(CVideoBufferDRMPRIME* buffer)
 {
   // a new renderer generation brings a new buffer pool; old entries can never match again
   m_fbCache.InvalidateAll();
-  for (uint32_t doomed : m_fbCache.Reap(m_fb_id, m_prev_fb_id))
+  for (uint32_t doomed : m_fbCache.Reap({m_fb_id, m_prev_fb_id}))
     drmModeRmFB(m_DRM->GetFileDescriptor(), doomed);
 
   auto plane = m_DRM->GetVideoPlane();

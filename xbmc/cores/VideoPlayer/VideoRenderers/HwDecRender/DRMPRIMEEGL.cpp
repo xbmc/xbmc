@@ -327,6 +327,25 @@ void CDRMPRIMETexturePool::Init(EGLDisplay eglDisplay)
   m_eglDisplay = eglDisplay;
 }
 
+namespace
+{
+
+// destroy reaped textures and recycle their slots
+template<typename EntryVec>
+void RecycleDoomed(DRMPRIME::CDmaBufIdentityCache& cache,
+                   EntryVec& entries,
+                   std::vector<size_t>& freeSlots,
+                   std::initializer_list<uint32_t> protectedHandles)
+{
+  for (uint32_t doomed : cache.Reap(protectedHandles))
+  {
+    entries[doomed - 1]->Reset();
+    freeSlots.push_back(doomed - 1);
+  }
+}
+
+} // namespace
+
 CDRMPRIMETexture* CDRMPRIMETexturePool::GetOES(CVideoBufferDRMPRIME* buffer)
 {
   const auto identity = DRMPRIME::ComputeDmaBufIdentity(buffer->GetDescriptor(), buffer->GetWidth(),
@@ -358,17 +377,14 @@ CDRMPRIMETexture* CDRMPRIMETexturePool::GetOES(CVideoBufferDRMPRIME* buffer)
     if (!m_oesEntries[slot]->Import(buffer))
     {
       m_oesFree.push_back(slot);
+      RecycleDoomed(m_oesCache, m_oesEntries, m_oesFree, {});
       return nullptr;
     }
     handle = static_cast<uint32_t>(slot) + 1;
     m_oesCache.Insert(*identity, handle, salt);
   }
 
-  for (uint32_t doomed : m_oesCache.Reap(handle, 0))
-  {
-    m_oesEntries[doomed - 1]->Reset();
-    m_oesFree.push_back(doomed - 1);
-  }
+  RecycleDoomed(m_oesCache, m_oesEntries, m_oesFree, {handle});
 
   return m_oesEntries[handle - 1].get();
 }
@@ -399,17 +415,14 @@ CDRMPRIMETextureYUV* CDRMPRIMETexturePool::GetYUV(CVideoBufferDRMPRIME* buffer)
     if (!m_yuvEntries[slot]->Import(buffer))
     {
       m_yuvFree.push_back(slot);
+      RecycleDoomed(m_yuvCache, m_yuvEntries, m_yuvFree, {});
       return nullptr;
     }
     handle = static_cast<uint32_t>(slot) + 1;
     m_yuvCache.Insert(*identity, handle);
   }
 
-  for (uint32_t doomed : m_yuvCache.Reap(handle, 0))
-  {
-    m_yuvEntries[doomed - 1]->Reset();
-    m_yuvFree.push_back(doomed - 1);
-  }
+  RecycleDoomed(m_yuvCache, m_yuvEntries, m_yuvFree, {handle});
 
   return m_yuvEntries[handle - 1].get();
 }
