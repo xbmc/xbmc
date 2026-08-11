@@ -7,7 +7,8 @@ DEPS = ../../Makefile.include Makefile PYTHON3-VERSION ../../download-files.incl
                                  11-android-ctypes.patch \
                                  13-wasm-em-config-clang.patch \
                                  14-wasm-build-wasm-default.patch \
-                                 15-wasm-static-hacl.patch
+                                 15-wasm-static-hacl.patch \
+                                 16-ios-platform.patch
 
 ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
   ifeq ($(OS), darwin_embedded)
@@ -79,6 +80,12 @@ PY_MODULES+= py_cv_module__decimal=n/a \
 ifeq ($(OS), darwin_embedded)
   PY_MODULES+= py_cv_module__posixsubprocess=n/a \
                py_cv_module__scproxy=n/a
+
+  ifeq ($(findstring iphone,$(TARGET_PLATFORM)),iphone)
+    # see 16-ios-platform.patch
+    export IPHONEOS_DEPLOYMENT_TARGET=$(APPLE_DEPLOYMENT_TARGET)
+    export _host_device=$(subst iphone,,$(TARGET_PLATFORM))
+  endif
 endif
 
 # configuration settings
@@ -118,6 +125,9 @@ ifeq ($(OS),wasm)
 	cd $(PLATFORM); patch -p1 -i ../13-wasm-em-config-clang.patch
 	cd $(PLATFORM); patch -p1 -i ../14-wasm-build-wasm-default.patch
 	cd $(PLATFORM); patch -p1 -i ../15-wasm-static-hacl.patch
+endif
+ifeq ($(findstring iphone,$(TARGET_PLATFORM)),iphone)
+	cd $(PLATFORM); patch -p1 -i ../16-ios-platform.patch
 endif
 	cd $(PLATFORM); $(AUTORECONF)
 	cd $(PLATFORM); $(CONFIGURE)
