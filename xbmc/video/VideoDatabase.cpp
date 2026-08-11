@@ -7959,6 +7959,8 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
     const bool videoVersionNav{options.contains("videoversionid")};
     // navigation = list of assets of the movie
     const bool assetsNav{options.contains("assetType")};
+    const bool flattenVersions{CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+        CSettings::SETTING_VIDEOLIBRARY_FLATTENVERSIONS)};
 
     int total = -1;
 
@@ -8035,10 +8037,24 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
         {
           itemUrl.AppendPath(std::to_string(movie.m_iDbId));
 
-          // Turn a movie with versions or extras into a folder item that navigates to a list of
-          // the versions and a virtual Extras folder (special assetType -2 value).
-          if (movie.HasVideoVersions() || movie.HasVideoExtras())
+          if (flattenVersions && movie.HasVideoVersions())
           {
+            static std::string versionPath{
+                std::to_string(static_cast<int>(VideoAssetType::VERSION)) + "/"};
+            itemUrl.AppendPath(versionPath);
+            itemUrl.AppendPath(std::to_string(movie.m_iFileId));
+            // for recognition by IsVideoAssetFile()
+            //! @todo figure out a more efficient and robust way
+            itemUrl.AddOption("assetType", static_cast<int>(VideoAssetType::VERSION));
+            //! @todo reset hasvideoversions/hasvideoextras or not? have to let the implementation
+            //! mature to decide.
+            //item->GetVideoInfoTag()->SetHasVideoVersions(false);
+            //item->GetVideoInfoTag()->SetHasVideoExtras(false);
+          }
+          else if (!flattenVersions && (movie.HasVideoVersions() || movie.HasVideoExtras()))
+          {
+            // Turn a movie with versions or extras into a folder item that navigates to a list of
+            // the versions and a virtual Extras folder (special assetType -2 value).
             static std::string hybridFolderPath{
                 std::to_string(static_cast<int>(VideoAssetType::VERSIONSANDEXTRASFOLDER)) + "/"};
             item->SetProperty("IsHybridFolder", true);
@@ -12020,9 +12036,14 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
 
     if (!assetAware)
     {
-      //! @todo not necessary with current movie view but wouldn't hurt?
-      // filter.AppendWhere(PrepareSQL("videoVersionTypeItemType = %i", VideoAssetType::VERSION));
-      filter.AppendWhere("isDefaultVersion = 1");
+      const bool flattenVersions = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_VIDEOLIBRARY_FLATTENVERSIONS);
+
+      if (flattenVersions)
+        filter.AppendWhere(
+            PrepareSQL("videoVersionTypeItemType = %i", static_cast<int>(VideoAssetType::VERSION)));
+      else
+        filter.AppendWhere("isDefaultVersion = 1");
     }
 
     AppendIdLinkFilter("tag", "tag", "movie", "movie", "idMovie", options, filter);

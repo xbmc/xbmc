@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -8,7 +8,9 @@
 
 #include "ApplicationSettingsHandling.h"
 
+#include "GUIUserMessages.h"
 #include "ServiceBroker.h"
+#include "Util.h"
 #include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonType.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
@@ -49,32 +51,35 @@ void CApplicationSettingsHandling::RegisterSettings()
 
   settingsMgr->RegisterSettingsHandler(this);
 
-  settingsMgr->RegisterCallback(this, {CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH,
-                                       CSettings::SETTING_LOOKANDFEEL_SKIN,
-                                       CSettings::SETTING_LOOKANDFEEL_SKINSETTINGS,
-                                       CSettings::SETTING_LOOKANDFEEL_FONT,
-                                       CSettings::SETTING_LOOKANDFEEL_SKINTHEME,
-                                       CSettings::SETTING_LOOKANDFEEL_SKINCOLORS,
-                                       CSettings::SETTING_LOOKANDFEEL_SKINZOOM,
-                                       CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP,
-                                       CSettings::SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP,
-                                       CSettings::SETTING_MUSICPLAYER_REPLAYGAINTYPE,
-                                       CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING,
-                                       CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT,
-                                       CSettings::SETTING_SCREENSAVER_MODE,
-                                       CSettings::SETTING_SCREENSAVER_PREVIEW,
-                                       CSettings::SETTING_SCREENSAVER_SETTINGS,
-                                       CSettings::SETTING_AUDIOCDS_SETTINGS,
-                                       CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION,
-                                       CSettings::SETTING_VIDEOSCREEN_TESTPATTERN,
-                                       CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC,
-                                       CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE,
-                                       CSettings::SETTING_VIDEOPLAYER_USEDECODERFILTER,
-                                       CSettings::SETTING_AUDIOOUTPUT_VOLUMESTEPS,
-                                       CSettings::SETTING_SOURCE_VIDEOS,
-                                       CSettings::SETTING_SOURCE_MUSIC,
-                                       CSettings::SETTING_SOURCE_PICTURES,
-                                       CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN});
+  settingsMgr->RegisterCallback(this, {
+                                          CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH,
+                                          CSettings::SETTING_LOOKANDFEEL_SKIN,
+                                          CSettings::SETTING_LOOKANDFEEL_SKINSETTINGS,
+                                          CSettings::SETTING_LOOKANDFEEL_FONT,
+                                          CSettings::SETTING_LOOKANDFEEL_SKINTHEME,
+                                          CSettings::SETTING_LOOKANDFEEL_SKINCOLORS,
+                                          CSettings::SETTING_LOOKANDFEEL_SKINZOOM,
+                                          CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP,
+                                          CSettings::SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP,
+                                          CSettings::SETTING_MUSICPLAYER_REPLAYGAINTYPE,
+                                          CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING,
+                                          CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT,
+                                          CSettings::SETTING_SCREENSAVER_MODE,
+                                          CSettings::SETTING_SCREENSAVER_PREVIEW,
+                                          CSettings::SETTING_SCREENSAVER_SETTINGS,
+                                          CSettings::SETTING_AUDIOCDS_SETTINGS,
+                                          CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION,
+                                          CSettings::SETTING_VIDEOSCREEN_TESTPATTERN,
+                                          CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC,
+                                          CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE,
+                                          CSettings::SETTING_VIDEOPLAYER_USEDECODERFILTER,
+                                          CSettings::SETTING_AUDIOOUTPUT_VOLUMESTEPS,
+                                          CSettings::SETTING_SOURCE_VIDEOS,
+                                          CSettings::SETTING_SOURCE_MUSIC,
+                                          CSettings::SETTING_SOURCE_PICTURES,
+                                          CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN,
+                                          CSettings::SETTING_VIDEOLIBRARY_FLATTENVERSIONS,
+                                      });
 
   auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
@@ -136,6 +141,15 @@ void CApplicationSettingsHandling::OnSettingChanged(const std::shared_ptr<const 
   else if (settingId == CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH)
   {
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_RESTART);
+  }
+  else if (settingId == CSettings::SETTING_VIDEOLIBRARY_FLATTENVERSIONS)
+  {
+    // Versions flattening happens in the database, before caching the items list
+    // Toggling flattening mode requires removal of obsolete cache files in order for the media
+    // window to refresh and display according to the new mode.
+    CUtil::DeleteVideoDatabaseDirectoryCache();
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
+    CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
   }
 }
 

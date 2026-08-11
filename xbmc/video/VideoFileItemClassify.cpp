@@ -139,6 +139,7 @@ bool IsVideoAssetFile(const CFileItem& item)
     return false;
 
   // @todo better encoding of video assets as path, they won't always be tied with movies.
+  // Info can also be retrieved with CVideoDbUrl::FromString but less efficient
   const CURL url{item.GetPath()};
   return (url.HasOption("videoversionid") || url.HasOption("assetType"));
 }
