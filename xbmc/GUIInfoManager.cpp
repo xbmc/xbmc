@@ -8061,7 +8061,7 @@ constexpr std::array<InfoMap, 4> fanart_labels = {{
 ///                  _boolean_,
 ///     @param setting - the requested skin setting
 ///     @return **True** if the requested skin setting is true\, false otherwise.
-///     @sa \link Skin_SetBool `Skin.SetBool(setting[\,value])`
+///     @sa \link Skin_SetBool `Skin.SetBool(setting[\,value])`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`Skin.String(setting)`</b>,
@@ -9964,7 +9964,7 @@ constexpr std::array<InfoMap, 45> rds = {{
 ///       - <b>"Colour"</b>
 ///       - <b>"Black and White"</b>
 ///     <p>
-///     @deprecated Slideshow_Colour `Slideshow.Colour`\endlink is deprecated and will be removed in future Kodi versions
+///     @deprecated \link Slideshow_Colour `Slideshow.Colour`\endlink is deprecated and will be removed in future Kodi versions
 ///     <p><hr>
 ///     @skinning_v13 **[New Infolabel]** \link Slideshow_Colour `Slideshow.Colour`\endlink
 ///     <p>
