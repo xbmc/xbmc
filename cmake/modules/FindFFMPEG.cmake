@@ -111,6 +111,13 @@ macro(buildFFMPEG)
                                         --win10=${win10})
     set(INSTALL_COMMAND ${CMAKE_COMMAND} -E true)
 
+    foreach(_ffmpeg_pkg IN ITEMS ${FFMPEG_PKGS})
+      string(REGEX REPLACE "[>]?=.*" "" _libname ${_ffmpeg_pkg})
+      string(REGEX REPLACE "^lib" "" _name ${_libname})
+      list(APPEND _ffmpeg_byproducts ${MINGW_LIBS_DIR}/lib/${_name}.lib)
+    endforeach()
+    set(BUILD_BYPRODUCTS ${_ffmpeg_byproducts})
+
     BUILD_DEP_TARGET()
 
     set(FFMPEG_INCLUDE_DIRS ${MINGW_LIBS_DIR}/include)
@@ -265,7 +272,7 @@ macro(buildFFMPEG)
                                                 INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIRS}")
 
       if(WIN32 OR WINDOWS_STORE)
-        string(REPLACE "lib" "" name ${_libname})
+        string(REGEX REPLACE "^lib" "" name ${_libname})
         set_target_properties(ffmpeg::${_libname} PROPERTIES
                                                   IMPORTED_LOCATION "${MINGW_LIBS_DIR}/lib/${name}.lib")
       endif()

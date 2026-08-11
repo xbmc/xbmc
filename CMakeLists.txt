@@ -390,10 +390,10 @@ endif()
 if(WIN32)
   configure_file(${CMAKE_SOURCE_DIR}/xbmc/platform/win32/XBMC_PC.rc.in
                  ${CORE_BUILD_DIR}/xbmc/platform/win32/XBMC_PC.rc @ONLY)
-  add_library(resources OBJECT ${CORE_BUILD_DIR}/xbmc/platform/win32/XBMC_PC.rc)
-  set_target_properties(resources PROPERTIES FOLDER "Build Utilities")
-  target_include_directories(resources PRIVATE ${CMAKE_SOURCE_DIR}/tools/windows/packaging/media)
-  set(RESOURCES $<TARGET_OBJECTS:resources>)
+  add_library(windows_resources OBJECT ${CORE_BUILD_DIR}/xbmc/platform/win32/XBMC_PC.rc)
+  set_target_properties(windows_resources PROPERTIES FOLDER "Build Utilities")
+  target_include_directories(windows_resources PRIVATE ${CMAKE_SOURCE_DIR}/tools/windows/packaging/media)
+  set(RESOURCES $<TARGET_OBJECTS:windows_resources>)
 endif()
 
 # Generate messages
