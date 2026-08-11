@@ -8316,6 +8316,16 @@ constexpr std::array<InfoMap, 9> window_bools = {{
 /// \subsection modules__infolabels_boolean_conditions_Control Control
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`ControlGroup(id).HasFocus(controlid)`</b>,
+///                  \anchor ControlGroup_HasFocus
+///                  _boolean_,
+///     @return **True** if the group with id "id" has focus. If "controlid" is
+///     given\, **True** if that control is the one currently selected in the
+///     group instead.
+///     @param id - The id of the group
+///     @param controlid - The id of a control in the group (optional)
+///     <p>
+///   }
 ///   \table_row3{   <b>`Control.HasFocus(id)`</b>,
 ///                  \anchor Control_HasFocus
 ///                  _boolean_,
