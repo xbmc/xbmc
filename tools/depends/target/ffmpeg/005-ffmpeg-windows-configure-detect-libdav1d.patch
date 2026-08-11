@@ -1,4 +1,4 @@
-From e394774a4353d6a7a7331be5d0bff56bc2017479 Mon Sep 17 00:00:00 2001
+From 1baf36ef9294518dbd4f444f74058ec77f9f476e Mon Sep 17 00:00:00 2001
 From: Lukas Rusak <lorusak@gmail.com>
 Date: Sat, 10 Apr 2021 08:19:27 -0700
 Subject: [PATCH] ffmpeg: windows: configure: detect libdav1d
@@ -8,11 +8,11 @@ Subject: [PATCH] ffmpeg: windows: configure: detect libdav1d
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/configure b/configure
-index e00e3a8c96..a5942dc086 100755
+index 4b0ddd9b11..189a8d0b60 100755
 --- a/configure
 +++ b/configure
-@@ -7256,7 +7256,7 @@ enabled libcelt           && require libcelt celt/celt.h celt_decode -lcelt0 &&
-                                die "ERROR: libcelt must be installed and version must be >= 0.11.0."; }
+@@ -7339,7 +7339,7 @@ enabled libbluray         && require_pkg_config libbluray libbluray libbluray/bl
+ enabled libbs2b           && require_pkg_config libbs2b libbs2b bs2b.h bs2b_open
  enabled libcaca           && require_pkg_config libcaca caca caca.h caca_create_canvas
  enabled libcodec2         && require libcodec2 codec2/codec2.h codec2_create -lcodec2
 -enabled libdav1d          && require_pkg_config libdav1d "dav1d >= 1.0.0" "dav1d/dav1d.h" dav1d_version

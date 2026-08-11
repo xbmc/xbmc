@@ -23,6 +23,10 @@ if(CROSSCOMPILING)
                           --ar=${CMAKE_AR}
                           --ranlib=${CMAKE_RANLIB}
                           --strip=${CMAKE_STRIP}
+                          --host-cc=${CC_FOR_BUILD}
+                          --host-ld=${CC_FOR_BUILD}
+                          "--host-cflags=${CFLAGS_FOR_BUILD}"
+                          "--host-ldflags=${LDFLAGS_FOR_BUILD}"
               )
 
   message(STATUS "CROSS: ${ffmpeg_conf}")

@@ -1,17 +1,17 @@
-From 7dc382761de805f9b8bea1a4ec2535f19be20623 Mon Sep 17 00:00:00 2001
+From 63f7ee999208c06bb8d72e955ded71024b0a85e5 Mon Sep 17 00:00:00 2001
 From: Lukas Rusak <lorusak@gmail.com>
 Date: Sat, 10 Apr 2021 08:16:48 -0700
-Subject: [PATCH 2/4] ffmpeg: windows: configure: fix zlib conflict
+Subject: [PATCH] ffmpeg: windows: configure: fix zlib conflict
 
 ---
  configure | 3 +++
  1 file changed, 3 insertions(+)
 
 diff --git a/configure b/configure
-index 176ffac998..ab1c0e1e78 100755
+index 3a5671a7f0..ad7a945f2c 100755
 --- a/configure
 +++ b/configure
-@@ -8737,6 +8737,9 @@ print_config HAVE_   "$config_files" $HAVE_LIST
+@@ -8822,6 +8822,9 @@ print_config HAVE_   "$config_files" $HAVE_LIST
  print_config CONFIG_ "$config_files" $CONFIG_LIST       \
                                       $CONFIG_EXTRA      \
  
