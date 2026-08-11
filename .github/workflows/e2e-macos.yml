@@ -90,6 +90,13 @@ jobs:
       # restore, so the correct relative ordering (sources older than stamps) comes
       # back automatically, for anything currently in the tree and anything added to
       # it later.
+      #
+      # Each recipe's <platform>/ build directory is excluded - extracted sources and
+      # object files, which nothing reads once the recipe is installed. The trailing
+      # slash restricts the exclusion to directories, keeping the sibling
+      # .installed-<platform> stamps that tell make the recipe is done; without it the
+      # stamps match too and every recipe rebuilds. The tarball directory stays cached
+      # so that a recipe forced to rebuild re-extracts rather than re-downloading.
       - name: Restore Kodi dependencies cache (tools/depends)
         id: depends-cache
         uses: actions/cache/restore@v6
@@ -97,6 +104,8 @@ jobs:
           path: |
             /Users/Shared/xbmc-depends
             tools/depends
+            !tools/depends/native/*/*/
+            !tools/depends/target/*/*/
           key: macos-${{ runner.arch }}-depends-${{ steps.depends-key.outputs.hash }}
 
       # Secondary cache: speeds up rebuilding xbmc/ core sources across commits even
@@ -189,6 +198,8 @@ jobs:
           path: |
             /Users/Shared/xbmc-depends
             tools/depends
+            !tools/depends/native/*/*/
+            !tools/depends/target/*/*/
           key: macos-${{ runner.arch }}-depends-${{ steps.depends-key.outputs.hash }}
 
       - name: Save ccache

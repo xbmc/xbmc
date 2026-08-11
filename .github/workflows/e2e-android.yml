@@ -96,6 +96,13 @@ jobs:
       # correct, and it rebuilds only when the depends recipes change.
       # Cross-compiling ffmpeg, python3 and the rest of the Android dependency stack
       # is the single biggest time cost in this job.
+      #
+      # Each recipe's <platform>/ build directory is excluded - extracted sources and
+      # object files, which nothing reads once the recipe is installed. The trailing
+      # slash restricts the exclusion to directories, keeping the sibling
+      # .installed-<platform> stamps that tell make the recipe is done; without it the
+      # stamps match too and every recipe rebuilds. The tarball directory stays cached
+      # so that a recipe forced to rebuild re-extracts rather than re-downloading.
       - name: Restore Kodi dependencies cache (tools/depends)
         id: depends-cache
         uses: actions/cache/restore@v6
@@ -103,6 +110,8 @@ jobs:
           path: |
             ${{ env.DEPENDS_PREFIX }}
             tools/depends
+            !tools/depends/native/*/*/
+            !tools/depends/target/*/*/
           key: android-${{ runner.arch }}-depends-${{ steps.depends-key.outputs.hash }}
 
       - name: Restore ccache
@@ -248,6 +257,8 @@ jobs:
           path: |
             ${{ env.DEPENDS_PREFIX }}
             tools/depends
+            !tools/depends/native/*/*/
+            !tools/depends/target/*/*/
           key: android-${{ runner.arch }}-depends-${{ steps.depends-key.outputs.hash }}
 
       - name: Save ccache
