@@ -213,8 +213,12 @@ jobs:
           echo "dir=$dir" >> "$GITHUB_OUTPUT"
           echo "log=$log" >> "$GITHUB_OUTPUT"
 
+      # Skipped when the profile did not resolve (the app was never installed, e.g. the
+      # build failed): upload-artifact takes `path` as a required input, so an empty
+      # string fails the step with "Input required and not supplied: path" before
+      # if-no-files-found: warn can apply.
       - name: Upload Kodi log
-        if: always()
+        if: always() && steps.profile.outputs.log != ''
         uses: actions/upload-artifact@v7
         with:
           name: kodi-${{ matrix.platform }}-log
@@ -222,7 +226,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Upload screenshot
-        if: always()
+        if: always() && steps.profile.outputs.dir != ''
         uses: actions/upload-artifact@v7
         with:
           name: kodi-${{ matrix.platform }}-screenshot
