@@ -18,9 +18,11 @@
 #include "URL.h"
 #include "VideoDatabase.h"
 #include "dbwrappers/dataset.h"
+#include "filesystem/File.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "utils/DiscsUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/i18n/TableLanguageCodes.h"
@@ -1425,9 +1427,319 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->exec("ALTER TABLE streamdetails ADD iSource INTEGER DEFAULT 40");
     m_pDS->exec("ALTER TABLE streamdetails ADD iVersion INTEGER DEFAULT 1");
   }
+
+  if (iVersion < 149)
+  {
+    // A title on a bluray was recorded under the disc's own index (index.bdmv, or the image
+    // holding one), which every title on that disc shared. Each is moved to a select entry of its
+    // own - select for a movie and select-<season>-<episode> per episode - so that a title has a
+    // file, and so a bookmark, stream details and a play count, that belong to it alone.
+    // Episodes already played have a playlist of their own and so no longer share the index entry;
+    // it survives only while at least one title still refers to it, so those still found here are
+    // exactly the ones left to convert.
+    constexpr int LOCAL_VIDEODB_ID_PARENTPATHID = 23;
+    constexpr int LOCAL_VIDEODB_ID_EPISODE_SEASON = 12;
+    constexpr int LOCAL_VIDEODB_ID_EPISODE_EPISODE = 13;
+    constexpr int LOCAL_VIDEODB_ID_EPISODE_BOOKMARK = 17;
+    constexpr int LOCAL_VIDEODB_ID_EPISODE_PARENTPATHID = 19;
+
+    std::map<std::string, int> pathMap;
+    std::map<int, std::string> vacatedPaths;
+
+    // The path a select entry belongs under, adding it if the library hasn't got one yet
+    auto GetSelectPathId{
+        [&](const std::string& playlistPath)
+        {
+          if (const auto it{pathMap.find(playlistPath)}; it != pathMap.end())
+            return it->second;
+
+          int idPath{-1};
+          m_pDS2->query(
+              PrepareSQL("SELECT idPath FROM path WHERE strPath = '%s'", playlistPath.c_str()));
+          if (!m_pDS2->eof())
+            idPath = m_pDS2->fv(0).get_asInt();
+          m_pDS2->close();
+
+          if (idPath < 0)
+          {
+            // Held as AddPath holds it, so that a converted entry's path is indistinguishable
+            // from one a scan would have made - the parent is recorded only where the library
+            // already has it, and is never added on its behalf
+            int idParentPath{-1};
+            if (const std::string parentPath{URIUtils::GetParentPath(playlistPath)};
+                !parentPath.empty())
+            {
+              m_pDS2->query(
+                  PrepareSQL("SELECT idPath FROM path WHERE strPath = '%s'", parentPath.c_str()));
+              if (!m_pDS2->eof())
+                idParentPath = m_pDS2->fv(0).get_asInt();
+              m_pDS2->close();
+            }
+
+            if (idParentPath >= 0)
+              m_pDS2->exec(PrepareSQL("INSERT INTO path (idPath, strPath, idParentPath) VALUES "
+                                      "(NULL, '%s', %i)",
+                                      playlistPath.c_str(), idParentPath));
+            else
+              m_pDS2->exec(PrepareSQL("INSERT INTO path (idPath, strPath) VALUES (NULL, '%s')",
+                                      playlistPath.c_str()));
+            idPath = static_cast<int>(m_pDS2->lastinsertid());
+          }
+
+          pathMap[playlistPath] = idPath;
+          return idPath;
+        }};
+
+    // The file already sitting where a select entry would go, or -1 where the way is clear. A
+    // select name belongs to the one title, so a file already holding it is that title and is
+    // used rather than a duplicate being created.
+    auto SelectFileTakenBy{[&](int idPath, const std::string& fileName, int idFile)
+                           {
+                             const int existing{GetSingleValueInt(
+                                 PrepareSQL("SELECT idFile FROM files WHERE idPath = %i AND "
+                                            "strFileName = '%s'",
+                                            idPath, fileName.c_str()))};
+                             return existing > 0 && existing != idFile ? existing : -1;
+                           }};
+
+    // The file naming the bluray a library entry sits on, empty when the entry doesn't name one
+    auto GetDiscFile{
+        [](const std::string& path, const std::string& fileName)
+        {
+          const std::string file{URIUtils::AddFileToFolder(path, fileName)};
+          if (URIUtils::IsBDFile(file))
+            return file;
+
+          // An image has to be read to tell what it holds, and one holding no bluray - a DVD, as
+          // a rule - is left alone with nothing to say about it.
+          if (URIUtils::IsDiscImage(file))
+          {
+            if (UTILS::DISCS::IsBlurayDiscImage(file))
+              return file;
+
+            // Reading it needs the media to hand, so an image on a share that is offline while
+            // the library is upgraded cannot be told apart from one holding no bluray, and is
+            // left as it is. The entry still names the image and so still plays, but the titles
+            // on it keep sharing the one entry, and as the upgrade runs once it is never looked
+            // at again - hence the warning naming what was passed over.
+            if (!XFILE::CFile::Exists(file))
+              CLog::LogF(LOGWARNING,
+                         "Leaving {} as it is, as it could not be read to tell whether it holds a "
+                         "bluray",
+                         CURL::GetRedacted(file));
+          }
+
+          return std::string{};
+        }};
+
+    // The path and name a title on a disc is held under, until a playlist has been chosen for it
+    auto SplitSelectPath{[](const std::string& discFile, int season, int episode,
+                            std::string& selectPath, std::string& selectFile)
+                         {
+                           URIUtils::Split(URIUtils::GetBluraySelectPath(discFile, season, episode),
+                                           selectPath, selectFile);
+                         }};
+
+    // Episodes first, as a disc entry shared by several of them is split rather than renamed
+    m_pDS->query("SELECT DISTINCT f.idFile, f.idPath, p.strPath, f.strFileName, f.dateAdded "
+                 "FROM files AS f "
+                 "JOIN path AS p ON f.idPath = p.idPath "
+                 "JOIN episode AS e ON e.idFile = f.idFile");
+    std::vector<std::tuple<int, int, std::string, std::string, std::string>> episodeFiles;
+    while (!m_pDS->eof())
+    {
+      episodeFiles.emplace_back(m_pDS->fv(0).get_asInt(), m_pDS->fv(1).get_asInt(),
+                                m_pDS->fv(2).get_asString(), m_pDS->fv(3).get_asString(),
+                                m_pDS->fv(4).get_asString());
+      m_pDS->next();
+    }
+    m_pDS->close();
+
+    for (const auto& [idFile, idOldPath, path, fileName, dateAdded] : episodeFiles)
+    {
+      const std::string discFile{GetDiscFile(path, fileName)};
+      if (discFile.empty())
+        continue;
+
+      m_pDS->query(PrepareSQL("SELECT idEpisode, c%02d, c%02d FROM episode WHERE idFile = %i "
+                              "ORDER BY CAST(c%02d AS integer), CAST(c%02d AS integer)",
+                              LOCAL_VIDEODB_ID_EPISODE_SEASON, LOCAL_VIDEODB_ID_EPISODE_EPISODE,
+                              idFile, LOCAL_VIDEODB_ID_EPISODE_SEASON,
+                              LOCAL_VIDEODB_ID_EPISODE_EPISODE));
+      std::vector<std::tuple<int, int, int>> episodes;
+      while (!m_pDS->eof())
+      {
+        episodes.emplace_back(m_pDS->fv(0).get_asInt(), m_pDS->fv(1).get_asInt(),
+                              m_pDS->fv(2).get_asInt());
+        m_pDS->next();
+      }
+      m_pDS->close();
+
+      // Everything the entry holds of what has been watched and what the disc looks like
+      auto DropFileState{
+          [&](int id)
+          {
+            m_pDS2->exec(PrepareSQL("DELETE FROM bookmark WHERE idFile = %i", id));
+            m_pDS2->exec(PrepareSQL("DELETE FROM settings WHERE idFile = %i", id));
+            m_pDS2->exec(PrepareSQL("DELETE FROM streamdetails WHERE idFile = %i", id));
+            m_pDS2->exec(PrepareSQL("DELETE FROM stacktimes WHERE idFile = %i", id));
+            m_pDS2->exec(PrepareSQL("UPDATE files SET playCount = NULL, "
+                                    "lastPlayed = NULL WHERE idFile = %i",
+                                    id));
+          }};
+
+      bool first{true};
+      for (const auto& [idEpisode, season, episode] : episodes)
+      {
+        std::string selectPath;
+        std::string fileNameNew;
+        SplitSelectPath(discFile, season, episode, selectPath, fileNameNew);
+
+        const int idPath{GetSelectPathId(selectPath)};
+        if (idPath < 0)
+          continue;
+
+        // The episode's own file is already there, so it is moved onto it rather than the entry
+        // being split into a name that is spoken for. Leaving it where it is would hand it to
+        // whichever episode goes on to rename the shared entry.
+        if (const int existing{SelectFileTakenBy(idPath, fileNameNew, idFile)}; existing > 0)
+        {
+          CLog::LogF(LOGDEBUG, "Moving episode {} of file {} to file {}, which already holds {}",
+                     idEpisode, idFile, existing, fileNameNew);
+          m_pDS2->exec(PrepareSQL("UPDATE episode SET idFile = %i WHERE idEpisode = %i", existing,
+                                  idEpisode));
+          continue;
+        }
+
+        if (first)
+        {
+          // The entry itself becomes the first episode, so that an idFile anything outside the
+          // library may have recorded still names something
+          m_pDS2->exec(PrepareSQL("UPDATE files SET idPath = %i, strFileName = '%s' WHERE "
+                                  "idFile = %i",
+                                  idPath, fileNameNew.c_str(), idFile));
+          vacatedPaths.try_emplace(idOldPath, path);
+          first = false;
+        }
+        else
+        {
+          m_pDS2->exec(PrepareSQL("INSERT INTO files (idFile, idPath, strFileName, dateAdded) "
+                                  "VALUES (NULL, %i, '%s', '%s')",
+                                  idPath, fileNameNew.c_str(), dateAdded.c_str()));
+          m_pDS2->exec(PrepareSQL("UPDATE episode SET idFile = %i WHERE idEpisode = %i",
+                                  static_cast<int>(m_pDS2->lastinsertid()), idEpisode));
+        }
+      }
+
+      const bool inUse{
+          GetSingleValueInt(PrepareSQL("SELECT COUNT(1) FROM episode WHERE idFile = %i", idFile)) >
+              0 ||
+          GetSingleValueInt(PrepareSQL("SELECT COUNT(1) FROM movie WHERE idFile = %i", idFile)) >
+              0 ||
+          GetSingleValueInt(
+              PrepareSQL("SELECT COUNT(1) FROM videoversion WHERE idFile = %i", idFile)) > 0};
+
+      if (!inUse)
+      {
+        // Every episode went onto a file of its own elsewhere, so the entry names the disc and
+        // nothing else. It is dropped rather than left behind as an index nothing refers to,
+        // taking what it held with it.
+        DropFileState(idFile);
+        m_pDS2->exec(PrepareSQL("DELETE FROM files WHERE idFile = %i", idFile));
+        vacatedPaths.try_emplace(idOldPath, path);
+      }
+      else if (episodes.size() > 1 && !first)
+      {
+        // Several episodes shared the entry, so what it held was recorded against the disc rather
+        // than any one title on it and can't be said to belong to an episode. It is dropped, the
+        // episode bookmarks with it, as each episode is now a title in its own right rather than
+        // an offset into a shared one.
+        // A disc holding a single episode is that episode, so there is nothing to tell apart and
+        // its bookmark, play count and stream details are kept, just as a movie's are - the entry
+        // is only renamed.
+        DropFileState(idFile);
+        for (const auto& idEpisode : episodes | std::views::elements<0>)
+          m_pDS2->exec(PrepareSQL("UPDATE episode SET c%02d = '-1' WHERE idEpisode = %i",
+                                  LOCAL_VIDEODB_ID_EPISODE_BOOKMARK, idEpisode));
+      }
+    }
+
+    // Movies, where the entry belongs to the one title and so is simply renamed. The movie itself
+    // is taken before any extra of it, as both would want the disc's plain select name and only
+    // the first to ask can have it.
+    m_pDS->query(
+        "SELECT DISTINCT f.idFile, f.idPath, p.strPath, f.strFileName, "
+        "CASE WHEN f.idFile IN (SELECT idFile FROM movie) THEN 0 ELSE 1 END AS isMovie "
+        "FROM files AS f "
+        "JOIN path AS p ON f.idPath = p.idPath "
+        "WHERE f.idFile IN (SELECT idFile FROM movie UNION SELECT idFile FROM videoversion) "
+        "AND f.idFile NOT IN (SELECT idFile FROM episode) "
+        "ORDER BY isMovie, f.idFile");
+    std::vector<std::tuple<int, int, std::string, std::string>> movieFiles;
+    while (!m_pDS->eof())
+    {
+      movieFiles.emplace_back(m_pDS->fv(0).get_asInt(), m_pDS->fv(1).get_asInt(),
+                              m_pDS->fv(2).get_asString(), m_pDS->fv(3).get_asString());
+      m_pDS->next();
+    }
+    m_pDS->close();
+
+    for (const auto& [idFile, idOldPath, path, fileName] : movieFiles)
+    {
+      const std::string discFile{GetDiscFile(path, fileName)};
+      if (discFile.empty())
+        continue;
+
+      std::string selectPath;
+      std::string fileNameNew;
+      SplitSelectPath(discFile, -1, -1, selectPath, fileNameNew);
+
+      const int idPath{GetSelectPathId(selectPath)};
+      if (idPath < 0)
+        continue;
+
+      if (SelectFileTakenBy(idPath, fileNameNew, idFile) > 0)
+      {
+        CLog::LogF(LOGWARNING, "Not converting file {}, as {} is already taken", idFile,
+                   fileNameNew);
+        continue;
+      }
+
+      m_pDS2->exec(PrepareSQL("UPDATE files SET idPath = %i, strFileName = '%s' WHERE idFile = %i",
+                              idPath, fileNameNew.c_str(), idFile));
+      vacatedPaths.try_emplace(idOldPath, path);
+    }
+
+    // The entries have moved to bluray:// paths, leaving the disc's own BDMV folder holding
+    // nothing. A scan of the same library from scratch never creates one, so it is removed - but
+    // only where nothing at all still refers to it. The folder holding a disc image is an ordinary
+    // library folder, which a scan does create, so that is left alone.
+    for (const auto& [idPath, path] : vacatedPaths)
+    {
+      std::string folder{path};
+      URIUtils::RemoveSlashAtEnd(folder);
+      folder = URIUtils::GetFileName(folder);
+      if (!StringUtils::EqualsNoCase(folder, "BDMV"))
+        continue;
+
+      if (GetSingleValueInt(PrepareSQL("SELECT COUNT(1) FROM files WHERE idPath = %i", idPath)) >
+              0 ||
+          GetSingleValueInt(
+              PrepareSQL("SELECT COUNT(1) FROM path WHERE idParentPath = %i", idPath)) > 0 ||
+          GetSingleValueInt(
+              PrepareSQL("SELECT COUNT(1) FROM tvshowlinkpath WHERE idPath = %i", idPath)) > 0 ||
+          GetSingleValueInt(PrepareSQL("SELECT COUNT(1) FROM movie WHERE c%02d = %i",
+                                       LOCAL_VIDEODB_ID_PARENTPATHID, idPath)) > 0 ||
+          GetSingleValueInt(PrepareSQL("SELECT COUNT(1) FROM episode WHERE c%02d = %i",
+                                       LOCAL_VIDEODB_ID_EPISODE_PARENTPATHID, idPath)) > 0)
+        continue;
+
+      m_pDS2->exec(PrepareSQL("DELETE FROM path WHERE idPath = %i", idPath));
+    }
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 148;
+  return 149;
 }
