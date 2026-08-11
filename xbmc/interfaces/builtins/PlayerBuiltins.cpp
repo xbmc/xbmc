@@ -790,6 +790,12 @@ static int SubtitleShiftDown(const std::vector<std::string>& params)
 ///     @param[in] param                 "restart" to play from the beginning instead of resuming (optional)
 ///   }
 ///   \table_row2_l{
+///     <b>`PlayPlaylist`</b>
+///     ,
+///     Play the disc in the drive\, asking which playlist to use rather than
+///     starting the main title. Intended for Blu-ray discs.
+///   }
+///   \table_row2_l{
 ///     <b>`PlayerControl(control[\,param])`</b>
 ///     ,
 ///     Allows control of music and videos. <br>
@@ -822,8 +828,6 @@ static int SubtitleShiftDown(const std::vector<std::string>& params)
 ///     | Partymode(path to .xsp) | Partymode for *.xsp-file               | Partymode for *.xsp-file    |             |
 ///     | ShowVideoMenu           | Shows the DVD/BR menu if available     | none                        |             |
 ///     | FrameAdvance(n) ***     | Advance video by _n_ frames            | none                        | Kodi v18    |
-///     | SubtitleShiftUp(save)   | Shift up the subtitle position\, add "save" to save the change permanently    | none | Kodi v20 |
-///     | SubtitleShiftDown(save) | Shift down the subtitle position\, add "save" to save the change permanently  | none | Kodi v20 |
 ///     <br>
 ///     '*' = For these controls\, the PlayerControl built-in function can make use of the 'notify'-parameter. For example: PlayerControl(random\, notify)
 ///     <br>
@@ -870,6 +874,18 @@ static int SubtitleShiftDown(const std::vector<std::string>& params)
 ///     ,
 ///     Play the selected item with the specified player core.
 ///     @param[in] core                  Name of playback core.
+///   }
+///   \table_row2_l{
+///     <b>`SubtitleShiftUp([save])`</b>
+///     ,
+///     Shift the subtitle position up.
+///     @param[in] save                  "save" to keep the change permanently (optional)
+///   }
+///   \table_row2_l{
+///     <b>`SubtitleShiftDown([save])`</b>
+///     ,
+///     Shift the subtitle position down.
+///     @param[in] save                  "save" to keep the change permanently (optional)
 ///   }
 ///   \table_row2_l{
 ///     <b>`Seek(seconds)`</b>
