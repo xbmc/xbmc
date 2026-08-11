@@ -5465,15 +5465,20 @@ bool CVideoDatabase::GetArtForAsset(int assetId,
     m_pDS2->query(sql);
     while (!m_pDS2->eof())
     {
-      if (m_pDS2->fv(0).get_asString() == MediaTypeVideoVersion)
+      const std::string mediaType{m_pDS2->fv(0).get_asString()};
+      std::string key{m_pDS2->fv(1).get_asString()};
+      std::string artUrl{m_pDS2->fv(2).get_asString()};
+
+      if (mediaType == MediaTypeVideoVersion)
       {
         // version data has priority over owner's data
-        art[m_pDS2->fv(1).get_asString()] = m_pDS2->fv(2).get_asString();
+        if (!artUrl.empty())
+          art.insert_or_assign(std::move(key), std::move(artUrl));
       }
       else if (fallback == ArtFallbackOptions::PARENT)
       {
         // insert if not yet present
-        art.try_emplace(m_pDS2->fv(1).get_asString(), m_pDS2->fv(2).get_asString());
+        art.try_emplace(std::move(key), std::move(artUrl));
       }
       m_pDS2->next();
     }
