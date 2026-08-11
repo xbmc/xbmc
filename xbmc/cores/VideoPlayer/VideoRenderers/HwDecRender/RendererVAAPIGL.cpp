@@ -71,6 +71,8 @@ CRendererVAAPIGL::~CRendererVAAPIGL()
   {
     DeleteTexture(i);
   }
+  // renderer destruction runs on the render thread with the GL context current
+  m_texturePool.ReleaseAll();
 }
 
 bool CRendererVAAPIGL::Configure(const VideoPicture& picture, float fps, unsigned int orientation)

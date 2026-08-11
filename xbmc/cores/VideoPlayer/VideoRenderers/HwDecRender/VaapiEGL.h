@@ -11,8 +11,6 @@
 #include "cores/VideoPlayer/Buffers/DmaBufIdentityCache.h"
 #include "utils/Geometry.h"
 
-#include "platform/posix/utils/FileHandle.h"
-
 #include <array>
 #include <cstdint>
 #include <memory>
@@ -83,7 +81,6 @@ private:
   InteropInfo m_interop;
   bool m_hasPlaneModifiers{false};
   bool m_imported{false};
-  std::array<KODI::UTILS::POSIX::CFileHandle, 4> m_drmFDs;
   MappedTexture m_y, m_vu;
   CSizeInt m_textureSize;
 };
@@ -94,8 +91,6 @@ class CVaapiTexturePool
 public:
   // must exceed the largest VAAPI surface pool (AV1: 27) or cycling evicts every frame
   static constexpr size_t MAX_ENTRIES = 32;
-
-  ~CVaapiTexturePool() { ReleaseAll(); }
 
   void Init(InteropInfo& interop);
   //! \brief Imported texture for the picture's surface dma-buf; nullptr on export or import failure.

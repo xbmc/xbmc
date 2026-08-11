@@ -12,6 +12,8 @@
 #include "utils/EGLUtils.h"
 #include "utils/log.h"
 
+#include "platform/posix/utils/FileHandle.h"
+
 #include <algorithm>
 
 #include <drm_fourcc.h>
@@ -54,10 +56,10 @@ bool CVaapi2Texture::Import(CVaapiRenderPicture* pic)
     return failImport();
   }
 
-  // Take ownership of the exported fds (RAII closes them on Reset). num_objects
-  // is bounded by the libva descriptor's fixed objects[] array == m_drmFDs.size().
-  for (uint32_t object = 0; object < surface.num_objects && object < m_drmFDs.size(); object++)
-    m_drmFDs[object].attach(surface.objects[object].fd);
+  // EGL takes its own dma-buf reference at import; the fds need not outlive this function
+  std::array<KODI::UTILS::POSIX::CFileHandle, 4> drmFDs;
+  for (uint32_t object = 0; object < surface.num_objects && object < drmFDs.size(); object++)
+    drmFDs[object].attach(surface.objects[object].fd);
 
   status = vaSyncSurface(pic->vadsp, pic->procPic.videoSurface);
   if (status != VA_STATUS_SUCCESS)
@@ -182,7 +184,6 @@ bool CVaapi2Texture::Import(CVaapiRenderPicture* pic)
 
 void CVaapi2Texture::Reset()
 {
-
   for (auto texture : {&m_y, &m_vu})
   {
     if (texture->eglImage != EGL_NO_IMAGE_KHR)
@@ -191,11 +192,6 @@ void CVaapi2Texture::Reset()
       texture->eglImage = EGL_NO_IMAGE_KHR;
       glDeleteTextures(1, &texture->glTexture);
     }
-  }
-
-  for (auto& fd : m_drmFDs)
-  {
-    fd.reset();
   }
 
   m_imported = false;
@@ -219,9 +215,11 @@ CSizeInt CVaapi2Texture::GetTextureSize()
 namespace
 {
 
-// separate-layers export: one plane per layer, keyed like the DRMPRIME path
+// separate-layers export: one plane per layer, keyed like the DRMPRIME path.
+// width/height are the picture dims because CVaapi2Texture::Import sizes the
+// EGL images from those, not from the aligned surface dims.
 std::optional<DRMPRIME::DmaBufIdentity> IdentityFromVaDescriptor(
-    const VADRMPRIMESurfaceDescriptor& surface)
+    const VADRMPRIMESurfaceDescriptor& surface, uint32_t width, uint32_t height)
 {
   if (surface.num_objects < 1 || surface.num_objects > AV_DRM_MAX_PLANES ||
       surface.num_layers < 1 || surface.num_layers > AV_DRM_MAX_PLANES)
@@ -236,8 +234,8 @@ std::optional<DRMPRIME::DmaBufIdentity> IdentityFromVaDescriptor(
     identity.modifier[i] = surface.objects[i].drm_format_modifier;
   }
 
-  identity.width = surface.width;
-  identity.height = surface.height;
+  identity.width = width;
+  identity.height = height;
   identity.format = surface.fourcc;
   identity.nbLayers = surface.num_layers;
   identity.nbPlanes = surface.num_layers;
@@ -273,7 +271,7 @@ CVaapi2Texture* CVaapiTexturePool::Get(CVaapiRenderPicture* pic,
   }
 
   // this export only identifies the memory; Import on a miss re-exports its own fds
-  const auto identity = IdentityFromVaDescriptor(surface);
+  const auto identity = IdentityFromVaDescriptor(surface, pic->DVDPic.iWidth, pic->DVDPic.iHeight);
   for (uint32_t i = 0; i < surface.num_objects; i++)
     close(surface.objects[i].fd);
   if (!identity)
