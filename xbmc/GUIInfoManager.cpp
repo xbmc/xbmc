@@ -2358,12 +2358,6 @@ constexpr std::array<InfoMap, 7> musicpartymode = {{
 ///     @param number - the offset number with respect to the start of the playlist
 ///     <p>
 ///   }
-///   \table_row3{   <b>`MusicPlayer.Property(Album_Mood)`</b>,
-///                  \anchor MusicPlayer_Property_Album_Mood
-///                  _string_,
-///     @return The moods of the currently playing Album
-///     <p>
-///   }
 ///   \table_row3{   <b>`MusicPlayer.Property(Role.Composer)`</b>,
 ///                  \anchor MusicPlayer_Property_Role_Composer
 ///                  _string_,
