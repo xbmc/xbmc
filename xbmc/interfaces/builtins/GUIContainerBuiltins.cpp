@@ -165,11 +165,6 @@ static int Update(const std::vector<std::string>& params)
 ///     @param[in] id                    ID of view mode.
 ///   }
 ///   \table_row2_l{
-///     <b>`Container.SortDirection`</b>
-///     ,
-///     Toggle the sort direction
-///   }
-///   \table_row2_l{
 ///     <b>`Container.Update(url\,[replace])`</b>
 ///     ,
 ///     Update current listing. Send `Container.Update(path\,replace)` to reset the path history.
