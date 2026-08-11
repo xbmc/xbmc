@@ -798,7 +798,10 @@ function(create_mesonbinaries)
   endif()
 
   if(PKG_CONFIG_EXECUTABLE)
-    list(APPEND binariespairs "pkg-config" "PKG_CONFIG_EXECUTABLE")
+    # Both names, because meson renamed this entry from "pkgconfig" to "pkg-config"
+    # in 1.2.0. Duplicates are accepted as long as the values match.
+    list(APPEND binariespairs "pkg-config" "PKG_CONFIG_EXECUTABLE"
+                              "pkgconfig" "PKG_CONFIG_EXECUTABLE")
   endif()
 
   # Get/set loop limit (Size - 1) from size of binariespairs list
