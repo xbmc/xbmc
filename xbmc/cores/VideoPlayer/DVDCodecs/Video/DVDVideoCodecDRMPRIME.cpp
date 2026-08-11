@@ -91,7 +91,7 @@ CDVDVideoCodecDRMPRIME::CDVDVideoCodecDRMPRIME(CProcessInfo& processInfo)
   : CDVDVideoCodec(processInfo)
 {
   m_pFrame = av_frame_alloc();
-  m_videoBufferPool = std::make_shared<CVideoBufferPoolDRMPRIMEFFmpeg>();
+  m_hwVideoBufferPool = std::make_shared<CVideoBufferPoolDRMPRIMEFFmpeg>();
 }
 
 CDVDVideoCodecDRMPRIME::~CDVDVideoCodecDRMPRIME()
@@ -266,7 +266,7 @@ int CDVDVideoCodecDRMPRIME::GetBuffer(struct AVCodecContext* avctx, AVFrame* fra
       ctx->m_swVideoBufferPool->Configure(avctx->pix_fmt, size);
     }
 
-    auto* buffer = static_cast<CVideoBufferDMA*>(ctx->m_swVideoBufferPool->Get());
+    CVideoBufferDMA* buffer = ctx->m_swVideoBufferPool->Get();
     if (!buffer)
       return -1;
 
@@ -651,8 +651,7 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecDRMPRIME::GetPicture(VideoPicture* pVideo
 
   if (IsSupportedHwFormat(static_cast<AVPixelFormat>(m_pFrame->format)))
   {
-    CVideoBufferDRMPRIMEFFmpeg* buffer =
-        dynamic_cast<CVideoBufferDRMPRIMEFFmpeg*>(m_videoBufferPool->Get());
+    CVideoBufferDRMPRIMEFFmpeg* buffer = m_hwVideoBufferPool->Get();
     buffer->SetPictureParams(*pVideoPicture);
     buffer->SetRef(m_pFrame);
     pVideoPicture->videoBuffer = buffer;

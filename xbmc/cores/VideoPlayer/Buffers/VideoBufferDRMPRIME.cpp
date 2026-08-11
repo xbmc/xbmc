@@ -91,7 +91,7 @@ CVideoBufferPoolDRMPRIMEFFmpeg::~CVideoBufferPoolDRMPRIMEFFmpeg()
     delete buf;
 }
 
-CVideoBuffer* CVideoBufferPoolDRMPRIMEFFmpeg::Get()
+CVideoBufferDRMPRIMEFFmpeg* CVideoBufferPoolDRMPRIMEFFmpeg::Get()
 {
   std::unique_lock lock(m_critSection);
 

@@ -15,6 +15,7 @@
 #include <memory>
 
 class CVideoBufferPoolDMA;
+class CVideoBufferPoolDRMPRIMEFFmpeg;
 
 class CDVDVideoCodecDRMPRIME : public CDVDVideoCodec
 {
@@ -46,6 +47,6 @@ protected:
   double m_DAR = 1.0;
   AVCodecContext* m_pCodecContext = nullptr;
   AVFrame* m_pFrame = nullptr;
-  std::shared_ptr<IVideoBufferPool> m_videoBufferPool;
+  std::shared_ptr<CVideoBufferPoolDRMPRIMEFFmpeg> m_hwVideoBufferPool;
   std::shared_ptr<CVideoBufferPoolDMA> m_swVideoBufferPool;
 };

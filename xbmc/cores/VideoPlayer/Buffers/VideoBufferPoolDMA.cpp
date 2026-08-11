@@ -29,7 +29,7 @@ CVideoBufferPoolDMA::~CVideoBufferPoolDMA()
     delete buf;
 }
 
-CVideoBuffer* CVideoBufferPoolDMA::Get()
+CVideoBufferDMA* CVideoBufferPoolDMA::Get()
 {
   std::unique_lock lock(m_critSection);
 

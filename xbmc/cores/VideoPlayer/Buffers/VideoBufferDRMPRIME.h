@@ -69,7 +69,7 @@ class CVideoBufferPoolDRMPRIMEFFmpeg : public IVideoBufferPool
 public:
   ~CVideoBufferPoolDRMPRIMEFFmpeg() override;
   void Return(int id) override;
-  CVideoBuffer* Get() override;
+  CVideoBufferDRMPRIMEFFmpeg* Get() override;
 
 protected:
   CCriticalSection m_critSection;
