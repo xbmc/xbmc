@@ -66,9 +66,12 @@ std::string FindTrailer(const CFileItem& item, KODI::REGEXP::RegExpCache* cache 
     strFile = URIUtils::AddFileToFolder(strParent, URIUtils::GetFileName(item.GetPath()));
   }
 
+  if (URIUtils::IsBlurayPath(strFile))
+    strFile = URIUtils::GetDiscFile(strFile);
+
   // no local trailer available for these
-  if (NETWORK::IsInternetStream(item) || URIUtils::IsUPnP(strFile) ||
-      URIUtils::IsBlurayPath(strFile) || item.IsLiveTV() || item.IsPlugin() || item.IsDVD())
+  if (NETWORK::IsInternetStream(item) || URIUtils::IsUPnP(strFile) || item.IsLiveTV() ||
+      item.IsPlugin() || item.IsDVD())
     return "";
 
   std::string strDir = URIUtils::GetDirectory(strFile);

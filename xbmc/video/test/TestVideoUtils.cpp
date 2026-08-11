@@ -83,6 +83,7 @@ TEST_P(TrailerTest, FindTrailer)
     EXPECT_FALSE(ec);
     XFILE::CDirectory::Create(temp_path);
     const std::string file_path = URIUtils::AddFileToFolder(temp_path, GetParam().second);
+    XFILE::CDirectory::Create(URIUtils::GetDirectory(file_path));
     {
       std::ofstream of(file_path);
     }
@@ -119,6 +120,8 @@ const auto trailer_tests = std::array{
     TrailerDef{"zip://#URLENCODED_DIRECTORY#bar.zip/bar.mkv", "movie-trailer.ogm"},
     TrailerDef{"#DIRECTORY#bar.mkv", "bar-trailer.mkv"},
     TrailerDef{"#DIRECTORY#bar.mkv", "movie-trailer.avi"},
+    TrailerDef{"bluray://#URLENCODED_DIRECTORY#/BDMV/PLAYLIST/00800.mpls",
+               "BDMV/index-trailer.mov"},
 };
 
 INSTANTIATE_TEST_SUITE_P(TestVideoUtils, TrailerTest, testing::ValuesIn(trailer_tests));

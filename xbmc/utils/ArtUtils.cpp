@@ -317,15 +317,20 @@ std::string GetLocalFanart(const CFileItem& item)
     file = url.GetHostName();
   }
 
+  if (URIUtils::IsBlurayPath(file))
+    file = URIUtils::GetDiscFile(file);
+
   // no local fanart available for these
-  if (NETWORK::IsInternetStream(item) || URIUtils::IsUPnP(file) || URIUtils::IsBlurayPath(file) ||
-      item.IsLiveTV() || item.IsPlugin() || item.IsAddonsPath() || item.IsDVD() ||
+  if (NETWORK::IsInternetStream(item) || URIUtils::IsUPnP(file) || item.IsLiveTV() ||
+      item.IsPlugin() || item.IsAddonsPath() || item.IsDVD() ||
       (URIUtils::IsFTP(file) &&
        !CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bFTPThumbs) ||
       item.GetPath().empty())
     return "";
 
-  const std::string dir{URIUtils::GetDirectory(file)};
+  // For optical media the art is in the disc root, not in the BDMV/VIDEO_TS folder
+  const std::string dir{URIUtils::IsOpticalMediaFile(file) ? URIUtils::GetDiscBasePath(file)
+                                                           : URIUtils::GetDirectory(file)};
   if (dir.empty())
     return "";
 
@@ -333,15 +338,6 @@ std::string GetLocalFanart(const CFileItem& item)
   CDirectory::GetDirectory(dir, items,
                            CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(),
                            DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
-  if (item.IsOpticalMediaFile())
-  {
-    // Get files from the optical media parent folder as well
-    CFileItemList moreItems;
-    CDirectory::GetDirectory(item.GetLocalMetadataPath(), moreItems,
-                             CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(),
-                             DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
-    items.Append(moreItems);
-  }
   if (!alternateFile.empty())
   {
     // Get files from the alternate path as well
