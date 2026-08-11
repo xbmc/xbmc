@@ -962,6 +962,12 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame
   { // we have a new frame from decoder
 
     VASurfaceID surf = (VASurfaceID)(uintptr_t)pFrame->data[3];
+    // surface IDs are only meaningful within the decoder generation that allocated them
+    if (pFrame->buf[0] && av_buffer_get_opaque(pFrame->buf[0]) != this)
+    {
+      CLog::Log(LOGWARNING, "VAAPI::Decode - ignoring frame of a previous decoder generation");
+      return CDVDVideoCodec::VC_BUFFER;
+    }
     // ffmpeg vc-1 decoder does not flush, make sure the data buffer is still valid
     if (!m_videoSurfaces.IsValid(surf))
     {
