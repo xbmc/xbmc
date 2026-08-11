@@ -1606,7 +1606,7 @@ constexpr std::array<InfoMap, 10> weather = {{
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`System.Time(startTime[\,endTime])`</b>,
-///                  \anchor System_Time
+///                  \anchor System_Time_startTime_endTime
 ///                  _boolean_,
 ///     @return **True** if the current system time is >= `startTime` and < `endTime` (if defined).
 ///     @param startTime - Start time
@@ -1645,7 +1645,7 @@ constexpr std::array<InfoMap, 10> weather = {{
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`System.Date(startDate[\,endDate])`</b>,
-///                  \anchor System_Date
+///                  \anchor System_Date_startDate_endDate
 ///                  _boolean_,
 ///     @return **True** if the current system date is >= `startDate` and < `endDate` (if defined).
 ///     @param startDate - The start date
@@ -1972,7 +1972,7 @@ constexpr std::array<InfoMap, 10> weather = {{
 ///     `System.AddonVersion(id)`\endlink <p>
 ///   }
 ///   \table_row3{   <b>`System.AddonIcon(id)`</b>,
-///                  \anchor System_AddonVersion
+///                  \anchor System_AddonIcon
 ///                  _string_,
 ///     @return The icon of the addon with the given id.
 ///     @param id - the addon id
@@ -10606,11 +10606,11 @@ constexpr std::array<InfoMap, 63> slideshow = {{
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`Library.HasContent(Role.Arranger)`</b>,
-///                  \anchor Library_HasContent_Role_Remixer
+///                  \anchor Library_HasContent_Role_Arranger
 ///                  _boolean_,
 ///     @return **True** if there are songs in the library which have an arranger.
 ///     <p><hr>
-///     @skinning_v17 **[New Boolean Condition]** \link Library_HasContent_Role_Remixer `Library.HasContent(Role.Arranger)`\endlink
+///     @skinning_v17 **[New Boolean Condition]** \link Library_HasContent_Role_Arranger `Library.HasContent(Role.Arranger)`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`Library.HasContent(Role.Engineer)`</b>,
