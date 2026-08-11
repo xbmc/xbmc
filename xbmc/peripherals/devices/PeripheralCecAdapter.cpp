@@ -66,6 +66,8 @@ using namespace std::chrono_literals;
 #define LOCALISED_ID_RECORDING_DEVICE 36051
 #define LOCALISED_ID_PLAYBACK_DEVICE 36052
 #define LOCALISED_ID_TUNER_DEVICE 36053
+#define LOCALISED_ID_ALWAYS 36055
+#define LOCALISED_ID_UNLESS_PLAYING 36056
 
 #define LOCALISED_ID_NONE 231
 
@@ -138,7 +140,6 @@ void CPeripheralCecAdapter::ResetMembers(void)
   m_bPowerOnScreensaver = false;
   m_bUseTVMenuLanguage = false;
   m_bSendInactiveSource = false;
-  m_bPowerOffScreensaver = false;
   m_bShutdownOnStandby = false;
 
   m_currentButton.iButton = 0;
@@ -182,13 +183,19 @@ void CPeripheralCecAdapter::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
   else if (flag == ANNOUNCEMENT::GUI && sender == CAnnouncementManager::ANNOUNCEMENT_SENDER &&
            message == "OnScreensaverActivated" && m_bIsReady)
   {
-    // Don't put devices to standby if application is currently playing
-    const auto& components = CServiceBroker::GetAppComponents();
-    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-    if (!appPlayer->IsPlaying() && m_bPowerOffScreensaver)
+    const int iStandbyMode = GetSettingInt("cec_standby_screensaver_mode");
+    if (iStandbyMode != LOCALISED_ID_NONE)
     {
+      // the screensaver doesn't activate while a video is playing, so this mainly keeps the
+      // devices on for audio playback over HDMI. paused playback doesn't count as playing.
+      const auto& components = CServiceBroker::GetAppComponents();
+      const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+      const bool bPlaying = (appPlayer->IsPlayingVideo() || appPlayer->IsPlayingAudio()) &&
+                            !appPlayer->IsPausedPlayback();
+
       // only power off when we're the active source
-      if (m_cecAdapter->IsLibCECActiveSource())
+      if ((iStandbyMode == LOCALISED_ID_ALWAYS || !bPlaying) &&
+          m_cecAdapter->IsLibCECActiveSource())
         StandbyDevices();
     }
   }
@@ -1515,7 +1522,6 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
   // read the boolean settings
   m_bUseTVMenuLanguage = GetSettingBool("use_tv_menu_language");
   m_configuration.bActivateSource = GetSettingBool("activate_source") ? 1 : 0;
-  m_bPowerOffScreensaver = GetSettingBool("cec_standby_screensaver");
   m_bPowerOnScreensaver = GetSettingBool("cec_wake_screensaver");
   m_bSendInactiveSource = GetSettingBool("send_inactive_source");
   m_configuration.bAutoWakeAVR = GetSettingBool("power_avr_on_as") ? 1 : 0;
@@ -1543,6 +1549,14 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
     // have to be marked as changed
     SetSetting("pause_or_stop_playback_on_deactivate", LOCALISED_ID_PAUSE, false);
     SetSetting("pause_playback_on_deactivate", false, false);
+  }
+
+  if (GetSettingBool("cec_standby_screensaver"))
+  {
+    // migration of a deprecated setting. the new value is read when it's needed, so it doesn't
+    // have to be marked as changed
+    SetSetting("cec_standby_screensaver_mode", LOCALISED_ID_UNLESS_PLAYING, false);
+    SetSetting("cec_standby_screensaver", false, false);
   }
 }
 

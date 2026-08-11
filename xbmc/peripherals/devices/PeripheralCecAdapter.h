@@ -217,7 +217,6 @@ private:
   bool m_bPowerOnScreensaver;
   bool m_bUseTVMenuLanguage;
   bool m_bSendInactiveSource;
-  bool m_bPowerOffScreensaver;
   bool m_bShutdownOnStandby;
 };
 
