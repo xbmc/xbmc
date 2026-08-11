@@ -418,7 +418,7 @@ static int PlayerControl(const std::vector<std::string>& params)
 
 /*! \brief Play currently inserted DVD.
  *  \param params The parameters.
- *  \details params[0] = "restart" to restart from resume point (optional).
+ *  \details params[0] = "restart" to play from the beginning instead of resuming (optional).
  */
 static int PlayDVD(const std::vector<std::string>& params)
 {
@@ -783,11 +783,11 @@ static int SubtitleShiftDown(const std::vector<std::string>& params)
 ///     Function,
 ///     Description }
 ///   \table_row2_l{
-///     <b>`PlaysDisc(parm)`</b>\n
+///     <b>`PlayDisc(param)`</b>\n
 ///     <b>`PlayDVD(param)`</b>(deprecated)
 ///     ,
 ///     Plays the inserted disc\, like CD\, DVD or Blu-ray\, in the disc drive.
-///     @param[in] param                 "restart" to restart from resume point (optional)
+///     @param[in] param                 "restart" to play from the beginning instead of resuming (optional)
 ///   }
 ///   \table_row2_l{
 ///     <b>`PlayerControl(control[\,param])`</b>
