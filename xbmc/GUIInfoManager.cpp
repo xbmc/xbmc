@@ -3957,6 +3957,14 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///     see \ref ListItem_VideoAspect "ListItem.VideoAspect").
 ///     <p>
 ///   }
+///   \table_row3{   <b>`VideoPlayer.VideoBitrate`</b>,
+///                  \anchor VideoPlayer_VideoBitrate
+///                  _string_,
+///     @return The bitrate of the video stream of the currently playing video\, in kbps.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link VideoPlayer_VideoBitrate `VideoPlayer.VideoBitrate`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`VideoPlayer.AudioCodec`</b>,
 ///                  \anchor VideoPlayer_AudioCodec
 ///                  _string_,
@@ -3979,6 +3987,14 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///
 ///     @skinning_v22 **[Infolabel Updated]** \link VideoPlayer_AudioChannels `VideoPlayer.AudioChannels`\endlink
 ///     added optional format parameter
+///     <p>
+///   }
+///   \table_row3{   <b>`VideoPlayer.AudioBitrate`</b>,
+///                  \anchor VideoPlayer_AudioBitrate
+///                  _string_,
+///     @return The bitrate of the audio stream of the currently playing video\, in kbps.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link VideoPlayer_AudioBitrate `VideoPlayer.AudioBitrate`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.AudioLanguage`</b>,
