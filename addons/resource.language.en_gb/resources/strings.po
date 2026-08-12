@@ -19423,7 +19423,15 @@ msgctxt "#35280"
 msgid "Select disc"
 msgstr ""
 
-#empty strings from id 35281 to 35504
+#empty strings from id 35281 to 35297
+
+#. Error message shown when trying to load a compressed savestate in an unsupported version of Kodi
+#: xbmc/games/dialogs/osd/DialogInGameSaves.cpp
+msgctxt "#35298"
+msgid "This savestate is compressed and can't be loaded by this version of Kodi."
+msgstr ""
+
+#empty strings from id 35299 to 35504
 
 #. connection state "host unreachable"
 #: xbmc/pvr/addons/PVRClients.cpp
