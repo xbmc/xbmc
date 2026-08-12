@@ -632,7 +632,41 @@ public:
   //--==----==----==----==----==----==----==----==----==----==----==----==----==--
 
   //============================================================================
-  /// @defgroup cpp_kodi_addon_game_InputOperations 4. Input operations
+  ///
+  /// @defgroup cpp_kodi_addon_game_Audio 4. Audio operations
+  /// @ingroup cpp_kodi_addon_game
+  /// @brief **Audio operations**
+  ///
+  ///---------------------------------------------------------------------------
+  ///
+  /// **Audio operation parts in interface:**\n
+  /// Copy this to your project and extend with your parts or leave functions
+  /// complete away where not used or supported.
+  ///
+  /// @copydetails cpp_kodi_addon_game_Audio_header_addon_auto_check
+  /// @copydetails cpp_kodi_addon_game_Audio_source_addon_auto_check
+  ///
+  ///@{
+
+  //==========================================================================
+  /// @brief Tell the client the frontend is ready for audio
+  ///
+  /// Only implemented by clients that asked for the asynchronous audio
+  /// interface. Such a client produces no audio of its own accord: it waits to
+  /// be asked, then writes what it has through AddStreamData() on the thread
+  /// this was called from.
+  ///
+  /// @return The error, or GAME_ERROR_NO_ERROR if audio was handled
+  ///
+  virtual GAME_ERROR AudioAvailable() { return GAME_ERROR_NOT_IMPLEMENTED; }
+  //--------------------------------------------------------------------------
+
+  ///@}
+
+  //--==----==----==----==----==----==----==----==----==----==----==----==----==--
+
+  //============================================================================
+  /// @defgroup cpp_kodi_addon_game_InputOperations 5. Input operations
   /// @ingroup cpp_kodi_addon_game
   /// @brief **Input operations**
   ///
@@ -808,7 +842,7 @@ public:
   //--==----==----==----==----==----==----==----==----==----==----==----==----==--
 
   //============================================================================
-  /// @defgroup cpp_kodi_addon_game_SerializationOperations 5. Serialization operations
+  /// @defgroup cpp_kodi_addon_game_SerializationOperations 6. Serialization operations
   /// @ingroup cpp_kodi_addon_game
   /// @brief **Serialization operations**
   ///
@@ -861,7 +895,7 @@ public:
   //--==----==----==----==----==----==----==----==----==----==----==----==----==--
 
   //============================================================================
-  /// @defgroup cpp_kodi_addon_game_CheatOperations 6. Cheat operations
+  /// @defgroup cpp_kodi_addon_game_CheatOperations 7. Cheat operations
   /// @ingroup cpp_kodi_addon_game
   /// @brief **Cheat operations**
   ///
@@ -1080,7 +1114,7 @@ public:
   //--==----==----==----==----==----==----==----==----==----==----==----==----==--
 
   //============================================================================
-  /// @defgroup cpp_kodi_addon_game_DiscOperations 5. Disc operations
+  /// @defgroup cpp_kodi_addon_game_DiscOperations 8. Disc operations
   /// @ingroup cpp_kodi_addon_game
   /// @brief **Disc operations**
   ///
@@ -1243,6 +1277,8 @@ private:
     instance->game->toAddon->HwContextReset = ADDON_HwContextReset;
     instance->game->toAddon->HwContextDestroy = ADDON_HwContextDestroy;
 
+    instance->game->toAddon->AudioAvailable = ADDON_AudioAvailable;
+
     instance->game->toAddon->HasFeature = ADDON_HasFeature;
     instance->game->toAddon->GetTopology = ADDON_GetTopology;
     instance->game->toAddon->FreeTopology = ADDON_FreeTopology;
@@ -1360,6 +1396,13 @@ private:
   inline static GAME_ERROR ADDON_HwContextDestroy(const AddonInstance_Game* instance)
   {
     return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->HwContextDestroy();
+  }
+
+  // --- Audio operations --------------------------------------------------------
+
+  inline static GAME_ERROR ADDON_AudioAvailable(const AddonInstance_Game* instance)
+  {
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->AudioAvailable();
   }
 
   // --- Input operations --------------------------------------------------------
