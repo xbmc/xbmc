@@ -25,7 +25,7 @@
 #include "filesystem/UDFContext.h"
 #endif
 #include "utils/EpisodeUtils.h"
-#include "utils/LangCodeExpander.h"
+#include "utils/LanguageTag.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -470,8 +470,11 @@ void ProcessPlaylist(PlaylistMap& playlists, PlaylistInformation& titleInfo, Cli
   info.pgStreams = titleInfo.pgStreams;
 
   // Get languages
-  const std::string langs{fmt::format(
-      "{}", fmt::join(titleInfo.audioStreams | std::views::transform(&StreamInfo::language), ","))};
+  const std::string langs{
+      fmt::format("{}", fmt::join(titleInfo.audioStreams |
+                                      std::views::transform([](const auto& stream)
+                                                            { return stream.language.AsBcp47(); }),
+                                  ","))};
   info.languages = langs;
   titleInfo.languages = langs;
 
@@ -520,7 +523,10 @@ bool CBlurayDirectory::GetPlaylistsInformation(const CURL& url,
 
       CLog::LogF(LOGDEBUG, "Playlist {}, Duration {}, Langs {}, Subs {}, Clips {} ", playlist,
                  title->GetVideoInfoTag()->GetDuration(), titleInfo.languages,
-                 fmt::join(titleInfo.pgStreams | std::views::transform(&StreamInfo::language), ","),
+                 fmt::join(titleInfo.pgStreams |
+                               std::views::transform([](const auto& stream)
+                                                     { return stream.language.AsBcp47(); }),
+                           ","),
                  fmt::join(titleInfo.clips, ","));
     }
 
@@ -917,9 +923,8 @@ bool CBlurayDirectory::EnsureBlurayOpen()
     return false;
   }
 
-  std::string langCode;
-  g_LangCodeExpander.ConvertToISO6392T(g_langInfo.GetDVDMenuLanguage(), langCode);
-  bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_MENU_LANG, langCode.c_str());
+  const std::string menuLang{g_langInfo.GetDVDMenuLanguage().AsIso6392T()};
+  bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_MENU_LANG, menuLang.c_str());
 
   if (!bd_open_files(m_bd, &m_realPath, CBlurayCallback::dir_open, CBlurayCallback::file_open))
   {

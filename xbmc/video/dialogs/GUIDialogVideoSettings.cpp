@@ -25,7 +25,6 @@
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingsManager.h"
-#include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -497,12 +496,11 @@ void CGUIDialogVideoSettings::VideoStreamsOptionFiller(
   for (int i = 0; i < videoStreamCount; ++i)
   {
     std::string strItem;
-    std::string strLanguage;
 
     VideoStreamInfo info;
     appPlayer->GetVideoStreamInfo(i, info);
 
-    g_LangCodeExpander.Lookup(info.language, strLanguage);
+    const std::string strLanguage{info.language.GetEnglishName()};
 
     if (!info.name.empty())
     {

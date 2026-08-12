@@ -294,7 +294,7 @@ public:
    *
    * \todo Remove this function and replace with a better solution
    *
-   * \param languageCode ISO 639-2 language code, as returned by CLangInfo::GetLanguageCode()
+   * \param languageCode ISO 639-2 language code, as returned by CLangInfo::GetLanguageAs()
    * \param codepoint the (upper or lower case) unicode codepoint being weighted
    *
    * \return an override weight that sorts after 'z', or 0 if no override applies

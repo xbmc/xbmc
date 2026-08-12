@@ -42,7 +42,6 @@
 #include "Util.h"
 #include "cores/FFmpeg.h"
 #include "filesystem/File.h"
-#include "utils/LangCodeExpander.h"
 
 #include <cstdlib>
 #include <memory>
@@ -568,7 +567,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
       p->m_strCodec = pDemux->GetStreamCodecName(stream->demuxerId, stream->uniqueId);
       p->m_iDuration = pDemux->GetStreamLength();
       p->m_strStereoMode = vstream->stereo_mode;
-      p->m_strLanguage = vstream->language;
+      p->m_strLanguage = vstream->language.AsIso6392B();
       p->m_strHdrType = CStreamDetails::HdrTypeToString(vstream->hdr_type);
       if (vstream->hdr_type == StreamHdrType::HDR_TYPE_DOLBYVISION)
       {
@@ -638,7 +637,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
     {
       CStreamDetailAudio *p = new CStreamDetailAudio();
       p->m_iChannels = static_cast<CDemuxStreamAudio*>(stream)->iChannels;
-      p->m_strLanguage = stream->language;
+      p->m_strLanguage = stream->language.AsIso6392B();
       p->m_strCodec = pDemux->GetStreamCodecName(stream->demuxerId, stream->uniqueId);
       p->SetSource(CStreamDetail::MEDIA);
       details.AddStream(p);
@@ -648,7 +647,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
     else if (stream->type == StreamType::SUBTITLE)
     {
       CStreamDetailSubtitle *p = new CStreamDetailSubtitle();
-      p->m_strLanguage = stream->language;
+      p->m_strLanguage = stream->language.AsIso6392B();
       p->SetSource(CStreamDetail::MEDIA);
       details.AddStream(p);
       retVal = true;
@@ -716,8 +715,7 @@ bool CDVDFileInfo::AddExternalSubtitleToDetails(const std::string &path, CStream
     for(CDemuxStream* stream : v.GetStreams())
     {
       CStreamDetailSubtitle *dsub = new CStreamDetailSubtitle();
-      std::string lang = stream->language;
-      dsub->m_strLanguage = g_LangCodeExpander.ConvertToISO6392B(lang);
+      dsub->m_strLanguage = stream->language.AsIso6392B();
       dsub->SetSource(CStreamDetail::MEDIA);
       details.AddStream(dsub);
     }
@@ -732,7 +730,7 @@ bool CDVDFileInfo::AddExternalSubtitleToDetails(const std::string &path, CStream
 
   CStreamDetailSubtitle *dsub = new CStreamDetailSubtitle();
   ExternalStreamInfo info = CUtil::GetExternalStreamDetailsFromFilename(path, filename);
-  dsub->m_strLanguage = g_LangCodeExpander.ConvertToISO6392B(info.language);
+  dsub->m_strLanguage = info.language.AsIso6392B();
   dsub->SetSource(CStreamDetail::MEDIA);
   details.AddStream(dsub);
 

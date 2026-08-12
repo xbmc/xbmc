@@ -86,7 +86,6 @@
 #include "storage/MediaManager.h"
 #include "utils/Digest.h"
 #include "utils/FileExtensionProvider.h"
-#include "utils/LangCodeExpander.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "video/FilenameAttributes.h"
@@ -106,11 +105,14 @@
 #include <cstdlib>
 #include <iomanip>
 #include <memory>
+#include <optional>
 #include <random>
 #include <ranges>
 #include <sstream>
 #include <string>
+#include <string_view>
 #include <unordered_set>
+#include <utility>
 #include <vector>
 
 #include <fstrcmp.h>
@@ -2162,6 +2164,49 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
   CLog::Log(LOGDEBUG, "{}: END (total time: {} ms)", __FUNCTION__, duration.count());
 }
 
+namespace
+{
+//! Matched case-insensitively against filename tokens
+constexpr auto EXTERNAL_STREAM_FLAG_WORDS = std::array{
+    std::pair{std::string_view{"none"}, StreamFlags::FLAG_NONE},
+    std::pair{std::string_view{"default"}, StreamFlags::FLAG_DEFAULT},
+    std::pair{std::string_view{"forced"}, StreamFlags::FLAG_FORCED},
+    std::pair{std::string_view{"original"}, StreamFlags::FLAG_ORIGINAL},
+    std::pair{std::string_view{"impaired"}, StreamFlags::FLAG_HEARING_IMPAIRED},
+};
+
+/*!
+ * \brief The stream flag a filename token states.
+ * \note FLAG_NONE is one of the words rather than an absence of one, so that a filename
+ *       saying "none" has stated a flag rather than part of the stream's name.
+ * \param[in] token One token of the filename.
+ * \return The flag, or nullopt where the token states none.
+ */
+std::optional<StreamFlags> ExternalStreamFlagFromToken(std::string_view token)
+{
+  const auto it = std::ranges::find_if(EXTERNAL_STREAM_FLAG_WORDS, [&token](const auto& word)
+                                       { return StringUtils::EqualsNoCase(token, word.first); });
+  if (it == EXTERNAL_STREAM_FLAG_WORDS.end())
+    return std::nullopt;
+
+  return it->second;
+}
+
+/*!
+ * \brief The language a filename token states.
+ * \param[in] token One token of the filename.
+ * \return The language, or nullopt where the token states none.
+ */
+std::optional<KODI::UTILS::CLanguageTag> ExternalStreamLanguageFromToken(const std::string& token)
+{
+  // _ stands in for the BCP 47 subtag separator, since - separates the filename's own tokens
+  std::string langCode{token};
+  std::ranges::replace(langCode, '_', '-');
+
+  return KODI::UTILS::CLanguageTag::TryParse(langCode);
+}
+} // namespace
+
 ExternalStreamInfo CUtil::GetExternalStreamDetailsFromFilename(const std::string& videoPath, const std::string& associatedFile)
 {
   ExternalStreamInfo info;
@@ -2194,46 +2239,23 @@ ExternalStreamInfo CUtil::GetExternalStreamDetailsFromFilename(const std::string
     std::vector<std::string> tokens;
     StringUtils::Tokenize(inputString, tokens, delimiters);
 
+    // The tokens are read from the end of the filename towards the front, so of several languages
+    // the one nearest the extension is the stream's and the rest belong to its name
     for (auto it = tokens.rbegin(); it != tokens.rend(); ++it)
     {
-      // try to recognize a flag
-      std::string flag_tmp(*it);
-      StringUtils::ToLower(flag_tmp);
-      if (!flag_tmp.compare("none"))
+      if (const auto flag = ExternalStreamFlagFromToken(*it); flag.has_value())
       {
-        info.flag |= StreamFlags::FLAG_NONE;
-        continue;
-      }
-      else if (!flag_tmp.compare("default"))
-      {
-        info.flag |= StreamFlags::FLAG_DEFAULT;
-        continue;
-      }
-      else if (!flag_tmp.compare("forced"))
-      {
-        info.flag |= StreamFlags::FLAG_FORCED;
-        continue;
-      }
-      else if (!flag_tmp.compare("original"))
-      {
-        info.flag |= StreamFlags::FLAG_ORIGINAL;
-        continue;
-      }
-      else if (!flag_tmp.compare("impaired"))
-      {
-        info.flag |= StreamFlags::FLAG_HEARING_IMPAIRED;
+        info.flag |= *flag;
         continue;
       }
 
-      if (info.language.empty())
+      if (info.language.IsEmpty())
       {
-        // try to recognize language
-        std::string langCode = *it;
-        // _ is used in BCP47 tags as subtag separator instead of - since - is a token separator.
-        // Convert back to - separator to parse.
-        std::ranges::replace(langCode, '_', '-');
-        if (g_LangCodeExpander.ConvertToBcp47(langCode, info.language))
+        if (const auto tag = ExternalStreamLanguageFromToken(*it); tag.has_value())
+        {
+          info.language = *tag;
           continue;
+        }
       }
 
       name = (*it) + " " + name;
@@ -2247,7 +2269,7 @@ ExternalStreamInfo CUtil::GetExternalStreamDetailsFromFilename(const std::string
     info.flag = StreamFlags::FLAG_NONE;
 
   CLog::Log(LOGDEBUG, "{} - Language = '{}' / Name = '{}' / Flag = '{}' from {}", __FUNCTION__,
-            info.language, info.name, info.flag, CURL::GetRedacted(associatedFile));
+            info.language.AsBcp47(), info.name, info.flag, CURL::GetRedacted(associatedFile));
 
   return info;
 }

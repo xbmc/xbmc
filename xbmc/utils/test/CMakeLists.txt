@@ -27,6 +27,7 @@ set(SOURCES TestAlarmClock.cpp
             TestJSONVariantWriter.cpp
             TestLabelFormatter.cpp
             TestLangCodeExpander.cpp
+            TestLanguageTag.cpp
             TestLocale.cpp
             Testlog.cpp
             TestMap.cpp

@@ -196,6 +196,56 @@ TEST(TestI18nBcp47, Canonicalize)
   EXPECT_EQ(tag->Format(), "ab-a-bc-d-ef-g-hi");
 }
 
+TEST(TestI18nBcp47, CanonicalizeReplacesDeprecatedLanguages)
+{
+  // Moldavian was merged into Romanian in 2008
+  auto tag = CBcp47::ParseTag("mo");
+  tag->Canonicalize();
+  EXPECT_EQ(tag->Format(), "ro");
+  EXPECT_TRUE(tag->IsValid());
+
+  // Only the language subtag is replaced
+  tag = CBcp47::ParseTag("iw-Hebr-IL");
+  tag->Canonicalize();
+  EXPECT_EQ(tag->Format(), "he-Hebr-IL");
+
+  // A current subtag has no preferred value
+  tag = CBcp47::ParseTag("ro");
+  tag->Canonicalize();
+  EXPECT_EQ(tag->Format(), "ro");
+}
+
+TEST(TestI18nBcp47, CanonicalizeReplacesDeprecatedRegions)
+{
+  // Burma became Myanmar, Zaire became the Democratic Republic of the Congo. The registry
+  // spells a region upper case, the tag holds it lower case.
+  auto tag = CBcp47::ParseTag("en-BU");
+  tag->Canonicalize();
+  EXPECT_EQ(tag->Format(), "en-MM");
+
+  tag = CBcp47::ParseTag("fr-ZR");
+  tag->Canonicalize();
+  EXPECT_EQ(tag->Format(), "fr-CD");
+
+  // Both subtags of a tag can be withdrawn
+  tag = CBcp47::ParseTag("mo-DD");
+  tag->Canonicalize();
+  EXPECT_EQ(tag->Format(), "ro-DE");
+}
+
+TEST(TestI18nBcp47, CanonicalizeRefreshesTheRegistryDescriptions)
+{
+  // The registry records cached at parse time describe the subtags that were dropped, so a name
+  // taken from them would read Moldovan and English (Burma)
+  auto tag = CBcp47::ParseTag("mo");
+  tag->Canonicalize();
+  EXPECT_EQ(tag->Format(Bcp47FormattingStyle::FORMAT_ENGLISH), "Romanian");
+
+  tag = CBcp47::ParseTag("en-BU");
+  tag->Canonicalize();
+  EXPECT_EQ(tag->Format(Bcp47FormattingStyle::FORMAT_ENGLISH), "English (Myanmar)");
+}
+
 TEST(TestI18nBcp47, RegistryDI)
 {
   // System registry

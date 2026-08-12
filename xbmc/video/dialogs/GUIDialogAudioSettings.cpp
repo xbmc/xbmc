@@ -29,7 +29,6 @@
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingsManager.h"
-#include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -385,12 +384,11 @@ void CGUIDialogAudioSettings::AudioStreamsOptionFiller(const SettingConstPtr& se
   // cycle through each audio stream and add it to our list control
   for (int i = 0; i < audioStreamCount; ++i)
   {
-    std::string textInfo;
-
     AudioStreamInfo info;
     appPlayer->GetAudioStreamInfo(i, info);
 
-    if (!g_LangCodeExpander.Lookup(info.language, textInfo))
+    std::string textInfo{info.language.GetEnglishName()};
+    if (textInfo.empty())
       textInfo = "[" + CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205) +
                  "]"; // Unknown
 
