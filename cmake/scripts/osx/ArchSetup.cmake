@@ -24,6 +24,20 @@ else()
   endif()
 endif()
 
+# Xcode sets a deployment target for every Apple platform it knows about, not just the one
+# being built for, and exports them all into Run Script build phases. clang rejects an
+# invocation that sees more than one:
+#   clang: error: conflicting deployment targets, both '26.5' and '25.5' are present in environment
+# which breaks internal dependencies that configure or build through a shell. Blank the
+# platforms we do not build for; MACOSX_DEPLOYMENT_TARGET stays, it is what
+# CMAKE_OSX_DEPLOYMENT_TARGET feeds. Check with:
+#   xcodebuild -target build-<dep> -showBuildSettings | grep _DEPLOYMENT_TARGET
+set(CMAKE_XCODE_ATTRIBUTE_DRIVERKIT_DEPLOYMENT_TARGET "")
+set(CMAKE_XCODE_ATTRIBUTE_WATCHOS_DEPLOYMENT_TARGET "")
+set(CMAKE_XCODE_ATTRIBUTE_XROS_DEPLOYMENT_TARGET "")
+set(CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET "")
+set(CMAKE_XCODE_ATTRIBUTE_TVOS_DEPLOYMENT_TARGET "")
+
 # m1 macs can execute x86_64 code via rosetta
 if(CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm64" AND
    CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
