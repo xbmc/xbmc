@@ -1606,7 +1606,7 @@ constexpr std::array<InfoMap, 10> weather = {{
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`System.Time(startTime[\,endTime])`</b>,
-///                  \anchor System_Time
+///                  \anchor System_Time_startTime_endTime
 ///                  _boolean_,
 ///     @return **True** if the current system time is >= `startTime` and < `endTime` (if defined).
 ///     @param startTime - Start time
@@ -1645,7 +1645,7 @@ constexpr std::array<InfoMap, 10> weather = {{
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`System.Date(startDate[\,endDate])`</b>,
-///                  \anchor System_Date
+///                  \anchor System_Date_startDate_endDate
 ///                  _boolean_,
 ///     @return **True** if the current system date is >= `startDate` and < `endDate` (if defined).
 ///     @param startDate - The start date
@@ -1972,7 +1972,7 @@ constexpr std::array<InfoMap, 10> weather = {{
 ///     `System.AddonVersion(id)`\endlink <p>
 ///   }
 ///   \table_row3{   <b>`System.AddonIcon(id)`</b>,
-///                  \anchor System_AddonVersion
+///                  \anchor System_AddonIcon
 ///                  _string_,
 ///     @return The icon of the addon with the given id.
 ///     @param id - the addon id
@@ -2356,12 +2356,6 @@ constexpr std::array<InfoMap, 7> musicpartymode = {{
 ///     @return The album from which the song with offset `number` with respect to
 ///     the start of the playlist is from.
 ///     @param number - the offset number with respect to the start of the playlist
-///     <p>
-///   }
-///   \table_row3{   <b>`MusicPlayer.Property(Album_Mood)`</b>,
-///                  \anchor MusicPlayer_Property_Album_Mood
-///                  _string_,
-///     @return The moods of the currently playing Album
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Property(Role.Composer)`</b>,
@@ -3963,6 +3957,14 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///     see \ref ListItem_VideoAspect "ListItem.VideoAspect").
 ///     <p>
 ///   }
+///   \table_row3{   <b>`VideoPlayer.VideoBitrate`</b>,
+///                  \anchor VideoPlayer_VideoBitrate
+///                  _string_,
+///     @return The bitrate of the video stream of the currently playing video\, in kbps.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link VideoPlayer_VideoBitrate `VideoPlayer.VideoBitrate`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`VideoPlayer.AudioCodec`</b>,
 ///                  \anchor VideoPlayer_AudioCodec
 ///                  _string_,
@@ -3985,6 +3987,14 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///
 ///     @skinning_v22 **[Infolabel Updated]** \link VideoPlayer_AudioChannels `VideoPlayer.AudioChannels`\endlink
 ///     added optional format parameter
+///     <p>
+///   }
+///   \table_row3{   <b>`VideoPlayer.AudioBitrate`</b>,
+///                  \anchor VideoPlayer_AudioBitrate
+///                  _string_,
+///     @return The bitrate of the audio stream of the currently playing video\, in kbps.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link VideoPlayer_AudioBitrate `VideoPlayer.AudioBitrate`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.AudioLanguage`</b>,
@@ -5236,6 +5246,20 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///     @return **True** if the current Season/Episode is a Special.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.Property(isbookmark)`</b>,
+///                  \anchor ListItem_Property_IsBookmark
+///                  _boolean_,
+///     @return **True** if the item is a bookmark.
+///     @note Only set on items in the video bookmarks dialog.
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.Property(ischapter)`</b>,
+///                  \anchor ListItem_Property_IsChapter
+///                  _boolean_,
+///     @return **True** if the item is a chapter.
+///     @note Only set on items in the video bookmarks dialog.
+///     <p>
+///   }
 ///   \table_row3{   <b>`ListItem.Property(DateLabel)`</b>,
 ///                  \anchor ListItem_Property_DateLabel
 ///                  _boolean_,
@@ -5512,7 +5536,7 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///                  _string_,
 ///     @return The total number of discs belonging to an album.
 ///     <p><hr>
-///     @skinning_v19 **[New Infolabel]** \link ListItem.Property(Album_Totaldiscs) `ListItem.Property(Album_Totaldiscs)`\endlink
+///     @skinning_v19 **[New Infolabel]** \link ListItem_Property_Album_Totaldiscs `ListItem.Property(Album_Totaldiscs)`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Album_Isboxset)`</b>,
@@ -5520,7 +5544,7 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///                  _string_,
 ///     @return **True** if the album is a boxset.
 ///     <p><hr>
-///     @skinning_v19 **[New Infobool]** \link ListItem.Property(Album_Isboxset) `ListItem.Property(Album_Isboxset)`\endlink
+///     @skinning_v19 **[New Infobool]** \link ListItem_Property_Album_Isboxset `ListItem.Property(Album_Isboxset)`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Album_Duration)`</b>,
@@ -6991,7 +7015,7 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.HasReminderRule`</b>,
-///                  \anchor ListItem_ListItem.HasReminderRule
+///                  \anchor ListItem_HasReminderRule
 ///                  _boolean_,
 ///     @return **True** if the item was scheduled by a reminder timer rule (PVR).
 ///     <p><hr>
@@ -7580,7 +7604,7 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///     @return The number of audio channels of a song.
 ///     (possible values: see \ref ListItem_AudioChannels "ListItem.AudioChannels").
 ///     <p><hr>
-///     @skinning_v19 **[New Infolabel]** \link ListItem_No_Of_Channels `ListItem.NoOfChannels`\endlink
+///     @skinning_v19 **[New Infolabel]** \link ListItem_MusicChannels `ListItem.MusicChannels`\endlink
 ///
 ///     @skinning_v22 **[Infolabel Updated]** \link ListItem_MusicChannels `ListItem.MusicChannels`\endlink
 ///     added optional format parameter
@@ -8067,7 +8091,7 @@ constexpr std::array<InfoMap, 4> fanart_labels = {{
 ///                  _boolean_,
 ///     @param setting - the requested skin setting
 ///     @return **True** if the requested skin setting is true\, false otherwise.
-///     @sa \link Skin_SetBool `Skin.SetBool(setting[\,value])`
+///     @sa \link Skin_SetBool `Skin.SetBool(setting[\,value])`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`Skin.String(setting)`</b>,
@@ -8322,6 +8346,16 @@ constexpr std::array<InfoMap, 9> window_bools = {{
 /// \subsection modules__infolabels_boolean_conditions_Control Control
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`ControlGroup(id).HasFocus(controlid)`</b>,
+///                  \anchor ControlGroup_HasFocus
+///                  _boolean_,
+///     @return **True** if the group with id "id" has focus. If "controlid" is
+///     given\, **True** if that control is the one currently selected in the
+///     group instead.
+///     @param id - The id of the group
+///     @param controlid - The id of a control in the group (optional)
+///     <p>
+///   }
 ///   \table_row3{   <b>`Control.HasFocus(id)`</b>,
 ///                  \anchor Control_HasFocus
 ///                  _boolean_,
@@ -9970,7 +10004,7 @@ constexpr std::array<InfoMap, 45> rds = {{
 ///       - <b>"Colour"</b>
 ///       - <b>"Black and White"</b>
 ///     <p>
-///     @deprecated Slideshow_Colour `Slideshow.Colour`\endlink is deprecated and will be removed in future Kodi versions
+///     @deprecated \link Slideshow_Colour `Slideshow.Colour`\endlink is deprecated and will be removed in future Kodi versions
 ///     <p><hr>
 ///     @skinning_v13 **[New Infolabel]** \link Slideshow_Colour `Slideshow.Colour`\endlink
 ///     <p>
@@ -10606,11 +10640,11 @@ constexpr std::array<InfoMap, 63> slideshow = {{
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`Library.HasContent(Role.Arranger)`</b>,
-///                  \anchor Library_HasContent_Role_Remixer
+///                  \anchor Library_HasContent_Role_Arranger
 ///                  _boolean_,
 ///     @return **True** if there are songs in the library which have an arranger.
 ///     <p><hr>
-///     @skinning_v17 **[New Boolean Condition]** \link Library_HasContent_Role_Remixer `Library.HasContent(Role.Arranger)`\endlink
+///     @skinning_v17 **[New Boolean Condition]** \link Library_HasContent_Role_Arranger `Library.HasContent(Role.Arranger)`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`Library.HasContent(Role.Engineer)`</b>,
@@ -10687,7 +10721,7 @@ constexpr std::array<InfoMap, 63> slideshow = {{
 /// <hr>
 /// \subsection modules_rm_infolabels_booleans_v19 Kodi v19 (Matrix)
 /// @skinning_v19 **[Removed Infolabels]** The following infolabels have been removed:
-///   - `System.Platform.Linux.RaspberryPi` - use \link System_Platform_Linux `System.Platform.Linux`\endlink instead
+///   - `System.Platform.Linux.RaspberryPi` - use \link System_PlatformLinux `System.Platform.Linux`\endlink instead
 ///
 /// <hr>
 /// \subsection modules_rm_infolabels_booleans_v18 Kodi v18 (Leia)
