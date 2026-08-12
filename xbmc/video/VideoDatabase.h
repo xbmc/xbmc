@@ -496,6 +496,14 @@ public:
   bool EraseAllForFile(const std::string& fileNameAndPath);
 
   bool GetStackTimes(const std::string& filePath, std::vector<std::chrono::milliseconds>& times);
+
+  /*! \brief The stack times of a file, by its id rather than its path. A stack of discs is renamed
+   as each part is resolved to a playlist, so times recorded against a path would be left behind by
+   the entry they belong to.
+   */
+  bool GetStackTimes(int idFile, std::vector<std::chrono::milliseconds>& times);
+  void SetStackTimes(int idFile, const std::vector<std::chrono::milliseconds>& times);
+
   void SetStackTimes(const std::string& filePath,
                      const std::vector<std::chrono::milliseconds>& times);
 

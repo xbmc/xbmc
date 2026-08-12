@@ -106,7 +106,7 @@ bool CApplicationStackHelper::InitializeStack(const CFileItem& item)
       const std::string& partPath{part->GetDynPath()};
 
       std::chrono::milliseconds partTime{0ms};
-      if (URIUtils::IsBlurayPath(partPath))
+      if (URIUtils::IsBlurayPath(partPath) && !URIUtils::IsBluraySelectPath(partPath))
       {
         CFileItemList parts;
         if (CDirectory::GetDirectory(partPath, parts, "", DIR_FLAG_DEFAULTS) && !parts.IsEmpty() &&
@@ -250,12 +250,15 @@ bool CApplicationStackHelper::UpdateDiscStackAndTimes(const CFileItem& playedFil
     return false;
 
   // Get existing stacktimes (if any)
-  const std::string newStackPath{m_stackMap.begin()->second->stackItem->GetDynPath()};
+  const std::shared_ptr<CFileItem>& stackItem{m_stackMap.begin()->second->stackItem};
+  const std::string newStackPath{stackItem->GetDynPath()};
+  const int idFile{stackItem->HasVideoInfoTag() ? stackItem->GetVideoInfoTag()->m_iFileId : -1};
   const std::string path{!m_oldStackPath.empty() ? m_oldStackPath : newStackPath};
-  CLog::LogF(LOGDEBUG, "Looking for existing stacktimes ({})", path);
+  CLog::LogF(LOGDEBUG, "Looking for existing stacktimes (file {}, {})", idFile, path);
 
   std::vector<std::chrono::milliseconds> times;
-  const bool haveTimes{db.GetStackTimes(path, times)};
+  const bool haveTimes{idFile >= 0 ? db.GetStackTimes(idFile, times)
+                                   : db.GetStackTimes(path, times)};
 
   // See if new part played
   if (GetKnownStackParts() - 1 == static_cast<int>(times.size()))
@@ -269,7 +272,10 @@ bool CApplicationStackHelper::UpdateDiscStackAndTimes(const CFileItem& playedFil
 
     // Add this part's time to end of stacktimes
     times.emplace_back(totalTime);
-    db.SetStackTimes(newStackPath, times);
+    if (idFile >= 0)
+      db.SetStackTimes(idFile, times);
+    else
+      db.SetStackTimes(newStackPath, times);
     db.Close();
 
     // Update stack times (for bookmark and % played)
@@ -327,7 +333,9 @@ bool CApplicationStackHelper::IsPlayingResolvedDiscStack() const
   for (int i = 0; i <= m_currentStackPosition; ++i)
   {
     const std::string path{m_stackPaths[i]};
-    if (URIUtils::IsDiscImage(path) || URIUtils::IsDVDFile(path) || URIUtils::IsBDFile(path))
+    // A select path names the disc rather than a title on it, so its duration isn't known yet
+    if (URIUtils::IsBluraySelectPath(path) || URIUtils::IsDiscImage(path) ||
+        URIUtils::IsDVDFile(path) || URIUtils::IsBDFile(path))
       return false; // Stack part not resolved
   }
 
@@ -337,9 +345,14 @@ bool CApplicationStackHelper::IsPlayingResolvedDiscStack() const
 
 bool CApplicationStackHelper::HasDiscParts() const
 {
+  // A scanned part names a title on the disc with a select path, but one played from outside the
+  // library still names the disc itself - and a DVD has no playlist to choose, so it keeps doing
+  // so. Either way the part's duration is not known ahead of playing it.
   return std::ranges::any_of(m_stackPaths,
-                             [](const std::string& path) {
-                               return URIUtils::IsDiscImage(path) || URIUtils::IsDVDFile(path) ||
+                             [](const std::string& path)
+                             {
+                               return URIUtils::IsBluraySelectPath(path) ||
+                                      URIUtils::IsDiscImage(path) || URIUtils::IsDVDFile(path) ||
                                       URIUtils::IsBDFile(path);
                              });
 }

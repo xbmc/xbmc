@@ -315,7 +315,14 @@ public:
   static bool IsArchive(const std::string& strFile);
   static bool IsArchive(const CURL& url);
   static bool IsDiscImage(const std::string& file);
-  static bool IsDiscImageStack(const std::string& file);
+
+  /*! \brief Determines if a stack holds a part that names a disc rather than a title on it, and so
+   is still waiting for a playlist to be chosen for it (see IsBluraySelectPath).
+   \param file file path for determination.
+   \return true if any part of the stack has yet to be resolved.
+   */
+  static bool IsUnresolvedDiscStack(const std::string& file);
+
   static bool IsBlurayPath(const std::string& strFile);
   static bool IsBlurayMenuPath(const std::string& file);
 

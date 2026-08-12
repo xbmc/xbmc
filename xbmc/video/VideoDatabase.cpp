@@ -4583,7 +4583,7 @@ bool CVideoDatabase::GetResumePoint(CVideoInfoTag& tag)
 
   try
   {
-    if (URIUtils::IsDiscImageStack(tag.m_strFileNameAndPath))
+    if (URIUtils::IsUnresolvedDiscStack(tag.m_strFileNameAndPath))
     {
       CStackDirectory dir;
       CFileItemList fileList;
@@ -5777,11 +5777,16 @@ std::vector<std::string> CVideoDatabase::GetAvailableArtTypesForItem(int mediaId
 bool CVideoDatabase::GetStackTimes(const std::string& filePath,
                                    std::vector<std::chrono::milliseconds>& times)
 {
+  // obtain the FileID (if it exists)
+  return GetStackTimes(GetFileId(filePath), times);
+}
+
+bool CVideoDatabase::GetStackTimes(int idFile, std::vector<std::chrono::milliseconds>& times)
+{
   try
   {
-    // obtain the FileID (if it exists)
-    int idFile = GetFileId(filePath);
-    if (idFile < 0) return false;
+    if (idFile < 0)
+      return false;
     if (nullptr == m_pDB)
       return false;
     if (nullptr == m_pDS)
@@ -5817,14 +5822,20 @@ bool CVideoDatabase::GetStackTimes(const std::string& filePath,
 void CVideoDatabase::SetStackTimes(const std::string& filePath,
                                    const std::vector<std::chrono::milliseconds>& times)
 {
+  // The file is added when it is not in the library yet, as happens when the times are worked out
+  // during a scan, before the item itself has been added
+  SetStackTimes(AddFile(filePath), times);
+}
+
+void CVideoDatabase::SetStackTimes(int idFile, const std::vector<std::chrono::milliseconds>& times)
+{
   try
   {
+    if (idFile < 0)
+      return;
     if (nullptr == m_pDB)
       return;
     if (nullptr == m_pDS)
-      return;
-    int idFile = AddFile(filePath);
-    if (idFile < 0)
       return;
 
     // delete any existing items
@@ -5840,7 +5851,7 @@ void CVideoDatabase::SetStackTimes(const std::string& filePath,
   }
   catch (...)
   {
-    CLog::LogF(LOGERROR, "({}) failed", filePath);
+    CLog::LogF(LOGERROR, "({}) failed", idFile);
   }
 }
 

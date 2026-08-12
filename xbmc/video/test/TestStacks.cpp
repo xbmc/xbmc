@@ -221,22 +221,36 @@ TEST_F(TestStacks, TestStackIsNotItselfADiscImage)
 {
   // A stack of .ISOs must not be classified from its tail either - otherwise it takes the disc
   // branch in eg. CVideoDatabase::GetMovieId/GetVideoVersionsByPath, which asks for a bluray://
-  // playlist path that a container cannot have. Use IsDiscImageStack() to spot these instead
+  // playlist path that a container cannot have
   const std::string isoStack{R"(stack://D:\Movies\Movie.CD1.iso , D:\Movies\Movie.CD2.iso)"};
 
   EXPECT_FALSE(URIUtils::IsDiscImage(isoStack));
   EXPECT_FALSE(CURL(isoStack).IsDiscImage());
   EXPECT_FALSE(CFileItem(isoStack, false).IsDiscImage());
 
-  // The stack as a whole is still recognised as one holding disc parts..
-  EXPECT_TRUE(URIUtils::IsDiscImageStack(isoStack));
-
-  // ..and the individual members are still disc images
+  // The individual members are still disc images
   std::vector<std::string> paths;
   CStackDirectory::GetPaths(isoStack, paths);
   ASSERT_EQ(paths.size(), 2U);
   EXPECT_TRUE(URIUtils::IsDiscImage(paths[0]));
   EXPECT_TRUE(URIUtils::IsDiscImage(paths[1]));
+
+  // A stack is waiting for a playlist while any part still names a disc rather than a title on
+  // it - whether the library has scanned it, and so named the title with a select path, or it is
+  // being played from outside the library and still names the disc itself
+  EXPECT_TRUE(URIUtils::IsUnresolvedDiscStack(isoStack));
+  EXPECT_TRUE(URIUtils::IsUnresolvedDiscStack(
+      R"(stack://bluray://D%3a%5cMovies%5cCD1%5c/BDMV/PLAYLIST/select , )"
+      R"(bluray://D%3a%5cMovies%5cCD2%5c/BDMV/PLAYLIST/select)"));
+  EXPECT_TRUE(URIUtils::IsUnresolvedDiscStack(
+      R"(stack://D:\Movies\CD1\VIDEO_TS\VIDEO_TS.IFO , D:\Movies\CD2\VIDEO_TS\VIDEO_TS.IFO)"));
+  EXPECT_TRUE(URIUtils::IsUnresolvedDiscStack(
+      R"(stack://D:\Movies\CD1\BDMV\index.bdmv , D:\Movies\CD2\BDMV\index.bdmv)"));
+
+  // A stack whose parts have been resolved to playlists is not waiting for anything
+  EXPECT_FALSE(URIUtils::IsUnresolvedDiscStack(
+      R"(stack://bluray://D%3a%5cMovies%5cCD1%5c/BDMV/PLAYLIST/00800.mpls , )"
+      R"(bluray://D%3a%5cMovies%5cCD2%5c/BDMV/PLAYLIST/00800.mpls)"));
 
   // A single .ISO is unaffected
   EXPECT_TRUE(URIUtils::IsDiscImage(R"(D:\Movies\Movie.iso)"));

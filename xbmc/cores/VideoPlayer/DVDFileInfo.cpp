@@ -381,7 +381,7 @@ bool CDVDFileInfo::CanExtract(const CFileItem& fileItem)
 
   // ..nor from a stack still holding unresolved disc parts.
   // A stack of bluray:// playlists is extractable and DemuxerToStreamDetails() sums their durations
-  if (URIUtils::IsDiscImageStack(fileItem.GetDynPath()))
+  if (URIUtils::IsUnresolvedDiscStack(fileItem.GetDynPath()))
     return false;
 
   // For HTTP/FTP we only allow extraction when on a LAN

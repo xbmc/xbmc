@@ -20,6 +20,7 @@
 #include "dbwrappers/dataset.h"
 #include "filesystem/File.h"
 #include "filesystem/MultiPathDirectory.h"
+#include "filesystem/StackDirectory.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "utils/DiscsUtils.h"
@@ -1446,8 +1447,8 @@ void CVideoDatabase::UpdateTables(int iVersion)
     std::map<std::string, int> pathMap;
     std::map<int, std::string> vacatedPaths;
 
-    // The path a select entry belongs under, adding it if the library hasn't got one yet
-    auto GetSelectPathId{
+    // The path an entry belongs under, adding it if the library hasn't got one yet
+    auto GetPathId{
         [&](const std::string& playlistPath)
         {
           if (const auto it{pathMap.find(playlistPath)}; it != pathMap.end())
@@ -1490,23 +1491,22 @@ void CVideoDatabase::UpdateTables(int iVersion)
           return idPath;
         }};
 
-    // The file already sitting where a select entry would go, or -1 where the way is clear. A
-    // select name belongs to the one title, so a file already holding it is that title and is
-    // used rather than a duplicate being created.
-    auto SelectFileTakenBy{[&](int idPath, const std::string& fileName, int idFile)
-                           {
-                             const int existing{GetSingleValueInt(
-                                 PrepareSQL("SELECT idFile FROM files WHERE idPath = %i AND "
-                                            "strFileName = '%s'",
-                                            idPath, fileName.c_str()))};
-                             return existing > 0 && existing != idFile ? existing : -1;
-                           }};
+    // The file already sitting where an entry would go, or -1 where the way is clear. A name
+    // belongs to the one title, so a file already holding it is that title and is used rather
+    // than a duplicate being created.
+    auto FileNameTakenBy{[&](int idPath, const std::string& fileName, int idFile)
+                         {
+                           const int existing{GetSingleValueInt(
+                               PrepareSQL("SELECT idFile FROM files WHERE idPath = %i AND "
+                                          "strFileName = '%s'",
+                                          idPath, fileName.c_str()))};
+                           return existing > 0 && existing != idFile ? existing : -1;
+                         }};
 
     // The file naming the bluray a library entry sits on, empty when the entry doesn't name one
     auto GetDiscFile{
-        [](const std::string& path, const std::string& fileName)
+        [](const std::string& file)
         {
-          const std::string file{URIUtils::AddFileToFolder(path, fileName)};
           if (URIUtils::IsBDFile(file))
             return file;
 
@@ -1544,7 +1544,8 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->query("SELECT DISTINCT f.idFile, f.idPath, p.strPath, f.strFileName, f.dateAdded "
                  "FROM files AS f "
                  "JOIN path AS p ON f.idPath = p.idPath "
-                 "JOIN episode AS e ON e.idFile = f.idFile");
+                 "JOIN episode AS e ON e.idFile = f.idFile "
+                 "WHERE f.strFileName NOT LIKE 'stack://%'");
     std::vector<std::tuple<int, int, std::string, std::string, std::string>> episodeFiles;
     while (!m_pDS->eof())
     {
@@ -1557,7 +1558,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
     for (const auto& [idFile, idOldPath, path, fileName, dateAdded] : episodeFiles)
     {
-      const std::string discFile{GetDiscFile(path, fileName)};
+      const std::string discFile{GetDiscFile(URIUtils::AddFileToFolder(path, fileName))};
       if (discFile.empty())
         continue;
 
@@ -1595,14 +1596,14 @@ void CVideoDatabase::UpdateTables(int iVersion)
         std::string fileNameNew;
         SplitSelectPath(discFile, season, episode, selectPath, fileNameNew);
 
-        const int idPath{GetSelectPathId(selectPath)};
+        const int idPath{GetPathId(selectPath)};
         if (idPath < 0)
           continue;
 
         // The episode's own file is already there, so it is moved onto it rather than the entry
         // being split into a name that is spoken for. Leaving it where it is would hand it to
         // whichever episode goes on to rename the shared entry.
-        if (const int existing{SelectFileTakenBy(idPath, fileNameNew, idFile)}; existing > 0)
+        if (const int existing{FileNameTakenBy(idPath, fileNameNew, idFile)}; existing > 0)
         {
           CLog::LogF(LOGDEBUG, "Moving episode {} of file {} to file {}, which already holds {}",
                      idEpisode, idFile, existing, fileNameNew);
@@ -1674,6 +1675,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
         "JOIN path AS p ON f.idPath = p.idPath "
         "WHERE f.idFile IN (SELECT idFile FROM movie UNION SELECT idFile FROM videoversion) "
         "AND f.idFile NOT IN (SELECT idFile FROM episode) "
+        "AND f.strFileName NOT LIKE 'stack://%' "
         "ORDER BY isMovie, f.idFile");
     std::vector<std::tuple<int, int, std::string, std::string>> movieFiles;
     while (!m_pDS->eof())
@@ -1686,7 +1688,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
     for (const auto& [idFile, idOldPath, path, fileName] : movieFiles)
     {
-      const std::string discFile{GetDiscFile(path, fileName)};
+      const std::string discFile{GetDiscFile(URIUtils::AddFileToFolder(path, fileName))};
       if (discFile.empty())
         continue;
 
@@ -1694,11 +1696,11 @@ void CVideoDatabase::UpdateTables(int iVersion)
       std::string fileNameNew;
       SplitSelectPath(discFile, -1, -1, selectPath, fileNameNew);
 
-      const int idPath{GetSelectPathId(selectPath)};
+      const int idPath{GetPathId(selectPath)};
       if (idPath < 0)
         continue;
 
-      if (SelectFileTakenBy(idPath, fileNameNew, idFile) > 0)
+      if (FileNameTakenBy(idPath, fileNameNew, idFile) > 0)
       {
         CLog::LogF(LOGWARNING, "Not converting file {}, as {} is already taken", idFile,
                    fileNameNew);
@@ -1708,6 +1710,64 @@ void CVideoDatabase::UpdateTables(int iVersion)
       m_pDS2->exec(PrepareSQL("UPDATE files SET idPath = %i, strFileName = '%s' WHERE idFile = %i",
                               idPath, fileNameNew.c_str(), idFile));
       vacatedPaths.try_emplace(idOldPath, path);
+    }
+
+    // Stacks, where the whole stack is the one library item and so nothing is split - only the
+    // parts that name a disc are converted. A part is a disc in its own right, so it takes the
+    // plain select name whatever the stack holds.
+    m_pDS->query("SELECT DISTINCT f.idFile, f.strFileName "
+                 "FROM files AS f "
+                 "WHERE f.strFileName LIKE 'stack://%'");
+    std::vector<std::pair<int, std::string>> stackFiles;
+    while (!m_pDS->eof())
+    {
+      stackFiles.emplace_back(m_pDS->fv(0).get_asInt(), m_pDS->fv(1).get_asString());
+      m_pDS->next();
+    }
+    m_pDS->close();
+
+    for (const auto& [idFile, stackPath] : stackFiles)
+    {
+      std::vector<std::string> parts;
+      if (!CStackDirectory::GetPaths(stackPath, parts) || parts.empty())
+        continue;
+
+      bool converted{false};
+      for (std::string& part : parts)
+      {
+        const std::string discFile{GetDiscFile(part)};
+        if (discFile.empty())
+          continue;
+
+        std::string selectPath;
+        std::string selectFile;
+        SplitSelectPath(discFile, -1, -1, selectPath, selectFile);
+        part = URIUtils::AddFileToFolder(selectPath, selectFile);
+        converted = true;
+      }
+
+      std::string newStackPath;
+      if (!converted || !CStackDirectory::ConstructStackPath(parts, newStackPath))
+        continue;
+
+      // Held as a scan would hold it - the folder of the parts as the path, the whole stack as
+      // the name
+      std::string strPath;
+      std::string strFileName;
+      SplitPath(newStackPath, strPath, strFileName);
+
+      const int idPath{GetPathId(strPath)};
+      if (idPath < 0)
+        continue;
+
+      if (FileNameTakenBy(idPath, strFileName, idFile) > 0)
+      {
+        CLog::LogF(LOGWARNING, "Not converting stack of file {}, as it is already held", idFile);
+        continue;
+      }
+
+      m_pDS2->exec(PrepareSQL("UPDATE files SET idPath = %i, strFileName = '%s' WHERE idFile = %i",
+                              idPath, strFileName.c_str(), idFile));
     }
 
     // The entries have moved to bluray:// paths, leaving the disc's own BDMV folder holding

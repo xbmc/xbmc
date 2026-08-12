@@ -1268,14 +1268,17 @@ bool URIUtils::IsDiscImage(const std::string& file)
   return HasExtension(file, ".img|.iso|.nrg|.udf");
 }
 
-bool URIUtils::IsDiscImageStack(const std::string& file)
+bool URIUtils::IsUnresolvedDiscStack(const std::string& file)
 {
   if (IsStack(file))
   {
     std::vector<std::string> paths;
     CStackDirectory::GetPaths(file, paths);
+    // A part naming a disc rather than a title on it is one still waiting for a playlist. A part
+    // the library has scanned names it with a select path; one played from outside the library
+    // has never been looked at, so it still names the disc itself.
     for (const std::string& path : paths)
-      if (IsDiscImage(path) || IsDVDFile(path) || IsBDFile(path))
+      if (IsBluraySelectPath(path) || IsDiscImage(path) || IsDVDFile(path) || IsBDFile(path))
         return true;
   }
   return false;
