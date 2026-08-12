@@ -36,8 +36,10 @@ public:
   bool CanBeCancelled() const override { return true; }
   bool Cancel() override;
 
+  static constexpr const char* TYPE = "VideoLibraryScanningJob";
+
   // specialization of CJob
-  const char *GetType() const override { return "VideoLibraryScanningJob"; }
+  const char* GetType() const override { return TYPE; }
   bool Equals(const CJob* job) const override;
 
 protected:
