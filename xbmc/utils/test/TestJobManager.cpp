@@ -7,13 +7,16 @@
  */
 
 #include "ServiceBroker.h"
+#include "jobs/IJobCallback.h"
 #include "jobs/Job.h"
 #include "jobs/JobManager.h"
 #include "test/MtTestUtils.h"
 #include "utils/XTimeUtils.h"
 
 #include <atomic>
+#include <chrono>
 #include <mutex>
+#include <thread>
 
 #include <gtest/gtest.h>
 
@@ -210,4 +213,90 @@ TEST_F(TestJobManager, IsProcessing)
   EXPECT_EQ(0, CServiceBroker::GetJobManager()->IsProcessing(""));
 
   job->FinishAndStopBlocking();
+}
+
+namespace
+{
+class BlockingCallback : public IJobCallback
+{
+public:
+  ~BlockingCallback() override { Release(); }
+
+  void OnJobComplete(unsigned int jobID, bool success, CJob* job) override
+  {
+    m_entered = true;
+    while (m_blocked)
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    m_exited = true;
+  }
+
+  bool HasEntered() const { return m_entered; }
+
+  void Release()
+  {
+    m_blocked = false;
+    while (m_entered && !m_exited)
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+  }
+
+private:
+  std::atomic<bool> m_blocked{true};
+  std::atomic<bool> m_entered{false};
+  std::atomic<bool> m_exited{false};
+};
+
+unsigned int AddDumbJob(Flags& flags, IJobCallback* callback, CJob::PRIORITY priority)
+{
+  return CServiceBroker::GetJobManager()->AddJob(new ReallyDumbJob(&flags), callback, priority);
+}
+} // namespace
+
+TEST_F(TestJobManager, BlockedCallbackDoesNotStallOtherJobs)
+{
+  BlockingCallback callback;
+  Flags blockedFlags;
+  AddDumbJob(blockedFlags, &callback, CJob::PRIORITY_NORMAL);
+  ASSERT_TRUE(poll([&callback]() { return callback.HasEntered(); }));
+
+  Flags flags;
+  AddDumbJob(flags, nullptr, CJob::PRIORITY_NORMAL);
+  EXPECT_TRUE(poll([&flags]() { return flags.finished.load(); }));
+
+  callback.Release();
+}
+
+TEST_F(TestJobManager, BlockedCallbackDoesNotStallDedicatedJobs)
+{
+  BlockingCallback callback;
+  Flags blockedFlags;
+  AddDumbJob(blockedFlags, &callback, CJob::PRIORITY_NORMAL);
+  ASSERT_TRUE(poll([&callback]() { return callback.HasEntered(); }));
+
+  Flags flags;
+  AddDumbJob(flags, nullptr, CJob::PRIORITY_DEDICATED);
+  EXPECT_TRUE(poll([&flags]() { return flags.finished.load(); }));
+
+  callback.Release();
+}
+
+TEST_F(TestJobManager, CallbacksCountTowardsTheConcurrencyLimit)
+{
+  BlockingCallback firstCallback;
+  BlockingCallback secondCallback;
+  Flags firstFlags;
+  Flags secondFlags;
+
+  AddDumbJob(firstFlags, &firstCallback, CJob::PRIORITY_LOW_PAUSABLE);
+  ASSERT_TRUE(poll([&firstCallback]() { return firstCallback.HasEntered(); }));
+  AddDumbJob(secondFlags, &secondCallback, CJob::PRIORITY_LOW_PAUSABLE);
+  ASSERT_TRUE(poll([&secondCallback]() { return secondCallback.HasEntered(); }));
+
+  Flags thirdFlags;
+  AddDumbJob(thirdFlags, nullptr, CJob::PRIORITY_LOW_PAUSABLE);
+  EXPECT_FALSE(poll(1000, [&thirdFlags]() { return thirdFlags.finished.load(); }));
+
+  firstCallback.Release();
+  secondCallback.Release();
+
+  EXPECT_TRUE(poll([&thirdFlags]() { return thirdFlags.finished.load(); }));
 }
