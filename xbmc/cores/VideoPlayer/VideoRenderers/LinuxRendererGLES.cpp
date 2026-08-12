@@ -414,17 +414,26 @@ bool CLinuxRendererGLES::Flush(bool saveBuffers)
 {
   glFinish();
 
-  for (int i = 0; i < m_NumYUVBuffers; i++)
+  // When asked to save buffers, leave the currently held textures/picture
+  // references alone so the renderer can keep presenting the last frame.
+  if (!saveBuffers)
   {
-    DeleteTexture(i);
+    for (int i = 0; i < m_NumYUVBuffers; i++)
+    {
+      DeleteTexture(i);
+    }
+
+    m_iYUVRenderBuffer = 0;
+
+    // Only invalidate the render target when we actually tore the buffers
+    // down above.
+    m_bValidated = false;
   }
 
   glFinish();
-  m_bValidated = false;
   m_fbo.fbo.Cleanup();
-  m_iYUVRenderBuffer = 0;
 
-  return false;
+  return saveBuffers;
 }
 
 void CLinuxRendererGLES::Update()
