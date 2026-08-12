@@ -14,11 +14,14 @@
 
 class CFileItem;
 class CDVDDemux;
+class CDVDStreamInfo;
 class CStreamDetails;
 class CStreamDetailSubtitle;
 class CDVDInputStream;
 class CTexture;
 class CTextureDetails;
+
+struct VideoPicture;
 
 class CDVDFileInfo
 {

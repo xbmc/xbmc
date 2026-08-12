@@ -8,6 +8,7 @@
 
 #include "DVDFileInfo.h"
 
+#include "DVDDecodeSession.h"
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDStreamInfo.h"
 #include "FileItem.h"
@@ -46,6 +47,7 @@
 
 #include <cstdlib>
 #include <memory>
+#include <optional>
 #include <string>
 
 extern "C" {
@@ -107,51 +109,12 @@ bool SeekAndDecodeFirstPicture(CDVDDemux& demuxer,
                                VideoPicture& picture,
                                int& packetsTried)
 {
-  const int nTotalLen = demuxer.GetStreamLength();
-
   const bool seekToChapter = chapterNumber > 0 && demuxer.GetChapterCount() > 0;
-  const int64_t nSeekTo =
-      seekToChapter ? demuxer.GetChapterPos(chapterNumber).count() : nTotalLen / 3;
+  const int64_t nSeekTo = seekToChapter ? demuxer.GetChapterPos(chapterNumber).count()
+                                        : demuxer.GetStreamLength() / 3;
 
-  CLog::LogF(LOGDEBUG, "seeking to pos {}ms (total: {}ms) in {}", nSeekTo, nTotalLen, redactPath);
-
-  if (!demuxer.SeekTime(static_cast<double>(nSeekTo), true))
-    return false;
-
-  CDVDVideoCodec::VCReturn iDecoderState = CDVDVideoCodec::VC_NONE;
-
-  // num streams * 160 frames, should get a valid frame, if not abort.
-  for (int attemptsLeft = demuxer.GetNrOfStreams() * 160; attemptsLeft >= 0; attemptsLeft--)
-  {
-    DemuxPacket* pPacket = demuxer.Read();
-    packetsTried++;
-
-    if (!pPacket)
-      break;
-
-    if (pPacket->iStreamId != videoStream)
-    {
-      CDVDDemuxUtils::FreeDemuxPacket(pPacket);
-      continue;
-    }
-
-    codec.AddData(*pPacket);
-    CDVDDemuxUtils::FreeDemuxPacket(pPacket);
-
-    iDecoderState = CDVDVideoCodec::VC_NONE;
-    while (iDecoderState == CDVDVideoCodec::VC_NONE)
-    {
-      iDecoderState = codec.GetPicture(&picture);
-    }
-
-    if (iDecoderState == CDVDVideoCodec::VC_PICTURE)
-    {
-      if (!(picture.iFlags & DVP_FLAG_DROPPED))
-        break;
-    }
-  }
-
-  return iDecoderState == CDVDVideoCodec::VC_PICTURE && !(picture.iFlags & DVP_FLAG_DROPPED);
+  return SeekAndDecodePictureAt(demuxer, codec, videoStream, nSeekTo, redactPath, picture,
+                                packetsTried);
 }
 
 //! Convert a decoded picture to a BGRA texture sized for the thumbnail cache.
@@ -263,6 +226,7 @@ std::unique_ptr<CTexture> PictureToTexture(const VideoPicture& picture, const CD
 
   return result;
 }
+
 } // namespace
 
 std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& fileItem,
@@ -274,78 +238,20 @@ std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& f
   const std::string redactPath = CURL::GetRedacted(fileItem.GetPath());
   auto start = std::chrono::steady_clock::now();
 
-  CFileItem item(fileItem);
-  item.SetMimeTypeForInternetFile();
-  auto pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, item);
-  if (!pInputStream)
-  {
-    CLog::Log(LOGERROR, "InputStream: Error creating stream for {}", redactPath);
+  std::optional<DVDDecodeSession> session =
+      OpenDVDDecodeSession(fileItem, CODEC_FORCE_SOFTWARE, redactPath);
+  if (!session)
     return {};
-  }
-
-  if (!pInputStream->Open())
-  {
-    CLog::Log(LOGERROR, "InputStream: Error opening, {}", redactPath);
-    return {};
-  }
-
-  std::unique_ptr<CDVDDemux> demuxer{CDVDFactoryDemuxer::CreateDemuxer(pInputStream, true)};
-  if (!demuxer)
-  {
-    CLog::LogF(LOGERROR, "Error creating demuxer");
-    return {};
-  }
-
-  int nVideoStream = -1;
-  int64_t demuxerId = -1;
-  for (CDemuxStream* pStream : demuxer->GetStreams())
-  {
-    if (pStream)
-    {
-      // ignore if it's a picture attachment (e.g. jpeg artwork)
-      // assume the first video stream is the one we want, ie the base layer in DV DTDL files
-      if (pStream->type == StreamType::VIDEO && !(pStream->flags & AV_DISPOSITION_ATTACHED_PIC) &&
-          nVideoStream == -1)
-      {
-        nVideoStream = pStream->uniqueId;
-        demuxerId = pStream->demuxerId;
-      }
-      else
-        demuxer->EnableStream(pStream->demuxerId, pStream->uniqueId, false);
-    }
-  }
 
   int packetsTried = 0;
 
   std::unique_ptr<CTexture> result{};
-  if (nVideoStream != -1)
-  {
-    std::unique_ptr<CProcessInfo> pProcessInfo(CProcessInfo::CreateInstance());
-    std::vector<AVPixelFormat> pixFmts;
-    pixFmts.push_back(AV_PIX_FMT_YUV420P);
-    pixFmts.push_back(AV_PIX_FMT_YUV420P10);
-    pixFmts.push_back(AV_PIX_FMT_YUV422P);
-    pixFmts.push_back(AV_PIX_FMT_YUV422P10);
-    pixFmts.push_back(AV_PIX_FMT_YUV444P);
-    pixFmts.push_back(AV_PIX_FMT_YUV444P10);
-    pProcessInfo->SetPixFormats(pixFmts);
-
-    CDVDStreamInfo hint(*demuxer->GetStream(demuxerId, nVideoStream), true);
-    hint.codecOptions = CODEC_FORCE_SOFTWARE;
-
-    std::unique_ptr<CDVDVideoCodec> pVideoCodec =
-        CDVDFactoryCodec::CreateVideoCodec(hint, *pProcessInfo);
-
-    if (pVideoCodec)
-    {
-      VideoPicture picture = {};
-      if (SeekAndDecodeFirstPicture(*demuxer, *pVideoCodec, nVideoStream, chapterNumber, redactPath,
-                                    picture, packetsTried))
-        result = PictureToTexture(picture, hint);
-      else
-        CLog::LogF(LOGDEBUG, "decode failed in {} after {} packets.", redactPath, packetsTried);
-    }
-  }
+  VideoPicture picture = {};
+  if (SeekAndDecodeFirstPicture(*session->demuxer, *session->codec, session->videoStream,
+                                chapterNumber, redactPath, picture, packetsTried))
+    result = PictureToTexture(picture, session->hint);
+  else
+    CLog::LogF(LOGDEBUG, "decode failed in {} after {} packets.", redactPath, packetsTried);
 
   auto end = std::chrono::steady_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
