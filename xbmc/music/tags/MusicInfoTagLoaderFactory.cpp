@@ -73,19 +73,19 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CFileItem& i
       strExtension == "wav" || strExtension == "mod" || strExtension == "s3m" ||
       strExtension == "it" || strExtension == "xm" || strExtension == "wv")
   {
-    CTagLoaderTagLib *pTagLoader = new CTagLoaderTagLib();
+    CTagLoaderTagLib* pTagLoader = new CTagLoaderTagLib();
     return pTagLoader;
   }
 #ifdef HAS_OPTICAL_DRIVE
   else if (strExtension == "cdda")
   {
-    CMusicInfoTagLoaderCDDA *pTagLoader = new CMusicInfoTagLoaderCDDA();
+    CMusicInfoTagLoaderCDDA* pTagLoader = new CMusicInfoTagLoaderCDDA();
     return pTagLoader;
   }
 #endif
   else if (strExtension == "shn")
   {
-    CMusicInfoTagLoaderSHN *pTagLoader = new CMusicInfoTagLoaderSHN();
+    CMusicInfoTagLoaderSHN* pTagLoader = new CMusicInfoTagLoaderSHN();
     return pTagLoader;
   }
   else if (strExtension == "mka" || strExtension == "mkv")
