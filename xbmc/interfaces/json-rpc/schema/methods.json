@@ -5347,6 +5347,48 @@
     ],
     "returns": "string"
   },
+  "VideoLibrary.RelocatePath": {
+    "type": "method",
+    "description": "Rewrites the location the library stores for items whose files have moved, keeping each item, its identifiers, its playback state and its artwork",
+    "transport": "Response",
+    "permission": "UpdateData",
+    "params": [
+      {
+        "name": "from",
+        "type": "string",
+        "required": true,
+        "minLength": 1,
+        "description": "Path prefix the library currently stores. A trailing separator is added if missing"
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": true,
+        "minLength": 1,
+        "description": "Path prefix to store in its place. Must lie within a video source"
+      }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "paths": {
+          "type": "integer",
+          "required": true,
+          "description": "Number of stored paths rewritten"
+        },
+        "items": {
+          "type": "integer",
+          "required": true,
+          "description": "Number of library items whose stored location changed"
+        },
+        "art": {
+          "type": "integer",
+          "required": true,
+          "description": "Number of artwork locations rewritten"
+        }
+      }
+    }
+  },
   "VideoLibrary.Export": {
     "type": "method",
     "description": "Exports all items from the video library",
