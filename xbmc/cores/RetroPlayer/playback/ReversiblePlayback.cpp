@@ -277,10 +277,14 @@ bool CReversiblePlayback::LoadSavestate(const std::string& savestatePath)
   std::unique_ptr<ISavestate> savestate = CSavestateDatabase::AllocateSavestate();
   if (m_savestateDatabase->GetSavestate(savestatePath, *savestate))
   {
-    if (savestate->GetMemorySize() != memorySize)
+    if (!savestate->PrepareMemoryData(memorySize))
     {
-      CLog::Log(LOGERROR, "Invalid memory size, got {}, expected {}", memorySize,
-                savestate->GetMemorySize());
+      CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Failed to prepare memory data");
+    }
+    else if (savestate->GetMemorySize() != memorySize)
+    {
+      CLog::Log(LOGERROR, "Invalid memory size, got {}, expected {}", savestate->GetMemorySize(),
+                memorySize);
     }
     else
     {

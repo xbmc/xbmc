@@ -1,8 +1,10 @@
 set(SOURCES SavestateDatabase.cpp
+            SavestateBlob.cpp
             SavestateFlatBuffer.cpp
 )
 
 set(HEADERS ISavestate.h
+            SavestateBlob.h
             SavestateDatabase.h
             SavestateFlatBuffer.h
             SavestateTypes.h
