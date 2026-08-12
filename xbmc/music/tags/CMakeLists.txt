@@ -1,4 +1,5 @@
 set(SOURCES MatroskaTagMapping.cpp
+            MatroskaTagReader.cpp
             MusicCodecInfoFFmpeg.cpp
             MusicInfoTag.cpp
             MusicInfoTagLoaderDatabase.cpp
@@ -12,6 +13,7 @@ set(SOURCES MatroskaTagMapping.cpp
 
 set(HEADERS ImusicInfoTagLoader.h
             MatroskaTagMapping.h
+            MatroskaTagReader.h
             MusicCodecInfoFFmpeg.h
             MusicInfoTag.h
             MusicInfoTagLoaderDatabase.h
@@ -21,6 +23,7 @@ set(HEADERS ImusicInfoTagLoader.h
             MusicInfoTagLoaderShn.h
             MatroskaTagLibStream.h
             ReplayGain.h
+            TagLibVersion.h
             TagLibVFSStream.h
             TagLoaderTagLib.h)
 if(ENABLE_OPTICAL)
