@@ -6,11 +6,13 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "utils/LanguageTag.h"
 #include "video/VideoStreamSelect.h"
 
 #include <gtest/gtest.h>
 
 using namespace KODI::VIDEO;
+using KODI::UTILS::CLanguageTag;
 
 namespace
 {
@@ -120,7 +122,7 @@ TEST_P(VideoStreamSelectVideoOrderTest, OrderVideo)
   for (const auto& mock : params.inputStreams)
   {
     VideoStreamInfo info;
-    info.language = mock.language;
+    info.language = CLanguageTag::Parse(mock.language);
     info.codecName = mock.codecName;
     info.hdrType = mock.hdrType;
     info.height = mock.height;
@@ -273,7 +275,7 @@ TEST_P(VideoStreamSelectAudioOrderTest, OrderAudio)
   for (const auto& mock : params.inputStreams)
   {
     AudioStreamInfo info;
-    info.language = mock.language;
+    info.language = CLanguageTag::Parse(mock.language);
     info.codecName = mock.codecName;
     info.flags = mock.flags;
     info.channels = mock.channels;
@@ -410,7 +412,7 @@ TEST_P(VideoStreamSelectSubtitleOrderTest, OrderSubtitles)
   for (const auto& mock : params.inputStreams)
   {
     SubtitleStreamInfo info;
-    info.language = mock.language;
+    info.language = CLanguageTag::Parse(mock.language);
     info.codecName = mock.codecName;
     info.flags = mock.flags;
     info.isExternal = mock.isExternal;

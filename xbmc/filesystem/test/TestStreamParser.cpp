@@ -75,7 +75,7 @@ std::vector<std::string> AudioLanguagesOf(const PlaylistInformation& p)
 {
   std::vector<std::string> languages;
   for (const auto& stream : p.audioStreams)
-    languages.emplace_back(stream.language);
+    languages.emplace_back(stream.language.AsBcp47());
   return languages;
 }
 
@@ -83,7 +83,7 @@ std::vector<std::string> SubtitleLanguagesOf(const PlaylistInformation& p)
 {
   std::vector<std::string> languages;
   for (const auto& stream : p.pgStreams)
-    languages.emplace_back(stream.language);
+    languages.emplace_back(stream.language.AsBcp47());
   return languages;
 }
 } // namespace
@@ -106,8 +106,8 @@ TEST(TestStreamParser, StreamsComeFromThePlaylistNotTheSharedClip)
   CStreamParser::ConvertBlurayPlaylistInformation(MakePlaylist(33, 30, allAudio, allSubtitles),
                                                   english, {}, StreamDetails::INCLUDE);
 
-  EXPECT_EQ(AudioLanguagesOf(english), (std::vector<std::string>{"eng", "jpn"}));
-  EXPECT_EQ(SubtitleLanguagesOf(english), (std::vector<std::string>{"eng", "fra", "jpn"}));
+  EXPECT_EQ(AudioLanguagesOf(english), (std::vector<std::string>{"en", "ja"}));
+  EXPECT_EQ(SubtitleLanguagesOf(english), (std::vector<std::string>{"en", "fr", "ja"}));
 
   const std::vector<StreamInformation> japaneseAudio{
       MakeStream(ENCODING_TYPE::AUDIO_AC3, 0x1101, "jpn"),
@@ -120,8 +120,8 @@ TEST(TestStreamParser, StreamsComeFromThePlaylistNotTheSharedClip)
   CStreamParser::ConvertBlurayPlaylistInformation(
       MakePlaylist(20, 30, japaneseAudio, japaneseSubtitles), japanese, {}, StreamDetails::INCLUDE);
 
-  EXPECT_EQ(AudioLanguagesOf(japanese), (std::vector<std::string>{"jpn", "eng"}));
-  EXPECT_EQ(SubtitleLanguagesOf(japanese), (std::vector<std::string>{"jpn", "eng"}));
+  EXPECT_EQ(AudioLanguagesOf(japanese), (std::vector<std::string>{"ja", "en"}));
+  EXPECT_EQ(SubtitleLanguagesOf(japanese), (std::vector<std::string>{"ja", "en"}));
 }
 
 TEST(TestStreamParser, TheFirstStreamOfEachTypeIsFlaggedAsTheDefault)
@@ -180,8 +180,8 @@ TEST(TestStreamParser, PlaylistWithoutAStreamNumberTableFallsBackToTheClip)
   PlaylistInformation p;
   CStreamParser::ConvertBlurayPlaylistInformation(b, p, {}, StreamDetails::INCLUDE);
 
-  EXPECT_EQ(AudioLanguagesOf(p), (std::vector<std::string>{"eng", "jpn"}));
-  EXPECT_EQ(SubtitleLanguagesOf(p), (std::vector<std::string>{"eng", "fra", "jpn"}));
+  EXPECT_EQ(AudioLanguagesOf(p), (std::vector<std::string>{"en", "ja"}));
+  EXPECT_EQ(SubtitleLanguagesOf(p), (std::vector<std::string>{"en", "fr", "ja"}));
 
   // Nothing has been read when stream details are deferred, so there is nothing to fall back to
   PlaylistInformation deferred;

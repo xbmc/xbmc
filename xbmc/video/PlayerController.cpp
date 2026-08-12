@@ -18,6 +18,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUISliderControl.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/guiinfo/GUIInfoUtils.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "resources/LocalizeStrings.h"
@@ -28,7 +29,6 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/SubtitlesSettings.h"
-#include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "video/PlayerControllerActions.h"
@@ -87,12 +87,9 @@ bool CPlayerController::OnAction(const CAction &action)
         std::string sub;
         if (subsOn)
         {
-          std::string lang;
           SubtitleStreamInfo info;
           appPlayer->GetSubtitleStreamInfo(CURRENT_STREAM, info);
-          if (!g_LangCodeExpander.Lookup(info.language, lang))
-            lang =
-                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // Unknown
+          const std::string lang{GUILIB::GUIINFO::CGUIInfoUtils::FormatLanguage(info.language)};
 
           if (info.name.empty())
             sub = lang;

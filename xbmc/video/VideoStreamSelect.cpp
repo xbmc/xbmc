@@ -13,11 +13,9 @@
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
-#include "resources/LocalizeStrings.h"
-#include "resources/ResourcesComponent.h"
+#include "guilib/guiinfo/GUIInfoUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/LangCodeExpander.h"
 #include "utils/URIUtils.h"
 
 #include <algorithm>
@@ -136,9 +134,7 @@ VideoStreamInfoExt::VideoStreamInfoExt(int id, const VideoStreamInfo& info) : Vi
 {
   streamId = id;
 
-  if (!g_LangCodeExpander.Lookup(info.language, languageDesc))
-    languageDesc =
-        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // Unknown
+  languageDesc = KODI::GUILIB::GUIINFO::CGUIInfoUtils::FormatLanguage(info.language);
 
   isDefault = info.flags & StreamFlags::FLAG_DEFAULT;
   isForced = info.flags & StreamFlags::FLAG_FORCED;
@@ -154,9 +150,7 @@ AudioStreamInfoExt::AudioStreamInfoExt(int id, const AudioStreamInfo& info) : Au
 {
   streamId = id;
 
-  if (!g_LangCodeExpander.Lookup(info.language, languageDesc))
-    languageDesc =
-        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // Unknown
+  languageDesc = KODI::GUILIB::GUIINFO::CGUIInfoUtils::FormatLanguage(info.language);
 
   isDefault = info.flags & StreamFlags::FLAG_DEFAULT;
   isForced = info.flags & StreamFlags::FLAG_FORCED;
@@ -170,9 +164,7 @@ SubtitleStreamInfoExt::SubtitleStreamInfoExt(int id, const SubtitleStreamInfo& i
 {
   streamId = id;
 
-  if (!g_LangCodeExpander.Lookup(info.language, languageDesc))
-    languageDesc =
-        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // Unknown
+  languageDesc = KODI::GUILIB::GUIINFO::CGUIInfoUtils::FormatLanguage(info.language);
 
   isDefault = info.flags & StreamFlags::FLAG_DEFAULT;
   isForced = info.flags & StreamFlags::FLAG_FORCED;

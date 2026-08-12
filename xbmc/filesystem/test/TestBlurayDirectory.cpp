@@ -8,6 +8,7 @@
 
 #include "filesystem/BlurayDirectory.h"
 #include "filesystem/DiscDirectoryHelper.h"
+#include "utils/LanguageTag.h"
 
 #include <chrono>
 #include <vector>
@@ -16,6 +17,7 @@
 
 using namespace XFILE;
 using namespace std::chrono_literals;
+using KODI::UTILS::CLanguageTag;
 
 class TestBlurayDirectory : public ::testing::Test
 {
@@ -235,11 +237,11 @@ TEST_F(TestBlurayDirectory, ProcessPlaylist_CarriesThePlaylistThrough)
   titleInfo.hasSecondaryVideo = true;
 
   AudioStreamInfo audio;
-  audio.language = "eng";
+  audio.language = CLanguageTag::Parse("eng");
   titleInfo.audioStreams.emplace_back(audio);
 
   SubtitleStreamInfo subtitle;
-  subtitle.language = "fra";
+  subtitle.language = CLanguageTag::Parse("fra");
   titleInfo.pgStreams.emplace_back(subtitle);
 
   PlaylistMap playlists;
@@ -254,7 +256,7 @@ TEST_F(TestBlurayDirectory, ProcessPlaylist_CarriesThePlaylistThrough)
   EXPECT_EQ(recorded.chapters.size(), titleInfo.chapters.size());
   EXPECT_EQ(recorded.audioStreams.size(), 1U);
   EXPECT_EQ(recorded.pgStreams.size(), 1U);
-  EXPECT_EQ(recorded.languages, "eng");
+  EXPECT_EQ(recorded.languages, "en");
   EXPECT_TRUE(recorded.hasSecondaryVideo);
 
   // The clips are recorded once, in the clip map, along with which playlists reference them

@@ -12,6 +12,7 @@
 #include "StreamUtils.h"
 #include "utils/Archive.h"
 #include "utils/LangCodeExpander.h"
+#include "utils/LanguageTag.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
@@ -44,7 +45,7 @@ CStreamDetailVideo::CStreamDetailVideo(const VideoStreamInfo& info, int duration
     m_iDuration(duration),
     m_strCodec(info.codecName),
     m_strStereoMode(info.stereoMode),
-    m_strLanguage(info.language),
+    m_strLanguage(info.language.AsIso6392B()),
     m_strHdrType(CStreamDetails::HdrTypeToString(info.hdrType)),
     m_strHdrDetail(info.hdrDetail)
 {
@@ -92,7 +93,7 @@ void CStreamDetailVideo::Serialize(CVariant& value) const
   value["width"] = m_iWidth;
   value["duration"] = m_iDuration;
   value["stereomode"] = m_strStereoMode;
-  value["language"] = m_strLanguage;
+  value["language"] = CLangCodeExpander::AsBcp47(m_strLanguage);
   value["hdrtype"] = m_strHdrType;
   value["hdrdetail"] = m_strHdrDetail;
   value["source"] = static_cast<int>(m_source);
@@ -118,7 +119,7 @@ CStreamDetailAudio::CStreamDetailAudio(const AudioStreamInfo& info, Source sourc
   : CStreamDetail(CStreamDetail::AUDIO),
     m_iChannels(info.channels),
     m_strCodec(info.codecName),
-    m_strLanguage(info.language),
+    m_strLanguage(info.language.AsIso6392B()),
     m_flags(info.flags)
 {
   m_source = source;
@@ -152,7 +153,7 @@ void CStreamDetailAudio::Archive(CArchive& ar)
 void CStreamDetailAudio::Serialize(CVariant& value) const
 {
   value["codec"] = m_strCodec;
-  value["language"] = m_strLanguage;
+  value["language"] = CLangCodeExpander::AsBcp47(m_strLanguage);
   value["channels"] = m_iChannels;
   value["source"] = static_cast<int>(m_source);
   value["version"] = m_version;
@@ -176,7 +177,7 @@ CStreamDetailSubtitle::CStreamDetailSubtitle() :
 
 CStreamDetailSubtitle::CStreamDetailSubtitle(const SubtitleStreamInfo& info, Source source)
   : CStreamDetail(CStreamDetail::SUBTITLE),
-    m_strLanguage(info.language),
+    m_strLanguage(info.language.AsIso6392B()),
     m_flags(info.flags)
 {
   m_source = source;
@@ -205,25 +206,27 @@ void CStreamDetailSubtitle::Archive(CArchive& ar)
 }
 void CStreamDetailSubtitle::Serialize(CVariant& value) const
 {
-  value["language"] = m_strLanguage;
+  value["language"] = CLangCodeExpander::AsBcp47(m_strLanguage);
   value["source"] = static_cast<int>(m_source);
   value["version"] = m_version;
   value["flags"] = static_cast<int>(m_flags);
 }
 
-bool CStreamDetailSubtitle::IsWorseThan(const CStreamDetail &that) const
+bool CStreamDetailSubtitle::IsWorseThan(const CStreamDetail& that) const
 {
   if (that.m_eType != CStreamDetail::SUBTITLE)
     return true;
 
-  if (g_LangCodeExpander.CompareISO639Codes(m_strLanguage, static_cast<const CStreamDetailSubtitle &>(that).m_strLanguage))
+  const KODI::UTILS::CLanguageTag language{KODI::UTILS::CLanguageTag::Parse(m_strLanguage)};
+  const KODI::UTILS::CLanguageTag other{KODI::UTILS::CLanguageTag::Parse(
+      static_cast<const CStreamDetailSubtitle&>(that).m_strLanguage)};
+
+  if (language.Matches(other))
     return false;
 
   // the best subtitle should be the one in the user's preferred language
   // If preferred language is set to "original" this is "eng"
-  return m_strLanguage.empty() || g_LangCodeExpander.CompareISO639Codes(
-                                      static_cast<const CStreamDetailSubtitle&>(that).m_strLanguage,
-                                      g_langInfo.GetSubtitleLanguage(true));
+  return language.IsEmpty() || g_langInfo.GetSubtitleLanguage(true).Matches(other);
 }
 
 CStreamDetailVideo& CStreamDetailVideo::operator=(const CStreamDetailVideo& that)
@@ -624,6 +627,8 @@ int CStreamDetails::GetPreferredAudioStreamIndex(const std::string& language) co
   if (language.empty())
     return 0;
 
+  const KODI::UTILS::CLanguageTag preferred{KODI::UTILS::CLanguageTag::Parse(language)};
+
   int index{0};
   int bestIndex{0};
   const CStreamDetailAudio* best{nullptr};
@@ -636,7 +641,7 @@ int CStreamDetails::GetPreferredAudioStreamIndex(const std::string& language) co
     index++;
 
     const auto* audio{static_cast<const CStreamDetailAudio*>(iter.get())};
-    if (!g_LangCodeExpander.CompareISO639Codes(audio->m_strLanguage, language))
+    if (!KODI::UTILS::CLanguageTag::Parse(audio->m_strLanguage).Matches(preferred))
       continue;
 
     if (!best || StreamUtils::CompareAudioQuality(audio->m_strCodec, audio->m_iChannels,

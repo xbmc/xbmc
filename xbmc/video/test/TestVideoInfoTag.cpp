@@ -11,6 +11,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "test/TestUtils.h"
+#include "utils/LanguageTag.h"
 #include "utils/SortUtils.h"
 #include "utils/StreamDetails.h"
 #include "utils/Variant.h"
@@ -22,6 +23,8 @@
 #include <string>
 
 #include <gtest/gtest.h>
+
+using KODI::UTILS::CLanguageTag;
 
 TEST(TestVideoInfoTag, ReadTVShowSeasons)
 {
@@ -100,13 +103,13 @@ TEST(TestVideoInfoTag, WriteStreamDetailFlags)
   // keeps them.
   AudioStreamInfo audioInfo;
   audioInfo.codecName = "dts";
-  audioInfo.language = "eng";
+  audioInfo.language = CLanguageTag::Parse("eng");
   audioInfo.channels = 6;
   audioInfo.flags =
       static_cast<StreamFlags>(StreamFlags::FLAG_DEFAULT | StreamFlags::FLAG_ORIGINAL);
 
   SubtitleStreamInfo subtitleInfo;
-  subtitleInfo.language = "eng";
+  subtitleInfo.language = CLanguageTag::Parse("eng");
   subtitleInfo.flags = StreamFlags::FLAG_FORCED;
 
   CVideoInfoTag details;
@@ -261,7 +264,7 @@ protected:
   {
     m_settingOriginal = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
         CSettings::SETTING_LOCALE_AUDIOLANGUAGE);
-    m_audioLanguageOriginal = g_langInfo.GetAudioLanguage(false);
+    m_audioLanguageOriginal = g_langInfo.GetAudioLanguage(false).AsBcp47();
   }
 
   void TearDown() override
