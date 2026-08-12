@@ -222,13 +222,9 @@ class BlockingCallback : public IJobCallback
 public:
   ~BlockingCallback() override { Release(); }
 
-  void OnJobComplete(unsigned int jobID, bool success, CJob* job) override
-  {
-    m_entered = true;
-    while (m_blocked)
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    m_exited = true;
-  }
+  void OnJobComplete(unsigned int jobID, bool success, CJob* job) override { Block(); }
+
+  void OnJobAbort(unsigned int jobID, CJob* job) override { Block(); }
 
   bool HasEntered() const { return m_entered; }
 
@@ -240,6 +236,14 @@ public:
   }
 
 private:
+  void Block()
+  {
+    m_entered = true;
+    while (m_blocked)
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    m_exited = true;
+  }
+
   std::atomic<bool> m_blocked{true};
   std::atomic<bool> m_entered{false};
   std::atomic<bool> m_exited{false};
@@ -299,4 +303,30 @@ TEST_F(TestJobManager, CallbacksCountTowardsTheConcurrencyLimit)
   secondCallback.Release();
 
   EXPECT_TRUE(poll([&thirdFlags]() { return thirdFlags.finished.load(); }));
+}
+
+TEST_F(TestJobManager, CancelJobsDoesNotRunCallbacksUnderTheLock)
+{
+  CServiceBroker::GetJobManager()->PauseJobs();
+
+  BlockingCallback callback;
+  Flags flags;
+  AddDumbJob(flags, &callback, CJob::PRIORITY_LOW_PAUSABLE);
+
+  std::thread canceller([]() { CServiceBroker::GetJobManager()->CancelJobs(); });
+  ASSERT_TRUE(poll([&callback]() { return callback.HasEntered(); }));
+
+  std::atomic<bool> queried{false};
+  std::thread observer(
+      [&queried]()
+      {
+        CServiceBroker::GetJobManager()->IsProcessing(CJob::PRIORITY_NORMAL);
+        queried = true;
+      });
+
+  EXPECT_TRUE(poll(2000, [&queried]() { return queried.load(); }));
+
+  callback.Release();
+  observer.join();
+  canceller.join();
 }
