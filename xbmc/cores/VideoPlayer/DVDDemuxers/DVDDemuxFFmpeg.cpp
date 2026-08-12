@@ -427,6 +427,14 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
     m_pFormatContext->pb = m_ioContext;
 
     AVDictionary* options = NULL;
+    // ffmpeg's mpegts demuxer stops after the first PMT by default; force a full scan
+    // so the requested program is available to the scoping loop below.
+    CVariant earlyProgramProp(pInput->GetProperty("program"));
+    if (!earlyProgramProp.isNull())
+    {
+      av_dict_set(&options, "scan_all_pmts", "1", 0);
+    }
+
     if (iformat->name && (strcmp(iformat->name, "mp3") == 0 || strcmp(iformat->name, "mp2") == 0))
     {
       CLog::Log(LOGDEBUG, "{} - setting usetoc to 0 for accurate VBR MP3 seek", __FUNCTION__);
@@ -481,19 +489,53 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
                          "empty. Please report this bug.");
   }
 
-  // Don't apply the mpegts analyzeduration optimization if any stream needs full analysis:
-  // HEVC params break on reopen; DTS and TrueHD need full analyzeduration for extensions and channels
-  // (DTS channel/sample-rate detection is unreliable at a truncated analyzeduration even for core DTS).
+  // These codecs need full analysis: HEVC/VVC params break on reopen or a truncated
+  // probe; DTS/TrueHD channel and extension detection is unreliable at a short probe.
   bool skipTsOptimization = false;
-  bool isMpegTsWithStreams = iformat && (strcmp(iformat->name, "mpegts") == 0) &&
-                             m_pFormatContext->nb_streams > 0 &&
-                             m_pFormatContext->streams != nullptr;
+  bool isMpegTs = iformat && strcmp(iformat->name, "mpegts") == 0;
+  bool isMpegTsWithStreams =
+      isMpegTs && m_pFormatContext->nb_streams > 0 && m_pFormatContext->streams != nullptr;
   if (isMpegTsWithStreams)
   {
-    for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
+    // Check only the requested program, so an unrelated channel's codec doesn't force
+    // full analysis on a program that doesn't need it. Fall back to all streams
+    // when there's no program to resolve.
+    std::vector<unsigned int> streamIndexesToCheck;
+    CVariant programProp(pInput->GetProperty("program"));
+    if (!programProp.isNull() && m_pFormatContext->nb_programs > 0)
     {
-      AVCodecID codec = m_pFormatContext->streams[i]->codecpar->codec_id;
-      if (codec == AV_CODEC_ID_HEVC || codec == AV_CODEC_ID_DTS || codec == AV_CODEC_ID_TRUEHD)
+      int wantedProgramNum = static_cast<int>(programProp.asInteger());
+      for (unsigned int p = 0; p < m_pFormatContext->nb_programs; p++)
+      {
+        if (m_pFormatContext->programs[p]->program_num == wantedProgramNum)
+        {
+          for (unsigned int j = 0; j < m_pFormatContext->programs[p]->nb_stream_indexes; j++)
+            streamIndexesToCheck.push_back(m_pFormatContext->programs[p]->stream_index[j]);
+          break;
+        }
+      }
+    }
+    if (streamIndexesToCheck.empty())
+    {
+      for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
+        streamIndexesToCheck.push_back(i);
+    }
+
+    // DTS/TrueHD stream_types still AV_CODEC_ID_NONE at open (registration descriptor
+    // not seen yet); codec_tag holds the raw stream_type.
+    static constexpr int kHdAudioStreamTypes[] = {0x82, 0x83, 0x85, 0x86, 0xA2};
+    for (unsigned int idx : streamIndexesToCheck)
+    {
+      const AVCodecParameters* codecpar = m_pFormatContext->streams[idx]->codecpar;
+      if (codecpar->codec_id == AV_CODEC_ID_HEVC || codecpar->codec_id == AV_CODEC_ID_VVC ||
+          codecpar->codec_id == AV_CODEC_ID_DTS || codecpar->codec_id == AV_CODEC_ID_TRUEHD)
+      {
+        skipTsOptimization = true;
+        break;
+      }
+      if (codecpar->codec_id == AV_CODEC_ID_NONE && codecpar->codec_type != AVMEDIA_TYPE_VIDEO &&
+          std::find(std::begin(kHdAudioStreamTypes), std::end(kHdAudioStreamTypes),
+                    static_cast<int>(codecpar->codec_tag)) != std::end(kHdAudioStreamTypes))
       {
         skipTsOptimization = true;
         break;
@@ -501,14 +543,16 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
     }
   }
 
-  if (isMpegTsWithStreams && !url.IsProtocol("tcp") && !fileinfo && !isBluray &&
-      !skipTsOptimization)
+  // Live/realtime excluded: the full probe would stall playback start by seconds.
+  bool forceFullAnalysis = skipTsOptimization && !pInput->IsRealtime();
+
+  if (isMpegTsWithStreams && !url.IsProtocol("tcp") && !fileinfo && !isBluray && !forceFullAnalysis)
   {
     av_opt_set_int(m_pFormatContext, "analyzeduration", 500000, 0);
     m_checkTransportStream = true;
     skipCreateStreams = true;
   }
-  else if (!iformat || strcmp(iformat->name, "mpegts") != 0 || skipTsOptimization)
+  else if (!isMpegTs || forceFullAnalysis)
   {
     m_streaminfo = true;
   }
