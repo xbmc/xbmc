@@ -13,6 +13,8 @@
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/lib/SettingDefinitions.h"
+#include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
 
 struct ViewModeProperties
 {
@@ -41,6 +43,16 @@ static const ViewModeProperties viewModes[] =
 };
 
 #define NUMBER_OF_VIEW_MODES (sizeof(viewModes) / sizeof(viewModes[0]))
+
+//! \brief Is this view mode offerable right now? The shape in force decides, and what survives
+//! it is the renderer's rule rather than a second one written here.
+static bool Offerable(const ViewModeProperties& mode)
+{
+  if (!CServiceBroker::GetWinSystem()->GetGfxContext().IsRasterShapeStated())
+    return true;
+
+  return CViewModeSettings::SurvivesStatedShape(mode.viewMode);
+}
 
 /** Gets the index of a view mode
  *
@@ -71,7 +83,7 @@ int CViewModeSettings::GetNextQuickCycleViewMode(int viewMode)
   // Find the next quick cycle view mode
   for (size_t i = GetViewModeIndex(viewMode) + 1; i < NUMBER_OF_VIEW_MODES; i++)
   {
-    if (!viewModes[i].hideFromQuickCycle)
+    if (!viewModes[i].hideFromQuickCycle && Offerable(viewModes[i]))
       return viewModes[i].viewMode;
   }
 
@@ -97,9 +109,14 @@ void CViewModeSettings::ViewModesFiller(const std::shared_ptr<const CSetting>& s
   // Add all appropriate view modes to the list control
   for (const auto &item : viewModes)
   {
-    if (!item.hideFromList)
+    if (!item.hideFromList && Offerable(item))
       list.emplace_back(
           CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(item.stringIndex),
           item.viewMode);
   }
+}
+
+bool CViewModeSettings::SurvivesStatedShape(int viewMode)
+{
+  return viewMode == ViewModeNormal || viewMode == ViewModeCustom;
 }

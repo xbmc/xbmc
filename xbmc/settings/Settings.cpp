@@ -453,6 +453,8 @@ void CSettings::InitializeOptionFillers()
       "playerqueuedatasizes", CPlayerSettings::SettingOptionsQueueDataSizesFiller);
   GetSettingsManager()->RegisterSettingOptionsFiller(
       "playerfastforwardspeeds", CPlayerSettings::SettingOptionsFastForwardSpeeds);
+  GetSettingsManager()->RegisterSettingOptionsFiller(
+      "rasteraspectratios", CPlayerSettings::SettingOptionsRasterAspectRatios);
 }
 
 void CSettings::UninitializeOptionFillers()
@@ -509,6 +511,7 @@ void CSettings::UninitializeOptionFillers()
   GetSettingsManager()->UnregisterSettingOptionsFiller("playerqueuetimesizes");
   GetSettingsManager()->UnregisterSettingOptionsFiller("playerqueuedatasizes");
   GetSettingsManager()->UnregisterSettingOptionsFiller("playerfastforwardspeeds");
+  GetSettingsManager()->UnregisterSettingOptionsFiller("rasteraspectratios");
 }
 
 void CSettings::InitializeConditions()
@@ -591,6 +594,8 @@ void CSettings::InitializeISettingCallbacks()
        CSettings::SETTING_VIDEOLIBRARY_GROUPMOVIESETS, CSettings::SETTING_VIDEOLIBRARY_CLEANUP,
        CSettings::SETTING_VIDEOLIBRARY_IMPORT, CSettings::SETTING_VIDEOLIBRARY_EXPORT,
        CSettings::SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS,
+       CSettings::SETTING_VIDEOSCREEN_EXTRACTCONTENTGEOMETRY,
+       CSettings::SETTING_VIDEOSCREEN_SCANCONTENTGEOMETRY,
        CSettings::SETTING_MAINTENANCE_CLEANIMAGECACHE});
 
   GetSettingsManager()->RegisterCallback(

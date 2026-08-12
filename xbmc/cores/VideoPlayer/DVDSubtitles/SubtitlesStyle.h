@@ -10,6 +10,7 @@
 
 #include "utils/ColorUtils.h"
 
+#include <algorithm>
 #include <string>
 
 namespace KODI
@@ -120,6 +121,11 @@ struct renderOpts
   float videoWidth;
   // Video size height, may be influenced by video settings (e.g. zoom)
   float videoHeight;
+  // The picture within the video, in the same space as videoWidth/videoHeight. Black bars
+  // coded into the video are outside it. Zero means it is not known, which is taken as the
+  // whole video.
+  float contentWidth = 0.0f;
+  float contentHeight = 0.0f;
   float sourceWidth;
   float sourceHeight;
   float m_par; // Set the pixel aspect ratio
@@ -129,6 +135,29 @@ struct renderOpts
   double position = 0;
   HorizontalAlign horizontalAlignment = HorizontalAlign::DISABLED;
 };
+
+//! \brief Margins insetting the render frame, in frame pixels.
+struct FrameMargins
+{
+  int top{0};
+  int left{0};
+};
+
+/*!
+ * \brief The margins that place text inside the picture rather than inside the whole frame,
+ *        libass always rendering into the full frame. Applied symmetrically.
+ *
+ * \param opts contentWidth/contentHeight of zero mean the picture is not known, and the whole
+ *             video is used
+ */
+inline FrameMargins InsideVideoMargins(const renderOpts& opts)
+{
+  const float width = opts.contentWidth > 0.0f ? opts.contentWidth : opts.videoWidth;
+  const float height = opts.contentHeight > 0.0f ? opts.contentHeight : opts.videoHeight;
+
+  return {static_cast<int>((opts.frameHeight - std::min(height, opts.frameHeight)) / 2),
+          static_cast<int>((opts.frameWidth - std::min(width, opts.frameWidth)) / 2)};
+}
 
 } // namespace STYLE
 } // namespace SUBTITLES

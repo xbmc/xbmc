@@ -78,6 +78,13 @@
         <setting id="videoplayer.errorinaspect" type="integer" label="22021" help="36170">
           <level>2</level>
           <default>0</default>
+          <dependencies>
+            <!-- A stated screen shape means the picture corresponds to a mask or a lens, and a
+                 stretch to minimise bars would break that correspondence - the bars are cut or
+                 masked instead. The help text carries the why; the runtime ignores a stored
+                 value in the same state. -->
+            <dependency type="enable" setting="videoscreen.rasteraspect" operator="is">0</dependency>
+          </dependencies>
           <constraints>
             <minimum label="351">0</minimum>
             <step>1</step>
@@ -90,6 +97,9 @@
         <setting id="videoplayer.stretch43" type="integer" label="173" help="36171">
           <level>2</level>
           <default>0</default> <!-- ViewModeNormal -->
+          <dependencies>
+            <dependency type="enable" setting="videoscreen.rasteraspect" operator="is">0</dependency>
+          </dependencies>
           <constraints>
             <options>
               <option label="630">0</option> <!-- ViewModeNormal -->
@@ -650,6 +660,19 @@
             </options>
           </constraints>
           <control type="list" format="string" />
+        </setting>
+        <setting id="subtitles.aligntocontent" type="boolean" label="40815" help="40816">
+          <level>2</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="enable">
+              <or>
+                <condition setting="subtitles.align" operator="is">1</condition> <!-- Align::BOTTOM_INSIDE -->
+                <condition setting="subtitles.align" operator="is">3</condition> <!-- Align::TOP_INSIDE -->
+              </or>
+            </dependency>
+          </dependencies>
+          <control type="toggle" />
         </setting>
         <setting id="subtitles.fontname" type="string" label="14089" help="36185">
           <level>1</level>
@@ -3243,8 +3266,252 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
+        <!-- The same tool as videoscreen.screenalignment on the screen geometry page, reached
+             from here because this is the group a viewer already comes to about the shape of
+             their screen. A setting is defined once and belongs to one group, so a second way
+             in is a second entry rather than the same one listed twice. -->
+        <setting id="videoscreen.calibrationalignment" type="action" label="40860" help="40861">
+          <level>2</level>
+          <control type="button" format="action" />
+        </setting>
         <setting id="videoscreen.guicalibration" type="action" label="214" help="36357">
           <level>3</level>
+          <control type="button" format="action" />
+        </setting>
+      </group>
+    </category>
+    <category id="screengeometry" label="40844" help="40845">
+      <!-- One cohesive home for the content-geometry feature: the shape the screen operates
+           at, how the interface and the picture are laid out against it, and how the shape of
+           the content is measured. Some of it crosses into playback, deliberately - splitting
+           one feature across pages costs more than the taxonomy buys. -->
+      <group id="1" label="40846">
+        <!-- First, because the shape stated below is the shape the optics were aligned to: a
+             viewer setting their screen to 2.40 is exactly the viewer who needs a true 2.40
+             frame to align against, and should not have to find it on another page. -->
+        <setting id="videoscreen.screenalignment" type="action" label="40860" help="40861">
+          <level>2</level>
+          <control type="button" format="action" />
+        </setting>
+        <setting id="videoscreen.rasteraspect" type="integer" label="40830" help="40831">
+          <level>2</level>
+          <default>0</default> <!-- the display's own shape: inert on every display, window and calibration -->
+          <constraints>
+            <options>rasteraspectratios</options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
+      </group>
+      <group id="2" label="40847">
+        <setting id="videoscreen.guikeepshape" type="boolean" label="40832" help="40833">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoscreen.guisurround" type="integer" parent="videoscreen.guikeepshape" label="40835" help="40836">
+          <level>2</level>
+          <default>0</default> <!-- the skin's own declaration, black when it has none -->
+          <dependencies>
+            <dependency type="enable" setting="videoscreen.guikeepshape" operator="is">true</dependency>
+          </dependencies>
+          <constraints>
+            <options>
+              <option label="15109">0</option> <!-- the skin's own declaration, black when it has none -->
+              <option label="40838">1</option>
+              <option label="40839">2</option>
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
+        <setting id="videoscreen.guisurroundcolour" type="string" parent="videoscreen.guisurround" label="40840" help="40841">
+          <level>2</level>
+          <default>FF1A1A1A</default> <!-- a dark grey, visibly a choice without being a torch -->
+          <dependencies>
+            <dependency type="enable">
+              <and>
+                <condition setting="videoscreen.guikeepshape" operator="is">true</condition>
+                <condition setting="videoscreen.guisurround" operator="is">1</condition>
+              </and>
+            </dependency>
+          </dependencies>
+          <control type="colorbutton" />
+        </setting>
+        <setting id="videoscreen.guisurroundimage" type="path" parent="videoscreen.guisurround" label="40842" help="40843">
+          <level>2</level>
+          <default></default>
+          <dependencies>
+            <dependency type="enable">
+              <and>
+                <condition setting="videoscreen.guikeepshape" operator="is">true</condition>
+                <condition setting="videoscreen.guisurround" operator="is">2</condition>
+              </and>
+            </dependency>
+          </dependencies>
+          <constraints>
+            <allowempty>true</allowempty>
+            <writable>false</writable>
+          </constraints>
+          <control type="button" format="image">
+            <heading>40842</heading>
+          </control>
+        </setting>
+      </group>
+      <group id="3" label="40848">
+        <setting id="videoscreen.osdplaying" type="integer" label="40817" help="40818">
+          <level>2</level>
+          <default>0</default> <!-- the raster: today's behaviour -->
+          <constraints>
+            <options>
+              <option label="40819">0</option> <!-- the raster -->
+              <option label="40820">1</option>
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
+        <setting id="videoscreen.variablecontentgeometry" type="integer" label="40804" help="40805">
+          <level>2</level>
+          <default>0</default> <!-- show all of the picture -->
+          <constraints>
+            <options>
+              <option label="40806">0</option> <!-- show all of the picture -->
+              <option label="40807">1</option> <!-- use the title's main ratio -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
+      </group>
+      <group id="4" label="40849">
+        <setting id="videoscreen.extractcontentgeometry" type="boolean" label="40808" help="40809">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoscreen.contentgeometryonscan" type="boolean" parent="videoscreen.extractcontentgeometry" label="40810" help="40811">
+          <level>2</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="enable" setting="videoscreen.extractcontentgeometry" operator="is">true</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoscreen.contentgeometrysamples" type="integer" parent="videoscreen.extractcontentgeometry" label="40821" help="40822">
+          <level>2</level>
+          <default>9</default>
+          <constraints>
+            <minimum>5</minimum>
+            <step>2</step>
+            <maximum>45</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="videoscreen.extractcontentgeometry" operator="is">true</dependency>
+          </dependencies>
+          <control type="spinner" format="string">
+            <formatlabel>40823</formatlabel>
+          </control>
+        </setting>
+        <setting id="videoscreen.contentgeometryleadin" type="integer" parent="videoscreen.extractcontentgeometry" label="40824" help="40825">
+          <level>3</level>
+          <default>2</default>
+          <constraints>
+            <minimum label="40828">0</minimum>
+            <step>1</step>
+            <maximum>15</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="videoscreen.extractcontentgeometry" operator="is">true</dependency>
+          </dependencies>
+          <control type="spinner" format="string">
+            <formatlabel>14044</formatlabel>
+          </control>
+        </setting>
+        <setting id="videoscreen.contentgeometryleadout" type="integer" parent="videoscreen.extractcontentgeometry" label="40826" help="40829">
+          <level>3</level>
+          <default>1</default>
+          <constraints>
+            <minimum label="40828">0</minimum>
+            <step>1</step>
+            <maximum>15</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="videoscreen.extractcontentgeometry" operator="is">true</dependency>
+          </dependencies>
+          <control type="spinner" format="string">
+            <formatlabel>14044</formatlabel>
+          </control>
+        </setting>
+        <setting id="videoscreen.livecontentgeometry" type="boolean" parent="videoscreen.extractcontentgeometry" label="40850" help="40851">
+          <level>2</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="enable" setting="videoscreen.extractcontentgeometry" operator="is">true</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoscreen.livegeometrynarrow" type="integer" parent="videoscreen.livecontentgeometry" label="40852" help="40853">
+          <level>3</level>
+          <default>3</default>
+          <constraints>
+            <minimum label="40859">1</minimum>
+            <step>1</step>
+            <maximum>10</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="enable">
+              <and>
+                <condition setting="videoscreen.extractcontentgeometry" operator="is">true</condition>
+                <condition setting="videoscreen.livecontentgeometry" operator="is">true</condition>
+              </and>
+            </dependency>
+          </dependencies>
+          <control type="spinner" format="string">
+            <formatlabel>40858</formatlabel>
+          </control>
+        </setting>
+        <setting id="videoscreen.livegeometryleadin" type="integer" parent="videoscreen.livecontentgeometry" label="40854" help="40855">
+          <level>3</level>
+          <default>2</default> <!-- the scan's own exclusion; the two may diverge without one edit moving both -->
+          <constraints>
+            <minimum label="40828">0</minimum>
+            <step>1</step>
+            <maximum>15</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="enable">
+              <and>
+                <condition setting="videoscreen.extractcontentgeometry" operator="is">true</condition>
+                <condition setting="videoscreen.livecontentgeometry" operator="is">true</condition>
+              </and>
+            </dependency>
+          </dependencies>
+          <control type="spinner" format="string">
+            <formatlabel>14044</formatlabel>
+          </control>
+        </setting>
+        <setting id="videoscreen.livegeometryleadout" type="integer" parent="videoscreen.livecontentgeometry" label="40856" help="40857">
+          <level>3</level>
+          <default>1</default>
+          <constraints>
+            <minimum label="40828">0</minimum>
+            <step>1</step>
+            <maximum>15</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="enable">
+              <and>
+                <condition setting="videoscreen.extractcontentgeometry" operator="is">true</condition>
+                <condition setting="videoscreen.livecontentgeometry" operator="is">true</condition>
+              </and>
+            </dependency>
+          </dependencies>
+          <control type="spinner" format="string">
+            <formatlabel>14044</formatlabel>
+          </control>
+        </setting>
+        <setting id="videoscreen.scancontentgeometry" type="action" parent="videoscreen.extractcontentgeometry" label="40812" help="40813">
+          <level>2</level>
+          <dependencies>
+            <dependency type="enable" setting="videoscreen.extractcontentgeometry" operator="is">true</dependency>
+          </dependencies>
           <control type="button" format="action" />
         </setting>
       </group>

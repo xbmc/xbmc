@@ -3159,6 +3159,16 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///     @skinning_v13 **[New Boolean Condition]** \link VideoPlayer_IsStereoscopic `VideoPlayer.IsStereoscopic`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`VideoPlayer.ContentAspectVaries`</b>,
+///                  \anchor VideoPlayer_ContentAspectVaries
+///                  _boolean_,
+///     @return **True** when the currently playing title's picture changes shape partway
+///     through\, so that one ratio does not describe all of it. What the other ratios are is
+///     at \ref VideoPlayer_ContentAspect "VideoPlayer.ContentAspect(n)".
+///     <p><hr>
+///     @skinning_v22 **[New Boolean Condition]** \link VideoPlayer_ContentAspectVaries `VideoPlayer.ContentAspectVaries`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`VideoPlayer.SubtitlesEnabled`</b>,
 ///                  \anchor VideoPlayer_SubtitlesEnabled
 ///                  _boolean_,
@@ -3965,6 +3975,58 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///     @skinning_v18 **[New Infolabel]** \link VideoPlayer_VideoBitrate `VideoPlayer.VideoBitrate`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`VideoPlayer.VideoAspectName`</b>,
+///                  \anchor VideoPlayer_VideoAspectName
+///                  _string_,
+///     @return The name of the aspect ratio of the currently playing video (possible values:
+///     see \ref ListItem_VideoAspectName "ListItem.VideoAspectName").
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_VideoAspectName `VideoPlayer.VideoAspectName`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`VideoPlayer.ContentAspect([n])`</b>,
+///                  \anchor VideoPlayer_ContentAspect
+///                  _string_,
+///     @return The ratio of the picture inside the currently playing video's frame\, e.g. `2.35`
+///     - which is what the film was shot at\, where \ref VideoPlayer_VideoAspect
+///     "VideoPlayer.VideoAspect" is the shape of the frame carrying it. Empty when nothing has
+///     been measured or declared. `n` indexes the ratios a title whose geometry changes partway
+///     through contains\, dominant first\, so `ContentAspect` and `ContentAspect(0)` are the
+///     same value (possible values: see \ref ListItem_VideoAspect "ListItem.VideoAspect").
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_ContentAspect `VideoPlayer.ContentAspect`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`VideoPlayer.ContentAspectName([n])`</b>,
+///                  \anchor VideoPlayer_ContentAspectName
+///                  _string_,
+///     @return What the ratio at \ref VideoPlayer_ContentAspect "VideoPlayer.ContentAspect" is
+///     called\, e.g. `Scope`\, and empty when it has no name. Not translated (possible values:
+///     see \ref ListItem_VideoAspectName "ListItem.VideoAspectName").
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_ContentAspectName `VideoPlayer.ContentAspectName`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`VideoPlayer.ContentAspectCount`</b>,
+///                  \anchor VideoPlayer_ContentAspectCount
+///                  _string_,
+///     @return How many distinct ratios the currently playing title contains\, and **`0` when
+///     nothing was measured or declared for it**\, which is not the same as a title detected as
+///     the shape of its own frame. The count is of ratios\, never of how much runtime each holds.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_ContentAspectCount `VideoPlayer.ContentAspectCount`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`VideoPlayer.ContentAspectSource`</b>,
+///                  \anchor VideoPlayer_ContentAspectSource
+///                  _string_,
+///     @return Where the ratio came from: `container` (nothing is known\, so the frame is the
+///     answer)\, `cached` (a stored measurement)\, `live` (measured during playback) or
+///     `declared` (stated by the viewer\, which pins).
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_ContentAspectSource `VideoPlayer.ContentAspectSource`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`VideoPlayer.AudioCodec`</b>,
 ///                  \anchor VideoPlayer_AudioCodec
 ///                  _string_,
@@ -4324,7 +4386,7 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 88> videoplayer = {{
+constexpr std::array<InfoMap, 94> videoplayer = {{
     {"title",                 VIDEOPLAYER_TITLE},
     {"genre",                 VIDEOPLAYER_GENRE},
     {"country",               VIDEOPLAYER_COUNTRY},
@@ -4361,6 +4423,12 @@ constexpr std::array<InfoMap, 88> videoplayer = {{
     {"videocodec",            VIDEOPLAYER_VIDEO_CODEC},
     {"videoresolution",       VIDEOPLAYER_VIDEO_RESOLUTION},
     {"videoaspect",           VIDEOPLAYER_VIDEO_ASPECT},
+    {"videoaspectname",       VIDEOPLAYER_VIDEO_ASPECT_NAME},
+    {"contentaspect",         VIDEOPLAYER_CONTENT_ASPECT},
+    {"contentaspectname",     VIDEOPLAYER_CONTENT_ASPECT_NAME},
+    {"contentaspectcount",    VIDEOPLAYER_CONTENT_ASPECT_COUNT},
+    {"contentaspectsource",   VIDEOPLAYER_CONTENT_ASPECT_SOURCE},
+    {"contentaspectvaries",   VIDEOPLAYER_CONTENT_ASPECT_VARIES},
     {"videobitrate",          VIDEOPLAYER_VIDEO_BITRATE},
     {"audiocodec",            VIDEOPLAYER_AUDIO_CODEC},
     {"audiochannels",         VIDEOPLAYER_AUDIO_CHANNELS},
@@ -6690,6 +6758,78 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///      - <b>2.40</b>
 ///      - <b>2.55</b>
 ///      - <b>2.76</b>
+///     .
+///     The list is the shipped `system/aspectratios.xml`\, which a user may add to.
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.VideoAspectName`</b>,
+///                  \anchor ListItem_VideoAspectName
+///                  _string_,
+///     @return What that aspect ratio is called\, empty for a ratio that has no name.
+///     Reported alongside \ref ListItem_VideoAspect "ListItem.VideoAspect"\, never instead
+///     of it. Not translated. Values:
+///      - <b>Movietone</b>
+///      - <b>4:3</b>
+///      - <b>Academy</b>
+///      - <b>IMAX 70mm</b>
+///      - <b>3:2</b>
+///      - <b>16:9</b>
+///      - <b>Flat</b>
+///      - <b>IMAX digital</b>
+///      - <b>Univisium</b>
+///      - <b>Todd-AO</b>
+///      - <b>CinemaScope</b>
+///      - <b>Scope</b>
+///      - <b>CinemaScope 55</b>
+///      - <b>Ultra Panavision 70</b>
+///     .
+///     The list is the shipped `system/aspectratios.xml`\, which a user may add to or rename.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_VideoAspectName `ListItem.VideoAspectName`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.ContentAspect([n])`</b>,
+///                  \anchor ListItem_ContentAspect
+///                  _string_,
+///     @return The ratio of the picture inside the selected item's frame - what the film was
+///     shot at\, where \ref ListItem_VideoAspect "ListItem.VideoAspect" is the shape of the
+///     frame carrying it. A hard-matted 2.35 film in a 1920x1080 encode reports `2.35` here and
+///     `1.78` there. Empty when nothing has been measured or declared for the item. `n` indexes
+///     the ratios a title whose geometry changes partway through contains\, dominant first\, so
+///     `ContentAspect` and `ContentAspect(0)` are the same value. Values as for \ref
+///     ListItem_VideoAspect "ListItem.VideoAspect".
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_ContentAspect `ListItem.ContentAspect`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.ContentAspectName([n])`</b>,
+///                  \anchor ListItem_ContentAspectName
+///                  _string_,
+///     @return What the ratio at \ref ListItem_ContentAspect "ListItem.ContentAspect" is
+///     called\, empty for a ratio that has no name. Not translated. Values as for \ref
+///     ListItem_VideoAspectName "ListItem.VideoAspectName".
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_ContentAspectName `ListItem.ContentAspectName`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.ContentAspectCount`</b>,
+///                  \anchor ListItem_ContentAspectCount
+///                  _string_,
+///     @return How many distinct ratios the selected item contains\, and **`0` when nothing was
+///     measured or declared for it**\, which is not the same as an item detected as the shape of
+///     its own frame. The count is of ratios\, never of how much runtime each holds.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_ContentAspectCount `ListItem.ContentAspectCount`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.ContentAspectSource`</b>,
+///                  \anchor ListItem_ContentAspectSource
+///                  _string_,
+///     @return Where the ratio came from: `container` (nothing is known\, so the frame is the
+///     answer)\, `cached` (a stored measurement)\, `live` (measured during playback) or
+///     `declared` (stated by the viewer\, which pins).
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_ContentAspectSource `ListItem.ContentAspectSource`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.AudioCodec`</b>,
@@ -7685,6 +7825,15 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///     <p><hr>
 ///     @skinning_v21 **[New Infolabel]** \link ListItem_IsVideoExtra `ListItem.IsVideoExtra`\endlink
 ///   }
+///   \table_row3{   <b>`ListItem.ContentAspectVaries`</b>,
+///                  \anchor ListItem_ContentAspectVaries
+///                  _boolean_,
+///     @return **True** when the selected item's picture changes shape partway through\, so
+///     that one ratio does not describe all of it. What the other ratios are is at \ref
+///     ListItem_ContentAspect "ListItem.ContentAspect(n)".
+///     <p><hr>
+///     @skinning_v22 **[New Boolean Condition]** \link ListItem_ContentAspectVaries `ListItem.ContentAspectVaries`\endlink
+///   }
 ///   \table_row3{   <b>`ListItem.VideoVersionName`</b>,
 ///                  \anchor ListItem_VideoVersionName
 ///                  _string_,
@@ -7755,7 +7904,7 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 228> listitem_labels = {{
+constexpr std::array<InfoMap, 234> listitem_labels = {{
     {"thumb",                         LISTITEM_THUMB},
     {"icon",                          LISTITEM_ICON},
     {"actualicon",                    LISTITEM_ACTUAL_ICON},
@@ -7873,6 +8022,12 @@ constexpr std::array<InfoMap, 228> listitem_labels = {{
     {"videowidth",                    LISTITEM_VIDEO_WIDTH},
     {"videoheight",                   LISTITEM_VIDEO_HEIGHT},
     {"videoaspect",                   LISTITEM_VIDEO_ASPECT},
+    {"videoaspectname",               LISTITEM_VIDEO_ASPECT_NAME},
+    {"contentaspect",                 LISTITEM_CONTENT_ASPECT},
+    {"contentaspectname",             LISTITEM_CONTENT_ASPECT_NAME},
+    {"contentaspectcount",            LISTITEM_CONTENT_ASPECT_COUNT},
+    {"contentaspectsource",           LISTITEM_CONTENT_ASPECT_SOURCE},
+    {"contentaspectvaries",           LISTITEM_CONTENT_ASPECT_VARIES},
     {"audiocodec",                    LISTITEM_AUDIO_CODEC},
     {"audiochannels",                 LISTITEM_AUDIO_CHANNELS},
     {"audiolanguage",                 LISTITEM_AUDIO_LANGUAGE},
@@ -11301,6 +11456,15 @@ int CGUIInfoManager::TranslateSingleString(const std::string& strCondition, bool
       {
         return AddMultiInfo(CGUIInfo(VIDEOPLAYER_ART, prop.param(), 0));
       }
+      // The ratios a title contains, dominant first. Index zero is the same answer the
+      // unparameterised form gives, so a skin writing a loop does not need a special case
+      // for the first one.
+      if ((prop.Name() == "contentaspect" || prop.Name() == "contentaspectname") &&
+          prop.num_params() > 0)
+      {
+        return AddMultiInfo(CGUIInfo(TranslateVideoPlayerString(prop.Name()),
+                                     static_cast<uint32_t>(std::atoi(prop.param().c_str()))));
+      }
       if (prop.Name() == "cast" && prop.num_params() > 0)
       {
         return AddMultiInfo(CGUIInfo(VIDEOPLAYER_CAST, TranslateListSeparator(prop.param()), 0));
@@ -11676,6 +11840,11 @@ int CGUIInfoManager::TranslateListItem(const Property& cat,
     else if (prop.Name() == "audiochannels" || prop.Name() == "musicchannels")
     {
       data3 = prop.param();
+    }
+    // Index zero is the unparameterised form's answer, as for VideoPlayer.
+    else if (prop.Name() == "contentaspect" || prop.Name() == "contentaspectname")
+    {
+      data4 = std::atoi(prop.param().c_str());
     }
   }
 
@@ -12480,6 +12649,11 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem* item, int contextWindow, i
 
 void CGUIInfoManager::ResetCache()
 {
+  // The content geometry a refresh serves is resolved once and held for the whole of it, so the
+  // ratio, the count and whether it varies cannot come from two resolutions either side of a
+  // change. A refresh ends here, so the snapshot expires here.
+  m_infoProviders.GetVideoInfoProvider().ResetContentGeometry();
+
   // mark our infobools as dirty
   std::unique_lock lock(m_critInfo);
   ++m_refreshCounter;

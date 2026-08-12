@@ -8,9 +8,24 @@
 
 #include "VideoSettings.h"
 
+#include "XBDateTime.h"
 #include "threads/CriticalSection.h"
 
 #include <mutex>
+
+void CVideoSettings::DeclareAspect(float ratio, float detectedNow)
+{
+  m_declaredAspect = ratio;
+  m_declaredOn = CDateTime::GetCurrentDateTime().GetAsDBDateTime();
+  m_detectedWhenDeclared = detectedNow;
+}
+
+void CVideoSettings::ClearDeclaredAspect()
+{
+  m_declaredAspect = 0.0f;
+  m_declaredOn.clear();
+  m_detectedWhenDeclared = 0.0f;
+}
 
 CVideoSettings::CVideoSettings()
 {
@@ -78,6 +93,10 @@ bool CVideoSettings::operator!=(const CVideoSettings &right) const
   if (m_ToneMapParam != right.m_ToneMapParam) return true;
   if (m_Orientation != right.m_Orientation) return true;
   if (m_CenterMixLevel != right.m_CenterMixLevel) return true;
+  if (m_declaredAspect != right.m_declaredAspect)
+    return true;
+  // The provenance is a record of the declaration rather than a setting of its own, so
+  // rewriting an unchanged declaration is not a change.
   return false;
 }
 

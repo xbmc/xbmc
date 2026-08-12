@@ -2,6 +2,7 @@ set(SOURCES AppEnvironment.cpp
             AppInboundProtocol.cpp
             Application.cpp
             ApplicationActionListeners.cpp
+            ApplicationContentGeometry.cpp
             ApplicationMessageHandling.cpp
             ApplicationPlay.cpp
             ApplicationPlayer.cpp
@@ -18,6 +19,7 @@ set(HEADERS AppEnvironment.h
             AppInboundProtocol.h
             Application.h
             ApplicationActionListeners.h
+            ApplicationContentGeometry.h
             ApplicationEnums.h
             ApplicationMessageHandling.h
             ApplicationPlay.h

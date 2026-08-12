@@ -35,6 +35,7 @@ xbmc/playlists/test/test.pxml
 xbmc/playlists/test/test.wpl
 xbmc/playlists/test/test.xspf
 xbmc/settings/test/test-MediaSources.xml
+xbmc/video/geometry/test/testdata/letterbox_320x240_bars40.mp4
 xbmc/video/test/testdata/moviestack_ab/Movie-(2001)/Movie-(2001)A.mp4
 xbmc/video/test/testdata/moviestack_ab/Movie-(2001)/Movie-(2001)B.mp4
 xbmc/video/test/testdata/moviestack_part/Movie_(2001)/Movie_(2001)_part1.mkv

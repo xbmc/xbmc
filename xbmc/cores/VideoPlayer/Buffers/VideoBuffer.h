@@ -35,6 +35,11 @@ struct YuvImage
   unsigned int bpp; // bytes per pixel
 };
 
+namespace KODI::VIDEO::GEOMETRY
+{
+struct ReducedFrame;
+}
+
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
@@ -131,6 +136,28 @@ public:
    * the concrete buffer type.
    */
   virtual AVDRMFrameDescriptor* GetDescriptor() const { return nullptr; }
+
+  /*!
+   * \brief Produce a small CPU-readable copy of the picture, for analysis whose answer survives
+   *        downscaling, when GetPlanes() exposes nothing.
+   *
+   * A hardware decoder's surface has no CPU-addressable planes, but its device can scale the
+   * picture to a small target and read that back for a fraction of the bandwidth. Not supported
+   * by default; false means the same to a caller as planeless GetPlanes().
+   *
+   * \param reduction receives the frame; plane vectors are reused across calls
+   * \param sourceWidth width of the picture within the surface, which may be padded
+   * \param sourceHeight height of the picture within the surface
+   * \param targetWidth requested width of the reduction; the height follows the source
+   *        shape, and a source already smaller is copied at its own size
+   */
+  virtual bool ReduceForAnalysis(KODI::VIDEO::GEOMETRY::ReducedFrame& reduction,
+                                 unsigned int sourceWidth,
+                                 unsigned int sourceHeight,
+                                 unsigned int targetWidth)
+  {
+    return false;
+  }
 
   static bool CopyPicture(YuvImage* pDst, YuvImage *pSrc);
   static bool CopyNV12Picture(YuvImage* pDst, YuvImage *pSrc);

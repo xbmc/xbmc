@@ -1,5 +1,6 @@
 xbmc/addons/gui/skin/test         test/skin
 xbmc/addons/test                  test/addons
+xbmc/application/test             test/application
 xbmc/cores/AudioEngine/Sinks/test test/audioengine_sinks
 xbmc/cores/VideoPlayer/test       test/videoplayer
 xbmc/cores/VideoPlayer/DVDDemuxers/test test/dvddemuxers
@@ -32,4 +33,6 @@ xbmc/threads/test                 test/threads
 xbmc/utils/i18n/test              test/utils/i18n
 xbmc/utils/i18n/Bcp47Registry/test test/utils/i18n/Bcp47Registry
 xbmc/utils/test                   test/utils
+xbmc/video/geometry/test          test/video/geometry
 xbmc/video/test                   test/video
+xbmc/windowing/test               test/windowing

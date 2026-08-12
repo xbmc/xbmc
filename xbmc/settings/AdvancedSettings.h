@@ -181,6 +181,14 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_musicPercentSeekBackwardBig;
     int m_videoIgnoreSecondsAtStart;
     float m_videoIgnorePercentAtEnd;
+
+    //! \brief Share of a title's samples a second shape needs before content counts as varying.
+    float m_videoContentGeometryVariesShare;
+
+    //! \brief Width of the reduced copy live geometry reads a hardware-decoded picture through.
+    //! Smaller costs less readback bandwidth, larger reads more of the dark HDR frames the
+    //! confidence gate would drop.
+    int m_videoContentGeometryReductionWidth;
     float m_audioApplyDrc;
     unsigned int m_maxPassthroughOffSyncDuration = 50; // when 50 ms off adjust
     bool m_AllowMultiChannelFloat = false; // Android only switch to be removed in v22

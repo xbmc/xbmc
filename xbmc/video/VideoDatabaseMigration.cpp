@@ -17,6 +17,7 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "VideoDatabase.h"
+#include "VideoDatabaseDDL.h"
 #include "dbwrappers/dataset.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "resources/LocalizeStrings.h"
@@ -1425,9 +1426,24 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->exec("ALTER TABLE streamdetails ADD iSource INTEGER DEFAULT 40");
     m_pDS->exec("ALTER TABLE streamdetails ADD iVersion INTEGER DEFAULT 1");
   }
+
+  if (iVersion < 149)
+  {
+    // Shared with CreateTables() rather than copied inline, against this file's usual rule,
+    // because 149 is the version that introduces the tables: the DDL cannot drift from this
+    // migration without also being a new schema version.
+    KODI::DATABASE::CVideoDatabaseDDL::CreateContentGeometryTable(*this);
+
+    // A declaration is user intent, so it lives with the other per-file overrides rather than in
+    // the cache above: the cache is invalidated when the file changes or the algorithm moves on,
+    // and a declaration survives both.
+    m_pDS->exec("ALTER TABLE settings ADD COLUMN DeclaredAspect float");
+    m_pDS->exec("ALTER TABLE settings ADD COLUMN DeclaredOn text");
+    m_pDS->exec("ALTER TABLE settings ADD COLUMN DetectedWhenDeclared float");
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 148;
+  return 149;
 }

@@ -25,4 +25,10 @@ public:
   static void SettingOptionsFastForwardSpeeds(const SettingConstPtr& setting,
                                               std::vector<IntegerSettingOption>& list,
                                               int& current);
+
+  //! \brief The ratios a viewer may state their room rests at, which are the ones Kodi can
+  //! label. Keyed in hundredths, so a stored choice survives a change to the vocabulary file.
+  static void SettingOptionsRasterAspectRatios(const SettingConstPtr& setting,
+                                               std::vector<IntegerSettingOption>& list,
+                                               int& current);
 };

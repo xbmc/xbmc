@@ -89,6 +89,16 @@ public:
   void SetAlignment(Align align) const;
 
   /*!
+   * \brief Whether alignment is measured against the picture rather than the whole video.
+   *
+   * Gated on the display setting - a masked screen or an anamorphic lens removes the coded bars,
+   * where an ordinary screen shows them and they are a good place for subtitles.
+   *
+   * \return true to align to the picture, false to align to the video
+   */
+  bool IsAlignedToContent() const;
+
+  /*!
    * \brief Get horizontal text alignment
    * \return The alignment
    */

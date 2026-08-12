@@ -15,7 +15,9 @@
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "video/geometry/FrameReduction.h"
 
+#include <algorithm>
 #include <mutex>
 
 extern "C" {
@@ -54,6 +56,57 @@ void CVideoBufferVTB::Unref()
 CVPixelBufferRef CVideoBufferVTB::GetPB()
 {
   return m_pbRef;
+}
+
+bool CVideoBufferVTB::ReduceForAnalysis(KODI::VIDEO::GEOMETRY::ReducedFrame& reduction,
+                                        unsigned int sourceWidth,
+                                        unsigned int sourceHeight,
+                                        unsigned int targetWidth)
+{
+  using namespace KODI::VIDEO::GEOMETRY;
+
+  if (!m_pbRef)
+    return false;
+
+  // No GPU work: a CVPixelBuffer is CPU-lockable, so the reduction is a locked read and a box
+  // downscale touching each source sample once, with depth and chroma layout normalised on the
+  // way.
+  ReductionSource source;
+  switch (CVPixelBufferGetPixelFormatType(m_pbRef))
+  {
+    case kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange:
+    case kCVPixelFormatType_420YpCbCr8BiPlanarFullRange:
+      source.bitDepth = 8;
+      break;
+    case kCVPixelFormatType_420YpCbCr10BiPlanarVideoRange:
+    case kCVPixelFormatType_420YpCbCr10BiPlanarFullRange:
+      source.bitDepth = 10;
+      source.highAligned = true;
+      break;
+    default:
+      return false;
+  }
+
+  if (CVPixelBufferGetPlaneCount(m_pbRef) < 2)
+    return false;
+
+  if (CVPixelBufferLockBaseAddress(m_pbRef, kCVPixelBufferLock_ReadOnly) != kCVReturnSuccess)
+    return false;
+
+  source.width =
+      std::min(sourceWidth, static_cast<unsigned int>(CVPixelBufferGetWidthOfPlane(m_pbRef, 0)));
+  source.height =
+      std::min(sourceHeight, static_cast<unsigned int>(CVPixelBufferGetHeightOfPlane(m_pbRef, 0)));
+  source.chroma = ChromaLayout::Interleaved;
+  source.y = static_cast<const uint8_t*>(CVPixelBufferGetBaseAddressOfPlane(m_pbRef, 0));
+  source.yStrideBytes = static_cast<int>(CVPixelBufferGetBytesPerRowOfPlane(m_pbRef, 0));
+  source.u = static_cast<const uint8_t*>(CVPixelBufferGetBaseAddressOfPlane(m_pbRef, 1));
+  source.uStrideBytes = static_cast<int>(CVPixelBufferGetBytesPerRowOfPlane(m_pbRef, 1));
+
+  const bool reduced = ReduceFrame(source, targetWidth, reduction);
+
+  CVPixelBufferUnlockBaseAddress(m_pbRef, kCVPixelBufferLock_ReadOnly);
+  return reduced;
 }
 
 //------------------------------------------------------------------------------

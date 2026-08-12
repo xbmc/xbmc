@@ -16,6 +16,7 @@ struct DEBUG_INFO_PLAYER
   std::string video;
   std::string player;
   std::string vsync;
+  std::string contentGeometry; //!< served rect, source and live gate state; empty without video
 };
 
 struct DEBUG_INFO_VIDEO

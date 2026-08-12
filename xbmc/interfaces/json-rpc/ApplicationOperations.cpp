@@ -13,12 +13,14 @@
 #include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "application/ApplicationComponents.h"
+#include "application/ApplicationContentGeometry.h"
 #include "application/ApplicationVolumeHandling.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "video/geometry/GeometryPublication.h"
 
 #include <cmath>
 #include <string.h>
@@ -158,6 +160,17 @@ JSONRPC_STATUS CApplicationOperations::GetPropertyValue(const std::string &prope
   }
   else if (property == "language")
     result = g_langInfo.GetLocale().ToShortString();
+  else if (property == "contentrect")
+  {
+    // Served here as well as on the player because the shape on the screen outlives any one
+    // stream, and Player.GetProperties needs one to exist.
+    const auto& components = CServiceBroker::GetAppComponents();
+    const auto contentGeometry = components.GetComponent<CApplicationContentGeometry>();
+    if (!contentGeometry)
+      return FailedToExecute;
+
+    KODI::VIDEO::GEOMETRY::SerializeEffectiveGeometry(contentGeometry->Get(), result);
+  }
   else
     return InvalidParams;
 
