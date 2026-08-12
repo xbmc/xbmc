@@ -300,11 +300,17 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
     if (strExtension == ".mkv" && !IsUnderMusicSource(url.Get()))
       return nullptr;
 
-    // Already-expanded chapter rows (have a music tag and a positive end offset)
-    // are going to return nullptr regardless, so skip the music-DB open for them
-    // and only consult the DB on the not-yet-expanded path where it gates the
-    // expensive FFmpeg ContainsFiles() probe.
-    if (!pItem->HasMusicInfoTag() || pItem->GetEndOffset() <= 0)
+    // Already-expanded chapter rows (have a music tag and a play range of their
+    // own) are going to return nullptr regardless, so skip the music-DB open for
+    // them and only consult the DB on the not-yet-expanded path where it gates
+    // the expensive FFmpeg ContainsFiles() probe.
+    //
+    // A last chapter nothing could close carries no end offset, so a positive end
+    // alone does not spot every expanded row: such a row is never the first, and
+    // so always carries a start.
+    const bool expandedRow =
+        pItem->HasMusicInfoTag() && (pItem->GetEndOffset() > 0 || pItem->GetStartOffset() > 0);
+    if (!expandedRow)
     {
       if (HasChaptersInMusicDb(url))
         return nullptr;
