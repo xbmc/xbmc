@@ -1,5 +1,6 @@
 set(SOURCES AudioSinkAE.cpp
             DVDClock.cpp
+            DVDDecodeSession.cpp
             DVDDemuxSPU.cpp
             DVDFileInfo.cpp
             DVDMessage.cpp
@@ -26,6 +27,7 @@ set(SOURCES AudioSinkAE.cpp
 
 set(HEADERS AudioSinkAE.h
             DVDClock.h
+            DVDDecodeSession.h
             DVDDemuxSPU.h
             DVDFileInfo.h
             DVDMessage.h
