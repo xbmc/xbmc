@@ -13,6 +13,8 @@
 #include <cstdint>
 #include <initializer_list>
 #include <span>
+#include <string>
+#include <string_view>
 #include <vector>
 
 namespace DRMPRIME
@@ -22,7 +24,11 @@ namespace DRMPRIME
 class CDmaBufIdentityCache
 {
 public:
-  explicit CDmaBufIdentityCache(size_t maxEntries) : m_maxEntries(maxEntries) {}
+  CDmaBufIdentityCache(size_t maxEntries, std::string_view name)
+    : m_maxEntries(maxEntries),
+      m_name(name)
+  {
+  }
 
   //! \brief Handle for an exact identity+salt match, 0 on miss; a same-memory mismatch dooms the entry.
   uint32_t Lookup(const DmaBufIdentity& identity, uint64_t salt = 0);
@@ -58,6 +64,7 @@ private:
   std::vector<uint32_t> m_doomed;
   uint64_t m_useCounter{0};
   size_t m_maxEntries;
+  std::string m_name;
   bool m_warnedEviction{false};
 };
 

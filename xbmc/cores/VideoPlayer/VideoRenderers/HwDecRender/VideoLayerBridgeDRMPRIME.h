@@ -52,7 +52,7 @@ private:
 
   static constexpr size_t MAX_FB_CACHE = 32;
 
-  DRMPRIME::CDmaBufIdentityCache m_fbCache{MAX_FB_CACHE};
+  DRMPRIME::CDmaBufIdentityCache m_fbCache{MAX_FB_CACHE, "bridge-fb"};
   CVideoBufferDRMPRIME* m_buffer = nullptr;
   CVideoBufferDRMPRIME* m_prev_buffer = nullptr;
   uint32_t m_fb_id{0};

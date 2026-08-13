@@ -35,7 +35,7 @@ DmaBufIdentity MakeIdentity(uint64_t inode, uint64_t pitch = 1920)
 
 TEST(TestDmaBufIdentityCache, MissThenHit)
 {
-  CDmaBufIdentityCache cache{4};
+  CDmaBufIdentityCache cache{4, "test"};
   const DmaBufIdentity identity = MakeIdentity(7);
 
   EXPECT_EQ(cache.Lookup(identity), 0u);
@@ -46,7 +46,7 @@ TEST(TestDmaBufIdentityCache, MissThenHit)
 
 TEST(TestDmaBufIdentityCache, SaltDistinguishesEntries)
 {
-  CDmaBufIdentityCache cache{4};
+  CDmaBufIdentityCache cache{4, "test"};
   const DmaBufIdentity identity = MakeIdentity(7);
 
   cache.Insert(identity, 100, 1);
@@ -57,7 +57,7 @@ TEST(TestDmaBufIdentityCache, SaltDistinguishesEntries)
 
 TEST(TestDmaBufIdentityCache, ExactLayoutRequiredForHit)
 {
-  CDmaBufIdentityCache cache{4};
+  CDmaBufIdentityCache cache{4, "test"};
   cache.Insert(MakeIdentity(7, 1920), 100);
 
   // same memory, different pitch: miss, and the old handle is doomed
@@ -71,7 +71,7 @@ TEST(TestDmaBufIdentityCache, ExactLayoutRequiredForHit)
 
 TEST(TestDmaBufIdentityCache, ExactMatchWinsOverStaleSameMemoryEntry)
 {
-  CDmaBufIdentityCache cache{4};
+  CDmaBufIdentityCache cache{4, "test"};
   cache.Insert(MakeIdentity(7, 1920), 100);
   cache.Insert(MakeIdentity(7, 2048), 200);
 
@@ -83,7 +83,7 @@ TEST(TestDmaBufIdentityCache, ExactMatchWinsOverStaleSameMemoryEntry)
 
 TEST(TestDmaBufIdentityCache, FdRecyclingCannotAlias)
 {
-  CDmaBufIdentityCache cache{4};
+  CDmaBufIdentityCache cache{4, "test"};
   cache.Insert(MakeIdentity(7), 100);
   cache.Insert(MakeIdentity(8), 200);
 
@@ -94,7 +94,7 @@ TEST(TestDmaBufIdentityCache, FdRecyclingCannotAlias)
 
 TEST(TestDmaBufIdentityCache, ReapDrainsDoomedExceptProtected)
 {
-  CDmaBufIdentityCache cache{4};
+  CDmaBufIdentityCache cache{4, "test"};
   cache.Insert(MakeIdentity(7, 1920), 100);
   EXPECT_EQ(cache.Lookup(MakeIdentity(7, 2048)), 0u); // dooms 100
 
@@ -108,7 +108,7 @@ TEST(TestDmaBufIdentityCache, ReapDrainsDoomedExceptProtected)
 
 TEST(TestDmaBufIdentityCache, EvictionOverCapIsLRU)
 {
-  CDmaBufIdentityCache cache{2};
+  CDmaBufIdentityCache cache{2, "test"};
   cache.Insert(MakeIdentity(1), 100);
   cache.Insert(MakeIdentity(2), 200);
   cache.Insert(MakeIdentity(3), 300);
@@ -128,7 +128,7 @@ TEST(TestDmaBufIdentityCache, EvictionOverCapIsLRU)
 
 TEST(TestDmaBufIdentityCache, EvictionNeverReturnsProtected)
 {
-  CDmaBufIdentityCache cache{1};
+  CDmaBufIdentityCache cache{1, "test"};
   cache.Insert(MakeIdentity(1), 100);
   cache.Insert(MakeIdentity(2), 200);
   cache.Insert(MakeIdentity(3), 300);
@@ -142,7 +142,7 @@ TEST(TestDmaBufIdentityCache, EvictionNeverReturnsProtected)
 
 TEST(TestDmaBufIdentityCache, EvictionHonorsMoreThanTwoProtectedHandles)
 {
-  CDmaBufIdentityCache cache{1};
+  CDmaBufIdentityCache cache{1, "test"};
   cache.Insert(MakeIdentity(1), 100);
   cache.Insert(MakeIdentity(2), 200);
   cache.Insert(MakeIdentity(3), 300);
@@ -157,7 +157,7 @@ TEST(TestDmaBufIdentityCache, EvictionHonorsMoreThanTwoProtectedHandles)
 
 TEST(TestDmaBufIdentityCache, TakeAllReturnsEverythingAndEmpties)
 {
-  CDmaBufIdentityCache cache{4};
+  CDmaBufIdentityCache cache{4, "test"};
   cache.Insert(MakeIdentity(7, 1920), 100);
   EXPECT_EQ(cache.Lookup(MakeIdentity(7, 2048)), 0u); // dooms 100
   cache.Insert(MakeIdentity(8), 200);
@@ -175,7 +175,7 @@ TEST(TestDmaBufIdentityCache, TakeAllReturnsEverythingAndEmpties)
 
 TEST(TestDmaBufIdentityCache, InvalidateAllFreesEverythingExceptProtected)
 {
-  CDmaBufIdentityCache cache{4};
+  CDmaBufIdentityCache cache{4, "test"};
   cache.Insert(MakeIdentity(7), 100);
   cache.Insert(MakeIdentity(8), 200);
   cache.Insert(MakeIdentity(9), 300);

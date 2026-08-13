@@ -106,8 +106,8 @@ public:
 
 private:
   EGLDisplay m_eglDisplay{nullptr};
-  DRMPRIME::CDmaBufIdentityCache m_oesCache{MAX_ENTRIES};
-  DRMPRIME::CDmaBufIdentityCache m_yuvCache{MAX_ENTRIES};
+  DRMPRIME::CDmaBufIdentityCache m_oesCache{MAX_ENTRIES, "oes"};
+  DRMPRIME::CDmaBufIdentityCache m_yuvCache{MAX_ENTRIES, "yuv"};
   // cache handle = entry index + 1; freed slots are recycled
   std::vector<std::unique_ptr<CDRMPRIMETexture>> m_oesEntries;
   std::vector<std::unique_ptr<CDRMPRIMETextureYUV>> m_yuvEntries;

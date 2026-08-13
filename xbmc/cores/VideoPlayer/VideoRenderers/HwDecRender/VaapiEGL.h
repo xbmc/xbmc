@@ -101,7 +101,7 @@ public:
 
 private:
   InteropInfo m_interop{};
-  DRMPRIME::CDmaBufIdentityCache m_cache{MAX_ENTRIES};
+  DRMPRIME::CDmaBufIdentityCache m_cache{MAX_ENTRIES, "vaapi"};
   // cache handle = entry index + 1; freed slots are recycled
   std::vector<std::unique_ptr<CVaapi2Texture>> m_entries;
   std::vector<size_t> m_free;
