@@ -2086,7 +2086,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
     CLog::LogF(LOGDEBUG, "Adding new set {}", set.GetTitle());
 
     // Create set
-    const int idSet{m_database.AddSet(set.GetTitle(), set.GetOverview(), set.GetOriginalTitle())};
+    const int idSet{m_database.AddSet(set.GetTitle(), set.GetOverview(), set.GetOriginalTitle(),
+                                      set.GetSortTitle())};
 
     // Assume art in set
     if (idSet > 0)

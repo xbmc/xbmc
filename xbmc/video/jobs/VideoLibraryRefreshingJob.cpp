@@ -165,7 +165,8 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     // tag now contains up-to-date set title
     if (tag.m_set.HasTitle())
       overview = tag.m_set.GetOverview();
-    db.AddSet(tag.m_set.GetTitle(), overview, tag.m_set.GetOriginalTitle());
+    db.AddSet(tag.m_set.GetTitle(), overview, tag.m_set.GetOriginalTitle(),
+              tag.m_set.GetSortTitle());
 
     // Update set art
     ART::Artwork movieSetArt;
