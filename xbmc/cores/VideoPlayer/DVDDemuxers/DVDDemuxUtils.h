@@ -30,6 +30,10 @@ struct ChapterFFmpeg
 class CDVDDemuxUtils
 {
 public:
+  //! How far in a first chapter may start and still count as starting at zero: longer than a
+  //! keyframe interval, shorter than anything worth seeking to.
+  static constexpr std::chrono::milliseconds KEYFRAME_OFFSET_LIMIT{1000};
+
   static void FreeDemuxPacket(DemuxPacket* pPacket);
   static DemuxPacket* AllocateDemuxPacket(int iDataSize = 0);
   static DemuxPacket* AllocateDemuxPacket(unsigned int iDataSize,
