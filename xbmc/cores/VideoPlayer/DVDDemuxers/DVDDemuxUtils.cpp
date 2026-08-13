@@ -146,9 +146,22 @@ std::vector<ChapterFFmpeg> CDVDDemuxUtils::LoadChapters(std::span<AVChapter*> ch
 
   std::ranges::sort(result, std::less(), &ChapterFFmpeg::m_startPts);
 
-  // Videoplayer expects the first chapter to start at 00:00:00 - make one up if needed.
-  if (result.front().m_startPts != 0ms)
-    result.insert(result.begin(), ChapterFFmpeg{0ms, 0ms, ""});
+  // Videoplayer expects the first chapter to start at 00:00:00.
+  // The timestamp of the first chapter may be a key frame a few ms in, allow a bit of leeway
+  // before the creation of a virtual additional chapter.
+  ChapterFFmpeg& first = result.front();
+  if (first.m_startPts != 0ms)
+  {
+    if (first.m_startPts < KEYFRAME_OFFSET_LIMIT)
+    {
+      // A chapter marker (start == end) stays one once snapped.
+      if (first.m_endPts == first.m_startPts)
+        first.m_endPts = 0ms;
+      first.m_startPts = 0ms;
+    }
+    else
+      result.insert(result.begin(), ChapterFFmpeg{0ms, 0ms, ""});
+  }
 
   return result;
 }

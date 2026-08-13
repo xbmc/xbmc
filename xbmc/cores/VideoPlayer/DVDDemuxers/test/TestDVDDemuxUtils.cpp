@@ -35,6 +35,10 @@ struct TestChapter
   std::vector<ChapterFFmpeg> expected;
 };
 
+// So that the case sitting on the boundary keeps testing the boundary if the tolerance moves.
+constexpr auto Tolerance = CDVDDemuxUtils::KEYFRAME_OFFSET_LIMIT;
+constexpr int64_t ToleranceMs = std::chrono::milliseconds{Tolerance}.count();
+
 // clang-format off
 const TestChapter testChapters[] = {
   {{{{1, 1, 0, 1, "A"}, {1, 1, 1, 2, "B"}}},
@@ -53,9 +57,18 @@ const TestChapter testChapters[] = {
   // Out of order chapters
   {{{{1, 1, 10, 20, "B"}, {1, 1, 0, 10, "A"}}},
     {{{0s, 10s, "A"}, {10s, 20s, "B"}}}},
-  // 1st chapter is not at 00:00:00
-  {{{{1, 1, 1, 2, "A"}}},
-    {{{0s, 0s, ""}, {1s, 2s, "A"}}}},
+  // 1st chapter on an early keyframe is tolerated and snapped to 00:00:00
+  {{{{1, 1000, 80, 2000, "A"}}},
+    {{{0s, 2s, "A"}}}},
+  // ... and only the 1st chapter is snapped
+  {{{{1, 1000, 80, 2000, "A"}, {1, 1000, 2080, 4000, "B"}}},
+    {{{0s, 2s, "A"}, {2080ms, 4s, "B"}}}},
+  // ... and a chapter marker stays a marker
+  {{{{1, 1000, 80, 80, "A"}}},
+    {{{0s, 0s, "A"}}}},
+  // First chapter timestamp past tolerance
+  {{{{1, 1000, ToleranceMs, ToleranceMs * 2, "A"}}},
+    {{{0s, 0s, ""}, {Tolerance, Tolerance * 2, "A"}}}},
 };
 // clang-format on
 
