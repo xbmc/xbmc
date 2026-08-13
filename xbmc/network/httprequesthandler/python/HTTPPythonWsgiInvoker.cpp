@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2015-2018 Team Kodi
+ *  Copyright (C) 2015-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -12,10 +12,10 @@
 #include "URL.h"
 #include "addons/Webinterface.h"
 #include "addons/addoninfo/AddonType.h"
+#include "interfaces/legacy/Exception.h"
 #include "interfaces/legacy/wsgi/WsgiErrorStream.h"
 #include "interfaces/legacy/wsgi/WsgiInputStream.h"
 #include "interfaces/legacy/wsgi/WsgiResponse.h"
-#include "interfaces/python/swig.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
@@ -67,25 +67,65 @@
   RUNSCRIPT_PREAMBLE RUNSCRIPT_POSTSCRIPT
 #endif
 
-namespace PythonBindings {
-PyObject* PyInit_Module_xbmc(void);
-PyObject* PyInit_Module_xbmcaddon(void);
-PyObject* PyInit_Module_xbmcwsgi(void);
+extern "C"
+{
+  PyObject* PyInit_xbmc(void);
+  PyObject* PyInit_xbmcaddon(void);
+  PyObject* PyInit_xbmcwsgi(void);
 }
 
-using namespace PythonBindings;
+// Host-side wrap helpers compiled into the xbmcwsgi module
+extern "C"
+{
+  PyObject* KodiSwig_wrapWsgiResponse(XBMCAddon::xbmcwsgi::WsgiResponse* obj, int owned);
+  PyObject* KodiSwig_wrapWsgiInputStream(XBMCAddon::xbmcwsgi::WsgiInputStream* obj, int owned);
+  PyObject* KodiSwig_wrapWsgiErrorStream(XBMCAddon::xbmcwsgi::WsgiErrorStream* obj, int owned);
+}
 
 namespace
 {
 // clang-format off
 const _inittab PythonModules[] =
 {
-  { "xbmc",           PyInit_Module_xbmc },
-  { "xbmcaddon",      PyInit_Module_xbmcaddon },
-  { "xbmcwsgi",       PyInit_Module_xbmcwsgi },
+  { "xbmc",           PyInit_xbmc },
+  { "xbmcaddon",      PyInit_xbmcaddon },
+  { "xbmcwsgi",       PyInit_xbmcwsgi },
   { nullptr,          nullptr }
 };
 // clang-format on
+
+// str or bytes to std::string; anything else raises WrongTypeException
+void getPythonString(std::string& buf,
+                     PyObject* obj,
+                     const char* argumentName,
+                     const char* methodname)
+{
+  if (obj == Py_None)
+  {
+    buf.clear();
+    return;
+  }
+  if (PyUnicode_Check(obj))
+  {
+    const char* s = PyUnicode_AsUTF8(obj);
+    if (s)
+    {
+      buf = s;
+      return;
+    }
+  }
+  else if (PyBytes_Check(obj))
+  {
+    char* s = PyBytes_AsString(obj);
+    if (s)
+    {
+      buf = s;
+      return;
+    }
+  }
+  throw XBMCAddon::WrongTypeException("argument \"%s\" for \"%s\" must be a string", argumentName,
+                                      methodname);
+}
 } // namespace
 
 CHTTPPythonWsgiInvoker::CHTTPPythonWsgiInvoker(ILanguageInvocationHandler* invocationHandler, HTTPPythonRequest* request)
@@ -192,8 +232,8 @@ void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, 
 
   try
   {
-    // prepare the start_response callable
-    pyStart_response = PythonBindings::makePythonInstance(m_wsgiResponse, true);
+    // prepare the start_response callable; the invoker owns m_wsgiResponse
+    pyStart_response = KodiSwig_wrapWsgiResponse(m_wsgiResponse, 0);
 
     // create the (CGI) environment dictionary
     cgiEnvironment = createCgiEnvironment(m_request, m_addon);
@@ -254,7 +294,7 @@ void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, 
     std::string result;
     try
     {
-      PythonBindings::PyXBMCGetUnicodeString(result, pyIterResult, false, "result", "handle_request");
+      getPythonString(result, pyIterResult, "result", "handle_request");
     }
     catch (const XBMCAddon::WrongTypeException& e)
     {
@@ -412,8 +452,9 @@ void CHTTPPythonWsgiInvoker::addWsgiEnvironment(HTTPPythonRequest* request, void
     if (request != NULL)
       wsgiInputStream->SetRequest(request);
 
-    PythonBindings::prepareForReturn(wsgiInputStream);
-    PyObject* pyWsgiInputStream = PythonBindings::makePythonInstance(wsgiInputStream, false);
+    // the python wrapper holds the only reference and Releases on dealloc
+    wsgiInputStream->Acquire();
+    PyObject* pyWsgiInputStream = KodiSwig_wrapWsgiInputStream(wsgiInputStream, 1);
     PyDict_SetItemString(pyEnviron, "wsgi.input", pyWsgiInputStream);
     Py_DECREF(pyWsgiInputStream);
   }
@@ -423,8 +464,9 @@ void CHTTPPythonWsgiInvoker::addWsgiEnvironment(HTTPPythonRequest* request, void
     if (request != NULL)
       wsgiErrorStream->SetRequest(request);
 
-    PythonBindings::prepareForReturn(wsgiErrorStream);
-    PyObject* pyWsgiErrorStream = PythonBindings::makePythonInstance(wsgiErrorStream, false);
+    // the python wrapper holds the only reference and Releases on dealloc
+    wsgiErrorStream->Acquire();
+    PyObject* pyWsgiErrorStream = KodiSwig_wrapWsgiErrorStream(wsgiErrorStream, 1);
     PyDict_SetItemString(pyEnviron, "wsgi.errors", pyWsgiErrorStream);
     Py_DECREF(pyWsgiErrorStream);
   }

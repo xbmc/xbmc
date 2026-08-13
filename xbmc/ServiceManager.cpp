@@ -130,6 +130,16 @@ bool CServiceManager::InitStageOne()
 
 bool CServiceManager::InitStageTwo(const std::string& profilesUserDataFolder)
 {
+#ifdef HAS_PYTHON
+  // checked here rather than at construction so the failure reaches kodi.log
+  if (!m_XBPython->BindingModulesLoaded())
+  {
+    CLog::Log(LOGFATAL, "CServiceManager::{}: Unable to initialize the python binding modules",
+              __FUNCTION__);
+    return false;
+  }
+#endif
+
   // Initialize the addon database (must be before the addon manager is init'd)
   try
   {

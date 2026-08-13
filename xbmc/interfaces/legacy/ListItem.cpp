@@ -367,6 +367,32 @@ namespace XBMCAddon
       setContentLookupRaw(enable);
     }
 
+    void ListItem::setFileTitle(const String& title)
+    {
+      XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
+      setTitleRaw(title);
+    }
+
+    void ListItem::setCount(int count)
+    {
+      XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
+      setCountRaw(count);
+    }
+
+    void ListItem::setSize(int64_t size)
+    {
+      XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
+      setSizeRaw(size);
+    }
+
+    void ListItem::setOverlay(int overlay)
+    {
+      if (overlay < 0 || overlay > 8)
+        throw ListItemException("setOverlay: overlay must be in the range 0 to 8, not %d", overlay);
+      XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
+      item->SetOverlayImage(static_cast<CGUIListItem::GUIIconOverlay>(overlay));
+    }
+
     String ListItem::getPath()
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
@@ -761,6 +787,10 @@ namespace XBMCAddon
 
     void ListItem::setAvailableFanart(const std::vector<Properties>& images)
     {
+      CLog::Log(LOGWARNING,
+                "ListItem.setAvailableFanart() is deprecated and might be removed in future Kodi "
+                "versions. Please use InfoTagVideo.setAvailableFanart().");
+
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
       auto infoTag = GetVideoInfoTag();
       infoTag->m_fanart.Clear();
