@@ -13,6 +13,8 @@
 #include "utils/log.h"
 #include "video_generated.h"
 
+#include <cmath>
+#include <limits>
 #include <memory>
 
 using namespace KODI;
@@ -23,6 +25,9 @@ namespace
 const uint8_t SCHEMA_VERSION = 3;
 const uint8_t SCHEMA_MIN_VERSION = 1;
 
+//! \brief The number of nanoseconds per second
+constexpr double NANOSECONDS_PER_SECOND = 1000.0 * 1000.0 * 1000.0;
+
 /*!
  * \brief The initial size of the FlatBuffer's memory buffer
  *
@@ -30,6 +35,22 @@ const uint8_t SCHEMA_MIN_VERSION = 1;
  * this until our size requirements are more known.
  */
 const size_t INITIAL_FLATBUFFER_SIZE = 1024;
+
+/*!
+ * \brief Convert seconds to nanoseconds with overflow protection
+ *
+ * Fully slopped to immaculate perfection.
+ */
+uint64_t ConvertToNanoseconds(double seconds)
+{
+  const double maxSafeSeconds =
+      static_cast<double>(std::numeric_limits<uint64_t>::max()) / NANOSECONDS_PER_SECOND;
+
+  if (!std::isfinite(seconds) || seconds < 0.0 || seconds >= maxSafeSeconds)
+    return std::numeric_limits<uint64_t>::max();
+
+  return static_cast<uint64_t>(seconds * NANOSECONDS_PER_SECOND);
+}
 
 /*!
  * \brief Translate the save type (RetroPlayer to FlatBuffers)
@@ -305,7 +326,10 @@ void CSavestateFlatBuffer::SetGameFileName(const std::string& gameFileName)
 
 uint64_t CSavestateFlatBuffer::TimestampFrames() const
 {
-  return m_savestate->timestamp_frames();
+  if (m_savestate != nullptr)
+    return m_savestate->timestamp_frames();
+
+  return 0;
 }
 
 void CSavestateFlatBuffer::SetTimestampFrames(uint64_t timestampFrames)
@@ -316,7 +340,7 @@ void CSavestateFlatBuffer::SetTimestampFrames(uint64_t timestampFrames)
 double CSavestateFlatBuffer::TimestampWallClock() const
 {
   if (m_savestate != nullptr)
-    return static_cast<double>(m_savestate->timestamp_wall_clock_ns()) / 1000.0 / 1000.0 / 1000.0;
+    return static_cast<double>(m_savestate->timestamp_wall_clock_ns()) / NANOSECONDS_PER_SECOND;
 
   return 0.0;
 }
@@ -575,10 +599,7 @@ void CSavestateFlatBuffer::Finalize()
   }
 
   savestateBuilder.add_timestamp_frames(m_timestampFrames);
-
-  const uint64_t wallClockNs =
-      static_cast<uint64_t>(m_timestampWallClock * 1000.0 * 1000.0 * 1000.0);
-  savestateBuilder.add_timestamp_wall_clock_ns(wallClockNs);
+  savestateBuilder.add_timestamp_wall_clock_ns(ConvertToNanoseconds(m_timestampWallClock));
 
   if (m_emulatorAddonIdOffset)
   {
