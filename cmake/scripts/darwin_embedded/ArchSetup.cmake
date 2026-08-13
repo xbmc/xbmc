@@ -51,6 +51,21 @@ set(CMAKE_XCODE_ATTRIBUTE_INLINES_ARE_PRIVATE_EXTERN OFF)
 set(CMAKE_XCODE_ATTRIBUTE_GCC_SYMBOLS_PRIVATE_EXTERN OFF)
 set(CMAKE_XCODE_ATTRIBUTE_COPY_PHASE_STRIP OFF)
 
+# Xcode sets a deployment target for every Apple platform it knows about, not just the one
+# being built for, and exports them all into Run Script build phases. clang rejects an
+# invocation that sees more than one, which breaks internal dependencies that configure or
+# build through a shell. See cmake/scripts/osx/ArchSetup.cmake.
+set(CMAKE_XCODE_ATTRIBUTE_DRIVERKIT_DEPLOYMENT_TARGET "")
+set(CMAKE_XCODE_ATTRIBUTE_WATCHOS_DEPLOYMENT_TARGET "")
+set(CMAKE_XCODE_ATTRIBUTE_XROS_DEPLOYMENT_TARGET "")
+set(CMAKE_XCODE_ATTRIBUTE_MACOSX_DEPLOYMENT_TARGET "")
+
+if(CORE_PLATFORM_NAME_LC STREQUAL tvos)
+  set(CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET "")
+else()
+  set(CMAKE_XCODE_ATTRIBUTE_TVOS_DEPLOYMENT_TARGET "")
+endif()
+
 include(cmake/scripts/darwin/Macros.cmake)
 enable_arc()
 
