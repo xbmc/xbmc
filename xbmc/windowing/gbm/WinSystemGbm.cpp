@@ -330,6 +330,7 @@ void CWinSystemGbm::FlipPage(bool rendered, bool videoLayer, bool async)
     m_videoLayerBridge.reset();
 
     //! @todo unify D2P and single-plane teardown behind one winsystem plane API
+    m_DRM->ReleaseVideoPlane();
     auto* gui = m_DRM->GetGuiPlane();
     m_DRM->FindGuiPlane(gui->GetFormat(), gui->GetModifier());
   }

@@ -72,6 +72,9 @@ public:
   bool FindGuiPlane(uint32_t format, uint64_t modifier);
   bool FindVideoPlane(uint32_t format, uint64_t modifier);
   bool FindVideoAndGuiPlane(uint32_t format, uint64_t modifier, uint64_t width, uint64_t height);
+  // FindGuiPlane never releases a D2P video plane reservation; a caller that
+  // means "video is over" states it here before revalidating the gui plane.
+  void ReleaseVideoPlane() { m_video_plane = nullptr; }
   bool HasQuirk(int quirk) const { return m_drm_quirks & quirk; }
 
   std::vector<std::string> GetConnectedConnectorNames();
