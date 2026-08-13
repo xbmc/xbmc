@@ -352,8 +352,8 @@ std::optional<DRMPRIME::DmaBufIdentity> AcquiredIdentity(CVideoBufferDRMPRIME* b
     CLog::Log(LOGERROR, "CDRMPRIMETexturePool - failed to acquire descriptor");
     return std::nullopt;
   }
-  const auto identity = DRMPRIME::ComputeDmaBufIdentity(buffer->GetDescriptor(), buffer->GetWidth(),
-                                                        buffer->GetHeight());
+  const auto identity =
+      DRMPRIME::GetDmaBufIdentity(buffer->GetDescriptor(), buffer->GetWidth(), buffer->GetHeight());
   buffer->ReleaseDescriptor();
   return identity;
 }

@@ -94,19 +94,19 @@ TEST_F(TestVideoBufferDMA, DescriptorIdentityTracksLayout)
   buffer->SetDimensions(1920, 1080, strides, offsets);
 
   CountingStat stat{{{FAKE_FD, 7}}};
-  const auto first = ComputeDmaBufIdentity(buffer->GetDescriptor(), buffer->GetWidth(),
-                                           buffer->GetHeight(), stat.Fn());
+  const auto first = GetDmaBufIdentity(buffer->GetDescriptor(), buffer->GetWidth(),
+                                       buffer->GetHeight(), stat.Fn());
   ASSERT_TRUE(first);
 
-  const auto repeat = ComputeDmaBufIdentity(buffer->GetDescriptor(), buffer->GetWidth(),
-                                            buffer->GetHeight(), stat.Fn());
+  const auto repeat = GetDmaBufIdentity(buffer->GetDescriptor(), buffer->GetWidth(),
+                                        buffer->GetHeight(), stat.Fn());
   ASSERT_TRUE(repeat);
   EXPECT_TRUE(*first == *repeat);
 
   const int changed[YuvImage::MAX_PLANES] = {2048, 1920, 0};
   buffer->SetDimensions(1920, 1080, changed, offsets);
-  const auto relaid = ComputeDmaBufIdentity(buffer->GetDescriptor(), buffer->GetWidth(),
-                                            buffer->GetHeight(), stat.Fn());
+  const auto relaid = GetDmaBufIdentity(buffer->GetDescriptor(), buffer->GetWidth(),
+                                        buffer->GetHeight(), stat.Fn());
   ASSERT_TRUE(relaid);
   EXPECT_FALSE(*first == *relaid);
   EXPECT_TRUE(first->SameMemory(*relaid));

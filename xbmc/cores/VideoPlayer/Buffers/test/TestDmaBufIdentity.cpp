@@ -57,7 +57,7 @@ TEST(TestDmaBufIdentity, ComputeFillsInodesPerObject)
   descriptor.objects[1].format_modifier = 0x200;
   descriptor.layers[0].planes[1].object_index = 1;
 
-  auto identity = ComputeDmaBufIdentity(&descriptor, 1920, 1080, FixedInodes({{40, 7}, {41, 8}}));
+  auto identity = GetDmaBufIdentity(&descriptor, 1920, 1080, FixedInodes({{40, 7}, {41, 8}}));
   ASSERT_TRUE(identity);
   EXPECT_EQ(identity->nbObjects, 2);
   EXPECT_EQ(identity->inode[0], 7u);
@@ -75,14 +75,14 @@ TEST(TestDmaBufIdentity, ComputeFillsInodesPerObject)
 
 TEST(TestDmaBufIdentity, NullDescriptorReturnsNullopt)
 {
-  EXPECT_FALSE(ComputeDmaBufIdentity(nullptr, 1920, 1080, FixedInodes({{40, 7}})));
+  EXPECT_FALSE(GetDmaBufIdentity(nullptr, 1920, 1080, FixedInodes({{40, 7}})));
 }
 
 TEST(TestDmaBufIdentity, ZeroLayersReturnsNullopt)
 {
   AVDRMFrameDescriptor descriptor = MakeDescriptor();
   descriptor.nb_layers = 0;
-  EXPECT_FALSE(ComputeDmaBufIdentity(&descriptor, 1920, 1080, FixedInodes({{40, 7}})));
+  EXPECT_FALSE(GetDmaBufIdentity(&descriptor, 1920, 1080, FixedInodes({{40, 7}})));
 }
 
 TEST(TestDmaBufIdentity, StatFailureReturnsNullopt)
@@ -92,15 +92,15 @@ TEST(TestDmaBufIdentity, StatFailureReturnsNullopt)
   descriptor.objects[1].fd = 41;
 
   // the second object's fd is unknown to the stat fn
-  EXPECT_FALSE(ComputeDmaBufIdentity(&descriptor, 1920, 1080, FixedInodes({{40, 7}})));
+  EXPECT_FALSE(GetDmaBufIdentity(&descriptor, 1920, 1080, FixedInodes({{40, 7}})));
 }
 
 TEST(TestDmaBufIdentity, FdRecyclingProducesDifferentIdentity)
 {
   AVDRMFrameDescriptor descriptor = MakeDescriptor();
 
-  auto before = ComputeDmaBufIdentity(&descriptor, 1920, 1080, FixedInodes({{40, 7}}));
-  auto after = ComputeDmaBufIdentity(&descriptor, 1920, 1080, FixedInodes({{40, 8}}));
+  auto before = GetDmaBufIdentity(&descriptor, 1920, 1080, FixedInodes({{40, 7}}));
+  auto after = GetDmaBufIdentity(&descriptor, 1920, 1080, FixedInodes({{40, 8}}));
   ASSERT_TRUE(before);
   ASSERT_TRUE(after);
   EXPECT_FALSE(*before == *after);
@@ -113,8 +113,8 @@ TEST(TestDmaBufIdentity, SameMemoryDifferentFdNumbersMatch)
   AVDRMFrameDescriptor descB = MakeDescriptor();
   descB.objects[0].fd = 99;
 
-  auto a = ComputeDmaBufIdentity(&descA, 1920, 1080, FixedInodes({{40, 7}}));
-  auto b = ComputeDmaBufIdentity(&descB, 1920, 1080, FixedInodes({{99, 7}}));
+  auto a = GetDmaBufIdentity(&descA, 1920, 1080, FixedInodes({{40, 7}}));
+  auto b = GetDmaBufIdentity(&descB, 1920, 1080, FixedInodes({{99, 7}}));
   ASSERT_TRUE(a);
   ASSERT_TRUE(b);
   EXPECT_TRUE(*a == *b);
@@ -125,12 +125,12 @@ TEST(TestDmaBufIdentity, LayoutFieldChangesBreakEquality)
 {
   const auto stat = FixedInodes({{40, 7}});
   AVDRMFrameDescriptor base = MakeDescriptor();
-  auto reference = ComputeDmaBufIdentity(&base, 1920, 1080, stat);
+  auto reference = GetDmaBufIdentity(&base, 1920, 1080, stat);
   ASSERT_TRUE(reference);
 
   auto differs = [&](const AVDRMFrameDescriptor& descriptor, uint32_t width, uint32_t height)
   {
-    auto other = ComputeDmaBufIdentity(&descriptor, width, height, stat);
+    auto other = GetDmaBufIdentity(&descriptor, width, height, stat);
     EXPECT_TRUE(other);
     if (!other)
       return false;
@@ -175,8 +175,8 @@ TEST(TestDmaBufIdentity, MultiObjectSecondInodeCompared)
   descriptor.objects[1].fd = 41;
   descriptor.layers[0].planes[1].object_index = 1;
 
-  auto a = ComputeDmaBufIdentity(&descriptor, 1920, 1080, FixedInodes({{40, 7}, {41, 8}}));
-  auto b = ComputeDmaBufIdentity(&descriptor, 1920, 1080, FixedInodes({{40, 7}, {41, 9}}));
+  auto a = GetDmaBufIdentity(&descriptor, 1920, 1080, FixedInodes({{40, 7}, {41, 8}}));
+  auto b = GetDmaBufIdentity(&descriptor, 1920, 1080, FixedInodes({{40, 7}, {41, 9}}));
   ASSERT_TRUE(a);
   ASSERT_TRUE(b);
   EXPECT_FALSE(*a == *b);

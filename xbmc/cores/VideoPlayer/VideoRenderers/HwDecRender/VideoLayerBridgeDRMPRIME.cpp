@@ -77,8 +77,8 @@ bool CVideoLayerBridgeDRMPRIME::PrepareBuffer(CVideoBufferDRMPRIME* buffer)
     return false;
   }
 
-  const auto identity = DRMPRIME::ComputeDmaBufIdentity(buffer->GetDescriptor(), buffer->GetWidth(),
-                                                        buffer->GetHeight());
+  const auto identity =
+      DRMPRIME::GetDmaBufIdentity(buffer->GetDescriptor(), buffer->GetWidth(), buffer->GetHeight());
   if (!identity)
   {
     buffer->ReleaseDescriptor();

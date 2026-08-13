@@ -54,14 +54,14 @@ struct DmaBufIdentity
 //! \brief Identity of descriptor layer[0] only; nbLayers is keyed, layers 1+ are
 //! not inspected: a consumer that reads layers 1+ must not key on this identity.
 //! Returns nullopt for a missing or malformed descriptor or an unreadable inode.
-std::optional<DmaBufIdentity> ComputeDmaBufIdentity(const AVDRMFrameDescriptor* descriptor,
-                                                    uint32_t width,
-                                                    uint32_t height);
+std::optional<DmaBufIdentity> GetDmaBufIdentity(const AVDRMFrameDescriptor* descriptor,
+                                                uint32_t width,
+                                                uint32_t height);
 
 //! \brief Test seam: same, with an injectable stat function.
-std::optional<DmaBufIdentity> ComputeDmaBufIdentity(const AVDRMFrameDescriptor* descriptor,
-                                                    uint32_t width,
-                                                    uint32_t height,
-                                                    const StatInodeFn& statInode);
+std::optional<DmaBufIdentity> GetDmaBufIdentity(const AVDRMFrameDescriptor* descriptor,
+                                                uint32_t width,
+                                                uint32_t height,
+                                                const StatInodeFn& statInode);
 
 } // namespace DRMPRIME

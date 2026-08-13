@@ -85,17 +85,17 @@ std::optional<DmaBufIdentity> Compute(const AVDRMFrameDescriptor* descriptor,
 
 } // namespace
 
-std::optional<DmaBufIdentity> ComputeDmaBufIdentity(const AVDRMFrameDescriptor* descriptor,
-                                                    uint32_t width,
-                                                    uint32_t height)
+std::optional<DmaBufIdentity> GetDmaBufIdentity(const AVDRMFrameDescriptor* descriptor,
+                                                uint32_t width,
+                                                uint32_t height)
 {
   return Compute(descriptor, width, height, &StatInode);
 }
 
-std::optional<DmaBufIdentity> ComputeDmaBufIdentity(const AVDRMFrameDescriptor* descriptor,
-                                                    uint32_t width,
-                                                    uint32_t height,
-                                                    const StatInodeFn& statInode)
+std::optional<DmaBufIdentity> GetDmaBufIdentity(const AVDRMFrameDescriptor* descriptor,
+                                                uint32_t width,
+                                                uint32_t height,
+                                                const StatInodeFn& statInode)
 {
   return Compute(descriptor, width, height, statInode);
 }
