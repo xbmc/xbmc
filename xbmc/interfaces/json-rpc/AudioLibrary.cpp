@@ -811,8 +811,22 @@ JSONRPC_STATUS CAudioLibrary::SetArtistDetails(const std::string &method, ITrans
   }
 
   // Update artist including adding or replacing (but not removing) art
-  if (!musicdatabase.UpdateArtist(artist))
+  musicdatabase.SetLibraryLastUpdated();
+  const std::string itemSeparator =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator;
+  if (musicdatabase.UpdateArtist(
+          artist.idArtist, artist.strArtist, artist.strSortName, artist.strMusicBrainzArtistID,
+          artist.bScrapedMBID, artist.strType, artist.strGender, artist.strDisambiguation,
+          artist.strBorn, artist.strFormed, StringUtils::Join(artist.genre, itemSeparator),
+          StringUtils::Join(artist.moods, itemSeparator),
+          StringUtils::Join(artist.styles, itemSeparator),
+          StringUtils::Join(artist.instruments, itemSeparator), artist.strBiography, artist.strDied,
+          artist.strDisbanded, StringUtils::Join(artist.yearsActive, itemSeparator),
+          artist.thumbURL.GetData()) <= 0)
     return InternalError;
+
+  if (!artist.art.empty())
+    musicdatabase.SetArtForItem(artist.idArtist, MediaTypeArtist, artist.art);
 
   CJSONRPCUtils::NotifyItemUpdated();
   return ACK;
