@@ -640,7 +640,7 @@ bool CSavestateFlatBuffer::Deserialize(std::vector<uint8_t> data)
     if (savestate->version() < SCHEMA_MIN_VERSION)
     {
       CLog::Log(LOGERROR,
-                "RetroPlayer[SAVE): Schema version {} not supported, must be at least version {}",
+                "RetroPlayer[SAVE]: Schema version {} not supported, must be at least version {}",
                 savestate->version(), SCHEMA_MIN_VERSION);
     }
     else
