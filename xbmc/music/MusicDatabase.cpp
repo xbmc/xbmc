@@ -2191,9 +2191,14 @@ bool CMusicDatabase::GetArtist(int idArtist, CArtist& artist, bool fetchAll /* =
         const dbiplus::sql_record* const record = m_pDS->get_sql_record();
         CDiscoAlbum discoAlbum;
         discoAlbum.strAlbum = record->at(discographyOffset + 1).get_asString();
-        discoAlbum.strYear = record->at(discographyOffset + 2).get_asString();
-        discoAlbum.strReleaseGroupMBID = record->at(discographyOffset + 3).get_asString();
-        artist.discography.emplace_back(discoAlbum);
+        // Skip entries with no title: the LEFT JOIN yields one all-NULL row for an artist with
+        // no discography, and a titleless entry is useless to callers regardless.
+        if (!discoAlbum.strAlbum.empty())
+        {
+          discoAlbum.strYear = record->at(discographyOffset + 2).get_asString();
+          discoAlbum.strReleaseGroupMBID = record->at(discographyOffset + 3).get_asString();
+          artist.discography.emplace_back(discoAlbum);
+        }
         m_pDS->next();
       }
     }
