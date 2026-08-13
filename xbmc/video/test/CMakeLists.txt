@@ -1,5 +1,6 @@
 set(SOURCES TestBookmark.cpp
             TestFilenameAttributes.cpp
+            TestSetInfoTag.cpp
             TestStacks.cpp
             TestVideoDbUrl.cpp
             TestVideoFileItemClassify.cpp
