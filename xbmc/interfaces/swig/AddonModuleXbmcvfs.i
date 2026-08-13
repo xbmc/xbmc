@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -27,10 +27,29 @@ using namespace xbmcvfs;
 
 %}
 
+
+%include "kodi_common.i"
+
+// construction in tp_new; see kodi_construct.i
+KODI_CONSTRUCT(XBMCAddon::xbmcvfs, File)
+KODI_CONSTRUCT(XBMCAddon::xbmcvfs, Stat)
+
+/* one line per shape crossing the boundary in this module */
+%template() std::vector<std::string>;
+%template() XBMCAddon::Tuple<std::vector<std::string>, std::vector<std::string> >;
+
 %include "interfaces/legacy/swighelper.h"
 %include "interfaces/legacy/AddonString.h"
 
-%feature("python:strictUnicode") XBMCAddon::xbmcvfs::File::read "true"
+// The shipped bindings decode File.read strictly (%feature("python:strictUnicode"),
+// a Kodi-invented feature stock SWIG drops). Stock SWIG_FromCharPtrAndSize uses
+// surrogateescape, which turns binary content into surrogates instead of raising,
+// so a caller reading a non-text file gets silent mojibake rather than an error.
+%typemap(out) XBMCAddon::String XBMCAddon::xbmcvfs::File::read {
+  $result = PyUnicode_DecodeUTF8($1.c_str(), (Py_ssize_t)$1.size(), "strict");
+  if (!$result)
+    SWIG_fail;
+}
 
 %include "interfaces/legacy/File.h"
 
