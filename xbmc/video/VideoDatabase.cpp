@@ -324,8 +324,10 @@ bool CVideoDatabase::GetSubPaths(const std::string& basepath,
     sql = "SELECT idPath, strPath FROM path WHERE " + startsWith(path);
     if (excludeDiscPaths)
     {
-      sql += " AND idPath NOT IN (SELECT idPath FROM files WHERE strFileName='video_ts.ifo')"
-             " AND idPath NOT IN (SELECT idPath FROM files WHERE strFileName='index.bdmv')";
+      // mysql/mariadb are made case-insensitive by setting a collation on connection
+      // sqlite LIKE is case-insensitive, '=' is not
+      sql += " AND idPath NOT IN (SELECT idPath FROM files WHERE strFileName LIKE 'VIDEO_TS.IFO')"
+             " AND idPath NOT IN (SELECT idPath FROM files WHERE strFileName LIKE 'index.bdmv')";
     }
     else
     {
