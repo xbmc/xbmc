@@ -1062,7 +1062,7 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
     buttons.Add(CONTEXT_BUTTON_EDIT, 16105);
 
   if ((type == MediaTypeMovie && !VIDEO::IsVideoAssetFile(*item)) || type == MediaTypeTvShow ||
-      type == MediaTypeSeason)
+      type == MediaTypeSeason || type == MediaTypeVideoCollection)
     buttons.Add(CONTEXT_BUTTON_EDIT_SORTTITLE, 16107);
 
   if (type == MediaTypeMovie && !VIDEO::IsVideoAssetFile(*item))
@@ -2041,6 +2041,8 @@ bool CGUIDialogVideoInfo::UpdateVideoItemSortTitle(const std::shared_ptr<CFileIt
                           pItem->GetVideoInfoTag()->m_iFileId, VideoDbDetailsNone);
   else if (iType == VideoDbContentType::TVSHOWS)
     database.GetTvShowInfo(pItem->GetVideoInfoTag()->m_strFileNameAndPath, detail, iDbId, 0, VideoDbDetailsNone);
+  else if (iType == VideoDbContentType::MOVIE_SETS)
+    database.GetSetInfo(iDbId, detail);
 
   std::string currentTitle;
   if (detail.m_strSortTitle.empty())
