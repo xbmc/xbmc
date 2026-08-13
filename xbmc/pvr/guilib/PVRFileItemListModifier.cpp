@@ -27,8 +27,12 @@ bool NeedsResolving(const CFileItem& item)
   // Items created by add-ons that only know the item's path (rather than by PVR-internal code,
   // which always attaches the respective PVR tag) need to be resolved before use, e.g. to be
   // able to show proper art and info for them.
-  return URIUtils::IsPVR(item.GetPath()) && !item.HasPVRChannelInfoTag() &&
-         !item.HasPVRRecordingInfoTag() && !item.HasEPGInfoTag() && !item.HasPVRTimerInfoTag();
+  // Note: Parent folder items ("..") must never be resolved. They only carry the path of the
+  // parent folder as navigation aid and resolving them would wrongly decorate them with the
+  // parent folder's data, for example watched/total counts and overlay icons.
+  return !item.IsParentFolder() && URIUtils::IsPVR(item.GetPath()) &&
+         !item.HasPVRChannelInfoTag() && !item.HasPVRRecordingInfoTag() && !item.HasEPGInfoTag() &&
+         !item.HasPVRTimerInfoTag();
 }
 } // unnamed namespace
 
