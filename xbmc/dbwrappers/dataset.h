@@ -173,6 +173,14 @@ public:
   virtual std::string vprepare(std::string_view format, va_list args) = 0;
 
   virtual bool in_transaction() { return false; }
+
+protected:
+  /*! \brief Rewrite each "%s" conversion sequence to "%q", the quote-escaping form.
+   \param format - C printf compliant format string, rewritten in place
+
+   Scanning is left to right so that %% is consumed as the literal percent it is.
+   */
+  static void EscapeStringConversions(std::string& format);
 };
 
 /******************* Class Dataset definition *********************

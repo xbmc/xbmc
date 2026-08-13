@@ -769,23 +769,14 @@ bool MysqlDatabase::exists()
 std::string MysqlDatabase::vprepare(std::string_view format, va_list args)
 {
   std::string strFormat{format};
-  std::string strResult;
-  size_t pos;
+  //  Transform the %s printf format specifier to the Sqlite specific %q for sql-safe escape of
+  //  quotes in format parameters. mysql_vmprintf() is derived from sqlite3.c and understands it
+  //  the same way.
+  EscapeStringConversions(strFormat);
 
-  //  %q is the sqlite format string for %s.
-  //  Any bad character, like "'", will be replaced with a proper one
-  pos = 0;
-  while ((pos = strFormat.find("%s", pos)) != std::string::npos)
-  {
-    // %%s is meant as a literal % followed by s, skip
-    if (pos == 0 || strFormat[pos - 1] != '%')
-      strFormat.replace(pos, 2, "%q");
-    pos++;
-  }
-
-  strResult = mysql_vmprintf(strFormat.c_str(), args);
+  std::string strResult = mysql_vmprintf(strFormat.c_str(), args);
   //  RAND() is the mysql form of RANDOM()
-  pos = 0;
+  size_t pos = 0;
   while ((pos = strResult.find("RANDOM()", pos)) != std::string::npos)
   {
     strResult.replace(pos, 8, "RAND()");
