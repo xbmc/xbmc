@@ -239,6 +239,64 @@ std::string CStackDirectory::GetParentPath(const std::string& stackPath)
   return GetBasePath(stackPath);
 }
 
+namespace
+{
+// Whether a path names a disc - its structure, the image holding it, or a playlist of one
+bool IsDiscPart(const std::string& path)
+{
+  return URIUtils::IsBlurayPath(path) || URIUtils::IsBDFile(path) || URIUtils::IsDVDFile(path) ||
+         URIUtils::IsDiscImage(path);
+}
+
+} // unnamed namespace
+
+bool CStackDirectory::HasDiscPart(const std::string& stackPath)
+{
+  std::vector<std::string> paths;
+  if (!URIUtils::IsStack(stackPath) || !GetPaths(stackPath, paths))
+    return false;
+
+  return std::ranges::any_of(paths, IsDiscPart);
+}
+
+bool CStackDirectory::IsSameDiscStack(const std::string& stackPath,
+                                      const std::string& otherStackPath)
+{
+  std::vector<std::string> paths;
+  std::vector<std::string> otherPaths;
+  if (!URIUtils::IsStack(stackPath) || !URIUtils::IsStack(otherStackPath) ||
+      !GetPaths(stackPath, paths) || !GetPaths(otherStackPath, otherPaths) || paths.empty() ||
+      paths.size() != otherPaths.size())
+    return false;
+
+  for (size_t part{0}; part < paths.size(); ++part)
+  {
+    const std::string& path{paths[part]};
+    const std::string& otherPath{otherPaths[part]};
+
+    // A disc is compared as a disc and not as a path, so that the options of a url, or a trailing
+    // slash, cannot make the same disc look like another one
+    if (IsDiscPart(path) || IsDiscPart(otherPath))
+    {
+      if (!URIUtils::CompareDiscPaths(path, otherPath))
+        return false;
+
+      // When both sides name a playlist it has to be the same one, as a disc can hold a cut, or
+      // a feature, per playlist. Where either states none the disc is all there is to compare.
+      if (URIUtils::IsBlurayPath(path) && URIUtils::IsBlurayPath(otherPath) &&
+          CURL(path).GetFileName() != CURL(otherPath).GetFileName())
+        return false;
+
+      continue;
+    }
+
+    // Neither names a disc - CompareDiscPaths() would compare the folders holding them
+    if (!URIUtils::PathEquals(path, otherPath, true, true))
+      return false;
+  }
+  return true;
+}
+
 std::string CStackDirectory::GetBasePath(const std::string& stackPath)
 {
   std::vector<std::string> paths;

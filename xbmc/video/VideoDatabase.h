@@ -1081,6 +1081,18 @@ protected:
    */
   int GetFileId(const std::string& url);
 
+  /*! \brief Get the id of a stack of discs, however its members are expressed.
+   A stack holding a bluray (a BDMV folder or a disc image) is stored resolved to the
+   bluray:// playlist of each member, a form only a playlist scan of the discs can produce.
+   The same stack listed from disc, or read from an NFO, names the disc structures instead,
+   so it cannot be found by path. Both forms describe the same discs, which is what is
+   matched here. A match has to be unique: where several stacks of these discs differ only by
+   the playlist of each part, nothing distinguishes them from a stack named without one.
+   \param stackPath a stack:// path of which at least one member is a bluray
+   \return id of the file, -1 if it is not in the db or several stacks match.
+   */
+  int GetDiscStackFileId(const std::string& stackPath);
+
   int AddToTable(const std::string& table, const std::string& firstField, const std::string& secondField, const std::string& value);
   int UpdateRatings(int mediaId, const char *mediaType, const RatingMap& values, const std::string& defaultRating);
   int AddRatings(int mediaId,

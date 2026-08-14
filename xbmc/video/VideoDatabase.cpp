@@ -834,11 +834,72 @@ int CVideoDatabase::GetFileId(const std::string& strFilenameAndPath)
         m_pDS->close();
         return idFile;
       }
+      m_pDS->close();
+
+      // A stack of discs is stored resolved to the bluray:// playlist of each member, so the
+      // unresolved form the scanner and NFOs use never matches by name
+      return GetDiscStackFileId(strFilenameAndPath);
     }
   }
   catch (...)
   {
     CLog::LogF(LOGERROR, "({}) failed", strFilenameAndPath);
+  }
+  return -1;
+}
+
+int CVideoDatabase::GetDiscStackFileId(const std::string& stackPath)
+{
+  // Only a disc is stored in a form that can differ from the one given here, so a stack of
+  // ordinary files was already covered by the lookup by name
+  if (!URIUtils::IsStack(stackPath) || !CStackDirectory::HasDiscPart(stackPath))
+    return -1;
+
+  try
+  {
+    if (!m_pDB || !m_pDS)
+      return -1;
+
+    std::string strPath;
+    std::string strFileName;
+    SplitPath(stackPath, strPath, strFileName);
+    const int idPath{GetPathId(strPath)};
+    if (idPath < 0)
+      return -1;
+
+    // Both forms of a stack reduce to the same base path (the common parent of its discs), so
+    // only the few stacks stored there have to be compared. Were the two ever to reduce
+    // differently the stack would simply not be found here, and be scraped as a new one
+    m_pDS->query(PrepareSQL("SELECT idFile, strFileName FROM files "
+                            "WHERE idPath=%i AND strFileName LIKE 'stack://%%'",
+                            idPath));
+    int idFile{-1};
+    int matches{0};
+    while (!m_pDS->eof())
+    {
+      if (CStackDirectory::IsSameDiscStack(stackPath, m_pDS->fv(1).get_asString()))
+      {
+        idFile = m_pDS->fv(0).get_asInt();
+        ++matches;
+      }
+      m_pDS->next();
+    }
+    m_pDS->close();
+
+    // The rows are in no particular order, so an ambiguous match cannot be resolved by taking one
+    // of them. It says the library holds several stacks of these discs that only a playlist tells
+    // apart, and the caller asked without one - leave the stack unknown rather than guess.
+    if (matches > 1)
+    {
+      CLog::LogF(LOGWARNING, "'{}' matches {} stacks of the same discs - none can be chosen",
+                 CURL::GetRedacted(stackPath), matches);
+      return -1;
+    }
+    return idFile;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "({}) failed", CURL::GetRedacted(stackPath));
   }
   return -1;
 }
