@@ -29,11 +29,11 @@
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingsManager.h"
-#include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoStreamSelect.h"
 
 #include <memory>
 #include <string>
@@ -380,27 +380,34 @@ void CGUIDialogAudioSettings::AudioStreamsOptionFiller(const SettingConstPtr& se
 {
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-  const int audioStreamCount = appPlayer->GetAudioStreamCount();
 
-  // cycle through each audio stream and add it to our list control
-  for (int i = 0; i < audioStreamCount; ++i)
+  if (appPlayer != nullptr)
   {
-    std::string textInfo;
+    using namespace KODI::VIDEO;
+    const std::vector<AudioStreamInfoExt> streams =
+        CVideoStreamSelect::GetAudioStreams(appPlayer.get());
+    const int streamCount = streams.size();
 
-    AudioStreamInfo info;
-    appPlayer->GetAudioStreamInfo(i, info);
+    // cycle through each audio stream and add it to our list control
+    for (int i = 0; i < streamCount; ++i)
+    {
+      const AudioStreamInfoExt& info = streams[i];
 
-    if (!g_LangCodeExpander.Lookup(info.language, textInfo))
-      textInfo = "[" + CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205) +
-                 "]"; // Unknown
+      std::string strItem = info.languageDesc;
 
-    if (!info.name.empty())
-      textInfo += " - " + info.name;
+      if (!info.name.empty())
+        strItem += " - " + info.name;
 
-    textInfo += FormatCodec(info);
-    textInfo += FormatFlags(info.flags);
-    textInfo += StringUtils::Format(" ({}/{})", i + 1, audioStreamCount);
-    list.emplace_back(std::move(textInfo), i);
+      strItem += FormatCodec(info);
+      strItem += FormatFlags(info.flags);
+      strItem += StringUtils::Format(" ({}/{})", i + 1, streamCount);
+
+      list.emplace_back(std::move(strItem), info.streamId);
+    }
+  }
+  else
+  {
+    CLog::LogF(LOGERROR, "No application player.");
   }
 
   if (list.empty())

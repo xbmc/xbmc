@@ -67,6 +67,7 @@ bool CPlayerController::OnAction(const CAction &action)
     {
       case ACTION_SHOW_SUBTITLES:
       {
+        //! @todo combine processing of ACTION_SHOW_SUBTITLES with ACTION_NEXT_SUBTITLE and the other stream actions
         if (appPlayer->GetSubtitleCount() == 0)
         {
           CGUIDialogKaiToast::QueueNotification(
