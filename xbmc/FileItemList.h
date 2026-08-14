@@ -24,8 +24,13 @@
 #include <vector>
 
 //! item property set by the video library scanner on subfolders whose fast hash matches
-//! the stored hash; Stack() skips the disc structure probes for such folders
+//! the stored hash; a stack of such folders is marked in turn by Stack()
 static constexpr const char* PROPERTY_UNCHANGED{"scanner:unchanged"};
+
+//! item property set by Stack() on a stack: the date of its newest part, as a time_t. All but the
+//! first part are dropped from the listing, so the hash the video library scanner takes of it
+//! (CVideoInfoScanner::GetPathHash) would otherwise not describe them
+static constexpr const char* PROPERTY_STACK_NEWEST_PART{"scanner:stacknewestpart"};
 
 /*!
   \brief Represents a list of files

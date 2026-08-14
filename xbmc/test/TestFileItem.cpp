@@ -24,7 +24,9 @@
 #include "utils/URIUtils.h"
 #include "video/VideoInfoTag.h"
 
+#include <array>
 #include <fstream>
+#include <utility>
 
 #include <gtest/gtest.h>
 
@@ -1228,6 +1230,126 @@ TEST(TestFileItemList, StackConvertsDiscFolders)
     items.Stack();
     EXPECT_FALSE(items[0]->IsFolder());
   }
+
+  XFILE::CDirectory::RemoveRecursive(tempPath);
+}
+
+TEST(TestFileItemList, StackIsUnchangedOnlyWhenEveryPartIs)
+{
+  std::error_code ec;
+  const std::string tempPath = KODI::PLATFORM::FILESYSTEM::create_temp_directory(ec);
+  EXPECT_FALSE(ec);
+
+  // two disc folders that form a folder stack
+  std::array<std::string, 2> partPaths;
+  for (int part{1}; const auto& name : {"movie_part1", "movie_part2"})
+  {
+    std::string path{URIUtils::AddFileToFolder(tempPath, name)};
+    EXPECT_TRUE(CUtil::CreateDirectoryEx(path));
+    {
+      std::ofstream of(URIUtils::AddFileToFolder(path, "VIDEO_TS.IFO"));
+    }
+    URIUtils::AddSlashAtEnd(path);
+    partPaths[part++ - 1] = path;
+  }
+
+  struct StackResult
+  {
+    int size{0};
+    bool isStack{false};
+    bool unchanged{false};
+  };
+
+  const auto stackOf = [&partPaths, &tempPath](bool firstMarked, bool secondMarked)
+  {
+    CFileItemList items(tempPath);
+    for (const auto& [path, marked] :
+         {std::pair{partPaths[0], firstMarked}, std::pair{partPaths[1], secondMarked}})
+    {
+      auto item = std::make_shared<CFileItem>(path, true);
+      item->SetLabel(URIUtils::GetFileOrFolderName(path));
+      if (marked)
+        item->SetProperty(PROPERTY_UNCHANGED, true);
+      items.Add(std::move(item));
+    }
+    items.Stack();
+
+    StackResult result{.size = items.Size()};
+    if (result.size > 0)
+    {
+      result.isStack = items[0]->IsStack();
+      result.unchanged = items[0]->GetProperty(PROPERTY_UNCHANGED).asBoolean();
+    }
+    return result;
+  };
+
+  // the first part becomes the stack, so its mark alone must not speak for the second
+  const StackResult firstOnly{stackOf(true, false)};
+  EXPECT_EQ(firstOnly.size, 1);
+  EXPECT_TRUE(firstOnly.isStack);
+  EXPECT_FALSE(firstOnly.unchanged);
+
+  // ..nor may a mark on a later part speak for the first
+  const StackResult secondOnly{stackOf(false, true)};
+  EXPECT_EQ(secondOnly.size, 1);
+  EXPECT_FALSE(secondOnly.unchanged);
+
+  // a stack is only unchanged when every one of its parts is
+  const StackResult both{stackOf(true, true)};
+  EXPECT_EQ(both.size, 1);
+  EXPECT_TRUE(both.isStack);
+  EXPECT_TRUE(both.unchanged);
+
+  // and an unmarked stack stays unmarked
+  const StackResult neither{stackOf(false, false)};
+  EXPECT_EQ(neither.size, 1);
+  EXPECT_FALSE(neither.unchanged);
+
+  XFILE::CDirectory::RemoveRecursive(tempPath);
+}
+
+TEST(TestFileItemList, StackRecordsTheDateOfItsNewestPart)
+{
+  std::error_code ec;
+  const std::string tempPath = KODI::PLATFORM::FILESYSTEM::create_temp_directory(ec);
+  EXPECT_FALSE(ec);
+
+  const auto stackDates = [&tempPath](const CDateTime& firstPart, const CDateTime& secondPart)
+  {
+    CFileItemList items(tempPath);
+    for (const auto& [name, date] :
+         {std::pair{"movie_part1", firstPart}, std::pair{"movie_part2", secondPart}})
+    {
+      auto item = std::make_shared<CFileItem>(
+          URIUtils::AddFileToFolder(tempPath, name, "VIDEO_TS.IFO"), false);
+      item->SetLabel(name);
+      item->SetDateTime(date);
+      items.Add(std::move(item));
+    }
+    items.Stack();
+
+    time_t newest{0};
+    if (items.Size() == 1)
+      newest = static_cast<time_t>(items[0]->GetProperty(PROPERTY_STACK_NEWEST_PART).asInteger(0));
+    return std::pair{items.Size(), newest};
+  };
+
+  const CDateTime older{2020, 1, 1, 0, 0, 0};
+  const CDateTime newer{2026, 1, 1, 0, 0, 0};
+  time_t olderTime{0};
+  time_t newerTime{0};
+  older.GetAsTime(olderTime);
+  newer.GetAsTime(newerTime);
+
+  // the first part becomes the stack, so its date is the one the listing holds - the date of the
+  // newest part has to be recorded or a change to a later part is invisible to a listing hash
+  const auto [firstNewerSize, firstNewer] = stackDates(newer, older);
+  EXPECT_EQ(firstNewerSize, 1);
+  EXPECT_EQ(firstNewer, newerTime);
+
+  const auto [secondNewerSize, secondNewer] = stackDates(older, newer);
+  EXPECT_EQ(secondNewerSize, 1);
+  EXPECT_EQ(secondNewer, newerTime);
 
   XFILE::CDirectory::RemoveRecursive(tempPath);
 }

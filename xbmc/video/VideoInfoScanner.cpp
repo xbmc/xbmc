@@ -550,25 +550,20 @@ CVideoInfoScanner::~CVideoInfoScanner()
         // RetrieveVideoInfo and the recursion loop (which also drops a folder from
         // m_pathsToScan) skip marked items. Marking must not change the listing
         // itself - Stack() converts a marked disc folder like any other, so that
-        // the listing hash below describes the same items on every scan. Full
-        // listing hashes never match here, so folders containing subfolders are
-        // still visited.
-        std::vector<CRegExp> stackRegExps{m_advancedSettings->m_folderStackRegExps};
+        // the listing hash below describes the same items on every scan, and a
+        // marked folder still forms a stack. Full listing hashes never match here,
+        // so folders containing subfolders are still visited.
         for (int i = items.Size() - 1; i >= 0; --i)
         {
           if (!items[i]->IsFolder())
             continue;
-          // a marked folder-stack member (label like "cd1") stays a folder in
-          // Stack() and its stack cannot form; leave such folders unmarked
-          std::string label = StringUtils::ToLower(items[i]->GetLabel());
-          URIUtils::RemoveSlashAtEnd(label);
+          // A folder-stack member is marked like any other: it still stacks (Stack() converts a
+          // marked folder too) and the stack is only marked when all of its parts are.
           std::string dbh;
           int64_t rawTime = items[i]->GetProperty(DIR_PROPERTY_STAT_MTIME).asInteger(0);
           if (rawTime == 0)
             rawTime = items[i]->GetProperty(DIR_PROPERTY_STAT_CTIME).asInteger(0);
           if (m_advancedSettings->m_bVideoLibraryUseFastHash &&
-              std::none_of(stackRegExps.begin(), stackRegExps.end(),
-                           [&label](CRegExp& re) { return re.RegFind(label) != -1; }) &&
               m_database.GetPathHash(items[i]->GetPath(), dbh) && !dbh.empty() &&
               StringUtils::EqualsNoCase(rawTime != 0 ? GetFastHash(regexps, rawTime)
                                                      : GetFastHash(items[i]->GetPath(), regexps),
@@ -753,32 +748,74 @@ CVideoInfoScanner::~CVideoInfoScanner()
         continue;
       }
 
-      // Disc rips are anchored in files/path several ways: BD subfolder rips
-      // under the raw BDMV/ row (older imports or failed playlist detection)
-      // or under a bluray:// playlist row (current imports); DVD rips under
-      // VIDEO_TS/; flat rips with the structure file directly in the movie
-      // folder. In every form the movie folder itself, the item the scanner
-      // lists, has no hashed row, so each parent rescan re-imports the movie
-      // from NFO. Store its fast hash here; GetMovieId resolves all anchor
-      // forms. ISOs hash normally as plain files and never reach this block.
+      // The item the scanner lists for a movie held in a folder of its own is never that folder:
+      // a disc rip is listed as its structure (BDMV/ or VIDEO_TS/, in the movie folder or below
+      // it) and a stack has absorbed the parts it is made of. The folder is left with no hash of
+      // its own, so nothing marks the movie unchanged and every parent rescan re-reads its NFO
+      // and re-resolves the disc of every part. Hash each folder here, so that the next scan of
+      // the parent can mark what has not changed.
       if (content == ContentType::MOVIES && m_advancedSettings->m_bVideoLibraryUseFastHash &&
-          !URIUtils::IsPlugin(strDirectory) && !pItem->IsFolder() &&
-          !URIUtils::IsStack(pItem->GetPath()) && URIUtils::IsOpticalMediaFile(pItem->GetPath()))
+          !URIUtils::IsPlugin(strDirectory) && !pItem->IsFolder())
       {
-        std::string discFolder = URIUtils::RemoveDiscPath(pItem->GetPath());
-        URIUtils::AddSlashAtEnd(discFolder);
-        if (!URIUtils::PathEquals(discFolder, strDirectory, true))
+        // The media a movie is held in: the item itself, or every part of it when the item is a
+        // stack. Hashing a folder is only of use if it can end in the item being marked, and a
+        // stack is marked only when every one of its parts is (see Stack()).
+        // Hash the folder of every part of a stack, or of none.
+        std::vector<std::string> media;
+        if (URIUtils::IsStack(pItem->GetPath()))
+          CStackDirectory::GetPaths(pItem->GetPath(), media);
+        else
+          media.emplace_back(pItem->GetPath());
+
+        std::vector<std::string> folders;
+        folders.reserve(media.size());
+        for (const std::string& path : media)
         {
-          int64_t rawTime = pItem->GetProperty(DIR_PROPERTY_STAT_MTIME).asInteger(0);
+          std::string folder;
+          if (URIUtils::IsOpticalMediaFile(path))
+            folder = URIUtils::RemoveDiscPath(path); // the movie folder, above BDMV/ or VIDEO_TS/
+          else if (URIUtils::IsBlurayPath(path))
+            folder = URIUtils::GetDiscBasePath(path); // an already resolved part names its disc
+          else
+            folder = URIUtils::GetDirectory(path); // an image or a plain file
+
+          if (!folder.empty())
+            URIUtils::AddSlashAtEnd(folder);
+          if (folder.empty() || URIUtils::PathEquals(folder, strDirectory, true))
+          {
+            folders.clear();
+            break;
+          }
+
+          folders.emplace_back(std::move(folder));
+        }
+
+        // The listing states the date of the folder the item itself is held in; the folder of any
+        // other part of a stack has to be asked for it
+        int64_t rawTime{0};
+        if (folders.size() == 1)
+        {
+          rawTime = pItem->GetProperty(DIR_PROPERTY_STAT_MTIME).asInteger(0);
           if (rawTime == 0)
             rawTime = pItem->GetProperty(DIR_PROPERTY_STAT_CTIME).asInteger(0);
-          const std::string fh =
-              rawTime != 0 ? GetFastHash(regexps, rawTime) : GetFastHash(discFolder, regexps);
+        }
+
+        std::vector<std::pair<std::string, std::string>> hashes; // folder and its fast hash
+        for (const std::string& folder : folders)
+        {
+          const std::string fh{rawTime != 0 ? GetFastHash(regexps, rawTime)
+                                            : GetFastHash(folder, regexps)};
           std::string dbh;
           if (!fh.empty() &&
-              !(m_database.GetPathHash(discFolder, dbh) && StringUtils::EqualsNoCase(fh, dbh)) &&
-              m_database.HasMovieInfo(pItem->GetDynPath()))
-            m_database.SetPathHash(discFolder, fh);
+              !(m_database.GetPathHash(folder, dbh) && StringUtils::EqualsNoCase(fh, dbh)))
+            hashes.emplace_back(folder, fh);
+        }
+
+        // Only a hash that has to be written is worth asking the library about the movie for
+        if (!hashes.empty() && m_database.HasMovieInfo(pItem->GetDynPath()))
+        {
+          for (const auto& [folder, fh] : hashes)
+            m_database.SetPathHash(folder, fh);
         }
       }
 
@@ -925,7 +962,20 @@ CVideoInfoScanner::~CVideoInfoScanner()
       // folder any more - Stack() converts a marked disc folder to a playable file item so that
       // the listing hash stays stable - but there is still nothing to read or scrape for it.
       if (pItem->GetProperty(PROPERTY_UNCHANGED).asBoolean())
-        continue;
+      {
+        // Only a folder is ever marked, and the hash that marks it outlives the movie it was
+        // hashed for. Where Stack() has since made the item something else - a disc structure, or
+        // a stack of several of them - the mark can therefore stand for a movie that is no longer
+        // in the library: removed by hand, or cleaned away because a part of its stack went
+        // missing, which also leaves the surviving part listed on its own. The library has the
+        // last word on such an item; a folder is still marked for itself alone.
+        if (pItem->IsFolder() || m_database.HasMovieInfo(pItem->GetDynPath()))
+          continue;
+
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: '{}' is no longer in the library - importing",
+                  CURL::GetRedacted(pItem->GetPath()));
+        pItem->ClearProperty(PROPERTY_UNCHANGED);
+      }
 
       // we do this since we may have a override per dir
       ScraperPtr info2 = m_database.GetScraperForPath(
@@ -2971,6 +3021,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
         time_t tt{};
         pItem->GetDateTime().GetAsTime(tt);
         digest.Update(&tt, sizeof(tt));
+
+        // A stack is one item made of several, all but the first of which are no longer listed.
+        // Its date is the date of that first part, so the date of the newest of them is taken as
+        // well - a change to any part has to be visible here or the directory is never rescanned.
+        if (const int64_t newestPart{pItem->GetProperty(PROPERTY_STACK_NEWEST_PART).asInteger(0)};
+            newestPart != 0)
+          digest.Update(&newestPart, sizeof(newestPart));
       }
       if (IsVideo(*pItem) && !PLAYLIST::IsPlayList(*pItem) && !pItem->IsNFO())
         count++;
@@ -2989,6 +3046,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
       // For the purposes of fast hashing archives are not considered folders
       if (items[i]->IsFolder() && !URIUtils::IsArchive(CURL(items[i]->GetPath())) &&
           !CUtil::ExcludeFileOrFolder(items[i]->GetPath(), excludes, &m_regexpCache))
+        return false;
+
+      // A stack is made of parts Stack() has already dropped from the listing, and of folders it
+      // may have turned into files. The mtime of the directory says nothing about any of them, so
+      // the listing has to be hashed to see a change to a stack (see GetPathHash)
+      if (items[i]->IsStack())
         return false;
     }
     return true;

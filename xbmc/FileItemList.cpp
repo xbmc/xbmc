@@ -861,6 +861,27 @@ void CFileItemList::Stack()
     baseItem->SetPath(stackPath);
     baseItem->SetLabel(stackName);
     baseItem->SetSize(size);
+
+    // The library scanner marks a part it need not look at again, and the first part becomes the
+    // stack, so its mark would speak for parts that may well have changed. Only a stack whose
+    // every part is unchanged is unchanged - the other parts are dropped below, leaving no way to
+    // tell afterwards.
+    if (std::ranges::any_of(stack, [this](const int i)
+                            { return !Get(i)->GetProperty(PROPERTY_UNCHANGED).asBoolean(); }))
+      baseItem->ClearProperty(PROPERTY_UNCHANGED);
+
+    // For the same reason the date of the stack, which is the date of its first part, says nothing
+    // about the others: record the newest of them so that a change to any part is still visible in
+    // a hash of the listing (the size set above is likewise the total of all of them)
+    time_t newestPart{0};
+    for (const int i : stack)
+    {
+      time_t partTime{0};
+      Get(i)->GetDateTime().GetAsTime(partTime);
+      newestPart = std::max(newestPart, partTime);
+    }
+    if (newestPart != 0)
+      baseItem->SetProperty(PROPERTY_STACK_NEWEST_PART, static_cast<int64_t>(newestPart));
   }
 
   // Delete unneeded items
