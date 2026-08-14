@@ -16,6 +16,7 @@
 #include "utils/LangCodeExpander.h"
 
 #include <algorithm>
+#include <functional>
 
 namespace KODI::VIDEO
 {
@@ -170,72 +171,67 @@ SubtitleStreamInfoExt::SubtitleStreamInfoExt(int id, const SubtitleStreamInfo& i
   isOriginal = info.flags & StreamFlags::FLAG_ORIGINAL;
 }
 
-std::vector<VideoStreamInfoExt> CVideoStreamSelect::GetVideoStreams()
+namespace
+{
+// Concepts to safeguard the template
+template<typename F, typename Player>
+concept StreamCountGetter = requires(F f, Player* p) {
+  { std::invoke(f, p) } -> std::convertible_to<int>;
+};
+
+template<typename F, typename Player, typename InfoT>
+concept StreamInfoGetter = requires(F f, Player* p, int i, InfoT& info) {
+  { std::invoke(f, p, i, info) } -> std::same_as<void>;
+};
+
+template<typename StreamInfoExtT,
+         typename StreamInfoT,
+         typename GetCountFn,
+         typename GetInfoFn,
+         typename Comparer>
+  requires StreamCountGetter<GetCountFn, CApplicationPlayer> &&
+           StreamInfoGetter<GetInfoFn, CApplicationPlayer, StreamInfoT>
+std::vector<StreamInfoExtT> GetStreams(GetCountFn getCount, GetInfoFn getInfo, Comparer comparer)
 {
   auto& components = CServiceBroker::GetAppComponents();
   auto appPlayer = components.GetComponent<CApplicationPlayer>();
 
-  const int streamCount = appPlayer->GetVideoStreamCount();
-
-  std::vector<VideoStreamInfoExt> streams;
+  const int streamCount = std::invoke(getCount, appPlayer.get());
+  std::vector<StreamInfoExtT> streams;
   streams.reserve(streamCount);
 
   // Collect all streams
   for (int i = 0; i < streamCount; ++i)
   {
-    VideoStreamInfo info;
-    appPlayer->GetVideoStreamInfo(i, info);
+    StreamInfoT info;
+    std::invoke(getInfo, appPlayer.get(), i, info);
     streams.emplace_back(i, info);
   }
 
-  std::sort(streams.begin(), streams.end(), SortComparerStreamVideo());
+  std::sort(streams.begin(), streams.end(), comparer);
 
   return streams;
+}
+} // namespace
+
+std::vector<VideoStreamInfoExt> CVideoStreamSelect::GetVideoStreams()
+{
+  return GetStreams<VideoStreamInfoExt, VideoStreamInfo>(&CApplicationPlayer::GetVideoStreamCount,
+                                                         &CApplicationPlayer::GetVideoStreamInfo,
+                                                         SortComparerStreamVideo{});
 }
 
 std::vector<AudioStreamInfoExt> CVideoStreamSelect::GetAudioStreams()
 {
-  auto& components = CServiceBroker::GetAppComponents();
-  auto appPlayer = components.GetComponent<CApplicationPlayer>();
-
-  const int streamCount = appPlayer->GetAudioStreamCount();
-
-  std::vector<AudioStreamInfoExt> streams;
-  streams.reserve(streamCount);
-
-  // Collect all streams
-  for (int i = 0; i < streamCount; ++i)
-  {
-    AudioStreamInfo info;
-    appPlayer->GetAudioStreamInfo(i, info);
-    streams.emplace_back(i, info);
-  }
-
-  std::sort(streams.begin(), streams.end(), SortComparerStreamAudio());
-
-  return streams;
+  return GetStreams<AudioStreamInfoExt, AudioStreamInfo>(&CApplicationPlayer::GetAudioStreamCount,
+                                                         &CApplicationPlayer::GetAudioStreamInfo,
+                                                         SortComparerStreamAudio{});
 }
 
 std::vector<SubtitleStreamInfoExt> CVideoStreamSelect::GetSubtitleStreams()
 {
-  auto& components = CServiceBroker::GetAppComponents();
-  auto appPlayer = components.GetComponent<CApplicationPlayer>();
-
-  const int streamCount = appPlayer->GetSubtitleCount();
-
-  std::vector<SubtitleStreamInfoExt> streams;
-  streams.reserve(streamCount);
-
-  // Collect all streams
-  for (int i = 0; i < streamCount; ++i)
-  {
-    SubtitleStreamInfo info;
-    appPlayer->GetSubtitleStreamInfo(i, info);
-    streams.emplace_back(i, info);
-  }
-
-  std::sort(streams.begin(), streams.end(), SortComparerStreamSubtitle());
-
-  return streams;
+  return GetStreams<SubtitleStreamInfoExt, SubtitleStreamInfo>(
+      &CApplicationPlayer::GetSubtitleCount, &CApplicationPlayer::GetSubtitleStreamInfo,
+      SortComparerStreamSubtitle{});
 }
 } // namespace KODI::VIDEO
