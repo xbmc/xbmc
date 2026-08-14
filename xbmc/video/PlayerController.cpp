@@ -31,6 +31,7 @@
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "video/PlayerControllerActions.h"
 #include "video/VideoStreamSelect.h"
 #include "video/dialogs/GUIDialogAudioSettings.h"
 #include "video/guilib/VideoStreamSelectHelper.h"
@@ -129,44 +130,33 @@ bool CPlayerController::OnAction(const CAction &action)
         auto it = std::ranges::find(streams, currentStreamId, &SubtitleStreamInfoExt::streamId);
         if (it == streams.end())
           return true;
+        const int currentIndex = static_cast<int>(std::distance(streams.begin(), it));
 
-        bool subVisible = true;
+        const bool visible = appPlayer->GetSubtitleVisible();
 
-        if (appPlayer->GetSubtitleVisible())
-        {
-          int delta = action.GetID() == ACTION_PREV_SUBTITLE ? -1 : 1;
+        SubtitleTrackAction act = SubtitleTrackAction::NEXT;
+        if (action.GetID() == ACTION_PREV_SUBTITLE)
+          act = SubtitleTrackAction::PREV;
+        else if (action.GetID() == ACTION_CYCLE_SUBTITLE)
+          act = SubtitleTrackAction::CYCLE;
 
-          // The position before begin() is UB. Clamp.
-          if (it == streams.begin() && delta < 0)
-            subVisible = false;
-          else
-            std::advance(it, delta);
+        const auto [newIndex, newVisible] = CPlayerControllerActions::ExecSubtitleTrackAction(
+            static_cast<int>(streams.size()), currentIndex, visible, act);
 
-          if (it == streams.end())
-          {
-            it = streams.begin();
-            if (action.GetID() != ACTION_CYCLE_SUBTITLE)
-              subVisible = false;
-          }
+        if (newIndex < 0 || newIndex >= static_cast<int>(streams.size()))
+          return true;
 
-          if (!subVisible)
-            appPlayer->SetSubtitleVisible(false);
-          if (currentStreamId != it->streamId)
-            appPlayer->SetSubtitle(it->streamId);
-        }
-        else if (action.GetID() != ACTION_CYCLE_SUBTITLE)
-        {
-          if (it == streams.begin() && action.GetID() == ACTION_PREV_SUBTITLE)
-          {
-            it = std::prev(streams.end());
-            if (currentStreamId != it->streamId)
-              appPlayer->SetSubtitle(it->streamId);
-          }
-          appPlayer->SetSubtitleVisible(true);
-        }
+        it = streams.begin() + newIndex;
 
+        // Change track and visibility
+        if (newVisible != visible)
+          appPlayer->SetSubtitleVisible(newVisible);
+        if (it->streamId != currentStreamId)
+          appPlayer->SetSubtitle(it->streamId);
+
+        // Toast
         std::string sub;
-        if (subVisible)
+        if (newVisible)
         {
           sub = it->languageDesc;
 
@@ -180,7 +170,8 @@ bool CPlayerController::OnAction(const CAction &action)
         }
         else
         {
-          sub = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1223);
+          sub =
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1223); // "Disabled"
         }
 
         CGUIDialogKaiToast::QueueNotification(
