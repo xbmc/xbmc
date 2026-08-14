@@ -213,6 +213,7 @@ struct SelectionStream
   CRect VideoRect;
   std::string stereo_mode;
   float aspect_ratio = 0.0f;
+  int orientation = 0;
   StreamHdrType hdrType = StreamHdrType::HDR_TYPE_NONE;
   AVDOVIDecoderConfigurationRecord dovi{};
   uint32_t fpsScale{0};
@@ -403,7 +404,7 @@ protected:
   void OnExit() override;
   void Process() override;
   void VideoParamsChange() override;
-  void GetDebugInfo(std::string &audio, std::string &video, std::string &general) override;
+  void GetDebugInfo(DEBUG_INFO_PLAYER& info) override;
   void UpdateClockSync(bool enabled) override;
   void UpdateRenderInfo(CRenderInfo &info) override;
   void UpdateRenderBuffers(int queued, int discard, int free) override;

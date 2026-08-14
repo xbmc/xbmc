@@ -22,6 +22,21 @@ class CApplicationSettingsHandling : public ISettingCallback,
                                      public ISettingsHandler,
                                      public ISubSettings
 {
+public:
+  //! \brief Push the raster's shape and the interface's fill policy into the graphics context.
+  //! Public because the skin reload calls it too - the raster and the skin selected against it
+  //! must move in one step on the render thread.
+  static void ApplyRasterSettings();
+
+  /*!
+   * \brief Carry a moved raster to the layout, whatever moved it - a raster stated over the API
+   *        arrives by this same path.
+   *
+   * The raster is the target a skin's resolution is selected against, so it posts a skin reload
+   * and lets that apply the raster in the same step rather than applying it here first.
+   */
+  static void ApplyRasterChange();
+
 protected:
   void RegisterSettings();
   void UnregisterSettings();

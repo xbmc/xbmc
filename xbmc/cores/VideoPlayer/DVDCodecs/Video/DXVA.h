@@ -14,6 +14,7 @@
 #include "threads/Event.h"
 
 #include <mutex>
+#include <utility>
 #include <vector>
 
 #include <d3d11_4.h>
@@ -27,6 +28,8 @@ extern "C"
 namespace DXVA
 {
 class CDecoder;
+
+class CSurfaceReadback;
 
 class CVideoBuffer : public ::CVideoBuffer
 {
@@ -42,6 +45,11 @@ public:
   virtual void Initialize(CDecoder* decoder);
   virtual HRESULT GetResource(ID3D11Resource** ppResource);
   virtual unsigned GetIdx();
+
+  bool ReduceForAnalysis(KODI::VIDEO::GEOMETRY::ReducedFrame& reduction,
+                         unsigned int sourceWidth,
+                         unsigned int sourceHeight,
+                         unsigned int targetWidth) override;
 
   ID3D11View* view = nullptr;
   DXGI_FORMAT format = DXGI_FORMAT_UNKNOWN;
@@ -178,6 +186,10 @@ public:
   size_t Size();
   bool HasFree();
 
+  //! \brief The pool-wide readback scaler, created on first use. Shared because its D3D objects
+  //! are per-stream, not per-buffer.
+  std::shared_ptr<CSurfaceReadback> GetReadback();
+
 protected:
   void Reset();
   virtual CVideoBuffer* CreateBuffer(int idx) = 0;
@@ -188,6 +200,7 @@ protected:
   std::deque<size_t> m_freeViews;
   std::vector<CVideoBuffer*> m_out;
   std::deque<size_t> m_freeOut;
+  std::shared_ptr<CSurfaceReadback> m_readback;
 };
 
 template<typename TBuffer>

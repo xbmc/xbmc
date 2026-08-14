@@ -20,6 +20,9 @@
 #define WINDOW_SETTINGS_MENU              10004
 #define WINDOW_SYSTEM_INFORMATION         10007
 #define WINDOW_SCREEN_CALIBRATION         10011
+// A window's title is the string with its own number, so this is the first id free on both
+// sides: 10012 through 10015 are all spoken for by the add-on configuration strings.
+#define WINDOW_SCREEN_ALIGNMENT           10023
 
 #define WINDOW_SETTINGS_START             10016
 #define WINDOW_SETTINGS_SYSTEM            10016

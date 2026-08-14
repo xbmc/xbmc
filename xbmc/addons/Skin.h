@@ -168,6 +168,17 @@ public:
 
   float GetEffectsSlowdown() const { return m_effectsSlowDown; }
 
+  /*! \brief What the skin asks to have drawn in the part of the screen its layout leaves
+   uncovered when it is held at its own aspect ratio on a screen of a different shape.
+   Declared as `<surround colour="AARRGGBB" image="file"/>` in the skin extension, both
+   attributes optional - the image is fitted at its own ratio over the colour.
+   \return the declared colour as AARRGGBB hex, empty when the skin declares none
+   */
+  const std::string& GetSurroundColour() const { return m_surroundColour; }
+
+  //! \brief The declared surround image, resolved like any skin media path; empty for none.
+  const std::string& GetSurroundImage() const { return m_surroundImage; }
+
   const std::vector<CStartupWindow>& GetStartupWindows() const { return m_startupWindows; }
 
   /*! \brief Retrieve the skin paths to search for skin XML files
@@ -293,6 +304,8 @@ protected:
 
   std::vector<CStartupWindow> m_startupWindows;
   bool m_debugging;
+  std::string m_surroundColour;
+  std::string m_surroundImage;
 
   /*! Manager/Owner of skin timers */
   std::unique_ptr<CSkinTimerManager> m_skinTimerManager;

@@ -216,6 +216,8 @@ void CAdvancedSettings::Initialize()
   m_videoDefaultPlayer = "VideoPlayer";
   m_videoIgnoreSecondsAtStart = 3*60;
   m_videoIgnorePercentAtEnd   = 8.0f;
+  m_videoContentGeometryVariesShare = 0.10f;
+  m_videoContentGeometryReductionWidth = 960;
   m_videoPlayCountMinimumPercent = 90.0f;
   m_videoVDPAUScaling = -1;
   m_videoNonLinStretchRatio = 0.5f;
@@ -692,6 +694,10 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetFloat(pElement, "playcountminimumpercent", m_videoPlayCountMinimumPercent, 0.0f, 101.0f);
     XMLUtils::GetInt(pElement, "ignoresecondsatstart", m_videoIgnoreSecondsAtStart, 0, 900);
     XMLUtils::GetFloat(pElement, "ignorepercentatend", m_videoIgnorePercentAtEnd, 0, 100.0f);
+    XMLUtils::GetFloat(pElement, "contentgeometryvariesshare", m_videoContentGeometryVariesShare,
+                       0.0f, 1.0f);
+    XMLUtils::GetInt(pElement, "contentgeometryreductionwidth",
+                     m_videoContentGeometryReductionWidth, 120, 3840);
 
     XMLUtils::GetBoolean(pElement, "usetimeseeking", m_videoUseTimeSeeking);
     XMLUtils::GetBoolean(pElement, "smoothpercenttotimeseeking", m_videoSmoothPercentToTimeSeeking);

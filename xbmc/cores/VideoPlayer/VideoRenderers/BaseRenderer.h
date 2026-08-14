@@ -96,6 +96,10 @@ public:
   void SetFps(float fps) { m_fps = fps; }
   void SetViewMode(int viewMode);
 
+  //! \brief Take VideoPicture::contentRect for the frame about to be drawn. Empty leaves the
+  //! stored measurement in charge.
+  void SetFrameContentRect(const CRectInt& rect) { m_frameContentRect = rect; }
+
   /*! \brief Get video rectangle and view window
   \param source is original size of the video
   \param dest is the target rendering area honoring aspect ratio of source
@@ -127,6 +131,14 @@ protected:
                             float inputFrameRatio, float zoomAmount, float verticalShift);
   void CalculateFrameAspectRatio(unsigned int desired_width, unsigned int desired_height);
   virtual void ManageRenderArea();
+
+  /*!
+   * \brief The content geometry's part of ManageRenderArea(): cut to the frame's own
+   * measurement, then fit the mask opening, then honour a maintained ratio.
+   * \param contentRatio narrowed to the cut content when the measurement applies
+   * \return the window to render into
+   */
+  CRect ApplyContentGeometry(float& contentRatio);
   virtual void ReorderDrawPoints();
   virtual EShaderFormat GetShaderFormat();
   void MarkDirty();
@@ -152,6 +164,7 @@ protected:
   CRect m_destRect;
   CRect m_sourceRect;
   CRect m_viewRect;
+  CRectInt m_frameContentRect;
 
   // rendering flags
   unsigned m_iFlags = 0;

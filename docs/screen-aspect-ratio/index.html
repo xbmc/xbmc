@@ -1,0 +1,1792 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Screen &amp; Aspect Ratio — feature documentation</title>
+<style>
+:root {
+  --ground:  #EDEFF1;
+  --surface: #FFFFFF;
+  --sunk:    #E4E8EB;
+  --ink:     #131920;
+  --muted:   #5A6672;
+  --rule:    #D3D9DE;
+  --rule-firm:#B6BFC7;
+  --accent:  #0B6E78;
+  --accent-soft: #DCEDEF;
+  --lit:     #B9862B;
+  --lit-soft:#F2E4C4;
+  --warn:    #A9522A;
+  --mask:    #2A3138;
+
+  --serif: Constantia, Cambria, "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --sans: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+  --mono: "Cascadia Mono", "Cascadia Code", Consolas, ui-monospace, "SF Mono", Menlo, monospace;
+
+  --measure: 68ch;
+  --rail: 15.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ground:  #0D1013;
+    --surface: #151A1F;
+    --sunk:    #10151A;
+    --ink:     #E4E9ED;
+    --muted:   #8B96A2;
+    --rule:    #252D35;
+    --rule-firm:#38434E;
+    --accent:  #3FB4BE;
+    --accent-soft: #10333A;
+    --lit:     #E0B45C;
+    --lit-soft:#3A2F17;
+    --warn:    #D2854E;
+    --mask:    #05070A;
+  }
+}
+:root[data-theme="dark"] {
+  --ground:  #0D1013;
+  --surface: #151A1F;
+  --sunk:    #10151A;
+  --ink:     #E4E9ED;
+  --muted:   #8B96A2;
+  --rule:    #252D35;
+  --rule-firm:#38434E;
+  --accent:  #3FB4BE;
+  --accent-soft: #10333A;
+  --lit:     #E0B45C;
+  --lit-soft:#3A2F17;
+  --warn:    #D2854E;
+  --mask:    #05070A;
+}
+:root[data-theme="light"] {
+  --ground:  #EDEFF1;
+  --surface: #FFFFFF;
+  --sunk:    #E4E8EB;
+  --ink:     #131920;
+  --muted:   #5A6672;
+  --rule:    #D3D9DE;
+  --rule-firm:#B6BFC7;
+  --accent:  #0B6E78;
+  --accent-soft: #DCEDEF;
+  --lit:     #B9862B;
+  --lit-soft:#F2E4C4;
+  --warn:    #A9522A;
+  --mask:    #2A3138;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { animation: none !important; transition: none !important; }
+}
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- masthead ---------- */
+
+.masthead {
+  border-bottom: 1px solid var(--rule);
+  background: var(--surface);
+}
+.masthead-inner {
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: 3.25rem 2rem 2.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.9rem;
+  align-items: center;
+}
+.eyebrow .dot { color: var(--rule-firm); }
+.masthead h1 {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: clamp(2.4rem, 5.2vw, 3.6rem);
+  line-height: 1.04;
+  letter-spacing: -0.018em;
+  margin: 0;
+  text-wrap: balance;
+}
+.standfirst {
+  font-size: 1.16rem;
+  line-height: 1.55;
+  color: var(--muted);
+  max-width: 54ch;
+  margin: 0;
+}
+.factbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 2.4rem;
+  border-top: 1px solid var(--rule);
+  padding-top: 1.15rem;
+  margin-top: 0.35rem;
+}
+.fact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.35rem 0;
+}
+.fact dt {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.fact dd {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 0.86rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.provenance {
+  border: 1px solid var(--rule-firm);
+  border-left: 3px solid var(--warn);
+  background: var(--sunk);
+  padding: 0.85rem 1.1rem;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--muted);
+  max-width: var(--measure);
+}
+.provenance strong { color: var(--ink); }
+
+/* ---------- shell ---------- */
+
+.shell {
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: 0 2rem 6rem;
+  display: grid;
+  grid-template-columns: var(--rail) minmax(0, 1fr);
+  gap: 3.5rem;
+  align-items: start;
+}
+
+/* ---------- rail ---------- */
+
+.rail {
+  position: sticky;
+  top: 0;
+  max-height: 100vh;
+  overflow-y: auto;
+  padding: 2.5rem 0;
+  border-right: 1px solid var(--rule);
+  padding-right: 1.5rem;
+}
+.rail h2 {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 0.9rem;
+  font-weight: 600;
+}
+.rail ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: toc;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.rail li { counter-increment: toc; }
+.rail a {
+  display: block;
+  padding: 0.3rem 0 0.3rem 2rem;
+  font-size: 0.865rem;
+  line-height: 1.35;
+  color: var(--muted);
+  text-decoration: none;
+  position: relative;
+  border-left: 2px solid transparent;
+  margin-left: -1px;
+}
+.rail a::before {
+  content: counter(toc, decimal-leading-zero);
+  position: absolute;
+  left: 0.55rem;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--rule-firm);
+  font-variant-numeric: tabular-nums;
+}
+.rail a:hover { color: var(--ink); }
+.rail a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.rail a.here {
+  color: var(--accent);
+  border-left-color: var(--accent);
+}
+.rail a.here::before { color: var(--accent); }
+
+/* ---------- content ---------- */
+
+.content { padding: 2.5rem 0 0; min-width: 0; }
+
+section { margin: 0 0 4.25rem; scroll-margin-top: 1.5rem; }
+
+h2.sec {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 1.95rem;
+  line-height: 1.15;
+  letter-spacing: -0.012em;
+  margin: 0 0 0.35rem;
+  text-wrap: balance;
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+}
+h2.sec .num {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  flex: none;
+}
+.sec-rule {
+  border: 0;
+  border-top: 1px solid var(--rule-firm);
+  margin: 0 0 1.6rem;
+}
+
+h3 {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 1.28rem;
+  letter-spacing: -0.005em;
+  margin: 2.4rem 0 0.7rem;
+  text-wrap: balance;
+}
+h4 {
+  font-family: var(--sans);
+  font-weight: 650;
+  font-size: 0.94rem;
+  letter-spacing: 0.005em;
+  margin: 1.8rem 0 0.55rem;
+}
+
+p, ul, ol.prose { max-width: var(--measure); }
+p { margin: 0 0 1rem; }
+
+ul.prose, ol.prose {
+  margin: 0 0 1.1rem;
+  padding-left: 1.15rem;
+}
+ul.prose li, ol.prose li { margin-bottom: 0.42rem; }
+
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+code, .mono { font-family: var(--mono); font-size: 0.875em; }
+p code, li code, td code {
+  background: var(--sunk);
+  border: 1px solid var(--rule);
+  padding: 0.05em 0.32em;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+.lead {
+  font-size: 1.08rem;
+  line-height: 1.58;
+  color: var(--ink);
+  max-width: 60ch;
+}
+
+/* ---------- setting entries ---------- */
+
+.setting {
+  border-top: 1px solid var(--rule);
+  padding: 1.35rem 0 0.4rem;
+  display: grid;
+  grid-template-columns: 13.5rem minmax(0, 1fr);
+  gap: 0 2rem;
+}
+.setting:last-of-type { border-bottom: 1px solid var(--rule); padding-bottom: 1.35rem; }
+
+.setting-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.42rem;
+  align-items: flex-start;
+  padding-top: 0.2rem;
+}
+.setting-id {
+  font-family: var(--mono);
+  font-size: 0.735rem;
+  line-height: 1.35;
+  color: var(--muted);
+  word-break: break-all;
+}
+.chip {
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  padding: 0.16rem 0.45rem;
+  border: 1px solid var(--rule-firm);
+  color: var(--muted);
+  border-radius: 2px;
+  white-space: nowrap;
+}
+.chip.adv { border-color: var(--accent); color: var(--accent); }
+.chip.exp { border-color: var(--lit); color: var(--lit); }
+.chip.new { border-color: var(--warn); color: var(--warn); }
+.default {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.default b { color: var(--ink); font-weight: 600; }
+
+.setting-body h4 {
+  margin: 0 0 0.45rem;
+  font-family: var(--serif);
+  font-size: 1.12rem;
+  font-weight: 600;
+  letter-spacing: -0.004em;
+}
+.setting-body p { margin: 0 0 0.7rem; max-width: 62ch; }
+.setting-body p:last-child { margin-bottom: 0; }
+.setting-body ul { margin: 0 0 0.75rem; padding-left: 1.1rem; max-width: 62ch; }
+.setting-body li { margin-bottom: 0.28rem; }
+
+.opts {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  max-width: 62ch;
+}
+.opts li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.6rem;
+  align-items: baseline;
+  font-size: 0.94rem;
+}
+.opts .opt-label {
+  font-weight: 620;
+  white-space: nowrap;
+}
+
+/* ---------- notes ---------- */
+
+.note {
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  padding: 0.8rem 1.05rem;
+  margin: 1.2rem 0;
+  font-size: 0.93rem;
+  line-height: 1.55;
+  max-width: var(--measure);
+}
+.note.caution { border-left-color: var(--warn); background: var(--lit-soft); }
+.note p { margin: 0 0 0.55rem; max-width: none; }
+.note p:last-child { margin: 0; }
+.note-label {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 0.3rem;
+}
+.note.caution .note-label { color: var(--warn); }
+
+/* ---------- tables ---------- */
+
+.table-wrap {
+  overflow-x: auto;
+  margin: 1.15rem 0 1.6rem;
+  border: 1px solid var(--rule);
+  background: var(--surface);
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.885rem;
+  min-width: 34rem;
+}
+th, td {
+  text-align: left;
+  padding: 0.6rem 0.85rem;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+thead th {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+  background: var(--sunk);
+  white-space: nowrap;
+}
+tbody tr:last-child td { border-bottom: 0; }
+td.m, th.m { font-family: var(--mono); font-size: 0.8rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
+td.num { font-variant-numeric: tabular-nums; text-align: right; }
+
+/* ---------- code ---------- */
+
+pre {
+  background: var(--sunk);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--rule-firm);
+  padding: 0.95rem 1.1rem;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 0.815rem;
+  line-height: 1.62;
+  margin: 1.1rem 0 1.5rem;
+  tab-size: 2;
+}
+pre code { background: none; border: 0; padding: 0; font-size: inherit; white-space: pre; }
+.c-key { color: var(--accent); }
+.c-str { color: var(--lit); }
+.c-com { color: var(--muted); font-style: italic; }
+
+/* ---------- figures ---------- */
+
+figure {
+  margin: 1.6rem 0 1.8rem;
+  border: 1px solid var(--rule);
+  background: var(--surface);
+  padding: 1.4rem 1.4rem 1rem;
+  max-width: var(--measure);
+}
+figure svg { display: block; width: 100%; height: auto; }
+figcaption {
+  margin-top: 0.9rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.83rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+figcaption b { color: var(--ink); font-weight: 620; }
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.3rem;
+  margin-top: 0.7rem;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.legend span { display: inline-flex; align-items: center; gap: 0.4rem; }
+.swatch { width: 0.85rem; height: 0.6rem; display: inline-block; border: 1px solid var(--rule-firm); }
+
+/* ratio strip */
+.ratios {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.1rem 1.4rem;
+  align-items: flex-end;
+  margin: 1.4rem 0 1.7rem;
+  padding: 1.4rem 1.2rem 1.1rem;
+  border: 1px solid var(--rule);
+  background: var(--surface);
+  overflow-x: auto;
+}
+.ratio { display: flex; flex-direction: column; align-items: center; gap: 0.45rem; flex: none; }
+.ratio .box {
+  height: 3.1rem;
+  border: 1px solid var(--accent);
+  background: var(--accent-soft);
+}
+.ratio.nodetect .box {
+  border-style: dashed;
+  border-color: var(--rule-firm);
+  background: transparent;
+}
+.ratio .val {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.ratio .nm {
+  font-size: 0.66rem;
+  color: var(--muted);
+  max-width: 7rem;
+  text-align: center;
+  line-height: 1.25;
+}
+
+/* ---------- footer ---------- */
+
+footer {
+  border-top: 1px solid var(--rule);
+  background: var(--surface);
+  padding: 2.5rem 2rem 3.5rem;
+}
+.footer-inner {
+  max-width: 76rem;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 3rem;
+  font-size: 0.84rem;
+  color: var(--muted);
+}
+.footer-inner p { max-width: 48ch; margin: 0; }
+
+/* ---------- theme toggle ---------- */
+
+.toggle {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 20;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  background: var(--surface);
+  color: var(--muted);
+  border: 1px solid var(--rule-firm);
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  border-radius: 2px;
+}
+.toggle:hover { color: var(--ink); border-color: var(--accent); }
+.toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 60rem) {
+  .shell { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .rail {
+    position: static;
+    max-height: none;
+    border-right: 0;
+    border-bottom: 1px solid var(--rule);
+    padding: 1.5rem 0;
+  }
+  .rail ol { flex-direction: row; flex-wrap: wrap; gap: 0.2rem 1.2rem; }
+  .rail a { padding-left: 1.6rem; border-left: 0; }
+  .setting { grid-template-columns: minmax(0, 1fr); gap: 0.7rem; }
+  .setting-meta { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.8rem; }
+}
+@media (max-width: 40rem) {
+  .masthead-inner, .shell, footer { padding-left: 1.15rem; padding-right: 1.15rem; }
+  .factbar { gap: 0 1.4rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="eyebrow">
+      <span>Kodi&nbsp;v22</span><span class="dot">/</span>
+      <span>Feature documentation</span><span class="dot">/</span>
+      <span>Settings &rsaquo; System &rsaquo; Screen &amp; Aspect Ratio</span>
+    </div>
+    <h1>Screen &amp; Aspect&nbsp;Ratio</h1>
+    <p class="standfirst">
+      Kodi learns the true shape of what it is playing, and the true shape of the screen it is
+      playing onto — then keeps everything it draws inside that shape, and tells the rest of the
+      room about it.
+    </p>
+
+    <dl class="factbar">
+      <div class="fact"><dt>Introduced in</dt><dd>Kodi v22</dd></div>
+      <div class="fact"><dt>Settings level</dt><dd>Advanced</dd></div>
+      <div class="fact"><dt>Settings path</dt><dd>System &rsaquo; Screen &amp; Aspect Ratio</dd></div>
+      <div class="fact"><dt>JSON-RPC</dt><dd>14.0.0</dd></div>
+      <div class="fact"><dt>xbmc.python</dt><dd>3.0.3</dd></div>
+    </dl>
+  </div>
+</header>
+
+<div class="shell">
+
+  <nav class="rail" aria-label="Contents">
+    <h2>Contents</h2>
+    <ol>
+      <li><a href="#intro">What this is for</a></li>
+      <li><a href="#concepts">The four ideas</a></li>
+      <li><a href="#vocabulary">The aspect ratio vocabulary</a></li>
+      <li><a href="#measuring">Measuring content</a></li>
+      <li><a href="#live">Live detection</a></li>
+      <li><a href="#settings">Settings reference</a></li>
+      <li><a href="#displaced">What it switches off</a></li>
+      <li><a href="#alignment">Screen alignment</a></li>
+      <li><a href="#skinning">For skinners</a></li>
+      <li><a href="#python">For add-ons</a></li>
+      <li><a href="#jsonrpc">For automation</a></li>
+      <li><a href="#advanced">advancedsettings.xml</a></li>
+      <li><a href="#limits">Known limitations</a></li>
+      <li><a href="#trying">Getting started</a></li>
+    </ol>
+  </nav>
+
+  <main class="content">
+
+  <!-- 1 -->
+  <section id="intro">
+    <h2 class="sec"><span class="num">01</span>What this is for</h2>
+    <hr class="sec-rule">
+
+    <p class="lead">
+      A widescreen film is usually delivered inside a 16:9 frame with black bars baked into the
+      picture. Kodi has never known they were there. It knows the shape of the <em>frame</em>, and
+      it treats that as the shape of the film.
+    </p>
+
+    <p>
+      On a television that hardly matters — the bars are black, the screen is black, nobody looks.
+      In a room with a masked screen or an anamorphic lens it matters a great deal, because
+      something has to know how tall the picture actually is before it can drive a mask to the
+      edge of it. Today that job is done by external video processors that re-measure the picture
+      after Kodi has already drawn it.
+    </p>
+
+    <p>
+      This feature moves that knowledge inside Kodi. It measures the picture area of each video,
+      stores it in the library, resolves it against a vocabulary of real aspect ratios, and then
+      publishes it — to skins, to add-ons, and over JSON-RPC — alongside the shape of the screen
+      the viewer says they have.
+    </p>
+
+    <h3>The four rooms</h3>
+    <p>The design is shaped by four kinds of viewing setup, in increasing order of what they need:</p>
+    <ol class="prose">
+      <li><b>A television.</b> The screen is the whole picture. Nothing here needs to change, and by default nothing does.</li>
+      <li><b>A fixed screen, projector zoomed by hand.</b> The screen is a shape the display is not. Kodi needs to be told that shape and stay inside it.</li>
+      <li><b>Two-way masking.</b> Something must be told how tall the picture is, per title, before the film starts.</li>
+      <li><b>Motorised lens and masking.</b> The room's shape changes per title, so the area Kodi operates in is not a setting at all — it is something an automation states, and Kodi follows.</li>
+    </ol>
+
+    <div class="note">
+      <span class="note-label">Default behaviour</span>
+      <p>
+        Every setting in this feature is off, or set to a value that is inert, out of the box.
+        <b>Screen aspect ratio</b> defaults to <em>Same as the display</em>, which is drawing-inert
+        by construction on every display, window and calibration. A viewer who never opens this
+        page sees byte-identical behaviour to Kodi today.
+      </p>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section id="concepts">
+    <h2 class="sec"><span class="num">02</span>The four ideas</h2>
+    <hr class="sec-rule">
+
+    <p>
+      Four things get confused with one another constantly in this area, and the whole feature
+      falls out of keeping them apart.
+    </p>
+
+    <h3>The frame</h3>
+    <p>
+      What is coded in the file — <code>1920&times;1080</code>, corrected for pixel aspect. This is
+      what Kodi has always reported as the aspect ratio, and it is what the skin's existing
+      <code>VideoPlayer.VideoAspect</code> still reports.
+    </p>
+
+    <h3>The content geometry</h3>
+    <p>
+      The lit rectangle <em>inside</em> the frame, with the coded black bars excluded. For a scope
+      film in a 16:9 container this is roughly <code>1920&times;800</code> — the thing a mask is
+      driven to. It is discovered by measurement, not by parsing metadata, because no metadata
+      records it.
+    </p>
+
+    <h3>The raster</h3>
+    <p>
+      The area Kodi may operate in — the shape of the physical screen. This is the load-bearing
+      invariant of the whole feature:
+    </p>
+    <div class="note">
+      <span class="note-label">The invariant</span>
+      <p><b>Nothing Kodi draws ever exceeds the raster.</b> Not the picture, not the OSD, not a dialogue, not a subtitle, not the mouse pointer.</p>
+    </div>
+    <p>
+      That single rule dissolves several settings that otherwise look necessary. At rest the OSD has
+      only one place to be. The picture is always contained. A motorised room does not opt out of
+      the constraint — it <em>moves</em> it.
+    </p>
+
+    <h3>The picture as drawn</h3>
+    <p>
+      Where the content actually landed on the screen, in screen pixels, after the raster, the
+      calibration and any maintained ratio have all had their say. Neither the content's ratio nor
+      the raster's ratio tells you this; it has to be observed from what the renderer drew, and it
+      is reported separately.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 620 240" role="img" aria-label="Diagram: a 2.40 film inside a 16:9 frame, drawn inside a 2.40 raster on a 16:9 display">
+        <!-- left: the file -->
+        <text x="0" y="14" font-family="Consolas, monospace" font-size="11" fill="currentColor" opacity="0.55">THE FILE</text>
+        <rect x="0" y="26" width="260" height="146" fill="none" stroke="currentColor" stroke-opacity="0.45" stroke-width="1"/>
+        <rect x="0" y="26" width="260" height="19" fill="currentColor" fill-opacity="0.12"/>
+        <rect x="0" y="153" width="260" height="19" fill="currentColor" fill-opacity="0.12"/>
+        <rect x="0" y="45" width="260" height="108" fill="var(--lit)" fill-opacity="0.55" stroke="var(--lit)" stroke-width="1.5"/>
+        <text x="130" y="103" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="currentColor">2.40 content</text>
+        <text x="130" y="39" text-anchor="middle" font-family="Consolas, monospace" font-size="10" fill="currentColor" opacity="0.6">coded bars</text>
+        <text x="0" y="192" font-family="Consolas, monospace" font-size="10" fill="currentColor" opacity="0.6">frame 1.78 &#183; content 2.40</text>
+
+        <!-- arrow -->
+        <path d="M282 99 L322 99" stroke="var(--accent)" stroke-width="1.5" fill="none"/>
+        <path d="M322 99 l-7 -4 l0 8 z" fill="var(--accent)"/>
+
+        <!-- right: the screen -->
+        <text x="344" y="14" font-family="Consolas, monospace" font-size="11" fill="currentColor" opacity="0.55">THE SCREEN</text>
+        <rect x="344" y="26" width="260" height="146" fill="var(--mask)" fill-opacity="0.14" stroke="currentColor" stroke-opacity="0.35" stroke-dasharray="3 3"/>
+        <rect x="344" y="45" width="260" height="108" fill="var(--lit)" fill-opacity="0.55"/>
+        <rect x="344" y="45" width="260" height="108" fill="none" stroke="var(--accent)" stroke-width="2"/>
+        <text x="474" y="103" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="currentColor">picture = raster</text>
+        <text x="474" y="39" text-anchor="middle" font-family="Consolas, monospace" font-size="10" fill="currentColor" opacity="0.6">display, unused</text>
+        <text x="344" y="192" font-family="Consolas, monospace" font-size="10" fill="currentColor" opacity="0.6">display 1.78 &#183; raster 2.40</text>
+      </svg>
+      <div class="legend">
+        <span><i class="swatch" style="background:var(--lit);opacity:.55"></i> picture</span>
+        <span><i class="swatch" style="border-color:var(--accent);border-width:2px"></i> raster</span>
+        <span><i class="swatch" style="background:currentColor;opacity:.12"></i> coded bars</span>
+        <span><i class="swatch" style="border-style:dashed"></i> display</span>
+      </div>
+      <figcaption>
+        A 2.40 film delivered in a 16:9 frame, played in a room whose screen is 2.40. The coded bars
+        are <b>cut, not drawn</b>: the content fills the raster edge to edge, and the part of the
+        display outside the raster is where the mask is. Cutting the bars is gated on a stated
+        raster — with no raster stated, nothing about the picture moves.
+      </figcaption>
+    </figure>
+  </section>
+
+  <!-- 3 -->
+  <section id="vocabulary">
+    <h2 class="sec"><span class="num">03</span>The aspect ratio vocabulary</h2>
+    <hr class="sec-rule">
+
+    <p>
+      A measurement produces a number like <code>2.3881</code>. Nothing in a room can act on that.
+      Kodi therefore resolves every measurement to an entry in a shipped vocabulary of real
+      delivery ratios, and serves the resolved rectangle rather than the raw one — the same path a
+      hand-made declaration takes, so both answer identically.
+    </p>
+
+    <div class="ratios" role="img" aria-label="The shipped aspect ratio vocabulary, drawn at true proportions">
+      <div class="ratio nodetect"><div class="box" style="width:3.10rem"></div><div class="val">1.00</div><div class="nm">&mdash;</div></div>
+      <div class="ratio"><div class="box" style="width:3.69rem"></div><div class="val">1.19</div><div class="nm">Movietone</div></div>
+      <div class="ratio"><div class="box" style="width:4.13rem"></div><div class="val">1.33</div><div class="nm">4:3</div></div>
+      <div class="ratio"><div class="box" style="width:4.25rem"></div><div class="val">1.37</div><div class="nm">Academy</div></div>
+      <div class="ratio"><div class="box" style="width:4.43rem"></div><div class="val">1.43</div><div class="nm">IMAX 70mm</div></div>
+      <div class="ratio nodetect"><div class="box" style="width:4.65rem"></div><div class="val">1.50</div><div class="nm">3:2</div></div>
+      <div class="ratio"><div class="box" style="width:5.15rem"></div><div class="val">1.66</div><div class="nm">&mdash;</div></div>
+      <div class="ratio"><div class="box" style="width:5.51rem"></div><div class="val">1.78</div><div class="nm">16:9</div></div>
+      <div class="ratio"><div class="box" style="width:5.74rem"></div><div class="val">1.85</div><div class="nm">Flat</div></div>
+      <div class="ratio"><div class="box" style="width:5.89rem"></div><div class="val">1.90</div><div class="nm">IMAX digital</div></div>
+      <div class="ratio"><div class="box" style="width:6.20rem"></div><div class="val">2.00</div><div class="nm">Univisium</div></div>
+      <div class="ratio"><div class="box" style="width:6.82rem"></div><div class="val">2.20</div><div class="nm">Todd&#8209;AO</div></div>
+      <div class="ratio"><div class="box" style="width:7.29rem"></div><div class="val">2.35</div><div class="nm">CinemaScope</div></div>
+      <div class="ratio"><div class="box" style="width:7.44rem"></div><div class="val">2.40</div><div class="nm">Scope</div></div>
+      <div class="ratio nodetect"><div class="box" style="width:7.91rem"></div><div class="val">2.55</div><div class="nm">CinemaScope 55</div></div>
+      <div class="ratio nodetect"><div class="box" style="width:8.56rem"></div><div class="val">2.76</div><div class="nm">Ultra Panavision 70</div></div>
+    </div>
+    <p style="font-size:0.85rem;color:var(--muted);max-width:var(--measure);margin-top:-0.9rem;">
+      Drawn at true proportions. Solid entries may be the answer to a measurement; dashed entries
+      may only be chosen by hand.
+    </p>
+
+    <h3>Why some ratios cannot be measured into</h3>
+    <p>
+      Four entries carry <code>detect="false"</code>. They are ratios rare enough that a measurement
+      landing on one is more likely to be an overshoot on a neighbour — and getting that wrong
+      reports a picture <em>narrower</em> than the truth, which crops it. A square picture is what a
+      failed measurement looks like, not a ratio anyone delivers, so <code>1.00</code> is
+      declare-only too.
+    </p>
+
+    <h3>Tolerance, and exact fractions</h3>
+    <p>
+      A measurement within <b>2%</b> of an entry is called that entry. The allowance exists because
+      real encodes are not exact: <code>1888&times;1080</code> is 1.748, which is a correct 16:9
+      encode and 1.8% away from nominal. The 4:3 and 16:9 entries are stored as exact fractions
+      (<code>1.3333333</code>, <code>1.7777778</code>) so that a full-frame title resolves to
+      <em>exactly</em> its own frame rather than a rectangle a few pixels short of it.
+    </p>
+
+    <h3>Direction of resolution</h3>
+    <p>
+      A measurement can sit within tolerance of two entries at once — <code>3840&times;1608</code>
+      is 2.3881, which is legitimately close to both 2.35 and 2.40. Kodi breaks the tie
+      <em>toward the shape the room is resting at</em>: in a 2.40 room it resolves to 2.40 and
+      fills the screen; in a 1.78 room it resolves to 2.35. Both answers are correct; the one that
+      costs the viewer least is chosen.
+    </p>
+
+    <h3>Overriding the vocabulary</h3>
+    <p>
+      Copy <code>system/aspectratios.xml</code> to your userdata folder and edit the copy. It is
+      applied <em>over</em> the shipped file rather than instead of it, so it only needs the ratios
+      you want to change, and you still receive any ratio a later Kodi adds. Entries match at two
+      decimal places.
+    </p>
+<pre><code><span class="c-com">&lt;!-- userdata/aspectratios.xml --&gt;</span>
+<span class="c-key">&lt;aspectratios&gt;</span>
+  <span class="c-key">&lt;ratio</span> value=<span class="c-str">"1.50"</span> detect=<span class="c-str">"true"</span><span class="c-key">/&gt;</span>
+  <span class="c-key">&lt;ratio</span> value=<span class="c-str">"1.66"</span> name=<span class="c-str">"European widescreen"</span><span class="c-key">/&gt;</span>
+<span class="c-key">&lt;/aspectratios&gt;</span></code></pre>
+    <p style="font-size:0.9rem;color:var(--muted);">
+      Attributes you leave out keep whatever the entry already had, so you can change one property
+      on its own. The <code>name</code> is never translated — it is the same string in every
+      language, so anything reading it can compare against it.
+    </p>
+  </section>
+
+  <!-- 4 -->
+  <section id="measuring">
+    <h2 class="sec"><span class="num">04</span>Measuring content</h2>
+    <hr class="sec-rule">
+
+    <p>
+      With <b>Detect content aspect ratio</b> on, Kodi samples each video at a number of points
+      across its runtime, decodes a frame at each, and finds the lit rectangle within it. The
+      result is stored against the file in the video library, so it is measured once and read
+      thereafter.
+    </p>
+
+    <h3>What gets excluded, and why</h3>
+    <p>
+      The first and last minutes of a title are skipped by default. This is not a performance
+      trick — it is accuracy. Studio logos and service idents are frequently a different shape from
+      the film, and measuring one is exactly how a widescreen film gets recorded as full frame. A
+      credit roll is frequently full frame on a widescreen title, and credits over black describe
+      the text rather than any picture.
+    </p>
+
+    <h3>Titles that change shape partway through</h3>
+    <p>
+      A film with sequences shot for IMAX is genuinely two shapes. Kodi records every distinct
+      geometry it found as a <em>section</em>, dominant first, and flags the title as varying. What
+      it then serves depends on <b>Variable aspect ratio content</b>:
+    </p>
+    <ul class="prose">
+      <li><b>Use envelope ratio + bars</b> — report an area large enough for every part of the picture. Nothing is ever cropped; the narrower sequences show bars.</li>
+      <li><b>Use dominant ratio + clip</b> — report the shape the title is mostly in, so everything can be masked or zoomed to it, at the cost of losing the edges of the other sequences.</li>
+    </ul>
+    <p>
+      A second shape has to occupy a meaningful share of the samples before the title counts as
+      varying. That threshold is deliberately not a user-facing setting — see
+      <a href="#advanced">advancedsettings.xml</a>.
+    </p>
+
+    <h3>Where an answer came from</h3>
+    <p>
+      Every surface that reports geometry also reports its <b>source</b>, because acting on a
+      guess and acting on a measurement are different decisions:
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th class="m">source</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td class="m">container</td><td>Nothing is known. The coded frame is being served as the answer.</td></tr>
+          <tr><td class="m">cached</td><td>A stored measurement from the library.</td></tr>
+          <tr><td class="m">live</td><td>Read from the frames currently being decoded.</td></tr>
+          <tr><td class="m">declared</td><td>Stated by hand or by an automation, overriding detection.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note">
+      <span class="note-label">rejected</span>
+      <p>
+        A measurement can exist and be refused by the plausibility gate, in which case the frame is
+        served instead. That is otherwise indistinguishable from never having measured at all —
+        both report <code>container</code>, both serve the frame. The <code>rejected</code> flag is
+        the only thing that tells them apart, and which one it is decides whether the answer is to
+        measure the file or to look at why detection failed on it.
+      </p>
+    </div>
+
+    <h3>What can and cannot be measured</h3>
+    <p>
+      Local and network files only. Discs and disc images cannot be sampled. Sampling costs roughly
+      half a second per point for an episode and a second for a film, which is why the whole feature
+      is off by default and why measuring during a library scan is a separate opt-in — it turns a
+      scan of a large library from minutes into hours.
+    </p>
+  </section>
+
+  <!-- 5 -->
+  <section id="live">
+    <h2 class="sec"><span class="num">05</span>Live detection during playback</h2>
+    <hr class="sec-rule">
+
+    <p>
+      Scan-time measurement knows a title changes shape, but not <em>when</em>. Live detection reads
+      every frame as it plays and fits the picture to the shape actually on screen, so a title that
+      changes shape partway through follows it from the frame it changes on.
+    </p>
+
+    <p>
+      The two work together rather than competing: what was measured before playback still decides
+      how far the picture may open, and live detection only moves it <em>within</em> that. The scan
+      owns what is stored; live detection is serve-only and never writes back.
+    </p>
+
+    <h3>Asymmetric confirmation</h3>
+    <p>
+      Growing and shrinking are not the same risk, and are not treated the same way. A
+      <b>larger</b> picture is reported on the frame it appears, because nothing is at risk. A
+      <b>smaller</b> one must persist for a few frames first, because reporting it wrongly crops
+      real picture — and a shot that happens to be dark along its edges reads smaller than it is.
+      Setting the confirmation window to one frame reports both immediately.
+    </p>
+
+    <div class="note caution">
+      <span class="note-label">Constraint</span>
+      <p>
+        Live detection reads frames from <b>software-decoded local and network sources only</b>.
+        Turn it off if a video processor already tracks the picture in real time, or if you would
+        rather the picture never changed size mid-film.
+      </p>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section id="settings">
+    <h2 class="sec"><span class="num">06</span>Settings reference</h2>
+    <hr class="sec-rule">
+
+    <p>
+      Everything lives on one page — <b>Settings &rsaquo; System &rsaquo; Screen &amp; Aspect
+      Ratio</b> — in four groups. Splitting one feature across several pages costs more than the
+      taxonomy buys, so some of it deliberately crosses into playback territory.
+    </p>
+
+    <h3>Group 1 &mdash; The Screen</h3>
+
+    <div class="setting">
+      <div class="setting-meta">
+        <span class="chip adv">Advanced</span>
+        <span class="setting-id">videoscreen.screenalignment</span>
+        <span class="default">action</span>
+      </div>
+      <div class="setting-body">
+        <h4>Screen alignment</h4>
+        <p>
+          Shows a frame at each aspect ratio you choose, drawn at the true shape and at the full
+          size of the display, so you can set a projector's position, zoom and lens shift against
+          the shape of your screen. Align optically first: nothing here is corrected or scaled, and
+          a picture that lands where it should needs no correction afterwards.
+        </p>
+        <p style="font-size:0.9rem;color:var(--muted);">
+          Placed first in the group on purpose — a viewer setting their screen to 2.40 is exactly
+          the viewer who needs a true 2.40 frame to align against, and should not have to find it
+          on another page. See <a href="#alignment">Screen alignment</a>.
+        </p>
+      </div>
+    </div>
+
+    <div class="setting">
+      <div class="setting-meta">
+        <span class="chip adv">Advanced</span>
+        <span class="setting-id">videoscreen.rasteraspect</span>
+        <span class="default">default <b>Same as the display</b></span>
+      </div>
+      <div class="setting-body">
+        <h4>Screen aspect ratio</h4>
+        <p>
+          The shape of the screen the picture is projected onto. Kodi keeps everything it draws
+          inside that shape, so a projector zoomed to fill a wider screen no longer puts menus and
+          subtitles past the edges. Leave this at <em>Same as the display</em> for a television or
+          a monitor, where the screen is the whole picture.
+        </p>
+        <p style="font-size:0.9rem;color:var(--muted);">
+          Options are the detectable entries of the aspect ratio vocabulary, plus
+          <em>Same as the display</em>, which is drawing-inert and is the default. Changing this
+          reloads the skin so it can re-select a layout for the new shape.
+        </p>
+      </div>
+    </div>
+
+    <h3>Group 2 &mdash; The Interface</h3>
+
+    <div class="setting">
+      <div class="setting-meta">
+        <span class="chip adv">Advanced</span>
+        <span class="setting-id">videoscreen.guikeepshape</span>
+        <span class="default">default <b>Off</b></span>
+      </div>
+      <div class="setting-body">
+        <h4>Maintain original OSD aspect ratio</h4>
+        <p>
+          Draws the OSD and menus at the shape the skin's layout was drawn at, centred, instead of
+          stretching that layout to fill a screen of a different shape. Kodi already picks the
+          closest layout a skin offers, so a skin with one near the shape of your screen fills it
+          either way &mdash; this matters most for a skin that has only one.
+        </p>
+        <p>
+          The shape held is that of the layout Kodi <em>selected</em>, not 16:9. A skin may declare
+          several resolution variants and Kodi picks the one closest to the raster, so on a 2.40
+          screen Estuary is already being drawn at 21:9 before this setting is consulted at all.
+        </p>
+        <p>There are three outcomes, not two:</p>
+        <ul class="opts">
+          <li><span class="opt-label">Within 2%</span><span>The selected variant is close enough to the area's shape that it is <b>stretched to fill it</b>. No bars, no surround.</span></li>
+          <li><span class="opt-label">Beyond 2%</span><span>The variant is <b>held at its own shape and centred</b>. What is left over is the surround.</span></li>
+          <li><span class="opt-label">Setting off</span><span>Always stretched to fill, however far off the shape is.</span></li>
+        </ul>
+        <p style="font-size:0.9rem;color:var(--muted);">
+          The tolerance is the aspect ratio vocabulary's own, judged as
+          <code>|ln(have / wanted)| &le; 0.02</code>. It exists because selection picks the
+          <em>closest</em> declared variant, so the two are routinely a fraction of a percent apart
+          &mdash; and holding on that difference would put a permanent few-pixel bar around the
+          interface for no visible gain.
+        </p>
+        <p style="font-size:0.9rem;color:var(--muted);">
+          This governs menus only. It is suspended during fullscreen video, where the OSD spans the
+          raster.
+        </p>
+
+        <div class="note">
+          <span class="note-label">With Estuary, this often does nothing</span>
+          <p>
+            Estuary declares eight variants, densely covering the wide range, so most rasters land
+            inside the tolerance and are filled rather than held &mdash; there is nothing left over
+            to surround. It bites at <b>2.76</b>, where nothing that wide is declared, and at
+            <b>1.85</b>, where 17:9 is 1.8889 and misses the threshold by a hair
+            (<code>0.0208</code> against <code>0.0200</code>), giving a ~9px band. The real audience
+            for this setting is a skin with a single layout.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="setting">
+      <div class="setting-meta">
+        <span class="chip adv">Advanced</span>
+        <span class="setting-id">videoscreen.guisurround</span>
+        <span class="default">default <b>Skin default</b></span>
+      </div>
+      <div class="setting-body">
+        <h4>Fill the unused area around the OSD with</h4>
+        <p>
+          What is drawn in the part of the screen the OSD leaves uncovered while it keeps its
+          original aspect ratio. A backdrop that fades toward the edges can read better than a hard
+          black border.
+        </p>
+        <ul class="opts">
+          <li><span class="opt-label">Skin default</span><span>Whatever the skin itself asks for, or black when it asks for nothing.</span></li>
+          <li><span class="opt-label">A colour</span><span>Set by <code>videoscreen.guisurroundcolour</code>, default a dark grey <code>FF1A1A1A</code>.</span></li>
+          <li><span class="opt-label">An image</span><span>Set by <code>videoscreen.guisurroundimage</code>. Fitted at its own aspect ratio, never stretched.</span></li>
+        </ul>
+        <p style="font-size:0.9rem;color:var(--muted);">
+          Only enabled while <b>Maintain original OSD aspect ratio</b> is on. A skin can declare its
+          own surround — see <a href="#skinning">For skinners</a>.
+        </p>
+      </div>
+    </div>
+
+    <h3>Group 3 &mdash; During Playback</h3>
+
+    <div class="setting">
+      <div class="setting-meta">
+        <span class="chip adv">Advanced</span>
+        <span class="setting-id">videoscreen.osdplaying</span>
+        <span class="default">default <b>The whole screen</b></span>
+      </div>
+      <div class="setting-body">
+        <h4>Lay the OSD out against</h4>
+        <p>
+          Where the on-screen display, menus and dialogues are laid out while a video is playing or
+          paused. <em>The picture</em> keeps them inside the picture as it is drawn, so on a masked
+          screen or with an anamorphic lens nothing lands on the mask. On an ordinary screen the
+          black bars are visible and are usable space, so leave this at <em>The whole screen</em>.
+        </p>
+        <p><b>The video itself is never moved or resized by this setting.</b></p>
+      </div>
+    </div>
+
+    <div class="setting">
+      <div class="setting-meta">
+        <span class="chip adv">Advanced</span>
+        <span class="setting-id">videoscreen.variablecontentgeometry</span>
+        <span class="default">default <b>Use envelope ratio + bars</b></span>
+      </div>
+      <div class="setting-body">
+        <h4>Variable aspect ratio content</h4>
+        <p>
+          What to report for a title whose picture changes shape partway through, such as a film
+          with sequences shot for IMAX.
+        </p>
+        <ul class="opts">
+          <li><span class="opt-label">Use envelope ratio + bars</span><span>Reports an area large enough for every part of the picture, leaving black bars visible during the narrower sequences.</span></li>
+          <li><span class="opt-label">Use dominant ratio + clip</span><span>Reports the shape the title is mostly in, so everything can be cropped or zoomed to it, at the cost of losing the edges of the other sequences.</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Group 4 &mdash; Detection</h3>
+
+    <div class="setting">
+      <div class="setting-meta">
+        <span class="chip adv">Advanced</span>
+        <span class="setting-id">videoscreen.extractcontentgeometry</span>
+        <span class="default">default <b>Off</b></span>
+      </div>
+      <div class="setting-body">
+        <h4>Detect content aspect ratio</h4>
+        <p>
+          Measure the picture area of each video ahead of playback, so that black bars coded into
+          the file are known rather than guessed and can be followed by screen masking or projector
+          lens control. Sampling a file takes several seconds, so this is off by default. Local and
+          network files only; discs and disc images cannot be sampled.
+        </p>
+        <p style="font-size:0.9rem;color:var(--muted);">
+          This is the master switch for the group — everything below is disabled until it is on.
+        </p>
+      </div>
+    </div>
+
+    <div class="setting">
+      <div class="setting-meta">
+        <span class="chip adv">Advanced</span>
+        <span class="setting-id">videoscreen.contentgeometryonscan</span>
+        <span class="default">default <b>Off</b></span>
+      </div>
+      <div class="setting-body">
+        <h4>Measure while scanning the library</h4>
+        <p>
+          Measure each item as the library scan adds it, rather than leaving it to the background
+          scan afterwards. Every item is then complete as soon as it appears, but a scan of a large
+          library takes hours instead of minutes.
+        </p>
+      </div>
+    </div>
+
+    <div class="setting">
+      <div class="setting-meta">
+        <span class="chip adv">Advanced</span>
+        <span class="setting-id">videoscreen.contentgeometrysamples</span>
+        <span class="default">default <b>9</b> &#183; 5&ndash;45</span>
+      </div>
+      <div class="setting-body">
+        <h4>Samples per video</h4>
+        <p>
+          How many points across each video to measure. Deciding that a title changes shape partway
+          through depends on catching more than one of its sections, so more samples find more of
+          them, at the cost of a slower scan. Sampling one point takes around half a second for an
+          episode and around a second for a film.
+        </p>
+      </div>
+    </div>
+
+    <div class="setting">
+      <div class="setting-meta">
+        <span class="chip exp">Expert</span>
+        <span class="setting-id">videoscreen.contentgeometryleadin</span>
+        <span class="default">default <b>2 min</b> &#183; 0&ndash;15</span>
+      </div>
+      <div class="setting-body">
+        <h4>Ignore at the start of each video</h4>
+        <p>
+          Runtime to leave unmeasured at the beginning of each video. Studio logos and service
+          idents are often a different shape from the title itself, and measuring one is how a
+          widescreen film gets recorded as full frame.
+        </p>
+      </div>
+    </div>
+
+    <div class="setting">
+      <div class="setting-meta">
+        <span class="chip exp">Expert</span>
+        <span class="setting-id">videoscreen.contentgeometryleadout</span>
+        <span class="default">default <b>1 min</b> &#183; 0&ndash;15</span>
+      </div>
+      <div class="setting-body">
+        <h4>Ignore at the end of each video</h4>
+        <p>
+          Runtime to leave unmeasured at the end of each video. A credit roll is frequently full
+          frame on a widescreen title, and credits over black describe the text rather than any
+          picture. Raise this for a library of films with long credits; lower it to measure titles
+          whose closing minutes are genuinely a different shape.
+        </p>
+      </div>
+    </div>
+
+    <div class="setting">
+      <div class="setting-meta">
+        <span class="chip adv">Advanced</span>
+        <span class="setting-id">videoscreen.livecontentgeometry</span>
+        <span class="default">default <b>Off</b></span>
+      </div>
+      <div class="setting-body">
+        <h4>Rescale the picture as its aspect ratio changes</h4>
+        <p>
+          Reads every frame while a file plays and fits the picture to the shape actually on screen,
+          so a title that changes shape partway through follows it from the frame it changes on.
+          What was measured before playback still decides how far the picture can open; this only
+          moves it within that. Reads frames from software-decoded local and network sources only.
+        </p>
+      </div>
+    </div>
+
+    <div class="setting">
+      <div class="setting-meta">
+        <span class="chip exp">Expert</span>
+        <span class="setting-id">videoscreen.livegeometrynarrow</span>
+        <span class="default">default <b>3 frames</b> &#183; 1&ndash;10</span>
+      </div>
+      <div class="setting-body">
+        <h4>Confirm a smaller picture for</h4>
+        <p>
+          Frames a smaller picture must persist for before it is reported. A larger picture is
+          reported on the frame it appears, because nothing is at risk; a smaller one crops real
+          picture if it is wrong, and a shot that is dark along its edges reads smaller than it is.
+          <em>The next frame</em> reports both immediately.
+        </p>
+      </div>
+    </div>
+
+    <div class="setting">
+      <div class="setting-meta">
+        <span class="chip exp">Expert</span>
+        <span class="setting-id">videoscreen.livegeometryleadin</span>
+        <span class="default">default <b>1 min</b> &#183; 0&ndash;15</span>
+      </div>
+      <div class="setting-body">
+        <h4>Ignore at the start of playback</h4>
+        <p>
+          Runtime at the beginning of a title during which live readings are not taken, judged on
+          playback position. Idents and studio logos are often a different shape from the title, so
+          the picture would be rescaled to a shape the film is not in before the film has begun.
+          Sources with no duration have no position for the window to be relative to, and are not
+          excluded.
+        </p>
+      </div>
+    </div>
+
+    <div class="setting">
+      <div class="setting-meta">
+        <span class="chip exp">Expert</span>
+        <span class="setting-id">videoscreen.livegeometryleadout</span>
+        <span class="default">default <b>1 min</b> &#183; 0&ndash;15</span>
+      </div>
+      <div class="setting-body">
+        <h4>Ignore at the end of playback</h4>
+        <p>
+          Runtime at the end of a title during which live readings are not taken. A credit roll is
+          frequently full frame on a widescreen title, and rescaling the picture to it as the film
+          ends is a change nothing on screen explains.
+        </p>
+      </div>
+    </div>
+
+    <div class="setting">
+      <div class="setting-meta">
+        <span class="chip adv">Advanced</span>
+        <span class="setting-id">videoscreen.scancontentgeometry</span>
+        <span class="default">action</span>
+      </div>
+      <div class="setting-body">
+        <h4>Scan library for content aspect ratios</h4>
+        <p>
+          Measure every video that has no measurement yet, including any that could not be read on a
+          previous attempt. Runs in the background and pauses while anything is playing.
+        </p>
+      </div>
+    </div>
+
+    <h3>Elsewhere in Settings</h3>
+
+    <div class="setting">
+      <div class="setting-meta">
+        <span class="chip adv">Advanced</span>
+        <span class="setting-id">subtitles.aligntocontent</span>
+        <span class="default">default <b>Off</b></span>
+      </div>
+      <div class="setting-body">
+        <h4>Position subtitles by the picture <span style="font-weight:400;color:var(--muted);font-size:0.85rem;">&mdash; Player &rsaquo; Subtitles</span></h4>
+        <p>
+          Applies to the "inside the video" alignments. Measures the inset from the picture rather
+          than from the whole video, so that subtitles are not placed in a black bar the display
+          crops away. Only enabled when subtitle alignment is set to one of the inside positions.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section id="displaced">
+    <h2 class="sec"><span class="num">07</span>What it switches off</h2>
+    <hr class="sec-rule">
+
+    <p>
+      Several existing settings assume Kodi does not know the shape of the room. Once a screen
+      shape is stated, their premises no longer hold, and leaving them active would fight the
+      raster rather than compose with it. They are therefore disabled — the stored choice is kept,
+      so clearing the raster restores it.
+    </p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Setting or feature</th><th>What happens while a raster is stated</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>Stretch to minimise black bars</b><br><span class="mono" style="color:var(--muted)">videoplayer.errorinaspect</span></td>
+            <td>Disabled. The picture is fitted to its content and never stretched, so that it corresponds to a mask or a lens.</td>
+          </tr>
+          <tr>
+            <td><b>Zoom for 4:3 on widescreen</b><br><span class="mono" style="color:var(--muted)">videoplayer.stretch43</span></td>
+            <td>Disabled, for the same reason.</td>
+          </tr>
+          <tr>
+            <td><b>Computed view modes</b><br><span style="color:var(--muted)">Zoom, Wide zoom, Stretch, Original, 110%, 120%</span></td>
+            <td>Withdrawn from the OSD list and the remote quick-cycle, and coerced to Normal. They compute from the coded frame while the crop draws content, so "zoom until no bars" over-zooms substantially on a bar-cut title.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Four playback controls remain valid under a raster, each defensible in room terms:</p>
+    <ul class="prose">
+      <li><b>Zoom</b> — lens driving.</li>
+      <li><b>Vertical shift</b> — one-way masking.</li>
+      <li><b>Pixel ratio</b> — repairing a broken encode.</li>
+      <li><b>The aspect ratio declaration</b> — pinning a title whose measurement is wrong.</li>
+    </ul>
+
+    <div class="note">
+      <span class="note-label">Why it is greyed rather than hidden</span>
+      <p>
+        Greyed settings stay focusable and still show their help text, which is where the reason
+        lives. Genuinely dynamic help would be new core work and was not attempted.
+      </p>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section id="alignment">
+    <h2 class="sec"><span class="num">08</span>Screen alignment</h2>
+    <hr class="sec-rule">
+
+    <p>
+      A separate full-screen tool that draws a frame at each aspect ratio you select, at the true
+      shape and at the full size of the display. It is for setting a projector's position, zoom and
+      lens shift against the physical screen — you align the optics to the frame, rather than
+      correcting anything in software afterwards.
+    </p>
+
+    <div class="note caution">
+      <span class="note-label">Deliberately uncorrected</span>
+      <p>
+        The frames bypass the raster, the calibration and the skin transform by design. Nothing
+        here is corrected or scaled, because a picture that lands where it should needs no
+        correction afterwards. While the tool is up, nothing else is allowed to correct the screen
+        either.
+      </p>
+    </div>
+
+    <p>
+      It is reachable from two places — the Screen &amp; Aspect Ratio page, and the existing
+      <b>Calibration</b> group beside <b>Overscan alignment</b> (which is what video calibration is
+      now called, since it is per-mode overscan compensation rather than calibration in the
+      colourimetric sense). The tool is also fully drivable over JSON-RPC, so a masking installer
+      can program presets without touching the remote — see
+      <a href="#jsonrpc"><code>GUI.SetScreenAlignment</code></a>.
+    </p>
+  </section>
+
+  <!-- 9 -->
+  <section id="skinning">
+    <h2 class="sec"><span class="num">09</span>For skinners</h2>
+    <hr class="sec-rule">
+
+    <p>
+      Six new infolabels, available under both <code>VideoPlayer.</code> (what is playing) and
+      <code>ListItem.</code> (an item in a list). They sit beside the existing
+      <code>VideoAspect</code>, which continues to report the coded frame — the new labels report
+      the <em>content</em>.
+    </p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th class="m">Infolabel</th><th>Reports</th></tr></thead>
+        <tbody>
+          <tr><td class="m">ContentAspect</td><td>The dominant ratio, as a number. <code>ContentAspect(n)</code> indexes the sections; <code>ContentAspect(0)</code> equals <code>ContentAspect</code>.</td></tr>
+          <tr><td class="m">ContentAspectName</td><td>What that ratio is called — <em>Scope</em>, <em>Todd-AO</em>. Empty when it has no established name.</td></tr>
+          <tr><td class="m">ContentAspectCount</td><td>How many <em>distinct</em> ratios the title was measured in. Zero means nothing was measured.</td></tr>
+          <tr><td class="m">ContentAspectSource</td><td>One of <code>container</code>, <code>cached</code>, <code>live</code>, <code>declared</code>.</td></tr>
+          <tr><td class="m">ContentAspectVaries</td><td>A boolean condition — true when the title changes shape partway through.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note">
+      <span class="note-label">Why the count matters</span>
+      <p>
+        A count of <code>0</code> beside a <code>container</code> source is the difference between
+        "this title is 4:3" and "we have never looked". Two episodes from the same folder can
+        legitimately report a measured 1.33 and an unmeasured 1.33, and only the count separates
+        them.
+      </p>
+    </div>
+
+    <h3>Declaring a surround from the skin</h3>
+    <p>
+      A skin can state what should be drawn around the menus when they keep their own shape, via
+      its <code>xbmc.gui.skin</code> extension point. This is what <em>Skin default</em> resolves
+      to; the viewer's explicit choice always overrides it.
+    </p>
+<pre><code><span class="c-key">&lt;extension</span> point=<span class="c-str">"xbmc.gui.skin"</span><span class="c-key">&gt;</span>
+  <span class="c-key">&lt;surround</span> colour=<span class="c-str">"FF101418"</span> image=<span class="c-str">"backdrop.jpg"</span><span class="c-key">/&gt;</span>
+<span class="c-key">&lt;/extension&gt;</span></code></pre>
+
+    <h3>Per-shape layouts already work</h3>
+    <p>
+      Skin resolution variants are selected against the <em>raster</em>, not the display. With a
+      2.40 screen shape stated, <code>Skin.AspectRatio</code> reports 21:9 and Estuary's existing
+      2560&times;1080 layout is selected and fills the band undistorted — a wide layout the skin
+      already declares but which could never previously win, because selection targeted the display.
+    </p>
+  </section>
+
+  <!-- 10 -->
+  <section id="python">
+    <h2 class="sec"><span class="num">10</span>For add-ons</h2>
+    <hr class="sec-rule">
+
+    <p>
+      Two new classes in the <code>xbmc</code> module, reached from either the player or a library
+      item. Both are snapshots — they are copies, so a held object does not change underneath you
+      when the geometry moves.
+    </p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th class="m">Obtained from</th><th>Returns</th></tr></thead>
+        <tbody>
+          <tr><td class="m">xbmc.Player().getContentGeometry()</td><td>What is playing, or the shape Kodi rests at when nothing is.</td></tr>
+          <tr><td class="m">InfoTagVideo.getContentGeometry()</td><td>A library item's stored geometry.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4><code>ContentGeometry</code></h4>
+    <p>
+      <code>getX()</code> <code>getY()</code> <code>getWidth()</code> <code>getHeight()</code> —
+      the picture within the frame. <code>getFrameWidth()</code> <code>getFrameHeight()</code>
+      <code>getCodedWidth()</code> <code>getCodedHeight()</code> <code>getPixelAspect()</code>
+      <code>getOrientation()</code> — the frame it sits in. <code>getAspect()</code>
+      <code>getLabel()</code> <code>getName()</code> <code>getSource()</code>
+      <code>getVaries()</code> <code>getRejected()</code> <code>getStale()</code>
+      <code>getSections()</code>.
+    </p>
+
+    <h4><code>ContentGeometrySection</code></h4>
+    <p>
+      One entry from <code>getSections()</code>, for a title that changes shape partway through:
+      <code>getX()</code> <code>getY()</code> <code>getWidth()</code> <code>getHeight()</code>
+      <code>getAspect()</code> <code>getLabel()</code> <code>getName()</code>.
+    </p>
+
+<pre><code><span class="c-key">import</span> xbmc
+
+geometry = xbmc.Player().getContentGeometry()
+
+<span class="c-com"># 'container' means nothing was measured - the frame is standing in for an answer</span>
+<span class="c-key">if</span> geometry.getSource() != <span class="c-str">'container'</span>:
+    lens.select(geometry.getAspect())
+
+<span class="c-key">if</span> geometry.getVaries():
+    <span class="c-key">for</span> section <span class="c-key">in</span> geometry.getSections():
+        print(section.getAspect(), section.getName())</code></pre>
+
+    <div class="note">
+      <span class="note-label">Deliberate departure</span>
+      <p>
+        <code>getContentGeometry()</code> does <b>not</b> raise when nothing is playing, unlike
+        every other info tag getter beside it. The resting shape is what an automation acts on
+        between films, so it has to be readable then. <code>getFrameWidth()</code> is what
+        separates "nothing playing" from "nothing measured".
+      </p>
+    </div>
+  </section>
+
+  <!-- 11 -->
+  <section id="jsonrpc">
+    <h2 class="sec"><span class="num">11</span>For automation</h2>
+    <hr class="sec-rule">
+
+    <p>
+      This is the surface a masking controller, a lens automation or a room processor actually
+      drives. It is a JSON-RPC <b>14.0.0</b> addition.
+    </p>
+
+    <h3>Reading</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th class="m">Method</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><td class="m">Player.GetGeometry</td><td>The overrides in force, the OSD placement, and <code>screen</code> — where the picture and the raster actually are, in screen pixels.</td></tr>
+          <tr><td class="m">Player.GetDeclaredAspectRatio</td><td>The ratio declared for what is playing, if any.</td></tr>
+          <tr><td class="m">GUI.GetScreenAlignment</td><td>The alignment frames' state, and every ratio one can be drawn for.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Content geometry also rides on the existing item surfaces as <code>Video.ContentRect</code> —
+      inside <code>currentvideostream</code> on the player, and on library items. There is no
+      top-level <code>contentrect</code> player property.
+    </p>
+
+    <h3>Writing</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th class="m">Method</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><td class="m">Player.SetGeometry</td><td>State the raster, a maintained ratio, and the OSD placement for this playback.</td></tr>
+          <tr><td class="m">Player.SetDeclaredAspectRatio</td><td>Override detection for what is playing. <code>"auto"</code> withdraws it.</td></tr>
+          <tr><td class="m">GUI.SetScreenAlignment</td><td>Show or hide the alignment frames and choose which ratios are drawn.</td></tr>
+          <tr><td class="m">VideoLibrary.RefreshContentGeometry</td><td>Re-measure one file, replacing what is stored. Takes <code>thorough</code> for a far denser sample.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note">
+      <span class="note-label">Override semantics</span>
+      <p>
+        Every field of <code>Player.SetGeometry</code> is independent. State only the ones you are
+        driving and the viewer's own choices stand for the rest. A field omitted, or given as
+        <code>null</code>, is left exactly as it is — so an automation moving the lens need not
+        restate an OSD placement it set earlier. Overrides last for this playback only and revert
+        when it ends; to withdraw one without ending playback, give <code>0</code> for a ratio or
+        <code>"setting"</code> for the placement.
+      </p>
+    </div>
+
+    <h3>Being told</h3>
+    <p>
+      <code>Player.OnContentGeometryChange</code> fires when playback starts, when a confirmed change
+      occurs partway through a title, <b>when the picture moves on the screen</b>, and when playback
+      ends — the last carrying the geometry of the GUI, because that is then what is on the screen.
+      It carries the rectangles themselves, so acting on it needs no follow-up call.
+    </p>
+    <p style="font-size:0.9rem;color:var(--muted);">
+      The picture moving is a change in its own right: an instruction can move it without changing
+      what the content is, and a display mode switch or a resized window moves it with no
+      instruction at all.
+    </p>
+
+    <h4>A worked exchange</h4>
+<pre><code><span class="c-com">// The room tells Kodi its screen is 2.40 for this film, and to keep the OSD in the picture.</span>
+{ <span class="c-key">"jsonrpc"</span>: <span class="c-str">"2.0"</span>, <span class="c-key">"id"</span>: 1, <span class="c-key">"method"</span>: <span class="c-str">"Player.SetGeometry"</span>,
+  <span class="c-key">"params"</span>: { <span class="c-key">"playerid"</span>: 1,
+              <span class="c-key">"geometry"</span>: { <span class="c-key">"raster"</span>: 2.40, <span class="c-key">"osdplacement"</span>: <span class="c-str">"picture"</span> } } }
+
+<span class="c-com">// Kodi answers with where things actually ended up.</span>
+{ <span class="c-key">"jsonrpc"</span>: <span class="c-str">"2.0"</span>, <span class="c-key">"id"</span>: 1,
+  <span class="c-key">"result"</span>: { <span class="c-key">"raster"</span>: 2.40,
+              <span class="c-key">"osdplacement"</span>: <span class="c-str">"picture"</span>,
+              <span class="c-key">"screen"</span>: {
+                <span class="c-key">"picture"</span>: { <span class="c-key">"x"</span>: 0,   <span class="c-key">"y"</span>: 187, <span class="c-key">"width"</span>: 2560, <span class="c-key">"height"</span>: 1066 },
+                <span class="c-key">"raster"</span>:  { <span class="c-key">"x"</span>: 0,   <span class="c-key">"y"</span>: 187, <span class="c-key">"width"</span>: 2560, <span class="c-key">"height"</span>: 1066 } } } }</code></pre>
+
+    <div class="note">
+      <span class="note-label">picture vs raster</span>
+      <p>
+        <code>picture</code> is the lit rectangle — <b>what a mask is driven to</b>. <code>raster</code>
+        is the area Kodi is operating in — <b>what a lens is driven to</b>. They coincide when the
+        content fills the room, and they do not whenever the content is narrower than it. Driving
+        the wrong one is the single easiest mistake to make against this API.
+      </p>
+    </div>
+  </section>
+
+  <!-- 12 -->
+  <section id="advanced">
+    <h2 class="sec"><span class="num">12</span>advancedsettings.xml</h2>
+    <hr class="sec-rule">
+
+    <p>
+      One tunable is deliberately not exposed in Settings, because the answer that suits a library
+      is not the answer that suits one viewer's use of it. A room driving motorised masking wants
+      to know about a sequence occupying a tenth of a film; a listing that simply names what a title
+      is would rather not mention it.
+    </p>
+<pre><code><span class="c-key">&lt;advancedsettings&gt;</span>
+  <span class="c-key">&lt;video&gt;</span>
+    <span class="c-com">&lt;!-- share of a title's samples a second shape needs before it counts as varying --&gt;</span>
+    <span class="c-key">&lt;contentgeometryvariesshare&gt;</span>0.10<span class="c-key">&lt;/contentgeometryvariesshare&gt;</span>
+  <span class="c-key">&lt;/video&gt;</span>
+<span class="c-key">&lt;/advancedsettings&gt;</span></code></pre>
+    <p style="font-size:0.9rem;color:var(--muted);">
+      Judged on sample counts rather than on confidence weight.
+    </p>
+  </section>
+
+  <!-- 13 -->
+  <section id="limits">
+    <h2 class="sec"><span class="num">13</span>Known limitations</h2>
+    <hr class="sec-rule">
+
+    <p>These are known, and worth knowing before you build a room around the feature.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Limitation</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>Video ignores per-mode overscan calibration</b></td>
+            <td>With a non-default calibration and a raster stated, the interface honours the calibrated area but the picture is drawn on the raw pixel grid — so the picture can extend past the stated screen edge, onto the masking. It only arises where overscan calibration has been moved away from its defaults <em>and</em> a screen shape is stated.</td>
+          </tr>
+          <tr>
+            <td><b>Skin variants do not re-select on a display mode change</b></td>
+            <td>A mode switch sends a resize but not a skin load, so the selected resolution variant can go stale until something else reloads the skin. Changing the screen shape corrects it immediately. Reloading the skin on every mode change would fix it, at a cost of its own.</td>
+          </tr>
+          <tr>
+            <td><b>An armed raster on an audio file</b></td>
+            <td>The raster is applied at the first resolve against a real video stream, so a raster stated on <code>Player.Open</code> of an <em>audio</em> file is reported as in force without having reached the layout. <code>Player.SetGeometry</code> mid-playback covers the case.</td>
+          </tr>
+          <tr>
+            <td><b>Hardware decoding</b></td>
+            <td>Live detection needs software-decoded frames, so it does not operate on a hardware-decoded stream. Scan-time measurement is unaffected.</td>
+          </tr>
+          <tr>
+            <td><b>Stereoscopic content</b></td>
+            <td>Under 3D the reported geometry describes the <em>packed</em> frame, so a half-SBS clip reports a very wide ratio and gets labelled accordingly. The number and the label are both internally consistent, but they describe the packing rather than the film.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 14 -->
+  <section id="trying">
+    <h2 class="sec"><span class="num">14</span>Getting started</h2>
+    <hr class="sec-rule">
+
+    <p class="lead">
+      Nothing here is on by default, and a viewer who never opens the page sees Kodi behave exactly
+      as it always has. This is the shortest path from that to seeing the feature work.
+    </p>
+
+    <h3>A five-minute path through it</h3>
+    <ol class="prose">
+      <li>Open <b>Settings &rsaquo; System &rsaquo; Screen &amp; Aspect Ratio</b>. Set the settings level to Advanced or higher, or none of it is visible.</li>
+      <li>Turn on <b>Detect content aspect ratio</b>, then run <b>Scan library for content aspect ratios</b> and let it work through a few titles.</li>
+      <li>Play a scope film. Check <code>ContentAspect</code> and <code>ContentAspectName</code> against the existing <code>VideoAspect</code> — the first two describe the film, the third describes the container.</li>
+      <li>Set <b>Screen aspect ratio</b> to 2.40. The skin reloads, Estuary selects its wide layout, and the coded bars are cut rather than drawn.</li>
+      <li>Play a title with IMAX sequences and watch <code>ContentAspectCount</code> read 2. Turn on <b>Rescale the picture as its aspect ratio changes</b> and watch the picture follow the boundaries.</li>
+      <li>If you are driving a room, subscribe to <code>Player.OnContentGeometryChange</code> over the JSON-RPC TCP interface — the rectangles arrive with the notification, so there is no follow-up call to make.</li>
+    </ol>
+
+    <div class="note caution">
+      <span class="note-label">If a title looks like the wrong shape</span>
+      <p>
+        Check <code>ContentAspectSource</code> first. If it reads <code>container</code>, nothing
+        was measured &mdash; which is a different problem from a measurement that came out wrong,
+        and has a different answer. <code>VideoLibrary.RefreshContentGeometry</code> with
+        <code>thorough</code> re-measures a single title far more densely than the scan does, which
+        is what to reach for when a title cut in several ratios was recorded as having one shape.
+      </p>
+    </div>
+  </section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <p>
+      Screen &amp; Aspect Ratio, introduced in Kodi v22. Structured after the Kodi wiki's own
+      settings references. This is an independently written reference, not a Team Kodi publication.
+    </p>
+    <p>
+      Setting descriptions are quoted from the on-screen help text, so what is written here is what
+      the viewer reads in Settings.
+    </p>
+  </div>
+</footer>
+
+<button class="toggle" id="themeToggle" type="button" aria-label="Switch between light and dark theme">Theme</button>
+
+<script>
+(function () {
+  var toggle = document.getElementById('themeToggle');
+  toggle.addEventListener('click', function () {
+    var root = document.documentElement;
+    var current = root.getAttribute('data-theme');
+    if (!current) {
+      current = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+  });
+
+  var links = Array.prototype.slice.call(document.querySelectorAll('.rail a'));
+  var sections = links.map(function (a) {
+    return document.getElementById(a.getAttribute('href').slice(1));
+  });
+
+  function mark() {
+    var best = 0;
+    for (var i = 0; i < sections.length; i++) {
+      if (sections[i] && sections[i].getBoundingClientRect().top <= 120) {
+        best = i;
+      }
+    }
+    links.forEach(function (a, i) { a.classList.toggle('here', i === best); });
+  }
+
+  var ticking = false;
+  window.addEventListener('scroll', function () {
+    if (!ticking) {
+      window.requestAnimationFrame(function () { mark(); ticking = false; });
+      ticking = true;
+    }
+  }, { passive: true });
+  mark();
+})();
+</script>
+
+</body>
+</html>

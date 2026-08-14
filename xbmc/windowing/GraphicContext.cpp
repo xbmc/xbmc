@@ -25,10 +25,14 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "utils/log.h"
+#include "windowing/GuiGeometry.h"
 
+#include <algorithm>
 #include <cassert>
+#include <cmath>
 #include <mutex>
 
+using namespace KODI::WINDOWING;
 using KODI::UTILS::COLOR::Color;
 
 CGraphicContext::CGraphicContext() = default;
@@ -280,8 +284,38 @@ CRect CGraphicContext::StereoCorrection(const CRect &rect) const
 void CGraphicContext::SetScissors(const CRect &rect)
 {
   m_scissors = rect;
-  m_scissors.Intersect(CRect(0,0,(float)m_iScreenWidth, (float)m_iScreenHeight));
+  m_scissors.Intersect(ClipBounds());
   CServiceBroker::GetRenderSystem()->SetScissors(StereoCorrection(m_scissors));
+}
+
+CRect CGraphicContext::ScreenRect() const
+{
+  return {0.0f, 0.0f, static_cast<float>(m_iScreenWidth), static_cast<float>(m_iScreenHeight)};
+}
+
+CRect CGraphicContext::ClipBounds() const
+{
+  // Every window is bounded, the unscaled ones included: the mouse pointer draws in raw screen
+  // coordinates, and under dirty-region rendering a cursor left in the letterbox band stays
+  // there for good. The picture lifts the clip explicitly (ClipToVideo).
+  return ComputeClipBounds(ScreenRect(), GetRasterRect(), GetGuiKeepShapeRect());
+}
+
+float CGraphicContext::RasterAspectInForce() const
+{
+  return ComputeRasterAspectInForce(m_rasterAspect, m_bCalibrating);
+}
+
+bool CGraphicContext::GuiKeepShapeInForce() const
+{
+  return ComputeGuiKeepShape(m_guiKeepShape, m_bFullScreenVideo, m_bCalibrating);
+}
+
+CRect CGraphicContext::ClipToVideo()
+{
+  // The picture is contained by scaling, never by the scissor. This also covers the renderer's
+  // clearing pass, which bounded to the raster would leave the previous window in the bands.
+  return SetClip(ScreenRect());
 }
 
 const CRect &CGraphicContext::GetScissors() const
@@ -291,8 +325,13 @@ const CRect &CGraphicContext::GetScissors() const
 
 void CGraphicContext::ResetScissors()
 {
-  m_scissors.SetRect(0, 0, (float)m_iScreenWidth, (float)m_iScreenHeight);
-  CServiceBroker::GetRenderSystem()->SetScissors(StereoCorrection(m_scissors));
+  // ClipBounds() and not the display: a control undoing its own clip must not undo that one too.
+  m_scissors = ClipBounds();
+
+  // Reached from SetRenderingResolution, which runs before there is anything to render on.
+  auto* const renderSystem = CServiceBroker::GetRenderSystem();
+  if (renderSystem)
+    renderSystem->SetScissors(StereoCorrection(m_scissors));
 }
 
 const CRect CGraphicContext::GetViewWindow() const
@@ -305,6 +344,11 @@ const CRect CGraphicContext::GetViewWindow() const
     rect.y1 = (float)info.Overscan.top;
     rect.x2 = (float)info.Overscan.right;
     rect.y2 = (float)info.Overscan.bottom;
+
+    // The picture is contained by the raster: the renderer fits the frame inside this window
+    // preserving its ratio, so bounding the window scales rather than crops. Computed from the
+    // resolution in hand rather than through GetRasterRect(), this running per frame.
+    rect.Intersect(ComputeRasterRect(info, RasterAspectInForce()));
     return rect;
   }
   return m_videoRect;
@@ -316,6 +360,86 @@ void CGraphicContext::SetViewWindow(float left, float top, float right, float bo
   m_videoRect.y1 = ScaleFinalYCoord(left, top);
   m_videoRect.x2 = ScaleFinalXCoord(right, bottom);
   m_videoRect.y2 = ScaleFinalYCoord(right, bottom);
+}
+
+bool CGraphicContext::SetGuiContentRect(const CRect& rect)
+{
+  std::unique_lock lock(*this);
+
+  if (rect == m_guiContentRect)
+    return false;
+
+  m_guiContentRect = rect;
+  return true;
+}
+
+void CGraphicContext::SetRasterAspect(float aspect)
+{
+  std::unique_lock lock(*this);
+  m_rasterAspect = aspect;
+}
+
+float CGraphicContext::GetRasterAspect() const
+{
+  return m_rasterAspect;
+}
+
+CRect CGraphicContext::ClipToGui()
+{
+  // SetClip() rather than SetScissors(), which would intersect the bounds with themselves and
+  // reach the resolution and the raster again to do it.
+  return SetClip(ClipBounds());
+}
+
+CRect CGraphicContext::SetClip(const CRect& rect)
+{
+  const CRect previous = m_scissors;
+  m_scissors = rect;
+
+  auto* const renderSystem = CServiceBroker::GetRenderSystem();
+  if (renderSystem)
+    renderSystem->SetScissors(StereoCorrection(m_scissors));
+
+  return previous;
+}
+
+void CGraphicContext::SetGuiKeepShape(bool keepShape)
+{
+  std::unique_lock lock(*this);
+  m_guiKeepShape = keepShape;
+}
+
+CRect CGraphicContext::GetGuiKeepShapeRect() const
+{
+  // The same conditions the clip applies, so what this reports as held and what the scissor
+  // confines cannot disagree.
+  if (!GuiKeepShapeInForce())
+    return {};
+  return m_guiRect;
+}
+
+CRect CGraphicContext::GetRasterRect() const
+{
+  // Unlocked, like the other const accessors here, and answered from the held dimensions rather
+  // than GetResInfo(), which copies three heap strings under a lock. The two agree because
+  // m_iScreenWidth and m_iScreenHeight are only ever assigned from GetResInfo().
+  const float raster = RasterAspectInForce();
+
+  // Before the first SetVideoResolution() there is no resolution to ask about and GetResInfo()
+  // answers an empty one, so the held defaults are the only answer either branch can give.
+  if (!(raster > 0.0f) || m_Resolution == RES_INVALID)
+    return ScreenRect();
+
+  return ComputeRasterRect(GetResInfo(), raster);
+}
+
+RESOLUTION_INFO CGraphicContext::GetRasterResInfo() const
+{
+  RESOLUTION_INFO info = GetResInfo();
+  const CRect raster = ComputeRasterRect(info, RasterAspectInForce());
+  info.iWidth = static_cast<int>(raster.Width() + 0.5f);
+  info.iHeight = static_cast<int>(raster.Height() + 0.5f);
+  return info;
 }
 
 void CGraphicContext::SetFullScreenVideo(bool bOnOff)
@@ -431,9 +555,7 @@ void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdat
   // So in theory, m_iScreenWidth etc. would not need to be updated at all before the
   // change is confirmed.
   // But other windowing code expects these variables to be already set when
-  // SetFullScreen() is called, so set them anyway and remember the old values.
-  int origScreenWidth = m_iScreenWidth;
-  int origScreenHeight = m_iScreenHeight;
+  // SetFullScreen() is called, so set them anyway and put them back if it fails.
   float origFPSOverride = m_fFPSOverride;
 
   UpdateInternalStateWithResolution(res);
@@ -470,23 +592,16 @@ void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdat
   }
   else
   {
-    // Reset old state
-    m_iScreenWidth = origScreenWidth;
-    m_iScreenHeight = origScreenHeight;
+    // Reset old state - derived from the resolution being fallen back to rather than restored
+    // verbatim, so the held dimensions keep agreeing with GetResInfo().
+    //
+    // FIXME Resolution has become invalid
+    // This happens e.g. when switching monitors and the new monitor has fewer
+    // resolutions than the old one. Fall back to RES_DESKTOP and hope that
+    // the real resolution is set soon.
+    // Again, must be fixed as part of a greater refactor.
+    UpdateInternalStateWithResolution(IsValidResolution(lastRes) ? lastRes : RES_DESKTOP);
     m_fFPSOverride = origFPSOverride;
-    if (IsValidResolution(lastRes))
-    {
-      m_Resolution = lastRes;
-    }
-    else
-    {
-      // FIXME Resolution has become invalid
-      // This happens e.g. when switching monitors and the new monitor has fewer
-      // resolutions than the old one. Fall back to RES_DESKTOP and hope that
-      // the real resolution is set soon.
-      // Again, must be fixed as part of a greater refactor.
-      m_Resolution = RES_DESKTOP;
-    }
   }
 }
 
@@ -674,33 +789,25 @@ void CGraphicContext::GetGUIScaling(const RESOLUTION_INFO &res, float &scaleX, f
 {
   if (m_Resolution != RES_INVALID)
   {
-    // calculate necessary scalings
-    RESOLUTION_INFO info = GetResInfo();
-    float fFromWidth  = (float)res.iWidth;
-    float fFromHeight = (float)res.iHeight;
-    auto fToPosX = info.Overscan.left + info.guiInsets.left;
-    auto fToPosY = info.Overscan.top + info.guiInsets.top;
-    auto fToWidth = info.Overscan.right - info.guiInsets.right - fToPosX;
-    auto fToHeight = info.Overscan.bottom - info.guiInsets.bottom - fToPosY;
+    const RESOLUTION_INFO info = GetResInfo();
+    const float zoomFraction = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+                                   CSettings::SETTING_LOOKANDFEEL_SKINZOOM) *
+                               0.01f;
 
-    float fZoom = (100 + CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_LOOKANDFEEL_SKINZOOM)) * 0.01f;
+    // The proportions hold governs the menus, not the playback overlay: while fullscreen video
+    // is showing, the OSD spans whatever area is in force.
+    const bool keepShape = GuiKeepShapeInForce();
 
-    fZoom -= 1.0f;
-    fToPosX -= fToWidth * fZoom * 0.5f;
-    fToWidth *= fZoom + 1.0f;
+    // Kept so the clip can be the area the interface actually occupies.
+    m_guiRect = ComputeGuiRect(res, info, RasterAspectInForce(), m_guiContentRect, keepShape,
+                               zoomFraction, scaleX, scaleY);
 
-    // adjust for aspect ratio as zoom is given in the vertical direction and we don't
-    // do aspect ratio corrections in the gui code
-    fZoom = fZoom / info.fPixelRatio;
-    fToPosY -= fToHeight * fZoom * 0.5f;
-    fToHeight *= fZoom + 1.0f;
-
-    scaleX = fFromWidth / fToWidth;
-    scaleY = fFromHeight / fToHeight;
     if (matrix)
     {
-      TransformMatrix guiScaler = TransformMatrix::CreateScaler(fToWidth / fFromWidth, fToHeight / fFromHeight, fToHeight / fFromHeight);
-      TransformMatrix guiOffset = TransformMatrix::CreateTranslation(fToPosX, fToPosY);
+      TransformMatrix guiScaler = TransformMatrix::CreateScaler(
+          m_guiRect.Width() / (float)res.iWidth, m_guiRect.Height() / (float)res.iHeight,
+          m_guiRect.Height() / (float)res.iHeight);
+      TransformMatrix guiOffset = TransformMatrix::CreateTranslation(m_guiRect.x1, m_guiRect.y1);
       *matrix = guiOffset * guiScaler;
     }
   }

@@ -62,11 +62,14 @@
 #include "video/VideoUtils.h"
 #include "video/dialogs/GUIDialogVideoManagerExtras.h"
 #include "video/dialogs/GUIDialogVideoManagerVersions.h"
+#include "video/geometry/ContentGeometryScanner.h"
+#include "video/geometry/GeometrySettings.h"
 
 #include <algorithm>
 #include <chrono>
 #include <map>
 #include <memory>
+#include <optional>
 #include <ranges>
 #include <set>
 #include <string>
@@ -2177,6 +2180,27 @@ CVideoInfoScanner::~CVideoInfoScanner()
         CLog::LogF(LOGDEBUG, "Filestream details from NFO file for {}", CURL::GetRedacted(path));
       else
         CLog::LogF(LOGDEBUG, "Filestream details already present for {}", CURL::GetRedacted(path));
+    }
+
+    // Not gated on the stream details above, whose gate skips any item whose NFO supplied
+    // them - common in exactly the curated libraries this is for. An NFO carrying a
+    // measurement is honoured separately.
+    if (GEOMETRY::ContentGeometryOnScanFromSettings() && !movieDetails.HasContentGeometry() &&
+        GEOMETRY::CanMeasureContentGeometry(*pItem))
+    {
+      const GEOMETRY::FileIdentity identity{GEOMETRY::GetFileIdentity(pItem->GetDynPath())};
+      if (identity.IsKnown())
+      {
+        const std::optional<GEOMETRY::ContentGeometryRecord> geometry{
+            GEOMETRY::MeasureContentGeometry(*pItem, identity, GEOMETRY::SamplingDepth::Normal,
+                                             [this]() { return m_bStop; })};
+
+        // The tag carries it into the database. A measurement that was abandoned or came to
+        // nothing leaves the field empty, and the sweep takes the item afterwards - a failure
+        // cannot travel on the tag, which has no rectangle to hold.
+        if (geometry && geometry->outcome == GEOMETRY::ContentGeometryOutcome::Measured)
+          movieDetails.m_contentGeometry = *geometry;
+      }
     }
 
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new item to {}:{}", content,

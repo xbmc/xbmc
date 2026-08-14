@@ -619,6 +619,107 @@
       "all"
     ]
   },
+  "Player.OsdPlacement": {
+    "type": "string",
+    "enum": [
+      "raster",
+      "picture"
+    ]
+  },
+  "Player.Geometry": {
+    "type": "object",
+    "description":
+        "What a system driving the room has told Kodi to do for this playback, overriding the corresponding settings. Every field is independent: state only the ones you are driving and the viewer's own choices stand for the rest. An override lasts for this playback only and reverts when it ends. A field omitted, or given as null, is left exactly as it is - so an automation moving the lens need not restate an OSD placement it set earlier. To withdraw a single override without ending playback, give zero for a ratio or \"setting\" for the placement.",
+    "additionalProperties": false,
+    "properties": {
+      "raster": {
+        "type": [
+          "null",
+          {
+            "type": "number",
+            "minimum": 0,
+            "required": true
+          }
+        ],
+        "default": null,
+        "description":
+            "The aspect ratio of the area Kodi may operate in. This is the whole of the lens control: nothing Kodi draws ever exceeds the raster, so a motorised room does not opt out of that constraint, it moves it. Both choices for a given title are legitimate and the cost is yours to weigh - a 16:9 title in a 1.78 raster fills the display and the lens zooms in, while the same title in a 2.40 raster is pillarboxed and costs resolution because the lens is zoomed out. Zero means the same as the display."
+      },
+      "osdplacement": {
+        "type": [
+          "null",
+          {
+            "type": "string",
+            "required": true,
+            "enum": [
+              "raster",
+              "picture",
+              "setting"
+            ]
+          }
+        ],
+        "default": null,
+        "description":
+            "Whether the interface is laid out against the whole raster or against the picture as it was actually drawn. \"setting\" withdraws the override and returns this to the viewer's own choice, which is what zero does for the two ratios."
+      },
+      "maintain": {
+        "type": [
+          "null",
+          {
+            "type": "number",
+            "minimum": 0,
+            "required": true
+          }
+        ],
+        "default": null,
+        "description":
+            "Render this title into the area of the raster with this ratio, so that the picture and the lens memory about to be selected correspond. This is a rendering target, not a claim about the content: a 2.35 film maintained at 1.78 is a valid instruction, and it neither reads nor disturbs any aspect ratio declared for the file. The target nests inside the raster rather than replacing it, so the picture cannot be pushed off the screen. Content wider than the maintained ratio is letterboxed within the target and content taller is pillarboxed within it; content taller than the maintained ratio is unaffected, because it binds on a height the target already has. Zero maintains nothing."
+      }
+    }
+  },
+  "Player.ScreenRect": {
+    "type": "object",
+    "description": "A rectangle in screen pixels.",
+    "additionalProperties": false,
+    "properties": {
+      "x": {
+        "type": "number",
+        "required": true
+      },
+      "y": {
+        "type": "number",
+        "required": true
+      },
+      "width": {
+        "type": "number",
+        "required": true
+      },
+      "height": {
+        "type": "number",
+        "required": true
+      }
+    }
+  },
+  "Player.ScreenGeometry": {
+    "type": "object",
+    "description":
+        "Where Kodi actually put the picture, in screen pixels. This is what was done rather than what the content is: a raster and a maintained ratio together decide the rectangle, and neither of those ratios says where the picture landed. Present only while something is drawn.",
+    "additionalProperties": false,
+    "properties": {
+      "picture": {
+        "$ref": "Player.ScreenRect",
+        "required": true,
+        "description":
+            "The content on the screen. Black bars coded into the video are outside it, as are the bars Kodi itself is showing around it - this is the lit rectangle, which is what a mask is driven to."
+      },
+      "raster": {
+        "$ref": "Player.ScreenRect",
+        "required": true,
+        "description":
+            "The area Kodi is operating in, which the picture is contained by and never exceeds. This is what a lens is driven to, and it is not the picture whenever the content is narrower than the room."
+      }
+    }
+  },
   "Player.Audio.Stream": {
     "type": "object",
     "properties": {
@@ -757,7 +858,8 @@
       "live",
       "currentvideostream",
       "videostreams",
-      "cachepercentage"
+      "cachepercentage",
+      "contentrect"
     ]
   },
   "Player.Property.Value": {
@@ -825,6 +927,10 @@
       },
       "currentvideostream": {
         "$ref": "Player.Video.Stream"
+      },
+      "contentrect": {
+        "$ref": "Video.ContentRect",
+        "description": "Where the picture sits inside the frame, and what shape it is. A property of the player rather than of a stream, because it describes what is on the screen: it is served whether or not a video stream is selected, and it outlives any one stream within a playback."
       },
       "videostreams": {
         "type": "array",
@@ -2074,6 +2180,110 @@
       "additionalProperties": false
     }
   },
+  "Video.ContentRect": {
+    "type": "object",
+    "description": "The picture within the frame, after pixel aspect correction. Black bars coded into the video are outside it. The rectangle is absent when there is no frame behind it, which is the case while nothing is playing and Kodi is reporting the shape it rests at; aspect, label and name are always present, and are what a consumer acting on the shape rather than on the pixels should read.",
+    "properties": {
+      "x": {
+        "type": "number",
+        "description": "Absent when there is no frame behind the rectangle, along with the five below - which is the case while nothing is playing and Kodi is reporting the shape it rests at. A library row carries no rectangle at all until its file is measured, so it is never the shape this describes."
+      },
+      "y": {
+        "type": "number"
+      },
+      "width": {
+        "type": "number"
+      },
+      "height": {
+        "type": "number"
+      },
+      "framewidth": {
+        "type": "number",
+        "description": "The whole frame, in the same space, which the rectangle is contained by"
+      },
+      "frameheight": {
+        "type": "number"
+      },
+      "aspect": {
+        "type": "number",
+        "required": true,
+        "description": "The ratio the content was shot at"
+      },
+      "label": {
+        "type": "string",
+        "required": true,
+        "description": "Kodi's name for that ratio, empty when it corresponds to none"
+      },
+      "name": {
+        "type": "string",
+        "required": true,
+        "description": "What that ratio is called, empty when it has no established name. Served beside label rather than instead of it, and never translated, so it can be compared against."
+      },
+      "varies": {
+        "type": "boolean",
+        "required": true,
+        "description": "The title changes shape partway through, so one rectangle cannot describe all of it"
+      },
+      "stale": {
+        "type": "boolean",
+        "required": true,
+        "description": "Measured by a superseded detector, and served rather than discarded"
+      },
+      "rejected": {
+        "type": "boolean",
+        "required": true,
+        "description": "A measurement existed and the plausibility gate refused it, so the frame is being served instead. The only thing that tells that apart from never having measured at all, which is otherwise identical: both report source container and both serve the frame. Which of the two it is decides whether the answer is to measure the file or to look at why detection failed on it."
+      },
+      "source": {
+        "type": "string",
+        "required": true,
+        "enum": ["container", "cached", "live", "declared"],
+        "description": "container means nothing is known and the frame is the answer"
+      },
+      "sections": {
+        "type": "array",
+        "required": true,
+        "description": "Every geometry the title was measured in, dominant first, in the same space and frame as the rectangle above. Present whatever decided the rectangle: a declared ratio pins the answer without erasing what was measured, and a measurement the plausibility gate refused is still what detection saw. Empty when nothing was measured, and when the answer is a live reading on a file no stored measurement retained the shapes of. This is what varies can be acted on with.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "x": {
+              "type": "number",
+              "required": true
+            },
+            "y": {
+              "type": "number",
+              "required": true
+            },
+            "width": {
+              "type": "number",
+              "required": true
+            },
+            "height": {
+              "type": "number",
+              "required": true
+            },
+            "aspect": {
+              "type": "number",
+              "required": true
+            },
+            "label": {
+              "type": "string",
+              "required": true,
+              "description": "Kodi's name for that ratio, empty when it corresponds to none"
+            },
+            "name": {
+              "type": "string",
+              "required": true,
+              "description": "What that ratio is called, empty when it has no established name"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "additionalProperties": false
+  },
   "Video.Streams": {
     "type": "object",
     "properties": {
@@ -2119,6 +2329,10 @@
             },
             "hdrtype": {
               "type": "string"
+            },
+            "contentrect": {
+              "$ref": "Video.ContentRect",
+              "description": "Present only when the picture rectangle has been measured for this file. Absent means it has not been, not that the picture fills the frame."
             }
           },
           "additionalProperties": false
@@ -4353,6 +4567,37 @@
       }
     }
   },
+  "GUI.ScreenAlignment": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "showing": {
+        "type": "boolean",
+        "required": true,
+        "description": "Whether the frames are on the screen now"
+      },
+      "ratios": {
+        "type": "array",
+        "uniqueItems": true,
+        "required": true,
+        "items": {
+          "type": "number"
+        },
+        "description":
+            "The ratios whose frames are drawn, ascending. Reported whether or not the tool is showing, because a set may be stated before it is brought up"
+      },
+      "available": {
+        "type": "array",
+        "uniqueItems": true,
+        "required": true,
+        "items": {
+          "type": "number"
+        },
+        "description":
+            "Every ratio a frame can be drawn for, ascending. This is Kodi's aspect ratio vocabulary, which a viewer may add to in userdata, so it is read rather than assumed"
+      }
+    }
+  },
   "System.Property.Name": {
     "type": "string",
     "enum": [
@@ -4388,7 +4633,8 @@
       "version",
       "volume",
       "sorttokens",
-      "language"
+      "language",
+      "contentrect"
     ]
   },
   "Application.Property.Value": {
@@ -4449,6 +4695,10 @@
         "type": "string",
         "minLength": 1,
         "description": "Current language code and region e.g. en_GB"
+      },
+      "contentrect": {
+        "$ref": "Video.ContentRect",
+        "description": "The shape on the screen, which is the picture while something is playing and the shape Kodi rests at otherwise. Answerable at any time, unlike the copy on Player.GetProperties, which describes a stream and so requires one to exist."
       }
     }
   },

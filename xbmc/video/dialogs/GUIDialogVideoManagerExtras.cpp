@@ -30,6 +30,7 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoManagerTypes.h"
+#include "video/geometry/ContentGeometryScanner.h"
 
 #include <algorithm>
 #include <string>
@@ -245,6 +246,10 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
       return false;
 
     m_database.AddVideoAsset(itemType, dbId, idNewVideoVersion, VideoAssetType::EXTRA, item);
+
+    // An extra is its own file and needs its own measurement. Handed to the background sweep
+    // rather than taken here: sampling is seconds, and the user is standing in front of this.
+    KODI::VIDEO::GEOMETRY::CContentGeometryScanner::GetInstance().Sweep();
 
     return true;
   }

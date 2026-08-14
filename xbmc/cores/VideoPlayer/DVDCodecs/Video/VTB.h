@@ -36,6 +36,11 @@ public:
   void Unref();
   CVPixelBufferRef GetPB();
 
+  bool ReduceForAnalysis(KODI::VIDEO::GEOMETRY::ReducedFrame& reduction,
+                         unsigned int sourceWidth,
+                         unsigned int sourceHeight,
+                         unsigned int targetWidth) override;
+
   GLuint m_fence = 0;
 protected:
   CVPixelBufferRef m_pbRef = nullptr;

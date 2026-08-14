@@ -1,4 +1,5 @@
 set(SOURCES VideoLibraryCleaningJob.cpp
+            VideoLibraryContentGeometryJob.cpp
             VideoLibraryJob.cpp
             VideoLibraryMarkWatchedJob.cpp
             VideoLibraryProgressJob.cpp
@@ -7,6 +8,7 @@ set(SOURCES VideoLibraryCleaningJob.cpp
             VideoLibraryResetResumePointJob.cpp)
 
 set(HEADERS VideoLibraryCleaningJob.h
+            VideoLibraryContentGeometryJob.h
             VideoLibraryJob.h
             VideoLibraryMarkWatchedJob.h
             VideoLibraryProgressJob.h

@@ -383,6 +383,10 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_pCodecContext->flags = AV_CODEC_FLAG_COPY_OPAQUE;
 #endif
 
+  // Analysis callers want the coded picture, not a grain-synthesised rendition of it.
+  if (hints.codecOptions & CODEC_EXPORT_FILM_GRAIN)
+    m_pCodecContext->export_side_data |= AV_CODEC_EXPORT_DATA_FILM_GRAIN;
+
   // setup threading model
   if (!(hints.codecOptions & CODEC_FORCE_SOFTWARE))
   {

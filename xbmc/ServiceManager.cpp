@@ -87,6 +87,8 @@ bool CServiceManager::InitForTesting()
   m_extsMimeSupportList = std::make_unique<ADDONS::CExtsMimeSupportList>(*m_addonMgr);
   m_fileExtensionProvider->Initialize(*m_addonMgr);
 
+  m_mediaManager = std::make_unique<CMediaManager>();
+
   m_subTagRegistryManager = std::make_unique<KODI::UTILS::I18N::CSubTagRegistryManager>();
   m_subTagRegistryManager->Initialize();
 
@@ -98,6 +100,7 @@ void CServiceManager::DeinitTesting()
 {
   init_level = 0;
   m_subTagRegistryManager.reset();
+  m_mediaManager.reset();
   m_fileExtensionProvider->Deinitialize();
   m_extsMimeSupportList.reset();
   m_dataCacheCore.reset();

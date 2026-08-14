@@ -996,7 +996,7 @@ msgstr ""
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 #: skins/xml/SettingsScreenCalibration.xml
 msgctxt "#214"
-msgid "Video calibration"
+msgid "Overscan alignment"
 msgstr ""
 
 msgctxt "#215"
@@ -5179,7 +5179,10 @@ msgctxt "#10022"
 msgid "Settings - Games"
 msgstr ""
 
-#empty string with id 10023
+#. Title of the screen alignment window, which is the string with the window's own number
+msgctxt "#10023"
+msgid "Screen alignment"
+msgstr ""
 
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMoviesOverview.cpp
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMusicVideosOverview.cpp
@@ -20186,13 +20189,13 @@ msgstr ""
 #. Description of setting with label #22021 "Minimise black bars"
 #: system/settings/settings.xml
 msgctxt "#36170"
-msgid "Stretch the video up to the set percentage in order to minimise black bars."
+msgid "Stretch the video up to the set percentage in order to minimise black bars. Ignored while \"Screen aspect ratio\" states a shape - the picture is then fitted to its content and never stretched, so that it corresponds to a mask or a lens."
 msgstr ""
 
 #. Description of setting with label #173 "Display 4:3 videos as"
 #: system/settings/settings.xml
 msgctxt "#36171"
-msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
+msgid "Select the zoom level that 4:3 videos are shown on widescreen displays. Ignored while \"Screen aspect ratio\" states a shape - the picture is then fitted to its content and never stretched, so that it corresponds to a mask or a lens."
 msgstr ""
 
 #. Description of setting with label #13430 "Allow hardware acceleration - PRIME"
@@ -25189,4 +25192,347 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#40803"
 msgid "Monitor change may require restart."
+msgstr ""
+
+#. Label for the setting deciding what is reported for a title whose aspect ratio changes partway through
+#: system/settings/settings.xml
+msgctxt "#40804"
+msgid "Variable aspect ratio content"
+msgstr ""
+
+#. Description of setting with label #40804 "Variable aspect ratio content"
+#: system/settings/settings.xml
+msgctxt "#40805"
+msgid "What to report for a title whose picture changes shape partway through."
+msgstr ""
+
+#. Option for setting with label #40804 "Variable aspect ratio content"
+#: system/settings/settings.xml
+msgctxt "#40806"
+msgid "Use envelope ratio + bars"
+msgstr ""
+
+#. Option for setting with label #40804 "Variable aspect ratio content"
+#: system/settings/settings.xml
+msgctxt "#40807"
+msgid "Use dominant ratio + clip"
+msgstr ""
+
+#. Label for setting "videoscreen.extractcontentgeometry"
+#: system/settings/settings.xml
+msgctxt "#40808"
+msgid "Detect content aspect ratio"
+msgstr ""
+
+#. Help text for setting with label #40808 "Detect content aspect ratio"
+#: system/settings/settings.xml
+msgctxt "#40809"
+msgid "Measure the picture area of each video ahead of playback. Discs and streams are skipped."
+msgstr ""
+
+#. Label for setting "videoscreen.contentgeometryonscan"
+#: system/settings/settings.xml
+msgctxt "#40810"
+msgid "Measure while scanning the library"
+msgstr ""
+
+#. Help text for setting with label #40810 "Measure while scanning the library"
+#: system/settings/settings.xml
+msgctxt "#40811"
+msgid "Measure each item as the library scan adds it, rather than in the background afterwards."
+msgstr ""
+
+#. Label for setting "videoscreen.scancontentgeometry"
+#: system/settings/settings.xml
+msgctxt "#40812"
+msgid "Scan library for content aspect ratios"
+msgstr ""
+
+#. Help text for setting with label #40812 "Scan library for content aspect ratios"
+#: system/settings/settings.xml
+msgctxt "#40813"
+msgid "Measure every video that has no measurement yet. Runs in the background."
+msgstr ""
+
+#. Heading of the background progress bar shown while content geometry is being measured
+#: xbmc/video/jobs/VideoLibraryContentGeometryJob.cpp
+msgctxt "#40814"
+msgid "Calculating aspect ratios"
+msgstr ""
+
+#. Label for setting "subtitles.aligntocontent"
+#: system/settings/settings.xml
+msgctxt "#40815"
+msgid "Position subtitles by the picture"
+msgstr ""
+
+#. Help text for setting with label #40815 "Position subtitles by the picture"
+#: system/settings/settings.xml
+msgctxt "#40816"
+msgid "Measures the subtitle inset from the picture rather than from the whole video."
+msgstr ""
+
+#. Label for setting "videoscreen.osdplaying"
+#: system/settings/settings.xml
+msgctxt "#40817"
+msgid "Lay the OSD out against"
+msgstr ""
+
+#. Help text for setting with label #40817 "Lay the OSD out against"
+#: system/settings/settings.xml
+msgctxt "#40818"
+msgid "Where the OSD and menus are laid out during playback. The video itself is never moved."
+msgstr ""
+
+#. Option for setting "videoscreen.osdplaying" - laid out against the whole operating area
+#: system/settings/settings.xml
+msgctxt "#40819"
+msgid "The whole screen"
+msgstr ""
+
+#. Option for setting "videoscreen.osdplaying" - laid out against the picture as drawn
+#: system/settings/settings.xml
+msgctxt "#40820"
+msgid "The picture"
+msgstr ""
+
+#. Label for setting "videoscreen.contentgeometrysamples"
+#: system/settings/settings.xml
+msgctxt "#40821"
+msgid "Samples per video"
+msgstr ""
+
+#. Help text for setting with label #40821 "Samples per video"
+#: system/settings/settings.xml
+msgctxt "#40822"
+msgid "How many points across each video to measure. More samples find more shapes, and scan slower."
+msgstr ""
+
+#. Spinner format for setting with label #40821 "Samples per video"
+#: system/settings/settings.xml
+msgctxt "#40823"
+msgid "{0:d} samples"
+msgstr ""
+
+#. Label for setting "videoscreen.contentgeometryleadin"
+#: system/settings/settings.xml
+msgctxt "#40824"
+msgid "Ignore at the start of each video"
+msgstr ""
+
+#. Help text for setting with label #40824 "Ignore at the start of each video"
+#: system/settings/settings.xml
+msgctxt "#40825"
+msgid "Runtime to leave unmeasured at the start of each video, past the idents and logos."
+msgstr ""
+
+#. Label for setting "videoscreen.contentgeometryleadout"
+#: system/settings/settings.xml
+msgctxt "#40826"
+msgid "Ignore at the end of each video"
+msgstr ""
+
+#. Minimum value for settings with labels #40824 and #40826, meaning nothing is ignored
+#: system/settings/settings.xml
+msgctxt "#40828"
+msgid "Measure all of it"
+msgstr ""
+
+#. Help text for setting with label #40826 "Ignore at the end of each video"
+#: system/settings/settings.xml
+msgctxt "#40829"
+msgid "Runtime to leave unmeasured at the end of each video, past the credits."
+msgstr ""
+
+#. Label for setting "videoscreen.rasteraspect"
+#: system/settings/settings.xml
+msgctxt "#40830"
+msgid "Screen aspect ratio"
+msgstr ""
+
+#. Help text for setting with label #40830 "Screen aspect ratio"
+#: system/settings/settings.xml
+msgctxt "#40831"
+msgid "The shape of the screen the picture is projected onto. Kodi draws nothing outside it."
+msgstr ""
+
+#. Label for setting "videoscreen.guikeepshape"
+#: system/settings/settings.xml
+msgctxt "#40832"
+msgid "Maintain original OSD aspect ratio"
+msgstr ""
+
+#. Help text for setting with label #40832 "Maintain original OSD aspect ratio"
+#: system/settings/settings.xml
+msgctxt "#40833"
+msgid "Draws the OSD and menus at the skin's own aspect ratio, centred, rather than laid out to the screen."
+msgstr ""
+
+#. Option for setting "videoscreen.rasteraspect" - the screen is the display itself, no shape stated
+#: system/settings/settings.xml
+msgctxt "#40834"
+msgid "Same as the display"
+msgstr ""
+
+#. Label for setting "videoscreen.guisurround"
+#: system/settings/settings.xml
+msgctxt "#40835"
+msgid "Fill the unused area around the OSD with"
+msgstr ""
+
+#. Help text for setting with label #40835 "Fill the unused area around the OSD with"
+#: system/settings/settings.xml
+msgctxt "#40836"
+msgid "What is drawn in the part of the screen the OSD leaves uncovered."
+msgstr ""
+
+#. Option for setting "videoscreen.guisurround" - a solid colour
+#: system/settings/settings.xml
+msgctxt "#40838"
+msgid "A colour"
+msgstr ""
+
+#. Option for setting "videoscreen.guisurround" - an image
+#: system/settings/settings.xml
+msgctxt "#40839"
+msgid "An image"
+msgstr ""
+
+#. Label for setting "videoscreen.guisurroundcolour"
+#: system/settings/settings.xml
+msgctxt "#40840"
+msgid "Surround colour"
+msgstr ""
+
+#. Help text for setting with label #40840 "Surround colour"
+#: system/settings/settings.xml
+msgctxt "#40841"
+msgid "The colour drawn around the menus."
+msgstr ""
+
+#. Label for setting "videoscreen.guisurroundimage"
+#: system/settings/settings.xml
+msgctxt "#40842"
+msgid "Surround image"
+msgstr ""
+
+#. Help text for setting with label #40842 "Surround image"
+#: system/settings/settings.xml
+msgctxt "#40843"
+msgid "The image drawn around the menus. It is fitted at its own aspect ratio, never stretched."
+msgstr ""
+
+#. Label for the screen geometry settings category
+#: system/settings/settings.xml
+msgctxt "#40844"
+msgid "Screen & aspect ratio"
+msgstr ""
+
+#. Help text for the screen geometry settings category
+#: system/settings/settings.xml
+msgctxt "#40845"
+msgid "The shape of the screen, and how the interface, the picture and content aspect ratios follow it."
+msgstr ""
+
+#. Label for the screen geometry category group holding the screen shape
+#: system/settings/settings.xml
+msgctxt "#40846"
+msgid "The screen"
+msgstr ""
+
+#. Label for the screen geometry category group holding the interface layout settings
+#: system/settings/settings.xml
+msgctxt "#40847"
+msgid "The interface"
+msgstr ""
+
+#. Label for the screen geometry category group holding the playback-time settings
+#: system/settings/settings.xml
+msgctxt "#40848"
+msgid "During playback"
+msgstr ""
+
+#. Label for the screen geometry category group holding the measurement settings
+#: system/settings/settings.xml
+msgctxt "#40849"
+msgid "Detection"
+msgstr ""
+
+#. Label for the setting enabling live in-playback content geometry detection
+#: system/settings/settings.xml
+msgctxt "#40850"
+msgid "Rescale the picture as its aspect ratio changes"
+msgstr ""
+
+#. Help text for the setting enabling live in-playback content geometry detection
+#: system/settings/settings.xml
+msgctxt "#40851"
+msgid "Reads every frame while a file plays and fits the picture to the shape on screen."
+msgstr ""
+
+#. Label for the live detection sample period setting
+#: system/settings/settings.xml
+msgctxt "#40852"
+msgid "Confirm a smaller picture for"
+msgstr ""
+
+#. Help text for the live detection narrowing frame guard setting
+#: system/settings/settings.xml
+msgctxt "#40853"
+msgid "Frames a smaller picture must persist for before it is reported."
+msgstr ""
+
+#. Label for the live detection opening exclusion setting
+#: system/settings/settings.xml
+msgctxt "#40854"
+msgid "Ignore at the start of playback"
+msgstr ""
+
+#. Help text for the live detection opening exclusion setting
+#: system/settings/settings.xml
+msgctxt "#40855"
+msgid "Runtime at the start of playback during which live readings are not taken."
+msgstr ""
+
+#. Label for the live detection closing exclusion setting
+#: system/settings/settings.xml
+msgctxt "#40856"
+msgid "Ignore at the end of playback"
+msgstr ""
+
+#. Help text for the live detection closing exclusion setting
+#: system/settings/settings.xml
+msgctxt "#40857"
+msgid "Runtime at the end of playback during which live readings are not taken."
+msgstr ""
+
+#. Spinner format for the live detection frame guard setting
+#: system/settings/settings.xml
+msgctxt "#40858"
+msgid "{0:d} frames"
+msgstr ""
+
+#. Minimum value label for the live detection frame guard setting
+#: system/settings/settings.xml
+msgctxt "#40859"
+msgid "The next frame"
+msgstr ""
+
+#. Label for the action opening the screen alignment tool, and its window title
+#: system/settings/settings.xml
+msgctxt "#40860"
+msgid "Screen alignment"
+msgstr ""
+
+#. Help text for the action opening the screen alignment tool
+#: system/settings/settings.xml
+msgctxt "#40861"
+msgid "Draws a frame at each aspect ratio you choose, for aligning a projector to your screen."
+msgstr ""
+
+
+#. Label for the OSD video setting that declares the content's aspect ratio, overriding detection
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#40862"
+msgid "Content aspect ratio"
 msgstr ""

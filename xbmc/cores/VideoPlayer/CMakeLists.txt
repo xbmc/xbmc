@@ -1,11 +1,14 @@
 set(SOURCES AudioSinkAE.cpp
             DVDClock.cpp
+            DVDDecodeSession.cpp
             DVDDemuxSPU.cpp
+            DVDFileGeometry.cpp
             DVDFileInfo.cpp
             DVDMessage.cpp
             DVDMessageQueue.cpp
             DVDOverlayContainer.cpp
             DVDStreamInfo.cpp
+            LiveGeometryMonitor.cpp
             Edl.cpp
             Edl/EdlParserFactory.cpp
             Edl/EdlParsers/BeyondTVParser.cpp
@@ -27,11 +30,14 @@ set(SOURCES AudioSinkAE.cpp
 set(HEADERS AudioSinkAE.h
             DVDClock.h
             DVDDemuxSPU.h
+            DVDDecodeSession.h
+            DVDFileGeometry.h
             DVDFileInfo.h
             DVDMessage.h
             DVDMessageQueue.h
             DVDOverlayContainer.h
             DVDResource.h
+            LiveGeometryMonitor.h
             DVDStreamInfo.h
             Edl.h
             Edl/EdlParser.h

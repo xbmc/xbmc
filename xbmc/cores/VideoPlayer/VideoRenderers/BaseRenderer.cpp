@@ -9,6 +9,8 @@
 #include "BaseRenderer.h"
 
 #include "ServiceBroker.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationContentGeometry.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -20,6 +22,7 @@
 #include "settings/lib/SettingDefinitions.h"
 #include "utils/MathUtils.h"
 #include "utils/log.h"
+#include "video/ViewModeSettings.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
@@ -130,6 +133,11 @@ void CBaseRenderer::CalcDestRect(float offsetX,
   // allow a certain error to maximize size of render area
   float fCorrection = width / height / outputFrameRatio - 1.0f;
   float fAllowed = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_ERRORINASPECT) * 0.01f;
+
+  // With a screen shape stated the bars are cut or masked, so a stretch to minimise them breaks
+  // the correspondence with the lens. The UI disables the setting; this covers a stored value.
+  if (CServiceBroker::GetWinSystem()->GetGfxContext().IsRasterShapeStated())
+    fAllowed = 0.0f;
   if (fCorrection > fAllowed)
     fCorrection = fAllowed;
   if (fCorrection < -fAllowed)
@@ -348,10 +356,61 @@ void CBaseRenderer::ManageRenderArea()
       break;
   }
 
-  CalcNormalRenderRect(m_viewRect.x1, m_viewRect.y1, m_viewRect.Width(), m_viewRect.Height(),
-                       GetAspectRatio() * CDisplaySettings::GetInstance().GetPixelRatio(),
+  float contentRatio = GetAspectRatio();
+  const CRect renderWindow = ApplyContentGeometry(contentRatio);
+
+  CalcNormalRenderRect(renderWindow.x1, renderWindow.y1, renderWindow.Width(),
+                       renderWindow.Height(),
+                       contentRatio * CDisplaySettings::GetInstance().GetPixelRatio(),
                        CDisplaySettings::GetInstance().GetZoomAmount(),
                        CDisplaySettings::GetInstance().GetVerticalShift());
+}
+
+CRect CBaseRenderer::ApplyContentGeometry(float& contentRatio)
+{
+  CRect renderWindow = m_viewRect;
+
+  const auto geometry =
+      CServiceBroker::GetAppComponents().GetComponent<CApplicationContentGeometry>();
+  if (!geometry)
+    return renderWindow;
+
+  // One acquisition of the geometry's section for the whole of this function, which runs per
+  // rendered frame.
+  const CApplicationContentGeometry::RenderInputs inputs{geometry->GetRenderInputs()};
+
+  // With a raster stated, what is fitted to the view window is the resolved content rather than
+  // the coded frame, so a scope title fills a scope raster instead of bringing its bars into it.
+  // Gated on the raster because cutting bars grows the picture.
+  if (CServiceBroker::GetWinSystem()->GetGfxContext().IsRasterShapeStated())
+  {
+    const KODI::VIDEO::GEOMETRY::RenderGeometry& effective = inputs.geometry;
+
+    // Asked against the source rectangle rather than the source size: on a stereoscopic stream
+    // that has already been narrowed to the view, which is what the measurement describes.
+    if (KODI::VIDEO::GEOMETRY::DescribesFrame(effective, m_sourceRect))
+    {
+      // The frame's own measurement outranks the published one, which describes whichever frame
+      // was measured most recently rather than this one.
+      const KODI::VIDEO::GEOMETRY::ContentCut cut{
+          KODI::VIDEO::GEOMETRY::CutToContent(effective, m_frameContentRect, m_sourceRect)};
+
+      m_sourceRect = cut.source;
+      contentRatio = cut.aspect;
+    }
+  }
+
+  // The masking sits at the stored measurement's extent for the whole title, so a live reading
+  // larger than it is scaled down inside the opening rather than spilling onto the mask.
+  if (!m_frameContentRect.IsEmpty() && inputs.maskAspect > 0.0f)
+    renderWindow = KODI::VIDEO::GEOMETRY::FitAspect(inputs.maskAspect, renderWindow);
+
+  // An explicit instruction outranks the opening. Ungated by the raster, unlike the cut above,
+  // so the lens and the picture cannot disagree.
+  if (inputs.maintainAspect > 0.0f)
+    renderWindow = KODI::VIDEO::GEOMETRY::FitAspect(inputs.maintainAspect, m_viewRect);
+
+  return renderWindow;
 }
 
 EShaderFormat CBaseRenderer::GetShaderFormat()
@@ -404,6 +463,12 @@ void CBaseRenderer::SetViewMode(int viewMode)
 
   m_videoSettings.m_ViewMode = viewMode;
 
+  // A stated screen shape collapses the computed view modes to Normal - see
+  // CViewModeSettings::SurvivesStatedShape(). The stored choice is kept.
+  const bool shapeStated = CServiceBroker::GetWinSystem()->GetGfxContext().IsRasterShapeStated();
+  const int mode =
+      shapeStated && !CViewModeSettings::SurvivesStatedShape(viewMode) ? ViewModeNormal : viewMode;
+
   // get our calibrated full screen resolution
   RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
   float screenWidth  = (float)(info.Overscan.right  - info.Overscan.left);
@@ -412,8 +477,10 @@ void CBaseRenderer::SetViewMode(int viewMode)
   // and the source frame ratio
   float sourceFrameRatio = GetAspectRatio();
 
-  bool is43 = (sourceFrameRatio < 8.f/(3.f*sqrt(3.f)) &&
-              m_videoSettings.m_ViewMode == ViewModeNormal);
+  bool is43 =
+      (sourceFrameRatio < 8.f / (3.f * sqrt(3.f)) && mode == ViewModeNormal && !shapeStated);
+  const int stretch43 = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+      CSettings::SETTING_VIDEOPLAYER_STRETCH43);
 
   // Splitres scaling factor
   float xscale = (float)info.iScreenWidth  / (float)info.iWidth;
@@ -425,8 +492,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
   CDisplaySettings::GetInstance().SetVerticalShift(0.0f);
   CDisplaySettings::GetInstance().SetNonLinearStretched(false);
 
-  if (m_videoSettings.m_ViewMode == ViewModeZoom ||
-       (is43 && CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_STRETCH43) == ViewModeZoom))
+  if (mode == ViewModeZoom || (is43 && stretch43 == ViewModeZoom))
   { // zoom image so no black bars
     CDisplaySettings::GetInstance().SetPixelRatio(1.0);
     // calculate the desired output ratio
@@ -442,15 +508,14 @@ void CBaseRenderer::SetViewMode(int viewMode)
       CDisplaySettings::GetInstance().SetZoomAmount(newHeight / screenHeight);
     }
   }
-  else if (m_videoSettings.m_ViewMode == ViewModeStretch4x3)
+  else if (mode == ViewModeStretch4x3)
   { // stretch image to 4:3 ratio
     CDisplaySettings::GetInstance().SetZoomAmount(1.0);
     // now we need to set CDisplaySettings::GetInstance().GetPixelRatio() so that
     // fOutputFrameRatio = 4:3.
     CDisplaySettings::GetInstance().SetPixelRatio((4.0f / 3.0f) / sourceFrameRatio);
   }
-  else if (m_videoSettings.m_ViewMode == ViewModeWideZoom ||
-           (is43 && CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_STRETCH43) == ViewModeWideZoom))
+  else if (mode == ViewModeWideZoom || (is43 && stretch43 == ViewModeWideZoom))
   { // super zoom
     float stretchAmount = (screenWidth / screenHeight) * info.fPixelRatio / sourceFrameRatio;
     CDisplaySettings::GetInstance().SetPixelRatio(pow(stretchAmount, float(2.0/3.0)));
@@ -458,20 +523,18 @@ void CBaseRenderer::SetViewMode(int viewMode)
         pow(stretchAmount, float((stretchAmount < 1.0f) ? -1.0 / 3.0 : 1.0 / 3.0)));
     CDisplaySettings::GetInstance().SetNonLinearStretched(true);
   }
-  else if (m_videoSettings.m_ViewMode == ViewModeStretch16x9 ||
-            m_videoSettings.m_ViewMode == ViewModeStretch16x9Nonlin ||
-           (is43 && (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_STRETCH43) == ViewModeStretch16x9 ||
-                     CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_STRETCH43) == ViewModeStretch16x9Nonlin)))
+  else if (mode == ViewModeStretch16x9 || mode == ViewModeStretch16x9Nonlin ||
+           (is43 && (stretch43 == ViewModeStretch16x9 || stretch43 == ViewModeStretch16x9Nonlin)))
   { // stretch image to 16:9 ratio
     CDisplaySettings::GetInstance().SetZoomAmount(1.0);
     // stretch to the limits of the 16:9 screen.
     // incorrect behaviour, but it's what the users want, so...
     CDisplaySettings::GetInstance().SetPixelRatio((screenWidth / screenHeight) * info.fPixelRatio / sourceFrameRatio);
-    bool nonlin = (is43 && CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_STRETCH43) == ViewModeStretch16x9Nonlin) ||
-                  m_videoSettings.m_ViewMode == ViewModeStretch16x9Nonlin;
+    bool nonlin =
+        (is43 && stretch43 == ViewModeStretch16x9Nonlin) || mode == ViewModeStretch16x9Nonlin;
     CDisplaySettings::GetInstance().SetNonLinearStretched(nonlin);
   }
-  else  if (m_videoSettings.m_ViewMode == ViewModeOriginal)
+  else if (mode == ViewModeOriginal)
   { // zoom image so that the height is the original size
     CDisplaySettings::GetInstance().SetPixelRatio(1.0);
     // get the size of the media file
@@ -486,20 +549,20 @@ void CBaseRenderer::SetViewMode(int viewMode)
     // now work out the zoom amount so that no zoom is done
     CDisplaySettings::GetInstance().SetZoomAmount(m_sourceHeight / newHeight);
   }
-  else if (m_videoSettings.m_ViewMode == ViewModeCustom)
+  else if (mode == ViewModeCustom)
   {
     CDisplaySettings::GetInstance().SetZoomAmount(m_videoSettings.m_CustomZoomAmount);
     CDisplaySettings::GetInstance().SetPixelRatio(m_videoSettings.m_CustomPixelRatio);
     CDisplaySettings::GetInstance().SetNonLinearStretched(m_videoSettings.m_CustomNonLinStretch);
     CDisplaySettings::GetInstance().SetVerticalShift(m_videoSettings.m_CustomVerticalShift);
   }
-  else if (m_videoSettings.m_ViewMode == ViewModeZoom120Width)
+  else if (mode == ViewModeZoom120Width)
   {
     float fitHeightZoom = sourceFrameRatio * screenHeight / (info.fPixelRatio * screenWidth);
     CDisplaySettings::GetInstance().SetPixelRatio(1.0f);
     CDisplaySettings::GetInstance().SetZoomAmount(fitHeightZoom < 1.0f ? 1.0f : (fitHeightZoom > 1.2f ? 1.2f : fitHeightZoom));
   }
-  else if (m_videoSettings.m_ViewMode == ViewModeZoom110Width)
+  else if (mode == ViewModeZoom110Width)
   {
     float fitHeightZoom = sourceFrameRatio * screenHeight / (info.fPixelRatio * screenWidth);
     CDisplaySettings::GetInstance().SetPixelRatio(1.0f);

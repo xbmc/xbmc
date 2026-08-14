@@ -94,6 +94,72 @@ public:
   const CRect &GetScissors() const;
   const CRect GetViewWindow() const;
   void SetViewWindow(float left, float top, float right, float bottom);
+  /*! \brief Confine the GUI to \p rect, in screen coordinates.
+   Not persisted, unlike the overscan calibration and guiInsets: this follows what is playing and
+   must never outlive it.
+   \param rect the area of the screen the GUI may use, or an empty rectangle for all of it
+   \return true if this changed the confinement, so the caller can mark the GUI dirty
+   */
+  bool SetGuiContentRect(const CRect& rect);
+
+  /*! \brief The shape of the screen the display is projected onto.
+   Defines the raster: the largest rectangle of this shape centred in the display, which is the
+   maximum area Kodi operates in. Nothing drawn may exceed it, interface or picture alike.
+   \param aspect the ratio, or zero for "the display's own", which is the whole display
+   */
+  void SetRasterAspect(float aspect);
+
+  //! \brief The stated shape of the screen, or zero when the display's own shape is in force.
+  float GetRasterAspect() const;
+
+  //! \brief Stated, not in force: one suspended while a screen tool is up still counts.
+  bool IsRasterShapeStated() const { return GetRasterAspect() > 0.0f; }
+
+  /*! \brief The raster, in screen coordinates.
+   The whole display when no shape has been stated, and when the stated shape is the display's
+   own - ComputeRasterRect() says why that case must be exact.
+   */
+  CRect GetRasterRect() const;
+
+  /*! \brief The resolution sized as the raster, so the skin's layout selection compares ratios
+   against the area actually being drawn into. A selection target, not a drawable resolution.
+   */
+  RESOLUTION_INFO GetRasterResInfo() const;
+
+  //! \brief Draw the interface at its authored proportions inside whatever area is in force,
+  //! rather than stretching it to fill. A 16:9 skin in a 2.40 raster is then pillarboxed.
+  void SetGuiKeepShape(bool keepShape);
+
+  //! \brief Asked for, not in force - unlike GetGuiKeepShapeRect(), which answers empty while
+  //! the hold is merely suspended.
+  bool GetGuiKeepShape() const { return m_guiKeepShape; }
+
+  /*! \brief The rectangle the interface is being held to while it keeps its own shape.
+   Empty whenever no hold is in force, which is also the answer "the interface fills the raster".
+   */
+  CRect GetGuiKeepShapeRect() const;
+
+  /*!
+   * \brief Confine drawing to the area the interface occupies.
+   * \return what the clip was, to hand back to SetClip()
+   */
+  CRect ClipToGui();
+
+  /*!
+   * \brief Lift the clip to the whole display for the picture's render pass. The picture is
+   * contained by scaling rather than by the scissor.
+   * \return what the clip was, to hand back to SetClip()
+   */
+  CRect ClipToVideo();
+
+  //! \brief Clip to exactly \p rect, re-applying no bound.
+  //! \return what the clip was
+  CRect SetClip(const CRect& rect);
+
+  /*! \brief Whether a screen tool - overscan alignment or screen alignment - is on screen.
+   While either is up the raster and the proportions hold are suspended and the tool draws on
+   the raw pixel grid.
+   */
   bool IsCalibrating() const;
   void SetCalibrating(bool bOnOff);
   void ResetOverscan(RESOLUTION res, OVERSCAN &overscan);
@@ -230,6 +296,24 @@ protected:
   int m_iScreenWidth = 720;
   std::string m_strMediaDir;
   CRect m_videoRect;
+  CRect m_guiContentRect;
+  float m_rasterAspect{0.0f};
+  bool m_guiKeepShape{false};
+
+  //! \brief The area the interface occupies, recorded by GetGUIScaling for the clip.
+  CRect m_guiRect;
+
+  //! \brief The furthest anything being drawn may reach: the raster for the interface, the whole
+  //! display for the picture.
+  CRect ClipBounds() const;
+
+  CRect ScreenRect() const;
+
+  //! \brief The stated shape put through ComputeRasterAspectInForce() for the state in hand.
+  float RasterAspectInForce() const;
+
+  //! \brief The hold put through ComputeGuiKeepShape() for the state in hand.
+  bool GuiKeepShapeInForce() const;
   bool m_bFullScreenRoot = true;
   bool m_bFullScreenVideo = false;
   bool m_bCalibrating = false;

@@ -4,14 +4,14 @@
 		<import addon="xbmc.gui" version="5.18.0"/>
 	</requires>
 	<extension point="xbmc.gui.skin" debugging="false">
-		<res width="1920" height="1440" aspect="4:3" default="false" folder="xml" />
-		<res width="1920" height="1280" aspect="3:2" default="false" folder="xml" />
-		<res width="1920" height="1200" aspect="16:10" default="false" folder="xml" />
-		<res width="2040" height="1080" aspect="17:9" default="false" folder="xml" />
-		<res width="1920" height="1080" aspect="16:9" default="true" folder="xml" />
-		<res width="2560" height="1080" aspect="21:9" default="false" folder="xml" />
-		<res width="2338" height="1080" aspect="19.5:9" default="false" folder="xml" />
-		<res width="2160" height="1080" aspect="18:9" default="false" folder="xml" />
+		<res width="1920" height="1440" aspect="1.33" default="false" folder="xml" />
+		<res width="1920" height="1280" aspect="1.50" default="false" folder="xml" />
+		<res width="1920" height="1200" aspect="1.60" default="false" folder="xml" />
+		<res width="2040" height="1080" aspect="1.89" default="false" folder="xml" />
+		<res width="1920" height="1080" aspect="1.78" default="true" folder="xml" />
+		<res width="2560" height="1080" aspect="2.37" default="false" folder="xml" />
+		<res width="2338" height="1080" aspect="2.16" default="false" folder="xml" />
+		<res width="2160" height="1080" aspect="2.00" default="false" folder="xml" />
 	</extension>
 	<extension point="xbmc.addon.metadata">
 		<platform>all</platform>
