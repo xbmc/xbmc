@@ -9,6 +9,9 @@
 #include "AddonButtonMap.h"
 
 #include "PeripheralAddonTranslator.h"
+#include "games/controllers/Controller.h"
+#include "games/controllers/ControllerManager.h"
+#include "games/controllers/input/PhysicalFeature.h"
 #include "input/joysticks/JoystickUtils.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/devices/Peripheral.h"
@@ -180,6 +183,29 @@ bool CAddonButtonMap::GetScalar(const FeatureName& feature, CDriverPrimitive& pr
     {
       primitive = CPeripheralAddonTranslator::TranslatePrimitive(
           addonFeature.Primitive(JOYSTICK_SCALAR_PRIMITIVE));
+      retVal = true;
+    }
+  }
+  else
+  {
+    // Nothing has mapped this feature. If the controller profile calls it a
+    // motor, map it here by position rather than leaving it unmapped.
+    //
+    // Motors cannot be mapped the way everything else is. The configuration
+    // wizard asks the user to activate each feature in turn, and a motor is
+    // not something that can be activated, so the wizard never offers one and
+    // no button map has ever contained a motor entry. The result is that a
+    // game asking for rumble finds nothing to drive, on every controller.
+    //
+    // Position is the only thing available to map by, and it is what the
+    // drivers use: the first motor a controller declares is the strong one,
+    // the second the weak one, matching the order evdev reports them. A
+    // controller with no motors, or a device with fewer than it declares,
+    // yields an index the driver rejects, which is the same as today.
+    unsigned int motorIndex = 0;
+    if (GetMotorIndex(feature, motorIndex))
+    {
+      primitive = CDriverPrimitive(PRIMITIVE_TYPE::MOTOR, motorIndex);
       retVal = true;
     }
   }
@@ -554,6 +580,31 @@ void CAddonButtonMap::RevertButtonMap()
 {
   if (auto addon = m_addon.lock())
     addon->RevertButtonMap(m_device);
+}
+
+bool CAddonButtonMap::GetMotorIndex(const FeatureName& feature, unsigned int& motorIndex) const
+{
+  const KODI::GAME::ControllerPtr controller =
+      m_manager.GetControllerProfiles().GetController(m_strControllerId);
+  if (!controller)
+    return false;
+
+  unsigned int index = 0;
+  for (const auto& physicalFeature : controller->Features())
+  {
+    if (physicalFeature.Type() != KODI::JOYSTICK::FEATURE_TYPE::MOTOR)
+      continue;
+
+    if (physicalFeature.Name() == feature)
+    {
+      motorIndex = index;
+      return true;
+    }
+
+    ++index;
+  }
+
+  return false;
 }
 
 CAddonButtonMap::DriverMap CAddonButtonMap::CreateLookupTable(const FeatureMap& features)

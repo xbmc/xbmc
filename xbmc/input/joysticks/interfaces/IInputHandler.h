@@ -161,7 +161,16 @@ public:
   // Input receiver interface
   void SetInputReceiver(IInputReceiver* receiver) { m_receiver = receiver; }
   void ResetInputReceiver(void) { m_receiver = nullptr; }
-  IInputReceiver* InputReceiver(void) { return m_receiver; }
+
+  /*!
+   * \brief The receiver that input can be sent back to
+   *
+   * A handler that is registered with a peripheral is given a receiver and
+   * answers with it. A handler that sits behind another one is never given
+   * one, and overrides this to answer with the receiver of the handler in
+   * front of it, so that callers can ask the handler they hold.
+   */
+  virtual IInputReceiver* InputReceiver(void) { return m_receiver; }
 
 private:
   IInputReceiver* m_receiver = nullptr;

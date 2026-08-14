@@ -199,6 +199,15 @@ void CGameClientJoystick::ClearSource()
   m_sourcePeripheral.reset();
 }
 
+JOYSTICK::IInputReceiver* CGameClientJoystick::InputReceiver(void)
+{
+  // Answer with the port's receiver, not this handler's. CPortInput is what
+  // registers with the peripheral, so it is what the peripheral attaches its
+  // receiver to; this class sits behind it and is never given one, so every
+  // motor event a game produced was dropped, for every core.
+  return m_portInput ? m_portInput->InputReceiver() : nullptr;
+}
+
 bool CGameClientJoystick::SetRumble(const std::string& feature, float magnitude)
 {
   bool bHandled = false;
