@@ -675,11 +675,12 @@ void ChangeFolderToFile(const std::shared_ptr<CFileItem>& item, const std::strin
 
 void ConvertDiscFoldersToFiles(std::vector<std::shared_ptr<CFileItem>> items)
 {
-  auto folderItems{items | std::views::filter(
-                               [](const std::shared_ptr<CFileItem>& item) {
-                                 return item->IsFolder() &&
-                                        !item->GetProperty(PROPERTY_UNCHANGED).asBoolean();
-                               })};
+  // Every folder is probed, including one the library scanner has marked unchanged. The listing
+  // hash the scanner stores describes the stacked listing, so leaving a marked folder unconverted
+  // would change that hash and force a rescan of the parent on the next scan. The scanner skips a
+  // marked item after stacking instead (which is where the expensive work is).
+  auto folderItems{items | std::views::filter([](const std::shared_ptr<CFileItem>& item)
+                                              { return item->IsFolder(); })};
   for (const auto& item : folderItems)
   {
     if (auto playPath{VIDEO::UTILS::GetOpticalMediaPath(*item)}; !playPath.empty())

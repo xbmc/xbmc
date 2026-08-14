@@ -1198,7 +1198,7 @@ INSTANTIATE_TEST_SUITE_P(EpisodeLabel,
                          [](const testing::TestParamInfo<EpisodeLabelTestCase>& info)
                          { return info.param.testName; });
 
-TEST(TestFileItemList, StackSkipsUnchangedFolders)
+TEST(TestFileItemList, StackConvertsDiscFolders)
 {
   std::error_code ec;
   const std::string tempPath = KODI::PLATFORM::FILESYSTEM::create_temp_directory(ec);
@@ -1219,13 +1219,14 @@ TEST(TestFileItemList, StackSkipsUnchangedFolders)
     EXPECT_FALSE(items[0]->IsFolder());
   }
   {
-    // unless it is marked unchanged by the library scanner
+    // including one the library scanner has marked unchanged - the listing it hashes has to
+    // describe the same items whether or not the folder is marked
     CFileItemList items(tempPath);
     const auto folder = std::make_shared<CFileItem>(moviePath, true);
     folder->SetProperty(PROPERTY_UNCHANGED, true);
     items.Add(folder);
     items.Stack();
-    EXPECT_TRUE(items[0]->IsFolder());
+    EXPECT_FALSE(items[0]->IsFolder());
   }
 
   XFILE::CDirectory::RemoveRecursive(tempPath);

@@ -547,9 +547,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                  DIR_FLAG_DEFAULTS);
 
         // mark subfolders whose stored fast hash matches the listing mtime digest;
-        // the disc structure probes in Stack() and the recursion loop (which also
-        // drops them from m_pathsToScan) skip marked items. Full listing hashes
-        // never match here, so folders containing subfolders are still visited.
+        // RetrieveVideoInfo and the recursion loop (which also drops a folder from
+        // m_pathsToScan) skip marked items. Marking must not change the listing
+        // itself - Stack() converts a marked disc folder like any other, so that
+        // the listing hash below describes the same items on every scan. Full
+        // listing hashes never match here, so folders containing subfolders are
+        // still visited.
         std::vector<CRegExp> stackRegExps{m_advancedSettings->m_folderStackRegExps};
         for (int i = items.Size() - 1; i >= 0; --i)
         {
@@ -700,12 +703,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
         // an all-folder listing has nothing to directly import, so foundSomething
         // is false here even when nothing changed; store the hash or GetPathHash
         // output never matches dbHash and every scan repeats the full rescan.
-        // Only store a listing-hash, as an mtime-hash would match the fasthash
-        // gate before the listing is fetched, hiding content that never imported.
+        // A marked item counts as one of those - it imported on an earlier scan
+        // and holds a hash of its own, and it is not necessarily a folder as
+        // Stack() converts a marked disc folder like any other. Only store a
+        // listing-hash, as an mtime-hash would match the fasthash gate before the
+        // listing is fetched, hiding content that never imported.
         if ((content == ContentType::MOVIES || content == ContentType::MUSICVIDEOS) &&
             listingHash && !URIUtils::IsArchive(CURL(strDirectory)) &&
-            std::all_of(items.begin(), items.end(),
-                        [](const auto& item) { return item->IsFolder(); }))
+            std::all_of(
+                items.begin(), items.end(), [](const auto& item)
+                { return item->IsFolder() || item->GetProperty(PROPERTY_UNCHANGED).asBoolean(); }))
           m_database.SetPathHash(strDirectory, hash);
         if (m_bClean)
           m_pathsToClean.insert(m_database.GetPathId(strDirectory));
@@ -914,7 +921,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
     {
       CFileItemPtr pItem = items[i];
 
-      if (pItem->IsFolder() && pItem->GetProperty(PROPERTY_UNCHANGED).asBoolean())
+      // Nothing has changed below a marked item since it was imported. It is not necessarily a
+      // folder any more - Stack() converts a marked disc folder to a playable file item so that
+      // the listing hash stays stable - but there is still nothing to read or scrape for it.
+      if (pItem->GetProperty(PROPERTY_UNCHANGED).asBoolean())
         continue;
 
       // we do this since we may have a override per dir
