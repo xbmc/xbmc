@@ -1,0 +1,68 @@
+/*
+ *  Copyright (C) 2026 Team Kodi
+ *  This file is part of Kodi - https://kodi.tv
+ *
+ *  SPDX-License-Identifier: GPL-2.0-or-later
+ *  See LICENSES/README.md for more information.
+ */
+
+#pragma once
+
+#include "cores/VideoPlayer/Interface/StreamInfo.h"
+
+#include <string>
+#include <vector>
+
+namespace KODI::VIDEO
+{
+struct VideoStreamInfoExt : VideoStreamInfo
+{
+  VideoStreamInfoExt(int id, const VideoStreamInfo& info);
+
+  int streamId{0};
+  std::string languageDesc;
+  bool isDefault{false};
+  bool isForced{false};
+  bool isHearingImpaired{false};
+  bool isVisualImpaired{false};
+  float fps{0.0f};
+};
+
+struct AudioStreamInfoExt : AudioStreamInfo
+{
+  AudioStreamInfoExt(int id, const AudioStreamInfo& info);
+
+  int streamId{0};
+  std::string languageDesc;
+  bool isDefault{false};
+  bool isForced{false};
+  bool isHearingImpaired{false};
+  bool isVisualImpaired{false};
+  bool isOriginal{false};
+};
+
+struct SubtitleStreamInfoExt : SubtitleStreamInfo
+{
+  SubtitleStreamInfoExt(int id, const SubtitleStreamInfo& info);
+
+  int streamId{0};
+  std::string languageDesc;
+  bool isDefault{false};
+  bool isForced{false};
+  bool isHearingImpaired{false};
+  bool isVisualImpaired{false};
+  bool isOriginal{false};
+};
+
+class CVideoStreamSelect
+{
+private:
+  CVideoStreamSelect() = delete;
+  ~CVideoStreamSelect() = delete;
+
+public:
+  static std::vector<VideoStreamInfoExt> GetVideoStreams();
+  static std::vector<AudioStreamInfoExt> GetAudioStreams();
+  static std::vector<SubtitleStreamInfoExt> GetSubtitleStreams();
+};
+} // namespace KODI::VIDEO

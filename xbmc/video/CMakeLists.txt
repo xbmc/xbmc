@@ -17,6 +17,7 @@ set(SOURCES Bookmark.cpp
             VideoInfoTag.cpp
             VideoItemArtworkHandler.cpp
             VideoLibraryQueue.cpp
+            VideoStreamSelect.cpp
             VideoThumbLoader.cpp
             VideoUtils.cpp
             ViewModeSettings.cpp)
@@ -42,6 +43,7 @@ set(HEADERS Bookmark.h
             VideoInfoTag.h
             VideoItemArtworkHandler.h
             VideoLibraryQueue.h
+            VideoStreamSelect.h
             VideoThumbLoader.h
             VideoUtils.h
             VideoManagerTypes.h
