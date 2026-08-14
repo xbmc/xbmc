@@ -262,7 +262,6 @@ namespace KODI::VIDEO
 CVideoInfoScanner::CVideoInfoScanner()
   : m_advancedSettings(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings())
 {
-  m_bStop = false;
   m_scanAll = false;
 
   const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -283,8 +282,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
   void CVideoInfoScanner::Process()
   {
-    m_bStop = false;
-
     try
     {
       const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -301,8 +298,11 @@ CVideoInfoScanner::~CVideoInfoScanner()
       // check if we only need to perform a cleaning
       if (m_bClean && m_pathsToScan.empty())
       {
-        std::set<int> paths;
-        m_database.CleanDatabase(m_handle, paths, false);
+        if (!m_bStop)
+        {
+          std::set<int> paths;
+          m_database.CleanDatabase(m_handle, paths, false);
+        }
 
         if (m_handle)
           m_handle->MarkFinished();

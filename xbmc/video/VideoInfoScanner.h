@@ -16,6 +16,7 @@
 #include "utils/Artwork.h"
 #include "utils/RegExp.h"
 
+#include <atomic>
 #include <cstdint>
 #include <functional>
 #include <set>
@@ -357,7 +358,8 @@ namespace KODI::VIDEO
     std::pair<InfoType, std::unique_ptr<IVideoInfoTagLoader>> ReadInfoTag(
         CFileItem& item, const ADDON::ScraperPtr& scraper, bool lookInFolder, bool resetTag);
 
-    bool m_bStop;
+    //! Sticky - never reset, so a scanner instance is good for one scan only
+    std::atomic<bool> m_bStop{false};
     bool m_scanAll;
 
     SimilarVideoScanAction m_similarVideoAction{SimilarVideoScanAction::NONE};
