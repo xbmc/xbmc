@@ -145,99 +145,68 @@ AudioStreamInfo PopulateAudioStreamInfo(const StreamInformation& stream,
   AudioStreamInfo asi;
   asi.valid = true;
 
-  if (bsai)
-  {
-    asi.channels = bsai->channels > 8
-                       ? 8
-                       : static_cast<int>(bsai->channels); // Limit to max 7.1 for display purposes
+  // The coding in the playlist is the authoritative codec - some discs declare only the core
+  // codec in the M2TS program map.
+  asi.channels = bsai ? (bsai->channels > 8 ? 8 : static_cast<int>(bsai->channels))
+                      : 0; // Limit to max 7.1 for display purposes
 
-    switch (bsai->streamType)
-    {
-      using enum ENCODING_TYPE;
-      case AUDIO_AC3:
-        asi.codecName = "ac3";
-        break;
-      case AUDIO_AC3PLUS:
-      case AUDIO_AC3PLUS_SECONDARY:
-      {
-        if (bsai->isAtmos)
-          asi.codecName = "eac3_ddp_atmos";
-        else
-          asi.codecName = "eac3";
-        break;
-      }
-      case AUDIO_LPCM:
-        asi.codecName = "pcm_bluray";
-        break;
-      case AUDIO_DTS:
-        asi.codecName = "dts";
-        break;
-      case AUDIO_DTSHD:
-      case AUDIO_DTSHD_SECONDARY:
-      {
-        if (bsai->isXLL)
-          asi.codecName = "dtshd_hra";
-        else
-          asi.codecName = "dts";
-        break;
-      }
-      case AUDIO_DTSHD_MASTER:
-      {
-        if (bsai->isXLLXIMAX)
-          asi.codecName = "dtshd_ma_x_imax";
-        else if (bsai->isXLLX)
-          asi.codecName = "dtshd_ma_x";
-        else
-          asi.codecName = "dtshd_ma";
-        break;
-      }
-      case AUDIO_TRUHD:
-      {
-        if (bsai->isAtmos)
-          asi.codecName = "truehd_atmos";
-        else
-          asi.codecName = "truehd";
-        break;
-      }
-      default:
-        asi.codecName = "";
-        break;
-    }
-  }
-  else
+  switch (stream.coding)
   {
-    asi.channels = 0; // Only basic mono/stereo/multichannel is stored in BLURAY_TITLE_INFO
-
-    switch (stream.coding)
+    using enum ENCODING_TYPE;
+    case AUDIO_AC3:
+      asi.codecName = "ac3";
+      break;
+    case AUDIO_AC3PLUS:
+    case AUDIO_AC3PLUS_SECONDARY:
     {
-      using enum ENCODING_TYPE;
-      case AUDIO_AC3:
-        asi.codecName = "ac3";
-        break;
-      case AUDIO_AC3PLUS:
-      case AUDIO_AC3PLUS_SECONDARY:
+      if (bsai && bsai->isAtmos)
+        asi.codecName = "eac3_ddp_atmos";
+      else
         asi.codecName = "eac3";
-        break;
-      case AUDIO_LPCM:
-        asi.codecName = "pcm";
-        break;
-      case AUDIO_DTS:
-        asi.codecName = "dts";
-        break;
-      case AUDIO_DTSHD:
-      case AUDIO_DTSHD_SECONDARY:
-        asi.codecName = "dtshd";
-        break;
-      case AUDIO_DTSHD_MASTER:
-        asi.codecName = "dtshd_ma";
-        break;
-      case AUDIO_TRUHD:
-        asi.codecName = "truehd";
-        break;
-      default:
-        asi.codecName = "";
-        break;
+      break;
     }
+    case AUDIO_LPCM:
+      asi.codecName = bsai ? "pcm_bluray" : "pcm";
+      break;
+    case AUDIO_DTS:
+      asi.codecName = "dts";
+      break;
+    case AUDIO_DTSHD:
+    case AUDIO_DTSHD_SECONDARY:
+    {
+      if (!bsai)
+        asi.codecName = "dtshd";
+      else if (bsai->isXLLXIMAX)
+        asi.codecName = "dtshd_ma_x_imax";
+      else if (bsai->isXLLX)
+        asi.codecName = "dtshd_ma_x";
+      else if (bsai->isXLL)
+        asi.codecName = "dtshd_ma";
+      else
+        asi.codecName = "dtshd_hra";
+      break;
+    }
+    case AUDIO_DTSHD_MASTER:
+    {
+      if (bsai && bsai->isXLLXIMAX)
+        asi.codecName = "dtshd_ma_x_imax";
+      else if (bsai && bsai->isXLLX)
+        asi.codecName = "dtshd_ma_x";
+      else
+        asi.codecName = "dtshd_ma";
+      break;
+    }
+    case AUDIO_TRUHD:
+    {
+      if (bsai && bsai->isAtmos)
+        asi.codecName = "truehd_atmos";
+      else
+        asi.codecName = "truehd";
+      break;
+    }
+    default:
+      asi.codecName = "";
+      break;
   }
 
   asi.language = stream.language;
