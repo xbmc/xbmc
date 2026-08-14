@@ -87,6 +87,7 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
       {
         UpdateLocations();
         SetProps();
+        RefreshImages();
         return true;
       }
       break;
@@ -294,4 +295,16 @@ void CGUIWindowWeather::ClearProps()
     if (!value.isNull())
       SetProperty(name, value);
   }
+}
+
+void CGUIWindowWeather::RefreshImages()
+{
+  // The add-on might have replaced the image files it provides (for example the images of an
+  // animated radar loop) without changing the window properties containing the image paths.
+  // Tell the controls of this window to reload their images to avoid displaying stale data.
+  // This is essential for controls that were hidden while the update was in progress (for
+  // example via 'Weather.IsUpdating'), because hidden controls do not re-evaluate their image
+  // paths and thus never notice changed content.
+  CGUIMessage msg{GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_REFRESH_THUMBS};
+  OnMessage(msg);
 }
