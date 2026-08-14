@@ -63,8 +63,18 @@ private:
   ~CVideoStreamSelect() = delete;
 
 public:
+  enum class TrackOrder
+  {
+    MEDIA = 0, // explicit IDs because persisted in settings.
+    SORTED = 1,
+  };
+
   static std::vector<VideoStreamInfoExt> GetVideoStreams(const CApplicationPlayer* appPlayer);
   static std::vector<AudioStreamInfoExt> GetAudioStreams(const CApplicationPlayer* appPlayer);
   static std::vector<SubtitleStreamInfoExt> GetSubtitleStreams(const CApplicationPlayer* appPlayer);
+
+  static void OrderVideoStreams(std::vector<VideoStreamInfoExt>& streams, TrackOrder order);
+  static void OrderAudioStreams(std::vector<AudioStreamInfoExt>& streams, TrackOrder order);
+  static void OrderSubtitleStreams(std::vector<SubtitleStreamInfoExt>& streams, TrackOrder order);
 };
 } // namespace KODI::VIDEO

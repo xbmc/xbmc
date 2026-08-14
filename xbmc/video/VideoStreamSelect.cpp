@@ -13,6 +13,8 @@
 #include "application/ApplicationPlayer.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/LangCodeExpander.h"
 
 #include <algorithm>
@@ -184,17 +186,23 @@ concept StreamInfoGetter = requires(F f, Player* p, int i, InfoT& info) {
   { std::invoke(f, p, i, info) } -> std::same_as<void>;
 };
 
+template<typename F, typename InfoExtT, typename Order>
+concept StreamOrderer = requires(F f, std::vector<InfoExtT>& i, Order o) {
+  { std::invoke(f, i, o) } -> std::same_as<void>;
+};
+
 template<typename StreamInfoExtT,
          typename StreamInfoT,
          typename GetCountFn,
          typename GetInfoFn,
-         typename Comparer>
+         typename OrderFn>
   requires StreamCountGetter<GetCountFn, CApplicationPlayer> &&
-           StreamInfoGetter<GetInfoFn, CApplicationPlayer, StreamInfoT>
+           StreamInfoGetter<GetInfoFn, CApplicationPlayer, StreamInfoT> &&
+           StreamOrderer<OrderFn, StreamInfoExtT, CVideoStreamSelect::TrackOrder>
 std::vector<StreamInfoExtT> GetStreams(const CApplicationPlayer* appPlayer,
                                        GetCountFn getCount,
                                        GetInfoFn getInfo,
-                                       Comparer comparer)
+                                       OrderFn orderer)
 {
   if (appPlayer == nullptr)
     return {};
@@ -211,7 +219,12 @@ std::vector<StreamInfoExtT> GetStreams(const CApplicationPlayer* appPlayer,
     streams.emplace_back(i, info);
   }
 
-  std::sort(streams.begin(), streams.end(), comparer);
+  // Sort the streams
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  auto order = static_cast<CVideoStreamSelect::TrackOrder>(
+      settings->GetInt(CSettings::SETTING_VIDEOPLAYER_STREAMDISPLAYORDER));
+
+  std::invoke(orderer, streams, order);
 
   return streams;
 }
@@ -222,7 +235,7 @@ std::vector<VideoStreamInfoExt> CVideoStreamSelect::GetVideoStreams(
 {
   return GetStreams<VideoStreamInfoExt, VideoStreamInfo>(
       appPlayer, &CApplicationPlayer::GetVideoStreamCount, &CApplicationPlayer::GetVideoStreamInfo,
-      SortComparerStreamVideo{});
+      OrderVideoStreams);
 }
 
 std::vector<AudioStreamInfoExt> CVideoStreamSelect::GetAudioStreams(
@@ -230,7 +243,7 @@ std::vector<AudioStreamInfoExt> CVideoStreamSelect::GetAudioStreams(
 {
   return GetStreams<AudioStreamInfoExt, AudioStreamInfo>(
       appPlayer, &CApplicationPlayer::GetAudioStreamCount, &CApplicationPlayer::GetAudioStreamInfo,
-      SortComparerStreamAudio{});
+      OrderAudioStreams);
 }
 
 std::vector<SubtitleStreamInfoExt> CVideoStreamSelect::GetSubtitleStreams(
@@ -238,6 +251,27 @@ std::vector<SubtitleStreamInfoExt> CVideoStreamSelect::GetSubtitleStreams(
 {
   return GetStreams<SubtitleStreamInfoExt, SubtitleStreamInfo>(
       appPlayer, &CApplicationPlayer::GetSubtitleCount, &CApplicationPlayer::GetSubtitleStreamInfo,
-      SortComparerStreamSubtitle{});
+      OrderSubtitleStreams);
+}
+
+void CVideoStreamSelect::OrderVideoStreams(std::vector<VideoStreamInfoExt>& streams,
+                                           TrackOrder order)
+{
+  if (order == TrackOrder::SORTED)
+    std::sort(streams.begin(), streams.end(), SortComparerStreamVideo());
+}
+
+void CVideoStreamSelect::OrderAudioStreams(std::vector<AudioStreamInfoExt>& streams,
+                                           TrackOrder order)
+{
+  if (order == TrackOrder::SORTED)
+    std::sort(streams.begin(), streams.end(), SortComparerStreamAudio());
+}
+
+void CVideoStreamSelect::OrderSubtitleStreams(std::vector<SubtitleStreamInfoExt>& streams,
+                                              TrackOrder order)
+{
+  if (order == TrackOrder::SORTED)
+    std::sort(streams.begin(), streams.end(), SortComparerStreamSubtitle());
 }
 } // namespace KODI::VIDEO
