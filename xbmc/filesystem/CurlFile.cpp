@@ -163,7 +163,7 @@ static bool IsTransientCurlError(CURLcode result)
 {
   return result == CURLE_OPERATION_TIMEDOUT || result == CURLE_PARTIAL_FILE ||
          result == CURLE_COULDNT_CONNECT || result == CURLE_HTTP2_STREAM ||
-         result == CURLE_RECV_ERROR;
+         result == CURLE_RECV_ERROR || result == CURLE_SEND_ERROR;
 }
 
 static CURLcode PerformWithTransientRetries(CURL_HANDLE* easyHandle,
