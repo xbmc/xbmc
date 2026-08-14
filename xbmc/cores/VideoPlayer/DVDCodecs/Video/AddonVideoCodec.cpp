@@ -367,7 +367,17 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
   picture.flags = (m_codecFlags & DVD_CODEC_CTRL_DRAIN) ? VIDEOCODEC_PICTURE_FLAG_DRAIN
                                                         : VIDEOCODEC_PICTURE_FLAG_DROP;
 
-  switch (m_ifc.videocodec->toAddon->get_picture(m_ifc.videocodec, &picture))
+  const VIDEOCODEC_RETVAL ret = m_ifc.videocodec->toAddon->get_picture(m_ifc.videocodec, &picture);
+
+  // only VC_PICTURE hands the frame buffer to the caller; release it on any other return
+  if (ret != VIDEOCODEC_RETVAL::VC_PICTURE && picture.videoBufferHandle)
+  {
+    CVideoBuffer* const videoBuffer = static_cast<CVideoBuffer*>(picture.videoBufferHandle);
+    videoBuffer->SyncEnd();
+    videoBuffer->Release();
+  }
+
+  switch (ret)
   {
   case VIDEOCODEC_RETVAL::VC_NONE:
     return CDVDVideoCodec::VC_NONE;
@@ -489,8 +499,6 @@ const char* CAddonVideoCodec::GetName()
 
 void CAddonVideoCodec::Reset()
 {
-  CVideoBuffer *videoBuffer;
-
   CLog::Log(LOGDEBUG, "CAddonVideoCodec: Reset");
 
   // Get the remaining pictures out of the external decoder. Re-zero the
@@ -503,11 +511,12 @@ void CAddonVideoCodec::Reset()
     picture = {};
     picture.flags = VIDEOCODEC_PICTURE_FLAG_DRAIN;
     ret = m_ifc.videocodec->toAddon->get_picture(m_ifc.videocodec, &picture);
-    if (ret == VIDEOCODEC_RETVAL::VC_PICTURE)
+    // any buffer still referenced by the picture is ours to release, drained or abandoned
+    if (picture.videoBufferHandle)
     {
-      videoBuffer = static_cast<CVideoBuffer*>(picture.videoBufferHandle);
-      if (videoBuffer)
-        videoBuffer->Release();
+      CVideoBuffer* const videoBuffer = static_cast<CVideoBuffer*>(picture.videoBufferHandle);
+      videoBuffer->SyncEnd();
+      videoBuffer->Release();
     }
   } while (ret != VIDEOCODEC_RETVAL::VC_EOF);
   if (m_ifc.videocodec->toAddon->reset)
