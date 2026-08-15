@@ -42,6 +42,7 @@ set(package_files strings.xml
                   src/XBMCJsonRPC.java
                   src/XBMCMainView.java
                   src/XBMCMediaSession.java
+                  src/XBMCNativeKeyboard.java
                   src/XBMCRecommendationBuilder.java
                   src/XBMCSearchableActivity.java
                   src/XBMCSettingsContentObserver.java
