@@ -100,7 +100,7 @@ void CGUIDialogVideoManagerExtras::SetVideoAsset(const std::shared_ptr<CFileItem
 {
   CGUIDialogVideoManager::SetVideoAsset(item);
 
-  if (!m_videoAssetsList->IsEmpty())
+  if (m_selectedVideoAsset == nullptr && !m_videoAssetsList->IsEmpty())
     SetSelectedVideoAsset(m_videoAssetsList->Get(0));
 }
 
