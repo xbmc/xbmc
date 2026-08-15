@@ -1351,6 +1351,19 @@ bool ParseH265SPS(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamI
   return true;
 }
 
+void ParseH264ScalingList(BitReader& br, int sizeOfScalingList)
+{
+  int lastScale{8};
+  int nextScale{8};
+  for (int j = 0; j < sizeOfScalingList; j++)
+  {
+    if (nextScale != 0)
+      nextScale = (lastScale + br.ReadSE() + 256) % 256;
+    if (nextScale != 0)
+      lastScale = nextScale;
+  }
+}
+
 bool ParseH264SPS(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamInfo)
 {
   CLog::LogFC(LOGDEBUG, LOGBLURAY, "Parsing H264 SPS");
@@ -1378,7 +1391,8 @@ bool ParseH264SPS(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamI
     if (br.ReadBits(1) == 1) // seq_scaling_matrix_present_flag
     {
       for (int i = 0; i < ((chroma_format != 3) ? 8 : 12); i++)
-        br.SkipBits(1);
+        if (br.ReadBits(1) == 1) // seq_scaling_list_present_flag[i]
+          ParseH264ScalingList(br, i < 6 ? 16 : 64);
     }
   }
   else
@@ -1423,10 +1437,13 @@ bool ParseH264SPS(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamI
     frame_crop_bottom_offset = br.ReadUE();
   }
 
+  // Crop offsets are in units of CropUnitX/CropUnitY, not luma samples (7-19 to 7-22). Blurays are
+  // always 4:2:0, so CropUnitX is 2 and CropUnitY is 2 * (2 - frame_mbs_only_flag)
+  const unsigned int cropUnitY{frame_mbs_only_flag ? 2u : 4u};
   streamInfo->width =
       pic_width_in_mbs * 16 - (frame_crop_left_offset + frame_crop_right_offset) * 2;
   streamInfo->height = (2 - (frame_mbs_only_flag ? 1 : 0)) * pic_height_in_map_units * 16 -
-                       (frame_crop_top_offset + frame_crop_bottom_offset) * 2;
+                       (frame_crop_top_offset + frame_crop_bottom_offset) * cropUnitY;
 
   if (br.ReadBits(1) == 1) // vui_parameters_present_flag
     streamInfo->aspectRatio = ParseVUI(br);
