@@ -380,6 +380,16 @@ public:
   {
     return 'A' <= c && c <= 'Z' ? c - 'A' + 'a' : c;
   }
+  [[nodiscard]] constexpr static bool isasciiwhitespace(char chr) noexcept // locale independent
+  {
+    return chr == ' ' || chr == '\t' || chr == '\n' || chr == '\v' || chr == '\f' || chr == '\r';
+  }
+  [[nodiscard]] constexpr static bool IsAsciiTrimmed(
+      std::string_view str) noexcept // locale independent
+  {
+    return str.empty() || (!StringUtils::isasciiwhitespace(str.front()) &&
+                           !StringUtils::isasciiwhitespace(str.back()));
+  }
   [[nodiscard]] static std::string SizeToString(int64_t size);
   static const std::string Empty;
   [[nodiscard]] static size_t FindWords(std::string_view str,

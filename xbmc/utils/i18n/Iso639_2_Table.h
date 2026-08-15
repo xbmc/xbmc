@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "utils/StringUtils.h"
 #include "utils/i18n/Iso639.h"
 
 #include <algorithm>
@@ -529,6 +530,11 @@ constexpr std::array<struct LCENTRY, ISO639_2_COUNT> TableISO639_2ByCode = {{
 
 static_assert(std::ranges::is_sorted(TableISO639_2ByCode, {}, &LCENTRY::code));
 
+static_assert(std::ranges::all_of(
+    TableISO639_2ByCode,
+    [](std::string_view name) { return StringUtils::IsAsciiTrimmed(name); },
+    &LCENTRY::name));
+
 // Additional names for ISO 639-2 codes that have multiple names
 // 79 from the standard, 3 Kodi additions
 static constexpr int ISO639_2_ADDL_NAMES_COUNT = 79 + 3;
@@ -621,6 +627,11 @@ constexpr std::array<struct LCENTRY, ISO639_2_ADDL_NAMES_COUNT> TableISO639_2_Na
 // clang-format on
 
 static_assert(std::ranges::is_sorted(TableISO639_2_Names, {}, &LCENTRY::code));
+
+static_assert(std::ranges::all_of(
+    TableISO639_2_Names,
+    [](std::string_view name) { return StringUtils::IsAsciiTrimmed(name); },
+    &LCENTRY::name));
 
 // 20 pairs of active ISO 639-2/T and /B codes and 2 inactive pairs (deprecated B codes)
 inline static constexpr int ISO639_2_TB_COUNT = 22;
