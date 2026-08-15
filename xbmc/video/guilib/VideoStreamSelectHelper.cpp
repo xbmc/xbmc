@@ -120,10 +120,18 @@ void KODI::VIDEO::GUILIB::OpenDialogSelectVideoStream()
 
   auto& components = CServiceBroker::GetAppComponents();
   auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
+  if (appPlayer == nullptr)
+  {
+    CLog::LogF(LOGERROR, "No application player.");
+    return;
+  }
+
   const int selectedId = appPlayer->GetVideoStream();
 
   using namespace KODI::VIDEO;
-  const std::vector<VideoStreamInfoExt> streams = CVideoStreamSelect::GetVideoStreams();
+  const std::vector<VideoStreamInfoExt> streams =
+      CVideoStreamSelect::GetVideoStreams(appPlayer.get());
 
   // Convert streams to FileItem's
   CFileItemList itemsToDisplay;
@@ -186,6 +194,12 @@ void KODI::VIDEO::GUILIB::OpenDialogSelectAudioStream()
   auto& components = CServiceBroker::GetAppComponents();
   auto appPlayer = components.GetComponent<CApplicationPlayer>();
 
+  if (appPlayer == nullptr)
+  {
+    CLog::LogF(LOGERROR, "No application player.");
+    return;
+  }
+
   std::vector<IPlayerAudioCaps> caps;
   appPlayer->GetAudioCapabilities(caps);
   if (!SupportsAudioFeature(IPlayerAudioCaps::SELECT_STREAM, caps))
@@ -194,7 +208,8 @@ void KODI::VIDEO::GUILIB::OpenDialogSelectAudioStream()
   const int selectedId = appPlayer->GetAudioStream();
 
   using namespace KODI::VIDEO;
-  const std::vector<AudioStreamInfoExt> streams = CVideoStreamSelect::GetAudioStreams();
+  const std::vector<AudioStreamInfoExt> streams =
+      CVideoStreamSelect::GetAudioStreams(appPlayer.get());
 
   // Convert streams to FileItem's
   CFileItemList itemsToDisplay;
@@ -246,6 +261,12 @@ void KODI::VIDEO::GUILIB::OpenDialogSelectSubtitleStream()
   auto& components = CServiceBroker::GetAppComponents();
   auto appPlayer = components.GetComponent<CApplicationPlayer>();
 
+  if (appPlayer == nullptr)
+  {
+    CLog::LogF(LOGERROR, "No application player.");
+    return;
+  }
+
   std::vector<IPlayerSubtitleCaps> caps;
   appPlayer->GetSubtitleCapabilities(caps);
   if (!SupportsSubtitleFeature(IPlayerSubtitleCaps::SELECT_STREAM, caps))
@@ -255,7 +276,8 @@ void KODI::VIDEO::GUILIB::OpenDialogSelectSubtitleStream()
   const bool isSubtitleEnabled = appPlayer->GetSubtitleVisible();
 
   using namespace KODI::VIDEO;
-  const std::vector<SubtitleStreamInfoExt> streams = CVideoStreamSelect::GetSubtitleStreams();
+  const std::vector<SubtitleStreamInfoExt> streams =
+      CVideoStreamSelect::GetSubtitleStreams(appPlayer.get());
 
   // Convert streams to FileItem's
   CFileItemList itemsToDisplay;

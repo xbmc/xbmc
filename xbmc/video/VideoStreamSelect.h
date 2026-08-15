@@ -13,6 +13,8 @@
 #include <string>
 #include <vector>
 
+class CApplicationPlayer;
+
 namespace KODI::VIDEO
 {
 struct VideoStreamInfoExt : VideoStreamInfo
@@ -61,8 +63,8 @@ private:
   ~CVideoStreamSelect() = delete;
 
 public:
-  static std::vector<VideoStreamInfoExt> GetVideoStreams();
-  static std::vector<AudioStreamInfoExt> GetAudioStreams();
-  static std::vector<SubtitleStreamInfoExt> GetSubtitleStreams();
+  static std::vector<VideoStreamInfoExt> GetVideoStreams(const CApplicationPlayer* appPlayer);
+  static std::vector<AudioStreamInfoExt> GetAudioStreams(const CApplicationPlayer* appPlayer);
+  static std::vector<SubtitleStreamInfoExt> GetSubtitleStreams(const CApplicationPlayer* appPlayer);
 };
 } // namespace KODI::VIDEO

@@ -191,12 +191,15 @@ template<typename StreamInfoExtT,
          typename Comparer>
   requires StreamCountGetter<GetCountFn, CApplicationPlayer> &&
            StreamInfoGetter<GetInfoFn, CApplicationPlayer, StreamInfoT>
-std::vector<StreamInfoExtT> GetStreams(GetCountFn getCount, GetInfoFn getInfo, Comparer comparer)
+std::vector<StreamInfoExtT> GetStreams(const CApplicationPlayer* appPlayer,
+                                       GetCountFn getCount,
+                                       GetInfoFn getInfo,
+                                       Comparer comparer)
 {
-  auto& components = CServiceBroker::GetAppComponents();
-  auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (appPlayer == nullptr)
+    return {};
 
-  const int streamCount = std::invoke(getCount, appPlayer.get());
+  const int streamCount = std::invoke(getCount, appPlayer);
   std::vector<StreamInfoExtT> streams;
   streams.reserve(streamCount);
 
@@ -204,7 +207,7 @@ std::vector<StreamInfoExtT> GetStreams(GetCountFn getCount, GetInfoFn getInfo, C
   for (int i = 0; i < streamCount; ++i)
   {
     StreamInfoT info;
-    std::invoke(getInfo, appPlayer.get(), i, info);
+    std::invoke(getInfo, appPlayer, i, info);
     streams.emplace_back(i, info);
   }
 
@@ -214,24 +217,27 @@ std::vector<StreamInfoExtT> GetStreams(GetCountFn getCount, GetInfoFn getInfo, C
 }
 } // namespace
 
-std::vector<VideoStreamInfoExt> CVideoStreamSelect::GetVideoStreams()
+std::vector<VideoStreamInfoExt> CVideoStreamSelect::GetVideoStreams(
+    const CApplicationPlayer* appPlayer)
 {
-  return GetStreams<VideoStreamInfoExt, VideoStreamInfo>(&CApplicationPlayer::GetVideoStreamCount,
-                                                         &CApplicationPlayer::GetVideoStreamInfo,
-                                                         SortComparerStreamVideo{});
+  return GetStreams<VideoStreamInfoExt, VideoStreamInfo>(
+      appPlayer, &CApplicationPlayer::GetVideoStreamCount, &CApplicationPlayer::GetVideoStreamInfo,
+      SortComparerStreamVideo{});
 }
 
-std::vector<AudioStreamInfoExt> CVideoStreamSelect::GetAudioStreams()
+std::vector<AudioStreamInfoExt> CVideoStreamSelect::GetAudioStreams(
+    const CApplicationPlayer* appPlayer)
 {
-  return GetStreams<AudioStreamInfoExt, AudioStreamInfo>(&CApplicationPlayer::GetAudioStreamCount,
-                                                         &CApplicationPlayer::GetAudioStreamInfo,
-                                                         SortComparerStreamAudio{});
+  return GetStreams<AudioStreamInfoExt, AudioStreamInfo>(
+      appPlayer, &CApplicationPlayer::GetAudioStreamCount, &CApplicationPlayer::GetAudioStreamInfo,
+      SortComparerStreamAudio{});
 }
 
-std::vector<SubtitleStreamInfoExt> CVideoStreamSelect::GetSubtitleStreams()
+std::vector<SubtitleStreamInfoExt> CVideoStreamSelect::GetSubtitleStreams(
+    const CApplicationPlayer* appPlayer)
 {
   return GetStreams<SubtitleStreamInfoExt, SubtitleStreamInfo>(
-      &CApplicationPlayer::GetSubtitleCount, &CApplicationPlayer::GetSubtitleStreamInfo,
+      appPlayer, &CApplicationPlayer::GetSubtitleCount, &CApplicationPlayer::GetSubtitleStreamInfo,
       SortComparerStreamSubtitle{});
 }
 } // namespace KODI::VIDEO
