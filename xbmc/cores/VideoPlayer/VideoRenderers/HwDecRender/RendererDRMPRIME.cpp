@@ -24,8 +24,6 @@
 #include "windowing/gbm/WinSystemGbm.h"
 #include "windowing/gbm/drm/DRMAtomic.h"
 
-#include <typeinfo>
-
 using namespace KODI::WINDOWING::GBM;
 
 CRendererDRMPRIME::~CRendererDRMPRIME()
@@ -39,16 +37,6 @@ CRendererDRMPRIME::~CRendererDRMPRIME()
   winSystem->SetGuiCompositing(false);
   winSystem->SetHDR(nullptr);
   winSystem->SetColorimetry(nullptr);
-
-  //! @todo Restore single-plane state after D2P playback: null m_video_plane
-  //! via direct FindGuiPlane, mirroring Create's direct FindVideoAndGuiPlane.
-  //! D2P cannot share single-plane's teardown via winSystem->SetVideoOutput
-  //! (nullptr) because the renderer factory hands Create a CVideoBuffer*
-  //! (not a VideoPicture*) and start has no buffer-shaped winsystem entry.
-  //! Future: unified plane API for D2P and single-plane to share teardown.
-  auto drm = winSystem->GetDrm();
-  auto* gui = drm->GetGuiPlane();
-  drm->FindGuiPlane(gui->GetFormat(), gui->GetModifier());
 }
 
 CBaseRenderer* CRendererDRMPRIME::Create(CVideoBuffer* buffer)
@@ -186,12 +174,9 @@ void CRendererDRMPRIME::AddVideoPicture(const VideoPicture& picture, int index)
   buf.videoBuffer = picture.videoBuffer;
   buf.videoBuffer->Acquire();
 
-  //! @todo skip only the exact CVideoBufferDRMPRIMEFFmpeg type, which
-  //! CDVDVideoCodecDRMPRIME always fills at decode; its subclass
-  //! CVideoBufferDMA also arrives from CAddonVideoCodec unfilled, so it is
-  //! set here (a duplicate set for the ffmpeg software path, accepted).
+  // CDVDVideoCodecDRMPRIME fills its buffers at decode; CVideoBufferDMA arrives unfilled
   auto* drmBuffer = dynamic_cast<CVideoBufferDRMPRIME*>(picture.videoBuffer);
-  if (drmBuffer && typeid(*drmBuffer) != typeid(CVideoBufferDRMPRIMEFFmpeg))
+  if (drmBuffer && !dynamic_cast<CVideoBufferDRMPRIMEFFmpeg*>(drmBuffer))
     drmBuffer->SetPictureParams(picture);
 }
 

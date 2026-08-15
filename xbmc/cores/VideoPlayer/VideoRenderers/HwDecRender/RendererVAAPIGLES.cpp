@@ -76,6 +76,8 @@ CRendererVAAPIGLES::~CRendererVAAPIGLES()
   {
     DeleteTexture(i);
   }
+  // renderer destruction runs on the render thread with the GL context current
+  m_texturePool.ReleaseAll();
 }
 
 bool CRendererVAAPIGLES::Configure(const VideoPicture& picture, float fps, unsigned int orientation)
@@ -98,11 +100,10 @@ bool CRendererVAAPIGLES::Configure(const VideoPicture& picture, float fps, unsig
         (PFNGLEGLIMAGETARGETTEXTURE2DOESPROC)eglGetProcAddress("glEGLImageTargetTexture2DOES");
     interop.eglDisplay = m_pWinSystem->GetEGLDisplay();
 
+    m_texturePool.ReleaseAll();
+    m_texturePool.Init(interop);
     for (auto& tex : m_vaapiTextures)
-    {
-      tex = std::make_unique<VAAPI::CVaapi2Texture>();
-      tex->Init(interop);
-    }
+      tex = nullptr;
 
     for (auto& fence : m_fences)
     {
@@ -264,7 +265,9 @@ bool CRendererVAAPIGLES::UploadTexture(int index)
     return false;
   }
 
-  m_vaapiTextures[index]->Map(pic);
+  m_vaapiTextures[index] = m_texturePool.Get(pic, m_vaapiTextures);
+  if (!m_vaapiTextures[index])
+    return false;
 
   YuvImage &im = buf.image;
   CYuvPlane (&planes)[3] = buf.fields[0];
@@ -335,9 +338,7 @@ void CRendererVAAPIGLES::ReleaseBuffer(int index)
     m_fences[index]->DestroyFence();
 
   if (m_isVAAPIBuffer)
-  {
-    m_vaapiTextures[index]->Unmap();
-  }
+    m_vaapiTextures[index] = nullptr;
 
   CLinuxRendererGLES::ReleaseBuffer(index);
 }

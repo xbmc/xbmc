@@ -89,7 +89,7 @@ private:
   {
     CVideoBuffer* videoBuffer = nullptr;
     std::unique_ptr<KODI::UTILS::EGL::CEGLFence> fence;
-    CDRMPRIMETexture texture;
-    CDRMPRIMETextureYUV yuvTexture;
   } m_buffers[NUM_BUFFERS];
+
+  CDRMPRIMETexturePool m_texturePool;
 };

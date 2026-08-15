@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/Buffers/VideoBufferDMA.h"
 #include "cores/VideoPlayer/Buffers/VideoBufferDRMPRIME.h"
+#include "cores/VideoPlayer/Buffers/VideoBufferPoolDMA.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "settings/Settings.h"
@@ -90,7 +91,7 @@ CDVDVideoCodecDRMPRIME::CDVDVideoCodecDRMPRIME(CProcessInfo& processInfo)
   : CDVDVideoCodec(processInfo)
 {
   m_pFrame = av_frame_alloc();
-  m_videoBufferPool = std::make_shared<CVideoBufferPoolDRMPRIMEFFmpeg>();
+  m_hwVideoBufferPool = std::make_shared<CVideoBufferPoolDRMPRIMEFFmpeg>();
 }
 
 CDVDVideoCodecDRMPRIME::~CDVDVideoCodecDRMPRIME()
@@ -258,8 +259,18 @@ int CDVDVideoCodecDRMPRIME::GetBuffer(struct AVCodecContext* avctx, AVFrame* fra
     }
 
     CDVDVideoCodecDRMPRIME* ctx = static_cast<CDVDVideoCodecDRMPRIME*>(avctx->opaque);
-    auto buffer = dynamic_cast<CVideoBufferDMA*>(
-        ctx->m_processInfo.GetVideoBufferManager().Get(avctx->pix_fmt, size, nullptr));
+    // no lock: ffmpeg serializes get_buffer2 even with frame threading, and the codec's
+    // own accesses are safe because avcodec flush/free join the frame threads first
+    if (!ctx->m_swVideoBufferPool || !ctx->m_swVideoBufferPool->IsCompatible(avctx->pix_fmt, size))
+    {
+      ctx->m_swVideoBufferPool = std::make_shared<CVideoBufferPoolDMA>();
+      ctx->m_swVideoBufferPool->Configure(avctx->pix_fmt, size);
+    }
+
+    if (!ctx->m_swVideoBufferPool->IsConfigured())
+      return -1;
+
+    CVideoBufferDMA* buffer = ctx->m_swVideoBufferPool->Get();
     if (!buffer)
       return -1;
 
@@ -644,8 +655,7 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecDRMPRIME::GetPicture(VideoPicture* pVideo
 
   if (IsSupportedHwFormat(static_cast<AVPixelFormat>(m_pFrame->format)))
   {
-    CVideoBufferDRMPRIMEFFmpeg* buffer =
-        dynamic_cast<CVideoBufferDRMPRIMEFFmpeg*>(m_videoBufferPool->Get());
+    CVideoBufferDRMPRIMEFFmpeg* buffer = m_hwVideoBufferPool->Get();
     buffer->SetPictureParams(*pVideoPicture);
     buffer->SetRef(m_pFrame);
     pVideoPicture->videoBuffer = buffer;
