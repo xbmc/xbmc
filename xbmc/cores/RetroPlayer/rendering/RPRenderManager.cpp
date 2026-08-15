@@ -81,8 +81,11 @@ void CRPRenderManager::Deinitialize()
     renderBuffer->Release();
   m_renderBuffers.clear();
 
-  for (auto buffer : m_pendingBuffers)
+  for (const auto& [buffer, memory] : m_pendingBuffers)
+  {
+    buffer->ReleaseMemory();
     buffer->Release();
+  }
   m_pendingBuffers.clear();
 
   for (auto& [savestatePath, renderBuffers] : m_savestateBuffers)
@@ -132,9 +135,13 @@ bool CRPRenderManager::GetVideoBuffer(unsigned int width,
                                       unsigned int height,
                                       VideoStreamBuffer& buffer)
 {
-  // Clear any previous pending buffers
-  for (IRenderBuffer* buffer : m_pendingBuffers)
+  // Clear any previous pending buffers. A buffer still pending here was lent
+  // to the client and never handed back, so its CPU access is still open.
+  for (const auto& [buffer, memory] : m_pendingBuffers)
+  {
+    buffer->ReleaseMemory();
     buffer->Release();
+  }
   m_pendingBuffers.clear();
 
   if (m_bFlush || m_state != RENDER_STATE::CONFIGURED)
@@ -172,11 +179,14 @@ bool CRPRenderManager::GetVideoBuffer(unsigned int width,
   if (renderBuffer == nullptr)
     return false;
 
-  buffer = VideoStreamBuffer{renderBuffer->GetFormat(), renderBuffer->GetMemory(),
-                             renderBuffer->GetFrameSize(), renderBuffer->GetMemoryAccess(),
+  // Starts CPU access, which lasts until the client hands the frame back
+  uint8_t* const memory = renderBuffer->GetMemory();
+
+  buffer = VideoStreamBuffer{renderBuffer->GetFormat(), memory, renderBuffer->GetFrameSize(),
+                             renderBuffer->GetMemoryAccess(),
                              renderBuffer->GetMemoryAlignment()};
 
-  m_pendingBuffers.emplace_back(renderBuffer);
+  m_pendingBuffers.emplace_back(PendingBuffer{renderBuffer, memory});
 
   return true;
 }
@@ -198,10 +208,15 @@ void CRPRenderManager::AddFrame(const uint8_t* data,
   // Get render buffers to copy the frame into
   std::vector<IRenderBuffer*> renderBuffers;
 
-  // Check pending buffers
-  for (IRenderBuffer* buffer : m_pendingBuffers)
+  // Check pending buffers. The client has finished writing, so end CPU access
+  // on everything it was lent before any of it is handed to the GPU.
+  for (const auto& [buffer, memory] : m_pendingBuffers)
   {
-    if (buffer->GetMemory() == data)
+    const bool bSubmitted = (memory == data);
+
+    buffer->ReleaseMemory();
+
+    if (bSubmitted)
     {
       buffer->Acquire();
       renderBuffers.emplace_back(buffer);
