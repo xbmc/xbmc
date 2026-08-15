@@ -143,10 +143,7 @@ void KODI::VIDEO::GUILIB::OpenDialogSelectVideoStream()
     fileItem->SetProperty("stream.id", info.streamId);
     fileItem->SetProperty("stream.description", info.name);
     fileItem->SetProperty("stream.codec", info.codecName);
-
-    std::string languageDesc;
-    g_LangCodeExpander.Lookup(info.language, languageDesc);
-    fileItem->SetProperty("stream.language", languageDesc);
+    fileItem->SetProperty("stream.language", info.languageDesc);
 
     fileItem->SetProperty("stream.resolution",
                           std::to_string(info.width) + "x" + std::to_string(info.height));

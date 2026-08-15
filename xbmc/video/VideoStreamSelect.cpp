@@ -28,9 +28,9 @@ struct SortComparerStreamVideo
 {
   bool operator()(const VideoStreamInfoExt& a, const VideoStreamInfoExt& b)
   {
-    if (a.language != b.language)
+    if (a.languageDesc != b.languageDesc)
     {
-      return a.language < b.language;
+      return a.languageDesc < b.languageDesc;
     }
     if (a.codecName != b.codecName)
     {
@@ -132,6 +132,11 @@ struct SortComparerStreamSubtitle
 VideoStreamInfoExt::VideoStreamInfoExt(int id, const VideoStreamInfo& info) : VideoStreamInfo(info)
 {
   streamId = id;
+
+  if (!g_LangCodeExpander.Lookup(info.language, languageDesc))
+    languageDesc =
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // Unknown
+
   isDefault = info.flags & StreamFlags::FLAG_DEFAULT;
   isForced = info.flags & StreamFlags::FLAG_FORCED;
   isHearingImpaired = info.flags & StreamFlags::FLAG_HEARING_IMPAIRED;
