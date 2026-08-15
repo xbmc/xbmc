@@ -1042,14 +1042,15 @@ bool ParseTrueHDHeader(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
       audio_sampling_frequency < sampleRates.size() && sampleRates[audio_sampling_frequency] != 0)
     streamInfo->sampleRate = sampleRates[audio_sampling_frequency];
 
-  bool ch6_multichannel_type{GetBits(format_info, 28, 1) == 1};
-  bool ch8_multichannel_type{GetBits(format_info, 27, 1) == 1};
-  unsigned int ch2_presentation_channel_modifier{GetBits(format_info, 26, 2)};
-  unsigned int ch6_presentation_channel_assignment{GetBits(format_info, 22, 5)};
-  unsigned int ch8_presentation_channel_assignment{GetBits(format_info, 15, 13)};
-  bool ch8_flag{GetBits(flags, 12, 1) == 1};
+  const unsigned int ch2_presentation_channel_modifier{GetBits(format_info, 24, 2)};
+  const unsigned int ch6_presentation_channel_assignment{GetBits(format_info, 20, 5)};
+  const unsigned int ch8_presentation_channel_assignment{GetBits(format_info, 13, 13)};
+  const bool ch8_flag{GetBits(flags, 12, 1) == 1};
 
-  if (ch8_multichannel_type)
+  const unsigned int header{GetByte(buffer, 16)};
+  const unsigned int substreams{GetBits(header, 8, 4)};
+
+  if (substreams > 2)
   {
     unsigned int ch8_1;
     unsigned int ch8_2;
@@ -1065,18 +1066,19 @@ bool ParseTrueHDHeader(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
     }
     streamInfo->channels = std::popcount(ch8_2) * 2 + std::popcount(ch8_1);
   }
-  else if (ch6_multichannel_type)
+  else
   {
-    unsigned int ch6_1{ch6_presentation_channel_assignment & CH8_16_SINGLE_CHANNEL_ALTERNATE_MASK};
-    unsigned int ch6_2{ch6_presentation_channel_assignment & CH8_16_DUAL_CHANNEL_ALTERNATE_MASK};
+    const unsigned int ch6_1{ch6_presentation_channel_assignment &
+                             CH8_16_SINGLE_CHANNEL_ALTERNATE_MASK};
+    const unsigned int ch6_2{ch6_presentation_channel_assignment &
+                             CH8_16_DUAL_CHANNEL_ALTERNATE_MASK};
     streamInfo->channels = std::popcount(ch6_2) * 2 + std::popcount(ch6_1);
   }
-  else
+
+  if (streamInfo->channels == 0)
     streamInfo->channels = (ch2_presentation_channel_modifier == 3) ? 1 : 2;
 
   // Look for extended channel info
-  unsigned int header{GetByte(buffer, 16)};
-  unsigned int substreams{GetBits(header, 8, 4)};
   unsigned int substream_info{GetByte(buffer, 17)};
   bool ch16_present{GetBits(substream_info, 8, 1) == 1};
   uint64_t channel_meaning{GetQWord(buffer, 18)};
