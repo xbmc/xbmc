@@ -72,6 +72,14 @@ public:
   virtual std::shared_ptr<IRenderBufferPool> GetPtr() { return shared_from_this(); }
 
   /*!
+   * \brief Whether the GPU reads the memory a frame was written into directly
+   *
+   * Such a pool saves uploading every frame, but the memory is sampled in
+   * place, so it must not be written to while a frame is being drawn from it.
+   */
+  virtual bool SharesMemoryWithGpu() const { return false; }
+
+  /*!
    * \brief Release resources tied to the rendering context
    *
    * This function is called when the render context is being destroyed.

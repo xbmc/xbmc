@@ -29,6 +29,7 @@ public:
 
   // Implementation of IRenderBufferPool via CBaseRenderBufferPool
   bool IsCompatible(const CRenderVideoSettings& renderSettings) const override;
+  bool SharesMemoryWithGpu() const override { return true; }
 
 protected:
   // Implementation of CBaseRenderBufferPool

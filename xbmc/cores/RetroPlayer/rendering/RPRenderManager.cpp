@@ -169,6 +169,13 @@ bool CRPRenderManager::GetVideoBuffer(unsigned int width,
 
   for (IRenderBufferPool* bufferPool : bufferPools)
   {
+    // Never lend out memory the GPU samples in place. A client treats the
+    // buffer it is given as its own framebuffer and keeps drawing into it, so
+    // the frame on screen would change under the GPU as it is sampled, tearing
+    // rows out of the picture. Such a pool can still be filled by copying.
+    if (bufferPool->SharesMemoryWithGpu())
+      continue;
+
     renderBuffer = bufferPool->GetBuffer(width, height);
     if (renderBuffer != nullptr)
       break;
@@ -183,8 +190,7 @@ bool CRPRenderManager::GetVideoBuffer(unsigned int width,
   uint8_t* const memory = renderBuffer->GetMemory();
 
   buffer = VideoStreamBuffer{renderBuffer->GetFormat(), memory, renderBuffer->GetFrameSize(),
-                             renderBuffer->GetMemoryAccess(),
-                             renderBuffer->GetMemoryAlignment()};
+                             renderBuffer->GetMemoryAccess(), renderBuffer->GetMemoryAlignment()};
 
   m_pendingBuffers.emplace_back(PendingBuffer{renderBuffer, memory});
 
