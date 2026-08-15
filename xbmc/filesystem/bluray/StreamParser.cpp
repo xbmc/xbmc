@@ -15,7 +15,9 @@
 
 #include <algorithm>
 #include <map>
+#include <optional>
 #include <ranges>
+#include <string_view>
 #include <vector>
 
 #include <fmt/format.h>
@@ -214,11 +216,66 @@ AudioStreamInfo PopulateAudioStreamInfo(const StreamInformation& stream,
   return asi;
 }
 
+// The packet identifiers of the streams a player starts playback with (see GetDefaultStreams)
+struct DefaultStreams
+{
+  std::optional<unsigned int> audio;
+  std::optional<unsigned int> subtitle;
+};
+
+// The play item's stream number table lists the primary streams in stream number order, and a
+// player starts with audio stream number 1 (PSR1) and presentation graphic stream number 1 (PSR2),
+// so the first entry of each is the disc's default. Both are only a starting point - the player
+// moves to another stream number when the user's language preferences (PSR16/PSR18) match one, and
+// HDMV/BD-J code can select whatever it likes. For subtitles the stream number says nothing about
+// whether subtitles are displayed to begin with, as that is a separate flag of PSR2 the .mpls does
+// not carry.
+DefaultStreams GetDefaultStreams(const BlurayPlaylistInformation& b)
+{
+  DefaultStreams defaults;
+
+  const PlayItemInformation* playItem{GetLongestPlayItem(b)};
+  if (!playItem)
+    return defaults;
+
+  if (!playItem->audioStreams.empty())
+    defaults.audio = playItem->audioStreams.front().packetIdentifier;
+  if (!playItem->presentationGraphicStreams.empty())
+    defaults.subtitle = playItem->presentationGraphicStreams.front().packetIdentifier;
+
+  return defaults;
+}
+
+void LogDefaultStreams(const BlurayPlaylistInformation& b)
+{
+  const PlayItemInformation* playItem{GetLongestPlayItem(b)};
+  if (!playItem)
+    return;
+
+  const auto logStream = [&b](const std::vector<StreamInformation>& streams, std::string_view type)
+  {
+    if (streams.empty())
+      return;
+
+    const StreamInformation& stream{streams.front()};
+    CLog::LogF(LOGDEBUG,
+               "Playlist {} - {} stream number 1 (the default) is PID 0x{} coding 0x{} language {}"
+               " - of {} {} streams",
+               b.playlist, type, fmt::format("{:04x}", stream.packetIdentifier),
+               fmt::format("{:02x}", static_cast<int>(stream.coding)),
+               stream.language.empty() ? "unknown" : stream.language, streams.size(), type);
+  };
+
+  logStream(playItem->audioStreams, "audio");
+  logStream(playItem->presentationGraphicStreams, "subtitle");
+}
+
 // Add one elementary stream to the playlist, refined by the M2TS analysis in s where it has been
 // done (s is empty when stream details were deferred).
 void AddStream(const StreamInformation& stream,
                const StreamMap& s,
                unsigned int playlist,
+               const DefaultStreams& defaults,
                PlaylistInformation& p)
 {
   // Find stream in StreamMap to get accurate details
@@ -255,7 +312,11 @@ void AddStream(const StreamInformation& stream,
                    bs == s.end() ? "packet identifier not present in stream map"
                                  : "stream in map is not an audio stream");
 
-      p.audioStreams.emplace_back(PopulateAudioStreamInfo(stream, bsai));
+      AudioStreamInfo asi{PopulateAudioStreamInfo(stream, bsai)};
+      if (defaults.audio == stream.packetIdentifier)
+        asi.flags = static_cast<StreamFlags>(asi.flags | StreamFlags::FLAG_DEFAULT);
+
+      p.audioStreams.emplace_back(std::move(asi));
       break;
     }
     case SUB_PG:
@@ -264,6 +325,8 @@ void AddStream(const StreamInformation& stream,
       SubtitleStreamInfo ssi;
       ssi.valid = true;
       ssi.language = stream.language;
+      if (defaults.subtitle == stream.packetIdentifier)
+        ssi.flags = static_cast<StreamFlags>(ssi.flags | StreamFlags::FLAG_DEFAULT);
 
       p.pgStreams.emplace_back(std::move(ssi));
       break;
@@ -302,11 +365,12 @@ void CStreamParser::ConvertBlurayPlaylistInformation(const BlurayPlaylistInforma
     // details the m2ts carries (channel counts, resolutions) are missing.
     if (const PlayItemInformation * playItem{GetLongestPlayItem(b)}; playItem)
     {
+      const DefaultStreams defaults{GetDefaultStreams(b)};
       for (const auto* streams : {&playItem->videoStreams, &playItem->audioStreams,
                                   &playItem->presentationGraphicStreams})
       {
         for (const StreamInformation& stream : *streams)
-          AddStream(stream, s, b.playlist, p);
+          AddStream(stream, s, b.playlist, defaults, p);
       }
     }
     return;
@@ -331,8 +395,10 @@ void CStreamParser::ConvertBlurayPlaylistInformation(const BlurayPlaylistInforma
 
   if (streamClip && !streamClip->programs.empty())
   {
+    LogDefaultStreams(b);
+    const DefaultStreams defaults{GetDefaultStreams(b)};
     for (const StreamInformation& stream : streamClip->programs[0].streams)
-      AddStream(stream, s, b.playlist, p);
+      AddStream(stream, s, b.playlist, defaults, p);
   }
 }
 } // namespace XFILE
