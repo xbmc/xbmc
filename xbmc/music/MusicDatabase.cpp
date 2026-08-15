@@ -2207,12 +2207,18 @@ bool CMusicDatabase::GetArtist(int idArtist, CArtist& artist, bool fetchAll /* =
     artist.videolinks.clear();
     if (fetchAll)
     {
-      strSQL = PrepareSQL("SELECT idSong, strTitle, strMusicBrainzTrackID, strVideoURL, url "
-                          "FROM song JOIN album_artist ON song.idAlbum = album_artist.idAlbum "
-                          "LEFT JOIN art ON art.media_id = song.idSong AND art.type = 'videothumb' "
-                          "WHERE album_artist.idArtist = %i AND "
-                          "song.strVideoURL is not NULL GROUP by song.strVideoURL ORDER BY idSong",
-                          idArtist);
+      // Group by every column that ends up in an ArtistVideoLinks, so that the same video listed
+      // against several copies of a song yields one entry, without collapsing distinct songs that
+      // happen to share a video URL - those are separate links, and UpdateArtist() writes back
+      // exactly what is read here.
+      strSQL =
+          PrepareSQL("SELECT MIN(song.idSong), strTitle, strMusicBrainzTrackID, strVideoURL, url "
+                     "FROM song JOIN album_artist ON song.idAlbum = album_artist.idAlbum "
+                     "LEFT JOIN art ON art.media_id = song.idSong AND art.type = 'videothumb' "
+                     "WHERE album_artist.idArtist = %i AND song.strVideoURL is not NULL "
+                     "GROUP BY strTitle, strMusicBrainzTrackID, strVideoURL, url "
+                     "ORDER BY MIN(song.idSong)",
+                     idArtist);
       debugSQL += strSQL;
       m_pDS->query(strSQL);
       while (!m_pDS->eof())
