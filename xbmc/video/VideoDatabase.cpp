@@ -201,14 +201,21 @@ bool CVideoDatabase::GetPaths(std::set<std::string, std::less<>>& paths)
     // - this isnt perfect but it should do fine in most situations.
     // reason we need it to hold a movie is stacks from different directories (cdx folders for instance)
     // not making mistakes must take priority
-    if (!m_pDS->query("select strPath,noUpdate from path"
-                       " where idPath in (select idPath from files join movie on movie.idFile=files.idFile)"
-                       " and idPath NOT in (select idPath from tvshowlinkpath)"
-                       " and idPath NOT in (select idPath from files where strFileName like 'video_ts.ifo')" // dvd folders get stacked to a single item in parent folder
-                       " and idPath NOT in (select idPath from files where strFileName like 'index.bdmv')" // bluray folders get stacked to a single item in parent folder
-                       " and strPath NOT like 'multipath://%%'"
-                       " and strContent NOT in ('movies', 'tvshows', 'None')" // these have been added above
-                       " order by strPath"))
+    if (!m_pDS->query(
+            "SELECT strPath,noUpdate "
+            "FROM path "
+            "WHERE idPath IN "
+            "  (SELECT idPath FROM files JOIN movie ON movie.idFile = files.idFile) "
+            "AND idPath NOT IN (SELECT idPath FROM tvshowlinkpath) "
+            // dvd folders get stacked to a single item in parent folder
+            "AND idPath NOT IN "
+            "  (SELECT idPath FROM files WHERE strFileName LIKE 'VIDEO|_TS.IFO' ESCAPE '|') "
+            // bluray folders get stacked to a single item in parent folder
+            "AND idPath NOT IN "
+            "  (SELECT idPath FROM files WHERE strFileName LIKE 'index.bdmv') "
+            "AND strPath NOT LIKE 'multipath://%%' "
+            "AND strContent NOT IN ('movies', 'tvshows', 'None') " // these have been added above
+            "ORDER BY strPath"))
 
       return false;
     while (!m_pDS->eof())
@@ -326,7 +333,8 @@ bool CVideoDatabase::GetSubPaths(const std::string& basepath,
     {
       // mysql/mariadb are made case-insensitive by setting a collation on connection
       // sqlite LIKE is case-insensitive, '=' is not
-      sql += " AND idPath NOT IN (SELECT idPath FROM files WHERE strFileName LIKE 'VIDEO_TS.IFO')"
+      sql += " AND idPath NOT IN "
+             "   (SELECT idPath FROM files WHERE strFileName LIKE 'VIDEO|_TS.IFO' ESCAPE '|')"
              " AND idPath NOT IN (SELECT idPath FROM files WHERE strFileName LIKE 'index.bdmv')";
     }
     else
