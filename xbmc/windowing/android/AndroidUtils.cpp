@@ -15,6 +15,7 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
 
 #include "platform/android/activity/XBMCApp.h"
 
@@ -284,6 +285,46 @@ void CAndroidUtils::LogDisplaySupportedHdrTypes()
             text.empty() ? " None" : text);
 }
 
+namespace
+{
+/*!
+ * \brief Whether to assume Dolby Vision display support which Android does not report.
+ *
+ * Decided from the display mode Kodi has selected, not from the content frame rate, because
+ * content is not always shown at its own rate: 29.97fps video can be given a 59.94Hz mode.
+ * The first generation Dolby Vision displays this exists for accept Dolby Vision up to 30Hz.
+ */
+bool IsDolbyVisionForced()
+{
+  const auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent)
+    return false;
+
+  const auto settings = settingsComponent->GetSettings();
+  if (!settings || !settings->GetBool(CSettings::SETTING_VIDEOPLAYER_FORCEDOLBYVISION))
+    return false;
+
+  // Without refresh rate switching the display stays in its desktop mode whatever is played.
+  if (settings->GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) == ADJUST_REFRESHRATE_OFF)
+    return false;
+
+  const auto winSystem = CServiceBroker::GetWinSystem();
+  if (!winSystem)
+    return false;
+
+  const auto& gfxContext = winSystem->GetGfxContext();
+  const RESOLUTION res = gfxContext.GetVideoResolution();
+  if (res == RES_INVALID)
+    return false;
+
+  // Tolerance so that a 29.97Hz mode meets the limit.
+  constexpr float maxRefreshRate = 30.0f;
+  constexpr float tolerance = 0.05f;
+  const float refreshRate = gfxContext.GetResInfo(res).fRefreshRate;
+  return refreshRate > 0.0f && refreshRate <= maxRefreshRate + tolerance;
+}
+} // unnamed namespace
+
 CHDRCapabilities CAndroidUtils::GetDisplayHDRCapabilities()
 {
   CHDRCapabilities caps;
@@ -303,6 +344,11 @@ CHDRCapabilities CAndroidUtils::GetDisplayHDRCapabilities()
 
   if (std::find(types.begin(), types.end(), CJNIDisplayHdrCapabilities::HDR_TYPE_DOLBY_VISION) !=
       types.end())
+    caps.SetDolbyVision();
+
+  // A display can accept Dolby Vision without Android reporting it. Assume it on request, and
+  // only where nothing is reported, so a display which reports Dolby Vision is left as it is.
+  if (!caps.SupportsDolbyVision() && IsDolbyVisionForced())
     caps.SetDolbyVision();
 
   return caps;
