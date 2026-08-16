@@ -133,6 +133,14 @@ public:
 
   void GetStreamInfo(int pid, std::string &language);
 
+  /*!
+   * \brief Check whether a stream is the default of the playlist being played, ie. audio stream
+   *        number 1 or presentation graphic stream number 1 of the current clip.
+   * \param pid The packet identifier of the stream
+   * \return True if the stream is the default audio or subtitle stream, false otherwise
+   */
+  bool IsDefaultStream(int pid) const;
+
   void OverlayCallback(const BD_OVERLAY * const);
 #ifdef HAVE_LIBBLURAY_BDJ
   void OverlayCallbackARGB(const struct bd_argb_overlay_s * const);

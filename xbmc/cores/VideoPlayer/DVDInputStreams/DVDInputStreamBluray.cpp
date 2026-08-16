@@ -1078,6 +1078,11 @@ static bool find_stream(int pid, BLURAY_STREAM_INFO *info, int count, std::strin
   return true;
 }
 
+static bool is_first_stream(int pid, const BLURAY_STREAM_INFO* info, int count)
+{
+  return count > 0 && info[0].pid == static_cast<uint16_t>(pid);
+}
+
 void CDVDInputStreamBluray::GetStreamInfo(int pid, std::string &language)
 {
   if(!m_titleInfo || !m_clip)
@@ -1095,6 +1100,23 @@ void CDVDInputStreamBluray::GetStreamInfo(int pid, std::string &language)
     find_stream(pid, m_clip->ig_streams, m_clip->ig_stream_count, language);
   else
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::GetStreamInfo - unhandled pid {}", pid);
+}
+
+bool CDVDInputStreamBluray::IsDefaultStream(int pid) const
+{
+  if (!m_titleInfo || !m_clip)
+    return false;
+
+  // The clip's stream number table lists the primary streams in stream number order, and a player
+  // starts with audio stream number 1 (PSR1) and presentation graphic stream number 1 (PSR2), so
+  // the first entry of each is the disc's default.
+  if (HDMV_PID_AUDIO_FIRST <= pid && pid <= HDMV_PID_AUDIO_LAST)
+    return is_first_stream(pid, m_clip->audio_streams, m_clip->audio_stream_count);
+  if ((HDMV_PID_PG_FIRST <= pid && pid <= HDMV_PID_PG_LAST) ||
+      (HDMV_PID_PG_HDR_FIRST <= pid && pid <= HDMV_PID_PG_HDR_LAST))
+    return is_first_stream(pid, m_clip->pg_streams, m_clip->pg_stream_count);
+
+  return false;
 }
 
 CDVDInputStream::ENextStream CDVDInputStreamBluray::NextStream()
