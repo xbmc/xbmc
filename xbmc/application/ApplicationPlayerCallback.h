@@ -10,6 +10,7 @@
 
 #include "cores/IPlayerCallback.h"
 #include "threads/Event.h"
+#include "threads/Timer.h"
 
 #include <memory>
 
@@ -36,4 +37,13 @@ public:
   void OnAVStarted(const CFileItem& file) override;
   void RequestVideoSettings(const CFileItem& fileItem) override;
   void StoreVideoSettings(const CFileItem& fileItem, const CVideoSettings& vs) override;
+
+private:
+  // Periodic progress save timer
+  void OnProgressSaveTimer();
+  void StartProgressSaveTimer(const CFileItem& file);
+  void StopProgressSaveTimer();
+
+  std::unique_ptr<CTimer> m_progressSaveTimer;
+  std::shared_ptr<CFileItem> m_currentFileItem;
 };

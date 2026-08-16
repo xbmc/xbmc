@@ -39,6 +39,7 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
+#include "threads/Timer.h"
 
 #include <chrono>
 #include <memory>
@@ -49,6 +50,9 @@ using namespace std::chrono_literals;
 void CApplicationPlayerCallback::OnPlayBackEnded()
 {
   CLog::LogF(LOGDEBUG, "call");
+
+  // Stop periodic progress save timer
+  StopProgressSaveTimer();
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
@@ -110,6 +114,9 @@ void CApplicationPlayerCallback::OnPlayBackStarted(const CFileItem& file)
   }
 
   stackHelper->OnPlayBackStarted();
+
+  // Start periodic progress save timer
+  StartProgressSaveTimer(file);
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0, 0, 0, itemCurrentFile);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
@@ -354,6 +361,9 @@ bool UpdatePlayCount(const CFileItem& fileItem, const CBookmark& bookmark)
 void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
                                                    const CBookmark& bookmarkParam)
 {
+  // Stop periodic progress save timer
+  StopProgressSaveTimer();
+
   auto& components{CServiceBroker::GetAppComponents()};
   const auto stackHelper{components.GetComponent<CApplicationStackHelper>()};
   const auto advancedSettings{CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
@@ -411,6 +421,72 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
   }
 }
 
+void CApplicationPlayerCallback::OnProgressSaveTimer()
+{
+  if (!m_currentFileItem)
+    return;
+
+  auto& components{CServiceBroker::GetAppComponents()};
+  const auto appPlayer{components.GetComponent<CApplicationPlayer>()};
+
+  if (!appPlayer || !appPlayer->IsPlaying())
+    return;
+
+  // Get current playback position as bookmark
+  CBookmark bookmark;
+  bookmark.timeInSeconds = appPlayer->GetTime() / 1000.0; // Convert from milliseconds
+  bookmark.totalTimeInSeconds = appPlayer->GetTotalTime() / 1000.0;
+  bookmark.playerState = appPlayer->GetPlayerState();
+
+  // Log for testing
+  CLog::LogF(LOGDEBUG, "Periodic progress save: {} / {} sec", bookmark.timeInSeconds,
+             bookmark.totalTimeInSeconds);
+
+  // Save current file item (don't update play count during periodic saves)
+  CSaveFileState::DoWork(*m_currentFileItem, bookmark, false);
+}
+
+void CApplicationPlayerCallback::StartProgressSaveTimer(const CFileItem& file)
+{
+  // Don't save resume for live TV or in-progress PVR recordings
+  if (file.IsLiveTV() || file.IsInProgressPVRRecording())
+    return;
+
+  // Check if we have database write permissions
+  if (!CServiceBroker::GetSettingsComponent()
+          ->GetProfileManager()
+          ->GetCurrentProfile()
+          .canWriteDatabases())
+    return;
+
+  // Stop any existing timer
+  StopProgressSaveTimer();
+
+  // Store the current file item for use in the timer callback
+  m_currentFileItem = std::make_shared<CFileItem>(file);
+
+  // Create and start a new timer (60 seconds = 60000 milliseconds, interval = true for repeating)
+  m_progressSaveTimer = std::make_unique<CTimer>([this]() { OnProgressSaveTimer(); });
+  m_progressSaveTimer->Start(std::chrono::milliseconds(60000), true);
+
+  CLog::LogF(LOGDEBUG, "Started periodic progress save timer for: {}",
+             CURL::GetRedacted(file.GetPath()));
+}
+
+void CApplicationPlayerCallback::StopProgressSaveTimer()
+{
+  if (m_progressSaveTimer)
+  {
+    if (m_progressSaveTimer->IsRunning())
+    {
+      CLog::LogF(LOGDEBUG, "Stopped periodic progress save timer");
+      m_progressSaveTimer->Stop(false);
+    }
+    m_progressSaveTimer.reset();
+  }
+  m_currentFileItem.reset();
+}
+
 void CApplicationPlayerCallback::OnPlayBackPaused()
 {
 #ifdef HAS_PYTHON
@@ -434,6 +510,9 @@ void CApplicationPlayerCallback::OnPlayBackResumed()
 void CApplicationPlayerCallback::OnPlayBackStopped()
 {
   CLog::LogF(LOGDEBUG, "call");
+
+  // Stop periodic progress save timer
+  StopProgressSaveTimer();
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STOPPED, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
