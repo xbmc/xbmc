@@ -2725,11 +2725,6 @@ void CVideoPlayer::CheckAutoSceneSkip()
     if ((m_playSpeed > 0 && correctClock < (edit->start + 1s)) ||
         (m_playSpeed < 0 && correctClock < (edit->end - 1s)))
     {
-      CLog::Log(LOGDEBUG, "{} - Clock in EDL cut [{} - {}]: {}. Automatically skipping over.",
-                __FUNCTION__, StringUtils::MillisecondsToTimeString(edit->start),
-                StringUtils::MillisecondsToTimeString(edit->end),
-                StringUtils::MillisecondsToTimeString(clock));
-
       // Seeking either goes to the start or the end of the cut depending on the play direction.
       std::chrono::milliseconds seek = m_playSpeed >= 0 ? m_Edl.GetNextPlayableTime(edit->end)
                                                         : m_Edl.GetPrevPlayableTime(edit->start);
@@ -2738,36 +2733,53 @@ void CVideoPlayer::CheckAutoSceneSkip()
       // auto-skip is enabled, absorb it into this seek so no frames are rendered
       // before the second CheckAutoSceneSkip cycle would otherwise fire.
       // The COMM_BREAK edit is preserved so the user can still seek back into it.
+      const std::chrono::milliseconds cutEndSeek{seek};
+      std::optional<EDL::Edit> absorbedCommBreak;
       if (m_playSpeed >= 0 && m_SkipCommercials)
       {
         const auto commEdit = m_Edl.InEdit(seek);
         if (commEdit && commEdit.value()->action == EDL::Action::COMM_BREAK)
         {
-          CLog::Log(LOGDEBUG,
-                    "{} - CUT seek target [{}] lands in commercial break [{} - {}]; "
-                    "advancing past it in single seek.",
-                    __FUNCTION__, StringUtils::MillisecondsToTimeString(seek),
-                    StringUtils::MillisecondsToTimeString(commEdit.value()->start),
-                    StringUtils::MillisecondsToTimeString(commEdit.value()->end));
+          absorbedCommBreak = *commEdit.value();
           seek = m_Edl.GetNextPlayableTime(commEdit.value()->end);
         }
       }
 
-      if (m_playSpeed >= 0 && seek != edit->end)
-      {
-        CLog::Log(LOGDEBUG, "{} - Resolved cut end [{}] to next playable point [{}].", __FUNCTION__,
-                  StringUtils::MillisecondsToTimeString(edit->end),
-                  StringUtils::MillisecondsToTimeString(seek));
-      }
-      else if (m_playSpeed < 0 && seek != edit->start)
-      {
-        CLog::Log(LOGDEBUG, "{} - Resolved cut start [{}] to prev playable point [{}].",
-                  __FUNCTION__, StringUtils::MillisecondsToTimeString(edit->start),
-                  StringUtils::MillisecondsToTimeString(seek));
-      }
-
+      // Act - and log - only once per resolved target. This is re-entered on every pass for as
+      // long as the clock still resolves into the cut, which happens whenever playback sits at
+      // the end of a leading cut: that position maps back to the cut itself.
       if (m_Edl.GetLastEditTime() != seek)
       {
+        // Report correctClock, not clock: the edit boundaries are in raw source time, whereas
+        // clock has already had the preceding cuts removed and so would not line up with them.
+        CLog::Log(LOGDEBUG, "{} - Clock in EDL cut [{} - {}]: {}. Automatically skipping over.",
+                  __FUNCTION__, StringUtils::MillisecondsToTimeString(edit->start),
+                  StringUtils::MillisecondsToTimeString(edit->end),
+                  StringUtils::MillisecondsToTimeString(correctClock));
+
+        if (absorbedCommBreak)
+        {
+          CLog::Log(LOGDEBUG,
+                    "{} - CUT seek target [{}] lands in commercial break [{} - {}]; "
+                    "advancing past it in single seek.",
+                    __FUNCTION__, StringUtils::MillisecondsToTimeString(cutEndSeek),
+                    StringUtils::MillisecondsToTimeString(absorbedCommBreak->start),
+                    StringUtils::MillisecondsToTimeString(absorbedCommBreak->end));
+        }
+
+        if (m_playSpeed >= 0 && seek != edit->end)
+        {
+          CLog::Log(LOGDEBUG, "{} - Resolved cut end [{}] to next playable point [{}].",
+                    __FUNCTION__, StringUtils::MillisecondsToTimeString(edit->end),
+                    StringUtils::MillisecondsToTimeString(seek));
+        }
+        else if (m_playSpeed < 0 && seek != edit->start)
+        {
+          CLog::Log(LOGDEBUG, "{} - Resolved cut start [{}] to prev playable point [{}].",
+                    __FUNCTION__, StringUtils::MillisecondsToTimeString(edit->start),
+                    StringUtils::MillisecondsToTimeString(seek));
+        }
+
         QueueAutoSceneSkip(seek);
         m_Edl.SetLastEditTime(seek);
         m_Edl.SetLastEditActionType(edit->action);
@@ -2779,7 +2791,10 @@ void CVideoPlayer::CheckAutoSceneSkip()
     // marker for commbreak may be inaccurate. allow user to skip into break from the back
     const std::chrono::milliseconds seek = m_Edl.GetNextPlayableTime(edit->end);
 
-    if (m_playSpeed >= 0 && m_Edl.GetLastEditTime() != seek && clock < edit->end - 1s)
+    // Compare against correctClock: edit->end is in raw source time, whereas clock has already
+    // had the preceding cuts removed and would make this test progressively too permissive as
+    // total cut time grows.
+    if (m_playSpeed >= 0 && m_Edl.GetLastEditTime() != seek && correctClock < edit->end - 1s)
     {
       CVariant announcement{StringUtils::SecondsToTimeString(
           std::chrono::duration_cast<std::chrono::seconds>(edit->end - edit->start).count(),
@@ -2794,12 +2809,13 @@ void CVideoPlayer::CheckAutoSceneSkip()
 
       if (m_SkipCommercials)
       {
+        // Report correctClock, not clock - see the equivalent note in the CUT branch above.
         CLog::Log(LOGDEBUG,
                   "{} - Clock in commercial break [{} - {}]: {}. Automatically skipping to next "
                   "playable point [{}].",
                   __FUNCTION__, StringUtils::MillisecondsToTimeString(edit->start),
                   StringUtils::MillisecondsToTimeString(edit->end),
-                  StringUtils::MillisecondsToTimeString(clock),
+                  StringUtils::MillisecondsToTimeString(correctClock),
                   StringUtils::MillisecondsToTimeString(seek));
 
         QueueAutoSceneSkip(seek);
