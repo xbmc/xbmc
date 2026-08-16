@@ -16,8 +16,6 @@
 #include <string_view>
 #include <vector>
 
-class TestConversions;
-
 class CSettingsMigration
 {
 public:
@@ -38,26 +36,6 @@ public:
    *         default value). True otherwise.
    */
   bool UpdateXMLSettings(TiXmlElement* root, int currentVersion, int targetVersion);
-
-  enum class SettingConversionResult
-  {
-    FAILURE, // failed conversion left an inconsistent irrecoverable state
-    NOT_PRESENT, // the old setting cannot be found
-    INVALID, // the old setting has an invalid value for its data type
-    CONVERTED, // successful conversion from old to new setting
-  };
-
-  struct SettingBoolToIntMapping
-  {
-    int m_default;
-    int m_false;
-    int m_true;
-  };
-
-  static SettingConversionResult ConvertSettingBoolToInt(TiXmlElement* root,
-                                                         std::string_view oldSettingId,
-                                                         std::string_view newSettingId,
-                                                         const SettingBoolToIntMapping& mapping);
 
 private:
   KODI::SETTINGS::MigrationStepList m_steps; // steps sorted by TargetVersion() in constructor

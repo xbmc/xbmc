@@ -8,14 +8,14 @@
 
 #include "SettingsMigrationSteps.h"
 
-#include "SettingsMigration.h"
+#include "SettingsMigrationPrimitive.h"
 
 #include <string_view>
 
 namespace KODI::SETTINGS
 {
 
-using enum CSettingsMigration::SettingConversionResult;
+using enum SettingConversionResult;
 
 class CSettingsMigrationToV3 : public ISettingsMigrationStep
 {
@@ -26,9 +26,8 @@ public:
     constexpr std::string_view oldSettingId = "dvds.autorun";
     constexpr std::string_view newSettingId = "dvds.autoaction";
 
-    return FAILURE !=
-           CSettingsMigration::ConvertSettingBoolToInt(root, oldSettingId, newSettingId,
-                                                       {.m_default = 0, .m_false = 0, .m_true = 1});
+    return FAILURE != ConvertSettingBoolToInt(root, oldSettingId, newSettingId,
+                                              {.m_default = 0, .m_false = 0, .m_true = 1});
   }
 };
 
