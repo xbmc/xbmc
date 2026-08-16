@@ -143,6 +143,7 @@ public:
   static constexpr auto SETTING_VIDEOPLAYER_CONVERTDOVI = "videoplayer.convertdovi";
   static constexpr auto SETTING_VIDEOPLAYER_ALLOWEDHDRFORMATS = "videoplayer.allowedhdrformats";
   static constexpr auto SETTING_VIDEOPLAYER_DOVIZEROLEVEL5 = "videoplayer.dovizerolevel5";
+  static constexpr auto SETTING_VIDEOPLAYER_FORCEDOLBYVISION = "videoplayer.forcedolbyvision";
   static constexpr auto SETTING_VIDEOPLAYER_FILESTREAMDISPLAYORDER =
       "videoplayer.filestreamdisplayorder";
   static constexpr auto SETTING_VIDEOPLAYER_QUEUETIMESIZE = "videoplayer.queuetimesize";

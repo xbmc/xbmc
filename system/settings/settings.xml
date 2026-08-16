@@ -70,6 +70,22 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="videoplayer.forcedolbyvision" type="boolean" label="39213" help="39214">
+          <!-- Deliberately not gated on the "supportsdolbyvision" property: the whole point
+               of this setting is to remain reachable when the display does not report Dolby
+               Vision support in the currently active display mode.
+               It does however require display refresh rate switching, because forcing only
+               makes sense if the display will be switched into a mode that accepts Dolby
+               Vision. Kept in this group so that prerequisite sits on the same screen.
+               Disabled rather than hidden, so the reason stays visible. -->
+          <requirement>HAS_MEDIACODEC</requirement>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.adjustrefreshrate" operator="!is">0</dependency>
+          </dependencies>
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.usedisplayasclock" type="boolean" label="13510" help="36166">
           <level>1</level>
           <default>false</default>
@@ -225,6 +241,9 @@
             <dependency type="visible">
               <or>
                 <condition on="property" name="supportsdolbyvision" />
+                <!-- forcing changes that property, and a property alone does not make the
+                     dialog re-evaluate this control when the setting behind it is toggled -->
+                <condition on="setting" setting="videoplayer.forcedolbyvision" operator="is">true</condition>
                 <condition>HAVE_WEBOS</condition>
               </or>
             </dependency>
@@ -265,6 +284,9 @@
             <dependency type="visible">
               <or>
                 <condition on="property" name="supportsdolbyvision" />
+                <!-- forcing changes that property, and a property alone does not make the
+                     dialog re-evaluate this control when the setting behind it is toggled -->
+                <condition on="setting" setting="videoplayer.forcedolbyvision" operator="is">true</condition>
                 <condition>HAVE_WEBOS</condition>
               </or>
             </dependency>
