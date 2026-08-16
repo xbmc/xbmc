@@ -46,11 +46,24 @@ enum class SortTitles : uint8_t
   SORT_TITLES_MOVIE
 };
 
-enum class AddMenuOption : bool
+enum class AddMenuAndAllTitlesOptions : uint8_t
 {
-  NO_MENU,
-  ADD_MENU
+  NONE = 0x00,
+  ADD_MENU = 0x01,
+  ADD_ALL_TITLES = 0x02
 };
+
+constexpr AddMenuAndAllTitlesOptions operator|(AddMenuAndAllTitlesOptions lhs,
+                                               AddMenuAndAllTitlesOptions rhs)
+{
+  return static_cast<AddMenuAndAllTitlesOptions>(static_cast<uint8_t>(lhs) |
+                                                 static_cast<uint8_t>(rhs));
+}
+
+constexpr bool operator&(AddMenuAndAllTitlesOptions lhs, AddMenuAndAllTitlesOptions rhs)
+{
+  return (static_cast<uint8_t>(lhs) & static_cast<uint8_t>(rhs)) != 0;
+}
 
 enum class MenuDecision : uint8_t
 {
@@ -287,12 +300,12 @@ public:
    * \param url bluray:// episode url
    * \param items CFileItemList to populate
    * \param allTitlesType Determines whether to add All Episodes or All Movies option
-   * \param addMenuOption Bluray disc has menu, so add Menu Option
+   * \param addMenuAndAllTitlesOptions whether to add Disc Menu and All Titles options
    */
   static void AddRootOptions(const CURL& url,
                              CFileItemList& items,
                              AllTitles allTitlesType,
-                             AddMenuOption addMenuOption);
+                             AddMenuAndAllTitlesOptions addMenuAndAllTitlesOptions);
 
   /*!
    * \brief Either shows simple menu to select playlist, chooses main feature (movie/episode) playlists or returns if disc menu will be used later.

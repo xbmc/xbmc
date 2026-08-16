@@ -2813,24 +2813,28 @@ bool CDiscDirectoryHelper::GetMoviePlaylists(const CURL& url,
 void CDiscDirectoryHelper::AddRootOptions(const CURL& url,
                                           CFileItemList& items,
                                           AllTitles allTitlesType,
-                                          AddMenuOption addMenuOption)
+                                          AddMenuAndAllTitlesOptions addMenuAndAllTitlesOptions)
 {
-  CURL path{url};
-  if (allTitlesType == AllTitles::MOVIES)
-    path.SetFileName(URIUtils::AddFileToFolder("root", "titles", "all"));
-  else if (allTitlesType == AllTitles::EPISODES)
-    path.SetFileName(URIUtils::AddFileToFolder("root", "titles", "episodes", "all"));
-
-  auto item{std::make_shared<CFileItem>(path.Get(), true)};
-  item->SetLabel(
-      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25002) /* All titles */);
-  item->SetArt("icon", "DefaultVideoPlaylists.png");
-  items.Add(item);
-
-  if (addMenuOption == AddMenuOption::ADD_MENU)
+  if (addMenuAndAllTitlesOptions & AddMenuAndAllTitlesOptions::ADD_ALL_TITLES)
   {
+    CURL path{url};
+    if (allTitlesType == AllTitles::MOVIES)
+      path.SetFileName(URIUtils::AddFileToFolder("root", "titles", "all"));
+    else if (allTitlesType == AllTitles::EPISODES)
+      path.SetFileName(URIUtils::AddFileToFolder("root", "titles", "episodes", "all"));
+
+    auto item{std::make_shared<CFileItem>(path.Get(), true)};
+    item->SetLabel(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25002) /* All titles */);
+    item->SetArt("icon", "DefaultVideoPlaylists.png");
+    items.Add(item);
+  }
+
+  if (addMenuAndAllTitlesOptions & AddMenuAndAllTitlesOptions::ADD_MENU)
+  {
+    CURL path{url};
     path.SetFileName("menu");
-    item = {std::make_shared<CFileItem>(path.Get(), false)};
+    auto item{std::make_shared<CFileItem>(path.Get(), false)};
     item->SetLabel(
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25003) /* Menu */);
     item->SetArt("icon", "DefaultProgram.png");
