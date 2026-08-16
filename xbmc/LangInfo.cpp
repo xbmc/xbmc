@@ -214,6 +214,7 @@ constexpr auto specialAudioLangSettings = std::array{
 constexpr auto specialSubtitlesLangSettings = std::array{
     SpecialLanguageSetting{subLanguageNone, 231},
     SpecialLanguageSetting{subLanguageForcedOnly, 13207},
+    SpecialLanguageSetting{subLanguageForcedOnlyLenient, 39233},
     SpecialLanguageSetting{subLanguageOriginal, 308},
     SpecialLanguageSetting{subLanguageDefault, 309},
 };

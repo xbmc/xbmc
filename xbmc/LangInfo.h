@@ -57,6 +57,14 @@ constexpr std::string_view audioLanguageDefault = "default";
 // subtitles language special values
 constexpr std::string_view subLanguageNone = "none";
 constexpr std::string_view subLanguageForcedOnly = "forced_only";
+/*!
+ * \brief As forced_only, but a subtitle track whose name contains "forced" is treated as forced
+ *        even when the file never sets the forced flag, which many releases get wrong.
+ *        Modelled as a value of this setting rather than a separate toggle so the behaviour is
+ *        self contained: it cannot silently affect the other modes, and there is no second
+ *        setting whose interaction has to be understood.
+ */
+constexpr std::string_view subLanguageForcedOnlyLenient = "forced_only_lenient";
 constexpr std::string_view subLanguageOriginal = "original";
 constexpr std::string_view subLanguageDefault = "default";
 } // namespace KODI::LANGINFO

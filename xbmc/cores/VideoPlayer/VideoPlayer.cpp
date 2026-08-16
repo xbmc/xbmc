@@ -114,7 +114,11 @@ public:
 
     m_isSubNone = StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageNone);
     m_isPrefOriginal = StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageOriginal);
-    m_isPrefForced = StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageForcedOnly);
+    // both forced modes select forced subtitles the same way, they only differ in how a track
+    // gets its forced flag (see CDVDDemuxFFmpeg::AddStream)
+    m_isPrefForced =
+        StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageForcedOnly) ||
+        StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageForcedOnlyLenient);
     m_isPrefHearingImp = settings->GetBool(CSettings::SETTING_ACCESSIBILITY_SUBHEARING);
 
     m_subLang = g_langInfo.GetSubtitleLanguage(false);
@@ -289,7 +293,11 @@ public:
         settings->GetString(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE);
 
     m_isPrefOriginal = StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageOriginal);
-    m_isPrefForced = StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageForcedOnly);
+    // both forced modes select forced subtitles the same way, they only differ in how a track
+    // gets its forced flag (see CDVDDemuxFFmpeg::AddStream)
+    m_isPrefForced =
+        StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageForcedOnly) ||
+        StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageForcedOnlyLenient);
     m_isPrefHearingImp = settings->GetBool(CSettings::SETTING_ACCESSIBILITY_SUBHEARING);
 
     m_subLang = g_langInfo.GetSubtitleLanguage(false);

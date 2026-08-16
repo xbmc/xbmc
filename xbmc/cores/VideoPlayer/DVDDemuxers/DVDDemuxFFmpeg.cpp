@@ -14,6 +14,7 @@
 #include "DVDInputStreams/DVDInputStreamBluray.h"
 #endif
 #include "DVDInputStreams/DVDInputStreamFFmpeg.h"
+#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
@@ -1898,6 +1899,41 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
     stream->pPrivate = pStream;
     stream->flags =
         static_cast<StreamFlags>(static_cast<int>(stream->flags) | pStream->disposition);
+
+    // Plenty of releases label a subtitle track "Forced" in its title but never set the forced
+    // disposition, which leaves automatic forced subtitle selection with nothing to match on.
+    // External subtitles already get the same treatment from their filename in
+    // CUtil::GetExternalStreamDetailsFromFilename(), so apply the convention to embedded
+    // tracks too rather than silently missing them.
+    // Only in the lenient forced mode. Applying this in the other modes would be a silent change
+    // of behaviour there: a track treated as forced is never picked as an ordinary full subtitle
+    // track, so blanket subtitle selection by language would quietly lose tracks.
+    const auto settingsComponent = CServiceBroker::GetSettingsComponent();
+    const auto settings = settingsComponent ? settingsComponent->GetSettings() : nullptr;
+    const bool forcedFromTitle =
+        settings &&
+        StringUtils::EqualsNoCase(settings->GetString(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE),
+                                  KODI::LANGINFO::subLanguageForcedOnlyLenient);
+
+    if (forcedFromTitle && pStream->codecpar->codec_type == AVMEDIA_TYPE_SUBTITLE &&
+        (stream->flags & StreamFlags::FLAG_FORCED) == 0)
+    {
+      const AVDictionaryEntry* titleTag = av_dict_get(pStream->metadata, "title", nullptr, 0);
+      if (titleTag && titleTag->value)
+      {
+        std::string title{titleTag->value};
+        StringUtils::ToLower(title);
+        if (title.find("forced") != std::string::npos)
+        {
+          stream->flags =
+              static_cast<StreamFlags>(static_cast<int>(stream->flags) | StreamFlags::FLAG_FORCED);
+          CLog::LogF(LOGDEBUG,
+                     "Treating subtitle stream {} as forced, its title says so but the forced "
+                     "disposition is not set",
+                     pStream->index);
+        }
+      }
+    }
 
     AVDictionaryEntry* langTag = av_dict_get(pStream->metadata, "language", NULL, 0);
     if (!langTag)
