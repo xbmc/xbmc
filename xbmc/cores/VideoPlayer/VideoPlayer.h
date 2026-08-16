@@ -486,6 +486,8 @@ protected:
   void CheckAutoSceneSkip();
   bool CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket);
   bool CheckSceneSkip(const CCurrentStream& current);
+  std::chrono::milliseconds GetEdlTime(const CCurrentStream& current) const;
+  std::chrono::milliseconds GetSourceStreamLength() const;
   bool CheckPlayerInit(CCurrentStream& current);
   void UpdateCorrection(DemuxPacket* pkt, double correction);
   void UpdateTimestamps(CCurrentStream& current, DemuxPacket* pPacket);

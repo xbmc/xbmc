@@ -1922,8 +1922,7 @@ void CVideoPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
   }
   else
   {
-    const auto hasEdit = m_Edl.InEdit(
-        std::chrono::milliseconds(DVD_TIME_TO_MSEC(m_CurrentAudio.dts + m_offset_pts)));
+    const auto hasEdit = m_Edl.InEdit(GetEdlTime(m_CurrentAudio));
     if (hasEdit && hasEdit.value()->action == EDL::Action::MUTE)
       drop = true;
   }
@@ -2600,6 +2599,44 @@ bool CVideoPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket
   return true;
 }
 
+std::chrono::milliseconds CVideoPlayer::GetEdlTime(const CCurrentStream& current) const
+{
+  // Input streams that own their timeline (bluray://, dvd://) hand the demuxer a raw stream
+  // whose timestamps restart from zero whenever the demuxer is reopened - for instance after
+  // an EDL skip that crosses a clip boundary. CheckContinuity() absorbs that jump into
+  // m_offset_pts to keep the player clock monotonic, which leaves (dts + m_offset_pts) back
+  // near zero rather than at the real position. Such streams stamp packets with the
+  // input stream's own display time, so prefer that as the EDL reference.
+  if (current.dispTime > 0)
+    return std::chrono::milliseconds(current.dispTime);
+
+  return std::chrono::milliseconds(DVD_TIME_TO_MSEC(current.dts + m_offset_pts));
+}
+
+std::chrono::milliseconds CVideoPlayer::GetSourceStreamLength() const
+{
+  // Sources played through an input stream that provides its own timings (eg. bluray:// and
+  // dvd://) present the demuxer with a raw stream carrying no container duration, so
+  // GetStreamLength() reports 0. Fall back to the input stream, which knows the real length.
+  if (m_pDemuxer)
+  {
+    if (const auto length{std::chrono::milliseconds(m_pDemuxer->GetStreamLength())}; length > 0ms)
+      return length;
+  }
+
+  if (m_pInputStream)
+  {
+    CDVDInputStream::ITimes* pTimes = m_pInputStream->GetITimes();
+    CDVDInputStream::IDisplayTime* pDisplayTime = m_pInputStream->GetIDisplayTime();
+    if (CDVDInputStream::ITimes::Times times; pTimes && pTimes->GetTimes(times))
+      return std::chrono::milliseconds(DVD_TIME_TO_MSEC(times.ptsEnd - times.ptsStart));
+    if (pDisplayTime && pDisplayTime->GetTotalTime() > 0)
+      return std::chrono::milliseconds(pDisplayTime->GetTotalTime());
+  }
+
+  return 0ms;
+}
+
 bool CVideoPlayer::CheckSceneSkip(const CCurrentStream& current)
 {
   if (!m_Edl.HasEdits())
@@ -2611,36 +2648,34 @@ bool CVideoPlayer::CheckSceneSkip(const CCurrentStream& current)
   if(current.inited == false)
     return false;
 
-  const auto hasEdit =
-      m_Edl.InEdit(std::chrono::milliseconds(DVD_TIME_TO_MSEC(current.dts + m_offset_pts)));
+  const auto hasEdit = m_Edl.InEdit(GetEdlTime(current));
   return hasEdit && hasEdit.value()->action == EDL::Action::CUT;
 }
 
 void CVideoPlayer::QueueAutoSceneSkip(std::chrono::milliseconds seekTime)
 {
-  if (m_pDemuxer)
+  const auto streamLength{GetSourceStreamLength()};
+
+  // Use the same 50ms tolerance as the chapter-seek EOF guard (see HandleMessages PLAYER_SEEK_CHAPTER):
+  // cut/skip time arithmetic can produce a result fractionally past the true stream end due to
+  // millisecond rounding, which would cause the demuxer to stall rather than ending cleanly.
+  if (streamLength > 0ms && seekTime + 50ms >= streamLength)
   {
-    const auto streamLength{
-        std::chrono::milliseconds(static_cast<int64_t>(m_pDemuxer->GetStreamLength()))};
+    CLog::Log(LOGDEBUG, "{} - Resolved EDL skip target [{}] is at/near EOF [{}]. Ending playback.",
+              __FUNCTION__, StringUtils::MillisecondsToTimeString(seekTime),
+              StringUtils::MillisecondsToTimeString(streamLength));
 
-    // Use the same 50ms tolerance as the chapter-seek EOF guard (see HandleMessages PLAYER_SEEK_CHAPTER):
-    // cut/skip time arithmetic can produce a result fractionally past the true stream end due to
-    // millisecond rounding, which would cause the demuxer to stall rather than ending cleanly.
-    if (streamLength > 0ms && seekTime + 50ms >= streamLength)
-    {
-      CLog::Log(LOGDEBUG,
-                "{} - Resolved EDL skip target [{}] is at/near EOF [{}]. Ending playback.",
-                __FUNCTION__, StringUtils::MillisecondsToTimeString(seekTime),
-                StringUtils::MillisecondsToTimeString(streamLength));
+    SetCaching(CACHESTATE_DONE);
 
-      SetCaching(CACHESTATE_DONE);
+    // Abort the processing loop immediately, but keep the playback result as "ended".
+    // The caller sets LastEditTime and suppresses any re-trigger (the player is terminating)
+    m_bCloseRequest = false;
+    m_error = false;
+    m_bAbortRequest = true;
 
-      // Abort the processing loop immediately, but keep the playback result as "ended".
-      // The caller sets LastEditTime and suppresses any re-trigger (the player is terminating)
-      m_bCloseRequest = false;
-      m_error = false;
-      m_bAbortRequest = true;
-    }
+    // No point queueing the seek - the loop is terminating, and seeking to the stream end
+    // only costs a demuxer seek and a buffer flush before it does.
+    return;
   }
 
   CDVDMsgPlayerSeek::CMode mode;
@@ -4334,9 +4369,7 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
     float fFramesPerSecond = 0.0f;
     if (m_CurrentVideo.hint.fpsscale > 0.0f)
       fFramesPerSecond = static_cast<float>(m_CurrentVideo.hint.fpsrate) / static_cast<float>(m_CurrentVideo.hint.fpsscale);
-    const std::chrono::milliseconds duration =
-        m_pDemuxer ? std::chrono::milliseconds(m_pDemuxer->GetStreamLength()) : 0ms;
-    m_Edl.ReadEditDecisionLists(m_item, fFramesPerSecond, duration);
+    m_Edl.ReadEditDecisionLists(m_item, fFramesPerSecond, GetSourceStreamLength());
     CServiceBroker::GetDataCacheCore().SetEditList(m_Edl.GetEditList());
     CServiceBroker::GetDataCacheCore().SetCuts(m_Edl.GetCutMarkers());
     CServiceBroker::GetDataCacheCore().SetSceneMarkers(m_Edl.GetSceneMarkers());
