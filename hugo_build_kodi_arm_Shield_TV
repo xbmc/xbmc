@@ -1,0 +1,23 @@
+rm -rf $HOME/android-tools/xbmc-tarballs
+rm -rf $HOME/android-tools/xbmc-depends
+rm -rf $HOME/build/kodi-build
+. $HOME/source_me_use_java17.sh
+echo JAVA_HOME = $JAVA_HOME
+cd $HOME/build/kodi/tools/depends && \
+ ./bootstrap && \
+# ./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=aarch64-linux-android --with-sdk-path=$HOME/android-tools/android-sdk-linux --with-ndk-path=$HOME/android-tools/android-sdk-linux/ndk/21.4.7075529 --prefix=$HOME/android-tools/xbmc-depends --enable-debug=no && \
+ ./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=arm-linux-androideabi --with-sdk-path=$HOME/android-tools/android-sdk-linux --with-ndk-path=$HOME/android-tools/android-sdk-linux/ndk/21.4.7075529 --prefix=$HOME/android-tools/xbmc-depends --enable-debug=no && \
+ make -j$(getconf _NPROCESSORS_ONLN) && \
+ cd $HOME/build/kodi && \
+ make -j$(getconf _NPROCESSORS_ONLN) -C tools/depends/target/binary-addons ADDONS="audioencoder.flac" && \
+ mkdir $HOME/build/kodi-build && \
+ cd $HOME/build/kodi && \
+ make -C tools/depends/target/cmakebuildsys BUILD_DIR=$HOME/build/kodi-build && \
+ cd $HOME/build/kodi-build && \
+ make -j$(getconf _NPROCESSORS_ONLN) && \
+ mv $HOME/android-tools/xbmc-depends/arm-linux-androideabi-21-release/share/kodi $HOME/android-tools/xbmc-depends/arm-linux-androideabi-21-release/share/kodi.old && \
+ mv $HOME/android-tools/xbmc-depends/arm-linux-androideabi-21-release/lib/kodi $HOME/android-tools/xbmc-depends/arm-linux-androideabi-21-release/lib/kodi.old && \
+ ln -s -f $HOME/android-tools/xbmc-depends/arm-linux-androideabi-21-release/share/kodi-hugo $HOME/android-tools/xbmc-depends/arm-linux-androideabi-21-release/share/kodi && \
+ ln -s -f $HOME/android-tools/xbmc-depends/arm-linux-androideabi-21-release/lib/kodi-hugo $HOME/android-tools/xbmc-depends/arm-linux-androideabi-21-release/lib/kodi && \
+ make apk && \
+ echo "Build finished!"

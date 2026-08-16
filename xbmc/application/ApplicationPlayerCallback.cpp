@@ -32,6 +32,7 @@
 #include "settings/MediaSettings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
+#include "threads/Timer.h"
 #include "utils/SaveFileStateJob.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -39,7 +40,6 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
-#include "threads/Timer.h"
 
 #include <chrono>
 #include <memory>
@@ -454,9 +454,9 @@ void CApplicationPlayerCallback::StartProgressSaveTimer(const CFileItem& file)
 
   // Check if we have database write permissions
   if (!CServiceBroker::GetSettingsComponent()
-          ->GetProfileManager()
-          ->GetCurrentProfile()
-          .canWriteDatabases())
+           ->GetProfileManager()
+           ->GetCurrentProfile()
+           .canWriteDatabases())
     return;
 
   // Stop any existing timer
