@@ -1602,6 +1602,11 @@ void CGUIWindowManager::DeInitialize()
   m_vecCustomWindows.clear();
   m_activeDialogs.clear();
 
+  // FrameMove is the only other drain and stops running at shutdown
+  for (const auto& window : m_deleteWindows)
+    window->FreeResources(true);
+  m_deleteWindows.clear();
+
   m_initialized = false;
 }
 
