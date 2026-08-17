@@ -9,6 +9,7 @@
 #pragma once
 
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
+#include "cores/VideoPlayer/Interface/StreamInfo.h"
 #include "filesystem/File.h"
 #include "music/tags/MusicInfoTag.h"
 
@@ -69,6 +70,14 @@ public:
 
   virtual bool IsCaching()    const    {return false;}
   virtual int GetCacheLevel() const    {return -1;}
+
+  // Audio stream support (e.g. for .mka files with multiple audio streams)
+  virtual int GetStreamCount() const { return 1; }
+  virtual bool SetStream([[maybe_unused]] int index) { return false; }
+  virtual void GetStreamInfo([[maybe_unused]] int index, AudioStreamInfo& info) const
+  {
+    info.valid = false;
+  }
 
   int64_t m_TotalTime;  // time in ms
   int m_bitRate;

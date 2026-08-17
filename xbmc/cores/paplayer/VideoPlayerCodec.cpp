@@ -215,6 +215,10 @@ bool VideoPlayerCodec::InitFormatFromStream(CDemuxStreamAudio* stream, bool allo
   m_pResampler.reset();
   m_needConvert = false;
 
+  // The probe has to consume whatever it reads, so a skip left over from an earlier seek must not
+  // eat those packets. The caller seeks after us, which sets it again.
+  m_skipToPts = DVD_NOPTS_VALUE;
+
   // Decode up to 10 packets to let the codec describe its output.
   //
   // The first complete answer cannot be trusted. Starting part way into a stream, the first frame
@@ -222,6 +226,13 @@ bool VideoPlayerCodec::InitFormatFromStream(CDemuxStreamAudio* stream, bool allo
   // core while the frames after it carry the 96kHz extension - and whichever answer we take here
   // is fixed for as long as the stream plays, since nothing downstream can follow a format change.
   // So keep reading until two consecutive frames agree.
+  //
+  // On a stream change this reads from wherever the demuxer happens to be rather than from the
+  // point we are about to seek to, so ffmpeg can log container parse errors here (for matroska,
+  // "Element at ... exceeds containing master element ...") before the caller's Seek() puts it
+  // back on a cluster boundary. They are expected and recovered from. Probing after the seek
+  // instead would silence them, at the cost of a second seek to undo the packets the probe
+  // consumes.
   int nErrors = 0;
   bool stable = false;
   AEAudioFormat probed{};
@@ -650,4 +661,130 @@ CAEStreamInfo::DataType VideoPlayerCodec::GetPassthroughStreamType(AVCodecID cod
     return format.m_streamInfo.m_type;
   else
     return CAEStreamInfo::DataType::STREAM_TYPE_NULL;
+}
+
+std::vector<CDemuxStreamAudio*> VideoPlayerCodec::GetAudioStreams() const
+{
+  std::vector<CDemuxStreamAudio*> audioStreams;
+  if (!m_pDemuxer)
+    return audioStreams;
+
+  for (auto* stream : m_pDemuxer->GetStreams())
+  {
+    if (stream && stream->type == StreamType::AUDIO)
+      audioStreams.push_back(static_cast<CDemuxStreamAudio*>(stream));
+  }
+  return audioStreams;
+}
+
+int VideoPlayerCodec::GetStreamCount() const
+{
+  return static_cast<int>(GetAudioStreams().size());
+}
+
+void VideoPlayerCodec::GetStreamInfo(int index, AudioStreamInfo& info) const
+{
+  auto audioStreams = GetAudioStreams();
+  if (index < 0 || index >= static_cast<int>(audioStreams.size()))
+  {
+    info.valid = false;
+    return;
+  }
+
+  CDemuxStreamAudio* stream = audioStreams[index];
+  info.valid = true;
+  info.language = stream->language;
+  info.name = stream->GetStreamName();
+  info.codecName = stream->codecName;
+  info.codecDesc = stream->GetStreamType();
+  info.channels = stream->iChannels;
+  info.samplerate = stream->iSampleRate;
+  info.bitspersample = stream->iBitsPerSample;
+  info.bitrate = stream->iBitRate;
+  info.flags = stream->flags;
+}
+
+bool VideoPlayerCodec::SetStream(int index)
+{
+  const std::vector<CDemuxStreamAudio*> audioStreams = GetAudioStreams();
+  if (index < 0 || index >= static_cast<int>(audioStreams.size()))
+  {
+    CLog::Log(LOGERROR, "{}: Invalid audio stream index {}", __FUNCTION__, index);
+    return false;
+  }
+
+  CDemuxStreamAudio* newStream = audioStreams[index];
+  if (newStream->uniqueId == m_nAudioStream)
+    return true;
+
+  // Remember the current stream so we can fall back to it if the switch goes bad
+  CDemuxStreamAudio* oldStream = nullptr;
+  for (auto* stream : audioStreams)
+  {
+    if (stream->uniqueId == m_nAudioStream)
+    {
+      oldStream = stream;
+      break;
+    }
+  }
+
+  if (!SwitchToStream(newStream, oldStream))
+  {
+    // The codec has already been torn down at this point, so leaving it as is would hand the
+    // caller a decoder that cannot produce anything. Try to get back to where we were.
+    if (oldStream && SwitchToStream(oldStream, newStream))
+      CLog::Log(LOGWARNING, "{}: Restored audio stream uniqueId={} after a failed switch",
+                __FUNCTION__, oldStream->uniqueId);
+    else
+      CLog::Log(LOGERROR, "{}: Audio codec left unusable after a failed switch", __FUNCTION__);
+
+    return false;
+  }
+
+  CLog::Log(LOGDEBUG, "{}: Switched to audio stream {} (uniqueId={})", __FUNCTION__, index,
+            m_nAudioStream);
+  return true;
+}
+
+bool VideoPlayerCodec::SwitchToStream(CDemuxStreamAudio* newStream, CDemuxStreamAudio* oldStream)
+{
+  // Build the codec before touching any existing state, so that a failure here leaves the
+  // currently selected stream playing untouched.
+  CDVDStreamInfo hint(*newStream, true);
+  const CAEStreamInfo::DataType ptStreamType =
+      GetPassthroughStreamType(hint.codec, hint.samplerate, hint.profile);
+
+  std::unique_ptr<CDVDAudioCodec> codec =
+      CDVDFactoryCodec::CreateAudioCodec(hint, *m_processInfo, true, true, ptStreamType);
+  if (!codec)
+  {
+    CLog::Log(LOGERROR, "{}: Could not create audio codec for stream uniqueId={}", __FUNCTION__,
+              newStream->uniqueId);
+    return false;
+  }
+
+  // Past this point we are committed to the new stream
+
+  if (oldStream)
+    m_pDemuxer->EnableStream(oldStream->demuxerId, oldStream->uniqueId, false);
+
+  m_nAudioStream = newStream->uniqueId;
+  m_pDemuxer->EnableStream(newStream->demuxerId, m_nAudioStream, true);
+
+  // Only CDVDDemuxClient acts on this, and it can replace the CDemuxStream it is given - which
+  // would leave newStream (and anything else GetAudioStreams() handed out) dangling, and the codec
+  // above built from properties that have since been refreshed. The demuxers a music file is
+  // opened with do not implement it, so reacquiring the stream afterwards is not worth the
+  // reshuffle here; revisit if this codec is ever handed a client demuxer.
+  m_pDemuxer->OpenStream(newStream->demuxerId, m_nAudioStream);
+
+  // m_audioFrame borrows buffers owned by the codec, so it must be dropped before the old
+  // codec goes away
+  m_nDecodedLen = 0;
+  m_audioFrame = {};
+  m_pAudioCodec = std::move(codec);
+
+  m_pDemuxer->Flush();
+
+  return InitFormatFromStream(newStream, false);
 }
