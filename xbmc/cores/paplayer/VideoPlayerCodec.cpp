@@ -423,7 +423,7 @@ int VideoPlayerCodec::ReadPCM(uint8_t* pBuffer, size_t size, size_t* actualsize)
 
 int VideoPlayerCodec::ReadRaw(uint8_t **pBuffer, int *bufferSize)
 {
-  DemuxPacket* pPacket;
+  DemuxPacket* pPacket = nullptr;
 
   m_nDecodedLen = 0;
   DVDAudioFrame audioframe;
@@ -436,6 +436,8 @@ int VideoPlayerCodec::ReadRaw(uint8_t **pBuffer, int *bufferSize)
 
   do
   {
+    if (pPacket)
+      CDVDDemuxUtils::FreeDemuxPacket(pPacket);
     pPacket = m_pDemuxer->Read();
   } while (pPacket && pPacket->iStreamId != m_nAudioStream);
 
