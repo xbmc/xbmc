@@ -441,6 +441,16 @@ void CApplicationSkinHandling::ReloadSkin(bool confirm)
   if (!skin || m_bInitializing)
     return; // Don't allow reload before skin is loaded by system
 
+  // Reloading destroys every control in every window, and the GUI message handlers
+  // suspended below a nested render loop still hold pointers into that tree. Wait for
+  // the stack to unwind.
+  if (gui->GetWindowManager().IsNested())
+  {
+    m_pendingSkinReload = true;
+    m_pendingSkinReloadConfirm = m_pendingSkinReloadConfirm || confirm;
+    return;
+  }
+
   std::string oldSkin = skin->ID();
 
   CGUIMessage msg(GUI_MSG_LOAD_SKIN, -1, gui->GetWindowManager().GetActiveWindow());
@@ -500,6 +510,21 @@ void CApplicationSkinHandling::ReloadSkin(bool confirm)
     }
   }
   m_confirmSkinChange = true;
+}
+
+void CApplicationSkinHandling::ProcessPendingSkinReload()
+{
+  if (!m_pendingSkinReload)
+    return;
+
+  const auto gui = CServiceBroker::GetGUI();
+  if (gui == nullptr || gui->GetWindowManager().IsNested())
+    return;
+
+  const bool confirm = m_pendingSkinReloadConfirm;
+  m_pendingSkinReload = false;
+  m_pendingSkinReloadConfirm = false;
+  ReloadSkin(confirm);
 }
 
 bool CApplicationSkinHandling::OnSettingChanged(const CSetting& setting)

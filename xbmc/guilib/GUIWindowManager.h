@@ -133,6 +133,14 @@ public:
    */
   bool Initialized() const { return m_initialized; }
 
+  /*! \brief Return whether a nested render loop is currently running.
+   A modal dialog pumps the application from its own Open() loop, leaving the GUI
+   message handlers below it suspended while still holding pointers into the control
+   tree. Destroying windows or controls has to wait until the stack has unwound.
+   \return true if called from within a nested render loop, false otherwise.
+   */
+  bool IsNested() const { return m_iNested > 0; }
+
   /*! \brief Create and initialize all windows and dialogs
    */
   void CreateWindows();

@@ -44,9 +44,18 @@ protected:
  */
   void ProcessSkin() const;
 
+  /*!
+   * \brief Run a skin reload that was deferred out of a nested render loop.
+   *
+   * Does nothing unless a reload is pending and the render loop has unwound.
+   */
+  void ProcessPendingSkinReload();
+
   bool m_saveSkinOnUnloading = true;
   bool m_confirmSkinChange = true;
   bool m_ignoreSkinSettingChanges = false;
+  bool m_pendingSkinReload = false;
+  bool m_pendingSkinReloadConfirm = false;
   IMsgTargetCallback* m_msgCb;
   IWindowManagerCallback* m_wCb;
   bool& m_bInitializing;
