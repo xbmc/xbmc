@@ -120,13 +120,11 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
 
   CDemuxStream* pStream = NULL;
   m_nAudioStream = -1;
-  int64_t demuxerId = -1;
   for (auto stream : m_pDemuxer->GetStreams())
   {
     if (stream && stream->type == StreamType::AUDIO)
     {
       m_nAudioStream = stream->uniqueId;
-      demuxerId = stream->demuxerId;
       pStream = stream;
       break;
     }
@@ -159,7 +157,7 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
     return false;
   }
 
-  //  Extract ReplayGain info
+  // Extract ReplayGain info
   // tagLoaderTagLib.Load will try to determine tag type by file extension, so set fallback by contentType
   std::string strFallbackFileExtension = "";
   if (m_strContentType == "audio/aacp" ||
@@ -173,37 +171,15 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
   CTagLoaderTagLib tagLoaderTagLib;
   tagLoaderTagLib.Load(file.GetDynPath(), m_tag, strFallbackFileExtension);
 
-  // we have to decode initial data in order to get channels/samplerate
-  // for sanity - we read no more than 10 packets
-  int nErrors = 0;
-  for (int nPacket = 0;
-       nPacket < 10 && (m_channels == 0 || m_format.m_sampleRate == 0 || m_format.m_frameSize == 0);
-       nPacket++)
-  {
-    uint8_t dummy[256];
-    size_t nSize = 256;
-    if (ReadPCM(dummy, nSize, &nSize) == READ_ERROR)
-      ++nErrors;
-
-    m_srcFormat = m_pAudioCodec->GetFormat();
-    m_format = m_srcFormat;
-    m_channels = m_srcFormat.m_channelLayout.Count();
-    m_bitsPerSample = CAEUtil::DataFormatToBits(m_srcFormat.m_dataFormat);
-    m_bitsPerCodedSample = static_cast<CDemuxStreamAudio*>(pStream)->iBitsPerSample;
-  }
-  if (nErrors >= 10)
-  {
-    CLog::Log(LOGDEBUG, "{}: Could not decode data", __FUNCTION__);
+  if (!InitFormatFromStream(static_cast<CDemuxStreamAudio*>(pStream), true))
     return false;
-  }
 
-  // test if seeking is supported
+  // Test seeking is supported (and rewind stream)
   m_bCanSeek = false;
   if (m_pInputStream->Seek(0, DVDSTREAM_SEEK_POSSIBLE))
   {
     if (Seek(1))
     {
-      // rewind stream to beginning
       Seek(0);
       m_bCanSeek = true;
     }
@@ -215,24 +191,103 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
     }
   }
 
-  if (m_channels == 0) // no data - just guess and hope for the best
+  m_strFileName = file.GetDynPath();
+  m_bInited = true;
+
+  return true;
+}
+
+bool VideoPlayerCodec::InitFormatFromStream(CDemuxStreamAudio* stream, bool allowFormatFallback)
+{
+  // Reset format information
+  m_srcFormat = {};
+  m_format = {};
+  m_channels = 0;
+  m_bitsPerSample = 0;
+  m_bitsPerCodedSample = 0;
+  m_planes = 0;
+
+  // The probe loop calls ReadPCM()
+  m_pResampler.reset();
+  m_needConvert = false;
+
+  // Decode up to 10 packets to let the codec describe its output.
+  // The first frame decoded may not reflect true format (eg. a partial DTS frame decodes as the 48kHz
+  // core while the frames after it carry the 96kHz extension). Keep reading until two consecutive
+  // frames agree.
+  int nErrors = 0;
+  bool stable = false;
+  AEAudioFormat probed{};
+  for (int nPacket = 0; nPacket < 10 && !stable; nPacket++)
   {
-    m_srcFormat.m_channelLayout = CAEChannelInfo(AE_CH_LAYOUT_2_0);
-    m_channels = m_srcFormat.m_channelLayout.Count();
+    uint8_t dummy[256];
+    size_t nSize = 256;
+    const int read = ReadPCM(dummy, nSize, &nSize);
+    if (read == READ_ERROR)
+      ++nErrors;
+    else if (read == READ_EOF)
+      break; // there is nothing left to describe the stream with
+
+    const AEAudioFormat previous = probed;
+    probed = m_pAudioCodec->GetFormat();
+
+    stable = probed.m_channelLayout.Count() != 0 && probed.m_sampleRate != 0 &&
+             probed.m_frameSize != 0 && probed.m_sampleRate == previous.m_sampleRate &&
+             probed.m_channelLayout.Count() == previous.m_channelLayout.Count() &&
+             probed.m_dataFormat == previous.m_dataFormat;
+
+    // Force move to next frame
+    m_nDecodedLen = 0;
+  }
+  if (nErrors >= 10)
+  {
+    CLog::Log(LOGDEBUG, "{}: Could not decode data", __FUNCTION__);
+    return false;
   }
 
-  if (m_srcFormat.m_sampleRate == 0)
-    m_srcFormat.m_sampleRate = 44100;
+  if (!stable)
+    CLog::Log(LOGDEBUG,
+              "{}: Format of audio stream uniqueId={} did not settle, using {} Hz, {} channels",
+              __FUNCTION__, stream->uniqueId, probed.m_sampleRate, probed.m_channelLayout.Count());
 
+  m_srcFormat = probed;
+  m_format = m_srcFormat;
+  m_channels = m_srcFormat.m_channelLayout.Count();
+  m_bitsPerSample = CAEUtil::DataFormatToBits(m_srcFormat.m_dataFormat);
+  m_bitsPerCodedSample = stream->iBitsPerSample;
+
+  if (m_channels == 0 || m_srcFormat.m_sampleRate == 0)
+  {
+    // Guessing only when opening the file
+    if (!allowFormatFallback)
+    {
+      CLog::Log(LOGERROR, "{}: Could not determine the format of audio stream uniqueId={}",
+                __FUNCTION__, stream->uniqueId);
+      return false;
+    }
+
+    if (m_channels == 0) // no data - just guess and hope for the best
+    {
+      m_srcFormat.m_channelLayout = CAEChannelInfo(AE_CH_LAYOUT_2_0);
+      m_channels = m_srcFormat.m_channelLayout.Count();
+    }
+
+    if (m_srcFormat.m_sampleRate == 0)
+      m_srcFormat.m_sampleRate = 44100;
+  }
+
+  m_format = m_srcFormat;
+
+  // Update duration, bitrate and codec name for this stream
   m_TotalTime = m_pDemuxer->GetStreamLength();
   m_bitRate = m_pAudioCodec->GetBitRate();
   if (!m_bitRate && m_TotalTime)
-  {
-    m_bitRate = (int)(((m_pInputStream->GetLength()*1000) / m_TotalTime) * 8);
-  }
-  m_CodecName = m_pDemuxer->GetStreamCodecName(demuxerId, m_nAudioStream);
+    m_bitRate = (int)(((m_pInputStream->GetLength() * 1000) / m_TotalTime) * 8);
 
-  m_needConvert = false;
+  m_CodecName = m_pDemuxer->GetStreamCodecName(stream->demuxerId, m_nAudioStream);
+
+  m_planes = AE_IS_PLANAR(m_srcFormat.m_dataFormat) ? m_channels : 1;
+
   if (NeedConvert(m_srcFormat.m_dataFormat))
   {
     m_needConvert = true;
@@ -278,14 +333,14 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
     m_pResampler->Init(dstConfig, srcConfig, false, false, M_SQRT1_2, NULL, AE_QUALITY_UNKNOWN,
                        false, 0.0f);
 
-    m_planes = AE_IS_PLANAR(m_srcFormat.m_dataFormat) ? m_channels : 1;
-    m_format = m_srcFormat;
     m_format.m_dataFormat = AE_FMT_FLOAT;
     m_bitsPerSample = CAEUtil::DataFormatToBits(m_format.m_dataFormat);
   }
 
-  m_strFileName = file.GetDynPath();
-  m_bInited = true;
+  // Drop partial frame so ReadPCM() starts on a frame boundary
+  m_nDecodedLen = 0;
+  m_audioFrame = {};
+  m_pAudioCodec->Reset();
 
   return true;
 }
@@ -354,8 +409,8 @@ bool VideoPlayerCodec::PacketIsBeforeSeek(const DemuxPacket& packet)
     return false;
   }
 
-  // Keep the packet that spans the requested time
-  if (pts + packet.duration > m_skipToPts)
+  // Keep the packet the requested time falls in, and any that starts at or after it.
+  if (pts >= m_skipToPts || pts + packet.duration > m_skipToPts)
   {
     m_skipToPts = DVD_NOPTS_VALUE;
     return false;
