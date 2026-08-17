@@ -665,9 +665,10 @@ bool CApplication::Initialize()
 
   const auto skinHandling = GetComponent<CApplicationSkinHandling>();
 
-  bool uiInitializationFinished = false;
+  const bool guiCreated = CServiceBroker::GetGUI()->GetWindowManager().Initialized();
+  bool uiInitializationFinished = !guiCreated;
 
-  if (CServiceBroker::GetGUI()->GetWindowManager().Initialized())
+  if (guiCreated)
   {
     const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
@@ -743,6 +744,22 @@ bool CApplication::Initialize()
     // because we need a real window in the background which gets
     // rendered while we load the main window or enter the master lock key
     CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_SPLASH);
+  }
+
+  // Must stay above the window activation below: that can raise a modal dialog, whose nested
+  // render loop reaches anything after it only once the dialog has been dismissed.
+  CJSONRPC::Initialize();
+
+  CServiceBroker::RegisterSpeechRecognition(speech::ISpeechRecognition::CreateInstance());
+
+  if (!m_ServiceManager->InitStageThree(profileManager))
+  {
+    CLog::Log(LOGERROR, "Application - Init3 failed");
+  }
+
+  if (guiCreated)
+  {
+    const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
     if (settings->GetBool(CSettings::SETTING_MASTERLOCK_STARTUPLOCK) &&
         profileManager->GetMasterProfile().getLockMode() != LockMode::EVERYONE &&
@@ -771,19 +788,6 @@ bool CApplication::Initialize()
       // the startup window is considered part of the initialization as it most likely switches to the final window
       uiInitializationFinished = firstWindow != WINDOW_STARTUP_ANIM;
     }
-  }
-  else //No GUI Created
-  {
-    uiInitializationFinished = true;
-  }
-
-  CJSONRPC::Initialize();
-
-  CServiceBroker::RegisterSpeechRecognition(speech::ISpeechRecognition::CreateInstance());
-
-  if (!m_ServiceManager->InitStageThree(profileManager))
-  {
-    CLog::Log(LOGERROR, "Application - Init3 failed");
   }
 
   g_sysinfo.Refresh();
