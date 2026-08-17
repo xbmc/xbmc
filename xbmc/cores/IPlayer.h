@@ -113,6 +113,14 @@ public:
   virtual void SetVolume(float volume){}
   virtual void SetDynamicRangeCompression(long drc){}
 
+  /*!
+   \brief Report that the downstream audio chain has finished settling
+
+   Ends a pass-through hold early. The player cannot see the chain, so this is
+   for an add-on that can - one per device. Ignored when nothing is holding.
+   */
+  virtual void NotifyAudioChainReady() {}
+
   virtual void SetAVDelay(float fValue = 0.0f) {}
   virtual float GetAVDelay() { return 0.0f; }
 
