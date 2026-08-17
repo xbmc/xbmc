@@ -325,7 +325,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn)
     starttime = 0; // No resume point
   }
 
-  if (!si->m_decoder.Create(file, si->m_startOffset))
+  if (!si->m_decoder.Create(file, si->m_startOffset, 0))
   {
     CLog::Log(LOGWARNING, "PAPlayer::QueueNextFileEx - Failed to create the decoder");
 
