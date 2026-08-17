@@ -13,6 +13,8 @@
 #include "utils/EGLUtils.h"
 #include "utils/GlobalsHandling.h"
 
+#include <atomic>
+
 struct AVMasteringDisplayMetadata;
 struct AVContentLightMetadata;
 
@@ -40,6 +42,7 @@ public:
   float GetFrameLatencyAdjustment() override;
   bool IsHDRDisplay() override;
   bool SetHDR(const VideoPicture* videoPicture) override;
+  bool IsGuiHdrPQTagged() const override;
 
   EGLDisplay GetEGLDisplay() const;
   EGLSurface GetEGLSurface() const;
@@ -60,4 +63,11 @@ private:
   EGLint m_HDRColorSpace = EGL_NONE;
   bool m_hasEGL_ST2086_Extension = false;
   bool m_hasEGL_BT2020_PQ_Colorspace_Extension = false;
+
+  //! True when the last SetHDR() call successfully tagged the GUI surface's
+  //! ANativeWindow as BT.2020 PQ via ANativeWindow_setBuffersDataSpace().
+  //! Written from the player thread (SetHDR) and read from the render thread
+  //! (IsGuiHdrPQTagged), hence atomic. Independent of the EGL
+  //! colorspace-attribute mechanism above.
+  std::atomic<bool> m_nativeWindowTaggedPQ{false};
 };

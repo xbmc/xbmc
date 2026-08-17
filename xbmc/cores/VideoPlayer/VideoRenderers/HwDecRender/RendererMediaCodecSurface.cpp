@@ -76,6 +76,12 @@ bool CRendererMediaCodecSurface::Configure(const VideoPicture &picture, float fp
       CServiceBroker::GetWinSystem()->GetGfxContext().SetTransferPQ(true);
   }
 
+  // Other GLES render paths (LinuxRendererGLES, RendererDRMPRIMEGLES)
+  // call SetHDR() here. SetTransferPQ() only selects shaders; SetHDR()
+  // tags the GUI/OSD surface itself as BT.2020 PQ so the compositor
+  // interprets GUI output treated as PQ correctly.
+  CServiceBroker::GetWinSystem()->SetHDR(&picture);
+
   return true;
 }
 
@@ -138,6 +144,8 @@ void CRendererMediaCodecSurface::Reset()
   m_lastIndex = -1;
 
   CServiceBroker::GetWinSystem()->GetGfxContext().SetTransferPQ(false);
+  // Pairs with the SetHDR(&picture) call in Configure() above.
+  CServiceBroker::GetWinSystem()->SetHDR(nullptr);
 }
 
 void CRendererMediaCodecSurface::RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha)

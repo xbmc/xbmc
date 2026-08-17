@@ -11,6 +11,8 @@
 #include "ServiceBroker.h"
 #include "VideoSyncAndroid.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "windowing/WindowSystemFactory.h"
@@ -24,6 +26,38 @@
 #include "PlatformDefs.h"
 
 #include <EGL/eglext.h>
+
+// Resolve ANativeWindow_setBuffersDataSpace() at runtime from
+// libnativewindow.so. The symbol is API 28+, while Kodi targets a lower
+// Android API, so dynamic lookup lets the same binary run on older
+// devices and use the API only when available.
+#include <android/native_window.h>
+#include <dlfcn.h>
+
+namespace
+{
+// Hardcode ADATASPACE_UNKNOWN and ADATASPACE_BT2020_PQ because
+// <android/data_space.h> is not guaranteed at the current NDK target.
+// Values are from AOSP libsystem/include/system/graphics-base-v1.0.h.
+constexpr int32_t KODI_ADATASPACE_UNKNOWN = 0;
+constexpr int32_t KODI_ADATASPACE_BT2020_PQ = 163971072;
+
+using PFN_ANativeWindow_setBuffersDataSpace = int32_t (*)(ANativeWindow*, int32_t);
+
+PFN_ANativeWindow_setBuffersDataSpace GetSetBuffersDataSpaceFn()
+{
+  static const PFN_ANativeWindow_setBuffersDataSpace fn = []()
+  {
+    void* handle = dlopen("libnativewindow.so", RTLD_NOW);
+    void* sym = handle ? dlsym(handle, "ANativeWindow_setBuffersDataSpace") : nullptr;
+    if (!sym)
+      CLog::Log(LOGDEBUG,
+                "CWinSystemAndroidGLESContext: ANativeWindow_setBuffersDataSpace not resolvable");
+    return reinterpret_cast<PFN_ANativeWindow_setBuffersDataSpace>(sym);
+  }();
+  return fn;
+}
+} // namespace
 
 void CWinSystemAndroidGLESContext::Register()
 {
@@ -227,6 +261,60 @@ bool CWinSystemAndroidGLESContext::SetHDR(const VideoPicture* videoPicture)
   if (!CServiceBroker::GetWinSystem()->IsHDRDisplaySettingEnabled())
     return false;
 
+  // Tag the GUI surface's ANativeWindow as BT.2020 PQ for genuine HDR
+  // content, and reset it to UNKNOWN otherwise. This lets the compositor
+  // interpret PGS overlays treated as PQ correctly. Unlike the EGL path
+  // below, this applies to subsequently-queued buffers and needs no
+  // surface recreation. A rejected dataspace leaves the surface untagged;
+  // PGS rendering then falls back to conversion (see
+  // OverlayRendererGLES.cpp).
+  //
+  // SetHDR() is called for every video, HDR or SDR, so gate on the video's
+  // actual HDR-ness, not simply videoPicture != nullptr. Only HdrPgsMode::AUTO
+  // attempts tagging at all: HdrPgsMode::FORCE_CONVERSION leaves the surface
+  // untagged on purpose (a "successful" tag has been observed to cause
+  // compositor problems independent of which PGS shader is later selected,
+  // on at least one platform), and HdrPgsMode::OFF disables the feature
+  // outright.
+  const auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  const auto settings = settingsComponent ? settingsComponent->GetSettings() : nullptr;
+  const auto hdrPgsMode =
+      settings
+          ? static_cast<HdrPgsMode>(settings->GetInt(CSettings::SETTING_VIDEOPLAYER_HDRPGSMODE))
+          : HdrPgsMode::AUTO;
+
+  // color_transfer is not always populated for genuine PQ content on Android,
+  // so mirror CRendererMediaCodecSurface::Configure()'s two-way condition.
+  // IsTransferPQ() is deliberately not used here: SetHDR() is also reachable
+  // through CLinuxRendererGLES::Configure() for SurfaceTexture-backed
+  // MediaCodec buffers, where IsTransferPQ() may not have been set yet.
+  // Derive from videoPicture directly so tagging does not depend on which
+  // renderer happened to run first.
+  const bool isRealHdrMode =
+      videoPicture && (videoPicture->color_transfer == AVCOL_TRC_SMPTE2084 ||
+                       videoPicture->hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION);
+
+  // The ANativeWindow_setBuffersDataSpace() call itself reports whether this
+  // dataspace is supported; no additional display-capability gate is needed.
+  const bool attemptTagging = hdrPgsMode == HdrPgsMode::AUTO && isRealHdrMode;
+
+  m_nativeWindowTaggedPQ = false;
+  if (m_nativeWindow && m_nativeWindow->GetWindow())
+  {
+    if (const auto setBuffersDataSpace = GetSetBuffersDataSpaceFn())
+    {
+      const int32_t targetDataSpace =
+          attemptTagging ? KODI_ADATASPACE_BT2020_PQ : KODI_ADATASPACE_UNKNOWN;
+      const int32_t result = setBuffersDataSpace(m_nativeWindow->GetWindow(), targetDataSpace);
+      m_nativeWindowTaggedPQ = attemptTagging && (result == 0);
+      if (attemptTagging && result != 0)
+        CLog::Log(LOGDEBUG,
+                  "CWinSystemAndroidGLESContext::SetHDR: BT.2020 PQ dataspace rejected for the "
+                  "GUI surface (error {}) - HDR PGS subtitles will use SDR conversion",
+                  result);
+    }
+  }
+
   EGLint HDRColorSpace = 0;
 
 #if EGL_EXT_gl_colorspace_bt2020_linear
@@ -272,4 +360,9 @@ bool CWinSystemAndroidGLESContext::SetHDR(const VideoPicture* videoPicture)
 #endif
 
   return m_HDRColorSpace == HDRColorSpace;
+}
+
+bool CWinSystemAndroidGLESContext::IsGuiHdrPQTagged() const
+{
+  return m_HDRColorSpace == EGL_GL_COLORSPACE_BT2020_PQ_EXT || m_nativeWindowTaggedPQ;
 }

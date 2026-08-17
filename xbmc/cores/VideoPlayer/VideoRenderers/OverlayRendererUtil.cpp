@@ -17,6 +17,9 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
+#include <algorithm>
+#include <cmath>
+
 namespace OVERLAY
 {
 
@@ -45,13 +48,19 @@ static uint32_t build_rgba(const int yuv[3], int alpha, bool mergealpha)
 }
 #undef clamp
 
-void convert_rgba(const CDVDOverlayImage& o, bool mergealpha, std::vector<uint32_t>& rgba)
+void convert_rgba(const CDVDOverlayImage& o,
+                  bool mergealpha,
+                  std::vector<uint32_t>& rgba,
+                  const std::vector<uint32_t>* paletteOverride)
 {
+  const std::vector<uint32_t>& srcPalette = paletteOverride ? *paletteOverride : o.palette;
+
   uint32_t palette[256] = {};
-  for (size_t i = 0; i < o.palette.size(); i++)
-    palette[i] = build_rgba(
-        (o.palette[i] >> PIXEL_ASHIFT) & 0xff, (o.palette[i] >> PIXEL_RSHIFT) & 0xff,
-        (o.palette[i] >> PIXEL_GSHIFT) & 0xff, (o.palette[i] >> PIXEL_BSHIFT) & 0xff, mergealpha);
+  for (size_t i = 0; i < srcPalette.size(); i++)
+    palette[i] = build_rgba((srcPalette[i] >> PIXEL_ASHIFT) & 0xff,
+                             (srcPalette[i] >> PIXEL_RSHIFT) & 0xff,
+                             (srcPalette[i] >> PIXEL_GSHIFT) & 0xff,
+                             (srcPalette[i] >> PIXEL_BSHIFT) & 0xff, mergealpha);
 
   for (int row = 0; row < o.height; row++)
     for (int col = 0; col < o.width; col++)
@@ -270,6 +279,101 @@ bool convert_quad(ASS_Image* images, SQuads& quads, int max_x)
     data   += img->w + 1;
   }
   return true;
+}
+
+PgsHdrHandling GetPgsHdrHandling(bool isPgs, float& sdrWhiteNits)
+{
+  if (!isPgs || !CServiceBroker::GetWinSystem()->GetGfxContext().IsTransferPQ())
+    return PgsHdrHandling::NONE;
+
+  const auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  const auto settings = settingsComponent ? settingsComponent->GetSettings() : nullptr;
+  const auto hdrPgsMode =
+      settings
+          ? static_cast<HdrPgsMode>(settings->GetInt(CSettings::SETTING_VIDEOPLAYER_HDRPGSMODE))
+          : HdrPgsMode::AUTO;
+
+  if (hdrPgsMode == HdrPgsMode::OFF)
+    return PgsHdrHandling::NONE;
+
+  if (hdrPgsMode == HdrPgsMode::AUTO && CServiceBroker::GetWinSystem()->IsGuiHdrPQTagged())
+    return PgsHdrHandling::PQ_PASSTHROUGH;
+
+  sdrWhiteNits = settings ? static_cast<float>(std::clamp(
+                                settings->GetInt(CSettings::SETTING_VIDEOPLAYER_HDRPGSSDRWHITENITS),
+                                100, 600))
+                          : 350.0f;
+  return PgsHdrHandling::CONVERTED_TO_SDR;
+}
+
+namespace
+{
+constexpr float ST2084_m1 = 2610.0f / (4096.0f * 4.0f);
+constexpr float ST2084_m2 = (2523.0f / 4096.0f) * 128.0f;
+constexpr float ST2084_c1 = 3424.0f / 4096.0f;
+constexpr float ST2084_c2 = (2413.0f / 4096.0f) * 32.0f;
+constexpr float ST2084_c3 = (2392.0f / 4096.0f) * 32.0f;
+
+// PQ code value (0-1) -> linear (1.0 == 10000 nits).
+float DecodePQ(float x)
+{
+  x = std::clamp(x, 0.0f, 1.0f);
+  const float p = std::pow(x, 1.0f / ST2084_m2);
+  const float num = std::max(p - ST2084_c1, 0.0f);
+  const float den = std::max(ST2084_c2 - ST2084_c3 * p, 1e-6f);
+  return std::pow(num / den, 1.0f / ST2084_m1);
+}
+
+float LinearToSrgbComponent(float c)
+{
+  c = std::clamp(c, 0.0f, 1.0f);
+  return (c <= 0.0031308f) ? (12.92f * c) : (1.055f * std::pow(c, 1.0f / 2.4f) - 0.055f);
+}
+} // namespace
+
+void ConvertPgsPaletteToSdr(std::vector<uint32_t>& palette, float sdrWhiteNits)
+{
+  // Linear BT.2020 -> linear BT.709/sRGB primaries, D65 both ends;
+  // numerically confirmed to map (1,1,1) to (1,1,1).
+  static constexpr float BT2020_TO_709[3][3] = {
+      {1.660491002f, -0.587641139f, -0.072849863f},
+      {-0.124550474f, 1.132899897f, -0.008349423f},
+      {-0.018150763f, -0.100578897f, 1.118729660f},
+  };
+
+  const float whiteScale = 10000.0f / std::max(sdrWhiteNits, 1.0f);
+
+  for (uint32_t& entry : palette)
+  {
+    const int a = (entry >> PIXEL_ASHIFT) & 0xff;
+    const float linearPQ[3] = {
+        DecodePQ(((entry >> PIXEL_RSHIFT) & 0xff) / 255.0f) * whiteScale,
+        DecodePQ(((entry >> PIXEL_GSHIFT) & 0xff) / 255.0f) * whiteScale,
+        DecodePQ(((entry >> PIXEL_BSHIFT) & 0xff) / 255.0f) * whiteScale,
+    };
+
+    float linear709[3];
+    for (int i = 0; i < 3; i++)
+      linear709[i] = std::max(BT2020_TO_709[i][0] * linearPQ[0] +
+                                   BT2020_TO_709[i][1] * linearPQ[1] +
+                                   BT2020_TO_709[i][2] * linearPQ[2],
+                               0.0f);
+
+    // Scale toward white by the single largest channel instead of clipping
+    // each channel independently, so an out-of-gamut or above-white colour
+    // keeps its hue - e.g. orange stays orange rather than shifting toward
+    // yellow/white as one or two channels clip before the others.
+    const float maxChannel = std::max({linear709[0], linear709[1], linear709[2]});
+    if (maxChannel > 1.0f)
+      for (float& c : linear709)
+        c /= maxChannel;
+
+    const int r = static_cast<int>(LinearToSrgbComponent(linear709[0]) * 255.0f + 0.5f);
+    const int g = static_cast<int>(LinearToSrgbComponent(linear709[1]) * 255.0f + 0.5f);
+    const int b = static_cast<int>(LinearToSrgbComponent(linear709[2]) * 255.0f + 0.5f);
+
+    entry = (a << PIXEL_ASHIFT) | (r << PIXEL_RSHIFT) | (g << PIXEL_GSHIFT) | (b << PIXEL_BSHIFT);
+  }
 }
 
 int GetStereoscopicDepth()

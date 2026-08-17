@@ -533,6 +533,27 @@ void CRenderSystemGLES::InitialiseShaders()
     CLog::Log(LOGERROR, "GUI Shader gles_shader_texture_noblend.frag - compile and link failed");
   }
 
+  // Same source as SM_TEXTURE_NOBLEND but without KODI_TRANSFER_PQ/m_sdrPeak
+  // scaling. Used for every PGS (Blu-ray bitmap) overlay under HDR video,
+  // whether its palette is an untouched BT.2020 PQ pass-through or was
+  // already converted to SDR on the CPU before upload: either way
+  // the texture holds its final display-ready value, and the usual GUI sdrPeak
+  // boost - which assumes SDR-authored input - must not apply on top
+  // of that. See OVERLAY::GetPgsHdrHandling() for which case applies.
+  std::string definesHdrPgs;
+  if (m_limitedColorRange)
+    definesHdrPgs += "#define KODI_LIMITED_RANGE 1\n";
+
+  m_pShader[ShaderMethodGLES::SM_TEXTURE_NOBLEND_HDR_PGS] =
+      std::make_unique<CGLESShader>("gles_shader_texture_noblend.frag", definesHdrPgs);
+  if (!m_pShader[ShaderMethodGLES::SM_TEXTURE_NOBLEND_HDR_PGS]->CompileAndLink())
+  {
+    m_pShader[ShaderMethodGLES::SM_TEXTURE_NOBLEND_HDR_PGS]->Free();
+    m_pShader[ShaderMethodGLES::SM_TEXTURE_NOBLEND_HDR_PGS].reset();
+    CLog::Log(LOGERROR,
+              "GUI Shader gles_shader_texture_noblend.frag (HDR PGS) - compile and link failed");
+  }
+
   m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR] =
       std::make_unique<CGLESShader>("gles_shader_multi_blendcolor.frag", defines);
   if (!m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR]->CompileAndLink())
@@ -654,6 +675,10 @@ void CRenderSystemGLES::ReleaseShaders()
   if (m_pShader[ShaderMethodGLES::SM_TEXTURE_NOBLEND])
     m_pShader[ShaderMethodGLES::SM_TEXTURE_NOBLEND]->Free();
   m_pShader[ShaderMethodGLES::SM_TEXTURE_NOBLEND].reset();
+
+  if (m_pShader[ShaderMethodGLES::SM_TEXTURE_NOBLEND_HDR_PGS])
+    m_pShader[ShaderMethodGLES::SM_TEXTURE_NOBLEND_HDR_PGS]->Free();
+  m_pShader[ShaderMethodGLES::SM_TEXTURE_NOBLEND_HDR_PGS].reset();
 
   if (m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR])
     m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR]->Free();

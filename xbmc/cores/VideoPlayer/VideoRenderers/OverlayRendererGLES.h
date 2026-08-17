@@ -10,6 +10,7 @@
 #pragma once
 
 #include "OverlayRenderer.h"
+#include "OverlayRendererUtil.h"
 
 #include "system_gl.h"
 
@@ -38,6 +39,17 @@ public:
   float m_u;
   float m_v;
   bool m_pma; /*< is alpha in texture premultiplied in the values */
+  //! How this overlay's PGS (Blu-ray bitmap) palette was handled when its
+  //! texture was built - see OVERLAY::GetPgsHdrHandling(). NONE for every
+  //! non-PGS overlay.
+  //!
+  //! Resolved once, here, from current HdrPgsMode/display-tag state.
+  //! Unlike CDVDOverlayImage::isPgs (DVDOverlayImage.h), which is a pure
+  //! decode-time content fact, this depends on live state. It is
+  //! intentionally not re-read per frame; mode/tag changes are expected
+  //! to be accompanied by a new overlay/rebuild. If that expectation
+  //! ever changes, this must be invalidated accordingly.
+  OVERLAY::PgsHdrHandling m_pgsHandling = OVERLAY::PgsHdrHandling::NONE;
 };
 
 class COverlayGlyphGLES : public COverlay

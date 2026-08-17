@@ -294,6 +294,15 @@ std::shared_ptr<CDVDOverlay> CDVDOverlayCodecFFmpeg::GetOverlay()
     for (int i = 0; i < rect.nb_colors; i++)
       overlay->palette[i] = Endian_SwapLE32(((uint32_t *)rect.data[1])[i]);
 
+    // Mark PGS-sourced overlays. On HDR video their palette is treated as
+    // BT.2020 PQ (BD-ROM HDR whitepaper). Dolby Vision doesn't change the PG
+    // stream's own format - it only affects how reliably HDR mode itself can
+    // be detected on some platforms (see WinSystemAndroidGLESContext.cpp).
+    // Whether that requires special handling is decided when the overlay's
+    // texture is built (see DVDOverlayImage.h::isPgs and
+    // OVERLAY::GetPgsHdrHandling()).
+    overlay->isPgs = (m_pCodecContext->codec_id == AV_CODEC_ID_HDMV_PGS_SUBTITLE);
+
     m_SubtitleIndex++;
 
     return overlay;
