@@ -38,9 +38,15 @@ public:
   bool NeedConvert(AEDataFormat fmt);
   void SetPassthroughStreamType(CAEStreamInfo::DataType streamType);
 
+  int GetStreamCount() const override;
+  bool SetStream(int index) override;
+  void GetStreamInfo(int index, AudioStreamInfo& info) const override;
+
 private:
   CAEStreamInfo::DataType GetPassthroughStreamType(AVCodecID codecId, int samplerate, int profile);
 
+  std::vector<CDemuxStreamAudio*> GetAudioStreams() const;
+  CDemuxStreamAudio* GetAudioStream(int uniqueId) const;
   /*!
    * \brief Probe the currently selected stream and derive the output format from it.
    *
@@ -49,6 +55,21 @@ private:
    *                            change means decoding through an invented format.
    */
   bool InitFormatFromStream(CDemuxStreamAudio* stream, bool allowFormatFallback);
+
+  /*!
+   * \brief Commit to decoding \p newStream, disabling \p oldStream if given.
+   *
+   * On failure the codec state is undefined and the caller must either switch to another
+   * stream or treat the codec as unusable.
+   */
+  enum class SwitchResult
+  {
+    OK,
+    NOT_STARTED, /* nothing was changed, so the stream being decoded still plays */
+    FAILED,
+  };
+
+  SwitchResult SwitchToStream(CDemuxStreamAudio* newStream, CDemuxStreamAudio* oldStream);
 
   //! \brief Decide whether \p packet lies entirely before the time the last Seek() asked for.
   bool PacketIsBeforeSeek(const DemuxPacket& packet);

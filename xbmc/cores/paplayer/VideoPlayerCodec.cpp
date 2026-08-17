@@ -21,6 +21,8 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <algorithm>
+
 extern "C"
 {
 #include <libavcodec/defs.h>
@@ -199,6 +201,12 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
 
 bool VideoPlayerCodec::InitFormatFromStream(CDemuxStreamAudio* stream, bool allowFormatFallback)
 {
+  // A demuxer may rebuild its stream objects as it reads, so take what the probe below needs
+  // rather than holding the pointer across the reads it makes
+  const int64_t demuxerId = stream->demuxerId;
+  const int uniqueId = stream->uniqueId;
+  const int bitsPerCodedSample = stream->iBitsPerSample;
+
   // Reset format information
   m_srcFormat = {};
   m_format = {};
@@ -211,10 +219,20 @@ bool VideoPlayerCodec::InitFormatFromStream(CDemuxStreamAudio* stream, bool allo
   m_pResampler.reset();
   m_needConvert = false;
 
+  // The probe has to consume whatever it reads, so a skip left over from an earlier seek must not
+  // eat those packets. The caller seeks after us, which sets it again.
+  m_skipToPts = DVD_NOPTS_VALUE;
+  m_skipDecodedOutput = false;
+
   // Decode up to 10 packets to let the codec describe its output.
   // The first frame decoded may not reflect true format (eg. a partial DTS frame decodes as the 48kHz
   // core while the frames after it carry the 96kHz extension). Keep reading until two consecutive
   // frames agree.
+  //
+  // On a stream change this reads from demuxer current position rather than from the
+  // point we are about to seek to, so ffmpeg can log container parse errors here before the caller's Seek()
+  // puts it back on a cluster boundary. They are expected and recovered from. Probing after the seek
+  // would silence them, at the cost of a second seek to undo the packets the probe consumes.
   int nErrors = 0;
   bool stable = false;
   AEAudioFormat probed{};
@@ -248,13 +266,13 @@ bool VideoPlayerCodec::InitFormatFromStream(CDemuxStreamAudio* stream, bool allo
   if (!stable)
     CLog::Log(LOGDEBUG,
               "{}: Format of audio stream uniqueId={} did not settle, using {} Hz, {} channels",
-              __FUNCTION__, stream->uniqueId, probed.m_sampleRate, probed.m_channelLayout.Count());
+              __FUNCTION__, uniqueId, probed.m_sampleRate, probed.m_channelLayout.Count());
 
   m_srcFormat = probed;
   m_format = m_srcFormat;
   m_channels = m_srcFormat.m_channelLayout.Count();
   m_bitsPerSample = CAEUtil::DataFormatToBits(m_srcFormat.m_dataFormat);
-  m_bitsPerCodedSample = stream->iBitsPerSample;
+  m_bitsPerCodedSample = bitsPerCodedSample;
 
   if (m_channels == 0 || m_srcFormat.m_sampleRate == 0)
   {
@@ -262,7 +280,7 @@ bool VideoPlayerCodec::InitFormatFromStream(CDemuxStreamAudio* stream, bool allo
     if (!allowFormatFallback)
     {
       CLog::Log(LOGERROR, "{}: Could not determine the format of audio stream uniqueId={}",
-                __FUNCTION__, stream->uniqueId);
+                __FUNCTION__, uniqueId);
       return false;
     }
 
@@ -284,7 +302,7 @@ bool VideoPlayerCodec::InitFormatFromStream(CDemuxStreamAudio* stream, bool allo
   if (!m_bitRate && m_TotalTime)
     m_bitRate = (int)(((m_pInputStream->GetLength() * 1000) / m_TotalTime) * 8);
 
-  m_CodecName = m_pDemuxer->GetStreamCodecName(stream->demuxerId, m_nAudioStream);
+  m_CodecName = m_pDemuxer->GetStreamCodecName(demuxerId, m_nAudioStream);
 
   m_planes = AE_IS_PLANAR(m_srcFormat.m_dataFormat) ? m_channels : 1;
 
@@ -647,4 +665,157 @@ CAEStreamInfo::DataType VideoPlayerCodec::GetPassthroughStreamType(AVCodecID cod
     return format.m_streamInfo.m_type;
   else
     return CAEStreamInfo::DataType::STREAM_TYPE_NULL;
+}
+
+CDemuxStreamAudio* VideoPlayerCodec::GetAudioStream(int uniqueId) const
+{
+  const std::vector<CDemuxStreamAudio*> audioStreams = GetAudioStreams();
+  const auto it = std::ranges::find_if(audioStreams, [uniqueId](const CDemuxStreamAudio* stream)
+                                       { return stream->uniqueId == uniqueId; });
+  return it != audioStreams.end() ? *it : nullptr;
+}
+
+std::vector<CDemuxStreamAudio*> VideoPlayerCodec::GetAudioStreams() const
+{
+  std::vector<CDemuxStreamAudio*> audioStreams;
+  if (!m_pDemuxer)
+    return audioStreams;
+
+  for (auto* stream : m_pDemuxer->GetStreams())
+  {
+    if (stream && stream->type == StreamType::AUDIO)
+      audioStreams.push_back(static_cast<CDemuxStreamAudio*>(stream));
+  }
+  return audioStreams;
+}
+
+int VideoPlayerCodec::GetStreamCount() const
+{
+  return static_cast<int>(GetAudioStreams().size());
+}
+
+void VideoPlayerCodec::GetStreamInfo(int index, AudioStreamInfo& info) const
+{
+  auto audioStreams = GetAudioStreams();
+  if (index < 0 || index >= static_cast<int>(audioStreams.size()))
+  {
+    info.valid = false;
+    return;
+  }
+
+  CDemuxStreamAudio* stream = audioStreams[index];
+  info.valid = true;
+  info.language = stream->language;
+  info.name = stream->GetStreamName();
+  info.codecName = stream->codecName;
+  info.codecDesc = stream->GetStreamType();
+  info.channels = stream->iChannels;
+  info.samplerate = stream->iSampleRate;
+  info.bitspersample = stream->iBitsPerSample;
+  info.bitrate = stream->iBitRate;
+  info.flags = stream->flags;
+}
+
+bool VideoPlayerCodec::SetStream(int index)
+{
+  const std::vector<CDemuxStreamAudio*> audioStreams = GetAudioStreams();
+  if (index < 0 || index >= static_cast<int>(audioStreams.size()))
+  {
+    CLog::Log(LOGERROR, "{}: Invalid audio stream index {}", __FUNCTION__, index);
+    return false;
+  }
+
+  CDemuxStreamAudio* newStream = audioStreams[index];
+  if (newStream->uniqueId == m_nAudioStream)
+    return true;
+
+  // Remember the current stream so we can fall back to it if the switch goes bad
+  CDemuxStreamAudio* oldStream = nullptr;
+  for (auto* stream : audioStreams)
+  {
+    if (stream->uniqueId == m_nAudioStream)
+    {
+      oldStream = stream;
+      break;
+    }
+  }
+
+  const int newUniqueId = newStream->uniqueId;
+  const int oldUniqueId = m_nAudioStream;
+
+  const SwitchResult result = SwitchToStream(newStream, oldStream);
+  if (result == SwitchResult::NOT_STARTED)
+    return false;
+
+  if (result == SwitchResult::FAILED)
+  {
+    // The codec has already been destroyed, so try and restore. The switch may have rebuilt the
+    // stream objects, so take them again rather than reusing the pointers from before.
+    CDemuxStreamAudio* const restoreStream = GetAudioStream(oldUniqueId);
+    if (restoreStream &&
+        SwitchToStream(restoreStream, GetAudioStream(newUniqueId)) == SwitchResult::OK)
+      CLog::Log(LOGWARNING, "{}: Restored audio stream uniqueId={} after a failed switch",
+                __FUNCTION__, oldUniqueId);
+    else
+      CLog::Log(LOGERROR, "{}: Audio codec left unusable after a failed switch", __FUNCTION__);
+
+    return false;
+  }
+
+  CLog::Log(LOGDEBUG, "{}: Switched to audio stream {} (uniqueId={})", __FUNCTION__, index,
+            m_nAudioStream);
+  return true;
+}
+
+VideoPlayerCodec::SwitchResult VideoPlayerCodec::SwitchToStream(CDemuxStreamAudio* newStream,
+                                                                CDemuxStreamAudio* oldStream)
+{
+  const int64_t demuxerId = newStream->demuxerId;
+  const int uniqueId = newStream->uniqueId;
+  const bool hasOldStream = oldStream != nullptr;
+  const int64_t oldDemuxerId = hasOldStream ? oldStream->demuxerId : 0;
+  const int oldUniqueId = hasOldStream ? oldStream->uniqueId : -1;
+
+  // Open the stream before describing it. A demuxer is free to complete or correct a stream's
+  // properties as it opens it, and to rebuild the stream object while doing so.
+  m_pDemuxer->EnableStream(demuxerId, uniqueId, true);
+  m_pDemuxer->OpenStream(demuxerId, uniqueId);
+  newStream = GetAudioStream(uniqueId);
+
+  // Build the codec before anything else is disturbed, so that failure leaves the stream that
+  // is playing untouched
+  std::unique_ptr<CDVDAudioCodec> codec;
+  if (newStream)
+  {
+    CDVDStreamInfo hint(*newStream, true);
+    const CAEStreamInfo::DataType ptStreamType =
+        GetPassthroughStreamType(hint.codec, hint.samplerate, hint.profile);
+
+    codec = CDVDFactoryCodec::CreateAudioCodec(hint, *m_processInfo, true, true, ptStreamType);
+  }
+
+  if (!codec)
+  {
+    CLog::Log(LOGERROR, "{}: Could not create audio codec for stream uniqueId={}", __FUNCTION__,
+              uniqueId);
+    if (uniqueId != m_nAudioStream)
+      m_pDemuxer->EnableStream(demuxerId, uniqueId, false);
+    return SwitchResult::NOT_STARTED;
+  }
+
+  // Past this point we are committed to the new stream
+
+  if (hasOldStream)
+    m_pDemuxer->EnableStream(oldDemuxerId, oldUniqueId, false);
+
+  m_nAudioStream = uniqueId;
+
+  // m_audioFrame borrows buffers owned by the codec, so it must be dropped first
+  m_nDecodedLen = 0;
+  m_audioFrame = {};
+  m_pAudioCodec = std::move(codec);
+
+  m_pDemuxer->Flush();
+
+  return InitFormatFromStream(newStream, false) ? SwitchResult::OK : SwitchResult::FAILED;
 }
