@@ -601,6 +601,13 @@ EpisodeExtent GetEpisodeExtent(const EpisodeExtents& episodes,
   return {start, duration};
 }
 
+// Which stream a playlist starts on says nothing about what it offers, so FLAG_DEFAULT is not
+// part of comparing one stream with another. Everything else about a stream is.
+StreamFlags GetComparableFlags(StreamFlags flags)
+{
+  return static_cast<StreamFlags>(flags & ~StreamFlags::FLAG_DEFAULT);
+}
+
 // Whether candidateStream offers everything stream does.
 //
 // The two must have the same language, name and flags - and the candidate must then
@@ -608,7 +615,7 @@ EpisodeExtent GetEpisodeExtent(const EpisodeExtents& episodes,
 bool IsStreamCovered(const AudioStreamInfo& stream, const AudioStreamInfo& candidateStream)
 {
   if (stream.language != candidateStream.language || stream.name != candidateStream.name ||
-      stream.flags != candidateStream.flags)
+      GetComparableFlags(stream.flags) != GetComparableFlags(candidateStream.flags))
     return false;
 
   // A channel count of zero means unknown, so only compare them when both are known
@@ -623,7 +630,14 @@ bool IsStreamCovered(const AudioStreamInfo& stream, const AudioStreamInfo& candi
 // Subtitle streams have no comparable ordering of quality, so they have to match
 bool IsStreamCovered(const SubtitleStreamInfo& stream, const SubtitleStreamInfo& candidateStream)
 {
-  return stream == candidateStream;
+  // Compared as a whole rather than field by field, so a field added to SubtitleStreamInfo is
+  // taken into account here without having to be added here too
+  SubtitleStreamInfo comparable{stream};
+  SubtitleStreamInfo comparableCandidate{candidateStream};
+  comparable.flags = GetComparableFlags(comparable.flags);
+  comparableCandidate.flags = GetComparableFlags(comparableCandidate.flags);
+
+  return comparable == comparableCandidate;
 }
 
 // Whether every stream of subset has a distinct counterpart in superset that covers it. Streams are
