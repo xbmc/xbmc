@@ -797,6 +797,13 @@ void CApplicationPlayer::SetDynamicRangeCompression(long drc)
     player->SetDynamicRangeCompression(drc);
 }
 
+void CApplicationPlayer::NotifyAudioChainReady()
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    player->NotifyAudioChainReady();
+}
+
 void CApplicationPlayer::LoadPage(int p, int sp, unsigned char* buffer)
 {
   std::shared_ptr<IPlayer> player = GetInternal();

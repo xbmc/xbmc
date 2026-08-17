@@ -572,6 +572,11 @@ enum AEDataFormat CActiveAEStream::GetDataFormat() const
   return m_format.m_dataFormat;
 }
 
+bool CActiveAEStream::HasSinkFormatChanged() const
+{
+  return m_sinkFormatChanged;
+}
+
 void CActiveAEStream::RegisterAudioCallback(IAudioCallback* pCallback)
 {
 }

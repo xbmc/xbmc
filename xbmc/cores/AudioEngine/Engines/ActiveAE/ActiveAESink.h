@@ -162,6 +162,10 @@ protected:
   int m_sinkLatency;
   std::unique_ptr<CAEBitstreamPacker> m_packer;
   bool m_needIecPack{false};
+  bool m_silenceFiller{false};
+  //! \brief Armed at sink open, dropped once content follows the filler.
+  bool m_fillerArmed{false};
+  bool m_fillerUsed{false};
   bool m_streamNoise;
 };
 
