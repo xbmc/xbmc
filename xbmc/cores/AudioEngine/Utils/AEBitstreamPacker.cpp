@@ -71,6 +71,8 @@ void CAEBitstreamPacker::Pack(CAEStreamInfo &info, uint8_t* data, int size)
     default:
       CLog::Log(LOGERROR, "CAEBitstreamPacker::Pack - no pack function");
   }
+
+  RetainBurst();
 }
 
 bool CAEBitstreamPacker::PackPause(CAEStreamInfo &info, unsigned int millis, bool iecBursts)
@@ -110,6 +112,27 @@ bool CAEBitstreamPacker::PackPause(CAEStreamInfo &info, unsigned int millis, boo
   return true;
 }
 
+bool CAEBitstreamPacker::PackLastBurst()
+{
+  if (m_lastBurst.empty())
+    return false;
+
+  memcpy(m_packedBuffer, m_lastBurst.data(), m_lastBurst.size());
+  m_dataSize = static_cast<unsigned int>(m_lastBurst.size());
+  m_pauseDuration = 0;
+  return true;
+}
+
+void CAEBitstreamPacker::RetainBurst()
+{
+  // Whole bursts only: DTS-HD and E-AC3 leave m_dataSize at zero while
+  // they accumulate.
+  if (m_dataSize == 0 || m_dataSize > sizeof(m_packedBuffer))
+    return;
+
+  m_lastBurst.assign(m_packedBuffer, m_packedBuffer + m_dataSize);
+}
+
 unsigned int CAEBitstreamPacker::GetSize() const
 {
   return m_dataSize;
@@ -124,6 +147,8 @@ void CAEBitstreamPacker::Reset()
 {
   m_dataSize = 0;
   m_pauseDuration = 0;
+  // The retained burst belongs to the stream that is ending.
+  m_lastBurst.clear();
   m_packedBuffer[0] = 0;
 }
 

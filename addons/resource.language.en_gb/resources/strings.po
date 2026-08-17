@@ -18201,6 +18201,30 @@ msgctxt "#34113"
 msgid "To keep certain AVRs powered we send an inaudible random noise signal. You can disable this setting if you are using headphone or analog output."
 msgstr ""
 
+#. label for setting audiooutput.delayformatchange
+#: system/settings/settings.xml
+msgctxt "#34131"
+msgid "Wait for the receiver after an audio format change"
+msgstr ""
+
+#. Description of setting with label #34131 "Wait for the receiver after an audio format change"
+#: system/settings/settings.xml
+msgctxt "#34132"
+msgid "Hold playback while a receiver locks on to a new pass-through format, so the start of a film is not lost. A maximum, not a fixed wait."
+msgstr ""
+
+#. label for setting audiooutput.silencefiller
+#: system/settings/settings.xml
+msgctxt "#34133"
+msgid "Repeat the last audio frame while waiting"
+msgstr ""
+
+#. Description of setting with label #34133 "Repeat the last audio frame while waiting"
+#: system/settings/settings.xml
+msgctxt "#34134"
+msgid "Keeps a valid frame on the wire during the wait above, so the receiver does not lose the format and have to find it again."
+msgstr ""
+
 #. Indicates if Audio Engine should include lfe when downmixing
 #: system/settings/settings.xml
 msgctxt "#34114"

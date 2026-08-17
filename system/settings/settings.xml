@@ -3380,6 +3380,14 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="audiooutput.delayformatchange" type="integer" label="34131" help="34132">
+          <level>2</level>
+          <default>0</default>
+          <constraints>
+            <options>refreshchangedelays</options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
         <setting id="audiooutput.mixsublevel" type="integer" label="34114" help="34115">
           <level>2</level>
           <default>0</default>
@@ -3560,6 +3568,14 @@
                 <condition setting="audiooutput.passthrough" operator="is">true</condition>
               </and>
             </dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="audiooutput.silencefiller" type="boolean" label="34133" help="34134">
+          <level>2</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="enable" setting="audiooutput.passthrough" operator="is">true</dependency>
           </dependencies>
           <control type="toggle" />
         </setting>
