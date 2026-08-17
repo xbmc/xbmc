@@ -263,35 +263,7 @@ bool CPlayerController::OnAction(const CAction &action)
       }
 
       case ACTION_AUDIO_NEXT_LANGUAGE:
-      {
-        if (appPlayer->GetAudioStreamCount() == 1)
-          return true;
-
-        int currentAudio = appPlayer->GetAudioStream();
-        int audioStreamCount = appPlayer->GetAudioStreamCount();
-
-        if (++currentAudio >= audioStreamCount)
-          currentAudio = 0;
-        appPlayer->SetAudioStream(currentAudio); // Set the audio stream to the one selected
-
-        std::string lan;
-        AudioStreamInfo info;
-        appPlayer->GetAudioStreamInfo(currentAudio, info);
-        if (!g_LangCodeExpander.Lookup(info.language, lan))
-          lan = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // Unknown
-
-        std::string textInfo = lan;
-        if (!info.name.empty())
-          textInfo += " - " + info.name;
-        if (!info.codecDesc.empty())
-          textInfo += " (" + info.codecDesc + ")";
-
-        std::string caption = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(460);
-        caption += StringUtils::Format(" ({}/{})", currentAudio + 1, audioStreamCount);
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, caption, textInfo,
-                                              DisplTime, false, MsgTime);
-        return true;
-      }
+        return NextAudioStream();
 
       case ACTION_DIALOG_SELECT_AUDIO:
       {
@@ -597,7 +569,54 @@ bool CPlayerController::OnAction(const CAction &action)
         break;
     }
   }
+  else if (appPlayer->IsPlayingAudio())
+  {
+    switch (action.GetID())
+    {
+      case ACTION_AUDIO_NEXT_LANGUAGE:
+        return NextAudioStream();
+
+      default:
+        break;
+    }
+  }
   return false;
+}
+
+bool CPlayerController::NextAudioStream()
+{
+  const unsigned int MsgTime = 300;
+  const unsigned int DisplTime = 2000;
+
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
+  const int audioStreamCount = appPlayer->GetAudioStreamCount();
+  if (audioStreamCount < 2)
+    return true;
+
+  int currentAudio = appPlayer->GetAudioStream();
+  if (++currentAudio >= audioStreamCount)
+    currentAudio = 0;
+  appPlayer->SetAudioStream(currentAudio); // Set the audio stream to the one selected
+
+  std::string lan;
+  AudioStreamInfo info;
+  appPlayer->GetAudioStreamInfo(currentAudio, info);
+  if (!g_LangCodeExpander.Lookup(info.language, lan))
+    lan = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // Unknown
+
+  std::string textInfo = lan;
+  if (!info.name.empty())
+    textInfo += " - " + info.name;
+  if (!info.codecDesc.empty())
+    textInfo += " (" + info.codecDesc + ")";
+
+  std::string caption = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(460);
+  caption += StringUtils::Format(" ({}/{})", currentAudio + 1, audioStreamCount);
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, caption, textInfo, DisplTime,
+                                        false, MsgTime);
+  return true;
 }
 
 void CPlayerController::ShowSlider(int action, int label, float value, float min, float delta, float max, bool modal)
