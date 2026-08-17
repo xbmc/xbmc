@@ -331,7 +331,38 @@ bool VideoPlayerCodec::Seek(int64_t iSeekTime)
 
   m_nDecodedLen = 0;
 
+  // A container can generally only seek to a point at or before the time asked for - for matroska
+  // the start of a cluster, which can be a second or more earlier. Decoding straight from there
+  // replays audio the caller believes it is already past, and since the caller keeps counting from
+  // the time it requested, the two drift apart a little further with every seek. Note where we
+  // were asked to be so ReadPCM() can drop the packets in between.
+  m_skipToPts = ret ? DVD_MSEC_TO_TIME(iSeekTime) : DVD_NOPTS_VALUE;
+
   return ret;
+}
+
+bool VideoPlayerCodec::DiscardPacketAfterSeek(const DemuxPacket& packet)
+{
+  if (m_skipToPts == DVD_NOPTS_VALUE)
+    return false;
+
+  const double pts = packet.pts != DVD_NOPTS_VALUE ? packet.pts : packet.dts;
+  if (pts == DVD_NOPTS_VALUE)
+  {
+    // Nothing to compare against, so hand the packet over and stop trying for this seek rather
+    // than discarding the whole stream
+    m_skipToPts = DVD_NOPTS_VALUE;
+    return false;
+  }
+
+  // Keep the packet that spans the requested time, not the first one starting after it
+  if (pts + packet.duration > m_skipToPts)
+  {
+    m_skipToPts = DVD_NOPTS_VALUE;
+    return false;
+  }
+
+  return true;
 }
 
 int VideoPlayerCodec::ReadPCM(uint8_t* pBuffer, size_t size, size_t* actualsize)
@@ -371,7 +402,7 @@ int VideoPlayerCodec::ReadPCM(uint8_t* pBuffer, size_t size, size_t* actualsize)
       if (pPacket)
         CDVDDemuxUtils::FreeDemuxPacket(pPacket);
       pPacket = m_pDemuxer->Read();
-    } while (pPacket && pPacket->iStreamId != m_nAudioStream);
+    } while (pPacket && (pPacket->iStreamId != m_nAudioStream || DiscardPacketAfterSeek(*pPacket)));
 
     if (!pPacket)
     {
@@ -439,7 +470,7 @@ int VideoPlayerCodec::ReadRaw(uint8_t **pBuffer, int *bufferSize)
     if (pPacket)
       CDVDDemuxUtils::FreeDemuxPacket(pPacket);
     pPacket = m_pDemuxer->Read();
-  } while (pPacket && pPacket->iStreamId != m_nAudioStream);
+  } while (pPacket && (pPacket->iStreamId != m_nAudioStream || DiscardPacketAfterSeek(*pPacket)));
 
   if (!pPacket)
   {

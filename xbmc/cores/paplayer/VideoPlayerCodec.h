@@ -41,6 +41,14 @@ public:
 private:
   CAEStreamInfo::DataType GetPassthroughStreamType(AVCodecID codecId, int samplerate, int profile);
 
+  /*!
+   * \brief Decide whether \p packet lies entirely before the time the last Seek() asked for.
+   *
+   * Consumes the pending skip once a packet covering that time is reached, so the caller keeps
+   * every packet from there on.
+   */
+  bool DiscardPacketAfterSeek(const DemuxPacket& packet);
+
   CDVDDemux* m_pDemuxer{nullptr};
   std::shared_ptr<CDVDInputStream> m_pInputStream;
   std::unique_ptr<CDVDAudioCodec> m_pAudioCodec;
@@ -49,6 +57,9 @@ private:
   std::string m_strFileName;
   int m_nAudioStream{-1};
   size_t m_nDecodedLen{0};
+
+  /*! \brief Time the last Seek() was asked for, until a packet covering it has been read */
+  double m_skipToPts{DVD_NOPTS_VALUE};
 
   bool m_bInited{false};
   bool m_bCanSeek{false};
