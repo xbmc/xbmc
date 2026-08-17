@@ -33,6 +33,7 @@
 #include <array>
 #include <chrono>
 #include <cstdint>
+#include <functional>
 #include <iterator>
 #include <map>
 #include <memory>
@@ -2443,6 +2444,16 @@ bool IsSamePresentation(const PlaylistInformation& a,
 }
 
 /*!
+ * \brief Whether the playlist presents the content picture-in-picture.
+ *
+ * \note Kodi does not play the secondary video stream.
+ */
+bool IsPictureInPicturePresentation(const PlaylistInformation& playlist)
+{
+  return playlist.hasSecondaryVideo;
+}
+
+/*!
  * \brief The playlist presenting the movie most fully of those of (near) the longest length.
  *
  * Playlists within MOVIE_EQUAL_LENGTH_TOLERANCE of one another are the same movie presented
@@ -2460,9 +2471,16 @@ const PlaylistInformation& GetBestMoviePlaylist(const std::vector<PlaylistInform
                                  return a.pgStreams.size() > b.pgStreams.size();
                                }};
 
-  const auto longest{std::ranges::max_element(playlists, {}, &PlaylistInformation::duration)};
+  // A picture-in-picture presentation is only the best a disc offers when it is all it offers
+  const bool anyFeature{
+      std::ranges::any_of(playlists, std::not_fn(IsPictureInPicturePresentation))};
+  auto candidates{
+      std::views::filter(playlists, [anyFeature](const PlaylistInformation& playlist)
+                         { return !anyFeature || !IsPictureInPicturePresentation(playlist); })};
+
+  const auto longest{std::ranges::max_element(candidates, {}, &PlaylistInformation::duration)};
   const PlaylistInformation* best{&*longest};
-  for (const auto& playlist : playlists)
+  for (const auto& playlist : candidates)
   {
     if (std::chrono::abs(playlist.duration - longest->duration) <= MOVIE_EQUAL_LENGTH_TOLERANCE &&
         offersMoreStreams(playlist, *best))
@@ -2749,7 +2767,8 @@ void PopulateMovieFileItems(
     const std::vector<PlaylistInformation>& playlists,
     const StreamDetailsProvider& getStreamDetails)
 {
-  // Sort by duration (putting mainPlaylist first if present)
+  // Sort by duration (putting mainPlaylist first if present, and any picture-in-picture
+  // presentation last however long it runs)
   auto sortedPlaylists = playlists;
   std::ranges::sort(sortedPlaylists,
                     [mainPlaylist](const PlaylistInformation& a, const PlaylistInformation& b)
@@ -2759,6 +2778,11 @@ void PopulateMovieFileItems(
 
                       if (aIsMain || bIsMain)
                         return aIsMain && !bIsMain;
+
+                      const bool aIsPiP{IsPictureInPicturePresentation(a)};
+                      const bool bIsPiP{IsPictureInPicturePresentation(b)};
+                      if (aIsPiP != bIsPiP)
+                        return bIsPiP;
 
                       if (a.duration != b.duration)
                         return a.duration > b.duration;

@@ -147,6 +147,29 @@ TEST(TestStreamParser, TheFirstStreamOfEachTypeIsFlaggedAsTheDefault)
   EXPECT_FALSE(p.pgStreams[1].flags & StreamFlags::FLAG_DEFAULT);
 }
 
+TEST(TestStreamParser, SecondaryVideoMarksAPictureInPicturePresentation)
+{
+  const std::vector<StreamInformation> audio{
+      MakeStream(ENCODING_TYPE::AUDIO_DTSHD_MASTER, 0x1100, "eng")};
+
+  BlurayPlaylistInformation feature{MakePlaylist(100, 30, audio, {})};
+  PlaylistInformation p;
+  CStreamParser::ConvertBlurayPlaylistInformation(feature, p, {}, StreamDetails::INCLUDE);
+  EXPECT_FALSE(p.hasSecondaryVideo);
+
+  // An in-movie experience carries a second video stream to show over the film. Kodi does not play
+  // it, so it is not added as a stream of the playlist - it only marks what the playlist is.
+  BlurayPlaylistInformation inMovieExperience{MakePlaylist(101, 30, audio, {})};
+  inMovieExperience.playItems[0].secondaryVideoStreams.emplace_back(
+      MakeStream(ENCODING_TYPE::VIDEO_VC1, 0x1b00, ""));
+
+  PlaylistInformation pip;
+  CStreamParser::ConvertBlurayPlaylistInformation(inMovieExperience, pip, {},
+                                                  StreamDetails::INCLUDE);
+  EXPECT_TRUE(pip.hasSecondaryVideo);
+  EXPECT_EQ(pip.videoStreams.size(), p.videoStreams.size());
+}
+
 TEST(TestStreamParser, PlaylistWithoutAStreamNumberTableFallsBackToTheClip)
 {
   // A stream number table is expected of a conforming playlist, but if it is missing the clip's

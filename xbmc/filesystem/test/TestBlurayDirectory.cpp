@@ -24,6 +24,13 @@ protected:
   {
     return CBlurayDirectory::FilterPlaylists(playlists);
   }
+
+  static void ProcessPlaylist(PlaylistMap& playlists,
+                              PlaylistInformation& titleInfo,
+                              ClipMap& clips)
+  {
+    CBlurayDirectory::ProcessPlaylist(playlists, titleInfo, clips);
+  }
 };
 
 namespace
@@ -217,4 +224,42 @@ TEST_F(TestBlurayDirectory, FilterPlaylists_RemovesAllCopiesOfADuplicate)
 
   EXPECT_TRUE(FilterPlaylists(playlists));
   EXPECT_EQ(PlaylistNumbers(playlists), (std::vector<unsigned int>{800u, 803u}));
+}
+
+// What a playlist offers has to survive being recorded, or the movie and episode searches decide
+// on a playlist described differently to the one the disc holds
+TEST_F(TestBlurayDirectory, ProcessPlaylist_CarriesThePlaylistThrough)
+{
+  PlaylistInformation titleInfo{MakePlaylist(801u, 2h, {1u, 2u}, {1min, 2min})};
+  titleInfo.clipDuration = {{1u, 1h}, {2u, 1h}};
+  titleInfo.hasSecondaryVideo = true;
+
+  AudioStreamInfo audio;
+  audio.language = "eng";
+  titleInfo.audioStreams.emplace_back(audio);
+
+  SubtitleStreamInfo subtitle;
+  subtitle.language = "fra";
+  titleInfo.pgStreams.emplace_back(subtitle);
+
+  PlaylistMap playlists;
+  ClipMap clips;
+  ProcessPlaylist(playlists, titleInfo, clips);
+
+  ASSERT_TRUE(playlists.contains(801u));
+  const PlaylistInformation& recorded{playlists[801u]};
+  EXPECT_EQ(recorded.playlist, 801u);
+  EXPECT_EQ(recorded.duration, 2h);
+  EXPECT_EQ(recorded.clips, (std::vector<unsigned int>{1u, 2u}));
+  EXPECT_EQ(recorded.chapters.size(), titleInfo.chapters.size());
+  EXPECT_EQ(recorded.audioStreams.size(), 1U);
+  EXPECT_EQ(recorded.pgStreams.size(), 1U);
+  EXPECT_EQ(recorded.languages, "eng");
+  EXPECT_TRUE(recorded.hasSecondaryVideo);
+
+  // The clips are recorded once, in the clip map, along with which playlists reference them
+  EXPECT_TRUE(recorded.clipDuration.empty());
+  ASSERT_TRUE(clips.contains(1u));
+  EXPECT_EQ(clips[1u].duration, 1h);
+  EXPECT_EQ(clips[1u].playlists, (std::vector<unsigned int>{801u}));
 }
