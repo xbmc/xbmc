@@ -42,6 +42,15 @@ private:
   CAEStreamInfo::DataType GetPassthroughStreamType(AVCodecID codecId, int samplerate, int profile);
 
   /*!
+   * \brief Probe the currently selected stream and derive the output format from it.
+   *
+   * \param allowFormatFallback if the probe yields nothing, assume 44.1kHz stereo rather than
+   *                            failing. Only safe when opening the file - guessing on a stream
+   *                            change means decoding through an invented format.
+   */
+  bool InitFormatFromStream(CDemuxStreamAudio* stream, bool allowFormatFallback);
+
+  /*!
    * \brief Decide whether \p packet lies entirely before the time the last Seek() asked for.
    *
    * Consumes the pending skip once a packet covering that time is reached, so the caller keeps
