@@ -9,7 +9,6 @@
 #include "VideoPlayerCodec.h"
 
 #include "ServiceBroker.h"
-#include "URL.h"
 #include "cores/AudioEngine/AEResampleFactory.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
@@ -331,7 +330,38 @@ bool VideoPlayerCodec::Seek(int64_t iSeekTime)
 
   m_nDecodedLen = 0;
 
+  // A container can generally only seek to a point at or before the time asked for - for matroska
+  // the start of a cluster, which can be a second or more earlier. Decoding straight from there
+  // replays audio the caller believes it is already past, and since the caller keeps counting from
+  // the time it requested, so times drift.
+  // Note where we were asked to be so ReadPCM() can drop the packets in between.
+  m_skipToPts = ret ? DVD_MSEC_TO_TIME(iSeekTime) : DVD_NOPTS_VALUE;
+  m_skipDecodedOutput = false;
+
   return ret;
+}
+
+bool VideoPlayerCodec::PacketIsBeforeSeek(const DemuxPacket& packet)
+{
+  if (m_skipToPts == DVD_NOPTS_VALUE)
+    return false;
+
+  const double pts = packet.pts != DVD_NOPTS_VALUE ? packet.pts : packet.dts;
+  if (pts == DVD_NOPTS_VALUE)
+  {
+    // Nothing to compare against, so hand the packet over and stop trying for this seek
+    m_skipToPts = DVD_NOPTS_VALUE;
+    return false;
+  }
+
+  // Keep the packet that spans the requested time
+  if (pts + packet.duration > m_skipToPts)
+  {
+    m_skipToPts = DVD_NOPTS_VALUE;
+    return false;
+  }
+
+  return true;
 }
 
 int VideoPlayerCodec::ReadPCM(uint8_t* pBuffer, size_t size, size_t* actualsize)
@@ -378,6 +408,8 @@ int VideoPlayerCodec::ReadPCM(uint8_t* pBuffer, size_t size, size_t* actualsize)
       return READ_EOF;
     }
 
+    m_skipDecodedOutput = PacketIsBeforeSeek(*pPacket);
+
     pPacket->pts = DVD_NOPTS_VALUE;
     pPacket->dts = DVD_NOPTS_VALUE;
 
@@ -390,6 +422,16 @@ int VideoPlayerCodec::ReadPCM(uint8_t* pBuffer, size_t size, size_t* actualsize)
 
     m_pAudioCodec->GetData(m_audioFrame);
     bytes = m_audioFrame.nb_frames * m_audioFrame.framesize;
+  }
+
+  if (bytes && m_skipDecodedOutput)
+  {
+    // Audio from before the seek is decoded rather than skipped, so that a codec carrying state
+    // from one frame to the next has it, and dropped here instead. A codec that needs more than
+    // one packet to produce anything relies on returning without data, so do the same.
+    m_audioFrame = {};
+    *actualsize = 0;
+    return READ_SUCCESS;
   }
 
   m_nDecodedLen = bytes;
@@ -439,7 +481,7 @@ int VideoPlayerCodec::ReadRaw(uint8_t **pBuffer, int *bufferSize)
     if (pPacket)
       CDVDDemuxUtils::FreeDemuxPacket(pPacket);
     pPacket = m_pDemuxer->Read();
-  } while (pPacket && pPacket->iStreamId != m_nAudioStream);
+  } while (pPacket && (pPacket->iStreamId != m_nAudioStream || PacketIsBeforeSeek(*pPacket)));
 
   if (!pPacket)
   {
