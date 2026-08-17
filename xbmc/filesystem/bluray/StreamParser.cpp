@@ -357,28 +357,36 @@ void CStreamParser::ConvertBlurayPlaylistInformation(const BlurayPlaylistInforma
     p.clipDuration[clip.clip] = clip.duration;
   }
 
-  if (streamDetails == StreamDetails::DEFER)
+  const DefaultStreams defaults{GetDefaultStreams(b)};
+
+  // The PlayItem's stream number table is what the playlist exposes, and in stream number order.
+  // The clip's program list is everything the m2ts carries.
+  const PlayItemInformation* playItem{GetLongestPlayItem(b)};
+  if (playItem && !(playItem->videoStreams.empty() && playItem->audioStreams.empty() &&
+                    playItem->presentationGraphicStreams.empty()))
   {
-    // Neither the .clpi nor the m2ts has been read, so describe the streams from the play item's
-    // stream number table. That gives the coding and language of every stream the playlist
-    // exposes, which is what telling playlists apart and listing their languages needs - only the
-    // details the m2ts carries (channel counts, resolutions) are missing.
-    if (const PlayItemInformation * playItem{GetLongestPlayItem(b)}; playItem)
+    if (streamDetails != StreamDetails::DEFER)
+      LogDefaultStreams(b);
+
+    for (const auto* streams :
+         {&playItem->videoStreams, &playItem->audioStreams, &playItem->presentationGraphicStreams})
     {
-      const DefaultStreams defaults{GetDefaultStreams(b)};
-      for (const auto* streams : {&playItem->videoStreams, &playItem->audioStreams,
-                                  &playItem->presentationGraphicStreams})
-      {
-        for (const StreamInformation& stream : *streams)
-          AddStream(stream, s, b.playlist, defaults, p);
-      }
+      for (const StreamInformation& stream : *streams)
+        AddStream(stream, s, b.playlist, defaults, p);
     }
     return;
   }
 
-  // Stream information must come from the same clip the M2TS analysis used (see
-  // CM2TSParser::GetStreams), otherwise the packet identifiers will not correspond and no parsed
-  // details will be found for some (or all) streams
+  if (streamDetails == StreamDetails::DEFER)
+    return;
+
+  // If the playlist has no stream number table then fall back to every stream the clip carries.
+  // Stream information must come from the same clip the M2TS analysis used, otherwise the packet
+  // identifiers will not correspond and no parsed details will be found for some (or all) streams.
+  CLog::LogFC(LOGDEBUG, LOGBLURAY,
+              "Playlist {} - no stream number table - falling back to the clip's streams",
+              b.playlist);
+
   const ClipInformation* streamClip{nullptr};
   if (const ClipInformation * playItemClip{GetLongestPlayItemClip(b)}; playItemClip)
   {
@@ -395,8 +403,6 @@ void CStreamParser::ConvertBlurayPlaylistInformation(const BlurayPlaylistInforma
 
   if (streamClip && !streamClip->programs.empty())
   {
-    LogDefaultStreams(b);
-    const DefaultStreams defaults{GetDefaultStreams(b)};
     for (const StreamInformation& stream : streamClip->programs[0].streams)
       AddStream(stream, s, b.playlist, defaults, p);
   }

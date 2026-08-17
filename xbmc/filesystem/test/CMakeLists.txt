@@ -7,7 +7,8 @@ set(SOURCES TestDirectory.cpp
             TestZipManager.cpp)
 
 if(TARGET ${APP_NAME_LC}::Bluray)
-  list(APPEND SOURCES TestBlurayDirectory.cpp)
+  list(APPEND SOURCES TestBlurayDirectory.cpp
+                      TestStreamParser.cpp)
 endif()
 
 if(TARGET ${APP_NAME_LC}::MicroHttpd)
