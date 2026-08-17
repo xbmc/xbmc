@@ -256,6 +256,15 @@ bool CAudioSinkAE::IsValidFormat(const DVDAudioFrame &audioframe)
   return true;
 }
 
+bool CAudioSinkAE::HasSinkFormatChanged()
+{
+  std::unique_lock lock(m_critSection);
+  if (!m_pAudioStream)
+    return false;
+
+  return m_pAudioStream->HasSinkFormatChanged();
+}
+
 double CAudioSinkAE::GetCacheTime()
 {
   std::unique_lock lock(m_critSection);

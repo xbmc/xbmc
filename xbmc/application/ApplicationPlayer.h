@@ -151,6 +151,7 @@ public:
   void SetAVDelay(float fValue = 0.0f);
   void SetBookmarks(const std::vector<std::chrono::milliseconds>& bookmarks);
   void SetDynamicRangeCompression(long drc);
+  void NotifyAudioChainReady();
   void SetMute(bool bOnOff);
   bool SetPlayerState(const std::string& state);
   void SetSubtitle(int iStream);

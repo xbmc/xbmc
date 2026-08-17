@@ -219,6 +219,15 @@ public:
   virtual enum AEDataFormat GetDataFormat() const = 0;
 
   /**
+   * Whether the sink was reconfigured to carry this stream, so that the format on the wire
+   * changed and a downstream device has to acquire it again.
+   * @note Latched for the life of the stream. False where the engine reused the existing sink
+   *       configuration, as a fixed output configuration does when only the source rate changed.
+   * @return True when the wire format changed
+   */
+  virtual bool HasSinkFormatChanged() const = 0;
+
+  /**
    * Return the resample ratio
    * @note This will return an undefined value if the stream is not resampling
    * @return the current resample ratio or undefined if the stream is not resampling
