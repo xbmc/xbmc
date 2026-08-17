@@ -10,47 +10,24 @@
 
 #include "Setting.h"
 #include "SettingsManager.h"
+#include "SettingsMigrationSteps.h"
 #include "settings/SettingsValueXmlSerializer.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
-#include <memory>
 #include <stdexcept>
 #include <string>
 
 // Version when the migration system was added. Early exit for upgrades to that version or lower
 constexpr int VERSION_BEFORE_MIGRATION_SYSTEM = 2;
 
-namespace
-{
-class CSettingsMigrationToV3 : public ISettingsMigrationStep
-{
-public:
-  int TargetVersion() const override { return 3; }
-  bool Apply(TiXmlElement* root) override
-  {
-    constexpr std::string_view oldSettingId = "dvds.autorun";
-    constexpr std::string_view newSettingId = "dvds.autoaction";
-
-    return CSettingsMigration::SettingConversionResult::FAILURE !=
-           CSettingsMigration::ConvertSettingBoolToInt(root, oldSettingId, newSettingId,
-                                                       {.m_default = 0, .m_false = 0, .m_true = 1});
-  }
-};
-
-CSettingsMigration::StepList BuildMigrationSteps()
-{
-  return {
-      std::make_shared<CSettingsMigrationToV3>(),
-  };
-}
-} // namespace
+using namespace KODI::SETTINGS;
 
 CSettingsMigration::CSettingsMigration() : CSettingsMigration(BuildMigrationSteps())
 {
 }
 
-CSettingsMigration::CSettingsMigration(StepList steps)
+CSettingsMigration::CSettingsMigration(MigrationStepList steps)
 {
   m_steps = std::move(steps);
   std::ranges::sort(m_steps, {}, &ISettingsMigrationStep::TargetVersion);

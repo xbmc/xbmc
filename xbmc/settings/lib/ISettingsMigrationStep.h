@@ -10,6 +10,11 @@
 
 #include "utils/XBMCTinyXML.h"
 
+#include <memory>
+#include <vector>
+
+namespace KODI::SETTINGS
+{
 class ISettingsMigrationStep
 {
 public:
@@ -17,3 +22,6 @@ public:
   virtual int TargetVersion() const = 0;
   virtual bool Apply(TiXmlElement* root) = 0;
 };
+
+using MigrationStepList = std::vector<std::shared_ptr<ISettingsMigrationStep>>;
+} // namespace KODI::SETTINGS

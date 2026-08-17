@@ -8,6 +8,7 @@ set(SOURCES ISetting.cpp
             SettingSection.cpp
             SettingsManager.cpp
             SettingsMigration.cpp
+            SettingsMigrationSteps.cpp
             SettingUpdate.cpp)
 
 set(HEADERS ISetting.h
@@ -28,6 +29,7 @@ set(HEADERS ISetting.h
             SettingSection.h
             SettingsManager.h
             SettingsMigration.h
+            SettingsMigrationSteps.h
             SettingType.h
             SettingUpdate.h)
 

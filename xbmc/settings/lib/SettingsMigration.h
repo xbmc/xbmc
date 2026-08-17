@@ -21,11 +21,9 @@ class TestConversions;
 class CSettingsMigration
 {
 public:
-  using StepList = std::vector<std::shared_ptr<ISettingsMigrationStep>>;
-
   // The constructors throw for invalid lists of steps
   CSettingsMigration();
-  CSettingsMigration(StepList steps);
+  CSettingsMigration(KODI::SETTINGS::MigrationStepList steps);
 
   /*!
    * \brief Upgrade the settings contained in \p root from \p fromVersion to \p targetVersion.
@@ -62,5 +60,5 @@ public:
                                                          const SettingBoolToIntMapping& mapping);
 
 private:
-  StepList m_steps; // steps sorted by TargetVersion() in constructor
+  KODI::SETTINGS::MigrationStepList m_steps; // steps sorted by TargetVersion() in constructor
 };

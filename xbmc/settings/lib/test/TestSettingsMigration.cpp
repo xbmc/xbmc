@@ -17,6 +17,8 @@
 
 #include <gtest/gtest.h>
 
+using namespace KODI::SETTINGS;
+
 struct StepSpec
 {
   int version;
@@ -99,7 +101,7 @@ TEST_P(TestSettingsMigrationUpdateXML, UpdateXMLSettings)
 
   std::vector<int> completed;
 
-  CSettingsMigration::StepList steps;
+  MigrationStepList steps;
   for (const auto& step : params.steps)
     steps.push_back(std::make_shared<StubStep>(step.version, step.returns, completed));
 
@@ -118,7 +120,7 @@ TEST(TestSettingsMigration, MultipleMigrationStepsSameTarget)
 {
   std::vector<int> completed;
 
-  CSettingsMigration::StepList steps;
+  MigrationStepList steps;
   steps.push_back(std::make_shared<StubStep>(3, true, completed));
   steps.push_back(std::make_shared<StubStep>(3, true, completed));
 
