@@ -579,6 +579,14 @@
     ],
     "returns": "string"
   },
+  "Player.NotifyAudioChainReady": {
+    "type": "method",
+    "description": "Report that the downstream audio chain has finished settling, releasing a playback hold early. Intended for an add-on that can observe an AV processor or receiver directly; ignored when nothing is holding",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [],
+    "returns": "string"
+  },
   "Player.GetAudioDelay": {
     "type": "method",
     "description": "Get the audio delay for the current playback",
