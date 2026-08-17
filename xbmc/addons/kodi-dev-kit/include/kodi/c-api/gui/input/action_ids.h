@@ -192,7 +192,7 @@ enum ADDON_ACTION
   /// @brief <b>`55 `</b>: Decrease avsync delay.  Can b used in videoFullScreen.xml window id=2005
   ADDON_ACTION_AUDIO_DELAY_PLUS = 55,
 
-  /// @brief <b>`56 `</b>: Select next language in movie.  Can b used in videoFullScreen.xml window id=2005
+  /// @brief <b>`56 `</b>: Select the next audio stream. Despite the name, the streams it cycles need not differ in language, and it applies to music playback as well as video.
   ADDON_ACTION_AUDIO_NEXT_LANGUAGE = 56,
 
   /// @brief <b>`57 `</b>: Switch 2 next resolution. Can b used during screen calibration settingsScreenCalibration.xml windowid=11

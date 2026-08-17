@@ -164,7 +164,9 @@ constexpr const int ACTION_AUDIO_DELAY_MIN = 54;
 //! Decrease avsync delay.  Can be used in videoFullScreen.xml window id=2005
 constexpr const int ACTION_AUDIO_DELAY_PLUS = 55;
 
-//! Select next language in movie.  Can be used in videoFullScreen.xml window id=2005
+//! Select the next audio stream. Despite the name, the streams it cycles need not differ in
+//! language - alternate mixes of one language are common in music files - and it applies to music
+//! playback as well as video.
 constexpr const int ACTION_AUDIO_NEXT_LANGUAGE = 56;
 
 //! Switch 2 next resolution. Can b used during screen calibration
