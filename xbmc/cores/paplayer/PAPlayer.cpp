@@ -1083,6 +1083,23 @@ int PAPlayer::GetCacheLevel() const
 
 void PAPlayer::GetAudioStreamInfo(int index, AudioStreamInfo& info) const
 {
+  std::unique_lock lock(m_streamsLock);
+
+  const StreamInfo* si = PlayingStream();
+  if (!si)
+    return;
+
+  if (index == CURRENT_STREAM)
+    index = si->m_audioStream;
+
+  // Language, name and codec description are only known to the demuxer, so get from decoder
+  si->m_decoder.GetStreamInfo(index, info);
+
+  if (index != si->m_audioStream)
+    return;
+
+  // For the stream being decoded prefer the values the codec reports
+  info.valid = true;
   info.bitrate = m_playerGUIData.m_audioBitrate;
   info.channels = m_playerGUIData.m_channelCount;
   info.codecName = m_playerGUIData.m_codec;
