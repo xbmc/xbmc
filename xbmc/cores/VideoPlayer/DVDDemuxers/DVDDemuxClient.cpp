@@ -23,6 +23,7 @@
 extern "C"
 {
 #include <libavcodec/defs.h>
+#include <libavutil/pixdesc.h>
 }
 
 class CDemuxStreamClientInternal
@@ -273,6 +274,18 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
           stv->changes++;
           stv->disabled = false;
         }
+        // no 8-bit default here unlike CDVDDemuxFFmpeg, 0 keeps the depth
+        // unknown so consumers derive it from the pixel format
+        const AVPixFmtDescriptor* desc =
+            av_pix_fmt_desc_get(static_cast<AVPixelFormat>(stream->m_parser->format));
+        if (desc != nullptr && desc->comp[0].depth != 0 && desc->comp[0].depth != stv->bitDepth)
+        {
+          CLog::LogF(LOGDEBUG, "({}) bitdepth changed from {} to {}", st->uniqueId, stv->bitDepth,
+                     desc->comp[0].depth);
+          stv->bitDepth = desc->comp[0].depth;
+          stv->changes++;
+          stv->disabled = false;
+        }
         if (stream->m_context->sample_aspect_ratio.num && stream->m_context->height)
         {
           double fAspect =
@@ -486,6 +499,10 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
     streamVideo->iBitRate = source->iBitRate;
     if (source->extraData)
     {
+      // a parsed bit depth belongs to the coded stream it came from, reset to
+      // unknown when the add-on replaces the extradata
+      if (source->extraData != streamVideo->extraData)
+        streamVideo->bitDepth = 0;
       streamVideo->extraData = source->extraData;
     }
     streamVideo->colorPrimaries = source->colorPrimaries;
