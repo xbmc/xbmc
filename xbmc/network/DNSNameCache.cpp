@@ -11,7 +11,9 @@
 #include "network/Network.h"
 #include "utils/log.h"
 
+#include <cstdint>
 #include <mutex>
+#include <string>
 #include <tuple>
 #include <utility>
 
@@ -28,6 +30,37 @@
 #if defined(TARGET_FREEBSD)
 #include <sys/socket.h>
 #endif
+
+namespace
+{
+/*!
+ * \brief Check whether an address can never be used to reach a remote host
+ *
+ * Resolvers do hand out loopback addresses for names that belong to another machine, e.g. an
+ * AAAA record of ::1 for a host whose A record is its real address. RFC 6724 destination
+ * address sorting puts such an address first, so the first result of a lookup cannot be
+ * trusted to be reachable.
+ */
+bool IsUnusableForRemoteHost(const addrinfo* info)
+{
+  switch (info->ai_family)
+  {
+    case AF_INET:
+    {
+      const uint32_t address =
+          ntohl(reinterpret_cast<const sockaddr_in*>(info->ai_addr)->sin_addr.s_addr);
+      return address == INADDR_ANY || (address >> 24) == 127;
+    }
+    case AF_INET6:
+    {
+      const in6_addr& address = reinterpret_cast<const sockaddr_in6*>(info->ai_addr)->sin6_addr;
+      return IN6_IS_ADDR_UNSPECIFIED(&address) || IN6_IS_ADDR_LOOPBACK(&address);
+    }
+    default:
+      return true;
+  }
+}
+} // unnamed namespace
 
 bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAddress)
 {
@@ -60,10 +93,35 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
 
   if (getaddrinfo(strHostName.c_str(), nullptr, &hints, &res) == 0)
   {
-    strIpAddress = CNetworkBase::GetIpStr(res->ai_addr);
+    // take the first address that can reach a remote host, but keep an unreachable one as a
+    // fallback so that a name which only resolves to loopback, e.g. "localhost", still works
+    std::string fallback;
+    for (const addrinfo* info = res; info; info = info->ai_next)
+    {
+      std::string address = CNetworkBase::GetIpStr(info->ai_addr);
+      if (address.empty())
+        continue;
+
+      if (IsUnusableForRemoteHost(info))
+      {
+        if (fallback.empty())
+          fallback = std::move(address);
+        continue;
+      }
+
+      strIpAddress = std::move(address);
+      break;
+    }
     freeaddrinfo(res);
-    Add(strHostName, strIpAddress);
-    return true;
+
+    if (strIpAddress.empty())
+      strIpAddress = std::move(fallback);
+
+    if (!strIpAddress.empty())
+    {
+      Add(strHostName, strIpAddress);
+      return true;
+    }
   }
 
   CLog::Log(LOGERROR, "Unable to lookup host: '{}'", strHostName);
