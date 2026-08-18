@@ -65,9 +65,14 @@ void AddOptionsAndSortMethods(const CURL& url,
                               bool blurayMenuSupport)
 {
   // Add all titles and menu options
+  std::string file{url.GetFileName()};
+  URIUtils::RemoveSlashAtEnd(file);
   CDiscDirectoryHelper::AddRootOptions(url, items, allTitlesType,
-                                       blurayMenuSupport ? AddMenuOption::ADD_MENU
-                                                         : AddMenuOption::NO_MENU);
+                                       (!StringUtils::EndsWith(file, "/all")
+                                            ? AddMenuAndAllTitlesOptions::ADD_ALL_TITLES
+                                            : AddMenuAndAllTitlesOptions::NONE) |
+                                           (blurayMenuSupport ? AddMenuAndAllTitlesOptions::ADD_MENU
+                                                              : AddMenuAndAllTitlesOptions::NONE));
 
   items.AddSortMethod(SortBy::TRACK_NUMBER, 554,
                       LABEL_MASKS("%L", "%D", "%L", "")); // FileName, Duration | Foldername, empty
@@ -744,14 +749,14 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
       else
         CLog::LogF(LOGDEBUG, "Invalid path {} for bluray playlist parsing", file);
 
-      const bool success{!items.IsEmpty()};
+      if (items.IsEmpty())
+        return false;
 
       // Add all titles and menu option (if menus supported on disc)
-      if (!StringUtils::EndsWith(file, "/all"))
-        AddOptionsAndSortMethods(m_url, items, CDiscDirectoryHelper::AllTitles::MOVIES,
-                                 HasMenuSupport());
+      AddOptionsAndSortMethods(m_url, items, CDiscDirectoryHelper::AllTitles::MOVIES,
+                               HasMenuSupport());
 
-      return success;
+      return true;
     }
 
     if (StringUtils::StartsWith(file, "root/main"))
