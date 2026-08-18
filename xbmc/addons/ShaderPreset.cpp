@@ -127,11 +127,8 @@ bool CShaderPresetAddon::LoadPreset(const std::string& presetPath,
     video_shader videoShader = {};
     if (shaderPresetAddon->ReadShaderPreset(videoShader))
     {
-      if (shaderPresetAddon->ResolveParameters(videoShader))
-      {
-        TranslateShaderPreset(videoShader, shaderPreset);
-        bSuccess = true;
-      }
+      TranslateShaderPreset(videoShader, shaderPreset);
+      bSuccess = true;
       shaderPresetAddon->FreeShaderPreset(videoShader);
     }
   }
