@@ -624,8 +624,13 @@ bool IsStreamCovered(const AudioStreamInfo& stream, const AudioStreamInfo& candi
       stream.channels > candidateStream.channels)
     return false;
 
-  return StreamUtils::GetCodecPriority(stream.codecName) <=
-         StreamUtils::GetCodecPriority(candidateStream.codecName);
+  // Codecs of equal priority are equally good but not interchangeable
+  const int priority{StreamUtils::GetCodecPriority(stream.codecName)};
+  const int candidatePriority{StreamUtils::GetCodecPriority(candidateStream.codecName)};
+  if (priority == candidatePriority)
+    return stream.codecName == candidateStream.codecName;
+
+  return priority < candidatePriority;
 }
 
 // Subtitle streams have no comparable ordering of quality, so they have to match

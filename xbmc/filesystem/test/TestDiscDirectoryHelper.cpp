@@ -1701,6 +1701,52 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_IdenticalPlaylist_BetterCode
   EXPECT_EQ(GetPlaylists(items), expected);
 }
 
+// Playlist 650 offers English in a codec ranked equal to the one episode playlist 602 offers it
+// in. Equally good is not the same as interchangeable - the two are different lossless codecs and
+// a viewer may want either - so 650 is an alternative and both should be offered for episode 2
+TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_IdenticalPlaylist_EquallyRankedCodecOffered)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{MakeThreeEpisodes()};
+
+  // 602 carries English as TrueHD, so DTS-HD MA is neither poorer nor better, just different
+  PlaylistMap playlists{MakeIdenticalPlaylistDisc(
+      MakePlaylist(650u, 2400s, {1001u}, {2400s}, "eng", {MakeAudioStream("dtshd_ma", "eng")}))};
+  ClipMap clips{MakeIdenticalPlaylistDiscClips()};
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 1, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 2);
+  const std::set<unsigned int> expected{602u, 650u};
+  EXPECT_EQ(GetPlaylists(items), expected);
+}
+
+// As above for the object-based codecs, which are rival systems rather than tiers - a DTS:X
+// presentation is not covered by a Dolby Atmos one, so both should be offered for episode 2
+TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_IdenticalPlaylist_RivalObjectCodecOffered)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{MakeThreeEpisodes()};
+
+  PlaylistMap playlists{MakeIdenticalPlaylistDisc(
+      MakePlaylist(650u, 2400s, {1001u}, {2400s}, "eng", {MakeAudioStream("dtshd_ma_x", "eng")}),
+      {MakeAudioStream("truehd_atmos", "eng"), MakeAudioStream("ac3", "spa"),
+       MakeAudioStream("ac3", "fra")})};
+  ClipMap clips{MakeIdenticalPlaylistDiscClips()};
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 1, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 2);
+  const std::set<unsigned int> expected{602u, 650u};
+  EXPECT_EQ(GetPlaylists(items), expected);
+}
+
 // A playlist offering a language the candidate carries in a better codec, alongside one the
 // candidate does not carry at all, is a genuine alternative and both should be offered for
 // episode 2

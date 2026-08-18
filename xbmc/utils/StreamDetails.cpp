@@ -158,14 +158,8 @@ bool CStreamDetailAudio::IsWorseThan(const CStreamDetail &that) const
     return true;
 
   const auto& sda = static_cast<const CStreamDetailAudio&>(that);
-  // First choice is the thing with the most channels
-  if (sda.m_iChannels > m_iChannels)
-    return true;
-  if (m_iChannels > sda.m_iChannels)
-    return false;
-
-  // In case of a tie, revert to codec priority
-  return StreamUtils::GetCodecPriority(sda.m_strCodec) > StreamUtils::GetCodecPriority(m_strCodec);
+  return StreamUtils::CompareAudioQuality(m_strCodec, m_iChannels, sda.m_strCodec,
+                                          sda.m_iChannels) < 0;
 }
 
 CStreamDetailSubtitle::CStreamDetailSubtitle() :
@@ -570,10 +564,39 @@ std::string CStreamDetails::GetSubtitleLanguage(int idx) const
     return "";
 }
 
+int CStreamDetails::GetPreferredAudioStreamIndex(const std::string& language) const
+{
+  if (language.empty())
+    return 0;
+
+  int index{0};
+  int bestIndex{0};
+  const CStreamDetailAudio* best{nullptr};
+
+  for (const auto& iter : m_vecItems)
+  {
+    if (iter->m_eType != CStreamDetail::AUDIO)
+      continue;
+
+    index++;
+
+    const auto* audio{static_cast<const CStreamDetailAudio*>(iter.get())};
+    if (!g_LangCodeExpander.CompareISO639Codes(audio->m_strLanguage, language))
+      continue;
+
+    if (!best || StreamUtils::CompareAudioQuality(audio->m_strCodec, audio->m_iChannels,
+                                                  best->m_strCodec, best->m_iChannels) > 0)
+    {
+      best = audio;
+      bestIndex = index;
+    }
+  }
+
+  return bestIndex;
+}
+
 std::string CStreamDetails::GetDefaultAudioLanguage() const
 {
-  // Index 1 is the first stream in the order the streams were added, whereas index 0 is the
-  // stream best matching the user's language preferences
   return GetAudioLanguage(1);
 }
 
