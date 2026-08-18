@@ -173,6 +173,7 @@ bool CGameClient::Initialize(void)
   m_ifc.game->toKodi->kodiInstance = this;
   m_ifc.game->toKodi->EnableHardwareRendering = cb_enable_hardware_rendering;
   m_ifc.game->toKodi->CloseGame = cb_close_game;
+  m_ifc.game->toKodi->GetPlaybackSpeed = cb_get_playback_speed;
   m_ifc.game->toKodi->OpenStream = cb_open_stream;
   m_ifc.game->toKodi->GetStreamBuffer = cb_get_stream_buffer;
   m_ifc.game->toKodi->AddStreamData = cb_add_stream_data;
@@ -701,6 +702,15 @@ void CGameClient::cb_close_game(KODI_HANDLE kodiInstance)
 {
   CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
                                              static_cast<void*>(new CAction(ACTION_STOP)));
+}
+
+double CGameClient::cb_get_playback_speed(KODI_HANDLE kodiInstance)
+{
+  CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
+  if (!gameClient)
+    return 0.0;
+
+  return gameClient->m_playbackSpeed;
 }
 
 KODI_GAME_STREAM_HANDLE CGameClient::cb_open_stream(KODI_HANDLE kodiInstance,
