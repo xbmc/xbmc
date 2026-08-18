@@ -90,6 +90,9 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
   hints.ai_family = AF_UNSPEC;
   hints.ai_socktype = SOCK_STREAM;
   hints.ai_flags |= AI_CANONNAME;
+  // don't get offered addresses of a family this host has no address configured for, they
+  // could never be connected to
+  hints.ai_flags |= AI_ADDRCONFIG;
 
   if (getaddrinfo(strHostName.c_str(), nullptr, &hints, &res) == 0)
   {
