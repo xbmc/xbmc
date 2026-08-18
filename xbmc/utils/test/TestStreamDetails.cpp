@@ -545,3 +545,66 @@ TEST(TestStreamDetails, Source_SurvivesCopyAssignment)
   EXPECT_EQ(CStreamDetail::EXTERNAL, subtitleCopy.GetSource());
   EXPECT_EQ(CStreamDetail::STREAM_DETAILS_VERSION, subtitleCopy.GetVersion());
 }
+
+namespace
+{
+// Builds a CStreamDetails carrying audio and subtitle streams in the order given, as a bluray
+// playlist's streams are stored in stream number order.
+CStreamDetails MakeStreamDetailsWithLanguages(const std::vector<std::string>& audioLanguages,
+                                              const std::vector<std::string>& subtitleLanguages)
+{
+  CStreamDetails details;
+  for (const auto& language : audioLanguages)
+  {
+    auto* audio = new CStreamDetailAudio();
+    audio->m_strCodec = "dtshd_ma";
+    audio->m_iChannels = 6;
+    audio->m_strLanguage = language;
+    audio->SetSource(CStreamDetail::MEDIA);
+    details.AddStream(audio);
+  }
+  for (const auto& language : subtitleLanguages)
+  {
+    auto* subtitle = new CStreamDetailSubtitle();
+    subtitle->m_strLanguage = language;
+    subtitle->SetSource(CStreamDetail::MEDIA);
+    details.AddStream(subtitle);
+  }
+  details.DetermineBestStreams();
+  return details;
+}
+} // namespace
+
+TEST(TestStreamDetails, DefaultLanguage_IsTheFirstStreamNotTheBestMatch)
+{
+  // Two bluray playlists of the same movie differing only in which stream they start on must
+  // report different default languages, whatever the user's language preferences make "best".
+  const CStreamDetails all{MakeStreamDetailsWithLanguages({"eng", "jpn"}, {"eng", "fra", "jpn"})};
+  EXPECT_EQ("eng", all.GetDefaultAudioLanguage());
+  EXPECT_EQ("eng", all.GetDefaultSubtitleLanguage());
+
+  const CStreamDetails japanese{MakeStreamDetailsWithLanguages({"jpn", "eng"}, {"jpn", "eng"})};
+  EXPECT_EQ("jpn", japanese.GetDefaultAudioLanguage());
+  EXPECT_EQ("jpn", japanese.GetDefaultSubtitleLanguage());
+}
+
+TEST(TestStreamDetails, DefaultLanguage_EmptyWhenThereIsNoSuchStream)
+{
+  const CStreamDetails none{MakeStreamDetailsWithLanguages({}, {})};
+  EXPECT_EQ("", none.GetDefaultAudioLanguage());
+  EXPECT_EQ("", none.GetDefaultSubtitleLanguage());
+
+  // A playlist can offer audio without subtitles
+  const CStreamDetails audioOnly{MakeStreamDetailsWithLanguages({"eng"}, {})};
+  EXPECT_EQ("eng", audioOnly.GetDefaultAudioLanguage());
+  EXPECT_EQ("", audioOnly.GetDefaultSubtitleLanguage());
+}
+
+TEST(TestStreamDetails, DefaultLanguage_UnknownLanguageIsReportedAsEmpty)
+{
+  // A stream number table need not name a language, and an empty language must be passed
+  // through rather than falling back to another stream.
+  const CStreamDetails details{MakeStreamDetailsWithLanguages({"", "eng"}, {"", "eng"})};
+  EXPECT_EQ("", details.GetDefaultAudioLanguage());
+  EXPECT_EQ("", details.GetDefaultSubtitleLanguage());
+}

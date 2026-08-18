@@ -6784,6 +6784,57 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///     ISO 639-2 three character code: e.g. eng\, epo\, deu)
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.DefaultAudioLanguage`</b>,
+///                  \anchor ListItem_DefaultAudioLanguage
+///                  _string_,
+///     @return The language of the audio stream playback of the currently selected video starts
+///     with (an ISO 639-2 three character code: e.g. eng\, epo\, deu)
+///     @note Unlike \link ListItem_AudioLanguage `ListItem.AudioLanguage`\endlink this is the
+///     stream the source itself starts with (for a bluray playlist\, audio stream number 1)
+///     rather than the stream best matching the user's language preferences.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_DefaultAudioLanguage `ListItem.DefaultAudioLanguage`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.DefaultSubtitleLanguage`</b>,
+///                  \anchor ListItem_DefaultSubtitleLanguage
+///                  _string_,
+///     @return The language of the subtitle stream playback of the currently selected video starts
+///     with (an ISO 639-2 three character code: e.g. eng\, epo\, deu)
+///     @note The counterpart of
+///     \link ListItem_DefaultAudioLanguage `ListItem.DefaultAudioLanguage`\endlink for subtitles.
+///     This says nothing about whether subtitles are displayed to begin with.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_DefaultSubtitleLanguage `ListItem.DefaultSubtitleLanguage`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.DefaultAudioCodec`</b>,
+///                  \anchor ListItem_DefaultAudioCodec
+///                  _string_,
+///     @return The codec of the audio stream playback of the currently selected video starts with.
+///     @note Unlike \link ListItem_AudioCodec `ListItem.AudioCodec`\endlink this describes the
+///     stream the source itself starts with (for a bluray playlist\, audio stream number 1)
+///     rather than the stream playback would select for the user's language preferences. Pairs
+///     with \link ListItem_DefaultAudioLanguage `ListItem.DefaultAudioLanguage`\endlink.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_DefaultAudioCodec `ListItem.DefaultAudioCodec`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.DefaultAudioChannels`</b>,
+///                  \anchor ListItem_DefaultAudioChannels
+///                  _string_,
+///     @return The number of audio channels of the audio stream playback of the currently selected
+///     video starts with.
+///     @note Unlike \link ListItem_AudioChannels `ListItem.AudioChannels`\endlink this describes
+///     the stream the source itself starts with (for a bluray playlist\, audio stream number 1)
+///     rather than the stream playback would select for the user's language preferences. Accepts
+///     the same `DefaultLayout` parameter\, ie. `ListItem.DefaultAudioChannels(DefaultLayout)`
+///     renders 6 as 5.1. Pairs with
+///     \link ListItem_DefaultAudioLanguage `ListItem.DefaultAudioLanguage`\endlink.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_DefaultAudioChannels `ListItem.DefaultAudioChannels`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`ListItem.Property(AudioCodec.[n])`</b>,
 ///                  \anchor ListItem_Property_AudioCodec
 ///                  _string_,
@@ -7755,7 +7806,7 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 228> listitem_labels = {{
+constexpr std::array<InfoMap, 232> listitem_labels = {{
     {"thumb",                         LISTITEM_THUMB},
     {"icon",                          LISTITEM_ICON},
     {"actualicon",                    LISTITEM_ACTUAL_ICON},
@@ -7877,6 +7928,10 @@ constexpr std::array<InfoMap, 228> listitem_labels = {{
     {"audiochannels",                 LISTITEM_AUDIO_CHANNELS},
     {"audiolanguage",                 LISTITEM_AUDIO_LANGUAGE},
     {"subtitlelanguage",              LISTITEM_SUBTITLE_LANGUAGE},
+    {"defaultaudiolanguage",          LISTITEM_DEFAULT_AUDIO_LANGUAGE},
+    {"defaultsubtitlelanguage",       LISTITEM_DEFAULT_SUBTITLE_LANGUAGE},
+    {"defaultaudiocodec",             LISTITEM_DEFAULT_AUDIO_CODEC},
+    {"defaultaudiochannels",          LISTITEM_DEFAULT_AUDIO_CHANNELS},
     {"isresumable",                   LISTITEM_IS_RESUMABLE},
     {"percentplayed",                 LISTITEM_PERCENT_PLAYED},
     {"isfolder",                      LISTITEM_IS_FOLDER},
@@ -11673,7 +11728,8 @@ int CGUIInfoManager::TranslateListItem(const Property& cat,
     {
       data4 = TranslateTimeFormat(prop.param());
     }
-    else if (prop.Name() == "audiochannels" || prop.Name() == "musicchannels")
+    else if (prop.Name() == "audiochannels" || prop.Name() == "musicchannels" ||
+             prop.Name() == "defaultaudiochannels")
     {
       data3 = prop.param();
     }

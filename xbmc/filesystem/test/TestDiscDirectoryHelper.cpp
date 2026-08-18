@@ -4860,6 +4860,50 @@ TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_PictureInPicturePresentationAl
   EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 101u);
 }
 
+// The streams a playlist starts on are named alongside its chapters and duration, so that two
+// playlists presenting the same content can be told apart when a disc is browsed
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_LabelNamesTheDefaultStreams)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{
+      {20u, MakePlaylist(20u, 120min, {1u}, {60min, 60min}, "eng",
+                         {MakeAudioStream("dtshd_ma", "jpn"), MakeAudioStream("ac3", "eng")},
+                         {MakeSubtitleStream("jpn"), MakeSubtitleStream("eng")})},
+  };
+  ClipMap clips{{1u, MakeClip(120min, {20u})}};
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::SINGLE, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_TRUE(items[0]->GetLabel2().ends_with("jpn | jpn")) << items[0]->GetLabel2();
+}
+
+// A playlist naming no language for the streams it starts on says nothing to add to its label
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_LabelOmitsUnnamedDefaultStreams)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{
+      {20u,
+       MakePlaylist(20u, 120min, {1u}, {60min, 60min}, "", {MakeAudioStream("dtshd_ma", "")}, {})},
+  };
+  ClipMap clips{{1u, MakeClip(120min, {20u})}};
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::SINGLE, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(items[0]->GetLabel2().find(" | "), std::string::npos) << items[0]->GetLabel2();
+}
+
 // Playlists without video stream information are neither discarded nor used for comparison,
 // and the known main playlist is never discarded for its resolution
 TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_Resolution_UnknownAndMainPlaylist)

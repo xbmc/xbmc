@@ -2719,6 +2719,24 @@ void EndMoviePlaylistSearch(const std::vector<PlaylistInformation>& playlists)
   CLog::LogF(LOGDEBUG, "*** Movie Search End ***");
 }
 
+/*!
+ * \brief The languages of the streams a playlist starts playback with.
+ *
+ * Audio stream number 1 and presentation graphic stream number 1 of the playlist.
+ * Shows them as "eng | jpn".
+ * A stream with no languages returns an empty string.
+ */
+std::string GetDefaultStreamLanguages(const PlaylistInformation& information)
+{
+  std::vector<std::string> languages;
+  if (!information.audioStreams.empty() && !information.audioStreams.front().language.empty())
+    languages.emplace_back(information.audioStreams.front().language);
+  if (!information.pgStreams.empty() && !information.pgStreams.front().language.empty())
+    languages.emplace_back(information.pgStreams.front().language);
+
+  return StringUtils::Join(languages, " | ");
+}
+
 std::shared_ptr<CFileItem> GenerateMovieItem(const CURL& url,
                                              unsigned int playlist,
                                              unsigned int mainPlaylist,
@@ -2732,9 +2750,6 @@ std::shared_ptr<CFileItem> GenerateMovieItem(const CURL& url,
   // Get clips
   const std::chrono::milliseconds duration{information.duration};
 
-  // Get languages
-  const std::string langs{information.languages};
-
   CVideoInfoTag* itemTag{item->GetVideoInfoTag()};
   itemTag->SetDuration(static_cast<int>(duration.count() / 1000));
   item->SetProperty("bluray_playlist", playlist);
@@ -2747,11 +2762,16 @@ std::shared_ptr<CFileItem> GenerateMovieItem(const CURL& url,
   item->SetTitle(buf);
   item->SetLabel(buf);
 
-  const std::string chap{StringUtils::Format(
+  std::string label2{StringUtils::Format(
       CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25007),
       information.chapters.size(),
       StringUtils::SecondsToTimeString(static_cast<int>(duration.count() / 1000)))};
-  item->SetLabel2(chap);
+
+  // The streams a playlist starts on are what tells playlists offering the same content apart
+  if (const std::string languages{GetDefaultStreamLanguages(information)}; !languages.empty())
+    label2 += " | " + languages;
+
+  item->SetLabel2(label2);
 
   item->SetSize(0);
   item->SetArt("icon", "DefaultVideo.png");

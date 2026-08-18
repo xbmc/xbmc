@@ -570,6 +570,28 @@ std::string CStreamDetails::GetSubtitleLanguage(int idx) const
     return "";
 }
 
+std::string CStreamDetails::GetDefaultAudioLanguage() const
+{
+  // Index 1 is the first stream in the order the streams were added, whereas index 0 is the
+  // stream best matching the user's language preferences
+  return GetAudioLanguage(1);
+}
+
+std::string CStreamDetails::GetDefaultAudioCodec() const
+{
+  return GetAudioCodec(1);
+}
+
+int CStreamDetails::GetDefaultAudioChannels() const
+{
+  return GetAudioChannels(1);
+}
+
+std::string CStreamDetails::GetDefaultSubtitleLanguage() const
+{
+  return GetSubtitleLanguage(1);
+}
+
 void CStreamDetails::Archive(CArchive& ar)
 {
   if (ar.IsStoring())

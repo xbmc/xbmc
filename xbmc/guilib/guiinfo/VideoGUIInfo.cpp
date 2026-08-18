@@ -518,6 +518,27 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
       case LISTITEM_SUBTITLE_LANGUAGE:
         value = tag->m_streamDetails.GetSubtitleLanguage();
         return true;
+      case LISTITEM_DEFAULT_AUDIO_LANGUAGE:
+        value = tag->m_streamDetails.GetDefaultAudioLanguage();
+        return true;
+      case LISTITEM_DEFAULT_SUBTITLE_LANGUAGE:
+        value = tag->m_streamDetails.GetDefaultSubtitleLanguage();
+        return true;
+      case LISTITEM_DEFAULT_AUDIO_CODEC:
+        value = tag->m_streamDetails.GetDefaultAudioCodec();
+        return true;
+      case LISTITEM_DEFAULT_AUDIO_CHANNELS:
+      {
+        const auto formatted{CGUIInfoUtils::FormatAudioChannels(
+            info.GetData3(), tag->m_streamDetails.GetDefaultAudioChannels())};
+
+        if (formatted.has_value())
+        {
+          value = formatted.value();
+          return true;
+        }
+        break;
+      }
       case LISTITEM_FILENAME:
       case LISTITEM_FILE_EXTENSION:
       case LISTITEM_FILENAME_NO_EXTENSION:
