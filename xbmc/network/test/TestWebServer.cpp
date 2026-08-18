@@ -34,7 +34,7 @@
 
 using namespace XFILE;
 
-#define WEBSERVER_HOST          "localhost"
+#define WEBSERVER_HOST          "127.0.0.1"
 
 #define TEST_URL_JSONRPC        "jsonrpc"
 

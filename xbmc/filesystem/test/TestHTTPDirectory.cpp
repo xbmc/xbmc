@@ -27,7 +27,7 @@
 
 using namespace XFILE;
 
-#define WEBSERVER_HOST "localhost"
+#define WEBSERVER_HOST "127.0.0.1"
 
 #define SOURCE_PATH "xbmc/filesystem/test/data/httpdirectory/"
 
