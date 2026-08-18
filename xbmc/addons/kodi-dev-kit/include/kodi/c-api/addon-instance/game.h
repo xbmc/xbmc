@@ -1262,6 +1262,7 @@ extern "C"
     GAME_ERROR(__cdecl* Reset)(const struct AddonInstance_Game*);
     GAME_ERROR(__cdecl* HwContextReset)(const struct AddonInstance_Game*);
     GAME_ERROR(__cdecl* HwContextDestroy)(const struct AddonInstance_Game*);
+    GAME_ERROR(__cdecl* AudioAvailable)(const AddonInstance_Game*);
     bool(__cdecl* HasFeature)(const struct AddonInstance_Game*, const char*, const char*);
     game_input_topology*(__cdecl* GetTopology)(const struct AddonInstance_Game*);
     void(__cdecl* FreeTopology)(const struct AddonInstance_Game*, struct game_input_topology*);

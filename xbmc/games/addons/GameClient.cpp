@@ -549,6 +549,17 @@ void CGameClient::RunFrame()
     try
     {
       LogError(m_ifc.game->toAddon->RunFrame(m_ifc.game), "RunFrame()");
+
+      // A client using the asynchronous audio interface produces no audio of
+      // its own accord: it waits to be asked, once per frame, and writes what
+      // it has from this thread. One that is never asked is silent, and since
+      // the frame rate is paced against the audio it delivers, it also runs as
+      // fast as the machine allows. Clients on the ordinary synchronous path
+      // answer this with GAME_ERROR_NOT_IMPLEMENTED and are unaffected.
+      const GAME_ERROR audioError = m_ifc.game->toAddon->AudioAvailable(m_ifc.game);
+      if (audioError != GAME_ERROR_NO_ERROR && audioError != GAME_ERROR_NOT_IMPLEMENTED)
+        LogError(audioError, "AudioAvailable()");
+
       m_hasFrameRun = true;
     }
     catch (...)
