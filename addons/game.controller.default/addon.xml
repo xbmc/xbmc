@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="game.controller.default"
         name="Default Controller"
-        version="1.0.47"
+        version="1.0.49"
         provider-name="Team Kodi">
     <extension point="kodi.game.controller" library="resources/layout.xml"/>
     <extension point="xbmc.addon.metadata">
@@ -17,6 +17,7 @@
         <summary lang="da_DK">Standard controller</summary>
         <summary lang="de_DE">Standardcontroller</summary>
         <summary lang="en_GB">Default Controller</summary>
+        <summary lang="eo">Defaŭlta ludregilo</summary>
         <summary lang="es_ES">Mando por defecto</summary>
         <summary lang="es_MX">Mando por defecto</summary>
         <summary lang="et_EE">Vaikimisi juhtseade</summary>
@@ -52,6 +53,7 @@
         <description lang="da_DK">Mediecentrets standardcontroller er baseret på Xbox 360-controlleren.</description>
         <description lang="de_DE">Der Standard-Mediacenter-Controller basiert auf dem Xbox 360 Controller.</description>
         <description lang="en_GB">The default media center controller is based on the Xbox 360 controller.</description>
+        <description lang="eo">La defaŭlta ludregilo de aŭdvidaĵa centro estas bazita sur ludregilo de Xbox 360.</description>
         <description lang="es_ES">El mando por defecto del media center está basado en el mando de Xbox 360.</description>
         <description lang="es_MX">El mando por defecto de Kodi se basa en el control de Xbox 360.</description>
         <description lang="et_EE">Meediakeskuse vaikejuhtseade põhineb Xbox 360 juhtseadmel.</description>
@@ -85,6 +87,7 @@
         <disclaimer lang="da_DK">Kildeangivelse: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="de_DE">Bildnachweis: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="en_GB">Image credit: Wikipedia (wikipedia.org)</disclaimer>
+        <disclaimer lang="eo">Bilda fonto: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="es_ES">Crédito de la imagen: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="es_MX">Crédito de la imagen: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="et_EE">Pildi allikas: Vikipeedia (wikipedia.org)</disclaimer>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="game.controller.snes"
         name="SNES Controller"
-        version="1.0.47"
+        version="1.0.49"
         provider-name="Team Kodi">
     <extension point="kodi.game.controller" library="resources/layout.xml"/>
     <extension point="xbmc.addon.metadata">
@@ -17,6 +17,7 @@
         <summary lang="da_DK">SNES controller</summary>
         <summary lang="de_DE">SNES-Controller</summary>
         <summary lang="en_GB">SNES controller</summary>
+        <summary lang="eo">SNES-ludregilo</summary>
         <summary lang="es_ES">Mando SNES</summary>
         <summary lang="es_MX">Control de SNES</summary>
         <summary lang="et_EE">SNES juhtseade</summary>
@@ -47,10 +48,11 @@
         <description lang="be_BY">SNES (таксама вядомая як Super NES або Super Nintendo) - 16-бітавая гульнявая кансоль, выпушчаная ў 1990. Па ўзоры яе кантролераў ствараліся кантролеры для PlayStation, Dreamcast, Xbox і Wii Classic.</description>
         <description lang="bs_BA">Super Nintendo (također poznat kao Super NES ili SNES) je 16-bitna konzola objavljena 1990-te godine. Dizajn džojstika poslužio je kao inspiracija za PlayStation, Dreamcast, Xbox i Wii Classic džojstike.</description>
         <description lang="ca_ES">La SNES (també coneguda com Super NES o Super Nintendo) és una consola de 16 bits llançada el 1990. El disseny del comandament va servir d&apos;inspiració per als comandaments de PlayStation, Dreamcast, Xbox i Wii Classic.</description>
-        <description lang="cs_CZ">SNES (taky známé jako Super NES nebo Super Nintendo) je 16 bitová konzole vydaná v roce 1990. Návrh ovladače posloužil jako inspirace pro PlayStation, Dreamcast, Xbox a Wii Classic.</description>
+        <description lang="cs_CZ">SNES (známá také jako Super NES nebo Super Nintendo) je 16bitová konzole vydaná v roce 1990. Design ovladače posloužil jako inspirace pro ovladače PlayStation, Dreamcast, Xbox a Wii Classic.</description>
         <description lang="da_DK">SNES (også kendt som Super NES eller Super Nintendo) er en 16-bit konsol udgivet i 1990. Controllerdesignet fungerede som inspiration til PlayStation-, Dreamcast-, Xbox- og Wii Classic-controllere.</description>
         <description lang="de_DE">SNES (auch bekannt als Super NES oder Super Nintendo) ist eine 1990 veröffentlichte 16-bit Konsole. Das Controller-Design diente als Inspiration für die Controller von Playstation, Dreamcast, Xbox und Wii Classic.</description>
         <description lang="en_GB">The SNES (also known as Super NES or Super Nintendo) is a 16-bit console released in 1990. The controller design served as inspiration for the PlayStation, Dreamcast, Xbox and Wii Classic controllers.</description>
+        <description lang="eo">SNES (ankaŭ konata kiel Super NES aŭ Super Nintendo) estas 16-bita konzolo eldonita en jaro 1990. Ĝia ludregila fasono estis inspiro por la ludregiloj de PlayStation, Dreamcast, Xbox kaj Wii Classic.</description>
         <description lang="es_ES">La SNES (también conocida como Super NES o Super Nintendo) es una consola de 16-bit lanzada en 1990. El diseño de su mando sirvió de inspiracion para la PlayStation, Dreamcast, Xbox y los Mandos Clásicos de Wii.</description>
         <description lang="es_MX">La SNES (también conocida como Super NES o Super Nintendo) es una consola de 16-bit lanzada en 1990. El diseño del control sirvió como inspiración para los controles de PlayStation, Dreamcast, Xbox, y de la Wii Classic.</description>
         <description lang="et_EE">SNES (tuntud ka kui Super NES või Super Nintendo) on 1990. aastal välja antud 16-bitine konsool. Selle puldi disain on olnud inspiratsiooniks PlayStationi, Dreamcasti, Xboxi ja Wii Classicu pultidele.</description>
@@ -80,10 +82,11 @@
         <disclaimer lang="be_BY">Крыніца выяў: OpenEmu (openemu.org)</disclaimer>
         <disclaimer lang="bs_BA">Zasluga za sliku: OpenEmu (openemu.org)</disclaimer>
         <disclaimer lang="ca_ES">Crèdit de la imatge: OpenEmu (openemu.org)</disclaimer>
-        <disclaimer lang="cs_CZ">Zásluhy obrázku: OpenEmu (openemu.org)</disclaimer>
+        <disclaimer lang="cs_CZ">Zdroj obrázku: OpenEmu (openemu.org)</disclaimer>
         <disclaimer lang="da_DK">Kildeangivelse: OpenEmu (openemu.org)</disclaimer>
         <disclaimer lang="de_DE">Bildnachweis: OpenEmu (openemu.org)</disclaimer>
         <disclaimer lang="en_GB">Image credit: OpenEmu (openemu.org)</disclaimer>
+        <disclaimer lang="eo">Bilda fonto: OpenEmu (openemu.org)</disclaimer>
         <disclaimer lang="es_ES">Crédito de la imagen: OpenEmu (openemu.org)</disclaimer>
         <disclaimer lang="es_MX">Créditos de la imagen: OpenEmu (openemu.org)</disclaimer>
         <disclaimer lang="et_EE">Pildi autor: OpenEmu (openemu.org)</disclaimer>
