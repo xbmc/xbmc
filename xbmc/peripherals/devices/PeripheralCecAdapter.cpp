@@ -68,6 +68,7 @@ using namespace std::chrono_literals;
 #define LOCALISED_ID_TUNER_DEVICE 36053
 #define LOCALISED_ID_ALWAYS 36055
 #define LOCALISED_ID_UNLESS_PLAYING 36056
+#define LOCALISED_ID_VOLUME_ALWAYS 20422
 
 #define LOCALISED_ID_NONE 231
 
@@ -119,7 +120,8 @@ void CPeripheralCecAdapter::ResetMembers(void)
   m_bStarted = false;
   m_bHasButton = false;
   m_bIsReady = false;
-  m_bAmpControlsVolume = false;
+  m_volumeTarget = CECDEVICE_UNKNOWN;
+  m_tvVolumeTarget = CECDEVICE_UNKNOWN;
   m_strMenuLanguage = "???";
   m_lastKeypress = {};
   m_lastChange = VOLUME_CHANGE_NONE;
@@ -485,23 +487,33 @@ void CPeripheralCecAdapter::Process(void)
 
 bool CPeripheralCecAdapter::HasAudioControl(void)
 {
-  std::unique_lock lock(m_critSection);
-  return m_bAmpControlsVolume;
+  return GetVolumeTarget() != CECDEVICE_UNKNOWN;
 }
 
-void CPeripheralCecAdapter::SetAmpControlsVolume(bool bSetTo)
+cec_logical_address CPeripheralCecAdapter::GetVolumeTarget(void)
+{
+  std::unique_lock lock(m_critSection);
+  return m_volumeTarget;
+}
+
+void CPeripheralCecAdapter::SetVolumeTarget(cec_logical_address address)
 {
   {
     std::unique_lock lock(m_critSection);
-    if (m_bAmpControlsVolume == bSetTo)
+    if (m_volumeTarget == address)
       return;
   }
 
-  /* hand Kodi's volume over before the amp takes it: from that point on a mute keypress is
-     forwarded to the amp rather than clearing Kodi's own mute, which would leave Kodi muted
+  CLog::Log(LOGDEBUG, "{} - volume will be controlled {}", __FUNCTION__,
+            address == CECDEVICE_AUDIOSYSTEM ? "on the amp"
+            : address == CECDEVICE_TV        ? "on the TV"
+                                             : "by Kodi");
+
+  /* hand Kodi's volume over before the target takes it: from that point on a mute keypress is
+     forwarded over CEC rather than clearing Kodi's own mute, which would leave Kodi muted
      with no way to unmute it. setting the volume to maximum lets Kodi pass its audio through
-     unchanged, so the amp is the only thing attenuating it */
-  if (bSetTo)
+     unchanged, so the target is the only thing attenuating it */
+  if (address != CECDEVICE_UNKNOWN)
   {
     auto& components = CServiceBroker::GetAppComponents();
     const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
@@ -510,21 +522,45 @@ void CPeripheralCecAdapter::SetAmpControlsVolume(bool bSetTo)
   }
 
   std::unique_lock lock(m_critSection);
-  m_bAmpControlsVolume = bSetTo;
+  m_volumeTarget = address;
+}
+
+cec_logical_address CPeripheralCecAdapter::GetTvVolumeTarget(void)
+{
+  std::unique_lock lock(m_critSection);
+  return m_tvVolumeTarget;
+}
+
+void CPeripheralCecAdapter::SetTvVolumeTarget(cec_logical_address address)
+{
+  std::unique_lock lock(m_critSection);
+  m_tvVolumeTarget = address;
+}
+
+void CPeripheralCecAdapter::SetAmpControlsVolume(bool bSetTo)
+{
+  /* the setting rules the amp out even while it has system audio mode on */
+  const bool bToAmp = bSetTo && GetSettingInt("volume_control") != LOCALISED_ID_NONE;
+  SetVolumeTarget(bToAmp ? CECDEVICE_AUDIOSYSTEM : GetTvVolumeTarget());
 }
 
 void CPeripheralCecAdapter::SetAmpMuted(bool bSetTo)
 {
   std::unique_lock lock(m_critSection);
-  m_bIsMuted = bSetTo;
+  /* the mute state belongs to whichever device handles volume, so leave it alone while the amp
+     reports one it is not acting on */
+  if (m_volumeTarget == CECDEVICE_AUDIOSYSTEM)
+    m_bIsMuted = bSetTo;
 }
 
 void CPeripheralCecAdapter::ProcessVolumeChange(void)
 {
   bool bSendRelease(false);
   CecVolumeChange pendingVolumeChange = VOLUME_CHANGE_NONE;
+  cec_logical_address target = CECDEVICE_UNKNOWN;
   {
     std::unique_lock lock(m_critSection);
+    target = m_volumeTarget;
     auto now = std::chrono::steady_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_lastKeypress);
     if (!m_volumeChangeQueue.empty())
@@ -565,16 +601,20 @@ void CPeripheralCecAdapter::ProcessVolumeChange(void)
     }
   }
 
+  /* the target can be cleared while changes are queued, so drain the queue but send nothing */
+  if (target == CECDEVICE_UNKNOWN)
+    return;
+
   switch (pendingVolumeChange)
   {
     case VOLUME_CHANGE_UP:
-      m_cecAdapter->SendKeypress(CECDEVICE_AUDIOSYSTEM, CEC_USER_CONTROL_CODE_VOLUME_UP, false);
+      m_cecAdapter->SendKeypress(target, CEC_USER_CONTROL_CODE_VOLUME_UP, false);
       break;
     case VOLUME_CHANGE_DOWN:
-      m_cecAdapter->SendKeypress(CECDEVICE_AUDIOSYSTEM, CEC_USER_CONTROL_CODE_VOLUME_DOWN, false);
+      m_cecAdapter->SendKeypress(target, CEC_USER_CONTROL_CODE_VOLUME_DOWN, false);
       break;
     case VOLUME_CHANGE_MUTE:
-      m_cecAdapter->SendKeypress(CECDEVICE_AUDIOSYSTEM, CEC_USER_CONTROL_CODE_MUTE, false);
+      m_cecAdapter->SendKeypress(target, CEC_USER_CONTROL_CODE_MUTE, false);
       {
         std::unique_lock lock(m_critSection);
         m_bIsMuted = !m_bIsMuted;
@@ -582,7 +622,7 @@ void CPeripheralCecAdapter::ProcessVolumeChange(void)
       break;
     case VOLUME_CHANGE_NONE:
       if (bSendRelease)
-        m_cecAdapter->SendKeyRelease(CECDEVICE_AUDIOSYSTEM, false);
+        m_cecAdapter->SendKeyRelease(target, false);
       break;
   }
 }
@@ -1704,9 +1744,34 @@ void CPeripheralCecAdapterUpdateThread::UpdateMenuLanguage(void)
   }
 }
 
+void CPeripheralCecAdapterUpdateThread::UpdateTvVolumeTarget(void)
+{
+  const int iVolumeControl = m_adapter->GetSettingInt("volume_control");
+  cec_logical_address target = CECDEVICE_UNKNOWN;
+
+  if (iVolumeControl != LOCALISED_ID_NONE)
+  {
+    /* CEC 2.0 is the first version that requires a TV to act on volume commands. TVs that report
+       an older version are only addressed when the user opted in. */
+    const cec_version version = m_adapter->m_cecAdapter->GetDeviceCecVersion(CECDEVICE_TV);
+    if (version >= CEC_VERSION_2_0 || iVolumeControl == LOCALISED_ID_VOLUME_ALWAYS)
+      target = CECDEVICE_TV;
+    else
+      CLog::Log(LOGDEBUG,
+                "{} - the TV reports CEC version {}, which does not require it to act on volume "
+                "commands",
+                __FUNCTION__, m_adapter->m_cecAdapter->ToString(version));
+  }
+
+  m_adapter->SetTvVolumeTarget(target);
+}
+
 std::string CPeripheralCecAdapterUpdateThread::UpdateAudioSystemStatus(void)
 {
   std::string strAmpName;
+
+  /* the TV takes over whenever the amp is not handling volume, so settle on it first */
+  UpdateTvVolumeTarget();
 
   if (!m_adapter->m_cecAdapter->IsActiveDeviceType(CEC_DEVICE_TYPE_AUDIO_SYSTEM))
   {
@@ -1721,21 +1786,17 @@ std::string CPeripheralCecAdapterUpdateThread::UpdateAudioSystemStatus(void)
 
 #if CEC_LIB_HAS_SYSTEM_AUDIO_MODE_STATUS
   /* an amp only acts on volume keypresses while system audio mode is on. handing it the volume
-     while it is off leaves the user with no working volume control at all, since CEC 1.4b has no
-     way to change the volume anywhere else. */
+     while it is off leaves the user with no working volume control at all. */
   if (m_adapter->m_cecAdapter->SystemAudioModeStatus() != CEC_SYSTEM_AUDIO_STATUS_ON)
   {
-    CLog::Log(LOGDEBUG,
-              "{} - CEC capable amplifier found ({}), but system audio mode is off. volume will be "
-              "controlled by Kodi",
+    CLog::Log(LOGDEBUG, "{} - CEC capable amplifier found ({}), but system audio mode is off",
               __FUNCTION__, ampName);
     m_adapter->SetAmpControlsVolume(false);
     return strAmpName;
   }
 #endif
 
-  CLog::Log(LOGDEBUG, "{} - CEC capable amplifier found ({}). volume will be controlled on the amp",
-            __FUNCTION__, ampName);
+  CLog::Log(LOGDEBUG, "{} - CEC capable amplifier found ({})", __FUNCTION__, ampName);
 
   m_adapter->SetAmpControlsVolume(true);
 

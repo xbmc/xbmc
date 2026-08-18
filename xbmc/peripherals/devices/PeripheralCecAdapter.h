@@ -162,11 +162,20 @@ private:
   void GetNextKey(void);
 
   /*!
-   * @brief Move volume control between the amp and Kodi.
-   * @param bSetTo True to let the amp handle volume and mute, false to keep them in Kodi.
+   * @brief Move volume control to a device on the bus, or back to Kodi.
+   * @param address The device that handles volume and mute, CECDEVICE_UNKNOWN for Kodi's own mixer.
    *
-   * Unmutes Kodi and sets its volume to maximum when the amp takes over, so that all attenuation
+   * Unmutes Kodi and sets its volume to maximum when a device takes over, so that all attenuation
    * happens in one place. Does nothing when control is already where it is asked to be.
+   */
+  void SetVolumeTarget(CEC::cec_logical_address address);
+  CEC::cec_logical_address GetVolumeTarget(void);
+  void SetTvVolumeTarget(CEC::cec_logical_address address);
+  CEC::cec_logical_address GetTvVolumeTarget(void);
+  /*!
+   * @brief Move volume control between the amp and whatever handles it in the amp's absence.
+   * @param bSetTo True to let the amp handle volume and mute, false to hand them to the TV, or to
+   *               Kodi when the TV is not expected to act on them.
    */
   void SetAmpControlsVolume(bool bSetTo);
   void SetAmpMuted(bool bSetTo);
@@ -189,8 +198,12 @@ private:
   bool m_bStarted;
   bool m_bHasButton;
   bool m_bIsReady;
-  /* set while an amp is present and has system audio mode on: it, not Kodi, handles volume */
-  bool m_bAmpControlsVolume;
+  /* device that receives volume and mute commands, or CECDEVICE_UNKNOWN when Kodi's own mixer
+     handles them */
+  CEC::cec_logical_address m_volumeTarget;
+  /* CECDEVICE_TV while the TV is expected to act on volume commands, so that it can take over
+     whenever no amp handles them. CECDEVICE_UNKNOWN leaves those to Kodi's own mixer */
+  CEC::cec_logical_address m_tvVolumeTarget;
   std::string m_strMenuLanguage;
   CDateTime m_standbySent;
   std::vector<CecButtonPress> m_buttonQueue;
@@ -232,6 +245,7 @@ public:
 
 protected:
   void UpdateMenuLanguage(void);
+  void UpdateTvVolumeTarget(void);
   std::string UpdateAudioSystemStatus(void);
   bool WaitReady(void);
   bool SetInitialConfiguration(void);
