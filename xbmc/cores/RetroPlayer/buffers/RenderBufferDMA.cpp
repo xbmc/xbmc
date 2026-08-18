@@ -60,14 +60,22 @@ size_t CRenderBufferDMA::GetFrameSize() const
 
 uint8_t* CRenderBufferDMA::GetMemory()
 {
+  // Map first, then open CPU access over the mapping that will be written
+  uint8_t* const memory = m_bo->GetMemory();
+  if (memory == nullptr)
+    return nullptr;
+
   m_bo->SyncStart();
-  return m_bo->GetMemory();
+
+  return memory;
 }
 
 void CRenderBufferDMA::ReleaseMemory()
 {
-  m_bo->ReleaseMemory();
+  // Close CPU access while the mapping is still there, then drop it. Ending it
+  // after the unmap leaves the writes outside the bracket the GPU relies on.
   m_bo->SyncEnd();
+  m_bo->ReleaseMemory();
 }
 
 void CRenderBufferDMA::CreateTexture()
