@@ -10363,7 +10363,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
         filesToDelete = "(" + StringUtils::TrimRight(filesToDelete, ",") + ")";
 
         // Note the paths of the deleted files to have their hashes invalidated once
-        // the path rows themselves have been cleaned below - blanking a hash first would
+        // the paths no longer on disk have been cleaned below - blanking a hash first would
         // hide a path that no longer exists from the pass that deletes it.
         m_pDS->query("SELECT DISTINCT strPath FROM path JOIN files ON files.idPath=path.idPath "
                      "WHERE files.idFile IN " +
@@ -10545,24 +10545,6 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
         m_pDS->exec(sql);
       }
 
-      CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning path table");
-      sql = StringUtils::Format(
-          "DELETE FROM path "
-          "WHERE (strContent IS NULL OR strContent = '') "
-          "AND (strSettings IS NULL OR strSettings = '') "
-          "AND (strHash IS NULL OR strHash = '') "
-          "AND (exclude IS NULL OR exclude != 1) "
-          "AND (idParentPath IS NULL OR NOT EXISTS (SELECT 1 FROM (SELECT idPath FROM path) as "
-          "parentPath WHERE parentPath.idPath = path.idParentPath)) " // MySQL only fix (#5007)
-          "AND NOT EXISTS (SELECT 1 FROM files WHERE files.idPath = path.idPath) "
-          "AND NOT EXISTS (SELECT 1 FROM tvshowlinkpath WHERE tvshowlinkpath.idPath = path.idPath) "
-          "AND NOT EXISTS (SELECT 1 FROM movie WHERE movie.c{:02} = path.idPath) "
-          "AND NOT EXISTS (SELECT 1 FROM episode WHERE episode.c{:02} = path.idPath) "
-          "AND NOT EXISTS (SELECT 1 FROM musicvideo WHERE musicvideo.c{:02} = path.idPath)",
-          VIDEODB_ID_PARENTPATHID, VIDEODB_ID_EPISODE_PARENTPATHID,
-          VIDEODB_ID_MUSICVIDEO_PARENTPATHID);
-      m_pDS->exec(sql);
-
       // Clean hashes of all paths that files are deleted from
       // Otherwise there is a mismatch between the path contents and the hash in the
       // database, leading to potentially missed items on re-scan (if deleted files are
@@ -10571,6 +10553,32 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
       for (const auto& path : pathsToInvalidate)
         InvalidatePathHash(path);
       CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaned {} path hashes", pathsToInvalidate.size());
+
+      CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning path table");
+      sql = StringUtils::Format(
+          "DELETE FROM path "
+          "WHERE (strContent IS NULL OR strContent = '') "
+          "AND (strSettings IS NULL OR strSettings = '') "
+          "AND (strHash IS NULL OR strHash = '') "
+          "AND (exclude IS NULL OR exclude != 1) "
+          "AND ((idParentPath IS NULL OR NOT EXISTS (SELECT 1 FROM (SELECT idPath FROM path) as "
+          "parentPath WHERE parentPath.idPath = path.idParentPath)) " // MySQL only fix (#5007)
+          "OR NOT EXISTS (SELECT 1 FROM (SELECT idParentPath FROM path) as childPath "
+          "WHERE childPath.idParentPath = path.idPath)) "
+          "AND NOT EXISTS (SELECT 1 FROM files WHERE files.idPath = path.idPath) "
+          "AND NOT EXISTS (SELECT 1 FROM tvshowlinkpath WHERE tvshowlinkpath.idPath = path.idPath) "
+          "AND NOT EXISTS (SELECT 1 FROM movie WHERE movie.c{:02} = path.idPath) "
+          "AND NOT EXISTS (SELECT 1 FROM episode WHERE episode.c{:02} = path.idPath) "
+          "AND NOT EXISTS (SELECT 1 FROM musicvideo WHERE musicvideo.c{:02} = path.idPath)",
+          VIDEODB_ID_PARENTPATHID, VIDEODB_ID_EPISODE_PARENTPATHID,
+          VIDEODB_ID_MUSICVIDEO_PARENTPATHID);
+      // Removing an entry can leave its parent with nothing hanging off it
+      int pathCount;
+      do
+      {
+        pathCount = GetSingleValueInt("SELECT COUNT(*) FROM path");
+        m_pDS->exec(sql);
+      } while (GetSingleValueInt("SELECT COUNT(*) FROM path") < pathCount);
 
       CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning genre table");
       sql =
