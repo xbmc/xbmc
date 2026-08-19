@@ -22,6 +22,7 @@
 #include "threads/Thread.h"
 #include "utils/DiscsUtils.h"
 
+#include <atomic>
 #include <memory>
 #include <string>
 
@@ -54,9 +55,12 @@ protected:
   void UpdateDvdrom();
   DriveState PollDriveState();
 
-
-  void DetectMediaType();
-  void SetNewDVDShareUrl( const std::string& strNewUrl, bool bCDDA, const std::string& strDiscLabel );
+  //! \brief Probes the drive and publishes the result. Operates on static state
+  //! only, so it needs no instance - see UpdateState().
+  static void DetectMediaType();
+  static void SetNewDVDShareUrl(const std::string& strNewUrl,
+                                bool bCDDA,
+                                const std::string& strDiscLabel);
 
   //! \brief Discards the details of the disc that was in the drive, so that nothing
   //! describing it can be reported once it is gone. Deliberately leaves the label
@@ -75,7 +79,10 @@ private:
 
   static DriveState m_DriveState;
   static time_t m_LastPoll;
-  static CDetectDVDMedia* m_pInstance;
+  //! \brief Set while a detection thread exists. The detection itself is static, so
+  //! this is an existence flag rather than a handle - there is nothing to call
+  //! through, and hence nothing that can be used after the instance is gone.
+  static std::atomic<bool> m_bInstanceExists;
 
   static CCdInfo* m_pCdInfo;
 
