@@ -247,6 +247,23 @@ jobs:
           path: e2e-results.xml
           if-no-files-found: warn
 
+      # Only when the run was started with debug logging enabled ("Enable debug
+      # logging" on a re-run): autoconf, meson and cmake record the actual compiler and
+      # linker errors here, where the console shows only a generic failure.
+      - name: Upload build logs
+        if: always() && runner.debug == '1'
+        uses: actions/upload-artifact@v7
+        with:
+          name: build-logs-android
+          path: |
+            tools/depends/target/*/*/config.log
+            tools/depends/native/*/*/config.log
+            tools/depends/target/*/*/meson-logs/*.txt
+            tools/depends/native/*/*/meson-logs/*.txt
+            build/CMakeFiles/CMake*.log
+          if-no-files-found: ignore
+          retention-days: 7
+
       # !cancelled() matters: the concurrency group cancels in-flight runs on a new
       # push, and a cancelled run's half-built tree would otherwise be saved
       # permanently under this tools/depends tree's one cache key.
