@@ -24,6 +24,7 @@
 #include "utils/Archive.h"
 #include "utils/ArtUtils.h"
 #include "utils/Crc32.h"
+#include "utils/Digest.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/Random.h"
 #include "utils/RegExp.h"
@@ -39,6 +40,7 @@
 #include <vector>
 
 using namespace KODI;
+using KODI::UTILITY::CDigest;
 using namespace XFILE;
 
 CFileItemList::CFileItemList() : CFileItem("", true)
@@ -860,6 +862,22 @@ void CFileItemList::Stack()
     baseItem->SetPath(stackPath);
     baseItem->SetLabel(stackName);
     baseItem->SetSize(size);
+
+    // Record a digest of every part so that a change to any part is recognised in the scraper
+    CDigest partsDigest{CDigest::Type::MD5};
+    for (const int i : stack)
+    {
+      const auto& part{Get(i)};
+      partsDigest.Update(part->GetPath());
+
+      const int64_t partSize{part->GetSize()};
+      partsDigest.Update(&partSize, sizeof(partSize));
+
+      time_t partTime{0};
+      part->GetDateTime().GetAsTime(partTime);
+      partsDigest.Update(&partTime, sizeof(partTime));
+    }
+    baseItem->SetProperty(PROPERTY_STACK_DIGEST, partsDigest.Finalize());
   }
 
   // Delete unneeded items

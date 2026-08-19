@@ -25,6 +25,8 @@
 #include "video/VideoInfoTag.h"
 
 #include <fstream>
+#include <tuple>
+#include <utility>
 
 #include <gtest/gtest.h>
 
@@ -1197,6 +1199,50 @@ INSTANTIATE_TEST_SUITE_P(EpisodeLabel,
                          ValuesIn(EpisodeLabelCases),
                          [](const testing::TestParamInfo<EpisodeLabelTestCase>& info)
                          { return info.param.testName; });
+
+TEST(TestFileItemList, StackRecordsWhatItsPartsAre)
+{
+  // Nothing is read from disc here: a part naming a disc structure stacks on its label alone
+  const auto digestOf = [](const CDateTime& firstDate, int64_t firstSize,
+                           const CDateTime& secondDate, int64_t secondSize)
+  {
+    CFileItemList items(R"(D:\Movies\)");
+    for (const auto& [name, date, size] : {std::tuple{"movie_part1", firstDate, firstSize},
+                                           std::tuple{"movie_part2", secondDate, secondSize}})
+    {
+      auto item = std::make_shared<CFileItem>(
+          std::string{R"(D:\Movies\)"} + name + R"(\VIDEO_TS.IFO)", false);
+      item->SetLabel(name);
+      item->SetDateTime(date);
+      item->SetSize(size);
+      items.Add(std::move(item));
+    }
+    items.Stack();
+
+    EXPECT_EQ(items.Size(), 1);
+    return items.Size() == 1 ? items[0]->GetProperty(PROPERTY_STACK_DIGEST).asString() : "";
+  };
+
+  const CDateTime older{2020, 1, 1, 0, 0, 0};
+  const CDateTime middle{2023, 1, 1, 0, 0, 0};
+  const CDateTime newer{2026, 1, 1, 0, 0, 0};
+
+  const std::string stack{digestOf(newer, 100, older, 100)};
+  EXPECT_FALSE(stack.empty());
+
+  // the same parts always describe the same stack
+  EXPECT_EQ(digestOf(newer, 100, older, 100), stack);
+
+  // the stack takes the date and the total size of its first part, so neither a part that has
+  // changed without becoming the newest..
+  EXPECT_NE(digestOf(newer, 100, middle, 100), stack);
+
+  // ..nor one that has changed without altering the total may look the same
+  EXPECT_NE(digestOf(newer, 90, older, 110), stack);
+
+  // a change to the first part is of course seen as well
+  EXPECT_NE(digestOf(middle, 100, older, 100), stack);
+}
 
 TEST(TestFileItemList, StackSkipsUnchangedFolders)
 {
