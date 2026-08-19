@@ -41,6 +41,7 @@ public:
   // Stream management functions
   IGameClientStream* OpenStream(const game_stream_properties& properties);
   void CloseStream(IGameClientStream* stream);
+  void SetGameTiming(const game_system_timing& timingInfo);
 
   // HW rendering functions
   bool EnableHardwareRendering(const game_hw_rendering_properties& properties);

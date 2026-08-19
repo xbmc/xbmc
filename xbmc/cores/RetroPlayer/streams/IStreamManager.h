@@ -38,6 +38,13 @@ public:
   virtual void CloseStream(StreamPtr stream) = 0;
 
   /*!
+   * \brief Update the video frame rate reported by the game
+   *
+   * \param fps The new frame rate
+   */
+  virtual void SetVideoFps(float fps) = 0;
+
+  /*!
    * \brief Get a symbol from the hardware context
    *
    * \param symbol The symbol's name

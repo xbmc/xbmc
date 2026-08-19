@@ -168,8 +168,8 @@ public:
   bool RequiresGameLoop() const { return m_bRequiresGameLoop; }
   bool IsPlaying() const { return m_bIsPlaying; }
   size_t GetSerializeSize() const { return m_serializeSize; }
-  double GetFrameRate() const { return m_framerate; }
-  double GetSampleRate() const { return m_samplerate; }
+  double GetFrameRate() const { return m_framerate.load(); }
+  double GetSampleRate() const { return m_samplerate.load(); }
   void RunFrame();
 
   /*!
@@ -224,6 +224,7 @@ private:
                                            const game_hw_rendering_properties* properties);
   static void cb_close_game(KODI_HANDLE kodiInstance);
   static double cb_get_playback_speed(KODI_HANDLE kodiInstance);
+  static void cb_set_game_timing(KODI_HANDLE kodiInstance, const game_system_timing* timingInfo);
   static KODI_GAME_STREAM_HANDLE cb_open_stream(KODI_HANDLE kodiInstance,
                                                 const game_stream_properties* properties);
   static bool cb_get_stream_buffer(KODI_HANDLE kodiInstance,
@@ -290,8 +291,8 @@ private:
   bool m_bRequiresGameLoop = false;
   size_t m_serializeSize = 0;
   IGameInputCallback* m_input = nullptr; // The input callback passed to OpenFile()
-  double m_framerate = 0.0; // Video frame rate (fps)
-  double m_samplerate = 0.0; // Audio sample rate (Hz)
+  std::atomic<double> m_framerate{0.0}; // Video frame rate (fps)
+  std::atomic<double> m_samplerate{0.0}; // Audio sample rate (Hz)
   GAME_REGION m_region = GAME_REGION_UNKNOWN; // Region of the loaded game
 
   // In-game saves

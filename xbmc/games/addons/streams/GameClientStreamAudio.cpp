@@ -19,6 +19,26 @@ CGameClientStreamAudio::CGameClientStreamAudio(double sampleRate) : m_sampleRate
 {
 }
 
+CGameClientStreamAudio::~CGameClientStreamAudio()
+{
+  CloseStream();
+}
+
+void CGameClientStreamAudio::SetSampleRate(double sampleRate)
+{
+  if (m_sampleRate == sampleRate)
+    return;
+
+  m_sampleRate = sampleRate;
+
+  if (m_stream != nullptr && m_properties != nullptr)
+  {
+    m_properties->sampleRate = sampleRate;
+    if (!m_stream->OpenStream(static_cast<const RETRO::StreamProperties&>(*m_properties)))
+      CLog::Log(LOGERROR, "GAME: Failed to reopen audio stream with sample rate {:f}", sampleRate);
+  }
+}
+
 bool CGameClientStreamAudio::OpenStream(RETRO::IRetroPlayerStream* stream,
                                         const game_stream_properties& properties)
 {
@@ -29,11 +49,10 @@ bool CGameClientStreamAudio::OpenStream(RETRO::IRetroPlayerStream* stream,
     return false;
   }
 
-  std::unique_ptr<RETRO::AudioStreamProperties> audioProperties(
-      TranslateProperties(properties.audio, m_sampleRate));
-  if (audioProperties)
+  m_properties.reset(TranslateProperties(properties.audio, m_sampleRate));
+  if (m_properties)
   {
-    if (audioStream->OpenStream(static_cast<const RETRO::StreamProperties&>(*audioProperties)))
+    if (audioStream->OpenStream(static_cast<const RETRO::StreamProperties&>(*m_properties)))
       m_stream = stream;
   }
 
@@ -47,6 +66,8 @@ void CGameClientStreamAudio::CloseStream()
     m_stream->CloseStream();
     m_stream = nullptr;
   }
+
+  m_properties.reset();
 }
 
 void CGameClientStreamAudio::AddData(const game_stream_packet& packet)
