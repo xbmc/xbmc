@@ -380,31 +380,41 @@ bool CVideoDatabase::GetSubPaths(const std::string& basepath,
   return false;
 }
 
+namespace
+{
+/*! \brief Get the other alternative protocol path of a zip file path.
+ If a zip file is added using the native zip support it has a zip:// path.
+ If the archive vfs addon is then installed and the containing directory is altered (so the
+ hash is changed) then when the directory is rescanned the zip file will have an archive://
+ path and could lead to an orphaned zip:// entry.
+ Similarly, if the archive vfs addon is used first and then removed and the directory
+ contents change then rescan could lead to zip://
+ \param path the path to translate
+ \return the same path under the other protocol, or empty if not an archive path
+ */
+std::string GetArchiveProtocolAlias(const std::string& path)
+{
+  CURL url(path);
+  if (url.IsProtocol("archive"))
+    url.SetProtocol("zip");
+  else if (url.IsProtocol("zip"))
+    url.SetProtocol("archive");
+  else
+    return {};
+
+  return url.Get();
+}
+} // unnamed namespace
+
 int CVideoDatabase::AddPath(const std::string& strPath, const std::string &parentPath /*= "" */, const CDateTime& dateAdded /* = CDateTime() */)
 {
   std::string strSQL;
   try
   {
-    // Special case for zip files
-    // If a zip file is added using the native zip support it has a zip:// path
-    // If the archive vfs addon is then installed and the containing directory is altered (so the hash is changed)
-    //  then when the directory is rescanned the zip file will have an archive:// path and could lead to an orphaned zip:// entry
-    // Similarly if the archive vfs addon is used first and then removed and the directory contents change then rescan could lead to zip://
-    // So check to see if there is an existing zip:// or archive:// path and use that
+    // Use an existing zip:// or archive:// path for the same archive if there is one
     int idPath{-1};
-    CURL url(strPath);
-    if (url.IsProtocol("archive"))
-    {
-      // See if a zip://
-      url.SetProtocol("zip");
-      idPath = GetPathId(url.Get());
-    }
-    else if (url.IsProtocol("zip"))
-    {
-      // See if an archive://
-      url.SetProtocol("archive");
-      idPath = GetPathId(url.Get());
-    }
+    if (const std::string alias{GetArchiveProtocolAlias(strPath)}; !alias.empty())
+      idPath = GetPathId(alias);
     if (idPath < 0)
       idPath = GetPathId(strPath);
     if (idPath >= 0)
@@ -725,7 +735,15 @@ void CVideoDatabase::ClearPathHash(const std::string& strPath)
     std::string path{strPath};
     URIUtils::AddSlashAtEnd(path);
 
-    m_pDS->exec(PrepareSQL("update path set strHash='' where strPath='%s'", path.c_str()));
+    // An archive may be recorded under either spelling, so clear both
+    std::string alias{GetArchiveProtocolAlias(path)};
+    if (!alias.empty())
+      URIUtils::AddSlashAtEnd(alias);
+
+    m_pDS->exec(alias.empty()
+                    ? PrepareSQL("update path set strHash='' where strPath='%s'", path.c_str())
+                    : PrepareSQL("update path set strHash='' where strPath in ('%s','%s')",
+                                 path.c_str(), alias.c_str()));
   }
   catch (...)
   {
@@ -10200,19 +10218,14 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
         progress->Progress();
       }
 
+      std::vector<std::string> pathsToInvalidate;
       if (!filesToDelete.empty())
       {
         filesToDelete = "(" + StringUtils::TrimRight(filesToDelete, ",") + ")";
 
-        // Clean hashes of all paths that files are deleted from
-        // Otherwise there is a mismatch between the path contents and the hash in the
-        // database, leading to potentially missed items on re-scan (if deleted files are
-        // later re-added to a source)
-        //
-        // Collect the whole path list before invalidating them as InvalidatePathHash()
-        // overwrites the m_pDS dataset and only first path would be invalidated.
-        CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning path hashes");
-        std::vector<std::string> pathsToInvalidate;
+        // Note the paths of the deleted files to have their hashes invalidated once
+        // the path rows themselves have been cleaned below - blanking a hash first would
+        // hide a path that no longer exists from the pass that deletes it.
         m_pDS->query("SELECT DISTINCT strPath FROM path JOIN files ON files.idPath=path.idPath "
                      "WHERE files.idFile IN " +
                      filesToDelete);
@@ -10222,10 +10235,6 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
           m_pDS->next();
         }
         m_pDS->close();
-
-        for (const auto& pathToInvalidate : pathsToInvalidate)
-          InvalidatePathHash(pathToInvalidate);
-        CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaned {} path hashes", pathsToInvalidate.size());
 
         // If a movie is listed for deletion because the file of its default version has gone,
         // promote a different version and keep the movie
@@ -10398,6 +10407,12 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
           VIDEODB_ID_PARENTPATHID, VIDEODB_ID_EPISODE_PARENTPATHID,
           VIDEODB_ID_MUSICVIDEO_PARENTPATHID);
       m_pDS->exec(sql);
+
+      // Clean hashes of all paths that files were deleted from.
+      CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning path hashes");
+      for (const auto& path : pathsToInvalidate)
+        InvalidatePathHash(path);
+      CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaned {} path hashes", pathsToInvalidate.size());
 
       CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning genre table");
       sql =
@@ -11819,11 +11834,7 @@ void CVideoDatabase::InvalidatePathHash(const std::string& strPath)
 
   ScraperPtr info = GetScraperForPath(path, settings, foundDirectly);
 
-  // strPath is a known row (it comes from a files/path join), so it can be set directly.
-  // (SetPathHash includes AddPath if the path is not already known)
-  // Subsequently use ClearPathHash to ensure no paths added inadvertently.
-  // SetPathHash (via AddPath) also handles zip:// <-> archive:// aliasing
-  SetPathHash(strPath, "");
+  ClearPathHash(strPath);
   if (path != strPath)
     ClearPathHash(path);
   if (!info)
