@@ -139,7 +139,7 @@ FOR /F  %%X IN ("%1") DO (
       )
     )
   ) ELSE (
-    tar -xf %1 >NUL 2>NUL || (
+    %ZIP% x %1 >NUL 2>NUL || (
       IF %RetryDownload%==YES (
         POPD || EXIT /B 5
         ECHO WARNING! Can't extract files from archive %1!

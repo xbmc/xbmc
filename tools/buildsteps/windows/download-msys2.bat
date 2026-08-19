@@ -60,6 +60,7 @@ if "%usemirror%"=="yes" (
 )
 
 set downloaddir=%instdir%\downloads2
+set unpack_exe=%instdir%\..\Win32BuildSetup\tools\7z\7za.exe
 
 for %%b in (%*) do (
   if %%b==sh (set opt=sh)
@@ -117,8 +118,8 @@ if exist "%downloaddir%\%msysfile%" (
     echo -------------------------------------------------------------------------------
     echo.- Installing msys2 basic system
     echo -------------------------------------------------------------------------------
-    tar -xf %downloaddir%\%msysfile% -C %instdir% >NUL 2>NUL
-    )
+	%unpack_exe% x %downloaddir%\%msysfile% -so 2>NUL | %unpack_exe% x -aoa -si -ttar -o%instdir% >NUL 2>NUL
+	)
 
 if not exist %instdir%\%msys2%\usr\bin\msys-2.0.dll (
 	echo -------------------------------------------------------------------------------
@@ -426,7 +427,7 @@ if exist %instdir%\%msys2%\usr\bin\gas-preprocessor.pl goto end
     echo -------------------------------------------------------------------------------
     echo.- Installing gas-preprocessor.pl
     echo -------------------------------------------------------------------------------
-    tar -xf %downloaddir%\%gaspreprocfile% --strip-components=1 -C %instdir%\%msys2%\usr\bin *.pl >NUL 2>NUL
+    %unpack_exe% x %downloaddir%\%gaspreprocfile% -so 2>NUL | %unpack_exe% e -si -ttar -o%instdir%\%msys2%\usr\bin *.pl -r >NUL 2>NUL
 
 :end
 cd %instdir%
