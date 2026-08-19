@@ -79,7 +79,7 @@ bool CVideoGUIInfo::InitCurrentItem(CFileItem* item)
     if (!item->HasArt("thumb"))
     {
       CVideoThumbLoader loader;
-      loader.LoadItem(item);
+      loader.LoadItemCached(item);
     }
 
     // find a thumb for this stream
