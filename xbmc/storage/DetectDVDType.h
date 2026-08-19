@@ -58,7 +58,11 @@ protected:
   void DetectMediaType();
   void SetNewDVDShareUrl( const std::string& strNewUrl, bool bCDDA, const std::string& strDiscLabel );
 
-  //! \brief Discards the published disc details. Callers must hold m_muReadingMedia.
+  //! \brief Discards the details of the disc that was in the drive, so that nothing
+  //! describing it can be reported once it is gone. Deliberately leaves the label
+  //! and path alone - those are published by SetNewDVDShareUrl() and carry the
+  //! drive status (open/busy/empty) once there is no disc.
+  //! Callers must hold m_muReadingMedia.
   void Clear();
 
 private:
