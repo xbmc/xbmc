@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: XBMC Addons\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2025-12-11 16:13+0000\n"
+"PO-Revision-Date: 2026-08-22 08:16+0000\n"
 "Last-Translator: Oskari Lavinto <olavinto@protonmail.com>\n"
 "Language-Team: Finnish <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-artists-universal/fi_fi/>\n"
 "Language: fi_fi\n"
@@ -15,11 +15,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.14.3\n"
+"X-Generator: Weblate 2026.8.1\n"
 
 msgctxt "Addon Summary"
 msgid "Universal Scraper for Artists"
-msgstr "Universaali tietolähde esittäjille"
+msgstr "Universaali tietolähde artisteille"
 
 msgctxt "Addon Description"
 msgid "This scraper collects information from the following supported sites: TheAudioDb.com, MusicBrainz, last.fm, and allmusic.com, while grabs artwork from: fanart.tv, htbackdrops.com, last.fm and allmusic.com. It can be set field by field that from which site you want that specific information.[CR][CR]The initial search is always done on MusicBrainz. In case allmusic link is not added on the MusicBrainz site fields from allmusic.com cannot be fetched (very easy to add those missing links though)."
@@ -27,31 +27,31 @@ msgstr "Noutaa tietoja TheAudioDB.com, MusicBrainz, Last.fm ja AllMusic -verkkop
 
 msgctxt "#30000"
 msgid "Enable Artist Fanarts from HTBackdrops.com"
-msgstr "Nouda esittäjien fanart-kuvia HTBackdrops.com-palvelusta"
+msgstr "Nouda artistien fanart-kuvia HTBackdrops.com-palvelusta"
 
 msgctxt "#30001"
 msgid "Enable Artist Thumbs from allmusic.com"
-msgstr "Nouda esittäjien pienoiskuvia AllMusic-palvelusta"
+msgstr "Nouda artistien pienoiskuvia AllMusic-palvelusta"
 
 msgctxt "#30002"
 msgid "Enable Artist Thumbs from last.fm"
-msgstr "Nouda esittäjien pienoiskuvia Last.fm-palvelusta"
+msgstr "Nouda artistien pienoiskuvia Last.fm-palvelusta"
 
 msgctxt "#30003"
 msgid "Enable Artist Thumbs from HTBackdrops.com"
-msgstr "Nouda esittäjien pienoiskuvia HTBackdrops.com-palvelusta"
+msgstr "Nouda artistien pienoiskuvia HTBackdrops.com-palvelusta"
 
 msgctxt "#30004"
 msgid "Enable Artist Fanarts from fanart.tv"
-msgstr "Nouda esittäjien fanart-kuvia Fanart.tv-palvelusta"
+msgstr "Nouda artistien fanart-kuvia Fanart.tv-palvelusta"
 
 msgctxt "#30005"
 msgid "Enable Artist Thumbs from fanart.tv"
-msgstr "Nouda esittäjien pienoiskuvia Fanart.tv-palvelusta"
+msgstr "Nouda artistien pienoiskuvia Fanart.tv-palvelusta"
 
 msgctxt "#30006"
 msgid "Get Artist Biography from"
-msgstr "Nouda esittäjien elämäkerrat lähteestä"
+msgstr "Nouda artistien biografiat lähteestä"
 
 msgctxt "#30007"
 msgid "Artwork"
@@ -59,27 +59,27 @@ msgstr "Mediakuvitukset"
 
 msgctxt "#30008"
 msgid "Get Artist Discography from"
-msgstr "Nouda esittäjien diskografiat lähteestä"
+msgstr "Nouda artistien diskografiat lähteestä"
 
 msgctxt "#30009"
 msgid "Get Artist Genres from"
-msgstr "Nouda esittäjien lajityypit lähteestä"
+msgstr "Nouda artistien lajityypit lähteestä"
 
 msgctxt "#30010"
 msgid "Get Artist Styles from"
-msgstr "Nouda esittäjien tyylit lähteestä"
+msgstr "Nouda artistien tyylit lähteestä"
 
 msgctxt "#30011"
 msgid "Get Artist Life-Span from"
-msgstr "Nouda esittäjien elinkaaret lähteestä"
+msgstr "Nouda artistien elinkaaret lähteestä"
 
 msgctxt "#30012"
 msgid "Get Artist Moods from"
-msgstr "Nouda esittäjien tunnelmat lähteestä"
+msgstr "Nouda artistien tunnelmat lähteestä"
 
 msgctxt "#30014"
 msgid "Get Artist Years Active from"
-msgstr "Nouda esittäjien aktiivisuusvuodet lähteestä"
+msgstr "Nouda artistien aktiivisuusvuodet lähteestä"
 
 msgctxt "#30015"
 msgid "     Preferred Language"
@@ -87,23 +87,23 @@ msgstr "     Ensisijainen kieli"
 
 msgctxt "#30016"
 msgid "Fallback to Artist Biography from"
-msgstr "Varmista esittäjien biografiat lähteestä"
+msgstr "Varmista artistien biografiat lähteestä"
 
 msgctxt "#30017"
 msgid "Fallback to Artist Discography from"
-msgstr "Varmista esittäjien diskografiat lähteestä"
+msgstr "Varmista artistien diskografiat lähteestä"
 
 msgctxt "#30018"
 msgid "Fallback to Artist Genres from"
-msgstr "Varmista esittäjien lajityypit lähteestä"
+msgstr "Varmista artistien lajityypit lähteestä"
 
 msgctxt "#30019"
 msgid "Fallback to Artist Styles from"
-msgstr "Varmista esittäjien tyylit lähteestä"
+msgstr "Varmista artistien tyylit lähteestä"
 
 msgctxt "#30020"
 msgid "Fallback to Artist Life-Span from"
-msgstr "Varmista esittäjien elinkaaret lähteestä"
+msgstr "Varmista artistien elinkaaret lähteestä"
 
 msgctxt "#30021"
 msgid "Fallbacks"
@@ -111,7 +111,7 @@ msgstr "Varalähteet"
 
 msgctxt "#30022"
 msgid "Enable Artist Thumbs from theaudiodb.com"
-msgstr "Nouda esittäjien pienoiskuvia TheAudioDB-palvelusta"
+msgstr "Nouda artistien pienoiskuvia TheAudioDB-palvelusta"
 
 msgctxt "#30023"
 msgid "Enable Artist Fanarts from theaudiodb.com"
@@ -119,7 +119,7 @@ msgstr "Nouda artistien fanart-kuvia TheAudioDB-palvelusta"
 
 msgctxt "#30024"
 msgid "Fallback to Artist Moods from"
-msgstr "Varmista esittäjien tunnelmat lähteestä"
+msgstr "Varmista artistien tunnelmat lähteestä"
 
 msgctxt "#30025"
 msgid "MB Mirror"
@@ -139,16 +139,16 @@ msgstr "Nouda artistien bannereita Fanart.tv-palvelusta"
 
 msgctxt "#30029"
 msgid "Enable Artist Clearlogo from theaudiodb.com"
-msgstr "Nouda esittäjien clearlogo-kuvia TheAudioDB-palvelusta"
+msgstr "Nouda artistien clearlogo-kuvia TheAudioDB-palvelusta"
 
 msgctxt "#30030"
 msgid "Enable Artist Clearart from theaudiodb.com"
-msgstr "Nouda esittäjien clearart-kuvia TheAudioDB-palvelusta"
+msgstr "Nouda artistien clearart-kuvia TheAudioDB-palvelusta"
 
 msgctxt "#30031"
 msgid "Enable Artist Landscape from theaudiodb.com"
-msgstr "Nouda esittäjien landscape-kuvia TheAudioDB-palvelusta"
+msgstr "Nouda artistien landscape-kuvia TheAudioDB-palvelusta"
 
 msgctxt "#30032"
 msgid "Enable Artist Banner from theaudiodb.com"
-msgstr "Nouda esittäjien bannereita TheAudioDB-palvelusta"
+msgstr "Nouda artistien bannereita TheAudioDB-palvelusta"
