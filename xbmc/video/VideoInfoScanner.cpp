@@ -601,7 +601,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                   "clean list",
                   CURL::GetRedacted(strDirectory));
         if (m_bClean)
-          m_pathsToClean.insert(m_database.GetPathId(strDirectory));
+          AddPathToClean(strDirectory);
         bSkip = true;
       }
       else if (dbHash.empty())
@@ -690,7 +690,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
           if (!URIUtils::IsArchive(CURL(strDirectory)))
             m_database.SetPathHash(strDirectory, hash);
           if (m_bClean)
-            m_pathsToClean.insert(m_database.GetPathId(strDirectory));
+            AddPathToClean(strDirectory);
           CLog::Log(LOGDEBUG, "VideoInfoScanner: Finished adding information from dir {}",
                     CURL::GetRedacted(strDirectory));
         }
@@ -708,7 +708,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                         [](const auto& item) { return item->IsFolder(); }))
           m_database.SetPathHash(strDirectory, hash);
         if (m_bClean)
-          m_pathsToClean.insert(m_database.GetPathId(strDirectory));
+          AddPathToClean(strDirectory);
         CLog::Log(LOGDEBUG, "VideoInfoScanner: No (new) information was found in dir {}",
                   CURL::GetRedacted(strDirectory));
       }
@@ -2967,6 +2967,24 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
     hash = digest.Finalize();
     return count;
+  }
+
+  void CVideoInfoScanner::AddPathToClean(const std::string& directory)
+  {
+    m_pathsToClean.insert(m_database.GetPathId(directory));
+
+    // Pick up the paths the directory's disc rips and archives are anchored under - the
+    // encoded ones (bluray://, zip:// etc.) and the VIDEO_TS/BDMV directories of a rip held
+    // under its raw disc structure. Neither is ever scanned in its own right, being consumed
+    // by Stack(), so nothing else would queue them. Ordinary sub directories are left out as
+    // each is scanned, and queued, of its own accord.
+    std::vector<std::pair<int, std::string>> subPaths;
+    m_database.GetSubPaths(directory, subPaths, false);
+    for (const auto& [idPath, path] : subPaths)
+    {
+      if (!URIUtils::PathHasParent(path, directory) || URIUtils::IsDiscPath(path))
+        m_pathsToClean.insert(idPath);
+    }
   }
 
   bool CVideoInfoScanner::CanFastHash(const CFileItemList &items, const std::vector<std::string> &excludes) const

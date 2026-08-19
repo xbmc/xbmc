@@ -306,6 +306,14 @@ namespace KODI::VIDEO
      */
     bool CanFastHash(const CFileItemList &items, const std::vector<std::string> &excludes) const;
 
+    /*! \brief Queue a scanned directory to be cleaned, along with the paths holding its media
+     A disc rip or archive is not anchored in the folder that was scanned but under a
+     bluray:// or zip:// path of its own. Those are queued too, otherwise the clean never
+     looks at them and media removed with the disc stays in the library.
+     \param directory the directory that was scanned
+     */
+    void AddPathToClean(const std::string& directory);
+
     /*! \brief Process a series folder, filling in episode details and adding them to the database.
      @todo Ideally we would return InfoRet:HAVE_ALREADY if we don't have to update any episodes
      and we should return InfoRet::NOT_FOUND only if no information is found for any of
