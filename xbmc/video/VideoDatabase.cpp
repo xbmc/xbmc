@@ -10208,17 +10208,24 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
         // Otherwise there is a mismatch between the path contents and the hash in the
         // database, leading to potentially missed items on re-scan (if deleted files are
         // later re-added to a source)
+        //
+        // Collect the whole path list before invalidating them as InvalidatePathHash()
+        // overwrites the m_pDS dataset and only first path would be invalidated.
         CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning path hashes");
+        std::vector<std::string> pathsToInvalidate;
         m_pDS->query("SELECT DISTINCT strPath FROM path JOIN files ON files.idPath=path.idPath "
                      "WHERE files.idFile IN " +
                      filesToDelete);
-        int pathHashCount = m_pDS->num_rows();
         while (!m_pDS->eof())
         {
-          InvalidatePathHash(m_pDS->fv("strPath").get_asString());
+          pathsToInvalidate.emplace_back(m_pDS->fv("strPath").get_asString());
           m_pDS->next();
         }
-        CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaned {} path hashes", pathHashCount);
+        m_pDS->close();
+
+        for (const auto& pathToInvalidate : pathsToInvalidate)
+          InvalidatePathHash(pathToInvalidate);
+        CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaned {} path hashes", pathsToInvalidate.size());
 
         // If a movie is listed for deletion because the file of its default version has gone,
         // promote a different version and keep the movie
