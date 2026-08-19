@@ -120,7 +120,7 @@ void CDetectDVDMedia::UpdateDvdrom()
                           CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(502));
         CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REMOVED_MEDIA);
         CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
-        // Clear all stored info
+        // Discard the details of the disc that was in the drive
         Clear();
         // Update drive state
         waitLock.unlock();
@@ -134,13 +134,8 @@ void CDetectDVDMedia::UpdateDvdrom()
         SetNewDVDShareUrl(CServiceBroker::GetMediaManager().TranslateDevicePath(m_diskPath), false,
                           CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(503));
         m_DriveState = DriveState::NOT_READY;
-        // DVD-ROM in undefined state
-        // Better delete old CD Information
-        if (m_pCdInfo != nullptr)
-        {
-          delete m_pCdInfo;
-          m_pCdInfo = nullptr;
-        }
+        // DVD-ROM in undefined state - discard the details of the old disc
+        Clear();
         waitLock.unlock();
         CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
         CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
@@ -156,6 +151,8 @@ void CDetectDVDMedia::UpdateDvdrom()
         SetNewDVDShareUrl(CServiceBroker::GetMediaManager().TranslateDevicePath(m_diskPath), false,
                           CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(504));
         m_DriveState = DriveState::CLOSED_NO_MEDIA;
+        // Nothing in the drive, so discard the details of the old disc
+        Clear();
         // Send Message to GUI that disc has changed
         CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
         waitLock.unlock();
@@ -213,22 +210,39 @@ void CDetectDVDMedia::DetectMediaType()
     devicePath = CServiceBroker::GetMediaManager().TranslateDevicePath(m_diskPath);
   }
 
-  // Probe and store DiscInfo result
-  // even if no valid tracks are detected we might still be able to play the disc via libdvdnav or libbluray
-  // as long as they can correctly detect the disc
-  UTILS::DISCS::DiscInfo discInfo;
-  const bool haveDiscInfo = UTILS::DISCS::GetDiscInfo(discInfo, devicePath);
-
-  // Detect new CD-Information
+  // Detect new CD-Information. Scan the tracks first: this is comparatively
+  // cheap and tells us whether we should then probe for a video disc
   CCdIoSupport cdio;
   CCdInfo* pCdInfo = cdio.GetCdInfo();
+
+  // Probe and store DiscInfo result.
+  // Even if no valid tracks are detected we might still be able to play the disc
+  // via libdvdnav or libbluray as long as they can correctly detect the disc.
+  // Only skip discs that cannot possibly be a DVD or Blu-ray, i.e. ones
+  // where every track is audio.
+  UTILS::DISCS::DiscInfo discInfo;
+  bool haveDiscInfo = false;
+  if (pCdInfo == nullptr || pCdInfo->HasDataTracks())
+  {
+    haveDiscInfo = UTILS::DISCS::GetDiscInfo(discInfo, devicePath);
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "Not probing for a video disc: no data tracks on the disc");
+  }
 
   // Probing is done - lock and publish the results
   std::unique_lock waitLock(m_muReadingMedia);
 
+  // Publish the result of the probe, including a negative one (otherwise
+  // previous disc info would be used)
   if (haveDiscInfo)
   {
     m_discInfo = discInfo;
+  }
+  else
+  {
+    m_discInfo.clear();
   }
 
   // Replace the old CD-Information
@@ -238,7 +252,11 @@ void CDetectDVDMedia::DetectMediaType()
   if (m_pCdInfo == nullptr)
   {
     CLog::Log(LOGERROR, "Detection of DVD-ROM media failed.");
-    return ;
+    // Nothing could be read from the disc, so fall back to the default label rather
+    // than returning here and leaving the previous disc's details in place for
+    // GetDVDLabel()/GetDVDPath()
+    SetNewDVDShareUrl(devicePath, false, "");
+    return;
   }
   CLog::Log(LOGINFO, "Tracks overall:{}; Audio tracks:{}; Data tracks:{}",
             m_pCdInfo->GetTrackCount(), m_pCdInfo->GetAudioTrackCount(),
@@ -455,6 +473,7 @@ void CDetectDVDMedia::Clear()
   {
     m_discInfo.clear();
   }
-  m_diskLabel.clear();
-  m_diskPath.clear();
+
+  delete m_pCdInfo;
+  m_pCdInfo = nullptr;
 }
