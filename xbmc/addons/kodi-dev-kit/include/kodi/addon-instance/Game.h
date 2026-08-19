@@ -429,7 +429,7 @@ public:
   ///
   /// @remarks Only called from the add-on itself
   ///
-  double KodiGetPlaybackSpeed()
+  double GetPlaybackSpeed()
   {
     return m_instanceData->toKodi->GetPlaybackSpeed(m_instanceData->toKodi->kodiInstance);
   }
