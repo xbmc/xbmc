@@ -280,8 +280,7 @@ void CGUIDialogVideoInfo::OnInitWindow()
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_REFRESH, m_refreshEnabled && userCanWrite);
 
-  // @todo add support to edit video asset art. Until then edit art through Versions Manager.
-  if (!VIDEO::IsVideoAssetFile(*m_movieItem) && userCanWrite)
+  if (userCanWrite)
     CONTROL_ENABLE_ON_CONDITION(
         CONTROL_BTN_GET_THUMB,
         !StringUtils::StartsWithNoCase(m_movieItem->GetVideoInfoTag()->GetUniqueID(), "plugin"));
@@ -1089,8 +1088,7 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
       item->GetVideoInfoTag()->m_iBookmarkId > 0)
     buttons.Add(CONTEXT_BUTTON_UNLINK_BOOKMARK, 20405);
 
-  if (type == MediaTypeVideoCollection ||
-      (type == MediaTypeMovie && !VIDEO::IsVideoAssetFile(*item)) || type == MediaTypeTvShow ||
+  if (type == MediaTypeVideoCollection || (type == MediaTypeMovie) || type == MediaTypeTvShow ||
       type == MediaTypeSeason || type == MediaTypeEpisode)
     buttons.Add(CONTEXT_BUTTON_SET_ART, 13511);
 

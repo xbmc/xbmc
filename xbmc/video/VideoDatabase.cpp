@@ -5475,15 +5475,20 @@ bool CVideoDatabase::GetArtForAsset(int assetId,
     m_pDS2->query(sql);
     while (!m_pDS2->eof())
     {
-      if (m_pDS2->fv(0).get_asString() == MediaTypeVideoVersion)
+      const std::string mediaType{m_pDS2->fv(0).get_asString()};
+      std::string key{m_pDS2->fv(1).get_asString()};
+      std::string artUrl{m_pDS2->fv(2).get_asString()};
+
+      if (mediaType == MediaTypeVideoVersion)
       {
         // version data has priority over owner's data
-        art[m_pDS2->fv(1).get_asString()] = m_pDS2->fv(2).get_asString();
+        if (!artUrl.empty())
+          art.insert_or_assign(std::move(key), std::move(artUrl));
       }
       else if (fallback == ArtFallbackOptions::PARENT)
       {
         // insert if not yet present
-        art.try_emplace(m_pDS2->fv(1).get_asString(), m_pDS2->fv(2).get_asString());
+        art.try_emplace(std::move(key), std::move(artUrl));
       }
       m_pDS2->next();
     }
@@ -6333,22 +6338,57 @@ void CVideoDatabase::UpdateFanart(const CFileItem& item, VideoDbContentType type
     return;
   if (nullptr == m_pDS)
     return;
-  if (!item.HasVideoInfoTag() || item.GetVideoInfoTag()->m_iDbId < 0) return;
+  if (!item.HasVideoInfoTag())
+    return;
+
+  int mediaId{item.GetVideoInfoTag()->m_iDbId};
+  if (mediaId < 0)
+    return;
 
   std::string exec;
+  std::string mediaType;
+
   if (type == VideoDbContentType::TVSHOWS)
-    exec = PrepareSQL("UPDATE tvshow set c%02d='%s' WHERE idShow=%i", VIDEODB_ID_TV_FANART, item.GetVideoInfoTag()->m_fanart.m_xml.c_str(), item.GetVideoInfoTag()->m_iDbId);
+  {
+    mediaType = MediaTypeTvShow;
+
+    exec = PrepareSQL("UPDATE tvshow set c%02d='%s' WHERE idShow=%i", VIDEODB_ID_TV_FANART,
+                      item.GetVideoInfoTag()->m_fanart.m_xml.c_str(), mediaId);
+  }
   else if (type == VideoDbContentType::MOVIES)
-    exec = PrepareSQL("UPDATE movie set c%02d='%s' WHERE idMovie=%i", VIDEODB_ID_FANART, item.GetVideoInfoTag()->m_fanart.m_xml.c_str(), item.GetVideoInfoTag()->m_iDbId);
+  {
+    // Fanart candidates are shared by all versions of a movie
+    // Updating art with the video versions manager dialog uses special items/tag that don't store
+    // the movie id as the m_iDbId, special processing to retrieve from the item's path instead.
+    //! @todo use standard items and tags in the video versions manager dialog, now that nodes
+    //! representing versions and extras exist.
+    if (item.GetVideoInfoTag()->m_type == MediaTypeVideoVersion)
+    {
+      CVideoDbUrl videoUrl;
+      if (!videoUrl.FromString(item.GetPath()))
+        return;
+
+      CVariant movieIdVariant;
+      if (!videoUrl.GetOption("mediaid", movieIdVariant))
+        return;
+
+      mediaId = movieIdVariant.asInteger(-1);
+      if (mediaId < 0)
+        return;
+    }
+    mediaType = MediaTypeMovie;
+
+    exec = PrepareSQL("UPDATE movie set c%02d='%s' WHERE idMovie=%i", VIDEODB_ID_FANART,
+                      item.GetVideoInfoTag()->m_fanart.m_xml.c_str(), mediaId);
+  }
+  else
+    return;
 
   try
   {
     m_pDS->exec(exec);
 
-    if (type == VideoDbContentType::TVSHOWS)
-      AnnounceUpdate(MediaTypeTvShow, item.GetVideoInfoTag()->m_iDbId);
-    else if (type == VideoDbContentType::MOVIES)
-      AnnounceUpdate(MediaTypeMovie, item.GetVideoInfoTag()->m_iDbId);
+    AnnounceUpdate(mediaType, mediaId);
   }
   catch (...)
   {
