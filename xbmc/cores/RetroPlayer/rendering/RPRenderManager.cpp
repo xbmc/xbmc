@@ -1070,6 +1070,12 @@ void CRPRenderManager::LoadVideoFrameSync(const std::string& savestatePath)
   if (!db.GetSavestate(savestatePath, *savestate))
     return;
 
+  if (!savestate->PrepareVideoData())
+  {
+    CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Failed to prepare video data");
+    return;
+  }
+
   // Load video data
   const AVPixelFormat format = savestate->GetPixelFormat();
   const uint8_t* data = savestate->GetVideoData();

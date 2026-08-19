@@ -206,8 +206,8 @@ std::unique_ptr<ISavestate> CSavestateDatabase::RenameSavestate(const std::strin
   newSavestate->SetGameClientID(savestate->GameClientID());
   newSavestate->SetGameClientVersion(savestate->GameClientVersion());
 
-  size_t memorySize = savestate->GetMemorySize();
-  std::memcpy(newSavestate->GetMemoryBuffer(memorySize), savestate->GetMemoryData(), memorySize);
+  if (!savestate->CopyMemoryDataTo(*newSavestate))
+    return {};
 
   newSavestate->Finalize();
 
