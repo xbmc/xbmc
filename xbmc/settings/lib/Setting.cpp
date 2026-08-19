@@ -516,33 +516,39 @@ bool CSettingList::FromString(const std::vector<std::string> &value)
 
 bool CSettingList::SetValue(const SettingList &values)
 {
-  std::unique_lock lock(m_critical);
-
-  if (static_cast<int>(values.size()) < m_minimumItems ||
-      (m_maximumItems > 0 && static_cast<int>(values.size()) > m_maximumItems))
-    return false;
-
-  bool equal = values.size() == m_values.size();
-  for (size_t index = 0; index < values.size(); index++)
+  SettingList oldValues;
   {
-    if (values[index]->GetType() != GetElementType())
+    std::unique_lock lock(m_critical);
+
+    if (static_cast<int>(values.size()) < m_minimumItems ||
+        (m_maximumItems > 0 && static_cast<int>(values.size()) > m_maximumItems))
       return false;
 
-    if (equal &&
-        !values[index]->Equals(m_values[index]->ToString()))
-      equal = false;
+    bool equal = values.size() == m_values.size();
+    for (size_t index = 0; index < values.size(); index++)
+    {
+      if (values[index]->GetType() != GetElementType())
+        return false;
+
+      if (equal && !values[index]->Equals(m_values[index]->ToString()))
+        equal = false;
+    }
+
+    if (equal)
+      return true;
+
+    oldValues = m_values;
+    m_values.clear();
+    m_values.insert(m_values.begin(), values.begin(), values.end());
   }
 
-  if (equal)
-    return true;
-
-  SettingList oldValues = m_values;
-  m_values.clear();
-  m_values.insert(m_values.begin(), values.begin(), values.end());
-
+  // Run the callbacks without m_critical held, or a re-entrant read of this setting deadlocks.
   if (!OnSettingChanging(shared_from_base<CSettingList>()))
   {
-    m_values = oldValues;
+    {
+      std::unique_lock lock(m_critical);
+      m_values = oldValues;
+    }
 
     // the setting couldn't be changed because one of the
     // callback handlers failed the OnSettingChanging()
@@ -552,7 +558,10 @@ bool CSettingList::SetValue(const SettingList &values)
     return false;
   }
 
-  m_changed = toString(m_values) != toString(m_defaults);
+  {
+    std::unique_lock lock(m_critical);
+    m_changed = toString(m_values) != toString(m_defaults);
+  }
   OnSettingChanged(shared_from_base<CSettingList>());
   return true;
 }
@@ -745,17 +754,24 @@ bool CSettingBool::CheckValidity(const std::string &value) const
 
 bool CSettingBool::SetValue(bool value)
 {
-  std::unique_lock lock(m_critical);
+  bool oldValue;
+  {
+    std::unique_lock lock(m_critical);
 
-  if (value == m_value)
-    return true;
+    if (value == m_value)
+      return true;
 
-  bool oldValue = m_value;
-  m_value = value;
+    oldValue = m_value;
+    m_value = value;
+  }
 
+  // Run the callbacks without m_critical held, or a re-entrant read of this setting deadlocks.
   if (!OnSettingChanging(shared_from_base<CSettingBool>()))
   {
-    m_value = oldValue;
+    {
+      std::unique_lock lock(m_critical);
+      m_value = oldValue;
+    }
 
     // the setting couldn't be changed because one of the
     // callback handlers failed the OnSettingChanging()
@@ -765,7 +781,10 @@ bool CSettingBool::SetValue(bool value)
     return false;
   }
 
-  m_changed = m_value != m_default;
+  {
+    std::unique_lock lock(m_critical);
+    m_changed = m_value != m_default;
+  }
   OnSettingChanged(shared_from_base<CSettingBool>());
   return true;
 }
@@ -1024,20 +1043,27 @@ bool CSettingInt::CheckValidity(int value) const
 
 bool CSettingInt::SetValue(int value)
 {
-  std::unique_lock lock(m_critical);
+  int oldValue;
+  {
+    std::unique_lock lock(m_critical);
 
-  if (value == m_value)
-    return true;
+    if (value == m_value)
+      return true;
 
-  if (!CheckValidity(value))
-    return false;
+    if (!CheckValidity(value))
+      return false;
 
-  int oldValue = m_value;
-  m_value = value;
+    oldValue = m_value;
+    m_value = value;
+  }
 
+  // Run the callbacks without m_critical held, or a re-entrant read of this setting deadlocks.
   if (!OnSettingChanging(shared_from_base<CSettingInt>()))
   {
-    m_value = oldValue;
+    {
+      std::unique_lock lock(m_critical);
+      m_value = oldValue;
+    }
 
     // the setting couldn't be changed because one of the
     // callback handlers failed the OnSettingChanging()
@@ -1047,7 +1073,10 @@ bool CSettingInt::SetValue(int value)
     return false;
   }
 
-  m_changed = m_value != m_default;
+  {
+    std::unique_lock lock(m_critical);
+    m_changed = m_value != m_default;
+  }
   OnSettingChanged(shared_from_base<CSettingInt>());
   return true;
 }
@@ -1294,20 +1323,27 @@ bool CSettingNumber::CheckValidity(double value) const
 
 bool CSettingNumber::SetValue(double value)
 {
-  std::unique_lock lock(m_critical);
+  double oldValue;
+  {
+    std::unique_lock lock(m_critical);
 
-  if (value == m_value)
-    return true;
+    if (value == m_value)
+      return true;
 
-  if (!CheckValidity(value))
-    return false;
+    if (!CheckValidity(value))
+      return false;
 
-  double oldValue = m_value;
-  m_value = value;
+    oldValue = m_value;
+    m_value = value;
+  }
 
+  // Run the callbacks without m_critical held, or a re-entrant read of this setting deadlocks.
   if (!OnSettingChanging(shared_from_base<CSettingNumber>()))
   {
-    m_value = oldValue;
+    {
+      std::unique_lock lock(m_critical);
+      m_value = oldValue;
+    }
 
     // the setting couldn't be changed because one of the
     // callback handlers failed the OnSettingChanging()
@@ -1317,7 +1353,10 @@ bool CSettingNumber::SetValue(double value)
     return false;
   }
 
-  m_changed = m_value != m_default;
+  {
+    std::unique_lock lock(m_critical);
+    m_changed = m_value != m_default;
+  }
   OnSettingChanged(shared_from_base<CSettingNumber>());
   return true;
 }
@@ -1517,20 +1556,27 @@ bool CSettingString::CheckValidity(const std::string &value) const
 
 bool CSettingString::SetValue(const std::string &value)
 {
-  std::unique_lock lock(m_critical);
+  std::string oldValue;
+  {
+    std::unique_lock lock(m_critical);
 
-  if (value == m_value)
-    return true;
+    if (value == m_value)
+      return true;
 
-  if (!CheckValidity(value))
-    return false;
+    if (!CheckValidity(value))
+      return false;
 
-  std::string oldValue = m_value;
-  m_value = value;
+    oldValue = m_value;
+    m_value = value;
+  }
 
+  // Run the callbacks without m_critical held, or a re-entrant read of this setting deadlocks.
   if (!OnSettingChanging(shared_from_base<CSettingString>()))
   {
-    m_value = oldValue;
+    {
+      std::unique_lock lock(m_critical);
+      m_value = oldValue;
+    }
 
     // the setting couldn't be changed because one of the
     // callback handlers failed the OnSettingChanging()
@@ -1540,7 +1586,10 @@ bool CSettingString::SetValue(const std::string &value)
     return false;
   }
 
-  m_changed = m_value != m_default;
+  {
+    std::unique_lock lock(m_critical);
+    m_changed = m_value != m_default;
+  }
   OnSettingChanged(shared_from_base<CSettingString>());
   return true;
 }
