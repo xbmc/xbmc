@@ -8,7 +8,6 @@
 
 #include "RenderBufferPoolDMA.h"
 
-#include "RenderBufferDMA.h"
 #include "cores/RetroPlayer/rendering/RenderVideoSettings.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererDMAUtils.h"
 
@@ -17,21 +16,12 @@
 using namespace KODI;
 using namespace RETRO;
 
-CRenderBufferPoolDMA::CRenderBufferPoolDMA(CRenderContext& context) : m_context(context)
-{
-}
-
 bool CRenderBufferPoolDMA::IsCompatible(const CRenderVideoSettings& renderSettings) const
 {
   if (!CRPRendererDMAUtils::SupportsScalingMethod(renderSettings.GetScalingMethod()))
     return false;
 
   return true;
-}
-
-IRenderBuffer* CRenderBufferPoolDMA::CreateRenderBuffer(void* header /* = nullptr */)
-{
-  return new CRenderBufferDMA(m_context, m_fourcc);
 }
 
 bool CRenderBufferPoolDMA::ConfigureInternal()

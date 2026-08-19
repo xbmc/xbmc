@@ -9,7 +9,7 @@
 #include "RPRendererDMAOpenGLES.h"
 
 #include "cores/RetroPlayer/buffers/RenderBufferDMA.h"
-#include "cores/RetroPlayer/buffers/RenderBufferPoolDMA.h"
+#include "cores/RetroPlayer/buffers/RenderBufferPoolDMAOpenGLES.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "cores/RetroPlayer/shaders/gles/ShaderPresetGLES.h"
 #include "cores/RetroPlayer/shaders/gles/ShaderTextureGLES.h"
@@ -42,7 +42,7 @@ RenderBufferPoolVector CRendererFactoryDMAOpenGLES::CreateBufferPools(CRenderCon
   if (!CBufferObjectFactory::CreateBufferObject(false))
     return {};
 
-  return {std::make_shared<CRenderBufferPoolDMA>(context)};
+  return {std::make_shared<CRenderBufferPoolDMAOpenGLES>(context)};
 }
 
 CRPRendererDMAOpenGLES::CRPRendererDMAOpenGLES(const CRenderSettings& renderSettings,

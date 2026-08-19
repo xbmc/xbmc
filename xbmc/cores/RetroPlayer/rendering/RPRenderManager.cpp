@@ -81,8 +81,12 @@ void CRPRenderManager::Deinitialize()
     renderBuffer->Release();
   m_renderBuffers.clear();
 
-  for (auto buffer : m_pendingBuffers)
-    buffer->Release();
+  for (const PendingBuffer& pending : m_pendingBuffers)
+  {
+    if (pending.memory != nullptr)
+      pending.buffer->ReleaseMemory();
+    pending.buffer->Release();
+  }
   m_pendingBuffers.clear();
 
   for (auto& [savestatePath, renderBuffers] : m_savestateBuffers)
@@ -132,9 +136,15 @@ bool CRPRenderManager::GetVideoBuffer(unsigned int width,
                                       unsigned int height,
                                       VideoStreamBuffer& buffer)
 {
-  // Clear any previous pending buffers
-  for (IRenderBuffer* buffer : m_pendingBuffers)
-    buffer->Release();
+  // Clear any previous pending buffers. A buffer still pending here was lent
+  // to the client and never handed back. If it has mapped memory, its CPU
+  // access is still open.
+  for (const PendingBuffer& pending : m_pendingBuffers)
+  {
+    if (pending.memory != nullptr)
+      pending.buffer->ReleaseMemory();
+    pending.buffer->Release();
+  }
   m_pendingBuffers.clear();
 
   if (m_bFlush || m_state != RENDER_STATE::CONFIGURED)
@@ -172,11 +182,18 @@ bool CRPRenderManager::GetVideoBuffer(unsigned int width,
   if (renderBuffer == nullptr)
     return false;
 
-  buffer = VideoStreamBuffer{renderBuffer->GetFormat(), renderBuffer->GetMemory(),
-                             renderBuffer->GetFrameSize(), renderBuffer->GetMemoryAccess(),
-                             renderBuffer->GetMemoryAlignment()};
+  // Starts CPU access, which lasts until the client hands the frame back
+  uint8_t* const memory = renderBuffer->GetMemory();
+  if (memory == nullptr)
+  {
+    renderBuffer->Release();
+    return false;
+  }
 
-  m_pendingBuffers.emplace_back(renderBuffer);
+  buffer = VideoStreamBuffer{renderBuffer->GetFormat(), memory, renderBuffer->GetFrameSize(),
+                             renderBuffer->GetMemoryAccess(), renderBuffer->GetMemoryAlignment()};
+
+  m_pendingBuffers.emplace_back(PendingBuffer{renderBuffer, memory});
 
   return true;
 }
@@ -198,15 +215,24 @@ void CRPRenderManager::AddFrame(const uint8_t* data,
   // Get render buffers to copy the frame into
   std::vector<IRenderBuffer*> renderBuffers;
 
-  // Check pending buffers
-  for (IRenderBuffer* buffer : m_pendingBuffers)
+  // Check and consume pending buffers. The client has finished writing, so
+  // end any CPU access it opened before handing a submitted buffer to the GPU.
+  for (const PendingBuffer& pending : m_pendingBuffers)
   {
-    if (buffer->GetMemory() == data)
+    const bool bSubmitted = (pending.memory == data);
+
+    if (pending.memory != nullptr)
+      pending.buffer->ReleaseMemory();
+
+    if (bSubmitted)
     {
-      buffer->Acquire();
-      renderBuffers.emplace_back(buffer);
+      pending.buffer->Acquire();
+      renderBuffers.emplace_back(pending.buffer);
     }
+
+    pending.buffer->Release();
   }
+  m_pendingBuffers.clear();
 
   // If we aren't submitting a zero-copy frame, copy into render buffer now
   if (renderBuffers.empty())
@@ -302,7 +328,9 @@ uintptr_t CRPRenderManager::GetCurrentFramebuffer(unsigned int width, unsigned i
     IRenderBuffer* renderBuffer = bufferPool->GetBuffer(width, height);
     if (renderBuffer != nullptr)
     {
-      m_pendingBuffers.emplace_back(renderBuffer);
+      // A framebuffer is lent here, not memory, so there is no CPU access open
+      // on the buffer and nothing for the client to hand back
+      m_pendingBuffers.emplace_back(PendingBuffer{renderBuffer, nullptr});
       return renderBuffer->GetCurrentFramebuffer();
     }
   }
