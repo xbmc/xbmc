@@ -4800,7 +4800,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery /*=false*/) const
     return false;
 
   // Get information for the inserted disc
-  CCdInfo* pCdInfo = CServiceBroker::GetMediaManager().GetCdInfo();
+  const std::shared_ptr<CCdInfo> pCdInfo{CServiceBroker::GetMediaManager().GetCdInfo()};
   if (!pCdInfo)
     return false;
 
@@ -4821,7 +4821,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery /*=false*/) const
   cddb.setCacheDir(m_profileManager.GetCDDBFolder());
 
   // Do we have to look for cddb information
-  if (pCdInfo->HasCDDBInfo() && !cddb.isCDCached(pCdInfo))
+  if (pCdInfo->HasCDDBInfo() && !cddb.isCDCached(pCdInfo.get()))
   {
     CGUIDialogProgress* pDialogProgress =
         CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(
@@ -4844,7 +4844,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery /*=false*/) const
     pDialogProgress->Open();
 
     // get cddb information
-    if (!cddb.queryCDinfo(pCdInfo))
+    if (!cddb.queryCDinfo(pCdInfo.get()))
     {
       pDialogProgress->Close();
       int lasterror = cddb.getLastError();
@@ -4877,7 +4877,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery /*=false*/) const
         if (iSelectedCD >= 0)
         {
           // ...query cddb for the inexact match
-          if (!cddb.queryCDinfo(pCdInfo, 1 + iSelectedCD))
+          if (!cddb.queryCDinfo(pCdInfo.get(), 1 + iSelectedCD))
             pCdInfo->SetNoCDDBInfo();
         }
         else

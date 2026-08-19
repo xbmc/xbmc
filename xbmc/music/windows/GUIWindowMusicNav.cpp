@@ -593,8 +593,9 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       if (CServiceBroker::GetMediaManager().IsDiscInDrive() && MUSIC::IsCDDA(*item))
       {
         // those cds can also include Audio Tracks: CDExtra and MixedMode!
-        MEDIA_DETECT::CCdInfo* pCdInfo = CServiceBroker::GetMediaManager().GetCdInfo();
-        if (pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1))
+        const std::shared_ptr<MEDIA_DETECT::CCdInfo> pCdInfo{
+            CServiceBroker::GetMediaManager().GetCdInfo()};
+        if (pCdInfo && (pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1)))
         {
           if (CServiceBroker::GetJobManager()->IsProcessing("cdrip"))
             buttons.Add(CONTEXT_BUTTON_CANCEL_RIP_CD, 14100);
