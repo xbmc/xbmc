@@ -131,6 +131,20 @@ jobs:
       - name: Build Kodi
         run: make -j"$(sysctl -n hw.ncpu)" -C build
 
+      # kodi-test is EXCLUDE_FROM_ALL (CMakeLists.txt), so the default target above
+      # does not build it. It whole-archive links the whole app, so this is a real
+      # link step rather than a few extra objects.
+      - name: Build unit tests
+        run: make -j"$(sysctl -n hw.ncpu)" -C build kodi-test
+
+      - name: Upload unit test binary
+        uses: actions/upload-artifact@v7
+        with:
+          name: kodi-test-macos
+          path: build/kodi-test
+          if-no-files-found: error
+          retention-days: 7
+
       - name: Show ccache stats
         if: always()
         run: ccache -s || true
@@ -149,6 +163,15 @@ jobs:
           # the test driver locates portable_data relative to this.
           KODI_BINARY: ${{ github.workspace }}/build/Kodi.app/Contents/MacOS/Kodi
         run: uv run pytest scenarios -v --junitxml=../../e2e-results.xml
+
+      # Runs whatever the E2E scenarios did, so one run reports both. Executed from
+      # the build tree because CUtil::GetHomePath() finds no Resources/Kodi next to a
+      # bare test binary and falls back to walking up for a directory holding
+      # system/settings/settings.xml, which is the build tree.
+      - name: Run unit tests
+        if: '!cancelled()'
+        working-directory: build
+        run: ./kodi-test
 
       - name: Upload Kodi log
         if: always()

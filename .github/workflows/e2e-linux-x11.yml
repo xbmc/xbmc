@@ -121,6 +121,20 @@ jobs:
       - name: Build Kodi
         run: cmake --build build -- -j"$(nproc)"
 
+      # kodi-test is EXCLUDE_FROM_ALL (CMakeLists.txt), so the default target above
+      # does not build it. It whole-archive links the whole app, so this is a real
+      # link step rather than a few extra objects.
+      - name: Build unit tests
+        run: cmake --build build --target kodi-test -- -j"$(nproc)"
+
+      - name: Upload unit test binary
+        uses: actions/upload-artifact@v7
+        with:
+          name: kodi-test-linux-x11
+          path: build/kodi-test
+          if-no-files-found: error
+          retention-days: 7
+
       - name: Show ccache stats
         if: always()
         run: ccache -s || true
@@ -153,6 +167,15 @@ jobs:
         env:
           KODI_BINARY: ${{ github.workspace }}/build/kodi-x11
         run: uv run pytest scenarios -v --junitxml=../../e2e-results.xml
+
+      # Runs whatever the E2E scenarios did, so one run reports both. Executed from
+      # the build tree because CUtil::GetHomePath() resolves special://xbmc by walking
+      # up from the binary, and that is where the reference data the tests read
+      # (cmake/installdata/test-reference-data.txt) was copied at configure time.
+      - name: Run unit tests
+        if: '!cancelled()'
+        working-directory: build
+        run: ./kodi-test
 
       - name: Upload Kodi log
         if: always()
