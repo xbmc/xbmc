@@ -2988,11 +2988,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
   {
     m_pathsToClean.insert(m_database.GetPathId(directory));
 
-    // Pick up the paths the directory's disc rips and archives are anchored under - the
-    // encoded ones (bluray://, zip:// etc.) and the VIDEO_TS/BDMV directories of a rip held
-    // under its raw disc structure. Neither is ever scanned in its own right, being consumed
-    // by Stack(), so nothing else would queue them. Ordinary sub directories are left out as
-    // each is scanned, and queued, of its own accord.
+    // Pick up the base paths of directory's disc rips and archives
     std::vector<std::pair<int, std::string>> subPaths;
     m_database.GetSubPaths(directory, subPaths, false);
     for (const auto& [idPath, path] : subPaths)
