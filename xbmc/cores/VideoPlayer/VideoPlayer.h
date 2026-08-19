@@ -552,6 +552,7 @@ protected:
   std::optional<SeekCandidate> GetChapterSeekCandidate(int64_t time, Direction direction);
   std::optional<SeekCandidate> GetBookmarkSeekCandidate(int64_t time, Direction direction);
   void ExecuteTimeSeek(int64_t target, Direction direction, bool accurate);
+  bool EvaluateIsStreaming() const;
 
   bool m_players_created;
 

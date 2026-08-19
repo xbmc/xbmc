@@ -112,6 +112,8 @@ public:
   std::chrono::milliseconds GetChapterPos(int chapterIdx = -1) override;
   std::string GetStreamCodecName(int iStreamId) override;
 
+  bool IsStreaming() const override;
+
   bool Aborted();
 
   AVFormatContext* m_pFormatContext;
