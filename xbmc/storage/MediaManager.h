@@ -88,8 +88,8 @@ public:
   /*! \brief Get the disc TOC, reusing successful reads.
    * \param allowCachedFailure Allow GUI polling to reuse a recent failed read on Windows.
    */
-  MEDIA_DETECT::CCdInfo* GetCdInfo(const std::string& devicePath = "",
-                                   bool allowCachedFailure = false);
+  std::shared_ptr<MEDIA_DETECT::CCdInfo> GetCdInfo(const std::string& devicePath = "",
+                                                   bool allowCachedFailure = false);
   bool RemoveCdInfo(const std::string& devicePath = "");
   std::string GetDiskLabel(const std::string& devicePath = "");
   std::string GetDiskUniqueId(const std::string& devicePath="");
@@ -150,7 +150,7 @@ protected:
 
   CCriticalSection m_muAutoSource, m_CritSecStorageProvider;
 #ifdef HAS_OPTICAL_DRIVE
-  std::map<std::string,MEDIA_DETECT::CCdInfo*> m_mapCdInfo;
+  std::map<std::string, std::shared_ptr<MEDIA_DETECT::CCdInfo>> m_mapCdInfo;
 #endif
   bool m_bOpticalDrivePresent;
   std::string m_strFirstAvailDrive;
@@ -212,9 +212,9 @@ private:
   /*! Reads the TOC of the disc in a drive. Replaceable so the cache can be tested without one */
   std::function<std::unique_ptr<MEDIA_DETECT::CCdInfo>(const std::string& devicePath)> m_readToc;
   std::unique_ptr<MEDIA_DETECT::CCdInfo> ReadToc(const std::string& devicePath);
-  MEDIA_DETECT::CCdInfo* CacheCdInfo(const std::string& devicePath,
-                                     std::unique_ptr<MEDIA_DETECT::CCdInfo> info,
-                                     uint64_t generation);
+  std::shared_ptr<MEDIA_DETECT::CCdInfo> CacheCdInfo(const std::string& devicePath,
+                                                     std::unique_ptr<MEDIA_DETECT::CCdInfo> info,
+                                                     uint64_t generation);
   void CacheDiscInfo(const std::string& mediaPath, DiscInfoCacheEntry& entry, uint64_t generation);
 
   struct DriveStatusCacheEntry

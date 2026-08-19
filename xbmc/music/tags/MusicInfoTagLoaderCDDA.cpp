@@ -43,8 +43,8 @@ bool CMusicInfoTagLoaderCDDA::Load(const std::string& strFileName, CMusicInfoTag
     bool bResult = false;
 
     // Get information for the inserted disc
-    CCdInfo* pCdInfo = CServiceBroker::GetMediaManager().GetCdInfo();
-    if (pCdInfo == NULL)
+    const std::shared_ptr<CCdInfo> pCdInfo{CServiceBroker::GetMediaManager().GetCdInfo()};
+    if (!pCdInfo)
       return bResult;
 
     const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
@@ -60,10 +60,10 @@ bool CMusicInfoTagLoaderCDDA::Load(const std::string& strFileName, CMusicInfoTag
                      + pCdInfo->GetTrackInformation(iTrack).nSecs );
 
     // Only load cached cddb info in this tag loader, the internet database query is made in CCDDADirectory
-    if (pCdInfo->HasCDDBInfo() && cddb.isCDCached(pCdInfo))
+    if (pCdInfo->HasCDDBInfo() && cddb.isCDCached(pCdInfo.get()))
     {
       // get cddb information
-      if (cddb.queryCDinfo(pCdInfo))
+      if (cddb.queryCDinfo(pCdInfo.get()))
       {
         // Fill the fileitems music tag with cddb information, if available
         const std::string& strTitle = cddb.getTrackTitle(iTrack);

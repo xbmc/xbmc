@@ -491,15 +491,15 @@ bool CMediaManager::IsAudio(const std::string& devicePath, bool allowCachedFailu
   if (!IsOpticalDrivePresent())
     return false;
 
-  CCdInfo* pCdInfo{GetCdInfo(devicePath, allowCachedFailure)};
-  if (pCdInfo != NULL && pCdInfo->IsAudio(1))
+  const std::shared_ptr<CCdInfo> pCdInfo{GetCdInfo(devicePath, allowCachedFailure)};
+  if (pCdInfo && pCdInfo->IsAudio(1))
     return true;
 
   return false;
 #else
   //! @todo switch all ports to use auto sources
-  MEDIA_DETECT::CCdInfo* pInfo = MEDIA_DETECT::CDetectDVDMedia::GetCdInfo();
-  if (pInfo != NULL && pInfo->IsAudio(1))
+  const std::shared_ptr<MEDIA_DETECT::CCdInfo> pInfo{MEDIA_DETECT::CDetectDVDMedia::GetCdInfo()};
+  if (pInfo && pInfo->IsAudio(1))
     return true;
 #endif
 #endif
@@ -605,26 +605,31 @@ void CMediaManager::ResetDriveCaches(const std::string& devicePath)
       m_mapDiscInfo.erase(drivePath);
   }
 
-  //! @todo m_mapCdInfo hands out raw pointers to entries it owns, so it cannot safely be cleared
-  //! here - a caller may still be reading one. It is only released through RemoveAutoSource().
-  //! Only the record of discs that yielded no CdInfo is dropped.
+  // Dropping a TOC a caller is still reading is safe - it holds a share of it
   {
     std::unique_lock waitLock(m_muAutoSource);
     ++m_cdInfoGeneration;
     if (drivePath.empty())
+    {
+      m_mapCdInfo.clear();
       m_cdInfoUnavailable.clear();
+    }
     else
+    {
+      m_mapCdInfo.erase(drivePath);
       m_cdInfoUnavailable.erase(drivePath);
+    }
   }
 #endif
 }
 
 #ifdef HAS_OPTICAL_DRIVE
-CCdInfo* CMediaManager::GetCdInfo(const std::string& devicePath, bool allowCachedFailure)
+std::shared_ptr<CCdInfo> CMediaManager::GetCdInfo(const std::string& devicePath,
+                                                  bool allowCachedFailure)
 {
 #ifdef TARGET_WINDOWS
   if (!IsOpticalDrivePresent())
-    return NULL;
+    return {};
 
   const std::string strDevice{TranslateDevicePath(devicePath, false)};
 
@@ -643,20 +648,20 @@ CCdInfo* CMediaManager::GetCdInfo(const std::string& devicePath, bool allowCache
       const auto unavailable{m_cdInfoUnavailable.find(strDevice)};
       if (allowCachedFailure && unavailable != m_cdInfoUnavailable.end() &&
           std::chrono::steady_clock::now() < unavailable->second)
-        return NULL;
+        return {};
       generation = m_cdInfoGeneration;
     }
 
     // Reading the TOC is slow, so this is done without holding m_muAutoSource
-    CCdInfo* pCdInfo{CacheCdInfo(strDevice, ReadToc(strDevice), generation)};
+    std::shared_ptr<CCdInfo> pCdInfo{CacheCdInfo(strDevice, ReadToc(strDevice), generation)};
     if (pCdInfo)
       return pCdInfo;
 
     std::unique_lock waitLock(m_muAutoSource);
     if (generation == m_cdInfoGeneration)
-      return NULL; // The disc really could not be read
+      return {}; // The disc really could not be read
   }
-  return NULL;
+  return {};
 #else
   return MEDIA_DETECT::CDetectDVDMedia::GetCdInfo();
 #endif
@@ -672,15 +677,15 @@ std::unique_ptr<CCdInfo> CMediaManager::ReadToc(const std::string& devicePath)
   return std::unique_ptr<CCdInfo>{cdio.GetCdInfo(const_cast<char*>(devicePath.c_str()))};
 }
 
-CCdInfo* CMediaManager::CacheCdInfo(const std::string& devicePath,
-                                    std::unique_ptr<CCdInfo> info,
-                                    uint64_t generation)
+std::shared_ptr<CCdInfo> CMediaManager::CacheCdInfo(const std::string& devicePath,
+                                                    std::unique_ptr<CCdInfo> info,
+                                                    uint64_t generation)
 {
   std::unique_lock waitLock(m_muAutoSource);
   if (generation != m_cdInfoGeneration)
   {
     CLog::LogF(LOGDEBUG, "Discarding invalidated TOC read for {}", devicePath);
-    return nullptr;
+    return {};
   }
 
   const auto cached{m_mapCdInfo.find(devicePath)};
@@ -689,16 +694,14 @@ CCdInfo* CMediaManager::CacheCdInfo(const std::string& devicePath,
 
   if (info)
   {
-    const auto [it, inserted]{m_mapCdInfo.try_emplace(devicePath, info.get())};
-    if (inserted)
-      info.release();
+    const auto it{m_mapCdInfo.try_emplace(devicePath, std::move(info)).first};
     m_cdInfoUnavailable.erase(devicePath);
     return it->second;
   }
 
   m_cdInfoUnavailable.insert_or_assign(devicePath,
                                        std::chrono::steady_clock::now() + CDINFO_RETRY_INTERVAL);
-  return nullptr;
+  return {};
 }
 #endif
 
@@ -709,18 +712,15 @@ bool CMediaManager::RemoveCdInfo(const std::string& devicePath)
 
   std::string strDevice = TranslateDevicePath(devicePath, false);
 
-  std::map<std::string,CCdInfo*>::iterator it;
   std::unique_lock waitLock(m_muAutoSource);
 #ifdef TARGET_WINDOWS
   ++m_cdInfoGeneration;
   m_cdInfoUnavailable.erase(strDevice);
 #endif
-  it = m_mapCdInfo.find(strDevice);
-  if(it != m_mapCdInfo.end())
+  const auto it = m_mapCdInfo.find(strDevice);
+  if (it != m_mapCdInfo.end())
   {
-    if(it->second != NULL)
-      delete it->second;
-
+    // Any caller still holding this keeps it alive until it is done with it
     m_mapCdInfo.erase(it);
     return true;
   }
@@ -816,8 +816,8 @@ std::string CMediaManager::GetDiskUniqueId(const std::string& devicePath)
 {
   std::string mediaPath;
 
-  CCdInfo* pInfo = CServiceBroker::GetMediaManager().GetCdInfo(devicePath);
-  if (pInfo == NULL)
+  const std::shared_ptr<CCdInfo> pInfo{CServiceBroker::GetMediaManager().GetCdInfo(devicePath)};
+  if (!pInfo)
     return "";
 
   if (pInfo->IsAudio(1))
@@ -1079,7 +1079,8 @@ void CMediaManager::OnStorageAdded(const MEDIA_DETECT::STORAGE::StorageDevice& d
 #endif
 
     // Source creation clears the previous TOC; classification retries any failed read.
-    CCdInfo* pInfo{GetCdInfo(device.path)};
+    const std::shared_ptr<CCdInfo> pInfo{GetCdInfo(device.path)};
+    // No TOC is likely to mean a protected video disc
     const bool isAudioDisc{pInfo && pInfo->IsAudio(1)};
 
     const std::shared_ptr<CSettings> settings{
