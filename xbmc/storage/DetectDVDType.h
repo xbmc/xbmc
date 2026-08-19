@@ -44,7 +44,7 @@ public:
   static void WaitMediaReady();
   static bool IsDiscInDrive();
   static DriveState GetDriveState();
-  static CCdInfo* GetCdInfo();
+  static std::shared_ptr<CCdInfo> GetCdInfo();
   static CEvent m_evAutorun;
 
   static std::string GetDVDLabel();
@@ -77,14 +77,16 @@ private:
   //! can be held across the slow probe. Always acquired before m_muReadingMedia.
   static CCriticalSection m_muDetect;
 
-  static DriveState m_DriveState;
+  static std::atomic<DriveState> m_DriveState;
   static time_t m_LastPoll;
   //! \brief Set while a detection thread exists. The detection itself is static, so
   //! this is an existence flag rather than a handle - there is nothing to call
   //! through, and hence nothing that can be used after the instance is gone.
   static std::atomic<bool> m_bInstanceExists;
 
-  static CCdInfo* m_pCdInfo;
+  //! \brief Shared so that a caller of GetCdInfo() keeps it alive for as long as
+  //! it holds it - the detection replaces this from another thread.
+  static std::shared_ptr<CCdInfo> m_pCdInfo;
 
   bool m_bStartup = true; // Do not autorun on startup
   bool m_bAutorun = false;
