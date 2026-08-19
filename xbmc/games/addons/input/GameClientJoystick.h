@@ -73,6 +73,7 @@ public:
                         float position,
                         unsigned int motionTimeMs) override;
   void OnInputFrame() override {}
+  JOYSTICK::IInputReceiver* InputReceiver(void) override;
 
   // Input accessors
   const std::string& GetPortAddress() const { return m_portAddress; }

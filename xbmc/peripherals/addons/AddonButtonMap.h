@@ -122,6 +122,17 @@ private:
   typedef std::map<KODI::JOYSTICK::CDriverPrimitive, KODI::JOYSTICK::FeatureName> DriverMap;
   typedef std::vector<KODI::JOYSTICK::CDriverPrimitive> JoystickPrimitiveVector;
 
+  /*!
+   * \brief Position of a motor among the motors this controller declares
+   *
+   * Motors are never mapped by the configuration wizard, because a motor is
+   * not something the user can activate on request. Position is what the
+   * drivers order them by, so it is what they are matched on here.
+   *
+   * \return True if the controller declares this feature as a motor
+   */
+  bool GetMotorIndex(const KODI::JOYSTICK::FeatureName& feature, unsigned int& motorIndex) const;
+
   // Utility functions
   static DriverMap CreateLookupTable(const FeatureMap& features);
 
