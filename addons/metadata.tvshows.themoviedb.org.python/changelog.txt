@@ -1,3 +1,45 @@
+2.0.6
+Show the season regular cast instead of everyone who ever appeared
+Fix episodes listing the whole series cast
+Fewer API calls when scraping a show
+
+2.0.5
+Show the full series cast in themoviedb.org order, limited to 200
+Request compressed responses from TMDb for faster scraping
+Restore Trakt ratings after their API access change
+
+2.0.4
+Fix missing show cast when TMDb has no series regulars
+
+2.0.3
+Fix crash on legacy episodeguide format
+Log info of deprecated episodeguide to refresh instead of erroring
+
+2.0.2
+Log Fanart.tv and Trakt 404s as info instead of error
+Wipe in-memory caches after 15 min idle
+updated Trackt access
+
+2.0.1
+ground up rewrite by MikeSiLVO
+Season-aware artwork selection
+Better artwork distribution across all art types
+fix Fanart.tv URLs with special characters
+Tier-based artwork scoring, prefer highest resolution setting
+Fix Fanart.tv season art with no number getting assigned to all seasons instead of specials
+artwork scoring for trimming: language + pixels + vote tiebreaker
+Prioritize user-language clearart from Fanart.tv
+Punctuation agnostic title matching, year filter fallback
+
+1.8.3
+fix for image sort not using separate image language setting
+fix for fanarttv landscape art overwriting TMDb landscape art
+
+1.8.2
+added option to separate posters and keyart
+updated process for separating certain artwork types for better trimming
+updated language files
+
 1.8.1
 refactored duration storage to use VideoInfoTag instead of stream details
 updated language files
