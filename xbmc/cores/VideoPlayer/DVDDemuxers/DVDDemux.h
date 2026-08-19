@@ -369,6 +369,8 @@ public:
    */
   virtual void SetVideoResolution(unsigned int width, unsigned int height) {}
 
+  virtual bool IsStreaming() const { return false; }
+
   /*
   * return the id of the demuxer
   */
