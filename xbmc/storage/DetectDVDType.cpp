@@ -23,6 +23,7 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <atomic>
 #include <mutex>
 
 using namespace MEDIA_DETECT;
@@ -34,7 +35,7 @@ CEvent CDetectDVDMedia::m_evAutorun;
 DriveState CDetectDVDMedia::m_DriveState{DriveState::CLOSED_NO_MEDIA};
 CCdInfo* CDetectDVDMedia::m_pCdInfo = NULL;
 time_t CDetectDVDMedia::m_LastPoll = 0;
-CDetectDVDMedia* CDetectDVDMedia::m_pInstance = NULL;
+std::atomic<bool> CDetectDVDMedia::m_bInstanceExists{false};
 std::string CDetectDVDMedia::m_diskLabel = "";
 std::string CDetectDVDMedia::m_diskPath = "";
 UTILS::DISCS::DiscInfo CDetectDVDMedia::m_discInfo;
@@ -43,10 +44,13 @@ CDetectDVDMedia::CDetectDVDMedia() : CThread("DetectDVDMedia"),
   m_cdio(CLibcdio::GetInstance())
 {
   m_bStop = false;
-  m_pInstance = this;
+  m_bInstanceExists = true;
 }
 
-CDetectDVDMedia::~CDetectDVDMedia() = default;
+CDetectDVDMedia::~CDetectDVDMedia()
+{
+  m_bInstanceExists = false;
+}
 
 void CDetectDVDMedia::OnStartup()
 {
@@ -320,7 +324,9 @@ void CDetectDVDMedia::DetectMediaType()
   SetNewDVDShareUrl( strNewUrl , bCDDA, strLabel);
 }
 
-void CDetectDVDMedia::SetNewDVDShareUrl( const std::string& strNewUrl, bool bCDDA, const std::string& strDiscLabel )
+void CDetectDVDMedia::SetNewDVDShareUrl(const std::string& strNewUrl,
+                                        bool bCDDA,
+                                        const std::string& strDiscLabel)
 {
   std::string strDescription = "DVD";
   if (bCDDA) strDescription = "CD";
@@ -415,7 +421,11 @@ DriveState CDetectDVDMedia::PollDriveState()
 
 void CDetectDVDMedia::UpdateState()
 {
-  m_pInstance->DetectMediaType();
+  // Do nothing unless a detection thread exists
+  if (!m_bInstanceExists)
+    return;
+
+  DetectMediaType();
 }
 
 // Static function
