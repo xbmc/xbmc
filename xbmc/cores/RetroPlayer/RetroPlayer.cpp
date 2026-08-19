@@ -663,6 +663,12 @@ void CRetroPlayer::OnSpeedChange(double newSpeed)
   m_input->SetSpeed(newSpeed);
   m_renderManager->SetSpeed(newSpeed);
   m_processInfo->SetSpeed(static_cast<float>(newSpeed));
+
+  // Told rather than asked, because a client can ask for this from any thread
+  // and at any point inside a call of its own, where reaching back into the
+  // player would mean locking against the thread that is driving it.
+  if (m_gameClient)
+    m_gameClient->SetPlaybackSpeed(newSpeed);
 }
 
 void CRetroPlayer::CreatePlayback(const std::string& savestatePath)

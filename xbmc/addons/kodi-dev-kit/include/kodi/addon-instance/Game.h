@@ -408,6 +408,34 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
+  /// @brief **Callback to Kodi Function**\n
+  /// Get the speed the game is being played back at
+  ///
+  /// @return The speed as a multiple of normal speed
+  ///
+  /// The value is the same one Kodi shows the user, so it follows the player's
+  /// fast-forward and rewind semantics:
+  ///
+  ///   - `1.0` is normal speed
+  ///   - `0.0` is paused
+  ///   - greater than `1.0` is fast-forward
+  ///   - between `0.0` and `1.0` is slow motion
+  ///   - less than `0.0` is rewind
+  ///
+  /// Rewind is driven by Kodi replaying saved states, so a client is run
+  /// forwards even while the speed is negative. A client that changes its
+  /// behaviour with the speed should read the sign as "the user is going
+  /// backwards", not as a direction to run in.
+  ///
+  /// @remarks Only called from the add-on itself
+  ///
+  double KodiGetPlaybackSpeed()
+  {
+    return m_instanceData->toKodi->GetPlaybackSpeed(m_instanceData->toKodi->kodiInstance);
+  }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
   /// @defgroup cpp_kodi_addon_game_Operation_CStream Class: CStream
   /// @ingroup cpp_kodi_addon_game_Operation
   /// @brief @cpp_class{ kodi::addon::CInstanceGame::CStream }

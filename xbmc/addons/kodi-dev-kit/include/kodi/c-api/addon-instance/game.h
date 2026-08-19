@@ -1227,6 +1227,7 @@ extern "C"
 
     bool (*EnableHardwareRendering)(void*, const game_hw_rendering_properties*);
     void (*CloseGame)(KODI_HANDLE kodiInstance);
+    double (*GetPlaybackSpeed)(KODI_HANDLE kodiInstance);
     KODI_GAME_STREAM_HANDLE (*OpenStream)(KODI_HANDLE, const struct game_stream_properties*);
     bool (*GetStreamBuffer)(KODI_HANDLE,
                             KODI_GAME_STREAM_HANDLE,

@@ -172,6 +172,19 @@ public:
   double GetSampleRate() const { return m_samplerate; }
   void RunFrame();
 
+  /*!
+   * \brief Tell the client what speed the player is running at
+   *
+   * \param speed The speed as a multiple of normal speed, with the player's own
+   *              meaning: 1.0 normal, 0.0 paused, above 1.0 fast-forward,
+   *              between 0.0 and 1.0 slow motion, below 0.0 rewind
+   *
+   * Kept so the client can answer for it when asked. Clients that care use it
+   * to drop work the user will not see at speed, and the audio limiter is the
+   * usual one.
+   */
+  void SetPlaybackSpeed(double speed) { m_playbackSpeed = speed; }
+
   // Access memory
   size_t SerializeSize() const { return m_serializeSize; }
   bool Serialize(uint8_t* data, size_t size);
@@ -210,6 +223,7 @@ private:
   static bool cb_enable_hardware_rendering(void* kodiInstance,
                                            const game_hw_rendering_properties* properties);
   static void cb_close_game(KODI_HANDLE kodiInstance);
+  static double cb_get_playback_speed(KODI_HANDLE kodiInstance);
   static KODI_GAME_STREAM_HANDLE cb_open_stream(KODI_HANDLE kodiInstance,
                                                 const game_stream_properties* properties);
   static bool cb_get_stream_buffer(KODI_HANDLE kodiInstance,
@@ -261,6 +275,17 @@ private:
   // Properties of the current playing file
   std::atomic_bool m_bIsPlaying; // True between OpenFile() and CloseFile()
   std::atomic_bool m_hasFrameRun{false};
+  // The speed the player is running at, as a multiple of normal speed. Written
+  // by the thread that changes the speed and read by the client's own, so it is
+  // atomic; a client asks for it from inside a call of its own, which can be on
+  // any thread.
+  //
+  // Starts at normal speed rather than zero because clients ask this while
+  // loading, before the player has set a speed for the first time, and the
+  // honest answer to "am I being fast-forwarded" at that point is no. Zero
+  // would read as paused and have a client behave as though the user had
+  // stopped the game before it started.
+  std::atomic<double> m_playbackSpeed{1.0};
   std::string m_gamePath;
   bool m_bRequiresGameLoop = false;
   size_t m_serializeSize = 0;
