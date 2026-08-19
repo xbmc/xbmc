@@ -29,6 +29,7 @@ using namespace MEDIA_DETECT;
 using namespace std::chrono_literals;
 
 CCriticalSection CDetectDVDMedia::m_muReadingMedia;
+CCriticalSection CDetectDVDMedia::m_muDetect;
 CEvent CDetectDVDMedia::m_evAutorun;
 DriveState CDetectDVDMedia::m_DriveState{DriveState::CLOSED_NO_MEDIA};
 CCdInfo* CDetectDVDMedia::m_pCdInfo = NULL;
@@ -97,6 +98,10 @@ void CDetectDVDMedia::OnExit()
 // Gets state of the DVD drive
 void CDetectDVDMedia::UpdateDvdrom()
 {
+  // Serialise against DetectMediaType(): a probe that started before a state change
+  // detected here would otherwise finish after it and republish the old disc
+  std::unique_lock detectLock(m_muDetect);
+
   // Signal for WaitMediaReady()
   // that we are busy detecting the
   // newly inserted media.
@@ -168,10 +173,10 @@ void CDetectDVDMedia::UpdateDvdrom()
         if (m_DriveState != DriveState::CLOSED_MEDIA_PRESENT)
         {
           m_DriveState = DriveState::CLOSED_MEDIA_PRESENT;
+          waitLock.unlock(); // Locking occurs in DetectMediaType()
           // Detect ISO9660(mode1/mode2) or CDDA filesystem
           DetectMediaType();
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
-          waitLock.unlock();
           CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
           // Tell the application object that a new Cd is inserted
           // So autorun can be started.
@@ -198,29 +203,39 @@ void CDetectDVDMedia::DetectMediaType()
   bool bCDDA(false);
   CLog::Log(LOGINFO, "Detecting DVD-ROM media filesystem...");
 
+  // Lock before the path is read - the drive state (and with it m_diskPath) must
+  // not be able to change between the snapshot and the probe that acts on it
+  std::unique_lock detectLock(m_muDetect);
+
+  std::string devicePath;
+  {
+    std::unique_lock waitLock(m_muReadingMedia);
+    devicePath = CServiceBroker::GetMediaManager().TranslateDevicePath(m_diskPath);
+  }
+
   // Probe and store DiscInfo result
   // even if no valid tracks are detected we might still be able to play the disc via libdvdnav or libbluray
   // as long as they can correctly detect the disc
   UTILS::DISCS::DiscInfo discInfo;
-  if (UTILS::DISCS::GetDiscInfo(discInfo,
-                                CServiceBroker::GetMediaManager().TranslateDevicePath(m_diskPath)))
+  const bool haveDiscInfo = UTILS::DISCS::GetDiscInfo(discInfo, devicePath);
+
+  // Detect new CD-Information
+  CCdIoSupport cdio;
+  CCdInfo* pCdInfo = cdio.GetCdInfo();
+
+  // Probing is done - lock and publish the results
+  std::unique_lock waitLock(m_muReadingMedia);
+
+  if (haveDiscInfo)
   {
     m_discInfo = discInfo;
   }
 
-  std::string strNewUrl;
-  CCdIoSupport cdio;
+  // Replace the old CD-Information
+  delete m_pCdInfo;
+  m_pCdInfo = pCdInfo;
 
-  // Delete old CD-Information
-  if ( m_pCdInfo != NULL )
-  {
-    delete m_pCdInfo;
-    m_pCdInfo = NULL;
-  }
-
-  // Detect new CD-Information
-  m_pCdInfo = cdio.GetCdInfo();
-  if (m_pCdInfo == NULL)
+  if (m_pCdInfo == nullptr)
   {
     CLog::Log(LOGERROR, "Detection of DVD-ROM media failed.");
     return ;
@@ -228,6 +243,8 @@ void CDetectDVDMedia::DetectMediaType()
   CLog::Log(LOGINFO, "Tracks overall:{}; Audio tracks:{}; Data tracks:{}",
             m_pCdInfo->GetTrackCount(), m_pCdInfo->GetAudioTrackCount(),
             m_pCdInfo->GetDataTrackCount());
+
+  std::string strNewUrl;
 
   // Detect ISO9660(mode1/mode2), CDDA filesystem or UDF
   if (m_pCdInfo->IsISOHFS(1) || m_pCdInfo->IsIso9660(1) || m_pCdInfo->IsIso9660Interactive(1))
@@ -237,14 +254,14 @@ void CDetectDVDMedia::DetectMediaType()
   else
   {
     if (m_pCdInfo->IsUDF(1))
-      strNewUrl = CServiceBroker::GetMediaManager().TranslateDevicePath(m_diskPath);
+      strNewUrl = devicePath;
     else if (m_pCdInfo->IsAudio(1))
     {
       strNewUrl = "cdda://local/";
       bCDDA = true;
     }
     else
-      strNewUrl = CServiceBroker::GetMediaManager().TranslateDevicePath(m_diskPath);
+      strNewUrl = devicePath;
   }
 
   if (m_pCdInfo->IsISOUDF(1))
@@ -255,7 +272,7 @@ void CDetectDVDMedia::DetectMediaType()
     }
     else
     {
-      strNewUrl = CServiceBroker::GetMediaManager().TranslateDevicePath(m_diskPath);
+      strNewUrl = devicePath;
     }
   }
 
@@ -380,7 +397,6 @@ DriveState CDetectDVDMedia::PollDriveState()
 
 void CDetectDVDMedia::UpdateState()
 {
-  std::unique_lock waitLock(m_muReadingMedia);
   m_pInstance->DetectMediaType();
 }
 
@@ -388,6 +404,7 @@ void CDetectDVDMedia::UpdateState()
 // Wait for drive, to finish media detection.
 void CDetectDVDMedia::WaitMediaReady()
 {
+  std::unique_lock detectLock(m_muDetect);
   std::unique_lock waitLock(m_muReadingMedia);
 }
 
@@ -414,8 +431,9 @@ CCdInfo* CDetectDVDMedia::GetCdInfo()
   return pCdInfo;
 }
 
-const std::string &CDetectDVDMedia::GetDVDLabel()
+std::string CDetectDVDMedia::GetDVDLabel()
 {
+  std::unique_lock waitLock(m_muReadingMedia);
   if (!m_discInfo.empty())
   {
     return m_discInfo.name;
@@ -424,8 +442,9 @@ const std::string &CDetectDVDMedia::GetDVDLabel()
   return m_diskLabel;
 }
 
-const std::string &CDetectDVDMedia::GetDVDPath()
+std::string CDetectDVDMedia::GetDVDPath()
 {
+  std::unique_lock waitLock(m_muReadingMedia);
   return m_diskPath;
 }
 

@@ -46,8 +46,8 @@ public:
   static CCdInfo* GetCdInfo();
   static CEvent m_evAutorun;
 
-  static const std::string &GetDVDLabel();
-  static const std::string &GetDVDPath();
+  static std::string GetDVDLabel();
+  static std::string GetDVDPath();
 
   static void UpdateState();
 protected:
@@ -58,10 +58,16 @@ protected:
   void DetectMediaType();
   void SetNewDVDShareUrl( const std::string& strNewUrl, bool bCDDA, const std::string& strDiscLabel );
 
+  //! \brief Discards the published disc details. Callers must hold m_muReadingMedia.
   void Clear();
 
 private:
+  //! \brief Guards the published detection results (label, path, disc and CD info)
   static CCriticalSection m_muReadingMedia;
+
+  //! \brief Serialises the whole detection sequence. Never taken by readers, so it
+  //! can be held across the slow probe. Always acquired before m_muReadingMedia.
+  static CCriticalSection m_muDetect;
 
   static DriveState m_DriveState;
   static time_t m_LastPoll;
