@@ -29,7 +29,7 @@
 #include "settings/SettingsComponent.h"
 #include "threads/SystemClock.h"
 #include "utils/FontUtils.h"
-#include "utils/LangCodeExpander.h"
+#include "utils/LanguageTag.h"
 #include "utils/StreamUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -63,6 +63,7 @@ extern "C"
 #include <libavutil/pixdesc.h>
 }
 
+using namespace KODI::UTILS;
 using namespace std::chrono_literals;
 
 struct StereoModeConversionMap
@@ -1921,20 +1922,18 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
     }
     if (langTag)
     {
-      stream->language = std::string(langTag->value, 3);
-      //! @FIXME: Matroska v4 support BCP-47 language code with LanguageIETF element
-      //! that have the priority over the Language element, but this is not currently
-      //! implemented in to ffmpeg library. Since ffmpeg read only the Language element
-      //! all tracks will be identified with same language (of Language element).
-      //! As workaround to allow set the right language code we provide the possibility
-      //! to set the language code in the title field, this allow to kodi to recognize
-      //! the right language and select the right track to be played at playback starts.
+      // A transport stream can carry several ISO 639 language descriptors for one track, which
+      // ffmpeg joins with commas ("deu,eng" for dual mono, or one entry per DVB subtitle page)
+      const std::string_view language{langTag->value};
+      stream->language = CLanguageTag::Parse(std::string{language.substr(0, language.find(','))});
+      //! @todo ffmpeg does not read the Matroska v4 LanguageBCP47 element, which takes priority
+      //! over Language when present, so every track is reported with the value of Language. The
+      //! curly-brace tag in the title field is the interim way to state a track's real language.
       AVDictionaryEntry* title = av_dict_get(pStream->metadata, "title", NULL, 0);
       if (title && title->value)
       {
-        const std::string langCode = g_LangCodeExpander.FindLanguageCodeWithSubtag(title->value);
-        if (!langCode.empty())
-          stream->language = langCode;
+        if (const auto tag = CLanguageTag::FindInText(title->value); tag.has_value())
+          stream->language = *tag;
       }
     }
 
@@ -1975,7 +1974,10 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         delete stream;
         return nullptr;
       }
-      std::static_pointer_cast<CDVDInputStreamBluray>(m_pInput)->GetStreamInfo(pStream->id, stream->language);
+      std::string blurayLanguage;
+      std::static_pointer_cast<CDVDInputStreamBluray>(m_pInput)->GetStreamInfo(pStream->id,
+                                                                               blurayLanguage);
+      stream->language = CLanguageTag::Parse(blurayLanguage);
     }
 #endif
     if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))

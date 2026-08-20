@@ -31,11 +31,13 @@
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
+#include "utils/i18n/Iso3166_1.h"
 #include "utils/log.h"
 #include "weather/WeatherManager.h"
 
 #include <algorithm>
 #include <array>
+#include <span>
 
 namespace
 {
@@ -48,6 +50,8 @@ std::string GetDateStringWithFormat(const CDateTime& date, const std::string& fo
 } // namespace
 
 using namespace KODI::LANGINFO;
+using namespace KODI::UTILS;
+using namespace KODI::UTILS::I18N;
 
 static std::string shortDateFormats[] = {
     // clang-format off
@@ -224,6 +228,49 @@ constexpr auto specialSubtitlesDownloadLangSettings = std::array{
     SpecialLanguageSetting{subLanguageDefault, 309},
 };
 
+namespace
+{
+/*!
+ * \brief The language a disc library should be told about.
+ * \param[in] language The language the user asked for.
+ * \param[in] fallback The langinfo.xml value to stand in where no language was asked for.
+ * \return The language, or the fallback where there is none. Not narrowed to any notation, as
+ *         the accepted notation is defined by the disc library that receives it.
+ */
+CLanguageTag DiscLanguage(const CLanguageTag& language, const std::string& fallback)
+{
+  return language.IsEmpty() ? CLanguageTag::Parse(fallback) : language;
+}
+
+/*!
+ * \brief The language a setting names.
+ * \param[in] language The setting value.
+ * \param[in] specialSettings The values of that setting which name a policy rather than a
+ *            language, such as "original" or "none".
+ * \return The language, or an empty tag where the setting names none. A code the user defined in
+ *         advancedsettings.xml is taken as it stands, so it need not be a standard one.
+ */
+CLanguageTag LanguageFromSetting(const std::string& language,
+                                 std::span<const SpecialLanguageSetting> specialSettings)
+{
+  if (language.empty() ||
+      std::ranges::any_of(specialSettings, [&language](const SpecialLanguageSetting& setting)
+                          { return StringUtils::EqualsNoCase(language, setting.m_code); }))
+  {
+    return {};
+  }
+
+  // Parse would keep text it does not recognize. An unrecognized setting must become an empty
+  // tag instead: a kept one leaves callers preferring a language no stream can match, and the
+  // fallback to the UI language never engages
+  if (const auto tag = CLanguageTag::TryParse(language); tag.has_value())
+    return *tag;
+
+  CLog::LogF(LOGERROR, "'{}' does not name a language, ignoring it", language);
+  return {};
+}
+} // namespace
+
 CLangInfo::CRegion::CRegion()
 {
   SetDefaults();
@@ -233,7 +280,6 @@ void CLangInfo::CRegion::SetDefaults()
 {
   m_strName="N/A";
   m_strLangLocaleName = "English";
-  m_strLangLocaleCodeTwoChar = "en";
 
   m_strDateFormatShort="DD/MM/YYYY";
   m_strDateFormatLong="DDDD, D MMMM YYYY";
@@ -258,18 +304,61 @@ void CLangInfo::CRegion::SetTimeZone(const std::string& strTimeZone)
   m_strTimeZone = strTimeZone;
 }
 
+CLocale CLangInfo::CRegion::GetLocale() const
+{
+  // langinfo.xml may state the language in any of the forms the expander accepts, and Windows
+  // rewrites it at load, so it is narrowed here rather than assumed
+  std::string language;
+  if (!CLangCodeExpander::ConvertToISO6391(m_strLangLocaleName, language))
+    language = m_strLangLocaleName;
+
+  return {language, GetCodeAlpha2()};
+}
+
+std::string CLangInfo::CRegion::GetCodeAlpha2() const
+{
+  // The lookup table is keyed lowercase; ISO 3166-1 publishes the codes uppercase
+  std::string code{m_strRegionLocaleName};
+  StringUtils::ToLower(code);
+
+  if (code.length() == 2)
+  {
+    if (!CIso3166_1::ContainsAlpha2(code))
+      return "";
+  }
+  else
+  {
+    code = CIso3166_1::Alpha3ToAlpha2(code).value_or("");
+  }
+
+  StringUtils::ToUpper(code);
+  return code;
+}
+
+std::string CLangInfo::CRegion::GetCodeAlpha3() const
+{
+  // ISO 3166-1 gives every region both forms, so only one of them needs parsing
+  std::string alpha2{GetCodeAlpha2()};
+  StringUtils::ToLower(alpha2);
+
+  std::string alpha3{CIso3166_1::Alpha2ToAlpha3(alpha2).value_or("")};
+  StringUtils::ToUpper(alpha3);
+  return alpha3;
+}
+
 void CLangInfo::CRegion::SetGlobalLocale(CLangInfo& langInfo)
 {
   std::string strLocale;
   if (!m_strRegionLocaleName.empty())
   {
+    const CLocale locale{GetLocale()};
+
+    // The name a platform's locale database answers to. Windows separates the parts with a
+    // hyphen, other platforms use the POSIX form the locale renders itself as.
 #ifdef TARGET_WINDOWS
-    std::string strLang, strRegion;
-    g_LangCodeExpander.ConvertToISO6391(m_strLangLocaleName, strLang);
-    g_LangCodeExpander.ConvertToISO6391(m_strRegionLocaleName, strRegion);
-    strLocale = strLang + "-" + strRegion;
+    strLocale = locale.GetLanguageCode() + "-" + locale.GetTerritoryCode();
 #else
-    strLocale = m_strLangLocaleName + "_" + m_strRegionLocaleName;
+    strLocale = locale.ToString();
 #endif
 #ifdef TARGET_POSIX
     strLocale += ".UTF-8";
@@ -427,6 +516,11 @@ bool CLangInfo::Load(const std::string& strLanguage)
 {
   SetDefaults();
 
+  // Stands in until the file supplies one, and remains if it cannot be read. Set here rather
+  // than in SetDefaults because parsing reaches the subtag registry, which does not yet
+  // exist when this class is constructed.
+  m_uiLanguage = CLanguageTag::Parse("eng");
+
   std::string strFileName = GetLanguageInfoPath(strLanguage);
 
   CXBMCTinyXML2 xmlDoc;
@@ -464,29 +558,7 @@ bool CLangInfo::Load(const std::string& strLanguage)
   if (pRootElement->Attribute("locale"))
     m_defaultRegion.m_strLangLocaleName = pRootElement->Attribute("locale");
 
-#ifdef TARGET_WINDOWS
-  // Windows need 3 chars isolang code
-  if (m_defaultRegion.m_strLangLocaleName.length() == 2)
-  {
-    if (!g_LangCodeExpander.ConvertISO6391ToISO6392B(m_defaultRegion.m_strLangLocaleName, m_defaultRegion.m_strLangLocaleName, true))
-      m_defaultRegion.m_strLangLocaleName = "";
-  }
-
-  if (!g_LangCodeExpander.ConvertWindowsLanguageCodeToISO6392B(m_defaultRegion.m_strLangLocaleName, m_languageCodeGeneral))
-    m_languageCodeGeneral = "";
-#else
-  if (m_defaultRegion.m_strLangLocaleName.length() != 3)
-  {
-    if (!g_LangCodeExpander.ConvertToISO6392B(m_defaultRegion.m_strLangLocaleName, m_languageCodeGeneral))
-      m_languageCodeGeneral = "";
-  }
-  else
-    m_languageCodeGeneral = m_defaultRegion.m_strLangLocaleName;
-#endif
-
-  std::string tmp;
-  if (g_LangCodeExpander.ConvertToISO6391(m_defaultRegion.m_strLangLocaleName, tmp))
-    m_defaultRegion.m_strLangLocaleCodeTwoChar = tmp;
+  m_uiLanguage = CLanguageTag::Parse(m_defaultRegion.m_strLangLocaleName);
 
   const auto* pRegions = pRootElement->FirstChildElement("regions");
   if (pRegions && !pRegions->NoChildren())
@@ -505,11 +577,7 @@ bool CLangInfo::Load(const std::string& strLanguage)
 
 #ifdef TARGET_WINDOWS
       // Windows need 3 chars regions code
-      if (region.m_strRegionLocaleName.length() == 2)
-      {
-        if (!g_LangCodeExpander.ConvertISO31661Alpha2ToISO31661Alpha3(region.m_strRegionLocaleName, region.m_strRegionLocaleName))
-          region.m_strRegionLocaleName = "";
-      }
+      region.m_strRegionLocaleName = region.GetCodeAlpha3();
 #endif
 
       const auto* pDateLong = pRegion->FirstChildElement("datelong");
@@ -673,8 +741,6 @@ void CLangInfo::SetDefaults()
   m_strDVDAudioLanguage = "en";
   m_strDVDSubtitleLanguage = "en";
   m_sortTokens.clear();
-
-  m_languageCodeGeneral = "eng";
 }
 
 std::string CLangInfo::GetGuiCharSet() const
@@ -757,6 +823,72 @@ std::string CLangInfo::GetEnglishLanguageName(const std::string& locale /* = "" 
   return addon->Name();
 }
 
+namespace
+{
+/*!
+ * \brief The name of the language alone, with the region or script qualifier a langinfo.xml name
+ *        may carry in parentheses removed - "English (Australia)" becomes "English".
+ */
+std::string BaseLanguageName(const std::string& name)
+{
+  const size_t openParen = name.find('(');
+  if (openParen == std::string::npos)
+    return name;
+
+  std::string base = name.substr(0, openParen);
+  StringUtils::TrimRight(base);
+  return base;
+}
+} // namespace
+
+std::string CLangInfo::GetLanguageAs(CLangCodeExpander::LANGFORMATS format, bool withRegion) const
+{
+  const std::string englishName{GetEnglishLanguageName()};
+
+  std::string language;
+  switch (format)
+  {
+    case CLangCodeExpander::ENGLISH_NAME:
+      language = englishName;
+      break;
+    case CLangCodeExpander::ISO_NAME:
+      language = BaseLanguageName(englishName);
+      break;
+    case CLangCodeExpander::ISO_639_1:
+      CLangCodeExpander::ConvertToISO6391(BaseLanguageName(englishName), language);
+      break;
+    case CLangCodeExpander::ISO_639_2:
+      CLangCodeExpander::ConvertToISO6392B(BaseLanguageName(englishName), language);
+      break;
+  }
+
+  // The region, named in the notation the language format implies
+  const auto regionInFormat = [this](CLangCodeExpander::LANGFORMATS fmt)
+  {
+    switch (fmt)
+    {
+      case CLangCodeExpander::ISO_639_1:
+        return GetRegionCodeAlpha2();
+      case CLangCodeExpander::ISO_639_2:
+        return GetRegionCodeAlpha3();
+      case CLangCodeExpander::ISO_NAME:
+        return BaseLanguageName(GetCurrentRegion());
+      default:
+        return GetCurrentRegion();
+    }
+  };
+
+  // Some languages have no code in the requested ISO 639 format - Asturian, for one, has no
+  // ISO 639-1 code - and the conversion then yields nothing to join a region to
+  if (withRegion && !language.empty())
+  {
+    if (const std::string regionCode{regionInFormat(format)}; !regionCode.empty())
+      language += "-" + regionCode;
+  }
+
+  return language;
+}
+
 bool CLangInfo::SetLanguage(std::string language /* = "" */, bool reloadServices /* = true */)
 {
   if (language.empty())
@@ -829,108 +961,46 @@ bool CLangInfo::SetLanguage(std::string language /* = "" */, bool reloadServices
   return true;
 }
 
-const std::string& CLangInfo::GetAudioLanguage(bool allowFallback) const
+const CLanguageTag& CLangInfo::GetAudioLanguage(bool allowFallback) const
 {
-  if (allowFallback && m_audioLanguage.empty())
-    return m_languageCodeGeneral;
+  if (allowFallback && m_audioLanguage.IsEmpty())
+    return m_uiLanguage;
 
   return m_audioLanguage;
 }
 
-void CLangInfo::SetAudioLanguage(const std::string& language, bool isIso6392 /* = false */)
+void CLangInfo::SetAudioLanguage(const std::string& language)
 {
-  if (language.empty() || std::ranges::find_if(specialAudioLangSettings,
-                                               [&language](const SpecialLanguageSetting& setting) {
-                                                 return StringUtils::EqualsNoCase(language,
-                                                                                  setting.m_code);
-                                               }) != specialAudioLangSettings.end())
-  {
-    m_audioLanguage.clear();
-    return;
-  }
-
-  std::string langISO6392;
-  if (isIso6392)
-  {
-    g_LangCodeExpander.ConvertToISO6392B(language, langISO6392);
-  }
-  else
-  {
-    if (g_LangCodeExpander.ConvertToISO6391(language, langISO6392))
-    {
-      // if following conversion (to ISO 639-2) fails it should be because
-      // the language code has been defined by the user, so ignore it
-      g_LangCodeExpander.ConvertISO6391ToISO6392B(langISO6392, langISO6392);
-    }
-  }
-  m_audioLanguage = langISO6392; // empty value for error cases
+  m_audioLanguage = LanguageFromSetting(language, specialAudioLangSettings);
 }
 
-const std::string& CLangInfo::GetSubtitleLanguage(bool allowFallback) const
+const CLanguageTag& CLangInfo::GetSubtitleLanguage(bool allowFallback) const
 {
-  if (allowFallback && m_subtitleLanguage.empty())
-    return m_languageCodeGeneral;
+  if (allowFallback && m_subtitleLanguage.IsEmpty())
+    return m_uiLanguage;
 
   return m_subtitleLanguage;
 }
 
-void CLangInfo::SetSubtitleLanguage(const std::string& language, bool isIso6392 /* = false */)
+void CLangInfo::SetSubtitleLanguage(const std::string& language)
 {
-  if (language.empty() || std::ranges::find_if(specialSubtitlesLangSettings,
-                                               [&language](const SpecialLanguageSetting& setting) {
-                                                 return StringUtils::EqualsNoCase(language,
-                                                                                  setting.m_code);
-                                               }) != specialSubtitlesLangSettings.end())
-  {
-    m_subtitleLanguage.clear();
-    return;
-  }
-
-  std::string langISO6392;
-  if (isIso6392)
-  {
-    g_LangCodeExpander.ConvertToISO6392B(language, langISO6392);
-  }
-  else
-  {
-    if (g_LangCodeExpander.ConvertToISO6391(language, langISO6392))
-    {
-      // if following conversion (to ISO 639-2) fails it should be because
-      // the language code has been defined by the user, so ignore it
-      g_LangCodeExpander.ConvertISO6391ToISO6392B(langISO6392, langISO6392);
-    }
-  }
-  m_subtitleLanguage = langISO6392; // empty value for error cases
+  m_subtitleLanguage = LanguageFromSetting(language, specialSubtitlesLangSettings);
 }
 
-// two character codes as defined in ISO639
-const std::string CLangInfo::GetDVDMenuLanguage() const
+CLanguageTag CLangInfo::GetDVDMenuLanguage() const
 {
-  std::string code;
-  if (!g_LangCodeExpander.ConvertToISO6391(m_currentRegion->m_strLangLocaleName, code))
-    code = m_strDVDMenuLanguage;
-
-  return code;
+  return DiscLanguage(CLanguageTag::Parse(m_currentRegion->m_strLangLocaleName),
+                      m_strDVDMenuLanguage);
 }
 
-// two character codes as defined in ISO639
-const std::string CLangInfo::GetDVDAudioLanguage() const
+CLanguageTag CLangInfo::GetDVDAudioLanguage() const
 {
-  std::string code;
-  if (!g_LangCodeExpander.ConvertToISO6391(m_audioLanguage, code))
-    code = m_strDVDAudioLanguage;
-
-  return code;
+  return DiscLanguage(m_audioLanguage, m_strDVDAudioLanguage);
 }
 
-// two character codes as defined in ISO639
-const std::string CLangInfo::GetDVDSubtitleLanguage() const
+CLanguageTag CLangInfo::GetDVDSubtitleLanguage() const
 {
-  std::string code;
-  if (!g_LangCodeExpander.ConvertToISO6391(m_subtitleLanguage, code))
-    code = m_strDVDSubtitleLanguage;
-
-  return code;
+  return DiscLanguage(m_subtitleLanguage, m_strDVDSubtitleLanguage);
 }
 
 const CLocale& CLangInfo::GetLocale() const
@@ -942,6 +1012,16 @@ const CLocale& CLangInfo::GetLocale() const
 const std::string& CLangInfo::GetRegionLocale() const
 {
   return m_currentRegion->m_strRegionLocaleName;
+}
+
+std::string CLangInfo::GetRegionCodeAlpha2() const
+{
+  return m_currentRegion->GetCodeAlpha2();
+}
+
+std::string CLangInfo::GetRegionCodeAlpha3() const
+{
+  return m_currentRegion->GetCodeAlpha3();
 }
 
 const std::locale& CLangInfo::GetOriginalLocale() const
@@ -1272,7 +1352,7 @@ void CLangInfo::SettingOptionsISO6391LanguagesFiller(const SettingConstPtr& /*se
                                                      std::vector<StringSettingOption>& list,
                                                      std::string& /*current*/)
 {
-  std::vector<std::string> languages = g_LangCodeExpander.GetLanguageNames(
+  std::vector<std::string> languages = CLangCodeExpander::GetLanguageNames(
       CLangCodeExpander::ISO_639_1, CLangCodeExpander::LANG_LIST::INCLUDE_USERDEFINED);
 
   std::ranges::transform(languages, std::back_inserter(list), [](const auto& language)
@@ -1607,7 +1687,7 @@ void CLangInfo::SettingOptionsSpeedUnitsFiller(const SettingConstPtr& setting,
 
 void CLangInfo::AddLanguages(std::vector<StringSettingOption> &list)
 {
-  std::vector<std::string> languages = g_LangCodeExpander.GetLanguageNames(
+  std::vector<std::string> languages = CLangCodeExpander::GetLanguageNames(
       CLangCodeExpander::ISO_639_1, CLangCodeExpander::LANG_LIST::INCLUDE_ADDONS_USERDEFINED);
 
   std::ranges::transform(languages, std::back_inserter(list), [](const auto& language)

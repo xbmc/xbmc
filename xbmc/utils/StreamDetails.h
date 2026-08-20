@@ -66,6 +66,16 @@ protected:
   friend class CVideoDatabase;
 };
 
+// Language codes held by the classes below are ISO 639-2/B, not BCP 47 as used elsewhere in the
+// player, and every writer narrows them on the way in. Archive reads and writes that form, while
+// Serialize widens to BCP 47 so a JSON-RPC client sees one notation across the API - though only
+// ever a bare language, since a value carrying a region lost it before it arrived.
+//
+// The classes are the shape of the streamdetails table, which smart playlists filter with SQL
+// built from user-authored rules (see CSmartPlaylistRule::GetWhereClause). Those rules live in
+// .xsp files rather than in the database, so another notation would silently stop matching and no
+// database migration could repair it.
+
 class CStreamDetailVideo final : public CStreamDetail
 {
 public:

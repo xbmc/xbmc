@@ -1106,8 +1106,8 @@ static wchar_t GetCollationWeight(const wchar_t& r)
   //! longer needed.
   if (!CollationMirrorsMySql())
   {
-    const wchar_t nordicWeight =
-        StringUtils::GetNordicCollationWeight(g_langInfo.GetLanguageCode(), r);
+    const wchar_t nordicWeight = StringUtils::GetNordicCollationWeight(
+        g_langInfo.GetLanguageAs(CLangCodeExpander::ISO_639_2, false), r);
     if (nordicWeight != 0)
       return nordicWeight;
   }

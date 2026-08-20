@@ -16,9 +16,9 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/guiinfo/GUIInfoUtils.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
-#include "utils/LangCodeExpander.h"
 #include "utils/StreamDetails.h"
 #include "utils/StreamUtils.h"
 #include "utils/StringUtils.h"
@@ -113,9 +113,7 @@ struct AudioStreamInfoExt : AudioStreamInfo
   {
     streamId = id;
 
-    if (!g_LangCodeExpander.Lookup(info.language, languageDesc))
-      languageDesc =
-          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // Unknown
+    languageDesc = KODI::GUILIB::GUIINFO::CGUIInfoUtils::FormatLanguage(info.language);
 
     isDefault = info.flags & StreamFlags::FLAG_DEFAULT;
     isForced = info.flags & StreamFlags::FLAG_FORCED;
@@ -139,9 +137,7 @@ struct SubtitleStreamInfoExt : SubtitleStreamInfo
   {
     streamId = id;
 
-    if (!g_LangCodeExpander.Lookup(info.language, languageDesc))
-      languageDesc =
-          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // Unknown
+    languageDesc = KODI::GUILIB::GUIINFO::CGUIInfoUtils::FormatLanguage(info.language);
 
     isDefault = info.flags & StreamFlags::FLAG_DEFAULT;
     isForced = info.flags & StreamFlags::FLAG_FORCED;
@@ -165,7 +161,7 @@ struct SortComparerStreamVideo
   {
     if (a.language != b.language)
     {
-      return a.language < b.language;
+      return a.language.AsBcp47() < b.language.AsBcp47();
     }
     if (a.codecName != b.codecName)
     {
@@ -327,9 +323,8 @@ void KODI::VIDEO::GUILIB::OpenDialogSelectVideoStream()
     fileItem->SetProperty("stream.description", info.name);
     fileItem->SetProperty("stream.codec", info.codecName);
 
-    std::string languageDesc;
-    g_LangCodeExpander.Lookup(info.language, languageDesc);
-    fileItem->SetProperty("stream.language", languageDesc);
+    // Deliberately not defaulted to "Unknown", so a skin can hide the property when unset
+    fileItem->SetProperty("stream.language", info.language.GetEnglishName());
 
     fileItem->SetProperty("stream.resolution",
                           std::to_string(info.width) + "x" + std::to_string(info.height));
