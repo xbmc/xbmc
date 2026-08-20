@@ -260,6 +260,14 @@ public:
   void UpdateMovieTitle(int idMovie,
                         const std::string& strNewMovieTitle,
                         VideoDbContentType iType = VideoDbContentType::MOVIES);
+
+  /*! \brief Set the sort title of a movie, tvshow or movie set.
+   For a movie set an empty sort title clears the stored value, so the user can undo an edit.
+   \param[in] idDb the dbId of the item
+   \param[in] strNewSortTitle the new sort title, or an empty string to sort by the title
+   \param[in] iType the content type of the item
+   \return true on success.
+   */
   bool UpdateVideoSortTitle(int idDb,
                             const std::string& strNewSortTitle,
                             VideoDbContentType iType = VideoDbContentType::MOVIES);
@@ -927,9 +935,21 @@ public:
   \return The dbId of the season.
   */
   int AddSeason(int showID, int season, const std::string& name = "", const std::string& plot = "");
+
+  /*! \brief Add a movie set, or update it if it already exists.
+   \param[in] strSet the (possibly user defined) title of the set
+   \param[in] strOverview the overview of the set
+   \param[in] strOriginalSet the title of the set as given by the scraper. Used to identify an
+              existing set, and defaults to strSet when empty.
+   \param[in] strSortSet the title used to sort the set. An empty value never clears an existing
+              sort title, so callers without one to offer can leave it out.
+   \param[in] updateOverview whether an existing set's overview should be replaced
+   \return the dbId of the set, or -1 on failure.
+   */
   int AddSet(const std::string& strSet,
              const std::string& strOverview = "",
              const std::string& strOriginalSet = "",
+             const std::string& strSortSet = "",
              const bool updateOverview = true);
   void ClearMovieSet(int idMovie);
   void SetMovieSet(int idMovie, int idSet);

@@ -847,6 +847,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
           tag.m_set.SetOriginalTitle(tag.m_set.GetTitle());
           if (!setTag.GetTitle().empty())
             tag.m_set.SetTitle(setTag.GetTitle());
+          if (setTag.HasSortTitle())
+            tag.m_set.SetSortTitle(setTag.GetSortTitle());
           if (!setTag.GetOverview().empty())
             tag.m_set.SetOverview(setTag.GetOverview());
           if (setTag.HasArt())
@@ -2084,7 +2086,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
     CLog::LogF(LOGDEBUG, "Adding new set {}", set.GetTitle());
 
     // Create set
-    const int idSet{m_database.AddSet(set.GetTitle(), set.GetOverview(), set.GetOriginalTitle())};
+    const int idSet{m_database.AddSet(set.GetTitle(), set.GetOverview(), set.GetOriginalTitle(),
+                                      set.GetSortTitle())};
 
     // Assume art in set
     if (idSet > 0)

@@ -1459,6 +1459,7 @@ int CVideoDatabase::AddUniqueIDs(int mediaId, const char *mediaType, const CVide
 int CVideoDatabase::AddSet(const std::string& strSet,
                            const std::string& strOverview /* = "" */,
                            const std::string& strOriginalSet /* = "" */,
+                           const std::string& strSortSet /* = "" */,
                            const bool updateOverview /* = true */)
 {
   if (strSet.empty())
@@ -1476,10 +1477,11 @@ int CVideoDatabase::AddSet(const std::string& strSet,
     if (m_pDS->num_rows() == 0)
     {
       m_pDS->close();
-      strSQL = PrepareSQL("INSERT INTO `sets` (idSet, strSet, strOverview, strOriginalSet) "
-                          "VALUES(NULL, '%s', '%s', '%s')",
-                          strSet.c_str(), strOverview.c_str(),
-                          strOriginalSet.empty() ? strSet.c_str() : strOriginalSet.c_str());
+      strSQL = PrepareSQL(
+          "INSERT INTO `sets` (idSet, strSet, strOverview, strOriginalSet, strSortSet) "
+          "VALUES(NULL, '%s', '%s', '%s', '%s')",
+          strSet.c_str(), strOverview.c_str(),
+          strOriginalSet.empty() ? strSet.c_str() : strOriginalSet.c_str(), strSortSet.c_str());
       m_pDS->exec(strSQL);
       return static_cast<int>(m_pDS->lastinsertid());
     }
@@ -1489,11 +1491,12 @@ int CVideoDatabase::AddSet(const std::string& strSet,
       m_pDS->close();
 
       // update set data
+      strSQL = PrepareSQL("UPDATE `sets` SET strSet = '%s'", strSet.c_str());
       if (updateOverview)
-        strSQL = PrepareSQL("UPDATE `sets` SET strSet = '%s', strOverview = '%s' WHERE idSet = %i",
-                            strSet.c_str(), strOverview.c_str(), id);
-      else
-        strSQL = PrepareSQL("UPDATE `sets` SET strSet = '%s' WHERE idSet = %i", strSet.c_str(), id);
+        strSQL += PrepareSQL(", strOverview = '%s'", strOverview.c_str());
+      if (!strSortSet.empty())
+        strSQL += PrepareSQL(", strSortSet = '%s'", strSortSet.c_str());
+      strSQL += PrepareSQL(" WHERE idSet = %i", id);
 
       m_pDS->exec(strSQL);
 
@@ -2363,7 +2366,8 @@ int CVideoDatabase::SetDetailsForMovie(CVideoInfoTag& details,
     if (details.m_set.HasTitle())
     {
       idSet = AddSet(details.m_set.GetTitle(), details.m_set.GetOverview(),
-                     details.m_set.GetOriginalTitle(), details.m_set.GetUpdateSetOverview());
+                     details.m_set.GetOriginalTitle(), details.m_set.GetSortTitle(),
+                     details.m_set.GetUpdateSetOverview());
       details.m_set.SetID(idSet);
       for (const auto& [type, url] : artwork)
       {
@@ -2475,7 +2479,8 @@ int CVideoDatabase::UpdateDetailsForMovie(int idMovie,
       idSet = -1;
       if (details.m_set.HasTitle())
       {
-        idSet = AddSet(details.m_set.GetTitle(), details.m_set.GetOverview());
+        // Only the set title is updated here (SetSet does not touch the other fields)
+        idSet = AddSet(details.m_set.GetTitle(), "", "", "", false);
       }
     }
 
@@ -2547,7 +2552,7 @@ int CVideoDatabase::SetDetailsForMovieSet(const CVideoInfoTag& details,
 
     if (idSet < 0)
     {
-      idSet = AddSet(details.m_strTitle, details.m_strPlot);
+      idSet = AddSet(details.m_strTitle, details.m_strPlot, "", details.m_strSortTitle);
       if (idSet < 0)
       {
         if (!inTransaction)
@@ -2564,8 +2569,12 @@ int CVideoDatabase::SetDetailsForMovieSet(const CVideoInfoTag& details,
     }
 
     // and insert the new row
-    std::string sql = PrepareSQL("UPDATE `sets` SET strSet='%s', strOverview='%s' WHERE idSet=%i",
-                                 details.m_strTitle.c_str(), details.m_strPlot.c_str(), idSet);
+    // Unlike AddSet, callers here always pass a tag loaded from the database,
+    // so an untouched field keeps its current value.
+    const std::string sql{PrepareSQL(
+        "UPDATE `sets` SET strSet='%s', strOverview='%s', strSortSet='%s' WHERE idSet=%i",
+        details.m_strTitle.c_str(), details.m_strPlot.c_str(), details.m_strSortTitle.c_str(),
+        idSet)};
     m_pDS->exec(sql);
 
     if (!inTransaction)
@@ -4769,6 +4778,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
   details.m_set.SetTitle(record->at(VIDEODB_DETAILS_MOVIE_SET_NAME).get_asString());
   details.m_set.SetOverview(record->at(VIDEODB_DETAILS_MOVIE_SET_OVERVIEW).get_asString());
   details.m_set.SetOriginalTitle(record->at(VIDEODB_DETAILS_MOVIE_SET_ORIGINALNAME).get_asString());
+  details.m_set.SetSortTitle(record->at(VIDEODB_DETAILS_MOVIE_SET_SORTNAME).get_asString());
   details.m_iFileId = record->at(VIDEODB_DETAILS_MOVIE_VERSION_FILEID).get_asInt();
   details.m_strPath = record->at(VIDEODB_DETAILS_MOVIE_PATH).get_asString();
   std::string strFileName = record->at(VIDEODB_DETAILS_MOVIE_FILE).get_asString();
@@ -6530,6 +6540,18 @@ bool CVideoDatabase::UpdateVideoSortTitle(int idDb,
   {
     if (nullptr == m_pDB || nullptr == m_pDS)
       return false;
+
+    if (iType == VideoDbContentType::MOVIE_SETS)
+    {
+      // sets have named columns rather than the c%02d columns SetSingleValue writes to.
+      // An empty sort title is stored as-is, so the user can undo an edit.
+      CLog::Log(LOGINFO, "Changing Movie set:id:{} New Sort Title:{}", idDb, strNewSortTitle);
+      m_pDS->exec(PrepareSQL("UPDATE `sets` SET strSortSet = '%s' WHERE idSet = %i",
+                             strNewSortTitle.c_str(), idDb));
+      AnnounceUpdate(MediaTypeVideoCollection, idDb);
+      return true;
+    }
+
     if (iType != VideoDbContentType::MOVIES && iType != VideoDbContentType::TVSHOWS)
       return false;
 
