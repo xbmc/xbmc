@@ -214,6 +214,9 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
   {
     std::unique_lock lock(m_streamsLock);
+    // A new playback request; the queue is no longer exhausted. Nothing else clears this, so
+    // a reused player would otherwise carry it into the next song.
+    m_isFinished = false;
     m_jobCounter++;
   }
   CServiceBroker::GetJobManager()->Submit([=, this]() { QueueNextFileEx(file, false); }, this,
