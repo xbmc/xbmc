@@ -19463,7 +19463,20 @@ msgctxt "#35509"
 msgid "Connecting to backend."
 msgstr ""
 
-#empty strings from id 35510 to 35999
+#. Context menu item, and heading of the dialog it opens, for choosing the
+#. emulator a game or a folder of games is opened with
+#: xbmc/games/windows/GUIWindowGames.cpp
+msgctxt "#35510"
+msgid "Default emulator"
+msgstr ""
+
+#. Marks the emulator already set as the default in the list of emulators
+#: xbmc/games/GameUtils.cpp
+msgctxt "#35511"
+msgid "Current"
+msgstr ""
+
+#empty strings from id 35512 to 35999
 
 #: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
 msgctxt "#36000"
