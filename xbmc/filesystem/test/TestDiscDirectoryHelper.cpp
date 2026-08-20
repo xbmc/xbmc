@@ -4797,6 +4797,69 @@ TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_Resolution_MultipleVersions)
   EXPECT_TRUE(std::ranges::includes(returned, expected));
 }
 
+// Sherlock Holmes (2009) offers the feature as playlist 100 and, as playlist 101, an in-movie
+// experience carrying a host over the film - which runs longer than the feature and drops the
+// other languages. Both present the movie so both are offered, but the feature has to lead, as
+// the presentation offered first becomes the version the library plays by default.
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_PictureInPicturePresentationNeverLeads)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  auto inMovieExperience{MakePlaylist(101u, 131min + 41s, {101u}, {65min, 66min + 41s}, "eng",
+                                      {MakeAudioStream("truehd", "eng")},
+                                      {MakeSubtitleStream("eng")}, 1080)};
+  inMovieExperience.hasSecondaryVideo = true;
+
+  PlaylistMap playlists{
+      {100u, MakePlaylist(100u, 128min + 24s, {100u}, {64min, 64min + 24s}, "eng",
+                          {MakeAudioStream("truehd", "eng"), MakeAudioStream("ac3", "fra")},
+                          {MakeSubtitleStream("eng"), MakeSubtitleStream("fra")}, 1080)},
+      {101u, std::move(inMovieExperience)},
+  };
+  ClipMap clips{
+      {100u, MakeClip(128min + 24s, {100u})},
+      {101u, MakeClip(131min + 41s, {101u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::MAIN, clips, playlists));
+  ASSERT_EQ(items.Size(), 2);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 100u);
+
+  // The longer run of the in-movie experience must not win it a single choice either
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::SINGLE, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 100u);
+}
+
+// A disc offering nothing but a picture-in-picture presentation still offers it
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_PictureInPicturePresentationAlone)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  auto inMovieExperience{MakePlaylist(101u, 131min + 41s, {101u}, {65min, 66min + 41s}, "eng",
+                                      {MakeAudioStream("truehd", "eng")},
+                                      {MakeSubtitleStream("eng")}, 1080)};
+  inMovieExperience.hasSecondaryVideo = true;
+
+  PlaylistMap playlists{{101u, std::move(inMovieExperience)}};
+  ClipMap clips{{101u, MakeClip(131min + 41s, {101u})}};
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::SINGLE, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 101u);
+}
+
 // Playlists without video stream information are neither discarded nor used for comparison,
 // and the known main playlist is never discarded for its resolution
 TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_Resolution_UnknownAndMainPlaylist)

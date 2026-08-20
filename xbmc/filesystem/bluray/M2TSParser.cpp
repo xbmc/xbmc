@@ -114,6 +114,8 @@ inline constexpr std::array DTS_CHANNEL_COUNTS{1u, 2u, 2u, 2u, 2u, 3u, 3u, 4u,
                                                4u, 5u, 6u, 6u, 6u, 7u, 8u, 8u};
 
 constexpr unsigned int DTS_HEADER_SIZE = 14;
+constexpr unsigned int DTS_SYNCWORD_SIZE = 4;
+constexpr unsigned int DTS_MAX_PRESENTATIONS = 8;
 constexpr unsigned int HEADERS_PARSED_FOR_COMPLETE = 2;
 // The DTS:X and IMAX extension sync words are not present in every frame, so more frames need to
 // be examined before concluding an extension substream is plain DTS-HD Master Audio
@@ -962,6 +964,69 @@ std::optional<unsigned int> FindDTSSyncWord(const std::span<std::byte>& buffer,
   return std::nullopt;
 }
 
+std::optional<unsigned int> ParseDTSExtensionSubstreamChannels(BitReader& br)
+{
+  br.SkipBits(8); // UserDefinedBits
+  const unsigned int substreamIndex{br.ReadBits(2)}; // nExtSSIndex
+  const bool longSizeFields{br.ReadBits(1) == 1}; // bHeaderSizeType
+  const unsigned int bitsForHeaderSize{longSizeFields ? 12u : 8u};
+  const unsigned int bitsForFrameSize{longSizeFields ? 20u : 16u};
+  br.SkipBits(bitsForHeaderSize); // nuExtSSHeaderSize
+  br.SkipBits(bitsForFrameSize); // nuExtSSFsize
+
+  unsigned int numAssets{1};
+  const bool staticFieldsPresent{br.ReadBits(1) == 1}; // bStaticFieldsPresent
+  if (staticFieldsPresent)
+  {
+    br.SkipBits(2); // nuRefClockCode
+    br.SkipBits(3); // nuExSSFrameDurationCode
+    if (br.ReadBits(1) == 1) // bTimeStampFlag
+      br.SkipBits(36); // nuTimeStamp and nLSB
+
+    const unsigned int numPresentations{br.ReadBits(3) + 1}; // nuNumAudioPresnt
+    numAssets = br.ReadBits(3) + 1; // nuNumAssets
+
+    // Each presentation names the substreams it is carried by, and then holds one asset mask
+    // byte for each of them
+    std::array<unsigned int, DTS_MAX_PRESENTATIONS> activeSubstreamMask{};
+    for (unsigned int i = 0; i < numPresentations; ++i)
+      activeSubstreamMask[i] = br.ReadBits(substreamIndex + 1); // nuActiveExSSMask
+    for (unsigned int i = 0; i < numPresentations; ++i)
+      br.SkipBits(static_cast<uint32_t>(std::popcount(activeSubstreamMask[i])) *
+                  8); // nuActiveAssetMask
+
+    if (br.ReadBits(1) == 1) // bMixMetadataEnbl
+    {
+      br.SkipBits(2); // nuMixMetadataAdjLevel
+      const unsigned int bitsForSpeakerMask{(br.ReadBits(2) + 1) << 2}; // nuBits4MixOutMask
+      const unsigned int numMixConfigurations{br.ReadBits(2) + 1}; // nuNumMixOutConfigs
+      br.SkipBits(numMixConfigurations * bitsForSpeakerMask); // nuMixOutChMask
+    }
+  }
+
+  // The size of every asset, and then the descriptor of the first of them
+  br.SkipBits(numAssets * bitsForFrameSize); // nuAssetFsize
+  br.SkipBits(9); // nuAssetDescriptFsize
+  br.SkipBits(3); // nuAssetIndex
+
+  // The channel count is one of the descriptor's static fields, so without them the asset says
+  // nothing the core has not already said
+  if (!staticFieldsPresent)
+    return std::nullopt;
+
+  if (br.ReadBits(1) == 1) // bAssetTypeDescrPresent
+    br.SkipBits(4); // nuAssetTypeDescriptor
+  if (br.ReadBits(1) == 1) // bLanguageDescrPresent
+    br.SkipBits(24); // LanguageDescriptor
+  if (br.ReadBits(1) == 1) // bInfoTextPresent
+    br.SkipBits((br.ReadBits(10) + 1) * 8); // nuInfoTextByteSize and InfoTextString
+
+  br.SkipBits(5); // nuBitResolution
+  br.SkipBits(4); // nuMaxSampleRate
+
+  return br.ReadBits(8) + 1; // nuTotalNumChs
+}
+
 bool ParseDTSBitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* streamInfo)
 {
   if (buffer.size() < DTS_HEADER_SIZE)
@@ -971,7 +1036,10 @@ bool ParseDTSBitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
   if (!dtsData)
     return false;
 
-  bool substreamPresent{dtsData->syncWord == DTSSyncWords::SUBSTREAM};
+  // A frame that starts with the substream sync word has no core
+  std::optional<unsigned int> substreamPos{dtsData->syncWord == DTSSyncWords::SUBSTREAM
+                                               ? std::optional{dtsData->syncPos}
+                                               : std::nullopt};
   if (dtsData->syncWord == DTSSyncWords::CORE_16BIT_BE)
   {
     // Parse 16-bit DTS core header
@@ -998,12 +1066,13 @@ bool ParseDTSBitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
       streamInfo->channels++; // Add LFE channel
 
     // See if there is a DTS substream header in this block
-    substreamPresent =
-        FindDTSSyncWord(buffer, dtsData->syncPos + DTS_HEADER_SIZE, DTS_SYNCWORD_SUBSTREAM)
-            .has_value();
+    const unsigned int searchStart{dtsData->syncPos + DTS_HEADER_SIZE};
+    if (const auto found{FindDTSSyncWord(buffer, searchStart, DTS_SYNCWORD_SUBSTREAM)};
+        found.has_value())
+      substreamPos = searchStart + found.value();
   }
 
-  if (substreamPresent)
+  if (substreamPos.has_value())
   {
     // Substream header found
     streamInfo->hasSubstream = true;
@@ -1017,6 +1086,16 @@ bool ParseDTSBitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
     if (auto xllximax{FindDTSSyncWord(buffer, dtsData->syncPos + 10, DTS_SYNCWORD_XLL_X_IMAX)};
         xllximax.has_value())
       streamInfo->isXLLXIMAX = true;
+
+    // The extension describes the full mix, of which the core is only a downmix
+    if (const unsigned int headerPos{substreamPos.value() + DTS_SYNCWORD_SIZE};
+        headerPos < buffer.size())
+    {
+      BitReader br(buffer.subspan(headerPos));
+      if (const auto channels{ParseDTSExtensionSubstreamChannels(br)};
+          channels.has_value() && channels.value() > streamInfo->channels)
+        streamInfo->channels = channels.value();
+    }
   }
 
   // An XLL substream may still be DTS:X or DTS:X IMAX - neither marker is in every frame, so keep
@@ -1042,14 +1121,15 @@ bool ParseTrueHDHeader(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
       audio_sampling_frequency < sampleRates.size() && sampleRates[audio_sampling_frequency] != 0)
     streamInfo->sampleRate = sampleRates[audio_sampling_frequency];
 
-  bool ch6_multichannel_type{GetBits(format_info, 28, 1) == 1};
-  bool ch8_multichannel_type{GetBits(format_info, 27, 1) == 1};
-  unsigned int ch2_presentation_channel_modifier{GetBits(format_info, 26, 2)};
-  unsigned int ch6_presentation_channel_assignment{GetBits(format_info, 22, 5)};
-  unsigned int ch8_presentation_channel_assignment{GetBits(format_info, 15, 13)};
-  bool ch8_flag{GetBits(flags, 12, 1) == 1};
+  const unsigned int ch2_presentation_channel_modifier{GetBits(format_info, 24, 2)};
+  const unsigned int ch6_presentation_channel_assignment{GetBits(format_info, 20, 5)};
+  const unsigned int ch8_presentation_channel_assignment{GetBits(format_info, 13, 13)};
+  const bool ch8_flag{GetBits(flags, 12, 1) == 1};
 
-  if (ch8_multichannel_type)
+  const unsigned int header{GetByte(buffer, 16)};
+  const unsigned int substreams{GetBits(header, 8, 4)};
+
+  if (substreams > 2)
   {
     unsigned int ch8_1;
     unsigned int ch8_2;
@@ -1065,18 +1145,19 @@ bool ParseTrueHDHeader(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
     }
     streamInfo->channels = std::popcount(ch8_2) * 2 + std::popcount(ch8_1);
   }
-  else if (ch6_multichannel_type)
+  else
   {
-    unsigned int ch6_1{ch6_presentation_channel_assignment & CH8_16_SINGLE_CHANNEL_ALTERNATE_MASK};
-    unsigned int ch6_2{ch6_presentation_channel_assignment & CH8_16_DUAL_CHANNEL_ALTERNATE_MASK};
+    const unsigned int ch6_1{ch6_presentation_channel_assignment &
+                             CH8_16_SINGLE_CHANNEL_ALTERNATE_MASK};
+    const unsigned int ch6_2{ch6_presentation_channel_assignment &
+                             CH8_16_DUAL_CHANNEL_ALTERNATE_MASK};
     streamInfo->channels = std::popcount(ch6_2) * 2 + std::popcount(ch6_1);
   }
-  else
+
+  if (streamInfo->channels == 0)
     streamInfo->channels = (ch2_presentation_channel_modifier == 3) ? 1 : 2;
 
   // Look for extended channel info
-  unsigned int header{GetByte(buffer, 16)};
-  unsigned int substreams{GetBits(header, 8, 4)};
   unsigned int substream_info{GetByte(buffer, 17)};
   bool ch16_present{GetBits(substream_info, 8, 1) == 1};
   uint64_t channel_meaning{GetQWord(buffer, 18)};

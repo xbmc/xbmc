@@ -82,6 +82,16 @@ private:
   static bool FilterPlaylists(std::vector<PlaylistInformation>& playlists);
 
   /*!
+   \brief Record a playlist and how it and its clips reference one another.
+   \param playlists the playlist map to add the playlist to
+   \param titleInfo the playlist, whose languages are filled in from its audio streams
+   \param clips the clip map to add the playlist's clips to
+   */
+  static void ProcessPlaylist(PlaylistMap& playlists,
+                              PlaylistInformation& titleInfo,
+                              ClipMap& clips);
+
+  /*!
    \brief Get the playlist(s) on the disc as FileItems, without their stream details.
    \param playlist a single playlist to return, or ALL_PLAYLISTS for every valid one
    \return true if any playlist was found

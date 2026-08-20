@@ -118,6 +118,10 @@ struct PlaylistInformation
   std::vector<SubtitleStreamInfo> pgStreams;
   std::string languages;
 
+  //! Whether the playlist carries a secondary video stream, ie. it presents the content
+  //! picture-in-picture (see IsPictureInPicturePresentation)
+  bool hasSecondaryVideo{false};
+
   void clear()
   {
     playlist = 0;
@@ -129,6 +133,7 @@ struct PlaylistInformation
     audioStreams.clear();
     pgStreams.clear();
     languages.clear();
+    hasSecondaryVideo = false;
   }
 };
 

@@ -432,27 +432,15 @@ bool CBlurayDirectory::GetPlaylists(const CURL& url,
   }
 }
 
-namespace
-{
-void ProcessPlaylist(PlaylistMap& playlists, PlaylistInformation& titleInfo, ClipMap& clips)
+void CBlurayDirectory::ProcessPlaylist(PlaylistMap& playlists,
+                                       PlaylistInformation& titleInfo,
+                                       ClipMap& clips)
 {
   const unsigned int playlist{titleInfo.playlist};
 
-  // Save playlist
-  PlaylistInformation info;
-  info.playlist = playlist;
-
-  // Save playlist duration and chapters
-  info.duration = titleInfo.duration;
-  info.chapters = titleInfo.chapters;
-
-  // Get clips
+  // Record which playlists each clip belongs to, and how long it is
   for (const auto& clip : titleInfo.clips)
   {
-    // Add clip to playlist
-    info.clips.push_back(clip);
-
-    // Add/extend clip information
     const auto& it = clips.find(clip);
     if (it == clips.end())
     {
@@ -470,19 +458,19 @@ void ProcessPlaylist(PlaylistMap& playlists, PlaylistInformation& titleInfo, Cli
     }
   }
 
-  info.videoStreams = titleInfo.videoStreams;
-  info.audioStreams = titleInfo.audioStreams;
-  info.pgStreams = titleInfo.pgStreams;
-
   // Get languages
-  const std::string langs{fmt::format(
-      "{}", fmt::join(titleInfo.audioStreams | std::views::transform(&StreamInfo::language), ","))};
-  info.languages = langs;
-  titleInfo.languages = langs;
+  titleInfo.languages = fmt::format(
+      "{}", fmt::join(titleInfo.audioStreams | std::views::transform(&StreamInfo::language), ","));
 
-  playlists[playlist] = info;
+  // Saved as a whole, so a field added to PlaylistInformation reaches the playlist map without
+  // having to be added here too
+  PlaylistInformation info{titleInfo};
+
+  // The duration of each clip is held once, in the clip map above
+  info.clipDuration.clear();
+
+  playlists[playlist] = std::move(info);
 }
-} // namespace
 
 bool CBlurayDirectory::GetPlaylistsInformation(const CURL& url,
                                                const std::string& realPath,
