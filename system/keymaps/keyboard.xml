@@ -543,6 +543,7 @@
       <m>OSD</m>
       <menu>OSD</menu>
       <i>Info</i>
+      <a>AudioNextLanguage</a>
       <p>ActivateWindow(VisualisationPresetList)</p>
       <v>Addon.Default.OpenSettings(xbmc.player.musicviz)</v>
       <text>Addon.Default.OpenSettings(xbmc.player.musicviz)</text>
@@ -568,6 +569,7 @@
       <menu>Back</menu>
       <i>Info</i>
       <o>PlayerProcessInfo</o>
+      <a>AudioNextLanguage</a>
       <p>ActivateWindow(VisualisationPresetList)</p>
       <v>Addon.Default.OpenSettings(xbmc.player.musicviz)</v>
       <text>Addon.Default.OpenSettings(xbmc.player.musicviz)</text>

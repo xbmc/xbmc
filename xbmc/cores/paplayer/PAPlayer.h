@@ -10,7 +10,6 @@
 
 #include "AudioDecoder.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
-#include "cores/AudioEngine/Interfaces/IAudioCallback.h"
 #include "cores/IPlayer.h"
 #include "jobs/IJobCallback.h"
 #include "threads/CriticalSection.h"
@@ -47,13 +46,14 @@ public:
   void SetSpeed(float speed = 0) override;
   int GetCacheLevel() const override;
   void SetTotalTime(int64_t time) override;
-  void GetAudioStreamInfo(int index, AudioStreamInfo& info) const override;
   void SetTime(int64_t time) override;
   void SeekTime(int64_t iTime = 0) override;
   void GetAudioCapabilities(std::vector<IPlayerAudioCaps>& caps) const override {}
 
-  int GetAudioStreamCount() const override { return 1; }
-  int GetAudioStream() override { return 0; }
+  void GetAudioStreamInfo(int index, AudioStreamInfo& info) const override;
+  int GetAudioStreamCount() const override;
+  int GetAudioStream() override;
+  void SetAudioStream(int iStream) override;
 
   // implementation of IJobCallback
   void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
@@ -87,6 +87,7 @@ private:
     int64_t m_startOffset;               /* the stream start offset */
     int64_t m_endOffset;                 /* the stream end offset */
     int64_t m_decoderTotal = 0;
+    int m_audioStream = 0; /* the audio stream being decoded */
     AEAudioFormat m_audioFormat;
     unsigned int m_bytesPerSample;       /* number of bytes per audio sample */
     unsigned int m_bytesPerFrame;        /* number of bytes per audio frame */
@@ -106,6 +107,7 @@ private:
     float m_volume;                      /* the initial volume level to set the stream to on creation */
 
     bool m_isSlaved;                     /* true if the stream has been slaved to another */
+    StreamInfo* m_slavedTo = nullptr; /* the stream that owns it while slaved, and resumes it */
     bool m_waitOnDrain;                  /* wait for stream being drained in AE */
   };
 
@@ -124,7 +126,11 @@ private:
   StreamInfo* m_currentStream = nullptr;
   IAudioCallback*     m_audioCallback;       /* the viz audio callback */
 
-  CCriticalSection    m_streamsLock;         /* lock for the stream list */
+  std::atomic_int m_requestedAudioStream{-1}; /* audio stream to switch to, -1 for none */
+  std::atomic_int m_preferredAudioStream{0}; /* audio stream to open the next track on */
+  bool m_audioStreamDeferred = false; /* if a pending request has been reported as deferred */
+
+  mutable CCriticalSection m_streamsLock; /* lock for the stream list */
   StreamList          m_streams;             /* playing streams */
   StreamList          m_finishing;           /* finishing streams */
   int m_jobCounter = 0;
@@ -150,5 +156,33 @@ private:
   bool SetTotalTimeInternal(int64_t time);
   void CloseFileCB(StreamInfo &si);
   void AdvancePlaylistOnError(CFileItem &fileItem);
+
+  /*!
+   * \brief Replace a StreamInfo's IAEStream with one matching its current audio format.
+   *
+   * Must be called on the player thread with m_streamsLock held.
+   */
+  bool RecreateStream(StreamInfo* si);
+
+  /*!
+   * \brief The stream being played, or the one about to take over mid handover.
+   *
+   * Must be called with m_streamsLock held.
+   */
+  StreamInfo* PlayingStream() const;
+
+  /*!
+   * \brief Discard a StreamInfo that has been left without an IAEStream.
+   *
+   * Must be called on the player thread with m_streamsLock held, and not while walking m_streams.
+   */
+  void DropStream(StreamInfo* si);
+
+  /*!
+   * \brief Carry out a pending SetAudioStream() request, if any.
+   *
+   * Must be called on the player thread with m_streamsLock held.
+   */
+  void ProcessAudioStreamChange();
 };
 
