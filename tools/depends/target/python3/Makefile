@@ -8,7 +8,9 @@ DEPS = ../../Makefile.include Makefile PYTHON3-VERSION ../../download-files.incl
                                  13-wasm-em-config-clang.patch \
                                  14-wasm-build-wasm-default.patch \
                                  15-wasm-static-hacl.patch \
-                                 16-ios-platform.patch
+                                 16-ios-static-nonframework.patch \
+                                 17-ios-simulator-version-min.patch \
+                                 18-ios-objc-fallback.patch
 
 ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
   ifeq ($(OS), darwin_embedded)
@@ -81,10 +83,14 @@ ifeq ($(OS), darwin_embedded)
   PY_MODULES+= py_cv_module__posixsubprocess=n/a \
                py_cv_module__scproxy=n/a
 
+  # A real iOS triplet, not the tree's darwin one: CPython derives ac_sys_system,
+  # the deployment target and the simulator split from it.
   ifeq ($(findstring iphone,$(TARGET_PLATFORM)),iphone)
-    # see 16-ios-platform.patch
-    export IPHONEOS_DEPLOYMENT_TARGET=$(APPLE_DEPLOYMENT_TARGET)
-    export _host_device=$(subst iphone,,$(TARGET_PLATFORM))
+    PYTHON_HOST=$(subst -darwin,-ios$(APPLE_DEPLOYMENT_TARGET),$(HOST))
+    ifeq ($(TARGET_PLATFORM),iphonesimulator)
+      PYTHON_HOST:=$(PYTHON_HOST)-simulator
+    endif
+    EXTRA_CONFIGURE+= --host=$(PYTHON_HOST)
   endif
 endif
 
@@ -127,7 +133,9 @@ ifeq ($(OS),wasm)
 	cd $(PLATFORM); patch -p1 -i ../15-wasm-static-hacl.patch
 endif
 ifeq ($(findstring iphone,$(TARGET_PLATFORM)),iphone)
-	cd $(PLATFORM); patch -p1 -i ../16-ios-platform.patch
+	cd $(PLATFORM); patch -p1 -i ../16-ios-static-nonframework.patch
+	cd $(PLATFORM); patch -p1 -i ../17-ios-simulator-version-min.patch
+	cd $(PLATFORM); patch -p1 -i ../18-ios-objc-fallback.patch
 endif
 	cd $(PLATFORM); $(AUTORECONF)
 	cd $(PLATFORM); $(CONFIGURE)
