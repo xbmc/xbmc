@@ -191,6 +191,11 @@ void CheckAndUpdateCurrentMonitor(NSUInteger screenNumber)
 {
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   const std::string storedScreenName = settings->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
+  // OUTPUT_NAME_DEFAULT is a placeholder resolving to screen 0, not a stale name.
+  // Rewriting it before the render system exists leaves the GUI without a viewport.
+  if (storedScreenName == OUTPUT_NAME_DEFAULT && screenNumber == 0)
+    return;
+
   const std::string currentScreenName = screenNameForDisplay(screenNumber).UTF8String;
   if (storedScreenName != currentScreenName)
   {
