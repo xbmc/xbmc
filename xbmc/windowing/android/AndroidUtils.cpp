@@ -305,7 +305,91 @@ CHDRCapabilities CAndroidUtils::GetDisplayHDRCapabilities()
       types.end())
     caps.SetDolbyVision();
 
+  // Some older Dolby Vision displays only advertise Dolby Vision for a subset of their
+  // display modes (commonly the low frame rate ones), so Android reports no Dolby Vision
+  // support at all while the display is running at e.g. 4K60. Allow the user to override
+  // the reported capability in that case.
+  if (!caps.SupportsDolbyVision() && IsDolbyVisionForcedBySetting())
+    caps.SetDolbyVision();
+
   return caps;
+}
+
+bool CAndroidUtils::IsDolbyVisionForcedBySetting()
+{
+  const auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent)
+    return false;
+
+  const auto settings = settingsComponent->GetSettings();
+  if (!settings)
+    return false;
+
+  if (!settings->GetBool(CSettings::SETTING_VIDEOPLAYER_FORCEDOLBYVISION))
+    return false;
+
+  // Forcing is a bet that the display will be in a Dolby Vision capable mode by the time the
+  // picture is sent, which is only true when Kodi switches the display to match the content
+  // frame rate. The capability is read when the decoder is chosen, before the mode switch has
+  // happened, which is exactly why the override is needed at all - but with refresh rate
+  // switching off the display simply stays where it is, and a display that only accepts Dolby
+  // Vision at some rates (many sets only do so at 24Hz) is then handed a signal it rejects
+  // outright, giving no picture rather than a fallback.
+  if (settings->GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) == ADJUST_REFRESHRATE_OFF)
+  {
+    CLog::Log(LOGDEBUG, "CAndroidUtils: Dolby Vision override ignored, display refresh rate "
+                        "switching is disabled");
+    return false;
+  }
+
+  return true;
+}
+
+bool CAndroidUtils::DisplayReportsDolbyVision()
+{
+  const std::vector<int> types = GetDisplaySupportedHdrTypes();
+
+  return std::find(types.begin(), types.end(), CJNIDisplayHdrCapabilities::HDR_TYPE_DOLBY_VISION) !=
+         types.end();
+}
+
+bool CAndroidUtils::IsForcedDolbyVisionBlockedForFps(double fps)
+{
+  if (!IsDolbyVisionForcedBySetting())
+    return false;
+
+  // The ceiling only guards the forced capability. A display that genuinely reports
+  // Dolby Vision is left to its own advertised support.
+  if (DisplayReportsDolbyVision())
+    return false;
+
+  const auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent)
+    return false;
+
+  const auto settings = settingsComponent->GetSettings();
+  if (!settings)
+    return false;
+
+  const int maxFps = settings->GetInt(CSettings::SETTING_VIDEOPLAYER_FORCEDOVIMAXFPS);
+
+  if (maxFps <= 0) // no limit configured
+    return false;
+
+  if (fps <= 0.0) // unknown frame rate, do not second guess the stream
+    return false;
+
+  // Tolerance so that broadcast rates (23.976 / 29.97 / 59.94) match their nominal ceiling.
+  constexpr double tolerance = 0.05;
+  const bool blocked = fps > (static_cast<double>(maxFps) + tolerance);
+
+  if (blocked)
+    CLog::Log(LOGDEBUG,
+              "CAndroidUtils: forced Dolby Vision not applied, content {:.3f} fps exceeds the "
+              "configured {} fps ceiling",
+              fps, maxFps);
+
+  return blocked;
 }
 
 bool CAndroidUtils::SupportsMediaCodecMimeType(const std::string& mimeType)

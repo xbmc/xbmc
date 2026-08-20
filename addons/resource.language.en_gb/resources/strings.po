@@ -24581,7 +24581,67 @@ msgctxt "#39210"
 msgid "If enabled, Dolby Vision files will have level 5 (active area) metadata overridden to zero offsets. Enable if your display has issues with incorrectly cropped image in Dolby Vision playback."
 msgstr ""
 
-#empty strings from id 39211 to 39899
+#. Label for setting "Force Dolby Vision on display for older DV TVs"
+#: system/settings/settings.xml
+msgctxt "#39211"
+msgid "Force Dolby Vision on display for older DV TVs"
+msgstr ""
+
+#. Help text for setting "Force Dolby Vision on display for older DV TVs" of label #39211
+#: system/settings/settings.xml
+msgctxt "#39212"
+msgid "Treat the display as Dolby Vision capable even when Android does not report Dolby Vision support for the current display mode. Some older Dolby Vision TVs only advertise Dolby Vision at lower frame rates (for example 24 Hz), so support disappears while the display is running at 50/60 Hz.[CR][CR]Requires \"Adjust display refresh rate\", because forcing relies on the display being switched into a mode that accepts Dolby Vision before the picture is sent.[CR][CR]Only enable this if you know your display accepts a Dolby Vision signal."
+msgstr ""
+
+#. Label for setting "Maximum frame rate for forced Dolby Vision"
+#: system/settings/settings.xml
+msgctxt "#39213"
+msgid "Maximum frame rate for forced Dolby Vision"
+msgstr ""
+
+#. Help text for setting "Maximum frame rate for forced Dolby Vision" of label #39213
+#: system/settings/settings.xml
+msgctxt "#39214"
+msgid "Only force Dolby Vision for video up to this frame rate. Video above this frame rate falls back to the display's real capabilities, so content your display cannot handle in Dolby Vision is not forced. Has no effect when the display genuinely reports Dolby Vision support."
+msgstr ""
+
+#. Option for setting "Maximum frame rate for forced Dolby Vision" - no frame rate limit
+#: system/settings/settings.xml
+msgctxt "#39215"
+msgid "No limit"
+msgstr ""
+
+#. Option for setting "Maximum frame rate for forced Dolby Vision" - 24 fps
+#: system/settings/settings.xml
+msgctxt "#39216"
+msgid "24 fps"
+msgstr ""
+
+#. Option for setting "Maximum frame rate for forced Dolby Vision" - 25 fps
+#: system/settings/settings.xml
+msgctxt "#39217"
+msgid "25 fps"
+msgstr ""
+
+#. Option for setting "Maximum frame rate for forced Dolby Vision" - 30 fps
+#: system/settings/settings.xml
+msgctxt "#39218"
+msgid "30 fps"
+msgstr ""
+
+#. Option for setting "Maximum frame rate for forced Dolby Vision" - 50 fps
+#: system/settings/settings.xml
+msgctxt "#39219"
+msgid "50 fps"
+msgstr ""
+
+#. Option for setting "Maximum frame rate for forced Dolby Vision" - 60 fps
+#: system/settings/settings.xml
+msgctxt "#39220"
+msgid "60 fps"
+msgstr ""
+
+#empty strings from id 39221 to 39899
 
 #. List formatting: pattern used to join a list of exactly two items, e.g. "A and B"
 #. STR_LIST_AND_TWO
