@@ -67,6 +67,9 @@ GUISETTINGS_TEMPLATE = """<settings>
   <setting id="services.webserverport">{port}</setting>
   <setting id="services.webserverauthentication">false</setting>
   <setting id="debug.screenshotpath">{screenshot_dir}</setting>
+  <!-- AUTO_UPDATES_NEVER: a repository fetch still running at quit time holds
+       shutdown open past the launchers' exit timeout. -->
+  <setting id="general.addonupdates">2</setting>
   <resolutions/>
   <viewstates/>
 </settings>
