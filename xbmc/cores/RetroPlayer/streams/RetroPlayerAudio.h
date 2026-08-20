@@ -11,6 +11,7 @@
 #include "IRetroPlayerStream.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 
+#include <limits>
 #include <memory>
 
 class IAEStream;
@@ -64,6 +65,12 @@ private:
   CRPProcessInfo& m_processInfo;
   IAE::StreamPtr m_pAudioStream;
   bool m_bAudioEnabled = true;
+
+  // Smallest delay this stream has reported, which stands in for the sink's own
+  // latency: what is left once everything queued has played. Sinks differ by
+  // hundreds of milliseconds, so the throttle target is measured from here
+  // rather than from zero.
+  double m_floorDelaySecs = std::numeric_limits<double>::max();
 };
 } // namespace RETRO
 } // namespace KODI

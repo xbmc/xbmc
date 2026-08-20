@@ -18,6 +18,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <limits>
 #include <chrono>
 #include <thread>
 
@@ -33,12 +34,19 @@ const double MAX_DELAY = 0.3; // seconds
 // stopped draining costs the game loop one frame rather than hanging it.
 constexpr auto MAX_WAIT = std::chrono::milliseconds(100);
 
-// How much audio to keep queued ahead of the speakers. This has to sit above
-// AudioEngine's own buffering floor, or the delay can never reach it and every
-// packet burns the full wait: at 0.1 the floor turned out to be around 0.2 and
-// games ran at about half a frame per second. MAX_DELAY is Kodi's own idea of
-// too much latency, and is comfortably above the floor.
-const double TARGET_DELAY = MAX_DELAY; // seconds
+// How much audio to keep queued ahead of what the sink reports when it has
+// nothing of ours left to play.
+//
+// Measured against that floor rather than against zero. GetDelay() includes the
+// sink's own latency, which is not a small or fixed number: AESinkPULSE asks for
+// a 400 ms buffer on the paths it considers high-latency. A fixed target below
+// that floor can never be reached, so every packet burns its whole wait and the
+// game ends up slower than real time -- seen at about half a frame per second
+// with a 0.1 s target against a floor near 0.2 s.
+//
+// Subtracting the observed floor makes the target mean the same thing on every
+// sink: how much of our audio is queued, not how much latency the device has.
+const double TARGET_AHEAD = 0.1; // seconds
 
 CRetroPlayerAudio::CRetroPlayerAudio(CRPProcessInfo& processInfo) : m_processInfo(processInfo)
 {
@@ -116,6 +124,9 @@ bool CRetroPlayerAudio::OpenStream(const StreamProperties& properties)
   m_processInfo.SetAudioSampleRate(audioFormat.m_sampleRate);
   m_processInfo.SetAudioBitsPerSample(CAEUtil::DataFormatToUsedBits(audioFormat.m_dataFormat));
 
+  // Learned per stream: a new one may be on a device with a different latency
+  m_floorDelaySecs = std::numeric_limits<double>::max();
+
   return true;
 }
 
@@ -129,6 +140,11 @@ void CRetroPlayerAudio::AddStreamData(const StreamPacket& packet)
     {
       const double delaySecs = m_pAudioStream->GetDelay();
 
+      // The smallest delay seen on this stream approximates the sink's own
+      // latency, which is what remains once everything we queued has played.
+      m_floorDelaySecs = std::min(m_floorDelaySecs, delaySecs);
+      const double targetDelay = m_floorDelaySecs + TARGET_AHEAD;
+
       const size_t frameSize = m_pAudioStream->GetChannelCount() *
                                (CAEUtil::DataFormatToBits(m_pAudioStream->GetDataFormat()) >> 3);
 
@@ -138,7 +154,7 @@ void CRetroPlayerAudio::AddStreamData(const StreamPacket& packet)
       // which means something other than a full sink is wrong -- a device that
       // stopped draining, or a client that raced ahead while the stream was
       // unable to take anything.
-      if (delaySecs > MAX_DELAY * 2.0)
+      if (delaySecs > targetDelay + MAX_DELAY)
       {
         m_pAudioStream->Flush();
         CLog::Log(LOGDEBUG, "RetroPlayer[AUDIO]: Audio delay ({:0.2f} ms) is too high - flushing",
@@ -185,12 +201,11 @@ void CRetroPlayerAudio::AddStreamData(const StreamPacket& packet)
       //
       // Bounded by the same deadline, so a stream that has stopped draining
       // costs the game loop a frame rather than hanging it.
-      // Never wait longer than the audio just handed over would take to play.
-      // That bound is what makes this safe: however wrong the target turns out
-      // to be for a given sink, the client can only ever be held to real time,
-      // never slower. Waiting a fixed 100 ms instead, with a target below the
-      // sink's floor, cost every packet the full wait and ran games at about
-      // half a frame per second.
+      // Never wait longer than the audio just handed over would take to play,
+      // so a packet cannot cost more than the time it represents. That caps how
+      // wrong this can go, but it does not make a wrong target free: the wait
+      // runs after the frame has been emulated, so a target the sink can never
+      // reach still adds to every frame. Hence measuring the floor above.
       const unsigned int sampleRate = m_pAudioStream->GetSampleRate();
       if (sampleRate > 0)
       {
@@ -199,7 +214,7 @@ void CRetroPlayerAudio::AddStreamData(const StreamPacket& packet)
                                    std::chrono::microseconds(static_cast<long long>(
                                        1000000.0 * frameCount / sampleRate)));
 
-        while (m_pAudioStream->GetDelay() > TARGET_DELAY &&
+        while (m_pAudioStream->GetDelay() > targetDelay &&
                std::chrono::steady_clock::now() < throttleUntil)
         {
           std::this_thread::sleep_for(std::chrono::milliseconds(1));
