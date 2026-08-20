@@ -103,6 +103,7 @@ private:
   // Motor events are reported once each, not once per frame of rumble
   bool m_bLoggedRumble{false};
   bool m_bLoggedRumbleFailure{false};
+  bool m_bLoggedRumbleUnwired{false};
 };
 } // namespace GAME
 } // namespace KODI

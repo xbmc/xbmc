@@ -227,29 +227,42 @@ bool CGameClientJoystick::SetRumble(const std::string& feature, float magnitude)
   // made an unconnected chain look connected.
   const bool bMeaningful = (magnitude > 0.0f);
 
-  if (bMeaningful && !(bHandled ? m_bLoggedRumble : m_bLoggedRumbleFailure))
+  // A flag each, rather than one shared between the failures. The two failures
+  // are not the same event and the harmless one comes first: a game that asks
+  // before its port is wired would otherwise spend the only flag, and the
+  // warning that names a real gap in the button map would never be printed.
+  if (bMeaningful)
   {
     if (bHandled)
     {
-      CLog::Log(LOGDEBUG, "GAME: Rumble \"{}\" at {:0.2f} accepted by the peripheral", feature,
-                magnitude);
-      m_bLoggedRumble = true;
+      if (!m_bLoggedRumble)
+      {
+        CLog::Log(LOGDEBUG, "GAME: Rumble \"{}\" at {:0.2f} accepted by the peripheral", feature,
+                  magnitude);
+        m_bLoggedRumble = true;
+      }
     }
     else if (receiver != nullptr)
     {
       // The chain is connected and the request was still turned down, which
       // means the button map has no motor of that name for this device
-      CLog::Log(LOGWARNING, "GAME: Rumble \"{}\" went nowhere, the peripheral would not take it",
-                feature);
-      m_bLoggedRumbleFailure = true;
+      if (!m_bLoggedRumbleFailure)
+      {
+        CLog::Log(LOGWARNING, "GAME: Rumble \"{}\" went nowhere, the peripheral would not take it",
+                  feature);
+        m_bLoggedRumbleFailure = true;
+      }
     }
     else
     {
       // Ports are wired up after the client starts, so a game that asks this
       // early is told no and asks again once there is somewhere to send it.
       // Reporting that as a warning described a broken chain that then worked.
-      CLog::Log(LOGDEBUG, "GAME: Rumble \"{}\" arrived before the port had a receiver", feature);
-      m_bLoggedRumbleFailure = true;
+      if (!m_bLoggedRumbleUnwired)
+      {
+        CLog::Log(LOGDEBUG, "GAME: Rumble \"{}\" arrived before the port had a receiver", feature);
+        m_bLoggedRumbleUnwired = true;
+      }
     }
   }
 
