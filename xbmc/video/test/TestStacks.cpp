@@ -148,6 +148,8 @@ TEST_F(TestStacks, TestMovieFilesStackFolderFilesPart2)
   }
 }
 
+#ifdef HAVE_LIBBLURAY
+// The Blu-ray part is only recognised as a disc folder when libbluray is available.
 TEST_F(TestStacks, TestMovieFilesStackFolderFilesDiscPart)
 {
   const std::string movieFolder =
@@ -175,6 +177,7 @@ TEST_F(TestStacks, TestMovieFilesStackFolderFilesDiscPart)
     EXPECT_EQ(URIUtils::IsBDFile(paths[1]), true);
   }
 }
+#endif
 
 TEST_F(TestStacks, TestStackIsNotItselfADiscFile)
 {
