@@ -1,0 +1,57 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -570,7 +570,6 @@
+ 	case $enableval in
+ 	no)
+ 		case $ac_sys_system in
+-			iOS) AC_MSG_ERROR([iOS builds must use --enable-framework]) ;;
+ 			*)
+ 				PYTHONFRAMEWORK=
+ 				PYTHONFRAMEWORKDIR=no-framework
+@@ -680,7 +679,7 @@
+ 		esac
+ 	],[
+ 	case $ac_sys_system in
+-		iOS) AC_MSG_ERROR([iOS builds must use --enable-framework]) ;;
++		iOS) AC_MSG_ERROR([iOS builds must use --enable-framework, or --disable-framework with --disable-shared to build a static libpython]) ;;
+ 		*)
+ 			PYTHONFRAMEWORK=
+ 			PYTHONFRAMEWORKDIR=no-framework
+@@ -1636,6 +1635,12 @@
+   esac
+ fi
+ AC_MSG_RESULT([$LDLIBRARY])
++
++# A shared Python on iOS has to be a framework: an app can only load a signed
++# framework, never a bare dylib. A static libpython has nothing to load.
++if test "$ac_sys_system" = "iOS" && test "$PY_ENABLE_SHARED" = 1 && test -z "$PYTHONFRAMEWORK"; then
++  AC_MSG_ERROR([iOS builds must use --enable-framework, or --disable-framework with --disable-shared to build a static libpython])
++fi
+ 
+ if test "$cross_compiling" = yes; then
+   RUNSHARED=
+@@ -3658,7 +3663,11 @@
+ 			fi
+ 			LINKFORSHARED="$LINKFORSHARED"
+ 		elif test $ac_sys_system = "iOS"; then
+-			LINKFORSHARED="-Wl,-stack_size,$stack_size $LINKFORSHARED "'$(PYTHONFRAMEWORKDIR)/$(PYTHONFRAMEWORK)'
++			LINKFORSHARED="-Wl,-stack_size,$stack_size $LINKFORSHARED"
++
++			if test "$enable_framework"; then
++				LINKFORSHARED="$LINKFORSHARED "'$(PYTHONFRAMEWORKDIR)/$(PYTHONFRAMEWORK)'
++			fi
+ 		fi
+ 		;;
+ 	OpenUNIX*|UnixWare*) LINKFORSHARED="-Wl,-Bexport";;
+@@ -6413,8 +6422,9 @@
+   LIBPYTHON="\$(BLDLIBRARY)"
+ fi
+ 
+-# On iOS the shared libraries must be linked with the Python framework
+-if test "$ac_sys_system" = "iOS"; then
++# On iOS the shared libraries must be linked with the Python framework, when one
++# is being built
++if test "$ac_sys_system" = "iOS" && test "$enable_framework"; then
+   MODULE_DEPS_SHARED="$MODULE_DEPS_SHARED \$(PYTHONFRAMEWORKDIR)/\$(PYTHONFRAMEWORK)"
+ fi
+ 
