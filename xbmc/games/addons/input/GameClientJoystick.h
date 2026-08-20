@@ -99,6 +99,10 @@ private:
   // Input parameters
   std::unique_ptr<CPortInput> m_portInput;
   PERIPHERALS::PeripheralPtr m_sourcePeripheral;
+
+  // Motor events are reported once each, not once per frame of rumble
+  bool m_bLoggedRumble{false};
+  bool m_bLoggedRumbleFailure{false};
 };
 } // namespace GAME
 } // namespace KODI

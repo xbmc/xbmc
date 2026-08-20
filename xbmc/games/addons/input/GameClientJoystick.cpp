@@ -212,8 +212,46 @@ bool CGameClientJoystick::SetRumble(const std::string& feature, float magnitude)
 {
   bool bHandled = false;
 
-  if (InputReceiver())
-    bHandled = InputReceiver()->SetRumbleState(feature, magnitude);
+  JOYSTICK::IInputReceiver* receiver = InputReceiver();
+
+  if (receiver != nullptr)
+    bHandled = receiver->SetRumbleState(feature, magnitude);
+
+  // Report the first motor event, and the first that fails, once each. A game
+  // asking for rumble and not producing any is otherwise entirely silent: the
+  // request is well-formed the whole way down and simply stops, either because
+  // no receiver was attached to this handler or because the peripheral's button
+  // map has no motor of that name for the connected device.
+  // Only a non-zero magnitude says anything: a game stopping a motor it never
+  // started is accepted just as readily, and reporting that as success is what
+  // made an unconnected chain look connected.
+  const bool bMeaningful = (magnitude > 0.0f);
+
+  if (bMeaningful && !(bHandled ? m_bLoggedRumble : m_bLoggedRumbleFailure))
+  {
+    if (bHandled)
+    {
+      CLog::Log(LOGDEBUG, "GAME: Rumble \"{}\" at {:0.2f} accepted by the peripheral", feature,
+                magnitude);
+      m_bLoggedRumble = true;
+    }
+    else if (receiver != nullptr)
+    {
+      // The chain is connected and the request was still turned down, which
+      // means the button map has no motor of that name for this device
+      CLog::Log(LOGWARNING, "GAME: Rumble \"{}\" went nowhere, the peripheral would not take it",
+                feature);
+      m_bLoggedRumbleFailure = true;
+    }
+    else
+    {
+      // Ports are wired up after the client starts, so a game that asks this
+      // early is told no and asks again once there is somewhere to send it.
+      // Reporting that as a warning described a broken chain that then worked.
+      CLog::Log(LOGDEBUG, "GAME: Rumble \"{}\" arrived before the port had a receiver", feature);
+      m_bLoggedRumbleFailure = true;
+    }
+  }
 
   return bHandled;
 }
