@@ -165,8 +165,7 @@ int CScriptInvocationManager::GetReusablePluginHandle(const std::string& script)
   {
     if (m_lastInvokerThread->Reuseable(script))
       return m_lastPluginHandle;
-    m_lastInvokerThread->Release();
-    m_lastInvokerThread = nullptr;
+    ReleaseLastInvokerIfIdle();
   }
   return -1;
 }
@@ -185,8 +184,11 @@ std::shared_ptr<ILanguageInvoker> CScriptInvocationManager::GetLanguageInvoker(
       m_lastInvokerThread->GetInvoker()->Reset();
       return m_lastInvokerThread->GetInvoker();
     }
-    m_lastInvokerThread->Release();
-    m_lastInvokerThread = nullptr;
+    // A concurrent script must not Release() a claimed or running invoker.
+    // Reset() used to leave the state as Uninitialized, which looks idle, so
+    // the next widget refresh aborted the thread and Py_EndInterpreter raced
+    // the Execute that had just claimed it.
+    ReleaseLastInvokerIfIdle();
   }
 
   std::string extension = URIUtils::GetExtension(script);
@@ -251,21 +253,30 @@ int CScriptInvocationManager::ExecuteAsync(
     return invokerThread->GetId();
   }
 
-  m_lastInvokerThread = std::make_shared<CLanguageInvokerThread>(languageInvoker, this, reuseable);
-  if (m_lastInvokerThread == nullptr)
+  const bool lastBusy = m_lastInvokerThread && m_lastInvokerThread->IsBusy();
+  auto invokerThread =
+      std::make_shared<CLanguageInvokerThread>(languageInvoker, this, reuseable && !lastBusy);
+  if (invokerThread == nullptr)
     return -1;
 
   if (addon != nullptr)
-    m_lastInvokerThread->SetAddon(addon);
+    invokerThread->SetAddon(addon);
 
-  m_lastInvokerThread->SetId(m_nextId++);
-  m_lastPluginHandle = pluginHandle;
+  invokerThread->SetId(m_nextId++);
 
-  LanguageInvokerThread thread = {m_lastInvokerThread, script, false};
-  m_scripts.insert(std::make_pair(m_lastInvokerThread->GetId(), thread));
-  m_scriptPaths.insert(std::make_pair(script, m_lastInvokerThread->GetId()));
-  // After we leave the lock, m_lastInvokerThread can be released -> copy!
-  auto invokerThread = m_lastInvokerThread;
+  LanguageInvokerThread thread = {invokerThread, script, false};
+  m_scripts.insert(std::make_pair(invokerThread->GetId(), thread));
+  m_scriptPaths.insert(std::make_pair(script, invokerThread->GetId()));
+
+  // Do not steal the reusable slot from a claimed or running last thread.
+  // The caller that Reset() it still has to match GetInvoker() above.
+  if (!lastBusy)
+  {
+    ReleaseLastInvokerIfIdle();
+    m_lastInvokerThread = invokerThread;
+    m_lastPluginHandle = pluginHandle;
+  }
+
   lock.unlock();
   invokerThread->Execute(script, arguments);
 
@@ -391,6 +402,15 @@ void CScriptInvocationManager::OnExecutionDone(int scriptId)
   const auto script = m_scripts.find(scriptId);
   if (script != m_scripts.end())
     script->second.done = true;
+}
+
+void CScriptInvocationManager::ReleaseLastInvokerIfIdle()
+{
+  if (!m_lastInvokerThread || m_lastInvokerThread->IsBusy())
+    return;
+
+  m_lastInvokerThread->Release();
+  m_lastInvokerThread = nullptr;
 }
 
 CScriptInvocationManager::LanguageInvokerThread CScriptInvocationManager::getInvokerThread(int scriptId) const

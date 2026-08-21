@@ -32,6 +32,7 @@ public:
   {
     return !m_bStop && m_reusable && GetState() == InvokerStateScriptDone && m_script == script;
   };
+  bool IsBusy() const { return m_invoker && m_invoker->IsActive(); }
   virtual void Release();
 
 protected:

@@ -144,6 +144,7 @@ private:
   using LanguageInvocationHandlerMap = std::map<std::string, ILanguageInvocationHandler*>;
 
   LanguageInvokerThread getInvokerThread(int scriptId) const;
+  void ReleaseLastInvokerIfIdle();
 
   LanguageInvocationHandlerMap m_invocationHandlers;
   LanguageInvokerThreadMap m_scripts;

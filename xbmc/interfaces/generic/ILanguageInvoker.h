@@ -45,7 +45,10 @@ public:
   InvokerState GetState() const { return m_state; }
   bool IsActive() const;
   bool IsRunning() const;
-  void Reset() { m_state = InvokerStateUninitialized; }
+  // Initialized, not Uninitialized: Reuseable() stays false (state is not
+  // ScriptDone) but IsActive() is true, so a concurrent GetLanguageInvoker
+  // will not Release() the thread that just claimed this invoker.
+  void Reset() { m_state = InvokerStateInitialized; }
 
 protected:
   friend class CLanguageInvokerThread;
