@@ -44,13 +44,10 @@ CTextureCacheJob::~CTextureCacheJob() = default;
 
 bool CTextureCacheJob::Equals(const CJob* job) const
 {
-  if (strcmp(job->GetType(),GetType()) == 0)
-  {
-    const CTextureCacheJob* cacheJob = dynamic_cast<const CTextureCacheJob*>(job);
-    if (cacheJob && cacheJob->m_cachePath == m_cachePath)
-      return true;
-  }
-  return false;
+  if (strcmp(job->GetType(), GetType()) != 0)
+    return false;
+
+  return static_cast<const CTextureCacheJob*>(job)->m_cachePath == m_cachePath;
 }
 
 bool CTextureCacheJob::DoWork()
