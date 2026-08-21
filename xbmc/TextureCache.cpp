@@ -130,7 +130,7 @@ void CTextureCache::BackgroundCacheImage(const std::string &url)
     return;
 
   // needs (re)caching
-  AddJob(new CTextureCacheJob(path, details.hash));
+  AddJob(new CTextureCacheJob(path, details));
 }
 
 bool CTextureCache::StartCacheImage(const std::string& image)
@@ -168,13 +168,32 @@ std::string CTextureCache::CacheImage(
   {
     m_processinglist.insert(url);
     lock.unlock();
+
+    // Retrieve the hash the image was last cached with, so an unchanged source can be revalidated
+    CTextureDetails cached;
+    GetCachedImage(url, cached);
+
     // cache the texture directly
-    CTextureCacheJob job(url, "", knownHash);
-    bool success = job.CacheTexture(texture);
+    CTextureCacheJob job(url, cached, knownHash);
+    const bool success = job.CacheTexture(texture);
     OnCachingComplete(success, &job);
-    if (success && details)
+    if (!success)
+      return "";
+
+    if (job.m_details.hashRevalidated)
+    {
+      // Unchanged, so the copy already in the cache stands
+      if (details)
+        *details = cached;
+      const std::string cachedPath{GetCachedPath(cached.file)};
+      if (texture)
+        *texture = CTexture::LoadFromFile(cachedPath, idealWidth, idealHeight, aspectRatio);
+      return cachedPath;
+    }
+
+    if (details)
       *details = job.m_details;
-    return success ? GetCachedPath(job.m_details.file) : "";
+    return GetCachedPath(job.m_details.file);
   }
   lock.unlock();
 
