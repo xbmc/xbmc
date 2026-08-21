@@ -134,6 +134,7 @@ protected:
   AVDictionary* GetFFMpegOptionsFromInput();
   double ConvertTimestamp(int64_t pts, int den, int num);
   bool IsProgramChange();
+  bool WaitingOutInputStall();
   unsigned int HLSSelectProgram();
 
   std::string GetStereoModeFromMetadata(AVDictionary* pMetadata);
@@ -162,6 +163,9 @@ protected:
   int m_seekStream;
 
   XbmcThreads::EndTime<> m_timeout;
+
+  bool m_inputStalled = false;
+  XbmcThreads::EndTime<> m_stallDeadline;
 
   // Due to limitations of ffmpeg, we only can detect a program change
   // with a packet. This struct saves the packet for the next read and
