@@ -5493,7 +5493,7 @@ bool CVideoDatabase::GetArtForAsset(int assetId,
       m_pDS2->next();
     }
     m_pDS2->close();
-    return !art.empty();
+    return true;
   }
   catch (...)
   {
