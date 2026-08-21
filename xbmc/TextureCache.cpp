@@ -132,7 +132,7 @@ void CTextureCache::BackgroundCacheImage(const std::string &url)
     return;
 
   // needs (re)caching
-  AddJob(new CTextureCacheJob(path, details.hash));
+  AddJob(new CTextureCacheJob(path, details));
 }
 
 bool CTextureCache::StartCacheImage(const std::string& image)
@@ -164,13 +164,54 @@ std::string CTextureCache::CacheImage(
   {
     m_processinglist.insert(url);
     lock.unlock();
+
+    // Retrieve the hash the image was last cached with, so an unchanged source can be revalidated
+    CTextureDetails cached;
+    GetCachedImage(url, cached);
+
     // cache the texture directly
-    CTextureCacheJob job(url);
+    CTextureCacheJob job(url, cached);
     bool success = job.CacheTexture(texture);
-    OnCachingComplete(success, &job);
-    if (success && details)
-      *details = job.m_details;
-    return success ? GetCachedPath(job.m_details.file) : "";
+
+    // Unchanged, so the copy already in the cache stands. Load it if the caller wants the image
+    bool revalidated = success && job.m_details.hashRevalidated;
+    if (revalidated && texture)
+    {
+      *texture =
+          CTexture::LoadFromFile(GetCachedPath(cached.file), idealWidth, idealHeight, aspectRatio);
+      if (!*texture)
+      {
+        // The copy is there but unreadable, so cache the image again
+        CLog::LogF(LOGWARNING, "Cached copy of {} could not be loaded - caching it again",
+                   CURL::GetRedacted(url));
+        revalidated = false;
+      }
+    }
+
+    // An abandoned revalidation leaves the image still to be cached
+    std::optional<CTextureCacheJob> recache;
+    if (success && !revalidated && job.m_details.hashRevalidated)
+    {
+      recache.emplace(url, CTextureDetails{});
+      success = recache->CacheTexture(texture);
+    }
+
+    // Whichever job ran last carries the details to record
+    CTextureCacheJob& completed = recache ? *recache : job;
+    OnCachingComplete(success, &completed);
+    if (!success)
+      return "";
+
+    if (revalidated)
+    {
+      if (details)
+        *details = cached;
+      return GetCachedPath(cached.file);
+    }
+
+    if (details)
+      *details = completed.m_details;
+    return GetCachedPath(completed.m_details.file);
   }
   lock.unlock();
 

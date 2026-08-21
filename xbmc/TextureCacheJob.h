@@ -56,7 +56,14 @@ class CTextureCacheJob : public CJob
 public:
   static constexpr const char* JOB_TYPE_CACHE_IMAGE = "cacheimage";
 
-  CTextureCacheJob(const std::string &url, const std::string &oldHash = "");
+  /*!
+   \param url location of the image
+   \param oldDetails what the image is already cached as, if anything. Its hash is only set once
+          the image is due its periodic check, and an unchanged image is then revalidated rather
+          than cached all over again.
+   */
+  CTextureCacheJob(const std::string& url,
+      const CTextureDetails& oldDetails = {});
   ~CTextureCacheJob() override;
 
   const char* GetType() const override { return JOB_TYPE_CACHE_IMAGE; }
@@ -78,9 +85,15 @@ public:
                             size_t& result_size);
 
   std::string m_url;
-  std::string m_oldHash;
+  CTextureDetails m_oldDetails;
   CTextureDetails m_details;
 private:
+  /*! \brief Whether the copy this image was previously cached to is still present
+   Revalidating leaves that copy in place rather than writing it again, so it has to still be
+   there - if it has been deleted the image needs caching again.
+   */
+  bool HasCachedFile() const;
+
   /*! \brief retrieve a hash for the given image
    Combines the size, ctime and mtime of the image file into a "unique" hash
    \param url location of the image

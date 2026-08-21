@@ -33,11 +33,18 @@
 
 #include "PlatformDefs.h"
 
-CTextureCacheJob::CTextureCacheJob(const std::string &url, const std::string &oldHash):
-  m_url(url),
-  m_oldHash(oldHash),
-  m_cachePath(CTextureCache::GetCacheFile(m_url))
+CTextureCacheJob::CTextureCacheJob(const std::string& url,
+    const CTextureDetails& oldDetails)
+    : m_url(url),
+    m_oldDetails(oldDetails),
+    m_cachePath(CTextureCache::GetCacheFile(m_url))
 {
+}
+
+bool CTextureCacheJob::HasCachedFile() const
+{
+  return !m_oldDetails.file.empty() &&
+         XFILE::CFile::Exists(CTextureCache::GetCachedPath(m_oldDetails.file));
 }
 
 CTextureCacheJob::~CTextureCacheJob() = default;
@@ -107,7 +114,8 @@ bool CTextureCacheJob::CacheTexture(std::unique_ptr<CTexture>* out_texture)
     if (m_details.hash.empty())
       return false;
 
-    if (m_details.hash == m_oldHash)
+    // Unchanged, so the copy already in the cache stands - as long as it is still there
+    if (m_details.hash == m_oldDetails.hash && HasCachedFile())
     {
       m_details.hashRevalidated = true;
       return true;
@@ -122,7 +130,8 @@ bool CTextureCacheJob::CacheTexture(std::unique_ptr<CTexture>* out_texture)
     else
       m_details.file = m_cachePath + ".jpg";
 
-    CLog::Log(LOGDEBUG, "{} image '{}' to '{}':", m_oldHash.empty() ? "Caching" : "Recaching",
+    CLog::Log(LOGDEBUG,
+              "{} image '{}' to '{}':", m_oldDetails.hash.empty() ? "Caching" : "Recaching",
               CURL::GetRedacted(image), m_details.file);
 
     unsigned int cached_width = 0;
