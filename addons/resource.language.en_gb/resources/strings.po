@@ -21792,16 +21792,16 @@ msgctxt "#36446"
 msgid "Sorted"
 msgstr ""
 
-#. Name of the setting of the stream display order in the stream selection screen and the OSD
+#. Name of the setting of the stream order in the stream selection screen and the OSD for video files
 #: system/settings/settings.xml
 msgctxt "#36447"
-msgid "Stream display order"
+msgid "Video file stream display order"
 msgstr ""
 
-#. Description of setting with label #36447 "Stream display order"
+#. Description of setting with label #36447 "Video file stream display order"
 #: system/settings/settings.xml
 msgctxt "#36448"
-msgid "Display order of the audio, video and subtitle streams. [Media] stream order in the media, [Sorted] sorted using the stream attributes"
+msgid "Video files only: display order in the stream selection dialogs. [Media] stream order in the media, [Sorted] sorted using the stream attributes[CR]"
 msgstr ""
 
 #empty strings from id 36449 to 36459
