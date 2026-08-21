@@ -186,6 +186,12 @@ bool CWin32SMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     if (!isDir)
       item->SetSize((static_cast<int64_t>(findData.nFileSizeHigh) << 32) + findData.nFileSizeLow);
 
+    // raw values; the DateTime above is local-time converted
+    item->SetProperty(DIR_PROPERTY_STAT_MTIME,
+                      static_cast<int64_t>(CWIN32Util::fileTimeToTimeT(findData.ftLastWriteTime)));
+    item->SetProperty(DIR_PROPERTY_STAT_CTIME,
+                      static_cast<int64_t>(CWIN32Util::fileTimeToTimeT(findData.ftCreationTime)));
+
     if (isHidden)
       item->SetProperty("file:hidden", true);
 
