@@ -25393,3 +25393,15 @@ msgstr ""
 msgctxt "#40804"
 msgid "{0:.1f} dB"
 msgstr ""
+
+#. Setting "audiooutput.passthroughvolumecontrol"
+#: system/settings/settings.xml
+msgctxt "#40805"
+msgid "Volume control during passthrough"
+msgstr ""
+
+#. Help of setting "audiooutput.passthroughvolumecontrol"
+#: system/settings/settings.xml
+msgctxt "#40806"
+msgid "Adjust and display the volume level while audio is passed through. The level is not applied to the bitstream, but every change is announced, so an add-on or automation can apply it to an external audio processor."
+msgstr ""

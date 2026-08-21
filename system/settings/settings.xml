@@ -3469,6 +3469,20 @@
           </dependencies>
           <control type="toggle" />
         </setting>
+        <setting id="audiooutput.passthroughvolumecontrol" type="boolean" label="40805" help="40806">
+          <level>2</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="visible">
+              <and>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.passthrough">audiooutput.passthrough</condition>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.passthrough</condition>
+              </and>
+            </dependency>
+            <dependency type="enable" setting="audiooutput.passthrough" operator="is">true</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
         <setting id="audiooutput.passthroughdevice" type="string" label="546" help="36372">
           <level>1</level>
           <default>Default</default> <!-- will be properly set on startup -->
