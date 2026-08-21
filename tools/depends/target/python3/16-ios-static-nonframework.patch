@@ -22,8 +22,8 @@
  fi
  AC_MSG_RESULT([$LDLIBRARY])
 +
-+# A shared Python on iOS has to be a framework: an app can only load a signed
-+# framework, never a bare dylib. A static libpython has nothing to load.
++# A shared Python on iOS has to be packaged as a framework for App Store Connect
++# to accept it. A static libpython has nothing to load at runtime.
 +if test "$ac_sys_system" = "iOS" && test "$PY_ENABLE_SHARED" = 1 && test -z "$PYTHONFRAMEWORK"; then
 +  AC_MSG_ERROR([iOS builds must use --enable-framework, or --disable-framework with --disable-shared to build a static libpython])
 +fi
