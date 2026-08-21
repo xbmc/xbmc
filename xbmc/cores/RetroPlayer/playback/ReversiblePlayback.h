@@ -72,6 +72,7 @@ public:
 
 private:
   void AddFrame();
+  void UpdateFrameRate();
   void RewindFrames(uint64_t frames);
   void AdvanceFrames(uint64_t frames);
   void UpdatePlaybackStats();

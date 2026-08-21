@@ -436,6 +436,23 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
+  /// @brief **Callback to Kodi Function**\n
+  /// Update the video and audio timing of the running game
+  ///
+  /// @param[in] timingInfo The new video frame rate and audio sample rate
+  ///
+  /// This updates timing reported by the add-on after gameplay has started.
+  /// Add-ons should call this when the game changes its timing dynamically.
+  ///
+  /// @remarks Only called from the add-on itself
+  ///
+  void SetGameTiming(const game_system_timing& timingInfo)
+  {
+    m_instanceData->toKodi->SetGameTiming(m_instanceData->toKodi->kodiInstance, &timingInfo);
+  }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
   /// @defgroup cpp_kodi_addon_game_Operation_CStream Class: CStream
   /// @ingroup cpp_kodi_addon_game_Operation
   /// @brief @cpp_class{ kodi::addon::CInstanceGame::CStream }

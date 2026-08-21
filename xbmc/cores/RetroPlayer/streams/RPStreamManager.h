@@ -29,6 +29,7 @@ public:
   // Implementation of IStreamManager
   StreamPtr CreateStream(StreamType streamType) override;
   void CloseStream(StreamPtr stream) override;
+  void SetVideoFps(float fps) override;
   HwProcedureAddress GetHwProcedureAddress(const char* symbol) override;
 
 private:

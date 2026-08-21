@@ -67,6 +67,11 @@ void CRPStreamManager::CloseStream(StreamPtr stream)
   }
 }
 
+void CRPStreamManager::SetVideoFps(float fps)
+{
+  m_processInfo.SetVideoFps(fps);
+}
+
 HwProcedureAddress CRPStreamManager::GetHwProcedureAddress(const char* symbol)
 {
   return m_processInfo.GetHwProcedureAddress(symbol);

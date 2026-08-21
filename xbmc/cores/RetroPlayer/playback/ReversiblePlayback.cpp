@@ -316,6 +316,7 @@ bool CReversiblePlayback::LoadSavestate(const std::string& savestatePath)
 void CReversiblePlayback::FrameEvent()
 {
   m_gameClient->RunFrame();
+  UpdateFrameRate();
 
   AddFrame();
 }
@@ -325,6 +326,7 @@ void CReversiblePlayback::RewindEvent()
   RewindFrames(1);
 
   m_gameClient->RunFrame();
+  UpdateFrameRate();
 }
 
 void CReversiblePlayback::EndEvent()
@@ -346,6 +348,15 @@ void CReversiblePlayback::AddFrame()
   }
 
   m_totalFrameCount++;
+}
+
+void CReversiblePlayback::UpdateFrameRate()
+{
+  const double previousFrameRate = m_gameLoop.FPS();
+  m_gameLoop.SetFrameRate(m_gameClient->GetFrameRate());
+
+  if (m_gameLoop.FPS() != previousFrameRate)
+    UpdateMemoryStream();
 }
 
 void CReversiblePlayback::RewindFrames(uint64_t frames)

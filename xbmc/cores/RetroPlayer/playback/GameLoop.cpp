@@ -64,6 +64,11 @@ void CGameLoop::SetSpeed(double speedFactor)
   m_sleepEvent.Set();
 }
 
+void CGameLoop::SetFrameRate(double fps)
+{
+  m_fps.store(fps != 0.0 ? fps : DEFAULT_FPS);
+}
+
 void CGameLoop::PauseAsync()
 {
   // Pause the game loop asynchronously by setting speed to 0
@@ -133,7 +138,7 @@ std::chrono::microseconds CGameLoop::FrameTimeUs() const
   // Calculate the duration of one frame in microseconds based on the FPS and
   // speed factor
   const double factor = m_loopSpeedFactor != 0.0 ? std::abs(m_loopSpeedFactor) : 1.0;
-  return std::chrono::duration_cast<std::chrono::microseconds>(1s / m_fps / factor);
+  return std::chrono::duration_cast<std::chrono::microseconds>(1s / m_fps.load() / factor);
 }
 
 std::chrono::microseconds CGameLoop::NowUs() const
