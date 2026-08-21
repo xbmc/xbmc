@@ -47,6 +47,7 @@ protected:
 
     // remove the script handle if necessary
     RemoveScriptHandle(handle);
+    CScriptInvocationManager::GetInstance().OnPluginHandleReleased(handle);
 
     return result;
   }

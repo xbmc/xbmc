@@ -65,6 +65,8 @@ void CScriptInvocationManager::Uninitialize()
 
   // it is safe to release early, thread must be in m_scripts too
   m_lastInvokerThread = nullptr;
+  m_lastPluginHandle = -1;
+  m_lastPluginHandleInUse = false;
 
   // make sure all scripts are done
   std::vector<LanguageInvokerThread> tempList;
@@ -163,25 +165,51 @@ int CScriptInvocationManager::GetReusablePluginHandle(const std::string& script)
 
   if (m_lastInvokerThread)
   {
-    if (m_lastInvokerThread->Reuseable(script))
+    // ScriptDone is not idle: a waiter may still hold the handle, and two
+    // widgets used to both take it before either Reset().
+    if (m_lastInvokerThread->Reuseable(script) && !m_lastPluginHandleInUse)
+    {
+      m_lastInvokerThread->GetInvoker()->Reset();
+      m_lastPluginHandleInUse = true;
+      CLog::Log(LOGDEBUG, "{} - claiming reusable plugin handle {} on LanguageInvokerThread {}",
+                __FUNCTION__, m_lastPluginHandle, m_lastInvokerThread->GetId());
       return m_lastPluginHandle;
+    }
     ReleaseLastInvokerIfIdle();
   }
   return -1;
 }
 
+void CScriptInvocationManager::OnPluginHandleReleased(int handle)
+{
+  if (handle < 0)
+    return;
+
+  std::unique_lock lock(m_critSection);
+  if (handle == m_lastPluginHandle)
+    m_lastPluginHandleInUse = false;
+}
+
 std::shared_ptr<ILanguageInvoker> CScriptInvocationManager::GetLanguageInvoker(
-    const std::string& script)
+    const std::string& script, int pluginHandle /* = -1 */)
 {
   std::unique_lock lock(m_critSection);
 
   if (m_lastInvokerThread)
   {
-    if (m_lastInvokerThread->Reuseable(script))
+    const bool sameHandle = pluginHandle >= 0 && pluginHandle == m_lastPluginHandle;
+    // GetReusablePluginHandle already Reset() to Initialized for this handle.
+    if (sameHandle && m_lastInvokerThread->GetState() == InvokerStateInitialized)
+      return m_lastInvokerThread->GetInvoker();
+
+    if (m_lastInvokerThread->Reuseable(script) && (pluginHandle < 0 || sameHandle) &&
+        !m_lastPluginHandleInUse)
     {
       CLog::Log(LOGDEBUG, "{} - Reusing LanguageInvokerThread {} for script {}", __FUNCTION__,
                 m_lastInvokerThread->GetId(), script);
       m_lastInvokerThread->GetInvoker()->Reset();
+      if (pluginHandle >= 0)
+        m_lastPluginHandleInUse = true;
       return m_lastInvokerThread->GetInvoker();
     }
     // A concurrent script must not Release() a claimed or running invoker.
@@ -217,7 +245,7 @@ int CScriptInvocationManager::ExecuteAsync(
     return -1;
   }
 
-  auto invoker = GetLanguageInvoker(script);
+  auto invoker = GetLanguageInvoker(script, pluginHandle);
   return ExecuteAsync(script, invoker, addon, arguments, reuseable, pluginHandle);
 }
 
@@ -253,7 +281,7 @@ int CScriptInvocationManager::ExecuteAsync(
     return invokerThread->GetId();
   }
 
-  const bool lastBusy = m_lastInvokerThread && m_lastInvokerThread->IsBusy();
+  const bool lastBusy = LastInvokerOccupied();
   auto invokerThread =
       std::make_shared<CLanguageInvokerThread>(languageInvoker, this, reuseable && !lastBusy);
   if (invokerThread == nullptr)
@@ -268,13 +296,14 @@ int CScriptInvocationManager::ExecuteAsync(
   m_scripts.insert(std::make_pair(invokerThread->GetId(), thread));
   m_scriptPaths.insert(std::make_pair(script, invokerThread->GetId()));
 
-  // Do not steal the reusable slot from a claimed or running last thread.
-  // The caller that Reset() it still has to match GetInvoker() above.
+  // Do not steal the reusable slot from a claimed or running last thread,
+  // or from one whose plugin handle still has a waiter.
   if (!lastBusy)
   {
     ReleaseLastInvokerIfIdle();
     m_lastInvokerThread = invokerThread;
     m_lastPluginHandle = pluginHandle;
+    m_lastPluginHandleInUse = pluginHandle >= 0;
   }
 
   lock.unlock();
@@ -404,13 +433,24 @@ void CScriptInvocationManager::OnExecutionDone(int scriptId)
     script->second.done = true;
 }
 
+bool CScriptInvocationManager::LastInvokerOccupied() const
+{
+  if (!m_lastInvokerThread)
+    return false;
+  return m_lastInvokerThread->IsBusy() || m_lastPluginHandleInUse;
+}
+
 void CScriptInvocationManager::ReleaseLastInvokerIfIdle()
 {
-  if (!m_lastInvokerThread || m_lastInvokerThread->IsBusy())
+  if (LastInvokerOccupied())
+    return;
+  if (!m_lastInvokerThread)
     return;
 
   m_lastInvokerThread->Release();
   m_lastInvokerThread = nullptr;
+  m_lastPluginHandle = -1;
+  m_lastPluginHandleInUse = false;
 }
 
 CScriptInvocationManager::LanguageInvokerThread CScriptInvocationManager::getInvokerThread(int scriptId) const

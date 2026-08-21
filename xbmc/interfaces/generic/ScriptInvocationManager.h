@@ -31,12 +31,20 @@ public:
   void RegisterLanguageInvocationHandler(ILanguageInvocationHandler *invocationHandler, const std::set<std::string> &extensions);
   void UnregisterLanguageInvocationHandler(ILanguageInvocationHandler *invocationHandler);
   bool HasLanguageInvoker(const std::string &script) const;
-  std::shared_ptr<ILanguageInvoker> GetLanguageInvoker(const std::string& script);
+  std::shared_ptr<ILanguageInvoker> GetLanguageInvoker(const std::string& script,
+                                                       int pluginHandle = -1);
 
   /*!
-  * \brief Returns addon_handle if last reusable invoker is ready to use.
-  */
+   * \brief Returns the last plugin handle if the reusable invoker is idle.
+   *
+   * Claims the slot. ScriptDone is not idle while a waiter still holds the handle.
+   */
   int GetReusablePluginHandle(const std::string& script);
+
+  /*!
+   * \brief Clear the in-use mark after CRunningScriptsHandler drops the handle.
+   */
+  void OnPluginHandleReleased(int handle);
 
   /*!
    * \brief Executes the given script asynchronously in a separate thread.
@@ -145,11 +153,15 @@ private:
 
   LanguageInvokerThread getInvokerThread(int scriptId) const;
   void ReleaseLastInvokerIfIdle();
+  //! True if the last reusable thread is executing, claimed, or a plugin waiter
+  //! still holds m_lastPluginHandle. Caller must hold m_critSection.
+  bool LastInvokerOccupied() const;
 
   LanguageInvocationHandlerMap m_invocationHandlers;
   LanguageInvokerThreadMap m_scripts;
   std::shared_ptr<CLanguageInvokerThread> m_lastInvokerThread;
   int m_lastPluginHandle = -1;
+  bool m_lastPluginHandleInUse = false;
 
   std::map<std::string, int> m_scriptPaths;
   int m_nextId = 0;
