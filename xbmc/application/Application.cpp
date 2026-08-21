@@ -1446,7 +1446,13 @@ bool CApplication::OnAction(const CAction &action)
   if ((action.GetAmount() && (action.GetID() == ACTION_VOLUME_UP || action.GetID() == ACTION_VOLUME_DOWN)) || action.GetID() == ACTION_VOLUME_SET)
   {
     const auto appVolume = GetComponent<CApplicationVolumeHandling>();
-    if (!appPlayer->IsPassthrough())
+
+    // The level cannot be applied to a bitstream, but with volume control enabled
+    // it is still adjusted and announced, so an external processor can follow it
+    const bool volumeControl = !appPlayer->IsPassthrough() ||
+                               CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                                   CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHVOLUMECONTROL);
+    if (volumeControl)
     {
       if (appVolume->IsMuted())
         appVolume->UnMute();
