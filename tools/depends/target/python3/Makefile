@@ -133,6 +133,8 @@ ifeq ($(OS),wasm)
 	cd $(PLATFORM); patch -p1 -i ../15-wasm-static-hacl.patch
 endif
 ifeq ($(findstring iphone,$(TARGET_PLATFORM)),iphone)
+# These three patches are all merged upstream now (python/cpython#156110,
+# #156116, #156113); drop them when we bump python past 3.16.
 	cd $(PLATFORM); patch -p1 -i ../16-ios-static-nonframework.patch
 	cd $(PLATFORM); patch -p1 -i ../17-ios-simulator-version-min.patch
 	cd $(PLATFORM); patch -p1 -i ../18-ios-objc-fallback.patch
