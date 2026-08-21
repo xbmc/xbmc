@@ -42,6 +42,26 @@ class CTexture;
 class CTextureCache : public CJobQueue, public CPowerState
 {
 public:
+  /*! \brief Holds background caching back to one image at a time while it exists
+
+   Background caching competes for the same source eg. scraping and art caching.
+   Caching then catches up afterwards, when it has the source to itself.
+
+   Counted, so that concurrent holders (a video and a music scan, say) each keep it in force.
+   */
+  class CBackgroundThrottle
+  {
+  public:
+    explicit CBackgroundThrottle(CTextureCache& cache) : m_cache(cache) { m_cache.AddThrottle(); }
+    ~CBackgroundThrottle() { m_cache.RemoveThrottle(); }
+
+    CBackgroundThrottle(const CBackgroundThrottle&) = delete;
+    CBackgroundThrottle& operator=(const CBackgroundThrottle&) = delete;
+
+  private:
+    CTextureCache& m_cache;
+  };
+
   CTextureCache();
   ~CTextureCache() override;
 
@@ -185,6 +205,15 @@ private:
   // private construction, and no assignments; use the provided singleton methods
   CTextureCache(const CTextureCache&) = delete;
   CTextureCache const& operator=(CTextureCache const&) = delete;
+
+  //! \brief Take a hold on background caching, limiting it if this is the first
+  void AddThrottle();
+
+  //! \brief Release a hold on background caching, restoring it if this was the last
+  void RemoveThrottle();
+
+  //! Outstanding CBackgroundThrottle holds
+  std::atomic<unsigned int> m_throttles{0};
 
   /*! \brief Check if the given image is a cached image
    \param image url of the image

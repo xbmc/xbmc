@@ -34,6 +34,9 @@
 #include "guilib/GUIWindowManager.h"
 #include "imagefiles/ImageFileURL.h"
 #include "interfaces/AnnouncementManager.h"
+#include "jobs/Job.h"
+#include "jobs/JobManager.h"
+#include "jobs/JobQueue.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "playlists/PlayListFileItemClassify.h"
@@ -44,6 +47,7 @@
 #include "settings/SettingsComponent.h"
 #include "tags/SetInfoTagLoaderFactory.h"
 #include "tags/VideoInfoTagLoaderFactory.h"
+#include "threads/Event.h"
 #include "utils/ArtUtils.h"
 #include "utils/Digest.h"
 #include "utils/DiscsUtils.h"
@@ -65,6 +69,7 @@
 #include "video/dialogs/GUIDialogVideoManagerVersions.h"
 
 #include <algorithm>
+#include <atomic>
 #include <chrono>
 #include <map>
 #include <memory>
@@ -73,6 +78,7 @@
 #include <string>
 #include <unordered_map>
 #include <utility>
+#include <vector>
 
 using namespace XFILE;
 using namespace ADDON;
@@ -258,6 +264,9 @@ void CacheArtwork(const std::string& url,
   CLog::LogF(LOGDEBUG, "Synchronous art caching for {} failed", url);
 }
 
+//! so jobs that were queued but hadn't started are discarded and will never complete.
+constexpr auto ART_CACHE_JOB_POLL_INTERVAL{std::chrono::milliseconds{1000}};
+
 //! \brief An artwork url to cache, with the hash of its source file if that is already known
 struct ArtToCache
 {
@@ -265,11 +274,6 @@ struct ArtToCache
   std::string hash; //!< empty if unknown, leaving the texture cache to determine it
 };
 
-/*! \brief Cache a group of artwork
- Empty and duplicate urls are dropped first, so callers don't have to.
- \param art the images to cache. Order is not preserved.
- \param retrieveArtDuringScrape whether to fetch the art now, or queue it for background caching
- */
 void CacheArtwork(std::vector<ArtToCache> art, bool retrieveArtDuringScrape)
 {
   std::erase_if(art, [](const ArtToCache& a) { return a.url.empty(); });
@@ -285,8 +289,44 @@ void CacheArtwork(std::vector<ArtToCache> art, bool retrieveArtDuringScrape)
                     });
   art.erase(std::ranges::begin(std::ranges::unique(art, {}, &ArtToCache::url)), art.end());
 
+  // The background path only queues the urls, so there is nothing to overlap.
+  if (!retrieveArtDuringScrape || art.size() < 2)
+  {
+    for (const auto& a : art)
+      CacheArtwork(a.url, retrieveArtDuringScrape, a.hash);
+    return;
+  }
+
+  // Caching an image is mostly waiting on the source, so let a few overlap. PRIORITY_LOW_PAUSABLE
+  // is what the texture cache queues its own work at, so this shares one allowance with it rather
+  // than competing, and yields to playback the same way.
+  CJobQueue queue{false, CJobManager::GetMaxPausableWorkers(), CJob::PRIORITY_LOW_PAUSABLE};
   for (const auto& a : art)
-    CacheArtwork(a.url, retrieveArtDuringScrape, a.hash);
+    queue.Submit([a]() { CacheArtwork(a.url, true, a.hash); });
+
+  const auto jobManager{CServiceBroker::GetJobManager()};
+  while (!queue.WaitForCompletion(ART_CACHE_JOB_POLL_INTERVAL))
+  {
+    if (!jobManager->IsRunning())
+    {
+      // Shutting down - whatever is left is abandoned when the queue goes out of scope
+      CLog::LogF(LOGDEBUG, "Abandoning art caching, the job manager has been shut down");
+      break;
+    }
+
+    if (jobManager->ArePausableJobsPaused())
+    {
+      // Playback has started, so nothing still queued here will be dispatched until it stops, and
+      // waiting that long would hold up the scrape. Hand what is left to the background path
+      // instead: its queue outlives this call, so the images are still cached once playback ends
+      // rather than being left for something to ask for them. Anything already cached costs only
+      // the lookup that finds it there.
+      CLog::LogF(LOGDEBUG, "Handing remaining art to background caching, playback has started");
+      for (const auto& a : art)
+        CacheArtwork(a.url, false, a.hash);
+      break;
+    }
+  }
 }
 } // namespace
 
@@ -318,6 +358,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
   {
     try
     {
+      // Background caching reads from the same source as this scan does, and that source is the
+      // limit rather than the CPU. Hold it back to one image at a time until the scan is done, so
+      // that the library becomes browsable as soon as it can - the backlog then catches up faster
+      // than it would have, with the source to itself.
+      const CTextureCache::CBackgroundThrottle throttle{*CServiceBroker::GetTextureCache()};
+
       m_actorThumbs.clear();
 
       const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();

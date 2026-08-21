@@ -36,12 +36,35 @@
 using namespace XFILE;
 using namespace std::chrono_literals;
 
+namespace
+{
+//! \brief Images to cache at once in the background
+//! Half of what the priority allows, whilst still scraping (to avoid saturating the source)
+unsigned int BackgroundJobsAtOnce()
+{
+  return std::max(1U, CJobManager::GetMaxPausableWorkers() / 2);
+}
+} // namespace
+
 CTextureCache::CTextureCache()
-  : CJobQueue(false, 1, CJob::PRIORITY_LOW_PAUSABLE), m_cleanTimer{[this]() { CleanTimer(); }}
+  : CJobQueue(false, BackgroundJobsAtOnce(), CJob::PRIORITY_LOW_PAUSABLE),
+    m_cleanTimer{[this]() { CleanTimer(); }}
 {
 }
 
 CTextureCache::~CTextureCache() = default;
+
+void CTextureCache::AddThrottle()
+{
+  if (++m_throttles == 1)
+    SetJobsAtOnce(1);
+}
+
+void CTextureCache::RemoveThrottle()
+{
+  if (--m_throttles == 0)
+    SetJobsAtOnce(BackgroundJobsAtOnce());
+}
 
 void CTextureCache::Initialize()
 {
@@ -163,18 +186,15 @@ std::string CTextureCache::CacheImage(
   if (url.empty())
     return "";
 
-  std::unique_lock lock(m_processingSection);
-  if (!m_processinglist.contains(url))
+  if (StartCacheImage(url))
   {
-    m_processinglist.insert(url);
-    lock.unlock();
-
     // Retrieve the hash the image was last cached with, so an unchanged source can be revalidated
     CTextureDetails cached;
     GetCachedImage(url, cached);
 
-    // cache the texture directly
+    // cache the texture directly. The url was reserved above, so this job owns that reservation
     CTextureCacheJob job(url, cached, knownHash);
+    job.m_holdsProcessingClaim = true;
     const bool success = job.CacheTexture(texture);
     OnCachingComplete(success, &job);
     if (!success)
@@ -195,9 +215,8 @@ std::string CTextureCache::CacheImage(
       *details = job.m_details;
     return GetCachedPath(job.m_details.file);
   }
-  lock.unlock();
 
-  // wait for currently processing job to end.
+  // wait for currently processing job to end
   while (true)
   {
     m_completeEvent.Wait(1000ms);
@@ -334,6 +353,7 @@ void CTextureCache::OnCachingComplete(bool success, CTextureCacheJob *job)
       AddCachedTexture(job->m_url, job->m_details);
   }
 
+  if (job->m_holdsProcessingClaim)
   { // remove from our processing list
     std::unique_lock lock(m_processingSection);
     std::set<std::string>::iterator i = m_processinglist.find(job->m_url);
