@@ -15,6 +15,7 @@
 #include "ServiceBroker.h"
 #include "SetInfoTag.h"
 #include "TextureCache.h"
+#include "TextureCacheJob.h"
 #include "URL.h"
 #include "Util.h"
 #include "VideoInfoDownloader.h"
@@ -224,7 +225,9 @@ void OnDirectoryScanned(const std::string& strDirectory)
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 }
 
-void CacheArtwork(const std::string& url, bool retrieveArtDuringScrape)
+void CacheArtwork(const std::string& url,
+                  bool retrieveArtDuringScrape,
+                  const std::string& knownHash = "")
 {
   if (url.empty())
     return;
@@ -232,7 +235,7 @@ void CacheArtwork(const std::string& url, bool retrieveArtDuringScrape)
   const auto& textureCache = CServiceBroker::GetTextureCache();
   if (!retrieveArtDuringScrape)
   {
-    textureCache->BackgroundCacheImage(url);
+    textureCache->BackgroundCacheImage(url, knownHash);
     return;
   }
 
@@ -245,14 +248,45 @@ void CacheArtwork(const std::string& url, bool retrieveArtDuringScrape)
   constexpr int MAX_SYNC_CACHE_ATTEMPTS = 3;
   for (int attempt = 1; attempt <= MAX_SYNC_CACHE_ATTEMPTS; ++attempt)
   {
-    if (!textureCache->CacheImage(url).empty())
+    if (!textureCache->CacheImage(url, knownHash).empty())
       return; // succeeded
   }
 
   // Synchronous fetch failed after several attempts (network timeout, etc.)
   // Fall back to the resilient background path.
-  textureCache->BackgroundCacheImage(url);
+  textureCache->BackgroundCacheImage(url, knownHash);
   CLog::LogF(LOGDEBUG, "Synchronous art caching for {} failed", url);
+}
+
+//! \brief An artwork url to cache, with the hash of its source file if that is already known
+struct ArtToCache
+{
+  std::string url;
+  std::string hash; //!< empty if unknown, leaving the texture cache to determine it
+};
+
+/*! \brief Cache a group of artwork
+ Empty and duplicate urls are dropped first, so callers don't have to.
+ \param art the images to cache. Order is not preserved.
+ \param retrieveArtDuringScrape whether to fetch the art now, or queue it for background caching
+ */
+void CacheArtwork(std::vector<ArtToCache> art, bool retrieveArtDuringScrape)
+{
+  std::erase_if(art, [](const ArtToCache& a) { return a.url.empty(); });
+
+  // Where the same url appears more than once, order any known hash first so that the copy kept
+  // below is the one that saves a stat
+  std::ranges::sort(art,
+                    [](const ArtToCache& a, const ArtToCache& b)
+                    {
+                      if (a.url != b.url)
+                        return a.url < b.url;
+                      return !a.hash.empty() && b.hash.empty();
+                    });
+  art.erase(std::ranges::begin(std::ranges::unique(art, {}, &ArtToCache::url)), art.end());
+
+  for (const auto& a : art)
+    CacheArtwork(a.url, retrieveArtDuringScrape, a.hash);
 }
 } // namespace
 
@@ -3133,11 +3167,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
     CFileItemList items;
     // don't try to fetch anything local with plugin source
     if (!URIUtils::IsPlugin(actorsDir) && CDirectory::Exists(actorsDir))
-      CDirectory::GetDirectory(actorsDir, items, ".png|.jpg|.tbn",
-                               DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO);
+      CDirectory::GetDirectory(actorsDir, items, ".png|.jpg|.tbn", DIR_FLAG_NO_FILE_DIRS);
 
     // Index the thumbs by filename (without extension)
-    std::map<std::string, std::string> thumbs;
+    std::map<std::string, ArtToCache> thumbs;
     for (const auto& item : items)
     {
       if (item->IsFolder())
@@ -3145,7 +3178,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
       std::string name{URIUtils::GetFileName(item->GetPath())};
       URIUtils::RemoveExtension(name);
-      thumbs.try_emplace(std::move(name), item->GetPath());
+      thumbs.try_emplace(std::move(name),
+                         ArtToCache{item->GetPath(), CTextureCacheJob::GetImageHash(*item)});
     }
 
     for (auto& actor : actors)
@@ -3159,7 +3193,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         StringUtils::Replace(thumbFile, ' ', '_');
         thumbFile = CUtil::MakeLegalFileName(std::move(thumbFile));
         if (const auto thumb{thumbs.find(thumbFile)}; thumb != thumbs.end())
-          actor.thumb = thumb->second;
+          actor.thumb = thumb->second.url;
         if (!actor.thumbUrl.GetFirstUrlByType().m_url.empty())
         {
           const std::string thumb{CScraperUrl::GetThumbUrl(actor.thumbUrl.GetFirstUrlByType())};
@@ -3171,8 +3205,27 @@ CVideoInfoScanner::~CVideoInfoScanner()
             actor.thumbUrl.Clear();
         }
       }
-      CacheArtwork(actor.thumb, m_artRetrievalTiming == ArtRetrievalTiming::SYNCHRONOUS);
     }
+
+    // Index the hashes taken from the directory listing by url
+    std::map<std::string, std::string> listedHashes;
+    for (const auto& thumb : thumbs | std::views::values)
+    {
+      if (!thumb.hash.empty())
+        listedHashes.emplace(thumb.url, thumb.hash);
+    }
+
+    // Cache thumbs together (with hashes)
+    std::vector<ArtToCache> thumbsToCache;
+    thumbsToCache.reserve(actors.size());
+    for (const auto& actor : actors)
+    {
+      const auto hash{listedHashes.find(actor.thumb)};
+      thumbsToCache.push_back(
+          ArtToCache{actor.thumb, hash != listedHashes.end() ? hash->second : std::string{}});
+    }
+
+    CacheArtwork(std::move(thumbsToCache), m_artRetrievalTiming == ArtRetrievalTiming::SYNCHRONOUS);
   }
 
   bool CVideoInfoScanner::DownloadFailed(CGUIDialogProgress* pDialog)
