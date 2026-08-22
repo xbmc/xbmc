@@ -21,6 +21,7 @@
 #include "pvr/utils/PVRStreamUtils.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "threads/Thread.h"
 #include "utils/MemUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -44,9 +45,15 @@
 #include "filesystem/File.h"
 #include "utils/LangCodeExpander.h"
 
+#include <atomic>
+#include <chrono>
 #include <cstdlib>
+#include <future>
+#include <map>
 #include <memory>
+#include <mutex>
 #include <string>
+#include <thread>
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -57,27 +64,168 @@ extern "C" {
 
 using namespace KODI;
 
-bool CDVDFileInfo::GetFileDuration(const std::string &path, int& duration)
+namespace
 {
-  std::unique_ptr<CDVDDemux> demux;
+constexpr std::chrono::seconds EXTRACT_TIMEOUT{30};
+constexpr std::chrono::seconds RETRY_COOLDOWN{120};
 
-  CFileItem item(path, false);
-  auto input = CDVDFactoryInputStream::CreateInputStream(NULL, item);
-  if (!input)
+std::mutex g_recentTimeoutsMutex;
+std::map<std::string, std::chrono::steady_clock::time_point> g_recentTimeouts;
+
+bool RecentlyTimedOut(const std::string& redactPath)
+{
+  std::lock_guard<std::mutex> lock(g_recentTimeoutsMutex);
+  const auto it = g_recentTimeouts.find(redactPath);
+  if (it == g_recentTimeouts.end())
     return false;
 
-  if (!input->Open())
+  if (std::chrono::steady_clock::now() - it->second > RETRY_COOLDOWN)
+  {
+    g_recentTimeouts.erase(it);
+    return false;
+  }
+  return true;
+}
+
+void RememberTimeout(const std::string& redactPath)
+{
+  std::lock_guard<std::mutex> lock(g_recentTimeoutsMutex);
+  if (g_recentTimeouts.size() > 256)
+    g_recentTimeouts.clear();
+  g_recentTimeouts[redactPath] = std::chrono::steady_clock::now();
+}
+
+constexpr std::chrono::milliseconds POLL_INTERVAL{100};
+
+//! Hard cap on extraction worker threads that are currently running
+constexpr int MAX_OUTSTANDING_WORKERS = 8;
+
+std::atomic<int> g_outstandingWorkers{0};
+
+struct WorkerSlotGuard
+{
+  ~WorkerSlotGuard() { g_outstandingWorkers.fetch_sub(1, std::memory_order_relaxed); }
+};
+
+template<typename Func>
+auto RunWithTimeout(Func&& func, const std::string& redactPath, const char* what, bool& timedOut)
+{
+  using ResultT = decltype(func());
+  timedOut = false;
+
+  if (g_outstandingWorkers.fetch_add(1, std::memory_order_relaxed) >= MAX_OUTSTANDING_WORKERS)
+  {
+    g_outstandingWorkers.fetch_sub(1, std::memory_order_relaxed);
+    CLog::LogF(LOGWARNING,
+               "at the cap of {} outstanding extraction workers, skipping attempt to {} '{}'",
+               MAX_OUTSTANDING_WORKERS, what, redactPath);
+    return ResultT{};
+  }
+
+  auto promise = std::make_shared<std::promise<ResultT>>();
+  std::future<ResultT> future = promise->get_future();
+
+  std::thread(
+      [promise, slot = std::make_shared<WorkerSlotGuard>(),
+       task = std::forward<Func>(func)]() mutable
+      {
+        try
+        {
+          promise->set_value(task());
+        }
+        catch (...)
+        {
+          try
+          {
+            promise->set_exception(std::current_exception());
+          }
+          catch (...)
+          {
+          }
+        }
+      })
+      .detach();
+
+  const CThread* callingThread = CThread::GetCurrentThread();
+
+  const auto deadline = std::chrono::steady_clock::now() + EXTRACT_TIMEOUT;
+  for (;;)
+  {
+    const auto now = std::chrono::steady_clock::now();
+    if (now >= deadline)
+    {
+      timedOut = true;
+      CLog::LogF(LOGWARNING,
+                 "timed out after {}s trying to {} '{}' - the file may be incomplete, still "
+                 "being written to, corrupt, or on an unresponsive share. Skipping for now "
+                 "and holding off retrying this path for {}s.",
+                 EXTRACT_TIMEOUT.count(), what, redactPath, RETRY_COOLDOWN.count());
+      return ResultT{};
+    }
+
+    if (callingThread && callingThread->IsStopRequested())
+    {
+      CLog::LogF(LOGDEBUG,
+                 "abandoning attempt to {} '{}' - this thread was asked to stop "
+                 "(e.g. the window/list requesting it was closed or refreshed)",
+                 what, redactPath);
+      return ResultT{};
+    }
+
+    const auto sliceWait = std::min<std::chrono::milliseconds>(
+        POLL_INTERVAL, std::chrono::duration_cast<std::chrono::milliseconds>(deadline - now));
+
+    if (future.wait_for(sliceWait) == std::future_status::ready)
+    {
+      try
+      {
+        return future.get();
+      }
+      catch (...)
+      {
+        CLog::LogF(LOGERROR, "exception while trying to {} '{}'", what, redactPath);
+        return ResultT{};
+      }
+    }
+  }
+}
+} // namespace
+
+bool CDVDFileInfo::GetFileDuration(const std::string& path, int& duration)
+{
+  const std::string redactPath = CURL::GetRedacted(path);
+
+  if (RecentlyTimedOut(redactPath))
+  {
+    CLog::LogF(LOGDEBUG, "skipping '{}' - it timed out recently, still in cooldown", redactPath);
+    return false;
+  }
+
+  bool timedOut = false;
+  const int result = RunWithTimeout(
+      [path]()
+      {
+        int dur = 0;
+        CFileItem item(path, false);
+        auto input = CDVDFactoryInputStream::CreateInputStream(NULL, item);
+        if (input && input->Open())
+        {
+          std::unique_ptr<CDVDDemux> demux{CDVDFactoryDemuxer::CreateDemuxer(input, true)};
+          if (demux)
+            dur = demux->GetStreamLength();
+        }
+        return dur;
+      },
+      redactPath, "read duration for", timedOut);
+
+  if (timedOut)
+    RememberTimeout(redactPath);
+
+  if (result <= 0)
     return false;
 
-  demux.reset(CDVDFactoryDemuxer::CreateDemuxer(input, true));
-  if (!demux)
-    return false;
-
-  duration = demux->GetStreamLength();
-  if (duration > 0)
-    return true;
-  else
-    return false;
+  duration = result;
+  return true;
 }
 
 int DegreeToOrientation(int degrees)
@@ -265,13 +413,12 @@ std::unique_ptr<CTexture> PictureToTexture(const VideoPicture& picture, const CD
 }
 } // namespace
 
-std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& fileItem,
-                                                              int chapterNumber)
+namespace
 {
-  if (!CanExtract(fileItem))
-    return {};
-
-  const std::string redactPath = CURL::GetRedacted(fileItem.GetPath());
+std::unique_ptr<CTexture> ExtractThumbToTextureImpl(const CFileItem& fileItem,
+                                                    int chapterNumber,
+                                                    const std::string& redactPath)
+{
   auto start = std::chrono::steady_clock::now();
 
   CFileItem item(fileItem);
@@ -354,6 +501,33 @@ std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& f
 
   return result;
 }
+} // namespace
+
+std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& fileItem,
+                                                              int chapterNumber)
+{
+  if (!CanExtract(fileItem))
+    return {};
+
+  const std::string redactPath = CURL::GetRedacted(fileItem.GetPath());
+
+  if (RecentlyTimedOut(redactPath))
+  {
+    CLog::LogF(LOGDEBUG, "skipping '{}' - it timed out recently, still in cooldown", redactPath);
+    return {};
+  }
+
+  bool timedOut = false;
+  auto result =
+      RunWithTimeout([fileItem, chapterNumber, redactPath]()
+                     { return ExtractThumbToTextureImpl(fileItem, chapterNumber, redactPath); },
+                     redactPath, "extract a thumbnail for", timedOut);
+
+  if (timedOut)
+    RememberTimeout(redactPath);
+
+  return result;
+}
 
 bool CDVDFileInfo::CanExtract(const CFileItem& fileItem)
 {
@@ -396,6 +570,31 @@ bool CDVDFileInfo::CanExtract(const CFileItem& fileItem)
  * \brief Open the item pointed to by pItem and extract streamdetails
  * \return true if the stream details have changed
  */
+bool CDVDFileInfo::ExtractStreamDetailsForPath(const std::string& playablePath,
+                                               const std::string& strFileNameAndPath,
+                                               CStreamDetails& details,
+                                               bool& isPvr)
+{
+  isPvr = false;
+
+  CFileItem item(playablePath, false);
+  item.SetMimeTypeForInternetFile();
+  auto pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, item);
+  if (!pInputStream)
+    return false;
+
+  if (pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) || !pInputStream->Open())
+    return false;
+
+  isPvr = pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER);
+
+  std::unique_ptr<CDVDDemux> pDemuxer{CDVDFactoryDemuxer::CreateDemuxer(pInputStream, true)};
+  if (!pDemuxer)
+    return false;
+
+  return DemuxerToStreamDetails(pInputStream, pDemuxer.get(), details, strFileNameAndPath);
+}
+
 bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
 {
   if (!pItem)
@@ -415,32 +614,44 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
   if (URIUtils::IsStack(playablePath))
     playablePath = XFILE::CStackDirectory::GetFirstStackedFile(playablePath);
 
-  CFileItem item(playablePath, false);
-  item.SetMimeTypeForInternetFile();
-  auto pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, item);
-  if (!pInputStream)
-    return false;
+  const std::string redactPath = CURL::GetRedacted(playablePath);
 
-  if (pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) || !pInputStream->Open())
+  if (RecentlyTimedOut(redactPath))
   {
+    CLog::LogF(LOGDEBUG, "skipping '{}' - it timed out recently, still in cooldown", redactPath);
     return false;
   }
 
-  CDVDDemux *pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(pInputStream, true);
-  if (pDemuxer)
+  struct Extraction
   {
-    bool retVal = DemuxerToStreamDetails(pInputStream, pDemuxer, pItem->GetVideoInfoTag()->m_streamDetails, strFileNameAndPath);
+    bool success = false;
+    bool isPvr = false;
+    CStreamDetails details;
+  };
 
-    if (!pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
-      ProcessExternalSubtitles(pItem);
+  bool timedOut = false;
+  const Extraction extraction = RunWithTimeout(
+      [playablePath, strFileNameAndPath]()
+      {
+        Extraction result;
+        result.success = ExtractStreamDetailsForPath(playablePath, strFileNameAndPath,
+                                                     result.details, result.isPvr);
+        return result;
+      },
+      redactPath, "extract video information for", timedOut);
 
-    delete pDemuxer;
-    return retVal;
-  }
-  else
-  {
+  if (timedOut)
+    RememberTimeout(redactPath);
+
+  if (!extraction.success)
     return false;
-  }
+
+  pItem->GetVideoInfoTag()->m_streamDetails = extraction.details;
+
+  if (!extraction.isPvr)
+    ProcessExternalSubtitles(pItem);
+
+  return true;
 }
 
 bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>& pInputStream,
