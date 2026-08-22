@@ -72,6 +72,7 @@
 #include <memory>
 #include <mutex>
 #include <ranges>
+#include <string_view>
 #include <utility>
 
 using namespace KODI;
@@ -87,6 +88,14 @@ using namespace std::chrono_literals;
       return (lh) > (rh); \
   } while(0)
 
+namespace
+{
+constexpr bool IsKnownLanguage(std::string_view language)
+{
+  return !language.empty() && language != "und";
+}
+} // unnamed namespace
+
 class PredicateSubtitleFilter
 {
 private:
@@ -98,6 +107,7 @@ private:
   bool m_isPrefForced;
   bool m_isPrefHearingImp;
   bool m_isSubNone;
+  bool m_hideSameAudioLang;
   int m_subStream;
 
 public:
@@ -116,6 +126,7 @@ public:
     m_isPrefOriginal = StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageOriginal);
     m_isPrefForced = StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageForcedOnly);
     m_isPrefHearingImp = settings->GetBool(CSettings::SETTING_ACCESSIBILITY_SUBHEARING);
+    m_hideSameAudioLang = settings->GetBool(CSettings::SETTING_SUBTITLES_HIDESAMEAUDIOLANGUAGE);
 
     m_subLang = g_langInfo.GetSubtitleLanguage(false);
     if (m_subLang.empty()) // No language set (due to none, original, forced_only settings)
@@ -143,12 +154,22 @@ public:
     const bool isCC = STREAM_SOURCE_MASK(ss.source) == STREAM_SOURCE_VIDEOMUX;
 
     // External subtitles with unknown language always allow it
-    if (isExternal && (ss.language.empty() || ss.language == "und"))
+    if (isExternal && !IsKnownLanguage(ss.language))
     {
       return false;
     }
 
     const bool isSameSubLang = g_LangCodeExpander.CompareISO639Codes(ss.language, m_subLang);
+
+    // The user does not want to read subtitles in a language they are already listening to.
+    // Forced subtitles are kept, as they usually only translate foreign language parts.
+    // Both languages must be declared, a stream that states none is never assumed to match.
+    if (m_hideSameAudioLang && (ss.flags & FLAG_FORCED) == 0 &&
+        IsKnownLanguage(m_playedAudioLang) && IsKnownLanguage(ss.language) &&
+        g_LangCodeExpander.CompareISO639Codes(ss.language, m_playedAudioLang))
+    {
+      return true;
+    }
 
     if (m_isPrefHearingImp)
     {
@@ -158,7 +179,7 @@ public:
 
       // to consider CC streams may not have the language code
       if ((ss.flags & StreamFlags::FLAG_HEARING_IMPAIRED) &&
-          (isSameSubLang || (isCC && (ss.language.empty() || ss.language == "und"))))
+          (isSameSubLang || (isCC && !IsKnownLanguage(ss.language))))
       {
         return false;
       }
@@ -184,7 +205,7 @@ public:
 
     // can fall here only when "forced" and "impaired" are disabled,
     // it always enable subs if language is unknown for external and CC
-    if ((isSameSubLang || (isCC && (ss.language.empty() || ss.language == "und"))) &&
+    if ((isSameSubLang || (isCC && !IsKnownLanguage(ss.language))) &&
         (ss.flags & FLAG_FORCED) == 0 && (ss.flags & FLAG_HEARING_IMPAIRED) == 0)
     {
       return false;
@@ -392,8 +413,8 @@ public:
     // if all previous conditions do not match, allow fallback to "unknown" language
     if (!m_isPrefForced)
     {
-      PREDICATE_RETURN(isLincluded && (lh.language.empty() || lh.language == "und"),
-                       isRincluded && (rh.language.empty() || rh.language == "und"));
+      PREDICATE_RETURN(isLincluded && !IsKnownLanguage(lh.language),
+                       isRincluded && !IsKnownLanguage(rh.language));
     }
 
     return false;
