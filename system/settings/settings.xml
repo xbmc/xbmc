@@ -3641,6 +3641,22 @@
           <control type="toggle" />
         </setting>
       </group>
+      <group id="4" label="35150">
+        <setting id="input.useapplicationkeyboard" type="boolean" label="24162" help="34008">
+          <requirement>
+            <or>
+              <condition>HAVE_ANDROID</condition>
+              <condition>HAVE_TVOS</condition>
+            </or>
+          </requirement>
+          <level>1</level>
+          <default>false</default>
+          <updates>
+            <update type="rename">input.tvosusekodikeyboard</update>
+          </updates>
+          <control type="toggle" />
+        </setting>
+      </group>
     </category>
     <category id="network" label="798" help="36379">
       <group id="1" label="16000">
