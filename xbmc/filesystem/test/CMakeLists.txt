@@ -1,4 +1,6 @@
-set(SOURCES TestDirectory.cpp
+set(SOURCES TestDataFile.cpp
+            TestDataURI.cpp
+            TestDirectory.cpp
             TestDirectoryCache.cpp
             TestDiscDirectoryHelper.cpp
             TestFile.cpp

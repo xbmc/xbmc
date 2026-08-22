@@ -1027,6 +1027,12 @@ std::string CUtil::MakeLegalPath(const std::string& strPathAndFile, LegalPath Le
 std::string CUtil::ValidatePath(std::string path, bool bFixDoubleSlashes /* = false */)
 {
 
+  // Preserve data: scheme candidates verbatim so malformed opaque content is
+  // rejected by its handler rather than altered by filesystem normalization.
+  // Other URI-looking strings retain Kodi's historical local path treatment.
+  if (StringUtils::StartsWithNoCase(path, "data:"))
+    return path;
+
   // Don't do any stuff on URLs containing %-characters or protocols that embed
   // filenames. NOTE: Don't use IsInZip or IsInRar here since it will infinitely
   // recurse and crash XBMC
