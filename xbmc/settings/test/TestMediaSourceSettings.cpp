@@ -43,7 +43,6 @@ TEST(TestMediaSourceSettings, SaveString)
   XFILE::CFile* file;
   file = XBMC_CREATETEMPFILE(".xml");
   std::string xmlfile = XBMC_TEMPFILEPATH(file);
-  std::cout << "Reference file generated at '" << XBMC_TEMPFILEPATH(file) << "'" << std::endl;
   file->Close();
 
   EXPECT_TRUE(ms.Save(xmlfile));
@@ -65,6 +64,8 @@ TEST(TestMediaSourceSettings, SaveString)
   EXPECT_EQ(picturessources->size(), refpictures);
   auto gamessources = ms.GetSources("games");
   EXPECT_EQ(gamessources->size(), refgames);
+
+  EXPECT_TRUE(XBMC_DELETETEMPFILE(file));
 }
 
 TEST(TestMediaSourceSettings, GetSource)
