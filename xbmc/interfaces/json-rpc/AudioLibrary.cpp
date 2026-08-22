@@ -750,7 +750,9 @@ JSONRPC_STATUS CAudioLibrary::SetArtistDetails(const std::string &method, ITrans
     return InternalError;
 
   CArtist artist;
-  if (!musicdatabase.GetArtist(id, artist) || artist.idArtist <= 0)
+  // fetchAll: UpdateArtist() below replaces the discography and video links wholesale from this
+  // CArtist, so anything not loaded here is deleted from the database.
+  if (!musicdatabase.GetArtist(id, artist, true) || artist.idArtist <= 0)
     return NotFound;
 
   if (ParameterNotNull(parameterObject, "artist"))
