@@ -50,6 +50,12 @@ public:
     return GetBookmarkPos(idx);
   }
 
+  static CVideoPlayer::SpeedChangeNotifications InvokeGetSpeedChangeNotifications(int previousSpeed,
+                                                                                  int newSpeed)
+  {
+    return GetSpeedChangeNotifications(previousSpeed, newSpeed);
+  }
+
   void SetCurrentVideoId(int id) { m_CurrentVideo.id = id; }
   void SetCurrentAudioId(int id) { m_CurrentAudio.id = id; }
   void SetHasVideo(bool hasVideo) { m_HasVideo = hasVideo; }
@@ -364,4 +370,67 @@ TEST_F(TestVideoPlayer, CalcTimeOrPercentSeekTargetSmooth)
   EXPECT_EQ(advancedSettings->m_videoTimeSeekBackward * 1000,
             CTestVideoPlayer::InvokeCalcTimeOrPercentSeekTarget(0, maxTime, Direction::BACKWARD,
                                                                 TestSeekStep::NORMAL));
+}
+
+TEST_F(TestVideoPlayer, GetSpeedChangeNotifications_ResumeToNormalFromPause)
+{
+  // ordinary unpause (Pause()/SetSpeed(1.0)) already raises OnPlayBackResumed itself -
+  // must not be raised again here, and no speed-changed notification is expected either
+  const auto notifications = CTestVideoPlayer::InvokeGetSpeedChangeNotifications(
+      DVD_PLAYSPEED_PAUSE, DVD_PLAYSPEED_NORMAL);
+  EXPECT_FALSE(notifications.resumed);
+  EXPECT_FALSE(notifications.speedChanged);
+}
+
+TEST_F(TestVideoPlayer, GetSpeedChangeNotifications_FFFromPause)
+{
+  // FF/RW started directly from paused bypasses Pause()/SetSpeed(1.0), so both
+  // notifications must be raised here instead
+  const auto notifications = CTestVideoPlayer::InvokeGetSpeedChangeNotifications(
+      DVD_PLAYSPEED_PAUSE, 2 * DVD_PLAYSPEED_NORMAL);
+  EXPECT_TRUE(notifications.resumed);
+  EXPECT_TRUE(notifications.speedChanged);
+}
+
+TEST_F(TestVideoPlayer, GetSpeedChangeNotifications_RWFromPause)
+{
+  const auto notifications = CTestVideoPlayer::InvokeGetSpeedChangeNotifications(
+      DVD_PLAYSPEED_PAUSE, -2 * DVD_PLAYSPEED_NORMAL);
+  EXPECT_TRUE(notifications.resumed);
+  EXPECT_TRUE(notifications.speedChanged);
+}
+
+TEST_F(TestVideoPlayer, GetSpeedChangeNotifications_SpeedChangeWhilePlaying)
+{
+  // already playing (not paused): FF/RW speed changes never raise a resume notification
+  const auto notifications = CTestVideoPlayer::InvokeGetSpeedChangeNotifications(
+      2 * DVD_PLAYSPEED_NORMAL, 4 * DVD_PLAYSPEED_NORMAL);
+  EXPECT_FALSE(notifications.resumed);
+  EXPECT_TRUE(notifications.speedChanged);
+}
+
+TEST_F(TestVideoPlayer, GetSpeedChangeNotifications_ReturnToNormalFromFF)
+{
+  const auto notifications = CTestVideoPlayer::InvokeGetSpeedChangeNotifications(
+      2 * DVD_PLAYSPEED_NORMAL, DVD_PLAYSPEED_NORMAL);
+  EXPECT_FALSE(notifications.resumed);
+  EXPECT_TRUE(notifications.speedChanged);
+}
+
+TEST_F(TestVideoPlayer, GetSpeedChangeNotifications_PauseFromPlaying)
+{
+  // pausing is handled entirely by Pause()/SetSpeed(0.0)'s own OnPlayBackPaused - neither
+  // notification is raised here
+  const auto notifications = CTestVideoPlayer::InvokeGetSpeedChangeNotifications(
+      DVD_PLAYSPEED_NORMAL, DVD_PLAYSPEED_PAUSE);
+  EXPECT_FALSE(notifications.resumed);
+  EXPECT_FALSE(notifications.speedChanged);
+}
+
+TEST_F(TestVideoPlayer, GetSpeedChangeNotifications_NoActualChange)
+{
+  const auto notifications = CTestVideoPlayer::InvokeGetSpeedChangeNotifications(
+      2 * DVD_PLAYSPEED_NORMAL, 2 * DVD_PLAYSPEED_NORMAL);
+  EXPECT_FALSE(notifications.resumed);
+  EXPECT_FALSE(notifications.speedChanged);
 }
