@@ -150,6 +150,21 @@ void CAirTunesServer::RefreshCoverArt(const char *outputFilename/* = NULL*/)
   //update the ui
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_REFRESH_THUMBS);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
+
+  // The info manager holds its own item; the application item is the one the players and
+  // JSON-RPC read, so it needs the same art.
+  if (ServerInstance != NULL && ServerInstance->m_pPipe != NULL)
+  {
+    // Path and mime type match the playing item so that UpdateInfo, which copies both,
+    // leaves them unchanged. An empty url clears the previous track's thumbnail.
+    CFileItem* item = new CFileItem();
+    item->SetPath(ServerInstance->m_pPipe->GetName());
+    item->SetMimeType("audio/x-xbmc-pcm");
+    item->SetArt("thumb", CFile::Exists(coverArtFile) ? coverArtFile : "");
+
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_UPDATE_PLAYER_ITEM, -1, -1,
+                                               static_cast<void*>(item));
+  }
 }
 
 void CAirTunesServer::SetMetadataFromBuffer(const char *buffer, unsigned int size)
