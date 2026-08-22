@@ -380,31 +380,41 @@ bool CVideoDatabase::GetSubPaths(const std::string& basepath,
   return false;
 }
 
+namespace
+{
+/*! \brief Get the other alternative protocol path of a zip file path.
+ If a zip file is added using the native zip support it has a zip:// path.
+ If the archive vfs addon is then installed and the containing directory is altered (so the
+ hash is changed) then when the directory is rescanned the zip file will have an archive://
+ path and could lead to an orphaned zip:// entry.
+ Similarly, if the archive vfs addon is used first and then removed and the directory
+ contents change then rescan could lead to zip://
+ \param path the path to translate
+ \return the same path under the other protocol, or empty if not an archive path
+ */
+std::string GetArchiveProtocolAlias(const std::string& path)
+{
+  CURL url(path);
+  if (url.IsProtocol("archive"))
+    url.SetProtocol("zip");
+  else if (url.IsProtocol("zip"))
+    url.SetProtocol("archive");
+  else
+    return {};
+
+  return url.Get();
+}
+} // unnamed namespace
+
 int CVideoDatabase::AddPath(const std::string& strPath, const std::string &parentPath /*= "" */, const CDateTime& dateAdded /* = CDateTime() */)
 {
   std::string strSQL;
   try
   {
-    // Special case for zip files
-    // If a zip file is added using the native zip support it has a zip:// path
-    // If the archive vfs addon is then installed and the containing directory is altered (so the hash is changed)
-    //  then when the directory is rescanned the zip file will have an archive:// path and could lead to an orphaned zip:// entry
-    // Similarly if the archive vfs addon is used first and then removed and the directory contents change then rescan could lead to zip://
-    // So check to see if there is an existing zip:// or archive:// path and use that
+    // Use an existing zip:// or archive:// path for the same archive if there is one
     int idPath{-1};
-    CURL url(strPath);
-    if (url.IsProtocol("archive"))
-    {
-      // See if a zip://
-      url.SetProtocol("zip");
-      idPath = GetPathId(url.Get());
-    }
-    else if (url.IsProtocol("zip"))
-    {
-      // See if an archive://
-      url.SetProtocol("archive");
-      idPath = GetPathId(url.Get());
-    }
+    if (const std::string alias{GetArchiveProtocolAlias(strPath)}; !alias.empty())
+      idPath = GetPathId(alias);
     if (idPath < 0)
       idPath = GetPathId(strPath);
     if (idPath >= 0)
@@ -725,7 +735,15 @@ void CVideoDatabase::ClearPathHash(const std::string& strPath)
     std::string path{strPath};
     URIUtils::AddSlashAtEnd(path);
 
-    m_pDS->exec(PrepareSQL("update path set strHash='' where strPath='%s'", path.c_str()));
+    // An archive may be recorded under either spelling, so clear both
+    std::string alias{GetArchiveProtocolAlias(path)};
+    if (!alias.empty())
+      URIUtils::AddSlashAtEnd(alias);
+
+    m_pDS->exec(alias.empty()
+                    ? PrepareSQL("update path set strHash='' where strPath='%s'", path.c_str())
+                    : PrepareSQL("update path set strHash='' where strPath in ('%s','%s')",
+                                 path.c_str(), alias.c_str()));
   }
   catch (...)
   {
@@ -10200,25 +10218,58 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
         progress->Progress();
       }
 
+      std::vector<std::string> pathsToInvalidate;
       if (!filesToDelete.empty())
       {
         filesToDelete = "(" + StringUtils::TrimRight(filesToDelete, ",") + ")";
 
-        // Clean hashes of all paths that files are deleted from
-        // Otherwise there is a mismatch between the path contents and the hash in the
-        // database, leading to potentially missed items on re-scan (if deleted files are
-        // later re-added to a source)
-        CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning path hashes");
+        // Note the paths of the deleted files to have their hashes invalidated once
+        // the path rows themselves have been cleaned below - blanking a hash first would
+        // hide a path that no longer exists from the pass that deletes it.
         m_pDS->query("SELECT DISTINCT strPath FROM path JOIN files ON files.idPath=path.idPath "
                      "WHERE files.idFile IN " +
                      filesToDelete);
-        int pathHashCount = m_pDS->num_rows();
         while (!m_pDS->eof())
         {
-          InvalidatePathHash(m_pDS->fv("strPath").get_asString());
+          pathsToInvalidate.emplace_back(m_pDS->fv("strPath").get_asString());
           m_pDS->next();
         }
-        CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaned {} path hashes", pathHashCount);
+        m_pDS->close();
+
+        // If a movie is listed for deletion because the file of its default version has gone,
+        // promote a different version and keep the movie
+        for (auto it = movieIDs.begin(); it != movieIDs.end();)
+        {
+          // Any of the movie's remaining versions will do, so take the oldest for a
+          // predictable choice - GetDbId reads the first row of whatever order the engine
+          // happens to return
+          const int idFile{
+              GetDbId(PrepareSQL("SELECT idFile FROM videoversion WHERE idMedia=%i AND "
+                                 "media_type='%s' AND itemType=%i AND idFile NOT IN %s "
+                                 "ORDER BY idFile LIMIT 1",
+                                 *it, MediaTypeMovie, static_cast<int>(VideoAssetType::VERSION),
+                                 filesToDelete.c_str()))};
+          if (idFile < 0)
+          {
+            ++it;
+            continue;
+          }
+
+          if (!SetDefaultVideoVersion(VideoDbContentType::MOVIES, *it, idFile))
+          {
+            // Leave the movie to be removed below rather than keep one whose default
+            // version is a file that has gone
+            CLog::LogF(LOGERROR, "Unable to promote the version of file {} of movie {}", idFile,
+                       *it);
+            ++it;
+            continue;
+          }
+
+          CLog::LogFC(LOGDEBUG, LOGDATABASE,
+                      "Default version of movie {} has gone, promoted the version of file {}", *it,
+                      idFile);
+          it = movieIDs.erase(it);
+        }
 
         CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning files table");
         sql = "DELETE FROM files WHERE idFile IN " + filesToDelete;
@@ -10231,6 +10282,15 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
         for (const auto& i : movieIDs)
           moviesToDelete += StringUtils::Format("{},", i);
         moviesToDelete = "(" + StringUtils::TrimRight(moviesToDelete, ",") + ")";
+
+        // Any asset still attached to the movie goes with it. The delete_movie trigger only
+        // takes the default version, so remove the files of the rest first and let their own
+        // trigger clear the assets, rather than leaving either behind.
+        CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning assets of removed movies");
+        m_pDS->exec(PrepareSQL("DELETE FROM files WHERE idFile IN "
+                               "(SELECT idFile FROM videoversion "
+                               "WHERE media_type='%s' AND idMedia IN %s)",
+                               MediaTypeMovie, moviesToDelete.c_str()));
 
         CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning movie table");
         sql = "DELETE FROM movie WHERE idMovie IN " + moviesToDelete;
@@ -10337,8 +10397,10 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
           "AND (strSettings IS NULL OR strSettings = '') "
           "AND (strHash IS NULL OR strHash = '') "
           "AND (exclude IS NULL OR exclude != 1) "
-          "AND (idParentPath IS NULL OR NOT EXISTS (SELECT 1 FROM (SELECT idPath FROM path) as "
+          "AND ((idParentPath IS NULL OR NOT EXISTS (SELECT 1 FROM (SELECT idPath FROM path) as "
           "parentPath WHERE parentPath.idPath = path.idParentPath)) " // MySQL only fix (#5007)
+          "OR NOT EXISTS (SELECT 1 FROM (SELECT idParentPath FROM path) as childPath "
+          "WHERE childPath.idParentPath = path.idPath)) "
           "AND NOT EXISTS (SELECT 1 FROM files WHERE files.idPath = path.idPath) "
           "AND NOT EXISTS (SELECT 1 FROM tvshowlinkpath WHERE tvshowlinkpath.idPath = path.idPath) "
           "AND NOT EXISTS (SELECT 1 FROM movie WHERE movie.c{:02} = path.idPath) "
@@ -10347,6 +10409,12 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
           VIDEODB_ID_PARENTPATHID, VIDEODB_ID_EPISODE_PARENTPATHID,
           VIDEODB_ID_MUSICVIDEO_PARENTPATHID);
       m_pDS->exec(sql);
+
+      // Clean hashes of all paths that files were deleted from.
+      CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning path hashes");
+      for (const auto& path : pathsToInvalidate)
+        InvalidatePathHash(path);
+      CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaned {} path hashes", pathsToInvalidate.size());
 
       CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning genre table");
       sql =
@@ -10527,7 +10595,10 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
         }
 
         sourcePathsDeleteDecisions.insert(std::make_pair(sourcePathID, std::make_pair(sourcePathNotExists, del)));
-        pathsDeleteDecisions.insert(std::make_pair(sourcePathID, sourcePathNotExists && del));
+
+        // Only a source that has gone carries a decision about its contents
+        if (sourcePathNotExists)
+          pathsDeleteDecisions.insert(std::make_pair(sourcePathID, del));
       }
       // the only reason not to delete the file is if the parent path doesn't
       // exist and the user decided to delete all the items it contained
@@ -11768,11 +11839,7 @@ void CVideoDatabase::InvalidatePathHash(const std::string& strPath)
 
   ScraperPtr info = GetScraperForPath(path, settings, foundDirectly);
 
-  // strPath is a known row (it comes from a files/path join), so it can be set directly.
-  // (SetPathHash includes AddPath if the path is not already known)
-  // Subsequently use ClearPathHash to ensure no paths added inadvertently.
-  // SetPathHash (via AddPath) also handles zip:// <-> archive:// aliasing
-  SetPathHash(strPath, "");
+  ClearPathHash(strPath);
   if (path != strPath)
     ClearPathHash(path);
   if (!info)
@@ -12810,10 +12877,12 @@ bool CVideoDatabase::SetDefaultVideoVersion(VideoDbContentType itemType, int dbI
     return false;
 
   int idOldFile{-1};
+  const bool inTransaction{m_pDB->in_transaction()};
 
   try
   {
-    BeginTransaction();
+    if (!inTransaction)
+      BeginTransaction();
 
     if (itemType == VideoDbContentType::MOVIES)
     {
@@ -12837,7 +12906,8 @@ bool CVideoDatabase::SetDefaultVideoVersion(VideoDbContentType itemType, int dbI
       }
     }
 
-    CommitTransaction();
+    if (!inTransaction)
+      CommitTransaction();
 
     if (itemType == VideoDbContentType::MOVIES)
     {
@@ -12853,7 +12923,8 @@ bool CVideoDatabase::SetDefaultVideoVersion(VideoDbContentType itemType, int dbI
   catch (...)
   {
     CLog::LogF(LOGERROR, "failed for video {}", dbId);
-    RollbackTransaction();
+    if (!inTransaction)
+      RollbackTransaction();
   }
   return false;
 }

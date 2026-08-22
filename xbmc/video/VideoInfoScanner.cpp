@@ -365,18 +365,30 @@ CVideoInfoScanner::~CVideoInfoScanner()
           }
           else
           {
-            // The remaining sub directories under the path to scan were not found on disk, skip
-            // the individual scans.
-            // Happens mostly for TV Shows that are in the library and were deleted from a sub
-            // directory of a defined source.
-            std::function<void(const std::string&)> f;
-            if (m_bClean)
-              f = [this](const std::string& dir)
-              { m_pathsToClean.insert(m_database.GetPathId(dir)); };
+            // Skip the individual scans of the subdirectories still queued under the path
+            // just scanned. Most were simply consumed by it - disc folders are handled as
+            // items (by Stack()) rather than recursed into, season folders are enumerated
+            // by the show scan, and nothing under a folder skipped on its hash is ever listed
+            // - so only those actually gone from disk are missing and worth cleaning.
+            // Happens mostly for TV Shows that are in the library and were deleted from a
+            // subdirectory of a defined source.
+            size_t missing{0};
+            auto f{[this, &missing](const std::string& dir)
+                   {
+                     // A plugin path cannot be probed - CPluginDirectory::Exists always says
+                     // yes - so treat one as gone, as this did before the probe was added,
+                     // rather than never cleaning a path a plugin has dropped
+                     if (!URIUtils::IsPlugin(dir) && CDirectory::Exists(dir))
+                       return;
 
-            if (auto count = RemoveSubDirectories(m_pathsToScan, directory, f))
-              CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipped {} missing sub directories of {}.",
-                        count, directory);
+                     ++missing;
+                     if (m_bClean)
+                       m_pathsToClean.insert(m_database.GetPathId(dir));
+                   }};
+
+            RemoveSubDirectories(m_pathsToScan, directory, f);
+            if (missing)
+              CLog::LogF(LOGDEBUG, "Skipped {} missing sub directories of {}.", missing, directory);
           }
         }
       }
@@ -601,7 +613,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                   "clean list",
                   CURL::GetRedacted(strDirectory));
         if (m_bClean)
-          m_pathsToClean.insert(m_database.GetPathId(strDirectory));
+          AddPathToClean(strDirectory);
         bSkip = true;
       }
       else if (dbHash.empty())
@@ -690,7 +702,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
           if (!URIUtils::IsArchive(CURL(strDirectory)))
             m_database.SetPathHash(strDirectory, hash);
           if (m_bClean)
-            m_pathsToClean.insert(m_database.GetPathId(strDirectory));
+            AddPathToClean(strDirectory);
           CLog::Log(LOGDEBUG, "VideoInfoScanner: Finished adding information from dir {}",
                     CURL::GetRedacted(strDirectory));
         }
@@ -708,7 +720,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                         [](const auto& item) { return item->IsFolder(); }))
           m_database.SetPathHash(strDirectory, hash);
         if (m_bClean)
-          m_pathsToClean.insert(m_database.GetPathId(strDirectory));
+          AddPathToClean(strDirectory);
         CLog::Log(LOGDEBUG, "VideoInfoScanner: No (new) information was found in dir {}",
                   CURL::GetRedacted(strDirectory));
       }
@@ -2967,6 +2979,24 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
     hash = digest.Finalize();
     return count;
+  }
+
+  void CVideoInfoScanner::AddPathToClean(const std::string& directory)
+  {
+    m_pathsToClean.insert(m_database.GetPathId(directory));
+
+    // Pick up the paths the directory's disc rips and archives are anchored under - the
+    // encoded ones (bluray://, zip:// etc.) and the VIDEO_TS/BDMV directories of a rip held
+    // under its raw disc structure. Neither is ever scanned in its own right, being consumed
+    // by Stack(), so nothing else would queue them. Ordinary sub directories are left out as
+    // each is scanned, and queued, of its own accord.
+    std::vector<std::pair<int, std::string>> subPaths;
+    m_database.GetSubPaths(directory, subPaths, false);
+    for (const auto& [idPath, path] : subPaths)
+    {
+      if (!URIUtils::PathHasParent(path, directory) || URIUtils::IsDiscPath(path))
+        m_pathsToClean.insert(idPath);
+    }
   }
 
   bool CVideoInfoScanner::CanFastHash(const CFileItemList &items, const std::vector<std::string> &excludes) const
