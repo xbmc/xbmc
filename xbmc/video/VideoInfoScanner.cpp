@@ -1562,27 +1562,42 @@ CVideoInfoScanner::~CVideoInfoScanner()
         defaultVersionFileId = tag->m_iFileId; // Updated in AddMovie()
 
       // Look for versions (ie. subsequent <movie> entries in the .nfo file)
-      // These must be versions
+      // These must be versions. Reuse the loader.
       int index{1};
-      do
+      while (true)
       {
-        index++;
-        item.SetProperty("nfo_index", index); // Attempt to read next movie version
-        std::tie(result, loader) = ReadInfoTag(item, info2, bDirNames, true);
-        if (result == InfoType::FULL)
-        {
-          // Add the version entry
-          tag->m_iDbId = movieId;
-          const int versionId{static_cast<int>(AddVideo(&item, nullptr, bDirNames, true, nullptr,
-                                                        false, ContentType::MOVIE_VERSIONS))};
-          if (versionId < 0)
-            return InfoRet::INFO_ERROR;
+        tag->Reset();
+        const InfoType versionResult{loader->LoadVersion(++index, *tag)};
+        if (versionResult == InfoType::NONE)
+          break; // No further <movie> entries
+        if (versionResult != InfoType::FULL)
+          continue; // Entry cannot stand alone as a version - skip it, but keep looking
 
-          // Look for default version
-          if (tag->IsDefaultVideoVersion())
-            defaultVersionFileId = tag->m_iFileId; // Updated in AddVideoAsset()
-        }
-      } while (result == InfoType::FULL);
+        // A <playlist> nfo element identifies the disc playlist the info belongs to.
+        // The item is reused for every entry, so a version without one must not inherit the
+        // playlist of the entry before it
+        if (const int playlist{loader->GetBlurayPlaylist()}; playlist > -1)
+          item.SetProperty("bluray_playlist", playlist);
+        else
+          item.ClearProperty("bluray_playlist");
+
+        // Keep properties only if advancedsettings.xml says so
+        if (!m_advancedSettings->m_bVideoLibraryImportWatchedState)
+          tag->ResetPlayCount();
+        if (!m_advancedSettings->m_bVideoLibraryImportResumePoint)
+          tag->SetResumePoint(CBookmark());
+
+        // Add the version entry
+        tag->m_iDbId = movieId;
+        const int versionId{static_cast<int>(AddVideo(&item, nullptr, bDirNames, true, nullptr,
+                                                      false, ContentType::MOVIE_VERSIONS))};
+        if (versionId < 0)
+          return InfoRet::INFO_ERROR;
+
+        // Look for default version
+        if (tag->IsDefaultVideoVersion())
+          defaultVersionFileId = tag->m_iFileId; // Updated in AddVideoAsset()
+      }
 
       // Set default version
       if (defaultVersionFileId > -1)

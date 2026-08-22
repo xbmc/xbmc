@@ -48,14 +48,6 @@ std::string InfoTypeToStr(CInfoScanner::InfoType infoType)
   }
 }
 
-int GetNfoIndex(const CFileItem& item, const ADDON::ScraperPtr& scraper)
-{
-  if (scraper->Content() == ADDON::ContentType::MOVIES && !item.IsFolder() &&
-      item.HasProperty("nfo_index"))
-    return item.GetProperty("nfo_index").asInteger32(1); // multiple versions (playlists) in nfo
-  return 1;
-}
-
 } // Unnamed namespace
 
 CVideoTagLoaderNFO::CVideoTagLoaderNFO(const CFileItem& item,
@@ -85,7 +77,7 @@ CInfoScanner::InfoType CVideoTagLoaderNFO::Load(CVideoInfoTag& tag,
   {
     if (!m_nfoParsed)
     {
-      m_parseResult = m_nfoReader.Create(m_path, m_info, GetNfoIndex(m_item, m_info));
+      m_parseResult = m_nfoReader.Create(m_path, m_info);
       m_nfoParsed = true;
     }
     result = m_parseResult;
@@ -101,25 +93,45 @@ CInfoScanner::InfoType CVideoTagLoaderNFO::Load(CVideoInfoTag& tag,
   }
 
   if (result != NONE)
-  {
-    const std::string type{InfoTypeToStr(result)};
-    if (m_item.HasProperty("nfo_index"))
-      CLog::Log(LOGDEBUG, "VideoInfoScanner: Found additional version ({}) in {} NFO file: {}",
-                m_item.GetProperty("nfo_index").asInteger32(), type, CURL::GetRedacted(m_path));
-    else
-      CLog::Log(LOGDEBUG, "VideoInfoScanner: Found matching {} NFO file: {}", type,
-                CURL::GetRedacted(m_path));
-  }
+    CLog::Log(LOGDEBUG, "VideoInfoScanner: Found matching {} NFO file: {}", InfoTypeToStr(result),
+              CURL::GetRedacted(m_path));
   else
-  {
-    if (m_item.HasProperty("nfo_index"))
-      CLog::Log(LOGDEBUG, "VideoInfoScanner: No additional versions found in NFO file.");
-    else
-      CLog::Log(LOGDEBUG, "VideoInfoScanner: No NFO file found. Using title search for '{}'",
-                CURL::GetRedacted(m_item.GetPath()));
-  }
+    CLog::Log(LOGDEBUG, "VideoInfoScanner: No NFO file found. Using title search for '{}'",
+              CURL::GetRedacted(m_item.GetPath()));
 
   return result;
+}
+
+CInfoScanner::InfoType CVideoTagLoaderNFO::LoadVersion(int index, CVideoInfoTag& tag)
+{
+  using enum CInfoScanner::InfoType;
+
+  // The document is only in memory once Load() has parsed it
+  if (!m_nfoParsed)
+    return NONE;
+
+  const CInfoScanner::InfoType result{m_nfoReader.Reparse(index)};
+  if (result == FULL)
+  {
+    m_nfoReader.GetDetails(tag, nullptr, false);
+    CLog::Log(LOGDEBUG, "VideoInfoScanner: Found additional version ({}) in {} NFO file: {}", index,
+              InfoTypeToStr(result), CURL::GetRedacted(m_path));
+    return result;
+  }
+
+  if (result != NONE)
+  {
+    // An override entry needs a scrape to merge into, and versions are added without a scraper.
+    // Report it so the caller can move on to the next entry rather than stop here
+    CLog::Log(LOGDEBUG,
+              "VideoInfoScanner: Ignoring additional {} entry ({}) in NFO file - only full entries "
+              "can be added as versions: {}",
+              InfoTypeToStr(result), index, CURL::GetRedacted(m_path));
+    return result;
+  }
+
+  CLog::Log(LOGDEBUG, "VideoInfoScanner: No additional versions found in NFO file.");
+  return NONE;
 }
 
 int CVideoTagLoaderNFO::GetBlurayPlaylist() const

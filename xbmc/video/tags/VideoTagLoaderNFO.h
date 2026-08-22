@@ -28,10 +28,16 @@ public:
   bool HasInfo() const override;
 
   //! \brief Load "tag" from nfo file.
-  //! \brief tag Tag to load info into
+  //! \param tag Tag to load info into
   CInfoScanner::InfoType Load(CVideoInfoTag& tag,
                               bool prioritise,
                               std::vector<EmbeddedArt>* = nullptr) override;
+
+  //! \brief Load an additional <movie> entry from the nfo file as a version.
+  //! \param index 1-based index of the entry to load (2 is the first additional version)
+  //! \param tag Tag to load info into, only populated when the result is FULL
+  //! The nfo file is already in memory after Load()
+  CInfoScanner::InfoType LoadVersion(int index, CVideoInfoTag& tag) override;
 
   //! \brief Returns the bluray playlist from a <playlist> nfo element, -1 if there isn't one.
   int GetBlurayPlaylist() const override;
