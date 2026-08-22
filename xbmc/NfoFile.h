@@ -31,7 +31,15 @@ class CNfoFile
 public:
   virtual ~CNfoFile() { Close(); }
 
-  CInfoScanner::InfoType Create(const std::string&, const ADDON::ScraperPtr&, int index = 1);
+  CInfoScanner::InfoType Create(const std::string& nfoPath, const ADDON::ScraperPtr& info);
+
+  /*! \brief Re-parse the already loaded document, starting at its nth <movie> element.
+   Only valid after a successful Create(), and only for movie documents - nothing else can hold
+   more than one entry.
+   \param index 1-based index of the <movie> element to parse
+   \return the parse result, NONE if the document holds no such element
+   */
+  CInfoScanner::InfoType Reparse(int index);
 
   template<class T>
   bool GetDetails(T& details, const char* document = nullptr, bool prioritise = false) const
@@ -64,9 +72,7 @@ public:
 
 private:
   CInfoScanner::InfoType TryParsing(ADDON::AddonType addonType) const;
-  CInfoScanner::InfoType TryParsing(const CURL& nfoPath,
-                                    ADDON::ContentType contentType,
-                                    int index = 1);
+  CInfoScanner::InfoType TryParsing(const CURL& nfoPath, ADDON::ContentType contentType);
   CInfoScanner::InfoType SearchNfoForScraperUrls(CInfoScanner::InfoType parseResult,
                                                  const ADDON::ScraperPtr& info);
   bool SeekToMovieIndex(int index);
@@ -76,6 +82,7 @@ private:
 
   std::string m_doc;
   size_t m_headPos = 0;
+  ADDON::AddonType m_addonType{};
   ADDON::ScraperPtr m_info;
   CScraperUrl m_scurl;
 
