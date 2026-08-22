@@ -91,7 +91,18 @@ private:
    * \return true if a version was added, false otherwise.
    */
   bool AddVideoVersion();
+
+  /*!
+   * \brief Set as default button handler
+   */
   void SetDefault();
+
+  /*!
+   * \brief Ungroup button handler
+   */
+  void Ungroup();
+  bool UngroupImpl();
+
   void UpdateDefaultVideoVersionSelection();
 
   enum class Mode

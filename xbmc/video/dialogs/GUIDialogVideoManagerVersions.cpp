@@ -46,6 +46,7 @@
 static constexpr unsigned int CONTROL_BUTTON_ADD_VERSION = 22;
 static constexpr unsigned int CONTROL_BUTTON_RENAME_VERSION = 24;
 static constexpr unsigned int CONTROL_BUTTON_SET_DEFAULT = 25;
+static constexpr unsigned int CONTROL_BUTTON_UNGROUP_VERSION = 29;
 static constexpr int NO_VERSION = -1;
 
 CGUIDialogVideoManagerVersions::CGUIDialogVideoManagerVersions()
@@ -84,6 +85,10 @@ bool CGUIDialogVideoManagerVersions::OnMessage(CGUIMessage& message)
       {
         SetDefault();
       }
+      else if (control == CONTROL_BUTTON_UNGROUP_VERSION)
+      {
+        Ungroup();
+      }
       break;
     }
   }
@@ -109,11 +114,13 @@ void CGUIDialogVideoManagerVersions::UpdateButtons()
       m_defaultVideoVersion->GetVideoInfoTag()->m_iDbId)
   {
     DisableRemove();
+    CONTROL_DISABLE(CONTROL_BUTTON_UNGROUP_VERSION);
     CONTROL_DISABLE(CONTROL_BUTTON_SET_DEFAULT);
   }
   else
   {
     EnableRemove();
+    CONTROL_ENABLE(CONTROL_BUTTON_UNGROUP_VERSION);
     CONTROL_ENABLE(CONTROL_BUTTON_SET_DEFAULT);
   }
 
@@ -171,6 +178,87 @@ void CGUIDialogVideoManagerVersions::Remove()
   }
 
   CGUIDialogVideoManager::Remove();
+}
+
+void CGUIDialogVideoManagerVersions::Ungroup()
+{
+  const MediaType mediaType{m_videoAsset->GetVideoInfoTag()->m_type};
+
+  // default video version is not allowed
+  if (m_database.IsDefaultVideoVersion(m_selectedVideoAsset->GetVideoInfoTag()->m_iDbId))
+  {
+    CGUIDialogOK::ShowAndGetInput(CVariant{40043}, CVariant{40044});
+    return;
+  }
+
+  // confirm the action
+  if (!m_selectedVideoAsset || !m_selectedVideoAsset->HasVideoInfoTag() ||
+      !CGUIDialogYesNo::ShowAndGetInput(
+          40043, StringUtils::Format(
+                     CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(40045),
+                     m_selectedVideoAsset->GetVideoInfoTag()->GetAssetInfo().GetTitle())))
+  {
+    return;
+  }
+
+  if (UngroupImpl())
+  {
+    // refresh data and controls
+    Refresh();
+    RefreshSelectedVideoAsset();
+    UpdateControls();
+  }
+}
+
+bool CGUIDialogVideoManagerVersions::UngroupImpl()
+{
+  m_database.BeginTransaction();
+
+  // Strategy: capture version-level information (artwork, name, stream details) and recreate the
+  // version as a movie after deletion.
+  // The existing code and architecture favor that approach rather than building up the stored
+  // version data into a movie.
+
+  const CVideoInfoTag* versionDetails = m_selectedVideoAsset->GetVideoInfoTag();
+
+  KODI::ART::Artwork artwork;
+  if (m_videoAsset->HasVideoInfoTag() &&
+      m_database.GetArtForAsset(versionDetails->m_iDbId, ArtFallbackOptions::PARENT, artwork) &&
+      m_database.DeleteVideoAsset(versionDetails->m_iDbId))
+  {
+    // The item used to open the dialog contains the correct movie information because all
+    // versions of a movie share fields.
+    CVideoInfoTag details = *m_videoAsset->GetVideoInfoTag();
+    const int origMovieId = details.m_iDbId;
+    // Force a movie record creation - the parent movie is found otherwise.
+    details.m_iDbId = -1;
+    // Then modify the persisted fields with the removed version info
+    details.m_iFileId = versionDetails->m_iFileId;
+    details.m_strFileNameAndPath = versionDetails->m_strFileNameAndPath;
+    details.m_basePath = versionDetails->m_basePath;
+    details.m_parentPathID = versionDetails->m_parentPathID;
+    details.m_dateAdded = versionDetails->m_dateAdded;
+    details.m_streamDetails = versionDetails->m_streamDetails;
+    // Preserve the version name
+    details.GetAssetInfo().Clear();
+    details.GetAssetInfo().SetTitle(versionDetails->GetAssetInfo().GetTitle());
+
+    const int movieId = m_database.SetDetailsForMovie(details, artwork);
+    if (movieId >= 0 && movieId != origMovieId)
+    {
+      std::vector<int> showIds;
+      if (m_database.GetLinksToTvShow(origMovieId, showIds) &&
+          (showIds.empty() || m_database.LinkMovieToTvshows(movieId, showIds, false)))
+      {
+        m_database.CommitTransaction();
+        m_hasUpdatedItems = true;
+        return true;
+      }
+    }
+  }
+
+  m_database.RollbackTransaction();
+  return false;
 }
 
 void CGUIDialogVideoManagerVersions::SetDefault()
