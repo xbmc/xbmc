@@ -70,7 +70,7 @@ elif action == 'getdetails':
                       xbmc.Actor('monkey', 'orange', order=1, thumbnail='/home/akva/Pictures/coffee.jpg')])
         tags.addAvailableArtwork('DefaultBackFanart.png', 'banner')
         tags.addAvailableArtwork('/home/akva/Pictures/hawaii-shirt.png', 'poster')
-        liz.setAvailableFanart([{'image': 'DefaultBackFanart.png', 'preview': 'DefaultBackFanart.png'},
+        tags.setAvailableFanart([{'image': 'DefaultBackFanart.png', 'preview': 'DefaultBackFanart.png'},
                                 {'image': '/home/akva/Pictures/hawaii-shirt.png',
                                  'preview': '/home/akva/Pictures/hawaii-shirt.png'}])
         xbmcplugin.setResolvedUrl(handle=plugin_handle, succeeded=True, listitem=liz)
@@ -83,7 +83,7 @@ elif action == 'getartwork':
         tags = liz.getVideoInfoTag()
         tags.addAvailableArtwork('DefaultBackFanart.png', 'banner')
         tags.addAvailableArtwork('/home/akva/Pictures/hawaii-shirt.png', 'poster')
-        liz.setAvailableFanart([{'image': 'DefaultBackFanart.png', 'preview': 'DefaultBackFanart.png'},
+        tags.setAvailableFanart([{'image': 'DefaultBackFanart.png', 'preview': 'DefaultBackFanart.png'},
                                 {'image': '/home/akva/Pictures/hawaii-shirt.png',
                                  'preview': '/home/akva/Pictures/hawaii-shirt.png'}])
         xbmcplugin.setResolvedUrl(handle=plugin_handle, succeeded=True, listitem=liz)
