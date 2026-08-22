@@ -9,9 +9,11 @@
 #include "GUIDialogSimpleMenu.h"
 
 #include "FileItem.h"
+#include "GUIDialogOK.h"
 #include "GUIDialogSelect.h"
 #include "GUIDialogYesNo.h"
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/URIUtils.h"
@@ -65,9 +67,7 @@ bool CGUIDialogSimpleMenu::ShowPlaylistSelection(
         if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{559}, CVariant{25015}))
           return false;
 
-        std::string base{item.GetDynPath()};
-        if (URIUtils::IsBlurayPath(base))
-          base = URIUtils::GetDiscFile(base);
+        const std::string& base{item.GetDynPath()};
 
         CVideoDatabase db;
         if (!db.Open())
@@ -76,18 +76,35 @@ bool CGUIDialogSimpleMenu::ShowPlaylistSelection(
           return false;
         }
 
+        // The displaced items are reverted together. A playlist belongs to the one title, so
+        // leaving any of them holding it would hand it to two at once - the selection is
+        // abandoned rather than half made.
+        db.BeginTransaction();
         for (const auto& it : matchingPlaylists)
         {
-          // Revert file to base file (BDMV/ISO)
-          db.BeginTransaction();
-          if (db.SetFileForMedia(base, it.mediaType, it.idMedia,
-                                 CVideoDatabase::FileRecord{
-                                     .m_idFile = it.idFile,
-                                     .m_dateAdded = item.GetVideoInfoTag()->m_dateAdded}) > 0)
-            db.CommitTransaction();
-          else
+          // Revert the displaced item to a select path. The playlist belongs to it alone, so its
+          // file record is simply renamed and keeps its idFile - and with it the item's bookmarks,
+          // stream details and settings.
+          const std::string revertPath{
+              it.mediaType == VideoDbContentType::EPISODES
+                  ? URIUtils::GetBluraySelectPath(base, it.season, it.episode)
+                  : URIUtils::GetBluraySelectPath(base)};
+          if (revertPath.empty() || !db.RenameFile(it.idFile, revertPath))
+          {
             db.RollbackTransaction();
+            db.Close();
+            CLog::LogF(LOGERROR,
+                       "Unable to revert file {} of {} to a select path, so playlist {} is left "
+                       "where it is",
+                       it.idFile, CURL::GetRedacted(base), newPlaylist);
+
+            // The user has just agreed to the change, so say that it hasn't happened rather than
+            // leave the dialog closing as though it had
+            CGUIDialogOK::ShowAndGetInput(CVariant{559}, CVariant{25021});
+            return false;
+          }
         }
+        db.CommitTransaction();
         db.Close();
       }
     }

@@ -157,7 +157,7 @@ struct TestURLParseDetailsData
   bool expectedIsZIP = false;
   bool expectedIsArchive = false;
   bool expectedIsDiscImage = false;
-  bool expectedIsDiscImageStack = false;
+  bool expectedIsUnresolvedDiscStack = false;
   bool expectedIsSpecial = false;
   bool expectedIsPlugin = false;
   bool expectedIsScript = false;
@@ -337,7 +337,7 @@ TestURLParseDetailsData CreateParamFromJson(std::string filename)
     read(param.expectedIsZIP, json, "expectedIsZIP");
     read(param.expectedIsArchive, json, "expectedIsArchive");
     read(param.expectedIsDiscImage, json, "expectedIsDiscImage");
-    read(param.expectedIsDiscImageStack, json, "expectedIsDiscImageStack");
+    read(param.expectedIsUnresolvedDiscStack, json, "expectedIsUnresolvedDiscStack");
     read(param.expectedIsSpecial, json, "expectedIsSpecial");
     read(param.expectedIsPlugin, json, "expectedIsPlugin");
     read(param.expectedIsScript, json, "expectedIsScript");
@@ -510,7 +510,7 @@ void RunParseTest(const std::string& filename, const TestURLParseDetailsData& pa
   EXPECT_EQ(param.expectedIsArchive, curl.IsArchive());
   EXPECT_EQ(param.expectedIsDiscImage, URIUtils::IsDiscImage(p));
   EXPECT_EQ(param.expectedIsDiscImage, curl.IsDiscImage());
-  EXPECT_EQ(param.expectedIsDiscImageStack, URIUtils::IsDiscImageStack(p));
+  EXPECT_EQ(param.expectedIsUnresolvedDiscStack, URIUtils::IsUnresolvedDiscStack(p));
   EXPECT_EQ(param.expectedIsSpecial, URIUtils::IsSpecial(p));
   EXPECT_EQ(param.expectedIsPlugin, URIUtils::IsPlugin(p));
   EXPECT_EQ(param.expectedIsPlugin, curl.IsPlugin());
@@ -658,7 +658,7 @@ void RunParseTest(const std::string& filename, const TestURLParseDetailsData& pa
   write(jsonObj, "expectedIsZIP", URIUtils::IsZIP(p));
   write(jsonObj, "expectedIsArchive", URIUtils::IsArchive(p));
   write(jsonObj, "expectedIsDiscImage", URIUtils::IsDiscImage(p));
-  write(jsonObj, "expectedIsDiscImageStack", URIUtils::IsDiscImageStack(p));
+  write(jsonObj, "expectedIsUnresolvedDiscStack", URIUtils::IsUnresolvedDiscStack(p));
   write(jsonObj, "expectedIsSpecial", URIUtils::IsSpecial(p));
   write(jsonObj, "expectedIsPlugin", URIUtils::IsPlugin(p));
   write(jsonObj, "expectedIsScript", URIUtils::IsScript(p));

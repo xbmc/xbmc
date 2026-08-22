@@ -17124,7 +17124,13 @@ msgctxt "#25020"
 msgid "Mb/s"
 msgstr ""
 
-#empty strings from id 25021 to 29800
+#. Inform user that the playlist could not be taken from the item already holding it
+#: xbmc/dialogs/GUIDialogSimpleMenu.cpp
+msgctxt "#25021"
+msgid "The selected playlist could not be reassigned, so it has been left as it was."
+msgstr ""
+
+#empty strings from id 25022 to 29800
 
 #: unused
 msgctxt "#29801"

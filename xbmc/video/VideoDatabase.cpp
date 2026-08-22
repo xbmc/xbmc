@@ -554,27 +554,11 @@ bool CVideoDatabase::GetSourcePath(const std::string &path, std::string &sourceP
   return false;
 }
 
-int CVideoDatabase::AddFile(const std::string& strFileNameAndPath,
+int CVideoDatabase::AddFile(const std::string& fileNameAndPath,
                             const std::string& parentPath /* = "" */,
                             const CDateTime& dateAdded /* = CDateTime() */,
                             int playCount /* = 0 */,
                             const CDateTime& lastPlayed /* = CDateTime() */)
-{
-  return AddOrUpdateFile(strFileNameAndPath, parentPath,
-                         FileRecord{
-                             .m_playCount = playCount,
-                             .m_lastPlayed = lastPlayed,
-                             .m_dateAdded = dateAdded,
-                         },
-                         FileExistsAction::ACTION_NONE);
-}
-
-//********************************************************************************************************************************
-//! @todo for more future flexibility add the rest of the fields to the struct and provide a mask to specify which fields to update
-int CVideoDatabase::AddOrUpdateFile(const std::string& fileAndPath,
-                                    const std::string& parentPath,
-                                    const FileRecord& fileInfo,
-                                    FileExistsAction existsAction)
 {
   if (nullptr == m_pDB || nullptr == m_pDS)
     return -1;
@@ -582,21 +566,15 @@ int CVideoDatabase::AddOrUpdateFile(const std::string& fileAndPath,
   std::string sql;
   try
   {
-    const CDateTime finalDateAdded{GetDateAdded(fileAndPath, fileInfo.m_dateAdded)};
+    const CDateTime finalDateAdded{GetDateAdded(fileNameAndPath, dateAdded)};
 
     std::string strFileName;
     std::string strPath;
-    SplitPath(fileAndPath, strPath, strFileName);
+    SplitPath(fileNameAndPath, strPath, strFileName);
 
     const int idPath{AddPath(strPath, parentPath, finalDateAdded)};
     if (idPath < 0)
       return -1;
-
-    const std::string playCount{fileInfo.m_playCount > 0 ? std::to_string(fileInfo.m_playCount)
-                                                         : "NULL"};
-    const std::string lastPlayed{fileInfo.m_lastPlayed.IsValid()
-                                     ? "'" + fileInfo.m_lastPlayed.GetAsDBDateTime() + "'"
-                                     : "NULL"};
 
     sql = PrepareSQL("SELECT idFile FROM files WHERE strFileName = '%s' AND idPath=%i",
                      strFileName.c_str(), idPath);
@@ -606,32 +584,19 @@ int CVideoDatabase::AddOrUpdateFile(const std::string& fileAndPath,
     {
       const int idFile{m_pDS->fv("idFile").get_asInt()};
       m_pDS->close();
-
-      if (existsAction == FileExistsAction::ACTION_UPDATE)
-      {
-        sql = PrepareSQL("UPDATE files "
-                         "SET playCount = " +
-                             playCount +
-                             ", "
-                             "lastPlayed = " +
-                             lastPlayed +
-                             ", "
-                             "dateAdded = '%s' "
-                             "WHERE idFile = %i",
-                         finalDateAdded.GetAsDBDateTime().c_str(), idFile);
-
-        m_pDS->exec(sql);
-      }
-
       return idFile;
     }
 
     m_pDS->close();
 
+    const std::string playCountValue{playCount > 0 ? std::to_string(playCount) : "NULL"};
+    const std::string lastPlayedValue{
+        lastPlayed.IsValid() ? "'" + lastPlayed.GetAsDBDateTime() + "'" : "NULL"};
+
     sql = PrepareSQL(
         "INSERT INTO files (idFile, idPath, strFileName, playCount, lastPlayed, dateAdded) "
         "VALUES(NULL, %i, '%s', " +
-            playCount + ", " + lastPlayed + ", '%s')",
+            playCountValue + ", " + lastPlayedValue + ", '%s')",
         idPath, strFileName.c_str(), finalDateAdded.GetAsDBDateTime().c_str());
 
     m_pDS->exec(sql);
@@ -640,7 +605,7 @@ int CVideoDatabase::AddOrUpdateFile(const std::string& fileAndPath,
   }
   catch (...)
   {
-    CLog::LogF(LOGERROR, "unable to add or update file ({})", sql);
+    CLog::LogF(LOGERROR, "unable to add file ({})", sql);
   }
   return -1;
 }
@@ -2828,144 +2793,47 @@ int CVideoDatabase::SetDetailsForSeason(const CVideoInfoTag& details,
   return -1;
 }
 
-int CVideoDatabase::SetFileForMedia(const std::string& fileAndPath,
-                                    VideoDbContentType type,
-                                    int mediaId,
-                                    const FileRecord& oldFile)
+bool CVideoDatabase::RenameFile(int idFile, const std::string& fileAndPath)
 {
-  if ((mediaId < 0 && type != VideoDbContentType::UNKNOWN) || oldFile.m_idFile < 0)
-    return -1;
-
-  const int newIdFile = AddOrUpdateFile(fileAndPath, "", oldFile, FileExistsAction::ACTION_UPDATE);
-  if (newIdFile < 0)
-    return -1;
-
-  switch (type)
-  {
-    using enum VideoDbContentType;
-
-    case MOVIES:
-      return SetFileForMovie(fileAndPath, mediaId, oldFile.m_idFile, newIdFile);
-    case EPISODES:
-      return SetFileForEpisode(fileAndPath, mediaId, oldFile.m_idFile, newIdFile);
-    case UNKNOWN:
-      // Used for removable blurays
-      return SetFileForUnknown(fileAndPath, oldFile.m_idFile, newIdFile);
-    default:
-      CLog::LogF(LOGDEBUG, "unsupported media type {}", type);
-      return -1;
-  }
-}
-
-int CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath,
-                                      int idEpisode,
-                                      int oldIdFile,
-                                      int newIdFile)
-{
-  assert(m_pDB->in_transaction());
-
-  if (newIdFile < 0)
-    return -1;
-
-  if (newIdFile == oldIdFile)
-    return newIdFile; // Nothing to do, and the file must not be deleted below
+  if (!m_pDB || !m_pDS || idFile < 0 || fileAndPath.empty())
+    return false;
 
   try
   {
-    m_pDS->exec(
-        PrepareSQL("UPDATE episode SET idFile=%i WHERE idEpisode=%i", newIdFile, idEpisode));
-    m_pDS->exec(PrepareSQL("UPDATE settings SET idFile=%i WHERE idFile=%i", newIdFile, oldIdFile));
-    return DeleteFile(oldIdFile) ? newIdFile : -1;
+    // A file shared by several library items (as a disc entry added before select paths is) can't
+    // be renamed on behalf of just one of them
+    if (GetSingleValueInt(PrepareSQL("SELECT (SELECT COUNT(1) FROM episode WHERE idFile=%i) + "
+                                     "(SELECT COUNT(1) FROM videoversion WHERE idFile=%i)",
+                                     idFile, idFile)) > 1)
+      return false;
+
+    std::string strFileName;
+    std::string strPath;
+    SplitPath(fileAndPath, strPath, strFileName);
+
+    const int idPath{AddPath(strPath)};
+    if (idPath < 0)
+      return false;
+
+    // A file already of that name is a different library item that happens to share the path (two
+    // episodes on one playlist, say), so this one can't take it
+    if (const int existingIdFile{
+            GetSingleValueInt(PrepareSQL("SELECT idFile FROM files WHERE strFileName='%s' AND "
+                                         "idPath=%i",
+                                         strFileName.c_str(), idPath))};
+        existingIdFile > 0)
+      return existingIdFile == idFile; // Already named as asked, so nothing to do
+
+    m_pDS->exec(PrepareSQL("UPDATE files SET idPath=%i, strFileName='%s' WHERE idFile=%i", idPath,
+                           strFileName.c_str(), idFile));
+    return true;
   }
   catch (...)
   {
-    CLog::LogF(LOGERROR, " idFile {}, fileAndPath {}, idEpisode {}, oldIdFile {} - failed",
-               newIdFile, fileAndPath, idEpisode, oldIdFile);
+    CLog::LogF(LOGERROR, "idFile {}, fileAndPath {} - failed", idFile,
+               CURL::GetRedacted(fileAndPath));
   }
-  return -1;
-}
-
-int CVideoDatabase::SetFileForMovie(const std::string& fileAndPath,
-                                    int idMovie,
-                                    int oldIdFile,
-                                    int newIdFile)
-{
-  assert(m_pDB->in_transaction());
-
-  if (newIdFile < 0)
-    return -1;
-
-  if (newIdFile == oldIdFile)
-    return newIdFile; // Nothing to do
-
-  try
-  {
-    // The file played may already be a version of the movie in its own right
-    // eg. selecting a known version playlist through the bluray menu
-    // Only a version of this same movie is adopted. A file belonging to another movie, or held as
-    // an extra, is not the replacement that was asked for, so it falls through to fail and roll back
-    if (GetSingleValueInt(PrepareSQL("SELECT COUNT(1) FROM videoversion WHERE idFile=%i AND "
-                                     "media_type='movie' AND idMedia=%i AND itemType=%i",
-                                     newIdFile, idMovie,
-                                     static_cast<int>(VideoAssetType::VERSION))) > 0)
-    {
-      CLog::LogF(LOGDEBUG,
-                 "File {} ({}) is already a version of movie {} - keeping both it and "
-                 "file {}",
-                 newIdFile, CURL::GetRedacted(fileAndPath), idMovie, oldIdFile);
-      return newIdFile;
-    }
-
-    m_pDS->exec(PrepareSQL("UPDATE movie SET idFile=%i WHERE idFile=%i AND idMovie=%i", newIdFile,
-                           oldIdFile, idMovie));
-    m_pDS->exec(PrepareSQL(
-        "UPDATE videoversion SET idFile=%i WHERE idFile=%i AND media_type='movie' AND idMedia=%i",
-        newIdFile, oldIdFile, idMovie));
-    m_pDS->exec(
-        PrepareSQL("UPDATE art SET media_id=%i WHERE media_id=%i AND media_type='videoversion'",
-                   newIdFile, oldIdFile));
-    m_pDS->exec(
-        PrepareSQL("UPDATE streamdetails SET idFile=%i WHERE idFile=%i AND NOT EXISTS (SELECT 1 "
-                   "FROM streamdetails WHERE idFile=%i)",
-                   newIdFile, oldIdFile, newIdFile));
-    m_pDS->exec(PrepareSQL("UPDATE settings SET idFile=%i WHERE idFile=%i", newIdFile, oldIdFile));
-
-    return DeleteFile(oldIdFile) ? newIdFile : -1;
-  }
-  catch (...)
-  {
-    CLog::LogF(LOGERROR, " idFile {}, fileAndPath {}, idMovie {}, oldIdFile {} - failed", newIdFile,
-               fileAndPath, idMovie, oldIdFile);
-  }
-  return -1;
-}
-
-int CVideoDatabase::SetFileForUnknown(const std::string& fileAndPath, int oldIdFile, int newIdFile)
-{
-  assert(m_pDB->in_transaction());
-
-  if (newIdFile < 0)
-    return -1;
-
-  if (newIdFile == oldIdFile)
-    return newIdFile; // Nothing to do, and the file must not be deleted below
-
-  try
-  {
-    m_pDS->exec(
-        PrepareSQL("UPDATE streamdetails SET idFile=%i WHERE idFile=%i AND NOT EXISTS (SELECT 1 "
-                   "FROM streamdetails WHERE idFile=%i)",
-                   newIdFile, oldIdFile, newIdFile));
-    m_pDS->exec(PrepareSQL("UPDATE settings SET idFile=%i WHERE idFile=%i", newIdFile, oldIdFile));
-
-    return DeleteFile(oldIdFile) ? newIdFile : -1;
-  }
-  catch (...)
-  {
-    CLog::LogF(LOGERROR, " idFile {}, fileAndPath {}, oldIdFile {} - failed", newIdFile,
-               fileAndPath, oldIdFile);
-  }
-  return -1;
+  return false;
 }
 
 bool CVideoDatabase::DeleteFile(int idFile)
@@ -3308,12 +3176,13 @@ std::vector<CVideoDatabase::PlaylistInfo> CVideoDatabase::GetPlaylistsByPath(
       return playlists;
 
     const std::string strSQL{PrepareSQL(
-        "SELECT files.strFilename, files.idFile, episode.idEpisode, vv.idMedia FROM files "
+        "SELECT files.strFilename, files.idFile, episode.idEpisode, episode.c%02d AS epSeason, "
+        "episode.c%02d AS epEpisode, vv.idMedia FROM files "
         "LEFT JOIN episode ON episode.idFile=files.idFile "
         "LEFT JOIN videoversion vv ON vv.idFile = files.idFile AND vv.media_type='%s' "
         "INNER JOIN path ON path.idPath=files.idPath "
         "WHERE path.strPath='%s'",
-        MediaTypeMovie, path.c_str())};
+        VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_EPISODE_EPISODE, MediaTypeMovie, path.c_str())};
     m_pDS->query(strSQL);
 
     while (!m_pDS->eof())
@@ -3334,7 +3203,9 @@ std::vector<CVideoDatabase::PlaylistInfo> CVideoDatabase::GetPlaylistsByPath(
             playlists.emplace_back(PlaylistInfo{.playlist = std::stoi(filename),
                                                 .idFile = m_pDS->fv(idFileIndex).get_asInt(),
                                                 .mediaType = VideoDbContentType::EPISODES,
-                                                .idMedia = idEpisode});
+                                                .idMedia = idEpisode,
+                                                .season = m_pDS->fv("epSeason").get_asInt(),
+                                                .episode = m_pDS->fv("epEpisode").get_asInt()});
           if (idMovie > 0)
             playlists.emplace_back(PlaylistInfo{.playlist = std::stoi(filename),
                                                 .idFile = m_pDS->fv(idFileIndex).get_asInt(),
@@ -3497,24 +3368,21 @@ void CVideoDatabase::GetEpisodesByBlurayPath(const std::string& path,
 {
   try
   {
-    // url will be in vfs format (ie. bluray://.../episode/1/1)
-    // episode database entries will either have basepath path (ie. ISO/BDMV) if not yet played ...
-    const std::string baseFileAndPath{URIUtils::GetDiscFile(path)};
-    std::string baseFile;
-    std::string basePath;
-    SplitPath(baseFileAndPath, basePath, baseFile);
-
-    // ... or bluray:// path (ie. bluray://.../BDMV/00000.mpls) if already played
+    // path is one of the vfs episode listings (ie. bluray://.../root/episode/1/1)
     CURL url{path};
     url.SetFileName("");
     const std::string blurayPath{URIUtils::AddFileToFolder(url.Get(), "BDMV", "PLAYLIST", "")};
+
+    // Any one of the titles on the disc will do, as GetEpisodesByFileId goes on to find the rest
+    // by the disc they share. The dataset is finished with first, as that call reuses it.
     const std::string sql{
-        PrepareSQL("select idFile from episode_view "
-                   "where (strPath = '%s' and strFileName = '%s') or strPath = '%s'",
-                   basePath.c_str(), baseFile.c_str(), blurayPath.c_str())};
+        PrepareSQL("select idFile from episode_view where strPath = '%s'", blurayPath.c_str())};
     m_pDS->query(sql);
-    if (!m_pDS->eof())
-      return GetEpisodesByFileId(m_pDS->fv("idFile").get_asInt(), episodes);
+    const int idFile{m_pDS->eof() ? -1 : m_pDS->fv("idFile").get_asInt()};
+    m_pDS->close();
+
+    if (idFile >= 0)
+      GetEpisodesByFileId(idFile, episodes);
   }
   catch (...)
   {
@@ -4281,6 +4149,32 @@ std::string CVideoDatabase::GetFileBasePathById(int idFile)
   return "";
 }
 
+std::string CVideoDatabase::GetFileAndPathById(int idFile)
+{
+  if (!m_pDB || !m_pDS || idFile < 0)
+    return {};
+
+  try
+  {
+    m_pDS->query(PrepareSQL("SELECT strPath, strFileName FROM path "
+                            "JOIN files ON path.idPath = files.idPath WHERE idFile = %i",
+                            idFile));
+
+    std::string fileAndPath;
+    if (!m_pDS->eof())
+      ConstructPath(fileAndPath, m_pDS->fv("strPath").get_asString(),
+                    m_pDS->fv("strFileName").get_asString());
+    m_pDS->close();
+    return fileAndPath;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "failed for file {}", idFile);
+  }
+
+  return {};
+}
+
 int CVideoDatabase::GetFileIdByMovie(int idMovie)
 {
   if (!m_pDB || !m_pDS)
@@ -4699,7 +4593,7 @@ bool CVideoDatabase::GetResumePoint(CVideoInfoTag& tag)
 
   try
   {
-    if (URIUtils::IsDiscImageStack(tag.m_strFileNameAndPath))
+    if (URIUtils::IsUnresolvedDiscStack(tag.m_strFileNameAndPath))
     {
       CStackDirectory dir;
       CFileItemList fileList;
@@ -5898,11 +5792,16 @@ std::vector<std::string> CVideoDatabase::GetAvailableArtTypesForItem(int mediaId
 bool CVideoDatabase::GetStackTimes(const std::string& filePath,
                                    std::vector<std::chrono::milliseconds>& times)
 {
+  // obtain the FileID (if it exists)
+  return GetStackTimes(GetFileId(filePath), times);
+}
+
+bool CVideoDatabase::GetStackTimes(int idFile, std::vector<std::chrono::milliseconds>& times)
+{
   try
   {
-    // obtain the FileID (if it exists)
-    int idFile = GetFileId(filePath);
-    if (idFile < 0) return false;
+    if (idFile < 0)
+      return false;
     if (nullptr == m_pDB)
       return false;
     if (nullptr == m_pDS)
@@ -5938,14 +5837,20 @@ bool CVideoDatabase::GetStackTimes(const std::string& filePath,
 void CVideoDatabase::SetStackTimes(const std::string& filePath,
                                    const std::vector<std::chrono::milliseconds>& times)
 {
+  // The file is added when it is not in the library yet, as happens when the times are worked out
+  // during a scan, before the item itself has been added
+  SetStackTimes(AddFile(filePath), times);
+}
+
+void CVideoDatabase::SetStackTimes(int idFile, const std::vector<std::chrono::milliseconds>& times)
+{
   try
   {
+    if (idFile < 0)
+      return;
     if (nullptr == m_pDB)
       return;
     if (nullptr == m_pDS)
-      return;
-    int idFile = AddFile(filePath);
-    if (idFile < 0)
       return;
 
     // delete any existing items
@@ -5961,7 +5866,7 @@ void CVideoDatabase::SetStackTimes(const std::string& filePath,
   }
   catch (...)
   {
-    CLog::LogF(LOGERROR, "({}) failed", filePath);
+    CLog::LogF(LOGERROR, "({}) failed", idFile);
   }
 }
 

@@ -356,20 +356,13 @@ public:
                            int idEpisode = -1);
 
   /*!
-   * @brief The FileInfo structure represents a DB record of the files table.
+   * \brief Rename an existing file record, keeping its idFile.
+   * \param idFile the file to rename.
+   * \param fileAndPath the path and filename to rename it to.
+   * \return true if the file was renamed (or already had that name), false if it could not be -
+   *         because several library items share it, or because another file already has that name.
    */
-  struct FileRecord
-  {
-    int m_idFile{-1};
-    int m_playCount{-1};
-    CDateTime m_lastPlayed{};
-    CDateTime m_dateAdded{};
-  };
-
-  int SetFileForMedia(const std::string& fileAndPath,
-                      VideoDbContentType type,
-                      int mediaId,
-                      const FileRecord& oldFile);
+  bool RenameFile(int idFile, const std::string& fileAndPath);
 
   int SetDetailsForMusicVideo(CVideoInfoTag& details,
                               const KODI::ART::Artwork& artwork,
@@ -391,6 +384,8 @@ public:
     int idFile{-1};
     VideoDbContentType mediaType{-1};
     int idMedia{-1};
+    int season{-1}; //!< Only set for episodes
+    int episode{-1}; //!< Only set for episodes
   };
 
   /*!
@@ -501,6 +496,14 @@ public:
   bool EraseAllForFile(const std::string& fileNameAndPath);
 
   bool GetStackTimes(const std::string& filePath, std::vector<std::chrono::milliseconds>& times);
+
+  /*! \brief The stack times of a file, by its id rather than its path. A stack of discs is renamed
+   as each part is resolved to a playlist, so times recorded against a path would be left behind by
+   the entry they belong to.
+   */
+  bool GetStackTimes(int idFile, std::vector<std::chrono::milliseconds>& times);
+  void SetStackTimes(int idFile, const std::vector<std::chrono::milliseconds>& times);
+
   void SetStackTimes(const std::string& filePath,
                      const std::vector<std::chrono::milliseconds>& times);
 
@@ -728,27 +731,16 @@ public:
                      const std::set<int>& paths = std::set<int>(),
                      bool showProgress = true);
 
-  enum class FileExistsAction
-  {
-    ACTION_NONE,
-    ACTION_UPDATE
-  };
-
-  int AddOrUpdateFile(const std::string& fileAndPath,
-                      const std::string& parentPath,
-                      const FileRecord& fileInfo,
-                      FileExistsAction existsAction);
-
   /*! \brief Add a file to the database, if necessary
    If the file is already in the database, we simply return its id.
-   \param url - full path of the file to add.
+   \param fileNameAndPath - full path of the file to add.
    \param parentPath the parent path of the path to add. If empty, URIUtils::GetParentPath() will determine the path.
    \param dateAdded datetime when the file was added to the filesystem/database
    \param playcount the playcount of the file to add.
    \param lastPlayed the date and time when the file to add was last played.
    \return id of the file, -1 if it could not be added.
    */
-  int AddFile(const std::string& url,
+  int AddFile(const std::string& fileNameAndPath,
               const std::string& parentPath = "",
               const CDateTime& dateAdded = CDateTime(),
               int playcount = 0,
@@ -1043,6 +1035,13 @@ public:
   std::string GetFileBasePathById(int idFile);
 
   /*!
+   * \brief Get the path and filename currently recorded for a file.
+   * \param idFile the file.
+   * \return the path and filename, or an empty string if there is no such file.
+   */
+  std::string GetFileAndPathById(int idFile);
+
+  /*!
    * @brief Check the passed in list of images if used in this database. Used to clean the image cache.
    * @param imagesToCheck
    * @return a list of the passed in images used by this database.
@@ -1181,13 +1180,6 @@ protected:
                              int min,
                              int max,
                              const T& offsets) const;
-
-  int SetFileForEpisode(const std::string& fileAndPath,
-                        int idEpisode,
-                        int oldIdFile,
-                        int newIdFile);
-  int SetFileForMovie(const std::string& fileAndPath, int idMovie, int oldIdFile, int newIdFile);
-  int SetFileForUnknown(const std::string& fileAndPath, int oldIdFile, int newIdFile);
 
 private:
   void CreateTables() override;

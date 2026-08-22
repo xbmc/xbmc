@@ -2914,7 +2914,8 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
   const std::string directory{
       [&item, &playback, &returnMultipleItems]
       {
-        const bool forceSelection{item.GetProperty("force_playlist_selection").asBoolean(false)};
+        const bool forceSelection{item.GetProperty("force_playlist_selection").asBoolean(false) ||
+                                  URIUtils::IsBluraySelectPath(item.GetDynPath())};
 
         // All episodes
         if (item.HasProperty("episodes_start"))

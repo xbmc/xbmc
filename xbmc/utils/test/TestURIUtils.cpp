@@ -2271,6 +2271,59 @@ TEST_F(TestURIUtils, GetBlurayPlaylistPath)
       URIUtils::GetBlurayPlaylistPath("smb://somepath/path/movie.iso", 800));
 }
 
+TEST_F(TestURIUtils, GetBluraySelectPath)
+{
+  // Movie (or an episode of unknown numbering)
+  EXPECT_EQ("bluray://%2fsomepath%2fpath%2f/BDMV/PLAYLIST/select",
+            URIUtils::GetBluraySelectPath("/somepath/path/BDMV/index.bdmv"));
+  EXPECT_EQ("bluray://udf%3a%2f%2f%252fsomepath%252fpath%252fmovie.iso%2f/BDMV/PLAYLIST/select",
+            URIUtils::GetBluraySelectPath("/somepath/path/movie.iso"));
+  EXPECT_EQ("bluray://D%3a%5cMovies%5c/BDMV/PLAYLIST/select",
+            URIUtils::GetBluraySelectPath("D:\\Movies\\BDMV\\index.bdmv"));
+  EXPECT_EQ("bluray://%5c%5cServer%5cMovies%5c/BDMV/PLAYLIST/select",
+            URIUtils::GetBluraySelectPath("\\\\Server\\Movies\\BDMV\\index.bdmv"));
+  EXPECT_EQ("bluray://smb%3a%2f%2fsomepath%2fpath%2f/BDMV/PLAYLIST/select",
+            URIUtils::GetBluraySelectPath("smb://somepath/path/BDMV/index.bdmv"));
+
+  // Episode - the same folder as the playlist it will become, so no path entry of its own
+  EXPECT_EQ("bluray://%2fsomepath%2fpath%2f/BDMV/PLAYLIST/select-3-4",
+            URIUtils::GetBluraySelectPath("/somepath/path/BDMV/index.bdmv", 3, 4));
+  EXPECT_EQ("bluray://udf%3a%2f%2f%252fsomepath%252fpath%252fmovie.iso%2f/BDMV/PLAYLIST/select-3-4",
+            URIUtils::GetBluraySelectPath("/somepath/path/movie.iso", 3, 4));
+
+  // Specials are season 0
+  EXPECT_EQ("bluray://%2fsomepath%2fpath%2f/BDMV/PLAYLIST/select-0-1",
+            URIUtils::GetBluraySelectPath("/somepath/path/BDMV/index.bdmv", 0, 1));
+
+  // An existing bluray:// path resolves to the same disc
+  EXPECT_EQ("bluray://%2fsomepath%2fpath%2f/BDMV/PLAYLIST/select-3-4",
+            URIUtils::GetBluraySelectPath("bluray://%2fsomepath%2fpath%2f/BDMV/PLAYLIST/00800.mpls",
+                                          3, 4));
+  EXPECT_EQ("bluray://%2fsomepath%2fpath%2f/BDMV/PLAYLIST/select-3-4",
+            URIUtils::GetBluraySelectPath("bluray://%2fsomepath%2fpath%2f/BDMV/PLAYLIST/select-1-2",
+                                          3, 4));
+
+  // Not a disc
+  EXPECT_EQ("", URIUtils::GetBluraySelectPath("/somepath/path/movie.mkv"));
+}
+
+TEST_F(TestURIUtils, IsBluraySelectPath)
+{
+  EXPECT_TRUE(URIUtils::IsBluraySelectPath("bluray://%2fsomepath%2fpath%2f/BDMV/PLAYLIST/select"));
+  EXPECT_TRUE(
+      URIUtils::IsBluraySelectPath("bluray://%2fsomepath%2fpath%2f/BDMV/PLAYLIST/select-3-4"));
+  EXPECT_FALSE(
+      URIUtils::IsBluraySelectPath("bluray://%2fsomepath%2fpath%2f/BDMV/PLAYLIST/00800.mpls"));
+  EXPECT_FALSE(URIUtils::IsBluraySelectPath("bluray://%2fsomepath%2fpath%2f/menu"));
+  EXPECT_FALSE(URIUtils::IsBluraySelectPath("bluray://%2fsomepath%2fpath%2f/root/episode/3/4"));
+  EXPECT_FALSE(URIUtils::IsBluraySelectPath("/somepath/path/BDMV/index.bdmv"));
+
+  // A folder item carries a trailing slash, and still names the same title
+  EXPECT_TRUE(URIUtils::IsBluraySelectPath("bluray://%2fsomepath%2fpath%2f/BDMV/PLAYLIST/select/"));
+  EXPECT_TRUE(
+      URIUtils::IsBluraySelectPath("bluray://%2fsomepath%2fpath%2f/BDMV/PLAYLIST/select-3-4/"));
+}
+
 TEST_F(TestURIUtils, GetBlurayPlaylistFromPath)
 {
   EXPECT_EQ(URIUtils::GetBlurayPlaylistFromPath(

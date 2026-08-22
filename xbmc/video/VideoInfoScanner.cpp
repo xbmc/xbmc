@@ -1226,16 +1226,21 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                                          std::chrono::milliseconds{0});
     CStreamDetails streamDetails;
     int totalDuration{0};
-    size_t blurays{0};
+    size_t blurays{0}; // Parts resolved to a playlist, the first of which describes the streams
+    size_t discs{0}; // Parts naming a disc, whether resolved to a playlist or not
 
     for (size_t partIndex{0}; const std::string& path : paths)
     {
       const size_t part{partIndex++};
 
-      // Only resolve blurays
+      // Only blurays are resolved
       if (!IsBluray(path))
       {
-        fileParts.emplace_back(part);
+        // A part naming a disc of another kind has no duration to be had - reading one needs a
+        // player to answer the disc's navigation commands, and CDVDFileInfo::GetFileDuration has
+        // none - so it is left unknown rather than asked for
+        if (!URIUtils::IsDiscImage(path) && !URIUtils::IsDVDFile(path))
+          fileParts.emplace_back(part);
         playlistPaths.emplace_back(path);
         continue;
       }
@@ -1249,9 +1254,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
       ResolveBlurayPlaylist(&partItem, partItems);
       if (partItems.IsEmpty())
       {
-        CLog::LogF(LOGERROR, "Unable to resolve a bluray playlist for {} of {}",
+        // A playlist is chosen when the part is first played, so until then it is named by a
+        // select path rather than by the disc that every title on it shares
+        CLog::LogF(LOGDEBUG, "No bluray playlist could be determined for {} of {} yet",
                    CURL::GetRedacted(path), CURL::GetRedacted(originalPath));
-        playlistPaths.emplace_back(path);
+        const std::string selectPath{URIUtils::GetBluraySelectPath(path)};
+        playlistPaths.emplace_back(selectPath.empty() ? path : selectPath);
+        ++discs;
         continue;
       }
 
@@ -1265,11 +1274,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
       partDurations[part] = std::chrono::seconds{partDuration};
 
       ++blurays;
+      ++discs;
       playlistPaths.emplace_back(partItem.GetDynPath());
     }
 
-    // Not a stack of blurays at all, so there is nothing to do
-    if (blurays == 0)
+    // Not a stack of discs at all, so there is nothing to do
+    if (discs == 0)
       return false;
 
     // Durations of any plain file members
@@ -2137,6 +2147,24 @@ CVideoInfoScanner::~CVideoInfoScanner()
       art["thumb"] = "";
 
     CVideoInfoTag &movieDetails = *pItem->GetVideoInfoTag();
+
+    // A disc whose playlist couldn't be determined is recorded under a 'select' path rather than
+    // the index.bdmv (or ISO) shared by everything on the disc.
+    if (!pItem->IsFolder() && (content == ContentType::MOVIES || content == ContentType::TVSHOWS) &&
+        (::UTILS::DISCS::IsBlurayDiscImage(path) || URIUtils::IsBDFile(path)))
+    {
+      const bool isEpisode{content == ContentType::TVSHOWS};
+      if (const std::string selectPath{
+              isEpisode ? URIUtils::GetBluraySelectPath(path, movieDetails.m_iSeason,
+                                                        movieDetails.m_iEpisode)
+                        : URIUtils::GetBluraySelectPath(path)};
+          !selectPath.empty())
+      {
+        path = selectPath;
+        pItem->SetDynPath(path);
+      }
+    }
+
     if (movieDetails.m_basePath.empty())
       movieDetails.m_basePath = pItem->GetBaseMoviePath(videoFolder);
     movieDetails.m_parentPathID =

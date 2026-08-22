@@ -191,6 +191,19 @@ public:
    */
   static int GetBlurayPlaylistFromPath(const std::string& path);
 
+  /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path standing in for a
+   title whose playlist is not (yet) known.
+   It names a file in the same playlist folder the playlist itself will occupy, so resolving it
+   later renames the file without adding or orphaning a path entry.
+   \param path the ISO/index.BDMV (or an existing bluray://) path.
+   \param season the season number, or -1 for a movie (or an episode of unknown season).
+   \param episode the episode number, or -1 for a movie (or an episode of unknown number).
+   \return the bluray:// select path - BDMV/PLAYLIST/select(-<season>-<episode>)
+   */
+  static std::string GetBluraySelectPath(const std::string& path,
+                                         int season = -1,
+                                         int episode = -1);
+
   /*! \brief Resolve two paths to their disc base (if needed) and compare for equality.
    \param path1 first path to resolve and compare
    \param path2 second path to resolve and compare
@@ -302,9 +315,23 @@ public:
   static bool IsArchive(const std::string& strFile);
   static bool IsArchive(const CURL& url);
   static bool IsDiscImage(const std::string& file);
-  static bool IsDiscImageStack(const std::string& file);
+
+  /*! \brief Determines if a stack holds a part that names a disc rather than a title on it, and so
+   is still waiting for a playlist to be chosen for it (see IsBluraySelectPath).
+   \param file file path for determination.
+   \return true if any part of the stack has yet to be resolved.
+   */
+  static bool IsUnresolvedDiscStack(const std::string& file);
+
   static bool IsBlurayPath(const std::string& strFile);
   static bool IsBlurayMenuPath(const std::string& file);
+
+  /*! \brief Determines if a path is one produced by GetBluraySelectPath, ie. a library entry on a
+   disc whose playlist has not been determined yet.
+   \param file file path for determination.
+   \return true if the path stands in for an as yet unresolved title.
+   */
+  static bool IsBluraySelectPath(const std::string& file);
 
   /*! \brief Determines if a file is from optical media (ie. index.bdmv, video_ts.ifo etc..)
    \param file file path for determination.

@@ -757,6 +757,23 @@ std::string URIUtils::GetBlurayPlaylistPath(const std::string& path, int playlis
                          playlist != -1 ? StringUtils::Format("{:05}.mpls", playlist) : "");
 }
 
+std::string URIUtils::GetBluraySelectPath(const std::string& path,
+                                          int season /* = -1 */,
+                                          int episode /* = -1 */)
+{
+  if (IsContainerPath(path))
+    return {};
+
+  const std::string blurayPath{GetBlurayPath(path)};
+  if (blurayPath.empty())
+    return {};
+
+  const std::string file{season < 0 || episode < 0
+                             ? "select" // A movie, or an episode whose numbering isn't known
+                             : StringUtils::Format("select-{}-{}", season, episode)};
+  return AddFileToFolder(blurayPath, "BDMV", "PLAYLIST", file);
+}
+
 std::string URIUtils::GetBlurayPath(const std::string& path)
 {
   if (IsContainerPath(path))
@@ -1251,14 +1268,17 @@ bool URIUtils::IsDiscImage(const std::string& file)
   return HasExtension(file, ".img|.iso|.nrg|.udf");
 }
 
-bool URIUtils::IsDiscImageStack(const std::string& file)
+bool URIUtils::IsUnresolvedDiscStack(const std::string& file)
 {
   if (IsStack(file))
   {
     std::vector<std::string> paths;
     CStackDirectory::GetPaths(file, paths);
+    // A part naming a disc rather than a title on it is one still waiting for a playlist. A part
+    // the library has scanned names it with a select path; one played from outside the library
+    // has never been looked at, so it still names the disc itself.
     for (const std::string& path : paths)
-      if (IsDiscImage(path) || IsDVDFile(path) || IsBDFile(path))
+      if (IsBluraySelectPath(path) || IsDiscImage(path) || IsDVDFile(path) || IsBDFile(path))
         return true;
   }
   return false;
@@ -1580,6 +1600,19 @@ bool URIUtils::IsBlurayPath(const std::string& strFile)
 bool URIUtils::IsBlurayMenuPath(const std::string& file)
 {
   return IsBlurayPath(file) && GetFileName(file) == "menu";
+}
+
+bool URIUtils::IsBluraySelectPath(const std::string& file)
+{
+  if (!IsBlurayPath(file))
+    return false;
+
+  // A folder item carries a trailing slash, which the name would otherwise be taken from
+  std::string path{file};
+  RemoveSlashAtEnd(path);
+
+  const std::string fileName{GetFileName(path)};
+  return fileName == "select" || StringUtils::StartsWith(fileName, "select-");
 }
 
 bool URIUtils::IsOpticalMediaFile(const std::string& file)

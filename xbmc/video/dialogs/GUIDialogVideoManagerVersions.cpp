@@ -219,8 +219,10 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersion()
 
   if (m_selectedVideoAsset && m_selectedVideoAsset->IsBluray())
   {
-    // First see if the existing video asset has a playlist
-    if (!URIUtils::IsBlurayPath(m_selectedVideoAsset->GetDynPath()))
+    // First see if the existing video asset has a playlist. A select path is a bluray:// path but
+    // stands in for a title whose playlist has yet to be chosen, so it counts as having none.
+    if (!URIUtils::IsBlurayPath(m_selectedVideoAsset->GetDynPath()) ||
+        URIUtils::IsBluraySelectPath(m_selectedVideoAsset->GetDynPath()))
     {
       const int dlgResult{CGUIDialogYesNo::ShowAndGetInput(CVariant{40030}, CVariant{40041})};
       if (dlgResult == CGUIDialogYesNo::DIALOG_RESULT_YES &&
@@ -388,11 +390,8 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
     m_database.BeginTransaction();
     if (replaceExistingFile == ReplaceExistingFile::YES)
     {
-      idFile = m_database.SetFileForMedia(
-          item->GetDynPath(), item->GetVideoContentType(), item->GetVideoInfoTag()->m_iDbId,
-          CVideoDatabase::FileRecord{.m_idFile = item->GetVideoInfoTag()->m_iFileId,
-                                     .m_dateAdded = item->GetVideoInfoTag()->m_dateAdded});
-      videoDbSuccess = idFile > 0;
+      idFile = item->GetVideoInfoTag()->m_iFileId;
+      videoDbSuccess = m_database.RenameFile(idFile, item->GetDynPath());
       if (videoDbSuccess)
       {
         m_database.SetStreamDetailsForFile(item->GetVideoInfoTag()->m_streamDetails,
@@ -441,7 +440,7 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
         RemovePartNumberFromTitle(m_videoAsset->GetVideoInfoTag()->m_iDbId,
                                   m_videoAsset->GetVideoContentType(), m_database);
 
-      // New disc video version will not have any art so use the art from the disc
+      // Take the art from the disc
       m_database.SetArtForItem(idFile, MediaTypeVideoVersion, item->GetArt());
 
       m_database.CommitTransaction();
@@ -971,11 +970,13 @@ bool CGUIDialogVideoManagerVersions::AddSimilarMovieAsVersion(
     return false;
   }
 
-  // Choose playlist for blurays, unless one has already been determined
+  // Choose playlist for blurays, unless one has already been determined. A select path is a
+  // bluray:// path but stands in for a title whose playlist has yet to be chosen.
   DeleteMovieCascadeAction cascadeAction{DeleteMovieCascadeAction::ALL_ASSETS};
   if (itemMovie->IsBluray())
   {
-    if (!URIUtils::IsBlurayPath(itemMovie->GetDynPath()) &&
+    if ((!URIUtils::IsBlurayPath(itemMovie->GetDynPath()) ||
+         URIUtils::IsBluraySelectPath(itemMovie->GetDynPath())) &&
         !ChoosePlaylist(itemMovie, ReplaceExistingFile::YES))
       return false;
     cascadeAction = DeleteMovieCascadeAction::ALL_ASSETS_NOT_STREAMDETAILS;

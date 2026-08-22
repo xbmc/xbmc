@@ -191,9 +191,13 @@ MenuDecision GetMenuDecisions(const CFileItem& item,
   if (isExternalPlayer || isRemotePlayer)
     return NO_ACTION;
 
+  // A library entry for a title on a disc whose playlist could not be determined when it was
+  // scanned
+  const bool isSelectPath{URIUtils::IsBluraySelectPath(item.GetDynPath())};
+
   // See if disc image is a Blu-ray (as an image could be a DVD as well) or if the path is a BDMV folder
   const bool isBluray{::UTILS::DISCS::IsBlurayDiscImage(item) ||
-                      URIUtils::IsBDFile(item.GetDynPath())};
+                      URIUtils::IsBDFile(item.GetDynPath()) || isSelectPath};
 
   // If already a bluray:// path then playlist selection may not be needed
   // Unless overridden by context menu 'Choose Playlist' or 'Simple Menu' in settings
@@ -233,6 +237,10 @@ MenuDecision GetMenuDecisions(const CFileItem& item,
   if (forceSelectionAtStart && isBlurayPath && atStart)
     return SHOW_SIMPLE_MENU;
 
+  // Needs manual playlist selection
+  if (isSelectPath)
+    return SHOW_SIMPLE_MENU;
+
   return NO_ACTION;
 }
 } // namespace
@@ -266,7 +274,18 @@ bool CApplicationPlay::GetPlaylistIfDisc()
       break;
     }
     case NO_ACTION:
+    {
+      // A select path stands in for a title on a disc and names no file of its own, so anything
+      // that declined to choose a playlist - an external or remote player, which does its own
+      // disc handling - is given the disc instead
+      if (URIUtils::IsBluraySelectPath(m_item.GetDynPath()))
+      {
+        if (const std::string discFile{URIUtils::GetDiscFile(m_item.GetDynPath())};
+            !discFile.empty())
+          m_item.SetDynPath(discFile);
+      }
       break;
+    }
   }
   return true;
 }
