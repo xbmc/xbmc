@@ -67,6 +67,7 @@
 #include <chrono>
 #include <map>
 #include <memory>
+#include <optional>
 #include <ranges>
 #include <set>
 #include <string>
@@ -329,6 +330,11 @@ CVideoInfoScanner::~CVideoInfoScanner()
       // result in unexpected behaviour.
       m_bCanInterrupt = false;
 
+      // Database lookup cannot use the table's index as case insensitivity needed
+      // Hold the table in memory for the scan instead
+      std::optional<KODI::VIDEO::CActorCacheScope> actorCache;
+      actorCache.emplace(m_database);
+
       bool bCancelled = false;
       while (!bCancelled && !m_pathsToScan.empty())
       {
@@ -380,6 +386,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
           }
         }
       }
+
+      // The cached ids would not survive cleaning, which removes actors
+      actorCache.reset();
 
       if (!bCancelled)
       {

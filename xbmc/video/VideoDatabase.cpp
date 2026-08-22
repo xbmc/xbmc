@@ -109,7 +109,20 @@ CVideoDatabase::~CVideoDatabase() = default;
 //********************************************************************************************************************************
 bool CVideoDatabase::Open()
 {
+  if (!IsOpen())
+    m_actorCache.Release();
+
   return CDatabase::Open(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseVideo);
+}
+
+void CVideoDatabase::RollbackTransaction()
+{
+  CDatabase::RollbackTransaction();
+
+  // AddActor() inserts inside the caller's transaction, so any actor added during this one has
+  // just been undone.
+  if (m_actorCache.IsLoaded())
+    LoadActorCache();
 }
 
 void CVideoDatabase::CreateTables()
@@ -1516,6 +1529,16 @@ int CVideoDatabase::AddTag(const std::string& name)
   return AddToTable("tag", "tag_id", "name", name);
 }
 
+void CVideoDatabase::LoadActorCache()
+{
+  m_actorCache.Load(m_pDS2.get());
+}
+
+void CVideoDatabase::ReleaseActorCache()
+{
+  m_actorCache.Release();
+}
+
 int CVideoDatabase::AddActor(const std::string& name, const std::string& thumbURLs, const std::string &thumb)
 {
   try
@@ -1527,30 +1550,78 @@ int CVideoDatabase::AddActor(const std::string& name, const std::string& thumbUR
     int idActor = -1;
 
     // ATTENTION: the trimming of actor names should really not be done here but after the scraping / NFO-parsing
-    std::string trimmedName = name;
-    StringUtils::Trim(trimmedName);
+    const std::string storedName{KODI::VIDEO::CActorCache::StoredName(name)};
 
-    std::string strSQL=PrepareSQL("select actor_id from actor where name like '%s'", trimmedName.substr(0, 255).c_str());
-    m_pDS->query(strSQL);
-    if (m_pDS->num_rows() == 0)
+    bool known = false;
+    std::string storedArtUrls;
+    bool haveArtUrls = false;
+
+    if (m_actorCache.IsLoaded())
     {
-      m_pDS->close();
-      // doesn't exists, add it
-      strSQL=PrepareSQL("insert into actor (actor_id, name, art_urls) values(NULL, '%s', '%s')", trimmedName.substr(0,255).c_str(), thumbURLs.c_str());
-      m_pDS->exec(strSQL);
-      idActor = static_cast<int>(m_pDS->lastinsertid());
+      // The cache stands in for the whole table, so a name it doesn't hold is one we haven't seen
+      if (const auto* cached = m_actorCache.Find(storedName))
+      {
+        idActor = cached->id;
+        storedArtUrls = cached->artUrls;
+        haveArtUrls = true;
+        known = true;
+      }
     }
     else
     {
-      idActor = m_pDS->fv(0).get_asInt();
-      m_pDS->close();
-      // update the thumb url's
-      if (!thumbURLs.empty())
+      // Only the name is asked for, so that the index over it covers the query
+      m_pDS->query(
+          PrepareSQL("select actor_id from actor where name like '%s'", storedName.c_str()));
+      if (m_pDS->num_rows() > 0)
       {
-        strSQL=PrepareSQL("update actor set art_urls = '%s' where actor_id = %i", thumbURLs.c_str(), idActor);
-        m_pDS->exec(strSQL);
+        idActor = m_pDS->fv(0).get_asInt();
+        known = true;
+      }
+      m_pDS->close();
+    }
+
+    if (!known)
+    {
+      try
+      {
+        m_pDS->exec(
+            PrepareSQL("insert into actor (actor_id, name, art_urls) values(NULL, '%s', '%s')",
+                       storedName.c_str(), thumbURLs.c_str()));
+        idActor = static_cast<int>(m_pDS->lastinsertid());
+        storedArtUrls = thumbURLs;
+        haveArtUrls = true;
+      }
+      catch (...)
+      {
+        // Something else added this actor since the cache was read. Take the row it created,
+        // including its art urls - those are not ours to assume
+        m_pDS->query(PrepareSQL("select actor_id, art_urls from actor where name like '%s'",
+                                storedName.c_str()));
+        if (m_pDS->num_rows() == 0)
+        {
+          m_pDS->close();
+          throw;
+        }
+        idActor = m_pDS->fv(0).get_asInt();
+        storedArtUrls = m_pDS->fv(1).get_asString();
+        m_pDS->close();
+        haveArtUrls = true;
+        known = true;
       }
     }
+
+    // update the thumb url's, skipping the write where the row is known to hold them already
+    if (known && !thumbURLs.empty() && (!haveArtUrls || thumbURLs != storedArtUrls))
+    {
+      m_pDS->exec(PrepareSQL("update actor set art_urls = '%s' where actor_id = %i",
+                             thumbURLs.c_str(), idActor));
+      storedArtUrls = thumbURLs;
+      haveArtUrls = true;
+    }
+
+    if (m_actorCache.IsLoaded() && idActor > 0 && haveArtUrls)
+      m_actorCache.Set(storedName, idActor, storedArtUrls);
+
     // add artwork
     if (!thumb.empty())
       SetArtForItem(idActor, "actor", "thumb", thumb);

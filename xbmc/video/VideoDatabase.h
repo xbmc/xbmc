@@ -15,6 +15,7 @@
 #include "utils/Artwork.h"
 #include "utils/SortUtils.h"
 #include "utils/UrlOptions.h"
+#include "video/VideoDatabaseActorCache.h"
 
 #include <array>
 #include <functional>
@@ -197,6 +198,7 @@ public:
 
   bool Open() override;
   bool CommitTransaction() override;
+  void RollbackTransaction() override;
 
   int AddNewEpisode(int idShow, CVideoInfoTag& details);
 
@@ -1193,6 +1195,15 @@ private:
   void CreateTables() override;
   void CreateAnalytics() override;
   void UpdateTables(int version) override;
+
+  /*! \brief Load / discard the in-memory actor cache
+   Held through CActorCacheScope, which is the intended way for a caller to turn it on
+   */
+  void LoadActorCache();
+  void ReleaseActorCache();
+  friend class KODI::VIDEO::CActorCacheScope;
+
+  KODI::VIDEO::CActorCache m_actorCache;
 
   /*! \brief Helper to get a database id given a query.
    Returns an integer, -1 if not found, and greater than 0 if found.
