@@ -25,11 +25,11 @@
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingsManager.h"
-#include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoStreamSelect.h"
 #include "video/ViewModeSettings.h"
 #include "windowing/WinSystem.h"
 
@@ -492,43 +492,50 @@ void CGUIDialogVideoSettings::VideoStreamsOptionFiller(
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
 
-  int videoStreamCount = appPlayer->GetVideoStreamCount();
-  // cycle through each video stream and add it to our list control
-  for (int i = 0; i < videoStreamCount; ++i)
+  if (appPlayer != nullptr)
   {
-    std::string strItem;
-    std::string strLanguage;
+    using namespace KODI::VIDEO;
+    const std::vector<VideoStreamInfoExt> streams =
+        CVideoStreamSelect::GetVideoStreams(appPlayer.get());
+    const int streamCount = streams.size();
 
-    VideoStreamInfo info;
-    appPlayer->GetVideoStreamInfo(i, info);
-
-    g_LangCodeExpander.Lookup(info.language, strLanguage);
-
-    if (!info.name.empty())
+    // cycle through each video stream and add it to our list control
+    for (int i = 0; i < streamCount; ++i)
     {
-      if (!strLanguage.empty())
-        strItem = StringUtils::Format("{} - {}", strLanguage, info.name);
+      const VideoStreamInfoExt& info = streams[i];
+
+      std::string strItem;
+
+      if (!info.name.empty())
+      {
+        if (!info.languageDesc.empty())
+          strItem = StringUtils::Format("{} - {}", info.languageDesc, info.name);
+        else
+          strItem = info.name;
+      }
+      else if (!info.languageDesc.empty())
+      {
+        strItem = info.languageDesc;
+      }
+
+      if (info.codecName.empty())
+        strItem += StringUtils::Format(" ({}x{}", info.width, info.height);
       else
-        strItem = info.name;
+        strItem += StringUtils::Format(" ({}, {}x{}", info.codecName, info.width, info.height);
+
+      if (info.bitrate)
+        strItem += StringUtils::Format(", {} bps)", info.bitrate);
+      else
+        strItem += ")";
+
+      strItem += FormatFlags(info.flags);
+      strItem += StringUtils::Format(" ({}/{})", i + 1, streamCount);
+      list.emplace_back(strItem, info.streamId);
     }
-    else if (!strLanguage.empty())
-    {
-        strItem = strLanguage;
-    }
-
-    if (info.codecName.empty())
-      strItem += StringUtils::Format(" ({}x{}", info.width, info.height);
-    else
-      strItem += StringUtils::Format(" ({}, {}x{}", info.codecName, info.width, info.height);
-
-    if (info.bitrate)
-      strItem += StringUtils::Format(", {} bps)", info.bitrate);
-    else
-      strItem += ")";
-
-    strItem += FormatFlags(info.flags);
-    strItem += StringUtils::Format(" ({}/{})", i + 1, videoStreamCount);
-    list.emplace_back(strItem, i);
+  }
+  else
+  {
+    CLog::LogF(LOGERROR, "No application player.");
   }
 
   if (list.empty())

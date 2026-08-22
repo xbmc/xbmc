@@ -952,7 +952,20 @@
       </group>
     </category>
     <category id="advanced" label="14187" help="38113">
-      <group id="1" label="14188">
+      <group id="1" label="128">
+        <setting id="videoplayer.filestreamdisplayorder" type="integer" label="36447" help="36448">
+          <level>2</level>
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="14211">0</option> <!-- media -->
+              <option label="36446">1</option> <!-- sorted -->
+            </options>
+          </constraints>
+          <control type="spinner" format="integer" />
+        </setting>
+      </group>
+      <group id="2" label="14188">
         <setting id="videoplayer.queuetimesize" type="integer" label="37130" help="37131">
           <level>2</level>
           <default>40</default> <!-- 4.0 s -->

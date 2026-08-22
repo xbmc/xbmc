@@ -23,6 +23,7 @@
 #include "utils/StreamUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
+#include "video/VideoStreamSelect.h"
 
 namespace
 {
@@ -83,186 +84,6 @@ std::string ConvertFpsToString(float value)
   return str;
 }
 
-struct VideoStreamInfoExt : VideoStreamInfo
-{
-  VideoStreamInfoExt(int id, const VideoStreamInfo& info) : VideoStreamInfo(info)
-  {
-    streamId = id;
-    isDefault = info.flags & StreamFlags::FLAG_DEFAULT;
-    isForced = info.flags & StreamFlags::FLAG_FORCED;
-    isHearingImpaired = info.flags & StreamFlags::FLAG_HEARING_IMPAIRED;
-    isVisualImpaired = info.flags & StreamFlags::FLAG_VISUAL_IMPAIRED;
-
-    fps = static_cast<float>(info.fpsRate);
-    if (fps > 0.0f && info.fpsScale > 0)
-      fps /= info.fpsScale;
-  }
-
-  int streamId{0};
-  std::string languageDesc;
-  bool isDefault{false};
-  bool isForced{false};
-  bool isHearingImpaired{false};
-  bool isVisualImpaired{false};
-  float fps{0.0f};
-};
-
-struct AudioStreamInfoExt : AudioStreamInfo
-{
-  AudioStreamInfoExt(int id, const AudioStreamInfo& info) : AudioStreamInfo(info)
-  {
-    streamId = id;
-
-    if (!g_LangCodeExpander.Lookup(info.language, languageDesc))
-      languageDesc =
-          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // Unknown
-
-    isDefault = info.flags & StreamFlags::FLAG_DEFAULT;
-    isForced = info.flags & StreamFlags::FLAG_FORCED;
-    isHearingImpaired = info.flags & StreamFlags::FLAG_HEARING_IMPAIRED;
-    isVisualImpaired = info.flags & StreamFlags::FLAG_VISUAL_IMPAIRED;
-    isOriginal = info.flags & StreamFlags::FLAG_ORIGINAL;
-  }
-
-  int streamId{0};
-  std::string languageDesc;
-  bool isDefault{false};
-  bool isForced{false};
-  bool isHearingImpaired{false};
-  bool isVisualImpaired{false};
-  bool isOriginal{false};
-};
-
-struct SubtitleStreamInfoExt : SubtitleStreamInfo
-{
-  SubtitleStreamInfoExt(int id, const SubtitleStreamInfo& info) : SubtitleStreamInfo(info)
-  {
-    streamId = id;
-
-    if (!g_LangCodeExpander.Lookup(info.language, languageDesc))
-      languageDesc =
-          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // Unknown
-
-    isDefault = info.flags & StreamFlags::FLAG_DEFAULT;
-    isForced = info.flags & StreamFlags::FLAG_FORCED;
-    isHearingImpaired = info.flags & StreamFlags::FLAG_HEARING_IMPAIRED;
-    isVisualImpaired = info.flags & StreamFlags::FLAG_VISUAL_IMPAIRED;
-    isOriginal = info.flags & StreamFlags::FLAG_ORIGINAL;
-  }
-
-  int streamId{0};
-  std::string languageDesc;
-  bool isDefault{false};
-  bool isForced{false};
-  bool isHearingImpaired{false};
-  bool isVisualImpaired{false};
-  bool isOriginal{false};
-};
-
-struct SortComparerStreamVideo
-{
-  bool operator()(const VideoStreamInfoExt& a, const VideoStreamInfoExt& b)
-  {
-    if (a.language != b.language)
-    {
-      return a.language < b.language;
-    }
-    if (a.codecName != b.codecName)
-    {
-      return a.codecName < b.codecName;
-    }
-    if (a.hdrType != b.hdrType)
-    {
-      return a.hdrType < b.hdrType;
-    }
-    if (a.fps != b.fps)
-    {
-      return a.fps < b.fps;
-    }
-    if (a.height != b.height)
-    {
-      return a.height < b.height;
-    }
-    if (a.width != b.width)
-    {
-      return a.width < b.width;
-    }
-    return a.bitrate < b.bitrate;
-  }
-};
-
-struct SortComparerStreamAudio
-{
-  bool operator()(const AudioStreamInfoExt& a, const AudioStreamInfoExt& b)
-  {
-    if (a.languageDesc != b.languageDesc)
-    {
-      return a.languageDesc < b.languageDesc;
-    }
-    if (a.isOriginal != b.isOriginal)
-    {
-      return a.isOriginal < b.isOriginal;
-    }
-    if (a.isHearingImpaired != b.isHearingImpaired)
-    {
-      return a.isHearingImpaired < b.isHearingImpaired;
-    }
-    if (a.isVisualImpaired != b.isVisualImpaired)
-    {
-      return a.isVisualImpaired < b.isVisualImpaired;
-    }
-    if (a.isForced != b.isForced)
-    {
-      return a.isForced < b.isForced;
-    }
-    if (a.channels != b.channels)
-    {
-      return a.channels < b.channels;
-    }
-    if (a.bitrate != b.bitrate)
-    {
-      return a.bitrate < b.bitrate;
-    }
-    if (a.samplerate != b.samplerate)
-    {
-      return a.samplerate < b.samplerate;
-    }
-    return a.codecName < b.codecName;
-  }
-};
-
-struct SortComparerStreamSubtitle
-{
-  bool operator()(const SubtitleStreamInfoExt& a, const SubtitleStreamInfoExt& b)
-  {
-    if (a.isExternal != b.isExternal)
-    {
-      return a.isExternal > b.isExternal;
-    }
-    if (a.languageDesc != b.languageDesc)
-    {
-      return a.languageDesc < b.languageDesc;
-    }
-    if (a.isOriginal != b.isOriginal)
-    {
-      return a.isOriginal < b.isOriginal;
-    }
-    if (a.isHearingImpaired != b.isHearingImpaired)
-    {
-      return a.isHearingImpaired < b.isHearingImpaired;
-    }
-    if (a.isVisualImpaired != b.isVisualImpaired)
-    {
-      return a.isVisualImpaired < b.isVisualImpaired;
-    }
-    if (a.isForced != b.isForced)
-    {
-      return a.isForced < b.isForced;
-    }
-    return a.codecName < b.codecName;
-  }
-};
-
 bool SupportsAudioFeature(IPlayerAudioCaps feature, const std::vector<IPlayerAudioCaps>& caps)
 {
   for (IPlayerAudioCaps cap : caps)
@@ -299,22 +120,18 @@ void KODI::VIDEO::GUILIB::OpenDialogSelectVideoStream()
 
   auto& components = CServiceBroker::GetAppComponents();
   auto appPlayer = components.GetComponent<CApplicationPlayer>();
-  const int streamCount = appPlayer->GetVideoStreamCount();
-  const int selectedId = appPlayer->GetVideoStream();
 
-  std::vector<VideoStreamInfoExt> streams;
-  streams.reserve(streamCount);
-
-  // Collect all streams
-  for (int i = 0; i < streamCount; ++i)
+  if (appPlayer == nullptr)
   {
-    VideoStreamInfo info;
-    appPlayer->GetVideoStreamInfo(i, info);
-    streams.emplace_back(i, info);
+    CLog::LogF(LOGERROR, "No application player.");
+    return;
   }
 
-  // Sort streams
-  std::sort(streams.begin(), streams.end(), SortComparerStreamVideo());
+  const int selectedId = appPlayer->GetVideoStream();
+
+  using namespace KODI::VIDEO;
+  const std::vector<VideoStreamInfoExt> streams =
+      CVideoStreamSelect::GetVideoStreams(appPlayer.get());
 
   // Convert streams to FileItem's
   CFileItemList itemsToDisplay;
@@ -326,10 +143,7 @@ void KODI::VIDEO::GUILIB::OpenDialogSelectVideoStream()
     fileItem->SetProperty("stream.id", info.streamId);
     fileItem->SetProperty("stream.description", info.name);
     fileItem->SetProperty("stream.codec", info.codecName);
-
-    std::string languageDesc;
-    g_LangCodeExpander.Lookup(info.language, languageDesc);
-    fileItem->SetProperty("stream.language", languageDesc);
+    fileItem->SetProperty("stream.language", info.languageDesc);
 
     fileItem->SetProperty("stream.resolution",
                           std::to_string(info.width) + "x" + std::to_string(info.height));
@@ -377,27 +191,22 @@ void KODI::VIDEO::GUILIB::OpenDialogSelectAudioStream()
   auto& components = CServiceBroker::GetAppComponents();
   auto appPlayer = components.GetComponent<CApplicationPlayer>();
 
+  if (appPlayer == nullptr)
+  {
+    CLog::LogF(LOGERROR, "No application player.");
+    return;
+  }
+
   std::vector<IPlayerAudioCaps> caps;
   appPlayer->GetAudioCapabilities(caps);
   if (!SupportsAudioFeature(IPlayerAudioCaps::SELECT_STREAM, caps))
     return;
 
-  const int streamCount = appPlayer->GetAudioStreamCount();
   const int selectedId = appPlayer->GetAudioStream();
 
-  std::vector<AudioStreamInfoExt> streams;
-  streams.reserve(streamCount);
-
-  // Collect all streams
-  for (int i = 0; i < streamCount; ++i)
-  {
-    AudioStreamInfo info;
-    appPlayer->GetAudioStreamInfo(i, info);
-    streams.emplace_back(i, info);
-  }
-
-  // Sort streams
-  std::sort(streams.begin(), streams.end(), SortComparerStreamAudio());
+  using namespace KODI::VIDEO;
+  const std::vector<AudioStreamInfoExt> streams =
+      CVideoStreamSelect::GetAudioStreams(appPlayer.get());
 
   // Convert streams to FileItem's
   CFileItemList itemsToDisplay;
@@ -449,34 +258,29 @@ void KODI::VIDEO::GUILIB::OpenDialogSelectSubtitleStream()
   auto& components = CServiceBroker::GetAppComponents();
   auto appPlayer = components.GetComponent<CApplicationPlayer>();
 
+  if (appPlayer == nullptr)
+  {
+    CLog::LogF(LOGERROR, "No application player.");
+    return;
+  }
+
   std::vector<IPlayerSubtitleCaps> caps;
   appPlayer->GetSubtitleCapabilities(caps);
   if (!SupportsSubtitleFeature(IPlayerSubtitleCaps::SELECT_STREAM, caps))
     return;
 
-  const int streamCount = appPlayer->GetSubtitleCount();
   const int selectedId = appPlayer->GetSubtitle();
   const bool isSubtitleEnabled = appPlayer->GetSubtitleVisible();
 
-  std::vector<SubtitleStreamInfoExt> streams;
-  streams.reserve(streamCount);
-
-  // Collect all streams
-  for (int i = 0; i < streamCount; ++i)
-  {
-    SubtitleStreamInfo info;
-    appPlayer->GetSubtitleStreamInfo(i, info);
-    streams.emplace_back(i, info);
-  }
-
-  // Sort streams
-  std::sort(streams.begin(), streams.end(), SortComparerStreamSubtitle());
+  using namespace KODI::VIDEO;
+  const std::vector<SubtitleStreamInfoExt> streams =
+      CVideoStreamSelect::GetSubtitleStreams(appPlayer.get());
 
   // Convert streams to FileItem's
   CFileItemList itemsToDisplay;
   itemsToDisplay.Reserve(streams.size() + 1);
 
-  for (const SubtitleStreamInfoExt& info : streams)
+  for (const auto& info : streams)
   {
     CFileItemPtr fileItem = std::make_shared<CFileItem>(info.languageDesc);
     fileItem->SetProperty("stream.id", info.streamId);
