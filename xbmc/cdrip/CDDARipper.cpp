@@ -87,8 +87,8 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
 bool CCDDARipper::RipCD()
 {
   // return here if cd is not a CDDA disc
-  MEDIA_DETECT::CCdInfo* pInfo = CServiceBroker::GetMediaManager().GetCdInfo();
-  if (pInfo == nullptr || !pInfo->IsAudio(1))
+  const std::shared_ptr<MEDIA_DETECT::CCdInfo> pInfo{CServiceBroker::GetMediaManager().GetCdInfo()};
+  if (!pInfo || !pInfo->IsAudio(1))
   {
     CLog::LogF(LOGDEBUG, "CD is not an audio cd");
     return false;

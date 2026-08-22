@@ -22,6 +22,7 @@
 #include "threads/Thread.h"
 #include "utils/DiscsUtils.h"
 
+#include <atomic>
 #include <memory>
 #include <string>
 
@@ -43,31 +44,49 @@ public:
   static void WaitMediaReady();
   static bool IsDiscInDrive();
   static DriveState GetDriveState();
-  static CCdInfo* GetCdInfo();
+  static std::shared_ptr<CCdInfo> GetCdInfo();
   static CEvent m_evAutorun;
 
-  static const std::string &GetDVDLabel();
-  static const std::string &GetDVDPath();
+  static std::string GetDVDLabel();
+  static std::string GetDVDPath();
 
   static void UpdateState();
 protected:
   void UpdateDvdrom();
   DriveState PollDriveState();
 
+  //! \brief Probes the drive and publishes the result. Operates on static state
+  //! only, so it needs no instance - see UpdateState().
+  static void DetectMediaType();
+  static void SetNewDVDShareUrl(const std::string& strNewUrl,
+                                bool bCDDA,
+                                const std::string& strDiscLabel);
 
-  void DetectMediaType();
-  void SetNewDVDShareUrl( const std::string& strNewUrl, bool bCDDA, const std::string& strDiscLabel );
-
+  //! \brief Discards the details of the disc that was in the drive, so that nothing
+  //! describing it can be reported once it is gone. Deliberately leaves the label
+  //! and path alone - those are published by SetNewDVDShareUrl() and carry the
+  //! drive status (open/busy/empty) once there is no disc.
+  //! Callers must hold m_muReadingMedia.
   void Clear();
 
 private:
+  //! \brief Guards the published detection results (label, path, disc and CD info)
   static CCriticalSection m_muReadingMedia;
 
-  static DriveState m_DriveState;
-  static time_t m_LastPoll;
-  static CDetectDVDMedia* m_pInstance;
+  //! \brief Serialises the whole detection sequence. Never taken by readers, so it
+  //! can be held across the slow probe. Always acquired before m_muReadingMedia.
+  static CCriticalSection m_muDetect;
 
-  static CCdInfo* m_pCdInfo;
+  static std::atomic<DriveState> m_DriveState;
+  static time_t m_LastPoll;
+  //! \brief Set while a detection thread exists. The detection itself is static, so
+  //! this is an existence flag rather than a handle - there is nothing to call
+  //! through, and hence nothing that can be used after the instance is gone.
+  static std::atomic<bool> m_bInstanceExists;
+
+  //! \brief Shared so that a caller of GetCdInfo() keeps it alive for as long as
+  //! it holds it - the detection replaces this from another thread.
+  static std::shared_ptr<CCdInfo> m_pCdInfo;
 
   bool m_bStartup = true; // Do not autorun on startup
   bool m_bAutorun = false;
