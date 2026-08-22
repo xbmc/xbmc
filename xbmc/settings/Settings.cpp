@@ -142,6 +142,18 @@ bool CSettings::Load(const TiXmlElement* root)
   return Load(root, updated);
 }
 
+bool CSettings::LoadHidden(const std::string& file)
+{
+  CXBMCTinyXML xmlDoc;
+  if (!XFILE::CFile::Exists(file) || !xmlDoc.LoadFile(file))
+  {
+    CLog::Log(LOGERROR, "CSettings: unable to load hidden settings from {}", file);
+    return false;
+  }
+
+  return this->LoadHidden(xmlDoc.RootElement());
+}
+
 bool CSettings::Save()
 {
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
