@@ -17,6 +17,7 @@ set(SOURCES AutoSwitch.cpp
             LangInfo.cpp
             MediaSource.cpp
             NfoFile.cpp
+            NfoUtils.cpp
             PasswordManager.cpp
             PlayListPlayer.cpp
             PartyModeManager.cpp
@@ -61,6 +62,7 @@ set(HEADERS AutoSwitch.h
             LockMode.h
             MediaSource.h
             NfoFile.h
+            NfoUtils.h
             PartyModeManager.h
             PasswordManager.h
             PlayListPlayer.h
