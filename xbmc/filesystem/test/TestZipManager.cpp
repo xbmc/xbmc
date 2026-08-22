@@ -6,7 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "filesystem/ZipManager.h"
+#include "filesystem/Zip.h"
 #include "utils/RegExp.h"
 
 #include <gtest/gtest.h>
