@@ -79,8 +79,11 @@ function(add_addon_depends addon searchpath)
                        -DBUILD_SHARED_LIBS=0)
         # windows args
         if (CMAKE_SYSTEM_NAME STREQUAL WindowsStore OR CMAKE_SYSTEM_NAME STREQUAL Windows)
-          list(APPEND BUILD_ARGS -DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}
-                                 -DCMAKE_SYSTEM_VERSION=${CMAKE_SYSTEM_VERSION})
+          list(APPEND BUILD_ARGS -DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME})
+          if(CMAKE_SYSTEM_NAME STREQUAL Windows AND ADDON_SYSTEM_PROCESSOR AND NOT CMAKE_TOOLCHAIN_FILE)
+            list(APPEND BUILD_ARGS -DCMAKE_SYSTEM_PROCESSOR=${ADDON_SYSTEM_PROCESSOR})
+          endif()
+          list(APPEND BUILD_ARGS -DCMAKE_SYSTEM_VERSION=${CMAKE_SYSTEM_VERSION})
         endif()
         # if there are no make rules override files available take care of manually passing on ARCH_DEFINES
         if(NOT CMAKE_USER_MAKE_RULES_OVERRIDE AND NOT CMAKE_USER_MAKE_RULES_OVERRIDE_CXX)
