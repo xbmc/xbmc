@@ -1,0 +1,26 @@
+From 63a6320f2298046889554c6eb0e29e13476d7b60 Mon Sep 17 00:00:00 2001
+From: Garrett Brown <garrett.brown@aclima.earth>
+Date: Tue, 17 Jun 2025 18:31:06 -0700
+Subject: [PATCH 2/2] CMake: Fix building with CMake 4.0
+
+---
+ CMakeLists.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index a2f61e6..420d45c 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,7 +1,7 @@
+-cmake_minimum_required(VERSION 2.8.12)
++cmake_minimum_required(VERSION 3.5...4.0)
+ project(try_signal)
+ 
+-add_library(try_signal signal_error_code try_signal)
++add_library(try_signal signal_error_code.cpp try_signal.cpp)
+ target_include_directories(try_signal PUBLIC .)
+ 
+ file(GLOB HEADERS "*.hpp")
+-- 
+2.49.0
+

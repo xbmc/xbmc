@@ -334,6 +334,14 @@ std::string CUtil::GetTitleFromPath(const std::string& strFileNameAndPath, bool 
 
 std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false */)
 {
+  // Magnet links, use "display name" (dn) option
+  if (url.IsProtocol("magnet"))
+  {
+    std::string strTitle;
+    if (url.GetOption("dn", strTitle))
+      return strTitle;
+  }
+
   // use above to get the filename
   std::string path(url.Get());
   URIUtils::RemoveSlashAtEnd(path);
@@ -1903,6 +1911,13 @@ void CUtil::GetVideoBasePathAndFileName(const std::string& videoPath,
     // Strip URL options (e.g., query/fragment) before computing the parent path
     url.SetOptions("");
     basePath = URIUtils::GetParentPath(url.Get());
+  }
+
+  // Preserve magnet URI options
+  if (URIUtils::IsMagnetURI(videoPath))
+  {
+    const CURL url(videoPath);
+    basePath += url.GetOptions();
   }
 }
 
