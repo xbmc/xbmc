@@ -305,7 +305,8 @@ void CGUIDialogVideoManager::Remove()
   }
 
   // confirm the removal
-  if (!CGUIDialogYesNo::ShowAndGetInput(
+  if (!m_selectedVideoAsset || !m_selectedVideoAsset->HasVideoInfoTag() ||
+      !CGUIDialogYesNo::ShowAndGetInput(
           titleMsgId,
           StringUtils::Format(
               CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(textMsgId),
@@ -314,16 +315,32 @@ void CGUIDialogVideoManager::Remove()
     return;
   }
 
-  m_database.DeleteVideoAsset(m_selectedVideoAsset->GetVideoInfoTag()->m_iDbId);
+  bool success{false};
+  m_database.BeginTransaction();
 
-  // If a version of a bluray then remove the idFile as well
-  if (URIUtils::IsBlurayPath(m_selectedVideoAsset->GetDynPath()))
-    m_database.DeleteFile(m_selectedVideoAsset->GetVideoInfoTag()->m_iFileId);
+  if (m_database.DeleteVideoAsset(m_selectedVideoAsset->GetVideoInfoTag()->m_iDbId))
+  {
+    // If a version of a bluray then remove the idFile as well
+    const bool isblurayPath = URIUtils::IsBlurayPath(m_selectedVideoAsset->GetDynPath());
+    if (!isblurayPath || m_database.DeleteFile(m_selectedVideoAsset->GetVideoInfoTag()->m_iFileId))
+    {
+      success = true;
+    }
+  }
 
-  // refresh data and controls
-  Refresh();
-  RefreshSelectedVideoAsset();
-  UpdateControls();
+  if (success)
+  {
+    m_database.CommitTransaction();
+
+    // refresh data and controls
+    Refresh();
+    RefreshSelectedVideoAsset();
+    UpdateControls();
+  }
+  else
+  {
+    m_database.RollbackTransaction();
+  }
 }
 
 void CGUIDialogVideoManager::Rename()
