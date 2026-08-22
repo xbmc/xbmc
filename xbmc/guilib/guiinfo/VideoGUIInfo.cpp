@@ -930,6 +930,10 @@ bool CVideoGUIInfo::GetBool(bool& value,
       case LISTITEM_HASVIDEOEXTRAS:
         value = tag->HasVideoExtras();
         return true;
+      case LISTITEM_ISDEFAULTVIDEOVERSION_NAME:
+        value = tag->m_type == MediaTypeMovie &&
+                tag->GetAssetInfo().GetId() == VIDEO_VERSION_ID_DEFAULT;
+        return true;
       default:
         break;
     }
