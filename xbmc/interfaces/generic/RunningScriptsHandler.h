@@ -35,12 +35,21 @@ protected:
     if (script == nullptr || addon == nullptr)
       return false;
 
-    // reuse an existing script handle or get a new one if necessary
-    int handle = CScriptInvocationManager::GetInstance().GetReusablePluginHandle(addon->LibPath());
-    if (handle < 0)
-      handle = GetNewScriptHandle(script);
-    else
+    // Claim the reusable invoker for as long as the script runs. Destroying the
+    // claim - here or on any early return - is what hands it back, so no exit
+    // path can leave the slot marked in use.
+    const CReusableInvokerClaim claim =
+        CScriptInvocationManager::GetInstance().ClaimReusableInvoker(addon->LibPath());
+
+    // reuse the claimed script handle or get a new one if necessary
+    HandleType handle;
+    if (claim.IsValid())
+    {
+      handle = claim.GetPluginHandle();
       ReuseScriptHandle(handle, script);
+    }
+    else
+      handle = GetNewScriptHandle(script);
 
     // run the script
     auto result = CScriptRunner::RunScript(addon, url, handle, resume);
