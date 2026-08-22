@@ -37,6 +37,7 @@ InvokerState CLanguageInvokerThread::GetState() const
 
 void CLanguageInvokerThread::Release()
 {
+  std::unique_lock<std::mutex> lck(m_mutex);
   m_bStop = true;
   m_condition.notify_one();
 }
@@ -46,17 +47,20 @@ bool CLanguageInvokerThread::execute(const std::string &script, const std::vecto
   if (m_invoker == NULL || script.empty())
     return false;
 
-  m_script = script;
-  m_args = arguments;
-
   if (CThread::IsRunning())
   {
     std::unique_lock<std::mutex> lck(m_mutex);
+    m_script = script;
+    m_args = arguments;
     m_restart = true;
     m_condition.notify_one();
   }
   else
+  {
+    m_script = script;
+    m_args = arguments;
     Create();
+  }
 
   //Todo wait until running
 
@@ -104,7 +108,15 @@ void CLanguageInvokerThread::Process()
   do
   {
     m_restart = false;
-    m_invoker->Execute(m_script, m_args);
+    const std::string script = m_script;
+    const std::vector<std::string> args = m_args;
+    // Execute() talks to the GUI and to other invokers. Holding m_mutex
+    // across it deadlocks Home.xml load: a JobWorker in Release()/restart
+    // waits for this lock, the app thread waits for that job, and this
+    // script waits for the GUI.
+    lckdl.unlock();
+    m_invoker->Execute(script, args);
+    lckdl.lock();
 
     if (m_invoker->GetState() != InvokerStateScriptDone)
       m_reusable = false;
