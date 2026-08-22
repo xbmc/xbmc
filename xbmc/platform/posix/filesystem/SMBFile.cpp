@@ -565,7 +565,19 @@ std::string CSMB::URLEncode(const CURL& url)
     }
     flat += "@";
   }
-  flat += URLEncode(url.GetHostName());
+  const std::string& hostName = url.GetHostName();
+  if (hostName.find(':') != std::string::npos)
+  {
+    /* an IPv6 literal has to be bracketed and its colons must stay unencoded, otherwise
+       libsmbclient cannot read it back as an address */
+    flat += '[';
+    flat += hostName;
+    flat += ']';
+  }
+  else
+  {
+    flat += URLEncode(hostName);
+  }
 
   if (url.HasPort())
   {
