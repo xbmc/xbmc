@@ -12,6 +12,7 @@
 #include "guilib/GUIProgressControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
+#include "messaging/ApplicationMessenger.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "threads/Event.h"
@@ -77,6 +78,11 @@ void CGUIDialogProgress::Open(const std::string &param /* = "" */)
   }
 
   CGUIDialog::Open(false, param);
+
+  // Only wait for animation on main thread - background threads cannot drive
+  // the render loop, so spinning here would be a busy-wait at 100% CPU
+  if (!CServiceBroker::GetAppMessenger()->IsProcessThread())
+    return;
 
   while (m_active && IsAnimating(ANIM_TYPE_WINDOW_OPEN))
   {
