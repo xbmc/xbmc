@@ -350,6 +350,7 @@ void CVideoPlayerAudio::Process()
       m_stalled = true;
       m_audioClock = 0;
       audioframe.nb_frames = 0;
+      m_holdPending = false;
 
       if (sync)
       {
@@ -523,6 +524,12 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
 
       if (!m_audioSink.Create(audioframe, m_streaminfo.codec, m_synctype == SYNC_RESAMPLE))
         CLog::Log(LOGERROR, "{} - failed to create audio renderer", __FUNCTION__);
+      else if (audioframe.passthrough)
+      {
+        // Armed here, started once real audio has reached the sink.
+        m_holdPending = true;
+        m_holdDelivered = 0.0;
+      }
 
       m_prevsynctype = -1;
 
@@ -563,6 +570,19 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
   m_audioClock += audioframe.duration * ((double)framesOutput / audioframe.nb_frames);
 
   audioframe.framesOut += framesOutput;
+
+  // INSYNC, not AddPackets: the sink is paused until the player syncs.
+  if (m_holdPending && m_syncState == IDVDStreamPlayer::SYNC_INSYNC && framesOutput > 0 &&
+      audioframe.nb_frames > 0)
+  {
+    m_holdDelivered +=
+        audioframe.duration * (static_cast<double>(framesOutput) / audioframe.nb_frames);
+    if (m_holdDelivered >= DVD_MSEC_TO_TIME(250))
+    {
+      m_holdPending = false;
+      m_messageParent.Put(std::make_shared<CDVDMsg>(CDVDMsg::PLAYER_AUDIO_FORMAT_CHANGE));
+    }
+  }
 
   // signal to our parent that we have initialized
   if (m_syncState == IDVDStreamPlayer::SYNC_STARTING)

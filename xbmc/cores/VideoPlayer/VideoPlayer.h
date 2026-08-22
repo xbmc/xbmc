@@ -385,6 +385,19 @@ public:
   void OnLostDisplay() override;
   void OnResetDisplay() override;
 
+  /*!
+   \brief Hold presentation while a passthrough format change settles downstream
+
+   Opening a passthrough stream re-trains the HDMI link. On a chain with a matrix
+   or an AV processor in it the picture and sound can take many seconds to return,
+   and playback runs on regardless — the opening of the film is neither seen nor
+   heard. This is the audio-side counterpart of videoscreen.delayrefreshchange,
+   which only ever arms on a display mode change.
+   */
+  void HoldForAudioFormatChange();
+  void ReleaseAudioFormatHold();
+  void NotifyAudioChainReady() override;
+
   bool IsCaching() const override;
   int GetCacheLevel() const override;
 
@@ -561,6 +574,10 @@ protected:
 
   ECacheState  m_caching;
   XbmcThreads::EndTime<> m_cachingTimer;
+
+  bool m_audioFormatHold{false};
+  XbmcThreads::EndTime<> m_audioFormatHoldTimer;
+  std::atomic<bool> m_audioChainReady{false};
 
   std::unique_ptr<CProcessInfo> m_processInfo;
 

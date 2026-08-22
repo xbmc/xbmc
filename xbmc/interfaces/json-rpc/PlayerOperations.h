@@ -61,6 +61,11 @@ namespace JSONRPC
                                         IClient* client,
                                         const CVariant& parameterObject,
                                         CVariant& result);
+    static JSONRPC_STATUS NotifyAudioChainReady(const std::string& method,
+                                                ITransportLayer* transport,
+                                                IClient* client,
+                                                const CVariant& parameterObject,
+                                                CVariant& result);
     static JSONRPC_STATUS SetSpeed(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSONRPC_STATUS SetTempo(const std::string& method,
                                    ITransportLayer* transport,

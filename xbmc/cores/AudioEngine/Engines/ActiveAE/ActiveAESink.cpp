@@ -9,10 +9,13 @@
 #include "ActiveAESink.h"
 
 #include "ActiveAE.h"
+#include "ServiceBroker.h"
 #include "cores/AudioEngine/AEResampleFactory.h"
 #include "cores/AudioEngine/Utils/AEBitstreamPacker.h"
 #include "cores/AudioEngine/Utils/AEStreamInfo.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/EndianSwap.h"
 #include "utils/MemUtils.h"
 #include "utils/log.h"
@@ -1014,6 +1017,14 @@ void CActiveAESink::OpenSink()
     m_sampleOfSilence.pkt->pause_burst_ms = m_sinkFormat.m_streamInfo.GetDuration();
   }
 
+  const auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  const auto settings = settingsComponent ? settingsComponent->GetSettings() : nullptr;
+  m_silenceFiller = passthrough && settings && settings->GetBool("audiooutput.silencefiller");
+  m_fillerArmed = m_silenceFiller;
+  m_fillerUsed = false;
+  if (m_silenceFiller)
+    CLog::Log(LOGINFO, "CActiveAESink::OpenSink - content filler armed for the opening hold");
+
   m_swapState = CHECK_SWAP;
 }
 
@@ -1048,20 +1059,73 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
     bool skipSwap = false;
     if (m_needIecPack)
     {
+      enum class RawOut
+      {
+        NONE,
+        DATA,
+        FILLER,
+        PAUSE
+      };
+      static RawOut lastOut = RawOut::NONE;
+      RawOut out = lastOut;
+      const char* why = "";
       if (frames > 0)
       {
         m_packer->Reset();
         m_packer->Pack(m_sinkFormat.m_streamInfo, buffer[0], frames);
+        out = RawOut::DATA;
+        // Content after the filler is the film starting: the opening is over.
+        if (m_fillerUsed)
+          m_fillerArmed = false;
       }
       else if (samples->pkt->pause_burst_ms > 0)
       {
         // construct a pause burst if we have already output valid audio
         bool burst = m_extStreaming && (m_packer->GetBuffer()[0] != 0);
-        if (!m_packer->PackPause(m_sinkFormat.m_streamInfo, samples->pkt->pause_burst_ms, burst))
+        // ActiveAE reports STREAMING false for the whole of a hold, so burst
+        // cannot gate this.
+        const bool haveFormat = m_packer->GetBuffer()[0] != 0;
+        // Sync gaps request arbitrary lengths and stay as pause bursts.
+        bool filled = false;
+        const bool wholeFrame = samples->pkt->pause_burst_ms ==
+                                static_cast<int>(m_sinkFormat.m_streamInfo.GetDuration());
+        // The opening only: repeating a burst across a later gap is audible.
+        if (m_silenceFiller && m_fillerArmed && haveFormat && wholeFrame)
+        {
+          filled = m_packer->PackLastBurst();
+          if (filled)
+            m_fillerUsed = true;
+          if (!filled)
+            why = " [filler: no burst retained]";
+        }
+        else if (m_silenceFiller)
+          why = !m_fillerArmed ? " [filler: past the opening]"
+                : !haveFormat  ? " [filler: no prior burst]"
+                : !wholeFrame  ? " [filler: partial frame]"
+                               : "";
+        // Not skipSwap: the retained burst is copied in fresh and still needs it.
+        if (!filled &&
+            !m_packer->PackPause(m_sinkFormat.m_streamInfo, samples->pkt->pause_burst_ms, burst))
           skipSwap = true;
+        out = filled ? RawOut::FILLER : RawOut::PAUSE;
       }
       else
+      {
         m_packer->Reset();
+        out = RawOut::NONE;
+      }
+
+      if (out != lastOut)
+      {
+        static const char* const names[] = {"none", "data", "filler", "pause"};
+        CLog::Log(
+            LOGINFO,
+            "CActiveAESink::OutputSamples - raw output {} -> {} (type {}, repeat {}, {} ms){}",
+            names[static_cast<int>(lastOut)], names[static_cast<int>(out)],
+            static_cast<int>(m_sinkFormat.m_streamInfo.m_type), m_sinkFormat.m_streamInfo.m_repeat,
+            samples->pkt->pause_burst_ms, why);
+        lastOut = out;
+      }
 
       unsigned int size = m_packer->GetSize();
       packBuffer = m_packer->GetBuffer();
