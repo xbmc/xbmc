@@ -130,6 +130,9 @@ private:
   bool LoadFontsFromFile(const std::string& fontsetFilePath,
                          const std::string& fontSet,
                          std::string& firstFontset);
+  //! \brief Merge in fonts declared by enabled RESOURCE_FONT add-ons. Additive only:
+  //!        the skin's own Font.xml wins on a name collision.
+  void LoadAddonFonts(const std::string& fontSet);
 
   mutable CCriticalSection m_critSection;
   std::vector<FontMetadata> m_userFontsCache;
