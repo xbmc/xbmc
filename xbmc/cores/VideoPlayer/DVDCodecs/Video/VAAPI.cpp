@@ -99,12 +99,6 @@ void CVAAPIContext::Release(CDecoder *decoder)
     m_decoders.erase(it);
 
   m_refCount--;
-  if (m_refCount <= 0)
-  {
-    Close();
-    delete this;
-    m_context = 0;
-  }
 }
 
 void CVAAPIContext::Close()
@@ -1098,15 +1092,10 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
       m_vaapiConfig.context->Release(this);
     m_vaapiConfig.context = 0;
 
-    if (CVAAPIContext::EnsureContext(&m_vaapiConfig.context, this) && ConfigVAAPI())
-    {
-      m_DisplayState = VAAPI_OPEN;
-    }
+    m_vaapiConfigured = false;
+    m_DisplayState = VAAPI_ERROR;
 
-    if (state == VAAPI_RESET)
-      return CDVDVideoCodec::VC_FLUSHED;
-    else
-      return CDVDVideoCodec::VC_ERROR;
+    return CDVDVideoCodec::VC_FATAL;
   }
 
   if (m_getBufferError > 0 && m_getBufferError < 5)
