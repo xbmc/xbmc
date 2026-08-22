@@ -2442,8 +2442,6 @@ int CVideoDatabase::UpdateDetailsForMovie(int idMovie,
 
   try
   {
-    CLog::Log(LOGINFO, "Starting updates for movie {}", idMovie);
-
     BeginTransaction();
 
     // process the link table updates
@@ -2518,9 +2516,6 @@ int CVideoDatabase::UpdateDetailsForMovie(int idMovie,
     m_pDS->exec(sql);
 
     CommitTransaction();
-
-    CLog::Log(LOGINFO, "Finished updates for movie {}", idMovie);
-
     return idMovie;
   }
   catch (...)
