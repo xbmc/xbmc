@@ -1,30 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.tvshows.themoviedb.org.python"
   name="TMDb TV Shows"
-  version="1.8.1"
+  version="2.0.6"
   provider-name="Team Kodi">
   <requires>
-    <import addon="xbmc.python" version="3.0.0"/>
+    <import addon="xbmc.python" version="3.0.1"/>
     <import addon="xbmc.metadata" version="2.1.0"/>
   </requires>
-  <extension point="xbmc.metadata.scraper.tvshows" library="main.py" cachepersistence="00:15"/>
+  <extension point="xbmc.metadata.scraper.tvshows" library="main.py"/>
   <extension point="xbmc.addon.metadata">
     <reuselanguageinvoker>true</reuselanguageinvoker>
-    <news>1.8.1
-first version for Kodi 22 (Piers)
-added season plot
-added tagline
-added original language
-use new VideoInfoTag call to add fanart
-refactored duration to be stored in VideoInfoTag rather than stream details
-updated language files
-	</news>
+    <news>2.0.6
+- Show the season regular cast instead of everyone who ever appeared
+- Fix episodes listing the whole series cast
+- Fewer API calls when scraping a show
+    </news>
     <platform>all</platform>
     <license>GPL-3.0-or-later</license>
     <assets>
       <icon>resources/icon.png</icon>
     </assets>
-	<forum>https://forum.kodi.tv/showthread.php?tid=357232</forum>
+    <forum>https://forum.kodi.tv/showthread.php?tid=357232</forum>
     <website>https://www.themoviedb.org</website>
     <source>https://github.com/xbmc/metadata.tvshows.themoviedb.org.python</source>
     <summary lang="be_BY">Атрымліваць метаданыя серыялаў з themoviedb.org</summary>

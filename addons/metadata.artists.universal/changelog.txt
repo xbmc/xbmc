@@ -1,3 +1,9 @@
+[B]v4.3.23[/B]
+- Translations updates from Weblate
+
+[B]v4.3.22[/B]
+- Translations updates from Weblate
+
 [B]v4.3.21[/B]
 - Translations updates from Weblate
 
