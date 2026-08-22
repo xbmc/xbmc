@@ -48,12 +48,12 @@ constexpr auto CONSTANT_ATTRIBUTES = make_set<std::string_view>({
 });
 
 constexpr auto CONSTANT_NODES = make_set<std::string_view>({
-    "bordersize",  "bottom",     "centerbottom",  "centerleft", "centerright", "centertop",
-    "depth",       "fadetime",   "focusposition", "height",     "itemgap",     "left",
-    "movement",    "offsetx",    "offsety",       "pauseatend", "posx",        "posy",
-    "radioheight", "radioposx",  "radioposy",     "radiowidth", "right",       "sliderheight",
-    "sliderwidth", "spinheight", "spinposx",      "spinposy",   "spinwidth",   "textoffsetx",
-    "textoffsety", "textwidth",  "timeperimage",  "top",        "width",
+    "bordersize",   "bottom",      "centerbottom",  "centerleft",   "centerright", "centertop",
+    "depth",        "fadetime",    "focusposition", "height",       "itemgap",     "left",
+    "movement",     "offsetx",     "offsety",       "pageitems",    "pauseatend",  "posx",
+    "posy",         "radioheight", "radioposx",     "radioposy",    "radiowidth",  "right",
+    "sliderheight", "sliderwidth", "spinheight",    "spinposx",     "spinposy",    "spinwidth",
+    "textoffsetx",  "textoffsety", "textwidth",     "timeperimage", "top",         "width",
 });
 
 constexpr std::string_view EXPRESSION_ATTRIBUTE = "condition";
