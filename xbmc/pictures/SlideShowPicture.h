@@ -46,6 +46,11 @@ public:
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   void Render();
   void Close();
+
+  // Call while the render context is still valid: on app exit, CGUIWindowSlideShow's destructor
+  // runs only after CRenderSystemGLES::DestroyRenderSystem() has already torn the context down.
+  virtual void Free() {}
+
   void Reset(DISPLAY_EFFECT dispEffect = EFFECT_RANDOM, TRANSITION_EFFECT transEffect = FADEIN_FADEOUT);
   DISPLAY_EFFECT DisplayEffect() const { return m_displayEffect; }
   bool DisplayEffectNeedChange(DISPLAY_EFFECT newDispEffect) const;
