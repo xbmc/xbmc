@@ -8,6 +8,7 @@ xbmc/cores/VideoPlayer/Edl/test/testdata/mplayertimebasedinterleavedcuts.edl
 xbmc/cores/VideoPlayer/Edl/test/testdata/mplayertimebasedmixed.edl
 xbmc/cores/VideoPlayer/Edl/test/testdata/snapstream.mkv.chapters.xml
 xbmc/cores/VideoPlayer/Edl/test/testdata/videoredo.Vprj
+xbmc/cores/VideoPlayer/test/testdata/h264_8bit_320x240.mkv
 xbmc/filesystem/test/data/audiobook/chaptered.mka
 xbmc/filesystem/test/data/audiobook/chapternames-only.mka
 xbmc/filesystem/test/data/audiobook/lateredition.mka
