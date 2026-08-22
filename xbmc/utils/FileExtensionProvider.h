@@ -110,6 +110,7 @@ private:
   void OnAdvancedSettingsLoaded();
 
   // Construction properties
+  bool m_initialized{false};
   std::shared_ptr<CAdvancedSettings> m_advancedSettings;
   ADDON::CAddonMgr* m_addonManager{nullptr};
   std::optional<int> m_callbackId;

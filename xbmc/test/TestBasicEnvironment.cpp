@@ -16,7 +16,6 @@
 #include "application/AppEnvironment.h"
 #include "application/AppParams.h"
 #include "application/Application.h"
-#include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "messaging/ApplicationMessenger.h"
@@ -29,9 +28,10 @@
 #include "Util.h"
 #endif
 
+#include <climits>
 #include <cstdio>
 #include <cstdlib>
-#include <climits>
+#include <filesystem>
 #include <system_error>
 
 namespace fs = KODI::PLATFORM::FILESYSTEM;
@@ -109,8 +109,9 @@ void TestBasicEnvironment::TearDown()
 {
   g_application.m_ServiceManager->DeinitTesting();
 
-  // Removal after release of all open files
-  XFILE::CDirectory::RemoveRecursive(m_tempPath);
+  // The VFS machinery is not usable once the services are deinitialized.
+  std::error_code ec;
+  std::filesystem::remove_all(m_tempPath, ec);
 
   CServiceBroker::UnregisterAppMessenger();
 
