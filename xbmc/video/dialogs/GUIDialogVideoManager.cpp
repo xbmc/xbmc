@@ -215,6 +215,8 @@ void CGUIDialogVideoManager::Refresh()
   const int dbId{m_videoAsset->GetVideoInfoTag()->m_iDbId};
   const MediaType mediaType{m_videoAsset->GetVideoInfoTag()->m_type};
   const VideoDbContentType itemType{m_videoAsset->GetVideoContentType()};
+  const int selectedId =
+      m_selectedVideoAsset != nullptr ? m_selectedVideoAsset->GetVideoInfoTag()->m_iDbId : -1;
 
   //! @todo db refactor: should not be versions, but assets
   m_database.GetVideoVersions(itemType, dbId, *m_videoAssetsList, GetVideoAssetType());
@@ -225,6 +227,9 @@ void CGUIDialogVideoManager::Refresh()
   for (auto& item : *m_videoAssetsList)
   {
     loader.LoadItem(item.get());
+
+    if (selectedId != -1 && item.get()->GetVideoInfoTag()->m_iDbId == selectedId)
+      m_selectedVideoAsset = item;
   }
 
   CGUIMessage msg{GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_ASSETS, 0, 0, m_videoAssetsList.get()};
@@ -300,7 +305,8 @@ void CGUIDialogVideoManager::Remove()
   }
 
   // confirm the removal
-  if (!CGUIDialogYesNo::ShowAndGetInput(
+  if (!m_selectedVideoAsset || !m_selectedVideoAsset->HasVideoInfoTag() ||
+      !CGUIDialogYesNo::ShowAndGetInput(
           titleMsgId,
           StringUtils::Format(
               CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(textMsgId),
@@ -309,16 +315,32 @@ void CGUIDialogVideoManager::Remove()
     return;
   }
 
-  m_database.DeleteVideoAsset(m_selectedVideoAsset->GetVideoInfoTag()->m_iDbId);
+  bool success{false};
+  m_database.BeginTransaction();
 
-  // If a version of a bluray then remove the idFile as well
-  if (URIUtils::IsBlurayPath(m_selectedVideoAsset->GetDynPath()))
-    m_database.DeleteFile(m_selectedVideoAsset->GetVideoInfoTag()->m_iFileId);
+  if (m_database.DeleteVideoAsset(m_selectedVideoAsset->GetVideoInfoTag()->m_iDbId))
+  {
+    // If a version of a bluray then remove the idFile as well
+    const bool isblurayPath = URIUtils::IsBlurayPath(m_selectedVideoAsset->GetDynPath());
+    if (!isblurayPath || m_database.DeleteFile(m_selectedVideoAsset->GetVideoInfoTag()->m_iFileId))
+    {
+      success = true;
+    }
+  }
 
-  // refresh data and controls
-  Refresh();
-  RefreshSelectedVideoAsset();
-  UpdateControls();
+  if (success)
+  {
+    m_database.CommitTransaction();
+
+    // refresh data and controls
+    Refresh();
+    RefreshSelectedVideoAsset();
+    UpdateControls();
+  }
+  else
+  {
+    m_database.RollbackTransaction();
+  }
 }
 
 void CGUIDialogVideoManager::Rename()

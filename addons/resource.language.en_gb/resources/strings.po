@@ -24765,7 +24765,7 @@ msgstr ""
 #. Remove video version dialog text
 #: xbmc/video/dialogs/GUIDialogVideoManager.cpp
 msgctxt "#40020"
-msgid "Are you sure to remove version \"{0:s}\"?"
+msgid "Are you sure to remove version \"{0:s}\" from the library?"
 msgstr ""
 
 #. Remove item from library text if item has multiple versions
@@ -24901,7 +24901,31 @@ msgctxt "#40042"
 msgid "Found a different version of the movie \"{0:s}\" in playlist {1:s} of {2:s} - length {3:s}. Would you like to convert it into an additional version of the original?"
 msgstr ""
 
-#empty strings with id 40043 to 40201
+#. Ungroup video version dialog title
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
+msgctxt "#40043"
+msgid "Ungroup video version"
+msgstr ""
+
+#. Manage versions, ungroup: ungrouping the default version of a movie is not allowed.
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
+msgctxt "#40044"
+msgid "The default version of a movie cannot be ungrouped. Set a different default version and try again."
+msgstr ""
+
+#. Ungroup video version dialog text
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
+msgctxt "#40045"
+msgid "Are you sure to ungroup version \"{0:s}\"?[CR]It will be turned into a library movie entry."
+msgstr ""
+
+#. Button name for video version ungroup function of the manage versions dialog
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
+msgctxt "#40046"
+msgid "Ungroup"
+msgstr ""
+
+#empty strings with id 40047 to 40201
 
 #. Ignore different video versions settting
 #: system/settings/settings.xml
