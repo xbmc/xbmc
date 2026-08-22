@@ -1113,7 +1113,8 @@ bool CVideoLibrary::FillFileItem(
   if (videodatabase.Open())
   {
     CVideoInfoTag details;
-    if (videodatabase.LoadVideoInfo(strFilename, details))
+    if (videodatabase.LoadVideoInfo(strFilename, details) ||
+        (item->IsFolder() && videodatabase.GetTvShowInfo(strFilename, details, -1, item.get())))
     {
       item->SetFromVideoInfoTag(details);
       item->SetDynPath(strFilename);

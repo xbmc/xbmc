@@ -18,6 +18,7 @@
 #include "VideoLibrary.h"
 #include "filesystem/Directory.h"
 #include "media/MediaLockState.h"
+#include "music/MusicFileItemClassify.h"
 #include "playlists/PlayListFileItemClassify.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
@@ -28,8 +29,10 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoFileItemClassify.h"
 
 #include <memory>
+#include <set>
 
 using namespace KODI;
 using namespace KODI::REGEXP;
@@ -114,32 +117,111 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const std::string &method, ITranspo
         return status;
     }
 
-    CFileItemList filteredFiles;
-    RegExpCache cache;
-    for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
+    // Basic file properties are already available on the directory entries and must not cause a
+    // library lookup in media="files" mode.
+    const bool needsLibraryLookup =
+        media == "files" && CFileOperations::NeedsLibraryLookup(parameterObject);
+
+    CVideoDatabase videoDatabase;
+    CFileItemList videoDbItems;
+    bool hasVideoLibraryContent = false;
+    if (needsLibraryLookup && !URIUtils::IsUPnP(items.GetPath()))
     {
-      if (CUtil::ExcludeFileOrFolder(items[i]->GetPath(), regexps, &cache))
+      if (videoDatabase.Open())
+      {
+        const std::string videoContent = videoDatabase.GetContentForPath(items.GetPath());
+        if (videoContent == "movies" || videoContent == "episodes" || videoContent == "tvshows" ||
+            videoContent == "musicvideos")
+        {
+          const int requestedDetails = CVideoLibrary::GetDetailsFromJsonParameters(parameterObject);
+          videoDatabase.GetItemsForPath(videoContent, items.GetPath(), videoDbItems,
+                                        requestedDetails);
+          videoDbItems.SetFastLookup(true);
+          hasVideoLibraryContent = true;
+        }
+      }
+    }
+
+    CFileItemList outputFiles;
+    outputFiles.SetPath(items.GetPath());
+    const auto addFile = [&outputFiles](const CFileItemPtr& fileItem)
+    {
+      if (fileItem->IsSmb())
+      {
+        CURL url(fileItem->GetPath());
+        fileItem->SetPath(url.GetWithoutUserDetails());
+      }
+      outputFiles.Add(fileItem);
+    };
+
+    RegExpCache cache;
+    for (int i = 0; i < items.Size(); ++i)
+    {
+      const CFileItemPtr& currentItem = items[i];
+      if (CUtil::ExcludeFileOrFolder(currentItem->GetPath(), regexps, &cache))
         continue;
 
-      if (items[i]->IsSmb())
+      const std::string itemPath = currentItem->GetPath();
+
+      if (media == "files" && needsLibraryLookup && hasVideoLibraryContent)
       {
-        CURL url(items[i]->GetPath());
-        items[i]->SetPath(url.GetWithoutUserDetails());
+        const CFileItemPtr libraryItem =
+            CVideoDatabase::GetMatchingItemForPath(*currentItem, videoDbItems);
+        if (libraryItem)
+        {
+          // Enrich the filesystem entry instead of replacing it. UpdateInfo copies the library
+          // tag/art/properties but may also adopt the library mime type, so restore the browsed
+          // entry's identity afterwards.
+          const bool isFolder = currentItem->IsFolder();
+          const std::string mimeType = currentItem->GetMimeType();
+          currentItem->UpdateInfo(*libraryItem);
+          currentItem->SetPath(itemPath);
+          currentItem->SetFolder(isFolder);
+          currentItem->SetMimeType(mimeType);
+          addFile(currentItem);
+          continue;
+        }
+
+        // The directory lookup is authoritative for video entries. Do not run per-item video
+        // lookups for misses or query the music database for arbitrary folders.
+        if (VIDEO::IsVideo(*currentItem) || currentItem->IsFolder())
+        {
+          addFile(currentItem);
+          continue;
+        }
+
+        if (MUSIC::IsAudio(*currentItem))
+        {
+          CFileItemPtr fileItem(new CFileItem());
+          if (FillFileItem(currentItem, fileItem, "music", parameterObject))
+            addFile(fileItem);
+          else
+            addFile(currentItem);
+          continue;
+        }
+
+        addFile(currentItem);
+        continue;
       }
 
-      if ((media == "video" && items[i]->HasVideoInfoTag()) ||
-          (media == "music" && items[i]->HasMusicInfoTag()) ||
-          (media == "picture" && items[i]->HasPictureInfoTag()) ||
-           media == "files" ||
-           URIUtils::IsUPnP(items.GetPath()))
-          filteredFiles.Add(items[i]);
+      if (currentItem->IsSmb())
+      {
+        CURL url(currentItem->GetPath());
+        currentItem->SetPath(url.GetWithoutUserDetails());
+      }
+
+      if ((media == "video" && currentItem->HasVideoInfoTag()) ||
+          (media == "music" && currentItem->HasMusicInfoTag()) ||
+          (media == "pictures" && currentItem->HasPictureInfoTag()) ||
+          (media == "files" && !needsLibraryLookup) || URIUtils::IsUPnP(items.GetPath()))
+        outputFiles.Add(currentItem);
       else
       {
         CFileItemPtr fileItem(new CFileItem());
-        if (FillFileItem(items[i], fileItem, media, parameterObject))
-            filteredFiles.Add(fileItem);
+        if (FillFileItem(currentItem, fileItem, media, parameterObject))
+          outputFiles.Add(fileItem);
         else
-            filteredFiles.Add(items[i]);
+          outputFiles.Add(currentItem);
       }
     }
 
@@ -165,7 +247,7 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const std::string &method, ITranspo
       param["properties"].append("file");
     param["properties"].append("filetype");
 
-    HandleFileItemList("id", true, "files", filteredFiles, param, result);
+    HandleFileItemList("id", true, "files", outputFiles, param, result);
 
     return OK;
   }
@@ -304,13 +386,44 @@ bool CFileOperations::FillFileItem(
   *item = *originalItem;
 
   bool status = false;
-  std::string strFilename = originalItem->GetPath();
+  const std::string strFilename = originalItem->GetPath();
+
+  // Basic file properties do not require filesystem probes or library access.
+  if (media == "files" && !CFileOperations::NeedsLibraryLookup(parameterObject))
+  {
+    if (item->GetLabel().empty() && !strFilename.empty())
+    {
+      std::string label = CUtil::GetTitleFromPath(strFilename, originalItem->IsFolder());
+      if (label.empty())
+        label = URIUtils::GetFileName(strFilename);
+      item->SetLabel(label);
+    }
+    return true;
+  }
+
   if (!strFilename.empty() && (CDirectory::Exists(strFilename) || CFileUtils::Exists(strFilename)))
   {
     if (media == "video")
       status = CVideoLibrary::FillFileItem(strFilename, item, parameterObject);
     else if (media == "music")
       status = CAudioLibrary::FillFileItem(strFilename, item, parameterObject);
+    else if (media == "files")
+    {
+      // An untyped files listing can contain either media kind. Use Kodi's classifiers rather
+      // than MIME/extension heuristics; a folder may legitimately match either library.
+      if (!MUSIC::IsAudio(*originalItem))
+        status = CVideoLibrary::FillFileItem(strFilename, item, parameterObject);
+      if (!status && !VIDEO::IsVideo(*originalItem))
+        status = CAudioLibrary::FillFileItem(strFilename, item, parameterObject);
+    }
+
+    if (status)
+    {
+      // A library match annotates the directory entry; it must not replace its path/type.
+      item->SetPath(strFilename);
+      item->SetFolder(originalItem->IsFolder());
+      item->SetMimeType(originalItem->GetMimeType());
+    }
 
     if (status && item->GetLabel().empty())
     {
@@ -422,6 +535,27 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
         return true;
       }
     }
+  }
+
+  return false;
+}
+
+bool CFileOperations::NeedsLibraryLookup(const CVariant& parameterObject)
+{
+  if (!parameterObject.isMember("properties") || !parameterObject["properties"].isArray())
+    return false;
+
+  static const std::set<std::string> fileProps = {"file",     "filetype", "label",
+                                                  "mimetype", "size",     "lastmodified"};
+
+  for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array();
+       itr != parameterObject["properties"].end_array(); ++itr)
+  {
+    if (!itr->isString())
+      continue;
+
+    if (!fileProps.contains(itr->asString()))
+      return true;
   }
 
   return false;
