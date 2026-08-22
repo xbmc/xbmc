@@ -100,7 +100,12 @@ int CDVDInputStreamFile::Read(uint8_t* buf, int buf_size)
 
   /* we currently don't support non completing reads */
   if (ret == 0)
-    m_eof = true;
+  {
+    // A zero read short of the file's length is a stalled source, not the end
+    const int64_t length = m_pFile->GetLength();
+    if (length <= 0 || m_pFile->GetPosition() >= length)
+      m_eof = true;
+  }
 
   return (int)ret;
 }
