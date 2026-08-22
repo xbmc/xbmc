@@ -904,6 +904,15 @@ void CCheevos::RichPresencePingThread()
     if (evaluation.empty())
       continue;
 
+    // Set caption of playing item
+    std::unique_ptr<CFileItem> file{std::make_unique<CFileItem>()};
+
+    GAME::CGameInfoTag& tag = *file->GetGameInfoTag();
+    tag.SetCaption(evaluation);
+
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_UPDATE_PLAYER_ITEM, -1, -1,
+                                               static_cast<void*>(file.release()));
+
     CLog::Log(LOGDEBUG, "CCheevos::RichPresencePingThread -- posting: {}", evaluation);
 
     std::string url;
