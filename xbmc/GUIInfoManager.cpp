@@ -7699,6 +7699,13 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///     <p><hr>
 ///     @skinning_v21 **[New Infolabel]** \link ListItem_HasVideoExtras `ListItem.HasVideoExtras`\endlink
 ///   }
+///   \table_row3{   <b>`ListItem.IsDefaultVideoVersionName`</b>,
+///                  \anchor ListItem_IsDefaultVideoVersionName
+///                  _boolean_,
+///     @return **True** when the selected item is a video version with default name.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_IsDefaultVideoVersionName `ListItem.IsDefaultVideoVersionName`\endlink
+///   }
 ///   \table_row3{   <b>`ListItem.PVRClientName`</b>,
 ///                  \anchor ListItem_PVRClientName
 ///                  _string_,
@@ -7755,7 +7762,7 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 228> listitem_labels = {{
+constexpr std::array<InfoMap, 229> listitem_labels = {{
     {"thumb",                         LISTITEM_THUMB},
     {"icon",                          LISTITEM_ICON},
     {"actualicon",                    LISTITEM_ACTUAL_ICON},
@@ -7977,6 +7984,7 @@ constexpr std::array<InfoMap, 228> listitem_labels = {{
     {"isvideoextra",                  LISTITEM_ISVIDEOEXTRA},
     {"videoversionname",              LISTITEM_VIDEOVERSION_NAME},
     {"hasvideoextras",                LISTITEM_HASVIDEOEXTRAS},
+    {"isdefaultvideoversionname",     LISTITEM_ISDEFAULTVIDEOVERSION_NAME},
     {"pvrclientname",                 LISTITEM_PVR_CLIENT_NAME},
     {"pvrinstancename",               LISTITEM_PVR_INSTANCE_NAME},
     {"pvrgrouporigin",                LISTITEM_PVR_GROUP_ORIGIN},
