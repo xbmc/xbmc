@@ -38,6 +38,7 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <set>
 #include <utility>
 
 using namespace KODI;
@@ -391,7 +392,208 @@ int CVideoThumbLoader::SetDetailsForItem(CVideoInfoTag& details, const KODI::ART
   return -1;
 }
 
-bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
+namespace
+{
+struct LibraryArtRequest
+{
+  CFileItem* item{nullptr};
+  CVideoDatabase::MediaId direct;
+  CVideoDatabase::MediaId owner;
+  CVideoDatabase::MediaId tvShow;
+  CVideoDatabase::MediaId season;
+  CVideoDatabase::MediaId set;
+  bool hasDirect{false};
+  bool hasOwner{false};
+  bool hasTvShow{false};
+  bool hasSeason{false};
+  bool hasSet{false};
+};
+
+bool SupportsBatchLibraryArt(const MediaType& mediaType)
+{
+  return mediaType == MediaTypeMovie || mediaType == MediaTypeVideoCollection ||
+         mediaType == MediaTypeTvShow || mediaType == MediaTypeSeason ||
+         mediaType == MediaTypeEpisode || mediaType == MediaTypeMusicVideo ||
+         mediaType == MediaTypeVideoVersion;
+}
+
+LibraryArtRequest GetLibraryArtRequest(CFileItem& item)
+{
+  LibraryArtRequest request{.item = &item};
+  const CVideoInfoTag& tag = *item.GetVideoInfoTag();
+
+  if (VIDEO::IsVideoAssetFile(item))
+  {
+    request.direct = {MediaTypeVideoVersion, tag.m_iFileId};
+    request.hasDirect = tag.m_iFileId >= 0;
+    if (!item.GetProperty("noartfallbacktoowner").asBoolean(false) &&
+        tag.GetAssetInfo().GetType() == VideoAssetType::VERSION)
+    {
+      request.owner = {tag.m_type, tag.m_iDbId};
+      request.hasOwner = true;
+    }
+  }
+  else
+  {
+    request.direct = {tag.m_type, tag.m_iDbId};
+    request.hasDirect = true;
+  }
+
+  if ((tag.m_type == MediaTypeEpisode || tag.m_type == MediaTypeSeason) &&
+      !item.HasArt("tvshow.fanart") && tag.m_iIdShow >= 0)
+  {
+    request.tvShow = {MediaTypeTvShow, tag.m_iIdShow};
+    request.hasTvShow = true;
+  }
+  if (tag.m_type == MediaTypeEpisode && !item.HasArt("season.poster") && tag.m_iSeason > -1 &&
+      tag.m_iIdSeason >= 0)
+  {
+    request.season = {MediaTypeSeason, tag.m_iIdSeason};
+    request.hasSeason = true;
+  }
+  if (tag.m_type == MediaTypeMovie && !item.HasArt("set.fanart") && tag.m_set.GetID() >= 0)
+  {
+    request.set = {MediaTypeVideoCollection, tag.m_set.GetID()};
+    request.hasSet = true;
+  }
+
+  return request;
+}
+} // unnamed namespace
+
+bool CVideoThumbLoader::FillVideoLibraryArt(const std::vector<CFileItem*>& items,
+                                            bool includeItemArt)
+{
+  std::vector<LibraryArtRequest> requests;
+  std::set<CVideoDatabase::MediaId> mediaIds;
+  std::set<CVideoDatabase::MediaId> relatedMediaIds;
+
+  const auto addDirect = [&mediaIds](const CVideoDatabase::MediaId& mediaId)
+  {
+    if (mediaId.second >= 0 && !mediaId.first.empty())
+      mediaIds.insert(mediaId);
+  };
+  const auto addRelated =
+      [this, &mediaIds, &relatedMediaIds](const CVideoDatabase::MediaId& mediaId)
+  {
+    if (mediaId.second < 0 || mediaId.first.empty())
+      return;
+
+    relatedMediaIds.insert(mediaId);
+    if (!m_artCache.contains(mediaId))
+      mediaIds.insert(mediaId);
+  };
+
+  for (CFileItem* item : items)
+  {
+    if (!item || !item->HasVideoInfoTag())
+      continue;
+
+    const CVideoInfoTag& tag = *item->GetVideoInfoTag();
+    if (tag.m_iDbId < 0 || tag.m_type.empty())
+      continue;
+
+    LibraryArtRequest request = GetLibraryArtRequest(*item);
+    if (includeItemArt && request.hasDirect)
+      addDirect(request.direct);
+    if (includeItemArt && request.hasOwner)
+      addRelated(request.owner);
+    if (request.hasTvShow)
+      addRelated(request.tvShow);
+    if (request.hasSeason)
+      addRelated(request.season);
+    if (request.hasSet)
+      addRelated(request.set);
+    requests.emplace_back(std::move(request));
+  }
+
+  if (requests.empty())
+    return true;
+
+  CVideoDatabase::ArtByMediaId artwork;
+  m_videoDatabase->Open();
+  const bool success = m_videoDatabase->GetArtForItems(mediaIds, artwork);
+  m_videoDatabase->Close();
+  if (!success)
+    return false;
+
+  for (const auto& mediaId : relatedMediaIds)
+  {
+    auto [cacheIt, inserted] = m_artCache.try_emplace(mediaId);
+    if (inserted)
+    {
+      const auto artIt = artwork.find(mediaId);
+      if (artIt != artwork.end())
+        cacheIt->second = artIt->second;
+    }
+  }
+
+  const KODI::ART::Artwork emptyArt;
+  const auto getDirectArt =
+      [&artwork, &emptyArt](const CVideoDatabase::MediaId& mediaId) -> const KODI::ART::Artwork&
+  {
+    const auto it = artwork.find(mediaId);
+    return it != artwork.end() ? it->second : emptyArt;
+  };
+  const auto getRelatedArt =
+      [this, &emptyArt](const CVideoDatabase::MediaId& mediaId) -> const KODI::ART::Artwork&
+  {
+    const auto it = m_artCache.find(mediaId);
+    return it != m_artCache.end() ? it->second : emptyArt;
+  };
+
+  for (const auto& request : requests)
+  {
+    if (includeItemArt && request.hasOwner)
+      request.item->AppendArt(getRelatedArt(request.owner));
+    if (includeItemArt && request.hasDirect)
+      request.item->AppendArt(getDirectArt(request.direct));
+
+    if (request.hasTvShow)
+    {
+      const KODI::ART::Artwork& art = getRelatedArt(request.tvShow);
+      if (!art.empty())
+      {
+        request.item->AppendArt(art, MediaTypeTvShow);
+        request.item->SetArtFallback("fanart", "tvshow.fanart");
+        request.item->SetArtFallback("tvshow.thumb", "tvshow.poster");
+      }
+    }
+    if (request.hasSeason)
+      request.item->AppendArt(getRelatedArt(request.season), MediaTypeSeason);
+    if (request.hasSet)
+      request.item->AppendArt(getRelatedArt(request.set), MediaTypeVideoCollection);
+
+    request.item->SetProperty("libraryartfilled", true);
+  }
+
+  return true;
+}
+
+bool CVideoThumbLoader::FillLibraryArt(CFileItemList& items, int start, int end)
+{
+  const int first = std::max(start, 0);
+  const int last = std::min(end, items.Size());
+  std::vector<CFileItem*> batchItems;
+  bool success = true;
+
+  for (int i = first; i < last; ++i)
+  {
+    const CFileItemPtr& item = items[i];
+    if (!item || !item->HasVideoInfoTag() || item->GetProperty("libraryartfilled").asBoolean())
+      continue;
+
+    const CVideoInfoTag& tag = *item->GetVideoInfoTag();
+    if (tag.m_iDbId >= 0 && SupportsBatchLibraryArt(tag.m_type) && !VIDEO::IsVideoAssetFile(*item))
+      batchItems.emplace_back(item.get());
+    else
+      success &= FillLibraryArt(*item);
+  }
+
+  return FillVideoLibraryArt(batchItems) && success;
+}
+
+bool CVideoThumbLoader::FillLibraryArt(CFileItem& item)
 {
   CVideoInfoTag &tag = *item.GetVideoInfoTag();
   KODI::ART::Artwork artwork;
@@ -446,23 +648,32 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
     database.Close();
   }
 
-  if (tag.m_iDbId > -1 && !tag.m_type.empty())
+  if (tag.m_iDbId > -1 && VIDEO::IsVideoAssetFile(item))
+  {
+    m_videoDatabase->Open();
+    if (m_videoDatabase->GetArtForAsset(
+            tag.m_iFileId,
+            (item.GetProperty("noartfallbacktoowner").asBoolean(false) ||
+             tag.GetAssetInfo().GetType() != VideoAssetType::VERSION)
+                ? ArtFallbackOptions::NONE
+                : ArtFallbackOptions::PARENT,
+            artwork))
+    {
+      item.AppendArt(artwork);
+    }
+    m_videoDatabase->Close();
+
+    FillVideoLibraryArt({&item}, false);
+  }
+  else if (tag.m_iDbId > -1 && SupportsBatchLibraryArt(tag.m_type))
+  {
+    FillVideoLibraryArt({&item});
+  }
+  else if (tag.m_iDbId > -1 && !tag.m_type.empty())
   {
     m_videoDatabase->Open();
 
-    // @todo unify asset path for other items path
-    if (VIDEO::IsVideoAssetFile(item))
-    {
-      if (m_videoDatabase->GetArtForAsset(
-              tag.m_iFileId,
-              (item.GetProperty("noartfallbacktoowner").asBoolean(false) ||
-               item.GetVideoInfoTag()->GetAssetInfo().GetType() != VideoAssetType::VERSION)
-                  ? ArtFallbackOptions::NONE
-                  : ArtFallbackOptions::PARENT,
-              artwork))
-        item.AppendArt(artwork);
-    }
-    else if (m_videoDatabase->GetArtForItem(tag.m_iDbId, tag.m_type, artwork) && !artwork.empty())
+    if (m_videoDatabase->GetArtForItem(tag.m_iDbId, tag.m_type, artwork) && !artwork.empty())
     {
       item.AppendArt(artwork);
     }
@@ -479,37 +690,11 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
       database.Close();
     }
 
-    if (tag.m_type == MediaTypeEpisode || tag.m_type == MediaTypeSeason)
-    {
-      // For episodes and seasons, we want to set fanart for that of the show
-      if (!item.HasArt("tvshow.fanart") && tag.m_iIdShow >= 0)
-      {
-        const KODI::ART::Artwork& artmap = GetArtFromCache(MediaTypeTvShow, tag.m_iIdShow);
-        if (!artmap.empty())
-        {
-          item.AppendArt(artmap, MediaTypeTvShow);
-          item.SetArtFallback("fanart", "tvshow.fanart");
-          item.SetArtFallback("tvshow.thumb", "tvshow.poster");
-        }
-      }
-
-      if (tag.m_type == MediaTypeEpisode && !item.HasArt("season.poster") && tag.m_iSeason > -1)
-      {
-        const KODI::ART::Artwork& artmap = GetArtFromCache(MediaTypeSeason, tag.m_iIdSeason);
-        if (!artmap.empty())
-          item.AppendArt(artmap, MediaTypeSeason);
-      }
-    }
-    else if (tag.m_type == MediaTypeMovie && tag.m_set.GetID() >= 0 && !item.HasArt("set.fanart"))
-    {
-      const KODI::ART::Artwork& artmap =
-          GetArtFromCache(MediaTypeVideoCollection, tag.m_set.GetID());
-      if (!artmap.empty())
-        item.AppendArt(artmap, MediaTypeVideoCollection);
-    }
     m_videoDatabase->Close();
+    item.SetProperty("libraryartfilled", true);
   }
-  item.SetProperty("libraryartfilled", true);
+  else
+    item.SetProperty("libraryartfilled", true);
   return !item.GetArt().empty();
 }
 
@@ -670,18 +855,4 @@ void CVideoThumbLoader::DetectAndAddMissingItemData(CFileItem &item)
 
   if (!stereoMode.empty())
     item.SetProperty("stereomode", CStereoscopicsManager::NormalizeStereoMode(stereoMode));
-}
-
-const KODI::ART::Artwork& CVideoThumbLoader::GetArtFromCache(const std::string& mediaType,
-                                                             const int id)
-{
-  std::pair<MediaType, int> key = std::make_pair(mediaType, id);
-  auto it = m_artCache.find(key);
-  if (it == m_artCache.end())
-  {
-    KODI::ART::Artwork newart;
-    m_videoDatabase->GetArtForItem(id, mediaType, newart);
-    it = m_artCache.insert(std::make_pair(key, std::move(newart))).first;
-  }
-  return it->second;
 }

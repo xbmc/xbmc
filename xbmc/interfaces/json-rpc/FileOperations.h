@@ -35,5 +35,6 @@ namespace JSONRPC
         const std::string& media = "",
         const CVariant& parameterObject = CVariant(CVariant::VariantTypeArray));
     static bool FillFileItemList(const CVariant &parameterObject, CFileItemList &list);
+    static bool NeedsLibraryLookup(const CVariant& parameterObject);
   };
 }

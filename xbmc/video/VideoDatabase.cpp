@@ -5412,27 +5412,64 @@ bool CVideoDatabase::SetArtForItem(int mediaId,
 
 bool CVideoDatabase::GetArtForItem(int mediaId, const MediaType& mediaType, KODI::ART::Artwork& art)
 {
+  ArtByMediaId artwork;
+  if (!GetArtForItems({{mediaType, mediaId}}, artwork))
+    return false;
+
+  const auto it = artwork.find({mediaType, mediaId});
+  if (it != artwork.end())
+    art.insert(it->second.begin(), it->second.end());
+  return true;
+}
+
+bool CVideoDatabase::GetArtForItems(const std::set<MediaId>& mediaIds, ArtByMediaId& art)
+{
   try
   {
-    if (nullptr == m_pDB)
+    if (!m_pDB || !m_pDS2)
       return false;
-    if (nullptr == m_pDS2)
-      return false; // using dataset 2 as we're likely called in loops on dataset 1
 
-    std::string sql = PrepareSQL("SELECT type,url FROM art WHERE media_id=%i AND media_type='%s'", mediaId, mediaType.c_str());
+    if (mediaIds.empty())
+      return true;
 
-    m_pDS2->query(sql);
+    std::map<MediaType, std::vector<std::string>> idsByMediaType;
+    for (const auto& [mediaType, mediaId] : mediaIds)
+    {
+      if (mediaId >= 0 && !mediaType.empty())
+        idsByMediaType[mediaType].emplace_back(std::to_string(mediaId));
+    }
+
+    std::vector<std::string> conditions;
+    conditions.reserve(idsByMediaType.size());
+    for (const auto& [mediaType, ids] : idsByMediaType)
+    {
+      conditions.emplace_back(PrepareSQL("(media_type='%s' AND media_id IN (%s))",
+                                         mediaType.c_str(), StringUtils::Join(ids, ",").c_str()));
+    }
+
+    if (conditions.empty())
+      return true;
+
+    const std::string sql = "SELECT media_type, media_id, type, url FROM art WHERE " +
+                            StringUtils::Join(conditions, " OR ");
+    if (!m_pDS2->query(sql))
+      return false;
+
     while (!m_pDS2->eof())
     {
-      art.try_emplace(m_pDS2->fv(0).get_asString(), m_pDS2->fv(1).get_asString());
+      const MediaId key{m_pDS2->fv(0).get_asString(), m_pDS2->fv(1).get_asInt()};
+      art[key].try_emplace(m_pDS2->fv(2).get_asString(), m_pDS2->fv(3).get_asString());
       m_pDS2->next();
     }
     m_pDS2->close();
+
     return true;
   }
   catch (...)
   {
-    CLog::LogF(LOGERROR, "({}) failed", mediaId);
+    if (m_pDS2)
+      m_pDS2->close();
+    CLog::LogF(LOGERROR, "retrieval failed");
   }
   return false;
 }
@@ -11867,7 +11904,10 @@ void CVideoDatabase::AnnounceUpdate(const std::string& content, int id)
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "OnUpdate", data);
 }
 
-bool CVideoDatabase::GetItemsForPath(const std::string &content, const std::string &strPath, CFileItemList &items)
+bool CVideoDatabase::GetItemsForPath(const std::string& content,
+                                     const std::string& strPath,
+                                     CFileItemList& items,
+                                     int getDetails)
 {
   const std::string& path(strPath);
 
@@ -11877,7 +11917,7 @@ bool CVideoDatabase::GetItemsForPath(const std::string &content, const std::stri
     CMultiPathDirectory::GetPaths(path, paths);
 
     for (const auto& p : paths)
-      GetItemsForPath(content, p, items);
+      GetItemsForPath(content, p, items, getDetails);
 
     return !items.IsEmpty();
   }
@@ -11886,7 +11926,7 @@ bool CVideoDatabase::GetItemsForPath(const std::string &content, const std::stri
   {
     std::string parent = URIUtils::GetParentPath(path);
     if (!parent.empty() && parent != path)
-      return GetItemsForPath(content, parent, items);
+      return GetItemsForPath(content, parent, items, getDetails);
     return false;
   }
 
@@ -11897,26 +11937,37 @@ bool CVideoDatabase::GetItemsForPath(const std::string &content, const std::stri
   if (content == "movies")
   {
     Filter filter(PrepareSQL("c%02d=%d", VIDEODB_ID_PARENTPATHID, pathID));
-    GetMoviesByWhere("videodb://movies/titles/", filter, items);
+    GetMoviesByWhere("videodb://movies/titles/", filter, items, SortDescription(), getDetails);
   }
   else if (content == "episodes")
   {
     Filter filter(PrepareSQL("c%02d=%d", VIDEODB_ID_EPISODE_PARENTPATHID, pathID));
-    GetEpisodesByWhere("videodb://tvshows/titles/", filter, items);
+    GetEpisodesByWhere("videodb://tvshows/titles/", filter, items, true, SortDescription(),
+                       getDetails);
   }
   else if (content == "tvshows")
   {
     Filter filter(PrepareSQL("idParentPath=%d", pathID));
-    GetTvShowsByWhere("videodb://tvshows/titles/", filter, items);
+    GetTvShowsByWhere("videodb://tvshows/titles/", filter, items, SortDescription(), getDetails);
   }
   else if (content == "musicvideos")
   {
     Filter filter(PrepareSQL("c%02d=%d", VIDEODB_ID_MUSICVIDEO_PARENTPATHID, pathID));
-    GetMusicVideosByWhere("videodb://musicvideos/titles/", filter, items);
+    GetMusicVideosByWhere("videodb://musicvideos/titles/", filter, items, true, SortDescription(),
+                          getDetails);
   }
   for (const auto& item : items)
     item->SetPath(item->GetVideoInfoTag()->m_basePath);
   return !items.IsEmpty();
+}
+
+std::shared_ptr<CFileItem> CVideoDatabase::GetMatchingItemForPath(const CFileItem& item,
+                                                                  const CFileItemList& dbItems)
+{
+  std::string path = item.IsOpticalMediaFile() ? item.GetLocalMetadataPath() : item.GetPath();
+  if (URIUtils::IsMultiPath(path))
+    path = CMultiPathDirectory::GetFirstPath(path);
+  return dbItems.Get(path);
 }
 
 void CVideoDatabase::AppendIdLinkFilter(const char* field,

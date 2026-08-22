@@ -17,6 +17,7 @@
 
 class CStreamDetails;
 class CVideoDatabase;
+class CFileItemList;
 class EmbeddedArt;
 
 using ArtCache = std::map<std::pair<MediaType, int>, KODI::ART::Artwork>;
@@ -71,20 +72,27 @@ public:
    \param item a video CFileItem
    \return true if we fill art, false otherwise
    */
- bool FillLibraryArt(CFileItem &item) override;
+  bool FillLibraryArt(CFileItem& item) override;
+
+  /*! \brief Fill library artwork for a range of video items using a batched database lookup.
+   \param items video items to populate.
+   \param start index of the first item to process.
+   \param end index one past the last item to process.
+   \return true if the artwork lookup completed successfully, false otherwise.
+   */
+  bool FillLibraryArt(CFileItemList& items, int start, int end);
 
 protected:
-  CVideoDatabase *m_videoDatabase;
+  CVideoDatabase* m_videoDatabase;
   ArtCache m_artCache;
 
   /*! \brief Tries to detect missing data/info from a file and adds those
    \param item The CFileItem to process
    \return void
    */
-  void DetectAndAddMissingItemData(CFileItem &item);
-
-  const KODI::ART::Artwork& GetArtFromCache(const std::string& mediaType, const int id);
+  void DetectAndAddMissingItemData(CFileItem& item);
 
 private:
+  bool FillVideoLibraryArt(const std::vector<CFileItem*>& items, bool includeItemArt = true);
   int SetDetailsForItem(CVideoInfoTag& details, const KODI::ART::Artwork& artwork);
 };

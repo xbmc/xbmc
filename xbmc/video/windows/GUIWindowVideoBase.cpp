@@ -27,7 +27,6 @@
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/Directory.h"
-#include "filesystem/MultiPathDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory/DirectoryNode.h"
 #include "filesystem/VideoDatabaseDirectory/QueryParams.h"
@@ -793,11 +792,7 @@ void CGUIWindowVideoBase::LoadVideoInfo(CFileItemList& items,
     if (!content
              .empty()) /* optical media will be stacked down, so it's path won't match the base path */
     {
-      std::string pathToMatch =
-          pItem->IsOpticalMediaFile() ? pItem->GetLocalMetadataPath() : pItem->GetPath();
-      if (URIUtils::IsMultiPath(pathToMatch))
-        pathToMatch = CMultiPathDirectory::GetFirstPath(pathToMatch);
-      match = dbItems.Get(pathToMatch);
+      match = CVideoDatabase::GetMatchingItemForPath(*pItem, dbItems);
     }
     if (match)
     {
@@ -830,7 +825,7 @@ void CGUIWindowVideoBase::LoadVideoInfo(CFileItemList& items,
     else
     {
       /* NOTE: Currently we GetPlayCounts on our items regardless of whether content is set
-                as if content is set, GetItemsForPaths doesn't return anything not in the content tables.
+                as if content is set, GetItemsForPath doesn't return anything not in the content tables.
                 This code can be removed once the content tables are always filled */
       if (!pItem->IsFolder() && !fetchedPlayCounts)
       {
