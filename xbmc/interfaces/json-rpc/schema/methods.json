@@ -4671,6 +4671,10 @@
         "$ref": "Optional.String"
       },
       {
+        "name": "trailer",
+        "$ref": "Optional.String"
+      },
+      {
         "name": "sorttitle",
         "$ref": "Optional.String"
       },
