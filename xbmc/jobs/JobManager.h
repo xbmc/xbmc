@@ -226,6 +226,8 @@ private:
    */
   CJob* PopJob();
 
+  size_t GetBusyCount() const { return m_processing.size() + m_completing; }
+
   void StartWorkers(CJob::PRIORITY priority);
   void RemoveWorker(const CJobWorker* worker);
   static unsigned int GetMaxWorkers(CJob::PRIORITY priority);
@@ -239,7 +241,9 @@ private:
   std::array<JobQueue, CJob::PRIORITY_DEDICATED + 1> m_jobQueue;
   bool m_pauseJobs{false};
   Processing m_processing;
+  size_t m_completing{0};
   Workers m_workers;
+  size_t m_idleWorkers{0};
 
   mutable CCriticalSection m_section;
   CEvent m_jobEvent;
