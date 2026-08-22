@@ -303,6 +303,82 @@ public:
   bool GetSetInfo(int idSet, CVideoInfoTag& details, CFileItem* item = nullptr);
   bool GetFileInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int idFile = -1);
 
+  /*! \brief Retrieve a movie, distinguishing a missing movie from a failed lookup.
+   \param strFilenameAndPath the path of the movie, ignored when idMovie is given.
+   \param details [out] the details to fill.
+   \return GetResult::Ok if retrieved, NotFound if there is no such movie, Error otherwise.
+   */
+  GetResult TryGetMovieInfo(const std::string& strFilenameAndPath,
+                            CVideoInfoTag& details,
+                            int idMovie = -1,
+                            int idVersion = -1,
+                            int idFile = -1,
+                            int getDetails = VideoDbDetailsAll);
+
+  /*! \brief Retrieve a tv show, distinguishing a missing show from a failed lookup.
+   \param strPath the path of the tv show, ignored when idTvShow is given.
+   \param details [out] the details to fill.
+   \return GetResult::Ok if retrieved, NotFound if there is no such tv show, Error otherwise.
+   */
+  GetResult TryGetTvShowInfo(const std::string& strPath,
+                             CVideoInfoTag& details,
+                             int idTvShow = -1,
+                             CFileItem* item = nullptr,
+                             int getDetails = VideoDbDetailsAll);
+
+  /*! \brief Retrieve a season, distinguishing a missing season from a failed lookup.
+   \param idSeason the database id of the season.
+   \param details [out] the details to fill.
+   \param allDetails whether to fill the details from the season view rather than the season row.
+   \return GetResult::Ok if retrieved, NotFound if there is no such season, Error otherwise.
+   */
+  GetResult TryGetSeasonInfo(int idSeason, CVideoInfoTag& details, bool allDetails = true);
+
+  /*! \brief Retrieve a season, distinguishing a missing season from a failed lookup.
+   \param idSeason the database id of the season.
+   \param details [out] the details to fill.
+   \param item [out] the item to fill with the season.
+   \return GetResult::Ok if retrieved, NotFound if there is no such season, Error otherwise.
+   */
+  GetResult TryGetSeasonInfo(int idSeason, CVideoInfoTag& details, CFileItem* item);
+
+  /*! \brief Retrieve an episode, distinguishing a missing episode from a failed lookup.
+   \param strFilenameAndPath the path of the episode, ignored when idEpisode is given.
+   \param details [out] the details to fill.
+   \return GetResult::Ok if retrieved, NotFound if there is no such episode, Error otherwise.
+   */
+  GetResult TryGetEpisodeInfo(const std::string& strFilenameAndPath,
+                              CVideoInfoTag& details,
+                              int idEpisode = -1,
+                              int getDetails = VideoDbDetailsAll);
+
+  /*! \brief Retrieve a music video, distinguishing a missing one from a failed lookup.
+   \param strFilenameAndPath the path of the music video, ignored when idMVideo is given.
+   \param details [out] the details to fill.
+   \return GetResult::Ok if retrieved, NotFound if there is no such music video, Error otherwise.
+   */
+  GetResult TryGetMusicVideoInfo(const std::string& strFilenameAndPath,
+                                 CVideoInfoTag& details,
+                                 int idMVideo = -1,
+                                 int getDetails = VideoDbDetailsAll);
+
+  /*! \brief Retrieve a set, distinguishing a missing set from a failed lookup.
+   \param idSet the database id of the set.
+   \param details [out] the details to fill.
+   \param item [out] optional item to fill with the set.
+   \return GetResult::Ok if retrieved, NotFound if there is no such set, Error otherwise.
+   */
+  GetResult TryGetSetInfo(int idSet, CVideoInfoTag& details, CFileItem* item = nullptr);
+
+  /*! \brief Retrieve a file, distinguishing a missing file from a failed lookup.
+   \param strFilenameAndPath the path of the file, ignored when idFile is given.
+   \param details [in/out] the details to add the file information to.
+   \return GetResult::Ok if retrieved, NotFound if there is no such file, Error otherwise.
+   */
+  GetResult TryGetFileInfo(const std::string& strFilenameAndPath,
+                           CVideoInfoTag& details,
+                           int idFile = -1);
+
   int GetPathId(const std::string& strPath);
   int GetTvShowId(const std::string& strPath);
   int GetEpisodeId(const std::string& strFilenameAndPath, int idEpisode=-1, int idSeason=-1); // idEpisode, idSeason are used for multipart episodes as hints
@@ -1244,6 +1320,10 @@ private:
   CDateTime GetLastPlayed(int iFileId);
 
   bool GetSeasonInfo(int idSeason, CVideoInfoTag& details, bool allDetails, CFileItem* item);
+  GetResult TryGetSeasonInfo(int idSeason,
+                             CVideoInfoTag& details,
+                             bool allDetails,
+                             CFileItem* item);
 
   int GetMinSchemaVersion() const override { return 75; }
   int GetSchemaVersion() const override;
