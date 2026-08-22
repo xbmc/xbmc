@@ -1,0 +1,215 @@
+name: E2E (Linux X11)
+
+# End-to-end smoke test for docs/E2E-TESTING.md, X11 edition.
+#
+# Runs the same tools/e2e suite as e2e-linux.yml, against Kodi's X11 windowing
+# backend (xbmc/windowing/X11). docs/E2E-TESTING.md picked GBM as the primary
+# Linux headless job (closer to real set-top deployments); this adds X11
+# coverage alongside it, not in its place.
+#
+# Built with APP_RENDER_SYSTEM=gl, not gles like the GBM/Wayland jobs: real
+# desktop OpenGL/GLX, exercising xbmc/rendering/gl and GLContextGLX rather than
+# the GLES/EGL path. That is the reason this is a separate workflow rather than
+# a third leg of e2e-linux.yml's matrix.
+#
+# No GPU, no display server: Xvfb provides the display and Mesa falls back to
+# llvmpipe, the same software GLX path any desktop Linux box without a GPU
+# already uses.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+  # Every commit of a PR, once it is out of draft: `synchronize` covers pushes to
+  # an open PR, `ready_for_review` starts a run when a draft is marked ready.
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-linux-x11-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  linux-x11-smoke:
+    # Draft PRs are skipped - they run as soon as they are marked ready for review.
+    if: >-
+      github.event_name != 'pull_request' ||
+      github.event.pull_request.draft == false
+    # 22.04, not 24.04 like the other Linux jobs: xbmc/windowing/X11/GLContextEGL.h
+    # includes <EGL/eglextchromium.h>, and GLContextEGL.cpp is unconditional in
+    # xbmc/windowing/X11/CMakeLists.txt. Mesa stopped shipping that header when EGL
+    # headers moved to libglvnd, which does not carry it - 22.04's libegl1-mesa-dev
+    # is the newest Ubuntu that still provides it. Once Kodi can build X11 without
+    # the header this should move to 24.04 to match the other jobs, and most of the
+    # ENABLE_INTERNAL_* flags below can go with it.
+    runs-on: ubuntu-22.04
+    timeout-minutes: 180
+    env:
+      CCACHE_DIR: /home/runner/.cache/kodi-e2e-x11-ccache
+      # ccache's defaults are a poor fit for CI: restoring the cache rewrites every
+      # file's mtime, which defeats direct mode, and a Debug build hashes the build
+      # directory because debug info embeds absolute paths. Together those held the
+      # hit rate near 10%. compilercheck=content also matters wherever the compiler
+      # itself comes out of a restored tools/depends tree.
+      CCACHE_COMPILERCHECK: content
+      CCACHE_SLOPPINESS: include_file_mtime,include_file_ctime,time_macros
+      CCACHE_NOHASHDIR: "true"
+      CCACHE_BASEDIR: ${{ github.workspace }}
+      CCACHE_MAXSIZE: "1G"
+      DISPLAY: ":99"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      # Same system-package approach as e2e-linux.yml, so this tests what a distro
+      # user's build looks like rather than a tools/depends stand-in.
+      #
+      # X11 itself needs little: cmake/platform/linux/x11.cmake requires EGL, X,
+      # XRandR, LibDRM>=2.4.95 and OpenGl. libgl-dev pulls in a working Mesa GLX
+      # runtime and libgl1-mesa-dri provides the llvmpipe driver it loads with no
+      # GPU present.
+      #
+      # libflatbuffers-dev is deliberately absent: 22.04 ships 2.0.0 while this tree
+      # targets 23.3.3, and a system flatc would be picked up by FindFlatC and
+      # generate schemas the internal library cannot read. Leaving it out makes Kodi
+      # build both the library and flatc itself, in matching versions.
+      - name: Install build tools and libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential cmake gawk gperf gettext libtool meson nasm \
+            ninja-build pkg-config swig python3-dev unzip zip ccache uuid-dev \
+            libass-dev libcurl4-openssl-dev libexiv2-dev \
+            libfmt-dev libfreetype-dev libfribidi-dev libfstrcmp-dev \
+            libharfbuzz-dev liblzo2-dev libpcre2-dev libssl-dev libsqlite3-dev \
+            libtinyxml-dev zlib1g-dev libcdio-dev libcdio++-dev libgtest-dev \
+            libgif-dev libjpeg-dev nlohmann-json3-dev libmicrohttpd-dev \
+            libunistring-dev libspdlog-dev libtinyxml2-dev libcrossguid-dev \
+            libdbus-1-dev libasound2-dev libdav1d-dev libdrm-dev \
+            libgl-dev libegl-dev libegl1-mesa-dev libglu1-mesa-dev libgl1-mesa-dri \
+            libx11-dev libxext-dev libxrandr-dev \
+            xvfb x11-utils
+
+      # Keyed on the runner image, not just the arch: a cache built on a different
+      # Ubuntu release is useless here and, for anything holding prebuilt binaries,
+      # actively harmful.
+      - name: Restore ccache
+        uses: actions/cache/restore@v6
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: linux-x11-ubuntu2204-${{ runner.arch }}-ccache-${{ github.sha }}
+          restore-keys: |
+            linux-x11-ubuntu2204-${{ runner.arch }}-ccache-
+
+      # 22.04 predates most of what this tree targets, so more is built internally
+      # here than in e2e-linux.yml: ffmpeg (needs >= 7.0, 22.04 has 4.4), TagLib
+      # (Matroska tag support is gated on >= 2.3.1, 22.04 has 1.11.1), fmt (8.1.1 vs
+      # 12.1.0), spdlog (1.9.2 vs 1.17.0, and it couples tightly to fmt), exiv2
+      # (0.27 vs 0.28, a breaking API change) and flatbuffers (2.0.0 vs 23.3.3).
+      - name: Configure Kodi
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug \
+            -DCORE_PLATFORM_NAME=x11 -DAPP_RENDER_SYSTEM=gl \
+            -DENABLE_INTERNAL_FFMPEG=ON -DENABLE_INTERNAL_TAGLIB=ON \
+            -DENABLE_INTERNAL_FMT=ON -DENABLE_INTERNAL_SPDLOG=ON \
+            -DENABLE_INTERNAL_EXIV2=ON -DENABLE_INTERNAL_FLATBUFFERS=ON
+
+      - name: Build Kodi
+        run: cmake --build build -- -j"$(nproc)"
+
+      # kodi-test is EXCLUDE_FROM_ALL (CMakeLists.txt), so the default target above
+      # does not build it. It whole-archive links the whole app, so this is a real
+      # link step rather than a few extra objects.
+      - name: Build unit tests
+        run: cmake --build build --target kodi-test -- -j"$(nproc)"
+
+      - name: Upload unit test binary
+        uses: actions/upload-artifact@v7
+        with:
+          name: kodi-test-linux-x11
+          path: build/kodi-test
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Show ccache stats
+        if: always()
+        run: ccache -s || true
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.3.1
+        with:
+          enable-cache: true
+          cache-dependency-glob: "tools/e2e/uv.lock"
+
+      # Waited for via xdpyinfo since Xvfb prints no "ready" message.
+      - name: Start headless X server (Xvfb)
+        run: |
+          Xvfb "${DISPLAY}" -screen 0 1920x1080x24 &
+          for _ in $(seq 1 30); do
+            xdpyinfo -display "${DISPLAY}" >/dev/null 2>&1 && break
+            sleep 1
+          done
+          xdpyinfo -display "${DISPLAY}" >/dev/null 2>&1 || {
+            echo "::error::Xvfb did not become ready on display ${DISPLAY} in time"
+            exit 1
+          }
+
+      # ENABLE_APP_AUTONAME (default ON, single-platform Linux build) names the
+      # binary kodi-x11; it runs in place from the build tree, so portable_data
+      # lands at build/portable_data. No LD_LIBRARY_PATH needed: every library
+      # comes from the system's normal linker paths or is statically linked in.
+      - name: Run E2E smoke test
+        working-directory: tools/e2e
+        env:
+          KODI_BINARY: ${{ github.workspace }}/build/kodi-x11
+        run: uv run pytest scenarios -v --junitxml=../../e2e-results.xml
+
+      # Runs whatever the E2E scenarios did, so one run reports both. Executed from
+      # the build tree because CUtil::GetHomePath() resolves special://xbmc by walking
+      # up from the binary, and that is where the reference data the tests read
+      # (cmake/installdata/test-reference-data.txt) was copied at configure time.
+      - name: Run unit tests
+        if: '!cancelled()'
+        working-directory: build
+        run: ./kodi-test
+
+      - name: Upload Kodi log
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: kodi-linux-x11-log
+          path: |
+            build/portable_data/temp/kodi.log
+            build/portable_data/temp/process-output.log
+          if-no-files-found: warn
+
+      - name: Upload screenshot
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: kodi-linux-x11-screenshot
+          path: build/portable_data/screenshots/*.png
+          if-no-files-found: warn
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-results-linux-x11
+          path: e2e-results.xml
+          if-no-files-found: warn
+
+      - name: Save ccache
+        # Not on pull_request: cache entries are immutable, so every push to a
+        # PR would add another ~600MB entry rather than replace one, and
+        # the repo's 10GB budget then evicts the entries that are actually useful.
+        # PR runs still restore.
+        if: "!cancelled() && github.event_name != 'pull_request'"
+        uses: actions/cache/save@v6
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: linux-x11-ubuntu2204-${{ runner.arch }}-ccache-${{ github.sha }}
