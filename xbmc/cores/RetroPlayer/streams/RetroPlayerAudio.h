@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <cstdint>
+
 #include "IRetroPlayerStream.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 
@@ -64,6 +66,11 @@ private:
   CRPProcessInfo& m_processInfo;
   IAE::StreamPtr m_pAudioStream;
   bool m_bAudioEnabled = true;
+
+  // Audio the sink refused, counted so the log can say how much has gone
+  // without a line per occurrence
+  uint64_t m_droppedFrames = 0;
+  uint64_t m_dropEvents = 0;
 };
 } // namespace RETRO
 } // namespace KODI

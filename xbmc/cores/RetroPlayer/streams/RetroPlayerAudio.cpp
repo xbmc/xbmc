@@ -24,6 +24,10 @@ using namespace RETRO;
 
 const double MAX_DELAY = 0.3; // seconds
 
+// How many refusals to let pass between log lines. A sink that is refusing at
+// all is usually refusing every packet, which arrives at frame rate.
+const unsigned int DROP_LOG_INTERVAL = 300;
+
 CRetroPlayerAudio::CRetroPlayerAudio(CRPProcessInfo& processInfo) : m_processInfo(processInfo)
 {
   CLog::Log(LOGDEBUG, "RetroPlayer[AUDIO]: Initializing audio");
@@ -125,7 +129,22 @@ void CRetroPlayerAudio::AddStreamData(const StreamPacket& packet)
                   delaySecs * 1000);
       }
 
-      m_pAudioStream->AddData(&audioPacket.data, 0, frameCount, nullptr);
+      const unsigned int accepted =
+          m_pAudioStream->AddData(&audioPacket.data, 0, frameCount, nullptr);
+
+      // Audio the sink will not take is dropped, which is the right thing to
+      // do -- the alternative is waiting on it, and the game's timing does not
+      // belong to the audio sink. It is worth saying so, though: dropped audio
+      // is audible and silent in the log otherwise.
+      if (accepted < frameCount)
+      {
+        m_droppedFrames += frameCount - accepted;
+
+        if (m_dropEvents++ % DROP_LOG_INTERVAL == 0)
+          CLog::Log(LOGDEBUG,
+                    "RetroPlayer[AUDIO]: Sink accepted {} of {} frames, {} dropped so far",
+                    accepted, frameCount, m_droppedFrames);
+      }
     }
   }
 }
