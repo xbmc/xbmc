@@ -22,10 +22,12 @@
 #include "utils/Digest.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#if defined(TARGET_DARWIN_EMBEDDED)
+#if defined(TARGET_DARWIN_EMBEDDED) || defined(TARGET_WEBOS)
 #include "dialogs/GUIDialogKeyboardTouch.h"
 
+#if defined(TARGET_DARWIN_EMBEDDED)
 #include "platform/darwin/ios-common/DarwinEmbedKeyboard.h"
+#endif
 #endif
 
 using namespace KODI::MESSAGING;
@@ -91,23 +93,21 @@ bool CGUIKeyboardFactory::ShowAndGetInput(std::string& aTextString,
         (uint32_t)heading.asInteger());
 
   bool useKodiKeyboard = true;
-#if defined(TARGET_DARWIN_EMBEDDED)
-#if defined(TARGET_DARWIN_TVOS)
+#if defined(TARGET_DARWIN_TVOS) || defined(TARGET_WEBOS)
   useKodiKeyboard = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-      CSettings::SETTING_INPUT_TVOSUSEKODIKEYBOARD);
-#else
+      CSettings::SETTING_INPUT_USEKODIKEYBOARD);
+#elif defined(TARGET_DARWIN_EMBEDDED)
   useKodiKeyboard = CDarwinEmbedKeyboard::hasExternalKeyboard();
-#endif // defined(TARGET_DARWIN_TVOS)
 #endif
 
   auto& winManager = CServiceBroker::GetGUI()->GetWindowManager();
   CGUIKeyboard* kb = nullptr;
   if (useKodiKeyboard)
     kb = winManager.GetWindow<CGUIDialogKeyboardGeneric>(WINDOW_DIALOG_KEYBOARD);
-#if defined(TARGET_DARWIN_EMBEDDED)
+#if defined(TARGET_DARWIN_EMBEDDED) || defined(TARGET_WEBOS)
   else
     kb = winManager.GetWindow<CGUIDialogKeyboardTouch>(WINDOW_DIALOG_KEYBOARD_TOUCH);
-#endif // defined(TARGET_DARWIN_EMBEDDED)
+#endif
 
   if (kb)
   {
@@ -239,4 +239,3 @@ int CGUIKeyboardFactory::ShowAndVerifyPassword(std::string& strPassword, const s
     else return 1;
   }
 }
-
