@@ -42,6 +42,26 @@ class CTexture;
 class CTextureCache : public CJobQueue, public CPowerState
 {
 public:
+  /*! \brief Holds background caching back to one image at a time while it exists
+
+   Background caching competes for the same source eg. scraping and art caching.
+   Caching then catches up afterwards, when it has the source to itself.
+
+   Counted, so that concurrent holders (a video and a music scan, say) each keep it in force.
+   */
+  class CBackgroundThrottle
+  {
+  public:
+    explicit CBackgroundThrottle(CTextureCache& cache) : m_cache(cache) { m_cache.AddThrottle(); }
+    ~CBackgroundThrottle() { m_cache.RemoveThrottle(); }
+
+    CBackgroundThrottle(const CBackgroundThrottle&) = delete;
+    CBackgroundThrottle& operator=(const CBackgroundThrottle&) = delete;
+
+  private:
+    CTextureCache& m_cache;
+  };
+
   CTextureCache();
   ~CTextureCache() override;
 
@@ -97,6 +117,7 @@ public:
    \param idealWidth the ideal width of the returned texture (defaults to 0, no ideal width). Only matters if texture is not null.
    \param idealHeight the ideal height of the returned texture (defaults to 0, no ideal height). Only matters if texture is not null.
    \param aspectRatio the aspect ratio mode of the texture (defaults to "center"). Only matters if texture is not null.
+   \param knownHash hash of the source file, in the form CTextureCacheJob::GetImageHash() produces, if known.
    \return cached url of this image
    \sa CTextureCacheJob::CacheTexture
    */
@@ -105,7 +126,8 @@ public:
                          CTextureDetails* details = nullptr,
                          unsigned int idealWidth = 0,
                          unsigned int idealHeight = 0,
-                         CAspectRatio::AspectRatio aspectRatio = CAspectRatio::CENTER);
+                         CAspectRatio::AspectRatio aspectRatio = CAspectRatio::CENTER,
+                         const std::string& knownHash = "");
 
   /*! \brief Cache an image to image cache if not already cached, returning the image details.
    \param image url of the image to cache.
@@ -114,6 +136,18 @@ public:
    \sa CTextureCacheJob::CacheTexture
    */
   bool CacheImage(const std::string &image, CTextureDetails &details);
+
+  /*! \brief Cache an image whose source file hash the caller already knows
+
+   Saves the texture cache stat'ing the file to build that hash itself
+
+   \param image url of the image to cache
+   \param knownHash hash of the source file, in the form CTextureCacheJob::GetImageHash() produces.
+          Pass empty to have it determined as usual.
+   \return cached url of this image
+   \sa CTextureCacheJob::CacheTexture
+   */
+  std::string CacheImage(const std::string& image, const std::string& knownHash);
 
   /*! \brief Check whether an image is in the cache
    Note: If the image url won't normally be cached (eg a skin image) this function will return false.
@@ -171,6 +205,15 @@ private:
   // private construction, and no assignments; use the provided singleton methods
   CTextureCache(const CTextureCache&) = delete;
   CTextureCache const& operator=(CTextureCache const&) = delete;
+
+  //! \brief Take a hold on background caching, limiting it if this is the first
+  void AddThrottle();
+
+  //! \brief Release a hold on background caching, restoring it if this was the last
+  void RemoveThrottle();
+
+  //! Outstanding CBackgroundThrottle holds
+  std::atomic<unsigned int> m_throttles{0};
 
   /*! \brief Check if the given image is a cached image
    \param image url of the image

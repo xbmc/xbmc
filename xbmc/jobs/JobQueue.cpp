@@ -86,6 +86,7 @@ bool CJobQueue::AddJob(CJob* job)
   else
     m_jobQueue.emplace_front(job);
 
+  m_idleEvent.Reset();
   QueueNextJob();
 
   return true;
@@ -102,6 +103,9 @@ void CJobQueue::OnJobNotify(const CJob* job)
 
   // request a new job be queued
   QueueNextJob();
+
+  if (m_jobQueue.empty() && m_processing.empty())
+    m_idleEvent.Set();
 }
 
 void CJobQueue::QueueNextJob()
@@ -128,12 +132,26 @@ void CJobQueue::CancelJobs()
   std::ranges::for_each(m_jobQueue, [](CJobPointer& jp) { jp.FreeJob(); });
   m_jobQueue.clear();
   m_processing.clear();
+  m_idleEvent.Set();
+}
+
+void CJobQueue::SetJobsAtOnce(unsigned int jobsAtOnce)
+{
+  std::unique_lock lock(m_section);
+  m_jobsAtOnce = jobsAtOnce;
+  QueueNextJob(); // in case the limit went up and something is waiting
 }
 
 bool CJobQueue::IsProcessing() const
 {
+  std::unique_lock lock(m_section);
   return CServiceBroker::GetJobManager()->IsRunning() &&
          (!m_processing.empty() || !m_jobQueue.empty());
+}
+
+bool CJobQueue::WaitForCompletion(std::chrono::milliseconds timeout)
+{
+  return m_idleEvent.Wait(timeout);
 }
 
 bool CJobQueue::QueueEmpty() const

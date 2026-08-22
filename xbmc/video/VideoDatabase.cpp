@@ -5511,6 +5511,51 @@ std::string CVideoDatabase::GetArtForItem(int mediaId, const MediaType &mediaTyp
   return GetSingleValue(query, *m_pDS2);
 }
 
+std::map<std::string, std::string> CVideoDatabase::GetArtForActors(
+    const std::vector<std::string>& names)
+{
+  std::map<std::string, std::string> art;
+  if (!m_pDS2 || names.empty())
+    return art;
+
+  // Name trimming, truncation and comparison match AddActor()
+  std::string nameMatches;
+  for (const auto& name : names)
+  {
+    std::string trimmedName = name;
+    StringUtils::Trim(trimmedName);
+    if (trimmedName.empty())
+      continue;
+
+    if (!nameMatches.empty())
+      nameMatches += " OR ";
+    nameMatches += PrepareSQL("actor.name LIKE '%s'", trimmedName.substr(0, 255).c_str());
+  }
+  if (nameMatches.empty())
+    return art;
+
+  try
+  {
+    m_pDS2->query("SELECT actor.name, art.url FROM actor"
+                  " JOIN art ON art.media_id = actor.actor_id"
+                  " WHERE (" +
+                  nameMatches +
+                  ")"
+                  " AND art.media_type = 'actor' AND art.type = 'thumb'");
+    while (!m_pDS2->eof())
+    {
+      art.emplace(m_pDS2->fv(0).get_asString(), m_pDS2->fv(1).get_asString());
+      m_pDS2->next();
+    }
+    m_pDS2->close();
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "failed for {} actors", names.size());
+  }
+  return art;
+}
+
 bool CVideoDatabase::RemoveArtForItem(int mediaId, const MediaType &mediaType, const std::string &artType)
 {
   return ExecuteQuery(PrepareSQL("DELETE FROM art WHERE media_id=%i AND media_type='%s' AND type='%s'", mediaId, mediaType.c_str(), artType.c_str()));

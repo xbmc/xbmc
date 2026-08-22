@@ -19,6 +19,7 @@
 #include <atomic>
 #include <cstdint>
 #include <functional>
+#include <map>
 #include <set>
 #include <string>
 #include <string_view>
@@ -131,13 +132,12 @@ namespace KODI::VIDEO
      \param actorArtPath the directory containing actor thumbs. Defaults to empty.
      \param useRemoteArt use remote art if also using local scraper. Defaults to yes.
      */
-    void GetArtwork(
-        CFileItem* pItem,
-        ADDON::ContentType content,
-        bool bApplyToDir = false,
-        bool useLocal = true,
-        const std::string& actorArtPath = "",
-        UseRemoteArtWithLocalScraper useRemoteArt = UseRemoteArtWithLocalScraper::YES) const;
+    void GetArtwork(CFileItem* pItem,
+                    ADDON::ContentType content,
+                    bool bApplyToDir = false,
+                    bool useLocal = true,
+                    const std::string& actorArtPath = "",
+                    UseRemoteArtWithLocalScraper useRemoteArt = UseRemoteArtWithLocalScraper::YES);
 
     /*! \brief Get season thumbs for a tvshow.
      All seasons (regardless of whether the user has episodes) are added to the art map.
@@ -265,7 +265,14 @@ namespace KODI::VIDEO
     void FetchActorThumbs(
         std::vector<SActorInfo>& actors,
         const std::string& actorsDir,
-        UseRemoteArtWithLocalScraper useRemoteArt = UseRemoteArtWithLocalScraper::YES) const;
+        UseRemoteArtWithLocalScraper useRemoteArt = UseRemoteArtWithLocalScraper::YES);
+
+    /*! \brief Make sure m_actorThumbs holds an answer for every actor in a cast
+     Any not already resolved by an earlier film are looked up together, as one pass over the
+     actor table rather than one per cast member.
+     \param actors the cast to resolve
+     */
+    void ResolveActorThumbs(const std::vector<SActorInfo>& actors);
 
     static int GetPathHash(const CFileItemList &items, std::string &hash);
 
@@ -376,6 +383,9 @@ namespace KODI::VIDEO
 
     ArtRetrievalTiming m_artRetrievalTiming{ArtRetrievalTiming::BACKGROUND};
     CVideoDatabase m_database;
+
+    //! \brief Reusable thumb per actor, keyed on the actor's folded name.
+    std::map<std::string, std::string> m_actorThumbs;
     std::set<int> m_pathsToClean;
     std::shared_ptr<CAdvancedSettings> m_advancedSettings;
     CVideoDatabase::ScraperCache m_scraperCache;

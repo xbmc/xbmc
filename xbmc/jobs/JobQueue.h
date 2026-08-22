@@ -12,7 +12,9 @@
 #include "jobs/Job.h"
 #include "jobs/LambdaJob.h"
 #include "threads/CriticalSection.h"
+#include "threads/Event.h"
 
+#include <chrono>
 #include <queue>
 #include <vector>
 
@@ -88,9 +90,32 @@ public:
   void CancelJobs();
 
   /*!
+   \brief Change how many jobs this queue runs at once
+
+   Takes effect from the next job dispatched: lowering it lets those already running finish, and
+   raising it starts more straight away if any are waiting.
+
+   \param jobsAtOnce number of jobs to run at once from now on
+   */
+  void SetJobsAtOnce(unsigned int jobsAtOnce);
+
+  /*!
    \brief Check whether the queue is processing a job
    */
   bool IsProcessing() const;
+
+  /*!
+   \brief Wait for every job added to this queue to finish
+
+   Returns as soon as nothing is queued or in progress, so a queue that was already idle returns
+   at once. Note that a queue whose priority is currently suspended will not drain: callers should
+   treat a timeout as a reason to check, rather than as a reason to keep waiting.
+
+   \param timeout how long to wait for
+   \return true if the queue is now idle, false if it timed out first
+   \sa IsProcessing
+   */
+  bool WaitForCompletion(std::chrono::milliseconds timeout);
 
   /*!
    \brief The callback used when a job completes.
@@ -156,6 +181,9 @@ private:
   using Processing = std::vector<CJobPointer>;
   Queue m_jobQueue;
   Processing m_processing;
+
+  //! Set whenever nothing is queued or in progress
+  CEvent m_idleEvent{true, true};
 
   unsigned int m_jobsAtOnce{1};
   CJob::PRIORITY m_priority{CJob::PRIORITY::PRIORITY_LOW};

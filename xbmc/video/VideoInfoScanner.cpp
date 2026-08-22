@@ -15,6 +15,7 @@
 #include "ServiceBroker.h"
 #include "SetInfoTag.h"
 #include "TextureCache.h"
+#include "TextureCacheJob.h"
 #include "URL.h"
 #include "Util.h"
 #include "VideoInfoDownloader.h"
@@ -33,6 +34,9 @@
 #include "guilib/GUIWindowManager.h"
 #include "imagefiles/ImageFileURL.h"
 #include "interfaces/AnnouncementManager.h"
+#include "jobs/Job.h"
+#include "jobs/JobManager.h"
+#include "jobs/JobQueue.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "playlists/PlayListFileItemClassify.h"
@@ -43,6 +47,7 @@
 #include "settings/SettingsComponent.h"
 #include "tags/SetInfoTagLoaderFactory.h"
 #include "tags/VideoInfoTagLoaderFactory.h"
+#include "threads/Event.h"
 #include "utils/ArtUtils.h"
 #include "utils/Digest.h"
 #include "utils/DiscsUtils.h"
@@ -64,6 +69,7 @@
 #include "video/dialogs/GUIDialogVideoManagerVersions.h"
 
 #include <algorithm>
+#include <atomic>
 #include <chrono>
 #include <map>
 #include <memory>
@@ -72,6 +78,7 @@
 #include <string>
 #include <unordered_map>
 #include <utility>
+#include <vector>
 
 using namespace XFILE;
 using namespace ADDON;
@@ -224,7 +231,9 @@ void OnDirectoryScanned(const std::string& strDirectory)
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 }
 
-void CacheArtwork(const std::string& url, bool retrieveArtDuringScrape)
+void CacheArtwork(const std::string& url,
+                  bool retrieveArtDuringScrape,
+                  const std::string& knownHash = "")
 {
   if (url.empty())
     return;
@@ -245,7 +254,7 @@ void CacheArtwork(const std::string& url, bool retrieveArtDuringScrape)
   constexpr int MAX_SYNC_CACHE_ATTEMPTS = 3;
   for (int attempt = 1; attempt <= MAX_SYNC_CACHE_ATTEMPTS; ++attempt)
   {
-    if (!textureCache->CacheImage(url).empty())
+    if (!textureCache->CacheImage(url, knownHash).empty())
       return; // succeeded
   }
 
@@ -253,6 +262,71 @@ void CacheArtwork(const std::string& url, bool retrieveArtDuringScrape)
   // Fall back to the resilient background path.
   textureCache->BackgroundCacheImage(url);
   CLog::LogF(LOGDEBUG, "Synchronous art caching for {} failed", url);
+}
+
+//! so jobs that were queued but hadn't started are discarded and will never complete.
+constexpr auto ART_CACHE_JOB_POLL_INTERVAL{std::chrono::milliseconds{1000}};
+
+//! \brief An artwork url to cache, with the hash of its source file if that is already known
+struct ArtToCache
+{
+  std::string url;
+  std::string hash; //!< empty if unknown, leaving the texture cache to determine it
+};
+
+void CacheArtwork(std::vector<ArtToCache> art, bool retrieveArtDuringScrape)
+{
+  std::erase_if(art, [](const ArtToCache& a) { return a.url.empty(); });
+
+  // Where the same url appears more than once, order any known hash first so that the copy kept
+  // below is the one that saves a stat
+  std::ranges::sort(art,
+                    [](const ArtToCache& a, const ArtToCache& b)
+                    {
+                      if (a.url != b.url)
+                        return a.url < b.url;
+                      return !a.hash.empty() && b.hash.empty();
+                    });
+  art.erase(std::ranges::begin(std::ranges::unique(art, {}, &ArtToCache::url)), art.end());
+
+  // The background path only queues the urls, so there is nothing to overlap.
+  if (!retrieveArtDuringScrape || art.size() < 2)
+  {
+    for (const auto& a : art)
+      CacheArtwork(a.url, retrieveArtDuringScrape, a.hash);
+    return;
+  }
+
+  // Caching an image is mostly waiting on the source, so let a few overlap. PRIORITY_LOW_PAUSABLE
+  // is what the texture cache queues its own work at, so this shares one allowance with it rather
+  // than competing, and yields to playback the same way.
+  CJobQueue queue{false, CJobManager::GetMaxPausableWorkers(), CJob::PRIORITY_LOW_PAUSABLE};
+  for (const auto& a : art)
+    queue.Submit([a]() { CacheArtwork(a.url, true, a.hash); });
+
+  const auto jobManager{CServiceBroker::GetJobManager()};
+  while (!queue.WaitForCompletion(ART_CACHE_JOB_POLL_INTERVAL))
+  {
+    if (!jobManager->IsRunning())
+    {
+      // Shutting down - whatever is left is abandoned when the queue goes out of scope
+      CLog::LogF(LOGDEBUG, "Abandoning art caching, the job manager has been shut down");
+      break;
+    }
+
+    if (jobManager->ArePausableJobsPaused())
+    {
+      // Playback has started, so nothing still queued here will be dispatched until it stops, and
+      // waiting that long would hold up the scrape. Hand what is left to the background path
+      // instead: its queue outlives this call, so the images are still cached once playback ends
+      // rather than being left for something to ask for them. Anything already cached costs only
+      // the lookup that finds it there.
+      CLog::LogF(LOGDEBUG, "Handing remaining art to background caching, playback has started");
+      for (const auto& a : art)
+        CacheArtwork(a.url, false, a.hash);
+      break;
+    }
+  }
 }
 } // namespace
 
@@ -284,6 +358,14 @@ CVideoInfoScanner::~CVideoInfoScanner()
   {
     try
     {
+      // Background caching reads from the same source as this scan does, and that source is the
+      // limit rather than the CPU. Hold it back to one image at a time until the scan is done, so
+      // that the library becomes browsable as soon as it can - the backlog then catches up faster
+      // than it would have, with the source to itself.
+      const CTextureCache::CBackgroundThrottle throttle{*CServiceBroker::GetTextureCache()};
+
+      m_actorThumbs.clear();
+
       const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
       if (m_showDialog && !settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_BACKGROUNDUPDATE))
@@ -2443,7 +2525,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                      bool bApplyToDir,
                                      bool useLocal,
                                      const std::string& actorArtPath,
-                                     UseRemoteArtWithLocalScraper useRemoteArt /* = yes */) const
+                                     UseRemoteArtWithLocalScraper useRemoteArt /* = yes */)
   {
     int artLevel = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
         CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL);
@@ -3125,19 +3207,56 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
   }
 
-  void CVideoInfoScanner::FetchActorThumbs(
-      std::vector<SActorInfo>& actors,
-      const std::string& actorsDir,
-      UseRemoteArtWithLocalScraper useRemoteArt /* = YES */) const
+  namespace
+  {
+  std::string PrepareActorName(const std::string& name)
+  {
+    std::string folded{name};
+    StringUtils::Trim(folded);
+    StringUtils::ToLower(folded);
+    return folded;
+  }
+  } // namespace
+
+  void CVideoInfoScanner::ResolveActorThumbs(const std::vector<SActorInfo>& actors)
+  {
+    std::vector<std::string> unresolved;
+    for (const auto& actor : actors)
+    {
+      if (!actor.thumb.empty() && !m_actorThumbs.contains(PrepareActorName(actor.strName)))
+        unresolved.push_back(actor.strName);
+    }
+    if (unresolved.empty())
+      return;
+
+    const auto stored{m_database.GetArtForActors(unresolved)};
+
+    // Record every name asked about, so that one without art is not asked about again
+    for (const auto& name : unresolved)
+      m_actorThumbs.try_emplace(PrepareActorName(name));
+
+    const auto& textureCache{CServiceBroker::GetTextureCache()};
+    for (const auto& [name, url] : stored)
+    {
+      // Scraped art (http) is not reused, so that local art still takes preference over it. Note
+      // that this is not IsRemote(), which is also true of a file on a share - those are exactly
+      // the copies worth reusing
+      if (!url.empty() && !URIUtils::IsHTTP(url) && textureCache->HasCachedImage(url))
+        m_actorThumbs.insert_or_assign(PrepareActorName(name), url);
+    }
+  }
+
+  void CVideoInfoScanner::FetchActorThumbs(std::vector<SActorInfo>& actors,
+                                           const std::string& actorsDir,
+                                           UseRemoteArtWithLocalScraper useRemoteArt /* = YES */)
   {
     CFileItemList items;
     // don't try to fetch anything local with plugin source
     if (!URIUtils::IsPlugin(actorsDir) && CDirectory::Exists(actorsDir))
-      CDirectory::GetDirectory(actorsDir, items, ".png|.jpg|.tbn",
-                               DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO);
+      CDirectory::GetDirectory(actorsDir, items, ".png|.jpg|.tbn", DIR_FLAG_NO_FILE_DIRS);
 
     // Index the thumbs by filename (without extension)
-    std::map<std::string, std::string> thumbs;
+    std::map<std::string, ArtToCache> thumbs;
     for (const auto& item : items)
     {
       if (item->IsFolder())
@@ -3145,7 +3264,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
       std::string name{URIUtils::GetFileName(item->GetPath())};
       URIUtils::RemoveExtension(name);
-      thumbs.try_emplace(std::move(name), item->GetPath());
+      thumbs.try_emplace(std::move(name),
+                         ArtToCache{item->GetPath(), CTextureCacheJob::GetImageHash(*item)});
     }
 
     for (auto& actor : actors)
@@ -3159,7 +3279,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         StringUtils::Replace(thumbFile, ' ', '_');
         thumbFile = CUtil::MakeLegalFileName(std::move(thumbFile));
         if (const auto thumb{thumbs.find(thumbFile)}; thumb != thumbs.end())
-          actor.thumb = thumb->second;
+          actor.thumb = thumb->second.url;
         if (!actor.thumbUrl.GetFirstUrlByType().m_url.empty())
         {
           const std::string thumb{CScraperUrl::GetThumbUrl(actor.thumbUrl.GetFirstUrlByType())};
@@ -3171,8 +3291,48 @@ CVideoInfoScanner::~CVideoInfoScanner()
             actor.thumbUrl.Clear();
         }
       }
-      CacheArtwork(actor.thumb, m_artRetrievalTiming == ArtRetrievalTiming::SYNCHRONOUS);
     }
+
+    // Index the hashes taken from the directory listing by url
+    std::map<std::string, std::string> listedHashes;
+    for (const auto& thumb : thumbs | std::views::values)
+    {
+      if (!thumb.hash.empty())
+        listedHashes.emplace(thumb.url, thumb.hash);
+    }
+
+    // Art is held per actor, not per actor per film, so an actor is resolved once and the
+    // answer kept for the rest of the scan
+    const auto& textureCache{CServiceBroker::GetTextureCache()};
+    ResolveActorThumbs(actors);
+
+    // Cache thumbs together (with hashes)
+    std::vector<ArtToCache> thumbsToCache;
+    thumbsToCache.reserve(actors.size());
+    for (auto& actor : actors)
+    {
+      if (actor.thumb.empty())
+        continue;
+
+      const std::string foldedName{PrepareActorName(actor.strName)};
+      const auto known{m_actorThumbs.find(foldedName)};
+
+      if (known != m_actorThumbs.end() && !known->second.empty() && known->second != actor.thumb)
+      {
+        actor.thumb = known->second;
+        continue;
+      }
+
+      const auto hash{listedHashes.find(actor.thumb)};
+      thumbsToCache.push_back(
+          ArtToCache{actor.thumb, hash != listedHashes.end() ? hash->second : std::string{}});
+
+      // Scraped art (http) is not reused, so that local art still takes preference
+      if (!foldedName.empty() && !URIUtils::IsHTTP(actor.thumb))
+        m_actorThumbs.insert_or_assign(foldedName, actor.thumb);
+    }
+
+    CacheArtwork(std::move(thumbsToCache), m_artRetrievalTiming == ArtRetrievalTiming::SYNCHRONOUS);
   }
 
   bool CVideoInfoScanner::DownloadFailed(CGUIDialogProgress* pDialog)
