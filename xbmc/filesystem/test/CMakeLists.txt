@@ -2,6 +2,7 @@ set(SOURCES TestDirectory.cpp
             TestDirectoryCache.cpp
             TestDiscDirectoryHelper.cpp
             TestFile.cpp
+            TestFileCache.cpp
             TestFileFactory.cpp
             TestZipFile.cpp
             TestZipManager.cpp)

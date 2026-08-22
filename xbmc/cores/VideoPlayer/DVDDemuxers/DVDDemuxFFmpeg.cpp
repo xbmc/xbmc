@@ -175,9 +175,13 @@ static int dvd_file_read(void* h, uint8_t* buf, int size)
   std::shared_ptr<CDVDInputStream> pInputStream = static_cast<CDVDDemuxFFmpeg*>(h)->m_pInput;
   int len = pInputStream->Read(buf, size);
   if (len == 0)
+  {
+    // A file input that has bytes left is a stalled source rather than the end
+    if (pInputStream->IsStreamType(DVDSTREAM_TYPE_FILE) && !pInputStream->IsEOF())
+      return AVERROR(EAGAIN);
     return AVERROR_EOF;
-  else
-    return len;
+  }
+  return len;
 }
 /*
 static int dvd_file_write(URLContext* h, uint8_t* buf, int size)
@@ -1011,9 +1015,13 @@ DemuxPacket* CDVDDemuxFFmpeg::ReadInternal(bool keep)
     std::unique_lock lock(m_critSection); // open lock scope
     if (m_pFormatContext)
     {
-      // assume we are not eof
+      // assume we are not eof, and drop any stale io error so a failure
+      // reported below is known to be this read's own
       if (m_pFormatContext->pb)
+      {
         m_pFormatContext->pb->eof_reached = 0;
+        m_pFormatContext->pb->error = 0;
+      }
 
       // check for saved packet after a program change
       if (m_pkt.result < 0)
@@ -1028,6 +1036,12 @@ DemuxPacket* CDVDDemuxFFmpeg::ReadInternal(bool keep)
         m_timeout.SetInfinite();
       }
 
+      if (m_inputStalled && m_pkt.result >= 0)
+      {
+        m_inputStalled = false;
+        CLog::Log(LOGINFO, "CDVDDemuxFFmpeg::{}: the input recovered", __FUNCTION__);
+      }
+
       if (m_pkt.result == AVERROR(EINTR) || m_pkt.result == AVERROR(EAGAIN))
       {
         // timeout, probably no real error, return empty packet
@@ -1035,10 +1049,15 @@ DemuxPacket* CDVDDemuxFFmpeg::ReadInternal(bool keep)
       }
       else if (m_pkt.result == AVERROR_EOF)
       {
+        if (WaitingOutInputStall())
+          bReturnEmpty = true;
       }
       else if (m_pkt.result < 0)
       {
-        Flush();
+        if (m_pkt.result != AVERROR_EXIT && WaitingOutInputStall())
+          bReturnEmpty = true;
+        else
+          Flush();
       }
       // check size and stream index for being in a valid range
       else if (m_pkt.pkt.size < 0 || m_pkt.pkt.stream_index < 0 ||
@@ -1222,6 +1241,36 @@ DemuxPacket* CDVDDemuxFFmpeg::ReadInternal(bool keep)
     pPacket->demuxerId = GetDemuxerId();
   }
   return pPacket;
+}
+
+bool CDVDDemuxFFmpeg::WaitingOutInputStall()
+{
+  // Long enough to ride out a network share dropping individual connections for
+  // over a minute; playback ends once the window closes without a packet.
+  constexpr auto recoveryWindow = 2min;
+
+  if (!m_pInput || !m_pInput->IsStreamType(DVDSTREAM_TYPE_FILE) || m_pInput->IsEOF())
+    return false;
+
+  // Only an io-reported failure is a stall. An index-driven container ends
+  // with the position short of the file length, and a parse error is not a
+  // dropped connection - both must keep ending playback promptly
+  if (!m_pFormatContext || !m_pFormatContext->pb || m_pFormatContext->pb->error == 0)
+    return false;
+
+  if (!m_inputStalled)
+  {
+    m_inputStalled = true;
+    m_stallDeadline.Set(recoveryWindow);
+    CLog::Log(LOGWARNING,
+              "CDVDDemuxFFmpeg::{}: the input stalled short of its length, polling for up to {} s",
+              __FUNCTION__,
+              std::chrono::duration_cast<std::chrono::seconds>(recoveryWindow).count());
+  }
+  else if (m_stallDeadline.IsTimePast())
+    return false;
+
+  return true;
 }
 
 DemuxPacket* CDVDDemuxFFmpeg::Read()
