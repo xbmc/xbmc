@@ -11,9 +11,13 @@
 #include "ServiceBroker.h"
 #include "rendering/MatrixGL.h"
 #include "rendering/RenderSystem.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
+
+#include <algorithm>
 
 using namespace Shaders;
 

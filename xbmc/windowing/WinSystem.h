@@ -58,6 +58,27 @@ class CVideoReferenceClock;
 
 struct VideoPicture;
 
+//! Selects how HDR-authored PGS (Blu-ray bitmap) subtitles are rendered
+//! during HDR10/Dolby Vision playback. Read from
+//! CSettings::SETTING_VIDEOPLAYER_HDRPGSMODE; see
+//! CWinSystemBase::SetHDR()/IsGuiHdrPQTagged() and
+//! COverlayTextureGLES::Render().
+enum class HdrPgsMode
+{
+  //! No GUI HDR tagging attempt, no PGS-specific shader.
+  OFF = 0,
+
+  //! Attempt to tag the GUI surface BT.2020 PQ; render through the
+  //! pass-through shader where tagging is confirmed, or a PQ-to-SDR
+  //! conversion shader otherwise.
+  AUTO = 1,
+
+  //! Never attempt GUI HDR tagging; always render through the PQ-to-SDR
+  //! conversion shader. For platforms where a successful tag causes
+  //! compositor problems unrelated to which PGS shader is used.
+  FORCE_CONVERSION = 2,
+};
+
 class CWinSystemBase
 {
 public:
@@ -245,6 +266,11 @@ public:
    */
   virtual bool SetHDR(const VideoPicture* videoPicture) { return false; }
   virtual bool IsHDRDisplay() { return false; }
+  //! True only when the GUI/OSD surface itself is currently composited as
+  //! a tagged BT.2020 PQ colourspace - not merely that HDR video is playing
+  //! (that's CGraphicContext::IsTransferPQ()). Default false is conservative:
+  //! a platform must confirm tagging actually succeeded, not just attempted.
+  virtual bool IsGuiHdrPQTagged() const { return false; }
   virtual HDR_STATUS ToggleHDR() { return HDR_STATUS::HDR_UNSUPPORTED; }
   virtual HDR_STATUS GetOSHDRStatus() { return HDR_STATUS::HDR_UNSUPPORTED; }
   virtual CHDRCapabilities GetDisplayHDRCapabilities() const { return {}; }

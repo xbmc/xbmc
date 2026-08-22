@@ -44,6 +44,7 @@ public:
     height = sub_h;
     source_width = src.source_width;
     source_height = src.source_height;
+    isPgs = src.isPgs;
 
     pixels.resize(sub_h * linesize);
 
@@ -83,4 +84,13 @@ public:
   int height{0};
   int source_width{0};
   int source_height{0};
+
+  //! True if this overlay was decoded from a PGS (AV_CODEC_ID_HDMV_PGS_SUBTITLE)
+  //! stream. A pure content fact, set once at decode time - deliberately not
+  //! keyed off display/HDR state, which can change after decode. On HDR video,
+  //! PGS palettes are treated as BT.2020 PQ (BD-ROM HDR whitepaper); whether
+  //! that actually requires special handling is decided once, when this
+  //! overlay's texture is built (see OverlayRendererGLES.cpp,
+  //! OVERLAY::GetPgsHdrHandling()).
+  bool isPgs{false};
 };

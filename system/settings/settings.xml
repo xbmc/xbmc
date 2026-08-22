@@ -196,6 +196,41 @@
           </updates>
           <control type="toggle" />
         </setting>
+        <setting id="videoplayer.hdrpgsmode" type="integer" label="39211" help="39212">
+          <requirement>
+            <condition>HAS_MEDIACODEC</condition>
+          </requirement>
+          <dependencies>
+            <dependency type="visible" on="property" name="ishdrdisplay"/>
+          </dependencies>
+          <level>2</level>
+          <default>1</default> <!-- HdrPgsMode::AUTO -->
+          <constraints>
+            <options>
+              <option label="351">0</option> <!-- HdrPgsMode::OFF -->
+              <option label="16316">1</option> <!-- HdrPgsMode::AUTO -->
+              <option label="39213">2</option> <!-- HdrPgsMode::FORCE_CONVERSION -->
+            </options>
+          </constraints>
+          <control type="spinner" format="string" />
+        </setting>
+        <setting id="videoplayer.hdrpgssdrwhitenits" type="integer" label="39214" help="39215">
+          <requirement>
+            <condition>HAS_MEDIACODEC</condition>
+          </requirement>
+          <dependencies>
+            <dependency type="visible" on="property" name="ishdrdisplay"/>
+            <dependency type="visible" setting="videoplayer.hdrpgsmode" operator="!is">0</dependency>
+          </dependencies>
+          <level>2</level>
+          <default>350</default>
+          <constraints>
+            <minimum>100</minimum>
+            <step>25</step>
+            <maximum>600</maximum>
+          </constraints>
+          <control type="slider" format="integer" />
+        </setting>
         <setting id="videoplayer.usedxva2" type="boolean" label="13427" help="36158">
           <requirement>HasDXVA2</requirement>
           <level>2</level>

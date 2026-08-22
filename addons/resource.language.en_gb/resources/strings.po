@@ -24599,7 +24599,40 @@ msgctxt "#39210"
 msgid "If enabled, Dolby Vision files will have level 5 (active area) metadata overridden to zero offsets. Enable if your display has issues with incorrectly cropped image in Dolby Vision playback."
 msgstr ""
 
-#empty strings from id 39211 to 39899
+#. Label of setting "HDR PGS subtitle processing" of category "Videos" in group "Processing" of settings section "Player"
+#. Selects how PGS (Blu-ray bitmap) subtitles are rendered during HDR10/Dolby
+#. Vision playback: BT.2020 PQ surface tagging with pass-through rendering,
+#. a PQ-to-SDR conversion, or plain stock rendering.
+#: system/settings/settings.xml
+msgctxt "#39211"
+msgid "HDR PGS subtitle processing"
+msgstr ""
+
+#. Help text for setting "HDR PGS subtitle processing" of label #39211
+#: system/settings/settings.xml
+msgctxt "#39212"
+msgid "Controls how PGS (Blu-ray bitmap) subtitles are rendered during HDR10/Dolby Vision playback. Auto tags the GUI surface as BT.2020 PQ where supported and falls back to converting subtitles to SDR where tagging fails. Force conversion always converts and never tags the GUI surface; use this if Auto causes flickering or other display problems. Off disables the feature."
+msgstr ""
+
+#. Option of setting "HDR PGS subtitle processing" of label #39211 - always converts PGS subtitles to SDR and never tags the GUI surface as HDR
+#: system/settings/settings.xml
+msgctxt "#39213"
+msgid "Force conversion"
+msgstr ""
+
+#. Label of setting "HDR PGS conversion white point" of category "Videos" in group "Processing" of settings section "Player"
+#: system/settings/settings.xml
+msgctxt "#39214"
+msgid "HDR PGS conversion white point (nits)"
+msgstr ""
+
+#. Help text for setting "HDR PGS conversion white point" of label #39214
+#: system/settings/settings.xml
+msgctxt "#39215"
+msgid "Brightness, in nits, treated as SDR white when converting PGS subtitles. Lower values make subtitles brighter, higher values make them dimmer but preserve more highlight detail. There is no single correct value; adjust until subtitle colours look right on this display."
+msgstr ""
+
+#empty strings from id 39216 to 39899
 
 #. List formatting: pattern used to join a list of exactly two items, e.g. "A and B"
 #. STR_LIST_AND_TWO

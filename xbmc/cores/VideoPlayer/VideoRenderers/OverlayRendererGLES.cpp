@@ -23,7 +23,6 @@
 #include "utils/GLUtils.h"
 #include "utils/MathUtils.h"
 #include "utils/log.h"
-#include "windowing/WinSystem.h"
 
 #include <cmath>
 
@@ -161,9 +160,26 @@ COverlayTextureGLES::COverlayTextureGLES(const CDVDOverlayImage& o, CRect& rSour
   }
   else
   {
+    // PGS (Blu-ray bitmap) subtitles under HDR video are treated as
+    // BT.2020 PQ (BD-ROM HDR whitepaper). Decide once, here, whether this
+    // overlay's palette needs any special handling, and if so convert the
+    // palette (<=256 entries) rather than every output pixel every frame -
+    // see GetPgsHdrHandling()/ConvertPgsPaletteToSdr().
+    float sdrWhiteNits = 0.0f;
+    m_pgsHandling = OVERLAY::GetPgsHdrHandling(o.isPgs, sdrWhiteNits);
+
+    std::vector<uint32_t> convertedPalette;
+    const std::vector<uint32_t>* paletteOverride = nullptr;
+    if (m_pgsHandling == OVERLAY::PgsHdrHandling::CONVERTED_TO_SDR)
+    {
+      convertedPalette = o.palette;
+      OVERLAY::ConvertPgsPaletteToSdr(convertedPalette, sdrWhiteNits);
+      paletteOverride = &convertedPalette;
+    }
+
     std::vector<uint32_t> rgba(o.width * o.height);
     m_pma = !!USE_PREMULTIPLIED_ALPHA;
-    convert_rgba(o, m_pma, rgba);
+    convert_rgba(o, m_pma, rgba, paletteOverride);
     LoadTexture(GL_TEXTURE_2D, o.width, o.height, o.width * 4, &m_u, &m_v, false, rgba.data());
   }
 
@@ -459,7 +475,19 @@ void COverlayTextureGLES::Render(SRenderState& state)
 
   CRenderSystemGLES* renderSystem =
       dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
-  renderSystem->EnableGUIShader(ShaderMethodGLES::SM_TEXTURE_NOBLEND);
+
+  // m_pgsHandling was resolved once, when this overlay's texture was built
+  // (see the constructor and OVERLAY::GetPgsHdrHandling()), from the same
+  // HdrPgsMode/display-tag state this used to re-read via CServiceBroker on
+  // every single Render() call. Both outcomes that need special handling -
+  // an unconverted PQ pass-through and an already-converted-to-SDR palette -
+  // use the same shader: the stock texture shader compiled without
+  // KODI_TRANSFER_PQ/m_sdrPeak scaling, since in both cases the texture
+  // already holds its final display-ready value and must not be scaled
+  // further.
+  renderSystem->EnableGUIShader(m_pgsHandling == OVERLAY::PgsHdrHandling::NONE
+                                     ? ShaderMethodGLES::SM_TEXTURE_NOBLEND
+                                     : ShaderMethodGLES::SM_TEXTURE_NOBLEND_HDR_PGS);
   GLint posLoc = renderSystem->GUIShaderGetPos();
   GLint tex0Loc = renderSystem->GUIShaderGetCoord0();
   GLint depthLoc = renderSystem->GUIShaderGetDepth();

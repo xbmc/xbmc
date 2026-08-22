@@ -36,7 +36,54 @@ struct SQuads
   std::vector<SQuad> quad;
 };
 
-void convert_rgba(const CDVDOverlayImage& o, bool mergealpha, std::vector<uint32_t>& rgba);
+//! How a PGS (Blu-ray bitmap) overlay's palette was handled - decided once,
+//! by GetPgsHdrHandling() below, when the overlay's texture is built. See
+//! that function and CDVDOverlayImage::isPgs (DVDOverlayImage.h) for why
+//! this is not simply re-derived from isPgs at render time.
+enum class PgsHdrHandling
+{
+  //! Not a PGS overlay, or HdrPgsMode::OFF, or non-PQ video: render
+  //! the palette exactly as decoded.
+  NONE,
+
+  //! Palette already holds valid BT.2020 PQ code values and the GUI surface
+  //! is confirmed tagged BT.2020 PQ: render unconverted.
+  PQ_PASSTHROUGH,
+
+  //! Palette was converted from BT.2020 PQ to BT.709/sRGB below,
+  //! at the configured white point, before upload.
+  CONVERTED_TO_SDR,
+};
+
+//! Decides how a PGS overlay's palette should be handled, from live
+//! HdrPgsMode / video-transfer / GUI-tag state.
+//!
+//! Call once per overlay, when its texture is about to be built. This
+//! reads live state, unlike the isPgs content fact. It is not re-read
+//! per frame; mode/tag changes are expected to be accompanied by a new
+//! overlay/rebuild. If that changes, this decision must be invalidated
+//! accordingly.
+//!
+//! On CONVERTED_TO_SDR, sdrWhiteNits is set to the configured white point
+//! in nits; left untouched otherwise.
+PgsHdrHandling GetPgsHdrHandling(bool isPgs, float& sdrWhiteNits);
+
+//! Converts a PGS palette (CDVDOverlayImage::palette - PIXEL_A/R/G/BSHIFT-
+//! packed, see PlatformDefs.h) in place from BT.2020 ST.2084 (PQ)
+//! to BT.709/sRGB, scaled to the given SDR white point in nits. Alpha
+//! is untouched. Operates on the whole palette (<=256 entries): PGS colour
+//! information lives entirely in the palette, so converting it once here is
+//! equivalent to, and far cheaper than, converting every output pixel every
+//! frame in a shader.
+void ConvertPgsPaletteToSdr(std::vector<uint32_t>& palette, float sdrWhiteNits);
+
+//! paletteOverride, when non-null, is used in place of o.palette - e.g.
+//! a palette already converted by ConvertPgsPaletteToSdr() above. o.pixels
+//! (the per-pixel palette indices) is always taken from o itself either way.
+void convert_rgba(const CDVDOverlayImage& o,
+                  bool mergealpha,
+                  std::vector<uint32_t>& rgba,
+                  const std::vector<uint32_t>* paletteOverride = nullptr);
 void convert_rgba(const CDVDOverlaySpu& o,
                   bool mergealpha,
                   int& min_x,
