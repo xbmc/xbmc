@@ -128,7 +128,10 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
     // Delayed Intent
     if (getIntent().getData() != null)
     {
-      mDelayedIntents.add(new DelayedIntent(new Intent(getIntent()), 5000));
+      if (savedInstanceState == null)
+      {
+        mDelayedIntents.add(new DelayedIntent(new Intent(getIntent()), 5000));
+      }
       getIntent().setData(null);
     }
 
