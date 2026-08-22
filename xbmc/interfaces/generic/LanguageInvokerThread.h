@@ -11,6 +11,7 @@
 #include "interfaces/generic/ILanguageInvoker.h"
 #include "threads/Thread.h"
 
+#include <mutex>
 #include <string>
 #include <vector>
 
@@ -26,12 +27,21 @@ public:
 
   virtual InvokerState GetState() const;
 
-  const std::string& GetScript() const { return m_script; }
   std::shared_ptr<ILanguageInvoker> GetInvoker() const { return m_invoker; }
   bool Reuseable(const std::string& script) const
   {
-    return !m_bStop && m_reusable && GetState() == InvokerStateScriptDone && m_script == script;
-  };
+    // Cheap, independently-synchronised checks first, so the common "not
+    // reusable" answer does not contend with a running script for m_mutex.
+    if (m_bStop || GetState() != InvokerStateScriptDone)
+      return false;
+
+    // m_script and m_reusable are written by execute() and Process() under
+    // m_mutex. Reading them unlocked from the manager thread was a data race on
+    // a std::string: a concurrent assignment can reallocate the buffer while
+    // the comparison walks it.
+    std::unique_lock<std::mutex> lck(m_mutex);
+    return m_reusable && m_script == script;
+  }
   virtual void Release();
 
 protected:
@@ -49,7 +59,10 @@ private:
   std::string m_script;
   std::vector<std::string> m_args;
 
-  std::mutex m_mutex;
+  //! Guards m_script, m_args and m_reusable. Taken while m_critSection is held
+  //! (CScriptInvocationManager -> Reuseable()/Release()); never the other way
+  //! round, which is why Process() drops it across Execute().
+  mutable std::mutex m_mutex;
   std::condition_variable m_condition;
   bool m_restart = false;
   bool m_reusable = false;
