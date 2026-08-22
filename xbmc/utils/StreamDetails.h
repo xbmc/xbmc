@@ -221,11 +221,73 @@ public:
   std::string GetStereoMode(int idx = 0) const;
   std::string GetVideoLanguage(int idx = 0) const;
 
+  /*!
+   * \name Audio stream properties
+   *
+   * An idx of 0 asks for the technically best stream, as judged by StreamUtils::CompareAudioQuality()
+   * (based on codec and channel count only).
+   *
+   * Any other idx is a 1-based ordinal into the streams in the order the source presented them.
+   *
+   * @{
+   */
   std::string GetAudioCodec(int idx = 0) const;
   std::string GetAudioLanguage(int idx = 0) const;
   int GetAudioChannels(int idx = 0) const;
+  /*! @} */
 
   std::string GetSubtitleLanguage(int idx = 0) const;
+
+  /*!
+   * \brief Get the index of the best audio stream in the given language.
+   *
+   * \param language The preferred audio language as an ISO 639 code, empty for no preference
+   * \return The 1-based index of the best stream in that language, or 0 (meaning the technically
+   *         best stream, see GetAudioCodec()) when no preference was given or no stream matches
+   */
+  int GetPreferredAudioStreamIndex(const std::string& language) const;
+
+  /*!
+   * \brief Get the language of the audio stream playback starts with.
+   *
+   * This is the first stream as the source presented it, which is not the same thing as either
+   * the technically best stream (GetAudioLanguage()) or the one the user's preferences ask for
+   * (GetPreferredAudioStreamIndex()). The streams of a bluray playlist are stored in stream
+   * number order, so the first is audio stream number 1, ie. the stream the disc expects a
+   * player to start with.
+   *
+   * \return The language of the first audio stream, or an empty string if there is none
+   */
+  std::string GetDefaultAudioLanguage() const;
+
+  /*!
+   * \brief Get the codec of the audio stream playback starts with.
+   *
+   * The counterpart of GetDefaultAudioLanguage() for the codec.
+   *
+   * \return The codec of the first audio stream, or an empty string if there is none
+   */
+  std::string GetDefaultAudioCodec() const;
+
+  /*!
+   * \brief Get the channel count of the audio stream playback starts with.
+   *
+   * The counterpart of GetDefaultAudioLanguage() for the channel count.
+   *
+   * \return The channel count of the first audio stream, or -1 if there is none
+   */
+  int GetDefaultAudioChannels() const;
+
+  /*!
+   * \brief Get the language of the subtitle stream playback starts with.
+   *
+   * The counterpart of GetDefaultAudioLanguage() for subtitles, ie. presentation graphic stream
+   * number 1 of a bluray playlist. Note that this says nothing about whether subtitles are
+   * displayed to begin with, as that is a separate flag the source may not carry.
+   *
+   * \return The language of the first subtitle stream, or an empty string if there is none
+   */
+  std::string GetDefaultSubtitleLanguage() const;
 
   void AddStream(CStreamDetail *item);
   void Reset(void);

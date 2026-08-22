@@ -12,6 +12,7 @@
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 
+#include <algorithm>
 #include <array>
 
 extern "C"
@@ -23,20 +24,25 @@ extern "C"
 int StreamUtils::GetCodecPriority(const std::string &codec)
 {
   /*
-   * Technically flac, truehd, and dtshd_ma are equivalently good as they're all lossless. However,
-   * ffmpeg can't decode dtshd_ma losslessy yet.
+   * Priority   Codecs
+   * 8          truehd_atmos, dtshd_ma_x_imax, dtshd_ma_x — lossless + objects
+   * 7          truehd, dtshd_ma - lossless, can be bit-streamed (offload processing)
+   * 6          flac, pcm_bluray - lossless
+   * 5..1       dtshd_hra, eac3_ddp_atmos, eac3, dts, ac3 - lossy, decreasing quality
    */
   if (codec == "truehd_atmos") // Dolby TrueHD with Atmos
-    return 11;
+    return 8;
   if (codec == "dtshd_ma_x_imax") // DTS:X IMAX Enhanced
-    return 10;
+    return 8;
   if (codec == "dtshd_ma_x") // DTS:X
-    return 9;
-  if (codec == "flac") // Lossless FLAC
     return 8;
   if (codec == "truehd") // Dolby TrueHD
     return 7;
   if (codec == "dtshd_ma") // DTS-HD Master Audio (previously known as DTS++)
+    return 7;
+  if (codec == "flac") // Lossless FLAC
+    return 6;
+  if (codec == "pcm_bluray") // Uncompressed LPCM
     return 6;
   if (codec == "dtshd_hra") // DTS-HD High Resolution Audio
     return 5;
@@ -48,6 +54,48 @@ int StreamUtils::GetCodecPriority(const std::string &codec)
     return 2;
   if (codec == "ac3") // Dolby Digital
     return 1;
+  return 0;
+}
+
+int StreamUtils::CompareAudioQuality(const std::string& codecA,
+                                     int channelsA,
+                                     const std::string& codecB,
+                                     int channelsB)
+{
+  const int priorityA{GetCodecPriority(codecA)};
+  const int priorityB{GetCodecPriority(codecB)};
+
+  // A channel count of zero or less means unknown, and the sources disagree on which of those to
+  // use - a stream the player described carries 0 whereas one restored from an NFO or a NULL
+  // database column carries -1. Fold them together so that two equally unknown streams compare
+  // equal and fall through to the codec, rather than one sentinel outranking the other.
+  const int knownChannelsA{std::max(0, channelsA)};
+  const int knownChannelsB{std::max(0, channelsB)};
+
+  // Once both streams are beyond stereo the codec describes the stream better than the channel
+  // count does, so 5.1 TrueHD is a better listen than 7.1 AC3. An unknown channel count never
+  // takes this path and stays the poorest choice below.
+  if (knownChannelsA > 2 && knownChannelsB > 2)
+  {
+    if (priorityA != priorityB)
+      return priorityA > priorityB ? 1 : -1;
+
+    // Codecs of equal rank are equally good, so the wider presentation wins
+    if (knownChannelsA != knownChannelsB)
+      return knownChannelsA > knownChannelsB ? 1 : -1;
+
+    return 0;
+  }
+
+  // Otherwise the first choice is the stream with the most channels, as the step up from stereo
+  // to surround outweighs any codec difference
+  if (knownChannelsA != knownChannelsB)
+    return knownChannelsA > knownChannelsB ? 1 : -1;
+
+  // In case of a tie, revert to codec priority
+  if (priorityA != priorityB)
+    return priorityA > priorityB ? 1 : -1;
+
   return 0;
 }
 
