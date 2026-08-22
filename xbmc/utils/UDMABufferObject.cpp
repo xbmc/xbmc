@@ -203,11 +203,7 @@ uint8_t* CUDMABufferObject::GetMemory()
     return m_map;
   }
 
-  // Map the dma-buf itself rather than the memfd behind it. DMA_BUF_IOCTL_SYNC,
-  // which SyncStart() and SyncEnd() use to bracket CPU access, only governs
-  // mappings of the dma-buf, so writes through a mapping of the memfd sit
-  // outside the bracket entirely.
-  m_map = static_cast<uint8_t*>(mmap(nullptr, m_size, PROT_READ | PROT_WRITE, MAP_SHARED, m_fd, 0));
+  m_map = static_cast<uint8_t*>(mmap(nullptr, m_size, PROT_WRITE, MAP_SHARED, m_memfd, 0));
   if (m_map == MAP_FAILED)
   {
     CLog::Log(LOGERROR, "CUDMABufferObject::{} - mmap failed, errno={}", __FUNCTION__,
