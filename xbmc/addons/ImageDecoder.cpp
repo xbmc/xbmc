@@ -206,5 +206,9 @@ bool CImageDecoder::Decode(unsigned char* const pixels,
   m_width = width;
   m_height = height;
 
+  // Only these two addon-facing formats carry a per-pixel alpha channel.
+  if (result)
+    m_hasAlpha = (addonFmt == ADDON_IMG_FMT_A8R8G8B8 || addonFmt == ADDON_IMG_FMT_RGBA8);
+
   return result;
 }
