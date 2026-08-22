@@ -42,25 +42,45 @@ void CLanguageInvokerThread::Release()
   m_condition.notify_one();
 }
 
+bool CLanguageInvokerThread::Claim()
+{
+  bool unclaimed = false;
+  return m_claimed.compare_exchange_strong(unclaimed, true);
+}
+
+void CLanguageInvokerThread::ReleaseClaim()
+{
+  m_claimed = false;
+}
+
 bool CLanguageInvokerThread::execute(const std::string &script, const std::vector<std::string> &arguments)
 {
   if (m_invoker == NULL || script.empty())
     return false;
 
+  std::unique_lock<std::mutex> lck(m_mutex);
+
+  // The Process() loop has gone but the thread has not: CThread::IsRunning()
+  // stays true all through OnExit()/Py_EndInterpreter, so a restart set here
+  // would notify a condition variable nobody waits on and the script would
+  // silently never run. Create() is not an alternative either - it calls
+  // exit(1) while the previous thread has not fulfilled its promise. Refuse,
+  // and let the caller start a fresh thread.
+  if (m_processDone)
+    return false;
+
+  m_script = script;
+  m_args = arguments;
+
   if (CThread::IsRunning())
   {
-    std::unique_lock<std::mutex> lck(m_mutex);
-    m_script = script;
-    m_args = arguments;
     m_restart = true;
     m_condition.notify_one();
+    return true;
   }
-  else
-  {
-    m_script = script;
-    m_args = arguments;
-    Create();
-  }
+
+  lck.unlock();
+  Create();
 
   //Todo wait until running
 
@@ -105,7 +125,8 @@ void CLanguageInvokerThread::Process()
     return;
 
   std::unique_lock<std::mutex> lckdl(m_mutex);
-  do
+  bool keepGoing = true;
+  while (keepGoing)
   {
     m_restart = false;
     const std::string script = m_script;
@@ -118,12 +139,22 @@ void CLanguageInvokerThread::Process()
     m_invoker->Execute(script, args);
     lckdl.lock();
 
-    if (m_invoker->GetState() != InvokerStateScriptDone)
+    // A claimed invoker was Reset() on purpose by whoever claimed it, so its
+    // state says nothing about whether this thread is still worth keeping.
+    // Reading it unconditionally raced that Reset() and retired the very
+    // thread the claimer was about to run its script on.
+    if (!IsClaimed() && m_invoker->GetState() != InvokerStateScriptDone)
       m_reusable = false;
 
-    m_condition.wait(lckdl, [this] { return m_bStop || m_restart || !m_reusable; });
+    m_condition.wait(lckdl,
+                     [this] { return m_bStop || m_restart || (!m_reusable && !IsClaimed()); });
 
-  } while (m_reusable && !m_bStop);
+    // A claim keeps the loop open, so a stop request does not have to be
+    // ignored to protect a script that has just been handed to this thread.
+    keepGoing = (m_restart || m_reusable || IsClaimed()) && !m_bStop;
+    if (!keepGoing)
+      m_processDone = true; // set under m_mutex, before execute() can look again
+  }
 }
 
 void CLanguageInvokerThread::OnExit()

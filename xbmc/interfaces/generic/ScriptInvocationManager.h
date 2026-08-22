@@ -15,9 +15,51 @@
 #include <map>
 #include <memory>
 #include <set>
+#include <utility>
 #include <vector>
 
 class CLanguageInvokerThread;
+
+/*!
+ * \brief RAII claim on the reusable language invoker and its plugin handle.
+ *
+ * While a claim is held CScriptInvocationManager will neither hand that invoker
+ * to another script nor release it as idle. Dropping the claim - on scope exit,
+ * an early return, or an exception - is what puts the slot back in circulation,
+ * so a caller cannot leak the claimed state by forgetting to clean up.
+ */
+class CReusableInvokerClaim
+{
+public:
+  CReusableInvokerClaim() = default;
+  ~CReusableInvokerClaim() { Release(); }
+
+  CReusableInvokerClaim(CReusableInvokerClaim&& other) noexcept { *this = std::move(other); }
+  CReusableInvokerClaim& operator=(CReusableInvokerClaim&& other) noexcept;
+
+  CReusableInvokerClaim(const CReusableInvokerClaim&) = delete;
+  CReusableInvokerClaim& operator=(const CReusableInvokerClaim&) = delete;
+
+  //! \brief True if a reusable invoker and its plugin handle were claimed.
+  bool IsValid() const { return m_thread != nullptr; }
+
+  //! \brief The claimed plugin handle, or -1 if nothing was claimed.
+  int GetPluginHandle() const { return m_pluginHandle; }
+
+  //! \brief Drop the claim. Safe to call on an invalid claim and more than once.
+  void Release();
+
+private:
+  friend class CScriptInvocationManager;
+  CReusableInvokerClaim(std::shared_ptr<CLanguageInvokerThread> thread, int pluginHandle)
+    : m_thread(std::move(thread)),
+      m_pluginHandle(pluginHandle)
+  {
+  }
+
+  std::shared_ptr<CLanguageInvokerThread> m_thread;
+  int m_pluginHandle{-1};
+};
 
 class CScriptInvocationManager
 {
@@ -30,13 +72,32 @@ public:
   void RegisterLanguageInvocationHandler(ILanguageInvocationHandler *invocationHandler, const std::string &extension);
   void RegisterLanguageInvocationHandler(ILanguageInvocationHandler *invocationHandler, const std::set<std::string> &extensions);
   void UnregisterLanguageInvocationHandler(ILanguageInvocationHandler *invocationHandler);
-  bool HasLanguageInvoker(const std::string &script) const;
-  std::shared_ptr<ILanguageInvoker> GetLanguageInvoker(const std::string& script);
+  bool HasLanguageInvoker(const std::string& script) const;
 
   /*!
-  * \brief Returns addon_handle if last reusable invoker is ready to use.
-  */
-  int GetReusablePluginHandle(const std::string& script);
+   * \brief Returns the invoker to run the given script with.
+   *
+   * \param script Path to the script to be executed
+   * \param pluginHandle The plugin handle the script will run with, or -1 if it
+   *        is not a plugin invocation. A handle matching an outstanding claim
+   *        (see ClaimReusableInvoker) resolves to that claim's invoker.
+   * \return The invoker to use, or a new one if nothing reusable is available
+   */
+  std::shared_ptr<ILanguageInvoker> GetLanguageInvoker(const std::string& script,
+                                                       int pluginHandle = -1);
+
+  /*!
+   * \brief Claim the reusable invoker for the given script, if there is one.
+   *
+   * A valid claim gives the caller exclusive use of a parked interpreter and the
+   * plugin handle it was created for. Hold it for as long as the script runs;
+   * destroying it hands the invoker back. An invalid claim means the caller has
+   * to allocate its own handle and will get a fresh invoker.
+   *
+   * \param script Path to the script about to be executed
+   * \return The claim, which is invalid if nothing reusable was available
+   */
+  CReusableInvokerClaim ClaimReusableInvoker(const std::string& script);
 
   /*!
    * \brief Executes the given script asynchronously in a separate thread.
@@ -144,6 +205,10 @@ private:
   using LanguageInvocationHandlerMap = std::map<std::string, ILanguageInvocationHandler*>;
 
   LanguageInvokerThread getInvokerThread(int scriptId) const;
+  void ReleaseLastInvokerIfIdle();
+  //! True if the last reusable thread is claimed, has a script queued, or is
+  //! running one. Caller must hold m_critSection.
+  bool LastInvokerOccupied() const;
 
   LanguageInvocationHandlerMap m_invocationHandlers;
   LanguageInvokerThreadMap m_scripts;
