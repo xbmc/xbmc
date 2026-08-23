@@ -424,10 +424,8 @@ public:
   static void FFReleaseBuffer(void *opaque, uint8_t *data);
 private:
   CVAAPIContext();
-  void Close();
   void SetVaDisplayForSystem();
   bool CreateContext();
-  void DestroyContext();
   void QueryCaps();
   bool CheckSuccess(VAStatus status, const std::string& function);
   bool IsValidDecoder(CDecoder *decoder);
@@ -435,6 +433,8 @@ private:
   static CVAAPIContext *m_context;
   static CCriticalSection m_section;
   VADisplay m_display = NULL;
+  // Diagnostics-only: nothing branches on this value (see Release()) --
+  // logged on change to make decoder-lifecycle issues visible.
   int m_refCount;
   int m_profileCount;
   VAProfile *m_profiles;

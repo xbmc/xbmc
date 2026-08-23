@@ -676,12 +676,17 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(VideoPicture* pVideoPi
     if (ret == VC_PICTURE)
     {
       if (m_pHardware->GetPicture(m_pCodecContext, pVideoPicture))
+      {
+        m_hwFailedCount = 0;
         return VC_PICTURE;
+      }
       else
         return VC_ERROR;
     }
     else if (ret == VC_BUFFER)
       ;
+    else if (ret == VC_FATAL)
+      return HandleHwFatal();
     else
       return ret;
   }
@@ -739,7 +744,10 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(VideoPicture* pVideoPi
       if (ret == VC_PICTURE)
       {
         if (m_pHardware->GetPicture(m_pCodecContext, pVideoPicture))
+        {
+          m_hwFailedCount = 0;
           return VC_PICTURE;
+        }
         else
           return VC_ERROR;
       }
@@ -851,13 +859,15 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(VideoPicture* pVideoPi
     }
     else if (ret == VC_FATAL)
     {
-      m_decoderState = STATE_HW_FAILED;
-      return VC_REOPEN;
+      return HandleHwFatal();
     }
     else if (ret == VC_PICTURE)
     {
       if (m_pHardware->GetPicture(m_pCodecContext, pVideoPicture))
+      {
+        m_hwFailedCount = 0;
         return VC_PICTURE;
+      }
       else
         return VC_ERROR;
     }
@@ -970,6 +980,16 @@ void CDVDVideoCodecFFmpeg::Reopen()
   {
     Dispose();
   }
+}
+
+CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::HandleHwFatal()
+{
+  m_hwFailedCount++;
+  CLog::Log(LOGWARNING,
+            "CDVDVideoCodecFFmpeg::{} - hw decode failure {} (consecutive), retrying hardware",
+            __FUNCTION__, m_hwFailedCount);
+  m_decoderState = STATE_NONE;
+  return VC_REOPEN;
 }
 
 bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
