@@ -673,6 +673,69 @@ TEST(TestStreamDetails, Source_SurvivesCopyAssignment)
 
 namespace
 {
+// Builds a CStreamDetails carrying audio and subtitle streams in the order given, as a bluray
+// playlist's streams are stored in stream number order.
+CStreamDetails MakeStreamDetailsWithLanguages(const std::vector<std::string>& audioLanguages,
+                                              const std::vector<std::string>& subtitleLanguages)
+{
+  CStreamDetails details;
+  for (const auto& language : audioLanguages)
+  {
+    auto* audio = new CStreamDetailAudio();
+    audio->m_strCodec = "dtshd_ma";
+    audio->m_iChannels = 6;
+    audio->m_strLanguage = language;
+    audio->SetSource(CStreamDetail::MEDIA);
+    details.AddStream(audio);
+  }
+  for (const auto& language : subtitleLanguages)
+  {
+    auto* subtitle = new CStreamDetailSubtitle();
+    subtitle->m_strLanguage = language;
+    subtitle->SetSource(CStreamDetail::MEDIA);
+    details.AddStream(subtitle);
+  }
+  details.DetermineBestStreams();
+  return details;
+}
+} // namespace
+
+TEST(TestStreamDetails, FirstLanguage_IsTheFirstStreamNotTheBestMatch)
+{
+  // Two bluray playlists of the same movie differing only in which stream they start on must
+  // report different default languages, whatever the user's language preferences make "best".
+  const CStreamDetails all{MakeStreamDetailsWithLanguages({"eng", "jpn"}, {"eng", "fra", "jpn"})};
+  EXPECT_EQ("eng", all.GetFirstAudioLanguage());
+  EXPECT_EQ("eng", all.GetFirstSubtitleLanguage());
+
+  const CStreamDetails japanese{MakeStreamDetailsWithLanguages({"jpn", "eng"}, {"jpn", "eng"})};
+  EXPECT_EQ("jpn", japanese.GetFirstAudioLanguage());
+  EXPECT_EQ("jpn", japanese.GetFirstSubtitleLanguage());
+}
+
+TEST(TestStreamDetails, FirstLanguage_EmptyWhenThereIsNoSuchStream)
+{
+  const CStreamDetails none{MakeStreamDetailsWithLanguages({}, {})};
+  EXPECT_EQ("", none.GetFirstAudioLanguage());
+  EXPECT_EQ("", none.GetFirstSubtitleLanguage());
+
+  // A playlist can offer audio without subtitles
+  const CStreamDetails audioOnly{MakeStreamDetailsWithLanguages({"eng"}, {})};
+  EXPECT_EQ("eng", audioOnly.GetFirstAudioLanguage());
+  EXPECT_EQ("", audioOnly.GetFirstSubtitleLanguage());
+}
+
+TEST(TestStreamDetails, FirstLanguage_UnknownLanguageIsReportedAsEmpty)
+{
+  // A stream number table need not name a language, and an empty language must be passed
+  // through rather than falling back to another stream.
+  const CStreamDetails details{MakeStreamDetailsWithLanguages({"", "eng"}, {"", "eng"})};
+  EXPECT_EQ("", details.GetFirstAudioLanguage());
+  EXPECT_EQ("", details.GetFirstSubtitleLanguage());
+}
+
+namespace
+{
 // Builds a CStreamDetails carrying the given audio streams, in the order the source presented
 // them, so that the index of the preferred stream can be asserted.
 CStreamDetails MakeAudioStreams(
@@ -747,4 +810,44 @@ TEST(TestStreamDetails, PreferredAudio_NoAudioStreams)
   const CStreamDetails details{MakeAudioStreams({})};
   EXPECT_EQ(0, details.GetPreferredAudioStreamIndex("eng"));
   EXPECT_EQ("", details.GetAudioCodec(details.GetPreferredAudioStreamIndex("eng")));
+}
+
+TEST(TestStreamDetails, FirstAudio_CodecAndChannelsComeFromTheFirstStream)
+{
+  // The disc starts on a modest Japanese track, the technically best stream is a German one, and
+  // an English speaker would hear a third. Describing the disc default must not borrow from
+  // either of the others.
+  const CStreamDetails details{
+      MakeAudioStreams({{"jpn", "ac3", 2}, {"ger", "truehd", 8}, {"eng", "dtshd_ma", 6}})};
+
+  EXPECT_EQ("jpn", details.GetFirstAudioLanguage());
+  EXPECT_EQ("ac3", details.GetFirstAudioCodec());
+  EXPECT_EQ(2, details.GetFirstAudioChannels());
+
+  // ie. not the technically best stream idx 0 describes
+  EXPECT_EQ("truehd", details.GetAudioCodec());
+  EXPECT_EQ(8, details.GetAudioChannels());
+
+  // nor the stream the user's language preference would pick
+  EXPECT_EQ("dtshd_ma", details.GetAudioCodec(details.GetPreferredAudioStreamIndex("eng")));
+  EXPECT_EQ(6, details.GetAudioChannels(details.GetPreferredAudioStreamIndex("eng")));
+}
+
+TEST(TestStreamDetails, FirstAudio_CodecAndChannelsWhenThereIsNoSuchStream)
+{
+  // Matches GetAudioCodec()/GetAudioChannels() for a missing stream, so the GUI suppresses the
+  // label rather than showing a placeholder.
+  const CStreamDetails none{MakeAudioStreams({})};
+  EXPECT_EQ("", none.GetFirstAudioCodec());
+  EXPECT_EQ(-1, none.GetFirstAudioChannels());
+}
+
+TEST(TestStreamDetails, FirstAudio_UnknownCodecAndChannelsArePassedThrough)
+{
+  // A stream number table need not describe the stream fully, and the gap must be passed through
+  // rather than falling back to another stream.
+  const CStreamDetails details{MakeAudioStreams({{"", "", 0}, {"eng", "truehd", 8}})};
+  EXPECT_EQ("", details.GetFirstAudioLanguage());
+  EXPECT_EQ("", details.GetFirstAudioCodec());
+  EXPECT_EQ(0, details.GetFirstAudioChannels());
 }

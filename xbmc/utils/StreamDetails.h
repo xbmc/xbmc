@@ -247,6 +247,63 @@ public:
    */
   int GetPreferredAudioStreamIndex(const std::string& language) const;
 
+  /*!
+   * \brief Get the language of the first audio stream in the order the source lists them.
+   *
+   * This is neither the technically best stream (GetAudioLanguage()) nor the one the user's
+   * preferences ask for (GetPreferredAudioStreamIndex()) - it is simply the stream listed first
+   * by whatever produced these details, which is one of:
+   *
+   * - a bluray playlist, whose streams are stored in stream number order, so the first is audio
+   *   stream number 1 - the stream the disc expects a player to start with. This is the only
+   *   case where the order is specified rather than conventional.
+   * - any other container, in the order its demuxer reports the streams.
+   * - an NFO, in the order its elements appear.
+   *
+   * Note this does not say which stream playback will actually start on. That also depends on
+   * stream flags, a choice remembered from a previous watch and the audio layout at play time,
+   * none of which the library carries.
+   *
+   * Note also that "first" is the order the details were stored, which is the order the source
+   * presented for freshly scanned or disc-browsed content. It is not currently guaranteed to
+   * survive a round trip through the video database, which stores no stream ordinal and reads
+   * the rows back without an ORDER BY.
+   *
+   * \todo Persist a stream ordinal and order by it, so this holds unconditionally.
+   *
+   * \return The language of the first audio stream, or an empty string if there is none
+   */
+  std::string GetFirstAudioLanguage() const;
+
+  /*!
+   * \brief Get the codec of the first audio stream in the order the source lists them.
+   *
+   * The counterpart of GetFirstAudioLanguage() for the codec.
+   *
+   * \return The codec of the first audio stream, or an empty string if there is none
+   */
+  std::string GetFirstAudioCodec() const;
+
+  /*!
+   * \brief Get the channel count of the first audio stream in the order the source lists them.
+   *
+   * The counterpart of GetFirstAudioLanguage() for the channel count.
+   *
+   * \return The channel count of the first audio stream, or -1 if there is none
+   */
+  int GetFirstAudioChannels() const;
+
+  /*!
+   * \brief Get the language of the first subtitle stream in the order the source lists them.
+   *
+   * The counterpart of GetFirstAudioLanguage() for subtitles, ie. presentation graphic stream
+   * number 1 of a bluray playlist. Note that this says nothing about whether subtitles are
+   * displayed to begin with, which the locale.subtitlelanguage setting decides.
+   *
+   * \return The language of the first subtitle stream, or an empty string if there is none
+   */
+  std::string GetFirstSubtitleLanguage() const;
+
   void AddStream(CStreamDetail *item);
   void Reset(void);
   void DetermineBestStreams(void);

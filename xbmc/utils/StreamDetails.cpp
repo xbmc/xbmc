@@ -595,6 +595,26 @@ int CStreamDetails::GetPreferredAudioStreamIndex(const std::string& language) co
   return bestIndex;
 }
 
+std::string CStreamDetails::GetFirstAudioLanguage() const
+{
+  return GetAudioLanguage(1);
+}
+
+std::string CStreamDetails::GetFirstAudioCodec() const
+{
+  return GetAudioCodec(1);
+}
+
+int CStreamDetails::GetFirstAudioChannels() const
+{
+  return GetAudioChannels(1);
+}
+
+std::string CStreamDetails::GetFirstSubtitleLanguage() const
+{
+  return GetSubtitleLanguage(1);
+}
+
 void CStreamDetails::Archive(CArchive& ar)
 {
   if (ar.IsStoring())
