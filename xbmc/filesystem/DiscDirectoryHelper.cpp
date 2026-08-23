@@ -2724,6 +2724,35 @@ void EndMoviePlaylistSearch(const std::vector<PlaylistInformation>& playlists)
   CLog::LogF(LOGDEBUG, "*** Movie Search End ***");
 }
 
+/*!
+ * \brief The languages of the streams the disc expects a player to start with.
+ *
+ * The audio and presentation graphic streams the playlist flags as its defaults - audio stream
+ * number 1 and presentation graphic stream number 1 of its longest play item - shown as
+ * "eng | jpn". A playlist that flags no default, or whose default names no language,
+ * contributes nothing.
+ *
+ * The flag is read rather than the first stream taken, so that this agrees with the stream
+ * VideoPlayer is told is the default even where the two would otherwise differ - a playlist
+ * described from its clip rather than its play item flags no default at all.
+ */
+std::string GetDefaultStreamLanguages(const PlaylistInformation& information)
+{
+  const auto isDefault{[](const auto& stream)
+                       { return (stream.flags & StreamFlags::FLAG_DEFAULT) != 0; }};
+
+  std::vector<std::string> languages;
+  if (const auto audio{std::ranges::find_if(information.audioStreams, isDefault)};
+      audio != information.audioStreams.cend() && !audio->language.empty())
+    languages.emplace_back(audio->language);
+
+  if (const auto pg{std::ranges::find_if(information.pgStreams, isDefault)};
+      pg != information.pgStreams.cend() && !pg->language.empty())
+    languages.emplace_back(pg->language);
+
+  return StringUtils::Join(languages, " | ");
+}
+
 std::shared_ptr<CFileItem> GenerateMovieItem(const CURL& url,
                                              unsigned int playlist,
                                              unsigned int mainPlaylist,
@@ -2737,9 +2766,6 @@ std::shared_ptr<CFileItem> GenerateMovieItem(const CURL& url,
   // Get clips
   const std::chrono::milliseconds duration{information.duration};
 
-  // Get languages
-  const std::string langs{information.languages};
-
   CVideoInfoTag* itemTag{item->GetVideoInfoTag()};
   itemTag->SetDuration(static_cast<int>(duration.count() / 1000));
   item->SetProperty("bluray_playlist", playlist);
@@ -2752,11 +2778,16 @@ std::shared_ptr<CFileItem> GenerateMovieItem(const CURL& url,
   item->SetTitle(buf);
   item->SetLabel(buf);
 
-  const std::string chap{StringUtils::Format(
+  std::string label2{StringUtils::Format(
       CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25007),
       information.chapters.size(),
       StringUtils::SecondsToTimeString(static_cast<int>(duration.count() / 1000)))};
-  item->SetLabel2(chap);
+
+  // The streams a playlist starts on are what tells playlists offering the same content apart
+  if (const std::string languages{GetDefaultStreamLanguages(information)}; !languages.empty())
+    label2 += " | " + languages;
+
+  item->SetLabel2(label2);
 
   item->SetSize(0);
   item->SetArt("icon", "DefaultVideo.png");

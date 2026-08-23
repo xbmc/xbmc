@@ -102,6 +102,15 @@ AudioStreamInfo MakeAudioStream(std::string codecName, std::string language, int
   return info;
 }
 
+// Flags a stream as the one the disc expects a player to start with, as the bluray stream
+// parser does for audio stream 1 and presentation graphic stream 1 of a playlist
+template<typename T>
+T AsDefault(T info)
+{
+  info.flags = static_cast<StreamFlags>(info.flags | StreamFlags::FLAG_DEFAULT);
+  return info;
+}
+
 SubtitleStreamInfo MakeSubtitleStream(std::string language)
 {
   SubtitleStreamInfo info;
@@ -4904,6 +4913,74 @@ TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_PictureInPicturePresentationAl
       helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::SINGLE, clips, playlists));
   ASSERT_EQ(items.Size(), 1);
   EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 101u);
+}
+
+// The streams a playlist starts on are named alongside its chapters and duration, so that two
+// playlists presenting the same content can be told apart when a disc is browsed
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_LabelNamesTheDefaultStreams)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{
+      {20u,
+       MakePlaylist(20u, 120min, {1u}, {60min, 60min}, "eng",
+                    {AsDefault(MakeAudioStream("dtshd_ma", "jpn")), MakeAudioStream("ac3", "eng")},
+                    {AsDefault(MakeSubtitleStream("jpn")), MakeSubtitleStream("eng")})},
+  };
+  ClipMap clips{{1u, MakeClip(120min, {20u})}};
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::SINGLE, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_TRUE(items[0]->GetLabel2().ends_with("jpn | jpn")) << items[0]->GetLabel2();
+}
+
+// A playlist naming no language for the streams it starts on says nothing to add to its label
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_LabelOmitsUnnamedDefaultStreams)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{
+      {20u, MakePlaylist(20u, 120min, {1u}, {60min, 60min}, "",
+                         {AsDefault(MakeAudioStream("dtshd_ma", ""))}, {})},
+  };
+  ClipMap clips{{1u, MakeClip(120min, {20u})}};
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::SINGLE, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(items[0]->GetLabel2().find(" | "), std::string::npos) << items[0]->GetLabel2();
+}
+
+// A playlist described from its clip rather than its play item flags no default at all, so
+// there is nothing to name - the first stream listed must not be presented as the default
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_LabelOmitsUnflaggedStreams)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{
+      {20u, MakePlaylist(20u, 120min, {1u}, {60min, 60min}, "eng",
+                         {MakeAudioStream("dtshd_ma", "jpn"), MakeAudioStream("ac3", "eng")},
+                         {MakeSubtitleStream("jpn")})},
+  };
+  ClipMap clips{{1u, MakeClip(120min, {20u})}};
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::SINGLE, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(items[0]->GetLabel2().find("jpn"), std::string::npos) << items[0]->GetLabel2();
 }
 
 // Playlists without video stream information are neither discarded nor used for comparison,
