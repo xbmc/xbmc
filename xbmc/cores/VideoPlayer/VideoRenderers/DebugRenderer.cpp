@@ -262,7 +262,11 @@ void CDebugRenderer::CRenderer::Render(int idx, float depth)
       std::shared_ptr<COverlay> o = COverlay::Create(images, rOpts.frameWidth, rOpts.frameHeight);
 
       if (o)
-        OVERLAY::CRenderer::Render(o.get());
+      {
+        SRenderState state;
+        OVERLAY::CRenderer::GetRenderState(o.get(), state);
+        o->Render(state);
+      }
     }
   }
   ReleaseUnused();

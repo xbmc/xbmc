@@ -15,6 +15,7 @@
 #include "settings/SubtitlesSettings.h"
 #include "threads/CriticalSection.h"
 #include "utils/Observer.h"
+#include "windowing/Resolution.h"
 
 #include <atomic>
 #include <map>
@@ -190,7 +191,19 @@ namespace OVERLAY {
       float renderedFrameHeight{0.0f};
     };
 
-    void Render(COverlay* o);
+    /*! \brief One overlay resolved to the screen geometry it will be drawn with */
+    struct SRenderItem
+    {
+      std::shared_ptr<COverlay> overlay;
+      SRenderState state;
+    };
+
+    /*! \brief Resolve an overlay's placement into screen pixels */
+    void GetRenderState(COverlay* o, SRenderState& state) const;
+
+    /*! \brief Resolve the overlays Render (or, with hdrOverlays, RenderHDROverlays) draws */
+    std::vector<SRenderItem> ResolveRenderItems(int idx, bool hdrOverlays);
+
     std::shared_ptr<COverlay> Convert(SElement& e);
     // Build a COverlay (cached or freshly created) from the libass output
     // already produced by PrepareOverlays. Does not call ass_render_frame.
@@ -206,6 +219,9 @@ namespace OVERLAY {
      * \brief Load and store settings locally
      */
     void LoadSettings();
+
+    /*! \brief Sync the cached subtitle position with the resolution info */
+    RESOLUTION_INFO SyncSubtitlePosition();
 
     enum PositonResInfoState
     {
