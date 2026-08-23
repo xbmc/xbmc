@@ -12,6 +12,7 @@
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 
+#include <algorithm>
 #include <array>
 
 extern "C"
@@ -149,6 +150,54 @@ int StreamUtils::GetCodecPriority(const std::string &codec)
         return 1;
     }
   }
+
+  return 0;
+}
+
+int StreamUtils::CompareAudioQuality(const std::string& codecA,
+                                     int channelsA,
+                                     const std::string& codecB,
+                                     int channelsB)
+{
+  const int priorityA{GetCodecPriority(codecA)};
+  const int priorityB{GetCodecPriority(codecB)};
+
+  // A channel count of zero or less means unknown, and the sources disagree on which of those to
+  // use, so normalise them to compare equal rather than ranking one unknown above another.
+  const int knownChannelsA{std::max(0, channelsA)};
+  const int knownChannelsB{std::max(0, channelsB)};
+
+  // The comparison has to be a strict weak ordering, because VideoPlayer hands it to
+  // std::stable_sort. Streams are therefore split into surround and not-surround, which each
+  // stream decides for itself, and then ranked within that group on a fixed pair of keys. Nothing
+  // here may depend on which two streams are being compared, or the ordering can cycle.
+  const bool surroundA{knownChannelsA > 2};
+  const bool surroundB{knownChannelsB > 2};
+  if (surroundA != surroundB)
+    return surroundA ? 1 : -1;
+
+  if (surroundA)
+  {
+    // Beyond stereo the codec describes the stream better than the channel count does, so 5.1
+    // TrueHD is a better listen than 7.1 AC3. Every codec the stream details can carry is ranked,
+    // so a rank of 0 really is an unknown codec and belongs at the bottom.
+    if (priorityA != priorityB)
+      return priorityA > priorityB ? 1 : -1;
+
+    // Codecs of equal rank are equally good, so the wider presentation wins
+    if (knownChannelsA != knownChannelsB)
+      return knownChannelsA > knownChannelsB ? 1 : -1;
+
+    return 0;
+  }
+
+  // At or below stereo the step up towards surround outweighs any codec difference
+  if (knownChannelsA != knownChannelsB)
+    return knownChannelsA > knownChannelsB ? 1 : -1;
+
+  // In case of a tie, revert to codec priority
+  if (priorityA != priorityB)
+    return priorityA > priorityB ? 1 : -1;
 
   return 0;
 }

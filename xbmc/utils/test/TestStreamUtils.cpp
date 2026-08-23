@@ -9,6 +9,7 @@
 #include "utils/StreamUtils.h"
 
 #include <string>
+#include <utility>
 #include <vector>
 
 #include <gtest/gtest.h>
@@ -179,4 +180,116 @@ TEST(TestStreamUtils, EveryCodecKodiRecognisesIsRanked)
 
   for (const auto& codec : recognised)
     EXPECT_GT(StreamUtils::GetCodecPriority(codec), 0) << codec << " is not ranked";
+}
+
+TEST(TestStreamUtils, CompareAudioQuality_CodecBeatsChannelsBeyondStereo)
+{
+  // Beyond stereo the codec is the better description of the stream, so the lossless 5.1 track
+  // is the better listen than the lossy one carrying more channels.
+  EXPECT_GT(StreamUtils::CompareAudioQuality("truehd", 6, "ac3", 8), 0);
+  EXPECT_LT(StreamUtils::CompareAudioQuality("ac3", 8, "truehd", 6), 0);
+
+  // Codecs of equal rank leave the channel count to decide
+  EXPECT_GT(StreamUtils::CompareAudioQuality("truehd", 8, "dtshd_ma", 6), 0);
+  EXPECT_EQ(StreamUtils::CompareAudioQuality("truehd", 6, "dtshd_ma", 6), 0);
+}
+
+TEST(TestStreamUtils, CompareAudioQuality_ChannelsWinAtOrBelowStereo)
+{
+  // The codec-first rule applies only when both streams are beyond stereo - the step up from
+  // stereo to surround outweighs any codec difference.
+  EXPECT_GT(StreamUtils::CompareAudioQuality("ac3", 6, "truehd", 2), 0);
+  EXPECT_LT(StreamUtils::CompareAudioQuality("flac", 2, "ac3", 6), 0);
+
+  // Both stereo, so the codec decides
+  EXPECT_GT(StreamUtils::CompareAudioQuality("flac", 2, "ac3", 2), 0);
+  EXPECT_EQ(StreamUtils::CompareAudioQuality("ac3", 2, "ac3", 2), 0);
+}
+
+TEST(TestStreamUtils, CompareAudioQuality_UnknownCodecIsThePoorestSurroundChoice)
+{
+  // Every codec the stream details can carry is ranked, so a rank of 0 is a codec genuinely
+  // nobody knows and belongs below the ones that are. This is only safe because the common names
+  // are ranked - it is what the AAC family being unranked used to get wrong.
+  EXPECT_GT(StreamUtils::CompareAudioQuality("ac3", 6, "nellymoser", 8), 0);
+  EXPECT_GT(StreamUtils::CompareAudioQuality("aac_lc", 8, "ac3", 6), 0);
+  EXPECT_GT(StreamUtils::CompareAudioQuality("opus", 6, "aac_lc", 8), 0);
+}
+
+TEST(TestStreamUtils, CompareAudioQuality_IsAStrictWeakOrdering)
+{
+  // VideoPlayer hands this comparison to std::stable_sort, which is undefined behaviour unless it
+  // is a strict weak ordering. A pair-dependent choice of key breaks that, and no amount of spot
+  // assertions will catch it, so walk the whole relation.
+  const std::vector<std::pair<std::string, int>> candidates{
+      {"truehd", 6},   {"ac3", 8},       {"aac_lc", 7}, {"nellymoser", 7}, {"opus", 6},
+      {"dts", 8},      {"pcm_s16le", 2}, {"flac", 2},   {"mp3", 1},        {"eac3", 0},
+      {"dtshd_ma", 8}, {"he_aac", 6},    {"pcm", 0},    {"dts_es", 6},     {"truehd", 2}};
+
+  const auto better{
+      [&candidates](size_t i, size_t j)
+      {
+        return StreamUtils::CompareAudioQuality(candidates[i].first, candidates[i].second,
+                                                candidates[j].first, candidates[j].second) > 0;
+      }};
+
+  for (size_t i = 0; i < candidates.size(); ++i)
+  {
+    // Irreflexive - nothing is better than itself
+    EXPECT_FALSE(better(i, i)) << candidates[i].first;
+
+    for (size_t j = 0; j < candidates.size(); ++j)
+    {
+      // Antisymmetric - the result must simply invert when the arguments swap
+      EXPECT_EQ(StreamUtils::CompareAudioQuality(candidates[i].first, candidates[i].second,
+                                                 candidates[j].first, candidates[j].second),
+                -StreamUtils::CompareAudioQuality(candidates[j].first, candidates[j].second,
+                                                  candidates[i].first, candidates[i].second))
+          << candidates[i].first << " vs " << candidates[j].first;
+
+      for (size_t k = 0; k < candidates.size(); ++k)
+      {
+        // Transitive - no cycles, for either "better than" or "equally good"
+        if (better(i, j) && better(j, k))
+        {
+          EXPECT_TRUE(better(i, k))
+              << candidates[i].first << " > " << candidates[j].first << " > " << candidates[k].first
+              << " but not " << candidates[i].first << " > " << candidates[k].first;
+        }
+
+        if (!better(i, j) && !better(j, i) && !better(j, k) && !better(k, j))
+        {
+          EXPECT_TRUE(!better(i, k) && !better(k, i))
+              << candidates[i].first << " == " << candidates[j].first
+              << " == " << candidates[k].first;
+        }
+      }
+    }
+  }
+}
+
+TEST(TestStreamUtils, CompareAudioQuality_UnknownChannelCountIsThePoorestChoice)
+{
+  // A channel count of zero or less means unknown rather than none, so such a stream must not be
+  // promoted by carrying a good codec.
+  EXPECT_LT(StreamUtils::CompareAudioQuality("truehd", 0, "ac3", 6), 0);
+  EXPECT_LT(StreamUtils::CompareAudioQuality("truehd", -1, "ac3", 2), 0);
+  EXPECT_EQ(StreamUtils::CompareAudioQuality("truehd", 0, "truehd", 0), 0);
+}
+
+TEST(TestStreamUtils, CompareAudioQuality_UnknownChannelCountSentinelsRankEqually)
+{
+  // The sources disagree on how to say "unknown": the player reports 0 whereas an NFO without a
+  // <channels> element or a NULL database column yields -1. Both mean the same thing, so neither
+  // sentinel may outrank the other and the codec has to decide.
+  EXPECT_GT(StreamUtils::CompareAudioQuality("truehd", -1, "ac3", 0), 0);
+  EXPECT_LT(StreamUtils::CompareAudioQuality("ac3", 0, "truehd", -1), 0);
+
+  // Same codec, so two differently spelled unknowns are indistinguishable
+  EXPECT_EQ(StreamUtils::CompareAudioQuality("ac3", 0, "ac3", -1), 0);
+  EXPECT_EQ(StreamUtils::CompareAudioQuality("ac3", -1, "ac3", 0), 0);
+
+  // And an unknown count still loses to any known one, however it is spelled
+  EXPECT_LT(StreamUtils::CompareAudioQuality("truehd", -1, "ac3", 1), 0);
+  EXPECT_LT(StreamUtils::CompareAudioQuality("truehd", 0, "ac3", 1), 0);
 }

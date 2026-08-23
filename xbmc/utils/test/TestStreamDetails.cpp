@@ -8,6 +8,11 @@
 
 #include "utils/StreamDetails.h"
 
+#include <string>
+#include <tuple>
+#include <utility>
+#include <vector>
+
 #include <gtest/gtest.h>
 
 TEST(TestStreamDetails, General)
@@ -66,6 +71,126 @@ TEST(TestStreamDetails, General)
   EXPECT_EQ(1080, a.GetVideoHeight());
   EXPECT_EQ(30, a.GetVideoDuration());
   EXPECT_STREQ("left_right", a.GetStereoMode().c_str());
+}
+
+namespace
+{
+// Builds a CStreamDetails carrying the given audio streams and returns the codec of the one
+// picked as best, so that the choice can be asserted the way the GUI observes it.
+std::string BestAudioCodecOf(const std::vector<std::pair<std::string, int>>& codecsAndChannels)
+{
+  CStreamDetails details;
+  for (const auto& [codec, channels] : codecsAndChannels)
+  {
+    auto* audio = new CStreamDetailAudio();
+    audio->m_strCodec = codec;
+    audio->m_iChannels = channels;
+    audio->m_strLanguage = "eng";
+    audio->SetSource(CStreamDetail::MEDIA);
+    details.AddStream(audio);
+  }
+  details.DetermineBestStreams();
+  return details.GetAudioCodec();
+}
+
+// As above, but reporting the channel count of the stream picked as best.
+int BestAudioChannelsOf(const std::vector<std::pair<std::string, int>>& codecsAndChannels)
+{
+  CStreamDetails details;
+  for (const auto& [codec, channels] : codecsAndChannels)
+  {
+    auto* audio = new CStreamDetailAudio();
+    audio->m_strCodec = codec;
+    audio->m_iChannels = channels;
+    audio->m_strLanguage = "eng";
+    audio->SetSource(CStreamDetail::MEDIA);
+    details.AddStream(audio);
+  }
+  details.DetermineBestStreams();
+  return details.GetAudioChannels();
+}
+} // namespace
+
+TEST(TestStreamDetails, BestAudio_CodecBeatsChannelsBeyondStereo)
+{
+  // Beyond stereo the codec is the better description of the stream, so a lossless 5.1 track
+  // is preferred over a lossy one carrying more channels.
+  EXPECT_EQ("truehd", BestAudioCodecOf({{"ac3", 8}, {"truehd", 6}}));
+  EXPECT_EQ("truehd", BestAudioCodecOf({{"truehd", 6}, {"ac3", 8}})); // order must not matter
+  EXPECT_EQ("dtshd_ma", BestAudioCodecOf({{"dts", 8}, {"dtshd_ma", 6}}));
+  EXPECT_EQ("eac3", BestAudioCodecOf({{"ac3", 8}, {"eac3", 6}}));
+
+  // Uncompressed LPCM is lossless, so a disc offering it alongside lossy tracks of the same
+  // width must not report one of those instead (which would show a foreign language track as
+  // the item's audio when the LPCM one is the disc's own default).
+  EXPECT_EQ("pcm_bluray", BestAudioCodecOf({{"pcm_bluray", 6}, {"dts", 6}}));
+  EXPECT_EQ("pcm_bluray", BestAudioCodecOf({{"dts", 6}, {"pcm_bluray", 6}}));
+  EXPECT_EQ("pcm_bluray", BestAudioCodecOf({{"dtshd_hra", 8}, {"pcm_bluray", 6}}));
+
+  // But it remains the poorest of the lossless codecs.
+  EXPECT_EQ("dtshd_ma", BestAudioCodecOf({{"pcm_bluray", 6}, {"dtshd_ma", 6}}));
+  EXPECT_EQ("truehd", BestAudioCodecOf({{"pcm_bluray", 8}, {"truehd", 6}}));
+}
+
+TEST(TestStreamDetails, BestAudio_ChannelsBreakACodecTie)
+{
+  // Same codec on both sides leaves the channel count to decide.
+  EXPECT_EQ(8, BestAudioChannelsOf({{"ac3", 6}, {"ac3", 8}}));
+  EXPECT_EQ(8, BestAudioChannelsOf({{"ac3", 8}, {"ac3", 6}}));
+
+  // The 5.1 TrueHD track wins on codec, and reports its own channel count with it.
+  EXPECT_EQ(6, BestAudioChannelsOf({{"ac3", 8}, {"truehd", 6}}));
+}
+
+TEST(TestStreamDetails, BestAudio_ChannelsDecideWithinALosslessGroup)
+{
+  // The codecs of a lossless group all reconstruct the original samples, so none of them
+  // describes a better stream than the others and the channel count is left to decide - a 7.1
+  // track is not passed over for a 5.1 one carrying the same audio.
+  EXPECT_EQ(8, BestAudioChannelsOf({{"truehd", 8}, {"dtshd_ma", 6}}));
+  EXPECT_EQ(8, BestAudioChannelsOf({{"dtshd_ma", 6}, {"truehd", 8}}));
+  EXPECT_EQ(8, BestAudioChannelsOf({{"flac", 8}, {"pcm_bluray", 6}}));
+  EXPECT_EQ(8, BestAudioChannelsOf({{"pcm_bluray", 6}, {"flac", 8}}));
+
+  // The same of the object-based codecs, which are rival systems rather than tiers.
+  EXPECT_EQ(8, BestAudioChannelsOf({{"truehd_atmos", 8}, {"dtshd_ma_x", 6}}));
+  EXPECT_EQ(8, BestAudioChannelsOf({{"dtshd_ma_x", 6}, {"truehd_atmos", 8}}));
+  EXPECT_EQ(8, BestAudioChannelsOf({{"dtshd_ma_x_imax", 8}, {"truehd_atmos", 6}}));
+}
+
+TEST(TestStreamDetails, BestAudio_LosslessCarryingExtensionsOutranksLosslessWithout)
+{
+  // A truehd or dtshd_ma stream may be carrying objects that were never spotted, so it describes
+  // the item better than an equally lossless stream that cannot carry them, whatever the widths.
+  EXPECT_EQ("truehd", BestAudioCodecOf({{"flac", 8}, {"truehd", 6}}));
+  EXPECT_EQ("truehd", BestAudioCodecOf({{"truehd", 6}, {"flac", 8}})); // order must not matter
+  EXPECT_EQ("dtshd_ma", BestAudioCodecOf({{"pcm_bluray", 8}, {"dtshd_ma", 6}}));
+
+  // And where the extensions were spotted, those codecs outrank both groups.
+  EXPECT_EQ("truehd_atmos", BestAudioCodecOf({{"truehd", 8}, {"truehd_atmos", 6}}));
+  EXPECT_EQ("dtshd_ma_x", BestAudioCodecOf({{"flac", 8}, {"dtshd_ma_x", 6}}));
+}
+
+TEST(TestStreamDetails, BestAudio_ChannelsStillWinAtOrBelowStereo)
+{
+  // The codec-first rule applies only when both streams are beyond stereo - a multichannel
+  // track is still the better choice than a stereo one of any codec.
+  EXPECT_EQ("ac3", BestAudioCodecOf({{"flac", 2}, {"ac3", 6}}));
+  EXPECT_EQ("ac3", BestAudioCodecOf({{"truehd", 2}, {"ac3", 6}}));
+
+  // Both stereo, so the codec decides as it always did.
+  EXPECT_EQ("flac", BestAudioCodecOf({{"ac3", 2}, {"flac", 2}}));
+}
+
+TEST(TestStreamDetails, BestAudio_UnknownChannelCountIsThePoorestChoice)
+{
+  // Zero channels means unknown rather than none, so such a stream must not be promoted by
+  // carrying a good codec - anything with a known count describes the item better.
+  EXPECT_EQ("ac3", BestAudioCodecOf({{"truehd", 0}, {"ac3", 6}}));
+  EXPECT_EQ("ac3", BestAudioCodecOf({{"truehd", 0}, {"ac3", 2}}));
+
+  // With nothing else to go on the unknown stream is still reported.
+  EXPECT_EQ("truehd", BestAudioCodecOf({{"truehd", 0}}));
 }
 
 TEST(TestStreamDetails, VideoDimsToResolutionDescription)
