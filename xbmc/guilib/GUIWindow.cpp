@@ -74,6 +74,14 @@ bool CGUIWindow::Load(const std::string& strFileName, bool bContainsPath)
   if (m_windowLoaded || !skin)
     return true;      // no point loading if it's already there
 
+  if (GetID() == WINDOW_INVALID && !m_idRangeBeforeLoadFailure.empty())
+  {
+    // SetID keeps only the id it is given, so the rest of the range goes back afterwards
+    SetID(m_idRangeBeforeLoadFailure.front());
+    m_idRange = m_idRangeBeforeLoadFailure;
+    m_idRangeBeforeLoadFailure.clear();
+  }
+
 #ifdef _DEBUG
   const auto start = std::chrono::steady_clock::now();
 #endif
@@ -136,6 +144,7 @@ bool CGUIWindow::LoadXML(const std::string &strPath, const std::string &strLower
     {
       CLog::Log(LOGERROR, "Unable to load window XML: {}. Line {}\n{}", strPath, xmlDoc.ErrorRow(),
                 xmlDoc.ErrorDesc());
+      m_idRangeBeforeLoadFailure = m_idRange;
       SetID(WINDOW_INVALID);
       return false;
     }
