@@ -91,6 +91,8 @@ void CVideoPlayerSubtitle::SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priori
       if (pSPUInfo)
       {
         CLog::Log(LOGDEBUG, "CVideoPlayer::ProcessSubData: Got complete SPU packet");
+        // A forced SPU here is a menu button highlight, not a subtitle (FSTA_DSP)
+        pSPUInfo->SetBitmapSubtitle(!pSPUInfo->bForced);
         m_pOverlayContainer->ProcessAndAddOverlayIfValid(pSPUInfo);
       }
     }
