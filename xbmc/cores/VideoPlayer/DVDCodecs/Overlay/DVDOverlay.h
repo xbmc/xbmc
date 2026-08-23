@@ -46,6 +46,7 @@ public:
     m_setForcedMargins = false;
     m_discMenu = false;
     m_stereoView = DVDOverlayStereoView::BOTH;
+    m_isBitmapSubtitle = false;
   }
 
   CDVDOverlay(const CDVDOverlay& src) : std::enable_shared_from_this<CDVDOverlay>(src)
@@ -61,6 +62,7 @@ public:
     m_setForcedMargins = src.m_setForcedMargins;
     m_discMenu = src.m_discMenu;
     m_stereoView = src.m_stereoView;
+    m_isBitmapSubtitle = src.m_isBitmapSubtitle;
   }
 
   virtual ~CDVDOverlay() = default;
@@ -125,6 +127,12 @@ public:
    */
   bool IsDiscMenu() const { return m_discMenu; }
 
+  /*! \brief Mark the overlay as a picture of subtitle text, as opposed to menu graphics */
+  void SetBitmapSubtitle(bool isBitmapSubtitle) { m_isBitmapSubtitle = isBitmapSubtitle; }
+
+  /*! \brief Whether the overlay is a picture of subtitle text */
+  bool IsBitmapSubtitle() const { return m_isBitmapSubtitle; }
+
   double iPTSStartTime;
   double iPTSStopTime;
   bool bForced; // display, no matter what
@@ -138,6 +146,7 @@ protected:
   bool m_overlayContainerFlushable;
   bool m_setForcedMargins;
   bool m_discMenu;
+  bool m_isBitmapSubtitle;
 };
 
 using VecOverlays = std::vector<std::shared_ptr<CDVDOverlay>>;
