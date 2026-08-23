@@ -202,6 +202,19 @@ public:
    */
   float GetVerticalMarginPerc() const;
 
+  /*!
+   * \brief Get the zoom factor to be applied to bitmap subtitles
+   * \return The zoom factor in %, 100 meaning the authored size
+   */
+  int GetBitmapZoomPerc() const;
+
+  /*!
+   * \brief Check whether the subtitle position and vertical margin settings
+   *        should also be applied to bitmap subtitles
+   * \return True if bitmap subtitles must be repositioned, otherwise false
+   */
+  bool IsBitmapPositionEnabled() const;
+
   static void SettingOptionsSubtitleFontsFiller(const std::shared_ptr<const CSetting>& setting,
                                                 std::vector<StringSettingOption>& list,
                                                 std::string& current);

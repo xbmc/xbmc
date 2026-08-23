@@ -41,6 +41,15 @@ namespace OVERLAY {
     float height;
   };
 
+  /*! \brief Transparent fraction of an overlay quad, inward from each edge */
+  struct SContentInset
+  {
+    float left{0.0f};
+    float top{0.0f};
+    float right{0.0f};
+    float bottom{0.0f};
+  };
+
   /*!
    * \brief Mark the entire GUI dirty so the next render pass runs
    *  (not skipped). Overlays (subtitles, debug OSD) are not CGUIControls
@@ -89,6 +98,10 @@ namespace OVERLAY {
     float m_height{1.0f};
     float m_source_width{0}; // Video source width resolution used to calculate aspect ratio
     float m_source_height{0}; // Video source height resolution used to calculate aspect ratio
+
+    // Picture of subtitle text (PGS, VobSub), as opposed to e.g. menu graphics
+    bool m_isBitmapSubtitle{false};
+    SContentInset m_contentInset;
 
   protected:
     /*!
@@ -195,6 +208,15 @@ namespace OVERLAY {
     /*! \brief Resolve an overlay's placement into screen pixels */
     void GetRenderState(COverlay* o, SRenderState& state) const;
 
+    /*! \brief The rectangle covered by an overlay's visible pixels, in screen pixels */
+    static CRect GetContentRect(const COverlay& o, const SRenderState& state);
+
+    /*!
+     * \brief Move bitmap subtitles onto the line set by the position and
+     *        margin settings. Overlays too tall to be a line of text are left alone.
+     */
+    void RepositionBitmapSubtitles(std::vector<SRenderItem>& items) const;
+
     std::shared_ptr<COverlay> Convert(SElement& e);
     // Build a COverlay (cached or freshly created) from the libass output
     // already produced by PrepareOverlays. Does not call ass_render_frame.
@@ -237,13 +259,20 @@ namespace OVERLAY {
     // or PositonResInfoState enum values for deferred processing
     int m_subtitlePosResInfo{POSRESINFO_UNSET};
     int m_subtitleVerticalMargin{0};
+    // Vertical margin setting the current baseline was computed from, in %
+    float m_subtitleVerticalMarginPerc{0.0f};
     bool m_saveSubtitlePosition{false}; // To save subtitle position permanently
     KODI::SUBTITLES::HorizontalAlign m_subtitleHorizontalAlign{
         KODI::SUBTITLES::HorizontalAlign::CENTER};
     KODI::SUBTITLES::Align m_subtitleAlign{KODI::SUBTITLES::Align::BOTTOM_OUTSIDE};
+    int m_bitmapZoomPerc{100};
+    // Whether the subtitle position and margin also apply to bitmap subtitles
+    bool m_bitmapPosition{false};
 
     std::shared_ptr<struct KODI::SUBTITLES::STYLE::style> m_overlayStyle;
     std::atomic<bool> m_isSettingsChanged{false};
+    // Set by OnViewChange; the subtitle baseline must then be recomputed
+    std::atomic<bool> m_isViewChanged{false};
     // Whether last frame had any image/SPU overlay. Used by PrepareOverlays
     // to detect arrival/disappearance transitions (image/SPU have no
     // per-frame change signal of their own, unlike libass detect_change).
