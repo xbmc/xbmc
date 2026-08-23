@@ -150,24 +150,33 @@ void CRenderer::Render(int idx, float depth)
 {
   std::unique_lock lock(m_section);
 
-  std::vector<SElement>& list = m_buffers[idx];
-  for(std::vector<SElement>::iterator it = list.begin(); it != list.end(); ++it)
-  {
-    if (it->overlay_dvd)
-    {
-      std::shared_ptr<COverlay> o = Convert(*it);
+  // Resolve all geometry first so a later pass can see the whole frame
+  std::vector<SRenderItem> items;
+  items.reserve(m_buffers[idx].size());
 
-      if (o)
-        Render(o.get());
-    }
+  for (auto& e : m_buffers[idx])
+  {
+    if (!e.overlay_dvd)
+      continue;
+
+    std::shared_ptr<COverlay> o = Convert(e);
+    if (!o)
+      continue;
+
+    SRenderItem item;
+    GetRenderState(o.get(), item.state);
+    item.overlay = std::move(o);
+    items.emplace_back(std::move(item));
   }
+
+  for (auto& item : items)
+    item.overlay->Render(item.state);
 
   ReleaseUnused();
 }
 
-void CRenderer::Render(COverlay* o)
+void CRenderer::GetRenderState(COverlay* o, SRenderState& state) const
 {
-  SRenderState state;
   state.x = o->m_x;
   state.y = o->m_y;
   state.width = o->m_width;
@@ -250,8 +259,6 @@ void CRenderer::Render(COverlay* o)
   }
 
   state.x += GetStereoscopicDepth();
-
-  o->Render(state);
 }
 
 bool CRenderer::HasVisibleOverlay(int idx) const
@@ -355,6 +362,32 @@ void CRenderer::ResetSubtitlePosition()
   appPlayer->SetSubtitleVerticalPosition(pos, false);
 }
 
+RESOLUTION_INFO CRenderer::SyncSubtitlePosition()
+{
+  // Set position of subtitles based on video calibration settings
+  RESOLUTION_INFO resInfo = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
+
+  // Keep track of subtitle position value change,
+  // can be changed by GUI Calibration or by window mode/resolution change or
+  // by user manual change (e.g. keyboard shortcut)
+  if (m_subtitlePosResInfo != resInfo.iSubtitles)
+  {
+    if (m_subtitlePosResInfo == POSRESINFO_SAVE_CHANGES)
+    {
+      // m_subtitlePosition has been changed
+      // and has been requested to save the value to resInfo
+      resInfo.iSubtitles = m_subtitlePosition + m_subtitleVerticalMargin;
+      CServiceBroker::GetWinSystem()->GetGfxContext().SetResInfo(
+          CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution(), resInfo);
+      m_subtitlePosResInfo = m_subtitlePosition + m_subtitleVerticalMargin;
+    }
+    else
+      ResetSubtitlePosition();
+  }
+
+  return resInfo;
+}
+
 void CRenderer::CreateSubtitlesStyle()
 {
   m_overlayStyle = std::make_shared<SUBTITLES::STYLE::style>();
@@ -430,6 +463,22 @@ void CRenderer::PrepareOverlays(int idx)
 
   bool doMarkDirty = false;
   bool hasImageSpu = false;
+
+  // Load the subtitle settings for any overlay, not only for libass tracks
+  bool updateStyle = false;
+  RESOLUTION_INFO resInfo;
+  if (!m_buffers[idx].empty())
+  {
+    if (!m_overlayStyle || m_isSettingsChanged)
+    {
+      m_isSettingsChanged = false;
+      LoadSettings();
+      CreateSubtitlesStyle();
+      updateStyle = true;
+    }
+    resInfo = SyncSubtitlePosition();
+  }
+
   for (auto& e : m_buffers[idx])
   {
     // Clear last frame's cached output; libass may have invalidated the
@@ -462,14 +511,6 @@ void CRenderer::PrepareOverlays(int idx)
     if (!ovAss.GetLibassHandler())
       continue;
 
-    bool updateStyle = !m_overlayStyle || m_isSettingsChanged;
-    if (updateStyle)
-    {
-      m_isSettingsChanged = false;
-      LoadSettings();
-      CreateSubtitlesStyle();
-    }
-
     // rOpts setup moved from CRenderer::ConvertLibass; duplicated in CDebugRenderer::CRenderer::Render.
     SUBTITLES::STYLE::renderOpts rOpts;
 
@@ -495,26 +536,6 @@ void CRenderer::PrepareOverlays(int idx)
       // only half-ou video, ou video don't need to change source size
       if (rOpts.sourceWidth / rOpts.sourceHeight > 2.5f)
         rOpts.sourceHeight = m_rs.Height() * 2;
-    }
-
-    // Set position of subtitles based on video calibration settings
-    RESOLUTION_INFO resInfo = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
-    // Keep track of subtitle position value change,
-    // can be changed by GUI Calibration or by window mode/resolution change or
-    // by user manual change (e.g. keyboard shortcut)
-    if (m_subtitlePosResInfo != resInfo.iSubtitles)
-    {
-      if (m_subtitlePosResInfo == POSRESINFO_SAVE_CHANGES)
-      {
-        // m_subtitlePosition has been changed
-        // and has been requested to save the value to resInfo
-        resInfo.iSubtitles = m_subtitlePosition + m_subtitleVerticalMargin;
-        CServiceBroker::GetWinSystem()->GetGfxContext().SetResInfo(
-            CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution(), resInfo);
-        m_subtitlePosResInfo = m_subtitlePosition + m_subtitleVerticalMargin;
-      }
-      else
-        ResetSubtitlePosition();
     }
 
     rOpts.m_par = resInfo.fPixelRatio;
