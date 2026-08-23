@@ -72,9 +72,12 @@ public:
    cache the image and add to the database [see CTextureCacheJob]
 
    \param image url of the image to cache
+   \param knownHash hash of the source file, if the caller already knows it. The listing that found
+                    the image carries what the hash is made of, so a caller working from one can
+                    save the job a stat (see CTextureCacheJob::GetImageHash())
    \sa CacheImage
    */
-  void BackgroundCacheImage(const std::string &image);
+  void BackgroundCacheImage(const std::string& image, const std::string& knownHash = "");
 
   /*! \brief Updates the in-process list.
 
@@ -97,6 +100,7 @@ public:
    \param idealWidth the ideal width of the returned texture (defaults to 0, no ideal width). Only matters if texture is not null.
    \param idealHeight the ideal height of the returned texture (defaults to 0, no ideal height). Only matters if texture is not null.
    \param aspectRatio the aspect ratio mode of the texture (defaults to "center"). Only matters if texture is not null.
+   \param knownHash hash of the source file, in the form CTextureCacheJob::GetImageHash() produces, if known.
    \return cached url of this image
    \sa CTextureCacheJob::CacheTexture
    */
@@ -105,7 +109,8 @@ public:
                          CTextureDetails* details = nullptr,
                          unsigned int idealWidth = 0,
                          unsigned int idealHeight = 0,
-                         CAspectRatio::AspectRatio aspectRatio = CAspectRatio::CENTER);
+                         CAspectRatio::AspectRatio aspectRatio = CAspectRatio::CENTER,
+                         const std::string& knownHash = "");
 
   /*! \brief Cache an image to image cache if not already cached, returning the image details.
    \param image url of the image to cache.
@@ -114,6 +119,18 @@ public:
    \sa CTextureCacheJob::CacheTexture
    */
   bool CacheImage(const std::string &image, CTextureDetails &details);
+
+  /*! \brief Cache an image whose source file hash the caller already knows
+
+   Saves the texture cache stat'ing the file to build that hash itself
+
+   \param image url of the image to cache
+   \param knownHash hash of the source file, in the form CTextureCacheJob::GetImageHash() produces.
+          Pass empty to have it determined as usual.
+   \return cached url of this image
+   \sa CTextureCacheJob::CacheTexture
+   */
+  std::string CacheImage(const std::string& image, const std::string& knownHash);
 
   /*! \brief Check whether an image is in the cache
    Note: If the image url won't normally be cached (eg a skin image) this function will return false.
