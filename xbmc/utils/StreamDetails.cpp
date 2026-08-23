@@ -564,6 +564,37 @@ std::string CStreamDetails::GetSubtitleLanguage(int idx) const
     return "";
 }
 
+int CStreamDetails::GetPreferredAudioStreamIndex(const std::string& language) const
+{
+  if (language.empty())
+    return 0;
+
+  int index{0};
+  int bestIndex{0};
+  const CStreamDetailAudio* best{nullptr};
+
+  for (const auto& iter : m_vecItems)
+  {
+    if (iter->m_eType != CStreamDetail::AUDIO)
+      continue;
+
+    index++;
+
+    const auto* audio{static_cast<const CStreamDetailAudio*>(iter.get())};
+    if (!g_LangCodeExpander.CompareISO639Codes(audio->m_strLanguage, language))
+      continue;
+
+    if (!best || StreamUtils::CompareAudioQuality(audio->m_strCodec, audio->m_iChannels,
+                                                  best->m_strCodec, best->m_iChannels) > 0)
+    {
+      best = audio;
+      bestIndex = index;
+    }
+  }
+
+  return bestIndex;
+}
+
 void CStreamDetails::Archive(CArchive& ar)
 {
   if (ar.IsStoring())

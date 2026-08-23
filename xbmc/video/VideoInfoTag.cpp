@@ -8,6 +8,7 @@
 
 #include "VideoInfoTag.h"
 
+#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "imagefiles/ImageFileURL.h"
 #include "resources/LocalizeStrings.h"
@@ -1001,14 +1002,21 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
       break;
 
     case Field::AUDIO_CHANNELS:
-      sortable[Field::AUDIO_CHANNELS] = m_streamDetails.GetAudioChannels();
-      break;
     case Field::AUDIO_CODEC:
-      sortable[Field::AUDIO_CODEC] = m_streamDetails.GetAudioCodec();
-      break;
     case Field::AUDIO_LANGUAGE:
-      sortable[Field::AUDIO_LANGUAGE] = m_streamDetails.GetAudioLanguage();
+    {
+      // Order by the stream the GUI describes, which is the one playback will start with,
+      // rather than by the technically best stream the list does not show
+      const int idx{
+          m_streamDetails.GetPreferredAudioStreamIndex(g_langInfo.GetPreferredAudioLanguage())};
+      if (field == Field::AUDIO_CHANNELS)
+        sortable[Field::AUDIO_CHANNELS] = m_streamDetails.GetAudioChannels(idx);
+      else if (field == Field::AUDIO_CODEC)
+        sortable[Field::AUDIO_CODEC] = m_streamDetails.GetAudioCodec(idx);
+      else
+        sortable[Field::AUDIO_LANGUAGE] = m_streamDetails.GetAudioLanguage(idx);
       break;
+    }
 
     case Field::SUBTITLE_LANGUAGE:
       sortable[Field::SUBTITLE_LANGUAGE] = m_streamDetails.GetSubtitleLanguage();

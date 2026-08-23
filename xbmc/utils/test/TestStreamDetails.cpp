@@ -670,3 +670,81 @@ TEST(TestStreamDetails, Source_SurvivesCopyAssignment)
   EXPECT_EQ(CStreamDetail::EXTERNAL, subtitleCopy.GetSource());
   EXPECT_EQ(CStreamDetail::STREAM_DETAILS_VERSION, subtitleCopy.GetVersion());
 }
+
+namespace
+{
+// Builds a CStreamDetails carrying the given audio streams, in the order the source presented
+// them, so that the index of the preferred stream can be asserted.
+CStreamDetails MakeAudioStreams(
+    const std::vector<std::tuple<std::string, std::string, int>>& langsCodecsAndChannels)
+{
+  CStreamDetails details;
+  for (const auto& [language, codec, channels] : langsCodecsAndChannels)
+  {
+    auto* audio = new CStreamDetailAudio();
+    audio->m_strLanguage = language;
+    audio->m_strCodec = codec;
+    audio->m_iChannels = channels;
+    audio->SetSource(CStreamDetail::MEDIA);
+    details.AddStream(audio);
+  }
+  details.DetermineBestStreams();
+  return details;
+}
+} // namespace
+
+TEST(TestStreamDetails, PreferredAudio_BestStreamInThePreferredLanguage)
+{
+  // The disc carries a better German track than English one, but an English speaker will hear
+  // the English one, so that is the stream to describe.
+  const CStreamDetails details{
+      MakeAudioStreams({{"ger", "truehd", 8}, {"eng", "ac3", 6}, {"eng", "dtshd_ma", 6}})};
+
+  EXPECT_EQ(3, details.GetPreferredAudioStreamIndex("eng"));
+  EXPECT_EQ("dtshd_ma", details.GetAudioCodec(details.GetPreferredAudioStreamIndex("eng")));
+
+  EXPECT_EQ(1, details.GetPreferredAudioStreamIndex("ger"));
+  EXPECT_EQ("truehd", details.GetAudioCodec(details.GetPreferredAudioStreamIndex("ger")));
+}
+
+TEST(TestStreamDetails, PreferredAudio_IndexCountsAllAudioStreams)
+{
+  // The index is an ordinal into every audio stream, not just the matching ones, or it would not
+  // address the stream it named.
+  const CStreamDetails details{
+      MakeAudioStreams({{"fra", "ac3", 6}, {"jpn", "ac3", 6}, {"eng", "ac3", 6}})};
+
+  EXPECT_EQ(3, details.GetPreferredAudioStreamIndex("eng"));
+  EXPECT_EQ("eng", details.GetAudioLanguage(details.GetPreferredAudioStreamIndex("eng")));
+}
+
+TEST(TestStreamDetails, PreferredAudio_LanguageIsMatchedAcrossISO639Forms)
+{
+  // A source may name a language in either ISO 639 form, and the setting is held in another, so
+  // the two must be compared rather than string matched.
+  const CStreamDetails details{MakeAudioStreams({{"ger", "ac3", 6}, {"en", "truehd", 6}})};
+
+  EXPECT_EQ(2, details.GetPreferredAudioStreamIndex("eng"));
+  EXPECT_EQ(1, details.GetPreferredAudioStreamIndex("deu"));
+}
+
+TEST(TestStreamDetails, PreferredAudio_FallsBackToTheBestStream)
+{
+  const CStreamDetails details{MakeAudioStreams({{"ger", "ac3", 6}, {"fra", "truehd", 6}})};
+
+  // Nothing in the preferred language, so there is no better answer than the best listen the
+  // file has to offer, which index 0 is.
+  EXPECT_EQ(0, details.GetPreferredAudioStreamIndex("eng"));
+  EXPECT_EQ("truehd", details.GetAudioCodec(details.GetPreferredAudioStreamIndex("eng")));
+
+  // As when the preference cannot be expressed as a language at all
+  EXPECT_EQ(0, details.GetPreferredAudioStreamIndex(""));
+  EXPECT_EQ("truehd", details.GetAudioCodec(details.GetPreferredAudioStreamIndex("")));
+}
+
+TEST(TestStreamDetails, PreferredAudio_NoAudioStreams)
+{
+  const CStreamDetails details{MakeAudioStreams({})};
+  EXPECT_EQ(0, details.GetPreferredAudioStreamIndex("eng"));
+  EXPECT_EQ("", details.GetAudioCodec(details.GetPreferredAudioStreamIndex("eng")));
+}

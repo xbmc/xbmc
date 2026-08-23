@@ -837,6 +837,19 @@ const std::string& CLangInfo::GetAudioLanguage(bool allowFallback) const
   return m_audioLanguage;
 }
 
+std::string CLangInfo::GetPreferredAudioLanguage() const
+{
+  const std::string setting{CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+      CSettings::SETTING_LOCALE_AUDIOLANGUAGE)};
+
+  if (StringUtils::EqualsNoCase(setting, audioLanguageMediaDefault) ||
+      StringUtils::EqualsNoCase(setting, audioLanguageOriginal))
+    return "";
+
+  // Resolves "default" to the UI language
+  return GetAudioLanguage(true);
+}
+
 void CLangInfo::SetAudioLanguage(const std::string& language, bool isIso6392 /* = false */)
 {
   if (language.empty() || std::ranges::find_if(specialAudioLangSettings,
