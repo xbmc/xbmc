@@ -29,6 +29,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/SubtitlesSettings.h"
+#include "settings/lib/Setting.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "video/PlayerControllerActions.h"
@@ -488,6 +489,42 @@ bool CPlayerController::OnAction(const CAction &action)
         return true;
       }
 
+      case ACTION_SUBTITLE_BITMAP_ZOOM_IN:
+      case ACTION_SUBTITLE_BITMAP_ZOOM_OUT:
+      {
+        // Via the settings manager so the renderer gets the change notification
+        const auto setting{std::static_pointer_cast<CSettingInt>(
+            CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(
+                CSettings::SETTING_SUBTITLES_BITMAPZOOM))};
+        if (!setting)
+          return true;
+
+        // Coarser than the setting's 1% step, which reads as doing nothing per press
+        constexpr int zoomStep{5};
+        const int step{action.GetID() == ACTION_SUBTITLE_BITMAP_ZOOM_IN ? zoomStep : -zoomStep};
+        const int zoom{
+            std::clamp(setting->GetValue() + step, setting->GetMinimum(), setting->GetMaximum())};
+        setting->SetValue(zoom);
+
+        ShowSlider(action.GetID(), 39213, static_cast<float>(zoom),
+                   static_cast<float>(setting->GetMinimum()), static_cast<float>(zoomStep),
+                   static_cast<float>(setting->GetMaximum()));
+        return true;
+      }
+
+      case ACTION_SUBTITLE_BITMAP_POSITION:
+      {
+        const auto settings{CServiceBroker::GetSettingsComponent()->GetSettings()};
+        const bool enabled{!settings->GetBool(CSettings::SETTING_SUBTITLES_BITMAPPOSITION)};
+        settings->SetBool(CSettings::SETTING_SUBTITLES_BITMAPPOSITION, enabled);
+
+        const auto& strings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()};
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, strings.Get(39215),
+                                              strings.Get(enabled ? 305 : 13106),
+                                              TOAST_DISPLAY_TIME, false);
+        return true;
+      }
+
       case ACTION_SUBTITLE_ALIGN:
       {
         const auto settings{CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()};
@@ -653,6 +690,12 @@ void CPlayerController::OnSliderChange(void *data, CGUISliderControl *slider)
           m_sliderAction == ACTION_VOLAMP_DOWN ||
           m_sliderAction == ACTION_VOLAMP)
     slider->SetTextValue(CGUIDialogAudioSettings::FormatDecibel(slider->GetFloatValue()));
+  else if (m_sliderAction == ACTION_SUBTITLE_BITMAP_ZOOM_IN ||
+           m_sliderAction == ACTION_SUBTITLE_BITMAP_ZOOM_OUT)
+  {
+    std::string strValue = StringUtils::Format("{:.0f}%", slider->GetFloatValue());
+    slider->SetTextValue(strValue);
+  }
   else if (m_sliderAction == ACTION_SUBTITLE_DELAY || m_sliderAction == ACTION_SUBTITLE_DELAY_MIN ||
            m_sliderAction == ACTION_SUBTITLE_DELAY_PLUS)
   {

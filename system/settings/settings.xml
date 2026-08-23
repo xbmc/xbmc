@@ -876,7 +876,7 @@
           <default>100</default>
           <constraints>
             <minimum>10</minimum>
-            <step>5</step>
+            <step>1</step>
             <maximum>200</maximum>
           </constraints>
           <!-- Not format="percentage": a percentage slider is hard clamped to 0-100 -->
