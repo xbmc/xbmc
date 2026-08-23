@@ -27,6 +27,7 @@
 #include "windowing/WinSystem.h"
 
 #include <algorithm>
+#include <cstring>
 #include <mutex>
 #include <utility>
 
@@ -45,6 +46,78 @@ COverlay::COverlay()
 }
 
 COverlay::~COverlay() = default;
+
+namespace
+{
+/*! \brief Measure the transparent border around a bitmap overlay's visible pixels */
+OVERLAY::SContentInset MeasureContentInset(const CDVDOverlayImage& o)
+{
+  OVERLAY::SContentInset inset;
+
+  if (o.width <= 0 || o.height <= 0 || o.pixels.empty())
+    return inset;
+
+  int minX = o.width;
+  int maxX = -1;
+  int minY = o.height;
+  int maxY = -1;
+
+  std::vector<bool> opaque;
+  opaque.reserve(o.palette.size());
+  for (const uint32_t entry : o.palette)
+    opaque.push_back(((entry >> PIXEL_ASHIFT) & 0xff) != 0);
+
+  for (int row = 0; row < o.height; ++row)
+  {
+    const uint8_t* line = o.pixels.data() + static_cast<size_t>(row) * o.linesize;
+    int first = -1;
+    int last = -1;
+
+    for (int col = 0; col < o.width; ++col)
+    {
+      bool visible;
+      if (opaque.empty())
+      {
+        uint32_t pixel;
+        std::memcpy(&pixel, line + static_cast<size_t>(col) * 4, sizeof(pixel));
+        visible = ((pixel >> PIXEL_ASHIFT) & 0xff) != 0;
+      }
+      else
+      {
+        const uint8_t index = line[col];
+        visible = index < opaque.size() && opaque[index];
+      }
+
+      if (!visible)
+        continue;
+
+      if (first < 0)
+        first = col;
+      last = col;
+    }
+
+    if (first < 0)
+      continue;
+
+    minX = std::min(minX, first);
+    maxX = std::max(maxX, last);
+    if (minY > row)
+      minY = row;
+    maxY = row;
+  }
+
+  if (maxY < 0)
+    return inset;
+
+  const float width = static_cast<float>(o.width);
+  const float height = static_cast<float>(o.height);
+  inset.left = static_cast<float>(minX) / width;
+  inset.right = static_cast<float>(o.width - 1 - maxX) / width;
+  inset.top = static_cast<float>(minY) / height;
+  inset.bottom = static_cast<float>(o.height - 1 - maxY) / height;
+  return inset;
+}
+} // unnamed namespace
 
 void OVERLAY::MarkDirty()
 {
@@ -202,6 +275,8 @@ std::vector<CRenderer::SRenderItem> CRenderer::ResolveRenderItems(int idx, bool 
     items.emplace_back(std::move(item));
   }
 
+  RepositionBitmapSubtitles(items);
+
   return items;
 }
 
@@ -288,7 +363,138 @@ void CRenderer::GetRenderState(COverlay* o, SRenderState& state) const
     }
   }
 
+  if (o->m_isBitmapSubtitle && m_bitmapZoomPerc != 100)
+  {
+    const float zoom = static_cast<float>(m_bitmapZoomPerc) / 100.0f;
+    const CRect before = GetContentRect(*o, state);
+    const bool lowerHalf = before.y1 + before.Height() * 0.5f > m_rv.y1 + m_rv.Height() * 0.5f;
+
+    state.width *= zoom;
+    state.height *= zoom;
+
+    // Centre the content and pin the edge it is read against, so resizing
+    // does not move the text off its line
+    const CRect after = GetContentRect(*o, state);
+    state.x += before.x1 + before.Width() * 0.5f - (after.x1 + after.Width() * 0.5f);
+    state.y += lowerHalf ? before.y2 - after.y2 : before.y1 - after.y1;
+  }
+
   state.x += GetStereoscopicDepth();
+}
+
+CRect CRenderer::GetContentRect(const COverlay& o, const SRenderState& state)
+{
+  // POSITION_RELATIVE places the quad by its centre, everything else by its top left
+  const float x1 = o.m_pos == COverlay::POSITION_RELATIVE ? state.x - state.width * 0.5f : state.x;
+  const float y1 = o.m_pos == COverlay::POSITION_RELATIVE ? state.y - state.height * 0.5f : state.y;
+
+  return {x1 + o.m_contentInset.left * state.width, y1 + o.m_contentInset.top * state.height,
+          x1 + state.width - o.m_contentInset.right * state.width,
+          y1 + state.height - o.m_contentInset.bottom * state.height};
+}
+
+void CRenderer::RepositionBitmapSubtitles(std::vector<SRenderItem>& items) const
+{
+  if (!m_bitmapPosition)
+    return;
+
+  std::vector<std::pair<size_t, CRect>> subs;
+  for (size_t i = 0; i < items.size(); ++i)
+  {
+    const COverlay& o = *items[i].overlay;
+    if (o.m_isBitmapSubtitle)
+      subs.emplace_back(i, GetContentRect(o, items[i].state));
+  }
+
+  if (subs.empty())
+    return;
+
+  std::sort(subs.begin(), subs.end(),
+            [](const auto& a, const auto& b) { return a.second.y1 < b.second.y1; });
+
+  // m_rd reaches outside the screen when the video is zoomed
+  CRect picture{m_rd};
+  picture.Intersect(m_rv);
+  if (picture.Height() <= 0.0f)
+    picture = m_rv;
+
+  // Group only objects close enough to be one block of text, so a translated
+  // sign is not dragged along with the dialogue
+  const float groupGap = picture.Height() * 0.15f;
+  // Taller than this is a graphic, not a line of text
+  const float maxHeight = picture.Height() / 3.0f;
+  const float pictureMiddle = picture.y1 + picture.Height() * 0.5f;
+
+  const RESOLUTION_INFO resInfo = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
+
+  // BOTTOM/TOP_INSIDE measure from the picture, as CDVDSubtitlesLibass does
+  // for text subtitles via MarginsMode::INSIDE_VIDEO
+  const bool insideVideo = m_subtitleAlign == SUBTITLES::Align::BOTTOM_INSIDE ||
+                           m_subtitleAlign == SUBTITLES::Align::TOP_INSIDE;
+  const bool topPosition = m_subtitleAlign == SUBTITLES::Align::TOP_INSIDE ||
+                           m_subtitleAlign == SUBTITLES::Align::TOP_OUTSIDE;
+  const CRect& edges = insideVideo ? picture : m_rv;
+
+  // m_subtitlePosition is the libass baseline in view coordinates with the
+  // margin already subtracted, so Align::MANUAL calibration is honoured
+  const float bottomTarget =
+      insideVideo ? edges.y2 - static_cast<float>(m_subtitleVerticalMargin)
+                  : m_rv.y1 + static_cast<float>(m_subtitlePosition - resInfo.Overscan.top);
+  const float topTarget = edges.y1 + static_cast<float>(m_subtitleVerticalMargin);
+
+  struct SGroup
+  {
+    size_t first;
+    size_t last;
+    CRect rect;
+    bool toTop;
+  };
+  std::vector<SGroup> groups;
+
+  for (size_t first = 0; first < subs.size();)
+  {
+    size_t last = first;
+    CRect group = subs[first].second;
+    while (last + 1 < subs.size() && subs[last + 1].second.y1 <= group.y2 + groupGap)
+    {
+      ++last;
+      group.y1 = std::min(group.y1, subs[last].second.y1);
+      group.y2 = std::max(group.y2, subs[last].second.y2);
+    }
+
+    const bool lowerHalf = group.y1 + group.Height() * 0.5f > pictureMiddle;
+    const bool straddles = group.y1 < pictureMiddle && group.y2 > pictureMiddle;
+
+    // A cue the disc put at the top stays there, clear of whatever it avoids at the bottom
+    if (group.Height() <= maxHeight && !straddles)
+      groups.push_back({first, last, group, topPosition || !lowerHalf});
+
+    first = last + 1;
+  }
+
+  // Blocks bound for the same edge are stacked in authored order rather than overlaid
+  const float stackGap = picture.Height() * 0.02f;
+  const auto shift = [&](const SGroup& g, float offset)
+  {
+    offset = std::clamp(offset, m_rv.y1 - g.rect.y1, m_rv.y2 - g.rect.y2);
+    for (size_t i = g.first; i <= g.last; ++i)
+      items[subs[i].first].state.y += offset;
+    return offset;
+  };
+
+  float nextTop = topTarget;
+  for (const SGroup& g : groups)
+  {
+    if (g.toTop)
+      nextTop = g.rect.y2 + shift(g, nextTop - g.rect.y1) + stackGap;
+  }
+
+  float nextBottom = bottomTarget;
+  for (auto g = groups.rbegin(); g != groups.rend(); ++g)
+  {
+    if (!g->toTop)
+      nextBottom = g->rect.y1 + shift(*g, nextBottom - g->rect.y2) - stackGap;
+  }
 }
 
 bool CRenderer::HasVisibleOverlay(int idx) const
@@ -336,6 +542,7 @@ void CRenderer::SetVideoRect(CRect &source, CRect &dest, CRect &view)
 void CRenderer::OnViewChange()
 {
   m_isSettingsChanged = true;
+  m_isViewChanged = true;
 }
 
 void CRenderer::SetStereoMode(const std::string &stereomode)
@@ -715,9 +922,22 @@ std::shared_ptr<COverlay> CRenderer::Convert(SElement& e)
   }
 
   if (o.IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
-    r = COverlay::Create(static_cast<CDVDOverlayImage&>(o), m_rs);
+  {
+    CDVDOverlayImage& ovImage = static_cast<CDVDOverlayImage&>(o);
+    r = COverlay::Create(ovImage, m_rs);
+    if (r && o.IsBitmapSubtitle())
+    {
+      r->m_isBitmapSubtitle = true;
+      r->m_contentInset = MeasureContentInset(ovImage);
+    }
+  }
   else if (o.IsOverlayType(DVDOVERLAY_TYPE_SPU))
+  {
     r = COverlay::Create(static_cast<CDVDOverlaySpu&>(o));
+    // COverlayTexture already crops an SPU to its visible pixels
+    if (r && o.IsBitmapSubtitle())
+      r->m_isBitmapSubtitle = true;
+  }
 
   m_textureCache[m_textureid] = r;
   o.m_textureid = m_textureid;
@@ -749,7 +969,21 @@ void CRenderer::Notify(const Observable& obs, const ObservableMessage msg)
 void CRenderer::LoadSettings()
 {
   const auto settings{CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()};
-  m_subtitleHorizontalAlign = settings->GetHorizontalAlignment();
-  m_subtitleAlign = settings->GetAlignment();
-  ResetSubtitlePosition();
+  const SUBTITLES::HorizontalAlign horizontalAlign{settings->GetHorizontalAlignment()};
+  const SUBTITLES::Align align{settings->GetAlignment()};
+  const float verticalMarginPerc{settings->GetVerticalMarginPerc()};
+
+  // Reset only when a baseline input changed, else a hand-set position is lost
+  const bool resetPosition{!m_overlayStyle || m_isViewChanged || align != m_subtitleAlign ||
+                           verticalMarginPerc != m_subtitleVerticalMarginPerc};
+  m_isViewChanged = false;
+
+  m_subtitleHorizontalAlign = horizontalAlign;
+  m_subtitleAlign = align;
+  m_subtitleVerticalMarginPerc = verticalMarginPerc;
+  m_bitmapZoomPerc = settings->GetBitmapZoomPerc();
+  m_bitmapPosition = settings->IsBitmapPositionEnabled();
+
+  if (resetPosition)
+    ResetSubtitlePosition();
 }
