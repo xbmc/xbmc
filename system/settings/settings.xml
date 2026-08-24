@@ -609,6 +609,19 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
+        <setting id="subtitles.hidesameaudiolanguage" parent="locale.subtitlelanguage" type="boolean" label="39211" help="39212">
+          <level>1</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="enable">
+              <and>
+                <condition setting="locale.subtitlelanguage" operator="!is">none</condition>
+                <condition setting="locale.subtitlelanguage" operator="!is">forced_only</condition>
+              </and>
+            </dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
       </group>
       <group id="3" label="37032">
         <setting id="accessibility.audiovisual" type="boolean" label="37034" help="37035">
