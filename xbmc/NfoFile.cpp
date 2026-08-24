@@ -90,24 +90,43 @@ bool CNfoFile::SeekToMovieIndex(int index)
   return m_headPos != std::string::npos;
 }
 
-CInfoScanner::InfoType CNfoFile::TryParsing(const CURL& nfoPath,
-                                            ADDON::ContentType contentType,
-                                            int index /* =1 */)
+CInfoScanner::InfoType CNfoFile::TryParsing(const CURL& nfoPath, ADDON::ContentType contentType)
 {
   if (Load(nfoPath) != 0) // Setup m_doc and m_headPos
     return CInfoScanner::InfoType::ERROR_NFO;
 
-  const AddonType addonType = ScraperTypeFromContent(contentType);
+  m_addonType = ScraperTypeFromContent(contentType);
 
-  if (addonType == ADDON::AddonType::SCRAPER_MOVIES && !SeekToMovieIndex(index))
+  if (m_addonType == ADDON::AddonType::SCRAPER_MOVIES && !SeekToMovieIndex(1))
     return CInfoScanner::InfoType::NONE;
 
-  return TryParsing(addonType);
+  return TryParsing(m_addonType);
 }
 
-CInfoScanner::InfoType CNfoFile::Create(const std::string& nfoPath,
-                                        const ScraperPtr& info,
-                                        int index)
+CInfoScanner::InfoType CNfoFile::Reparse(int index)
+{
+  using enum CInfoScanner::InfoType;
+
+  // Only movie nfos can hold more than one entry
+  if (m_doc.empty() || m_addonType != ADDON::AddonType::SCRAPER_MOVIES)
+    return NONE;
+
+  // Seek before discarding anything
+  const size_t previousHeadPos{m_headPos};
+  if (!SeekToMovieIndex(index))
+  {
+    m_headPos = previousHeadPos;
+    return NONE;
+  }
+
+  // Discard the element parsed previously and re-parse starting from the requested one
+  m_xmlDoc.Clear();
+  m_xmlParsed = false;
+
+  return TryParsing(m_addonType);
+}
+
+CInfoScanner::InfoType CNfoFile::Create(const std::string& nfoPath, const ScraperPtr& info)
 {
   /* `TryParsing` creates a close approximation to the desired result.
    * The desired result would be knowing if any valid URLs have been
@@ -131,7 +150,7 @@ CInfoScanner::InfoType CNfoFile::Create(const std::string& nfoPath,
    * This call is expensive as it encodes the NFO file into a URL param
    * and executes a python interpreter for each installed python scraper.
   */
-  const CInfoScanner::InfoType result = TryParsing(CURL{nfoPath}, info->Content(), index);
+  const CInfoScanner::InfoType result = TryParsing(CURL{nfoPath}, info->Content());
   if (result == CInfoScanner::InfoType::ERROR_NFO)
     return CInfoScanner::InfoType::NONE;
   return SearchNfoForScraperUrls(result, info);
@@ -193,6 +212,7 @@ void CNfoFile::Close()
 {
   m_doc.clear();
   m_headPos = 0;
+  m_addonType = {}; // ADDON::AddonType::UNKNOWN
   m_scurl.Clear();
   m_xmlDoc.Clear();
   m_xmlParsed = false;
