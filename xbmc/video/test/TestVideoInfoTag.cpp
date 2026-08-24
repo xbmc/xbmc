@@ -49,6 +49,81 @@ TEST(TestVideoInfoTag, ReadTVShowSeasons)
   EXPECT_EQ(details.m_seasons, reference);
 }
 
+TEST(TestVideoInfoTag, ReadStreamDetailFlags)
+{
+  const std::string document =
+      R"(<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+         <movie>
+         <fileinfo>
+         <streamdetails>
+         <audio><codec>dts</codec><language>eng</language><channels>6</channels>
+           <flags><flag>default</flag><flag>original</flag></flags></audio>
+         <audio><codec>ac3</codec><language>fre</language><channels>2</channels></audio>
+         <audio><codec>aac</codec><language>ger</language><channels>2</channels>
+           <flags><flag>  Forced  </flag><flag>notaflag</flag><flag></flag></flags></audio>
+         <subtitle><language>eng</language><flags><flag>forced</flag></flags></subtitle>
+         <subtitle><language>fre</language></subtitle>
+         <subtitle><language>ger</language><flags></flags></subtitle>
+         </streamdetails>
+         </fileinfo>
+         </movie>)";
+
+  CXBMCTinyXML doc;
+  doc.Parse(document, TIXML_ENCODING_UNKNOWN);
+
+  CVideoInfoTag details;
+  EXPECT_TRUE(details.Load(doc.RootElement(), true, false));
+
+  const CStreamDetails& streams = details.m_streamDetails;
+  ASSERT_EQ(3, streams.GetAudioStreamCount());
+  ASSERT_EQ(3, streams.GetSubtitleStreamCount());
+
+  EXPECT_EQ(StreamFlags::FLAG_DEFAULT | StreamFlags::FLAG_ORIGINAL, streams.GetAudioFlags(1));
+  EXPECT_EQ(StreamFlags::FLAG_FORCED, streams.GetSubtitleFlags(1));
+
+  // An NFO written before flags existed has no <flags> element at all, which must
+  // read back as no flags rather than leaving the field uninitialised.
+  EXPECT_EQ(StreamFlags::FLAG_NONE, streams.GetAudioFlags(2));
+  EXPECT_EQ(StreamFlags::FLAG_NONE, streams.GetSubtitleFlags(2));
+
+  // Names are trimmed and case-insensitive; a name this build doesn't know, and an empty
+  // one, are skipped rather than failing the whole stream.
+  EXPECT_EQ(StreamFlags::FLAG_FORCED, streams.GetAudioFlags(3));
+
+  // An empty <flags> block is a positive statement that the stream has no flags.
+  EXPECT_EQ(StreamFlags::FLAG_NONE, streams.GetSubtitleFlags(3));
+}
+
+TEST(TestVideoInfoTag, WriteStreamDetailFlags)
+{
+  // Flags survive an export/import cycle, so a library rebuilt from exported NFOs
+  // keeps them.
+  AudioStreamInfo audioInfo;
+  audioInfo.codecName = "dts";
+  audioInfo.language = "eng";
+  audioInfo.channels = 6;
+  audioInfo.flags =
+      static_cast<StreamFlags>(StreamFlags::FLAG_DEFAULT | StreamFlags::FLAG_ORIGINAL);
+
+  SubtitleStreamInfo subtitleInfo;
+  subtitleInfo.language = "eng";
+  subtitleInfo.flags = StreamFlags::FLAG_FORCED;
+
+  CVideoInfoTag details;
+  details.m_streamDetails.AddStream(new CStreamDetailAudio(audioInfo, CStreamDetail::MEDIA));
+  details.m_streamDetails.AddStream(new CStreamDetailSubtitle(subtitleInfo, CStreamDetail::MEDIA));
+  details.m_streamDetails.DetermineBestStreams();
+
+  CXBMCTinyXML xmlDoc;
+  ASSERT_TRUE(details.Save(&xmlDoc, "movie"));
+
+  CVideoInfoTag reloaded;
+  ASSERT_TRUE(reloaded.Load(xmlDoc.RootElement(), true, false));
+
+  EXPECT_EQ(audioInfo.flags, reloaded.m_streamDetails.GetAudioFlags(1));
+  EXPECT_EQ(subtitleInfo.flags, reloaded.m_streamDetails.GetSubtitleFlags(1));
+}
+
 // Trick to make protected methods accessible for testing
 class CVideoInfoTagTest : public CVideoInfoTag
 {
