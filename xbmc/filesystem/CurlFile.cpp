@@ -75,6 +75,15 @@ extern "C" int debug_callback(CURL_HANDLE *handle, curl_infotype info, char *out
   if (!CServiceBroker::GetLogging().CanLogComponent(LOGCURL))
     return 0;
 
+  // TLS records are binary, logging their contents as text yields hundreds of
+  // unreadable lines per handshake, so only note that they went by
+  if (info == CURLINFO_SSL_DATA_IN || info == CURLINFO_SSL_DATA_OUT)
+  {
+    const char* direction = info == CURLINFO_SSL_DATA_IN ? "IN" : "OUT";
+    CLog::Log(LOGDEBUG, "Curl::Debug - SSL_DATA_{}: {} bytes", direction, size);
+    return 0;
+  }
+
   std::string strLine;
   strLine.append(output, size);
   std::vector<std::string> vecLines;
@@ -87,8 +96,6 @@ extern "C" int debug_callback(CURL_HANDLE *handle, curl_infotype info, char *out
     case CURLINFO_TEXT         : infotype = "TEXT: "; break;
     case CURLINFO_HEADER_IN    : infotype = "HEADER_IN: "; break;
     case CURLINFO_HEADER_OUT   : infotype = "HEADER_OUT: "; break;
-    case CURLINFO_SSL_DATA_IN  : infotype = "SSL_DATA_IN: "; break;
-    case CURLINFO_SSL_DATA_OUT : infotype = "SSL_DATA_OUT: "; break;
     case CURLINFO_END          : infotype = "END: "; break;
     default                    : infotype = ""; break;
   }
