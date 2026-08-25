@@ -1597,6 +1597,116 @@ void CVideoDatabase::UpdateTables(int iVersion)
                 "(SELECT vv.idVersion FROM videoversion vv WHERE vv.idFile=art.media_id AND "
                 "vv.media_type='movie' LIMIT 1) "
                 "WHERE media_type='videoversion'");
+
+    // Collapse vfs file rows onto their physical containers: the vfs path of each media
+    // item moves to its version row and the file's watched state to the version columns,
+    // so one disc or archive is one file regardless of how many media items it holds. An
+    // archive member outside the library keeps a row of its own, as at runtime.
+    m_pDS->query("SELECT f.idFile, f.strFilename, p.strPath, f.playCount, f.lastPlayed, "
+                 "f.dateAdded FROM files f JOIN path p ON p.idPath=f.idPath "
+                 "WHERE (p.strPath LIKE 'bluray://%' OR ((p.strPath LIKE 'rar://%' OR "
+                 "p.strPath LIKE 'zip://%' OR p.strPath LIKE 'archive://%') AND "
+                 "EXISTS (SELECT 1 FROM videoversion vv WHERE vv.idFile=f.idFile))) "
+                 "AND f.strFilename NOT LIKE 'stack://%'");
+
+    struct VfsFile
+    {
+      int idFile;
+      std::string vfsPath;
+      std::string playCount;
+      std::string lastPlayed;
+      std::string dateAdded;
+    };
+    std::vector<VfsFile> vfsFiles;
+    while (!m_pDS->eof())
+    {
+      vfsFiles.emplace_back(m_pDS->fv(0).get_asInt(),
+                            m_pDS->fv(2).get_asString() + m_pDS->fv(1).get_asString(),
+                            m_pDS->fv(3).get_isNull() ? "" : m_pDS->fv(3).get_asString(),
+                            m_pDS->fv(4).get_asString(), m_pDS->fv(5).get_asString());
+      m_pDS->next();
+    }
+    m_pDS->close();
+
+    for (const auto& file : vfsFiles)
+    {
+      // a removable disc keeps a files row per playlist
+      if (URIUtils::IsBlurayPath(file.vfsPath) &&
+          CURL(CURL(file.vfsPath).GetHostName()).IsProtocol("removable"))
+        continue;
+
+      const std::string physical{URIUtils::IsBlurayPath(file.vfsPath)
+                                     ? URIUtils::GetDiscFile(file.vfsPath)
+                                     : CURL(file.vfsPath).GetHostName()};
+      if (physical.empty())
+        continue;
+
+      std::string physPath;
+      std::string physName;
+      SplitPath(physical, physPath, physName);
+
+      const int idPhysPath{AddPath(physPath, URIUtils::GetParentPath(physPath))};
+      if (idPhysPath < 0)
+        continue;
+
+      int idPhysFile{-1};
+      m_pDS2->query(PrepareSQL("SELECT idFile FROM files WHERE strFileName='%s' AND idPath=%i",
+                               physName.c_str(), idPhysPath));
+      if (!m_pDS2->eof())
+        idPhysFile = m_pDS2->fv(0).get_asInt();
+      m_pDS2->close();
+      if (idPhysFile < 0)
+      {
+        m_pDS2->exec(PrepareSQL("INSERT INTO files (idFile, idPath, strFileName, dateAdded) "
+                                "VALUES(NULL, %i, '%s', '%s')",
+                                idPhysPath, physName.c_str(), file.dateAdded.c_str()));
+        idPhysFile = static_cast<int>(m_pDS2->lastinsertid());
+      }
+
+      // fold the file's watched state into its versions without overwriting their own
+      const std::string playCount{file.playCount.empty() ? "NULL" : file.playCount};
+      const std::string lastPlayed{file.lastPlayed.empty() ? "NULL"
+                                                           : "'" + file.lastPlayed + "'"};
+      m_pDS2->exec(PrepareSQL("UPDATE videoversion SET idFile=%i, filePath='%s', "
+                              "playCount=COALESCE(playCount, " + playCount + "), "
+                              "lastPlayed=COALESCE(lastPlayed, " + lastPlayed + ") "
+                              "WHERE idFile=%i",
+                              idPhysFile, file.vfsPath.c_str(), file.idFile));
+
+      m_pDS2->exec(
+          PrepareSQL("UPDATE bookmark SET idFile=%i WHERE idFile=%i", idPhysFile, file.idFile));
+      // as for settings below: at most one unowned fallback set per physical file
+      m_pDS2->query(PrepareSQL(
+          "SELECT 1 FROM streamdetails WHERE idFile=%i AND idVersion IS NULL", idPhysFile));
+      const bool physHasStreamFallback{m_pDS2->num_rows() > 0};
+      m_pDS2->close();
+      if (physHasStreamFallback)
+        m_pDS2->exec(PrepareSQL(
+            "DELETE FROM streamdetails WHERE idFile=%i AND idVersion IS NULL", file.idFile));
+      m_pDS2->exec(PrepareSQL("UPDATE streamdetails SET idFile=%i WHERE idFile=%i", idPhysFile,
+                              file.idFile));
+      m_pDS2->exec(
+          PrepareSQL("UPDATE settings SET idFile=%i WHERE idFile=%i", idPhysFile, file.idFile));
+      m_pDS2->exec(
+          PrepareSQL("UPDATE movie SET idFile=%i WHERE idFile=%i", idPhysFile, file.idFile));
+      m_pDS2->exec(
+          PrepareSQL("UPDATE episode SET idFile=%i WHERE idFile=%i", idPhysFile, file.idFile));
+      m_pDS2->exec(
+          PrepareSQL("UPDATE musicvideo SET idFile=%i WHERE idFile=%i", idPhysFile, file.idFile));
+
+      m_pDS2->exec(PrepareSQL("DELETE FROM files WHERE idFile=%i", file.idFile));
+    }
+
+    if (!vfsFiles.empty())
+      m_pDS->exec("DELETE FROM path WHERE (strPath LIKE 'bluray://%' OR strPath LIKE 'rar://%' "
+                  "OR strPath LIKE 'zip://%' OR strPath LIKE 'archive://%') "
+                  "AND idPath NOT IN (SELECT idPath FROM files) "
+                  "AND (strContent IS NULL OR strContent = '') "
+                  "AND (strSettings IS NULL OR strSettings = '') "
+                  "AND NOT EXISTS (SELECT 1 FROM tvshowlinkpath t WHERE t.idPath = path.idPath) "
+                  "AND NOT EXISTS (SELECT 1 FROM movie WHERE movie.c23 = path.idPath) "
+                  "AND NOT EXISTS (SELECT 1 FROM episode WHERE episode.c19 = path.idPath) "
+                  "AND NOT EXISTS (SELECT 1 FROM musicvideo WHERE musicvideo.c14 = path.idPath)");
   }
 }
 
