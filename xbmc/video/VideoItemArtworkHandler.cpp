@@ -146,7 +146,7 @@ void CVideoItemArtworkHandler::PersistArt(const std::string& art)
   const CVideoInfoTag* tag = m_item->GetVideoInfoTag();
 
   const bool isAssetArt{VIDEO::IsVideoAssetFile(*m_item)};
-  const int mediaId = isAssetArt ? tag->m_iFileId : tag->m_iDbId;
+  const int mediaId = isAssetArt ? tag->GetAssetInfo().GetVersionId() : tag->m_iDbId;
   const MediaType mediaType = isAssetArt ? MediaTypeVideoVersion : tag->m_type;
 
   videodb.SetArtForItem(mediaId, mediaType, m_artType, art);

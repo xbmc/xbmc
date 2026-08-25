@@ -59,4 +59,5 @@ struct VideoAssetInfo
   int m_idMedia{-1};
   MediaType m_mediaType{MediaTypeNone};
   VideoAssetType m_assetType{VideoAssetType::UNKNOWN};
+  int m_idVersion{-1};
 };

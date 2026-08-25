@@ -1390,6 +1390,19 @@ TEST(TestFileItemIsSamePath, BlurayMovieVersionsAreToldApartByFile)
   EXPECT_TRUE(Same(theatrical, theatricalMoved));
 }
 
+TEST(TestFileItemIsSamePath, BlurayMovieVersionsSharingTheDiscFileAreToldApartByVersion)
+{
+  CFileItem theatrical{MakeLibraryItem(DISC, PLAYLIST_1, 3, MediaTypeMovie, 10, true)};
+  theatrical.GetVideoInfoTag()->GetAssetInfo().SetVersionId(20);
+  CFileItem extended{MakeLibraryItem(DISC, PLAYLIST_2, 3, MediaTypeMovie, 10, true)};
+  extended.GetVideoInfoTag()->GetAssetInfo().SetVersionId(21);
+  CFileItem theatricalMoved{MakeLibraryItem(DISC, PLAYLIST_2, 3, MediaTypeMovie, 10, true)};
+  theatricalMoved.GetVideoInfoTag()->GetAssetInfo().SetVersionId(20);
+
+  EXPECT_FALSE(Same(theatrical, extended));
+  EXPECT_TRUE(Same(theatrical, theatricalMoved));
+}
+
 // Replacing a version's file gives it a new file id, so an update for it names the file it replaced
 TEST(TestFileItemIsSamePath, BlurayMovieVersionMatchesAcrossReplacedFile)
 {
@@ -1406,18 +1419,18 @@ TEST(TestFileItemIsSamePath, BlurayMovieVersionMatchesAcrossReplacedFile)
   EXPECT_FALSE(Same(other, update));
 }
 
-// Items listed by the version manager are typed as versions and carry the file id as their db id
+// Items listed by the version manager are typed as versions and carry the version id as their
+// db id, which a replaced file leaves unchanged
 TEST(TestFileItemIsSamePath, VersionTypedItemMatchesAcrossReplacedFile)
 {
-  const CFileItem listed{MakeLibraryItem(DISC, PLAYLIST_1, 10, MediaTypeVideoVersion, 10)};
-  CFileItem update{MakeLibraryItem(DISC, PLAYLIST_2, 12, MediaTypeVideoVersion, 12)};
-  EXPECT_FALSE(Same(listed, update));
-
+  const CFileItem listed{MakeLibraryItem(DISC, PLAYLIST_1, 20, MediaTypeVideoVersion, 10)};
+  CFileItem update{MakeLibraryItem(DISC, PLAYLIST_2, 20, MediaTypeVideoVersion, 12)};
   update.SetProperty("replaced_file_id", 10);
   EXPECT_TRUE(Same(listed, update));
   EXPECT_TRUE(Same(update, listed));
 
-  const CFileItem other{MakeLibraryItem(DISC, PLAYLIST_1, 11, MediaTypeVideoVersion, 11)};
+  // another version, even one whose id equals the replaced file id, is not it
+  const CFileItem other{MakeLibraryItem(DISC, PLAYLIST_1, 10, MediaTypeVideoVersion, 11)};
   EXPECT_FALSE(Same(other, update));
 }
 
