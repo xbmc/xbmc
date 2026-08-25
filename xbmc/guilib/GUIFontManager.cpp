@@ -12,15 +12,20 @@
 #include "GUIComponent.h"
 #include "GUIFontTTF.h"
 #include "GUIWindowManager.h"
+#include "addons/AddonEvents.h"
 #include "addons/AddonManager.h"
 #include "addons/FontResource.h"
 #include "addons/Skin.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonType.h"
 #include "filesystem/SpecialProtocol.h"
+#include "messaging/ApplicationMessenger.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
+#include <algorithm>
 #include <mutex>
+#include <set>
 #if defined(HAS_GL)
 #include "GUIFontTTFGL.h"
 #endif
@@ -33,6 +38,8 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "filesystem/Directory.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
 #include "utils/FileUtils.h"
@@ -79,6 +86,8 @@ GUIFontManager::GUIFontManager() = default;
 
 GUIFontManager::~GUIFontManager()
 {
+  if (m_addonEventsSubscribed && CServiceBroker::IsAddonInterfaceUp())
+    CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
   Clear();
 }
 
@@ -463,7 +472,10 @@ void GUIFontManager::LoadFonts(const std::string& fontSet)
   // Try to load the fontset from Font.xml
   const std::string fontsetFilePath = skin->GetSkinPath("Font.xml", &m_skinResolution);
   if (LoadFontsFromFile(fontsetFilePath, fontSet, firstFontset))
+  {
+    LoadAddonFonts(fontSet);
     return;
+  }
 
   // If we got here, then the requested fontset was not found in the skin's Font.xml file
   // Look at additional fontsets that are defined in .xml files in the skin's fonts directory
@@ -472,7 +484,10 @@ void GUIFontManager::LoadFonts(const std::string& fontSet)
                            ".xml", DIR_FLAG_BYPASS_CACHE);
   for (int i = 0; i < xmlFileItems.Size(); i++)
     if (LoadFontsFromFile(xmlFileItems[i]->GetPath(), fontSet, firstFontset))
+    {
+      LoadAddonFonts(fontSet);
       return;
+    }
 
   // Requested fontset was not found, try the first
   if (!firstFontset.empty())
@@ -486,6 +501,113 @@ void GUIFontManager::LoadFonts(const std::string& fontSet)
   else
     CLog::LogF(LOGERROR, "No valid <fontset> found in '{}' or in xml files in fonts directory",
                fontsetFilePath);
+}
+
+void GUIFontManager::LoadAddonFonts(const std::string& fontSet)
+{
+  if (!m_addonEventsSubscribed)
+  {
+    m_addonEventsSubscribed = true;
+    CServiceBroker::GetAddonMgr().Events().Subscribe(this, [this](const ADDON::AddonEvent& event)
+                                                     { OnAddonEvent(event); });
+  }
+
+  // GetAddons() filters to enabled add-ons, so disabled ones contribute nothing.
+  VECADDONS addons;
+  CServiceBroker::GetAddonMgr().GetAddons(addons, AddonType::RESOURCE_FONT);
+  // Built aside and swapped in at the end: an add-on disabled while this runs
+  // must still resolve against the last completed load, or its event sees a
+  // half-filled set and skips the reload this load then makes necessary.
+  std::set<std::string> addonFontIds;
+  for (const auto& addon : addons)
+  {
+    // LoadTTF() resolves a file against every enabled font add-on, so track them
+    // all - one without a Font.xml still supplies files to other declarations.
+    addonFontIds.insert(addon->ID());
+
+    const auto fontResource = std::static_pointer_cast<CFontResource>(addon);
+    const std::string addonFontsetFilePath =
+        CSpecialProtocol::TranslatePathConvertCase(fontResource->Path() + "/resources/Font.xml");
+    if (!CFileUtils::Exists(addonFontsetFilePath))
+      continue;
+
+    // The add-on's first fontset is its base set and is always loaded, so a
+    // name declared only there survives a skin fontset switch; a fontset
+    // matching the active one by name can specialize on top of it.
+    std::string addonFirstFontset;
+    LoadFontsFromFile(addonFontsetFilePath, fontSet, addonFirstFontset);
+    if (!addonFirstFontset.empty() && !StringUtils::EqualsNoCase(addonFirstFontset, fontSet))
+    {
+      std::string unused;
+      LoadFontsFromFile(addonFontsetFilePath, addonFirstFontset, unused);
+    }
+  }
+
+  std::unique_lock lock(m_critSection);
+  m_addonFontIds = std::move(addonFontIds);
+}
+
+bool GUIFontManager::IsActiveSkinDependency(const std::string& addonId)
+{
+  const std::string skin = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+      CSettings::SETTING_LOOKANDFEEL_SKIN);
+  const auto deps =
+      CServiceBroker::GetAddonMgr().GetDepsRecursive(skin, OnlyEnabledRootAddon::CHOICE_YES);
+  return std::any_of(deps.begin(), deps.end(),
+                     [&addonId](const auto& dep) { return dep.id == addonId; });
+}
+
+void GUIFontManager::OnAddonEvent(const ADDON::AddonEvent& event)
+{
+  bool reload = false;
+  if (typeid(event) == typeid(AddonEvents::Enabled) ||
+      typeid(event) == typeid(AddonEvents::ReInstalled))
+  {
+    AddonPtr addon;
+    reload = CServiceBroker::GetAddonMgr().GetAddon(event.addonId, addon, AddonType::RESOURCE_FONT,
+                                                    OnlyEnabled::CHOICE_YES);
+
+    if (typeid(event) == typeid(AddonEvents::ReInstalled))
+    {
+      if (!reload)
+      {
+        // the update dropped the font extension, but what the old version
+        // registered is still loaded
+        std::unique_lock lock(m_critSection);
+        reload = m_addonFontIds.count(event.addonId) != 0;
+      }
+      // CFontResource::OnPostInstall() already reloads for a dependency of the
+      // active skin, and the messenger does not coalesce the two requests. It
+      // only runs when it is what the installer builds, which follows the main
+      // extension - a secondary kodi.resource.font gets some other callback.
+      else if (addon->HasMainType(AddonType::RESOURCE_FONT) &&
+               IsActiveSkinDependency(event.addonId))
+      {
+        reload = false;
+      }
+    }
+  }
+  else if (typeid(event) == typeid(AddonEvents::Disabled))
+  {
+    // Still installed, so ask what it is. Events are published on a job queue
+    // and a load may be part-way through replacing the tracked set, so that set
+    // cannot answer this reliably - and it is the only other thing that would
+    // post, hence exactly one reload per transition.
+    AddonPtr addon;
+    reload = CServiceBroker::GetAddonMgr().GetAddon(event.addonId, addon, AddonType::RESOURCE_FONT,
+                                                    OnlyEnabled::CHOICE_NO);
+  }
+  else if (typeid(event) == typeid(AddonEvents::UnInstalled))
+  {
+    // The add-on is gone, so the last completed load is all there is to go on;
+    // one uninstalled inside the load that first registered it is missed here.
+    std::unique_lock lock(m_critSection);
+    reload = m_addonFontIds.count(event.addonId) != 0;
+  }
+
+  if (reload)
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr,
+                                               "ReloadSkin");
 }
 
 void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
