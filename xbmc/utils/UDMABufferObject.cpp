@@ -203,7 +203,8 @@ uint8_t* CUDMABufferObject::GetMemory()
     return m_map;
   }
 
-  m_map = static_cast<uint8_t*>(mmap(nullptr, m_size, PROT_WRITE, MAP_SHARED, m_memfd, 0));
+  m_map =
+      static_cast<uint8_t*>(mmap(nullptr, m_size, PROT_READ | PROT_WRITE, MAP_SHARED, m_memfd, 0));
   if (m_map == MAP_FAILED)
   {
     CLog::Log(LOGERROR, "CUDMABufferObject::{} - mmap failed, errno={}", __FUNCTION__,
