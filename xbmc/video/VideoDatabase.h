@@ -993,7 +993,8 @@ public:
                                int dbIdSource,
                                int idFile,
                                int idVideoVersion,
-                               VideoAssetType assetType);
+                               VideoAssetType assetType,
+                               const std::string& filePath = "");
 
   bool SetDefaultVideoVersion(VideoDbContentType itemType, int dbId, int idVersion);
   void SetVideoVersion(int idVersion, int idVideoVersion);
@@ -1221,6 +1222,12 @@ private:
    */
   int GetVideoVersionIdByFile(int idFile) const;
 
+  /*! \brief Get the version id of the media item with the given vfs path
+   \param fileNameAndPath vfs path of the media item within its physical file
+   \return the version id, -1 if not found or not a vfs media path
+   */
+  int GetVideoVersionIdByPath(const std::string& fileNameAndPath) const;
+
   /*! \brief Create a videoversion row linking a media item and a file.
    Bookmarks recorded for the file before it was linked to any media item are
    adopted by the new version.
@@ -1231,7 +1238,8 @@ private:
                       const MediaType& mediaType,
                       VideoAssetType assetType,
                       int idType,
-                      bool isDefault);
+                      bool isDefault,
+                      const std::string& filePath);
 
   /*! \brief Run a query on the main dataset and return the number of rows
    If no rows are found we close the dataset and return 0.
