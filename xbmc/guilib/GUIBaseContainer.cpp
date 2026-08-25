@@ -574,7 +574,7 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
       if (message.GetSenderId() == m_pageControl && IsVisible())
       { // update our page if we're visible - not much point otherwise
         if (message.GetParam1() != GetOffset())
-          m_pageChangeTimer.StartZero();
+          StartPageChangeTimer();
         ScrollToOffset(message.GetParam1());
         return true;
       }
@@ -1065,6 +1065,11 @@ void CGUIBaseContainer::UpdatePageControl(int offset)
     SendWindowMessage(msg);
     m_lastPageControlOffset = offset;
   }
+}
+
+void CGUIBaseContainer::StartPageChangeTimer()
+{
+  m_pageChangeTimer.StartZero();
 }
 
 void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
