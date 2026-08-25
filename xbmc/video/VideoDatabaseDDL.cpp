@@ -14,6 +14,7 @@
 #include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
+#include "video/Bookmark.h"
 #include "video/VideoDatabaseColumns.h"
 #include "video/VideoManagerTypes.h"
 
@@ -120,8 +121,7 @@ void CVideoDatabaseDDL::CreateTables(CDatabase& db)
   for (int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
   {
     std::string column;
-    if (i == VIDEODB_ID_EPISODE_SEASON || i == VIDEODB_ID_EPISODE_EPISODE ||
-        i == VIDEODB_ID_EPISODE_BOOKMARK)
+    if (i == VIDEODB_ID_EPISODE_SEASON || i == VIDEODB_ID_EPISODE_EPISODE)
       column = StringUtils::Format(",c{:02} varchar(24)", i);
     else
       column = StringUtils::Format(",c{:02} text", i);
@@ -259,12 +259,9 @@ void CVideoDatabaseDDL::CreateIndices(CDatabase& db)
 
   db.ExecuteQuery("CREATE UNIQUE INDEX ix_episode_file_1 on episode (idEpisode, idFile)");
   db.ExecuteQuery("CREATE UNIQUE INDEX id_episode_file_2 on episode (idFile, idEpisode)");
-  std::string createColIndex =
+  const std::string createColIndex =
       StringUtils::Format("CREATE INDEX ix_episode_season_episode on episode (c{:02}, c{:02})",
                           VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_EPISODE_EPISODE);
-  db.ExecuteQuery(createColIndex);
-  createColIndex = StringUtils::Format("CREATE INDEX ix_episode_bookmark on episode (c{:02})",
-                                       VIDEODB_ID_EPISODE_BOOKMARK);
   db.ExecuteQuery(createColIndex);
   db.ExecuteQuery("CREATE INDEX ix_episode_show1 on episode(idEpisode,idShow)");
   db.ExecuteQuery("CREATE INDEX ix_episode_show2 on episode(idShow,idEpisode)");
@@ -451,7 +448,8 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
       "  rating.votes AS votes, "
       "  rating.rating_type AS rating_type, "
       "  uniqueid.value AS uniqueid_value, "
-      "  uniqueid.type AS uniqueid_type "
+      "  uniqueid.type AS uniqueid_type, "
+      "  epBookmark.idBookmark AS bookmarkId "
       "FROM episode"
       "  JOIN files ON"
       "    files.idFile=episode.idFile"
@@ -463,12 +461,15 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
       "    vv.idFile=episode.idFile AND vv.idMedia=episode.idEpisode AND vv.media_type='episode'"
       "  LEFT JOIN bookmark ON"
       "    bookmark.idVersion=vv.idVersion AND bookmark.type=1"
+      "  LEFT JOIN bookmark epBookmark ON"
+      "    epBookmark.idVersion=vv.idVersion AND epBookmark.type=%i"
       "  LEFT JOIN rating ON"
       "    rating.rating_id=episode.c%02d"
       "  LEFT JOIN uniqueid ON"
       "    uniqueid.uniqueid_id=episode.c%02d",
       VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_GENRE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_PREMIERED,
-      VIDEODB_ID_TV_MPAA, VIDEODB_ID_EPISODE_RATING_ID, VIDEODB_ID_EPISODE_IDENT_ID);
+      VIDEODB_ID_TV_MPAA, CBookmark::EPISODE, VIDEODB_ID_EPISODE_RATING_ID,
+      VIDEODB_ID_EPISODE_IDENT_ID);
   db.ExecuteQuery(episodeview);
 
   CLog::Log(LOGINFO, "create tvshowcounts");

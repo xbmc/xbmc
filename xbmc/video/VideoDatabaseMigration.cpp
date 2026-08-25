@@ -1505,7 +1505,8 @@ void CVideoDatabase::UpdateTables(int iVersion)
     // Bookmarks become owned by a (media item, file) pair instead of a file alone
     m_pDS->exec("ALTER TABLE bookmark ADD idVersion INTEGER");
 
-    // Episode bookmarks are linked to their episode through the episode's bookmark id column
+    // Episode bookmarks were linked to their episode through the episode's bookmark id column,
+    // which the version link replaces
     m_pDS->exec(PrepareSQL(
         "UPDATE bookmark SET idVersion="
         "(SELECT vv.idVersion FROM videoversion vv"
@@ -1514,6 +1515,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
         " WHERE e.c%02d=bookmark.idBookmark LIMIT 1) "
         "WHERE type=%i",
         LOCAL_VIDEODB_ID_EPISODE_BOOKMARK, CBookmark_EPISODE));
+    m_pDS->exec(PrepareSQL("UPDATE episode SET c%02d=NULL", LOCAL_VIDEODB_ID_EPISODE_BOOKMARK));
 
     // Bookmarks of files holding a single media item
     m_pDS->exec("UPDATE bookmark SET idVersion="

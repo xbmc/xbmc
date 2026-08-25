@@ -3514,14 +3514,18 @@ void CVideoDatabase::GetBookMarksForFile(const std::string& strFilenameAndPath, 
       bookmark.type = type;
       if (type == CBookmark::EPISODE)
       {
-        std::string strSQL2 =
-            PrepareSQL("select c%02d, c%02d from episode where c%02d=%i order by c%02d, c%02d",
-                       VIDEODB_ID_EPISODE_EPISODE, VIDEODB_ID_EPISODE_SEASON,
-                       VIDEODB_ID_EPISODE_BOOKMARK, m_pDS->fv("idBookmark").get_asInt(),
-                       VIDEODB_ID_EPISODE_SORTSEASON, VIDEODB_ID_EPISODE_SORTEPISODE);
+        std::string strSQL2 = PrepareSQL(
+            "select episode.c%02d, episode.c%02d from episode "
+            "join videoversion vv on vv.idMedia=episode.idEpisode and vv.media_type='episode' "
+            "where vv.idVersion=%i",
+            VIDEODB_ID_EPISODE_EPISODE, VIDEODB_ID_EPISODE_SEASON,
+            m_pDS->fv("idVersion").get_asInt());
         m_pDS2->query(strSQL2);
-        bookmark.episodeNumber = m_pDS2->fv(0).get_asInt();
-        bookmark.seasonNumber = m_pDS2->fv(1).get_asInt();
+        if (!m_pDS2->eof())
+        {
+          bookmark.episodeNumber = m_pDS2->fv(0).get_asInt();
+          bookmark.seasonNumber = m_pDS2->fv(1).get_asInt();
+        }
         m_pDS2->close();
       }
       m_pDS->next();
@@ -3774,10 +3778,11 @@ bool CVideoDatabase::GetEpisodeMap(int idShow,
         "and sdo.iStreamType = %i and sdo.idVersion = vv.idVersion "
         "left join streamdetails sdu on sdu.idFile = episode_view.idFile "
         "and sdu.iStreamType = %i and sdu.idVersion is NULL and sdo.idFile is NULL "
-        "left join bookmark as epBookmark on epBookmark.idBookmark = episode_view.c%02d "
+        "left join bookmark as epBookmark on epBookmark.idVersion = vv.idVersion "
+        "and epBookmark.type = %i "
         "where episode_view.idShow = %i "
         "order by cast(episode_view.c%02d as integer), cast(episode_view.c%02d as integer)",
-        CStreamDetail::VIDEO, CStreamDetail::VIDEO, VIDEODB_ID_EPISODE_BOOKMARK, idShow,
+        CStreamDetail::VIDEO, CStreamDetail::VIDEO, CBookmark::EPISODE, idShow,
         VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_EPISODE_EPISODE)};
     pDS.query(sql);
 
@@ -3949,11 +3954,6 @@ void CVideoDatabase::ClearBookMarkOfFile(const std::string& strFilenameAndPath,
       int idBookmark = m_pDS->get_field_value("idBookmark").get_asInt();
       strSQL=PrepareSQL("delete from bookmark where idBookmark=%i",idBookmark);
       m_pDS->exec(strSQL);
-      if (type == CBookmark::EPISODE)
-      {
-        strSQL=PrepareSQL("update episode set c%02d=-1 where idFile=%i and c%02d=%i", VIDEODB_ID_EPISODE_BOOKMARK, idFile, VIDEODB_ID_EPISODE_BOOKMARK, idBookmark);
-        m_pDS->exec(strSQL);
-      }
     }
 
     m_pDS->close();
@@ -3995,11 +3995,6 @@ bool CVideoDatabase::ClearBookMarksOfFile(int idFile,
     if (idVersion >= 0)
       strSQL += PrepareSQL(" and (idVersion=%i or idVersion is NULL)", idVersion);
     m_pDS->exec(strSQL);
-    if (type == CBookmark::EPISODE)
-    {
-      strSQL=PrepareSQL("update episode set c%02d=-1 where idFile=%i", VIDEODB_ID_EPISODE_BOOKMARK, idFile);
-      m_pDS->exec(strSQL);
-    }
   }
   catch (...)
   {
@@ -4018,9 +4013,11 @@ bool CVideoDatabase::GetBookMarkForEpisode(int dbId, CBookmark& bookmark) const
 {
   try
   {
-    std::string strSQL = PrepareSQL("select bookmark.* from bookmark join episode on "
-                                    "episode.c%02d=bookmark.idBookmark where episode.idEpisode=%i",
-                                    VIDEODB_ID_EPISODE_BOOKMARK, dbId);
+    std::string strSQL =
+        PrepareSQL("select bookmark.* from bookmark join videoversion vv on "
+                   "bookmark.idVersion=vv.idVersion where vv.idMedia=%i and "
+                   "vv.media_type='%s' and bookmark.type=%i",
+                   dbId, MediaTypeEpisode, CBookmark::EPISODE);
     m_pDS2->query( strSQL );
     if (!m_pDS2->eof())
     {
@@ -4045,16 +4042,24 @@ void CVideoDatabase::AddBookMarkForEpisode(const CVideoInfoTag& tag, const CBook
 {
   try
   {
-    int idFile = GetFileId(tag.m_strFileNameAndPath);
-    // delete the current episode for the selected episode number
-    std::string strSQL = PrepareSQL("delete from bookmark where idBookmark in (select c%02d from episode where c%02d=%i and c%02d=%i and idFile=%i)", VIDEODB_ID_EPISODE_BOOKMARK, VIDEODB_ID_EPISODE_SEASON, tag.m_iSeason, VIDEODB_ID_EPISODE_EPISODE, tag.m_iEpisode, idFile);
-    m_pDS->exec(strSQL);
+    const int idFile{GetFileId(tag.m_strFileNameAndPath)};
 
-    AddBookMarkToFile(tag.m_strFileNameAndPath, bookmark, CBookmark::EPISODE,
-                      GetVideoVersionId(idFile, tag.m_iDbId, MediaTypeEpisode));
-    const auto idBookmark = static_cast<int>(m_pDS->lastinsertid());
-    strSQL = PrepareSQL("update episode set c%02d=%i where c%02d=%i and c%02d=%i and idFile=%i", VIDEODB_ID_EPISODE_BOOKMARK, idBookmark, VIDEODB_ID_EPISODE_SEASON, tag.m_iSeason, VIDEODB_ID_EPISODE_EPISODE, tag.m_iEpisode, idFile);
-    m_pDS->exec(strSQL);
+    int idEpisode{tag.m_iDbId};
+    if (idEpisode < 0)
+      idEpisode = GetDbId(
+          PrepareSQL("select idEpisode from episode where c%02d=%i and c%02d=%i and idFile=%i",
+                     VIDEODB_ID_EPISODE_SEASON, tag.m_iSeason, VIDEODB_ID_EPISODE_EPISODE,
+                     tag.m_iEpisode, idFile));
+
+    const int idVersion{GetVideoVersionId(idFile, idEpisode, MediaTypeEpisode)};
+    if (idVersion < 0)
+      return;
+
+    // replace any existing episode bookmark
+    m_pDS->exec(PrepareSQL("delete from bookmark where idVersion=%i and type=%i", idVersion,
+                           CBookmark::EPISODE));
+
+    AddBookMarkToFile(tag.m_strFileNameAndPath, bookmark, CBookmark::EPISODE, idVersion);
   }
   catch (...)
   {
@@ -4066,9 +4071,10 @@ void CVideoDatabase::DeleteBookMarkForEpisode(const CVideoInfoTag& tag)
 {
   try
   {
-    std::string strSQL = PrepareSQL("delete from bookmark where idBookmark in (select c%02d from episode where idEpisode=%i)", VIDEODB_ID_EPISODE_BOOKMARK, tag.m_iDbId);
-    m_pDS->exec(strSQL);
-    strSQL = PrepareSQL("update episode set c%02d=-1 where idEpisode=%i", VIDEODB_ID_EPISODE_BOOKMARK, tag.m_iDbId);
+    std::string strSQL =
+        PrepareSQL("delete from bookmark where type=%i and idVersion in "
+                   "(select idVersion from videoversion where idMedia=%i and media_type='%s')",
+                   CBookmark::EPISODE, tag.m_iDbId, MediaTypeEpisode);
     m_pDS->exec(strSQL);
   }
   catch (...)
@@ -5167,6 +5173,9 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* co
                     record->at(VIDEODB_DETAILS_EPISODE_VOTES).get_asInt(),
                     record->at(VIDEODB_DETAILS_EPISODE_RATING_TYPE).get_asString(), true);
   details.SetUniqueID(record->at(VIDEODB_DETAILS_EPISODE_UNIQUEID_VALUE).get_asString(), record->at(VIDEODB_DETAILS_EPISODE_UNIQUEID_TYPE).get_asString(), true);
+
+  const auto& bookmarkId = record->at(VIDEODB_DETAILS_EPISODE_BOOKMARK_ID);
+  details.m_iBookmarkId = bookmarkId.get_isNull() ? -1 : bookmarkId.get_asInt();
 
   if (getDetails)
   {
