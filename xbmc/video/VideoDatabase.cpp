@@ -2381,8 +2381,10 @@ int CVideoDatabase::SetDetailsForMovie(CVideoInfoTag& details,
       }
     }
 
+    const int fileId{GetAndFillFileId(details)};
     if (details.HasStreamDetails() &&
-        !SetStreamDetailsForFileId(details.m_streamDetails, GetAndFillFileId(details)))
+        !SetStreamDetailsForFileId(details.m_streamDetails, fileId,
+                                   GetVideoVersionId(fileId, idMovie, MediaTypeMovie)))
     {
       if (!inTransaction)
         RollbackTransaction();
@@ -2875,6 +2877,9 @@ int CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath,
 
   try
   {
+    // when the old file is shared with other media items, only this version's rows move with it
+    const int idVersion{GetVideoVersionId(oldIdFile, idEpisode, MediaTypeEpisode)};
+    const bool exclusive{GetVideoVersionIdByFile(oldIdFile) == idVersion};
     m_pDS->exec(
         PrepareSQL("UPDATE episode SET idFile=%i WHERE idEpisode=%i", newIdFile, idEpisode));
     m_pDS->exec(PrepareSQL("UPDATE videoversion SET idFile=%i WHERE idFile=%i AND "
@@ -2886,6 +2891,18 @@ int CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath,
         "media_type='%s' AND idMedia=%i) WHERE idFile=%i AND idVersion IS NULL AND type=%i",
         newIdFile, MediaTypeEpisode, idEpisode, newIdFile, CBookmark::RESUME));
     m_pDS->exec(PrepareSQL("UPDATE bookmark SET idFile=%i WHERE idFile=%i", newIdFile, oldIdFile));
+    // the version's own stream details move with it; unowned fallback rows follow only when
+    // the old file holds nothing else and the new file has no fallback of its own
+    m_pDS->exec(PrepareSQL(
+        "UPDATE streamdetails SET idFile=%i WHERE idFile=%i AND idVersion=%i AND NOT EXISTS "
+        "(SELECT 1 FROM (SELECT 1 FROM streamdetails WHERE idFile=%i AND idVersion=%i) AS sd)",
+        newIdFile, oldIdFile, idVersion, newIdFile, idVersion));
+    if (exclusive)
+      m_pDS->exec(PrepareSQL(
+          "UPDATE streamdetails SET idFile=%i WHERE idFile=%i AND idVersion IS NULL AND NOT "
+          "EXISTS (SELECT 1 FROM (SELECT 1 FROM streamdetails WHERE idFile=%i AND idVersion IS "
+          "NULL) AS sd)",
+          newIdFile, oldIdFile, newIdFile));
     m_pDS->exec(PrepareSQL("UPDATE settings SET idFile=%i WHERE idFile=%i", newIdFile, oldIdFile));
     return DeleteFile(oldIdFile) ? newIdFile : -1;
   }
@@ -2928,6 +2945,12 @@ int CVideoDatabase::SetFileForMovie(const std::string& fileAndPath,
       return newIdFile;
     }
 
+    // when the old file is shared with other media items, only this version's rows move with it
+    const int idVersion{GetVideoVersionId(oldIdFile, idMovie, MediaTypeMovie)};
+    const bool exclusive{GetVideoVersionIdByFile(oldIdFile) == idVersion};
+    const std::string versionScope{
+        idVersion >= 0 && !exclusive ? PrepareSQL(" AND idVersion=%i", idVersion) : ""};
+
     m_pDS->exec(PrepareSQL("UPDATE movie SET idFile=%i WHERE idFile=%i AND idMovie=%i", newIdFile,
                            oldIdFile, idMovie));
     m_pDS->exec(PrepareSQL(
@@ -2942,10 +2965,18 @@ int CVideoDatabase::SetFileForMovie(const std::string& fileAndPath,
     m_pDS->exec(
         PrepareSQL("UPDATE art SET media_id=%i WHERE media_id=%i AND media_type='videoversion'",
                    newIdFile, oldIdFile));
-    m_pDS->exec(
-        PrepareSQL("UPDATE streamdetails SET idFile=%i WHERE idFile=%i AND NOT EXISTS (SELECT 1 "
-                   "FROM streamdetails WHERE idFile=%i)",
-                   newIdFile, oldIdFile, newIdFile));
+    // the version's own stream details move with it; unowned fallback rows follow only when
+    // the old file holds nothing else and the new file has no fallback of its own
+    m_pDS->exec(PrepareSQL(
+        "UPDATE streamdetails SET idFile=%i WHERE idFile=%i AND idVersion=%i AND NOT EXISTS "
+        "(SELECT 1 FROM (SELECT 1 FROM streamdetails WHERE idFile=%i AND idVersion=%i) AS sd)",
+        newIdFile, oldIdFile, idVersion, newIdFile, idVersion));
+    if (exclusive)
+      m_pDS->exec(PrepareSQL(
+          "UPDATE streamdetails SET idFile=%i WHERE idFile=%i AND idVersion IS NULL AND NOT "
+          "EXISTS (SELECT 1 FROM (SELECT 1 FROM streamdetails WHERE idFile=%i AND idVersion IS "
+          "NULL) AS sd)",
+          newIdFile, oldIdFile, newIdFile));
     m_pDS->exec(PrepareSQL("UPDATE settings SET idFile=%i WHERE idFile=%i", newIdFile, oldIdFile));
 
     return DeleteFile(oldIdFile) ? newIdFile : -1;
@@ -3080,8 +3111,10 @@ int CVideoDatabase::SetDetailsForEpisode(CVideoInfoTag& details,
     // add unique ids
     details.m_iIdUniqueID = AddUniqueIDs(idEpisode, MediaTypeEpisode, details);
 
+    const int fileId{GetAndFillFileId(details)};
     if (details.HasStreamDetails() &&
-        !SetStreamDetailsForFileId(details.m_streamDetails, GetAndFillFileId(details)))
+        !SetStreamDetailsForFileId(details.m_streamDetails, fileId,
+                                   GetVideoVersionId(fileId, idEpisode, MediaTypeEpisode)))
     {
       if (!inTransaction)
         RollbackTransaction();
@@ -3190,8 +3223,10 @@ int CVideoDatabase::SetDetailsForMusicVideo(CVideoInfoTag& details,
     // add unique ids
     details.m_iIdUniqueID = UpdateUniqueIDs(idMVideo, MediaTypeMusicVideo, details);
 
+    const int fileId{GetAndFillFileId(details)};
     if (details.HasStreamDetails() &&
-        !SetStreamDetailsForFileId(details.m_streamDetails, GetAndFillFileId(details)))
+        !SetStreamDetailsForFileId(details.m_streamDetails, fileId,
+                                   GetVideoVersionId(fileId, idMVideo, MediaTypeMusicVideo)))
     {
       if (!inTransaction)
         RollbackTransaction();
@@ -3234,23 +3269,38 @@ int CVideoDatabase::SetDetailsForMusicVideo(CVideoInfoTag& details,
 }
 
 bool CVideoDatabase::SetStreamDetailsForFile(const CStreamDetails& details,
-                                             const std::string& strFileNameAndPath)
+                                             const std::string& strFileNameAndPath,
+                                             int idVersion /*= -1*/)
 {
   // AddFile checks to make sure the file isn't already in the DB first
   int idFile = AddFile(strFileNameAndPath);
   if (idFile < 0)
     return false;
-  return SetStreamDetailsForFileId(details, idFile);
+  return SetStreamDetailsForFileId(details, idFile, idVersion);
 }
 
-bool CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, int idFile)
+bool CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details,
+                                               int idFile,
+                                               int idVersion /*= -1*/)
 {
   if (idFile < 0)
     return false;
 
   try
   {
-    m_pDS->exec(PrepareSQL("DELETE FROM streamdetails WHERE idFile = %i", idFile));
+    if (idVersion < 0)
+      idVersion = GetVideoVersionIdByFile(idFile);
+
+    // scoped to this version's own rows: the unowned rows remain as the fallback for
+    // other versions sharing the file that have no rows of their own yet
+    if (idVersion >= 0)
+      m_pDS->exec(PrepareSQL("DELETE FROM streamdetails WHERE idFile = %i AND idVersion = %i",
+                             idFile, idVersion));
+    else
+      m_pDS->exec(
+          PrepareSQL("DELETE FROM streamdetails WHERE idFile = %i AND idVersion IS NULL", idFile));
+
+    const std::string idVersionValue{idVersion >= 0 ? std::to_string(idVersion) : "NULL"};
 
     for (int i = 1; i <= details.GetVideoStreamCount(); i++)
     {
@@ -3258,37 +3308,40 @@ bool CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
           "INSERT INTO streamdetails "
           "(idFile, iStreamType, strVideoCodec, fVideoAspect, iVideoWidth, iVideoHeight, "
           "iVideoDuration, strStereoMode, strVideoLanguage, strHdrType, strHdrDetail, iSource, "
-          "iVersion) "
-          "VALUES (%i,%i,'%s',%f,%i,%i,%i,'%s','%s','%s','%s',%i,%i)",
+          "iVersion, idVersion) "
+          "VALUES (%i,%i,'%s',%f,%i,%i,%i,'%s','%s','%s','%s',%i,%i,%s)",
           idFile, static_cast<int>(CStreamDetail::VIDEO), details.GetVideoCodec(i).c_str(),
           static_cast<double>(details.GetVideoAspect(i)), details.GetVideoWidth(i),
           details.GetVideoHeight(i), details.GetVideoDuration(i), details.GetStereoMode(i).c_str(),
           details.GetVideoLanguage(i).c_str(), details.GetVideoHdrType(i).c_str(),
           details.GetVideoHdrDetail(i).c_str(),
           static_cast<int>(details.GetSource(CStreamDetail::VIDEO, i)),
-          details.GetVersion(CStreamDetail::VIDEO, i)));
+          details.GetVersion(CStreamDetail::VIDEO, i), idVersionValue.c_str()));
     }
     for (int i = 1; i <= details.GetAudioStreamCount(); i++)
     {
       m_pDS->exec(PrepareSQL("INSERT INTO streamdetails "
                              "(idFile, iStreamType, strAudioCodec, iAudioChannels, "
-                             "strAudioLanguage, iSource, iVersion) "
-                             "VALUES (%i,%i,'%s',%i,'%s',%i, %i)",
+                             "strAudioLanguage, iSource, iVersion, idVersion) "
+                             "VALUES (%i,%i,'%s',%i,'%s',%i, %i, %s)",
                              idFile, static_cast<int>(CStreamDetail::AUDIO),
                              details.GetAudioCodec(i).c_str(), details.GetAudioChannels(i),
                              details.GetAudioLanguage(i).c_str(),
                              static_cast<int>(details.GetSource(CStreamDetail::AUDIO, i)),
-                             details.GetVersion(CStreamDetail::AUDIO, i)));
+                             details.GetVersion(CStreamDetail::AUDIO, i),
+                             idVersionValue.c_str()));
     }
     for (int i = 1; i <= details.GetSubtitleStreamCount(); i++)
     {
       m_pDS->exec(PrepareSQL("INSERT INTO streamdetails "
-                             "(idFile, iStreamType, strSubtitleLanguage, iSource, iVersion) "
-                             "VALUES (%i,%i,'%s',%i, %i)",
+                             "(idFile, iStreamType, strSubtitleLanguage, iSource, iVersion, "
+                             "idVersion) "
+                             "VALUES (%i,%i,'%s',%i, %i, %s)",
                              idFile, static_cast<int>(CStreamDetail::SUBTITLE),
                              details.GetSubtitleLanguage(i).c_str(),
                              static_cast<int>(details.GetSource(CStreamDetail::SUBTITLE, i)),
-                             details.GetVersion(CStreamDetail::SUBTITLE, i)));
+                             details.GetVersion(CStreamDetail::SUBTITLE, i),
+                             idVersionValue.c_str()));
     }
 
     // update the runtime information, if empty
@@ -3691,8 +3744,10 @@ bool CVideoDatabase::GetEpisodeMap(int idShow,
 {
   try
   {
+    // stream details owned by the episode's version take precedence over the
+    // file's unowned fallback rows
     const std::string sql{PrepareSQL(
-        "select episode_view.*, streamdetails.iVideoDuration as duration, "
+        "select episode_view.*, COALESCE(sdo.iVideoDuration, sdu.iVideoDuration) as duration, "
         "epBookmark.timeInSeconds as epBookmarkTime, "
         "epBookmark.totalTimeInSeconds as epBookmarkTotalTime, "
         "epBookmark.thumbNailImage as epBookmarkThumb, "
@@ -3700,13 +3755,17 @@ bool CVideoDatabase::GetEpisodeMap(int idShow,
         "epBookmark.playerState as epBookmarkState, "
         "epBookmark.type as epBookmarkType "
         "from episode_view "
-        "left join streamdetails on episode_view.idFile = streamdetails.idFile "
-        "and streamdetails.iStreamType = %i "
+        "left join videoversion vv on vv.idMedia = episode_view.idEpisode "
+        "and vv.media_type='episode' and vv.idFile = episode_view.idFile "
+        "left join streamdetails sdo on sdo.idFile = episode_view.idFile "
+        "and sdo.iStreamType = %i and sdo.idVersion = vv.idVersion "
+        "left join streamdetails sdu on sdu.idFile = episode_view.idFile "
+        "and sdu.iStreamType = %i and sdu.idVersion is NULL and sdo.idFile is NULL "
         "left join bookmark as epBookmark on epBookmark.idBookmark = episode_view.c%02d "
         "where episode_view.idShow = %i "
         "order by cast(episode_view.c%02d as integer), cast(episode_view.c%02d as integer)",
-        CStreamDetail::VIDEO, VIDEODB_ID_EPISODE_BOOKMARK, idShow, VIDEODB_ID_EPISODE_SEASON,
-        VIDEODB_ID_EPISODE_EPISODE)};
+        CStreamDetail::VIDEO, CStreamDetail::VIDEO, VIDEODB_ID_EPISODE_BOOKMARK, idShow,
+        VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_EPISODE_EPISODE)};
     pDS.query(sql);
 
     // Generate map of episodes in each file (finding base file for bluray://) of show
@@ -4027,7 +4086,7 @@ bool CVideoDatabase::DeleteMovie(int idMovie,
 
     const int idFile{GetDbId(PrepareSQL("SELECT idFile FROM movie WHERE idMovie=%i", idMovie))};
     if (ca != DeleteMovieCascadeAction::ALL_ASSETS_NOT_STREAMDETAILS)
-      DeleteStreamDetails(idFile);
+      DeleteStreamDetails(idFile, GetVideoVersionId(idFile, idMovie, MediaTypeMovie));
 
     if (hashAction == DeleteMovieHashAction::HASH_DELETE)
     {
@@ -4199,7 +4258,7 @@ void CVideoDatabase::DeleteEpisode(int idEpisode, bool bKeepId /* = false */)
       AnnounceRemove(MediaTypeEpisode, idEpisode);
 
     int idFile = GetDbId(PrepareSQL("SELECT idFile FROM episode WHERE idEpisode=%i", idEpisode));
-    DeleteStreamDetails(idFile);
+    DeleteStreamDetails(idFile, GetVideoVersionId(idFile, idEpisode, MediaTypeEpisode));
 
     // keep episode table entry and bookmarks so we can update the data in place
     // the ancillary tables are still purged
@@ -4235,7 +4294,7 @@ void CVideoDatabase::DeleteMusicVideo(int idMVideo, bool bKeepId /* = false */)
     BeginTransaction();
 
     int idFile = GetDbId(PrepareSQL("SELECT idFile FROM musicvideo WHERE idMVideo=%i", idMVideo));
-    DeleteStreamDetails(idFile);
+    DeleteStreamDetails(idFile, GetVideoVersionId(idFile, idMVideo, MediaTypeMusicVideo));
 
     // keep the music video table entry and bookmarks so we can update data in place
     // the ancillary tables are still purged
@@ -4275,9 +4334,15 @@ int CVideoDatabase::GetDbId(const std::string& query) const
   return -1;
 }
 
-void CVideoDatabase::DeleteStreamDetails(int idFile)
+void CVideoDatabase::DeleteStreamDetails(int idFile, int idVersion /* = -1 */)
 {
-  m_pDS->exec(PrepareSQL("DELETE FROM streamdetails WHERE idFile = %i", idFile));
+  // scoped to the version's own rows when known, so other versions sharing the file
+  // keep theirs and the unowned fallback rows
+  if (idVersion >= 0)
+    m_pDS->exec(PrepareSQL("DELETE FROM streamdetails WHERE idFile = %i AND idVersion = %i",
+                           idFile, idVersion));
+  else
+    m_pDS->exec(PrepareSQL("DELETE FROM streamdetails WHERE idFile = %i", idFile));
 }
 
 void CVideoDatabase::DeleteSet(int idSet)
@@ -4678,8 +4743,30 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag)
   std::unique_ptr<Dataset> pDS(m_pDB->CreateDataset());
   try
   {
-    std::string strSQL = PrepareSQL("SELECT * FROM streamdetails WHERE idFile = %i", fileId);
-    pDS->query(strSQL);
+    int idVersion{tag.m_iDbId >= 0 ? GetVideoVersionId(fileId, tag.m_iDbId, tag.m_type) : -1};
+    if (idVersion < 0)
+      idVersion = GetVideoVersionIdByFile(fileId);
+
+    // prefer details owned by this version, fall back to the file's unowned details
+    std::string strSQL;
+    if (idVersion >= 0)
+    {
+      strSQL = PrepareSQL("SELECT * FROM streamdetails WHERE idFile = %i AND idVersion = %i",
+                          fileId, idVersion);
+      pDS->query(strSQL);
+      if (pDS->eof())
+      {
+        pDS->close();
+        strSQL = PrepareSQL(
+            "SELECT * FROM streamdetails WHERE idFile = %i AND idVersion IS NULL", fileId);
+        pDS->query(strSQL);
+      }
+    }
+    else
+    {
+      strSQL = PrepareSQL("SELECT * FROM streamdetails WHERE idFile = %i", fileId);
+      pDS->query(strSQL);
+    }
 
     while (!pDS->eof())
     {
@@ -13059,7 +13146,8 @@ bool CVideoDatabase::AddVideoAsset(VideoDbContentType itemType,
     }
 
     if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->HasStreamDetails() &&
-        !SetStreamDetailsForFileId(item.GetVideoInfoTag()->m_streamDetails, idFile))
+        !SetStreamDetailsForFileId(item.GetVideoInfoTag()->m_streamDetails, idFile,
+                                   GetVideoVersionId(idFile, dbId, mediaType)))
     {
       RollbackTransaction();
       return false;

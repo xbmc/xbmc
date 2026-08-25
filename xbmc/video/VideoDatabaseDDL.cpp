@@ -156,7 +156,7 @@ void CVideoDatabaseDDL::CreateTables(CDatabase& db)
       "strAudioCodec text, iAudioChannels integer, strAudioLanguage text, "
       "strSubtitleLanguage text, iVideoDuration integer, strStereoMode text, "
       "strVideoLanguage text, strHdrType text, strHdrDetail text, iSource integer, iVersion "
-      "integer)");
+      "integer, idVersion integer)");
 
   CLog::Log(LOGINFO, "create sets table");
   db.ExecuteQuery("CREATE TABLE `sets` ( idSet integer primary key, strSet text, strOverview text, "
@@ -322,6 +322,9 @@ void CVideoDatabaseDDL::CreateTriggers(CDatabase& db)
                   "DELETE FROM bookmark WHERE idVersion IN "
                   "(SELECT idVersion FROM videoversion WHERE idFile=old.idFile AND "
                   "idMedia=old.idMovie AND media_type='movie'); "
+                  "DELETE FROM streamdetails WHERE idVersion IN "
+                  "(SELECT idVersion FROM videoversion WHERE idFile=old.idFile AND "
+                  "idMedia=old.idMovie AND media_type='movie'); "
                   "DELETE FROM videoversion "
                   "WHERE idFile=old.idFile AND idMedia=old.idMovie AND media_type='movie'; "
                   "END");
@@ -352,6 +355,9 @@ void CVideoDatabaseDDL::CreateTriggers(CDatabase& db)
       "DELETE FROM bookmark WHERE idVersion IN "
       "(SELECT idVersion FROM videoversion WHERE idMedia=old.idMVideo AND "
       "media_type='musicvideo'); "
+      "DELETE FROM streamdetails WHERE idVersion IN "
+      "(SELECT idVersion FROM videoversion WHERE idMedia=old.idMVideo AND "
+      "media_type='musicvideo'); "
       "DELETE FROM videoversion WHERE idMedia=old.idMVideo AND media_type='musicvideo'; "
       "END");
   db.ExecuteQuery(
@@ -365,6 +371,9 @@ void CVideoDatabaseDDL::CreateTriggers(CDatabase& db)
       // SQLite does not fire delete_videoversion for rows deleted inside a trigger,
       // so the versions' dependents are cleaned here
       "DELETE FROM bookmark WHERE idVersion IN "
+      "(SELECT idVersion FROM videoversion WHERE idMedia=old.idEpisode AND "
+      "media_type='episode'); "
+      "DELETE FROM streamdetails WHERE idVersion IN "
       "(SELECT idVersion FROM videoversion WHERE idMedia=old.idEpisode AND "
       "media_type='episode'); "
       "DELETE FROM videoversion WHERE idMedia=old.idEpisode AND media_type='episode'; "
@@ -399,6 +408,7 @@ void CVideoDatabaseDDL::CreateTriggers(CDatabase& db)
       "DELETE FROM art WHERE media_id=old.idFile AND media_type='videoversion' "
       "AND old.media_type='movie'; "
       "DELETE FROM bookmark WHERE idVersion=old.idVersion; "
+      "DELETE FROM streamdetails WHERE idVersion=old.idVersion; "
       "END");
 }
 

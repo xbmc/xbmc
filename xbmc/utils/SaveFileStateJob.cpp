@@ -106,6 +106,16 @@ void CSaveFileState::DoWork(CFileItem& item,
           }
         }
 
+        // scope per-version data to the played media item, so other items
+        // sharing the same file (eg. multi-episode files) keep theirs
+        int idVersion{-1};
+        if (item.HasVideoInfoTag())
+        {
+          const CVideoInfoTag* playedTag{item.GetVideoInfoTag()};
+          idVersion = videodatabase.GetVideoVersionId(playedTag->m_iFileId, playedTag->m_iDbId,
+                                                      playedTag->m_type);
+        }
+
         bool updateListing = false;
         // No resume & watched status for livetv
         if (!item.IsLiveTV())
@@ -161,16 +171,6 @@ void CSaveFileState::DoWork(CFileItem& item,
           if (!item.HasVideoInfoTag() ||
               item.GetVideoInfoTag()->GetResumePoint().timeInSeconds != bookmark.timeInSeconds)
           {
-            // scope the resume point to the played media item, so other items
-            // sharing the same file (eg. multi-episode files) keep theirs
-            int idVersion{-1};
-            if (item.HasVideoInfoTag())
-            {
-              const CVideoInfoTag* tag{item.GetVideoInfoTag()};
-              idVersion =
-                  videodatabase.GetVideoVersionId(tag->m_iFileId, tag->m_iDbId, tag->m_type);
-            }
-
             videodatabase.BeginTransaction();
             bool success{true};
             if (bookmark.timeInSeconds <= 0.0)
@@ -217,7 +217,7 @@ void CSaveFileState::DoWork(CFileItem& item,
             videodatabase.BeginTransaction();
 
             if (videodatabase.SetStreamDetailsForFile(item.GetVideoInfoTag()->m_streamDetails,
-                                                      progressTrackingFile))
+                                                      progressTrackingFile, idVersion))
             {
               videodatabase.CommitTransaction();
               updateListing = true;

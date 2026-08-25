@@ -1530,6 +1530,19 @@ void CVideoDatabase::UpdateTables(int iVersion)
                            "AND idFile IN (SELECT idFile FROM videoversion)",
                            CBookmark_RESUME));
 
+    // Stream details of files holding a single media item become owned by its version.
+    // Details of a file holding several media items describe the whole container - its
+    // duration above all - so they are wrong for every one of them and are dropped rather
+    // than left as a shared fallback; each item gets its own on next scan or playback.
+    // Files not linked to any media item keep theirs.
+    m_pDS->exec("ALTER TABLE streamdetails ADD idVersion INTEGER");
+    m_pDS->exec(
+        "UPDATE streamdetails SET idVersion="
+        "(SELECT vv.idVersion FROM videoversion vv WHERE vv.idFile=streamdetails.idFile) "
+        "WHERE (SELECT COUNT(1) FROM videoversion vv2 WHERE vv2.idFile=streamdetails.idFile)=1");
+    m_pDS->exec("DELETE FROM streamdetails WHERE idVersion IS NULL "
+                "AND idFile IN (SELECT idFile FROM videoversion)");
+
     m_pDS->dropIndex("videoversion", "ix_migration_videoversion");
     m_pDS->dropIndex("episode", "ix_migration_episode_bookmark");
   }

@@ -375,7 +375,8 @@ public:
                               const KODI::ART::Artwork& artwork,
                               int idMVideo = -1);
   bool SetStreamDetailsForFile(const CStreamDetails& details,
-                               const std::string& strFileNameAndPath);
+                               const std::string& strFileNameAndPath,
+                               int idVersion = -1);
 
   /*!
    * \brief Clear any existing stream details and add the new provided details to a file.
@@ -383,7 +384,7 @@ public:
    * \param[in] idFile Identifier of the file
    * \return operation success. true for success, false for failure
    */
-  bool SetStreamDetailsForFileId(const CStreamDetails& details, int idFile);
+  bool SetStreamDetailsForFileId(const CStreamDetails& details, int idFile, int idVersion = -1);
 
   struct PlaylistInfo
   {
@@ -431,7 +432,7 @@ public:
   void DeleteEpisode(int idEpisode, bool bKeepId = false);
   void DeleteMusicVideo(int idMusicVideo, bool bKeepId = false);
   void DeleteDetailsForTvShow(int idTvShow);
-  void DeleteStreamDetails(int idFile);
+  void DeleteStreamDetails(int idFile, int idVersion = -1);
   void RemoveContentForPath(const std::string& strPath, CGUIDialogProgress* progress = nullptr);
   void UpdateFanart(const CFileItem& item, VideoDbContentType type);
   void DeleteSet(int idSet);

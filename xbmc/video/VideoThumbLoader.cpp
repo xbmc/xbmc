@@ -340,7 +340,9 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
               info->m_streamDetails,
               !info->m_strFileNameAndPath.empty() ? info->m_strFileNameAndPath : pItem->GetPath());
         else
-          m_videoDatabase->SetStreamDetailsForFileId(info->m_streamDetails, info->m_iFileId);
+          m_videoDatabase->SetStreamDetailsForFileId(
+              info->m_streamDetails, info->m_iFileId,
+              m_videoDatabase->GetVideoVersionId(info->m_iFileId, info->m_iDbId, info->m_type));
 
         // overwrite the runtime value if the one from streamdetails is available
         if (info->m_iDbId > 0 && info->GetStaticDuration() != info->GetDuration())
