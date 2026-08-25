@@ -333,6 +333,9 @@ void CVideoDatabaseDDL::CreateTriggers(CDatabase& db)
                   "DELETE FROM settings WHERE idVersion IN "
                   "(SELECT idVersion FROM videoversion WHERE idFile=old.idFile AND "
                   "idMedia=old.idMovie AND media_type='movie'); "
+                  "DELETE FROM art WHERE media_type='videoversion' AND media_id IN "
+                  "(SELECT idVersion FROM videoversion WHERE idFile=old.idFile AND "
+                  "idMedia=old.idMovie AND media_type='movie'); "
                   "DELETE FROM videoversion "
                   "WHERE idFile=old.idFile AND idMedia=old.idMovie AND media_type='movie'; "
                   "END");
@@ -369,6 +372,9 @@ void CVideoDatabaseDDL::CreateTriggers(CDatabase& db)
       "DELETE FROM settings WHERE idVersion IN "
       "(SELECT idVersion FROM videoversion WHERE idMedia=old.idMVideo AND "
       "media_type='musicvideo'); "
+      "DELETE FROM art WHERE media_type='videoversion' AND media_id IN "
+      "(SELECT idVersion FROM videoversion WHERE idMedia=old.idMVideo AND "
+      "media_type='musicvideo'); "
       "DELETE FROM videoversion WHERE idMedia=old.idMVideo AND media_type='musicvideo'; "
       "END");
   db.ExecuteQuery(
@@ -388,6 +394,9 @@ void CVideoDatabaseDDL::CreateTriggers(CDatabase& db)
       "(SELECT idVersion FROM videoversion WHERE idMedia=old.idEpisode AND "
       "media_type='episode'); "
       "DELETE FROM settings WHERE idVersion IN "
+      "(SELECT idVersion FROM videoversion WHERE idMedia=old.idEpisode AND "
+      "media_type='episode'); "
+      "DELETE FROM art WHERE media_type='videoversion' AND media_id IN "
       "(SELECT idVersion FROM videoversion WHERE idMedia=old.idEpisode AND "
       "media_type='episode'); "
       "DELETE FROM videoversion WHERE idMedia=old.idEpisode AND media_type='episode'; "
@@ -412,15 +421,15 @@ void CVideoDatabaseDDL::CreateTriggers(CDatabase& db)
                   "DELETE FROM settings WHERE idFile=old.idFile; "
                   "DELETE FROM stacktimes WHERE idFile=old.idFile; "
                   "DELETE FROM streamdetails WHERE idFile=old.idFile; "
+                  "DELETE FROM art WHERE media_type='videoversion' AND media_id IN "
+                  "(SELECT idVersion FROM videoversion WHERE idFile=old.idFile); "
                   "DELETE FROM videoversion WHERE idFile=old.idFile; "
-                  "DELETE FROM art WHERE media_id=old.idFile AND media_type='videoversion'; "
                   "END");
   // streamdetails are not removed here: the file may still be referenced by other
   // videoversion rows (eg. other episodes in the same file) and is cleaned up with the file
   db.ExecuteQuery(
       "CREATE TRIGGER delete_videoversion AFTER DELETE ON videoversion FOR EACH ROW BEGIN "
-      "DELETE FROM art WHERE media_id=old.idFile AND media_type='videoversion' "
-      "AND old.media_type='movie'; "
+      "DELETE FROM art WHERE media_id=old.idVersion AND media_type='videoversion'; "
       "DELETE FROM bookmark WHERE idVersion=old.idVersion; "
       "DELETE FROM streamdetails WHERE idVersion=old.idVersion; "
       "DELETE FROM settings WHERE idVersion=old.idVersion; "
@@ -650,7 +659,7 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
       "    WHERE vv.idMedia = movie.idMovie "
       "    AND   vv.media_type = '%s' "
       "    AND   vv.itemType = %i "
-      "    AND   vv.idFile <> movie.idFile "
+      "    AND   vv.isDefault = 0 "
       "  ) AS hasVideoVersions, "
       "  EXISTS( "
       "    SELECT 1 "
@@ -659,14 +668,12 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
       "    AND   vv.media_type = '%s' "
       "    AND   vv.itemType = %i "
       "  ) AS hasVideoExtras, "
-      "  CASE "
-      "    WHEN vv.idFile = movie.idFile AND vv.itemType = %i THEN 1 "
-      "    ELSE 0 "
-      "  END AS isDefaultVersion, "
+      "  vv.isDefault AS isDefaultVersion, "
       "  vv.idFile AS videoVersionIdFile, "
       "  vvt.id AS videoVersionTypeId,"
       "  vvt.name AS videoVersionTypeName,"
-      "  vvt.itemType AS videoVersionTypeItemType "
+      "  vvt.itemType AS videoVersionTypeItemType, "
+      "  vv.idVersion AS videoVersionId "
       "FROM movie"
       "  LEFT JOIN `sets` ON"
       "    `sets`.idSet = movie.idSet"
@@ -685,7 +692,7 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
       "  LEFT JOIN bookmark ON"
       "    bookmark.idVersion = vv.idVersion AND bookmark.type = 1",
       MediaTypeMovie, VideoAssetType::VERSION, MediaTypeMovie, VideoAssetType::EXTRA,
-      VideoAssetType::VERSION, VIDEODB_ID_RATING_ID, VIDEODB_ID_IDENT_ID, MediaTypeMovie);
+      VIDEODB_ID_RATING_ID, VIDEODB_ID_IDENT_ID, MediaTypeMovie);
 
   db.ExecuteQuery(movieview);
 }

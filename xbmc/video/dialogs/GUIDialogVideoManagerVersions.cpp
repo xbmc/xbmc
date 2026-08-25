@@ -442,7 +442,8 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
                                   m_videoAsset->GetVideoContentType(), m_database);
 
       // New disc video version will not have any art so use the art from the disc
-      m_database.SetArtForItem(idFile, MediaTypeVideoVersion, item->GetArt());
+      m_database.SetArtForItem(m_database.GetVideoVersionId(idFile, idMovie, MediaTypeMovie),
+                               MediaTypeVideoVersion, item->GetArt());
 
       m_database.CommitTransaction();
     }
@@ -601,9 +602,10 @@ std::pair<VersionConversionResult, int> CGUIDialogVideoManagerVersions::ConvertT
       return {VersionConversionResult::CANCELLED, NO_VERSION};
   }
 
-  // The file of the source movie, needed to make the new version the default one.
-  // Must be retrieved before the conversion, which reassigns the file to the target movie.
-  const int idFile{videoDb.GetFileIdByMovie(sourceDbId)};
+  // The default version of the source movie, needed to make the new version the default one.
+  // Must be retrieved before the conversion, which reassigns the version to the target movie.
+  const int idVersion{
+      videoDb.GetVideoVersionId(videoDb.GetFileIdByMovie(sourceDbId), sourceDbId, MediaTypeMovie)};
 
   // Preserve streamdetails if bluray playlist, or a stack containing them
   CFileItem sourceItem;
@@ -636,9 +638,9 @@ std::pair<VersionConversionResult, int> CGUIDialogVideoManagerVersions::ConvertT
              CURL::GetRedacted(sourceItem.GetDynPath()), targetDbId);
 
   if (setDefaultVersion &&
-      (idFile < 0 || !videoDb.SetDefaultVideoVersion(itemType, targetDbId, idFile)))
-    CLog::LogF(LOGERROR, "Failed to set file id {} as the default version of movie id {}", idFile,
-               targetDbId);
+      (idVersion < 0 || !videoDb.SetDefaultVideoVersion(itemType, targetDbId, idVersion)))
+    CLog::LogF(LOGERROR, "Failed to set version id {} as the default version of movie id {}",
+               idVersion, targetDbId);
 
   // Success is returned even if the default version could not be set, since the conversion itself was successful.
   return {VersionConversionResult::SUCCESS, targetDbId};
@@ -890,7 +892,7 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
 
       // Additional constraints for the conversion of a movie version
       if (newAsset.m_assetType == VideoAssetType::VERSION &&
-          m_database.IsDefaultVideoVersion(newAsset.m_idFile))
+          m_database.IsDefaultVideoVersion(newAsset.m_idVersion))
       {
         CFileItemList list;
         m_database.GetVideoVersions(itemType, newAsset.m_idMedia, list, newAsset.m_assetType);

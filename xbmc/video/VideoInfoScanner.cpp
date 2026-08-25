@@ -1557,9 +1557,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
       }
 
       // Look for default version
-      int defaultVersionFileId{-1};
+      int defaultVersionId{-1};
       if (tag->IsDefaultVideoVersion())
-        defaultVersionFileId = tag->m_iFileId; // Updated in AddMovie()
+        defaultVersionId =
+            m_database.GetVideoVersionId(tag->m_iFileId, movieId, MediaTypeMovie);
 
       // Look for versions (ie. subsequent <movie> entries in the .nfo file)
       // These must be versions. Reuse the loader.
@@ -1596,13 +1597,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
         // Look for default version
         if (tag->IsDefaultVideoVersion())
-          defaultVersionFileId = tag->m_iFileId; // Updated in AddVideoAsset()
+          defaultVersionId = tag->GetAssetInfo().GetVersionId(); // Updated in AddVideoAsset()
       }
 
       // Set default version
-      if (defaultVersionFileId > -1)
-        m_database.SetDefaultVideoVersion(VideoDbContentType::MOVIES, movieId,
-                                          defaultVersionFileId);
+      if (defaultVersionId > -1)
+        m_database.SetDefaultVideoVersion(VideoDbContentType::MOVIES, movieId, defaultVersionId);
 
       return mergedIntoExistingMovie ? InfoRet::HAVE_ALREADY : InfoRet::ADDED;
     }

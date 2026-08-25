@@ -287,7 +287,7 @@ public:
                     CVideoInfoTag& details,
                     int idMovie = -1,
                     int idVersion = -1,
-                    int idFile = -1,
+                    int idAsset = -1,
                     int getDetails = VideoDbDetailsAll);
   bool GetTvShowInfo(const std::string& strPath,
                      CVideoInfoTag& details,
@@ -861,7 +861,7 @@ public:
   /*!
    * \brief Retrieve all art for the given video asset, with optional fallback to the art of the
    * parent/owner of the asset
-   * \param assetId id of the file of the asset
+   * \param assetId version id of the asset
    * \param fallback optionally request fallback to the art of the parent/owner for each art type
      that is not defined for the asset
    * \param art collection of the retrieved art
@@ -995,8 +995,8 @@ public:
                                int idVideoVersion,
                                VideoAssetType assetType);
 
-  bool SetDefaultVideoVersion(VideoDbContentType itemType, int dbId, int idFile);
-  void SetVideoVersion(int idFile, int idVideoVersion);
+  bool SetDefaultVideoVersion(VideoDbContentType itemType, int dbId, int idVersion);
+  void SetVideoVersion(int idVersion, int idVideoVersion);
   int AddOrValidateVideoVersionType(const std::string& typeVideoVersion);
   int AddVideoVersionType(const std::string& typeVideoVersion,
                           VideoAssetTypeOwner owner,
@@ -1016,8 +1016,8 @@ public:
                      int idVideoAsset,
                      VideoAssetType videoAssetType,
                      CFileItem& item);
-  bool DeleteVideoAsset(int idFile);
-  bool IsDefaultVideoVersion(int idFile);
+  bool DeleteVideoAsset(int idVersion);
+  bool IsDefaultVideoVersion(int idVersion);
   bool GetVideoVersionTypes(VideoDbContentType idContent,
                             VideoAssetType assetType,
                             CFileItemList& items);

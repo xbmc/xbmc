@@ -202,7 +202,7 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
 
       // Additional constraints for the conversion of a movie version
       if (newAsset.m_assetType == VideoAssetType::VERSION &&
-          m_database.IsDefaultVideoVersion(newAsset.m_idFile))
+          m_database.IsDefaultVideoVersion(newAsset.m_idVersion))
       {
         CFileItemList list;
         m_database.GetVideoVersions(itemType, newAsset.m_idMedia, list, newAsset.m_assetType);

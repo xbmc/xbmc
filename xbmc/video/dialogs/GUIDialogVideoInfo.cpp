@@ -830,7 +830,7 @@ void AddCurrentArtTypes(std::vector<std::string>& artTypes,
   KODI::ART::Artwork currentArt;
 
   if (tag.GetAssetInfo().GetId() >= 0)
-    db.GetArtForAsset(tag.m_iFileId, ArtFallbackOptions::NONE, currentArt);
+    db.GetArtForAsset(tag.GetAssetInfo().GetVersionId(), ArtFallbackOptions::NONE, currentArt);
   else
     db.GetArtForItem(tag.m_iDbId, tag.m_type, currentArt);
 

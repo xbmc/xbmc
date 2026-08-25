@@ -456,7 +456,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
     if (VIDEO::IsVideoAssetFile(item))
     {
       if (m_videoDatabase->GetArtForAsset(
-              tag.m_iFileId,
+              tag.GetAssetInfo().GetVersionId(),
               (item.GetProperty("noartfallbacktoowner").asBoolean(false) ||
                item.GetVideoInfoTag()->GetAssetInfo().GetType() != VideoAssetType::VERSION)
                   ? ArtFallbackOptions::NONE

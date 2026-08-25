@@ -2031,6 +2031,7 @@ void CVideoInfoTag::CAssetInfo::Clear()
   m_id = -1;
   m_title.clear();
   m_type = VideoAssetType::UNKNOWN;
+  m_idVersion = -1;
 }
 
 void CVideoInfoTag::CAssetInfo::Archive(CArchive& ar)
@@ -2040,6 +2041,7 @@ void CVideoInfoTag::CAssetInfo::Archive(CArchive& ar)
     ar << m_title;
     ar << m_id;
     ar << static_cast<int>(m_type);
+    ar << m_idVersion;
   }
   else
   {
@@ -2048,6 +2050,7 @@ void CVideoInfoTag::CAssetInfo::Archive(CArchive& ar)
     int assetType{0};
     ar >> assetType;
     m_type = static_cast<VideoAssetType>(assetType);
+    ar >> m_idVersion;
   }
 }
 
@@ -2080,6 +2083,8 @@ void CVideoInfoTag::CAssetInfo::Merge(const CAssetInfo& other)
     m_id = other.m_id;
   if (other.m_type != VideoAssetType::UNKNOWN)
     m_type = other.m_type;
+  if (other.m_idVersion >= 0)
+    m_idVersion = other.m_idVersion;
 }
 
 void CVideoInfoTag::CAssetInfo::Serialize(CVariant& value) const
@@ -2087,6 +2092,7 @@ void CVideoInfoTag::CAssetInfo::Serialize(CVariant& value) const
   value["videoassettitle"] = m_title;
   value["videoassetid"] = m_id;
   value["videoassettype"] = static_cast<int>(m_type);
+  value["videoversionid"] = m_idVersion;
 }
 
 void CVideoInfoTag::CAssetInfo::SetTitle(const std::string& assetTitle)
@@ -2103,6 +2109,11 @@ void CVideoInfoTag::CAssetInfo::SetId(int assetId)
 void CVideoInfoTag::CAssetInfo::SetType(VideoAssetType assetType)
 {
   m_type = assetType;
+}
+
+void CVideoInfoTag::CAssetInfo::SetVersionId(int idVersion)
+{
+  m_idVersion = idVersion;
 }
 
 void CVideoInfoTag::SetHasVideoVersions(bool hasVersions)

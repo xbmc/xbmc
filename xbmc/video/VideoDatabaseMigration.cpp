@@ -1577,6 +1577,15 @@ void CVideoDatabase::UpdateTables(int iVersion)
     // Per-version watched state; NULL falls back to the file's values
     m_pDS->exec("ALTER TABLE videoversion ADD playCount INTEGER");
     m_pDS->exec("ALTER TABLE videoversion ADD lastPlayed TEXT");
+
+    // Version art becomes keyed by the version id: the file id stops identifying
+    // a version once several versions can share one physical file
+    m_pDS->exec("DELETE FROM art WHERE media_type='videoversion' AND media_id NOT IN "
+                "(SELECT idFile FROM videoversion WHERE media_type='movie')");
+    m_pDS->exec("UPDATE art SET media_id="
+                "(SELECT vv.idVersion FROM videoversion vv WHERE vv.idFile=art.media_id AND "
+                "vv.media_type='movie' LIMIT 1) "
+                "WHERE media_type='videoversion'");
   }
 }
 

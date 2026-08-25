@@ -314,10 +314,23 @@ public:
      */
     void SetType(VideoAssetType assetType);
 
+    /*!
+     * @brief Get the database id of the video version this asset represents.
+     * @return The id or -1 if the item has no video asset.
+     */
+    int GetVersionId() const { return m_idVersion; }
+
+    /*!
+     * @brief Set the database id of the video version this asset represents.
+     * @param idVersion The id.
+     */
+    void SetVersionId(int idVersion);
+
   private:
     std::string m_title;
     int m_id{-1};
     VideoAssetType m_type{-1};
+    int m_idVersion{-1};
   };
 
   /*!
