@@ -1473,6 +1473,31 @@ void CVideoDatabase::UpdateTables(int iVersion)
                 "AND idMedia NOT IN (SELECT idMovie FROM movie)");
     m_pDS->exec("DELETE FROM videoversion WHERE idFile NOT IN (SELECT idFile FROM files)");
 
+    constexpr int VideoAssetType_VERSION = 1;
+    constexpr int VIDEO_VERSION_ID_DEFAULT = 40400;
+
+    // Temporary indices for the seeding guards and correlated backfills below
+    // (indices are offline during migration - CVideoDatabaseDDL::CreateIndices() runs after)
+    m_pDS->exec("CREATE INDEX ix_migration_videoversion ON videoversion (idFile)");
+
+    // NOT EXISTS keeps the seeding idempotent for a retried run on MySQL,
+    // where earlier statements are already committed
+    m_pDS->exec(
+        PrepareSQL("INSERT INTO videoversion (idFile, idMedia, media_type, itemType, idType) "
+                   "SELECT idFile, idEpisode, 'episode', %i, %i FROM episode "
+                   "WHERE NOT EXISTS (SELECT 1 FROM videoversion vv WHERE "
+                   "vv.idFile=episode.idFile AND vv.idMedia=episode.idEpisode AND "
+                   "vv.media_type='episode')",
+                   VideoAssetType_VERSION, VIDEO_VERSION_ID_DEFAULT));
+    m_pDS->exec(
+        PrepareSQL("INSERT INTO videoversion (idFile, idMedia, media_type, itemType, idType) "
+                   "SELECT idFile, idMVideo, 'musicvideo', %i, %i FROM musicvideo "
+                   "WHERE NOT EXISTS (SELECT 1 FROM videoversion vv WHERE "
+                   "vv.idFile=musicvideo.idFile AND vv.idMedia=musicvideo.idMVideo AND "
+                   "vv.media_type='musicvideo')",
+                   VideoAssetType_VERSION, VIDEO_VERSION_ID_DEFAULT));
+
+    m_pDS->dropIndex("videoversion", "ix_migration_videoversion");
   }
 }
 

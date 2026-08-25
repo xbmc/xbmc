@@ -1236,6 +1236,12 @@ int CVideoDatabase::AddNewEpisode(int idShow, CVideoInfoTag& details)
     m_pDS->exec(strSQL);
     details.m_iDbId = static_cast<int>(m_pDS->lastinsertid());
 
+    m_pDS->exec(
+        PrepareSQL("INSERT INTO videoversion (idFile, idMedia, media_type, itemType, idType) "
+                   "VALUES(%i, %i, '%s', %i, %i)",
+                   details.m_iFileId, details.m_iDbId, MediaTypeEpisode, VideoAssetType::VERSION,
+                   VIDEO_VERSION_ID_DEFAULT));
+
     return details.m_iDbId;
   }
   catch (...)
@@ -1267,6 +1273,12 @@ int CVideoDatabase::AddNewMusicVideo(CVideoInfoTag& details)
                                     details.m_iFileId);
     m_pDS->exec(strSQL);
     details.m_iDbId = static_cast<int>(m_pDS->lastinsertid());
+
+    m_pDS->exec(
+        PrepareSQL("INSERT INTO videoversion (idFile, idMedia, media_type, itemType, idType) "
+                   "VALUES(%i, %i, '%s', %i, %i)",
+                   details.m_iFileId, details.m_iDbId, MediaTypeMusicVideo,
+                   VideoAssetType::VERSION, VIDEO_VERSION_ID_DEFAULT));
 
     return details.m_iDbId;
   }
@@ -2874,6 +2886,9 @@ int CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath,
   {
     m_pDS->exec(
         PrepareSQL("UPDATE episode SET idFile=%i WHERE idEpisode=%i", newIdFile, idEpisode));
+    m_pDS->exec(PrepareSQL("UPDATE videoversion SET idFile=%i WHERE idFile=%i AND "
+                           "media_type='%s' AND idMedia=%i",
+                           newIdFile, oldIdFile, MediaTypeEpisode, idEpisode));
     m_pDS->exec(PrepareSQL("UPDATE settings SET idFile=%i WHERE idFile=%i", newIdFile, oldIdFile));
     return DeleteFile(oldIdFile) ? newIdFile : -1;
   }
@@ -10470,6 +10485,10 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
                     parentPathIdField.c_str(),
                     table.c_str(), cleanableFileIDs.c_str());
 
+  // episode and musicvideo version rows are handled through their own media type sweeps
+  if (mediaType == MediaTypeVideoVersion)
+    sql += PrepareSQL(" AND videoversion.media_type = '%s'", MediaTypeMovie);
+
   std::vector<CMediaSource> videoSources(*CMediaSourceSettings::GetInstance().GetSources("video"));
   CServiceBroker::GetMediaManager().GetRemovableDrives(videoSources);
 
@@ -13024,6 +13043,8 @@ VideoAssetInfo CVideoDatabase::GetVideoVersionInfo(const std::string& filenameAn
 
   try
   {
+    // a file can be linked to several media items; the consumers manage movie assets,
+    // so a movie row is preferred when present
     m_pDS->query(PrepareSQL("SELECT videoversiontype.name,"
                             "  videoversiontype.id,"
                             "  videoversion.idMedia,"
@@ -13032,8 +13053,9 @@ VideoAssetInfo CVideoDatabase::GetVideoVersionInfo(const std::string& filenameAn
                             "FROM videoversion"
                             "  JOIN videoversiontype ON "
                             "    videoversiontype.id = videoversion.idType "
-                            "WHERE videoversion.idFile = %i",
-                            info.m_idFile));
+                            "WHERE videoversion.idFile = %i "
+                            "ORDER BY videoversion.media_type = '%s' DESC",
+                            info.m_idFile, MediaTypeMovie));
 
     if (m_pDS->num_rows() > 0)
     {

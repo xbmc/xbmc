@@ -341,6 +341,7 @@ void CVideoDatabaseDDL::CreateTriggers(CDatabase& db)
       "DELETE FROM art WHERE media_id=old.idMVideo AND media_type='musicvideo'; "
       "DELETE FROM tag_link WHERE media_id=old.idMVideo AND media_type='musicvideo'; "
       "DELETE FROM uniqueid WHERE media_id=old.idMVideo AND media_type='musicvideo'; "
+      "DELETE FROM videoversion WHERE idMedia=old.idMVideo AND media_type='musicvideo'; "
       "END");
   db.ExecuteQuery(
       "CREATE TRIGGER delete_episode AFTER DELETE ON episode FOR EACH ROW BEGIN "
@@ -350,6 +351,7 @@ void CVideoDatabaseDDL::CreateTriggers(CDatabase& db)
       "DELETE FROM art WHERE media_id=old.idEpisode AND media_type='episode'; "
       "DELETE FROM rating WHERE media_id=old.idEpisode AND media_type='episode'; "
       "DELETE FROM uniqueid WHERE media_id=old.idEpisode AND media_type='episode'; "
+      "DELETE FROM videoversion WHERE idMedia=old.idEpisode AND media_type='episode'; "
       "END");
   db.ExecuteQuery("CREATE TRIGGER delete_season AFTER DELETE ON seasons FOR EACH ROW BEGIN "
                   "DELETE FROM art WHERE media_id=old.idSeason AND media_type='season'; "
@@ -378,7 +380,8 @@ void CVideoDatabaseDDL::CreateTriggers(CDatabase& db)
   // videoversion rows (eg. other episodes in the same file) and is cleaned up with the file
   db.ExecuteQuery(
       "CREATE TRIGGER delete_videoversion AFTER DELETE ON videoversion FOR EACH ROW BEGIN "
-      "DELETE FROM art WHERE media_id=old.idFile AND media_type='videoversion'; "
+      "DELETE FROM art WHERE media_id=old.idFile AND media_type='videoversion' "
+      "AND old.media_type='movie'; "
       "END");
 }
 
