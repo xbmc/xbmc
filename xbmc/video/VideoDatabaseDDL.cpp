@@ -192,9 +192,12 @@ void CVideoDatabaseDDL::CreateTables(CDatabase& db)
   InitializeVideoVersionTypeTable(db);
 
   CLog::Log(LOGINFO, "create videoversion table");
+  // filePath holds the vfs path of the media item within its physical file (eg. a
+  // bluray:// playlist or archive member), empty for plain files. It is never NULL:
+  // NULL values would not participate in the unique index.
   db.ExecuteQuery(
       "CREATE TABLE videoversion (idVersion INTEGER PRIMARY KEY, idFile INTEGER, idMedia INTEGER, "
-      "media_type TEXT, itemType INTEGER, idType INTEGER)");
+      "media_type TEXT, itemType INTEGER, idType INTEGER, filePath TEXT, isDefault bool)");
 }
 
 void CVideoDatabaseDDL::CreateLinkIndex(CDatabase& db, const std::string& table)
@@ -289,9 +292,12 @@ void CVideoDatabaseDDL::CreateIndices(CDatabase& db)
                   "actor_link (media_id, media_type(20), actor_id)");
   db.ExecuteQuery("CREATE INDEX ix_actor_link_3 ON actor_link (media_type(20))");
 
-  db.ExecuteQuery(
-      "CREATE UNIQUE INDEX ix_videoversion_1 ON videoversion (idFile, idMedia, media_type(20))");
+  // not unique: MySQL would compare only the filePath prefix (and writers enforce
+  // uniqueness of the full path themselves)
+  db.ExecuteQuery("CREATE INDEX ix_videoversion_1 ON videoversion "
+                  "(idFile, idMedia, media_type(20), filePath(255))");
   db.ExecuteQuery("CREATE INDEX ix_videoversion_2 ON videoversion (idMedia, media_type(20))");
+  db.ExecuteQuery("CREATE INDEX ix_videoversion_3 ON videoversion (filePath(255))");
 
   db.ExecuteQuery(
       db.PrepareSQL("CREATE INDEX ix_movie_title ON movie (c%02d(255))", VIDEODB_ID_TITLE));

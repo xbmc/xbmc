@@ -1180,7 +1180,7 @@ int CVideoDatabase::AddNewMovie(CVideoInfoTag& details)
     const int assetId{AddOrValidateVideoVersionType(assetTitle)};
 
     AddVideoVersion(details.m_iFileId, details.m_iDbId, MediaTypeMovie, VideoAssetType::VERSION,
-                    assetId > 0 ? assetId : VIDEO_VERSION_ID_DEFAULT);
+                    assetId > 0 ? assetId : VIDEO_VERSION_ID_DEFAULT, true);
 
     return details.m_iDbId;
   }
@@ -1234,7 +1234,7 @@ int CVideoDatabase::AddNewEpisode(int idShow, CVideoInfoTag& details)
     details.m_iDbId = static_cast<int>(m_pDS->lastinsertid());
 
     AddVideoVersion(details.m_iFileId, details.m_iDbId, MediaTypeEpisode, VideoAssetType::VERSION,
-                    VIDEO_VERSION_ID_DEFAULT);
+                    VIDEO_VERSION_ID_DEFAULT, true);
 
     return details.m_iDbId;
   }
@@ -1269,7 +1269,7 @@ int CVideoDatabase::AddNewMusicVideo(CVideoInfoTag& details)
     details.m_iDbId = static_cast<int>(m_pDS->lastinsertid());
 
     AddVideoVersion(details.m_iFileId, details.m_iDbId, MediaTypeMusicVideo,
-                    VideoAssetType::VERSION, VIDEO_VERSION_ID_DEFAULT);
+                    VideoAssetType::VERSION, VIDEO_VERSION_ID_DEFAULT, true);
 
     return details.m_iDbId;
   }
@@ -12973,15 +12973,18 @@ bool CVideoDatabase::ConvertVideoToVersion(VideoDbContentType itemType,
   }
 
   // Rename the default version when provided
+  // A video converted into a version of another one is no longer anyone's default
+  const char* defaultClause{dbIdSource != dbIdTarget ? ", isDefault = 0" : ""};
+
   std::string query;
   if (idVideoVersion < 0)
-    query = PrepareSQL("UPDATE videoversion SET itemType = %i WHERE idFile = %i AND "
+    query = PrepareSQL("UPDATE videoversion SET itemType = %i%s WHERE idFile = %i AND "
                        "media_type = '%s'",
-                       assetType, idFile, mediaType.c_str());
+                       assetType, defaultClause, idFile, mediaType.c_str());
   else
-    query = PrepareSQL("UPDATE videoversion SET idType = %i, itemType = %i WHERE idFile = %i AND "
-                       "media_type = '%s'",
-                       idVideoVersion, assetType, idFile, mediaType.c_str());
+    query = PrepareSQL("UPDATE videoversion SET idType = %i, itemType = %i%s WHERE idFile = %i "
+                       "AND media_type = '%s'",
+                       idVideoVersion, assetType, defaultClause, idFile, mediaType.c_str());
 
   if (!ExecuteQuery(query))
   {
@@ -13015,10 +13018,14 @@ bool CVideoDatabase::AddOrUpdateVideoVersion(VideoDbContentType itemType,
     {
       m_pDS->close();
 
+      // isDefault first: MySQL evaluates SET clauses left to right with updated values,
+      // and the old idMedia is needed to detect a reassignment to another media item
       sql = PrepareSQL("UPDATE videoversion "
-                       "SET idMedia = %i, itemType = %i, idType = %i "
+                       "SET isDefault = (CASE WHEN idMedia = %i THEN isDefault ELSE 0 END), "
+                       "idMedia = %i, itemType = %i, idType = %i "
                        "WHERE idFile=%i AND media_type='%s'",
-                       dbIdSource, assetType, idVideoVersion, idFile, mediaType.c_str());
+                       dbIdSource, dbIdSource, assetType, idVideoVersion, idFile,
+                       mediaType.c_str());
 
       m_pDS->exec(sql);
 
@@ -13027,7 +13034,7 @@ bool CVideoDatabase::AddOrUpdateVideoVersion(VideoDbContentType itemType,
 
     m_pDS->close();
 
-    AddVideoVersion(idFile, dbIdSource, mediaType, assetType, idVideoVersion);
+    AddVideoVersion(idFile, dbIdSource, mediaType, assetType, idVideoVersion, false);
 
     return true;
   }
@@ -13061,6 +13068,13 @@ bool CVideoDatabase::SetDefaultVideoVersion(VideoDbContentType itemType, int dbI
       {
         m_pDS->exec(PrepareSQL("UPDATE movie SET idFile = %i, c%02d = '%s' WHERE idMovie = %i",
                                idFile, VIDEODB_ID_BASEPATH, path.c_str(), dbId));
+
+        m_pDS->exec(
+            PrepareSQL("UPDATE videoversion SET isDefault=0 WHERE idMedia=%i AND media_type='%s'",
+                       dbId, MediaTypeMovie));
+        m_pDS->exec(PrepareSQL("UPDATE videoversion SET isDefault=1 WHERE idMedia=%i AND "
+                               "media_type='%s' AND idFile=%i",
+                               dbId, MediaTypeMovie, idFile));
 
         // Swap art
         // media_id is idMovie for movies and idFile for videoversions
@@ -13337,13 +13351,17 @@ int CVideoDatabase::GetVideoVersionIdByFile(int idFile) const
   return -1;
 }
 
-int CVideoDatabase::AddVideoVersion(
-    int idFile, int idMedia, const MediaType& mediaType, VideoAssetType assetType, int idType)
+int CVideoDatabase::AddVideoVersion(int idFile,
+                                    int idMedia,
+                                    const MediaType& mediaType,
+                                    VideoAssetType assetType,
+                                    int idType,
+                                    bool isDefault)
 {
-  m_pDS->exec(
-      PrepareSQL("INSERT INTO videoversion (idFile, idMedia, media_type, itemType, idType) "
-                 "VALUES(%i, %i, '%s', %i, %i)",
-                 idFile, idMedia, mediaType.c_str(), assetType, idType));
+  m_pDS->exec(PrepareSQL(
+      "INSERT INTO videoversion (idFile, idMedia, media_type, itemType, idType, filePath, "
+      "isDefault) VALUES(%i, %i, '%s', %i, %i, '', %i)",
+      idFile, idMedia, mediaType.c_str(), assetType, idType, isDefault ? 1 : 0));
   const int idVersion{static_cast<int>(m_pDS->lastinsertid())};
 
   // A resume point recorded before the file was linked to any media item is copied to the

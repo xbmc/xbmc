@@ -1555,9 +1555,28 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->dropIndex("videoversion", "ix_migration_videoversion");
     m_pDS->dropIndex("episode", "ix_migration_episode_bookmark");
   }
+
+  if (iVersion < 150)
+  {
+    // filePath will hold the vfs path of a media item within its physical file
+    // (eg. a bluray:// playlist or archive member). Empty, never NULL, so that
+    // it participates in the unique (idFile, idMedia, media_type, filePath) index.
+    m_pDS->exec("ALTER TABLE videoversion ADD filePath TEXT");
+    m_pDS->exec("UPDATE videoversion SET filePath=''");
+
+    // The default version of a media item, replacing the movie table's file id
+    // as the discriminator once several versions can share one physical file
+    m_pDS->exec("ALTER TABLE videoversion ADD isDefault bool");
+    m_pDS->exec("UPDATE videoversion SET isDefault=0");
+    m_pDS->exec("UPDATE videoversion SET isDefault=1 "
+                "WHERE media_type IN ('episode','musicvideo')");
+    m_pDS->exec("UPDATE videoversion SET isDefault=1 WHERE media_type='movie' AND EXISTS "
+                "(SELECT 1 FROM movie WHERE movie.idMovie=videoversion.idMedia AND "
+                "movie.idFile=videoversion.idFile)");
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 149;
+  return 150;
 }

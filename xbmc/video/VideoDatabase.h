@@ -1226,8 +1226,12 @@ private:
    adopted by the new version.
    \return the new version id
    */
-  int AddVideoVersion(
-      int idFile, int idMedia, const MediaType& mediaType, VideoAssetType assetType, int idType);
+  int AddVideoVersion(int idFile,
+                      int idMedia,
+                      const MediaType& mediaType,
+                      VideoAssetType assetType,
+                      int idType,
+                      bool isDefault);
 
   /*! \brief Run a query on the main dataset and return the number of rows
    If no rows are found we close the dataset and return 0.
