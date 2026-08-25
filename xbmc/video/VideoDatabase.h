@@ -320,12 +320,19 @@ public:
                              std::vector<CVideoInfoTag>& episodes,
                              int idShow = -1);
   void GetEpisodesByFile(const std::string& strFilenameAndPath, std::vector<CVideoInfoTag>& episodes);
-  void GetEpisodesByFileId(int idFile, std::vector<CVideoInfoTag>& episodes);
-  bool GetEpisodeMap(int idShow, EpisodeFileMap& fileMap, int idFile = -1) const;
+  void GetEpisodesByFileId(int idFile,
+                           std::vector<CVideoInfoTag>& episodes,
+                           const std::string& filePath = {});
+  // filePath, if given, picks the archive member or disc of idFile that was played
+  bool GetEpisodeMap(int idShow,
+                     EpisodeFileMap& fileMap,
+                     int idFile = -1,
+                     const std::string& filePath = {}) const;
   bool GetEpisodeMap(int idShow,
                      EpisodeFileMap& fileMap,
                      dbiplus::Dataset& pDS,
-                     int idFile = -1 /* = -1 */) const;
+                     int idFile = -1 /* = -1 */,
+                     const std::string& filePath = {}) const;
 
   int SetDetailsForMovie(CVideoInfoTag& details,
                          const KODI::ART::Artwork& artwork,
@@ -781,10 +788,15 @@ public:
     ACTION_UPDATE
   };
 
+  /*! \brief Add or update a file
+   \param libraryItem whether the file is added for a library item, which an archive member
+   is stored on its archive for; a member outside the library keeps a row of its own
+   */
   int AddOrUpdateFile(const std::string& fileAndPath,
                       const std::string& parentPath,
                       const FileRecord& fileInfo,
-                      FileExistsAction existsAction);
+                      FileExistsAction existsAction,
+                      bool libraryItem = false);
 
   /*! \brief Add a file to the database, if necessary
    If the file is already in the database, we simply return its id.
@@ -1035,7 +1047,8 @@ public:
                                int dbIdSource,
                                int idFile,
                                int idVideoVersion,
-                               VideoAssetType assetType);
+                               VideoAssetType assetType,
+                               const std::string& filePath = "");
 
   bool SetDefaultVideoVersion(VideoDbContentType itemType, int dbId, int idVersion);
   void SetVideoVersion(int idVersion, int idVideoVersion);
@@ -1272,9 +1285,18 @@ private:
    */
   int GetVideoVersionIdByFile(int idFile) const;
 
+  /*! \brief Get the version id of the media item with the given vfs path
+   \param fileNameAndPath vfs path of the media item within its physical file
+   \return the version id, -1 if not found or not a vfs media path
+   */
+  int GetVideoVersionIdByPath(const std::string& fileNameAndPath) const;
+
   /*! \brief Create a videoversion row linking a media item and a file.
    Bookmarks recorded for the file before it was linked to any media item are
-   adopted by the new version.
+   adopted by the new version. An archive member's own files row, from play before
+   it entered the library, is folded into the new version. Callers derive filePath
+   from the media item's playable path (m_strFileNameAndPath / dynpath), which must
+   hold the vfs path (playlist, archive member) for media within a physical container.
    \return the new version id
    */
   int AddVideoVersion(int idFile,
@@ -1282,7 +1304,13 @@ private:
                       const MediaType& mediaType,
                       VideoAssetType assetType,
                       int idType,
-                      bool isDefault);
+                      bool isDefault,
+                      const std::string& filePath);
+
+  /*! \brief The path of the files row a media path is stored on: the physical container of a
+   disc or of an archive member in the library, the path itself otherwise
+   */
+  std::string GetStoragePath(const std::string& fileNameAndPath) const;
 
   /*! \brief Run a query on the main dataset and return the number of rows
    If no rows are found we close the dataset and return 0.
