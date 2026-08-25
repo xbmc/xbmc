@@ -192,8 +192,8 @@ void CVideoDatabaseDDL::CreateTables(CDatabase& db)
 
   CLog::Log(LOGINFO, "create videoversion table");
   db.ExecuteQuery(
-      "CREATE TABLE videoversion (idFile INTEGER PRIMARY KEY, idMedia INTEGER, media_type "
-      "TEXT, itemType INTEGER, idType INTEGER)");
+      "CREATE TABLE videoversion (idVersion INTEGER PRIMARY KEY, idFile INTEGER, idMedia INTEGER, "
+      "media_type TEXT, itemType INTEGER, idType INTEGER)");
 }
 
 void CVideoDatabaseDDL::CreateLinkIndex(CDatabase& db, const std::string& table)
@@ -290,7 +290,9 @@ void CVideoDatabaseDDL::CreateIndices(CDatabase& db)
                   "actor_link (media_id, media_type(20), actor_id)");
   db.ExecuteQuery("CREATE INDEX ix_actor_link_3 ON actor_link (media_type(20))");
 
-  db.ExecuteQuery("CREATE INDEX ix_videoversion ON videoversion (idMedia, media_type(20))");
+  db.ExecuteQuery(
+      "CREATE UNIQUE INDEX ix_videoversion_1 ON videoversion (idFile, idMedia, media_type(20))");
+  db.ExecuteQuery("CREATE INDEX ix_videoversion_2 ON videoversion (idMedia, media_type(20))");
 
   db.ExecuteQuery(
       db.PrepareSQL("CREATE INDEX ix_movie_title ON movie (c%02d(255))", VIDEODB_ID_TITLE));
@@ -372,10 +374,11 @@ void CVideoDatabaseDDL::CreateTriggers(CDatabase& db)
                   "DELETE FROM videoversion WHERE idFile=old.idFile; "
                   "DELETE FROM art WHERE media_id=old.idFile AND media_type='videoversion'; "
                   "END");
+  // streamdetails are not removed here: the file may still be referenced by other
+  // videoversion rows (eg. other episodes in the same file) and is cleaned up with the file
   db.ExecuteQuery(
       "CREATE TRIGGER delete_videoversion AFTER DELETE ON videoversion FOR EACH ROW BEGIN "
       "DELETE FROM art WHERE media_id=old.idFile AND media_type='videoversion'; "
-      "DELETE FROM streamdetails WHERE idFile=old.idFile; "
       "END");
 }
 
