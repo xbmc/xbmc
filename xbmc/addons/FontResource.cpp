@@ -7,14 +7,9 @@
  */
 #include "FontResource.h"
 
-#include "ServiceBroker.h"
-#include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonType.h"
 #include "filesystem/SpecialProtocol.h"
-#include "messaging/ApplicationMessenger.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
 #include "utils/FileUtils.h"
 
 namespace ADDON
@@ -23,17 +18,6 @@ namespace ADDON
 CFontResource::CFontResource(const AddonInfoPtr& addonInfo)
   : CResource(addonInfo, AddonType::RESOURCE_FONT)
 {
-}
-
-void CFontResource::OnPostInstall(bool update, bool modal)
-{
-  std::string skin = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
-  const auto& deps =
-      CServiceBroker::GetAddonMgr().GetDepsRecursive(skin, OnlyEnabledRootAddon::CHOICE_YES);
-  for (const auto& it : deps)
-    if (it.id == ID())
-      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr,
-                                                 "ReloadSkin");
 }
 
 bool CFontResource::GetFont(const std::string& file, std::string& path) const
