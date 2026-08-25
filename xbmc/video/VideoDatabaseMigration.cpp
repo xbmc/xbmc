@@ -1543,6 +1543,13 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->exec("DELETE FROM streamdetails WHERE idVersion IS NULL "
                 "AND idFile IN (SELECT idFile FROM videoversion)");
 
+    // Playback settings follow the same ownership model as stream details
+    m_pDS->exec("ALTER TABLE settings ADD idVersion INTEGER");
+    m_pDS->exec(
+        "UPDATE settings SET idVersion="
+        "(SELECT vv.idVersion FROM videoversion vv WHERE vv.idFile=settings.idFile) "
+        "WHERE (SELECT COUNT(1) FROM videoversion vv2 WHERE vv2.idFile=settings.idFile)=1");
+
     m_pDS->dropIndex("videoversion", "ix_migration_videoversion");
     m_pDS->dropIndex("episode", "ix_migration_episode_bookmark");
   }

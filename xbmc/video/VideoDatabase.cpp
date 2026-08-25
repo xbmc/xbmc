@@ -2879,7 +2879,16 @@ int CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath,
   {
     // when the old file is shared with other media items, only this version's rows move with it
     const int idVersion{GetVideoVersionId(oldIdFile, idEpisode, MediaTypeEpisode)};
+    if (idVersion < 0)
+    {
+      CLog::LogF(LOGDEBUG, "no version of episode {} found on file {} - not retargeting",
+                 idEpisode, oldIdFile);
+      return -1;
+    }
     const bool exclusive{GetVideoVersionIdByFile(oldIdFile) == idVersion};
+    const std::string versionScope{exclusive ? ""
+                                             : PrepareSQL(" AND idVersion=%i", idVersion)};
+
     m_pDS->exec(
         PrepareSQL("UPDATE episode SET idFile=%i WHERE idEpisode=%i", newIdFile, idEpisode));
     m_pDS->exec(PrepareSQL("UPDATE videoversion SET idFile=%i WHERE idFile=%i AND "
@@ -2890,7 +2899,8 @@ int CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath,
         "UPDATE bookmark SET idVersion=(SELECT idVersion FROM videoversion WHERE idFile=%i AND "
         "media_type='%s' AND idMedia=%i) WHERE idFile=%i AND idVersion IS NULL AND type=%i",
         newIdFile, MediaTypeEpisode, idEpisode, newIdFile, CBookmark::RESUME));
-    m_pDS->exec(PrepareSQL("UPDATE bookmark SET idFile=%i WHERE idFile=%i", newIdFile, oldIdFile));
+    m_pDS->exec(PrepareSQL("UPDATE bookmark SET idFile=%i WHERE idFile=%i", newIdFile, oldIdFile) +
+                versionScope);
     // the version's own stream details move with it; unowned fallback rows follow only when
     // the old file holds nothing else and the new file has no fallback of its own
     m_pDS->exec(PrepareSQL(
@@ -2903,7 +2913,8 @@ int CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath,
           "EXISTS (SELECT 1 FROM (SELECT 1 FROM streamdetails WHERE idFile=%i AND idVersion IS "
           "NULL) AS sd)",
           newIdFile, oldIdFile, newIdFile));
-    m_pDS->exec(PrepareSQL("UPDATE settings SET idFile=%i WHERE idFile=%i", newIdFile, oldIdFile));
+    m_pDS->exec(PrepareSQL("UPDATE settings SET idFile=%i WHERE idFile=%i", newIdFile, oldIdFile) +
+                versionScope);
     return DeleteFile(oldIdFile) ? newIdFile : -1;
   }
   catch (...)
@@ -2961,7 +2972,8 @@ int CVideoDatabase::SetFileForMovie(const std::string& fileAndPath,
         "UPDATE bookmark SET idVersion=(SELECT idVersion FROM videoversion WHERE idFile=%i AND "
         "media_type='movie' AND idMedia=%i) WHERE idFile=%i AND idVersion IS NULL AND type=%i",
         newIdFile, idMovie, newIdFile, CBookmark::RESUME));
-    m_pDS->exec(PrepareSQL("UPDATE bookmark SET idFile=%i WHERE idFile=%i", newIdFile, oldIdFile));
+    m_pDS->exec(PrepareSQL("UPDATE bookmark SET idFile=%i WHERE idFile=%i", newIdFile, oldIdFile) +
+                versionScope);
     m_pDS->exec(
         PrepareSQL("UPDATE art SET media_id=%i WHERE media_id=%i AND media_type='videoversion'",
                    newIdFile, oldIdFile));
@@ -2977,7 +2989,8 @@ int CVideoDatabase::SetFileForMovie(const std::string& fileAndPath,
           "EXISTS (SELECT 1 FROM (SELECT 1 FROM streamdetails WHERE idFile=%i AND idVersion IS "
           "NULL) AS sd)",
           newIdFile, oldIdFile, newIdFile));
-    m_pDS->exec(PrepareSQL("UPDATE settings SET idFile=%i WHERE idFile=%i", newIdFile, oldIdFile));
+    m_pDS->exec(PrepareSQL("UPDATE settings SET idFile=%i WHERE idFile=%i", newIdFile, oldIdFile) +
+                versionScope);
 
     return DeleteFile(oldIdFile) ? newIdFile : -1;
   }
@@ -5363,7 +5376,14 @@ void CVideoDatabase::GetUniqueIDs(int media_id, const std::string &media_type, C
 
 bool CVideoDatabase::GetVideoSettings(const CFileItem &item, CVideoSettings &settings)
 {
-  return GetVideoSettings(GetFileId(item), settings);
+  const int idFile{GetFileId(item)};
+  int idVersion{-1};
+  if (item.HasVideoInfoTag())
+  {
+    const CVideoInfoTag* tag{item.GetVideoInfoTag()};
+    idVersion = GetVideoVersionId(idFile, tag->m_iDbId, tag->m_type);
+  }
+  return GetVideoSettings(idFile, settings, idVersion);
 }
 
 /// \brief GetVideoSettings() obtains any saved video settings for the current file.
@@ -5373,7 +5393,7 @@ bool CVideoDatabase::GetVideoSettings(const std::string &filePath, CVideoSetting
   return GetVideoSettings(GetFileId(filePath), settings);
 }
 
-bool CVideoDatabase::GetVideoSettings(int idFile, CVideoSettings &settings)
+bool CVideoDatabase::GetVideoSettings(int idFile, CVideoSettings& settings, int idVersion /*= -1*/)
 {
   try
   {
@@ -5383,7 +5403,17 @@ bool CVideoDatabase::GetVideoSettings(int idFile, CVideoSettings &settings)
     if (nullptr == m_pDS)
       return false;
 
-    std::string strSQL=PrepareSQL("select * from settings where settings.idFile = '%i'", idFile);
+    if (idVersion < 0)
+      idVersion = GetVideoVersionIdByFile(idFile);
+
+    // prefer settings owned by this version, fall back to the file's unowned settings
+    std::string strSQL;
+    if (idVersion >= 0)
+      strSQL = PrepareSQL("select * from settings where idFile = %i and (idVersion = %i or "
+                          "idVersion is NULL) order by idVersion is NULL",
+                          idFile, idVersion);
+    else
+      strSQL = PrepareSQL("select * from settings where idFile = %i and idVersion is NULL", idFile);
     m_pDS->query( strSQL );
 
     if (m_pDS->num_rows() > 0)
@@ -5432,11 +5462,19 @@ bool CVideoDatabase::GetVideoSettings(int idFile, CVideoSettings &settings)
 void CVideoDatabase::SetVideoSettings(const CFileItem &item, const CVideoSettings &settings)
 {
   int idFile = AddFile(item);
-  SetVideoSettings(idFile, settings);
+  int idVersion{-1};
+  if (item.HasVideoInfoTag())
+  {
+    const CVideoInfoTag* tag{item.GetVideoInfoTag()};
+    idVersion = GetVideoVersionId(idFile, tag->m_iDbId, tag->m_type);
+  }
+  SetVideoSettings(idFile, settings, idVersion);
 }
 
 /// \brief Sets the settings for a particular video file
-void CVideoDatabase::SetVideoSettings(int idFile, const CVideoSettings &setting)
+void CVideoDatabase::SetVideoSettings(int idFile,
+                                      const CVideoSettings& setting,
+                                      int idVersion /*= -1*/)
 {
   try
   {
@@ -5446,7 +5484,20 @@ void CVideoDatabase::SetVideoSettings(int idFile, const CVideoSettings &setting)
       return;
     if (idFile < 0)
       return;
-    std::string strSQL = PrepareSQL("select * from settings where idFile=%i", idFile);
+
+    if (idVersion < 0)
+      idVersion = GetVideoVersionIdByFile(idFile);
+
+    // only the version's own row is updated in place; the file's unowned row stays
+    // untouched as the fallback for other versions sharing the file, and a version
+    // storing settings for the first time gets its own copy inserted below
+    std::string strSQL;
+    if (idVersion >= 0)
+      strSQL = PrepareSQL("select idVersion from settings where idFile=%i and idVersion=%i",
+                          idFile, idVersion);
+    else
+      strSQL = PrepareSQL("select idVersion from settings where idFile=%i and idVersion is NULL",
+                          idFile);
     m_pDS->query( strSQL );
     if (m_pDS->num_rows() > 0)
     {
@@ -5473,11 +5524,15 @@ void CVideoDatabase::SetVideoSettings(int idFile, const CVideoSettings &setting)
       std::string strSQL2;
 
       strSQL2 = PrepareSQL("ResumeTime=%i,StereoMode=%i,StereoInvert=%i,VideoStream=%i,"
-                           "TonemapMethod=%i,TonemapParam=%f where idFile=%i\n",
+                           "TonemapMethod=%i,TonemapParam=%f",
                            setting.m_ResumeTime, setting.m_StereoMode, setting.m_StereoInvert,
                            setting.m_VideoStream, setting.m_ToneMapMethod,
-                           static_cast<double>(setting.m_ToneMapParam), idFile);
+                           static_cast<double>(setting.m_ToneMapParam));
       strSQL += strSQL2;
+      if (idVersion >= 0)
+        strSQL += PrepareSQL(" where idFile=%i and idVersion=%i\n", idFile, idVersion);
+      else
+        strSQL += PrepareSQL(" where idFile=%i and idVersion is NULL\n", idFile);
       m_pDS->exec(strSQL);
       return ;
     }
@@ -5488,10 +5543,12 @@ void CVideoDatabase::SetVideoSettings(int idFile, const CVideoSettings &setting)
                 "AudioStream,SubtitleStream,SubtitleDelay,SubtitlesOn,Brightness,"
                 "Contrast,Gamma,VolumeAmplification,AudioDelay,"
                 "ResumeTime,"
-                "Sharpness,NoiseReduction,NonLinStretch,PostProcess,ScalingMethod,StereoMode,StereoInvert,VideoStream,TonemapMethod,TonemapParam,Orientation,CenterMixLevel) "
+                "Sharpness,NoiseReduction,NonLinStretch,PostProcess,ScalingMethod,StereoMode,StereoInvert,VideoStream,TonemapMethod,TonemapParam,Orientation,CenterMixLevel,idVersion) "
               "VALUES ";
+      const std::string idVersionValue{idVersion >= 0 ? std::to_string(idVersion) : "NULL"};
       strSQL += PrepareSQL(
-          "(%i,%i,%i,%f,%f,%f,%i,%i,%f,%i,%f,%f,%f,%f,%f,%i,%f,%f,%i,%i,%i,%i,%i,%i,%i,%f,%i,%i)",
+          "(%i,%i,%i,%f,%f,%f,%i,%i,%f,%i,%f,%f,%f,%f,%f,%i,%f,%f,%i,%i,%i,%i,%i,%i,%i,%f,%i,%i,"
+          "%s)",
           idFile, setting.m_InterlaceMethod, setting.m_ViewMode,
           static_cast<double>(setting.m_CustomZoomAmount),
           static_cast<double>(setting.m_CustomPixelRatio),
@@ -5505,7 +5562,7 @@ void CVideoDatabase::SetVideoSettings(int idFile, const CVideoSettings &setting)
           setting.m_CustomNonLinStretch, setting.m_PostProcess, setting.m_ScalingMethod,
           setting.m_StereoMode, setting.m_StereoInvert, setting.m_VideoStream,
           setting.m_ToneMapMethod, static_cast<double>(setting.m_ToneMapParam),
-          setting.m_Orientation, setting.m_CenterMixLevel);
+          setting.m_Orientation, setting.m_CenterMixLevel, idVersionValue.c_str());
       m_pDS->exec(strSQL);
     }
   }
@@ -6719,7 +6776,17 @@ void CVideoDatabase::EraseVideoSettings(const CFileItem &item)
 
   try
   {
+    int idVersion{-1};
+    if (item.HasVideoInfoTag())
+    {
+      const CVideoInfoTag* tag{item.GetVideoInfoTag()};
+      idVersion = GetVideoVersionId(idFile, tag->m_iDbId, tag->m_type);
+    }
+
     std::string sql = PrepareSQL("DELETE FROM settings WHERE idFile=%i", idFile);
+    // when the file is shared by several media items, keep their rows and the unowned fallback
+    if (idVersion >= 0 && GetVideoVersionIdByFile(idFile) != idVersion)
+      sql += PrepareSQL(" AND idVersion=%i", idVersion);
 
     CLog::Log(LOGINFO, "Deleting settings information for files {}",
               CURL::GetRedacted(item.GetPath()));

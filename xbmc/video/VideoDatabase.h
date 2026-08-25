@@ -444,7 +444,7 @@ public:
    \return true if video settings found, false otherwise
    \sa SetVideoSettings
    */
-  bool GetVideoSettings(int idFile, CVideoSettings &settings);
+  bool GetVideoSettings(int idFile, CVideoSettings& settings, int idVersion = -1);
 
   /*! \brief Get video settings for the specified file item
    \param item item to get the settings for
@@ -470,7 +470,7 @@ public:
    \param fileId to set the settings for
    \sa GetVideoSettings
    */
-  void SetVideoSettings(int idFile, const CVideoSettings &settings);
+  void SetVideoSettings(int idFile, const CVideoSettings& settings, int idVersion = -1);
 
   /**
    * Erases video settings for file item
