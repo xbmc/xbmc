@@ -4945,8 +4945,15 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
   details.m_set.SetOriginalTitle(record->at(VIDEODB_DETAILS_MOVIE_SET_ORIGINALNAME).get_asString());
   details.m_iFileId = record->at(VIDEODB_DETAILS_MOVIE_VERSION_FILEID).get_asInt();
   details.m_strPath = record->at(VIDEODB_DETAILS_MOVIE_PATH).get_asString();
-  std::string strFileName = record->at(VIDEODB_DETAILS_MOVIE_FILE).get_asString();
-  ConstructPath(details.m_strFileNameAndPath,details.m_strPath,strFileName);
+  const std::string movieVersionFilePath{
+      record->at(VIDEODB_DETAILS_MOVIE_VERSION_FILEPATH).get_asString()};
+  if (!movieVersionFilePath.empty())
+    details.m_strFileNameAndPath = movieVersionFilePath;
+  else
+  {
+    std::string strFileName = record->at(VIDEODB_DETAILS_MOVIE_FILE).get_asString();
+    ConstructPath(details.m_strFileNameAndPath, details.m_strPath, strFileName);
+  }
   details.SetPlayCount(record->at(VIDEODB_DETAILS_MOVIE_PLAYCOUNT).get_asInt());
   details.m_lastPlayed.SetFromDBDateTime(record->at(VIDEODB_DETAILS_MOVIE_LASTPLAYED).get_asString());
   details.m_dateAdded.SetFromDBDateTime(record->at(VIDEODB_DETAILS_MOVIE_DATEADDED).get_asString());
@@ -5150,8 +5157,15 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* co
   details = GetBasicDetailsForEpisode(record);
 
   details.m_strPath = record->at(VIDEODB_DETAILS_EPISODE_PATH).get_asString();
-  std::string strFileName = record->at(VIDEODB_DETAILS_EPISODE_FILE).get_asString();
-  ConstructPath(details.m_strFileNameAndPath,details.m_strPath,strFileName);
+  const std::string episodeVersionFilePath{
+      record->at(VIDEODB_DETAILS_EPISODE_VERSION_FILEPATH).get_asString()};
+  if (!episodeVersionFilePath.empty())
+    details.m_strFileNameAndPath = episodeVersionFilePath;
+  else
+  {
+    std::string strFileName = record->at(VIDEODB_DETAILS_EPISODE_FILE).get_asString();
+    ConstructPath(details.m_strFileNameAndPath, details.m_strPath, strFileName);
+  }
   details.SetPlayCount(record->at(VIDEODB_DETAILS_EPISODE_PLAYCOUNT).get_asInt());
   details.m_lastPlayed.SetFromDBDateTime(record->at(VIDEODB_DETAILS_EPISODE_LASTPLAYED).get_asString());
   details.m_dateAdded.SetFromDBDateTime(record->at(VIDEODB_DETAILS_EPISODE_DATEADDED).get_asString());
@@ -5223,8 +5237,15 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(const dbiplus::sql_record*
 
   details.m_iFileId = record->at(VIDEODB_DETAILS_FILEID).get_asInt();
   details.m_strPath = record->at(VIDEODB_DETAILS_MUSICVIDEO_PATH).get_asString();
-  std::string strFileName = record->at(VIDEODB_DETAILS_MUSICVIDEO_FILE).get_asString();
-  ConstructPath(details.m_strFileNameAndPath,details.m_strPath,strFileName);
+  const std::string mvideoVersionFilePath{
+      record->at(VIDEODB_DETAILS_MUSICVIDEO_VERSION_FILEPATH).get_asString()};
+  if (!mvideoVersionFilePath.empty())
+    details.m_strFileNameAndPath = mvideoVersionFilePath;
+  else
+  {
+    std::string strFileName = record->at(VIDEODB_DETAILS_MUSICVIDEO_FILE).get_asString();
+    ConstructPath(details.m_strFileNameAndPath, details.m_strPath, strFileName);
+  }
   details.SetPlayCount(record->at(VIDEODB_DETAILS_MUSICVIDEO_PLAYCOUNT).get_asInt());
   details.m_lastPlayed.SetFromDBDateTime(record->at(VIDEODB_DETAILS_MUSICVIDEO_LASTPLAYED).get_asString());
   details.m_dateAdded.SetFromDBDateTime(record->at(VIDEODB_DETAILS_MUSICVIDEO_DATEADDED).get_asString());
