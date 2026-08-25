@@ -338,31 +338,6 @@ bool CVideoDatabase::GetSubPaths(const std::string& basepath,
              "   (SELECT idPath FROM files WHERE strFileName LIKE 'VIDEO|_TS.IFO' ESCAPE '|')"
              " AND idPath NOT IN (SELECT idPath FROM files WHERE strFileName LIKE 'index.bdmv')";
     }
-    else
-    {
-      // Generate encoded paths
-      // Terminal slashes removed as there is an encoded slash immediately prior
-      //  eg. zip://D%3a%5cMovies%5c'
-      CURL url("udf://");
-      url.SetHostName(path);
-      std::string filePath{url.Get()};
-      URIUtils::RemoveSlashAtEnd(filePath);
-      url = CURL("bluray://");
-      url.SetHostName(filePath);
-      std::string blurayIsoPath{url.Get()};
-      URIUtils::RemoveSlashAtEnd(blurayIsoPath);
-      constexpr size_t udfPrefixLength = 6; // length of "udf://"
-      filePath = filePath.substr(udfPrefixLength); // Remove udf://
-
-      // Return encoded media paths for content removal
-      // clang format-off
-      for (const std::string& prefix : {blurayIsoPath, "bluray://" + filePath, "zip://" + filePath,
-                                        "rar://" + filePath, "archive://" + filePath})
-      {
-        sql += " OR " + startsWith(prefix);
-      }
-      // clang format-on
-    }
 
     m_pDS->query(sql);
     while (!m_pDS->eof())
@@ -3104,32 +3079,9 @@ bool CVideoDatabase::DeleteFile(int idFile)
     m_pDS->query(sql);
     if (m_pDS->eof())
     {
-      // Get idPath
-      sql = PrepareSQL("SELECT path.idPath, path.strPath FROM path "
-                       "JOIN files ON path.idPath = files.idPath "
-                       "WHERE idFile = %i",
-                       idFile);
-      m_pDS->query(sql);
-      int idPath{-1};
-      std::string strPath;
-      if (!m_pDS->eof())
-      {
-        idPath = m_pDS->fv("idPath").get_asInt();
-        strPath = m_pDS->fv("strPath").get_asString();
-      }
-
       // Associated bookmarks and streamdetails deleted by delete trigger
       sql = PrepareSQL("DELETE FROM files WHERE idFile = %i", idFile);
       m_pDS->exec(sql);
-
-      // Delete path if orphan (and not base directory - needs to remain to prevent re-adding on library update)
-      if (idPath >= 0 && URIUtils::IsBlurayPath(strPath))
-      {
-        sql = PrepareSQL("DELETE FROM path WHERE idPath = %i "
-                         "AND NOT EXISTS (SELECT 1 FROM files WHERE files.idPath = %i)",
-                         idPath, idPath);
-        m_pDS->exec(sql);
-      }
     }
     return true;
   }
@@ -10486,13 +10438,8 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
         if (URIUtils::IsStack(fullPath))
           fullPath = CStackDirectory::GetFirstStackedFile(fullPath);
 
-        // get the actual archive path
-        if (URIUtils::IsInArchive(fullPath))
-          fullPath = CURL(fullPath).GetHostName();
-
-        // if bluray:// get actual path
-        if (URIUtils::IsBlurayPath(fullPath))
-          fullPath = URIUtils::GetDiscFile(fullPath);
+        // stack members may be vfs media paths; test the physical container
+        fullPath = GetPhysicalPath(fullPath);
 
         bool del = true;
         if (URIUtils::IsPlugin(fullPath))
