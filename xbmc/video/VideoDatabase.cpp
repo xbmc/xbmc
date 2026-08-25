@@ -6511,14 +6511,36 @@ int CVideoDatabase::GetPlayCount(int iFileId)
   return -1;
 }
 
+int CVideoDatabase::GetPlayCount(int iFileId, int idVersion)
+{
+  if (idVersion >= 0)
+  {
+    const std::string value{GetSingleValue(
+        PrepareSQL("SELECT playCount FROM videoversion WHERE idVersion=%i", idVersion))};
+    if (!value.empty())
+      return std::atoi(value.c_str());
+  }
+  return GetPlayCount(iFileId);
+}
+
 int CVideoDatabase::GetPlayCount(const std::string& strFilenameAndPath)
 {
-  return GetPlayCount(GetFileId(strFilenameAndPath));
+  const int idFile{GetFileId(strFilenameAndPath)};
+  return GetPlayCount(idFile, GetVideoVersionIdByFile(idFile));
 }
 
 int CVideoDatabase::GetPlayCount(const CFileItem &item)
 {
-  return GetPlayCount(GetFileId(item));
+  const int idFile{GetFileId(item)};
+  int idVersion{-1};
+  if (item.HasVideoInfoTag())
+  {
+    const CVideoInfoTag* tag{item.GetVideoInfoTag()};
+    idVersion = GetVideoVersionId(idFile, tag->m_iDbId, tag->m_type);
+  }
+  if (idVersion < 0)
+    idVersion = GetVideoVersionIdByFile(idFile);
+  return GetPlayCount(idFile, idVersion);
 }
 
 CDateTime CVideoDatabase::GetLastPlayed(int iFileId)
@@ -6646,22 +6668,30 @@ CDateTime CVideoDatabase::SetPlayCount(const CFileItem& item, int count, const C
     if (nullptr == m_pDS)
       return {};
 
-    std::string strSQL;
+    std::string setClause;
     if (count)
-    {
-      strSQL = PrepareSQL("update files set playCount=%i,lastPlayed='%s' where idFile=%i", count,
-                          lastPlayed.GetAsDBDateTime().c_str(), id);
-    }
+      setClause = PrepareSQL("playCount=%i,lastPlayed='%s'", count,
+                             lastPlayed.GetAsDBDateTime().c_str());
+    else if (date.IsValid())
+      setClause = PrepareSQL("playCount=NULL,lastPlayed='%s'",
+                             lastPlayed.GetAsDBDateTime().c_str());
     else
-    {
-      if (!date.IsValid())
-        strSQL = PrepareSQL("update files set playCount=NULL,lastPlayed=NULL where idFile=%i", id);
-      else
-        strSQL = PrepareSQL("update files set playCount=NULL,lastPlayed='%s' where idFile=%i",
-                            lastPlayed.GetAsDBDateTime().c_str(), id);
-    }
+      setClause = "playCount=NULL,lastPlayed=NULL";
 
-    m_pDS->exec(strSQL);
+    // the file keeps the values as fallback for its other media items and for file-level queries
+    m_pDS->exec("update files set " + setClause + PrepareSQL(" where idFile=%i", id));
+
+    int idVersion{-1};
+    if (item.HasVideoInfoTag())
+    {
+      const CVideoInfoTag* tag{item.GetVideoInfoTag()};
+      idVersion = GetVideoVersionId(id, tag->m_iDbId, tag->m_type);
+    }
+    if (idVersion < 0)
+      idVersion = GetVideoVersionIdByFile(id);
+    if (idVersion >= 0)
+      m_pDS->exec("update videoversion set " + setClause +
+                  PrepareSQL(" where idVersion=%i", idVersion));
 
     // We only need to announce changes to video items in the library
     if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iDbId > 0)

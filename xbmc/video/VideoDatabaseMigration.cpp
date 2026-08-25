@@ -1573,6 +1573,10 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->exec("UPDATE videoversion SET isDefault=1 WHERE media_type='movie' AND EXISTS "
                 "(SELECT 1 FROM movie WHERE movie.idMovie=videoversion.idMedia AND "
                 "movie.idFile=videoversion.idFile)");
+
+    // Per-version watched state; NULL falls back to the file's values
+    m_pDS->exec("ALTER TABLE videoversion ADD playCount INTEGER");
+    m_pDS->exec("ALTER TABLE videoversion ADD lastPlayed TEXT");
   }
 }
 

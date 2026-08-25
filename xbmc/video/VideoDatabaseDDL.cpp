@@ -197,7 +197,8 @@ void CVideoDatabaseDDL::CreateTables(CDatabase& db)
   // NULL values would not participate in the unique index.
   db.ExecuteQuery(
       "CREATE TABLE videoversion (idVersion INTEGER PRIMARY KEY, idFile INTEGER, idMedia INTEGER, "
-      "media_type TEXT, itemType INTEGER, idType INTEGER, filePath TEXT, isDefault bool)");
+      "media_type TEXT, itemType INTEGER, idType INTEGER, filePath TEXT, isDefault bool, "
+      "playCount INTEGER, lastPlayed TEXT)");
 }
 
 void CVideoDatabaseDDL::CreateLinkIndex(CDatabase& db, const std::string& table)
@@ -438,8 +439,8 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
       "  episode.*,"
       "  files.strFileName AS strFileName,"
       "  path.strPath AS strPath,"
-      "  files.playCount AS playCount,"
-      "  files.lastPlayed AS lastPlayed,"
+      "  COALESCE(vv.playCount, files.playCount) AS playCount,"
+      "  COALESCE(vv.lastPlayed, files.lastPlayed) AS lastPlayed,"
       "  files.dateAdded AS dateAdded,"
       "  tvshow.c%02d AS strTitle,"
       "  tvshow.c%02d AS genre,"
@@ -482,9 +483,9 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
   const std::string tvshowcounts =
       db.PrepareSQL("CREATE VIEW tvshowcounts AS SELECT "
                     "      tvshow.idShow AS idShow,"
-                    "      MAX(files.lastPlayed) AS lastPlayed,"
+                    "      MAX(COALESCE(vv.lastPlayed, files.lastPlayed)) AS lastPlayed,"
                     "      NULLIF(COUNT(episode.c12), 0) AS totalCount,"
-                    "      COUNT(files.playCount) AS watchedcount,"
+                    "      COUNT(COALESCE(vv.playCount, files.playCount)) AS watchedcount,"
                     "      NULLIF(COUNT(DISTINCT(episode.c12)), 0) AS totalSeasons, "
                     "      MAX(files.dateAdded) as dateAdded, "
                     "      COUNT(bookmark.type) AS inProgressCount "
@@ -560,7 +561,7 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
       "  tvshow_view.c%02d AS studio,"
       "  tvshow_view.c%02d AS mpaa,"
       "  count(DISTINCT episode.idEpisode) AS episodes,"
-      "  count(files.playCount) AS playCount,"
+      "  count(COALESCE(vv.playCount, files.playCount)) AS playCount,"
       "  min(episode.c%02d) AS aired, "
       "  count(bookmark.type) AS inProgressCount, "
       "  seasons.plot AS seasonPlot "
@@ -600,8 +601,8 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
                                 "  musicvideo.*,"
                                 "  files.strFileName as strFileName,"
                                 "  path.strPath as strPath,"
-                                "  files.playCount as playCount,"
-                                "  files.lastPlayed as lastPlayed,"
+                                "  COALESCE(vv.playCount, files.playCount) as playCount,"
+                                "  COALESCE(vv.lastPlayed, files.lastPlayed) as lastPlayed,"
                                 "  files.dateAdded as dateAdded, "
                                 "  bookmark.timeInSeconds AS resumeTimeInSeconds, "
                                 "  bookmark.totalTimeInSeconds AS totalTimeInSeconds, "
@@ -632,8 +633,8 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
       "  `sets`.`strOriginalSet` as strOriginalSet,"
       "  files.strFileName AS strFileName,"
       "  path.strPath AS strPath,"
-      "  files.playCount AS playCount,"
-      "  files.lastPlayed AS lastPlayed, "
+      "  COALESCE(vv.playCount, files.playCount) AS playCount,"
+      "  COALESCE(vv.lastPlayed, files.lastPlayed) AS lastPlayed, "
       "  files.dateAdded AS dateAdded, "
       "  bookmark.timeInSeconds AS resumeTimeInSeconds, "
       "  bookmark.totalTimeInSeconds AS totalTimeInSeconds, "
