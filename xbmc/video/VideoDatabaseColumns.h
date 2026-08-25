@@ -98,6 +98,7 @@ constexpr int VIDEODB_DETAILS_EPISODE_VOTES             = VIDEODB_DETAILS_EPISOD
 constexpr int VIDEODB_DETAILS_EPISODE_RATING_TYPE       = VIDEODB_DETAILS_EPISODE_TABLE_LAST_ATTR + 17;
 constexpr int VIDEODB_DETAILS_EPISODE_UNIQUEID_VALUE    = VIDEODB_DETAILS_EPISODE_TABLE_LAST_ATTR + 18;
 constexpr int VIDEODB_DETAILS_EPISODE_UNIQUEID_TYPE     = VIDEODB_DETAILS_EPISODE_TABLE_LAST_ATTR + 19;
+constexpr int VIDEODB_DETAILS_EPISODE_BOOKMARK_ID       = VIDEODB_DETAILS_EPISODE_TABLE_LAST_ATTR + 20;
 
 // tvshow_view columns past idShow c00-cxx (tvshow table)
 constexpr int VIDEODB_DETAILS_TVSHOW_USER_RATING        = VIDEODB_MAX_COLUMNS + 1;
@@ -333,7 +334,7 @@ enum VIDEODB_EPISODE_IDS // this enum MUST match the offset struct further down!
   VIDEODB_ID_EPISODE_ORIGINALTITLE = 14,
   VIDEODB_ID_EPISODE_SORTSEASON = 15,
   VIDEODB_ID_EPISODE_SORTEPISODE = 16,
-  VIDEODB_ID_EPISODE_BOOKMARK = 17,
+  VIDEODB_ID_EPISODE_BOOKMARK = 17, // unused - feel free to repurpose
   VIDEODB_ID_EPISODE_BASEPATH = 18,
   VIDEODB_ID_EPISODE_PARENTPATHID = 19,
   VIDEODB_ID_EPISODE_IDENT_ID = 20,
@@ -360,7 +361,7 @@ const std::array<SDbTableOffsets, DB_EPISODE_OFFSETS_SIZE> DbEpisodeOffsets = {{
     {VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag, m_strOriginalTitle)},
     {VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag, m_iSpecialSortSeason)},
     {VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag, m_iSpecialSortEpisode)},
-    {VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag, m_iBookmarkId)},
+    {VIDEODB_TYPE_UNUSED, 0}, // unused
     {VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag, m_basePath)},
     {VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag, m_parentPathID)},
     {VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag, m_iIdUniqueID)},
