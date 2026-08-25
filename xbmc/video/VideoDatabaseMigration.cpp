@@ -1533,6 +1533,27 @@ void CVideoDatabase::UpdateTables(int iVersion)
                            "AND idFile IN (SELECT idFile FROM videoversion)",
                            CBookmark_RESUME));
 
+    // Stream details of a file become owned by each media item on it, as a scan records
+    // them. Files not linked to any media item keep theirs.
+    m_pDS->exec("ALTER TABLE streamdetails ADD idVersion INTEGER");
+    m_pDS->exec(
+        "UPDATE streamdetails SET idVersion="
+        "(SELECT vv.idVersion FROM videoversion vv WHERE vv.idFile=streamdetails.idFile) "
+        "WHERE (SELECT COUNT(1) FROM videoversion vv2 WHERE vv2.idFile=streamdetails.idFile)=1");
+    m_pDS->exec(
+        "INSERT INTO streamdetails (idFile, iStreamType, strVideoCodec, fVideoAspect, "
+        "iVideoWidth, iVideoHeight, strAudioCodec, iAudioChannels, strAudioLanguage, "
+        "strSubtitleLanguage, iVideoDuration, strStereoMode, strVideoLanguage, strHdrType, "
+        "strHdrDetail, iSource, iVersion, iFlags, idVersion) "
+        "SELECT sd.idFile, sd.iStreamType, sd.strVideoCodec, sd.fVideoAspect, sd.iVideoWidth, "
+        "sd.iVideoHeight, sd.strAudioCodec, sd.iAudioChannels, sd.strAudioLanguage, "
+        "sd.strSubtitleLanguage, sd.iVideoDuration, sd.strStereoMode, sd.strVideoLanguage, "
+        "sd.strHdrType, sd.strHdrDetail, sd.iSource, sd.iVersion, sd.iFlags, vv.idVersion "
+        "FROM streamdetails sd JOIN videoversion vv ON vv.idFile=sd.idFile "
+        "WHERE sd.idVersion IS NULL");
+    m_pDS->exec("DELETE FROM streamdetails WHERE idVersion IS NULL "
+                "AND idFile IN (SELECT idFile FROM videoversion)");
+
     m_pDS->dropIndex("videoversion", "ix_migration_videoversion");
     m_pDS->dropIndex("episode", "ix_migration_episode_bookmark");
   }
