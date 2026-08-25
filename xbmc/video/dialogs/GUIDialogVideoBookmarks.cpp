@@ -506,6 +506,8 @@ bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
   CVideoInfoTag episodeTag;
   if (episode)
     episodeTag = *tag;
+  else if (g_application.CurrentFileItem().HasVideoInfoTag())
+    episodeTag = *g_application.CurrentFileItem().GetVideoInfoTag();
 
   // convert (HDR tonemap), encode and the DB write run on the capture service
   // worker, off the render thread; the render thread pays only the readback tap
@@ -537,7 +539,15 @@ bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
           if (episode)
             videoDatabase.AddBookMarkForEpisode(episodeTag, bookmark);
           else
-            videoDatabase.AddBookMarkToFile(dynPath, bookmark, CBookmark::STANDARD);
+          {
+            int idVersion{episodeTag.GetAssetInfo().GetVersionId()};
+            if (idVersion < 0)
+              idVersion = videoDatabase.GetVideoVersionIdByPath(dynPath);
+            if (idVersion < 0)
+              idVersion = videoDatabase.GetVideoVersionId(
+                  episodeTag.m_iFileId, episodeTag.m_iDbId, episodeTag.m_type);
+            videoDatabase.AddBookMarkToFile(dynPath, bookmark, CBookmark::STANDARD, idVersion);
+          }
           videoDatabase.Close();
         }
 

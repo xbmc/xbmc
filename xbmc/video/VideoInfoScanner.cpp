@@ -1523,8 +1523,14 @@ CVideoInfoScanner::~CVideoInfoScanner()
       // Look for default version
       int defaultVersionId{-1};
       if (tag->IsDefaultVideoVersion())
-        defaultVersionId =
-            m_database.GetVideoVersionId(tag->m_iFileId, movieId, MediaTypeMovie);
+      {
+        defaultVersionId = tag->GetAssetInfo().GetVersionId();
+        if (defaultVersionId < 0)
+          defaultVersionId = m_database.GetVideoVersionIdByPath(tag->GetPath());
+        if (defaultVersionId < 0)
+          defaultVersionId =
+              m_database.GetVideoVersionId(tag->m_iFileId, movieId, MediaTypeMovie);
+      }
 
       // Look for versions (ie. subsequent <movie> entries in the .nfo file)
       // These must be versions. Reuse the loader.
@@ -2334,10 +2340,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
       if ((libraryImport || m_advancedSettings->m_bVideoLibraryImportResumePoint) &&
           movieDetails.GetResumePoint().IsSet())
+      {
+        int idVersion{movieDetails.GetAssetInfo().GetVersionId()};
+        if (idVersion < 0)
+          idVersion = m_database.GetVideoVersionIdByPath(path);
+        if (idVersion < 0)
+          idVersion = m_database.GetVideoVersionId(
+              movieDetails.m_iFileId, movieDetails.m_iDbId, movieDetails.m_type);
         m_database.AddBookMarkToFile(path, movieDetails.GetResumePoint(), CBookmark::RESUME,
-                                     m_database.GetVideoVersionId(movieDetails.m_iFileId,
-                                                                  movieDetails.m_iDbId,
-                                                                  movieDetails.m_type));
+                                     idVersion);
+      }
     }
 
     m_database.Close();

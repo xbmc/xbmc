@@ -335,7 +335,7 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
         CVideoInfoTag* info = pItem->GetVideoInfoTag();
         m_videoDatabase->BeginTransaction();
 
-        if (info->m_iFileId < 0)
+        if (info->m_iFileId < 0 || info->m_iDbId < 0)
           m_videoDatabase->SetStreamDetailsForFile(
               info->m_streamDetails,
               !info->m_strFileNameAndPath.empty() ? info->m_strFileNameAndPath : pItem->GetPath());

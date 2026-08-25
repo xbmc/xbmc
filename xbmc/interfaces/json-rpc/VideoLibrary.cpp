@@ -1263,8 +1263,10 @@ void CVideoLibrary::UpdateResumePoint(const CVariant &parameterObject, CVideoInf
 {
   if (!parameterObject["resume"].isNull())
   {
-    const int idVersion{
-        videodatabase.GetVideoVersionId(details.m_iFileId, details.m_iDbId, details.m_type)};
+    int idVersion{videodatabase.GetVideoVersionIdByPath(details.m_strFileNameAndPath)};
+    if (idVersion < 0)
+      idVersion = videodatabase.GetVideoVersionId(details.m_iFileId, details.m_iDbId,
+                                                  details.m_type);
 
     double position = (double)parameterObject["resume"]["position"].asDouble();
     if (position == 0.0)
