@@ -1318,6 +1318,7 @@ private:
    \sa SetPlayCount, IncrementPlayCount, GetPlayCounts
    */
   int GetPlayCount(int iFileId);
+  int GetPlayCount(int iFileId, int idVersion);
 
   /*! \brief Get the last played time of a filename and path
    \param iFileId file id to get the playcount for
