@@ -1586,6 +1586,94 @@ void CVideoDatabase::UpdateTables(int iVersion)
                 "(SELECT vv.idVersion FROM videoversion vv WHERE vv.idFile=art.media_id AND "
                 "vv.media_type='movie' LIMIT 1) "
                 "WHERE media_type='videoversion'");
+
+    // Collapse vfs file rows onto their physical containers: the vfs path of each media
+    // item moves to its version row and the file's watched state to the version columns,
+    // so one disc or archive is one file regardless of how many media items it holds
+    m_pDS->query("SELECT f.idFile, f.strFilename, p.strPath, f.playCount, f.lastPlayed, "
+                 "f.dateAdded FROM files f JOIN path p ON p.idPath=f.idPath "
+                 "WHERE p.strPath LIKE 'bluray://%' OR p.strPath LIKE 'rar://%' OR "
+                 "p.strPath LIKE 'zip://%' OR p.strPath LIKE 'archive://%'");
+
+    struct VfsFile
+    {
+      int idFile;
+      std::string vfsPath;
+      std::string playCount;
+      std::string lastPlayed;
+      std::string dateAdded;
+    };
+    std::vector<VfsFile> vfsFiles;
+    while (!m_pDS->eof())
+    {
+      vfsFiles.emplace_back(m_pDS->fv(0).get_asInt(),
+                            m_pDS->fv(2).get_asString() + m_pDS->fv(1).get_asString(),
+                            m_pDS->fv(3).get_isNull() ? "" : m_pDS->fv(3).get_asString(),
+                            m_pDS->fv(4).get_asString(), m_pDS->fv(5).get_asString());
+      m_pDS->next();
+    }
+    m_pDS->close();
+
+    for (const auto& file : vfsFiles)
+    {
+      const std::string physical{URIUtils::IsBlurayPath(file.vfsPath)
+                                     ? URIUtils::GetDiscFile(file.vfsPath)
+                                     : CURL(file.vfsPath).GetHostName()};
+      if (physical.empty())
+        continue;
+
+      std::string physPath;
+      std::string physName;
+      SplitPath(physical, physPath, physName);
+
+      const int idPhysPath{AddPath(physPath, URIUtils::GetParentPath(physPath))};
+      if (idPhysPath < 0)
+        continue;
+
+      int idPhysFile{-1};
+      m_pDS2->query(PrepareSQL("SELECT idFile FROM files WHERE strFileName='%s' AND idPath=%i",
+                               physName.c_str(), idPhysPath));
+      if (!m_pDS2->eof())
+        idPhysFile = m_pDS2->fv(0).get_asInt();
+      m_pDS2->close();
+      if (idPhysFile < 0)
+      {
+        m_pDS2->exec(PrepareSQL("INSERT INTO files (idFile, idPath, strFileName, dateAdded) "
+                                "VALUES(NULL, %i, '%s', '%s')",
+                                idPhysPath, physName.c_str(), file.dateAdded.c_str()));
+        idPhysFile = static_cast<int>(m_pDS2->lastinsertid());
+      }
+
+      // fold the file's watched state into its versions without overwriting their own
+      const std::string playCount{file.playCount.empty() ? "NULL" : file.playCount};
+      const std::string lastPlayed{file.lastPlayed.empty() ? "NULL"
+                                                           : "'" + file.lastPlayed + "'"};
+      m_pDS2->exec(PrepareSQL("UPDATE videoversion SET idFile=%i, filePath='%s', "
+                              "playCount=COALESCE(playCount, " + playCount + "), "
+                              "lastPlayed=COALESCE(lastPlayed, " + lastPlayed + ") "
+                              "WHERE idFile=%i",
+                              idPhysFile, file.vfsPath.c_str(), file.idFile));
+
+      m_pDS2->exec(
+          PrepareSQL("UPDATE bookmark SET idFile=%i WHERE idFile=%i", idPhysFile, file.idFile));
+      m_pDS2->exec(PrepareSQL("UPDATE streamdetails SET idFile=%i WHERE idFile=%i", idPhysFile,
+                              file.idFile));
+      m_pDS2->exec(
+          PrepareSQL("UPDATE settings SET idFile=%i WHERE idFile=%i", idPhysFile, file.idFile));
+      m_pDS2->exec(
+          PrepareSQL("UPDATE movie SET idFile=%i WHERE idFile=%i", idPhysFile, file.idFile));
+      m_pDS2->exec(
+          PrepareSQL("UPDATE episode SET idFile=%i WHERE idFile=%i", idPhysFile, file.idFile));
+      m_pDS2->exec(
+          PrepareSQL("UPDATE musicvideo SET idFile=%i WHERE idFile=%i", idPhysFile, file.idFile));
+
+      m_pDS2->exec(PrepareSQL("DELETE FROM files WHERE idFile=%i", file.idFile));
+    }
+
+    if (!vfsFiles.empty())
+      m_pDS->exec("DELETE FROM path WHERE (strPath LIKE 'bluray://%' OR strPath LIKE 'rar://%' "
+                  "OR strPath LIKE 'zip://%' OR strPath LIKE 'archive://%') "
+                  "AND idPath NOT IN (SELECT idPath FROM files)");
   }
 }
 
