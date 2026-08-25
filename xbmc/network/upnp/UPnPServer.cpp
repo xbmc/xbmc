@@ -1362,7 +1362,9 @@ NPT_Result CUPnPServer::OnUpdateObject(PLT_ActionReference& action,
 
       // scope to the updated media item, so other items sharing the same file
       // (eg. multi-episode files) keep their resume points
-      const int idVersion = db.GetVideoVersionId(tag.m_iFileId, tag.m_iDbId, tag.m_type);
+      int idVersion = db.GetVideoVersionIdByPath(file_path);
+      if (idVersion < 0)
+        idVersion = db.GetVideoVersionId(tag.m_iFileId, tag.m_iDbId, tag.m_type);
 
       if (resume <= 0)
         db.ClearBookMarksOfFile(file_path, CBookmark::RESUME, idVersion);

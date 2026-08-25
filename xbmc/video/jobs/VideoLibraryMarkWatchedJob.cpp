@@ -112,8 +112,8 @@ bool CVideoLibraryMarkWatchedJob::Work(CVideoDatabase &db)
 
     // scope to the marked media item, so other items sharing the same file
     // (eg. multi-episode files) keep their resume points
-    int idVersion{-1};
-    if (item->HasVideoInfoTag())
+    int idVersion{db.GetVideoVersionIdByPath(path)};
+    if (idVersion < 0 && item->HasVideoInfoTag())
     {
       const CVideoInfoTag* tag{item->GetVideoInfoTag()};
       idVersion = db.GetVideoVersionId(tag->m_iFileId, tag->m_iDbId, tag->m_type);

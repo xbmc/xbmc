@@ -701,7 +701,7 @@ void CGUIDialogVideoInfo::OnSearchItemFound(const CFileItem* pItem)
   if (type == VideoDbContentType::MOVIES)
     db.GetMovieInfo(pItem->GetPath(), movieDetails, pItem->GetVideoInfoTag()->m_iDbId,
                     pItem->GetVideoInfoTag()->GetAssetInfo().GetId(),
-                    pItem->GetVideoInfoTag()->m_iFileId);
+                    pItem->GetVideoInfoTag()->GetAssetInfo().GetVersionId());
   if (type == VideoDbContentType::EPISODES)
     db.GetEpisodeInfo(pItem->GetPath(), movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
   if (type == VideoDbContentType::TVSHOWS)
@@ -1231,7 +1231,8 @@ bool CGUIDialogVideoInfo::UpdateVideoItemTitle(const std::shared_ptr<CFileItem>&
   if (mediaType == MediaTypeMovie)
   {
     database.GetMovieInfo("", detail, iDbId, pItem->GetVideoInfoTag()->GetAssetInfo().GetId(),
-                          pItem->GetVideoInfoTag()->m_iFileId, VideoDbDetailsNone);
+                          pItem->GetVideoInfoTag()->GetAssetInfo().GetVersionId(),
+                          VideoDbDetailsNone);
     title = detail.m_strTitle;
   }
   else if (mediaType == MediaTypeVideoCollection)
@@ -2036,7 +2037,8 @@ bool CGUIDialogVideoInfo::UpdateVideoItemSortTitle(const std::shared_ptr<CFileIt
   VideoDbContentType iType = pItem->GetVideoContentType();
   if (iType == VideoDbContentType::MOVIES)
     database.GetMovieInfo("", detail, iDbId, pItem->GetVideoInfoTag()->GetAssetInfo().GetId(),
-                          pItem->GetVideoInfoTag()->m_iFileId, VideoDbDetailsNone);
+                          pItem->GetVideoInfoTag()->GetAssetInfo().GetVersionId(),
+                          VideoDbDetailsNone);
   else if (iType == VideoDbContentType::TVSHOWS)
     database.GetTvShowInfo(pItem->GetVideoInfoTag()->m_strFileNameAndPath, detail, iDbId, 0, VideoDbDetailsNone);
 

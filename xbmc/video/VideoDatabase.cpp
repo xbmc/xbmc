@@ -937,6 +937,22 @@ int CVideoDatabase::GetMovieId(const std::string& strFilenameAndPath)
     if (!m_pDB || !m_pDS)
       return -1;
 
+    // A vfs media path identifies the exact version within a shared physical file, and is the
+    // only way to identify it: the file holds every media item in the container, so resolving
+    // one by file id below would answer with whichever of them comes first. A path with no
+    // version row of its own is therefore not in the library - a playlist being scanned for
+    // the first time must not be taken for one already added from the same disc.
+    if (IsVfsMediaPath(strFilenameAndPath))
+    {
+      const int idVersionByPath{GetVideoVersionIdByPath(strFilenameAndPath)};
+      if (idVersionByPath < 0)
+        return -1;
+
+      return GetDbId(
+          PrepareSQL("SELECT idMedia FROM videoversion WHERE idVersion=%i AND media_type='%s'",
+                     idVersionByPath, MediaTypeMovie));
+    }
+
     // needed for query parameters
     int idMovie{-1};
     int idFile{GetFileId(strFilenameAndPath)};
@@ -1937,10 +1953,23 @@ bool CVideoDatabase::GetMovieInfo(const std::string& strFilenameAndPath,
     }
     else if (!strFilenameAndPath.empty())
     {
-      const int idFile{GetFileId(strFilenameAndPath)};
-      if (idFile != -1)
-        sql = PrepareSQL("SELECT * FROM movie_view WHERE idMovie = %i AND videoVersionIdFile = %i",
-                         idMovie, idFile);
+      // a vfs media path identifies the exact version within a shared physical file, and only
+      // that way: the file id would match every version in the container (see GetMovieId)
+      if (IsVfsMediaPath(strFilenameAndPath))
+      {
+        const int idVersionByPath{GetVideoVersionIdByPath(strFilenameAndPath)};
+        if (idVersionByPath >= 0)
+          sql = PrepareSQL("SELECT * FROM movie_view WHERE idMovie = %i AND videoVersionId = %i",
+                           idMovie, idVersionByPath);
+      }
+      else
+      {
+        const int idFile{GetFileId(strFilenameAndPath)};
+        if (idFile != -1)
+          sql = PrepareSQL(
+              "SELECT * FROM movie_view WHERE idMovie = %i AND videoVersionIdFile = %i", idMovie,
+              idFile);
+      }
     }
 
     if (sql.empty())
@@ -3051,6 +3080,34 @@ int CVideoDatabase::SetFileForUnknown(const std::string& fileAndPath, int oldIdF
 
   try
   {
+    // the whole container moved: repoint its version rows and rebase their vfs paths
+    if (URIUtils::IsBlurayPath(fileAndPath))
+    {
+      const std::string newBase{URIUtils::GetBlurayPlaylistPath(fileAndPath)};
+      m_pDS->query(
+          PrepareSQL("SELECT idVersion, filePath FROM videoversion WHERE idFile=%i", oldIdFile));
+      std::vector<std::pair<int, std::string>> versions;
+      while (!m_pDS->eof())
+      {
+        versions.emplace_back(m_pDS->fv(0).get_asInt(), m_pDS->fv(1).get_asString());
+        m_pDS->next();
+      }
+      m_pDS->close();
+      for (const auto& [idVersion, versionFilePath] : versions)
+      {
+        const std::string newFilePath{
+            versionFilePath.empty()
+                ? ""
+                : URIUtils::AddFileToFolder(newBase, URIUtils::GetFileName(versionFilePath))};
+        m_pDS->exec(
+            PrepareSQL("UPDATE videoversion SET idFile=%i, filePath='%s' WHERE idVersion=%i",
+                       newIdFile, newFilePath.c_str(), idVersion));
+      }
+    }
+    else
+      m_pDS->exec(
+          PrepareSQL("UPDATE videoversion SET idFile=%i WHERE idFile=%i", newIdFile, oldIdFile));
+
     m_pDS->exec(
         PrepareSQL("UPDATE streamdetails SET idFile=%i WHERE idFile=%i AND NOT EXISTS (SELECT 1 "
                    "FROM streamdetails WHERE idFile=%i)",
@@ -3619,8 +3676,9 @@ void CVideoDatabase::DeleteResumeBookMark(const CFileItem& item)
   try
   {
     const CVideoInfoTag* tag{item.GetVideoInfoTag()};
-    const int idVersion{tag->m_iDbId >= 0 ? GetVideoVersionId(fileID, tag->m_iDbId, tag->m_type)
-                                          : -1};
+    int idVersion{GetVideoVersionIdByPath(item.GetDynPath())};
+    if (idVersion < 0 && tag->m_iDbId >= 0)
+      idVersion = GetVideoVersionId(fileID, tag->m_iDbId, tag->m_type);
 
     std::string sql = PrepareSQL("delete from bookmark where idFile=%i and type=%i", fileID, CBookmark::RESUME);
     if (idVersion >= 0)
@@ -5467,8 +5525,8 @@ void CVideoDatabase::GetUniqueIDs(int media_id, const std::string &media_type, C
 bool CVideoDatabase::GetVideoSettings(const CFileItem &item, CVideoSettings &settings)
 {
   const int idFile{GetFileId(item)};
-  int idVersion{-1};
-  if (item.HasVideoInfoTag())
+  int idVersion{GetVideoVersionIdByPath(item.GetDynPath())};
+  if (idVersion < 0 && item.HasVideoInfoTag())
   {
     const CVideoInfoTag* tag{item.GetVideoInfoTag()};
     idVersion = GetVideoVersionId(idFile, tag->m_iDbId, tag->m_type);
@@ -5552,8 +5610,8 @@ bool CVideoDatabase::GetVideoSettings(int idFile, CVideoSettings& settings, int 
 void CVideoDatabase::SetVideoSettings(const CFileItem &item, const CVideoSettings &settings)
 {
   int idFile = AddFile(item);
-  int idVersion{-1};
-  if (item.HasVideoInfoTag())
+  int idVersion{GetVideoVersionIdByPath(item.GetDynPath())};
+  if (idVersion < 0 && item.HasVideoInfoTag())
   {
     const CVideoInfoTag* tag{item.GetVideoInfoTag()};
     idVersion = GetVideoVersionId(idFile, tag->m_iDbId, tag->m_type);
@@ -6616,8 +6674,8 @@ int CVideoDatabase::GetPlayCount(const std::string& strFilenameAndPath)
 int CVideoDatabase::GetPlayCount(const CFileItem &item)
 {
   const int idFile{GetFileId(item)};
-  int idVersion{-1};
-  if (item.HasVideoInfoTag())
+  int idVersion{GetVideoVersionIdByPath(item.GetDynPath())};
+  if (idVersion < 0 && item.HasVideoInfoTag())
   {
     const CVideoInfoTag* tag{item.GetVideoInfoTag()};
     idVersion = GetVideoVersionId(idFile, tag->m_iDbId, tag->m_type);
@@ -6899,8 +6957,8 @@ void CVideoDatabase::EraseVideoSettings(const CFileItem &item)
 
   try
   {
-    int idVersion{-1};
-    if (item.HasVideoInfoTag())
+    int idVersion{GetVideoVersionIdByPath(item.GetDynPath())};
+    if (idVersion < 0 && item.HasVideoInfoTag())
     {
       const CVideoInfoTag* tag{item.GetVideoInfoTag()};
       idVersion = GetVideoVersionId(idFile, tag->m_iDbId, tag->m_type);
@@ -12771,7 +12829,7 @@ bool CVideoDatabase::EraseAllForFile(const std::string& fileNameAndPath)
 
     std::string path;
     std::string fileName;
-    SplitPath(fileNameAndPath, path, fileName);
+    SplitPath(GetPhysicalPath(fileNameAndPath), path, fileName);
     const int pathId{GetPathId(path)};
     if (pathId == -1)
       return false;
@@ -13134,10 +13192,13 @@ bool CVideoDatabase::AddOrUpdateVideoVersion(VideoDbContentType itemType,
   {
     const MediaType mediaType{VideoContentTypeToString(itemType)};
 
-    // vfs media paths identify the exact version within a shared physical file
-    if (!filePath.empty())
+    // vfs media paths identify the exact version within a shared physical file;
+    // tolerate plain paths from callers, only vfs paths belong on the version row
+    const std::string versionPath{GetVersionFilePath(filePath)};
+
+    if (!versionPath.empty())
       sql = PrepareSQL("SELECT 1 FROM videoversion WHERE filePath='%s' AND media_type='%s'",
-                       filePath.c_str(), mediaType.c_str());
+                       versionPath.c_str(), mediaType.c_str());
     else
       sql = PrepareSQL("SELECT 1 FROM videoversion WHERE idFile=%i AND media_type='%s'", idFile,
                        mediaType.c_str());
@@ -13152,8 +13213,8 @@ bool CVideoDatabase::AddOrUpdateVideoVersion(VideoDbContentType itemType,
                        "SET isDefault = (CASE WHEN idMedia = %i THEN isDefault ELSE 0 END), "
                        "idMedia = %i, itemType = %i, idType = %i, idFile = %i",
                        dbIdSource, dbIdSource, assetType, idVideoVersion, idFile);
-      if (!filePath.empty())
-        sql += PrepareSQL(" WHERE filePath='%s' AND media_type='%s'", filePath.c_str(),
+      if (!versionPath.empty())
+        sql += PrepareSQL(" WHERE filePath='%s' AND media_type='%s'", versionPath.c_str(),
                           mediaType.c_str());
       else
         sql += PrepareSQL(" WHERE idFile=%i AND media_type='%s'", idFile, mediaType.c_str());
@@ -13165,7 +13226,7 @@ bool CVideoDatabase::AddOrUpdateVideoVersion(VideoDbContentType itemType,
 
     m_pDS->close();
 
-    AddVideoVersion(idFile, dbIdSource, mediaType, assetType, idVideoVersion, false, filePath);
+    AddVideoVersion(idFile, dbIdSource, mediaType, assetType, idVideoVersion, false, versionPath);
 
     return true;
   }
@@ -13408,20 +13469,25 @@ VideoAssetInfo CVideoDatabase::GetVideoVersionInfo(const std::string& filenameAn
 
   try
   {
-    // a file can be linked to several media items; the consumers manage movie assets,
-    // so a movie row is preferred when present
-    m_pDS->query(PrepareSQL("SELECT videoversiontype.name,"
-                            "  videoversiontype.id,"
-                            "  videoversion.idMedia,"
-                            "  videoversion.media_type,"
-                            "  videoversion.itemType,"
-                            "  videoversion.idVersion "
-                            "FROM videoversion"
-                            "  JOIN videoversiontype ON "
-                            "    videoversiontype.id = videoversion.idType "
-                            "WHERE videoversion.idFile = %i "
-                            "ORDER BY videoversion.media_type = '%s' DESC",
-                            info.m_idFile, MediaTypeMovie));
+    // a vfs media path identifies the exact version within a shared physical file;
+    // a plain file can still be linked to several media items, and the consumers
+    // manage movie assets, so a movie row is preferred then
+    std::string sql{PrepareSQL("SELECT videoversiontype.name,"
+                               "  videoversiontype.id,"
+                               "  videoversion.idMedia,"
+                               "  videoversion.media_type,"
+                               "  videoversion.itemType,"
+                               "  videoversion.idVersion "
+                               "FROM videoversion"
+                               "  JOIN videoversiontype ON "
+                               "    videoversiontype.id = videoversion.idType ")};
+    if (IsVfsMediaPath(filenameAndPath))
+      sql += PrepareSQL("WHERE videoversion.filePath = '%s'", filenameAndPath.c_str());
+    else
+      sql += PrepareSQL("WHERE videoversion.idFile = %i "
+                        "ORDER BY videoversion.media_type = '%s' DESC",
+                        info.m_idFile, MediaTypeMovie);
+    m_pDS->query(sql);
 
     if (m_pDS->num_rows() > 0)
     {
@@ -13474,6 +13540,8 @@ int CVideoDatabase::GetVideoVersionIdByPath(const std::string& fileNameAndPath) 
   try
   {
     // local dataset: often called while m_pDS/m_pDS2 hold results being iterated
+    // filePath is not unique on its own in theory (one member could belong to media
+    // items of different types); consumers so far want any owner of the exact path
     const std::unique_ptr<Dataset> pDS{m_pDB->CreateDataset()};
     pDS->query(PrepareSQL("SELECT idVersion FROM videoversion WHERE filePath='%s'",
                           fileNameAndPath.c_str()));

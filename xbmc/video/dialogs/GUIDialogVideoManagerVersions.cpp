@@ -424,13 +424,17 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
       if (idFile > 0)
       {
         videoDbSuccess = true;
-        m_database.SetStreamDetailsForFileId(item->GetVideoInfoTag()->m_streamDetails, idFile);
+        // the playlist path identifies the version: versions on one disc share the file
         if (!m_database.AddOrUpdateVideoVersion(item->GetVideoContentType(), idMovie, idFile,
-                                                idVideoVersion, VideoAssetType::VERSION))
+                                                idVideoVersion, VideoAssetType::VERSION,
+                                                item->GetDynPath()))
         {
           m_database.RollbackTransaction();
           return false;
         }
+        m_database.SetStreamDetailsForFileId(
+            item->GetVideoInfoTag()->m_streamDetails, idFile,
+            m_database.GetVideoVersionIdByPath(item->GetDynPath()));
       }
     }
 
@@ -442,8 +446,10 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
                                   m_videoAsset->GetVideoContentType(), m_database);
 
       // New disc video version will not have any art so use the art from the disc
-      m_database.SetArtForItem(m_database.GetVideoVersionId(idFile, idMovie, MediaTypeMovie),
-                               MediaTypeVideoVersion, item->GetArt());
+      int idVersion{m_database.GetVideoVersionIdByPath(item->GetDynPath())};
+      if (idVersion < 0)
+        idVersion = m_database.GetVideoVersionId(idFile, idMovie, MediaTypeMovie);
+      m_database.SetArtForItem(idVersion, MediaTypeVideoVersion, item->GetArt());
 
       m_database.CommitTransaction();
     }

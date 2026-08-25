@@ -108,8 +108,8 @@ void CSaveFileState::DoWork(CFileItem& item,
 
         // scope per-version data to the played media item, so other items
         // sharing the same file (eg. multi-episode files) keep theirs
-        int idVersion{-1};
-        if (item.HasVideoInfoTag())
+        int idVersion{videodatabase.GetVideoVersionIdByPath(progressTrackingFile)};
+        if (idVersion < 0 && item.HasVideoInfoTag())
         {
           const CVideoInfoTag* playedTag{item.GetVideoInfoTag()};
           idVersion = videodatabase.GetVideoVersionId(playedTag->m_iFileId, playedTag->m_iDbId,

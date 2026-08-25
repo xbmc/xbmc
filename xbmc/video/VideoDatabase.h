@@ -961,6 +961,12 @@ public:
    */
   int GetVideoVersionId(int idFile, int idMedia, const MediaType& mediaType) const;
 
+  /*! \brief Get the version id of the media item with the given vfs path
+   \param fileNameAndPath vfs path of the media item within its physical file
+   \return the version id, -1 if not found or not a vfs media path
+   */
+  int GetVideoVersionIdByPath(const std::string& fileNameAndPath) const;
+
   /*!
    * \brief Remove a video from the library and transfer all of its assets to another video of the
    * same type.
@@ -1222,15 +1228,11 @@ private:
    */
   int GetVideoVersionIdByFile(int idFile) const;
 
-  /*! \brief Get the version id of the media item with the given vfs path
-   \param fileNameAndPath vfs path of the media item within its physical file
-   \return the version id, -1 if not found or not a vfs media path
-   */
-  int GetVideoVersionIdByPath(const std::string& fileNameAndPath) const;
-
   /*! \brief Create a videoversion row linking a media item and a file.
    Bookmarks recorded for the file before it was linked to any media item are
-   adopted by the new version.
+   adopted by the new version. Callers derive filePath from the media item's
+   playable path (m_strFileNameAndPath / dynpath), which must hold the vfs
+   path (playlist, archive member) for media within a physical container.
    \return the new version id
    */
   int AddVideoVersion(int idFile,
