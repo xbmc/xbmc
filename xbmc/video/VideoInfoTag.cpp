@@ -16,6 +16,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/Archive.h"
 #include "utils/LangCodeExpander.h"
+#include "utils/StreamUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -1505,6 +1506,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
         XMLUtils::GetInt(nodeDetail, "channels", p->m_iChannels);
         StringUtils::ToLower(p->m_strCodec);
         StringUtils::ToLower(p->m_strLanguage);
+        p->m_strCodec = StreamUtils::NormalizeAudioCodecName(p->m_strCodec);
         m_streamDetails.AddStream(p);
       }
       nodeDetail = nullptr;

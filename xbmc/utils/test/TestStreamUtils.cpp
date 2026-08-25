@@ -25,3 +25,11 @@ TEST(TestStreamUtils, General)
   EXPECT_EQ(10, StreamUtils::GetCodecPriority("dtshd_ma_x_imax"));
   EXPECT_EQ(11, StreamUtils::GetCodecPriority("truehd_atmos"));
 }
+
+TEST(TestStreamUtils, NormalizeAudioCodecName)
+{
+  EXPECT_EQ("dts", StreamUtils::NormalizeAudioCodecName("dca"));
+  EXPECT_EQ("dts", StreamUtils::NormalizeAudioCodecName("dts"));
+  EXPECT_EQ("ac3", StreamUtils::NormalizeAudioCodecName("ac3"));
+  EXPECT_EQ("", StreamUtils::NormalizeAudioCodecName(""));
+}
