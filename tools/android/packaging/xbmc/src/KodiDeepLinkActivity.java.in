@@ -30,15 +30,20 @@ import android.util.Log;
 // the only alternative has been to use adb to launch Kodi.
 //
 // The class is necessary, because while adding a scheme "kodi" to AndroidManifest.xml can work to
-// launch Kodi, Kodi always tries to "play" the URL, which causes it to display a modal error box
-// titled "Playback failed" with the message "One or more items failed to play". Logfile errors also
-// appear, including:
+// launch Kodi, Kodi always tries to "play" the URL, even if it's empty like with "kodi://", and
+// it goes on to display a modal error box titled "Playback failed" with the message "One or more
+// items failed to play". Logfile errors also appear, including:
 //
 // CreateLoader - unsupported protocol(kodi) in kodi://?mimetype=application%2foctet-stream/
 // CVideoPlayer::OpenInputStream - error opening [kodi://]
 //
 // Nothing I tried or Gemini and Claude suggested worked to avoid these problems that seem to be
 // inherent to merely modifying the manifest, so with Claude's help, KodiDeepLinkActivity was born.
+// It runs Kodi or brings it to the foreground as necessary, and if Kodi was already the foreground
+// app, it has no effect other than to momentarily blank the screen if Kodi is playing video, the
+// same behavior as the old "market://" prefix, and the same as using adb to start
+// "org.xbmc.kodi/.Splash". This can be avoided by checking if Kodi is the current app and simply
+// not issuing the call if it is.
 
 public class KodiDeepLinkActivity extends Activity
 {
