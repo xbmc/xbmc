@@ -16,6 +16,14 @@ namespace KODI
 namespace GAME
 {
 /*!
+ * \brief Base name of the database file, before the schema version suffix
+ *
+ * Kodi opens "Games" + the schema version, so this is the name every version
+ * of the file shares. Changing it orphans the user's existing database.
+ */
+constexpr const char* GAME_DATABASE_NAME = "Games";
+
+/*!
  * \ingroup games
  *
  * \brief The database of everything Kodi remembers about games
@@ -45,7 +53,7 @@ protected:
   void CreateAnalytics() override;
   void UpdateTables(int version) override;
   int GetSchemaVersion() const override { return 1; }
-  const char* GetBaseDBName() const override { return "Games"; }
+  const char* GetBaseDBName() const override { return GAME_DATABASE_NAME; }
 
 private:
   // Tables
