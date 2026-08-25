@@ -13119,11 +13119,13 @@ bool CVideoDatabase::ConvertVideoToVersion(VideoDbContentType itemType,
   // Rename the default version when provided
   std::string query;
   if (idVideoVersion < 0)
-    query =
-        PrepareSQL("UPDATE videoversion SET itemType = %i WHERE idFile = %i", assetType, idFile);
+    query = PrepareSQL("UPDATE videoversion SET itemType = %i WHERE idFile = %i AND "
+                       "media_type = '%s'",
+                       assetType, idFile, mediaType.c_str());
   else
-    query = PrepareSQL("UPDATE videoversion SET idType = %i, itemType = %i WHERE idFile = %i",
-                       idVideoVersion, assetType, idFile);
+    query = PrepareSQL("UPDATE videoversion SET idType = %i, itemType = %i WHERE idFile = %i AND "
+                       "media_type = '%s'",
+                       idVideoVersion, assetType, idFile, mediaType.c_str());
 
   if (!ExecuteQuery(query))
   {
@@ -13148,17 +13150,19 @@ bool CVideoDatabase::AddOrUpdateVideoVersion(VideoDbContentType itemType,
   std::string sql;
   try
   {
-    sql = PrepareSQL("SELECT 1 FROM videoversion WHERE idFile=%i", idFile);
+    const MediaType mediaType{VideoContentTypeToString(itemType)};
+
+    sql = PrepareSQL("SELECT 1 FROM videoversion WHERE idFile=%i AND media_type='%s'", idFile,
+                     mediaType.c_str());
     m_pDS->query(sql);
     if (m_pDS->num_rows() > 0)
     {
       m_pDS->close();
 
       sql = PrepareSQL("UPDATE videoversion "
-                       "SET idMedia = %i, media_type = '%s', itemType = %i, idType = %i "
-                       "WHERE idFile=%i",
-                       dbIdSource, VideoContentTypeToString(itemType).c_str(), assetType,
-                       idVideoVersion, idFile);
+                       "SET idMedia = %i, itemType = %i, idType = %i "
+                       "WHERE idFile=%i AND media_type='%s'",
+                       dbIdSource, assetType, idVideoVersion, idFile, mediaType.c_str());
 
       m_pDS->exec(sql);
 
@@ -13169,8 +13173,7 @@ bool CVideoDatabase::AddOrUpdateVideoVersion(VideoDbContentType itemType,
 
     sql = PrepareSQL("INSERT INTO videoversion (idFile, idMedia, media_type, itemType, idType) "
                      "VALUES(%i, %i, '%s', %i, %i)",
-                     idFile, dbIdSource, VideoContentTypeToString(itemType).c_str(), assetType,
-                     idVideoVersion);
+                     idFile, dbIdSource, mediaType.c_str(), assetType, idVideoVersion);
 
     m_pDS->exec(sql);
 
@@ -13253,20 +13256,17 @@ bool CVideoDatabase::IsDefaultVideoVersion(int idFile)
   try
   {
     m_pDS->query(
-        PrepareSQL("SELECT idMedia, media_type FROM videoversion WHERE idFile = %i", idFile));
+        PrepareSQL("SELECT idMedia FROM videoversion WHERE idFile = %i AND media_type = '%s'",
+                   idFile, MediaTypeMovie));
     if (m_pDS->num_rows() > 0)
     {
       int idMedia = m_pDS->fv("idMedia").get_asInt();
-      std::string mediaType = m_pDS->fv("media_type").get_asString();
 
-      if (mediaType == MediaTypeMovie)
+      m_pDS->query(PrepareSQL("SELECT idFile FROM movie WHERE idMovie = %i", idMedia));
+      if (m_pDS->num_rows() > 0)
       {
-        m_pDS->query(PrepareSQL("SELECT idFile FROM movie WHERE idMovie = %i", idMedia));
-        if (m_pDS->num_rows() > 0)
-        {
-          if (m_pDS->fv("idFile").get_asInt() == idFile)
-            return true;
-        }
+        if (m_pDS->fv("idFile").get_asInt() == idFile)
+          return true;
       }
     }
   }
@@ -13299,7 +13299,8 @@ bool CVideoDatabase::DeleteVideoAsset(int idFile)
     if (!path.empty())
       InvalidatePathHash(path);
 
-    m_pDS->exec(PrepareSQL("DELETE FROM videoversion WHERE idFile=%i", idFile));
+    m_pDS->exec(PrepareSQL("DELETE FROM videoversion WHERE idFile=%i AND media_type='%s'", idFile,
+                           MediaTypeMovie));
 
     if (!inTransaction)
       CommitTransaction();
@@ -13322,8 +13323,9 @@ void CVideoDatabase::SetVideoVersion(int idFile, int idVideoVersion)
 
   try
   {
-    m_pDS->exec(PrepareSQL("UPDATE videoversion SET idType = %i WHERE idFile = %i", idVideoVersion,
-                           idFile));
+    m_pDS->exec(
+        PrepareSQL("UPDATE videoversion SET idType = %i WHERE idFile = %i AND media_type = '%s'",
+                   idVideoVersion, idFile, MediaTypeMovie));
   }
   catch (...)
   {
