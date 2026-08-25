@@ -62,7 +62,8 @@ void CVideoDatabaseDDL::CreateTables(CDatabase& db)
       "Sharpness float, NoiseReduction float, NonLinStretch bool, PostProcess bool,"
       "ScalingMethod integer, DeinterlaceMode integer, StereoMode integer, StereoInvert bool, "
       "VideoStream integer,"
-      "TonemapMethod integer, TonemapParam float, Orientation integer, CenterMixLevel integer)\n");
+      "TonemapMethod integer, TonemapParam float, Orientation integer, CenterMixLevel integer, "
+      "idVersion integer)\n");
 
   CLog::Log(LOGINFO, "create stacktimes table");
   db.ExecuteQuery("CREATE TABLE stacktimes (idFile integer, times text)\n");
@@ -240,7 +241,8 @@ void CVideoDatabaseDDL::CreateIndices(CDatabase& db)
   CLog::Log(LOGINFO, "Creating video database indices");
   db.ExecuteQuery("CREATE INDEX ix_bookmark ON bookmark (idFile, type)");
   db.ExecuteQuery("CREATE INDEX ix_bookmark2 ON bookmark (idVersion, type)");
-  db.ExecuteQuery("CREATE UNIQUE INDEX ix_settings ON settings ( idFile )\n");
+  db.ExecuteQuery("CREATE UNIQUE INDEX ix_settings ON settings ( idFile, idVersion )\n");
+  db.ExecuteQuery("CREATE INDEX ix_settings_version ON settings (idVersion)");
   db.ExecuteQuery("CREATE UNIQUE INDEX ix_stacktimes ON stacktimes ( idFile )\n");
   db.ExecuteQuery("CREATE INDEX ix_path ON path ( strPath(255) )");
   db.ExecuteQuery("CREATE INDEX ix_path2 ON path ( idParentPath )");
@@ -324,6 +326,9 @@ void CVideoDatabaseDDL::CreateTriggers(CDatabase& db)
                   "DELETE FROM streamdetails WHERE idVersion IN "
                   "(SELECT idVersion FROM videoversion WHERE idFile=old.idFile AND "
                   "idMedia=old.idMovie AND media_type='movie'); "
+                  "DELETE FROM settings WHERE idVersion IN "
+                  "(SELECT idVersion FROM videoversion WHERE idFile=old.idFile AND "
+                  "idMedia=old.idMovie AND media_type='movie'); "
                   "DELETE FROM videoversion "
                   "WHERE idFile=old.idFile AND idMedia=old.idMovie AND media_type='movie'; "
                   "END");
@@ -355,6 +360,9 @@ void CVideoDatabaseDDL::CreateTriggers(CDatabase& db)
       "DELETE FROM streamdetails WHERE idVersion IN "
       "(SELECT idVersion FROM videoversion WHERE idMedia=old.idMVideo AND "
       "media_type='musicvideo'); "
+      "DELETE FROM settings WHERE idVersion IN "
+      "(SELECT idVersion FROM videoversion WHERE idMedia=old.idMVideo AND "
+      "media_type='musicvideo'); "
       "DELETE FROM videoversion WHERE idMedia=old.idMVideo AND media_type='musicvideo'; "
       "END");
   db.ExecuteQuery(
@@ -369,6 +377,9 @@ void CVideoDatabaseDDL::CreateTriggers(CDatabase& db)
       "(SELECT idVersion FROM videoversion WHERE idMedia=old.idEpisode AND "
       "media_type='episode'); "
       "DELETE FROM streamdetails WHERE idVersion IN "
+      "(SELECT idVersion FROM videoversion WHERE idMedia=old.idEpisode AND "
+      "media_type='episode'); "
+      "DELETE FROM settings WHERE idVersion IN "
       "(SELECT idVersion FROM videoversion WHERE idMedia=old.idEpisode AND "
       "media_type='episode'); "
       "DELETE FROM videoversion WHERE idMedia=old.idEpisode AND media_type='episode'; "
@@ -402,6 +413,7 @@ void CVideoDatabaseDDL::CreateTriggers(CDatabase& db)
       "AND old.media_type='movie'; "
       "DELETE FROM bookmark WHERE idVersion=old.idVersion; "
       "DELETE FROM streamdetails WHERE idVersion=old.idVersion; "
+      "DELETE FROM settings WHERE idVersion=old.idVersion; "
       "END");
 }
 
