@@ -1425,9 +1425,58 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->exec("ALTER TABLE streamdetails ADD iSource INTEGER DEFAULT 40");
     m_pDS->exec("ALTER TABLE streamdetails ADD iVersion INTEGER DEFAULT 1");
   }
+
+  if (iVersion < 149)
+  {
+    // idVersion uniquely identifies a (media item, file) pair so that one file can hold
+    // several media items (eg. multi-episode files) and one media item several files (versions)
+
+    // MySQL DDL is not transactional: a run interrupted between the drop of the old table
+    // and the rename leaves the rebuilt table as the only copy of the version links,
+    // which the retry must rename rather than discard
+    bool hasVersionTable{true};
+    try
+    {
+      m_pDS->query("SELECT 1 FROM videoversion WHERE 1=0");
+      m_pDS->close();
+    }
+    catch (...)
+    {
+      // only resume when the rebuilt table actually exists; a transient error on the
+      // probe must take the rebuild path and surface there
+      try
+      {
+        m_pDS->query("SELECT 1 FROM videoversion_new WHERE 1=0");
+        m_pDS->close();
+        hasVersionTable = false;
+      }
+      catch (...)
+      {
+      }
+    }
+
+    if (hasVersionTable)
+    {
+      m_pDS->exec("DROP TABLE IF EXISTS videoversion_new");
+      m_pDS->exec("CREATE TABLE videoversion_new "
+                  "(idVersion INTEGER PRIMARY KEY, idFile INTEGER, idMedia INTEGER, "
+                  "media_type TEXT, itemType INTEGER, idType INTEGER)");
+      m_pDS->exec("INSERT INTO videoversion_new (idFile, idMedia, media_type, itemType, idType) "
+                  "SELECT idFile, idMedia, media_type, itemType, idType FROM videoversion");
+      m_pDS->exec("DROP TABLE videoversion");
+    }
+    m_pDS->exec("ALTER TABLE videoversion_new RENAME TO videoversion");
+
+    // Remove rows whose owning movie or file no longer exists, so per-file version
+    // resolution cannot pick up a stale row
+    m_pDS->exec("DELETE FROM videoversion WHERE media_type='movie' "
+                "AND idMedia NOT IN (SELECT idMovie FROM movie)");
+    m_pDS->exec("DELETE FROM videoversion WHERE idFile NOT IN (SELECT idFile FROM files)");
+
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 148;
+  return 149;
 }
