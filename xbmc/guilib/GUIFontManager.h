@@ -25,6 +25,10 @@
 #include <vector>
 
 // Forward
+namespace ADDON
+{
+struct AddonEvent;
+}
 class CGUIFont;
 class CGUIFontTTF;
 class CXBMCTinyXML;
@@ -127,11 +131,20 @@ protected:
 
 private:
   void LoadUserFonts();
+  //! \param resolveIncludes run the active skin's include resolver over the file; never
+  //! for an add-on's Font.xml, whose includes would mutate the skin's global state
   bool LoadFontsFromFile(const std::string& fontsetFilePath,
                          const std::string& fontSet,
-                         std::string& firstFontset);
+                         std::string& firstFontset,
+                         bool resolveIncludes);
+  //! \brief Merge in fonts declared by enabled RESOURCE_FONT add-ons; the skin's win
+  void LoadAddonFonts(const std::string& fontSet);
+
+  void OnAddonEvent(const ADDON::AddonEvent& event);
 
   mutable CCriticalSection m_critSection;
+  bool m_addonEventsSubscribed{false};
+  std::set<std::string> m_addonFontIds;
   std::vector<FontMetadata> m_userFontsCache;
 };
 
