@@ -1,0 +1,158 @@
+# Kodi Media Center language file
+# Addon Name: TMDb TV Shows python3
+# Addon id: metadata.tvshows.tmdb.python3
+# Addon Provider: MikeSiLVO
+msgid ""
+msgstr ""
+"Project-Id-Version: metadata.tvshows.tmdb.python3\n"
+"Report-Msgid-Bugs-To: https://github.com/MikeSiLVO/metadata.tvshows.tmdb.python3\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: prs\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+# General settings
+msgctxt "#32000"
+msgid "Metadata language"
+msgstr ""
+
+msgctxt "#32001"
+msgid "Separate language for images"
+msgstr ""
+
+msgctxt "#32002"
+msgid "Image language"
+msgstr ""
+
+msgctxt "#32003"
+msgid "Certification country"
+msgstr ""
+
+msgctxt "#32004"
+msgid "Certification prefix"
+msgstr ""
+
+msgctxt "#32005"
+msgid "Prefix text"
+msgstr ""
+
+msgctxt "#32006"
+msgid "Use original title"
+msgstr ""
+
+msgctxt "#32007"
+msgid "Keywords as tags"
+msgstr ""
+
+msgctxt "#32008"
+msgid "Categorize backdrops with text as landscape"
+msgstr ""
+
+msgctxt "#32009"
+msgid "Categorize textless posters as key art"
+msgstr ""
+
+msgctxt "#32010"
+msgid "Country of origin in studio name"
+msgstr ""
+
+msgctxt "#32011"
+msgid "Trailers"
+msgstr ""
+
+msgctxt "#32016"
+msgid "Enable trailers"
+msgstr ""
+
+msgctxt "#32012"
+msgid "Trailer player"
+msgstr ""
+
+msgctxt "#32013"
+msgid "YouTube"
+msgstr ""
+
+msgctxt "#32014"
+msgid "Tubed"
+msgstr ""
+
+msgctxt "#32015"
+msgid "Prefer highest resolution"
+msgstr ""
+
+# General group headers
+msgctxt "#32020"
+msgid "Language"
+msgstr ""
+
+msgctxt "#32021"
+msgid "Certification"
+msgstr ""
+
+msgctxt "#32022"
+msgid "Content"
+msgstr ""
+
+# Artwork category
+msgctxt "#32050"
+msgid "Artwork"
+msgstr ""
+
+msgctxt "#32051"
+msgid "Preferences"
+msgstr ""
+
+# Ratings settings
+msgctxt "#32100"
+msgid "Ratings"
+msgstr ""
+
+msgctxt "#32101"
+msgid "Primary rating source"
+msgstr ""
+
+msgctxt "#32102"
+msgid "Also fetch IMDb rating"
+msgstr ""
+
+msgctxt "#32103"
+msgid "Also fetch Trakt rating"
+msgstr ""
+
+msgctxt "#32104"
+msgid "Also fetch TMDb rating"
+msgstr ""
+
+# Fanart.tv settings
+msgctxt "#32200"
+msgid "fanart.tv"
+msgstr ""
+
+msgctxt "#32201"
+msgid "Fetch art from fanart.tv"
+msgstr ""
+
+msgctxt "#32202"
+msgid "Personal client key"
+msgstr ""
+
+msgctxt "#32204"
+msgid "Prefer fanart.tv logos"
+msgstr ""
+
+msgctxt "#32205"
+msgid "Prefer fanart.tv artwork"
+msgstr ""
+
+# Advanced settings
+msgctxt "#32300"
+msgid "Advanced"
+msgstr ""
+
+msgctxt "#32301"
+msgid "Verbose logging"
+msgstr ""
