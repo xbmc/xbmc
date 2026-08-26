@@ -3016,6 +3016,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     int targetDbId{-1};
     for (const auto& item : blurayItems)
     {
+      const bool existed{m_database.GetMovieId(item->GetDynPath()) > 0};
       const int newMovieDbId{static_cast<int>(
           AddVideo(item.get(), scraper, bDirNames, useLocal, nullptr, false, ContentType::MOVIES))};
       if (newMovieDbId < 0)
@@ -3048,13 +3049,28 @@ CVideoInfoScanner::~CVideoInfoScanner()
       else if (result == VersionConversionResult::FAILED ||
                result == VersionConversionResult::CANCELLED)
       {
-        // Declined, or merging was not possible
-        m_database.DeleteMovie(newMovieDbId, DeleteMovieCascadeAction::ALL_ASSETS,
-                               DeleteMovieHashAction::HASH_DELETE,
-                               DeleteFileAction::DELETE_IF_UNUSED);
-        CLog::LogF(LOGDEBUG,
-                   "Not adding bluray playlist '{}' as a version - declined or merge not possible",
-                   CURL::GetRedacted(item->GetDynPath()));
+        // Declined, or merging was not possible. Adding a playlist can land on a movie already
+        // in the library instead of a new one, and removing that would take everything it
+        // already held with it, so only a movie created for this playlist and holding nothing
+        // else is removed.
+        CFileItemList assets;
+        m_database.GetVideoVersions(ContentToVideoDbType(ContentType::MOVIES), newMovieDbId, assets,
+                                    VideoAssetType::VERSION);
+        if (!existed && assets.Size() == 1 && assets[0]->GetDynPath() == item->GetDynPath())
+        {
+          m_database.DeleteMovie(newMovieDbId, DeleteMovieCascadeAction::ALL_ASSETS,
+                                 DeleteMovieHashAction::HASH_DELETE,
+                                 DeleteFileAction::DELETE_IF_UNUSED);
+          CLog::LogF(
+              LOGDEBUG,
+              "Not adding bluray playlist '{}' as a version - declined or merge not possible",
+              CURL::GetRedacted(item->GetDynPath()));
+        }
+        else
+          CLog::LogF(LOGDEBUG,
+                     "Bluray playlist '{}' was not added as a version - declined or merge not "
+                     "possible - and movie id {} it was added to is kept, holding {} version(s)",
+                     CURL::GetRedacted(item->GetDynPath()), newMovieDbId, assets.Size());
       }
     }
 
