@@ -497,7 +497,8 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
                     "      tvshow.idShow AS idShow,"
                     "      MAX(vv.lastPlayed) AS lastPlayed,"
                     "      NULLIF(COUNT(episode.c12), 0) AS totalCount,"
-                    "      COUNT(vv.playCount) AS watchedcount,"
+                    // NULLIF: watched means a positive count, not merely non-NULL
+                    "      COUNT(NULLIF(vv.playCount, 0)) AS watchedcount,"
                     "      NULLIF(COUNT(DISTINCT(episode.c12)), 0) AS totalSeasons, "
                     "      MAX(files.dateAdded) as dateAdded, "
                     "      COUNT(bookmark.type) AS inProgressCount "
@@ -573,7 +574,7 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
       "  tvshow_view.c%02d AS studio,"
       "  tvshow_view.c%02d AS mpaa,"
       "  count(DISTINCT episode.idEpisode) AS episodes,"
-      "  count(vv.playCount) AS playCount,"
+      "  count(NULLIF(vv.playCount, 0)) AS playCount,"
       "  min(episode.c%02d) AS aired, "
       "  count(bookmark.type) AS inProgressCount, "
       "  seasons.plot AS seasonPlot "
