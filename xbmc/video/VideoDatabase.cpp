@@ -13309,6 +13309,11 @@ bool CVideoDatabase::AddOrUpdateVideoVersion(VideoDbContentType itemType,
     // across media types
     const std::string versionPath{GetVersionFilePath(filePath)};
 
+    // a version is named by its vfs path when it has one, and by its file otherwise
+    const std::string named{versionPath.empty()
+                                ? StringUtils::Format("file id {}", idFile)
+                                : StringUtils::Format("'{}'", CURL::GetRedacted(versionPath))};
+
     if (!versionPath.empty())
       sql = PrepareSQL("SELECT 1 FROM videoversion WHERE filePath='%s' AND media_type='%s'",
                        versionPath.c_str(), mediaType.c_str());
@@ -13334,12 +13339,19 @@ bool CVideoDatabase::AddOrUpdateVideoVersion(VideoDbContentType itemType,
 
       m_pDS->exec(sql);
 
+      CLog::LogF(LOGDEBUG, "The {} version at {} now belongs to id {}", mediaType, named,
+                 dbIdSource);
+
       return true;
     }
 
     m_pDS->close();
 
-    AddVideoVersion(idFile, dbIdSource, mediaType, assetType, idVideoVersion, false, versionPath);
+    const int idVersion{AddVideoVersion(idFile, dbIdSource, mediaType, assetType, idVideoVersion,
+                                        false, versionPath)};
+
+    CLog::LogF(LOGDEBUG, "Added version id {} of {} id {} at {}", idVersion, mediaType,
+               dbIdSource, named);
 
     return true;
   }

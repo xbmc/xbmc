@@ -2194,7 +2194,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
         CLog::LogF(LOGDEBUG, "Filestream details already present for {}", CURL::GetRedacted(path));
     }
 
-    CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new item to {}:{}", content,
+    // an item already in the library is updated in place here, so this is not only an addition
+    CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding or updating item in {}:{}", content,
               CURL::GetRedacted(path));
     long lResult = -1;
 
