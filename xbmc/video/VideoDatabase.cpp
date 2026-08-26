@@ -6652,12 +6652,13 @@ int CVideoDatabase::GetPlayCount(int iFileId)
 
 int CVideoDatabase::GetPlayCount(int iFileId, int idVersion)
 {
+  // a version owns its watched state: NULL means unwatched, so versions sharing a
+  // physical file cannot inherit each other's state through the file
   if (idVersion >= 0)
   {
     const std::string value{GetSingleValue(
         PrepareSQL("SELECT playCount FROM videoversion WHERE idVersion=%i", idVersion))};
-    if (!value.empty())
-      return std::atoi(value.c_str());
+    return value.empty() ? 0 : std::atoi(value.c_str());
   }
   return GetPlayCount(iFileId);
 }
