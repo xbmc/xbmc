@@ -3364,13 +3364,27 @@ CVideoInfoScanner::~CVideoInfoScanner()
       else if (result == VersionConversionResult::FAILED ||
                result == VersionConversionResult::CANCELLED)
       {
-        // Declined, or merging was not possible
-        m_database.DeleteMovie(newMovieDbId, DeleteMovieCascadeAction::ALL_ASSETS,
-                               DeleteMovieHashAction::HASH_DELETE,
-                               DeleteFileAction::DELETE_IF_UNUSED);
-        CLog::LogF(LOGDEBUG,
-                   "Not adding bluray playlist '{}' as a version - declined or merge not possible",
-                   CURL::GetRedacted(item->GetDynPath()));
+        // Declined, or merging was not possible. Adding a playlist can land on a movie already
+        // in the library instead of a new one, and removing that would take everything it
+        // already held with it, so only a movie left holding this playlist alone is removed.
+        CFileItemList assets;
+        m_database.GetVideoVersions(ContentToVideoDbType(ContentType::MOVIES), newMovieDbId, assets,
+                                    VideoAssetType::VERSION);
+        if (assets.Size() == 1 && assets[0]->GetDynPath() == item->GetDynPath())
+        {
+          m_database.DeleteMovie(newMovieDbId, DeleteMovieCascadeAction::ALL_ASSETS,
+                                 DeleteMovieHashAction::HASH_DELETE,
+                                 DeleteFileAction::DELETE_IF_UNUSED);
+          CLog::LogF(
+              LOGDEBUG,
+              "Not adding bluray playlist '{}' as a version - declined or merge not possible",
+              CURL::GetRedacted(item->GetDynPath()));
+        }
+        else
+          CLog::LogF(LOGDEBUG,
+                     "Bluray playlist '{}' was not added as a version - declined or merge not "
+                     "possible - and movie id {} it was added to is kept, holding {} version(s)",
+                     CURL::GetRedacted(item->GetDynPath()), newMovieDbId, assets.Size());
       }
     }
 
