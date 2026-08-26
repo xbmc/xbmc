@@ -2869,10 +2869,10 @@
           </constraints>
           <dependencies>
             <dependency type="enable">
-              <or>
+              <and>
                 <condition on="property" name="SupportsScreenMove" />
                 <condition on="property" name="HasMultipleMonitors" />
-              </or>
+              </and>
             </dependency>
             <dependency type="update" setting="videoscreen.screenmode" />
           </dependencies>
