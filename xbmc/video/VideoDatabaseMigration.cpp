@@ -1619,8 +1619,8 @@ void CVideoDatabase::UpdateTables(int iVersion)
     // CURL) against this file's minimal-dependency policy: deriving physical
     // containers without the vfs machinery is not practical, and these mappings are
     // stable by design
-    m_pDS->query("SELECT f.idFile, f.strFilename, p.strPath, f.dateAdded "
-                 "FROM files f JOIN path p ON p.idPath=f.idPath "
+    m_pDS->query("SELECT f.idFile, f.strFilename, p.strPath, f.dateAdded, f.playCount, "
+                 "f.lastPlayed FROM files f JOIN path p ON p.idPath=f.idPath "
                  "WHERE p.strPath LIKE 'bluray://%' OR p.strPath LIKE 'rar://%' OR "
                  "p.strPath LIKE 'zip://%' OR p.strPath LIKE 'apk://%' OR "
                  "p.strPath LIKE 'archive://%'");
@@ -1630,13 +1630,17 @@ void CVideoDatabase::UpdateTables(int iVersion)
       int idFile;
       std::string vfsPath;
       std::string dateAdded;
+      std::string playCount;
+      std::string lastPlayed;
     };
     std::vector<VfsFile> vfsFiles;
     while (!m_pDS->eof())
     {
       vfsFiles.emplace_back(m_pDS->fv(0).get_asInt(),
                             m_pDS->fv(2).get_asString() + m_pDS->fv(1).get_asString(),
-                            m_pDS->fv(3).get_asString());
+                            m_pDS->fv(3).get_asString(),
+                            m_pDS->fv(4).get_isNull() ? "" : m_pDS->fv(4).get_asString(),
+                            m_pDS->fv(5).get_asString());
       m_pDS->next();
     }
     m_pDS->close();
@@ -1665,10 +1669,39 @@ void CVideoDatabase::UpdateTables(int iVersion)
       m_pDS2->close();
       if (idPhysFile < 0)
       {
-        m_pDS2->exec(PrepareSQL("INSERT INTO files (idFile, idPath, strFileName, dateAdded) "
-                                "VALUES(NULL, %i, '%s', '%s')",
-                                idPhysPath, physName.c_str(), file.dateAdded.c_str()));
+        // the container keeps the file-level watched state for file-level listings
+        std::string insertSql{PrepareSQL(
+            "INSERT INTO files (idFile, idPath, strFileName, dateAdded, playCount, lastPlayed) "
+            "VALUES(NULL, %i, '%s', '%s', ",
+            idPhysPath, physName.c_str(), file.dateAdded.c_str())};
+        insertSql +=
+            file.playCount.empty() ? "NULL" : PrepareSQL("%i", std::atoi(file.playCount.c_str()));
+        insertSql += ", ";
+        insertSql +=
+            file.lastPlayed.empty() ? "NULL" : PrepareSQL("'%s'", file.lastPlayed.c_str());
+        insertSql += ")";
+        m_pDS2->exec(insertSql);
         idPhysFile = static_cast<int>(m_pDS2->lastinsertid());
+      }
+      else if (!file.playCount.empty() || !file.lastPlayed.empty())
+      {
+        // several vfs rows can fold onto one container: any watched wins, latest play wins
+        std::string mergeSql{"UPDATE files SET "};
+        if (!file.playCount.empty())
+          mergeSql += PrepareSQL("playCount=CASE WHEN COALESCE(playCount, 0) < %i THEN %i ELSE "
+                                 "playCount END",
+                                 std::atoi(file.playCount.c_str()),
+                                 std::atoi(file.playCount.c_str()));
+        if (!file.lastPlayed.empty())
+        {
+          if (!file.playCount.empty())
+            mergeSql += ", ";
+          mergeSql += PrepareSQL("lastPlayed=CASE WHEN COALESCE(lastPlayed, '') < '%s' THEN '%s' "
+                                 "ELSE lastPlayed END",
+                                 file.lastPlayed.c_str(), file.lastPlayed.c_str());
+        }
+        mergeSql += PrepareSQL(" WHERE idFile=%i", idPhysFile);
+        m_pDS2->exec(mergeSql);
       }
 
       // the versions' watched state was already materialized from their files above
