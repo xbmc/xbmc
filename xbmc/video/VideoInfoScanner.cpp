@@ -3365,8 +3365,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
                result == VersionConversionResult::CANCELLED)
       {
         // Declined, or merging was not possible
-        if (m_database.DeleteMovie(newMovieDbId))
-          m_database.DeleteFile(item->GetVideoInfoTag()->m_iFileId);
+        m_database.DeleteMovie(newMovieDbId, DeleteMovieCascadeAction::ALL_ASSETS,
+                               DeleteMovieHashAction::HASH_DELETE,
+                               DeleteFileAction::DELETE_IF_UNUSED);
         CLog::LogF(LOGDEBUG,
                    "Not adding bluray playlist '{}' as a version - declined or merge not possible",
                    CURL::GetRedacted(item->GetDynPath()));

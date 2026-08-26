@@ -133,6 +133,19 @@ enum class DeleteMovieHashAction
   HASH_PRESERVE
 };
 
+/*!
+ * \brief Whether removing a media item also removes the file row it leaves behind.
+ * KEEP is for callers that remove an item only to add it back, such as a refresh: the file
+ * row carries state that must outlive the media item (date added, file-level watched state).
+ * DELETE_IF_UNUSED removes the row once nothing references it, so that removing an item from
+ * the library does not leave one behind.
+ */
+enum class DeleteFileAction
+{
+  KEEP,
+  DELETE_IF_UNUSED
+};
+
 #define COMPARE_PERCENTAGE     0.90f // 90%
 #define COMPARE_PERCENTAGE_MIN 0.50f // 50%
 
@@ -426,16 +439,22 @@ public:
    * \param[in] idMovie The id of the movie
    * \param[in] action Versions of the movie to be deleted
    * \param[in] hashAction Preserve or invalidate the hash of the movie path
+   * \param[in] fileAction Whether the file rows left unused by the removal are deleted
    * \return operation success. true for success, false for failure
    */
   bool DeleteMovie(int idMovie,
                    DeleteMovieCascadeAction action = DeleteMovieCascadeAction::ALL_ASSETS,
-                   DeleteMovieHashAction hashAction = DeleteMovieHashAction::HASH_DELETE);
+                   DeleteMovieHashAction hashAction = DeleteMovieHashAction::HASH_DELETE,
+                   DeleteFileAction fileAction = DeleteFileAction::KEEP);
   void DeleteTvShow(int idTvShow, bool bKeepId = false);
   void DeleteTvShow(const std::string& strPath);
   void DeleteSeason(int idSeason, bool bKeepId = false);
-  void DeleteEpisode(int idEpisode, bool bKeepId = false);
-  void DeleteMusicVideo(int idMusicVideo, bool bKeepId = false);
+  void DeleteEpisode(int idEpisode,
+                     bool bKeepId = false,
+                     DeleteFileAction fileAction = DeleteFileAction::KEEP);
+  void DeleteMusicVideo(int idMusicVideo,
+                        bool bKeepId = false,
+                        DeleteFileAction fileAction = DeleteFileAction::KEEP);
   void DeleteDetailsForTvShow(int idTvShow);
   void DeleteStreamDetails(int idFile, int idVersion = -1);
   void RemoveContentForPath(const std::string& strPath, CGUIDialogProgress* progress = nullptr);

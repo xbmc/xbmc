@@ -3169,23 +3169,55 @@ int CVideoDatabase::SetFileForUnknown(const std::string& fileAndPath, int oldIdF
 
 bool CVideoDatabase::DeleteFile(int idFile)
 {
+  if (idFile < 0)
+    return false;
+
   try
   {
-    // First check no other references to file (eg. other episodes)
+    // First check no other references to file (eg. other episodes, other versions of a movie
+    // or another media item sharing the physical container)
     std::string sql{PrepareSQL("SELECT idFile FROM movie WHERE idFile = %i "
                                "UNION SELECT idFile FROM episode WHERE idFile = %i "
+                               "UNION SELECT idFile FROM musicvideo WHERE idFile = %i "
                                "UNION SELECT idFile FROM videoversion WHERE idFile = %i",
-                               idFile, idFile, idFile)};
+                               idFile, idFile, idFile, idFile)};
     m_pDS->query(sql);
     const bool referenced{!m_pDS->eof()};
     m_pDS->close();
     if (!referenced)
     {
+      const int idPath{GetDbId(PrepareSQL("SELECT idPath FROM files WHERE idFile = %i", idFile))};
+
       // Associated bookmarks and streamdetails deleted by delete trigger
       sql = PrepareSQL("DELETE FROM files WHERE idFile = %i", idFile);
       m_pDS->exec(sql);
       // not LogF: winbase.h rewrites DeleteFile to DeleteFileW, and so the name it would print
       CLog::Log(LOGDEBUG, "CVideoDatabase::DeleteFile: Removed file id {}", idFile);
+
+      // The folder a container was found in - a disc's BDMV directory above all - is of no
+      // use once the last file in it is gone, and the cleaner only reaches such a row when
+      // its parent has gone too. A path describing a source, holding a scan hash, or named
+      // by another row is left alone; the same conditions the cleaner applies.
+      if (idPath >= 0)
+      {
+        sql = StringUtils::Format(
+            "DELETE FROM path WHERE idPath = {0} "
+            "AND (strContent IS NULL OR strContent = '') "
+            "AND (strSettings IS NULL OR strSettings = '') "
+            "AND (strHash IS NULL OR strHash = '') "
+            "AND (exclude IS NULL OR exclude != 1) "
+            "AND NOT EXISTS (SELECT 1 FROM files WHERE idPath = {0}) "
+            // the derived table keeps MySQL from rejecting the self reference (#5007)
+            "AND NOT EXISTS (SELECT 1 FROM (SELECT idParentPath FROM path) AS child "
+            "WHERE child.idParentPath = {0}) "
+            "AND NOT EXISTS (SELECT 1 FROM tvshowlinkpath WHERE idPath = {0}) "
+            "AND NOT EXISTS (SELECT 1 FROM movie WHERE c{1:02} = {0}) "
+            "AND NOT EXISTS (SELECT 1 FROM episode WHERE c{2:02} = {0}) "
+            "AND NOT EXISTS (SELECT 1 FROM musicvideo WHERE c{3:02} = {0})",
+            idPath, VIDEODB_ID_PARENTPATHID, VIDEODB_ID_EPISODE_PARENTPATHID,
+            VIDEODB_ID_MUSICVIDEO_PARENTPATHID);
+        m_pDS->exec(sql);
+      }
     }
     else
       CLog::Log(LOGDEBUG, "CVideoDatabase::DeleteFile: File id {} is still referenced - kept",
@@ -4249,7 +4281,8 @@ void CVideoDatabase::DeleteBookMarkForEpisode(const CVideoInfoTag& tag)
 //********************************************************************************************************************************
 bool CVideoDatabase::DeleteMovie(int idMovie,
                                  DeleteMovieCascadeAction ca /* = ALL_ASSETS */,
-                                 DeleteMovieHashAction hashAction /* = HASH_DELETE */)
+                                 DeleteMovieHashAction hashAction /* = HASH_DELETE */,
+                                 DeleteFileAction fileAction /* = KEEP */)
 {
   if (idMovie < 0)
     return false;
@@ -4322,6 +4355,10 @@ bool CVideoDatabase::DeleteMovie(int idMovie,
     CLog::LogF(LOGDEBUG, "Removed movie id {} (file id {}) and its {} asset(s), {} of them on "
                          "files of their own",
                idMovie, idFile, assetsOnOwnFile + assetsOnOtherFiles, assetsOnOtherFiles);
+
+    // the default version's rows went with the movie; the other assets pruned their own files
+    if (fileAction == DeleteFileAction::DELETE_IF_UNUSED)
+      DeleteFile(idFile);
 
     //! @todo move this below CommitTransaction() once UPnP doesn't rely on this anymore
     AnnounceRemove(MediaTypeMovie, idMovie);
@@ -4438,7 +4475,9 @@ void CVideoDatabase::DeleteSeason(int idSeason, bool bKeepId /* = false */)
   }
 }
 
-void CVideoDatabase::DeleteEpisode(int idEpisode, bool bKeepId /* = false */)
+void CVideoDatabase::DeleteEpisode(int idEpisode,
+                                   bool bKeepId /* = false */,
+                                   DeleteFileAction fileAction /* = KEEP */)
 {
   if (idEpisode < 0)
     return;
@@ -4469,6 +4508,9 @@ void CVideoDatabase::DeleteEpisode(int idEpisode, bool bKeepId /* = false */)
       m_pDS->exec(strSQL);
 
       CLog::LogF(LOGDEBUG, "Removed episode id {} (file id {})", idEpisode, idFile);
+
+      if (fileAction == DeleteFileAction::DELETE_IF_UNUSED)
+        DeleteFile(idFile);
     }
 
   }
@@ -4478,7 +4520,9 @@ void CVideoDatabase::DeleteEpisode(int idEpisode, bool bKeepId /* = false */)
   }
 }
 
-void CVideoDatabase::DeleteMusicVideo(int idMVideo, bool bKeepId /* = false */)
+void CVideoDatabase::DeleteMusicVideo(int idMVideo,
+                                      bool bKeepId /* = false */,
+                                      DeleteFileAction fileAction /* = KEEP */)
 {
   if (idMVideo < 0)
     return;
@@ -4507,6 +4551,9 @@ void CVideoDatabase::DeleteMusicVideo(int idMVideo, bool bKeepId /* = false */)
       m_pDS->exec(strSQL);
 
       CLog::LogF(LOGDEBUG, "Removed music video id {} (file id {})", idMVideo, idFile);
+
+      if (fileAction == DeleteFileAction::DELETE_IF_UNUSED)
+        DeleteFile(idFile);
     }
 
     //! @todo move this below CommitTransaction() once UPnP doesn't rely on this anymore
@@ -6461,12 +6508,13 @@ void CVideoDatabase::RemoveContentForPath(const std::string& strPath,
           ConstructPath(strMoviePath, path, strFileName);
           const auto movieId = GetMovieId(strMoviePath);
           if (movieId > 0)
-            DeleteMovie(movieId);
+            DeleteMovie(movieId, DeleteMovieCascadeAction::ALL_ASSETS,
+                        DeleteMovieHashAction::HASH_DELETE, DeleteFileAction::DELETE_IF_UNUSED);
           else
           {
             const auto musicvideoId = GetMusicVideoId(strMoviePath);
             if (musicvideoId > 0)
-              DeleteMusicVideo(musicvideoId);
+              DeleteMusicVideo(musicvideoId, false, DeleteFileAction::DELETE_IF_UNUSED);
           }
           m_pDS2->next();
           if (m_pDS2->eof() && !bMvidsChecked)
@@ -13442,6 +13490,10 @@ bool CVideoDatabase::DeleteVideoAsset(int idVersion)
 
     CLog::LogF(LOGDEBUG, "Removed version id {} of {} id {} (file id {})", idVersion, mediaType,
                idMedia, idFile);
+
+    // an asset is always a genuine removal, so its file goes with it unless shared
+    if (idFile >= 0)
+      DeleteFile(idFile);
 
     if (!inTransaction)
       CommitTransaction();

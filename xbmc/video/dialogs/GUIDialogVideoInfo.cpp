@@ -1387,17 +1387,22 @@ bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const std::shared_ptr<CFil
   switch (type)
   {
     case VideoDbContentType::MOVIES:
-      if (!database.DeleteMovie(item->GetVideoInfoTag()->m_iDbId))
+      if (!database.DeleteMovie(item->GetVideoInfoTag()->m_iDbId,
+                                DeleteMovieCascadeAction::ALL_ASSETS,
+                                DeleteMovieHashAction::HASH_DELETE,
+                                DeleteFileAction::DELETE_IF_UNUSED))
         return false;
       break;
     case VideoDbContentType::EPISODES:
-      database.DeleteEpisode(item->GetVideoInfoTag()->m_iDbId);
+      database.DeleteEpisode(item->GetVideoInfoTag()->m_iDbId, false,
+                             DeleteFileAction::DELETE_IF_UNUSED);
       break;
     case VideoDbContentType::TVSHOWS:
       database.DeleteTvShow(item->GetVideoInfoTag()->m_iDbId);
       break;
     case VideoDbContentType::MUSICVIDEOS:
-      database.DeleteMusicVideo(item->GetVideoInfoTag()->m_iDbId);
+      database.DeleteMusicVideo(item->GetVideoInfoTag()->m_iDbId, false,
+                                DeleteFileAction::DELETE_IF_UNUSED);
       break;
     case VideoDbContentType::MOVIE_SETS:
       database.DeleteSet(item->GetVideoInfoTag()->m_iDbId);

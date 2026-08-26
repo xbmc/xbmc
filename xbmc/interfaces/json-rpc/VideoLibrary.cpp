@@ -1245,15 +1245,20 @@ JSONRPC_STATUS CVideoLibrary::RemoveVideo(const CVariant &parameterObject)
 
   if (parameterObject.isMember("movieid"))
   {
-    if (!videodatabase.DeleteMovie((int)parameterObject["movieid"].asInteger()))
+    if (!videodatabase.DeleteMovie(static_cast<int>(parameterObject["movieid"].asInteger()),
+                                   DeleteMovieCascadeAction::ALL_ASSETS,
+                                   DeleteMovieHashAction::HASH_DELETE,
+                                   DeleteFileAction::DELETE_IF_UNUSED))
       return InternalError;
   }
   else if (parameterObject.isMember("tvshowid"))
     videodatabase.DeleteTvShow((int)parameterObject["tvshowid"].asInteger());
   else if (parameterObject.isMember("episodeid"))
-    videodatabase.DeleteEpisode((int)parameterObject["episodeid"].asInteger());
+    videodatabase.DeleteEpisode(static_cast<int>(parameterObject["episodeid"].asInteger()), false,
+                                DeleteFileAction::DELETE_IF_UNUSED);
   else if (parameterObject.isMember("musicvideoid"))
-    videodatabase.DeleteMusicVideo((int)parameterObject["musicvideoid"].asInteger());
+    videodatabase.DeleteMusicVideo(static_cast<int>(parameterObject["musicvideoid"].asInteger()),
+                                   false, DeleteFileAction::DELETE_IF_UNUSED);
 
   CJSONRPCUtils::NotifyItemUpdated();
   return ACK;
