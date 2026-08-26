@@ -8,9 +8,12 @@
 
 #include "DVDOverlayCodecFFmpeg.h"
 
+#include "DVDOverlayCodecFFmpegUtils.h"
 #include "DVDOverlayImage.h"
+#include "DVDOverlayStereoUtils.h"
 #include "DVDStreamInfo.h"
 #include "ServiceBroker.h"
+#include "cores/DataCacheCore.h"
 #include "cores/FFmpeg.h"
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
@@ -18,6 +21,40 @@
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
+
+#include <cstddef>
+#include <utility>
+
+using namespace KODI::VIDEO::SUBTITLES;
+
+namespace
+{
+std::shared_ptr<CDVDOverlayImage> CropStereoView(const CDVDOverlayImage& source,
+                                                 BitmapStereoLayout layout,
+                                                 DVDOverlayStereoView view)
+{
+  BitmapSubtitle bitmap;
+  bitmap.x = source.x;
+  bitmap.y = source.y;
+  bitmap.width = source.width;
+  bitmap.height = source.height;
+  bitmap.sourceWidth = source.source_width;
+  bitmap.sourceHeight = source.source_height;
+
+  const BitmapStereoCrop crop = GetStereoCrop(bitmap, layout, view == DVDOverlayStereoView::RIGHT);
+  if (crop.IsEmpty())
+    return nullptr;
+
+  auto cropped = std::make_shared<CDVDOverlayImage>(source, crop.packedX, crop.packedY, crop.width,
+                                                    crop.height);
+  cropped->x = crop.x;
+  cropped->y = crop.y;
+  cropped->source_width = crop.sourceWidth;
+  cropped->source_height = crop.sourceHeight;
+  cropped->m_stereoView = view;
+  return cropped;
+}
+} // unnamed namespace
 
 CDVDOverlayCodecFFmpeg::CDVDOverlayCodecFFmpeg() : CDVDOverlayCodec("FFmpeg Subtitle Decoder")
 {
@@ -187,6 +224,7 @@ OverlayMessage CDVDOverlayCodecFFmpeg::Decode(DemuxPacket* pPacket)
     m_StopTime += pts_offset;
 
   m_SubtitleIndex = 0;
+  m_pendingOverlay.reset();
 
   return OverlayMessage::OC_OVERLAY;
 }
@@ -200,12 +238,18 @@ void CDVDOverlayCodecFFmpeg::Flush()
 {
   avsubtitle_free(&m_Subtitle);
   m_SubtitleIndex = -1;
+  m_pendingOverlay.reset();
 
   avcodec_flush_buffers(m_pCodecContext);
 }
 
 std::shared_ptr<CDVDOverlay> CDVDOverlayCodecFFmpeg::GetOverlay()
 {
+  if (m_pendingOverlay)
+  {
+    return std::exchange(m_pendingOverlay, nullptr);
+  }
+
   if(m_SubtitleIndex<0)
     return nullptr;
 
@@ -248,23 +292,6 @@ std::shared_ptr<CDVDOverlay> CDVDOverlayCodecFFmpeg::GetOverlay()
       }
     }
 
-    RenderStereoMode render_stereo_mode =
-        CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode();
-    if (render_stereo_mode != RenderStereoMode::OFF &&
-        render_stereo_mode != RenderStereoMode::HARDWAREBASED)
-    {
-      if (rect.h > m_height / 2)
-      {
-        m_height /= 2;
-        rect.h /= 2;
-      }
-      else if (rect.w > m_width / 2)
-      {
-        m_width /= 2;
-        rect.w /= 2;
-      }
-    }
-
     auto overlay = std::make_shared<CDVDOverlayImage>();
 
     overlay->iPTSStartTime = m_StartTime;
@@ -293,6 +320,51 @@ std::shared_ptr<CDVDOverlay> CDVDOverlayCodecFFmpeg::GetOverlay()
 
     for (int i = 0; i < rect.nb_colors; i++)
       overlay->palette[i] = Endian_SwapLE32(((uint32_t *)rect.data[1])[i]);
+
+    // CProcessInfo would be the natural owner of the source stereo layout, but it is not
+    // accessible from an overlay codec. DataCacheCore provides the video player's thread-safe
+    // copy instead.
+    const BitmapStereoLayout layout =
+        GetBitmapStereoLayout(CServiceBroker::GetDataCacheCore().GetVideoStereoMode());
+    const RenderStereoMode renderMode =
+        CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode();
+    if (IsStereoscopicOutputMode(renderMode) && layout != BitmapStereoLayout::MONO &&
+        !overlay->palette.empty())
+    {
+      BitmapSubtitle bitmap;
+      bitmap.pixels = overlay->pixels.data();
+      bitmap.stride = overlay->linesize;
+      bitmap.x = overlay->x;
+      bitmap.y = overlay->y;
+      bitmap.width = overlay->width;
+      bitmap.height = overlay->height;
+      bitmap.sourceWidth = overlay->source_width;
+      bitmap.sourceHeight = overlay->source_height;
+      for (std::size_t i = 0; i < overlay->palette.size() && i < bitmap.palette.size(); ++i)
+      {
+        const uint32_t color = overlay->palette[i];
+        if (((color >> PIXEL_ASHIFT) & 0xff) != 0)
+          bitmap.palette[i] = color;
+      }
+
+      if (IsStereoBitmap(bitmap, layout))
+      {
+        auto left = CropStereoView(*overlay, layout, DVDOverlayStereoView::LEFT);
+        auto right = CropStereoView(*overlay, layout, DVDOverlayStereoView::RIGHT);
+        if (left && right)
+        {
+          if (!m_loggedStereoSplit)
+          {
+            m_loggedStereoSplit = true;
+            CLog::Log(LOGDEBUG, "{} - splitting {} packed stereoscopic subtitle", __FUNCTION__,
+                      layout == BitmapStereoLayout::LEFT_RIGHT ? "side-by-side" : "top-and-bottom");
+          }
+          m_pendingOverlay = std::move(right);
+          m_SubtitleIndex++;
+          return left;
+        }
+      }
+    }
 
     m_SubtitleIndex++;
 

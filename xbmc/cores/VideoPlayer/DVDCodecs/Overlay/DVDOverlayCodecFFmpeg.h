@@ -15,6 +15,8 @@ extern "C" {
 #include <libavutil/avutil.h>
 }
 
+#include <memory>
+
 class CDVDOverlaySpu;
 class CDVDOverlayText;
 
@@ -38,4 +40,6 @@ private:
 
   int             m_width;
   int             m_height;
+  std::shared_ptr<CDVDOverlay> m_pendingOverlay;
+  bool m_loggedStereoSplit{false};
 };
