@@ -10,6 +10,7 @@
 
 /* to use the same as player */
 #include "../VideoPlayer/DVDClock.h"
+#include "../VideoPlayer/VideoRenderers/VideoShaders/ToneMappers.h"
 #include "RenderFactory.h"
 #include "RenderFlags.h"
 #include "ServiceBroker.h"
@@ -236,6 +237,14 @@ bool CRenderManager::Configure()
     m_dvdClock.SetVsyncAdjust(0);
     m_overlays.Reset();
     m_overlays.SetStereoMode(m_picture.stereoMode);
+
+    // configure the HDR nits value to tonemap HDR PGS subtitles to SDR
+    const float nits = (m_picture.color_transfer == AVCOL_TRC_SMPTE2084)
+                           ? CToneMappers::GetLuminanceValue(
+                                 m_picture.hasDisplayMetadata, m_picture.displayMetadata,
+                                 m_picture.hasLightMetadata, m_picture.lightMetadata)
+                           : 0.0f;
+    CServiceBroker::GetWinSystem()->GetGfxContext().SetHdrMaxNits(nits);
 
     m_renderState = STATE_CONFIGURED;
 

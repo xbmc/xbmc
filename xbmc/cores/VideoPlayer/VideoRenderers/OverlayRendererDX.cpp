@@ -227,7 +227,23 @@ COverlayImageDX::COverlayImageDX(const CDVDOverlayImage& o, CRect& rSource)
   {
     std::vector<uint32_t> rgba(o.width * o.height);
     m_pma = !!USE_PREMULTIPLIED_ALPHA;
-    convert_rgba(o, m_pma, rgba);
+
+    std::vector<uint32_t> convertedPalette;
+    const std::vector<uint32_t>* paletteOverride = nullptr;
+
+    // convert HDR PGS subtitles to SDR when video output is not PQ
+    if (o.isPgs && !DX::Windowing()->IsTransferPQ())
+    {
+      const float nits = CServiceBroker::GetWinSystem()->GetGfxContext().GetHdrMaxNits();
+      if (nits > 100.0f)
+      {
+        convertedPalette = o.palette;
+        OVERLAY::ConvertPgsPaletteToSdr(convertedPalette, nits, 100.0f);
+        paletteOverride = &convertedPalette;
+      }
+    }
+
+    convert_rgba(o, m_pma, rgba, paletteOverride);
     Load(rgba.data(), o.width, o.height, o.width * 4);
   }
 

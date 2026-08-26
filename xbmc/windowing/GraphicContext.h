@@ -219,6 +219,9 @@ public:
   void SetTransferPQ(bool PQ) { m_isTransferPQ = PQ; }
   bool IsTransferPQ() const { return m_isTransferPQ; }
 
+  void SetHdrMaxNits(float nits) { m_HdrMaxNits = nits; }
+  float GetHdrMaxNits() const { return m_HdrMaxNits; }
+
 protected:
 
   void UpdateCameraPosition(const CPoint &camera, const float &factor);
@@ -273,4 +276,5 @@ protected:
   bool m_isTransferPQ{false};
   RENDER_ORDER m_renderOrder{RENDER_ORDER_ALL_BACK_TO_FRONT};
   uint32_t m_layer{2};
+  float m_HdrMaxNits{0.0f};
 };

@@ -44,6 +44,7 @@ public:
     height = sub_h;
     source_width = src.source_width;
     source_height = src.source_height;
+    isPgs = src.isPgs;
 
     pixels.resize(sub_h * linesize);
 
@@ -83,4 +84,5 @@ public:
   int height{0};
   int source_width{0};
   int source_height{0};
+  bool isPgs{false};
 };

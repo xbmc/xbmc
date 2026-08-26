@@ -36,7 +36,10 @@ struct SQuads
   std::vector<SQuad> quad;
 };
 
-void convert_rgba(const CDVDOverlayImage& o, bool mergealpha, std::vector<uint32_t>& rgba);
+void convert_rgba(const CDVDOverlayImage& o,
+                  bool mergealpha,
+                  std::vector<uint32_t>& rgba,
+                  const std::vector<uint32_t>* paletteOverride = nullptr);
 void convert_rgba(const CDVDOverlaySpu& o,
                   bool mergealpha,
                   int& min_x,
@@ -46,5 +49,6 @@ void convert_rgba(const CDVDOverlaySpu& o,
                   std::vector<uint32_t>& rgba);
 bool convert_quad(ASS_Image* images, SQuads& quads, int max_x);
 int GetStereoscopicDepth();
+void ConvertPgsPaletteToSdr(std::vector<uint32_t>& palette, float hdrWhiteNits, float sdrWhiteNits);
 
 } // namespace OVERLAY
