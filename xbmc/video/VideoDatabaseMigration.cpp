@@ -1628,14 +1628,6 @@ void CVideoDatabase::UpdateTables(int iVersion)
                 "vv.media_type='movie' LIMIT 1) "
                 "WHERE media_type='videoversion'");
 
-    // Remove duplicate resume points left by updates that stamped the unowned fallback
-    // row of a file after the version had already received its own copy
-    m_pDS->exec(PrepareSQL(
-        "DELETE FROM bookmark WHERE type=%i AND idBookmark NOT IN "
-        "(SELECT idBookmark FROM (SELECT MIN(idBookmark) AS idBookmark FROM bookmark "
-        "WHERE type=%i GROUP BY idFile, idVersion) AS sub)",
-        CBookmark_RESUME, CBookmark_RESUME));
-
     // Collapse vfs file rows onto their physical containers: the vfs path of each media
     // item moves to its version row and the file's watched state to the version columns,
     // so one disc or archive is one file regardless of how many media items it holds. An
@@ -1644,8 +1636,8 @@ void CVideoDatabase::UpdateTables(int iVersion)
     // CURL) against this file's minimal-dependency policy: deriving physical
     // containers without the vfs machinery is not practical, and these mappings are
     // stable by design
-    m_pDS->query("SELECT f.idFile, f.strFilename, p.strPath, f.playCount, f.lastPlayed, "
-                 "f.dateAdded FROM files f JOIN path p ON p.idPath=f.idPath "
+    m_pDS->query("SELECT f.idFile, f.strFilename, p.strPath, f.dateAdded "
+                 "FROM files f JOIN path p ON p.idPath=f.idPath "
                  "WHERE (p.strPath LIKE 'bluray://%' OR ((p.strPath LIKE 'rar://%' OR "
                  "p.strPath LIKE 'zip://%' OR p.strPath LIKE 'apk://%' OR "
                  "p.strPath LIKE 'archive://%') AND "
@@ -1656,8 +1648,6 @@ void CVideoDatabase::UpdateTables(int iVersion)
     {
       int idFile;
       std::string vfsPath;
-      std::string playCount;
-      std::string lastPlayed;
       std::string dateAdded;
     };
     std::vector<VfsFile> vfsFiles;
@@ -1665,8 +1655,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
     {
       vfsFiles.emplace_back(m_pDS->fv(0).get_asInt(),
                             m_pDS->fv(2).get_asString() + m_pDS->fv(1).get_asString(),
-                            m_pDS->fv(3).get_isNull() ? "" : m_pDS->fv(3).get_asString(),
-                            m_pDS->fv(4).get_asString(), m_pDS->fv(5).get_asString());
+                            m_pDS->fv(3).get_asString());
       m_pDS->next();
     }
     m_pDS->close();
@@ -1706,17 +1695,9 @@ void CVideoDatabase::UpdateTables(int iVersion)
         idPhysFile = static_cast<int>(m_pDS2->lastinsertid());
       }
 
-      // fold the file's watched state into its versions without overwriting their own
-      std::string versionSql{PrepareSQL("UPDATE videoversion SET idFile=%i, filePath='%s'",
-                                        idPhysFile, file.vfsPath.c_str())};
-      if (!file.playCount.empty())
-        versionSql += PrepareSQL(", playCount=COALESCE(playCount, %i)",
-                                 std::atoi(file.playCount.c_str()));
-      if (!file.lastPlayed.empty())
-        versionSql +=
-            PrepareSQL(", lastPlayed=COALESCE(lastPlayed, '%s')", file.lastPlayed.c_str());
-      versionSql += PrepareSQL(" WHERE idFile=%i", file.idFile);
-      m_pDS2->exec(versionSql);
+      // the versions' watched state was already materialized from their files above
+      m_pDS2->exec(PrepareSQL("UPDATE videoversion SET idFile=%i, filePath='%s' WHERE idFile=%i",
+                              idPhysFile, file.vfsPath.c_str(), file.idFile));
 
       m_pDS2->exec(
           PrepareSQL("UPDATE bookmark SET idFile=%i WHERE idFile=%i", idPhysFile, file.idFile));
@@ -1741,8 +1722,15 @@ void CVideoDatabase::UpdateTables(int iVersion)
                                 file.idFile));
       m_pDS2->exec(
           PrepareSQL("UPDATE settings SET idFile=%i WHERE idFile=%i", idPhysFile, file.idFile));
-      m_pDS2->exec(
-          PrepareSQL("UPDATE stacktimes SET idFile=%i WHERE idFile=%i", idPhysFile, file.idFile));
+      // stacktimes is unique on idFile; a container cannot receive a second row
+      m_pDS2->query(PrepareSQL("SELECT 1 FROM stacktimes WHERE idFile=%i", idPhysFile));
+      const bool physHasStackTimes{m_pDS2->num_rows() > 0};
+      m_pDS2->close();
+      if (physHasStackTimes)
+        m_pDS2->exec(PrepareSQL("DELETE FROM stacktimes WHERE idFile=%i", file.idFile));
+      else
+        m_pDS2->exec(PrepareSQL("UPDATE stacktimes SET idFile=%i WHERE idFile=%i", idPhysFile,
+                                file.idFile));
       m_pDS2->exec(
           PrepareSQL("UPDATE movie SET idFile=%i WHERE idFile=%i", idPhysFile, file.idFile));
       m_pDS2->exec(
@@ -1764,6 +1752,23 @@ void CVideoDatabase::UpdateTables(int iVersion)
                   "AND NOT EXISTS (SELECT 1 FROM movie WHERE movie.c23 = path.idPath) "
                   "AND NOT EXISTS (SELECT 1 FROM episode WHERE episode.c19 = path.idPath) "
                   "AND NOT EXISTS (SELECT 1 FROM musicvideo WHERE musicvideo.c14 = path.idPath)");
+
+    // Unowned state from a collapsed playlist cannot be attributed to a library version.
+    m_pDS->exec(PrepareSQL(
+        "DELETE FROM bookmark WHERE idVersion IS NULL AND type=%i "
+        "AND idFile IN (SELECT idFile FROM videoversion)",
+        CBookmark_RESUME));
+    m_pDS->exec("DELETE FROM streamdetails WHERE idVersion IS NULL "
+                "AND idFile IN (SELECT idFile FROM videoversion)");
+
+    // Remove duplicate resume points: updates that stamped the unowned fallback row of a
+    // file after the version had already received its own copy, and unowned rows folded
+    // together by the collapse
+    m_pDS->exec(PrepareSQL(
+        "DELETE FROM bookmark WHERE type=%i AND idBookmark NOT IN "
+        "(SELECT idBookmark FROM (SELECT MIN(idBookmark) AS idBookmark FROM bookmark "
+        "WHERE type=%i GROUP BY idFile, idVersion) AS sub)",
+        CBookmark_RESUME, CBookmark_RESUME));
   }
 }
 
