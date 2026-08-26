@@ -2358,7 +2358,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
       if ((libraryImport || m_advancedSettings->m_bVideoLibraryImportResumePoint) &&
           movieDetails.GetResumePoint().IsSet())
-        m_database.AddBookMarkToFile(path, movieDetails.GetResumePoint(), CBookmark::RESUME);
+        m_database.AddBookMarkToFile(path, movieDetails.GetResumePoint(), CBookmark::RESUME,
+                                     m_database.GetVideoVersionId(movieDetails.m_iFileId,
+                                                                  movieDetails.m_iDbId,
+                                                                  movieDetails.m_type));
     }
 
     m_database.Close();

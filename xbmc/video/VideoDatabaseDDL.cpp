@@ -50,7 +50,7 @@ void CVideoDatabaseDDL::CreateTables(CDatabase& db)
   db.ExecuteQuery(
       "CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, "
       "timeInSeconds double, totalTimeInSeconds double, thumbNailImage text, player text, "
-      "playerState text, type integer)\n");
+      "playerState text, type integer, idVersion integer)\n");
 
   CLog::Log(LOGINFO, "create settings table");
   db.ExecuteQuery(
@@ -239,6 +239,7 @@ void CVideoDatabaseDDL::CreateIndices(CDatabase& db)
 
   CLog::Log(LOGINFO, "Creating video database indices");
   db.ExecuteQuery("CREATE INDEX ix_bookmark ON bookmark (idFile, type)");
+  db.ExecuteQuery("CREATE INDEX ix_bookmark2 ON bookmark (idVersion, type)");
   db.ExecuteQuery("CREATE UNIQUE INDEX ix_settings ON settings ( idFile )\n");
   db.ExecuteQuery("CREATE UNIQUE INDEX ix_stacktimes ON stacktimes ( idFile )\n");
   db.ExecuteQuery("CREATE INDEX ix_path ON path ( strPath(255) )");
@@ -316,6 +317,11 @@ void CVideoDatabaseDDL::CreateTriggers(CDatabase& db)
                   "DELETE FROM tag_link WHERE media_id=old.idMovie AND media_type='movie'; "
                   "DELETE FROM rating WHERE media_id=old.idMovie AND media_type='movie'; "
                   "DELETE FROM uniqueid WHERE media_id=old.idMovie AND media_type='movie'; "
+                  // SQLite does not fire delete_videoversion for rows deleted inside a trigger,
+                  // so the versions' dependents are cleaned here
+                  "DELETE FROM bookmark WHERE idVersion IN "
+                  "(SELECT idVersion FROM videoversion WHERE idFile=old.idFile AND "
+                  "idMedia=old.idMovie AND media_type='movie'); "
                   "DELETE FROM videoversion "
                   "WHERE idFile=old.idFile AND idMedia=old.idMovie AND media_type='movie'; "
                   "END");
@@ -341,6 +347,11 @@ void CVideoDatabaseDDL::CreateTriggers(CDatabase& db)
       "DELETE FROM art WHERE media_id=old.idMVideo AND media_type='musicvideo'; "
       "DELETE FROM tag_link WHERE media_id=old.idMVideo AND media_type='musicvideo'; "
       "DELETE FROM uniqueid WHERE media_id=old.idMVideo AND media_type='musicvideo'; "
+      // SQLite does not fire delete_videoversion for rows deleted inside a trigger,
+      // so the versions' dependents are cleaned here
+      "DELETE FROM bookmark WHERE idVersion IN "
+      "(SELECT idVersion FROM videoversion WHERE idMedia=old.idMVideo AND "
+      "media_type='musicvideo'); "
       "DELETE FROM videoversion WHERE idMedia=old.idMVideo AND media_type='musicvideo'; "
       "END");
   db.ExecuteQuery(
@@ -351,6 +362,11 @@ void CVideoDatabaseDDL::CreateTriggers(CDatabase& db)
       "DELETE FROM art WHERE media_id=old.idEpisode AND media_type='episode'; "
       "DELETE FROM rating WHERE media_id=old.idEpisode AND media_type='episode'; "
       "DELETE FROM uniqueid WHERE media_id=old.idEpisode AND media_type='episode'; "
+      // SQLite does not fire delete_videoversion for rows deleted inside a trigger,
+      // so the versions' dependents are cleaned here
+      "DELETE FROM bookmark WHERE idVersion IN "
+      "(SELECT idVersion FROM videoversion WHERE idMedia=old.idEpisode AND "
+      "media_type='episode'); "
       "DELETE FROM videoversion WHERE idMedia=old.idEpisode AND media_type='episode'; "
       "END");
   db.ExecuteQuery("CREATE TRIGGER delete_season AFTER DELETE ON seasons FOR EACH ROW BEGIN "
@@ -382,6 +398,7 @@ void CVideoDatabaseDDL::CreateTriggers(CDatabase& db)
       "CREATE TRIGGER delete_videoversion AFTER DELETE ON videoversion FOR EACH ROW BEGIN "
       "DELETE FROM art WHERE media_id=old.idFile AND media_type='videoversion' "
       "AND old.media_type='movie'; "
+      "DELETE FROM bookmark WHERE idVersion=old.idVersion; "
       "END");
 }
 
@@ -421,8 +438,10 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
       "    tvshow.idShow=episode.idShow"
       "  JOIN path ON"
       "    files.idPath=path.idPath"
+      "  LEFT JOIN videoversion vv ON"
+      "    vv.idFile=episode.idFile AND vv.idMedia=episode.idEpisode AND vv.media_type='episode'"
       "  LEFT JOIN bookmark ON"
-      "    bookmark.idFile=episode.idFile AND bookmark.type=1"
+      "    bookmark.idVersion=vv.idVersion AND bookmark.type=1"
       "  LEFT JOIN rating ON"
       "    rating.rating_id=episode.c%02d"
       "  LEFT JOIN uniqueid ON"
@@ -446,8 +465,11 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
                     "        episode.idShow=tvshow.idShow"
                     "      LEFT JOIN files ON"
                     "        files.idFile=episode.idFile "
+                    "      LEFT JOIN videoversion vv ON"
+                    "        vv.idFile=episode.idFile AND vv.idMedia=episode.idEpisode AND"
+                    "        vv.media_type='episode' "
                     "      LEFT JOIN bookmark ON"
-                    "        bookmark.idFile=files.idFile AND bookmark.type=1 "
+                    "        bookmark.idVersion=vv.idVersion AND bookmark.type=1 "
                     "GROUP BY tvshow.idShow");
   db.ExecuteQuery(tvshowcounts);
 
@@ -521,8 +543,11 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
       "    episode.idShow = seasons.idShow AND episode.c%02d = seasons.season"
       "  JOIN files ON"
       "    files.idFile = episode.idFile "
+      "  LEFT JOIN videoversion vv ON"
+      "    vv.idFile = episode.idFile AND vv.idMedia = episode.idEpisode AND"
+      "    vv.media_type = 'episode' "
       "  LEFT JOIN bookmark ON"
-      "    bookmark.idFile = files.idFile AND bookmark.type = 1 "
+      "    bookmark.idVersion = vv.idVersion AND bookmark.type = 1 "
       "GROUP BY seasons.idSeason,"
       "         seasons.idShow,"
       "         seasons.season,"
@@ -560,8 +585,11 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
                                 "    files.idFile=musicvideo.idFile"
                                 "  JOIN path ON"
                                 "    path.idPath=files.idPath"
+                                "  LEFT JOIN videoversion vv ON"
+                                "    vv.idFile=musicvideo.idFile AND vv.idMedia=musicvideo.idMVideo"
+                                "    AND vv.media_type='musicvideo'"
                                 "  LEFT JOIN bookmark ON"
-                                "    bookmark.idFile=musicvideo.idFile AND bookmark.type=1"
+                                "    bookmark.idVersion=vv.idVersion AND bookmark.type=1"
                                 "  LEFT JOIN uniqueid ON"
                                 "    uniqueid.uniqueid_id=musicvideo.c%02d",
                                 VIDEODB_ID_MUSICVIDEO_IDENT_ID));
@@ -626,7 +654,7 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
       "  JOIN path ON"
       "    path.idPath = files.idPath"
       "  LEFT JOIN bookmark ON"
-      "    bookmark.idFile = vv.idFile AND bookmark.type = 1",
+      "    bookmark.idVersion = vv.idVersion AND bookmark.type = 1",
       MediaTypeMovie, VideoAssetType::VERSION, MediaTypeMovie, VideoAssetType::EXTRA,
       VideoAssetType::VERSION, VIDEODB_ID_RATING_ID, VIDEODB_ID_IDENT_ID, MediaTypeMovie);
 

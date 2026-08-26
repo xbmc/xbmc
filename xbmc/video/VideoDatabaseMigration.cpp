@@ -1475,10 +1475,15 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
     constexpr int VideoAssetType_VERSION = 1;
     constexpr int VIDEO_VERSION_ID_DEFAULT = 40400;
+    constexpr int LOCAL_VIDEODB_ID_EPISODE_BOOKMARK = 17;
+    constexpr int CBookmark_RESUME = 1;
+    constexpr int CBookmark_EPISODE = 2;
 
     // Temporary indices for the seeding guards and correlated backfills below
     // (indices are offline during migration - CVideoDatabaseDDL::CreateIndices() runs after)
     m_pDS->exec("CREATE INDEX ix_migration_videoversion ON videoversion (idFile)");
+    m_pDS->exec(PrepareSQL("CREATE INDEX ix_migration_episode_bookmark ON episode (c%02d)",
+                           LOCAL_VIDEODB_ID_EPISODE_BOOKMARK));
 
     // NOT EXISTS keeps the seeding idempotent for a retried run on MySQL,
     // where earlier statements are already committed
@@ -1497,7 +1502,36 @@ void CVideoDatabase::UpdateTables(int iVersion)
                    "vv.media_type='musicvideo')",
                    VideoAssetType_VERSION, VIDEO_VERSION_ID_DEFAULT));
 
+    // Bookmarks become owned by a (media item, file) pair instead of a file alone
+    m_pDS->exec("ALTER TABLE bookmark ADD idVersion INTEGER");
+
+    // Episode bookmarks are linked to their episode through the episode's bookmark id column
+    m_pDS->exec(PrepareSQL(
+        "UPDATE bookmark SET idVersion="
+        "(SELECT vv.idVersion FROM videoversion vv"
+        " JOIN episode e ON e.idEpisode=vv.idMedia AND vv.media_type='episode'"
+        " AND vv.idFile=bookmark.idFile"
+        " WHERE e.c%02d=bookmark.idBookmark LIMIT 1) "
+        "WHERE type=%i",
+        LOCAL_VIDEODB_ID_EPISODE_BOOKMARK, CBookmark_EPISODE));
+
+    // Bookmarks of files holding a single media item
+    m_pDS->exec("UPDATE bookmark SET idVersion="
+                "(SELECT vv.idVersion FROM videoversion vv WHERE vv.idFile=bookmark.idFile) "
+                "WHERE idVersion IS NULL "
+                "AND (SELECT COUNT(1) FROM videoversion vv2 WHERE vv2.idFile=bookmark.idFile)=1");
+
+    // A resume point of a file holding several media items cannot be attributed to any one
+    // of them: its player state names a disc title or playlist, not the media item. Copying
+    // it to each would leave every item but one resuming into another item's content, with
+    // nothing to tell them apart, so it is dropped instead - the item that was watched
+    // restarts from the beginning. Files not linked to any media item keep theirs.
+    m_pDS->exec(PrepareSQL("DELETE FROM bookmark WHERE idVersion IS NULL AND type=%i "
+                           "AND idFile IN (SELECT idFile FROM videoversion)",
+                           CBookmark_RESUME));
+
     m_pDS->dropIndex("videoversion", "ix_migration_videoversion");
+    m_pDS->dropIndex("episode", "ix_migration_episode_bookmark");
   }
 }
 

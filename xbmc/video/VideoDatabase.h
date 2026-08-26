@@ -507,15 +507,19 @@ public:
   void GetBookMarksForFile(const std::string& strFilenameAndPath, VECBOOKMARKS& bookmarks, CBookmark::EType type = CBookmark::STANDARD, bool bAppend=false, long partNumber=0);
   bool AddBookMarkToFile(const std::string& strFilenameAndPath,
                          const CBookmark& bookmark,
-                         CBookmark::EType type = CBookmark::STANDARD);
+                         CBookmark::EType type = CBookmark::STANDARD,
+                         int idVersion = -1);
   bool GetResumeBookMark(const std::string& strFilenameAndPath, CBookmark &bookmark);
   void DeleteResumeBookMark(const CFileItem& item);
   void ClearBookMarkOfFile(const std::string& strFilenameAndPath,
                            const CBookmark& bookmark,
                            CBookmark::EType type = CBookmark::STANDARD);
   bool ClearBookMarksOfFile(const std::string& strFilenameAndPath,
-                            CBookmark::EType type = CBookmark::STANDARD);
-  bool ClearBookMarksOfFile(int idFile, CBookmark::EType type = CBookmark::STANDARD);
+                            CBookmark::EType type = CBookmark::STANDARD,
+                            int idVersion = -1);
+  bool ClearBookMarksOfFile(int idFile,
+                            CBookmark::EType type = CBookmark::STANDARD,
+                            int idVersion = -1);
   bool GetBookMarkForEpisode(int dbId, CBookmark& bookmark) const;
   bool GetBookMarkForEpisode(const CVideoInfoTag& tag, CBookmark& bookmark) const;
   void AddBookMarkForEpisode(const CVideoInfoTag& tag, const CBookmark& bookmark);
@@ -948,6 +952,15 @@ public:
   void GetDefaultVideoVersion(VideoDbContentType itemType, int dbId, CFileItem& item);
 
   /*!
+   * \brief Get the id of the videoversion row linking a media item and a file
+   * \param idFile id of the file
+   * \param idMedia id of the media item (movie/episode/musicvideo)
+   * \param mediaType type of the media item
+   * \return the version id, -1 if not found
+   */
+  int GetVideoVersionId(int idFile, int idMedia, const MediaType& mediaType) const;
+
+  /*!
    * \brief Remove a video from the library and transfer all of its assets to another video of the
    * same type.
    * \param itemType[in] Type of the video being converted
@@ -1200,6 +1213,20 @@ private:
    \return -1 if not found, else a valid database id (i.e. > 0)
    */
   int GetDbId(const std::string& query) const;
+
+  /*! \brief Get the version id of a file that maps to exactly one media item
+   \param idFile id of the file
+   \return the version id, -1 if the file has no version rows or more than one
+   */
+  int GetVideoVersionIdByFile(int idFile) const;
+
+  /*! \brief Create a videoversion row linking a media item and a file.
+   Bookmarks recorded for the file before it was linked to any media item are
+   adopted by the new version.
+   \return the new version id
+   */
+  int AddVideoVersion(
+      int idFile, int idMedia, const MediaType& mediaType, VideoAssetType assetType, int idType);
 
   /*! \brief Run a query on the main dataset and return the number of rows
    If no rows are found we close the dataset and return 0.

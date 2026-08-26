@@ -110,8 +110,17 @@ bool CVideoLibraryMarkWatchedJob::Work(CVideoDatabase &db)
     if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->GetPath().empty())
       path = item->GetVideoInfoTag()->GetPath();
 
+    // scope to the marked media item, so other items sharing the same file
+    // (eg. multi-episode files) keep their resume points
+    int idVersion{-1};
+    if (item->HasVideoInfoTag())
+    {
+      const CVideoInfoTag* tag{item->GetVideoInfoTag()};
+      idVersion = db.GetVideoVersionId(tag->m_iFileId, tag->m_iDbId, tag->m_type);
+    }
+
     // With both mark as watched and unwatched we want the resume bookmarks to be reset
-    db.ClearBookMarksOfFile(path, CBookmark::RESUME);
+    db.ClearBookMarksOfFile(path, CBookmark::RESUME, idVersion);
 
     CDateTime newLastPlayed;
     if (m_mark)

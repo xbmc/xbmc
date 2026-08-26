@@ -1179,11 +1179,8 @@ int CVideoDatabase::AddNewMovie(CVideoInfoTag& details)
     const std::string assetTitle{details.GetAssetInfo().GetTitle()};
     const int assetId{AddOrValidateVideoVersionType(assetTitle)};
 
-    m_pDS->exec(
-        PrepareSQL("INSERT INTO videoversion (idFile, idMedia, media_type, itemType, idType) "
-                   "VALUES(%i, %i, '%s', %i, %i)",
-                   details.m_iFileId, details.m_iDbId, MediaTypeMovie, VideoAssetType::VERSION,
-                   assetId > 0 ? assetId : VIDEO_VERSION_ID_DEFAULT));
+    AddVideoVersion(details.m_iFileId, details.m_iDbId, MediaTypeMovie, VideoAssetType::VERSION,
+                    assetId > 0 ? assetId : VIDEO_VERSION_ID_DEFAULT);
 
     return details.m_iDbId;
   }
@@ -1236,11 +1233,8 @@ int CVideoDatabase::AddNewEpisode(int idShow, CVideoInfoTag& details)
     m_pDS->exec(strSQL);
     details.m_iDbId = static_cast<int>(m_pDS->lastinsertid());
 
-    m_pDS->exec(
-        PrepareSQL("INSERT INTO videoversion (idFile, idMedia, media_type, itemType, idType) "
-                   "VALUES(%i, %i, '%s', %i, %i)",
-                   details.m_iFileId, details.m_iDbId, MediaTypeEpisode, VideoAssetType::VERSION,
-                   VIDEO_VERSION_ID_DEFAULT));
+    AddVideoVersion(details.m_iFileId, details.m_iDbId, MediaTypeEpisode, VideoAssetType::VERSION,
+                    VIDEO_VERSION_ID_DEFAULT);
 
     return details.m_iDbId;
   }
@@ -1274,11 +1268,8 @@ int CVideoDatabase::AddNewMusicVideo(CVideoInfoTag& details)
     m_pDS->exec(strSQL);
     details.m_iDbId = static_cast<int>(m_pDS->lastinsertid());
 
-    m_pDS->exec(
-        PrepareSQL("INSERT INTO videoversion (idFile, idMedia, media_type, itemType, idType) "
-                   "VALUES(%i, %i, '%s', %i, %i)",
-                   details.m_iFileId, details.m_iDbId, MediaTypeMusicVideo,
-                   VideoAssetType::VERSION, VIDEO_VERSION_ID_DEFAULT));
+    AddVideoVersion(details.m_iFileId, details.m_iDbId, MediaTypeMusicVideo,
+                    VideoAssetType::VERSION, VIDEO_VERSION_ID_DEFAULT);
 
     return details.m_iDbId;
   }
@@ -2889,6 +2880,12 @@ int CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath,
     m_pDS->exec(PrepareSQL("UPDATE videoversion SET idFile=%i WHERE idFile=%i AND "
                            "media_type='%s' AND idMedia=%i",
                            newIdFile, oldIdFile, MediaTypeEpisode, idEpisode));
+    // adopt bookmarks written against the new file before its version row existed
+    m_pDS->exec(PrepareSQL(
+        "UPDATE bookmark SET idVersion=(SELECT idVersion FROM videoversion WHERE idFile=%i AND "
+        "media_type='%s' AND idMedia=%i) WHERE idFile=%i AND idVersion IS NULL AND type=%i",
+        newIdFile, MediaTypeEpisode, idEpisode, newIdFile, CBookmark::RESUME));
+    m_pDS->exec(PrepareSQL("UPDATE bookmark SET idFile=%i WHERE idFile=%i", newIdFile, oldIdFile));
     m_pDS->exec(PrepareSQL("UPDATE settings SET idFile=%i WHERE idFile=%i", newIdFile, oldIdFile));
     return DeleteFile(oldIdFile) ? newIdFile : -1;
   }
@@ -2936,6 +2933,12 @@ int CVideoDatabase::SetFileForMovie(const std::string& fileAndPath,
     m_pDS->exec(PrepareSQL(
         "UPDATE videoversion SET idFile=%i WHERE idFile=%i AND media_type='movie' AND idMedia=%i",
         newIdFile, oldIdFile, idMovie));
+    // adopt bookmarks written against the new file before its version row existed
+    m_pDS->exec(PrepareSQL(
+        "UPDATE bookmark SET idVersion=(SELECT idVersion FROM videoversion WHERE idFile=%i AND "
+        "media_type='movie' AND idMedia=%i) WHERE idFile=%i AND idVersion IS NULL AND type=%i",
+        newIdFile, idMovie, newIdFile, CBookmark::RESUME));
+    m_pDS->exec(PrepareSQL("UPDATE bookmark SET idFile=%i WHERE idFile=%i", newIdFile, oldIdFile));
     m_pDS->exec(
         PrepareSQL("UPDATE art SET media_id=%i WHERE media_id=%i AND media_type='videoversion'",
                    newIdFile, oldIdFile));
@@ -3426,9 +3429,12 @@ void CVideoDatabase::GetBookMarksForFile(const std::string& strFilenameAndPath, 
     if (nullptr == m_pDS)
       return;
 
-    std::string strSQL =
-        PrepareSQL("select * from bookmark where idFile=%i and type=%i order by timeInSeconds",
-                   idFile, static_cast<int>(type));
+    std::string strSQL = PrepareSQL("select * from bookmark where idFile=%i and type=%i", idFile,
+                                    static_cast<int>(type));
+    // resume reads prefer a version's own point over the unowned original it was copied
+    // from; chapter bookmarks keep plain time order
+    strSQL += type == CBookmark::RESUME ? " order by idVersion is NULL, timeInSeconds"
+                                        : " order by timeInSeconds";
     m_pDS->query(strSQL);
     while (!m_pDS->eof())
     {
@@ -3490,7 +3496,13 @@ void CVideoDatabase::DeleteResumeBookMark(const CFileItem& item)
 
   try
   {
+    const CVideoInfoTag* tag{item.GetVideoInfoTag()};
+    const int idVersion{tag->m_iDbId >= 0 ? GetVideoVersionId(fileID, tag->m_iDbId, tag->m_type)
+                                          : -1};
+
     std::string sql = PrepareSQL("delete from bookmark where idFile=%i and type=%i", fileID, CBookmark::RESUME);
+    if (idVersion >= 0)
+      sql += PrepareSQL(" and (idVersion=%i or idVersion is NULL)", idVersion);
     m_pDS->exec(sql);
 
     const MediaType content = VideoContentTypeToString(item.GetVideoContentType());
@@ -3756,7 +3768,8 @@ bool CVideoDatabase::GetEpisodeMap(int idShow,
 //********************************************************************************************************************************
 bool CVideoDatabase::AddBookMarkToFile(const std::string& strFilenameAndPath,
                                        const CBookmark& bookmark,
-                                       CBookmark::EType type /*= CBookmark::STANDARD*/)
+                                       CBookmark::EType type /*= CBookmark::STANDARD*/,
+                                       int idVersion /*= -1*/)
 {
   try
   {
@@ -3768,11 +3781,19 @@ bool CVideoDatabase::AddBookMarkToFile(const std::string& strFilenameAndPath,
     if (nullptr == m_pDS)
       return false;
 
+    if (idVersion < 0)
+      idVersion = GetVideoVersionIdByFile(idFile);
+
     std::string strSQL;
     int idBookmark=-1;
     if (type == CBookmark::RESUME) // get the same resume mark bookmark each time type
     {
       strSQL=PrepareSQL("select idBookmark from bookmark where idFile=%i and type=1", idFile);
+      // prefer the version's own resume point over the unowned fallback, so updating it
+      // cannot stamp the fallback and leave two rows for one version
+      if (idVersion >= 0)
+        strSQL += PrepareSQL(" and (idVersion=%i or idVersion is NULL) order by idVersion is NULL",
+                             idVersion);
     }
     else if (type == CBookmark::STANDARD) // get the same bookmark again, and update. not sure here as a dvd can have same time in multiple places, state will differ thou
     {
@@ -3795,7 +3816,24 @@ bool CVideoDatabase::AddBookMarkToFile(const std::string& strFilenameAndPath,
     }
     // update or insert depending if it existed before
     if (idBookmark >= 0 )
-      strSQL=PrepareSQL("update bookmark set timeInSeconds = %f, totalTimeInSeconds = %f, thumbNailImage = '%s', player = '%s', playerState = '%s' where idBookmark = %i", bookmark.timeInSeconds, bookmark.totalTimeInSeconds, bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(), idBookmark);
+    {
+      strSQL = PrepareSQL("update bookmark set timeInSeconds = %f, totalTimeInSeconds = %f, "
+                          "thumbNailImage = '%s', player = '%s', playerState = '%s'",
+                          bookmark.timeInSeconds, bookmark.totalTimeInSeconds,
+                          bookmark.thumbNailImage.c_str(), bookmark.player.c_str(),
+                          bookmark.playerState.c_str());
+      if (idVersion >= 0)
+        strSQL += PrepareSQL(", idVersion = %i", idVersion);
+      strSQL += PrepareSQL(" where idBookmark = %i", idBookmark);
+    }
+    else if (idVersion >= 0)
+      strSQL = PrepareSQL(
+          "insert into bookmark (idBookmark, idFile, timeInSeconds, totalTimeInSeconds, "
+          "thumbNailImage, player, playerState, type, idVersion) "
+          "values(NULL,%i,%f,%f,'%s','%s','%s', %i, %i)",
+          idFile, bookmark.timeInSeconds, bookmark.totalTimeInSeconds,
+          bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(),
+          static_cast<int>(type), idVersion);
     else
       strSQL = PrepareSQL(
           "insert into bookmark (idBookmark, idFile, timeInSeconds, totalTimeInSeconds, "
@@ -3856,17 +3894,19 @@ void CVideoDatabase::ClearBookMarkOfFile(const std::string& strFilenameAndPath,
 
 //********************************************************************************************************************************
 bool CVideoDatabase::ClearBookMarksOfFile(const std::string& strFilenameAndPath,
-                                          CBookmark::EType type /*= CBookmark::STANDARD*/)
+                                          CBookmark::EType type /*= CBookmark::STANDARD*/,
+                                          int idVersion /*= -1*/)
 {
   int idFile = GetFileId(strFilenameAndPath);
   if (idFile < 0)
     return false;
 
-  return ClearBookMarksOfFile(idFile, type);
+  return ClearBookMarksOfFile(idFile, type, idVersion);
 }
 
 bool CVideoDatabase::ClearBookMarksOfFile(int idFile,
-                                          CBookmark::EType type /*= CBookmark::STANDARD*/)
+                                          CBookmark::EType type /*= CBookmark::STANDARD*/,
+                                          int idVersion /*= -1*/)
 {
   if (idFile < 0)
     return false;
@@ -3880,6 +3920,8 @@ bool CVideoDatabase::ClearBookMarksOfFile(int idFile,
 
     std::string strSQL = PrepareSQL("delete from bookmark where idFile=%i and type=%i", idFile,
                                     static_cast<int>(type));
+    if (idVersion >= 0)
+      strSQL += PrepareSQL(" and (idVersion=%i or idVersion is NULL)", idVersion);
     m_pDS->exec(strSQL);
     if (type == CBookmark::EPISODE)
     {
@@ -3936,7 +3978,8 @@ void CVideoDatabase::AddBookMarkForEpisode(const CVideoInfoTag& tag, const CBook
     std::string strSQL = PrepareSQL("delete from bookmark where idBookmark in (select c%02d from episode where c%02d=%i and c%02d=%i and idFile=%i)", VIDEODB_ID_EPISODE_BOOKMARK, VIDEODB_ID_EPISODE_SEASON, tag.m_iSeason, VIDEODB_ID_EPISODE_EPISODE, tag.m_iEpisode, idFile);
     m_pDS->exec(strSQL);
 
-    AddBookMarkToFile(tag.m_strFileNameAndPath, bookmark, CBookmark::EPISODE);
+    AddBookMarkToFile(tag.m_strFileNameAndPath, bookmark, CBookmark::EPISODE,
+                      GetVideoVersionId(idFile, tag.m_iDbId, MediaTypeEpisode));
     const auto idBookmark = static_cast<int>(m_pDS->lastinsertid());
     strSQL = PrepareSQL("update episode set c%02d=%i where c%02d=%i and c%02d=%i and idFile=%i", VIDEODB_ID_EPISODE_BOOKMARK, idBookmark, VIDEODB_ID_EPISODE_SEASON, tag.m_iSeason, VIDEODB_ID_EPISODE_EPISODE, tag.m_iEpisode, idFile);
     m_pDS->exec(strSQL);
@@ -4735,7 +4778,18 @@ bool CVideoDatabase::GetResumePoint(CVideoInfoTag& tag)
     }
     else
     {
-      std::string strSQL=PrepareSQL("select timeInSeconds, totalTimeInSeconds from bookmark where idFile=%i and type=%i order by timeInSeconds", tag.m_iFileId, CBookmark::RESUME);
+      const int idVersion{
+          tag.m_iDbId >= 0 ? GetVideoVersionId(tag.m_iFileId, tag.m_iDbId, tag.m_type) : -1};
+
+      std::string strSQL =
+          PrepareSQL("select timeInSeconds, totalTimeInSeconds from bookmark where idFile=%i and "
+                     "type=%i",
+                     tag.m_iFileId, CBookmark::RESUME);
+      if (idVersion >= 0)
+        strSQL += PrepareSQL(" and (idVersion=%i or idVersion is NULL) order by idVersion is NULL",
+                             idVersion);
+      else
+        strSQL += " order by timeInSeconds";
       m_pDS2->query( strSQL );
       if (!m_pDS2->eof())
       {
@@ -6200,13 +6254,16 @@ bool CVideoDatabase::GetPlayCounts(const std::string &strPath, CFileItemList &it
     if (nullptr == m_pDS)
       return false;
 
+    // a file can hold one resume point per version; pick one deterministically
+    // for this file-level overlay
     std::string sql =
       "SELECT"
       "  files.strFilename, files.playCount,"
       "  bookmark.timeInSeconds, bookmark.totalTimeInSeconds "
       "FROM files"
       "  LEFT JOIN bookmark ON"
-      "    files.idFile = bookmark.idFile AND bookmark.type = %i ";
+      "    bookmark.idBookmark = (SELECT MIN(b2.idBookmark) FROM bookmark b2"
+      "    WHERE b2.idFile = files.idFile AND b2.type = %i) ";
 
     if (URIUtils::IsPlugin(strPath))
     {
@@ -12807,11 +12864,7 @@ bool CVideoDatabase::AddOrUpdateVideoVersion(VideoDbContentType itemType,
 
     m_pDS->close();
 
-    sql = PrepareSQL("INSERT INTO videoversion (idFile, idMedia, media_type, itemType, idType) "
-                     "VALUES(%i, %i, '%s', %i, %i)",
-                     idFile, dbIdSource, mediaType.c_str(), assetType, idVideoVersion);
-
-    m_pDS->exec(sql);
+    AddVideoVersion(idFile, dbIdSource, mediaType, assetType, idVideoVersion);
 
     return true;
   }
@@ -13074,6 +13127,71 @@ VideoAssetInfo CVideoDatabase::GetVideoVersionInfo(const std::string& filenameAn
   }
 
   return info;
+}
+
+int CVideoDatabase::GetVideoVersionId(int idFile, int idMedia, const MediaType& mediaType) const
+{
+  if (idFile < 0 || idMedia < 0 || mediaType.empty() || !m_pDB)
+    return -1;
+
+  try
+  {
+    // local dataset: often called while m_pDS/m_pDS2 hold results being iterated
+    const std::unique_ptr<Dataset> pDS{m_pDB->CreateDataset()};
+    pDS->query(PrepareSQL("SELECT idVersion FROM videoversion WHERE idFile=%i AND idMedia=%i AND "
+                          "media_type='%s'",
+                          idFile, idMedia, mediaType.c_str()));
+    const int idVersion{pDS->eof() ? -1 : pDS->fv(0).get_asInt()};
+    pDS->close();
+    return idVersion;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "({}, {}, {}) failed", idFile, idMedia, mediaType);
+  }
+  return -1;
+}
+
+int CVideoDatabase::GetVideoVersionIdByFile(int idFile) const
+{
+  if (idFile < 0 || !m_pDB)
+    return -1;
+
+  try
+  {
+    // local dataset: often called while m_pDS/m_pDS2 hold results being iterated
+    const std::unique_ptr<Dataset> pDS{m_pDB->CreateDataset()};
+    pDS->query(PrepareSQL("SELECT idVersion FROM videoversion WHERE idFile=%i", idFile));
+    const int idVersion{pDS->num_rows() == 1 ? pDS->fv(0).get_asInt() : -1};
+    pDS->close();
+    return idVersion;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "({}) failed", idFile);
+  }
+  return -1;
+}
+
+int CVideoDatabase::AddVideoVersion(
+    int idFile, int idMedia, const MediaType& mediaType, VideoAssetType assetType, int idType)
+{
+  m_pDS->exec(
+      PrepareSQL("INSERT INTO videoversion (idFile, idMedia, media_type, itemType, idType) "
+                 "VALUES(%i, %i, '%s', %i, %i)",
+                 idFile, idMedia, mediaType.c_str(), assetType, idType));
+  const int idVersion{static_cast<int>(m_pDS->lastinsertid())};
+
+  // A resume point recorded before the file was linked to any media item is copied to the
+  // new version. The unowned original remains for media items linked to the file later.
+  m_pDS->exec(PrepareSQL(
+      "INSERT INTO bookmark (idFile, timeInSeconds, totalTimeInSeconds, thumbNailImage, "
+      "player, playerState, type, idVersion) "
+      "SELECT idFile, timeInSeconds, totalTimeInSeconds, thumbNailImage, player, playerState, "
+      "type, %i FROM bookmark WHERE idFile=%i AND idVersion IS NULL AND type=%i",
+      idVersion, idFile, CBookmark::RESUME));
+
+  return idVersion;
 }
 
 bool CVideoDatabase::GetVideoVersionsNav(const std::string& strBaseDir,

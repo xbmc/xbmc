@@ -1360,8 +1360,12 @@ NPT_Result CUPnPServer::OnUpdateObject(PLT_ActionReference& action,
       NPT_UInt32 resume;
       NPT_CHECK_LABEL(position.ToInteger32(resume), args);
 
+      // scope to the updated media item, so other items sharing the same file
+      // (eg. multi-episode files) keep their resume points
+      const int idVersion = db.GetVideoVersionId(tag.m_iFileId, tag.m_iDbId, tag.m_type);
+
       if (resume <= 0)
-        db.ClearBookMarksOfFile(file_path, CBookmark::RESUME);
+        db.ClearBookMarksOfFile(file_path, CBookmark::RESUME, idVersion);
       else
       {
         CBookmark bookmark;
@@ -1369,7 +1373,7 @@ NPT_Result CUPnPServer::OnUpdateObject(PLT_ActionReference& action,
         bookmark.totalTimeInSeconds = resume + 100; // not required to be correct
         bookmark.playerState = new_vals["lastPlayerState"];
 
-        db.AddBookMarkToFile(file_path, bookmark, CBookmark::RESUME);
+        db.AddBookMarkToFile(file_path, bookmark, CBookmark::RESUME, idVersion);
       }
       if (playCount.IsEmpty())
       {
