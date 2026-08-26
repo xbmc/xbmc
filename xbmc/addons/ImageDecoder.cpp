@@ -21,15 +21,14 @@ struct AddonFormat
 {
   unsigned int kodiFormat;
   ADDON_IMG_FMT addonFormat;
-  size_t bytesPerPixel;
   bool hasAlpha;
 };
 
 constexpr std::array<AddonFormat, 4> KodiToAddonFormat = {
-    {{XB_FMT_A8R8G8B8, ADDON_IMG_FMT_A8R8G8B8, sizeof(uint8_t) * 4, true},
-     {XB_FMT_A8, ADDON_IMG_FMT_A8, sizeof(uint8_t) * 1, true},
-     {XB_FMT_RGBA8, ADDON_IMG_FMT_RGBA8, sizeof(uint8_t) * 4, true},
-     {XB_FMT_RGB8, ADDON_IMG_FMT_RGB8, sizeof(uint8_t) * 3, false}}};
+    {{XB_FMT_A8R8G8B8, ADDON_IMG_FMT_A8R8G8B8, true},
+     {XB_FMT_A8, ADDON_IMG_FMT_A8, true},
+     {XB_FMT_RGBA8, ADDON_IMG_FMT_RGBA8, true},
+     {XB_FMT_RGB8, ADDON_IMG_FMT_RGB8, false}}};
 
 } /* namespace */
 
@@ -208,7 +207,7 @@ bool CImageDecoder::Decode(unsigned char* const pixels,
     return false;
 
   const ADDON_IMG_FMT addonFmt = it->addonFormat;
-  const size_t size = width * height * it->bytesPerPixel;
+  const size_t size = static_cast<size_t>(pitch) * height;
   const bool result =
       m_ifc.imagedecoder->toAddon->decode(m_ifc.hdl, pixels, size, width, height, pitch, addonFmt);
   m_width = width;
