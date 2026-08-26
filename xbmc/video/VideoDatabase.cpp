@@ -7144,7 +7144,7 @@ bool CVideoDatabase::GetNavCommon(const std::string& strBaseDir,
         view       = MediaTypeMovie;
         view_id    = "idMovie";
         media_type = MediaTypeMovie;
-        extraField = PrepareSQL("count(1), count(%s_view.playCount)", view.c_str());
+        extraField = PrepareSQL("count(1), count(NULLIF(%s_view.playCount, 0))", view.c_str());
       }
       else if (idContent == VideoDbContentType::TVSHOWS)
       {
@@ -7157,7 +7157,7 @@ bool CVideoDatabase::GetNavCommon(const std::string& strBaseDir,
         view       = MediaTypeMusicVideo;
         view_id    = "idMVideo";
         media_type = MediaTypeMusicVideo;
-        extraField = PrepareSQL("count(1), count(%s_view.playCount)", view.c_str());
+        extraField = PrepareSQL("count(1), count(NULLIF(%s_view.playCount, 0))", view.c_str());
       }
       else
         return false;
@@ -7629,7 +7629,7 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir,
         view       = MediaTypeMusicVideo;
         view_id    = "idMVideo";
         media_type = MediaTypeMusicVideo;
-        extraField = "count(1), count(musicvideo_view.playCount)";
+        extraField = "count(1), count(NULLIF(musicvideo_view.playCount, 0))";
         if (bMainArtistOnly)
           extraJoin =
               PrepareSQL(" WHERE actor.name IN (SELECT musicvideo_view.c10 from musicvideo_view)");
@@ -7660,7 +7660,7 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir,
         view       = MediaTypeMovie;
         view_id    = "idMovie";
         media_type = MediaTypeMovie;
-        extraField = PrepareSQL("count(1), count(%s_view.playCount)", view.c_str());
+        extraField = PrepareSQL("count(1), count(NULLIF(%s_view.playCount, 0))", view.c_str());
       }
       else if (idContent == VideoDbContentType::TVSHOWS)
       {
@@ -7674,7 +7674,7 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir,
         view       = MediaTypeEpisode;
         view_id    = "idEpisode";
         media_type = MediaTypeEpisode;
-        extraField = PrepareSQL("count(1), count(%s_view.playCount)", view.c_str());
+        extraField = PrepareSQL("count(1), count(NULLIF(%s_view.playCount, 0))", view.c_str());
       }
       else if (idContent == VideoDbContentType::MUSICVIDEOS)
       {
@@ -7686,7 +7686,7 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir,
         view       = MediaTypeMusicVideo;
         view_id    = "idMVideo";
         media_type = MediaTypeMusicVideo;
-        extraField = PrepareSQL("count(1), count(%s_view.playCount)", view.c_str());
+        extraField = PrepareSQL("count(1), count(NULLIF(%s_view.playCount, 0))", view.c_str());
         if (bMainArtistOnly)
           extraJoin =
               extraJoin +
@@ -7900,7 +7900,8 @@ bool CVideoDatabase::GetYearsNav(const std::string& strBaseDir,
       if (idContent == VideoDbContentType::MOVIES)
       {
         strSQL =
-            "select movie_view.premiered, count(1), count(movie_view.playCount) from movie_view ";
+            "select movie_view.premiered, count(1), count(NULLIF(movie_view.playCount, 0)) "
+            "from movie_view ";
         extFilter.AppendGroup("movie_view.premiered");
       }
       else if (idContent == VideoDbContentType::TVSHOWS)
@@ -7910,8 +7911,8 @@ bool CVideoDatabase::GetYearsNav(const std::string& strBaseDir,
       }
       else if (idContent == VideoDbContentType::MUSICVIDEOS)
       {
-        strSQL = "select musicvideo_view.premiered, count(1), count(musicvideo_view.playCount) "
-                 "from musicvideo_view ";
+        strSQL = "select musicvideo_view.premiered, "
+                 "count(1), count(NULLIF(musicvideo_view.playCount, 0)) from musicvideo_view ";
         extFilter.AppendGroup("musicvideo_view.premiered");
       }
       else
