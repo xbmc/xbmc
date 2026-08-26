@@ -228,7 +228,7 @@ bool CGUIDialogVideoManagerVersions::UngroupImpl()
   KODI::ART::Artwork artwork;
   if (m_videoAsset->HasVideoInfoTag() &&
       m_database.GetArtForAsset(versionDetails->m_iDbId, ArtFallbackOptions::PARENT, artwork) &&
-      m_database.DeleteVideoAsset(versionDetails->m_iDbId))
+      m_database.DeleteVideoAsset(versionDetails->m_iDbId, DeleteFileAction::KEEP))
   {
     // The item used to open the dialog contains the correct movie information because all
     // versions of a movie share fields.

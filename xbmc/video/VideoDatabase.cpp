@@ -3275,23 +3275,55 @@ int CVideoDatabase::SetFileForUnknown(const std::string& fileAndPath, int oldIdF
 
 bool CVideoDatabase::DeleteFile(int idFile)
 {
+  if (idFile < 0)
+    return false;
+
   try
   {
-    // First check no other references to file (eg. other episodes)
+    // First check no other references to file (eg. other episodes, other versions of a movie
+    // or another media item sharing the physical container)
     std::string sql{PrepareSQL("SELECT idFile FROM movie WHERE idFile = %i "
                                "UNION SELECT idFile FROM episode WHERE idFile = %i "
+                               "UNION SELECT idFile FROM musicvideo WHERE idFile = %i "
                                "UNION SELECT idFile FROM videoversion WHERE idFile = %i",
-                               idFile, idFile, idFile)};
+                               idFile, idFile, idFile, idFile)};
     m_pDS->query(sql);
     const bool referenced{!m_pDS->eof()};
     m_pDS->close();
     if (!referenced)
     {
+      const int idPath{GetDbId(PrepareSQL("SELECT idPath FROM files WHERE idFile = %i", idFile))};
+
       // Associated bookmarks and streamdetails deleted by delete trigger
       sql = PrepareSQL("DELETE FROM files WHERE idFile = %i", idFile);
       m_pDS->exec(sql);
       // not LogF: winbase.h rewrites DeleteFile to DeleteFileW, and so the name it would print
       CLog::Log(LOGDEBUG, "CVideoDatabase::DeleteFile: Removed file id {}", idFile);
+
+      // The folder a container was found in - a disc's BDMV directory above all - is of no
+      // use once the last file in it is gone, and the cleaner only reaches such a row when
+      // its parent has gone too. A path describing a source, holding a scan hash, or named
+      // by another row is left alone; the same conditions the cleaner applies.
+      if (idPath >= 0)
+      {
+        sql = StringUtils::Format(
+            "DELETE FROM path WHERE idPath = {0} "
+            "AND (strContent IS NULL OR strContent = '') "
+            "AND (strSettings IS NULL OR strSettings = '') "
+            "AND (strHash IS NULL OR strHash = '') "
+            "AND (exclude IS NULL OR exclude != 1) "
+            "AND NOT EXISTS (SELECT 1 FROM files WHERE idPath = {0}) "
+            // the derived table keeps MySQL from rejecting the self reference (#5007)
+            "AND NOT EXISTS (SELECT 1 FROM (SELECT idParentPath FROM path) AS child "
+            "WHERE child.idParentPath = {0}) "
+            "AND NOT EXISTS (SELECT 1 FROM tvshowlinkpath WHERE idPath = {0}) "
+            "AND NOT EXISTS (SELECT 1 FROM movie WHERE c{1:02} = {0}) "
+            "AND NOT EXISTS (SELECT 1 FROM episode WHERE c{2:02} = {0}) "
+            "AND NOT EXISTS (SELECT 1 FROM musicvideo WHERE c{3:02} = {0})",
+            idPath, VIDEODB_ID_PARENTPATHID, VIDEODB_ID_EPISODE_PARENTPATHID,
+            VIDEODB_ID_MUSICVIDEO_PARENTPATHID);
+        m_pDS->exec(sql);
+      }
     }
     else
       CLog::Log(LOGDEBUG, "CVideoDatabase::DeleteFile: File id {} is still referenced - kept",
@@ -4445,7 +4477,8 @@ void CVideoDatabase::DeleteBookMarkForEpisode(int idEpisode)
 //********************************************************************************************************************************
 bool CVideoDatabase::DeleteMovie(int idMovie,
                                  DeleteMovieCascadeAction ca /* = ALL_ASSETS */,
-                                 DeleteMovieHashAction hashAction /* = HASH_DELETE */)
+                                 DeleteMovieHashAction hashAction /* = HASH_DELETE */,
+                                 DeleteFileAction fileAction /* = KEEP */)
 {
   if (idMovie < 0)
     return false;
@@ -4524,6 +4557,10 @@ bool CVideoDatabase::DeleteMovie(int idMovie,
 
     CLog::LogF(LOGDEBUG, "Removed movie id {} (file id {}) and {} other asset(s)", idMovie,
                idFile, otherAssets);
+
+    // the default version's rows went with the movie; the other assets pruned their own files
+    if (fileAction == DeleteFileAction::DELETE_IF_UNUSED)
+      DeleteFile(idFile);
 
     //! @todo move this below CommitTransaction() once UPnP doesn't rely on this anymore
     AnnounceRemove(MediaTypeMovie, idMovie);
@@ -4640,7 +4677,9 @@ void CVideoDatabase::DeleteSeason(int idSeason, bool bKeepId /* = false */)
   }
 }
 
-void CVideoDatabase::DeleteEpisode(int idEpisode, bool bKeepId /* = false */)
+void CVideoDatabase::DeleteEpisode(int idEpisode,
+                                   bool bKeepId /* = false */,
+                                   DeleteFileAction fileAction /* = KEEP */)
 {
   if (idEpisode < 0)
     return;
@@ -4678,6 +4717,9 @@ void CVideoDatabase::DeleteEpisode(int idEpisode, bool bKeepId /* = false */)
       m_pDS->exec(strSQL);
 
       CLog::LogF(LOGDEBUG, "Removed episode id {} (file id {})", idEpisode, idFile);
+
+      if (fileAction == DeleteFileAction::DELETE_IF_UNUSED)
+        DeleteFile(idFile);
     }
 
   }
@@ -4687,7 +4729,9 @@ void CVideoDatabase::DeleteEpisode(int idEpisode, bool bKeepId /* = false */)
   }
 }
 
-void CVideoDatabase::DeleteMusicVideo(int idMVideo, bool bKeepId /* = false */)
+void CVideoDatabase::DeleteMusicVideo(int idMVideo,
+                                      bool bKeepId /* = false */,
+                                      DeleteFileAction fileAction /* = KEEP */)
 {
   if (idMVideo < 0)
     return;
@@ -4720,6 +4764,9 @@ void CVideoDatabase::DeleteMusicVideo(int idMVideo, bool bKeepId /* = false */)
       m_pDS->exec(strSQL);
 
       CLog::LogF(LOGDEBUG, "Removed music video id {} (file id {})", idMVideo, idFile);
+
+      if (fileAction == DeleteFileAction::DELETE_IF_UNUSED)
+        DeleteFile(idFile);
     }
 
     //! @todo move this below CommitTransaction() once UPnP doesn't rely on this anymore
@@ -6765,12 +6812,13 @@ void CVideoDatabase::RemoveContentForPath(const std::string& strPath,
           ConstructPath(strMoviePath, path, strFileName);
           const auto movieId = GetMovieId(strMoviePath);
           if (movieId > 0)
-            DeleteMovie(movieId);
+            DeleteMovie(movieId, DeleteMovieCascadeAction::ALL_ASSETS,
+                        DeleteMovieHashAction::HASH_DELETE, DeleteFileAction::DELETE_IF_UNUSED);
           else
           {
             const auto musicvideoId = GetMusicVideoId(strMoviePath);
             if (musicvideoId > 0)
-              DeleteMusicVideo(musicvideoId);
+              DeleteMusicVideo(musicvideoId, false, DeleteFileAction::DELETE_IF_UNUSED);
           }
           m_pDS2->next();
           if (m_pDS2->eof() && !bMvidsChecked)
@@ -11091,33 +11139,27 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
           moviesToDelete += StringUtils::Format("{},", i);
         moviesToDelete = "(" + StringUtils::TrimRight(moviesToDelete, ",") + ")";
 
-        // Any asset still attached to the movie goes with it. The delete_movie trigger only
-        // takes the default version, so remove the files of the rest first and let their own
-        // trigger clear the assets, rather than leaving either behind.
-        // Collect the files before deleting them: deleting a file fires a trigger that
-        // deletes from videoversion, which MySQL refuses to do while the statement that
-        // invoked it reads that same table.
-        std::string assetsToDelete;
-        m_pDS->query(PrepareSQL("SELECT idFile FROM videoversion "
-                                "WHERE media_type='%s' AND idMedia IN %s",
-                                MediaTypeMovie, moviesToDelete.c_str()));
-        while (!m_pDS->eof())
-        {
-          assetsToDelete += m_pDS->fv(0).get_asString() + ",";
-          m_pDS->next();
-        }
-        m_pDS->close();
-
-        if (!assetsToDelete.empty())
-        {
-          CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning assets of removed movies");
-          m_pDS->exec("DELETE FROM files WHERE idFile IN (" +
-                      StringUtils::TrimRight(assetsToDelete, ",") + ")");
-        }
-
         CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning movie table");
         sql = "DELETE FROM movie WHERE idMovie IN " + moviesToDelete;
         m_pDS->exec(sql);
+
+        // Any asset still attached to the movie goes with it. The delete_movie trigger only
+        // takes the versions on the movie's own file, so remove the rest as assets. Their files
+        // are not deleted outright: a physical container can hold other media items, whose
+        // version rows the file's delete trigger would take with it.
+        // need local dataset due to nested DeleteVideoAsset query
+        const std::unique_ptr<Dataset> pDS{m_pDB->CreateDataset()};
+        pDS->query(PrepareSQL("SELECT idVersion FROM videoversion "
+                              "WHERE media_type='%s' AND idMedia IN %s",
+                              MediaTypeMovie, moviesToDelete.c_str()));
+        if (!pDS->eof())
+          CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning assets of removed movies");
+        while (!pDS->eof())
+        {
+          DeleteVideoAsset(pDS->fv(0).get_asInt());
+          pDS->next();
+        }
+        pDS->close();
       }
 
       if (!episodeIDs.empty())
@@ -13915,7 +13957,8 @@ bool CVideoDatabase::IsDefaultVideoVersion(int idVersion)
   return false;
 }
 
-bool CVideoDatabase::DeleteVideoAsset(int idVersion)
+bool CVideoDatabase::DeleteVideoAsset(int idVersion,
+                                      DeleteFileAction fileAction /* = DELETE_IF_UNUSED */)
 {
   if (!m_pDB || !m_pDS)
     return false;
@@ -13957,10 +14000,18 @@ bool CVideoDatabase::DeleteVideoAsset(int idVersion)
     if (!path.empty())
       InvalidatePathHash(path);
 
+    // the caller recreates the item on the same file
+    if (fileAction == DeleteFileAction::KEEP)
+      ReleaseVersionState(idFile, idVersion);
+
     m_pDS->exec(PrepareSQL("DELETE FROM videoversion WHERE idVersion=%i", idVersion));
 
     CLog::LogF(LOGDEBUG, "Removed version id {} of {} id {} (file id {})", idVersion, mediaType,
                idMedia, idFile);
+
+    // its file goes with it unless shared or kept by the caller
+    if (idFile >= 0 && fileAction == DeleteFileAction::DELETE_IF_UNUSED)
+      DeleteFile(idFile);
 
     if (!inTransaction)
       CommitTransaction();
