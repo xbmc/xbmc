@@ -49,6 +49,11 @@ public:
   CRating(float r, int v): rating(r), votes(v) {}
   float rating = 0.0f;
   int votes = 0;
+  bool operator==(const CRating& other) const
+  {
+    // floating point equality OK for unit tests but may require tweaking for general comparison.
+    return rating == other.rating && votes == other.votes;
+  }
 };
 using RatingMap = std::map<std::string, CRating, std::less<>>;
 
@@ -443,6 +448,20 @@ protected:
    * \return true for success, false otherwise.
    */
   bool SaveTvShowSeasons(TiXmlNode* node) const;
+
+  /*!
+   * \brief Add the uniqueid information to an XML node
+   * \param element  the root XML element to append to
+   * \return true for success, false otherwise.
+   */
+  bool SaveUniqueId(TiXmlNode* node) const;
+
+  /*!
+   * \brief Add the ratings information to an XML node
+   * \param element  the root XML element to append to
+   * \return true for success, false otherwise.
+   */
+  bool SaveRatings(TiXmlNode* node) const;
 
 private:
   /* \brief Parse our native XML format for video info.

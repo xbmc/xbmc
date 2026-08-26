@@ -8,6 +8,7 @@
 
 #include "VideoInfoTag.h"
 
+#include "NfoUtils.h"
 #include "ServiceBroker.h"
 #include "imagefiles/ImageFileURL.h"
 #include "resources/LocalizeStrings.h"
@@ -108,6 +109,8 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
 
   // we start with a <tag> tag
   TiXmlElement movieElement(tag.c_str());
+  CNfoUtils::SetVersion(movieElement, tag);
+
   TiXmlNode *movie = node->InsertEndChild(movieElement);
 
   if (!movie) return false;
@@ -119,22 +122,10 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
     XMLUtils::SetString(movie, "showtitle", m_strShowTitle);
   if (!m_strSortTitle.empty())
     XMLUtils::SetString(movie, "sorttitle", m_strSortTitle);
-  if (!m_ratings.empty())
-  {
-    TiXmlElement ratings("ratings");
-    for (const auto& [name, value] : m_ratings)
-    {
-      TiXmlElement rating("rating");
-      rating.SetAttribute("name", name.c_str());
-      XMLUtils::SetFloat(&rating, "value", value.rating);
-      XMLUtils::SetInt(&rating, "votes", value.votes);
-      rating.SetAttribute("max", 10);
-      if (name == m_strDefaultRating)
-        rating.SetAttribute("default", "true");
-      ratings.InsertEndChild(rating);
-    }
-    movie->InsertEndChild(ratings);
-  }
+
+  if (!SaveRatings(movie))
+    return false;
+
   XMLUtils::SetInt(movie, "userrating", m_iUserRating);
 
   if (m_EpBookmark.timeInSeconds > 0)
@@ -212,17 +203,9 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
       XMLUtils::SetString(movie, "episodeguide", m_strEpisodeGuide);
   }
 
-  XMLUtils::SetString(movie, "id", GetUniqueID());
-  for (const auto& [type, value] : m_uniqueIDs)
-  {
-    TiXmlElement uniqueID("uniqueid");
-    uniqueID.SetAttribute("type", type);
-    if (type == m_strDefaultUniqueID)
-      uniqueID.SetAttribute("default", "true");
-    uniqueID.InsertEndChild(TiXmlText(value));
+  if (!SaveUniqueId(movie))
+    return false;
 
-    movie->InsertEndChild(uniqueID);
-  }
   XMLUtils::SetStringArray(movie, "genre", m_genre);
   XMLUtils::SetStringArray(movie, "country", m_country);
   if (m_set.HasTitle())
@@ -358,6 +341,48 @@ bool CVideoInfoTag::SaveTvShowSeasons(TiXmlNode* root) const
   return true;
 }
 
+bool CVideoInfoTag::SaveUniqueId(TiXmlNode* node) const
+{
+  for (const auto& [type, value] : m_uniqueIDs)
+  {
+    TiXmlElement uniqueID("uniqueid");
+    uniqueID.SetAttribute("type", type);
+    if (type == m_strDefaultUniqueID)
+      uniqueID.SetAttribute("default", "true");
+    if (nullptr == uniqueID.InsertEndChild(TiXmlText(value)))
+      return false;
+
+    if (nullptr == node->InsertEndChild(uniqueID))
+      return false;
+  }
+  return true;
+}
+
+bool CVideoInfoTag::SaveRatings(TiXmlNode* node) const
+{
+  if (!m_ratings.empty())
+  {
+    TiXmlElement ratings("ratings");
+    for (const auto& [name, value] : m_ratings)
+    {
+      TiXmlElement rating("rating");
+      rating.SetAttribute("name", name.c_str());
+      if (nullptr == XMLUtils::SetFloat(&rating, "value", value.rating))
+        return false;
+      if (nullptr == XMLUtils::SetInt(&rating, "votes", value.votes))
+        return false;
+      rating.SetAttribute("max", 10);
+      if (name == m_strDefaultRating)
+        rating.SetAttribute("default", "true");
+      if (nullptr == ratings.InsertEndChild(rating))
+        return false;
+    }
+    if (nullptr == node->InsertEndChild(ratings))
+      return false;
+  }
+  return true;
+}
+
 bool CVideoInfoTag::Load(const TiXmlElement *element, bool append, bool prioritise)
 {
   if (!element)
@@ -456,8 +481,6 @@ void CVideoInfoTag::Merge(CVideoInfoTag& other)
     m_ratings = other.m_ratings;
     m_strDefaultRating = other.m_strDefaultRating;
   }
-  if (other.m_iIdRating != -1)
-    m_iIdRating = other.m_iIdRating;
   if (other.m_iUserRating)
     m_iUserRating = other.m_iUserRating;
 
@@ -1135,7 +1158,6 @@ std::string CVideoInfoTag::GetCast(const std::string& separator,
 void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
 {
   std::string value;
-  float fValue;
 
   if (StringUtils::ToLower(XMLUtils::GetAttribute(movie, "override")) == "true")
     SetOverride(true);
@@ -1176,19 +1198,6 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
           (child->QueryBoolAttribute("default", &isDefault) == TIXML_SUCCESS) && isDefault)
         m_strDefaultRating = name;
     }
-  }
-  else if (XMLUtils::GetFloat(movie, "rating", fValue))
-  {
-    CRating r(fValue, 0);
-    if (XMLUtils::GetString(movie, "votes", value))
-      r.votes = StringUtils::ReturnDigits(value);
-    int max_value = 10;
-    const TiXmlElement* rElement = movie->FirstChildElement("rating");
-    if (rElement && (rElement->QueryIntAttribute("max", &max_value) == TIXML_SUCCESS) && max_value >= 1)
-      r.rating = r.rating / static_cast<float>(max_value) *
-                 10.0f; // Normalise the Movie Rating to between 1 and 10
-    SetRating(r, "default");
-    m_strDefaultRating = "default";
   }
   XMLUtils::GetInt(movie, "userrating", m_iUserRating);
 
@@ -1251,28 +1260,20 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   if (XMLUtils::GetString(movie, "path", value))
     SetPath(value);
 
-  const TiXmlElement* uniqueid = movie->FirstChildElement("uniqueid");
-  if (uniqueid == nullptr)
+  for (const TiXmlElement* uniqueid = movie->FirstChildElement("uniqueid"); uniqueid != nullptr;
+       uniqueid = uniqueid->NextSiblingElement("uniqueid"))
   {
-    if (XMLUtils::GetString(movie, "id", value))
-      SetUniqueID(value);
-  }
-  else
-  {
-    for (; uniqueid != nullptr; uniqueid = uniqueid->NextSiblingElement("uniqueid"))
+    if (uniqueid->FirstChild())
     {
-      if (uniqueid->FirstChild())
+      if (uniqueid->QueryStringAttribute("type", &value) == TIXML_SUCCESS)
+        SetUniqueID(uniqueid->FirstChild()->ValueStr(), value);
+      else
+        SetUniqueID(uniqueid->FirstChild()->ValueStr());
+      bool isDefault;
+      if (m_strDefaultUniqueID == "unknown" &&
+          (uniqueid->QueryBoolAttribute("default", &isDefault) == TIXML_SUCCESS) && isDefault)
       {
-        if (uniqueid->QueryStringAttribute("type", &value) == TIXML_SUCCESS)
-          SetUniqueID(uniqueid->FirstChild()->ValueStr(), value);
-        else
-          SetUniqueID(uniqueid->FirstChild()->ValueStr());
-        bool isDefault;
-        if (m_strDefaultUniqueID == "unknown" &&
-            (uniqueid->QueryBoolAttribute("default", &isDefault) == TIXML_SUCCESS) && isDefault)
-        {
-          m_strDefaultUniqueID = value;
-        }
+        m_strDefaultUniqueID = value;
       }
     }
   }
@@ -1432,17 +1433,11 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     node = node->NextSiblingElement("actor");
   }
 
-  // Pre-Jarvis NFO file:
-  // <set>A set</set>
-  if (XMLUtils::GetString(movie, "set", value))
-    SetSet(value);
-  // Jarvis+:
-  // <set><name>A set</name><overview>A set with a number of movies...</overview></set>
   node = movie->FirstChildElement("set");
   if (node)
   {
     // No name, no set
-    if (XMLUtils::GetString(node, "name", value))
+    if (XMLUtils::GetString(node, "name", value) && !value.empty())
     {
       SetSet(value);
       if (XMLUtils::GetString(node, "overview", value))
