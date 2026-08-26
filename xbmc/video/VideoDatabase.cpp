@@ -2357,7 +2357,10 @@ bool CVideoDatabase::GetSetInfo(int idSet, CVideoInfoTag& details, CFileItem* it
   return false;
 }
 
-bool CVideoDatabase::GetFileInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int idFile /* = -1 */)
+bool CVideoDatabase::GetFileInfo(const std::string& strFilenameAndPath,
+                                 CVideoInfoTag& details,
+                                 int idFile /* = -1 */,
+                                 int idVersion /* = -1 */)
 {
   try
   {
@@ -2366,21 +2369,38 @@ bool CVideoDatabase::GetFileInfo(const std::string& strFilenameAndPath, CVideoIn
     if (idFile < 0)
       return false;
 
-    std::string sql = PrepareSQL("SELECT * FROM files "
-                                "JOIN path ON path.idPath = files.idPath "
-                                "LEFT JOIN bookmark ON bookmark.idFile = files.idFile AND bookmark.type = %i "
-                                "WHERE files.idFile = %i", CBookmark::RESUME, idFile);
+    // when a version is given, its own watched state and resume point are returned
+    // rather than the file's, which is shared by every version on the file
+    std::string sql;
+    if (idVersion >= 0)
+      sql = PrepareSQL("SELECT *, vv.playCount AS versionPlayCount, "
+                       "vv.lastPlayed AS versionLastPlayed FROM files "
+                       "JOIN path ON path.idPath = files.idPath "
+                       "LEFT JOIN videoversion vv ON vv.idVersion = %i "
+                       "LEFT JOIN bookmark ON bookmark.idVersion = %i AND bookmark.type = %i "
+                       "WHERE files.idFile = %i",
+                       idVersion, idVersion, CBookmark::RESUME, idFile);
+    else
+      sql = PrepareSQL("SELECT * FROM files "
+                       "JOIN path ON path.idPath = files.idPath "
+                       "LEFT JOIN bookmark ON bookmark.idFile = files.idFile AND bookmark.type = "
+                       "%i AND bookmark.idVersion IS NULL "
+                       "WHERE files.idFile = %i",
+                       CBookmark::RESUME, idFile);
     if (!m_pDS->query(sql))
       return false;
+
+    const char* playCountField{idVersion >= 0 ? "versionPlayCount" : "files.playCount"};
+    const char* lastPlayedField{idVersion >= 0 ? "versionLastPlayed" : "files.lastPlayed"};
 
     details.m_iFileId = m_pDS->fv("files.idFile").get_asInt();
     details.m_strPath = m_pDS->fv("path.strPath").get_asString();
     std::string strFileName = m_pDS->fv("files.strFilename").get_asString();
     ConstructPath(details.m_strFileNameAndPath, details.m_strPath, strFileName);
     details.m_basePath = URIUtils::GetBasePath(details.m_strPath);
-    details.SetPlayCount(std::max(details.GetPlayCount(), m_pDS->fv("files.playCount").get_asInt()));
+    details.SetPlayCount(std::max(details.GetPlayCount(), m_pDS->fv(playCountField).get_asInt()));
     if (!details.m_lastPlayed.IsValid())
-      details.m_lastPlayed.SetFromDBDateTime(m_pDS->fv("files.lastPlayed").get_asString());
+      details.m_lastPlayed.SetFromDBDateTime(m_pDS->fv(lastPlayedField).get_asString());
     if (!details.m_dateAdded.IsValid())
       details.m_dateAdded.SetFromDBDateTime(m_pDS->fv("files.dateAdded").get_asString());
     if (!details.GetResumePoint().IsSet() ||
@@ -2391,6 +2411,9 @@ bool CVideoDatabase::GetFileInfo(const std::string& strFilenameAndPath, CVideoIn
                              m_pDS->fv("bookmark.totalTimeInSeconds").get_asDouble(),
                              m_pDS->fv("bookmark.playerState").get_asString());
     }
+
+    if (idVersion >= 0)
+      details.GetAssetInfo().SetVersionId(idVersion);
 
     // get streamdetails
     GetStreamDetails(details);
@@ -5153,7 +5176,9 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag)
   std::unique_ptr<Dataset> pDS(m_pDB->CreateDataset());
   try
   {
-    int idVersion{tag.m_iDbId >= 0 ? GetVideoVersionId(fileId, tag.m_iDbId, tag.m_type) : -1};
+    int idVersion{tag.GetAssetInfo().GetVersionId()};
+    if (idVersion < 0 && tag.m_iDbId >= 0)
+      idVersion = GetVideoVersionId(fileId, tag.m_iDbId, tag.m_type);
     if (idVersion < 0)
       idVersion = GetVideoVersionIdByFile(fileId);
 
@@ -7444,7 +7469,7 @@ bool CVideoDatabase::GetNavCommon(const std::string& strBaseDir,
         view       = MediaTypeMovie;
         view_id    = "idMovie";
         media_type = MediaTypeMovie;
-        extraField = "files.playCount";
+        extraField = "movie_view.playCount";
       }
       else if (idContent == VideoDbContentType::TVSHOWS) //this will not get tvshows with 0 episodes
       {
@@ -7460,7 +7485,7 @@ bool CVideoDatabase::GetNavCommon(const std::string& strBaseDir,
         view       = MediaTypeMusicVideo;
         view_id    = "idMVideo";
         media_type = MediaTypeMusicVideo;
-        extraField = "files.playCount";
+        extraField = "musicvideo_view.playCount";
       }
       else
         return false;
@@ -7482,8 +7507,7 @@ bool CVideoDatabase::GetNavCommon(const std::string& strBaseDir,
         view       = MediaTypeMovie;
         view_id    = "idMovie";
         media_type = MediaTypeMovie;
-        extraField = "count(1), count(files.playCount)";
-        extraJoin  = PrepareSQL("JOIN files ON files.idFile = %s_view.idFile", view.c_str());
+        extraField = PrepareSQL("count(1), count(%s_view.playCount)", view.c_str());
       }
       else if (idContent == VideoDbContentType::TVSHOWS)
       {
@@ -7496,8 +7520,7 @@ bool CVideoDatabase::GetNavCommon(const std::string& strBaseDir,
         view       = MediaTypeMusicVideo;
         view_id    = "idMVideo";
         media_type = MediaTypeMusicVideo;
-        extraField = "count(1), count(files.playCount)";
-        extraJoin  = PrepareSQL("JOIN files ON files.idFile = %s_view.idFile", view.c_str());
+        extraField = PrepareSQL("count(1), count(%s_view.playCount)", view.c_str());
       }
       else
         return false;
@@ -7942,7 +7965,7 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir,
         view       = MediaTypeMovie;
         view_id    = "idMovie";
         media_type = MediaTypeMovie;
-        extraField = "files.playCount";
+        extraField = "movie_view.playCount";
       }
       else if (idContent == VideoDbContentType::TVSHOWS)
       {
@@ -7957,7 +7980,7 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir,
         view       = MediaTypeEpisode;
         view_id    = "idEpisode";
         media_type = MediaTypeEpisode;
-        extraField = "files.playCount";
+        extraField = "episode_view.playCount";
       }
       else if (idContent == VideoDbContentType::MUSICVIDEOS)
       {
@@ -7969,7 +7992,7 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir,
         view       = MediaTypeMusicVideo;
         view_id    = "idMVideo";
         media_type = MediaTypeMusicVideo;
-        extraField = "count(1), count(files.playCount)";
+        extraField = "count(1), count(musicvideo_view.playCount)";
         if (bMainArtistOnly)
           extraJoin =
               PrepareSQL(" WHERE actor.name IN (SELECT musicvideo_view.c10 from musicvideo_view)");
@@ -8000,8 +8023,7 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir,
         view       = MediaTypeMovie;
         view_id    = "idMovie";
         media_type = MediaTypeMovie;
-        extraField = "count(1), count(files.playCount)";
-        extraJoin  = PrepareSQL(" JOIN files ON files.idFile=%s_view.idFile", view.c_str());
+        extraField = PrepareSQL("count(1), count(%s_view.playCount)", view.c_str());
       }
       else if (idContent == VideoDbContentType::TVSHOWS)
       {
@@ -8015,8 +8037,7 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir,
         view       = MediaTypeEpisode;
         view_id    = "idEpisode";
         media_type = MediaTypeEpisode;
-        extraField = "count(1), count(files.playCount)";
-        extraJoin  = PrepareSQL("JOIN files ON files.idFile = %s_view.idFile", view.c_str());
+        extraField = PrepareSQL("count(1), count(%s_view.playCount)", view.c_str());
       }
       else if (idContent == VideoDbContentType::MUSICVIDEOS)
       {
@@ -8028,8 +8049,7 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir,
         view       = MediaTypeMusicVideo;
         view_id    = "idMVideo";
         media_type = MediaTypeMusicVideo;
-        extraField = "count(1), count(files.playCount)";
-        extraJoin  = PrepareSQL("JOIN files ON files.idFile = %s_view.idFile", view.c_str());
+        extraField = PrepareSQL("count(1), count(%s_view.playCount)", view.c_str());
         if (bMainArtistOnly)
           extraJoin =
               extraJoin +
@@ -8221,7 +8241,7 @@ bool CVideoDatabase::GetYearsNav(const std::string& strBaseDir,
     {
       if (idContent == VideoDbContentType::MOVIES)
       {
-        strSQL = "select movie_view.premiered, path.strPath, files.playCount from movie_view ";
+        strSQL = "select movie_view.premiered, path.strPath, movie_view.playCount from movie_view ";
         extFilter.AppendJoin("join files on files.idFile = movie_view.idFile join path on files.idPath = path.idPath");
       }
       else if (idContent == VideoDbContentType::TVSHOWS)
@@ -8231,7 +8251,7 @@ bool CVideoDatabase::GetYearsNav(const std::string& strBaseDir,
       }
       else if (idContent == VideoDbContentType::MUSICVIDEOS)
       {
-        strSQL = "select musicvideo_view.premiered, path.strPath, files.playCount from musicvideo_view ";
+        strSQL = "select musicvideo_view.premiered, path.strPath, musicvideo_view.playCount from musicvideo_view ";
         extFilter.AppendJoin("join files on files.idFile = musicvideo_view.idFile join path on files.idPath = path.idPath");
       }
       else
@@ -8242,8 +8262,8 @@ bool CVideoDatabase::GetYearsNav(const std::string& strBaseDir,
       std::string group;
       if (idContent == VideoDbContentType::MOVIES)
       {
-        strSQL = "select movie_view.premiered, count(1), count(files.playCount) from movie_view ";
-        extFilter.AppendJoin("join files on files.idFile = movie_view.idFile");
+        strSQL =
+            "select movie_view.premiered, count(1), count(movie_view.playCount) from movie_view ";
         extFilter.AppendGroup("movie_view.premiered");
       }
       else if (idContent == VideoDbContentType::TVSHOWS)
@@ -8253,8 +8273,8 @@ bool CVideoDatabase::GetYearsNav(const std::string& strBaseDir,
       }
       else if (idContent == VideoDbContentType::MUSICVIDEOS)
       {
-        strSQL = "select musicvideo_view.premiered, count(1), count(files.playCount) from musicvideo_view ";
-        extFilter.AppendJoin("join files on files.idFile = musicvideo_view.idFile");
+        strSQL = "select musicvideo_view.premiered, count(1), count(musicvideo_view.playCount) "
+                 "from musicvideo_view ";
         extFilter.AppendGroup("musicvideo_view.premiered");
       }
       else
@@ -13508,7 +13528,7 @@ void CVideoDatabase::GetVideoVersions(VideoDbContentType itemType,
     for (const auto& [name, id, idFile, idVersion, filePath] : versions)
     {
       CVideoInfoTag infoTag;
-      if (GetFileInfo("", infoTag, idFile))
+      if (GetFileInfo("", infoTag, idFile, idVersion))
       {
         infoTag.m_type = MediaTypeVideoVersion;
         infoTag.m_iDbId = idVersion;
@@ -13591,7 +13611,7 @@ void CVideoDatabase::GetDefaultVideoVersion(VideoDbContentType itemType, int dbI
       const std::string filePath{m_pDS->fv("filePath").get_asString()};
       const auto videoAssetType{static_cast<VideoAssetType>(m_pDS->fv("itemType").get_asInt())};
       CVideoInfoTag infoTag;
-      if (GetFileInfo("", infoTag, idFile))
+      if (GetFileInfo("", infoTag, idFile, idVersion))
       {
         infoTag.m_type = MediaTypeVideoVersion;
         infoTag.m_iDbId = idVersion;
