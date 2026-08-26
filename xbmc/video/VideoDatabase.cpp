@@ -2915,16 +2915,14 @@ int CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath,
   if (newIdFile < 0)
     return -1;
 
-  if (newIdFile == oldIdFile && !IsVfsMediaPath(fileAndPath))
-    return newIdFile; // Nothing to do, and the file must not be deleted below
-
   try
   {
     const std::string filePath{GetVersionFilePath(fileAndPath)};
 
     if (newIdFile == oldIdFile)
     {
-      // same physical container: only the episode's vfs path changes
+      // same physical container: only the episode's vfs path changes, cleared when
+      // reverting to the container base
       m_pDS->exec(PrepareSQL("UPDATE videoversion SET filePath='%s' WHERE idFile=%i AND "
                              "media_type='%s' AND idMedia=%i",
                              filePath.c_str(), oldIdFile, MediaTypeEpisode, idEpisode));
@@ -2989,12 +2987,18 @@ int CVideoDatabase::SetFileForMovie(const std::string& fileAndPath,
   if (newIdFile < 0)
     return -1;
 
-  if (newIdFile == oldIdFile && !IsVfsMediaPath(fileAndPath))
-    return newIdFile; // Nothing to do
-
   try
   {
     const std::string filePath{GetVersionFilePath(fileAndPath)};
+
+    if (newIdFile == oldIdFile && filePath.empty())
+    {
+      // reverting to the container base: clear the default version's vfs path
+      m_pDS->exec(PrepareSQL("UPDATE videoversion SET filePath='' WHERE idFile=%i AND "
+                             "media_type='movie' AND idMedia=%i AND isDefault=1",
+                             oldIdFile, idMovie));
+      return newIdFile;
+    }
 
     // The file played may already be a version of the movie in its own right
     // eg. selecting a known version playlist through the bluray menu
