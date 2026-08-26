@@ -81,6 +81,10 @@ bool CPosixDirectory::GetDirectory(const CURL& url, CFileItemList& items)
 
           item->SetDateTime(localTime);
           item->SetSize(isDir ? 0 : buffer.st_size);
+
+          // raw values; the DateTime above is local-time converted
+          item->SetProperty(DIR_PROPERTY_STAT_MTIME, static_cast<int64_t>(buffer.st_mtime));
+          item->SetProperty(DIR_PROPERTY_STAT_CTIME, static_cast<int64_t>(buffer.st_ctime));
         }
       }
 

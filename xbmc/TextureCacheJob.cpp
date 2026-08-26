@@ -13,30 +13,29 @@
 #include "TextureCache.h"
 #include "TextureDatabase.h"
 #include "URL.h"
-#include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/audiodecoder.h"
 #include "commons/ilog.h"
 #include "filesystem/File.h"
+#include "filesystem/IDirectory.h"
 #include "guilib/Texture.h"
 #include "imagefiles/ImageFileURL.h"
 #include "imagefiles/SpecialImageLoaderFactory.h"
 #include "pictures/Picture.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
-#include <cstdlib>
 #include <cstring>
-#include <exception>
 #include <utility>
 
 #include "PlatformDefs.h"
 
-CTextureCacheJob::CTextureCacheJob(const std::string &url, const std::string &oldHash):
-  m_url(url),
-  m_oldHash(oldHash),
-  m_cachePath(CTextureCache::GetCacheFile(m_url))
+CTextureCacheJob::CTextureCacheJob(const std::string& url,
+                                   const std::string& oldHash,
+                                   const std::string& knownHash)
+  : m_url(url),
+    m_oldHash(oldHash),
+    m_knownHash(knownHash),
+    m_cachePath(CTextureCache::GetCacheFile(m_url))
 {
 }
 
@@ -99,8 +98,8 @@ bool CTextureCacheJob::CacheTexture(std::unique_ptr<CTexture>* out_texture)
 
   if (m_details.updateable)
   {
-    // generate the hash
-    m_details.hash = GetImageHash(image);
+    // generate the hash, unless the caller already knows it (saves a file stat)
+    m_details.hash = m_knownHash.empty() ? GetImageHashFromStat(image) : m_knownHash;
     if (m_details.hash.empty())
       return false;
 
@@ -197,7 +196,30 @@ std::unique_ptr<CTexture> CTextureCacheJob::LoadImage(const IMAGE_FILES::CImageF
   return texture;
 }
 
-std::string CTextureCacheJob::GetImageHash(const std::string &url)
+std::string CTextureCacheJob::FormatImageHash(int64_t modificationTime, int64_t size)
+{
+  if (modificationTime == 0 && size == 0)
+    return "";
+
+  return StringUtils::Format("d{}s{}", modificationTime, size);
+}
+
+std::string CTextureCacheJob::GetImageHash(const CFileItem& listedFile)
+{
+  // The raw values the listing carried, rather than the item's date/time (UTC conversion -> DST issues)
+  int64_t modificationTime{listedFile.GetProperty(XFILE::DIR_PROPERTY_STAT_MTIME).asInteger(0)};
+  if (modificationTime == 0)
+    modificationTime = listedFile.GetProperty(XFILE::DIR_PROPERTY_STAT_CTIME).asInteger(0);
+
+  // Not every VFS layer fills these in. Without a time the size alone would not match a stat-based
+  // hash, so say nothing is known and let the file be stat'ed as usual
+  if (modificationTime == 0)
+    return "";
+
+  return FormatImageHash(modificationTime, listedFile.GetSize());
+}
+
+std::string CTextureCacheJob::GetImageHashFromStat(const std::string& url)
 {
   // silently ignore - we cannot stat these
   // in the case of upnp thumbs are/should be provided when filling the directory list, there's no reason to stat all object ids
@@ -211,8 +233,9 @@ std::string CTextureCacheJob::GetImageHash(const std::string &url)
     int64_t time = st.st_mtime;
     if (!time)
       time = st.st_ctime;
-    if (time || st.st_size)
-      return StringUtils::Format("d{}s{}", time, st.st_size);
+
+    if (const std::string hash{FormatImageHash(time, st.st_size)}; !hash.empty())
+      return hash;
 
     // the image exists but we couldn't determine the mtime/ctime and/or size
     // so set an obviously bad hash

@@ -14,7 +14,6 @@
 #include "commons/ilog.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "filesystem/File.h"
-#include "filesystem/IFileTypes.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/Texture.h"
@@ -30,10 +29,9 @@
 #include "utils/log.h"
 
 #include <chrono>
-#include <exception>
+#include <cstring>
 #include <mutex>
 #include <optional>
-#include <string.h>
 
 using namespace XFILE;
 using namespace std::chrono_literals;
@@ -117,7 +115,7 @@ std::string CTextureCache::CheckCachedImage(const std::string &url, bool &needsR
   return "";
 }
 
-void CTextureCache::BackgroundCacheImage(const std::string &url)
+void CTextureCache::BackgroundCacheImage(const std::string& url, const std::string& knownHash)
 {
   if (url.empty())
     return;
@@ -132,7 +130,7 @@ void CTextureCache::BackgroundCacheImage(const std::string &url)
     return;
 
   // needs (re)caching
-  AddJob(new CTextureCacheJob(path, details.hash));
+  AddJob(new CTextureCacheJob(path, details.hash, knownHash));
 }
 
 bool CTextureCache::StartCacheImage(const std::string& image)
@@ -147,13 +145,19 @@ bool CTextureCache::StartCacheImage(const std::string& image)
   return false;
 }
 
+std::string CTextureCache::CacheImage(const std::string& image, const std::string& knownHash)
+{
+  return CacheImage(image, nullptr, nullptr, 0, 0, CAspectRatio::CENTER, knownHash);
+}
+
 std::string CTextureCache::CacheImage(
     const std::string& image,
     std::unique_ptr<CTexture>* texture /*= nullptr*/,
     CTextureDetails* details /*= nullptr*/,
     unsigned int idealWidth /*= 0*/,
     unsigned int idealHeight /*= 0*/,
-    CAspectRatio::AspectRatio aspectRatio /*= CAspectRatio::CENTER*/)
+    CAspectRatio::AspectRatio aspectRatio /*= CAspectRatio::CENTER*/,
+    const std::string& knownHash /*= ""*/)
 {
   std::string url = IMAGE_FILES::ToCacheKey(image);
   if (url.empty())
@@ -165,7 +169,7 @@ std::string CTextureCache::CacheImage(
     m_processinglist.insert(url);
     lock.unlock();
     // cache the texture directly
-    CTextureCacheJob job(url);
+    CTextureCacheJob job(url, "", knownHash);
     bool success = job.CacheTexture(texture);
     OnCachingComplete(success, &job);
     if (success && details)

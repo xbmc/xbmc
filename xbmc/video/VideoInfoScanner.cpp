@@ -15,6 +15,7 @@
 #include "ServiceBroker.h"
 #include "SetInfoTag.h"
 #include "TextureCache.h"
+#include "TextureCacheJob.h"
 #include "URL.h"
 #include "Util.h"
 #include "VideoInfoDownloader.h"
@@ -224,7 +225,9 @@ void OnDirectoryScanned(const std::string& strDirectory)
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 }
 
-void CacheArtwork(const std::string& url, bool retrieveArtDuringScrape)
+void CacheArtwork(const std::string& url,
+                  bool retrieveArtDuringScrape,
+                  const std::string& knownHash = "")
 {
   if (url.empty())
     return;
@@ -232,7 +235,7 @@ void CacheArtwork(const std::string& url, bool retrieveArtDuringScrape)
   const auto& textureCache = CServiceBroker::GetTextureCache();
   if (!retrieveArtDuringScrape)
   {
-    textureCache->BackgroundCacheImage(url);
+    textureCache->BackgroundCacheImage(url, knownHash);
     return;
   }
 
@@ -245,15 +248,16 @@ void CacheArtwork(const std::string& url, bool retrieveArtDuringScrape)
   constexpr int MAX_SYNC_CACHE_ATTEMPTS = 3;
   for (int attempt = 1; attempt <= MAX_SYNC_CACHE_ATTEMPTS; ++attempt)
   {
-    if (!textureCache->CacheImage(url).empty())
+    if (!textureCache->CacheImage(url, knownHash).empty())
       return; // succeeded
   }
 
   // Synchronous fetch failed after several attempts (network timeout, etc.)
   // Fall back to the resilient background path.
-  textureCache->BackgroundCacheImage(url);
+  textureCache->BackgroundCacheImage(url, knownHash);
   CLog::LogF(LOGDEBUG, "Synchronous art caching for {} failed", url);
 }
+
 } // namespace
 
 namespace KODI::VIDEO
@@ -3148,11 +3152,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
     CFileItemList items;
     // don't try to fetch anything local with plugin source
     if (!URIUtils::IsPlugin(actorsDir) && CDirectory::Exists(actorsDir))
-      CDirectory::GetDirectory(actorsDir, items, ".png|.jpg|.tbn",
-                               DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO);
+      CDirectory::GetDirectory(actorsDir, items, ".png|.jpg|.tbn", DIR_FLAG_NO_FILE_DIRS);
 
-    // Index the thumbs by filename (without extension)
+    // Index the thumbs by filename (without extension), and the hashes taken from the directory
+    // listing by url
     std::map<std::string, std::string> thumbs;
+    std::map<std::string, std::string> listedHashes;
     for (const auto& item : items)
     {
       if (item->IsFolder())
@@ -3161,6 +3166,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
       std::string name{URIUtils::GetFileName(item->GetPath())};
       URIUtils::RemoveExtension(name);
       thumbs.try_emplace(std::move(name), item->GetPath());
+      if (std::string hash{CTextureCacheJob::GetImageHash(*item)}; !hash.empty())
+        listedHashes.emplace(item->GetPath(), std::move(hash));
     }
 
     for (auto& actor : actors)
@@ -3186,7 +3193,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
             actor.thumbUrl.Clear();
         }
       }
-      CacheArtwork(actor.thumb, m_artRetrievalTiming == ArtRetrievalTiming::SYNCHRONOUS);
+    }
+
+    for (const auto& actor : actors)
+    {
+      const auto hash{listedHashes.find(actor.thumb)};
+      CacheArtwork(actor.thumb, m_artRetrievalTiming == ArtRetrievalTiming::SYNCHRONOUS,
+                   hash != listedHashes.end() ? hash->second : std::string{});
     }
   }
 
