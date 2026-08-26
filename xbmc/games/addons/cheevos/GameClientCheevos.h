@@ -8,17 +8,16 @@
 
 #pragma once
 
-#include <functional>
 #include <string>
 
 struct AddonInstance_Game;
+struct game_rc_achievement_progress;
+struct game_rc_achievement_triggered;
+struct game_rc_game_loaded;
+struct game_rc_login_result;
 
 namespace KODI
 {
-namespace RETRO
-{
-enum class RConsoleID;
-}
 
 namespace GAME
 {
@@ -33,30 +32,45 @@ class CGameClientCheevos
 public:
   CGameClientCheevos(CGameClient& gameClient, AddonInstance_Game& addonStruct);
 
-  bool RCGenerateHashFromFile(std::string& hash,
-                              RETRO::RConsoleID consoleID,
-                              const std::string& filePath);
-  bool RCGetGameIDUrl(std::string& url, const std::string& hash);
-  bool RCGetPatchFileUrl(std::string& url,
-                         const std::string& username,
-                         const std::string& token,
-                         unsigned int gameID);
-  void SetRetroAchievementsCredentials(const std::string& username, const std::string& token);
-  bool RCPostRichPresenceUrl(std::string& url,
-                             std::string& postData,
-                             const std::string& username,
-                             const std::string& token,
-                             unsigned gameID,
-                             const std::string& richPresence);
-  void RCEnableRichPresence(const std::string& script);
-  void RCGetRichPresenceEvaluation(std::string& evaluation, RETRO::RConsoleID consoleID);
+  /*!
+   * \name RetroAchievements events received from the add-on
+   *
+   * These are called on the add-on's thread. They publish to the achievement
+   * runtime and post notifications; they must not block.
+   */
+  //@{
+  void OnGameLoaded(const game_rc_game_loaded& data);
+  void OnAchievementTriggered(const game_rc_achievement_triggered& data);
+  void OnGameCompleted(const std::string& title, bool hardcore);
+  void OnRichPresenceUpdated(const std::string& evaluation);
+  void OnLoginResult(const game_rc_login_result& data);
+  void OnAchievementProgress(const game_rc_achievement_progress* progress, unsigned int count);
+  void OnServerError(const std::string& message, const std::string& api);
+  void OnConnectionChanged(bool connected);
+  //@}
 
-  void ActivateAchievement(unsigned int cheevoId, const std::string& memAddrExpression);
-  void GetAchievementUrlId(const std::function<void(const std::string& achievementUrl,
-                                                    unsigned int cheevoId)>& callback);
+  /*!
+   * \brief Drop the published state when the game closes
+   *
+   * The next game's state doesn't arrive until the add-on has identified it,
+   * which may be several seconds away and may never happen. Without this the
+   * OSD would keep showing the previous game's achievements in the meantime.
+   */
+  void OnGameClosed();
 
-  // When the game is reset, the runtime should also be reset
-  void RCResetRuntime();
+  /*!
+   * \brief Hand the add-on the credentials to sign in with
+   *
+   * The account is entered in Kodi's settings, so the add-on can only sign in
+   * with what Kodi gives it. Sent before each game is loaded, since the token
+   * can change between games.
+   *
+   * Sent for every game, including when the player is signed out, where the
+   * credentials are empty and tell the client to drop any session it holds.
+   *
+   * \return True if the client accepted them
+   */
+  bool SendCredentials();
 
 private:
   CGameClient& m_gameClient;

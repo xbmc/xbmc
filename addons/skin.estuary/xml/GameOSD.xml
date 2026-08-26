@@ -13,7 +13,8 @@
 				!Window.IsActive(GameVideoRotation) +
 				!Window.IsActive(InGameSaves) +
 				!Window.IsActive(GameAgents) +
-				!Window.IsActive(GameDiscManager)
+				!Window.IsActive(GameDiscManager) +
+				!Window.IsActive(GameAchievements)
 			</visible>
 			<include>Visible_Fade</include>
 			<control type="group" id="10">
@@ -73,13 +74,13 @@
 			<control type="group" id="20">
 				<visible>!System.GetBool(gamesgeneral.showosdhelp) + !RetroPlayer.SupportsEject</visible>
 				<centerleft>50%</centerleft>
-				<height>560</height>
+				<height>640</height>
 				<centertop>50%</centertop>
 				<width>700</width>
 				<animation effect="fade" time="200">VisibleChange</animation>
 				<include content="DialogBackgroundCommons">
 					<param name="width" value="700" />
-					<param name="height" value="560" />
+					<param name="height" value="640" />
 					<param name="header_label" value="$LOCALIZE[35221]" />
 					<param name="header_id" value="3" />
 				</include>
@@ -229,6 +230,17 @@
 								<onclick>ActivateWindow(GameAgents)</onclick>
 							</item>
 							<item>
+								<description>
+									Achievements button. Shown unconditionally: the dialog says
+									whether the player needs to sign in or the game has no
+									achievement set, which is clearer than hiding the button.
+								</description>
+								<label>$LOCALIZE[35287]</label>
+								<label2>$INFO[RetroPlayer.AchievementsProgress]</label2>
+								<icon>osd/fullscreen/buttons/rating.png</icon>
+								<onclick>ActivateWindow(GameAchievements)</onclick>
+							</item>
+							<item>
 								<description>Reset button</description>
 								<label>$LOCALIZE[13007]</label>
 								<icon>osd/fullscreen/buttons/reset.png</icon>
@@ -263,13 +275,13 @@
 			<control type="group" id="20">
 				<visible>!System.GetBool(gamesgeneral.showosdhelp) + RetroPlayer.SupportsEject</visible>
 				<centerleft>50%</centerleft>
-				<height>640</height>
+				<height>720</height>
 				<centertop>50%</centertop>
 				<width>700</width>
 				<animation effect="fade" time="200">VisibleChange</animation>
 				<include content="DialogBackgroundCommons">
 					<param name="width" value="700" />
-					<param name="height" value="640" />
+					<param name="height" value="720" />
 					<param name="header_label" value="$LOCALIZE[35221]" />
 					<param name="header_id" value="3" />
 				</include>
@@ -423,6 +435,17 @@
 								<label>$LOCALIZE[35172]</label>
 								<icon>osd/fullscreen/buttons/agent.png</icon>
 								<onclick>ActivateWindow(GameAgents)</onclick>
+							</item>
+							<item>
+								<description>
+									Achievements button. Shown unconditionally: the dialog says
+									whether the player needs to sign in or the game has no
+									achievement set, which is clearer than hiding the button.
+								</description>
+								<label>$LOCALIZE[35287]</label>
+								<label2>$INFO[RetroPlayer.AchievementsProgress]</label2>
+								<icon>osd/fullscreen/buttons/rating.png</icon>
+								<onclick>ActivateWindow(GameAchievements)</onclick>
 							</item>
 							<item>
 								<description>Reset button</description>

@@ -190,6 +190,47 @@ public:
   bool Serialize(uint8_t* data, size_t size);
   bool Deserialize(const uint8_t* data, size_t size);
 
+  /*!
+   * \brief Hold the client still for the duration of a savestate snapshot
+   *
+   * The emulator's memory and the achievement state have to describe the same
+   * frame. Both are read from a worker thread while the game loop runs, so
+   * locking each read on its own is not enough - RunFrame() would still be
+   * free to advance between them, pairing one frame's memory with another
+   * frame's achievement progress.
+   *
+   * The lock is recursive, so the calls made while holding it may take it
+   * again.
+   */
+  std::unique_lock<CCriticalSection> LockForSnapshot() { return std::unique_lock(m_critSection); }
+
+  /*!
+   * \brief Take a snapshot of the client's achievement state
+   *
+   * Separate from the emulator's state, which must keep the exact size the
+   * client reports. See savestate.fbs.
+   *
+   * \param[out] data The state, emptied if there is none
+   *
+   * \return True if state was captured, false if the client has none
+   */
+  bool SerializeAchievementState(std::vector<uint8_t>& data);
+
+  /*!
+   * \brief Restore the client's achievement state after a savestate load
+   *
+   * Called for every load, including savestates that carry no achievement
+   * data: the client has to know the machine state jumped either way.
+   */
+  bool DeserializeAchievements(const uint8_t* data, size_t size);
+
+  /*!
+   * \brief Give the client the RetroAchievements account to sign in with
+   *
+   * The account is held by Kodi, which owns the settings it is entered in.
+   */
+  bool SetRetroAchievementsCredentials(const std::string& username, const std::string& token);
+
   // Implementation of IHwFramebufferCallback
   void HardwareContextReset() override;
 
@@ -241,6 +282,17 @@ private:
   static void cb_close_stream(KODI_HANDLE kodiInstance, KODI_GAME_STREAM_HANDLE stream);
   static game_proc_address_t cb_hw_get_proc_address(KODI_HANDLE kodiInstance, const char* sym);
   static bool cb_input_event(KODI_HANDLE kodiInstance, const game_input_event* event);
+  static void cb_rc_on_game_loaded(KODI_HANDLE kodiInstance, const game_rc_game_loaded* data);
+  static void cb_rc_on_achievement_triggered(KODI_HANDLE kodiInstance,
+                                             const game_rc_achievement_triggered* data);
+  static void cb_rc_on_game_completed(KODI_HANDLE kodiInstance, const char* title, bool hardcore);
+  static void cb_rc_on_rich_presence_updated(KODI_HANDLE kodiInstance, const char* evaluation);
+  static void cb_rc_on_login_result(KODI_HANDLE kodiInstance, const game_rc_login_result* data);
+  static void cb_rc_on_achievement_progress(KODI_HANDLE kodiInstance,
+                                            const game_rc_achievement_progress* progress,
+                                            unsigned int count);
+  static void cb_rc_on_server_error(KODI_HANDLE kodiInstance, const char* message, const char* api);
+  static void cb_rc_on_connection_changed(KODI_HANDLE kodiInstance, bool connected);
   //@}
 
   /*!

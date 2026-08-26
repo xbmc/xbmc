@@ -232,6 +232,25 @@ public:
   virtual void SetDisplayAspectRatio(float displayAspectRatio) = 0;
   virtual void SetRotationDegCCW(unsigned int rotationCCW) = 0;
   virtual uint8_t* GetMemoryBuffer(size_t size) = 0;
+
+  /*!
+   * \brief The achievement runtime's state, if the savestate carries any
+   *
+   * \return The state, or nullptr when the savestate was written without it
+   */
+  virtual const uint8_t* GetAchievementData() const = 0;
+
+  /*!
+   * \brief The size of the region returned by GetAchievementData()
+   */
+  virtual size_t GetAchievementSize() const = 0;
+
+  /*!
+   * \brief A buffer to write the achievement runtime's state into
+   *
+   * Sized by the caller from what the runtime reports, so it is not capped.
+   */
+  virtual uint8_t* GetAchievementBuffer(size_t size) = 0;
   virtual void Finalize() = 0;
   ///}
 

@@ -83,6 +83,9 @@ public:
   void SetDisplayAspectRatio(float displayAspectRatio) override;
   void SetRotationDegCCW(unsigned int rotationCCW) override;
   uint8_t* GetMemoryBuffer(size_t size) override;
+  const uint8_t* GetAchievementData() const override;
+  size_t GetAchievementSize() const override;
+  uint8_t* GetAchievementBuffer(size_t size) override;
   void Finalize() override;
   bool Deserialize(std::vector<uint8_t> data) override;
 
@@ -133,6 +136,10 @@ private:
   unsigned int m_rotationCCW{0};
   PendingSavestateBlob m_memoryData;
   std::vector<uint8_t> m_memoryDataDecompressed;
+
+  //! Small and written rarely, so it is stored as-is rather than through the
+  //! compressing blob path the video and memory payloads use
+  std::vector<uint8_t> m_achievementData;
 };
 } // namespace RETRO
 } // namespace KODI

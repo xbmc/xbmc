@@ -23,6 +23,7 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+#include <cstring>
 #include <memory>
 
 namespace
@@ -217,6 +218,14 @@ std::unique_ptr<ISavestate> CSavestateDatabase::RenameSavestate(const std::strin
 
   if (!savestate->CopyMemoryDataTo(*newSavestate))
     return {};
+
+  // Carried separately from the emulator's memory, which is all the copy above
+  // moves; without this a rename would drop the player's achievement progress
+  if (const size_t achievementSize = savestate->GetAchievementSize(); achievementSize > 0)
+  {
+    if (uint8_t* const achievementData = newSavestate->GetAchievementBuffer(achievementSize))
+      std::memcpy(achievementData, savestate->GetAchievementData(), achievementSize);
+  }
 
   newSavestate->Finalize();
 

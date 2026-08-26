@@ -11,13 +11,13 @@
 #include "ServiceBroker.h"
 #include "XBDateTime.h"
 #include "addons/AddonVersion.h"
-#include "cores/RetroPlayer/cheevos/Cheevos.h"
 #include "cores/RetroPlayer/guibridge/GUIGameMessenger.h"
 #include "cores/RetroPlayer/rendering/RPRenderManager.h"
 #include "cores/RetroPlayer/savestates/ISavestate.h"
 #include "cores/RetroPlayer/savestates/SavestateDatabase.h"
 #include "cores/RetroPlayer/streams/memory/DeltaPairMemoryStream.h"
 #include "filesystem/File.h"
+#include "games/AchievementRuntime.h"
 #include "games/GameServices.h"
 #include "games/GameSettings.h"
 #include "games/addons/GameClient.h"
@@ -26,8 +26,10 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <cstring>
 #include <memory>
 #include <mutex>
+#include <vector>
 
 using namespace KODI;
 using namespace RETRO;
@@ -36,13 +38,11 @@ using namespace RETRO;
 
 CReversiblePlayback::CReversiblePlayback(GAME::CGameClient* gameClient,
                                          CRPRenderManager& renderManager,
-                                         CCheevos* cheevos,
                                          CGUIGameMessenger& guiMessenger,
                                          double fps,
                                          size_t serializeSize)
   : m_gameClient(gameClient),
     m_renderManager(renderManager),
-    m_cheevos(cheevos),
     m_guiMessenger(guiMessenger),
     m_gameLoop(this, fps),
     m_savestateDatabase(new CSavestateDatabase)
@@ -200,19 +200,39 @@ void CReversiblePlayback::CommitSavestate(bool autosave,
   const size_t memorySize = m_gameClient->SerializeSize();
   uint8_t* const memoryData = savestate->GetMemoryBuffer(memorySize);
 
-  // Copy the savestate memory
+  // Separate from the emulator's memory; see savestate.fbs
+  std::vector<uint8_t> achievementState;
+
+  // Both payloads under one client lock, so the game loop cannot advance
+  // between them and pair one frame's memory with another frame's progress.
+  //
+  // m_mutex before the client lock, which is the order the game loop uses:
+  // AddFrame() holds m_mutex across CGameClient::Serialize(), and that takes
+  // the client lock. Taking them the other way round here deadlocks the two
+  // against each other whenever an autosave lands mid-frame, which also hangs
+  // shutdown because Deinitialize() waits on the save.
   {
     std::unique_lock lock(m_mutex);
+    std::unique_lock clientLock = m_gameClient->LockForSnapshot();
+
+    // Copy the savestate memory
     if (m_memoryStream && m_memoryStream->CurrentFrame() != nullptr)
     {
       std::memcpy(memoryData, m_memoryStream->CurrentFrame(), memorySize);
     }
     else
     {
-      lock.unlock();
       if (!m_gameClient->Serialize(memoryData, memorySize))
         return;
     }
+
+    m_gameClient->SerializeAchievementState(achievementState);
+  }
+
+  if (!achievementState.empty())
+  {
+    if (uint8_t* const achievementData = savestate->GetAchievementBuffer(achievementState.size()))
+      std::memcpy(achievementData, achievementState.data(), achievementState.size());
   }
 
   // Attempt to get existing properties
@@ -226,7 +246,8 @@ void CReversiblePlayback::CommitSavestate(bool autosave,
     }
   }
 
-  const std::string caption = m_cheevos->GetRichPresenceEvaluation();
+  const std::string caption =
+      CServiceBroker::GetGameServices().AchievementRuntime().GetRichPresence();
   const std::string gameFileName = URIUtils::GetFileName(m_gameClient->GetGamePath());
   const double timestampWallClock =
       (timestampFrames /
@@ -300,6 +321,27 @@ bool CReversiblePlayback::LoadSavestate(const std::string& savestatePath)
 
       if (m_gameClient->Deserialize(savestate->GetMemoryData(), memorySize))
       {
+        // After the emulator, so the runtime matches its machine state, and
+        // unconditionally: a savestate written before this existed, or while
+        // signed out, carries none, but the client still has to be told the
+        // machine state jumped. Left untold, the progress it holds for the
+        // timeline being abandoned would survive the restore.
+        const uint8_t* const achievementData = savestate->GetAchievementData();
+        const size_t achievementSize = savestate->GetAchievementSize();
+
+        if (!m_gameClient->DeserializeAchievements(achievementData, achievementSize) &&
+            achievementData != nullptr && achievementSize != 0)
+        {
+          // State the runtime would not take, from another runtime version or
+          // a damaged file. Ask for a reset rather than leaving it: what it
+          // still holds describes the timeline just abandoned, and carrying
+          // that forward is how an achievement gets awarded unearned. The
+          // savestate itself is fine, so the load is not failed for it.
+          CLog::Log(LOGWARNING, "RetroPlayer[SAVE]: Achievement state refused, resetting runtime");
+
+          m_gameClient->DeserializeAchievements(nullptr, 0);
+        }
+
         m_totalFrameCount = savestate->TimestampFrames();
         bSuccess = true;
         if (savestate->Type() == SAVE_TYPE::AUTO)
@@ -307,8 +349,6 @@ bool CReversiblePlayback::LoadSavestate(const std::string& savestatePath)
       }
     }
   }
-
-  m_cheevos->ResetRuntime();
 
   return bSuccess;
 }
@@ -434,8 +474,20 @@ void CReversiblePlayback::UpdateMemoryStream()
 
     if (!m_memoryStream)
     {
+      const size_t memorySize = m_gameClient->SerializeSize();
+
+      // Ceiling, not the real cost: the buffer keeps xor deltas of changed
+      // words only. Worth logging because a large state and a long window put
+      // that ceiling in the gigabytes.
+      CLog::Log(LOGINFO,
+                "RetroPlayer[SAVE]: Rewind buffer: {} frames of up to {} bytes ({:.1f} MB "
+                "worst case) for {} seconds at {:.2f} fps",
+                frameCount, memorySize,
+                static_cast<double>(memorySize) * frameCount / (1024.0 * 1024.0), rewindBufferSec,
+                m_gameLoop.FPS());
+
       m_memoryStream = std::make_unique<CDeltaPairMemoryStream>();
-      m_memoryStream->Init(m_gameClient->SerializeSize(), frameCount);
+      m_memoryStream->Init(memorySize, frameCount);
     }
 
     if (m_memoryStream->MaxFrameCount() != frameCount)

@@ -19423,7 +19423,109 @@ msgctxt "#35280"
 msgid "Select disc"
 msgstr ""
 
-#empty strings from id 35281 to 35297
+#. Heading of the notification shown when the player earns an achievement
+#: xbmc/games/addons/cheevos/GameClientCheevos.cpp
+msgctxt "#35281"
+msgid "Achievement Unlocked"
+msgstr ""
+
+#. Heading of the notification shown when every achievement of a game has been earned in hardcore mode
+#: xbmc/games/addons/cheevos/GameClientCheevos.cpp
+msgctxt "#35282"
+msgid "Game mastered"
+msgstr ""
+
+#. Heading of the notification shown when every achievement of a game has been earned
+#: xbmc/games/addons/cheevos/GameClientCheevos.cpp
+msgctxt "#35283"
+msgid "Game completed"
+msgstr ""
+
+#. Notification shown when a game with achievement support is loaded. {0:d} is the number earned, {1:d} the total
+#: xbmc/games/addons/cheevos/GameClientCheevos.cpp
+msgctxt "#35284"
+msgid "{0:d} of {1:d} achievements unlocked"
+msgstr ""
+
+#. Message shown when the achievements dialog is opened without being logged in to RetroAchievements
+#: xbmc/games/dialogs/osd/DialogGameAchievements.cpp
+msgctxt "#35285"
+msgid "Log in to RetroAchievements in Settings to use this feature."
+msgstr ""
+
+#. Message shown when the achievements dialog is opened for a game that RetroAchievements has no achievement set for
+#: xbmc/games/dialogs/osd/DialogGameAchievements.cpp
+msgctxt "#35286"
+msgid "This game doesn't support RetroAchievements"
+msgstr ""
+
+#. Label for the button that opens the achievements dialog, and heading of that dialog
+#: addons/skin.estuary/xml/GameOSD.xml
+#: addons/skin.estuary/xml/Includes_Games.xml
+msgctxt "#35287"
+msgid "Achievements"
+msgstr ""
+
+#. Progress through a game's achievements, weighted by point value. {0:d} is a percentage
+#: xbmc/games/dialogs/osd/DialogGameAchievements.cpp
+msgctxt "#35288"
+msgid "{0:d}% complete"
+msgstr ""
+
+#. Date an achievement was earned. {0:s} is a localised date
+#: xbmc/games/dialogs/osd/DialogGameAchievements.cpp
+msgctxt "#35289"
+msgid "Unlocked {0:s}"
+msgstr ""
+
+#. Rarity category of an achievement earned by more than half of players
+#: xbmc/games/dialogs/osd/DialogGameAchievements.cpp
+msgctxt "#35290"
+msgid "Common"
+msgstr ""
+
+#. Rarity category of an achievement earned by 10% to 50% of players
+#: xbmc/games/dialogs/osd/DialogGameAchievements.cpp
+msgctxt "#35291"
+msgid "Uncommon"
+msgstr ""
+
+#. Rarity category of an achievement earned by 2% to 10% of players
+#: xbmc/games/dialogs/osd/DialogGameAchievements.cpp
+msgctxt "#35292"
+msgid "Rare"
+msgstr ""
+
+#. Rarity category of an achievement earned by fewer than 2% of players
+#: xbmc/games/dialogs/osd/DialogGameAchievements.cpp
+msgctxt "#35293"
+msgid "Ultra rare"
+msgstr ""
+
+#. Point value of an achievement, abbreviated to fit the list. {0:d} is the number of points
+#: xbmc/games/dialogs/osd/DialogGameAchievements.cpp
+msgctxt "#35294"
+msgid "{0:d} pts"
+msgstr ""
+
+#. Notification shown after signing in to RetroAchievements. {0:s} is the account name
+#: xbmc/games/GameSettings.cpp
+#: xbmc/games/addons/cheevos/GameClientCheevos.cpp
+msgctxt "#35295"
+msgid "Logged in as {0:s}"
+msgstr ""
+
+#. Notification shown when RetroAchievements becomes unreachable during play
+#: xbmc/games/addons/cheevos/GameClientCheevos.cpp
+msgctxt "#35296"
+msgid "Unlocks will be submitted when the connection returns."
+msgstr ""
+
+#. Notification shown when RetroAchievements becomes reachable again
+#: xbmc/games/addons/cheevos/GameClientCheevos.cpp
+msgctxt "#35297"
+msgid "Pending unlocks have been submitted."
+msgstr ""
 
 #. Error message shown when trying to load a compressed savestate in an unsupported version of Kodi
 #: xbmc/games/dialogs/osd/DialogInGameSaves.cpp
@@ -19431,7 +19533,13 @@ msgctxt "#35298"
 msgid "This savestate is compressed and can't be loaded by this version of Kodi."
 msgstr ""
 
-#empty strings from id 35299 to 35504
+#. Shown when the achievements dialog is opened before the game has been identified
+#: xbmc/games/dialogs/osd/DialogGameAchievements.cpp
+msgctxt "#35299"
+msgid "Still looking this game up on RetroAchievements..."
+msgstr ""
+
+#empty strings from id 35300 to 35504
 
 #. connection state "host unreachable"
 #: xbmc/pvr/addons/PVRClients.cpp

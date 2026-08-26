@@ -18,7 +18,6 @@
 #include "addons/addoninfo/AddonType.h"
 #include "cores/DataCacheCore.h"
 #include "cores/IPlayerCallback.h"
-#include "cores/RetroPlayer/cheevos/Cheevos.h"
 #include "cores/RetroPlayer/guibridge/GUIGameMessenger.h"
 #include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
 #include "cores/RetroPlayer/guiplayback/GUIPlaybackControl.h"
@@ -194,14 +193,6 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
     // Switch to fullscreen
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_SWITCHTOFULLSCREEN);
 
-    m_cheevos = std::make_shared<CCheevos>(m_gameClient.get(),
-                                           m_gameServices.GameSettings().GetRAUsername(),
-                                           m_gameServices.GameSettings().GetRAToken());
-
-    m_cheevos->EnableRichPresence();
-
-    m_cheevos->ActivateAchievement();
-
     // Initialize gameplay
     CreatePlayback(savestatePath);
     RegisterWindowCallbacks();
@@ -252,15 +243,8 @@ bool CRetroPlayer::CloseFile(bool reopen /* = false */)
   if (m_input)
     m_input->StopAgentManager();
 
-  // Stop threads that access the game client, but keep the achievement callback
-  // alive until CloseFile() has stopped the add-on from invoking it.
-  if (m_cheevos)
-    m_cheevos->Stop();
-
   if (m_gameClient)
     m_gameClient->CloseFile();
-
-  m_cheevos.reset();
 
   m_input.reset();
 
@@ -438,14 +422,13 @@ bool CRetroPlayer::OnAction(const CAction& action)
     case ACTION_PLAYER_RESET:
     {
       std::unique_lock lock(m_mutex);
-      if (m_gameClient && m_playback && m_cheevos)
+      if (m_gameClient && m_playback)
       {
         float speed = static_cast<float>(m_playback->GetSpeed());
 
         m_playback->SetSpeed(0.0);
 
         CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Sending reset command via ACTION_PLAYER_RESET");
-        m_cheevos->ResetRuntime();
         m_gameClient->Input().HardwareReset();
 
         // If rewinding or paused, begin playback
@@ -677,8 +660,8 @@ void CRetroPlayer::CreatePlayback(const std::string& savestatePath)
   {
     m_playback->Deinitialize();
     m_playback = std::make_unique<CReversiblePlayback>(
-        m_gameClient.get(), *m_renderManager, m_cheevos.get(), *m_guiMessenger,
-        m_gameClient->GetFrameRate(), m_gameClient->GetSerializeSize());
+        m_gameClient.get(), *m_renderManager, *m_guiMessenger, m_gameClient->GetFrameRate(),
+        m_gameClient->GetSerializeSize());
   }
   else
     ResetPlayback();
