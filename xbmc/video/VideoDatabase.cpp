@@ -3283,17 +3283,24 @@ bool CVideoDatabase::DeleteFile(int idFile)
                                "UNION SELECT idFile FROM videoversion WHERE idFile = %i",
                                idFile, idFile, idFile)};
     m_pDS->query(sql);
-    if (m_pDS->eof())
+    const bool referenced{!m_pDS->eof()};
+    m_pDS->close();
+    if (!referenced)
     {
       // Associated bookmarks and streamdetails deleted by delete trigger
       sql = PrepareSQL("DELETE FROM files WHERE idFile = %i", idFile);
       m_pDS->exec(sql);
+      // not LogF: winbase.h rewrites DeleteFile to DeleteFileW, and so the name it would print
+      CLog::Log(LOGDEBUG, "CVideoDatabase::DeleteFile: Removed file id {}", idFile);
     }
+    else
+      CLog::Log(LOGDEBUG, "CVideoDatabase::DeleteFile: File id {} is still referenced - kept",
+                idFile);
     return true;
   }
   catch (...)
   {
-    CLog::LogF(LOGERROR, "({}) failed", idFile);
+    CLog::Log(LOGERROR, "CVideoDatabase::DeleteFile: ({}) failed", idFile);
   }
   return false;
 }
@@ -4460,6 +4467,9 @@ bool CVideoDatabase::DeleteMovie(int idMovie,
                                            "AND idMedia=%i AND media_type='%s' AND isDefault=1",
                                            idFile, idMovie, MediaTypeMovie))};
 
+    // The delete trigger takes the default version; the loop further down removes the
+    // other assets.
+    int otherAssets{0};
     // with no version left on the file (eg. converted to another movie's), its rows are
     // another item's
     if (ca != DeleteMovieCascadeAction::ALL_ASSETS_NOT_STREAMDETAILS &&
@@ -4506,10 +4516,14 @@ bool CVideoDatabase::DeleteMovie(int idMovie,
           pDS->close();
           return false;
         }
+        ++otherAssets;
         pDS->next();
       }
       pDS->close();
     }
+
+    CLog::LogF(LOGDEBUG, "Removed movie id {} (file id {}) and {} other asset(s)", idMovie,
+               idFile, otherAssets);
 
     //! @todo move this below CommitTransaction() once UPnP doesn't rely on this anymore
     AnnounceRemove(MediaTypeMovie, idMovie);
@@ -4662,6 +4676,8 @@ void CVideoDatabase::DeleteEpisode(int idEpisode, bool bKeepId /* = false */)
 
       std::string strSQL = PrepareSQL("delete from episode where idEpisode=%i", idEpisode);
       m_pDS->exec(strSQL);
+
+      CLog::LogF(LOGDEBUG, "Removed episode id {} (file id {})", idEpisode, idFile);
     }
 
   }
@@ -4702,6 +4718,8 @@ void CVideoDatabase::DeleteMusicVideo(int idMVideo, bool bKeepId /* = false */)
 
       std::string strSQL = PrepareSQL("delete from musicvideo where idMVideo=%i", idMVideo);
       m_pDS->exec(strSQL);
+
+      CLog::LogF(LOGDEBUG, "Removed music video id {} (file id {})", idMVideo, idFile);
     }
 
     //! @todo move this below CommitTransaction() once UPnP doesn't rely on this anymore
@@ -13903,7 +13921,11 @@ bool CVideoDatabase::DeleteVideoAsset(int idVersion)
     return false;
 
   if (IsDefaultVideoVersion(idVersion))
+  {
+    CLog::LogF(LOGDEBUG, "Version id {} is the default version of its media item - not removed",
+               idVersion);
     return false;
+  }
 
   const bool inTransaction{m_pDB->in_transaction()};
 
@@ -13912,16 +13934,33 @@ bool CVideoDatabase::DeleteVideoAsset(int idVersion)
     if (!inTransaction)
       BeginTransaction();
 
-    const std::string path =
-        GetSingleValue(PrepareSQL("SELECT strPath FROM path "
-                                  "JOIN files ON files.idPath=path.idPath "
-                                  "JOIN videoversion ON videoversion.idFile=files.idFile "
-                                  "WHERE videoversion.idVersion=%i",
-                                  idVersion));
+    // the version's owner and file, for the path hash and the log
+    m_pDS->query(PrepareSQL("SELECT vv.idFile, vv.idMedia, vv.media_type, path.strPath "
+                            "FROM videoversion vv "
+                            "JOIN files ON files.idFile=vv.idFile "
+                            "JOIN path ON path.idPath=files.idPath "
+                            "WHERE vv.idVersion=%i",
+                            idVersion));
+    int idFile{-1};
+    int idMedia{-1};
+    std::string mediaType;
+    std::string path;
+    if (!m_pDS->eof())
+    {
+      idFile = m_pDS->fv(0).get_asInt();
+      idMedia = m_pDS->fv(1).get_asInt();
+      mediaType = m_pDS->fv(2).get_asString();
+      path = m_pDS->fv(3).get_asString();
+    }
+    m_pDS->close();
+
     if (!path.empty())
       InvalidatePathHash(path);
 
     m_pDS->exec(PrepareSQL("DELETE FROM videoversion WHERE idVersion=%i", idVersion));
+
+    CLog::LogF(LOGDEBUG, "Removed version id {} of {} id {} (file id {})", idVersion, mediaType,
+               idMedia, idFile);
 
     if (!inTransaction)
       CommitTransaction();
