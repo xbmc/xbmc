@@ -34,11 +34,11 @@
 using namespace KODI;
 namespace
 {
-void RetypeAsVersion(CFileItem& item)
+void RetypeAsVersion(CFileItem& item, int idVersion)
 {
   CVideoInfoTag* tag{item.GetVideoInfoTag()};
   tag->m_type = MediaTypeVideoVersion;
-  tag->m_iDbId = tag->m_iFileId;
+  tag->m_iDbId = idVersion;
   tag->m_strTitle = tag->GetAssetInfo().GetTitle();
   item.SetTitle(tag->m_strTitle);
   item.SetLabel(tag->m_strTitle);
@@ -94,6 +94,7 @@ bool ReassignPlaylist(const CFileItem& item,
     CFileItem item;
     std::string oldPath;
     int oldFile;
+    int idVersion;
     bool version;
     std::string mediaType;
     int idMedia;
@@ -107,7 +108,7 @@ bool ReassignPlaylist(const CFileItem& item,
     const MediaType& mediaType{it.mediaType == VideoDbContentType::EPISODES ? MediaTypeEpisode
                                                                             : MediaTypeMovie};
 
-    // History belongs to the playlist (watched counts etc.), so it is not carried over.
+    // The resume point belongs to the playlist, so it is not carried over.
     // An item already at the base file keeps its own, as SetFileForMedia() rewrites the row
     CVideoInfoTag baseFile;
     const bool baseInUse{db.GetFileInfo(base, baseFile)};
@@ -119,7 +120,8 @@ bool ReassignPlaylist(const CFileItem& item,
             .m_lastPlayed = baseInUse ? baseFile.m_lastPlayed : CDateTime{},
             .m_dateAdded = baseInUse
                                ? baseFile.m_dateAdded
-                               : it.dateAdded})}; // Update displaced item and create new idFile
+                               : it.dateAdded},
+        it.idVersion)}; // Update displaced item and create new idFile
     if (newIdFile <= 0)
     {
       CLog::LogF(LOGERROR, "Failed to move {} {} off playlist {}", mediaType, it.idMedia,
@@ -127,12 +129,15 @@ bool ReassignPlaylist(const CFileItem& item,
       db.RollbackTransaction();
       return false;
     }
-    if (CVideoInfoTag oldFile;
-        it.mediaType == VideoDbContentType::MOVIES && db.GetFileInfo("", oldFile, it.idFile))
+    db.ClearBookMarksOfFile(newIdFile, CBookmark::RESUME, it.idVersion);
+    // Versions on one disc share its file, so it is the version that must have left the playlist
+    const std::string oldPath{URIUtils::GetBlurayPlaylistPath(base, it.playlist)};
+    if (it.mediaType == VideoDbContentType::MOVIES &&
+        db.GetVideoVersionInfo(oldPath).m_idVersion == it.idVersion)
     {
       db.RollbackTransaction();
-      CLog::LogF(LOGERROR, "File {} is still in use after moving {} {} to file {}", it.idFile,
-                 mediaType, it.idMedia, newIdFile);
+      CLog::LogF(LOGERROR, "Version {} is still on playlist {} after moving {} {} to file {}",
+                 it.idVersion, it.playlist, mediaType, it.idMedia, newIdFile);
       CGUIDialogOK::ShowAndGetInput(CVariant{257},
                                     CVariant{40051}); // Still in use by another movie version
       return false;
@@ -142,9 +147,9 @@ bool ReassignPlaylist(const CFileItem& item,
     CVideoInfoTag details;
     if (it.mediaType == VideoDbContentType::MOVIES)
     {
-      if (!db.GetMovieInfo("", details, it.idMedia, -1, newIdFile))
+      if (!db.GetMovieInfo("", details, it.idMedia, -1, it.idVersion))
       {
-        CLog::LogF(LOGERROR, "Failed to read movie {} on file {}", it.idMedia, newIdFile);
+        CLog::LogF(LOGERROR, "Failed to read version {} of movie {}", it.idVersion, it.idMedia);
         db.RollbackTransaction();
         return false;
       }
@@ -163,8 +168,9 @@ bool ReassignPlaylist(const CFileItem& item,
     CLog::LogF(LOGDEBUG, "{} {} moved from playlist {} to file {}", mediaType, it.idMedia,
                it.playlist, newIdFile);
     displaced.emplace_back(Displaced{.item = CFileItem{details},
-                                     .oldPath = URIUtils::GetBlurayPlaylistPath(base, it.playlist),
+                                     .oldPath = oldPath,
                                      .oldFile = it.idFile,
+                                     .idVersion = it.idVersion,
                                      .version = it.mediaType == VideoDbContentType::MOVIES,
                                      .mediaType = mediaType,
                                      .idMedia = it.idMedia});
@@ -183,7 +189,7 @@ bool ReassignPlaylist(const CFileItem& item,
     VIDEO::UTILS::NotifyItemPathChanged(d.item, d.oldPath, d.oldFile);
     if (d.version)
     {
-      RetypeAsVersion(d.item); // Generate FileItem for version update
+      RetypeAsVersion(d.item, d.idVersion); // Generate FileItem for version update
       VIDEO::UTILS::NotifyItemPathChanged(d.item, d.oldPath, d.oldFile);
     }
   }

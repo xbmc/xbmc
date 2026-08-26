@@ -479,10 +479,10 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
   const CFileItem& owner{item->GetVideoInfoTag()->m_type == MediaTypeVideoVersion ? *m_videoAsset
                                                                                   : *item};
   const VideoAssetInfo existing{m_database.GetVideoVersionInfo(chosen.GetDynPath())};
-  if (existing.m_idFile >= 0 && existing.m_mediaType == MediaTypeMovie &&
+  if (existing.m_idVersion >= 0 && existing.m_mediaType == MediaTypeMovie &&
       existing.m_idMedia == owner.GetVideoInfoTag()->m_iDbId &&
       (replaceExistingFile == ReplaceExistingFile::NO ||
-       existing.m_idFile != item->GetVideoInfoTag()->m_iFileId))
+       existing.m_idVersion != item->GetVideoInfoTag()->GetAssetInfo().GetVersionId()))
   {
     CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{40047});
     return false;
@@ -506,16 +506,18 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
           CVideoDatabase::FileRecord{.m_idFile = item->GetVideoInfoTag()->m_iFileId,
                                      .m_playCount = item->GetVideoInfoTag()->GetPlayCount(),
                                      .m_lastPlayed = item->GetVideoInfoTag()->m_lastPlayed,
-                                     .m_dateAdded = item->GetVideoInfoTag()->m_dateAdded});
+                                     .m_dateAdded = item->GetVideoInfoTag()->m_dateAdded},
+          original.GetVideoInfoTag()->GetAssetInfo().GetVersionId());
       videoDbSuccess = idFile > 0;
       if (videoDbSuccess)
       {
+        if (const int idVersion{original.GetVideoInfoTag()->GetAssetInfo().GetVersionId()};
+            idVersion >= 0)
+          m_database.ClearBookMarksOfFile(idFile, CBookmark::RESUME, idVersion);
         m_database.SetStreamDetailsForFile(item->GetVideoInfoTag()->m_streamDetails,
                                            item->GetDynPath());
         CVideoInfoTag* tag{item->GetVideoInfoTag()};
         const int oldFileId{tag->m_iFileId};
-        if (tag->m_type == MediaTypeVideoVersion)
-          tag->m_iDbId = idFile;
         tag->m_iFileId = idFile;
         KODI::VIDEO::UTILS::NotifyItemPathChanged(*item, oldPath, oldFileId);
         announce = {owner.GetVideoInfoTag()->m_type, owner.GetVideoInfoTag()->m_iDbId};

@@ -19,6 +19,7 @@
 #include "video/Bookmark.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoManagerTypes.h"
 
 #include <memory>
 #include <string>
@@ -436,4 +437,176 @@ TEST_F(TestVideoDatabase, GetItemsForPathReturnsArchivedMoviesWithCollapsedPaths
   EXPECT_EQ(archived, archivedItems[0]->GetPath());
   EXPECT_EQ(0, archivedItems[0]->GetVideoInfoTag()->GetPlayCount());
   EXPECT_EQ(1200.0, archivedItems[0]->GetVideoInfoTag()->GetResumePoint().timeInSeconds);
+}
+
+TEST_F(TestVideoDatabase, SharedPlaylistWritesUseEpisodeIdentity)
+{
+  const int idShow{AddTvShow("/tv/Show/")};
+  ASSERT_GT(idShow, 0);
+  const std::string path{URIUtils::GetBlurayPlaylistPath("/tv/Show/disc.iso", 1)};
+  const int firstEpisode{AddEpisode(idShow, path, 1)};
+  const int secondEpisode{AddEpisode(idShow, path, 2)};
+  ASSERT_GT(firstEpisode, 0);
+  ASSERT_GT(secondEpisode, 0);
+  EXPECT_LT(m_db.GetVideoVersionIdByPath(path), 0);
+
+  CVideoInfoTag firstTag;
+  CVideoInfoTag secondTag;
+  ASSERT_TRUE(m_db.GetEpisodeInfo("", firstTag, firstEpisode));
+  ASSERT_TRUE(m_db.GetEpisodeInfo("", secondTag, secondEpisode));
+  ASSERT_EQ(firstTag.m_iFileId, secondTag.m_iFileId);
+  CFileItem first{firstTag};
+  CFileItem second{secondTag};
+  ASSERT_TRUE(m_db.SetPlayCount(second, 1).IsValid());
+  EXPECT_EQ(0, m_db.GetPlayCount(first));
+  EXPECT_EQ(1, m_db.GetPlayCount(second));
+
+  CVideoSettings setting;
+  setting.m_AudioDelay = 1.5f;
+  m_db.SetVideoSettings(second, setting);
+  CVideoSettings stored;
+  EXPECT_FALSE(m_db.GetVideoSettings(first, stored));
+  ASSERT_TRUE(m_db.GetVideoSettings(second, stored));
+  EXPECT_FLOAT_EQ(1.5f, stored.m_AudioDelay);
+
+  CBookmark bookmark;
+  bookmark.timeInSeconds = 600.0;
+  bookmark.totalTimeInSeconds = 3600.0;
+  const int idVersion{
+      m_db.GetVideoVersionId(secondTag.m_iFileId, secondEpisode, MediaTypeEpisode)};
+  ASSERT_TRUE(m_db.AddBookMarkToFile(path, bookmark, CBookmark::RESUME, idVersion));
+  EXPECT_FALSE(m_db.GetResumePoint(firstTag));
+  ASSERT_TRUE(m_db.GetResumePoint(secondTag));
+  EXPECT_EQ(600.0, secondTag.GetResumePoint().timeInSeconds);
+}
+
+TEST_F(TestVideoDatabase, SharedArchiveMemberStillUsesItsPhysicalFile)
+{
+  const int idShow{AddTvShow("/tv/Show/")};
+  ASSERT_GT(idShow, 0);
+  const std::string path{ArchivePath("rar", "/tv/Show/season.rar", "e01-e02.mkv")};
+  const int firstEpisode{AddEpisode(idShow, path, 1)};
+  const int secondEpisode{AddEpisode(idShow, path, 2)};
+  ASSERT_GT(firstEpisode, 0);
+  ASSERT_GT(secondEpisode, 0);
+  EXPECT_LT(m_db.GetVideoVersionIdByPath(path), 0);
+  EXPECT_EQ(m_db.AddFile("/tv/Show/season.rar"), m_db.AddFile(path));
+}
+
+TEST_F(TestVideoDatabase, EpisodesByBasePathUsesArchiveMember)
+{
+  const int idShow{AddTvShow("/tv/Show/")};
+  ASSERT_GT(idShow, 0);
+  const std::string path{ArchivePath("rar", "/tv/Show/season.rar", "e01-e02.mkv")};
+  const std::string otherPath{ArchivePath("rar", "/tv/Show/season.rar", "e03.mkv")};
+  const int firstEpisode{AddEpisode(idShow, path, 1)};
+  const int secondEpisode{AddEpisode(idShow, path, 2)};
+  ASSERT_GT(firstEpisode, 0);
+  ASSERT_GT(secondEpisode, 0);
+  ASSERT_GT(AddEpisode(idShow, otherPath, 3), 0);
+  ASSERT_EQ(m_db.AddFile(path), m_db.AddFile(otherPath));
+
+  std::vector<CVideoInfoTag> episodes;
+  m_db.GetEpisodesByBasePath(path, episodes, idShow);
+  ASSERT_EQ(2u, episodes.size());
+  EXPECT_EQ(firstEpisode, episodes[0].m_iDbId);
+  EXPECT_EQ(secondEpisode, episodes[1].m_iDbId);
+  EXPECT_EQ(path, episodes[0].m_strFileNameAndPath);
+  EXPECT_EQ(path, episodes[1].m_strFileNameAndPath);
+
+  episodes.clear();
+  m_db.GetEpisodesByFile(otherPath, episodes);
+  ASSERT_EQ(1u, episodes.size());
+  EXPECT_EQ(otherPath, episodes[0].m_strFileNameAndPath);
+}
+
+TEST_F(TestVideoDatabase, StandardBookmarksStayWithTheirArchiveMember)
+{
+  const std::string firstPath{ArchivePath("rar", "/movies/disc.rar", "first.mkv")};
+  const std::string secondPath{ArchivePath("rar", "/movies/disc.rar", "second.mkv")};
+  ASSERT_GT(AddMovie(firstPath), 0);
+  ASSERT_GT(AddMovie(secondPath), 0);
+  ASSERT_EQ(m_db.AddFile(firstPath), m_db.AddFile(secondPath));
+
+  CBookmark first;
+  first.timeInSeconds = 60.0;
+  first.totalTimeInSeconds = 3600.0;
+  first.thumbNailImage = "first.jpg";
+  CBookmark second{first};
+  second.thumbNailImage = "second.jpg";
+  ASSERT_TRUE(m_db.AddBookMarkToFile(firstPath, first, CBookmark::STANDARD));
+  ASSERT_TRUE(m_db.AddBookMarkToFile(secondPath, second, CBookmark::STANDARD));
+
+  VECBOOKMARKS bookmarks;
+  m_db.GetBookMarksForFile(firstPath, bookmarks);
+  ASSERT_EQ(1u, bookmarks.size());
+  EXPECT_EQ("first.jpg", bookmarks[0].thumbNailImage);
+  m_db.GetBookMarksForFile(secondPath, bookmarks);
+  ASSERT_EQ(1u, bookmarks.size());
+  EXPECT_EQ("second.jpg", bookmarks[0].thumbNailImage);
+
+  m_db.ClearBookMarkOfFile(secondPath, second);
+  m_db.GetBookMarksForFile(firstPath, bookmarks);
+  ASSERT_EQ(1u, bookmarks.size());
+  m_db.GetBookMarksForFile(secondPath, bookmarks);
+  EXPECT_TRUE(bookmarks.empty());
+}
+
+TEST_F(TestVideoDatabase, AmbiguousPlaylistBookmarksExcludeOtherPlaylists)
+{
+  const int idShow{AddTvShow("/tv/Show/")};
+  ASSERT_GT(idShow, 0);
+  const std::string sharedPath{URIUtils::GetBlurayPlaylistPath("/tv/Show/disc.iso", 1)};
+  const std::string otherPath{URIUtils::GetBlurayPlaylistPath("/tv/Show/disc.iso", 2)};
+  const int firstEpisode{AddEpisode(idShow, sharedPath, 1)};
+  ASSERT_GT(firstEpisode, 0);
+  ASSERT_GT(AddEpisode(idShow, sharedPath, 2), 0);
+  ASSERT_GT(AddEpisode(idShow, otherPath, 3), 0);
+
+  CBookmark bookmark;
+  bookmark.timeInSeconds = 60.0;
+  bookmark.totalTimeInSeconds = 3600.0;
+  ASSERT_TRUE(m_db.AddBookMarkToFile(otherPath, bookmark, CBookmark::STANDARD));
+  ASSERT_TRUE(m_db.AddBookMarkToFile(otherPath, bookmark, CBookmark::RESUME));
+  VECBOOKMARKS bookmarks;
+  m_db.GetBookMarksForFile(sharedPath, bookmarks);
+  EXPECT_TRUE(bookmarks.empty());
+  EXPECT_FALSE(m_db.GetResumeBookMark(sharedPath, bookmark));
+
+  bookmark.timeInSeconds = 120.0;
+  EXPECT_FALSE(m_db.AddBookMarkToFile(sharedPath, bookmark, CBookmark::RESUME));
+  EXPECT_FALSE(m_db.AddBookMarkToFile(sharedPath, bookmark, CBookmark::STANDARD));
+  const int idVersion{
+      m_db.GetVideoVersionId(m_db.AddFile(sharedPath), firstEpisode, MediaTypeEpisode)};
+  ASSERT_TRUE(m_db.AddBookMarkToFile(sharedPath, bookmark, CBookmark::RESUME, idVersion));
+  ASSERT_TRUE(m_db.AddBookMarkToFile(sharedPath, bookmark, CBookmark::STANDARD, idVersion));
+  m_db.GetBookMarksForFile(otherPath, bookmarks);
+  ASSERT_EQ(1u, bookmarks.size());
+  EXPECT_EQ(60.0, bookmarks[0].timeInSeconds);
+  CBookmark otherResume;
+  ASSERT_TRUE(m_db.GetResumeBookMark(otherPath, otherResume));
+  EXPECT_EQ(60.0, otherResume.timeInSeconds);
+  m_db.ClearBookMarkOfFile(sharedPath, bookmark, CBookmark::STANDARD);
+  ASSERT_TRUE(m_db.ClearBookMarksOfFile(sharedPath, CBookmark::RESUME));
+  ASSERT_TRUE(m_db.GetResumeBookMark(otherPath, otherResume));
+  EXPECT_EQ(60.0, otherResume.timeInSeconds);
+}
+
+TEST_F(TestVideoDatabase, PhysicalFileMovieInfoUsesItsDefaultVersion)
+{
+  const std::string firstPath{URIUtils::GetBlurayPlaylistPath("/movies/disc.iso", 1)};
+  const std::string secondPath{URIUtils::GetBlurayPlaylistPath("/movies/disc.iso", 2)};
+  const int idMovie{AddMovie(firstPath)};
+  ASSERT_GT(idMovie, 0);
+  CFileItem second{Tag(secondPath)};
+  ASSERT_TRUE(m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie, VIDEO_VERSION_ID_DEFAULT,
+                                VideoAssetType::VERSION, second));
+  const int idVersion{second.GetVideoInfoTag()->GetAssetInfo().GetVersionId()};
+  ASSERT_GT(idVersion, 0);
+  ASSERT_TRUE(m_db.SetDefaultVideoVersion(VideoDbContentType::MOVIES, idMovie, idVersion));
+
+  CVideoInfoTag tag;
+  ASSERT_TRUE(m_db.GetMovieInfo("/movies/disc.iso", tag));
+  EXPECT_EQ(idVersion, tag.GetAssetInfo().GetVersionId());
+  EXPECT_EQ(secondPath, tag.GetPath());
 }

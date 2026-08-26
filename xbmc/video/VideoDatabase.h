@@ -386,7 +386,8 @@ public:
   int SetFileForMedia(const std::string& fileAndPath,
                       VideoDbContentType type,
                       int mediaId,
-                      const FileRecord& oldFile);
+                      const FileRecord& oldFile,
+                      int idVersion = -1);
 
   int SetDetailsForMusicVideo(CVideoInfoTag& details,
                               const KODI::ART::Artwork& artwork,
@@ -409,6 +410,7 @@ public:
     int idFile{-1};
     VideoDbContentType mediaType{-1};
     int idMedia{-1};
+    int idVersion{-1};
     std::string title{};
 
     //! Which of a movie's assets holds the playlist. Unset for an episode, which is named by its
@@ -1273,7 +1275,11 @@ protected:
                         int idEpisode,
                         int oldIdFile,
                         int newIdFile);
-  int SetFileForMovie(const std::string& fileAndPath, int idMovie, int oldIdFile, int newIdFile);
+  int SetFileForMovie(const std::string& fileAndPath,
+                      int idMovie,
+                      int oldIdFile,
+                      int newIdFile,
+                      int idVersion = -1);
   int SetFileForUnknown(const std::string& fileAndPath, int oldIdFile, int newIdFile);
 
 private:

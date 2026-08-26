@@ -27,6 +27,7 @@
 #include "video/Bookmark.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
+#include "video/VideoManagerTypes.h"
 
 using namespace KODI;
 using namespace KODI::VIDEO;
@@ -253,28 +254,37 @@ void CSaveFileState::DoWork(CFileItem& item,
             }()};
 
         int replacedFileId{-1};
+        bool retargeted{false};
         if (updateNeeded)
         {
           videodatabase.BeginTransaction();
           // tag->m_iFileId contains the idFile originally played and may be different to the idFile
           // in the movie table entry if it's a non-default video version
           const int oldFileId{tag->m_iFileId};
+          // a version item's db id is its version id, not the movie's
+          const int mediaId{
+              tag->m_type == MediaTypeVideoVersion
+                  ? videodatabase.GetVideoVersionInfo(tag->m_strFileNameAndPath).m_idMedia
+                  : tag->m_iDbId};
           const int newFileId{videodatabase.SetFileForMedia(
-              progressTrackingFile, item.GetVideoContentType(), tag->m_iDbId,
+              progressTrackingFile, item.GetVideoContentType(), mediaId,
               CVideoDatabase::FileRecord{.m_idFile = oldFileId,
                                          .m_playCount = tag->GetPlayCount(),
                                          .m_lastPlayed = tag->m_lastPlayed,
-                                         .m_dateAdded = tag->m_dateAdded})};
+                                         .m_dateAdded = tag->m_dateAdded},
+              tag->GetAssetInfo().GetVersionId())};
           if (newFileId > 0)
           {
             videodatabase.CommitTransaction();
             item.GetVideoInfoTag()->m_iFileId = newFileId;
+            // the path changed even when the file did not (a playlist within one disc)
+            updateListing = true;
+            retargeted = true;
             if (newFileId != oldFileId)
             {
               CLog::LogF(LOGDEBUG, "{} {} now uses file {} ({}) instead of file {}", tag->m_type,
                          tag->m_iDbId, newFileId, redactPath, oldFileId);
               replacedFileId = oldFileId;
-              updateListing = true;
             }
           }
           else
@@ -293,8 +303,8 @@ void CSaveFileState::DoWork(CFileItem& item,
           CGUIMessage message(GUI_MSG_NOTIFY_ALL, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 0, msgItem);
           CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
 
-          // Widgets reload on the announcement, which must follow the file change
-          if (replacedFileId > 0)
+          // Widgets reload on the announcement, which must follow the path change
+          if (retargeted)
             CVideoDatabase::AnnounceUpdate(tag->m_type, tag->m_iDbId);
         }
 
