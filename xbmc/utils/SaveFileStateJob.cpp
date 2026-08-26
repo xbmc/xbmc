@@ -260,7 +260,8 @@ void CSaveFileState::DoWork(CFileItem& item,
               CVideoDatabase::FileRecord{.m_idFile = tag->m_iFileId,
                                          .m_playCount = tag->GetPlayCount(),
                                          .m_lastPlayed = tag->m_lastPlayed,
-                                         .m_dateAdded = tag->m_dateAdded})};
+                                         .m_dateAdded = tag->m_dateAdded},
+              tag->GetAssetInfo().GetVersionId())};
           if (newFileId > 0)
           {
             videodatabase.CommitTransaction();

@@ -2902,7 +2902,8 @@ int CVideoDatabase::SetDetailsForSeason(const CVideoInfoTag& details,
 int CVideoDatabase::SetFileForMedia(const std::string& fileAndPath,
                                     VideoDbContentType type,
                                     int mediaId,
-                                    const FileRecord& oldFile)
+                                    const FileRecord& oldFile,
+                                    int idVersion /* = -1 */)
 {
   if ((mediaId < 0 && type != VideoDbContentType::UNKNOWN) || oldFile.m_idFile < 0)
     return -1;
@@ -2916,7 +2917,7 @@ int CVideoDatabase::SetFileForMedia(const std::string& fileAndPath,
     using enum VideoDbContentType;
 
     case MOVIES:
-      return SetFileForMovie(fileAndPath, mediaId, oldFile.m_idFile, newIdFile);
+      return SetFileForMovie(fileAndPath, mediaId, oldFile.m_idFile, newIdFile, idVersion);
     case EPISODES:
       return SetFileForEpisode(fileAndPath, mediaId, oldFile.m_idFile, newIdFile);
     case UNKNOWN:
@@ -3003,7 +3004,8 @@ int CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath,
 int CVideoDatabase::SetFileForMovie(const std::string& fileAndPath,
                                     int idMovie,
                                     int oldIdFile,
-                                    int newIdFile)
+                                    int newIdFile,
+                                    int idVersion /* = -1 */)
 {
   assert(m_pDB->in_transaction());
 
@@ -3014,12 +3016,24 @@ int CVideoDatabase::SetFileForMovie(const std::string& fileAndPath,
   {
     const std::string filePath{GetVersionFilePath(fileAndPath)};
 
+    // the version being retargeted; the movie's default version when the caller
+    // does not know which one it is
+    if (idVersion < 0)
+      idVersion = GetDbId(PrepareSQL("SELECT idVersion FROM videoversion WHERE idFile=%i AND "
+                                     "media_type='movie' AND idMedia=%i AND isDefault=1",
+                                     oldIdFile, idMovie));
+    if (idVersion < 0)
+    {
+      CLog::LogF(LOGDEBUG, "no version of movie {} found on file {} - not retargeting", idMovie,
+                 oldIdFile);
+      return -1;
+    }
+
     if (newIdFile == oldIdFile && filePath.empty())
     {
-      // reverting to the container base: clear the default version's vfs path
-      m_pDS->exec(PrepareSQL("UPDATE videoversion SET filePath='' WHERE idFile=%i AND "
-                             "media_type='movie' AND idMedia=%i AND isDefault=1",
-                             oldIdFile, idMovie));
+      // reverting to the container base: clear the version's vfs path
+      m_pDS->exec(
+          PrepareSQL("UPDATE videoversion SET filePath='' WHERE idVersion=%i", idVersion));
       return newIdFile;
     }
 
@@ -3030,11 +3044,13 @@ int CVideoDatabase::SetFileForMovie(const std::string& fileAndPath,
     const std::string guard{
         !filePath.empty()
             ? PrepareSQL("SELECT COUNT(1) FROM videoversion WHERE filePath='%s' AND "
-                         "media_type='movie' AND idMedia=%i AND itemType=%i AND isDefault=0",
-                         filePath.c_str(), idMovie, static_cast<int>(VideoAssetType::VERSION))
+                         "media_type='movie' AND idMedia=%i AND itemType=%i AND idVersion<>%i",
+                         filePath.c_str(), idMovie, static_cast<int>(VideoAssetType::VERSION),
+                         idVersion)
             : PrepareSQL("SELECT COUNT(1) FROM videoversion WHERE idFile=%i AND "
-                         "media_type='movie' AND idMedia=%i AND itemType=%i",
-                         newIdFile, idMovie, static_cast<int>(VideoAssetType::VERSION))};
+                         "media_type='movie' AND idMedia=%i AND itemType=%i AND idVersion<>%i",
+                         newIdFile, idMovie, static_cast<int>(VideoAssetType::VERSION),
+                         idVersion)};
     if (GetSingleValueInt(guard) > 0)
     {
       CLog::LogF(LOGDEBUG,
@@ -3046,29 +3062,28 @@ int CVideoDatabase::SetFileForMovie(const std::string& fileAndPath,
 
     if (newIdFile == oldIdFile)
     {
-      // same physical container: only the default version's vfs path changes
-      m_pDS->exec(PrepareSQL("UPDATE videoversion SET filePath='%s' WHERE idFile=%i AND "
-                             "media_type='movie' AND idMedia=%i AND isDefault=1",
-                             filePath.c_str(), oldIdFile, idMovie));
+      // same physical container: only the version's vfs path changes
+      m_pDS->exec(PrepareSQL("UPDATE videoversion SET filePath='%s' WHERE idVersion=%i",
+                             filePath.c_str(), idVersion));
       return newIdFile;
     }
 
     // when the old file is shared with other media items, only this version's rows move with it
-    const int idVersion{GetVideoVersionId(oldIdFile, idMovie, MediaTypeMovie)};
     const bool exclusive{GetVideoVersionIdByFile(oldIdFile) == idVersion};
-    const std::string versionScope{
-        idVersion >= 0 && !exclusive ? PrepareSQL(" AND idVersion=%i", idVersion) : ""};
+    const std::string versionScope{exclusive ? ""
+                                             : PrepareSQL(" AND idVersion=%i", idVersion)};
 
-    m_pDS->exec(PrepareSQL("UPDATE movie SET idFile=%i WHERE idFile=%i AND idMovie=%i", newIdFile,
-                           oldIdFile, idMovie));
-    m_pDS->exec(PrepareSQL("UPDATE videoversion SET idFile=%i, filePath='%s' WHERE idFile=%i AND "
-                           "media_type='movie' AND idMedia=%i AND isDefault=1",
-                           newIdFile, filePath.c_str(), oldIdFile, idMovie));
+    // the movie table's file id points at the default version's physical file
+    if (IsDefaultVideoVersion(idVersion))
+      m_pDS->exec(PrepareSQL("UPDATE movie SET idFile=%i WHERE idFile=%i AND idMovie=%i", newIdFile,
+                             oldIdFile, idMovie));
+    m_pDS->exec(PrepareSQL("UPDATE videoversion SET idFile=%i, filePath='%s' WHERE idVersion=%i",
+                           newIdFile, filePath.c_str(), idVersion));
     // adopt bookmarks written against the new file before its version row existed
-    m_pDS->exec(PrepareSQL(
-        "UPDATE bookmark SET idVersion=(SELECT idVersion FROM videoversion WHERE idFile=%i AND "
-        "media_type='movie' AND idMedia=%i) WHERE idFile=%i AND idVersion IS NULL AND type=%i",
-        newIdFile, idMovie, newIdFile, CBookmark::RESUME));
+    m_pDS->exec(
+        PrepareSQL("UPDATE bookmark SET idVersion=%i WHERE idFile=%i AND idVersion IS NULL AND "
+                   "type=%i",
+                   idVersion, newIdFile, CBookmark::RESUME));
     m_pDS->exec(PrepareSQL("UPDATE bookmark SET idFile=%i WHERE idFile=%i", newIdFile, oldIdFile) +
                 versionScope);
     // the version's own stream details move with it; unowned fallback rows follow only when
@@ -3504,10 +3519,11 @@ std::vector<CVideoDatabase::PlaylistInfo> CVideoDatabase::GetPlaylistsByPath(
 
     // playlists known to the library are the vfs paths of version rows under the disc's
     // playlist path (SUBSTR rather than LIKE: encoded paths contain % characters)
-    const std::string strSQL{
-        PrepareSQL("SELECT vv.filePath, vv.idFile, vv.idMedia, vv.media_type FROM videoversion vv "
-                   "WHERE SUBSTR(vv.filePath,1,%i)='%s'",
-                   static_cast<int>(StringUtils::utf8_strlen(path.c_str())), path.c_str())};
+    const std::string strSQL{PrepareSQL(
+        "SELECT vv.filePath, vv.idFile, vv.idMedia, vv.media_type, vv.idVersion "
+        "FROM videoversion vv "
+        "WHERE SUBSTR(vv.filePath,1,%i)='%s'",
+        static_cast<int>(StringUtils::utf8_strlen(path.c_str())), path.c_str())};
     m_pDS->query(strSQL);
 
     while (!m_pDS->eof())
@@ -3523,12 +3539,14 @@ std::vector<CVideoDatabase::PlaylistInfo> CVideoDatabase::GetPlaylistsByPath(
             playlists.emplace_back(PlaylistInfo{.playlist = std::stoi(filename),
                                                 .idFile = m_pDS->fv(1).get_asInt(),
                                                 .mediaType = VideoDbContentType::EPISODES,
-                                                .idMedia = m_pDS->fv(2).get_asInt()});
+                                                .idMedia = m_pDS->fv(2).get_asInt(),
+                                                .idVersion = m_pDS->fv(4).get_asInt()});
           else if (mediaType == MediaTypeMovie)
             playlists.emplace_back(PlaylistInfo{.playlist = std::stoi(filename),
                                                 .idFile = m_pDS->fv(1).get_asInt(),
                                                 .mediaType = VideoDbContentType::MOVIES,
-                                                .idMedia = m_pDS->fv(2).get_asInt()});
+                                                .idMedia = m_pDS->fv(2).get_asInt(),
+                                                .idVersion = m_pDS->fv(4).get_asInt()});
         }
       }
       m_pDS->next();

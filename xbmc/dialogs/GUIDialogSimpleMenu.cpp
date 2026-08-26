@@ -83,7 +83,8 @@ bool CGUIDialogSimpleMenu::ShowPlaylistSelection(
           if (db.SetFileForMedia(base, it.mediaType, it.idMedia,
                                  CVideoDatabase::FileRecord{
                                      .m_idFile = it.idFile,
-                                     .m_dateAdded = item.GetVideoInfoTag()->m_dateAdded}) > 0)
+                                     .m_dateAdded = item.GetVideoInfoTag()->m_dateAdded},
+                                 it.idVersion) > 0)
             db.CommitTransaction();
           else
             db.RollbackTransaction();

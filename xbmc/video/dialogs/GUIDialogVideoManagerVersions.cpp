@@ -391,7 +391,8 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
       idFile = m_database.SetFileForMedia(
           item->GetDynPath(), item->GetVideoContentType(), item->GetVideoInfoTag()->m_iDbId,
           CVideoDatabase::FileRecord{.m_idFile = item->GetVideoInfoTag()->m_iFileId,
-                                     .m_dateAdded = item->GetVideoInfoTag()->m_dateAdded});
+                                     .m_dateAdded = item->GetVideoInfoTag()->m_dateAdded},
+          item->GetVideoInfoTag()->GetAssetInfo().GetVersionId());
       videoDbSuccess = idFile > 0;
       if (videoDbSuccess)
       {
