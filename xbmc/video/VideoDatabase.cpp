@@ -688,7 +688,7 @@ void CVideoDatabase::UpdateFileDateAdded(CVideoInfoTag& details)
     if (nullptr == m_pDS)
       return;
 
-    finalDateAdded = GetDateAdded(details.GetPath(), details.m_dateAdded);
+    finalDateAdded = GetDateAdded(GetPhysicalPath(details.GetPath()), details.m_dateAdded);
 
     m_pDS->exec(PrepareSQL("UPDATE files SET dateAdded='%s' WHERE idFile=%d",
                            finalDateAdded.GetAsDBDateTime().c_str(), details.m_iFileId));
@@ -914,7 +914,8 @@ std::string CVideoDatabase::GetRemovableBlurayPath(std::string originalPath)
     // a version row whose vfs path lies under the disc's playlist path
     // (SUBSTR rather than LIKE: encoded paths contain % characters)
     m_pDS->query(PrepareSQL("select filePath from videoversion where SUBSTR(filePath,1,%i)='%s'",
-                            StringUtils::utf8_strlen(path.c_str()), path.c_str()));
+                            static_cast<int>(StringUtils::utf8_strlen(path.c_str())),
+                            path.c_str()));
     if (m_pDS->num_rows() > 0)
     {
       const std::string newPath{m_pDS->fv("filePath").get_asString()};
@@ -3479,7 +3480,7 @@ std::vector<CVideoDatabase::PlaylistInfo> CVideoDatabase::GetPlaylistsByPath(
     const std::string strSQL{
         PrepareSQL("SELECT vv.filePath, vv.idFile, vv.idMedia, vv.media_type FROM videoversion vv "
                    "WHERE SUBSTR(vv.filePath,1,%i)='%s'",
-                   StringUtils::utf8_strlen(path.c_str()), path.c_str())};
+                   static_cast<int>(StringUtils::utf8_strlen(path.c_str())), path.c_str())};
     m_pDS->query(strSQL);
 
     while (!m_pDS->eof())
@@ -3704,21 +3705,16 @@ void CVideoDatabase::GetEpisodesByBlurayPath(const std::string& path,
 {
   try
   {
-    // url will be in vfs format (ie. bluray://.../episode/1/1)
-    // episode database entries will either have basepath path (ie. ISO/BDMV) if not yet played ...
+    // url will be in vfs format (ie. bluray://.../episode/1/1); episode files hold the
+    // physical container (ie. disc index/image)
     const std::string baseFileAndPath{URIUtils::GetDiscFile(path)};
     std::string baseFile;
     std::string basePath;
     SplitPath(baseFileAndPath, basePath, baseFile);
 
-    // ... or bluray:// path (ie. bluray://.../BDMV/00000.mpls) if already played
-    CURL url{path};
-    url.SetFileName("");
-    const std::string blurayPath{URIUtils::AddFileToFolder(url.Get(), "BDMV", "PLAYLIST", "")};
-    const std::string sql{
-        PrepareSQL("select idFile from episode_view "
-                   "where (strPath = '%s' and strFileName = '%s') or strPath = '%s'",
-                   basePath.c_str(), baseFile.c_str(), blurayPath.c_str())};
+    const std::string sql{PrepareSQL("select idFile from episode_view "
+                                     "where strPath = '%s' and strFileName = '%s'",
+                                     basePath.c_str(), baseFile.c_str())};
     m_pDS->query(sql);
     if (!m_pDS->eof())
       return GetEpisodesByFileId(m_pDS->fv("idFile").get_asInt(), episodes);
@@ -11112,8 +11108,8 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
     }
 
     // Save information for each version
-    // Also count number of versions per physical file
-    // All versions of a movie in movie_view have the idFile of the movie in the movie table
+    // Also count number of versions per physical file: versions of one container share
+    // one files row, so the constructed path is already physical
     std::vector<FileInformation> versions;
     std::map<std::string, unsigned int, std::less<>> fileHashMap;
     if (!singleFile)
@@ -11126,8 +11122,6 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         const std::string filePath{pDS3->fv("strPath").get_asString()};
         std::string fullPath;
         ConstructPath(fullPath, filePath, fileName);
-        if (URIUtils::IsBlurayPath(fullPath))
-          fullPath = URIUtils::GetDiscFile(fullPath);
         // non-const for move
         std::string hash{fmt::format("{}{}", fileId, fullPath)};
 
@@ -13194,7 +13188,9 @@ bool CVideoDatabase::AddOrUpdateVideoVersion(VideoDbContentType itemType,
     const MediaType mediaType{VideoContentTypeToString(itemType)};
 
     // vfs media paths identify the exact version within a shared physical file;
-    // tolerate plain paths from callers, only vfs paths belong on the version row
+    // tolerate plain paths from callers, only vfs paths belong on the version row.
+    // media_type is part of the row's identity here, so a row cannot be retyped
+    // across media types
     const std::string versionPath{GetVersionFilePath(filePath)};
 
     if (!versionPath.empty())
@@ -13317,7 +13313,12 @@ bool CVideoDatabase::IsDefaultVideoVersion(int idVersion)
     m_pDS->query(
         PrepareSQL("SELECT isDefault FROM videoversion WHERE idVersion = %i", idVersion));
     if (m_pDS->num_rows() > 0)
-      return m_pDS->fv("isDefault").get_asBool();
+    {
+      const bool isDefault{m_pDS->fv("isDefault").get_asBool()};
+      m_pDS->close();
+      return isDefault;
+    }
+    m_pDS->close();
   }
   catch (...)
   {
