@@ -1601,9 +1601,23 @@ void CVideoDatabase::UpdateTables(int iVersion)
                 "WHERE EXISTS (SELECT 1 FROM videoversion vv WHERE vv.idMedia=movie.idMovie "
                 "AND vv.media_type='movie' AND vv.isDefault=1 AND vv.idFile<>movie.idFile)");
 
-    // Per-version watched state; NULL falls back to the file's values
+    // Per-version watched state, materialized from the file so that versions sharing a
+    // physical file do not inherit each other's state through the file afterwards:
+    // for a version, NULL means unwatched, not unknown. A play count is worth keeping even
+    // where it cannot be attributed to one media item on the file, since that is the state
+    // every one of them displayed before. lastPlayed is carried over for the media item a
+    // file belongs to alone, and otherwise only alongside a play count: on a file holding
+    // several items it preserves no watched state of its own and would date all of them to
+    // the one that was played. The collapse below has not run yet, so a version row still
+    // points at its own vfs file and a count of one means the file belongs to it alone.
     m_pDS->exec("ALTER TABLE videoversion ADD playCount INTEGER");
     m_pDS->exec("ALTER TABLE videoversion ADD lastPlayed TEXT");
+    m_pDS->exec("UPDATE videoversion SET playCount="
+                "(SELECT f.playCount FROM files f WHERE f.idFile=videoversion.idFile)");
+    m_pDS->exec("UPDATE videoversion SET lastPlayed="
+                "(SELECT f.lastPlayed FROM files f WHERE f.idFile=videoversion.idFile) "
+                "WHERE playCount IS NOT NULL OR idFile IN (SELECT idFile FROM (SELECT idFile "
+                "FROM videoversion GROUP BY idFile HAVING COUNT(1)=1) AS single)");
 
     // Version art becomes keyed by the version id: the file id stops identifying
     // a version once several versions can share one physical file

@@ -1293,10 +1293,11 @@ private:
 
   /*! \brief Create a videoversion row linking a media item and a file.
    Bookmarks recorded for the file before it was linked to any media item are
-   adopted by the new version. An archive member's own files row, from play before
-   it entered the library, is folded into the new version. Callers derive filePath
-   from the media item's playable path (m_strFileNameAndPath / dynpath), which must
-   hold the vfs path (playlist, archive member) for media within a physical container.
+   adopted by the new version, and the only version on a file takes the file's
+   watched state. An archive member's own files row, from play before it entered
+   the library, is folded into the new version. Callers derive filePath from the
+   media item's playable path (m_strFileNameAndPath / dynpath), which must hold the
+   vfs path (playlist, archive member) for media within a physical container.
    \return the new version id
    */
   int AddVideoVersion(int idFile,
@@ -1311,6 +1312,11 @@ private:
    disc or of an archive member in the library, the path itself otherwise
    */
   std::string GetStoragePath(const std::string& fileNameAndPath) const;
+
+  /*! \brief Hand the resume point and settings of a file's only version back to the file,
+   for the version that replaces it to adopt.
+   */
+  void ReleaseVersionState(int idFile, int idVersion);
 
   /*! \brief Run a query on the main dataset and return the number of rows
    If no rows are found we close the dataset and return 0.

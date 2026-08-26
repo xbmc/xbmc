@@ -4430,6 +4430,10 @@ bool CVideoDatabase::DeleteMovie(int idMovie,
                                       idFile)) == 0))
       DeleteStreamDetails(idFile, idVersion);
 
+    // a refresh re-adds the movie on the same file
+    if (ca == DeleteMovieCascadeAction::DEFAULT_VERSION)
+      ReleaseVersionState(idFile, idVersion);
+
     if (hashAction == DeleteMovieHashAction::HASH_DELETE)
     {
       const std::string path = GetSingleValue(PrepareSQL(
@@ -4614,6 +4618,10 @@ void CVideoDatabase::DeleteEpisode(int idEpisode, bool bKeepId /* = false */)
       // Removed first to avoid being orphaned
       DeleteBookMarkForEpisode(idEpisode);
 
+      // a refresh re-adds the episode on the same file
+      if (fileAction == DeleteFileAction::KEEP)
+        ReleaseVersionState(idFile, GetVideoVersionId(idFile, idEpisode, MediaTypeEpisode));
+
       std::string strSQL = PrepareSQL("delete from episode where idEpisode=%i", idEpisode);
       m_pDS->exec(strSQL);
     }
@@ -4649,6 +4657,10 @@ void CVideoDatabase::DeleteMusicVideo(int idMVideo, bool bKeepId /* = false */)
       std::string path = GetSingleValue(PrepareSQL("SELECT strPath FROM path JOIN files ON files.idPath=path.idPath WHERE files.idFile=%i", idFile));
       if (!path.empty())
         InvalidatePathHash(path);
+
+      // a refresh re-adds the music video on the same file
+      if (fileAction == DeleteFileAction::KEEP)
+        ReleaseVersionState(idFile, GetVideoVersionId(idFile, idMVideo, MediaTypeMusicVideo));
 
       std::string strSQL = PrepareSQL("delete from musicvideo where idMVideo=%i", idMVideo);
       m_pDS->exec(strSQL);
@@ -6988,12 +7000,13 @@ int CVideoDatabase::GetPlayCount(int iFileId)
 
 int CVideoDatabase::GetPlayCount(int iFileId, int idVersion)
 {
+  // a version owns its watched state: NULL means unwatched, so versions sharing a
+  // physical file cannot inherit each other's state through the file
   if (idVersion >= 0)
   {
     const std::string value{GetSingleValue(
         PrepareSQL("SELECT playCount FROM videoversion WHERE idVersion=%i", idVersion))};
-    if (!value.empty())
-      return std::atoi(value.c_str());
+    return value.empty() ? 0 : std::atoi(value.c_str());
   }
   return GetPlayCount(iFileId);
 }
@@ -7174,6 +7187,14 @@ CDateTime CVideoDatabase::SetPlayCount(const CFileItem& item, int count, const C
     if (idVersion >= 0)
       m_pDS->exec("update videoversion set " + setClause +
                   PrepareSQL(" where idVersion=%i", idVersion));
+
+    // a file holding several versions is watched while any of them is
+    if (idVersion >= 0 &&
+        GetSingleValueInt(PrepareSQL("SELECT COUNT(1) FROM videoversion WHERE idFile=%i", id)) > 1)
+      m_pDS->exec(PrepareSQL(
+          "UPDATE files SET playCount=(SELECT MAX(playCount) FROM videoversion WHERE idFile=%i), "
+          "lastPlayed=(SELECT MAX(lastPlayed) FROM videoversion WHERE idFile=%i) WHERE idFile=%i",
+          id, id, id));
 
     // We only need to announce changes to video items in the library
     if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iDbId > 0)
@@ -14115,6 +14136,15 @@ int CVideoDatabase::AddVideoVersion(int idFile,
       "type, %i FROM bookmark WHERE idFile=%i AND idVersion IS NULL AND type=%i",
       idVersion, idFile, CBookmark::RESUME));
 
+  // the only item on a file takes the file's watched state, as it did before versions owned it
+  if (GetSingleValueInt(
+          PrepareSQL("SELECT COUNT(1) FROM videoversion WHERE idFile=%i", idFile)) == 1)
+    m_pDS->exec(PrepareSQL("UPDATE videoversion SET "
+                           "playCount=(SELECT playCount FROM files WHERE idFile=%i), "
+                           "lastPlayed=(SELECT lastPlayed FROM files WHERE idFile=%i) "
+                           "WHERE idVersion=%i",
+                           idFile, idFile, idVersion));
+
   // an archive member played before it entered the library has a files row of its own,
   // whose state becomes the version's
   if (!filePath.empty() && !URIUtils::IsBlurayPath(filePath))
@@ -14161,6 +14191,21 @@ std::string CVideoDatabase::GetStoragePath(const std::string& fileNameAndPath) c
       return fileNameAndPath;
   }
   return GetPhysicalPath(fileNameAndPath);
+}
+
+void CVideoDatabase::ReleaseVersionState(int idFile, int idVersion)
+{
+  if (idVersion < 0 ||
+      GetSingleValueInt(PrepareSQL("SELECT COUNT(1) FROM videoversion WHERE idFile=%i",
+                                   idFile)) != 1)
+    return;
+
+  // one unowned row each, so the replacing version adopts this version's
+  m_pDS->exec(PrepareSQL("DELETE FROM bookmark WHERE idFile=%i AND idVersion IS NULL AND type=%i",
+                         idFile, CBookmark::RESUME));
+  m_pDS->exec(PrepareSQL("UPDATE bookmark SET idVersion=NULL WHERE idVersion=%i", idVersion));
+  m_pDS->exec(PrepareSQL("DELETE FROM settings WHERE idFile=%i AND idVersion IS NULL", idFile));
+  m_pDS->exec(PrepareSQL("UPDATE settings SET idVersion=NULL WHERE idVersion=%i", idVersion));
 }
 
 bool CVideoDatabase::GetVideoVersionsNav(const std::string& strBaseDir,
