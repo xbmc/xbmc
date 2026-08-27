@@ -14,6 +14,7 @@
 
 #include <cstdint>
 #include <string>
+#include <string_view>
 #include <vector>
 
 class CFileItem;
@@ -22,6 +23,26 @@ struct SActorInfo;
 
 namespace KODI::VIDEO
 {
+//! \brief When an image is likely to be first seen by the user, and so the order to fetch it in
+enum class ArtPriority : uint8_t
+{
+  LIST = 0, //!< poster - shown in library
+  BACKGROUND, //!< fanart - shown behind a list
+  DETAIL, //!< shown once an item is opened
+  ACTOR, //!< shown once a cast list is opened
+};
+
+//! \brief An artwork url to cache, with the hash of its source file if that is already known
+struct ArtToCache
+{
+  std::string url;
+  std::string hash; //!< empty if unknown, leaving the texture cache to determine it
+  ArtPriority priority{ArtPriority::DETAIL};
+};
+
+//! \brief When art of the given type (a "poster", a "set.fanart") is first seen
+ArtPriority PriorityOfArtType(std::string_view artType);
+
 /*! \brief The artwork side of a video scan
 
  Finds the art belonging scraped items - local files, what the scraper offered, what
@@ -39,6 +60,12 @@ public:
   };
 
   CVideoInfoScannerArt();
+
+  /*! \brief Queues anything still held back, for a holder that doesn't do so itself
+   A library import, say, gathers art without ever running a scan to finish.
+   \sa FlushDeferred
+   */
+  ~CVideoInfoScannerArt();
 
   /*! \brief Retrieve any artwork associated with an item
    \param pItem item to find artwork for.
@@ -75,6 +102,27 @@ public:
    */
   void Cache(const std::string& url, const std::string& knownHash = "") const;
 
+  /*! \brief Have the texture cache fetch a set of an item's artwork
+   Each image is placed by the art type it is held under \sa PriorityOfArtType
+   \param art the artwork to cache
+   */
+  void Cache(const KODI::ART::Artwork& art) const;
+
+  /*! \brief Hand the artwork held back during the scan to the texture cache
+
+   Caching an image competes with the scan for the cpu to decode and store what it fetched, so
+   with ArtRetrievalTiming::BACKGROUND all but ArtPriority::LIST is collected as it is found and
+   queued here instead, once the library is browsable. The texture cache's own queue outlives this
+   object, so the images are still cached from that point rather than being left for something to
+   ask for them.
+
+   Queued in ArtPriority order, so that what the user comes to first is fetched first.
+
+   Duplicates are dropped, since one image - an actor, a set - often belongs to several items and
+   each would otherwise cost a lookup to find it already cached.
+   */
+  void FlushDeferred();
+
   /*! \brief Get season thumbs for a tvshow.
    All seasons (regardless of whether the user has episodes) are added to the art map.
    \param[in] show     tvshow info tag
@@ -102,7 +150,14 @@ private:
     BACKGROUND = 1 //!< retrieve art in background after scrape
   };
 
+  //! \brief Cache a group of artwork, or collect it for FlushDeferred() to
+  void Cache(std::vector<ArtToCache> art) const;
+
   ArtRetrievalTiming m_artRetrievalTiming{ArtRetrievalTiming::BACKGROUND};
+
+  //! Artwork found during the scan, to be cached once it has finished \sa FlushDeferred
+  //! Mutable, as the art is found by the const methods that gather it
+  mutable std::vector<ArtToCache> m_deferredArt;
 };
 
 } // namespace KODI::VIDEO
