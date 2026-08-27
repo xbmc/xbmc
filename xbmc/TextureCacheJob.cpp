@@ -65,7 +65,9 @@ bool CTextureCacheJob::DoWork()
   std::string path(CServiceBroker::GetTextureCache()->CheckCachedImage(m_url, needsRecaching));
   if (!path.empty() && !needsRecaching)
     return false;
-  if (CServiceBroker::GetTextureCache()->StartCacheImage(m_url))
+
+  m_holdsProcessingClaim = CServiceBroker::GetTextureCache()->StartCacheImage(m_url);
+  if (m_holdsProcessingClaim)
     return CacheTexture();
 
   return false;

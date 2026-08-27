@@ -129,6 +129,18 @@ public:
    */
   void UnPauseJobs();
 
+  /*! \brief Whether jobs of priority PRIORITY_LOW_PAUSABLE are currently suspended
+   \sa PauseJobs, UnPauseJobs
+   */
+  bool ArePausableJobsPaused() const;
+
+  /*! \brief Maximum jobs to run at once at PRIORITY_LOW_PAUSABLE
+
+   \return the limit
+   \sa CJobQueue
+   */
+  static unsigned int GetMaxPausableWorkers();
+
   /*!
    \brief Checks to see if any jobs with specific priority are currently processing.
    \param priority to search for
@@ -228,7 +240,18 @@ private:
 
   void StartWorkers(CJob::PRIORITY priority);
   void RemoveWorker(const CJobWorker* worker);
+
+  /*! \brief Number of workers available to a priority, excluding PRIORITY_LOW_PAUSABLE
+   Each level leaves headroom for the ones above it, so that a busy background never stops
+   higher-priority work from starting.
+   */
   static unsigned int GetMaxWorkers(CJob::PRIORITY priority);
+
+  /*! \brief Whether another job of this priority may start now
+   \param priority priority of the job wanting to start
+   \return true if there is room for it
+   */
+  bool CanStart(CJob::PRIORITY priority) const;
 
   unsigned int m_jobCounter{0};
 

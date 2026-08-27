@@ -18,6 +18,9 @@
 #include "cores/VideoPlayer/DVDFileInfo.h"
 #include "filesystem/Directory.h"
 #include "imagefiles/ImageFileURL.h"
+#include "jobs/Job.h"
+#include "jobs/JobManager.h"
+#include "jobs/JobQueue.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ArtUtils.h"
@@ -30,6 +33,7 @@
 #include "video/VideoThumbLoader.h"
 
 #include <algorithm>
+#include <chrono>
 #include <map>
 #include <ranges>
 #include <string>
@@ -41,6 +45,9 @@ using namespace ADDON;
 
 namespace
 {
+//! \brief How often to check on a batch of art caching jobs while waiting for it to finish
+constexpr auto ART_CACHE_JOB_POLL_INTERVAL{std::chrono::milliseconds{1000}};
+
 void CacheArtwork(const std::string& url,
                   bool retrieveArtDuringScrape,
                   const std::string& knownHash = "")
@@ -158,9 +165,40 @@ void CVideoInfoScannerArt::Cache(std::vector<ArtToCache> art) const
     return;
   }
 
-  // Synchronous so fetch all now
+  // A single image has nothing to overlap with
+  if (art.size() < 2)
+  {
+    for (const auto& a : art)
+      CacheArtwork(a.url, true, a.hash);
+    return;
+  }
+
+  // Caching an image is mostly waiting on the source
+  CJobQueue queue{false, CJobManager::GetMaxPausableWorkers(), CJob::PRIORITY_LOW_PAUSABLE};
   for (const auto& a : art)
-    CacheArtwork(a.url, true, a.hash);
+    queue.Submit([a]() { CacheArtwork(a.url, true, a.hash); });
+
+  const auto jobManager{CServiceBroker::GetJobManager()};
+  while (!queue.WaitForCompletion(ART_CACHE_JOB_POLL_INTERVAL))
+  {
+    if (!jobManager->IsRunning())
+    {
+      // Shutting down - whatever is left is abandoned when the queue goes out of scope
+      CLog::LogF(LOGDEBUG, "Abandoning art caching, the job manager has been shut down");
+      break;
+    }
+
+    if (jobManager->ArePausableJobsPaused())
+    {
+      // Playback has started, so nothing still queued here will be dispatched until it stops, and
+      // waiting that long would hold up the scrape. Hand what is left to the background path
+      // instead: its queue outlives this call, so the images are still cached once playback ends.
+      CLog::LogF(LOGDEBUG, "Handing remaining art to background caching, playback has started");
+      for (const auto& a : art)
+        CacheArtwork(a.url, false, a.hash);
+      break;
+    }
+  }
 }
 
 void CVideoInfoScannerArt::FlushDeferred()
