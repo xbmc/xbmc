@@ -17,6 +17,7 @@
 #include <memory>
 #include <string>
 #include <string_view>
+#include <unordered_map>
 #include <vector>
 
 #include <fmt/format.h>
@@ -185,6 +186,32 @@ private:
                          const CScraperUrl& url,
                          XFILE::CCurlFile& http,
                          const std::vector<std::string>* extras);
+
+  //! \brief FindMovie without the result cache in front of it
+  std::vector<CScraperUrl> FindMovieUncached(XFILE::CCurlFile& fcurl,
+                                             const std::string& movieTitle,
+                                             int movieYear,
+                                             bool fFirst);
+
+  //! \brief GetVideoDetails without the result cache in front of it
+  bool GetVideoDetailsUncached(XFILE::CCurlFile& fcurl,
+                               const UniqueIDs& uniqueIDs,
+                               const CScraperUrl& scurl,
+                               bool fMovie,
+                               CVideoInfoTag& video);
+
+  /*! \brief Cache scraper results rather than repeating the request.
+
+   Lifetime is this instance.
+   Repeats come from versions, discs and folders of the same title, which are scraped close together.
+   Not synchronised, matching the rest of CScraper: a scraper shared between threads needs the
+   caller to provide that.
+   */
+  static constexpr size_t MAX_CACHED_RESULTS{50};
+  std::unordered_map<std::string, std::vector<CScraperUrl>, StringHash, std::equal_to<>>
+      m_findCache;
+  std::unordered_map<std::string, std::shared_ptr<const CVideoInfoTag>, StringHash, std::equal_to<>>
+      m_detailsCache;
 
   bool m_fLoaded = false;
   bool m_isPython = false;

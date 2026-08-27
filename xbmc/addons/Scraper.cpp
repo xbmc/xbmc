@@ -40,6 +40,7 @@
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoInfoTag.h"
 
 #include <algorithm>
 #include <array>
@@ -913,13 +914,64 @@ bool PythonDetails(const std::string& ID,
   const ADDON::CScraper::UniqueIDs ids;
   return PythonDetails(ID, key, url, action, pathSettings, ids, result);
 }
+//! \brief Length prefixed, so that no separator can appear in what it is separating
+std::string Keyed(std::string_view value)
+{
+  return StringUtils::Format("{}:{}", value.size(), value);
+}
+
+//! \brief Key a set of unique ids into something a result cache can look up
+std::string SerialiseUniqueIDs(const ADDON::CScraper::UniqueIDs& uniqueIDs)
+{
+  std::vector<std::string> ids;
+  ids.reserve(uniqueIDs.size());
+  for (const auto& [type, value] : uniqueIDs)
+    ids.emplace_back(Keyed(type) + Keyed(value));
+
+  std::ranges::sort(ids); // the ids are unordered, the key cannot be
+  return StringUtils::Join(ids, "");
+}
+
+//! \brief Key every url a scraper would be given, since it fetches each one it is handed
+std::string SerialiseUrls(const CScraperUrl& scurl)
+{
+  std::string key;
+  for (const auto& url : scurl.GetUrls())
+    key += Keyed(url.m_url) + Keyed(url.m_spoof) + Keyed(url.m_cache) +
+           Keyed(url.m_post ? "1" : "") + Keyed(url.m_isgz ? "1" : "");
+
+  return key;
+}
 } // unnamed namespace
 
 // fetch list of matching movies sorted by relevance (may be empty);
 // throws CScraperError on error; first called with fFirst set, then unset if first try fails
-std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
-                                             const std::string &movieTitle, int movieYear,
+std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile& fcurl,
+                                             const std::string& movieTitle,
+                                             int movieYear,
                                              bool fFirst)
+{
+  // The title is cleaned below, so the arguments as given identify the search
+  const std::string key{StringUtils::Format("{}\n{}\n{}", movieTitle, movieYear, fFirst)};
+  if (const auto it = m_findCache.find(key); it != m_findCache.end())
+    return it->second;
+
+  auto result = FindMovieUncached(fcurl, movieTitle, movieYear, fFirst);
+
+  if (!result.empty())
+  {
+    if (m_findCache.size() >= MAX_CACHED_RESULTS)
+      m_findCache.clear();
+    m_findCache.emplace(key, result);
+  }
+
+  return result;
+}
+
+std::vector<CScraperUrl> CScraper::FindMovieUncached(XFILE::CCurlFile& fcurl,
+                                                     const std::string& movieTitle,
+                                                     int movieYear,
+                                                     bool fFirst)
 {
   // prepare parameters for URL creation
   std::string sTitle;
@@ -1361,6 +1413,33 @@ bool CScraper::GetVideoDetails(XFILE::CCurlFile& fcurl,
                                const CScraperUrl& scurl,
                                bool fMovie /*else episode*/,
                                CVideoInfoTag& video)
+{
+  // The id as well as the url, since an xml scraper is given both and two search results can
+  // carry the same url under different ids
+  const std::string key{Keyed(scurl.GetId()) + SerialiseUrls(scurl) + (fMovie ? "m" : "e") +
+                        SerialiseUniqueIDs(uniqueIDs)};
+  if (const auto it = m_detailsCache.find(key); it != m_detailsCache.end())
+  {
+    // A copy - the caller goes on to fill in where this came from and what art it ended up with
+    video = *it->second;
+    return true;
+  }
+
+  if (!GetVideoDetailsUncached(fcurl, uniqueIDs, scurl, fMovie, video))
+    return false;
+
+  if (m_detailsCache.size() >= MAX_CACHED_RESULTS)
+    m_detailsCache.clear();
+  m_detailsCache.emplace(key, std::make_shared<const CVideoInfoTag>(video));
+
+  return true;
+}
+
+bool CScraper::GetVideoDetailsUncached(XFILE::CCurlFile& fcurl,
+                                       const UniqueIDs& uniqueIDs,
+                                       const CScraperUrl& scurl,
+                                       bool fMovie,
+                                       CVideoInfoTag& video)
 {
   CLog::LogF(LOGDEBUG,
              "Reading {} '{}' using {} scraper (file: '{}', content: '{}', version: '{}')",
