@@ -24978,7 +24978,37 @@ msgctxt "#39212"
 msgid "Do not turn on subtitles that are in the same language as the audio being played. Forced subtitles are not affected."
 msgstr ""
 
-#empty strings from id 39213 to 39899
+#. Title of the setting that chooses which audio stream a library list describes
+#: system/settings/settings.xml
+msgctxt "#39213"
+msgid "Language details to display"
+msgstr ""
+
+#. Help text for setting "Language details to display" of label #39213
+#: system/settings/settings.xml
+msgctxt "#39214"
+msgid "Which audio stream the language, codec and channel count shown against an item describe.[CR][Player][Default] The language that will normally be played.[CR][Media default] The default language for the media. If not set, then the best audio stream is shown.[CR][Best] The best audio stream as determined by codec quality and channel count."
+msgstr ""
+
+#. Value of the setting "Language details to display" - describe the stream that will be played
+#: system/settings/settings.xml
+msgctxt "#39215"
+msgid "Player"
+msgstr ""
+
+#. Value of the setting "Language details to display" - describe the media's default stream
+#: system/settings/settings.xml
+msgctxt "#39216"
+msgid "Media default"
+msgstr ""
+
+#. Value of the setting "Language details to display" - describe the technically best stream
+#: system/settings/settings.xml
+msgctxt "#39217"
+msgid "Best"
+msgstr ""
+
+#empty strings from id 39218 to 39899
 
 #. List formatting: pattern used to join a list of exactly two items, e.g. "A and B"
 #. STR_LIST_AND_TWO
