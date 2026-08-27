@@ -215,7 +215,7 @@ void CJobManager::StartWorkers(CJob::PRIORITY priority)
   std::unique_lock lock(m_section);
 
   // check how many free threads we have
-  if (m_processing.size() >= GetMaxWorkers(priority))
+  if (!CanStart(priority))
     return;
 
   // do we have any sleeping threads?
@@ -238,8 +238,7 @@ CJob* CJobManager::PopJob()
     if (priority == CJob::PRIORITY_LOW_PAUSABLE && m_pauseJobs)
       continue;
 
-    if (!m_jobQueue[priority].empty() &&
-        m_processing.size() < GetMaxWorkers(CJob::PRIORITY(priority)))
+    if (!m_jobQueue[priority].empty() && CanStart(CJob::PRIORITY(priority)))
     {
       // pop the job off the queue
       const CWorkItem job{m_jobQueue[priority].front()};
@@ -258,6 +257,12 @@ void CJobManager::PauseJobs()
 {
   std::unique_lock lock(m_section);
   m_pauseJobs = true;
+}
+
+bool CJobManager::ArePausableJobsPaused() const
+{
+  std::unique_lock lock(m_section);
+  return m_pauseJobs;
 }
 
 void CJobManager::UnPauseJobs()
@@ -410,4 +415,29 @@ unsigned int CJobManager::GetMaxWorkers(CJob::PRIORITY priority)
   if (priority == CJob::PRIORITY_DEDICATED)
     return 10000; // A large number..
   return max_workers - (CJob::PRIORITY_HIGH - priority);
+}
+
+unsigned int CJobManager::GetMaxPausableWorkers()
+{
+  // PRIORITY_LOW_PAUSABLE work waits on a source rather than on a core
+  constexpr unsigned int SOURCE_REQUEST_LIMIT{4};
+  constexpr unsigned int SMALL_DEVICE_LIMIT{2};
+
+  // hardware_concurrency() rather than CCPUInfo, to keep the job manager free of the service
+  // broker. It reports 0 when it cannot tell, which counts as "not many".
+  return std::thread::hardware_concurrency() >= 4 ? SOURCE_REQUEST_LIMIT : SMALL_DEVICE_LIMIT;
+}
+
+bool CJobManager::CanStart(CJob::PRIORITY priority) const
+{
+  // PRIORITY_LOW_PAUSABLE is background work that spends its time waiting on a source rather than
+  // on a core. Currently only used for texture cache.
+  const auto pausable{static_cast<size_t>(
+      std::ranges::count_if(m_processing, [](const CWorkItem& item)
+                            { return item.GetPriority() == CJob::PRIORITY_LOW_PAUSABLE; }))};
+
+  if (priority == CJob::PRIORITY_LOW_PAUSABLE)
+    return pausable < GetMaxPausableWorkers();
+
+  return m_processing.size() - pausable < GetMaxWorkers(priority);
 }
