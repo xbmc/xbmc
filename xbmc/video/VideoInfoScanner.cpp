@@ -294,6 +294,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
       CLog::Log(LOGINFO, "VideoInfoScanner: Finished scan. Scanning for video info took {} ms",
                 duration.count());
+
+      // Deliberately after the scan is timed and the library is browsable, so that fetching the
+      // art doesn't hold either back
+      m_art.FlushDeferred();
     }
     catch (...)
     {
@@ -1690,8 +1694,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
             useLocal && !item->IsPlugin(), useRemoteArt, &m_regexpCache);
         for (const auto& [season, art] : seasonArt)
         {
-          for (const auto& url : art | std::views::values)
-            m_art.Cache(url);
+          m_art.Cache(art);
 
           const int seasonID{m_database.AddSeason(static_cast<int>(showID), season)};
           m_database.SetArtForItem(seasonID, MediaTypeSeason, art);
@@ -2210,8 +2213,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
               movieDetails, seasonArt, CVideoThumbLoader::GetArtTypes(MediaTypeSeason),
               useLocal && !pItem->IsPlugin(), useRemoteArt, &m_regexpCache);
           for (const auto& seasonArtwork : seasonArt | std::views::values)
-            for (const auto& url : seasonArtwork | std::views::values)
-              m_art.Cache(url);
+            m_art.Cache(seasonArtwork);
         }
 
         lResult = m_database.SetDetailsForTvShow(multipath, movieDetails, art, seasonArt);

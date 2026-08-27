@@ -74,6 +74,26 @@ void CacheArtwork(const std::string& url,
   CLog::LogF(LOGDEBUG, "Synchronous art caching for {} failed", url);
 }
 
+//! \brief Drop the empty and duplicate urls from a set of artwork. Order is not preserved.
+void DedupeArt(std::vector<KODI::VIDEO::ArtToCache>& art)
+{
+  using KODI::VIDEO::ArtToCache;
+
+  std::erase_if(art, [](const ArtToCache& a) { return a.url.empty(); });
+
+  // Where the same url appears more than once, order the copy kept below first: the one seen
+  // earliest, and of those the one with a hash already known, which saves a stat
+  std::ranges::sort(art,
+                    [](const ArtToCache& a, const ArtToCache& b)
+                    {
+                      if (a.url != b.url)
+                        return a.url < b.url;
+                      if (a.priority != b.priority)
+                        return a.priority < b.priority;
+                      return !a.hash.empty() && b.hash.empty();
+                    });
+  art.erase(std::ranges::begin(std::ranges::unique(art, {}, &ArtToCache::url)), art.end());
+}
 std::string ContentToMediaType(ContentType content, bool folder)
 {
   switch (content)
@@ -101,9 +121,88 @@ CVideoInfoScannerArt::CVideoInfoScannerArt()
           CSettings::SETTING_VIDEOLIBRARY_ARTRETRIEVALTIMING));
 }
 
+CVideoInfoScannerArt::~CVideoInfoScannerArt()
+{
+  FlushDeferred();
+}
+
 void CVideoInfoScannerArt::Cache(const std::string& url, const std::string& knownHash) const
 {
   CacheArtwork(url, m_artRetrievalTiming == ArtRetrievalTiming::SYNCHRONOUS, knownHash);
+}
+
+void CVideoInfoScannerArt::Cache(const KODI::ART::Artwork& art) const
+{
+  std::vector<ArtToCache> artToCache;
+  artToCache.reserve(art.size());
+  for (const auto& [artType, url] : art)
+    artToCache.push_back({url, {}, PriorityOfArtType(artType)});
+
+  Cache(std::move(artToCache));
+}
+
+void CVideoInfoScannerArt::Cache(std::vector<ArtToCache> art) const
+{
+  DedupeArt(art);
+
+  if (m_artRetrievalTiming != ArtRetrievalTiming::SYNCHRONOUS)
+  {
+    for (auto& a : art)
+    {
+      // Get artwork that is immediately visible to the user first, and defer the rest for later
+      if (a.priority == ArtPriority::LIST)
+        CacheArtwork(a.url, false, a.hash);
+      else
+        m_deferredArt.push_back(std::move(a));
+    }
+    return;
+  }
+
+  // Synchronous so fetch all now
+  for (const auto& a : art)
+    CacheArtwork(a.url, true, a.hash);
+}
+
+void CVideoInfoScannerArt::FlushDeferred()
+{
+  DedupeArt(m_deferredArt);
+  if (m_deferredArt.empty())
+    return;
+
+  // Fetched in the order the user is likely to view it, rather than the order it was found in
+  std::ranges::stable_sort(m_deferredArt, {}, &ArtToCache::priority);
+
+  const auto count = [this](ArtPriority priority)
+  { return std::ranges::count(m_deferredArt, priority, &ArtToCache::priority); };
+
+  // Broken down by priority, as one image looks like any other by the time it is fetched
+  CLog::LogF(LOGDEBUG,
+             "Queueing {} images found during the scan for caching "
+             "({} list, {} background, {} detail, {} actor)",
+             m_deferredArt.size(), count(ArtPriority::LIST), count(ArtPriority::BACKGROUND),
+             count(ArtPriority::DETAIL), count(ArtPriority::ACTOR));
+
+  const auto& textureCache = CServiceBroker::GetTextureCache();
+  for (const auto& art : m_deferredArt)
+    textureCache->BackgroundCacheImage(art.url, art.hash);
+
+  m_deferredArt.clear();
+}
+
+ArtPriority PriorityOfArtType(std::string_view artType)
+{
+  // A movie's set art is shown wherever the movie's own is
+  if (artType.starts_with("set."))
+    artType.remove_prefix(4);
+
+  // Numbered, where a scraper offers more than one eg. "fanart2"
+  if (artType.starts_with("fanart"))
+    return ArtPriority::BACKGROUND;
+
+  if (artType == "poster" || artType == "thumb" || artType == "banner" || artType == "keyart")
+    return ArtPriority::LIST;
+
+  return ArtPriority::DETAIL;
 }
 
 void CVideoInfoScannerArt::GetArtwork(CFileItem* pItem,
@@ -245,9 +344,11 @@ void CVideoInfoScannerArt::GetArtwork(CFileItem* pItem,
     art["thumb"] = CVideoThumbLoader::GetEmbeddedThumbURL(*pItem);
   }
 
+  std::vector<ArtToCache> artToCache;
   for (const auto& artType : artTypes)
     if (art.contains(artType))
-      CacheArtwork(art.at(artType), m_artRetrievalTiming == ArtRetrievalTiming::SYNCHRONOUS);
+      artToCache.push_back({art.at(artType), {}, PriorityOfArtType(artType)});
+  Cache(std::move(artToCache));
 
   pItem->SetArt(art);
 
@@ -421,12 +522,15 @@ void CVideoInfoScannerArt::FetchActorThumbs(
     }
   }
 
+  std::vector<ArtToCache> artToCache;
+  artToCache.reserve(actors.size());
   for (const auto& actor : actors)
   {
     const auto hash{listedHashes.find(actor.thumb)};
-    CacheArtwork(actor.thumb, m_artRetrievalTiming == ArtRetrievalTiming::SYNCHRONOUS,
-                 hash != listedHashes.end() ? hash->second : std::string{});
+    artToCache.push_back({actor.thumb, hash != listedHashes.end() ? hash->second : std::string{},
+                          ArtPriority::ACTOR});
   }
+  Cache(std::move(artToCache));
 }
 
 } // namespace KODI::VIDEO
