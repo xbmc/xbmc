@@ -94,6 +94,12 @@ public:
    */
   static std::string GetImageHash(const CFileItem& listedFile);
 
+  /*! \brief Whether a mime type leaves an image possible
+   \param mimeType the type to consider, empty if nothing has said what it is
+   \return true for an image type, and for the type a source gives when it doesn't know
+   */
+  static bool MayBeAnImage(const std::string& mimeType);
+
   std::string m_url;
   CTextureDetails m_oldDetails;
   CTextureDetails m_details;
