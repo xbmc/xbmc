@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "utils/LanguageTag.h"
 #include "utils/StreamUtils.h"
 
 #include <string>
@@ -292,6 +293,152 @@ TEST(TestStreamUtils, CompareAudioQuality_UnknownChannelCountSentinelsRankEquall
   // And an unknown count still loses to any known one, however it is spelled
   EXPECT_LT(StreamUtils::CompareAudioQuality("truehd", -1, "ac3", 1), 0);
   EXPECT_LT(StreamUtils::CompareAudioQuality("truehd", 0, "ac3", 1), 0);
+}
+
+TEST(TestStreamUtils, CompareAudioPreference_IsAStrictWeakOrdering)
+{
+  // CSelectionStreams::Get() hands this to std::stable_sort, which is undefined behaviour unless
+  // it is a strict weak ordering. Every tier has to be a property each stream decides for itself,
+  // never one that depends on the pair, so walk the whole relation for a set of preferences that
+  // turns every tier on at once.
+  const std::vector<StreamUtils::AudioCandidate> candidates{
+      {.language = KODI::UTILS::CLanguageTag::Parse("eng"),
+       .codec = "truehd",
+       .channels = 8,
+       .flags = StreamFlags::FLAG_DEFAULT},
+      {.language = KODI::UTILS::CLanguageTag::Parse("eng"),
+       .codec = "ac3",
+       .channels = 2,
+       .flags = StreamFlags::FLAG_NONE},
+      {.language = KODI::UTILS::CLanguageTag::Parse("ger"),
+       .codec = "dtshd_ma",
+       .channels = 6,
+       .flags = StreamFlags::FLAG_ORIGINAL},
+      {.language = KODI::UTILS::CLanguageTag::Parse("eng"),
+       .codec = "dts",
+       .channels = 6,
+       .flags = StreamFlags::FLAG_HEARING_IMPAIRED},
+      {.language = KODI::UTILS::CLanguageTag::Parse("jpn"),
+       .codec = "truehd",
+       .channels = 8,
+       .flags = StreamFlags::FLAG_VISUAL_IMPAIRED},
+      {.language = KODI::UTILS::CLanguageTag::Parse(""),
+       .codec = "",
+       .channels = 0,
+       .flags = StreamFlags::FLAG_NONE},
+      {.language = KODI::UTILS::CLanguageTag::Parse("eng"),
+       .codec = "ac3",
+       .channels = 2,
+       .flags = StreamFlags::FLAG_DEFAULT},
+      {.language = KODI::UTILS::CLanguageTag::Parse("fra"),
+       .codec = "flac",
+       .channels = 2,
+       .flags = static_cast<StreamFlags>(StreamFlags::FLAG_DEFAULT | StreamFlags::FLAG_ORIGINAL)},
+      {.language = KODI::UTILS::CLanguageTag::Parse("eng"),
+       .codec = "truehd",
+       .channels = 8,
+       .flags = StreamFlags::FLAG_NONE},
+      {.language = KODI::UTILS::CLanguageTag::Parse("und"),
+       .codec = "opus",
+       .channels = 6,
+       .flags = StreamFlags::FLAG_NONE},
+  };
+
+  StreamUtils::AudioPreferences preferences;
+  preferences.language = KODI::UTILS::CLanguageTag::Parse("eng");
+  preferences.preferHearingImpaired = true;
+  preferences.preferVisualImpaired = true;
+  preferences.preferDefaultFlag = true;
+  preferences.preferStereo = true;
+
+  const auto compare{[&candidates, &preferences](size_t i, size_t j) {
+    return StreamUtils::CompareAudioPreference(candidates[i], candidates[j], preferences);
+  }};
+  const auto better{[&compare](size_t i, size_t j) { return compare(i, j) > 0; }};
+
+  for (size_t i = 0; i < candidates.size(); ++i)
+  {
+    // Irreflexive - nothing is a better match than itself
+    EXPECT_FALSE(better(i, i)) << i;
+
+    for (size_t j = 0; j < candidates.size(); ++j)
+    {
+      // Antisymmetric - the result must simply invert when the arguments swap
+      EXPECT_EQ(compare(i, j), -compare(j, i)) << i << " vs " << j;
+
+      for (size_t k = 0; k < candidates.size(); ++k)
+      {
+        // Transitive - no cycles, for either "better than" or "equally good"
+        if (better(i, j) && better(j, k))
+        {
+          EXPECT_TRUE(better(i, k))
+              << i << " > " << j << " > " << k << " but not " << i << " > " << k;
+        }
+
+        if (!better(i, j) && !better(j, i) && !better(j, k) && !better(k, j))
+        {
+          EXPECT_TRUE(!better(i, k) && !better(k, i)) << i << " == " << j << " == " << k;
+        }
+      }
+    }
+  }
+}
+
+TEST(TestStreamUtils, CompareAudioPreference_TiersApplyInThePlayersOrder)
+{
+  const StreamUtils::AudioCandidate english{.language = KODI::UTILS::CLanguageTag::Parse("eng"),
+                                            .codec = "ac3",
+                                            .channels = 2,
+                                            .flags = StreamFlags::FLAG_NONE};
+  const StreamUtils::AudioCandidate german{
+      .language = KODI::UTILS::CLanguageTag::Parse("ger"),
+      .codec = "truehd",
+      .channels = 8,
+      .flags = static_cast<StreamFlags>(StreamFlags::FLAG_DEFAULT | StreamFlags::FLAG_ORIGINAL)};
+
+  // The wanted language outranks the original flag, the default flag and quality alike
+  StreamUtils::AudioPreferences wantsEnglish;
+  wantsEnglish.language = KODI::UTILS::CLanguageTag::Parse("eng");
+  wantsEnglish.preferDefaultFlag = true;
+  EXPECT_GT(StreamUtils::CompareAudioPreference(english, german, wantsEnglish), 0);
+
+  // Asking for the original language instead moves the decision onto the flag
+  StreamUtils::AudioPreferences wantsOriginal;
+  wantsOriginal.preferOriginal = true;
+  EXPECT_LT(StreamUtils::CompareAudioPreference(english, german, wantsOriginal), 0);
+
+  // Media default takes language, original and impaired out of it, leaving quality
+  StreamUtils::AudioPreferences mediaDefault;
+  mediaDefault.mediaDefault = true;
+  mediaDefault.language = KODI::UTILS::CLanguageTag::Parse("eng"); // must be disregarded
+  EXPECT_LT(StreamUtils::CompareAudioPreference(english, german, mediaDefault), 0);
+
+  // A stereo layout is preferred over quality, but still yields to the default flag
+  StreamUtils::AudioPreferences stereo;
+  stereo.mediaDefault = true;
+  stereo.preferStereo = true;
+  EXPECT_GT(StreamUtils::CompareAudioPreference(english, german, stereo), 0);
+
+  stereo.preferDefaultFlag = true;
+  EXPECT_LT(StreamUtils::CompareAudioPreference(english, german, stereo), 0);
+}
+
+TEST(TestStreamUtils, CompareAudioPreference_DefaultFlagBreaksAQualityTie)
+{
+  // The player's last tier, which applies whether or not the user asked for default streams
+  const StreamUtils::AudioCandidate plain{.language = KODI::UTILS::CLanguageTag::Parse("eng"),
+                                          .codec = "ac3",
+                                          .channels = 6,
+                                          .flags = StreamFlags::FLAG_NONE};
+  const StreamUtils::AudioCandidate flagged{.language = KODI::UTILS::CLanguageTag::Parse("eng"),
+                                            .codec = "ac3",
+                                            .channels = 6,
+                                            .flags = StreamFlags::FLAG_DEFAULT};
+
+  const StreamUtils::AudioPreferences preferences;
+  EXPECT_LT(StreamUtils::CompareAudioPreference(plain, flagged, preferences), 0);
+  EXPECT_GT(StreamUtils::CompareAudioPreference(flagged, plain, preferences), 0);
+  EXPECT_EQ(0, StreamUtils::CompareAudioPreference(plain, plain, preferences));
 }
 
 TEST(TestStreamUtils, NormalizeAudioCodecName)

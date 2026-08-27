@@ -236,62 +236,32 @@ class PredicateAudioFilter
 {
 private:
   int currentAudioStream;
-  bool preferStereo;
+  StreamUtils::AudioPreferences preferences;
+
 public:
   explicit PredicateAudioFilter(int audioStream, bool preferStereo)
-    : currentAudioStream(audioStream)
-    , preferStereo(preferStereo)
+    : currentAudioStream(audioStream),
+      preferences(StreamUtils::AudioPreferences::Current())
   {
+    // Follows from the audio output layout rather than a setting
+    preferences.preferStereo = preferStereo;
   };
   bool operator()(const SelectionStream& lh, const SelectionStream& rh)
   {
+    // A stream remembered from a previous watch outranks everything
     PREDICATE_RETURN(lh.type_index == currentAudioStream
                      , rh.type_index == currentAudioStream);
 
-    const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-
-    if (!StringUtils::EqualsNoCase(settings->GetString(CSettings::SETTING_LOCALE_AUDIOLANGUAGE),
-                                   LANGINFO::audioLanguageMediaDefault))
-    {
-      if (!StringUtils::EqualsNoCase(settings->GetString(CSettings::SETTING_LOCALE_AUDIOLANGUAGE),
-                                     LANGINFO::audioLanguageOriginal))
-      {
-        const CLanguageTag& audioLanguage{g_langInfo.GetAudioLanguage(true)};
-        PREDICATE_RETURN(lh.language.Matches(audioLanguage), rh.language.Matches(audioLanguage));
-      }
-      else
-      {
-        PREDICATE_RETURN(lh.flags & StreamFlags::FLAG_ORIGINAL,
-          rh.flags & StreamFlags::FLAG_ORIGINAL);
-      }
-
-      bool hearingimp = settings->GetBool(CSettings::SETTING_ACCESSIBILITY_AUDIOHEARING);
-      PREDICATE_RETURN(!hearingimp ? !(lh.flags & StreamFlags::FLAG_HEARING_IMPAIRED) : lh.flags & StreamFlags::FLAG_HEARING_IMPAIRED
-                       , !hearingimp ? !(rh.flags & StreamFlags::FLAG_HEARING_IMPAIRED) : rh.flags & StreamFlags::FLAG_HEARING_IMPAIRED);
-
-      bool visualimp = settings->GetBool(CSettings::SETTING_ACCESSIBILITY_AUDIOVISUAL);
-      PREDICATE_RETURN(!visualimp ? !(lh.flags & StreamFlags::FLAG_VISUAL_IMPAIRED) : lh.flags & StreamFlags::FLAG_VISUAL_IMPAIRED
-                       , !visualimp ? !(rh.flags & StreamFlags::FLAG_VISUAL_IMPAIRED) : rh.flags & StreamFlags::FLAG_VISUAL_IMPAIRED);
-    }
-
-    if (settings->GetBool(CSettings::SETTING_VIDEOPLAYER_PREFERDEFAULTFLAG))
-    {
-      PREDICATE_RETURN(lh.flags & StreamFlags::FLAG_DEFAULT,
-                       rh.flags & StreamFlags::FLAG_DEFAULT);
-    }
-
-    if (preferStereo)
-      PREDICATE_RETURN(lh.channels == 2, rh.channels == 2);
-
-    // Order the remaining candidates the same way the library does
-    const int quality{
-        StreamUtils::CompareAudioQuality(lh.codec, lh.channels, rh.codec, rh.channels)};
-    if (quality != 0)
-      return quality > 0;
-
-    PREDICATE_RETURN(lh.flags & StreamFlags::FLAG_DEFAULT,
-                     rh.flags & StreamFlags::FLAG_DEFAULT);
-    return false;
+    // Everything below this is shared with the library
+    return StreamUtils::CompareAudioPreference({.language = lh.language,
+                                                .codec = lh.codec,
+                                                .channels = lh.channels,
+                                                .flags = lh.flags},
+                                               {.language = rh.language,
+                                                .codec = rh.codec,
+                                                .channels = rh.channels,
+                                                .flags = rh.flags},
+                                               preferences) > 0;
   };
 };
 

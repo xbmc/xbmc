@@ -758,6 +758,37 @@ CStreamDetails MakeAudioStreams(
   details.DetermineBestStreams();
   return details;
 }
+
+// As above, with the stream flags the scanner would have stored alongside each stream.
+CStreamDetails MakeFlaggedAudioStreams(
+    const std::vector<std::tuple<std::string, std::string, int, StreamFlags>>& streams)
+{
+  CStreamDetails details;
+  for (const auto& [language, codec, channels, flags] : streams)
+  {
+    auto* audio = new CStreamDetailAudio();
+    audio->m_strLanguage = language;
+    audio->m_strCodec = codec;
+    audio->m_iChannels = channels;
+    audio->m_flags = flags;
+    audio->SetSource(CStreamDetail::MEDIA);
+    details.AddStream(audio);
+  }
+  details.DetermineBestStreams();
+  return details;
+}
+
+// The settings as they stand when the user has asked for a particular audio language, or, for an
+// empty language, has left the choice to the media.
+StreamUtils::AudioPreferences ForLanguage(std::string_view language)
+{
+  StreamUtils::AudioPreferences preferences;
+  if (language.empty())
+    preferences.mediaDefault = true;
+  else
+    preferences.language = KODI::UTILS::CLanguageTag::Parse(std::string{language});
+  return preferences;
+}
 } // namespace
 
 TEST(TestStreamDetails, PreferredAudio_BestStreamInThePreferredLanguage)
@@ -767,11 +798,13 @@ TEST(TestStreamDetails, PreferredAudio_BestStreamInThePreferredLanguage)
   const CStreamDetails details{
       MakeAudioStreams({{"ger", "truehd", 8}, {"eng", "ac3", 6}, {"eng", "dtshd_ma", 6}})};
 
-  EXPECT_EQ(3, details.GetPreferredAudioStreamIndex("eng"));
-  EXPECT_EQ("dtshd_ma", details.GetAudioCodec(details.GetPreferredAudioStreamIndex("eng")));
+  EXPECT_EQ(3, details.GetPreferredAudioStreamIndex(ForLanguage("eng")));
+  EXPECT_EQ("dtshd_ma",
+            details.GetAudioCodec(details.GetPreferredAudioStreamIndex(ForLanguage("eng"))));
 
-  EXPECT_EQ(1, details.GetPreferredAudioStreamIndex("ger"));
-  EXPECT_EQ("truehd", details.GetAudioCodec(details.GetPreferredAudioStreamIndex("ger")));
+  EXPECT_EQ(1, details.GetPreferredAudioStreamIndex(ForLanguage("ger")));
+  EXPECT_EQ("truehd",
+            details.GetAudioCodec(details.GetPreferredAudioStreamIndex(ForLanguage("ger"))));
 }
 
 TEST(TestStreamDetails, PreferredAudio_IndexCountsAllAudioStreams)
@@ -781,8 +814,9 @@ TEST(TestStreamDetails, PreferredAudio_IndexCountsAllAudioStreams)
   const CStreamDetails details{
       MakeAudioStreams({{"fra", "ac3", 6}, {"jpn", "ac3", 6}, {"eng", "ac3", 6}})};
 
-  EXPECT_EQ(3, details.GetPreferredAudioStreamIndex("eng"));
-  EXPECT_EQ("eng", details.GetAudioLanguage(details.GetPreferredAudioStreamIndex("eng")));
+  EXPECT_EQ(3, details.GetPreferredAudioStreamIndex(ForLanguage("eng")));
+  EXPECT_EQ("eng",
+            details.GetAudioLanguage(details.GetPreferredAudioStreamIndex(ForLanguage("eng"))));
 }
 
 TEST(TestStreamDetails, PreferredAudio_LanguageIsMatchedAcrossISO639Forms)
@@ -791,8 +825,8 @@ TEST(TestStreamDetails, PreferredAudio_LanguageIsMatchedAcrossISO639Forms)
   // the two must be compared rather than string matched.
   const CStreamDetails details{MakeAudioStreams({{"ger", "ac3", 6}, {"en", "truehd", 6}})};
 
-  EXPECT_EQ(2, details.GetPreferredAudioStreamIndex("eng"));
-  EXPECT_EQ(1, details.GetPreferredAudioStreamIndex("deu"));
+  EXPECT_EQ(2, details.GetPreferredAudioStreamIndex(ForLanguage("eng")));
+  EXPECT_EQ(1, details.GetPreferredAudioStreamIndex(ForLanguage("deu")));
 }
 
 TEST(TestStreamDetails, PreferredAudio_FallsBackToTheBestStream)
@@ -800,20 +834,22 @@ TEST(TestStreamDetails, PreferredAudio_FallsBackToTheBestStream)
   const CStreamDetails details{MakeAudioStreams({{"ger", "ac3", 6}, {"fra", "truehd", 6}})};
 
   // Nothing in the preferred language, so there is no better answer than the best listen the
-  // file has to offer, which index 0 is.
-  EXPECT_EQ(0, details.GetPreferredAudioStreamIndex("eng"));
-  EXPECT_EQ("truehd", details.GetAudioCodec(details.GetPreferredAudioStreamIndex("eng")));
+  // file has to offer. The index names that stream rather than the 0 that stands for it, since
+  // the flag tiers can pick a stream the technical ranking would not have.
+  EXPECT_EQ(2, details.GetPreferredAudioStreamIndex(ForLanguage("eng")));
+  EXPECT_EQ("truehd",
+            details.GetAudioCodec(details.GetPreferredAudioStreamIndex(ForLanguage("eng"))));
 
   // As when the preference cannot be expressed as a language at all
-  EXPECT_EQ(0, details.GetPreferredAudioStreamIndex(""));
-  EXPECT_EQ("truehd", details.GetAudioCodec(details.GetPreferredAudioStreamIndex("")));
+  EXPECT_EQ(2, details.GetPreferredAudioStreamIndex(ForLanguage("")));
+  EXPECT_EQ("truehd", details.GetAudioCodec(details.GetPreferredAudioStreamIndex(ForLanguage(""))));
 }
 
 TEST(TestStreamDetails, PreferredAudio_NoAudioStreams)
 {
   const CStreamDetails details{MakeAudioStreams({})};
-  EXPECT_EQ(0, details.GetPreferredAudioStreamIndex("eng"));
-  EXPECT_EQ("", details.GetAudioCodec(details.GetPreferredAudioStreamIndex("eng")));
+  EXPECT_EQ(0, details.GetPreferredAudioStreamIndex(ForLanguage("eng")));
+  EXPECT_EQ("", details.GetAudioCodec(details.GetPreferredAudioStreamIndex(ForLanguage("eng"))));
 }
 
 TEST(TestStreamDetails, FirstAudio_CodecAndChannelsComeFromTheFirstStream)
@@ -833,8 +869,9 @@ TEST(TestStreamDetails, FirstAudio_CodecAndChannelsComeFromTheFirstStream)
   EXPECT_EQ(8, details.GetAudioChannels());
 
   // nor the stream the user's language preference would pick
-  EXPECT_EQ("dtshd_ma", details.GetAudioCodec(details.GetPreferredAudioStreamIndex("eng")));
-  EXPECT_EQ(6, details.GetAudioChannels(details.GetPreferredAudioStreamIndex("eng")));
+  EXPECT_EQ("dtshd_ma",
+            details.GetAudioCodec(details.GetPreferredAudioStreamIndex(ForLanguage("eng"))));
+  EXPECT_EQ(6, details.GetAudioChannels(details.GetPreferredAudioStreamIndex(ForLanguage("eng"))));
 }
 
 TEST(TestStreamDetails, FirstAudio_CodecAndChannelsWhenThereIsNoSuchStream)
@@ -1031,4 +1068,135 @@ TEST(TestStreamDetails, SerializeWidensLanguageToBcp47)
   subtitle.m_strLanguage = "";
   subtitle.Serialize(value);
   EXPECT_EQ(value["language"].asString(), "");
+}
+
+TEST(TestStreamDetails, PreferredAudio_OriginalLanguageFollowsTheFlag)
+{
+  // "Original language" is not a language the library can match on, so before flags were stored
+  // it fell back to the technically best stream. The player picks the flagged stream, and now
+  // so does the library.
+  const CStreamDetails details{
+      MakeFlaggedAudioStreams({{"eng", "truehd", 8, StreamFlags::FLAG_NONE},
+                               {"jpn", "ac3", 6, StreamFlags::FLAG_ORIGINAL}})};
+
+  StreamUtils::AudioPreferences preferences;
+  preferences.preferOriginal = true;
+
+  EXPECT_EQ(2, details.GetPreferredAudioStreamIndex(preferences));
+  EXPECT_EQ("jpn", details.GetAudioLanguage(details.GetPreferredAudioStreamIndex(preferences)));
+
+  // Without that preference the better stream is still the one described
+  EXPECT_EQ(1, details.GetPreferredAudioStreamIndex(ForLanguage("")));
+}
+
+TEST(TestStreamDetails, PreferredAudio_DefaultFlagWhenTheUserAsksForIt)
+{
+  // The disc's own default is a modest track, so it is only described when the user has asked
+  // for default streams to be honoured.
+  const CStreamDetails details{
+      MakeFlaggedAudioStreams({{"eng", "ac3", 2, StreamFlags::FLAG_DEFAULT},
+                               {"eng", "truehd", 8, StreamFlags::FLAG_NONE}})};
+
+  StreamUtils::AudioPreferences preferences{ForLanguage("eng")};
+  EXPECT_EQ(2, details.GetPreferredAudioStreamIndex(preferences));
+
+  preferences.preferDefaultFlag = true;
+  EXPECT_EQ(1, details.GetPreferredAudioStreamIndex(preferences));
+  EXPECT_EQ("ac3", details.GetAudioCodec(details.GetPreferredAudioStreamIndex(preferences)));
+}
+
+TEST(TestStreamDetails, PreferredAudio_DefaultFlagBreaksAQualityTie)
+{
+  // Two streams of the same quality, so the media's own default settles it even when the user
+  // has not asked for default streams to be preferred. This is the player's last tier.
+  const CStreamDetails details{MakeFlaggedAudioStreams(
+      {{"eng", "ac3", 6, StreamFlags::FLAG_NONE}, {"eng", "ac3", 6, StreamFlags::FLAG_DEFAULT}})};
+
+  EXPECT_EQ(2, details.GetPreferredAudioStreamIndex(ForLanguage("eng")));
+}
+
+TEST(TestStreamDetails, PreferredAudio_ImpairedStreamsAreAvoidedUnlessWanted)
+{
+  // A described or captioned mix is not what most listeners want, so it is passed over however
+  // good it is - and chosen when the accessibility setting asks for it.
+  const CStreamDetails details{
+      MakeFlaggedAudioStreams({{"eng", "truehd", 8, StreamFlags::FLAG_VISUAL_IMPAIRED},
+                               {"eng", "ac3", 2, StreamFlags::FLAG_NONE},
+                               {"eng", "dts", 6, StreamFlags::FLAG_HEARING_IMPAIRED}})};
+
+  EXPECT_EQ(2, details.GetPreferredAudioStreamIndex(ForLanguage("eng")));
+
+  StreamUtils::AudioPreferences visual{ForLanguage("eng")};
+  visual.preferVisualImpaired = true;
+  EXPECT_EQ(1, details.GetPreferredAudioStreamIndex(visual));
+
+  StreamUtils::AudioPreferences hearing{ForLanguage("eng")};
+  hearing.preferHearingImpaired = true;
+  EXPECT_EQ(3, details.GetPreferredAudioStreamIndex(hearing));
+}
+
+TEST(TestStreamDetails, PreferredAudio_MediaDefaultIgnoresLanguageAndImpairedFlags)
+{
+  // "Media default" means the user has asked for none of the language or impaired reasoning,
+  // leaving quality and the default flag to decide.
+  const CStreamDetails details{
+      MakeFlaggedAudioStreams({{"eng", "ac3", 6, StreamFlags::FLAG_NONE},
+                               {"jpn", "truehd", 8, StreamFlags::FLAG_HEARING_IMPAIRED}})};
+
+  StreamUtils::AudioPreferences preferences;
+  preferences.mediaDefault = true;
+  preferences.language = KODI::UTILS::CLanguageTag::Parse("eng"); // must be disregarded
+
+  EXPECT_EQ(2, details.GetPreferredAudioStreamIndex(preferences));
+}
+
+TEST(TestStreamDetails, PreferredAudio_LanguageOutranksTheDefaultFlag)
+{
+  // Tier order matters: a stream in the wanted language wins even against the media's default,
+  // which is how the player orders the two.
+  const CStreamDetails details{
+      MakeFlaggedAudioStreams({{"ger", "truehd", 8, StreamFlags::FLAG_DEFAULT},
+                               {"eng", "ac3", 2, StreamFlags::FLAG_NONE}})};
+
+  StreamUtils::AudioPreferences preferences{ForLanguage("eng")};
+  preferences.preferDefaultFlag = true;
+
+  EXPECT_EQ(2, details.GetPreferredAudioStreamIndex(preferences));
+}
+
+TEST(TestStreamDetails, DefaultAudio_NamesTheStreamTheMediaNominates)
+{
+  // The media's own default, which is not the best stream nor the one a language preference
+  // would pick, so all three settings have somewhere different to point.
+  const CStreamDetails details{
+      MakeFlaggedAudioStreams({{"ger", "truehd", 8, StreamFlags::FLAG_NONE},
+                               {"fra", "ac3", 2, StreamFlags::FLAG_DEFAULT},
+                               {"eng", "dts", 6, StreamFlags::FLAG_NONE}})};
+
+  EXPECT_EQ(2, details.GetDefaultAudioStreamIndex());
+  EXPECT_EQ("fra", details.GetAudioLanguage(details.GetDefaultAudioStreamIndex()));
+  EXPECT_EQ("ac3", details.GetAudioCodec(details.GetDefaultAudioStreamIndex()));
+}
+
+TEST(TestStreamDetails, DefaultAudio_FallsBackToTheBestStream)
+{
+  // Nothing is nominated, so index 0 - the best stream - is the only answer left. This is what
+  // a file scanned before flags were stored looks like, as well as one that genuinely has none.
+  const CStreamDetails details{MakeAudioStreams({{"ger", "ac3", 6}, {"fra", "truehd", 6}})};
+
+  EXPECT_EQ(0, details.GetDefaultAudioStreamIndex());
+  EXPECT_EQ("truehd", details.GetAudioCodec(details.GetDefaultAudioStreamIndex()));
+
+  const CStreamDetails none{MakeAudioStreams({})};
+  EXPECT_EQ(0, none.GetDefaultAudioStreamIndex());
+}
+
+TEST(TestStreamDetails, DefaultAudio_FirstNominationWins)
+{
+  // A media that flags more than one stream is nominating the first of them, not the best.
+  const CStreamDetails details{
+      MakeFlaggedAudioStreams({{"eng", "ac3", 2, StreamFlags::FLAG_DEFAULT},
+                               {"ger", "truehd", 8, StreamFlags::FLAG_DEFAULT}})};
+
+  EXPECT_EQ(1, details.GetDefaultAudioStreamIndex());
 }
