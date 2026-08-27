@@ -13,8 +13,8 @@
 #include "VideoManagerTypes.h"
 #include "addons/Scraper.h"
 #include "settings/VideoVersionsSettings.h"
-#include "utils/Artwork.h"
 #include "utils/RegExp.h"
+#include "video/VideoInfoScannerArt.h"
 
 #include <atomic>
 #include <cstdint>
@@ -56,14 +56,22 @@ namespace KODI::VIDEO
   class CVideoInfoScanner : public CInfoScanner
   {
   public:
-    enum class UseRemoteArtWithLocalScraper : bool
-    {
-      NO,
-      YES
-    };
-
     CVideoInfoScanner();
     ~CVideoInfoScanner() override;
+
+    /*! \brief Retrieve any artwork associated with an item
+     \sa CVideoInfoScannerArt::GetArtwork
+     */
+    void GetArtwork(CFileItem* pItem,
+                    ADDON::ContentType content,
+                    bool bApplyToDir = false,
+                    bool useLocal = true,
+                    const std::string& actorArtPath = "",
+                    CVideoInfoScannerArt::UseRemoteArtWithLocalScraper useRemoteArt =
+                        CVideoInfoScannerArt::UseRemoteArtWithLocalScraper::YES) const
+    {
+      m_art.GetArtwork(pItem, content, bApplyToDir, useLocal, actorArtPath, useRemoteArt);
+    }
 
     /*! \brief Scan a folder using the background scanner
      \param strDirectory path to scan
@@ -114,7 +122,6 @@ namespace KODI::VIDEO
                            bool fetchEpisodes = true,
                            CGUIDialogProgress* pDlgProgress = nullptr);
 
-    static void ApplyThumbToFolder(const std::string &folder, const std::string &imdbThumb);
     static bool DownloadFailed(CGUIDialogProgress* pDlgProgress);
 
     /*! \brief Update the set information from a SET.NFO in the Movie Set Information Folder
@@ -122,39 +129,6 @@ namespace KODI::VIDEO
      \param tag     info tag
      */
     static bool UpdateSetInTag(CVideoInfoTag& tag);
-
-    /*! \brief Retrieve any artwork associated with an item
-     \param pItem item to find artwork for.
-     \param content content type of the item.
-     \param bApplyToDir whether we should apply any thumbs to a folder.  Defaults to false.
-     \param useLocal whether we should use local thumbs. Defaults to true.
-     \param actorArtPath the directory containing actor thumbs. Defaults to empty.
-     \param useRemoteArt use remote art if also using local scraper. Defaults to yes.
-     */
-    void GetArtwork(
-        CFileItem* pItem,
-        ADDON::ContentType content,
-        bool bApplyToDir = false,
-        bool useLocal = true,
-        const std::string& actorArtPath = "",
-        UseRemoteArtWithLocalScraper useRemoteArt = UseRemoteArtWithLocalScraper::YES) const;
-
-    /*! \brief Get season thumbs for a tvshow.
-     All seasons (regardless of whether the user has episodes) are added to the art map.
-     \param[in] show     tvshow info tag
-     \param[in] art      artwork map to which season thumbs are added.
-     \param[in] useLocal whether to use local thumbs, defaults to true
-     \param[in] useRemoteArt use remote art if also using local scraper. Defaults to yes.
-     \param[in] cache regexp cache to avoid repeated compilations
-     */
-    static void GetSeasonThumbs(
-        const CVideoInfoTag& show,
-        KODI::ART::SeasonsArtwork& art,
-        const std::vector<std::string>& artTypes,
-        bool useLocal = true,
-        UseRemoteArtWithLocalScraper useRemoteArt = UseRemoteArtWithLocalScraper::YES,
-        KODI::REGEXP::RegExpCache* cache = nullptr);
-    static std::string GetImage(const CScraperUrl::SUrlEntry &image, const std::string& itemPath);
 
     static std::string GetMovieSetInfoFolder(const std::string& setTitle);
 
@@ -254,18 +228,6 @@ namespace KODI::VIDEO
      \return true on success (1 match), false on failure (no matches)
      */
     bool GetEpisodeTitleFromRegExp(CRegExp& reg, EPISODE& episodeInfo);
-
-    /*! \brief Fetch thumbs for actors
-     Updates each actor with their thumb (local or online)
-     \param actors - vector of SActorInfo
-     \param actorsDir - directory holding the local thumbs (ie. a .actors folder, or the actors
-            folder of a library export). Used as given, nothing is appended.
-     \param useRemoteArt - use remote art (ie. http://) even if derived from local .nfo file. Defaults to yes.
-     */
-    void FetchActorThumbs(
-        std::vector<SActorInfo>& actors,
-        const std::string& actorsDir,
-        UseRemoteArtWithLocalScraper useRemoteArt = UseRemoteArtWithLocalScraper::YES) const;
 
     static int GetPathHash(const CFileItemList &items, std::string &hash);
 
@@ -368,17 +330,13 @@ namespace KODI::VIDEO
     //! Whether the folder a movie is in names it (the scraper's "movies are in separate folders")
     bool m_useFolderNames{false};
 
-    enum class ArtRetrievalTiming : uint8_t
-    {
-      SYNCHRONOUS = 0, //!< retrieve art synchronously during scrape
-      BACKGROUND = 1 //!< retrieve art in background after scrape
-    };
-
-    ArtRetrievalTiming m_artRetrievalTiming{ArtRetrievalTiming::BACKGROUND};
     CVideoDatabase m_database;
     std::set<int> m_pathsToClean;
     std::shared_ptr<CAdvancedSettings> m_advancedSettings;
     CVideoDatabase::ScraperCache m_scraperCache;
+
+    //! The artwork side of the scan
+    CVideoInfoScannerArt m_art;
 
   private:
     /*!

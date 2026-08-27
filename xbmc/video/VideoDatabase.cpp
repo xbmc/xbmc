@@ -18,6 +18,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "VideoInfoScanner.h"
+#include "VideoInfoScannerArt.h"
 #include "XBDateTime.h"
 #include "addons/AddonManager.h"
 #include "dbwrappers/dataset.h"
@@ -11493,7 +11494,7 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
 
     // An import takes all of its information from local files, so honour the same setting as a
     // local scraper does and do not retrieve remote art when it is set
-    using UseRemoteArt = CVideoInfoScanner::UseRemoteArtWithLocalScraper;
+    using UseRemoteArt = CVideoInfoScannerArt::UseRemoteArtWithLocalScraper;
     const UseRemoteArt useRemoteArt{CServiceBroker::GetSettingsComponent()
                                             ->GetAdvancedSettings()
                                             ->m_bNoRemoteArtWithLocalScraper
@@ -11644,9 +11645,9 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
         // season artwork
         KODI::ART::SeasonsArtwork seasonArt;
         artItem.GetVideoInfoTag()->m_strPath = artPath;
-        CVideoInfoScanner::GetSeasonThumbs(*artItem.GetVideoInfoTag(), seasonArt,
-                                           CVideoThumbLoader::GetArtTypes(MediaTypeSeason), true,
-                                           useRemoteArt, &regexpCache);
+        CVideoInfoScannerArt::GetSeasonThumbs(*artItem.GetVideoInfoTag(), seasonArt,
+                                              CVideoThumbLoader::GetArtTypes(MediaTypeSeason), true,
+                                              useRemoteArt, &regexpCache);
         for (const auto& [seasonNumber, art] : seasonArt)
         {
           const int seasonID = AddSeason(showID, seasonNumber);
