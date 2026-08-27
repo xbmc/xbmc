@@ -9,41 +9,13 @@ import android.util.Log;
 
 // KodiDeepLinkActivity
 //
-// Class to provide deep links for use with Google's Android TV Remote protocol v2, which is used by
-// clients like androidtvremote2, a Python library used by Home Assistant and others to launch
-// Android TV applications and do various other remote control things that otherwise would require
-// adb. The protocol is far superior to adb, because (a) it has far less latency, and (b) it
-// requires no setup by the user beyond entering a pairing code they see on the TV when using a
-// remote for the first time. This class lets an androidtvremote2 object named "remote" launch Kodi
-// with:
+// Class to provide deep links for Kodi as described here:
 //
-// remote.send_launch_app_command("kodi://") -or-
-// remote.send_launch_app_command("kodi://launch")
+// https://developer.android.com/training/app-links/create-deeplinks
 //
-// It should be possible to implement other "host" strings to provide deep linking to content, pages
-// in Kodi's UI, etc.
-//
-// Deep linking became necessary sometime in 2026, after Google removed the former trick that
-// consisted of adding the prefix "market://launch?id=" to strings that didn't appear to be URLs, so
-// that passing "org.xbmc.kodi" to send_launch_app_command would work. As documented on
-// androidtvremote2's github and discussed in the Home Assistant forums, this no longer works, and
-// the only alternative has been to use adb to launch Kodi.
-//
-// The class is necessary, because while adding a scheme "kodi" to AndroidManifest.xml can work to
-// launch Kodi, Kodi always tries to "play" the URL, even if it's empty like with "kodi://", and
-// it goes on to display a modal error box titled "Playback failed" with the message "One or more
-// items failed to play". Logfile errors also appear, including:
-//
-// CreateLoader - unsupported protocol(kodi) in kodi://?mimetype=application%2foctet-stream/
-// CVideoPlayer::OpenInputStream - error opening [kodi://]
-//
-// Nothing I tried or Gemini and Claude suggested worked to avoid these problems that seem to be
-// inherent to merely modifying the manifest, so with Claude's help, KodiDeepLinkActivity was born.
-// It runs Kodi or brings it to the foreground as necessary, and if Kodi was already the foreground
-// app, it has no effect other than to momentarily blank the screen if Kodi is playing video, the
-// same behavior as the old "market://" prefix, and the same as using adb to start
-// "org.xbmc.kodi/.Splash". This can be avoided by checking if Kodi is the current app and simply
-// not issuing the call if it is.
+// These are "custom deep links" as defined on that page and start with
+// the prefix "kodi://", with that exact string and "kodi://launch" serving
+// to start Kodi.
 
 public class KodiDeepLinkActivity extends Activity
 {
@@ -63,13 +35,10 @@ public class KodiDeepLinkActivity extends Activity
       return;
     }
 
-    // Other deep link actions could be handled below.
-
     switch (host)
     {
       case "launch":
       case "":
-        // Both "kodi://launch" and "kodi://" work.
         doLaunch();
         break;
       default:
