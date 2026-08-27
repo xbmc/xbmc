@@ -8,6 +8,11 @@
 
 #include "utils/StreamDetails.h"
 
+#include <string>
+#include <tuple>
+#include <utility>
+#include <vector>
+
 #include <gtest/gtest.h>
 
 TEST(TestStreamDetails, General)
@@ -66,6 +71,126 @@ TEST(TestStreamDetails, General)
   EXPECT_EQ(1080, a.GetVideoHeight());
   EXPECT_EQ(30, a.GetVideoDuration());
   EXPECT_STREQ("left_right", a.GetStereoMode().c_str());
+}
+
+namespace
+{
+// Builds a CStreamDetails carrying the given audio streams and returns the codec of the one
+// picked as best, so that the choice can be asserted the way the GUI observes it.
+std::string BestAudioCodecOf(const std::vector<std::pair<std::string, int>>& codecsAndChannels)
+{
+  CStreamDetails details;
+  for (const auto& [codec, channels] : codecsAndChannels)
+  {
+    auto* audio = new CStreamDetailAudio();
+    audio->m_strCodec = codec;
+    audio->m_iChannels = channels;
+    audio->m_strLanguage = "eng";
+    audio->SetSource(CStreamDetail::MEDIA);
+    details.AddStream(audio);
+  }
+  details.DetermineBestStreams();
+  return details.GetAudioCodec();
+}
+
+// As above, but reporting the channel count of the stream picked as best.
+int BestAudioChannelsOf(const std::vector<std::pair<std::string, int>>& codecsAndChannels)
+{
+  CStreamDetails details;
+  for (const auto& [codec, channels] : codecsAndChannels)
+  {
+    auto* audio = new CStreamDetailAudio();
+    audio->m_strCodec = codec;
+    audio->m_iChannels = channels;
+    audio->m_strLanguage = "eng";
+    audio->SetSource(CStreamDetail::MEDIA);
+    details.AddStream(audio);
+  }
+  details.DetermineBestStreams();
+  return details.GetAudioChannels();
+}
+} // namespace
+
+TEST(TestStreamDetails, BestAudio_CodecBeatsChannelsBeyondStereo)
+{
+  // Beyond stereo the codec is the better description of the stream, so a lossless 5.1 track
+  // is preferred over a lossy one carrying more channels.
+  EXPECT_EQ("truehd", BestAudioCodecOf({{"ac3", 8}, {"truehd", 6}}));
+  EXPECT_EQ("truehd", BestAudioCodecOf({{"truehd", 6}, {"ac3", 8}})); // order must not matter
+  EXPECT_EQ("dtshd_ma", BestAudioCodecOf({{"dts", 8}, {"dtshd_ma", 6}}));
+  EXPECT_EQ("eac3", BestAudioCodecOf({{"ac3", 8}, {"eac3", 6}}));
+
+  // Uncompressed LPCM is lossless, so a disc offering it alongside lossy tracks of the same
+  // width must not report one of those instead (which would show a foreign language track as
+  // the item's audio when the LPCM one is the disc's own default).
+  EXPECT_EQ("pcm_bluray", BestAudioCodecOf({{"pcm_bluray", 6}, {"dts", 6}}));
+  EXPECT_EQ("pcm_bluray", BestAudioCodecOf({{"dts", 6}, {"pcm_bluray", 6}}));
+  EXPECT_EQ("pcm_bluray", BestAudioCodecOf({{"dtshd_hra", 8}, {"pcm_bluray", 6}}));
+
+  // But it remains the poorest of the lossless codecs.
+  EXPECT_EQ("dtshd_ma", BestAudioCodecOf({{"pcm_bluray", 6}, {"dtshd_ma", 6}}));
+  EXPECT_EQ("truehd", BestAudioCodecOf({{"pcm_bluray", 8}, {"truehd", 6}}));
+}
+
+TEST(TestStreamDetails, BestAudio_ChannelsBreakACodecTie)
+{
+  // Same codec on both sides leaves the channel count to decide.
+  EXPECT_EQ(8, BestAudioChannelsOf({{"ac3", 6}, {"ac3", 8}}));
+  EXPECT_EQ(8, BestAudioChannelsOf({{"ac3", 8}, {"ac3", 6}}));
+
+  // The 5.1 TrueHD track wins on codec, and reports its own channel count with it.
+  EXPECT_EQ(6, BestAudioChannelsOf({{"ac3", 8}, {"truehd", 6}}));
+}
+
+TEST(TestStreamDetails, BestAudio_ChannelsDecideWithinALosslessGroup)
+{
+  // The codecs of a lossless group all reconstruct the original samples, so none of them
+  // describes a better stream than the others and the channel count is left to decide - a 7.1
+  // track is not passed over for a 5.1 one carrying the same audio.
+  EXPECT_EQ(8, BestAudioChannelsOf({{"truehd", 8}, {"dtshd_ma", 6}}));
+  EXPECT_EQ(8, BestAudioChannelsOf({{"dtshd_ma", 6}, {"truehd", 8}}));
+  EXPECT_EQ(8, BestAudioChannelsOf({{"flac", 8}, {"pcm_bluray", 6}}));
+  EXPECT_EQ(8, BestAudioChannelsOf({{"pcm_bluray", 6}, {"flac", 8}}));
+
+  // The same of the object-based codecs, which are rival systems rather than tiers.
+  EXPECT_EQ(8, BestAudioChannelsOf({{"truehd_atmos", 8}, {"dtshd_ma_x", 6}}));
+  EXPECT_EQ(8, BestAudioChannelsOf({{"dtshd_ma_x", 6}, {"truehd_atmos", 8}}));
+  EXPECT_EQ(8, BestAudioChannelsOf({{"dtshd_ma_x_imax", 8}, {"truehd_atmos", 6}}));
+}
+
+TEST(TestStreamDetails, BestAudio_LosslessCarryingExtensionsOutranksLosslessWithout)
+{
+  // A truehd or dtshd_ma stream may be carrying objects that were never spotted, so it describes
+  // the item better than an equally lossless stream that cannot carry them, whatever the widths.
+  EXPECT_EQ("truehd", BestAudioCodecOf({{"flac", 8}, {"truehd", 6}}));
+  EXPECT_EQ("truehd", BestAudioCodecOf({{"truehd", 6}, {"flac", 8}})); // order must not matter
+  EXPECT_EQ("dtshd_ma", BestAudioCodecOf({{"pcm_bluray", 8}, {"dtshd_ma", 6}}));
+
+  // And where the extensions were spotted, those codecs outrank both groups.
+  EXPECT_EQ("truehd_atmos", BestAudioCodecOf({{"truehd", 8}, {"truehd_atmos", 6}}));
+  EXPECT_EQ("dtshd_ma_x", BestAudioCodecOf({{"flac", 8}, {"dtshd_ma_x", 6}}));
+}
+
+TEST(TestStreamDetails, BestAudio_ChannelsStillWinAtOrBelowStereo)
+{
+  // The codec-first rule applies only when both streams are beyond stereo - a multichannel
+  // track is still the better choice than a stereo one of any codec.
+  EXPECT_EQ("ac3", BestAudioCodecOf({{"flac", 2}, {"ac3", 6}}));
+  EXPECT_EQ("ac3", BestAudioCodecOf({{"truehd", 2}, {"ac3", 6}}));
+
+  // Both stereo, so the codec decides as it always did.
+  EXPECT_EQ("flac", BestAudioCodecOf({{"ac3", 2}, {"flac", 2}}));
+}
+
+TEST(TestStreamDetails, BestAudio_UnknownChannelCountIsThePoorestChoice)
+{
+  // Zero channels means unknown rather than none, so such a stream must not be promoted by
+  // carrying a good codec - anything with a known count describes the item better.
+  EXPECT_EQ("ac3", BestAudioCodecOf({{"truehd", 0}, {"ac3", 6}}));
+  EXPECT_EQ("ac3", BestAudioCodecOf({{"truehd", 0}, {"ac3", 2}}));
+
+  // With nothing else to go on the unknown stream is still reported.
+  EXPECT_EQ("truehd", BestAudioCodecOf({{"truehd", 0}}));
 }
 
 TEST(TestStreamDetails, VideoDimsToResolutionDescription)
@@ -544,4 +669,185 @@ TEST(TestStreamDetails, Source_SurvivesCopyAssignment)
   subtitleCopy = subtitle;
   EXPECT_EQ(CStreamDetail::EXTERNAL, subtitleCopy.GetSource());
   EXPECT_EQ(CStreamDetail::STREAM_DETAILS_VERSION, subtitleCopy.GetVersion());
+}
+
+namespace
+{
+// Builds a CStreamDetails carrying audio and subtitle streams in the order given, as a bluray
+// playlist's streams are stored in stream number order.
+CStreamDetails MakeStreamDetailsWithLanguages(const std::vector<std::string>& audioLanguages,
+                                              const std::vector<std::string>& subtitleLanguages)
+{
+  CStreamDetails details;
+  for (const auto& language : audioLanguages)
+  {
+    auto* audio = new CStreamDetailAudio();
+    audio->m_strCodec = "dtshd_ma";
+    audio->m_iChannels = 6;
+    audio->m_strLanguage = language;
+    audio->SetSource(CStreamDetail::MEDIA);
+    details.AddStream(audio);
+  }
+  for (const auto& language : subtitleLanguages)
+  {
+    auto* subtitle = new CStreamDetailSubtitle();
+    subtitle->m_strLanguage = language;
+    subtitle->SetSource(CStreamDetail::MEDIA);
+    details.AddStream(subtitle);
+  }
+  details.DetermineBestStreams();
+  return details;
+}
+} // namespace
+
+TEST(TestStreamDetails, FirstLanguage_IsTheFirstStreamNotTheBestMatch)
+{
+  // Two bluray playlists of the same movie differing only in which stream they start on must
+  // report different default languages, whatever the user's language preferences make "best".
+  const CStreamDetails all{MakeStreamDetailsWithLanguages({"eng", "jpn"}, {"eng", "fra", "jpn"})};
+  EXPECT_EQ("eng", all.GetFirstAudioLanguage());
+  EXPECT_EQ("eng", all.GetFirstSubtitleLanguage());
+
+  const CStreamDetails japanese{MakeStreamDetailsWithLanguages({"jpn", "eng"}, {"jpn", "eng"})};
+  EXPECT_EQ("jpn", japanese.GetFirstAudioLanguage());
+  EXPECT_EQ("jpn", japanese.GetFirstSubtitleLanguage());
+}
+
+TEST(TestStreamDetails, FirstLanguage_EmptyWhenThereIsNoSuchStream)
+{
+  const CStreamDetails none{MakeStreamDetailsWithLanguages({}, {})};
+  EXPECT_EQ("", none.GetFirstAudioLanguage());
+  EXPECT_EQ("", none.GetFirstSubtitleLanguage());
+
+  // A playlist can offer audio without subtitles
+  const CStreamDetails audioOnly{MakeStreamDetailsWithLanguages({"eng"}, {})};
+  EXPECT_EQ("eng", audioOnly.GetFirstAudioLanguage());
+  EXPECT_EQ("", audioOnly.GetFirstSubtitleLanguage());
+}
+
+TEST(TestStreamDetails, FirstLanguage_UnknownLanguageIsReportedAsEmpty)
+{
+  // A stream number table need not name a language, and an empty language must be passed
+  // through rather than falling back to another stream.
+  const CStreamDetails details{MakeStreamDetailsWithLanguages({"", "eng"}, {"", "eng"})};
+  EXPECT_EQ("", details.GetFirstAudioLanguage());
+  EXPECT_EQ("", details.GetFirstSubtitleLanguage());
+}
+
+namespace
+{
+// Builds a CStreamDetails carrying the given audio streams, in the order the source presented
+// them, so that the index of the preferred stream can be asserted.
+CStreamDetails MakeAudioStreams(
+    const std::vector<std::tuple<std::string, std::string, int>>& langsCodecsAndChannels)
+{
+  CStreamDetails details;
+  for (const auto& [language, codec, channels] : langsCodecsAndChannels)
+  {
+    auto* audio = new CStreamDetailAudio();
+    audio->m_strLanguage = language;
+    audio->m_strCodec = codec;
+    audio->m_iChannels = channels;
+    audio->SetSource(CStreamDetail::MEDIA);
+    details.AddStream(audio);
+  }
+  details.DetermineBestStreams();
+  return details;
+}
+} // namespace
+
+TEST(TestStreamDetails, PreferredAudio_BestStreamInThePreferredLanguage)
+{
+  // The disc carries a better German track than English one, but an English speaker will hear
+  // the English one, so that is the stream to describe.
+  const CStreamDetails details{
+      MakeAudioStreams({{"ger", "truehd", 8}, {"eng", "ac3", 6}, {"eng", "dtshd_ma", 6}})};
+
+  EXPECT_EQ(3, details.GetPreferredAudioStreamIndex("eng"));
+  EXPECT_EQ("dtshd_ma", details.GetAudioCodec(details.GetPreferredAudioStreamIndex("eng")));
+
+  EXPECT_EQ(1, details.GetPreferredAudioStreamIndex("ger"));
+  EXPECT_EQ("truehd", details.GetAudioCodec(details.GetPreferredAudioStreamIndex("ger")));
+}
+
+TEST(TestStreamDetails, PreferredAudio_IndexCountsAllAudioStreams)
+{
+  // The index is an ordinal into every audio stream, not just the matching ones, or it would not
+  // address the stream it named.
+  const CStreamDetails details{
+      MakeAudioStreams({{"fra", "ac3", 6}, {"jpn", "ac3", 6}, {"eng", "ac3", 6}})};
+
+  EXPECT_EQ(3, details.GetPreferredAudioStreamIndex("eng"));
+  EXPECT_EQ("eng", details.GetAudioLanguage(details.GetPreferredAudioStreamIndex("eng")));
+}
+
+TEST(TestStreamDetails, PreferredAudio_LanguageIsMatchedAcrossISO639Forms)
+{
+  // A source may name a language in either ISO 639 form, and the setting is held in another, so
+  // the two must be compared rather than string matched.
+  const CStreamDetails details{MakeAudioStreams({{"ger", "ac3", 6}, {"en", "truehd", 6}})};
+
+  EXPECT_EQ(2, details.GetPreferredAudioStreamIndex("eng"));
+  EXPECT_EQ(1, details.GetPreferredAudioStreamIndex("deu"));
+}
+
+TEST(TestStreamDetails, PreferredAudio_FallsBackToTheBestStream)
+{
+  const CStreamDetails details{MakeAudioStreams({{"ger", "ac3", 6}, {"fra", "truehd", 6}})};
+
+  // Nothing in the preferred language, so there is no better answer than the best listen the
+  // file has to offer, which index 0 is.
+  EXPECT_EQ(0, details.GetPreferredAudioStreamIndex("eng"));
+  EXPECT_EQ("truehd", details.GetAudioCodec(details.GetPreferredAudioStreamIndex("eng")));
+
+  // As when the preference cannot be expressed as a language at all
+  EXPECT_EQ(0, details.GetPreferredAudioStreamIndex(""));
+  EXPECT_EQ("truehd", details.GetAudioCodec(details.GetPreferredAudioStreamIndex("")));
+}
+
+TEST(TestStreamDetails, PreferredAudio_NoAudioStreams)
+{
+  const CStreamDetails details{MakeAudioStreams({})};
+  EXPECT_EQ(0, details.GetPreferredAudioStreamIndex("eng"));
+  EXPECT_EQ("", details.GetAudioCodec(details.GetPreferredAudioStreamIndex("eng")));
+}
+
+TEST(TestStreamDetails, FirstAudio_CodecAndChannelsComeFromTheFirstStream)
+{
+  // The disc starts on a modest Japanese track, the technically best stream is a German one, and
+  // an English speaker would hear a third. Describing the disc default must not borrow from
+  // either of the others.
+  const CStreamDetails details{
+      MakeAudioStreams({{"jpn", "ac3", 2}, {"ger", "truehd", 8}, {"eng", "dtshd_ma", 6}})};
+
+  EXPECT_EQ("jpn", details.GetFirstAudioLanguage());
+  EXPECT_EQ("ac3", details.GetFirstAudioCodec());
+  EXPECT_EQ(2, details.GetFirstAudioChannels());
+
+  // ie. not the technically best stream idx 0 describes
+  EXPECT_EQ("truehd", details.GetAudioCodec());
+  EXPECT_EQ(8, details.GetAudioChannels());
+
+  // nor the stream the user's language preference would pick
+  EXPECT_EQ("dtshd_ma", details.GetAudioCodec(details.GetPreferredAudioStreamIndex("eng")));
+  EXPECT_EQ(6, details.GetAudioChannels(details.GetPreferredAudioStreamIndex("eng")));
+}
+
+TEST(TestStreamDetails, FirstAudio_CodecAndChannelsWhenThereIsNoSuchStream)
+{
+  // Matches GetAudioCodec()/GetAudioChannels() for a missing stream, so the GUI suppresses the
+  // label rather than showing a placeholder.
+  const CStreamDetails none{MakeAudioStreams({})};
+  EXPECT_EQ("", none.GetFirstAudioCodec());
+  EXPECT_EQ(-1, none.GetFirstAudioChannels());
+}
+
+TEST(TestStreamDetails, FirstAudio_UnknownCodecAndChannelsArePassedThrough)
+{
+  // A stream number table need not describe the stream fully, and the gap must be passed through
+  // rather than falling back to another stream.
+  const CStreamDetails details{MakeAudioStreams({{"", "", 0}, {"eng", "truehd", 8}})};
+  EXPECT_EQ("", details.GetFirstAudioLanguage());
+  EXPECT_EQ("", details.GetFirstAudioCodec());
+  EXPECT_EQ(0, details.GetFirstAudioChannels());
 }

@@ -106,12 +106,13 @@
 		<value condition="Container.SortMethod(7) | Container.SortMethod(29)">$INFO[ListItem.Year]</value>
 		<value condition="!String.isempty(ListItem.Appearances)">$LOCALIZE[38026]: $INFO[ListItem.Appearances]</value>
 		<value condition="Window.IsActive(musicplaylist) | Window.IsActive(videoplaylist)">$INFO[ListItem.Duration]</value>
-		<value condition="$EXP[videoasset_true] + Container.SortMethod(1)"></value>
-		<value condition="$EXP[videoasset_true] + Container.SortMethod(9) + Control.IsVisible(504)"></value>
-		<value condition="$EXP[videoasset_true] + Container.SortMethod(9) + !Control.IsVisible(504)">$INFO[ListItem.Duration]</value>
-		<value condition="$EXP[videoasset_true] + Container.SortMethod(32)">$INFO[ListItem.VideoResolution]$VAR[VideoResolutionTypeVar, ]</value>
-		<value condition="$EXP[videoasset_true] + Container.SortMethod(33)">$VAR[VideoCodecVar]</value>
-		<value condition="$EXP[videoasset_true] + Container.SortMethod(36)">$VAR[AudioCodecVar]</value>
+		<value condition="$EXP[videoasset_true] + Container.SortMethod(1)">$VAR[FirstLanguagesVar]</value>
+		<value condition="$EXP[videoasset_true] + Container.SortMethod(9) + Control.IsVisible(504)">$VAR[FirstLanguagesVar]</value>
+		<value condition="$EXP[videoasset_true] + Container.SortMethod(9) + !Control.IsVisible(504)">$INFO[ListItem.Duration]$VAR[FirstLanguagesVar, | ]</value>
+		<value condition="$EXP[videoasset_true] + Container.SortMethod(32)">$INFO[ListItem.VideoResolution]$VAR[VideoResolutionTypeVar, ]$VAR[FirstLanguagesVar, | ]</value>
+		<value condition="$EXP[videoasset_true] + Container.SortMethod(33)">$VAR[VideoCodecVar]$VAR[FirstLanguagesVar, | ]</value>
+		<value condition="$EXP[videoasset_true] + Container.SortMethod(36)">$VAR[AudioCodecVar]$VAR[FirstLanguagesVar, | ]</value>
+		<value condition="$EXP[videoasset_true]">$VAR[FirstLanguagesVar]</value>
 		<value condition="Container.SortMethod(9)">$INFO[ListItem.Duration]</value>
 		<value>$INFO[ListItem.Label2]</value>
 	</variable>
@@ -916,8 +917,22 @@
 		<value>$INFO[ListItem.Label]</value>
 	</variable>
 	<variable name="MediaInfoListLabel2Var">
-		<value condition="ListItem.IsStereoscopic">3D$VAR[VideoCodecVar, | ]$INFO[ListItem.VideoResolution, | ]$VAR[VideoResolutionTypeVar, ]$VAR[VideoHDRTypeVar, | ]$INFO[ListItem.VideoAspect, | ,:1]$VAR[AudioCodecVar, | ]$VAR[AudioChannelsVar, ]</value>
-		<value>$VAR[VideoCodecVar]$INFO[ListItem.VideoResolution, | ]$VAR[VideoResolutionTypeVar, ]$VAR[VideoHDRTypeVar, | ]$INFO[ListItem.VideoAspect, | ,:1]$VAR[AudioCodecVar, | ]$VAR[AudioChannelsVar, ]</value>
+		<value condition="ListItem.IsStereoscopic">3D$VAR[VideoCodecVar, | ]$INFO[ListItem.VideoResolution, | ]$VAR[VideoResolutionTypeVar, ]$VAR[VideoHDRTypeVar, | ]$INFO[ListItem.VideoAspect, | ,:1]$VAR[VideoAssetAudioPropertyVar]$VAR[VideoManagerFirstLanguagesVar]</value>
+		<value>$VAR[VideoCodecVar]$INFO[ListItem.VideoResolution, | ]$VAR[VideoResolutionTypeVar, ]$VAR[VideoHDRTypeVar, | ]$INFO[ListItem.VideoAspect, | ,:1]$VAR[VideoAssetAudioPropertyVar]$VAR[VideoManagerFirstLanguagesVar]</value>
+	</variable>
+	<variable name="FirstLanguagesVar">
+		<value condition="String.IsEmpty(ListItem.FirstAudioLanguage)">$INFO[ListItem.FirstSubtitleLanguage]</value>
+		<value>$INFO[ListItem.FirstAudioLanguage]$INFO[ListItem.FirstSubtitleLanguage, | ]</value>
+	</variable>
+	<variable name="VideoAssetAudioPropertyVar">
+		<value condition="Window.IsVisible(managevideoversions) | Window.IsVisible(managevideoextras)">$VAR[FirstAudioCodecVar, | ]$INFO[ListItem.FirstAudioChannels(DefaultLayout), ]</value>
+		<value>$VAR[AudioCodecVar, | ]$VAR[AudioPropertyFlagVar, | ]</value>
+	</variable>
+	<variable name="FirstAudioCodecVar">
+		<value>$MAP[DefaultAltAudioMap, ListItem.FirstAudioCodec]</value>
+	</variable>
+	<variable name="VideoManagerFirstLanguagesVar">
+		<value condition="Window.IsVisible(managevideoversions) | Window.IsVisible(managevideoextras)">$VAR[FirstLanguagesVar, | ]</value>
 	</variable>
 	<variable name="PVRInstanceName">
 		<value condition="Integer.IsGreater(PVR.ClientCount,1)">$INFO[ListItem.PVRClientName,[COLOR grey]$LOCALIZE[31137]:[/COLOR] ,]$INFO[ListItem.PVRInstanceName, (,)]</value>

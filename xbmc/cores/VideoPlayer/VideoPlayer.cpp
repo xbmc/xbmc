@@ -265,14 +265,13 @@ public:
     }
 
     if (preferStereo)
-      PREDICATE_RETURN(lh.channels == 2,
-                       rh.channels == 2);
-    else
-      PREDICATE_RETURN(lh.channels,
-                       rh.channels);
+      PREDICATE_RETURN(lh.channels == 2, rh.channels == 2);
 
-    PREDICATE_RETURN(StreamUtils::GetCodecPriority(lh.codec),
-                     StreamUtils::GetCodecPriority(rh.codec));
+    // Order the remaining candidates the same way the library does
+    const int quality{
+        StreamUtils::CompareAudioQuality(lh.codec, lh.channels, rh.codec, rh.channels)};
+    if (quality != 0)
+      return quality > 0;
 
     PREDICATE_RETURN(lh.flags & StreamFlags::FLAG_DEFAULT,
                      rh.flags & StreamFlags::FLAG_DEFAULT);

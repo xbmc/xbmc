@@ -6,7 +6,14 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "LangInfo.h"
+#include "ServiceBroker.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "test/TestUtils.h"
+#include "utils/SortUtils.h"
+#include "utils/StreamDetails.h"
+#include "utils/Variant.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "video/VideoInfoTag.h"
@@ -169,3 +176,82 @@ TEST_P(OriginalLanguageTester, SetOriginalLanguage)
 INSTANTIATE_TEST_SUITE_P(TestVideoInfoTag,
                          OriginalLanguageTester,
                          testing::ValuesIn(OriginalLanguageTests));
+
+// Sorting a list by an audio field must order it by the stream the list displays, which is the
+// stream playback will start with, not by the technically best stream that is not shown.
+class AudioSortKeyTester : public testing::Test
+{
+protected:
+  void SetUp() override
+  {
+    m_settingOriginal = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+        CSettings::SETTING_LOCALE_AUDIOLANGUAGE);
+    m_audioLanguageOriginal = g_langInfo.GetAudioLanguage(false);
+  }
+
+  void TearDown() override
+  {
+    CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(
+        CSettings::SETTING_LOCALE_AUDIOLANGUAGE, m_settingOriginal);
+    g_langInfo.SetAudioLanguage(m_audioLanguageOriginal);
+  }
+
+  static void PreferLanguage(const std::string& language)
+  {
+    CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(
+        CSettings::SETTING_LOCALE_AUDIOLANGUAGE, language);
+    g_langInfo.SetAudioLanguage(language);
+  }
+
+  // A German TrueHD 7.1 track that outranks an English AC3 5.1 one on quality alone
+  static CVideoInfoTag MakeTagWithTwoAudioStreams()
+  {
+    CVideoInfoTag tag;
+    for (const auto& [language, codec, channels] :
+         {std::tuple{"ger", "truehd", 8}, std::tuple{"eng", "ac3", 6}})
+    {
+      auto* audio = new CStreamDetailAudio();
+      audio->m_strLanguage = language;
+      audio->m_strCodec = codec;
+      audio->m_iChannels = channels;
+      audio->SetSource(CStreamDetail::MEDIA);
+      tag.m_streamDetails.AddStream(audio);
+    }
+    tag.m_streamDetails.DetermineBestStreams();
+    return tag;
+  }
+
+  std::string m_settingOriginal;
+  std::string m_audioLanguageOriginal;
+};
+
+TEST_F(AudioSortKeyTester, OrdersByThePreferredLanguageStream)
+{
+  const CVideoInfoTag tag{MakeTagWithTwoAudioStreams()};
+
+  // The technically best stream is the German one, so that is what the sort key used to be
+  ASSERT_EQ("truehd", tag.m_streamDetails.GetAudioCodec());
+
+  PreferLanguage("eng");
+
+  SortItem sortable;
+  tag.ToSortable(sortable, Field::AUDIO_CODEC);
+  EXPECT_EQ("ac3", sortable[Field::AUDIO_CODEC].asString());
+
+  tag.ToSortable(sortable, Field::AUDIO_CHANNELS);
+  EXPECT_EQ(6, sortable[Field::AUDIO_CHANNELS].asInteger());
+
+  tag.ToSortable(sortable, Field::AUDIO_LANGUAGE);
+  EXPECT_EQ("eng", sortable[Field::AUDIO_LANGUAGE].asString());
+}
+
+TEST_F(AudioSortKeyTester, FallsBackToTheBestStreamWithoutALanguagePreference)
+{
+  const CVideoInfoTag tag{MakeTagWithTwoAudioStreams()};
+
+  PreferLanguage("mediadefault");
+
+  SortItem sortable;
+  tag.ToSortable(sortable, Field::AUDIO_CODEC);
+  EXPECT_EQ("truehd", sortable[Field::AUDIO_CODEC].asString());
+}
