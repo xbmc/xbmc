@@ -218,15 +218,37 @@ void CJobManager::StartWorkers(CJob::PRIORITY priority)
   if (!CanStart(priority))
     return;
 
-  // do we have any sleeping threads?
-  if (m_processing.size() < m_workers.size())
+  // Workers not running a job (ie waiting for one, or between jobs and about to ask for the next)
+  const size_t free{m_workers.size() > m_processing.size() ? m_workers.size() - m_processing.size()
+                                                           : 0};
+
+  // Each job already waiting has a claim on those ahead of this one
+  const size_t wanted{std::min<size_t>(CountQueuedJobs(), GetMaxWorkers(priority))};
+
+  // Do we have any sleeping threads?
+  if (free >= wanted)
   {
     m_jobEvent.Set();
     return;
   }
 
-  // everyone is busy - we need more workers
+  // Everyone is busy - we need more workers
   m_workers.emplace_back(new CJobWorker(*this));
+}
+
+size_t CJobManager::CountQueuedJobs() const
+{
+  size_t queued{0};
+  for (unsigned int priority = CJob::PRIORITY_LOW_PAUSABLE; priority <= CJob::PRIORITY_DEDICATED;
+       ++priority)
+  {
+    // Nothing takes these until playback stops, so a worker made for one would only sit waiting
+    if (priority == CJob::PRIORITY_LOW_PAUSABLE && m_pauseJobs)
+      continue;
+
+    queued += m_jobQueue[priority].size();
+  }
+  return queued;
 }
 
 CJob* CJobManager::PopJob()
@@ -269,6 +291,10 @@ void CJobManager::UnPauseJobs()
 {
   std::unique_lock lock(m_section);
   m_pauseJobs = false;
+
+  // Nothing was made to run what was queued while paused, so it would sit until something else
+  // was asked for
+  StartWorkers(CJob::PRIORITY_LOW_PAUSABLE);
 }
 
 bool CJobManager::IsProcessing(const CJob::PRIORITY& priority) const
@@ -411,9 +437,12 @@ void CJobManager::RemoveWorker(const CJobWorker* worker)
 
 unsigned int CJobManager::GetMaxWorkers(CJob::PRIORITY priority)
 {
-  static const unsigned int max_workers = 5;
   if (priority == CJob::PRIORITY_DEDICATED)
     return 10000; // A large number..
+  if (priority == CJob::PRIORITY_LOW_PAUSABLE)
+    return GetMaxPausableWorkers();
+
+  static const unsigned int max_workers = 5;
   return max_workers - (CJob::PRIORITY_HIGH - priority);
 }
 
@@ -437,7 +466,7 @@ bool CJobManager::CanStart(CJob::PRIORITY priority) const
                             { return item.GetPriority() == CJob::PRIORITY_LOW_PAUSABLE; }))};
 
   if (priority == CJob::PRIORITY_LOW_PAUSABLE)
-    return pausable < GetMaxPausableWorkers();
+    return pausable < GetMaxWorkers(priority);
 
   return m_processing.size() - pausable < GetMaxWorkers(priority);
 }

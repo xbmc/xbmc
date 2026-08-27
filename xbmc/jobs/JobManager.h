@@ -241,11 +241,17 @@ private:
   void StartWorkers(CJob::PRIORITY priority);
   void RemoveWorker(const CJobWorker* worker);
 
-  /*! \brief Number of workers available to a priority, excluding PRIORITY_LOW_PAUSABLE
+  /*! \brief Number of workers available to a priority
    Each level leaves headroom for the ones above it, so that a busy background never stops
    higher-priority work from starting.
    */
   static unsigned int GetMaxWorkers(CJob::PRIORITY priority);
+
+  /*! \brief How many jobs are waiting to be picked up
+   Excludes those of a priority that is currently suspended, as nothing will take them.
+   \return the count, across every priority
+   */
+  size_t CountQueuedJobs() const;
 
   /*! \brief Whether another job of this priority may start now
    \param priority priority of the job wanting to start
