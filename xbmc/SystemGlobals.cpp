@@ -17,11 +17,8 @@
 #include "interfaces/python/XBPython.h"
 #endif
 
-// Guarantee that CSpecialProtocol is initialized before and uninitialized after ZipManager
 #include "filesystem/SpecialProtocol.h"
 std::map<std::string, std::string> CSpecialProtocol::m_pathMap;
-
-#include "filesystem/ZipManager.h"
 
 CLangCodeExpander g_LangCodeExpander;
 
@@ -34,5 +31,3 @@ CPartyModeManager g_partyModeManager;
 
 CAlarmClock g_alarmClock;
 CSectionLoader g_sectionLoader;
-
-CZipManager g_ZipManager;

@@ -10,6 +10,8 @@
 
 #include "IFileDirectory.h"
 
+#include <string>
+
 namespace XFILE
 {
   class CZipDirectory : public IFileDirectory
@@ -20,5 +22,8 @@ namespace XFILE
     bool GetDirectory(const CURL& url, CFileItemList& items) override;
     bool ContainsFiles(const CURL& url) override;
     CacheType GetCacheType(const CURL& url) const override { return CacheType::ALWAYS; }
+
+    static bool ExtractArchive(const std::string& strArchive, const std::string& strPath);
+    static bool ExtractArchive(const CURL& archive, const std::string& strPath);
   };
 }
