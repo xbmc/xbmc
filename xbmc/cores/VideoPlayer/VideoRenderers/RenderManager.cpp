@@ -99,6 +99,14 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
     if (m_pRenderer != nullptr && m_picture.IsSameParams(picture) && m_orientation == orientation &&
         m_NumberBuffers == buffers && !m_pRenderer->ConfigChanged(picture))
     {
+      // check if HDR light metadata changes during playback
+      if (!m_picture.CompareLightMetadata(picture))
+      {
+        CLog::Log(LOGDEBUG, "CRenderManager::Configure - HDR light metadata has changed");
+        m_picture.SetParams(picture);
+        m_pRenderer->UpdateLightMetadata(picture);
+      }
+
       if (m_fps != fps)
       {
         CLog::Log(LOGDEBUG, "CRenderManager::Configure - framerate changed from {:4.2f} to {:4.2f}",
