@@ -701,7 +701,7 @@ void CGUIDialogVideoInfo::OnSearchItemFound(const CFileItem* pItem)
   if (type == VideoDbContentType::MOVIES)
     db.GetMovieInfo(pItem->GetPath(), movieDetails, pItem->GetVideoInfoTag()->m_iDbId,
                     pItem->GetVideoInfoTag()->GetAssetInfo().GetId(),
-                    pItem->GetVideoInfoTag()->m_iFileId);
+                    pItem->GetVideoInfoTag()->GetAssetInfo().GetVersionId());
   if (type == VideoDbContentType::EPISODES)
     db.GetEpisodeInfo(pItem->GetPath(), movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
   if (type == VideoDbContentType::TVSHOWS)
@@ -830,7 +830,7 @@ void AddCurrentArtTypes(std::vector<std::string>& artTypes,
   KODI::ART::Artwork currentArt;
 
   if (tag.GetAssetInfo().GetId() >= 0)
-    db.GetArtForAsset(tag.m_iFileId, ArtFallbackOptions::NONE, currentArt);
+    db.GetArtForAsset(tag.GetAssetInfo().GetVersionId(), ArtFallbackOptions::NONE, currentArt);
   else
     db.GetArtForItem(tag.m_iDbId, tag.m_type, currentArt);
 
@@ -1231,7 +1231,8 @@ bool CGUIDialogVideoInfo::UpdateVideoItemTitle(const std::shared_ptr<CFileItem>&
   if (mediaType == MediaTypeMovie)
   {
     database.GetMovieInfo("", detail, iDbId, pItem->GetVideoInfoTag()->GetAssetInfo().GetId(),
-                          pItem->GetVideoInfoTag()->m_iFileId, VideoDbDetailsNone);
+                          pItem->GetVideoInfoTag()->GetAssetInfo().GetVersionId(),
+                          VideoDbDetailsNone);
     title = detail.m_strTitle;
   }
   else if (mediaType == MediaTypeVideoCollection)
@@ -1386,17 +1387,22 @@ bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const std::shared_ptr<CFil
   switch (type)
   {
     case VideoDbContentType::MOVIES:
-      if (!database.DeleteMovie(item->GetVideoInfoTag()->m_iDbId))
+      if (!database.DeleteMovie(item->GetVideoInfoTag()->m_iDbId,
+                                DeleteMovieCascadeAction::ALL_ASSETS,
+                                DeleteMovieHashAction::HASH_DELETE,
+                                DeleteFileAction::DELETE_IF_UNUSED))
         return false;
       break;
     case VideoDbContentType::EPISODES:
-      database.DeleteEpisode(item->GetVideoInfoTag()->m_iDbId);
+      database.DeleteEpisode(item->GetVideoInfoTag()->m_iDbId, false,
+                             DeleteFileAction::DELETE_IF_UNUSED);
       break;
     case VideoDbContentType::TVSHOWS:
       database.DeleteTvShow(item->GetVideoInfoTag()->m_iDbId);
       break;
     case VideoDbContentType::MUSICVIDEOS:
-      database.DeleteMusicVideo(item->GetVideoInfoTag()->m_iDbId);
+      database.DeleteMusicVideo(item->GetVideoInfoTag()->m_iDbId, false,
+                                DeleteFileAction::DELETE_IF_UNUSED);
       break;
     case VideoDbContentType::MOVIE_SETS:
       database.DeleteSet(item->GetVideoInfoTag()->m_iDbId);
@@ -2036,7 +2042,8 @@ bool CGUIDialogVideoInfo::UpdateVideoItemSortTitle(const std::shared_ptr<CFileIt
   VideoDbContentType iType = pItem->GetVideoContentType();
   if (iType == VideoDbContentType::MOVIES)
     database.GetMovieInfo("", detail, iDbId, pItem->GetVideoInfoTag()->GetAssetInfo().GetId(),
-                          pItem->GetVideoInfoTag()->m_iFileId, VideoDbDetailsNone);
+                          pItem->GetVideoInfoTag()->GetAssetInfo().GetVersionId(),
+                          VideoDbDetailsNone);
   else if (iType == VideoDbContentType::TVSHOWS)
     database.GetTvShowInfo(pItem->GetVideoInfoTag()->m_strFileNameAndPath, detail, iDbId, 0, VideoDbDetailsNone);
 

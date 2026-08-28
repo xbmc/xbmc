@@ -14,6 +14,7 @@
 #include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
+#include "video/Bookmark.h"
 #include "video/VideoDatabaseColumns.h"
 #include "video/VideoManagerTypes.h"
 
@@ -50,7 +51,7 @@ void CVideoDatabaseDDL::CreateTables(CDatabase& db)
   db.ExecuteQuery(
       "CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, "
       "timeInSeconds double, totalTimeInSeconds double, thumbNailImage text, player text, "
-      "playerState text, type integer)\n");
+      "playerState text, type integer, idVersion integer)\n");
 
   CLog::Log(LOGINFO, "create settings table");
   db.ExecuteQuery(
@@ -62,7 +63,8 @@ void CVideoDatabaseDDL::CreateTables(CDatabase& db)
       "Sharpness float, NoiseReduction float, NonLinStretch bool, PostProcess bool,"
       "ScalingMethod integer, DeinterlaceMode integer, StereoMode integer, StereoInvert bool, "
       "VideoStream integer,"
-      "TonemapMethod integer, TonemapParam float, Orientation integer, CenterMixLevel integer)\n");
+      "TonemapMethod integer, TonemapParam float, Orientation integer, CenterMixLevel integer, "
+      "idVersion integer)\n");
 
   CLog::Log(LOGINFO, "create stacktimes table");
   db.ExecuteQuery("CREATE TABLE stacktimes (idFile integer, times text)\n");
@@ -119,8 +121,7 @@ void CVideoDatabaseDDL::CreateTables(CDatabase& db)
   for (int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
   {
     std::string column;
-    if (i == VIDEODB_ID_EPISODE_SEASON || i == VIDEODB_ID_EPISODE_EPISODE ||
-        i == VIDEODB_ID_EPISODE_BOOKMARK)
+    if (i == VIDEODB_ID_EPISODE_SEASON || i == VIDEODB_ID_EPISODE_EPISODE)
       column = StringUtils::Format(",c{:02} varchar(24)", i);
     else
       column = StringUtils::Format(",c{:02} text", i);
@@ -156,7 +157,7 @@ void CVideoDatabaseDDL::CreateTables(CDatabase& db)
       "strAudioCodec text, iAudioChannels integer, strAudioLanguage text, "
       "strSubtitleLanguage text, iVideoDuration integer, strStereoMode text, "
       "strVideoLanguage text, strHdrType text, strHdrDetail text, iSource integer, iVersion "
-      "integer)");
+      "integer, idVersion integer)");
 
   CLog::Log(LOGINFO, "create sets table");
   db.ExecuteQuery("CREATE TABLE `sets` ( idSet integer primary key, strSet text, strOverview text, "
@@ -191,9 +192,13 @@ void CVideoDatabaseDDL::CreateTables(CDatabase& db)
   InitializeVideoVersionTypeTable(db);
 
   CLog::Log(LOGINFO, "create videoversion table");
+  // filePath holds the vfs path of the media item within its physical file (eg. a
+  // bluray:// playlist or archive member), empty for plain files. It is never NULL:
+  // NULL values would not participate in the unique index.
   db.ExecuteQuery(
-      "CREATE TABLE videoversion (idFile INTEGER PRIMARY KEY, idMedia INTEGER, media_type "
-      "TEXT, itemType INTEGER, idType INTEGER)");
+      "CREATE TABLE videoversion (idVersion INTEGER PRIMARY KEY, idFile INTEGER, idMedia INTEGER, "
+      "media_type TEXT, itemType INTEGER, idType INTEGER, filePath TEXT, isDefault bool, "
+      "playCount INTEGER, lastPlayed TEXT)");
 }
 
 void CVideoDatabaseDDL::CreateLinkIndex(CDatabase& db, const std::string& table)
@@ -239,7 +244,8 @@ void CVideoDatabaseDDL::CreateIndices(CDatabase& db)
 
   CLog::Log(LOGINFO, "Creating video database indices");
   db.ExecuteQuery("CREATE INDEX ix_bookmark ON bookmark (idFile, type)");
-  db.ExecuteQuery("CREATE UNIQUE INDEX ix_settings ON settings ( idFile )\n");
+  db.ExecuteQuery("CREATE INDEX ix_bookmark2 ON bookmark (idVersion, type)");
+  db.ExecuteQuery("CREATE UNIQUE INDEX ix_settings ON settings ( idFile, idVersion )\n");
   db.ExecuteQuery("CREATE UNIQUE INDEX ix_stacktimes ON stacktimes ( idFile )\n");
   db.ExecuteQuery("CREATE INDEX ix_path ON path ( strPath(255) )");
   db.ExecuteQuery("CREATE INDEX ix_path2 ON path ( idParentPath )");
@@ -257,12 +263,9 @@ void CVideoDatabaseDDL::CreateIndices(CDatabase& db)
 
   db.ExecuteQuery("CREATE UNIQUE INDEX ix_episode_file_1 on episode (idEpisode, idFile)");
   db.ExecuteQuery("CREATE UNIQUE INDEX id_episode_file_2 on episode (idFile, idEpisode)");
-  std::string createColIndex =
+  const std::string createColIndex =
       StringUtils::Format("CREATE INDEX ix_episode_season_episode on episode (c{:02}, c{:02})",
                           VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_EPISODE_EPISODE);
-  db.ExecuteQuery(createColIndex);
-  createColIndex = StringUtils::Format("CREATE INDEX ix_episode_bookmark on episode (c{:02})",
-                                       VIDEODB_ID_EPISODE_BOOKMARK);
   db.ExecuteQuery(createColIndex);
   db.ExecuteQuery("CREATE INDEX ix_episode_show1 on episode(idEpisode,idShow)");
   db.ExecuteQuery("CREATE INDEX ix_episode_show2 on episode(idShow,idEpisode)");
@@ -290,7 +293,12 @@ void CVideoDatabaseDDL::CreateIndices(CDatabase& db)
                   "actor_link (media_id, media_type(20), actor_id)");
   db.ExecuteQuery("CREATE INDEX ix_actor_link_3 ON actor_link (media_type(20))");
 
-  db.ExecuteQuery("CREATE INDEX ix_videoversion ON videoversion (idMedia, media_type(20))");
+  // not unique: MySQL would compare only the filePath prefix (and writers enforce
+  // uniqueness of the full path themselves)
+  db.ExecuteQuery("CREATE INDEX ix_videoversion_1 ON videoversion "
+                  "(idFile, idMedia, media_type(20), filePath(255))");
+  db.ExecuteQuery("CREATE INDEX ix_videoversion_2 ON videoversion (idMedia, media_type(20))");
+  db.ExecuteQuery("CREATE INDEX ix_videoversion_3 ON videoversion (filePath(255))");
 
   db.ExecuteQuery(
       db.PrepareSQL("CREATE INDEX ix_movie_title ON movie (c%02d(255))", VIDEODB_ID_TITLE));
@@ -314,6 +322,20 @@ void CVideoDatabaseDDL::CreateTriggers(CDatabase& db)
                   "DELETE FROM tag_link WHERE media_id=old.idMovie AND media_type='movie'; "
                   "DELETE FROM rating WHERE media_id=old.idMovie AND media_type='movie'; "
                   "DELETE FROM uniqueid WHERE media_id=old.idMovie AND media_type='movie'; "
+                  // SQLite does not fire delete_videoversion for rows deleted inside a trigger,
+                  // so the versions' dependents are cleaned here
+                  "DELETE FROM bookmark WHERE idVersion IN "
+                  "(SELECT idVersion FROM videoversion WHERE idFile=old.idFile AND "
+                  "idMedia=old.idMovie AND media_type='movie'); "
+                  "DELETE FROM streamdetails WHERE idVersion IN "
+                  "(SELECT idVersion FROM videoversion WHERE idFile=old.idFile AND "
+                  "idMedia=old.idMovie AND media_type='movie'); "
+                  "DELETE FROM settings WHERE idVersion IN "
+                  "(SELECT idVersion FROM videoversion WHERE idFile=old.idFile AND "
+                  "idMedia=old.idMovie AND media_type='movie'); "
+                  "DELETE FROM art WHERE media_type='videoversion' AND media_id IN "
+                  "(SELECT idVersion FROM videoversion WHERE idFile=old.idFile AND "
+                  "idMedia=old.idMovie AND media_type='movie'); "
                   "DELETE FROM videoversion "
                   "WHERE idFile=old.idFile AND idMedia=old.idMovie AND media_type='movie'; "
                   "END");
@@ -339,6 +361,21 @@ void CVideoDatabaseDDL::CreateTriggers(CDatabase& db)
       "DELETE FROM art WHERE media_id=old.idMVideo AND media_type='musicvideo'; "
       "DELETE FROM tag_link WHERE media_id=old.idMVideo AND media_type='musicvideo'; "
       "DELETE FROM uniqueid WHERE media_id=old.idMVideo AND media_type='musicvideo'; "
+      // SQLite does not fire delete_videoversion for rows deleted inside a trigger,
+      // so the versions' dependents are cleaned here
+      "DELETE FROM bookmark WHERE idVersion IN "
+      "(SELECT idVersion FROM videoversion WHERE idMedia=old.idMVideo AND "
+      "media_type='musicvideo'); "
+      "DELETE FROM streamdetails WHERE idVersion IN "
+      "(SELECT idVersion FROM videoversion WHERE idMedia=old.idMVideo AND "
+      "media_type='musicvideo'); "
+      "DELETE FROM settings WHERE idVersion IN "
+      "(SELECT idVersion FROM videoversion WHERE idMedia=old.idMVideo AND "
+      "media_type='musicvideo'); "
+      "DELETE FROM art WHERE media_type='videoversion' AND media_id IN "
+      "(SELECT idVersion FROM videoversion WHERE idMedia=old.idMVideo AND "
+      "media_type='musicvideo'); "
+      "DELETE FROM videoversion WHERE idMedia=old.idMVideo AND media_type='musicvideo'; "
       "END");
   db.ExecuteQuery(
       "CREATE TRIGGER delete_episode AFTER DELETE ON episode FOR EACH ROW BEGIN "
@@ -348,6 +385,21 @@ void CVideoDatabaseDDL::CreateTriggers(CDatabase& db)
       "DELETE FROM art WHERE media_id=old.idEpisode AND media_type='episode'; "
       "DELETE FROM rating WHERE media_id=old.idEpisode AND media_type='episode'; "
       "DELETE FROM uniqueid WHERE media_id=old.idEpisode AND media_type='episode'; "
+      // SQLite does not fire delete_videoversion for rows deleted inside a trigger,
+      // so the versions' dependents are cleaned here
+      "DELETE FROM bookmark WHERE idVersion IN "
+      "(SELECT idVersion FROM videoversion WHERE idMedia=old.idEpisode AND "
+      "media_type='episode'); "
+      "DELETE FROM streamdetails WHERE idVersion IN "
+      "(SELECT idVersion FROM videoversion WHERE idMedia=old.idEpisode AND "
+      "media_type='episode'); "
+      "DELETE FROM settings WHERE idVersion IN "
+      "(SELECT idVersion FROM videoversion WHERE idMedia=old.idEpisode AND "
+      "media_type='episode'); "
+      "DELETE FROM art WHERE media_type='videoversion' AND media_id IN "
+      "(SELECT idVersion FROM videoversion WHERE idMedia=old.idEpisode AND "
+      "media_type='episode'); "
+      "DELETE FROM videoversion WHERE idMedia=old.idEpisode AND media_type='episode'; "
       "END");
   db.ExecuteQuery("CREATE TRIGGER delete_season AFTER DELETE ON seasons FOR EACH ROW BEGIN "
                   "DELETE FROM art WHERE media_id=old.idSeason AND media_type='season'; "
@@ -369,13 +421,18 @@ void CVideoDatabaseDDL::CreateTriggers(CDatabase& db)
                   "DELETE FROM settings WHERE idFile=old.idFile; "
                   "DELETE FROM stacktimes WHERE idFile=old.idFile; "
                   "DELETE FROM streamdetails WHERE idFile=old.idFile; "
+                  "DELETE FROM art WHERE media_type='videoversion' AND media_id IN "
+                  "(SELECT idVersion FROM videoversion WHERE idFile=old.idFile); "
                   "DELETE FROM videoversion WHERE idFile=old.idFile; "
-                  "DELETE FROM art WHERE media_id=old.idFile AND media_type='videoversion'; "
                   "END");
+  // streamdetails are not removed here: the file may still be referenced by other
+  // videoversion rows (eg. other episodes in the same file) and is cleaned up with the file
   db.ExecuteQuery(
       "CREATE TRIGGER delete_videoversion AFTER DELETE ON videoversion FOR EACH ROW BEGIN "
-      "DELETE FROM art WHERE media_id=old.idFile AND media_type='videoversion'; "
-      "DELETE FROM streamdetails WHERE idFile=old.idFile; "
+      "DELETE FROM art WHERE media_id=old.idVersion AND media_type='videoversion'; "
+      "DELETE FROM bookmark WHERE idVersion=old.idVersion; "
+      "DELETE FROM streamdetails WHERE idVersion=old.idVersion; "
+      "DELETE FROM settings WHERE idVersion=old.idVersion; "
       "END");
 }
 
@@ -391,8 +448,8 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
       "  episode.*,"
       "  files.strFileName AS strFileName,"
       "  path.strPath AS strPath,"
-      "  files.playCount AS playCount,"
-      "  files.lastPlayed AS lastPlayed,"
+      "  vv.playCount AS playCount,"
+      "  vv.lastPlayed AS lastPlayed,"
       "  files.dateAdded AS dateAdded,"
       "  tvshow.c%02d AS strTitle,"
       "  tvshow.c%02d AS genre,"
@@ -407,7 +464,9 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
       "  rating.votes AS votes, "
       "  rating.rating_type AS rating_type, "
       "  uniqueid.value AS uniqueid_value, "
-      "  uniqueid.type AS uniqueid_type "
+      "  uniqueid.type AS uniqueid_type, "
+      "  epBookmark.idBookmark AS bookmarkId, "
+      "  vv.filePath AS versionFilePath "
       "FROM episode"
       "  JOIN files ON"
       "    files.idFile=episode.idFile"
@@ -415,23 +474,31 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
       "    tvshow.idShow=episode.idShow"
       "  JOIN path ON"
       "    files.idPath=path.idPath"
+      // once episodes can have several versions this join multiplies rows; it will then
+      // need the default version flag or the version file path to disambiguate
+      "  LEFT JOIN videoversion vv ON"
+      "    vv.idFile=episode.idFile AND vv.idMedia=episode.idEpisode AND vv.media_type='episode'"
       "  LEFT JOIN bookmark ON"
-      "    bookmark.idFile=episode.idFile AND bookmark.type=1"
+      "    bookmark.idVersion=vv.idVersion AND bookmark.type=1"
+      "  LEFT JOIN bookmark epBookmark ON"
+      "    epBookmark.idVersion=vv.idVersion AND epBookmark.type=%i"
       "  LEFT JOIN rating ON"
       "    rating.rating_id=episode.c%02d"
       "  LEFT JOIN uniqueid ON"
       "    uniqueid.uniqueid_id=episode.c%02d",
       VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_GENRE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_PREMIERED,
-      VIDEODB_ID_TV_MPAA, VIDEODB_ID_EPISODE_RATING_ID, VIDEODB_ID_EPISODE_IDENT_ID);
+      VIDEODB_ID_TV_MPAA, CBookmark::EPISODE, VIDEODB_ID_EPISODE_RATING_ID,
+      VIDEODB_ID_EPISODE_IDENT_ID);
   db.ExecuteQuery(episodeview);
 
   CLog::Log(LOGINFO, "create tvshowcounts");
   const std::string tvshowcounts =
       db.PrepareSQL("CREATE VIEW tvshowcounts AS SELECT "
                     "      tvshow.idShow AS idShow,"
-                    "      MAX(files.lastPlayed) AS lastPlayed,"
+                    "      MAX(vv.lastPlayed) AS lastPlayed,"
                     "      NULLIF(COUNT(episode.c12), 0) AS totalCount,"
-                    "      COUNT(files.playCount) AS watchedcount,"
+                    // NULLIF: watched means a positive count, not merely non-NULL
+                    "      COUNT(NULLIF(vv.playCount, 0)) AS watchedcount,"
                     "      NULLIF(COUNT(DISTINCT(episode.c12)), 0) AS totalSeasons, "
                     "      MAX(files.dateAdded) as dateAdded, "
                     "      COUNT(bookmark.type) AS inProgressCount "
@@ -440,8 +507,11 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
                     "        episode.idShow=tvshow.idShow"
                     "      LEFT JOIN files ON"
                     "        files.idFile=episode.idFile "
+                    "      LEFT JOIN videoversion vv ON"
+                    "        vv.idFile=episode.idFile AND vv.idMedia=episode.idEpisode AND"
+                    "        vv.media_type='episode' "
                     "      LEFT JOIN bookmark ON"
-                    "        bookmark.idFile=files.idFile AND bookmark.type=1 "
+                    "        bookmark.idVersion=vv.idVersion AND bookmark.type=1 "
                     "GROUP BY tvshow.idShow");
   db.ExecuteQuery(tvshowcounts);
 
@@ -504,7 +574,7 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
       "  tvshow_view.c%02d AS studio,"
       "  tvshow_view.c%02d AS mpaa,"
       "  count(DISTINCT episode.idEpisode) AS episodes,"
-      "  count(files.playCount) AS playCount,"
+      "  count(NULLIF(vv.playCount, 0)) AS playCount,"
       "  min(episode.c%02d) AS aired, "
       "  count(bookmark.type) AS inProgressCount, "
       "  seasons.plot AS seasonPlot "
@@ -515,8 +585,11 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
       "    episode.idShow = seasons.idShow AND episode.c%02d = seasons.season"
       "  JOIN files ON"
       "    files.idFile = episode.idFile "
+      "  LEFT JOIN videoversion vv ON"
+      "    vv.idFile = episode.idFile AND vv.idMedia = episode.idEpisode AND"
+      "    vv.media_type = 'episode' "
       "  LEFT JOIN bookmark ON"
-      "    bookmark.idFile = files.idFile AND bookmark.type = 1 "
+      "    bookmark.idVersion = vv.idVersion AND bookmark.type = 1 "
       "GROUP BY seasons.idSeason,"
       "         seasons.idShow,"
       "         seasons.season,"
@@ -541,21 +614,25 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
                                 "  musicvideo.*,"
                                 "  files.strFileName as strFileName,"
                                 "  path.strPath as strPath,"
-                                "  files.playCount as playCount,"
-                                "  files.lastPlayed as lastPlayed,"
+                                "  vv.playCount as playCount,"
+                                "  vv.lastPlayed as lastPlayed,"
                                 "  files.dateAdded as dateAdded, "
                                 "  bookmark.timeInSeconds AS resumeTimeInSeconds, "
                                 "  bookmark.totalTimeInSeconds AS totalTimeInSeconds, "
                                 "  bookmark.playerState AS playerState, "
                                 "  uniqueid.value AS uniqueid_value, "
-                                "  uniqueid.type AS uniqueid_type "
+                                "  uniqueid.type AS uniqueid_type, "
+                                "  vv.filePath AS versionFilePath "
                                 "FROM musicvideo"
                                 "  JOIN files ON"
                                 "    files.idFile=musicvideo.idFile"
                                 "  JOIN path ON"
                                 "    path.idPath=files.idPath"
+                                "  LEFT JOIN videoversion vv ON"
+                                "    vv.idFile=musicvideo.idFile AND vv.idMedia=musicvideo.idMVideo"
+                                "    AND vv.media_type='musicvideo'"
                                 "  LEFT JOIN bookmark ON"
-                                "    bookmark.idFile=musicvideo.idFile AND bookmark.type=1"
+                                "    bookmark.idVersion=vv.idVersion AND bookmark.type=1"
                                 "  LEFT JOIN uniqueid ON"
                                 "    uniqueid.uniqueid_id=musicvideo.c%02d",
                                 VIDEODB_ID_MUSICVIDEO_IDENT_ID));
@@ -570,8 +647,8 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
       "  `sets`.`strOriginalSet` as strOriginalSet,"
       "  files.strFileName AS strFileName,"
       "  path.strPath AS strPath,"
-      "  files.playCount AS playCount,"
-      "  files.lastPlayed AS lastPlayed, "
+      "  vv.playCount AS playCount,"
+      "  vv.lastPlayed AS lastPlayed, "
       "  files.dateAdded AS dateAdded, "
       "  bookmark.timeInSeconds AS resumeTimeInSeconds, "
       "  bookmark.totalTimeInSeconds AS totalTimeInSeconds, "
@@ -587,7 +664,7 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
       "    WHERE vv.idMedia = movie.idMovie "
       "    AND   vv.media_type = '%s' "
       "    AND   vv.itemType = %i "
-      "    AND   vv.idFile <> movie.idFile "
+      "    AND   vv.isDefault = 0 "
       "  ) AS hasVideoVersions, "
       "  EXISTS( "
       "    SELECT 1 "
@@ -596,14 +673,13 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
       "    AND   vv.media_type = '%s' "
       "    AND   vv.itemType = %i "
       "  ) AS hasVideoExtras, "
-      "  CASE "
-      "    WHEN vv.idFile = movie.idFile AND vv.itemType = %i THEN 1 "
-      "    ELSE 0 "
-      "  END AS isDefaultVersion, "
+      "  vv.isDefault AS isDefaultVersion, "
       "  vv.idFile AS videoVersionIdFile, "
       "  vvt.id AS videoVersionTypeId,"
       "  vvt.name AS videoVersionTypeName,"
-      "  vvt.itemType AS videoVersionTypeItemType "
+      "  vvt.itemType AS videoVersionTypeItemType, "
+      "  vv.idVersion AS videoVersionId, "
+      "  vv.filePath AS versionFilePath "
       "FROM movie"
       "  LEFT JOIN `sets` ON"
       "    `sets`.idSet = movie.idSet"
@@ -620,9 +696,9 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
       "  JOIN path ON"
       "    path.idPath = files.idPath"
       "  LEFT JOIN bookmark ON"
-      "    bookmark.idFile = vv.idFile AND bookmark.type = 1",
+      "    bookmark.idVersion = vv.idVersion AND bookmark.type = 1",
       MediaTypeMovie, VideoAssetType::VERSION, MediaTypeMovie, VideoAssetType::EXTRA,
-      VideoAssetType::VERSION, VIDEODB_ID_RATING_ID, VIDEODB_ID_IDENT_ID, MediaTypeMovie);
+      VIDEODB_ID_RATING_ID, VIDEODB_ID_IDENT_ID, MediaTypeMovie);
 
   db.ExecuteQuery(movieview);
 }

@@ -1425,9 +1425,341 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->exec("ALTER TABLE streamdetails ADD iSource INTEGER DEFAULT 40");
     m_pDS->exec("ALTER TABLE streamdetails ADD iVersion INTEGER DEFAULT 1");
   }
+
+  if (iVersion < 149)
+  {
+    // idVersion uniquely identifies a (media item, file) pair so that one file can hold
+    // several media items (eg. multi-episode files) and one media item several files (versions)
+
+    // MySQL DDL is not transactional: a run interrupted between the drop of the old table
+    // and the rename leaves the rebuilt table as the only copy of the version links,
+    // which the retry must rename rather than discard
+    bool hasVersionTable{true};
+    try
+    {
+      m_pDS->query("SELECT 1 FROM videoversion WHERE 1=0");
+      m_pDS->close();
+    }
+    catch (...)
+    {
+      // only resume when the rebuilt table actually exists; a transient error on the
+      // probe must take the rebuild path and surface there
+      try
+      {
+        m_pDS->query("SELECT 1 FROM videoversion_new WHERE 1=0");
+        m_pDS->close();
+        hasVersionTable = false;
+      }
+      catch (...)
+      {
+      }
+    }
+
+    if (hasVersionTable)
+    {
+      m_pDS->exec("DROP TABLE IF EXISTS videoversion_new");
+      m_pDS->exec("CREATE TABLE videoversion_new "
+                  "(idVersion INTEGER PRIMARY KEY, idFile INTEGER, idMedia INTEGER, "
+                  "media_type TEXT, itemType INTEGER, idType INTEGER)");
+      m_pDS->exec("INSERT INTO videoversion_new (idFile, idMedia, media_type, itemType, idType) "
+                  "SELECT idFile, idMedia, media_type, itemType, idType FROM videoversion");
+      m_pDS->exec("DROP TABLE videoversion");
+    }
+    m_pDS->exec("ALTER TABLE videoversion_new RENAME TO videoversion");
+
+    // Remove rows whose owning movie or file no longer exists, so per-file version
+    // resolution cannot pick up a stale row
+    m_pDS->exec("DELETE FROM videoversion WHERE media_type='movie' "
+                "AND idMedia NOT IN (SELECT idMovie FROM movie)");
+    m_pDS->exec("DELETE FROM videoversion WHERE idFile NOT IN (SELECT idFile FROM files)");
+
+    constexpr int VideoAssetType_VERSION = 1;
+    constexpr int VIDEO_VERSION_ID_DEFAULT = 40400;
+    constexpr int LOCAL_VIDEODB_ID_EPISODE_BOOKMARK = 17;
+    constexpr int CBookmark_RESUME = 1;
+    constexpr int CBookmark_EPISODE = 2;
+
+    // Temporary indices for the seeding guards and correlated backfills below
+    // (indices are offline during migration - CVideoDatabaseDDL::CreateIndices() runs after)
+    m_pDS->exec("CREATE INDEX ix_migration_videoversion ON videoversion (idFile)");
+    m_pDS->exec(PrepareSQL("CREATE INDEX ix_migration_episode_bookmark ON episode (c%02d)",
+                           LOCAL_VIDEODB_ID_EPISODE_BOOKMARK));
+
+    // NOT EXISTS keeps the seeding idempotent for a retried run on MySQL,
+    // where earlier statements are already committed
+    m_pDS->exec(
+        PrepareSQL("INSERT INTO videoversion (idFile, idMedia, media_type, itemType, idType) "
+                   "SELECT idFile, idEpisode, 'episode', %i, %i FROM episode "
+                   "WHERE NOT EXISTS (SELECT 1 FROM videoversion vv WHERE "
+                   "vv.idFile=episode.idFile AND vv.idMedia=episode.idEpisode AND "
+                   "vv.media_type='episode')",
+                   VideoAssetType_VERSION, VIDEO_VERSION_ID_DEFAULT));
+    m_pDS->exec(
+        PrepareSQL("INSERT INTO videoversion (idFile, idMedia, media_type, itemType, idType) "
+                   "SELECT idFile, idMVideo, 'musicvideo', %i, %i FROM musicvideo "
+                   "WHERE NOT EXISTS (SELECT 1 FROM videoversion vv WHERE "
+                   "vv.idFile=musicvideo.idFile AND vv.idMedia=musicvideo.idMVideo AND "
+                   "vv.media_type='musicvideo')",
+                   VideoAssetType_VERSION, VIDEO_VERSION_ID_DEFAULT));
+
+    // Bookmarks become owned by a (media item, file) pair instead of a file alone
+    m_pDS->exec("ALTER TABLE bookmark ADD idVersion INTEGER");
+
+    // Episode bookmarks were linked to their episode through the episode's bookmark id column,
+    // which the version link replaces
+    m_pDS->exec(PrepareSQL(
+        "UPDATE bookmark SET idVersion="
+        "(SELECT vv.idVersion FROM videoversion vv"
+        " JOIN episode e ON e.idEpisode=vv.idMedia AND vv.media_type='episode'"
+        " AND vv.idFile=bookmark.idFile"
+        " WHERE e.c%02d=bookmark.idBookmark LIMIT 1) "
+        "WHERE type=%i",
+        LOCAL_VIDEODB_ID_EPISODE_BOOKMARK, CBookmark_EPISODE));
+    m_pDS->exec(PrepareSQL("UPDATE episode SET c%02d=NULL", LOCAL_VIDEODB_ID_EPISODE_BOOKMARK));
+
+    // Bookmarks of files holding a single media item
+    m_pDS->exec("UPDATE bookmark SET idVersion="
+                "(SELECT vv.idVersion FROM videoversion vv WHERE vv.idFile=bookmark.idFile) "
+                "WHERE idVersion IS NULL "
+                "AND (SELECT COUNT(1) FROM videoversion vv2 WHERE vv2.idFile=bookmark.idFile)=1");
+
+    // A resume point of a file holding several media items cannot be attributed to any one
+    // of them: its player state names a disc title or playlist, not the media item. Copying
+    // it to each would leave every item but one resuming into another item's content, with
+    // nothing to tell them apart, so it is dropped instead - the item that was watched
+    // restarts from the beginning. Files not linked to any media item keep theirs.
+    m_pDS->exec(PrepareSQL("DELETE FROM bookmark WHERE idVersion IS NULL AND type=%i "
+                           "AND idFile IN (SELECT idFile FROM videoversion)",
+                           CBookmark_RESUME));
+
+    // Stream details of files holding a single media item become owned by its version.
+    // Details of a file holding several media items describe the whole container - its
+    // duration above all - so they are wrong for every one of them and are dropped rather
+    // than left as a shared fallback; each item gets its own on next scan or playback.
+    // Files not linked to any media item keep theirs.
+    m_pDS->exec("ALTER TABLE streamdetails ADD idVersion INTEGER");
+    m_pDS->exec(
+        "UPDATE streamdetails SET idVersion="
+        "(SELECT vv.idVersion FROM videoversion vv WHERE vv.idFile=streamdetails.idFile) "
+        "WHERE (SELECT COUNT(1) FROM videoversion vv2 WHERE vv2.idFile=streamdetails.idFile)=1");
+    m_pDS->exec("DELETE FROM streamdetails WHERE idVersion IS NULL "
+                "AND idFile IN (SELECT idFile FROM videoversion)");
+
+    // Playback settings follow the same ownership model as stream details
+    m_pDS->exec("ALTER TABLE settings ADD idVersion INTEGER");
+    m_pDS->exec(
+        "UPDATE settings SET idVersion="
+        "(SELECT vv.idVersion FROM videoversion vv WHERE vv.idFile=settings.idFile) "
+        "WHERE (SELECT COUNT(1) FROM videoversion vv2 WHERE vv2.idFile=settings.idFile)=1");
+
+    m_pDS->dropIndex("videoversion", "ix_migration_videoversion");
+    m_pDS->dropIndex("episode", "ix_migration_episode_bookmark");
+  }
+
+  if (iVersion < 150)
+  {
+    constexpr int VideoAssetType_VERSION = 1;
+    constexpr int CBookmark_RESUME = 1;
+
+    // filePath will hold the vfs path of a media item within its physical file
+    // (eg. a bluray:// playlist or archive member). Empty, never NULL, so that
+    // it participates in the unique (idFile, idMedia, media_type, filePath) index.
+    m_pDS->exec("ALTER TABLE videoversion ADD filePath TEXT");
+    m_pDS->exec("UPDATE videoversion SET filePath=''");
+
+    // The default version of a media item, replacing the movie table's file id
+    // as the discriminator once several versions can share one physical file
+    m_pDS->exec("ALTER TABLE videoversion ADD isDefault bool");
+    m_pDS->exec("UPDATE videoversion SET isDefault=0");
+    m_pDS->exec("UPDATE videoversion SET isDefault=1 "
+                "WHERE media_type IN ('episode','musicvideo')");
+    m_pDS->exec("UPDATE videoversion SET isDefault=1 WHERE media_type='movie' AND EXISTS "
+                "(SELECT 1 FROM movie WHERE movie.idMovie=videoversion.idMedia AND "
+                "movie.idFile=videoversion.idFile)");
+    // safety net: a movie whose file id matched no version row would otherwise have no
+    // default version and disappear from the default view queries
+    m_pDS->exec(PrepareSQL(
+        "UPDATE videoversion SET isDefault=1 WHERE idVersion IN "
+        "(SELECT idVersion FROM (SELECT MIN(idVersion) AS idVersion FROM videoversion "
+        "WHERE media_type='movie' AND itemType=%i GROUP BY idMedia HAVING SUM(isDefault)=0) "
+        "AS sub)",
+        VideoAssetType_VERSION));
+
+    // Per-version watched state, materialized from the file so that versions sharing a
+    // physical file do not inherit each other's state through the file afterwards:
+    // for a version, NULL means unwatched, not unknown. A play count is worth keeping even
+    // where it cannot be attributed to one media item on the file, since that is the state
+    // every one of them displayed before. lastPlayed is carried over for the media item a
+    // file belongs to alone, and otherwise only alongside a play count: on a file holding
+    // several items it preserves no watched state of its own and would date all of them to
+    // the one that was played. The collapse below has not run yet, so a version row still
+    // points at its own vfs file and a count of one means the file belongs to it alone.
+    m_pDS->exec("ALTER TABLE videoversion ADD playCount INTEGER");
+    m_pDS->exec("ALTER TABLE videoversion ADD lastPlayed TEXT");
+    m_pDS->exec("UPDATE videoversion SET playCount="
+                "(SELECT f.playCount FROM files f WHERE f.idFile=videoversion.idFile)");
+    m_pDS->exec("UPDATE videoversion SET lastPlayed="
+                "(SELECT f.lastPlayed FROM files f WHERE f.idFile=videoversion.idFile) "
+                "WHERE playCount IS NOT NULL OR "
+                "(SELECT COUNT(1) FROM videoversion vv2 WHERE vv2.idFile=videoversion.idFile)=1");
+
+    // Version art becomes keyed by the version id: the file id stops identifying
+    // a version once several versions can share one physical file
+    m_pDS->exec("DELETE FROM art WHERE media_type='videoversion' AND media_id NOT IN "
+                "(SELECT idFile FROM videoversion WHERE media_type='movie')");
+    m_pDS->exec("UPDATE art SET media_id="
+                "(SELECT vv.idVersion FROM videoversion vv WHERE vv.idFile=art.media_id AND "
+                "vv.media_type='movie' LIMIT 1) "
+                "WHERE media_type='videoversion'");
+
+    // Collapse vfs file rows onto their physical containers: the vfs path of each media
+    // item moves to its version row and the file's watched state to the version columns,
+    // so one disc or archive is one file regardless of how many media items it holds
+    // The collapse depends on live path handling (AddPath, SplitPath, GetDiscFile,
+    // CURL) against this file's minimal-dependency policy: deriving physical
+    // containers without the vfs machinery is not practical, and these mappings are
+    // stable by design
+    m_pDS->query("SELECT f.idFile, f.strFilename, p.strPath, f.dateAdded, f.playCount, "
+                 "f.lastPlayed FROM files f JOIN path p ON p.idPath=f.idPath "
+                 "WHERE p.strPath LIKE 'bluray://%' OR p.strPath LIKE 'rar://%' OR "
+                 "p.strPath LIKE 'zip://%' OR p.strPath LIKE 'apk://%' OR "
+                 "p.strPath LIKE 'archive://%'");
+
+    struct VfsFile
+    {
+      int idFile;
+      std::string vfsPath;
+      std::string dateAdded;
+      std::string playCount;
+      std::string lastPlayed;
+    };
+    std::vector<VfsFile> vfsFiles;
+    while (!m_pDS->eof())
+    {
+      vfsFiles.emplace_back(m_pDS->fv(0).get_asInt(),
+                            m_pDS->fv(2).get_asString() + m_pDS->fv(1).get_asString(),
+                            m_pDS->fv(3).get_asString(),
+                            m_pDS->fv(4).get_isNull() ? "" : m_pDS->fv(4).get_asString(),
+                            m_pDS->fv(5).get_asString());
+      m_pDS->next();
+    }
+    m_pDS->close();
+
+    for (const auto& file : vfsFiles)
+    {
+      const std::string physical{URIUtils::IsBlurayPath(file.vfsPath)
+                                     ? URIUtils::GetDiscFile(file.vfsPath)
+                                     : CURL(file.vfsPath).GetHostName()};
+      if (physical.empty())
+        continue;
+
+      std::string physPath;
+      std::string physName;
+      SplitPath(physical, physPath, physName);
+
+      const int idPhysPath{AddPath(physPath, URIUtils::GetParentPath(physPath))};
+      if (idPhysPath < 0)
+        continue;
+
+      int idPhysFile{-1};
+      m_pDS2->query(PrepareSQL("SELECT idFile FROM files WHERE strFileName='%s' AND idPath=%i",
+                               physName.c_str(), idPhysPath));
+      if (!m_pDS2->eof())
+        idPhysFile = m_pDS2->fv(0).get_asInt();
+      m_pDS2->close();
+      if (idPhysFile < 0)
+      {
+        // the container keeps the file-level watched state for file-level listings
+        std::string insertSql{PrepareSQL(
+            "INSERT INTO files (idFile, idPath, strFileName, dateAdded, playCount, lastPlayed) "
+            "VALUES(NULL, %i, '%s', '%s', ",
+            idPhysPath, physName.c_str(), file.dateAdded.c_str())};
+        insertSql +=
+            file.playCount.empty() ? "NULL" : PrepareSQL("%i", std::atoi(file.playCount.c_str()));
+        insertSql += ", ";
+        insertSql +=
+            file.lastPlayed.empty() ? "NULL" : PrepareSQL("'%s'", file.lastPlayed.c_str());
+        insertSql += ")";
+        m_pDS2->exec(insertSql);
+        idPhysFile = static_cast<int>(m_pDS2->lastinsertid());
+      }
+      else if (!file.playCount.empty() || !file.lastPlayed.empty())
+      {
+        // several vfs rows can fold onto one container: any watched wins, latest play wins
+        std::string mergeSql{"UPDATE files SET "};
+        if (!file.playCount.empty())
+          mergeSql += PrepareSQL("playCount=CASE WHEN COALESCE(playCount, 0) < %i THEN %i ELSE "
+                                 "playCount END",
+                                 std::atoi(file.playCount.c_str()),
+                                 std::atoi(file.playCount.c_str()));
+        if (!file.lastPlayed.empty())
+        {
+          if (!file.playCount.empty())
+            mergeSql += ", ";
+          mergeSql += PrepareSQL("lastPlayed=CASE WHEN COALESCE(lastPlayed, '') < '%s' THEN '%s' "
+                                 "ELSE lastPlayed END",
+                                 file.lastPlayed.c_str(), file.lastPlayed.c_str());
+        }
+        mergeSql += PrepareSQL(" WHERE idFile=%i", idPhysFile);
+        m_pDS2->exec(mergeSql);
+      }
+
+      // the versions' watched state was already materialized from their files above
+      m_pDS2->exec(PrepareSQL("UPDATE videoversion SET idFile=%i, filePath='%s' WHERE idFile=%i",
+                              idPhysFile, file.vfsPath.c_str(), file.idFile));
+
+      m_pDS2->exec(
+          PrepareSQL("UPDATE bookmark SET idFile=%i WHERE idFile=%i", idPhysFile, file.idFile));
+      m_pDS2->exec(PrepareSQL("UPDATE streamdetails SET idFile=%i WHERE idFile=%i", idPhysFile,
+                              file.idFile));
+      // the unique settings index does not constrain unowned rows (NULLs compare
+      // distinct); keep at most one unowned fallback row per physical file
+      m_pDS2->query(PrepareSQL(
+          "SELECT 1 FROM settings WHERE idFile=%i AND idVersion IS NULL", idPhysFile));
+      const bool physHasFallback{m_pDS2->num_rows() > 0};
+      m_pDS2->close();
+      if (physHasFallback)
+        m_pDS2->exec(PrepareSQL("DELETE FROM settings WHERE idFile=%i AND idVersion IS NULL",
+                                file.idFile));
+      m_pDS2->exec(
+          PrepareSQL("UPDATE settings SET idFile=%i WHERE idFile=%i", idPhysFile, file.idFile));
+      // stacktimes is unique on idFile; a container cannot receive a second row
+      m_pDS2->query(PrepareSQL("SELECT 1 FROM stacktimes WHERE idFile=%i", idPhysFile));
+      const bool physHasStackTimes{m_pDS2->num_rows() > 0};
+      m_pDS2->close();
+      if (physHasStackTimes)
+        m_pDS2->exec(PrepareSQL("DELETE FROM stacktimes WHERE idFile=%i", file.idFile));
+      else
+        m_pDS2->exec(PrepareSQL("UPDATE stacktimes SET idFile=%i WHERE idFile=%i", idPhysFile,
+                                file.idFile));
+      m_pDS2->exec(
+          PrepareSQL("UPDATE movie SET idFile=%i WHERE idFile=%i", idPhysFile, file.idFile));
+      m_pDS2->exec(
+          PrepareSQL("UPDATE episode SET idFile=%i WHERE idFile=%i", idPhysFile, file.idFile));
+      m_pDS2->exec(
+          PrepareSQL("UPDATE musicvideo SET idFile=%i WHERE idFile=%i", idPhysFile, file.idFile));
+
+      m_pDS2->exec(PrepareSQL("DELETE FROM files WHERE idFile=%i", file.idFile));
+    }
+
+    if (!vfsFiles.empty())
+      m_pDS->exec("DELETE FROM path WHERE (strPath LIKE 'bluray://%' OR strPath LIKE 'rar://%' "
+                  "OR strPath LIKE 'zip://%' OR strPath LIKE 'apk://%' OR "
+                  "strPath LIKE 'archive://%') "
+                  "AND idPath NOT IN (SELECT idPath FROM files)");
+
+    // Remove duplicate resume points: updates that stamped the unowned fallback row of a
+    // file after the version had already received its own copy, and unowned rows folded
+    // together by the collapse
+    m_pDS->exec(PrepareSQL(
+        "DELETE FROM bookmark WHERE type=%i AND idBookmark NOT IN "
+        "(SELECT idBookmark FROM (SELECT MIN(idBookmark) AS idBookmark FROM bookmark "
+        "WHERE type=%i GROUP BY idFile, idVersion) AS sub)",
+        CBookmark_RESUME, CBookmark_RESUME));
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 148;
+  return 150;
 }

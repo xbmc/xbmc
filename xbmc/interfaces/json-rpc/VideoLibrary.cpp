@@ -1245,15 +1245,20 @@ JSONRPC_STATUS CVideoLibrary::RemoveVideo(const CVariant &parameterObject)
 
   if (parameterObject.isMember("movieid"))
   {
-    if (!videodatabase.DeleteMovie((int)parameterObject["movieid"].asInteger()))
+    if (!videodatabase.DeleteMovie(static_cast<int>(parameterObject["movieid"].asInteger()),
+                                   DeleteMovieCascadeAction::ALL_ASSETS,
+                                   DeleteMovieHashAction::HASH_DELETE,
+                                   DeleteFileAction::DELETE_IF_UNUSED))
       return InternalError;
   }
   else if (parameterObject.isMember("tvshowid"))
     videodatabase.DeleteTvShow((int)parameterObject["tvshowid"].asInteger());
   else if (parameterObject.isMember("episodeid"))
-    videodatabase.DeleteEpisode((int)parameterObject["episodeid"].asInteger());
+    videodatabase.DeleteEpisode(static_cast<int>(parameterObject["episodeid"].asInteger()), false,
+                                DeleteFileAction::DELETE_IF_UNUSED);
   else if (parameterObject.isMember("musicvideoid"))
-    videodatabase.DeleteMusicVideo((int)parameterObject["musicvideoid"].asInteger());
+    videodatabase.DeleteMusicVideo(static_cast<int>(parameterObject["musicvideoid"].asInteger()),
+                                   false, DeleteFileAction::DELETE_IF_UNUSED);
 
   CJSONRPCUtils::NotifyItemUpdated();
   return ACK;
@@ -1263,9 +1268,15 @@ void CVideoLibrary::UpdateResumePoint(const CVariant &parameterObject, CVideoInf
 {
   if (!parameterObject["resume"].isNull())
   {
+    int idVersion{videodatabase.GetVideoVersionIdByPath(details.m_strFileNameAndPath)};
+    if (idVersion < 0)
+      idVersion = videodatabase.GetVideoVersionId(details.m_iFileId, details.m_iDbId,
+                                                  details.m_type);
+
     double position = (double)parameterObject["resume"]["position"].asDouble();
     if (position == 0.0)
-      videodatabase.ClearBookMarksOfFile(details.m_strFileNameAndPath, CBookmark::RESUME);
+      videodatabase.ClearBookMarksOfFile(details.m_strFileNameAndPath, CBookmark::RESUME,
+                                         idVersion);
     else
     {
       CBookmark bookmark;
@@ -1276,7 +1287,8 @@ void CVideoLibrary::UpdateResumePoint(const CVariant &parameterObject, CVideoInf
         bookmark.totalTimeInSeconds = total;
 
       bookmark.timeInSeconds = position;
-      videodatabase.AddBookMarkToFile(details.m_strFileNameAndPath, bookmark, CBookmark::RESUME);
+      videodatabase.AddBookMarkToFile(details.m_strFileNameAndPath, bookmark, CBookmark::RESUME,
+                                      idVersion);
     }
   }
 }

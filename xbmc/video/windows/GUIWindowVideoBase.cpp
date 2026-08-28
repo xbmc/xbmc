@@ -394,8 +394,9 @@ CGUIWindowVideoBase::ShowInfoResult CGUIWindowVideoBase::ShowInfo(
     {
       const int versionId{item->HasVideoInfoTag() ? item->GetVideoInfoTag()->GetAssetInfo().GetId()
                                                   : -1};
-      const int fileId{item->HasVideoInfoTag() ? item->GetVideoInfoTag()->m_iFileId : -1};
-      bHasInfo = m_database.GetMovieInfo(item->GetPath(), movieDetails, dbId, versionId, fileId);
+      const int assetId{
+          item->HasVideoInfoTag() ? item->GetVideoInfoTag()->GetAssetInfo().GetVersionId() : -1};
+      bHasInfo = m_database.GetMovieInfo(item->GetPath(), movieDetails, dbId, versionId, assetId);
     }
     if (info->Content() == ContentType::TVSHOWS)
     {

@@ -106,6 +106,16 @@ void CSaveFileState::DoWork(CFileItem& item,
           }
         }
 
+        // scope per-version data to the played media item, so other items
+        // sharing the same file (eg. multi-episode files) keep theirs
+        int idVersion{videodatabase.GetVideoVersionIdByPath(progressTrackingFile)};
+        if (idVersion < 0 && item.HasVideoInfoTag())
+        {
+          const CVideoInfoTag* playedTag{item.GetVideoInfoTag()};
+          idVersion = videodatabase.GetVideoVersionId(playedTag->m_iFileId, playedTag->m_iDbId,
+                                                      playedTag->m_type);
+        }
+
         bool updateListing = false;
         // No resume & watched status for livetv
         if (!item.IsLiveTV())
@@ -164,10 +174,11 @@ void CSaveFileState::DoWork(CFileItem& item,
             videodatabase.BeginTransaction();
             bool success{true};
             if (bookmark.timeInSeconds <= 0.0)
-              success = videodatabase.ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME);
+              success = videodatabase.ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME,
+                                                           idVersion);
             else
               success = videodatabase.AddBookMarkToFile(progressTrackingFile, bookmark,
-                                                        CBookmark::RESUME);
+                                                        CBookmark::RESUME, idVersion);
             if (success)
               videodatabase.CommitTransaction();
             else
@@ -206,7 +217,7 @@ void CSaveFileState::DoWork(CFileItem& item,
             videodatabase.BeginTransaction();
 
             if (videodatabase.SetStreamDetailsForFile(item.GetVideoInfoTag()->m_streamDetails,
-                                                      progressTrackingFile))
+                                                      progressTrackingFile, idVersion))
             {
               videodatabase.CommitTransaction();
               updateListing = true;
@@ -249,7 +260,8 @@ void CSaveFileState::DoWork(CFileItem& item,
               CVideoDatabase::FileRecord{.m_idFile = tag->m_iFileId,
                                          .m_playCount = tag->GetPlayCount(),
                                          .m_lastPlayed = tag->m_lastPlayed,
-                                         .m_dateAdded = tag->m_dateAdded})};
+                                         .m_dateAdded = tag->m_dateAdded},
+              tag->GetAssetInfo().GetVersionId())};
           if (newFileId > 0)
           {
             videodatabase.CommitTransaction();
