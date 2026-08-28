@@ -268,6 +268,16 @@ std::string StreamUtils::GetCodecName(int codecId, int profile)
   return codecName;
 }
 
+std::string StreamUtils::NormalizeAudioCodecName(const std::string& codec)
+{
+  // 'dca' (name of ffmpeg's DTS decoder) was previously used in error for 'dts'
+  // Corrected in database schema v145
+  if (codec == "dca")
+    return "dts";
+
+  return codec;
+}
+
 std::string StreamUtils::GetDefaultLayout(unsigned int channels)
 {
   static constexpr std::array layouts{

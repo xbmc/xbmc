@@ -293,3 +293,11 @@ TEST(TestStreamUtils, CompareAudioQuality_UnknownChannelCountSentinelsRankEquall
   EXPECT_LT(StreamUtils::CompareAudioQuality("truehd", -1, "ac3", 1), 0);
   EXPECT_LT(StreamUtils::CompareAudioQuality("truehd", 0, "ac3", 1), 0);
 }
+
+TEST(TestStreamUtils, NormalizeAudioCodecName)
+{
+  EXPECT_EQ("dts", StreamUtils::NormalizeAudioCodecName("dca"));
+  EXPECT_EQ("dts", StreamUtils::NormalizeAudioCodecName("dts"));
+  EXPECT_EQ("ac3", StreamUtils::NormalizeAudioCodecName("ac3"));
+  EXPECT_EQ("", StreamUtils::NormalizeAudioCodecName(""));
+}

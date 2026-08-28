@@ -57,6 +57,14 @@ public:
   static std::string GetCodecName(int codecId, int profile);
 
   /*!
+   * \brief Normalise an externally supplied (eg. NFO) audio codec name to the name Kodi uses
+   *
+   * \param codec The audio codec name, lowercased
+   * \return The equivalent Kodi codec name, or the codec name unchanged if nothing maps
+   */
+  static std::string NormalizeAudioCodecName(const std::string& codec);
+
+  /*!
    * \brief Return a default channel layout in x.y.z form for a channel count.
    * \param[in] channels the count of channels
    * \return the default layout
