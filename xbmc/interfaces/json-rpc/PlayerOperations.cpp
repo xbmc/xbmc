@@ -1535,60 +1535,23 @@ int CPlayerOperations::GetActivePlayers()
   return activePlayers;
 }
 
-PlayerType CPlayerOperations::GetPlayer(const CVariant &player)
+PlayerState CPlayerOperations::GetPlayerState()
 {
-  PLAYLIST::Id playerPlaylistId = PLAYLIST::Id{player.asInteger32()};
-  PlayerType playerID;
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
 
-  switch (playerPlaylistId)
-  {
-    case PLAYLIST::Id::TYPE_VIDEO:
-      playerID = Video;
-      break;
+  return {GetActivePlayers(), CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist(),
+          appPlayer->GetPreferredPlaylist()};
+}
 
-    case PLAYLIST::Id::TYPE_MUSIC:
-      playerID = Audio;
-      break;
-
-    case PLAYLIST::Id::TYPE_PICTURE:
-      playerID = Picture;
-      break;
-
-    default:
-      playerID = None;
-      break;
-  }
-
-  if (GetPlaylist(playerID) == playerPlaylistId)
-    return playerID;
-  else
-    return None;
+PlayerType CPlayerOperations::GetPlayer(const CVariant& player)
+{
+  return PlayerForId(PLAYLIST::Id{player.asInteger32()}, GetPlayerState());
 }
 
 PLAYLIST::Id CPlayerOperations::GetPlaylist(PlayerType player)
 {
-  PLAYLIST::Id playlistId = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
-  if (playlistId == PLAYLIST::Id::TYPE_NONE) // No active playlist, try guessing
-  {
-    const auto& components = CServiceBroker::GetAppComponents();
-    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-    playlistId = appPlayer->GetPreferredPlaylist();
-  }
-
-  switch (player)
-  {
-    case Video:
-      return playlistId == PLAYLIST::Id::TYPE_NONE ? PLAYLIST::Id::TYPE_VIDEO : playlistId;
-
-    case Audio:
-      return playlistId == PLAYLIST::Id::TYPE_NONE ? PLAYLIST::Id::TYPE_MUSIC : playlistId;
-
-    case Picture:
-      return PLAYLIST::Id::TYPE_PICTURE;
-
-    default:
-      return playlistId;
-  }
+  return PlayerIdOf(player, GetPlayerState());
 }
 
 JSONRPC_STATUS CPlayerOperations::StartSlideshow(const std::string& path, bool recursive, bool random, const std::string &firstPicturePath /* = "" */)
