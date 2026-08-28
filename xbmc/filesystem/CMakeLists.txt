@@ -15,6 +15,7 @@ set(SOURCES AddonsDirectory.cpp
             EpisodesDirectory.cpp
             EventsDirectory.cpp
             FavouritesDirectory.cpp
+            FFmpegVfsContext.cpp
             FileCache.cpp
             File.cpp
             FileDirectoryFactory.cpp
@@ -81,6 +82,7 @@ set(HEADERS AddonsDirectory.h
             FTPDirectory.h
             FTPParse.h
             FavouritesDirectory.h
+            FFmpegVfsContext.h
             File.h
             FileCache.h
             FileDirectoryFactory.h
