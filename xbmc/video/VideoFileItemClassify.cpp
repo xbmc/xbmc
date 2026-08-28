@@ -117,6 +117,10 @@ bool IsVideo(const CFileItem& item)
   if (URIUtils::IsDVD(item.GetPath()))
     return true;
 
+  // IsDVD() above asks whether the path is on optical media, not whether it names a disc.
+  if (URIUtils::IsBlurayPath(item.GetPath()) || URIUtils::IsProtocol(item.GetPath(), "dvd"))
+    return true;
+
   std::string extension;
   if (StringUtils::StartsWithNoCase(item.GetMimeType(), "application/"))
   { /* check for some standard types */
