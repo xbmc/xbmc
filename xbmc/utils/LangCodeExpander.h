@@ -12,7 +12,10 @@
 #include <string>
 #include <vector>
 
-class TiXmlElement;
+namespace tinyxml2
+{
+class XMLElement;
+}
 
 class CLangCodeExpander
 {
@@ -41,7 +44,7 @@ public:
     INCLUDE_ADDONS_USERDEFINED,
   };
 
-  void LoadUserCodes(const TiXmlElement* pRootElement);
+  void LoadUserCodes(const tinyxml2::XMLElement* pRootElement);
   void Clear();
 
   bool Lookup(const std::string& code, std::string& desc);

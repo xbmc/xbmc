@@ -11,7 +11,7 @@
 #include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XMLUtils.h"
 #include "utils/i18n/Bcp47.h"
 #include "utils/i18n/Bcp47Registry/SubTagRegistryManager.h"
 #include "utils/i18n/Iso3166_1.h"
@@ -22,6 +22,8 @@
 
 #include <algorithm>
 #include <cassert>
+
+#include <tinyxml2.h>
 
 using namespace KODI::UTILS::I18N;
 
@@ -36,7 +38,7 @@ void CLangCodeExpander::Clear()
   m_mapUser.clear();
 }
 
-void CLangCodeExpander::LoadUserCodes(const TiXmlElement* pRootElement)
+void CLangCodeExpander::LoadUserCodes(const tinyxml2::XMLElement* pRootElement)
 {
   if (pRootElement != nullptr)
   {
@@ -44,22 +46,17 @@ void CLangCodeExpander::LoadUserCodes(const TiXmlElement* pRootElement)
 
     std::string sShort, sLong;
 
-    const TiXmlNode* pLangCode = pRootElement->FirstChild("code");
+    const auto* pLangCode = pRootElement->FirstChildElement("code");
     while (pLangCode != nullptr)
     {
-      const TiXmlNode* pShort = pLangCode->FirstChildElement("short");
-      const TiXmlNode* pLong = pLangCode->FirstChildElement("long");
-      if (pShort != nullptr && pShort->FirstChild() != nullptr && pLong != nullptr &&
-          pLong->FirstChild() != nullptr)
+      if (XMLUtils::GetString(pLangCode, "short", sShort) &&
+          XMLUtils::GetString(pLangCode, "long", sLong))
       {
-        sShort = pShort->FirstChild()->Value();
-        sLong = pLong->FirstChild()->Value();
         StringUtils::ToLower(sShort);
-
-        m_mapUser[sShort] = sLong;
+        m_mapUser.emplace(sShort, sLong);
       }
 
-      pLangCode = pLangCode->NextSibling();
+      pLangCode = pLangCode->NextSiblingElement();
     }
   }
 }
