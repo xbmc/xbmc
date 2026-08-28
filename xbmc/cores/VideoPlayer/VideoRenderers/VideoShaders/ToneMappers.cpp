@@ -27,7 +27,7 @@ float CToneMappers::GetLuminanceValue(bool hasDisplayMetadata,
       maxLuminance = lum;
   }
 
-  if (hasLightMetadata)
+  if (hasLightMetadata && lightMetadata.MaxCLL)
   {
     float lum2;
 
