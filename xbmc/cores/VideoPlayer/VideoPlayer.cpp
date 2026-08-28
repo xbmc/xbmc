@@ -5934,6 +5934,13 @@ bool CVideoPlayer::IsLiveStream() const
   return m_processInfo->IsRealtimeStream();
 }
 
+bool CVideoPlayer::IsStreaming() const
+{
+  if (!m_processInfo)
+    return false;
+  return m_processInfo->IsStreaming();
+}
+
 bool CVideoPlayer::Supports(EINTERLACEMETHOD method) const
 {
   if (!m_processInfo)

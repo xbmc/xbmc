@@ -654,6 +654,20 @@ bool CProcessInfo::IsRealtimeStream()
   return m_realTimeStream;
 }
 
+void CProcessInfo::SetStateStreaming(bool isStreaming)
+{
+  std::unique_lock lock(m_stateSection);
+
+  m_isStreaming = isStreaming;
+}
+
+bool CProcessInfo::IsStreaming()
+{
+  std::unique_lock lock(m_stateSection);
+
+  return m_isStreaming;
+}
+
 void CProcessInfo::SetSpeed(float speed)
 {
   std::unique_lock lock(m_stateSection);

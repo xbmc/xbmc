@@ -245,6 +245,7 @@ public:
    */
   virtual bool HasVisibleOverlay() const { return false; }
   virtual bool IsLiveStream() const { return false; }
+  virtual bool IsStreaming() const { return false; }
   virtual void GetRects(CRect& source, CRect& dest, CRect& view) const
   {
     source = {};
