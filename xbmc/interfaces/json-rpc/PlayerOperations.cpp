@@ -134,7 +134,7 @@ JSONRPC_STATUS CPlayerOperations::GetActivePlayers(const std::string &method, IT
   if (activePlayers & Video)
   {
     CVariant video = CVariant(CVariant::VariantTypeObject);
-    video["playerid"] = static_cast<int>(GetPlaylist(Video));
+    video["playerid"] = static_cast<int>(PlayerIdOf(Video));
     video["type"] = "video";
     video["playertype"] = strPlayerType;
     result.append(video);
@@ -142,7 +142,7 @@ JSONRPC_STATUS CPlayerOperations::GetActivePlayers(const std::string &method, IT
   if (activePlayers & Audio)
   {
     CVariant audio = CVariant(CVariant::VariantTypeObject);
-    audio["playerid"] = static_cast<int>(GetPlaylist(Audio));
+    audio["playerid"] = static_cast<int>(PlayerIdOf(Audio));
     audio["type"] = "audio";
     audio["playertype"] = strPlayerType;
     result.append(audio);
@@ -150,7 +150,7 @@ JSONRPC_STATUS CPlayerOperations::GetActivePlayers(const std::string &method, IT
   if (activePlayers & Picture)
   {
     CVariant picture = CVariant(CVariant::VariantTypeObject);
-    picture["playerid"] = static_cast<int>(GetPlaylist(Picture));
+    picture["playerid"] = static_cast<int>(PlayerIdOf(Picture));
     picture["type"] = "picture";
     picture["playertype"] = "internal";
     result.append(picture);
@@ -1535,23 +1535,30 @@ int CPlayerOperations::GetActivePlayers()
   return activePlayers;
 }
 
-PlayerState CPlayerOperations::GetPlayerState()
+PlayerState CPlayerOperations::GetPlaylistState()
 {
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
 
-  return {GetActivePlayers(), CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist(),
+  return {None, CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist(),
           appPlayer->GetPreferredPlaylist()};
+}
+
+PlayerState CPlayerOperations::GetPlayerState()
+{
+  PlayerState state{GetPlaylistState()};
+  state.players = GetActivePlayers();
+  return state;
 }
 
 PlayerType CPlayerOperations::GetPlayer(const CVariant& player)
 {
-  return PlayerForId(PLAYLIST::Id{player.asInteger32()}, GetPlayerState());
+  return RunningPlayerForId(PLAYLIST::Id{player.asInteger32()}, GetPlayerState());
 }
 
 PLAYLIST::Id CPlayerOperations::GetPlaylist(PlayerType player)
 {
-  return PlayerIdOf(player, GetPlayerState());
+  return PlaylistOf(player, GetPlaylistState());
 }
 
 JSONRPC_STATUS CPlayerOperations::StartSlideshow(const std::string& path, bool recursive, bool random, const std::string &firstPicturePath /* = "" */)
