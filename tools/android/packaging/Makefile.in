@@ -26,6 +26,13 @@ ifeq ($(KODI_ANDROID_KEY_PASSWORD),)
 export KODI_ANDROID_KEY_PASSWORD:=android
 endif
 
+# Gradle takes exclusive locks on its user home, so parallel builds that share
+# one will time each other out. Override to share a warm cache between builds
+# that cannot overlap.
+ifeq ($(GRADLE_USER_HOME),)
+export GRADLE_USER_HOME:=$(CURDIR)/.gradle-home
+endif
+
 # libc++
 STLLIB=$(TOOLCHAIN)/sysroot/usr/lib/$(HOST)/libc++_shared.so
 
