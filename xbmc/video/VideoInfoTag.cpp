@@ -30,6 +30,32 @@
 #include <string>
 #include <vector>
 
+namespace
+{
+/*!
+ * \brief Read the <flags> block of one <audio> or <subtitle> stream in an NFO.
+ * \param nodeDetail The stream element to read from.
+ * \return The flags named by its <flag> children. FLAG_NONE if there is no <flags> block.
+ */
+StreamFlags ParseStreamFlags(const TiXmlNode* nodeDetail)
+{
+  int flags{StreamFlags::FLAG_NONE};
+
+  const TiXmlNode* nodeFlags{nodeDetail->FirstChild("flags")};
+  if (nodeFlags)
+  {
+    const TiXmlNode* nodeFlag{nullptr};
+    while ((nodeFlag = nodeFlags->IterateChildren("flag", nodeFlag)))
+    {
+      if (nodeFlag->FirstChild())
+        flags |= CStreamDetails::StreamFlagFromName(nodeFlag->FirstChild()->ValueStr());
+    }
+  }
+
+  return static_cast<StreamFlags>(flags);
+}
+} // unnamed namespace
+
 void CVideoInfoTag::Reset()
 {
   m_director.clear();
@@ -279,12 +305,30 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
       XMLUtils::SetString(&stream, "codec", m_streamDetails.GetAudioCodec(iStream));
       XMLUtils::SetString(&stream, "language", m_streamDetails.GetAudioLanguage(iStream));
       XMLUtils::SetInt(&stream, "channels", m_streamDetails.GetAudioChannels(iStream));
+      if (m_streamDetails.GetVersion(CStreamDetail::AUDIO, iStream) >=
+          CStreamDetail::STREAM_DETAILS_VERSION_FLAGS)
+      {
+        TiXmlElement flags("flags");
+        XMLUtils::SetStringArray(
+            &flags, "flag",
+            CStreamDetails::StreamFlagsToNames(m_streamDetails.GetAudioFlags(iStream)));
+        stream.InsertEndChild(flags);
+      }
       streamdetails.InsertEndChild(stream);
     }
     for (int iStream=1; iStream<=m_streamDetails.GetSubtitleStreamCount(); iStream++)
     {
       TiXmlElement stream("subtitle");
       XMLUtils::SetString(&stream, "language", m_streamDetails.GetSubtitleLanguage(iStream));
+      if (m_streamDetails.GetVersion(CStreamDetail::SUBTITLE, iStream) >=
+          CStreamDetail::STREAM_DETAILS_VERSION_FLAGS)
+      {
+        TiXmlElement flags("flags");
+        XMLUtils::SetStringArray(
+            &flags, "flag",
+            CStreamDetails::StreamFlagsToNames(m_streamDetails.GetSubtitleFlags(iStream)));
+        stream.InsertEndChild(flags);
+      }
       streamdetails.InsertEndChild(stream);
     }
     fileinfo.InsertEndChild(streamdetails);
@@ -1512,6 +1556,9 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
           p->m_strLanguage = StringUtils::Trim(value);
 
         XMLUtils::GetInt(nodeDetail, "channels", p->m_iChannels);
+
+        p->m_flags = ParseStreamFlags(nodeDetail);
+
         StringUtils::ToLower(p->m_strCodec);
         StringUtils::ToLower(p->m_strLanguage);
         p->m_strCodec = StreamUtils::NormalizeAudioCodecName(p->m_strCodec);
@@ -1550,6 +1597,9 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
         auto* p = new CStreamDetailSubtitle();
         if (XMLUtils::GetString(nodeDetail, "language", value))
           p->m_strLanguage = StringUtils::Trim(value);
+
+        p->m_flags = ParseStreamFlags(nodeDetail);
+
         StringUtils::ToLower(p->m_strLanguage);
         m_streamDetails.AddStream(p);
       }

@@ -156,7 +156,7 @@ void CVideoDatabaseDDL::CreateTables(CDatabase& db)
       "strAudioCodec text, iAudioChannels integer, strAudioLanguage text, "
       "strSubtitleLanguage text, iVideoDuration integer, strStereoMode text, "
       "strVideoLanguage text, strHdrType text, strHdrDetail text, iSource integer, iVersion "
-      "integer)");
+      "integer, iFlags integer)");
 
   CLog::Log(LOGINFO, "create sets table");
   db.ExecuteQuery("CREATE TABLE `sets` ( idSet integer primary key, strSet text, strOverview text, "

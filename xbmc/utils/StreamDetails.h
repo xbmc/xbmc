@@ -12,6 +12,7 @@
 #include "cores/VideoPlayer/Interface/StreamInfo.h"
 #include "utils/IArchivable.h"
 
+#include <algorithm>
 #include <array>
 #include <memory>
 #include <string>
@@ -27,7 +28,9 @@ struct SubtitleStreamInfo;
 class CStreamDetail : public IArchivable, public ISerializable
 {
 public:
-  static constexpr int STREAM_DETAILS_VERSION = 2;
+  static constexpr int STREAM_DETAILS_VERSION = 3;
+  static constexpr int STREAM_DETAILS_VERSION_FLAGS =
+      3; // Version that introduced flags to audio and subtitle streams
 
   enum StreamType {
     VIDEO,
@@ -102,6 +105,7 @@ public:
   int m_iChannels = -1;
   std::string m_strCodec;
   std::string m_strLanguage;
+  StreamFlags m_flags{StreamFlags::FLAG_NONE};
 };
 
 class CStreamDetailSubtitle final : public CStreamDetail
@@ -116,6 +120,7 @@ public:
   bool IsWorseThan(const CStreamDetail &that) const override;
 
   std::string m_strLanguage;
+  StreamFlags m_flags{StreamFlags::FLAG_NONE};
 };
 
 class CStreamDetails final : public IArchivable, public ISerializable
@@ -199,8 +204,54 @@ public:
       {2.76f, "2.76"},
   });
 
+  /*!
+   * \brief A stream flag, and the name Kodi reads and writes for it in an NFO.
+   */
+  struct FlagName
+  {
+    StreamFlags flag;
+    std::string_view name;
+  };
+
+  /*!
+   * \brief The vocabulary of stream flag names used in NFOs.
+   *
+   * Written out in alphabetical order.
+   */
+  static constexpr auto STREAM_FLAG_NAMES = std::to_array<FlagName>({
+      {StreamFlags::FLAG_COMMENT, "comment"},
+      {StreamFlags::FLAG_DEFAULT, "default"},
+      {StreamFlags::FLAG_DUB, "dub"},
+      {StreamFlags::FLAG_FORCED, "forced"},
+      {StreamFlags::FLAG_HEARING_IMPAIRED, "hearingimpaired"},
+      {StreamFlags::FLAG_KARAOKE, "karaoke"},
+      {StreamFlags::FLAG_LYRICS, "lyrics"},
+      {StreamFlags::FLAG_ORIGINAL, "original"},
+      {StreamFlags::FLAG_STILL_IMAGES, "stillimages"},
+      {StreamFlags::FLAG_VISUAL_IMPAIRED, "visualimpaired"},
+      {StreamFlags::FLAG_WEBVTT_DATA_PACKETS, "webvttdatapackets"},
+  });
+
+  static_assert(std::ranges::is_sorted(STREAM_FLAG_NAMES, {}, &FlagName::name),
+                "STREAM_FLAG_NAMES must be in alphabetical order - StreamFlagsToNames() walks it "
+                "in order and its callers rely on the names coming out sorted");
+
   static std::string VideoDimsToResolutionDescription(int iWidth, int iHeight);
   static std::string VideoAspectToAspectDescription(float fAspect);
+
+  /*!
+   * \brief Break a flag set out into its names, in alphabetical order.
+   * \param flags The flags to name.
+   * \return One entry per set bit that has a name; empty for FLAG_NONE.
+   */
+  static std::vector<std::string> StreamFlagsToNames(StreamFlags flags);
+
+  /*!
+   * \brief Look a single flag up by name.
+   * \param name The name to look up. Leading and trailing space is ignored, as is case.
+   * \return The matching flag, or FLAG_NONE if the name isn't known.
+   */
+  static StreamFlags StreamFlagFromName(std::string_view name);
 
   bool HasItems(void) const { return !m_vecItems.empty(); }
   int GetStreamCount(CStreamDetail::StreamType type) const;
@@ -234,9 +285,11 @@ public:
   std::string GetAudioCodec(int idx = 0) const;
   std::string GetAudioLanguage(int idx = 0) const;
   int GetAudioChannels(int idx = 0) const;
+  StreamFlags GetAudioFlags(int idx = 0) const;
   /*! @} */
 
   std::string GetSubtitleLanguage(int idx = 0) const;
+  StreamFlags GetSubtitleFlags(int idx = 0) const;
 
   /*!
    * \brief Get the index of the best audio stream in the given language.

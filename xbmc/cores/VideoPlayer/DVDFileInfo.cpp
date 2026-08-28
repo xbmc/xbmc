@@ -453,6 +453,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
   {
     CStreamDetailSubtitle* sub = new CStreamDetailSubtitle();
     sub->m_strLanguage = subs[i].m_strLanguage;
+    sub->m_flags = subs[i].m_flags;
     sub->SetSource(CStreamDetail::MEDIA);
     details.AddStream(sub);
     result = true;
@@ -640,6 +641,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
       p->m_iChannels = static_cast<CDemuxStreamAudio*>(stream)->iChannels;
       p->m_strLanguage = stream->language;
       p->m_strCodec = pDemux->GetStreamCodecName(stream->demuxerId, stream->uniqueId);
+      p->m_flags = stream->flags;
       p->SetSource(CStreamDetail::MEDIA);
       details.AddStream(p);
       retVal = true;
@@ -649,6 +651,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
     {
       CStreamDetailSubtitle *p = new CStreamDetailSubtitle();
       p->m_strLanguage = stream->language;
+      p->m_flags = stream->flags;
       p->SetSource(CStreamDetail::MEDIA);
       details.AddStream(p);
       retVal = true;
@@ -713,11 +716,18 @@ bool CDVDFileInfo::AddExternalSubtitleToDetails(const std::string &path, CStream
     if (!v.Open(filename, STREAM_SOURCE_NONE, vobsubfile))
       return false;
 
+    const ExternalStreamInfo idxInfo = CUtil::GetExternalStreamDetailsFromFilename(path, filename);
+
     for(CDemuxStream* stream : v.GetStreams())
     {
       CStreamDetailSubtitle *dsub = new CStreamDetailSubtitle();
       std::string lang = stream->language;
       dsub->m_strLanguage = g_LangCodeExpander.ConvertToISO6392B(lang);
+      // Mirror CVideoPlayer::AddSubtitleFile: a flag in the filename overrides the demuxer,
+      // so the scanner and the player agree
+      dsub->m_flags = static_cast<StreamFlags>(idxInfo.flag) != StreamFlags::FLAG_NONE
+                          ? static_cast<StreamFlags>(idxInfo.flag)
+                          : stream->flags;
       dsub->SetSource(CStreamDetail::MEDIA);
       details.AddStream(dsub);
     }
@@ -733,6 +743,7 @@ bool CDVDFileInfo::AddExternalSubtitleToDetails(const std::string &path, CStream
   CStreamDetailSubtitle *dsub = new CStreamDetailSubtitle();
   ExternalStreamInfo info = CUtil::GetExternalStreamDetailsFromFilename(path, filename);
   dsub->m_strLanguage = g_LangCodeExpander.ConvertToISO6392B(info.language);
+  dsub->m_flags = static_cast<StreamFlags>(info.flag);
   dsub->SetSource(CStreamDetail::MEDIA);
   details.AddStream(dsub);
 
