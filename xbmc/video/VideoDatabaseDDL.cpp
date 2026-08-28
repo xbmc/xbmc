@@ -68,11 +68,15 @@ void CVideoDatabaseDDL::CreateTables(CDatabase& db)
   db.ExecuteQuery("CREATE TABLE stacktimes (idFile integer, times text)\n");
 
   CLog::Log(LOGINFO, "create genre table");
-  db.ExecuteQuery("CREATE TABLE genre ( genre_id integer primary key, name TEXT)\n");
+  // NOCASE gives sqlite the case-insensitive name matching. Mysql/mariadb already match case-insensitively
+  // through the connection collation and MysqlDatabase::vprepare() removes the clause (via PrepareSQL())
+  db.ExecuteQuery(db.PrepareSQL(
+      "CREATE TABLE genre ( genre_id integer primary key, name TEXT COLLATE NOCASE)"));
   db.ExecuteQuery("CREATE TABLE genre_link (genre_id integer, media_id integer, media_type TEXT)");
 
   CLog::Log(LOGINFO, "create country table");
-  db.ExecuteQuery("CREATE TABLE country ( country_id integer primary key, name TEXT)");
+  db.ExecuteQuery(db.PrepareSQL(
+      "CREATE TABLE country ( country_id integer primary key, name TEXT COLLATE NOCASE)"));
   db.ExecuteQuery(
       "CREATE TABLE country_link (country_id integer, media_id integer, media_type TEXT)");
 
@@ -86,7 +90,8 @@ void CVideoDatabaseDDL::CreateTables(CDatabase& db)
   db.ExecuteQuery(columns);
 
   CLog::Log(LOGINFO, "create actor table");
-  db.ExecuteQuery("CREATE TABLE actor ( actor_id INTEGER PRIMARY KEY, name TEXT, art_urls TEXT )");
+  db.ExecuteQuery(db.PrepareSQL("CREATE TABLE actor ( actor_id INTEGER PRIMARY KEY, name TEXT "
+                                "COLLATE NOCASE, art_urls TEXT )"));
   db.ExecuteQuery(
       "CREATE TABLE actor_link(actor_id INTEGER, media_id INTEGER, media_type TEXT, role "
       "TEXT, cast_order INTEGER)");
@@ -137,7 +142,8 @@ void CVideoDatabaseDDL::CreateTables(CDatabase& db)
   db.ExecuteQuery("CREATE TABLE movielinktvshow ( idMovie integer, IdShow integer)\n");
 
   CLog::Log(LOGINFO, "create studio table");
-  db.ExecuteQuery("CREATE TABLE studio ( studio_id integer primary key, name TEXT)\n");
+  db.ExecuteQuery(db.PrepareSQL(
+      "CREATE TABLE studio ( studio_id integer primary key, name TEXT COLLATE NOCASE)"));
   db.ExecuteQuery(
       "CREATE TABLE studio_link (studio_id integer, media_id integer, media_type TEXT)");
 
@@ -171,7 +177,8 @@ void CVideoDatabaseDDL::CreateTables(CDatabase& db)
                   "type TEXT, url TEXT)");
 
   CLog::Log(LOGINFO, "create tag table");
-  db.ExecuteQuery("CREATE TABLE tag (tag_id integer primary key, name TEXT)");
+  db.ExecuteQuery(
+      db.PrepareSQL("CREATE TABLE tag (tag_id integer primary key, name TEXT COLLATE NOCASE)"));
   db.ExecuteQuery("CREATE TABLE tag_link (tag_id integer, media_id integer, media_type TEXT)");
 
   CLog::Log(LOGINFO, "create rating table");

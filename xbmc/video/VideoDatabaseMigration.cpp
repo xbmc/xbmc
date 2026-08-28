@@ -1425,9 +1425,192 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->exec("ALTER TABLE streamdetails ADD iSource INTEGER DEFAULT 40");
     m_pDS->exec("ALTER TABLE streamdetails ADD iVersion INTEGER DEFAULT 1");
   }
+
+  if (iVersion < 149 && m_sqlite)
+  {
+    // Give the name columns of actor / genre / country / studio / tag the NOCASE collation, so that
+    // the case-insensitive lookups of AddActor() and AddToTable() are served by the unique index
+    // over those columns instead of scanning the whole table. Mysql/mariadb match case-insensitively
+    // already, through the collation set on the connection, so this is sqlite only.
+    //
+    // Analytics are not present here, which means that no index or trigger has to be dropped and
+    // recreated, and that deleting a merged actor cannot take its art with it through the
+    // delete_person trigger. CreateAnalytics() creates the now case-insensitive unique index over
+    // the name as soon as this returns - if a duplicate escaped the merge below then that fails and
+    // the whole update is rolled back.
+
+    struct LinkTable
+    {
+      std::string table;
+      bool keyedOnRole{false}; // actor_link keys on the role as well
+    };
+
+    struct NameTable
+    {
+      std::string table;
+      std::string idColumn;
+      std::string columns;
+      std::string createTable; // mirrors CVideoDatabaseDDL::CreateTables()
+      std::vector<LinkTable> linkTables;
+      bool hasArtwork{false}; // only actor carries artwork: art rows and scraped art urls
+    };
+
+    const std::vector<NameTable> nameTables{
+        {"actor",
+         "actor_id",
+         "actor_id, name, art_urls",
+         "CREATE TABLE actor ( actor_id INTEGER PRIMARY KEY, name TEXT COLLATE NOCASE, art_urls "
+         "TEXT )",
+         {{"actor_link", true}, {"director_link"}, {"writer_link"}},
+         true},
+        {"genre",
+         "genre_id",
+         "genre_id, name",
+         "CREATE TABLE genre ( genre_id integer primary key, name TEXT COLLATE NOCASE)",
+         {{"genre_link"}}},
+        {"country",
+         "country_id",
+         "country_id, name",
+         "CREATE TABLE country ( country_id integer primary key, name TEXT COLLATE NOCASE)",
+         {{"country_link"}}},
+        {"studio",
+         "studio_id",
+         "studio_id, name",
+         "CREATE TABLE studio ( studio_id integer primary key, name TEXT COLLATE NOCASE)",
+         {{"studio_link"}}},
+        {"tag",
+         "tag_id",
+         "tag_id, name",
+         "CREATE TABLE tag (tag_id integer primary key, name TEXT COLLATE NOCASE)",
+         {{"tag_link"}}},
+    };
+
+    // Art is keyed on (media_id, media_type, type), so of two rows that a merge brings together
+    // only one can be kept. The media types are those of the delete_person trigger.
+    auto MergeArt{
+        [&](int keepId, int loserId)
+        {
+          m_pDS2->exec(PrepareSQL("DELETE FROM art WHERE media_id = %i AND media_type IN "
+                                  "('actor', 'artist', 'writer', 'director') AND EXISTS "
+                                  "  (SELECT 1 FROM art AS kept WHERE kept.media_id = %i AND "
+                                  "   kept.media_type = art.media_type AND kept.type = art.type)",
+                                  loserId, keepId));
+          m_pDS2->exec(PrepareSQL("UPDATE art SET media_id = %i WHERE media_id = %i AND "
+                                  "media_type IN ('actor', 'artist', 'writer', 'director')",
+                                  keepId, loserId));
+        }};
+
+    // The art urls are held on the row itself, so the merge would drop those of every row but the
+    // one that survives. Hand it the first non-empty value of its group instead. Merging two
+    // non-empty values is not attempted - art_urls holds a serialized scraper result, and this code
+    // must not grow a dependency on that format.
+    auto PreserveArtUrls{
+        [&](int keepId, const std::string& name)
+        {
+          const std::string artUrls{
+              GetSingleValue(PrepareSQL("SELECT art_urls FROM actor WHERE name = '%s' COLLATE "
+                                        "NOCASE AND COALESCE(art_urls, '') <> '' "
+                                        "ORDER BY actor_id LIMIT 1",
+                                        name.c_str()),
+                             *m_pDS2)};
+          if (!artUrls.empty())
+            m_pDS2->exec(PrepareSQL("UPDATE actor SET art_urls = '%s' WHERE actor_id = %i AND "
+                                    "COALESCE(art_urls, '') = ''",
+                                    artUrls.c_str(), keepId));
+        }};
+
+    for (const auto& [table, idColumn, columns, createTable, linkTables, hasArtwork] : nameTables)
+    {
+      // Names that differ only in case have to be merged before a case-insensitive unique index can
+      // be created over them. Group with COLLATE NOCASE, so that the grouping is by construction
+      // the same equality that the index will enforce. The lowest id of a group is kept.
+      //
+      // A null name is not a duplicate of another null name - a unique index holds as many of those
+      // as it likes - so they are left out. GROUP BY would otherwise collect them into one group
+      // that no '=' comparison can ever pick a row out of again.
+      struct Duplicate
+      {
+        int keepId;
+        std::string name;
+      };
+      std::vector<Duplicate> duplicates;
+
+      m_pDS->query(PrepareSQL("SELECT MIN(%s), name FROM %s WHERE name IS NOT NULL "
+                              "GROUP BY name COLLATE NOCASE HAVING COUNT(*) > 1",
+                              idColumn.c_str(), table.c_str()));
+      while (!m_pDS->eof())
+      {
+        duplicates.push_back({m_pDS->fv(0).get_asInt(), m_pDS->fv(1).get_asString()});
+        m_pDS->next();
+      }
+      m_pDS->close();
+
+      for (const auto& [keepId, name] : duplicates)
+      {
+        std::vector<int> loserIds;
+        m_pDS->query(PrepareSQL("SELECT %s FROM %s WHERE name = '%s' COLLATE NOCASE AND %s <> %i",
+                                idColumn.c_str(), table.c_str(), name.c_str(), idColumn.c_str(),
+                                keepId));
+        while (!m_pDS->eof())
+        {
+          loserIds.emplace_back(m_pDS->fv(0).get_asInt());
+          m_pDS->next();
+        }
+        m_pDS->close();
+
+        if (hasArtwork)
+          PreserveArtUrls(keepId, name);
+
+        for (const int loserId : loserIds)
+        {
+          for (const auto& linkTable : linkTables)
+            m_pDS2->exec(PrepareSQL("UPDATE %s SET %s = %i WHERE %s = %i", linkTable.table.c_str(),
+                                    idColumn.c_str(), keepId, idColumn.c_str(), loserId));
+
+          if (hasArtwork)
+            MergeArt(keepId, loserId);
+
+          m_pDS2->exec(
+              PrepareSQL("DELETE FROM %s WHERE %s = %i", table.c_str(), idColumn.c_str(), loserId));
+        }
+
+        CLog::Log(LOGINFO, "Merged {} row(s) of table {} into \"{}\" ({}={})", loserIds.size(),
+                  table, name, idColumn, keepId);
+      }
+
+      // Repointing the links of a merged row creates rows that the unique index over the link
+      // table would reject
+      if (!duplicates.empty())
+      {
+        for (const auto& linkTable : linkTables)
+          m_pDS2->exec(
+              PrepareSQL("DELETE FROM %s WHERE rowid NOT IN "
+                         "  (SELECT MIN(rowid) FROM %s GROUP BY %s, media_type, media_id%s)",
+                         linkTable.table.c_str(), linkTable.table.c_str(), idColumn.c_str(),
+                         linkTable.keyedOnRole ? ", role" : ""));
+      }
+
+      // CreateAnalytics() goes through CDatabase::ExecuteQuery(), which logs a failing statement
+      // and carries on, so a duplicate left behind here would cost the table its unique index
+      // rather than fail the update. Refuse to leave one behind - throwing reaches
+      // CDatabaseManager::UpdateVersion(), which rolls the whole update back
+      if (GetSingleValueInt(
+              PrepareSQL("SELECT COUNT(*) FROM (SELECT 1 FROM %s WHERE name IS NOT NULL "
+                         "GROUP BY name COLLATE NOCASE HAVING COUNT(*) > 1)",
+                         table.c_str())) > 0)
+        throw DbErrors("Table %s still holds names differing only in case", table.c_str());
+
+      // sqlite cannot alter the collation of an existing column, the table has to be rebuilt
+      m_pDS->exec(PrepareSQL("ALTER TABLE %s RENAME TO %s_old", table.c_str(), table.c_str()));
+      m_pDS->exec(createTable);
+      m_pDS->exec(PrepareSQL("INSERT INTO %s (%s) SELECT %s FROM %s_old", table.c_str(),
+                             columns.c_str(), columns.c_str(), table.c_str()));
+      m_pDS->exec(PrepareSQL("DROP TABLE %s_old", table.c_str()));
+    }
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 148;
+  return 149;
 }
