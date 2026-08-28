@@ -943,6 +943,8 @@ bool SqliteDataset::query(const std::string& query)
 
   close();
 
+  const auto start = std::chrono::steady_clock::now();
+
   sqlite3_stmt* stmt = nullptr;
   if (db->setErr(sqlite3_prepare_v2(handle(), query.c_str(), -1, &stmt, nullptr), query.c_str()) !=
       SQLITE_OK)
@@ -987,7 +989,17 @@ bool SqliteDataset::query(const std::string& query)
     }
     result.records.push_back(res);
   }
-  if (db->setErr(sqlite3_finalize(stmt), query.c_str()) == SQLITE_OK)
+  const int finalizeResult = db->setErr(sqlite3_finalize(stmt), query.c_str());
+
+  const auto end = std::chrono::steady_clock::now();
+
+  // fractions of a millisecond matter here: a select served by an index takes microseconds, and it
+  // is the sum over a whole library scan that tells whether one is served by an index at all
+  const std::chrono::duration<double, std::milli> duration{end - start};
+
+  CLog::LogFC(LOGDEBUG, LOGDATABASE, "{:.3f} ms for query: {}", duration.count(), query);
+
+  if (finalizeResult == SQLITE_OK)
   {
     active = true;
     ds_state = dsSelect;

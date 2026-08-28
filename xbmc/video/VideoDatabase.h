@@ -36,6 +36,7 @@ class CVideoSettings;
 class CGUIDialogProgress;
 class CGUIDialogProgressBarHandle;
 class TiXmlNode;
+class TestVideoDatabaseMigration;
 
 struct VideoAssetInfo;
 
@@ -1190,6 +1191,9 @@ protected:
   int SetFileForUnknown(const std::string& fileAndPath, int oldIdFile, int newIdFile);
 
 private:
+  //! rief Drives the schema entry points the way CDatabaseManager does, to cover a migration
+  friend class ::TestVideoDatabaseMigration;
+
   void CreateTables() override;
   void CreateAnalytics() override;
   void UpdateTables(int version) override;

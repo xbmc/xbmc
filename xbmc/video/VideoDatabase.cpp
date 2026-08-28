@@ -1287,7 +1287,9 @@ int CVideoDatabase::AddToTable(const std::string& table, const std::string& firs
     if (nullptr == m_pDS)
       return -1;
 
-    std::string strSQL = PrepareSQL("select %s from %s where %s like '%s'", firstField.c_str(), table.c_str(), secondField.c_str(), value.substr(0, 255).c_str());
+    std::string strSQL =
+        PrepareSQL("select %s from %s where %s = '%s'", firstField.c_str(), table.c_str(),
+                   secondField.c_str(), value.substr(0, 255).c_str());
     m_pDS->query(strSQL);
     if (m_pDS->num_rows() == 0)
     {
@@ -1530,7 +1532,8 @@ int CVideoDatabase::AddActor(const std::string& name, const std::string& thumbUR
     std::string trimmedName = name;
     StringUtils::Trim(trimmedName);
 
-    std::string strSQL=PrepareSQL("select actor_id from actor where name like '%s'", trimmedName.substr(0, 255).c_str());
+    std::string strSQL = PrepareSQL("select actor_id from actor where name = '%s'",
+                                    trimmedName.substr(0, 255).c_str());
     m_pDS->query(strSQL);
     if (m_pDS->num_rows() == 0)
     {
@@ -9443,17 +9446,40 @@ int CVideoDatabase::GetMatchingMusicVideo(const std::string& strArtist, const st
     { // we want to return matching artists only
       if (m_profileManager.GetMasterProfile().getLockMode() != LockMode::EVERYONE &&
           !g_passwordManager.bMasterUser)
-        strSQL=PrepareSQL("SELECT DISTINCT actor.actor_id, path.strPath FROM actor INNER JOIN actor_link ON actor_link.actor_id=actor.actor_id INNER JOIN musicvideo ON actor_link.media_id=musicvideo.idMVideo INNER JOIN files ON files.idFile=musicvideo.idFile INNER JOIN path ON path.idPath=files.idPath WHERE actor_link.media_type='musicvideo' AND actor.name like '%s'", strArtist.c_str());
+        strSQL =
+            PrepareSQL("SELECT DISTINCT actor.actor_id, path.strPath FROM actor INNER JOIN "
+                       "actor_link ON actor_link.actor_id=actor.actor_id INNER JOIN musicvideo ON "
+                       "actor_link.media_id=musicvideo.idMVideo INNER JOIN files ON "
+                       "files.idFile=musicvideo.idFile INNER JOIN path ON path.idPath=files.idPath "
+                       "WHERE actor_link.media_type='musicvideo' AND actor.name = '%s'",
+                       strArtist.c_str());
       else
-        strSQL=PrepareSQL("SELECT DISTINCT actor.actor_id FROM actor INNER JOIN actor_link ON actor_link.actor_id=actor.actor_id WHERE actor_link.media_type='musicvideo' AND actor.name LIKE '%s'", strArtist.c_str());
+        strSQL = PrepareSQL("SELECT DISTINCT actor.actor_id FROM actor INNER JOIN actor_link ON "
+                            "actor_link.actor_id=actor.actor_id WHERE "
+                            "actor_link.media_type='musicvideo' AND actor.name = '%s'",
+                            strArtist.c_str());
     }
     else
     { // we want to return the matching musicvideo
       if (m_profileManager.GetMasterProfile().getLockMode() != LockMode::EVERYONE &&
           !g_passwordManager.bMasterUser)
-        strSQL = PrepareSQL("SELECT musicvideo.idMVideo FROM actor INNER JOIN actor_link ON actor_link.actor_id=actor.actor_id INNER JOIN musicvideo ON actor_link.media_id=musicvideo.idMVideo INNER JOIN files ON files.idFile=musicvideo.idFile INNER JOIN path ON path.idPath=files.idPath WHERE actor_link.media_type='musicvideo' AND musicvideo.c%02d LIKE '%s' AND musicvideo.c%02d LIKE '%s' AND actor.name LIKE '%s'", VIDEODB_ID_MUSICVIDEO_ALBUM, strAlbum.c_str(), VIDEODB_ID_MUSICVIDEO_TITLE, strTitle.c_str(), strArtist.c_str());
+        strSQL =
+            PrepareSQL("SELECT musicvideo.idMVideo FROM actor INNER JOIN actor_link ON "
+                       "actor_link.actor_id=actor.actor_id INNER JOIN musicvideo ON "
+                       "actor_link.media_id=musicvideo.idMVideo INNER JOIN files ON "
+                       "files.idFile=musicvideo.idFile INNER JOIN path ON path.idPath=files.idPath "
+                       "WHERE actor_link.media_type='musicvideo' AND musicvideo.c%02d LIKE '%s' "
+                       "AND musicvideo.c%02d LIKE '%s' AND actor.name = '%s'",
+                       VIDEODB_ID_MUSICVIDEO_ALBUM, strAlbum.c_str(), VIDEODB_ID_MUSICVIDEO_TITLE,
+                       strTitle.c_str(), strArtist.c_str());
       else
-        strSQL = PrepareSQL("select musicvideo.idMVideo from musicvideo join actor_link on actor_link.media_id=musicvideo.idMVideo AND actor_link.media_type='musicvideo' join actor on actor.actor_id=actor_link.actor_id where musicvideo.c%02d like '%s' and musicvideo.c%02d like '%s' and actor.name like '%s'",VIDEODB_ID_MUSICVIDEO_ALBUM,strAlbum.c_str(),VIDEODB_ID_MUSICVIDEO_TITLE,strTitle.c_str(),strArtist.c_str());
+        strSQL = PrepareSQL(
+            "select musicvideo.idMVideo from musicvideo join actor_link on "
+            "actor_link.media_id=musicvideo.idMVideo AND actor_link.media_type='musicvideo' join "
+            "actor on actor.actor_id=actor_link.actor_id where musicvideo.c%02d like '%s' and "
+            "musicvideo.c%02d like '%s' and actor.name = '%s'",
+            VIDEODB_ID_MUSICVIDEO_ALBUM, strAlbum.c_str(), VIDEODB_ID_MUSICVIDEO_TITLE,
+            strTitle.c_str(), strArtist.c_str());
     }
     m_pDS->query( strSQL );
 
@@ -11795,10 +11821,15 @@ bool CVideoDatabase::CommitTransaction()
 {
   if (CDatabase::CommitTransaction())
   { // number of items in the db has likely changed, so recalculate
-    GUIINFO::CLibraryGUIInfo& guiInfo = CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetLibraryInfoProvider();
-    guiInfo.SetLibraryBool(LIBRARY_HAS_MOVIES, HasContent(VideoDbContentType::MOVIES));
-    guiInfo.SetLibraryBool(LIBRARY_HAS_TVSHOWS, HasContent(VideoDbContentType::TVSHOWS));
-    guiInfo.SetLibraryBool(LIBRARY_HAS_MUSICVIDEOS, HasContent(VideoDbContentType::MUSICVIDEOS));
+    // there is no gui to tell when the database is driven by a test
+    if (CGUIComponent* gui = CServiceBroker::GetGUI())
+    {
+      GUIINFO::CLibraryGUIInfo& guiInfo =
+          gui->GetInfoManager().GetInfoProviders().GetLibraryInfoProvider();
+      guiInfo.SetLibraryBool(LIBRARY_HAS_MOVIES, HasContent(VideoDbContentType::MOVIES));
+      guiInfo.SetLibraryBool(LIBRARY_HAS_TVSHOWS, HasContent(VideoDbContentType::TVSHOWS));
+      guiInfo.SetLibraryBool(LIBRARY_HAS_MUSICVIDEOS, HasContent(VideoDbContentType::MUSICVIDEOS));
+    }
     return true;
   }
   return false;
@@ -12000,7 +12031,7 @@ void CVideoDatabase::AppendLinkFilter(const char* field,
 
   filter.AppendJoin(PrepareSQL("JOIN %s_link ON %s_link.media_id=%s_view.%s AND %s_link.media_type='%s'", field, field, view, viewKey, field, mediaType.c_str()));
   filter.AppendJoin(PrepareSQL("JOIN %s ON %s.%s_id=%s_link.%s_id", table, table, field, table, field));
-  filter.AppendWhere(PrepareSQL("%s.name like '%s'", table, option->second.asString().c_str()));
+  filter.AppendWhere(PrepareSQL("%s.name = '%s'", table, option->second.asString().c_str()));
 }
 
 bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription &sorting)
@@ -12231,7 +12262,7 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
         filter.AppendJoin(PrepareSQL("JOIN actor_link ON actor_link.media_id=musicvideo_view.idMVideo AND actor_link.media_type='musicvideo'"));
         filter.AppendJoin(PrepareSQL("JOIN actor ON actor.actor_id=actor_link.actor_id"));
       }
-      filter.AppendWhere(PrepareSQL("actor.name LIKE '%s'", option->second.asString().c_str()));
+      filter.AppendWhere(PrepareSQL("actor.name = '%s'", option->second.asString().c_str()));
     }
 
     option = options.find("albumid");

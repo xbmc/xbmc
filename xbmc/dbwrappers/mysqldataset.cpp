@@ -2008,6 +2008,8 @@ bool MysqlDataset::query(const std::string& query)
 
   MYSQL_RES* stmt = nullptr;
 
+  const auto start = std::chrono::steady_clock::now();
+
   if (static_cast<MysqlDatabase*>(db)->setErr(
           static_cast<MysqlDatabase*>(db)->query_with_reconnect(qry), qry.c_str()) != MYSQL_OK)
     throw DbErrors("%s", db->getErrorMsg());
@@ -2095,6 +2097,15 @@ bool MysqlDataset::query(const std::string& query)
     result.records.push_back(res);
   }
   mysql_free_result(stmt);
+
+  const auto end = std::chrono::steady_clock::now();
+
+  // fractions of a millisecond matter here: a select served by an index takes microseconds, and it
+  // is the sum over a whole library scan that tells whether one is served by an index at all
+  const std::chrono::duration<double, std::milli> duration{end - start};
+
+  CLog::LogFC(LOGDEBUG, LOGDATABASE, "{:.3f} ms for query: {}", duration.count(), qry);
+
   active = true;
   ds_state = dsSelect;
   this->first();

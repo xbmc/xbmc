@@ -130,6 +130,28 @@ const auto VPrepareNoParamTests = std::array{
                         "SELECT foo, bar"},
     VPrepareNoParamTest{"SELECT foo COLLATE BINARY, bar", "SELECT foo COLLATE BINARY, bar",
                         "SELECT foo COLLATE BINARY, bar"},
+    // COLLATE NOCASE in the shapes that CVideoDatabaseDDL::CreateTables() and the name lookups of
+    // CVideoDatabase depend on. Sqlite needs the clause to reach it, MySQL needs it gone - its
+    // tables are case-insensitive through the connection collation and it knows no NOCASE
+    VPrepareNoParamTest{
+        "CREATE TABLE actor ( actor_id INTEGER PRIMARY KEY, name TEXT COLLATE NOCASE, art_urls "
+        "TEXT )",
+        "CREATE TABLE actor ( actor_id INTEGER PRIMARY KEY, name TEXT COLLATE NOCASE, art_urls "
+        "TEXT )",
+        "CREATE TABLE actor ( actor_id INTEGER PRIMARY KEY, name TEXT, art_urls TEXT )"},
+    VPrepareNoParamTest{"CREATE TABLE tag (tag_id integer primary key, name TEXT COLLATE NOCASE)",
+                        "CREATE TABLE tag (tag_id integer primary key, name TEXT COLLATE NOCASE)",
+                        "CREATE TABLE tag (tag_id integer primary key, name TEXT)"},
+    VPrepareNoParamTest{"SELECT actor_id FROM actor WHERE name = 'x' COLLATE NOCASE",
+                        "SELECT actor_id FROM actor WHERE name = 'x' COLLATE NOCASE",
+                        "SELECT actor_id FROM actor WHERE name = 'x'"},
+    VPrepareNoParamTest{"SELECT MIN(actor_id), name FROM actor GROUP BY name COLLATE NOCASE",
+                        "SELECT MIN(actor_id), name FROM actor GROUP BY name COLLATE NOCASE",
+                        "SELECT MIN(actor_id), name FROM actor GROUP BY name"},
+    // more than one occurrence in a statement
+    VPrepareNoParamTest{"SELECT a COLLATE NOCASE FROM t WHERE b = 'x' COLLATE NOCASE",
+                        "SELECT a COLLATE NOCASE FROM t WHERE b = 'x' COLLATE NOCASE",
+                        "SELECT a FROM t WHERE b = 'x'"},
 };
 
 class VPrepareNoParamTester : public testing::WithParamInterface<VPrepareNoParamTest>,
