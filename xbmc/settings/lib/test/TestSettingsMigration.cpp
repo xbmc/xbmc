@@ -7,10 +7,13 @@
  */
 
 #include "settings/lib/ISettingsMigrationStep.h"
+#include "settings/lib/SettingsManager.h"
 #include "settings/lib/SettingsMigration.h"
 #include "utils/XBMCTinyXML.h"
 
 #include <stdexcept>
+#include <string>
+#include <string_view>
 #include <vector>
 
 #include <gtest/gtest.h>
@@ -124,3 +127,62 @@ TEST(TestSettingsMigration, MultipleMigrationStepsSameTarget)
 
   EXPECT_THROW({ CSettingsMigration(std::move(steps)); }, std::invalid_argument);
 }
+
+namespace
+{
+struct ReplayGainMigrationTest
+{
+  std::string_view oldSettingId;
+  std::string_view newSettingId;
+  int oldValue;
+  double expectedValue;
+};
+
+constexpr ReplayGainMigrationTest ReplayGainMigrationTests[]{
+    {"musicplayer.replaygainpreamp", "musicplayer.replaygainpreampdb", 77, -12.0},
+    {"musicplayer.replaygainpreamp", "musicplayer.replaygainpreampdb", 89, 0.0},
+    {"musicplayer.replaygainpreamp", "musicplayer.replaygainpreampdb", 101, 12.0},
+    {"musicplayer.replaygainnogainpreamp", "musicplayer.replaygainnogainpreampdb", 77, -12.0},
+    {"musicplayer.replaygainnogainpreamp", "musicplayer.replaygainnogainpreampdb", 89, 0.0},
+    {"musicplayer.replaygainnogainpreamp", "musicplayer.replaygainnogainpreampdb", 101, 12.0},
+};
+} // namespace
+
+class TestSettingsMigrationToV4ReplayGain
+  : public testing::WithParamInterface<ReplayGainMigrationTest>,
+    public testing::Test
+{
+};
+
+TEST_P(TestSettingsMigrationToV4ReplayGain, MigratesPreampSetting)
+{
+  const auto& params = GetParam();
+  const std::string xml =
+      "<settings version=\"3\"><setting id=\"" + std::string{params.oldSettingId} + "\">" +
+      std::to_string(params.oldValue) +
+      "</setting><setting id=\"lookandfeel.skin\">skin.estuary</setting></settings>";
+
+  CXBMCTinyXML doc;
+  ASSERT_TRUE(doc.Parse(xml));
+
+  CSettingsMigration migration;
+  ASSERT_TRUE(migration.UpdateXMLSettings(doc.RootElement(), 3, 4));
+
+  EXPECT_EQ(nullptr, CSettingsManager::LocateSetting(doc.RootElement(), params.oldSettingId));
+
+  const TiXmlElement* migratedSetting =
+      CSettingsManager::LocateSetting(doc.RootElement(), params.newSettingId);
+  ASSERT_NE(nullptr, migratedSetting);
+  ASSERT_NE(nullptr, migratedSetting->FirstChild());
+  EXPECT_DOUBLE_EQ(params.expectedValue, std::stod(migratedSetting->FirstChild()->ValueStr()));
+
+  const TiXmlElement* unrelatedSetting =
+      CSettingsManager::LocateSetting(doc.RootElement(), "lookandfeel.skin");
+  ASSERT_NE(nullptr, unrelatedSetting);
+  ASSERT_NE(nullptr, unrelatedSetting->FirstChild());
+  EXPECT_EQ("skin.estuary", unrelatedSetting->FirstChild()->ValueStr());
+}
+
+INSTANTIATE_TEST_SUITE_P(TestSettingsMigration,
+                         TestSettingsMigrationToV4ReplayGain,
+                         testing::ValuesIn(ReplayGainMigrationTests));

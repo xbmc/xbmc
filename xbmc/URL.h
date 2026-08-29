@@ -175,4 +175,5 @@ private:
   std::string m_strProtocolOptions;
   CUrlOptions m_options;
   CUrlOptions m_protocolOptions;
+  bool m_isOpaque{false};
 };
