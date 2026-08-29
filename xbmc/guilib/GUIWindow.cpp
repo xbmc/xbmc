@@ -165,7 +165,7 @@ std::unique_ptr<TiXmlElement> CGUIWindow::Prepare(const std::unique_ptr<TiXmlEle
   // copy the root element as we will manipulate it
   auto preparedRoot = std::make_unique<TiXmlElement>(*rootElement);
 
-  // Resolve any includes, constants, expressions that may be present
+  // Resolve any includes, constants, expressions, skin resources, and maps that may be present
   // and save include's conditions to the given map
   auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
   if (skin)

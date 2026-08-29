@@ -215,7 +215,7 @@ protected:
   /*!
    \brief Prepare the XML for load
    \param rootElement the original XML element
-   \return the prepared XML (resolved includes, constants and expression)
+   \return the prepared XML (resolved includes, constants, expressions, skin resources, and maps)
    */
   virtual std::unique_ptr<TiXmlElement> Prepare(const std::unique_ptr<TiXmlElement>& rootElement);
 
