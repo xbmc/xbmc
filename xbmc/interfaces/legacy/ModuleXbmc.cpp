@@ -44,6 +44,7 @@
 #include "utils/FileExtensionProvider.h"
 #include "utils/FileUtils.h"
 #include "utils/LangCodeExpander.h"
+#include "utils/LanguageTag.h"
 #include "utils/MemUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
@@ -62,25 +63,6 @@ namespace XBMCAddon
     /*****************************************************************
      * start of xbmc methods
      *****************************************************************/
-
-    /*! @brief Extract base language name from compound language strings.
-     *  Removes region or script identifier suffix in parentheses.
-     *  Examples: "English(US)" -> "English", "Chinese(Hant)" -> "Chinese"
-     *  @param lang Language string that may contain region (2-char, e.g. US) or
-     *              script identifier (e.g. Hant, Cyrl, Arab) in parentheses
-     *  @return Base language name without region or script suffix
-     */
-    static std::string GetBaseLanguageName(const std::string& lang)
-    {
-      size_t openParen = lang.find('(');
-      if (openParen != std::string::npos)
-      {
-        std::string baseLang = lang.substr(0, openParen);
-        StringUtils::TrimRight(baseLang);
-        return baseLang;
-      }
-      return lang;
-    }
 
     void log(const char* msg, int level)
     {
@@ -210,50 +192,16 @@ namespace XBMCAddon
     String getLanguage(int format /* = CLangCodeExpander::ENGLISH_NAME */, bool region /*= false*/)
     {
       XBMC_TRACE;
-      std::string lang = g_langInfo.GetEnglishLanguageName();
-
       switch (format)
       {
-      case CLangCodeExpander::ENGLISH_NAME:
-        {
-          if (region)
-          {
-            std::string region = "-" + g_langInfo.GetCurrentRegion();
-            return (lang += region);
-          }
-          return lang;
-        }
-      case CLangCodeExpander::ISO_639_1:
-        {
-          std::string langCode;
-          g_LangCodeExpander.ConvertToISO6391(GetBaseLanguageName(lang), langCode);
-          if (region)
-          {
-            std::string region = g_langInfo.GetRegionLocale();
-            std::string region2Code;
-            g_LangCodeExpander.ConvertToISO6391(region, region2Code);
-            region2Code = "-" + region2Code;
-            return (langCode += region2Code);
-          }
-          return langCode;
-        }
-      case CLangCodeExpander::ISO_639_2:
-        {
-          std::string langCode;
-          g_LangCodeExpander.ConvertToISO6392B(GetBaseLanguageName(lang), langCode);
-          if (region)
-          {
-            std::string region = g_langInfo.GetRegionLocale();
-            std::string region3Code;
-            g_LangCodeExpander.ConvertToISO6392B(region, region3Code);
-            region3Code = "-" + region3Code;
-            return (langCode += region3Code);
-          }
-
-          return langCode;
-        }
-      default:
-        return "";
+        case CLangCodeExpander::ENGLISH_NAME:
+        case CLangCodeExpander::ISO_NAME:
+        case CLangCodeExpander::ISO_639_1:
+        case CLangCodeExpander::ISO_639_2:
+          return g_langInfo.GetLanguageAs(static_cast<CLangCodeExpander::LANGFORMATS>(format),
+                                          region);
+        default:
+          return "";
       }
     }
 
@@ -575,20 +523,26 @@ namespace XBMCAddon
       {
       case CLangCodeExpander::ENGLISH_NAME:
         {
-          g_LangCodeExpander.Lookup(language, convertedLanguage);
+          CLangCodeExpander::Lookup(language, convertedLanguage);
           // maybe it's a check whether the language exists or not
           if (convertedLanguage.empty())
           {
-            g_LangCodeExpander.ConvertToISO6392B(language, convertedLanguage);
-            g_LangCodeExpander.Lookup(convertedLanguage, convertedLanguage);
+            CLangCodeExpander::ConvertToISO6392B(language, convertedLanguage);
+            CLangCodeExpander::Lookup(convertedLanguage, convertedLanguage);
           }
           break;
         }
       case CLangCodeExpander::ISO_639_1:
-        g_LangCodeExpander.ConvertToISO6391(language, convertedLanguage);
+        if (const auto tag = KODI::UTILS::CLanguageTag::TryParse(language); tag.has_value())
+          convertedLanguage = tag->AsIso6391();
         break;
       case CLangCodeExpander::ISO_639_2:
-        g_LangCodeExpander.ConvertToISO6392B(language, convertedLanguage);
+        if (const auto tag = KODI::UTILS::CLanguageTag::TryParse(language); tag.has_value())
+          convertedLanguage = tag->AsIso6392B();
+        break;
+      case CLangCodeExpander::ISO_NAME:
+        if (const auto tag = KODI::UTILS::CLanguageTag::TryParse(language); tag.has_value())
+          convertedLanguage = tag->GetEnglishLanguageName();
         break;
       default:
         return "";
@@ -665,6 +619,10 @@ namespace XBMCAddon
     int getISO_639_1() { return CLangCodeExpander::ISO_639_1; }
     int getISO_639_2(){ return CLangCodeExpander::ISO_639_2; }
     int getENGLISH_NAME() { return CLangCodeExpander::ENGLISH_NAME; }
+    int getISO_NAME()
+    {
+      return CLangCodeExpander::ISO_NAME;
+    }
 
     // Device power status (HDMI-CEC)
     int getDEVICE_POWER_NO_ADAPTER()

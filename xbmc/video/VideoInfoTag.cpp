@@ -1553,7 +1553,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
           p->m_strCodec = StringUtils::Trim(value);
 
         if (XMLUtils::GetString(nodeDetail, "language", value))
-          p->m_strLanguage = StringUtils::Trim(value);
+          p->m_strLanguage = CLangCodeExpander::AsISO6392B(StringUtils::Trim(value));
 
         XMLUtils::GetInt(nodeDetail, "channels", p->m_iChannels);
 
@@ -1578,7 +1578,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
         if (XMLUtils::GetString(nodeDetail, "stereomode", value))
           p->m_strStereoMode = StringUtils::Trim(value);
         if (XMLUtils::GetString(nodeDetail, "language", value))
-          p->m_strLanguage = StringUtils::Trim(value);
+          p->m_strLanguage = CLangCodeExpander::AsISO6392B(StringUtils::Trim(value));
         if (XMLUtils::GetString(nodeDetail, "hdrtype", value))
           p->m_strHdrType = StringUtils::Trim(value);
         if (XMLUtils::GetString(nodeDetail, "hdrdetail", value))
@@ -1596,7 +1596,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
       {
         auto* p = new CStreamDetailSubtitle();
         if (XMLUtils::GetString(nodeDetail, "language", value))
-          p->m_strLanguage = StringUtils::Trim(value);
+          p->m_strLanguage = CLangCodeExpander::AsISO6392B(StringUtils::Trim(value));
 
         p->m_flags = ParseStreamFlags(nodeDetail);
 
@@ -1936,7 +1936,7 @@ bool CVideoInfoTag::SetOriginalLanguage(std::string language, LanguageTagSource 
   }
 
   StringUtils::Trim(language);
-  if (g_LangCodeExpander.ConvertToBcp47(language, language))
+  if (CLangCodeExpander::ConvertToBcp47(language, language))
   {
     m_originalLanguage = std::move(language);
     return true;

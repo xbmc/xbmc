@@ -29,7 +29,7 @@
 #include "settings/lib/Setting.h"
 #include "utils/Base64.h"
 #include "utils/ContentUtils.h"
-#include "utils/LangCodeExpander.h"
+#include "utils/LanguageTag.h"
 #include "utils/Set.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -875,15 +875,15 @@ PLT_MediaObject* BuildObject(CFileItem& item,
       else
         preferredLanguage = setting->ToString();
 
-      std::string preferredLanguageCode;
-      g_LangCodeExpander.ConvertToISO6392B(preferredLanguage, preferredLanguageCode);
+      const KODI::UTILS::CLanguageTag preferredTag{
+          KODI::UTILS::CLanguageTag::Parse(preferredLanguage)};
 
       for (unsigned int i = 0; i < subtitles.size(); i++)
       {
         ExternalStreamInfo info =
             CUtil::GetExternalStreamDetailsFromFilename(file_path.GetChars(), subtitles[i]);
 
-        if (preferredLanguageCode == info.language)
+        if (info.language.Matches(preferredTag))
         {
           subtitlePath = subtitles[i];
           break;
