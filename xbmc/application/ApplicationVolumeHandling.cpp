@@ -197,7 +197,8 @@ bool CApplicationVolumeHandling::OnSettingChanged(const CSetting& setting)
            StringUtils::EqualsNoCase(settingId,
                                      CSettings::SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP))
   {
-    float gain = static_cast<float>(static_cast<const CSettingNumber&>(setting).GetValue());
+    const float gain{
+        static_cast<float>(static_cast<const CSettingNumber&>(setting).GetValue())};
 
     // 0 dB gain value needs to be exactly 0 to avoid unwanted sign flips
     if (gain != 0.0f && (std::abs(gain) < 0.01f))
