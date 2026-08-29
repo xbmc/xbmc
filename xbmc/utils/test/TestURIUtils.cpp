@@ -2725,3 +2725,12 @@ TEST_F(TestURIUtils, GetDecodedPath)
   decoded = "bluray://smb://somepath/path//BDMV/PLAYLIST/00800.mpls";
   EXPECT_EQ(decoded, URIUtils::GetDecodedPath(encoded));
 }
+
+TEST_F(TestURIUtils, Protocol)
+{
+  EXPECT_EQ("smb", URIUtils::Protocol("smb://server/share/file.ext"));
+  EXPECT_EQ("smb", URIUtils::Protocol("SMB://server/share/file.ext"));
+  EXPECT_EQ("", URIUtils::Protocol("/media/movies/file.ext"));
+  EXPECT_EQ("", URIUtils::Protocol("D:\\media\\movies\\file.ext"));
+  EXPECT_EQ("", URIUtils::Protocol(""));
+}
