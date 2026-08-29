@@ -2969,17 +2969,27 @@ CVideoInfoScanner::~CVideoInfoScanner()
       }
       else
       {
-        const int64_t size{pItem->GetSize()};
-        digest.Update(&size, sizeof(size));
         // linux and windows platform don't follow the same output format
         // (linux return a zero value for milliseconds member).
         // for consistency, use less precise format instead which discard
         // milliseconds value.
         // Unless a modification occur during the 1 second window when
         // kodi hash and update this particular file, we are safe.
-        time_t tt{};
-        pItem->GetDateTime().GetAsTime(tt);
-        digest.Update(&tt, sizeof(tt));
+        if (const std::string stackParts{pItem->GetProperty(PROPERTY_STACK_DIGEST).asString()};
+            !stackParts.empty())
+        {
+          // add a digest of every part (calculated in Stack())
+          digest.Update(stackParts);
+        }
+        else
+        {
+          const int64_t size{pItem->GetSize()};
+          digest.Update(&size, sizeof(size));
+
+          time_t tt{};
+          pItem->GetDateTime().GetAsTime(tt);
+          digest.Update(&tt, sizeof(tt));
+        }
       }
       if (IsVideo(*pItem) && !PLAYLIST::IsPlayList(*pItem) && !pItem->IsNFO())
         count++;

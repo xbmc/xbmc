@@ -76,6 +76,22 @@ namespace XFILE
                                    const std::string& newPath = {});
 
     /*!
+    \brief Whether any part of a stack:// path names a disc - a disc structure
+    (BDMV/index.bdmv, VIDEO_TS/VIDEO_TS.IFO), a disc image, or a bluray:// playlist of one.
+    \param stackPath The stack:// path
+    \return True if at least one part names a disc, false otherwise
+    */
+    static bool HasDiscPart(const std::string& stackPath);
+
+    /*!
+    \brief Whether two stack:// paths describe the same movie on the same discs
+    \param stackPath The stack:// path
+    \param otherStackPath The stack:// path to compare it with
+    \return True if both describe the same movie, false otherwise
+    */
+    static bool IsSameDiscStack(const std::string& stackPath, const std::string& otherStackPath);
+
+    /*!
     \brief Get the base/parent path in common from all the parts of a stack:// path
     \param stackPath The stack:// path
     \return The base/parent path

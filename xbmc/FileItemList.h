@@ -27,6 +27,10 @@
 //! the stored hash; Stack() skips the disc structure probes for such folders
 static constexpr const char* PROPERTY_UNCHANGED{"scanner:unchanged"};
 
+//! item property set by Stack() on a stack: a digest of what each of its parts is,
+//! to allow the scraper to detect changes to any part
+static constexpr const char* PROPERTY_STACK_DIGEST{"scanner:stackdigest"};
+
 /*!
   \brief Represents a list of files
   \sa CFileItemList, CFileItem

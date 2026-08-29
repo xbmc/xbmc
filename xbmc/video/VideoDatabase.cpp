@@ -844,11 +844,67 @@ int CVideoDatabase::GetFileId(const std::string& strFilenameAndPath)
         m_pDS->close();
         return idFile;
       }
+      m_pDS->close();
+
+      // A stack of discs may be stored as bluray:// playlists but the scanner
+      // may pass a stack:// with the base paths
+      return GetDiscStackFileId(strFilenameAndPath);
     }
   }
   catch (...)
   {
     CLog::LogF(LOGERROR, "({}) failed", strFilenameAndPath);
+  }
+  return -1;
+}
+
+int CVideoDatabase::GetDiscStackFileId(const std::string& stackPath)
+{
+  if (!URIUtils::IsStack(stackPath) || !CStackDirectory::HasDiscPart(stackPath))
+    return -1;
+
+  try
+  {
+    if (!m_pDB || !m_pDS)
+      return -1;
+
+    std::string strPath;
+    std::string strFileName;
+    SplitPath(stackPath, strPath, strFileName);
+    const int idPath{GetPathId(strPath)};
+    if (idPath < 0)
+      return -1;
+
+    // All forms of a folder stack reduce to the same base path
+    m_pDS->query(PrepareSQL("SELECT idFile, strFileName FROM files "
+                            "WHERE idPath=%i AND strFileName LIKE 'stack://%%'",
+                            idPath));
+    int idFile{-1};
+    int matches{0};
+    while (!m_pDS->eof())
+    {
+      if (CStackDirectory::IsSameDiscStack(stackPath, m_pDS->fv(1).get_asString()))
+      {
+        idFile = m_pDS->fv(0).get_asInt();
+        ++matches;
+      }
+      m_pDS->next();
+    }
+    m_pDS->close();
+
+    // If there is more than one match then we cannot be sure which one a stack:// with base paths
+    // is referring to.
+    if (matches > 1)
+    {
+      CLog::LogF(LOGWARNING, "'{}' matches {} stacks of the same discs - none can be chosen",
+                 CURL::GetRedacted(stackPath), matches);
+      return -1;
+    }
+    return idFile;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "({}) failed", CURL::GetRedacted(stackPath));
   }
   return -1;
 }
