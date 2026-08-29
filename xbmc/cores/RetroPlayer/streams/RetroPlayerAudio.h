@@ -11,7 +11,10 @@
 #include "IRetroPlayerStream.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 
+#include <chrono>
+#include <cstdint>
 #include <memory>
+#include <optional>
 
 class IAEStream;
 
@@ -64,6 +67,10 @@ private:
   CRPProcessInfo& m_processInfo;
   IAE::StreamPtr m_pAudioStream;
   bool m_bAudioEnabled = true;
+
+  uint64_t m_droppedFrames = 0;
+  uint64_t m_dropEvents = 0;
+  std::optional<std::chrono::steady_clock::time_point> m_lastDropLog;
 };
 } // namespace RETRO
 } // namespace KODI
