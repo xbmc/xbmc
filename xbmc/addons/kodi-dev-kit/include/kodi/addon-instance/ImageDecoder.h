@@ -466,6 +466,7 @@ private:
 ///                            unsigned int& height) override;
 ///
 ///   bool Decode(uint8_t* pixels,
+///               size_t pixelBufferSize,
 ///               unsigned int width,
 ///               unsigned int height,
 ///               unsigned int pitch,
@@ -491,6 +492,7 @@ private:
 /// }
 ///
 /// bool CMyImageDecoder::Decode(uint8_t* pixels,
+///                              size_t pixelBufferSize,
 ///                              unsigned int width,
 ///                              unsigned int height,
 ///                              unsigned int pitch,
@@ -619,20 +621,22 @@ public:
   /// @brief Decode previously loaded image.
   ///
   /// @param[out] pixels Output buffer
+  /// @param[in] pixelBufferSize Size of the output buffer in bytes
   /// @param[in] width Width of output image
   /// @param[in] height Height of output image
   /// @param[in] pitch Byte offset between the start of one output row and the next
   /// @param[in] format Format of output image
   /// @return true if successful done, false on error
   ///
-  /// @note The buffer holds `height` rows of `pitch` bytes. Write no more than
-  /// `pitch` bytes per row, and no more than `height` rows. `pitch` already
-  /// accounts for `format`, so an add-on that writes a fixed number of bytes per
-  /// pixel regardless of `format` will overrun the buffer for any format
-  /// narrower than the one it assumes. Return false for a `format` the add-on
-  /// does not implement rather than falling through to a default.
+  /// @note The buffer holds `height` rows of `pitch` bytes, `pixelBufferSize` in
+  /// total. `pitch` already accounts for `format`, so an add-on that writes a
+  /// fixed number of bytes per pixel regardless of `format` will overrun the
+  /// buffer for any format narrower than the one it assumes. Return false for
+  /// a `format` the add-on does not implement rather than falling through to a
+  /// default.
   ///
   virtual bool Decode(uint8_t* pixels,
+                      size_t pixelBufferSize,
                       unsigned int width,
                       unsigned int height,
                       unsigned int pitch,
@@ -711,13 +715,14 @@ private:
 
   inline static bool ADDON_decode(const KODI_ADDON_IMAGEDECODER_HDL hdl,
                                   uint8_t* pixels,
-                                  size_t pixels_size,
+                                  size_t pixel_buffer_size,
                                   unsigned int width,
                                   unsigned int height,
                                   unsigned int pitch,
                                   enum ADDON_IMG_FMT format)
   {
-    return static_cast<CInstanceImageDecoder*>(hdl)->Decode(pixels, width, height, pitch, format);
+    return static_cast<CInstanceImageDecoder*>(hdl)->Decode(pixels, pixel_buffer_size, width,
+                                                            height, pitch, format);
   }
 };
 

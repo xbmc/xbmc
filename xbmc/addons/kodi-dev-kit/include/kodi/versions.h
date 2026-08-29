@@ -103,8 +103,8 @@
 #define ADDON_INSTANCE_VERSION_GAME_DEPENDS           "c-api/addon-instance/game.h" \
                                                       "addon-instance/Game.h"
 
-#define ADDON_INSTANCE_VERSION_IMAGEDECODER           "3.0.1"
-#define ADDON_INSTANCE_VERSION_IMAGEDECODER_MIN       "3.0.0"
+#define ADDON_INSTANCE_VERSION_IMAGEDECODER           "3.1.0"
+#define ADDON_INSTANCE_VERSION_IMAGEDECODER_MIN       "3.1.0"
 #define ADDON_INSTANCE_VERSION_IMAGEDECODER_XML_ID    "kodi.binary.instance.imagedecoder"
 #define ADDON_INSTANCE_VERSION_IMAGEDECODER_DEPENDS   "c-api/addon-instance/imagedecoder.h" \
                                                       "addon-instance/ImageDecoder.h"

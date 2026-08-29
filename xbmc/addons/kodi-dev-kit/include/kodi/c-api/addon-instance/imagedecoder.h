@@ -418,7 +418,7 @@ extern "C"
   typedef bool(ATTR_APIENTRYP PFN_KODI_ADDON_IMAGEDECODER_DECODE_V1)(
       const KODI_ADDON_IMAGEDECODER_HDL hdl,
       uint8_t* pixels,
-      size_t pixels_size,
+      size_t pixel_buffer_size,
       unsigned int width,
       unsigned int height,
       unsigned int pitch,

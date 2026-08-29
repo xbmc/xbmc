@@ -17,11 +17,18 @@ using namespace KODI::ADDONS;
 namespace
 {
 
-constexpr std::array<std::tuple<unsigned int, ADDON_IMG_FMT, size_t>, 4> KodiToAddonFormat = {
-    {{XB_FMT_A8R8G8B8, ADDON_IMG_FMT_A8R8G8B8, sizeof(uint8_t) * 4},
-     {XB_FMT_A8, ADDON_IMG_FMT_A8, sizeof(uint8_t) * 1},
-     {XB_FMT_RGBA8, ADDON_IMG_FMT_RGBA8, sizeof(uint8_t) * 4},
-     {XB_FMT_RGB8, ADDON_IMG_FMT_RGB8, sizeof(uint8_t) * 3}}};
+struct AddonFormat
+{
+  unsigned int kodiFormat;
+  ADDON_IMG_FMT addonFormat;
+  bool hasAlpha;
+};
+
+constexpr std::array<AddonFormat, 4> KodiToAddonFormat = {
+    {{XB_FMT_A8R8G8B8, ADDON_IMG_FMT_A8R8G8B8, true},
+     {XB_FMT_A8, ADDON_IMG_FMT_A8, true},
+     {XB_FMT_RGBA8, ADDON_IMG_FMT_RGBA8, true},
+     {XB_FMT_RGB8, ADDON_IMG_FMT_RGB8, false}}};
 
 } /* namespace */
 
@@ -194,17 +201,20 @@ bool CImageDecoder::Decode(unsigned char* const pixels,
   if (!m_created || !m_ifc.imagedecoder->toAddon->decode)
     return false;
 
-  const auto it = std::ranges::find_if(KodiToAddonFormat,
-                                       [format](auto& p) { return std::get<0>(p) == format; });
+  const auto it =
+      std::ranges::find_if(KodiToAddonFormat, [format](auto& f) { return f.kodiFormat == format; });
   if (it == KodiToAddonFormat.end())
     return false;
 
-  const ADDON_IMG_FMT addonFmt = std::get<1>(*it);
-  const size_t size = width * height * std::get<2>(*it);
+  const ADDON_IMG_FMT addonFmt = it->addonFormat;
+  const size_t size = static_cast<size_t>(pitch) * height;
   const bool result =
       m_ifc.imagedecoder->toAddon->decode(m_ifc.hdl, pixels, size, width, height, pitch, addonFmt);
   m_width = width;
   m_height = height;
+
+  if (result)
+    m_hasAlpha = it->hasAlpha;
 
   return result;
 }
