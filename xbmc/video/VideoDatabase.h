@@ -653,6 +653,15 @@ public:
   void GetEpisodesByPlot(const std::string& strSearch, CFileItemList& items);
   void GetMoviesByPlot(const std::string& strSearch, CFileItemList& items);
 
+  /*!
+   * \brief Link or unlink a movie with a list of shows.
+   * \param idMovie Id of the movie
+   * \param shows List of show identifiers
+   * \param remove true: remove link, false: add link
+   * \return true for successful link/unlink of all shows, false on the first error otherwise.
+   * \note Attempting to link an already linked show results in failure.
+   */
+  bool LinkMovieToTvshows(int idMovie, std::vector<int> shows, bool remove);
   bool LinkMovieToTvshow(int idMovie, int idShow, bool bRemove);
   bool IsLinkedToTvshow(int idMovie);
   bool GetLinksToTvShow(int idMovie, std::vector<int>& ids);

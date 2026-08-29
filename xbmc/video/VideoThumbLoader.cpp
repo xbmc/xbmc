@@ -459,7 +459,8 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
                item.GetVideoInfoTag()->GetAssetInfo().GetType() != VideoAssetType::VERSION)
                   ? ArtFallbackOptions::NONE
                   : ArtFallbackOptions::PARENT,
-              artwork))
+              artwork) &&
+          !artwork.empty())
         item.AppendArt(artwork);
     }
     else if (m_videoDatabase->GetArtForItem(tag.m_iDbId, tag.m_type, artwork) && !artwork.empty())
