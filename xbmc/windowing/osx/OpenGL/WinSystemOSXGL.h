@@ -22,6 +22,7 @@ public:
 
   // Implementation of CWinSystemBase via CWinSystemOSX
   CRenderSystemBase *GetRenderSystem() override { return this; }
+  bool InitRenderSystem() override;
   bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;
   bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
 

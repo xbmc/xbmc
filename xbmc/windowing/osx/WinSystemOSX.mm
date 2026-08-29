@@ -187,16 +187,15 @@ NSString* screenNameForDisplay(NSUInteger screenIdx)
   return screenName;
 }
 
-void CheckAndUpdateCurrentMonitor(NSUInteger screenNumber)
+void CWinSystemOSX::SynchronizeCurrentMonitor()
 {
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   const std::string storedScreenName = settings->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
   // OUTPUT_NAME_DEFAULT is a placeholder resolving to screen 0, not a stale name.
-  // Rewriting it before the render system exists leaves the GUI without a viewport.
-  if (storedScreenName == OUTPUT_NAME_DEFAULT && screenNumber == 0)
+  if (storedScreenName == OUTPUT_NAME_DEFAULT && m_lastDisplayNr == 0)
     return;
 
-  const std::string currentScreenName = screenNameForDisplay(screenNumber).UTF8String;
+  const std::string currentScreenName = screenNameForDisplay(m_lastDisplayNr).UTF8String;
   if (storedScreenName != currentScreenName)
   {
     CDisplaySettings::GetInstance().SetMonitor(currentScreenName);
@@ -741,8 +740,6 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
 
   m_bWindowCreated = true;
 
-  CheckAndUpdateCurrentMonitor(m_lastDisplayNr);
-
   // warning, we can order front but not become
   // key window or risk starting up with bad flicker
   // becoming key window must happen in completion block.
@@ -1199,7 +1196,7 @@ bool CWinSystemOSX::HasValidResolution() const
 void CWinSystemOSX::OnMove(int x, int y)
 {
   // check if the current screen/monitor settings needs to be updated
-  CheckAndUpdateCurrentMonitor(m_lastDisplayNr);
+  SynchronizeCurrentMonitor();
 
   // check if refresh rate needs to be updated
   static double oldRefreshRate = m_refreshRate;
@@ -1239,7 +1236,7 @@ void CWinSystemOSX::OnChangeScreen(unsigned int screenIdx)
   if (lastDisplay != m_lastDisplayNr && m_bFullScreen)
   {
     UnblankDisplay(m_lastDisplayNr);
-    CheckAndUpdateCurrentMonitor(m_lastDisplayNr);
+    SynchronizeCurrentMonitor();
   }
 }
 
