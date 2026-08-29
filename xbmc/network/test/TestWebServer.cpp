@@ -28,7 +28,9 @@
 #include "utils/Variant.h"
 
 #include <errno.h>
+#include <memory>
 #include <stdlib.h>
+#include <string_view>
 
 #include <gtest/gtest.h>
 
@@ -46,39 +48,56 @@ using namespace XFILE;
 class TestWebServer : public testing::Test
 {
 protected:
-  TestWebServer()
-    : webserver(),
-      sourcePath(XBMC_REF_FILE_PATH("xbmc/network/test/data/webserver/"))
-  {
-  }
+  TestWebServer() : sourcePath(XBMC_REF_FILE_PATH("xbmc/network/test/data/webserver/")) {}
   ~TestWebServer() override = default;
 
 protected:
+  //! CWebServer's constructor needs the service broker's logger, which does not exist
+  //! during static initialisation.
+  static void StartSuiteServer(std::string_view username, std::string_view password)
+  {
+    s_webserver = std::make_unique<CWebServer>();
+    s_jsonRpcHandler = std::make_unique<CHTTPJsonRpcHandler>();
+    s_vfsHandler = std::make_unique<CHTTPVfsHandler>();
+
+    ASSERT_TRUE(s_webserver->Start(0, std::string{username}, std::string{password}));
+    s_baseUrl = StringUtils::Format("http://" WEBSERVER_HOST ":{}", s_webserver->GetPort());
+
+    s_webserver->RegisterRequestHandler(s_jsonRpcHandler.get());
+    s_webserver->RegisterRequestHandler(s_vfsHandler.get());
+  }
+
+  static void StopSuiteServer()
+  {
+    if (s_webserver->IsStarted())
+      s_webserver->Stop();
+
+    s_webserver->UnregisterRequestHandler(s_vfsHandler.get());
+    s_webserver->UnregisterRequestHandler(s_jsonRpcHandler.get());
+
+    s_vfsHandler.reset();
+    s_jsonRpcHandler.reset();
+    s_webserver.reset();
+    s_baseUrl.clear();
+  }
+
+  static void SetUpTestSuite() { StartSuiteServer(SERVER_USERNAME, SERVER_PASSWORD); }
+
+  static void TearDownTestSuite() { StopSuiteServer(); }
+
   void SetUp() override
   {
     CServiceBroker::RegisterDNSNameCache(std::make_shared<CDNSNameCache>());
 
     SetupMediaSources();
-
-    ASSERT_TRUE(webserver.Start(0, GetServerUsername(), GetServerPassword()));
-    baseUrl = StringUtils::Format("http://" WEBSERVER_HOST ":{}", webserver.GetPort());
-
-    webserver.RegisterRequestHandler(&m_jsonRpcHandler);
-    webserver.RegisterRequestHandler(&m_vfsHandler);
   }
 
-  //! \brief Credentials the test web server requires. Empty means no authentication.
-  virtual std::string GetServerUsername() const { return ""; }
-  virtual std::string GetServerPassword() const { return ""; }
+  // Credentials this suite's server requires. Empty means no authentication.
+  static constexpr std::string_view SERVER_USERNAME{""};
+  static constexpr std::string_view SERVER_PASSWORD{""};
 
   void TearDown() override
   {
-    if (webserver.IsStarted())
-      webserver.Stop();
-
-    webserver.UnregisterRequestHandler(&m_vfsHandler);
-    webserver.UnregisterRequestHandler(&m_jsonRpcHandler);
-
     TearDownMediaSources();
 
     CServiceBroker::UnregisterDNSNameCache();
@@ -106,9 +125,9 @@ protected:
   std::string GetUrl(const std::string& path)
   {
     if (path.empty())
-      return baseUrl;
+      return s_baseUrl;
 
-    return URIUtils::AddFileToFolder(baseUrl, path);
+    return URIUtils::AddFileToFolder(s_baseUrl, path);
   }
 
   std::string GetUrlOfTestFile(const std::string& testFile)
@@ -353,22 +372,39 @@ protected:
     return StringUtils::Format("bytes={}-{}", start, end);
   }
 
-  CWebServer webserver;
-  CHTTPJsonRpcHandler m_jsonRpcHandler;
-  CHTTPVfsHandler m_vfsHandler;
-  std::string baseUrl;
+  static std::unique_ptr<CWebServer> s_webserver;
+  static std::unique_ptr<CHTTPJsonRpcHandler> s_jsonRpcHandler;
+  static std::unique_ptr<CHTTPVfsHandler> s_vfsHandler;
+  static std::string s_baseUrl;
   std::string sourcePath;
 };
 
-TEST_F(TestWebServer, IsStarted)
+std::unique_ptr<CWebServer> TestWebServer::s_webserver;
+std::unique_ptr<CHTTPJsonRpcHandler> TestWebServer::s_jsonRpcHandler;
+std::unique_ptr<CHTTPVfsHandler> TestWebServer::s_vfsHandler;
+std::string TestWebServer::s_baseUrl;
+
+TEST(TestWebServerLifecycle, IsStarted)
 {
-  ASSERT_TRUE(webserver.IsStarted());
+  CWebServer server;
+  EXPECT_FALSE(server.IsStarted());
+
+  ASSERT_TRUE(server.Start(0, "", ""));
+  EXPECT_TRUE(server.IsStarted());
+
+  server.Stop();
+  EXPECT_FALSE(server.IsStarted());
 }
 
-TEST_F(TestWebServer, ReportsThePortAssignedByTheOperatingSystem)
+TEST(TestWebServerLifecycle, ReportsThePortAssignedByTheOperatingSystem)
 {
-  ASSERT_TRUE(webserver.IsStarted());
-  EXPECT_NE(0, webserver.GetPort());
+  CWebServer server;
+  ASSERT_TRUE(server.Start(0, "", ""));
+
+  EXPECT_TRUE(server.IsStarted());
+  EXPECT_NE(0, server.GetPort());
+
+  server.Stop();
 }
 
 TEST_F(TestWebServer, TwoServersDoNotShareAPort)
@@ -377,7 +413,7 @@ TEST_F(TestWebServer, TwoServersDoNotShareAPort)
   ASSERT_TRUE(other.Start(0, "", ""));
 
   EXPECT_NE(0, other.GetPort());
-  EXPECT_NE(webserver.GetPort(), other.GetPort());
+  EXPECT_NE(s_webserver->GetPort(), other.GetPort());
 
   other.Stop();
   EXPECT_EQ(0, other.GetPort());
@@ -954,8 +990,12 @@ TEST_F(TestWebServer, CanGetCachedRangedFileWithNewerIfRange)
 class TestWebServerAuth : public TestWebServer
 {
 protected:
-  std::string GetServerUsername() const override { return "kodi"; }
-  std::string GetServerPassword() const override { return "secret"; }
+  static constexpr std::string_view SERVER_USERNAME{"kodi"};
+  static constexpr std::string_view SERVER_PASSWORD{"secret"};
+
+  static void SetUpTestSuite() { StartSuiteServer(SERVER_USERNAME, SERVER_PASSWORD); }
+
+  static void TearDownTestSuite() { StopSuiteServer(); }
 
   void SetUp() override
   {
@@ -963,9 +1003,9 @@ protected:
     TestWebServer::SetUp();
 
     // remember the credentials for the server, as saving a source with a username/password does
-    CURL authenticatedUrl{baseUrl};
-    authenticatedUrl.SetUserName(GetServerUsername());
-    authenticatedUrl.SetPassword(GetServerPassword());
+    CURL authenticatedUrl{s_baseUrl};
+    authenticatedUrl.SetUserName(std::string{SERVER_USERNAME});
+    authenticatedUrl.SetPassword(std::string{SERVER_PASSWORD});
     CPasswordManager::GetInstance().SaveAuthenticatedURL(authenticatedUrl, false);
   }
 
