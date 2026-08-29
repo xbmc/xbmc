@@ -238,6 +238,19 @@ bool CGamesGUIInfo::GetLabel(std::string& value,
       value = AchievementRuntime().GetRichPresence();
       return true;
     }
+    case RETROPLAYER_ACHIEVEMENTS_PROGRESS:
+    {
+      const CAchievementRuntime& runtime = AchievementRuntime();
+      const unsigned int total = runtime.GetTotalAchievements();
+
+      // An empty label lets skins hide the control instead of showing "0 / 0"
+      if (total == 0)
+        value.clear();
+      else
+        value = StringUtils::Format("{} / {}", runtime.GetUnlockedAchievements(), total);
+
+      return true;
+    }
     default:
       break;
   }

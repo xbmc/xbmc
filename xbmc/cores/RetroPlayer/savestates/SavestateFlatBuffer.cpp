@@ -23,7 +23,7 @@ using namespace RETRO;
 
 namespace
 {
-const uint8_t SCHEMA_VERSION = 5;
+const uint8_t SCHEMA_VERSION = 6;
 const uint8_t SCHEMA_MIN_VERSION = 1;
 
 constexpr const char* SCHEMA_VIDEO_DATA_FIELD_NAME = "video_data";
@@ -717,6 +717,35 @@ uint8_t* CSavestateFlatBuffer::GetMemoryBuffer(size_t size)
   return m_memoryData.raw.empty() ? nullptr : m_memoryData.raw.data();
 }
 
+const uint8_t* CSavestateFlatBuffer::GetAchievementData() const
+{
+  if (!m_achievementData.empty())
+    return m_achievementData.data();
+
+  if (m_savestate != nullptr && m_savestate->achievement_data())
+    return m_savestate->achievement_data()->data();
+
+  return nullptr;
+}
+
+size_t CSavestateFlatBuffer::GetAchievementSize() const
+{
+  if (!m_achievementData.empty())
+    return m_achievementData.size();
+
+  if (m_savestate != nullptr && m_savestate->achievement_data())
+    return m_savestate->achievement_data()->size();
+
+  return 0;
+}
+
+uint8_t* CSavestateFlatBuffer::GetAchievementBuffer(size_t size)
+{
+  m_achievementData.assign(size, 0);
+
+  return m_achievementData.empty() ? nullptr : m_achievementData.data();
+}
+
 void CSavestateFlatBuffer::Finalize()
 {
   if (m_builder == nullptr)
@@ -727,10 +756,17 @@ void CSavestateFlatBuffer::Finalize()
   const SavestateBlobOffsets memoryBlob =
       CSavestateBlob::CreateWriteOffsets(*m_builder, m_memoryData, SCHEMA_MEMORY_DATA_FIELD_NAME);
 
+  flatbuffers::Offset<flatbuffers::Vector<uint8_t>> achievementBlob = 0;
+  if (!m_achievementData.empty())
+    achievementBlob = m_builder->CreateVector(m_achievementData);
+
   // Helper class to build the nested Savestate table
   SAVESTATE::SavestateBuilder savestateBuilder(*m_builder);
 
   savestateBuilder.add_version(SCHEMA_VERSION);
+
+  if (!achievementBlob.IsNull())
+    savestateBuilder.add_achievement_data(achievementBlob);
 
   savestateBuilder.add_type(TranslateType(m_type));
 

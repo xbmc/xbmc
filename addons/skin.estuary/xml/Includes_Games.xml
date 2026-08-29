@@ -951,4 +951,214 @@
 			<align>left</align>
 		</control>
 	</include>
+	<variable name="GameAchievementBadgeTintVar">
+		<description>
+			Dims the badge of an achievement the player hasn't earned. The add-on
+			supplies a separate greyscale badge, but not every achievement has one.
+		</description>
+		<value condition="String.IsEmpty(ListItem.Property(achievement.earned))">60FFFFFF</value>
+		<value>FFFFFFFF</value>
+	</variable>
+	<include name="GameAchievementItem">
+		<description>
+			Only the focused row scrolls its title and criteria. Scrolling every
+			row at once is unreadable, and the criteria are frequently longer than
+			the column.
+		</description>
+		<param name="scroll" default="false" />
+		<definition>
+		<control type="image">
+			<description>Achievement badge, dimmed while the achievement is locked</description>
+			<left>15</left>
+			<top>20</top>
+			<width>80</width>
+			<height>80</height>
+			<texture background="true" colordiffuse="$VAR[GameAchievementBadgeTintVar]">$INFO[ListItem.Icon]</texture>
+			<aspectratio>keep</aspectratio>
+		</control>
+		<control type="label">
+			<description>Achievement title</description>
+			<left>110</left>
+			<top>12</top>
+			<width>860</width>
+			<height>40</height>
+			<label>$INFO[ListItem.Label]</label>
+			<font>font25_title</font>
+			<align>left</align>
+			<aligny>center</aligny>
+			<shadowcolor>text_shadow</shadowcolor>
+			<scroll>$PARAM[scroll]</scroll>
+		</control>
+		<control type="label">
+			<description>How the achievement is earned</description>
+			<left>110</left>
+			<top>52</top>
+			<width>860</width>
+			<height>32</height>
+			<label>$INFO[ListItem.Label2]</label>
+			<font>font12</font>
+			<align>left</align>
+			<aligny>center</aligny>
+			<textcolor>grey</textcolor>
+			<scroll>$PARAM[scroll]</scroll>
+			<scrollsuffix>   </scrollsuffix>
+		</control>
+		<control type="label">
+			<description>How rare the achievement is</description>
+			<left>110</left>
+			<top>84</top>
+			<width>860</width>
+			<height>28</height>
+			<label>$INFO[ListItem.Property(achievement.raritystars)] $INFO[ListItem.Property(achievement.raritycategory)]</label>
+			<font>font12</font>
+			<align>left</align>
+			<aligny>center</aligny>
+			<textcolor>button_focus</textcolor>
+		</control>
+		<control type="label">
+			<description>Point value</description>
+			<right>25</right>
+			<top>12</top>
+			<width>260</width>
+			<height>40</height>
+			<label>$INFO[ListItem.Property(achievement.points)]</label>
+			<font>font25_title</font>
+			<align>right</align>
+			<aligny>center</aligny>
+			<textcolor>button_focus</textcolor>
+		</control>
+		<control type="label">
+			<description>Unlock date, shown only for earned achievements</description>
+			<right>25</right>
+			<top>52</top>
+			<width>380</width>
+			<height>32</height>
+			<label>$INFO[ListItem.Property(achievement.unlockeddate)]</label>
+			<font>font12</font>
+			<align>right</align>
+			<aligny>center</aligny>
+			<textcolor>green</textcolor>
+			<visible>!String.IsEmpty(ListItem.Property(achievement.earned))</visible>
+		</control>
+		<control type="label">
+			<description>
+				Progress towards a counting achievement, such as "45/100". Supplied
+				by the add-on rather than built here, because only it knows what is
+				being counted.
+			</description>
+			<right>25</right>
+			<top>52</top>
+			<width>380</width>
+			<height>32</height>
+			<label>$INFO[ListItem.Property(achievement.measuredprogress)]</label>
+			<font>font12</font>
+			<align>right</align>
+			<aligny>center</aligny>
+			<textcolor>button_focus</textcolor>
+			<visible>!String.IsEmpty(ListItem.Property(achievement.measured))</visible>
+		</control>
+		<control type="progress">
+			<description>
+				Progress bar for counting achievements. Sits on the rarity line,
+				which is free on the right-hand side, and only ever shows for
+				achievements the player hasn't earned yet.
+			</description>
+			<right>25</right>
+			<top>92</top>
+			<width>260</width>
+			<height>10</height>
+			<texturebg colordiffuse="44FFFFFF">colors/white.png</texturebg>
+			<midtexture colordiffuse="button_focus">colors/white.png</midtexture>
+			<lefttexture></lefttexture>
+			<righttexture></righttexture>
+			<overlaytexture></overlaytexture>
+			<info>ListItem.Property(achievement.measuredpercent)</info>
+			<visible>!String.IsEmpty(ListItem.Property(achievement.measured))</visible>
+		</control>
+		</definition>
+	</include>
+	<include name="GameDialogAchievements">
+		<control type="group">
+			<animation effect="fade" time="200">VisibleChange</animation>
+			<centertop>50%</centertop>
+			<centerleft>50%</centerleft>
+			<width>1480</width>
+			<height>860</height>
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="1480" />
+				<param name="height" value="860" />
+				<param name="header_label" value="" />
+				<param name="header_id" value="2" />
+			</include>
+			<control type="label">
+				<description>
+					Game title and progress. DialogBackgroundCommons draws a static
+					header label, so an empty one is passed above and this scrolling
+					label takes its place for titles too long to fit.
+				</description>
+				<left>40</left>
+				<top>0</top>
+				<right>100</right>
+				<height>70</height>
+				<font>font32_title</font>
+				<label>$INFO[Window.Property(Header)]</label>
+				<aligny>center</aligny>
+				<shadowcolor>black</shadowcolor>
+				<scroll>true</scroll>
+				<scrollsuffix> - </scrollsuffix>
+			</control>
+			<control type="group">
+				<description>Content area</description>
+				<top>90</top>
+				<bottom>30</bottom>
+				<left>30</left>
+				<right>30</right>
+				<control type="image">
+					<description>List background</description>
+					<top>-10</top>
+					<bottom>-10</bottom>
+					<left>-10</left>
+					<right>-10</right>
+					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				</control>
+				<control type="list" id="3">
+					<description>Achievement list</description>
+					<onright>62</onright>
+					<pagecontrol>62</pagecontrol>
+					<scrolltime tween="sine">200</scrolltime>
+					<orientation>vertical</orientation>
+					<itemlayout width="1400" height="120">
+						<include content="GameAchievementItem">
+							<param name="scroll" value="false" />
+						</include>
+					</itemlayout>
+					<focusedlayout width="1400" height="120">
+						<control type="image">
+							<description>
+								Focus fills the whole row so that no text falls outside it. This
+								must be a uniform, stretchable texture. The bordered button
+								textures are shaped for an 80px button, and a border draws its
+								edge strips unstretched, so their transparent margins land at the
+								row's edges and leave the bottom line of text uncovered.
+							</description>
+							<texture colordiffuse="button_focus">lists/focus.png</texture>
+							<visible>Control.HasFocus(3)</visible>
+						</control>
+						<include content="GameAchievementItem">
+							<param name="scroll" value="true" />
+						</include>
+					</focusedlayout>
+				</control>
+				<control type="scrollbar" id="62">
+					<description>Focusable so that the list can be paged from the keyboard</description>
+					<right>0</right>
+					<width>12</width>
+					<onleft>3</onleft>
+					<onright>3</onright>
+					<orientation>vertical</orientation>
+					<showonepage>false</showonepage>
+				</control>
+			</control>
+		</control>
+	</include>
 </includes>

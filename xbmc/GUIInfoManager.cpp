@@ -4504,6 +4504,16 @@ constexpr std::array<InfoMap, 88> videoplayer = {{
 ///     @skinning_v22 **[New Boolean Condition]** \link RetroPlayer_AchievementsLoggedIn `RetroPlayer.AchievementsLoggedIn`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`RetroPlayer.AchievementsProgress`</b>,
+///                  \anchor RetroPlayer_AchievementsProgress
+///                  _string_,
+///     @return The player's progress through the currently-playing game's
+///     achievements as "earned / total" (e.g. "3 / 77")\, or an empty string if
+///     the game has no achievements.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link RetroPlayer_AchievementsProgress `RetroPlayer.AchievementsProgress`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`RetroPlayer.RichPresence`</b>,
 ///                  \anchor RetroPlayer_RichPresence
 ///                  _string_,
@@ -4592,7 +4602,7 @@ constexpr std::array<InfoMap, 88> videoplayer = {{
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 18> retroplayer = {{
+constexpr std::array<InfoMap, 19> retroplayer = {{
     {"title", RETROPLAYER_TITLE},
     {"platform", RETROPLAYER_PLATFORM},
     {"genres", RETROPLAYER_GENRES},
@@ -4604,6 +4614,7 @@ constexpr std::array<InfoMap, 18> retroplayer = {{
     {"gameclientplatforms", RETROPLAYER_GAME_CLIENT_PLATFORMS},
     {"richpresence", RETROPLAYER_RICH_PRESENCE},
     {"achievementsloggedin", RETROPLAYER_ACHIEVEMENTS_LOGGED_IN},
+    {"achievementsprogress", RETROPLAYER_ACHIEVEMENTS_PROGRESS},
     {"supportseject", RETROPLAYER_SUPPORTS_EJECT},
     {"discejected", RETROPLAYER_DISC_EJECTED},
     {"disclabel", RETROPLAYER_DISC_LABEL},

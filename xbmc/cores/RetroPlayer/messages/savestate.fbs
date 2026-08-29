@@ -71,6 +71,9 @@ table Savestate {
   memory_data_compressed:[uint8] (id: 24);
   memory_data_compression:CompressionType = None (id: 25);
   memory_data_uncompressed_size:uint64 = 0 (id: 26);
+
+  // Achievement properties
+  achievement_data:[uint8] (id: 30);
 }
 
 root_type Savestate;

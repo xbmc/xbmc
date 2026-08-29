@@ -935,6 +935,55 @@ public:
   }
   //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief How many bytes the achievement runtime's state needs right now
+  ///
+  /// Asked each time rather than reserved once, so it grows with the runtime.
+  ///
+  /// @return The size, or 0 when there is nothing to save
+  ///
+  /// @note Added in Game API 8.0.0
+  ///
+  virtual size_t AchievementStateSize() { return 0; }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @brief Write the achievement runtime's state
+  ///
+  /// Kept beside the emulator's state, not inside it: a savestate whose
+  /// emulator memory does not match what the core reports is refused before the
+  /// core sees it.
+  ///
+  /// @note Added in Game API 8.0.0
+  ///
+  virtual GAME_ERROR SerializeAchievements(uint8_t* data, size_t size)
+  {
+    return GAME_ERROR_NOT_IMPLEMENTED;
+  }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @brief Restore achievement state written by SerializeAchievements()
+  ///
+  /// Called for every savestate load, including ones that carry no achievement
+  /// state: a savestate written by a build without it, or while signed out.
+  /// In that case @p data is nullptr and @p size is 0, and the runtime must be
+  /// reset rather than left as it is. Emulator memory has jumped, so every
+  /// hit count and prior value the runtime holds describes a moment that no
+  /// longer follows from it, and leaving them could award an achievement the
+  /// player did not earn.
+  ///
+  /// @param[in] data The state, or nullptr if the savestate carries none
+  /// @param[in] size The size of @p data, or 0 if the savestate carries none
+  ///
+  /// @note Added in Game API 8.0.0
+  ///
+  virtual GAME_ERROR DeserializeAchievements(const uint8_t* data, size_t size)
+  {
+    return GAME_ERROR_NOT_IMPLEMENTED;
+  }
+  //----------------------------------------------------------------------------
+
   ///@}
 
   //--==----==----==----==----==----==----==----==----==----==----==----==----==--
@@ -992,57 +1041,6 @@ public:
   {
     return GAME_ERROR_NOT_IMPLEMENTED;
   }
-
-  //============================================================================
-  /// @brief Generates a RetroAchievements hash for a given game that
-  ///        can be used to identify the game by RetroAchievements
-  ///
-  /// @param[out] hash The generated hash of the file
-  /// @param[in] consoleID The console ID as it is defined by rcheevos for
-  ///                      the console the ROM is made for
-  /// @param[in] filePath The path of the rom
-  ///
-  /// @return The error, or @ref GAME_ERROR_NO_ERROR if the hash was generated
-  ///         successfully
-  ///
-  virtual GAME_ERROR RCGenerateHashFromFile(std::string& hash,
-                                            unsigned int consoleID,
-                                            const std::string& filePath)
-  {
-    return GAME_ERROR_NOT_IMPLEMENTED;
-  }
-
-  //============================================================================
-  /// @brief Gets a URL to the endpoint that returns the game ID
-  ///
-  /// @param[out] url The URL to GET the game ID
-  /// @param[in] hash The hash of the rom
-  ///
-  /// @return The error, or @ref GAME_ERROR_NO_ERROR if the URL was created
-  ///
-  virtual GAME_ERROR RCGetGameIDUrl(std::string& url, const std::string& hash)
-  {
-    return GAME_ERROR_NOT_IMPLEMENTED;
-  }
-
-  //============================================================================
-  /// @brief Gets a URL to the endpoint that returns the patch file
-  ///
-  /// @param[out] url The URL to GET the game patch file
-  /// @param[in] username The RetroAchievements username of the user
-  /// @param[in] token The login token to RetroAchievements of the user
-  /// @param[in] gameID The ID of the game in RetroAchievements API
-  ///
-  /// @return The error, or @ref GAME_ERROR_NO_ERROR if the URL was created
-  ///
-  virtual GAME_ERROR RCGetPatchFileUrl(std::string& url,
-                                       const std::string& username,
-                                       const std::string& token,
-                                       unsigned int gameID)
-  {
-    return GAME_ERROR_NOT_IMPLEMENTED;
-  }
-
   //============================================================================
   /// @brief Set the credentials of the RetroAchievements user
   ///
@@ -1056,60 +1054,6 @@ public:
   {
     return GAME_ERROR_NOT_IMPLEMENTED;
   }
-
-  //============================================================================
-  /// @brief Gets a URL to the endpoint that updates the rich presence
-  ///        in the user's RetroAchievements profile
-  ///
-  /// @param[out] url The URL to POST the rich presence to RetroAchievements
-  /// @param[out] postData The post data of the request
-  /// @param[in] username The RetroAchievements username of the user
-  /// @param[in] token The login token to RetroAchievements of the user
-  /// @param[in] gameID The ID of the game in RetroAchievements API
-  /// @param[in] richPresence The rich presence evaluation to POST
-  ///
-  /// @return The error, or @ref GAME_ERROR_NO_ERROR if the URL and post data
-  ///         were created
-  ///
-  virtual GAME_ERROR RCPostRichPresenceUrl(std::string& url,
-                                           std::string& postData,
-                                           const std::string& username,
-                                           const std::string& token,
-                                           unsigned int gameID,
-                                           const std::string& richPresence)
-  {
-    return GAME_ERROR_NOT_IMPLEMENTED;
-  }
-
-  //============================================================================
-  /// @brief Enables rich presence
-  ///
-  /// @param[in] script The rich presence script from RetroAchievements
-  ///
-  /// @return The error, or GAME_ERROR_NO_ERROR if rich presence was enabled
-  ///
-  virtual GAME_ERROR RCEnableRichPresence(const std::string& script)
-  {
-    return GAME_ERROR_NOT_IMPLEMENTED;
-  }
-
-  //============================================================================
-  /// @brief Gets the rich presence evaluation for the current frame.
-  ///        Rich presence must be enabled first or this will fail.
-  ///
-  /// @param[out] evaluation The evaluation of what the player is doing in
-  ///                        the game this frame
-  /// @param[in] consoleID The console ID as it is defined by rcheevos for
-  ///                      the console the rom is made for
-  ///
-  /// @return The error, or @ref GAME_ERROR_NO_ERROR if the evaluation was
-  ///         created successfully
-  ///
-  virtual GAME_ERROR RCGetRichPresenceEvaluation(std::string& evaluation, unsigned int consoleID)
-  {
-    return GAME_ERROR_NOT_IMPLEMENTED;
-  }
-
   //============================================================================
   /// @brief Activate an achievement
   ///
@@ -1142,15 +1086,139 @@ public:
   {
     return GAME_ERROR_NOT_IMPLEMENTED;
   }
+  //============================================================================
+  /// @brief **Callback to Kodi Function**\n
+  /// Notify Kodi that a game has been identified by the achievement runtime
+  ///
+  /// @param[in] data The achievement set of the game
+  ///
+  /// @remarks Only called from the add-on itself. The pointers inside @p data
+  ///          need only stay valid for the duration of the call.
+  ///
+  /// @note Added in Game API 8.0.0
+  ///
+  void RCOnGameLoaded(const game_rc_game_loaded& data)
+  {
+    m_instanceData->toKodi->RCOnGameLoaded(m_instanceData->toKodi->kodiInstance, &data);
+  }
 
   //============================================================================
-  /// @brief Resets the runtime. Must be called each time a new rom is starting
-  ///        and when the savestate is changed
+  /// @brief **Callback to Kodi Function**\n
+  /// Notify Kodi that the player has earned an achievement
   ///
-  /// @return The error, or GAME_ERROR_NO_ERROR if the runtime was reset
-  ///         successfully
+  /// @param[in] data The achievement that was earned
   ///
-  virtual GAME_ERROR RCResetRuntime() { return GAME_ERROR_NOT_IMPLEMENTED; }
+  /// @remarks Only called from the add-on itself
+  ///
+  /// @note Added in Game API 8.0.0
+  ///
+  void RCOnAchievementTriggered(const game_rc_achievement_triggered& data)
+  {
+    m_instanceData->toKodi->RCOnAchievementTriggered(m_instanceData->toKodi->kodiInstance, &data);
+  }
+
+  //============================================================================
+  /// @brief **Callback to Kodi Function**\n
+  /// Notify Kodi that every achievement of the game has been earned
+  ///
+  /// @param[in] title The title of the completed game
+  /// @param[in] hardcore True if the game was completed in hardcore mode
+  ///
+  /// @remarks Only called from the add-on itself
+  ///
+  /// @note Added in Game API 8.0.0
+  ///
+  void RCOnGameCompleted(const std::string& title, bool hardcore)
+  {
+    m_instanceData->toKodi->RCOnGameCompleted(m_instanceData->toKodi->kodiInstance, title.c_str(),
+                                              hardcore);
+  }
+
+  //============================================================================
+  /// @brief **Callback to Kodi Function**\n
+  /// Publish the current rich presence evaluation to Kodi
+  ///
+  /// @param[in] evaluation What the player is currently doing in the game
+  ///
+  /// @remarks Only called from the add-on itself
+  ///
+  /// @note Added in Game API 8.0.0
+  ///
+  void RCOnRichPresenceUpdated(const std::string& evaluation)
+  {
+    m_instanceData->toKodi->RCOnRichPresenceUpdated(m_instanceData->toKodi->kodiInstance,
+                                                    evaluation.c_str());
+  }
+
+  //============================================================================
+  /// @brief **Callback to Kodi Function**\n
+  /// Notify Kodi of the outcome of a login attempt
+  ///
+  /// @param[in] data The login result
+  ///
+  /// @remarks Only called from the add-on itself
+  ///
+  /// @note Added in Game API 8.0.0
+  ///
+  void RCOnLoginResult(const game_rc_login_result& data)
+  {
+    m_instanceData->toKodi->RCOnLoginResult(m_instanceData->toKodi->kodiInstance, &data);
+  }
+
+  //============================================================================
+  /// @brief **Callback to Kodi Function**\n
+  /// Publish progress towards the game's measured achievements
+  ///
+  /// Sent whenever the reported progress changes. Achievements without a
+  /// measured trigger condition are omitted.
+  ///
+  /// @param[in] progress Progress of each measured achievement
+  ///
+  /// @remarks Only called from the add-on itself
+  ///
+  /// @note Added in Game API 8.0.0
+  ///
+  void RCOnAchievementProgress(const std::vector<game_rc_achievement_progress>& progress)
+  {
+    m_instanceData->toKodi->RCOnAchievementProgress(m_instanceData->toKodi->kodiInstance,
+                                                    progress.empty() ? nullptr : progress.data(),
+                                                    static_cast<unsigned int>(progress.size()));
+  }
+
+  //============================================================================
+  /// @brief **Callback to Kodi Function**\n
+  /// Report an error returned by the RetroAchievements server
+  ///
+  /// @param[in] message The error as reported by the server
+  /// @param[in] api The API call that failed, or an empty string
+  ///
+  /// @remarks Only called from the add-on itself
+  ///
+  /// @note Added in Game API 8.0.0
+  ///
+  void RCOnServerError(const std::string& message, const std::string& api)
+  {
+    m_instanceData->toKodi->RCOnServerError(m_instanceData->toKodi->kodiInstance, message.c_str(),
+                                            api.c_str());
+  }
+
+  //============================================================================
+  /// @brief **Callback to Kodi Function**\n
+  /// Report a change in connectivity to the RetroAchievements server
+  ///
+  /// Unlocks earned while disconnected are held by the add-on and submitted
+  /// once the connection returns.
+  ///
+  /// @param[in] connected True if the server is reachable again
+  ///
+  /// @remarks Only called from the add-on itself
+  ///
+  /// @note Added in Game API 8.0.0
+  ///
+  void RCOnConnectionChanged(bool connected)
+  {
+    m_instanceData->toKodi->RCOnConnectionChanged(m_instanceData->toKodi->kodiInstance, connected);
+  }
 
   //----------------------------------------------------------------------------
 
@@ -1336,22 +1404,18 @@ private:
     instance->game->toAddon->SerializeSize = ADDON_SerializeSize;
     instance->game->toAddon->Serialize = ADDON_Serialize;
     instance->game->toAddon->Deserialize = ADDON_Deserialize;
+    instance->game->toAddon->AchievementStateSize = ADDON_AchievementStateSize;
+    instance->game->toAddon->SerializeAchievements = ADDON_SerializeAchievements;
+    instance->game->toAddon->DeserializeAchievements = ADDON_DeserializeAchievements;
 
     instance->game->toAddon->CheatReset = ADDON_CheatReset;
     instance->game->toAddon->GetMemory = ADDON_GetMemory;
     instance->game->toAddon->SetCheat = ADDON_SetCheat;
 
-    instance->game->toAddon->RCGenerateHashFromFile = ADDON_RCGenerateHashFromFile;
-    instance->game->toAddon->RCGetGameIDUrl = ADDON_RCGetGameIDUrl;
-    instance->game->toAddon->RCGetPatchFileUrl = ADDON_RCGetPatchFileUrl;
     instance->game->toAddon->SetRetroAchievementsCredentials =
         ADDON_SetRetroAchievementsCredentials;
-    instance->game->toAddon->RCPostRichPresenceUrl = ADDON_RCPostRichPresenceUrl;
-    instance->game->toAddon->RCEnableRichPresence = ADDON_RCEnableRichPresence;
-    instance->game->toAddon->RCGetRichPresenceEvaluation = ADDON_RCGetRichPresenceEvaluation;
     instance->game->toAddon->ActivateAchievement = ADDON_ActivateAchievement;
     instance->game->toAddon->GetCheevoUrlId = ADDON_GetCheevoUrlId;
-    instance->game->toAddon->RCResetRuntime = ADDON_RCResetRuntime;
 
     instance->game->toAddon->GetEjectState = ADDON_GetEjectState;
     instance->game->toAddon->SetEjectState = ADDON_SetEjectState;
@@ -1539,6 +1603,27 @@ private:
     return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->Deserialize(data, size);
   }
 
+  inline static size_t ADDON_AchievementStateSize(const AddonInstance_Game* instance)
+  {
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->AchievementStateSize();
+  }
+
+  inline static GAME_ERROR ADDON_SerializeAchievements(const AddonInstance_Game* instance,
+                                                       uint8_t* data,
+                                                       size_t size)
+  {
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
+        ->SerializeAchievements(data, size);
+  }
+
+  inline static GAME_ERROR ADDON_DeserializeAchievements(const AddonInstance_Game* instance,
+                                                         const uint8_t* data,
+                                                         size_t size)
+  {
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
+        ->DeserializeAchievements(data, size);
+  }
+
   // --- Cheat operations --------------------------------------------------------
 
   inline static GAME_ERROR ADDON_CheatReset(const AddonInstance_Game* instance)
@@ -1564,80 +1649,6 @@ private:
         ->SetCheat(index, enabled, code);
   }
 
-  inline static GAME_ERROR ADDON_RCGenerateHashFromFile(const AddonInstance_Game* instance,
-                                                        char** hash,
-                                                        unsigned int consoleID,
-                                                        const char* filePath)
-  {
-    if (hash == nullptr || filePath == nullptr)
-      return GAME_ERROR_INVALID_PARAMETERS;
-
-    *hash = nullptr;
-
-    std::string cppHash;
-
-    GAME_ERROR ret = static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
-                         ->RCGenerateHashFromFile(cppHash, consoleID, filePath);
-
-    if (ret == GAME_ERROR_NO_ERROR)
-    {
-      *hash = new char[cppHash.size() + 1];
-      std::copy(cppHash.begin(), cppHash.end(), *hash);
-      (*hash)[cppHash.size()] = '\0';
-    }
-
-    return ret;
-  }
-
-  inline static GAME_ERROR ADDON_RCGetGameIDUrl(const AddonInstance_Game* instance,
-                                                char** url,
-                                                const char* hash)
-  {
-    if (url == nullptr || hash == nullptr)
-      return GAME_ERROR_INVALID_PARAMETERS;
-
-    *url = nullptr;
-
-    std::string cppUrl;
-    GAME_ERROR ret =
-        static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->RCGetGameIDUrl(cppUrl, hash);
-
-    if (ret == GAME_ERROR_NO_ERROR)
-    {
-      *url = new char[cppUrl.size() + 1];
-      std::copy(cppUrl.begin(), cppUrl.end(), *url);
-      (*url)[cppUrl.size()] = '\0';
-    }
-
-    return ret;
-  }
-
-  inline static GAME_ERROR ADDON_RCGetPatchFileUrl(const AddonInstance_Game* instance,
-                                                   char** url,
-                                                   const char* username,
-                                                   const char* token,
-                                                   unsigned int gameID)
-  {
-    if (url == nullptr || username == nullptr || token == nullptr)
-      return GAME_ERROR_INVALID_PARAMETERS;
-
-    *url = nullptr;
-
-    std::string cppUrl;
-
-    GAME_ERROR ret = static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
-                         ->RCGetPatchFileUrl(cppUrl, username, token, gameID);
-
-    if (ret == GAME_ERROR_NO_ERROR)
-    {
-      *url = new char[cppUrl.size() + 1];
-      std::copy(cppUrl.begin(), cppUrl.end(), *url);
-      (*url)[cppUrl.size()] = '\0';
-    }
-
-    return ret;
-  }
-
   inline static GAME_ERROR ADDON_SetRetroAchievementsCredentials(const AddonInstance_Game* instance,
                                                                  const char* username,
                                                                  const char* token)
@@ -1647,75 +1658,6 @@ private:
 
     return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
         ->SetRetroAchievementsCredentials(username, token);
-  }
-
-  inline static GAME_ERROR ADDON_RCPostRichPresenceUrl(const AddonInstance_Game* instance,
-                                                       char** url,
-                                                       char** postData,
-                                                       const char* username,
-                                                       const char* token,
-                                                       unsigned int gameID,
-                                                       const char* richPresence)
-  {
-    if (url == nullptr || postData == nullptr || username == nullptr || token == nullptr ||
-        richPresence == nullptr)
-      return GAME_ERROR_INVALID_PARAMETERS;
-
-    *url = nullptr;
-    *postData = nullptr;
-
-    std::string cppUrl;
-    std::string cppPostData;
-
-    GAME_ERROR ret =
-        static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
-            ->RCPostRichPresenceUrl(cppUrl, cppPostData, username, token, gameID, richPresence);
-
-    if (ret == GAME_ERROR_NO_ERROR)
-    {
-      *url = new char[cppUrl.size() + 1];
-      std::copy(cppUrl.begin(), cppUrl.end(), *url);
-      (*url)[cppUrl.size()] = '\0';
-
-      *postData = new char[cppPostData.size() + 1];
-      std::copy(cppPostData.begin(), cppPostData.end(), *postData);
-      (*postData)[cppPostData.size()] = '\0';
-    }
-
-    return ret;
-  }
-
-  inline static GAME_ERROR ADDON_RCEnableRichPresence(const AddonInstance_Game* instance,
-                                                      const char* script)
-  {
-    if (script == nullptr)
-      return GAME_ERROR_INVALID_PARAMETERS;
-
-    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
-        ->RCEnableRichPresence(script);
-  }
-
-  inline static GAME_ERROR ADDON_RCGetRichPresenceEvaluation(const AddonInstance_Game* instance,
-                                                             char** evaluation,
-                                                             unsigned int consoleID)
-  {
-    if (evaluation == nullptr)
-      return GAME_ERROR_INVALID_PARAMETERS;
-
-    *evaluation = nullptr;
-
-    std::string cppEvaluation;
-    GAME_ERROR ret = static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
-                         ->RCGetRichPresenceEvaluation(cppEvaluation, consoleID);
-
-    if (ret == GAME_ERROR_NO_ERROR)
-    {
-      *evaluation = new char[cppEvaluation.size() + 1];
-      std::copy(cppEvaluation.begin(), cppEvaluation.end(), *evaluation);
-      (*evaluation)[cppEvaluation.size()] = '\0';
-    }
-
-    return ret;
   }
 
   inline static GAME_ERROR ADDON_ActivateAchievement(const AddonInstance_Game* instance,
@@ -1744,11 +1686,6 @@ private:
 
     return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
         ->GetCheevoUrlId(cppCallback);
-  }
-
-  inline static GAME_ERROR ADDON_RCResetRuntime(const AddonInstance_Game* instance)
-  {
-    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->RCResetRuntime();
   }
 
   inline static bool ADDON_GetEjectState(const AddonInstance_Game* instance)
