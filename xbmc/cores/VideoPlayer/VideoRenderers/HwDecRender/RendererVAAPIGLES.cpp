@@ -321,7 +321,10 @@ bool CRendererVAAPIGLES::UploadTexture(int index)
 void CRendererVAAPIGLES::AfterRenderHook(int index)
 {
   if (m_fences[index])
+  {
+    m_fences[index]->DestroyFence();
     m_fences[index]->CreateFence();
+  }
 }
 
 bool CRendererVAAPIGLES::NeedBuffer(int index)
