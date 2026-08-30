@@ -1,0 +1,143 @@
+/*!
+
+\page Skin_Maps Skin Maps
+\brief **Skin-defined lookup tables for infolabel values**
+
+\tableofcontents
+
+--------------------------------------------------------------------------------
+\section Skin_Maps_sect1 Description
+
+Skin maps let a skin replace the raw value of an infolabel with a string of its own choosing.
+A map is a list of key/value pairs; at runtime
+\link modules__infolabels_boolean_conditions **an infolabel**\endlink is resolved to its current
+value, that value is looked up as a key, and the mapped string is displayed instead. Keys that
+the map does not define are displayed unchanged, so a map only has to list the values it wants
+to rewrite.
+
+Typical uses are turning short technical values into presentable text, such as an audio codec
+`eac3` into `Dolby Digital+`, or a two letter country code into a full country name, without
+needing a python script or a chain of `String.IsEqual` conditions.
+
+Maps are defined with `<map>` tags in `Includes.xml` or descendants pulled in with
+`<include file="..."/>`, alongside the other definitions that file carries:
+
+~~~~~~~~~~~~~{.xml}
+<!-- Includes.xml -->
+<includes>
+    <constant name="...">...</constant>
+    <variable name="...">...</variable>
+    <map name="AudioCodecs">
+        <entry key="...">...</entry>
+    </map>
+</includes>
+~~~~~~~~~~~~~
+
+Or keep them in their own file and pull that in:
+
+~~~~~~~~~~~~~{.xml}
+<!-- Includes.xml -->
+<includes>
+    <include file="Includes_Maps.xml"/>
+</includes>
+
+<!-- Includes_Maps.xml -->
+<includes>
+    <map name="AudioCodecs">
+        <entry key="...">...</entry>
+    </map>
+    <map name="HdrTypes">
+        <entry key="...">...</entry>
+    </map>
+</includes>
+~~~~~~~~~~~~~
+
+They are read with \link Skin_Maps_sect2 the `$MAP[]` label format\endlink. See
+\link Skin_Maps_sect4 the list of available tags\endlink for the definition rules.
+
+\skinning_v22 Added skin maps
+
+--------------------------------------------------------------------------------
+\section Skin_Maps_sect2 Usage
+
+A map is read with `$MAP[mapname, infolabel]`. Both are required and both are trimmed of
+surrounding whitespace:
+
+~~~~~~~~~~~~~{.xml}
+<label>$MAP[AudioCodecs, ListItem.AudioCodec]</label>
+~~~~~~~~~~~~~
+
+Being a label format, it is not limited to `<label>`. It works wherever `$%INFO[]` and `$VAR[]`
+do, including inside a `<variable>` value:
+
+~~~~~~~~~~~~~{.xml}
+<variable name="AudioCodecLabel">
+    <value>$MAP[AudioCodecs, ListItem.AudioCodec]</value>
+</variable>
+~~~~~~~~~~~~~
+
+Like `$%INFO[]` and `$VAR[]`, two further optional arguments set a prefix and a postfix. They
+are added only when the infolabel resolves to a value, so a separator never appears on its own:
+
+~~~~~~~~~~~~~{.xml}
+<label>$MAP[HdrTypes, ListItem.Property(stream.hdrtype), | ]</label>
+~~~~~~~~~~~~~
+
+`$ESCMAP[]` behaves identically but escapes the result, in the same way `$ESCINFO[]` and
+`$ESCVAR[]` relate to `$%INFO[]` and `$VAR[]`. Use it where the mapped value is passed on to
+something that parses it again, such as a builtin function argument.
+
+@note `$MAP[]` is a label format. It is not valid inside a boolean condition.
+
+--------------------------------------------------------------------------------
+\section Skin_Maps_sect3 Examples
+
+The simplest map rewrites a handful of values:
+
+~~~~~~~~~~~~~{.xml}
+<map name="AudioCodecs">
+    <entry key="ac3">Dolby Digital</entry>
+    <entry key="eac3">Dolby Digital+</entry>
+    <entry key="dtshd_ma">DTS-HD MA</entry>
+</map>
+~~~~~~~~~~~~~
+
+With the map above, a file whose audio codec is `ac3` displays `Dolby Digital`, while a file
+whose codec is `flac` displays `flac`, because the map does not define that key.
+
+A map may alias another with the `ref` attribute rather than repeating its entries. Entries
+listed in the aliasing map are searched first, so it can add keys the referenced map does not
+define, or override ones it does:
+
+~~~~~~~~~~~~~{.xml}
+<map name="AudioCodecsVerbose" ref="AudioCodecs">
+    <entry key="eac3_ddp_atmos">Dolby Digital Plus with Atmos</entry>
+</map>
+~~~~~~~~~~~~~
+
+Here `$MAP[AudioCodecsVerbose, ListItem.AudioCodec]` gives `Dolby Digital Plus with Atmos` for
+`eac3_ddp_atmos`, and `Dolby Digital` for `ac3`, the latter coming from the referenced map.
+
+--------------------------------------------------------------------------------
+\section Skin_Maps_sect4 Available tags
+
+Skin maps have the following available tags:
+
+| Tag           | Description                                                   |
+|--------------:|:--------------------------------------------------------------|
+| map           | A single lookup table. Requires a `name` attribute; a map without one is ignored. Accepts an optional `ref` attribute naming another map to fall back to.
+| entry         | One key/value pair, written as `<entry key="rawvalue">Display value</entry>`. Requires a non-empty `key` attribute and non-empty text; an entry missing either is ignored. <b>(can be repeated)</b>
+
+@note A map defining the same key twice keeps the first entry and logs a warning.
+@note Two maps sharing a name are not merged: the last definition replaces the earlier one and a warning is logged.
+@note A map with no usable entries and no `ref` is skipped entirely.
+@note A `ref` naming a map that is never defined is reported at load time, and lookups through it return the raw value.
+@note A `ref` chain that loops back on itself is detected, aborted, and the raw value returned.
+
+--------------------------------------------------------------------------------
+\section Skin_Maps_sect5 See also
+#### Development:
+
+- [Skinning](http://kodi.wiki/view/Skinning)
+
+*/
