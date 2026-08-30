@@ -290,7 +290,7 @@ private:
 ///   CMyAudioEncoder(const kodi::addon::IInstanceInfo& instance);
 ///
 ///   bool Start(const kodi::addon::AudioEncoderInfoTag& tag) override;
-///   int Encode(int numBytesRead, const uint8_t* pbtStream) override;
+///   ssize_t Encode(const uint8_t* pbtStream, size_t numBytesRead) override;
 ///   bool Finish() override; // Optional
 /// };
 ///

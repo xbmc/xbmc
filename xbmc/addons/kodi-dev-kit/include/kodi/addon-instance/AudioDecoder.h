@@ -367,7 +367,7 @@ private:
 ///             int& bitspersample, int64_t& totaltime,
 ///             int& bitrate, AudioEngineDataFormat& format,
 ///             std::vector<AudioEngineChannel>& channellist) override;
-///   int ReadPCM(uint8_t* buffer, int size, int& actualsize) override;
+///   int ReadPCM(uint8_t* buffer, size_t size, size_t& actualsize) override;
 /// };
 ///
 /// CMyAudioDecoder::CMyAudioDecoder(const kodi::addon::IInstanceInfo& instance)
@@ -386,7 +386,7 @@ private:
 ///   return true;
 /// }
 ///
-/// int CMyAudioDecoder::ReadPCM(uint8_t* buffer, int size, int& actualsize)
+/// int CMyAudioDecoder::ReadPCM(uint8_t* buffer, size_t size, size_t& actualsize)
 /// {
 ///   ...
 ///   return AUDIODECODER_READ_SUCCESS;
