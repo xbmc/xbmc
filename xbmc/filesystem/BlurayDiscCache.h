@@ -11,6 +11,7 @@
 #include "DiscDirectoryHelper.h"
 #include "FileItemList.h"
 #include "bluray/M2TSParser.h"
+#include "bluray/MovieObjectParser.h"
 #include "bluray/PlaylistStructure.h"
 #include "threads/CriticalSection.h"
 
@@ -33,6 +34,9 @@ struct Disc
 
   std::optional<bool> menuSupport;
   std::optional<int> mainPlaylist;
+
+  //! How the disc navigates - read once and unchanged for as long as it is in the drive
+  std::optional<XFILE::MovieObjectInformation> movieObject;
 
   //! When this disc was last used, to decide which to drop when the cache is full. Mutable as
   //! recency is not part of what the cache holds, so reading a disc's information updates it too.
@@ -64,6 +68,7 @@ public:
                              unsigned int playlist,
                              const StreamMap& streams);
   void SetMenuSupport(const std::string& path, bool menuSupport);
+  void SetMovieObject(const std::string& path, const MovieObjectInformation& movieObject);
   void SetMainPlaylist(const std::string& path, int mainPlaylist);
 
   bool GetPlaylistInfo(const std::string& path,
@@ -90,6 +95,13 @@ public:
    \return true if the disc has been examined for a main playlist before
    */
   bool GetMainPlaylist(const std::string& path, int& mainPlaylist) const;
+
+  /*!
+   \brief Get how the disc navigates, if already read.
+   \param[out] movieObject set only when true is returned
+   \return true if the disc's navigation has been read before
+   */
+  bool GetMovieObject(const std::string& path, MovieObjectInformation& movieObject) const;
 
   //! Drop everything held for a disc, as its information no longer describes what is in the drive
   void ClearDisc(const std::string& path);

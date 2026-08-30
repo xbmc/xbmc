@@ -173,6 +173,27 @@ bool CBlurayDiscCache::GetPlaylistStreamInfo(const std::string& path,
   return false;
 }
 
+void CBlurayDiscCache::SetMovieObject(const std::string& path,
+                                      const MovieObjectInformation& movieObject)
+{
+  std::unique_lock lock(m_cs);
+
+  FindOrCreate(path).movieObject = movieObject;
+}
+
+bool CBlurayDiscCache::GetMovieObject(const std::string& path,
+                                      MovieObjectInformation& movieObject) const
+{
+  std::unique_lock lock(m_cs);
+
+  if (const Disc* disc{Find(path)}; disc && disc->movieObject)
+  {
+    movieObject = *disc->movieObject;
+    return true;
+  }
+  return false;
+}
+
 bool CBlurayDiscCache::GetMenuSupport(const std::string& path, bool& menuSupport) const
 {
   std::unique_lock lock(m_cs);

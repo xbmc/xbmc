@@ -703,6 +703,7 @@ constexpr unsigned int OFFSET_MPLS_APP_INFO_PLAYLIST = 40;
 constexpr unsigned int OFFSET_MPLS_APP_INFO_PLAYBACK_TYPE = 5;
 constexpr unsigned int OFFSET_MPLS_NUM_PLAYITEMS = 6;
 constexpr unsigned int OFFSET_MPLS_NUM_SUBPATHS = 8;
+constexpr unsigned int OFFSET_MPLS_SUBPATH_TYPE = 5;
 constexpr unsigned int OFFSET_MPLS_SUBPATH_NUM_SUBPLAYITEMS = 9;
 constexpr unsigned int OFFSET_MPLS_NUM_PLAYLISTMARKS = 4;
 constexpr unsigned int OFFSET_MPLS_PLAYLISTMARK_TYPE = 1;
@@ -758,6 +759,7 @@ bool ParseSubPath(std::vector<std::byte>& buffer,
       buffer.size() < offset + subPathSize)
     return false;
 
+  const BLURAY_SUBPATH_TYPE subPathType{GetByte(buffer, offset + OFFSET_MPLS_SUBPATH_TYPE)};
   const unsigned int numSubPlayItems{
       GetByte(buffer, offset + OFFSET_MPLS_SUBPATH_NUM_SUBPLAYITEMS)};
   offset += 10;
@@ -774,6 +776,7 @@ bool ParseSubPath(std::vector<std::byte>& buffer,
       subPlayItems.pop_back();
       return false;
     }
+    subPlayItem.subPathType = subPathType;
   }
 
   return true;

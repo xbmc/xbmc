@@ -15,6 +15,7 @@
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "bluray/M2TSParser.h"
+#include "bluray/MovieObjectParser.h"
 #include "bluray/MPLSParser.h"
 #include "bluray/PlaylistStructure.h"
 #include "bluray/StreamParser.h"
@@ -956,6 +957,20 @@ bool CBlurayDirectory::HasMenuSupport()
              menuSupport ? "supports" : "does not support");
 
   return menuSupport;
+}
+
+bool CBlurayDirectory::GetMovieObjectInformation(MovieObjectInformation& information) const
+{
+  const std::string path{GetCachePath(m_url, m_realPath)};
+
+  if (CServiceBroker::GetBlurayDiscCache()->GetMovieObject(path, information))
+    return true;
+
+  CMovieObjectParser::GetMovieObject(m_url, information);
+  CServiceBroker::GetBlurayDiscCache()->SetMovieObject(path, information);
+
+  CMovieObjectParser::LogMovieObject(information);
+  return true;
 }
 
 int CBlurayDirectory::GetMainPlaylist()

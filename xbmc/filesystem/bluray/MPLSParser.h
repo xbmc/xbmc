@@ -164,6 +164,9 @@ struct ChapterInformation
 
 struct SubPlayItemInformation
 {
+  //! The kind of sub-path this item belongs to. An interactive graphics presentation menu
+  //! sub-path is how a disc carries its menu in a clip of its own.
+  BLURAY_SUBPATH_TYPE subPathType{0};
   BLURAY_CONNECTION connectionCondition{0};
   bool isMultiClip{false};
   std::chrono::milliseconds inTime{0ms};
