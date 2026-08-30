@@ -23,11 +23,12 @@
 <!--- What type of change does your code introduce? Put an `x` with no space in all the boxes that apply like this: [X] -->
 - [ ] **Bug fix** (non-breaking change which fixes an issue)
 - [ ] **Clean up** (non-breaking change which removes non-working, unmaintained functionality)
-- [ ] **Improvement** (non-breaking change which improves existing functionality)
+- [ ] **Improvement (v22 new feature polish)** (non-breaking change which improves a new feature in v22)
+- [ ] **Improvement (other)** (non-breaking change which improves other existing functionality)
 - [ ] **New feature** (non-breaking change which adds functionality)
 - [ ] **Breaking change** (fix or feature that will cause existing functionality to change)
 - [ ] **Cosmetic change** (non-breaking change that doesn't touch code)
-- [ ] **Student submission** (PR was done for educational purposes and will be treated as such)
+- [ ] **Student submission** (PR was done for educational purposes and will be reviewed with support)
 - [ ] **None of the above** (please explain below)
 
 ## Checklist:
