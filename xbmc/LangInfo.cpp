@@ -286,7 +286,6 @@ void CLangInfo::CRegion::SetDefaults()
   m_strTimeFormat="HH:mm:ss";
   m_tempUnit = CTemperature::UnitCelsius;
   m_speedUnit = CSpeed::UnitKilometresPerHour;
-  m_strTimeZone.clear();
 }
 
 void CLangInfo::CRegion::SetTemperatureUnit(const std::string& strUnit)
@@ -297,11 +296,6 @@ void CLangInfo::CRegion::SetTemperatureUnit(const std::string& strUnit)
 void CLangInfo::CRegion::SetSpeedUnit(const std::string& strUnit)
 {
   m_speedUnit = StringToSpeedUnit(strUnit);
-}
-
-void CLangInfo::CRegion::SetTimeZone(const std::string& strTimeZone)
-{
-  m_strTimeZone = strTimeZone;
 }
 
 CLocale CLangInfo::CRegion::GetLocale() const
@@ -605,10 +599,6 @@ bool CLangInfo::Load(const std::string& strLanguage)
       const auto* pSpeedUnit = pRegion->FirstChildElement("speedunit");
       if (pSpeedUnit && !pSpeedUnit->NoChildren())
         region.SetSpeedUnit(pSpeedUnit->FirstChild()->Value());
-
-      const auto* pTimeZone = pRegion->FirstChildElement("timezone");
-      if (pTimeZone && !pTimeZone->NoChildren())
-        region.SetTimeZone(pTimeZone->FirstChild()->Value());
 
       const auto* pThousandsSep = pRegion->FirstChildElement("thousandsseparator");
       if (pThousandsSep)
@@ -1049,14 +1039,6 @@ const std::string& CLangInfo::GetDateFormat(bool bLongDate /* = false */) const
   return bLongDate ? GetLongDateFormat() : GetShortDateFormat();
 }
 
-void CLangInfo::SetDateFormat(const std::string& dateFormat, bool bLongDate /* = false */)
-{
-  if (bLongDate)
-    SetLongDateFormat(dateFormat);
-  else
-    SetShortDateFormat(dateFormat);
-}
-
 const std::string& CLangInfo::GetShortDateFormat() const
 {
   return m_shortDateFormat;
@@ -1129,11 +1111,6 @@ void CLangInfo::Set24HourClock(const std::string& str24HourClock)
     return;
 
   m_use24HourClock = use24HourClock;
-}
-
-const std::string& CLangInfo::GetTimeZone() const
-{
-  return m_currentRegion->m_strTimeZone;
 }
 
 // Returns the AM/PM symbol of the current language
@@ -1286,14 +1263,6 @@ CSpeed::Unit CLangInfo::GetSpeedUnit() const
   return m_speedUnit;
 }
 
-std::string CLangInfo::GetSpeedAsString(const CSpeed& speed) const
-{
-  if (!speed.IsValid())
-    return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // "Unknown"
-
-  return StringUtils::Format("{}{}", speed.ToString(GetSpeedUnit()), GetSpeedUnitString());
-}
-
 // Returns the speed unit string for the current language
 const std::string& CLangInfo::GetSpeedUnitString() const
 {
@@ -1319,12 +1288,6 @@ bool CLangInfo::DetermineUse24HourClockFromTimeFormat(const std::string& timeFor
 {
   // if the time format contains a "h" it's 12-hour and otherwise 24-hour clock format
   return timeFormat.find('h') == std::string::npos;
-}
-
-bool CLangInfo::DetermineUseMeridiemFromTimeFormat(const std::string& timeFormat)
-{
-  // if the time format contains "xx" it's using meridiem
-  return timeFormat.find("xx") != std::string::npos;
 }
 
 std::string CLangInfo::PrepareTimeFormat(const std::string& timeFormat, bool use24HourClock)
