@@ -74,8 +74,11 @@ bool CShaderGL::Create(unsigned int passIdx,
     glGetShaderiv(vShader, GL_INFO_LOG_LENGTH, &maxLength);
     std::vector<GLchar> errorLog(maxLength);
     glGetShaderInfoLog(vShader, maxLength, &maxLength, errorLog.data());
-    CLog::Log(LOGERROR, "CShaderGL::Create: Vertex shader compile error:\n{}",
-              std::string(errorLog.begin(), errorLog.end()));
+    CLog::Log(
+        LOGERROR,
+        "CShaderGL::Create: Failed to compile vertex shader: pass={}, alias={}, shader={}\n{}",
+        m_passIdx, m_passAlias.empty() ? "<none>" : m_passAlias, m_shaderPath,
+        std::string(errorLog.begin(), errorLog.end()));
     glDeleteShader(vShader);
     return false;
   }
@@ -91,8 +94,11 @@ bool CShaderGL::Create(unsigned int passIdx,
     glGetShaderiv(fShader, GL_INFO_LOG_LENGTH, &maxLength);
     std::vector<GLchar> errorLog(maxLength);
     glGetShaderInfoLog(fShader, maxLength, &maxLength, errorLog.data());
-    CLog::Log(LOGERROR, "CShaderGL::Create: Fragment shader compile error:\n{}",
-              std::string(errorLog.begin(), errorLog.end()));
+    CLog::Log(
+        LOGERROR,
+        "CShaderGL::Create: Failed to compile fragment shader: pass={}, alias={}, shader={}\n{}",
+        m_passIdx, m_passAlias.empty() ? "<none>" : m_passAlias, m_shaderPath,
+        std::string(errorLog.begin(), errorLog.end()));
     glDeleteShader(vShader);
     glDeleteShader(fShader);
     return false;
@@ -118,9 +124,10 @@ bool CShaderGL::Create(unsigned int passIdx,
     glGetProgramiv(m_shaderProgram, GL_INFO_LOG_LENGTH, &maxLength);
     std::vector<GLchar> errorLog(maxLength);
     glGetProgramInfoLog(m_shaderProgram, maxLength, &maxLength, errorLog.data());
-    CLog::Log(LOGERROR, "CShaderGL::Create: Shader program link error:\n{}",
+    CLog::Log(LOGERROR,
+              "CShaderGL::Create: Failed to link shader program: pass={}, alias={}, shader={}\n{}",
+              m_passIdx, m_passAlias.empty() ? "<none>" : m_passAlias, m_shaderPath,
               std::string(errorLog.begin(), errorLog.end()));
-    CLog::Log(LOGERROR, "CShaderGL::Create: Failed to load video shader: {}", m_shaderPath);
     return false;
   }
 

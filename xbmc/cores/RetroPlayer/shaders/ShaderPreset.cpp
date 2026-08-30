@@ -89,7 +89,7 @@ bool CShaderPreset::SetShaderPreset(const std::string& shaderPresetPath)
   auto updateFailed = [this](const std::string& msg)
   {
     m_failedPaths.insert(m_presetPath);
-    CLog::Log(LOGWARNING, "CShaderPreset::SetShaderPreset: {}", msg);
+    CLog::Log(LOGWARNING, "CShaderPreset::SetShaderPreset: {}: preset={}", msg, m_presetPath);
     DisposeShaders();
     return false;
   };
@@ -139,7 +139,7 @@ bool CShaderPreset::Update()
   auto updateFailed = [this](const std::string& msg)
   {
     m_failedPaths.insert(m_presetPath);
-    CLog::Log(LOGWARNING, "CShaderPreset::Update: {}", msg);
+    CLog::Log(LOGWARNING, "CShaderPreset::Update: {}: preset={}", msg, m_presetPath);
     DisposeShaders();
     return false;
   };
