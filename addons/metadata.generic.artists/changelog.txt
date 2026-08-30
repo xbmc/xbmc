@@ -1,3 +1,6 @@
+v1.0.19
+- language updates
+
 v1.0.18
 - add video links from theaudiodb
 
