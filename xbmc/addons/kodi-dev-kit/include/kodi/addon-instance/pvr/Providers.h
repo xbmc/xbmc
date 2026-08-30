@@ -137,7 +137,7 @@ public:
   /// @brief **optional**\n
   /// The language codes for the provider.
   ///
-  /// @note RFC 5646 standard codes required (e.g.: 'en_GB,fr_CA').
+  /// @note RFC 5646 standard codes required (e.g.: 'en-GB,fr-CA').
   void SetLanguages(const std::vector<std::string>& languages)
   {
     ReallocAndCopyString(
