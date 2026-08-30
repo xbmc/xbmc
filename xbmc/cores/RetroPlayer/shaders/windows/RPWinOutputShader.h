@@ -30,7 +30,9 @@ public:
 
 protected:
   virtual bool CreateVertexBuffer(unsigned int vertCount, unsigned int vertSize);
-  virtual bool CreateInputLayout(D3D11_INPUT_ELEMENT_DESC* layout, unsigned numElements);
+  virtual bool CreateInputLayout(D3D11_INPUT_ELEMENT_DESC* layout,
+                                 unsigned numElements,
+                                 const char* techniqueName);
   virtual bool LockVertexBuffer(void** data);
   virtual bool UnlockVertexBuffer();
   virtual bool LoadEffect(const std::string& filename, DefinesMap* defines);

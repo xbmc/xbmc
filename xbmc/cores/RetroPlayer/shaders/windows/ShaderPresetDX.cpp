@@ -16,6 +16,7 @@
 #include "rendering/dx/RenderSystemDX.h"
 #include "utils/log.h"
 
+#include <cstddef>
 #include <regex>
 
 using namespace KODI::SHADER;
@@ -88,9 +89,12 @@ bool CShaderPresetDX::CreateLayouts()
 
     // Create input layout
     D3D11_INPUT_ELEMENT_DESC layout[] = {
-        {"SV_POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-        {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
-        {"TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0}};
+        {"SV_POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(CUSTOMVERTEX, x),
+         D3D11_INPUT_PER_VERTEX_DATA, 0},
+        {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, offsetof(CUSTOMVERTEX, tu),
+         D3D11_INPUT_PER_VERTEX_DATA, 0},
+        {"TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 0, offsetof(CUSTOMVERTEX, tu2),
+         D3D11_INPUT_PER_VERTEX_DATA, 0}};
 
     if (!videoShaderDX->CreateInputLayout(layout, ARRAYSIZE(layout)))
     {
