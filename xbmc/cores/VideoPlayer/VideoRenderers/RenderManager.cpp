@@ -636,6 +636,14 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
   if (presented)
     ServiceVideoCaptures();
 
+  if (presented && !gui)
+  {
+    CRect src, dst, view;
+    m_pRenderer->GetVideoRect(src, dst, view);
+    m_overlays.SetVideoRect(src, dst, view);
+    m_overlays.RenderHDROverlays(m_presentsource);
+  }
+
   if (gui)
   {
     if (!m_pRenderer->IsGuiLayer())
