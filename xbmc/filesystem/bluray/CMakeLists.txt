@@ -3,6 +3,7 @@ if(TARGET ${APP_NAME_LC}::Bluray)
               M2TSParser.cpp
               MovieObjectParser.cpp
               MPLSParser.cpp
+              ProjectParser.cpp
               StreamParser.cpp)
   set(HEADERS BitReader.h
               IndexParser.h
@@ -11,6 +12,7 @@ if(TARGET ${APP_NAME_LC}::Bluray)
               MPLSParser.h
               NavigationCommand.h
               PlaylistStructure.h
+              ProjectParser.h
               StreamParser.h)
 
   core_add_library(bluray)

@@ -13,6 +13,7 @@
 #include "URL.h"
 #include "bluray/MPLSParser.h"
 #include "bluray/MovieObjectParser.h"
+#include "bluray/ProjectParser.h"
 #if defined(HAS_UDFREAD)
 #include "filesystem/UDFContext.h"
 #endif
@@ -151,6 +152,11 @@ private:
    \brief Get how the disc navigates - its contents, movie objects and menu.
    */
   bool GetMovieObjectInformation(MovieObjectInformation& information) const;
+
+  /*!
+   \brief Get what the disc's authoring project named, where it left one behind.
+   */
+  bool GetProjectInformation(ProjectInformation& information) const;
 
   void Dispose();
   std::string GetDiscInfoString(DiscInfo info);

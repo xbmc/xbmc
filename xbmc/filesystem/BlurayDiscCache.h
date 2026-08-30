@@ -13,6 +13,7 @@
 #include "bluray/M2TSParser.h"
 #include "bluray/MovieObjectParser.h"
 #include "bluray/PlaylistStructure.h"
+#include "bluray/ProjectParser.h"
 #include "threads/CriticalSection.h"
 
 #include <cstdint>
@@ -37,6 +38,9 @@ struct Disc
 
   //! How the disc navigates - read once and unchanged for as long as it is in the drive
   std::optional<XFILE::MovieObjectInformation> movieObject;
+
+  //! What the disc's authoring project named, where it left one behind
+  std::optional<XFILE::ProjectInformation> project;
 
   //! When this disc was last used, to decide which to drop when the cache is full. Mutable as
   //! recency is not part of what the cache holds, so reading a disc's information updates it too.
@@ -69,6 +73,7 @@ public:
                              const StreamMap& streams);
   void SetMenuSupport(const std::string& path, bool menuSupport);
   void SetMovieObject(const std::string& path, const MovieObjectInformation& movieObject);
+  void SetProject(const std::string& path, const ProjectInformation& project);
   void SetMainPlaylist(const std::string& path, int mainPlaylist);
 
   bool GetPlaylistInfo(const std::string& path,
@@ -102,6 +107,13 @@ public:
    \return true if the disc's navigation has been read before
    */
   bool GetMovieObject(const std::string& path, MovieObjectInformation& movieObject) const;
+
+  /*!
+   \brief Get what the disc's authoring project named, if already read.
+   \param[out] project set only when true is returned
+   \return true if the disc has been examined for a project before
+   */
+  bool GetProject(const std::string& path, ProjectInformation& project) const;
 
   //! Drop everything held for a disc, as its information no longer describes what is in the drive
   void ClearDisc(const std::string& path);

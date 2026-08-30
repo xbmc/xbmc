@@ -959,6 +959,20 @@ bool CBlurayDirectory::HasMenuSupport()
   return menuSupport;
 }
 
+bool CBlurayDirectory::GetProjectInformation(ProjectInformation& information) const
+{
+  const std::string path{GetCachePath(m_url, m_realPath)};
+
+  if (CServiceBroker::GetBlurayDiscCache()->GetProject(path, information))
+    return true;
+
+  CProjectParser::GetProject(m_url, information);
+  CServiceBroker::GetBlurayDiscCache()->SetProject(path, information);
+
+  CProjectParser::LogProject(information);
+  return true;
+}
+
 bool CBlurayDirectory::GetMovieObjectInformation(MovieObjectInformation& information) const
 {
   const std::string path{GetCachePath(m_url, m_realPath)};
