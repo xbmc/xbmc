@@ -199,6 +199,9 @@ const TestISO6392ToISO6391 ISO6392ToISO6391Tests[] = {
     {"zzz", false, ""},  // not assigned
     {" eng ", true, "en"},
     {"ENG", true, "en"}, // case-insensitive conversion
+    // ISO withdrew the bibliographic codes scr and scc in 2008 and hrv and srp became both forms
+    {"hrv", true, "hr"},
+    {"srp", true, "sr"},
 };
 // clang-format on
 
