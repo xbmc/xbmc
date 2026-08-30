@@ -976,6 +976,30 @@ bool CBlurayDirectory::HasMenuSupport()
   return menuSupport;
 }
 
+bool CBlurayDirectory::GetProjectInformation(const PlaylistMap& playlists,
+                                             ProjectInformation& information) const
+{
+  const std::string path{GetCachePath(m_url, m_realPath)};
+
+  if (CServiceBroker::GetBlurayDiscCache()->GetProject(path, information))
+    return true;
+
+  // The disc says which playlists it has, so a record naming one it does not is not a record
+  std::set<unsigned int> discPlaylists;
+  for (const unsigned int playlist : playlists | std::views::keys)
+    discPlaylists.insert(playlist);
+
+  const ProjectReadResult result{CProjectParser::GetProject(m_url, discPlaylists, information)};
+
+  // A disc that could not be read has not said it has no project, so it is asked again rather
+  // than written off for as long as it stays in the drive
+  if (result != ProjectReadResult::FAILED)
+    CServiceBroker::GetBlurayDiscCache()->SetProject(path, information);
+
+  CProjectParser::LogProject(information);
+  return result != ProjectReadResult::FAILED;
+}
+
 int CBlurayDirectory::GetMainPlaylist()
 {
   const std::string path{GetCachePath(m_url, m_realPath)};
