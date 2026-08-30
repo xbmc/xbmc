@@ -387,7 +387,11 @@
 				</include>
 				<include content="MediaFlag">
 					<param name="flag_visible" value="!String.IsEmpty(ListItem.AudioChannels) + !Control.IsVisible(504)" />
-					<param name="flag_label" value="$VAR[AudioPropertyFlagVar]" />
+					<param name="flag_label" value="$VAR[AudioChannelsVar]" />
+				</include>
+				<include content="MediaFlag">
+					<param name="flag_visible" value="!String.IsEmpty(ListItem.AudioLanguage) + !String.IsEqual(ListItem.AudioLanguage,und) + !Control.IsVisible(504)" />
+					<param name="flag_label" value="$INFO[ListItem.AudioLanguage]" />
 				</include>
 			</control>
 			<control type="grouplist">
@@ -426,11 +430,19 @@
 				</include>
 				<include content="MediaFlag">
 					<param name="flag_visible" value="!String.IsEmpty(VideoPlayer.AudioChannels)" />
-					<param name="flag_label" value="$VAR[AudioPropertyFlagVar]" />
+					<param name="flag_label" value="$VAR[AudioChannelsVar]" />
 				</include>
 				<include content="MediaFlag">
-					<param name="flag_visible" value="VideoPlayer.SubtitlesEnabled + [!String.IsEmpty(VideoPlayer.SubtitleCodec) | !String.IsEmpty(VideoPlayer.SubtitlesLanguage)]" />
-					<param name="flag_label" value="$VAR[ActiveVideoPlayerSubtitleLanguage]" />
+					<param name="flag_visible" value="!String.IsEmpty(VideoPlayer.AudioLanguage) + !String.IsEqual(VideoPlayer.AudioLanguage,und)" />
+					<param name="flag_label" value="$INFO[VideoPlayer.AudioLanguage]" />
+				</include>
+				<include content="MediaFlag">
+					<param name="flag_visible" value="VideoPlayer.SubtitlesEnabled + !String.IsEmpty(VideoPlayer.SubtitleCodec) + !String.IsEmpty(VideoPlayer.SubtitlesLanguage) + !String.IsEqual(VideoPlayer.SubtitlesLanguage,und)" />
+					<param name="flag_label" value="$VAR[SubtitleCodecVar]" />
+				</include>
+				<include content="MediaFlag">
+					<param name="flag_visible" value="VideoPlayer.SubtitlesEnabled + !String.IsEmpty(VideoPlayer.SubtitleCodec) + !String.IsEmpty(VideoPlayer.SubtitlesLanguage) + !String.IsEqual(VideoPlayer.SubtitlesLanguage,und)" />
+					<param name="flag_label" value="$INFO[VideoPlayer.SubtitlesLanguage]" />
 				</include>
 			</control>
 			<control type="grouplist">
