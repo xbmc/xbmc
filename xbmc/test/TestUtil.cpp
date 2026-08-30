@@ -11,6 +11,8 @@
 #include "cores/VideoPlayer/Interface/StreamInfo.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "video/FilenameAttributes.h"
 
 #include <gtest/gtest-param-test.h>
@@ -827,18 +829,52 @@ constexpr TestMatchingSourceData SourcesToMatch[] = {
 
 TEST_P(TestMatchingSource, GetMatchingSource)
 {
+#if defined(TARGET_WINDOWS_DESKTOP)
+  // D: is often an optical drive. Use a non-optical letter so this fixture tests source matching
+  // rather than the intentional optical-source shortcut.
+  char dosDriveLetter{'D'};
+  if (URIUtils::IsOnDVD("D:\\"))
+  {
+    for (char candidate = 'C'; candidate <= 'Z'; ++candidate)
+    {
+      std::string driveRoot{"C:\\"};
+      driveRoot.front() = candidate;
+      if (!URIUtils::IsOnDVD(driveRoot))
+      {
+        dosDriveLetter = candidate;
+        break;
+      }
+    }
+  }
+  ASSERT_FALSE(URIUtils::IsOnDVD(std::string{dosDriveLetter} + ":\\"));
+#else
+  const char dosDriveLetter{'D'};
+#endif
+
+  const auto replaceOpticalTestDrive = [dosDriveLetter](const char* value)
+  {
+    std::string path{value};
+    const std::string drive{dosDriveLetter};
+    StringUtils::Replace(path, "D:\\", drive + ":\\");
+    StringUtils::Replace(path, "D%3a", drive + "%3a");
+    StringUtils::Replace(path, "D%253a", drive + "%253a");
+    return path;
+  };
+
   // Generate sources
   std::vector<CMediaSource> sources;
   for (const auto& source : Sources)
   {
+    const std::string sourcePath{replaceOpticalTestDrive(source.path)};
     CMediaSource mediaSource{
-        source.name,   "",    "",  source.path, SourceType::REMOTE, KODI::UTILS::CLockInfo{}, "",
-        {source.path}, false, true};
+        source.name, "",           "",    sourcePath, SourceType::REMOTE, KODI::UTILS::CLockInfo{},
+        "",          {sourcePath}, false, true};
     sources.emplace_back(mediaSource);
   }
 
   bool isSourceName{false};
-  int source{CUtil::GetMatchingSource(GetParam().path, sources, isSourceName)};
+  int source{
+      CUtil::GetMatchingSource(replaceOpticalTestDrive(GetParam().path), sources, isSourceName)};
   EXPECT_EQ(source, GetParam().matchingSource);
 }
 
