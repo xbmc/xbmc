@@ -15,6 +15,7 @@
 #include "cores/RetroPlayer/shaders/windows/ShaderPresetDX.h"
 #include "cores/RetroPlayer/shaders/windows/ShaderTextureDX.h"
 #include "cores/RetroPlayer/shaders/windows/ShaderTextureDXRef.h"
+#include "cores/RetroPlayer/shaders/windows/ShaderUtilsDX.h"
 #include "guilib/D3DResource.h"
 #include "rendering/dx/RenderSystemDX.h"
 #include "utils/log.h"
@@ -315,25 +316,67 @@ void CRPWinRenderer::Render(CD3DTexture& target, uint8_t alpha)
   {
     RenderBufferTextures* rbTextures = nullptr;
 
-    // Drop cached textures if target size is changed
-    if (m_fullDestWidth != m_lastTargetWidth || m_fullDestHeight != m_lastTargetHeight)
+    const UINT outputWidth = static_cast<UINT>(m_fullDestWidth);
+    const UINT outputHeight = static_cast<UINT>(m_fullDestHeight);
+    const SHADER::float2 outputSize{static_cast<float>(outputWidth),
+                                   static_cast<float>(outputHeight)};
+
+    if (m_shaderPreset->GetPasses().empty())
     {
-      m_RBTexturesMap.clear();
-      m_lastTargetWidth = m_fullDestWidth;
-      m_lastTargetHeight = m_fullDestHeight;
+      CLog::Log(LOGERROR, "RPWinRenderer: Shader preset contains no passes");
+      m_bShadersNeedUpdate = false;
+      m_bUseShaderPreset = false;
     }
 
-    const auto it = m_RBTexturesMap.find(renderBuffer);
-    if (it != m_RBTexturesMap.end())
+    UINT targetWidth{0};
+    UINT targetHeight{0};
+    DXGI_FORMAT targetFormat{DXGI_FORMAT_UNKNOWN};
+    if (m_bUseShaderPreset)
     {
-      rbTextures = it->second.get();
+      const SHADER::ShaderRenderTargetDX targetDesc =
+          SHADER::ResolveFinalPassTarget(m_shaderPreset->GetPasses().back(), outputSize);
+      targetWidth = static_cast<UINT>(targetDesc.size.x);
+      targetHeight = static_cast<UINT>(targetDesc.size.y);
+      targetFormat = targetDesc.format;
+
+      const bool targetSupported =
+          renderingDx->IsFormatSupport(targetFormat, D3D11_FORMAT_SUPPORT_RENDER_TARGET) &&
+          renderingDx->IsFormatSupport(targetFormat, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE);
+      if (targetWidth == 0 || targetHeight == 0 || !targetSupported)
+      {
+        CLog::Log(LOGERROR,
+                  "RPWinRenderer: Invalid shader preset target: width={}, height={}, format={}",
+                  targetWidth, targetHeight, static_cast<unsigned int>(targetFormat));
+        m_bShadersNeedUpdate = false;
+        m_bUseShaderPreset = false;
+      }
     }
-    else
+
+    if (m_bUseShaderPreset)
+    {
+      const auto it = m_RBTexturesMap.find(renderBuffer);
+      if (it != m_RBTexturesMap.end())
+      {
+        CD3DTexture& cachedTexture = it->second->targetTexture->GetTexture();
+        if (cachedTexture.Get() != nullptr && cachedTexture.GetWidth() == targetWidth &&
+            cachedTexture.GetHeight() == targetHeight && cachedTexture.GetFormat() == targetFormat)
+        {
+          rbTextures = it->second.get();
+        }
+        else
+        {
+          m_RBTexturesMap.erase(it);
+        }
+      }
+    }
+
+    if (m_bUseShaderPreset && rbTextures == nullptr)
     {
       auto presetTargetTexture = std::make_shared<CD3DTexture>();
-      if (!presetTargetTexture->Create(static_cast<UINT>(m_fullDestWidth),
-                                       static_cast<UINT>(m_fullDestHeight), 1, D3D11_USAGE_DEFAULT,
-                                       DXGI_FORMAT_B8G8R8A8_UNORM))
+      if (!presetTargetTexture->Create(targetWidth, targetHeight, 1, D3D11_USAGE_DEFAULT,
+                                       targetFormat) ||
+          presetTargetTexture->GetRenderTarget() == nullptr ||
+          presetTargetTexture->GetShaderResource() == nullptr)
       {
         CLog::Log(LOGERROR, "RPWinRenderer: Shader preset target texture creation failed");
         m_bShadersNeedUpdate = false;
@@ -355,7 +398,7 @@ void CRPWinRenderer::Render(CD3DTexture& target, uint8_t alpha)
 
       // Render shaders to an intermediate texture. The output shader handles
       // the final transform and alpha.
-      if (!m_shaderPreset->RenderUpdate(*renderBufferTarget, *presetTarget))
+      if (!m_shaderPreset->RenderUpdate(*renderBufferTarget, *presetTarget, outputSize))
       {
         m_bShadersNeedUpdate = false;
         m_bUseShaderPreset = false;

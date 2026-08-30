@@ -37,6 +37,25 @@ DirectX::XMFLOAT2 CShaderUtilsDX::ToDXVector(const float2& vec)
   return DirectX::XMFLOAT2(static_cast<float>(vec.x), static_cast<float>(vec.y));
 }
 
+ShaderRenderTargetDX KODI::SHADER::ResolveFinalPassTarget(const ShaderPass& pass,
+                                                          const float2& outputSize)
+{
+  ShaderRenderTargetDX target{outputSize, DXGI_FORMAT_B8G8R8A8_UNORM};
+
+  if (pass.fbo.scaleX.scaleType == ScaleType::ABSOLUTE_SCALE &&
+      pass.fbo.scaleY.scaleType == ScaleType::ABSOLUTE_SCALE)
+  {
+    target.size = {pass.fbo.scaleX.abs, pass.fbo.scaleY.abs};
+
+    if (pass.fbo.floatFramebuffer)
+      target.format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+    else if (pass.fbo.sRgbFramebuffer)
+      target.format = DXGI_FORMAT_B8G8R8A8_UNORM_SRGB;
+  }
+
+  return target;
+}
+
 bool KODI::SHADER::GetShaderPassDescription(ID3DX11Effect* effect,
                                             const char* techniqueName,
                                             unsigned int passIndex,

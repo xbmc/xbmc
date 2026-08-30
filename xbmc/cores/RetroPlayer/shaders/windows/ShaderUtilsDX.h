@@ -23,6 +23,14 @@ public:
   static DirectX::XMFLOAT2 ToDXVector(const float2& vec);
 };
 
+struct ShaderRenderTargetDX
+{
+  float2 size;
+  DXGI_FORMAT format{DXGI_FORMAT_B8G8R8A8_UNORM};
+};
+
+ShaderRenderTargetDX ResolveFinalPassTarget(const ShaderPass& pass, const float2& outputSize);
+
 bool GetShaderPassDescription(ID3DX11Effect* effect,
                               const char* techniqueName,
                               unsigned int passIndex,

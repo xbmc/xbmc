@@ -106,7 +106,9 @@ void CRPRendererDMAOpenGL::Render(uint8_t alpha)
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-    if (!m_shaderPreset->RenderUpdate(*sourceTexture, *targetTexture))
+    if (!m_shaderPreset->RenderUpdate(*sourceTexture, *targetTexture,
+                                      {static_cast<unsigned int>(m_fullDestWidth),
+                                       static_cast<unsigned int>(m_fullDestHeight)}))
     {
       m_bShadersNeedUpdate = false;
       m_bUseShaderPreset = false;

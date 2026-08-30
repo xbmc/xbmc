@@ -37,12 +37,15 @@ public:
   /*!
    * \brief Updates state if needed and renders the preset to the target texture
    *
-   * \param source The source of the video frame, in its original resolution (unscaled)
-   * \param target The target texture that the final result will be rendered to
+   * \param sourceTexture The video frame in its original resolution (unscaled)
+   * \param targetTexture The actual render target used by the final shader pass
+   * \param outputSize Size the completed shader result is displayed at, in pixels
    *
    * \return Returns false if updating or rendering failed, true if both succeeded
    */
-  virtual bool RenderUpdate(IShaderTexture& sourceTexture, IShaderTexture& targetTexture) = 0;
+  virtual bool RenderUpdate(IShaderTexture& sourceTexture,
+                            IShaderTexture& targetTexture,
+                            const float2& outputSize) = 0;
 
   /*!
    * \brief Informs about the speed of playback

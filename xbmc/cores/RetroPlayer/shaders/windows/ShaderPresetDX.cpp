@@ -158,9 +158,8 @@ bool CShaderPresetDX::CreateShaderTextures()
 
     if (shaderIdx + 1 == numPasses)
     {
-      // We're supposed to output at full (viewport) resolution
-      scaledSize.x = m_outputSize.x;
-      scaledSize.y = m_outputSize.y;
+      // The caller owns the final render target
+      scaledSize = m_renderTargetSize;
     }
     else
     {

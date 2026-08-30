@@ -39,14 +39,17 @@ bool CShaderPreset::ReadPresetFile(const std::string& presetPath)
   return CServiceBroker::GetGameServices().VideoShaders().LoadPreset(presetPath, *this);
 }
 
-bool CShaderPreset::RenderUpdate(IShaderTexture& sourceTexture, IShaderTexture& targetTexture)
+bool CShaderPreset::RenderUpdate(IShaderTexture& sourceTexture,
+                                 IShaderTexture& targetTexture,
+                                 const float2& outputSize)
 {
   // Save the viewport
   CRect viewPort;
   m_context.GetViewPort(viewPort);
 
   // Handle target resizing
-  UpdateOutputSize({targetTexture.GetWidth(), targetTexture.GetHeight()});
+  UpdateOutputSize(outputSize);
+  UpdateRenderTargetSize({targetTexture.GetWidth(), targetTexture.GetHeight()});
 
   // Update shaders/shader textures if required
   if (!Update())
@@ -164,16 +167,23 @@ void CShaderPreset::UpdateOutputSize(const float2 outputSize)
   {
     m_outputSize = outputSize;
 
-    // Notify the last pass of new output size
-    if (!m_pShaders.empty())
-    {
-      m_pShaders.back()->SetSizes(outputSize);
-      m_pShaders.back()->UpdateMVP();
-    }
-
     // If intermediate textures depend on output size, full update is needed
     if (m_bTexturesNeedSizeUpdate)
       m_bPresetNeedsUpdate = true;
+  }
+}
+
+void CShaderPreset::UpdateRenderTargetSize(const float2 renderTargetSize)
+{
+  if (renderTargetSize != m_renderTargetSize)
+  {
+    m_renderTargetSize = renderTargetSize;
+
+    if (!m_pShaders.empty())
+    {
+      m_pShaders.back()->SetSizes(renderTargetSize);
+      m_pShaders.back()->UpdateMVP();
+    }
   }
 }
 
