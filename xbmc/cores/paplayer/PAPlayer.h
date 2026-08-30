@@ -49,7 +49,7 @@ public:
   void SetTotalTime(int64_t time) override;
   void SetTime(int64_t time) override;
   void SeekTime(int64_t iTime = 0) override;
-  void GetAudioCapabilities(std::vector<IPlayerAudioCaps>& caps) const override {}
+  void GetAudioCapabilities(std::vector<IPlayerAudioCaps>& caps) const override;
 
   void GetAudioStreamInfo(int index, AudioStreamInfo& info) const override;
   int GetAudioStreamCount() const override;

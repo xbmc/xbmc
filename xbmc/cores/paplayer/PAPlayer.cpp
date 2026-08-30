@@ -1244,6 +1244,12 @@ PAPlayer::StreamInfo* PAPlayer::PlayingStream() const
   return m_streams.empty() ? nullptr : m_streams.front();
 }
 
+void PAPlayer::GetAudioCapabilities(std::vector<IPlayerAudioCaps>& caps) const
+{
+  if (GetAudioStreamCount() > 1)
+    caps.emplace_back(IPlayerAudioCaps::SELECT_STREAM);
+}
+
 int PAPlayer::GetAudioStreamCount() const
 {
   std::unique_lock lock(m_streamsLock);
