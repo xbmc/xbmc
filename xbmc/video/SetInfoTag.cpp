@@ -16,6 +16,8 @@
 void CSetInfoTag::Reset()
 {
   m_title.clear();
+  m_originalTitle.clear();
+  m_sortTitle.clear();
   m_id = -1;
   m_overview.clear();
   m_updateSetOverview = false;
@@ -40,6 +42,8 @@ void CSetInfoTag::ParseNative(const TiXmlElement* set)
     SetTitle(value);
   if (XMLUtils::GetString(set, "originaltitle", value))
     SetOriginalTitle(value);
+  if (XMLUtils::GetString(set, "sorttitle", value))
+    SetSortTitle(value);
   if (XMLUtils::GetString(set, "overview", value))
     SetOverview(value);
 
@@ -73,6 +77,12 @@ void CSetInfoTag::SetOriginalTitle(std::string_view title)
   m_originalTitle = title;
 }
 
+void CSetInfoTag::SetSortTitle(std::string_view title)
+{
+  m_sortTitle = title;
+  m_sortTitle = StringUtils::Trim(m_sortTitle);
+}
+
 void CSetInfoTag::SetArt(const KODI::ART::Artwork& art)
 {
   m_art = art;
@@ -86,6 +96,8 @@ void CSetInfoTag::Merge(const CSetInfoTag& other)
     m_title = other.GetTitle();
   if (other.HasOriginalTitle())
     m_originalTitle = other.GetOriginalTitle();
+  if (other.HasSortTitle())
+    m_sortTitle = other.GetSortTitle();
   if (other.HasOverview())
   {
     m_overview = other.GetOverview();
@@ -100,6 +112,7 @@ void CSetInfoTag::Copy(const CSetInfoTag& other)
   m_id = other.GetID();
   m_title = other.GetTitle();
   m_originalTitle = other.GetOriginalTitle();
+  m_sortTitle = other.GetSortTitle();
   m_overview = other.GetOverview();
   m_updateSetOverview = other.m_updateSetOverview;
   m_art = other.m_art;
@@ -121,6 +134,8 @@ bool CSetInfoTag::Save(TiXmlNode* node,
   XMLUtils::SetString(set, "title", m_title);
   if (!m_originalTitle.empty())
     XMLUtils::SetString(set, "originaltitle", m_originalTitle);
+  if (!m_sortTitle.empty())
+    XMLUtils::SetString(set, "sorttitle", m_sortTitle);
   if (!m_overview.empty())
     XMLUtils::SetString(set, "overview", m_overview);
 
@@ -148,6 +163,7 @@ void CSetInfoTag::Archive(CArchive& ar)
     ar << m_id;
     ar << m_overview;
     ar << m_originalTitle;
+    ar << m_sortTitle;
   }
   else
   {
@@ -155,6 +171,7 @@ void CSetInfoTag::Archive(CArchive& ar)
     ar >> m_id;
     ar >> m_overview;
     ar >> m_originalTitle;
+    ar >> m_sortTitle;
   }
 }
 
@@ -164,6 +181,7 @@ void CSetInfoTag::Serialize(CVariant& value) const
   value["setid"] = m_id;
   value["setoverview"] = m_overview;
   value["originalset"] = m_originalTitle;
+  value["setsorttitle"] = m_sortTitle;
 }
 
 bool CSetInfoTag::IsEmpty() const

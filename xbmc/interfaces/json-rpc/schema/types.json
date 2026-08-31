@@ -1914,7 +1914,8 @@
         "fanart",
         "thumbnail",
         "art",
-        "plot"
+        "plot",
+        "sorttitle"
       ]
     }
   },
@@ -2313,6 +2314,9 @@
         "required": true
       },
       "plot": {
+        "type": "string"
+      },
+      "sorttitle": {
         "type": "string"
       }
     }
