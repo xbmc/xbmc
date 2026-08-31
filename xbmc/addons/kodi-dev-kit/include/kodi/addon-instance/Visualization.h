@@ -276,7 +276,7 @@ private:
 /// public:
 ///   CMyVisualization();
 ///
-///   bool Start(int channels, int samplesPerSec, int bitsPerSample, const std::string& songName) override;
+///   bool AudioStart(int channels, int samplesPerSec, int bitsPerSample) override;
 ///   void AudioData(const float* audioData, size_t audioDataLength) override;
 ///   void Render() override;
 /// };
@@ -286,7 +286,7 @@ private:
 ///   ...
 /// }
 ///
-/// bool CMyVisualization::Start(int channels, int samplesPerSec, int bitsPerSample, const std::string& songName)
+/// bool CMyVisualization::AudioStart(int channels, int samplesPerSec, int bitsPerSample)
 /// {
 ///   ...
 ///   return true;
@@ -320,18 +320,18 @@ private:
 /// public:
 ///   CMyVisualization(const kodi::addon::IInstanceInfo& instance);
 ///
-///   bool Start(int channels, int samplesPerSec, int bitsPerSample, const std::string& songName) override;
+///   bool AudioStart(int channels, int samplesPerSec, int bitsPerSample) override;
 ///   void AudioData(const float* audioData, size_t audioDataLength) override;
 ///   void Render() override;
 /// };
 ///
 /// CMyVisualization::CMyVisualization(const kodi::addon::IInstanceInfo& instance)
-///   : kodi::addon::CInstanceAudioDecoder(instance)
+///   : kodi::addon::CInstanceVisualization(instance)
 /// {
 ///   ...
 /// }
 ///
-/// bool CMyVisualization::Start(int channels, int samplesPerSec, int bitsPerSample, const std::string& songName)
+/// bool CMyVisualization::AudioStart(int channels, int samplesPerSec, int bitsPerSample)
 /// {
 ///   ...
 ///   return true;
@@ -421,11 +421,11 @@ public:
   ///
   /// **Here's example about the use of this:**
   /// ~~~~~~~~~~~~~{.cpp}
-  /// class CMyVisualization : public kodi::addon::CInstanceAudioDecoder
+  /// class CMyVisualization : public kodi::addon::CInstanceVisualization
   /// {
   /// public:
   ///   CMyVisualization(const kodi::addon::IInstanceInfo& instance)
-  ///     : kodi::addon::CInstanceAudioDecoder(instance)
+  ///     : kodi::addon::CInstanceVisualization(instance)
   ///   {
   ///      ...
   ///   }
