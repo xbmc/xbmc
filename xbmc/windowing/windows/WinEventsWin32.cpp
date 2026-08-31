@@ -12,7 +12,6 @@
 #include "WinEventsWin32.h"
 
 #include "ServiceBroker.h"
-#include "Util.h"
 #include "WinKeyMap.h"
 #include "application/AppInboundProtocol.h"
 #include "application/Application.h"
@@ -28,17 +27,15 @@
 #include "input/mouse/MouseStat.h"
 #include "input/touch/generic/GenericTouchActionHandler.h"
 #include "input/touch/generic/GenericTouchSwipeDetector.h"
-#include "jobs/JobManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/Zeroconf.h"
 #include "network/ZeroconfBrowser.h"
 #include "peripherals/Peripherals.h"
 #include "rendering/dx/RenderContext.h"
-#include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/log.h"
 
-#include "platform/win32/CharsetConverter.h"
 #include "platform/win32/WIN32Util.h"
 #include "platform/win32/powermanagement/Win32PowerSyscall.h"
 #include "platform/win32/storage/Win32StorageProvider.h"
@@ -83,6 +80,34 @@ CGenericTouchSwipeDetector* CWinEventsWin32::m_touchSwipeDetector = nullptr;
 // seen at http://www.codeproject.com/Messages/2897423/Re-No-message-triggered-on-SD-card-insertion-remov.aspx
 #define WM_MEDIA_CHANGE (WM_USER + 666)
 SHChangeNotifyEntry shcne;
+
+namespace
+{
+/*! \brief Queue an optical media change reported by the shell notification
+ *
+ * WM_DEVICECHANGE is the preferred channel for optical media because it does not need
+ * explorer.exe, but some systems don't broadcast it - in which case this is the only
+ * notification Kodi gets. Feed it from here as well; QueueStorageEvent() deduplicates.
+ *
+ * \param drivePath The drive root as reported by the shell (e.g. "D:\")
+ * \param bArrived true for media inserted, false for media removed
+ */
+void QueueOpticalStorageEvent(const wchar_t* drivePath, const bool bArrived)
+{
+  std::string strDrive{KODI::PLATFORM::WINDOWS::FromW(drivePath)};
+  URIUtils::RemoveSlashAtEnd(strDrive); // "D:\" -> "D:"
+
+  MEDIA_DETECT::STORAGE::StorageDevice device{CWin32StorageProvider::GetStorageDevice(strDrive)};
+  device.type = MEDIA_DETECT::STORAGE::Type::OPTICAL;
+
+  CLog::Log(LOGDEBUG, "CWinEventsWin32: Drive {} Media {} (shell notification).", strDrive,
+            bArrived ? "has arrived" : "was removed");
+  CWin32StorageProvider::QueueStorageEvent(
+      bArrived ? CWin32StorageProvider::StorageEventType::ADDED
+               : CWin32StorageProvider::StorageEventType::SAFELY_REMOVED,
+      device);
+}
+} // unnamed namespace
 
 static int XBMC_MapVirtualKey(int scancode, WPARAM vkey)
 {
@@ -728,8 +753,9 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         // It only works if the explorer.exe process is started. Because this
         // isn't the case for all setups we use WM_DEVICECHANGE for usb and
         // optical media because this event is also triggered without the
-        // explorer process. Since WM_DEVICECHANGE doesn't detect sd card changes
-        // we still use this event only for sd.
+        // explorer process. WM_DEVICECHANGE doesn't detect sd card changes, and
+        // doesn't always report optical media, so this event covers sd and is a
+        // second channel for optical.
         long lEvent;
         PIDLIST_ABSOLUTE *ppidl;
         HANDLE hLock = SHChangeNotification_Lock(reinterpret_cast<HANDLE>(wParam), static_cast<DWORD>(lParam), &ppidl, &lEvent);
@@ -749,6 +775,8 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
                 CLog::LogF(LOGDEBUG, "Drive {} Media has arrived.", FromW(drivePath));
                 CWin32StorageProvider::SetEvent();
               }
+              else
+                QueueOpticalStorageEvent(drivePath, true);
               break;
 
             case SHCNE_DRIVEREMOVED:
@@ -758,6 +786,8 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
                 CLog::LogF(LOGDEBUG, "Drive {} Media was removed.", FromW(drivePath));
                 CWin32StorageProvider::SetEvent();
               }
+              else
+                QueueOpticalStorageEvent(drivePath, false);
               break;
             default:;
           }

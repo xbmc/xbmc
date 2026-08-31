@@ -53,6 +53,10 @@
 #endif
 #endif
 
+#if defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
+#include "platform/win32/storage/Win32StorageProvider.h"
+#endif
+
 #include <string>
 #include <vector>
 
@@ -856,6 +860,17 @@ void CMediaManager::OnStorageAdded(const MEDIA_DETECT::STORAGE::StorageDevice& d
     SetHasOpticalDrive(true); // In case drive appeared after startup (eg. virtual drive)
     if (m_strFirstAvailDrive.empty())
       m_strFirstAvailDrive = device.path;
+
+    // Windows reports a tray closing on nothing as an arrival
+    // Have to identify from the drive (otherwise we would announce an empty drive)
+    const DriveState state{GetDriveStatus(device.path)};
+    if (state == DriveState::CLOSED_NO_MEDIA || state == DriveState::OPEN)
+    {
+      // Nothing arrived
+      CWin32StorageProvider::ForgetLastEvent(device.path);
+      return;
+    }
+
     AddOpticalSource(device.path);
 #endif
 
