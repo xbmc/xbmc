@@ -122,10 +122,12 @@ void CAdvancedSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& 
 
 int CAdvancedSettings::RegisterSettingsLoadedCallback(AdvancedSettingsCallback callback)
 {
-  static int idx{0};
   std::lock_guard lock{m_listCritSection};
-  m_settingsLoadedCallbacks.emplace(idx, std::move(callback));
-  return ++idx;
+  // The handle is read back from the inserted element, so it cannot drift from the key the
+  // callback is stored under and Unregister can never erase a different caller's callback.
+  const auto it =
+      m_settingsLoadedCallbacks.emplace(m_nextCallbackHandle++, std::move(callback)).first;
+  return it->first;
 }
 
 void CAdvancedSettings::UnregisterSettingsLoadedCallback(int handle)

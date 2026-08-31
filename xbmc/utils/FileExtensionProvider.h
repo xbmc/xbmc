@@ -10,6 +10,7 @@
 
 #include "threads/CriticalSection.h"
 
+#include <atomic>
 #include <map>
 #include <memory>
 #include <optional>
@@ -109,7 +110,18 @@ private:
 
   void OnAdvancedSettingsLoaded();
 
+  /*! \brief Release the cached lists built from the advanced settings.
+
+   Deinitialize releases the add-on derived list as well; a settings reload must not, because
+   the add-ons have not changed.
+   */
+  void ReleaseSettingsDerivedLists();
+
   // Construction properties
+  // Written by Initialize and Deinitialize, read by every getter, and those are not the same
+  // thread. Atomic for the getters' unlocked first check; Deinitialize clears it and the state
+  // below under m_critSection, which is what orders it against a list being built.
+  std::atomic<bool> m_initialized{false};
   std::shared_ptr<CAdvancedSettings> m_advancedSettings;
   ADDON::CAddonMgr* m_addonManager{nullptr};
   std::optional<int> m_callbackId;

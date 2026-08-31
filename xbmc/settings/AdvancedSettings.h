@@ -431,6 +431,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::vector<std::string> m_folderStackStrings;
 
     mutable CCriticalSection m_listCritSection;
+    int m_nextCallbackHandle{0};
     std::map<int, AdvancedSettingsCallback> m_settingsLoadedCallbacks;
     std::string m_metadataSourcesPriv;
 };

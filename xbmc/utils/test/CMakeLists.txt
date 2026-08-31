@@ -13,6 +13,7 @@ set(SOURCES TestAlarmClock.cpp
             TestDigest.cpp
             TestEndianSwap.cpp
             TestExecString.cpp
+            TestFileExtensionProvider.cpp
             TestFileOperationJob.cpp
             TestFileUtils.cpp
             TestGlobalsHandling.cpp

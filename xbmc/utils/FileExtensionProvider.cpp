@@ -20,6 +20,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
 #include <array>
 #include <functional>
@@ -69,10 +70,13 @@ void CFileExtensionProvider::Initialize(ADDON::CAddonMgr& addonManager)
 
   m_callbackId =
       m_advancedSettings->RegisterSettingsLoadedCallback([this]() { OnAdvancedSettingsLoaded(); });
+
+  m_initialized = true;
 }
 
 void CFileExtensionProvider::Deinitialize()
 {
+  // Both callbacks take m_critSection, so they are detached before it is held here.
   if (m_callbackId.has_value())
   {
     m_advancedSettings->UnregisterSettingsLoadedCallback(m_callbackId.value());
@@ -85,21 +89,63 @@ void CFileExtensionProvider::Deinitialize()
     m_addonManager = nullptr;
   }
 
+  // A getter that has already passed the unlocked initialized check builds its list under this
+  // lock and checks again once it holds it, so nothing below is dropped while a list is being
+  // built from it.
+  std::lock_guard lock{m_critSection};
+
+  m_initialized = false;
   m_advancedSettings.reset();
   m_addonExtensions.clear();
+  m_addonFileFolderExtensions.clear();
+
+  ReleaseSettingsDerivedLists();
+
+  // Not built from the advanced settings, so a settings reload leaves it alone. Deinitialization
+  // is dropping everything, so it goes too.
+  std::atomic_store(&m_fileFolderExtensions, {});
+}
+
+void CFileExtensionProvider::ReleaseSettingsDerivedLists()
+{
+  std::atomic_store(&m_discStubExtensions, {});
+  std::atomic_store(&m_musicExtensions, {});
+  std::atomic_store(&m_pictureExtensions, {});
+  std::atomic_store(&m_subtitlesExtensions, {});
+  std::atomic_store(&m_videoExtensions, {});
+  std::atomic_store(&m_archiveExtensions, {});
+  std::atomic_store(&m_compoundArchiveExtensions, {});
 }
 
 namespace
 {
-std::string GetExtensions(CCriticalSection& mutex,
+std::string NotInitialized()
+{
+  // The provider can be read before the logging service exists and after it has gone.
+  if (CServiceBroker::IsLoggingUp())
+    CLog::Log(LOGWARNING, "CFileExtensionProvider: extension list requested before initialization "
+                          "or after deinitialization");
+  return {};
+}
+
+std::string GetExtensions(const std::atomic<bool>& initialized,
+                          CCriticalSection& mutex,
                           std::shared_ptr<const std::string>& cache,
                           std::function<std::string()> newlist)
 {
+  if (!initialized)
+    return NotInitialized();
+
   // Double-checked locking - first check
   auto tmp = std::atomic_load_explicit(&cache, std::memory_order_acquire);
   if (tmp == nullptr)
   {
     std::lock_guard lock{mutex};
+
+    // Deinitialize drops the settings the list is built from under this lock, so the check is
+    // repeated once it is held: passing it unlocked above proves nothing by now.
+    if (!initialized)
+      return NotInitialized();
 
     // Second check for threads that saw nullptr but were held by the lock
     // (another thread performed the update)
@@ -116,13 +162,13 @@ std::string GetExtensions(CCriticalSection& mutex,
 
 std::string CFileExtensionProvider::GetDiscStubExtensions() const
 {
-  return GetExtensions(m_critSection, m_discStubExtensions,
+  return GetExtensions(m_initialized, m_critSection, m_discStubExtensions,
                        [this]() { return m_advancedSettings->m_discStubExtensions; });
 }
 
 std::string CFileExtensionProvider::GetMusicExtensions() const
 {
-  return GetExtensions(m_critSection, m_musicExtensions,
+  return GetExtensions(m_initialized, m_critSection, m_musicExtensions,
                        [this]()
                        {
                          return m_advancedSettings->m_musicExtensions + '|' +
@@ -133,7 +179,7 @@ std::string CFileExtensionProvider::GetMusicExtensions() const
 
 std::string CFileExtensionProvider::GetPictureExtensions() const
 {
-  return GetExtensions(m_critSection, m_pictureExtensions,
+  return GetExtensions(m_initialized, m_critSection, m_pictureExtensions,
                        [this]()
                        {
                          return m_advancedSettings->m_pictureExtensions + '|' +
@@ -144,8 +190,9 @@ std::string CFileExtensionProvider::GetPictureExtensions() const
 
 std::string CFileExtensionProvider::GetSubtitleExtensions() const
 {
-  return GetExtensions(m_critSection, m_subtitlesExtensions,
-                       [this]() {
+  return GetExtensions(m_initialized, m_critSection, m_subtitlesExtensions,
+                       [this]()
+                       {
                          return m_advancedSettings->m_subtitlesExtensions + '|' +
                                 GetAddonExtensions(AddonType::VFS);
                        });
@@ -153,7 +200,7 @@ std::string CFileExtensionProvider::GetSubtitleExtensions() const
 
 std::string CFileExtensionProvider::GetVideoExtensions() const
 {
-  return GetExtensions(m_critSection, m_videoExtensions,
+  return GetExtensions(m_initialized, m_critSection, m_videoExtensions,
                        [this]()
                        {
                          std::string extensions(m_advancedSettings->m_videoExtensions);
@@ -202,7 +249,7 @@ std::string GetCompoundExtensions(std::string_view extensions)
 
 std::string CFileExtensionProvider::GetArchiveExtensions() const
 {
-  return GetExtensions(m_critSection, m_archiveExtensions,
+  return GetExtensions(m_initialized, m_critSection, m_archiveExtensions,
                        [this]()
                        {
                          return m_advancedSettings->m_archiveExtensions + '|' +
@@ -212,7 +259,7 @@ std::string CFileExtensionProvider::GetArchiveExtensions() const
 
 std::string CFileExtensionProvider::GetCompoundArchiveExtensions() const
 {
-  return GetExtensions(m_critSection, m_compoundArchiveExtensions,
+  return GetExtensions(m_initialized, m_critSection, m_compoundArchiveExtensions,
                        [this]()
                        {
                          return m_advancedSettings->m_compoundArchiveExtensions + '|' +
@@ -222,7 +269,7 @@ std::string CFileExtensionProvider::GetCompoundArchiveExtensions() const
 
 std::string CFileExtensionProvider::GetFileFolderExtensions() const
 {
-  return GetExtensions(m_critSection, m_fileFolderExtensions,
+  return GetExtensions(m_initialized, m_critSection, m_fileFolderExtensions,
                        [this]()
                        {
                          std::string extensions(GetAddonFileFolderExtensions(AddonType::VFS));
@@ -415,11 +462,7 @@ bool CFileExtensionProvider::EncodedHostName(const std::string& protocol) const
 
 void CFileExtensionProvider::OnAdvancedSettingsLoaded()
 {
-  std::atomic_store(&m_discStubExtensions, {});
-  std::atomic_store(&m_musicExtensions, {});
-  std::atomic_store(&m_pictureExtensions, {});
-  std::atomic_store(&m_subtitlesExtensions, {});
-  std::atomic_store(&m_videoExtensions, {});
-  std::atomic_store(&m_archiveExtensions, {});
-  std::atomic_store(&m_compoundArchiveExtensions, {});
+  // m_fileFolderExtensions is deliberately not released here: it is built from the add-ons
+  // alone, so a settings reload cannot have changed it.
+  ReleaseSettingsDerivedLists();
 }
