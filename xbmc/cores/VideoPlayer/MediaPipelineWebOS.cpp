@@ -211,6 +211,7 @@ CMediaPipelineWebOS::CMediaPipelineWebOS(CProcessInfo& processInfo,
 CMediaPipelineWebOS::~CMediaPipelineWebOS()
 {
   Unload(false);
+  RequestAudioDevice(false);
   if (const auto buffer = static_cast<CStarfishVideoBuffer*>(m_picture.videoBuffer))
     buffer->ResetAcbHandle();
 }
@@ -220,19 +221,24 @@ int CMediaPipelineWebOS::GetVideoBitrate() const
   return static_cast<int>(m_videoStats.GetBitrate());
 }
 
-void CMediaPipelineWebOS::UpdateGUISounds(const bool playing)
+void CMediaPipelineWebOS::RequestAudioDevice(const bool pipelineOwns)
 {
-  IAE* activeAE = CServiceBroker::GetActiveAE();
-  const int guiSoundMode = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
-      CSettings::SETTING_AUDIOOUTPUT_GUISOUNDMODE);
+  std::unique_lock lock(m_audioDeviceMutex);
 
-  if (guiSoundMode != AE_SOUND_IDLE)
+  if (!m_hasAudio || m_ownsAudioDevice == pipelineOwns)
     return;
 
-  if (playing)
-    activeAE->SetVolume(0.0);
-  else
-    activeAE->SetVolume(1.0);
+  IAE* const activeAE = CServiceBroker::GetActiveAE();
+  if (!activeAE)
+    return;
+
+  if (!(pipelineOwns ? activeAE->YieldDevice() : activeAE->ReclaimDevice()))
+  {
+    CLog::LogF(LOGERROR, "Failed to {} the audio device", pipelineOwns ? "acquire" : "release");
+    return;
+  }
+
+  m_ownsAudioDevice = pipelineOwns;
 }
 
 std::string CMediaPipelineWebOS::GetAudioInfo() const
@@ -297,6 +303,7 @@ void CMediaPipelineWebOS::FlushAudioMessages()
 bool CMediaPipelineWebOS::OpenAudioStream(CDVDStreamInfo& audioHint)
 {
   m_audioHint = audioHint;
+  m_hasAudio = true;
 
   if (m_loaded)
   {
@@ -318,6 +325,8 @@ bool CMediaPipelineWebOS::OpenAudioStream(CDVDStreamInfo& audioHint)
       if (!m_mediaAPIs->changeAudioCodec(codecName, output))
         CLog::LogF(LOGERROR, "Failed to change audio codec to {}", codecName);
       FlushAudioMessages();
+
+      RequestAudioDevice(true);
 
       m_processInfo.SetAudioChannels(CAEUtil::GetAEChannelLayout(audioHint.channellayout));
       m_processInfo.SetAudioSampleRate(audioHint.samplerate);
@@ -513,10 +522,16 @@ void CMediaPipelineWebOS::SetSpeed(const int speed)
       CLog::LogF(LOGERROR, "Pause failed");
     return;
   }
+
+  RequestAudioDevice(true);
+
   if (speed == DVD_PLAYSPEED_NORMAL)
   {
     if (!m_mediaAPIs->Play())
+    {
       CLog::LogF(LOGERROR, "Play failed");
+      RequestAudioDevice(false);
+    }
   }
 
   CVariant payload;
@@ -725,12 +740,15 @@ bool CMediaPipelineWebOS::Load(CDVDStreamInfo videoHint, CDVDStreamInfo audioHin
   std::string payload;
   CJSONVariantWriter::Write(payloadArgs, payload, true);
 
+  RequestAudioDevice(true);
+
   if (!m_mediaAPIs->notifyForeground())
     CLog::LogF(LOGERROR, "notifyForeground failed");
   CLog::LogFC(LOGDEBUG, LOGVIDEO, "Sending Load payload {}", payload);
   if (!m_mediaAPIs->Load(payload.c_str(), &CMediaPipelineWebOS::PlayerCallback, this))
   {
     CLog::LogF(LOGERROR, "Load failed");
+    RequestAudioDevice(false);
     m_messageQueueParent.Put(std::make_shared<CDVDMsg>(CDVDMsg::PLAYER_ABORT));
     return false;
   }
@@ -1694,12 +1712,12 @@ void CMediaPipelineWebOS::PlayerCallback(int32_t type, const int64_t numValue, c
         m_audioThread.join();
       m_loaded = false;
       m_pipeline = nullptr;
-      UpdateGUISounds(false);
+      RequestAudioDevice(false);
       break;
     case PF_EVENT_TYPE_STR_STATE_UPDATE__PAUSED:
       if (acb)
         AcbAPI_setState(acb->Id(), APPSTATE_FOREGROUND, PLAYSTATE_PAUSED, &acb->TaskId());
-      UpdateGUISounds(false);
+      RequestAudioDevice(false);
       break;
     case PF_EVENT_TYPE_STR_STATE_UPDATE__PLAYING:
     {
@@ -1714,7 +1732,6 @@ void CMediaPipelineWebOS::PlayerCallback(int32_t type, const int64_t numValue, c
           std::make_shared<CDVDMsgType<SStartMsg>>(CDVDMsg::PLAYER_STARTED, msg));
       if (acb)
         AcbAPI_setState(acb->Id(), APPSTATE_FOREGROUND, PLAYSTATE_PLAYING, &acb->TaskId());
-      UpdateGUISounds(true);
       break;
     }
     case PF_EVENT_TYPE_STR_BUFFERFULL:
