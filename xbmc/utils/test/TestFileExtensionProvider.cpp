@@ -14,30 +14,30 @@
 
 #include <gtest/gtest.h>
 
-// The provider outlives its own deinitialization: it stays reachable through the service broker
-// until the process ends, and one-argument URIUtils::GetExtension consults the compound archive
-// extensions for any path containing a dot. Deinitialization drops the advanced settings that
-// the lazily built lists read, so a list not yet built was built against nothing.
-//
-// A local instance is used rather than the one the service broker holds, so deinitializing it
-// cannot disturb another test in this binary.
+// The provider stays reachable through the service broker after its own deinitialization, and a
+// one-argument URIUtils::GetExtension reaches it for any path containing a dot. Deinitializing
+// the provider the service broker holds would disturb every other test in this binary.
 TEST(TestFileExtensionProvider, GettersAnswerEmptyAfterDeinitializationRatherThanFaulting)
 {
   CFileExtensionProvider provider;
   provider.Initialize(CServiceBroker::GetAddonMgr());
 
-  // Build one list and leave another cold, so both states are covered after deinitialization.
+  // A cold list would be built from settings that are gone; a warm one must not be handed back.
   const std::string warmed = provider.GetVideoExtensions();
-  ASSERT_FALSE(warmed.empty()) << "the video extensions were not built while initialized, so the "
-                                  "warm case below would prove nothing";
+  ASSERT_FALSE(warmed.empty()) << "the video extensions were not built while initialized";
 
   provider.Deinitialize();
 
-  // The cold list is the case that faulted: nothing is cached, so it would be built, and the
-  // settings it reads are gone.
   EXPECT_TRUE(provider.GetCompoundArchiveExtensions().empty());
-
-  // Deinitialize releases the warm list too, so it answers the same way rather than handing back
-  // a list built against settings that no longer exist.
   EXPECT_TRUE(provider.GetVideoExtensions().empty());
+}
+
+// Guards the test above: an empty answer there must be deinitialization, not an unbuildable list.
+TEST(TestFileExtensionProvider, GettersAnswerTheBuiltListWhileInitialized)
+{
+  CFileExtensionProvider provider;
+  provider.Initialize(CServiceBroker::GetAddonMgr());
+
+  EXPECT_FALSE(provider.GetCompoundArchiveExtensions().empty());
+  EXPECT_FALSE(provider.GetVideoExtensions().empty());
 }

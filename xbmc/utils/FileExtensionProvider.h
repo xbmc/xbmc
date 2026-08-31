@@ -30,7 +30,10 @@ class CFileExtensionProvider
 {
 public:
   CFileExtensionProvider() = default;
-  ~CFileExtensionProvider() = default;
+
+  // Unregisters the callbacks that capture this, for a provider destroyed without an explicit
+  // Deinitialize().
+  ~CFileExtensionProvider();
 
   void Initialize(ADDON::CAddonMgr& addonManager);
   void Deinitialize();
@@ -110,17 +113,12 @@ private:
 
   void OnAdvancedSettingsLoaded();
 
-  /*! \brief Release the cached lists built from the advanced settings.
-
-   Deinitialize releases the add-on derived list as well; a settings reload must not, because
-   the add-ons have not changed.
-   */
+  // Call under m_critSection.
   void ReleaseSettingsDerivedLists();
 
   // Construction properties
-  // Written by Initialize and Deinitialize, read by every getter, and those are not the same
-  // thread. Atomic for the getters' unlocked first check; Deinitialize clears it and the state
-  // below under m_critSection, which is what orders it against a list being built.
+  // Atomic for the getters' unlocked first check; written under m_critSection, which is what
+  // orders it against a list being built.
   std::atomic<bool> m_initialized{false};
   std::shared_ptr<CAdvancedSettings> m_advancedSettings;
   ADDON::CAddonMgr* m_addonManager{nullptr};

@@ -36,47 +36,59 @@ constexpr std::array ADDON_TYPES{AddonType::VFS, AddonType::IMAGEDECODER, AddonT
 
 void CFileExtensionProvider::Initialize(ADDON::CAddonMgr& addonManager)
 {
-  m_addonManager = &addonManager;
+  {
+    std::lock_guard lock{m_critSection};
 
-  m_advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
-  if (!m_advancedSettings)
-    m_advancedSettings = std::make_shared<CAdvancedSettings>();
+    m_addonManager = &addonManager;
 
-  SetAddonExtensions();
+    m_advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+    if (!m_advancedSettings)
+      m_advancedSettings = std::make_shared<CAdvancedSettings>();
 
-  m_addonManager->Events().Subscribe(this,
-                                     [this](const AddonEvent& event)
-                                     {
-                                       if (typeid(event) == typeid(AddonEvents::Enabled) ||
-                                           typeid(event) == typeid(AddonEvents::Disabled) ||
-                                           typeid(event) == typeid(AddonEvents::ReInstalled))
-                                       {
-                                         for (auto& type : ADDON_TYPES)
-                                         {
-                                           if (m_addonManager->HasType(event.addonId, type))
-                                           {
-                                             std::lock_guard lock{m_critSection};
-                                             SetAddonExtensions(type);
-                                             break;
-                                           }
-                                         }
-                                       }
-                                       else if (typeid(event) == typeid(AddonEvents::UnInstalled))
-                                       {
-                                         std::lock_guard lock{m_critSection};
-                                         SetAddonExtensions();
-                                       }
-                                     });
+    SetAddonExtensions();
+  }
+
+  // A settings-loaded callback is dispatched under the advanced settings' own lock, so
+  // subscribing under m_critSection would invert the two.
+  addonManager.Events().Subscribe(this,
+                                  [this](const AddonEvent& event)
+                                  {
+                                    if (typeid(event) == typeid(AddonEvents::Enabled) ||
+                                        typeid(event) == typeid(AddonEvents::Disabled) ||
+                                        typeid(event) == typeid(AddonEvents::ReInstalled))
+                                    {
+                                      for (auto& type : ADDON_TYPES)
+                                      {
+                                        if (m_addonManager->HasType(event.addonId, type))
+                                        {
+                                          std::lock_guard lock{m_critSection};
+                                          SetAddonExtensions(type);
+                                          break;
+                                        }
+                                      }
+                                    }
+                                    else if (typeid(event) == typeid(AddonEvents::UnInstalled))
+                                    {
+                                      std::lock_guard lock{m_critSection};
+                                      SetAddonExtensions();
+                                    }
+                                  });
 
   m_callbackId =
       m_advancedSettings->RegisterSettingsLoadedCallback([this]() { OnAdvancedSettingsLoaded(); });
 
+  std::lock_guard lock{m_critSection};
+
   m_initialized = true;
+}
+
+CFileExtensionProvider::~CFileExtensionProvider()
+{
+  Deinitialize();
 }
 
 void CFileExtensionProvider::Deinitialize()
 {
-  // Both callbacks take m_critSection, so they are detached before it is held here.
   if (m_callbackId.has_value())
   {
     m_advancedSettings->UnregisterSettingsLoadedCallback(m_callbackId.value());
@@ -89,9 +101,6 @@ void CFileExtensionProvider::Deinitialize()
     m_addonManager = nullptr;
   }
 
-  // A getter that has already passed the unlocked initialized check builds its list under this
-  // lock and checks again once it holds it, so nothing below is dropped while a list is being
-  // built from it.
   std::lock_guard lock{m_critSection};
 
   m_initialized = false;
@@ -101,8 +110,7 @@ void CFileExtensionProvider::Deinitialize()
 
   ReleaseSettingsDerivedLists();
 
-  // Not built from the advanced settings, so a settings reload leaves it alone. Deinitialization
-  // is dropping everything, so it goes too.
+  // Built from the add-ons rather than the settings, so a settings reload must not drop it.
   std::atomic_store(&m_fileFolderExtensions, {});
 }
 
@@ -142,8 +150,7 @@ std::string GetExtensions(const std::atomic<bool>& initialized,
   {
     std::lock_guard lock{mutex};
 
-    // Deinitialize drops the settings the list is built from under this lock, so the check is
-    // repeated once it is held: passing it unlocked above proves nothing by now.
+    // Deinitialize drops the settings the list is built from.
     if (!initialized)
       return NotInitialized();
 
@@ -462,7 +469,7 @@ bool CFileExtensionProvider::EncodedHostName(const std::string& protocol) const
 
 void CFileExtensionProvider::OnAdvancedSettingsLoaded()
 {
-  // m_fileFolderExtensions is deliberately not released here: it is built from the add-ons
-  // alone, so a settings reload cannot have changed it.
+  std::lock_guard lock{m_critSection};
+
   ReleaseSettingsDerivedLists();
 }

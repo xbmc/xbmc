@@ -31,6 +31,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <atomic>
 #include <climits>
 #include <regex>
 #include <string>
@@ -95,14 +96,25 @@ void CAdvancedSettings::OnSettingsLoaded()
   }
   CServiceBroker::GetLogging().SetLogLevel(m_logLevel);
 
-  std::vector<AdvancedSettingsCallback> callbacks;
+  // A callback must not run after its registrant unregistered and was destroyed.
+  std::lock_guard lock{m_listCritSection};
+
+  std::vector<int> handles;
+  handles.reserve(m_settingsLoadedCallbacks.size());
+  std::ranges::transform(m_settingsLoadedCallbacks, std::back_inserter(handles),
+                         [](const auto& pair) { return pair.first; });
+
+  for (const int handle : handles)
   {
-    std::lock_guard lock{m_listCritSection};
-    callbacks.reserve(m_settingsLoadedCallbacks.size());
-    std::ranges::transform(m_settingsLoadedCallbacks, std::back_inserter(callbacks),
-                           [](const auto& pair) { return pair.second; });
+    // A callback can unregister a later one, which must not then be called.
+    const auto it = m_settingsLoadedCallbacks.find(handle);
+    if (it == m_settingsLoadedCallbacks.end())
+      continue;
+
+    // A callback can unregister itself, which would destroy the entry it is running from.
+    const AdvancedSettingsCallback callback{it->second};
+    callback();
   }
-  std::ranges::for_each(callbacks, &AdvancedSettingsCallback::operator());
 }
 
 void CAdvancedSettings::OnSettingsUnloaded()
@@ -122,12 +134,13 @@ void CAdvancedSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& 
 
 int CAdvancedSettings::RegisterSettingsLoadedCallback(AdvancedSettingsCallback callback)
 {
+  // A handle handed out by one instance must never erase an entry in another.
+  static std::atomic<int> nextHandle{0};
+  const int handle{nextHandle++};
+
   std::lock_guard lock{m_listCritSection};
-  // The handle is read back from the inserted element, so it cannot drift from the key the
-  // callback is stored under and Unregister can never erase a different caller's callback.
-  const auto it =
-      m_settingsLoadedCallbacks.emplace(m_nextCallbackHandle++, std::move(callback)).first;
-  return it->first;
+  m_settingsLoadedCallbacks.emplace(handle, std::move(callback));
+  return handle;
 }
 
 void CAdvancedSettings::UnregisterSettingsLoadedCallback(int handle)
