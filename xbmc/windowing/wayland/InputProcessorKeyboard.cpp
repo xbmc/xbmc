@@ -8,7 +8,7 @@
 
 #include "InputProcessorKeyboard.h"
 
-#include "LangInfo.h"
+#include "language/LangInfo.h"
 #include "utils/log.h"
 
 #include "platform/linux/input/EvdevKeyMapping.h"

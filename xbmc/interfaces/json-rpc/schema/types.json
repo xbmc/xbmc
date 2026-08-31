@@ -635,7 +635,7 @@
       "language": {
         "type": "string",
         "required": true,
-        "description": "BCP 47 language tag (e.g. en, en-AU), empty when the stream declares none, passed through unchanged when unrecognized"
+        "description": "BCP 47 language tag (e.g. en, en-AU), empty when the stream declares none, und where it declares one that names no language"
       },
       "codec": {
         "type": "string",
@@ -686,7 +686,7 @@
       "language": {
         "type": "string",
         "required": true,
-        "description": "BCP 47 language tag (e.g. en, en-AU), empty when the stream declares none, passed through unchanged when unrecognized"
+        "description": "BCP 47 language tag (e.g. en, en-AU), empty when the stream declares none, und where it declares one that names no language"
       },
       "codec": {
         "type": "string",
@@ -717,7 +717,7 @@
       "language": {
         "type": "string",
         "required": true,
-        "description": "BCP 47 language tag (e.g. en, en-AU), empty when the stream declares none, passed through unchanged when unrecognized"
+        "description": "BCP 47 language tag (e.g. en, en-AU), empty when the stream declares none, und where it declares one that names no language"
       },
       "isdefault": {
         "type": "boolean",
@@ -4464,7 +4464,7 @@
       "language": {
         "type": "string",
         "minLength": 1,
-        "description": "Current language code and region e.g. en_GB"
+        "description": "The interface language as a BCP 47 language tag e.g. en-GB"
       }
     }
   },

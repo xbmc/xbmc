@@ -11,7 +11,6 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "GUIPassword.h"
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonType.h"
@@ -23,6 +22,8 @@
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoHelper.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
+#include "language/LangInfo.h"
+#include "language/Language.h"
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfileManager.h"
 #include "rendering/RenderSystem.h"
@@ -301,7 +302,7 @@ bool CSystemGUIInfo::GetLabel(std::string& value,
       return true;
     }
     case SYSTEM_LANGUAGE:
-      value = g_langInfo.GetEnglishLanguageName();
+      value = KODI::LANGUAGE::CLanguage::GetInstance().PackName();
       return true;
     case SYSTEM_TEMPERATURE_UNITS:
       value = g_langInfo.GetTemperatureUnitString();
@@ -369,7 +370,7 @@ bool CSystemGUIInfo::GetLabel(std::string& value,
 
     case SYSTEM_LOCALE:
     {
-      value = g_langInfo.GetRegionLocale();
+      value = g_langInfo.GetRegionTerritory().ToString();
       return true;
     }
     default:

@@ -8,11 +8,11 @@
 
 #include "AdvancedSettings.h"
 
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "application/AppParams.h"
 #include "filesystem/SpecialProtocol.h"
+#include "language/i18n/LanguageTable.h"
 #include "network/DNSNameCache.h"
 #include "profiles/ProfileManager.h"
 #include "resources/LocalizeStrings.h"
@@ -22,7 +22,6 @@
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
 #include "utils/FileUtils.h"
-#include "utils/LangCodeExpander.h"
 #include "utils/Set.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
@@ -41,6 +40,72 @@ using namespace ADDON;
 
 namespace
 {
+
+/*!
+ * \brief Take the languages declared in a <languagecodes> block into the language table.
+ * \param[in] element The block, or nullptr when the file has none.
+ */
+void LoadLanguageCodes(const TiXmlElement* element)
+{
+  if (element == nullptr)
+    return;
+
+  std::map<std::string, std::string> languages;
+  for (const TiXmlElement* code = element->FirstChildElement("code"); code != nullptr;
+       code = code->NextSiblingElement("code"))
+  {
+    const TiXmlNode* shortCode = code->FirstChildElement("short");
+    const TiXmlNode* longName = code->FirstChildElement("long");
+
+    if (shortCode != nullptr && shortCode->FirstChild() != nullptr && longName != nullptr &&
+        longName->FirstChild() != nullptr)
+    {
+      languages.emplace(shortCode->FirstChild()->Value(), longName->FirstChild()->Value());
+    }
+    else
+    {
+      // A code declaring only one half of the pair states nothing, and dropping it in silence
+      // leaves the user with a block that does nothing and no way to see why
+      CLog::Log(LOGWARNING,
+                "CAdvancedSettings: <languagecodes> holds a <code> without both a <short> and a "
+                "<long>, which declares no language and is ignored");
+    }
+  }
+
+  KODI::LANGUAGE::I18N::CLanguageTable::GetInstance().Declare(languages);
+}
+
+/*!
+ * \brief Take the words a <sorttokens> block asks a sort to step over.
+ * \param[in] element The block, or nullptr when the file has none.
+ * \param[out] tokens The words, each stored once per separator it may be followed by.
+ */
+void LoadSortTokens(const TiXmlNode* element, KODI::LANGUAGE::CLanguage::Tokens& tokens)
+{
+  if (element == nullptr || element->NoChildren())
+    return;
+
+  for (const TiXmlElement* token = element->FirstChildElement("token"); token != nullptr;
+       token = token->NextSiblingElement())
+  {
+    if (token->FirstChild() == nullptr || token->FirstChild()->Value() == nullptr)
+      continue;
+
+    const std::string word = token->FirstChild()->ValueStr();
+    const std::string separators =
+        token->Attribute("separators") ? token->Attribute("separators") : " ._";
+
+    if (separators.empty())
+    {
+      tokens.insert(word);
+    }
+    else
+    {
+      for (const char separator : separators)
+        tokens.insert(word + separator);
+    }
+  }
+}
 
 bool ValidateVideoStackRegex(const CRegExp& regex)
 {
@@ -1085,7 +1150,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     GetCustomExtensions(pExts, m_discStubExtensions);
 
   m_vecTokens.clear();
-  CLangInfo::LoadTokens(pRootElement->FirstChild("sorttokens"), m_vecTokens);
+  LoadSortTokens(pRootElement->FirstChild("sorttokens"), m_vecTokens);
 
   //! @todo Should cache path be given in terms of our predefined paths??
   //! Are we even going to have predefined paths??
@@ -1094,7 +1159,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     m_cachePath = tmp;
   URIUtils::AddSlashAtEnd(m_cachePath);
 
-  CLangCodeExpander::LoadUserCodes(pRootElement->FirstChildElement("languagecodes"));
+  LoadLanguageCodes(pRootElement->FirstChildElement("languagecodes"));
 
   // trailer matching regexps
   const TiXmlElement* pTrailerMatching = pRootElement->FirstChildElement("trailermatching");

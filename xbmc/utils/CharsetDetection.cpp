@@ -8,7 +8,7 @@
 
 #include "CharsetDetection.h"
 
-#include "LangInfo.h"
+#include "language/Language.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/Utf8Utils.h"
@@ -312,7 +312,7 @@ bool CCharsetDetection::ConvertHtmlToUtf8(const std::string& htmlContent, std::s
   }
 
   // try user charset
-  std::string userCharset(g_langInfo.GetGuiCharSet());
+  std::string userCharset(KODI::LANGUAGE::CLanguage::GetInstance().GuiCharset());
   if (checkConversion(userCharset, htmlContent, converted))
   {
     usedHtmlCharset = userCharset;
@@ -379,7 +379,7 @@ bool CCharsetDetection::ConvertPlainTextToUtf8(const std::string& textContent, s
   }
 
   // try user charset
-  std::string userCharset(g_langInfo.GetGuiCharSet());
+  std::string userCharset(KODI::LANGUAGE::CLanguage::GetInstance().GuiCharset());
   if (checkConversion(userCharset, textContent, converted))
   {
     usedCharset = userCharset;

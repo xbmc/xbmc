@@ -53,8 +53,8 @@ void CPVRRadioRDSInfoTag::Serialize(CVariant& value) const
 {
   std::unique_lock lock(m_critSection);
 
-  value["strLanguage"] = m_strLanguage;
-  value["strCountry"] = m_strCountry;
+  value["strLanguage"] = m_language.ToString();
+  value["strCountry"] = m_territory.ToString();
   value["strTitle"] = m_strTitle;
   value["strBand"] = m_strBand;
   value["strArtist"] = m_strArtist;
@@ -82,8 +82,8 @@ void CPVRRadioRDSInfoTag::Archive(CArchive& ar)
 
   if (ar.IsStoring())
   {
-    ar << m_strLanguage;
-    ar << m_strCountry;
+    ar << m_language.ToString();
+    ar << m_territory.ToString();
     ar << m_strTitle;
     ar << m_strBand;
     ar << m_strArtist;
@@ -106,8 +106,12 @@ void CPVRRadioRDSInfoTag::Archive(CArchive& ar)
   }
   else
   {
-    ar >> m_strLanguage;
-    ar >> m_strCountry;
+    std::string language;
+    ar >> language;
+    m_language = KODI::LANGUAGE::CLanguageTag::Parse(language);
+    std::string territory;
+    ar >> territory;
+    m_territory = KODI::LANGUAGE::CTerritory::FromCode(territory);
     ar >> m_strTitle;
     ar >> m_strBand;
     ar >> m_strArtist;
@@ -137,7 +141,7 @@ bool CPVRRadioRDSInfoTag::operator==(const CPVRRadioRDSInfoTag& right) const
 
   std::unique_lock lock(m_critSection);
   return (
-      m_strLanguage == right.m_strLanguage && m_strCountry == right.m_strCountry &&
+      m_language == right.m_language && m_territory == right.m_territory &&
       m_strTitle == right.m_strTitle && m_strBand == right.m_strBand &&
       m_strArtist == right.m_strArtist && m_strComposer == right.m_strComposer &&
       m_strConductor == right.m_strConductor && m_strAlbum == right.m_strAlbum &&
@@ -169,8 +173,8 @@ void CPVRRadioRDSInfoTag::Clear()
 
   ResetSongInformation();
 
-  m_strLanguage.erase();
-  m_strCountry.erase();
+  m_language = {};
+  m_territory = {};
   m_strComment.erase();
   m_strInfoNews.Clear();
   m_strInfoNewsLocal.Clear();
@@ -220,28 +224,30 @@ void CPVRRadioRDSInfoTag::SetSpeechActive(bool active)
   m_RDS_SpeechActive = active;
 }
 
-void CPVRRadioRDSInfoTag::SetLanguage(const std::string& strLanguage)
+void CPVRRadioRDSInfoTag::SetLanguage(const KODI::LANGUAGE::CLanguageTag& language)
 {
   std::unique_lock lock(m_critSection);
-  m_strLanguage = Trim(strLanguage);
+  m_language = language;
 }
 
-const std::string& CPVRRadioRDSInfoTag::GetLanguage() const
+KODI::LANGUAGE::CLanguageTag CPVRRadioRDSInfoTag::GetLanguage() const
 {
+  // By value: a reference would outlive the lock that guards the member it names
   std::unique_lock lock(m_critSection);
-  return m_strLanguage;
+  return m_language;
 }
 
-void CPVRRadioRDSInfoTag::SetCountry(const std::string& strCountry)
+void CPVRRadioRDSInfoTag::SetCountry(const KODI::LANGUAGE::CTerritory& territory)
 {
   std::unique_lock lock(m_critSection);
-  m_strCountry = Trim(strCountry);
+  m_territory = territory;
 }
 
-const std::string& CPVRRadioRDSInfoTag::GetCountry() const
+KODI::LANGUAGE::CTerritory CPVRRadioRDSInfoTag::GetCountry() const
 {
+  // By value: a reference would outlive the lock that guards the member it names
   std::unique_lock lock(m_critSection);
-  return m_strCountry;
+  return m_territory;
 }
 
 void CPVRRadioRDSInfoTag::SetTitle(const std::string& strTitle)

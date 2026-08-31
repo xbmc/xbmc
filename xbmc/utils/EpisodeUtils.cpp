@@ -12,7 +12,7 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
-#include "i18n/ListFormatter.h"
+#include "language/i18n/ListFormatter.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
@@ -475,7 +475,7 @@ std::string CEpisodeUtils::GetEpisodesLabel(const CFileItem& item)
     labels.push_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(SPECIALS));
 
   // Generate label
-  using namespace KODI::UTILS::I18N;
+  using namespace KODI::LANGUAGE::I18N;
   const auto fmt =
       CListFormatter::CreateInstance(CServiceBroker::GetResourcesComponent().GetLocalizeStrings());
   const std::string label{fmt.Format(labels)};

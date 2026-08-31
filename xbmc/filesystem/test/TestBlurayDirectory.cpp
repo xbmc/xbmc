@@ -8,7 +8,7 @@
 
 #include "filesystem/BlurayDirectory.h"
 #include "filesystem/DiscDirectoryHelper.h"
-#include "utils/LanguageTag.h"
+#include "language/LanguageTag.h"
 
 #include <chrono>
 #include <vector>
@@ -17,7 +17,7 @@
 
 using namespace XFILE;
 using namespace std::chrono_literals;
-using KODI::UTILS::CLanguageTag;
+using KODI::LANGUAGE::CLanguageTag;
 
 class TestBlurayDirectory : public ::testing::Test
 {

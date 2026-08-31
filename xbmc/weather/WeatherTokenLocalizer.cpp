@@ -8,8 +8,8 @@
 
 #include "WeatherTokenLocalizer.h"
 
-#include "LangInfo.h"
 #include "ServiceBroker.h"
+#include "language/LanguageLoader.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
@@ -76,8 +76,8 @@ void CWeatherTokenLocalizer::LoadLocalizedTokens()
     language = languageSetting->GetDefault();
 
   // Load the strings.po file
-  const std::string fileName{
-      URIUtils::AddFileToFolder(CLangInfo::GetLanguagePath(language), "strings.po")};
+  const std::string fileName{URIUtils::AddFileToFolder(
+      KODI::LANGUAGE::CLanguageLoader::GetLanguagePath(language), "strings.po")};
   CPODocument poDoc;
   if (!poDoc.LoadFile(fileName))
   {

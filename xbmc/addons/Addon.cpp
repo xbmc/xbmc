@@ -185,6 +185,11 @@ const InfoMap& CAddon::ExtraInfo() const
   return m_addonInfo->ExtraInfo();
 }
 
+const std::vector<KODI::LANGUAGE::CLanguageTag>& CAddon::Languages() const
+{
+  return m_addonInfo->Languages();
+}
+
 const std::vector<DependencyInfo>& CAddon::GetDependencies() const
 {
   return m_addonInfo->GetDependencies();

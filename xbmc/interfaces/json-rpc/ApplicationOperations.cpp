@@ -10,12 +10,12 @@
 
 #include "CompileInfo.h"
 #include "InputOperations.h"
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationVolumeHandling.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
+#include "language/Language.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
@@ -152,12 +152,14 @@ JSONRPC_STATUS CApplicationOperations::GetPropertyValue(const std::string &prope
   else if (property == "sorttokens")
   {
     result = CVariant(CVariant::VariantTypeArray); // Ensure no tokens returns as []
-    const CLangInfo::Tokens sortTokens = g_langInfo.GetSortTokens();
+    const auto sortTokens = KODI::LANGUAGE::CLanguage::GetInstance().SortTokens();
     for (const auto& token : sortTokens)
       result.append(token);
   }
   else if (property == "language")
-    result = g_langInfo.GetLocale().ToShortString();
+  {
+    result = KODI::LANGUAGE::CLanguage::GetInstance().UI().ToString();
+  }
   else
     return InvalidParams;
 

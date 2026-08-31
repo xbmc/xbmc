@@ -9,13 +9,14 @@
 #include "AddonInfoBuilder.h"
 
 #include "CompileInfo.h"
-#include "LangInfo.h"
 #include "addons/Addon.h"
 #include "addons/Repository.h"
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonType.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
+#include "language/LangInfo.h"
+#include "language/LanguageTag.h"
 #include "utils/JSONVariantParser.h"
 #include "utils/JSONVariantWriter.h"
 #include "utils/StringUtils.h"
@@ -548,7 +549,24 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
       /* Parse addon.xml "<language">...</language>" */
       element = child->FirstChildElement("language");
       if (element && element->GetText() != nullptr)
+      {
         addon->AddExtraInfo("language", element->GetText());
+
+        for (const auto& token : StringUtils::Split(element->GetText(), " "))
+        {
+          if (token.empty())
+            continue;
+
+          if (const auto language = KODI::LANGUAGE::CLanguageTag::TryParse(token);
+              language.has_value())
+            addon->m_languages.emplace_back(*language);
+          else
+            CLog::Log(LOGWARNING,
+                      "CAddonInfoBuilder: add-on '{}' states a language of '{}', which names no "
+                      "language and is ignored",
+                      addon->m_id, token);
+        }
+      }
 
       /* Parse addon.xml "<reuselanguageinvoker">...</reuselanguageinvoker>" */
       element = child->FirstChildElement("reuselanguageinvoker");
@@ -767,7 +785,7 @@ bool CAddonInfoBuilder::ParseXMLExtension(CAddonExtensions& addonExt,
 
 bool CAddonInfoBuilder::GetTextList(const tinyxml2::XMLElement* element,
                                     const std::string& tag,
-                                    CLocale::LocalizedStringsMap& translatedValues)
+                                    LocalizedStringsMap& translatedValues)
 {
   if (!element)
     return false;

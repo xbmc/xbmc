@@ -2039,7 +2039,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
 
             result["index"] = index;
             result["name"] = info.name;
-            result["language"] = info.language.AsBcp47();
+            result["language"] = info.language.ToString();
             result["codec"] = info.codecName;
             result["bitrate"] = info.bitrate;
             result["channels"] = info.channels;
@@ -2079,7 +2079,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
             CVariant audioStream(CVariant::VariantTypeObject);
             audioStream["index"] = index;
             audioStream["name"] = info.name;
-            audioStream["language"] = info.language.AsBcp47();
+            audioStream["language"] = info.language.ToString();
             audioStream["codec"] = info.codecName;
             audioStream["bitrate"] = info.bitrate;
             audioStream["channels"] = info.channels;
@@ -2115,7 +2115,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
 
         result["index"] = index;
         result["name"] = info.name;
-        result["language"] = info.language.AsBcp47();
+        result["language"] = info.language.ToString();
         result["codec"] = info.codecName;
         result["width"] = info.width;
         result["height"] = info.height;
@@ -2151,7 +2151,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
           CVariant videoStream(CVariant::VariantTypeObject);
           videoStream["index"] = index;
           videoStream["name"] = info.name;
-          videoStream["language"] = info.language.AsBcp47();
+          videoStream["language"] = info.language.ToString();
           videoStream["codec"] = info.codecName;
           videoStream["width"] = info.width;
           videoStream["height"] = info.height;
@@ -2205,7 +2205,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
 
             result["index"] = index;
             result["name"] = info.name;
-            result["language"] = info.language.AsBcp47();
+            result["language"] = info.language.ToString();
             AppendSubtitleStreamFlagsAsBooleans(result, info.flags);
           }
         }
@@ -2240,7 +2240,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
             CVariant subtitle(CVariant::VariantTypeObject);
             subtitle["index"] = index;
             subtitle["name"] = info.name;
-            subtitle["language"] = info.language.AsBcp47();
+            subtitle["language"] = info.language.ToString();
             AppendSubtitleStreamFlagsAsBooleans(subtitle, info.flags);
 
             result.append(subtitle);

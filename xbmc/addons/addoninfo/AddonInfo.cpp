@@ -10,12 +10,13 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/IAddon.h"
 #include "addons/addoninfo/AddonType.h"
 #include "filesystem/Directory.h"
+#include "language/LangInfo.h"
+#include "language/Language.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
@@ -247,15 +248,48 @@ const CAddonVersion& CAddonInfo::DependencyVersion(const std::string& dependency
   return emptyVersion;
 }
 
-const std::string& CAddonInfo::GetTranslatedText(const CLocale::LocalizedStringsMap& locales) const
+namespace
+{
+//! Higher is better; -1 where the candidate names a different language altogether
+int MatchRank(const KODI::LANGUAGE::CLanguageTag& wanted,
+              const KODI::LANGUAGE::CLanguageTag& candidate)
+{
+  if (!wanted.Matches(candidate))
+    return -1;
+
+  // A translation for the same place is the better match, so two tags naming no place are not
+  // a better match than any other - only two naming the same one are
+  const KODI::LANGUAGE::CTerritory territory{wanted.GetTerritory()};
+
+  return territory != KODI::LANGUAGE::CTerritory{} && territory == candidate.GetTerritory() ? 1 : 0;
+}
+} // namespace
+
+const std::string& CAddonInfo::GetTranslatedText(const LocalizedStringsMap& locales) const
 {
   if (locales.size() == 1)
     return locales.begin()->second;
   else if (locales.empty())
     return StringUtils::Empty;
 
-  // find the language from the list that matches the current locale best
-  std::string matchingLanguage = g_langInfo.GetLocale().FindBestMatch(locales);
+  // find the language from the list that matches the interface language best
+  const KODI::LANGUAGE::CLanguageTag& wanted{KODI::LANGUAGE::CLanguage::GetInstance().UI()};
+  std::string matchingLanguage;
+  int bestRank = -1;
+
+  for (const auto& [locale, text] : locales)
+  {
+    const KODI::LANGUAGE::CLanguageTag candidate{KODI::LANGUAGE::CLanguageTag::Parse(locale)};
+    if (wanted == candidate)
+      return text;
+
+    if (const int rank = MatchRank(wanted, candidate); rank > bestRank)
+    {
+      bestRank = rank;
+      matchingLanguage = locale;
+    }
+  }
+
   if (matchingLanguage.empty())
     matchingLanguage = KODI_ADDON_DEFAULT_LANGUAGE_CODE;
 

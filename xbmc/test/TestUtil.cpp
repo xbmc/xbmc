@@ -921,7 +921,7 @@ TEST_P(TestExternalStreamDetails, GetExternalStreamDetailsFromFilename)
   const ExternalStreamInfo info =
       CUtil::GetExternalStreamDetailsFromFilename(GetParam().videoPath, GetParam().associatedFile);
 
-  EXPECT_EQ(info.language.AsBcp47(), GetParam().language);
+  EXPECT_EQ(info.language.ToString(), GetParam().language);
   EXPECT_EQ(info.flag, GetParam().flag);
 }
 

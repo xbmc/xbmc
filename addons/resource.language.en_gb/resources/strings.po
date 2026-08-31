@@ -24982,7 +24982,7 @@ msgstr ""
 
 #. List formatting: pattern used to join a list of exactly two items, e.g. "A and B"
 #. STR_LIST_AND_TWO
-#: xbmc/utils/i18n/ListFormatter.h
+#: xbmc/language/i18n/ListFormatter.h
 msgctxt "#39900"
 msgid "{0} and {1}"
 msgstr ""
@@ -24990,21 +24990,21 @@ msgstr ""
 #. List formatting: pattern used to join the first item to the rest of a list of three or more items, e.g. "A" + "B, and C" -> "A, B, and C"
 #. Note the "B, and C" is used here as an example - the actual formatting of the last two item(s) of a list of three of more is determined by STR_LIST_AND_END
 #. STR_LIST_AND_START
-#: xbmc/utils/i18n/ListFormatter.h
+#: xbmc/language/i18n/ListFormatter.h
 msgctxt "#39901"
 msgid "{0}, {1}"
 msgstr ""
 
 #. List formatting: pattern used to join an already-combined partial list to the next item, for the interior items of a list of four or more, e.g. "A, B" + "C" -> "A, B, C"
 #. STR_LIST_AND_MIDDLE
-#: xbmc/utils/i18n/ListFormatter.h
+#: xbmc/language/i18n/ListFormatter.h
 msgctxt "#39902"
 msgid "{0}, {1}"
 msgstr ""
 
 #. List formatting: pattern used to join the already-combined partial list to the final item in a list of three or more items, e.g. "A, B" + "C" -> "A, B, and C"
 #. STR_LIST_AND_END
-#: xbmc/utils/i18n/ListFormatter.h
+#: xbmc/language/i18n/ListFormatter.h
 msgctxt "#39903"
 msgid "{0}, and {1}"
 msgstr ""
@@ -25013,7 +25013,7 @@ msgstr ""
 
 #. List formatting: pattern used to join a list of exactly two items, e.g. "A or B"
 #. STR_LIST_OR_TWO
-#: xbmc/utils/i18n/ListFormatter.h
+#: xbmc/language/i18n/ListFormatter.h
 msgctxt "#39910"
 msgid "{0} or {1}"
 msgstr ""
@@ -25022,7 +25022,7 @@ msgstr ""
 #. Note: the "or"-type list uses only TWO and END patterns; the START and MIDDLE joins for lists of three or more still use the AND-type comma pattern 
 #. (STR_LIST_AND_START / STR_LIST_AND_MIDDLE), with only the very last join switching to "or"
 #. STR_LIST_OR_END
-#: xbmc/utils/i18n/ListFormatter.h
+#: xbmc/language/i18n/ListFormatter.h
 msgctxt "#39911"
 msgid "{0}, or {1}"
 msgstr ""

@@ -15,6 +15,8 @@ set(SOURCES AudioSinkAE.cpp
             Edl/EdlParsers/PvrEdlParser.cpp
             Edl/EdlParsers/VideoReDoParser.cpp
             PTSTracker.cpp
+            RadioRDSCountries.cpp
+            RadioRDSLanguages.cpp
             VideoPlayer.cpp
             VideoPlayerAudio.cpp
             VideoPlayerAudioID3.cpp

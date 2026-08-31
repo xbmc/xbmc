@@ -6,10 +6,11 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "XBDateTime.h"
 #include "interfaces/legacy/ModuleXbmc.h" //Needed to test getRegion()
+#include "language/LangInfo.h"
+#include "language/LanguageLoader.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 
@@ -434,7 +435,7 @@ TEST_F(TestDateTime, GetAsLocalized)
   // "YYYY. MMMM. D"
 
   ASSERT_TRUE(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Load(
-      g_langInfo.GetLanguagePath(), "resource.language.en_gb"));
+      KODI::LANGUAGE::CLanguageLoader::GetLanguagePath(), "resource.language.en_gb"));
 
   // 24 hour clock must be set before time format
   g_langInfo.Set24HourClock(false);

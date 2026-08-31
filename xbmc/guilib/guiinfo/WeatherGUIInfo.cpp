@@ -9,10 +9,10 @@
 #include "guilib/guiinfo/WeatherGUIInfo.h"
 
 #include "FileItem.h"
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
+#include "language/LangInfo.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"

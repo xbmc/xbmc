@@ -19,11 +19,11 @@
 #include "VideoDatabase.h"
 #include "dbwrappers/dataset.h"
 #include "filesystem/MultiPathDirectory.h"
+#include "language/i18n/TableLanguageCodes.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "utils/i18n/TableLanguageCodes.h"
 #include "utils/log.h"
 
 #include <algorithm>

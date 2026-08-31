@@ -7,17 +7,17 @@
  */
 #include "LanguageResource.h"
 
-#include "LangInfo.h"
 #include "ServiceBroker.h"
-#include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonType.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "language/LanguageLoader.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 
 using namespace KODI::MESSAGING;
 
@@ -34,9 +34,19 @@ namespace ADDON
 CLanguageResource::CLanguageResource(const AddonInfoPtr& addonInfo)
   : CResource(addonInfo, AddonType::RESOURCE_LANGUAGE),
     // parse <extension> attributes
-    m_locale(
-        CLocale::FromString(Type(AddonType::RESOURCE_LANGUAGE)->GetValue("@locale").asString()))
+    m_language(KODI::LANGUAGE::CLanguageTag::Parse(
+        Type(AddonType::RESOURCE_LANGUAGE)->GetValue("@locale").asString()))
 {
+  // The locale is kept as written either way, so an addon naming a language Kodi does not know
+  // still loads - it simply cannot be matched against media, which is worth saying out loud
+  if (!m_language.IsValid())
+  {
+    CLog::Log(LOGWARNING,
+              "CLanguageResource: addon '{}' states a locale of '{}', which names no language "
+              "Kodi recognizes",
+              ID(), m_language.ToString());
+  }
+
   // parse <charsets>
   const CAddonExtensions* charsetsElement =
       Type(AddonType::RESOURCE_LANGUAGE)->GetElement("charsets");
@@ -46,22 +56,6 @@ CLanguageResource::CLanguageResource(const AddonInfoPtr& addonInfo)
     m_forceUnicodeFont = charsetsElement->GetValue("gui@unicodefont").asBoolean();
     m_charsetSubtitle = charsetsElement->GetValue("subtitle").asString();
   }
-
-  // parse <dvd>
-  const CAddonExtensions* dvdElement = Type(AddonType::RESOURCE_LANGUAGE)->GetElement("dvd");
-  if (dvdElement != nullptr)
-  {
-    m_dvdLanguageMenu = dvdElement->GetValue("menu").asString();
-    m_dvdLanguageAudio = dvdElement->GetValue("audio").asString();
-    m_dvdLanguageSubtitle = dvdElement->GetValue("subtitle").asString();
-  }
-  // fall back to the language of the addon if a DVD language is not defined
-  if (m_dvdLanguageMenu.empty())
-    m_dvdLanguageMenu = m_locale.GetLanguageCode();
-  if (m_dvdLanguageAudio.empty())
-    m_dvdLanguageAudio = m_locale.GetLanguageCode();
-  if (m_dvdLanguageSubtitle.empty())
-    m_dvdLanguageSubtitle = m_locale.GetLanguageCode();
 
   // parse <sorttokens>
   const CAddonExtensions* sorttokensElement =
@@ -108,7 +102,7 @@ void CLanguageResource::OnPostInstall(bool update, bool modal)
                      DialogResponse::CHOICE_YES)))
   {
     if (IsInUse())
-      g_langInfo.SetLanguage(ID());
+      KODI::LANGUAGE::CLanguageLoader::GetInstance().Load(ID());
     else
       CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(CSettings::SETTING_LOCALE_LANGUAGE, ID());
   }
@@ -131,22 +125,6 @@ std::string CLanguageResource::GetAddonId(const std::string& locale)
 
   StringUtils::ToLower(addonId);
   return addonId;
-}
-
-bool CLanguageResource::FindLegacyLanguage(const std::string &locale, std::string &legacyLanguage)
-{
-  if (locale.empty())
-    return false;
-
-  std::string addonId = GetAddonId(locale);
-
-  AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(addonId, addon, AddonType::RESOURCE_LANGUAGE,
-                                              OnlyEnabled::CHOICE_YES))
-    return false;
-
-  legacyLanguage = addon->Name();
-  return true;
 }
 
 }

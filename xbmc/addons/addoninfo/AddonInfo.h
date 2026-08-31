@@ -10,14 +10,16 @@
 
 #include "XBDateTime.h"
 #include "addons/AddonVersion.h"
+#include "language/LanguageTag.h"
 #include "utils/Artwork.h"
-#include "utils/Locale.h"
 
+#include <functional>
 #include <map>
 #include <memory>
 #include <optional>
 #include <string>
 #include <string_view>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -132,6 +134,19 @@ struct DependencyInfo
 
 using InfoMap = std::map<std::string, std::string, std::less<>>;
 
+struct StringHash
+{
+  using is_transparent = void; // Enables heterogeneous operations.
+  std::size_t operator()(std::string_view sv) const
+  {
+    std::hash<std::string_view> hasher;
+    return hasher(sv);
+  }
+};
+
+//! \brief Text an add-on states in several languages, keyed by the locale it named each in.
+using LocalizedStringsMap = std::unordered_map<std::string, std::string, StringHash, std::equal_to<>>;
+
 class CAddonInfoBuilder;
 
 class CAddonInfo
@@ -235,6 +250,13 @@ public:
 
   const InfoMap& ExtraInfo() const { return m_extrainfo; }
 
+  /*!
+   * \brief The languages the add-on states it provides content in.
+   * \return The languages, empty where the add-on states none. Text naming no language was
+   *         reported and dropped when addon.xml was read.
+   */
+  const std::vector<KODI::LANGUAGE::CLanguageTag>& Languages() const { return m_languages; }
+
   bool MeetsVersion(const CAddonVersion& versionMin, const CAddonVersion& version) const;
   uint64_t PackageSize() const { return m_packageSize; }
   CDateTime InstallDate() const { return m_installDate; }
@@ -272,8 +294,8 @@ private:
   bool m_isBinary = false;
   std::string m_name;
   std::string m_license;
-  CLocale::LocalizedStringsMap m_summary;
-  CLocale::LocalizedStringsMap m_description;
+  LocalizedStringsMap m_summary;
+  LocalizedStringsMap m_description;
   std::string m_author;
   std::string m_source;
   std::string m_website;
@@ -281,14 +303,14 @@ private:
   std::string m_email;
   std::string m_path;
   std::string m_profilePath;
-  CLocale::LocalizedStringsMap m_changelog;
+  LocalizedStringsMap m_changelog;
   std::string m_icon;
   KODI::ART::Artwork m_art;
   std::vector<std::string> m_screenshots;
-  CLocale::LocalizedStringsMap m_disclaimer;
+  LocalizedStringsMap m_disclaimer;
   std::vector<DependencyInfo> m_dependencies;
   AddonLifecycleState m_lifecycleState = AddonLifecycleState::NORMAL;
-  CLocale::LocalizedStringsMap m_lifecycleStateDescription;
+  LocalizedStringsMap m_lifecycleStateDescription;
   CDateTime m_installDate;
   CDateTime m_lastUpdated;
   CDateTime m_lastUsed;
@@ -297,12 +319,13 @@ private:
   uint64_t m_packageSize = 0;
   std::string m_libname;
   InfoMap m_extrainfo;
+  std::vector<KODI::LANGUAGE::CLanguageTag> m_languages;
   std::vector<std::string> m_platforms;
   AddonInstanceSupport m_addonInstanceSupportType{AddonInstanceSupport::SUPPORT_NONE};
   bool m_supportsAddonSettings{false};
   bool m_supportsInstanceSettings{false};
 
-  const std::string& GetTranslatedText(const CLocale::LocalizedStringsMap& locales) const;
+  const std::string& GetTranslatedText(const LocalizedStringsMap& locales) const;
 };
 
 } /* namespace ADDON */

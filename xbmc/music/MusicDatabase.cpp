@@ -14,7 +14,6 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "GUIInfoManager.h"
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "Song.h"
 #include "TextureCache.h"
@@ -51,6 +50,7 @@
 #ifdef HAS_OPTICAL_DRIVE
 #include "network/cddb.h"
 #endif // HAS_OPTICAL_DRIVE
+#include "language/Language.h"
 #include "playlists/SmartPlayList.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
@@ -8302,7 +8302,7 @@ std::string CMusicDatabase::GetIgnoreArticleSQL(const std::string& strField) con
     WHEN strArtist LIKE 'an ' OR strArtist LIKE 'an.' strArtist LIKE 'an_' ESCAPE '_'
     THEN SUBSTR(strArtist, 4)
   */
-  const CLangInfo::Tokens sortTokens = g_langInfo.GetSortTokens();
+  const auto sortTokens = KODI::LANGUAGE::CLanguage::GetInstance().SortTokens();
   std::string sortclause;
   size_t tokenlength = 0;
   std::string strWhen;

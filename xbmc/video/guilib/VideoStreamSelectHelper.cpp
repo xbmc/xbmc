@@ -18,7 +18,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
-#include "utils/LangCodeExpander.h"
 #include "utils/StreamDetails.h"
 #include "utils/StreamUtils.h"
 #include "utils/StringUtils.h"

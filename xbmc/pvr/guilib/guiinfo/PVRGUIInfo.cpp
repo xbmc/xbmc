@@ -1350,7 +1350,7 @@ bool CPVRGUIInfo::GetRadioRDSLabel(const CFileItem* item,
     switch (info.GetInfo())
     {
       case RDS_CHANNEL_COUNTRY:
-        strValue = tag->GetCountry();
+        strValue = tag->GetCountry().ToString();
         return true;
       case RDS_TITLE:
         strValue = tag->GetTitle();
@@ -1468,7 +1468,7 @@ bool CPVRGUIInfo::GetRadioRDSLabel(const CFileItem* item,
         strValue = tag->GetProgNext();
         return true;
       case RDS_AUDIO_LANG:
-        strValue = tag->GetLanguage();
+        strValue = tag->GetLanguage().ToString();
         return true;
       case RDS_GET_RADIOTEXT_LINE:
         strValue = tag->GetRadioText(info.GetData1());

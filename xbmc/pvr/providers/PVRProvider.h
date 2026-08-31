@@ -11,7 +11,6 @@
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_providers.h"
 #include "pvr/PVRCachedImage.h"
 #include "threads/CriticalSection.h"
-#include "utils/ISerializable.h"
 #include "utils/ISortable.h"
 
 #include <memory>
@@ -31,7 +30,7 @@ enum class ProviderUpdateMode
 static constexpr int PVR_PROVIDER_ADDON_UID = -1;
 static constexpr int PVR_PROVIDER_INVALID_DB_ID = -1;
 
-class CPVRProvider final : public ISerializable, public ISortable
+class CPVRProvider final : public ISortable
 {
 public:
   static const std::string IMAGE_OWNER_PATTERN;
@@ -44,8 +43,6 @@ public:
                const std::string& addonThumbPath);
 
   bool operator==(const CPVRProvider& right) const;
-
-  void Serialize(CVariant& value) const override;
 
   // ISortable implementation
   void ToSortable(SortItem& sortable, Field field) const override;
@@ -132,19 +129,6 @@ public:
   std::string GetClientIconPath() const;
 
   /*!
-   * @brief Get this provider's country codes (ISO 3166).
-   * @return This provider's country codes.
-   */
-  std::vector<std::string> GetCountries() const;
-
-  /*!
-   * @brief Set the country codes for this provider
-   * @param countries The new ISO 3166 country codes for this provider.
-   * @return true if the country codes were updated successfully
-   */
-  bool SetCountries(const std::vector<std::string>& countries);
-
-  /*!
    * @brief Get this provider's country codes (ISO 3166) as a string.
    * @return This provider's country codes.
    */
@@ -156,19 +140,6 @@ public:
    * @return true if the country codes were updated successfully
    */
   bool SetCountriesFromDBString(std::string_view strCountries);
-
-  /*!
-   * @brief Get this provider's language codes (RFC 5646).
-   * @return This provider's language codes
-   */
-  std::vector<std::string> GetLanguages() const;
-
-  /*!
-   * @brief Set the language codes for this provider
-   * @param languages The new RFC 5646 language codes for this provider.
-   * @return true if the language codes were updated successfully
-   */
-  bool SetLanguages(const std::vector<std::string>& languages);
 
   /*!
    * @brief Get this provider's language codes (RFC 5646) as a string.

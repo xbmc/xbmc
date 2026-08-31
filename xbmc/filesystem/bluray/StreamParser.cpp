@@ -11,7 +11,7 @@
 #include "M2TSParser.h"
 #include "PlaylistStructure.h"
 #include "filesystem/DiscDirectoryHelper.h"
-#include "utils/LanguageTag.h"
+#include "language/LanguageTag.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -24,7 +24,7 @@
 #include <fmt/format.h>
 #include <libbluray/bluray.h>
 
-using namespace KODI::UTILS;
+using namespace KODI::LANGUAGE;
 
 namespace XFILE
 {
@@ -225,7 +225,7 @@ AudioStreamInfo PopulateAudioStreamInfo(const StreamInformation& stream,
       break;
   }
 
-  asi.language = CLanguageTag::Parse(stream.language);
+  asi.language = CLanguageTag::ParseStreamLanguage(stream.language);
 
   return asi;
 }
@@ -381,7 +381,7 @@ void AddStream(const StreamInformation& stream,
     {
       SubtitleStreamInfo ssi;
       ssi.valid = true;
-      ssi.language = CLanguageTag::Parse(stream.language);
+      ssi.language = CLanguageTag::ParseStreamLanguage(stream.language);
       if (defaults.subtitle == stream.packetIdentifier)
         ssi.flags = static_cast<StreamFlags>(ssi.flags | StreamFlags::FLAG_DEFAULT);
 

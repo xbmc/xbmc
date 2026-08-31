@@ -9,7 +9,6 @@
 #include "WeatherJob.h"
 
 #include "GUIUserMessages.h"
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "XBDateTime.h"
 #include "addons/AddonManager.h"
@@ -18,6 +17,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
+#include "language/LangInfo.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
 #include "resources/LocalizeStrings.h"

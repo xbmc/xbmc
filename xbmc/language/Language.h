@@ -1,0 +1,214 @@
+/*
+ *  Copyright (C) 2026 Team Kodi
+ *  This file is part of Kodi - https://kodi.tv
+ *
+ *  SPDX-License-Identifier: GPL-2.0-or-later
+ *  See LICENSES/README.md for more information.
+ */
+
+#pragma once
+
+#include "language/LanguageTag.h"
+
+#include <memory>
+#include <set>
+#include <string>
+#include <string_view>
+
+namespace ADDON
+{
+class CLanguageResource;
+}
+
+namespace KODI::LANGUAGE
+{
+//! The active language pack
+using LanguageResourcePtr = std::shared_ptr<ADDON::CLanguageResource>;
+
+// The setting values that name no language
+constexpr std::string_view languageSettingDefault = "default";
+constexpr std::string_view languageSettingOriginal = "original";
+constexpr std::string_view audioLanguageSettingMediaDefault = "mediadefault";
+constexpr std::string_view subtitleLanguageSettingNone = "none";
+constexpr std::string_view subtitleLanguageSettingForcedOnly = "forced_only";
+
+/*!
+ * \brief What the user asked for when choosing an audio or subtitle language.
+ *
+ * A setting states either a language or a way of choosing one, and the two are not
+ * interchangeable: asking for the original-language track is not the same question as asking for
+ * a track in a named language, and neither is answerable by the other. Holding both in one value
+ * is what lets a caller act on the choice without reading the setting back.
+ */
+class CLanguagePreference
+{
+public:
+  enum class Kind
+  {
+    Language, //!< the language the preference names
+    FollowUI, //!< whichever language the interface is in
+    MediaDefault, //!< whatever the media itself presents first - audio only
+    Original, //!< the track carrying the work's original language
+    None, //!< nothing at all - subtitles only
+    ForcedOnly, //!< only tracks marked forced - subtitles only
+  };
+
+  CLanguagePreference() = default;
+
+  /*!
+   * \brief Read an audio language setting.
+   * \param[in] setting The setting value.
+   * \return The preference. Text naming neither a language nor a known choice is reported and
+   *         treated as no preference, so a bad setting cannot leave playback matching nothing.
+   */
+  static CLanguagePreference ForAudio(const std::string& setting);
+
+  /*!
+   * \brief Read a subtitle language setting.
+   * \param[in] setting The setting value.
+   * \return The preference, as ForAudio describes.
+   */
+  static CLanguagePreference ForSubtitles(const std::string& setting);
+
+  Kind GetKind() const { return m_kind; }
+  bool Is(Kind kind) const { return m_kind == kind; }
+
+  /*!
+   * \brief The language the preference names.
+   * \return The language, or an empty tag for every kind that names none.
+   */
+  const CLanguageTag& GetLanguage() const { return m_language; }
+
+  /*!
+   * \brief The language a track should be matched against.
+   * \param[in] ui The interface language, which is what FollowUI asks for.
+   * \return The language to match, or an empty tag where the preference is answered by something
+   *         other than a language - a stream flag, or nothing being wanted at all.
+   */
+  CLanguageTag Resolve(const CLanguageTag& ui) const;
+
+  bool operator==(const CLanguagePreference& other) const = default;
+
+private:
+  CLanguagePreference(Kind kind, CLanguageTag language)
+    : m_kind(kind),
+      m_language(std::move(language))
+  {
+  }
+
+  static CLanguagePreference Parse(const std::string& setting, Kind unrecognized);
+
+  Kind m_kind{Kind::FollowUI};
+  CLanguageTag m_language;
+};
+
+/*!
+ * \brief The language the interface is in, the languages the user wants to hear and read, and
+ *        the active language pack.
+ */
+class CLanguage
+{
+public:
+  //! The leading words a sort steps over, each held with the separator that follows it
+  using Tokens = std::set<std::string, std::less<>>;
+
+  /*!
+   * \brief The one instance, holding what the running application is set to.
+   * \note The character sets and the sort tokens read settings; the languages do not.
+   */
+  static CLanguage& GetInstance();
+
+  CLanguage() = default;
+
+  /*!
+   * \brief The language the interface is in.
+   * \note This is the language of the pack the user chose, so it carries whatever region that
+   *       pack states - en-GB and en-US are different answers, and anything ranking a
+   *       translation by territory needs them to be.
+   * \return The language.
+   */
+  const CLanguageTag& UI() const { return m_ui; }
+
+  /*!
+   * \brief The language an audio track should be matched against.
+   *
+   * The audio preference, resolving "default" to the interface language. A preference answered
+   * by something other than a language - the media's own first track, or the original-language
+   * track - names none, and the caller decides what to do instead.
+   *
+   * \return The language, or an empty tag where the choice is not made by language.
+   */
+  CLanguageTag Audio() const { return m_audio.Resolve(m_ui); }
+
+  /*!
+   * \brief The language a subtitle track should be matched against.
+   *
+   * The interface language is deliberately not part of this, though it is part of Audio: a
+   * viewer who has stated no subtitle language is answered by the one they asked to hear, and
+   * failing that by whatever is playing. The caller supplies that last step, as it is not a
+   * setting.
+   *
+   * \return The language, or an empty tag where neither preference states one.
+   */
+  CLanguageTag Subtitle() const;
+
+  /*!
+   * \brief What the user asked for, rather than the language it resolves to.
+   * \note For the caller that has to act on the choice itself - preferring the media's own
+   *       first track, or the one flagged original, neither of which is a language.
+   */
+  const CLanguagePreference& AudioPreference() const { return m_audio; }
+
+  //! \brief What the user asked for, as AudioPreference describes.
+  const CLanguagePreference& SubtitlePreference() const { return m_subtitle; }
+
+  /*!
+   * \brief The language pack the interface is running.
+   * \return The pack, or nullptr before one has been loaded.
+   */
+  const LanguageResourcePtr& Pack() const { return m_pack; }
+
+  /*!
+   * \brief The name the active language pack states for itself, in english.
+   * \return The name, or empty when no pack has been loaded.
+   */
+  std::string PackName() const;
+
+  /*!
+   * \brief The character set the interface's text is in.
+   * \return The set the user chose, or the one the pack states where the user chose none.
+   */
+  std::string GuiCharset() const;
+
+  //! \brief The character set subtitles are read as, as GuiCharset describes.
+  std::string SubtitleCharset() const;
+
+  /*!
+   * \brief The leading words a sort steps over - "the", "le", "der".
+   * \note The pack's words, plus advancedsettings.xml's.
+   * \return The words, each carrying the separator that follows it.
+   */
+  Tokens SortTokens() const;
+
+  /*!
+   * \brief Run the interface in the language pack the user chose.
+   * \param[in] pack The pack, or nullptr to fall back to english.
+   */
+  void SetPack(const LanguageResourcePtr& pack);
+
+  //! \brief The interface language, for the caller that has no pack to take it from.
+  void SetUI(const CLanguageTag& language) { m_ui = language; }
+  void SetAudio(const std::string& setting) { m_audio = CLanguagePreference::ForAudio(setting); }
+  void SetSubtitle(const std::string& setting)
+  {
+    m_subtitle = CLanguagePreference::ForSubtitles(setting);
+  }
+
+private:
+  //! English until a pack states otherwise
+  CLanguageTag m_ui{CLanguageTag::English()};
+  CLanguagePreference m_audio;
+  CLanguagePreference m_subtitle;
+  LanguageResourcePtr m_pack;
+};
+} // namespace KODI::LANGUAGE

@@ -9,8 +9,8 @@
 #pragma once
 
 #include "MediaSource.h" // Definition of std::vector<CMediaSource>
+#include "language/LanguageTag.h"
 #include "utils/Digest.h"
-#include "utils/LanguageTag.h"
 #include "utils/RegExp.h"
 
 #include <cstdint>
@@ -37,7 +37,7 @@ class CURL;
 struct ExternalStreamInfo
 {
   std::string name;
-  KODI::UTILS::CLanguageTag language;
+  KODI::LANGUAGE::CLanguageTag language;
   unsigned int flag = 0;
 };
 
