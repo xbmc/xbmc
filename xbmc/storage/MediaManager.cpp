@@ -423,19 +423,6 @@ bool CMediaManager::IsDiscInDrive(const std::string& devicePath)
 {
 #ifdef HAS_OPTICAL_DRIVE
 #ifdef TARGET_WINDOWS
-  if (!m_bOpticalDrivePresent)
-    return false;
-
-  std::string strDevice = TranslateDevicePath(devicePath, false);
-
-  // m_mapCdInfo is only populated for audio CDs
-  {
-    std::unique_lock waitLock(m_muAutoSource);
-    if (m_mapCdInfo.contains(strDevice))
-      return true;
-  }
-
-  // Check physical drive state (for video discs)
   return GetDriveStatus(devicePath) == DriveState::CLOSED_MEDIA_PRESENT;
 #else
   if(URIUtils::IsDVD(devicePath) || devicePath.empty())
