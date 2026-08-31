@@ -72,6 +72,8 @@ public:
   bool HasOpticalDrive();
   std::string TranslateDevicePath(const std::string& devicePath, bool bReturnAsDevice=false);
   DriveState GetDriveStatus(const std::string& devicePath = "");
+
+  void ResetDriveStatusCache();
 #ifdef HAS_OPTICAL_DRIVE
   MEDIA_DETECT::CCdInfo* GetCdInfo(const std::string& devicePath="");
   bool RemoveCdInfo(const std::string& devicePath="");
@@ -167,6 +169,11 @@ private:
 
   void RemoveDiscInfo(const std::string& devicePath);
   std::map<std::string, UTILS::DISCS::DiscInfo> m_mapDiscInfo;
+#if defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
+  /*! Last known state of each optical drive, to keep the GUI off the hardware - see GetDriveStatus */
+  std::map<std::string, DriveState> m_driveStatusCache;
+  CCriticalSection m_driveStatusSection;
+#endif
 #ifdef HAVE_LIBBLURAY
   HasBlurayPlaylist m_hasBlurayPlaylist{HasBlurayPlaylist::UNKNOWN};
 #endif
