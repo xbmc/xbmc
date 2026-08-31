@@ -25386,6 +25386,7 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#40803"
 msgid "Monitor change may require restart."
+msgstr ""
 
 # Value formatting for ReplayGain Preamp settings
 #: system/settings/settings.xml
