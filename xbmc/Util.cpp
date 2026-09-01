@@ -341,8 +341,8 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
   URIUtils::RemoveSlashAtEnd(path);
   // A VFS path carries percent escapes; a local path and the friendly names assigned
   // below do not, so only this one is decoded.
-  std::string strFilename = URIUtils::IsURL(path) ? CURL::Decode(URIUtils::GetFileName(path))
-                                                  : URIUtils::GetFileName(path);
+  std::string strFilename =
+      URIUtils::IsURL(path) ? URIUtils::GetDecodedFileName(path) : URIUtils::GetFileName(path);
 
 #ifdef HAS_UPNP
   // UPNP
