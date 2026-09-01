@@ -38,6 +38,9 @@ public:
   static std::string URLEncode(std::string_view strURLData, std::string_view URLSpec = RFC1738);
   static std::string URLDecode(std::string_view strURLData);
 
+  /*! \brief Decode a path component, leaving a literal '+' alone. */
+  static std::string DecodePathEscapes(std::string_view strURLData);
+
   static void RegisterAdvancedSettings(const CAdvancedSettings& advancedSettings);
   static void UnregisterAdvancedSettings();
 
@@ -46,7 +49,7 @@ public:
   static std::string GetFileName(const CURL& url);
   static std::string GetFileName(const std::string& strFileNameAndPath);
 
-  /*! rief The file name with any percent escapes resolved, as a label carries it. */
+  /*! \brief The file name with any percent escapes resolved, as a label carries it. */
   static std::string GetDecodedFileName(const CURL& url);
   static std::string GetDecodedFileName(const std::string& strFileNameAndPath);
   static std::string GetFileOrFolderName(std::string_view path);

@@ -219,7 +219,8 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
     // is the label the actual file or folder name? A VFS that escapes its names hands the
     // label over decoded, so the escaped form has to be compared as well.
     const std::string& path = item->GetPath();
-    if (value == URIUtils::GetFileName(path) || value == URIUtils::GetDecodedFileName(path))
+    if (value == URIUtils::GetFileName(path) ||
+        (URIUtils::IsURL(path) && value == URIUtils::GetDecodedFileName(path)))
     { // label is the same as filename, clean it up as appropriate
       value = CUtil::GetTitleFromPath(item->GetPath(), item->IsFolder() && !item->IsFileFolder());
     }
