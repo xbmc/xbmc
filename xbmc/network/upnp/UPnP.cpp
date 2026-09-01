@@ -477,6 +477,25 @@ public:
                                                                                   userdata);
   }
 
+  /*!
+   * The sink list a resource is chosen against is populated only by ConnectionManager eventing,
+   * and an event naming its properties anything else leaves it empty. Ask the renderer outright.
+   */
+  void OnGetProtocolInfoResult(NPT_Result res,
+                               PLT_DeviceDataReference& device,
+                               PLT_StringList* sources,
+                               PLT_StringList* sinks,
+                               void* userdata) override
+  {
+    if (NPT_FAILED(res))
+      return;
+
+    if (sinks)
+      StoreProtocolInfo(device, "SinkProtocolInfo", *sinks);
+    if (sources)
+      StoreProtocolInfo(device, "SourceProtocolInfo", *sources);
+  }
+
   bool OnMRAdded(PLT_DeviceDataReference& device) override
   {
     if (device->GetUUID().IsEmpty() || device->GetUUID().GetChars() == NULL)
@@ -488,6 +507,8 @@ public:
                                          (const char*)device->GetFriendlyName());
 
     m_registeredRenderers.insert(std::string(device->GetUUID().GetChars()));
+
+    GetProtocolInfo(device, nullptr);
     return true;
   }
 
@@ -502,6 +523,28 @@ public:
   }
 
 private:
+  /*! rief Write a protocolInfo list where the state variable eventing would have put it. */
+  static void StoreProtocolInfo(PLT_DeviceDataReference& device,
+                                const char* variable,
+                                const PLT_StringList& values)
+  {
+    PLT_Service* service = nullptr;
+    if (NPT_FAILED(
+            device->FindServiceByType("urn:schemas-upnp-org:service:ConnectionManager:*", service)))
+      return;
+
+    NPT_String joined;
+    for (NPT_List<NPT_String>::Iterator value = values.GetFirstItem(); value; ++value)
+    {
+      if (!joined.IsEmpty())
+        joined += ",";
+      joined += *value;
+    }
+
+    if (!joined.IsEmpty())
+      service->SetStateVariable(variable, joined);
+  }
+
   void unregisterRenderer(const std::string& deviceUUID)
   {
     CPlayerCoreFactory& playerCoreFactory = CServiceBroker::GetPlayerCoreFactory();

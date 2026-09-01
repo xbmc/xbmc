@@ -1,6 +1,6 @@
 /*
  *  Copyright (c) 2006 elupus (Joakim Plate)
- *  Copyright (C) 2006-2018 Team Kodi
+ *  Copyright (C) 2006-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -235,6 +235,14 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
   if (obj.IsNull())
     goto failed;
 
+  // Before the DIDL is written, so the renderer is told about every address as well as being
+  // handed one of them. Scoped so it does not cross a goto.
+  {
+    NPT_IpAddress rendererAddress;
+    if (NPT_SUCCEEDED(rendererAddress.Parse(m_delegate->m_device->GetURLBase().GetHost())))
+      SortResourcesForRenderer(*obj, rendererAddress);
+  }
+
   NPT_CHECK_LABEL_SEVERE(PLT_Didl::ToDidl(*obj, "", tmp), failed_todidl);
   tmp.Insert(didl_header, 0);
   tmp.Append(didl_footer);
@@ -257,8 +265,23 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
   /* The resource uri's are stored in the Didl. We must choose the best resource
    * for the playback device */
   NPT_Cardinal res_index;
-  NPT_CHECK_LABEL_SEVERE(m_control->FindBestResource(m_delegate->m_device, *obj, res_index),
-                         failed_findbestresource);
+  if (NPT_FAILED(m_control->FindBestResource(m_delegate->m_device, *obj, res_index)))
+  {
+    /* An empty sink list means the renderer never told us what it accepts, which is not the same
+     * as it accepting nothing. Offer the first resource and let the device answer for itself. */
+    NPT_List<NPT_String> sinks;
+    const bool advertised =
+        NPT_SUCCEEDED(m_control->GetProtocolInfoSink(m_delegate->m_device->GetUUID(), sinks)) &&
+        sinks.GetItemCount() > 0 && !(*sinks.GetFirstItem()).IsEmpty();
+
+    if (advertised || obj->m_Resources.GetItemCount() == 0)
+      goto failed_findbestresource;
+
+    res_index = 0;
+    m_logger->warn("PlayFile({}): {} advertises no protocolInfo, offering '{}' unmatched",
+                   file.GetPath(), m_delegate->m_device->GetFriendlyName().GetChars(),
+                   obj->m_Resources[res_index].m_ProtocolInfo.ToString().GetChars());
+  }
 
   // get the transport info to evaluate the TransportState to be able to
   // determine whether we first need to call Stop()
