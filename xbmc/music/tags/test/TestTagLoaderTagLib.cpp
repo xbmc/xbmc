@@ -8,6 +8,7 @@
 
 #include "music/tags/MusicInfoTag.h"
 #include "music/tags/TagLoaderTagLib.h"
+#include "test/TestUtils.h"
 
 #include <gtest/gtest.h>
 #include <taglib/apetag.h>
@@ -227,4 +228,19 @@ TEST_F(TestTagLoaderTagLib, SplitMBID)
   EXPECT_EQ(result.size(), 2u);
   EXPECT_STREQ(result[0].c_str(), "0383dadf-2a4e-4d10-a46a-e9e041da8eb3");
   EXPECT_STREQ(result[1].c_str(), "53b106e7-0cc6-42cc-ac95-ed8d30a3a98e");
+}
+
+/*! .mp2 holds MPEG-1 Layer II, which TagLib's MPEG reader parses exactly as Layer III. */
+TEST(TestTagLoaderTagLibMp2, ReadsID3v2FromALayerIIFile)
+{
+  const std::string path = XBMC_REF_FILE_PATH("xbmc/music/tags/test/testdata/tagged.mp2");
+
+  CMusicInfoTag tag;
+  CTagLoaderTagLib loader;
+  ASSERT_TRUE(loader.Load(path, tag, ""));
+
+  EXPECT_TRUE(tag.Loaded());
+  EXPECT_EQ("The Test Tone", tag.GetTitle());
+  EXPECT_EQ("The Test Band", tag.GetArtistString());
+  EXPECT_EQ("Live At The Test Venue", tag.GetAlbum());
 }
