@@ -344,6 +344,16 @@ std::string URIUtils::GetFileName(const CURL& url)
   return GetFileName(url.GetFileName());
 }
 
+std::string URIUtils::GetDecodedFileName(const CURL& url)
+{
+  return CURL::Decode(GetFileName(url));
+}
+
+std::string URIUtils::GetDecodedFileName(const std::string& strFileNameAndPath)
+{
+  return CURL::Decode(GetFileName(strFileNameAndPath));
+}
+
 /* returns a filename given an url */
 /* handles both / and \, and options in urls*/
 std::string URIUtils::GetFileName(const std::string& strFileNameAndPath)
