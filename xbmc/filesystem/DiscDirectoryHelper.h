@@ -420,6 +420,18 @@ private:
                                  const ClipMap& clips,
                                  const PlaylistMap& playlistMap) const;
 
+  /*!
+   * \brief Replace the episode playlists the heuristics chose with those the disc names as the
+   * episode(s), where its numbering can be matched to the episodes on the disc.
+   * \param episodeIndex index into episodesOnDisc, or ALL_PLAYLISTS for every episode
+   */
+  void ApplyPlaylistHintsToEpisodes(const CURL& url,
+                                    CFileItemList& items,
+                                    const CFileItemList& allTitles,
+                                    int episodeIndex,
+                                    const Episodes& episodesOnDisc,
+                                    const PlaylistMap& playlists) const;
+
   //! What the disc says its playlists hold, if anything
   std::shared_ptr<const IPlaylistHints> m_hints;
 
