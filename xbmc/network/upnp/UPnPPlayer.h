@@ -96,8 +96,6 @@ private:
 
   PLT_MediaController* m_control = nullptr;
   std::unique_ptr<CUPnPPlayerController> m_delegate;
-  std::string m_current_uri;
-  std::string m_current_meta;
   CPlaybackState m_playback;
   bool m_stopremote = false;
   bool m_hasVideo{false};

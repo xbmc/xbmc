@@ -99,15 +99,6 @@ public:
     return m_trainfo.cur_transport_status;
   }
 
-  void OnGetMediaInfoResult(NPT_Result res,
-                            PLT_DeviceDataReference& device,
-                            PLT_MediaInfo* info,
-                            void* userdata) override
-  {
-    if (NPT_FAILED(res) || info == NULL)
-      m_logger->error("OnGetMediaInfoResult failed");
-  }
-
   void OnGetTransportInfoResult(NPT_Result res,
                                 PLT_DeviceDataReference& device,
                                 PLT_TransportInfo* info,
@@ -146,7 +137,7 @@ public:
 
     if (NPT_FAILED(res) || info == NULL)
     {
-      m_logger->error("OnGetMediaInfoResult failed");
+      m_logger->error("OnGetPositionInfoResult failed");
       m_posinfo = PLT_PositionInfo();
     }
     else
@@ -444,9 +435,6 @@ bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
   m_callback.OnAVStarted(file);
   NPT_CHECK_LABEL_SEVERE(
       m_control->GetPositionInfo(m_delegate->m_device, m_delegate->m_instance, m_delegate.get()),
-      failed);
-  NPT_CHECK_LABEL_SEVERE(
-      m_control->GetMediaInfo(m_delegate->m_device, m_delegate->m_instance, m_delegate.get()),
       failed);
 
   m_updateTimer.Set(0ms);
