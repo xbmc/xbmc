@@ -43,7 +43,7 @@ using namespace KODI;
 
 void CSeekHandler::Configure()
 {
-  Reset();
+  ResetAndClearSeekStepValue();
 
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
@@ -86,7 +86,29 @@ void CSeekHandler::Reset()
   m_timeCodePosition = 0;
 }
 
-int CSeekHandler::GetSeekStepSize(SeekType type, int step)
+void CSeekHandler::ClearSeekStepValue()
+{
+  m_seekStepValue = 0;
+}
+
+void CSeekHandler::CancelSeekAndClearSeekStepValue()
+{
+  std::unique_lock lock(m_critSection);
+  m_requireSeek = false;
+  m_analogSeek = false;
+  m_seekStep = 0;
+  m_seekSize = 0;
+  ClearSeekStepValue();
+}
+
+void CSeekHandler::ResetAndClearSeekStepValue()
+{
+  std::unique_lock lock(m_critSection);
+  Reset();
+  ClearSeekStepValue();
+}
+
+int CSeekHandler::GetSeekStepSize(SeekType type, int step) const
 {
   if (step == 0)
     return 0;
@@ -112,6 +134,24 @@ int CSeekHandler::GetSeekStepSize(SeekType type, int step)
   return seconds;
 }
 
+int CSeekHandler::GetSeekStepValue(SeekType type, int step) const
+{
+  if (step == 0)
+    return 0;
+
+  const std::vector<int>& seekSteps(step > 0 ? m_forwardSeekSteps.at(type)
+                                             : m_backwardSeekSteps.at(type));
+
+  if (seekSteps.empty())
+  {
+    CLog::LogF(LOGERROR, "No {} {} seek steps configured.",
+               (type == SeekType::VIDEO ? "video" : "music"), (step > 0 ? "forward" : "backward"));
+    return 0;
+  }
+
+  return seekSteps.at(std::min<size_t>(std::abs(step), seekSteps.size()) - 1);
+}
+
 void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bool analogSeek /* = false */, SeekType type /* = SEEK_TYPE_VIDEO */)
 {
   std::unique_lock lock(m_critSection);
@@ -122,7 +162,10 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
     // use only the first step forward/backward for a seek without a delay
     if (!analogSeek && m_seekDelays.at(type) == 0)
     {
-      SeekSeconds(GetSeekStepSize(type, forward ? 1 : -1));
+      const int step = forward ? 1 : -1;
+      const int seekSeconds = GetSeekStepSize(type, step);
+      const int seekStepValue = seekSeconds != 0 ? GetSeekStepValue(type, step) : 0;
+      SeekSeconds(seekSeconds, seekStepValue);
       return;
     }
 
@@ -134,6 +177,8 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
   // calculate our seek amount
   if (analogSeek)
   {
+    m_seekStepValue = 0;
+
     //100% over 1 second.
     float speed = 100.0f;
     if( duration )
@@ -157,11 +202,13 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
     const int seekSeconds = GetSeekStepSize(type, m_seekStep);
     if (seekSeconds != 0)
     {
+      m_seekStepValue = GetSeekStepValue(type, m_seekStep);
       SetSeekSize(seekSeconds);
     }
     else
     {
       // nothing to do, abort seeking
+      ClearSeekStepValue();
       Reset();
     }
   }
@@ -169,13 +216,14 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
   m_timer.StartZero();
 }
 
-void CSeekHandler::SeekSeconds(int seconds)
+void CSeekHandler::SeekSeconds(int seconds, int seekStepValue)
 {
   // abort if we do not have a play time or already perform a seek
   if (seconds == 0)
     return;
 
   std::unique_lock lock(m_critSection);
+  m_seekStepValue = seekStepValue;
   SetSeekSize(seconds);
 
   // perform relative seek
@@ -188,7 +236,14 @@ void CSeekHandler::SeekSeconds(int seconds)
 
 int CSeekHandler::GetSeekSize() const
 {
+  std::unique_lock lock(m_critSection);
   return MathUtils::round_int(m_seekSize);
+}
+
+int CSeekHandler::GetSeekStepValue() const
+{
+  std::unique_lock lock(m_critSection);
+  return m_seekStepValue;
 }
 
 void CSeekHandler::SetSeekSize(double seekSize)
@@ -206,35 +261,52 @@ void CSeekHandler::SetSeekSize(double seekSize)
 
 bool CSeekHandler::InProgress() const
 {
-  return m_requireSeek || CServiceBroker::GetDataCacheCore().IsSeeking();
+  bool requireSeek = false;
+  {
+    std::unique_lock lock(m_critSection);
+    requireSeek = m_requireSeek;
+  }
+
+  return requireSeek || CServiceBroker::GetDataCacheCore().IsSeeking();
+}
+
+bool CSeekHandler::HasTimeCode() const
+{
+  std::unique_lock lock(m_critSection);
+  return m_timeCodePosition > 0;
 }
 
 void CSeekHandler::FrameMove()
 {
-  if (m_timer.GetElapsedMilliseconds() >= m_seekDelay && m_requireSeek)
+  bool seekChanged = false;
+
   {
     std::unique_lock lock(m_critSection);
 
-    // perform relative seek
-    auto& components = CServiceBroker::GetAppComponents();
-    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-    appPlayer->SeekTimeRelative(static_cast<int64_t>(m_seekSize * 1000));
+    if (m_timer.GetElapsedMilliseconds() >= m_seekDelay && m_requireSeek)
+    {
+      // perform relative seek
+      auto& components = CServiceBroker::GetAppComponents();
+      const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+      appPlayer->SeekTimeRelative(static_cast<int64_t>(m_seekSize * 1000));
 
-    m_seekChanged = true;
+      m_seekChanged = true;
+      Reset();
+    }
 
-    Reset();
+    if (m_timeCodePosition > 0 && m_timerTimeCode.GetElapsedMilliseconds() >= 2500)
+      m_timeCodePosition = 0;
+
+    if (m_seekChanged)
+    {
+      seekChanged = true;
+      m_seekChanged = false;
+    }
   }
 
-  if (m_timeCodePosition > 0 && m_timerTimeCode.GetElapsedMilliseconds() >= 2500)
-  {
-    m_timeCodePosition = 0;
-  }
-
-  if (m_seekChanged)
-  {
-    m_seekChanged = false;
-    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_STATE_CHANGED);
-  }
+  if (seekChanged)
+    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0,
+                                                             GUI_MSG_STATE_CHANGED);
 }
 
 void CSeekHandler::SettingOptionsSeekStepsFiller(const SettingConstPtr& setting,
@@ -344,6 +416,7 @@ bool CSeekHandler::OnAction(const CAction &action)
     {
       if (!g_application.CurrentFileItem().IsLiveTV())
       {
+        CancelSeekAndClearSeekStepValue();
         ChangeTimeCode(action.GetID());
         return true;
       }
@@ -358,7 +431,7 @@ bool CSeekHandler::OnAction(const CAction &action)
 
 bool CSeekHandler::SeekTimeCode(const CAction &action)
 {
-  if (m_timeCodePosition <= 0)
+  if (!HasTimeCode())
     return false;
 
   switch (action.GetID())
@@ -367,9 +440,11 @@ bool CSeekHandler::SeekTimeCode(const CAction &action)
     case ACTION_PLAYER_PLAY:
     case ACTION_PAUSE:
     {
+      const int seekSeconds = GetTimeCodeSeconds();
       std::unique_lock lock(m_critSection);
 
-      g_application.SeekTime(GetTimeCodeSeconds());
+      m_seekStepValue = 0;
+      g_application.SeekTime(seekSeconds);
       Reset();
       return true;
     }
@@ -398,6 +473,8 @@ bool CSeekHandler::SeekTimeCode(const CAction &action)
 
 void CSeekHandler::ChangeTimeCode(int remote)
 {
+  std::unique_lock lock(m_critSection);
+
   if (remote >= ACTION_JUMP_SMS2 && remote <= ACTION_JUMP_SMS9)
   {
     // cast to REMOTE_X
@@ -423,6 +500,8 @@ void CSeekHandler::ChangeTimeCode(int remote)
 
 int CSeekHandler::GetTimeCodeSeconds() const
 {
+  std::unique_lock lock(m_critSection);
+
   if (m_timeCodePosition > 0)
   {
     // Convert the timestamp into an integer
