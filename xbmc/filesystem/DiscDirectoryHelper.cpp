@@ -3090,54 +3090,11 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
     }
   }
 
-  auto GenerateItem{
-      [](const CFileItem& originalItem, const CFileItem& selectedItem, const CFileItem& item)
-      {
-        auto newItem{std::make_shared<CFileItem>(originalItem)};
-        newItem->SetDynPath(selectedItem.GetDynPath());
-        const auto tag{newItem->GetVideoInfoTag()};
-        tag->SetFileNameAndPath(selectedItem.GetDynPath());
-        if (selectedItem.HasVideoInfoTag())
-        {
-          // Don't overwrite streamdetails that came from an nfo
-          if (selectedItem.GetVideoInfoTag()->HasStreamDetails() && !tag->HasNFOStreamDetails())
-            tag->m_streamDetails = selectedItem.GetVideoInfoTag()->m_streamDetails;
-
-          // Episode bookmarks
-          if (const CBookmark& bookmark{selectedItem.GetVideoInfoTag()->m_EpBookmark};
-              bookmark.IsSet())
-            tag->m_EpBookmark = bookmark;
-
-          // The duration of the playlist, or of the episode's part of it where several share one, is
-          // measured from the disc and so is preferred over the scraper's.
-          // Loose sanity check that the scraper and found durations are similar, to avoid a
-          // mis-identified playlist from overwriting the episode's duration and affecting future
-          // playlist identification.
-          static constexpr int SCRAPED_DURATION_TOLERANCE_PERCENT{50};
-          const unsigned int scrapedDuration{tag->GetStaticDuration()};
-          if (const unsigned int discDuration{selectedItem.GetVideoInfoTag()->GetDuration()};
-              discDuration > 0 &&
-              (scrapedDuration == 0 ||
-               CheckDurationsWithinTolerance(scrapedDuration * 1000ms, discDuration * 1000ms,
-                                             SCRAPED_DURATION_TOLERANCE_PERCENT)))
-            tag->SetDuration(static_cast<int>(discDuration));
-        }
-
-        if (tag->GetAssetInfo().GetTitle().empty())
-          tag->GetAssetInfo().SetTitle(
-              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
-                  VIDEO_VERSION_ID_DEFAULT));
-        if (selectedItem.HasProperty("bluray_playlist"))
-          newItem->SetProperty("bluray_playlist", selectedItem.GetProperty("bluray_playlist"));
-        newItem->SetProperty("original_listitem_url", item.GetDynPath());
-        return newItem;
-      }};
-
   items.Clear();
   if (!selectedItem.GetPath().empty())
   {
     // If SelectedItem is not empty then we have a user selected playlist, so return it
-    const auto newItem{GenerateItem(item, selectedItem, item)};
+    const auto newItem{GenerateItem(item, selectedItem)};
 
     // GenerateItem points the paths in the tag at the newly selected playlist
     // Flag so CSaveFileStateJob can tell playlist has changed
@@ -3148,15 +3105,56 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
   }
   else if (!returnMultipleItems)
     // Return single item
-    items.Add(GenerateItem(item, *sourceItems[0], item));
+    items.Add(GenerateItem(item, *sourceItems[0]));
   else
   {
     // Return all items
     for (const auto& sourceItem : sourceItems)
-      items.Add(GenerateItem(item, *sourceItem, item));
+      items.Add(GenerateItem(item, *sourceItem));
   }
 
   return true;
+}
+
+std::shared_ptr<CFileItem> CDiscDirectoryHelper::GenerateItem(const CFileItem& originalItem,
+                                                              const CFileItem& selectedItem)
+{
+  auto newItem{std::make_shared<CFileItem>(originalItem)};
+  newItem->SetDynPath(selectedItem.GetDynPath());
+  const auto tag{newItem->GetVideoInfoTag()};
+  tag->SetFileNameAndPath(selectedItem.GetDynPath());
+  if (selectedItem.HasVideoInfoTag())
+  {
+    // Don't overwrite streamdetails that came from an nfo
+    if (selectedItem.GetVideoInfoTag()->HasStreamDetails() && !tag->HasNFOStreamDetails())
+      tag->m_streamDetails = selectedItem.GetVideoInfoTag()->m_streamDetails;
+
+    // Episode bookmarks
+    if (const CBookmark& bookmark{selectedItem.GetVideoInfoTag()->m_EpBookmark}; bookmark.IsSet())
+      tag->m_EpBookmark = bookmark;
+
+    // The duration of the playlist, or of the episode's part of it where several share one, is
+    // measured from the disc and so is preferred over the scraper's.
+    // Loose sanity check that the scraper and found durations are similar, to avoid a
+    // mis-identified playlist from overwriting the episode's duration and affecting future
+    // playlist identification.
+    static constexpr int SCRAPED_DURATION_TOLERANCE_PERCENT{50};
+    const unsigned int scrapedDuration{tag->GetStaticDuration()};
+    if (const unsigned int discDuration{selectedItem.GetVideoInfoTag()->GetDuration()};
+        discDuration > 0 &&
+        (scrapedDuration == 0 ||
+         CheckDurationsWithinTolerance(scrapedDuration * 1000ms, discDuration * 1000ms,
+                                       SCRAPED_DURATION_TOLERANCE_PERCENT)))
+      tag->SetDuration(static_cast<int>(discDuration));
+  }
+
+  if (tag->GetAssetInfo().GetTitle().empty())
+    tag->GetAssetInfo().SetTitle(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(VIDEO_VERSION_ID_DEFAULT));
+  if (selectedItem.HasProperty("bluray_playlist"))
+    newItem->SetProperty("bluray_playlist", selectedItem.GetProperty("bluray_playlist"));
+  newItem->SetProperty("original_listitem_url", originalItem.GetDynPath());
+  return newItem;
 }
 
 bool CDiscDirectoryHelper::GetItems(CFileItemList& items, const std::string& directory, bool silent)

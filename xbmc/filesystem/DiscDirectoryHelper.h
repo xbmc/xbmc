@@ -390,6 +390,15 @@ private:
                                       int episodeIndex,
                                       const Episodes& episodesOnDisc) const;
   bool FilterAllEpisodesPlaylists(std::vector<PlaylistInformation>& playlists, GetTitle job);
+ 
+  /*!
+   * \brief Generate a FileItem for a given playlist
+   * \param originalItem FileItem containing details of desired movie/episode.
+   * \param selectedItem FileItem containing details of the selected playlist.
+   * \return a FileItem for the selected playlist
+   */
+  static std::shared_ptr<CFileItem> GenerateItem(const CFileItem& originalItem,
+                                                 const CFileItem& selectedItem);
 
   //! Describes the streams of a title, supplied by the disc's directory implementation
   StreamDetailsProvider m_getStreamDetails;
