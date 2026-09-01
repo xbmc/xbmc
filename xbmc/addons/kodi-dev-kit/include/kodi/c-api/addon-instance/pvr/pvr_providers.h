@@ -86,7 +86,7 @@ extern "C"
     /// (e.g 'GB,IE,FR,CA'), an empty string means this value is undefined
     const char* strCountries;
     //! @brief RFC 5646 language codes, separated by PROVIDER_STRING_TOKEN_SEPARATOR
-    /// (e.g. 'en_GB,fr_CA'), an empty string means this value is undefined
+    /// (e.g. 'en-GB,fr-CA'), an empty string means this value is undefined
     const char* strLanguages;
   } PVR_PROVIDER;
 
