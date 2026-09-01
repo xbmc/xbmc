@@ -11,6 +11,7 @@ xbmc/cores/VideoPlayer/DVDDemuxers/test test/dvddemuxers
 xbmc/cores/VideoPlayer/Edl/test   test/edl
 xbmc/cores/VideoPlayer/VideoRenderers/VideoShaders/test test/videoshaders
 xbmc/dbwrappers/test              test/dbwrappers
+xbmc/dialogs/test                 test/dialogs
 xbmc/filesystem/test              test/filesystem
 xbmc/filesystem/VideoDatabaseDirectory/test test/videodatabasedirectory
 xbmc/games/addons/cheevos/test    test/games/addons/cheevos
