@@ -2581,6 +2581,13 @@ bool IsRicherPresentation(const PlaylistInformation& a, const PlaylistInformatio
   return a.playlist < b.playlist;
 }
 
+//! \brief Whether a search wants one of each presentation or every playlist the disc holds
+enum class Duplicates : uint8_t
+{
+  KEEP,
+  REMOVE
+};
+
 /*!
  * \brief Discards the copies a disc holds of the same presentation, keeping the fullest of each.
  *
@@ -2593,10 +2600,9 @@ bool IsRicherPresentation(const PlaylistInformation& a, const PlaylistInformatio
  */
 void RemoveDuplicateMoviePlaylists(std::vector<PlaylistInformation>& playlists,
                                    const ClipMap& clips,
-                                   GetTitle job,
                                    int mainPlaylist)
 {
-  if (job == GetTitle::ALL || playlists.size() < 2)
+  if (playlists.size() < 2)
     return;
 
   // The clip durations are gathered up front, as a disc can hold hundreds of copies of the movie
@@ -2927,7 +2933,227 @@ void PopulateMovieFileItems(
     items.Add(newItem);
   }
 }
+
+/*!
+ * \brief Run the playlists through every stage of the movie search.
+ * \return the playlists that are the movie, or empty when none is
+ */
+std::vector<PlaylistInformation> SelectMoviePlaylists(const PlaylistMap& playlistMap,
+                                                      const ClipMap& clips,
+                                                      int mainPlaylist,
+                                                      GetTitle job,
+                                                      Duplicates duplicates)
+{
+  std::vector<PlaylistInformation> playlists;
+  InitialiseMoviePlaylistSearch(playlists, playlistMap, job, mainPlaylist);
+  if (duplicates == Duplicates::REMOVE)
+    RemoveDuplicateMoviePlaylists(playlists, clips, mainPlaylist);
+  if (FilterMoviePlaylists(playlists, job))
+  {
+    FilterMoviePlaylistsByResolution(playlists, job, mainPlaylist);
+    GetMainMoviePlaylists(playlists, job, mainPlaylist);
+  }
+  EndMoviePlaylistSearch(playlists);
+  return playlists;
+}
 } // namespace
+
+namespace
+{
+/*! \brief The playlist numbers of a list of items as a string. */
+std::string DescribePlaylists(const CFileItemList& items)
+{
+  std::vector<std::string> playlists;
+  playlists.reserve(items.Size());
+  for (const auto& item : items)
+    playlists.emplace_back(std::to_string(item->GetProperty("bluray_playlist").asInteger32(-1)));
+  return playlists.empty() ? "nothing" : StringUtils::Join(playlists, ", ");
+}
+
+//! \brief The playlists on the disc the hints give a role, in playlist order
+std::vector<unsigned int> GetHintedPlaylists(const PlaylistHintMap& hints,
+                                             const PlaylistMap& playlists,
+                                             PlaylistRole role)
+{
+  std::vector<unsigned int> hinted;
+  for (const auto& [playlist, hint] : hints)
+  {
+    if (hint.role == role && playlists.contains(playlist))
+      hinted.push_back(playlist);
+  }
+  return hinted;
+}
+} // namespace
+
+void CDiscDirectoryHelper::SetPlaylistHints(std::shared_ptr<const IPlaylistHints> hints)
+{
+  m_hints = std::move(hints);
+}
+
+void CDiscDirectoryHelper::ApplyPlaylistHintsToMovie(const CURL& url,
+                                                     CFileItemList& items,
+                                                     const CFileItemList& allTitles,
+                                                     int mainPlaylist,
+                                                     GetTitle job,
+                                                     const ClipMap& clips,
+                                                     const PlaylistMap& playlistMap) const
+{
+  // All titles requested, or the disc says nothing
+  if (job == GetTitle::ALL || !m_hints || !m_hints->HasHints())
+    return;
+
+  // disc.inf names the main title, which the heuristics keep and the project does not override
+  const auto mainItem{std::ranges::find_if(
+      items, [mainPlaylist](const auto& item)
+      { return std::cmp_equal(item->GetProperty("bluray_playlist").asInteger(), mainPlaylist); })};
+  const bool haveMain{mainPlaylist >= 0 && mainItem != items.end()};
+  if (haveMain && job == GetTitle::SINGLE)
+  {
+    CLog::LogF(LOGDEBUG, "Keeping playlist {} from disc information (disc.inf)", mainPlaylist);
+    return;
+  }
+
+  const std::vector<unsigned int> features{
+      GetHintedPlaylists(m_hints->GetHints(), playlistMap, PlaylistRole::FEATURE)};
+  if (features.empty())
+  {
+    CLog::LogF(LOGDEBUG,
+               "Disc names no movie playlists - keeping playlist(s) {} from the heuristics",
+               DescribePlaylists(items));
+    return;
+  }
+
+  // The named playlists go through the same filtering as every other, restricted to themselves
+  const auto select{[&](const std::vector<unsigned int>& playlists)
+                    {
+                      PlaylistMap featurePlaylists;
+                      for (unsigned int playlist : playlists)
+                        featurePlaylists.emplace(playlist, playlistMap.at(playlist));
+                      return SelectMoviePlaylists(featurePlaylists, clips, mainPlaylist,
+                                                  GetTitle::ALL, Duplicates::REMOVE);
+                    }};
+
+  // A single title is the plain feature, where one survives, rather than an extended, described or
+  // dubbed presentation of it that the ordering could otherwise put first
+  std::vector<PlaylistInformation> selected;
+  if (job == GetTitle::SINGLE)
+  {
+    const PlaylistHintMap& hints{m_hints->GetHints()};
+    std::vector<unsigned int> base{features};
+    std::erase_if(base,
+                  [&hints](unsigned int playlist) { return !hints.at(playlist).basePresentation; });
+    if (!base.empty())
+      selected = select(base);
+  }
+  if (selected.empty())
+    selected = select(features);
+
+  // Selected as for all titles, so a short film the disc names is kept, but versions must still
+  // be of comparable length - a disc can name a seconds-long segment SEG_MainFeature
+  if (job == GetTitle::MAIN)
+    GetMainMoviePlaylists(selected, GetTitle::MAIN, mainPlaylist);
+  if (selected.empty())
+  {
+    CLog::LogF(LOGDEBUG,
+               "Disc names playlist(s) {} as the movie, but none of them survived filtering - "
+               "keeping playlist(s) {} from the heuristics",
+               fmt::join(features, ", "), DescribePlaylists(items));
+    return;
+  }
+
+  // Describing the streams of each candidate means reading its m2ts, so that is left until the
+  // ones that are not wanted have gone. The ordering puts the best presentation first, which is
+  // the one a single title wants.
+  CFileItemList chosen;
+  PopulateMovieFileItems(url, chosen, mainPlaylist, allTitles, selected, {});
+  while (job == GetTitle::SINGLE && chosen.Size() > 1)
+    chosen.Remove(chosen.Size() - 1);
+
+  for (const auto& item : chosen)
+  {
+    AddStreamDetails(m_getStreamDetails, allTitles,
+                     item->GetProperty("bluray_playlist").asUnsignedInteger32(), *item);
+  }
+
+  const std::string heuristic{DescribePlaylists(items)};
+  const std::string named{DescribePlaylists(chosen)};
+
+  // Every version wanted: the disc may hold an edition under a name the convention does not
+  // recognise, so what the heuristics found follows what the disc names. Not what the disc says
+  // is something else, as an extra can be long enough to pass for a version, and not another
+  // copy of a presentation the disc has named, which the named one stands for. Those items
+  // already carry their stream details.
+  if (job == GetTitle::MAIN)
+  {
+    const PlaylistHintMap& hints{m_hints->GetHints()};
+
+    std::vector<std::vector<std::chrono::milliseconds>> selectedClipDurations;
+    selectedClipDurations.reserve(selected.size());
+    for (const PlaylistInformation& playlist : selected)
+      selectedClipDurations.push_back(GetSortedClipDurations(playlist, clips));
+
+    for (const auto& item : items)
+    {
+      const unsigned int playlist{item->GetProperty("bluray_playlist").asUnsignedInteger32()};
+      const PlaylistInformation& information{playlistMap.at(playlist)};
+
+      // A sing-along is named as an extra, but is the feature presented differently
+      if (const auto hint{hints.find(playlist)};
+          hint != hints.end() && hint->second.role != PlaylistRole::FEATURE &&
+          hint->second.role != PlaylistRole::UNKNOWN &&
+          (hint->second.role != PlaylistRole::SPECIAL ||
+           std::ranges::none_of(selected,
+                                [&information](const PlaylistInformation& feature)
+                                {
+                                  return std::chrono::abs(feature.duration -
+                                                          information.duration) <=
+                                         MOVIE_EQUAL_LENGTH_TOLERANCE;
+                                })))
+        continue;
+
+      const std::vector<std::chrono::milliseconds> clipDurations{
+          GetSortedClipDurations(information, clips)};
+      bool named{false};
+      for (size_t i = 0; i < selected.size() && !named; ++i)
+      {
+        named =
+            selected[i].playlist == playlist ||
+            IsSamePresentation(selected[i], selectedClipDurations[i], information, clipDurations);
+      }
+      if (!named)
+        chosen.Add(item);
+    }
+
+    // The disc.inf main title leads, in place of any other copy of its presentation
+    if (haveMain)
+    {
+      const PlaylistInformation& mainInformation{
+          playlistMap.at(static_cast<unsigned int>(mainPlaylist))};
+      const std::vector<std::chrono::milliseconds> mainClipDurations{
+          GetSortedClipDurations(mainInformation, clips)};
+      for (int i = chosen.Size() - 1; i >= 0; --i)
+      {
+        const PlaylistInformation& information{
+            playlistMap.at(chosen[i]->GetProperty("bluray_playlist").asUnsignedInteger32())};
+        if (information.playlist == mainInformation.playlist ||
+            IsSamePresentation(mainInformation, mainClipDurations, information,
+                               GetSortedClipDurations(information, clips)))
+          chosen.Remove(i);
+      }
+      chosen.AddFront(*mainItem, 0);
+    }
+  }
+
+  if (heuristic == named)
+    CLog::LogF(LOGDEBUG, "Disc and heuristics agree on playlist(s) {}", named);
+  else
+    CLog::LogF(LOGDEBUG,
+               "Disc names playlist(s) {} as the movie, where the heuristics chose {} - offering "
+               "{}",
+               named, heuristic, DescribePlaylists(chosen));
+
+  items.Assign(chosen);
+}
 
 bool CDiscDirectoryHelper::GetMoviePlaylists(const CURL& url,
                                              CFileItemList& items,
@@ -2944,18 +3170,15 @@ bool CDiscDirectoryHelper::GetMoviePlaylists(const CURL& url,
   if (playlistMap.empty() || clips.empty())
     return false;
 
-  std::vector<PlaylistInformation> playlists;
-  InitialiseMoviePlaylistSearch(playlists, playlistMap, job, mainPlaylist);
-  RemoveDuplicateMoviePlaylists(playlists, clips, job, mainPlaylist);
-  if (!FilterMoviePlaylists(playlists, job))
-  {
-    EndMoviePlaylistSearch(playlists);
-    return false;
-  }
-  FilterMoviePlaylistsByResolution(playlists, job, mainPlaylist);
-  GetMainMoviePlaylists(playlists, job, mainPlaylist);
-  PopulateMovieFileItems(url, items, mainPlaylist, allTitles, playlists, m_getStreamDetails);
-  EndMoviePlaylistSearch(playlists);
+  const std::vector<PlaylistInformation> playlists{
+      SelectMoviePlaylists(playlistMap, clips, mainPlaylist, job,
+                           job == GetTitle::ALL ? Duplicates::KEEP : Duplicates::REMOVE)};
+
+  // The disc may name a movie the heuristics rejected - a short film is below the minimum they
+  // will accept - so what it says is asked for even when they found nothing
+  if (!playlists.empty())
+    PopulateMovieFileItems(url, items, mainPlaylist, allTitles, playlists, m_getStreamDetails);
+  ApplyPlaylistHintsToMovie(url, items, allTitles, mainPlaylist, job, clips, playlistMap);
 
   return !items.IsEmpty();
 }

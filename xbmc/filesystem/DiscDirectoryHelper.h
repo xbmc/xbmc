@@ -9,6 +9,7 @@
 #pragma once
 
 #include "Directory.h"
+#include "IPlaylistHints.h"
 #include "video/Episode.h"
 #include "video/VideoInfoTag.h"
 
@@ -16,6 +17,7 @@
 #include <cstdint>
 #include <functional>
 #include <map>
+#include <memory>
 #include <set>
 #include <string>
 #include <vector>
@@ -230,6 +232,12 @@ public:
    */
   explicit CDiscDirectoryHelper(StreamDetailsProvider getStreamDetails);
 
+  /*!
+   * \brief Supply what the disc says its playlists hold, to be preferred over the heuristics.
+   * \param hints may be empty, in which case the heuristics alone decide
+   */
+  void SetPlaylistHints(std::shared_ptr<const IPlaylistHints> hints);
+
   CDiscDirectoryHelper(const CDiscDirectoryHelper&) = delete;
   CDiscDirectoryHelper& operator=(const CDiscDirectoryHelper&) = delete;
 
@@ -410,6 +418,25 @@ private:
                                       int episodeIndex,
                                       const Episodes& episodesOnDisc) const;
   bool FilterAllEpisodesPlaylists(std::vector<PlaylistInformation>& playlists, GetTitle job);
+
+  /*!
+   * \brief Put the playlists the disc names as the movie ahead of those the heuristics chose,
+   * where it names any and they survive the filtering every playlist goes through.
+   *
+   * The main title disc.inf names stands, leading every version. Otherwise a single title is the
+   * disc's alone. Every version keeps what the heuristics found as well, as a disc can hold an
+   * edition under a name the convention does not recognise.
+   */
+  void ApplyPlaylistHintsToMovie(const CURL& url,
+                                 CFileItemList& items,
+                                 const CFileItemList& allTitles,
+                                 int mainPlaylist,
+                                 GetTitle job,
+                                 const ClipMap& clips,
+                                 const PlaylistMap& playlistMap) const;
+
+  //! What the disc says its playlists hold, if anything
+  std::shared_ptr<const IPlaylistHints> m_hints;
 
   //! Describes the streams of a title, supplied by the disc's directory implementation
   StreamDetailsProvider m_getStreamDetails;
