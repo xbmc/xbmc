@@ -313,7 +313,6 @@ int GetMainPlaylistFromDisc(const CURL& url)
   }
   return playlist;
 }
-
 } // namespace
 
 bool CBlurayDirectory::FilterPlaylists(std::vector<PlaylistInformation>& playlists)
@@ -727,8 +726,15 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     CFileItemList allTitles;
     GetPlaylistsInformation(m_url, m_realPath, m_flags, allTitles, clips, playlists, m_clipCache);
 
+    MovieObjectInformation movieObjectInformation;
+    GetMovieObjectInformation(movieObjectInformation);
+    ProjectInformation projectInformation;
+    GetProjectInformation(projectInformation);
+
     CDiscDirectoryHelper helper{[this](unsigned int playlist, CFileItem& item)
                                 { SetPlaylistStreamDetails(playlist, item); }};
+    helper.SetProjectInformation(projectInformation);
+    helper.SetMenuPlaylists(movieObjectInformation.menuTargetPlaylists);
 
     if (StringUtils::StartsWith(file, "root/titles") && file != "root/titles/episodes")
     {
@@ -757,8 +763,8 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     if (StringUtils::StartsWith(file, "root/main"))
     {
       if (file == "root/main")
-        helper.GetMoviePlaylists(m_url, items, allTitles, GetMainPlaylist(), GetTitle::SINGLE,
-                                 clips, playlists);
+        helper.GetMoviePlaylists(m_url, items, allTitles, GetMainPlaylist(), GetTitle::SINGLE, clips,
+                                 playlists);
       else if (file == "root/main/all")
         helper.GetMoviePlaylists(m_url, items, allTitles, GetMainPlaylist(), GetTitle::MAIN, clips,
                                  playlists);

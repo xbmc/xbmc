@@ -10,6 +10,7 @@
 
 #include "Directory.h"
 #include "video/Episode.h"
+#include "bluray/ProjectParser.h"
 #include "video/VideoInfoTag.h"
 
 #include <chrono>
@@ -227,6 +228,16 @@ public:
    */
   explicit CDiscDirectoryHelper(StreamDetailsProvider getStreamDetails);
 
+  void SetProjectInformation(const ProjectInformation& projectInformation)
+  {
+    m_projectInformation = projectInformation;
+  }
+
+  void SetMenuPlaylists(const std::set<unsigned int>& menuPlaylists)
+  {
+    m_menuPlaylists = menuPlaylists;
+  }
+
   CDiscDirectoryHelper(const CDiscDirectoryHelper&) = delete;
   CDiscDirectoryHelper& operator=(const CDiscDirectoryHelper&) = delete;
 
@@ -401,6 +412,9 @@ private:
                                                  const CFileItem& selectedItem);
 
   //! Describes the streams of a title, supplied by the disc's directory implementation
+  ProjectInformation m_projectInformation;
+  std::set<unsigned int> m_menuPlaylists;
+
   StreamDetailsProvider m_getStreamDetails;
 
   std::chrono::milliseconds m_minEpisodeDuration{0ms};

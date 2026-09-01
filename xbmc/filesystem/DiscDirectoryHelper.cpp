@@ -2167,6 +2167,124 @@ void CDiscDirectoryHelper::LogEpisodePlaylistSearchResult(const CFileItemList& i
              episode.iSeason, episode.iEpisode, playlistList);
 }
 
+namespace
+{
+//! \brief Get movie playlists from the disc's authoring project file.
+std::vector<unsigned int> GetProjectFeaturePlaylists(const ProjectInformation& projectInformation,
+                                                     const PlaylistMap& playlists)
+{
+  std::vector<unsigned int> feature;
+  for (const auto& [playlist, information] : projectInformation.playlists)
+  {
+    if (information.IsFeature() && playlists.contains(playlist))
+      feature.push_back(playlist);
+  }
+  return feature;
+}
+
+/*! \brief The playlist numbers of a list of items as a string. */
+std::string DescribePlaylists(const CFileItemList& items)
+{
+  std::vector<std::string> playlists;
+  playlists.reserve(items.Size());
+  for (const auto& item : items)
+    playlists.emplace_back(
+        std::to_string(item->GetProperty("bluray_playlist").asInteger32(-1)));
+  return playlists.empty() ? "nothing" : StringUtils::Join(playlists, ", ");
+}
+
+/*!
+ \brief Cross-check if the playlists derived by heuristics or the project file are played through the menu
+ according to MovieObject.bdmv
+ */
+void MenuCrossCheck(const std::set<unsigned int>& menuPlaylists,
+                    const CFileItemList& items)
+{
+  if (menuPlaylists.empty() || items.IsEmpty())
+    return;
+
+  std::vector<std::string> played;
+  for (const auto& item : items)
+  {
+    const int playlist{item->GetProperty("bluray_playlist").asInteger32(-1)};
+    if (playlist >= 0 &&
+        menuPlaylists.contains(static_cast<unsigned int>(playlist)))
+      played.emplace_back(std::to_string(playlist));
+  }
+
+  if (played.empty())
+    CLog::LogF(LOGDEBUG, "None of playlist(s) {} are played through the disc's menu",
+               DescribePlaylists(items));
+  else
+    CLog::LogF(LOGDEBUG, "Playlist(s) {} of {} are played through the disc's menu",
+               StringUtils::Join(played, ", "), DescribePlaylists(items));
+}
+
+//! \brief Prioritise the playlists from the disc's authoring project over those chosen by heuristics.
+void ApplyAuthoringProjectToMovie(CDiscDirectoryHelper& helper,
+                                  const CURL& url,
+                                  CFileItemList& items,
+                                  const CFileItemList& allTitles,
+                                  int mainPlaylist,
+                                  GetTitle getTitle,
+                                  const ClipMap& clips,
+                                  const PlaylistMap& playlists,
+                                  const ProjectInformation& projectInformation)
+{
+  // All titles requested
+  if (getTitle == GetTitle::ALL)
+    return;
+
+  // No project information present
+  if (!projectInformation.present)
+    return;
+
+  const std::vector<unsigned int> features{
+      GetProjectFeaturePlaylists(projectInformation, playlists)};
+  if (features.empty())
+  {
+    CLog::LogF(LOGDEBUG,
+               "Authoring project has no movie playlists - keeping playlist(s) {} from the "
+               "heuristics",
+               DescribePlaylists(items));
+    return;
+  }
+
+  PlaylistMap featurePlaylists;
+  for (unsigned int playlist : features)
+    featurePlaylists.emplace(playlist, playlists.at(playlist));
+
+  // Use a restricted PlaylistMap (of just the feature playlists) to identify title information
+  CFileItemList chosen;
+  if (!helper.GetMoviePlaylists(url, chosen, allTitles, mainPlaylist, GetTitle::ALL, clips,
+                                featurePlaylists))
+  {
+    // The project named the movie but nothing survived the filtering every playlist goes through
+    CLog::LogF(LOGDEBUG,
+               "Authoring project names playlist(s) {} as the movie, but none of them survived "
+               "filtering - keeping playlist(s) {} from the heuristics",
+               fmt::join(features, ", "), DescribePlaylists(items));
+    return;
+  }
+
+  // The ordering puts the best presentation first, which is the one a single title wants
+  while (getTitle == GetTitle::SINGLE && chosen.Size() > 1)
+    chosen.Remove(chosen.Size() - 1);
+
+  const std::string heuristic{DescribePlaylists(items)};
+  const std::string named{DescribePlaylists(chosen)};
+  if (heuristic == named)
+    CLog::LogF(LOGDEBUG, "Authoring project and heuristics agree on playlist(s) {}", named);
+  else
+    CLog::LogF(LOGDEBUG,
+               "Authoring project names playlist(s) {} as the movie, where the heuristics chose "
+               "{} - using the project",
+               named, heuristic);
+
+  items.Assign(chosen);
+}
+} // namespace
+
 bool CDiscDirectoryHelper::GetEpisodePlaylists(
     const CURL& url,
     CFileItemList& items,
@@ -2891,6 +3009,10 @@ bool CDiscDirectoryHelper::GetMoviePlaylists(const CURL& url,
   GetMainMoviePlaylists(playlists, job, mainPlaylist);
   PopulateMovieFileItems(url, items, mainPlaylist, allTitles, playlists, m_getStreamDetails);
   EndMoviePlaylistSearch(playlists);
+
+  ApplyAuthoringProjectToMovie(*this, url, items, allTitles, mainPlaylist, job, clips, playlistMap,
+                               m_projectInformation);
+  MenuCrossCheck(m_menuPlaylists, items);
 
   return !items.IsEmpty();
 }
