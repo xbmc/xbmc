@@ -1,46 +1,94 @@
 # See https://help.github.com/articles/about-codeowners/
 # for more info about CODEOWNERS file
+#
+# Owners are requested for review automatically when a PR touches their paths.
+# A code owner must have write access to the repository, otherwise GitHub
+# silently skips the review request.
+#
+# The LAST matching pattern wins. Patterns are kept in alphabetical order
+# inside each section, which also keeps broad paths ahead of the narrower
+# paths that override them.
 
-# Please try and keep the list in alphabetical order
+# ----------------------------------------------------------------------------
+# Repository infrastructure, build system and packaging
+# ----------------------------------------------------------------------------
+/.github/ @keithah @basrieter
+/CMakeLists.txt @fuzzard
+/cmake/ @fuzzard
+/project/BuildDependencies/ @thexai @fuzzard
+/tools/buildsteps/windows/ @thexai @fuzzard
+/tools/darwin/packaging/ @keithah
+/tools/depends/ @fuzzard @sundermann
+/xbmc/interfaces/swig/ @fuzzard
 
-/addons/kodi-dev-kit/include/kodi/addon-instance/pvr/ @ksooo
-/addons/kodi-dev-kit/include/kodi/addon-instance/PVR.h @ksooo
-/addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/ @ksooo
-/addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr.h @ksooo
+# ----------------------------------------------------------------------------
+# Core playback and rendering
+# ----------------------------------------------------------------------------
+/system/shaders/ @reardonia @sarbes
+/xbmc/cores/AudioEngine/ @thexai @fritsch
 /xbmc/cores/RetroPlayer/ @garbear
+/xbmc/cores/VideoPlayer/ @reardonia @CrystalP
 /xbmc/cores/VideoPlayer/DVDInputStreams/InputStreamPVR*.* @ksooo
-/xbmc/cores/VideoPlayer/VideoRenderers/HwDecRender/DRMPRIMEEGL.* @lrusak
-/xbmc/cores/VideoPlayer/VideoRenderers/HwDecRender/RendererDRMPRIME* @lrusak
+/xbmc/cores/VideoPlayer/VideoRenderers/ @reardonia
+/xbmc/rendering/ @reardonia
+/xbmc/rendering/dx/ @CrystalP
+
+# ----------------------------------------------------------------------------
+# Platforms and windowing
+# ----------------------------------------------------------------------------
+/xbmc/platform/android/ @garbear
+/xbmc/platform/android/speech/ @ksooo
+/xbmc/platform/darwin/ @kambala-decapitator
+/xbmc/platform/darwin/speech/ @ksooo
+/xbmc/platform/linux/ @sundermann
+/xbmc/platform/win10/ @CrystalP @thexai
+/xbmc/platform/win32/ @CrystalP @thexai
+/xbmc/utils/EGL* @reardonia
+/xbmc/utils/GBMBufferObject.* @reardonia
+/xbmc/windowing/android/ @garbear
+/xbmc/windowing/gbm/ @reardonia
+/xbmc/windowing/osx/ @kambala-decapitator
+/xbmc/windowing/wayland/ @neo1973 @sundermann
+/xbmc/windowing/windows/ @CrystalP
+
+# ----------------------------------------------------------------------------
+# Features and subsystems
+# ----------------------------------------------------------------------------
+/addons/skin.estuary/ @jjd-uk
+/xbmc/addons/kodi-dev-kit/ @garbear
+/xbmc/addons/kodi-dev-kit/include/kodi/addon-instance/PVR.h @ksooo
+/xbmc/addons/kodi-dev-kit/include/kodi/addon-instance/pvr/ @ksooo
+/xbmc/addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr.h @ksooo
+/xbmc/addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/ @ksooo
+/xbmc/dbwrappers/ @CrystalP
 /xbmc/favourites/ @ksooo
-/xbmc/filesystem/Music*.* @DaveTBlake
+/xbmc/filesystem/ @78andyp
 /xbmc/filesystem/PVR*.* @ksooo
+/xbmc/filesystem/bluray/ @78andyp
 /xbmc/games/ @garbear
+/xbmc/guilib/GUIRangesControl.* @ksooo
+/xbmc/guilib/guiinfo/ @ksooo
+/xbmc/guilib/listproviders/ @ksooo
+/xbmc/imagefiles/ @rmrector
 /xbmc/input/ @garbear
 /xbmc/interfaces/builtins/PVR*.* @ksooo
-/xbmc/interfaces/json-rpc/AudioLibrary.* @DaveTBlake
+/xbmc/interfaces/json-rpc/ @malard
 /xbmc/interfaces/json-rpc/PVR*.* @ksooo
-/xbmc/guilib/GUIRangesControl.* @ksooo
-/xbmc/guilib/guiinfo/GUIInfoProvider.h @ksooo
-/xbmc/guilib/guiinfo/GUIInfoProviders.* @ksooo
-/xbmc/guilib/guiinfo/IGUIInfoProvider.h @ksooo
-/xbmc/music/ @DaveTBlake
-/xbmc/peripherals/ @garbear
-/xbmc/platform/android/speech/ @ksooo
-/xbmc/platform/darwin/speech/ @ksooo
-/xbmc/platform/linux/ @lrusak
+/xbmc/music/ @notspiff
+/xbmc/network/upnp/ @enen92
+/xbmc/peripherals/ @garbear @opdenkamp
 /xbmc/pvr/ @ksooo
-/xbmc/rendering/gles/ @lrusak
 /xbmc/settings/SettingsComponent.* @ksooo
 /xbmc/speech/ @ksooo
-/xbmc/utils/EGL* @lrusak
 /xbmc/utils/ExecString.* @ksooo
-/xbmc/utils/GBMBufferObject.* @lrusak
 /xbmc/utils/PlayerUtils.* @ksooo
+/xbmc/utils/i18n/ @CrystalP
+/xbmc/video/ @CrystalP
 /xbmc/video/VideoUtils.* @ksooo
+/xbmc/video/dialogs/ @CrystalP
 /xbmc/video/guilib/VideoAction.h @ksooo
 /xbmc/video/guilib/VideoActionProcessorBase.* @ksooo
 /xbmc/video/guilib/VideoGUIUtils.* @ksooo
 /xbmc/video/guilib/VideoPlayActionProcessor.* @ksooo
 /xbmc/video/guilib/VideoSelectActionProcessor.* @ksooo
-/xbmc/windowing/gbm/ @lrusak
-/xbmc/windowing/wayland/ @yol
+/xbmc/weather/ @ksooo
