@@ -11980,7 +11980,10 @@ void CVideoDatabase::AnnounceUpdate(const std::string& content, int id)
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "OnUpdate", data);
 }
 
-bool CVideoDatabase::GetItemsForPath(const std::string &content, const std::string &strPath, CFileItemList &items)
+bool CVideoDatabase::GetItemsForPath(const std::string& content,
+                                     const std::string& strPath,
+                                     CFileItemList& items,
+                                     int getDetails)
 {
   const std::string& path(strPath);
 
@@ -11990,7 +11993,7 @@ bool CVideoDatabase::GetItemsForPath(const std::string &content, const std::stri
     CMultiPathDirectory::GetPaths(path, paths);
 
     for (const auto& p : paths)
-      GetItemsForPath(content, p, items);
+      GetItemsForPath(content, p, items, getDetails);
 
     return !items.IsEmpty();
   }
@@ -11999,7 +12002,7 @@ bool CVideoDatabase::GetItemsForPath(const std::string &content, const std::stri
   {
     std::string parent = URIUtils::GetParentPath(path);
     if (!parent.empty() && parent != path)
-      return GetItemsForPath(content, parent, items);
+      return GetItemsForPath(content, parent, items, getDetails);
     return false;
   }
 
@@ -12010,22 +12013,24 @@ bool CVideoDatabase::GetItemsForPath(const std::string &content, const std::stri
   if (content == "movies")
   {
     Filter filter(PrepareSQL("c%02d=%d", VIDEODB_ID_PARENTPATHID, pathID));
-    GetMoviesByWhere("videodb://movies/titles/", filter, items);
+    GetMoviesByWhere("videodb://movies/titles/", filter, items, SortDescription(), getDetails);
   }
   else if (content == "episodes")
   {
     Filter filter(PrepareSQL("c%02d=%d", VIDEODB_ID_EPISODE_PARENTPATHID, pathID));
-    GetEpisodesByWhere("videodb://tvshows/titles/", filter, items);
+    GetEpisodesByWhere("videodb://tvshows/titles/", filter, items, true, SortDescription(),
+                       getDetails);
   }
   else if (content == "tvshows")
   {
     Filter filter(PrepareSQL("idParentPath=%d", pathID));
-    GetTvShowsByWhere("videodb://tvshows/titles/", filter, items);
+    GetTvShowsByWhere("videodb://tvshows/titles/", filter, items, SortDescription(), getDetails);
   }
   else if (content == "musicvideos")
   {
     Filter filter(PrepareSQL("c%02d=%d", VIDEODB_ID_MUSICVIDEO_PARENTPATHID, pathID));
-    GetMusicVideosByWhere("videodb://musicvideos/titles/", filter, items);
+    GetMusicVideosByWhere("videodb://musicvideos/titles/", filter, items, true, SortDescription(),
+                          getDetails);
   }
   for (const auto& item : items)
     item->SetPath(item->GetVideoInfoTag()->m_basePath);

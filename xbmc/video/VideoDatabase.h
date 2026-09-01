@@ -575,9 +575,13 @@ public:
    \param content the content type to fetch.
    \param path the path to fetch videos from.
    \param items the returned items
+   \param getDetails bitmask specifying which additional video details to load
    \return true if items are found, false otherwise.
    */
-  bool GetItemsForPath(const std::string &content, const std::string &path, CFileItemList &items);
+  bool GetItemsForPath(const std::string& content,
+                       const std::string& path,
+                       CFileItemList& items,
+                       int getDetails = VideoDbDetailsNone);
 
   /*! \brief Check whether a given scraper is in use.
    \param scraperID the scraper to check for.
