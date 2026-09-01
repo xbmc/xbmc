@@ -10,7 +10,9 @@
 
 #include "guilib/GUIDialog.h"
 
+#include <chrono>
 #include <cstdint>
+#include <optional>
 
 class IRunnable;
 class CEvent;
@@ -35,9 +37,13 @@ public:
    \param event the CEvent to wait on.
    \param displaytime the time in ms to wait prior to showing the busy dialog (defaults to 100ms)
    \param allowCancel whether the user can cancel the wait, defaults to true.
-   \return true if the event completed, false if cancelled.
+   \param timeout how long to wait for the event, or wait indefinitely if unset.
+   \return true if the event completed, false if it was cancelled or timed out.
    */
-  static bool WaitOnEvent(CEvent &event, unsigned int displaytime = 100, bool allowCancel = true);
+  static bool WaitOnEvent(CEvent& event,
+                          unsigned int displaytime = 100,
+                          bool allowCancel = true,
+                          std::optional<std::chrono::milliseconds> timeout = {});
 
 private:
   CGUIDialogBusy();
