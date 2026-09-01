@@ -300,6 +300,24 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
         failed_stop);
     NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_resevent, timeout), failed_stop);
     NPT_CHECK_LABEL_SEVERE(m_delegate->m_resstatus, failed_stop);
+
+    // Stopping is acknowledged before the renderer has stopped, and until it has it keeps
+    // reporting the file being replaced as playing. Waiting for the transport to reach STOPPED
+    // is what makes the states seen from here on belong to the file about to be opened. Polled
+    // directly rather than through WaitOnEvent, which has no bound and shows a busy dialog.
+    XbmcThreads::EndTime<> stopping(3s);
+    while (!stopping.IsTimePast())
+    {
+      if (NPT_FAILED(m_control->GetTransportInfo(m_delegate->m_device, m_delegate->m_instance,
+                                                 m_delegate.get())))
+        break;
+      if (!m_delegate->m_traevnt.Wait(500ms))
+        continue;
+
+      const NPT_String stoppedState = m_delegate->GetTransportState();
+      if (stoppedState == "STOPPED" || stoppedState == "NO_MEDIA_PRESENT")
+        break;
+    }
   }
 
   timeout.Set(timeout.GetInitialTimeoutValue());
@@ -321,9 +339,13 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
   timeout.Set(timeout.GetInitialTimeoutValue());
   do
   {
+    // The reply must be awaited before the state is read, or the first pass evaluates the state
+    // left by the query at the top of this function - the renderer still playing what is being
+    // replaced - and stops waiting before the new file has started.
     NPT_CHECK_LABEL_SEVERE(
         m_control->GetTransportInfo(m_delegate->m_device, m_delegate->m_instance, m_delegate.get()),
         failed_waitplaying);
+    NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_traevnt, timeout), failed_waitplaying);
 
     const NPT_String transportStatus = m_delegate->GetTransportStatus();
     const NPT_String transportState = m_delegate->GetTransportState();
@@ -336,8 +358,6 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
       m_logger->error("OpenFile({}): remote player signalled error", file.GetPath());
       return NPT_FAILURE;
     }
-
-    NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_traevnt, timeout), failed_waitplaying);
 
   } while (!timeout.IsTimePast());
 
@@ -384,6 +404,8 @@ bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
 {
   XbmcThreads::EndTime<> timeout(10s);
 
+  m_playback.Opening();
+
   /* if no path we want to attach to a already playing player */
   if (file.GetPath().empty())
   {
@@ -407,7 +429,7 @@ bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
     Create();
 
   m_stopremote = true;
-  m_started = true;
+  m_playback.Started();
 
   if (VIDEO::IsVideo(file))
   {
@@ -482,11 +504,9 @@ bool CUPnPPlayer::CloseFile(bool reopen)
     NPT_CHECK_LABEL(m_delegate->m_resstatus, failed);
   }
 
-  if (m_started)
-  {
-    m_started = false;
+  if (m_playback.Finish())
     m_callback.OnPlayBackStopped();
-  }
+
   StopThread(true);
   CServiceBroker::GetDataCacheCore().Reset();
   return true;
@@ -559,7 +579,7 @@ void CUPnPPlayer::Process()
     NPT_CHECK_POINTER_LABEL_SEVERE(m_delegate, failed);
     m_delegate->UpdatePositionInfo();
 
-    if (m_started)
+    if (m_playback.IsStarted())
     {
       // Update player times
       CDataCacheCore& dataCacheCore = CDataCacheCore::GetInstance();
@@ -581,10 +601,10 @@ void CUPnPPlayer::Process()
         dataCacheCore.SetSpeed(1.0, 1.0);
       }
 
-      if (m_delegate->GetTransportState() == "STOPPED")
+      if (m_playback.HasEnded(m_delegate->GetTransportState().GetChars()))
       {
         m_logger->info("Transport state flagged as STOPPED. Triggering OnPlayBackEnded.");
-        m_started = false;
+        m_playback.Finish();
         m_callback.OnPlayBackEnded();
       }
     }
@@ -677,7 +697,7 @@ failed:
 
 void CUPnPPlayer::OnExit()
 {
-  if (m_started)
+  if (m_playback.IsStarted())
   {
     m_callback.OnPlayBackEnded();
   }
