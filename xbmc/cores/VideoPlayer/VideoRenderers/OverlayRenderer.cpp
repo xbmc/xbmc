@@ -428,6 +428,9 @@ void CRenderer::PrepareOverlays(int idx)
   if (idx < 0 || idx >= NUM_BUFFERS)
     return;
 
+  SubtitleResolution resolution;
+  const bool updateStyle = UpdateSubtitleStyleAndPosition(resolution);
+
   bool doMarkDirty = false;
   bool hasImageSpu = false;
   for (auto& e : m_buffers[idx])
@@ -462,14 +465,6 @@ void CRenderer::PrepareOverlays(int idx)
     if (!ovAss.GetLibassHandler())
       continue;
 
-    bool updateStyle = !m_overlayStyle || m_isSettingsChanged;
-    if (updateStyle)
-    {
-      m_isSettingsChanged = false;
-      LoadSettings();
-      CreateSubtitlesStyle();
-    }
-
     // rOpts setup moved from CRenderer::ConvertLibass; duplicated in CDebugRenderer::CRenderer::Render.
     SUBTITLES::STYLE::renderOpts rOpts;
 
@@ -497,27 +492,7 @@ void CRenderer::PrepareOverlays(int idx)
         rOpts.sourceHeight = m_rs.Height() * 2;
     }
 
-    // Set position of subtitles based on video calibration settings
-    RESOLUTION_INFO resInfo = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
-    // Keep track of subtitle position value change,
-    // can be changed by GUI Calibration or by window mode/resolution change or
-    // by user manual change (e.g. keyboard shortcut)
-    if (m_subtitlePosResInfo != resInfo.iSubtitles)
-    {
-      if (m_subtitlePosResInfo == POSRESINFO_SAVE_CHANGES)
-      {
-        // m_subtitlePosition has been changed
-        // and has been requested to save the value to resInfo
-        resInfo.iSubtitles = m_subtitlePosition + m_subtitleVerticalMargin;
-        CServiceBroker::GetWinSystem()->GetGfxContext().SetResInfo(
-            CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution(), resInfo);
-        m_subtitlePosResInfo = m_subtitlePosition + m_subtitleVerticalMargin;
-      }
-      else
-        ResetSubtitlePosition();
-    }
-
-    rOpts.m_par = resInfo.fPixelRatio;
+    rOpts.m_par = resolution.pixelRatio;
 
     // rOpts.position and margins (set to style) can invalidate the text
     // positions to subtitles type that make use of margins to position text on
@@ -536,7 +511,7 @@ void CRenderer::PrepareOverlays(int idx)
       // match the bar, this calculation compensates for the displacement.
       // Note also that the displacement compensation will cause a different
       // default position of the text, different from the other alignment positions
-      double posPx = static_cast<double>(m_subtitlePosition - resInfo.Overscan.top);
+      double posPx = static_cast<double>(m_subtitlePosition - resolution.overscanTop);
 
       int assPlayResY = ovAss.GetLibassHandler()->GetPlayResY();
       double assVertMargin = static_cast<double>(m_overlayStyle->marginVertical) *
@@ -551,8 +526,8 @@ void CRenderer::PrepareOverlays(int idx)
     {
       // To keep consistent the position of text as other alignment positions
       // we avoid apply the displacement compensation
-      double posPx =
-          static_cast<double>(m_subtitlePosition + m_subtitleVerticalMargin - resInfo.Overscan.top);
+      double posPx = static_cast<double>(m_subtitlePosition + m_subtitleVerticalMargin -
+                                         resolution.overscanTop);
       rOpts.position = 100 - posPx / static_cast<double>(rOpts.frameHeight) * 100;
     }
     else if (m_subtitleAlign == SUBTITLES::Align::BOTTOM_INSIDE ||
@@ -581,6 +556,10 @@ void CRenderer::PrepareOverlays(int idx)
     int currentChange = 0;
     e.renderedImages = ovAss.GetLibassHandler()->RenderImage(e.pts, rOpts, updateStyle,
                                                              m_overlayStyle, &currentChange);
+    // A handler whose track is not built yet returns without applying the style, so the
+    // request has to stand.
+    if (e.renderedImages)
+      m_stylePendingApply = false;
     if (currentChange > 0)
     {
       // Persist on the overlay so a skipped GUI render does not drop the change.
@@ -701,4 +680,48 @@ void CRenderer::LoadSettings()
   m_subtitleHorizontalAlign = settings->GetHorizontalAlignment();
   m_subtitleAlign = settings->GetAlignment();
   ResetSubtitlePosition();
+}
+
+bool CRenderer::UpdateSubtitleStyleAndPosition(SubtitleResolution& resolution)
+{
+  if (!m_overlayStyle || m_isSettingsChanged)
+  {
+    m_isSettingsChanged = false;
+    m_stylePendingApply = true;
+    LoadSettings();
+    CreateSubtitlesStyle();
+  }
+
+  RESOLUTION_INFO resInfo = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
+  resolution.pixelRatio = resInfo.fPixelRatio;
+  resolution.overscanTop = resInfo.Overscan.top;
+
+  // m_rv is set after this runs on the first frame of a playback.
+  if (m_subtitleAlign != SUBTITLES::Align::MANUAL && m_rv.IsEmpty())
+    return m_stylePendingApply;
+
+  // Keep track of subtitle position value change,
+  // can be changed by GUI Calibration or by window mode/resolution change or
+  // by user manual change (e.g. keyboard shortcut).
+  // ResetSubtitlePosition() records the calibration line for MANUAL, the frame height
+  // otherwise.
+  const int posResInfo = m_subtitleAlign == SUBTITLES::Align::MANUAL
+                             ? resInfo.iSubtitles
+                             : static_cast<int>(m_rv.Height());
+  if (m_subtitlePosResInfo != posResInfo)
+  {
+    if (m_subtitlePosResInfo == POSRESINFO_SAVE_CHANGES)
+    {
+      // m_subtitlePosition has been changed
+      // and has been requested to save the value to resInfo
+      resInfo.iSubtitles = m_subtitlePosition + m_subtitleVerticalMargin;
+      CServiceBroker::GetWinSystem()->GetGfxContext().SetResInfo(
+          CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution(), resInfo);
+      m_subtitlePosResInfo = m_subtitlePosition + m_subtitleVerticalMargin;
+    }
+    else
+      ResetSubtitlePosition();
+  }
+
+  return m_stylePendingApply;
 }
