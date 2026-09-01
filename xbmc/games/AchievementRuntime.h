@@ -27,6 +27,28 @@ struct AchievementProgress
   std::string measuredProgress;
 };
 
+/*!
+ * \brief The achievement the player is working towards, as the runtime chose it
+ */
+struct ProgressIndicator
+{
+  unsigned int id{0};
+  std::string title;
+  std::string badgeUrl;
+  std::string measuredProgress;
+  float measuredPercent{0.0f};
+};
+
+/*!
+ * \brief The achievement the player is inside an attempt at
+ */
+struct ChallengeIndicator
+{
+  unsigned int id{0};
+  std::string title;
+  std::string badgeUrl;
+};
+
 struct AchievementInfo
 {
   unsigned int id{0};
@@ -74,6 +96,19 @@ struct AchievementState
   unsigned int unlockedAchievements{0};
   std::string richPresence;
   std::vector<AchievementInfo> achievements;
+
+  /*!
+   * \brief The measured achievements being worked towards
+   *
+   * More than one can be counting at once -- a game will happily track balloons
+   * popped and time survived together -- and the runtime announces each
+   * separately. Kept as a set so that one does not overwrite another; which of
+   * them is worth a corner indicator is decided on the way out.
+   */
+  std::vector<ProgressIndicator> progressIndicators;
+
+  //! \brief The achievements being attempted, for the same reason
+  std::vector<ChallengeIndicator> challenges;
   bool loaded{false};
 };
 
@@ -134,11 +169,44 @@ public:
   //@{
   unsigned int GetTotalAchievements() const;
   unsigned int GetUnlockedAchievements() const;
+
+  /*!
+   * \brief The achievement the player is working towards
+   *
+   * The achievement runtime picks it and says when to show and hide it, so this
+   * is empty whenever nothing should be on screen.
+   */
+  std::string GetTrackedAchievementTitle() const;
+  std::string GetTrackedAchievementProgress() const;
+  std::string GetTrackedAchievementBadge() const;
+  float GetTrackedAchievementPercent() const;
   //@}
 
+  /*!
+   * \brief Add, update or remove a measured achievement
+   *
+   * An id of zero with \p active false means everything counting has stopped,
+   * which is what the runtime sends with a hide.
+   */
+  void SetProgressIndicator(const ProgressIndicator& indicator, bool active);
+
+  //! \brief The achievement the player is inside an attempt at
+  std::string GetChallengeAchievementTitle() const;
+  std::string GetChallengeAchievementBadge() const;
+
+  //! \brief Add or remove an achievement being attempted
+  void SetChallengeIndicator(const ChallengeIndicator& indicator, bool active);
+
+  //! \brief True while any indicator has something to show
+  bool HasIndicators() const;
+
 private:
+  //! \brief The measured achievement closest to being earned, called under the lock
+  const ProgressIndicator* BestProgressIndicator() const;
+
   mutable std::mutex m_mutex;
   AchievementState m_state;
+
 };
 
 } // namespace KODI::GAME

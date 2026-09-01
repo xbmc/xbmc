@@ -19539,7 +19539,19 @@ msgctxt "#35299"
 msgid "Still looking this game up on RetroAchievements..."
 msgstr ""
 
-#empty strings from id 35300 to 35504
+#empty strings from id 35300 to 35363
+
+#. Setting to show achievement indicators over the game while playing
+msgctxt "#35364"
+msgid "Enable on screen achievement indicators"
+msgstr ""
+
+#. Help text for the on screen achievement indicators setting
+msgctxt "#35365"
+msgid "Show the achievement you are attempting, and how far along a counted achievement is, in the corner of the screen while you play."
+msgstr ""
+
+#empty strings from id 35366 to 35504
 
 #. connection state "host unreachable"
 #: xbmc/pvr/addons/PVRClients.cpp

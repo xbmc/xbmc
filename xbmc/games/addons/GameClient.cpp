@@ -189,6 +189,8 @@ bool CGameClient::Initialize(void)
   m_ifc.game->toKodi->RCOnRichPresenceUpdated = cb_rc_on_rich_presence_updated;
   m_ifc.game->toKodi->RCOnLoginResult = cb_rc_on_login_result;
   m_ifc.game->toKodi->RCOnAchievementProgress = cb_rc_on_achievement_progress;
+  m_ifc.game->toKodi->RCOnProgressIndicator = cb_rc_on_progress_indicator;
+  m_ifc.game->toKodi->RCOnChallengeIndicator = cb_rc_on_challenge_indicator;
   m_ifc.game->toKodi->RCOnServerError = cb_rc_on_server_error;
   m_ifc.game->toKodi->RCOnConnectionChanged = cb_rc_on_connection_changed;
 
@@ -994,6 +996,26 @@ void CGameClient::cb_rc_on_achievement_progress(KODI_HANDLE kodiInstance,
     count = 0;
 
   gameClient->Cheevos().OnAchievementProgress(progress, count);
+}
+
+void CGameClient::cb_rc_on_progress_indicator(KODI_HANDLE kodiInstance,
+                                              const game_rc_progress_indicator* indicator)
+{
+  CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
+  if (gameClient == nullptr)
+    return;
+
+  gameClient->Cheevos().OnProgressIndicator(indicator);
+}
+
+void CGameClient::cb_rc_on_challenge_indicator(KODI_HANDLE kodiInstance,
+                                               const game_rc_challenge_indicator* indicator)
+{
+  CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
+  if (gameClient == nullptr)
+    return;
+
+  gameClient->Cheevos().OnChallengeIndicator(indicator);
 }
 
 void CGameClient::cb_rc_on_server_error(KODI_HANDLE kodiInstance,

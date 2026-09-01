@@ -48,6 +48,9 @@ public:
 private:
   const KODI::GAME::CAchievementRuntime& AchievementRuntime() const;
 
+  //! \brief Whether the player wants indicators drawn over the game
+  static bool ShowIndicators();
+
   const KODI::GAME::CAchievementRuntime* m_achievementRuntime{nullptr};
 };
 

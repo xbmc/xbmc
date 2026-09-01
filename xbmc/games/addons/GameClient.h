@@ -293,6 +293,10 @@ private:
                                             unsigned int count);
   static void cb_rc_on_server_error(KODI_HANDLE kodiInstance, const char* message, const char* api);
   static void cb_rc_on_connection_changed(KODI_HANDLE kodiInstance, bool connected);
+  static void cb_rc_on_progress_indicator(KODI_HANDLE kodiInstance,
+                                          const game_rc_progress_indicator* indicator);
+  static void cb_rc_on_challenge_indicator(KODI_HANDLE kodiInstance,
+                                           const game_rc_challenge_indicator* indicator);
   //@}
 
   /*!

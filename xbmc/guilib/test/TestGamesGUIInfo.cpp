@@ -64,6 +64,18 @@ TEST_F(TestGamesGUIInfo, TranslatesRetroPlayerLabels)
   EXPECT_EQ(infoManager.TranslateString("RetroPlayer.RichPresence"), RETROPLAYER_RICH_PRESENCE);
   EXPECT_EQ(infoManager.TranslateString("RetroPlayer.AchievementsLoggedIn"),
             RETROPLAYER_ACHIEVEMENTS_LOGGED_IN);
+  EXPECT_EQ(infoManager.TranslateString("RetroPlayer.AchievementsIndicatorTitle"),
+            RETROPLAYER_ACHIEVEMENTS_INDICATOR_TITLE);
+  EXPECT_EQ(infoManager.TranslateString("RetroPlayer.AchievementsIndicatorProgress"),
+            RETROPLAYER_ACHIEVEMENTS_INDICATOR_PROGRESS);
+  EXPECT_EQ(infoManager.TranslateString("RetroPlayer.AchievementsIndicatorPercent"),
+            RETROPLAYER_ACHIEVEMENTS_INDICATOR_PERCENT);
+  EXPECT_EQ(infoManager.TranslateString("RetroPlayer.AchievementsIndicatorBadge"),
+            RETROPLAYER_ACHIEVEMENTS_INDICATOR_BADGE);
+  EXPECT_EQ(infoManager.TranslateString("RetroPlayer.AchievementsChallengeTitle"),
+            RETROPLAYER_ACHIEVEMENTS_CHALLENGE_TITLE);
+  EXPECT_EQ(infoManager.TranslateString("RetroPlayer.AchievementsChallengeBadge"),
+            RETROPLAYER_ACHIEVEMENTS_CHALLENGE_BADGE);
   EXPECT_EQ(infoManager.TranslateString("RetroPlayer.AchievementsProgress"),
             RETROPLAYER_ACHIEVEMENTS_PROGRESS);
 }
@@ -195,4 +207,100 @@ TEST_F(TestGamesGUIInfo, InitCurrentItemSetsTitleFromVfsHostnamePath)
   const CGameInfoTag* tag = item.GetGameInfoTag();
   ASSERT_NE(tag, nullptr);
   EXPECT_EQ(tag->GetTitle(), "test");
+}
+
+TEST_F(TestGamesGUIInfo, ShowsTheAchievementTheRuntimeIndicated)
+{
+  CAchievementRuntime achievementRuntime;
+  achievementRuntime.SetState(MakeAchievementState());
+
+  ProgressIndicator indicator;
+  indicator.id = 3;
+  indicator.title = "Collect 180 rings";
+  indicator.badgeUrl = "https://example.invalid/badge.png";
+  indicator.measuredProgress = "130/180";
+  indicator.measuredPercent = 72.0f;
+  achievementRuntime.SetProgressIndicator(indicator, true);
+
+  CGamesGUIInfo gamesGUIInfo{achievementRuntime};
+
+  std::string value;
+  EXPECT_TRUE(gamesGUIInfo.GetLabel(
+      value, nullptr, 0, CGUIInfo(RETROPLAYER_ACHIEVEMENTS_INDICATOR_TITLE), nullptr));
+  EXPECT_EQ(value, "Collect 180 rings");
+
+  EXPECT_TRUE(gamesGUIInfo.GetLabel(
+      value, nullptr, 0, CGUIInfo(RETROPLAYER_ACHIEVEMENTS_INDICATOR_PROGRESS), nullptr));
+  EXPECT_EQ(value, "130/180");
+
+  EXPECT_TRUE(gamesGUIInfo.GetLabel(
+      value, nullptr, 0, CGUIInfo(RETROPLAYER_ACHIEVEMENTS_INDICATOR_BADGE), nullptr));
+  EXPECT_EQ(value, "https://example.invalid/badge.png");
+
+  int percent = 0;
+  EXPECT_TRUE(gamesGUIInfo.GetInt(percent, nullptr, 0,
+                                  CGUIInfo(RETROPLAYER_ACHIEVEMENTS_INDICATOR_PERCENT)));
+  EXPECT_EQ(percent, 72);
+}
+
+TEST_F(TestGamesGUIInfo, ShowsNothingOnceTheIndicatorIsCleared)
+{
+  CAchievementRuntime achievementRuntime;
+  achievementRuntime.SetState(MakeAchievementState());
+
+  ProgressIndicator indicator;
+  indicator.id = 3;
+  indicator.title = "Collect 180 rings";
+  indicator.measuredProgress = "130/180";
+  indicator.measuredPercent = 72.0f;
+  achievementRuntime.SetProgressIndicator(indicator, true);
+  achievementRuntime.SetProgressIndicator({}, false);
+
+  CGamesGUIInfo gamesGUIInfo{achievementRuntime};
+
+  std::string value;
+  EXPECT_TRUE(gamesGUIInfo.GetLabel(
+      value, nullptr, 0, CGUIInfo(RETROPLAYER_ACHIEVEMENTS_INDICATOR_TITLE), nullptr));
+  EXPECT_TRUE(value.empty());
+
+  int percent = -1;
+  EXPECT_TRUE(gamesGUIInfo.GetInt(percent, nullptr, 0,
+                                  CGUIInfo(RETROPLAYER_ACHIEVEMENTS_INDICATOR_PERCENT)));
+  EXPECT_EQ(percent, 0);
+}
+
+TEST_F(TestGamesGUIInfo, ShowsTheClosestOfTwoAchievementsCountingAtOnce)
+{
+  CAchievementRuntime achievementRuntime;
+  achievementRuntime.SetState(MakeAchievementState());
+
+  ProgressIndicator behind;
+  behind.id = 4;
+  behind.title = "Trip Pop Pro";
+  behind.measuredProgress = "1/25";
+  behind.measuredPercent = 4.0f;
+
+  ProgressIndicator ahead;
+  ahead.id = 5;
+  ahead.title = "Orange Ace";
+  ahead.measuredProgress = "18/20";
+  ahead.measuredPercent = 90.0f;
+
+  // Announced separately, as the runtime does, and in the order that would
+  // leave the wrong one showing if the latest simply replaced the last
+  achievementRuntime.SetProgressIndicator(ahead, true);
+  achievementRuntime.SetProgressIndicator(behind, true);
+
+  CGamesGUIInfo gamesGUIInfo{achievementRuntime};
+
+  std::string value;
+  EXPECT_TRUE(gamesGUIInfo.GetLabel(
+      value, nullptr, 0, CGUIInfo(RETROPLAYER_ACHIEVEMENTS_INDICATOR_TITLE), nullptr));
+  EXPECT_EQ(value, "Orange Ace");
+
+  // The one that finished stops counting without taking the other with it
+  achievementRuntime.SetProgressIndicator(ahead, false);
+  EXPECT_TRUE(gamesGUIInfo.GetLabel(
+      value, nullptr, 0, CGUIInfo(RETROPLAYER_ACHIEVEMENTS_INDICATOR_TITLE), nullptr));
+  EXPECT_EQ(value, "Trip Pop Pro");
 }

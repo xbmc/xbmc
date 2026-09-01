@@ -27,6 +27,8 @@
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "settings/MediaSettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -74,6 +76,23 @@ const CAchievementRuntime& CGamesGUIInfo::AchievementRuntime() const
     return *m_achievementRuntime;
 
   return CServiceBroker::GetGameServices().AchievementRuntime();
+}
+
+bool CGamesGUIInfo::ShowIndicators()
+{
+  const auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (settingsComponent == nullptr)
+    return true;
+
+  const auto settings = settingsComponent->GetSettings();
+  if (settings == nullptr)
+    return true;
+
+  // Answered here rather than recorded when the runtime reports one, so turning
+  // it off during an attempt clears the screen at once and the achievements
+  // dialog still knows what is being attempted
+  static const std::string setting{"gamesachievements.onscreenindicators"};
+  return settings->GetBool(setting);
 }
 
 bool CGamesGUIInfo::InitCurrentItem(CFileItem* item)
@@ -238,6 +257,31 @@ bool CGamesGUIInfo::GetLabel(std::string& value,
       value = AchievementRuntime().GetRichPresence();
       return true;
     }
+    case RETROPLAYER_ACHIEVEMENTS_CHALLENGE_TITLE:
+    {
+      value = ShowIndicators() ? AchievementRuntime().GetChallengeAchievementTitle() : "";
+      return true;
+    }
+    case RETROPLAYER_ACHIEVEMENTS_CHALLENGE_BADGE:
+    {
+      value = ShowIndicators() ? AchievementRuntime().GetChallengeAchievementBadge() : "";
+      return true;
+    }
+    case RETROPLAYER_ACHIEVEMENTS_INDICATOR_TITLE:
+    {
+      value = ShowIndicators() ? AchievementRuntime().GetTrackedAchievementTitle() : "";
+      return true;
+    }
+    case RETROPLAYER_ACHIEVEMENTS_INDICATOR_PROGRESS:
+    {
+      value = ShowIndicators() ? AchievementRuntime().GetTrackedAchievementProgress() : "";
+      return true;
+    }
+    case RETROPLAYER_ACHIEVEMENTS_INDICATOR_BADGE:
+    {
+      value = ShowIndicators() ? AchievementRuntime().GetTrackedAchievementBadge() : "";
+      return true;
+    }
     case RETROPLAYER_ACHIEVEMENTS_PROGRESS:
     {
       const CAchievementRuntime& runtime = AchievementRuntime();
@@ -263,6 +307,22 @@ bool CGamesGUIInfo::GetInt(int& value,
                            int contextWindow,
                            const CGUIInfo& info) const
 {
+  switch (info.GetInfo())
+  {
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // RETROPLAYER_*
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    case RETROPLAYER_ACHIEVEMENTS_INDICATOR_PERCENT:
+    {
+      // Answered here as well as on GetLabel so a progress control can be bound
+      // to it directly
+      value = static_cast<int>(AchievementRuntime().GetTrackedAchievementPercent());
+      return true;
+    }
+    default:
+      break;
+  }
+
   return false;
 }
 

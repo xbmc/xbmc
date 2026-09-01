@@ -1187,6 +1187,36 @@ public:
 
   //============================================================================
   /// @brief **Callback to Kodi Function**\n
+  /// Show the achievement the player is working towards, or hide it
+  ///
+  /// @param[in] indicator The achievement to show, or `nullptr` to hide it
+  ///
+  /// @remarks Only called from the add-on itself
+  ///
+  /// @note Added in Game API 8.1.0
+  ///
+  void RCOnProgressIndicator(const game_rc_progress_indicator* indicator)
+  {
+    m_instanceData->toKodi->RCOnProgressIndicator(m_instanceData->toKodi->kodiInstance, indicator);
+  }
+
+  //============================================================================
+  /// @brief **Callback to Kodi Function**\n
+  /// Show or hide the achievement the player is inside an attempt at
+  ///
+  /// @param[in] indicator The achievement being attempted, or `nullptr` to hide
+  ///
+  /// @remarks Only called from the add-on itself
+  ///
+  /// @note Added in Game API 8.1.0
+  ///
+  void RCOnChallengeIndicator(const game_rc_challenge_indicator* indicator)
+  {
+    m_instanceData->toKodi->RCOnChallengeIndicator(m_instanceData->toKodi->kodiInstance, indicator);
+  }
+
+  //============================================================================
+  /// @brief **Callback to Kodi Function**\n
   /// Report an error returned by the RetroAchievements server
   ///
   /// @param[in] message The error as reported by the server

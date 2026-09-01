@@ -2845,6 +2845,11 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="gamesachievements.onscreenindicators" type="boolean" label="35364" help="35365">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
       </group>
     </category>
   </section>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol></defaultcontrol>
+	<animation effect="fade" time="200">WindowOpen</animation>
+	<animation effect="fade" time="200">WindowClose</animation>
+	<controls>
+		<description>
+			The corner indicators shown over a running game: the achievement being
+			attempted, and how far along a measured one is.
+
+			These are a dialog rather than controls in the fullscreen window because
+			where the game has its own plane the GUI layer is only composited when
+			something dirties it, and a control becoming visible is not enough. Kodi
+			opens this only while there is something to show, so an empty dialog is
+			never on screen.
+		</description>
+		<control type="group">
+			<description>
+				RetroAchievements challenge indicator. Shown while the player is
+				inside an attempt at an achievement, so they know the attempt is
+				live without opening the achievements dialog. Sits top-right,
+				clear of the OSD and of any subtitles.
+			</description>
+			<visible>!String.IsEmpty(RetroPlayer.AchievementsChallengeTitle)</visible>
+			<animation effect="fade" time="200">VisibleChange</animation>
+			<right>40</right>
+			<top>40</top>
+			<width>420</width>
+			<height>72</height>
+			<control type="image">
+				<description>Backdrop, so the indicator stays readable over any game</description>
+				<left>0</left>
+				<top>0</top>
+				<width>420</width>
+				<height>72</height>
+				<texture border="10" colordiffuse="BB000000">dialogs/dialog-bg-nobo.png</texture>
+			</control>
+			<control type="image">
+				<description>Achievement badge</description>
+				<left>10</left>
+				<top>10</top>
+				<width>52</width>
+				<height>52</height>
+				<texture background="true">$INFO[RetroPlayer.AchievementsChallengeBadge]</texture>
+				<aspectratio>keep</aspectratio>
+			</control>
+			<control type="label">
+				<description>Achievement being attempted</description>
+				<left>72</left>
+				<top>10</top>
+				<width>338</width>
+				<height>52</height>
+				<label>$INFO[RetroPlayer.AchievementsChallengeTitle]</label>
+				<font>font12</font>
+				<align>left</align>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<scroll>true</scroll>
+				<scrollsuffix>   </scrollsuffix>
+			</control>
+		</control>
+		<control type="group">
+			<description>
+				Measured achievement indicator. Some achievements are counted rather
+				than simply locked or unlocked - "collect 180 rings" - and this shows
+				how far along one is while the player works towards it.
+			</description>
+			<visible>!String.IsEmpty(RetroPlayer.AchievementsIndicatorTitle)</visible>
+			<animation effect="fade" time="200">VisibleChange</animation>
+			<right>40</right>
+			<top>40</top>
+			<width>420</width>
+			<height>72</height>
+			<animation effect="slide" end="0,82" time="0" condition="!String.IsEmpty(RetroPlayer.AchievementsChallengeTitle)">Conditional</animation>
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>420</width>
+				<height>72</height>
+				<texture border="10" colordiffuse="BB000000">dialogs/dialog-bg-nobo.png</texture>
+			</control>
+			<control type="image">
+				<description>Achievement badge</description>
+				<left>10</left>
+				<top>10</top>
+				<width>52</width>
+				<height>52</height>
+				<texture background="true">$INFO[RetroPlayer.AchievementsIndicatorBadge]</texture>
+				<aspectratio>keep</aspectratio>
+			</control>
+			<control type="label">
+				<left>72</left>
+				<top>6</top>
+				<width>270</width>
+				<height>32</height>
+				<label>$INFO[RetroPlayer.AchievementsIndicatorTitle]</label>
+				<font>font12</font>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<scroll>true</scroll>
+				<scrollsuffix>   </scrollsuffix>
+			</control>
+			<control type="label">
+				<description>How far along, as the client counts it</description>
+				<right>14</right>
+				<top>6</top>
+				<width>90</width>
+				<height>32</height>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>$INFO[RetroPlayer.AchievementsIndicatorProgress]</label>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="progress">
+				<description>
+					The same figure as a bar. Driven by the percentage rather than by
+					parsing "13/180" back into numbers.
+				</description>
+				<left>72</left>
+				<top>44</top>
+				<width>336</width>
+				<height>10</height>
+				<info>RetroPlayer.AchievementsIndicatorPercent</info>
+			</control>
+		</control>
+	</controls>
+</window>
