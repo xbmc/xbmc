@@ -201,6 +201,20 @@ namespace OVERLAY {
      */
     void LoadSettings();
 
+    //! \brief The display values the overlays need
+    struct SubtitleResolution
+    {
+      float pixelRatio{1.0f};
+      int overscanTop{0};
+    };
+
+    /*!
+     * \brief Establish the subtitle style and position for the current frame.
+     * \param[out] resolution the display values read while doing so
+     * \return True if the style was rebuilt and must be re-applied to libass
+     */
+    bool UpdateSubtitleStyleAndPosition(SubtitleResolution& resolution);
+
     enum PositonResInfoState
     {
       POSRESINFO_UNSET = -1,
@@ -217,8 +231,8 @@ namespace OVERLAY {
     std::string m_stereomode;
     // Current subtitle position
     int m_subtitlePosition{0};
-    // Current subtitle position from resolution info,
-    // or PositonResInfoState enum values for deferred processing
+    // The calibration line for MANUAL alignment and the frame height otherwise,
+    // or a PositonResInfoState value for deferred processing
     int m_subtitlePosResInfo{POSRESINFO_UNSET};
     int m_subtitleVerticalMargin{0};
     bool m_saveSubtitlePosition{false}; // To save subtitle position permanently
@@ -228,6 +242,8 @@ namespace OVERLAY {
 
     std::shared_ptr<struct KODI::SUBTITLES::STYLE::style> m_overlayStyle;
     std::atomic<bool> m_isSettingsChanged{false};
+    // Set when the style is rebuilt, cleared once a libass handler has been given it.
+    bool m_stylePendingApply{false};
     // Whether last frame had any image/SPU overlay. Used by PrepareOverlays
     // to detect arrival/disappearance transitions (image/SPU have no
     // per-frame change signal of their own, unlike libass detect_change).
