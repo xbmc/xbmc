@@ -1,6 +1,6 @@
 AC_PREREQ(2.59)
 AC_INIT([xbmc-depends], [2.00], [https://github.com/xbmc/xbmc])
-:${CFLAGS=""}
+: ${CFLAGS=""}
 AC_CONFIG_AUX_DIR([build-aux])
 # Only touch Makefile.include's mtime if its content actually changed, since every
 # dependency's rebuild stamp depends on it and an unconditional rewrite here would
@@ -754,6 +754,9 @@ else
   platform_cxxflags="$platform_cxxflags_release"
 fi
 
+# CPPFLAGS preprocesses C++ too, so a C standard from CFLAGS must not reach it.
+platform_cppflags=$(echo " $platform_cflags " | sed 's/ -std=@<:@^ @:>@*//g;s/ \{2,\}/ /g;s/^ //;s/ $//')
+
 CXXFLAGS="$platform_cxxflags $platform_includes"
 CXX_CACHED="$CXX"
 AX_CXX_COMPILE_STDCXX([20], [noext], [mandatory])
@@ -802,6 +805,7 @@ AC_SUBST(use_firmware)
 AC_SUBST(cross_compiling)
 AC_SUBST(platform_asflags)
 AC_SUBST(platform_cflags)
+AC_SUBST(platform_cppflags)
 AC_SUBST(platform_cxxflags)
 AC_SUBST(platform_cflags_release)
 AC_SUBST(platform_cxxflags_release)

@@ -25,7 +25,7 @@ ASFLAGS="@platform_asflags@"
 CFLAGS="@platform_cflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include $CFLAGS"
 LDFLAGS="-L@prefix@/@deps_dir@/lib @platform_ldflags@ $LDFLAGS"
 CXXFLAGS="@platform_cxxflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include $CXXFLAGS"
-CPPFLAGS="@platform_cflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include $CPPFLAGS"
+CPPFLAGS="@platform_cppflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include $CPPFLAGS"
 
 export PKG_CONFIG=@prefix@/@tool_dir@/bin/pkg-config
 export PKG_CONFIG_LIBDIR=@prefix@/@deps_dir@/lib/pkgconfig
