@@ -2373,16 +2373,15 @@ void LogMoviePlaylists(std::string_view prefix, const std::vector<PlaylistInform
     LogMoviePlaylist(prefix, playlist);
 }
 
-/*!
- * \brief Removes the playlists matching shouldRemove, logging each removal and the reason for it.
- */
+//! \brief Removes the playlists matching shouldRemove, logging each removal and the reason for it
 template<typename Predicate>
 void RemovePlaylists(std::vector<PlaylistInformation>& playlists,
                      std::string_view reason,
                      Predicate shouldRemove)
 {
-  for (const auto& playlist : playlists | std::views::filter(shouldRemove))
-    LogMoviePlaylist(StringUtils::Format("Rejected ({}) -", reason), playlist);
+  if (CServiceBroker::GetLogging().CanLogComponent(LOGBLURAY))
+    for (const auto& playlist : playlists | std::views::filter(shouldRemove))
+      LogMoviePlaylist(StringUtils::Format("Rejected ({}) -", reason), playlist);
 
   std::erase_if(playlists, shouldRemove);
 }
