@@ -72,7 +72,7 @@ void CDAVDirectory::ParseResponse(const tinyxml2::XMLElement* element, CFileItem
               else if (CDAVCommon::ValueWithoutNamespace(propChild, "displayname") &&
                        !propChild->NoChildren())
               {
-                item.SetLabel(CURL::Decode(propChild->FirstChild()->Value()));
+                item.SetLabel(URIUtils::DecodePathEscapes(propChild->FirstChild()->Value()));
               }
               else if (!item.GetDateTime().IsValid() &&
                        CDAVCommon::ValueWithoutNamespace(propChild, "creationdate") &&
@@ -153,7 +153,7 @@ bool CDAVDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       {
         std::string name(itemPath);
         URIUtils::RemoveSlashAtEnd(name);
-        item.SetLabel(CURL::Decode(URIUtils::GetFileName(name)));
+        item.SetLabel(URIUtils::DecodePathEscapes(URIUtils::GetFileName(name)));
       }
 
       if (item.IsFolder())
