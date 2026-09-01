@@ -2797,6 +2797,260 @@ namespace XBMCAddon
     };
     /// @}
 
+    // ControlToggleButton class
+    ///
+    /// \defgroup python_xbmcgui_control_togglebutton Subclass - ControlToggleButton
+    /// \ingroup python_xbmcgui_control
+    /// @{
+    /// @brief **A toggle button control (a button with two states).**
+    ///
+    /// \python_class{ ControlToggleButton(x, y, width, height, label[, altLabel, focusTexture,
+    ///                   noFocusTexture, altFocusTexture, altNoFocusTexture, textOffsetX,
+    ///                   textOffsetY, alignment, font, textColor, disabledColor, angle,
+    ///                   shadowColor, focusedColor]) }
+    ///
+    /// The toggle button control is a button that alternates between two states
+    /// each time it is clicked. Each state has its own label and its own pair of
+    /// focused and unfocused textures.
+    ///
+    /// @note This class include also all calls from \ref python_xbmcgui_control "Control"
+    ///
+    /// @param x                    integer - x coordinate of control.
+    /// @param y                    integer - y coordinate of control.
+    /// @param width                integer - width of control.
+    /// @param height               integer - height of control.
+    /// @param label                string or unicode - text string shown while
+    ///                             the button is not selected.
+    /// @param altLabel             [opt] string or unicode - text string shown
+    ///                             while the button is selected.
+    /// @param focusTexture         [opt] string - filename for focused button
+    ///                             texture.
+    /// @param noFocusTexture       [opt] string - filename for not focused button
+    ///                             texture.
+    /// @param altFocusTexture      [opt] string - filename for focused button
+    ///                             texture while selected.
+    /// @param altNoFocusTexture    [opt] string - filename for not focused button
+    ///                             texture while selected.
+    /// @param textOffsetX          [opt] integer - horizontal text offset
+    /// @param textOffsetY          [opt] integer - vertical text offset
+    /// @param alignment            [opt] integer - alignment of label
+    /// - \ref kodi_gui_font_alignment "Flags for alignment" used as bits to have several together:
+    /// | Definition name   |   Bitflag  | Description                         |
+    /// |-------------------|:----------:|:------------------------------------|
+    /// | XBFONT_LEFT       | 0x00000000 | Align X left
+    /// | XBFONT_RIGHT      | 0x00000001 | Align X right
+    /// | XBFONT_CENTER_X   | 0x00000002 | Align X center
+    /// | XBFONT_CENTER_Y   | 0x00000004 | Align Y center
+    /// | XBFONT_TRUNCATED  | 0x00000008 | Truncated text
+    /// | XBFONT_JUSTIFIED  | 0x00000010 | Justify text
+    /// | XBFONT_TRUNCATED_LEFT | 0x00000020 | Truncated text from left
+    /// @param font                 [opt] string - font used for label text.
+    ///                             (e.g. 'font13')
+    /// @param textColor            [opt] hexstring - color of label when control
+    ///                             is enabled. (e.g. '0xFFFFFFFF')
+    /// @param disabledColor        [opt] hexstring - color of label when control
+    ///                             is disabled. (e.g. '0xFFFF3300')
+    /// @param angle                [opt] integer - angle of control. (+ rotates
+    ///                             CCW, - rotates CW)
+    /// @param shadowColor          [opt] hexstring - color of label's shadow.
+    ///                             (e.g. '0xFF000000')
+    /// @param focusedColor         [opt] hexstring - color of label when control
+    ///                             is focused. (e.g. '0xFFFFFF00')
+    ///
+    /// @note You can use the above as keywords for arguments and skip certain
+    ///       optional arguments.\n
+    ///       Once you use a keyword, all following arguments require the
+    ///       keyword.\n
+    ///       After you create the control, you need to add it to the window with
+    ///       addControl().
+    ///
+    ///
+    ///--------------------------------------------------------------------------
+    /// @python_v22 New class added.
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ...
+    /// self.togglebutton = xbmcgui.ControlToggleButton(100, 250, 200, 50, 'Mute', 'Unmute')
+    /// ...
+    /// ~~~~~~~~~~~~~
+    ///
+    class ControlToggleButton : public Control
+    {
+    public:
+      ControlToggleButton(long x,
+                          long y,
+                          long width,
+                          long height,
+                          const String& label,
+                          const String& altLabel = emptyString,
+                          const char* focusTexture = NULL,
+                          const char* noFocusTexture = NULL,
+                          const char* altFocusTexture = NULL,
+                          const char* altNoFocusTexture = NULL,
+                          long textOffsetX = CONTROL_TEXT_OFFSET_X,
+                          long textOffsetY = CONTROL_TEXT_OFFSET_Y,
+                          long alignment = (XBFONT_LEFT | XBFONT_CENTER_Y),
+                          const char* font = NULL,
+                          const char* textColor = NULL,
+                          const char* disabledColor = NULL,
+                          long angle = 0,
+                          const char* shadowColor = NULL,
+                          const char* focusedColor = NULL);
+
+      // setSelected() Method
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_control_togglebutton
+      /// @brief \python_func{ setSelected(selected) }
+      /// **Sets the toggle button's selected status.**
+      ///
+      /// @param selected           bool - True=selected (on) / False=not
+      ///                               selected (off)
+      ///
+      ///
+      ///--------------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// self.togglebutton.setSelected(True)
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
+      setSelected(...);
+#else
+      virtual void setSelected(bool selected);
+#endif
+
+      // isSelected() Method
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_control_togglebutton
+      /// @brief \python_func{ isSelected() }
+      /// Returns the toggle button's selected status.
+      ///
+      /// @return                       True if selected on
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// is = self.togglebutton.isSelected()
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
+      isSelected();
+#else
+      virtual bool isSelected();
+#endif
+
+      // setLabel() Method
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_control_togglebutton
+      /// @brief \python_func{ setLabel([label, font, textColor, disabledColor, shadowColor, focusedColor, altLabel]) }
+      /// Sets the toggle button's text attributes.
+      ///
+      /// @param label              [opt] string or unicode - text string shown
+      ///                               while the button is not selected.
+      /// @param font               [opt] string - font used for label
+      ///                               text. (e.g. 'font13')
+      /// @param textColor          [opt] hexstring - color of enabled toggle
+      ///                               button's label. (e.g. '0xFFFFFFFF')
+      /// @param disabledColor      [opt] hexstring - color of disabled
+      ///                               toggle button's label. (e.g. '0xFFFF3300')
+      /// @param shadowColor        [opt] hexstring - color of toggle
+      ///                               button's label's shadow.
+      ///                               (e.g. '0xFF000000')
+      /// @param focusedColor       [opt] hexstring - color of focused toggle
+      ///                               button's label. (e.g. '0xFFFFFF00')
+      /// @param altLabel           [opt] string or unicode - text string shown
+      ///                               while the button is selected.
+      ///
+      /// @note You can use the above as keywords for arguments and skip certain
+      ///       optional arguments.\n
+      ///       Once you use a keyword, all following arguments require the
+      ///       keyword.
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// # setLabel([label, font, textColor, disabledColor, shadowColor, focusedColor, altLabel])
+      /// self.togglebutton.setLabel('Mute', 'font14', '0xFFFFFFFF', '0xFFFF3300', '0xFF000000', altLabel='Unmute')
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
+      setLabel(...);
+#else
+      virtual void setLabel(const String& label = emptyString,
+                            const char* font = NULL,
+                            const char* textColor = NULL,
+                            const char* disabledColor = NULL,
+                            const char* shadowColor = NULL,
+                            const char* focusedColor = NULL,
+                            const String& altLabel = emptyString);
+#endif
+
+      // getLabel() Method
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_control_togglebutton
+      /// @brief \python_func{ getLabel() }
+      /// Returns the toggle button's label, the alternate one while it is selected.
+      ///
+      /// @return                       The label currently shown
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// label = self.togglebutton.getLabel()
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
+      getLabel();
+#else
+      virtual String getLabel();
+#endif
+
+#ifndef SWIG
+      bool canAcceptMessages(int actionId) override { return true; }
+
+      std::string strFont;
+      std::string strText;
+      std::string strAltText;
+      std::string strTextureFocus;
+      std::string strTextureNoFocus;
+      std::string strTextureAltFocus;
+      std::string strTextureAltNoFocus;
+      KODI::UTILS::COLOR::Color textColor;
+      KODI::UTILS::COLOR::Color disabledColor;
+      int textOffsetX = 0;
+      int textOffsetY = 0;
+      uint32_t align;
+      int iAngle = 0;
+      KODI::UTILS::COLOR::Color shadowColor;
+      KODI::UTILS::COLOR::Color focusedColor;
+
+      CGUIControl* Create() override;
+
+      ControlToggleButton() = default;
+#endif
+    };
+    /// @}
+
     /// \defgroup python_xbmcgui_control_slider Subclass - ControlSlider
     /// \ingroup python_xbmcgui_control
     /// @{
