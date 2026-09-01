@@ -214,13 +214,17 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
     value = CUtil::GetTitleFromPath(item->GetPath(), item->IsFolder() && !item->IsFileFolder());
     break;
   case 'L':
+  {
     value = item->GetLabel();
     // is the label the actual file or folder name?
-    if (value == URIUtils::GetFileName(item->GetPath()))
+    const std::string& path = item->GetPath();
+    const std::string fileName = URIUtils::GetFileName(path);
+    if (value == fileName || (URIUtils::IsURL(path) && value == URIUtils::DecodePathEscapes(fileName)))
     { // label is the same as filename, clean it up as appropriate
       value = CUtil::GetTitleFromPath(item->GetPath(), item->IsFolder() && !item->IsFileFolder());
     }
     break;
+  }
   case 'D':
     { // duration
       int nDuration=0;

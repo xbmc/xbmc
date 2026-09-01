@@ -38,6 +38,9 @@ public:
   static std::string URLEncode(std::string_view strURLData, std::string_view URLSpec = RFC1738);
   static std::string URLDecode(std::string_view strURLData);
 
+  /*! \brief Decode a path component, leaving a literal '+' alone. */
+  static std::string DecodePathEscapes(std::string_view strURLData);
+
   static void RegisterAdvancedSettings(const CAdvancedSettings& advancedSettings);
   static void UnregisterAdvancedSettings();
 
