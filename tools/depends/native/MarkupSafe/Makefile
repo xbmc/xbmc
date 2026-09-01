@@ -14,7 +14,7 @@ all: .installed-$(PLATFORM)
 
 .installed-$(PLATFORM): .configured-$(PLATFORM)
 	cd $(PLATFORM); patch -p1 -i ../01-all-GH399-removedistutils.patch
-	cd $(PLATFORM); $(PREFIX)/bin/python3 setup.py install --prefix=$(PREFIX)
+	cd $(PLATFORM); $(PREFIX)/bin/python3 -m pip install --no-deps --no-build-isolation --prefix=$(PREFIX) .
 	touch $@
 
 clean:

@@ -11,7 +11,7 @@ all: .installed-$(PLATFORM)
 	touch $@
 
 .installed-$(PLATFORM): .configured-$(PLATFORM)
-	cd $(PLATFORM); PYTHONPATH="$(PYTHON_SITE_PKG)" $(NATIVEPREFIX)/bin/python3 setup.py install --prefix=$(PREFIX)
+	cd $(PLATFORM); PYTHONPATH="$(PYTHON_SITE_PKG)" $(NATIVEPREFIX)/bin/python3 -m pip install --no-deps --no-build-isolation --prefix=$(PREFIX) .
 	find $(PYTHON_SITE_PKG)/*setuptools* -type f -name "*.exe" -exec rm -f {} \;
 	touch $@
 
