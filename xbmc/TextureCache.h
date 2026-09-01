@@ -147,7 +147,7 @@ public:
   void ClearCachedImage(const std::string &image, bool deleteSource = false);
 
   /*! \brief clear the cached version of the image with given id
-   \param database id of the image
+   \param textureID id of the image
    \sa GetCachedImage
    */
   bool ClearCachedImage(int textureID);
@@ -206,7 +206,7 @@ private:
 
   /*! \brief Get an image from the database
    Thread-safe wrapper of CTextureDatabase::GetCachedTexture
-   \param image url of the original image
+   \param url url of the original image
    \param details [out] texture details from the database (if available)
    \return true if we have a cached version of this image, false otherwise.
    */
@@ -214,7 +214,7 @@ private:
 
   /*! \brief Clear an image from the database
    Thread-safe wrapper of CTextureDatabase::ClearCachedTexture
-   \param image url of the original image
+   \param url url of the original image
    \param cacheFile [out] url of the cached original (if available)
    \return true if we had a cached version of this image, false otherwise.
    */
@@ -229,7 +229,7 @@ private:
 
   /*! \brief Set a previously cached texture as valid in the database
    Thread-safe wrapper of CTextureDatabase::SetCachedTextureValid
-   \param image url of the original image
+   \param url url of the original image
    \param updateable whether this image should be checked for updates
    \return true if successful, false otherwise.
    */
