@@ -77,6 +77,27 @@ assert li.getLabel() == 'direct', li.getLabel()
 )py"));
 }
 
+// keyword names come from the C++ declaration; both textures are given because the default lookup needs a skin
+TEST_F(TestPythonBindings, ToggleButtonKeywordArguments)
+{
+  if (!s_pythonUp)
+    GTEST_SKIP() << "python runtime not initialized";
+  ASSERT_TRUE(s_mainImportOk);
+  EXPECT_TRUE(RunPy(R"py(
+import xbmcgui
+b = xbmcgui.ControlToggleButton(0, 0, 200, 50, 'off', altLabel='on', focusTexture='f.png',
+                                noFocusTexture='n.png', alignment=4)
+assert isinstance(b, xbmcgui.Control)
+assert b.getLabel() == 'off', b.getLabel()
+try:
+    xbmcgui.ControlToggleButton(0, 0, 200, 50, 'off', focusTexture='f.png',
+                                noFocusTexture='n.png', _alignment=4)
+    raise AssertionError('_alignment accepted')
+except TypeError:
+    pass
+)py"));
+}
+
 // construction happens in tp_new, which drops keyword arguments when retrying for a subclass, so offscreen must be positional here
 TEST_F(TestPythonBindings, SubclassExtraKwargs)
 {

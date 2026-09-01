@@ -148,7 +148,28 @@ void CGUIToggleButtonControl::SetLabel(const std::string &label)
 void CGUIToggleButtonControl::SetAltLabel(const std::string &label)
 {
   if (!label.empty())
+  {
+    m_altLabel = label;
     m_selectButton.SetLabel(label);
+  }
+}
+
+void CGUIToggleButtonControl::PythonSetLabel(const std::string& strFont,
+                                             const std::string& strText,
+                                             KODI::UTILS::COLOR::Color textColor,
+                                             KODI::UTILS::COLOR::Color shadowColor,
+                                             KODI::UTILS::COLOR::Color focusedColor)
+{
+  CGUIButtonControl::PythonSetLabel(strFont, strText, textColor, shadowColor, focusedColor);
+  // The selected state renders through m_selectButton, which carries its own label info.
+  m_selectButton.PythonSetLabel(strFont, m_altLabel.empty() ? strText : m_altLabel, textColor,
+                                shadowColor, focusedColor);
+}
+
+void CGUIToggleButtonControl::PythonSetDisabledColor(KODI::UTILS::COLOR::Color disabledColor)
+{
+  CGUIButtonControl::PythonSetDisabledColor(disabledColor);
+  m_selectButton.PythonSetDisabledColor(disabledColor);
 }
 
 std::string CGUIToggleButtonControl::GetDescription() const

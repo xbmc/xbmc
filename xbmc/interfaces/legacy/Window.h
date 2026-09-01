@@ -828,6 +828,7 @@ namespace XBMCAddon
       ///   | \ref python_xbmcgui_control_slider      "ControlSlider"       | The slider control is used for things where a sliding bar best represents the operation at hand
       ///   | \ref python_xbmcgui_control_spin        "ControlSpin"         | The spin control is used for when a list of options can be chosen
       ///   | \ref python_xbmcgui_control_textbox     "ControlTextBox"      | The text box is used for showing a large multipage piece of text in Kodi
+      ///   | \ref python_xbmcgui_control_togglebutton "ControlToggleButton" | A button which alternates between two states, each with its own label and textures
       ///
       addControl(...);
 #else

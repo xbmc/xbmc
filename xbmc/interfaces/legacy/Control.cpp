@@ -27,6 +27,7 @@
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUISliderControl.h"
 #include "guilib/GUITextBox.h"
+#include "guilib/GUIToggleButtonControl.h"
 #include "guilib/GUIVideoControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/listproviders/StaticProvider.h"
@@ -734,6 +735,162 @@ namespace XBMCAddon
         static_cast<CGUIRadioButtonControl*>(pGUIControl);
 
       pGuiButtonControl->SetLabel(strText);
+
+      return pGUIControl;
+    }
+
+    // ============================================================
+
+    // ============================================================
+    // ============================================================
+    ControlToggleButton::ControlToggleButton(long x,
+                                             long y,
+                                             long width,
+                                             long height,
+                                             const String& label,
+                                             const String& altLabel,
+                                             const char* focusTexture,
+                                             const char* noFocusTexture,
+                                             const char* altFocusTexture,
+                                             const char* altNoFocusTexture,
+                                             long _textOffsetX,
+                                             long _textOffsetY,
+                                             long alignment,
+                                             const char* font,
+                                             const char* _textColor,
+                                             const char* _disabledColor,
+                                             long angle,
+                                             const char* _shadowColor,
+                                             const char* _focusedColor)
+      : strFont("font13"),
+        textColor(0xffffffff),
+        disabledColor(0x60ffffff),
+        textOffsetX(_textOffsetX),
+        textOffsetY(_textOffsetY),
+        align(alignment),
+        iAngle(angle),
+        shadowColor(0),
+        focusedColor(0xffffffff)
+    {
+      dwPosX = x;
+      dwPosY = y;
+      dwWidth = width;
+      dwHeight = height;
+
+      strText = label;
+      strAltText = altLabel;
+
+      strTextureFocus = focusTexture
+                            ? focusTexture
+                            : XBMCAddonUtils::getDefaultImage("togglebutton", "texturefocus");
+      strTextureNoFocus = noFocusTexture
+                              ? noFocusTexture
+                              : XBMCAddonUtils::getDefaultImage("togglebutton", "texturenofocus");
+
+      // Without an alternate pair the button renders no texture when selected.
+      strTextureAltFocus = altFocusTexture ? altFocusTexture : strTextureFocus;
+      strTextureAltNoFocus = altNoFocusTexture ? altNoFocusTexture : strTextureNoFocus;
+
+      if (font)
+        strFont = font;
+      if (_textColor)
+        sscanf(_textColor, "%x", &textColor);
+      if (_disabledColor)
+        sscanf(_disabledColor, "%x", &disabledColor);
+      if (_shadowColor)
+        sscanf(_shadowColor, "%x", &shadowColor);
+      if (_focusedColor)
+        sscanf(_focusedColor, "%x", &focusedColor);
+    }
+
+    void ControlToggleButton::setSelected(bool selected)
+    {
+      if (pGUIControl)
+      {
+        XBMCAddonUtils::GuiLock lock(languageHook, false);
+        static_cast<CGUIToggleButtonControl*>(pGUIControl)->SetSelected(selected);
+      }
+    }
+
+    bool ControlToggleButton::isSelected()
+    {
+      bool isSelected = false;
+
+      if (pGUIControl)
+      {
+        XBMCAddonUtils::GuiLock lock(languageHook, false);
+        isSelected = static_cast<CGUIToggleButtonControl*>(pGUIControl)->IsSelected();
+      }
+      return isSelected;
+    }
+
+    void ControlToggleButton::setLabel(const String& label,
+                                       const char* font,
+                                       const char* _textColor,
+                                       const char* _disabledColor,
+                                       const char* _shadowColor,
+                                       const char* _focusedColor,
+                                       const String& altLabel)
+    {
+      if (!label.empty())
+        strText = label;
+      if (!altLabel.empty())
+        strAltText = altLabel;
+      if (font)
+        strFont = font;
+      if (_textColor)
+        sscanf(_textColor, "%x", &textColor);
+      if (_disabledColor)
+        sscanf(_disabledColor, "%x", &disabledColor);
+      if (_shadowColor)
+        sscanf(_shadowColor, "%x", &shadowColor);
+      if (_focusedColor)
+        sscanf(_focusedColor, "%x", &focusedColor);
+
+      if (pGUIControl)
+      {
+        XBMCAddonUtils::GuiLock lock(languageHook, false);
+        CGUIToggleButtonControl* pGuiButtonControl =
+            static_cast<CGUIToggleButtonControl*>(pGUIControl);
+        // SetAltLabel first: PythonSetLabel styles the selected button from the stored alt text.
+        pGuiButtonControl->SetAltLabel(strAltText);
+        pGuiButtonControl->PythonSetLabel(strFont, strText, textColor, shadowColor, focusedColor);
+        pGuiButtonControl->PythonSetDisabledColor(disabledColor);
+      }
+    }
+
+    String ControlToggleButton::getLabel()
+    {
+      if (pGUIControl == nullptr)
+        return strText;
+
+      XBMCAddonUtils::GuiLock lock(languageHook, false);
+      return static_cast<CGUIToggleButtonControl*>(pGUIControl)->GetLabel();
+    }
+
+    CGUIControl* ControlToggleButton::Create()
+    {
+      CLabelInfo label;
+      label.font = g_fontManager.GetFont(strFont);
+      label.textColor = textColor;
+      label.disabledColor = disabledColor;
+      label.shadowColor = shadowColor;
+      label.focusedColor = focusedColor;
+      label.align = align;
+      label.offsetX = (float)textOffsetX;
+      label.offsetY = (float)textOffsetY;
+      label.angle = (float)-iAngle;
+      pGUIControl = new CGUIToggleButtonControl(
+          iParentId, iControlId, (float)dwPosX, (float)dwPosY, (float)dwWidth, (float)dwHeight,
+          CTextureInfo(strTextureFocus), CTextureInfo(strTextureNoFocus),
+          CTextureInfo(strTextureAltFocus), CTextureInfo(strTextureAltNoFocus), label);
+      pGUIControl->SetVisible(m_visible);
+
+      CGUIToggleButtonControl* pGuiButtonControl =
+          static_cast<CGUIToggleButtonControl*>(pGUIControl);
+
+      pGuiButtonControl->SetLabel(strText);
+      pGuiButtonControl->SetAltLabel(strAltText);
 
       return pGUIControl;
     }

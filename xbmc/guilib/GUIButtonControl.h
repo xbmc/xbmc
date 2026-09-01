@@ -58,17 +58,18 @@ public:
   virtual std::string GetLabel() const { return GetDescription(); }
   virtual std::string GetLabel2() const;
   void SetSelected(bool bSelected);
+  bool IsSelected() const { return m_bSelected; }
   std::string GetDescription() const override;
   float GetWidth() const override;
   virtual void SetMinWidth(float minWidth);
   void SetAlpha(unsigned char alpha);
 
-  void PythonSetLabel(const std::string& strFont,
-                      const std::string& strText,
-                      KODI::UTILS::COLOR::Color textColor,
-                      KODI::UTILS::COLOR::Color shadowColor,
-                      KODI::UTILS::COLOR::Color focusedColor);
-  void PythonSetDisabledColor(KODI::UTILS::COLOR::Color disabledColor);
+  virtual void PythonSetLabel(const std::string& strFont,
+                              const std::string& strText,
+                              KODI::UTILS::COLOR::Color textColor,
+                              KODI::UTILS::COLOR::Color shadowColor,
+                              KODI::UTILS::COLOR::Color focusedColor);
+  virtual void PythonSetDisabledColor(KODI::UTILS::COLOR::Color disabledColor);
 
   virtual void OnClick();
   bool HasClickActions() const { return m_clickActions.HasActionsMeetingCondition(); }

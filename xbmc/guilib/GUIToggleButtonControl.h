@@ -39,9 +39,16 @@ public:
   void SetMinWidth(float minWidth) override;
   void SetLabel(const std::string& label) override;
   void SetAltLabel(const std::string& label);
+  const std::string& GetAltLabel() const { return m_altLabel; }
   std::string GetDescription() const override;
   void SetToggleSelect(const std::string &toggleSelect);
   void SetAltClickActions(const CGUIAction &clickActions);
+  void PythonSetLabel(const std::string& strFont,
+                      const std::string& strText,
+                      KODI::UTILS::COLOR::Color textColor,
+                      KODI::UTILS::COLOR::Color shadowColor,
+                      KODI::UTILS::COLOR::Color focusedColor) override;
+  void PythonSetDisabledColor(KODI::UTILS::COLOR::Color disabledColor) override;
 
 protected:
   bool UpdateColors(const CGUIListItem* item) override;

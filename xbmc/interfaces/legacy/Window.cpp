@@ -16,6 +16,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIRadioButtonControl.h"
+#include "guilib/GUIToggleButtonControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
@@ -338,6 +339,27 @@ namespace XBMCAddon
         if (li.font) ((ControlRadioButton*)pControl)->strFont = li.font->GetFontName();
         ((ControlRadioButton*)pControl)->align = li.align;
         break;
+      case CGUIControl::GUICONTROL_TOGGLEBUTTON:
+      {
+        pControl = new ControlToggleButton();
+
+        CGUIToggleButtonControl* toggle = static_cast<CGUIToggleButtonControl*>(pGUIControl);
+        li = toggle->GetLabelInfo();
+
+        // Qualified: the override returns whichever label is showing.
+        ((ControlToggleButton*)pControl)->strText = toggle->CGUIButtonControl::GetDescription();
+        ((ControlToggleButton*)pControl)->strAltText = toggle->GetAltLabel();
+
+        // note: conversion from infocolors -> plain colors here
+        ((ControlToggleButton*)pControl)->disabledColor = li.disabledColor;
+        ((ControlToggleButton*)pControl)->focusedColor = li.focusedColor;
+        ((ControlToggleButton*)pControl)->textColor = li.textColor;
+        ((ControlToggleButton*)pControl)->shadowColor = li.shadowColor;
+        if (li.font)
+          ((ControlToggleButton*)pControl)->strFont = li.font->GetFontName();
+        ((ControlToggleButton*)pControl)->align = li.align;
+        break;
+      }
       case CGUIControl::GUICONTROL_EDIT:
         pControl = new ControlEdit();
 
