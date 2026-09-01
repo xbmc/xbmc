@@ -24,8 +24,6 @@ public:
 
   void OnPostInstall(bool update, bool modal) override;
 
-  bool IsAllowed(const std::string &file) const override;
-
   const KODI::LANGUAGE::CLanguageTag& GetLanguage() const { return m_language; }
 
   const std::string& GetGuiCharset() const { return m_charsetGui; }
@@ -37,6 +35,9 @@ public:
 
   static std::string GetAddonId(const std::string& locale);
 
+
+protected:
+  Published PublishedFiles() const override;
 
 private:
   KODI::LANGUAGE::CLanguageTag m_language;

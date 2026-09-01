@@ -19,6 +19,9 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <array>
+#include <string_view>
+
 using namespace KODI::MESSAGING;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
@@ -108,10 +111,10 @@ void CLanguageResource::OnPostInstall(bool update, bool modal)
   }
 }
 
-bool CLanguageResource::IsAllowed(const std::string &file) const
+CResource::Published CLanguageResource::PublishedFiles() const
 {
-  return file.empty() || StringUtils::EqualsNoCase(file, "langinfo.xml") ||
-         StringUtils::EqualsNoCase(file, "strings.po");
+  static constexpr std::array<std::string_view, 2> names{"langinfo.xml", "strings.po"};
+  return {.names = names};
 }
 
 std::string CLanguageResource::GetAddonId(const std::string& locale)
