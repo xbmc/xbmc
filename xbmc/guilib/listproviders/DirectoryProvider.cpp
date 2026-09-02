@@ -227,6 +227,7 @@ public:
                 CDirectoryProvider::BrowseMode browse,
                 int parentID)
     : m_url(url),
+      m_targetKey(target),
       m_target(target),
       m_sort(sort),
       m_limit(limit),
@@ -242,7 +243,12 @@ public:
     if (strcmp(job->GetType(), GetType()) == 0)
     {
       const auto* dirJob = dynamic_cast<const CDirectoryJob*>(job);
-      if (dirJob && dirJob->m_url == m_url)
+      if (dirJob && dirJob->m_url == m_url && dirJob->m_targetKey == m_targetKey &&
+          dirJob->m_sort.sortBy == m_sort.sortBy && dirJob->m_sort.sortOrder == m_sort.sortOrder &&
+          dirJob->m_sort.sortAttributes == m_sort.sortAttributes &&
+          dirJob->m_sort.limitStart == m_sort.limitStart &&
+          dirJob->m_sort.limitEnd == m_sort.limitEnd && dirJob->m_limit == m_limit &&
+          dirJob->m_browse == m_browse && dirJob->m_parentID == m_parentID)
         return true;
     }
     return false;
@@ -352,6 +358,7 @@ public:
 
 private:
   std::string m_url;
+  std::string m_targetKey;
   std::string m_target;
   SortDescription m_sort;
   unsigned int m_limit{10};
