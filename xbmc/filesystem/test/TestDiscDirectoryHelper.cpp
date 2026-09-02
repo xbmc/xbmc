@@ -471,6 +471,72 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_SingleEpisode_MultiplePlayli
   EXPECT_TRUE(std::ranges::includes(returned, expected));
 }
 
+// Two specials on the disc and several candidate playlists. Nothing on the disc says which
+// special is which, so offering the best candidate would give both the same playlist. None is
+// offered instead and the user chooses from the simple menu.
+TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_MultipleSpecials_NoneOffered)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{MakeEpisode(0, 1, 1800), // Special 1
+                    MakeEpisode(0, 2, 1500), // Special 2
+                    MakeEpisode(1, 1, 3600)};
+
+  PlaylistMap playlists{{800u, MakePlaylist(800u, 60min, {1u}, {60min})},
+                        {100u, MakePlaylist(100u, 30min, {2u}, {30min})},
+                        {101u, MakePlaylist(101u, 25min, {3u}, {25min})}};
+  ClipMap clips{{1u, MakeClip(60min, {800u})},
+                {2u, MakeClip(30min, {100u})},
+                {3u, MakeClip(25min, {101u})}};
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  // The episode is unaffected
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 2, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 800);
+
+  // Neither special is given a playlist
+  EXPECT_FALSE(helper.GetEpisodePlaylists(url, items, allTitles, 0, episodes, clips, playlists));
+  EXPECT_EQ(items.Size(), 0);
+
+  EXPECT_FALSE(helper.GetEpisodePlaylists(url, items, allTitles, 1, episodes, clips, playlists));
+  EXPECT_EQ(items.Size(), 0);
+
+  // The simple menu still lists everything for the user to choose from
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::MAIN, episodes, clips,
+                                            playlists));
+  const auto returned{GetPlaylists(items)};
+  const std::set<unsigned int> expected{100u, 101u, 800u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+}
+
+// One special on the disc is still offered - there is nothing to confuse it with
+TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_SingleSpecial_StillOffered)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{MakeEpisode(0, 1, 1800), // Special
+                    MakeEpisode(1, 1, 3600)};
+
+  PlaylistMap playlists{{800u, MakePlaylist(800u, 60min, {1u}, {60min})},
+                        {100u, MakePlaylist(100u, 30min, {2u}, {30min})},
+                        {101u, MakePlaylist(101u, 25min, {3u}, {25min})}};
+  ClipMap clips{{1u, MakeClip(60min, {800u})},
+                {2u, MakeClip(30min, {100u})},
+                {3u, MakeClip(25min, {101u})}};
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 0, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 2);
+  const auto returned{GetPlaylists(items)};
+  const std::set<unsigned int> expected{100u, 101u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected)); // Either could be the special
+}
+
 //
 // ---- GetEpisodePlaylists – play-all playlist method -------------------------
 //
