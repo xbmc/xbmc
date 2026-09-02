@@ -17,7 +17,7 @@
 /cmake/ @fuzzard
 /project/BuildDependencies/ @thexai @fuzzard
 /tools/buildsteps/windows/ @thexai @fuzzard
-/tools/darwin/packaging/ @keithah
+/tools/darwin/ @kambala-decapitator
 /tools/depends/ @fuzzard @sundermann
 /xbmc/interfaces/swig/ @fuzzard
 
@@ -47,6 +47,8 @@
 /xbmc/utils/GBMBufferObject.* @reardonia
 /xbmc/windowing/android/ @garbear
 /xbmc/windowing/gbm/ @reardonia
+/xbmc/windowing/ios/ @kambala-decapitator
+/xbmc/windowing/osx/ @kambala-decapitator
 /xbmc/windowing/osx/ @kambala-decapitator
 /xbmc/windowing/wayland/ @neo1973 @sundermann
 /xbmc/windowing/windows/ @CrystalP
